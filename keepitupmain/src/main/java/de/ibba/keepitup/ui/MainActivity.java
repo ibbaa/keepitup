@@ -1,7 +1,9 @@
-package de.ibba.keepitup;
+package de.ibba.keepitup.ui;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+
+import de.ibba.keepitup.R;
 
 public class MainActivity extends AppCompatActivity {
 
