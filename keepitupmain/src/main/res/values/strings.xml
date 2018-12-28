@@ -1,3 +1,5 @@
 <resources>
-    <string name="app_name">KeepItUp</string>
+    <string name="app_name">Keep it up</string>
+    <string name="button_start">Start</string>
+    <string name="button_stop">Stop</string>
 </resources>
