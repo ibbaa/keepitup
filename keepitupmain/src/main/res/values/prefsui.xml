@@ -1,0 +1,11 @@
+<resources>
+    <string name="activity_setting_title">Settings</string>
+    <string name="menu_action_defaults">Reset</string>
+    <string name="hostname_setting_key">hostname_setting_key</string>
+    <string name="hostname_setting_label">Host</string>
+    <string name="hostname_setting_default">192.168.178.1</string>
+    <string name="interval_setting_key">interval_setting_key</string>
+    <string name="interval_setting_label">Interval</string>
+    <integer name="interval_setting_default">15</integer>
+    <integer name="interval_setting_minimum">15</integer>
+</resources>

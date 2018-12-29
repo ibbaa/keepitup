@@ -1,0 +1,5 @@
+<resources>
+    <string name="button_start">Start</string>
+    <string name="button_stop">Stop</string>
+    <string name="menu_action_settings">Settings</string>
+</resources>

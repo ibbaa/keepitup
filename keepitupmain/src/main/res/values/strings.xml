@@ -1,5 +1,9 @@
 <resources>
     <string name="app_name">Keep it up</string>
-    <string name="button_start">Start</string>
-    <string name="button_stop">Stop</string>
+    <string name="string_minutes">minutes</string>
+    <string name="string_minimum">Minimum</string>
+    <string name="string_value">Value</string>
+    <string name="string_invalid_input">Invalid input</string>
+    <string name="string_hostname_valid">Valid hostname</string>
+    <string name="string_ip_valid">Valid IP address</string>
 </resources>
