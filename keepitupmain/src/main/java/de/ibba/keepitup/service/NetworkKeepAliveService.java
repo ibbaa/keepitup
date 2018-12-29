@@ -13,6 +13,7 @@ public class NetworkKeepAliveService extends JobService {
         Log.d(NetworkKeepAliveService.class.getName(), "onStartJob");
         return false;
     }
+
     @Override
     public boolean onStopJob(JobParameters jobParameters) {
         Log.d(NetworkKeepAliveService.class.getName(), "onStopJob");

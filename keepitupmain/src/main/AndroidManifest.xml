@@ -27,7 +27,9 @@
         <activity
             android:name=".ui.SettingsActivity"
             android:label="@string/activity_setting_title" />
-        <service android:name=".service.NetworkKeepAliveService" android:permission="android.permission.BIND_JOB_SERVICE" />
+        <service
+            android:name=".service.NetworkKeepAliveService"
+            android:permission="android.permission.BIND_JOB_SERVICE" />
     </application>
 
 </manifest>

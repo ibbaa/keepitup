@@ -19,6 +19,8 @@ import de.ibba.keepitup.util.StringUtil;
 
 public class SettingsActivity extends AppCompatPreferenceActivity {
 
+    public static final int SETTING_ACTIVITY_CODE = 1000;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -40,7 +42,7 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
             SharedPreferences.Editor preferencesEditor = PreferenceManager.getDefaultSharedPreferences(this).edit();
             preferencesEditor.remove(getResources().getString(R.string.interval_setting_key));
             preferencesEditor.remove(getResources().getString(R.string.hostname_setting_key));
-            preferencesEditor.commit();
+            preferencesEditor.apply();
             PreferenceManager.setDefaultValues(this, R.xml.settings, true);
             recreate();
             return true;
@@ -59,6 +61,7 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
             hostname.setOnPreferenceChangeListener(this::onHostnameChanged);
         }
 
+        @SuppressWarnings("unused")
         boolean onIntervalChanged(Preference preference, Object newValue) {
             Log.d(SettingsActivity.class.getName(), "onIntervalChanged validating input " + newValue);
             boolean isValidValue = NumberUtil.isValidLongValue(newValue);
@@ -76,6 +79,7 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
             return true;
         }
 
+        @SuppressWarnings("unused")
         boolean onHostnameChanged(Preference preference, Object newValue) {
             Log.d(SettingsActivity.class.getName(), "onHostnameChanged validating input " + newValue);
             String hostname = StringUtil.getStringValue(newValue, "");
