@@ -4,9 +4,13 @@ import android.app.job.JobInfo;
 import android.app.job.JobScheduler;
 import android.content.ComponentName;
 import android.content.Context;
+import android.content.res.Resources;
 import android.util.Log;
 
 import java.util.List;
+
+import de.ibba.keepitup.R;
+import de.ibba.keepitup.util.NumberUtil;
 
 import static android.content.Context.JOB_SCHEDULER_SERVICE;
 
@@ -26,8 +30,9 @@ public class NetworkKeppAliveServiceScheduler {
         }
         JobScheduler jobScheduler = (JobScheduler) getContext().getSystemService(JOB_SCHEDULER_SERVICE);
         ComponentName componentName = new ComponentName(getContext(), NetworkKeepAliveService.class);
-        JobInfo jobInfo = new JobInfo.Builder(NetworkKeepAliveService.JOBID, componentName).setPeriodic(15 * 60 * 1000).setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY).setPersisted(false).build();
-        Log.d(NetworkKeppAliveServiceScheduler.class.getName(), "Starting service...");
+        long interval = getIntervalMillisceonds();
+        JobInfo jobInfo = new JobInfo.Builder(NetworkKeepAliveService.JOBID, componentName).setPeriodic(interval).setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY).setPersisted(false).build();
+        Log.d(NetworkKeppAliveServiceScheduler.class.getName(), "Starting service with periodic interval of " + interval + " msec");
         jobScheduler.schedule(jobInfo);
     }
 
@@ -52,7 +57,15 @@ public class NetworkKeppAliveServiceScheduler {
         return false;
     }
 
+    private long getIntervalMillisceonds() {
+        return 60 * 1000 * NumberUtil.getPreferenceLongSetting(getResources().getString(R.string.interval_setting_key), getResources().getInteger(R.integer.interval_setting_default), context);
+    }
+
     private Context getContext() {
         return context;
+    }
+
+    private Resources getResources() {
+        return getContext().getResources();
     }
 }
