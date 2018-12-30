@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#8A2BE2</color>
-    <color name="colorPrimaryDark">#00574B</color>
-    <color name="colorAccent">#8A2BE2</color>
-    <color name="colorStatusBar">#8A2BE2</color>
-    <color name="colorBackground">#FFFFFF</color>
-    <color name="colorProgressBar">#FFFFFF</color>
+    <color name="colorPrimary">#e0dde3</color>
+    <color name="colorPrimaryDark">#888888</color>
+    <color name="textColor">#000000</color>
+    <color name="textColorPrimary">#666666</color>
+    <color name="colorAccent">#e0dde3</color>
+    <color name="statusBarColor">#666666</color>
+    <color name="windowBackground">#FFFFFF</color>
+    <color name="colorProgressBar">#666666</color>
 </resources>
