@@ -39,6 +39,14 @@ public class NetworkJobDAO {
         executeDBOperationInTransaction(null, this::deleteAllNetworkJobs);
     }
 
+    public void updateNetworkJobRunning(long jobId, boolean running) {
+        Log.d(NetworkJobDAO.class.getName(), "Updating running status to " + running + " of job with id " + jobId);
+        NetworkJob networkJob = new NetworkJob();
+        networkJob.setId(jobId);
+        networkJob.setRunning(running);
+        executeDBOperationInTransaction(networkJob, this::updateNetworkJobRunning);
+    }
+
     public List<NetworkJob> readAllNetworkJobs() {
         Log.d(NetworkJobDAO.class.getName(), "Read all jobs");
         return executeDBOperationInTransaction(null, this::readAllNetworkJobs);
@@ -58,7 +66,7 @@ public class NetworkJobDAO {
         return rowid;
     }
 
-    private long deleteNetworkJob(NetworkJob networkJob, SQLiteDatabase db) {
+    private int deleteNetworkJob(NetworkJob networkJob, SQLiteDatabase db) {
         JobDBConstants dbConstants = new JobDBConstants(context);
         String selection = dbConstants.getJobIdColumnName() + " = ?";
         String[] selectionArgs = {String.valueOf(networkJob.getId())};
@@ -66,9 +74,18 @@ public class NetworkJobDAO {
     }
 
     @SuppressWarnings("unused")
-    private long deleteAllNetworkJobs(NetworkJob networkJob, SQLiteDatabase db) {
+    private int deleteAllNetworkJobs(NetworkJob networkJob, SQLiteDatabase db) {
         JobDBConstants dbConstants = new JobDBConstants(context);
         return db.delete(dbConstants.getJobTableName(), null, null);
+    }
+
+    private int updateNetworkJobRunning(NetworkJob networkJob, SQLiteDatabase db) {
+        JobDBConstants dbConstants = new JobDBConstants(context);
+        String selection = dbConstants.getJobIdColumnName() + " = ?";
+        String[] selectionArgs = {String.valueOf(networkJob.getId())};
+        ContentValues values = new ContentValues();
+        values.put(dbConstants.getJobRunningColumnName(), networkJob.isRunning() ? 1 : 0);
+        return db.update(dbConstants.getJobTableName(), values, selection, selectionArgs);
     }
 
     @SuppressWarnings("unused")
