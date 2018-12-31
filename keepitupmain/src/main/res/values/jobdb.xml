@@ -1,0 +1,10 @@
+<resources>
+    <string name="job_db_name">networkjob.db</string>
+    <integer name="job_db_version">1</integer>
+    <string name="job_table_name">NETWORKJOB</string>
+    <string name="job_id_column_name">_id</string>
+    <string name="job_address_column_name">ADDRESS</string>
+    <string name="job_accesstype_column_name">ACCCESSTYPE</string>
+    <string name="job_interval_column_name">INTERVAL</string>
+    <string name="job_running_column_name">RUNNING</string>
+</resources>
