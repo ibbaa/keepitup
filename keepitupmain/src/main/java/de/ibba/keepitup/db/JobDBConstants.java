@@ -21,6 +21,10 @@ class JobDBConstants {
         return getResources().getString(R.string.job_id_column_name);
     }
 
+    public String getJobIndexColumnName() {
+        return getResources().getString(R.string.job_index_column_name);
+    }
+
     public String getJobAddressColumnName() {
         return getResources().getString(R.string.job_address_column_name);
     }
@@ -33,6 +37,18 @@ class JobDBConstants {
         return getResources().getString(R.string.job_interval_column_name);
     }
 
+    public String getJobSuccessColumnName() {
+        return getResources().getString(R.string.job_success_column_name);
+    }
+
+    public String getJobMessageColumnName() {
+        return getResources().getString(R.string.job_message_column_name);
+    }
+
+    public String getJobNotificationColumnName() {
+        return getResources().getString(R.string.job_notification_column_name);
+    }
+
     public String getJobRunningColumnName() {
         return getResources().getString(R.string.job_running_column_name);
     }
@@ -40,9 +56,13 @@ class JobDBConstants {
     public String getCreateJobTableStatement() {
         return ("CREATE TABLE " + getJobTableName() + "(") +
                 getJobIdColumnName() + " INTEGER PRIMARY KEY ASC, " +
+                getJobIndexColumnName() + " INTEGER, " +
                 getJobAddressColumnName() + " TEXT, " +
                 getJobAccessTypeColumnName() + " INTEGER, " +
                 getJobIntervalColumnName() + " INTEGER, " +
+                getJobSuccessColumnName() + " INTEGER, " +
+                getJobMessageColumnName() + " TEXT, " +
+                getJobNotificationColumnName() + " INTEGER, " +
                 getJobRunningColumnName() + " INTEGER);";
     }
 
@@ -53,12 +73,20 @@ class JobDBConstants {
     public String getAllJobsStatement() {
         return "SELECT " +
                 getJobIdColumnName() + ", " +
+                getJobIndexColumnName() + ", " +
                 getJobAddressColumnName() + ", " +
                 getJobAccessTypeColumnName() + ", " +
                 getJobIntervalColumnName() + ", " +
+                getJobSuccessColumnName() + ", " +
+                getJobMessageColumnName() + ", " +
+                getJobNotificationColumnName() + ", " +
                 getJobRunningColumnName() +
                 " FROM " + getJobTableName() +
-                " ORDER BY " + getJobIdColumnName() + " ASC";
+                " ORDER BY " + getJobIndexColumnName() + " ASC";
+    }
+
+    public String getMaximumIndexStatement() {
+        return "SELECT MAX(" + getJobIndexColumnName() + ") FROM " + getJobTableName();
     }
 
     private Resources getResources() {
