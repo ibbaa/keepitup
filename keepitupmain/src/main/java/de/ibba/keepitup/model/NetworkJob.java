@@ -13,7 +13,6 @@ public class NetworkJob {
     private boolean success;
     private String message;
     private boolean notification;
-    private boolean running;
 
     public NetworkJob() {
     }
@@ -29,7 +28,6 @@ public class NetworkJob {
         this.success = bundle.getInt("success") >= 1;
         this.message = bundle.getString("message");
         this.notification = bundle.getInt("notification") >= 1;
-        this.running = bundle.getInt("running") >= 1;
     }
 
     public int getId() {
@@ -96,14 +94,6 @@ public class NetworkJob {
         this.notification = notification;
     }
 
-    public boolean isRunning() {
-        return running;
-    }
-
-    public void setRunning(boolean running) {
-        this.running = running;
-    }
-
     public PersistableBundle toPersistableBundle() {
         PersistableBundle bundle = new PersistableBundle();
         bundle.putInt("id", id);
@@ -120,7 +110,6 @@ public class NetworkJob {
             bundle.putString("message", message);
         }
         bundle.putInt("notification", notification ? 1 : 0);
-        bundle.putInt("running", running ? 1 : 0);
         return bundle;
     }
 
@@ -136,7 +125,6 @@ public class NetworkJob {
                 ", success=" + success +
                 ", message='" + message + '\'' +
                 ", notification=" + notification +
-                ", running=" + running +
                 '}';
     }
 }

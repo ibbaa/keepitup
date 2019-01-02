@@ -49,10 +49,6 @@ class JobDBConstants {
         return getResources().getString(R.string.job_notification_column_name);
     }
 
-    public String getJobRunningColumnName() {
-        return getResources().getString(R.string.job_running_column_name);
-    }
-
     public String getCreateJobTableStatement() {
         return ("CREATE TABLE " + getJobTableName() + "(") +
                 getJobIdColumnName() + " INTEGER PRIMARY KEY ASC, " +
@@ -62,8 +58,7 @@ class JobDBConstants {
                 getJobIntervalColumnName() + " INTEGER, " +
                 getJobSuccessColumnName() + " INTEGER, " +
                 getJobMessageColumnName() + " TEXT, " +
-                getJobNotificationColumnName() + " INTEGER, " +
-                getJobRunningColumnName() + " INTEGER);";
+                getJobNotificationColumnName() + " INTEGER);";
     }
 
     public String getDropJobTableStatement() {
@@ -80,7 +75,6 @@ class JobDBConstants {
                 getJobSuccessColumnName() + ", " +
                 getJobMessageColumnName() + ", " +
                 getJobNotificationColumnName() + ", " +
-                getJobRunningColumnName() +
                 " FROM " + getJobTableName() +
                 " ORDER BY " + getJobIndexColumnName() + " ASC";
     }
