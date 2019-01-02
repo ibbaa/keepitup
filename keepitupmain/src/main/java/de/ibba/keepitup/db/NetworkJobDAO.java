@@ -56,14 +56,6 @@ public class NetworkJobDAO {
         executeDBOperationInTransaction(networkJob, this::updateNetworkJobSuccess);
     }
 
-    public void updateNetworkJobRunning(int jobId, boolean running) {
-        Log.d(NetworkJobDAO.class.getName(), "Updating running status to " + running + " of job with id " + jobId);
-        NetworkJob networkJob = new NetworkJob();
-        networkJob.setId(jobId);
-        networkJob.setRunning(running);
-        executeDBOperationInTransaction(networkJob, this::updateNetworkJobRunning);
-    }
-
     public List<NetworkJob> readAllNetworkJobs() {
         Log.d(NetworkJobDAO.class.getName(), "Read all jobs");
         return executeDBOperationInTransaction(null, this::readAllNetworkJobs);
@@ -84,7 +76,6 @@ public class NetworkJobDAO {
         values.put(dbConstants.getJobSuccessColumnName(), networkJob.isSuccess() ? 1 : 0);
         values.put(dbConstants.getJobMessageColumnName(), networkJob.getMessage());
         values.put(dbConstants.getJobNotificationColumnName(), networkJob.isNotification() ? 1 : 0);
-        values.put(dbConstants.getJobRunningColumnName(), networkJob.isRunning() ? 1 : 0);
         long rowid = db.insert(dbConstants.getJobTableName(), null, values);
         if (rowid < 0) {
             Log.e(NetworkJobDAO.class.getName(), "Error inserting job into database. Insert returned -1.");
@@ -103,15 +94,6 @@ public class NetworkJobDAO {
     private int deleteAllNetworkJobs(NetworkJob networkJob, SQLiteDatabase db) {
         JobDBConstants dbConstants = new JobDBConstants(context);
         return db.delete(dbConstants.getJobTableName(), null, null);
-    }
-
-    private int updateNetworkJobRunning(NetworkJob networkJob, SQLiteDatabase db) {
-        JobDBConstants dbConstants = new JobDBConstants(context);
-        String selection = dbConstants.getJobIdColumnName() + " = ?";
-        String[] selectionArgs = {String.valueOf(networkJob.getId())};
-        ContentValues values = new ContentValues();
-        values.put(dbConstants.getJobRunningColumnName(), networkJob.isRunning() ? 1 : 0);
-        return db.update(dbConstants.getJobTableName(), values, selection, selectionArgs);
     }
 
     private int updateNetworkJobSuccess(NetworkJob networkJob, SQLiteDatabase db) {
@@ -194,7 +176,6 @@ public class NetworkJobDAO {
         int indexSuccessColumn = cursor.getColumnIndex(dbConstants.getJobSuccessColumnName());
         int indexMessageColumn = cursor.getColumnIndex(dbConstants.getJobMessageColumnName());
         int indexNotificationColumn = cursor.getColumnIndex(dbConstants.getJobNotificationColumnName());
-        int indexRunningColumn = cursor.getColumnIndex(dbConstants.getJobRunningColumnName());
         networkJob.setId(cursor.getInt(indexIdColumn));
         networkJob.setIndex(cursor.getInt(indexIndexColumn));
         networkJob.setAddress(cursor.getString(indexAddressColumn));
@@ -207,7 +188,6 @@ public class NetworkJobDAO {
         networkJob.setSuccess(cursor.getInt(indexSuccessColumn) >= 1);
         networkJob.setMessage(cursor.getString(indexMessageColumn));
         networkJob.setNotification(cursor.getInt(indexNotificationColumn) >= 1);
-        networkJob.setRunning(cursor.getInt(indexRunningColumn) >= 1);
         return networkJob;
     }
 

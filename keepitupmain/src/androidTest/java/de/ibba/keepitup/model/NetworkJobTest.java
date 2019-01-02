@@ -23,7 +23,6 @@ public class NetworkJobTest {
         Assert.assertFalse(job.isSuccess());
         Assert.assertNull(job.getMessage());
         Assert.assertFalse(job.isNotification());
-        Assert.assertFalse(job.isRunning());
         PersistableBundle bundle = job.toPersistableBundle();
         Assert.assertNotNull(bundle);
         job = new NetworkJob(bundle);
@@ -35,7 +34,6 @@ public class NetworkJobTest {
         Assert.assertFalse(job.isSuccess());
         Assert.assertNull(job.getMessage());
         Assert.assertFalse(job.isNotification());
-        Assert.assertFalse(job.isRunning());
     }
 
     public void testToPersistableBundleValues() {
@@ -48,7 +46,6 @@ public class NetworkJobTest {
         job.setSuccess(true);
         job.setMessage("Message");
         job.setNotification(true);
-        job.setRunning(true);
         Assert.assertEquals(1, job.getId());
         Assert.assertEquals(2, job.getIndex());
         Assert.assertEquals("127.0.0.1", job.getAddress());
@@ -57,7 +54,6 @@ public class NetworkJobTest {
         Assert.assertTrue(job.isSuccess());
         Assert.assertEquals("Message", job.getMessage());
         Assert.assertTrue(job.isNotification());
-        Assert.assertTrue(job.isRunning());
         PersistableBundle bundle = job.toPersistableBundle();
         Assert.assertNotNull(bundle);
         job = new NetworkJob(bundle);
@@ -69,6 +65,5 @@ public class NetworkJobTest {
         Assert.assertTrue(job.isSuccess());
         Assert.assertEquals("Message", job.getMessage());
         Assert.assertTrue(job.isNotification());
-        Assert.assertTrue(job.isRunning());
     }
 }
