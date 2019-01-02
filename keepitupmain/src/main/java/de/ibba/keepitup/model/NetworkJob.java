@@ -1,32 +1,50 @@
 package de.ibba.keepitup.model;
 
+import android.os.PersistableBundle;
 import android.support.annotation.NonNull;
 
 public class NetworkJob {
 
-    private long id;
-    private long index;
+    private int id;
+    private int index;
     private String address;
     private AccessType accessType;
-    private long interval;
+    private int interval;
     private boolean success;
     private String message;
     private boolean notification;
     private boolean running;
 
-    public long getId() {
+    public NetworkJob() {
+    }
+
+    public NetworkJob(PersistableBundle bundle) {
+        this.id = bundle.getInt("id");
+        this.index = bundle.getInt("index");
+        this.address = bundle.getString("address");
+        if (bundle.containsKey("accessType")) {
+            accessType = AccessType.forCode(bundle.getInt("accessType"));
+        }
+        this.interval = bundle.getInt("interval");
+        this.success = bundle.getInt("success") >= 1;
+        this.message = bundle.getString("message");
+        this.notification = bundle.getInt("notification") >= 1;
+        this.running = bundle.getInt("running") >= 1;
+    }
+
+    public int getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(int id) {
         this.id = id;
     }
 
-    public long getIndex() {
+    public int getIndex() {
         return index;
     }
 
-    public void setIndex(long index) {
+    public void setIndex(int index) {
         this.index = index;
     }
 
@@ -46,11 +64,11 @@ public class NetworkJob {
         this.accessType = accessType;
     }
 
-    public long getInterval() {
+    public int getInterval() {
         return interval;
     }
 
-    public void setInterval(long interval) {
+    public void setInterval(int interval) {
         this.interval = interval;
     }
 
@@ -84,6 +102,26 @@ public class NetworkJob {
 
     public void setRunning(boolean running) {
         this.running = running;
+    }
+
+    public PersistableBundle toPersistableBundle() {
+        PersistableBundle bundle = new PersistableBundle();
+        bundle.putInt("id", id);
+        bundle.putInt("index", index);
+        if (address != null) {
+            bundle.putString("address", address);
+        }
+        if (accessType != null) {
+            bundle.putInt("accessType", accessType.getCode());
+        }
+        bundle.putInt("interval", interval);
+        bundle.putInt("success", success ? 1 : 0);
+        if (message != null) {
+            bundle.putString("message", message);
+        }
+        bundle.putInt("notification", notification ? 1 : 0);
+        bundle.putInt("running", running ? 1 : 0);
+        return bundle;
     }
 
     @NonNull
