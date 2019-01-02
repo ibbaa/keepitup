@@ -27,7 +27,7 @@ public class NetworkJobDAO {
         return executeDBOperationInTransaction(networkJob, this::insertNetworkJob);
     }
 
-    public void deleteNetworkJob(long jobId) {
+    public void deleteNetworkJob(int jobId) {
         Log.d(NetworkJobDAO.class.getName(), "Deleting job with id " + jobId);
         NetworkJob networkJob = new NetworkJob();
         networkJob.setId(jobId);
@@ -39,7 +39,7 @@ public class NetworkJobDAO {
         executeDBOperationInTransaction(null, this::deleteAllNetworkJobs);
     }
 
-    public void updateNetworkJobNotification(long jobId, boolean notification) {
+    public void updateNetworkJobNotification(int jobId, boolean notification) {
         Log.d(NetworkJobDAO.class.getName(), "Updating notification status to " + notification + " of job with id " + jobId);
         NetworkJob networkJob = new NetworkJob();
         networkJob.setId(jobId);
@@ -47,7 +47,7 @@ public class NetworkJobDAO {
         executeDBOperationInTransaction(networkJob, this::updateNetworkJobNotification);
     }
 
-    public void updateNetworkJobSuccess(long jobId, boolean success, String message) {
+    public void updateNetworkJobSuccess(int jobId, boolean success, String message) {
         Log.d(NetworkJobDAO.class.getName(), "Updating success status to " + success + " with a message " + message + " of job with id " + jobId);
         NetworkJob networkJob = new NetworkJob();
         networkJob.setId(jobId);
@@ -56,7 +56,7 @@ public class NetworkJobDAO {
         executeDBOperationInTransaction(networkJob, this::updateNetworkJobSuccess);
     }
 
-    public void updateNetworkJobRunning(long jobId, boolean running) {
+    public void updateNetworkJobRunning(int jobId, boolean running) {
         Log.d(NetworkJobDAO.class.getName(), "Updating running status to " + running + " of job with id " + jobId);
         NetworkJob networkJob = new NetworkJob();
         networkJob.setId(jobId);
@@ -195,15 +195,15 @@ public class NetworkJobDAO {
         int indexMessageColumn = cursor.getColumnIndex(dbConstants.getJobMessageColumnName());
         int indexNotificationColumn = cursor.getColumnIndex(dbConstants.getJobNotificationColumnName());
         int indexRunningColumn = cursor.getColumnIndex(dbConstants.getJobRunningColumnName());
-        networkJob.setId(cursor.getLong(indexIdColumn));
-        networkJob.setIndex(cursor.getLong(indexIndexColumn));
+        networkJob.setId(cursor.getInt(indexIdColumn));
+        networkJob.setIndex(cursor.getInt(indexIndexColumn));
         networkJob.setAddress(cursor.getString(indexAddressColumn));
         if (cursor.isNull(indexAccessTypeColumn)) {
             networkJob.setAccessType(null);
         } else {
             networkJob.setAccessType(AccessType.forCode(cursor.getInt(indexAccessTypeColumn)));
         }
-        networkJob.setInterval(cursor.getLong(indexIntervalColumn));
+        networkJob.setInterval(cursor.getInt(indexIntervalColumn));
         networkJob.setSuccess(cursor.getInt(indexSuccessColumn) >= 1);
         networkJob.setMessage(cursor.getString(indexMessageColumn));
         networkJob.setNotification(cursor.getInt(indexNotificationColumn) >= 1);

@@ -16,14 +16,31 @@
             android:id="@+id/button_start"
             android:layout_height="wrap_content"
             android:layout_width="wrap_content"
-            android:text="@string/button_start" />
+            android:text="@string/label_button_start" />
 
         <Button
             android:id="@+id/button_stop"
             android:layout_height="wrap_content"
             android:layout_width="wrap_content"
             android:layout_below="@+id/button_start"
-            android:text="@string/button_stop" />
+            android:text="@string/label_button_stop" />
+
+        <ListView
+            android:id="@+id/list_network_jobs"
+            android:layout_gravity="center_vertical"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/button_stop" />
+
+        <ImageView
+            android:id="@+id/image_add_job"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/list_network_jobs"
+            android:layout_marginLeft="350dp"
+            android:layout_marginRight="10dp"
+            android:contentDescription="@string/label_add_network_job"
+            app:srcCompat="@drawable/icon_add" />
 
     </RelativeLayout>
 
