@@ -16,7 +16,7 @@ public class NetworkTaskViewHolder extends RecyclerView.ViewHolder {
     public NetworkTaskViewHolder(@NonNull View itemView) {
         super(itemView);
         statusText = itemView.findViewById(R.id.textview_list_item_network_task_status);
-        statusImage = itemView.findViewById(R.id.image_list_item_network_task_status);
+        statusImage = itemView.findViewById(R.id.imageview_list_item_network_task_status);
     }
 
     public void setStatus(String status, int image) {
