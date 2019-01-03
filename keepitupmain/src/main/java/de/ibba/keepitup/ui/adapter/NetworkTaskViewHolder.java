@@ -9,14 +9,14 @@ import de.ibba.keepitup.R;
 
 public class NetworkTaskViewHolder extends RecyclerView.ViewHolder {
 
-    private final TextView titleText;
+    private final TextView statusText;
 
     public NetworkTaskViewHolder(@NonNull View itemView) {
         super(itemView);
-        titleText = itemView.findViewById(R.id.text_list_item_network_task_title);
+        statusText = itemView.findViewById(R.id.textview_list_item_network_task_status);
     }
 
-    public void setTitle(String title) {
-        titleText.setText(title);
+    public void setStatus(String status) {
+        statusText.setText(status);
     }
 }

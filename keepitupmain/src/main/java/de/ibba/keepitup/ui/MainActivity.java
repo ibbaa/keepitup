@@ -23,6 +23,8 @@ import de.ibba.keepitup.ui.adapter.NetworkTaskAdapter;
 
 public class MainActivity extends AppCompatActivity {
 
+    private NetworkTaskAdapter adapter;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -34,7 +36,7 @@ public class MainActivity extends AppCompatActivity {
 
         RecyclerView recyclerView = findViewById(R.id.list_network_tasks);
         List<NetworkTask> taskList = prepareTaskList();
-        NetworkTaskAdapter adapter = new NetworkTaskAdapter(taskList);
+        adapter = new NetworkTaskAdapter(taskList, this);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
@@ -86,6 +88,7 @@ public class MainActivity extends AppCompatActivity {
         task.setId(1);
         task.setInterval(15);
         scheduler.start(task);
+        adapter.notifyDataSetChanged();
     }
 
     @SuppressWarnings("unused")
@@ -96,5 +99,6 @@ public class MainActivity extends AppCompatActivity {
         task.setId(1);
         task.setInterval(15);
         scheduler.stop(task);
+        adapter.notifyDataSetChanged();
     }
 }
