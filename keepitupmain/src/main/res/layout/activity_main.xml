@@ -2,11 +2,13 @@
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/layout_main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="de.ibba.keepitup.ui.MainActivity">
 
     <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/layout_main_content"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintEnd_toEndOf="parent"
@@ -25,16 +27,17 @@
             android:layout_below="@+id/button_start"
             android:text="@string/label_button_stop" />
 
-        <ListView
+        <android.support.v7.widget.RecyclerView
             android:id="@+id/list_network_jobs"
             android:layout_gravity="center_vertical"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/button_stop" />
+            android:layout_below="@+id/button_stop"
+            android:scrollbars="vertical" />
 
         <ImageView
             android:id="@+id/image_add_job"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/list_network_jobs"
             android:layout_marginLeft="350dp"
