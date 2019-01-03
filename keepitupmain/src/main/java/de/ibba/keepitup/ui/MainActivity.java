@@ -34,7 +34,7 @@ public class MainActivity extends AppCompatActivity {
         Button stopButton = findViewById(R.id.button_stop);
         stopButton.setOnClickListener(this::onStopClicked);
 
-        RecyclerView recyclerView = findViewById(R.id.list_network_tasks);
+        RecyclerView recyclerView = findViewById(R.id.listview_network_tasks);
         List<NetworkTask> taskList = prepareTaskList();
         adapter = new NetworkTaskAdapter(taskList, this);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
