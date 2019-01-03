@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,12 +28,14 @@ public class NetworkTaskAdapter extends RecyclerView.Adapter<NetworkTaskViewHold
     @NonNull
     @Override
     public NetworkTaskViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int viewType) {
+        Log.d(NetworkTaskAdapter.class.getName(), "onCreateViewHolder");
         View itemView = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.list_item_network_task, viewGroup, false);
         return new NetworkTaskViewHolder(itemView);
     }
 
     @Override
     public void onBindViewHolder(@NonNull NetworkTaskViewHolder networkTaskViewHolder, int position) {
+        Log.d(NetworkTaskAdapter.class.getName(), "onBindViewHolder");
         NetworkTask networkTask = networkTasks.get(position);
         NetworkKeepAliveServiceScheduler scheduler = new NetworkKeepAliveServiceScheduler(getContext());
         boolean isRunning = scheduler.isRunning(networkTask);
@@ -43,6 +46,7 @@ public class NetworkTaskAdapter extends RecyclerView.Adapter<NetworkTaskViewHold
         String statusRunning = isRunning ? getResources().getString(R.string.string_running) : getResources().getString(R.string.string_stopped);
         String statusText = String.format(getResources().getString(R.string.text_list_item_network_task_status), statusRunning);
         int statusImage = isRunning ? R.drawable.icon_running : R.drawable.icon_stopped;
+        Log.d(NetworkTaskAdapter.class.getName(), "binding status text " + statusText);
         networkTaskViewHolder.setStatus(statusText, statusImage);
     }
 
