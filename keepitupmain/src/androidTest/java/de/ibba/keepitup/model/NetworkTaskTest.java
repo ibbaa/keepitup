@@ -1,14 +1,14 @@
 package de.ibba.keepitup.model;
 
 import android.os.PersistableBundle;
-import android.support.test.filters.MediumTest;
+import android.support.test.filters.SmallTest;
 import android.support.test.runner.AndroidJUnit4;
 
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-@MediumTest
+@SmallTest
 @RunWith(AndroidJUnit4.class)
 public class NetworkTaskTest {
 
