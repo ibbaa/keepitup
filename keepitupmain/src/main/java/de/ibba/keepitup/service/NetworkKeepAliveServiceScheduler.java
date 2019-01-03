@@ -22,9 +22,9 @@ public class NetworkKeepAliveServiceScheduler {
     }
 
     public void start(NetworkTask networkTask) {
-        Log.d(NetworkKeepAliveServiceScheduler.class.getName(), "Start network job " + networkTask);
+        Log.d(NetworkKeepAliveServiceScheduler.class.getName(), "Start network task " + networkTask);
         if (isRunning(networkTask)) {
-            Log.d(NetworkKeepAliveServiceScheduler.class.getName(), "Network job " + networkTask + " is already running. Stopping...");
+            Log.d(NetworkKeepAliveServiceScheduler.class.getName(), "Network task " + networkTask + " is already running. Stopping...");
             stop(networkTask);
         }
         JobScheduler jobScheduler = (JobScheduler) getContext().getSystemService(JOB_SCHEDULER_SERVICE);
@@ -36,7 +36,7 @@ public class NetworkKeepAliveServiceScheduler {
     }
 
     public void stop(NetworkTask networkTask) {
-        Log.d(NetworkKeepAliveServiceScheduler.class.getName(), "Stop network job " + networkTask);
+        Log.d(NetworkKeepAliveServiceScheduler.class.getName(), "Stop network task " + networkTask);
         JobScheduler jobScheduler = (JobScheduler) getContext().getSystemService(JOB_SCHEDULER_SERVICE);
         Log.d(NetworkKeepAliveServiceScheduler.class.getName(), "Stopping NetworkKeepAliveService for job " + networkTask);
         jobScheduler.cancel(networkTask.getId());

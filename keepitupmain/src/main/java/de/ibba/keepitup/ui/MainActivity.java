@@ -44,14 +44,14 @@ public class MainActivity extends AppCompatActivity {
 
     private List<NetworkTask> prepareTaskList() {
         List<NetworkTask> taskList = new ArrayList<>();
-        NetworkTask job1 = new NetworkTask();
-        job1.setId(1);
-        job1.setAddress("Address1");
-        NetworkTask job2 = new NetworkTask();
-        job2.setId(2);
-        job2.setAddress("Address2");
-        taskList.add(job1);
-        taskList.add(job2);
+        NetworkTask task1 = new NetworkTask();
+        task1.setId(1);
+        task1.setAddress("Address1");
+        NetworkTask task2 = new NetworkTask();
+        task2.setId(2);
+        task2.setAddress("Address2");
+        taskList.add(task1);
+        taskList.add(task2);
         return taskList;
     }
 

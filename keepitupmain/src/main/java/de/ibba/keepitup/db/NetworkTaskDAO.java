@@ -23,24 +23,24 @@ public class NetworkTaskDAO {
     }
 
     public long insertNetworkTask(NetworkTask networkTask) {
-        Log.d(NetworkTaskDAO.class.getName(), "Inserting job " + networkTask);
+        Log.d(NetworkTaskDAO.class.getName(), "Inserting task " + networkTask);
         return executeDBOperationInTransaction(networkTask, this::insertNetworkTask);
     }
 
     public void deleteNetworkTask(int taskId) {
-        Log.d(NetworkTaskDAO.class.getName(), "Deleting job with id " + taskId);
+        Log.d(NetworkTaskDAO.class.getName(), "Deleting task with id " + taskId);
         NetworkTask networkTask = new NetworkTask();
         networkTask.setId(taskId);
         executeDBOperationInTransaction(networkTask, this::deleteNetworkTask);
     }
 
     public void deleteAllNetworkTasks() {
-        Log.d(NetworkTaskDAO.class.getName(), "Deleting all jobs");
+        Log.d(NetworkTaskDAO.class.getName(), "Deleting all tasks");
         executeDBOperationInTransaction(null, this::deleteAllNetworkTasks);
     }
 
     public void updateNetworkTaskNotification(int taskId, boolean notification) {
-        Log.d(NetworkTaskDAO.class.getName(), "Updating notification status to " + notification + " of job with id " + taskId);
+        Log.d(NetworkTaskDAO.class.getName(), "Updating notification status to " + notification + " of task with id " + taskId);
         NetworkTask networkTask = new NetworkTask();
         networkTask.setId(taskId);
         networkTask.setNotification(notification);
@@ -48,7 +48,7 @@ public class NetworkTaskDAO {
     }
 
     public void updateNetworkTaskSuccess(int taskId, boolean success, String message) {
-        Log.d(NetworkTaskDAO.class.getName(), "Updating success status to " + success + " with a message " + message + " of job with id " + taskId);
+        Log.d(NetworkTaskDAO.class.getName(), "Updating success status to " + success + " with a message " + message + " of task with id " + taskId);
         NetworkTask networkTask = new NetworkTask();
         networkTask.setId(taskId);
         networkTask.setSuccess(success);
@@ -57,7 +57,7 @@ public class NetworkTaskDAO {
     }
 
     public List<NetworkTask> readAllNetworkTasks() {
-        Log.d(NetworkTaskDAO.class.getName(), "Read all jobs");
+        Log.d(NetworkTaskDAO.class.getName(), "Read all tasks");
         return executeDBOperationInTransaction(null, this::readAllNetworkTasks);
     }
 
@@ -78,7 +78,7 @@ public class NetworkTaskDAO {
         values.put(dbConstants.getTaskNotificationColumnName(), networkTask.isNotification() ? 1 : 0);
         long rowid = db.insert(dbConstants.getTaskTableName(), null, values);
         if (rowid < 0) {
-            Log.e(NetworkTaskDAO.class.getName(), "Error inserting job into database. Insert returned -1.");
+            Log.e(NetworkTaskDAO.class.getName(), "Error inserting task into database. Insert returned -1.");
         }
         return rowid;
     }
@@ -125,7 +125,7 @@ public class NetworkTaskDAO {
             while (cursor.moveToNext()) {
                 int indexIdColumn = cursor.getColumnIndex(dbConstants.getTaskIdColumnName());
                 if (!cursor.isNull(indexIdColumn)) {
-                    NetworkTask mappedNetworkTask = mapCursorToNetworkJob(cursor);
+                    NetworkTask mappedNetworkTask = mapCursorToNetworkTask(cursor);
                     result.add(mappedNetworkTask);
                 }
             }
@@ -165,7 +165,7 @@ public class NetworkTaskDAO {
         return index;
     }
 
-    private NetworkTask mapCursorToNetworkJob(Cursor cursor) {
+    private NetworkTask mapCursorToNetworkTask(Cursor cursor) {
         NetworkTask networkTask = new NetworkTask();
         TaskDBConstants dbConstants = new TaskDBConstants(context);
         int indexIdColumn = cursor.getColumnIndex(dbConstants.getTaskIdColumnName());

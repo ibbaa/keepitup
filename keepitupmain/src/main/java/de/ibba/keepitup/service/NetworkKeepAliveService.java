@@ -11,16 +11,16 @@ public class NetworkKeepAliveService extends JobService {
     @Override
     public boolean onStartJob(JobParameters jobParameters) {
         Log.d(NetworkKeepAliveService.class.getName(), "onStartJob");
-        NetworkTask job = new NetworkTask(jobParameters.getExtras());
-        Log.d(NetworkKeepAliveService.class.getName(), "Configured job: " + job);
+        NetworkTask task = new NetworkTask(jobParameters.getExtras());
+        Log.d(NetworkKeepAliveService.class.getName(), "Configured task: " + task);
         return false;
     }
 
     @Override
     public boolean onStopJob(JobParameters jobParameters) {
         Log.d(NetworkKeepAliveService.class.getName(), "onStopJob");
-        NetworkTask job = new NetworkTask(jobParameters.getExtras());
-        Log.d(NetworkKeepAliveService.class.getName(), "Configured job: " + job);
+        NetworkTask task = new NetworkTask(jobParameters.getExtras());
+        Log.d(NetworkKeepAliveService.class.getName(), "Configured task: " + task);
         return false;
     }
 }
