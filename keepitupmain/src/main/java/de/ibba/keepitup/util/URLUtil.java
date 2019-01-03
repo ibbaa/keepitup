@@ -34,6 +34,13 @@ public class URLUtil {
         return false;
     }
 
+    public static String prefixHTTPProtocol(String inputUrl) {
+        if(inputUrl.toLowerCase().startsWith("http://") || inputUrl.toLowerCase().startsWith("https://")) {
+            return inputUrl;
+        }
+        return "http://" + inputUrl;
+    }
+
     public static String encodeURL(String inputUrl) {
         try {
             URL url= new URL(inputUrl);

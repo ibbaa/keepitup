@@ -35,6 +35,13 @@ public class URLUtilTest {
     }
 
     @Test
+    public void testPrefixHTTPProtocol() {
+        Assert.assertEquals("http://www.host.com", URLUtil.prefixHTTPProtocol("www.host.com"));
+        Assert.assertEquals("http://www.host.com", URLUtil.prefixHTTPProtocol("http://www.host.com"));
+        Assert.assertEquals("https://www.host.com", URLUtil.prefixHTTPProtocol("https://www.host.com"));
+    }
+
+    @Test
     public void testEncodeURL() {
         PowerMockito.mockStatic(Log.class);
         Assert.assertEquals("http://www.host.com", URLUtil.encodeURL("http://www.host.com"));
