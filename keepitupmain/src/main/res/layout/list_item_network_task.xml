@@ -17,11 +17,28 @@
         android:layout_margin="@dimen/list_item_network_task_margin">
 
         <TextView xmlns:android="http://schemas.android.com/apk/res/android"
-            android:id="@+id/text_list_item_network_task_title"
+            android:id="@+id/textview_list_item_network_task_title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textStyle="bold"
-            android:text="@string/list_item_network_task_title" />
+            android:text="@string/text_list_item_network_task_title" />
+
+        <TextView xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/textview_list_item_network_task_status"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/textview_list_item_network_task_title"
+            android:textStyle="normal"
+            android:text="@string/text_list_item_network_task_status" />
+
+        <ImageView
+            android:id="@+id/image_list_item_network_task_status"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/textview_list_item_network_task_title"
+            android:layout_toRightOf="@+id/textview_list_item_network_task_status"
+            android:contentDescription="@string/label_add_network_task"
+            app:srcCompat="@drawable/icon_running" />
 
     </RelativeLayout>
 
