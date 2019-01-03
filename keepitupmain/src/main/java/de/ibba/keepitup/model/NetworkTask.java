@@ -3,7 +3,7 @@ package de.ibba.keepitup.model;
 import android.os.PersistableBundle;
 import android.support.annotation.NonNull;
 
-public class NetworkJob {
+public class NetworkTask {
 
     private int id;
     private int index;
@@ -14,10 +14,10 @@ public class NetworkJob {
     private String message;
     private boolean notification;
 
-    public NetworkJob() {
+    public NetworkTask() {
     }
 
-    public NetworkJob(PersistableBundle bundle) {
+    public NetworkTask(PersistableBundle bundle) {
         this.id = bundle.getInt("id");
         this.index = bundle.getInt("index");
         this.address = bundle.getString("address");
@@ -116,7 +116,7 @@ public class NetworkJob {
     @NonNull
     @Override
     public String toString() {
-        return "NetworkJob{" +
+        return "NetworkTask{" +
                 "id=" + id +
                 ", index=" + index +
                 ", address='" + address + '\'' +

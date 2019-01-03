@@ -26,6 +26,6 @@ public class MinutesEditSummaryPreference extends EditTextPreference {
 
     @Override
     public CharSequence getSummary() {
-        return getText() + " " + getContext().getResources().getString(R.string.string_minutes);
+        return getText() + " " + getContext().getResources().getString(R.string.text_minutes);
     }
 }

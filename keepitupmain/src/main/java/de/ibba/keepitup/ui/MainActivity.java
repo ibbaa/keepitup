@@ -17,9 +17,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import de.ibba.keepitup.R;
-import de.ibba.keepitup.model.NetworkJob;
+import de.ibba.keepitup.model.NetworkTask;
 import de.ibba.keepitup.service.NetworkKeepAliveServiceScheduler;
-import de.ibba.keepitup.ui.adapter.NetworkJobAdapter;
+import de.ibba.keepitup.ui.adapter.NetworkTaskAdapter;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -32,9 +32,9 @@ public class MainActivity extends AppCompatActivity {
         Button stopButton = findViewById(R.id.button_stop);
         stopButton.setOnClickListener(this::onStopClicked);
 
-        RecyclerView recyclerView = (RecyclerView) findViewById(R.id.list_network_jobs);
-        List<NetworkJob> jobList = prepareJobList();
-        NetworkJobAdapter adapter = new NetworkJobAdapter(jobList);
+        RecyclerView recyclerView = findViewById(R.id.list_network_tasks);
+        List<NetworkTask> taskList = prepareTaskList();
+        NetworkTaskAdapter adapter = new NetworkTaskAdapter(taskList);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
@@ -42,17 +42,17 @@ public class MainActivity extends AppCompatActivity {
         recyclerView.setAdapter(adapter);
     }
 
-    private List<NetworkJob> prepareJobList() {
-        List<NetworkJob> jobList = new ArrayList<>();
-        NetworkJob job1 = new NetworkJob();
+    private List<NetworkTask> prepareTaskList() {
+        List<NetworkTask> taskList = new ArrayList<>();
+        NetworkTask job1 = new NetworkTask();
         job1.setId(1);
         job1.setAddress("Address1");
-        NetworkJob job2 = new NetworkJob();
+        NetworkTask job2 = new NetworkTask();
         job2.setId(2);
         job2.setAddress("Address2");
-        jobList.add(job1);
-        jobList.add(job2);
-        return jobList;
+        taskList.add(job1);
+        taskList.add(job2);
+        return taskList;
     }
 
     @Override
@@ -82,19 +82,19 @@ public class MainActivity extends AppCompatActivity {
     private void onStartClicked(View view) {
         Log.d(MainActivity.class.getName(), "onStartClicked");
         NetworkKeepAliveServiceScheduler scheduler = new NetworkKeepAliveServiceScheduler(this);
-        NetworkJob job = new NetworkJob();
-        job.setId(1);
-        job.setInterval(15);
-        scheduler.start(job);
+        NetworkTask task = new NetworkTask();
+        task.setId(1);
+        task.setInterval(15);
+        scheduler.start(task);
     }
 
     @SuppressWarnings("unused")
     private void onStopClicked(View view) {
         Log.d(MainActivity.class.getName(), "onStopClicked");
         NetworkKeepAliveServiceScheduler scheduler = new NetworkKeepAliveServiceScheduler(this);
-        NetworkJob job = new NetworkJob();
-        job.setId(1);
-        job.setInterval(15);
-        scheduler.stop(job);
+        NetworkTask task = new NetworkTask();
+        task.setId(1);
+        task.setInterval(15);
+        scheduler.stop(task);
     }
 }

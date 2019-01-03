@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="activity_setting_title">Settings</string>
     <string name="menu_action_defaults">Reset</string>
@@ -8,4 +9,10 @@
     <string name="interval_setting_label">Interval</string>
     <integer name="interval_setting_default">15</integer>
     <integer name="interval_setting_minimum">15</integer>
+    <string name="text_minutes">minutes</string>
+    <string name="text_minimum">Minimum</string>
+    <string name="text_value">Value</string>
+    <string name="text_invalid_input">Invalid input</string>
+    <string name="text_hostname_valid">Valid hostname</string>
+    <string name="text_ip_valid">Valid IP address</string>
 </resources>
