@@ -3,15 +3,23 @@ package de.ibba.keepitup.ui;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.DividerItemDecoration;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import de.ibba.keepitup.R;
 import de.ibba.keepitup.model.NetworkJob;
 import de.ibba.keepitup.service.NetworkKeepAliveServiceScheduler;
+import de.ibba.keepitup.ui.adapter.NetworkJobAdapter;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -23,6 +31,28 @@ public class MainActivity extends AppCompatActivity {
         startButton.setOnClickListener(this::onStartClicked);
         Button stopButton = findViewById(R.id.button_stop);
         stopButton.setOnClickListener(this::onStopClicked);
+
+        RecyclerView recyclerView = (RecyclerView) findViewById(R.id.list_network_jobs);
+        List<NetworkJob> jobList = prepareJobList();
+        NetworkJobAdapter adapter = new NetworkJobAdapter(jobList);
+        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
+        recyclerView.setLayoutManager(layoutManager);
+        recyclerView.setItemAnimator(new DefaultItemAnimator());
+        recyclerView.addItemDecoration(new DividerItemDecoration(this, LinearLayoutManager.VERTICAL));
+        recyclerView.setAdapter(adapter);
+    }
+
+    private List<NetworkJob> prepareJobList() {
+        List<NetworkJob> jobList = new ArrayList<>();
+        NetworkJob job1 = new NetworkJob();
+        job1.setId(1);
+        job1.setAddress("Address1");
+        NetworkJob job2 = new NetworkJob();
+        job2.setId(2);
+        job2.setAddress("Address2");
+        jobList.add(job1);
+        jobList.add(job2);
+        return jobList;
     }
 
     @Override
