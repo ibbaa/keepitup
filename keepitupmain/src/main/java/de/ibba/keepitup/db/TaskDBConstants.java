@@ -29,6 +29,10 @@ class TaskDBConstants {
         return getResources().getString(R.string.task_address_column_name);
     }
 
+    public String getTaskPortColumnName() {
+        return getResources().getString(R.string.task_port_column_name);
+    }
+
     public String getTaskAccessTypeColumnName() {
         return getResources().getString(R.string.task_accesstype_column_name);
     }
@@ -54,6 +58,7 @@ class TaskDBConstants {
                 getTaskIdColumnName() + " INTEGER PRIMARY KEY ASC, " +
                 getTaskIndexColumnName() + " INTEGER, " +
                 getTaskAddressColumnName() + " TEXT, " +
+                getTaskPortColumnName() + " INTEGER, " +
                 getTaskAccessTypeColumnName() + " INTEGER, " +
                 getTaskIntervalColumnName() + " INTEGER, " +
                 getTaskSuccessColumnName() + " INTEGER, " +
@@ -70,6 +75,7 @@ class TaskDBConstants {
                 getTaskIdColumnName() + ", " +
                 getTaskIndexColumnName() + ", " +
                 getTaskAddressColumnName() + ", " +
+                getTaskPortColumnName() + ", " +
                 getTaskAccessTypeColumnName() + ", " +
                 getTaskIntervalColumnName() + ", " +
                 getTaskSuccessColumnName() + ", " +

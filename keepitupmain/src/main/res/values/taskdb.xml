@@ -6,6 +6,7 @@
     <string name="task_id_column_name">_id</string>
     <string name="task_index_column_name">UIINDEX</string>
     <string name="task_address_column_name">ADDRESS</string>
+    <string name="task_port_column_name">PORT</string>
     <string name="task_accesstype_column_name">ACCCESSTYPE</string>
     <string name="task_interval_column_name">INTERVAL</string>
     <string name="task_success_column_name">SUCCESS</string>
