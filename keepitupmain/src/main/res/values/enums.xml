@@ -2,6 +2,6 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <string name="AccessType_NULL" tools:ignore="ExtraTranslation">No type</string>
     <string name="AccessType_NULL_address" tools:ignore="ExtraTranslation">Host: not applicable</string>
-    <string name="AccessType_PING" tools:ignore="ExtraTranslation">Ping</string>
-    <string name="AccessType_PING_address" tools:ignore="ExtraTranslation">Host: %s Port: %d</string>
+    <string name="AccessType_PING" tools:ignore="ExtraTranslation" tools:keep="@string/AccessType_PING">Ping</string>
+    <string name="AccessType_PING_address" tools:ignore="ExtraTranslation" tools:keep="@string/AccessType_PING_address">Host: %s Port: %d</string>
 </resources>

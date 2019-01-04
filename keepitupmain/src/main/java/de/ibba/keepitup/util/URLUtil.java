@@ -24,11 +24,9 @@ public class URLUtil {
     public static boolean isValidURL(String inputUrl) {
         try {
             URL url = new URL(inputUrl);
-            URI uri = new URI(url.getProtocol(), url.getUserInfo(), IDN.toASCII(url.getHost()), url.getPort(), url.getPath(), url.getQuery(), url.getRef());
+            @SuppressWarnings("unused") URI uri = new URI(url.getProtocol(), url.getUserInfo(), IDN.toASCII(url.getHost()), url.getPort(), url.getPath(), url.getQuery(), url.getRef());
             return true;
-        } catch (MalformedURLException exc) {
-            Log.d(URLUtil.class.getName(), "Exception parsing url " + inputUrl, exc);
-        } catch (URISyntaxException exc) {
+        } catch (MalformedURLException | URISyntaxException exc) {
             Log.d(URLUtil.class.getName(), "Exception parsing url " + inputUrl, exc);
         }
         return false;
@@ -46,9 +44,7 @@ public class URLUtil {
             URL url = new URL(inputUrl);
             URI uri = new URI(url.getProtocol(), url.getUserInfo(), IDN.toASCII(url.getHost()), url.getPort(), url.getPath(), url.getQuery(), url.getRef());
             return uri.toASCIIString();
-        } catch (MalformedURLException exc) {
-            Log.d(URLUtil.class.getName(), "Exception parsing url " + inputUrl, exc);
-        } catch (URISyntaxException exc) {
+        } catch (MalformedURLException | URISyntaxException exc) {
             Log.d(URLUtil.class.getName(), "Exception parsing url " + inputUrl, exc);
         }
         return inputUrl;
