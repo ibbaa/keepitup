@@ -23,7 +23,7 @@ public class URLUtil {
 
     public static boolean isValidURL(String inputUrl) {
         try {
-            URL url= new URL(inputUrl);
+            URL url = new URL(inputUrl);
             URI uri = new URI(url.getProtocol(), url.getUserInfo(), IDN.toASCII(url.getHost()), url.getPort(), url.getPath(), url.getQuery(), url.getRef());
             return true;
         } catch (MalformedURLException exc) {
@@ -35,7 +35,7 @@ public class URLUtil {
     }
 
     public static String prefixHTTPProtocol(String inputUrl) {
-        if(inputUrl.toLowerCase().startsWith("http://") || inputUrl.toLowerCase().startsWith("https://")) {
+        if (inputUrl.toLowerCase().startsWith("http://") || inputUrl.toLowerCase().startsWith("https://")) {
             return inputUrl;
         }
         return "http://" + inputUrl;
@@ -43,7 +43,7 @@ public class URLUtil {
 
     public static String encodeURL(String inputUrl) {
         try {
-            URL url= new URL(inputUrl);
+            URL url = new URL(inputUrl);
             URI uri = new URI(url.getProtocol(), url.getUserInfo(), IDN.toASCII(url.getHost()), url.getPort(), url.getPath(), url.getQuery(), url.getRef());
             return uri.toASCIIString();
         } catch (MalformedURLException exc) {
