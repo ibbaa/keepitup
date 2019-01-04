@@ -71,6 +71,7 @@ public class NetworkTaskDAO {
         TaskDBConstants dbConstants = new TaskDBConstants(context);
         values.put(dbConstants.getTaskIndexColumnName(), networkTask.getIndex());
         values.put(dbConstants.getTaskAddressColumnName(), networkTask.getAddress());
+        values.put(dbConstants.getTaskPortColumnName(), networkTask.getPort());
         values.put(dbConstants.getTaskAccessTypeColumnName(), networkTask.getAccessType() == null ? null : networkTask.getAccessType().getCode());
         values.put(dbConstants.getTaskIntervalColumnName(), networkTask.getInterval());
         values.put(dbConstants.getTaskSuccessColumnName(), networkTask.isSuccess() ? 1 : 0);
@@ -171,6 +172,7 @@ public class NetworkTaskDAO {
         int indexIdColumn = cursor.getColumnIndex(dbConstants.getTaskIdColumnName());
         int indexIndexColumn = cursor.getColumnIndex(dbConstants.getTaskIndexColumnName());
         int indexAddressColumn = cursor.getColumnIndex(dbConstants.getTaskAddressColumnName());
+        int indexPortColumn = cursor.getColumnIndex(dbConstants.getTaskPortColumnName());
         int indexAccessTypeColumn = cursor.getColumnIndex(dbConstants.getTaskAccessTypeColumnName());
         int indexIntervalColumn = cursor.getColumnIndex(dbConstants.getTaskIntervalColumnName());
         int indexSuccessColumn = cursor.getColumnIndex(dbConstants.getTaskSuccessColumnName());
@@ -179,6 +181,7 @@ public class NetworkTaskDAO {
         networkTask.setId(cursor.getInt(indexIdColumn));
         networkTask.setIndex(cursor.getInt(indexIndexColumn));
         networkTask.setAddress(cursor.getString(indexAddressColumn));
+        networkTask.setPort(cursor.getInt(indexPortColumn));
         if (cursor.isNull(indexAccessTypeColumn)) {
             networkTask.setAccessType(null);
         } else {

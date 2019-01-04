@@ -8,6 +8,7 @@ public class NetworkTask {
     private int id;
     private int index;
     private String address;
+    private int port;
     private AccessType accessType;
     private int interval;
     private boolean success;
@@ -21,6 +22,7 @@ public class NetworkTask {
         this.id = bundle.getInt("id");
         this.index = bundle.getInt("index");
         this.address = bundle.getString("address");
+        this.port = bundle.getInt("port");
         if (bundle.containsKey("accessType")) {
             accessType = AccessType.forCode(bundle.getInt("accessType"));
         }
@@ -52,6 +54,14 @@ public class NetworkTask {
 
     public void setAddress(String address) {
         this.address = address;
+    }
+
+    public int getPort() {
+        return port;
+    }
+
+    public void setPort(int port) {
+        this.port = port;
     }
 
     public AccessType getAccessType() {
@@ -101,6 +111,7 @@ public class NetworkTask {
         if (address != null) {
             bundle.putString("address", address);
         }
+        bundle.putInt("port", port);
         if (accessType != null) {
             bundle.putInt("accessType", accessType.getCode());
         }
@@ -120,6 +131,7 @@ public class NetworkTask {
                 "id=" + id +
                 ", index=" + index +
                 ", address='" + address + '\'' +
+                ", port=" + port +
                 ", accessType=" + accessType +
                 ", interval=" + interval +
                 ", success=" + success +
