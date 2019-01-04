@@ -129,7 +129,7 @@ public class NetworkTaskDAO {
         NetworkTask result = null;
         TaskDBConstants dbConstants = new TaskDBConstants(context);
         try {
-            cursor = db.rawQuery(dbConstants.getReadNetworkTaskStatement(), new String[] { String.valueOf(networkTask.getId()) });
+            cursor = db.rawQuery(dbConstants.getReadNetworkTaskStatement(), new String[]{String.valueOf(networkTask.getId())});
             while (cursor.moveToNext()) {
                 int indexIdColumn = cursor.getColumnIndex(dbConstants.getTaskIdColumnName());
                 if (!cursor.isNull(indexIdColumn)) {

@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import de.ibba.keepitup.R;
+import de.ibba.keepitup.model.AccessType;
 import de.ibba.keepitup.model.NetworkTask;
 import de.ibba.keepitup.service.NetworkKeepAliveServiceScheduler;
 import de.ibba.keepitup.ui.adapter.NetworkTaskAdapter;
@@ -49,9 +50,13 @@ public class MainActivity extends AppCompatActivity {
         NetworkTask task1 = new NetworkTask();
         task1.setId(1);
         task1.setAddress("Address1");
+        task1.setPort(21);
+        task1.setAccessType(AccessType.PING);
         NetworkTask task2 = new NetworkTask();
         task2.setId(2);
         task2.setAddress("Address2");
+        task2.setPort(21);
+        task2.setAccessType(null);
         taskList.add(task1);
         taskList.add(task2);
         return taskList;

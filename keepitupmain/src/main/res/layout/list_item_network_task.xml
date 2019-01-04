@@ -42,6 +42,22 @@
             android:contentDescription="@string/label_add_network_task"
             app:srcCompat="@drawable/icon_stopped" />
 
+        <TextView xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/textview_list_item_network_task_access_type"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/textview_list_item_network_task_status"
+            android:textStyle="normal"
+            android:text="@string/text_list_item_network_task_access_type" />
+
+        <TextView xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/textview_list_item_network_task_address"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/textview_list_item_network_task_access_type"
+            android:textStyle="normal"
+            android:text="@string/text_list_item_network_task_address" />
+
     </RelativeLayout>
 
 </android.support.v7.widget.CardView>

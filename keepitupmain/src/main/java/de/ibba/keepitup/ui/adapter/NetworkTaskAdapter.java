@@ -40,6 +40,8 @@ public class NetworkTaskAdapter extends RecyclerView.Adapter<NetworkTaskViewHold
         NetworkKeepAliveServiceScheduler scheduler = new NetworkKeepAliveServiceScheduler(getContext());
         boolean isRunning = scheduler.isRunning(networkTask);
         bindStatus(networkTaskViewHolder, isRunning);
+        bindAccessType(networkTaskViewHolder, networkTask);
+        bindAddress(networkTaskViewHolder, networkTask);
     }
 
     private void bindStatus(@NonNull NetworkTaskViewHolder networkTaskViewHolder, boolean isRunning) {
@@ -48,6 +50,20 @@ public class NetworkTaskAdapter extends RecyclerView.Adapter<NetworkTaskViewHold
         int statusImage = isRunning ? R.drawable.icon_running : R.drawable.icon_stopped;
         Log.d(NetworkTaskAdapter.class.getName(), "binding status text " + statusText);
         networkTaskViewHolder.setStatus(statusText, statusImage);
+    }
+
+    private void bindAccessType(@NonNull NetworkTaskViewHolder networkTaskViewHolder, NetworkTask networkTask) {
+        String accessType = networkTask.getAccessType() != null ? networkTask.getAccessType().getTypeText(getContext()) : getResources().getString(R.string.AccessType_NULL);
+        String accessTypeText = String.format(getResources().getString(R.string.text_list_item_network_task_access_type), accessType);
+        Log.d(NetworkTaskAdapter.class.getName(), "binding acccess type text " + accessTypeText);
+        networkTaskViewHolder.setAccessType(accessTypeText);
+    }
+
+    private void bindAddress(@NonNull NetworkTaskViewHolder networkTaskViewHolder, NetworkTask networkTask) {
+        String address = networkTask.getAccessType() != null ? networkTask.getAccessType().getAddressText(getContext()) : getResources().getString(R.string.AccessType_NULL_address);
+        String addressText = String.format(getResources().getString(R.string.text_list_item_network_task_address), address);
+        String addressTextFormatted = String.format(addressText, networkTask.getAddress(), networkTask.getPort());
+        networkTaskViewHolder.setAddress(addressTextFormatted);
     }
 
     @Override

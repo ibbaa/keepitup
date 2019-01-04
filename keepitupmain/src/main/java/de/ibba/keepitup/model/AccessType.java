@@ -1,5 +1,8 @@
 package de.ibba.keepitup.model;
 
+import android.content.Context;
+import android.content.res.Resources;
+
 public enum AccessType {
 
     PING(1);
@@ -12,6 +15,16 @@ public enum AccessType {
 
     public int getCode() {
         return code;
+    }
+
+    public String getTypeText(Context context) {
+        Resources resources = context.getResources();
+        return resources.getString(resources.getIdentifier(this.getClass().getSimpleName() + "_" + this.name(), "string", context.getPackageName()));
+    }
+
+    public String getAddressText(Context context) {
+        Resources resources = context.getResources();
+        return resources.getString(resources.getIdentifier(this.getClass().getSimpleName() + "_" + this.name() + "_address", "string", context.getPackageName()));
     }
 
     public static AccessType forCode(int code) {
