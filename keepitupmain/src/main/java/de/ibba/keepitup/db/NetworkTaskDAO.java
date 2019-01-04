@@ -56,13 +56,20 @@ public class NetworkTaskDAO {
         executeDBOperationInTransaction(networkTask, this::updateNetworkTaskSuccess);
     }
 
+    public NetworkTask readNetworkTask(int taskId) {
+        Log.d(NetworkTaskDAO.class.getName(), "Reading task with id " + taskId);
+        NetworkTask networkTask = new NetworkTask();
+        networkTask.setId(taskId);
+        return executeDBOperationInTransaction(networkTask, this::readNetworkTask);
+    }
+
     public List<NetworkTask> readAllNetworkTasks() {
-        Log.d(NetworkTaskDAO.class.getName(), "Read all tasks");
+        Log.d(NetworkTaskDAO.class.getName(), "Reading all tasks");
         return executeDBOperationInTransaction(null, this::readAllNetworkTasks);
     }
 
     public long readMaximumIndex() {
-        Log.d(NetworkTaskDAO.class.getName(), "Read maximum index");
+        Log.d(NetworkTaskDAO.class.getName(), "Reading maximum index");
         return executeDBOperationInTransaction(null, this::readMaximumIndex);
     }
 
@@ -117,12 +124,37 @@ public class NetworkTaskDAO {
     }
 
     @SuppressWarnings("unused")
+    private NetworkTask readNetworkTask(NetworkTask networkTask, SQLiteDatabase db) {
+        Cursor cursor = null;
+        NetworkTask result = null;
+        TaskDBConstants dbConstants = new TaskDBConstants(context);
+        try {
+            cursor = db.rawQuery(dbConstants.getReadNetworkTaskStatement(), new String[] { String.valueOf(networkTask.getId()) });
+            while (cursor.moveToNext()) {
+                int indexIdColumn = cursor.getColumnIndex(dbConstants.getTaskIdColumnName());
+                if (!cursor.isNull(indexIdColumn)) {
+                    result = mapCursorToNetworkTask(cursor);
+                }
+            }
+        } finally {
+            if (cursor != null) {
+                try {
+                    cursor.close();
+                } catch (Throwable exc) {
+                    Log.e(NetworkTaskDAO.class.getName(), "Error closing result cursor", exc);
+                }
+            }
+        }
+        return result;
+    }
+
+    @SuppressWarnings("unused")
     private List<NetworkTask> readAllNetworkTasks(NetworkTask networkTask, SQLiteDatabase db) {
         Cursor cursor = null;
         List<NetworkTask> result = new ArrayList<>();
         TaskDBConstants dbConstants = new TaskDBConstants(context);
         try {
-            cursor = db.rawQuery(dbConstants.getAllTasksStatement(), null);
+            cursor = db.rawQuery(dbConstants.getReadAllNetworkTasksStatement(), null);
             while (cursor.moveToNext()) {
                 int indexIdColumn = cursor.getColumnIndex(dbConstants.getTaskIdColumnName());
                 if (!cursor.isNull(indexIdColumn)) {
@@ -148,7 +180,7 @@ public class NetworkTaskDAO {
         long index = 0;
         TaskDBConstants dbConstants = new TaskDBConstants(context);
         try {
-            cursor = db.rawQuery(dbConstants.getMaximumIndexStatement(), null);
+            cursor = db.rawQuery(dbConstants.getReadMaximumIndexStatement(), null);
             while (cursor.moveToNext()) {
                 if (!cursor.isNull(0)) {
                     index = cursor.getLong(0);
