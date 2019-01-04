@@ -14,33 +14,45 @@ public class NumberUtil {
             Long.valueOf(value.toString());
             return true;
         } catch (NumberFormatException exc) {
-            Log.e(NumberUtil.class.getName(), "Parsing error, value == " + value, exc);
+            Log.d(NumberUtil.class.getName(), "Parsing error, value == " + value, exc);
         }
         return false;
     }
 
     public static long getLongValue(Object value, long defaultValue) {
-        if (value == null) {
-            return defaultValue;
-        }
-        try {
+        if(isValidLongValue(value)) {
             return Long.valueOf(value.toString());
-        } catch (NumberFormatException exc) {
-            Log.e(NumberUtil.class.getName(), "Parsing error, value == " + value, exc);
         }
         return defaultValue;
     }
 
     public static long getPreferenceLongSetting(String key, int defaultValue, Context context) {
         String value = PreferenceManager.getDefaultSharedPreferences(context).getString(key, String.valueOf(defaultValue));
+        return getLongValue(value, defaultValue);
+    }
+
+    public static boolean isValidIntValue(Object value) {
         if (value == null) {
-            return defaultValue;
+            return false;
         }
         try {
-            return Long.valueOf(value);
+            Integer.valueOf(value.toString());
+            return true;
         } catch (NumberFormatException exc) {
-            Log.e(NumberUtil.class.getName(), "Parsing error, key == " + key + ", value == " + value, exc);
+            Log.d(NumberUtil.class.getName(), "Parsing error, value == " + value, exc);
+        }
+        return false;
+    }
+
+    public static int getIntValue(Object value, int defaultValue) {
+        if(isValidIntValue(value)) {
+            return Integer.valueOf(value.toString());
         }
         return defaultValue;
+    }
+
+    public static long getPreferenceIntSetting(String key, int defaultValue, Context context) {
+        String value = PreferenceManager.getDefaultSharedPreferences(context).getString(key, String.valueOf(defaultValue));
+        return getIntValue(value, defaultValue);
     }
 }

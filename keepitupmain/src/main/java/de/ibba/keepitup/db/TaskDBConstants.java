@@ -70,7 +70,7 @@ class TaskDBConstants {
         return "DROP TABLE IF EXISTS " + getTaskTableName();
     }
 
-    public String getAllTasksStatement() {
+    public String getReadNetworkTaskStatement() {
         return "SELECT " +
                 getTaskIdColumnName() + ", " +
                 getTaskIndexColumnName() + ", " +
@@ -80,12 +80,28 @@ class TaskDBConstants {
                 getTaskIntervalColumnName() + ", " +
                 getTaskSuccessColumnName() + ", " +
                 getTaskMessageColumnName() + ", " +
-                getTaskNotificationColumnName() + ", " +
+                getTaskNotificationColumnName() +
+                " FROM " + getTaskTableName() +
+                "  WHERE " + getTaskIdColumnName() + " = ?;";
+    }
+
+
+    public String getReadAllNetworkTasksStatement() {
+        return "SELECT " +
+                getTaskIdColumnName() + ", " +
+                getTaskIndexColumnName() + ", " +
+                getTaskAddressColumnName() + ", " +
+                getTaskPortColumnName() + ", " +
+                getTaskAccessTypeColumnName() + ", " +
+                getTaskIntervalColumnName() + ", " +
+                getTaskSuccessColumnName() + ", " +
+                getTaskMessageColumnName() + ", " +
+                getTaskNotificationColumnName() +
                 " FROM " + getTaskTableName() +
                 " ORDER BY " + getTaskIndexColumnName() + " ASC";
     }
 
-    public String getMaximumIndexStatement() {
+    public String getReadMaximumIndexStatement() {
         return "SELECT MAX(" + getTaskIndexColumnName() + ") FROM " + getTaskTableName();
     }
 
