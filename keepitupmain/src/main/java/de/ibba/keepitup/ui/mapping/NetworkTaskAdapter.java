@@ -1,4 +1,4 @@
-package de.ibba.keepitup.ui.adapter;
+package de.ibba.keepitup.ui.mapping;
 
 import android.content.Context;
 import android.content.res.Resources;
@@ -46,24 +46,23 @@ public class NetworkTaskAdapter extends RecyclerView.Adapter<NetworkTaskViewHold
 
     private void bindStatus(@NonNull NetworkTaskViewHolder networkTaskViewHolder, boolean isRunning) {
         String statusRunning = isRunning ? getResources().getString(R.string.string_running) : getResources().getString(R.string.string_stopped);
-        String statusText = String.format(getResources().getString(R.string.text_list_item_network_task_status), statusRunning);
+        String formattedStatusText = String.format(getResources().getString(R.string.text_list_item_network_task_status), statusRunning);
         int statusImage = isRunning ? R.drawable.icon_running : R.drawable.icon_stopped;
-        Log.d(NetworkTaskAdapter.class.getName(), "binding status text " + statusText);
-        networkTaskViewHolder.setStatus(statusText, statusImage);
+        Log.d(NetworkTaskAdapter.class.getName(), "binding status text " + formattedStatusText);
+        networkTaskViewHolder.setStatus(formattedStatusText, statusImage);
     }
 
     private void bindAccessType(@NonNull NetworkTaskViewHolder networkTaskViewHolder, NetworkTask networkTask) {
-        String accessType = networkTask.getAccessType() != null ? networkTask.getAccessType().getTypeText(getContext()) : getResources().getString(R.string.AccessType_NULL);
-        String accessTypeText = String.format(getResources().getString(R.string.text_list_item_network_task_access_type), accessType);
-        Log.d(NetworkTaskAdapter.class.getName(), "binding acccess type text " + accessTypeText);
-        networkTaskViewHolder.setAccessType(accessTypeText);
+        String accessTypeText = new EnumMapping(getContext()).getAccessTypeText(networkTask.getAccessType());
+        String formattedAccessTypeText = String.format(getResources().getString(R.string.text_list_item_network_task_access_type), accessTypeText);
+        Log.d(NetworkTaskAdapter.class.getName(), "binding acccess type text " + formattedAccessTypeText);
+        networkTaskViewHolder.setAccessType(formattedAccessTypeText);
     }
 
     private void bindAddress(@NonNull NetworkTaskViewHolder networkTaskViewHolder, NetworkTask networkTask) {
-        String address = networkTask.getAccessType() != null ? networkTask.getAccessType().getAddressText(getContext()) : getResources().getString(R.string.AccessType_NULL_address);
-        String addressText = String.format(getResources().getString(R.string.text_list_item_network_task_address), address);
-        String addressTextFormatted = String.format(addressText, networkTask.getAddress(), networkTask.getPort());
-        networkTaskViewHolder.setAddress(addressTextFormatted);
+        String addressText = String.format(getResources().getString(R.string.text_list_item_network_task_address), new EnumMapping(getContext()).getAccessTypeAddressText(networkTask.getAccessType()));
+        String formattedAddressTextFormatted = String.format(addressText, networkTask.getAddress(), networkTask.getPort());
+        networkTaskViewHolder.setAddress(formattedAddressTextFormatted);
     }
 
     @Override

@@ -20,7 +20,7 @@ import de.ibba.keepitup.R;
 import de.ibba.keepitup.model.AccessType;
 import de.ibba.keepitup.model.NetworkTask;
 import de.ibba.keepitup.service.NetworkKeepAliveServiceScheduler;
-import de.ibba.keepitup.ui.adapter.NetworkTaskAdapter;
+import de.ibba.keepitup.ui.mapping.NetworkTaskAdapter;
 
 public class MainActivity extends AppCompatActivity {
 
