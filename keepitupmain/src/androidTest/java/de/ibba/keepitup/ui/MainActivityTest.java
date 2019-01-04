@@ -14,7 +14,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import de.ibba.keepitup.R;
-import de.ibba.keepitup.ui.adapter.NetworkTaskViewHolder;
+import de.ibba.keepitup.ui.mapping.NetworkTaskViewHolder;
 
 @MediumTest
 @RunWith(AndroidJUnit4.class)

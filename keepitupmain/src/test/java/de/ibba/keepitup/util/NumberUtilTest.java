@@ -15,7 +15,7 @@ import org.powermock.modules.junit4.PowerMockRunner;
 public class NumberUtilTest {
 
     @Before
-    public void setUp() {
+    public void beforeEachTestMethod() {
         PowerMockito.mockStatic(Log.class);
     }
 

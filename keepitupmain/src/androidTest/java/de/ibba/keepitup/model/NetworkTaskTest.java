@@ -38,6 +38,7 @@ public class NetworkTaskTest {
         Assert.assertFalse(task.isNotification());
     }
 
+    @Test
     public void testToPersistableBundleValues() {
         NetworkTask task = new NetworkTask();
         task.setId(1);

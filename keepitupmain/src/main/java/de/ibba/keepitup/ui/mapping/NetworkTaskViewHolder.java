@@ -1,4 +1,4 @@
-package de.ibba.keepitup.ui.adapter;
+package de.ibba.keepitup.ui.mapping;
 
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
