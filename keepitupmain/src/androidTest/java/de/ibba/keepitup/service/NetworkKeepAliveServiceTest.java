@@ -44,30 +44,30 @@ public class NetworkKeepAliveServiceTest {
     }
 
     private NetworkTask getNetworkTask1() {
-        NetworkTask insertedTask1 = new NetworkTask();
-        insertedTask1.setId(1);
-        insertedTask1.setIndex(1);
-        insertedTask1.setAddress("127.0.0.1");
-        insertedTask1.setPort(80);
-        insertedTask1.setAccessType(AccessType.PING);
-        insertedTask1.setInterval(15);
-        insertedTask1.setSuccess(true);
-        insertedTask1.setMessage("TestMessage1");
-        insertedTask1.setNotification(true);
-        return insertedTask1;
+        NetworkTask task1 = new NetworkTask();
+        task1.setId(1);
+        task1.setIndex(1);
+        task1.setAddress("127.0.0.1");
+        task1.setPort(80);
+        task1.setAccessType(AccessType.PING);
+        task1.setInterval(15);
+        task1.setSuccess(true);
+        task1.setMessage("TestMessage1");
+        task1.setNotification(true);
+        return task1;
     }
 
     private NetworkTask getNetworkTask2() {
-        NetworkTask insertedTask2 = new NetworkTask();
-        insertedTask2.setId(2);
-        insertedTask2.setIndex(10);
-        insertedTask2.setAddress("host.com");
-        insertedTask2.setPort(21);
-        insertedTask2.setAccessType(null);
-        insertedTask2.setInterval(1);
-        insertedTask2.setSuccess(false);
-        insertedTask2.setMessage(null);
-        insertedTask2.setNotification(false);
-        return insertedTask2;
+        NetworkTask task2 = new NetworkTask();
+        task2.setId(2);
+        task2.setIndex(10);
+        task2.setAddress("host.com");
+        task2.setPort(21);
+        task2.setAccessType(null);
+        task2.setInterval(1);
+        task2.setSuccess(false);
+        task2.setMessage(null);
+        task2.setNotification(false);
+        return task2;
     }
 }

@@ -12,5 +12,4 @@
     <string name="task_success_column_name">SUCCESS</string>
     <string name="task_message_column_name">MESSAGE</string>
     <string name="task_notification_column_name">NOTIFICATION</string>
-    <string name="task_running_column_name">RUNNING</string>
 </resources>
