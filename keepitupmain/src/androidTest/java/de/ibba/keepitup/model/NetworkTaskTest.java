@@ -22,6 +22,7 @@ public class NetworkTaskTest {
         Assert.assertNull(task.getAccessType());
         Assert.assertEquals(0, task.getInterval());
         Assert.assertFalse(task.isSuccess());
+        Assert.assertEquals(0, task.getTimestamp());
         Assert.assertNull(task.getMessage());
         Assert.assertFalse(task.isNotification());
         PersistableBundle bundle = task.toPersistableBundle();
@@ -34,12 +35,14 @@ public class NetworkTaskTest {
         Assert.assertNull(task.getAccessType());
         Assert.assertEquals(0, task.getInterval());
         Assert.assertFalse(task.isSuccess());
+        Assert.assertEquals(0, task.getTimestamp());
         Assert.assertNull(task.getMessage());
         Assert.assertFalse(task.isNotification());
     }
 
     @Test
     public void testToPersistableBundleValues() {
+        long timestamp = System.currentTimeMillis();
         NetworkTask task = new NetworkTask();
         task.setId(1);
         task.setIndex(2);
@@ -48,6 +51,7 @@ public class NetworkTaskTest {
         task.setAccessType(AccessType.PING);
         task.setInterval(15);
         task.setSuccess(true);
+        task.setTimestamp(timestamp);
         task.setMessage("Message");
         task.setNotification(true);
         Assert.assertEquals(1, task.getId());
@@ -57,6 +61,7 @@ public class NetworkTaskTest {
         Assert.assertEquals(AccessType.PING, task.getAccessType());
         Assert.assertEquals(15, task.getInterval());
         Assert.assertTrue(task.isSuccess());
+        Assert.assertEquals(timestamp, task.getTimestamp());
         Assert.assertEquals("Message", task.getMessage());
         Assert.assertTrue(task.isNotification());
         PersistableBundle bundle = task.toPersistableBundle();
@@ -69,6 +74,7 @@ public class NetworkTaskTest {
         Assert.assertEquals(AccessType.PING, task.getAccessType());
         Assert.assertEquals(15, task.getInterval());
         Assert.assertTrue(task.isSuccess());
+        Assert.assertEquals(timestamp, task.getTimestamp());
         Assert.assertEquals("Message", task.getMessage());
         Assert.assertTrue(task.isNotification());
     }

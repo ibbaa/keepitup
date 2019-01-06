@@ -10,6 +10,7 @@
     <string name="task_accesstype_column_name">ACCCESSTYPE</string>
     <string name="task_interval_column_name">INTERVAL</string>
     <string name="task_success_column_name">SUCCESS</string>
+    <string name="task_timestamp_column_name">TIMESTAMP</string>
     <string name="task_message_column_name">MESSAGE</string>
     <string name="task_notification_column_name">NOTIFICATION</string>
 </resources>

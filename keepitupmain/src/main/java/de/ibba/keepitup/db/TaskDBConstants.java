@@ -45,6 +45,10 @@ class TaskDBConstants {
         return getResources().getString(R.string.task_success_column_name);
     }
 
+    public String getTaskTimestampColumnName() {
+        return getResources().getString(R.string.task_timestamp_column_name);
+    }
+
     public String getTaskMessageColumnName() {
         return getResources().getString(R.string.task_message_column_name);
     }
@@ -62,6 +66,7 @@ class TaskDBConstants {
                 getTaskAccessTypeColumnName() + " INTEGER, " +
                 getTaskIntervalColumnName() + " INTEGER, " +
                 getTaskSuccessColumnName() + " INTEGER, " +
+                getTaskTimestampColumnName() + " INTEGER, " +
                 getTaskMessageColumnName() + " TEXT, " +
                 getTaskNotificationColumnName() + " INTEGER);";
     }
@@ -79,6 +84,7 @@ class TaskDBConstants {
                 getTaskAccessTypeColumnName() + ", " +
                 getTaskIntervalColumnName() + ", " +
                 getTaskSuccessColumnName() + ", " +
+                getTaskTimestampColumnName() + ", " +
                 getTaskMessageColumnName() + ", " +
                 getTaskNotificationColumnName() +
                 " FROM " + getTaskTableName() +
@@ -95,6 +101,7 @@ class TaskDBConstants {
                 getTaskAccessTypeColumnName() + ", " +
                 getTaskIntervalColumnName() + ", " +
                 getTaskSuccessColumnName() + ", " +
+                getTaskTimestampColumnName() + ", " +
                 getTaskMessageColumnName() + ", " +
                 getTaskNotificationColumnName() +
                 " FROM " + getTaskTableName() +

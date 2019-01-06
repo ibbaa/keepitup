@@ -12,6 +12,7 @@ public class NetworkTask {
     private AccessType accessType;
     private int interval;
     private boolean success;
+    private long timestamp;
     private String message;
     private boolean notification;
 
@@ -28,6 +29,7 @@ public class NetworkTask {
         }
         this.interval = bundle.getInt("interval");
         this.success = bundle.getInt("success") >= 1;
+        this.timestamp = bundle.getLong("timestamp");
         this.message = bundle.getString("message");
         this.notification = bundle.getInt("notification") >= 1;
     }
@@ -88,6 +90,14 @@ public class NetworkTask {
         this.success = success;
     }
 
+    public long getTimestamp() {
+        return timestamp;
+    }
+
+    public void setTimestamp(long timestamp) {
+        this.timestamp = timestamp;
+    }
+
     public String getMessage() {
         return message;
     }
@@ -117,6 +127,7 @@ public class NetworkTask {
         }
         bundle.putInt("interval", interval);
         bundle.putInt("success", success ? 1 : 0);
+        bundle.putLong("timestamp", timestamp);
         if (message != null) {
             bundle.putString("message", message);
         }
@@ -135,6 +146,7 @@ public class NetworkTask {
                 ", accessType=" + accessType +
                 ", interval=" + interval +
                 ", success=" + success +
+                ", timestamp=" + timestamp +
                 ", message='" + message + '\'' +
                 ", notification=" + notification +
                 '}';
