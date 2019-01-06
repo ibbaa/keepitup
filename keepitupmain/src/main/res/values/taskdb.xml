@@ -2,7 +2,7 @@
 <resources>
     <string name="task_db_name">networkjob.db</string>
     <integer name="task_db_version">1</integer>
-    <string name="task_table_name">NETWORKJOB</string>
+    <string name="task_table_name">NETWORKTASK</string>
     <string name="task_id_column_name">_id</string>
     <string name="task_index_column_name">UIINDEX</string>
     <string name="task_address_column_name">ADDRESS</string>
