@@ -87,7 +87,7 @@ public class NetworkTaskDAOTest {
         NetworkTask readTask1 = readTasks.get(0);
         NetworkTask readTask3 = readTasks.get(1);
         NetworkTask readTask2 = readTasks.get(2);
-        dao.updateNetworkTaskSuccess(readTask2.getId(), true, "TestMessage2");
+        dao.updateNetworkTaskSuccess(readTask2.getId(), true, 987,"TestMessage2");
         dao.updateNetworkTaskNotification(readTask3.getId(), true);
         readTask2 = dao.readNetworkTask(readTask2.getId());
         readTask3 = dao.readNetworkTask(readTask3.getId());
@@ -98,6 +98,7 @@ public class NetworkTaskDAOTest {
         Assert.assertEquals(insertedTask2.getInterval(), readTask2.getInterval());
         Assert.assertEquals(insertedTask2.isNotification(), readTask2.isNotification());
         Assert.assertTrue(readTask2.isSuccess());
+        Assert.assertEquals(987, readTask2.getTimestamp());
         Assert.assertEquals("TestMessage2", readTask2.getMessage());
         Assert.assertEquals(insertedTask3.getIndex(), readTask3.getIndex());
         Assert.assertEquals(insertedTask3.getAddress(), readTask3.getAddress());
@@ -117,6 +118,7 @@ public class NetworkTaskDAOTest {
         insertedTask1.setAccessType(AccessType.PING);
         insertedTask1.setInterval(15);
         insertedTask1.setSuccess(true);
+        insertedTask1.setTimestamp(789);
         insertedTask1.setMessage("TestMessage1");
         insertedTask1.setNotification(true);
         return insertedTask1;
@@ -131,6 +133,7 @@ public class NetworkTaskDAOTest {
         insertedTask2.setAccessType(null);
         insertedTask2.setInterval(1);
         insertedTask2.setSuccess(false);
+        insertedTask2.setTimestamp(456);
         insertedTask2.setMessage(null);
         insertedTask2.setNotification(false);
         return insertedTask2;
@@ -145,6 +148,7 @@ public class NetworkTaskDAOTest {
         insertedTask3.setAccessType(AccessType.PING);
         insertedTask3.setInterval(200);
         insertedTask3.setSuccess(true);
+        insertedTask3.setTimestamp(123);
         insertedTask3.setMessage("TestMessage3");
         insertedTask3.setNotification(false);
         return insertedTask3;
@@ -156,6 +160,7 @@ public class NetworkTaskDAOTest {
         Assert.assertEquals(task1.getPort(), task2.getPort());
         Assert.assertEquals(task1.getInterval(), task2.getInterval());
         Assert.assertEquals(task1.isSuccess(), task2.isSuccess());
+        Assert.assertEquals(task1.getTimestamp(), task2.getTimestamp());
         Assert.assertEquals(task1.getMessage(), task2.getMessage());
         Assert.assertEquals(task1.isNotification(), task2.isNotification());
     }

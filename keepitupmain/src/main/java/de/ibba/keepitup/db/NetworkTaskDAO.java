@@ -47,11 +47,12 @@ public class NetworkTaskDAO {
         executeDBOperationInTransaction(networkTask, this::updateNetworkTaskNotification);
     }
 
-    public void updateNetworkTaskSuccess(int taskId, boolean success, String message) {
+    public void updateNetworkTaskSuccess(int taskId, boolean success, long timestamp, String message) {
         Log.d(NetworkTaskDAO.class.getName(), "Updating success status to " + success + " with a message " + message + " of task with id " + taskId);
         NetworkTask networkTask = new NetworkTask();
         networkTask.setId(taskId);
         networkTask.setSuccess(success);
+        networkTask.setTimestamp(timestamp);
         networkTask.setMessage(message);
         executeDBOperationInTransaction(networkTask, this::updateNetworkTaskSuccess);
     }
@@ -82,6 +83,7 @@ public class NetworkTaskDAO {
         values.put(dbConstants.getTaskAccessTypeColumnName(), networkTask.getAccessType() == null ? null : networkTask.getAccessType().getCode());
         values.put(dbConstants.getTaskIntervalColumnName(), networkTask.getInterval());
         values.put(dbConstants.getTaskSuccessColumnName(), networkTask.isSuccess() ? 1 : 0);
+        values.put(dbConstants.getTaskTimestampColumnName(), networkTask.getTimestamp());
         values.put(dbConstants.getTaskMessageColumnName(), networkTask.getMessage());
         values.put(dbConstants.getTaskNotificationColumnName(), networkTask.isNotification() ? 1 : 0);
         long rowid = db.insert(dbConstants.getTaskTableName(), null, values);
@@ -110,6 +112,7 @@ public class NetworkTaskDAO {
         String[] selectionArgs = {String.valueOf(networkTask.getId())};
         ContentValues values = new ContentValues();
         values.put(dbConstants.getTaskSuccessColumnName(), networkTask.isSuccess() ? 1 : 0);
+        values.put(dbConstants.getTaskTimestampColumnName(), networkTask.getTimestamp());
         values.put(dbConstants.getTaskMessageColumnName(), networkTask.getMessage());
         return db.update(dbConstants.getTaskTableName(), values, selection, selectionArgs);
     }
@@ -208,6 +211,7 @@ public class NetworkTaskDAO {
         int indexAccessTypeColumn = cursor.getColumnIndex(dbConstants.getTaskAccessTypeColumnName());
         int indexIntervalColumn = cursor.getColumnIndex(dbConstants.getTaskIntervalColumnName());
         int indexSuccessColumn = cursor.getColumnIndex(dbConstants.getTaskSuccessColumnName());
+        int indexTimestampColumn = cursor.getColumnIndex(dbConstants.getTaskTimestampColumnName());
         int indexMessageColumn = cursor.getColumnIndex(dbConstants.getTaskMessageColumnName());
         int indexNotificationColumn = cursor.getColumnIndex(dbConstants.getTaskNotificationColumnName());
         networkTask.setId(cursor.getInt(indexIdColumn));
@@ -221,6 +225,7 @@ public class NetworkTaskDAO {
         }
         networkTask.setInterval(cursor.getInt(indexIntervalColumn));
         networkTask.setSuccess(cursor.getInt(indexSuccessColumn) >= 1);
+        networkTask.setTimestamp(cursor.getLong(indexTimestampColumn));
         networkTask.setMessage(cursor.getString(indexMessageColumn));
         networkTask.setNotification(cursor.getInt(indexNotificationColumn) >= 1);
         return networkTask;
