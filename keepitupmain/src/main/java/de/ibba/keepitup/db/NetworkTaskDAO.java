@@ -14,11 +14,11 @@ import de.ibba.keepitup.model.NetworkTask;
 
 public class NetworkTaskDAO {
 
-    private final TaskDBOpenHelper taskDbOpenHelper;
+    private final NetworkTaskDBOpenHelper taskDbOpenHelper;
     private final Context context;
 
     public NetworkTaskDAO(Context context) {
-        taskDbOpenHelper = new TaskDBOpenHelper(context);
+        taskDbOpenHelper = new NetworkTaskDBOpenHelper(context);
         this.context = context;
     }
 
@@ -76,17 +76,17 @@ public class NetworkTaskDAO {
 
     private long insertNetworkTask(NetworkTask networkTask, SQLiteDatabase db) {
         ContentValues values = new ContentValues();
-        TaskDBConstants dbConstants = new TaskDBConstants(context);
-        values.put(dbConstants.getTaskIndexColumnName(), networkTask.getIndex());
-        values.put(dbConstants.getTaskAddressColumnName(), networkTask.getAddress());
-        values.put(dbConstants.getTaskPortColumnName(), networkTask.getPort());
-        values.put(dbConstants.getTaskAccessTypeColumnName(), networkTask.getAccessType() == null ? null : networkTask.getAccessType().getCode());
-        values.put(dbConstants.getTaskIntervalColumnName(), networkTask.getInterval());
-        values.put(dbConstants.getTaskSuccessColumnName(), networkTask.isSuccess() ? 1 : 0);
-        values.put(dbConstants.getTaskTimestampColumnName(), networkTask.getTimestamp());
-        values.put(dbConstants.getTaskMessageColumnName(), networkTask.getMessage());
-        values.put(dbConstants.getTaskNotificationColumnName(), networkTask.isNotification() ? 1 : 0);
-        long rowid = db.insert(dbConstants.getTaskTableName(), null, values);
+        NetworkTaskDBConstants dbConstants = new NetworkTaskDBConstants(context);
+        values.put(dbConstants.getIndexColumnName(), networkTask.getIndex());
+        values.put(dbConstants.getAddressColumnName(), networkTask.getAddress());
+        values.put(dbConstants.getPortColumnName(), networkTask.getPort());
+        values.put(dbConstants.getAccessTypeColumnName(), networkTask.getAccessType() == null ? null : networkTask.getAccessType().getCode());
+        values.put(dbConstants.getIntervalColumnName(), networkTask.getInterval());
+        values.put(dbConstants.getSuccessColumnName(), networkTask.isSuccess() ? 1 : 0);
+        values.put(dbConstants.getTimestampColumnName(), networkTask.getTimestamp());
+        values.put(dbConstants.getMessageColumnName(), networkTask.getMessage());
+        values.put(dbConstants.getNotificationColumnName(), networkTask.isNotification() ? 1 : 0);
+        long rowid = db.insert(dbConstants.getTableName(), null, values);
         if (rowid < 0) {
             Log.e(NetworkTaskDAO.class.getName(), "Error inserting task into database. Insert returned -1.");
         }
@@ -94,47 +94,47 @@ public class NetworkTaskDAO {
     }
 
     private int deleteNetworkTask(NetworkTask networkTask, SQLiteDatabase db) {
-        TaskDBConstants dbConstants = new TaskDBConstants(context);
-        String selection = dbConstants.getTaskIdColumnName() + " = ?";
+        NetworkTaskDBConstants dbConstants = new NetworkTaskDBConstants(context);
+        String selection = dbConstants.getIdColumnName() + " = ?";
         String[] selectionArgs = {String.valueOf(networkTask.getId())};
-        return db.delete(dbConstants.getTaskTableName(), selection, selectionArgs);
+        return db.delete(dbConstants.getTableName(), selection, selectionArgs);
     }
 
     @SuppressWarnings("unused")
     private int deleteAllNetworkTasks(NetworkTask networkTask, SQLiteDatabase db) {
-        TaskDBConstants dbConstants = new TaskDBConstants(context);
-        return db.delete(dbConstants.getTaskTableName(), null, null);
+        NetworkTaskDBConstants dbConstants = new NetworkTaskDBConstants(context);
+        return db.delete(dbConstants.getTableName(), null, null);
     }
 
     private int updateNetworkTaskSuccess(NetworkTask networkTask, SQLiteDatabase db) {
-        TaskDBConstants dbConstants = new TaskDBConstants(context);
-        String selection = dbConstants.getTaskIdColumnName() + " = ?";
+        NetworkTaskDBConstants dbConstants = new NetworkTaskDBConstants(context);
+        String selection = dbConstants.getIdColumnName() + " = ?";
         String[] selectionArgs = {String.valueOf(networkTask.getId())};
         ContentValues values = new ContentValues();
-        values.put(dbConstants.getTaskSuccessColumnName(), networkTask.isSuccess() ? 1 : 0);
-        values.put(dbConstants.getTaskTimestampColumnName(), networkTask.getTimestamp());
-        values.put(dbConstants.getTaskMessageColumnName(), networkTask.getMessage());
-        return db.update(dbConstants.getTaskTableName(), values, selection, selectionArgs);
+        values.put(dbConstants.getSuccessColumnName(), networkTask.isSuccess() ? 1 : 0);
+        values.put(dbConstants.getTimestampColumnName(), networkTask.getTimestamp());
+        values.put(dbConstants.getMessageColumnName(), networkTask.getMessage());
+        return db.update(dbConstants.getTableName(), values, selection, selectionArgs);
     }
 
     private int updateNetworkTaskNotification(NetworkTask networkTask, SQLiteDatabase db) {
-        TaskDBConstants dbConstants = new TaskDBConstants(context);
-        String selection = dbConstants.getTaskIdColumnName() + " = ?";
+        NetworkTaskDBConstants dbConstants = new NetworkTaskDBConstants(context);
+        String selection = dbConstants.getIdColumnName() + " = ?";
         String[] selectionArgs = {String.valueOf(networkTask.getId())};
         ContentValues values = new ContentValues();
-        values.put(dbConstants.getTaskNotificationColumnName(), networkTask.isNotification() ? 1 : 0);
-        return db.update(dbConstants.getTaskTableName(), values, selection, selectionArgs);
+        values.put(dbConstants.getNotificationColumnName(), networkTask.isNotification() ? 1 : 0);
+        return db.update(dbConstants.getTableName(), values, selection, selectionArgs);
     }
 
     @SuppressWarnings("unused")
     private NetworkTask readNetworkTask(NetworkTask networkTask, SQLiteDatabase db) {
         Cursor cursor = null;
         NetworkTask result = null;
-        TaskDBConstants dbConstants = new TaskDBConstants(context);
+        NetworkTaskDBConstants dbConstants = new NetworkTaskDBConstants(context);
         try {
             cursor = db.rawQuery(dbConstants.getReadNetworkTaskStatement(), new String[]{String.valueOf(networkTask.getId())});
             while (cursor.moveToNext()) {
-                int indexIdColumn = cursor.getColumnIndex(dbConstants.getTaskIdColumnName());
+                int indexIdColumn = cursor.getColumnIndex(dbConstants.getIdColumnName());
                 if (!cursor.isNull(indexIdColumn)) {
                     result = mapCursorToNetworkTask(cursor);
                 }
@@ -155,11 +155,11 @@ public class NetworkTaskDAO {
     private List<NetworkTask> readAllNetworkTasks(NetworkTask networkTask, SQLiteDatabase db) {
         Cursor cursor = null;
         List<NetworkTask> result = new ArrayList<>();
-        TaskDBConstants dbConstants = new TaskDBConstants(context);
+        NetworkTaskDBConstants dbConstants = new NetworkTaskDBConstants(context);
         try {
             cursor = db.rawQuery(dbConstants.getReadAllNetworkTasksStatement(), null);
             while (cursor.moveToNext()) {
-                int indexIdColumn = cursor.getColumnIndex(dbConstants.getTaskIdColumnName());
+                int indexIdColumn = cursor.getColumnIndex(dbConstants.getIdColumnName());
                 if (!cursor.isNull(indexIdColumn)) {
                     NetworkTask mappedNetworkTask = mapCursorToNetworkTask(cursor);
                     result.add(mappedNetworkTask);
@@ -181,7 +181,7 @@ public class NetworkTaskDAO {
     private long readMaximumIndex(NetworkTask networkTask, SQLiteDatabase db) {
         Cursor cursor = null;
         long index = 0;
-        TaskDBConstants dbConstants = new TaskDBConstants(context);
+        NetworkTaskDBConstants dbConstants = new NetworkTaskDBConstants(context);
         try {
             cursor = db.rawQuery(dbConstants.getReadMaximumIndexStatement(), null);
             while (cursor.moveToNext()) {
@@ -203,17 +203,17 @@ public class NetworkTaskDAO {
 
     private NetworkTask mapCursorToNetworkTask(Cursor cursor) {
         NetworkTask networkTask = new NetworkTask();
-        TaskDBConstants dbConstants = new TaskDBConstants(context);
-        int indexIdColumn = cursor.getColumnIndex(dbConstants.getTaskIdColumnName());
-        int indexIndexColumn = cursor.getColumnIndex(dbConstants.getTaskIndexColumnName());
-        int indexAddressColumn = cursor.getColumnIndex(dbConstants.getTaskAddressColumnName());
-        int indexPortColumn = cursor.getColumnIndex(dbConstants.getTaskPortColumnName());
-        int indexAccessTypeColumn = cursor.getColumnIndex(dbConstants.getTaskAccessTypeColumnName());
-        int indexIntervalColumn = cursor.getColumnIndex(dbConstants.getTaskIntervalColumnName());
-        int indexSuccessColumn = cursor.getColumnIndex(dbConstants.getTaskSuccessColumnName());
-        int indexTimestampColumn = cursor.getColumnIndex(dbConstants.getTaskTimestampColumnName());
-        int indexMessageColumn = cursor.getColumnIndex(dbConstants.getTaskMessageColumnName());
-        int indexNotificationColumn = cursor.getColumnIndex(dbConstants.getTaskNotificationColumnName());
+        NetworkTaskDBConstants dbConstants = new NetworkTaskDBConstants(context);
+        int indexIdColumn = cursor.getColumnIndex(dbConstants.getIdColumnName());
+        int indexIndexColumn = cursor.getColumnIndex(dbConstants.getIndexColumnName());
+        int indexAddressColumn = cursor.getColumnIndex(dbConstants.getAddressColumnName());
+        int indexPortColumn = cursor.getColumnIndex(dbConstants.getPortColumnName());
+        int indexAccessTypeColumn = cursor.getColumnIndex(dbConstants.getAccessTypeColumnName());
+        int indexIntervalColumn = cursor.getColumnIndex(dbConstants.getIntervalColumnName());
+        int indexSuccessColumn = cursor.getColumnIndex(dbConstants.getSuccessColumnName());
+        int indexTimestampColumn = cursor.getColumnIndex(dbConstants.getTimestampColumnName());
+        int indexMessageColumn = cursor.getColumnIndex(dbConstants.getMessageColumnName());
+        int indexNotificationColumn = cursor.getColumnIndex(dbConstants.getNotificationColumnName());
         networkTask.setId(cursor.getInt(indexIdColumn));
         networkTask.setIndex(cursor.getInt(indexIndexColumn));
         networkTask.setAddress(cursor.getString(indexAddressColumn));
