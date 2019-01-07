@@ -42,6 +42,7 @@ public class NetworkTaskAdapter extends RecyclerView.Adapter<NetworkTaskViewHold
         bindStatus(networkTaskViewHolder, isRunning);
         bindAccessType(networkTaskViewHolder, networkTask);
         bindAddress(networkTaskViewHolder, networkTask);
+        bindInterval(networkTaskViewHolder, networkTask);
     }
 
     private void bindStatus(@NonNull NetworkTaskViewHolder networkTaskViewHolder, boolean isRunning) {
@@ -61,8 +62,15 @@ public class NetworkTaskAdapter extends RecyclerView.Adapter<NetworkTaskViewHold
 
     private void bindAddress(@NonNull NetworkTaskViewHolder networkTaskViewHolder, NetworkTask networkTask) {
         String addressText = String.format(getResources().getString(R.string.text_list_item_network_task_address), new EnumMapping(getContext()).getAccessTypeAddressText(networkTask.getAccessType()));
-        String formattedAddressTextFormatted = String.format(addressText, networkTask.getAddress(), networkTask.getPort());
-        networkTaskViewHolder.setAddress(formattedAddressTextFormatted);
+        String formattedAddressText = String.format(addressText, networkTask.getAddress(), networkTask.getPort());
+        Log.d(NetworkTaskAdapter.class.getName(), "binding address text " + formattedAddressText);
+        networkTaskViewHolder.setAddress(formattedAddressText);
+    }
+
+    private void bindInterval(@NonNull NetworkTaskViewHolder networkTaskViewHolder, NetworkTask networkTask) {
+        String intervalUnit = String.format(getResources().getString(R.string.string_minutes));
+        String formattedIntervalText = String.format(getResources().getString(R.string.text_list_item_network_task_interval), networkTask.getInterval(), intervalUnit);
+        networkTaskViewHolder.setInterval(formattedIntervalText);
     }
 
     @Override

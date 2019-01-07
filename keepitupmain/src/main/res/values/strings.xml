@@ -1,4 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Keep it up</string>
+    <string name="string_running">Running</string>
+    <string name="string_stopped">Stopped</string>
+    <string name="string_minutes">minutes</string>
 </resources>

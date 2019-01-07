@@ -9,7 +9,6 @@
     <string name="interval_setting_label">Interval</string>
     <integer name="interval_setting_default">15</integer>
     <integer name="interval_setting_minimum">15</integer>
-    <string name="string_minutes">minutes</string>
     <string name="string_minimum">Minimum</string>
     <string name="string_value">Value</string>
     <string name="string_invalid_input">Invalid input</string>

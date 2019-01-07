@@ -14,6 +14,7 @@ public class NetworkTaskViewHolder extends RecyclerView.ViewHolder {
     private final ImageView statusImage;
     private final TextView accessTypeText;
     private final TextView addressText;
+    private final TextView intervalText;
 
     public NetworkTaskViewHolder(@NonNull View itemView) {
         super(itemView);
@@ -21,6 +22,7 @@ public class NetworkTaskViewHolder extends RecyclerView.ViewHolder {
         statusImage = itemView.findViewById(R.id.imageview_list_item_network_task_status);
         accessTypeText = itemView.findViewById(R.id.textview_list_item_network_task_access_type);
         addressText = itemView.findViewById(R.id.textview_list_item_network_task_address);
+        intervalText = itemView.findViewById(R.id.textview_list_item_network_task_interval);
     }
 
     public void setStatus(String status, int image) {
@@ -34,5 +36,9 @@ public class NetworkTaskViewHolder extends RecyclerView.ViewHolder {
 
     public void setAddress(String address) {
         addressText.setText(address);
+    }
+
+    public void setInterval(String interval) {
+        intervalText.setText(interval);
     }
 }

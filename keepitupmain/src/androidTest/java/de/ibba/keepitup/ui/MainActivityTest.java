@@ -45,6 +45,9 @@ public class MainActivityTest {
         TextView addressText1 = viewHolder1.itemView.findViewById(R.id.textview_list_item_network_task_address);
         Assert.assertTrue(addressText1.getText().toString().contains("Host: Address1"));
         Assert.assertTrue(addressText1.getText().toString().contains("Port: 21"));
+        TextView intervalText1 = viewHolder1.itemView.findViewById(R.id.textview_list_item_network_task_interval);
+        Assert.assertTrue(intervalText1.getText().toString().contains("Interval:"));
+        Assert.assertTrue(intervalText1.getText().toString().contains("15 minutes"));
         NetworkTaskViewHolder viewHolder2 = (NetworkTaskViewHolder) recyclerView.findViewHolderForAdapterPosition(1);
         Assert.assertNotNull(viewHolder2);
         TextView statusText2 = viewHolder2.itemView.findViewById(R.id.textview_list_item_network_task_status);
@@ -55,5 +58,8 @@ public class MainActivityTest {
         TextView addressText2 = viewHolder2.itemView.findViewById(R.id.textview_list_item_network_task_address);
         Assert.assertTrue(addressText2.getText().toString().contains("Host: not applicable"));
         Assert.assertFalse(addressText2.getText().toString().contains("Port"));
+        TextView intervalText2 = viewHolder2.itemView.findViewById(R.id.textview_list_item_network_task_interval);
+        Assert.assertTrue(intervalText2.getText().toString().contains("Interval:"));
+        Assert.assertTrue(intervalText2.getText().toString().contains("30 minutes"));
     }
 }
