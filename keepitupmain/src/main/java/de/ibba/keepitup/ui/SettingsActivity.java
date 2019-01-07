@@ -70,8 +70,8 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
             if (!isValidValue || refreshInterval < refreshIntervalMinimum) {
                 Log.d(SettingsActivity.class.getName(), "onIntervalChanged, input " + newValue + " is invalid");
                 String failure = getResources().getString(R.string.interval_setting_label) + System.lineSeparator()
-                        + getResources().getString(R.string.string_value) + ": " + newValue + System.lineSeparator()
-                        + getResources().getString(R.string.string_minimum) + ": " + refreshIntervalMinimum;
+                        + getResources().getString(R.string.text_alert_dialog_value) + ": " + newValue + System.lineSeparator()
+                        + getResources().getString(R.string.text_alert_dialog_minimum) + ": " + refreshIntervalMinimum;
                 showErrorDialog(failure);
                 return false;
             }
@@ -88,9 +88,9 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
             if (!isValidHostname && !isValidIPAddress) {
                 Log.d(SettingsActivity.class.getName(), "onHostnameChanged, input " + newValue + " is invalid");
                 @SuppressWarnings("ConstantConditions") String failure = getResources().getString(R.string.hostname_setting_label) + System.lineSeparator()
-                        + getResources().getString(R.string.string_value) + ": " + newValue + System.lineSeparator()
-                        + getResources().getString(R.string.string_hostname_valid) + ": " + isValidHostname + System.lineSeparator()
-                        + getResources().getString(R.string.string_ip_valid) + ": " + isValidIPAddress;
+                        + getResources().getString(R.string.text_alert_dialog_value) + ": " + newValue + System.lineSeparator()
+                        + getResources().getString(R.string.text_alert_dialog_hostname_valid) + ": " + isValidHostname + System.lineSeparator()
+                        + getResources().getString(R.string.text_alert_dialog_ip_valid) + ": " + isValidIPAddress;
                 showErrorDialog(failure);
                 return false;
             }
@@ -100,7 +100,7 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
 
         private void showErrorDialog(String failureText) {
             AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-            builder.setTitle(getResources().getString(R.string.string_invalid_input));
+            builder.setTitle(getResources().getString(R.string.text_alert_dialog_invalid_input));
             builder.setMessage(failureText);
             builder.setPositiveButton(android.R.string.ok, null);
             builder.show();
