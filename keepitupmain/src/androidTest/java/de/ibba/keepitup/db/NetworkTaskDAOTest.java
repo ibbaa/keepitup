@@ -87,7 +87,7 @@ public class NetworkTaskDAOTest {
         NetworkTask readTask1 = readTasks.get(0);
         NetworkTask readTask3 = readTasks.get(1);
         NetworkTask readTask2 = readTasks.get(2);
-        dao.updateNetworkTaskSuccess(readTask2.getId(), true, 987,"TestMessage2");
+        dao.updateNetworkTaskSuccess(readTask2.getId(), true, 987, "TestMessage2");
         dao.updateNetworkTaskNotification(readTask3.getId(), true);
         readTask2 = dao.readNetworkTask(readTask2.getId());
         readTask3 = dao.readNetworkTask(readTask3.getId());
