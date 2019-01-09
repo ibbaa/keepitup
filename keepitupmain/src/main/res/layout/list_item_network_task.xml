@@ -66,6 +66,22 @@
             android:textStyle="normal"
             android:text="@string/text_list_item_network_task_interval" />
 
+        <TextView xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/textview_list_item_network_task_last_exec_timestamp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/textview_list_item_network_task_interval"
+            android:textStyle="normal"
+            android:text="@string/text_list_item_network_task_last_exec_timestamp" />
+
+        <TextView xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/textview_list_item_network_task_last_exec_message"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/textview_list_item_network_task_last_exec_timestamp"
+            android:textStyle="normal"
+            android:text="@string/text_list_item_network_task_last_exec_message" />
+
     </RelativeLayout>
 
 </android.support.v7.widget.CardView>

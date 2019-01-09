@@ -4,4 +4,7 @@
     <string name="string_running">Running</string>
     <string name="string_stopped">Stopped</string>
     <string name="string_minutes">minutes</string>
+    <string name="string_successful">successful</string>
+    <string name="string_not_successful">failed</string>
+    <string name="string_not_executed">not executed</string>
 </resources>

@@ -9,6 +9,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import java.text.DateFormat;
+import java.util.Date;
 import java.util.List;
 
 import de.ibba.keepitup.R;
@@ -43,6 +45,8 @@ public class NetworkTaskAdapter extends RecyclerView.Adapter<NetworkTaskViewHold
         bindAccessType(networkTaskViewHolder, networkTask);
         bindAddress(networkTaskViewHolder, networkTask);
         bindInterval(networkTaskViewHolder, networkTask);
+        bindLastExecTimestamp(networkTaskViewHolder, networkTask);
+        bindLastExecMessage(networkTaskViewHolder, networkTask);
     }
 
     private void bindStatus(@NonNull NetworkTaskViewHolder networkTaskViewHolder, boolean isRunning) {
@@ -71,6 +75,23 @@ public class NetworkTaskAdapter extends RecyclerView.Adapter<NetworkTaskViewHold
         String intervalUnit = getResources().getString(R.string.string_minutes);
         String formattedIntervalText = String.format(getResources().getString(R.string.text_list_item_network_task_interval), networkTask.getInterval(), intervalUnit);
         networkTaskViewHolder.setInterval(formattedIntervalText);
+    }
+
+    private void bindLastExecTimestamp(@NonNull NetworkTaskViewHolder networkTaskViewHolder, NetworkTask networkTask) {
+        String timestampText;
+        if (networkTask.getTimestamp() < 0) {
+            timestampText = getResources().getString(R.string.string_not_executed);
+        } else {
+            timestampText = networkTask.isSuccess() ? getResources().getString(R.string.string_successful) : getResources().getString(R.string.string_not_successful);
+            timestampText += ", " + DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.MEDIUM).format(new Date(networkTask.getTimestamp()));
+        }
+        String formattedLastExecTimestampText = String.format(getResources().getString(R.string.text_list_item_network_task_last_exec_timestamp), timestampText);
+        networkTaskViewHolder.setLastExecTimestamp(formattedLastExecTimestampText);
+    }
+
+    private void bindLastExecMessage(@NonNull NetworkTaskViewHolder networkTaskViewHolder, NetworkTask networkTask) {
+        String formattedMessageText = String.format(getResources().getString(R.string.text_list_item_network_task_last_exec_message), networkTask.getMessage());
+        networkTaskViewHolder.setLastExecMessage(formattedMessageText);
     }
 
     @Override

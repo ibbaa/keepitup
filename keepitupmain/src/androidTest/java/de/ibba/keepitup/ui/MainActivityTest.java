@@ -48,6 +48,8 @@ public class MainActivityTest {
         TextView intervalText1 = viewHolder1.itemView.findViewById(R.id.textview_list_item_network_task_interval);
         Assert.assertTrue(intervalText1.getText().toString().contains("Interval:"));
         Assert.assertTrue(intervalText1.getText().toString().contains("15 minutes"));
+        TextView lastExecTimestampText1 = viewHolder1.itemView.findViewById(R.id.textview_list_item_network_task_last_exec_timestamp);
+        Assert.assertTrue(lastExecTimestampText1.getText().toString().contains("successful"));
         NetworkTaskViewHolder viewHolder2 = (NetworkTaskViewHolder) recyclerView.findViewHolderForAdapterPosition(1);
         Assert.assertNotNull(viewHolder2);
         TextView statusText2 = viewHolder2.itemView.findViewById(R.id.textview_list_item_network_task_status);
@@ -61,5 +63,7 @@ public class MainActivityTest {
         TextView intervalText2 = viewHolder2.itemView.findViewById(R.id.textview_list_item_network_task_interval);
         Assert.assertTrue(intervalText2.getText().toString().contains("Interval:"));
         Assert.assertTrue(intervalText2.getText().toString().contains("30 minutes"));
+        TextView lastExecTimestampText2 = viewHolder2.itemView.findViewById(R.id.textview_list_item_network_task_last_exec_timestamp);
+        Assert.assertTrue(lastExecTimestampText2.getText().toString().contains("not executed"));
     }
 }
