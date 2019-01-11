@@ -5,6 +5,7 @@ import android.support.test.filters.MediumTest;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
 import android.support.v7.widget.RecyclerView;
+import android.view.View;
 import android.widget.TextView;
 
 import org.junit.Assert;
@@ -50,6 +51,9 @@ public class MainActivityTest {
         Assert.assertTrue(intervalText1.getText().toString().contains("15 minutes"));
         TextView lastExecTimestampText1 = viewHolder1.itemView.findViewById(R.id.textview_list_item_network_task_last_exec_timestamp);
         Assert.assertTrue(lastExecTimestampText1.getText().toString().contains("successful"));
+        TextView lastExecMessageText1 = viewHolder1.itemView.findViewById(R.id.textview_list_item_network_task_last_exec_message);
+        Assert.assertEquals(View.VISIBLE, lastExecMessageText1.getVisibility());
+        Assert.assertTrue(lastExecMessageText1.getText().toString().contains("Successful execution"));
         NetworkTaskViewHolder viewHolder2 = (NetworkTaskViewHolder) recyclerView.findViewHolderForAdapterPosition(1);
         Assert.assertNotNull(viewHolder2);
         TextView statusText2 = viewHolder2.itemView.findViewById(R.id.textview_list_item_network_task_status);
@@ -65,5 +69,8 @@ public class MainActivityTest {
         Assert.assertTrue(intervalText2.getText().toString().contains("30 minutes"));
         TextView lastExecTimestampText2 = viewHolder2.itemView.findViewById(R.id.textview_list_item_network_task_last_exec_timestamp);
         Assert.assertTrue(lastExecTimestampText2.getText().toString().contains("not executed"));
+        TextView lastExecMessageText2 = viewHolder2.itemView.findViewById(R.id.textview_list_item_network_task_last_exec_message);
+        Assert.assertEquals(View.GONE, lastExecMessageText2.getVisibility());
+        Assert.assertTrue(lastExecMessageText2.getText().toString().isEmpty());
     }
 }
