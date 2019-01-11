@@ -53,4 +53,12 @@ public class NetworkTaskViewHolder extends RecyclerView.ViewHolder {
     public void setLastExecMessage(String lastExecMessage) {
         lastExecMessageText.setText(lastExecMessage);
     }
+
+    public void showLastExecMessageTextView() {
+        lastExecMessageText.setVisibility(View.VISIBLE);
+    }
+
+    public void hideLastExecMessageTextView() {
+        lastExecMessageText.setVisibility(View.GONE);
+    }
 }

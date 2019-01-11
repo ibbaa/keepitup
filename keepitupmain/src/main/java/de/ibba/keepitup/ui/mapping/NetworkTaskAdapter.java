@@ -79,19 +79,29 @@ public class NetworkTaskAdapter extends RecyclerView.Adapter<NetworkTaskViewHold
 
     private void bindLastExecTimestamp(@NonNull NetworkTaskViewHolder networkTaskViewHolder, NetworkTask networkTask) {
         String timestampText;
-        if (networkTask.getTimestamp() < 0) {
-            timestampText = getResources().getString(R.string.string_not_executed);
-        } else {
+        if (wasExecuted(networkTask)) {
             timestampText = networkTask.isSuccess() ? getResources().getString(R.string.string_successful) : getResources().getString(R.string.string_not_successful);
             timestampText += ", " + DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.MEDIUM).format(new Date(networkTask.getTimestamp()));
+        } else {
+            timestampText = getResources().getString(R.string.string_not_executed);
         }
         String formattedLastExecTimestampText = String.format(getResources().getString(R.string.text_list_item_network_task_last_exec_timestamp), timestampText);
         networkTaskViewHolder.setLastExecTimestamp(formattedLastExecTimestampText);
     }
 
     private void bindLastExecMessage(@NonNull NetworkTaskViewHolder networkTaskViewHolder, NetworkTask networkTask) {
-        String formattedMessageText = String.format(getResources().getString(R.string.text_list_item_network_task_last_exec_message), networkTask.getMessage());
-        networkTaskViewHolder.setLastExecMessage(formattedMessageText);
+        if (wasExecuted(networkTask)) {
+            String formattedMessageText = String.format(getResources().getString(R.string.text_list_item_network_task_last_exec_message), networkTask.getMessage());
+            networkTaskViewHolder.setLastExecMessage(formattedMessageText);
+            networkTaskViewHolder.showLastExecMessageTextView();
+        } else {
+            networkTaskViewHolder.setLastExecMessage("");
+            networkTaskViewHolder.hideLastExecMessageTextView();
+        }
+    }
+
+    private boolean wasExecuted(NetworkTask networkTask) {
+        return networkTask.getTimestamp() > 0;
     }
 
     @Override
