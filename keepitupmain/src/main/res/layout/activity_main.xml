@@ -39,7 +39,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:contentDescription="@string/label_add_network_task"
-            app:srcCompat="@drawable/icon_add" />
+            android:clickable="true"
+            app:srcCompat="@drawable/icon_add_selector" />
 
     </LinearLayout>
 
