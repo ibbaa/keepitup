@@ -7,12 +7,11 @@
     android:layout_height="match_parent"
     tools:context="de.ibba.keepitup.ui.MainActivity">
 
-    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/layout_main_content"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent">
+        android:orientation="vertical">
 
         <Button
             android:id="@+id/button_start"
@@ -29,7 +28,7 @@
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/listview_network_tasks"
-            android:layout_gravity="center_vertical"
+            android:layout_gravity="center_horizontal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/button_stop"
@@ -39,12 +38,9 @@
             android:id="@+id/imageview_add_network_task"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/listview_network_tasks"
-            android:layout_marginLeft="350dp"
-            android:layout_marginRight="10dp"
             android:contentDescription="@string/label_add_network_task"
             app:srcCompat="@drawable/icon_add" />
 
-    </RelativeLayout>
+    </LinearLayout>
 
 </android.support.constraint.ConstraintLayout>
