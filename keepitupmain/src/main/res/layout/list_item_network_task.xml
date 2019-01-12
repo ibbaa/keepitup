@@ -34,8 +34,9 @@
             android:layout_row="0"
             android:layout_column="2"
             android:layout_rowSpan="2"
+            android:clickable="true"
             android:contentDescription="@string/label_delete_network_task"
-            app:srcCompat="@drawable/icon_delete" />
+            app:srcCompat="@drawable/icon_delete_selector" />
 
         <TextView xmlns:android="http://schemas.android.com/apk/res/android"
             android:id="@+id/textview_list_item_network_task_status"
