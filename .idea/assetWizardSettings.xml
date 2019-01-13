@@ -73,20 +73,13 @@
                                   </option>
                                   <option name="values">
                                     <map>
-                                      <entry key="backgroundAssetType" value="COLOR" />
-                                      <entry key="backgroundImage" value="J:\de\matrix-3407252_1920.jpg" />
-                                      <entry key="foregroundAssetType" value="CLIP_ART" />
-                                      <entry key="foregroundImage" value="J:\de\icons8-thick-arrow-pointing-up-96 (1).png" />
+                                      <entry key="backgroundImage" value="H:\git\repos\keepitup\keepitupmain\img\app_icon_background.jpg" />
+                                      <entry key="foregroundImage" value="H:\git\repos\keepitup\keepitupmain\img\app_icon_arrow.png" />
                                     </map>
                                   </option>
                                 </PersistentState>
                               </value>
                             </entry>
-                          </map>
-                        </option>
-                        <option name="values">
-                          <map>
-                            <entry key="outputIconType" value="ACTIONBAR" />
                           </map>
                         </option>
                       </PersistentState>
