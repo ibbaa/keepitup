@@ -15,6 +15,7 @@ public class NetworkTaskViewHolder extends RecyclerView.ViewHolder {
     private final TextView accessTypeText;
     private final TextView addressText;
     private final TextView intervalText;
+    private final TextView notificationText;
     private final TextView lastExecTimestampText;
     private final TextView lastExecMessageText;
 
@@ -25,6 +26,7 @@ public class NetworkTaskViewHolder extends RecyclerView.ViewHolder {
         accessTypeText = itemView.findViewById(R.id.textview_list_item_network_task_access_type);
         addressText = itemView.findViewById(R.id.textview_list_item_network_task_address);
         intervalText = itemView.findViewById(R.id.textview_list_item_network_task_interval);
+        notificationText = itemView.findViewById(R.id.textview_list_item_network_task_notification);
         lastExecTimestampText = itemView.findViewById(R.id.textview_list_item_network_task_last_exec_timestamp);
         lastExecMessageText = itemView.findViewById(R.id.textview_list_item_network_task_last_exec_message);
     }
@@ -44,6 +46,10 @@ public class NetworkTaskViewHolder extends RecyclerView.ViewHolder {
 
     public void setInterval(String interval) {
         intervalText.setText(interval);
+    }
+
+    public void setNotification(String notification) {
+        notificationText.setText(notification);
     }
 
     public void setLastExecTimestamp(String lastExecTimestamp) {

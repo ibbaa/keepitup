@@ -7,4 +7,6 @@
     <string name="string_successful">successful</string>
     <string name="string_not_successful">failed</string>
     <string name="string_not_executed">not executed</string>
+    <string name="string_yes">yes</string>
+    <string name="string_no">no</string>
 </resources>

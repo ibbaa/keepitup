@@ -53,6 +53,7 @@ public class MainActivity extends AppCompatActivity {
         task1.setPort(21);
         task1.setAccessType(AccessType.PING);
         task1.setInterval(15);
+        task1.setNotification(true);
         task1.setTimestamp(System.currentTimeMillis());
         task1.setSuccess(true);
         task1.setMessage("Successful execution");
@@ -62,6 +63,7 @@ public class MainActivity extends AppCompatActivity {
         task2.setPort(21);
         task2.setAccessType(null);
         task2.setInterval(30);
+        task2.setNotification(false);
         taskList.add(task1);
         taskList.add(task2);
         task2.setTimestamp(-1);

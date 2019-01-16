@@ -47,6 +47,7 @@ public class NetworkTaskAdapter extends RecyclerView.Adapter<NetworkTaskViewHold
         bindInterval(networkTaskViewHolder, networkTask);
         bindLastExecTimestamp(networkTaskViewHolder, networkTask);
         bindLastExecMessage(networkTaskViewHolder, networkTask);
+        bindNotification(networkTaskViewHolder, networkTask);
     }
 
     private void bindStatus(@NonNull NetworkTaskViewHolder networkTaskViewHolder, boolean isRunning) {
@@ -75,6 +76,12 @@ public class NetworkTaskAdapter extends RecyclerView.Adapter<NetworkTaskViewHold
         String intervalUnit = getResources().getString(R.string.string_minutes);
         String formattedIntervalText = String.format(getResources().getString(R.string.text_list_item_network_task_interval), networkTask.getInterval(), intervalUnit);
         networkTaskViewHolder.setInterval(formattedIntervalText);
+    }
+
+    private void bindNotification(@NonNull NetworkTaskViewHolder networkTaskViewHolder, NetworkTask networkTask) {
+        String sendNotification = networkTask.isNotification() ? getResources().getString(R.string.string_yes) : getResources().getString(R.string.string_no);
+        String formattedNotificationText = String.format(getResources().getString(R.string.text_list_item_network_task_notification), sendNotification);
+        networkTaskViewHolder.setNotification(formattedNotificationText);
     }
 
     private void bindLastExecTimestamp(@NonNull NetworkTaskViewHolder networkTaskViewHolder, NetworkTask networkTask) {

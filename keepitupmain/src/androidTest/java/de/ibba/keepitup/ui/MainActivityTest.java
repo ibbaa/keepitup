@@ -49,6 +49,9 @@ public class MainActivityTest {
         TextView intervalText1 = viewHolder1.itemView.findViewById(R.id.textview_list_item_network_task_interval);
         Assert.assertTrue(intervalText1.getText().toString().contains("Interval:"));
         Assert.assertTrue(intervalText1.getText().toString().contains("15 minutes"));
+        TextView notificationText1 = viewHolder1.itemView.findViewById(R.id.textview_list_item_network_task_notification);
+        Assert.assertTrue(notificationText1.getText().toString().contains("Notification"));
+        Assert.assertTrue(notificationText1.getText().toString().contains("yes"));
         TextView lastExecTimestampText1 = viewHolder1.itemView.findViewById(R.id.textview_list_item_network_task_last_exec_timestamp);
         Assert.assertTrue(lastExecTimestampText1.getText().toString().contains("successful"));
         TextView lastExecMessageText1 = viewHolder1.itemView.findViewById(R.id.textview_list_item_network_task_last_exec_message);
@@ -67,6 +70,9 @@ public class MainActivityTest {
         TextView intervalText2 = viewHolder2.itemView.findViewById(R.id.textview_list_item_network_task_interval);
         Assert.assertTrue(intervalText2.getText().toString().contains("Interval:"));
         Assert.assertTrue(intervalText2.getText().toString().contains("30 minutes"));
+        TextView notificationText2 = viewHolder2.itemView.findViewById(R.id.textview_list_item_network_task_notification);
+        Assert.assertTrue(notificationText2.getText().toString().contains("Notification"));
+        Assert.assertTrue(notificationText2.getText().toString().contains("no"));
         TextView lastExecTimestampText2 = viewHolder2.itemView.findViewById(R.id.textview_list_item_network_task_last_exec_timestamp);
         Assert.assertTrue(lastExecTimestampText2.getText().toString().contains("not executed"));
         TextView lastExecMessageText2 = viewHolder2.itemView.findViewById(R.id.textview_list_item_network_task_last_exec_message);
