@@ -6,6 +6,7 @@
     <string name="label_start_network_task">Start</string>
     <string name="label_stop_network_task">Stop</string>
     <string name="label_delete_network_task">Delete network task</string>
+    <string name="label_edit_network_task">Edit network task</string>
     <string name="menu_action_settings">Settings</string>
     <string name="text_list_item_network_task_title">Network task</string>
     <string name="text_list_item_network_task_status">Status: %s</string>
