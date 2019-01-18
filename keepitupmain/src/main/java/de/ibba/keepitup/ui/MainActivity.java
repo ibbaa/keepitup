@@ -37,12 +37,13 @@ public class MainActivity extends AppCompatActivity {
 
         RecyclerView recyclerView = findViewById(R.id.listview_network_tasks);
         List<NetworkTask> taskList = prepareTaskList();
-        adapter = new NetworkTaskAdapter(taskList, this);
+        NetworkTaskUIController uiController = new NetworkTaskUIController(taskList, this);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.addItemDecoration(new DividerItemDecoration(this, LinearLayoutManager.VERTICAL));
-        recyclerView.setAdapter(adapter);
+        recyclerView.setAdapter(uiController.getAdapter());
+        adapter = uiController.getAdapter();
     }
 
     private List<NetworkTask> prepareTaskList() {

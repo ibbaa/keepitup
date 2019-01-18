@@ -7,9 +7,12 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import de.ibba.keepitup.R;
+import de.ibba.keepitup.ui.NetworkTaskUIController;
 
 public class NetworkTaskViewHolder extends RecyclerView.ViewHolder {
 
+    private final NetworkTaskUIController uiController;
+    private final ImageView startStopImage;
     private final TextView statusText;
     private final ImageView statusImage;
     private final TextView accessTypeText;
@@ -19,8 +22,11 @@ public class NetworkTaskViewHolder extends RecyclerView.ViewHolder {
     private final TextView lastExecTimestampText;
     private final TextView lastExecMessageText;
 
-    public NetworkTaskViewHolder(@NonNull View itemView) {
+    public NetworkTaskViewHolder(@NonNull View itemView, NetworkTaskUIController uiController) {
         super(itemView);
+        this.uiController = uiController;
+        startStopImage = itemView.findViewById(R.id.imageview_list_item_network_task_start_stop);
+        startStopImage.setOnClickListener(this::onStartStopClicked);
         statusText = itemView.findViewById(R.id.textview_list_item_network_task_status);
         statusImage = itemView.findViewById(R.id.imageview_list_item_network_task_status);
         accessTypeText = itemView.findViewById(R.id.textview_list_item_network_task_access_type);
@@ -31,9 +37,12 @@ public class NetworkTaskViewHolder extends RecyclerView.ViewHolder {
         lastExecMessageText = itemView.findViewById(R.id.textview_list_item_network_task_last_exec_message);
     }
 
-    public void setStatus(String status, int image) {
+    public void setStatus(String status, int statusImageResource, String descriptionStartStopImage, int startStopImageResource) {
         statusText.setText(status);
-        statusImage.setImageResource(image);
+        statusImage.setImageResource(statusImageResource);
+        statusImage.setContentDescription(status);
+        startStopImage.setImageResource(startStopImageResource);
+        startStopImage.setContentDescription(descriptionStartStopImage);
     }
 
     public void setAccessType(String accessType) {
@@ -66,5 +75,9 @@ public class NetworkTaskViewHolder extends RecyclerView.ViewHolder {
 
     public void hideLastExecMessageTextView() {
         lastExecMessageText.setVisibility(View.GONE);
+    }
+
+    private void onStartStopClicked(View view) {
+        uiController.onStartStopClicked(view, getAdapterPosition());
     }
 }
