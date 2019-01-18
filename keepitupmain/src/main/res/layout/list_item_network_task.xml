@@ -36,6 +36,7 @@
             android:layout_column="1"
             android:layout_rowSpan="1"
             android:clickable="true"
+            android:focusable="true"
             android:contentDescription="@string/label_start_network_task"
             app:srcCompat="@drawable/icon_start_selector" />
 
@@ -48,6 +49,7 @@
             android:layout_column="2"
             android:layout_rowSpan="2"
             android:clickable="true"
+            android:focusable="true"
             android:contentDescription="@string/label_delete_network_task"
             app:srcCompat="@drawable/icon_delete_selector" />
 
@@ -91,6 +93,7 @@
             android:layout_column="2"
             android:layout_rowSpan="2"
             android:clickable="true"
+            android:focusable="true"
             android:contentDescription="@string/label_edit_network_task"
             app:srcCompat="@drawable/icon_edit_selector" />
 
