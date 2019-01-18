@@ -38,7 +38,7 @@ public class NetworkTaskUIController {
         NetworkTask networkTask = networkTasks.get(position);
         Log.d(NetworkTaskUIController.class.getName(), "onStartStopClicked for network task " + networkTask);
         NetworkKeepAliveServiceScheduler scheduler = new NetworkKeepAliveServiceScheduler(context);
-        if(scheduler.isRunning(networkTask)) {
+        if (scheduler.isRunning(networkTask)) {
             scheduler.stop(networkTask);
         } else {
             scheduler.start(networkTask);
