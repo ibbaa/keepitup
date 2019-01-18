@@ -78,7 +78,7 @@
             android:layout_height="wrap_content"
             android:layout_row="2"
             android:layout_column="0"
-            android:layout_columnSpan="3"
+            android:layout_columnSpan="2"
             android:textStyle="normal"
             android:text="@string/text_list_item_network_task_access_type" />
 
@@ -100,7 +100,7 @@
             android:layout_height="wrap_content"
             android:layout_row="3"
             android:layout_column="0"
-            android:layout_columnSpan="3"
+            android:layout_columnSpan="2"
             android:textStyle="normal"
             android:text="@string/text_list_item_network_task_address" />
 
