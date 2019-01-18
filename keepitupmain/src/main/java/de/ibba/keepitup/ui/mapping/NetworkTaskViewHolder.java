@@ -12,6 +12,7 @@ import de.ibba.keepitup.ui.NetworkTaskUIController;
 public class NetworkTaskViewHolder extends RecyclerView.ViewHolder {
 
     private final NetworkTaskUIController uiController;
+    private final TextView titleText;
     private final ImageView startStopImage;
     private final TextView statusText;
     private final ImageView statusImage;
@@ -25,6 +26,8 @@ public class NetworkTaskViewHolder extends RecyclerView.ViewHolder {
     public NetworkTaskViewHolder(@NonNull View itemView, NetworkTaskUIController uiController) {
         super(itemView);
         this.uiController = uiController;
+        titleText = itemView.findViewById(R.id.textview_list_item_network_task_title);
+        titleText.setOnClickListener(this::onStartStopClicked);
         startStopImage = itemView.findViewById(R.id.imageview_list_item_network_task_start_stop);
         startStopImage.setOnClickListener(this::onStartStopClicked);
         statusText = itemView.findViewById(R.id.textview_list_item_network_task_status);
