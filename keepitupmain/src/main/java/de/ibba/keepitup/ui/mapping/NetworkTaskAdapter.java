@@ -11,19 +11,19 @@ import android.view.ViewGroup;
 
 import java.text.DateFormat;
 import java.util.Date;
-import java.util.List;
 
 import de.ibba.keepitup.R;
 import de.ibba.keepitup.model.NetworkTask;
 import de.ibba.keepitup.service.NetworkKeepAliveServiceScheduler;
+import de.ibba.keepitup.ui.NetworkTaskUIController;
 
 public class NetworkTaskAdapter extends RecyclerView.Adapter<NetworkTaskViewHolder> {
 
-    private final List<NetworkTask> networkTasks;
+    private final NetworkTaskUIController uiController;
     private final Context context;
 
-    public NetworkTaskAdapter(List<NetworkTask> networkTasks, Context context) {
-        this.networkTasks = networkTasks;
+    public NetworkTaskAdapter(NetworkTaskUIController uiController, Context context) {
+        this.uiController = uiController;
         this.context = context;
     }
 
@@ -32,13 +32,13 @@ public class NetworkTaskAdapter extends RecyclerView.Adapter<NetworkTaskViewHold
     public NetworkTaskViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int viewType) {
         Log.d(NetworkTaskAdapter.class.getName(), "onCreateViewHolder");
         View itemView = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.list_item_network_task, viewGroup, false);
-        return new NetworkTaskViewHolder(itemView);
+        return new NetworkTaskViewHolder(itemView, uiController);
     }
 
     @Override
     public void onBindViewHolder(@NonNull NetworkTaskViewHolder networkTaskViewHolder, int position) {
         Log.d(NetworkTaskAdapter.class.getName(), "onBindViewHolder");
-        NetworkTask networkTask = networkTasks.get(position);
+        NetworkTask networkTask = uiController.getItem(position);
         NetworkKeepAliveServiceScheduler scheduler = new NetworkKeepAliveServiceScheduler(getContext());
         boolean isRunning = scheduler.isRunning(networkTask);
         bindStatus(networkTaskViewHolder, isRunning);
@@ -54,8 +54,10 @@ public class NetworkTaskAdapter extends RecyclerView.Adapter<NetworkTaskViewHold
         String statusRunning = isRunning ? getResources().getString(R.string.string_running) : getResources().getString(R.string.string_stopped);
         String formattedStatusText = String.format(getResources().getString(R.string.text_list_item_network_task_status), statusRunning);
         int statusImage = isRunning ? R.drawable.icon_running : R.drawable.icon_stopped;
+        int startStopImage = isRunning ? R.drawable.icon_stop_selector : R.drawable.icon_start_selector;
+        String descriptionStartStopImage = isRunning ? getResources().getString(R.string.label_stop_network_task) : getResources().getString(R.string.label_start_network_task);
         Log.d(NetworkTaskAdapter.class.getName(), "binding status text " + formattedStatusText);
-        networkTaskViewHolder.setStatus(formattedStatusText, statusImage);
+        networkTaskViewHolder.setStatus(formattedStatusText, statusImage, descriptionStartStopImage, startStopImage);
     }
 
     private void bindAccessType(@NonNull NetworkTaskViewHolder networkTaskViewHolder, NetworkTask networkTask) {
@@ -113,7 +115,7 @@ public class NetworkTaskAdapter extends RecyclerView.Adapter<NetworkTaskViewHold
 
     @Override
     public int getItemCount() {
-        return networkTasks.size();
+        return uiController.getItemCount();
     }
 
     private Context getContext() {
