@@ -10,8 +10,7 @@ import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.Button;
+import android.widget.ImageView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,22 +18,13 @@ import java.util.List;
 import de.ibba.keepitup.R;
 import de.ibba.keepitup.model.AccessType;
 import de.ibba.keepitup.model.NetworkTask;
-import de.ibba.keepitup.service.NetworkKeepAliveServiceScheduler;
-import de.ibba.keepitup.ui.mapping.NetworkTaskAdapter;
 
 public class MainActivity extends AppCompatActivity {
-
-    private NetworkTaskAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Button startButton = findViewById(R.id.button_start);
-        startButton.setOnClickListener(this::onStartClicked);
-        Button stopButton = findViewById(R.id.button_stop);
-        stopButton.setOnClickListener(this::onStopClicked);
-
         RecyclerView recyclerView = findViewById(R.id.listview_network_tasks);
         List<NetworkTask> taskList = prepareTaskList();
         NetworkTaskUIController uiController = new NetworkTaskUIController(taskList, this);
@@ -43,7 +33,8 @@ public class MainActivity extends AppCompatActivity {
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.addItemDecoration(new DividerItemDecoration(this, LinearLayoutManager.VERTICAL));
         recyclerView.setAdapter(uiController.getAdapter());
-        adapter = uiController.getAdapter();
+        ImageView addImage = findViewById(R.id.imageview_network_task_add);
+        addImage.setOnClickListener(uiController::onAddClicked);
     }
 
     private List<NetworkTask> prepareTaskList() {
@@ -94,27 +85,5 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         Log.d(MainActivity.class.getName(), "onActivityResult");
-    }
-
-    @SuppressWarnings("unused")
-    private void onStartClicked(View view) {
-        Log.d(MainActivity.class.getName(), "onStartClicked");
-        NetworkKeepAliveServiceScheduler scheduler = new NetworkKeepAliveServiceScheduler(this);
-        NetworkTask task = new NetworkTask();
-        task.setId(1);
-        task.setInterval(15);
-        scheduler.start(task);
-        adapter.notifyDataSetChanged();
-    }
-
-    @SuppressWarnings("unused")
-    private void onStopClicked(View view) {
-        Log.d(MainActivity.class.getName(), "onStopClicked");
-        NetworkKeepAliveServiceScheduler scheduler = new NetworkKeepAliveServiceScheduler(this);
-        NetworkTask task = new NetworkTask();
-        task.setId(1);
-        task.setInterval(15);
-        scheduler.stop(task);
-        adapter.notifyDataSetChanged();
     }
 }

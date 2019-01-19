@@ -1,6 +1,7 @@
 package de.ibba.keepitup.ui;
 
 import android.content.Context;
+import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 import android.view.View;
 
@@ -14,12 +15,12 @@ public class NetworkTaskUIController {
 
     private final List<NetworkTask> networkTasks;
     private final NetworkTaskAdapter adapter;
-    private final Context context;
+    private final FragmentActivity activity;
 
-    public NetworkTaskUIController(List<NetworkTask> networkTasks, Context context) {
+    public NetworkTaskUIController(List<NetworkTask> networkTasks, FragmentActivity activity) {
         this.networkTasks = networkTasks;
-        this.adapter = new NetworkTaskAdapter(this, context);
-        this.context = context;
+        this.activity = activity;
+        this.adapter = new NetworkTaskAdapter(this, getContext());
     }
 
     public NetworkTaskAdapter getAdapter() {
@@ -34,15 +35,25 @@ public class NetworkTaskUIController {
         return networkTasks.get(position);
     }
 
+    public void onAddClicked(View view) {
+        Log.d(NetworkTaskUIController.class.getName(), "onAddClicked");
+        NetworkTaskEditDialog editDialog = new NetworkTaskEditDialog();
+        editDialog.show(activity.getSupportFragmentManager(), NetworkTaskEditDialog.class.getName());
+    }
+
     public void onStartStopClicked(View view, int position) {
         NetworkTask networkTask = networkTasks.get(position);
         Log.d(NetworkTaskUIController.class.getName(), "onStartStopClicked for network task " + networkTask);
-        NetworkKeepAliveServiceScheduler scheduler = new NetworkKeepAliveServiceScheduler(context);
+        NetworkKeepAliveServiceScheduler scheduler = new NetworkKeepAliveServiceScheduler(getContext());
         if (scheduler.isRunning(networkTask)) {
             scheduler.stop(networkTask);
         } else {
             scheduler.start(networkTask);
         }
         adapter.notifyItemChanged(position);
+    }
+
+    private Context getContext() {
+        return activity;
     }
 }
