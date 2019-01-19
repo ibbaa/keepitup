@@ -53,11 +53,10 @@ public class NetworkTaskAdapter extends RecyclerView.Adapter<NetworkTaskViewHold
     private void bindStatus(@NonNull NetworkTaskViewHolder networkTaskViewHolder, boolean isRunning) {
         String statusRunning = isRunning ? getResources().getString(R.string.string_running) : getResources().getString(R.string.string_stopped);
         String formattedStatusText = String.format(getResources().getString(R.string.text_list_item_network_task_status), statusRunning);
-        int statusImage = isRunning ? R.drawable.icon_running : R.drawable.icon_stopped;
         int startStopImage = isRunning ? R.drawable.icon_stop_selector : R.drawable.icon_start_selector;
         String descriptionStartStopImage = isRunning ? getResources().getString(R.string.label_stop_network_task) : getResources().getString(R.string.label_start_network_task);
         Log.d(NetworkTaskAdapter.class.getName(), "binding status text " + formattedStatusText);
-        networkTaskViewHolder.setStatus(formattedStatusText, statusImage, descriptionStartStopImage, startStopImage);
+        networkTaskViewHolder.setStatus(formattedStatusText, descriptionStartStopImage, startStopImage);
     }
 
     private void bindAccessType(@NonNull NetworkTaskViewHolder networkTaskViewHolder, NetworkTask networkTask) {

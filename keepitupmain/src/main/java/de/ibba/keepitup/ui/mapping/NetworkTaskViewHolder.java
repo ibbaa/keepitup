@@ -12,10 +12,8 @@ import de.ibba.keepitup.ui.NetworkTaskUIController;
 public class NetworkTaskViewHolder extends RecyclerView.ViewHolder {
 
     private final NetworkTaskUIController uiController;
-    private final TextView titleText;
     private final ImageView startStopImage;
     private final TextView statusText;
-    private final ImageView statusImage;
     private final TextView accessTypeText;
     private final TextView addressText;
     private final TextView intervalText;
@@ -26,12 +24,10 @@ public class NetworkTaskViewHolder extends RecyclerView.ViewHolder {
     public NetworkTaskViewHolder(@NonNull View itemView, NetworkTaskUIController uiController) {
         super(itemView);
         this.uiController = uiController;
-        titleText = itemView.findViewById(R.id.textview_list_item_network_task_title);
-        titleText.setOnClickListener(this::onStartStopClicked);
+        itemView.setOnClickListener(this::onStartStopClicked);
         startStopImage = itemView.findViewById(R.id.imageview_list_item_network_task_start_stop);
         startStopImage.setOnClickListener(this::onStartStopClicked);
         statusText = itemView.findViewById(R.id.textview_list_item_network_task_status);
-        statusImage = itemView.findViewById(R.id.imageview_list_item_network_task_status);
         accessTypeText = itemView.findViewById(R.id.textview_list_item_network_task_access_type);
         addressText = itemView.findViewById(R.id.textview_list_item_network_task_address);
         intervalText = itemView.findViewById(R.id.textview_list_item_network_task_interval);
@@ -40,10 +36,8 @@ public class NetworkTaskViewHolder extends RecyclerView.ViewHolder {
         lastExecMessageText = itemView.findViewById(R.id.textview_list_item_network_task_last_exec_message);
     }
 
-    public void setStatus(String status, int statusImageResource, String descriptionStartStopImage, int startStopImageResource) {
+    public void setStatus(String status, String descriptionStartStopImage, int startStopImageResource) {
         statusText.setText(status);
-        statusImage.setImageResource(statusImageResource);
-        statusImage.setContentDescription(status);
         startStopImage.setImageResource(startStopImageResource);
         startStopImage.setContentDescription(descriptionStartStopImage);
     }
