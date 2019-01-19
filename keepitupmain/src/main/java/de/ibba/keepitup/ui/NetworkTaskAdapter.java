@@ -1,4 +1,4 @@
-package de.ibba.keepitup.ui.mapping;
+package de.ibba.keepitup.ui;
 
 import android.content.Context;
 import android.content.res.Resources;
@@ -15,7 +15,7 @@ import java.util.Date;
 import de.ibba.keepitup.R;
 import de.ibba.keepitup.model.NetworkTask;
 import de.ibba.keepitup.service.NetworkKeepAliveServiceScheduler;
-import de.ibba.keepitup.ui.NetworkTaskUIController;
+import de.ibba.keepitup.ui.mapping.EnumMapping;
 
 public class NetworkTaskAdapter extends RecyclerView.Adapter<NetworkTaskViewHolder> {
 
