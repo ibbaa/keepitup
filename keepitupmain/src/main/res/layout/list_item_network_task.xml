@@ -23,22 +23,10 @@
             android:textStyle="bold"
             android:layout_row="0"
             android:layout_column="0"
+            android:layout_columnSpan="2"
             android:clickable="true"
             android:focusable="true"
             android:text="@string/text_list_item_network_task_title" />
-
-        <ImageView
-            android:id="@+id/imageview_list_item_network_task_start_stop"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/list_item_network_task_start_stop_margin_top"
-            android:layout_marginLeft="@dimen/list_item_network_task_start_stop_margin_left"
-            android:layout_row="0"
-            android:layout_column="1"
-            android:clickable="true"
-            android:focusable="true"
-            android:contentDescription="@string/label_start_network_task"
-            app:srcCompat="@drawable/icon_start_selector" />
 
         <ImageView
             android:id="@+id/imageview_list_item_network_task_delete"
@@ -63,16 +51,17 @@
             android:text="@string/text_list_item_network_task_status" />
 
         <ImageView
-            android:id="@+id/imageview_list_item_network_task_status"
+            android:id="@+id/imageview_list_item_network_task_start_stop"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/list_item_network_task_status_margin_top"
-            android:layout_marginLeft="@dimen/list_item_network_task_status_margin_left"
-            android:gravity="left"
+            android:layout_marginTop="@dimen/list_item_network_task_start_stop_margin_top"
+            android:layout_marginLeft="@dimen/list_item_network_task_start_stop_margin_left"
             android:layout_row="1"
             android:layout_column="1"
-            android:contentDescription="@string/string_stopped"
-            app:srcCompat="@drawable/icon_stopped" />
+            android:clickable="true"
+            android:focusable="true"
+            android:contentDescription="@string/label_start_network_task"
+            app:srcCompat="@drawable/icon_start_selector" />
 
         <TextView xmlns:android="http://schemas.android.com/apk/res/android"
             android:id="@+id/textview_list_item_network_task_access_type"
