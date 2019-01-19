@@ -9,7 +9,6 @@ import java.util.List;
 
 import de.ibba.keepitup.model.NetworkTask;
 import de.ibba.keepitup.service.NetworkKeepAliveServiceScheduler;
-import de.ibba.keepitup.ui.mapping.NetworkTaskAdapter;
 
 public class NetworkTaskUIController {
 
