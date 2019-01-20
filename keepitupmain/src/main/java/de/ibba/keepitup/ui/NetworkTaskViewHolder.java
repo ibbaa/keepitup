@@ -10,7 +10,7 @@ import de.ibba.keepitup.R;
 
 public class NetworkTaskViewHolder extends RecyclerView.ViewHolder {
 
-    private MainActivity mainActivity;
+    private final MainActivity mainActivity;
     private final ImageView startStopImage;
     private final TextView statusText;
     private final TextView accessTypeText;
@@ -74,6 +74,6 @@ public class NetworkTaskViewHolder extends RecyclerView.ViewHolder {
     }
 
     private void onStartStopClicked(View view) {
-        mainActivity.onMainStartStopClicked(view, getAdapterPosition());
+        mainActivity.onMainStartStopClicked(getAdapterPosition());
     }
 }
