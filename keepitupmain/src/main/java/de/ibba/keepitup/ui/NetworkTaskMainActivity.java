@@ -21,12 +21,12 @@ import de.ibba.keepitup.model.AccessType;
 import de.ibba.keepitup.model.NetworkTask;
 import de.ibba.keepitup.service.NetworkKeepAliveServiceScheduler;
 
-public class MainActivity extends AppCompatActivity {
+public class NetworkTaskMainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_main_network_task);
         RecyclerView recyclerView = findViewById(R.id.listview_main_activity_network_tasks);
         List<NetworkTask> taskList = prepareTaskList();
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
@@ -75,7 +75,7 @@ public class MainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         if (id == R.id.menu_action_settings) {
-            Log.d(MainActivity.class.getName(), "menu_action_settings triggered");
+            Log.d(NetworkTaskMainActivity.class.getName(), "menu_action_settings triggered");
             Intent intent = new Intent(this, SettingsActivity.class);
             startActivityForResult(intent, SettingsActivity.SETTING_ACTIVITY_CODE);
             return true;
@@ -85,19 +85,19 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        Log.d(MainActivity.class.getName(), "onActivityResult");
+        Log.d(NetworkTaskMainActivity.class.getName(), "onActivityResult");
     }
 
     private void onMainAddClicked(View view) {
-        Log.d(MainActivity.class.getName(), "onMainAddClicked");
+        Log.d(NetworkTaskMainActivity.class.getName(), "onMainAddClicked");
         NetworkTaskEditDialog editDialog = new NetworkTaskEditDialog();
-        Log.d(MainActivity.class.getName(), "opening NetworkTaskEditDialog");
+        Log.d(NetworkTaskMainActivity.class.getName(), "opening NetworkTaskEditDialog");
         editDialog.show(getSupportFragmentManager(), NetworkTaskEditDialog.class.getName());
     }
 
     public void onMainStartStopClicked(int position) {
         NetworkTask networkTask = getApdapter().getItem(position);
-        Log.d(MainActivity.class.getName(), "onMainStartStopClicked for network task " + networkTask);
+        Log.d(NetworkTaskMainActivity.class.getName(), "onMainStartStopClicked for network task " + networkTask);
         NetworkKeepAliveServiceScheduler scheduler = new NetworkKeepAliveServiceScheduler(this);
         if (scheduler.isRunning(networkTask)) {
             scheduler.stop(networkTask);
@@ -108,12 +108,12 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void onEditDialogOkClicked(NetworkTaskEditDialog editDialog) {
-        Log.d(MainActivity.class.getName(), "onEditDialogOkClicked");
+        Log.d(NetworkTaskMainActivity.class.getName(), "onEditDialogOkClicked");
         editDialog.dismiss();
     }
 
     public void onEditDialogCancelClicked(NetworkTaskEditDialog editDialog) {
-        Log.d(MainActivity.class.getName(), "onEditDialogCancelClicked");
+        Log.d(NetworkTaskMainActivity.class.getName(), "onEditDialogCancelClicked");
         editDialog.dismiss();
     }
 

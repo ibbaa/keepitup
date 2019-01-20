@@ -10,7 +10,7 @@ import de.ibba.keepitup.R;
 
 public class NetworkTaskViewHolder extends RecyclerView.ViewHolder {
 
-    private final MainActivity mainActivity;
+    private final NetworkTaskMainActivity mainActivity;
     private final ImageView startStopImage;
     private final TextView statusText;
     private final TextView accessTypeText;
@@ -20,7 +20,7 @@ public class NetworkTaskViewHolder extends RecyclerView.ViewHolder {
     private final TextView lastExecTimestampText;
     private final TextView lastExecMessageText;
 
-    public NetworkTaskViewHolder(@NonNull View itemView, MainActivity mainActivity) {
+    public NetworkTaskViewHolder(@NonNull View itemView, NetworkTaskMainActivity mainActivity) {
         super(itemView);
         this.mainActivity = mainActivity;
         itemView.setOnClickListener(this::onStartStopClicked);

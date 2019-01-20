@@ -31,13 +31,13 @@ public class NetworkTaskEditDialog extends DialogFragment {
 
     private void onOkClicked(View view) {
         Log.d(NetworkTaskEditDialog.class.getName(), "onOkClicked");
-        MainActivity activity = (MainActivity) getActivity();
+        NetworkTaskMainActivity activity = (NetworkTaskMainActivity) getActivity();
         activity.onEditDialogOkClicked(this);
     }
 
     private void onCancelClicked(View view) {
         Log.d(NetworkTaskEditDialog.class.getName(), "onCancelClicked");
-        MainActivity activity = (MainActivity) getActivity();
+        NetworkTaskMainActivity activity = (NetworkTaskMainActivity) getActivity();
         activity.onEditDialogCancelClicked(this);
     }
 }

@@ -18,17 +18,17 @@ import de.ibba.keepitup.R;
 
 @MediumTest
 @RunWith(AndroidJUnit4.class)
-public class MainActivityTest {
+public class NetworkTaskMainActivityTest {
 
     @Rule
-    public final ActivityTestRule<MainActivity> rule = new ActivityTestRule<>(MainActivity.class);
+    public final ActivityTestRule<NetworkTaskMainActivity> rule = new ActivityTestRule<>(NetworkTaskMainActivity.class);
 
     private RecyclerView recyclerView;
 
     @Before
     @UiThreadTest
     public void beforeEachTestMethod() {
-        MainActivity activity = rule.getActivity();
+        NetworkTaskMainActivity activity = rule.getActivity();
         recyclerView = activity.findViewById(R.id.listview_main_activity_network_tasks);
     }
 
