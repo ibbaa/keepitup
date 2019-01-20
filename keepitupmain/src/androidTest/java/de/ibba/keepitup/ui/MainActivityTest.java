@@ -29,7 +29,7 @@ public class MainActivityTest {
     @UiThreadTest
     public void beforeEachTestMethod() {
         MainActivity activity = rule.getActivity();
-        recyclerView = activity.findViewById(R.id.listview_network_tasks);
+        recyclerView = activity.findViewById(R.id.listview_main_activity_network_tasks);
     }
 
     @Test
@@ -40,7 +40,7 @@ public class MainActivityTest {
         TextView statusText1 = viewHolder1.itemView.findViewById(R.id.textview_list_item_network_task_status);
         Assert.assertTrue(statusText1.getText().toString().contains("Status"));
         Assert.assertTrue(statusText1.getText().toString().contains("Stopped"));
-        TextView accessTypeText1 = viewHolder1.itemView.findViewById(R.id.textview_list_item_network_task_access_type);
+        TextView accessTypeText1 = viewHolder1.itemView.findViewById(R.id.textview_list_item_network_task_accesstype);
         Assert.assertTrue(accessTypeText1.getText().toString().contains("Ping"));
         TextView addressText1 = viewHolder1.itemView.findViewById(R.id.textview_list_item_network_task_address);
         Assert.assertTrue(addressText1.getText().toString().contains("Host: Address1"));
@@ -61,7 +61,7 @@ public class MainActivityTest {
         TextView statusText2 = viewHolder2.itemView.findViewById(R.id.textview_list_item_network_task_status);
         Assert.assertTrue(statusText2.getText().toString().contains("Status"));
         Assert.assertTrue(statusText2.getText().toString().contains("Stopped"));
-        TextView accessTypeText2 = viewHolder2.itemView.findViewById(R.id.textview_list_item_network_task_access_type);
+        TextView accessTypeText2 = viewHolder2.itemView.findViewById(R.id.textview_list_item_network_task_accesstype);
         Assert.assertTrue(accessTypeText2.getText().toString().contains("No type"));
         TextView addressText2 = viewHolder2.itemView.findViewById(R.id.textview_list_item_network_task_address);
         Assert.assertTrue(addressText2.getText().toString().contains("Host: not applicable"));

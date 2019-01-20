@@ -10,7 +10,7 @@ import de.ibba.keepitup.R;
 
 public class NetworkTaskViewHolder extends RecyclerView.ViewHolder {
 
-    private final NetworkTaskUIController uiController;
+    private MainActivity mainActivity;
     private final ImageView startStopImage;
     private final TextView statusText;
     private final TextView accessTypeText;
@@ -20,14 +20,14 @@ public class NetworkTaskViewHolder extends RecyclerView.ViewHolder {
     private final TextView lastExecTimestampText;
     private final TextView lastExecMessageText;
 
-    public NetworkTaskViewHolder(@NonNull View itemView, NetworkTaskUIController uiController) {
+    public NetworkTaskViewHolder(@NonNull View itemView, MainActivity mainActivity) {
         super(itemView);
-        this.uiController = uiController;
+        this.mainActivity = mainActivity;
         itemView.setOnClickListener(this::onStartStopClicked);
         startStopImage = itemView.findViewById(R.id.imageview_list_item_network_task_start_stop);
         startStopImage.setOnClickListener(this::onStartStopClicked);
         statusText = itemView.findViewById(R.id.textview_list_item_network_task_status);
-        accessTypeText = itemView.findViewById(R.id.textview_list_item_network_task_access_type);
+        accessTypeText = itemView.findViewById(R.id.textview_list_item_network_task_accesstype);
         addressText = itemView.findViewById(R.id.textview_list_item_network_task_address);
         intervalText = itemView.findViewById(R.id.textview_list_item_network_task_interval);
         notificationText = itemView.findViewById(R.id.textview_list_item_network_task_notification);
@@ -74,6 +74,6 @@ public class NetworkTaskViewHolder extends RecyclerView.ViewHolder {
     }
 
     private void onStartStopClicked(View view) {
-        uiController.onStartStopClicked(view, getAdapterPosition());
+        mainActivity.onMainStartStopClicked(view, getAdapterPosition());
     }
 }
