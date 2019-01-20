@@ -3,6 +3,7 @@ package de.ibba.keepitup.ui;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,15 +23,21 @@ public class NetworkTaskEditDialog extends DialogFragment {
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.dialog_edit_network_task, container);
         ImageView okImage = view.findViewById(R.id.imageview_dialog_edit_network_task_ok);
-        ImageView cancelImage = view.findViewById(R.id.imageview_dialog_edit_network_task_ok);
+        ImageView cancelImage = view.findViewById(R.id.imageview_dialog_edit_network_task_cancel);
+        okImage.setOnClickListener(this::onOkClicked);
+        cancelImage.setOnClickListener(this::onCancelClicked);
         return view;
     }
 
     private void onOkClicked(View view) {
-
+        Log.d(NetworkTaskEditDialog.class.getName(), "onOkClicked");
+        MainActivity activity = (MainActivity) getActivity();
+        activity.onEditDialogOkClicked(this);
     }
 
     private void onCancelClicked(View view) {
-
+        Log.d(NetworkTaskEditDialog.class.getName(), "onCancelClicked");
+        MainActivity activity = (MainActivity) getActivity();
+        activity.onEditDialogCancelClicked(this);
     }
 }

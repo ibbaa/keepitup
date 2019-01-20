@@ -21,7 +21,7 @@ import de.ibba.keepitup.ui.mapping.EnumMapping;
 public class NetworkTaskAdapter extends RecyclerView.Adapter<NetworkTaskViewHolder> {
 
     private final List<NetworkTask> networkTasks;
-    private MainActivity mainActivity;
+    private final MainActivity mainActivity;
 
     public NetworkTaskAdapter(List<NetworkTask> networkTasks, MainActivity mainActivity) {
         this.networkTasks = networkTasks;

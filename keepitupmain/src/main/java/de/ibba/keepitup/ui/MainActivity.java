@@ -88,13 +88,14 @@ public class MainActivity extends AppCompatActivity {
         Log.d(MainActivity.class.getName(), "onActivityResult");
     }
 
-    public void onMainAddClicked(View view) {
+    private void onMainAddClicked(View view) {
         Log.d(MainActivity.class.getName(), "onMainAddClicked");
         NetworkTaskEditDialog editDialog = new NetworkTaskEditDialog();
+        Log.d(MainActivity.class.getName(), "opening NetworkTaskEditDialog");
         editDialog.show(getSupportFragmentManager(), NetworkTaskEditDialog.class.getName());
     }
 
-    public void onMainStartStopClicked(View view, int position) {
+    public void onMainStartStopClicked(int position) {
         NetworkTask networkTask = getApdapter().getItem(position);
         Log.d(MainActivity.class.getName(), "onMainStartStopClicked for network task " + networkTask);
         NetworkKeepAliveServiceScheduler scheduler = new NetworkKeepAliveServiceScheduler(this);
@@ -106,8 +107,18 @@ public class MainActivity extends AppCompatActivity {
         getApdapter().notifyItemChanged(position);
     }
 
+    public void onEditDialogOkClicked(NetworkTaskEditDialog editDialog) {
+        Log.d(MainActivity.class.getName(), "onEditDialogOkClicked");
+        editDialog.dismiss();
+    }
+
+    public void onEditDialogCancelClicked(NetworkTaskEditDialog editDialog) {
+        Log.d(MainActivity.class.getName(), "onEditDialogCancelClicked");
+        editDialog.dismiss();
+    }
+
     private NetworkTaskAdapter getApdapter() {
         RecyclerView recyclerView = findViewById(R.id.listview_main_activity_network_tasks);
-        return (NetworkTaskAdapter)recyclerView.getAdapter();
+        return (NetworkTaskAdapter) recyclerView.getAdapter();
     }
 }
