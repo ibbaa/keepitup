@@ -1,17 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<GridLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/dialog_edit_network_task"
-    android:layout_width="wrap_content"
+    android:id="@+id/layout_dialog_edit_network_task"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_gravity="center"
-    android:orientation="vertical">
+    android:columnCount="2">
 
-    <TextView
-        android:id="@+id/dialog_test"
-        android:text="Dialog Test"
+    <TextView xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/textview_dialog_edit_network_task_access_type"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:textStyle="bold"
+        android:layout_row="0"
+        android:layout_column="0"
+        android:layout_marginTop="@dimen/dialog_edit_network_task_access_type_margin_top"
+        android:text="@string/label_dialog_edit_network_task_access_type" />
+
+    <RadioGroup
+        android:id="@+id/radiogroup_dialog_edit_network_task_accesstype"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_row="0"
+        android:layout_column="1" >
+
+        <RadioButton
+            android:id="@+id/radiobutton_dialog_edit_network_task_access_type"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Test"
+            android:checked="true" />
+
+    </RadioGroup>
 
     <ImageView
         android:id="@+id/imageview_dialog_edit_network_task_ok"
@@ -20,6 +39,20 @@
         android:clickable="true"
         android:focusable="true"
         android:contentDescription="@string/label_dialog_edit_network_task_ok"
+        android:layout_row="1"
+        android:layout_column="0"
         app:srcCompat="@drawable/icon_ok_selector" />
 
-</LinearLayout>
+    <ImageView
+        android:id="@+id/imageview_dialog_edit_network_task_cancel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="right"
+        android:clickable="true"
+        android:focusable="true"
+        android:contentDescription="@string/label_dialog_edit_network_task_cancel"
+        android:layout_row="1"
+        android:layout_column="1"
+        app:srcCompat="@drawable/icon_cancel_selector" />
+
+</GridLayout>

@@ -2,4 +2,5 @@
 <resources>
     <string name="label_dialog_edit_network_task_ok">Ok</string>
     <string name="label_dialog_edit_network_task_cancel">Cancel</string>
+    <string name="label_dialog_edit_network_task_access_type">Type:</string>
 </resources>

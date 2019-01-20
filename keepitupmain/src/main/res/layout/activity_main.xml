@@ -2,7 +2,7 @@
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/layout_main"
+    android:id="@+id/layout_main_activity"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="de.ibba.keepitup.ui.MainActivity">
@@ -15,14 +15,14 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <android.support.v7.widget.RecyclerView
-            android:id="@+id/listview_network_tasks"
+            android:id="@+id/listview_main_activity_network_tasks"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:scrollbars="vertical" />
 
         <ImageView
-            android:id="@+id/imageview_network_task_add"
+            android:id="@+id/imageview_main_activity_network_task_add"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:clickable="true"

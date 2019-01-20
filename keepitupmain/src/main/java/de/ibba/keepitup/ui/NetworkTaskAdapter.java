@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 
 import java.text.DateFormat;
 import java.util.Date;
+import java.util.List;
 
 import de.ibba.keepitup.R;
 import de.ibba.keepitup.model.NetworkTask;
@@ -19,12 +20,12 @@ import de.ibba.keepitup.ui.mapping.EnumMapping;
 
 public class NetworkTaskAdapter extends RecyclerView.Adapter<NetworkTaskViewHolder> {
 
-    private final NetworkTaskUIController uiController;
-    private final Context context;
+    private final List<NetworkTask> networkTasks;
+    private MainActivity mainActivity;
 
-    public NetworkTaskAdapter(NetworkTaskUIController uiController, Context context) {
-        this.uiController = uiController;
-        this.context = context;
+    public NetworkTaskAdapter(List<NetworkTask> networkTasks, MainActivity mainActivity) {
+        this.networkTasks = networkTasks;
+        this.mainActivity = mainActivity;
     }
 
     @NonNull
@@ -32,13 +33,13 @@ public class NetworkTaskAdapter extends RecyclerView.Adapter<NetworkTaskViewHold
     public NetworkTaskViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int viewType) {
         Log.d(NetworkTaskAdapter.class.getName(), "onCreateViewHolder");
         View itemView = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.list_item_network_task, viewGroup, false);
-        return new NetworkTaskViewHolder(itemView, uiController);
+        return new NetworkTaskViewHolder(itemView, mainActivity);
     }
 
     @Override
     public void onBindViewHolder(@NonNull NetworkTaskViewHolder networkTaskViewHolder, int position) {
         Log.d(NetworkTaskAdapter.class.getName(), "onBindViewHolder");
-        NetworkTask networkTask = uiController.getItem(position);
+        NetworkTask networkTask = networkTasks.get(position);
         NetworkKeepAliveServiceScheduler scheduler = new NetworkKeepAliveServiceScheduler(getContext());
         boolean isRunning = scheduler.isRunning(networkTask);
         bindStatus(networkTaskViewHolder, isRunning);
@@ -114,11 +115,15 @@ public class NetworkTaskAdapter extends RecyclerView.Adapter<NetworkTaskViewHold
 
     @Override
     public int getItemCount() {
-        return uiController.getItemCount();
+        return networkTasks.size();
+    }
+
+    public NetworkTask getItem(int position) {
+        return networkTasks.get(position);
     }
 
     private Context getContext() {
-        return context;
+        return mainActivity;
     }
 
     private Resources getResources() {

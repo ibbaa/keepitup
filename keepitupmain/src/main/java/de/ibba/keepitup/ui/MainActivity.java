@@ -10,6 +10,7 @@ import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.ImageView;
 
 import java.util.ArrayList;
@@ -18,6 +19,7 @@ import java.util.List;
 import de.ibba.keepitup.R;
 import de.ibba.keepitup.model.AccessType;
 import de.ibba.keepitup.model.NetworkTask;
+import de.ibba.keepitup.service.NetworkKeepAliveServiceScheduler;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -25,16 +27,15 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        RecyclerView recyclerView = findViewById(R.id.listview_network_tasks);
+        RecyclerView recyclerView = findViewById(R.id.listview_main_activity_network_tasks);
         List<NetworkTask> taskList = prepareTaskList();
-        NetworkTaskUIController uiController = new NetworkTaskUIController(taskList, this);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.addItemDecoration(new DividerItemDecoration(this, LinearLayoutManager.VERTICAL));
-        recyclerView.setAdapter(uiController.getAdapter());
-        ImageView addImage = findViewById(R.id.imageview_network_task_add);
-        addImage.setOnClickListener(uiController::onAddClicked);
+        recyclerView.setAdapter(new NetworkTaskAdapter(prepareTaskList(), this));
+        ImageView addImage = findViewById(R.id.imageview_main_activity_network_task_add);
+        addImage.setOnClickListener(this::onMainAddClicked);
     }
 
     private List<NetworkTask> prepareTaskList() {
@@ -85,5 +86,28 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         Log.d(MainActivity.class.getName(), "onActivityResult");
+    }
+
+    public void onMainAddClicked(View view) {
+        Log.d(MainActivity.class.getName(), "onMainAddClicked");
+        NetworkTaskEditDialog editDialog = new NetworkTaskEditDialog();
+        editDialog.show(getSupportFragmentManager(), NetworkTaskEditDialog.class.getName());
+    }
+
+    public void onMainStartStopClicked(View view, int position) {
+        NetworkTask networkTask = getApdapter().getItem(position);
+        Log.d(MainActivity.class.getName(), "onMainStartStopClicked for network task " + networkTask);
+        NetworkKeepAliveServiceScheduler scheduler = new NetworkKeepAliveServiceScheduler(this);
+        if (scheduler.isRunning(networkTask)) {
+            scheduler.stop(networkTask);
+        } else {
+            scheduler.start(networkTask);
+        }
+        getApdapter().notifyItemChanged(position);
+    }
+
+    private NetworkTaskAdapter getApdapter() {
+        RecyclerView recyclerView = findViewById(R.id.listview_main_activity_network_tasks);
+        return (NetworkTaskAdapter)recyclerView.getAdapter();
     }
 }
