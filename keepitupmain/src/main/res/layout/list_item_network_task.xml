@@ -10,7 +10,7 @@
     app:cardElevation="@dimen/list_item_network_task_card_elevation">
 
     <GridLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        android:id="@+id/layout_list_item_network_task"
+        android:id="@+id/gridlayout_list_item_network_task"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/list_item_network_task_margin"
