@@ -39,16 +39,21 @@ public class NetworkTaskAdapter extends RecyclerView.Adapter<NetworkTaskViewHold
     @Override
     public void onBindViewHolder(@NonNull NetworkTaskViewHolder networkTaskViewHolder, int position) {
         Log.d(NetworkTaskAdapter.class.getName(), "onBindViewHolder");
-        NetworkTask networkTask = networkTasks.get(position);
-        NetworkKeepAliveServiceScheduler scheduler = new NetworkKeepAliveServiceScheduler(getContext());
-        boolean isRunning = scheduler.isRunning(networkTask);
-        bindStatus(networkTaskViewHolder, isRunning);
-        bindAccessType(networkTaskViewHolder, networkTask);
-        bindAddress(networkTaskViewHolder, networkTask);
-        bindInterval(networkTaskViewHolder, networkTask);
-        bindLastExecTimestamp(networkTaskViewHolder, networkTask);
-        bindLastExecMessage(networkTaskViewHolder, networkTask);
-        bindNotification(networkTaskViewHolder, networkTask);
+        if (position < networkTasks.size()) {
+            NetworkTask networkTask = networkTasks.get(position);
+            NetworkKeepAliveServiceScheduler scheduler = new NetworkKeepAliveServiceScheduler(getContext());
+            boolean isRunning = scheduler.isRunning(networkTask);
+            bindStatus(networkTaskViewHolder, isRunning);
+            bindAccessType(networkTaskViewHolder, networkTask);
+            bindAddress(networkTaskViewHolder, networkTask);
+            bindInterval(networkTaskViewHolder, networkTask);
+            bindLastExecTimestamp(networkTaskViewHolder, networkTask);
+            bindLastExecMessage(networkTaskViewHolder, networkTask);
+            bindNotification(networkTaskViewHolder, networkTask);
+            networkTaskViewHolder.showMainNetworkTaskCard();
+        } else {
+            networkTaskViewHolder.showAddNetworkTaskImage();
+        }
     }
 
     private void bindStatus(@NonNull NetworkTaskViewHolder networkTaskViewHolder, boolean isRunning) {
@@ -115,7 +120,7 @@ public class NetworkTaskAdapter extends RecyclerView.Adapter<NetworkTaskViewHold
 
     @Override
     public int getItemCount() {
-        return networkTasks.size();
+        return networkTasks.size() + 1;
     }
 
     public NetworkTask getItem(int position) {

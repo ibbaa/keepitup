@@ -9,6 +9,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
+import java.util.Objects;
+
 import de.ibba.keepitup.R;
 
 public class NetworkTaskEditDialog extends DialogFragment {
@@ -32,12 +34,12 @@ public class NetworkTaskEditDialog extends DialogFragment {
     private void onOkClicked(View view) {
         Log.d(NetworkTaskEditDialog.class.getName(), "onOkClicked");
         NetworkTaskMainActivity activity = (NetworkTaskMainActivity) getActivity();
-        activity.onEditDialogOkClicked(this);
+        Objects.requireNonNull(activity).onEditDialogOkClicked(this);
     }
 
     private void onCancelClicked(View view) {
         Log.d(NetworkTaskEditDialog.class.getName(), "onCancelClicked");
         NetworkTaskMainActivity activity = (NetworkTaskMainActivity) getActivity();
-        activity.onEditDialogCancelClicked(this);
+        Objects.requireNonNull(activity).onEditDialogCancelClicked(this);
     }
 }

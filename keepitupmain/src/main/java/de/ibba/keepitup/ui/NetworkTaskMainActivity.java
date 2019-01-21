@@ -11,7 +11,6 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ImageView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,8 +33,6 @@ public class NetworkTaskMainActivity extends AppCompatActivity {
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.addItemDecoration(new DividerItemDecoration(this, LinearLayoutManager.VERTICAL));
         recyclerView.setAdapter(new NetworkTaskAdapter(prepareTaskList(), this));
-        ImageView addImage = findViewById(R.id.imageview_main_activity_network_task_add);
-        addImage.setOnClickListener(this::onMainAddClicked);
     }
 
     private List<NetworkTask> prepareTaskList() {
@@ -88,7 +85,7 @@ public class NetworkTaskMainActivity extends AppCompatActivity {
         Log.d(NetworkTaskMainActivity.class.getName(), "onActivityResult");
     }
 
-    private void onMainAddClicked(View view) {
+    public void onMainAddClicked(View view) {
         Log.d(NetworkTaskMainActivity.class.getName(), "onMainAddClicked");
         NetworkTaskEditDialog editDialog = new NetworkTaskEditDialog();
         Log.d(NetworkTaskMainActivity.class.getName(), "opening NetworkTaskEditDialog");
