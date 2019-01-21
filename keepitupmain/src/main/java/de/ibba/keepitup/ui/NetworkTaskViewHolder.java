@@ -1,6 +1,7 @@
 package de.ibba.keepitup.ui;
 
 import android.support.annotation.NonNull;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ImageView;
@@ -11,6 +12,7 @@ import de.ibba.keepitup.R;
 public class NetworkTaskViewHolder extends RecyclerView.ViewHolder {
 
     private final NetworkTaskMainActivity mainActivity;
+    private final CardView cardView;
     private final ImageView startStopImage;
     private final TextView statusText;
     private final TextView accessTypeText;
@@ -19,11 +21,13 @@ public class NetworkTaskViewHolder extends RecyclerView.ViewHolder {
     private final TextView notificationText;
     private final TextView lastExecTimestampText;
     private final TextView lastExecMessageText;
+    private final ImageView addImage;
 
     public NetworkTaskViewHolder(@NonNull View itemView, NetworkTaskMainActivity mainActivity) {
         super(itemView);
         this.mainActivity = mainActivity;
         itemView.setOnClickListener(this::onStartStopClicked);
+        cardView = itemView.findViewById(R.id.cardview_list_item_network_task);
         startStopImage = itemView.findViewById(R.id.imageview_list_item_network_task_start_stop);
         startStopImage.setOnClickListener(this::onStartStopClicked);
         statusText = itemView.findViewById(R.id.textview_list_item_network_task_status);
@@ -33,6 +37,8 @@ public class NetworkTaskViewHolder extends RecyclerView.ViewHolder {
         notificationText = itemView.findViewById(R.id.textview_list_item_network_task_notification);
         lastExecTimestampText = itemView.findViewById(R.id.textview_list_item_network_task_last_exec_timestamp);
         lastExecMessageText = itemView.findViewById(R.id.textview_list_item_network_task_last_exec_message);
+        addImage = itemView.findViewById(R.id.imageview_list_item_network_task_add);
+        addImage.setOnClickListener(mainActivity::onMainAddClicked);
     }
 
     public void setStatus(String status, String descriptionStartStopImage, int startStopImageResource) {
@@ -71,6 +77,16 @@ public class NetworkTaskViewHolder extends RecyclerView.ViewHolder {
 
     public void hideLastExecMessageTextView() {
         lastExecMessageText.setVisibility(View.GONE);
+    }
+
+    public void showMainNetworkTaskCard() {
+        cardView.setVisibility(View.VISIBLE);
+        addImage.setVisibility(View.GONE);
+    }
+
+    public void showAddNetworkTaskImage() {
+        cardView.setVisibility(View.GONE);
+        addImage.setVisibility(View.VISIBLE);
     }
 
     private void onStartStopClicked(View view) {

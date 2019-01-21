@@ -21,15 +21,6 @@
             android:layout_gravity="center_horizontal"
             android:scrollbars="vertical" />
 
-        <ImageView
-            android:id="@+id/imageview_main_activity_network_task_add"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:clickable="true"
-            android:focusable="true"
-            android:contentDescription="@string/label_add_network_task"
-            app:srcCompat="@drawable/icon_add_selector" />
-
     </LinearLayout>
 
 </android.support.constraint.ConstraintLayout>
