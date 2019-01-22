@@ -23,13 +23,6 @@
         android:layout_row="0"
         android:layout_column="1">
 
-        <RadioButton
-            android:id="@+id/radiobutton_dialog_edit_network_task_access_type"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Test"
-            android:checked="true" />
-
     </RadioGroup>
 
     <ImageView
