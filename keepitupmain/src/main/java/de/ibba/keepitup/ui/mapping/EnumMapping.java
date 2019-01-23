@@ -25,7 +25,19 @@ public class EnumMapping {
         if (accessType == null) {
             return getResources().getString(R.string.AccessType_NULL_address);
         }
+        String address = getAccessTypeAddressLabel(accessType) + " %s";
+        if (accessType.needsPort()) {
+            address += " " + getAccessTypePortLabel(accessType) + " %d";
+        }
+        return address;
+    }
+
+    public String getAccessTypeAddressLabel(AccessType accessType) {
         return getResources().getString(getResources().getIdentifier(accessType.getClass().getSimpleName() + "_" + accessType.name() + "_address", "string", context.getPackageName()));
+    }
+
+    public String getAccessTypePortLabel(AccessType accessType) {
+        return getResources().getString(getResources().getIdentifier(accessType.getClass().getSimpleName() + "_" + accessType.name() + "_port", "string", context.getPackageName()));
     }
 
     private Context getContext() {
