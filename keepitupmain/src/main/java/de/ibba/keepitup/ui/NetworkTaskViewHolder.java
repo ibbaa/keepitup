@@ -89,7 +89,7 @@ public class NetworkTaskViewHolder extends RecyclerView.ViewHolder {
         addImage.setVisibility(View.VISIBLE);
     }
 
-    private void onStartStopClicked(View view) {
+    private void onStartStopClicked(@SuppressWarnings("unused") View view) {
         mainActivity.onMainStartStopClicked(getAdapterPosition());
     }
 }
