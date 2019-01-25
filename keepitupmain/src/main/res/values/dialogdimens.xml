@@ -6,4 +6,6 @@
     <dimen name="dialog_edit_network_task_margin_bottom">10dp</dimen>
     <dimen name="dialog_edit_network_task_radius">8dp</dimen>
     <dimen name="dialog_edit_network_task_access_type_margin_top">6dp</dimen>
+    <dimen name="edittext_dialog_edit_network_task_host_margin_top">0dp</dimen>
+    <dimen name="edittext_dialog_edit_network_task_host_margin_left">4dp</dimen>
 </resources>
