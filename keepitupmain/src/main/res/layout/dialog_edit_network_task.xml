@@ -1,75 +1,71 @@
 <?xml version="1.0" encoding="utf-8"?>
-<GridLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/layout_dialog_edit_network_task"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:columnCount="2">
-
-    <TextView
-        android:id="@+id/textview_dialog_edit_network_task_access_type"
-        android:layout_width="wrap_content"
+ <GridLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/layout_dialog_edit_network_task"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textStyle="bold"
-        android:layout_row="0"
-        android:layout_column="0"
-        android:layout_marginTop="@dimen/dialog_edit_network_task_access_type_margin_top"
-        android:text="@string/label_dialog_edit_network_task_access_type" />
+        android:columnCount="2">
 
-    <RadioGroup
-        android:id="@+id/radiogroup_dialog_edit_network_task_accesstype"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_row="0"
-        android:layout_column="1">
+        <TextView
+            android:id="@+id/textview_dialog_edit_network_task_access_type"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textStyle="bold"
+            android:layout_row="0"
+            android:layout_column="0"
+            android:layout_marginTop="@dimen/dialog_edit_network_task_access_type_margin_top"
+            android:text="@string/label_dialog_edit_network_task_access_type" />
 
-    </RadioGroup>
+        <RadioGroup
+            android:id="@+id/radiogroup_dialog_edit_network_task_accesstype"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_row="0"
+            android:layout_column="1">
 
-    <TextView
-        android:id="@+id/textview_dialog_edit_network_task_host"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textStyle="bold"
-        android:layout_row="1"
-        android:layout_column="0"
-        android:text="Host" />
+        </RadioGroup>
 
-    <EditText
-        android:id="@+id/edittext_dialog_edit_network_task_host"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/edittext_dialog_edit_network_task_host_margin_top"
-        android:layout_marginLeft="@dimen/edittext_dialog_edit_network_task_host_margin_left"
-        android:inputType="textCapSentences|textMultiLine"
-        android:maxLines ="4"
-        android:maxLength ="2000"
-        android:scrollHorizontally="false"
-        android:layout_row="1"
-        android:layout_column="1"
-        android:text="Host"
-        style="@style/EditTextStyle"/>
+        <TextView
+            android:id="@+id/textview_dialog_edit_network_task_host"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textStyle="bold"
+            android:layout_row="1"
+            android:layout_column="0"
+            android:text="Host" />
 
-    <ImageView
-        android:id="@+id/imageview_dialog_edit_network_task_ok"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:clickable="true"
-        android:focusable="true"
-        android:contentDescription="@string/label_dialog_edit_network_task_ok"
-        android:layout_row="2"
-        android:layout_column="0"
-        app:srcCompat="@drawable/icon_ok_selector" />
+        <EditText
+            android:id="@+id/edittext_dialog_edit_network_task_host"
+            style="@style/EditTextStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/edittext_dialog_edit_network_task_host_margin_left"
+            android:layout_marginTop="@dimen/edittext_dialog_edit_network_task_host_margin_top"
+            android:layout_row="1"
+            android:layout_column="1"
+            android:text="Host" />
 
-    <ImageView
-        android:id="@+id/imageview_dialog_edit_network_task_cancel"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="right"
-        android:clickable="true"
-        android:focusable="true"
-        android:contentDescription="@string/label_dialog_edit_network_task_cancel"
-        android:layout_row="2"
-        android:layout_column="1"
-        app:srcCompat="@drawable/icon_cancel_selector" />
+        <ImageView
+            android:id="@+id/imageview_dialog_edit_network_task_ok"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:clickable="true"
+            android:focusable="true"
+            android:contentDescription="@string/label_dialog_edit_network_task_ok"
+            android:layout_row="2"
+            android:layout_column="0"
+            app:srcCompat="@drawable/icon_ok_selector" />
+
+        <ImageView
+            android:id="@+id/imageview_dialog_edit_network_task_cancel"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right"
+            android:clickable="true"
+            android:focusable="true"
+            android:contentDescription="@string/label_dialog_edit_network_task_cancel"
+            android:layout_row="2"
+            android:layout_column="1"
+            app:srcCompat="@drawable/icon_cancel_selector" />
 
 </GridLayout>
