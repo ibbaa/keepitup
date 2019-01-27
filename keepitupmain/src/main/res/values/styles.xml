@@ -18,9 +18,9 @@
         <item name="android:windowBackground">@android:color/transparent</item>
     </style>
 
-    <style name="EditTextStyle" parent="AppTheme">
+    <style name="DialogEditTextTheme" parent="AppTheme">
         <item name="android:textAppearance">?android:attr/textAppearanceSmall</item>
-        <item name="android:background">@drawable/edittext_background</item>
+        <item name="android:background">@drawable/dialog_edittext_background</item>
     </style>
 
 </resources>
