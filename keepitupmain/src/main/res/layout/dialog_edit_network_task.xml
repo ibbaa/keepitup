@@ -46,8 +46,8 @@
 
         <EditText
             android:id="@+id/edittext_dialog_edit_network_task_host"
-            style="@style/EditTextStyle"
-            android:layout_width="wrap_content"
+            style="@style/DialogEditTextTheme"
+            android:layout_width="@dimen/edittext_dialog_edit_network_task_host_width"
             android:layout_height="wrap_content"
             android:maxWidth="@dimen/edittext_dialog_edit_network_task_host_max_width"
             android:importantForAutofill="no"
