@@ -10,6 +10,10 @@
     <dimen name="linearlayout_dialog_edit_network_task_host_margin_left">10dp</dimen>
     <dimen name="edittext_dialog_edit_network_task_host_max_width">200dp</dimen>
     <dimen name="edittext_dialog_edit_network_task_host_width">80dp</dimen>
+    <dimen name="linearlayout_dialog_edit_network_task_port_margin_top">0dp</dimen>
+    <dimen name="linearlayout_dialog_edit_network_task_port_margin_left">10dp</dimen>
+    <dimen name="edittext_dialog_edit_network_task_port_max_width">200dp</dimen>
+    <dimen name="edittext_dialog_edit_network_task_port_width">80dp</dimen>
     <dimen name="edittext_edit_network_task_line_size">2dp</dimen>
     <dimen name="edittext_edit_network_task_line_height">4dp</dimen>
 </resources>

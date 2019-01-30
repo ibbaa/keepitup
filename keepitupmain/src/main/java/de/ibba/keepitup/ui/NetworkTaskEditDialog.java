@@ -11,6 +11,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.TextView;
 
 import java.util.Objects;
 
@@ -30,8 +31,21 @@ public class NetworkTaskEditDialog extends DialogFragment {
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.dialog_edit_network_task, container);
         prepareAccessTypeRadioButtons(view);
+        prepareAddressTextFields(view);
         prepareOkCancelImageButtons(view);
         return view;
+    }
+
+    private void prepareAddressTextFields(View view) {
+        EnumMapping mapping = new EnumMapping(getContext());
+        RadioGroup accessTypeGroup = view.findViewById(R.id.radiogroup_dialog_edit_network_task_accesstype);
+        int selectedId = accessTypeGroup.getCheckedRadioButtonId();
+        RadioButton selectedAccessTypeRadioButton = view.findViewById(selectedId);
+        AccessType accessType = (AccessType) selectedAccessTypeRadioButton.getTag();
+        TextView hostTextView = view.findViewById(R.id.textview_dialog_edit_network_task_host_label);
+        hostTextView.setText(mapping.getAccessTypeAddressLabel(accessType));
+        TextView portTextView = view.findViewById(R.id.textview_dialog_edit_network_task_port_label);
+        portTextView.setText(mapping.getAccessTypePortLabel(accessType));
     }
 
     private void prepareAccessTypeRadioButtons(View view) {
@@ -44,6 +58,7 @@ public class NetworkTaskEditDialog extends DialogFragment {
             newRadioButton.setText(mapping.getAccessTypeText(accessType));
             newRadioButton.setId(View.generateViewId());
             newRadioButton.setChecked(ii == 0);
+            newRadioButton.setTag(accessType);
             LinearLayout.LayoutParams layoutParams = new RadioGroup.LayoutParams(RadioGroup.LayoutParams.WRAP_CONTENT, RadioGroup.LayoutParams.WRAP_CONTENT);
             accessTypeGroup.addView(newRadioButton, ii, layoutParams);
         }
