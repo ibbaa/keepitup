@@ -3,4 +3,5 @@
     <string name="label_dialog_edit_network_task_ok">@android:string/ok</string>
     <string name="label_dialog_edit_network_task_cancel">@android:string/cancel</string>
     <string name="label_dialog_edit_network_task_access_type">Type:</string>
+    <integer name="edittext_dialog_edit_network_task_port_max_length">5</integer>
 </resources>
