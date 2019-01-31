@@ -7,6 +7,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
@@ -21,6 +22,11 @@ import de.ibba.keepitup.ui.mapping.EnumMapping;
 
 public class NetworkTaskEditDialog extends DialogFragment {
 
+    private RadioGroup accessTypeGroup;
+    private EditText hostEditText;
+    private EditText portEditText;
+    private EditText intervalEditText;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -33,23 +39,12 @@ public class NetworkTaskEditDialog extends DialogFragment {
         prepareAccessTypeRadioButtons(view);
         prepareAddressTextFields(view);
         prepareOkCancelImageButtons(view);
+        prepareIntervalTextField(view);
         return view;
     }
 
-    private void prepareAddressTextFields(View view) {
-        EnumMapping mapping = new EnumMapping(getContext());
-        RadioGroup accessTypeGroup = view.findViewById(R.id.radiogroup_dialog_edit_network_task_accesstype);
-        int selectedId = accessTypeGroup.getCheckedRadioButtonId();
-        RadioButton selectedAccessTypeRadioButton = view.findViewById(selectedId);
-        AccessType accessType = (AccessType) selectedAccessTypeRadioButton.getTag();
-        TextView hostTextView = view.findViewById(R.id.textview_dialog_edit_network_task_host_label);
-        hostTextView.setText(mapping.getAccessTypeAddressLabel(accessType));
-        TextView portTextView = view.findViewById(R.id.textview_dialog_edit_network_task_port_label);
-        portTextView.setText(mapping.getAccessTypePortLabel(accessType));
-    }
-
     private void prepareAccessTypeRadioButtons(View view) {
-        RadioGroup accessTypeGroup = view.findViewById(R.id.radiogroup_dialog_edit_network_task_accesstype);
+        accessTypeGroup = view.findViewById(R.id.radiogroup_dialog_edit_network_task_accesstype);
         EnumMapping mapping = new EnumMapping(getContext());
         AccessType[] accessTypes = AccessType.values();
         for (int ii = 0; ii < accessTypes.length; ii++) {
@@ -62,6 +57,25 @@ public class NetworkTaskEditDialog extends DialogFragment {
             LinearLayout.LayoutParams layoutParams = new RadioGroup.LayoutParams(RadioGroup.LayoutParams.WRAP_CONTENT, RadioGroup.LayoutParams.WRAP_CONTENT);
             accessTypeGroup.addView(newRadioButton, ii, layoutParams);
         }
+    }
+
+    private void prepareAddressTextFields(View view) {
+        EnumMapping mapping = new EnumMapping(getContext());
+        RadioGroup accessTypeGroup = view.findViewById(R.id.radiogroup_dialog_edit_network_task_accesstype);
+        int selectedId = accessTypeGroup.getCheckedRadioButtonId();
+        RadioButton selectedAccessTypeRadioButton = view.findViewById(selectedId);
+        AccessType accessType = (AccessType) selectedAccessTypeRadioButton.getTag();
+        TextView hostTextView = view.findViewById(R.id.textview_dialog_edit_network_task_host_label);
+        hostTextView.setText(mapping.getAccessTypeAddressLabel(accessType));
+        TextView portTextView = view.findViewById(R.id.textview_dialog_edit_network_task_port_label);
+        portTextView.setText(mapping.getAccessTypePortLabel(accessType));
+        hostEditText = view.findViewById(R.id.edittext_dialog_edit_network_task_host);
+        portEditText = view.findViewById(R.id.edittext_dialog_edit_network_task_port);
+    }
+
+
+    private void prepareIntervalTextField(View view) {
+        intervalEditText = view.findViewById(R.id.edittext_dialog_edit_network_task_interval);
     }
 
     private void prepareOkCancelImageButtons(View view) {
