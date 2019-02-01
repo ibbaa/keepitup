@@ -18,6 +18,7 @@
     <dimen name="linearlayout_dialog_edit_network_task_interval_margin_left">10dp</dimen>
     <dimen name="edittext_dialog_edit_network_task_interval_max_width">200dp</dimen>
     <dimen name="edittext_dialog_edit_network_task_interval_width">80dp</dimen>
+    <dimen name="switch_dialog_edit_network_task_notification_margin_left">10dp</dimen>
     <dimen name="edittext_edit_network_task_line_size">2dp</dimen>
     <dimen name="edittext_edit_network_task_line_height">4dp</dimen>
 </resources>
