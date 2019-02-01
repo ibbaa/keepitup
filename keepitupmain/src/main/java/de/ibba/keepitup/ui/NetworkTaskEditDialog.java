@@ -7,11 +7,13 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.Switch;
 import android.widget.TextView;
 
 import java.util.Objects;
@@ -26,6 +28,8 @@ public class NetworkTaskEditDialog extends DialogFragment {
     private EditText hostEditText;
     private EditText portEditText;
     private EditText intervalEditText;
+    private Switch notificationSwitch;
+    private TextView notifiactionOnOffText;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -40,6 +44,7 @@ public class NetworkTaskEditDialog extends DialogFragment {
         prepareAddressTextFields(view);
         prepareOkCancelImageButtons(view);
         prepareIntervalTextField(view);
+        prepareNotificationSwitch(view);
         return view;
     }
 
@@ -78,6 +83,17 @@ public class NetworkTaskEditDialog extends DialogFragment {
         intervalEditText = view.findViewById(R.id.edittext_dialog_edit_network_task_interval);
     }
 
+    private void prepareNotificationSwitch(View view) {
+        notificationSwitch = view.findViewById(R.id.switch_dialog_edit_network_task_notification);
+        notifiactionOnOffText = view.findViewById(R.id.textview_dialog_edit_network_task_notification_label_on_off);
+        notificationSwitch.setOnCheckedChangeListener(this::onNotificationCheckedChanged);
+        prepareNotificationOnOffText();
+    }
+
+    private void prepareNotificationOnOffText() {
+        //notifiactionOnOffText.setText(notificationSwitch.isChecked() ? getResources().getString(R.string.string_yes) : getResources().getString(R.string.string_no));
+    }
+
     private void prepareOkCancelImageButtons(View view) {
         ImageView okImage = view.findViewById(R.id.imageview_dialog_edit_network_task_ok);
         ImageView cancelImage = view.findViewById(R.id.imageview_dialog_edit_network_task_cancel);
@@ -95,5 +111,10 @@ public class NetworkTaskEditDialog extends DialogFragment {
         Log.d(NetworkTaskEditDialog.class.getName(), "onCancelClicked");
         NetworkTaskMainActivity activity = (NetworkTaskMainActivity) getActivity();
         Objects.requireNonNull(activity).onEditDialogCancelClicked(this);
+    }
+
+    private void onNotificationCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+        Log.d(NetworkTaskEditDialog.class.getName(), "onCheckedChanged, new value is " + isChecked);
+        prepareNotificationOnOffText();
     }
 }
