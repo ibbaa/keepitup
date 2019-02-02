@@ -91,7 +91,7 @@ public class NetworkTaskEditDialog extends DialogFragment {
     }
 
     private void prepareNotificationOnOffText() {
-        //notifiactionOnOffText.setText(notificationSwitch.isChecked() ? getResources().getString(R.string.string_yes) : getResources().getString(R.string.string_no));
+        notifiactionOnOffText.setText(notificationSwitch.isChecked() ? getResources().getString(R.string.string_yes) : getResources().getString(R.string.string_no));
     }
 
     private void prepareOkCancelImageButtons(View view) {
