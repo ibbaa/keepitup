@@ -8,16 +8,17 @@
     <dimen name="dialog_edit_network_task_access_type_margin_top">6dp</dimen>
     <dimen name="linearlayout_dialog_edit_network_task_host_margin_top">0dp</dimen>
     <dimen name="linearlayout_dialog_edit_network_task_host_margin_left">10dp</dimen>
-    <dimen name="edittext_dialog_edit_network_task_host_width">80dp</dimen>
+    <dimen name="edittext_dialog_edit_network_task_host_width">90dp</dimen>
     <dimen name="linearlayout_dialog_edit_network_task_port_margin_top">0dp</dimen>
     <dimen name="linearlayout_dialog_edit_network_task_port_margin_left">10dp</dimen>
-    <dimen name="edittext_dialog_edit_network_task_port_width">80dp</dimen>
+    <dimen name="edittext_dialog_edit_network_task_port_width">90dp</dimen>
     <dimen name="linearlayout_dialog_edit_network_task_interval_margin_top">0dp</dimen>
     <dimen name="linearlayout_dialog_edit_network_task_interval_margin_left">10dp</dimen>
-    <dimen name="edittext_dialog_edit_network_task_interval_width">80dp</dimen>
+    <dimen name="edittext_dialog_edit_network_task_interval_width">90dp</dimen>
     <dimen name="textview_dialog_edit_network_task_notification_label_margin_top">10dp</dimen>
     <dimen name="linearlayout_dialog_edit_network_task_notification_margin_top">0dp</dimen>
     <dimen name="linearlayout_dialog_edit_network_task_notification_margin_left">10dp</dimen>
+    <dimen name="linearlayout_dialog_edit_network_task_ok_cancel_padding_top">0dp</dimen>
     <dimen name="edittext_edit_network_task_line_size">2dp</dimen>
     <dimen name="edittext_edit_network_task_line_height">4dp</dimen>
 </resources>
