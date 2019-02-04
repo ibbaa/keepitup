@@ -58,6 +58,7 @@
                 android:layout_height="wrap_content"
                 android:importantForAutofill="no"
                 android:inputType="textUri|textMultiLine"
+                android:maxLines="@integer/edittext_dialog_edit_network_task_host_max_lines"
                 android:text="" />
 
         </LinearLayout>
