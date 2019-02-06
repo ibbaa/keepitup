@@ -23,12 +23,13 @@ public class NetworkTaskMainActivityTest {
     @Rule
     public final ActivityTestRule<NetworkTaskMainActivity> rule = new ActivityTestRule<>(NetworkTaskMainActivity.class);
 
+    private NetworkTaskMainActivity activity;
     private RecyclerView recyclerView;
 
     @Before
     @UiThreadTest
     public void beforeEachTestMethod() {
-        NetworkTaskMainActivity activity = rule.getActivity();
+        activity = rule.getActivity();
         recyclerView = activity.findViewById(R.id.listview_main_activity_network_tasks);
     }
 
