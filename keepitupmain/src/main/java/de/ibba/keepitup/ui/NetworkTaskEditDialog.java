@@ -25,7 +25,7 @@ import de.ibba.keepitup.ui.mapping.EnumMapping;
 public class NetworkTaskEditDialog extends DialogFragment {
 
     private RadioGroup accessTypeGroup;
-    private EditText hostEditText;
+    private EditText addressEditText;
     private EditText portEditText;
     private EditText intervalEditText;
     private Switch notificationSwitch;
@@ -70,11 +70,11 @@ public class NetworkTaskEditDialog extends DialogFragment {
         int selectedId = accessTypeGroup.getCheckedRadioButtonId();
         RadioButton selectedAccessTypeRadioButton = view.findViewById(selectedId);
         AccessType accessType = (AccessType) selectedAccessTypeRadioButton.getTag();
-        TextView hostTextView = view.findViewById(R.id.textview_dialog_edit_network_task_host_label);
-        hostTextView.setText(mapping.getAccessTypeAddressLabel(accessType));
+        TextView addressTextView = view.findViewById(R.id.textview_dialog_edit_network_task_address_label);
+        addressTextView.setText(mapping.getAccessTypeAddressLabel(accessType));
         TextView portTextView = view.findViewById(R.id.textview_dialog_edit_network_task_port_label);
         portTextView.setText(mapping.getAccessTypePortLabel(accessType));
-        hostEditText = view.findViewById(R.id.edittext_dialog_edit_network_task_host);
+        addressEditText = view.findViewById(R.id.edittext_dialog_edit_network_task_address);
         portEditText = view.findViewById(R.id.edittext_dialog_edit_network_task_port);
     }
 
