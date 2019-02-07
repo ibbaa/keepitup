@@ -37,32 +37,32 @@
             </RadioGroup>
 
             <TextView
-                android:id="@+id/textview_dialog_edit_network_task_host_label"
+                android:id="@+id/textview_dialog_edit_network_task_address_label"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textStyle="bold"
                 android:layout_row="1"
                 android:layout_column="0"
-                android:labelFor="@id/edittext_dialog_edit_network_task_host"
+                android:labelFor="@id/edittext_dialog_edit_network_task_address"
                 android:text="" />
 
             <LinearLayout
-                android:id="@+id/linearlayout_dialog_edit_network_task_host"
+                android:id="@+id/linearlayout_dialog_edit_network_task_address"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/linearlayout_dialog_edit_network_task_host_margin_left"
-                android:layout_marginTop="@dimen/linearlayout_dialog_edit_network_task_host_margin_top"
+                android:layout_marginLeft="@dimen/linearlayout_dialog_edit_network_task_address_margin_left"
+                android:layout_marginTop="@dimen/linearlayout_dialog_edit_network_task_address_margin_top"
                 android:layout_row="1"
                 android:layout_column="1">
 
                 <EditText
-                    android:id="@+id/edittext_dialog_edit_network_task_host"
+                    android:id="@+id/edittext_dialog_edit_network_task_address"
                     style="@style/DialogEditTextTheme"
-                    android:layout_width="@dimen/edittext_dialog_edit_network_task_host_width"
+                    android:layout_width="@dimen/edittext_dialog_edit_network_task_address_width"
                     android:layout_height="wrap_content"
                     android:importantForAutofill="no"
                     android:inputType="textUri|textMultiLine"
-                    android:maxLines="@integer/edittext_dialog_edit_network_task_host_max_lines"
+                    android:maxLines="@integer/edittext_dialog_edit_network_task_address_max_lines"
                     android:text="" />
 
             </LinearLayout>
