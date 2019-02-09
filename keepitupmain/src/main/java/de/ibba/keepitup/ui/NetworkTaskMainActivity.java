@@ -86,6 +86,8 @@ public class NetworkTaskMainActivity extends AppCompatActivity {
     public void onMainAddClicked(View view) {
         Log.d(NetworkTaskMainActivity.class.getName(), "onMainAddClicked");
         NetworkTaskEditDialog editDialog = new NetworkTaskEditDialog();
+        NetworkTask task = new NetworkTask(this);
+        editDialog.setArguments(task.toBundle());
         Log.d(NetworkTaskMainActivity.class.getName(), "opening NetworkTaskEditDialog");
         editDialog.show(getSupportFragmentManager(), NetworkTaskEditDialog.class.getName());
     }

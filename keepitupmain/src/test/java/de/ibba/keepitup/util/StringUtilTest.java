@@ -21,4 +21,11 @@ public class StringUtilTest {
         Assert.assertFalse(StringUtil.isEmpty(" "));
         Assert.assertFalse(StringUtil.isEmpty("123"));
     }
+
+    @Test
+    public void testNotNull() {
+        Assert.assertEquals("123", StringUtil.notNull("123"));
+        Assert.assertEquals("", StringUtil.notNull(""));
+        Assert.assertEquals("", StringUtil.notNull(null));
+    }
 }
