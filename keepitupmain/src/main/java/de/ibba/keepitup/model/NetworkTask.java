@@ -1,8 +1,12 @@
 package de.ibba.keepitup.model;
 
+import android.content.Context;
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.os.PersistableBundle;
 import android.support.annotation.NonNull;
+
+import de.ibba.keepitup.R;
 
 public class NetworkTask {
 
@@ -28,6 +32,20 @@ public class NetworkTask {
         this.timestamp = -1;
         this.message = null;
         this.notification = false;
+    }
+
+    public NetworkTask(Context context) {
+        Resources resources = context.getResources();
+        this.id = -1;
+        this.index = -1;
+        this.address = resources.getString(R.string.task_address_default);
+        this.port = resources.getInteger(R.integer.task_port_default);
+        this.accessType = AccessType.valueOf(resources.getString(R.string.task_accesstype_default));
+        this.interval = resources.getInteger(R.integer.task_interval_default);
+        this.success = false;
+        this.timestamp = -1;
+        this.message = null;
+        this.notification = resources.getBoolean(R.bool.task_notification_default);
     }
 
     public NetworkTask(PersistableBundle bundle) {

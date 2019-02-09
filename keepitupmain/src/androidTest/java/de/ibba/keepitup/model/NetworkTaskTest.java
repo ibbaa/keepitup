@@ -2,6 +2,7 @@ package de.ibba.keepitup.model;
 
 import android.os.Bundle;
 import android.os.PersistableBundle;
+import android.support.test.InstrumentationRegistry;
 import android.support.test.filters.SmallTest;
 import android.support.test.runner.AndroidJUnit4;
 
@@ -55,7 +56,48 @@ public class NetworkTaskTest {
     }
 
     @Test
-    public void testToPersistableBundleValues() {
+    public void testToBundleContextValues() {
+        NetworkTask task = new NetworkTask(InstrumentationRegistry.getTargetContext());
+        Assert.assertEquals(-1, task.getId());
+        Assert.assertEquals(-1, task.getIndex());
+        Assert.assertEquals("192.168.178.1", task.getAddress());
+        Assert.assertEquals(22, task.getPort());
+        Assert.assertEquals(AccessType.PING, task.getAccessType());
+        Assert.assertEquals(15, task.getInterval());
+        Assert.assertFalse(task.isSuccess());
+        Assert.assertEquals(-1, task.getTimestamp());
+        Assert.assertNull(task.getMessage());
+        Assert.assertFalse(task.isNotification());
+        PersistableBundle persistableBundle = task.toPersistableBundle();
+        Assert.assertNotNull(persistableBundle);
+        task = new NetworkTask(persistableBundle);
+        Assert.assertEquals(-1, task.getId());
+        Assert.assertEquals(-1, task.getIndex());
+        Assert.assertEquals("192.168.178.1", task.getAddress());
+        Assert.assertEquals(22, task.getPort());
+        Assert.assertEquals(AccessType.PING, task.getAccessType());
+        Assert.assertEquals(15, task.getInterval());
+        Assert.assertFalse(task.isSuccess());
+        Assert.assertEquals(-1, task.getTimestamp());
+        Assert.assertNull(task.getMessage());
+        Assert.assertFalse(task.isNotification());
+        Bundle bundle = task.toBundle();
+        Assert.assertNotNull(bundle);
+        task = new NetworkTask(bundle);
+        Assert.assertEquals(-1, task.getId());
+        Assert.assertEquals(-1, task.getIndex());
+        Assert.assertEquals("192.168.178.1", task.getAddress());
+        Assert.assertEquals(22, task.getPort());
+        Assert.assertEquals(AccessType.PING, task.getAccessType());
+        Assert.assertEquals(15, task.getInterval());
+        Assert.assertFalse(task.isSuccess());
+        Assert.assertEquals(-1, task.getTimestamp());
+        Assert.assertNull(task.getMessage());
+        Assert.assertFalse(task.isNotification());
+    }
+
+    @Test
+    public void testToBundleValues() {
         long timestamp = System.currentTimeMillis();
         NetworkTask task = new NetworkTask();
         task.setId(1);
