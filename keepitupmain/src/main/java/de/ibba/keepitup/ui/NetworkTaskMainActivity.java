@@ -105,7 +105,8 @@ public class NetworkTaskMainActivity extends AppCompatActivity {
     }
 
     public void onEditDialogOkClicked(NetworkTaskEditDialog editDialog) {
-        Log.d(NetworkTaskMainActivity.class.getName(), "onEditDialogOkClicked");
+        NetworkTask task = editDialog.getNetworkTask();
+        Log.d(NetworkTaskMainActivity.class.getName(), "onEditDialogOkClicked, network task is " + task);
         editDialog.dismiss();
     }
 
