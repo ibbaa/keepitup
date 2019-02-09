@@ -1,5 +1,6 @@
 package de.ibba.keepitup.model;
 
+import android.os.Bundle;
 import android.os.PersistableBundle;
 import android.support.annotation.NonNull;
 
@@ -17,9 +18,23 @@ public class NetworkTask {
     private boolean notification;
 
     public NetworkTask() {
+        this.id = -1;
+        this.index = -1;
+        this.address = null;
+        this.port = 0;
+        this.accessType = null;
+        this.interval = 0;
+        this.success = false;
+        this.timestamp = -1;
+        this.message = null;
+        this.notification = false;
     }
 
     public NetworkTask(PersistableBundle bundle) {
+        this(new Bundle(bundle));
+    }
+
+    public NetworkTask(Bundle bundle) {
         this.id = bundle.getInt("id");
         this.index = bundle.getInt("index");
         this.address = bundle.getString("address");
@@ -133,6 +148,10 @@ public class NetworkTask {
         }
         bundle.putInt("notification", notification ? 1 : 0);
         return bundle;
+    }
+
+    public Bundle toBundle() {
+        return new Bundle(toPersistableBundle());
     }
 
     @NonNull
