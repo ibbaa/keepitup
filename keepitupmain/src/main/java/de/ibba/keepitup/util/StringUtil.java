@@ -15,6 +15,10 @@ public class StringUtil {
     }
 
     public static String notNull(String value) {
-        return value == null ? "" : value;
+        return notNull((CharSequence) value);
+    }
+
+    public static String notNull(CharSequence value) {
+        return value == null ? "" : value.toString();
     }
 }
