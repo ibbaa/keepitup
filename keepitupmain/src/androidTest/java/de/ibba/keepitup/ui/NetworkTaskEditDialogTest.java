@@ -13,9 +13,12 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import de.ibba.keepitup.R;
+import de.ibba.keepitup.model.NetworkTask;
 
 import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.action.ViewActions.click;
+import static android.support.test.espresso.assertion.ViewAssertions.matches;
+import static android.support.test.espresso.matcher.ViewMatchers.hasChildCount;
 import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static org.hamcrest.Matchers.allOf;
@@ -37,8 +40,12 @@ public class NetworkTaskEditDialogTest {
 
     @Test
     public void testAddNetworkTask() {
-        ViewInteraction assNetworkTaskImageView = onView(allOf(withId(R.id.imageview_list_item_network_task_add), isDisplayed()));
-        assNetworkTaskImageView.perform(click());
+        ViewInteraction addNetworkTaskImageView = onView(allOf(withId(R.id.imageview_list_item_network_task_add), isDisplayed()));
+        addNetworkTaskImageView.perform(click());
+        onView(withId(R.id.radiogroup_dialog_edit_network_task_accesstype)).check(matches(hasChildCount(1)));
+        NetworkTaskEditDialog dialog = (NetworkTaskEditDialog) activity.getSupportFragmentManager().getFragments().get(0);
+        NetworkTask task = dialog.getNetworkTask();
+        Assert.assertNotNull(task);
         ViewInteraction okImageView = onView(withId(R.id.imageview_dialog_edit_network_task_ok));
         Assert.assertNotNull(okImageView);
         okImageView.perform(click());
