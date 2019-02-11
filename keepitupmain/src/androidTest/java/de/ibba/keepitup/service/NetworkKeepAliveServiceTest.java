@@ -4,13 +4,15 @@ import android.support.test.InstrumentationRegistry;
 import android.support.test.filters.MediumTest;
 import android.support.test.runner.AndroidJUnit4;
 
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import de.ibba.keepitup.model.AccessType;
 import de.ibba.keepitup.model.NetworkTask;
+
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 @MediumTest
 @RunWith(AndroidJUnit4.class)
@@ -27,20 +29,20 @@ public class NetworkKeepAliveServiceTest {
     public void testStartStopRunning() {
         NetworkTask task1 = getNetworkTask1();
         NetworkTask task2 = getNetworkTask2();
-        Assert.assertFalse(scheduler.isRunning(task1));
-        Assert.assertFalse(scheduler.isRunning(task2));
+        assertFalse(scheduler.isRunning(task1));
+        assertFalse(scheduler.isRunning(task2));
         scheduler.start(task1);
-        Assert.assertTrue(scheduler.isRunning(task1));
-        Assert.assertFalse(scheduler.isRunning(task2));
+        assertTrue(scheduler.isRunning(task1));
+        assertFalse(scheduler.isRunning(task2));
         scheduler.start(task2);
-        Assert.assertTrue(scheduler.isRunning(task1));
-        Assert.assertTrue(scheduler.isRunning(task2));
+        assertTrue(scheduler.isRunning(task1));
+        assertTrue(scheduler.isRunning(task2));
         scheduler.stop(task1);
-        Assert.assertFalse(scheduler.isRunning(task1));
-        Assert.assertTrue(scheduler.isRunning(task2));
+        assertFalse(scheduler.isRunning(task1));
+        assertTrue(scheduler.isRunning(task2));
         scheduler.stop(task2);
-        Assert.assertFalse(scheduler.isRunning(task1));
-        Assert.assertFalse(scheduler.isRunning(task2));
+        assertFalse(scheduler.isRunning(task1));
+        assertFalse(scheduler.isRunning(task2));
     }
 
     private NetworkTask getNetworkTask1() {
