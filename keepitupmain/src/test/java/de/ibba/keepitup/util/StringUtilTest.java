@@ -1,31 +1,34 @@
 package de.ibba.keepitup.util;
 
-import org.junit.Assert;
 import org.junit.Test;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 @SuppressWarnings("ConstantConditions")
 public class StringUtilTest {
 
     @Test
     public void testGetStringValue() {
-        Assert.assertEquals("123", StringUtil.getStringValue("123", ""));
-        Assert.assertEquals("123", StringUtil.getStringValue(new StringBuilder("123"), ""));
-        Assert.assertEquals("1", StringUtil.getStringValue(1, ""));
-        Assert.assertEquals("", StringUtil.getStringValue(null, ""));
+        assertEquals("123", StringUtil.getStringValue("123", ""));
+        assertEquals("123", StringUtil.getStringValue(new StringBuilder("123"), ""));
+        assertEquals("1", StringUtil.getStringValue(1, ""));
+        assertEquals("", StringUtil.getStringValue(null, ""));
     }
 
     @Test
     public void testIsEmpty() {
-        Assert.assertTrue(StringUtil.isEmpty(null));
-        Assert.assertTrue(StringUtil.isEmpty(""));
-        Assert.assertFalse(StringUtil.isEmpty(" "));
-        Assert.assertFalse(StringUtil.isEmpty("123"));
+        assertTrue(StringUtil.isEmpty(null));
+        assertTrue(StringUtil.isEmpty(""));
+        assertFalse(StringUtil.isEmpty(" "));
+        assertFalse(StringUtil.isEmpty("123"));
     }
 
     @Test
     public void testNotNull() {
-        Assert.assertEquals("123", StringUtil.notNull("123"));
-        Assert.assertEquals("", StringUtil.notNull(""));
-        Assert.assertEquals("", StringUtil.notNull(null));
+        assertEquals("123", StringUtil.notNull("123"));
+        assertEquals("", StringUtil.notNull(""));
+        assertEquals("", StringUtil.notNull(null));
     }
 }

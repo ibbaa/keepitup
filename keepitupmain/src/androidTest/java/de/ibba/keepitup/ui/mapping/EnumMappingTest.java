@@ -4,12 +4,14 @@ import android.support.test.InstrumentationRegistry;
 import android.support.test.filters.SmallTest;
 import android.support.test.runner.AndroidJUnit4;
 
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import de.ibba.keepitup.model.AccessType;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 @SmallTest
 @RunWith(AndroidJUnit4.class)
@@ -24,12 +26,12 @@ public class EnumMappingTest {
 
     @Test
     public void testAccessTypeText() {
-        Assert.assertEquals("Ping", enumMapping.getAccessTypeText(AccessType.PING));
-        Assert.assertTrue(enumMapping.getAccessTypeAddressText(AccessType.PING).contains("Host"));
-        Assert.assertTrue(enumMapping.getAccessTypeAddressText(AccessType.PING).contains("Port"));
-        Assert.assertEquals("Host:", enumMapping.getAccessTypeAddressLabel(AccessType.PING));
-        Assert.assertEquals("Port:", enumMapping.getAccessTypePortLabel(AccessType.PING));
-        Assert.assertEquals("No type", enumMapping.getAccessTypeText(null));
-        Assert.assertEquals("Host: not applicable", enumMapping.getAccessTypeAddressText(null));
+        assertEquals("Ping", enumMapping.getAccessTypeText(AccessType.PING));
+        assertTrue(enumMapping.getAccessTypeAddressText(AccessType.PING).contains("Host"));
+        assertTrue(enumMapping.getAccessTypeAddressText(AccessType.PING).contains("Port"));
+        assertEquals("Host:", enumMapping.getAccessTypeAddressLabel(AccessType.PING));
+        assertEquals("Port:", enumMapping.getAccessTypePortLabel(AccessType.PING));
+        assertEquals("No type", enumMapping.getAccessTypeText(null));
+        assertEquals("Host: not applicable", enumMapping.getAccessTypeAddressText(null));
     }
 }
