@@ -77,7 +77,8 @@ public class NetworkTaskDAO {
     private long insertNetworkTask(NetworkTask networkTask, SQLiteDatabase db) {
         ContentValues values = new ContentValues();
         NetworkTaskDBConstants dbConstants = new NetworkTaskDBConstants(context);
-        values.put(dbConstants.getIndexColumnName(), networkTask.getIndex());
+        long index = readMaximumIndex(networkTask, db);
+        values.put(dbConstants.getIndexColumnName(), index + 1);
         values.put(dbConstants.getAddressColumnName(), networkTask.getAddress());
         values.put(dbConstants.getPortColumnName(), networkTask.getPort());
         values.put(dbConstants.getAccessTypeColumnName(), networkTask.getAccessType() == null ? null : networkTask.getAccessType().getCode());
