@@ -6,5 +6,8 @@
     <string name="label_dialog_edit_network_task_interval">Interval (min):</string>
     <string name="label_dialog_edit_network_task_notification">Notifications:</string>
     <integer name="edittext_dialog_edit_network_task_address_max_lines">5</integer>
+    <integer name="edittext_dialog_edit_network_task_address_ems">20</integer>
     <integer name="edittext_dialog_edit_network_task_port_max_length">5</integer>
+    <integer name="edittext_dialog_edit_network_task_port_ems">20</integer>
+    <integer name="edittext_dialog_edit_network_task_interval_ems">20</integer>
 </resources>

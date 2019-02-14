@@ -11,158 +11,84 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <GridLayout
+        <LinearLayout
             android:id="@+id/gridlayout_dialog_edit_network_task"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:columnCount="2">
+            android:orientation="vertical">
 
-            <TextView
-                android:id="@+id/textview_dialog_edit_network_task_access_type_label"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textStyle="bold"
-                android:layout_row="0"
-                android:layout_column="0"
-                android:layout_marginTop="@dimen/dialog_edit_network_task_access_type_margin_top"
-                android:text="@string/label_dialog_edit_network_task_access_type" />
-
-            <RadioGroup
-                android:id="@+id/radiogroup_dialog_edit_network_task_accesstype"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_row="0"
-                android:layout_column="1">
-
-            </RadioGroup>
-
-            <TextView
-                android:id="@+id/textview_dialog_edit_network_task_address_label"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textStyle="bold"
-                android:layout_row="1"
-                android:layout_column="0"
-                android:labelFor="@id/edittext_dialog_edit_network_task_address"
-                android:text="" />
-
-            <LinearLayout
-                android:id="@+id/linearlayout_dialog_edit_network_task_address"
+            <android.support.design.widget.TextInputLayout
+                android:id="@+id/inputlayout_dialog_edit_network_task_address"
+                style="@style/DialogTextInputLayoutTheme"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/linearlayout_dialog_edit_network_task_address_margin_left"
-                android:layout_marginTop="@dimen/linearlayout_dialog_edit_network_task_address_margin_top"
-                android:layout_row="1"
-                android:layout_column="1">
+                android:layout_marginTop="@dimen/inputlayout_dialog_edit_network_task_address_margin_top"
+                android:layout_marginBottom="@dimen/inputlayout_dialog_edit_network_task_address_margin_bottom"
+                android:hint="Host">
 
-                <EditText
+                <android.support.design.widget.TextInputEditText
                     android:id="@+id/edittext_dialog_edit_network_task_address"
                     style="@style/DialogEditTextTheme"
-                    android:layout_width="@dimen/edittext_dialog_edit_network_task_address_width"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/edittext_dialog_edit_network_task_address_margin_top"
+                    android:layout_marginBottom="@dimen/edittext_dialog_edit_network_task_address_margin_bottom"
+                    android:ems="@integer/edittext_dialog_edit_network_task_address_ems"
                     android:importantForAutofill="no"
                     android:inputType="textUri|textMultiLine"
                     android:maxLines="@integer/edittext_dialog_edit_network_task_address_max_lines"
                     android:text="" />
 
-            </LinearLayout>
+            </android.support.design.widget.TextInputLayout>
 
-            <TextView
-                android:id="@+id/textview_dialog_edit_network_task_port_label"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textStyle="bold"
-                android:layout_row="2"
-                android:layout_column="0"
-                android:labelFor="@id/edittext_dialog_edit_network_task_port"
-                android:text="" />
-
-            <LinearLayout
-                android:id="@+id/linearlayout_dialog_edit_network_task_port"
+            <android.support.design.widget.TextInputLayout
+                android:id="@+id/inputlayout_dialog_edit_network_task_port"
+                style="@style/DialogTextInputLayoutTheme"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/linearlayout_dialog_edit_network_task_port_margin_left"
-                android:layout_marginTop="@dimen/linearlayout_dialog_edit_network_task_port_margin_top"
-                android:layout_row="2"
-                android:layout_column="1">
+                android:layout_marginTop="@dimen/inputlayout_dialog_edit_network_task_port_margin_top"
+                android:layout_marginBottom="@dimen/inputlayout_dialog_edit_network_task_port_margin_bottom"
+                android:hint="Port">
 
-                <EditText
+                <android.support.design.widget.TextInputEditText
                     android:id="@+id/edittext_dialog_edit_network_task_port"
                     style="@style/DialogEditTextTheme"
-                    android:layout_width="@dimen/edittext_dialog_edit_network_task_port_width"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/edittext_dialog_edit_network_task_port_margin_top"
+                    android:layout_marginBottom="@dimen/edittext_dialog_edit_network_task_port_margin_bottom"
+                    android:ems="@integer/edittext_dialog_edit_network_task_port_ems"
                     android:maxLength="@integer/edittext_dialog_edit_network_task_port_max_length"
                     android:importantForAutofill="no"
                     android:inputType="number"
                     android:text="" />
 
-            </LinearLayout>
+            </android.support.design.widget.TextInputLayout>
 
-            <TextView
-                android:id="@+id/textview_dialog_edit_network_task_interval_label"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textStyle="bold"
-                android:layout_row="3"
-                android:layout_column="0"
-                android:labelFor="@id/edittext_dialog_edit_network_task_interval"
-                android:text="@string/label_dialog_edit_network_task_interval" />
-
-            <LinearLayout
-                android:id="@+id/linearlayout_dialog_edit_network_task_interval"
+            <android.support.design.widget.TextInputLayout
+                android:id="@+id/inputlayout_dialog_edit_network_task_interval"
+                style="@style/DialogTextInputLayoutTheme"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/linearlayout_dialog_edit_network_task_interval_margin_left"
-                android:layout_marginTop="@dimen/linearlayout_dialog_edit_network_task_interval_margin_top"
-                android:layout_row="3"
-                android:layout_column="1">
+                android:layout_marginTop="@dimen/inputlayout_dialog_edit_network_task_interval_margin_top"
+                android:layout_marginBottom="@dimen/inputlayout_dialog_edit_network_task_interval_margin_bottom"
+                android:hint="Interval">
 
-                <EditText
+                <android.support.design.widget.TextInputEditText
                     android:id="@+id/edittext_dialog_edit_network_task_interval"
                     style="@style/DialogEditTextTheme"
-                    android:layout_width="@dimen/edittext_dialog_edit_network_task_interval_width"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/edittext_dialog_edit_network_task_interval_margin_top"
+                    android:layout_marginBottom="@dimen/edittext_dialog_edit_network_task_interval_margin_bottom"
+                    android:ems="@integer/edittext_dialog_edit_network_task_interval_ems"
                     android:importantForAutofill="no"
                     android:inputType="number"
                     android:text="" />
 
-            </LinearLayout>
+            </android.support.design.widget.TextInputLayout>
 
-            <TextView
-                android:id="@+id/textview_dialog_edit_network_task_notification_label"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/textview_dialog_edit_network_task_notification_label_margin_top"
-                android:textStyle="bold"
-                android:layout_row="4"
-                android:layout_column="0"
-                android:text="@string/label_dialog_edit_network_task_notification" />
-
-            <LinearLayout
-                android:id="@+id/linearlayout_dialog_edit_network_task_notification"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/linearlayout_dialog_edit_network_task_notification_margin_left"
-                android:layout_marginTop="@dimen/linearlayout_dialog_edit_network_task_notification_margin_top"
-                android:layout_row="4"
-                android:layout_column="1">
-
-                <Switch
-                    android:id="@+id/switch_dialog_edit_network_task_notification"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:showText="false" />
-
-                <TextView
-                    android:id="@+id/textview_dialog_edit_network_task_notification_label_on_off"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textStyle="bold"
-                    android:text="" />
-
-            </LinearLayout>
-
-        </GridLayout>
+        </LinearLayout>
 
         <LinearLayout
             android:id="@+id/linearlayout_dialog_edit_network_task_ok_cancel"

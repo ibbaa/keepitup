@@ -10,8 +10,6 @@ import android.view.ViewGroup;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Switch;
 import android.widget.TextView;
@@ -19,11 +17,7 @@ import android.widget.TextView;
 import java.util.Objects;
 
 import de.ibba.keepitup.R;
-import de.ibba.keepitup.model.AccessType;
 import de.ibba.keepitup.model.NetworkTask;
-import de.ibba.keepitup.ui.mapping.EnumMapping;
-import de.ibba.keepitup.util.NumberUtil;
-import de.ibba.keepitup.util.StringUtil;
 
 public class NetworkTaskEditDialog extends DialogFragment {
 
@@ -44,15 +38,15 @@ public class NetworkTaskEditDialog extends DialogFragment {
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.dialog_edit_network_task, container);
         NetworkTask task = new NetworkTask(Objects.requireNonNull(getArguments()));
-        prepareAccessTypeRadioButtons(task, view);
+        /*prepareAccessTypeRadioButtons(task, view);
         prepareAddressTextFields(task, view);
         prepareIntervalTextField(task, view);
-        prepareNotificationSwitch(task, view);
+        prepareNotificationSwitch(task, view);*/
         prepareOkCancelImageButtons(view);
         return view;
     }
 
-    private void prepareAccessTypeRadioButtons(NetworkTask task, View view) {
+    /*private void prepareAccessTypeRadioButtons(NetworkTask task, View view) {
         Log.d(NetworkTaskMainActivity.class.getName(), "prepareAccessTypeRadioButtons with access type of " + task.getAccessType());
         accessTypeGroup = view.findViewById(R.id.radiogroup_dialog_edit_network_task_accesstype);
         EnumMapping mapping = new EnumMapping(getContext());
@@ -118,7 +112,7 @@ public class NetworkTaskEditDialog extends DialogFragment {
 
     private void prepareNotificationOnOffText() {
         notificationOnOffText.setText(notificationSwitch.isChecked() ? getResources().getString(R.string.string_yes) : getResources().getString(R.string.string_no));
-    }
+    }*/
 
     private void prepareOkCancelImageButtons(View view) {
         Log.d(NetworkTaskMainActivity.class.getName(), "prepareOkCancelImageButtons");
@@ -130,7 +124,7 @@ public class NetworkTaskEditDialog extends DialogFragment {
 
     public NetworkTask getNetworkTask() {
         NetworkTask task = new NetworkTask(Objects.requireNonNull(getArguments()));
-        int selectedId = accessTypeGroup.getCheckedRadioButtonId();
+       /* int selectedId = accessTypeGroup.getCheckedRadioButtonId();
         RadioButton selectedAccessTypeRadioButton = accessTypeGroup.findViewById(selectedId);
         if (selectedAccessTypeRadioButton != null) {
             task.setAccessType((AccessType) selectedAccessTypeRadioButton.getTag());
@@ -145,7 +139,7 @@ public class NetworkTaskEditDialog extends DialogFragment {
             task.setInterval(NumberUtil.getIntValue(intervalEditText.getText(), task.getInterval()));
         }
         task.setNotification(notificationSwitch.isChecked());
-        Log.d(NetworkTaskMainActivity.class.getName(), "getNetworkTask, network task is " + task);
+        Log.d(NetworkTaskMainActivity.class.getName(), "getNetworkTask, network task is " + task);*/
         return task;
     }
 
@@ -163,6 +157,6 @@ public class NetworkTaskEditDialog extends DialogFragment {
 
     private void onNotificationCheckedChanged(CompoundButton buttonView, boolean isChecked) {
         Log.d(NetworkTaskEditDialog.class.getName(), "onCheckedChanged, new value is " + isChecked);
-        prepareNotificationOnOffText();
+        //prepareNotificationOnOffText();
     }
 }
