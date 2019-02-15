@@ -4,10 +4,8 @@
     <color name="colorPrimaryDark">#888888</color>
     <color name="textColor">#000000</color>
     <color name="textColorPrimary">#666666</color>
-    <color name="textColorSecondary">#666666</color>
     <color name="colorAccent">#e0dde3</color>
     <color name="statusBarColor">#666666</color>
     <color name="windowBackground">#FFFFFF</color>
     <color name="colorProgressBar">#666666</color>
-    <color name="textColorHint">#666666</color>
 </resources>
