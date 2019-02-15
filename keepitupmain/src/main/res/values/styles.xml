@@ -18,10 +18,6 @@
         <item name="android:windowBackground">@android:color/transparent</item>
     </style>
 
-    <style name="DialogTextInputLayoutTheme" parent="Widget.Design.TextInputLayout">
-        <item name="android:textColorHint">@color/textColorHint</item>
-    </style>
-
     <style name="DialogEditTextTheme" parent="AppTheme">
         <item name="android:textAppearance">?android:attr/textAppearanceSmall</item>
         <item name="android:background">@drawable/dialog_edittext_background</item>
