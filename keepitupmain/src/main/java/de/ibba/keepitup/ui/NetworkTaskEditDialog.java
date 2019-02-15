@@ -53,7 +53,7 @@ public class NetworkTaskEditDialog extends DialogFragment {
     }
 
     private void prepareAccessTypeRadioButtons(NetworkTask task, View view) {
-        Log.d(NetworkTaskMainActivity.class.getName(), "prepareAccessTypeRadioButtons with access type of " + task.getAccessType());
+        Log.d(NetworkTaskEditDialog.class.getName(), "prepareAccessTypeRadioButtons with access type of " + task.getAccessType());
         accessTypeGroup = view.findViewById(R.id.radiogroup_dialog_edit_network_task_accesstype);
         EnumMapping mapping = new EnumMapping(getContext());
         AccessType[] accessTypes = AccessType.values();
@@ -74,7 +74,7 @@ public class NetworkTaskEditDialog extends DialogFragment {
     }
 
     private void prepareAddressTextFields(NetworkTask task, View view) {
-        Log.d(NetworkTaskMainActivity.class.getName(), "prepareAddressTextFields with address of " + task.getAddress() + " and port of " + task.getPort());
+        Log.d(NetworkTaskEditDialog.class.getName(), "prepareAddressTextFields with address of " + task.getAddress() + " and port of " + task.getPort());
         EnumMapping mapping = new EnumMapping(getContext());
         RadioGroup accessTypeGroup = view.findViewById(R.id.radiogroup_dialog_edit_network_task_accesstype);
         int selectedId = accessTypeGroup.getCheckedRadioButtonId();
@@ -102,13 +102,13 @@ public class NetworkTaskEditDialog extends DialogFragment {
 
 
     private void prepareIntervalTextField(NetworkTask task, View view) {
-        Log.d(NetworkTaskMainActivity.class.getName(), "prepareIntervalTextField with interval of " + task.getInterval());
+        Log.d(NetworkTaskEditDialog.class.getName(), "prepareIntervalTextField with interval of " + task.getInterval());
         intervalEditText = view.findViewById(R.id.edittext_dialog_edit_network_task_interval);
         intervalEditText.setText(String.valueOf(task.getInterval()));
     }
 
     private void prepareNotificationSwitch(NetworkTask task, View view) {
-        Log.d(NetworkTaskMainActivity.class.getName(), "prepareNotificationSwitch with notification setting of " + task.isNotification());
+        Log.d(NetworkTaskEditDialog.class.getName(), "prepareNotificationSwitch with notification setting of " + task.isNotification());
         notificationSwitch = view.findViewById(R.id.switch_dialog_edit_network_task_notification);
         notificationOnOffText = view.findViewById(R.id.textview_dialog_edit_network_task_notification_label_on_off);
         notificationSwitch.setChecked(task.isNotification());
@@ -121,7 +121,7 @@ public class NetworkTaskEditDialog extends DialogFragment {
     }
 
     private void prepareOkCancelImageButtons(View view) {
-        Log.d(NetworkTaskMainActivity.class.getName(), "prepareOkCancelImageButtons");
+        Log.d(NetworkTaskEditDialog.class.getName(), "prepareOkCancelImageButtons");
         ImageView okImage = view.findViewById(R.id.imageview_dialog_edit_network_task_ok);
         ImageView cancelImage = view.findViewById(R.id.imageview_dialog_edit_network_task_cancel);
         okImage.setOnClickListener(this::onOkClicked);
@@ -145,14 +145,15 @@ public class NetworkTaskEditDialog extends DialogFragment {
             task.setInterval(NumberUtil.getIntValue(intervalEditText.getText(), task.getInterval()));
         }
         task.setNotification(notificationSwitch.isChecked());
-        Log.d(NetworkTaskMainActivity.class.getName(), "getNetworkTask, network task is " + task);
+        Log.d(NetworkTaskEditDialog.class.getName(), "getNetworkTask, network task is " + task);
         return task;
     }
 
     private void onOkClicked(@SuppressWarnings("unused") View view) {
         Log.d(NetworkTaskEditDialog.class.getName(), "onOkClicked");
         NetworkTaskMainActivity activity = (NetworkTaskMainActivity) getActivity();
-        Objects.requireNonNull(activity).onEditDialogOkClicked(this);
+        showErrorDialog();
+        //Objects.requireNonNull(activity).onEditDialogOkClicked(this);
     }
 
     private void onCancelClicked(@SuppressWarnings("unused") View view) {
@@ -164,5 +165,11 @@ public class NetworkTaskEditDialog extends DialogFragment {
     private void onNotificationCheckedChanged(CompoundButton buttonView, boolean isChecked) {
         Log.d(NetworkTaskEditDialog.class.getName(), "onCheckedChanged, new value is " + isChecked);
         prepareNotificationOnOffText();
+    }
+
+    private void showErrorDialog() {
+        Log.d(NetworkTaskEditDialog.class.getName(), "opening NetworkTaskEditErrorDialog");
+        NetworkTaskEditErrorDialog errorDialog = new NetworkTaskEditErrorDialog();
+        errorDialog.show(Objects.requireNonNull(getFragmentManager()), NetworkTaskEditErrorDialog.class.getName());
     }
 }
