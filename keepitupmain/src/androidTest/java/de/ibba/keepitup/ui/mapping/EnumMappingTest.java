@@ -9,6 +9,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import de.ibba.keepitup.model.AccessType;
+import de.ibba.keepitup.ui.validation.NullValidator;
+import de.ibba.keepitup.ui.validation.StandardHostPortValidator;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -25,13 +27,18 @@ public class EnumMappingTest {
     }
 
     @Test
-    public void testAccessTypeText() {
+    public void testGetAccessTypeText() {
         assertEquals("Ping", enumMapping.getAccessTypeText(AccessType.PING));
-        assertTrue(enumMapping.getAccessTypeAddressText(AccessType.PING).contains("Host"));
-        assertTrue(enumMapping.getAccessTypeAddressText(AccessType.PING).contains("Port"));
+        assertEquals("Host: %s Port: %d", enumMapping.getAccessTypeAddressText(AccessType.PING));
         assertEquals("Host:", enumMapping.getAccessTypeAddressLabel(AccessType.PING));
         assertEquals("Port:", enumMapping.getAccessTypePortLabel(AccessType.PING));
         assertEquals("No type", enumMapping.getAccessTypeText(null));
         assertEquals("Host: not applicable", enumMapping.getAccessTypeAddressText(null));
+    }
+
+    @Test
+    public void testGetValidator() {
+        assertTrue(enumMapping.getValidator(null) instanceof NullValidator);
+        assertTrue(enumMapping.getValidator(AccessType.PING) instanceof StandardHostPortValidator);
     }
 }
