@@ -5,4 +5,8 @@
     <integer name="task_port_default">22</integer>
     <integer name="task_interval_default">15</integer>
     <bool name="task_notification_default">false</bool>
+    <integer name="task_port_minimum">0</integer>
+    <integer name="task_port_maximum">65535</integer>
+    <integer name="task_interval_minimum">1</integer>
+    <integer name="task_interval_maximum">2147483647</integer>
 </resources>

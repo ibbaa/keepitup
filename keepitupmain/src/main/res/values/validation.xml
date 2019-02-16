@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="task_interval_field_name">Interval</string>
+    <string name="task_host_field_name">Host</string>
+    <string name="task_port_field_name">Port</string>
+    <string name="invalid_number_format">Invalid format</string>
+    <string name="invalid_host_format">No valid host or IP address</string>
+    <string name="invalid_range_minimim">Minimum: %d</string>
+    <string name="invalid_range_maximum">Maximum: %d</string>
+    <string name="validation_successful">Validation successful</string>
+</resources>
