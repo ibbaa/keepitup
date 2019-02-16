@@ -19,18 +19,23 @@ public class StandardHostPortValidator implements Validator {
 
     @Override
     public ValidationResult validateAddress(String address) {
+        Log.d(StandardHostPortValidator.class.getName(), "validateAddress, address is " + address);
         String fieldName = getResources().getString(R.string.task_host_field_name);
         String successMessage = getResources().getString(R.string.validation_successful);
         String failedMessage = getResources().getString(R.string.invalid_host_format);
         if (StringUtil.isEmpty(address)) {
+            Log.d(StandardHostPortValidator.class.getName(), "No value specified. Validation failed.");
             return new ValidationResult(false, fieldName, failedMessage);
         }
         if (URLUtil.isValidIPAddress(address)) {
+            Log.d(StandardHostPortValidator.class.getName(), "Valid IP address. Validation successful.");
             return new ValidationResult(true, fieldName, successMessage);
         }
         if (URLUtil.isValidHostName(address)) {
+            Log.d(StandardHostPortValidator.class.getName(), "Valid host name. Validation successful.");
             return new ValidationResult(true, fieldName, successMessage);
         }
+        Log.d(StandardHostPortValidator.class.getName(), "Neither IP address nor host name. Validation failed.");
         return new ValidationResult(false, fieldName, failedMessage);
     }
 
@@ -55,18 +60,21 @@ public class StandardHostPortValidator implements Validator {
     }
 
     private ValidationResult validateIntNumber(String value, int defaultValue, int minimum, int maximum, String fieldName) {
+        Log.d(StandardHostPortValidator.class.getName(), "validateIntNumber for field " + fieldName);
+        Log.d(StandardHostPortValidator.class.getName(), "value is " + value);
         if (!NumberUtil.isValidLongValue(value)) {
             Log.d(StandardHostPortValidator.class.getName(), "invalid number format");
             return new ValidationResult(false, fieldName, getResources().getString(R.string.invalid_number_format));
         }
         long numberValue = NumberUtil.getLongValue(value, defaultValue);
+        Log.d(StandardHostPortValidator.class.getName(), "validateIntNumber, parsed numeric value is " + numberValue);
         if (numberValue < minimum) {
-            Log.d(StandardHostPortValidator.class.getName(), "Out of range. Value less than minimum.");
+            Log.d(StandardHostPortValidator.class.getName(), "Out of range. Value less than minimum of " + minimum);
             String formattedMessage = String.format(getResources().getString(R.string.invalid_range_minimim), minimum);
             return new ValidationResult(false, fieldName, formattedMessage);
         }
         if (numberValue > maximum) {
-            Log.d(StandardHostPortValidator.class.getName(), "Out of range. Value greater than maximum.");
+            Log.d(StandardHostPortValidator.class.getName(), "Out of range. Value greater than maximum of " + maximum);
             String formattedMessage = String.format(getResources().getString(R.string.invalid_range_maximum), maximum);
             return new ValidationResult(false, fieldName, formattedMessage);
         }

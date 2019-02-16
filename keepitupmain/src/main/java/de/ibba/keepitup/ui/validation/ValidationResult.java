@@ -2,9 +2,9 @@ package de.ibba.keepitup.ui.validation;
 
 public class ValidationResult {
 
-    private boolean validationSuccessful;
-    private String fieldName;
-    private String message;
+    private final boolean validationSuccessful;
+    private final String fieldName;
+    private final String message;
 
     public ValidationResult(boolean validationSuccessful, String fieldName, String message) {
         this.validationSuccessful = validationSuccessful;
