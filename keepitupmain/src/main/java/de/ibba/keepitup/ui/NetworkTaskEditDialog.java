@@ -22,6 +22,8 @@ import de.ibba.keepitup.R;
 import de.ibba.keepitup.model.AccessType;
 import de.ibba.keepitup.model.NetworkTask;
 import de.ibba.keepitup.ui.mapping.EnumMapping;
+import de.ibba.keepitup.ui.validation.ValidationResult;
+import de.ibba.keepitup.ui.validation.Validator;
 import de.ibba.keepitup.util.NumberUtil;
 import de.ibba.keepitup.util.StringUtil;
 
@@ -50,6 +52,32 @@ public class NetworkTaskEditDialog extends DialogFragment {
         prepareNotificationSwitch(task, view);
         prepareOkCancelImageButtons(view);
         return view;
+    }
+
+    private AccessType getAccessType() {
+        int selectedId = accessTypeGroup.getCheckedRadioButtonId();
+        RadioButton selectedAccessTypeRadioButton = accessTypeGroup.findViewById(selectedId);
+        AccessType accessType = null;
+        if (selectedAccessTypeRadioButton != null) {
+            accessType = (AccessType) selectedAccessTypeRadioButton.getTag();
+        }
+        return accessType;
+    }
+
+    private String getAddress() {
+        return StringUtil.notNull(addressEditText.getText());
+    }
+
+    private String getPort() {
+        return StringUtil.notNull(portEditText.getText());
+    }
+
+    private String getInterval() {
+        return StringUtil.notNull(intervalEditText.getText());
+    }
+
+    private boolean isPortVisible() {
+        return portEditText.getVisibility() == View.VISIBLE;
     }
 
     private void prepareAccessTypeRadioButtons(NetworkTask task, View view) {
@@ -130,19 +158,18 @@ public class NetworkTaskEditDialog extends DialogFragment {
 
     public NetworkTask getNetworkTask() {
         NetworkTask task = new NetworkTask(Objects.requireNonNull(getArguments()));
-        int selectedId = accessTypeGroup.getCheckedRadioButtonId();
-        RadioButton selectedAccessTypeRadioButton = accessTypeGroup.findViewById(selectedId);
-        if (selectedAccessTypeRadioButton != null) {
-            task.setAccessType((AccessType) selectedAccessTypeRadioButton.getTag());
+        AccessType accessType = getAccessType();
+        if (accessType != null) {
+            task.setAccessType(accessType);
         }
-        task.setAddress(StringUtil.notNull(addressEditText.getText()));
-        if (portEditText.getVisibility() == View.VISIBLE) {
-            if (NumberUtil.isValidIntValue(portEditText.getText())) {
-                task.setPort(NumberUtil.getIntValue(portEditText.getText(), task.getPort()));
+        task.setAddress(getAddress());
+        if (isPortVisible()) {
+            if (NumberUtil.isValidIntValue(getPort())) {
+                task.setPort(NumberUtil.getIntValue(getPort(), task.getPort()));
             }
         }
-        if (NumberUtil.isValidIntValue(intervalEditText.getText())) {
-            task.setInterval(NumberUtil.getIntValue(intervalEditText.getText(), task.getInterval()));
+        if (NumberUtil.isValidIntValue(getInterval())) {
+            task.setInterval(NumberUtil.getIntValue(getInterval(), task.getInterval()));
         }
         task.setNotification(notificationSwitch.isChecked());
         Log.d(NetworkTaskEditDialog.class.getName(), "getNetworkTask, network task is " + task);
@@ -152,8 +179,12 @@ public class NetworkTaskEditDialog extends DialogFragment {
     private void onOkClicked(@SuppressWarnings("unused") View view) {
         Log.d(NetworkTaskEditDialog.class.getName(), "onOkClicked");
         NetworkTaskMainActivity activity = (NetworkTaskMainActivity) getActivity();
-        showErrorDialog();
-        //Objects.requireNonNull(activity).onEditDialogOkClicked(this);
+        if (validateInput()) {
+            Log.d(NetworkTaskEditDialog.class.getName(), "Validation was successful");
+            Objects.requireNonNull(activity).onEditDialogOkClicked(this);
+        } else {
+            Log.d(NetworkTaskEditDialog.class.getName(), "Validation failed");
+        }
     }
 
     private void onCancelClicked(@SuppressWarnings("unused") View view) {
@@ -167,8 +198,38 @@ public class NetworkTaskEditDialog extends DialogFragment {
         prepareNotificationOnOffText();
     }
 
+    private boolean validateInput() {
+        Log.d(NetworkTaskEditDialog.class.getName(), "validateInput");
+        EnumMapping mapping = new EnumMapping(getContext());
+        AccessType accessType = getAccessType();
+        Validator validator = mapping.getValidator(accessType);
+        Log.d(NetworkTaskEditDialog.class.getName(), "Validator is " + validator.getClass().getSimpleName() + " for access type " + accessType);
+        StringBuilder message = new StringBuilder();
+        boolean success = true;
+        ValidationResult result = validator.validateAddress(getAddress());
+        Log.d(NetworkTaskEditDialog.class.getName(), "address validation result: " + result);
+        if (!result.isValidationSuccessful()) {
+            success = false;
+        }
+        if (isPortVisible()) {
+            result = validator.validatePort(getPort());
+            Log.d(NetworkTaskEditDialog.class.getName(), "port validation result: " + result);
+            if (!result.isValidationSuccessful()) {
+                success = false;
+            }
+        } else {
+            Log.d(NetworkTaskEditDialog.class.getName(), "port validation skippedd");
+        }
+        result = validator.validateInterval(getInterval());
+        Log.d(NetworkTaskEditDialog.class.getName(), "interval validation result: " + result);
+        if (!result.isValidationSuccessful()) {
+            success = false;
+        }
+        return success;
+    }
+
     private void showErrorDialog() {
-        Log.d(NetworkTaskEditDialog.class.getName(), "opening NetworkTaskEditErrorDialog");
+        Log.d(NetworkTaskEditDialog.class.getName(), "showErrorDialog, opening NetworkTaskEditErrorDialog");
         NetworkTaskEditErrorDialog errorDialog = new NetworkTaskEditErrorDialog();
         errorDialog.show(Objects.requireNonNull(getFragmentManager()), NetworkTaskEditErrorDialog.class.getName());
     }

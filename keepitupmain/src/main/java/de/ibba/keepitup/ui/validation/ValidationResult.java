@@ -1,5 +1,7 @@
 package de.ibba.keepitup.ui.validation;
 
+import android.support.annotation.NonNull;
+
 public class ValidationResult {
 
     private final boolean validationSuccessful;
@@ -22,5 +24,15 @@ public class ValidationResult {
 
     public String getMessage() {
         return message;
+    }
+
+    @NonNull
+    @Override
+    public String toString() {
+        return "ValidationResult{" +
+                "validationSuccessful=" + validationSuccessful +
+                ", fieldName='" + fieldName + '\'' +
+                ", message='" + message + '\'' +
+                '}';
     }
 }
