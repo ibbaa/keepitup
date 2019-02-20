@@ -184,6 +184,7 @@ public class NetworkTaskEditDialog extends DialogFragment {
             Objects.requireNonNull(activity).onEditDialogOkClicked(this);
         } else {
             Log.d(NetworkTaskEditDialog.class.getName(), "Validation failed");
+            showErrorDialog();
         }
     }
 
