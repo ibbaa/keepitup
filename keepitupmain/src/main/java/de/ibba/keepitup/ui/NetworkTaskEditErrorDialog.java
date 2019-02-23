@@ -33,7 +33,7 @@ public class NetworkTaskEditErrorDialog extends DialogFragment {
         View view = inflater.inflate(R.layout.dialog_edit_network_task_error, container);
         List<ValidationResult> resultList = BundleUtil.indexedBundleToValidationResultList(Objects.requireNonNull(getArguments()));
         prepareErrorMessages(view, resultList);
-        prepareOkButton(view);
+        prepareOkButton(view, resultList.size() + 1);
         return view;
     }
 
@@ -51,8 +51,8 @@ public class NetworkTaskEditErrorDialog extends DialogFragment {
             labelTextParams.height = GridLayout.LayoutParams.WRAP_CONTENT;
             labelTextParams.width = GridLayout.LayoutParams.WRAP_CONTENT;
             labelTextParams.setGravity(Gravity.CENTER);
-            labelTextParams.rightMargin = 10;
-            labelTextParams.topMargin = 5;
+            labelTextParams.rightMargin = getResources().getDimensionPixelSize(R.dimen.textview_dialog_edit_network_task_error_label_margin_right);
+            labelTextParams.topMargin = getResources().getDimensionPixelSize(R.dimen.textview_dialog_edit_network_task_error_label_margin_top);
             labelTextParams.columnSpec = GridLayout.spec(0);
             labelTextParams.rowSpec = GridLayout.spec(ii + 1);
             gridLayout.addView(labelText, labelTextParams);
@@ -64,22 +64,24 @@ public class NetworkTaskEditErrorDialog extends DialogFragment {
             messageTextParams.height = GridLayout.LayoutParams.WRAP_CONTENT;
             messageTextParams.width = GridLayout.LayoutParams.WRAP_CONTENT;
             messageTextParams.setGravity(Gravity.CENTER);
-            messageTextParams.leftMargin = 10;
-            messageTextParams.topMargin = 5;
+            messageTextParams.leftMargin = getResources().getDimensionPixelSize(R.dimen.textview_dialog_edit_network_task_error_message_margin_left);
+            messageTextParams.topMargin = getResources().getDimensionPixelSize(R.dimen.textview_dialog_edit_network_task_error_message_margin_top);
             messageTextParams.columnSpec = GridLayout.spec(1);
             messageTextParams.rowSpec = GridLayout.spec(ii + 1);
             gridLayout.addView(messageText, messageTextParams);
         }
     }
 
-    private void prepareOkButton(View view) {
+    private void prepareOkButton(View view, int row) {
         Log.d(NetworkTaskEditErrorDialog.class.getName(), "prepareOkButton");
         ImageView okImage = view.findViewById(R.id.imageview_dialog_edit_network_task_error_ok);
         GridLayout.LayoutParams okImageParams = new GridLayout.LayoutParams();
+        okImageParams.height = GridLayout.LayoutParams.WRAP_CONTENT;
+        okImageParams.width = GridLayout.LayoutParams.WRAP_CONTENT;
         okImageParams.columnSpec = GridLayout.spec(0, 2);
-        okImageParams.rowSpec = GridLayout.spec(3);
+        okImageParams.rowSpec = GridLayout.spec(row);
         okImageParams.setGravity(Gravity.CENTER);
-        okImageParams.topMargin = 5;
+        okImageParams.topMargin = getResources().getDimensionPixelSize(R.dimen.imageview_dialog_edit_network_task_error_ok_margin_top);
         okImage.setLayoutParams(okImageParams);
         okImage.setOnClickListener(this::onOkClicked);
     }
