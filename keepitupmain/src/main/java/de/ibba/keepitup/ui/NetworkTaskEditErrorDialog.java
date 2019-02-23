@@ -13,7 +13,12 @@ import android.widget.GridLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import java.util.List;
+import java.util.Objects;
+
 import de.ibba.keepitup.R;
+import de.ibba.keepitup.ui.validation.ValidationResult;
+import de.ibba.keepitup.util.BundleUtil;
 
 public class NetworkTaskEditErrorDialog extends DialogFragment {
 
@@ -26,40 +31,45 @@ public class NetworkTaskEditErrorDialog extends DialogFragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.dialog_edit_network_task_error, container);
-        prepareErrorMessages(view);
+        List<ValidationResult> resultList = BundleUtil.indexedBundleToValidationResultList(Objects.requireNonNull(getArguments()));
+        prepareErrorMessages(view, resultList);
         prepareOkButton(view);
         return view;
     }
 
-    private void prepareErrorMessages(View view) {
+    private void prepareErrorMessages(View view, List<ValidationResult> resultList) {
         Log.d(NetworkTaskEditErrorDialog.class.getName(), "prepareErrorMessages");
         GridLayout gridLayout = view.findViewById(R.id.gridlayout_dialog_edit_network_task_error);
-        TextView labelText = new TextView(getContext());
-        labelText.setId(View.generateViewId());
-        labelText.setText("Field");
-        labelText.setTypeface(null, Typeface.BOLD);
-        GridLayout.LayoutParams labelTextParams = new GridLayout.LayoutParams();
-        labelTextParams.height = GridLayout.LayoutParams.WRAP_CONTENT;
-        labelTextParams.width = GridLayout.LayoutParams.WRAP_CONTENT;
-        labelTextParams.setGravity(Gravity.CENTER);
-        labelTextParams.rightMargin = 10;
-        labelTextParams.topMargin = 5;
-        labelTextParams.columnSpec = GridLayout.spec(0);
-        labelTextParams.rowSpec = GridLayout.spec(2);
-        gridLayout.addView(labelText, labelTextParams);
-        TextView messageText = new TextView(getContext());
-        labelText.setId(View.generateViewId());
-        messageText.setText("Message");
-        messageText.setTypeface(null, Typeface.NORMAL);
-        GridLayout.LayoutParams messageTextParams = new GridLayout.LayoutParams();
-        messageTextParams.height = GridLayout.LayoutParams.WRAP_CONTENT;
-        messageTextParams.width = GridLayout.LayoutParams.WRAP_CONTENT;
-        messageTextParams.setGravity(Gravity.CENTER);
-        messageTextParams.leftMargin = 10;
-        messageTextParams.topMargin = 5;
-        messageTextParams.columnSpec = GridLayout.spec(1);
-        messageTextParams.rowSpec = GridLayout.spec(2);
-        gridLayout.addView(messageText, messageTextParams);
+        for (int ii = 0; ii < resultList.size(); ii++) {
+            ValidationResult currentResult = resultList.get(ii);
+            Log.d(NetworkTaskEditErrorDialog.class.getName(), "prepareErrorMessages, result with index " + ii + " is " + currentResult);
+            TextView labelText = new TextView(getContext());
+            labelText.setId(View.generateViewId());
+            labelText.setText(currentResult.getFieldName());
+            labelText.setTypeface(null, Typeface.BOLD);
+            GridLayout.LayoutParams labelTextParams = new GridLayout.LayoutParams();
+            labelTextParams.height = GridLayout.LayoutParams.WRAP_CONTENT;
+            labelTextParams.width = GridLayout.LayoutParams.WRAP_CONTENT;
+            labelTextParams.setGravity(Gravity.CENTER);
+            labelTextParams.rightMargin = 10;
+            labelTextParams.topMargin = 5;
+            labelTextParams.columnSpec = GridLayout.spec(0);
+            labelTextParams.rowSpec = GridLayout.spec(ii + 1);
+            gridLayout.addView(labelText, labelTextParams);
+            TextView messageText = new TextView(getContext());
+            messageText.setId(View.generateViewId());
+            messageText.setText(currentResult.getMessage());
+            messageText.setTypeface(null, Typeface.NORMAL);
+            GridLayout.LayoutParams messageTextParams = new GridLayout.LayoutParams();
+            messageTextParams.height = GridLayout.LayoutParams.WRAP_CONTENT;
+            messageTextParams.width = GridLayout.LayoutParams.WRAP_CONTENT;
+            messageTextParams.setGravity(Gravity.CENTER);
+            messageTextParams.leftMargin = 10;
+            messageTextParams.topMargin = 5;
+            messageTextParams.columnSpec = GridLayout.spec(1);
+            messageTextParams.rowSpec = GridLayout.spec(ii + 1);
+            gridLayout.addView(messageText, messageTextParams);
+        }
     }
 
     private void prepareOkButton(View view) {
@@ -69,6 +79,7 @@ public class NetworkTaskEditErrorDialog extends DialogFragment {
         okImageParams.columnSpec = GridLayout.spec(0, 2);
         okImageParams.rowSpec = GridLayout.spec(3);
         okImageParams.setGravity(Gravity.CENTER);
+        okImageParams.topMargin = 5;
         okImage.setLayoutParams(okImageParams);
         okImage.setOnClickListener(this::onOkClicked);
     }

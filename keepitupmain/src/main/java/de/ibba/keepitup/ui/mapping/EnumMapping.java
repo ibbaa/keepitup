@@ -59,8 +59,8 @@ public class EnumMapping {
         Log.d(EnumMapping.class.getName(), "specified validator class is " + validatorClassName);
         try {
             Class<?> validatorClass = getContext().getClassLoader().loadClass(validatorClassName);
-            Constructor<?> validatorClassContructor = validatorClass.getConstructor(Context.class);
-            return (Validator) validatorClassContructor.newInstance(getContext());
+            Constructor<?> validatorClassConstructor = validatorClass.getConstructor(Context.class);
+            return (Validator) validatorClassConstructor.newInstance(getContext());
         } catch (Throwable exc) {
             Log.e(EnumMapping.class.getName(), "Error instantiating validator class", exc);
         }

@@ -68,7 +68,7 @@ public class NetworkTaskAdapter extends RecyclerView.Adapter<NetworkTaskViewHold
     private void bindAccessType(@NonNull NetworkTaskViewHolder networkTaskViewHolder, NetworkTask networkTask) {
         String accessTypeText = new EnumMapping(getContext()).getAccessTypeText(networkTask.getAccessType());
         String formattedAccessTypeText = String.format(getResources().getString(R.string.text_list_item_network_task_access_type), accessTypeText);
-        Log.d(NetworkTaskAdapter.class.getName(), "binding acccess type text " + formattedAccessTypeText);
+        Log.d(NetworkTaskAdapter.class.getName(), "binding access type text " + formattedAccessTypeText);
         networkTaskViewHolder.setAccessType(formattedAccessTypeText);
     }
 
