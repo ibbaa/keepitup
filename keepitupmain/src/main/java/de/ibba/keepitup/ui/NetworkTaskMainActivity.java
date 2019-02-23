@@ -93,7 +93,7 @@ public class NetworkTaskMainActivity extends AppCompatActivity {
     }
 
     public void onMainStartStopClicked(int position) {
-        NetworkTask networkTask = getApdapter().getItem(position);
+        NetworkTask networkTask = getAdapter().getItem(position);
         Log.d(NetworkTaskMainActivity.class.getName(), "onMainStartStopClicked for network task " + networkTask);
         NetworkKeepAliveServiceScheduler scheduler = new NetworkKeepAliveServiceScheduler(this);
         if (scheduler.isRunning(networkTask)) {
@@ -101,7 +101,7 @@ public class NetworkTaskMainActivity extends AppCompatActivity {
         } else {
             scheduler.start(networkTask);
         }
-        getApdapter().notifyItemChanged(position);
+        getAdapter().notifyItemChanged(position);
     }
 
     public void onEditDialogOkClicked(NetworkTaskEditDialog editDialog) {
@@ -115,7 +115,7 @@ public class NetworkTaskMainActivity extends AppCompatActivity {
         editDialog.dismiss();
     }
 
-    private NetworkTaskAdapter getApdapter() {
+    private NetworkTaskAdapter getAdapter() {
         RecyclerView recyclerView = findViewById(R.id.listview_main_activity_network_tasks);
         return (NetworkTaskAdapter) recyclerView.getAdapter();
     }

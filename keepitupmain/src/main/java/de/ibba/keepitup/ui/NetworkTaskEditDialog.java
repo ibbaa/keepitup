@@ -24,6 +24,7 @@ import de.ibba.keepitup.model.NetworkTask;
 import de.ibba.keepitup.ui.mapping.EnumMapping;
 import de.ibba.keepitup.ui.validation.ValidationResult;
 import de.ibba.keepitup.ui.validation.Validator;
+import de.ibba.keepitup.util.BundleUtil;
 import de.ibba.keepitup.util.NumberUtil;
 import de.ibba.keepitup.util.StringUtil;
 
@@ -179,12 +180,13 @@ public class NetworkTaskEditDialog extends DialogFragment {
     private void onOkClicked(@SuppressWarnings("unused") View view) {
         Log.d(NetworkTaskEditDialog.class.getName(), "onOkClicked");
         NetworkTaskMainActivity activity = (NetworkTaskMainActivity) getActivity();
-        if (validateInput()) {
+        Bundle validationResult = validateInput();
+        if (!hasErrors(validationResult)) {
             Log.d(NetworkTaskEditDialog.class.getName(), "Validation was successful");
             Objects.requireNonNull(activity).onEditDialogOkClicked(this);
         } else {
             Log.d(NetworkTaskEditDialog.class.getName(), "Validation failed");
-            showErrorDialog();
+            showErrorDialog(validationResult);
         }
     }
 
@@ -199,39 +201,43 @@ public class NetworkTaskEditDialog extends DialogFragment {
         prepareNotificationOnOffText();
     }
 
-    private boolean validateInput() {
+    private boolean hasErrors(Bundle bundle) {
+        return !bundle.isEmpty();
+    }
+
+    private Bundle validateInput() {
         Log.d(NetworkTaskEditDialog.class.getName(), "validateInput");
+        Bundle bundle = new Bundle();
         EnumMapping mapping = new EnumMapping(getContext());
         AccessType accessType = getAccessType();
         Validator validator = mapping.getValidator(accessType);
         Log.d(NetworkTaskEditDialog.class.getName(), "Validator is " + validator.getClass().getSimpleName() + " for access type " + accessType);
-        StringBuilder message = new StringBuilder();
-        boolean success = true;
         ValidationResult result = validator.validateAddress(getAddress());
         Log.d(NetworkTaskEditDialog.class.getName(), "address validation result: " + result);
         if (!result.isValidationSuccessful()) {
-            success = false;
+            BundleUtil.addValidationResultToIndexedBundle(bundle, result);
         }
         if (isPortVisible()) {
             result = validator.validatePort(getPort());
             Log.d(NetworkTaskEditDialog.class.getName(), "port validation result: " + result);
             if (!result.isValidationSuccessful()) {
-                success = false;
+                BundleUtil.addValidationResultToIndexedBundle(bundle, result);
             }
         } else {
-            Log.d(NetworkTaskEditDialog.class.getName(), "port validation skippedd");
+            Log.d(NetworkTaskEditDialog.class.getName(), "port validation skipped");
         }
         result = validator.validateInterval(getInterval());
         Log.d(NetworkTaskEditDialog.class.getName(), "interval validation result: " + result);
         if (!result.isValidationSuccessful()) {
-            success = false;
+            BundleUtil.addValidationResultToIndexedBundle(bundle, result);
         }
-        return success;
+        return bundle;
     }
 
-    private void showErrorDialog() {
+    private void showErrorDialog(Bundle bundle) {
         Log.d(NetworkTaskEditDialog.class.getName(), "showErrorDialog, opening NetworkTaskEditErrorDialog");
         NetworkTaskEditErrorDialog errorDialog = new NetworkTaskEditErrorDialog();
+        errorDialog.setArguments(bundle);
         errorDialog.show(Objects.requireNonNull(getFragmentManager()), NetworkTaskEditErrorDialog.class.getName());
     }
 }
