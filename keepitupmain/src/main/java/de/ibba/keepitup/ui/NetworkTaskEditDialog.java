@@ -3,6 +3,7 @@ package de.ibba.keepitup.ui;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,6 +23,7 @@ import de.ibba.keepitup.R;
 import de.ibba.keepitup.model.AccessType;
 import de.ibba.keepitup.model.NetworkTask;
 import de.ibba.keepitup.ui.mapping.EnumMapping;
+import de.ibba.keepitup.ui.validation.TextColorValidatingWatcher;
 import de.ibba.keepitup.ui.validation.ValidationResult;
 import de.ibba.keepitup.ui.validation.Validator;
 import de.ibba.keepitup.util.BundleUtil;
@@ -32,8 +34,11 @@ public class NetworkTaskEditDialog extends DialogFragment {
 
     private RadioGroup accessTypeGroup;
     private EditText addressEditText;
+    private TextColorValidatingWatcher addressEditTextWatcher;
     private EditText portEditText;
+    private TextColorValidatingWatcher portEditTextWatcher;
     private EditText intervalEditText;
+    private TextColorValidatingWatcher intervalEditTextWatcher;
     private Switch notificationSwitch;
     private TextView notificationOnOffText;
 
@@ -84,11 +89,11 @@ public class NetworkTaskEditDialog extends DialogFragment {
     private void prepareAccessTypeRadioButtons(NetworkTask task, View view) {
         Log.d(NetworkTaskEditDialog.class.getName(), "prepareAccessTypeRadioButtons with access type of " + task.getAccessType());
         accessTypeGroup = view.findViewById(R.id.radiogroup_dialog_edit_network_task_accesstype);
-        EnumMapping mapping = new EnumMapping(getContext());
+        EnumMapping mapping = new EnumMapping(requireContext());
         AccessType[] accessTypes = AccessType.values();
         for (int ii = 0; ii < accessTypes.length; ii++) {
             AccessType accessType = accessTypes[ii];
-            RadioButton newRadioButton = new RadioButton(getContext());
+            RadioButton newRadioButton = new RadioButton(requireContext());
             newRadioButton.setText(mapping.getAccessTypeText(accessType));
             newRadioButton.setId(View.generateViewId());
             if (task.getAccessType() == null && ii == 0) {
@@ -104,7 +109,7 @@ public class NetworkTaskEditDialog extends DialogFragment {
 
     private void prepareAddressTextFields(NetworkTask task, View view) {
         Log.d(NetworkTaskEditDialog.class.getName(), "prepareAddressTextFields with address of " + task.getAddress() + " and port of " + task.getPort());
-        EnumMapping mapping = new EnumMapping(getContext());
+        EnumMapping mapping = new EnumMapping(requireContext());
         RadioGroup accessTypeGroup = view.findViewById(R.id.radiogroup_dialog_edit_network_task_accesstype);
         int selectedId = accessTypeGroup.getCheckedRadioButtonId();
         RadioButton selectedAccessTypeRadioButton = view.findViewById(selectedId);
@@ -116,6 +121,7 @@ public class NetworkTaskEditDialog extends DialogFragment {
         addressTextView.setText(mapping.getAccessTypeAddressLabel(accessType));
         addressEditText = view.findViewById(R.id.edittext_dialog_edit_network_task_address);
         addressEditText.setText(StringUtil.notNull(task.getAddress()));
+        prepareAddressEditTextListener();
         TextView portTextView = view.findViewById(R.id.textview_dialog_edit_network_task_port_label);
         portEditText = view.findViewById(R.id.edittext_dialog_edit_network_task_port);
         if (accessType != null && accessType.needsPort()) {
@@ -123,16 +129,49 @@ public class NetworkTaskEditDialog extends DialogFragment {
             portEditText.setText(String.valueOf(task.getPort()));
             portTextView.setVisibility(View.VISIBLE);
             portEditText.setVisibility(View.VISIBLE);
+            preparePortEditTextListener();
         } else {
             portTextView.setVisibility(View.GONE);
             portEditText.setVisibility(View.GONE);
+            if (portEditTextWatcher != null) {
+                portEditText.removeTextChangedListener(portEditTextWatcher);
+                portEditTextWatcher = null;
+            }
         }
+    }
+
+    private void prepareAddressEditTextListener() {
+        if (addressEditTextWatcher != null) {
+            addressEditText.removeTextChangedListener(addressEditTextWatcher);
+            addressEditTextWatcher = null;
+        }
+        addressEditTextWatcher = new TextColorValidatingWatcher(addressEditText, this::validateAddress, getColor(R.color.textColor), getColor(R.color.textErrorColor));
+        addressEditText.addTextChangedListener(addressEditTextWatcher);
+    }
+
+    private void preparePortEditTextListener() {
+        if (portEditTextWatcher != null) {
+            portEditText.removeTextChangedListener(portEditTextWatcher);
+            portEditTextWatcher = null;
+        }
+        portEditTextWatcher = new TextColorValidatingWatcher(portEditText, this::validatePort, getColor(R.color.textColor), getColor(R.color.textErrorColor));
+        portEditText.addTextChangedListener(portEditTextWatcher);
     }
 
     private void prepareIntervalTextField(NetworkTask task, View view) {
         Log.d(NetworkTaskEditDialog.class.getName(), "prepareIntervalTextField with interval of " + task.getInterval());
         intervalEditText = view.findViewById(R.id.edittext_dialog_edit_network_task_interval);
         intervalEditText.setText(String.valueOf(task.getInterval()));
+        prepareIntervalEditTextListener();
+    }
+
+    private void prepareIntervalEditTextListener() {
+        if (intervalEditTextWatcher != null) {
+            intervalEditText.removeTextChangedListener(intervalEditTextWatcher);
+            intervalEditTextWatcher = null;
+        }
+        intervalEditTextWatcher = new TextColorValidatingWatcher(intervalEditText, this::validateInterval, getColor(R.color.textColor), getColor(R.color.textErrorColor));
+        intervalEditText.addTextChangedListener(intervalEditTextWatcher);
     }
 
     private void prepareNotificationSwitch(NetworkTask task, View view) {
@@ -207,10 +246,7 @@ public class NetworkTaskEditDialog extends DialogFragment {
     private Bundle validateInput() {
         Log.d(NetworkTaskEditDialog.class.getName(), "validateInput");
         Bundle bundle = new Bundle();
-        EnumMapping mapping = new EnumMapping(getContext());
-        AccessType accessType = getAccessType();
-        Validator validator = mapping.getValidator(accessType);
-        Log.d(NetworkTaskEditDialog.class.getName(), "Validator is " + validator.getClass().getSimpleName() + " for access type " + accessType);
+        Validator validator = getValidator();
         ValidationResult result = validator.validateAddress(getAddress());
         Log.d(NetworkTaskEditDialog.class.getName(), "address validation result: " + result);
         if (!result.isValidationSuccessful()) {
@@ -233,10 +269,47 @@ public class NetworkTaskEditDialog extends DialogFragment {
         return bundle;
     }
 
+    private boolean validateAddress(EditText editText) {
+        Log.d(NetworkTaskEditDialog.class.getName(), "validateAddress");
+        Validator validator = getValidator();
+        ValidationResult result = validator.validateAddress(getAddress());
+        Log.d(NetworkTaskEditDialog.class.getName(), "address validation result: " + result);
+        return result.isValidationSuccessful();
+    }
+
+    private boolean validatePort(EditText editText) {
+        Log.d(NetworkTaskEditDialog.class.getName(), "validatePort");
+        Validator validator = getValidator();
+        ValidationResult result = validator.validatePort(getPort());
+        Log.d(NetworkTaskEditDialog.class.getName(), "port validation result: " + result);
+        return result.isValidationSuccessful();
+    }
+
+    private boolean validateInterval(EditText editText) {
+        Log.d(NetworkTaskEditDialog.class.getName(), "validateInterval");
+        Validator validator = getValidator();
+        ValidationResult result = validator.validateInterval(getInterval());
+        Log.d(NetworkTaskEditDialog.class.getName(), "interval validation result: " + result);
+        return result.isValidationSuccessful();
+    }
+
+    @NonNull
+    private Validator getValidator() {
+        EnumMapping mapping = new EnumMapping(requireContext());
+        AccessType accessType = getAccessType();
+        Validator validator = mapping.getValidator(accessType);
+        Log.d(NetworkTaskEditDialog.class.getName(), "Validator is " + validator.getClass().getSimpleName() + " for access type " + accessType);
+        return validator;
+    }
+
     private void showErrorDialog(Bundle bundle) {
         Log.d(NetworkTaskEditDialog.class.getName(), "showErrorDialog, opening NetworkTaskEditErrorDialog");
         NetworkTaskEditErrorDialog errorDialog = new NetworkTaskEditErrorDialog();
         errorDialog.setArguments(bundle);
         errorDialog.show(Objects.requireNonNull(getFragmentManager()), NetworkTaskEditErrorDialog.class.getName());
+    }
+
+    private int getColor(int colorid) {
+        return ContextCompat.getColor(requireContext(), colorid);
     }
 }

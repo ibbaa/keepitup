@@ -18,21 +18,21 @@ public class TextColorValidatingWatcherTest {
     @Test
     public void testChangeTextColor() {
         EditText testEditText = new EditText(InstrumentationRegistry.getTargetContext());
-        TextColorValidatingWatcher watcher = new TextColorValidatingWatcher(testEditText, this::valdiateTrue, Color.BLACK, Color.RED);
+        TextColorValidatingWatcher watcher = new TextColorValidatingWatcher(testEditText, this::validateTrue, Color.BLACK, Color.RED);
         watcher.afterTextChanged(null);
         assertEquals(Color.BLACK, testEditText.getCurrentTextColor());
-        watcher = new TextColorValidatingWatcher(testEditText, this::valdiateFalse, Color.BLACK, Color.RED);
+        watcher = new TextColorValidatingWatcher(testEditText, this::validateFalse, Color.BLACK, Color.RED);
         watcher.afterTextChanged(null);
         assertEquals(Color.RED, testEditText.getCurrentTextColor());
     }
 
     @SuppressWarnings({"unused", "SameReturnValue"})
-    private boolean valdiateTrue(EditText editText) {
+    private boolean validateTrue(EditText editText) {
         return true;
     }
 
     @SuppressWarnings({"unused", "SameReturnValue"})
-    private boolean valdiateFalse(EditText editText) {
+    private boolean validateFalse(EditText editText) {
         return false;
     }
 }
