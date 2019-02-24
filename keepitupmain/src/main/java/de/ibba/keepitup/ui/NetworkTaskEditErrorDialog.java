@@ -43,7 +43,7 @@ public class NetworkTaskEditErrorDialog extends DialogFragment {
         for (int ii = 0; ii < resultList.size(); ii++) {
             ValidationResult currentResult = resultList.get(ii);
             Log.d(NetworkTaskEditErrorDialog.class.getName(), "prepareErrorMessages, result with index " + ii + " is " + currentResult);
-            TextView labelText = new TextView(getContext());
+            TextView labelText = new TextView(requireContext());
             labelText.setId(View.generateViewId());
             labelText.setText(currentResult.getFieldName());
             labelText.setTypeface(null, Typeface.BOLD);
@@ -56,7 +56,7 @@ public class NetworkTaskEditErrorDialog extends DialogFragment {
             labelTextParams.columnSpec = GridLayout.spec(0);
             labelTextParams.rowSpec = GridLayout.spec(ii + 1);
             gridLayout.addView(labelText, labelTextParams);
-            TextView messageText = new TextView(getContext());
+            TextView messageText = new TextView(requireContext());
             messageText.setId(View.generateViewId());
             messageText.setText(currentResult.getMessage());
             messageText.setTypeface(null, Typeface.NORMAL);
