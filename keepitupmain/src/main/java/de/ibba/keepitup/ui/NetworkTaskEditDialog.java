@@ -129,7 +129,6 @@ public class NetworkTaskEditDialog extends DialogFragment {
         }
     }
 
-
     private void prepareIntervalTextField(NetworkTask task, View view) {
         Log.d(NetworkTaskEditDialog.class.getName(), "prepareIntervalTextField with interval of " + task.getInterval());
         intervalEditText = view.findViewById(R.id.edittext_dialog_edit_network_task_interval);

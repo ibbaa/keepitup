@@ -4,7 +4,7 @@ public interface Validator {
 
     ValidationResult validateAddress(String address);
 
-    ValidationResult validatePort(String address);
+    ValidationResult validatePort(String port);
 
-    ValidationResult validateInterval(String address);
+    ValidationResult validateInterval(String interval);
 }
