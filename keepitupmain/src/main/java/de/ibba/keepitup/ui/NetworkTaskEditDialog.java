@@ -32,6 +32,8 @@ import de.ibba.keepitup.util.StringUtil;
 
 public class NetworkTaskEditDialog extends DialogFragment {
 
+    private View dialogView;
+    private NetworkTask task;
     private RadioGroup accessTypeGroup;
     private EditText addressEditText;
     private TextColorValidatingWatcher addressEditTextWatcher;
@@ -50,14 +52,14 @@ public class NetworkTaskEditDialog extends DialogFragment {
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.dialog_edit_network_task, container);
-        NetworkTask task = new NetworkTask(Objects.requireNonNull(getArguments()));
-        prepareAccessTypeRadioButtons(task, view);
-        prepareAddressTextFields(task, view);
-        prepareIntervalTextField(task, view);
-        prepareNotificationSwitch(task, view);
-        prepareOkCancelImageButtons(view);
-        return view;
+        dialogView = inflater.inflate(R.layout.dialog_edit_network_task, container);
+        task = new NetworkTask(Objects.requireNonNull(getArguments()));
+        prepareAccessTypeRadioButtons();
+        prepareAddressTextFields();
+        prepareIntervalTextField();
+        prepareNotificationSwitch();
+        prepareOkCancelImageButtons();
+        return dialogView;
     }
 
     private AccessType getAccessType() {
@@ -86,9 +88,10 @@ public class NetworkTaskEditDialog extends DialogFragment {
         return portEditText.getVisibility() == View.VISIBLE;
     }
 
-    private void prepareAccessTypeRadioButtons(NetworkTask task, View view) {
+    private void prepareAccessTypeRadioButtons() {
         Log.d(NetworkTaskEditDialog.class.getName(), "prepareAccessTypeRadioButtons with access type of " + task.getAccessType());
-        accessTypeGroup = view.findViewById(R.id.radiogroup_dialog_edit_network_task_accesstype);
+        accessTypeGroup = dialogView.findViewById(R.id.radiogroup_dialog_edit_network_task_accesstype);
+
         EnumMapping mapping = new EnumMapping(requireContext());
         AccessType[] accessTypes = AccessType.values();
         for (int ii = 0; ii < accessTypes.length; ii++) {
@@ -105,25 +108,31 @@ public class NetworkTaskEditDialog extends DialogFragment {
             LinearLayout.LayoutParams layoutParams = new RadioGroup.LayoutParams(RadioGroup.LayoutParams.WRAP_CONTENT, RadioGroup.LayoutParams.WRAP_CONTENT);
             accessTypeGroup.addView(newRadioButton, ii, layoutParams);
         }
+        accessTypeGroup.setOnCheckedChangeListener(this::onAccessTypeChanged);
     }
 
-    private void prepareAddressTextFields(NetworkTask task, View view) {
+    private void onAccessTypeChanged(RadioGroup group, int checkedId) {
+        prepareAddressTextFields();
+    }
+
+    private void prepareAddressTextFields() {
         Log.d(NetworkTaskEditDialog.class.getName(), "prepareAddressTextFields with address of " + task.getAddress() + " and port of " + task.getPort());
         EnumMapping mapping = new EnumMapping(requireContext());
-        RadioGroup accessTypeGroup = view.findViewById(R.id.radiogroup_dialog_edit_network_task_accesstype);
+        RadioGroup accessTypeGroup = dialogView.findViewById(R.id.radiogroup_dialog_edit_network_task_accesstype);
         int selectedId = accessTypeGroup.getCheckedRadioButtonId();
-        RadioButton selectedAccessTypeRadioButton = view.findViewById(selectedId);
-        AccessType accessType = null;
-        if (selectedAccessTypeRadioButton != null) {
-            accessType = (AccessType) selectedAccessTypeRadioButton.getTag();
+        RadioButton selectedAccessTypeRadioButton = dialogView.findViewById(selectedId);
+        if (selectedAccessTypeRadioButton == null) {
+            Log.d(NetworkTaskEditDialog.class.getName(), "prepareAddressTextFields, selectedAccessTypeRadioButton is null, no access type selected");
+            return;
         }
-        TextView addressTextView = view.findViewById(R.id.textview_dialog_edit_network_task_address_label);
+        AccessType accessType = (AccessType) selectedAccessTypeRadioButton.getTag();
+        TextView addressTextView = dialogView.findViewById(R.id.textview_dialog_edit_network_task_address_label);
         addressTextView.setText(mapping.getAccessTypeAddressLabel(accessType));
-        addressEditText = view.findViewById(R.id.edittext_dialog_edit_network_task_address);
+        addressEditText = dialogView.findViewById(R.id.edittext_dialog_edit_network_task_address);
         addressEditText.setText(StringUtil.notNull(task.getAddress()));
         prepareAddressEditTextListener();
-        TextView portTextView = view.findViewById(R.id.textview_dialog_edit_network_task_port_label);
-        portEditText = view.findViewById(R.id.edittext_dialog_edit_network_task_port);
+        TextView portTextView = dialogView.findViewById(R.id.textview_dialog_edit_network_task_port_label);
+        portEditText = dialogView.findViewById(R.id.edittext_dialog_edit_network_task_port);
         if (accessType != null && accessType.needsPort()) {
             portTextView.setText(mapping.getAccessTypePortLabel(accessType));
             portEditText.setText(String.valueOf(task.getPort()));
@@ -158,9 +167,9 @@ public class NetworkTaskEditDialog extends DialogFragment {
         portEditText.addTextChangedListener(portEditTextWatcher);
     }
 
-    private void prepareIntervalTextField(NetworkTask task, View view) {
+    private void prepareIntervalTextField() {
         Log.d(NetworkTaskEditDialog.class.getName(), "prepareIntervalTextField with interval of " + task.getInterval());
-        intervalEditText = view.findViewById(R.id.edittext_dialog_edit_network_task_interval);
+        intervalEditText = dialogView.findViewById(R.id.edittext_dialog_edit_network_task_interval);
         intervalEditText.setText(String.valueOf(task.getInterval()));
         prepareIntervalEditTextListener();
     }
@@ -174,10 +183,10 @@ public class NetworkTaskEditDialog extends DialogFragment {
         intervalEditText.addTextChangedListener(intervalEditTextWatcher);
     }
 
-    private void prepareNotificationSwitch(NetworkTask task, View view) {
+    private void prepareNotificationSwitch() {
         Log.d(NetworkTaskEditDialog.class.getName(), "prepareNotificationSwitch with notification setting of " + task.isNotification());
-        notificationSwitch = view.findViewById(R.id.switch_dialog_edit_network_task_notification);
-        notificationOnOffText = view.findViewById(R.id.textview_dialog_edit_network_task_notification_label_on_off);
+        notificationSwitch = dialogView.findViewById(R.id.switch_dialog_edit_network_task_notification);
+        notificationOnOffText = dialogView.findViewById(R.id.textview_dialog_edit_network_task_notification_label_on_off);
         notificationSwitch.setChecked(task.isNotification());
         notificationSwitch.setOnCheckedChangeListener(this::onNotificationCheckedChanged);
         prepareNotificationOnOffText();
@@ -187,10 +196,10 @@ public class NetworkTaskEditDialog extends DialogFragment {
         notificationOnOffText.setText(notificationSwitch.isChecked() ? getResources().getString(R.string.string_yes) : getResources().getString(R.string.string_no));
     }
 
-    private void prepareOkCancelImageButtons(View view) {
+    private void prepareOkCancelImageButtons() {
         Log.d(NetworkTaskEditDialog.class.getName(), "prepareOkCancelImageButtons");
-        ImageView okImage = view.findViewById(R.id.imageview_dialog_edit_network_task_ok);
-        ImageView cancelImage = view.findViewById(R.id.imageview_dialog_edit_network_task_cancel);
+        ImageView okImage = dialogView.findViewById(R.id.imageview_dialog_edit_network_task_ok);
+        ImageView cancelImage = dialogView.findViewById(R.id.imageview_dialog_edit_network_task_cancel);
         okImage.setOnClickListener(this::onOkClicked);
         cancelImage.setOnClickListener(this::onCancelClicked);
     }

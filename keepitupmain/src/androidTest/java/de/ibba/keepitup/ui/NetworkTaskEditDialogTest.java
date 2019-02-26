@@ -51,7 +51,7 @@ public class NetworkTaskEditDialogTest {
     public void testGetNetworkTaskDefaultValues() {
         ViewInteraction addNetworkTaskImageView = onView(allOf(withId(R.id.imageview_list_item_network_task_add), isDisplayed()));
         addNetworkTaskImageView.perform(click());
-        onView(withId(R.id.radiogroup_dialog_edit_network_task_accesstype)).check(matches(hasChildCount(1)));
+        onView(withId(R.id.radiogroup_dialog_edit_network_task_accesstype)).check(matches(hasChildCount(2)));
         onView(withText("Ping")).check(matches(isChecked()));
         onView(withId(R.id.edittext_dialog_edit_network_task_address)).check(matches(withText("192.168.178.1")));
         onView(withId(R.id.edittext_dialog_edit_network_task_port)).check(matches(withText("22")));
