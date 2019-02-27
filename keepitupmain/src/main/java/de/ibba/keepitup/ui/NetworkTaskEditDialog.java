@@ -91,7 +91,6 @@ public class NetworkTaskEditDialog extends DialogFragment {
     private void prepareAccessTypeRadioButtons() {
         Log.d(NetworkTaskEditDialog.class.getName(), "prepareAccessTypeRadioButtons with access type of " + task.getAccessType());
         accessTypeGroup = dialogView.findViewById(R.id.radiogroup_dialog_edit_network_task_accesstype);
-
         EnumMapping mapping = new EnumMapping(requireContext());
         AccessType[] accessTypes = AccessType.values();
         for (int ii = 0; ii < accessTypes.length; ii++) {
@@ -133,15 +132,18 @@ public class NetworkTaskEditDialog extends DialogFragment {
         prepareAddressEditTextListener();
         TextView portTextView = dialogView.findViewById(R.id.textview_dialog_edit_network_task_port_label);
         portEditText = dialogView.findViewById(R.id.edittext_dialog_edit_network_task_port);
+        LinearLayout portLinearLayout = dialogView.findViewById(R.id.linearlayout_dialog_edit_network_task_port);
         if (accessType != null && accessType.needsPort()) {
             portTextView.setText(mapping.getAccessTypePortLabel(accessType));
             portEditText.setText(String.valueOf(task.getPort()));
             portTextView.setVisibility(View.VISIBLE);
             portEditText.setVisibility(View.VISIBLE);
+            portLinearLayout.setVisibility(View.VISIBLE);
             preparePortEditTextListener();
         } else {
             portTextView.setVisibility(View.GONE);
             portEditText.setVisibility(View.GONE);
+            portLinearLayout.setVisibility(View.GONE);
             if (portEditTextWatcher != null) {
                 portEditText.removeTextChangedListener(portEditTextWatcher);
                 portEditTextWatcher = null;
