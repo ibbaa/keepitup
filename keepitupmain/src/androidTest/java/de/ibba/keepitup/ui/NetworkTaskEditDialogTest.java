@@ -2,10 +2,16 @@ package de.ibba.keepitup.ui;
 
 import android.support.test.annotation.UiThreadTest;
 import android.support.test.espresso.ViewInteraction;
+import android.support.test.espresso.matcher.BoundedMatcher;
 import android.support.test.filters.MediumTest;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
+import android.support.v4.content.ContextCompat;
+import android.view.View;
+import android.widget.TextView;
 
+import org.hamcrest.Description;
+import org.hamcrest.Matcher;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -27,6 +33,7 @@ import static android.support.test.espresso.matcher.ViewMatchers.isNotChecked;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
 import static org.hamcrest.Matchers.allOf;
+import static org.hamcrest.core.IsNot.not;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -83,6 +90,25 @@ public class NetworkTaskEditDialogTest {
         assertEquals(80, task.getPort());
         assertEquals(60, task.getInterval());
         assertTrue(task.isNotification());
+        onView(withText("Connect")).perform(click());
+        task = dialog.getNetworkTask();
+        assertEquals(AccessType.CONNECT, task.getAccessType());
+    }
+
+    @Test
+    public void testAccessTypePortField() {
+        ViewInteraction addNetworkTaskImageView = onView(allOf(withId(R.id.imageview_list_item_network_task_add), isDisplayed()));
+        addNetworkTaskImageView.perform(click());
+        onView(withText("Connect")).perform(click());
+        onView(withId(R.id.edittext_dialog_edit_network_task_address)).check(matches(isDisplayed()));
+        onView(withId(R.id.edittext_dialog_edit_network_task_port)).check(matches(not(isDisplayed())));
+        onView(withId(R.id.edittext_dialog_edit_network_task_interval)).check(matches(isDisplayed()));
+        onView(withId(R.id.switch_dialog_edit_network_task_notification)).check(matches(isDisplayed()));
+        onView(withText("Ping")).perform(click());
+        onView(withId(R.id.edittext_dialog_edit_network_task_address)).check(matches(isDisplayed()));
+        onView(withId(R.id.edittext_dialog_edit_network_task_port)).check(matches(isDisplayed()));
+        onView(withId(R.id.edittext_dialog_edit_network_task_interval)).check(matches(isDisplayed()));
+        onView(withId(R.id.switch_dialog_edit_network_task_notification)).check(matches(isDisplayed()));
     }
 
     @Test
@@ -99,7 +125,7 @@ public class NetworkTaskEditDialogTest {
     }
 
     @Test
-    public void testOnOkCancelClickedInputErrors() {
+    public void testOnOkCancelClickedErrorDialog() {
         ViewInteraction addNetworkTaskImageView = onView(allOf(withId(R.id.imageview_list_item_network_task_add), isDisplayed()));
         addNetworkTaskImageView.perform(click());
         onView(withId(R.id.edittext_dialog_edit_network_task_address)).perform(replaceText("123.456"));
@@ -128,5 +154,49 @@ public class NetworkTaskEditDialogTest {
         assertEquals(1, activity.getSupportFragmentManager().getFragments().size());
         onView(withId(R.id.imageview_dialog_edit_network_task_cancel)).perform(click());
         assertEquals(0, activity.getSupportFragmentManager().getFragments().size());
+    }
+
+    @Test
+    public void testOnOkCancelClickedInputErrorColor() {
+        ViewInteraction addNetworkTaskImageView = onView(allOf(withId(R.id.imageview_list_item_network_task_add), isDisplayed()));
+        addNetworkTaskImageView.perform(click());
+        onView(withId(R.id.edittext_dialog_edit_network_task_address)).check(matches(withTextColor(R.color.textColor)));
+        onView(withId(R.id.edittext_dialog_edit_network_task_port)).check(matches(withTextColor(R.color.textColor)));
+        onView(withId(R.id.edittext_dialog_edit_network_task_interval)).check(matches(withTextColor(R.color.textColor)));
+        onView(withId(R.id.edittext_dialog_edit_network_task_address)).perform(replaceText("123.456"));
+        onView(withId(R.id.edittext_dialog_edit_network_task_address)).check(matches(withTextColor(R.color.textErrorColor)));
+        onView(withId(R.id.edittext_dialog_edit_network_task_port)).check(matches(withTextColor(R.color.textColor)));
+        onView(withId(R.id.edittext_dialog_edit_network_task_interval)).check(matches(withTextColor(R.color.textColor)));
+        onView(withId(R.id.edittext_dialog_edit_network_task_port)).perform(replaceText("99999"));
+        onView(withId(R.id.edittext_dialog_edit_network_task_address)).check(matches(withTextColor(R.color.textErrorColor)));
+        onView(withId(R.id.edittext_dialog_edit_network_task_port)).check(matches(withTextColor(R.color.textErrorColor)));
+        onView(withId(R.id.edittext_dialog_edit_network_task_interval)).check(matches(withTextColor(R.color.textColor)));
+        onView(withId(R.id.edittext_dialog_edit_network_task_interval)).perform(replaceText("0"));
+        onView(withId(R.id.edittext_dialog_edit_network_task_address)).check(matches(withTextColor(R.color.textErrorColor)));
+        onView(withId(R.id.edittext_dialog_edit_network_task_port)).check(matches(withTextColor(R.color.textErrorColor)));
+        onView(withId(R.id.edittext_dialog_edit_network_task_interval)).check(matches(withTextColor(R.color.textErrorColor)));
+        onView(withId(R.id.edittext_dialog_edit_network_task_address)).perform(replaceText("localhost"));
+        onView(withId(R.id.edittext_dialog_edit_network_task_port)).perform(replaceText("80"));
+        onView(withId(R.id.edittext_dialog_edit_network_task_interval)).perform(replaceText("60"));
+        onView(withId(R.id.edittext_dialog_edit_network_task_address)).check(matches(withTextColor(R.color.textColor)));
+        onView(withId(R.id.edittext_dialog_edit_network_task_port)).check(matches(withTextColor(R.color.textColor)));
+        onView(withId(R.id.edittext_dialog_edit_network_task_interval)).check(matches(withTextColor(R.color.textColor)));
+    }
+
+    public static Matcher<View> withTextColor(final int expectedId) {
+        return new BoundedMatcher<View, TextView>(TextView.class) {
+
+            @Override
+            protected boolean matchesSafely(TextView textView) {
+                int colorId = ContextCompat.getColor(textView.getContext(), expectedId);
+                return textView.getCurrentTextColor() == colorId;
+            }
+
+            @Override
+            public void describeTo(Description description) {
+                description.appendText("with text color: ");
+                description.appendValue(expectedId);
+            }
+        };
     }
 }
