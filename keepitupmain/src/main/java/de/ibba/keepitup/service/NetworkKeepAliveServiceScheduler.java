@@ -30,7 +30,7 @@ public class NetworkKeepAliveServiceScheduler {
         JobScheduler jobScheduler = (JobScheduler) getContext().getSystemService(JOB_SCHEDULER_SERVICE);
         ComponentName componentName = new ComponentName(getContext(), NetworkKeepAliveService.class);
         long interval = getIntervalMilliseconds(networkTask);
-        JobInfo jobInfo = new JobInfo.Builder(networkTask.getId(), componentName).setPeriodic(interval).setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY).setPersisted(false).setExtras(networkTask.toPersistableBundle()).build();
+        JobInfo jobInfo = new JobInfo.Builder(networkTask.getSchedulerid(), componentName).setPeriodic(interval).setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY).setPersisted(false).setExtras(networkTask.toPersistableBundle()).build();
         Log.d(NetworkKeepAliveServiceScheduler.class.getName(), "Starting NetworkKeepAliveService with periodic interval of " + interval + " msec for job " + networkTask);
         jobScheduler.schedule(jobInfo);
     }
@@ -39,14 +39,14 @@ public class NetworkKeepAliveServiceScheduler {
         Log.d(NetworkKeepAliveServiceScheduler.class.getName(), "Stop network task " + networkTask);
         JobScheduler jobScheduler = (JobScheduler) getContext().getSystemService(JOB_SCHEDULER_SERVICE);
         Log.d(NetworkKeepAliveServiceScheduler.class.getName(), "Stopping NetworkKeepAliveService for job " + networkTask);
-        jobScheduler.cancel(networkTask.getId());
+        jobScheduler.cancel(networkTask.getSchedulerid());
     }
 
     public boolean isRunning(NetworkTask networkTask) {
         JobScheduler jobScheduler = (JobScheduler) getContext().getSystemService(JOB_SCHEDULER_SERVICE);
         List<JobInfo> jobList = jobScheduler.getAllPendingJobs();
         for (JobInfo currentJob : jobList) {
-            if (currentJob.getId() == networkTask.getId()) {
+            if (currentJob.getId() == networkTask.getSchedulerid()) {
                 return true;
             }
         }

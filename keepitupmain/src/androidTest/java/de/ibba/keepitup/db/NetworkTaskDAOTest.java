@@ -38,17 +38,14 @@ public class NetworkTaskDAOTest {
 
     @Test
     public void testInsertReadDelete() {
-        assertEquals(0, dao.readMaximumIndex());
         NetworkTask insertedTask1 = getNetworkTask1();
         dao.insertNetworkTask(insertedTask1);
         List<NetworkTask> readTasks = dao.readAllNetworkTasks();
         assertEquals(1, readTasks.size());
         NetworkTask readTask = readTasks.get(0);
         assertAreEqual(insertedTask1, readTask);
-        assertEquals(1, dao.readMaximumIndex());
         readTask = dao.readNetworkTask(readTask.getId());
         assertAreEqual(insertedTask1, readTask);
-        assertEquals(1, readTask.getIndex());
         NetworkTask insertedTask2 = getNetworkTask2();
         NetworkTask insertedTask3 = getNetworkTask3();
         dao.insertNetworkTask(insertedTask2);
@@ -56,15 +53,14 @@ public class NetworkTaskDAOTest {
         readTasks = dao.readAllNetworkTasks();
         assertEquals(3, readTasks.size());
         NetworkTask readTask1 = readTasks.get(0);
-        NetworkTask readTask2 = readTasks.get(1);
-        NetworkTask readTask3 = readTasks.get(2);
+        NetworkTask readTask3 = readTasks.get(1);
+        NetworkTask readTask2 = readTasks.get(2);
         assertAreEqual(insertedTask1, readTask1);
         assertAreEqual(insertedTask2, readTask2);
         assertAreEqual(insertedTask3, readTask3);
         assertEquals(1, readTask1.getIndex());
-        assertEquals(2, readTask2.getIndex());
-        assertEquals(3, readTask3.getIndex());
-        assertEquals(3, dao.readMaximumIndex());
+        assertEquals(10, readTask2.getIndex());
+        assertEquals(5, readTask3.getIndex());
         readTask1 = dao.readNetworkTask(readTask1.getId());
         readTask2 = dao.readNetworkTask(readTask2.getId());
         readTask3 = dao.readNetworkTask(readTask3.getId());
@@ -85,6 +81,8 @@ public class NetworkTaskDAOTest {
         dao.updateNetworkTaskSuccess(readTask1.getId(), false, 987, "TestMessage2");
         assertAreEqual(insertedTask1, readTask1);
         readTask1 = dao.readNetworkTask(readTask1.getId());
+        assertEquals(insertedTask1.getIndex(), readTask1.getIndex());
+        assertEquals(insertedTask1.getSchedulerid(), readTask1.getSchedulerid());
         assertEquals(insertedTask1.getAccessType(), readTask1.getAccessType());
         assertEquals(insertedTask1.getAddress(), readTask1.getAddress());
         assertEquals(insertedTask1.getPort(), readTask1.getPort());
@@ -111,6 +109,8 @@ public class NetworkTaskDAOTest {
         assertEquals(task2.getPort(), readTask1.getPort());
         assertEquals(task2.getInterval(), readTask1.getInterval());
         assertEquals(task2.isNotification(), readTask1.isNotification());
+        assertEquals(insertedTask1.getIndex(), readTask1.getIndex());
+        assertEquals(insertedTask1.getSchedulerid(), readTask1.getSchedulerid());
         assertEquals(insertedTask1.isSuccess(), readTask1.isSuccess());
         assertEquals(insertedTask1.getTimestamp(), readTask1.getTimestamp());
         assertEquals(insertedTask1.getMessage(), readTask1.getMessage());
@@ -119,6 +119,8 @@ public class NetworkTaskDAOTest {
     private NetworkTask getNetworkTask1() {
         NetworkTask insertedTask1 = new NetworkTask();
         insertedTask1.setId(0);
+        insertedTask1.setIndex(1);
+        insertedTask1.setSchedulerid(11);
         insertedTask1.setAddress("127.0.0.1");
         insertedTask1.setPort(80);
         insertedTask1.setAccessType(AccessType.PING);
@@ -133,6 +135,8 @@ public class NetworkTaskDAOTest {
     private NetworkTask getNetworkTask2() {
         NetworkTask insertedTask2 = new NetworkTask();
         insertedTask2.setId(0);
+        insertedTask2.setIndex(10);
+        insertedTask2.setSchedulerid(22);
         insertedTask2.setAddress("host.com");
         insertedTask2.setPort(21);
         insertedTask2.setAccessType(null);
@@ -147,6 +151,8 @@ public class NetworkTaskDAOTest {
     private NetworkTask getNetworkTask3() {
         NetworkTask insertedTask3 = new NetworkTask();
         insertedTask3.setId(0);
+        insertedTask3.setIndex(5);
+        insertedTask3.setSchedulerid(33);
         insertedTask3.setAddress(null);
         insertedTask3.setPort(456);
         insertedTask3.setAccessType(AccessType.PING);
@@ -159,6 +165,8 @@ public class NetworkTaskDAOTest {
     }
 
     private void assertAreEqual(NetworkTask task1, NetworkTask task2) {
+        assertEquals(task1.getIndex(), task2.getIndex());
+        assertEquals(task1.getSchedulerid(), task2.getSchedulerid());
         assertEquals(task1.getAccessType(), task2.getAccessType());
         assertEquals(task1.getAddress(), task2.getAddress());
         assertEquals(task1.getPort(), task2.getPort());

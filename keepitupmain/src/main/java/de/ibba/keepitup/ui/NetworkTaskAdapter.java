@@ -118,6 +118,20 @@ public class NetworkTaskAdapter extends RecyclerView.Adapter<NetworkTaskViewHold
         return networkTask.getTimestamp() > 0;
     }
 
+    public void addItem(NetworkTask task) {
+        networkTasks.add(task);
+    }
+
+    public void replaceItem(NetworkTask task) {
+        for (int ii = 0; ii < networkTasks.size(); ii++) {
+            NetworkTask currentTask = networkTasks.get(ii);
+            if (task.getId() == currentTask.getId()) {
+                networkTasks.set(ii, task);
+                return;
+            }
+        }
+    }
+
     @Override
     public int getItemCount() {
         return networkTasks.size() + 1;

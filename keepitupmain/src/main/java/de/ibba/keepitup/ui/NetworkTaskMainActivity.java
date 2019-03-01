@@ -12,10 +12,9 @@ import android.view.MenuItem;
 import android.view.View;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import de.ibba.keepitup.R;
-import de.ibba.keepitup.model.AccessType;
+import de.ibba.keepitup.db.NetworkTaskDAO;
 import de.ibba.keepitup.model.NetworkTask;
 import de.ibba.keepitup.service.NetworkKeepAliveServiceScheduler;
 
@@ -26,38 +25,10 @@ public class NetworkTaskMainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_network_task);
         RecyclerView recyclerView = findViewById(R.id.listview_main_activity_network_tasks);
-        List<NetworkTask> taskList = prepareTaskList();
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
-        recyclerView.setAdapter(new NetworkTaskAdapter(taskList, this));
-    }
-
-    private List<NetworkTask> prepareTaskList() {
-        List<NetworkTask> taskList = new ArrayList<>();
-        NetworkTask task1 = new NetworkTask();
-        task1.setId(1);
-        task1.setAddress("Address1");
-        task1.setPort(21);
-        task1.setAccessType(AccessType.PING);
-        task1.setInterval(15);
-        task1.setNotification(true);
-        task1.setTimestamp(System.currentTimeMillis());
-        task1.setSuccess(true);
-        task1.setMessage("Successful execution");
-        NetworkTask task2 = new NetworkTask();
-        task2.setId(2);
-        task2.setAddress("Address2");
-        task2.setPort(21);
-        task2.setAccessType(null);
-        task2.setInterval(30);
-        task2.setNotification(false);
-        taskList.add(task1);
-        taskList.add(task2);
-        task2.setTimestamp(-1);
-        task2.setSuccess(false);
-        task2.setMessage("Not executed");
-        return taskList;
+        recyclerView.setAdapter(new NetworkTaskAdapter(new ArrayList<>(), this));
     }
 
     @Override
@@ -107,6 +78,13 @@ public class NetworkTaskMainActivity extends AppCompatActivity {
     public void onEditDialogOkClicked(NetworkTaskEditDialog editDialog) {
         NetworkTask task = editDialog.getNetworkTask();
         Log.d(NetworkTaskMainActivity.class.getName(), "onEditDialogOkClicked, network task is " + task);
+        NetworkTaskDAO dao = new NetworkTaskDAO(this);
+        if (task.getId() < 0) {
+            Log.d(NetworkTaskMainActivity.class.getName(), "onEditDialogOkClicked, network task is new, inserting " + task);
+        } else {
+            Log.d(NetworkTaskMainActivity.class.getName(), "onEditDialogOkClicked, network task is new, updating " + task);
+        }
+        getAdapter().notifyDataSetChanged();
         editDialog.dismiss();
     }
 

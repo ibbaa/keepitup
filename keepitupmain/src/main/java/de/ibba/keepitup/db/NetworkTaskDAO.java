@@ -22,12 +22,12 @@ public class NetworkTaskDAO {
         this.context = context;
     }
 
-    public long insertNetworkTask(NetworkTask networkTask) {
+    public NetworkTask insertNetworkTask(NetworkTask networkTask) {
         Log.d(NetworkTaskDAO.class.getName(), "Inserting task " + networkTask);
         return executeDBOperationInTransaction(networkTask, this::insertNetworkTask);
     }
 
-    public void deleteNetworkTask(int taskId) {
+    public void deleteNetworkTask(long taskId) {
         Log.d(NetworkTaskDAO.class.getName(), "Deleting task with id " + taskId);
         NetworkTask networkTask = new NetworkTask();
         networkTask.setId(taskId);
@@ -44,7 +44,7 @@ public class NetworkTaskDAO {
         executeDBOperationInTransaction(networkTask, this::updateNetworkTask);
     }
 
-    public void updateNetworkTaskSuccess(int taskId, boolean success, long timestamp, String message) {
+    public void updateNetworkTaskSuccess(long taskId, boolean success, long timestamp, String message) {
         Log.d(NetworkTaskDAO.class.getName(), "Updating success status to " + success + " with a message " + message + " of task with id " + taskId);
         NetworkTask networkTask = new NetworkTask();
         networkTask.setId(taskId);
@@ -54,7 +54,7 @@ public class NetworkTaskDAO {
         executeDBOperationInTransaction(networkTask, this::updateNetworkTaskSuccess);
     }
 
-    public NetworkTask readNetworkTask(int taskId) {
+    public NetworkTask readNetworkTask(long taskId) {
         Log.d(NetworkTaskDAO.class.getName(), "Reading task with id " + taskId);
         NetworkTask networkTask = new NetworkTask();
         networkTask.setId(taskId);
@@ -66,16 +66,11 @@ public class NetworkTaskDAO {
         return executeDBOperationInTransaction(null, this::readAllNetworkTasks);
     }
 
-    public long readMaximumIndex() {
-        Log.d(NetworkTaskDAO.class.getName(), "Reading maximum index");
-        return executeDBOperationInTransaction(null, this::readMaximumIndex);
-    }
-
-    private long insertNetworkTask(NetworkTask networkTask, SQLiteDatabase db) {
+    private NetworkTask insertNetworkTask(NetworkTask networkTask, SQLiteDatabase db) {
         ContentValues values = new ContentValues();
         NetworkTaskDBConstants dbConstants = new NetworkTaskDBConstants(context);
-        long index = readMaximumIndex(networkTask, db);
-        values.put(dbConstants.getIndexColumnName(), index + 1);
+        values.put(dbConstants.getIndexColumnName(), networkTask.getIndex());
+        values.put(dbConstants.getSchedulerIdColumnName(), networkTask.getSchedulerid());
         values.put(dbConstants.getAddressColumnName(), networkTask.getAddress());
         values.put(dbConstants.getPortColumnName(), networkTask.getPort());
         values.put(dbConstants.getAccessTypeColumnName(), networkTask.getAccessType() == null ? null : networkTask.getAccessType().getCode());
@@ -88,7 +83,8 @@ public class NetworkTaskDAO {
         if (rowid < 0) {
             Log.e(NetworkTaskDAO.class.getName(), "Error inserting task into database. Insert returned -1.");
         }
-        return rowid;
+        networkTask.setId(rowid);
+        return networkTask;
     }
 
     private int deleteNetworkTask(NetworkTask networkTask, SQLiteDatabase db) {
@@ -180,35 +176,12 @@ public class NetworkTaskDAO {
         return result;
     }
 
-    @SuppressWarnings("unused")
-    private long readMaximumIndex(NetworkTask networkTask, SQLiteDatabase db) {
-        Cursor cursor = null;
-        long index = 0;
-        NetworkTaskDBConstants dbConstants = new NetworkTaskDBConstants(context);
-        try {
-            cursor = db.rawQuery(dbConstants.getReadMaximumIndexStatement(), null);
-            while (cursor.moveToNext()) {
-                if (!cursor.isNull(0)) {
-                    index = cursor.getLong(0);
-                }
-            }
-        } finally {
-            if (cursor != null) {
-                try {
-                    cursor.close();
-                } catch (Throwable exc) {
-                    Log.e(NetworkTaskDAO.class.getName(), "Error closing result cursor", exc);
-                }
-            }
-        }
-        return index;
-    }
-
     private NetworkTask mapCursorToNetworkTask(Cursor cursor) {
         NetworkTask networkTask = new NetworkTask();
         NetworkTaskDBConstants dbConstants = new NetworkTaskDBConstants(context);
         int indexIdColumn = cursor.getColumnIndex(dbConstants.getIdColumnName());
         int indexIndexColumn = cursor.getColumnIndex(dbConstants.getIndexColumnName());
+        int schedulerIdIndexColumn = cursor.getColumnIndex(dbConstants.getSchedulerIdColumnName());
         int indexAddressColumn = cursor.getColumnIndex(dbConstants.getAddressColumnName());
         int indexPortColumn = cursor.getColumnIndex(dbConstants.getPortColumnName());
         int indexAccessTypeColumn = cursor.getColumnIndex(dbConstants.getAccessTypeColumnName());
@@ -219,6 +192,7 @@ public class NetworkTaskDAO {
         int indexNotificationColumn = cursor.getColumnIndex(dbConstants.getNotificationColumnName());
         networkTask.setId(cursor.getInt(indexIdColumn));
         networkTask.setIndex(cursor.getInt(indexIndexColumn));
+        networkTask.setSchedulerid(cursor.getInt(schedulerIdIndexColumn));
         networkTask.setAddress(cursor.getString(indexAddressColumn));
         networkTask.setPort(cursor.getInt(indexPortColumn));
         if (cursor.isNull(indexAccessTypeColumn)) {
