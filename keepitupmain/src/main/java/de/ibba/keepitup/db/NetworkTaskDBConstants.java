@@ -25,6 +25,10 @@ class NetworkTaskDBConstants {
         return getResources().getString(R.string.task_index_column_name);
     }
 
+    public String getSchedulerIdColumnName() {
+        return getResources().getString(R.string.task_schedulerid_column_name);
+    }
+
     public String getAddressColumnName() {
         return getResources().getString(R.string.task_address_column_name);
     }
@@ -61,6 +65,7 @@ class NetworkTaskDBConstants {
         return ("CREATE TABLE " + getTableName() + "(") +
                 getIdColumnName() + " INTEGER PRIMARY KEY ASC, " +
                 getIndexColumnName() + " INTEGER, " +
+                getSchedulerIdColumnName() + " INTEGER, " +
                 getAddressColumnName() + " TEXT, " +
                 getPortColumnName() + " INTEGER, " +
                 getAccessTypeColumnName() + " INTEGER, " +
@@ -79,6 +84,7 @@ class NetworkTaskDBConstants {
         return "SELECT " +
                 getIdColumnName() + ", " +
                 getIndexColumnName() + ", " +
+                getSchedulerIdColumnName() + ", " +
                 getAddressColumnName() + ", " +
                 getPortColumnName() + ", " +
                 getAccessTypeColumnName() + ", " +
@@ -96,6 +102,7 @@ class NetworkTaskDBConstants {
         return "SELECT " +
                 getIdColumnName() + ", " +
                 getIndexColumnName() + ", " +
+                getSchedulerIdColumnName() + ", " +
                 getAddressColumnName() + ", " +
                 getPortColumnName() + ", " +
                 getAccessTypeColumnName() + ", " +
@@ -106,10 +113,6 @@ class NetworkTaskDBConstants {
                 getNotificationColumnName() +
                 " FROM " + getTableName() +
                 " ORDER BY " + getIndexColumnName() + " ASC";
-    }
-
-    public String getReadMaximumIndexStatement() {
-        return "SELECT MAX(" + getIndexColumnName() + ") FROM " + getTableName();
     }
 
     private Resources getResources() {

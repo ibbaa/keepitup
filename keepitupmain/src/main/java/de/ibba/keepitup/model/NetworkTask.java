@@ -10,8 +10,9 @@ import de.ibba.keepitup.R;
 
 public class NetworkTask {
 
-    private int id;
+    private long id;
     private int index;
+    private int schedulerid;
     private String address;
     private int port;
     private AccessType accessType;
@@ -24,6 +25,7 @@ public class NetworkTask {
     public NetworkTask() {
         this.id = -1;
         this.index = -1;
+        this.schedulerid = -1;
         this.address = null;
         this.port = 0;
         this.accessType = null;
@@ -38,6 +40,7 @@ public class NetworkTask {
         Resources resources = context.getResources();
         this.id = -1;
         this.index = -1;
+        this.schedulerid = -1;
         this.address = resources.getString(R.string.task_address_default);
         this.port = resources.getInteger(R.integer.task_port_default);
         this.accessType = AccessType.valueOf(resources.getString(R.string.task_accesstype_default));
@@ -53,8 +56,9 @@ public class NetworkTask {
     }
 
     public NetworkTask(Bundle bundle) {
-        this.id = bundle.getInt("id");
+        this.id = bundle.getLong("id");
         this.index = bundle.getInt("index");
+        this.schedulerid = bundle.getInt("schedulerid");
         this.address = bundle.getString("address");
         this.port = bundle.getInt("port");
         if (bundle.containsKey("accessType")) {
@@ -67,11 +71,11 @@ public class NetworkTask {
         this.notification = bundle.getInt("notification") >= 1;
     }
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(long id) {
         this.id = id;
     }
 
@@ -81,6 +85,14 @@ public class NetworkTask {
 
     public void setIndex(int index) {
         this.index = index;
+    }
+
+    public int getSchedulerid() {
+        return schedulerid;
+    }
+
+    public void setSchedulerid(int schedulerid) {
+        this.schedulerid = schedulerid;
     }
 
     public String getAddress() {
@@ -149,8 +161,9 @@ public class NetworkTask {
 
     public PersistableBundle toPersistableBundle() {
         PersistableBundle bundle = new PersistableBundle();
-        bundle.putInt("id", id);
+        bundle.putLong("id", id);
         bundle.putInt("index", index);
+        bundle.putInt("schedulerid", schedulerid);
         if (address != null) {
             bundle.putString("address", address);
         }
@@ -178,6 +191,7 @@ public class NetworkTask {
         return "NetworkTask{" +
                 "id=" + id +
                 ", index=" + index +
+                ", schedulerid=" + schedulerid +
                 ", address='" + address + '\'' +
                 ", port=" + port +
                 ", accessType=" + accessType +
