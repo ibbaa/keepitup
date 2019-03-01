@@ -15,8 +15,8 @@ import de.ibba.keepitup.model.AccessType;
 import de.ibba.keepitup.model.NetworkTask;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
 
 @MediumTest
 @RunWith(AndroidJUnit4.class)
@@ -77,35 +77,43 @@ public class NetworkTaskDAOTest {
     }
 
     @Test
-    public void testUpdate() {
+    public void testUpdateSuccess() {
         NetworkTask insertedTask1 = getNetworkTask1();
-        NetworkTask insertedTask2 = getNetworkTask2();
-        NetworkTask insertedTask3 = getNetworkTask3();
         dao.insertNetworkTask(insertedTask1);
-        dao.insertNetworkTask(insertedTask2);
-        dao.insertNetworkTask(insertedTask3);
         List<NetworkTask> readTasks = dao.readAllNetworkTasks();
         NetworkTask readTask1 = readTasks.get(0);
-        NetworkTask readTask2 = readTasks.get(1);
-        NetworkTask readTask3 = readTasks.get(2);
-        dao.updateNetworkTaskSuccess(readTask2.getId(), true, 987, "TestMessage2");
-        dao.updateNetworkTaskNotification(readTask3.getId(), true);
-        readTask2 = dao.readNetworkTask(readTask2.getId());
-        readTask3 = dao.readNetworkTask(readTask3.getId());
+        dao.updateNetworkTaskSuccess(readTask1.getId(), false, 987, "TestMessage2");
         assertAreEqual(insertedTask1, readTask1);
-        assertEquals(insertedTask2.getAddress(), readTask2.getAddress());
-        assertEquals(insertedTask2.getPort(), readTask2.getPort());
-        assertEquals(insertedTask2.getInterval(), readTask2.getInterval());
-        assertEquals(insertedTask2.isNotification(), readTask2.isNotification());
-        assertTrue(readTask2.isSuccess());
-        assertEquals(987, readTask2.getTimestamp());
-        assertEquals("TestMessage2", readTask2.getMessage());
-        assertEquals(insertedTask3.getAddress(), readTask3.getAddress());
-        assertEquals(insertedTask3.getPort(), readTask3.getPort());
-        assertEquals(insertedTask3.getInterval(), readTask3.getInterval());
-        assertEquals(insertedTask3.isSuccess(), readTask3.isSuccess());
-        assertEquals(insertedTask3.getMessage(), readTask3.getMessage());
-        assertTrue(readTask3.isNotification());
+        readTask1 = dao.readNetworkTask(readTask1.getId());
+        assertEquals(insertedTask1.getAccessType(), readTask1.getAccessType());
+        assertEquals(insertedTask1.getAddress(), readTask1.getAddress());
+        assertEquals(insertedTask1.getPort(), readTask1.getPort());
+        assertEquals(insertedTask1.getInterval(), readTask1.getInterval());
+        assertEquals(insertedTask1.isNotification(), readTask1.isNotification());
+        assertFalse(readTask1.isSuccess());
+        assertEquals(987, readTask1.getTimestamp());
+        assertEquals("TestMessage2", readTask1.getMessage());
+    }
+
+    @Test
+    public void testUpdate() {
+        NetworkTask insertedTask1 = getNetworkTask1();
+        dao.insertNetworkTask(insertedTask1);
+        List<NetworkTask> readTasks = dao.readAllNetworkTasks();
+        NetworkTask readTask1 = readTasks.get(0);
+        NetworkTask task2 = getNetworkTask2();
+        task2.setId(readTask1.getId());
+        dao.updateNetworkTask(task2);
+        assertAreEqual(insertedTask1, readTask1);
+        readTask1 = dao.readNetworkTask(readTask1.getId());
+        assertEquals(task2.getAccessType(), readTask1.getAccessType());
+        assertEquals(task2.getAddress(), readTask1.getAddress());
+        assertEquals(task2.getPort(), readTask1.getPort());
+        assertEquals(task2.getInterval(), readTask1.getInterval());
+        assertEquals(task2.isNotification(), readTask1.isNotification());
+        assertEquals(insertedTask1.isSuccess(), readTask1.isSuccess());
+        assertEquals(insertedTask1.getTimestamp(), readTask1.getTimestamp());
+        assertEquals(insertedTask1.getMessage(), readTask1.getMessage());
     }
 
     private NetworkTask getNetworkTask1() {
@@ -151,6 +159,7 @@ public class NetworkTaskDAOTest {
     }
 
     private void assertAreEqual(NetworkTask task1, NetworkTask task2) {
+        assertEquals(task1.getAccessType(), task2.getAccessType());
         assertEquals(task1.getAddress(), task2.getAddress());
         assertEquals(task1.getPort(), task2.getPort());
         assertEquals(task1.getInterval(), task2.getInterval());

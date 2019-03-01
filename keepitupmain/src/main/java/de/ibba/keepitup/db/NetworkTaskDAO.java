@@ -39,12 +39,9 @@ public class NetworkTaskDAO {
         executeDBOperationInTransaction(null, this::deleteAllNetworkTasks);
     }
 
-    public void updateNetworkTaskNotification(int taskId, boolean notification) {
-        Log.d(NetworkTaskDAO.class.getName(), "Updating notification status to " + notification + " of task with id " + taskId);
-        NetworkTask networkTask = new NetworkTask();
-        networkTask.setId(taskId);
-        networkTask.setNotification(notification);
-        executeDBOperationInTransaction(networkTask, this::updateNetworkTaskNotification);
+    public void updateNetworkTask(NetworkTask networkTask) {
+        Log.d(NetworkTaskDAO.class.getName(), "Updating task with id " + networkTask.getId());
+        executeDBOperationInTransaction(networkTask, this::updateNetworkTask);
     }
 
     public void updateNetworkTaskSuccess(int taskId, boolean success, long timestamp, String message) {
@@ -118,12 +115,17 @@ public class NetworkTaskDAO {
         return db.update(dbConstants.getTableName(), values, selection, selectionArgs);
     }
 
-    private int updateNetworkTaskNotification(NetworkTask networkTask, SQLiteDatabase db) {
+    private int updateNetworkTask(NetworkTask networkTask, SQLiteDatabase db) {
         NetworkTaskDBConstants dbConstants = new NetworkTaskDBConstants(context);
         String selection = dbConstants.getIdColumnName() + " = ?";
         String[] selectionArgs = {String.valueOf(networkTask.getId())};
         ContentValues values = new ContentValues();
+        values.put(dbConstants.getAccessTypeColumnName(), networkTask.getAccessType() == null ? null : networkTask.getAccessType().getCode());
         values.put(dbConstants.getNotificationColumnName(), networkTask.isNotification() ? 1 : 0);
+        values.put(dbConstants.getAddressColumnName(), networkTask.getAddress());
+        values.put(dbConstants.getPortColumnName(), networkTask.getPort());
+        values.put(dbConstants.getAccessTypeColumnName(), networkTask.getAccessType() == null ? null : networkTask.getAccessType().getCode());
+        values.put(dbConstants.getIntervalColumnName(), networkTask.getInterval());
         return db.update(dbConstants.getTableName(), values, selection, selectionArgs);
     }
 
