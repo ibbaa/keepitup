@@ -115,6 +115,10 @@ class NetworkTaskDBConstants {
                 " ORDER BY " + getIndexColumnName() + " ASC";
     }
 
+    public String getUpdateIndexNetworkTasksStatement() {
+        return "UPDATE " + getTableName() + " SET " + getIndexColumnName() + " = " + getIndexColumnName() + " - 1 WHERE " + getIndexColumnName() + " > ?;";
+    }
+
     private Resources getResources() {
         return context.getResources();
     }
