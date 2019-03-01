@@ -91,7 +91,9 @@ public class NetworkTaskDAO {
         NetworkTaskDBConstants dbConstants = new NetworkTaskDBConstants(context);
         String selection = dbConstants.getIdColumnName() + " = ?";
         String[] selectionArgs = {String.valueOf(networkTask.getId())};
-        return db.delete(dbConstants.getTableName(), selection, selectionArgs);
+        int value = db.delete(dbConstants.getTableName(), selection, selectionArgs);
+        db.execSQL(dbConstants.getUpdateIndexNetworkTasksStatement(), new Object[] { networkTask.getIndex() });
+        return value;
     }
 
     @SuppressWarnings("unused")
