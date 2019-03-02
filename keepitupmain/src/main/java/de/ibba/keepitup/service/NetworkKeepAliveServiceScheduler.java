@@ -42,6 +42,12 @@ public class NetworkKeepAliveServiceScheduler {
         jobScheduler.cancel(networkTask.getSchedulerid());
     }
 
+    public void stopAll() {
+        Log.d(NetworkKeepAliveServiceScheduler.class.getName(), "Stop alls network tasks ");
+        JobScheduler jobScheduler = (JobScheduler) getContext().getSystemService(JOB_SCHEDULER_SERVICE);
+        jobScheduler.cancelAll();
+    }
+
     public boolean isRunning(NetworkTask networkTask) {
         JobScheduler jobScheduler = (JobScheduler) getContext().getSystemService(JOB_SCHEDULER_SERVICE);
         List<JobInfo> jobList = jobScheduler.getAllPendingJobs();
