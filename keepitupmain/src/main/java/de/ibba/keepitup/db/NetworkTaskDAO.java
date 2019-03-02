@@ -52,6 +52,14 @@ public class NetworkTaskDAO {
         executeDBOperationInTransaction(networkTask, this::updateNetworkTaskSuccess);
     }
 
+    public void updateNetworkTaskSchedulerId(long taskId, int schedulerId) {
+        Log.d(NetworkTaskDAO.class.getName(), "Updating schedulerId to " + schedulerId + " of task with id " + taskId);
+        NetworkTask networkTask = new NetworkTask();
+        networkTask.setId(taskId);
+        networkTask.setSchedulerid(schedulerId);
+        executeDBOperationInTransaction(networkTask, this::updateNetworkTaskSchedulerId);
+    }
+
     public NetworkTask readNetworkTask(long taskId) {
         Log.d(NetworkTaskDAO.class.getName(), "Reading task with id " + taskId);
         NetworkTask networkTask = new NetworkTask();
@@ -90,7 +98,7 @@ public class NetworkTaskDAO {
         String selection = dbConstants.getIdColumnName() + " = ?";
         String[] selectionArgs = {String.valueOf(networkTask.getId())};
         int value = db.delete(dbConstants.getTableName(), selection, selectionArgs);
-        db.execSQL(dbConstants.getUpdateIndexNetworkTasksStatement(), new Object[] { String.valueOf(networkTask.getIndex())});
+        db.execSQL(dbConstants.getUpdateIndexNetworkTasksStatement(), new Object[]{String.valueOf(networkTask.getIndex())});
         return value;
     }
 
@@ -108,6 +116,15 @@ public class NetworkTaskDAO {
         values.put(dbConstants.getSuccessColumnName(), networkTask.isSuccess() ? 1 : 0);
         values.put(dbConstants.getTimestampColumnName(), networkTask.getTimestamp());
         values.put(dbConstants.getMessageColumnName(), networkTask.getMessage());
+        return db.update(dbConstants.getTableName(), values, selection, selectionArgs);
+    }
+
+    private int updateNetworkTaskSchedulerId(NetworkTask networkTask, SQLiteDatabase db) {
+        NetworkTaskDBConstants dbConstants = new NetworkTaskDBConstants(context);
+        String selection = dbConstants.getIdColumnName() + " = ?";
+        String[] selectionArgs = {String.valueOf(networkTask.getId())};
+        ContentValues values = new ContentValues();
+        values.put(dbConstants.getSchedulerIdColumnName(), networkTask.getSchedulerid());
         return db.update(dbConstants.getTableName(), values, selection, selectionArgs);
     }
 

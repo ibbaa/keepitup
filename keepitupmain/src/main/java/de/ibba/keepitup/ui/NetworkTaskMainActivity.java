@@ -80,9 +80,15 @@ public class NetworkTaskMainActivity extends AppCompatActivity {
         Log.d(NetworkTaskMainActivity.class.getName(), "onEditDialogOkClicked, network task is " + task);
         NetworkTaskDAO dao = new NetworkTaskDAO(this);
         if (task.getId() < 0) {
+            int index = getAdapter().getNextIndex();
+            task.setIndex(index);
             Log.d(NetworkTaskMainActivity.class.getName(), "onEditDialogOkClicked, network task is new, inserting " + task);
+            task = dao.insertNetworkTask(task);
+            getAdapter().addItem(task);
         } else {
             Log.d(NetworkTaskMainActivity.class.getName(), "onEditDialogOkClicked, network task is new, updating " + task);
+            dao.updateNetworkTask(task);
+            getAdapter().replaceItem(task);
         }
         getAdapter().notifyDataSetChanged();
         editDialog.dismiss();
