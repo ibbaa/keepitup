@@ -129,6 +129,25 @@ public class NetworkTaskDAOTest {
     }
 
     @Test
+    public void testUpdateSchedulerId() {
+        NetworkTask insertedTask1 = getNetworkTask1();
+        dao.insertNetworkTask(insertedTask1);
+        List<NetworkTask> readTasks = dao.readAllNetworkTasks();
+        NetworkTask readTask1 = readTasks.get(0);
+        dao.updateNetworkTaskSchedulerId(readTask1.getId(), 25);
+        readTask1 = dao.readNetworkTask(readTask1.getId());
+        assertEquals(insertedTask1.getIndex(), readTask1.getIndex());
+        assertEquals(insertedTask1.getAccessType(), readTask1.getAccessType());
+        assertEquals(insertedTask1.getAddress(), readTask1.getAddress());
+        assertEquals(insertedTask1.getPort(), readTask1.getPort());
+        assertEquals(insertedTask1.getInterval(), readTask1.getInterval());
+        assertEquals(insertedTask1.isNotification(), readTask1.isNotification());
+        assertEquals(insertedTask1.getTimestamp(), readTask1.getTimestamp());
+        assertEquals(insertedTask1.getMessage(), readTask1.getMessage());
+        assertEquals(25, readTask1.getSchedulerid());
+    }
+
+    @Test
     public void testUpdate() {
         NetworkTask insertedTask1 = getNetworkTask1();
         dao.insertNetworkTask(insertedTask1);

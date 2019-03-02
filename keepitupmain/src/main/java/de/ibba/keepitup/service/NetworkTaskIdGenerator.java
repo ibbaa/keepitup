@@ -20,7 +20,7 @@ public class NetworkTaskIdGenerator {
         JobScheduler jobScheduler = (JobScheduler) context.getSystemService(JOB_SCHEDULER_SERVICE);
         List<JobInfo> jobList = jobScheduler.getAllPendingJobs();
         for (int ii = 1; ii < Integer.MAX_VALUE; ii++) {
-            if(!isInUse(jobList, ii)) {
+            if (!isInUse(jobList, ii)) {
                 return ii;
             }
         }

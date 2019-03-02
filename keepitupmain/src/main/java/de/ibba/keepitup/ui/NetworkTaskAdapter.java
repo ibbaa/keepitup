@@ -132,6 +132,10 @@ public class NetworkTaskAdapter extends RecyclerView.Adapter<NetworkTaskViewHold
         }
     }
 
+    public int getNextIndex() {
+        return getItemCount();
+    }
+
     @Override
     public int getItemCount() {
         return networkTasks.size() + 1;
