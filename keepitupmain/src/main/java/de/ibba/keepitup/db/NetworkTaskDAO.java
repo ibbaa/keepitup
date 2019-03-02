@@ -27,10 +27,8 @@ public class NetworkTaskDAO {
         return executeDBOperationInTransaction(networkTask, this::insertNetworkTask);
     }
 
-    public void deleteNetworkTask(long taskId) {
-        Log.d(NetworkTaskDAO.class.getName(), "Deleting task with id " + taskId);
-        NetworkTask networkTask = new NetworkTask();
-        networkTask.setId(taskId);
+    public void deleteNetworkTask(NetworkTask networkTask) {
+        Log.d(NetworkTaskDAO.class.getName(), "Deleting task with id " + networkTask.getId());
         executeDBOperationInTransaction(networkTask, this::deleteNetworkTask);
     }
 
@@ -92,7 +90,7 @@ public class NetworkTaskDAO {
         String selection = dbConstants.getIdColumnName() + " = ?";
         String[] selectionArgs = {String.valueOf(networkTask.getId())};
         int value = db.delete(dbConstants.getTableName(), selection, selectionArgs);
-        db.execSQL(dbConstants.getUpdateIndexNetworkTasksStatement(), new Object[] { networkTask.getIndex() });
+        db.execSQL(dbConstants.getUpdateIndexNetworkTasksStatement(), new Object[] { String.valueOf(networkTask.getIndex())});
         return value;
     }
 
