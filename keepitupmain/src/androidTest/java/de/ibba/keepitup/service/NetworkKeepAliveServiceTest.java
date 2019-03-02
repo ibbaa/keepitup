@@ -4,6 +4,7 @@ import android.support.test.InstrumentationRegistry;
 import android.support.test.filters.MediumTest;
 import android.support.test.runner.AndroidJUnit4;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -23,6 +24,11 @@ public class NetworkKeepAliveServiceTest {
     @Before
     public void beforeEachTestMethod() {
         scheduler = new NetworkKeepAliveServiceScheduler(InstrumentationRegistry.getTargetContext());
+    }
+
+    @After
+    public void afterEachTestMethod() {
+        scheduler.stopAll();
     }
 
     @Test
