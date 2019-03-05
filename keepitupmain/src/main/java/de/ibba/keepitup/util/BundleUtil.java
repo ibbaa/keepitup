@@ -10,6 +10,22 @@ import de.ibba.keepitup.ui.validation.ValidationResult;
 
 public class BundleUtil {
 
+    public static Bundle messageToBundle(String key, String message) {
+        Bundle bundle = new Bundle();
+        if (key == null || message == null) {
+            return bundle;
+        }
+        bundle.putString(key, message);
+        return bundle;
+    }
+
+    public static String bundleToMessage(String key, Bundle bundle) {
+        if (bundle == null || key == null) {
+            return "";
+        }
+        return StringUtil.notNull(bundle.getString(key));
+    }
+
     public static List<ValidationResult> indexedBundleToValidationResultList(Bundle bundle) {
         if (bundle == null) {
             return Collections.emptyList();
