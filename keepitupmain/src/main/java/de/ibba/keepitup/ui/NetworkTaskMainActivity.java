@@ -92,6 +92,9 @@ public class NetworkTaskMainActivity extends AppCompatActivity {
         }
         getAdapter().notifyDataSetChanged();
         editDialog.dismiss();
+        /*GeneralErrorDialog errorDialog = new GeneralErrorDialog();
+        errorDialog.setArguments(BundleUtil.messageToBundle(GeneralErrorDialog.class.getSimpleName(), "Test"));
+        errorDialog.show(getSupportFragmentManager(), GeneralErrorDialog.class.getName());*/
     }
 
     public void onEditDialogCancelClicked(NetworkTaskEditDialog editDialog) {

@@ -43,7 +43,7 @@ public class NetworkKeepAliveServiceScheduler {
     }
 
     public void stopAll() {
-        Log.d(NetworkKeepAliveServiceScheduler.class.getName(), "Stop alls network tasks ");
+        Log.d(NetworkKeepAliveServiceScheduler.class.getName(), "Stop all network tasks ");
         JobScheduler jobScheduler = (JobScheduler) getContext().getSystemService(JOB_SCHEDULER_SERVICE);
         jobScheduler.cancelAll();
     }

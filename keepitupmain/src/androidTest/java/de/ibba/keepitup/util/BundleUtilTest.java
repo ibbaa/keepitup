@@ -21,7 +21,25 @@ import static org.junit.Assert.assertTrue;
 public class BundleUtilTest {
 
     @Test
-    public void addValidationResultToIndexedBundle() {
+    public void testMessageToBundle() {
+        Bundle bundle = BundleUtil.messageToBundle("key", "message");
+        assertEquals("message", bundle.getString("key"));
+        assertTrue(BundleUtil.messageToBundle(null, "message").isEmpty());
+        assertTrue(BundleUtil.messageToBundle("", null).isEmpty());
+    }
+
+    @Test
+    public void testBundleToMessage() {
+        Bundle bundle = new Bundle();
+        bundle.putString("key", "message");
+        assertEquals("message", BundleUtil.bundleToMessage("key", bundle));
+        assertEquals("", BundleUtil.bundleToMessage("xyz", bundle));
+        assertEquals("", BundleUtil.bundleToMessage(null, bundle));
+        assertEquals("", BundleUtil.bundleToMessage("key", null));
+    }
+
+    @Test
+    public void testAddValidationResultToIndexedBundle() {
         Bundle bundle = new Bundle();
         ValidationResult result1 = new ValidationResult(false, null, "");
         ValidationResult result2 = new ValidationResult(true, "result2", "message2");
