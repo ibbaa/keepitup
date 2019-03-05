@@ -25,7 +25,7 @@ public class GeneralErrorDialog extends DialogFragment {
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.general_error, container);
+        View view = inflater.inflate(R.layout.dialog_general_error, container);
         String message = BundleUtil.bundleToMessage(GeneralErrorDialog.class.getSimpleName(), Objects.requireNonNull(getArguments()));
         prepareErrorMessage(view, message);
         prepareOkButton(view);
@@ -34,13 +34,13 @@ public class GeneralErrorDialog extends DialogFragment {
 
     private void prepareErrorMessage(View view, String message) {
         Log.d(GeneralErrorDialog.class.getName(), "prepareErrorMessage");
-        TextView messageText = view.findViewById(R.id.textview_general_error_message);
+        TextView messageText = view.findViewById(R.id.textview_dialog_general_error_message);
         messageText.setText(message);
     }
 
     private void prepareOkButton(View view) {
         Log.d(GeneralErrorDialog.class.getName(), "prepareOkButton");
-        ImageView okImage = view.findViewById(R.id.imageview_general_error_ok);
+        ImageView okImage = view.findViewById(R.id.imageview_dialog_general_error_ok);
         okImage.setOnClickListener(this::onOkClicked);
     }
 
