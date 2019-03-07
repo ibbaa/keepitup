@@ -122,6 +122,16 @@ public class NetworkTaskAdapter extends RecyclerView.Adapter<NetworkTaskViewHold
         networkTasks.add(task);
     }
 
+    public void removeItem(NetworkTask task) {
+        for (int ii = 0; ii < networkTasks.size(); ii++) {
+            NetworkTask currentTask = networkTasks.get(ii);
+            if (task.getId() == currentTask.getId()) {
+                networkTasks.remove(ii);
+                return;
+            }
+        }
+    }
+
     public void replaceItem(NetworkTask task) {
         for (int ii = 0; ii < networkTasks.size(); ii++) {
             NetworkTask currentTask = networkTasks.get(ii);
@@ -129,6 +139,13 @@ public class NetworkTaskAdapter extends RecyclerView.Adapter<NetworkTaskViewHold
                 networkTasks.set(ii, task);
                 return;
             }
+        }
+    }
+
+    public void updateIndex() {
+        for (int ii = 0; ii < networkTasks.size(); ii++) {
+            NetworkTask currentTask = networkTasks.get(ii);
+            currentTask.setIndex(ii);
         }
     }
 

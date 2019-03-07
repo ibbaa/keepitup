@@ -11,16 +11,16 @@ import de.ibba.keepitup.model.NetworkTask;
 
 import static org.junit.Assert.assertEquals;
 
-public class NetworkTaskIdGeneratorTest {
+public class SchedulerIdGeneratorTest {
 
     private NetworkKeepAliveServiceScheduler scheduler;
-    private NetworkTaskIdGenerator idGenerator;
+    private SchedulerIdGenerator idGenerator;
 
     @Before
     public void beforeEachTestMethod() {
         Context context = InstrumentationRegistry.getTargetContext();
         scheduler = new NetworkKeepAliveServiceScheduler(context);
-        idGenerator = new NetworkTaskIdGenerator(context);
+        idGenerator = new SchedulerIdGenerator(context);
     }
 
     @After
@@ -30,13 +30,13 @@ public class NetworkTaskIdGeneratorTest {
 
     @Test
     public void testCreateNetworkTaskId() {
-        assertEquals(1, idGenerator.createNetworkTaskId());
+        assertEquals(1, idGenerator.createSchedulerId());
         NetworkTask task1 = new NetworkTask();
         task1.setSchedulerid(1);
         scheduler.start(task1);
-        assertEquals(2, idGenerator.createNetworkTaskId());
+        assertEquals(2, idGenerator.createSchedulerId());
         scheduler.stop(task1);
-        assertEquals(1, idGenerator.createNetworkTaskId());
+        assertEquals(1, idGenerator.createSchedulerId());
         NetworkTask task2 = new NetworkTask();
         task2.setSchedulerid(2);
         NetworkTask task5 = new NetworkTask();
@@ -44,6 +44,6 @@ public class NetworkTaskIdGeneratorTest {
         scheduler.start(task1);
         scheduler.start(task2);
         scheduler.start(task5);
-        assertEquals(3, idGenerator.createNetworkTaskId());
+        assertEquals(3, idGenerator.createSchedulerId());
     }
 }

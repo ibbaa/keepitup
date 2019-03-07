@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="label_dialog_general_error_ok">@android:string/ok</string>
+    <string name="text_dialog_general_error_insert_network_task">Fatal error adding network task.</string>
+    <string name="text_dialog_general_error_update_network_task">Fatal error updating network task.</string>
+    <string name="text_dialog_general_error_start_network_task">Fatal error starting network task.</string>
+</resources>
