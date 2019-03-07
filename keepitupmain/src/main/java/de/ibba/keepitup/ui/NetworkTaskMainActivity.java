@@ -100,7 +100,7 @@ public class NetworkTaskMainActivity extends AppCompatActivity {
         if (task.getId() < 0) {
             int index = getAdapter().getNextIndex();
             task.setIndex(index);
-            Log.d(NetworkTaskMainActivity.class.getName(), "network task is new, inserting " + task);
+            Log.d(NetworkTaskMainActivity.class.getName(), "Network task is new, inserting " + task);
             try {
                 task = dao.insertNetworkTask(task);
                 if (task.getId() < 0) {
