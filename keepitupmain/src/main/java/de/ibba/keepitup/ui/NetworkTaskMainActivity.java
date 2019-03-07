@@ -17,6 +17,8 @@ import de.ibba.keepitup.R;
 import de.ibba.keepitup.db.NetworkTaskDAO;
 import de.ibba.keepitup.model.NetworkTask;
 import de.ibba.keepitup.service.NetworkKeepAliveServiceScheduler;
+import de.ibba.keepitup.service.SchedulerIdGenerator;
+import de.ibba.keepitup.util.BundleUtil;
 
 public class NetworkTaskMainActivity extends AppCompatActivity {
 
@@ -66,11 +68,27 @@ public class NetworkTaskMainActivity extends AppCompatActivity {
     public void onMainStartStopClicked(int position) {
         NetworkTask networkTask = getAdapter().getItem(position);
         Log.d(NetworkTaskMainActivity.class.getName(), "onMainStartStopClicked for network task " + networkTask);
+        NetworkTaskDAO dao = new NetworkTaskDAO(this);
+        SchedulerIdGenerator idGenerator = new SchedulerIdGenerator(this);
         NetworkKeepAliveServiceScheduler scheduler = new NetworkKeepAliveServiceScheduler(this);
         if (scheduler.isRunning(networkTask)) {
             scheduler.stop(networkTask);
+            networkTask.setSchedulerid(-1);
+            try {
+                dao.updateNetworkTaskSchedulerId(networkTask.getId(), -1);
+            } catch (Exception exc) {
+                Log.e(NetworkTaskMainActivity.class.getName(), "Error updating scheduler id to -1", exc);
+            }
         } else {
-            scheduler.start(networkTask);
+            int schedulerId = idGenerator.createSchedulerId();
+            try {
+                dao.updateNetworkTaskSchedulerId(networkTask.getId(), schedulerId);
+                networkTask.setSchedulerid(schedulerId);
+                scheduler.start(networkTask);
+            } catch (Exception exc) {
+                Log.e(NetworkTaskMainActivity.class.getName(), "Error updating scheduler id to " + schedulerId + ". Showing error dialog.", exc);
+                showErrorDialog(getResources().getString(R.string.text_dialog_general_error_start_network_task));
+            }
         }
         getAdapter().notifyItemChanged(position);
     }
@@ -82,19 +100,37 @@ public class NetworkTaskMainActivity extends AppCompatActivity {
         if (task.getId() < 0) {
             int index = getAdapter().getNextIndex();
             task.setIndex(index);
-            Log.d(NetworkTaskMainActivity.class.getName(), "onEditDialogOkClicked, network task is new, inserting " + task);
-            task = dao.insertNetworkTask(task);
-            getAdapter().addItem(task);
+            Log.d(NetworkTaskMainActivity.class.getName(), "network task is new, inserting " + task);
+            try {
+                task = dao.insertNetworkTask(task);
+                if (task.getId() < 0) {
+                    Log.e(NetworkTaskMainActivity.class.getName(), "Error inserting task into database. Showing error dialog.");
+                    showErrorDialog(getResources().getString(R.string.text_dialog_general_error_insert_network_task));
+                } else {
+                    getAdapter().addItem(task);
+                }
+            } catch (Exception exc) {
+                Log.e(NetworkTaskMainActivity.class.getName(), "Error inserting task into database. Showing error dialog.", exc);
+                showErrorDialog(getResources().getString(R.string.text_dialog_general_error_insert_network_task));
+            }
         } else {
-            Log.d(NetworkTaskMainActivity.class.getName(), "onEditDialogOkClicked, network task is new, updating " + task);
-            dao.updateNetworkTask(task);
+            Log.d(NetworkTaskMainActivity.class.getName(), "network task is new, updating " + task);
+            try {
+                dao.updateNetworkTask(task);
+            } catch (Exception exc) {
+                Log.e(NetworkTaskMainActivity.class.getName(), "Error updating task. Showing error dialog.", exc);
+                showErrorDialog(getResources().getString(R.string.text_dialog_general_error_update_network_task));
+            }
             getAdapter().replaceItem(task);
         }
         getAdapter().notifyDataSetChanged();
         editDialog.dismiss();
-        /*GeneralErrorDialog errorDialog = new GeneralErrorDialog();
-        errorDialog.setArguments(BundleUtil.messageToBundle(GeneralErrorDialog.class.getSimpleName(), "Test"));
-        errorDialog.show(getSupportFragmentManager(), GeneralErrorDialog.class.getName());*/
+    }
+
+    private void showErrorDialog(String errorMessage) {
+        GeneralErrorDialog errorDialog = new GeneralErrorDialog();
+        errorDialog.setArguments(BundleUtil.messageToBundle(GeneralErrorDialog.class.getSimpleName(), errorMessage));
+        errorDialog.show(getSupportFragmentManager(), GeneralErrorDialog.class.getName());
     }
 
     public void onEditDialogCancelClicked(NetworkTaskEditDialog editDialog) {

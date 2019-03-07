@@ -8,15 +8,15 @@ import java.util.List;
 
 import static android.content.Context.JOB_SCHEDULER_SERVICE;
 
-public class NetworkTaskIdGenerator {
+public class SchedulerIdGenerator {
 
     private final Context context;
 
-    public NetworkTaskIdGenerator(Context context) {
+    public SchedulerIdGenerator(Context context) {
         this.context = context;
     }
 
-    public int createNetworkTaskId() {
+    public int createSchedulerId() {
         JobScheduler jobScheduler = (JobScheduler) context.getSystemService(JOB_SCHEDULER_SERVICE);
         List<JobInfo> jobList = jobScheduler.getAllPendingJobs();
         for (int ii = 1; ii < Integer.MAX_VALUE; ii++) {
