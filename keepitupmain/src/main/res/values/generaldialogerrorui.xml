@@ -5,4 +5,5 @@
     <string name="text_dialog_general_error_update_network_task">Fatal error updating network task.</string>
     <string name="text_dialog_general_error_start_network_task">Fatal error starting network task.</string>
     <string name="text_dialog_general_error_read_network_tasks">Fatal error reading network tasks.</string>
+    <string name="text_dialog_general_error_delete_network_task">Fatal error deleting network task.</string>
 </resources>

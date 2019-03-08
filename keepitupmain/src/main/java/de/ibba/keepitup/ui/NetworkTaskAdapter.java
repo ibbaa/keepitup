@@ -130,6 +130,7 @@ public class NetworkTaskAdapter extends RecyclerView.Adapter<NetworkTaskViewHold
                 return;
             }
         }
+        updateIndex();
     }
 
     public void replaceItem(NetworkTask task) {

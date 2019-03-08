@@ -14,6 +14,8 @@ public class NetworkTaskViewHolder extends RecyclerView.ViewHolder {
     private final NetworkTaskMainActivity mainActivity;
     private final CardView cardView;
     private final ImageView startStopImage;
+    private final ImageView deleteImage;
+    private final ImageView editImage;
     private final TextView statusText;
     private final TextView accessTypeText;
     private final TextView addressText;
@@ -30,6 +32,10 @@ public class NetworkTaskViewHolder extends RecyclerView.ViewHolder {
         cardView = itemView.findViewById(R.id.cardview_list_item_network_task);
         startStopImage = itemView.findViewById(R.id.imageview_list_item_network_task_start_stop);
         startStopImage.setOnClickListener(this::onStartStopClicked);
+        deleteImage = itemView.findViewById(R.id.imageview_list_item_network_task_delete);
+        deleteImage.setOnClickListener(this::onDeleteClicked);
+        editImage = itemView.findViewById(R.id.imageview_list_item_network_task_edit);
+        editImage.setOnClickListener(this::onEditClicked);
         statusText = itemView.findViewById(R.id.textview_list_item_network_task_status);
         accessTypeText = itemView.findViewById(R.id.textview_list_item_network_task_accesstype);
         addressText = itemView.findViewById(R.id.textview_list_item_network_task_address);
@@ -91,5 +97,13 @@ public class NetworkTaskViewHolder extends RecyclerView.ViewHolder {
 
     private void onStartStopClicked(@SuppressWarnings("unused") View view) {
         mainActivity.onMainStartStopClicked(getAdapterPosition());
+    }
+
+    private void onDeleteClicked(@SuppressWarnings("unused") View view) {
+        mainActivity.onMainDeleteClicked(getAdapterPosition());
+    }
+
+    private void onEditClicked(@SuppressWarnings("unused") View view) {
+        mainActivity.onMainEditClicked(getAdapterPosition());
     }
 }
