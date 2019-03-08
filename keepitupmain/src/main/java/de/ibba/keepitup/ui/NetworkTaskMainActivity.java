@@ -35,10 +35,15 @@ public class NetworkTaskMainActivity extends AppCompatActivity {
     }
 
     private List<NetworkTask> readNetworkTasksFromDatabase() {
-        Log.d(NetworkTaskMainActivity.class.getName(), "getNetworkTasksFromDatabase");
+        Log.d(NetworkTaskMainActivity.class.getName(), "readNetworkTasksFromDatabase");
         NetworkTaskDAO dao = new NetworkTaskDAO(this);
         try {
-            return dao.readAllNetworkTasks();
+            List<NetworkTask> tasks = dao.readAllNetworkTasks();
+            Log.d(NetworkTaskMainActivity.class.getName(), "Database returned:");
+            for(NetworkTask currentTask : tasks) {
+                Log.d(NetworkTaskMainActivity.class.getName(), currentTask.toString());
+            }
+            return tasks;
         } catch (Exception exc) {
             Log.e(NetworkTaskMainActivity.class.getName(), "Error reading all network tasks from database", exc);
             showErrorDialog(getResources().getString(R.string.text_dialog_general_error_read_network_tasks));
