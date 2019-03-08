@@ -12,6 +12,7 @@ import android.view.MenuItem;
 import android.view.View;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import de.ibba.keepitup.R;
 import de.ibba.keepitup.db.NetworkTaskDAO;
@@ -30,7 +31,19 @@ public class NetworkTaskMainActivity extends AppCompatActivity {
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
-        recyclerView.setAdapter(new NetworkTaskAdapter(new ArrayList<>(), this));
+        recyclerView.setAdapter(new NetworkTaskAdapter(readNetworkTasksFromDatabase(), this));
+    }
+
+    private List<NetworkTask> readNetworkTasksFromDatabase() {
+        Log.d(NetworkTaskMainActivity.class.getName(), "getNetworkTasksFromDatabase");
+        NetworkTaskDAO dao = new NetworkTaskDAO(this);
+        try {
+            return dao.readAllNetworkTasks();
+        } catch (Exception exc) {
+            Log.e(NetworkTaskMainActivity.class.getName(), "Error reading all network tasks from database", exc);
+            showErrorDialog(getResources().getString(R.string.text_dialog_general_error_read_network_tasks));
+            return new ArrayList<>();
+        }
     }
 
     @Override

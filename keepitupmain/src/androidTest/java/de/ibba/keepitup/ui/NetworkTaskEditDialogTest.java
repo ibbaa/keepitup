@@ -1,5 +1,6 @@
 package de.ibba.keepitup.ui;
 
+import android.support.test.InstrumentationRegistry;
 import android.support.test.annotation.UiThreadTest;
 import android.support.test.espresso.ViewInteraction;
 import android.support.test.espresso.matcher.BoundedMatcher;
@@ -12,12 +13,14 @@ import android.widget.TextView;
 
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import de.ibba.keepitup.R;
+import de.ibba.keepitup.db.NetworkTaskDAO;
 import de.ibba.keepitup.model.AccessType;
 import de.ibba.keepitup.model.NetworkTask;
 
@@ -52,6 +55,14 @@ public class NetworkTaskEditDialogTest {
     @UiThreadTest
     public void beforeEachTestMethod() {
         activity = rule.getActivity();
+        NetworkTaskDAO dao = new NetworkTaskDAO(InstrumentationRegistry.getTargetContext());
+        dao.deleteAllNetworkTasks();
+    }
+
+    @After
+    public void afterEachTestMethod() {
+        NetworkTaskDAO dao = new NetworkTaskDAO(InstrumentationRegistry.getTargetContext());
+        dao.deleteAllNetworkTasks();
     }
 
     @Test
