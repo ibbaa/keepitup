@@ -150,7 +150,7 @@ public class NetworkTaskAdapter extends RecyclerView.Adapter<NetworkTaskViewHold
     }
 
     public int getNextIndex() {
-        return getItemCount();
+        return networkTasks.size();
     }
 
     @Override
