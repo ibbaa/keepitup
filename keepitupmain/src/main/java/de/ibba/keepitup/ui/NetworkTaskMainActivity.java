@@ -40,7 +40,7 @@ public class NetworkTaskMainActivity extends AppCompatActivity {
         try {
             List<NetworkTask> tasks = dao.readAllNetworkTasks();
             Log.d(NetworkTaskMainActivity.class.getName(), "Database returned:");
-            for(NetworkTask currentTask : tasks) {
+            for (NetworkTask currentTask : tasks) {
                 Log.d(NetworkTaskMainActivity.class.getName(), currentTask.toString());
             }
             return tasks;
@@ -109,6 +109,25 @@ public class NetworkTaskMainActivity extends AppCompatActivity {
             }
         }
         getAdapter().notifyItemChanged(position);
+    }
+
+    public void onMainDeleteClicked(int position) {
+        NetworkTask networkTask = getAdapter().getItem(position);
+        Log.d(NetworkTaskMainActivity.class.getName(), "onMainDeleteClicked for network task " + networkTask);
+        NetworkTaskDAO dao = new NetworkTaskDAO(this);
+        try {
+            dao.deleteNetworkTask(networkTask);
+            getAdapter().removeItem(networkTask);
+            getAdapter().notifyDataSetChanged();
+        } catch (Exception exc) {
+            Log.e(NetworkTaskMainActivity.class.getName(), "Error deleting network task.", exc);
+            showErrorDialog(getResources().getString(R.string.text_dialog_general_error_delete_network_task));
+        }
+    }
+
+    public void onMainEditClicked(int position) {
+        NetworkTask networkTask = getAdapter().getItem(position);
+        Log.d(NetworkTaskMainActivity.class.getName(), "onMainEditClicked for network task " + networkTask);
     }
 
     public void onEditDialogOkClicked(NetworkTaskEditDialog editDialog) {
