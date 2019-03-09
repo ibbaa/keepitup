@@ -42,7 +42,9 @@ public class NetworkTaskEditDialog extends DialogFragment {
     private TextColorValidatingWatcher portEditTextWatcher;
     private EditText intervalEditText;
     private TextColorValidatingWatcher intervalEditTextWatcher;
+    private Switch onlyWifiSwitch;
     private Switch notificationSwitch;
+    private TextView onlyWifiOnOffText;
     private TextView notificationOnOffText;
 
     @Override
@@ -60,6 +62,7 @@ public class NetworkTaskEditDialog extends DialogFragment {
         prepareAccessTypeRadioButtons();
         prepareAddressTextFields();
         prepareIntervalTextField();
+        prepareOnlyWifiSwitch();
         prepareNotificationSwitch();
         prepareOkCancelImageButtons();
         return dialogView;
@@ -188,6 +191,15 @@ public class NetworkTaskEditDialog extends DialogFragment {
         intervalEditText.addTextChangedListener(intervalEditTextWatcher);
     }
 
+    private void prepareOnlyWifiSwitch() {
+        Log.d(NetworkTaskEditDialog.class.getName(), "prepareOnlyWifiSwitch with only wifi setting of " + task.isOnlyWifi());
+        onlyWifiSwitch = dialogView.findViewById(R.id.switch_dialog_edit_network_task_onlywifi);
+        onlyWifiOnOffText = dialogView.findViewById(R.id.textview_dialog_edit_network_task_onlywifi_label_on_off);
+        onlyWifiSwitch.setChecked(task.isOnlyWifi());
+        onlyWifiSwitch.setOnCheckedChangeListener(this::onOnlyWifiCheckedChanged);
+        prepareOnlyWifiOnOffText();
+    }
+
     private void prepareNotificationSwitch() {
         Log.d(NetworkTaskEditDialog.class.getName(), "prepareNotificationSwitch with notification setting of " + task.isNotification());
         notificationSwitch = dialogView.findViewById(R.id.switch_dialog_edit_network_task_notification);
@@ -195,6 +207,10 @@ public class NetworkTaskEditDialog extends DialogFragment {
         notificationSwitch.setChecked(task.isNotification());
         notificationSwitch.setOnCheckedChangeListener(this::onNotificationCheckedChanged);
         prepareNotificationOnOffText();
+    }
+
+    private void prepareOnlyWifiOnOffText() {
+        onlyWifiOnOffText.setText(onlyWifiSwitch.isChecked() ? getResources().getString(R.string.string_yes) : getResources().getString(R.string.string_no));
     }
 
     private void prepareNotificationOnOffText() {
@@ -224,6 +240,7 @@ public class NetworkTaskEditDialog extends DialogFragment {
         if (NumberUtil.isValidIntValue(getInterval())) {
             task.setInterval(NumberUtil.getIntValue(getInterval(), task.getInterval()));
         }
+        task.setOnlyWifi(onlyWifiSwitch.isChecked());
         task.setNotification(notificationSwitch.isChecked());
         Log.d(NetworkTaskEditDialog.class.getName(), "getNetworkTask, network task is " + task);
         return task;
@@ -246,6 +263,11 @@ public class NetworkTaskEditDialog extends DialogFragment {
         Log.d(NetworkTaskEditDialog.class.getName(), "onCancelClicked");
         NetworkTaskMainActivity activity = (NetworkTaskMainActivity) getActivity();
         Objects.requireNonNull(activity).onEditDialogCancelClicked(this);
+    }
+
+    private void onOnlyWifiCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+        Log.d(NetworkTaskEditDialog.class.getName(), "onOnlyWifiCheckedChanged, new value is " + isChecked);
+        prepareOnlyWifiOnOffText();
     }
 
     private void onNotificationCheckedChanged(CompoundButton buttonView, boolean isChecked) {

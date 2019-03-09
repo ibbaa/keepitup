@@ -49,6 +49,7 @@ public class NetworkTaskAdapter extends RecyclerView.Adapter<NetworkTaskViewHold
             bindInterval(networkTaskViewHolder, networkTask);
             bindLastExecTimestamp(networkTaskViewHolder, networkTask);
             bindLastExecMessage(networkTaskViewHolder, networkTask);
+            bindOnlyWifi(networkTaskViewHolder, networkTask);
             bindNotification(networkTaskViewHolder, networkTask);
             networkTaskViewHolder.showMainNetworkTaskCard();
         } else {
@@ -84,6 +85,13 @@ public class NetworkTaskAdapter extends RecyclerView.Adapter<NetworkTaskViewHold
         String formattedIntervalText = String.format(getResources().getString(R.string.text_list_item_network_task_interval), networkTask.getInterval(), intervalUnit);
         Log.d(NetworkTaskAdapter.class.getName(), "binding interval text " + formattedIntervalText);
         networkTaskViewHolder.setInterval(formattedIntervalText);
+    }
+
+    private void bindOnlyWifi(@NonNull NetworkTaskViewHolder networkTaskViewHolder, NetworkTask networkTask) {
+        String onlyWifi = networkTask.isOnlyWifi() ? getResources().getString(R.string.string_yes) : getResources().getString(R.string.string_no);
+        String formattedOnlyWifiText = String.format(getResources().getString(R.string.text_list_item_network_task_onlywifi), onlyWifi);
+        Log.d(NetworkTaskAdapter.class.getName(), "binding only wifi text " + formattedOnlyWifiText);
+        networkTaskViewHolder.setOnlyWifi(formattedOnlyWifiText);
     }
 
     private void bindNotification(@NonNull NetworkTaskViewHolder networkTaskViewHolder, NetworkTask networkTask) {

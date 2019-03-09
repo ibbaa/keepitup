@@ -125,10 +125,20 @@
                 app:srcCompat="@drawable/icon_log_selector" />
 
             <TextView
-                android:id="@+id/textview_list_item_network_task_notification"
+                android:id="@+id/textview_list_item_network_task_onlywifi"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_row="5"
+                android:layout_column="0"
+                android:layout_columnSpan="3"
+                android:textStyle="normal"
+                android:text="@string/text_list_item_network_task_onlywifi" />
+
+            <TextView
+                android:id="@+id/textview_list_item_network_task_notification"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_row="6"
                 android:layout_column="0"
                 android:layout_columnSpan="3"
                 android:textStyle="normal"
@@ -138,7 +148,7 @@
                 android:id="@+id/textview_list_item_network_task_last_exec_timestamp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_row="6"
+                android:layout_row="7"
                 android:layout_column="0"
                 android:layout_columnSpan="3"
                 android:textStyle="normal"
@@ -148,7 +158,7 @@
                 android:id="@+id/textview_list_item_network_task_last_exec_message"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_row="7"
+                android:layout_row="8"
                 android:layout_column="0"
                 android:layout_columnSpan="3"
                 android:textStyle="normal"

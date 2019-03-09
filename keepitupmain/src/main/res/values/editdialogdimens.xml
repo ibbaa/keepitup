@@ -15,6 +15,9 @@
     <dimen name="linearlayout_dialog_edit_network_task_interval_margin_top">0dp</dimen>
     <dimen name="linearlayout_dialog_edit_network_task_interval_margin_left">10dp</dimen>
     <dimen name="edittext_dialog_edit_network_task_interval_width">120dp</dimen>
+    <dimen name="textview_dialog_edit_network_task_onlywifi_label_margin_top">10dp</dimen>
+    <dimen name="linearlayout_dialog_edit_network_task_onlywifi_margin_top">0dp</dimen>
+    <dimen name="linearlayout_dialog_edit_network_task_onlywifi_margin_left">10dp</dimen>
     <dimen name="textview_dialog_edit_network_task_notification_label_margin_top">10dp</dimen>
     <dimen name="linearlayout_dialog_edit_network_task_notification_margin_top">0dp</dimen>
     <dimen name="linearlayout_dialog_edit_network_task_notification_margin_left">10dp</dimen>

@@ -75,6 +75,7 @@ public class NetworkTaskEditDialogTest {
         onView(withId(R.id.edittext_dialog_edit_network_task_address)).check(matches(withText("192.168.178.1")));
         onView(withId(R.id.edittext_dialog_edit_network_task_port)).check(matches(withText("22")));
         onView(withId(R.id.edittext_dialog_edit_network_task_interval)).check(matches(withText("15")));
+        onView(withId(R.id.switch_dialog_edit_network_task_onlywifi)).check(matches(isNotChecked()));
         onView(withId(R.id.switch_dialog_edit_network_task_notification)).check(matches(isNotChecked()));
         NetworkTaskEditDialog dialog = (NetworkTaskEditDialog) activity.getSupportFragmentManager().getFragments().get(0);
         NetworkTask task = dialog.getNetworkTask();
@@ -93,6 +94,7 @@ public class NetworkTaskEditDialogTest {
         onView(withId(R.id.edittext_dialog_edit_network_task_address)).perform(replaceText("localhost"));
         onView(withId(R.id.edittext_dialog_edit_network_task_port)).perform(replaceText("80"));
         onView(withId(R.id.edittext_dialog_edit_network_task_interval)).perform(replaceText("60"));
+        onView(withId(R.id.switch_dialog_edit_network_task_onlywifi)).perform(click());
         onView(withId(R.id.switch_dialog_edit_network_task_notification)).perform(click());
         NetworkTaskEditDialog dialog = (NetworkTaskEditDialog) activity.getSupportFragmentManager().getFragments().get(0);
         NetworkTask task = dialog.getNetworkTask();
@@ -101,6 +103,7 @@ public class NetworkTaskEditDialogTest {
         assertEquals("localhost", task.getAddress());
         assertEquals(80, task.getPort());
         assertEquals(60, task.getInterval());
+        assertTrue(task.isOnlyWifi());
         assertTrue(task.isNotification());
         onView(withText("Connect")).perform(click());
         task = dialog.getNetworkTask();
@@ -115,11 +118,13 @@ public class NetworkTaskEditDialogTest {
         onView(withId(R.id.edittext_dialog_edit_network_task_address)).check(matches(isDisplayed()));
         onView(withId(R.id.edittext_dialog_edit_network_task_port)).check(matches(not(isDisplayed())));
         onView(withId(R.id.edittext_dialog_edit_network_task_interval)).check(matches(isDisplayed()));
+        onView(withId(R.id.switch_dialog_edit_network_task_onlywifi)).check(matches(isDisplayed()));
         onView(withId(R.id.switch_dialog_edit_network_task_notification)).check(matches(isDisplayed()));
         onView(withText("Ping")).perform(click());
         onView(withId(R.id.edittext_dialog_edit_network_task_address)).check(matches(isDisplayed()));
         onView(withId(R.id.edittext_dialog_edit_network_task_port)).check(matches(isDisplayed()));
         onView(withId(R.id.edittext_dialog_edit_network_task_interval)).check(matches(isDisplayed()));
+        onView(withId(R.id.switch_dialog_edit_network_task_onlywifi)).check(matches(isDisplayed()));
         onView(withId(R.id.switch_dialog_edit_network_task_notification)).check(matches(isDisplayed()));
     }
 
