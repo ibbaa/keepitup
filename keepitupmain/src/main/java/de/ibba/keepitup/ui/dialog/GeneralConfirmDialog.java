@@ -42,13 +42,13 @@ public class GeneralConfirmDialog extends DialogFragment {
     }
 
     private void prepareConfirmMessage(View view, String message) {
-        Log.d(GeneralConfirmDialog.class.getName(), "prepareErrorMessage");
+        Log.d(GeneralConfirmDialog.class.getName(), "prepareConfirmMessage");
         TextView messageText = view.findViewById(R.id.textview_dialog_general_confirm_message);
         messageText.setText(message);
     }
 
     private void prepareOkCancelImageButtons(View view) {
-        Log.d(GeneralConfirmDialog.class.getName(), "prepareOkButton");
+        Log.d(GeneralConfirmDialog.class.getName(), "prepareOkCancelImageButtons");
         ImageView okImage = view.findViewById(R.id.imageview_dialog_general_confirm_ok);
         ImageView cancelImage = view.findViewById(R.id.imageview_dialog_general_confirm_cancel);
         okImage.setOnClickListener(this::onOkClicked);
