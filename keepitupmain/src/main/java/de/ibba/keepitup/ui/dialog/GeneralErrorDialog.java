@@ -41,7 +41,7 @@ public class GeneralErrorDialog extends DialogFragment {
     }
 
     private void prepareOkImageButton(View view) {
-        Log.d(GeneralErrorDialog.class.getName(), "prepareOkButton");
+        Log.d(GeneralErrorDialog.class.getName(), "prepareOkImageButton");
         ImageView okImage = view.findViewById(R.id.imageview_dialog_general_error_ok);
         okImage.setOnClickListener(this::onOkClicked);
     }
