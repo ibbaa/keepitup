@@ -111,6 +111,19 @@
                 android:textStyle="normal"
                 android:text="@string/text_list_item_network_task_interval" />
 
+            <ImageView
+                android:id="@+id/imageview_list_item_network_task_log"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="right|top"
+                android:layout_row="4"
+                android:layout_column="2"
+                android:layout_rowSpan="2"
+                android:clickable="true"
+                android:focusable="true"
+                android:contentDescription="@string/label_log_network_task"
+                app:srcCompat="@drawable/icon_log_selector" />
+
             <TextView
                 android:id="@+id/textview_list_item_network_task_notification"
                 android:layout_width="wrap_content"
