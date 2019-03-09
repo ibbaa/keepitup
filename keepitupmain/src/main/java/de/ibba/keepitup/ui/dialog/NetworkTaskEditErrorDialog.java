@@ -1,4 +1,4 @@
-package de.ibba.keepitup.ui;
+package de.ibba.keepitup.ui.dialog;
 
 import android.graphics.Typeface;
 import android.os.Bundle;
@@ -24,12 +24,14 @@ public class NetworkTaskEditErrorDialog extends DialogFragment {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
+        Log.d(NetworkTaskEditErrorDialog.class.getName(), "onCreate");
         super.onCreate(savedInstanceState);
         setStyle(DialogFragment.STYLE_NO_FRAME, R.style.DialogTheme);
     }
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        Log.d(NetworkTaskEditErrorDialog.class.getName(), "onCreateView");
         View view = inflater.inflate(R.layout.dialog_edit_network_task_error, container);
         List<ValidationResult> resultList = BundleUtil.indexedBundleToValidationResultList(Objects.requireNonNull(getArguments()));
         prepareErrorMessages(view, resultList);

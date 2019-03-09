@@ -19,12 +19,15 @@ import de.ibba.keepitup.db.NetworkTaskDAO;
 import de.ibba.keepitup.model.NetworkTask;
 import de.ibba.keepitup.service.NetworkKeepAliveServiceScheduler;
 import de.ibba.keepitup.service.SchedulerIdGenerator;
+import de.ibba.keepitup.ui.dialog.GeneralErrorDialog;
+import de.ibba.keepitup.ui.dialog.NetworkTaskEditDialog;
 import de.ibba.keepitup.util.BundleUtil;
 
 public class NetworkTaskMainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        Log.d(NetworkTaskMainActivity.class.getName(), "onCreate");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_network_task);
         RecyclerView recyclerView = findViewById(R.id.listview_main_activity_network_tasks);
@@ -128,6 +131,11 @@ public class NetworkTaskMainActivity extends AppCompatActivity {
     public void onMainEditClicked(int position) {
         NetworkTask networkTask = getAdapter().getItem(position);
         Log.d(NetworkTaskMainActivity.class.getName(), "onMainEditClicked for network task " + networkTask);
+    }
+
+    public void onMainLogClicked(int position) {
+        NetworkTask networkTask = getAdapter().getItem(position);
+        Log.d(NetworkTaskMainActivity.class.getName(), "onMainLogClicked for network task " + networkTask);
     }
 
     public void onEditDialogOkClicked(NetworkTaskEditDialog editDialog) {

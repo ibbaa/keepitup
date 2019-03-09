@@ -1,4 +1,4 @@
-package de.ibba.keepitup.ui;
+package de.ibba.keepitup.ui.dialog;
 
 import android.support.test.InstrumentationRegistry;
 import android.support.test.annotation.UiThreadTest;
@@ -23,6 +23,7 @@ import de.ibba.keepitup.R;
 import de.ibba.keepitup.db.NetworkTaskDAO;
 import de.ibba.keepitup.model.AccessType;
 import de.ibba.keepitup.model.NetworkTask;
+import de.ibba.keepitup.ui.NetworkTaskMainActivity;
 
 import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.action.ViewActions.click;

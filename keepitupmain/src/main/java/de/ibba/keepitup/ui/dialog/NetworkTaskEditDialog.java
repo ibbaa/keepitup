@@ -1,4 +1,4 @@
-package de.ibba.keepitup.ui;
+package de.ibba.keepitup.ui.dialog;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -22,6 +22,7 @@ import java.util.Objects;
 import de.ibba.keepitup.R;
 import de.ibba.keepitup.model.AccessType;
 import de.ibba.keepitup.model.NetworkTask;
+import de.ibba.keepitup.ui.NetworkTaskMainActivity;
 import de.ibba.keepitup.ui.mapping.EnumMapping;
 import de.ibba.keepitup.ui.validation.TextColorValidatingWatcher;
 import de.ibba.keepitup.ui.validation.ValidationResult;
@@ -46,12 +47,14 @@ public class NetworkTaskEditDialog extends DialogFragment {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
+        Log.d(NetworkTaskEditDialog.class.getName(), "onCreate");
         super.onCreate(savedInstanceState);
         setStyle(DialogFragment.STYLE_NO_FRAME, R.style.DialogTheme);
     }
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        Log.d(NetworkTaskEditDialog.class.getName(), "onCreateView");
         dialogView = inflater.inflate(R.layout.dialog_edit_network_task, container);
         task = new NetworkTask(Objects.requireNonNull(getArguments()));
         prepareAccessTypeRadioButtons();
