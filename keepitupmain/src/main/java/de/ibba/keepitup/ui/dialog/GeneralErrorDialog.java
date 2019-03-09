@@ -1,4 +1,4 @@
-package de.ibba.keepitup.ui;
+package de.ibba.keepitup.ui.dialog;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -19,16 +19,18 @@ public class GeneralErrorDialog extends DialogFragment {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
+        Log.d(GeneralErrorDialog.class.getName(), "onCreate");
         super.onCreate(savedInstanceState);
         setStyle(DialogFragment.STYLE_NO_FRAME, R.style.DialogTheme);
     }
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        Log.d(GeneralErrorDialog.class.getName(), "onCreateView");
         View view = inflater.inflate(R.layout.dialog_general_error, container);
         String message = BundleUtil.bundleToMessage(GeneralErrorDialog.class.getSimpleName(), Objects.requireNonNull(getArguments()));
         prepareErrorMessage(view, message);
-        prepareOkButton(view);
+        prepareOkImageButton(view);
         return view;
     }
 
@@ -38,7 +40,7 @@ public class GeneralErrorDialog extends DialogFragment {
         messageText.setText(message);
     }
 
-    private void prepareOkButton(View view) {
+    private void prepareOkImageButton(View view) {
         Log.d(GeneralErrorDialog.class.getName(), "prepareOkButton");
         ImageView okImage = view.findViewById(R.id.imageview_dialog_general_error_ok);
         okImage.setOnClickListener(this::onOkClicked);

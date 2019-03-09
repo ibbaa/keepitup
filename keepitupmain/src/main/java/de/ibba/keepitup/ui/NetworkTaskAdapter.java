@@ -82,12 +82,14 @@ public class NetworkTaskAdapter extends RecyclerView.Adapter<NetworkTaskViewHold
     private void bindInterval(@NonNull NetworkTaskViewHolder networkTaskViewHolder, NetworkTask networkTask) {
         String intervalUnit = getResources().getString(R.string.string_minutes);
         String formattedIntervalText = String.format(getResources().getString(R.string.text_list_item_network_task_interval), networkTask.getInterval(), intervalUnit);
+        Log.d(NetworkTaskAdapter.class.getName(), "binding interval text " + formattedIntervalText);
         networkTaskViewHolder.setInterval(formattedIntervalText);
     }
 
     private void bindNotification(@NonNull NetworkTaskViewHolder networkTaskViewHolder, NetworkTask networkTask) {
         String sendNotification = networkTask.isNotification() ? getResources().getString(R.string.string_yes) : getResources().getString(R.string.string_no);
         String formattedNotificationText = String.format(getResources().getString(R.string.text_list_item_network_task_notification), sendNotification);
+        Log.d(NetworkTaskAdapter.class.getName(), "binding notification text " + formattedNotificationText);
         networkTaskViewHolder.setNotification(formattedNotificationText);
     }
 
@@ -100,15 +102,18 @@ public class NetworkTaskAdapter extends RecyclerView.Adapter<NetworkTaskViewHold
             timestampText = getResources().getString(R.string.string_not_executed);
         }
         String formattedLastExecTimestampText = String.format(getResources().getString(R.string.text_list_item_network_task_last_exec_timestamp), timestampText);
+        Log.d(NetworkTaskAdapter.class.getName(), "binding last exec timestamp text " + formattedLastExecTimestampText);
         networkTaskViewHolder.setLastExecTimestamp(formattedLastExecTimestampText);
     }
 
     private void bindLastExecMessage(@NonNull NetworkTaskViewHolder networkTaskViewHolder, NetworkTask networkTask) {
         if (wasExecuted(networkTask)) {
             String formattedMessageText = String.format(getResources().getString(R.string.text_list_item_network_task_last_exec_message), networkTask.getMessage());
+            Log.d(NetworkTaskAdapter.class.getName(), "binding and showing last exec message text " + formattedMessageText);
             networkTaskViewHolder.setLastExecMessage(formattedMessageText);
             networkTaskViewHolder.showLastExecMessageTextView();
         } else {
+            Log.d(NetworkTaskAdapter.class.getName(), "Not executed. Hiding last exec message text.");
             networkTaskViewHolder.setLastExecMessage("");
             networkTaskViewHolder.hideLastExecMessageTextView();
         }
@@ -123,6 +128,7 @@ public class NetworkTaskAdapter extends RecyclerView.Adapter<NetworkTaskViewHold
     }
 
     public void removeItem(NetworkTask task) {
+        Log.d(NetworkTaskAdapter.class.getName(), "removeItem " + task);
         for (int ii = 0; ii < networkTasks.size(); ii++) {
             NetworkTask currentTask = networkTasks.get(ii);
             if (task.getId() == currentTask.getId()) {
@@ -134,6 +140,7 @@ public class NetworkTaskAdapter extends RecyclerView.Adapter<NetworkTaskViewHold
     }
 
     public void replaceItem(NetworkTask task) {
+        Log.d(NetworkTaskAdapter.class.getName(), "replaceItem " + task);
         for (int ii = 0; ii < networkTasks.size(); ii++) {
             NetworkTask currentTask = networkTasks.get(ii);
             if (task.getId() == currentTask.getId()) {
@@ -144,6 +151,7 @@ public class NetworkTaskAdapter extends RecyclerView.Adapter<NetworkTaskViewHold
     }
 
     public void updateIndex() {
+        Log.d(NetworkTaskAdapter.class.getName(), "updateIndex");
         for (int ii = 0; ii < networkTasks.size(); ii++) {
             NetworkTask currentTask = networkTasks.get(ii);
             currentTask.setIndex(ii);

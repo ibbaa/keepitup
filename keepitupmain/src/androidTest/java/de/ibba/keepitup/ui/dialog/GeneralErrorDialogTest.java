@@ -1,4 +1,4 @@
-package de.ibba.keepitup.ui;
+package de.ibba.keepitup.ui.dialog;
 
 import android.support.test.annotation.UiThreadTest;
 import android.support.test.filters.MediumTest;
@@ -11,6 +11,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import de.ibba.keepitup.R;
+import de.ibba.keepitup.ui.NetworkTaskMainActivity;
 import de.ibba.keepitup.util.BundleUtil;
 
 import static android.support.test.espresso.Espresso.onView;
