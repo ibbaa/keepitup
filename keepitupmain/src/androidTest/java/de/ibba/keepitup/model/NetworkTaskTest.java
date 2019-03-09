@@ -32,6 +32,7 @@ public class NetworkTaskTest {
         assertFalse(task.isSuccess());
         assertEquals(-1, task.getTimestamp());
         assertNull(task.getMessage());
+        assertFalse(task.isOnlyWifi());
         assertFalse(task.isNotification());
         PersistableBundle persistableBundle = task.toPersistableBundle();
         assertNotNull(persistableBundle);
@@ -46,6 +47,7 @@ public class NetworkTaskTest {
         assertFalse(task.isSuccess());
         assertEquals(-1, task.getTimestamp());
         assertNull(task.getMessage());
+        assertFalse(task.isOnlyWifi());
         assertFalse(task.isNotification());
         Bundle bundle = task.toBundle();
         assertNotNull(bundle);
@@ -60,6 +62,7 @@ public class NetworkTaskTest {
         assertFalse(task.isSuccess());
         assertEquals(-1, task.getTimestamp());
         assertNull(task.getMessage());
+        assertFalse(task.isOnlyWifi());
         assertFalse(task.isNotification());
     }
 
@@ -76,6 +79,7 @@ public class NetworkTaskTest {
         assertFalse(task.isSuccess());
         assertEquals(-1, task.getTimestamp());
         assertNull(task.getMessage());
+        assertFalse(task.isOnlyWifi());
         assertFalse(task.isNotification());
         PersistableBundle persistableBundle = task.toPersistableBundle();
         assertNotNull(persistableBundle);
@@ -90,6 +94,7 @@ public class NetworkTaskTest {
         assertFalse(task.isSuccess());
         assertEquals(-1, task.getTimestamp());
         assertNull(task.getMessage());
+        assertFalse(task.isOnlyWifi());
         assertFalse(task.isNotification());
         Bundle bundle = task.toBundle();
         assertNotNull(bundle);
@@ -104,6 +109,7 @@ public class NetworkTaskTest {
         assertFalse(task.isSuccess());
         assertEquals(-1, task.getTimestamp());
         assertNull(task.getMessage());
+        assertFalse(task.isOnlyWifi());
         assertFalse(task.isNotification());
     }
 
@@ -121,6 +127,7 @@ public class NetworkTaskTest {
         task.setSuccess(true);
         task.setTimestamp(timestamp);
         task.setMessage("Message");
+        task.setOnlyWifi(true);
         task.setNotification(true);
         assertEquals(1, task.getId());
         assertEquals(2, task.getIndex());
@@ -132,6 +139,7 @@ public class NetworkTaskTest {
         assertTrue(task.isSuccess());
         assertEquals(timestamp, task.getTimestamp());
         assertEquals("Message", task.getMessage());
+        assertTrue(task.isOnlyWifi());
         assertTrue(task.isNotification());
         PersistableBundle persistableBundle = task.toPersistableBundle();
         assertNotNull(persistableBundle);
@@ -146,6 +154,7 @@ public class NetworkTaskTest {
         assertTrue(task.isSuccess());
         assertEquals(timestamp, task.getTimestamp());
         assertEquals("Message", task.getMessage());
+        assertTrue(task.isOnlyWifi());
         assertTrue(task.isNotification());
         Bundle bundle = task.toBundle();
         assertNotNull(bundle);
@@ -160,6 +169,7 @@ public class NetworkTaskTest {
         assertTrue(task.isSuccess());
         assertEquals(timestamp, task.getTimestamp());
         assertEquals("Message", task.getMessage());
+        assertTrue(task.isOnlyWifi());
         assertTrue(task.isNotification());
     }
 }

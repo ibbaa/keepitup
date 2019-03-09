@@ -84,6 +84,7 @@ public class NetworkTaskDAO {
         values.put(dbConstants.getSuccessColumnName(), networkTask.isSuccess() ? 1 : 0);
         values.put(dbConstants.getTimestampColumnName(), networkTask.getTimestamp());
         values.put(dbConstants.getMessageColumnName(), networkTask.getMessage());
+        values.put(dbConstants.getOnlyWifiColumnName(), networkTask.isOnlyWifi() ? 1 : 0);
         values.put(dbConstants.getNotificationColumnName(), networkTask.isNotification() ? 1 : 0);
         long rowid = db.insert(dbConstants.getTableName(), null, values);
         if (rowid < 0) {
@@ -134,6 +135,7 @@ public class NetworkTaskDAO {
         String[] selectionArgs = {String.valueOf(networkTask.getId())};
         ContentValues values = new ContentValues();
         values.put(dbConstants.getAccessTypeColumnName(), networkTask.getAccessType() == null ? null : networkTask.getAccessType().getCode());
+        values.put(dbConstants.getOnlyWifiColumnName(), networkTask.isOnlyWifi() ? 1 : 0);
         values.put(dbConstants.getNotificationColumnName(), networkTask.isNotification() ? 1 : 0);
         values.put(dbConstants.getAddressColumnName(), networkTask.getAddress());
         values.put(dbConstants.getPortColumnName(), networkTask.getPort());
@@ -206,6 +208,7 @@ public class NetworkTaskDAO {
         int indexSuccessColumn = cursor.getColumnIndex(dbConstants.getSuccessColumnName());
         int indexTimestampColumn = cursor.getColumnIndex(dbConstants.getTimestampColumnName());
         int indexMessageColumn = cursor.getColumnIndex(dbConstants.getMessageColumnName());
+        int indexOnlyWifiColumn = cursor.getColumnIndex(dbConstants.getOnlyWifiColumnName());
         int indexNotificationColumn = cursor.getColumnIndex(dbConstants.getNotificationColumnName());
         networkTask.setId(cursor.getInt(indexIdColumn));
         networkTask.setIndex(cursor.getInt(indexIndexColumn));
@@ -221,6 +224,7 @@ public class NetworkTaskDAO {
         networkTask.setSuccess(cursor.getInt(indexSuccessColumn) >= 1);
         networkTask.setTimestamp(cursor.getLong(indexTimestampColumn));
         networkTask.setMessage(cursor.getString(indexMessageColumn));
+        networkTask.setOnlyWifi(cursor.getInt(indexOnlyWifiColumn) >= 1);
         networkTask.setNotification(cursor.getInt(indexNotificationColumn) >= 1);
         return networkTask;
     }

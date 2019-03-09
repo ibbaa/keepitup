@@ -4,6 +4,7 @@
     <string name="task_address_default">192.168.178.1</string>
     <integer name="task_port_default">22</integer>
     <integer name="task_interval_default">15</integer>
+    <bool name="task_onlywifi_default">false</bool>
     <bool name="task_notification_default">false</bool>
     <integer name="task_port_minimum">0</integer>
     <integer name="task_port_maximum">65535</integer>

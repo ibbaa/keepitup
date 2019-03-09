@@ -20,6 +20,7 @@ public class NetworkTask {
     private boolean success;
     private long timestamp;
     private String message;
+    private boolean onlyWifi;
     private boolean notification;
 
     public NetworkTask() {
@@ -33,6 +34,7 @@ public class NetworkTask {
         this.success = false;
         this.timestamp = -1;
         this.message = null;
+        this.onlyWifi = false;
         this.notification = false;
     }
 
@@ -48,6 +50,7 @@ public class NetworkTask {
         this.success = false;
         this.timestamp = -1;
         this.message = null;
+        this.onlyWifi = resources.getBoolean(R.bool.task_onlywifi_default);
         this.notification = resources.getBoolean(R.bool.task_notification_default);
     }
 
@@ -68,6 +71,7 @@ public class NetworkTask {
         this.success = bundle.getInt("success") >= 1;
         this.timestamp = bundle.getLong("timestamp");
         this.message = bundle.getString("message");
+        this.onlyWifi = bundle.getInt("onlywifi") >= 1;
         this.notification = bundle.getInt("notification") >= 1;
     }
 
@@ -151,6 +155,14 @@ public class NetworkTask {
         this.message = message;
     }
 
+    public boolean isOnlyWifi() {
+        return onlyWifi;
+    }
+
+    public void setOnlyWifi(boolean onlyWifi) {
+        this.onlyWifi = onlyWifi;
+    }
+
     public boolean isNotification() {
         return notification;
     }
@@ -177,6 +189,7 @@ public class NetworkTask {
         if (message != null) {
             bundle.putString("message", message);
         }
+        bundle.putInt("onlywifi", onlyWifi ? 1 : 0);
         bundle.putInt("notification", notification ? 1 : 0);
         return bundle;
     }
@@ -199,6 +212,7 @@ public class NetworkTask {
                 ", success=" + success +
                 ", timestamp=" + timestamp +
                 ", message='" + message + '\'' +
+                ", onlyWifi=" + onlyWifi +
                 ", notification=" + notification +
                 '}';
     }

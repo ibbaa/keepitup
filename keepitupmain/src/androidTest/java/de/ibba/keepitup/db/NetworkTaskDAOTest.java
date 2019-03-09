@@ -122,6 +122,7 @@ public class NetworkTaskDAOTest {
         assertEquals(insertedTask1.getAddress(), readTask1.getAddress());
         assertEquals(insertedTask1.getPort(), readTask1.getPort());
         assertEquals(insertedTask1.getInterval(), readTask1.getInterval());
+        assertEquals(insertedTask1.isOnlyWifi(), readTask1.isOnlyWifi());
         assertEquals(insertedTask1.isNotification(), readTask1.isNotification());
         assertFalse(readTask1.isSuccess());
         assertEquals(987, readTask1.getTimestamp());
@@ -141,6 +142,7 @@ public class NetworkTaskDAOTest {
         assertEquals(insertedTask1.getAddress(), readTask1.getAddress());
         assertEquals(insertedTask1.getPort(), readTask1.getPort());
         assertEquals(insertedTask1.getInterval(), readTask1.getInterval());
+        assertEquals(insertedTask1.isOnlyWifi(), readTask1.isOnlyWifi());
         assertEquals(insertedTask1.isNotification(), readTask1.isNotification());
         assertEquals(insertedTask1.getTimestamp(), readTask1.getTimestamp());
         assertEquals(insertedTask1.getMessage(), readTask1.getMessage());
@@ -162,6 +164,7 @@ public class NetworkTaskDAOTest {
         assertEquals(task2.getAddress(), readTask1.getAddress());
         assertEquals(task2.getPort(), readTask1.getPort());
         assertEquals(task2.getInterval(), readTask1.getInterval());
+        assertEquals(task2.isOnlyWifi(), readTask1.isOnlyWifi());
         assertEquals(task2.isNotification(), readTask1.isNotification());
         assertEquals(insertedTask1.getIndex(), readTask1.getIndex());
         assertEquals(insertedTask1.getSchedulerid(), readTask1.getSchedulerid());
@@ -182,6 +185,7 @@ public class NetworkTaskDAOTest {
         insertedTask1.setSuccess(true);
         insertedTask1.setTimestamp(789);
         insertedTask1.setMessage("TestMessage1");
+        insertedTask1.setOnlyWifi(false);
         insertedTask1.setNotification(true);
         return insertedTask1;
     }
@@ -198,6 +202,7 @@ public class NetworkTaskDAOTest {
         insertedTask2.setSuccess(false);
         insertedTask2.setTimestamp(456);
         insertedTask2.setMessage(null);
+        insertedTask2.setOnlyWifi(true);
         insertedTask2.setNotification(false);
         return insertedTask2;
     }
@@ -214,6 +219,7 @@ public class NetworkTaskDAOTest {
         insertedTask3.setSuccess(true);
         insertedTask3.setTimestamp(123);
         insertedTask3.setMessage("TestMessage3");
+        insertedTask3.setOnlyWifi(false);
         insertedTask3.setNotification(false);
         return insertedTask3;
     }
@@ -228,6 +234,7 @@ public class NetworkTaskDAOTest {
         assertEquals(task1.isSuccess(), task2.isSuccess());
         assertEquals(task1.getTimestamp(), task2.getTimestamp());
         assertEquals(task1.getMessage(), task2.getMessage());
+        assertEquals(task1.isOnlyWifi(), task2.isOnlyWifi());
         assertEquals(task1.isNotification(), task2.isNotification());
     }
 }
