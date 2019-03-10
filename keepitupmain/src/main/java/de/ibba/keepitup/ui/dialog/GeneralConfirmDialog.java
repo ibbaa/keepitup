@@ -19,8 +19,8 @@ import de.ibba.keepitup.util.StringUtil;
 
 public class GeneralConfirmDialog extends DialogFragment {
 
-    public static enum Type {
-        DELETE;
+    public enum Type {
+        DELETE
     }
 
     @Override

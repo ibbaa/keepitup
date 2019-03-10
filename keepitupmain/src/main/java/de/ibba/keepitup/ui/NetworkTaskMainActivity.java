@@ -13,12 +13,12 @@ import android.view.View;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import de.ibba.keepitup.R;
 import de.ibba.keepitup.db.NetworkTaskDAO;
 import de.ibba.keepitup.model.NetworkTask;
 import de.ibba.keepitup.service.NetworkKeepAliveServiceScheduler;
-import de.ibba.keepitup.service.SchedulerIdGenerator;
 import de.ibba.keepitup.ui.dialog.GeneralConfirmDialog;
 import de.ibba.keepitup.ui.dialog.GeneralErrorDialog;
 import de.ibba.keepitup.ui.dialog.NetworkTaskEditDialog;
@@ -91,10 +91,13 @@ public class NetworkTaskMainActivity extends AppCompatActivity {
         NetworkTask networkTask = getAdapter().getItem(position);
         Log.d(NetworkTaskMainActivity.class.getName(), "onMainStartStopClicked for network task " + networkTask);
         NetworkKeepAliveServiceScheduler scheduler = new NetworkKeepAliveServiceScheduler(this);
+        NetworkTaskHandler handler = new NetworkTaskHandler(this);
         if (scheduler.isRunning(networkTask)) {
-            stopNetworkTask(networkTask);
+            Log.d(NetworkTaskMainActivity.class.getName(), "Network task is running, stopping " + networkTask);
+            handler.stopNetworkTask(networkTask);
         } else {
-            startNetworkTask(networkTask);
+            Log.d(NetworkTaskMainActivity.class.getName(), "Network task is not running, starting " + networkTask);
+            handler.startNetworkTask(networkTask);
         }
         getAdapter().notifyItemChanged(position);
     }
@@ -121,38 +124,13 @@ public class NetworkTaskMainActivity extends AppCompatActivity {
     public void onEditDialogOkClicked(NetworkTaskEditDialog editDialog) {
         NetworkTask task = editDialog.getNetworkTask();
         Log.d(NetworkTaskMainActivity.class.getName(), "onEditDialogOkClicked, network task is " + task);
-        NetworkTaskDAO dao = new NetworkTaskDAO(this);
+        NetworkTaskHandler handler = new NetworkTaskHandler(this);
         if (task.getId() < 0) {
-            int index = getAdapter().getNextIndex();
-            task.setIndex(index);
             Log.d(NetworkTaskMainActivity.class.getName(), "Network task is new, inserting " + task);
-            try {
-                task = dao.insertNetworkTask(task);
-                if (task.getId() < 0) {
-                    Log.e(NetworkTaskMainActivity.class.getName(), "Error inserting task into database. Showing error dialog.");
-                    showErrorDialog(getResources().getString(R.string.text_dialog_general_error_insert_network_task));
-                } else {
-                    getAdapter().addItem(task);
-                }
-            } catch (Exception exc) {
-                Log.e(NetworkTaskMainActivity.class.getName(), "Error inserting task into database. Showing error dialog.", exc);
-                showErrorDialog(getResources().getString(R.string.text_dialog_general_error_insert_network_task));
-            }
+            handler.insertNetworkTask(task);
         } else {
             Log.d(NetworkTaskMainActivity.class.getName(), "Updating " + task);
-            try {
-                dao.updateNetworkTask(task);
-                NetworkKeepAliveServiceScheduler scheduler = new NetworkKeepAliveServiceScheduler(this);
-                if (scheduler.isRunning(task)) {
-                    Log.d(NetworkTaskMainActivity.class.getName(), "Network task is running. Restarting.");
-                    scheduler.stop(task);
-                    scheduler.start(task);
-                }
-                getAdapter().replaceItem(task);
-            } catch (Exception exc) {
-                Log.e(NetworkTaskMainActivity.class.getName(), "Error updating task. Showing error dialog.", exc);
-                showErrorDialog(getResources().getString(R.string.text_dialog_general_error_update_network_task));
-            }
+            handler.updateNetworkTask(task);
         }
         getAdapter().notifyDataSetChanged();
         editDialog.dismiss();
@@ -166,7 +144,16 @@ public class NetworkTaskMainActivity extends AppCompatActivity {
     public void onConfirmDialogOkClicked(GeneralConfirmDialog confirmDialog, GeneralConfirmDialog.Type type) {
         Log.d(NetworkTaskMainActivity.class.getName(), "onConfirmDialogOkClicked for type " + type);
         if (GeneralConfirmDialog.Type.DELETE.equals(type)) {
-            doNetworkTaskDelete(confirmDialog);
+            Bundle arguments = confirmDialog.getArguments();
+            if (Objects.requireNonNull(arguments).containsKey(getConfirmDialogPositionKey())) {
+                NetworkTaskHandler handler = new NetworkTaskHandler(this);
+                int position = arguments.getInt(getConfirmDialogPositionKey());
+                NetworkTask task = getAdapter().getItem(position);
+                Log.d(NetworkTaskMainActivity.class.getName(), "Deleting " + task);
+                handler.deleteNetworkTask(task);
+            } else {
+                Log.e(NetworkTaskMainActivity.class.getName(), GeneralConfirmDialog.class.getSimpleName() + " arguments do not contain position key " + getConfirmDialogPositionKey());
+            }
         } else {
             Log.e(NetworkTaskMainActivity.class.getName(), "unknown type " + type);
         }
@@ -178,42 +165,15 @@ public class NetworkTaskMainActivity extends AppCompatActivity {
         confirmDialog.dismiss();
     }
 
-    private void startNetworkTask(NetworkTask networkTask) {
-        Log.d(NetworkTaskMainActivity.class.getName(), "startNetworkTask");
-        NetworkKeepAliveServiceScheduler scheduler = new NetworkKeepAliveServiceScheduler(this);
-        NetworkTaskDAO dao = new NetworkTaskDAO(this);
-        SchedulerIdGenerator idGenerator = new SchedulerIdGenerator(this);
-        int schedulerId = idGenerator.createSchedulerId();
-        try {
-            dao.updateNetworkTaskSchedulerId(networkTask.getId(), schedulerId);
-            networkTask.setSchedulerid(schedulerId);
-            scheduler.start(networkTask);
-        } catch (Exception exc) {
-            Log.e(NetworkTaskMainActivity.class.getName(), "Error updating scheduler id to " + schedulerId + ". Showing error dialog.", exc);
-            showErrorDialog(getResources().getString(R.string.text_dialog_general_error_start_network_task));
-        }
-    }
-
-    private void stopNetworkTask(NetworkTask networkTask) {
-        Log.d(NetworkTaskMainActivity.class.getName(), "stopNetworkTask");
-        NetworkKeepAliveServiceScheduler scheduler = new NetworkKeepAliveServiceScheduler(this);
-        NetworkTaskDAO dao = new NetworkTaskDAO(this);
-        scheduler.stop(networkTask);
-        networkTask.setSchedulerid(-1);
-        try {
-            dao.updateNetworkTaskSchedulerId(networkTask.getId(), -1);
-        } catch (Exception exc) {
-            Log.e(NetworkTaskMainActivity.class.getName(), "Error updating scheduler id to -1", exc);
-        }
-    }
-
-    private void showErrorDialog(String errorMessage) {
+    public void showErrorDialog(String errorMessage) {
+        Log.d(NetworkTaskMainActivity.class.getName(), "showErrorDialog with message " + errorMessage);
         GeneralErrorDialog errorDialog = new GeneralErrorDialog();
         errorDialog.setArguments(BundleUtil.messageToBundle(GeneralErrorDialog.class.getSimpleName(), errorMessage));
         errorDialog.show(getSupportFragmentManager(), GeneralErrorDialog.class.getName());
     }
 
     private void showConfirmDialog(String confirmMessage, GeneralConfirmDialog.Type type, int position) {
+        Log.d(NetworkTaskMainActivity.class.getName(), "showConfirmDialog with message " + confirmMessage + " for type " + type + " and position " + position);
         GeneralConfirmDialog confirmDialog = new GeneralConfirmDialog();
         Bundle bundle = BundleUtil.messagesToBundle(new String[]{GeneralConfirmDialog.class.getSimpleName(), GeneralConfirmDialog.Type.class.getSimpleName()}, new String[]{confirmMessage, type.name()});
         bundle.putInt(getConfirmDialogPositionKey(), position);
@@ -225,32 +185,7 @@ public class NetworkTaskMainActivity extends AppCompatActivity {
         return GeneralConfirmDialog.class.getSimpleName() + ".position";
     }
 
-    private void doNetworkTaskDelete(GeneralConfirmDialog confirmDialog) {
-        Log.d(NetworkTaskMainActivity.class.getName(), "doNetworkTaskDelete, performing delete");
-        Bundle arguments = confirmDialog.getArguments();
-        if (arguments.containsKey(getConfirmDialogPositionKey())) {
-            try {
-                NetworkTaskDAO dao = new NetworkTaskDAO(this);
-                int position = arguments.getInt(getConfirmDialogPositionKey());
-                NetworkTask task = getAdapter().getItem(position);
-                NetworkKeepAliveServiceScheduler scheduler = new NetworkKeepAliveServiceScheduler(this);
-                if (scheduler.isRunning(task)) {
-                    Log.d(NetworkTaskMainActivity.class.getName(), "Network task is running. Stopping.");
-                    scheduler.stop(task);
-                }
-                dao.deleteNetworkTask(task);
-                getAdapter().removeItem(task);
-                getAdapter().notifyDataSetChanged();
-            } catch (Exception exc) {
-                Log.e(NetworkTaskMainActivity.class.getName(), "Error deleting network task.", exc);
-                showErrorDialog(getResources().getString(R.string.text_dialog_general_error_delete_network_task));
-            }
-        } else {
-            Log.e(NetworkTaskMainActivity.class.getName(), GeneralConfirmDialog.class.getSimpleName() + " arguments do not contain position key " + getConfirmDialogPositionKey());
-        }
-    }
-
-    private NetworkTaskAdapter getAdapter() {
+    public NetworkTaskAdapter getAdapter() {
         RecyclerView recyclerView = findViewById(R.id.listview_main_activity_network_tasks);
         return (NetworkTaskAdapter) recyclerView.getAdapter();
     }
