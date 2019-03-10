@@ -81,8 +81,9 @@ public class NetworkTaskAdapter extends RecyclerView.Adapter<NetworkTaskViewHold
     }
 
     private void bindInterval(@NonNull NetworkTaskViewHolder networkTaskViewHolder, NetworkTask networkTask) {
-        String intervalUnit = getResources().getString(R.string.string_minutes);
-        String formattedIntervalText = String.format(getResources().getString(R.string.text_list_item_network_task_interval), networkTask.getInterval(), intervalUnit);
+        int interval = networkTask.getInterval();
+        String intervalUnit = interval == 1 ? getResources().getString(R.string.string_minute) : getResources().getString(R.string.string_minutes);
+        String formattedIntervalText = String.format(getResources().getString(R.string.text_list_item_network_task_interval), interval, intervalUnit);
         Log.d(NetworkTaskAdapter.class.getName(), "binding interval text " + formattedIntervalText);
         networkTaskViewHolder.setInterval(formattedIntervalText);
     }

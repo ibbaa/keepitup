@@ -13,18 +13,21 @@ import android.widget.TextView;
 import java.util.Objects;
 
 import de.ibba.keepitup.R;
+import de.ibba.keepitup.ui.NetworkTaskMainActivity;
 import de.ibba.keepitup.util.BundleUtil;
+import de.ibba.keepitup.util.StringUtil;
 
 public class GeneralConfirmDialog extends DialogFragment {
 
-    private boolean wasConfirmed;
+    public static enum Type {
+        DELETE;
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         Log.d(GeneralConfirmDialog.class.getName(), "onCreate");
         super.onCreate(savedInstanceState);
         setStyle(DialogFragment.STYLE_NO_FRAME, R.style.DialogTheme);
-        wasConfirmed = false;
     }
 
     @Override
@@ -35,10 +38,6 @@ public class GeneralConfirmDialog extends DialogFragment {
         prepareConfirmMessage(view, message);
         prepareOkCancelImageButtons(view);
         return view;
-    }
-
-    public boolean wasConfirmed() {
-        return wasConfirmed;
     }
 
     private void prepareConfirmMessage(View view, String message) {
@@ -57,13 +56,25 @@ public class GeneralConfirmDialog extends DialogFragment {
 
     private void onOkClicked(@SuppressWarnings("unused") View view) {
         Log.d(GeneralConfirmDialog.class.getName(), "onOkClicked");
-        wasConfirmed = true;
-        dismiss();
+        NetworkTaskMainActivity activity = (NetworkTaskMainActivity) getActivity();
+        String typeString = BundleUtil.bundleToMessage(GeneralConfirmDialog.Type.class.getSimpleName(), Objects.requireNonNull(getArguments()));
+        if (StringUtil.isEmpty(typeString)) {
+            Log.e(GeneralConfirmDialog.class.getName(), GeneralConfirmDialog.Type.class.getSimpleName() + " not specified.");
+            Objects.requireNonNull(activity).onConfirmDialogOkClicked(this, null);
+            return;
+        }
+        Type type = null;
+        try {
+            type = Type.valueOf(typeString);
+        } catch (IllegalArgumentException exc) {
+            Log.e(GeneralConfirmDialog.class.getName(), GeneralConfirmDialog.Type.class.getSimpleName() + "." + typeString + " does not exist");
+        }
+        Objects.requireNonNull(activity).onConfirmDialogOkClicked(this, type);
     }
 
     private void onCancelClicked(@SuppressWarnings("unused") View view) {
         Log.d(GeneralConfirmDialog.class.getName(), "onCancelClicked");
-        wasConfirmed = false;
-        dismiss();
+        NetworkTaskMainActivity activity = (NetworkTaskMainActivity) getActivity();
+        Objects.requireNonNull(activity).onConfirmDialogCancelClicked(this);
     }
 }
