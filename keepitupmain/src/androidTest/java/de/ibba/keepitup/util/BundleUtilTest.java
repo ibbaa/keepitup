@@ -29,6 +29,18 @@ public class BundleUtilTest {
     }
 
     @Test
+    public void testMessagesToBundle() {
+        Bundle bundle = BundleUtil.messagesToBundle(new String[]{"key1", "key2"}, new String[]{"message1", "message2"});
+        assertEquals("message1", bundle.getString("key1"));
+        assertEquals("message2", bundle.getString("key2"));
+        bundle = BundleUtil.messagesToBundle(new String[]{"key1", "key2"}, new String[]{"message1"});
+        assertEquals("message1", bundle.getString("key1"));
+        assertTrue(BundleUtil.messagesToBundle(null, new String[0]).isEmpty());
+        assertTrue(BundleUtil.messagesToBundle(new String[0], null).isEmpty());
+        assertTrue(BundleUtil.messagesToBundle(new String[0], new String[0]).isEmpty());
+    }
+
+    @Test
     public void testBundleToMessage() {
         Bundle bundle = new Bundle();
         bundle.putString("key", "message");

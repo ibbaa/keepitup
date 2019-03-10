@@ -19,6 +19,19 @@ public class BundleUtil {
         return bundle;
     }
 
+    public static Bundle messagesToBundle(String[] keys, String[] messages) {
+        Bundle bundle = new Bundle();
+        if (keys == null || messages == null) {
+            return bundle;
+        }
+        for (int ii = 0; ii < keys.length; ii++) {
+            if (ii < messages.length) {
+                bundle.putString(keys[ii], messages[ii]);
+            }
+        }
+        return bundle;
+    }
+
     public static String bundleToMessage(String key, Bundle bundle) {
         if (bundle == null || key == null) {
             return "";

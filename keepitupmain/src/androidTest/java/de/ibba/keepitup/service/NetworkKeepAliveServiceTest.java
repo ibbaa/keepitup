@@ -24,6 +24,7 @@ public class NetworkKeepAliveServiceTest {
     @Before
     public void beforeEachTestMethod() {
         scheduler = new NetworkKeepAliveServiceScheduler(InstrumentationRegistry.getTargetContext());
+        scheduler.stopAll();
     }
 
     @After

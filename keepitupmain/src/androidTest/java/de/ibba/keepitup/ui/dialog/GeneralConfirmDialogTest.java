@@ -19,8 +19,6 @@ import static android.support.test.espresso.action.ViewActions.click;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
 
 @MediumTest
 @RunWith(AndroidJUnit4.class)
@@ -38,22 +36,11 @@ public class GeneralConfirmDialogTest {
     }
 
     @Test
-    public void testConfirmOk() {
-        GeneralConfirmDialog confirmDialog = new GeneralConfirmDialog();
-        confirmDialog.setArguments(BundleUtil.messageToBundle(GeneralConfirmDialog.class.getSimpleName(), "Message"));
-        confirmDialog.show(activity.getSupportFragmentManager(), GeneralConfirmDialog.class.getName());
-        onView(withId(R.id.textview_dialog_general_confirm_message)).check(matches(withText("Message")));
-        onView(withId(R.id.imageview_dialog_general_confirm_ok)).perform(click());
-        assertTrue(confirmDialog.wasConfirmed());
-    }
-
-    @Test
-    public void testConfirmCancel() {
+    public void testConfirmMessage() {
         GeneralConfirmDialog confirmDialog = new GeneralConfirmDialog();
         confirmDialog.setArguments(BundleUtil.messageToBundle(GeneralConfirmDialog.class.getSimpleName(), "Message"));
         confirmDialog.show(activity.getSupportFragmentManager(), GeneralConfirmDialog.class.getName());
         onView(withId(R.id.textview_dialog_general_confirm_message)).check(matches(withText("Message")));
         onView(withId(R.id.imageview_dialog_general_confirm_cancel)).perform(click());
-        assertFalse(confirmDialog.wasConfirmed());
     }
 }

@@ -31,7 +31,7 @@ public class NetworkKeepAliveServiceScheduler {
         ComponentName componentName = new ComponentName(getContext(), NetworkKeepAliveService.class);
         long interval = getIntervalMilliseconds(networkTask);
         JobInfo jobInfo = new JobInfo.Builder(networkTask.getSchedulerid(), componentName).setPeriodic(interval).setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY).setPersisted(false).setExtras(networkTask.toPersistableBundle()).build();
-        Log.d(NetworkKeepAliveServiceScheduler.class.getName(), "Starting NetworkKeepAliveService with periodic interval of " + interval + " msec for job " + networkTask);
+        Log.d(NetworkKeepAliveServiceScheduler.class.getName(), "Starting " + NetworkKeepAliveService.class.getSimpleName() + " with periodic interval of " + interval + " msec for job " + networkTask);
         jobScheduler.schedule(jobInfo);
     }
 

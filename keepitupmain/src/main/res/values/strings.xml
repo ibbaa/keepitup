@@ -3,6 +3,7 @@
     <string name="app_name">Keep it up</string>
     <string name="string_running">Running</string>
     <string name="string_stopped">Stopped</string>
+    <string name="string_minute">minute</string>
     <string name="string_minutes">minutes</string>
     <string name="string_successful">successful</string>
     <string name="string_not_successful">failed</string>
