@@ -32,7 +32,6 @@ public class NetworkTaskDAOTest {
 
     @After
     public void afterEachTestMethod() {
-        NetworkTaskDAO dao = new NetworkTaskDAO(InstrumentationRegistry.getTargetContext());
         dao.deleteAllNetworkTasks();
     }
 
