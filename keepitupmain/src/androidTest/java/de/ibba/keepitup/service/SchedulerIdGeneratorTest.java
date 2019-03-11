@@ -20,6 +20,7 @@ public class SchedulerIdGeneratorTest {
     public void beforeEachTestMethod() {
         Context context = InstrumentationRegistry.getTargetContext();
         scheduler = new NetworkKeepAliveServiceScheduler(context);
+        scheduler.stopAll();
         idGenerator = new SchedulerIdGenerator(context);
     }
 

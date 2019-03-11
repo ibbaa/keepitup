@@ -24,6 +24,7 @@ public class NetworkTaskMainActivityTest {
     public final ActivityTestRule<NetworkTaskMainActivity> rule = new ActivityTestRule<>(NetworkTaskMainActivity.class);
 
     private NetworkTaskMainActivity activity;
+    private NetworkTaskDAO dao;
     private RecyclerView recyclerView;
 
     @Before
@@ -31,13 +32,12 @@ public class NetworkTaskMainActivityTest {
     public void beforeEachTestMethod() {
         activity = rule.getActivity();
         recyclerView = activity.findViewById(R.id.listview_main_activity_network_tasks);
-        NetworkTaskDAO dao = new NetworkTaskDAO(InstrumentationRegistry.getTargetContext());
+        dao = new NetworkTaskDAO(InstrumentationRegistry.getTargetContext());
         dao.deleteAllNetworkTasks();
     }
 
     @After
     public void afterEachTestMethod() {
-        NetworkTaskDAO dao = new NetworkTaskDAO(InstrumentationRegistry.getTargetContext());
         dao.deleteAllNetworkTasks();
     }
 
