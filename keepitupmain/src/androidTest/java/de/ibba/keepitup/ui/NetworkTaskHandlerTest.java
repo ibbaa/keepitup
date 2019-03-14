@@ -16,6 +16,7 @@ import de.ibba.keepitup.model.AccessType;
 import de.ibba.keepitup.model.NetworkTask;
 import de.ibba.keepitup.service.NetworkKeepAliveServiceScheduler;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
@@ -48,7 +49,7 @@ public class NetworkTaskHandlerTest {
 
     @Test
     public void testStartStopNetworkTask() {
-        NetworkTask task = getNetworkTask();
+        NetworkTask task = getNetworkTask1();
         dao.insertNetworkTask(task);
         handler.startNetworkTask(task);
         assertTrue(task.getSchedulerid() >= 0);
@@ -64,20 +65,80 @@ public class NetworkTaskHandlerTest {
         assertFalse(scheduler.isRunning(task));
     }
 
-    private NetworkTask getNetworkTask() {
-        NetworkTask networkTask = new NetworkTask();
-        networkTask.setId(-1);
-        networkTask.setIndex(0);
-        networkTask.setSchedulerid(-1);
-        networkTask.setAddress("127.0.0.1");
-        networkTask.setPort(80);
-        networkTask.setAccessType(AccessType.PING);
-        networkTask.setInterval(15);
-        networkTask.setSuccess(true);
-        networkTask.setTimestamp(789);
-        networkTask.setMessage("TestMessage1");
-        networkTask.setOnlyWifi(false);
-        networkTask.setNotification(true);
-        return networkTask;
+    @Test
+    public void testInsertNetworkTask() {
+        NetworkTask task1 = getNetworkTask1();
+        handler.insertNetworkTask(task1);
+        List<NetworkTask> tasks = dao.readAllNetworkTasks();
+        assertEquals(1, tasks.size());
+        assertEquals(1, activity.getAdapter().getNextIndex());
+        assertEquals(2, activity.getAdapter().getItemCount());
+        task1 = tasks.get(0);
+        assertEquals(0, task1.getIndex());
+        assertTrue(task1.getId() >= 0);
+        NetworkTask adapterTask1 = activity.getAdapter().getItem(0);
+        assertAreEqual(task1, adapterTask1);
+        NetworkTask task2 = getNetworkTask1();
+        handler.insertNetworkTask(task2);
+        tasks = dao.readAllNetworkTasks();
+        assertEquals(2, tasks.size());
+        assertEquals(2, activity.getAdapter().getNextIndex());
+        assertEquals(3, activity.getAdapter().getItemCount());
+        task2 = tasks.get(1);
+        NetworkTask adapterTask2 = activity.getAdapter().getItem(1);
+        assertAreEqual(task2, adapterTask2);
+    }
+
+    @Test
+    public void testUpdateNetworkTask() {
+        NetworkTask task1 = getNetworkTask1();
+        handler.insertNetworkTask(task1);
+        NetworkTask task2 = getNetworkTask1();
+        handler.insertNetworkTask(task2);
+        task1.setAddress("192.168.178.1");
+        handler.updateNetworkTask(task1);
+        List<NetworkTask> tasks = dao.readAllNetworkTasks();
+        task1 = tasks.get(0);
+        assertEquals("192.168.178.1", task1.getAddress());
+        NetworkTask adapterTask1 = activity.getAdapter().getItem(0);
+        assertEquals("192.168.178.1", adapterTask1.getAddress());
+        assertAreEqual(task1, adapterTask1);
+        assertFalse(scheduler.isRunning(task1));
+        task2 = tasks.get(1);
+        handler.startNetworkTask(task2);
+        handler.updateNetworkTask(task2);
+        assertTrue(scheduler.isRunning(task2));
+    }
+
+    private NetworkTask getNetworkTask1() {
+        NetworkTask networkTask1 = new NetworkTask();
+        networkTask1.setId(-1);
+        networkTask1.setIndex(-1);
+        networkTask1.setSchedulerid(-1);
+        networkTask1.setAddress("127.0.0.1");
+        networkTask1.setPort(80);
+        networkTask1.setAccessType(AccessType.PING);
+        networkTask1.setInterval(15);
+        networkTask1.setSuccess(true);
+        networkTask1.setTimestamp(789);
+        networkTask1.setMessage("TestMessage1");
+        networkTask1.setOnlyWifi(false);
+        networkTask1.setNotification(true);
+        return networkTask1;
+    }
+
+    private void assertAreEqual(NetworkTask task1, NetworkTask task2) {
+        assertEquals(task1.getId(), task2.getId());
+        assertEquals(task1.getIndex(), task2.getIndex());
+        assertEquals(task1.getSchedulerid(), task2.getSchedulerid());
+        assertEquals(task1.getAccessType(), task2.getAccessType());
+        assertEquals(task1.getAddress(), task2.getAddress());
+        assertEquals(task1.getPort(), task2.getPort());
+        assertEquals(task1.getInterval(), task2.getInterval());
+        assertEquals(task1.isSuccess(), task2.isSuccess());
+        assertEquals(task1.getTimestamp(), task2.getTimestamp());
+        assertEquals(task1.getMessage(), task2.getMessage());
+        assertEquals(task1.isOnlyWifi(), task2.isOnlyWifi());
+        assertEquals(task1.isNotification(), task2.isNotification());
     }
 }
