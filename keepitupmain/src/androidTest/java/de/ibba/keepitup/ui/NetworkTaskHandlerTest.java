@@ -78,7 +78,7 @@ public class NetworkTaskHandlerTest {
         assertTrue(task1.getId() >= 0);
         NetworkTask adapterTask1 = activity.getAdapter().getItem(0);
         assertAreEqual(task1, adapterTask1);
-        NetworkTask task2 = getNetworkTask1();
+        NetworkTask task2 = getNetworkTask2();
         handler.insertNetworkTask(task2);
         tasks = dao.readAllNetworkTasks();
         assertEquals(2, tasks.size());
@@ -93,7 +93,7 @@ public class NetworkTaskHandlerTest {
     public void testUpdateNetworkTask() {
         NetworkTask task1 = getNetworkTask1();
         handler.insertNetworkTask(task1);
-        NetworkTask task2 = getNetworkTask1();
+        NetworkTask task2 = getNetworkTask2();
         handler.insertNetworkTask(task2);
         task1.setAddress("192.168.178.1");
         handler.updateNetworkTask(task1);
@@ -110,6 +110,31 @@ public class NetworkTaskHandlerTest {
         assertTrue(scheduler.isRunning(task2));
     }
 
+    @Test
+    public void testDeleteNetworkTask() {
+        NetworkTask task1 = getNetworkTask1();
+        handler.insertNetworkTask(task1);
+        NetworkTask task2 = getNetworkTask2();
+        handler.insertNetworkTask(task2);
+        NetworkTask task3 = getNetworkTask3();
+        handler.insertNetworkTask(task3);
+        NetworkTask task4 = getNetworkTask4();
+        handler.insertNetworkTask(task4);
+        List<NetworkTask> tasks = dao.readAllNetworkTasks();
+        task2 = tasks.get(1);
+        handler.startNetworkTask(task2);
+        handler.deleteNetworkTask(task2);
+        assertFalse(scheduler.isRunning(task2));
+        tasks = dao.readAllNetworkTasks();
+        assertEquals(3, tasks.size());
+        task1 = tasks.get(0);
+        task3 = tasks.get(1);
+        task4 = tasks.get(2);
+        assertEquals(0, task1.getIndex());
+        assertEquals(1, task3.getIndex());
+        assertEquals(2, task4.getIndex());
+    }
+
     private NetworkTask getNetworkTask1() {
         NetworkTask networkTask1 = new NetworkTask();
         networkTask1.setId(-1);
@@ -124,6 +149,57 @@ public class NetworkTaskHandlerTest {
         networkTask1.setMessage("TestMessage1");
         networkTask1.setOnlyWifi(false);
         networkTask1.setNotification(true);
+        return networkTask1;
+    }
+
+    private NetworkTask getNetworkTask2() {
+        NetworkTask networkTask1 = new NetworkTask();
+        networkTask1.setId(-1);
+        networkTask1.setIndex(-1);
+        networkTask1.setSchedulerid(-1);
+        networkTask1.setAddress("localhost");
+        networkTask1.setPort(22);
+        networkTask1.setAccessType(AccessType.PING);
+        networkTask1.setInterval(40);
+        networkTask1.setSuccess(false);
+        networkTask1.setTimestamp(123);
+        networkTask1.setMessage("TestMessage2");
+        networkTask1.setOnlyWifi(true);
+        networkTask1.setNotification(false);
+        return networkTask1;
+    }
+
+    private NetworkTask getNetworkTask3() {
+        NetworkTask networkTask1 = new NetworkTask();
+        networkTask1.setId(-1);
+        networkTask1.setIndex(-1);
+        networkTask1.setSchedulerid(-1);
+        networkTask1.setAddress("192.168.178.100");
+        networkTask1.setPort(8080);
+        networkTask1.setAccessType(AccessType.CONNECT);
+        networkTask1.setInterval(85);
+        networkTask1.setSuccess(true);
+        networkTask1.setTimestamp(987);
+        networkTask1.setMessage("TestMessage3");
+        networkTask1.setOnlyWifi(true);
+        networkTask1.setNotification(true);
+        return networkTask1;
+    }
+
+    private NetworkTask getNetworkTask4() {
+        NetworkTask networkTask1 = new NetworkTask();
+        networkTask1.setId(-1);
+        networkTask1.setIndex(-1);
+        networkTask1.setSchedulerid(-1);
+        networkTask1.setAddress("192.168.178.200");
+        networkTask1.setPort(3389);
+        networkTask1.setAccessType(AccessType.CONNECT);
+        networkTask1.setInterval(100);
+        networkTask1.setSuccess(false);
+        networkTask1.setTimestamp(321);
+        networkTask1.setMessage("TestMessage4");
+        networkTask1.setOnlyWifi(false);
+        networkTask1.setNotification(false);
         return networkTask1;
     }
 
