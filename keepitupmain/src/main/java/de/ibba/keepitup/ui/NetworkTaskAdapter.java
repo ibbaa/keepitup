@@ -142,10 +142,10 @@ public class NetworkTaskAdapter extends RecyclerView.Adapter<NetworkTaskViewHold
             NetworkTask currentTask = networkTasks.get(ii);
             if (task.getId() == currentTask.getId()) {
                 networkTasks.remove(ii);
+                updateIndex();
                 return;
             }
         }
-        updateIndex();
     }
 
     public void replaceItem(NetworkTask task) {

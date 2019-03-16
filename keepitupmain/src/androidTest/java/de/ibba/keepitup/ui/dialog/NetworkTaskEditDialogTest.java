@@ -1,17 +1,11 @@
 package de.ibba.keepitup.ui.dialog;
 
 import android.support.test.InstrumentationRegistry;
-import android.support.test.annotation.UiThreadTest;
-import android.support.test.espresso.ViewInteraction;
-import android.support.test.espresso.matcher.BoundedMatcher;
 import android.support.test.filters.MediumTest;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
-import android.support.v4.content.ContextCompat;
 import android.view.View;
-import android.widget.TextView;
 
-import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.junit.After;
 import org.junit.Before;
@@ -23,6 +17,7 @@ import de.ibba.keepitup.R;
 import de.ibba.keepitup.db.NetworkTaskDAO;
 import de.ibba.keepitup.model.AccessType;
 import de.ibba.keepitup.model.NetworkTask;
+import de.ibba.keepitup.test.matcher.TextColorMatcher;
 import de.ibba.keepitup.ui.NetworkTaskMainActivity;
 
 import static android.support.test.espresso.Espresso.onView;
@@ -48,16 +43,16 @@ import static org.junit.Assert.assertTrue;
 public class NetworkTaskEditDialogTest {
 
     @Rule
-    public final ActivityTestRule<NetworkTaskMainActivity> rule = new ActivityTestRule<>(NetworkTaskMainActivity.class);
+    public final ActivityTestRule<NetworkTaskMainActivity> rule = new ActivityTestRule<>(NetworkTaskMainActivity.class, false, false);
 
     private NetworkTaskMainActivity activity;
 
     @Before
-    @UiThreadTest
     public void beforeEachTestMethod() {
-        activity = rule.getActivity();
         NetworkTaskDAO dao = new NetworkTaskDAO(InstrumentationRegistry.getTargetContext());
         dao.deleteAllNetworkTasks();
+        rule.launchActivity(null);
+        activity = rule.getActivity();
     }
 
     @After
@@ -68,8 +63,7 @@ public class NetworkTaskEditDialogTest {
 
     @Test
     public void testGetNetworkTaskDefaultValues() {
-        ViewInteraction addNetworkTaskImageView = onView(allOf(withId(R.id.imageview_list_item_network_task_add), isDisplayed()));
-        addNetworkTaskImageView.perform(click());
+        onView(allOf(withId(R.id.imageview_list_item_network_task_add), isDisplayed())).perform(click());
         onView(withId(R.id.radiogroup_dialog_edit_network_task_accesstype)).check(matches(hasChildCount(2)));
         onView(withText("Ping")).check(matches(isChecked()));
         onView(withId(R.id.edittext_dialog_edit_network_task_address)).check(matches(withText("192.168.178.1")));
@@ -89,8 +83,7 @@ public class NetworkTaskEditDialogTest {
 
     @Test
     public void testGetNetworkTaskEnteredText() {
-        ViewInteraction addNetworkTaskImageView = onView(allOf(withId(R.id.imageview_list_item_network_task_add), isDisplayed()));
-        addNetworkTaskImageView.perform(click());
+        onView(allOf(withId(R.id.imageview_list_item_network_task_add), isDisplayed())).perform(click());
         onView(withId(R.id.edittext_dialog_edit_network_task_address)).perform(replaceText("localhost"));
         onView(withId(R.id.edittext_dialog_edit_network_task_port)).perform(replaceText("80"));
         onView(withId(R.id.edittext_dialog_edit_network_task_interval)).perform(replaceText("60"));
@@ -112,8 +105,7 @@ public class NetworkTaskEditDialogTest {
 
     @Test
     public void testAccessTypePortField() {
-        ViewInteraction addNetworkTaskImageView = onView(allOf(withId(R.id.imageview_list_item_network_task_add), isDisplayed()));
-        addNetworkTaskImageView.perform(click());
+        onView(allOf(withId(R.id.imageview_list_item_network_task_add), isDisplayed())).perform(click());
         onView(withText("Connect")).perform(click());
         onView(withId(R.id.edittext_dialog_edit_network_task_address)).check(matches(isDisplayed()));
         onView(withId(R.id.edittext_dialog_edit_network_task_port)).check(matches(not(isDisplayed())));
@@ -130,12 +122,11 @@ public class NetworkTaskEditDialogTest {
 
     @Test
     public void testOnOkCancelClickedDialogDismissed() {
-        ViewInteraction addNetworkTaskImageView = onView(allOf(withId(R.id.imageview_list_item_network_task_add), isDisplayed()));
-        addNetworkTaskImageView.perform(click());
+        onView(allOf(withId(R.id.imageview_list_item_network_task_add), isDisplayed())).perform(click());
         assertEquals(1, activity.getSupportFragmentManager().getFragments().size());
         onView(withId(R.id.imageview_dialog_edit_network_task_cancel)).perform(click());
         assertEquals(0, activity.getSupportFragmentManager().getFragments().size());
-        addNetworkTaskImageView.perform(click());
+        onView(withId(R.id.imageview_list_item_network_task_add)).perform(click());
         assertEquals(1, activity.getSupportFragmentManager().getFragments().size());
         onView(withId(R.id.imageview_dialog_edit_network_task_ok)).perform(click());
         assertEquals(0, activity.getSupportFragmentManager().getFragments().size());
@@ -143,8 +134,7 @@ public class NetworkTaskEditDialogTest {
 
     @Test
     public void testOnOkCancelClickedErrorDialog() {
-        ViewInteraction addNetworkTaskImageView = onView(allOf(withId(R.id.imageview_list_item_network_task_add), isDisplayed()));
-        addNetworkTaskImageView.perform(click());
+        onView(allOf(withId(R.id.imageview_list_item_network_task_add), isDisplayed())).perform(click());
         onView(withId(R.id.edittext_dialog_edit_network_task_address)).perform(replaceText("123.456"));
         onView(withId(R.id.edittext_dialog_edit_network_task_port)).perform(replaceText("99999"));
         onView(withId(R.id.edittext_dialog_edit_network_task_interval)).perform(replaceText("0"));
@@ -175,8 +165,7 @@ public class NetworkTaskEditDialogTest {
 
     @Test
     public void testOnOkCancelClickedInputErrorColor() {
-        ViewInteraction addNetworkTaskImageView = onView(allOf(withId(R.id.imageview_list_item_network_task_add), isDisplayed()));
-        addNetworkTaskImageView.perform(click());
+        onView(allOf(withId(R.id.imageview_list_item_network_task_add), isDisplayed())).perform(click());
         onView(withId(R.id.edittext_dialog_edit_network_task_address)).check(matches(withTextColor(R.color.textColor)));
         onView(withId(R.id.edittext_dialog_edit_network_task_port)).check(matches(withTextColor(R.color.textColor)));
         onView(withId(R.id.edittext_dialog_edit_network_task_interval)).check(matches(withTextColor(R.color.textColor)));
@@ -201,19 +190,6 @@ public class NetworkTaskEditDialogTest {
     }
 
     public static Matcher<View> withTextColor(final int expectedId) {
-        return new BoundedMatcher<View, TextView>(TextView.class) {
-
-            @Override
-            protected boolean matchesSafely(TextView textView) {
-                int colorId = ContextCompat.getColor(textView.getContext(), expectedId);
-                return textView.getCurrentTextColor() == colorId;
-            }
-
-            @Override
-            public void describeTo(Description description) {
-                description.appendText("with text color: ");
-                description.appendValue(expectedId);
-            }
-        };
+        return new TextColorMatcher(expectedId);
     }
 }

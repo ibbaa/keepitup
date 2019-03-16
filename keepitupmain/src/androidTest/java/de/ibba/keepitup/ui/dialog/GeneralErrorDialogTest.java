@@ -1,6 +1,5 @@
 package de.ibba.keepitup.ui.dialog;
 
-import android.support.test.annotation.UiThreadTest;
 import android.support.test.filters.MediumTest;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
@@ -24,13 +23,13 @@ import static android.support.test.espresso.matcher.ViewMatchers.withText;
 public class GeneralErrorDialogTest {
 
     @Rule
-    public final ActivityTestRule<NetworkTaskMainActivity> rule = new ActivityTestRule<>(NetworkTaskMainActivity.class);
+    public final ActivityTestRule<NetworkTaskMainActivity> rule = new ActivityTestRule<>(NetworkTaskMainActivity.class, false, false);
 
     private NetworkTaskMainActivity activity;
 
     @Before
-    @UiThreadTest
     public void beforeEachTestMethod() {
+        rule.launchActivity(null);
         activity = rule.getActivity();
     }
 
