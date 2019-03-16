@@ -1,7 +1,6 @@
 package de.ibba.keepitup.ui;
 
 import android.support.test.InstrumentationRegistry;
-import android.support.test.annotation.UiThreadTest;
 import android.support.test.rule.ActivityTestRule;
 
 import org.junit.After;
@@ -23,7 +22,7 @@ import static org.junit.Assert.assertTrue;
 public class NetworkTaskHandlerTest {
 
     @Rule
-    public final ActivityTestRule<NetworkTaskMainActivity> rule = new ActivityTestRule<>(NetworkTaskMainActivity.class);
+    public final ActivityTestRule<NetworkTaskMainActivity> rule = new ActivityTestRule<>(NetworkTaskMainActivity.class, false, false);
 
     private NetworkTaskMainActivity activity;
     private NetworkTaskDAO dao;
@@ -31,13 +30,13 @@ public class NetworkTaskHandlerTest {
     private NetworkTaskHandler handler;
 
     @Before
-    @UiThreadTest
     public void beforeEachTestMethod() {
-        activity = rule.getActivity();
         dao = new NetworkTaskDAO(InstrumentationRegistry.getTargetContext());
         dao.deleteAllNetworkTasks();
         scheduler = new NetworkKeepAliveServiceScheduler(InstrumentationRegistry.getTargetContext());
         scheduler.stopAll();
+        rule.launchActivity(null);
+        activity = rule.getActivity();
         handler = new NetworkTaskHandler(activity);
     }
 
