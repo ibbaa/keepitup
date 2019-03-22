@@ -33,6 +33,8 @@ import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
 import static org.hamcrest.Matchers.allOf;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 @MediumTest
 @RunWith(AndroidJUnit4.class)
@@ -127,6 +129,50 @@ public class NetworkTaskMainActivityTest {
         setTaskExecuted(1, new GregorianCalendar(2020, Calendar.DECEMBER, 1), false, "connection failed");
         onView(allOf(withId(R.id.textview_list_item_network_task_last_exec_timestamp), withChildDescendantAtPosition(withId(R.id.listview_main_activity_network_tasks), 1))).check(matches(withText("Last execution: failed, Dec 1, 2020 12:00:00 AM")));
         onView(allOf(withId(R.id.textview_list_item_network_task_last_exec_message), withChildDescendantAtPosition(withId(R.id.listview_main_activity_network_tasks), 1))).check(matches(withText("Last execution message: connection failed")));
+    }
+
+    @Test
+    public void testEditNetworkTask() {
+        onView(allOf(withId(R.id.imageview_list_item_network_task_add), isDisplayed())).perform(click());
+        onView(withId(R.id.imageview_dialog_edit_network_task_ok)).perform(click());
+        onView(allOf(withId(R.id.imageview_list_item_network_task_edit), withChildDescendantAtPosition(withId(R.id.listview_main_activity_network_tasks), 0))).perform(click());
+        onView(withId(R.id.edittext_dialog_edit_network_task_address)).perform(replaceText("localhost"));
+        onView(withId(R.id.edittext_dialog_edit_network_task_port)).perform(replaceText("456"));
+        onView(withId(R.id.edittext_dialog_edit_network_task_interval)).perform(replaceText("60"));
+        onView(withId(R.id.switch_dialog_edit_network_task_onlywifi)).perform(click());
+        onView(withId(R.id.switch_dialog_edit_network_task_notification)).perform(click());
+        onView(withId(R.id.imageview_dialog_edit_network_task_cancel)).perform(click());
+        onView(allOf(withId(R.id.textview_list_item_network_task_accesstype), withChildDescendantAtPosition(withId(R.id.listview_main_activity_network_tasks), 0))).check(matches(withText("Type: Ping")));
+        onView(allOf(withId(R.id.textview_list_item_network_task_address), withChildDescendantAtPosition(withId(R.id.listview_main_activity_network_tasks), 0))).check(matches(withText("Host: 192.168.178.1 Port: 22")));
+        onView(allOf(withId(R.id.textview_list_item_network_task_interval), withChildDescendantAtPosition(withId(R.id.listview_main_activity_network_tasks), 0))).check(matches(withText("Interval: 15 minutes")));
+        onView(allOf(withId(R.id.textview_list_item_network_task_onlywifi), withChildDescendantAtPosition(withId(R.id.listview_main_activity_network_tasks), 0))).check(matches(withText("Only on WiFi: no")));
+        onView(allOf(withId(R.id.textview_list_item_network_task_notification), withChildDescendantAtPosition(withId(R.id.listview_main_activity_network_tasks), 0))).check(matches(withText("Notification on failure: no")));
+        onView(allOf(withId(R.id.imageview_list_item_network_task_edit), withChildDescendantAtPosition(withId(R.id.listview_main_activity_network_tasks), 0))).perform(click());
+        onView(withId(R.id.edittext_dialog_edit_network_task_address)).perform(replaceText("localhost"));
+        onView(withId(R.id.edittext_dialog_edit_network_task_port)).perform(replaceText("456"));
+        onView(withId(R.id.edittext_dialog_edit_network_task_interval)).perform(replaceText("60"));
+        onView(withId(R.id.switch_dialog_edit_network_task_onlywifi)).perform(click());
+        onView(withId(R.id.switch_dialog_edit_network_task_notification)).perform(click());
+        onView(withId(R.id.imageview_dialog_edit_network_task_ok)).perform(click());
+        onView(allOf(withId(R.id.textview_list_item_network_task_accesstype), withChildDescendantAtPosition(withId(R.id.listview_main_activity_network_tasks), 0))).check(matches(withText("Type: Ping")));
+        onView(allOf(withId(R.id.textview_list_item_network_task_address), withChildDescendantAtPosition(withId(R.id.listview_main_activity_network_tasks), 0))).check(matches(withText("Host: localhost Port: 456")));
+        onView(allOf(withId(R.id.textview_list_item_network_task_interval), withChildDescendantAtPosition(withId(R.id.listview_main_activity_network_tasks), 0))).check(matches(withText("Interval: 60 minutes")));
+        onView(allOf(withId(R.id.textview_list_item_network_task_onlywifi), withChildDescendantAtPosition(withId(R.id.listview_main_activity_network_tasks), 0))).check(matches(withText("Only on WiFi: yes")));
+        onView(allOf(withId(R.id.textview_list_item_network_task_notification), withChildDescendantAtPosition(withId(R.id.listview_main_activity_network_tasks), 0))).check(matches(withText("Notification on failure: yes")));
+    }
+
+    @Test
+    public void testStartStopNetworkTask() {
+        onView(allOf(withId(R.id.imageview_list_item_network_task_add), isDisplayed())).perform(click());
+        onView(withId(R.id.imageview_dialog_edit_network_task_ok)).perform(click());
+        onView(allOf(withId(R.id.imageview_list_item_network_task_start_stop), withChildDescendantAtPosition(withId(R.id.listview_main_activity_network_tasks), 0))).check(matches(withDrawable(R.drawable.icon_start_shadow)));
+        assertFalse(scheduler.isRunning(activity.getAdapter().getItem(0)));
+        onView(allOf(withId(R.id.imageview_list_item_network_task_start_stop), withChildDescendantAtPosition(withId(R.id.listview_main_activity_network_tasks), 0))).perform(click());
+        onView(allOf(withId(R.id.imageview_list_item_network_task_start_stop), withChildDescendantAtPosition(withId(R.id.listview_main_activity_network_tasks), 0))).check(matches(withDrawable(R.drawable.icon_stop_shadow)));
+        assertTrue(scheduler.isRunning(activity.getAdapter().getItem(0)));
+        onView(allOf(withId(R.id.imageview_list_item_network_task_start_stop), withChildDescendantAtPosition(withId(R.id.listview_main_activity_network_tasks), 0))).perform(click());
+        onView(allOf(withId(R.id.imageview_list_item_network_task_start_stop), withChildDescendantAtPosition(withId(R.id.listview_main_activity_network_tasks), 0))).check(matches(withDrawable(R.drawable.icon_start_shadow)));
+        assertFalse(scheduler.isRunning(activity.getAdapter().getItem(0)));
     }
 
     private void setTaskExecuted(int position, Calendar calendar, boolean success, String message) {
