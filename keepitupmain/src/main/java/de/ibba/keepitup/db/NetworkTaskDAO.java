@@ -34,7 +34,7 @@ public class NetworkTaskDAO {
 
     public void deleteAllNetworkTasks() {
         Log.d(NetworkTaskDAO.class.getName(), "Deleting all tasks");
-        executeDBOperationInTransaction(null, this::deleteAllNetworkTasks);
+        executeDBOperationInTransaction((NetworkTask) null, this::deleteAllNetworkTasks);
     }
 
     public void updateNetworkTask(NetworkTask networkTask) {
@@ -69,7 +69,7 @@ public class NetworkTaskDAO {
 
     public List<NetworkTask> readAllNetworkTasks() {
         Log.d(NetworkTaskDAO.class.getName(), "Reading all tasks");
-        return executeDBOperationInTransaction(null, this::readAllNetworkTasks);
+        return executeDBOperationInTransaction((NetworkTask) null, this::readAllNetworkTasks);
     }
 
     private NetworkTask insertNetworkTask(NetworkTask networkTask, SQLiteDatabase db) {
@@ -229,7 +229,7 @@ public class NetworkTaskDAO {
         return networkTask;
     }
 
-    private <T> T executeDBOperationInTransaction(NetworkTask networkTask, DBOperation<T> dbOperation) {
+    private <S, T> T executeDBOperationInTransaction(S networkTask, DBOperation<S, T> dbOperation) {
         SQLiteDatabase db = null;
         T result;
         try {
