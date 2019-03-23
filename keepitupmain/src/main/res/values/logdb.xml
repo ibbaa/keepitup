@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="log_db_name">networklog.db</string>
+    <integer name="log_db_version">1</integer>
+    <string name="log_table_name">NETWORKTASKLOG</string>
+    <string name="log_id_column_name">_id</string>
+    <string name="log_taskid_column_name">NETWORKTASKID</string>
+    <string name="log_timestamp_column_name">TIMESTAMP</string>
+    <string name="log_success_column_name">SUCCESS</string>
+    <string name="log_message_column_name">MESSAGE</string>
+</resources>
