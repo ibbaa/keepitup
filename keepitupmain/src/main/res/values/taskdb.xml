@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="task_db_name">networkjob.db</string>
+    <string name="task_db_name">networktask.db</string>
     <integer name="task_db_version">1</integer>
     <string name="task_table_name">NETWORKTASK</string>
     <string name="task_id_column_name">_id</string>
