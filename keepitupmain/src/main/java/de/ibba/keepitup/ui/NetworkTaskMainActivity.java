@@ -43,7 +43,7 @@ public class NetworkTaskMainActivity extends AppCompatActivity {
         NetworkTaskDAO dao = new NetworkTaskDAO(this);
         try {
             List<NetworkTask> tasks = dao.readAllNetworkTasks();
-            Log.d(NetworkTaskMainActivity.class.getName(), "Database returned:");
+            Log.d(NetworkTaskMainActivity.class.getName(), "Database returned: " + (tasks.isEmpty() ? "nothing" : ""));
             for (NetworkTask currentTask : tasks) {
                 Log.d(NetworkTaskMainActivity.class.getName(), currentTask.toString());
             }

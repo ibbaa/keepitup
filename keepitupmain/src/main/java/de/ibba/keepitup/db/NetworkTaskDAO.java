@@ -12,14 +12,10 @@ import java.util.List;
 import de.ibba.keepitup.model.AccessType;
 import de.ibba.keepitup.model.NetworkTask;
 
-public class NetworkTaskDAO {
-
-    private final NetworkTaskDBOpenHelper taskDbOpenHelper;
-    private final Context context;
+public class NetworkTaskDAO extends BaseDAO {
 
     public NetworkTaskDAO(Context context) {
-        taskDbOpenHelper = new NetworkTaskDBOpenHelper(context);
-        this.context = context;
+        super(context);
     }
 
     public NetworkTask insertNetworkTask(NetworkTask networkTask) {
@@ -74,7 +70,7 @@ public class NetworkTaskDAO {
 
     private NetworkTask insertNetworkTask(NetworkTask networkTask, SQLiteDatabase db) {
         ContentValues values = new ContentValues();
-        NetworkTaskDBConstants dbConstants = new NetworkTaskDBConstants(context);
+        NetworkTaskDBConstants dbConstants = new NetworkTaskDBConstants(getContext());
         values.put(dbConstants.getIndexColumnName(), networkTask.getIndex());
         values.put(dbConstants.getSchedulerIdColumnName(), networkTask.getSchedulerid());
         values.put(dbConstants.getAddressColumnName(), networkTask.getAddress());
@@ -95,7 +91,7 @@ public class NetworkTaskDAO {
     }
 
     private int deleteNetworkTask(NetworkTask networkTask, SQLiteDatabase db) {
-        NetworkTaskDBConstants dbConstants = new NetworkTaskDBConstants(context);
+        NetworkTaskDBConstants dbConstants = new NetworkTaskDBConstants(getContext());
         String selection = dbConstants.getIdColumnName() + " = ?";
         String[] selectionArgs = {String.valueOf(networkTask.getId())};
         int value = db.delete(dbConstants.getTableName(), selection, selectionArgs);
@@ -105,12 +101,12 @@ public class NetworkTaskDAO {
 
     @SuppressWarnings("unused")
     private int deleteAllNetworkTasks(NetworkTask networkTask, SQLiteDatabase db) {
-        NetworkTaskDBConstants dbConstants = new NetworkTaskDBConstants(context);
+        NetworkTaskDBConstants dbConstants = new NetworkTaskDBConstants(getContext());
         return db.delete(dbConstants.getTableName(), null, null);
     }
 
     private int updateNetworkTaskSuccess(NetworkTask networkTask, SQLiteDatabase db) {
-        NetworkTaskDBConstants dbConstants = new NetworkTaskDBConstants(context);
+        NetworkTaskDBConstants dbConstants = new NetworkTaskDBConstants(getContext());
         String selection = dbConstants.getIdColumnName() + " = ?";
         String[] selectionArgs = {String.valueOf(networkTask.getId())};
         ContentValues values = new ContentValues();
@@ -121,7 +117,7 @@ public class NetworkTaskDAO {
     }
 
     private int updateNetworkTaskSchedulerId(NetworkTask networkTask, SQLiteDatabase db) {
-        NetworkTaskDBConstants dbConstants = new NetworkTaskDBConstants(context);
+        NetworkTaskDBConstants dbConstants = new NetworkTaskDBConstants(getContext());
         String selection = dbConstants.getIdColumnName() + " = ?";
         String[] selectionArgs = {String.valueOf(networkTask.getId())};
         ContentValues values = new ContentValues();
@@ -130,7 +126,7 @@ public class NetworkTaskDAO {
     }
 
     private int updateNetworkTask(NetworkTask networkTask, SQLiteDatabase db) {
-        NetworkTaskDBConstants dbConstants = new NetworkTaskDBConstants(context);
+        NetworkTaskDBConstants dbConstants = new NetworkTaskDBConstants(getContext());
         String selection = dbConstants.getIdColumnName() + " = ?";
         String[] selectionArgs = {String.valueOf(networkTask.getId())};
         ContentValues values = new ContentValues();
@@ -148,7 +144,7 @@ public class NetworkTaskDAO {
     private NetworkTask readNetworkTask(NetworkTask networkTask, SQLiteDatabase db) {
         Cursor cursor = null;
         NetworkTask result = null;
-        NetworkTaskDBConstants dbConstants = new NetworkTaskDBConstants(context);
+        NetworkTaskDBConstants dbConstants = new NetworkTaskDBConstants(getContext());
         try {
             cursor = db.rawQuery(dbConstants.getReadNetworkTaskStatement(), new String[]{String.valueOf(networkTask.getId())});
             while (cursor.moveToNext()) {
@@ -173,7 +169,7 @@ public class NetworkTaskDAO {
     private List<NetworkTask> readAllNetworkTasks(NetworkTask networkTask, SQLiteDatabase db) {
         Cursor cursor = null;
         List<NetworkTask> result = new ArrayList<>();
-        NetworkTaskDBConstants dbConstants = new NetworkTaskDBConstants(context);
+        NetworkTaskDBConstants dbConstants = new NetworkTaskDBConstants(getContext());
         try {
             cursor = db.rawQuery(dbConstants.getReadAllNetworkTasksStatement(), null);
             while (cursor.moveToNext()) {
@@ -197,7 +193,7 @@ public class NetworkTaskDAO {
 
     private NetworkTask mapCursorToNetworkTask(Cursor cursor) {
         NetworkTask networkTask = new NetworkTask();
-        NetworkTaskDBConstants dbConstants = new NetworkTaskDBConstants(context);
+        NetworkTaskDBConstants dbConstants = new NetworkTaskDBConstants(getContext());
         int indexIdColumn = cursor.getColumnIndex(dbConstants.getIdColumnName());
         int indexIndexColumn = cursor.getColumnIndex(dbConstants.getIndexColumnName());
         int schedulerIdIndexColumn = cursor.getColumnIndex(dbConstants.getSchedulerIdColumnName());
@@ -227,33 +223,5 @@ public class NetworkTaskDAO {
         networkTask.setOnlyWifi(cursor.getInt(indexOnlyWifiColumn) >= 1);
         networkTask.setNotification(cursor.getInt(indexNotificationColumn) >= 1);
         return networkTask;
-    }
-
-    private <S, T> T executeDBOperationInTransaction(S networkTask, DBOperation<S, T> dbOperation) {
-        SQLiteDatabase db = null;
-        T result;
-        try {
-            db = taskDbOpenHelper.getWritableDatabase();
-            db.beginTransaction();
-            result = dbOperation.execute(networkTask, db);
-            db.setTransactionSuccessful();
-        } catch (Throwable exc) {
-            Log.e(NetworkTaskDAO.class.getName(), "Error executing database operation", exc);
-            throw exc;
-        } finally {
-            if (db != null) {
-                try {
-                    db.endTransaction();
-                } catch (Throwable exc) {
-                    Log.e(NetworkTaskDAO.class.getName(), "Error committing changes to database", exc);
-                }
-                try {
-                    db.close();
-                } catch (Throwable exc) {
-                    Log.e(NetworkTaskDAO.class.getName(), "Error closing database", exc);
-                }
-            }
-        }
-        return result;
     }
 }

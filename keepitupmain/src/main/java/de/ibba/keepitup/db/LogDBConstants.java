@@ -79,6 +79,10 @@ class LogDBConstants {
         return "SELECT MIN(" + getTimestampColumnName() + ")," + getIdColumnName() + " FROM " + getTableName();
     }
 
+    public String getLogCountStatement() {
+        return "SELECT COUNT(*) FROM " + getTableName();
+    }
+
     private Resources getResources() {
         return context.getResources();
     }
