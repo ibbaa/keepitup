@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="task_db_name">networktask.db</string>
-    <integer name="task_db_version">1</integer>
+    <string name="db_name">keepitup.db</string>
+    <integer name="db_version">1</integer>
     <string name="task_table_name">NETWORKTASK</string>
     <string name="task_id_column_name">_id</string>
     <string name="task_index_column_name">UIINDEX</string>
@@ -15,4 +15,10 @@
     <string name="task_message_column_name">MESSAGE</string>
     <string name="task_onlywifi_column_name">ONLYWIFI</string>
     <string name="task_notification_column_name">NOTIFICATION</string>
+    <string name="log_table_name">NETWORKTASKLOG</string>
+    <string name="log_id_column_name">_id</string>
+    <string name="log_taskid_column_name">NETWORKTASKID</string>
+    <string name="log_timestamp_column_name">TIMESTAMP</string>
+    <string name="log_success_column_name">SUCCESS</string>
+    <string name="log_message_column_name">MESSAGE</string>
 </resources>
