@@ -45,7 +45,7 @@ class LogDBConstants {
                 getNetworkTaskIdColumnName() + " INTEGER, " +
                 getTimestampColumnName() + " INTEGER, " +
                 getSuccessColumnName() + " INTEGER, " +
-                getMessageColumnName() + " TEXT, " +
+                getMessageColumnName() + " TEXT " +
                 "FOREIGN KEY(" + getNetworkTaskIdColumnName() + ") REFERENCES " +
                 networkTaskDBConstants.getTableName() + "(" + networkTaskDBConstants.getIdColumnName() + "));";
     }
@@ -60,18 +60,18 @@ class LogDBConstants {
                 getNetworkTaskIdColumnName() + ", " +
                 getTimestampColumnName() + ", " +
                 getSuccessColumnName() + ", " +
-                getMessageColumnName() + ", " +
+                getMessageColumnName() +
                 " FROM " + getTableName() +
                 " ORDER BY " + getTimestampColumnName() + " DESC";
     }
 
     public String getMostRecentLogStatement() {
-        return "SELECT MAX(" + getTimestampColumnName() + ")" +
+        return "SELECT MAX(" + getTimestampColumnName() + "), " +
                 getIdColumnName() + ", " +
                 getNetworkTaskIdColumnName() + ", " +
                 getTimestampColumnName() + ", " +
                 getSuccessColumnName() + ", " +
-                getMessageColumnName() + ", " +
+                getMessageColumnName() +
                 " FROM " + getTableName();
     }
 
