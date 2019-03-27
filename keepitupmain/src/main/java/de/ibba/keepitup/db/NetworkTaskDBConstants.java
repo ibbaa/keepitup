@@ -68,7 +68,7 @@ class NetworkTaskDBConstants {
     public String getCreateTableStatement() {
         return ("CREATE TABLE " + getTableName() + "(") +
                 getIdColumnName() + " INTEGER PRIMARY KEY ASC, " +
-                getIndexColumnName() + " INTEGER, " +
+                getIndexColumnName() + " INTEGER NOT NULL, " +
                 getSchedulerIdColumnName() + " INTEGER, " +
                 getAddressColumnName() + " TEXT, " +
                 getPortColumnName() + " INTEGER, " +

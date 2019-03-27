@@ -40,11 +40,11 @@ public class LogEntry {
         this.id = id;
     }
 
-    public long getNetworktaskid() {
+    public long getNetworkTaskId() {
         return networktaskid;
     }
 
-    public void setNetworktaskid(long networktaskid) {
+    public void setNetworkTaskId(long networktaskid) {
         this.networktaskid = networktaskid;
     }
 

@@ -8,11 +8,9 @@ import de.ibba.keepitup.R;
 class LogDBConstants {
 
     private final Context context;
-    private final NetworkTaskDBConstants networkTaskDBConstants;
 
     public LogDBConstants(Context context) {
         this.context = context;
-        this.networkTaskDBConstants = new NetworkTaskDBConstants(context);
     }
 
     public String getTableName() {
@@ -42,12 +40,10 @@ class LogDBConstants {
     public String getCreateTableStatement() {
         return ("CREATE TABLE " + getTableName() + "(") +
                 getIdColumnName() + " INTEGER PRIMARY KEY ASC, " +
-                getNetworkTaskIdColumnName() + " INTEGER, " +
-                getTimestampColumnName() + " INTEGER, " +
-                getSuccessColumnName() + " INTEGER, " +
-                getMessageColumnName() + " TEXT " +
-                "FOREIGN KEY(" + getNetworkTaskIdColumnName() + ") REFERENCES " +
-                networkTaskDBConstants.getTableName() + "(" + networkTaskDBConstants.getIdColumnName() + "));";
+                getNetworkTaskIdColumnName() + " INTEGER NOT NULL, " +
+                getTimestampColumnName() + " INTEGER NOT NULL, " +
+                getSuccessColumnName() + " INTEGER NOT NULL, " +
+                getMessageColumnName() + " TEXT);";
     }
 
     public String getDropTableStatement() {
@@ -62,6 +58,7 @@ class LogDBConstants {
                 getSuccessColumnName() + ", " +
                 getMessageColumnName() +
                 " FROM " + getTableName() +
+                " WHERE " + getNetworkTaskIdColumnName() + " = ?" +
                 " ORDER BY " + getTimestampColumnName() + " DESC";
     }
 
@@ -72,15 +69,16 @@ class LogDBConstants {
                 getTimestampColumnName() + ", " +
                 getSuccessColumnName() + ", " +
                 getMessageColumnName() +
-                " FROM " + getTableName();
+                " FROM " + getTableName() + " WHERE " + getNetworkTaskIdColumnName() + " = ?";
     }
 
     public String getOldestLogStatement() {
-        return "SELECT MIN(" + getTimestampColumnName() + ")," + getIdColumnName() + " FROM " + getTableName();
+        return "SELECT MIN(" + getTimestampColumnName() + ")," + getIdColumnName() + " FROM " + getTableName() +
+                " WHERE " + getNetworkTaskIdColumnName() + " = ?";
     }
 
     public String getLogCountStatement() {
-        return "SELECT COUNT(*) FROM " + getTableName();
+        return "SELECT COUNT(*) FROM " + getTableName() + " WHERE " + getNetworkTaskIdColumnName() + " = ?";
     }
 
     private Resources getResources() {

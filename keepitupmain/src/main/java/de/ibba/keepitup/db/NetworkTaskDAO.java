@@ -99,7 +99,6 @@ public class NetworkTaskDAO extends BaseDAO {
         return value;
     }
 
-    @SuppressWarnings("unused")
     private int deleteAllNetworkTasks(NetworkTask networkTask, SQLiteDatabase db) {
         NetworkTaskDBConstants dbConstants = new NetworkTaskDBConstants(getContext());
         return db.delete(dbConstants.getTableName(), null, null);
@@ -140,7 +139,6 @@ public class NetworkTaskDAO extends BaseDAO {
         return db.update(dbConstants.getTableName(), values, selection, selectionArgs);
     }
 
-    @SuppressWarnings("unused")
     private NetworkTask readNetworkTask(NetworkTask networkTask, SQLiteDatabase db) {
         Cursor cursor = null;
         NetworkTask result = null;
@@ -165,7 +163,6 @@ public class NetworkTaskDAO extends BaseDAO {
         return result;
     }
 
-    @SuppressWarnings("unused")
     private List<NetworkTask> readAllNetworkTasks(NetworkTask networkTask, SQLiteDatabase db) {
         Cursor cursor = null;
         List<NetworkTask> result = new ArrayList<>();
