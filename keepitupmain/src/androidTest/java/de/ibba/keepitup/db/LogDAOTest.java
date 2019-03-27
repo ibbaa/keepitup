@@ -21,39 +21,39 @@ import static org.junit.Assert.assertTrue;
 @RunWith(AndroidJUnit4.class)
 public class LogDAOTest {
 
-    private LogDAO dao;
+    private LogDAO logDAO;
 
     @Before
     public void beforeEachTestMethod() {
-        dao = new LogDAO(InstrumentationRegistry.getTargetContext());
-        dao.deleteAllLogs();
+        logDAO = new LogDAO(InstrumentationRegistry.getTargetContext());
+        logDAO.deleteAllLogs();
     }
 
     @After
     public void afterEachTestMethod() {
-        dao.deleteAllLogs();
+        logDAO.deleteAllLogs();
     }
 
     @Test
     public void testInsertRead() {
         LogEntry logEntryForId2 = getLogEntryWithNetworkTaskId(2);
-        dao.insertAndDeleteLog(logEntryForId2);
-        dao.insertAndDeleteLog(logEntryForId2);
+        logDAO.insertAndDeleteLog(logEntryForId2);
+        logDAO.insertAndDeleteLog(logEntryForId2);
         LogEntry insertedLogEntry1 = getLogEntry1();
-        dao.insertAndDeleteLog(insertedLogEntry1);
-        List<LogEntry> allEntries = dao.readAllLogsForNetworkTask(1);
+        logDAO.insertAndDeleteLog(insertedLogEntry1);
+        List<LogEntry> allEntries = logDAO.readAllLogsForNetworkTask(1);
         assertEquals(1, allEntries.size());
         LogEntry readLogEntry1 = allEntries.get(0);
         assertTrue(readLogEntry1.getId() > 0);
         assertAreEqual(insertedLogEntry1, readLogEntry1);
-        readLogEntry1 = dao.readMostRecentLogForNetworkTask(1);
+        readLogEntry1 = logDAO.readMostRecentLogForNetworkTask(1);
         assertTrue(readLogEntry1.getId() > 0);
         assertAreEqual(insertedLogEntry1, readLogEntry1);
         LogEntry insertedLogEntry2 = getLogEntry2();
-        dao.insertAndDeleteLog(insertedLogEntry2);
+        logDAO.insertAndDeleteLog(insertedLogEntry2);
         LogEntry insertedLogEntry3 = getLogEntry3();
-        dao.insertAndDeleteLog(insertedLogEntry3);
-        allEntries = dao.readAllLogsForNetworkTask(1);
+        logDAO.insertAndDeleteLog(insertedLogEntry3);
+        allEntries = logDAO.readAllLogsForNetworkTask(1);
         assertEquals(3, allEntries.size());
         readLogEntry1 = allEntries.get(2);
         LogEntry readLogEntry2 = allEntries.get(1);
@@ -64,13 +64,13 @@ public class LogDAOTest {
         assertAreEqual(insertedLogEntry1, readLogEntry1);
         assertAreEqual(insertedLogEntry2, readLogEntry2);
         assertAreEqual(insertedLogEntry3, readLogEntry3);
-        readLogEntry3 = dao.readMostRecentLogForNetworkTask(1);
+        readLogEntry3 = logDAO.readMostRecentLogForNetworkTask(1);
         assertTrue(readLogEntry3.getId() > 0);
         assertAreEqual(insertedLogEntry3, readLogEntry3);
-        dao.deleteAllLogsForNetworkTask(1);
-        allEntries = dao.readAllLogsForNetworkTask(1);
+        logDAO.deleteAllLogsForNetworkTask(1);
+        allEntries = logDAO.readAllLogsForNetworkTask(1);
         assertTrue(allEntries.isEmpty());
-        readLogEntry1 = dao.readMostRecentLogForNetworkTask(1);
+        readLogEntry1 = logDAO.readMostRecentLogForNetworkTask(1);
         assertNull(readLogEntry1);
     }
 
@@ -80,46 +80,46 @@ public class LogDAOTest {
         LogEntry logEntryForId2 = getLogEntryWithNetworkTaskId(2);
         LogEntry logEntryForId3 = getLogEntryWithNetworkTaskId(3);
         LogEntry logEntryForId4 = getLogEntryWithNetworkTaskId(4);
-        dao.insertAndDeleteLog(logEntryForId1);
-        dao.insertAndDeleteLog(logEntryForId2);
-        dao.insertAndDeleteLog(logEntryForId3);
-        dao.insertAndDeleteLog(logEntryForId4);
-        List<LogEntry> allEntries = dao.readAllLogsForNetworkTask(1);
+        logDAO.insertAndDeleteLog(logEntryForId1);
+        logDAO.insertAndDeleteLog(logEntryForId2);
+        logDAO.insertAndDeleteLog(logEntryForId3);
+        logDAO.insertAndDeleteLog(logEntryForId4);
+        List<LogEntry> allEntries = logDAO.readAllLogsForNetworkTask(1);
         assertEquals(1, allEntries.size());
-        allEntries = dao.readAllLogsForNetworkTask(2);
+        allEntries = logDAO.readAllLogsForNetworkTask(2);
         assertEquals(1, allEntries.size());
-        allEntries = dao.readAllLogsForNetworkTask(3);
+        allEntries = logDAO.readAllLogsForNetworkTask(3);
         assertEquals(1, allEntries.size());
-        allEntries = dao.readAllLogsForNetworkTask(4);
+        allEntries = logDAO.readAllLogsForNetworkTask(4);
         assertEquals(1, allEntries.size());
-        allEntries = dao.readAllLogsForNetworkTask(5);
+        allEntries = logDAO.readAllLogsForNetworkTask(5);
         assertTrue(allEntries.isEmpty());
-        dao.insertAndDeleteLog(logEntryForId1);
-        dao.insertAndDeleteLog(logEntryForId2);
-        dao.insertAndDeleteLog(logEntryForId3);
-        dao.insertAndDeleteLog(logEntryForId4);
-        allEntries = dao.readAllLogsForNetworkTask(1);
+        logDAO.insertAndDeleteLog(logEntryForId1);
+        logDAO.insertAndDeleteLog(logEntryForId2);
+        logDAO.insertAndDeleteLog(logEntryForId3);
+        logDAO.insertAndDeleteLog(logEntryForId4);
+        allEntries = logDAO.readAllLogsForNetworkTask(1);
         assertEquals(2, allEntries.size());
-        allEntries = dao.readAllLogsForNetworkTask(2);
+        allEntries = logDAO.readAllLogsForNetworkTask(2);
         assertEquals(2, allEntries.size());
-        allEntries = dao.readAllLogsForNetworkTask(3);
+        allEntries = logDAO.readAllLogsForNetworkTask(3);
         assertEquals(2, allEntries.size());
-        allEntries = dao.readAllLogsForNetworkTask(4);
+        allEntries = logDAO.readAllLogsForNetworkTask(4);
         assertEquals(2, allEntries.size());
-        allEntries = dao.readAllLogsForNetworkTask(5);
+        allEntries = logDAO.readAllLogsForNetworkTask(5);
         assertTrue(allEntries.isEmpty());
-        dao.deleteAllLogsForNetworkTask(1);
-        dao.deleteAllLogsForNetworkTask(2);
-        dao.deleteAllLogsForNetworkTask(3);
-        allEntries = dao.readAllLogsForNetworkTask(1);
+        logDAO.deleteAllLogsForNetworkTask(1);
+        logDAO.deleteAllLogsForNetworkTask(2);
+        logDAO.deleteAllLogsForNetworkTask(3);
+        allEntries = logDAO.readAllLogsForNetworkTask(1);
         assertTrue(allEntries.isEmpty());
-        allEntries = dao.readAllLogsForNetworkTask(2);
+        allEntries = logDAO.readAllLogsForNetworkTask(2);
         assertTrue(allEntries.isEmpty());
-        allEntries = dao.readAllLogsForNetworkTask(3);
+        allEntries = logDAO.readAllLogsForNetworkTask(3);
         assertTrue(allEntries.isEmpty());
-        allEntries = dao.readAllLogsForNetworkTask(4);
+        allEntries = logDAO.readAllLogsForNetworkTask(4);
         assertEquals(2, allEntries.size());
-        allEntries = dao.readAllLogsForNetworkTask(5);
+        allEntries = logDAO.readAllLogsForNetworkTask(5);
         assertTrue(allEntries.isEmpty());
 
     }
@@ -127,29 +127,29 @@ public class LogDAOTest {
     @Test
     public void testInsertLimitExceeded() {
         LogEntry logEntryForId2 = getLogEntryWithNetworkTaskId(2);
-        dao.insertAndDeleteLog(logEntryForId2);
-        dao.insertAndDeleteLog(logEntryForId2);
+        logDAO.insertAndDeleteLog(logEntryForId2);
+        logDAO.insertAndDeleteLog(logEntryForId2);
         for (int ii = 0; ii < 100; ii++) {
             LogEntry logEntry = getLogEntryWithTimestamp(ii);
-            dao.insertAndDeleteLog(logEntry);
+            logDAO.insertAndDeleteLog(logEntry);
         }
-        List<LogEntry> allEntries = dao.readAllLogsForNetworkTask(1);
+        List<LogEntry> allEntries = logDAO.readAllLogsForNetworkTask(1);
         assertEquals(100, allEntries.size());
         LogEntry readLogEntry1 = allEntries.get(0);
         LogEntry readLogEntry2 = allEntries.get(99);
         assertEquals(99, readLogEntry1.getTimestamp());
         assertEquals(0, readLogEntry2.getTimestamp());
         LogEntry logEntry = getLogEntryWithTimestamp(100);
-        dao.insertAndDeleteLog(logEntry);
-        allEntries = dao.readAllLogsForNetworkTask(1);
+        logDAO.insertAndDeleteLog(logEntry);
+        allEntries = logDAO.readAllLogsForNetworkTask(1);
         assertEquals(100, allEntries.size());
         readLogEntry1 = allEntries.get(0);
         readLogEntry2 = allEntries.get(99);
         assertEquals(100, readLogEntry1.getTimestamp());
         assertEquals(1, readLogEntry2.getTimestamp());
         logEntry = getLogEntryWithTimestamp(101);
-        dao.insertAndDeleteLog(logEntry);
-        allEntries = dao.readAllLogsForNetworkTask(1);
+        logDAO.insertAndDeleteLog(logEntry);
+        allEntries = logDAO.readAllLogsForNetworkTask(1);
         assertEquals(100, allEntries.size());
         readLogEntry1 = allEntries.get(0);
         readLogEntry2 = allEntries.get(99);
@@ -193,7 +193,7 @@ public class LogDAOTest {
         insertedLogEntry.setNetworkTaskId(networkTaskId);
         insertedLogEntry.setSuccess(false);
         insertedLogEntry.setTimestamp(1);
-        insertedLogEntry.setMessage("TestMessageOther");
+        insertedLogEntry.setMessage("TestMessage");
         return insertedLogEntry;
     }
 

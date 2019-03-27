@@ -17,6 +17,7 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 
 import de.ibba.keepitup.R;
+import de.ibba.keepitup.db.LogDAO;
 import de.ibba.keepitup.db.NetworkTaskDAO;
 import de.ibba.keepitup.model.NetworkTask;
 import de.ibba.keepitup.service.NetworkKeepAliveServiceScheduler;
@@ -44,13 +45,16 @@ public class NetworkTaskMainActivityTest {
     public final ActivityTestRule<NetworkTaskMainActivity> rule = new ActivityTestRule<>(NetworkTaskMainActivity.class, false, false);
 
     private NetworkTaskMainActivity activity;
-    private NetworkTaskDAO dao;
+    private NetworkTaskDAO networkTaskDAO;
+    private LogDAO logDAO;
     private NetworkKeepAliveServiceScheduler scheduler;
 
     @Before
     public void beforeEachTestMethod() {
-        dao = new NetworkTaskDAO(InstrumentationRegistry.getTargetContext());
-        dao.deleteAllNetworkTasks();
+        logDAO = new LogDAO(InstrumentationRegistry.getTargetContext());
+        logDAO.deleteAllLogs();
+        networkTaskDAO = new NetworkTaskDAO(InstrumentationRegistry.getTargetContext());
+        networkTaskDAO.deleteAllNetworkTasks();
         scheduler = new NetworkKeepAliveServiceScheduler(InstrumentationRegistry.getTargetContext());
         scheduler.stopAll();
         rule.launchActivity(null);
@@ -59,7 +63,8 @@ public class NetworkTaskMainActivityTest {
 
     @After
     public void afterEachTestMethod() {
-        dao.deleteAllNetworkTasks();
+        logDAO.deleteAllLogs();
+        networkTaskDAO.deleteAllNetworkTasks();
         scheduler.stopAll();
     }
 

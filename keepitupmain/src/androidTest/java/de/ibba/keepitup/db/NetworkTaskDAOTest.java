@@ -23,35 +23,35 @@ import static org.junit.Assert.assertTrue;
 @RunWith(AndroidJUnit4.class)
 public class NetworkTaskDAOTest {
 
-    private NetworkTaskDAO dao;
+    private NetworkTaskDAO networkTaskDAO;
 
     @Before
     public void beforeEachTestMethod() {
-        dao = new NetworkTaskDAO(InstrumentationRegistry.getTargetContext());
-        dao.deleteAllNetworkTasks();
+        networkTaskDAO = new NetworkTaskDAO(InstrumentationRegistry.getTargetContext());
+        networkTaskDAO.deleteAllNetworkTasks();
     }
 
     @After
     public void afterEachTestMethod() {
-        dao.deleteAllNetworkTasks();
+        networkTaskDAO.deleteAllNetworkTasks();
     }
 
     @Test
     public void testInsertReadDelete() {
         NetworkTask insertedTask1 = getNetworkTask1();
-        dao.insertNetworkTask(insertedTask1);
-        List<NetworkTask> readTasks = dao.readAllNetworkTasks();
+        networkTaskDAO.insertNetworkTask(insertedTask1);
+        List<NetworkTask> readTasks = networkTaskDAO.readAllNetworkTasks();
         assertEquals(1, readTasks.size());
         NetworkTask readTask = readTasks.get(0);
         assertTrue(readTask.getId() > 0);
         assertAreEqual(insertedTask1, readTask);
-        readTask = dao.readNetworkTask(readTask.getId());
+        readTask = networkTaskDAO.readNetworkTask(readTask.getId());
         assertAreEqual(insertedTask1, readTask);
         NetworkTask insertedTask2 = getNetworkTask2();
         NetworkTask insertedTask3 = getNetworkTask3();
-        dao.insertNetworkTask(insertedTask2);
-        dao.insertNetworkTask(insertedTask3);
-        readTasks = dao.readAllNetworkTasks();
+        networkTaskDAO.insertNetworkTask(insertedTask2);
+        networkTaskDAO.insertNetworkTask(insertedTask3);
+        readTasks = networkTaskDAO.readAllNetworkTasks();
         assertEquals(3, readTasks.size());
         NetworkTask readTask1 = readTasks.get(0);
         NetworkTask readTask3 = readTasks.get(1);
@@ -65,14 +65,14 @@ public class NetworkTaskDAOTest {
         assertEquals(1, readTask1.getIndex());
         assertEquals(10, readTask2.getIndex());
         assertEquals(5, readTask3.getIndex());
-        readTask1 = dao.readNetworkTask(readTask1.getId());
-        readTask2 = dao.readNetworkTask(readTask2.getId());
-        readTask3 = dao.readNetworkTask(readTask3.getId());
+        readTask1 = networkTaskDAO.readNetworkTask(readTask1.getId());
+        readTask2 = networkTaskDAO.readNetworkTask(readTask2.getId());
+        readTask3 = networkTaskDAO.readNetworkTask(readTask3.getId());
         assertAreEqual(insertedTask1, readTask1);
         assertAreEqual(insertedTask2, readTask2);
         assertAreEqual(insertedTask3, readTask3);
-        dao.deleteNetworkTask(readTask2);
-        readTask2 = dao.readNetworkTask(readTask2.getId());
+        networkTaskDAO.deleteNetworkTask(readTask2);
+        readTask2 = networkTaskDAO.readNetworkTask(readTask2.getId());
         assertNull(readTask2);
     }
 
@@ -90,14 +90,14 @@ public class NetworkTaskDAOTest {
         insertedTask4.setIndex(4);
         insertedTask5.setIndex(5);
         insertedTask6.setIndex(6);
-        dao.insertNetworkTask(insertedTask1);
-        insertedTask2 = dao.insertNetworkTask(insertedTask2);
-        dao.insertNetworkTask(insertedTask3);
-        dao.insertNetworkTask(insertedTask4);
-        dao.insertNetworkTask(insertedTask5);
-        dao.insertNetworkTask(insertedTask6);
-        dao.deleteNetworkTask(insertedTask2);
-        List<NetworkTask> readTasks = dao.readAllNetworkTasks();
+        networkTaskDAO.insertNetworkTask(insertedTask1);
+        insertedTask2 = networkTaskDAO.insertNetworkTask(insertedTask2);
+        networkTaskDAO.insertNetworkTask(insertedTask3);
+        networkTaskDAO.insertNetworkTask(insertedTask4);
+        networkTaskDAO.insertNetworkTask(insertedTask5);
+        networkTaskDAO.insertNetworkTask(insertedTask6);
+        networkTaskDAO.deleteNetworkTask(insertedTask2);
+        List<NetworkTask> readTasks = networkTaskDAO.readAllNetworkTasks();
         assertEquals(5, readTasks.size());
         NetworkTask readTask1 = readTasks.get(0);
         NetworkTask readTask2 = readTasks.get(1);
@@ -114,12 +114,12 @@ public class NetworkTaskDAOTest {
     @Test
     public void testUpdateSuccess() {
         NetworkTask insertedTask1 = getNetworkTask1();
-        dao.insertNetworkTask(insertedTask1);
-        List<NetworkTask> readTasks = dao.readAllNetworkTasks();
+        networkTaskDAO.insertNetworkTask(insertedTask1);
+        List<NetworkTask> readTasks = networkTaskDAO.readAllNetworkTasks();
         NetworkTask readTask1 = readTasks.get(0);
-        dao.updateNetworkTaskSuccess(readTask1.getId(), false, 987, "TestMessage2");
+        networkTaskDAO.updateNetworkTaskSuccess(readTask1.getId(), false, 987, "TestMessage2");
         assertAreEqual(insertedTask1, readTask1);
-        readTask1 = dao.readNetworkTask(readTask1.getId());
+        readTask1 = networkTaskDAO.readNetworkTask(readTask1.getId());
         assertEquals(insertedTask1.getIndex(), readTask1.getIndex());
         assertEquals(insertedTask1.getSchedulerid(), readTask1.getSchedulerid());
         assertEquals(insertedTask1.getAccessType(), readTask1.getAccessType());
@@ -136,11 +136,11 @@ public class NetworkTaskDAOTest {
     @Test
     public void testUpdateSchedulerId() {
         NetworkTask insertedTask1 = getNetworkTask1();
-        dao.insertNetworkTask(insertedTask1);
-        List<NetworkTask> readTasks = dao.readAllNetworkTasks();
+        networkTaskDAO.insertNetworkTask(insertedTask1);
+        List<NetworkTask> readTasks = networkTaskDAO.readAllNetworkTasks();
         NetworkTask readTask1 = readTasks.get(0);
-        dao.updateNetworkTaskSchedulerId(readTask1.getId(), 25);
-        readTask1 = dao.readNetworkTask(readTask1.getId());
+        networkTaskDAO.updateNetworkTaskSchedulerId(readTask1.getId(), 25);
+        readTask1 = networkTaskDAO.readNetworkTask(readTask1.getId());
         assertEquals(insertedTask1.getIndex(), readTask1.getIndex());
         assertEquals(insertedTask1.getAccessType(), readTask1.getAccessType());
         assertEquals(insertedTask1.getAddress(), readTask1.getAddress());
@@ -156,14 +156,14 @@ public class NetworkTaskDAOTest {
     @Test
     public void testUpdate() {
         NetworkTask insertedTask1 = getNetworkTask1();
-        dao.insertNetworkTask(insertedTask1);
-        List<NetworkTask> readTasks = dao.readAllNetworkTasks();
+        networkTaskDAO.insertNetworkTask(insertedTask1);
+        List<NetworkTask> readTasks = networkTaskDAO.readAllNetworkTasks();
         NetworkTask readTask1 = readTasks.get(0);
         NetworkTask task2 = getNetworkTask2();
         task2.setId(readTask1.getId());
-        dao.updateNetworkTask(task2);
+        networkTaskDAO.updateNetworkTask(task2);
         assertAreEqual(insertedTask1, readTask1);
-        readTask1 = dao.readNetworkTask(readTask1.getId());
+        readTask1 = networkTaskDAO.readNetworkTask(readTask1.getId());
         assertEquals(task2.getAccessType(), readTask1.getAccessType());
         assertEquals(task2.getAddress(), readTask1.getAddress());
         assertEquals(task2.getPort(), readTask1.getPort());

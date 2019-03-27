@@ -49,16 +49,16 @@ public class NetworkTaskEditDialogTest {
 
     @Before
     public void beforeEachTestMethod() {
-        NetworkTaskDAO dao = new NetworkTaskDAO(InstrumentationRegistry.getTargetContext());
-        dao.deleteAllNetworkTasks();
+        NetworkTaskDAO networkTaskDAO = new NetworkTaskDAO(InstrumentationRegistry.getTargetContext());
+        networkTaskDAO.deleteAllNetworkTasks();
         rule.launchActivity(null);
         activity = rule.getActivity();
     }
 
     @After
     public void afterEachTestMethod() {
-        NetworkTaskDAO dao = new NetworkTaskDAO(InstrumentationRegistry.getTargetContext());
-        dao.deleteAllNetworkTasks();
+        NetworkTaskDAO networkTaskDAO = new NetworkTaskDAO(InstrumentationRegistry.getTargetContext());
+        networkTaskDAO.deleteAllNetworkTasks();
     }
 
     @Test
