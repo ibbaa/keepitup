@@ -22,7 +22,7 @@ public class LogEntryTest {
     public void testToBundleDefaultValues() {
         LogEntry logEntry = new LogEntry();
         assertEquals(-1, logEntry.getId());
-        assertEquals(-1, logEntry.getNetworktaskid());
+        assertEquals(-1, logEntry.getNetworkTaskId());
         assertEquals(-1, logEntry.getTimestamp());
         assertFalse(logEntry.isSuccess());
         assertNull(logEntry.getMessage());
@@ -30,7 +30,7 @@ public class LogEntryTest {
         assertNotNull(persistableBundle);
         logEntry = new LogEntry(persistableBundle);
         assertEquals(-1, logEntry.getId());
-        assertEquals(-1, logEntry.getNetworktaskid());
+        assertEquals(-1, logEntry.getNetworkTaskId());
         assertEquals(-1, logEntry.getTimestamp());
         assertFalse(logEntry.isSuccess());
         assertNull(logEntry.getMessage());
@@ -38,7 +38,7 @@ public class LogEntryTest {
         assertNotNull(bundle);
         logEntry = new LogEntry(bundle);
         assertEquals(-1, logEntry.getId());
-        assertEquals(-1, logEntry.getNetworktaskid());
+        assertEquals(-1, logEntry.getNetworkTaskId());
         assertEquals(-1, logEntry.getTimestamp());
         assertFalse(logEntry.isSuccess());
         assertNull(logEntry.getMessage());
@@ -49,19 +49,19 @@ public class LogEntryTest {
         long timestamp = System.currentTimeMillis();
         LogEntry logEntry = new LogEntry();
         logEntry.setId(1);
-        logEntry.setNetworktaskid(2);
+        logEntry.setNetworkTaskId(2);
         logEntry.setTimestamp(timestamp);
         logEntry.setSuccess(true);
         logEntry.setMessage("Message");
         assertEquals(1, logEntry.getId());
-        assertEquals(2, logEntry.getNetworktaskid());
+        assertEquals(2, logEntry.getNetworkTaskId());
         assertEquals(timestamp, logEntry.getTimestamp());
         assertTrue(logEntry.isSuccess());
         assertEquals("Message", logEntry.getMessage());
         PersistableBundle persistableBundle = logEntry.toPersistableBundle();
         assertNotNull(persistableBundle);
         assertEquals(1, logEntry.getId());
-        assertEquals(2, logEntry.getNetworktaskid());
+        assertEquals(2, logEntry.getNetworkTaskId());
         assertEquals(timestamp, logEntry.getTimestamp());
         assertTrue(logEntry.isSuccess());
         assertEquals("Message", logEntry.getMessage());
@@ -69,7 +69,7 @@ public class LogEntryTest {
         assertNotNull(bundle);
         logEntry = new LogEntry(bundle);
         assertEquals(1, logEntry.getId());
-        assertEquals(2, logEntry.getNetworktaskid());
+        assertEquals(2, logEntry.getNetworkTaskId());
         assertEquals(timestamp, logEntry.getTimestamp());
         assertTrue(logEntry.isSuccess());
         assertEquals("Message", logEntry.getMessage());
