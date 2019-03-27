@@ -6,6 +6,9 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import de.ibba.keepitup.R;
 import de.ibba.keepitup.model.LogEntry;
 
@@ -25,7 +28,17 @@ public class LogDAO extends BaseDAO {
         return executeDBOperationInTransaction((LogEntry) null, this::readMostRecentLog);
     }
 
-    public LogEntry insertAndDeleteLog(LogEntry logEntry, SQLiteDatabase db) {
+    public List<LogEntry> readAllLogs() {
+        Log.d(NetworkTaskDAO.class.getName(), "Reading all log entries");
+        return executeDBOperationInTransaction((LogEntry) null, this::readAllLogs);
+    }
+
+    public void deleteAllLogs() {
+        Log.d(NetworkTaskDAO.class.getName(), "Deleting all log entries");
+        executeDBOperationInTransaction((LogEntry) null, this::deleteAllLogs);
+    }
+
+    private LogEntry insertAndDeleteLog(LogEntry logEntry, SQLiteDatabase db) {
         ContentValues values = new ContentValues();
         LogDBConstants dbConstants = new LogDBConstants(getContext());
         values.put(dbConstants.getNetworkTaskIdColumnName(), logEntry.getNetworktaskid());
@@ -51,7 +64,8 @@ public class LogDAO extends BaseDAO {
         return logEntry;
     }
 
-    public LogEntry readMostRecentLog(LogEntry logEntry, SQLiteDatabase db) {
+    @SuppressWarnings("unused")
+    private LogEntry readMostRecentLog(LogEntry logEntry, SQLiteDatabase db) {
         Cursor cursor = null;
         LogEntry result = null;
         LogDBConstants dbConstants = new LogDBConstants(getContext());
@@ -73,6 +87,38 @@ public class LogDAO extends BaseDAO {
             }
         }
         return result;
+    }
+
+    @SuppressWarnings("unused")
+    private List<LogEntry> readAllLogs(LogEntry logEntry, SQLiteDatabase db) {
+        Cursor cursor = null;
+        List<LogEntry> result = new ArrayList<>();
+        LogDBConstants dbConstants = new LogDBConstants(getContext());
+        try {
+            cursor = db.rawQuery(dbConstants.getAllLogsStatement(), null);
+            while (cursor.moveToNext()) {
+                int indexIdColumn = cursor.getColumnIndex(dbConstants.getIdColumnName());
+                if (!cursor.isNull(indexIdColumn)) {
+                    LogEntry mappedLogEntry = mapCursorToLogEntry(cursor);
+                    result.add(mappedLogEntry);
+                }
+            }
+        } finally {
+            if (cursor != null) {
+                try {
+                    cursor.close();
+                } catch (Throwable exc) {
+                    Log.e(NetworkTaskDAO.class.getName(), "Error closing result cursor", exc);
+                }
+            }
+        }
+        return result;
+    }
+
+    @SuppressWarnings("unused")
+    private int deleteAllLogs(LogEntry logEntry, SQLiteDatabase db) {
+        LogDBConstants dbConstants = new LogDBConstants(getContext());
+        return db.delete(dbConstants.getTableName(), null, null);
     }
 
     private long readLogCount(SQLiteDatabase db) {

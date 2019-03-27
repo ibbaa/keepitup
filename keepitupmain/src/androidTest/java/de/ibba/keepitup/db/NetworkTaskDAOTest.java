@@ -17,6 +17,7 @@ import de.ibba.keepitup.model.NetworkTask;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 @MediumTest
 @RunWith(AndroidJUnit4.class)
@@ -42,6 +43,7 @@ public class NetworkTaskDAOTest {
         List<NetworkTask> readTasks = dao.readAllNetworkTasks();
         assertEquals(1, readTasks.size());
         NetworkTask readTask = readTasks.get(0);
+        assertTrue(readTask.getId() > 0);
         assertAreEqual(insertedTask1, readTask);
         readTask = dao.readNetworkTask(readTask.getId());
         assertAreEqual(insertedTask1, readTask);
@@ -54,6 +56,9 @@ public class NetworkTaskDAOTest {
         NetworkTask readTask1 = readTasks.get(0);
         NetworkTask readTask3 = readTasks.get(1);
         NetworkTask readTask2 = readTasks.get(2);
+        assertTrue(readTask1.getId() > 0);
+        assertTrue(readTask2.getId() > 0);
+        assertTrue(readTask3.getId() > 0);
         assertAreEqual(insertedTask1, readTask1);
         assertAreEqual(insertedTask2, readTask2);
         assertAreEqual(insertedTask3, readTask3);
