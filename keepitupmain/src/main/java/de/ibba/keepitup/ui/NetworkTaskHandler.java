@@ -4,6 +4,7 @@ import android.content.res.Resources;
 import android.util.Log;
 
 import de.ibba.keepitup.R;
+import de.ibba.keepitup.db.LogDAO;
 import de.ibba.keepitup.db.NetworkTaskDAO;
 import de.ibba.keepitup.model.NetworkTask;
 import de.ibba.keepitup.service.NetworkKeepAliveServiceScheduler;
@@ -86,13 +87,15 @@ class NetworkTaskHandler {
     public void deleteNetworkTask(NetworkTask task) {
         Log.d(NetworkTaskHandler.class.getName(), "deleteNetworkTask for task " + task);
         try {
-            NetworkTaskDAO dao = new NetworkTaskDAO(mainActivity);
+            NetworkTaskDAO networkTaskDAO = new NetworkTaskDAO(mainActivity);
+            LogDAO logDAO = new LogDAO(mainActivity);
             NetworkKeepAliveServiceScheduler scheduler = new NetworkKeepAliveServiceScheduler(mainActivity);
             if (scheduler.isRunning(task)) {
                 Log.d(NetworkTaskHandler.class.getName(), "Network task is running. Stopping.");
                 scheduler.stop(task);
             }
-            dao.deleteNetworkTask(task);
+            logDAO.deleteAllLogsForNetworkTask(task.getId());
+            networkTaskDAO.deleteNetworkTask(task);
             getAdapter().removeItem(task);
             getAdapter().notifyDataSetChanged();
         } catch (Exception exc) {
