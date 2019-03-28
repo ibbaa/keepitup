@@ -160,9 +160,6 @@ public class NetworkTaskHandlerTest {
         networkTask.setPort(80);
         networkTask.setAccessType(AccessType.PING);
         networkTask.setInterval(15);
-        networkTask.setSuccess(true);
-        networkTask.setTimestamp(789);
-        networkTask.setMessage("TestMessage1");
         networkTask.setOnlyWifi(false);
         networkTask.setNotification(true);
         return networkTask;
@@ -177,9 +174,6 @@ public class NetworkTaskHandlerTest {
         networkTask.setPort(22);
         networkTask.setAccessType(AccessType.PING);
         networkTask.setInterval(40);
-        networkTask.setSuccess(false);
-        networkTask.setTimestamp(123);
-        networkTask.setMessage("TestMessage2");
         networkTask.setOnlyWifi(true);
         networkTask.setNotification(false);
         return networkTask;
@@ -194,9 +188,6 @@ public class NetworkTaskHandlerTest {
         networkTask.setPort(8080);
         networkTask.setAccessType(AccessType.CONNECT);
         networkTask.setInterval(85);
-        networkTask.setSuccess(true);
-        networkTask.setTimestamp(987);
-        networkTask.setMessage("TestMessage3");
         networkTask.setOnlyWifi(true);
         networkTask.setNotification(true);
         return networkTask;
@@ -211,9 +202,6 @@ public class NetworkTaskHandlerTest {
         networkTask.setPort(3389);
         networkTask.setAccessType(AccessType.CONNECT);
         networkTask.setInterval(100);
-        networkTask.setSuccess(false);
-        networkTask.setTimestamp(321);
-        networkTask.setMessage("TestMessage4");
         networkTask.setOnlyWifi(false);
         networkTask.setNotification(false);
         return networkTask;
@@ -237,9 +225,6 @@ public class NetworkTaskHandlerTest {
         assertEquals(task1.getAddress(), task2.getAddress());
         assertEquals(task1.getPort(), task2.getPort());
         assertEquals(task1.getInterval(), task2.getInterval());
-        assertEquals(task1.isSuccess(), task2.isSuccess());
-        assertEquals(task1.getTimestamp(), task2.getTimestamp());
-        assertEquals(task1.getMessage(), task2.getMessage());
         assertEquals(task1.isOnlyWifi(), task2.isOnlyWifi());
         assertEquals(task1.isNotification(), task2.isNotification());
     }

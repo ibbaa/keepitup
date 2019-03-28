@@ -76,7 +76,6 @@ public class NetworkTaskMainActivityTest {
         NetworkTask task2 = getNetworkTask2();
         networkTaskDAO.insertNetworkTask(task2);
         rule.launchActivity(null);
-        NetworkTaskMainActivity activity = rule.getActivity();
         onView(withId(R.id.listview_main_activity_network_tasks)).check(matches(withListSize(3)));
         onView(allOf(withId(R.id.textview_list_item_network_task_title), withChildDescendantAtPosition(withId(R.id.listview_main_activity_network_tasks), 0))).check(matches(withText("Network task")));
         onView(allOf(withId(R.id.textview_list_item_network_task_status), withChildDescendantAtPosition(withId(R.id.listview_main_activity_network_tasks), 0))).check(matches(withText("Status: Stopped")));
@@ -238,9 +237,6 @@ public class NetworkTaskMainActivityTest {
         networkTask.setPort(80);
         networkTask.setAccessType(AccessType.PING);
         networkTask.setInterval(15);
-        networkTask.setSuccess(true);
-        networkTask.setTimestamp(789);
-        networkTask.setMessage("TestMessage1");
         networkTask.setOnlyWifi(false);
         networkTask.setNotification(true);
         return networkTask;
@@ -255,9 +251,6 @@ public class NetworkTaskMainActivityTest {
         networkTask.setPort(22);
         networkTask.setAccessType(AccessType.PING);
         networkTask.setInterval(40);
-        networkTask.setSuccess(false);
-        networkTask.setTimestamp(123);
-        networkTask.setMessage("TestMessage2");
         networkTask.setOnlyWifi(true);
         networkTask.setNotification(false);
         return networkTask;

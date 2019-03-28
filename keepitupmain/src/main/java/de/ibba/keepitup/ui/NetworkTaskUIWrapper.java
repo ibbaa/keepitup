@@ -1,5 +1,7 @@
 package de.ibba.keepitup.ui;
 
+import android.support.annotation.NonNull;
+
 import de.ibba.keepitup.model.LogEntry;
 import de.ibba.keepitup.model.NetworkTask;
 
@@ -25,6 +27,7 @@ public class NetworkTaskUIWrapper {
         return logEntry;
     }
 
+    @NonNull
     @Override
     public String toString() {
         return "NetworkTaskUIWrapper{" +

@@ -17,9 +17,6 @@ public class NetworkTask {
     private int port;
     private AccessType accessType;
     private int interval;
-    private boolean success;
-    private long timestamp;
-    private String message;
     private boolean onlyWifi;
     private boolean notification;
 
@@ -31,9 +28,6 @@ public class NetworkTask {
         this.port = 0;
         this.accessType = null;
         this.interval = 0;
-        this.success = false;
-        this.timestamp = -1;
-        this.message = null;
         this.onlyWifi = false;
         this.notification = false;
     }
@@ -47,9 +41,6 @@ public class NetworkTask {
         this.port = resources.getInteger(R.integer.task_port_default);
         this.accessType = AccessType.valueOf(resources.getString(R.string.task_accesstype_default));
         this.interval = resources.getInteger(R.integer.task_interval_default);
-        this.success = false;
-        this.timestamp = -1;
-        this.message = null;
         this.onlyWifi = resources.getBoolean(R.bool.task_onlywifi_default);
         this.notification = resources.getBoolean(R.bool.task_notification_default);
     }
@@ -68,9 +59,6 @@ public class NetworkTask {
             accessType = AccessType.forCode(bundle.getInt("accessType"));
         }
         this.interval = bundle.getInt("interval");
-        this.success = bundle.getInt("success") >= 1;
-        this.timestamp = bundle.getLong("timestamp");
-        this.message = bundle.getString("message");
         this.onlyWifi = bundle.getInt("onlywifi") >= 1;
         this.notification = bundle.getInt("notification") >= 1;
     }
@@ -131,30 +119,6 @@ public class NetworkTask {
         this.interval = interval;
     }
 
-    public boolean isSuccess() {
-        return success;
-    }
-
-    public void setSuccess(boolean success) {
-        this.success = success;
-    }
-
-    public long getTimestamp() {
-        return timestamp;
-    }
-
-    public void setTimestamp(long timestamp) {
-        this.timestamp = timestamp;
-    }
-
-    public String getMessage() {
-        return message;
-    }
-
-    public void setMessage(String message) {
-        this.message = message;
-    }
-
     public boolean isOnlyWifi() {
         return onlyWifi;
     }
@@ -184,11 +148,6 @@ public class NetworkTask {
             bundle.putInt("accessType", accessType.getCode());
         }
         bundle.putInt("interval", interval);
-        bundle.putInt("success", success ? 1 : 0);
-        bundle.putLong("timestamp", timestamp);
-        if (message != null) {
-            bundle.putString("message", message);
-        }
         bundle.putInt("onlywifi", onlyWifi ? 1 : 0);
         bundle.putInt("notification", notification ? 1 : 0);
         return bundle;
@@ -209,9 +168,6 @@ public class NetworkTask {
                 ", port=" + port +
                 ", accessType=" + accessType +
                 ", interval=" + interval +
-                ", success=" + success +
-                ", timestamp=" + timestamp +
-                ", message='" + message + '\'' +
                 ", onlyWifi=" + onlyWifi +
                 ", notification=" + notification +
                 '}';
