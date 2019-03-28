@@ -16,7 +16,9 @@ import java.util.List;
 import java.util.Objects;
 
 import de.ibba.keepitup.R;
+import de.ibba.keepitup.db.LogDAO;
 import de.ibba.keepitup.db.NetworkTaskDAO;
+import de.ibba.keepitup.model.LogEntry;
 import de.ibba.keepitup.model.NetworkTask;
 import de.ibba.keepitup.service.NetworkKeepAliveServiceScheduler;
 import de.ibba.keepitup.ui.dialog.GeneralConfirmDialog;
@@ -38,16 +40,25 @@ public class NetworkTaskMainActivity extends AppCompatActivity {
         recyclerView.setAdapter(new NetworkTaskAdapter(readNetworkTasksFromDatabase(), this));
     }
 
-    private List<NetworkTask> readNetworkTasksFromDatabase() {
+    private List<NetworkTaskUIWrapper> readNetworkTasksFromDatabase() {
         Log.d(NetworkTaskMainActivity.class.getName(), "readNetworkTasksFromDatabase");
-        NetworkTaskDAO dao = new NetworkTaskDAO(this);
+        NetworkTaskDAO networkTaskDAO = new NetworkTaskDAO(this);
+        LogDAO logDAO = new LogDAO(this);
         try {
-            List<NetworkTask> tasks = dao.readAllNetworkTasks();
-            Log.d(NetworkTaskMainActivity.class.getName(), "Database returned: " + (tasks.isEmpty() ? "nothing" : ""));
+            List<NetworkTaskUIWrapper> wrapperList = new ArrayList<>();
+            List<NetworkTask> tasks = networkTaskDAO.readAllNetworkTasks();
+            Log.d(NetworkTaskMainActivity.class.getName(), "Database returned the following network tasks: " + (tasks.isEmpty() ? "no network tasks" : ""));
             for (NetworkTask currentTask : tasks) {
                 Log.d(NetworkTaskMainActivity.class.getName(), currentTask.toString());
             }
-            return tasks;
+            for (NetworkTask currentTask : tasks) {
+                Log.d(NetworkTaskMainActivity.class.getName(), "Reading most recent log for " + currentTask.toString());
+                LogEntry logEntry = logDAO.readMostRecentLogForNetworkTask(currentTask.getId());
+                Log.d(NetworkTaskMainActivity.class.getName(), "Database returned the following log entry: " + (logEntry == null ? "no log entry" : logEntry.toString()));
+                NetworkTaskUIWrapper currentWrapper = new NetworkTaskUIWrapper(currentTask, logEntry);
+                wrapperList.add(currentWrapper);
+            }
+            return wrapperList;
         } catch (Exception exc) {
             Log.e(NetworkTaskMainActivity.class.getName(), "Error reading all network tasks from database", exc);
             showErrorDialog(getResources().getString(R.string.text_dialog_general_error_read_network_tasks));
@@ -88,7 +99,7 @@ public class NetworkTaskMainActivity extends AppCompatActivity {
     }
 
     public void onMainStartStopClicked(int position) {
-        NetworkTask networkTask = getAdapter().getItem(position);
+        NetworkTask networkTask = getAdapter().getItem(position).getNetworkTask();
         Log.d(NetworkTaskMainActivity.class.getName(), "onMainStartStopClicked for network task " + networkTask);
         NetworkKeepAliveServiceScheduler scheduler = new NetworkKeepAliveServiceScheduler(this);
         NetworkTaskHandler handler = new NetworkTaskHandler(this);
@@ -108,7 +119,7 @@ public class NetworkTaskMainActivity extends AppCompatActivity {
     }
 
     public void onMainEditClicked(int position) {
-        NetworkTask task = getAdapter().getItem(position);
+        NetworkTask task = getAdapter().getItem(position).getNetworkTask();
         Log.d(NetworkTaskMainActivity.class.getName(), "onMainAddClicked for network task " + task);
         NetworkTaskEditDialog editDialog = new NetworkTaskEditDialog();
         editDialog.setArguments(task.toBundle());
@@ -117,7 +128,7 @@ public class NetworkTaskMainActivity extends AppCompatActivity {
     }
 
     public void onMainLogClicked(int position) {
-        NetworkTask networkTask = getAdapter().getItem(position);
+        NetworkTask networkTask = getAdapter().getItem(position).getNetworkTask();
         Log.d(NetworkTaskMainActivity.class.getName(), "onMainLogClicked for network task " + networkTask);
     }
 
@@ -148,7 +159,7 @@ public class NetworkTaskMainActivity extends AppCompatActivity {
             if (Objects.requireNonNull(arguments).containsKey(getConfirmDialogPositionKey())) {
                 NetworkTaskHandler handler = new NetworkTaskHandler(this);
                 int position = arguments.getInt(getConfirmDialogPositionKey());
-                NetworkTask task = getAdapter().getItem(position);
+                NetworkTask task = getAdapter().getItem(position).getNetworkTask();
                 Log.d(NetworkTaskMainActivity.class.getName(), "Deleting " + task);
                 handler.deleteNetworkTask(task);
             } else {

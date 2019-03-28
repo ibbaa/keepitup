@@ -58,7 +58,7 @@ class NetworkTaskHandler {
                 Log.e(NetworkTaskHandler.class.getName(), "Error inserting task into database. Showing error dialog.");
                 mainActivity.showErrorDialog(getResources().getString(R.string.text_dialog_general_error_insert_network_task));
             } else {
-                getAdapter().addItem(task);
+                getAdapter().addItem(new NetworkTaskUIWrapper(task, null));
             }
         } catch (Exception exc) {
             Log.e(NetworkTaskHandler.class.getName(), "Error inserting task into database. Showing error dialog.", exc);
@@ -77,7 +77,7 @@ class NetworkTaskHandler {
                 scheduler.stop(task);
                 scheduler.start(task);
             }
-            getAdapter().replaceItem(task);
+            getAdapter().replaceItem(new NetworkTaskUIWrapper(task, null));
         } catch (Exception exc) {
             Log.e(NetworkTaskHandler.class.getName(), "Error updating task. Showing error dialog.", exc);
             showErrorDialog(getResources().getString(R.string.text_dialog_general_error_update_network_task));
@@ -96,7 +96,7 @@ class NetworkTaskHandler {
             }
             logDAO.deleteAllLogsForNetworkTask(task.getId());
             networkTaskDAO.deleteNetworkTask(task);
-            getAdapter().removeItem(task);
+            getAdapter().removeItem(new NetworkTaskUIWrapper(task, null));
             getAdapter().notifyDataSetChanged();
         } catch (Exception exc) {
             Log.e(NetworkTaskHandler.class.getName(), "Error deleting network task.", exc);

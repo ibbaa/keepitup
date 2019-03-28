@@ -14,16 +14,17 @@ import java.util.Date;
 import java.util.List;
 
 import de.ibba.keepitup.R;
+import de.ibba.keepitup.model.LogEntry;
 import de.ibba.keepitup.model.NetworkTask;
 import de.ibba.keepitup.service.NetworkKeepAliveServiceScheduler;
 import de.ibba.keepitup.ui.mapping.EnumMapping;
 
 public class NetworkTaskAdapter extends RecyclerView.Adapter<NetworkTaskViewHolder> {
 
-    private final List<NetworkTask> networkTasks;
+    private final List<NetworkTaskUIWrapper> networkTasks;
     private final NetworkTaskMainActivity mainActivity;
 
-    public NetworkTaskAdapter(List<NetworkTask> networkTasks, NetworkTaskMainActivity mainActivity) {
+    public NetworkTaskAdapter(List<NetworkTaskUIWrapper> networkTasks, NetworkTaskMainActivity mainActivity) {
         this.networkTasks = networkTasks;
         this.mainActivity = mainActivity;
     }
@@ -40,15 +41,16 @@ public class NetworkTaskAdapter extends RecyclerView.Adapter<NetworkTaskViewHold
     public void onBindViewHolder(@NonNull NetworkTaskViewHolder networkTaskViewHolder, int position) {
         Log.d(NetworkTaskAdapter.class.getName(), "onBindViewHolder");
         if (position < networkTasks.size()) {
-            NetworkTask networkTask = networkTasks.get(position);
+            NetworkTask networkTask = networkTasks.get(position).getNetworkTask();
+            LogEntry logEntry = networkTasks.get(position).getLogEntry();
             NetworkKeepAliveServiceScheduler scheduler = new NetworkKeepAliveServiceScheduler(getContext());
             boolean isRunning = scheduler.isRunning(networkTask);
             bindStatus(networkTaskViewHolder, isRunning);
             bindAccessType(networkTaskViewHolder, networkTask);
             bindAddress(networkTaskViewHolder, networkTask);
             bindInterval(networkTaskViewHolder, networkTask);
-            bindLastExecTimestamp(networkTaskViewHolder, networkTask);
-            bindLastExecMessage(networkTaskViewHolder, networkTask);
+            bindLastExecTimestamp(networkTaskViewHolder, logEntry);
+            bindLastExecMessage(networkTaskViewHolder, logEntry);
             bindOnlyWifi(networkTaskViewHolder, networkTask);
             bindNotification(networkTaskViewHolder, networkTask);
             networkTaskViewHolder.showMainNetworkTaskCard();
@@ -102,11 +104,11 @@ public class NetworkTaskAdapter extends RecyclerView.Adapter<NetworkTaskViewHold
         networkTaskViewHolder.setNotification(formattedNotificationText);
     }
 
-    private void bindLastExecTimestamp(@NonNull NetworkTaskViewHolder networkTaskViewHolder, NetworkTask networkTask) {
+    private void bindLastExecTimestamp(@NonNull NetworkTaskViewHolder networkTaskViewHolder, LogEntry logEntry) {
         String timestampText;
-        if (wasExecuted(networkTask)) {
-            timestampText = networkTask.isSuccess() ? getResources().getString(R.string.string_successful) : getResources().getString(R.string.string_not_successful);
-            timestampText += ", " + DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.MEDIUM).format(new Date(networkTask.getTimestamp()));
+        if (wasExecuted(logEntry)) {
+            timestampText = logEntry.isSuccess() ? getResources().getString(R.string.string_successful) : getResources().getString(R.string.string_not_successful);
+            timestampText += ", " + DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.MEDIUM).format(new Date(logEntry.getTimestamp()));
         } else {
             timestampText = getResources().getString(R.string.string_not_executed);
         }
@@ -115,9 +117,9 @@ public class NetworkTaskAdapter extends RecyclerView.Adapter<NetworkTaskViewHold
         networkTaskViewHolder.setLastExecTimestamp(formattedLastExecTimestampText);
     }
 
-    private void bindLastExecMessage(@NonNull NetworkTaskViewHolder networkTaskViewHolder, NetworkTask networkTask) {
-        if (wasExecuted(networkTask)) {
-            String formattedMessageText = String.format(getResources().getString(R.string.text_list_item_network_task_last_exec_message), networkTask.getMessage());
+    private void bindLastExecMessage(@NonNull NetworkTaskViewHolder networkTaskViewHolder, LogEntry logEntry) {
+        if (wasExecuted(logEntry)) {
+            String formattedMessageText = String.format(getResources().getString(R.string.text_list_item_network_task_last_exec_message), logEntry.getMessage());
             Log.d(NetworkTaskAdapter.class.getName(), "binding and showing last exec message text " + formattedMessageText);
             networkTaskViewHolder.setLastExecMessage(formattedMessageText);
             networkTaskViewHolder.showLastExecMessageTextView();
@@ -128,18 +130,19 @@ public class NetworkTaskAdapter extends RecyclerView.Adapter<NetworkTaskViewHold
         }
     }
 
-    private boolean wasExecuted(NetworkTask networkTask) {
-        return networkTask.getTimestamp() > 0;
+    private boolean wasExecuted(LogEntry logEntry) {
+        return logEntry != null && logEntry.getTimestamp() > 0;
     }
 
-    public void addItem(NetworkTask task) {
+    public void addItem(NetworkTaskUIWrapper task) {
+        Log.d(NetworkTaskAdapter.class.getName(), "addItem " + task);
         networkTasks.add(task);
     }
 
-    public void removeItem(NetworkTask task) {
+    public void removeItem(NetworkTaskUIWrapper task) {
         Log.d(NetworkTaskAdapter.class.getName(), "removeItem " + task);
         for (int ii = 0; ii < networkTasks.size(); ii++) {
-            NetworkTask currentTask = networkTasks.get(ii);
+            NetworkTaskUIWrapper currentTask = networkTasks.get(ii);
             if (task.getId() == currentTask.getId()) {
                 networkTasks.remove(ii);
                 updateIndex();
@@ -148,10 +151,10 @@ public class NetworkTaskAdapter extends RecyclerView.Adapter<NetworkTaskViewHold
         }
     }
 
-    public void replaceItem(NetworkTask task) {
+    public void replaceItem(NetworkTaskUIWrapper task) {
         Log.d(NetworkTaskAdapter.class.getName(), "replaceItem " + task);
         for (int ii = 0; ii < networkTasks.size(); ii++) {
-            NetworkTask currentTask = networkTasks.get(ii);
+            NetworkTaskUIWrapper currentTask = networkTasks.get(ii);
             if (task.getId() == currentTask.getId()) {
                 networkTasks.set(ii, task);
                 return;
@@ -162,7 +165,7 @@ public class NetworkTaskAdapter extends RecyclerView.Adapter<NetworkTaskViewHold
     public void updateIndex() {
         Log.d(NetworkTaskAdapter.class.getName(), "updateIndex");
         for (int ii = 0; ii < networkTasks.size(); ii++) {
-            NetworkTask currentTask = networkTasks.get(ii);
+            NetworkTask currentTask = networkTasks.get(ii).getNetworkTask();
             currentTask.setIndex(ii);
         }
     }
@@ -176,7 +179,7 @@ public class NetworkTaskAdapter extends RecyclerView.Adapter<NetworkTaskViewHold
         return networkTasks.size() + 1;
     }
 
-    public NetworkTask getItem(int position) {
+    public NetworkTaskUIWrapper getItem(int position) {
         return networkTasks.get(position);
     }
 
