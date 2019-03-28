@@ -61,8 +61,6 @@ public class NetworkKeepAliveServiceTest {
         task1.setPort(80);
         task1.setAccessType(AccessType.PING);
         task1.setInterval(15);
-        task1.setSuccess(true);
-        task1.setMessage("TestMessage1");
         task1.setNotification(true);
         return task1;
     }
@@ -76,8 +74,6 @@ public class NetworkKeepAliveServiceTest {
         task2.setPort(21);
         task2.setAccessType(null);
         task2.setInterval(1);
-        task2.setSuccess(false);
-        task2.setMessage(null);
         task2.setNotification(false);
         return task2;
     }

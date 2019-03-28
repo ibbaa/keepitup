@@ -45,18 +45,6 @@ class NetworkTaskDBConstants {
         return getResources().getString(R.string.task_interval_column_name);
     }
 
-    public String getSuccessColumnName() {
-        return getResources().getString(R.string.task_success_column_name);
-    }
-
-    public String getTimestampColumnName() {
-        return getResources().getString(R.string.task_timestamp_column_name);
-    }
-
-    public String getMessageColumnName() {
-        return getResources().getString(R.string.task_message_column_name);
-    }
-
     public String getOnlyWifiColumnName() {
         return getResources().getString(R.string.task_onlywifi_column_name);
     }
@@ -74,9 +62,6 @@ class NetworkTaskDBConstants {
                 getPortColumnName() + " INTEGER, " +
                 getAccessTypeColumnName() + " INTEGER, " +
                 getIntervalColumnName() + " INTEGER, " +
-                getSuccessColumnName() + " INTEGER, " +
-                getTimestampColumnName() + " INTEGER, " +
-                getMessageColumnName() + " TEXT, " +
                 getOnlyWifiColumnName() + " TEXT, " +
                 getNotificationColumnName() + " INTEGER);";
     }
@@ -94,9 +79,6 @@ class NetworkTaskDBConstants {
                 getPortColumnName() + ", " +
                 getAccessTypeColumnName() + ", " +
                 getIntervalColumnName() + ", " +
-                getSuccessColumnName() + ", " +
-                getTimestampColumnName() + ", " +
-                getMessageColumnName() + ", " +
                 getOnlyWifiColumnName() + ", " +
                 getNotificationColumnName() +
                 " FROM " + getTableName() +
@@ -113,9 +95,6 @@ class NetworkTaskDBConstants {
                 getPortColumnName() + ", " +
                 getAccessTypeColumnName() + ", " +
                 getIntervalColumnName() + ", " +
-                getSuccessColumnName() + ", " +
-                getTimestampColumnName() + ", " +
-                getMessageColumnName() + ", " +
                 getOnlyWifiColumnName() + ", " +
                 getNotificationColumnName() +
                 " FROM " + getTableName() +

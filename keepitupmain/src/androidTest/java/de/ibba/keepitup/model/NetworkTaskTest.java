@@ -29,9 +29,6 @@ public class NetworkTaskTest {
         assertEquals(0, task.getPort());
         assertNull(task.getAccessType());
         assertEquals(0, task.getInterval());
-        assertFalse(task.isSuccess());
-        assertEquals(-1, task.getTimestamp());
-        assertNull(task.getMessage());
         assertFalse(task.isOnlyWifi());
         assertFalse(task.isNotification());
         PersistableBundle persistableBundle = task.toPersistableBundle();
@@ -44,9 +41,6 @@ public class NetworkTaskTest {
         assertEquals(0, task.getPort());
         assertNull(task.getAccessType());
         assertEquals(0, task.getInterval());
-        assertFalse(task.isSuccess());
-        assertEquals(-1, task.getTimestamp());
-        assertNull(task.getMessage());
         assertFalse(task.isOnlyWifi());
         assertFalse(task.isNotification());
         Bundle bundle = task.toBundle();
@@ -59,9 +53,6 @@ public class NetworkTaskTest {
         assertEquals(0, task.getPort());
         assertNull(task.getAccessType());
         assertEquals(0, task.getInterval());
-        assertFalse(task.isSuccess());
-        assertEquals(-1, task.getTimestamp());
-        assertNull(task.getMessage());
         assertFalse(task.isOnlyWifi());
         assertFalse(task.isNotification());
     }
@@ -76,9 +67,6 @@ public class NetworkTaskTest {
         assertEquals(22, task.getPort());
         assertEquals(AccessType.PING, task.getAccessType());
         assertEquals(15, task.getInterval());
-        assertFalse(task.isSuccess());
-        assertEquals(-1, task.getTimestamp());
-        assertNull(task.getMessage());
         assertFalse(task.isOnlyWifi());
         assertFalse(task.isNotification());
         PersistableBundle persistableBundle = task.toPersistableBundle();
@@ -91,9 +79,6 @@ public class NetworkTaskTest {
         assertEquals(22, task.getPort());
         assertEquals(AccessType.PING, task.getAccessType());
         assertEquals(15, task.getInterval());
-        assertFalse(task.isSuccess());
-        assertEquals(-1, task.getTimestamp());
-        assertNull(task.getMessage());
         assertFalse(task.isOnlyWifi());
         assertFalse(task.isNotification());
         Bundle bundle = task.toBundle();
@@ -106,16 +91,12 @@ public class NetworkTaskTest {
         assertEquals(22, task.getPort());
         assertEquals(AccessType.PING, task.getAccessType());
         assertEquals(15, task.getInterval());
-        assertFalse(task.isSuccess());
-        assertEquals(-1, task.getTimestamp());
-        assertNull(task.getMessage());
         assertFalse(task.isOnlyWifi());
         assertFalse(task.isNotification());
     }
 
     @Test
     public void testToBundleValues() {
-        long timestamp = System.currentTimeMillis();
         NetworkTask task = new NetworkTask();
         task.setId(1);
         task.setIndex(2);
@@ -124,9 +105,6 @@ public class NetworkTaskTest {
         task.setPort(23);
         task.setAccessType(AccessType.PING);
         task.setInterval(15);
-        task.setSuccess(true);
-        task.setTimestamp(timestamp);
-        task.setMessage("Message");
         task.setOnlyWifi(true);
         task.setNotification(true);
         assertEquals(1, task.getId());
@@ -136,9 +114,6 @@ public class NetworkTaskTest {
         assertEquals(23, task.getPort());
         assertEquals(AccessType.PING, task.getAccessType());
         assertEquals(15, task.getInterval());
-        assertTrue(task.isSuccess());
-        assertEquals(timestamp, task.getTimestamp());
-        assertEquals("Message", task.getMessage());
         assertTrue(task.isOnlyWifi());
         assertTrue(task.isNotification());
         PersistableBundle persistableBundle = task.toPersistableBundle();
@@ -151,9 +126,6 @@ public class NetworkTaskTest {
         assertEquals(23, task.getPort());
         assertEquals(AccessType.PING, task.getAccessType());
         assertEquals(15, task.getInterval());
-        assertTrue(task.isSuccess());
-        assertEquals(timestamp, task.getTimestamp());
-        assertEquals("Message", task.getMessage());
         assertTrue(task.isOnlyWifi());
         assertTrue(task.isNotification());
         Bundle bundle = task.toBundle();
@@ -166,9 +138,6 @@ public class NetworkTaskTest {
         assertEquals(23, task.getPort());
         assertEquals(AccessType.PING, task.getAccessType());
         assertEquals(15, task.getInterval());
-        assertTrue(task.isSuccess());
-        assertEquals(timestamp, task.getTimestamp());
-        assertEquals("Message", task.getMessage());
         assertTrue(task.isOnlyWifi());
         assertTrue(task.isNotification());
     }
