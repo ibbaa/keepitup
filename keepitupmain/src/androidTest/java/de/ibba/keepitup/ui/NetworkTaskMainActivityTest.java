@@ -19,6 +19,7 @@ import java.util.GregorianCalendar;
 import de.ibba.keepitup.R;
 import de.ibba.keepitup.db.LogDAO;
 import de.ibba.keepitup.db.NetworkTaskDAO;
+import de.ibba.keepitup.model.AccessType;
 import de.ibba.keepitup.model.LogEntry;
 import de.ibba.keepitup.model.NetworkTask;
 import de.ibba.keepitup.service.NetworkKeepAliveServiceScheduler;
@@ -45,7 +46,6 @@ public class NetworkTaskMainActivityTest {
     @Rule
     public final ActivityTestRule<NetworkTaskMainActivity> rule = new ActivityTestRule<>(NetworkTaskMainActivity.class, false, false);
 
-    private NetworkTaskMainActivity activity;
     private NetworkTaskDAO networkTaskDAO;
     private LogDAO logDAO;
     private NetworkKeepAliveServiceScheduler scheduler;
@@ -58,8 +58,6 @@ public class NetworkTaskMainActivityTest {
         networkTaskDAO.deleteAllNetworkTasks();
         scheduler = new NetworkKeepAliveServiceScheduler(InstrumentationRegistry.getTargetContext());
         scheduler.stopAll();
-        rule.launchActivity(null);
-        activity = rule.getActivity();
     }
 
     @After
@@ -70,7 +68,41 @@ public class NetworkTaskMainActivityTest {
     }
 
     @Test
+    public void testInitializeActivity() {
+        NetworkTask task1 = getNetworkTask1();
+        task1 = networkTaskDAO.insertNetworkTask(task1);
+        LogEntry logEntry = getLogEntryWithNetworkTaskId(task1.getId());
+        logDAO.insertAndDeleteLog(logEntry);
+        NetworkTask task2 = getNetworkTask2();
+        networkTaskDAO.insertNetworkTask(task2);
+        rule.launchActivity(null);
+        NetworkTaskMainActivity activity = rule.getActivity();
+        onView(withId(R.id.listview_main_activity_network_tasks)).check(matches(withListSize(3)));
+        onView(allOf(withId(R.id.textview_list_item_network_task_title), withChildDescendantAtPosition(withId(R.id.listview_main_activity_network_tasks), 0))).check(matches(withText("Network task")));
+        onView(allOf(withId(R.id.textview_list_item_network_task_status), withChildDescendantAtPosition(withId(R.id.listview_main_activity_network_tasks), 0))).check(matches(withText("Status: Stopped")));
+        onView(allOf(withId(R.id.imageview_list_item_network_task_start_stop), withChildDescendantAtPosition(withId(R.id.listview_main_activity_network_tasks), 0))).check(matches(withDrawable(R.drawable.icon_start_shadow)));
+        onView(allOf(withId(R.id.textview_list_item_network_task_accesstype), withChildDescendantAtPosition(withId(R.id.listview_main_activity_network_tasks), 0))).check(matches(withText("Type: Ping")));
+        onView(allOf(withId(R.id.textview_list_item_network_task_address), withChildDescendantAtPosition(withId(R.id.listview_main_activity_network_tasks), 0))).check(matches(withText("Host: 127.0.0.1 Port: 80")));
+        onView(allOf(withId(R.id.textview_list_item_network_task_interval), withChildDescendantAtPosition(withId(R.id.listview_main_activity_network_tasks), 0))).check(matches(withText("Interval: 15 minutes")));
+        onView(allOf(withId(R.id.textview_list_item_network_task_onlywifi), withChildDescendantAtPosition(withId(R.id.listview_main_activity_network_tasks), 0))).check(matches(withText("Only on WiFi: no")));
+        onView(allOf(withId(R.id.textview_list_item_network_task_notification), withChildDescendantAtPosition(withId(R.id.listview_main_activity_network_tasks), 0))).check(matches(withText("Notification on failure: yes")));
+        onView(allOf(withId(R.id.textview_list_item_network_task_last_exec_timestamp), withChildDescendantAtPosition(withId(R.id.listview_main_activity_network_tasks), 0))).check(matches(withText("Last execution: successful, Mar 17, 1980 12:00:00 AM")));
+        onView(allOf(withId(R.id.textview_list_item_network_task_last_exec_message), withChildDescendantAtPosition(withId(R.id.listview_main_activity_network_tasks), 0))).check(matches(withText("Last execution message: TestMessage")));
+        onView(allOf(withId(R.id.textview_list_item_network_task_title), withChildDescendantAtPosition(withId(R.id.listview_main_activity_network_tasks), 1))).check(matches(withText("Network task")));
+        onView(allOf(withId(R.id.textview_list_item_network_task_status), withChildDescendantAtPosition(withId(R.id.listview_main_activity_network_tasks), 1))).check(matches(withText("Status: Stopped")));
+        onView(allOf(withId(R.id.imageview_list_item_network_task_start_stop), withChildDescendantAtPosition(withId(R.id.listview_main_activity_network_tasks), 1))).check(matches(withDrawable(R.drawable.icon_start_shadow)));
+        onView(allOf(withId(R.id.textview_list_item_network_task_accesstype), withChildDescendantAtPosition(withId(R.id.listview_main_activity_network_tasks), 1))).check(matches(withText("Type: Ping")));
+        onView(allOf(withId(R.id.textview_list_item_network_task_address), withChildDescendantAtPosition(withId(R.id.listview_main_activity_network_tasks), 1))).check(matches(withText("Host: localhost Port: 22")));
+        onView(allOf(withId(R.id.textview_list_item_network_task_interval), withChildDescendantAtPosition(withId(R.id.listview_main_activity_network_tasks), 1))).check(matches(withText("Interval: 40 minutes")));
+        onView(allOf(withId(R.id.textview_list_item_network_task_onlywifi), withChildDescendantAtPosition(withId(R.id.listview_main_activity_network_tasks), 1))).check(matches(withText("Only on WiFi: yes")));
+        onView(allOf(withId(R.id.textview_list_item_network_task_notification), withChildDescendantAtPosition(withId(R.id.listview_main_activity_network_tasks), 1))).check(matches(withText("Notification on failure: no")));
+        onView(allOf(withId(R.id.textview_list_item_network_task_last_exec_timestamp), withChildDescendantAtPosition(withId(R.id.listview_main_activity_network_tasks), 1))).check(matches(withText("Last execution: not executed")));
+    }
+
+    @Test
     public void testAddDeleteNetworkTask() {
+        rule.launchActivity(null);
+        NetworkTaskMainActivity activity = rule.getActivity();
         onView(withId(R.id.listview_main_activity_network_tasks)).check(matches(withListSize(1)));
         onView(allOf(withId(R.id.imageview_list_item_network_task_add), isDisplayed())).perform(click());
         onView(withId(R.id.imageview_dialog_edit_network_task_ok)).perform(click());
@@ -102,6 +134,8 @@ public class NetworkTaskMainActivityTest {
 
     @Test
     public void testNetworkTaskItemText() {
+        rule.launchActivity(null);
+        NetworkTaskMainActivity activity = rule.getActivity();
         onView(allOf(withId(R.id.imageview_list_item_network_task_add), isDisplayed())).perform(click());
         onView(withId(R.id.imageview_dialog_edit_network_task_ok)).perform(click());
         onView(allOf(withId(R.id.textview_list_item_network_task_title), withChildDescendantAtPosition(withId(R.id.listview_main_activity_network_tasks), 0))).check(matches(withText("Network task")));
@@ -129,16 +163,17 @@ public class NetworkTaskMainActivityTest {
         onView(allOf(withId(R.id.textview_list_item_network_task_onlywifi), withChildDescendantAtPosition(withId(R.id.listview_main_activity_network_tasks), 1))).check(matches(withText("Only on WiFi: yes")));
         onView(allOf(withId(R.id.textview_list_item_network_task_notification), withChildDescendantAtPosition(withId(R.id.listview_main_activity_network_tasks), 1))).check(matches(withText("Notification on failure: yes")));
         onView(allOf(withId(R.id.textview_list_item_network_task_last_exec_timestamp), withChildDescendantAtPosition(withId(R.id.listview_main_activity_network_tasks), 1))).check(matches(withText("Last execution: not executed")));
-        setTaskExecuted(1, new GregorianCalendar(1980, Calendar.MARCH, 17), true, "Success");
+        setTaskExecuted(activity, 1, new GregorianCalendar(1980, Calendar.MARCH, 17), true, "Success");
         onView(allOf(withId(R.id.textview_list_item_network_task_last_exec_timestamp), withChildDescendantAtPosition(withId(R.id.listview_main_activity_network_tasks), 1))).check(matches(withText("Last execution: successful, Mar 17, 1980 12:00:00 AM")));
         onView(allOf(withId(R.id.textview_list_item_network_task_last_exec_message), withChildDescendantAtPosition(withId(R.id.listview_main_activity_network_tasks), 1))).check(matches(withText("Last execution message: Success")));
-        setTaskExecuted(1, new GregorianCalendar(2020, Calendar.DECEMBER, 1), false, "connection failed");
+        setTaskExecuted(activity, 1, new GregorianCalendar(2020, Calendar.DECEMBER, 1), false, "connection failed");
         onView(allOf(withId(R.id.textview_list_item_network_task_last_exec_timestamp), withChildDescendantAtPosition(withId(R.id.listview_main_activity_network_tasks), 1))).check(matches(withText("Last execution: failed, Dec 1, 2020 12:00:00 AM")));
         onView(allOf(withId(R.id.textview_list_item_network_task_last_exec_message), withChildDescendantAtPosition(withId(R.id.listview_main_activity_network_tasks), 1))).check(matches(withText("Last execution message: connection failed")));
     }
 
     @Test
     public void testEditNetworkTask() {
+        rule.launchActivity(null);
         onView(allOf(withId(R.id.imageview_list_item_network_task_add), isDisplayed())).perform(click());
         onView(withId(R.id.imageview_dialog_edit_network_task_ok)).perform(click());
         onView(allOf(withId(R.id.imageview_list_item_network_task_edit), withChildDescendantAtPosition(withId(R.id.listview_main_activity_network_tasks), 0))).perform(click());
@@ -169,6 +204,8 @@ public class NetworkTaskMainActivityTest {
 
     @Test
     public void testStartStopNetworkTask() {
+        rule.launchActivity(null);
+        NetworkTaskMainActivity activity = rule.getActivity();
         onView(allOf(withId(R.id.imageview_list_item_network_task_add), isDisplayed())).perform(click());
         onView(withId(R.id.imageview_dialog_edit_network_task_ok)).perform(click());
         onView(allOf(withId(R.id.imageview_list_item_network_task_start_stop), withChildDescendantAtPosition(withId(R.id.listview_main_activity_network_tasks), 0))).check(matches(withDrawable(R.drawable.icon_start_shadow)));
@@ -181,7 +218,7 @@ public class NetworkTaskMainActivityTest {
         assertFalse(scheduler.isRunning(activity.getAdapter().getItem(0).getNetworkTask()));
     }
 
-    private void setTaskExecuted(int position, Calendar calendar, boolean success, String message) {
+    private void setTaskExecuted(NetworkTaskMainActivity activity, int position, Calendar calendar, boolean success, String message) {
         NetworkTask task = activity.getAdapter().getItem(position).getNetworkTask();
         LogEntry logEntry = new LogEntry();
         logEntry.setNetworkTaskId(task.getId());
@@ -190,6 +227,50 @@ public class NetworkTaskMainActivityTest {
         logEntry.setMessage(message);
         activity.getAdapter().replaceItem(new NetworkTaskUIWrapper(task, logEntry));
         activity.runOnUiThread(() -> activity.getAdapter().notifyDataSetChanged());
+    }
+
+    private NetworkTask getNetworkTask1() {
+        NetworkTask networkTask = new NetworkTask();
+        networkTask.setId(-1);
+        networkTask.setIndex(-1);
+        networkTask.setSchedulerid(-1);
+        networkTask.setAddress("127.0.0.1");
+        networkTask.setPort(80);
+        networkTask.setAccessType(AccessType.PING);
+        networkTask.setInterval(15);
+        networkTask.setSuccess(true);
+        networkTask.setTimestamp(789);
+        networkTask.setMessage("TestMessage1");
+        networkTask.setOnlyWifi(false);
+        networkTask.setNotification(true);
+        return networkTask;
+    }
+
+    private NetworkTask getNetworkTask2() {
+        NetworkTask networkTask = new NetworkTask();
+        networkTask.setId(-1);
+        networkTask.setIndex(-1);
+        networkTask.setSchedulerid(-1);
+        networkTask.setAddress("localhost");
+        networkTask.setPort(22);
+        networkTask.setAccessType(AccessType.PING);
+        networkTask.setInterval(40);
+        networkTask.setSuccess(false);
+        networkTask.setTimestamp(123);
+        networkTask.setMessage("TestMessage2");
+        networkTask.setOnlyWifi(true);
+        networkTask.setNotification(false);
+        return networkTask;
+    }
+
+    private LogEntry getLogEntryWithNetworkTaskId(long networkTaskId) {
+        LogEntry logEntry = new LogEntry();
+        logEntry.setId(0);
+        logEntry.setNetworkTaskId(networkTaskId);
+        logEntry.setSuccess(true);
+        logEntry.setTimestamp(new GregorianCalendar(1980, Calendar.MARCH, 17).getTime().getTime());
+        logEntry.setMessage("TestMessage");
+        return logEntry;
     }
 
     public static Matcher<View> withListSize(final int size) {

@@ -152,71 +152,71 @@ public class NetworkTaskHandlerTest {
     }
 
     private NetworkTask getNetworkTask1() {
-        NetworkTask networkTask1 = new NetworkTask();
-        networkTask1.setId(-1);
-        networkTask1.setIndex(-1);
-        networkTask1.setSchedulerid(-1);
-        networkTask1.setAddress("127.0.0.1");
-        networkTask1.setPort(80);
-        networkTask1.setAccessType(AccessType.PING);
-        networkTask1.setInterval(15);
-        networkTask1.setSuccess(true);
-        networkTask1.setTimestamp(789);
-        networkTask1.setMessage("TestMessage1");
-        networkTask1.setOnlyWifi(false);
-        networkTask1.setNotification(true);
-        return networkTask1;
+        NetworkTask networkTask = new NetworkTask();
+        networkTask.setId(-1);
+        networkTask.setIndex(-1);
+        networkTask.setSchedulerid(-1);
+        networkTask.setAddress("127.0.0.1");
+        networkTask.setPort(80);
+        networkTask.setAccessType(AccessType.PING);
+        networkTask.setInterval(15);
+        networkTask.setSuccess(true);
+        networkTask.setTimestamp(789);
+        networkTask.setMessage("TestMessage1");
+        networkTask.setOnlyWifi(false);
+        networkTask.setNotification(true);
+        return networkTask;
     }
 
     private NetworkTask getNetworkTask2() {
-        NetworkTask networkTask1 = new NetworkTask();
-        networkTask1.setId(-1);
-        networkTask1.setIndex(-1);
-        networkTask1.setSchedulerid(-1);
-        networkTask1.setAddress("localhost");
-        networkTask1.setPort(22);
-        networkTask1.setAccessType(AccessType.PING);
-        networkTask1.setInterval(40);
-        networkTask1.setSuccess(false);
-        networkTask1.setTimestamp(123);
-        networkTask1.setMessage("TestMessage2");
-        networkTask1.setOnlyWifi(true);
-        networkTask1.setNotification(false);
-        return networkTask1;
+        NetworkTask networkTask = new NetworkTask();
+        networkTask.setId(-1);
+        networkTask.setIndex(-1);
+        networkTask.setSchedulerid(-1);
+        networkTask.setAddress("localhost");
+        networkTask.setPort(22);
+        networkTask.setAccessType(AccessType.PING);
+        networkTask.setInterval(40);
+        networkTask.setSuccess(false);
+        networkTask.setTimestamp(123);
+        networkTask.setMessage("TestMessage2");
+        networkTask.setOnlyWifi(true);
+        networkTask.setNotification(false);
+        return networkTask;
     }
 
     private NetworkTask getNetworkTask3() {
-        NetworkTask networkTask1 = new NetworkTask();
-        networkTask1.setId(-1);
-        networkTask1.setIndex(-1);
-        networkTask1.setSchedulerid(-1);
-        networkTask1.setAddress("192.168.178.100");
-        networkTask1.setPort(8080);
-        networkTask1.setAccessType(AccessType.CONNECT);
-        networkTask1.setInterval(85);
-        networkTask1.setSuccess(true);
-        networkTask1.setTimestamp(987);
-        networkTask1.setMessage("TestMessage3");
-        networkTask1.setOnlyWifi(true);
-        networkTask1.setNotification(true);
-        return networkTask1;
+        NetworkTask networkTask = new NetworkTask();
+        networkTask.setId(-1);
+        networkTask.setIndex(-1);
+        networkTask.setSchedulerid(-1);
+        networkTask.setAddress("192.168.178.100");
+        networkTask.setPort(8080);
+        networkTask.setAccessType(AccessType.CONNECT);
+        networkTask.setInterval(85);
+        networkTask.setSuccess(true);
+        networkTask.setTimestamp(987);
+        networkTask.setMessage("TestMessage3");
+        networkTask.setOnlyWifi(true);
+        networkTask.setNotification(true);
+        return networkTask;
     }
 
     private NetworkTask getNetworkTask4() {
-        NetworkTask networkTask1 = new NetworkTask();
-        networkTask1.setId(-1);
-        networkTask1.setIndex(-1);
-        networkTask1.setSchedulerid(-1);
-        networkTask1.setAddress("192.168.178.200");
-        networkTask1.setPort(3389);
-        networkTask1.setAccessType(AccessType.CONNECT);
-        networkTask1.setInterval(100);
-        networkTask1.setSuccess(false);
-        networkTask1.setTimestamp(321);
-        networkTask1.setMessage("TestMessage4");
-        networkTask1.setOnlyWifi(false);
-        networkTask1.setNotification(false);
-        return networkTask1;
+        NetworkTask networkTask = new NetworkTask();
+        networkTask.setId(-1);
+        networkTask.setIndex(-1);
+        networkTask.setSchedulerid(-1);
+        networkTask.setAddress("192.168.178.200");
+        networkTask.setPort(3389);
+        networkTask.setAccessType(AccessType.CONNECT);
+        networkTask.setInterval(100);
+        networkTask.setSuccess(false);
+        networkTask.setTimestamp(321);
+        networkTask.setMessage("TestMessage4");
+        networkTask.setOnlyWifi(false);
+        networkTask.setNotification(false);
+        return networkTask;
     }
 
     private LogEntry getLogEntryWithNetworkTaskId(long networkTaskId) {
