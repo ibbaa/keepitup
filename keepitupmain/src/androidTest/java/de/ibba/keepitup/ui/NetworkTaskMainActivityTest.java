@@ -19,6 +19,7 @@ import java.util.GregorianCalendar;
 import de.ibba.keepitup.R;
 import de.ibba.keepitup.db.LogDAO;
 import de.ibba.keepitup.db.NetworkTaskDAO;
+import de.ibba.keepitup.model.LogEntry;
 import de.ibba.keepitup.model.NetworkTask;
 import de.ibba.keepitup.service.NetworkKeepAliveServiceScheduler;
 import de.ibba.keepitup.test.matcher.ChildDescendantAtPositionMatcher;
@@ -81,22 +82,22 @@ public class NetworkTaskMainActivityTest {
         onView(withId(R.id.imageview_dialog_edit_network_task_ok)).perform(click());
         onView(withId(R.id.listview_main_activity_network_tasks)).check(matches(withListSize(4)));
         assertEquals(4, activity.getAdapter().getItemCount());
-        assertEquals(0, activity.getAdapter().getItem(0).getIndex());
-        assertEquals(1, activity.getAdapter().getItem(1).getIndex());
-        assertEquals(2, activity.getAdapter().getItem(2).getIndex());
+        assertEquals(0, activity.getAdapter().getItem(0).getNetworkTask().getIndex());
+        assertEquals(1, activity.getAdapter().getItem(1).getNetworkTask().getIndex());
+        assertEquals(2, activity.getAdapter().getItem(2).getNetworkTask().getIndex());
         onView(allOf(withId(R.id.imageview_list_item_network_task_delete), withChildDescendantAtPosition(withId(R.id.listview_main_activity_network_tasks), 1))).perform(click());
         onView(withId(R.id.imageview_dialog_general_confirm_cancel)).perform(click());
         onView(withId(R.id.listview_main_activity_network_tasks)).check(matches(withListSize(4)));
         assertEquals(4, activity.getAdapter().getItemCount());
-        assertEquals(0, activity.getAdapter().getItem(0).getIndex());
-        assertEquals(1, activity.getAdapter().getItem(1).getIndex());
-        assertEquals(2, activity.getAdapter().getItem(2).getIndex());
+        assertEquals(0, activity.getAdapter().getItem(0).getNetworkTask().getIndex());
+        assertEquals(1, activity.getAdapter().getItem(1).getNetworkTask().getIndex());
+        assertEquals(2, activity.getAdapter().getItem(2).getNetworkTask().getIndex());
         onView(allOf(withId(R.id.imageview_list_item_network_task_delete), withChildDescendantAtPosition(withId(R.id.listview_main_activity_network_tasks), 1))).perform(click());
         onView(withId(R.id.imageview_dialog_general_confirm_ok)).perform(click());
         onView(withId(R.id.listview_main_activity_network_tasks)).check(matches(withListSize(3)));
         assertEquals(3, activity.getAdapter().getItemCount());
-        assertEquals(0, activity.getAdapter().getItem(0).getIndex());
-        assertEquals(1, activity.getAdapter().getItem(1).getIndex());
+        assertEquals(0, activity.getAdapter().getItem(0).getNetworkTask().getIndex());
+        assertEquals(1, activity.getAdapter().getItem(1).getNetworkTask().getIndex());
     }
 
     @Test
@@ -171,20 +172,23 @@ public class NetworkTaskMainActivityTest {
         onView(allOf(withId(R.id.imageview_list_item_network_task_add), isDisplayed())).perform(click());
         onView(withId(R.id.imageview_dialog_edit_network_task_ok)).perform(click());
         onView(allOf(withId(R.id.imageview_list_item_network_task_start_stop), withChildDescendantAtPosition(withId(R.id.listview_main_activity_network_tasks), 0))).check(matches(withDrawable(R.drawable.icon_start_shadow)));
-        assertFalse(scheduler.isRunning(activity.getAdapter().getItem(0)));
+        assertFalse(scheduler.isRunning(activity.getAdapter().getItem(0).getNetworkTask()));
         onView(allOf(withId(R.id.imageview_list_item_network_task_start_stop), withChildDescendantAtPosition(withId(R.id.listview_main_activity_network_tasks), 0))).perform(click());
         onView(allOf(withId(R.id.imageview_list_item_network_task_start_stop), withChildDescendantAtPosition(withId(R.id.listview_main_activity_network_tasks), 0))).check(matches(withDrawable(R.drawable.icon_stop_shadow)));
-        assertTrue(scheduler.isRunning(activity.getAdapter().getItem(0)));
+        assertTrue(scheduler.isRunning(activity.getAdapter().getItem(0).getNetworkTask()));
         onView(allOf(withId(R.id.imageview_list_item_network_task_start_stop), withChildDescendantAtPosition(withId(R.id.listview_main_activity_network_tasks), 0))).perform(click());
         onView(allOf(withId(R.id.imageview_list_item_network_task_start_stop), withChildDescendantAtPosition(withId(R.id.listview_main_activity_network_tasks), 0))).check(matches(withDrawable(R.drawable.icon_start_shadow)));
-        assertFalse(scheduler.isRunning(activity.getAdapter().getItem(0)));
+        assertFalse(scheduler.isRunning(activity.getAdapter().getItem(0).getNetworkTask()));
     }
 
     private void setTaskExecuted(int position, Calendar calendar, boolean success, String message) {
-        NetworkTask task = activity.getAdapter().getItem(position);
-        task.setSuccess(success);
-        task.setTimestamp(calendar.getTime().getTime());
-        task.setMessage(message);
+        NetworkTask task = activity.getAdapter().getItem(position).getNetworkTask();
+        LogEntry logEntry = new LogEntry();
+        logEntry.setNetworkTaskId(task.getId());
+        logEntry.setSuccess(success);
+        logEntry.setTimestamp(calendar.getTime().getTime());
+        logEntry.setMessage(message);
+        activity.getAdapter().replaceItem(new NetworkTaskUIWrapper(task, logEntry));
         activity.runOnUiThread(() -> activity.getAdapter().notifyDataSetChanged());
     }
 

@@ -13,11 +13,23 @@ public class NetworkTaskUIWrapper {
         this.logEntry = logEntry;
     }
 
+    public long getId() {
+        return networkTask.getId();
+    }
+
     public NetworkTask getNetworkTask() {
         return networkTask;
     }
 
     public LogEntry getLogEntry() {
         return logEntry;
+    }
+
+    @Override
+    public String toString() {
+        return "NetworkTaskUIWrapper{" +
+                "networkTask=" + networkTask +
+                ", logEntry=" + logEntry +
+                '}';
     }
 }

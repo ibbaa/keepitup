@@ -19,6 +19,7 @@ import de.ibba.keepitup.service.NetworkKeepAliveServiceScheduler;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 public class NetworkTaskHandlerTest {
@@ -81,8 +82,9 @@ public class NetworkTaskHandlerTest {
         task1 = tasks.get(0);
         assertEquals(0, task1.getIndex());
         assertTrue(task1.getId() >= 0);
-        NetworkTask adapterTask1 = activity.getAdapter().getItem(0);
-        assertAreEqual(task1, adapterTask1);
+        NetworkTaskUIWrapper adapterWrapper1 = activity.getAdapter().getItem(0);
+        assertNull(adapterWrapper1.getLogEntry());
+        assertAreEqual(task1, adapterWrapper1.getNetworkTask());
         NetworkTask task2 = getNetworkTask2();
         handler.insertNetworkTask(task2);
         tasks = networkTaskDAO.readAllNetworkTasks();
@@ -90,8 +92,9 @@ public class NetworkTaskHandlerTest {
         assertEquals(2, activity.getAdapter().getNextIndex());
         assertEquals(3, activity.getAdapter().getItemCount());
         task2 = tasks.get(1);
-        NetworkTask adapterTask2 = activity.getAdapter().getItem(1);
-        assertAreEqual(task2, adapterTask2);
+        NetworkTaskUIWrapper adapterWrapper2 = activity.getAdapter().getItem(1);
+        assertNull(adapterWrapper2.getLogEntry());
+        assertAreEqual(task2, adapterWrapper2.getNetworkTask());
     }
 
     @Test
@@ -105,9 +108,10 @@ public class NetworkTaskHandlerTest {
         List<NetworkTask> tasks = networkTaskDAO.readAllNetworkTasks();
         task1 = tasks.get(0);
         assertEquals("192.168.178.1", task1.getAddress());
-        NetworkTask adapterTask1 = activity.getAdapter().getItem(0);
-        assertEquals("192.168.178.1", adapterTask1.getAddress());
-        assertAreEqual(task1, adapterTask1);
+        NetworkTaskUIWrapper adapterWrapper1 = activity.getAdapter().getItem(0);
+        assertNull(adapterWrapper1.getLogEntry());
+        assertEquals("192.168.178.1", adapterWrapper1.getNetworkTask().getAddress());
+        assertAreEqual(task1, adapterWrapper1.getNetworkTask());
         assertFalse(scheduler.isRunning(task1));
         task2 = tasks.get(1);
         handler.startNetworkTask(task2);
