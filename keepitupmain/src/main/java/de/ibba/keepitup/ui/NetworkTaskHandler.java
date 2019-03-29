@@ -111,7 +111,7 @@ class NetworkTaskHandler {
     }
 
     private NetworkTaskAdapter getAdapter() {
-        return mainActivity.getAdapter();
+        return (NetworkTaskAdapter) mainActivity.getAdapter();
     }
 
     private Resources getResources() {
