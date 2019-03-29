@@ -20,7 +20,6 @@ import de.ibba.keepitup.db.LogDAO;
 import de.ibba.keepitup.model.LogEntry;
 import de.ibba.keepitup.model.NetworkTask;
 import de.ibba.keepitup.ui.adapter.LogEntryAdapter;
-import de.ibba.keepitup.ui.adapter.NetworkTaskUIWrapper;
 import de.ibba.keepitup.ui.dialog.GeneralErrorDialog;
 import de.ibba.keepitup.util.BundleUtil;
 
@@ -31,27 +30,26 @@ public class NetworkTaskLogActivity extends AppCompatActivity {
         Log.d(NetworkTaskLogActivity.class.getName(), "onCreate");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_log_network_task);
-        RecyclerView recyclerView = findViewById(R.id.listview_log_activity_network_tasks);
+        RecyclerView recyclerView = findViewById(R.id.listview_log_activity_log_entries);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
-        recyclerView.setAdapter(new LogEntryAdapter(readLogEntriesFromDatabase(), this));
+        NetworkTask task = new NetworkTask(Objects.requireNonNull(getIntent().getExtras()));
+        recyclerView.setAdapter(new LogEntryAdapter(task, readLogEntriesFromDatabase(task), this));
     }
 
-    private List<NetworkTaskUIWrapper> readLogEntriesFromDatabase() {
+    private List<LogEntry> readLogEntriesFromDatabase(NetworkTask task) {
         Log.d(NetworkTaskLogActivity.class.getName(), "readLogEntriesFromDatabase");
         LogDAO logDAO = new LogDAO(this);
         try {
-            NetworkTask task = new NetworkTask(Objects.requireNonNull(getIntent().getExtras()));
             Log.d(NetworkTaskLogActivity.class.getName(), "Reading log entries for network task " + task);
-            List<NetworkTaskUIWrapper> wrapperList = new ArrayList<>();
             List<LogEntry> logEntries = logDAO.readAllLogsForNetworkTask(task.getId());
             Log.d(NetworkTaskLogActivity.class.getName(), "Database returned the following log entries: " + (logEntries.isEmpty() ? "no log entries" : ""));
             for (LogEntry logEntry : logEntries) {
                 Log.d(NetworkTaskLogActivity.class.getName(), logEntry.toString());
-                wrapperList.add(new NetworkTaskUIWrapper(task, logEntry));
             }
             if (logEntries.isEmpty()) {
+                logEntries = new ArrayList<>();
                 for (int ii = 0; ii < 20; ii++) {
                     LogEntry entry = new LogEntry();
                     entry.setId(ii);
@@ -59,10 +57,10 @@ public class NetworkTaskLogActivity extends AppCompatActivity {
                     entry.setSuccess(true);
                     entry.setTimestamp(new GregorianCalendar(1980, Calendar.MARCH, 17).getTime().getTime());
                     entry.setMessage("TestMessage");
-                    wrapperList.add(new NetworkTaskUIWrapper(task, entry));
+                    logEntries.add(entry);
                 }
             }
-            return wrapperList;
+            return logEntries;
         } catch (Exception exc) {
             Log.e(NetworkTaskLogActivity.class.getName(), "Error reading all log entries from database", exc);
             showErrorDialog(getResources().getString(R.string.text_dialog_general_error_read_log_entries));
@@ -81,6 +79,14 @@ public class NetworkTaskLogActivity extends AppCompatActivity {
         int id = item.getItemId();
         if (id == R.id.menu_action_refresh) {
             Log.d(NetworkTaskLogActivity.class.getName(), "menu_action_refresh triggered");
+            if (getIntent() != null && getIntent().getExtras() != null) {
+                NetworkTask task = new NetworkTask(Objects.requireNonNull(getIntent().getExtras()));
+                List<LogEntry> logEntries = readLogEntriesFromDatabase(task);
+                getAdapter().replaceItems(logEntries);
+                getAdapter().notifyDataSetChanged();
+            } else {
+                Log.e(NetworkTaskLogActivity.class.getName(), "No network task intent present");
+            }
             return true;
         }
         return super.onOptionsItemSelected(item);
@@ -91,5 +97,10 @@ public class NetworkTaskLogActivity extends AppCompatActivity {
         GeneralErrorDialog errorDialog = new GeneralErrorDialog();
         errorDialog.setArguments(BundleUtil.messageToBundle(GeneralErrorDialog.class.getSimpleName(), errorMessage));
         errorDialog.show(getSupportFragmentManager(), GeneralErrorDialog.class.getName());
+    }
+
+    public LogEntryAdapter getAdapter() {
+        RecyclerView recyclerView = findViewById(R.id.listview_log_activity_log_entries);
+        return (LogEntryAdapter) recyclerView.getAdapter();
     }
 }

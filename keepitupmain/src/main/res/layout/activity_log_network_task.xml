@@ -15,7 +15,7 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <android.support.v7.widget.RecyclerView
-            android:id="@+id/listview_log_activity_network_tasks"
+            android:id="@+id/listview_log_activity_log_entries"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
