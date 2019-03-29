@@ -20,11 +20,13 @@ import de.ibba.keepitup.ui.NetworkTaskLogActivity;
 
 public class LogEntryAdapter extends RecyclerView.Adapter<LogEntryViewHolder> {
 
-    private final List<NetworkTaskUIWrapper> networkTaskWrapperList;
+    private final NetworkTask networkTask;
+    private List<LogEntry> logEntries;
     private final NetworkTaskLogActivity logActivity;
 
-    public LogEntryAdapter(List<NetworkTaskUIWrapper> networkTaskWrapperList, NetworkTaskLogActivity logActivity) {
-        this.networkTaskWrapperList = networkTaskWrapperList;
+    public LogEntryAdapter(NetworkTask networkTask, List<LogEntry> logEntries, NetworkTaskLogActivity logActivity) {
+        this.networkTask = networkTask;
+        this.logEntries = logEntries;
         this.logActivity = logActivity;
     }
 
@@ -39,15 +41,25 @@ public class LogEntryAdapter extends RecyclerView.Adapter<LogEntryViewHolder> {
     @Override
     public void onBindViewHolder(@NonNull LogEntryViewHolder logEntryViewHolder, int position) {
         Log.d(LogEntryAdapter.class.getName(), "onBindViewHolder");
-        NetworkTask networkTask = networkTaskWrapperList.get(position).getNetworkTask();
-        LogEntry logEntry = networkTaskWrapperList.get(position).getLogEntry();
-        bindTitle(logEntryViewHolder, networkTask);
-        bindSuccess(logEntryViewHolder, logEntry);
-        bindTimestamp(logEntryViewHolder, logEntry);
-        bindMessage(logEntryViewHolder, logEntry);
+        if (!logEntries.isEmpty() && position < logEntries.size()) {
+            LogEntry logEntry = logEntries.get(position);
+            bindTitle(logEntryViewHolder);
+            bindSuccess(logEntryViewHolder, logEntry);
+            bindTimestamp(logEntryViewHolder, logEntry);
+            bindMessage(logEntryViewHolder, logEntry);
+            logEntryViewHolder.hideNoLogTextView();
+        } else if (logEntries.isEmpty()) {
+            bindNoLog(logEntryViewHolder);
+            logEntryViewHolder.showNoLogTextView();
+        }
     }
 
-    private void bindTitle(@NonNull LogEntryViewHolder logEntryViewHolder, NetworkTask networkTask) {
+    private void bindNoLog(@NonNull LogEntryViewHolder logEntryViewHolder) {
+        String formattedNoLogText = String.format(getResources().getString(R.string.text_list_item_log_entry_no_log), networkTask.getIndex() + 1);
+        logEntryViewHolder.setNoLogText(formattedNoLogText);
+    }
+
+    private void bindTitle(@NonNull LogEntryViewHolder logEntryViewHolder) {
         String formattedTitleText = String.format(getResources().getString(R.string.text_list_item_log_entry_title), networkTask.getIndex() + 1);
         logEntryViewHolder.setTitleText(formattedTitleText);
     }
@@ -71,7 +83,11 @@ public class LogEntryAdapter extends RecyclerView.Adapter<LogEntryViewHolder> {
 
     @Override
     public int getItemCount() {
-        return networkTaskWrapperList.size();
+        return logEntries.size() + 1;
+    }
+
+    public void replaceItems(List<LogEntry> logEntries) {
+        this.logEntries = logEntries;
     }
 
     private Context getContext() {
