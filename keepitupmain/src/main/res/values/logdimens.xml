@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="list_item_log_entry_margin">4dp</dimen>
+    <dimen name="list_item_log_entry_corner_radius">4dp</dimen>
+    <dimen name="list_item_log_entry_card_elevation">4dp</dimen>
+</resources>

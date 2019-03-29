@@ -27,6 +27,15 @@
         <activity
             android:name=".ui.SettingsActivity"
             android:label="@string/activity_setting_title" />
+        <activity
+            android:name=".ui.NetworkTaskLogActivity"
+            android:label="@string/activity_log_title"
+            android:theme="@style/AppTheme"
+            android:parentActivityName=".ui.NetworkTaskMainActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".ui.NetworkTaskMainActivity" />
+        </activity>
 
         <service
             android:name=".service.NetworkKeepAliveService"

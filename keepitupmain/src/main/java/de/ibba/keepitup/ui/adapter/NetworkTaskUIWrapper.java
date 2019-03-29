@@ -1,4 +1,4 @@
-package de.ibba.keepitup.ui;
+package de.ibba.keepitup.ui.adapter;
 
 import android.support.annotation.NonNull;
 

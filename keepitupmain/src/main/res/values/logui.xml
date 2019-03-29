@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="activity_log_title">Log</string>
+    <string name="menu_action_refresh">Refresh</string>
+    <string name="text_list_item_log_entry_title">Log entry for network task %d</string>
+    <string name="text_list_item_log_entry_success">Execution %s</string>
+    <string name="text_list_item_log_entry_timestamp">Timestamp: %s</string>
+    <string name="text_list_item_log_entry_message">Message: %s</string>
+
+</resources>
