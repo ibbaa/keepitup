@@ -1,9 +1,6 @@
 package de.ibba.keepitup.ui;
 
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.DefaultItemAnimator;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.Menu;
@@ -20,22 +17,26 @@ import de.ibba.keepitup.db.LogDAO;
 import de.ibba.keepitup.model.LogEntry;
 import de.ibba.keepitup.model.NetworkTask;
 import de.ibba.keepitup.ui.adapter.LogEntryAdapter;
-import de.ibba.keepitup.ui.dialog.GeneralErrorDialog;
-import de.ibba.keepitup.util.BundleUtil;
 
-public class NetworkTaskLogActivity extends AppCompatActivity {
+public class NetworkTaskLogActivity extends RecyclerViewBaseActivity {
+
+    @Override
+    protected int getRecyclerViewId() {
+        return R.id.listview_log_activity_log_entries;
+    }
+
+    @Override
+    protected RecyclerView.Adapter createAdapter() {
+        NetworkTask task = new NetworkTask(Objects.requireNonNull(getIntent().getExtras()));
+        return new LogEntryAdapter(task, readLogEntriesFromDatabase(task), this);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         Log.d(NetworkTaskLogActivity.class.getName(), "onCreate");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_log_network_task);
-        RecyclerView recyclerView = findViewById(R.id.listview_log_activity_log_entries);
-        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
-        recyclerView.setLayoutManager(layoutManager);
-        recyclerView.setItemAnimator(new DefaultItemAnimator());
-        NetworkTask task = new NetworkTask(Objects.requireNonNull(getIntent().getExtras()));
-        recyclerView.setAdapter(new LogEntryAdapter(task, readLogEntriesFromDatabase(task), this));
+        initRecyclerView();
     }
 
     private List<LogEntry> readLogEntriesFromDatabase(NetworkTask task) {
@@ -82,7 +83,7 @@ public class NetworkTaskLogActivity extends AppCompatActivity {
             if (getIntent() != null && getIntent().getExtras() != null) {
                 NetworkTask task = new NetworkTask(Objects.requireNonNull(getIntent().getExtras()));
                 List<LogEntry> logEntries = readLogEntriesFromDatabase(task);
-                getAdapter().replaceItems(logEntries);
+                ((LogEntryAdapter) getAdapter()).replaceItems(logEntries);
                 getAdapter().notifyDataSetChanged();
             } else {
                 Log.e(NetworkTaskLogActivity.class.getName(), "No network task intent present");
@@ -90,17 +91,5 @@ public class NetworkTaskLogActivity extends AppCompatActivity {
             return true;
         }
         return super.onOptionsItemSelected(item);
-    }
-
-    public void showErrorDialog(String errorMessage) {
-        Log.d(NetworkTaskLogActivity.class.getName(), "showErrorDialog with message " + errorMessage);
-        GeneralErrorDialog errorDialog = new GeneralErrorDialog();
-        errorDialog.setArguments(BundleUtil.messageToBundle(GeneralErrorDialog.class.getSimpleName(), errorMessage));
-        errorDialog.show(getSupportFragmentManager(), GeneralErrorDialog.class.getName());
-    }
-
-    public LogEntryAdapter getAdapter() {
-        RecyclerView recyclerView = findViewById(R.id.listview_log_activity_log_entries);
-        return (LogEntryAdapter) recyclerView.getAdapter();
     }
 }

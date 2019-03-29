@@ -2,9 +2,6 @@ package de.ibba.keepitup.ui;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.DefaultItemAnimator;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.Menu;
@@ -24,22 +21,26 @@ import de.ibba.keepitup.service.NetworkKeepAliveServiceScheduler;
 import de.ibba.keepitup.ui.adapter.NetworkTaskAdapter;
 import de.ibba.keepitup.ui.adapter.NetworkTaskUIWrapper;
 import de.ibba.keepitup.ui.dialog.GeneralConfirmDialog;
-import de.ibba.keepitup.ui.dialog.GeneralErrorDialog;
 import de.ibba.keepitup.ui.dialog.NetworkTaskEditDialog;
-import de.ibba.keepitup.util.BundleUtil;
 
-public class NetworkTaskMainActivity extends AppCompatActivity {
+public class NetworkTaskMainActivity extends RecyclerViewBaseActivity {
+
+    @Override
+    protected int getRecyclerViewId() {
+        return R.id.listview_main_activity_network_tasks;
+    }
+
+    @Override
+    protected RecyclerView.Adapter createAdapter() {
+        return new NetworkTaskAdapter(readNetworkTasksFromDatabase(), this);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         Log.d(NetworkTaskMainActivity.class.getName(), "onCreate");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_network_task);
-        RecyclerView recyclerView = findViewById(R.id.listview_main_activity_network_tasks);
-        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
-        recyclerView.setLayoutManager(layoutManager);
-        recyclerView.setItemAnimator(new DefaultItemAnimator());
-        recyclerView.setAdapter(new NetworkTaskAdapter(readNetworkTasksFromDatabase(), this));
+        initRecyclerView();
     }
 
     private List<NetworkTaskUIWrapper> readNetworkTasksFromDatabase() {
@@ -101,7 +102,7 @@ public class NetworkTaskMainActivity extends AppCompatActivity {
     }
 
     public void onMainStartStopClicked(int position) {
-        NetworkTask networkTask = getAdapter().getItem(position).getNetworkTask();
+        NetworkTask networkTask = ((NetworkTaskAdapter) getAdapter()).getItem(position).getNetworkTask();
         Log.d(NetworkTaskMainActivity.class.getName(), "onMainStartStopClicked for network task " + networkTask);
         NetworkKeepAliveServiceScheduler scheduler = new NetworkKeepAliveServiceScheduler(this);
         NetworkTaskHandler handler = new NetworkTaskHandler(this);
@@ -121,7 +122,7 @@ public class NetworkTaskMainActivity extends AppCompatActivity {
     }
 
     public void onMainEditClicked(int position) {
-        NetworkTask task = getAdapter().getItem(position).getNetworkTask();
+        NetworkTask task = ((NetworkTaskAdapter) getAdapter()).getItem(position).getNetworkTask();
         Log.d(NetworkTaskMainActivity.class.getName(), "onMainAddClicked for network task " + task);
         NetworkTaskEditDialog editDialog = new NetworkTaskEditDialog();
         editDialog.setArguments(task.toBundle());
@@ -130,7 +131,7 @@ public class NetworkTaskMainActivity extends AppCompatActivity {
     }
 
     public void onMainLogClicked(int position) {
-        NetworkTask networkTask = getAdapter().getItem(position).getNetworkTask();
+        NetworkTask networkTask = ((NetworkTaskAdapter) getAdapter()).getItem(position).getNetworkTask();
         Log.d(NetworkTaskMainActivity.class.getName(), "onMainLogClicked for network task " + networkTask);
         Intent intent = new Intent(this, NetworkTaskLogActivity.class);
         intent.putExtras(networkTask.toBundle());
@@ -164,7 +165,7 @@ public class NetworkTaskMainActivity extends AppCompatActivity {
             if (Objects.requireNonNull(arguments).containsKey(getConfirmDialogPositionKey())) {
                 NetworkTaskHandler handler = new NetworkTaskHandler(this);
                 int position = arguments.getInt(getConfirmDialogPositionKey());
-                NetworkTask task = getAdapter().getItem(position).getNetworkTask();
+                NetworkTask task = ((NetworkTaskAdapter) getAdapter()).getItem(position).getNetworkTask();
                 Log.d(NetworkTaskMainActivity.class.getName(), "Deleting " + task);
                 handler.deleteNetworkTask(task);
             } else {
@@ -179,30 +180,5 @@ public class NetworkTaskMainActivity extends AppCompatActivity {
     public void onConfirmDialogCancelClicked(GeneralConfirmDialog confirmDialog) {
         Log.d(NetworkTaskMainActivity.class.getName(), "onConfirmDialogCancelClicked");
         confirmDialog.dismiss();
-    }
-
-    public void showErrorDialog(String errorMessage) {
-        Log.d(NetworkTaskMainActivity.class.getName(), "showErrorDialog with message " + errorMessage);
-        GeneralErrorDialog errorDialog = new GeneralErrorDialog();
-        errorDialog.setArguments(BundleUtil.messageToBundle(GeneralErrorDialog.class.getSimpleName(), errorMessage));
-        errorDialog.show(getSupportFragmentManager(), GeneralErrorDialog.class.getName());
-    }
-
-    private void showConfirmDialog(String confirmMessage, GeneralConfirmDialog.Type type, int position) {
-        Log.d(NetworkTaskMainActivity.class.getName(), "showConfirmDialog with message " + confirmMessage + " for type " + type + " and position " + position);
-        GeneralConfirmDialog confirmDialog = new GeneralConfirmDialog();
-        Bundle bundle = BundleUtil.messagesToBundle(new String[]{GeneralConfirmDialog.class.getSimpleName(), GeneralConfirmDialog.Type.class.getSimpleName()}, new String[]{confirmMessage, type.name()});
-        bundle.putInt(getConfirmDialogPositionKey(), position);
-        confirmDialog.setArguments(bundle);
-        confirmDialog.show(getSupportFragmentManager(), GeneralConfirmDialog.class.getName());
-    }
-
-    private String getConfirmDialogPositionKey() {
-        return GeneralConfirmDialog.class.getSimpleName() + ".position";
-    }
-
-    public NetworkTaskAdapter getAdapter() {
-        RecyclerView recyclerView = findViewById(R.id.listview_main_activity_network_tasks);
-        return (NetworkTaskAdapter) recyclerView.getAdapter();
     }
 }

@@ -16,6 +16,7 @@ import de.ibba.keepitup.model.AccessType;
 import de.ibba.keepitup.model.LogEntry;
 import de.ibba.keepitup.model.NetworkTask;
 import de.ibba.keepitup.service.NetworkKeepAliveServiceScheduler;
+import de.ibba.keepitup.ui.adapter.NetworkTaskAdapter;
 import de.ibba.keepitup.ui.adapter.NetworkTaskUIWrapper;
 
 import static org.junit.Assert.assertEquals;
@@ -78,22 +79,22 @@ public class NetworkTaskHandlerTest {
         handler.insertNetworkTask(task1);
         List<NetworkTask> tasks = networkTaskDAO.readAllNetworkTasks();
         assertEquals(1, tasks.size());
-        assertEquals(1, activity.getAdapter().getNextIndex());
+        assertEquals(1, getAdapter().getNextIndex());
         assertEquals(2, activity.getAdapter().getItemCount());
         task1 = tasks.get(0);
         assertEquals(0, task1.getIndex());
         assertTrue(task1.getId() >= 0);
-        NetworkTaskUIWrapper adapterWrapper1 = activity.getAdapter().getItem(0);
+        NetworkTaskUIWrapper adapterWrapper1 = getAdapter().getItem(0);
         assertNull(adapterWrapper1.getLogEntry());
         assertAreEqual(task1, adapterWrapper1.getNetworkTask());
         NetworkTask task2 = getNetworkTask2();
         handler.insertNetworkTask(task2);
         tasks = networkTaskDAO.readAllNetworkTasks();
         assertEquals(2, tasks.size());
-        assertEquals(2, activity.getAdapter().getNextIndex());
+        assertEquals(2, getAdapter().getNextIndex());
         assertEquals(3, activity.getAdapter().getItemCount());
         task2 = tasks.get(1);
-        NetworkTaskUIWrapper adapterWrapper2 = activity.getAdapter().getItem(1);
+        NetworkTaskUIWrapper adapterWrapper2 = getAdapter().getItem(1);
         assertNull(adapterWrapper2.getLogEntry());
         assertAreEqual(task2, adapterWrapper2.getNetworkTask());
     }
@@ -109,7 +110,7 @@ public class NetworkTaskHandlerTest {
         List<NetworkTask> tasks = networkTaskDAO.readAllNetworkTasks();
         task1 = tasks.get(0);
         assertEquals("192.168.178.1", task1.getAddress());
-        NetworkTaskUIWrapper adapterWrapper1 = activity.getAdapter().getItem(0);
+        NetworkTaskUIWrapper adapterWrapper1 = getAdapter().getItem(0);
         assertNull(adapterWrapper1.getLogEntry());
         assertEquals("192.168.178.1", adapterWrapper1.getNetworkTask().getAddress());
         assertAreEqual(task1, adapterWrapper1.getNetworkTask());
@@ -228,5 +229,9 @@ public class NetworkTaskHandlerTest {
         assertEquals(task1.getInterval(), task2.getInterval());
         assertEquals(task1.isOnlyWifi(), task2.isOnlyWifi());
         assertEquals(task1.isNotification(), task2.isNotification());
+    }
+
+    private NetworkTaskAdapter getAdapter() {
+        return (NetworkTaskAdapter) activity.getAdapter();
     }
 }
