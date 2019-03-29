@@ -26,6 +26,7 @@ import de.ibba.keepitup.service.NetworkKeepAliveServiceScheduler;
 import de.ibba.keepitup.test.matcher.ChildDescendantAtPositionMatcher;
 import de.ibba.keepitup.test.matcher.DrawableMatcher;
 import de.ibba.keepitup.test.matcher.ListSizeMatcher;
+import de.ibba.keepitup.ui.adapter.NetworkTaskUIWrapper;
 
 import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.action.ViewActions.click;

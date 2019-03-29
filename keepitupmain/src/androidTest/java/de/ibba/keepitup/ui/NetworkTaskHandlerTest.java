@@ -16,6 +16,7 @@ import de.ibba.keepitup.model.AccessType;
 import de.ibba.keepitup.model.LogEntry;
 import de.ibba.keepitup.model.NetworkTask;
 import de.ibba.keepitup.service.NetworkKeepAliveServiceScheduler;
+import de.ibba.keepitup.ui.adapter.NetworkTaskUIWrapper;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;

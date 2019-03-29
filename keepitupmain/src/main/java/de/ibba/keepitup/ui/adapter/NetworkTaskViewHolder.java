@@ -1,4 +1,4 @@
-package de.ibba.keepitup.ui;
+package de.ibba.keepitup.ui.adapter;
 
 import android.support.annotation.NonNull;
 import android.support.v7.widget.CardView;
@@ -8,6 +8,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import de.ibba.keepitup.R;
+import de.ibba.keepitup.ui.NetworkTaskMainActivity;
 
 public class NetworkTaskViewHolder extends RecyclerView.ViewHolder {
 

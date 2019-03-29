@@ -1,4 +1,4 @@
-package de.ibba.keepitup.ui;
+package de.ibba.keepitup.ui.adapter;
 
 import android.content.Context;
 import android.content.res.Resources;
@@ -17,15 +17,16 @@ import de.ibba.keepitup.R;
 import de.ibba.keepitup.model.LogEntry;
 import de.ibba.keepitup.model.NetworkTask;
 import de.ibba.keepitup.service.NetworkKeepAliveServiceScheduler;
+import de.ibba.keepitup.ui.NetworkTaskMainActivity;
 import de.ibba.keepitup.ui.mapping.EnumMapping;
 
 public class NetworkTaskAdapter extends RecyclerView.Adapter<NetworkTaskViewHolder> {
 
-    private final List<NetworkTaskUIWrapper> networkTasks;
+    private final List<NetworkTaskUIWrapper> networkTaskWrapperList;
     private final NetworkTaskMainActivity mainActivity;
 
-    public NetworkTaskAdapter(List<NetworkTaskUIWrapper> networkTasks, NetworkTaskMainActivity mainActivity) {
-        this.networkTasks = networkTasks;
+    public NetworkTaskAdapter(List<NetworkTaskUIWrapper> networkTaskWrapperList, NetworkTaskMainActivity mainActivity) {
+        this.networkTaskWrapperList = networkTaskWrapperList;
         this.mainActivity = mainActivity;
     }
 
@@ -40,9 +41,9 @@ public class NetworkTaskAdapter extends RecyclerView.Adapter<NetworkTaskViewHold
     @Override
     public void onBindViewHolder(@NonNull NetworkTaskViewHolder networkTaskViewHolder, int position) {
         Log.d(NetworkTaskAdapter.class.getName(), "onBindViewHolder");
-        if (position < networkTasks.size()) {
-            NetworkTask networkTask = networkTasks.get(position).getNetworkTask();
-            LogEntry logEntry = networkTasks.get(position).getLogEntry();
+        if (position < networkTaskWrapperList.size()) {
+            NetworkTask networkTask = networkTaskWrapperList.get(position).getNetworkTask();
+            LogEntry logEntry = networkTaskWrapperList.get(position).getLogEntry();
             NetworkKeepAliveServiceScheduler scheduler = new NetworkKeepAliveServiceScheduler(getContext());
             boolean isRunning = scheduler.isRunning(networkTask);
             bindStatus(networkTaskViewHolder, isRunning);
@@ -136,15 +137,15 @@ public class NetworkTaskAdapter extends RecyclerView.Adapter<NetworkTaskViewHold
 
     public void addItem(NetworkTaskUIWrapper task) {
         Log.d(NetworkTaskAdapter.class.getName(), "addItem " + task);
-        networkTasks.add(task);
+        networkTaskWrapperList.add(task);
     }
 
     public void removeItem(NetworkTaskUIWrapper task) {
         Log.d(NetworkTaskAdapter.class.getName(), "removeItem " + task);
-        for (int ii = 0; ii < networkTasks.size(); ii++) {
-            NetworkTaskUIWrapper currentTask = networkTasks.get(ii);
+        for (int ii = 0; ii < networkTaskWrapperList.size(); ii++) {
+            NetworkTaskUIWrapper currentTask = networkTaskWrapperList.get(ii);
             if (task.getId() == currentTask.getId()) {
-                networkTasks.remove(ii);
+                networkTaskWrapperList.remove(ii);
                 updateIndex();
                 return;
             }
@@ -153,10 +154,10 @@ public class NetworkTaskAdapter extends RecyclerView.Adapter<NetworkTaskViewHold
 
     public void replaceItem(NetworkTaskUIWrapper task) {
         Log.d(NetworkTaskAdapter.class.getName(), "replaceItem " + task);
-        for (int ii = 0; ii < networkTasks.size(); ii++) {
-            NetworkTaskUIWrapper currentTask = networkTasks.get(ii);
+        for (int ii = 0; ii < networkTaskWrapperList.size(); ii++) {
+            NetworkTaskUIWrapper currentTask = networkTaskWrapperList.get(ii);
             if (task.getId() == currentTask.getId()) {
-                networkTasks.set(ii, task);
+                networkTaskWrapperList.set(ii, task);
                 return;
             }
         }
@@ -164,23 +165,23 @@ public class NetworkTaskAdapter extends RecyclerView.Adapter<NetworkTaskViewHold
 
     public void updateIndex() {
         Log.d(NetworkTaskAdapter.class.getName(), "updateIndex");
-        for (int ii = 0; ii < networkTasks.size(); ii++) {
-            NetworkTask currentTask = networkTasks.get(ii).getNetworkTask();
+        for (int ii = 0; ii < networkTaskWrapperList.size(); ii++) {
+            NetworkTask currentTask = networkTaskWrapperList.get(ii).getNetworkTask();
             currentTask.setIndex(ii);
         }
     }
 
     public int getNextIndex() {
-        return networkTasks.size();
+        return networkTaskWrapperList.size();
     }
 
     @Override
     public int getItemCount() {
-        return networkTasks.size() + 1;
+        return networkTaskWrapperList.size() + 1;
     }
 
     public NetworkTaskUIWrapper getItem(int position) {
-        return networkTasks.get(position);
+        return networkTaskWrapperList.get(position);
     }
 
     private Context getContext() {

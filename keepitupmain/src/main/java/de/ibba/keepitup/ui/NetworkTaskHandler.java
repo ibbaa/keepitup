@@ -9,6 +9,8 @@ import de.ibba.keepitup.db.NetworkTaskDAO;
 import de.ibba.keepitup.model.NetworkTask;
 import de.ibba.keepitup.service.NetworkKeepAliveServiceScheduler;
 import de.ibba.keepitup.service.SchedulerIdGenerator;
+import de.ibba.keepitup.ui.adapter.NetworkTaskAdapter;
+import de.ibba.keepitup.ui.adapter.NetworkTaskUIWrapper;
 
 class NetworkTaskHandler {
 

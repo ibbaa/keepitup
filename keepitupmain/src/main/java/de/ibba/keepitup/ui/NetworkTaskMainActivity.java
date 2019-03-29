@@ -21,6 +21,8 @@ import de.ibba.keepitup.db.NetworkTaskDAO;
 import de.ibba.keepitup.model.LogEntry;
 import de.ibba.keepitup.model.NetworkTask;
 import de.ibba.keepitup.service.NetworkKeepAliveServiceScheduler;
+import de.ibba.keepitup.ui.adapter.NetworkTaskAdapter;
+import de.ibba.keepitup.ui.adapter.NetworkTaskUIWrapper;
 import de.ibba.keepitup.ui.dialog.GeneralConfirmDialog;
 import de.ibba.keepitup.ui.dialog.GeneralErrorDialog;
 import de.ibba.keepitup.ui.dialog.NetworkTaskEditDialog;
@@ -130,6 +132,9 @@ public class NetworkTaskMainActivity extends AppCompatActivity {
     public void onMainLogClicked(int position) {
         NetworkTask networkTask = getAdapter().getItem(position).getNetworkTask();
         Log.d(NetworkTaskMainActivity.class.getName(), "onMainLogClicked for network task " + networkTask);
+        Intent intent = new Intent(this, NetworkTaskLogActivity.class);
+        intent.putExtras(networkTask.toBundle());
+        startActivity(intent);
     }
 
     public void onEditDialogOkClicked(NetworkTaskEditDialog editDialog) {
