@@ -1,14 +1,9 @@
 package de.ibba.keepitup.ui;
 
-import android.support.test.InstrumentationRegistry;
 import android.support.test.filters.MediumTest;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
-import android.view.View;
 
-import org.hamcrest.Matcher;
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -17,15 +12,9 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 
 import de.ibba.keepitup.R;
-import de.ibba.keepitup.db.LogDAO;
-import de.ibba.keepitup.db.NetworkTaskDAO;
 import de.ibba.keepitup.model.AccessType;
 import de.ibba.keepitup.model.LogEntry;
 import de.ibba.keepitup.model.NetworkTask;
-import de.ibba.keepitup.service.NetworkKeepAliveServiceScheduler;
-import de.ibba.keepitup.test.matcher.ChildDescendantAtPositionMatcher;
-import de.ibba.keepitup.test.matcher.DrawableMatcher;
-import de.ibba.keepitup.test.matcher.ListSizeMatcher;
 import de.ibba.keepitup.ui.adapter.NetworkTaskAdapter;
 import de.ibba.keepitup.ui.adapter.NetworkTaskUIWrapper;
 
@@ -43,40 +32,19 @@ import static org.junit.Assert.assertTrue;
 
 @MediumTest
 @RunWith(AndroidJUnit4.class)
-public class NetworkTaskMainActivityTest {
+public class NetworkTaskMainActivityTest extends BaseUITest {
 
     @Rule
     public final ActivityTestRule<NetworkTaskMainActivity> rule = new ActivityTestRule<>(NetworkTaskMainActivity.class, false, false);
 
-    private NetworkTaskDAO networkTaskDAO;
-    private LogDAO logDAO;
-    private NetworkKeepAliveServiceScheduler scheduler;
-
-    @Before
-    public void beforeEachTestMethod() {
-        logDAO = new LogDAO(InstrumentationRegistry.getTargetContext());
-        logDAO.deleteAllLogs();
-        networkTaskDAO = new NetworkTaskDAO(InstrumentationRegistry.getTargetContext());
-        networkTaskDAO.deleteAllNetworkTasks();
-        scheduler = new NetworkKeepAliveServiceScheduler(InstrumentationRegistry.getTargetContext());
-        scheduler.stopAll();
-    }
-
-    @After
-    public void afterEachTestMethod() {
-        logDAO.deleteAllLogs();
-        networkTaskDAO.deleteAllNetworkTasks();
-        scheduler.stopAll();
-    }
-
     @Test
     public void testInitializeActivity() {
         NetworkTask task1 = getNetworkTask1();
-        task1 = networkTaskDAO.insertNetworkTask(task1);
+        task1 = getNetworkTaskDAO().insertNetworkTask(task1);
         LogEntry logEntry = getLogEntryWithNetworkTaskId(task1.getId());
-        logDAO.insertAndDeleteLog(logEntry);
+        getLogDAO().insertAndDeleteLog(logEntry);
         NetworkTask task2 = getNetworkTask2();
-        networkTaskDAO.insertNetworkTask(task2);
+        getNetworkTaskDAO().insertNetworkTask(task2);
         rule.launchActivity(null);
         onView(withId(R.id.listview_main_activity_network_tasks)).check(matches(withListSize(3)));
         onView(allOf(withId(R.id.textview_list_item_network_task_title), withChildDescendantAtPosition(withId(R.id.listview_main_activity_network_tasks), 0))).check(matches(withText("Network task")));
@@ -208,13 +176,13 @@ public class NetworkTaskMainActivityTest {
         onView(allOf(withId(R.id.imageview_list_item_network_task_add), isDisplayed())).perform(click());
         onView(withId(R.id.imageview_dialog_edit_network_task_ok)).perform(click());
         onView(allOf(withId(R.id.imageview_list_item_network_task_start_stop), withChildDescendantAtPosition(withId(R.id.listview_main_activity_network_tasks), 0))).check(matches(withDrawable(R.drawable.icon_start_shadow)));
-        assertFalse(scheduler.isRunning(getAdapter().getItem(0).getNetworkTask()));
+        assertFalse(getScheduler().isRunning(getAdapter().getItem(0).getNetworkTask()));
         onView(allOf(withId(R.id.imageview_list_item_network_task_start_stop), withChildDescendantAtPosition(withId(R.id.listview_main_activity_network_tasks), 0))).perform(click());
         onView(allOf(withId(R.id.imageview_list_item_network_task_start_stop), withChildDescendantAtPosition(withId(R.id.listview_main_activity_network_tasks), 0))).check(matches(withDrawable(R.drawable.icon_stop_shadow)));
-        assertTrue(scheduler.isRunning(getAdapter().getItem(0).getNetworkTask()));
+        assertTrue(getScheduler().isRunning(getAdapter().getItem(0).getNetworkTask()));
         onView(allOf(withId(R.id.imageview_list_item_network_task_start_stop), withChildDescendantAtPosition(withId(R.id.listview_main_activity_network_tasks), 0))).perform(click());
         onView(allOf(withId(R.id.imageview_list_item_network_task_start_stop), withChildDescendantAtPosition(withId(R.id.listview_main_activity_network_tasks), 0))).check(matches(withDrawable(R.drawable.icon_start_shadow)));
-        assertFalse(scheduler.isRunning(getAdapter().getItem(0).getNetworkTask()));
+        assertFalse(getScheduler().isRunning(getAdapter().getItem(0).getNetworkTask()));
     }
 
     private void setTaskExecuted(NetworkTaskMainActivity activity, int position, Calendar calendar, boolean success, String message) {
@@ -269,18 +237,6 @@ public class NetworkTaskMainActivityTest {
     private NetworkTaskAdapter getAdapter() {
         NetworkTaskMainActivity activity = rule.getActivity();
         return (NetworkTaskAdapter) activity.getAdapter();
-    }
-
-    public static Matcher<View> withListSize(final int size) {
-        return new ListSizeMatcher(size);
-    }
-
-    public static Matcher<View> withChildDescendantAtPosition(final Matcher<View> parentMatcher, final int childPosition) {
-        return new ChildDescendantAtPositionMatcher(parentMatcher, childPosition);
-    }
-
-    public static Matcher<View> withDrawable(final int resourceId) {
-        return new DrawableMatcher(resourceId);
     }
 }
 
