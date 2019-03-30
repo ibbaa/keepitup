@@ -47,13 +47,19 @@ public class LogEntryViewHolder extends RecyclerView.ViewHolder {
         noLogText.setText(nolog);
     }
 
+    public void showLogEntryCardView() {
+        cardView.setVisibility(View.VISIBLE);
+    }
+
+    public void hideLogEntryCardView() {
+        cardView.setVisibility(View.GONE);
+    }
+
     public void showNoLogTextView() {
         noLogText.setVisibility(View.VISIBLE);
-        cardView.setVisibility(View.GONE);
     }
 
     public void hideNoLogTextView() {
         noLogText.setVisibility(View.GONE);
-        cardView.setVisibility(View.VISIBLE);
     }
 }

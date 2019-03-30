@@ -7,7 +7,6 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 
-import de.ibba.keepitup.R;
 import de.ibba.keepitup.ui.dialog.GeneralConfirmDialog;
 import de.ibba.keepitup.ui.dialog.GeneralErrorDialog;
 import de.ibba.keepitup.util.BundleUtil;
@@ -19,7 +18,7 @@ public abstract class RecyclerViewBaseActivity extends AppCompatActivity {
     protected abstract RecyclerView.Adapter createAdapter();
 
     protected void initRecyclerView() {
-        RecyclerView recyclerView = findViewById(R.id.listview_main_activity_network_tasks);
+        RecyclerView recyclerView = findViewById(getRecyclerViewId());
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());

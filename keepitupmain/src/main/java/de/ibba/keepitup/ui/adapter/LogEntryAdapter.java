@@ -41,15 +41,23 @@ public class LogEntryAdapter extends RecyclerView.Adapter<LogEntryViewHolder> {
     @Override
     public void onBindViewHolder(@NonNull LogEntryViewHolder logEntryViewHolder, int position) {
         Log.d(LogEntryAdapter.class.getName(), "onBindViewHolder");
-        if (!logEntries.isEmpty() && position < logEntries.size()) {
-            LogEntry logEntry = logEntries.get(position);
-            bindTitle(logEntryViewHolder);
-            bindSuccess(logEntryViewHolder, logEntry);
-            bindTimestamp(logEntryViewHolder, logEntry);
-            bindMessage(logEntryViewHolder, logEntry);
+        if (!logEntries.isEmpty()) {
+            if (position < logEntries.size()) {
+                LogEntry logEntry = logEntries.get(position);
+                bindTitle(logEntryViewHolder);
+                bindSuccess(logEntryViewHolder, logEntry);
+                bindTimestamp(logEntryViewHolder, logEntry);
+                bindMessage(logEntryViewHolder, logEntry);
+                logEntryViewHolder.showLogEntryCardView();
+                logEntryViewHolder.hideNoLogTextView();
+            } else {
+                logEntryViewHolder.hideLogEntryCardView();
+                logEntryViewHolder.hideNoLogTextView();
+            }
             logEntryViewHolder.hideNoLogTextView();
-        } else if (logEntries.isEmpty()) {
+        } else {
             bindNoLog(logEntryViewHolder);
+            logEntryViewHolder.hideLogEntryCardView();
             logEntryViewHolder.showNoLogTextView();
         }
     }

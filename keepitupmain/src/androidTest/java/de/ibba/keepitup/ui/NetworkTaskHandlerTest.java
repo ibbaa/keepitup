@@ -1,21 +1,16 @@
 package de.ibba.keepitup.ui;
 
-import android.support.test.InstrumentationRegistry;
 import android.support.test.rule.ActivityTestRule;
 
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 
 import java.util.List;
 
-import de.ibba.keepitup.db.LogDAO;
-import de.ibba.keepitup.db.NetworkTaskDAO;
 import de.ibba.keepitup.model.AccessType;
 import de.ibba.keepitup.model.LogEntry;
 import de.ibba.keepitup.model.NetworkTask;
-import de.ibba.keepitup.service.NetworkKeepAliveServiceScheduler;
 import de.ibba.keepitup.ui.adapter.NetworkTaskAdapter;
 import de.ibba.keepitup.ui.adapter.NetworkTaskUIWrapper;
 
@@ -24,60 +19,45 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
-public class NetworkTaskHandlerTest {
+public class NetworkTaskHandlerTest extends BaseUITest {
 
     @Rule
     public final ActivityTestRule<NetworkTaskMainActivity> rule = new ActivityTestRule<>(NetworkTaskMainActivity.class, false, false);
 
     private NetworkTaskMainActivity activity;
-    private NetworkTaskDAO networkTaskDAO;
-    private LogDAO logDAO;
-    private NetworkKeepAliveServiceScheduler scheduler;
     private NetworkTaskHandler handler;
 
     @Before
     public void beforeEachTestMethod() {
-        logDAO = new LogDAO(InstrumentationRegistry.getTargetContext());
-        logDAO.deleteAllLogs();
-        networkTaskDAO = new NetworkTaskDAO(InstrumentationRegistry.getTargetContext());
-        networkTaskDAO.deleteAllNetworkTasks();
-        scheduler = new NetworkKeepAliveServiceScheduler(InstrumentationRegistry.getTargetContext());
-        scheduler.stopAll();
+        super.beforeEachTestMethod();
         rule.launchActivity(null);
         activity = rule.getActivity();
         handler = new NetworkTaskHandler(activity);
     }
 
-    @After
-    public void afterEachTestMethod() {
-        logDAO.deleteAllLogs();
-        networkTaskDAO.deleteAllNetworkTasks();
-        scheduler.stopAll();
-    }
-
     @Test
     public void testStartStopNetworkTask() {
         NetworkTask task = getNetworkTask1();
-        networkTaskDAO.insertNetworkTask(task);
+        getNetworkTaskDAO().insertNetworkTask(task);
         handler.startNetworkTask(task);
         assertTrue(task.getSchedulerid() >= 0);
-        List<NetworkTask> tasks = networkTaskDAO.readAllNetworkTasks();
+        List<NetworkTask> tasks = getNetworkTaskDAO().readAllNetworkTasks();
         task = tasks.get(0);
         assertTrue(task.getSchedulerid() >= 0);
-        assertTrue(scheduler.isRunning(task));
+        assertTrue(getScheduler().isRunning(task));
         handler.stopNetworkTask(task);
         assertTrue(task.getSchedulerid() < 0);
-        tasks = networkTaskDAO.readAllNetworkTasks();
+        tasks = getNetworkTaskDAO().readAllNetworkTasks();
         task = tasks.get(0);
         assertTrue(task.getSchedulerid() < 0);
-        assertFalse(scheduler.isRunning(task));
+        assertFalse(getScheduler().isRunning(task));
     }
 
     @Test
     public void testInsertNetworkTask() {
         NetworkTask task1 = getNetworkTask1();
         handler.insertNetworkTask(task1);
-        List<NetworkTask> tasks = networkTaskDAO.readAllNetworkTasks();
+        List<NetworkTask> tasks = getNetworkTaskDAO().readAllNetworkTasks();
         assertEquals(1, tasks.size());
         assertEquals(1, getAdapter().getNextIndex());
         assertEquals(2, activity.getAdapter().getItemCount());
@@ -89,7 +69,7 @@ public class NetworkTaskHandlerTest {
         assertAreEqual(task1, adapterWrapper1.getNetworkTask());
         NetworkTask task2 = getNetworkTask2();
         handler.insertNetworkTask(task2);
-        tasks = networkTaskDAO.readAllNetworkTasks();
+        tasks = getNetworkTaskDAO().readAllNetworkTasks();
         assertEquals(2, tasks.size());
         assertEquals(2, getAdapter().getNextIndex());
         assertEquals(3, activity.getAdapter().getItemCount());
@@ -107,18 +87,18 @@ public class NetworkTaskHandlerTest {
         handler.insertNetworkTask(task2);
         task1.setAddress("192.168.178.1");
         handler.updateNetworkTask(task1);
-        List<NetworkTask> tasks = networkTaskDAO.readAllNetworkTasks();
+        List<NetworkTask> tasks = getNetworkTaskDAO().readAllNetworkTasks();
         task1 = tasks.get(0);
         assertEquals("192.168.178.1", task1.getAddress());
         NetworkTaskUIWrapper adapterWrapper1 = getAdapter().getItem(0);
         assertNull(adapterWrapper1.getLogEntry());
         assertEquals("192.168.178.1", adapterWrapper1.getNetworkTask().getAddress());
         assertAreEqual(task1, adapterWrapper1.getNetworkTask());
-        assertFalse(scheduler.isRunning(task1));
+        assertFalse(getScheduler().isRunning(task1));
         task2 = tasks.get(1);
         handler.startNetworkTask(task2);
         handler.updateNetworkTask(task2);
-        assertTrue(scheduler.isRunning(task2));
+        assertTrue(getScheduler().isRunning(task2));
     }
 
     @Test
@@ -131,19 +111,19 @@ public class NetworkTaskHandlerTest {
         handler.insertNetworkTask(task3);
         NetworkTask task4 = getNetworkTask4();
         handler.insertNetworkTask(task4);
-        List<NetworkTask> tasks = networkTaskDAO.readAllNetworkTasks();
+        List<NetworkTask> tasks = getNetworkTaskDAO().readAllNetworkTasks();
         task2 = tasks.get(1);
         LogEntry logEntry = getLogEntryWithNetworkTaskId(task2.getId());
-        logDAO.insertAndDeleteLog(logEntry);
-        logDAO.insertAndDeleteLog(logEntry);
-        logDAO.insertAndDeleteLog(logEntry);
-        logDAO.insertAndDeleteLog(logEntry);
+        getLogDAO().insertAndDeleteLog(logEntry);
+        getLogDAO().insertAndDeleteLog(logEntry);
+        getLogDAO().insertAndDeleteLog(logEntry);
+        getLogDAO().insertAndDeleteLog(logEntry);
         handler.startNetworkTask(task2);
         handler.deleteNetworkTask(task2);
-        assertFalse(scheduler.isRunning(task2));
-        List<LogEntry> allEntries = logDAO.readAllLogsForNetworkTask(task2.getId());
+        assertFalse(getScheduler().isRunning(task2));
+        List<LogEntry> allEntries = getLogDAO().readAllLogsForNetworkTask(task2.getId());
         assertTrue(allEntries.isEmpty());
-        tasks = networkTaskDAO.readAllNetworkTasks();
+        tasks = getNetworkTaskDAO().readAllNetworkTasks();
         assertEquals(3, tasks.size());
         task1 = tasks.get(0);
         task3 = tasks.get(1);

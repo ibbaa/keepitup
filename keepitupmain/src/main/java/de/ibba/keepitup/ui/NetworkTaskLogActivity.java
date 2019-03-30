@@ -7,8 +7,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Objects;
 
@@ -48,18 +46,6 @@ public class NetworkTaskLogActivity extends RecyclerViewBaseActivity {
             Log.d(NetworkTaskLogActivity.class.getName(), "Database returned the following log entries: " + (logEntries.isEmpty() ? "no log entries" : ""));
             for (LogEntry logEntry : logEntries) {
                 Log.d(NetworkTaskLogActivity.class.getName(), logEntry.toString());
-            }
-            if (logEntries.isEmpty()) {
-                logEntries = new ArrayList<>();
-                for (int ii = 0; ii < 20; ii++) {
-                    LogEntry entry = new LogEntry();
-                    entry.setId(ii);
-                    entry.setNetworkTaskId(task.getId());
-                    entry.setSuccess(true);
-                    entry.setTimestamp(new GregorianCalendar(1980, Calendar.MARCH, 17).getTime().getTime());
-                    entry.setMessage("TestMessage");
-                    logEntries.add(entry);
-                }
             }
             return logEntries;
         } catch (Exception exc) {

@@ -1,23 +1,18 @@
 package de.ibba.keepitup.ui.dialog;
 
-import android.support.test.InstrumentationRegistry;
 import android.support.test.filters.MediumTest;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
-import android.view.View;
 
-import org.hamcrest.Matcher;
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import de.ibba.keepitup.R;
-import de.ibba.keepitup.db.NetworkTaskDAO;
 import de.ibba.keepitup.model.AccessType;
 import de.ibba.keepitup.model.NetworkTask;
-import de.ibba.keepitup.test.matcher.TextColorMatcher;
+import de.ibba.keepitup.ui.BaseUITest;
 import de.ibba.keepitup.ui.NetworkTaskMainActivity;
 
 import static android.support.test.espresso.Espresso.onView;
@@ -40,7 +35,7 @@ import static org.junit.Assert.assertTrue;
 
 @MediumTest
 @RunWith(AndroidJUnit4.class)
-public class NetworkTaskEditDialogTest {
+public class NetworkTaskEditDialogTest extends BaseUITest {
 
     @Rule
     public final ActivityTestRule<NetworkTaskMainActivity> rule = new ActivityTestRule<>(NetworkTaskMainActivity.class, false, false);
@@ -49,16 +44,9 @@ public class NetworkTaskEditDialogTest {
 
     @Before
     public void beforeEachTestMethod() {
-        NetworkTaskDAO networkTaskDAO = new NetworkTaskDAO(InstrumentationRegistry.getTargetContext());
-        networkTaskDAO.deleteAllNetworkTasks();
+        super.beforeEachTestMethod();
         rule.launchActivity(null);
         activity = rule.getActivity();
-    }
-
-    @After
-    public void afterEachTestMethod() {
-        NetworkTaskDAO networkTaskDAO = new NetworkTaskDAO(InstrumentationRegistry.getTargetContext());
-        networkTaskDAO.deleteAllNetworkTasks();
     }
 
     @Test
@@ -187,9 +175,5 @@ public class NetworkTaskEditDialogTest {
         onView(withId(R.id.edittext_dialog_edit_network_task_address)).check(matches(withTextColor(R.color.textColor)));
         onView(withId(R.id.edittext_dialog_edit_network_task_port)).check(matches(withTextColor(R.color.textColor)));
         onView(withId(R.id.edittext_dialog_edit_network_task_interval)).check(matches(withTextColor(R.color.textColor)));
-    }
-
-    public static Matcher<View> withTextColor(final int expectedId) {
-        return new TextColorMatcher(expectedId);
     }
 }
