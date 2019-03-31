@@ -15,6 +15,7 @@ import de.ibba.keepitup.model.AccessType;
 import de.ibba.keepitup.model.NetworkTask;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
@@ -125,7 +126,27 @@ public class NetworkTaskDAOTest {
         assertEquals(insertedTask1.getInterval(), readTask1.getInterval());
         assertEquals(insertedTask1.isOnlyWifi(), readTask1.isOnlyWifi());
         assertEquals(insertedTask1.isNotification(), readTask1.isNotification());
-        assertEquals(25, readTask1.getSchedulerid());
+        assertEquals(insertedTask1.isRunning(), readTask1.isRunning());
+        assertEquals(25, readTask1.getSchedulerId());
+    }
+
+    @Test
+    public void testUpdateRunning() {
+        NetworkTask insertedTask1 = getNetworkTask1();
+        networkTaskDAO.insertNetworkTask(insertedTask1);
+        List<NetworkTask> readTasks = networkTaskDAO.readAllNetworkTasks();
+        NetworkTask readTask1 = readTasks.get(0);
+        networkTaskDAO.updateNetworkTaskRunning(readTask1.getId(), false);
+        readTask1 = networkTaskDAO.readNetworkTask(readTask1.getId());
+        assertEquals(insertedTask1.getIndex(), readTask1.getIndex());
+        assertEquals(insertedTask1.getAccessType(), readTask1.getAccessType());
+        assertEquals(insertedTask1.getAddress(), readTask1.getAddress());
+        assertEquals(insertedTask1.getPort(), readTask1.getPort());
+        assertEquals(insertedTask1.getInterval(), readTask1.getInterval());
+        assertEquals(insertedTask1.isOnlyWifi(), readTask1.isOnlyWifi());
+        assertEquals(insertedTask1.isNotification(), readTask1.isNotification());
+        assertEquals(insertedTask1.getSchedulerId(), readTask1.getSchedulerId());
+        assertFalse(readTask1.isRunning());
     }
 
     @Test
@@ -146,59 +167,64 @@ public class NetworkTaskDAOTest {
         assertEquals(task2.isOnlyWifi(), readTask1.isOnlyWifi());
         assertEquals(task2.isNotification(), readTask1.isNotification());
         assertEquals(insertedTask1.getIndex(), readTask1.getIndex());
-        assertEquals(insertedTask1.getSchedulerid(), readTask1.getSchedulerid());
+        assertEquals(insertedTask1.getSchedulerId(), readTask1.getSchedulerId());
+        assertEquals(insertedTask1.isRunning(), readTask1.isRunning());
     }
 
     private NetworkTask getNetworkTask1() {
-        NetworkTask insertedTask1 = new NetworkTask();
-        insertedTask1.setId(0);
-        insertedTask1.setIndex(1);
-        insertedTask1.setSchedulerid(11);
-        insertedTask1.setAddress("127.0.0.1");
-        insertedTask1.setPort(80);
-        insertedTask1.setAccessType(AccessType.PING);
-        insertedTask1.setInterval(15);
-        insertedTask1.setOnlyWifi(false);
-        insertedTask1.setNotification(true);
-        return insertedTask1;
+        NetworkTask task = new NetworkTask();
+        task.setId(0);
+        task.setIndex(1);
+        task.setSchedulerId(11);
+        task.setAddress("127.0.0.1");
+        task.setPort(80);
+        task.setAccessType(AccessType.PING);
+        task.setInterval(15);
+        task.setOnlyWifi(false);
+        task.setNotification(true);
+        task.setRunning(true);
+        return task;
     }
 
     private NetworkTask getNetworkTask2() {
-        NetworkTask insertedTask2 = new NetworkTask();
-        insertedTask2.setId(0);
-        insertedTask2.setIndex(10);
-        insertedTask2.setSchedulerid(22);
-        insertedTask2.setAddress("host.com");
-        insertedTask2.setPort(21);
-        insertedTask2.setAccessType(null);
-        insertedTask2.setInterval(1);
-        insertedTask2.setOnlyWifi(true);
-        insertedTask2.setNotification(false);
-        return insertedTask2;
+        NetworkTask task = new NetworkTask();
+        task.setId(0);
+        task.setIndex(10);
+        task.setSchedulerId(22);
+        task.setAddress("host.com");
+        task.setPort(21);
+        task.setAccessType(null);
+        task.setInterval(1);
+        task.setOnlyWifi(true);
+        task.setNotification(false);
+        task.setRunning(false);
+        return task;
     }
 
     private NetworkTask getNetworkTask3() {
-        NetworkTask insertedTask3 = new NetworkTask();
-        insertedTask3.setId(0);
-        insertedTask3.setIndex(5);
-        insertedTask3.setSchedulerid(33);
-        insertedTask3.setAddress(null);
-        insertedTask3.setPort(456);
-        insertedTask3.setAccessType(AccessType.PING);
-        insertedTask3.setInterval(200);
-        insertedTask3.setOnlyWifi(false);
-        insertedTask3.setNotification(false);
-        return insertedTask3;
+        NetworkTask task = new NetworkTask();
+        task.setId(0);
+        task.setIndex(5);
+        task.setSchedulerId(33);
+        task.setAddress(null);
+        task.setPort(456);
+        task.setAccessType(AccessType.PING);
+        task.setInterval(200);
+        task.setOnlyWifi(false);
+        task.setNotification(false);
+        task.setRunning(false);
+        return task;
     }
 
     private void assertAreEqual(NetworkTask task1, NetworkTask task2) {
         assertEquals(task1.getIndex(), task2.getIndex());
-        assertEquals(task1.getSchedulerid(), task2.getSchedulerid());
+        assertEquals(task1.getSchedulerId(), task2.getSchedulerId());
         assertEquals(task1.getAccessType(), task2.getAccessType());
         assertEquals(task1.getAddress(), task2.getAddress());
         assertEquals(task1.getPort(), task2.getPort());
         assertEquals(task1.getInterval(), task2.getInterval());
         assertEquals(task1.isOnlyWifi(), task2.isOnlyWifi());
         assertEquals(task1.isNotification(), task2.isNotification());
+        assertEquals(task1.isRunning(), task2.isRunning());
     }
 }

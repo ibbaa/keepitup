@@ -109,7 +109,7 @@ public class NetworkTaskLogActivityTest extends BaseUITest {
         NetworkTask networkTask = new NetworkTask();
         networkTask.setId(-1);
         networkTask.setIndex(0);
-        networkTask.setSchedulerid(-1);
+        networkTask.setSchedulerId(-1);
         networkTask.setAddress("127.0.0.1");
         networkTask.setPort(80);
         networkTask.setAccessType(AccessType.PING);

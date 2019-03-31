@@ -53,6 +53,10 @@ class NetworkTaskDBConstants {
         return getResources().getString(R.string.task_notification_column_name);
     }
 
+    public String getRunningColumnName() {
+        return getResources().getString(R.string.task_running_column_name);
+    }
+
     public String getCreateTableStatement() {
         return ("CREATE TABLE " + getTableName() + "(") +
                 getIdColumnName() + " INTEGER PRIMARY KEY ASC, " +
@@ -63,7 +67,8 @@ class NetworkTaskDBConstants {
                 getAccessTypeColumnName() + " INTEGER, " +
                 getIntervalColumnName() + " INTEGER, " +
                 getOnlyWifiColumnName() + " TEXT, " +
-                getNotificationColumnName() + " INTEGER);";
+                getNotificationColumnName() + " INTEGER, " +
+                getRunningColumnName() + " INTEGER);";
     }
 
     public String getDropTableStatement() {
@@ -80,7 +85,8 @@ class NetworkTaskDBConstants {
                 getAccessTypeColumnName() + ", " +
                 getIntervalColumnName() + ", " +
                 getOnlyWifiColumnName() + ", " +
-                getNotificationColumnName() +
+                getNotificationColumnName() + ", " +
+                getRunningColumnName() +
                 " FROM " + getTableName() +
                 "  WHERE " + getIdColumnName() + " = ?;";
     }
@@ -96,7 +102,8 @@ class NetworkTaskDBConstants {
                 getAccessTypeColumnName() + ", " +
                 getIntervalColumnName() + ", " +
                 getOnlyWifiColumnName() + ", " +
-                getNotificationColumnName() +
+                getNotificationColumnName() + ", " +
+                getRunningColumnName() +
                 " FROM " + getTableName() +
                 " ORDER BY " + getIndexColumnName() + " ASC";
     }

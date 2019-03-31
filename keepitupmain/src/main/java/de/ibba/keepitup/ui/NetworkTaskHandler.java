@@ -28,7 +28,7 @@ class NetworkTaskHandler {
         int schedulerId = idGenerator.createSchedulerId();
         try {
             dao.updateNetworkTaskSchedulerId(networkTask.getId(), schedulerId);
-            networkTask.setSchedulerid(schedulerId);
+            networkTask.setSchedulerId(schedulerId);
             scheduler.start(networkTask);
         } catch (Exception exc) {
             Log.e(NetworkTaskHandler.class.getName(), "Error updating scheduler id to " + schedulerId + ". Showing error dialog.", exc);
@@ -41,7 +41,7 @@ class NetworkTaskHandler {
         NetworkKeepAliveServiceScheduler scheduler = new NetworkKeepAliveServiceScheduler(mainActivity);
         NetworkTaskDAO dao = new NetworkTaskDAO(mainActivity);
         scheduler.stop(task);
-        task.setSchedulerid(-1);
+        task.setSchedulerId(-1);
         try {
             dao.updateNetworkTaskSchedulerId(task.getId(), -1);
         } catch (Exception exc) {
