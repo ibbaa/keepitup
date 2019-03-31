@@ -25,20 +25,20 @@ public abstract class BaseUITest {
 
     @Before
     public void beforeEachTestMethod() {
+        scheduler = new NetworkKeepAliveServiceScheduler(InstrumentationRegistry.getTargetContext());
+        scheduler.stopAll();
         logDAO = new LogDAO(InstrumentationRegistry.getTargetContext());
         logDAO.deleteAllLogs();
         networkTaskDAO = new NetworkTaskDAO(InstrumentationRegistry.getTargetContext());
         networkTaskDAO.deleteAllNetworkTasks();
-        scheduler = new NetworkKeepAliveServiceScheduler(InstrumentationRegistry.getTargetContext());
-        scheduler.stopAll();
         setLocale(Locale.US);
     }
 
     @After
     public void afterEachTestMethod() {
+        scheduler.stopAll();
         logDAO.deleteAllLogs();
         networkTaskDAO.deleteAllNetworkTasks();
-        scheduler.stopAll();
     }
 
     public NetworkTaskDAO getNetworkTaskDAO() {

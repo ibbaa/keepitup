@@ -40,16 +40,12 @@ public class NetworkTaskHandlerTest extends BaseUITest {
         NetworkTask task = getNetworkTask1();
         getNetworkTaskDAO().insertNetworkTask(task);
         handler.startNetworkTask(task);
-        assertTrue(task.getSchedulerId() >= 0);
         List<NetworkTask> tasks = getNetworkTaskDAO().readAllNetworkTasks();
         task = tasks.get(0);
-        assertTrue(task.getSchedulerId() >= 0);
         assertTrue(task.isRunning());
         handler.stopNetworkTask(task);
-        assertTrue(task.getSchedulerId() < 0);
         tasks = getNetworkTaskDAO().readAllNetworkTasks();
         task = tasks.get(0);
-        assertTrue(task.getSchedulerId() < 0);
         assertFalse(task.isRunning());
     }
 

@@ -108,6 +108,10 @@ class NetworkTaskDBConstants {
                 " ORDER BY " + getIndexColumnName() + " ASC";
     }
 
+    public String getSchedulerIdCountStatement() {
+        return "SELECT COUNT(*) FROM " + getTableName() + " WHERE " + getSchedulerIdColumnName() + " = ?";
+    }
+
     public String getUpdateIndexNetworkTasksStatement() {
         return "UPDATE " + getTableName() + " SET " + getIndexColumnName() + " = " + getIndexColumnName() + " - 1 WHERE " + getIndexColumnName() + " > ?;";
     }
