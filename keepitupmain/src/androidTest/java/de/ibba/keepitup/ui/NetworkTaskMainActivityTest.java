@@ -26,6 +26,7 @@ import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
 import static org.hamcrest.Matchers.allOf;
+import static org.hamcrest.core.IsNot.not;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -168,6 +169,23 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
         onView(allOf(withId(R.id.textview_list_item_network_task_interval), withChildDescendantAtPosition(withId(R.id.listview_main_activity_network_tasks), 0))).check(matches(withText("Interval: 60 minutes")));
         onView(allOf(withId(R.id.textview_list_item_network_task_onlywifi), withChildDescendantAtPosition(withId(R.id.listview_main_activity_network_tasks), 0))).check(matches(withText("Only on WiFi: yes")));
         onView(allOf(withId(R.id.textview_list_item_network_task_notification), withChildDescendantAtPosition(withId(R.id.listview_main_activity_network_tasks), 0))).check(matches(withText("Notification on failure: yes")));
+    }
+
+    @Test
+    public void testDisplayLog() {
+        rule.launchActivity(null);
+        onView(allOf(withId(R.id.imageview_list_item_network_task_add), isDisplayed())).perform(click());
+        onView(withId(R.id.imageview_dialog_edit_network_task_ok)).perform(click());
+        NetworkTask task = getAdapter().getItem(0).getNetworkTask();
+        LogEntry logEntry = getLogEntryWithNetworkTaskId(task.getId());
+        getLogDAO().insertAndDeleteLog(logEntry);
+        onView(allOf(withId(R.id.imageview_list_item_network_task_log), withChildDescendantAtPosition(withId(R.id.listview_main_activity_network_tasks), 0))).perform(click());
+        onView(allOf(withId(R.id.textview_list_item_log_entry_no_log), withChildDescendantAtPosition(withId(R.id.listview_log_activity_log_entries), 0))).check(matches(not(isDisplayed())));
+        onView(allOf(withId(R.id.cardview_list_item_log_entry), withChildDescendantAtPosition(withId(R.id.listview_log_activity_log_entries), 0))).check(matches(isDisplayed()));
+        onView(allOf(withId(R.id.textview_list_item_log_entry_title), withChildDescendantAtPosition(withId(R.id.listview_log_activity_log_entries), 0))).check(matches(withText("Log entry for network task 1")));
+        onView(allOf(withId(R.id.textview_list_item_log_entry_success), withChildDescendantAtPosition(withId(R.id.listview_log_activity_log_entries), 0))).check(matches(withText("Execution successful")));
+        onView(allOf(withId(R.id.textview_list_item_log_entry_timestamp), withChildDescendantAtPosition(withId(R.id.listview_log_activity_log_entries), 0))).check(matches(withText("Timestamp: Mar 17, 1980 12:00:00 AM")));
+        onView(allOf(withId(R.id.textview_list_item_log_entry_message), withChildDescendantAtPosition(withId(R.id.listview_log_activity_log_entries), 0))).check(matches(withText("Message: TestMessage")));
     }
 
     @Test

@@ -37,9 +37,6 @@
                 android:value=".ui.NetworkTaskMainActivity" />
         </activity>
 
-        <service
-            android:name=".service.NetworkKeepAliveService"
-            android:permission="android.permission.BIND_JOB_SERVICE" />
     </application>
 
 </manifest>

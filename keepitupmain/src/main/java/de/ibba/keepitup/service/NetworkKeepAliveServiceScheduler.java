@@ -21,7 +21,7 @@ public class NetworkKeepAliveServiceScheduler {
 
     public NetworkTask start(NetworkTask networkTask) {
         Log.d(NetworkKeepAliveServiceScheduler.class.getName(), "Start network task " + networkTask);
-        if (isRunning(networkTask)) {
+        if (networkTask.isRunning()) {
             Log.d(NetworkKeepAliveServiceScheduler.class.getName(), "Network task " + networkTask + " is already running. Stopping...");
             stop(networkTask);
         }
@@ -43,10 +43,6 @@ public class NetworkKeepAliveServiceScheduler {
         for (NetworkTask currentTask : networkTasks) {
             stop(currentTask);
         }
-    }
-
-    private boolean isRunning(NetworkTask networkTask) {
-        return networkTask.isRunning();
     }
 
     private long getIntervalMilliseconds(NetworkTask networkTask) {
