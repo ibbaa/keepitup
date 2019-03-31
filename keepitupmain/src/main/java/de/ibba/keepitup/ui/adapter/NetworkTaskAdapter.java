@@ -16,7 +16,6 @@ import java.util.List;
 import de.ibba.keepitup.R;
 import de.ibba.keepitup.model.LogEntry;
 import de.ibba.keepitup.model.NetworkTask;
-import de.ibba.keepitup.service.NetworkKeepAliveServiceScheduler;
 import de.ibba.keepitup.ui.NetworkTaskMainActivity;
 import de.ibba.keepitup.ui.mapping.EnumMapping;
 
@@ -44,9 +43,7 @@ public class NetworkTaskAdapter extends RecyclerView.Adapter<NetworkTaskViewHold
         if (position < networkTaskWrapperList.size()) {
             NetworkTask networkTask = networkTaskWrapperList.get(position).getNetworkTask();
             LogEntry logEntry = networkTaskWrapperList.get(position).getLogEntry();
-            NetworkKeepAliveServiceScheduler scheduler = new NetworkKeepAliveServiceScheduler(getContext());
-            boolean isRunning = scheduler.isRunning(networkTask);
-            bindStatus(networkTaskViewHolder, isRunning);
+            bindStatus(networkTaskViewHolder, networkTask);
             bindAccessType(networkTaskViewHolder, networkTask);
             bindAddress(networkTaskViewHolder, networkTask);
             bindInterval(networkTaskViewHolder, networkTask);
@@ -60,11 +57,11 @@ public class NetworkTaskAdapter extends RecyclerView.Adapter<NetworkTaskViewHold
         }
     }
 
-    private void bindStatus(@NonNull NetworkTaskViewHolder networkTaskViewHolder, boolean isRunning) {
-        String statusRunning = isRunning ? getResources().getString(R.string.string_running) : getResources().getString(R.string.string_stopped);
+    private void bindStatus(@NonNull NetworkTaskViewHolder networkTaskViewHolder, NetworkTask networkTask) {
+        String statusRunning = networkTask.isRunning() ? getResources().getString(R.string.string_running) : getResources().getString(R.string.string_stopped);
         String formattedStatusText = String.format(getResources().getString(R.string.text_list_item_network_task_status), statusRunning);
-        int startStopImage = isRunning ? R.drawable.icon_stop_selector : R.drawable.icon_start_selector;
-        String descriptionStartStopImage = isRunning ? getResources().getString(R.string.label_stop_network_task) : getResources().getString(R.string.label_start_network_task);
+        int startStopImage = networkTask.isRunning() ? R.drawable.icon_stop_selector : R.drawable.icon_start_selector;
+        String descriptionStartStopImage = networkTask.isRunning() ? getResources().getString(R.string.label_stop_network_task) : getResources().getString(R.string.label_start_network_task);
         Log.d(NetworkTaskAdapter.class.getName(), "binding status text " + formattedStatusText);
         networkTaskViewHolder.setStatus(formattedStatusText, descriptionStartStopImage, startStopImage);
     }

@@ -176,13 +176,13 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
         onView(allOf(withId(R.id.imageview_list_item_network_task_add), isDisplayed())).perform(click());
         onView(withId(R.id.imageview_dialog_edit_network_task_ok)).perform(click());
         onView(allOf(withId(R.id.imageview_list_item_network_task_start_stop), withChildDescendantAtPosition(withId(R.id.listview_main_activity_network_tasks), 0))).check(matches(withDrawable(R.drawable.icon_start_shadow)));
-        assertFalse(getScheduler().isRunning(getAdapter().getItem(0).getNetworkTask()));
+        assertFalse(getAdapter().getItem(0).getNetworkTask().isRunning());
         onView(allOf(withId(R.id.imageview_list_item_network_task_start_stop), withChildDescendantAtPosition(withId(R.id.listview_main_activity_network_tasks), 0))).perform(click());
         onView(allOf(withId(R.id.imageview_list_item_network_task_start_stop), withChildDescendantAtPosition(withId(R.id.listview_main_activity_network_tasks), 0))).check(matches(withDrawable(R.drawable.icon_stop_shadow)));
-        assertTrue(getScheduler().isRunning(getAdapter().getItem(0).getNetworkTask()));
+        assertTrue(getAdapter().getItem(0).getNetworkTask().isRunning());
         onView(allOf(withId(R.id.imageview_list_item_network_task_start_stop), withChildDescendantAtPosition(withId(R.id.listview_main_activity_network_tasks), 0))).perform(click());
         onView(allOf(withId(R.id.imageview_list_item_network_task_start_stop), withChildDescendantAtPosition(withId(R.id.listview_main_activity_network_tasks), 0))).check(matches(withDrawable(R.drawable.icon_start_shadow)));
-        assertFalse(getScheduler().isRunning(getAdapter().getItem(0).getNetworkTask()));
+        assertFalse(getAdapter().getItem(0).getNetworkTask().isRunning());
     }
 
     private void setTaskExecuted(NetworkTaskMainActivity activity, int position, Calendar calendar, boolean success, String message) {
@@ -207,6 +207,7 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
         networkTask.setInterval(15);
         networkTask.setOnlyWifi(false);
         networkTask.setNotification(true);
+        networkTask.setRunning(false);
         return networkTask;
     }
 
@@ -221,6 +222,7 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
         networkTask.setInterval(40);
         networkTask.setOnlyWifi(true);
         networkTask.setNotification(false);
+        networkTask.setRunning(false);
         return networkTask;
     }
 

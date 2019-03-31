@@ -74,7 +74,7 @@ class NetworkTaskHandler {
             NetworkTaskDAO dao = new NetworkTaskDAO(mainActivity);
             dao.updateNetworkTask(task);
             NetworkKeepAliveServiceScheduler scheduler = new NetworkKeepAliveServiceScheduler(mainActivity);
-            if (scheduler.isRunning(task)) {
+            if (task.isRunning()) {
                 Log.d(NetworkTaskHandler.class.getName(), "Network task is running. Restarting.");
                 scheduler.stop(task);
                 scheduler.start(task);
@@ -92,7 +92,7 @@ class NetworkTaskHandler {
             NetworkTaskDAO networkTaskDAO = new NetworkTaskDAO(mainActivity);
             LogDAO logDAO = new LogDAO(mainActivity);
             NetworkKeepAliveServiceScheduler scheduler = new NetworkKeepAliveServiceScheduler(mainActivity);
-            if (scheduler.isRunning(task)) {
+            if (task.isRunning()) {
                 Log.d(NetworkTaskHandler.class.getName(), "Network task is running. Stopping.");
                 scheduler.stop(task);
             }

@@ -44,13 +44,13 @@ public class NetworkTaskHandlerTest extends BaseUITest {
         List<NetworkTask> tasks = getNetworkTaskDAO().readAllNetworkTasks();
         task = tasks.get(0);
         assertTrue(task.getSchedulerId() >= 0);
-        assertTrue(getScheduler().isRunning(task));
+        assertTrue(task.isRunning());
         handler.stopNetworkTask(task);
         assertTrue(task.getSchedulerId() < 0);
         tasks = getNetworkTaskDAO().readAllNetworkTasks();
         task = tasks.get(0);
         assertTrue(task.getSchedulerId() < 0);
-        assertFalse(getScheduler().isRunning(task));
+        assertFalse(task.isRunning());
     }
 
     @Test
@@ -94,11 +94,11 @@ public class NetworkTaskHandlerTest extends BaseUITest {
         assertNull(adapterWrapper1.getLogEntry());
         assertEquals("192.168.178.1", adapterWrapper1.getNetworkTask().getAddress());
         assertAreEqual(task1, adapterWrapper1.getNetworkTask());
-        assertFalse(getScheduler().isRunning(task1));
+        assertFalse(task1.isRunning());
         task2 = tasks.get(1);
         handler.startNetworkTask(task2);
         handler.updateNetworkTask(task2);
-        assertTrue(getScheduler().isRunning(task2));
+        assertTrue(task2.isRunning());
     }
 
     @Test
@@ -120,7 +120,7 @@ public class NetworkTaskHandlerTest extends BaseUITest {
         getLogDAO().insertAndDeleteLog(logEntry);
         handler.startNetworkTask(task2);
         handler.deleteNetworkTask(task2);
-        assertFalse(getScheduler().isRunning(task2));
+        assertFalse(task2.isRunning());
         List<LogEntry> allEntries = getLogDAO().readAllLogsForNetworkTask(task2.getId());
         assertTrue(allEntries.isEmpty());
         tasks = getNetworkTaskDAO().readAllNetworkTasks();
@@ -144,6 +144,7 @@ public class NetworkTaskHandlerTest extends BaseUITest {
         networkTask.setInterval(15);
         networkTask.setOnlyWifi(false);
         networkTask.setNotification(true);
+        networkTask.setRunning(false);
         return networkTask;
     }
 
@@ -158,6 +159,7 @@ public class NetworkTaskHandlerTest extends BaseUITest {
         networkTask.setInterval(40);
         networkTask.setOnlyWifi(true);
         networkTask.setNotification(false);
+        networkTask.setRunning(false);
         return networkTask;
     }
 
@@ -172,6 +174,7 @@ public class NetworkTaskHandlerTest extends BaseUITest {
         networkTask.setInterval(85);
         networkTask.setOnlyWifi(true);
         networkTask.setNotification(true);
+        networkTask.setRunning(false);
         return networkTask;
     }
 
@@ -186,6 +189,7 @@ public class NetworkTaskHandlerTest extends BaseUITest {
         networkTask.setInterval(100);
         networkTask.setOnlyWifi(false);
         networkTask.setNotification(false);
+        networkTask.setRunning(false);
         return networkTask;
     }
 
@@ -209,6 +213,7 @@ public class NetworkTaskHandlerTest extends BaseUITest {
         assertEquals(task1.getInterval(), task2.getInterval());
         assertEquals(task1.isOnlyWifi(), task2.isOnlyWifi());
         assertEquals(task1.isNotification(), task2.isNotification());
+        assertEquals(task1.isRunning(), task2.isRunning());
     }
 
     private NetworkTaskAdapter getAdapter() {

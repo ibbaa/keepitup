@@ -36,45 +36,45 @@ public class NetworkKeepAliveServiceTest {
     public void testStartStopRunning() {
         NetworkTask task1 = getNetworkTask1();
         NetworkTask task2 = getNetworkTask2();
-        assertFalse(scheduler.isRunning(task1));
-        assertFalse(scheduler.isRunning(task2));
         scheduler.start(task1);
-        assertTrue(scheduler.isRunning(task1));
-        assertFalse(scheduler.isRunning(task2));
+        assertTrue(task1.isRunning());
+        assertFalse(task2.isRunning());
         scheduler.start(task2);
-        assertTrue(scheduler.isRunning(task1));
-        assertTrue(scheduler.isRunning(task2));
+        assertTrue(task1.isRunning());
+        assertTrue(task2.isRunning());
         scheduler.stop(task1);
-        assertFalse(scheduler.isRunning(task1));
-        assertTrue(scheduler.isRunning(task2));
+        assertFalse(task1.isRunning());
+        assertTrue(task2.isRunning());
         scheduler.stop(task2);
-        assertFalse(scheduler.isRunning(task1));
-        assertFalse(scheduler.isRunning(task2));
+        assertFalse(task1.isRunning());
+        assertFalse(task2.isRunning());
     }
 
     private NetworkTask getNetworkTask1() {
-        NetworkTask task1 = new NetworkTask();
-        task1.setId(1);
-        task1.setIndex(1);
-        task1.setSchedulerId(1);
-        task1.setAddress("127.0.0.1");
-        task1.setPort(80);
-        task1.setAccessType(AccessType.PING);
-        task1.setInterval(15);
-        task1.setNotification(true);
-        return task1;
+        NetworkTask task = new NetworkTask();
+        task.setId(1);
+        task.setIndex(1);
+        task.setSchedulerId(1);
+        task.setAddress("127.0.0.1");
+        task.setPort(80);
+        task.setAccessType(AccessType.PING);
+        task.setInterval(15);
+        task.setNotification(true);
+        task.setRunning(false);
+        return task;
     }
 
     private NetworkTask getNetworkTask2() {
-        NetworkTask task2 = new NetworkTask();
-        task2.setId(2);
-        task2.setIndex(10);
-        task2.setSchedulerId(2);
-        task2.setAddress("host.com");
-        task2.setPort(21);
-        task2.setAccessType(null);
-        task2.setInterval(1);
-        task2.setNotification(false);
-        return task2;
+        NetworkTask task = new NetworkTask();
+        task.setId(2);
+        task.setIndex(10);
+        task.setSchedulerId(2);
+        task.setAddress("host.com");
+        task.setPort(21);
+        task.setAccessType(null);
+        task.setInterval(1);
+        task.setNotification(false);
+        task.setRunning(false);
+        return task;
     }
 }

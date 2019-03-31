@@ -116,6 +116,7 @@ public class NetworkTaskLogActivityTest extends BaseUITest {
         networkTask.setInterval(15);
         networkTask.setOnlyWifi(false);
         networkTask.setNotification(true);
+        networkTask.setRunning(false);
         return networkTask;
     }
 
