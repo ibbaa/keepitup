@@ -16,6 +16,7 @@ import de.ibba.keepitup.model.NetworkTask;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
@@ -77,6 +78,19 @@ public class NetworkTaskDAOTest {
     }
 
     @Test
+    public void testInsertUniqueSchedulerId() {
+        NetworkTask insertedTask1 = getNetworkTask1();
+        NetworkTask insertedTask2 = getNetworkTask2();
+        NetworkTask insertedTask3 = getNetworkTask3();
+        insertedTask1 = networkTaskDAO.insertNetworkTask(insertedTask1);
+        insertedTask2 = networkTaskDAO.insertNetworkTask(insertedTask2);
+        insertedTask3 = networkTaskDAO.insertNetworkTask(insertedTask3);
+        assertNotEquals(insertedTask1.getSchedulerId(), insertedTask2.getSchedulerId());
+        assertNotEquals(insertedTask1.getSchedulerId(), insertedTask3.getSchedulerId());
+        assertNotEquals(insertedTask2.getSchedulerId(), insertedTask3.getSchedulerId());
+    }
+
+    @Test
     public void testDeleteIndexCleanup() {
         NetworkTask insertedTask1 = new NetworkTask();
         NetworkTask insertedTask2 = new NetworkTask();
@@ -109,25 +123,6 @@ public class NetworkTaskDAOTest {
         assertEquals(3, readTask3.getIndex());
         assertEquals(4, readTask4.getIndex());
         assertEquals(5, readTask5.getIndex());
-    }
-
-    @Test
-    public void testUpdateSchedulerId() {
-        NetworkTask insertedTask1 = getNetworkTask1();
-        networkTaskDAO.insertNetworkTask(insertedTask1);
-        List<NetworkTask> readTasks = networkTaskDAO.readAllNetworkTasks();
-        NetworkTask readTask1 = readTasks.get(0);
-        networkTaskDAO.updateNetworkTaskSchedulerId(readTask1.getId(), 25);
-        readTask1 = networkTaskDAO.readNetworkTask(readTask1.getId());
-        assertEquals(insertedTask1.getIndex(), readTask1.getIndex());
-        assertEquals(insertedTask1.getAccessType(), readTask1.getAccessType());
-        assertEquals(insertedTask1.getAddress(), readTask1.getAddress());
-        assertEquals(insertedTask1.getPort(), readTask1.getPort());
-        assertEquals(insertedTask1.getInterval(), readTask1.getInterval());
-        assertEquals(insertedTask1.isOnlyWifi(), readTask1.isOnlyWifi());
-        assertEquals(insertedTask1.isNotification(), readTask1.isNotification());
-        assertEquals(insertedTask1.isRunning(), readTask1.isRunning());
-        assertEquals(25, readTask1.getSchedulerId());
     }
 
     @Test
@@ -175,7 +170,7 @@ public class NetworkTaskDAOTest {
         NetworkTask task = new NetworkTask();
         task.setId(0);
         task.setIndex(1);
-        task.setSchedulerId(11);
+        task.setSchedulerId(0);
         task.setAddress("127.0.0.1");
         task.setPort(80);
         task.setAccessType(AccessType.PING);
@@ -190,7 +185,7 @@ public class NetworkTaskDAOTest {
         NetworkTask task = new NetworkTask();
         task.setId(0);
         task.setIndex(10);
-        task.setSchedulerId(22);
+        task.setSchedulerId(0);
         task.setAddress("host.com");
         task.setPort(21);
         task.setAccessType(null);
@@ -205,7 +200,7 @@ public class NetworkTaskDAOTest {
         NetworkTask task = new NetworkTask();
         task.setId(0);
         task.setIndex(5);
-        task.setSchedulerId(33);
+        task.setSchedulerId(0);
         task.setAddress(null);
         task.setPort(456);
         task.setAccessType(AccessType.PING);
@@ -217,6 +212,7 @@ public class NetworkTaskDAOTest {
     }
 
     private void assertAreEqual(NetworkTask task1, NetworkTask task2) {
+        assertEquals(task1.getId(), task2.getId());
         assertEquals(task1.getIndex(), task2.getIndex());
         assertEquals(task1.getSchedulerId(), task2.getSchedulerId());
         assertEquals(task1.getAccessType(), task2.getAccessType());

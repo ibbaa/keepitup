@@ -1,16 +1,12 @@
 package de.ibba.keepitup.service;
 
-import android.content.Context;
+import java.security.SecureRandom;
 
 public class SchedulerIdGenerator {
 
-    private final Context context;
+    private final static SecureRandom randomGenerator = new SecureRandom();
 
-    public SchedulerIdGenerator(Context context) {
-        this.context = context;
-    }
-
-    public int createSchedulerId() {
-        return 0;
+    public static int createSchedulerId() {
+        return randomGenerator.nextInt();
     }
 }

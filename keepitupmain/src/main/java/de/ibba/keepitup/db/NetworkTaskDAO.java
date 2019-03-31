@@ -11,6 +11,7 @@ import java.util.List;
 
 import de.ibba.keepitup.model.AccessType;
 import de.ibba.keepitup.model.NetworkTask;
+import de.ibba.keepitup.service.SchedulerIdGenerator;
 
 public class NetworkTaskDAO extends BaseDAO {
 
@@ -38,14 +39,6 @@ public class NetworkTaskDAO extends BaseDAO {
         executeDBOperationInTransaction(networkTask, this::updateNetworkTask);
     }
 
-    public void updateNetworkTaskSchedulerId(long taskId, int schedulerId) {
-        Log.d(NetworkTaskDAO.class.getName(), "Updating schedulerId to " + schedulerId + " of task with id " + taskId);
-        NetworkTask networkTask = new NetworkTask();
-        networkTask.setId(taskId);
-        networkTask.setSchedulerId(schedulerId);
-        executeDBOperationInTransaction(networkTask, this::updateNetworkTaskSchedulerId);
-    }
-
     public void updateNetworkTaskRunning(long taskId, boolean running) {
         Log.d(NetworkTaskDAO.class.getName(), "Updating running status to " + running + " of task with id " + taskId);
         NetworkTask networkTask = new NetworkTask();
@@ -69,6 +62,7 @@ public class NetworkTaskDAO extends BaseDAO {
     private NetworkTask insertNetworkTask(NetworkTask networkTask, SQLiteDatabase db) {
         ContentValues values = new ContentValues();
         NetworkTaskDBConstants dbConstants = new NetworkTaskDBConstants(getContext());
+        networkTask.setSchedulerId(getUniqueSchedulerId(db));
         values.put(dbConstants.getIndexColumnName(), networkTask.getIndex());
         values.put(dbConstants.getSchedulerIdColumnName(), networkTask.getSchedulerId());
         values.put(dbConstants.getAddressColumnName(), networkTask.getAddress());
@@ -83,6 +77,7 @@ public class NetworkTaskDAO extends BaseDAO {
             Log.e(NetworkTaskDAO.class.getName(), "Error inserting task into database. Insert returned -1.");
         }
         networkTask.setId(rowid);
+
         return networkTask;
     }
 
@@ -98,15 +93,6 @@ public class NetworkTaskDAO extends BaseDAO {
     private int deleteAllNetworkTasks(NetworkTask networkTask, SQLiteDatabase db) {
         NetworkTaskDBConstants dbConstants = new NetworkTaskDBConstants(getContext());
         return db.delete(dbConstants.getTableName(), null, null);
-    }
-
-    private int updateNetworkTaskSchedulerId(NetworkTask networkTask, SQLiteDatabase db) {
-        NetworkTaskDBConstants dbConstants = new NetworkTaskDBConstants(getContext());
-        String selection = dbConstants.getIdColumnName() + " = ?";
-        String[] selectionArgs = {String.valueOf(networkTask.getId())};
-        ContentValues values = new ContentValues();
-        values.put(dbConstants.getSchedulerIdColumnName(), networkTask.getSchedulerId());
-        return db.update(dbConstants.getTableName(), values, selection, selectionArgs);
     }
 
     private int updateNetworkTaskRunning(NetworkTask networkTask, SQLiteDatabase db) {
@@ -180,6 +166,39 @@ public class NetworkTaskDAO extends BaseDAO {
             }
         }
         return result;
+    }
+
+    private int getUniqueSchedulerId(SQLiteDatabase db) {
+        Log.d(NetworkTaskDAO.class.getName(), "getUniqueSchedulerId");
+        int schedulerId = SchedulerIdGenerator.createSchedulerId();
+        Log.d(NetworkTaskDAO.class.getName(), "Created random scheduler id is " + schedulerId);
+        while (readSchedulerIdCount(schedulerId, db) > 0) {
+            Log.d(NetworkTaskDAO.class.getName(), "Created random scheduler id exists. Creating new one.");
+            schedulerId = SchedulerIdGenerator.createSchedulerId();
+            Log.d(NetworkTaskDAO.class.getName(), "Created random scheduler id is " + schedulerId);
+        }
+        Log.d(NetworkTaskDAO.class.getName(), "Created random scheduler id is unique and does not exist.");
+        return schedulerId;
+    }
+
+    private long readSchedulerIdCount(int schedulerId, SQLiteDatabase db) {
+        Cursor result = null;
+        NetworkTaskDBConstants dbConstants = new NetworkTaskDBConstants(getContext());
+        try {
+            result = db.rawQuery(dbConstants.getSchedulerIdCountStatement(), new String[]{String.valueOf(schedulerId)});
+            if (result.moveToFirst()) {
+                return result.getLong(0);
+            }
+        } finally {
+            if (result != null) {
+                try {
+                    result.close();
+                } catch (Throwable exc) {
+                    Log.e(LogDAO.class.getName(), "Error closing result cursor", exc);
+                }
+            }
+        }
+        return 0;
     }
 
     private NetworkTask mapCursorToNetworkTask(Cursor cursor) {

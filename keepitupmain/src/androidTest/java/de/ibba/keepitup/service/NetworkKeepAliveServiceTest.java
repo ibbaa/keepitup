@@ -36,16 +36,16 @@ public class NetworkKeepAliveServiceTest {
     public void testStartStopRunning() {
         NetworkTask task1 = getNetworkTask1();
         NetworkTask task2 = getNetworkTask2();
-        scheduler.start(task1);
+        task1 = scheduler.start(task1);
         assertTrue(task1.isRunning());
         assertFalse(task2.isRunning());
-        scheduler.start(task2);
+        task2 = scheduler.start(task2);
         assertTrue(task1.isRunning());
         assertTrue(task2.isRunning());
-        scheduler.stop(task1);
+        task1 = scheduler.stop(task1);
         assertFalse(task1.isRunning());
         assertTrue(task2.isRunning());
-        scheduler.stop(task2);
+        task2 = scheduler.stop(task2);
         assertFalse(task1.isRunning());
         assertFalse(task2.isRunning());
     }
@@ -54,7 +54,7 @@ public class NetworkKeepAliveServiceTest {
         NetworkTask task = new NetworkTask();
         task.setId(1);
         task.setIndex(1);
-        task.setSchedulerId(1);
+        task.setSchedulerId(0);
         task.setAddress("127.0.0.1");
         task.setPort(80);
         task.setAccessType(AccessType.PING);
@@ -68,7 +68,7 @@ public class NetworkKeepAliveServiceTest {
         NetworkTask task = new NetworkTask();
         task.setId(2);
         task.setIndex(10);
-        task.setSchedulerId(2);
+        task.setSchedulerId(0);
         task.setAddress("host.com");
         task.setPort(21);
         task.setAccessType(null);

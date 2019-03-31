@@ -17,7 +17,6 @@ import de.ibba.keepitup.R;
 import de.ibba.keepitup.model.AccessType;
 import de.ibba.keepitup.model.LogEntry;
 import de.ibba.keepitup.model.NetworkTask;
-import de.ibba.keepitup.ui.adapter.LogEntryAdapter;
 
 import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.Espresso.openActionBarOverflowOrOptionsMenu;
@@ -87,11 +86,6 @@ public class NetworkTaskLogActivityTest extends BaseUITest {
         onView(allOf(withId(R.id.textview_list_item_log_entry_success), withChildDescendantAtPosition(withId(R.id.listview_log_activity_log_entries), 0))).check(matches(withText("Execution successful")));
         onView(allOf(withId(R.id.textview_list_item_log_entry_timestamp), withChildDescendantAtPosition(withId(R.id.listview_log_activity_log_entries), 0))).check(matches(withText("Timestamp: Jul 1, 2016 12:00:00 AM")));
         onView(allOf(withId(R.id.textview_list_item_log_entry_message), withChildDescendantAtPosition(withId(R.id.listview_log_activity_log_entries), 0))).check(matches(withText("Message: Message3")));
-    }
-
-    private LogEntryAdapter getAdapter() {
-        NetworkTaskLogActivity activity = rule.getActivity();
-        return (LogEntryAdapter) activity.getAdapter();
     }
 
     private NetworkTask insertNetworkTask() {

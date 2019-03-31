@@ -19,7 +19,7 @@ public class NetworkKeepAliveServiceScheduler {
         this.networkTaskDAO = new NetworkTaskDAO(context);
     }
 
-    public void start(NetworkTask networkTask) {
+    public NetworkTask start(NetworkTask networkTask) {
         Log.d(NetworkKeepAliveServiceScheduler.class.getName(), "Start network task " + networkTask);
         if (isRunning(networkTask)) {
             Log.d(NetworkKeepAliveServiceScheduler.class.getName(), "Network task " + networkTask + " is already running. Stopping...");
@@ -27,12 +27,14 @@ public class NetworkKeepAliveServiceScheduler {
         }
         networkTask.setRunning(true);
         networkTaskDAO.updateNetworkTaskRunning(networkTask.getId(), true);
+        return networkTask;
     }
 
-    public void stop(NetworkTask networkTask) {
+    public NetworkTask stop(NetworkTask networkTask) {
         Log.d(NetworkKeepAliveServiceScheduler.class.getName(), "Stop network task " + networkTask);
         networkTask.setRunning(false);
         networkTaskDAO.updateNetworkTaskRunning(networkTask.getId(), false);
+        return networkTask;
     }
 
     public void stopAll() {

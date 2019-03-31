@@ -208,6 +208,7 @@ public class LogDAOTest {
     }
 
     private void assertAreEqual(LogEntry logEntry1, LogEntry logEntry2) {
+        assertEquals(logEntry1.getId(), logEntry2.getId());
         assertEquals(logEntry1.getNetworkTaskId(), logEntry2.getNetworkTaskId());
         assertEquals(logEntry1.isSuccess(), logEntry2.isSuccess());
         assertEquals(logEntry1.getTimestamp(), logEntry2.getTimestamp());
