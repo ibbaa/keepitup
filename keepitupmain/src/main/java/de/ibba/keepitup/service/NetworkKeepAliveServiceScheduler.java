@@ -1,24 +1,22 @@
 package de.ibba.keepitup.service;
 
-import android.app.job.JobInfo;
-import android.app.job.JobScheduler;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.res.Resources;
 import android.util.Log;
 
 import java.util.List;
 
+import de.ibba.keepitup.db.NetworkTaskDAO;
 import de.ibba.keepitup.model.NetworkTask;
-
-import static android.content.Context.JOB_SCHEDULER_SERVICE;
 
 public class NetworkKeepAliveServiceScheduler {
 
     private final Context context;
+    private final NetworkTaskDAO networkTaskDAO;
 
     public NetworkKeepAliveServiceScheduler(Context context) {
         this.context = context;
+        this.networkTaskDAO = new NetworkTaskDAO(context);
     }
 
     public void start(NetworkTask networkTask) {
@@ -27,36 +25,26 @@ public class NetworkKeepAliveServiceScheduler {
             Log.d(NetworkKeepAliveServiceScheduler.class.getName(), "Network task " + networkTask + " is already running. Stopping...");
             stop(networkTask);
         }
-        JobScheduler jobScheduler = (JobScheduler) getContext().getSystemService(JOB_SCHEDULER_SERVICE);
-        ComponentName componentName = new ComponentName(getContext(), NetworkKeepAliveService.class);
-        long interval = getIntervalMilliseconds(networkTask);
-        JobInfo jobInfo = new JobInfo.Builder(networkTask.getSchedulerId(), componentName).setPeriodic(interval).setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY).setPersisted(false).setExtras(networkTask.toPersistableBundle()).build();
-        Log.d(NetworkKeepAliveServiceScheduler.class.getName(), "Starting " + NetworkKeepAliveService.class.getSimpleName() + " with periodic interval of " + interval + " msec for job " + networkTask);
-        jobScheduler.schedule(jobInfo);
+        networkTask.setRunning(true);
+        networkTaskDAO.updateNetworkTaskRunning(networkTask.getId(), true);
     }
 
     public void stop(NetworkTask networkTask) {
         Log.d(NetworkKeepAliveServiceScheduler.class.getName(), "Stop network task " + networkTask);
-        JobScheduler jobScheduler = (JobScheduler) getContext().getSystemService(JOB_SCHEDULER_SERVICE);
-        Log.d(NetworkKeepAliveServiceScheduler.class.getName(), "Stopping NetworkKeepAliveService for job " + networkTask);
-        jobScheduler.cancel(networkTask.getSchedulerId());
+        networkTask.setRunning(false);
+        networkTaskDAO.updateNetworkTaskRunning(networkTask.getId(), false);
     }
 
     public void stopAll() {
         Log.d(NetworkKeepAliveServiceScheduler.class.getName(), "Stop all network tasks ");
-        JobScheduler jobScheduler = (JobScheduler) getContext().getSystemService(JOB_SCHEDULER_SERVICE);
-        jobScheduler.cancelAll();
+        List<NetworkTask> networkTasks = networkTaskDAO.readAllNetworkTasks();
+        for (NetworkTask currentTask : networkTasks) {
+            stop(currentTask);
+        }
     }
 
-    public boolean isRunning(NetworkTask networkTask) {
-        JobScheduler jobScheduler = (JobScheduler) getContext().getSystemService(JOB_SCHEDULER_SERVICE);
-        List<JobInfo> jobList = jobScheduler.getAllPendingJobs();
-        for (JobInfo currentJob : jobList) {
-            if (currentJob.getId() == networkTask.getSchedulerId()) {
-                return true;
-            }
-        }
-        return false;
+    private boolean isRunning(NetworkTask networkTask) {
+        return networkTask.isRunning();
     }
 
     private long getIntervalMilliseconds(NetworkTask networkTask) {

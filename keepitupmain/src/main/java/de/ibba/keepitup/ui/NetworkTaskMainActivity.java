@@ -106,7 +106,7 @@ public class NetworkTaskMainActivity extends RecyclerViewBaseActivity {
         Log.d(NetworkTaskMainActivity.class.getName(), "onMainStartStopClicked for network task " + networkTask);
         NetworkKeepAliveServiceScheduler scheduler = new NetworkKeepAliveServiceScheduler(this);
         NetworkTaskHandler handler = new NetworkTaskHandler(this);
-        if (scheduler.isRunning(networkTask)) {
+        if (networkTask.isRunning()) {
             Log.d(NetworkTaskMainActivity.class.getName(), "Network task is running, stopping " + networkTask);
             handler.stopNetworkTask(networkTask);
         } else {
