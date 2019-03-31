@@ -42,8 +42,16 @@ public class NetworkTaskDAO extends BaseDAO {
         Log.d(NetworkTaskDAO.class.getName(), "Updating schedulerId to " + schedulerId + " of task with id " + taskId);
         NetworkTask networkTask = new NetworkTask();
         networkTask.setId(taskId);
-        networkTask.setSchedulerid(schedulerId);
+        networkTask.setSchedulerId(schedulerId);
         executeDBOperationInTransaction(networkTask, this::updateNetworkTaskSchedulerId);
+    }
+
+    public void updateNetworkTaskRunning(long taskId, boolean running) {
+        Log.d(NetworkTaskDAO.class.getName(), "Updating running status to " + running + " of task with id " + taskId);
+        NetworkTask networkTask = new NetworkTask();
+        networkTask.setId(taskId);
+        networkTask.setRunning(running);
+        executeDBOperationInTransaction(networkTask, this::updateNetworkTaskRunning);
     }
 
     public NetworkTask readNetworkTask(long taskId) {
@@ -62,13 +70,14 @@ public class NetworkTaskDAO extends BaseDAO {
         ContentValues values = new ContentValues();
         NetworkTaskDBConstants dbConstants = new NetworkTaskDBConstants(getContext());
         values.put(dbConstants.getIndexColumnName(), networkTask.getIndex());
-        values.put(dbConstants.getSchedulerIdColumnName(), networkTask.getSchedulerid());
+        values.put(dbConstants.getSchedulerIdColumnName(), networkTask.getSchedulerId());
         values.put(dbConstants.getAddressColumnName(), networkTask.getAddress());
         values.put(dbConstants.getPortColumnName(), networkTask.getPort());
         values.put(dbConstants.getAccessTypeColumnName(), networkTask.getAccessType() == null ? null : networkTask.getAccessType().getCode());
         values.put(dbConstants.getIntervalColumnName(), networkTask.getInterval());
         values.put(dbConstants.getOnlyWifiColumnName(), networkTask.isOnlyWifi() ? 1 : 0);
         values.put(dbConstants.getNotificationColumnName(), networkTask.isNotification() ? 1 : 0);
+        values.put(dbConstants.getRunningColumnName(), networkTask.isRunning() ? 1 : 0);
         long rowid = db.insert(dbConstants.getTableName(), null, values);
         if (rowid < 0) {
             Log.e(NetworkTaskDAO.class.getName(), "Error inserting task into database. Insert returned -1.");
@@ -96,7 +105,16 @@ public class NetworkTaskDAO extends BaseDAO {
         String selection = dbConstants.getIdColumnName() + " = ?";
         String[] selectionArgs = {String.valueOf(networkTask.getId())};
         ContentValues values = new ContentValues();
-        values.put(dbConstants.getSchedulerIdColumnName(), networkTask.getSchedulerid());
+        values.put(dbConstants.getSchedulerIdColumnName(), networkTask.getSchedulerId());
+        return db.update(dbConstants.getTableName(), values, selection, selectionArgs);
+    }
+
+    private int updateNetworkTaskRunning(NetworkTask networkTask, SQLiteDatabase db) {
+        NetworkTaskDBConstants dbConstants = new NetworkTaskDBConstants(getContext());
+        String selection = dbConstants.getIdColumnName() + " = ?";
+        String[] selectionArgs = {String.valueOf(networkTask.getId())};
+        ContentValues values = new ContentValues();
+        values.put(dbConstants.getRunningColumnName(), networkTask.isRunning() ? 1 : 0);
         return db.update(dbConstants.getTableName(), values, selection, selectionArgs);
     }
 
@@ -176,9 +194,10 @@ public class NetworkTaskDAO extends BaseDAO {
         int indexIntervalColumn = cursor.getColumnIndex(dbConstants.getIntervalColumnName());
         int indexOnlyWifiColumn = cursor.getColumnIndex(dbConstants.getOnlyWifiColumnName());
         int indexNotificationColumn = cursor.getColumnIndex(dbConstants.getNotificationColumnName());
+        int indexRunningColumn = cursor.getColumnIndex(dbConstants.getRunningColumnName());
         networkTask.setId(cursor.getInt(indexIdColumn));
         networkTask.setIndex(cursor.getInt(indexIndexColumn));
-        networkTask.setSchedulerid(cursor.getInt(schedulerIdIndexColumn));
+        networkTask.setSchedulerId(cursor.getInt(schedulerIdIndexColumn));
         networkTask.setAddress(cursor.getString(indexAddressColumn));
         networkTask.setPort(cursor.getInt(indexPortColumn));
         if (cursor.isNull(indexAccessTypeColumn)) {
@@ -189,6 +208,7 @@ public class NetworkTaskDAO extends BaseDAO {
         networkTask.setInterval(cursor.getInt(indexIntervalColumn));
         networkTask.setOnlyWifi(cursor.getInt(indexOnlyWifiColumn) >= 1);
         networkTask.setNotification(cursor.getInt(indexNotificationColumn) >= 1);
+        networkTask.setRunning(cursor.getInt(indexRunningColumn) >= 1);
         return networkTask;
     }
 }

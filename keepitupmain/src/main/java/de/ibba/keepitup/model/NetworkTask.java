@@ -19,6 +19,7 @@ public class NetworkTask {
     private int interval;
     private boolean onlyWifi;
     private boolean notification;
+    private boolean running;
 
     public NetworkTask() {
         this.id = -1;
@@ -30,6 +31,7 @@ public class NetworkTask {
         this.interval = 0;
         this.onlyWifi = false;
         this.notification = false;
+        this.running = false;
     }
 
     public NetworkTask(Context context) {
@@ -43,6 +45,7 @@ public class NetworkTask {
         this.interval = resources.getInteger(R.integer.task_interval_default);
         this.onlyWifi = resources.getBoolean(R.bool.task_onlywifi_default);
         this.notification = resources.getBoolean(R.bool.task_notification_default);
+        this.running = resources.getBoolean(R.bool.task_running_default);
     }
 
     public NetworkTask(PersistableBundle bundle) {
@@ -61,6 +64,7 @@ public class NetworkTask {
         this.interval = bundle.getInt("interval");
         this.onlyWifi = bundle.getInt("onlywifi") >= 1;
         this.notification = bundle.getInt("notification") >= 1;
+        this.running = bundle.getInt("running") >= 1;
     }
 
     public long getId() {
@@ -79,11 +83,11 @@ public class NetworkTask {
         this.index = index;
     }
 
-    public int getSchedulerid() {
+    public int getSchedulerId() {
         return schedulerid;
     }
 
-    public void setSchedulerid(int schedulerid) {
+    public void setSchedulerId(int schedulerid) {
         this.schedulerid = schedulerid;
     }
 
@@ -135,6 +139,14 @@ public class NetworkTask {
         this.notification = notification;
     }
 
+    public boolean isRunning() {
+        return running;
+    }
+
+    public void setRunning(boolean running) {
+        this.running = running;
+    }
+
     public PersistableBundle toPersistableBundle() {
         PersistableBundle bundle = new PersistableBundle();
         bundle.putLong("id", id);
@@ -150,6 +162,7 @@ public class NetworkTask {
         bundle.putInt("interval", interval);
         bundle.putInt("onlywifi", onlyWifi ? 1 : 0);
         bundle.putInt("notification", notification ? 1 : 0);
+        bundle.putInt("running", running ? 1 : 0);
         return bundle;
     }
 
@@ -170,6 +183,7 @@ public class NetworkTask {
                 ", interval=" + interval +
                 ", onlyWifi=" + onlyWifi +
                 ", notification=" + notification +
+                ", running=" + running +
                 '}';
     }
 }

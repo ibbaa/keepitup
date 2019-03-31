@@ -56,7 +56,7 @@ public class NetworkKeepAliveServiceTest {
         NetworkTask task1 = new NetworkTask();
         task1.setId(1);
         task1.setIndex(1);
-        task1.setSchedulerid(1);
+        task1.setSchedulerId(1);
         task1.setAddress("127.0.0.1");
         task1.setPort(80);
         task1.setAccessType(AccessType.PING);
@@ -69,7 +69,7 @@ public class NetworkKeepAliveServiceTest {
         NetworkTask task2 = new NetworkTask();
         task2.setId(2);
         task2.setIndex(10);
-        task2.setSchedulerid(2);
+        task2.setSchedulerId(2);
         task2.setAddress("host.com");
         task2.setPort(21);
         task2.setAccessType(null);
