@@ -11,7 +11,7 @@ import java.util.Locale;
 
 import de.ibba.keepitup.db.LogDAO;
 import de.ibba.keepitup.db.NetworkTaskDAO;
-import de.ibba.keepitup.service.NetworkKeepAliveServiceScheduler;
+import de.ibba.keepitup.service.NetworkTaskServiceScheduler;
 import de.ibba.keepitup.test.matcher.ChildDescendantAtPositionMatcher;
 import de.ibba.keepitup.test.matcher.DrawableMatcher;
 import de.ibba.keepitup.test.matcher.ListSizeMatcher;
@@ -21,12 +21,12 @@ public abstract class BaseUITest {
 
     private NetworkTaskDAO networkTaskDAO;
     private LogDAO logDAO;
-    private NetworkKeepAliveServiceScheduler scheduler;
+    private NetworkTaskServiceScheduler scheduler;
 
     @Before
     public void beforeEachTestMethod() {
-        scheduler = new NetworkKeepAliveServiceScheduler(InstrumentationRegistry.getTargetContext());
-        scheduler.stopAll();
+        scheduler = new NetworkTaskServiceScheduler(InstrumentationRegistry.getTargetContext());
+        scheduler.cancelAll();
         logDAO = new LogDAO(InstrumentationRegistry.getTargetContext());
         logDAO.deleteAllLogs();
         networkTaskDAO = new NetworkTaskDAO(InstrumentationRegistry.getTargetContext());
@@ -36,7 +36,7 @@ public abstract class BaseUITest {
 
     @After
     public void afterEachTestMethod() {
-        scheduler.stopAll();
+        scheduler.cancelAll();
         logDAO.deleteAllLogs();
         networkTaskDAO.deleteAllNetworkTasks();
     }
@@ -49,7 +49,7 @@ public abstract class BaseUITest {
         return logDAO;
     }
 
-    public NetworkKeepAliveServiceScheduler getScheduler() {
+    public NetworkTaskServiceScheduler getScheduler() {
         return scheduler;
     }
 

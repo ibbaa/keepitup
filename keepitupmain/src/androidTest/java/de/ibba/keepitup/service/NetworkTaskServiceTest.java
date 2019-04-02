@@ -17,35 +17,35 @@ import static org.junit.Assert.assertTrue;
 
 @MediumTest
 @RunWith(AndroidJUnit4.class)
-public class NetworkKeepAliveServiceTest {
+public class NetworkTaskServiceTest {
 
-    private NetworkKeepAliveServiceScheduler scheduler;
+    private NetworkTaskServiceScheduler scheduler;
 
     @Before
     public void beforeEachTestMethod() {
-        scheduler = new NetworkKeepAliveServiceScheduler(InstrumentationRegistry.getTargetContext());
-        scheduler.stopAll();
+        scheduler = new NetworkTaskServiceScheduler(InstrumentationRegistry.getTargetContext());
+        scheduler.cancelAll();
     }
 
     @After
     public void afterEachTestMethod() {
-        scheduler.stopAll();
+        scheduler.cancelAll();
     }
 
     @Test
-    public void testStartStopRunning() {
+    public void testScheduleCancelRunning() {
         NetworkTask task1 = getNetworkTask1();
         NetworkTask task2 = getNetworkTask2();
-        task1 = scheduler.start(task1);
+        task1 = scheduler.schedule(task1);
         assertTrue(task1.isRunning());
         assertFalse(task2.isRunning());
-        task2 = scheduler.start(task2);
+        task2 = scheduler.schedule(task2);
         assertTrue(task1.isRunning());
         assertTrue(task2.isRunning());
-        task1 = scheduler.stop(task1);
+        task1 = scheduler.cancel(task1);
         assertFalse(task1.isRunning());
         assertTrue(task2.isRunning());
-        task2 = scheduler.stop(task2);
+        task2 = scheduler.cancel(task2);
         assertFalse(task1.isRunning());
         assertFalse(task2.isRunning());
     }
