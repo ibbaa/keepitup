@@ -7,7 +7,7 @@ import de.ibba.keepitup.R;
 import de.ibba.keepitup.db.LogDAO;
 import de.ibba.keepitup.db.NetworkTaskDAO;
 import de.ibba.keepitup.model.NetworkTask;
-import de.ibba.keepitup.service.NetworkKeepAliveServiceScheduler;
+import de.ibba.keepitup.service.NetworkTaskServiceScheduler;
 import de.ibba.keepitup.ui.adapter.NetworkTaskAdapter;
 import de.ibba.keepitup.ui.adapter.NetworkTaskUIWrapper;
 
@@ -21,9 +21,9 @@ class NetworkTaskHandler {
 
     public void startNetworkTask(NetworkTask task) {
         Log.d(NetworkTaskHandler.class.getName(), "startNetworkTask for task " + task);
-        NetworkKeepAliveServiceScheduler scheduler = new NetworkKeepAliveServiceScheduler(mainActivity);
+        NetworkTaskServiceScheduler scheduler = new NetworkTaskServiceScheduler(mainActivity);
         try {
-            scheduler.start(task);
+            scheduler.schedule(task);
         } catch (Exception exc) {
             Log.e(NetworkTaskHandler.class.getName(), "Error starting network task. Showing error dialog.", exc);
             showErrorDialog(getResources().getString(R.string.text_dialog_general_error_start_network_task));
@@ -32,9 +32,9 @@ class NetworkTaskHandler {
 
     public void stopNetworkTask(NetworkTask task) {
         Log.d(NetworkTaskHandler.class.getName(), "stopNetworkTask for task " + task);
-        NetworkKeepAliveServiceScheduler scheduler = new NetworkKeepAliveServiceScheduler(mainActivity);
+        NetworkTaskServiceScheduler scheduler = new NetworkTaskServiceScheduler(mainActivity);
         try {
-            scheduler.stop(task);
+            scheduler.cancel(task);
         } catch (Exception exc) {
             Log.e(NetworkTaskHandler.class.getName(), "Error stopping network task. Showing error dialog.", exc);
             showErrorDialog(getResources().getString(R.string.text_dialog_general_error_stop_network_task));
@@ -65,11 +65,11 @@ class NetworkTaskHandler {
         try {
             NetworkTaskDAO dao = new NetworkTaskDAO(mainActivity);
             dao.updateNetworkTask(task);
-            NetworkKeepAliveServiceScheduler scheduler = new NetworkKeepAliveServiceScheduler(mainActivity);
+            NetworkTaskServiceScheduler scheduler = new NetworkTaskServiceScheduler(mainActivity);
             if (task.isRunning()) {
                 Log.d(NetworkTaskHandler.class.getName(), "Network task is running. Restarting.");
-                task = scheduler.stop(task);
-                task = scheduler.start(task);
+                task = scheduler.cancel(task);
+                task = scheduler.schedule(task);
             }
             getAdapter().replaceItem(new NetworkTaskUIWrapper(task, null));
         } catch (Exception exc) {
@@ -83,10 +83,10 @@ class NetworkTaskHandler {
         try {
             NetworkTaskDAO networkTaskDAO = new NetworkTaskDAO(mainActivity);
             LogDAO logDAO = new LogDAO(mainActivity);
-            NetworkKeepAliveServiceScheduler scheduler = new NetworkKeepAliveServiceScheduler(mainActivity);
+            NetworkTaskServiceScheduler scheduler = new NetworkTaskServiceScheduler(mainActivity);
             if (task.isRunning()) {
                 Log.d(NetworkTaskHandler.class.getName(), "Network task is running. Stopping.");
-                task = scheduler.stop(task);
+                task = scheduler.cancel(task);
             }
             logDAO.deleteAllLogsForNetworkTask(task.getId());
             networkTaskDAO.deleteNetworkTask(task);

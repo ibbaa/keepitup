@@ -17,7 +17,6 @@ import de.ibba.keepitup.db.LogDAO;
 import de.ibba.keepitup.db.NetworkTaskDAO;
 import de.ibba.keepitup.model.LogEntry;
 import de.ibba.keepitup.model.NetworkTask;
-import de.ibba.keepitup.service.NetworkKeepAliveServiceScheduler;
 import de.ibba.keepitup.ui.adapter.NetworkTaskAdapter;
 import de.ibba.keepitup.ui.adapter.NetworkTaskUIWrapper;
 import de.ibba.keepitup.ui.dialog.GeneralConfirmDialog;
@@ -104,7 +103,6 @@ public class NetworkTaskMainActivity extends RecyclerViewBaseActivity {
     public void onMainStartStopClicked(int position) {
         NetworkTask networkTask = ((NetworkTaskAdapter) getAdapter()).getItem(position).getNetworkTask();
         Log.d(NetworkTaskMainActivity.class.getName(), "onMainStartStopClicked for network task " + networkTask);
-        NetworkKeepAliveServiceScheduler scheduler = new NetworkKeepAliveServiceScheduler(this);
         NetworkTaskHandler handler = new NetworkTaskHandler(this);
         if (networkTask.isRunning()) {
             Log.d(NetworkTaskMainActivity.class.getName(), "Network task is running, stopping " + networkTask);

@@ -37,6 +37,8 @@
                 android:value=".ui.NetworkTaskMainActivity" />
         </activity>
 
+        <receiver android:name=".service.NetworkTaskBroadcastReceiver" />
+
     </application>
 
 </manifest>
