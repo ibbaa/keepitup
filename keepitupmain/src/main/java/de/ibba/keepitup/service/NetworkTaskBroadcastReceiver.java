@@ -18,6 +18,7 @@ public class NetworkTaskBroadcastReceiver extends BroadcastReceiver {
         Log.d(NetworkTaskBroadcastReceiver.class.getName(), "Rescheduling " + task);
         NetworkTaskServiceScheduler scheduler = new NetworkTaskServiceScheduler(context);
         scheduler.reschedule(task, false);
+        doWork(task);
     }
 
     private void doWork(NetworkTask task) {
