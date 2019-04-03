@@ -121,7 +121,7 @@ public class NetworkTaskMainActivity extends RecyclerViewBaseActivity {
 
     public void onMainEditClicked(int position) {
         NetworkTask task = ((NetworkTaskAdapter) getAdapter()).getItem(position).getNetworkTask();
-        Log.d(NetworkTaskMainActivity.class.getName(), "onMainAddClicked for network task " + task);
+        Log.d(NetworkTaskMainActivity.class.getName(), "onMainEditClicked for network task " + task);
         NetworkTaskEditDialog editDialog = new NetworkTaskEditDialog();
         editDialog.setArguments(task.toBundle());
         Log.d(NetworkTaskMainActivity.class.getName(), "opening " + NetworkTaskEditDialog.class.getSimpleName());
