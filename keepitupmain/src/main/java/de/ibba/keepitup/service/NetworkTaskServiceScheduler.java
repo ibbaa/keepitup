@@ -37,7 +37,7 @@ public class NetworkTaskServiceScheduler {
     }
 
     public NetworkTask reschedule(NetworkTask networkTask, boolean immediate) {
-        Log.d(NetworkTaskServiceScheduler.class.getName(), "Reschedule network task " + networkTask + ", immediate is " + true);
+        Log.d(NetworkTaskServiceScheduler.class.getName(), "Reschedule network task " + networkTask + ", immediate is " + immediate);
         PendingIntent pendingIntent = getPendingIntent(networkTask);
         long delay = immediate ? 0 : getIntervalMilliseconds(networkTask);
         if (immediate) {
