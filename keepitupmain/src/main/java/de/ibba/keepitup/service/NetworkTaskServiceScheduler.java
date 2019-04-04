@@ -56,13 +56,8 @@ public class NetworkTaskServiceScheduler {
         PendingIntent pendingIntent = getPendingIntent(networkTask);
         AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         alarmManager.cancel(pendingIntent);
+        pendingIntent.cancel();
         return networkTask;
-    }
-
-    private PendingIntent getPendingIntent(NetworkTask networkTask) {
-        Intent intent = new Intent(context, NetworkTaskBroadcastReceiver.class);
-        intent.putExtras(networkTask.toBundle());
-        return PendingIntent.getBroadcast(context, networkTask.getSchedulerId(), intent, 0);
     }
 
     public void cancelAll() {
@@ -71,6 +66,12 @@ public class NetworkTaskServiceScheduler {
         for (NetworkTask currentTask : networkTasks) {
             cancel(currentTask);
         }
+    }
+
+    private PendingIntent getPendingIntent(NetworkTask networkTask) {
+        Intent intent = new Intent(context, NetworkTaskBroadcastReceiver.class);
+        intent.putExtras(networkTask.toBundle());
+        return PendingIntent.getBroadcast(context, networkTask.getSchedulerId(), intent, 0);
     }
 
     private void setAlarm(long delay, PendingIntent pendingIntent) {
