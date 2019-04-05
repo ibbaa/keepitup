@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import java.text.DateFormat;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -177,15 +178,19 @@ public class NetworkTaskAdapter extends RecyclerView.Adapter<NetworkTaskViewHold
         return networkTaskWrapperList.size() + 1;
     }
 
+    public List<NetworkTaskUIWrapper> getAllItems() {
+        return Collections.unmodifiableList(networkTaskWrapperList);
+    }
+
     public NetworkTaskUIWrapper getItem(int position) {
         return networkTaskWrapperList.get(position);
     }
 
-    private Context getContext() {
+    public Context getContext() {
         return mainActivity;
     }
 
-    private Resources getResources() {
+    public Resources getResources() {
         return getContext().getResources();
     }
 }

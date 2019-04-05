@@ -1,0 +1,3 @@
+- ui sync
+- test ui sync
+- boot complete service

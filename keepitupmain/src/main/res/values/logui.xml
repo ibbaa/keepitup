@@ -7,5 +7,4 @@
     <string name="text_list_item_log_entry_success">Execution %s</string>
     <string name="text_list_item_log_entry_timestamp">Timestamp: %s</string>
     <string name="text_list_item_log_entry_message">Message: %s</string>
-
 </resources>
