@@ -34,13 +34,13 @@ public class UISyncController {
         handler.post(runnable);
     }
 
-    private static synchronized void refresh(Runnable runnable, long refreshInterval) {
+    private static void refresh(Runnable runnable, long refreshInterval) {
         Log.d(UISyncController.class.getName(), "refreshing ui sync with interval of " + refreshInterval);
         UISyncController.runnable = runnable;
         handler.postDelayed(runnable, refreshInterval * 1000);
     }
 
-    public static synchronized void stop() {
+    public static void stop() {
         Log.d(UISyncController.class.getName(), "stopping UI sync");
         if (isRunning()) {
             Log.d(UISyncController.class.getName(), "Stopping...");
@@ -52,7 +52,7 @@ public class UISyncController {
         }
     }
 
-    public static synchronized boolean isRunning() {
+    public static boolean isRunning() {
         Log.d(UISyncController.class.getName(), "ui sync running: " + (UISyncController.runnable != null));
         return runnable != null;
     }
