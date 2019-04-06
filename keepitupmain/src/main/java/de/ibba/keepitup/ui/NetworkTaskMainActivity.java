@@ -21,6 +21,7 @@ import de.ibba.keepitup.ui.adapter.NetworkTaskAdapter;
 import de.ibba.keepitup.ui.adapter.NetworkTaskUIWrapper;
 import de.ibba.keepitup.ui.dialog.GeneralConfirmDialog;
 import de.ibba.keepitup.ui.dialog.NetworkTaskEditDialog;
+import de.ibba.keepitup.ui.sync.UISyncController;
 
 public class NetworkTaskMainActivity extends RecyclerViewBaseActivity {
 
@@ -40,6 +41,20 @@ public class NetworkTaskMainActivity extends RecyclerViewBaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_network_task);
         initRecyclerView();
+    }
+
+    @Override
+    protected void onStart() {
+        Log.d(NetworkTaskMainActivity.class.getName(), "onStart");
+        super.onStart();
+        UISyncController.start((NetworkTaskAdapter) getAdapter());
+    }
+
+    @Override
+    protected void onStop() {
+        Log.d(NetworkTaskMainActivity.class.getName(), "onStop");
+        super.onStop();
+        UISyncController.stop();
     }
 
     private List<NetworkTaskUIWrapper> readNetworkTasksFromDatabase() {
