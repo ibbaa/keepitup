@@ -45,5 +45,6 @@ public class UISyncAsyncTask extends AsyncTask<UISyncHolder, Integer, List<Netwo
         for (NetworkTaskUIWrapper currentWrapper : networkTaskWrapperList) {
             adapter.replaceItem(currentWrapper);
         }
+        adapter.notifyDataSetChanged();
     }
 }
