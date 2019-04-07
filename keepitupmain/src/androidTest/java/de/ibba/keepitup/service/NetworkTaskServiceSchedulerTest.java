@@ -17,7 +17,7 @@ import static org.junit.Assert.assertTrue;
 
 @MediumTest
 @RunWith(AndroidJUnit4.class)
-public class NetworkTaskServiceTest {
+public class NetworkTaskServiceSchedulerTest {
 
     private NetworkTaskServiceScheduler scheduler;
 
