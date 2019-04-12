@@ -13,15 +13,19 @@ import java.util.List;
 
 import de.ibba.keepitup.db.NetworkTaskDAO;
 import de.ibba.keepitup.model.NetworkTask;
+import de.ibba.keepitup.resources.ServiceFactory;
+import de.ibba.keepitup.resources.ServiceFactoryContributor;
 
 public class NetworkTaskServiceScheduler {
 
     private final Context context;
     private final NetworkTaskDAO networkTaskDAO;
+    private final ServiceFactory serviceFactory;
 
     public NetworkTaskServiceScheduler(Context context) {
         this.context = context;
         this.networkTaskDAO = new NetworkTaskDAO(context);
+        this.serviceFactory = getServiceFactory();
     }
 
     public NetworkTask schedule(NetworkTask networkTask) {
@@ -75,7 +79,8 @@ public class NetworkTaskServiceScheduler {
     }
 
     private void setAlarm(long delay, PendingIntent pendingIntent) {
-        AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+        AlarmManager alarmManager = serviceFactory.createAlarmManager(context);
+        Log.d(NetworkTaskServiceScheduler.class.getName(), "Created alarm manager class is " + alarmManager.getClass().getName());
         if (Build.VERSION.SDK_INT >= 23) {
             alarmManager.setExactAndAllowWhileIdle(AlarmManager.ELAPSED_REALTIME_WAKEUP, SystemClock.elapsedRealtime() + delay, pendingIntent);
         } else {
@@ -85,6 +90,11 @@ public class NetworkTaskServiceScheduler {
 
     private long getIntervalMilliseconds(NetworkTask networkTask) {
         return 60 * 1000 * networkTask.getInterval();
+    }
+
+    private ServiceFactory getServiceFactory() {
+        ServiceFactoryContributor factoryContributor = new ServiceFactoryContributor(context);
+        return factoryContributor.createServiceFactory();
     }
 
     private Context getContext() {
