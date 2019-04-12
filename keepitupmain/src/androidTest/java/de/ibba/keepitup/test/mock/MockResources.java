@@ -20,14 +20,16 @@ import org.xmlpull.v1.XmlPullParserException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.BiConsumer;
 
 public class MockResources extends Resources {
 
     private final Resources testResources;
     private final Resources targetResources;
-    private final Map<Integer, String> testStringResources;
+    private final Map<String, Integer> testStringResources;
     private final Map<Integer, String> targetStringResources;
 
     public MockResources(AssetManager assetManager, Resources testResources, Resources targetResources) {
@@ -36,12 +38,22 @@ public class MockResources extends Resources {
         this.targetResources = targetResources;
         testStringResources = new HashMap<>();
         targetStringResources = new HashMap<>();
+        parseStringResources(de.ibba.keepitup.test.R.string.class, (String name, Integer value) -> testStringResources.put(name, value));
+        parseStringResources(de.ibba.keepitup.R.string.class, (String name, Integer value) -> targetStringResources.put(value, name));
     }
 
-    private void parseStringResources(Class resources) {
-        Field[] fields = resources.getDeclaredFields();
-        for (Field currentField : fields) {
-
+    private void parseStringResources(Class resources, BiConsumer<String, Integer> consumer) {
+        try {
+            Field[] fields = resources.getDeclaredFields();
+            for (Field currentField : fields) {
+                if (Modifier.isStatic(currentField.getModifiers())) {
+                    String name = currentField.getName();
+                    int value = currentField.getInt(null);
+                    consumer.accept(name, value);
+                }
+            }
+        } catch (IllegalAccessException exc) {
+            throw new RuntimeException(exc);
         }
     }
 
@@ -62,11 +74,21 @@ public class MockResources extends Resources {
 
     @Override
     public String getString(int id) throws NotFoundException {
+        String resourceName = targetStringResources.get(id);
+        Integer testId = testStringResources.get(resourceName);
+        if (testId != null) {
+            return testResources.getString(testId);
+        }
         return targetResources.getString(id);
     }
 
     @Override
     public String getString(int id, Object... formatArgs) throws NotFoundException {
+        String resourceName = targetStringResources.get(id);
+        Integer testId = testStringResources.get(resourceName);
+        if (testId != null) {
+            return testResources.getString(testId, formatArgs);
+        }
         return targetResources.getString(id, formatArgs);
     }
 
