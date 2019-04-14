@@ -11,6 +11,7 @@ import android.graphics.Movie;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
 import android.util.TypedValue;
@@ -57,21 +58,25 @@ public class MockResources extends Resources {
         }
     }
 
+    @NonNull
     @Override
     public CharSequence getText(int id) throws NotFoundException {
         return targetResources.getText(id);
     }
 
+    @NonNull
     @Override
     public Typeface getFont(int id) throws NotFoundException {
         return targetResources.getFont(id);
     }
 
+    @NonNull
     @Override
     public CharSequence getQuantityText(int id, int quantity) throws NotFoundException {
         return targetResources.getQuantityText(id, quantity);
     }
 
+    @NonNull
     @Override
     public String getString(int id) throws NotFoundException {
         String resourceName = targetStringResources.get(id);
@@ -82,6 +87,7 @@ public class MockResources extends Resources {
         return targetResources.getString(id);
     }
 
+    @NonNull
     @Override
     public String getString(int id, Object... formatArgs) throws NotFoundException {
         String resourceName = targetStringResources.get(id);
@@ -92,11 +98,13 @@ public class MockResources extends Resources {
         return targetResources.getString(id, formatArgs);
     }
 
+    @NonNull
     @Override
     public String getQuantityString(int id, int quantity, Object... formatArgs) throws NotFoundException {
         return targetResources.getQuantityString(id, quantity, formatArgs);
     }
 
+    @NonNull
     @Override
     public String getQuantityString(int id, int quantity) throws NotFoundException {
         return targetResources.getQuantityString(id, quantity);
@@ -107,21 +115,25 @@ public class MockResources extends Resources {
         return targetResources.getText(id, def);
     }
 
+    @NonNull
     @Override
     public CharSequence[] getTextArray(int id) throws NotFoundException {
         return targetResources.getTextArray(id);
     }
 
+    @NonNull
     @Override
     public String[] getStringArray(int id) throws NotFoundException {
         return targetResources.getStringArray(id);
     }
 
+    @NonNull
     @Override
     public int[] getIntArray(int id) throws NotFoundException {
         return targetResources.getIntArray(id);
     }
 
+    @NonNull
     @Override
     public TypedArray obtainTypedArray(int id) throws NotFoundException {
         return targetResources.obtainTypedArray(id);
@@ -182,11 +194,13 @@ public class MockResources extends Resources {
         return targetResources.getColor(id, theme);
     }
 
+    @NonNull
     @Override
     public ColorStateList getColorStateList(int id) throws NotFoundException {
         return targetResources.getColorStateList(id);
     }
 
+    @NonNull
     @Override
     public ColorStateList getColorStateList(int id, Resources.Theme theme) throws NotFoundException {
         return targetResources.getColorStateList(id, theme);
@@ -202,26 +216,31 @@ public class MockResources extends Resources {
         return targetResources.getInteger(id);
     }
 
+    @NonNull
     @Override
     public XmlResourceParser getLayout(int id) throws NotFoundException {
         return targetResources.getLayout(id);
     }
 
+    @NonNull
     @Override
     public XmlResourceParser getAnimation(int id) throws NotFoundException {
         return targetResources.getAnimation(id);
     }
 
+    @NonNull
     @Override
     public XmlResourceParser getXml(int id) throws NotFoundException {
         return targetResources.getXml(id);
     }
 
+    @NonNull
     @Override
     public InputStream openRawResource(int id) throws NotFoundException {
         return targetResources.openRawResource(id);
     }
 
+    @NonNull
     @Override
     public InputStream openRawResource(int id, TypedValue value) throws NotFoundException {
         return targetResources.openRawResource(id, value);

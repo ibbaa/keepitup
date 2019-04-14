@@ -1,31 +1,27 @@
 package de.ibba.keepitup.service;
 
-import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
-import android.os.Build;
-import android.os.SystemClock;
 import android.util.Log;
 
 import java.util.List;
 
 import de.ibba.keepitup.db.NetworkTaskDAO;
 import de.ibba.keepitup.model.NetworkTask;
-import de.ibba.keepitup.resources.ServiceFactory;
 import de.ibba.keepitup.resources.ServiceFactoryContributor;
 
 public class NetworkTaskServiceScheduler {
 
     private final Context context;
     private final NetworkTaskDAO networkTaskDAO;
-    private final ServiceFactory serviceFactory;
+    private final IAlarmManager alarmManager;
 
     public NetworkTaskServiceScheduler(Context context) {
         this.context = context;
         this.networkTaskDAO = new NetworkTaskDAO(context);
-        this.serviceFactory = getServiceFactory();
+        this.alarmManager = getAlarmManager();
     }
 
     public NetworkTask schedule(NetworkTask networkTask) {
@@ -49,7 +45,7 @@ public class NetworkTaskServiceScheduler {
         } else {
             Log.d(NetworkTaskServiceScheduler.class.getName(), "scheduling alarm with delay of " + delay + " msec");
         }
-        setAlarm(delay, pendingIntent);
+        alarmManager.setAlarm(delay, pendingIntent);
         return networkTask;
     }
 
@@ -58,8 +54,7 @@ public class NetworkTaskServiceScheduler {
         networkTask.setRunning(false);
         networkTaskDAO.updateNetworkTaskRunning(networkTask.getId(), false);
         PendingIntent pendingIntent = getPendingIntent(networkTask);
-        AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-        alarmManager.cancel(pendingIntent);
+        alarmManager.cancelAlarm(pendingIntent);
         pendingIntent.cancel();
         return networkTask;
     }
@@ -78,23 +73,13 @@ public class NetworkTaskServiceScheduler {
         return PendingIntent.getBroadcast(context, networkTask.getSchedulerId(), intent, 0);
     }
 
-    private void setAlarm(long delay, PendingIntent pendingIntent) {
-        AlarmManager alarmManager = serviceFactory.createAlarmManager(context);
-        Log.d(NetworkTaskServiceScheduler.class.getName(), "Created alarm manager class is " + alarmManager.getClass().getName());
-        if (Build.VERSION.SDK_INT >= 23) {
-            alarmManager.setExactAndAllowWhileIdle(AlarmManager.ELAPSED_REALTIME_WAKEUP, SystemClock.elapsedRealtime() + delay, pendingIntent);
-        } else {
-            alarmManager.setExact(AlarmManager.ELAPSED_REALTIME_WAKEUP, SystemClock.elapsedRealtime() + delay, pendingIntent);
-        }
-    }
-
     private long getIntervalMilliseconds(NetworkTask networkTask) {
         return 60 * 1000 * networkTask.getInterval();
     }
 
-    private ServiceFactory getServiceFactory() {
+    private IAlarmManager getAlarmManager() {
         ServiceFactoryContributor factoryContributor = new ServiceFactoryContributor(context);
-        return factoryContributor.createServiceFactory();
+        return factoryContributor.createServiceFactory().createAlarmManager(context);
     }
 
     private Context getContext() {
