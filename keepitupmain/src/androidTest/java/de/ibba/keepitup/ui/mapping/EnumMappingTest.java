@@ -1,6 +1,5 @@
 package de.ibba.keepitup.ui.mapping;
 
-import android.support.test.InstrumentationRegistry;
 import android.support.test.filters.SmallTest;
 import android.support.test.runner.AndroidJUnit4;
 
@@ -9,6 +8,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import de.ibba.keepitup.model.AccessType;
+import de.ibba.keepitup.test.mock.TestRegistry;
 import de.ibba.keepitup.ui.validation.NullValidator;
 import de.ibba.keepitup.ui.validation.StandardHostPortValidator;
 
@@ -23,7 +23,7 @@ public class EnumMappingTest {
 
     @Before
     public void beforeEachTestMethod() {
-        enumMapping = new EnumMapping(InstrumentationRegistry.getTargetContext());
+        enumMapping = new EnumMapping(TestRegistry.getContext());
     }
 
     @Test

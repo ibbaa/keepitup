@@ -16,6 +16,7 @@ import de.ibba.keepitup.test.matcher.ChildDescendantAtPositionMatcher;
 import de.ibba.keepitup.test.matcher.DrawableMatcher;
 import de.ibba.keepitup.test.matcher.ListSizeMatcher;
 import de.ibba.keepitup.test.matcher.TextColorMatcher;
+import de.ibba.keepitup.test.mock.TestRegistry;
 
 public abstract class BaseUITest {
 
@@ -25,11 +26,11 @@ public abstract class BaseUITest {
 
     @Before
     public void beforeEachTestMethod() {
-        scheduler = new NetworkTaskServiceScheduler(InstrumentationRegistry.getTargetContext());
+        scheduler = new NetworkTaskServiceScheduler(TestRegistry.getContext());
         scheduler.cancelAll();
-        logDAO = new LogDAO(InstrumentationRegistry.getTargetContext());
+        logDAO = new LogDAO(TestRegistry.getContext());
         logDAO.deleteAllLogs();
-        networkTaskDAO = new NetworkTaskDAO(InstrumentationRegistry.getTargetContext());
+        networkTaskDAO = new NetworkTaskDAO(TestRegistry.getContext());
         networkTaskDAO.deleteAllNetworkTasks();
         setLocale(Locale.US);
     }

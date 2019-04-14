@@ -1,6 +1,5 @@
 package de.ibba.keepitup.db;
 
-import android.support.test.InstrumentationRegistry;
 import android.support.test.filters.MediumTest;
 import android.support.test.runner.AndroidJUnit4;
 
@@ -12,6 +11,7 @@ import org.junit.runner.RunWith;
 import java.util.List;
 
 import de.ibba.keepitup.model.LogEntry;
+import de.ibba.keepitup.test.mock.TestRegistry;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
@@ -25,7 +25,7 @@ public class LogDAOTest {
 
     @Before
     public void beforeEachTestMethod() {
-        logDAO = new LogDAO(InstrumentationRegistry.getTargetContext());
+        logDAO = new LogDAO(TestRegistry.getContext());
         logDAO.deleteAllLogs();
     }
 
