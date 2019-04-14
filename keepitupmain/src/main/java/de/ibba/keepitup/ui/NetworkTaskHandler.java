@@ -14,14 +14,15 @@ import de.ibba.keepitup.ui.adapter.NetworkTaskUIWrapper;
 class NetworkTaskHandler {
 
     private final NetworkTaskMainActivity mainActivity;
+    private final NetworkTaskServiceScheduler scheduler;
 
     public NetworkTaskHandler(NetworkTaskMainActivity mainActivity) {
         this.mainActivity = mainActivity;
+        this.scheduler = new NetworkTaskServiceScheduler(mainActivity);
     }
 
     public void startNetworkTask(NetworkTask task) {
         Log.d(NetworkTaskHandler.class.getName(), "startNetworkTask for task " + task);
-        NetworkTaskServiceScheduler scheduler = new NetworkTaskServiceScheduler(mainActivity);
         try {
             scheduler.schedule(task);
         } catch (Exception exc) {
@@ -32,7 +33,6 @@ class NetworkTaskHandler {
 
     public void stopNetworkTask(NetworkTask task) {
         Log.d(NetworkTaskHandler.class.getName(), "stopNetworkTask for task " + task);
-        NetworkTaskServiceScheduler scheduler = new NetworkTaskServiceScheduler(mainActivity);
         try {
             scheduler.cancel(task);
         } catch (Exception exc) {
@@ -65,7 +65,6 @@ class NetworkTaskHandler {
         try {
             NetworkTaskDAO dao = new NetworkTaskDAO(mainActivity);
             dao.updateNetworkTask(task);
-            NetworkTaskServiceScheduler scheduler = new NetworkTaskServiceScheduler(mainActivity);
             if (task.isRunning()) {
                 Log.d(NetworkTaskHandler.class.getName(), "Network task is running. Restarting.");
                 task = scheduler.cancel(task);
@@ -83,7 +82,6 @@ class NetworkTaskHandler {
         try {
             NetworkTaskDAO networkTaskDAO = new NetworkTaskDAO(mainActivity);
             LogDAO logDAO = new LogDAO(mainActivity);
-            NetworkTaskServiceScheduler scheduler = new NetworkTaskServiceScheduler(mainActivity);
             if (task.isRunning()) {
                 Log.d(NetworkTaskHandler.class.getName(), "Network task is running. Stopping.");
                 task = scheduler.cancel(task);

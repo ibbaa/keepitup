@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="service_factory_implementation">de.ibba.keepitup.test.mock.TestServiceFactory</string>
+</resources>
