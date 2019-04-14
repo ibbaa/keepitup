@@ -1,6 +1,5 @@
 package de.ibba.keepitup.service;
 
-import android.support.test.InstrumentationRegistry;
 import android.support.test.filters.MediumTest;
 import android.support.test.runner.AndroidJUnit4;
 
@@ -11,6 +10,7 @@ import org.junit.runner.RunWith;
 
 import de.ibba.keepitup.model.AccessType;
 import de.ibba.keepitup.model.NetworkTask;
+import de.ibba.keepitup.test.mock.TestRegistry;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -23,7 +23,7 @@ public class NetworkTaskServiceSchedulerTest {
 
     @Before
     public void beforeEachTestMethod() {
-        scheduler = new NetworkTaskServiceScheduler(InstrumentationRegistry.getTargetContext());
+        scheduler = new NetworkTaskServiceScheduler(TestRegistry.getContext());
         scheduler.cancelAll();
     }
 
