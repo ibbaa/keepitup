@@ -10,8 +10,8 @@ import de.ibba.keepitup.service.IAlarmManager;
 
 public class MockAlarmManager implements IAlarmManager {
 
-    private List<SetAlarmCall> setAlarmCalls;
-    private List<CancelAlarmCall> cancelAlarmCalls;
+    private final List<SetAlarmCall> setAlarmCalls;
+    private final List<CancelAlarmCall> cancelAlarmCalls;
 
     public MockAlarmManager() {
         setAlarmCalls = new ArrayList<>();

@@ -21,7 +21,7 @@ public class NetworkTaskServiceScheduler {
     public NetworkTaskServiceScheduler(Context context) {
         this.context = context;
         this.networkTaskDAO = new NetworkTaskDAO(context);
-        this.alarmManager = getAlarmManager();
+        this.alarmManager = createAlarmManager();
     }
 
     public NetworkTask schedule(NetworkTask networkTask) {
@@ -67,6 +67,10 @@ public class NetworkTaskServiceScheduler {
         }
     }
 
+    public IAlarmManager getAlarmManager() {
+        return alarmManager;
+    }
+
     private PendingIntent getPendingIntent(NetworkTask networkTask) {
         Intent intent = new Intent(context, NetworkTaskBroadcastReceiver.class);
         intent.putExtras(networkTask.toBundle());
@@ -77,7 +81,7 @@ public class NetworkTaskServiceScheduler {
         return 60 * 1000 * networkTask.getInterval();
     }
 
-    private IAlarmManager getAlarmManager() {
+    private IAlarmManager createAlarmManager() {
         ServiceFactoryContributor factoryContributor = new ServiceFactoryContributor(context);
         return factoryContributor.createServiceFactory().createAlarmManager(context);
     }
