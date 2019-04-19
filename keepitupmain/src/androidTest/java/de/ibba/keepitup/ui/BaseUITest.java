@@ -1,6 +1,8 @@
 package de.ibba.keepitup.ui;
 
+import android.content.Intent;
 import android.support.test.InstrumentationRegistry;
+import android.support.test.rule.ActivityTestRule;
 import android.view.View;
 
 import org.hamcrest.Matcher;
@@ -40,6 +42,16 @@ public abstract class BaseUITest {
         scheduler.cancelAll();
         logDAO.deleteAllLogs();
         networkTaskDAO.deleteAllNetworkTasks();
+    }
+
+    public void lauchRecyclerViewBaseActivity(ActivityTestRule<?> rule) {
+        lauchRecyclerViewBaseActivity(rule, null);
+    }
+
+    public void lauchRecyclerViewBaseActivity(ActivityTestRule<?> rule, Intent intent) {
+        rule.launchActivity(intent);
+        RecyclerViewBaseActivity activity = (RecyclerViewBaseActivity) rule.getActivity();
+        activity.injectResources(TestRegistry.getContext().getResources());
     }
 
     public NetworkTaskDAO getNetworkTaskDAO() {
