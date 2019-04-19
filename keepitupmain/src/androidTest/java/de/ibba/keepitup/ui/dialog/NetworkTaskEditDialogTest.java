@@ -45,7 +45,7 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
     @Before
     public void beforeEachTestMethod() {
         super.beforeEachTestMethod();
-        rule.launchActivity(null);
+        lauchRecyclerViewBaseActivity(rule);
         activity = rule.getActivity();
     }
 

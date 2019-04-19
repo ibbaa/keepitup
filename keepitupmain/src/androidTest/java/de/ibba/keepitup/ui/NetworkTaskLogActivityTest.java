@@ -38,7 +38,7 @@ public class NetworkTaskLogActivityTest extends BaseUITest {
     @Test
     public void testInitializeActivityNoData() {
         NetworkTask task = insertNetworkTask();
-        rule.launchActivity(getNetworkTaskIntent(task));
+        lauchRecyclerViewBaseActivity(rule, getNetworkTaskIntent(task));
         onView(withId(R.id.listview_log_activity_log_entries)).check(matches(withListSize(1)));
         onView(allOf(withId(R.id.textview_list_item_log_entry_no_log), withChildDescendantAtPosition(withId(R.id.listview_log_activity_log_entries), 0))).check(matches(isDisplayed()));
         onView(allOf(withId(R.id.textview_list_item_log_entry_no_log), withChildDescendantAtPosition(withId(R.id.listview_log_activity_log_entries), 0))).check(matches(withText("No logs present for network task 1")));
@@ -52,7 +52,7 @@ public class NetworkTaskLogActivityTest extends BaseUITest {
         LogEntry entry2 = getLogEntry(task, new GregorianCalendar(1985, Calendar.DECEMBER, 24), true, "Message2");
         getLogDAO().insertAndDeleteLog(entry1);
         getLogDAO().insertAndDeleteLog(entry2);
-        rule.launchActivity(getNetworkTaskIntent(task));
+        lauchRecyclerViewBaseActivity(rule, getNetworkTaskIntent(task));
         onView(withId(R.id.listview_log_activity_log_entries)).check(matches(withListSize(2)));
         onView(allOf(withId(R.id.textview_list_item_log_entry_no_log), withChildDescendantAtPosition(withId(R.id.listview_log_activity_log_entries), 0))).check(matches(not(isDisplayed())));
         onView(allOf(withId(R.id.textview_list_item_log_entry_no_log), withChildDescendantAtPosition(withId(R.id.listview_log_activity_log_entries), 1))).check(matches(not(isDisplayed())));
@@ -75,7 +75,7 @@ public class NetworkTaskLogActivityTest extends BaseUITest {
         LogEntry entry2 = getLogEntry(task, new GregorianCalendar(1985, Calendar.DECEMBER, 24), true, "Message2");
         getLogDAO().insertAndDeleteLog(entry1);
         getLogDAO().insertAndDeleteLog(entry2);
-        rule.launchActivity(getNetworkTaskIntent(task));
+        lauchRecyclerViewBaseActivity(rule, getNetworkTaskIntent(task));
         onView(withId(R.id.listview_log_activity_log_entries)).check(matches(withListSize(2)));
         LogEntry entry3 = getLogEntry(task, new GregorianCalendar(2016, Calendar.JULY, 1), true, "Message3");
         getLogDAO().insertAndDeleteLog(entry3);

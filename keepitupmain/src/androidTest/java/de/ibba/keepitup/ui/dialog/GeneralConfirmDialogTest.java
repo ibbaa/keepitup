@@ -10,6 +10,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import de.ibba.keepitup.R;
+import de.ibba.keepitup.ui.BaseUITest;
 import de.ibba.keepitup.ui.NetworkTaskMainActivity;
 import de.ibba.keepitup.util.BundleUtil;
 
@@ -21,7 +22,7 @@ import static android.support.test.espresso.matcher.ViewMatchers.withText;
 
 @MediumTest
 @RunWith(AndroidJUnit4.class)
-public class GeneralConfirmDialogTest {
+public class GeneralConfirmDialogTest extends BaseUITest {
 
     @Rule
     public final ActivityTestRule<NetworkTaskMainActivity> rule = new ActivityTestRule<>(NetworkTaskMainActivity.class, false, false);
@@ -30,7 +31,8 @@ public class GeneralConfirmDialogTest {
 
     @Before
     public void beforeEachTestMethod() {
-        rule.launchActivity(null);
+        super.beforeEachTestMethod();
+        lauchRecyclerViewBaseActivity(rule);
         activity = rule.getActivity();
     }
 
