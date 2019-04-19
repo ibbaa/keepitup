@@ -1,11 +1,11 @@
 package de.ibba.keepitup.test.mock;
 
 import android.content.Context;
-import android.os.Handler;
 import android.util.Log;
 
 import de.ibba.keepitup.resources.ServiceFactory;
 import de.ibba.keepitup.service.IAlarmManager;
+import de.ibba.keepitup.ui.sync.IHandler;
 import de.ibba.keepitup.ui.sync.UISyncAsyncTask;
 
 public class TestServiceFactory implements ServiceFactory {
@@ -17,9 +17,9 @@ public class TestServiceFactory implements ServiceFactory {
     }
 
     @Override
-    public Handler createHandler() {
+    public IHandler createHandler() {
         Log.d(TestServiceFactory.class.getName(), "createHandler");
-        return new Handler();
+        return new MockHandler();
     }
 
     @Override

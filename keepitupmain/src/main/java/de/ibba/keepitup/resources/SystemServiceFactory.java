@@ -1,11 +1,12 @@
 package de.ibba.keepitup.resources;
 
 import android.content.Context;
-import android.os.Handler;
 import android.util.Log;
 
 import de.ibba.keepitup.service.IAlarmManager;
 import de.ibba.keepitup.service.SystemAlarmManager;
+import de.ibba.keepitup.ui.sync.IHandler;
+import de.ibba.keepitup.ui.sync.SystemHandler;
 import de.ibba.keepitup.ui.sync.UISyncAsyncTask;
 
 public class SystemServiceFactory implements ServiceFactory {
@@ -17,9 +18,9 @@ public class SystemServiceFactory implements ServiceFactory {
     }
 
     @Override
-    public Handler createHandler() {
+    public IHandler createHandler() {
         Log.d(SystemServiceFactory.class.getName(), "createHandler");
-        return new Handler();
+        return new SystemHandler();
     }
 
     @Override
