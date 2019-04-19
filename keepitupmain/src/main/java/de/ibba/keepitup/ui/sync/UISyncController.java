@@ -1,7 +1,6 @@
 package de.ibba.keepitup.ui.sync;
 
 import android.content.Context;
-import android.os.Handler;
 import android.util.Log;
 
 import de.ibba.keepitup.R;
@@ -12,7 +11,7 @@ import de.ibba.keepitup.ui.adapter.NetworkTaskAdapter;
 
 public class UISyncController {
 
-    private static Handler handler;
+    private static IHandler handler;
     private static ServiceFactory serviceFactory;
     private static Runnable runnable;
     private static NetworkTaskAdapter adapter;
@@ -45,20 +44,20 @@ public class UISyncController {
             }
         };
         Log.d(UISyncController.class.getName(), "Starting...");
-        handler.post(runnable);
+        handler.start(runnable);
     }
 
     private static void refresh(Runnable runnable, long refreshInterval) {
         Log.d(UISyncController.class.getName(), "refreshing ui sync with interval of " + refreshInterval);
         UISyncController.runnable = runnable;
-        handler.postDelayed(runnable, refreshInterval * 1000);
+        handler.startDelayed(runnable, refreshInterval * 1000);
     }
 
     public static void stop() {
         Log.d(UISyncController.class.getName(), "stopping UI sync");
         if (isRunning()) {
             Log.d(UISyncController.class.getName(), "Stopping...");
-            handler.removeCallbacks(runnable);
+            handler.stop(runnable);
             runnable = null;
             adapter = null;
         } else {
