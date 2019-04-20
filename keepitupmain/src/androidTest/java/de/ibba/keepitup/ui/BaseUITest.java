@@ -44,11 +44,11 @@ public abstract class BaseUITest {
         networkTaskDAO.deleteAllNetworkTasks();
     }
 
-    public void lauchRecyclerViewBaseActivity(ActivityTestRule<?> rule) {
-        lauchRecyclerViewBaseActivity(rule, null);
+    public void launchRecyclerViewBaseActivity(ActivityTestRule<?> rule) {
+        launchRecyclerViewBaseActivity(rule, null);
     }
 
-    public void lauchRecyclerViewBaseActivity(ActivityTestRule<?> rule, Intent intent) {
+    public void launchRecyclerViewBaseActivity(ActivityTestRule<?> rule, Intent intent) {
         rule.launchActivity(intent);
         RecyclerViewBaseActivity activity = (RecyclerViewBaseActivity) rule.getActivity();
         activity.injectResources(TestRegistry.getContext().getResources());

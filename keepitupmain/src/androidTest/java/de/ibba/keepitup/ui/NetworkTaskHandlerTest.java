@@ -30,7 +30,7 @@ public class NetworkTaskHandlerTest extends BaseUITest {
     @Before
     public void beforeEachTestMethod() {
         super.beforeEachTestMethod();
-        lauchRecyclerViewBaseActivity(rule);
+        launchRecyclerViewBaseActivity(rule);
         activity = rule.getActivity();
         handler = new NetworkTaskHandler(activity);
     }

@@ -25,6 +25,6 @@ public class TestServiceFactory implements ServiceFactory {
     @Override
     public UISyncAsyncTask createUISyncAsyncTask() {
         Log.d(TestServiceFactory.class.getName(), "createUISyncAsyncTask");
-        return new UISyncAsyncTask();
+        return new MockUISyncAsyncTask();
     }
 }

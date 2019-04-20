@@ -16,6 +16,10 @@ public class UISyncAsyncTask extends AsyncTask<UISyncHolder, Integer, List<Netwo
 
     private UISyncHolder syncHolder;
 
+    public void start(UISyncHolder uiSyncHolder) {
+        super.execute(uiSyncHolder);
+    }
+
     @Override
     protected List<NetworkTaskUIWrapper> doInBackground(UISyncHolder... syncHolders) {
         syncHolder = syncHolders[0];

@@ -32,17 +32,7 @@ public class UISyncController {
         if (isRunning()) {
             stop();
         }
-        UISyncController.runnable = new Runnable() {
-            @Override
-            public void run() {
-                LogDAO logDAO = new LogDAO(UISyncController.adapter.getContext());
-                UISyncAsyncTask uiSyncAsyncTask = serviceFactory.createUISyncAsyncTask();
-                uiSyncAsyncTask.execute(new UISyncHolder(adapter.getAllItems(), adapter, logDAO));
-                long refreshInterval = UISyncController.adapter.getResources().getInteger(R.integer.ui_sync_refresh_interval);
-                Log.d(UISyncController.class.getName(), "loaded refreshInterval setting " + refreshInterval);
-                UISyncController.refresh(this, refreshInterval);
-            }
-        };
+        UISyncController.runnable = new UISyncRunnable();
         Log.d(UISyncController.class.getName(), "Starting...");
         handler.start(runnable);
     }
@@ -73,5 +63,24 @@ public class UISyncController {
     private static ServiceFactory getServiceFactory(Context context) {
         ServiceFactoryContributor factoryContributor = new ServiceFactoryContributor(context);
         return factoryContributor.createServiceFactory();
+    }
+
+    public static class UISyncRunnable implements Runnable {
+
+        private UISyncAsyncTask uiSyncAsyncTask;
+
+        @Override
+        public void run() {
+            LogDAO logDAO = new LogDAO(UISyncController.adapter.getContext());
+            uiSyncAsyncTask = serviceFactory.createUISyncAsyncTask();
+            uiSyncAsyncTask.start(new UISyncHolder(adapter.getAllItems(), adapter, logDAO));
+            long refreshInterval = UISyncController.adapter.getResources().getInteger(R.integer.ui_sync_refresh_interval);
+            Log.d(UISyncController.UISyncRunnable.class.getName(), "loaded refreshInterval setting " + refreshInterval);
+            UISyncController.refresh(this, refreshInterval);
+        }
+
+        public UISyncAsyncTask getUiSyncAsyncTask() {
+            return uiSyncAsyncTask;
+        }
     }
 }
