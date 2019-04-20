@@ -1,6 +1,7 @@
 package de.ibba.keepitup.test.mock;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import de.ibba.keepitup.ui.adapter.NetworkTaskUIWrapper;
@@ -29,7 +30,7 @@ public class MockUISyncAsyncTask extends UISyncAsyncTask {
     }
 
     public List<StartCall> getStartCalls() {
-        return startCalls;
+        return Collections.unmodifiableList(startCalls);
     }
 
     public void setDoCall(boolean doCall) {

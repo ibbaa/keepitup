@@ -1,6 +1,7 @@
 package de.ibba.keepitup.test.mock;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import de.ibba.keepitup.ui.sync.IHandler;
@@ -21,15 +22,15 @@ public class MockHandler implements IHandler {
     }
 
     public List<StartCall> getStartCalls() {
-        return startCalls;
+        return Collections.unmodifiableList(startCalls);
     }
 
     public List<StartDelayedCall> getStartDelayedCalls() {
-        return startDelayedCalls;
+        return Collections.unmodifiableList(startDelayedCalls);
     }
 
     public List<StopCall> getStopCalls() {
-        return stopCalls;
+        return Collections.unmodifiableList(stopCalls);
     }
 
     public void setDoCall(boolean doCall) {

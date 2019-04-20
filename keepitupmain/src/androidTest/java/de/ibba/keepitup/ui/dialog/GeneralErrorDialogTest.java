@@ -31,8 +31,7 @@ public class GeneralErrorDialogTest extends BaseUITest {
     @Before
     public void beforeEachTestMethod() {
         super.beforeEachTestMethod();
-        launchRecyclerViewBaseActivity(rule);
-        activity = rule.getActivity();
+        activity = (NetworkTaskMainActivity) launchRecyclerViewBaseActivity(rule);
     }
 
     @Test

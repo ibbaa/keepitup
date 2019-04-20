@@ -18,7 +18,9 @@ import de.ibba.keepitup.test.matcher.ChildDescendantAtPositionMatcher;
 import de.ibba.keepitup.test.matcher.DrawableMatcher;
 import de.ibba.keepitup.test.matcher.ListSizeMatcher;
 import de.ibba.keepitup.test.matcher.TextColorMatcher;
+import de.ibba.keepitup.test.mock.MockHandler;
 import de.ibba.keepitup.test.mock.TestRegistry;
+import de.ibba.keepitup.ui.sync.UISyncController;
 
 public abstract class BaseUITest {
 
@@ -35,6 +37,11 @@ public abstract class BaseUITest {
         networkTaskDAO = new NetworkTaskDAO(TestRegistry.getContext());
         networkTaskDAO.deleteAllNetworkTasks();
         setLocale(Locale.US);
+        UISyncController.injectContext(TestRegistry.getContext());
+        MockHandler handler = (MockHandler) UISyncController.getHandler();
+        if (handler != null) {
+            handler.reset();
+        }
     }
 
     @After
@@ -42,16 +49,20 @@ public abstract class BaseUITest {
         scheduler.cancelAll();
         logDAO.deleteAllLogs();
         networkTaskDAO.deleteAllNetworkTasks();
+        MockHandler handler = (MockHandler) UISyncController.getHandler();
+        if (handler != null) {
+            handler.reset();
+        }
     }
 
-    public void launchRecyclerViewBaseActivity(ActivityTestRule<?> rule) {
-        launchRecyclerViewBaseActivity(rule, null);
+    public RecyclerViewBaseActivity launchRecyclerViewBaseActivity(ActivityTestRule<?> rule) {
+        return launchRecyclerViewBaseActivity(rule, null);
     }
 
-    public void launchRecyclerViewBaseActivity(ActivityTestRule<?> rule, Intent intent) {
-        rule.launchActivity(intent);
-        RecyclerViewBaseActivity activity = (RecyclerViewBaseActivity) rule.getActivity();
+    public RecyclerViewBaseActivity launchRecyclerViewBaseActivity(ActivityTestRule<?> rule, Intent intent) {
+        RecyclerViewBaseActivity activity = (RecyclerViewBaseActivity) rule.launchActivity(intent);
         activity.injectResources(TestRegistry.getContext().getResources());
+        return activity;
     }
 
     public NetworkTaskDAO getNetworkTaskDAO() {
