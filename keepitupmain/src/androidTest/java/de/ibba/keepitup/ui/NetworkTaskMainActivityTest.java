@@ -17,6 +17,7 @@ import de.ibba.keepitup.model.LogEntry;
 import de.ibba.keepitup.model.NetworkTask;
 import de.ibba.keepitup.ui.adapter.NetworkTaskAdapter;
 import de.ibba.keepitup.ui.adapter.NetworkTaskUIWrapper;
+import de.ibba.keepitup.ui.sync.UISyncController;
 
 import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.action.ViewActions.click;
@@ -70,6 +71,13 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
     }
 
     @Test
+    public void testUISyncStart() throws Throwable {
+        assertFalse(UISyncController.isRunning());
+        launchRecyclerViewBaseActivity(rule);
+        assertTrue(UISyncController.isRunning());
+    }
+
+    @Test
     public void testAddDeleteNetworkTask() {
         launchRecyclerViewBaseActivity(rule);
         onView(withId(R.id.listview_main_activity_network_tasks)).check(matches(withListSize(1)));
@@ -103,8 +111,7 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
 
     @Test
     public void testNetworkTaskItemText() {
-        launchRecyclerViewBaseActivity(rule);
-        NetworkTaskMainActivity activity = rule.getActivity();
+        NetworkTaskMainActivity activity = (NetworkTaskMainActivity) launchRecyclerViewBaseActivity(rule);
         onView(allOf(withId(R.id.imageview_list_item_network_task_add), isDisplayed())).perform(click());
         onView(withId(R.id.imageview_dialog_edit_network_task_ok)).perform(click());
         onView(allOf(withId(R.id.textview_list_item_network_task_title), withChildDescendantAtPosition(withId(R.id.listview_main_activity_network_tasks), 0))).check(matches(withText("Network task")));

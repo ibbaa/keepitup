@@ -3,6 +3,8 @@ package de.ibba.keepitup.ui.sync;
 import android.content.Context;
 import android.util.Log;
 
+import java.util.Objects;
+
 import de.ibba.keepitup.R;
 import de.ibba.keepitup.db.LogDAO;
 import de.ibba.keepitup.resources.ServiceFactory;
@@ -12,18 +14,21 @@ import de.ibba.keepitup.ui.adapter.NetworkTaskAdapter;
 public class UISyncController {
 
     private static IHandler handler;
-    private static ServiceFactory serviceFactory;
     private static Runnable runnable;
     private static NetworkTaskAdapter adapter;
+
+    private static Context context;
+
+    public static void injectContext(Context context) {
+        UISyncController.context = context;
+    }
 
     public static void start(NetworkTaskAdapter adapter) {
         Log.d(UISyncController.class.getName(), "starting UI sync");
         UISyncController.adapter = adapter;
-        if (serviceFactory == null) {
-            Log.d(UISyncController.class.getName(), "Creating service factory");
-            serviceFactory = getServiceFactory(UISyncController.adapter.getContext());
-            Log.d(UISyncController.class.getName(), "Created service factory class is " + serviceFactory.getClass().getName());
-        }
+        Log.d(UISyncController.class.getName(), "Creating service factory");
+        ServiceFactory serviceFactory = getServiceFactory(Objects.requireNonNull(getContext()));
+        Log.d(UISyncController.class.getName(), "Created service factory class is " + serviceFactory.getClass().getName());
         if (handler == null) {
             Log.d(UISyncController.class.getName(), "Creating handler");
             handler = serviceFactory.createHandler();
@@ -65,6 +70,20 @@ public class UISyncController {
         return factoryContributor.createServiceFactory();
     }
 
+    public static IHandler getHandler() {
+        return handler;
+    }
+
+    public static Context getContext() {
+        if (context != null) {
+            return context;
+        }
+        if (adapter != null) {
+            return adapter.getContext();
+        }
+        return null;
+    }
+
     public static class UISyncRunnable implements Runnable {
 
         private UISyncAsyncTask uiSyncAsyncTask;
@@ -72,9 +91,9 @@ public class UISyncController {
         @Override
         public void run() {
             LogDAO logDAO = new LogDAO(UISyncController.adapter.getContext());
-            uiSyncAsyncTask = serviceFactory.createUISyncAsyncTask();
+            uiSyncAsyncTask = getServiceFactory(Objects.requireNonNull(getContext())).createUISyncAsyncTask();
             uiSyncAsyncTask.start(new UISyncHolder(adapter.getAllItems(), adapter, logDAO));
-            long refreshInterval = UISyncController.adapter.getResources().getInteger(R.integer.ui_sync_refresh_interval);
+            long refreshInterval = Objects.requireNonNull(getContext()).getResources().getInteger(R.integer.ui_sync_refresh_interval);
             Log.d(UISyncController.UISyncRunnable.class.getName(), "loaded refreshInterval setting " + refreshInterval);
             UISyncController.refresh(this, refreshInterval);
         }
