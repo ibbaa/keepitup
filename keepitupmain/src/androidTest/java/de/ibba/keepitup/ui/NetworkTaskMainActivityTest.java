@@ -1,5 +1,6 @@
 package de.ibba.keepitup.ui;
 
+import android.support.test.InstrumentationRegistry;
 import android.support.test.filters.MediumTest;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
@@ -219,6 +220,7 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
         logEntry.setMessage(message);
         getAdapter().replaceItem(new NetworkTaskUIWrapper(task, logEntry));
         activity.runOnUiThread(() -> getAdapter().notifyDataSetChanged());
+        InstrumentationRegistry.getInstrumentation().waitForIdleSync();
     }
 
     private NetworkTask getNetworkTask1() {

@@ -25,6 +25,9 @@ public class UISyncController {
 
     public static void start(NetworkTaskAdapter adapter) {
         Log.d(UISyncController.class.getName(), "starting UI sync");
+        if (isRunning()) {
+            stop();
+        }
         UISyncController.adapter = adapter;
         Log.d(UISyncController.class.getName(), "Creating service factory");
         ServiceFactory serviceFactory = getServiceFactory(Objects.requireNonNull(getContext()));
@@ -33,9 +36,6 @@ public class UISyncController {
             Log.d(UISyncController.class.getName(), "Creating handler");
             handler = serviceFactory.createHandler();
             Log.d(UISyncController.class.getName(), "Created handler class is " + handler.getClass().getName());
-        }
-        if (isRunning()) {
-            stop();
         }
         UISyncController.runnable = new UISyncRunnable();
         Log.d(UISyncController.class.getName(), "Starting...");
@@ -86,20 +86,14 @@ public class UISyncController {
 
     public static class UISyncRunnable implements Runnable {
 
-        private UISyncAsyncTask uiSyncAsyncTask;
-
         @Override
         public void run() {
-            LogDAO logDAO = new LogDAO(UISyncController.adapter.getContext());
-            uiSyncAsyncTask = getServiceFactory(Objects.requireNonNull(getContext())).createUISyncAsyncTask();
+            LogDAO logDAO = new LogDAO(getContext());
+            UISyncAsyncTask uiSyncAsyncTask = getServiceFactory(Objects.requireNonNull(getContext())).createUISyncAsyncTask();
             uiSyncAsyncTask.start(new UISyncHolder(adapter.getAllItems(), adapter, logDAO));
             long refreshInterval = Objects.requireNonNull(getContext()).getResources().getInteger(R.integer.ui_sync_refresh_interval);
             Log.d(UISyncController.UISyncRunnable.class.getName(), "loaded refreshInterval setting " + refreshInterval);
             UISyncController.refresh(this, refreshInterval);
-        }
-
-        public UISyncAsyncTask getUiSyncAsyncTask() {
-            return uiSyncAsyncTask;
         }
     }
 }

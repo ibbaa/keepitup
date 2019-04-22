@@ -1,5 +1,6 @@
 package de.ibba.keepitup.ui.sync;
 
+import android.support.test.InstrumentationRegistry;
 import android.support.test.filters.MediumTest;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
@@ -34,8 +35,19 @@ public class UISyncControllerTest extends BaseUITest {
     @Rule
     public final ActivityTestRule<NetworkTaskMainActivity> rule = new ActivityTestRule<>(NetworkTaskMainActivity.class, false, false);
 
+    public void startUISyncController(NetworkTaskMainActivity activity) {
+        activity.runOnUiThread(() -> UISyncController.start(getAdapter()));
+        InstrumentationRegistry.getInstrumentation().waitForIdleSync();
+    }
+
+    public void stopUISyncController(NetworkTaskMainActivity activity) {
+        activity.runOnUiThread(() -> UISyncController.stop());
+        InstrumentationRegistry.getInstrumentation().waitForIdleSync();
+    }
+
+    @Test
     public void testStartStop() {
-        launchRecyclerViewBaseActivity(rule);
+        NetworkTaskMainActivity activity = (NetworkTaskMainActivity) launchRecyclerViewBaseActivity(rule);
         assertTrue(UISyncController.isRunning());
         MockHandler handler = (MockHandler) UISyncController.getHandler();
         assertNotNull(handler);
@@ -46,7 +58,7 @@ public class UISyncControllerTest extends BaseUITest {
         assertEquals(5000, startDelayedCall.getDelay());
         MockHandler.StartCall startCall = handler.getStartCalls().get(0);
         Runnable startedRunnable = startCall.getRunnable();
-        UISyncController.stop();
+        stopUISyncController(activity);
         assertFalse(UISyncController.isRunning());
         assertTrue(handler.wasStopCalled());
         MockHandler.StopCall stopCall = handler.getStopCalls().get(0);
@@ -69,14 +81,14 @@ public class UISyncControllerTest extends BaseUITest {
         getLogDAO().insertAndDeleteLog(entry21);
         getLogDAO().insertAndDeleteLog(entry31);
         NetworkTaskMainActivity activity = (NetworkTaskMainActivity) launchRecyclerViewBaseActivity(rule);
-        UISyncController.stop();
+        stopUISyncController(activity);
         LogEntry entry12 = getLogEntry(task1, new GregorianCalendar(2016, Calendar.JULY, 2), true, "Message12");
         LogEntry entry22 = getLogEntry(task2, new GregorianCalendar(2016, Calendar.JULY, 2), true, "Message22");
         LogEntry entry32 = getLogEntry(task3, new GregorianCalendar(2016, Calendar.JULY, 2), true, "Message32");
         getLogDAO().insertAndDeleteLog(entry12);
         getLogDAO().insertAndDeleteLog(entry22);
         getLogDAO().insertAndDeleteLog(entry32);
-        activity.runOnUiThread(() -> UISyncController.start(getAdapter()));
+        startUISyncController(activity);
         List<NetworkTaskUIWrapper> uiWWrapperList = getAdapter().getAllItems();
         LogEntry adapterEntry1 = uiWWrapperList.get(0).getLogEntry();
         LogEntry adapterEntry2 = uiWWrapperList.get(1).getLogEntry();
@@ -84,6 +96,9 @@ public class UISyncControllerTest extends BaseUITest {
         assertEquals("Message11", adapterEntry1.getMessage());
         assertEquals("Message22", adapterEntry2.getMessage());
         assertEquals("Message31", adapterEntry3.getMessage());
+        assertEquals(entry11.getTimestamp(), adapterEntry1.getTimestamp());
+        assertEquals(entry22.getTimestamp(), adapterEntry2.getTimestamp());
+        assertEquals(entry31.getTimestamp(), adapterEntry3.getTimestamp());
     }
 
     private NetworkTask getNetworkTask1() {
