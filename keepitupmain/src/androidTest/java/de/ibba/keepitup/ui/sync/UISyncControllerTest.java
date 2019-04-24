@@ -1,6 +1,5 @@
 package de.ibba.keepitup.ui.sync;
 
-import android.support.test.InstrumentationRegistry;
 import android.support.test.filters.MediumTest;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
@@ -34,16 +33,6 @@ public class UISyncControllerTest extends BaseUITest {
 
     @Rule
     public final ActivityTestRule<NetworkTaskMainActivity> rule = new ActivityTestRule<>(NetworkTaskMainActivity.class, false, false);
-
-    public void startUISyncController(NetworkTaskMainActivity activity) {
-        activity.runOnUiThread(() -> UISyncController.start(getAdapter()));
-        InstrumentationRegistry.getInstrumentation().waitForIdleSync();
-    }
-
-    public void stopUISyncController(NetworkTaskMainActivity activity) {
-        activity.runOnUiThread(() -> UISyncController.stop());
-        InstrumentationRegistry.getInstrumentation().waitForIdleSync();
-    }
 
     @Test
     public void testStartStop() {
@@ -88,7 +77,7 @@ public class UISyncControllerTest extends BaseUITest {
         getLogDAO().insertAndDeleteLog(entry12);
         getLogDAO().insertAndDeleteLog(entry22);
         getLogDAO().insertAndDeleteLog(entry32);
-        startUISyncController(activity);
+        startUISyncController(activity, getAdapter());
         List<NetworkTaskUIWrapper> uiWWrapperList = getAdapter().getAllItems();
         LogEntry adapterEntry1 = uiWWrapperList.get(0).getLogEntry();
         LogEntry adapterEntry2 = uiWWrapperList.get(1).getLogEntry();
