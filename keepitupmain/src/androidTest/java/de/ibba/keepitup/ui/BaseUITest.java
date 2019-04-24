@@ -20,6 +20,7 @@ import de.ibba.keepitup.test.matcher.ListSizeMatcher;
 import de.ibba.keepitup.test.matcher.TextColorMatcher;
 import de.ibba.keepitup.test.mock.MockHandler;
 import de.ibba.keepitup.test.mock.TestRegistry;
+import de.ibba.keepitup.ui.adapter.NetworkTaskAdapter;
 import de.ibba.keepitup.ui.sync.UISyncController;
 
 public abstract class BaseUITest {
@@ -63,6 +64,16 @@ public abstract class BaseUITest {
         RecyclerViewBaseActivity activity = (RecyclerViewBaseActivity) rule.launchActivity(intent);
         activity.injectResources(TestRegistry.getContext().getResources());
         return activity;
+    }
+
+    public void startUISyncController(NetworkTaskMainActivity activity, NetworkTaskAdapter adapter) {
+        activity.runOnUiThread(() -> UISyncController.start(adapter));
+        InstrumentationRegistry.getInstrumentation().waitForIdleSync();
+    }
+
+    public void stopUISyncController(NetworkTaskMainActivity activity) {
+        activity.runOnUiThread(() -> UISyncController.stop());
+        InstrumentationRegistry.getInstrumentation().waitForIdleSync();
     }
 
     public NetworkTaskDAO getNetworkTaskDAO() {
