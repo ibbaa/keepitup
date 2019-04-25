@@ -14,6 +14,12 @@ import de.ibba.keepitup.model.NetworkTask;
 
 public class NetworkTaskBroadcastReceiver extends BroadcastReceiver {
 
+    private boolean synchronous = false;
+
+    public void setSynchronous(boolean synchronous) {
+        this.synchronous = synchronous;
+    }
+
     @Override
     public void onReceive(Context context, Intent intent) {
         NetworkTask task = new NetworkTask(Objects.requireNonNull(intent.getExtras()));
@@ -30,9 +36,14 @@ public class NetworkTaskBroadcastReceiver extends BroadcastReceiver {
 
     private void doWork(Context context, NetworkTask task, PowerManager.WakeLock wakeLock) {
         Log.d(NetworkTaskBroadcastReceiver.class.getName(), "Doing work for " + task);
+        Log.d(NetworkTaskBroadcastReceiver.class.getName(), "Synchronous is " + synchronous);
         NetworkTaskWorker networkTaskWorker = new NetworkTaskWorker(context, task, wakeLock);
-        ExecutorService executorService = Executors.newSingleThreadExecutor();
-        executorService.execute(networkTaskWorker);
-        executorService.shutdown();
+        if (synchronous) {
+            networkTaskWorker.run();
+        } else {
+            ExecutorService executorService = Executors.newSingleThreadExecutor();
+            executorService.execute(networkTaskWorker);
+            executorService.shutdown();
+        }
     }
 }
