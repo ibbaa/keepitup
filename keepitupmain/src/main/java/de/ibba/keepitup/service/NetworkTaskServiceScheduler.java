@@ -28,7 +28,7 @@ public class NetworkTaskServiceScheduler {
         Log.d(NetworkTaskServiceScheduler.class.getName(), "Schedule network task " + networkTask);
         if (networkTask.isRunning()) {
             Log.d(NetworkTaskServiceScheduler.class.getName(), "Network task " + networkTask + " is already running. Stopping...");
-            cancel(networkTask);
+            terminate(networkTask);
         }
         networkTask.setRunning(true);
         networkTaskDAO.updateNetworkTaskRunning(networkTask.getId(), true);
@@ -53,17 +53,46 @@ public class NetworkTaskServiceScheduler {
         Log.d(NetworkTaskServiceScheduler.class.getName(), "Cancel network task " + networkTask);
         networkTask.setRunning(false);
         networkTaskDAO.updateNetworkTaskRunning(networkTask.getId(), false);
+        return terminate(networkTask);
+    }
+
+    public NetworkTask terminate(NetworkTask networkTask) {
         PendingIntent pendingIntent = getPendingIntent(networkTask);
         alarmManager.cancelAlarm(pendingIntent);
         pendingIntent.cancel();
         return networkTask;
     }
 
+    public void startup() {
+        Log.d(NetworkTaskServiceScheduler.class.getName(), "Starting all network tasks marked as running.");
+        List<NetworkTask> networkTasks = networkTaskDAO.readAllNetworkTasks();
+        Log.d(NetworkTaskServiceScheduler.class.getName(), "Database returned the following network tasks: " + (networkTasks.isEmpty() ? "no network tasks" : ""));
+        for (NetworkTask currentTask : networkTasks) {
+            if (currentTask.isRunning()) {
+                Log.d(NetworkTaskServiceScheduler.class.getName(), "Network task " + currentTask + " is marked as running. Starting...");
+                reschedule(currentTask, true);
+            } else {
+                Log.d(NetworkTaskServiceScheduler.class.getName(), "Network task " + currentTask + " is not marked as running.");
+            }
+        }
+    }
+
     public void cancelAll() {
-        Log.d(NetworkTaskServiceScheduler.class.getName(), "Cancel all network tasks ");
+        Log.d(NetworkTaskServiceScheduler.class.getName(), "Cancelling all network tasks.");
+        List<NetworkTask> networkTasks = networkTaskDAO.readAllNetworkTasks();
+        Log.d(NetworkTaskServiceScheduler.class.getName(), "Database returned the following network tasks: " + (networkTasks.isEmpty() ? "no network tasks" : ""));
+        for (NetworkTask currentTask : networkTasks) {
+            Log.d(NetworkTaskServiceScheduler.class.getName(), "Cancelling network task " + currentTask);
+            cancel(currentTask);
+        }
+    }
+
+    public void terminateAll() {
+        Log.d(NetworkTaskServiceScheduler.class.getName(), "Terminating all network tasks.");
         List<NetworkTask> networkTasks = networkTaskDAO.readAllNetworkTasks();
         for (NetworkTask currentTask : networkTasks) {
-            cancel(currentTask);
+            Log.d(NetworkTaskServiceScheduler.class.getName(), "Terminating network task " + currentTask);
+            terminate(currentTask);
         }
     }
 
