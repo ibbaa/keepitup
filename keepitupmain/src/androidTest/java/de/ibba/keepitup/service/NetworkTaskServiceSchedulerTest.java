@@ -8,6 +8,9 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import java.util.List;
+
+import de.ibba.keepitup.db.NetworkTaskDAO;
 import de.ibba.keepitup.model.AccessType;
 import de.ibba.keepitup.model.NetworkTask;
 import de.ibba.keepitup.test.mock.MockAlarmManager;
@@ -23,52 +26,213 @@ import static org.junit.Assert.assertTrue;
 public class NetworkTaskServiceSchedulerTest {
 
     private NetworkTaskServiceScheduler scheduler;
+    private NetworkTaskDAO networkTaskDAO;
     private MockAlarmManager alarmManager;
 
     @Before
     public void beforeEachTestMethod() {
         scheduler = new NetworkTaskServiceScheduler(TestRegistry.getContext());
         scheduler.cancelAll();
+        networkTaskDAO = new NetworkTaskDAO(TestRegistry.getContext());
+        networkTaskDAO.deleteAllNetworkTasks();
         alarmManager = (MockAlarmManager) scheduler.getAlarmManager();
+        alarmManager.reset();
     }
 
     @After
     public void afterEachTestMethod() {
         scheduler.cancelAll();
+        networkTaskDAO.deleteAllNetworkTasks();
     }
 
     @Test
-    public void testScheduleCancelRunning() {
+    public void testScheduleCancel() {
         NetworkTask task1 = getNetworkTask1();
         NetworkTask task2 = getNetworkTask2();
+        task1 = networkTaskDAO.insertNetworkTask(task1);
+        task2 = networkTaskDAO.insertNetworkTask(task2);
         task1 = scheduler.schedule(task1);
         assertTrue(task1.isRunning());
         assertFalse(task2.isRunning());
+        assertTrue(isTaskMarkedAsRunningInDatabase(task1));
+        assertFalse(isTaskMarkedAsRunningInDatabase(task2));
         assertTrue(alarmManager.wasSetAlarmCalled());
         assertFalse(alarmManager.wasCancelAlarmCalled());
-        MockAlarmManager.SetAlarmCall setAlarmCall1 = alarmManager.getSetAlarmCalls().get(0);
+        List<MockAlarmManager.SetAlarmCall> setAlarmCalls = alarmManager.getSetAlarmCalls();
+        assertEquals(1, setAlarmCalls.size());
+        MockAlarmManager.SetAlarmCall setAlarmCall1 = setAlarmCalls.get(0);
         assertEquals(0, setAlarmCall1.getDelay());
         task2 = scheduler.schedule(task2);
         assertTrue(task1.isRunning());
         assertTrue(task2.isRunning());
+        assertTrue(isTaskMarkedAsRunningInDatabase(task1));
+        assertTrue(isTaskMarkedAsRunningInDatabase(task2));
         assertTrue(alarmManager.wasSetAlarmCalled());
         assertFalse(alarmManager.wasCancelAlarmCalled());
-        MockAlarmManager.SetAlarmCall setAlarmCall2 = alarmManager.getSetAlarmCalls().get(1);
+        setAlarmCalls = alarmManager.getSetAlarmCalls();
+        assertEquals(2, setAlarmCalls.size());
+        MockAlarmManager.SetAlarmCall setAlarmCall2 = setAlarmCalls.get(1);
         assertEquals(0, setAlarmCall2.getDelay());
         assertNotEquals(setAlarmCall1.getPendingIntent(), setAlarmCall2.getPendingIntent());
         task1 = scheduler.cancel(task1);
         assertFalse(task1.isRunning());
         assertTrue(task2.isRunning());
+        assertFalse(isTaskMarkedAsRunningInDatabase(task1));
+        assertTrue(isTaskMarkedAsRunningInDatabase(task2));
         assertTrue(alarmManager.wasCancelAlarmCalled());
-        MockAlarmManager.CancelAlarmCall cancelAlarmCall1 = alarmManager.getCancelAlarmCalls().get(0);
+        List<MockAlarmManager.CancelAlarmCall> cancelAlarmCalls = alarmManager.getCancelAlarmCalls();
+        assertEquals(1, cancelAlarmCalls.size());
+        MockAlarmManager.CancelAlarmCall cancelAlarmCall1 = cancelAlarmCalls.get(0);
         assertEquals(setAlarmCall1.getPendingIntent(), cancelAlarmCall1.getPendingIntent());
         task2 = scheduler.cancel(task2);
         assertFalse(task1.isRunning());
         assertFalse(task2.isRunning());
+        assertFalse(isTaskMarkedAsRunningInDatabase(task1));
+        assertFalse(isTaskMarkedAsRunningInDatabase(task2));
         assertTrue(alarmManager.wasCancelAlarmCalled());
+        cancelAlarmCalls = alarmManager.getCancelAlarmCalls();
+        assertEquals(2, cancelAlarmCalls.size());
+        MockAlarmManager.CancelAlarmCall cancelAlarmCall2 = cancelAlarmCalls.get(1);
+        assertEquals(setAlarmCall2.getPendingIntent(), cancelAlarmCall2.getPendingIntent());
+        assertNotEquals(cancelAlarmCall1.getPendingIntent(), cancelAlarmCall2.getPendingIntent());
+    }
+
+    @Test
+    public void testRescheduleTerminate() {
+        NetworkTask task1 = getNetworkTask1();
+        NetworkTask task2 = getNetworkTask2();
+        task1 = networkTaskDAO.insertNetworkTask(task1);
+        task2 = networkTaskDAO.insertNetworkTask(task2);
+        task1 = scheduler.reschedule(task1, false);
+        assertFalse(task1.isRunning());
+        assertFalse(task2.isRunning());
+        assertFalse(isTaskMarkedAsRunningInDatabase(task1));
+        assertFalse(isTaskMarkedAsRunningInDatabase(task2));
+        assertTrue(alarmManager.wasSetAlarmCalled());
+        assertFalse(alarmManager.wasCancelAlarmCalled());
+        List<MockAlarmManager.SetAlarmCall> setAlarmCalls = alarmManager.getSetAlarmCalls();
+        assertEquals(1, setAlarmCalls.size());
+        MockAlarmManager.SetAlarmCall setAlarmCall1 = setAlarmCalls.get(0);
+        assertEquals(20 * 60 * 1000, setAlarmCall1.getDelay());
+        task2 = scheduler.reschedule(task2, false);
+        assertFalse(task1.isRunning());
+        assertFalse(task2.isRunning());
+        assertFalse(isTaskMarkedAsRunningInDatabase(task1));
+        assertFalse(isTaskMarkedAsRunningInDatabase(task2));
+        assertTrue(alarmManager.wasSetAlarmCalled());
+        assertFalse(alarmManager.wasCancelAlarmCalled());
+        setAlarmCalls = alarmManager.getSetAlarmCalls();
+        assertEquals(2, setAlarmCalls.size());
+        MockAlarmManager.SetAlarmCall setAlarmCall2 = setAlarmCalls.get(1);
+        assertEquals(60 * 1000, setAlarmCall2.getDelay());
+        assertNotEquals(setAlarmCall1.getPendingIntent(), setAlarmCall2.getPendingIntent());
+        task1 = scheduler.terminate(task1);
+        assertFalse(task1.isRunning());
+        assertFalse(task2.isRunning());
+        assertFalse(isTaskMarkedAsRunningInDatabase(task1));
+        assertFalse(isTaskMarkedAsRunningInDatabase(task2));
+        assertTrue(alarmManager.wasCancelAlarmCalled());
+        List<MockAlarmManager.CancelAlarmCall> cancelAlarmCalls = alarmManager.getCancelAlarmCalls();
+        assertEquals(1, cancelAlarmCalls.size());
+        MockAlarmManager.CancelAlarmCall cancelAlarmCall1 = cancelAlarmCalls.get(0);
+        assertEquals(setAlarmCall1.getPendingIntent(), cancelAlarmCall1.getPendingIntent());
+        task2 = scheduler.terminate(task2);
+        assertFalse(task1.isRunning());
+        assertFalse(task2.isRunning());
+        assertFalse(isTaskMarkedAsRunningInDatabase(task1));
+        assertFalse(isTaskMarkedAsRunningInDatabase(task2));
+        assertTrue(alarmManager.wasCancelAlarmCalled());
+        cancelAlarmCalls = alarmManager.getCancelAlarmCalls();
+        assertEquals(2, cancelAlarmCalls.size());
         MockAlarmManager.CancelAlarmCall cancelAlarmCall2 = alarmManager.getCancelAlarmCalls().get(1);
         assertEquals(setAlarmCall2.getPendingIntent(), cancelAlarmCall2.getPendingIntent());
         assertNotEquals(cancelAlarmCall1.getPendingIntent(), cancelAlarmCall2.getPendingIntent());
+    }
+
+    @Test
+    public void testStartup() {
+        NetworkTask task1 = getNetworkTask1();
+        NetworkTask task2 = getNetworkTask2();
+        task1 = networkTaskDAO.insertNetworkTask(task1);
+        task2 = networkTaskDAO.insertNetworkTask(task2);
+        scheduler.startup();
+        assertFalse(isTaskMarkedAsRunningInDatabase(task1));
+        assertFalse(isTaskMarkedAsRunningInDatabase(task2));
+        assertFalse(alarmManager.wasSetAlarmCalled());
+        scheduler.schedule(task1);
+        scheduler.terminate(task1);
+        assertTrue(isTaskMarkedAsRunningInDatabase(task1));
+        assertFalse(isTaskMarkedAsRunningInDatabase(task2));
+        alarmManager.reset();
+        scheduler.startup();
+        assertTrue(isTaskMarkedAsRunningInDatabase(task1));
+        assertFalse(isTaskMarkedAsRunningInDatabase(task2));
+        assertTrue(alarmManager.wasSetAlarmCalled());
+        List<MockAlarmManager.SetAlarmCall> setAlarmCalls = alarmManager.getSetAlarmCalls();
+        assertEquals(1, setAlarmCalls.size());
+        MockAlarmManager.SetAlarmCall setAlarmCall1 = setAlarmCalls.get(0);
+        assertEquals(0, setAlarmCall1.getDelay());
+    }
+
+    @Test
+    public void testCancelAll() {
+        NetworkTask task1 = getNetworkTask1();
+        NetworkTask task2 = getNetworkTask2();
+        task1 = networkTaskDAO.insertNetworkTask(task1);
+        task2 = networkTaskDAO.insertNetworkTask(task2);
+        task1 = scheduler.schedule(task1);
+        task2 = scheduler.schedule(task2);
+        assertTrue(task1.isRunning());
+        assertTrue(task2.isRunning());
+        assertTrue(isTaskMarkedAsRunningInDatabase(task1));
+        assertTrue(isTaskMarkedAsRunningInDatabase(task2));
+        scheduler.cancelAll();
+        assertFalse(isTaskMarkedAsRunningInDatabase(task1));
+        assertFalse(isTaskMarkedAsRunningInDatabase(task2));
+        assertTrue(alarmManager.wasCancelAlarmCalled());
+        List<MockAlarmManager.CancelAlarmCall> cancelAlarmCalls = alarmManager.getCancelAlarmCalls();
+        assertEquals(2, cancelAlarmCalls.size());
+        MockAlarmManager.SetAlarmCall setAlarmCall1 = alarmManager.getSetAlarmCalls().get(0);
+        MockAlarmManager.SetAlarmCall setAlarmCall2 = alarmManager.getSetAlarmCalls().get(1);
+        MockAlarmManager.CancelAlarmCall cancelAlarmCall1 = cancelAlarmCalls.get(0);
+        MockAlarmManager.CancelAlarmCall cancelAlarmCall2 = cancelAlarmCalls.get(1);
+        assertEquals(setAlarmCall1.getPendingIntent(), cancelAlarmCall1.getPendingIntent());
+        assertEquals(setAlarmCall2.getPendingIntent(), cancelAlarmCall2.getPendingIntent());
+        assertNotEquals(cancelAlarmCall1.getPendingIntent(), cancelAlarmCall2.getPendingIntent());
+    }
+
+    @Test
+    public void testTerminateAll() {
+        NetworkTask task1 = getNetworkTask1();
+        NetworkTask task2 = getNetworkTask2();
+        task1 = networkTaskDAO.insertNetworkTask(task1);
+        task2 = networkTaskDAO.insertNetworkTask(task2);
+        task1 = scheduler.schedule(task1);
+        task2 = scheduler.schedule(task2);
+        assertTrue(task1.isRunning());
+        assertTrue(task2.isRunning());
+        assertTrue(isTaskMarkedAsRunningInDatabase(task1));
+        assertTrue(isTaskMarkedAsRunningInDatabase(task2));
+        scheduler.terminateAll();
+        assertTrue(task1.isRunning());
+        assertTrue(task2.isRunning());
+        assertTrue(isTaskMarkedAsRunningInDatabase(task1));
+        assertTrue(isTaskMarkedAsRunningInDatabase(task2));
+        assertTrue(alarmManager.wasCancelAlarmCalled());
+        List<MockAlarmManager.CancelAlarmCall> cancelAlarmCalls = alarmManager.getCancelAlarmCalls();
+        assertEquals(2, cancelAlarmCalls.size());
+        MockAlarmManager.SetAlarmCall setAlarmCall1 = alarmManager.getSetAlarmCalls().get(0);
+        MockAlarmManager.SetAlarmCall setAlarmCall2 = alarmManager.getSetAlarmCalls().get(1);
+        MockAlarmManager.CancelAlarmCall cancelAlarmCall1 = cancelAlarmCalls.get(0);
+        MockAlarmManager.CancelAlarmCall cancelAlarmCall2 = cancelAlarmCalls.get(1);
+        assertEquals(setAlarmCall1.getPendingIntent(), cancelAlarmCall1.getPendingIntent());
+        assertEquals(setAlarmCall2.getPendingIntent(), cancelAlarmCall2.getPendingIntent());
+        assertNotEquals(cancelAlarmCall1.getPendingIntent(), cancelAlarmCall2.getPendingIntent());
+    }
+
+    private boolean isTaskMarkedAsRunningInDatabase(NetworkTask task) {
+        task = networkTaskDAO.readNetworkTask(task.getId());
+        return task.isRunning();
     }
 
     private NetworkTask getNetworkTask1() {
@@ -79,7 +243,7 @@ public class NetworkTaskServiceSchedulerTest {
         task.setAddress("127.0.0.1");
         task.setPort(80);
         task.setAccessType(AccessType.PING);
-        task.setInterval(15);
+        task.setInterval(20);
         task.setNotification(true);
         task.setRunning(false);
         return task;
