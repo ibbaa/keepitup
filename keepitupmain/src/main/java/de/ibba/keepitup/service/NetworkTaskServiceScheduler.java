@@ -50,13 +50,14 @@ public class NetworkTaskServiceScheduler {
     }
 
     public NetworkTask cancel(NetworkTask networkTask) {
-        Log.d(NetworkTaskServiceScheduler.class.getName(), "Cancel network task " + networkTask);
+        Log.d(NetworkTaskServiceScheduler.class.getName(), "Cancelling network task " + networkTask);
         networkTask.setRunning(false);
         networkTaskDAO.updateNetworkTaskRunning(networkTask.getId(), false);
         return terminate(networkTask);
     }
 
     public NetworkTask terminate(NetworkTask networkTask) {
+        Log.d(NetworkTaskServiceScheduler.class.getName(), "Terminating network task " + networkTask);
         PendingIntent pendingIntent = getPendingIntent(networkTask);
         alarmManager.cancelAlarm(pendingIntent);
         pendingIntent.cancel();
