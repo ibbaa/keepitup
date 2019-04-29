@@ -159,6 +159,7 @@ public class NetworkTaskServiceSchedulerTest {
         assertFalse(isTaskMarkedAsRunningInDatabase(task1));
         assertFalse(isTaskMarkedAsRunningInDatabase(task2));
         assertFalse(alarmManager.wasSetAlarmCalled());
+        assertFalse(alarmManager.wasCancelAlarmCalled());
         scheduler.schedule(task1);
         scheduler.terminate(task1);
         assertTrue(isTaskMarkedAsRunningInDatabase(task1));
@@ -168,6 +169,7 @@ public class NetworkTaskServiceSchedulerTest {
         assertTrue(isTaskMarkedAsRunningInDatabase(task1));
         assertFalse(isTaskMarkedAsRunningInDatabase(task2));
         assertTrue(alarmManager.wasSetAlarmCalled());
+        assertTrue(alarmManager.wasCancelAlarmCalled());
         List<MockAlarmManager.SetAlarmCall> setAlarmCalls = alarmManager.getSetAlarmCalls();
         assertEquals(1, setAlarmCalls.size());
         MockAlarmManager.SetAlarmCall setAlarmCall1 = setAlarmCalls.get(0);

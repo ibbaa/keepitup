@@ -70,7 +70,8 @@ public class NetworkTaskServiceScheduler {
         Log.d(NetworkTaskServiceScheduler.class.getName(), "Database returned the following network tasks: " + (networkTasks.isEmpty() ? "no network tasks" : ""));
         for (NetworkTask currentTask : networkTasks) {
             if (currentTask.isRunning()) {
-                Log.d(NetworkTaskServiceScheduler.class.getName(), "Network task " + currentTask + " is marked as running. Starting...");
+                Log.d(NetworkTaskServiceScheduler.class.getName(), "Network task " + currentTask + " is marked as running. Terminating and restarting...");
+                terminate(currentTask);
                 reschedule(currentTask, true);
             } else {
                 Log.d(NetworkTaskServiceScheduler.class.getName(), "Network task " + currentTask + " is not marked as running.");
