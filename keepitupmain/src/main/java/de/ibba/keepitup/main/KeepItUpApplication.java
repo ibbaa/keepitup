@@ -11,15 +11,15 @@ public class KeepItUpApplication extends Application {
     public void onCreate() {
         Log.d(KeepItUpApplication.class.getName(), "onCreate");
         super.onCreate();
-        StartupService startupService = new StartupService(this);
-        startupService.startup();
+        StartupService startupService = new StartupService();
+        startupService.startup(this);
     }
 
     @Override
     public void onTerminate() {
         Log.d(KeepItUpApplication.class.getName(), "onTerminate");
         super.onTerminate();
-        StartupService startupService = new StartupService(this);
-        startupService.terminate();
+        StartupService startupService = new StartupService();
+        startupService.terminate(this);
     }
 }
