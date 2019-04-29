@@ -1,17 +1,19 @@
 package de.ibba.keepitup.service;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.Intent;
 import android.util.Log;
 
-public class StartupService {
+public class StartupService extends BroadcastReceiver {
 
-    private final Context context;
-
-    public StartupService(Context context) {
-        this.context = context;
+    @Override
+    public void onReceive(Context context, Intent intent) {
+        Log.d(StartupService.class.getName(), "received system boot event");
+        startup(context);
     }
 
-    public void startup() {
+    public void startup(Context context) {
         try {
             Log.d(StartupService.class.getName(), "Starting application.");
             NetworkTaskServiceScheduler scheduler = new NetworkTaskServiceScheduler(context);
@@ -21,7 +23,7 @@ public class StartupService {
         }
     }
 
-    public void terminate() {
+    public void terminate(Context context) {
         try {
             Log.d(StartupService.class.getName(), "Terminating application.");
             NetworkTaskServiceScheduler scheduler = new NetworkTaskServiceScheduler(context);
