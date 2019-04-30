@@ -173,6 +173,12 @@ public class NetworkTaskServiceSchedulerTest {
         assertEquals(1, setAlarmCalls.size());
         MockAlarmManager.SetAlarmCall setAlarmCall1 = setAlarmCalls.get(0);
         assertEquals(0, setAlarmCall1.getDelay());
+        scheduler.schedule(task2);
+        alarmManager.reset();
+        scheduler.startup();
+        assertTrue(isTaskMarkedAsRunningInDatabase(task1));
+        assertTrue(isTaskMarkedAsRunningInDatabase(task2));
+        assertFalse(alarmManager.wasSetAlarmCalled());
     }
 
     @Test

@@ -66,8 +66,13 @@ public class NetworkTaskServiceScheduler {
         Log.d(NetworkTaskServiceScheduler.class.getName(), "Database returned the following network tasks: " + (networkTasks.isEmpty() ? "no network tasks" : ""));
         for (NetworkTask currentTask : networkTasks) {
             if (currentTask.isRunning()) {
-                Log.d(NetworkTaskServiceScheduler.class.getName(), "Network task " + currentTask + " is marked as running. Terminating and restarting...");
-                reschedule(currentTask, true);
+                Log.d(NetworkTaskServiceScheduler.class.getName(), "Network task " + currentTask + " is marked as running.");
+                if (!hasPendingAlarm(currentTask)) {
+                    Log.d(NetworkTaskServiceScheduler.class.getName(), "No pending alarm. Scheduling...");
+                    reschedule(currentTask, true);
+                } else {
+                    Log.d(NetworkTaskServiceScheduler.class.getName(), "Pending alarm already present.");
+                }
             } else {
                 Log.d(NetworkTaskServiceScheduler.class.getName(), "Network task " + currentTask + " is not marked as running.");
             }
@@ -95,6 +100,12 @@ public class NetworkTaskServiceScheduler {
 
     public IAlarmManager getAlarmManager() {
         return alarmManager;
+    }
+
+    private boolean hasPendingAlarm(NetworkTask networkTask) {
+        Intent intent = new Intent(context, NetworkTaskBroadcastReceiver.class);
+        intent.putExtras(networkTask.toBundle());
+        return PendingIntent.getBroadcast(context, networkTask.getSchedulerId(), intent, PendingIntent.FLAG_NO_CREATE) != null;
     }
 
     private PendingIntent getPendingIntent(NetworkTask networkTask) {
