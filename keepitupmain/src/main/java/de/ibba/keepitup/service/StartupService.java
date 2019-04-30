@@ -9,8 +9,12 @@ public class StartupService extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        Log.d(StartupService.class.getName(), "received system boot event");
-        startup(context);
+        if(Intent.ACTION_BOOT_COMPLETED.equals(intent.getAction())) {
+            Log.d(StartupService.class.getName(), "Received system boot event. Startup.");
+            startup(context);
+        } else {
+            Log.e(StartupService.class.getName(), "The received intent is not Intent.ACTION_BOOT_COMPLETED.");
+        }
     }
 
     public void startup(Context context) {
