@@ -26,10 +26,6 @@ public class NetworkTaskServiceScheduler {
 
     public NetworkTask schedule(NetworkTask networkTask) {
         Log.d(NetworkTaskServiceScheduler.class.getName(), "Schedule network task " + networkTask);
-        if (networkTask.isRunning()) {
-            Log.d(NetworkTaskServiceScheduler.class.getName(), "Network task " + networkTask + " is already running. Stopping...");
-            terminate(networkTask);
-        }
         networkTask.setRunning(true);
         networkTaskDAO.updateNetworkTaskRunning(networkTask.getId(), true);
         reschedule(networkTask, true);
@@ -71,7 +67,6 @@ public class NetworkTaskServiceScheduler {
         for (NetworkTask currentTask : networkTasks) {
             if (currentTask.isRunning()) {
                 Log.d(NetworkTaskServiceScheduler.class.getName(), "Network task " + currentTask + " is marked as running. Terminating and restarting...");
-                terminate(currentTask);
                 reschedule(currentTask, true);
             } else {
                 Log.d(NetworkTaskServiceScheduler.class.getName(), "Network task " + currentTask + " is not marked as running.");
