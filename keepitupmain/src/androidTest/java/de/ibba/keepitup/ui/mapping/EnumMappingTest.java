@@ -29,9 +29,13 @@ public class EnumMappingTest {
     @Test
     public void testGetAccessTypeText() {
         assertEquals("Ping", enumMapping.getAccessTypeText(AccessType.PING));
-        assertEquals("Host: %s Port: %d", enumMapping.getAccessTypeAddressText(AccessType.PING));
+        assertEquals("Connect", enumMapping.getAccessTypeText(AccessType.CONNECT));
+        assertEquals("Host: %s", enumMapping.getAccessTypeAddressText(AccessType.PING));
+        assertEquals("Host: %s Port: %d", enumMapping.getAccessTypeAddressText(AccessType.CONNECT));
         assertEquals("Host:", enumMapping.getAccessTypeAddressLabel(AccessType.PING));
         assertEquals("Port:", enumMapping.getAccessTypePortLabel(AccessType.PING));
+        assertEquals("Host:", enumMapping.getAccessTypeAddressLabel(AccessType.CONNECT));
+        assertEquals("Port:", enumMapping.getAccessTypePortLabel(AccessType.CONNECT));
         assertEquals("No type", enumMapping.getAccessTypeText(null));
         assertEquals("Host: not applicable", enumMapping.getAccessTypeAddressText(null));
     }
