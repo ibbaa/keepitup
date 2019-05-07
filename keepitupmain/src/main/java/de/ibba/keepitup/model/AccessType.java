@@ -2,8 +2,8 @@ package de.ibba.keepitup.model;
 
 public enum AccessType {
 
-    PING(1, true),
-    CONNECT(2, false);
+    PING(1, false),
+    CONNECT(2, true);
 
     private final int code;
     private final boolean needsPort;
