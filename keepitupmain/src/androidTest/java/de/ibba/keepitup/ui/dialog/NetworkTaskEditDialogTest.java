@@ -91,6 +91,22 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
     }
 
     @Test
+    public void testGetNetworkTaskEnteredTextPreservedOnAccessTypeChange() {
+        onView(allOf(withId(R.id.imageview_list_item_network_task_add), isDisplayed())).perform(click());
+        onView(withText("Connect")).perform(click());
+        onView(withId(R.id.edittext_dialog_edit_network_task_address)).perform(replaceText("localhost"));
+        onView(withId(R.id.edittext_dialog_edit_network_task_port)).perform(replaceText("80"));
+        onView(withId(R.id.edittext_dialog_edit_network_task_interval)).perform(replaceText("60"));
+        onView(withText("Ping")).perform(click());
+        onView(withId(R.id.edittext_dialog_edit_network_task_address)).check(matches(withText("localhost")));
+        onView(withId(R.id.edittext_dialog_edit_network_task_interval)).check(matches(withText("60")));
+        onView(withText("Connect")).perform(click());
+        onView(withId(R.id.edittext_dialog_edit_network_task_address)).check(matches(withText("localhost")));
+        onView(withId(R.id.edittext_dialog_edit_network_task_port)).check(matches(withText("80")));
+        onView(withId(R.id.edittext_dialog_edit_network_task_interval)).check(matches(withText("60")));
+    }
+
+    @Test
     public void testAccessTypePortField() {
         onView(allOf(withId(R.id.imageview_list_item_network_task_add), isDisplayed())).perform(click());
         onView(withText("Connect")).perform(click());
