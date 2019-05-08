@@ -51,7 +51,7 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
     @Test
     public void testGetNetworkTaskDefaultValues() {
         onView(allOf(withId(R.id.imageview_list_item_network_task_add), isDisplayed())).perform(click());
-        onView(withId(R.id.radiogroup_dialog_edit_network_task_accesstype)).check(matches(hasChildCount(2)));
+        onView(withId(R.id.radiogroup_dialog_edit_network_task_accesstype)).check(matches(hasChildCount(3)));
         onView(withText("Ping")).check(matches(isChecked()));
         onView(withId(R.id.edittext_dialog_edit_network_task_address)).check(matches(withText("192.168.178.1")));
         onView(withId(R.id.edittext_dialog_edit_network_task_interval)).check(matches(withText("15")));
