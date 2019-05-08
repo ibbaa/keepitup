@@ -61,6 +61,7 @@ public class NetworkTaskEditDialog extends DialogFragment {
         task = new NetworkTask(Objects.requireNonNull(getArguments()));
         prepareAccessTypeRadioButtons();
         prepareAddressTextFields();
+        prepareAddressTextFieldsVisibility();
         prepareIntervalTextField();
         prepareOnlyWifiSwitch();
         prepareNotificationSwitch();
@@ -117,43 +118,43 @@ public class NetworkTaskEditDialog extends DialogFragment {
     }
 
     private void onAccessTypeChanged(RadioGroup group, int checkedId) {
-        prepareAddressTextFields();
+        prepareAddressTextFieldsVisibility();
     }
 
     private void prepareAddressTextFields() {
         Log.d(NetworkTaskEditDialog.class.getName(), "prepareAddressTextFields with address of " + task.getAddress() + " and port of " + task.getPort());
+        addressEditText = dialogView.findViewById(R.id.edittext_dialog_edit_network_task_address);
+        addressEditText.setText(StringUtil.notNull(task.getAddress()));
+        portEditText = dialogView.findViewById(R.id.edittext_dialog_edit_network_task_port);
+        portEditText.setText(String.valueOf(task.getPort()));
+        prepareAddressEditTextListener();
+        preparePortEditTextListener();
+    }
+
+    private void prepareAddressTextFieldsVisibility() {
+        Log.d(NetworkTaskEditDialog.class.getName(), "prepareAddressTextFieldsVisibility with address of " + task.getAddress() + " and port of " + task.getPort());
         EnumMapping mapping = new EnumMapping(requireContext());
         RadioGroup accessTypeGroup = dialogView.findViewById(R.id.radiogroup_dialog_edit_network_task_accesstype);
         int selectedId = accessTypeGroup.getCheckedRadioButtonId();
         RadioButton selectedAccessTypeRadioButton = dialogView.findViewById(selectedId);
         if (selectedAccessTypeRadioButton == null) {
-            Log.d(NetworkTaskEditDialog.class.getName(), "prepareAddressTextFields, selectedAccessTypeRadioButton is null, no access type selected");
+            Log.d(NetworkTaskEditDialog.class.getName(), "prepareAddressTextFieldsVisibility, selectedAccessTypeRadioButton is null, no access type selected");
             return;
         }
         AccessType accessType = (AccessType) selectedAccessTypeRadioButton.getTag();
         TextView addressTextView = dialogView.findViewById(R.id.textview_dialog_edit_network_task_address_label);
         addressTextView.setText(mapping.getAccessTypeAddressLabel(accessType));
-        addressEditText = dialogView.findViewById(R.id.edittext_dialog_edit_network_task_address);
-        addressEditText.setText(StringUtil.notNull(task.getAddress()));
-        prepareAddressEditTextListener();
         TextView portTextView = dialogView.findViewById(R.id.textview_dialog_edit_network_task_port_label);
-        portEditText = dialogView.findViewById(R.id.edittext_dialog_edit_network_task_port);
         LinearLayout portLinearLayout = dialogView.findViewById(R.id.linearlayout_dialog_edit_network_task_port);
         if (accessType != null && accessType.needsPort()) {
             portTextView.setText(mapping.getAccessTypePortLabel(accessType));
-            portEditText.setText(String.valueOf(task.getPort()));
             portTextView.setVisibility(View.VISIBLE);
             portEditText.setVisibility(View.VISIBLE);
             portLinearLayout.setVisibility(View.VISIBLE);
-            preparePortEditTextListener();
         } else {
             portTextView.setVisibility(View.GONE);
             portEditText.setVisibility(View.GONE);
             portLinearLayout.setVisibility(View.GONE);
-            if (portEditTextWatcher != null) {
-                portEditText.removeTextChangedListener(portEditTextWatcher);
-                portEditTextWatcher = null;
-            }
         }
     }
 
