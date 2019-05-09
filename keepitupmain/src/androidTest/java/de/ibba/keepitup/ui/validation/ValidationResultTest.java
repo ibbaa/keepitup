@@ -24,37 +24,49 @@ public class ValidationResultTest {
         assertFalse(result.isValidationSuccessful());
         assertNull(result.getFieldName());
         assertNull(result.getMessage());
+        assertFalse(result.modifiedValue());
+        assertNull(result.getValue());
         PersistableBundle persistableBundle = result.toPersistableBundle();
         assertNotNull(persistableBundle);
         result = new ValidationResult(persistableBundle);
         assertFalse(result.isValidationSuccessful());
         assertNull(result.getFieldName());
         assertNull(result.getMessage());
+        assertFalse(result.modifiedValue());
+        assertNull(result.getValue());
         Bundle bundle = result.toBundle();
         assertNotNull(bundle);
         result = new ValidationResult(bundle);
         assertFalse(result.isValidationSuccessful());
         assertNull(result.getFieldName());
         assertNull(result.getMessage());
+        assertFalse(result.modifiedValue());
+        assertNull(result.getValue());
     }
 
     @Test
     public void testToBundle() {
-        ValidationResult result = new ValidationResult(true, "testfield", "testmessage");
+        ValidationResult result = new ValidationResult(true, "testfield", "testmessage", false, "testvalue");
         assertTrue(result.isValidationSuccessful());
         assertEquals("testfield", result.getFieldName());
         assertEquals("testmessage", result.getMessage());
+        assertFalse(result.modifiedValue());
+        assertEquals("testvalue", result.getValue());
         PersistableBundle persistableBundle = result.toPersistableBundle();
         assertNotNull(persistableBundle);
         result = new ValidationResult(persistableBundle);
         assertTrue(result.isValidationSuccessful());
         assertEquals("testfield", result.getFieldName());
         assertEquals("testmessage", result.getMessage());
+        assertFalse(result.modifiedValue());
+        assertEquals("testvalue", result.getValue());
         Bundle bundle = result.toBundle();
         assertNotNull(bundle);
         result = new ValidationResult(bundle);
         assertTrue(result.isValidationSuccessful());
         assertEquals("testfield", result.getFieldName());
         assertEquals("testmessage", result.getMessage());
+        assertFalse(result.modifiedValue());
+        assertEquals("testvalue", result.getValue());
     }
 }
