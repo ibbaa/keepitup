@@ -29,19 +29,13 @@ public class NullValidatorTest {
         assertFalse(result.isValidationSuccessful());
         assertEquals("Address", result.getFieldName());
         assertEquals("No value specified", result.getMessage());
-        assertFalse(result.modifiedValue());
-        assertEquals("www.host.com", result.getValue());
         result = validator.validatePort("23");
         assertFalse(result.isValidationSuccessful());
         assertEquals("Port", result.getFieldName());
         assertEquals("No value specified", result.getMessage());
-        assertFalse(result.modifiedValue());
-        assertEquals("23", result.getValue());
         result = validator.validateInterval("1");
         assertFalse(result.isValidationSuccessful());
         assertEquals("Interval", result.getFieldName());
         assertEquals("No value specified", result.getMessage());
-        assertFalse(result.modifiedValue());
-        assertEquals("1", result.getValue());
     }
 }

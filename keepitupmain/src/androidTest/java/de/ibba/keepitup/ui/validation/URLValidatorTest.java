@@ -15,33 +15,53 @@ import static org.junit.Assert.assertTrue;
 
 @SmallTest
 @RunWith(AndroidJUnit4.class)
-public class StandardHostPortValidatorTest {
+public class URLValidatorTest {
 
-    private StandardHostPortValidator validator;
+    private URLValidator validator;
 
     @Before
     public void beforeEachTestMethod() {
-        validator = new StandardHostPortValidator(TestRegistry.getContext());
+        validator = new URLValidator(TestRegistry.getContext());
     }
 
     @Test
     public void testValidateAddress() {
-        ValidationResult result = validator.validateAddress("www.host.com");
+        ValidationResult result = validator.validateAddress("http://www.host.com");
         assertTrue(result.isValidationSuccessful());
-        assertEquals("Host", result.getFieldName());
+        assertEquals("URL", result.getFieldName());
         assertEquals("Validation successful", result.getMessage());
-        result = validator.validateAddress("3ffe:1900:4545:3:200:f8ff:fe21:67cf");
+        result = validator.validateAddress("https://test");
         assertTrue(result.isValidationSuccessful());
-        assertEquals("Host", result.getFieldName());
+        assertEquals("URL", result.getFieldName());
         assertEquals("Validation successful", result.getMessage());
-        result = validator.validateAddress("192.168.178.100");
+        result = validator.validateAddress("https://test/t est");
         assertTrue(result.isValidationSuccessful());
-        assertEquals("Host", result.getFieldName());
+        assertEquals("URL", result.getFieldName());
         assertEquals("Validation successful", result.getMessage());
-        result = validator.validateAddress("not valid");
+        result = validator.validateAddress("test/test?x=1");
+        assertTrue(result.isValidationSuccessful());
+        assertEquals("URL", result.getFieldName());
+        assertEquals("Validation successful", result.getMessage());
+        result = validator.validateAddress("x");
+        assertTrue(result.isValidationSuccessful());
+        assertEquals("URL", result.getFieldName());
+        assertEquals("Validation successful", result.getMessage());
+        result = validator.validateAddress("http://test/%E2%80%A5/test");
+        assertTrue(result.isValidationSuccessful());
+        assertEquals("URL", result.getFieldName());
+        assertEquals("Validation successful", result.getMessage());
+        result = validator.validateAddress("https://test/‥/test");
+        assertTrue(result.isValidationSuccessful());
+        assertEquals("URL", result.getFieldName());
+        assertEquals("Validation successful", result.getMessage());
+        result = validator.validateAddress("https://te st/");
         assertFalse(result.isValidationSuccessful());
-        assertEquals("Host", result.getFieldName());
-        assertEquals("No valid host or IP address", result.getMessage());
+        assertEquals("URL", result.getFieldName());
+        assertEquals("No valid URL", result.getMessage());
+        result = validator.validateAddress("htt p://test");
+        assertFalse(result.isValidationSuccessful());
+        assertEquals("URL", result.getFieldName());
+        assertEquals("No valid URL", result.getMessage());
     }
 
     @Test
