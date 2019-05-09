@@ -30,18 +30,26 @@ public class StandardHostPortValidatorTest {
         assertTrue(result.isValidationSuccessful());
         assertEquals("Host", result.getFieldName());
         assertEquals("Validation successful", result.getMessage());
+        assertFalse(result.modifiedValue());
+        assertEquals("www.host.com", result.getValue());
         result = validator.validateAddress("3ffe:1900:4545:3:200:f8ff:fe21:67cf");
         assertTrue(result.isValidationSuccessful());
         assertEquals("Host", result.getFieldName());
         assertEquals("Validation successful", result.getMessage());
+        assertFalse(result.modifiedValue());
+        assertEquals("3ffe:1900:4545:3:200:f8ff:fe21:67cf", result.getValue());
         result = validator.validateAddress("192.168.178.100");
         assertTrue(result.isValidationSuccessful());
         assertEquals("Host", result.getFieldName());
         assertEquals("Validation successful", result.getMessage());
+        assertFalse(result.modifiedValue());
+        assertEquals("192.168.178.100", result.getValue());
         result = validator.validateAddress("not valid");
         assertFalse(result.isValidationSuccessful());
         assertEquals("Host", result.getFieldName());
         assertEquals("No valid host or IP address", result.getMessage());
+        assertFalse(result.modifiedValue());
+        assertEquals("not valid", result.getValue());
     }
 
     @Test
@@ -50,18 +58,26 @@ public class StandardHostPortValidatorTest {
         assertTrue(result.isValidationSuccessful());
         assertEquals("Port", result.getFieldName());
         assertEquals("Validation successful", result.getMessage());
+        assertFalse(result.modifiedValue());
+        assertEquals("80", result.getValue());
         result = validator.validatePort("abc");
         assertFalse(result.isValidationSuccessful());
         assertEquals("Port", result.getFieldName());
         assertEquals("Invalid format", result.getMessage());
+        assertFalse(result.modifiedValue());
+        assertEquals("abc", result.getValue());
         result = validator.validatePort("-1");
         assertFalse(result.isValidationSuccessful());
         assertEquals("Port", result.getFieldName());
         assertEquals("Minimum: 0", result.getMessage());
+        assertFalse(result.modifiedValue());
+        assertEquals("-1", result.getValue());
         result = validator.validatePort("12345678");
         assertFalse(result.isValidationSuccessful());
         assertEquals("Port", result.getFieldName());
         assertEquals("Maximum: 65535", result.getMessage());
+        assertFalse(result.modifiedValue());
+        assertEquals("12345678", result.getValue());
     }
 
     @Test
@@ -70,21 +86,25 @@ public class StandardHostPortValidatorTest {
         assertTrue(result.isValidationSuccessful());
         assertEquals("Interval", result.getFieldName());
         assertEquals("Validation successful", result.getMessage());
+        assertFalse(result.modifiedValue());
+        assertEquals("15", result.getValue());
         result = validator.validateInterval("33x");
         assertFalse(result.isValidationSuccessful());
         assertEquals("Interval", result.getFieldName());
         assertEquals("Invalid format", result.getMessage());
+        assertFalse(result.modifiedValue());
+        assertEquals("33x", result.getValue());
         result = validator.validateInterval("0");
         assertFalse(result.isValidationSuccessful());
         assertEquals("Interval", result.getFieldName());
         assertEquals("Minimum: 1", result.getMessage());
-        result = validator.validateInterval("0");
-        assertFalse(result.isValidationSuccessful());
-        assertEquals("Interval", result.getFieldName());
-        assertEquals("Minimum: 1", result.getMessage());
+        assertFalse(result.modifiedValue());
+        assertEquals("0", result.getValue());
         result = validator.validateInterval(String.valueOf((long) Integer.MAX_VALUE + 1));
         assertFalse(result.isValidationSuccessful());
         assertEquals("Interval", result.getFieldName());
         assertEquals("Maximum: " + Integer.MAX_VALUE, result.getMessage());
+        assertFalse(result.modifiedValue());
+        assertEquals(String.valueOf((long) Integer.MAX_VALUE + 1), result.getValue());
     }
 }
