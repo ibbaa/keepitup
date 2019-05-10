@@ -24,8 +24,7 @@ public class URLValidator extends BaseValidator implements Validator {
             return new ValidationResult(false, fieldName, failedMessage);
         }
         Log.d(URLValidator.class.getName(), "Encoding and modifying URL.");
-        String prefixedURL = URLUtil.prefixHTTPProtocol(address);
-        String encodedURL = URLUtil.encodeURL(prefixedURL);
+        String encodedURL = URLUtil.encodeURL(address);
         Log.d(URLValidator.class.getName(), "Modified URL is " + encodedURL);
         if (URLUtil.isValidURL(encodedURL)) {
             Log.d(URLValidator.class.getName(), "Valid URL. Validation successful.");

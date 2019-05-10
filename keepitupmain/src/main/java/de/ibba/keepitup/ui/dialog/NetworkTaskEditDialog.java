@@ -119,6 +119,7 @@ public class NetworkTaskEditDialog extends DialogFragment {
 
     private void onAccessTypeChanged(RadioGroup group, int checkedId) {
         prepareAddressTextFieldsVisibility();
+        validateInput();
     }
 
     private void prepareAddressTextFields() {
@@ -250,7 +251,7 @@ public class NetworkTaskEditDialog extends DialogFragment {
     private void onOkClicked(@SuppressWarnings("unused") View view) {
         Log.d(NetworkTaskEditDialog.class.getName(), "onOkClicked");
         NetworkTaskMainActivity activity = (NetworkTaskMainActivity) getActivity();
-        Bundle validationResult = validateInput();
+        Bundle validationResult = validateFinalInput();
         if (!hasErrors(validationResult)) {
             Log.d(NetworkTaskEditDialog.class.getName(), "Validation was successful");
             Objects.requireNonNull(activity).onEditDialogOkClicked(this);
@@ -280,8 +281,26 @@ public class NetworkTaskEditDialog extends DialogFragment {
         return !bundle.isEmpty();
     }
 
-    private Bundle validateInput() {
+    private void validateInput() {
         Log.d(NetworkTaskEditDialog.class.getName(), "validateInput");
+        Validator validator = getValidator();
+        setValidationResultColor(addressEditText, validator.validateAddress(getAddress()).isValidationSuccessful());
+        if (isPortVisible()) {
+            setValidationResultColor(portEditText, validator.validatePort(getPort()).isValidationSuccessful());
+        }
+        setValidationResultColor(intervalEditText, validator.validateInterval(getInterval()).isValidationSuccessful());
+    }
+
+    private void setValidationResultColor(EditText editText, boolean success) {
+        if (success) {
+            editText.setTextColor(getColor(R.color.textColor));
+        } else {
+            editText.setTextColor(getColor(R.color.textErrorColor));
+        }
+    }
+
+    private Bundle validateFinalInput() {
+        Log.d(NetworkTaskEditDialog.class.getName(), "validateFinalInput");
         Bundle bundle = new Bundle();
         Validator validator = getValidator();
         ValidationResult result = validator.validateAddress(getAddress());
