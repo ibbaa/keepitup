@@ -13,5 +13,5 @@
     <string name="AccessType_DOWNLOAD" tools:ignore="ExtraTranslation" tools:keep="@string/AccessType_DOWNLOAD">Download</string>
     <string name="AccessType_DOWNLOAD_address" tools:ignore="ExtraTranslation" tools:keep="@string/AccessType_DOWNLOAD_address">URL:</string>
     <string name="AccessType_DOWNLOAD_port" tools:ignore="ExtraTranslation" tools:keep="@string/AccessType_DOWNLOAD_port">Port:</string>
-    <string name="AccessType_DOWNLOAD_validator" tools:ignore="ExtraTranslation" tools:keep="@string/AccessType_DOWNLOAD_validator">de.ibba.keepitup.ui.validation.StandardHostPortValidator</string>
+    <string name="AccessType_DOWNLOAD_validator" tools:ignore="ExtraTranslation" tools:keep="@string/AccessType_DOWNLOAD_validator">de.ibba.keepitup.ui.validation.URLValidator</string>
 </resources>

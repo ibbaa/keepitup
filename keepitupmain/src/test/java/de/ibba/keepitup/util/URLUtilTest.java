@@ -41,6 +41,9 @@ public class URLUtilTest {
         assertTrue(URLUtil.isValidURL("http://www.host.com/t%20est?x=1"));
         assertFalse(URLUtil.isValidURL("www.host.com"));
         assertFalse(URLUtil.isValidURL("www.ho st.com/t est?x=1"));
+        assertFalse(URLUtil.isValidURL("http:/www.host.com"));
+        assertFalse(URLUtil.isValidURL("http:///www.host.com"));
+        assertFalse(URLUtil.isValidURL("https:/test"));
     }
 
     @Test
