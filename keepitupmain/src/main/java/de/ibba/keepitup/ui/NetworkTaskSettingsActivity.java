@@ -10,10 +10,11 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import com.google.common.net.InetAddresses;
-import com.google.common.net.InternetDomainName;
-
 import de.ibba.keepitup.R;
+import de.ibba.keepitup.ui.validation.StandardHostPortValidator;
+import de.ibba.keepitup.ui.validation.URLValidator;
+import de.ibba.keepitup.ui.validation.ValidationResult;
+import de.ibba.keepitup.ui.validation.Validator;
 import de.ibba.keepitup.util.NumberUtil;
 import de.ibba.keepitup.util.StringUtil;
 
@@ -38,11 +39,11 @@ public class NetworkTaskSettingsActivity extends AppCompatPreferenceActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
-        if (id == R.id.menu_action_defaults) {
+        if (id == R.id.menu_action_reset) {
             Log.d(NetworkTaskSettingsActivity.class.getName(), "menu_action_defaults triggered");
             SharedPreferences.Editor preferencesEditor = PreferenceManager.getDefaultSharedPreferences(this).edit();
             preferencesEditor.remove(getResources().getString(R.string.interval_setting_key));
-            preferencesEditor.remove(getResources().getString(R.string.hostname_setting_key));
+            preferencesEditor.remove(getResources().getString(R.string.key_settings_defaults_address));
             preferencesEditor.apply();
             PreferenceManager.setDefaultValues(this, R.xml.settings, true);
             recreate();
@@ -52,14 +53,15 @@ public class NetworkTaskSettingsActivity extends AppCompatPreferenceActivity {
     }
 
     public static class SettingsFragment extends PreferenceFragment {
+
         @Override
         public void onCreate(final Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
             addPreferencesFromResource(R.xml.settings);
             Preference interval = findPreference(getResources().getString(R.string.interval_setting_key));
             interval.setOnPreferenceChangeListener(this::onIntervalChanged);
-            Preference hostname = findPreference(getResources().getString(R.string.hostname_setting_key));
-            hostname.setOnPreferenceChangeListener(this::onHostnameChanged);
+            Preference hostname = findPreference(getResources().getString(R.string.key_settings_defaults_address));
+            hostname.setOnPreferenceChangeListener(this::onAddressChanged);
         }
 
         @SuppressWarnings("unused")
@@ -81,17 +83,19 @@ public class NetworkTaskSettingsActivity extends AppCompatPreferenceActivity {
         }
 
         @SuppressWarnings("unused")
-        boolean onHostnameChanged(Preference preference, Object newValue) {
-            Log.d(NetworkTaskSettingsActivity.class.getName(), "onHostnameChanged validating input " + newValue);
-            String hostname = StringUtil.getStringValue(newValue, "");
-            boolean isValidHostname = InternetDomainName.isValid(hostname);
-            boolean isValidIPAddress = InetAddresses.isInetAddress(hostname);
-            if (!isValidHostname && !isValidIPAddress) {
+        boolean onAddressChanged(Preference preference, Object newValue) {
+            Log.d(NetworkTaskSettingsActivity.class.getName(), "onAddressChanged validating input " + newValue);
+            String address = StringUtil.getStringValue(newValue, "");
+            Validator hostValidator = new StandardHostPortValidator(getActivity());
+            Validator urlValidator = new URLValidator(getActivity());
+            ValidationResult validHostResult = hostValidator.validateAddress(address);
+            ValidationResult validURLResult = urlValidator.validateAddress(address);
+            if (!validHostResult.isValidationSuccessful() && !validURLResult.isValidationSuccessful()) {
                 Log.d(NetworkTaskSettingsActivity.class.getName(), "onHostnameChanged, input " + newValue + " is invalid");
-                @SuppressWarnings("ConstantConditions") String failure = getResources().getString(R.string.hostname_setting_label) + System.lineSeparator()
+                @SuppressWarnings("ConstantConditions") String failure = getResources().getString(R.string.label_settings_defaults_address) + System.lineSeparator()
                         + getResources().getString(R.string.text_alert_dialog_value) + ": " + newValue + System.lineSeparator()
-                        + getResources().getString(R.string.text_alert_dialog_hostname_valid) + ": " + isValidHostname + System.lineSeparator()
-                        + getResources().getString(R.string.text_alert_dialog_ip_valid) + ": " + isValidIPAddress;
+                        + getResources().getString(R.string.text_alert_dialog_hostname_valid) + ": " + validHostResult.isValidationSuccessful() + System.lineSeparator()
+                        + getResources().getString(R.string.text_alert_dialog_ip_valid) + ": " + validURLResult.isValidationSuccessful();
                 showErrorDialog(failure);
                 return false;
             }

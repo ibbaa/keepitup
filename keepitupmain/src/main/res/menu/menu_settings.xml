@@ -2,6 +2,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="de.ibba.keepitup.ui.NetworkTaskSettingsActivity">
     <item
-        android:id="@+id/menu_action_defaults"
-        android:title="@string/menu_action_defaults" />
+        android:id="@+id/menu_action_reset"
+        android:title="@string/menu_action_reset" />
 </menu>
