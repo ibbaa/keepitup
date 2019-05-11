@@ -27,8 +27,9 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".ui.SettingsActivity"
-            android:label="@string/activity_setting_title" />
+            android:name=".ui.NetworkTaskSettingsActivity"
+            android:label="@string/activity_setting_title"
+            android:theme="@style/SettingsAppTheme" />
         <activity
             android:name=".ui.NetworkTaskLogActivity"
             android:label="@string/activity_log_title"
