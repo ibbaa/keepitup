@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="text_dialog_edit_network_task_error_title">Validation failed</string>
-    <string name="label_dialog_edit_network_task_error_ok">@android:string/ok</string>
+    <string name="text_dialog_network_task_validator_error_title">Validation failed</string>
+    <string name="label_dialog_network_task_validator_error_ok">@android:string/ok</string>
 </resources>
