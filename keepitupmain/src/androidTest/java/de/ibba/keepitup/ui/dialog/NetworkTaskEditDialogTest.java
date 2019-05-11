@@ -88,6 +88,19 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         onView(withText("Ping")).perform(click());
         task = dialog.getNetworkTask();
         assertEquals(AccessType.PING, task.getAccessType());
+        assertEquals("localhost", task.getAddress());
+        assertEquals(60, task.getInterval());
+        assertTrue(task.isOnlyWifi());
+        assertTrue(task.isNotification());
+        onView(withText("Download")).perform(click());
+        onView(withId(R.id.edittext_dialog_edit_network_task_address)).perform(replaceText("http://test.com"));
+        task = dialog.getNetworkTask();
+        assertNotNull(task);
+        assertEquals(AccessType.DOWNLOAD, task.getAccessType());
+        assertEquals("http://test.com", task.getAddress());
+        assertEquals(60, task.getInterval());
+        assertTrue(task.isOnlyWifi());
+        assertTrue(task.isNotification());
     }
 
     @Test
@@ -104,6 +117,9 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         onView(withId(R.id.edittext_dialog_edit_network_task_address)).check(matches(withText("localhost")));
         onView(withId(R.id.edittext_dialog_edit_network_task_port)).check(matches(withText("80")));
         onView(withId(R.id.edittext_dialog_edit_network_task_interval)).check(matches(withText("60")));
+        onView(withText("Download")).perform(click());
+        onView(withId(R.id.edittext_dialog_edit_network_task_address)).check(matches(withText("localhost")));
+        onView(withId(R.id.edittext_dialog_edit_network_task_interval)).check(matches(withText("60")));
     }
 
     @Test
@@ -116,6 +132,12 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         onView(withId(R.id.switch_dialog_edit_network_task_onlywifi)).check(matches(isDisplayed()));
         onView(withId(R.id.switch_dialog_edit_network_task_notification)).check(matches(isDisplayed()));
         onView(withText("Ping")).perform(click());
+        onView(withId(R.id.edittext_dialog_edit_network_task_address)).check(matches(isDisplayed()));
+        onView(withId(R.id.edittext_dialog_edit_network_task_port)).check(matches(not(isDisplayed())));
+        onView(withId(R.id.edittext_dialog_edit_network_task_interval)).check(matches(isDisplayed()));
+        onView(withId(R.id.switch_dialog_edit_network_task_onlywifi)).check(matches(isDisplayed()));
+        onView(withId(R.id.switch_dialog_edit_network_task_notification)).check(matches(isDisplayed()));
+        onView(withText("Download")).perform(click());
         onView(withId(R.id.edittext_dialog_edit_network_task_address)).check(matches(isDisplayed()));
         onView(withId(R.id.edittext_dialog_edit_network_task_port)).check(matches(not(isDisplayed())));
         onView(withId(R.id.edittext_dialog_edit_network_task_interval)).check(matches(isDisplayed()));
@@ -136,7 +158,7 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
     }
 
     @Test
-    public void testOnOkCancelClickedErrorDialog() {
+    public void testOnOkCancelClickedErrorDialogConnect() {
         onView(allOf(withId(R.id.imageview_list_item_network_task_add), isDisplayed())).perform(click());
         onView(withText("Connect")).perform(click());
         onView(withId(R.id.edittext_dialog_edit_network_task_address)).perform(replaceText("123.456"));
@@ -168,6 +190,26 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
     }
 
     @Test
+    public void testOnOkCancelClickedErrorDialogDownload() {
+        onView(allOf(withId(R.id.imageview_list_item_network_task_add), isDisplayed())).perform(click());
+        onView(withText("Download")).perform(click());
+        onView(withId(R.id.edittext_dialog_edit_network_task_address)).perform(replaceText("http:/test"));
+        onView(withId(R.id.edittext_dialog_edit_network_task_interval)).perform(replaceText("0"));
+        onView(withId(R.id.imageview_dialog_edit_network_task_ok)).perform(click());
+        assertEquals(2, activity.getSupportFragmentManager().getFragments().size());
+        onView(withText("URL")).check(matches(isDisplayed()));
+        onView(withText("No valid URL")).check(matches(isDisplayed()));
+        onView(withText("Interval")).check(matches(isDisplayed()));
+        onView(withText("Minimum: 1")).check(matches(isDisplayed()));
+        onView(withId(R.id.imageview_dialog_edit_network_task_error_ok)).perform(click());
+        assertEquals(1, activity.getSupportFragmentManager().getFragments().size());
+        onView(withId(R.id.edittext_dialog_edit_network_task_address)).perform(replaceText("http://test"));
+        onView(withId(R.id.edittext_dialog_edit_network_task_interval)).perform(replaceText("55"));
+        onView(withId(R.id.imageview_dialog_edit_network_task_ok)).perform(click());
+        assertEquals(0, activity.getSupportFragmentManager().getFragments().size());
+    }
+
+    @Test
     public void testOnOkCancelClickedInputErrorColor() {
         onView(allOf(withId(R.id.imageview_list_item_network_task_add), isDisplayed())).perform(click());
         onView(withText("Connect")).perform(click());
@@ -192,5 +234,17 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         onView(withId(R.id.edittext_dialog_edit_network_task_address)).check(matches(withTextColor(R.color.textColor)));
         onView(withId(R.id.edittext_dialog_edit_network_task_port)).check(matches(withTextColor(R.color.textColor)));
         onView(withId(R.id.edittext_dialog_edit_network_task_interval)).check(matches(withTextColor(R.color.textColor)));
+    }
+
+    @Test
+    public void testOnOkCancelClickedInputErrorColorOnAccessTypeChange() {
+        onView(allOf(withId(R.id.imageview_list_item_network_task_add), isDisplayed())).perform(click());
+        onView(withId(R.id.edittext_dialog_edit_network_task_address)).check(matches(withTextColor(R.color.textColor)));
+        onView(withText("Download")).perform(click());
+        onView(withId(R.id.edittext_dialog_edit_network_task_address)).check(matches(withTextColor(R.color.textErrorColor)));
+        onView(withId(R.id.edittext_dialog_edit_network_task_address)).perform(replaceText("https://www.xyz.com"));
+        onView(withId(R.id.edittext_dialog_edit_network_task_address)).check(matches(withTextColor(R.color.textColor)));
+        onView(withText("Ping")).perform(click());
+        onView(withId(R.id.edittext_dialog_edit_network_task_address)).check(matches(withTextColor(R.color.textErrorColor)));
     }
 }
