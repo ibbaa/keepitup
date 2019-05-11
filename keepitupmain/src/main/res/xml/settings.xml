@@ -5,12 +5,12 @@
         android:layout="@layout/activity_settings_category_network_task">
 
         <de.ibba.keepitup.ui.component.EditSummaryPreference
-            android:defaultValue="@string/hostname_setting_default"
-            android:key="@string/hostname_setting_key"
+            android:defaultValue="@string/task_address_default"
+            android:key="@string/key_settings_defaults_address"
             android:selectAllOnFocus="false"
             android:singleLine="true"
             android:inputType="text"
-            android:title="@string/hostname_setting_label" />
+            android:title="@string/label_settings_defaults_address" />
 
         <de.ibba.keepitup.ui.component.MinutesEditSummaryPreference
             android:defaultValue="@integer/interval_setting_default"
