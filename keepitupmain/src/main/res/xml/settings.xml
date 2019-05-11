@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
-    <PreferenceCategory
-        android:title="@string/text_category_defaults_title"
-        android:layout="@layout/activity_settings_category_network_task">
+    <PreferenceCategory android:title="@string/text_category_defaults_title">
 
         <de.ibba.keepitup.ui.component.EditSummaryPreference
             android:defaultValue="@string/task_address_default"
