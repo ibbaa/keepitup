@@ -1,7 +1,7 @@
 package de.ibba.keepitup.ui.component;
 
 import android.content.Context;
-import android.preference.EditTextPreference;
+import android.support.v7.preference.EditTextPreference;
 import android.util.AttributeSet;
 
 public class EditSummaryPreference extends EditTextPreference {

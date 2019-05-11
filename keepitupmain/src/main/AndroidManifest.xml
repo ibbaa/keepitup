@@ -29,7 +29,12 @@
         <activity
             android:name=".ui.NetworkTaskSettingsActivity"
             android:label="@string/activity_setting_title"
-            android:theme="@style/SettingsAppTheme" />
+            android:theme="@style/SettingsAppTheme"
+            android:parentActivityName=".ui.NetworkTaskMainActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".ui.NetworkTaskMainActivity" />
+        </activity>
         <activity
             android:name=".ui.NetworkTaskLogActivity"
             android:label="@string/activity_log_title"

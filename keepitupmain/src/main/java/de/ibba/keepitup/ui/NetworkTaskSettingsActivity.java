@@ -3,30 +3,35 @@ package de.ibba.keepitup.ui;
 import android.app.AlertDialog;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.preference.Preference;
-import android.preference.PreferenceFragment;
-import android.preference.PreferenceManager;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.preference.Preference;
+import android.support.v7.preference.PreferenceFragmentCompat;
+import android.support.v7.preference.PreferenceManager;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import java.util.Objects;
+
 import de.ibba.keepitup.R;
+import de.ibba.keepitup.ui.dialog.NetworkTaskValidatorErrorDialog;
 import de.ibba.keepitup.ui.validation.StandardHostPortValidator;
 import de.ibba.keepitup.ui.validation.URLValidator;
 import de.ibba.keepitup.ui.validation.ValidationResult;
 import de.ibba.keepitup.ui.validation.Validator;
+import de.ibba.keepitup.util.BundleUtil;
 import de.ibba.keepitup.util.NumberUtil;
 import de.ibba.keepitup.util.StringUtil;
 
-public class NetworkTaskSettingsActivity extends AppCompatPreferenceActivity {
+public class NetworkTaskSettingsActivity extends AppCompatActivity {
 
     public static final int SETTING_ACTIVITY_CODE = 1000;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getFragmentManager().beginTransaction().replace(android.R.id.content, new SettingsFragment()).commit();
+        Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
+        getSupportFragmentManager().beginTransaction().replace(android.R.id.content, new SettingsFragment()).commit();
 
     }
 
@@ -52,11 +57,10 @@ public class NetworkTaskSettingsActivity extends AppCompatPreferenceActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    public static class SettingsFragment extends PreferenceFragment {
+    public static class SettingsFragment extends PreferenceFragmentCompat {
 
         @Override
-        public void onCreate(final Bundle savedInstanceState) {
-            super.onCreate(savedInstanceState);
+        public void onCreatePreferences(Bundle savedInstanceState, String string) {
             addPreferencesFromResource(R.xml.settings);
             Preference interval = findPreference(getResources().getString(R.string.interval_setting_key));
             interval.setOnPreferenceChangeListener(this::onIntervalChanged);
@@ -92,15 +96,21 @@ public class NetworkTaskSettingsActivity extends AppCompatPreferenceActivity {
             ValidationResult validURLResult = urlValidator.validateAddress(address);
             if (!validHostResult.isValidationSuccessful() && !validURLResult.isValidationSuccessful()) {
                 Log.d(NetworkTaskSettingsActivity.class.getName(), "onHostnameChanged, input " + newValue + " is invalid");
-                @SuppressWarnings("ConstantConditions") String failure = getResources().getString(R.string.label_settings_defaults_address) + System.lineSeparator()
-                        + getResources().getString(R.string.text_alert_dialog_value) + ": " + newValue + System.lineSeparator()
-                        + getResources().getString(R.string.text_alert_dialog_hostname_valid) + ": " + validHostResult.isValidationSuccessful() + System.lineSeparator()
-                        + getResources().getString(R.string.text_alert_dialog_ip_valid) + ": " + validURLResult.isValidationSuccessful();
-                showErrorDialog(failure);
+                Bundle bundle = new Bundle();
+                BundleUtil.addValidationResultToIndexedBundle(bundle, validHostResult);
+                BundleUtil.addValidationResultToIndexedBundle(bundle, validURLResult);
+                showErrorDialog(bundle);
                 return false;
             }
             Log.d(NetworkTaskSettingsActivity.class.getName(), "onHostnameChanged, input " + newValue + " is valid");
             return true;
+        }
+
+        private void showErrorDialog(Bundle bundle) {
+            Log.d(NetworkTaskSettingsActivity.class.getName(), "showErrorDialog, opening NetworkTaskValidatorErrorDialog");
+            NetworkTaskValidatorErrorDialog errorDialog = new NetworkTaskValidatorErrorDialog();
+            errorDialog.setArguments(bundle);
+            errorDialog.show(Objects.requireNonNull(getFragmentManager()), NetworkTaskValidatorErrorDialog.class.getName());
         }
 
         private void showErrorDialog(String failureText) {

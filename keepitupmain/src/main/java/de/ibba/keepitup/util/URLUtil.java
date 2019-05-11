@@ -25,10 +25,7 @@ public class URLUtil {
         try {
             URL url = new URL(inputUrl);
             @SuppressWarnings("unused") URI uri = new URI(url.getProtocol(), url.getUserInfo(), IDN.toASCII(url.getHost()), url.getPort(), url.getPath(), url.getQuery(), url.getRef());
-            if (StringUtil.isEmpty(IDN.toASCII(url.getHost()))) {
-                return false;
-            }
-            return true;
+            return !StringUtil.isEmpty(IDN.toASCII(url.getHost()));
         } catch (MalformedURLException | URISyntaxException exc) {
             Log.d(URLUtil.class.getName(), "Exception parsing url " + inputUrl, exc);
         }
