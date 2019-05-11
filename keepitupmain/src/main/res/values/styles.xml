@@ -11,6 +11,10 @@
         <item name="android:windowBackground">@color/windowBackground</item>
     </style>
 
+    <style name="SettingsAppTheme" parent="AppTheme">
+        <item name="colorAccent">@color/textColor</item>
+    </style>
+
     <style name="DialogTheme" parent="AppTheme">
         <item name="android:windowFullscreen">false</item>
         <item name="android:windowIsFloating">true</item>

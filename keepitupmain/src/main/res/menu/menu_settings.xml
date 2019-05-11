@@ -1,6 +1,6 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context="de.ibba.keepitup.ui.SettingsActivity">
+    tools:context="de.ibba.keepitup.ui.NetworkTaskSettingsActivity">
     <item
         android:id="@+id/menu_action_defaults"
         android:title="@string/menu_action_defaults" />
