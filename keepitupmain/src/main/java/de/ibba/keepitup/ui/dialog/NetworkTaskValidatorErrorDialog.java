@@ -41,7 +41,7 @@ public class NetworkTaskValidatorErrorDialog extends DialogFragment {
 
     private void prepareErrorMessages(View view, List<ValidationResult> resultList) {
         Log.d(NetworkTaskValidatorErrorDialog.class.getName(), "prepareErrorMessages");
-        GridLayout gridLayout = view.findViewById(R.id.gridlayout_dialog_edit_network_task_error);
+        GridLayout gridLayout = view.findViewById(R.id.gridlayout_dialog_network_task_validator_error);
         for (int ii = 0; ii < resultList.size(); ii++) {
             ValidationResult currentResult = resultList.get(ii);
             Log.d(NetworkTaskValidatorErrorDialog.class.getName(), "prepareErrorMessages, result with index " + ii + " is " + currentResult);
@@ -53,8 +53,8 @@ public class NetworkTaskValidatorErrorDialog extends DialogFragment {
             labelTextParams.height = GridLayout.LayoutParams.WRAP_CONTENT;
             labelTextParams.width = GridLayout.LayoutParams.WRAP_CONTENT;
             labelTextParams.setGravity(Gravity.CENTER);
-            labelTextParams.rightMargin = getResources().getDimensionPixelSize(R.dimen.textview_dialog_edit_network_task_error_label_margin_right);
-            labelTextParams.topMargin = getResources().getDimensionPixelSize(R.dimen.textview_dialog_edit_network_task_error_label_margin_top);
+            labelTextParams.rightMargin = getResources().getDimensionPixelSize(R.dimen.textview_dialog_network_task_validator_error_label_margin_right);
+            labelTextParams.topMargin = getResources().getDimensionPixelSize(R.dimen.textview_dialog_network_task_validator_error_label_margin_top);
             labelTextParams.columnSpec = GridLayout.spec(0);
             labelTextParams.rowSpec = GridLayout.spec(ii + 1);
             gridLayout.addView(labelText, labelTextParams);
@@ -66,8 +66,8 @@ public class NetworkTaskValidatorErrorDialog extends DialogFragment {
             messageTextParams.height = GridLayout.LayoutParams.WRAP_CONTENT;
             messageTextParams.width = GridLayout.LayoutParams.WRAP_CONTENT;
             messageTextParams.setGravity(Gravity.CENTER);
-            messageTextParams.leftMargin = getResources().getDimensionPixelSize(R.dimen.textview_dialog_edit_network_task_error_message_margin_left);
-            messageTextParams.topMargin = getResources().getDimensionPixelSize(R.dimen.textview_dialog_edit_network_task_error_message_margin_top);
+            messageTextParams.leftMargin = getResources().getDimensionPixelSize(R.dimen.textview_dialog_network_task_validator_error_message_margin_left);
+            messageTextParams.topMargin = getResources().getDimensionPixelSize(R.dimen.textview_dialog_network_task_validator_error_message_margin_top);
             messageTextParams.columnSpec = GridLayout.spec(1);
             messageTextParams.rowSpec = GridLayout.spec(ii + 1);
             gridLayout.addView(messageText, messageTextParams);
@@ -76,14 +76,14 @@ public class NetworkTaskValidatorErrorDialog extends DialogFragment {
 
     private void prepareOkButton(View view, int row) {
         Log.d(NetworkTaskValidatorErrorDialog.class.getName(), "prepareOkButton");
-        ImageView okImage = view.findViewById(R.id.imageview_dialog_edit_network_task_error_ok);
+        ImageView okImage = view.findViewById(R.id.imageview_dialog_network_task_validator_error_ok);
         GridLayout.LayoutParams okImageParams = new GridLayout.LayoutParams();
         okImageParams.height = GridLayout.LayoutParams.WRAP_CONTENT;
         okImageParams.width = GridLayout.LayoutParams.WRAP_CONTENT;
         okImageParams.columnSpec = GridLayout.spec(0, 2);
         okImageParams.rowSpec = GridLayout.spec(row);
         okImageParams.setGravity(Gravity.CENTER);
-        okImageParams.topMargin = getResources().getDimensionPixelSize(R.dimen.imageview_dialog_edit_network_task_error_ok_margin_top);
+        okImageParams.topMargin = getResources().getDimensionPixelSize(R.dimen.imageview_dialog_network_task_validator_error_ok_margin_top);
         okImage.setLayoutParams(okImageParams);
         okImage.setOnClickListener(this::onOkClicked);
     }
