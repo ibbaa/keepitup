@@ -140,6 +140,22 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
         setTaskExecuted(activity, 1, new GregorianCalendar(2020, Calendar.DECEMBER, 1), false, "connection failed");
         onView(allOf(withId(R.id.textview_list_item_network_task_last_exec_timestamp), withChildDescendantAtPosition(withId(R.id.listview_main_activity_network_tasks), 1))).check(matches(withText("Last execution: failed, Dec 1, 2020 12:00:00 AM")));
         onView(allOf(withId(R.id.textview_list_item_network_task_last_exec_message), withChildDescendantAtPosition(withId(R.id.listview_main_activity_network_tasks), 1))).check(matches(withText("Last execution message: connection failed")));
+        onView(allOf(withId(R.id.imageview_list_item_network_task_add), isDisplayed())).perform(click());
+        onView(withText("Download")).perform(click());
+        onView(withId(R.id.edittext_dialog_edit_network_task_address)).perform(replaceText("http://test"));
+        onView(withId(R.id.edittext_dialog_edit_network_task_interval)).perform(replaceText("60"));
+        onView(withId(R.id.switch_dialog_edit_network_task_onlywifi)).perform(click());
+        onView(withId(R.id.switch_dialog_edit_network_task_notification)).perform(click());
+        onView(withId(R.id.imageview_dialog_edit_network_task_ok)).perform(click());
+        onView(allOf(withId(R.id.textview_list_item_network_task_title), withChildDescendantAtPosition(withId(R.id.listview_main_activity_network_tasks), 2))).check(matches(withText("Network task")));
+        onView(allOf(withId(R.id.textview_list_item_network_task_status), withChildDescendantAtPosition(withId(R.id.listview_main_activity_network_tasks), 2))).check(matches(withText("Status: Stopped")));
+        onView(allOf(withId(R.id.imageview_list_item_network_task_start_stop), withChildDescendantAtPosition(withId(R.id.listview_main_activity_network_tasks), 2))).check(matches(withDrawable(R.drawable.icon_start_shadow)));
+        onView(allOf(withId(R.id.textview_list_item_network_task_accesstype), withChildDescendantAtPosition(withId(R.id.listview_main_activity_network_tasks), 2))).check(matches(withText("Type: Download")));
+        onView(allOf(withId(R.id.textview_list_item_network_task_address), withChildDescendantAtPosition(withId(R.id.listview_main_activity_network_tasks), 2))).check(matches(withText("URL: http://test")));
+        onView(allOf(withId(R.id.textview_list_item_network_task_interval), withChildDescendantAtPosition(withId(R.id.listview_main_activity_network_tasks), 2))).check(matches(withText("Interval: 60 minutes")));
+        onView(allOf(withId(R.id.textview_list_item_network_task_onlywifi), withChildDescendantAtPosition(withId(R.id.listview_main_activity_network_tasks), 2))).check(matches(withText("Only on WiFi: yes")));
+        onView(allOf(withId(R.id.textview_list_item_network_task_notification), withChildDescendantAtPosition(withId(R.id.listview_main_activity_network_tasks), 2))).check(matches(withText("Notification on failure: yes")));
+        onView(allOf(withId(R.id.textview_list_item_network_task_last_exec_timestamp), withChildDescendantAtPosition(withId(R.id.listview_main_activity_network_tasks), 2))).check(matches(withText("Last execution: not executed")));
     }
 
     @Test
