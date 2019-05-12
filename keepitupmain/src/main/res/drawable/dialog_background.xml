@@ -2,10 +2,10 @@
 <shape xmlns:android="http://schemas.android.com/apk/res/android"
     android:shape="rectangle">
     <solid android:color="@color/windowBackground" />
-    <corners android:radius="@dimen/dialog_edit_network_task_radius" />
+    <corners android:radius="@dimen/dialog_network_task_edit_radius" />
     <padding
-        android:top="@dimen/dialog_edit_network_task_margin_top"
-        android:left="@dimen/dialog_edit_network_task_margin_left"
-        android:right="@dimen/dialog_edit_network_task_margin_right"
-        android:bottom="@dimen/dialog_edit_network_task_margin_bottom" />
+        android:top="@dimen/dialog_network_task_edit_margin_top"
+        android:left="@dimen/dialog_network_task_edit_margin_left"
+        android:right="@dimen/dialog_network_task_edit_margin_right"
+        android:bottom="@dimen/dialog_network_task_edit_margin_bottom" />
 </shape>

@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <string name="label_dialog_general_confirm_ok">@android:string/ok</string>
-    <string name="label_dialog_general_confirm_cancel">@android:string/cancel</string>
-    <string name="text_dialog_general_confirm_delete_network_task">Really delete?</string>
-</resources>

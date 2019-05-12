@@ -8,7 +8,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 
-import de.ibba.keepitup.ui.dialog.GeneralConfirmDialog;
+import de.ibba.keepitup.ui.dialog.NetworkTaskDeleteConfirmDialog;
 import de.ibba.keepitup.ui.dialog.GeneralErrorDialog;
 import de.ibba.keepitup.util.BundleUtil;
 
@@ -52,16 +52,16 @@ public abstract class RecyclerViewBaseActivity extends AppCompatActivity {
         errorDialog.show(getSupportFragmentManager(), GeneralErrorDialog.class.getName());
     }
 
-    protected void showConfirmDialog(String confirmMessage, GeneralConfirmDialog.Type type, int position) {
+    protected void showConfirmDialog(String confirmMessage, NetworkTaskDeleteConfirmDialog.Type type, int position) {
         Log.d(RecyclerViewBaseActivity.class.getName(), "showConfirmDialog with message " + confirmMessage + " for type " + type + " and position " + position);
-        GeneralConfirmDialog confirmDialog = new GeneralConfirmDialog();
-        Bundle bundle = BundleUtil.messagesToBundle(new String[]{GeneralConfirmDialog.class.getSimpleName(), GeneralConfirmDialog.Type.class.getSimpleName()}, new String[]{confirmMessage, type.name()});
+        NetworkTaskDeleteConfirmDialog confirmDialog = new NetworkTaskDeleteConfirmDialog();
+        Bundle bundle = BundleUtil.messagesToBundle(new String[]{NetworkTaskDeleteConfirmDialog.class.getSimpleName(), NetworkTaskDeleteConfirmDialog.Type.class.getSimpleName()}, new String[]{confirmMessage, type.name()});
         bundle.putInt(getConfirmDialogPositionKey(), position);
         confirmDialog.setArguments(bundle);
-        confirmDialog.show(getSupportFragmentManager(), GeneralConfirmDialog.class.getName());
+        confirmDialog.show(getSupportFragmentManager(), NetworkTaskDeleteConfirmDialog.class.getName());
     }
 
     protected String getConfirmDialogPositionKey() {
-        return GeneralConfirmDialog.class.getSimpleName() + ".position";
+        return NetworkTaskDeleteConfirmDialog.class.getSimpleName() + ".position";
     }
 }

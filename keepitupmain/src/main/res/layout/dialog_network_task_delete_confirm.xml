@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/scrollview_dialog_general_confirm"
+    android:id="@+id/scrollview_dialog_network_task_delete_confirm"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent">
 
     <LinearLayout
-        android:id="@+id/linearlayout_dialog_general_confirm"
+        android:id="@+id/linearlayout_dialog_network_task_delete_confirm"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:focusable="true"
@@ -14,7 +14,7 @@
         android:orientation="vertical">
 
         <TextView
-            android:id="@+id/textview_dialog_general_confirm_message"
+            android:id="@+id/textview_dialog_network_task_delete_confirm_message"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
@@ -22,30 +22,30 @@
             android:text="" />
 
         <LinearLayout
-            android:id="@+id/linearlayout_dialog_general_confirm_ok_cancel"
+            android:id="@+id/linearlayout_dialog_network_task_delete_confirm_ok_cancel"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingTop="@dimen/linearlayout_dialog_general_confirm_ok_cancel_padding_top"
+            android:paddingTop="@dimen/linearlayout_dialog_network_task_delete_confirm_ok_cancel_padding_top"
             android:orientation="horizontal">
 
             <ImageView
-                android:id="@+id/imageview_dialog_general_confirm_ok"
+                android:id="@+id/imageview_dialog_network_task_delete_confirm_ok"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:clickable="true"
                 android:focusable="true"
-                android:contentDescription="@string/label_dialog_general_confirm_ok"
+                android:contentDescription="@string/label_dialog_network_task_delete_confirm_ok"
                 app:srcCompat="@drawable/icon_ok_selector" />
 
             <ImageView
-                android:id="@+id/imageview_dialog_general_confirm_cancel"
+                android:id="@+id/imageview_dialog_network_task_delete_confirm_cancel"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:clickable="true"
                 android:focusable="true"
-                android:contentDescription="@string/label_dialog_general_confirm_cancel"
+                android:contentDescription="@string/label_dialog_network_task_delete_confirm_cancel"
                 app:srcCompat="@drawable/icon_cancel_selector" />
 
         </LinearLayout>

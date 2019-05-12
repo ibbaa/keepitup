@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="label_dialog_edit_network_task_ok">@android:string/ok</string>
-    <string name="label_dialog_edit_network_task_cancel">@android:string/cancel</string>
-    <string name="label_dialog_edit_network_task_access_type">Type:</string>
-    <string name="label_dialog_edit_network_task_interval">Interval (min):</string>
-    <string name="label_dialog_edit_network_task_onlywifi">Only on WiFi:</string>
-    <string name="label_dialog_edit_network_task_notification">Notifications:</string>
-    <integer name="edittext_dialog_edit_network_task_address_max_lines">5</integer>
-    <integer name="edittext_dialog_edit_network_task_port_max_length">5</integer>
+    <string name="label_dialog_network_task_edit_ok">@android:string/ok</string>
+    <string name="label_dialog_network_task_edit_cancel">@android:string/cancel</string>
+    <string name="label_dialog_network_task_edit_access_type">Type:</string>
+    <string name="label_dialog_network_task_edit_interval">Interval (min):</string>
+    <string name="label_dialog_network_task_edit_onlywifi">Only on WiFi:</string>
+    <string name="label_dialog_network_task_edit_notification">Notifications:</string>
+    <integer name="edittext_dialog_network_task_edit_address_max_lines">5</integer>
+    <integer name="edittext_dialog_network_task_edit_port_max_length">5</integer>
 </resources>
