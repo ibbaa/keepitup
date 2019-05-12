@@ -22,7 +22,7 @@ import static android.support.test.espresso.matcher.ViewMatchers.withText;
 
 @MediumTest
 @RunWith(AndroidJUnit4.class)
-public class GeneralConfirmDialogTest extends BaseUITest {
+public class NetworkTaskDeleteConfirmDialogTest extends BaseUITest {
 
     @Rule
     public final ActivityTestRule<NetworkTaskMainActivity> rule = new ActivityTestRule<>(NetworkTaskMainActivity.class, false, false);
@@ -37,10 +37,10 @@ public class GeneralConfirmDialogTest extends BaseUITest {
 
     @Test
     public void testConfirmMessage() {
-        GeneralConfirmDialog confirmDialog = new GeneralConfirmDialog();
-        confirmDialog.setArguments(BundleUtil.messageToBundle(GeneralConfirmDialog.class.getSimpleName(), "Message"));
-        confirmDialog.show(activity.getSupportFragmentManager(), GeneralConfirmDialog.class.getName());
-        onView(withId(R.id.textview_dialog_general_confirm_message)).check(matches(withText("Message")));
-        onView(withId(R.id.imageview_dialog_general_confirm_cancel)).perform(click());
+        NetworkTaskDeleteConfirmDialog confirmDialog = new NetworkTaskDeleteConfirmDialog();
+        confirmDialog.setArguments(BundleUtil.messageToBundle(NetworkTaskDeleteConfirmDialog.class.getSimpleName(), "Message"));
+        confirmDialog.show(activity.getSupportFragmentManager(), NetworkTaskDeleteConfirmDialog.class.getName());
+        onView(withId(R.id.textview_dialog_network_task_delete_confirm_message)).check(matches(withText("Message")));
+        onView(withId(R.id.imageview_dialog_network_task_delete_confirm_cancel)).perform(click());
     }
 }
