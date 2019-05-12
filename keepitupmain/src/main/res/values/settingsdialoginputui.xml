@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="label_dialog_settings_input_ok">@android:string/ok</string>
+    <string name="label_dialog_settings_input_cancel">@android:string/cancel</string>
+    <integer name="edittext_dialog_settings_input_value_max_lines">5</integer>
+</resources>

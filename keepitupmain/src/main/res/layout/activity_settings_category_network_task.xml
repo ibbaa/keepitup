@@ -5,7 +5,7 @@
     android:id="@+id/layout_settings_activity_category"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="de.ibba.keepitup.ui.NetworkTaskSettingsActivity">
+    tools:context="de.ibba.keepitup.ui.SettingsActivity">
 
     <TextView
         android:id="@android:id/title"

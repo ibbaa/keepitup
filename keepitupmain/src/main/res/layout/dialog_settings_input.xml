@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/scrollview_dialog_settings_input"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent">
+
+    <LinearLayout
+        android:id="@+id/linearlayout_dialog_settings_input"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:id="@+id/linearlayout_dialog_settingsinput_value"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/linearlayout_dialog_settings_input_value_margin_left"
+            android:layout_marginTop="@dimen/linearlayout_dialog_settings_input_value_margin_top"
+            android:layout_row="1"
+            android:layout_column="1">
+
+            <EditText
+                android:id="@+id/edittext_dialog_settings_input_value"
+                style="@style/DialogEditTextTheme"
+                android:layout_width="@dimen/edittext_dialog_settings_input_value_width"
+                android:layout_height="wrap_content"
+                android:importantForAutofill="no"
+                android:inputType="textUri|textMultiLine"
+                android:maxLines="@integer/edittext_dialog_settings_input_value_max_lines"
+                android:text="" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/linearlayout_dialog_settings_input_ok_cancel"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingTop="@dimen/linearlayout_dialog_settings_input_ok_cancel_padding_top"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:id="@+id/imageview_dialog_settings_input_ok"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:clickable="true"
+                android:focusable="true"
+                android:contentDescription="@string/label_dialog_settings_input_ok"
+                app:srcCompat="@drawable/icon_ok_selector" />
+
+            <ImageView
+                android:id="@+id/imageview_dialog_settings_input_cancel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:clickable="true"
+                android:focusable="true"
+                android:contentDescription="@string/label_dialog_settings_input_cancel"
+                app:srcCompat="@drawable/icon_cancel_selector" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</ScrollView>
