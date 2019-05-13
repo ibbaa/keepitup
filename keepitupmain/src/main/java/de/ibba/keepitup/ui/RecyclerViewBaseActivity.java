@@ -8,8 +8,8 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 
-import de.ibba.keepitup.ui.dialog.NetworkTaskDeleteConfirmDialog;
 import de.ibba.keepitup.ui.dialog.GeneralErrorDialog;
+import de.ibba.keepitup.ui.dialog.NetworkTaskDeleteConfirmDialog;
 import de.ibba.keepitup.util.BundleUtil;
 
 public abstract class RecyclerViewBaseActivity extends AppCompatActivity {
