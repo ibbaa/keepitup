@@ -1,0 +1,48 @@
+package de.ibba.keepitup.ui.validation;
+
+import android.content.Context;
+import android.content.res.Resources;
+import android.util.Log;
+
+import de.ibba.keepitup.R;
+import de.ibba.keepitup.util.StringUtil;
+import de.ibba.keepitup.util.URLUtil;
+
+public class URLFieldValidator implements FieldValidator {
+
+    private final String field;
+    private final Context context;
+
+    public URLFieldValidator(String field, Context context) {
+        this.field = field;
+        this.context = context;
+    }
+
+    @Override
+    public ValidationResult validate(String value) {
+        Log.d(URLValidator.class.getName(), "validate, value is " + value);
+        String successMessage = getResources().getString(R.string.validation_successful);
+        String failedMessage = getResources().getString(R.string.invalid_url_format);
+        if (StringUtil.isEmpty(value)) {
+            Log.d(URLValidator.class.getName(), "No value specified. Validation failed.");
+            return new ValidationResult(false, field, failedMessage);
+        }
+        Log.d(URLValidator.class.getName(), "Encoding and modifying URL.");
+        String encodedURL = URLUtil.encodeURL(value);
+        Log.d(URLValidator.class.getName(), "Modified URL is " + encodedURL);
+        if (URLUtil.isValidURL(encodedURL)) {
+            Log.d(URLValidator.class.getName(), "Valid URL. Validation successful.");
+            return new ValidationResult(true, field, successMessage);
+        }
+        Log.d(URLValidator.class.getName(), "Invalid URL. Validation failed.");
+        return new ValidationResult(false, field, failedMessage);
+    }
+
+    private Context getContext() {
+        return context;
+    }
+
+    private Resources getResources() {
+        return getContext().getResources();
+    }
+}
