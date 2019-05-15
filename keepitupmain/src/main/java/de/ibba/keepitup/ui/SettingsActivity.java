@@ -15,6 +15,7 @@ import java.util.Objects;
 
 import de.ibba.keepitup.R;
 import de.ibba.keepitup.ui.dialog.NetworkTaskValidatorErrorDialog;
+import de.ibba.keepitup.ui.dialog.SettingsInputDialog;
 import de.ibba.keepitup.ui.validation.StandardHostPortValidator;
 import de.ibba.keepitup.ui.validation.URLValidator;
 import de.ibba.keepitup.ui.validation.ValidationResult;
@@ -120,5 +121,15 @@ public class SettingsActivity extends AppCompatActivity {
             builder.setPositiveButton(android.R.string.ok, null);
             builder.show();
         }
+    }
+
+    public void onInputDialogOkClicked(SettingsInputDialog inputDialog) {
+        Log.d(SettingsActivity.class.getName(), "onInputDialogOkClicked");
+        inputDialog.dismiss();
+    }
+
+    public void onInputDialogCancelClicked(SettingsInputDialog inputDialog) {
+        Log.d(SettingsActivity.class.getName(), "onInputDialogCancelClicked");
+        inputDialog.dismiss();
     }
 }
