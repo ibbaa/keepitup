@@ -359,10 +359,10 @@ public class NetworkTaskEditDialog extends DialogFragment {
     }
 
     private void showErrorDialog(Bundle bundle) {
-        Log.d(NetworkTaskEditDialog.class.getName(), "showErrorDialog, opening NetworkTaskValidatorErrorDialog");
-        NetworkTaskValidatorErrorDialog errorDialog = new NetworkTaskValidatorErrorDialog();
+        Log.d(NetworkTaskEditDialog.class.getName(), "showErrorDialog, opening ValidatorErrorDialog");
+        ValidatorErrorDialog errorDialog = new ValidatorErrorDialog();
         errorDialog.setArguments(bundle);
-        errorDialog.show(Objects.requireNonNull(getFragmentManager()), NetworkTaskValidatorErrorDialog.class.getName());
+        errorDialog.show(Objects.requireNonNull(getFragmentManager()), ValidatorErrorDialog.class.getName());
     }
 
     private int getColor(int colorid) {

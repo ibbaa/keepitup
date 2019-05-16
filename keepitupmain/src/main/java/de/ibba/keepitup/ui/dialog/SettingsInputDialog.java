@@ -20,6 +20,8 @@ import java.util.Objects;
 import de.ibba.keepitup.R;
 import de.ibba.keepitup.ui.SettingsActivity;
 import de.ibba.keepitup.ui.validation.FieldValidator;
+import de.ibba.keepitup.ui.validation.ValidationResult;
+import de.ibba.keepitup.util.BundleUtil;
 import de.ibba.keepitup.util.StringUtil;
 
 public class SettingsInputDialog extends DialogFragment {
@@ -59,11 +61,22 @@ public class SettingsInputDialog extends DialogFragment {
         cancelImage.setOnClickListener(this::onCancelClicked);
     }
 
+    private String getValue() {
+        return StringUtil.notNull(valueEditText.getText());
+    }
+
     private void onOkClicked(@SuppressWarnings("unused") View view) {
         Log.d(SettingsInputDialog.class.getName(), "onOkClicked");
         SettingsActivity activity = (SettingsActivity) getActivity();
         Bundle validationResult = validateInput();
-        Objects.requireNonNull(activity).onInputDialogOkClicked(this);
+        if (!hasErrors(validationResult)) {
+            Log.d(SettingsInputDialog.class.getName(), "Validation was successful");
+            Objects.requireNonNull(activity).onInputDialogOkClicked(this);
+        } else {
+            Log.d(SettingsInputDialog.class.getName(), "Validation failed");
+            showErrorDialog(validationResult);
+        }
+
     }
 
     private void onCancelClicked(@SuppressWarnings("unused") View view) {
@@ -72,29 +85,20 @@ public class SettingsInputDialog extends DialogFragment {
         Objects.requireNonNull(activity).onInputDialogCancelClicked(this);
     }
 
+    private boolean hasErrors(Bundle bundle) {
+        return !bundle.isEmpty();
+    }
+
     private Bundle validateInput() {
         Log.d(SettingsInputDialog.class.getName(), "validateInput");
         Bundle bundle = new Bundle();
-        /*ListValidator validator = getValidator();
-        ValidationResult result = validator.validateAddress(getAddress());
-        Log.d(NetworkTaskEditDialog.class.getName(), "address validation result: " + result);
-        if (!result.isValidationSuccessful()) {
-            BundleUtil.addValidationResultToIndexedBundle(bundle, result);
-        }
-        if (isPortVisible()) {
-            result = validator.validatePort(getPort());
-            Log.d(NetworkTaskEditDialog.class.getName(), "port validation result: " + result);
+        List<FieldValidator> validators = getValidators();
+        for (FieldValidator validator : validators) {
+            ValidationResult result = validator.validate(getValue());
             if (!result.isValidationSuccessful()) {
                 BundleUtil.addValidationResultToIndexedBundle(bundle, result);
             }
-        } else {
-            Log.d(NetworkTaskEditDialog.class.getName(), "port validation skipped");
         }
-        result = validator.validateInterval(getInterval());
-        Log.d(NetworkTaskEditDialog.class.getName(), "interval validation result: " + result);
-        if (!result.isValidationSuccessful()) {
-            BundleUtil.addValidationResultToIndexedBundle(bundle, result);
-        }*/
         return bundle;
     }
 
@@ -131,5 +135,12 @@ public class SettingsInputDialog extends DialogFragment {
             Log.e(SettingsInputDialog.class.getName(), "Error instantiating validator class", exc);
         }
         return null;
+    }
+
+    private void showErrorDialog(Bundle bundle) {
+        Log.d(SettingsInputDialog.class.getName(), "showErrorDialog, opening ValidatorErrorDialog");
+        ValidatorErrorDialog errorDialog = new ValidatorErrorDialog();
+        errorDialog.setArguments(bundle);
+        errorDialog.show(Objects.requireNonNull(getFragmentManager()), ValidatorErrorDialog.class.getName());
     }
 }

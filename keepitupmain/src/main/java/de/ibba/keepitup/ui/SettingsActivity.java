@@ -14,8 +14,8 @@ import android.view.MenuItem;
 import java.util.Objects;
 
 import de.ibba.keepitup.R;
-import de.ibba.keepitup.ui.dialog.NetworkTaskValidatorErrorDialog;
 import de.ibba.keepitup.ui.dialog.SettingsInputDialog;
+import de.ibba.keepitup.ui.dialog.ValidatorErrorDialog;
 import de.ibba.keepitup.ui.validation.StandardHostPortValidator;
 import de.ibba.keepitup.ui.validation.URLValidator;
 import de.ibba.keepitup.ui.validation.ValidationResult;
@@ -108,10 +108,10 @@ public class SettingsActivity extends AppCompatActivity {
         }
 
         private void showErrorDialog(Bundle bundle) {
-            Log.d(SettingsActivity.class.getName(), "showErrorDialog, opening NetworkTaskValidatorErrorDialog");
-            NetworkTaskValidatorErrorDialog errorDialog = new NetworkTaskValidatorErrorDialog();
+            Log.d(SettingsActivity.class.getName(), "showErrorDialog, opening ValidatorErrorDialog");
+            ValidatorErrorDialog errorDialog = new ValidatorErrorDialog();
             errorDialog.setArguments(bundle);
-            errorDialog.show(Objects.requireNonNull(getFragmentManager()), NetworkTaskValidatorErrorDialog.class.getName());
+            errorDialog.show(Objects.requireNonNull(getFragmentManager()), ValidatorErrorDialog.class.getName());
         }
 
         private void showErrorDialog(String failureText) {
