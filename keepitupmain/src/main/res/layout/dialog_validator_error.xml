@@ -1,18 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/scrollview_dialog_network_task_validator_error"
+    android:id="@+id/scrollview_dialog_validator_error"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent">
 
     <GridLayout
-        android:id="@+id/gridlayout_dialog_network_task_validator_error"
+        android:id="@+id/gridlayout_dialog_validator_error"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:columnCount="2">
 
         <TextView
-            android:id="@+id/textview_dialog_network_task_validator_error_title"
+            android:id="@+id/textview_dialog_validator_error_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
@@ -24,7 +24,7 @@
             android:text="@string/text_dialog_network_task_validator_error_title" />
 
         <ImageView
-            android:id="@+id/imageview_dialog_network_task_validator_error_ok"
+            android:id="@+id/imageview_dialog_validator_error_ok"
             android:clickable="true"
             android:focusable="true"
             android:contentDescription="@string/label_dialog_network_task_validator_error_ok"

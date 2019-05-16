@@ -172,7 +172,7 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         onView(withText("Maximum: 65535")).check(matches(isDisplayed()));
         onView(withText("Interval")).check(matches(isDisplayed()));
         onView(withText("Minimum: 1")).check(matches(isDisplayed()));
-        onView(withId(R.id.imageview_dialog_network_task_validator_error_ok)).perform(click());
+        onView(withId(R.id.imageview_dialog_validator_error_ok)).perform(click());
         assertEquals(1, activity.getSupportFragmentManager().getFragments().size());
         onView(withId(R.id.edittext_dialog_network_task_edit_port)).perform(replaceText("80"));
         onView(withId(R.id.imageview_dialog_network_task_edit_ok)).perform(click());
@@ -183,7 +183,7 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         onView(withText("Maximum: 65535")).check(doesNotExist());
         onView(withText("Interval")).check(matches(isDisplayed()));
         onView(withText("Minimum: 1")).check(matches(isDisplayed()));
-        onView(withId(R.id.imageview_dialog_network_task_validator_error_ok)).perform(click());
+        onView(withId(R.id.imageview_dialog_validator_error_ok)).perform(click());
         assertEquals(1, activity.getSupportFragmentManager().getFragments().size());
         onView(withId(R.id.imageview_dialog_network_task_edit_cancel)).perform(click());
         assertEquals(0, activity.getSupportFragmentManager().getFragments().size());
@@ -201,7 +201,7 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         onView(withText("No valid URL")).check(matches(isDisplayed()));
         onView(withText("Interval")).check(matches(isDisplayed()));
         onView(withText("Minimum: 1")).check(matches(isDisplayed()));
-        onView(withId(R.id.imageview_dialog_network_task_validator_error_ok)).perform(click());
+        onView(withId(R.id.imageview_dialog_validator_error_ok)).perform(click());
         assertEquals(1, activity.getSupportFragmentManager().getFragments().size());
         onView(withId(R.id.edittext_dialog_network_task_edit_address)).perform(replaceText("http://test"));
         onView(withId(R.id.edittext_dialog_network_task_edit_interval)).perform(replaceText("55"));
