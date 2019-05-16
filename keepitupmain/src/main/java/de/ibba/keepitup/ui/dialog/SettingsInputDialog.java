@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,6 +21,7 @@ import java.util.Objects;
 import de.ibba.keepitup.R;
 import de.ibba.keepitup.ui.SettingsActivity;
 import de.ibba.keepitup.ui.validation.FieldValidator;
+import de.ibba.keepitup.ui.validation.TextColorValidatingWatcher;
 import de.ibba.keepitup.ui.validation.ValidationResult;
 import de.ibba.keepitup.util.BundleUtil;
 import de.ibba.keepitup.util.StringUtil;
@@ -29,6 +31,7 @@ public class SettingsInputDialog extends DialogFragment {
     private View dialogView;
     private SettingsInput input;
     private EditText valueEditText;
+    private TextColorValidatingWatcher valueEditTextWatcher;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -51,6 +54,16 @@ public class SettingsInputDialog extends DialogFragment {
         Log.d(SettingsInputDialog.class.getName(), "prepareValueTextField");
         valueEditText = dialogView.findViewById(R.id.edittext_dialog_settings_input_value);
         valueEditText.setText(StringUtil.notNull(input.getValue()));
+        prepareValueEditTextListener();
+    }
+
+    private void prepareValueEditTextListener() {
+        if (valueEditTextWatcher != null) {
+            valueEditText.removeTextChangedListener(valueEditTextWatcher);
+            valueEditTextWatcher = null;
+        }
+        valueEditTextWatcher = new TextColorValidatingWatcher(valueEditText, this::validateValue, getColor(R.color.textColor), getColor(R.color.textErrorColor));
+        valueEditText.addTextChangedListener(valueEditTextWatcher);
     }
 
     private void prepareOkCancelImageButtons() {
@@ -89,12 +102,29 @@ public class SettingsInputDialog extends DialogFragment {
         return !bundle.isEmpty();
     }
 
+    private boolean validateValue(EditText editText) {
+        Log.d(SettingsInputDialog.class.getName(), "validateValue");
+        List<FieldValidator> validators = getValidators();
+        for (FieldValidator validator : validators) {
+            Log.d(SettingsInputDialog.class.getName(), "Current validator: " + validator.getClass().getName());
+            ValidationResult result = validator.validate(getValue());
+            Log.d(SettingsInputDialog.class.getName(), "Validation result: " + result);
+            if (result.isValidationSuccessful()) {
+                return true;
+            }
+        }
+        Log.d(SettingsInputDialog.class.getName(), "Validation failed");
+        return false;
+    }
+
     private Bundle validateInput() {
         Log.d(SettingsInputDialog.class.getName(), "validateInput");
         Bundle bundle = new Bundle();
         List<FieldValidator> validators = getValidators();
         for (FieldValidator validator : validators) {
+            Log.d(SettingsInputDialog.class.getName(), "Current validator: " + validator.getClass().getName());
             ValidationResult result = validator.validate(getValue());
+            Log.d(SettingsInputDialog.class.getName(), "Validation result: " + result);
             if (!result.isValidationSuccessful()) {
                 BundleUtil.addValidationResultToIndexedBundle(bundle, result);
             }
@@ -142,5 +172,9 @@ public class SettingsInputDialog extends DialogFragment {
         ValidatorErrorDialog errorDialog = new ValidatorErrorDialog();
         errorDialog.setArguments(bundle);
         errorDialog.show(Objects.requireNonNull(getFragmentManager()), ValidatorErrorDialog.class.getName());
+    }
+
+    private int getColor(int colorid) {
+        return ContextCompat.getColor(requireContext(), colorid);
     }
 }

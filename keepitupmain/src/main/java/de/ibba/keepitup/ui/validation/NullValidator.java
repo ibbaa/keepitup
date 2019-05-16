@@ -16,7 +16,7 @@ public class NullValidator implements Validator {
 
     @Override
     public ValidationResult validateAddress(String address) {
-        Log.d(StandardHostPortValidator.class.getName(), "validateAddress, address is " + address);
+        Log.d(NullValidator.class.getName(), "validateAddress, address is " + address);
         String fieldName = getResources().getString(R.string.task_address_field_name);
         String failedMessage = getResources().getString(R.string.invalid_no_value);
         return new ValidationResult(false, fieldName, failedMessage);
@@ -24,7 +24,7 @@ public class NullValidator implements Validator {
 
     @Override
     public ValidationResult validatePort(String port) {
-        Log.d(StandardHostPortValidator.class.getName(), "validatePort, port is " + port);
+        Log.d(NullValidator.class.getName(), "validatePort, port is " + port);
         String fieldName = getResources().getString(R.string.task_port_field_name);
         String failedMessage = getResources().getString(R.string.invalid_no_value);
         return new ValidationResult(false, fieldName, failedMessage);
@@ -32,7 +32,7 @@ public class NullValidator implements Validator {
 
     @Override
     public ValidationResult validateInterval(String interval) {
-        Log.d(StandardHostPortValidator.class.getName(), "validateInterval, interval is " + interval);
+        Log.d(NullValidator.class.getName(), "validateInterval, interval is " + interval);
         String fieldName = getResources().getString(R.string.task_interval_field_name);
         String failedMessage = getResources().getString(R.string.invalid_no_value);
         return new ValidationResult(false, fieldName, failedMessage);

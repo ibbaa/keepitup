@@ -24,18 +24,18 @@ public class HostFieldValidator implements FieldValidator {
         String successMessage = getResources().getString(R.string.validation_successful);
         String failedMessage = getResources().getString(R.string.invalid_host_format);
         if (StringUtil.isEmpty(value)) {
-            Log.d(StandardHostPortValidator.class.getName(), "No value specified. Validation failed.");
+            Log.d(HostFieldValidator.class.getName(), "No value specified. Validation failed.");
             return new ValidationResult(false, field, failedMessage);
         }
         if (URLUtil.isValidIPAddress(value)) {
-            Log.d(StandardHostPortValidator.class.getName(), "Valid IP address. Validation successful.");
+            Log.d(HostFieldValidator.class.getName(), "Valid IP address. Validation successful.");
             return new ValidationResult(true, field, successMessage);
         }
         if (URLUtil.isValidHostName(value)) {
-            Log.d(StandardHostPortValidator.class.getName(), "Valid host name. Validation successful.");
+            Log.d(HostFieldValidator.class.getName(), "Valid host name. Validation successful.");
             return new ValidationResult(true, field, successMessage);
         }
-        Log.d(StandardHostPortValidator.class.getName(), "Neither IP address nor host name. Validation failed.");
+        Log.d(HostFieldValidator.class.getName(), "Neither IP address nor host name. Validation failed.");
         return new ValidationResult(false, field, failedMessage);
     }
 
