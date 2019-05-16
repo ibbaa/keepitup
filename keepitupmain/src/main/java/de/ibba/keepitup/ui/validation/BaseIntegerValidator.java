@@ -21,22 +21,22 @@ public abstract class BaseIntegerValidator {
         Log.d(BaseIntegerValidator.class.getName(), "validateIntNumber for field " + field);
         Log.d(BaseIntegerValidator.class.getName(), "value is " + value);
         if (!NumberUtil.isValidLongValue(value)) {
-            Log.d(BaseValidator.class.getName(), "invalid number format");
+            Log.d(BaseIntegerValidator.class.getName(), "invalid number format");
             return new ValidationResult(false, field, getResources().getString(R.string.invalid_number_format));
         }
         long numberValue = NumberUtil.getLongValue(value, defaultValue);
-        Log.d(BaseValidator.class.getName(), "validateIntNumber, parsed numeric value is " + numberValue);
+        Log.d(BaseIntegerValidator.class.getName(), "validateIntNumber, parsed numeric value is " + numberValue);
         if (numberValue < minimum) {
-            Log.d(BaseValidator.class.getName(), "Out of range. Value less than minimum of " + minimum);
+            Log.d(BaseIntegerValidator.class.getName(), "Out of range. Value less than minimum of " + minimum);
             String formattedMessage = String.format(getResources().getString(R.string.invalid_range_minimim), minimum);
             return new ValidationResult(false, field, formattedMessage);
         }
         if (numberValue > maximum) {
-            Log.d(BaseValidator.class.getName(), "Out of range. Value greater than maximum of " + maximum);
+            Log.d(BaseIntegerValidator.class.getName(), "Out of range. Value greater than maximum of " + maximum);
             String formattedMessage = String.format(getResources().getString(R.string.invalid_range_maximum), maximum);
             return new ValidationResult(false, field, formattedMessage);
         }
-        Log.d(BaseValidator.class.getName(), "Validation successful");
+        Log.d(BaseIntegerValidator.class.getName(), "Validation successful");
         return new ValidationResult(true, field, getResources().getString(R.string.validation_successful));
     }
 

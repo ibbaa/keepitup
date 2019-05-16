@@ -11,18 +11,14 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import java.util.Arrays;
 import java.util.Objects;
 
 import de.ibba.keepitup.R;
+import de.ibba.keepitup.ui.dialog.SettingsInput;
 import de.ibba.keepitup.ui.dialog.SettingsInputDialog;
 import de.ibba.keepitup.ui.dialog.ValidatorErrorDialog;
-import de.ibba.keepitup.ui.validation.StandardHostPortValidator;
-import de.ibba.keepitup.ui.validation.URLValidator;
-import de.ibba.keepitup.ui.validation.ValidationResult;
-import de.ibba.keepitup.ui.validation.Validator;
-import de.ibba.keepitup.util.BundleUtil;
 import de.ibba.keepitup.util.NumberUtil;
-import de.ibba.keepitup.util.StringUtil;
 
 public class SettingsActivity extends AppCompatActivity {
 
@@ -90,19 +86,10 @@ public class SettingsActivity extends AppCompatActivity {
         @SuppressWarnings("unused")
         boolean onAddressChanged(Preference preference, Object newValue) {
             Log.d(SettingsActivity.class.getName(), "onAddressChanged validating input " + newValue);
-            String address = StringUtil.getStringValue(newValue, "");
-            Validator hostValidator = new StandardHostPortValidator(getActivity());
-            Validator urlValidator = new URLValidator(getActivity());
-            ValidationResult validHostResult = hostValidator.validateAddress(address);
-            ValidationResult validURLResult = urlValidator.validateAddress(address);
-            if (!validHostResult.isValidationSuccessful() && !validURLResult.isValidationSuccessful()) {
-                Log.d(SettingsActivity.class.getName(), "onHostnameChanged, input " + newValue + " is invalid");
-                Bundle bundle = new Bundle();
-                BundleUtil.addValidationResultToIndexedBundle(bundle, validHostResult);
-                BundleUtil.addValidationResultToIndexedBundle(bundle, validURLResult);
-                showErrorDialog(bundle);
-                return false;
-            }
+            SettingsInputDialog dialog = new SettingsInputDialog();
+            SettingsInput input = new SettingsInput("127.0.0.1", "Test", Arrays.asList("de.ibba.keepitup.ui.validation.HostFieldValidator"));
+            dialog.setArguments(input.toBundle());
+            dialog.show(Objects.requireNonNull(getFragmentManager()), SettingsInputDialog.class.getName());
             Log.d(SettingsActivity.class.getName(), "onHostnameChanged, input " + newValue + " is valid");
             return true;
         }

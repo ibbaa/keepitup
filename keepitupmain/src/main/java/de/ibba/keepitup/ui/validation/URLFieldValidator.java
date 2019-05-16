@@ -20,21 +20,21 @@ public class URLFieldValidator implements FieldValidator {
 
     @Override
     public ValidationResult validate(String value) {
-        Log.d(URLValidator.class.getName(), "validate, value is " + value);
+        Log.d(URLFieldValidator.class.getName(), "validate, value is " + value);
         String successMessage = getResources().getString(R.string.validation_successful);
         String failedMessage = getResources().getString(R.string.invalid_url_format);
         if (StringUtil.isEmpty(value)) {
-            Log.d(URLValidator.class.getName(), "No value specified. Validation failed.");
+            Log.d(URLFieldValidator.class.getName(), "No value specified. Validation failed.");
             return new ValidationResult(false, field, failedMessage);
         }
-        Log.d(URLValidator.class.getName(), "Encoding and modifying URL.");
+        Log.d(URLFieldValidator.class.getName(), "Encoding and modifying URL.");
         String encodedURL = URLUtil.encodeURL(value);
-        Log.d(URLValidator.class.getName(), "Modified URL is " + encodedURL);
+        Log.d(URLFieldValidator.class.getName(), "Modified URL is " + encodedURL);
         if (URLUtil.isValidURL(encodedURL)) {
-            Log.d(URLValidator.class.getName(), "Valid URL. Validation successful.");
+            Log.d(URLFieldValidator.class.getName(), "Valid URL. Validation successful.");
             return new ValidationResult(true, field, successMessage);
         }
-        Log.d(URLValidator.class.getName(), "Invalid URL. Validation failed.");
+        Log.d(URLFieldValidator.class.getName(), "Invalid URL. Validation failed.");
         return new ValidationResult(false, field, failedMessage);
     }
 
