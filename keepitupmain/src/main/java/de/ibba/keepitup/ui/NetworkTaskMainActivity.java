@@ -95,7 +95,7 @@ public class NetworkTaskMainActivity extends RecyclerViewBaseActivity {
         if (id == R.id.menu_action_settings) {
             Log.d(NetworkTaskMainActivity.class.getName(), "menu_action_settings triggered");
             Intent intent = new Intent(this, SettingsActivity.class);
-            startActivityForResult(intent, SettingsActivity.SETTING_ACTIVITY_CODE);
+            startActivity(intent);
             return true;
         }
         return super.onOptionsItemSelected(item);

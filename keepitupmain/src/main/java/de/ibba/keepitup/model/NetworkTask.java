@@ -7,6 +7,7 @@ import android.os.PersistableBundle;
 import android.support.annotation.NonNull;
 
 import de.ibba.keepitup.R;
+import de.ibba.keepitup.resources.NetworkTaskPreferenceManager;
 
 public class NetworkTask {
 
@@ -36,15 +37,16 @@ public class NetworkTask {
 
     public NetworkTask(Context context) {
         Resources resources = context.getResources();
+        NetworkTaskPreferenceManager preferenceManager = new NetworkTaskPreferenceManager(context);
         this.id = -1;
         this.index = -1;
         this.schedulerid = -1;
-        this.address = resources.getString(R.string.task_address_default);
-        this.port = resources.getInteger(R.integer.task_port_default);
-        this.accessType = AccessType.valueOf(resources.getString(R.string.task_accesstype_default));
-        this.interval = resources.getInteger(R.integer.task_interval_default);
-        this.onlyWifi = resources.getBoolean(R.bool.task_onlywifi_default);
-        this.notification = resources.getBoolean(R.bool.task_notification_default);
+        this.address = preferenceManager.getPreferenceAddress();
+        this.port = preferenceManager.getPreferencePort();
+        this.accessType = preferenceManager.getPreferenceAccessType();
+        this.interval = preferenceManager.getPreferenceInterval();
+        this.onlyWifi = preferenceManager.getPreferenceOnlyWifi();
+        this.notification = preferenceManager.getPreferenceNotification();
         this.running = resources.getBoolean(R.bool.task_running_default);
     }
 
