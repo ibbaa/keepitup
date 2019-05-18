@@ -13,6 +13,7 @@ import java.util.Locale;
 
 import de.ibba.keepitup.db.LogDAO;
 import de.ibba.keepitup.db.NetworkTaskDAO;
+import de.ibba.keepitup.resources.NetworkTaskPreferenceManager;
 import de.ibba.keepitup.service.NetworkTaskServiceScheduler;
 import de.ibba.keepitup.test.matcher.ChildDescendantAtPositionMatcher;
 import de.ibba.keepitup.test.matcher.DrawableMatcher;
@@ -43,6 +44,8 @@ public abstract class BaseUITest {
         if (handler != null) {
             handler.reset();
         }
+        NetworkTaskPreferenceManager preferenceManager = new NetworkTaskPreferenceManager(TestRegistry.getContext());
+        preferenceManager.removeAllPreferences();
     }
 
     @After
@@ -54,6 +57,8 @@ public abstract class BaseUITest {
         if (handler != null) {
             handler.reset();
         }
+        NetworkTaskPreferenceManager preferenceManager = new NetworkTaskPreferenceManager(TestRegistry.getContext());
+        preferenceManager.removeAllPreferences();
     }
 
     public RecyclerViewBaseActivity launchRecyclerViewBaseActivity(ActivityTestRule<?> rule) {

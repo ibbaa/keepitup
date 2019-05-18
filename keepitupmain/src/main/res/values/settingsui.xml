@@ -4,7 +4,7 @@
     <string name="menu_action_reset">Reset</string>
     <string name="text_category_defaults_title">Defaults</string>
     <string name="key_settings_defaults_address">key_settings_defaults_address</string>
-    <string name="label_settings_defaults_address">Host / URL</string>
+    <string name="label_settings_activity_address">Host / URL</string>
     <string name="interval_setting_key">interval_setting_key</string>
     <string name="interval_setting_label">Interval</string>
     <integer name="interval_setting_default">15</integer>

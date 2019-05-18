@@ -1,12 +1,17 @@
 package de.ibba.keepitup.util;
 
+import android.support.test.filters.SmallTest;
+import android.support.test.runner.AndroidJUnit4;
+
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-@SuppressWarnings("ConstantConditions")
+@SmallTest
+@RunWith(AndroidJUnit4.class)
 public class StringUtilTest {
 
     @Test

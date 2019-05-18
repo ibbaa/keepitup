@@ -1,35 +1,27 @@
 package de.ibba.keepitup.ui;
 
-import android.app.AlertDialog;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.preference.Preference;
-import android.support.v7.preference.PreferenceFragmentCompat;
-import android.support.v7.preference.PreferenceManager;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.TextView;
 
-import java.util.Arrays;
 import java.util.Objects;
 
 import de.ibba.keepitup.R;
-import de.ibba.keepitup.ui.dialog.SettingsInput;
+import de.ibba.keepitup.resources.NetworkTaskPreferenceManager;
 import de.ibba.keepitup.ui.dialog.SettingsInputDialog;
 import de.ibba.keepitup.ui.dialog.ValidatorErrorDialog;
-import de.ibba.keepitup.util.NumberUtil;
 
 public class SettingsActivity extends AppCompatActivity {
-
-    public static final int SETTING_ACTIVITY_CODE = 1000;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
-        getSupportFragmentManager().beginTransaction().replace(android.R.id.content, new SettingsFragment()).commit();
-
+        setContentView(R.layout.activity_settings);
+        prepareAddressField();
     }
 
     @Override
@@ -43,71 +35,28 @@ public class SettingsActivity extends AppCompatActivity {
         int id = item.getItemId();
         if (id == R.id.menu_action_reset) {
             Log.d(SettingsActivity.class.getName(), "menu_action_defaults triggered");
-            SharedPreferences.Editor preferencesEditor = PreferenceManager.getDefaultSharedPreferences(this).edit();
+            /*SharedPreferences.Editor preferencesEditor = PreferenceManager.getDefaultSharedPreferences(this).edit();
             preferencesEditor.remove(getResources().getString(R.string.interval_setting_key));
             preferencesEditor.remove(getResources().getString(R.string.key_settings_defaults_address));
             preferencesEditor.apply();
             PreferenceManager.setDefaultValues(this, R.xml.settings, true);
-            recreate();
+            recreate();*/
             return true;
         }
         return super.onOptionsItemSelected(item);
     }
 
-    public static class SettingsFragment extends PreferenceFragmentCompat {
+    private void prepareAddressField() {
+        NetworkTaskPreferenceManager preferenceManager = new NetworkTaskPreferenceManager(this);
+        TextView addressText = findViewById(R.id.textview_settings_activity_address);
+        addressText.setText(preferenceManager.getPreferenceAddress());
+    }
 
-        @Override
-        public void onCreatePreferences(Bundle savedInstanceState, String string) {
-            addPreferencesFromResource(R.xml.settings);
-            Preference interval = findPreference(getResources().getString(R.string.interval_setting_key));
-            interval.setOnPreferenceChangeListener(this::onIntervalChanged);
-            Preference hostname = findPreference(getResources().getString(R.string.key_settings_defaults_address));
-            hostname.setOnPreferenceChangeListener(this::onAddressChanged);
-        }
-
-        @SuppressWarnings("unused")
-        boolean onIntervalChanged(Preference preference, Object newValue) {
-            Log.d(SettingsActivity.class.getName(), "onIntervalChanged validating input " + newValue);
-            boolean isValidValue = NumberUtil.isValidLongValue(newValue);
-            long refreshInterval = NumberUtil.getLongValue(newValue, getResources().getInteger(R.integer.interval_setting_default));
-            long refreshIntervalMinimum = getResources().getInteger(R.integer.interval_setting_minimum);
-            if (!isValidValue || refreshInterval < refreshIntervalMinimum) {
-                Log.d(SettingsActivity.class.getName(), "onIntervalChanged, input " + newValue + " is invalid");
-                String failure = getResources().getString(R.string.interval_setting_label) + System.lineSeparator()
-                        + getResources().getString(R.string.text_alert_dialog_value) + ": " + newValue + System.lineSeparator()
-                        + getResources().getString(R.string.text_alert_dialog_minimum) + ": " + refreshIntervalMinimum;
-                showErrorDialog(failure);
-                return false;
-            }
-            Log.d(SettingsActivity.class.getName(), "onIntervalChanged, input " + newValue + " is valid");
-            return true;
-        }
-
-        @SuppressWarnings("unused")
-        boolean onAddressChanged(Preference preference, Object newValue) {
-            Log.d(SettingsActivity.class.getName(), "onAddressChanged validating input " + newValue);
-            SettingsInputDialog dialog = new SettingsInputDialog();
-            SettingsInput input = new SettingsInput("127.0.0.1", "Test", Arrays.asList("de.ibba.keepitup.ui.validation.HostFieldValidator"));
-            dialog.setArguments(input.toBundle());
-            dialog.show(Objects.requireNonNull(getFragmentManager()), SettingsInputDialog.class.getName());
-            Log.d(SettingsActivity.class.getName(), "onHostnameChanged, input " + newValue + " is valid");
-            return true;
-        }
-
-        private void showErrorDialog(Bundle bundle) {
-            Log.d(SettingsActivity.class.getName(), "showErrorDialog, opening ValidatorErrorDialog");
-            ValidatorErrorDialog errorDialog = new ValidatorErrorDialog();
-            errorDialog.setArguments(bundle);
-            errorDialog.show(Objects.requireNonNull(getFragmentManager()), ValidatorErrorDialog.class.getName());
-        }
-
-        private void showErrorDialog(String failureText) {
-            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-            builder.setTitle(getResources().getString(R.string.text_alert_dialog_invalid_input));
-            builder.setMessage(failureText);
-            builder.setPositiveButton(android.R.string.ok, null);
-            builder.show();
-        }
+    private void showErrorDialog(Bundle bundle) {
+        Log.d(SettingsActivity.class.getName(), "showErrorDialog, opening ValidatorErrorDialog");
+        ValidatorErrorDialog errorDialog = new ValidatorErrorDialog();
+        errorDialog.setArguments(bundle);
+        errorDialog.show(getSupportFragmentManager(), ValidatorErrorDialog.class.getName());
     }
 
     public void onInputDialogOkClicked(SettingsInputDialog inputDialog) {

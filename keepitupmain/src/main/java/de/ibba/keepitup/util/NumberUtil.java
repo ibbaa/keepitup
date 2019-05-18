@@ -1,7 +1,5 @@
 package de.ibba.keepitup.util;
 
-import android.content.Context;
-import android.preference.PreferenceManager;
 import android.util.Log;
 
 public class NumberUtil {
@@ -26,11 +24,6 @@ public class NumberUtil {
         return defaultValue;
     }
 
-    public static long getPreferenceLongSetting(String key, int defaultValue, Context context) {
-        String value = PreferenceManager.getDefaultSharedPreferences(context).getString(key, String.valueOf(defaultValue));
-        return getLongValue(value, defaultValue);
-    }
-
     public static boolean isValidIntValue(Object value) {
         if (value == null) {
             return false;
@@ -49,10 +42,5 @@ public class NumberUtil {
             return Integer.valueOf(value.toString());
         }
         return defaultValue;
-    }
-
-    public static long getPreferenceIntSetting(String key, int defaultValue, Context context) {
-        String value = PreferenceManager.getDefaultSharedPreferences(context).getString(key, String.valueOf(defaultValue));
-        return getIntValue(value, defaultValue);
     }
 }

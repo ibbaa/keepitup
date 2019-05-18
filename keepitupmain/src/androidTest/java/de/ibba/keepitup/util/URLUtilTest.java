@@ -1,26 +1,18 @@
 package de.ibba.keepitup.util;
 
-import android.util.Log;
+import android.support.test.filters.SmallTest;
+import android.support.test.runner.AndroidJUnit4;
 
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.powermock.api.mockito.PowerMockito;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-@RunWith(PowerMockRunner.class)
-@PrepareForTest({Log.class})
+@SmallTest
+@RunWith(AndroidJUnit4.class)
 public class URLUtilTest {
-
-    @Before
-    public void beforeEachTestMethod() {
-        PowerMockito.mockStatic(Log.class);
-    }
 
     @Test
     public void testInputValid() {

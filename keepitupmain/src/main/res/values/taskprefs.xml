@@ -1,11 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="task_accesstype_default">PING</string>
+    <string name="task_accesstype_key">task_accesstype_key</string>
     <string name="task_address_default">192.168.178.1</string>
+    <string name="task_address_key">task_address_key</string>
     <integer name="task_port_default">22</integer>
+    <string name="task_port_key">task_port_key</string>
     <integer name="task_interval_default">15</integer>
+    <string name="task_interval_key">task_interval_key</string>
     <bool name="task_onlywifi_default">false</bool>
+    <string name="task_onlywifi_key">task_onlywifi_key</string>
     <bool name="task_notification_default">false</bool>
+    <string name="task_notification_key">task_notification_key</string>
     <bool name="task_running_default">false</bool>
     <integer name="task_port_minimum">0</integer>
     <integer name="task_port_maximum">65535</integer>
