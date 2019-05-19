@@ -2,9 +2,11 @@ package de.ibba.keepitup.ui;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.CardView;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.TextView;
 
 import java.util.Objects;
@@ -13,8 +15,11 @@ import de.ibba.keepitup.R;
 import de.ibba.keepitup.resources.NetworkTaskPreferenceManager;
 import de.ibba.keepitup.ui.dialog.SettingsInputDialog;
 import de.ibba.keepitup.ui.dialog.ValidatorErrorDialog;
+import de.ibba.keepitup.util.StringUtil;
 
 public class SettingsActivity extends AppCompatActivity {
+
+    private TextView addressText;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -48,15 +53,33 @@ public class SettingsActivity extends AppCompatActivity {
 
     private void prepareAddressField() {
         NetworkTaskPreferenceManager preferenceManager = new NetworkTaskPreferenceManager(this);
-        TextView addressText = findViewById(R.id.textview_settings_activity_address);
+        addressText = findViewById(R.id.textview_settings_activity_address);
         addressText.setText(preferenceManager.getPreferenceAddress());
+        CardView addressCardView = findViewById(R.id.cardview_settings_activity_address);
+        //addressCardView.setOnClickListener();
     }
+
+    private String getAddress() {
+        return StringUtil.notNull(addressText.getText());
+    }
+
 
     private void showErrorDialog(Bundle bundle) {
         Log.d(SettingsActivity.class.getName(), "showErrorDialog, opening ValidatorErrorDialog");
         ValidatorErrorDialog errorDialog = new ValidatorErrorDialog();
         errorDialog.setArguments(bundle);
         errorDialog.show(getSupportFragmentManager(), ValidatorErrorDialog.class.getName());
+    }
+
+    private void showAddressInputDialog(View view) {
+
+    }
+
+    private void showInputDialog(Bundle bundle) {
+        Log.d(SettingsActivity.class.getName(), "showErrorDialog, opening SettingsInputDialog");
+        SettingsInputDialog inputDialog = new SettingsInputDialog();
+        inputDialog.setArguments(bundle);
+        inputDialog.show(getSupportFragmentManager(), SettingsInputDialog.class.getName());
     }
 
     public void onInputDialogOkClicked(SettingsInputDialog inputDialog) {

@@ -17,6 +17,24 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <android.support.v7.widget.CardView xmlns:card_view="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/cardview_settings_activity_defaults"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/settings_activity_defaults_margin"
+            card_view:cardCornerRadius="@dimen/settings_activity_defaults_corner_radius"
+            app:cardElevation="@dimen/settings_activity_defaults_card_elevation">
+
+            <TextView
+                android:id="@+id/textview_settings_activity_defaults_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/settings_activity_defaults_margin"
+                android:textStyle="bold"
+                android:text="@string/label_settings_activity_defaults" />
+
+        </android.support.v7.widget.CardView>
+
+        <android.support.v7.widget.CardView xmlns:card_view="http://schemas.android.com/apk/res-auto"
             android:id="@+id/cardview_settings_activity_address"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
