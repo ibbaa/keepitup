@@ -125,6 +125,10 @@ public class SettingsInputDialog extends DialogFragment {
             Log.d(SettingsInputDialog.class.getName(), "Current validator: " + validator.getClass().getName());
             ValidationResult result = validator.validate(getValue());
             Log.d(SettingsInputDialog.class.getName(), "Validation result: " + result);
+            if (result.isValidationSuccessful()) {
+                Log.d(SettingsInputDialog.class.getName(), "Validation successful.");
+                return new Bundle();
+            }
             if (!result.isValidationSuccessful()) {
                 BundleUtil.addValidationResultToIndexedBundle(bundle, result);
             }
