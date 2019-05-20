@@ -17,7 +17,7 @@ import de.ibba.keepitup.ui.NetworkTaskMainActivity;
 import de.ibba.keepitup.util.BundleUtil;
 import de.ibba.keepitup.util.StringUtil;
 
-public class NetworkTaskDeleteConfirmDialog extends DialogFragment {
+public class NetworkTaskConfirmDialog extends DialogFragment {
 
     public enum Type {
         DELETE
@@ -25,41 +25,41 @@ public class NetworkTaskDeleteConfirmDialog extends DialogFragment {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        Log.d(NetworkTaskDeleteConfirmDialog.class.getName(), "onCreate");
+        Log.d(NetworkTaskConfirmDialog.class.getName(), "onCreate");
         super.onCreate(savedInstanceState);
         setStyle(DialogFragment.STYLE_NO_FRAME, R.style.DialogTheme);
     }
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        Log.d(NetworkTaskDeleteConfirmDialog.class.getName(), "onCreateView");
-        View view = inflater.inflate(R.layout.dialog_network_task_delete_confirm, container);
-        String message = BundleUtil.bundleToMessage(NetworkTaskDeleteConfirmDialog.class.getSimpleName(), Objects.requireNonNull(getArguments()));
+        Log.d(NetworkTaskConfirmDialog.class.getName(), "onCreateView");
+        View view = inflater.inflate(R.layout.dialog_network_task_confirm, container);
+        String message = BundleUtil.bundleToMessage(NetworkTaskConfirmDialog.class.getSimpleName(), Objects.requireNonNull(getArguments()));
         prepareConfirmMessage(view, message);
         prepareOkCancelImageButtons(view);
         return view;
     }
 
     private void prepareConfirmMessage(View view, String message) {
-        Log.d(NetworkTaskDeleteConfirmDialog.class.getName(), "prepareConfirmMessage");
-        TextView messageText = view.findViewById(R.id.textview_dialog_network_task_delete_confirm_message);
+        Log.d(NetworkTaskConfirmDialog.class.getName(), "prepareConfirmMessage");
+        TextView messageText = view.findViewById(R.id.textview_dialog_network_task_confirm_message);
         messageText.setText(message);
     }
 
     private void prepareOkCancelImageButtons(View view) {
-        Log.d(NetworkTaskDeleteConfirmDialog.class.getName(), "prepareOkCancelImageButtons");
-        ImageView okImage = view.findViewById(R.id.imageview_dialog_network_task_delete_confirm_ok);
-        ImageView cancelImage = view.findViewById(R.id.imageview_dialog_network_task_delete_confirm_cancel);
+        Log.d(NetworkTaskConfirmDialog.class.getName(), "prepareOkCancelImageButtons");
+        ImageView okImage = view.findViewById(R.id.imageview_dialog_network_task_confirm_ok);
+        ImageView cancelImage = view.findViewById(R.id.imageview_dialog_network_task_confirm_cancel);
         okImage.setOnClickListener(this::onOkClicked);
         cancelImage.setOnClickListener(this::onCancelClicked);
     }
 
     private void onOkClicked(@SuppressWarnings("unused") View view) {
-        Log.d(NetworkTaskDeleteConfirmDialog.class.getName(), "onOkClicked");
+        Log.d(NetworkTaskConfirmDialog.class.getName(), "onOkClicked");
         NetworkTaskMainActivity activity = (NetworkTaskMainActivity) getActivity();
-        String typeString = BundleUtil.bundleToMessage(NetworkTaskDeleteConfirmDialog.Type.class.getSimpleName(), Objects.requireNonNull(getArguments()));
+        String typeString = BundleUtil.bundleToMessage(NetworkTaskConfirmDialog.Type.class.getSimpleName(), Objects.requireNonNull(getArguments()));
         if (StringUtil.isEmpty(typeString)) {
-            Log.e(NetworkTaskDeleteConfirmDialog.class.getName(), NetworkTaskDeleteConfirmDialog.Type.class.getSimpleName() + " not specified.");
+            Log.e(NetworkTaskConfirmDialog.class.getName(), NetworkTaskConfirmDialog.Type.class.getSimpleName() + " not specified.");
             Objects.requireNonNull(activity).onConfirmDialogOkClicked(this, null);
             return;
         }
@@ -67,13 +67,13 @@ public class NetworkTaskDeleteConfirmDialog extends DialogFragment {
         try {
             type = Type.valueOf(typeString);
         } catch (IllegalArgumentException exc) {
-            Log.e(NetworkTaskDeleteConfirmDialog.class.getName(), NetworkTaskDeleteConfirmDialog.Type.class.getSimpleName() + "." + typeString + " does not exist");
+            Log.e(NetworkTaskConfirmDialog.class.getName(), NetworkTaskConfirmDialog.Type.class.getSimpleName() + "." + typeString + " does not exist");
         }
         Objects.requireNonNull(activity).onConfirmDialogOkClicked(this, type);
     }
 
     private void onCancelClicked(@SuppressWarnings("unused") View view) {
-        Log.d(NetworkTaskDeleteConfirmDialog.class.getName(), "onCancelClicked");
+        Log.d(NetworkTaskConfirmDialog.class.getName(), "onCancelClicked");
         NetworkTaskMainActivity activity = (NetworkTaskMainActivity) getActivity();
         Objects.requireNonNull(activity).onConfirmDialogCancelClicked(this);
     }
