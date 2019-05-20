@@ -9,12 +9,16 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.Objects;
 
 import de.ibba.keepitup.R;
 import de.ibba.keepitup.resources.NetworkTaskPreferenceManager;
+import de.ibba.keepitup.ui.dialog.SettingsInput;
 import de.ibba.keepitup.ui.dialog.SettingsInputDialog;
-import de.ibba.keepitup.ui.dialog.ValidatorErrorDialog;
+import de.ibba.keepitup.ui.validation.HostFieldValidator;
+import de.ibba.keepitup.ui.validation.URLFieldValidator;
 import de.ibba.keepitup.util.StringUtil;
 
 public class SettingsActivity extends AppCompatActivity {
@@ -56,23 +60,17 @@ public class SettingsActivity extends AppCompatActivity {
         addressText = findViewById(R.id.textview_settings_activity_address);
         addressText.setText(preferenceManager.getPreferenceAddress());
         CardView addressCardView = findViewById(R.id.cardview_settings_activity_address);
-        //addressCardView.setOnClickListener();
+        addressCardView.setOnClickListener(this::showAddressInputDialog);
     }
 
     private String getAddress() {
         return StringUtil.notNull(addressText.getText());
     }
 
-
-    private void showErrorDialog(Bundle bundle) {
-        Log.d(SettingsActivity.class.getName(), "showErrorDialog, opening ValidatorErrorDialog");
-        ValidatorErrorDialog errorDialog = new ValidatorErrorDialog();
-        errorDialog.setArguments(bundle);
-        errorDialog.show(getSupportFragmentManager(), ValidatorErrorDialog.class.getName());
-    }
-
     private void showAddressInputDialog(View view) {
-
+        List<String> validators = Arrays.asList(HostFieldValidator.class.getName(), URLFieldValidator.class.getName());
+        SettingsInput input = new SettingsInput(getAddress(), getResources().getString(R.string.label_settings_activity_address), validators);
+        showInputDialog(input.toBundle());
     }
 
     private void showInputDialog(Bundle bundle) {
