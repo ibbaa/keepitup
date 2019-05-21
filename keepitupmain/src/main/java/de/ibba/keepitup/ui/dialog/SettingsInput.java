@@ -8,20 +8,36 @@ import java.util.List;
 
 public class SettingsInput {
 
+    public static enum Type {
+        ADDRESS,
+        PORT;
+    }
+
+    private final Type type;
     private final String value;
     private final String field;
     private final List<String> validators;
 
-    public SettingsInput(String value, String field, List<String> validators) {
+    public SettingsInput(Type type, String value, String field, List<String> validators) {
+        this.type = type;
         this.value = value;
         this.field = field;
         this.validators = validators;
     }
 
     public SettingsInput(Bundle bundle) {
+        if (bundle.containsKey("type")) {
+            type = Type.valueOf(bundle.getString("type"));
+        } else {
+            type = null;
+        }
         this.value = bundle.getString("value");
         this.field = bundle.getString("field");
         this.validators = bundle.getStringArrayList("validators");
+    }
+
+    public Type getType() {
+        return type;
     }
 
     public String getValue() {
@@ -38,6 +54,9 @@ public class SettingsInput {
 
     public Bundle toBundle() {
         Bundle bundle = new Bundle();
+        if (type != null) {
+            bundle.putString("type", type.name());
+        }
         bundle.putString("value", value);
         bundle.putString("field", field);
         bundle.putStringArrayList("validators", validators == null ? null : new ArrayList<>(validators));
@@ -48,7 +67,8 @@ public class SettingsInput {
     @Override
     public String toString() {
         return "SettingsInput{" +
-                "value='" + value + '\'' +
+                "type=" + type +
+                ", value='" + value + '\'' +
                 ", field='" + field + '\'' +
                 ", validators=" + validators +
                 '}';

@@ -45,6 +45,7 @@ public class SettingsInputDialog extends DialogFragment {
         Log.d(SettingsInputDialog.class.getName(), "onCreateView");
         dialogView = inflater.inflate(R.layout.dialog_settings_input, container);
         input = new SettingsInput(Objects.requireNonNull(getArguments()));
+        Log.d(SettingsInputDialog.class.getName(), "settings input is " + input);
         prepareValueTextField();
         prepareOkCancelImageButtons();
         return dialogView;
@@ -74,7 +75,7 @@ public class SettingsInputDialog extends DialogFragment {
         cancelImage.setOnClickListener(this::onCancelClicked);
     }
 
-    private String getValue() {
+    public String getValue() {
         return StringUtil.notNull(valueEditText.getText());
     }
 
@@ -84,7 +85,7 @@ public class SettingsInputDialog extends DialogFragment {
         Bundle validationResult = validateInput();
         if (!hasErrors(validationResult)) {
             Log.d(SettingsInputDialog.class.getName(), "Validation was successful");
-            Objects.requireNonNull(activity).onInputDialogOkClicked(this);
+            Objects.requireNonNull(activity).onInputDialogOkClicked(this, input.getType());
         } else {
             Log.d(SettingsInputDialog.class.getName(), "Validation failed");
             showErrorDialog(validationResult);
