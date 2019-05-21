@@ -22,21 +22,24 @@ public class SettingsInputTest {
 
     @Test
     public void testToBundle() {
-        SettingsInput settingsInput = new SettingsInput(null, null, null);
+        SettingsInput settingsInput = new SettingsInput(null, null, null, null);
         Bundle bundle = settingsInput.toBundle();
         settingsInput = new SettingsInput(bundle);
+        assertNull(settingsInput.getType());
         assertNull(settingsInput.getValue());
         assertNull(settingsInput.getField());
         assertNull(settingsInput.getValidators());
-        settingsInput = new SettingsInput("", "", Collections.emptyList());
+        settingsInput = new SettingsInput(SettingsInput.Type.ADDRESS, "", "", Collections.emptyList());
         bundle = settingsInput.toBundle();
         settingsInput = new SettingsInput(bundle);
+        assertEquals(SettingsInput.Type.ADDRESS, settingsInput.getType());
         assertEquals("", settingsInput.getValue());
         assertEquals("", settingsInput.getField());
         assertTrue(settingsInput.getValidators().isEmpty());
-        settingsInput = new SettingsInput("test", "testfield", Arrays.asList("1", "2", "3"));
+        settingsInput = new SettingsInput(SettingsInput.Type.PORT, "test", "testfield", Arrays.asList("1", "2", "3"));
         bundle = settingsInput.toBundle();
         settingsInput = new SettingsInput(bundle);
+        assertEquals(SettingsInput.Type.PORT, settingsInput.getType());
         assertEquals("test", settingsInput.getValue());
         assertEquals("testfield", settingsInput.getField());
         assertThat(settingsInput.getValidators(), is(Arrays.asList("1", "2", "3")));

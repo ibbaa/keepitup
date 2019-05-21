@@ -58,7 +58,7 @@ public class SettingsActivity extends AppCompatActivity {
     private void prepareAddressField() {
         NetworkTaskPreferenceManager preferenceManager = new NetworkTaskPreferenceManager(this);
         addressText = findViewById(R.id.textview_settings_activity_address);
-        addressText.setText(preferenceManager.getPreferenceAddress());
+        setAddress(preferenceManager.getPreferenceAddress());
         CardView addressCardView = findViewById(R.id.cardview_settings_activity_address);
         addressCardView.setOnClickListener(this::showAddressInputDialog);
     }
@@ -67,9 +67,13 @@ public class SettingsActivity extends AppCompatActivity {
         return StringUtil.notNull(addressText.getText());
     }
 
+    private void setAddress(String address) {
+        addressText.setText(StringUtil.notNull(address));
+    }
+
     private void showAddressInputDialog(View view) {
         List<String> validators = Arrays.asList(HostFieldValidator.class.getName(), URLFieldValidator.class.getName());
-        SettingsInput input = new SettingsInput(getAddress(), getResources().getString(R.string.label_settings_activity_address), validators);
+        SettingsInput input = new SettingsInput(SettingsInput.Type.ADDRESS, getAddress(), getResources().getString(R.string.label_settings_activity_address), validators);
         showInputDialog(input.toBundle());
     }
 
@@ -80,8 +84,15 @@ public class SettingsActivity extends AppCompatActivity {
         inputDialog.show(getSupportFragmentManager(), SettingsInputDialog.class.getName());
     }
 
-    public void onInputDialogOkClicked(SettingsInputDialog inputDialog) {
-        Log.d(SettingsActivity.class.getName(), "onInputDialogOkClicked");
+    public void onInputDialogOkClicked(SettingsInputDialog inputDialog, SettingsInput.Type type) {
+        Log.d(SettingsActivity.class.getName(), "onInputDialogOkClicked, type is " + type);
+        NetworkTaskPreferenceManager preferenceManager = new NetworkTaskPreferenceManager(this);
+        if (SettingsInput.Type.ADDRESS.equals(type)) {
+            setAddress(inputDialog.getValue());
+            preferenceManager.setPreferenceAddress(getAddress());
+        } else {
+            Log.e(SettingsActivity.class.getName(), "type " + type + " unknown");
+        }
         inputDialog.dismiss();
     }
 
