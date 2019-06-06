@@ -8,9 +8,10 @@ import java.util.List;
 
 public class SettingsInput {
 
-    public static enum Type {
+    public enum Type {
         ADDRESS,
-        PORT;
+        PORT,
+        INTERVAL
     }
 
     private final Type type;
