@@ -81,56 +81,75 @@ public class NetworkTaskPreferenceManagerTest {
     }
 
     @Test
-    public void testGetSetPreferenceAccessType() {
+    public void testGetSetRemovePreferenceAccessType() {
         assertEquals(AccessType.PING, preferenceManager.getPreferenceAccessType());
         preferenceManager.setPreferenceAccessType(AccessType.DOWNLOAD);
         assertEquals(AccessType.DOWNLOAD, preferenceManager.getPreferenceAccessType());
         preferenceManager.removeAllPreferences();
         assertEquals(AccessType.PING, preferenceManager.getPreferenceAccessType());
+        preferenceManager.setPreferenceAccessType(AccessType.DOWNLOAD);
+        preferenceManager.removePreferenceAccessType();
+        ;
+        assertEquals(AccessType.PING, preferenceManager.getPreferenceAccessType());
     }
 
     @Test
-    public void testGetSetPreferenceAddress() {
+    public void testGetSetRemovePreferenceAddress() {
         assertEquals("192.168.178.1", preferenceManager.getPreferenceAddress());
         preferenceManager.setPreferenceAddress("www.host.com");
         assertEquals("www.host.com", preferenceManager.getPreferenceAddress());
         preferenceManager.removeAllPreferences();
         assertEquals("192.168.178.1", preferenceManager.getPreferenceAddress());
+        preferenceManager.setPreferenceAddress("www.host.com");
+        preferenceManager.removePreferenceAddress();
+        assertEquals("192.168.178.1", preferenceManager.getPreferenceAddress());
     }
 
     @Test
-    public void testGetSetPreferencePort() {
+    public void testGetSetRemovePreferencePort() {
         assertEquals(22, preferenceManager.getPreferencePort());
         preferenceManager.setPreferencePort(80);
         assertEquals(80, preferenceManager.getPreferencePort());
         preferenceManager.removeAllPreferences();
         assertEquals(22, preferenceManager.getPreferencePort());
+        preferenceManager.setPreferencePort(80);
+        preferenceManager.removePreferencePort();
+        assertEquals(22, preferenceManager.getPreferencePort());
     }
 
     @Test
-    public void testGetSetPreferenceInterval() {
+    public void testGetSetRemovePreferenceInterval() {
         assertEquals(15, preferenceManager.getPreferenceInterval());
         preferenceManager.setPreferenceInterval(1);
         assertEquals(1, preferenceManager.getPreferenceInterval());
         preferenceManager.removeAllPreferences();
         assertEquals(15, preferenceManager.getPreferenceInterval());
+        preferenceManager.setPreferenceInterval(1);
+        preferenceManager.removePreferenceInterval();
+        assertEquals(15, preferenceManager.getPreferenceInterval());
     }
 
     @Test
-    public void testGetSetPreferenceOnlyWifi() {
+    public void testGetSetRemovePreferenceOnlyWifi() {
         assertFalse(preferenceManager.getPreferenceOnlyWifi());
         preferenceManager.setPreferenceOnlyWifi(true);
         assertTrue(preferenceManager.getPreferenceOnlyWifi());
         preferenceManager.removeAllPreferences();
         assertFalse(preferenceManager.getPreferenceOnlyWifi());
+        preferenceManager.setPreferenceOnlyWifi(true);
+        preferenceManager.removePreferenceOnlyWifi();
+        assertFalse(preferenceManager.getPreferenceOnlyWifi());
     }
 
     @Test
-    public void testGetSetPreferenceNotification() {
+    public void testGetSetRemovePreferenceNotification() {
         assertFalse(preferenceManager.getPreferenceNotification());
         preferenceManager.setPreferenceNotification(true);
         assertTrue(preferenceManager.getPreferenceNotification());
         preferenceManager.removeAllPreferences();
+        assertFalse(preferenceManager.getPreferenceNotification());
+        preferenceManager.setPreferenceNotification(true);
+        preferenceManager.removePreferenceNotification();
         assertFalse(preferenceManager.getPreferenceNotification());
     }
 }

@@ -52,18 +52,18 @@ public class SettingsActivity extends AppCompatActivity {
         int id = item.getItemId();
         if (id == R.id.menu_action_reset) {
             Log.d(SettingsActivity.class.getName(), "menu_action_reset triggered");
-            /*SharedPreferences.Editor preferencesEditor = PreferenceManager.getDefaultSharedPreferences(this).edit();
-            preferencesEditor.remove(getResources().getString(R.string.interval_setting_key));
-            preferencesEditor.remove(getResources().getString(R.string.key_settings_defaults_address));
-            preferencesEditor.apply();
-            PreferenceManager.setDefaultValues(this, R.xml.settings, true);
-            recreate();*/
+            NetworkTaskPreferenceManager preferenceManager = new NetworkTaskPreferenceManager(this);
+            preferenceManager.removePreferenceAddress();
+            preferenceManager.removePreferencePort();
+            preferenceManager.removePreferenceInterval();
+            recreate();
             return true;
         }
         return super.onOptionsItemSelected(item);
     }
 
     private void prepareAddressField() {
+        Log.d(SettingsActivity.class.getName(), "prepareAddressField");
         NetworkTaskPreferenceManager preferenceManager = new NetworkTaskPreferenceManager(this);
         addressText = findViewById(R.id.textview_settings_activity_address);
         setAddress(preferenceManager.getPreferenceAddress());
@@ -72,6 +72,7 @@ public class SettingsActivity extends AppCompatActivity {
     }
 
     private void preparePortField() {
+        Log.d(SettingsActivity.class.getName(), "preparePortField");
         NetworkTaskPreferenceManager preferenceManager = new NetworkTaskPreferenceManager(this);
         portText = findViewById(R.id.textview_settings_activity_port);
         setPort(String.valueOf(preferenceManager.getPreferencePort()));
@@ -80,6 +81,7 @@ public class SettingsActivity extends AppCompatActivity {
     }
 
     private void prepareIntervalField() {
+        Log.d(SettingsActivity.class.getName(), "prepareIntervalField");
         NetworkTaskPreferenceManager preferenceManager = new NetworkTaskPreferenceManager(this);
         intervalText = findViewById(R.id.textview_settings_activity_interval);
         setInterval(String.valueOf(preferenceManager.getPreferenceInterval()));
@@ -112,25 +114,28 @@ public class SettingsActivity extends AppCompatActivity {
     }
 
     private void showAddressInputDialog(View view) {
+        Log.d(SettingsActivity.class.getName(), "showAddressInputDialog");
         List<String> validators = Arrays.asList(HostFieldValidator.class.getName(), URLFieldValidator.class.getName());
         SettingsInput input = new SettingsInput(SettingsInput.Type.ADDRESS, getAddress(), getResources().getString(R.string.label_settings_activity_address), validators);
         showInputDialog(input.toBundle());
     }
 
     private void showPortInputDialog(View view) {
+        Log.d(SettingsActivity.class.getName(), "showPortInputDialog");
         List<String> validators = Collections.singletonList(PortFieldValidator.class.getName());
         SettingsInput input = new SettingsInput(SettingsInput.Type.PORT, getPort(), getResources().getString(R.string.label_settings_activity_port), validators);
         showInputDialog(input.toBundle());
     }
 
     private void showIntervalInputDialog(View view) {
+        Log.d(SettingsActivity.class.getName(), "showIntervalInputDialog");
         List<String> validators = Collections.singletonList(IntervalFieldValidator.class.getName());
         SettingsInput input = new SettingsInput(SettingsInput.Type.INTERVAL, getInterval(), getResources().getString(R.string.label_settings_activity_interval), validators);
         showInputDialog(input.toBundle());
     }
 
     private void showInputDialog(Bundle bundle) {
-        Log.d(SettingsActivity.class.getName(), "showErrorDialog, opening SettingsInputDialog");
+        Log.d(SettingsActivity.class.getName(), "showInputDialog, opening SettingsInputDialog");
         SettingsInputDialog inputDialog = new SettingsInputDialog();
         inputDialog.setArguments(bundle);
         inputDialog.show(getSupportFragmentManager(), SettingsInputDialog.class.getName());
