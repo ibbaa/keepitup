@@ -97,6 +97,11 @@ public class NetworkTaskPreferenceManager {
         setPreferenceString(getResources().getString(R.string.task_accesstype_key), accessType.name());
     }
 
+    public void removePreferenceAccessType() {
+        Log.d(NetworkTaskPreferenceManager.class.getName(), "removePreferenceAccessType");
+        removePreferenceValue(getResources().getString(R.string.task_accesstype_key));
+    }
+
     public String getPreferenceAddress() {
         Log.d(NetworkTaskPreferenceManager.class.getName(), "getPreferenceAddress");
         return getPreferenceString(getResources().getString(R.string.task_address_key), getResources().getString(R.string.task_address_default));
@@ -105,6 +110,11 @@ public class NetworkTaskPreferenceManager {
     public void setPreferenceAddress(String address) {
         Log.d(NetworkTaskPreferenceManager.class.getName(), "setPreferenceAddress, address is " + address);
         setPreferenceString(getResources().getString(R.string.task_address_key), address);
+    }
+
+    public void removePreferenceAddress() {
+        Log.d(NetworkTaskPreferenceManager.class.getName(), "removePreferenceAddress");
+        removePreferenceValue(getResources().getString(R.string.task_address_key));
     }
 
     public int getPreferencePort() {
@@ -117,6 +127,11 @@ public class NetworkTaskPreferenceManager {
         setPreferenceInt(getResources().getString(R.string.task_port_key), port);
     }
 
+    public void removePreferencePort() {
+        Log.d(NetworkTaskPreferenceManager.class.getName(), "removePreferencePort");
+        removePreferenceValue(getResources().getString(R.string.task_port_key));
+    }
+
     public int getPreferenceInterval() {
         Log.d(NetworkTaskPreferenceManager.class.getName(), "getPreferenceInterval");
         return getPreferenceInt(getResources().getString(R.string.task_interval_key), getResources().getInteger(R.integer.task_interval_default));
@@ -125,6 +140,11 @@ public class NetworkTaskPreferenceManager {
     public void setPreferenceInterval(int interval) {
         Log.d(NetworkTaskPreferenceManager.class.getName(), "setPreferenceInterval, interval is " + interval);
         setPreferenceInt(getResources().getString(R.string.task_interval_key), interval);
+    }
+
+    public void removePreferenceInterval() {
+        Log.d(NetworkTaskPreferenceManager.class.getName(), "removePreferenceInterval");
+        removePreferenceValue(getResources().getString(R.string.task_interval_key));
     }
 
     public boolean getPreferenceOnlyWifi() {
@@ -137,6 +157,11 @@ public class NetworkTaskPreferenceManager {
         setPreferenceBoolean(getResources().getString(R.string.task_onlywifi_key), onlyWifi);
     }
 
+    public void removePreferenceOnlyWifi() {
+        Log.d(NetworkTaskPreferenceManager.class.getName(), "removePreferenceOnlyWifi");
+        removePreferenceValue(getResources().getString(R.string.task_onlywifi_key));
+    }
+
     public boolean getPreferenceNotification() {
         Log.d(NetworkTaskPreferenceManager.class.getName(), "getPreferenceOnlyWifi");
         return getPreferenceBoolean(getResources().getString(R.string.task_notification_key), getResources().getBoolean(R.bool.task_notification_default));
@@ -145,6 +170,11 @@ public class NetworkTaskPreferenceManager {
     public void setPreferenceNotification(boolean notification) {
         Log.d(NetworkTaskPreferenceManager.class.getName(), "setPreferenceNotification, notification is " + notification);
         setPreferenceBoolean(getResources().getString(R.string.task_notification_key), notification);
+    }
+
+    public void removePreferenceNotification() {
+        Log.d(NetworkTaskPreferenceManager.class.getName(), "removePreferenceNotification");
+        removePreferenceValue(getResources().getString(R.string.task_notification_key));
     }
 
     private SharedPreferences getDefaultSharedPreferences() {
