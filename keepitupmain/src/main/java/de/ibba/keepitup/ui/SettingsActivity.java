@@ -8,6 +8,9 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.CompoundButton;
+import android.widget.LinearLayout;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.Switch;
 import android.widget.TextView;
 
@@ -17,10 +20,12 @@ import java.util.List;
 import java.util.Objects;
 
 import de.ibba.keepitup.R;
+import de.ibba.keepitup.model.AccessType;
 import de.ibba.keepitup.resources.NetworkTaskPreferenceManager;
 import de.ibba.keepitup.ui.dialog.NetworkTaskEditDialog;
 import de.ibba.keepitup.ui.dialog.SettingsInput;
 import de.ibba.keepitup.ui.dialog.SettingsInputDialog;
+import de.ibba.keepitup.ui.mapping.EnumMapping;
 import de.ibba.keepitup.ui.validation.HostFieldValidator;
 import de.ibba.keepitup.ui.validation.IntervalFieldValidator;
 import de.ibba.keepitup.ui.validation.PortFieldValidator;
@@ -30,6 +35,7 @@ import de.ibba.keepitup.util.StringUtil;
 
 public class SettingsActivity extends AppCompatActivity {
 
+    private RadioGroup accessTypeGroup;
     private TextView addressText;
     private TextView portText;
     private TextView intervalText;
@@ -43,6 +49,7 @@ public class SettingsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
         setContentView(R.layout.activity_settings);
+        prepareAccessTypeRadioButtons();
         prepareAddressField();
         preparePortField();
         prepareIntervalField();
@@ -62,6 +69,7 @@ public class SettingsActivity extends AppCompatActivity {
         if (id == R.id.menu_action_reset) {
             Log.d(SettingsActivity.class.getName(), "menu_action_reset triggered");
             NetworkTaskPreferenceManager preferenceManager = new NetworkTaskPreferenceManager(this);
+            preferenceManager.removePreferenceAccessType();
             preferenceManager.removePreferenceAddress();
             preferenceManager.removePreferencePort();
             preferenceManager.removePreferenceInterval();
@@ -71,6 +79,43 @@ public class SettingsActivity extends AppCompatActivity {
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void prepareAccessTypeRadioButtons() {
+        Log.d(NetworkTaskEditDialog.class.getName(), "prepareAccessTypeRadioButtons");
+        NetworkTaskPreferenceManager preferenceManager = new NetworkTaskPreferenceManager(this);
+        accessTypeGroup = findViewById(R.id.radiogroup_settings_activity_accesstype);
+        EnumMapping mapping = new EnumMapping(this);
+        AccessType[] accessTypes = AccessType.values();
+        AccessType type = preferenceManager.getPreferenceAccessType();
+        for (int ii = 0; ii < accessTypes.length; ii++) {
+            AccessType accessType = accessTypes[ii];
+            RadioButton newRadioButton = new RadioButton(this);
+            newRadioButton.setText(mapping.getAccessTypeText(accessType));
+            newRadioButton.setId(View.generateViewId());
+            if (type == null && ii == 0) {
+                newRadioButton.setChecked(true);
+            } else {
+                newRadioButton.setChecked(accessType.equals(type));
+            }
+            newRadioButton.setTag(accessType);
+            LinearLayout.LayoutParams layoutParams = new RadioGroup.LayoutParams(RadioGroup.LayoutParams.WRAP_CONTENT, RadioGroup.LayoutParams.WRAP_CONTENT);
+            accessTypeGroup.addView(newRadioButton, ii, layoutParams);
+        }
+        accessTypeGroup.setOnCheckedChangeListener(this::onAccessTypeChanged);
+    }
+
+    private void onAccessTypeChanged(RadioGroup group, int checkedId) {
+        Log.d(NetworkTaskEditDialog.class.getName(), "onAccessTypeChanged");
+        NetworkTaskPreferenceManager preferenceManager = new NetworkTaskPreferenceManager(this);
+        RadioButton selectedAccessTypeRadioButton = accessTypeGroup.findViewById(checkedId);
+        if (selectedAccessTypeRadioButton != null) {
+            AccessType accessType = (AccessType) selectedAccessTypeRadioButton.getTag();
+            Log.d(NetworkTaskEditDialog.class.getName(), "checked access type radio button is " + accessType);
+            if (accessType != null) {
+                preferenceManager.setPreferenceAccessType(accessType);
+            }
+        }
     }
 
     private void prepareAddressField() {

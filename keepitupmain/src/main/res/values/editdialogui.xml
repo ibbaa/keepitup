@@ -2,7 +2,7 @@
 <resources>
     <string name="label_dialog_network_task_edit_ok">@android:string/ok</string>
     <string name="label_dialog_network_task_edit_cancel">@android:string/cancel</string>
-    <string name="label_dialog_network_task_edit_access_type">Type:</string>
+    <string name="label_dialog_network_task_edit_accesstype">Type:</string>
     <string name="label_dialog_network_task_edit_interval">Interval (min):</string>
     <string name="label_dialog_network_task_edit_onlywifi">Only on WiFi:</string>
     <string name="label_dialog_network_task_edit_notification">Notifications:</string>
