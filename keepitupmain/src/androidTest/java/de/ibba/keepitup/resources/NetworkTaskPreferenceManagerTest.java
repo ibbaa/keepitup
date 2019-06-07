@@ -89,7 +89,6 @@ public class NetworkTaskPreferenceManagerTest {
         assertEquals(AccessType.PING, preferenceManager.getPreferenceAccessType());
         preferenceManager.setPreferenceAccessType(AccessType.DOWNLOAD);
         preferenceManager.removePreferenceAccessType();
-        ;
         assertEquals(AccessType.PING, preferenceManager.getPreferenceAccessType());
     }
 

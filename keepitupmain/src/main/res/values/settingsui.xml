@@ -6,4 +6,6 @@
     <string name="label_settings_activity_address">Host / URL</string>
     <string name="label_settings_activity_port">Port</string>
     <string name="label_settings_activity_interval">Interval</string>
+    <string name="label_settings_activity_onlywifi">Only on WiFi</string>
+    <string name="label_settings_activity_notification">Notifications</string>
 </resources>
