@@ -7,6 +7,8 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.CompoundButton;
+import android.widget.Switch;
 import android.widget.TextView;
 
 import java.util.Arrays;
@@ -16,6 +18,7 @@ import java.util.Objects;
 
 import de.ibba.keepitup.R;
 import de.ibba.keepitup.resources.NetworkTaskPreferenceManager;
+import de.ibba.keepitup.ui.dialog.NetworkTaskEditDialog;
 import de.ibba.keepitup.ui.dialog.SettingsInput;
 import de.ibba.keepitup.ui.dialog.SettingsInputDialog;
 import de.ibba.keepitup.ui.validation.HostFieldValidator;
@@ -30,6 +33,10 @@ public class SettingsActivity extends AppCompatActivity {
     private TextView addressText;
     private TextView portText;
     private TextView intervalText;
+    private Switch onlyWifiSwitch;
+    private TextView onlyWifiOnOffText;
+    private Switch notifiactionSwitch;
+    private TextView notificationOnOffText;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -39,6 +46,8 @@ public class SettingsActivity extends AppCompatActivity {
         prepareAddressField();
         preparePortField();
         prepareIntervalField();
+        prepareOnlyWifiSwitch();
+        prepareNotificationSwitch();
     }
 
     @Override
@@ -56,6 +65,8 @@ public class SettingsActivity extends AppCompatActivity {
             preferenceManager.removePreferenceAddress();
             preferenceManager.removePreferencePort();
             preferenceManager.removePreferenceInterval();
+            preferenceManager.removePreferenceOnlyWifi();
+            preferenceManager.removePreferenceNotification();
             recreate();
             return true;
         }
@@ -87,6 +98,48 @@ public class SettingsActivity extends AppCompatActivity {
         setInterval(String.valueOf(preferenceManager.getPreferenceInterval()));
         CardView intervalCardView = findViewById(R.id.cardview_settings_activity_interval);
         intervalCardView.setOnClickListener(this::showIntervalInputDialog);
+    }
+
+    private void prepareOnlyWifiSwitch() {
+        Log.d(SettingsActivity.class.getName(), "prepareOnlyWifiSwitch");
+        NetworkTaskPreferenceManager preferenceManager = new NetworkTaskPreferenceManager(this);
+        onlyWifiSwitch = findViewById(R.id.switch_settings_activity_onlywifi);
+        onlyWifiOnOffText = findViewById(R.id.textview_settings_activity_onlywifi_onoff);
+        onlyWifiSwitch.setChecked(preferenceManager.getPreferenceOnlyWifi());
+        onlyWifiSwitch.setOnCheckedChangeListener(this::onOnlyWifiCheckedChanged);
+        prepareOnlyWifiOnOffText();
+    }
+
+    private void prepareOnlyWifiOnOffText() {
+        onlyWifiOnOffText.setText(onlyWifiSwitch.isChecked() ? getResources().getString(R.string.string_yes) : getResources().getString(R.string.string_no));
+    }
+
+    private void onOnlyWifiCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+        Log.d(NetworkTaskEditDialog.class.getName(), "onOnlyWifiCheckedChanged, new value is " + isChecked);
+        NetworkTaskPreferenceManager preferenceManager = new NetworkTaskPreferenceManager(this);
+        preferenceManager.setPreferenceOnlyWifi(isChecked);
+        prepareOnlyWifiOnOffText();
+    }
+
+    private void prepareNotificationSwitch() {
+        Log.d(SettingsActivity.class.getName(), "prepareNotificationSwitch");
+        NetworkTaskPreferenceManager preferenceManager = new NetworkTaskPreferenceManager(this);
+        notifiactionSwitch = findViewById(R.id.switch_settings_activity_notification);
+        notificationOnOffText = findViewById(R.id.textview_settings_activity_notification_onoff);
+        notifiactionSwitch.setChecked(preferenceManager.getPreferenceNotification());
+        notifiactionSwitch.setOnCheckedChangeListener(this::onNotificationCheckedChanged);
+        prepareNotificationOnOffText();
+    }
+
+    private void prepareNotificationOnOffText() {
+        notificationOnOffText.setText(notifiactionSwitch.isChecked() ? getResources().getString(R.string.string_yes) : getResources().getString(R.string.string_no));
+    }
+
+    private void onNotificationCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+        Log.d(NetworkTaskEditDialog.class.getName(), "onNotificationCheckedChanged, new value is " + isChecked);
+        NetworkTaskPreferenceManager preferenceManager = new NetworkTaskPreferenceManager(this);
+        preferenceManager.setPreferenceNotification(isChecked);
+        prepareNotificationOnOffText();
     }
 
     private String getAddress() {

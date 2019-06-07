@@ -12,4 +12,10 @@
     <dimen name="settings_activity_interval_margin">4dp</dimen>
     <dimen name="settings_activity_interval_corner_radius">4dp</dimen>
     <dimen name="settings_activity_interval_card_elevation">4dp</dimen>
+    <dimen name="settings_activity_onlywifi_margin">4dp</dimen>
+    <dimen name="settings_activity_onlywifi_corner_radius">4dp</dimen>
+    <dimen name="settings_activity_onlywifi_card_elevation">4dp</dimen>
+    <dimen name="settings_activity_notification_margin">4dp</dimen>
+    <dimen name="settings_activity_notification_corner_radius">4dp</dimen>
+    <dimen name="settings_activity_notification_card_elevation">4dp</dimen>
 </resources>
