@@ -35,6 +35,39 @@
         </android.support.v7.widget.CardView>
 
         <android.support.v7.widget.CardView xmlns:card_view="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/cardview_settings_activity_accesstype"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/settings_activity_accesstype_margin"
+            card_view:cardCornerRadius="@dimen/settings_activity_accesstype_corner_radius"
+            app:cardElevation="@dimen/settings_activity_accesstype_card_elevation">
+
+            <LinearLayout
+                android:id="@+id/linearlayout_settings_activity_accesstype"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/settings_activity_accesstype_margin"
+                android:focusable="true"
+                android:focusableInTouchMode="true"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/textview_settings_activity_accesstype_label"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textStyle="bold"
+                    android:text="@string/label_settings_activity_accesstype" />
+
+                <RadioGroup
+                    android:id="@+id/radiogroup_settings_activity_accesstype"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+
+            </LinearLayout>
+
+        </android.support.v7.widget.CardView>
+
+        <android.support.v7.widget.CardView xmlns:card_view="http://schemas.android.com/apk/res-auto"
             android:id="@+id/cardview_settings_activity_address"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

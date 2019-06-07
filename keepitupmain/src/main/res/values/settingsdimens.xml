@@ -18,4 +18,7 @@
     <dimen name="settings_activity_notification_margin">4dp</dimen>
     <dimen name="settings_activity_notification_corner_radius">4dp</dimen>
     <dimen name="settings_activity_notification_card_elevation">4dp</dimen>
+    <dimen name="settings_activity_accesstype_margin">4dp</dimen>
+    <dimen name="settings_activity_accesstype_corner_radius">4dp</dimen>
+    <dimen name="settings_activity_accesstype_card_elevation">4dp</dimen>
 </resources>

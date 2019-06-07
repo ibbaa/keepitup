@@ -20,14 +20,14 @@
             android:columnCount="2">
 
             <TextView
-                android:id="@+id/textview_dialog_network_task_edit_access_type_label"
+                android:id="@+id/textview_dialog_network_task_edit_accesstype_label"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textStyle="bold"
                 android:layout_row="0"
                 android:layout_column="0"
                 android:layout_marginTop="@dimen/dialog_network_task_edit_access_type_margin_top"
-                android:text="@string/label_dialog_network_task_edit_access_type" />
+                android:text="@string/label_dialog_network_task_edit_accesstype" />
 
             <RadioGroup
                 android:id="@+id/radiogroup_dialog_network_task_edit_accesstype"
