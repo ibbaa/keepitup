@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.support.test.InstrumentationRegistry;
 import android.support.test.rule.ActivityTestRule;
 import android.view.View;
+import android.widget.GridLayout;
 
 import org.hamcrest.Matcher;
 import org.junit.After;
@@ -17,6 +18,7 @@ import de.ibba.keepitup.resources.NetworkTaskPreferenceManager;
 import de.ibba.keepitup.service.NetworkTaskServiceScheduler;
 import de.ibba.keepitup.test.matcher.ChildDescendantAtPositionMatcher;
 import de.ibba.keepitup.test.matcher.DrawableMatcher;
+import de.ibba.keepitup.test.matcher.GridLayoutPositionMatcher;
 import de.ibba.keepitup.test.matcher.ListSizeMatcher;
 import de.ibba.keepitup.test.matcher.TextColorMatcher;
 import de.ibba.keepitup.test.mock.MockHandler;
@@ -97,19 +99,27 @@ public abstract class BaseUITest {
         InstrumentationRegistry.getTargetContext().getResources().getConfiguration().setLocale(locale);
     }
 
-    public static Matcher<View> withListSize(final int size) {
+    public static Matcher<View> withListSize(int size) {
         return new ListSizeMatcher(size);
     }
 
-    public static Matcher<View> withChildDescendantAtPosition(final Matcher<View> parentMatcher, final int childPosition) {
+    public static Matcher<View> withChildDescendantAtPosition(Matcher<View> parentMatcher, int childPosition) {
         return new ChildDescendantAtPositionMatcher(parentMatcher, childPosition);
     }
 
-    public static Matcher<View> withDrawable(final int resourceId) {
+    public static Matcher<View> withGridLayoutPosition(int row, int column) {
+        return new GridLayoutPositionMatcher(row, 1, GridLayout.LEFT, column, 1, GridLayout.LEFT);
+    }
+
+    public static Matcher<View> withGridLayoutPositionAndSpan(int row, int rowSpan, GridLayout.Alignment rowAlignment, int column, int columnSpan, GridLayout.Alignment columnAlignment) {
+        return new GridLayoutPositionMatcher(row, rowSpan, rowAlignment, column, columnSpan, columnAlignment);
+    }
+
+    public static Matcher<View> withDrawable(int resourceId) {
         return new DrawableMatcher(resourceId);
     }
 
-    public static Matcher<View> withTextColor(final int expectedId) {
+    public static Matcher<View> withTextColor(int expectedId) {
         return new TextColorMatcher(expectedId);
     }
 }

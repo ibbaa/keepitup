@@ -90,7 +90,6 @@ public class SettingsInputDialog extends DialogFragment {
             Log.d(SettingsInputDialog.class.getName(), "Validation failed");
             showErrorDialog(validationResult);
         }
-
     }
 
     private void onCancelClicked(@SuppressWarnings("unused") View view) {
