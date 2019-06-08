@@ -55,8 +55,8 @@ public class ValidatorErrorDialog extends DialogFragment {
             labelTextParams.setGravity(Gravity.CENTER);
             labelTextParams.rightMargin = getResources().getDimensionPixelSize(R.dimen.textview_dialog_network_task_validator_error_label_margin_right);
             labelTextParams.topMargin = getResources().getDimensionPixelSize(R.dimen.textview_dialog_network_task_validator_error_label_margin_top);
-            labelTextParams.columnSpec = GridLayout.spec(0);
-            labelTextParams.rowSpec = GridLayout.spec(ii + 1);
+            labelTextParams.columnSpec = GridLayout.spec(0, 1, GridLayout.LEFT);
+            labelTextParams.rowSpec = GridLayout.spec(ii + 1, 1, GridLayout.LEFT);
             gridLayout.addView(labelText, labelTextParams);
             TextView messageText = new TextView(requireContext());
             messageText.setId(View.generateViewId());
@@ -68,8 +68,8 @@ public class ValidatorErrorDialog extends DialogFragment {
             messageTextParams.setGravity(Gravity.CENTER);
             messageTextParams.leftMargin = getResources().getDimensionPixelSize(R.dimen.textview_dialog_network_task_validator_error_message_margin_left);
             messageTextParams.topMargin = getResources().getDimensionPixelSize(R.dimen.textview_dialog_network_task_validator_error_message_margin_top);
-            messageTextParams.columnSpec = GridLayout.spec(1);
-            messageTextParams.rowSpec = GridLayout.spec(ii + 1);
+            messageTextParams.columnSpec = GridLayout.spec(1, 1, GridLayout.LEFT);
+            messageTextParams.rowSpec = GridLayout.spec(ii + 1, 1, GridLayout.LEFT);
             gridLayout.addView(messageText, messageTextParams);
         }
     }
@@ -80,8 +80,8 @@ public class ValidatorErrorDialog extends DialogFragment {
         GridLayout.LayoutParams okImageParams = new GridLayout.LayoutParams();
         okImageParams.height = GridLayout.LayoutParams.WRAP_CONTENT;
         okImageParams.width = GridLayout.LayoutParams.WRAP_CONTENT;
-        okImageParams.columnSpec = GridLayout.spec(0, 2);
-        okImageParams.rowSpec = GridLayout.spec(row);
+        okImageParams.columnSpec = GridLayout.spec(0, 2, GridLayout.CENTER);
+        okImageParams.rowSpec = GridLayout.spec(row, 1, GridLayout.CENTER);
         okImageParams.setGravity(Gravity.CENTER);
         okImageParams.topMargin = getResources().getDimensionPixelSize(R.dimen.imageview_dialog_network_task_validator_error_ok_margin_top);
         okImage.setLayoutParams(okImageParams);
