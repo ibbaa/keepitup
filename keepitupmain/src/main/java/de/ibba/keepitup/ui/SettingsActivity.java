@@ -149,7 +149,7 @@ public class SettingsActivity extends AppCompatActivity {
         Log.d(SettingsActivity.class.getName(), "prepareOnlyWifiSwitch");
         NetworkTaskPreferenceManager preferenceManager = new NetworkTaskPreferenceManager(this);
         onlyWifiSwitch = findViewById(R.id.switch_settings_activity_onlywifi);
-        onlyWifiOnOffText = findViewById(R.id.textview_settings_activity_onlywifi_onoff);
+        onlyWifiOnOffText = findViewById(R.id.textview_settings_activity_onlywifi_on_off);
         onlyWifiSwitch.setChecked(preferenceManager.getPreferenceOnlyWifi());
         onlyWifiSwitch.setOnCheckedChangeListener(this::onOnlyWifiCheckedChanged);
         prepareOnlyWifiOnOffText();
@@ -170,7 +170,7 @@ public class SettingsActivity extends AppCompatActivity {
         Log.d(SettingsActivity.class.getName(), "prepareNotificationSwitch");
         NetworkTaskPreferenceManager preferenceManager = new NetworkTaskPreferenceManager(this);
         notifiactionSwitch = findViewById(R.id.switch_settings_activity_notification);
-        notificationOnOffText = findViewById(R.id.textview_settings_activity_notification_onoff);
+        notificationOnOffText = findViewById(R.id.textview_settings_activity_notification_on_off);
         notifiactionSwitch.setChecked(preferenceManager.getPreferenceNotification());
         notifiactionSwitch.setOnCheckedChangeListener(this::onNotificationCheckedChanged);
         prepareNotificationOnOffText();

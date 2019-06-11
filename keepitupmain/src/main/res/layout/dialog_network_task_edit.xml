@@ -154,7 +154,7 @@
                     android:showText="false" />
 
                 <TextView
-                    android:id="@+id/textview_dialog_network_task_edit_onlywifi_label_on_off"
+                    android:id="@+id/textview_dialog_network_task_edit_onlywifi_on_off"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textStyle="bold"
@@ -188,7 +188,7 @@
                     android:showText="false" />
 
                 <TextView
-                    android:id="@+id/textview_dialog_network_task_edit_notification_label_on_off"
+                    android:id="@+id/textview_dialog_network_task_edit_notification_on_off"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textStyle="bold"

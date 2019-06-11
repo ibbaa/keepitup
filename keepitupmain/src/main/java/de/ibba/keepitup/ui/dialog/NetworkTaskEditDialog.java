@@ -196,7 +196,7 @@ public class NetworkTaskEditDialog extends DialogFragment {
     private void prepareOnlyWifiSwitch() {
         Log.d(NetworkTaskEditDialog.class.getName(), "prepareOnlyWifiSwitch with only wifi setting of " + task.isOnlyWifi());
         onlyWifiSwitch = dialogView.findViewById(R.id.switch_dialog_network_task_edit_onlywifi);
-        onlyWifiOnOffText = dialogView.findViewById(R.id.textview_dialog_network_task_edit_onlywifi_label_on_off);
+        onlyWifiOnOffText = dialogView.findViewById(R.id.textview_dialog_network_task_edit_onlywifi_on_off);
         onlyWifiSwitch.setChecked(task.isOnlyWifi());
         onlyWifiSwitch.setOnCheckedChangeListener(this::onOnlyWifiCheckedChanged);
         prepareOnlyWifiOnOffText();
@@ -205,7 +205,7 @@ public class NetworkTaskEditDialog extends DialogFragment {
     private void prepareNotificationSwitch() {
         Log.d(NetworkTaskEditDialog.class.getName(), "prepareNotificationSwitch with notification setting of " + task.isNotification());
         notificationSwitch = dialogView.findViewById(R.id.switch_dialog_network_task_edit_notification);
-        notificationOnOffText = dialogView.findViewById(R.id.textview_dialog_network_task_edit_notification_label_on_off);
+        notificationOnOffText = dialogView.findViewById(R.id.textview_dialog_network_task_edit_notification_on_off);
         notificationSwitch.setChecked(task.isNotification());
         notificationSwitch.setOnCheckedChangeListener(this::onNotificationCheckedChanged);
         prepareNotificationOnOffText();
