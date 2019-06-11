@@ -212,7 +212,7 @@
                         android:showText="false" />
 
                     <TextView
-                        android:id="@+id/textview_settings_activity_onlywifi_onoff"
+                        android:id="@+id/textview_settings_activity_onlywifi_on_off"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:textStyle="bold"
@@ -249,7 +249,7 @@
                     android:text="@string/label_settings_activity_notification" />
 
                 <LinearLayout
-                    android:id="@+id/linearlayout_settings_activity_notification_onoff"
+                    android:id="@+id/linearlayout_settings_activity_notification_on_off"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_margin="@dimen/settings_activity_notification_margin"
@@ -264,7 +264,7 @@
                         android:showText="false" />
 
                     <TextView
-                        android:id="@+id/textview_settings_activity_notification_onoff"
+                        android:id="@+id/textview_settings_activity_notification_on_off"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:textStyle="bold"

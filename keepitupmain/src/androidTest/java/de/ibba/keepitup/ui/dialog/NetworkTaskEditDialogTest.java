@@ -56,7 +56,9 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         onView(withId(R.id.edittext_dialog_network_task_edit_address)).check(matches(withText("192.168.178.1")));
         onView(withId(R.id.edittext_dialog_network_task_edit_interval)).check(matches(withText("15")));
         onView(withId(R.id.switch_dialog_network_task_edit_onlywifi)).check(matches(isNotChecked()));
+        onView(withId(R.id.textview_dialog_network_task_edit_onlywifi_on_off)).check(matches(withText("no")));
         onView(withId(R.id.switch_dialog_network_task_edit_notification)).check(matches(isNotChecked()));
+        onView(withId(R.id.textview_dialog_network_task_edit_notification_on_off)).check(matches(withText("no")));
         NetworkTaskEditDialog dialog = (NetworkTaskEditDialog) activity.getSupportFragmentManager().getFragments().get(0);
         NetworkTask task = dialog.getNetworkTask();
         assertNotNull(task);
@@ -65,6 +67,35 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         assertEquals(22, task.getPort());
         assertEquals(15, task.getInterval());
         assertFalse(task.isNotification());
+    }
+
+    @Test
+    public void testSwitchYesNoText() {
+        onView(allOf(withId(R.id.imageview_list_item_network_task_add), isDisplayed())).perform(click());
+        onView(withId(R.id.switch_dialog_network_task_edit_onlywifi)).check(matches(isNotChecked()));
+        onView(withId(R.id.textview_dialog_network_task_edit_onlywifi_on_off)).check(matches(withText("no")));
+        onView(withId(R.id.switch_dialog_network_task_edit_notification)).check(matches(isNotChecked()));
+        onView(withId(R.id.textview_dialog_network_task_edit_notification_on_off)).check(matches(withText("no")));
+        onView(withId(R.id.switch_dialog_network_task_edit_onlywifi)).perform(click());
+        onView(withId(R.id.switch_dialog_network_task_edit_onlywifi)).check(matches(isChecked()));
+        onView(withId(R.id.textview_dialog_network_task_edit_onlywifi_on_off)).check(matches(withText("yes")));
+        onView(withId(R.id.switch_dialog_network_task_edit_notification)).check(matches(isNotChecked()));
+        onView(withId(R.id.textview_dialog_network_task_edit_notification_on_off)).check(matches(withText("no")));
+        onView(withId(R.id.switch_dialog_network_task_edit_notification)).perform(click());
+        onView(withId(R.id.switch_dialog_network_task_edit_onlywifi)).check(matches(isChecked()));
+        onView(withId(R.id.textview_dialog_network_task_edit_onlywifi_on_off)).check(matches(withText("yes")));
+        onView(withId(R.id.switch_dialog_network_task_edit_notification)).check(matches(isChecked()));
+        onView(withId(R.id.textview_dialog_network_task_edit_notification_on_off)).check(matches(withText("yes")));
+        onView(withId(R.id.switch_dialog_network_task_edit_onlywifi)).perform(click());
+        onView(withId(R.id.switch_dialog_network_task_edit_onlywifi)).check(matches(isNotChecked()));
+        onView(withId(R.id.textview_dialog_network_task_edit_onlywifi_on_off)).check(matches(withText("no")));
+        onView(withId(R.id.switch_dialog_network_task_edit_notification)).check(matches(isChecked()));
+        onView(withId(R.id.textview_dialog_network_task_edit_notification_on_off)).check(matches(withText("yes")));
+        onView(withId(R.id.switch_dialog_network_task_edit_notification)).perform(click());
+        onView(withId(R.id.switch_dialog_network_task_edit_onlywifi)).check(matches(isNotChecked()));
+        onView(withId(R.id.textview_dialog_network_task_edit_onlywifi_on_off)).check(matches(withText("no")));
+        onView(withId(R.id.switch_dialog_network_task_edit_notification)).check(matches(isNotChecked()));
+        onView(withId(R.id.textview_dialog_network_task_edit_notification_on_off)).check(matches(withText("no")));
     }
 
     @Test
