@@ -41,7 +41,7 @@ public class SettingsActivity extends AppCompatActivity {
     private TextView intervalText;
     private Switch onlyWifiSwitch;
     private TextView onlyWifiOnOffText;
-    private Switch notifiactionSwitch;
+    private Switch notificationSwitch;
     private TextView notificationOnOffText;
 
     @Override
@@ -169,15 +169,15 @@ public class SettingsActivity extends AppCompatActivity {
     private void prepareNotificationSwitch() {
         Log.d(SettingsActivity.class.getName(), "prepareNotificationSwitch");
         NetworkTaskPreferenceManager preferenceManager = new NetworkTaskPreferenceManager(this);
-        notifiactionSwitch = findViewById(R.id.switch_settings_activity_notification);
+        notificationSwitch = findViewById(R.id.switch_settings_activity_notification);
         notificationOnOffText = findViewById(R.id.textview_settings_activity_notification_on_off);
-        notifiactionSwitch.setChecked(preferenceManager.getPreferenceNotification());
-        notifiactionSwitch.setOnCheckedChangeListener(this::onNotificationCheckedChanged);
+        notificationSwitch.setChecked(preferenceManager.getPreferenceNotification());
+        notificationSwitch.setOnCheckedChangeListener(this::onNotificationCheckedChanged);
         prepareNotificationOnOffText();
     }
 
     private void prepareNotificationOnOffText() {
-        notificationOnOffText.setText(notifiactionSwitch.isChecked() ? getResources().getString(R.string.string_yes) : getResources().getString(R.string.string_no));
+        notificationOnOffText.setText(notificationSwitch.isChecked() ? getResources().getString(R.string.string_yes) : getResources().getString(R.string.string_no));
     }
 
     private void onNotificationCheckedChanged(CompoundButton buttonView, boolean isChecked) {
