@@ -31,6 +31,7 @@ public abstract class BaseUITest {
     private NetworkTaskDAO networkTaskDAO;
     private LogDAO logDAO;
     private NetworkTaskServiceScheduler scheduler;
+    private NetworkTaskPreferenceManager preferenceManager;
 
     @Before
     public void beforeEachTestMethod() {
@@ -46,7 +47,7 @@ public abstract class BaseUITest {
         if (handler != null) {
             handler.reset();
         }
-        NetworkTaskPreferenceManager preferenceManager = new NetworkTaskPreferenceManager(TestRegistry.getContext());
+        preferenceManager = new NetworkTaskPreferenceManager(TestRegistry.getContext());
         preferenceManager.removeAllPreferences();
     }
 
@@ -59,7 +60,6 @@ public abstract class BaseUITest {
         if (handler != null) {
             handler.reset();
         }
-        NetworkTaskPreferenceManager preferenceManager = new NetworkTaskPreferenceManager(TestRegistry.getContext());
         preferenceManager.removeAllPreferences();
     }
 
@@ -93,6 +93,10 @@ public abstract class BaseUITest {
 
     public NetworkTaskServiceScheduler getScheduler() {
         return scheduler;
+    }
+
+    public NetworkTaskPreferenceManager getPreferenceManager() {
+        return preferenceManager;
     }
 
     public void setLocale(Locale locale) {
