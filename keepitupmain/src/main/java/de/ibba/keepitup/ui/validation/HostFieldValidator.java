@@ -23,9 +23,10 @@ public class HostFieldValidator implements FieldValidator {
         Log.d(HostFieldValidator.class.getName(), "validate, value is " + value);
         String successMessage = getResources().getString(R.string.validation_successful);
         String failedMessage = getResources().getString(R.string.invalid_host_format);
+        String failedMessageNoValue = getResources().getString(R.string.invalid_no_value);
         if (StringUtil.isEmpty(value)) {
             Log.d(HostFieldValidator.class.getName(), "No value specified. Validation failed.");
-            return new ValidationResult(false, field, failedMessage);
+            return new ValidationResult(false, field, failedMessageNoValue);
         }
         if (URLUtil.isValidIPAddress(value)) {
             Log.d(HostFieldValidator.class.getName(), "Valid IP address. Validation successful.");
