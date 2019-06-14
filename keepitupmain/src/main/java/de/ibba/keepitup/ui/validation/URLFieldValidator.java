@@ -23,9 +23,10 @@ public class URLFieldValidator implements FieldValidator {
         Log.d(URLFieldValidator.class.getName(), "validate, value is " + value);
         String successMessage = getResources().getString(R.string.validation_successful);
         String failedMessage = getResources().getString(R.string.invalid_url_format);
+        String failedMessageNoValue = getResources().getString(R.string.invalid_no_value);
         if (StringUtil.isEmpty(value)) {
             Log.d(URLFieldValidator.class.getName(), "No value specified. Validation failed.");
-            return new ValidationResult(false, field, failedMessage);
+            return new ValidationResult(false, field, failedMessageNoValue);
         }
         Log.d(URLFieldValidator.class.getName(), "Encoding and modifying URL.");
         String encodedURL = URLUtil.encodeURL(value);

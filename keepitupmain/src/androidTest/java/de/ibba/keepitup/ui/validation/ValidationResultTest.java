@@ -57,4 +57,28 @@ public class ValidationResultTest {
         assertEquals("testfield", result.getFieldName());
         assertEquals("testmessage", result.getMessage());
     }
+
+    @Test
+    public void testIsEqual() {
+        ValidationResult result = new ValidationResult(true, "testfield", "testmessage");
+        assertTrue(result.isEqual(result));
+        assertFalse(result.isEqual(null));
+        ValidationResult otherResult = new ValidationResult(true, "testfield", "testmessage") {
+        };
+        assertFalse(result.isEqual(otherResult));
+        otherResult = new ValidationResult(true, "testfield", "testmessage");
+        assertTrue(result.isEqual(otherResult));
+        otherResult = new ValidationResult(false, "testfield", "testmessage");
+        assertFalse(result.isEqual(otherResult));
+        otherResult = new ValidationResult(true, null, "testmessage");
+        assertFalse(result.isEqual(otherResult));
+        otherResult = new ValidationResult(true, "1", "testmessage");
+        assertFalse(result.isEqual(otherResult));
+        otherResult = new ValidationResult(true, "1", "testmessage1");
+        assertFalse(result.isEqual(otherResult));
+        otherResult = new ValidationResult(true, "1", null);
+        assertFalse(result.isEqual(otherResult));
+        otherResult = new ValidationResult(true, "", "");
+        assertFalse(result.isEqual(otherResult));
+    }
 }

@@ -4,6 +4,8 @@ import android.os.Bundle;
 import android.os.PersistableBundle;
 import android.support.annotation.NonNull;
 
+import java.util.Objects;
+
 public class ValidationResult {
 
     private final boolean validationSuccessful;
@@ -48,6 +50,16 @@ public class ValidationResult {
 
     public Bundle toBundle() {
         return new Bundle(toPersistableBundle());
+    }
+
+    public boolean isEqual(ValidationResult other) {
+        if (this == other) {
+            return true;
+        }
+        if (other == null || getClass() != other.getClass()) {
+            return false;
+        }
+        return validationSuccessful == other.validationSuccessful && Objects.equals(fieldName, other.fieldName) && Objects.equals(message, other.message);
     }
 
     @NonNull

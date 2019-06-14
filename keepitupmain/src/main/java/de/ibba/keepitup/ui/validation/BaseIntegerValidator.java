@@ -6,6 +6,7 @@ import android.util.Log;
 
 import de.ibba.keepitup.R;
 import de.ibba.keepitup.util.NumberUtil;
+import de.ibba.keepitup.util.StringUtil;
 
 public abstract class BaseIntegerValidator {
 
@@ -20,6 +21,10 @@ public abstract class BaseIntegerValidator {
     protected ValidationResult validateIntNumber(String value, int defaultValue, int minimum, int maximum) {
         Log.d(BaseIntegerValidator.class.getName(), "validateIntNumber for field " + field);
         Log.d(BaseIntegerValidator.class.getName(), "value is " + value);
+        if (StringUtil.isEmpty(value)) {
+            Log.d(BaseIntegerValidator.class.getName(), "No value specified. Validation failed.");
+            return new ValidationResult(false, field, getResources().getString(R.string.invalid_no_value));
+        }
         if (!NumberUtil.isValidLongValue(value)) {
             Log.d(BaseIntegerValidator.class.getName(), "invalid number format");
             return new ValidationResult(false, field, getResources().getString(R.string.invalid_number_format));

@@ -20,9 +20,11 @@ import static android.support.test.espresso.action.ViewActions.replaceText;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
 import static android.support.test.espresso.matcher.ViewMatchers.hasChildCount;
 import static android.support.test.espresso.matcher.ViewMatchers.isChecked;
+import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static android.support.test.espresso.matcher.ViewMatchers.isNotChecked;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
+import static org.hamcrest.Matchers.allOf;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -171,5 +173,54 @@ public class SettingsActivityTest extends BaseUITest {
         assertEquals("192.168.178.1", preferenceManager.getPreferenceAddress());
         assertEquals(22, preferenceManager.getPreferencePort());
         assertEquals(15, preferenceManager.getPreferenceInterval());
+    }
+
+    @Test
+    public void testAddressInput() {
+        launchRecyclerViewBaseActivity(rule);
+        openActionBarOverflowOrOptionsMenu(InstrumentationRegistry.getTargetContext());
+        onView(withText("Settings")).perform(click());
+        onView(withId(R.id.textview_settings_activity_address)).perform(click());
+        onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("1 2.33"));
+        onView(withId(R.id.edittext_dialog_settings_input_value)).check(matches(withTextColor(R.color.textErrorColor)));
+        onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
+        onView(allOf(withText("Host / URL"), withGridLayoutPosition(1, 0))).check(matches(isDisplayed()));
+        onView(allOf(withText("No valid host or IP address"), withGridLayoutPosition(1, 1))).check(matches(isDisplayed()));
+        onView(allOf(withText("Host / URL"), withGridLayoutPosition(2, 0))).check(matches(isDisplayed()));
+        onView(allOf(withText("No valid URL"), withGridLayoutPosition(2, 1))).check(matches(isDisplayed()));
+        onView(withId(R.id.imageview_dialog_validator_error_ok)).perform(click());
+        onView(withId(R.id.imageview_dialog_settings_input_cancel)).perform(click());
+        onView(withId(R.id.textview_settings_activity_address)).check(matches(withText("192.168.178.1")));
+        onView(withId(R.id.textview_settings_activity_address)).perform(click());
+        onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("host.com"));
+        onView(withId(R.id.edittext_dialog_settings_input_value)).check(matches(withTextColor(R.color.textColor)));
+        onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
+        onView(withId(R.id.textview_settings_activity_address)).check(matches(withText("host.com")));
+        onView(withId(R.id.textview_settings_activity_address)).perform(click());
+        onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("192.168.2.100"));
+        onView(withId(R.id.edittext_dialog_settings_input_value)).check(matches(withTextColor(R.color.textColor)));
+        onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
+        onView(withId(R.id.textview_settings_activity_address)).check(matches(withText("192.168.2.100")));
+    }
+
+    @Test
+    public void testPortInput() {
+        launchRecyclerViewBaseActivity(rule);
+        openActionBarOverflowOrOptionsMenu(InstrumentationRegistry.getTargetContext());
+        onView(withText("Settings")).perform(click());
+        onView(withId(R.id.textview_settings_activity_port)).perform(click());
+        onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("1a"));
+        onView(withId(R.id.edittext_dialog_settings_input_value)).check(matches(withTextColor(R.color.textErrorColor)));
+        onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
+        onView(allOf(withText("Port"), withGridLayoutPosition(1, 0))).check(matches(isDisplayed()));
+        onView(allOf(withText("Invalid format"), withGridLayoutPosition(1, 1))).check(matches(isDisplayed()));
+        onView(withId(R.id.imageview_dialog_validator_error_ok)).perform(click());
+        onView(withId(R.id.imageview_dialog_settings_input_cancel)).perform(click());
+        onView(withId(R.id.textview_settings_activity_port)).check(matches(withText("22")));
+        onView(withId(R.id.textview_settings_activity_port)).perform(click());
+        onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("80"));
+        onView(withId(R.id.edittext_dialog_settings_input_value)).check(matches(withTextColor(R.color.textColor)));
+        onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
+        onView(withId(R.id.textview_settings_activity_port)).check(matches(withText("80")));
     }
 }
