@@ -29,5 +29,13 @@ public class IntervalValidatorTest {
         assertFalse(result.isValidationSuccessful());
         assertEquals("testinterval", result.getFieldName());
         assertEquals("Maximum: " + Integer.MAX_VALUE, result.getMessage());
+        result = validator.validate("");
+        assertFalse(result.isValidationSuccessful());
+        assertEquals("testinterval", result.getFieldName());
+        assertEquals("No value specified", result.getMessage());
+        result = validator.validate(null);
+        assertFalse(result.isValidationSuccessful());
+        assertEquals("testinterval", result.getFieldName());
+        assertEquals("No value specified", result.getMessage());
     }
 }

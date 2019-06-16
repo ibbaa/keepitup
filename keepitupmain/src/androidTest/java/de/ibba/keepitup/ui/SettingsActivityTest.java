@@ -17,6 +17,7 @@ import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.Espresso.openActionBarOverflowOrOptionsMenu;
 import static android.support.test.espresso.action.ViewActions.click;
 import static android.support.test.espresso.action.ViewActions.replaceText;
+import static android.support.test.espresso.assertion.ViewAssertions.doesNotExist;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
 import static android.support.test.espresso.matcher.ViewMatchers.hasChildCount;
 import static android.support.test.espresso.matcher.ViewMatchers.isChecked;
@@ -189,6 +190,14 @@ public class SettingsActivityTest extends BaseUITest {
         onView(allOf(withText("Host / URL"), withGridLayoutPosition(2, 0))).check(matches(isDisplayed()));
         onView(allOf(withText("No valid URL"), withGridLayoutPosition(2, 1))).check(matches(isDisplayed()));
         onView(withId(R.id.imageview_dialog_validator_error_ok)).perform(click());
+        onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText(""));
+        onView(withId(R.id.edittext_dialog_settings_input_value)).check(matches(withTextColor(R.color.textErrorColor)));
+        onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
+        onView(allOf(withText("Host / URL"), withGridLayoutPosition(1, 0))).check(matches(isDisplayed()));
+        onView(allOf(withText("No value specified"), withGridLayoutPosition(1, 1))).check(matches(isDisplayed()));
+        onView(allOf(withText("Host / URL"), withGridLayoutPosition(2, 0))).check(doesNotExist());
+        onView(allOf(withText("No value specified"), withGridLayoutPosition(2, 1))).check(doesNotExist());
+        onView(withId(R.id.imageview_dialog_validator_error_ok)).perform(click());
         onView(withId(R.id.imageview_dialog_settings_input_cancel)).perform(click());
         onView(withId(R.id.textview_settings_activity_address)).check(matches(withText("192.168.178.1")));
         onView(withId(R.id.textview_settings_activity_address)).perform(click());
@@ -215,6 +224,18 @@ public class SettingsActivityTest extends BaseUITest {
         onView(allOf(withText("Port"), withGridLayoutPosition(1, 0))).check(matches(isDisplayed()));
         onView(allOf(withText("Invalid format"), withGridLayoutPosition(1, 1))).check(matches(isDisplayed()));
         onView(withId(R.id.imageview_dialog_validator_error_ok)).perform(click());
+        onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("70000"));
+        onView(withId(R.id.edittext_dialog_settings_input_value)).check(matches(withTextColor(R.color.textErrorColor)));
+        onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
+        onView(allOf(withText("Port"), withGridLayoutPosition(1, 0))).check(matches(isDisplayed()));
+        onView(allOf(withText("Maximum: 65535"), withGridLayoutPosition(1, 1))).check(matches(isDisplayed()));
+        onView(withId(R.id.imageview_dialog_validator_error_ok)).perform(click());
+        onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText(""));
+        onView(withId(R.id.edittext_dialog_settings_input_value)).check(matches(withTextColor(R.color.textErrorColor)));
+        onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
+        onView(allOf(withText("Port"), withGridLayoutPosition(1, 0))).check(matches(isDisplayed()));
+        onView(allOf(withText("No value specified"), withGridLayoutPosition(1, 1))).check(matches(isDisplayed()));
+        onView(withId(R.id.imageview_dialog_validator_error_ok)).perform(click());
         onView(withId(R.id.imageview_dialog_settings_input_cancel)).perform(click());
         onView(withId(R.id.textview_settings_activity_port)).check(matches(withText("22")));
         onView(withId(R.id.textview_settings_activity_port)).perform(click());
@@ -222,5 +243,38 @@ public class SettingsActivityTest extends BaseUITest {
         onView(withId(R.id.edittext_dialog_settings_input_value)).check(matches(withTextColor(R.color.textColor)));
         onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
         onView(withId(R.id.textview_settings_activity_port)).check(matches(withText("80")));
+    }
+
+    @Test
+    public void testIntervalInput() {
+        launchRecyclerViewBaseActivity(rule);
+        openActionBarOverflowOrOptionsMenu(InstrumentationRegistry.getTargetContext());
+        onView(withText("Settings")).perform(click());
+        onView(withId(R.id.textview_settings_activity_interval)).perform(click());
+        onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("xyz"));
+        onView(withId(R.id.edittext_dialog_settings_input_value)).check(matches(withTextColor(R.color.textErrorColor)));
+        onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
+        onView(allOf(withText("Interval"), withGridLayoutPosition(1, 0))).check(matches(isDisplayed()));
+        onView(allOf(withText("Invalid format"), withGridLayoutPosition(1, 1))).check(matches(isDisplayed()));
+        onView(withId(R.id.imageview_dialog_validator_error_ok)).perform(click());
+        onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("0"));
+        onView(withId(R.id.edittext_dialog_settings_input_value)).check(matches(withTextColor(R.color.textErrorColor)));
+        onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
+        onView(allOf(withText("Interval"), withGridLayoutPosition(1, 0))).check(matches(isDisplayed()));
+        onView(allOf(withText("Minimum: 1"), withGridLayoutPosition(1, 1))).check(matches(isDisplayed()));
+        onView(withId(R.id.imageview_dialog_validator_error_ok)).perform(click());
+        onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText(""));
+        onView(withId(R.id.edittext_dialog_settings_input_value)).check(matches(withTextColor(R.color.textErrorColor)));
+        onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
+        onView(allOf(withText("Interval"), withGridLayoutPosition(1, 0))).check(matches(isDisplayed()));
+        onView(allOf(withText("No value specified"), withGridLayoutPosition(1, 1))).check(matches(isDisplayed()));
+        onView(withId(R.id.imageview_dialog_validator_error_ok)).perform(click());
+        onView(withId(R.id.imageview_dialog_settings_input_cancel)).perform(click());
+        onView(withId(R.id.textview_settings_activity_interval)).check(matches(withText("15")));
+        onView(withId(R.id.textview_settings_activity_interval)).perform(click());
+        onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("20"));
+        onView(withId(R.id.edittext_dialog_settings_input_value)).check(matches(withTextColor(R.color.textColor)));
+        onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
+        onView(withId(R.id.textview_settings_activity_interval)).check(matches(withText("20")));
     }
 }

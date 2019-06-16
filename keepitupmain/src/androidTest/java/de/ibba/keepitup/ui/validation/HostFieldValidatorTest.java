@@ -31,5 +31,13 @@ public class HostFieldValidatorTest {
         assertFalse(result.isValidationSuccessful());
         assertEquals("testhost", result.getFieldName());
         assertEquals("No valid host or IP address", result.getMessage());
+        result = validator.validate("");
+        assertFalse(result.isValidationSuccessful());
+        assertEquals("testhost", result.getFieldName());
+        assertEquals("No value specified", result.getMessage());
+        result = validator.validate(null);
+        assertFalse(result.isValidationSuccessful());
+        assertEquals("testhost", result.getFieldName());
+        assertEquals("No value specified", result.getMessage());
     }
 }
