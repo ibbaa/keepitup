@@ -27,5 +27,13 @@ public class URLFieldValidatorTest {
         assertFalse(result.isValidationSuccessful());
         assertEquals("testurl", result.getFieldName());
         assertEquals("No valid URL", result.getMessage());
+        result = validator.validate("");
+        assertFalse(result.isValidationSuccessful());
+        assertEquals("testurl", result.getFieldName());
+        assertEquals("No value specified", result.getMessage());
+        result = validator.validate(null);
+        assertFalse(result.isValidationSuccessful());
+        assertEquals("testurl", result.getFieldName());
+        assertEquals("No value specified", result.getMessage());
     }
 }

@@ -42,6 +42,14 @@ public class StandardHostPortValidatorTest {
         assertFalse(result.isValidationSuccessful());
         assertEquals("Host", result.getFieldName());
         assertEquals("No valid host or IP address", result.getMessage());
+        result = validator.validateAddress("");
+        assertFalse(result.isValidationSuccessful());
+        assertEquals("Host", result.getFieldName());
+        assertEquals("No value specified", result.getMessage());
+        result = validator.validateAddress(null);
+        assertFalse(result.isValidationSuccessful());
+        assertEquals("Host", result.getFieldName());
+        assertEquals("No value specified", result.getMessage());
     }
 
     @Test
@@ -62,6 +70,14 @@ public class StandardHostPortValidatorTest {
         assertFalse(result.isValidationSuccessful());
         assertEquals("Port", result.getFieldName());
         assertEquals("Maximum: 65535", result.getMessage());
+        result = validator.validatePort("");
+        assertFalse(result.isValidationSuccessful());
+        assertEquals("Port", result.getFieldName());
+        assertEquals("No value specified", result.getMessage());
+        result = validator.validatePort(null);
+        assertFalse(result.isValidationSuccessful());
+        assertEquals("Port", result.getFieldName());
+        assertEquals("No value specified", result.getMessage());
     }
 
     @Test
@@ -82,5 +98,13 @@ public class StandardHostPortValidatorTest {
         assertFalse(result.isValidationSuccessful());
         assertEquals("Interval", result.getFieldName());
         assertEquals("Maximum: " + Integer.MAX_VALUE, result.getMessage());
+        result = validator.validateInterval("");
+        assertFalse(result.isValidationSuccessful());
+        assertEquals("Interval", result.getFieldName());
+        assertEquals("No value specified", result.getMessage());
+        result = validator.validateInterval(null);
+        assertFalse(result.isValidationSuccessful());
+        assertEquals("Interval", result.getFieldName());
+        assertEquals("No value specified", result.getMessage());
     }
 }

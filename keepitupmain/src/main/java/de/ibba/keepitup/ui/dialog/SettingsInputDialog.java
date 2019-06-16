@@ -121,6 +121,7 @@ public class SettingsInputDialog extends DialogFragment {
         Log.d(SettingsInputDialog.class.getName(), "validateInput");
         Bundle bundle = new Bundle();
         List<FieldValidator> validators = getValidators();
+        List<ValidationResult> validationResults = new ArrayList<>();
         for (FieldValidator validator : validators) {
             Log.d(SettingsInputDialog.class.getName(), "Current validator: " + validator.getClass().getName());
             ValidationResult result = validator.validate(getValue());
@@ -129,11 +130,23 @@ public class SettingsInputDialog extends DialogFragment {
                 Log.d(SettingsInputDialog.class.getName(), "Validation successful.");
                 return new Bundle();
             }
-            if (!result.isValidationSuccessful()) {
-                BundleUtil.addValidationResultToIndexedBundle(bundle, result);
+            if (!result.isValidationSuccessful() && !containsValidationResult(validationResults, result)) {
+                validationResults.add(result);
             }
         }
+        for (ValidationResult currentResult : validationResults) {
+            BundleUtil.addValidationResultToIndexedBundle(bundle, currentResult);
+        }
         return bundle;
+    }
+
+    private boolean containsValidationResult(List<ValidationResult> validationResults, ValidationResult result) {
+        for (ValidationResult currentResult : validationResults) {
+            if (currentResult.isEqual(result)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private List<FieldValidator> getValidators() {

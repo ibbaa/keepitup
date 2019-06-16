@@ -35,5 +35,13 @@ public class PortFieldValidatorTest {
         assertFalse(result.isValidationSuccessful());
         assertEquals("testport", result.getFieldName());
         assertEquals("Maximum: 65535", result.getMessage());
+        result = validator.validate("");
+        assertFalse(result.isValidationSuccessful());
+        assertEquals("testport", result.getFieldName());
+        assertEquals("No value specified", result.getMessage());
+        result = validator.validate(null);
+        assertFalse(result.isValidationSuccessful());
+        assertEquals("testport", result.getFieldName());
+        assertEquals("No value specified", result.getMessage());
     }
 }
