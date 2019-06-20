@@ -152,11 +152,11 @@ public class NetworkTaskEditDialog extends DialogFragment {
     private void prepareAddressTextFields() {
         Log.d(NetworkTaskEditDialog.class.getName(), "prepareAddressTextFields with address of " + task.getAddress() + " and port of " + task.getPort());
         addressEditText = dialogView.findViewById(R.id.edittext_dialog_network_task_edit_address);
+        prepareAddressEditTextListener();
         addressEditText.setText(StringUtil.notNull(task.getAddress()));
         portEditText = dialogView.findViewById(R.id.edittext_dialog_network_task_edit_port);
-        portEditText.setText(String.valueOf(task.getPort()));
-        prepareAddressEditTextListener();
         preparePortEditTextListener();
+        portEditText.setText(String.valueOf(task.getPort()));
     }
 
     private void prepareAddressTextFieldsVisibility() {
@@ -207,8 +207,8 @@ public class NetworkTaskEditDialog extends DialogFragment {
     private void prepareIntervalTextField() {
         Log.d(NetworkTaskEditDialog.class.getName(), "prepareIntervalTextField with interval of " + task.getInterval());
         intervalEditText = dialogView.findViewById(R.id.edittext_dialog_network_task_edit_interval);
-        intervalEditText.setText(String.valueOf(task.getInterval()));
         prepareIntervalEditTextListener();
+        intervalEditText.setText(String.valueOf(task.getInterval()));
     }
 
     private void prepareIntervalEditTextListener() {
