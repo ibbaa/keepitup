@@ -59,7 +59,7 @@ public class NetworkTaskEditDialog extends DialogFragment {
         Log.d(NetworkTaskEditDialog.class.getName(), "onCreateView");
         dialogView = inflater.inflate(R.layout.dialog_network_task_edit, container);
         task = new NetworkTask(Objects.requireNonNull(getArguments()));
-        prepareAccessTypeRadioButtons();
+        prepareAccessTypeRadioButtons(savedInstanceState);
         prepareAddressTextFields();
         prepareAddressTextFieldsVisibility();
         prepareIntervalTextField();
@@ -67,6 +67,21 @@ public class NetworkTaskEditDialog extends DialogFragment {
         prepareNotificationSwitch();
         prepareOkCancelImageButtons();
         return dialogView;
+    }
+
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        int selectedId = accessTypeGroup.getCheckedRadioButtonId();
+        RadioButton selectedAccessTypeRadioButton = dialogView.findViewById(selectedId);
+        if (selectedAccessTypeRadioButton != null) {
+            AccessType accessType = (AccessType) selectedAccessTypeRadioButton.getTag();
+            outState.putInt(getAccessTypeBundleKey(), accessType.getCode());
+        }
+    }
+
+    private String getAccessTypeBundleKey() {
+        return NetworkTaskEditDialog.class.getName() + ".AccessType";
     }
 
     private AccessType getAccessType() {
@@ -95,20 +110,31 @@ public class NetworkTaskEditDialog extends DialogFragment {
         return portEditText.getVisibility() == View.VISIBLE;
     }
 
-    private void prepareAccessTypeRadioButtons() {
+    private void prepareAccessTypeRadioButtons(Bundle savedInstanceState) {
         Log.d(NetworkTaskEditDialog.class.getName(), "prepareAccessTypeRadioButtons with access type of " + task.getAccessType());
         accessTypeGroup = dialogView.findViewById(R.id.radiogroup_dialog_network_task_edit_accesstype);
         EnumMapping mapping = new EnumMapping(requireContext());
         AccessType[] accessTypes = AccessType.values();
+        AccessType savedSelectedAccessType = null;
+        if (savedInstanceState != null) {
+            int selectedCode = savedInstanceState.getInt(getAccessTypeBundleKey(), -1);
+            if (selectedCode >= 0) {
+                savedSelectedAccessType = AccessType.forCode(selectedCode);
+            }
+        }
         for (int ii = 0; ii < accessTypes.length; ii++) {
             AccessType accessType = accessTypes[ii];
             RadioButton newRadioButton = new RadioButton(requireContext());
             newRadioButton.setText(mapping.getAccessTypeText(accessType));
             newRadioButton.setId(View.generateViewId());
-            if (task.getAccessType() == null && ii == 0) {
-                newRadioButton.setChecked(true);
+            if (savedSelectedAccessType != null) {
+                newRadioButton.setChecked(accessType.equals(savedSelectedAccessType));
             } else {
-                newRadioButton.setChecked(accessType.equals(task.getAccessType()));
+                if (task.getAccessType() == null && ii == 0) {
+                    newRadioButton.setChecked(true);
+                } else {
+                    newRadioButton.setChecked(accessType.equals(task.getAccessType()));
+                }
             }
             newRadioButton.setTag(accessType);
             LinearLayout.LayoutParams layoutParams = new RadioGroup.LayoutParams(RadioGroup.LayoutParams.WRAP_CONTENT, RadioGroup.LayoutParams.WRAP_CONTENT);
