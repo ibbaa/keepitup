@@ -121,6 +121,7 @@ public class NetworkTaskEditDialog extends DialogFragment {
             if (selectedCode >= 0) {
                 savedSelectedAccessType = AccessType.forCode(selectedCode);
             }
+            savedInstanceState.remove(getAccessTypeBundleKey());
         }
         for (int ii = 0; ii < accessTypes.length; ii++) {
             AccessType accessType = accessTypes[ii];
