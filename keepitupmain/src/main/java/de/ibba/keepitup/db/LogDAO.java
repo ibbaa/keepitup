@@ -65,7 +65,7 @@ public class LogDAO extends BaseDAO {
         logEntry.setId(rowid);
         Log.d(LogDAO.class.getName(), "Reading log count");
         long logCount = readLogCountForNetworkTask(logEntry, db);
-        int limit = getContext().getResources().getInteger(R.integer.task_count_maximum);
+        int limit = getContext().getResources().getInteger(R.integer.log_count_maximum);
         if (logCount > limit) {
             Log.d(LogDAO.class.getName(), "Log count of " + logCount + " exceeds limit of " + limit + ". Performing delete.");
             deleteOldestLogForNetworkTask(logEntry, db);
