@@ -1,5 +1,6 @@
 package de.ibba.keepitup.ui.dialog;
 
+import android.content.res.Configuration;
 import android.support.test.filters.MediumTest;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
@@ -42,6 +43,7 @@ public class SettingsInputDialogTest extends BaseUITest {
     public void beforeEachTestMethod() {
         super.beforeEachTestMethod();
         activity = rule.launchActivity(null);
+        activity.setRequestedOrientation(Configuration.ORIENTATION_PORTRAIT);
     }
 
     @Test

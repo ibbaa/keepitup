@@ -1,6 +1,5 @@
 package de.ibba.keepitup.ui.dialog;
 
-import android.support.test.InstrumentationRegistry;
 import android.support.test.espresso.action.ViewActions;
 import android.support.test.filters.MediumTest;
 import android.support.test.rule.ActivityTestRule;
@@ -14,6 +13,7 @@ import org.junit.runner.RunWith;
 import de.ibba.keepitup.R;
 import de.ibba.keepitup.model.AccessType;
 import de.ibba.keepitup.model.NetworkTask;
+import de.ibba.keepitup.test.mock.TestRegistry;
 import de.ibba.keepitup.ui.BaseUITest;
 import de.ibba.keepitup.ui.NetworkTaskMainActivity;
 
@@ -139,7 +139,7 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
     }
 
     @Test
-    public void testGetNetworkTaskEnteredTextPreservedOnAccessTypeChange() {
+    public void testEnteredTextPreservedOnAccessTypeChange() {
         onView(allOf(withId(R.id.imageview_list_item_network_task_add), isDisplayed())).perform(click());
         onView(withText("Connect")).perform(click());
         onView(withId(R.id.edittext_dialog_network_task_edit_address)).perform(replaceText("localhost"));
@@ -266,7 +266,7 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
     }
 
     @Test
-    public void testOnOkCancelClickedInputErrorColor() {
+    public void testInputErrorColor() {
         onView(allOf(withId(R.id.imageview_list_item_network_task_add), isDisplayed())).perform(click());
         onView(withText("Connect")).perform(click());
         onView(withId(R.id.edittext_dialog_network_task_edit_address)).check(matches(withTextColor(R.color.textColor)));
@@ -293,7 +293,7 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
     }
 
     @Test
-    public void testOnOkCancelClickedInputErrorColorOnAccessTypeChange() {
+    public void testErrorColorOnAccessTypeChange() {
         onView(allOf(withId(R.id.imageview_list_item_network_task_add), isDisplayed())).perform(click());
         onView(withId(R.id.edittext_dialog_network_task_edit_address)).check(matches(withTextColor(R.color.textColor)));
         onView(withText("Download")).perform(click());
@@ -301,6 +301,17 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         onView(withId(R.id.edittext_dialog_network_task_edit_address)).perform(replaceText("https://www.xyz.com"));
         onView(withId(R.id.edittext_dialog_network_task_edit_address)).check(matches(withTextColor(R.color.textColor)));
         onView(withText("Ping")).perform(click());
+        onView(withId(R.id.edittext_dialog_network_task_edit_address)).check(matches(withTextColor(R.color.textErrorColor)));
+    }
+
+    @Test
+    public void testErrorColorOnOpenDialog() {
+        openActionBarOverflowOrOptionsMenu(TestRegistry.getContext());
+        onView(withText("Settings")).perform(click());
+        onView(withText("Download")).perform(click());
+        onView(isRoot()).perform(ViewActions.pressBack());
+        onView(allOf(withId(R.id.imageview_list_item_network_task_add), isDisplayed())).perform(click());
+        onView(withText("Download")).check(matches(isChecked()));
         onView(withId(R.id.edittext_dialog_network_task_edit_address)).check(matches(withTextColor(R.color.textErrorColor)));
     }
 
@@ -315,7 +326,7 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         onView(withId(R.id.switch_dialog_network_task_edit_notification)).check(matches(isNotChecked()));
         onView(withId(R.id.textview_dialog_network_task_edit_notification_on_off)).check(matches(withText("no")));
         onView(withId(R.id.imageview_dialog_network_task_edit_cancel)).perform(click());
-        openActionBarOverflowOrOptionsMenu(InstrumentationRegistry.getTargetContext());
+        openActionBarOverflowOrOptionsMenu(TestRegistry.getContext());
         onView(withText("Settings")).perform(click());
         onView(withText("Connect")).perform(click());
         onView(withId(R.id.textview_settings_activity_address)).perform(click());
@@ -335,6 +346,35 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         onView(withId(R.id.edittext_dialog_network_task_edit_address)).check(matches(withText("host.com")));
         onView(withId(R.id.edittext_dialog_network_task_edit_port)).check(matches(withText("80")));
         onView(withId(R.id.edittext_dialog_network_task_edit_interval)).check(matches(withText("50")));
+        onView(withId(R.id.switch_dialog_network_task_edit_onlywifi)).check(matches(isChecked()));
+        onView(withId(R.id.textview_dialog_network_task_edit_onlywifi_on_off)).check(matches(withText("yes")));
+        onView(withId(R.id.switch_dialog_network_task_edit_notification)).check(matches(isChecked()));
+        onView(withId(R.id.textview_dialog_network_task_edit_notification_on_off)).check(matches(withText("yes")));
+    }
+
+    @Test
+    public void testStateSavedOnScreenRotation() {
+        onView(allOf(withId(R.id.imageview_list_item_network_task_add), isDisplayed())).perform(click());
+        onView(withText("Connect")).perform(click());
+        onView(withId(R.id.edittext_dialog_network_task_edit_address)).perform(replaceText("localhost"));
+        onView(withId(R.id.edittext_dialog_network_task_edit_port)).perform(replaceText("80"));
+        onView(withId(R.id.edittext_dialog_network_task_edit_interval)).perform(replaceText("60"));
+        onView(withId(R.id.switch_dialog_network_task_edit_onlywifi)).perform(click());
+        onView(withId(R.id.switch_dialog_network_task_edit_notification)).perform(click());
+        rotateScreen(activity);
+        onView(withText("Connect")).check(matches(isChecked()));
+        onView(withId(R.id.edittext_dialog_network_task_edit_address)).check(matches(withText("localhost")));
+        onView(withId(R.id.edittext_dialog_network_task_edit_port)).check(matches(withText("80")));
+        onView(withId(R.id.edittext_dialog_network_task_edit_interval)).check(matches(withText("60")));
+        onView(withId(R.id.switch_dialog_network_task_edit_onlywifi)).check(matches(isChecked()));
+        onView(withId(R.id.textview_dialog_network_task_edit_onlywifi_on_off)).check(matches(withText("yes")));
+        onView(withId(R.id.switch_dialog_network_task_edit_notification)).check(matches(isChecked()));
+        onView(withId(R.id.textview_dialog_network_task_edit_notification_on_off)).check(matches(withText("yes")));
+        onView(withText("Download")).perform(click());
+        rotateScreen(activity);
+        onView(withText("Download")).check(matches(isChecked()));
+        onView(withId(R.id.edittext_dialog_network_task_edit_address)).check(matches(withText("localhost")));
+        onView(withId(R.id.edittext_dialog_network_task_edit_interval)).check(matches(withText("60")));
         onView(withId(R.id.switch_dialog_network_task_edit_onlywifi)).check(matches(isChecked()));
         onView(withId(R.id.textview_dialog_network_task_edit_onlywifi_on_off)).check(matches(withText("yes")));
         onView(withId(R.id.switch_dialog_network_task_edit_notification)).check(matches(isChecked()));

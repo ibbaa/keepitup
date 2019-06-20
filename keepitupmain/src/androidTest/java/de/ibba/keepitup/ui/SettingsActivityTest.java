@@ -1,6 +1,5 @@
 package de.ibba.keepitup.ui;
 
-import android.support.test.InstrumentationRegistry;
 import android.support.test.filters.MediumTest;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
@@ -12,6 +11,7 @@ import org.junit.runner.RunWith;
 import de.ibba.keepitup.R;
 import de.ibba.keepitup.model.AccessType;
 import de.ibba.keepitup.resources.NetworkTaskPreferenceManager;
+import de.ibba.keepitup.test.mock.TestRegistry;
 
 import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.Espresso.openActionBarOverflowOrOptionsMenu;
@@ -40,7 +40,7 @@ public class SettingsActivityTest extends BaseUITest {
     @Test
     public void testDisplayDefaultValues() {
         launchRecyclerViewBaseActivity(rule);
-        openActionBarOverflowOrOptionsMenu(InstrumentationRegistry.getTargetContext());
+        openActionBarOverflowOrOptionsMenu(TestRegistry.getContext());
         onView(withText("Settings")).perform(click());
         NetworkTaskPreferenceManager preferenceManager = getPreferenceManager();
         assertEquals(AccessType.PING, preferenceManager.getPreferenceAccessType());
@@ -70,7 +70,7 @@ public class SettingsActivityTest extends BaseUITest {
     @Test
     public void testDisplayValues() {
         launchRecyclerViewBaseActivity(rule);
-        openActionBarOverflowOrOptionsMenu(InstrumentationRegistry.getTargetContext());
+        openActionBarOverflowOrOptionsMenu(TestRegistry.getContext());
         onView(withText("Settings")).perform(click());
         onView(withText("Download")).perform(click());
         onView(withId(R.id.textview_settings_activity_address)).perform(click());
@@ -102,7 +102,7 @@ public class SettingsActivityTest extends BaseUITest {
     @Test
     public void testSwitchYesNoText() {
         launchRecyclerViewBaseActivity(rule);
-        openActionBarOverflowOrOptionsMenu(InstrumentationRegistry.getTargetContext());
+        openActionBarOverflowOrOptionsMenu(TestRegistry.getContext());
         onView(withText("Settings")).perform(click());
         onView(withId(R.id.switch_settings_activity_onlywifi)).check(matches(isNotChecked()));
         onView(withId(R.id.textview_settings_activity_onlywifi_on_off)).check(matches(withText("no")));
@@ -133,7 +133,7 @@ public class SettingsActivityTest extends BaseUITest {
     @Test
     public void testSetPreferencesOk() {
         launchRecyclerViewBaseActivity(rule);
-        openActionBarOverflowOrOptionsMenu(InstrumentationRegistry.getTargetContext());
+        openActionBarOverflowOrOptionsMenu(TestRegistry.getContext());
         onView(withText("Settings")).perform(click());
         onView(withText("Download")).perform(click());
         onView(withId(R.id.textview_settings_activity_address)).perform(click());
@@ -159,7 +159,7 @@ public class SettingsActivityTest extends BaseUITest {
     @Test
     public void testSetPreferencesCancel() {
         launchRecyclerViewBaseActivity(rule);
-        openActionBarOverflowOrOptionsMenu(InstrumentationRegistry.getTargetContext());
+        openActionBarOverflowOrOptionsMenu(TestRegistry.getContext());
         onView(withText("Settings")).perform(click());
         onView(withId(R.id.textview_settings_activity_address)).perform(click());
         onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("localhost"));
@@ -179,7 +179,7 @@ public class SettingsActivityTest extends BaseUITest {
     @Test
     public void testAddressInput() {
         launchRecyclerViewBaseActivity(rule);
-        openActionBarOverflowOrOptionsMenu(InstrumentationRegistry.getTargetContext());
+        openActionBarOverflowOrOptionsMenu(TestRegistry.getContext());
         onView(withText("Settings")).perform(click());
         onView(withId(R.id.textview_settings_activity_address)).perform(click());
         onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("1 2.33"));
@@ -215,7 +215,7 @@ public class SettingsActivityTest extends BaseUITest {
     @Test
     public void testPortInput() {
         launchRecyclerViewBaseActivity(rule);
-        openActionBarOverflowOrOptionsMenu(InstrumentationRegistry.getTargetContext());
+        openActionBarOverflowOrOptionsMenu(TestRegistry.getContext());
         onView(withText("Settings")).perform(click());
         onView(withId(R.id.textview_settings_activity_port)).perform(click());
         onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("1a"));
@@ -248,7 +248,7 @@ public class SettingsActivityTest extends BaseUITest {
     @Test
     public void testIntervalInput() {
         launchRecyclerViewBaseActivity(rule);
-        openActionBarOverflowOrOptionsMenu(InstrumentationRegistry.getTargetContext());
+        openActionBarOverflowOrOptionsMenu(TestRegistry.getContext());
         onView(withText("Settings")).perform(click());
         onView(withId(R.id.textview_settings_activity_interval)).perform(click());
         onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("xyz"));

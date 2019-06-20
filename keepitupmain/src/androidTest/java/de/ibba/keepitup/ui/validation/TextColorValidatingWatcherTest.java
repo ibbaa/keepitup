@@ -1,13 +1,14 @@
 package de.ibba.keepitup.ui.validation;
 
 import android.graphics.Color;
-import android.support.test.InstrumentationRegistry;
 import android.support.test.filters.SmallTest;
 import android.support.test.runner.AndroidJUnit4;
 import android.widget.EditText;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
+import de.ibba.keepitup.test.mock.TestRegistry;
 
 import static org.junit.Assert.assertEquals;
 
@@ -17,7 +18,7 @@ public class TextColorValidatingWatcherTest {
 
     @Test
     public void testChangeTextColor() {
-        EditText testEditText = new EditText(InstrumentationRegistry.getTargetContext());
+        EditText testEditText = new EditText(TestRegistry.getContext());
         TextColorValidatingWatcher watcher = new TextColorValidatingWatcher(testEditText, this::validateTrue, Color.BLACK, Color.RED);
         watcher.afterTextChanged(null);
         assertEquals(Color.BLACK, testEditText.getCurrentTextColor());
