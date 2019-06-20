@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <string name="AccessType_PING_worker" tools:ignore="ExtraTranslation" tools:keep="@string/AccessType_PING_worker">de.ibba.keepitup.service.PingNetworkTaskWorker</string>
+    <string name="AccessType_CONNECT_worker" tools:ignore="ExtraTranslation" tools:keep="@string/AccessType_CONNECT_worker">de.ibba.keepitup.service.ConnectNetworkTaskWorker</string>
+    <string name="AccessType_DOWNLOAD_worker" tools:ignore="ExtraTranslation" tools:keep="@string/AccessType_DOWNLOAD_worker">de.ibba.keepitup.service.DownloadNetworkTaskWorker</string>
+</resources>
