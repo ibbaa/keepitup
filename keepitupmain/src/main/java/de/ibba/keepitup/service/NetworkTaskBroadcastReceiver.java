@@ -11,6 +11,8 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import de.ibba.keepitup.model.NetworkTask;
+import de.ibba.keepitup.resources.WorkerFactory;
+import de.ibba.keepitup.resources.WorkerFactoryContributor;
 
 public class NetworkTaskBroadcastReceiver extends BroadcastReceiver {
 
@@ -37,7 +39,11 @@ public class NetworkTaskBroadcastReceiver extends BroadcastReceiver {
     private void doWork(Context context, NetworkTask task, PowerManager.WakeLock wakeLock) {
         Log.d(NetworkTaskBroadcastReceiver.class.getName(), "Doing work for " + task);
         Log.d(NetworkTaskBroadcastReceiver.class.getName(), "Synchronous is " + synchronous);
-        NetworkTaskWorker networkTaskWorker = new NetworkTaskWorker(context, task, wakeLock);
+        WorkerFactoryContributor workerFactoryContributor = new WorkerFactoryContributor(context);
+        WorkerFactory workerFactory = workerFactoryContributor.createWorkerFactory();
+        Log.d(NetworkTaskBroadcastReceiver.class.getName(), "Worker factory is " + workerFactory.getClass().getName());
+        NetworkTaskWorker networkTaskWorker = workerFactory.createWorker(context, task, wakeLock);
+        Log.d(NetworkTaskBroadcastReceiver.class.getName(), "Worker is " + networkTaskWorker.getClass().getName());
         if (synchronous) {
             networkTaskWorker.run();
         } else {
