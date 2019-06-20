@@ -1,5 +1,6 @@
 package de.ibba.keepitup.ui.dialog;
 
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.test.rule.ActivityTestRule;
 import android.widget.GridLayout;
@@ -32,6 +33,7 @@ public class ValidatorErrorDialogTest extends BaseUITest {
     public void beforeEachTestMethod() {
         super.beforeEachTestMethod();
         activity = rule.launchActivity(null);
+        activity.setRequestedOrientation(Configuration.ORIENTATION_PORTRAIT);
     }
 
     @Test

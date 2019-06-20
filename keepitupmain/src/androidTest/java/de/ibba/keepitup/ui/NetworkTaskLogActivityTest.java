@@ -1,7 +1,6 @@
 package de.ibba.keepitup.ui;
 
 import android.content.Intent;
-import android.support.test.InstrumentationRegistry;
 import android.support.test.filters.MediumTest;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
@@ -17,6 +16,7 @@ import de.ibba.keepitup.R;
 import de.ibba.keepitup.model.AccessType;
 import de.ibba.keepitup.model.LogEntry;
 import de.ibba.keepitup.model.NetworkTask;
+import de.ibba.keepitup.test.mock.TestRegistry;
 
 import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.Espresso.openActionBarOverflowOrOptionsMenu;
@@ -79,7 +79,7 @@ public class NetworkTaskLogActivityTest extends BaseUITest {
         onView(withId(R.id.listview_log_activity_log_entries)).check(matches(withListSize(2)));
         LogEntry entry3 = getLogEntry(task, new GregorianCalendar(2016, Calendar.JULY, 1), true, "Message3");
         getLogDAO().insertAndDeleteLog(entry3);
-        openActionBarOverflowOrOptionsMenu(InstrumentationRegistry.getTargetContext());
+        openActionBarOverflowOrOptionsMenu(TestRegistry.getContext());
         onView(withText("Refresh")).perform(click());
         onView(withId(R.id.listview_log_activity_log_entries)).check(matches(withListSize(3)));
         onView(allOf(withId(R.id.textview_list_item_log_entry_title), withChildDescendantAtPosition(withId(R.id.listview_log_activity_log_entries), 0))).check(matches(withText("Log entry for network task 1")));
@@ -94,7 +94,7 @@ public class NetworkTaskLogActivityTest extends BaseUITest {
     }
 
     private Intent getNetworkTaskIntent(NetworkTask task) {
-        Intent intent = new Intent(InstrumentationRegistry.getTargetContext(), NetworkTaskLogActivity.class);
+        Intent intent = new Intent(TestRegistry.getContext(), NetworkTaskLogActivity.class);
         intent.putExtras(task.toBundle());
         return intent;
     }
