@@ -19,6 +19,7 @@ import de.ibba.keepitup.ui.NetworkTaskMainActivity;
 
 import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.Espresso.openActionBarOverflowOrOptionsMenu;
+import static android.support.test.espresso.Espresso.pressBack;
 import static android.support.test.espresso.action.ViewActions.click;
 import static android.support.test.espresso.action.ViewActions.replaceText;
 import static android.support.test.espresso.assertion.ViewAssertions.doesNotExist;
@@ -379,5 +380,17 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         onView(withId(R.id.textview_dialog_network_task_edit_onlywifi_on_off)).check(matches(withText("yes")));
         onView(withId(R.id.switch_dialog_network_task_edit_notification)).check(matches(isChecked()));
         onView(withId(R.id.textview_dialog_network_task_edit_notification_on_off)).check(matches(withText("yes")));
+    }
+
+    @Test
+    public void testSavedStateResetOnCreate() {
+        onView(allOf(withId(R.id.imageview_list_item_network_task_add), isDisplayed())).perform(click());
+        onView(withText("Ping")).check(matches(isChecked()));
+        onView(withText("Download")).perform(click());
+        rotateScreen(activity);
+        rotateScreen(activity);
+        pressBack();
+        onView(allOf(withId(R.id.imageview_list_item_network_task_add), isDisplayed())).perform(click());
+        onView(withText("Ping")).check(matches(isChecked()));
     }
 }
