@@ -21,4 +21,13 @@
     <dimen name="settings_activity_accesstype_margin">4dp</dimen>
     <dimen name="settings_activity_accesstype_corner_radius">4dp</dimen>
     <dimen name="settings_activity_accesstype_card_elevation">4dp</dimen>
+    <dimen name="settings_activity_global_margin">4dp</dimen>
+    <dimen name="settings_activity_global_corner_radius">4dp</dimen>
+    <dimen name="settings_activity_global_card_elevation">4dp</dimen>
+    <dimen name="settings_activity_connection_timeout_margin">4dp</dimen>
+    <dimen name="settings_activity_connection_timeout_corner_radius">4dp</dimen>
+    <dimen name="settings_activity_connection_timeout_card_elevation">4dp</dimen>
+    <dimen name="settings_activity_read_timeout_margin">4dp</dimen>
+    <dimen name="settings_activity_read_timeout_corner_radius">4dp</dimen>
+    <dimen name="settings_activity_read_timeout_card_elevation">4dp</dimen>
 </resources>
