@@ -9,4 +9,7 @@
     <string name="label_settings_activity_onlywifi">Only on WiFi</string>
     <string name="label_settings_activity_notification">Notifications</string>
     <string name="label_settings_activity_accesstype">Type</string>
+    <string name="label_settings_activity_global">Global settings</string>
+    <string name="label_settings_activity_connection_timeout">Connection timeout</string>
+    <string name="label_settings_activity_read_timeout">Read timeout</string>
 </resources>
