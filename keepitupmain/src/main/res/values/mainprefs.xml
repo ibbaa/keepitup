@@ -1,4 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <integer name="ui_sync_refresh_interval">5</integer>
+    <string name="socket_connection_timeout_key">socket_connection_timeout_key</string>
+    <string name="socket_read_timeout_key">socket_read_timeout_key</string>
+    <integer name="socket_connection_timeout_default">15</integer>
+    <integer name="socket_read_timeout_default">10</integer>
+    <integer name="socket_connection_timeout_minimum">1</integer>
+    <integer name="socket_read_timeout_minimum">1</integer>
+    <integer name="socket_connection_timeout_maximum">2147483647</integer>
+    <integer name="socket_read_timeout_maximum">2147483647</integer>
 </resources>

@@ -10,7 +10,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import de.ibba.keepitup.resources.NetworkTaskPreferenceManager;
+import de.ibba.keepitup.resources.PreferenceManager;
 import de.ibba.keepitup.test.mock.TestRegistry;
 
 import static org.junit.Assert.assertEquals;
@@ -25,13 +25,13 @@ public class NetworkTaskTest {
 
     @Before
     public void beforeEachTestMethod() {
-        NetworkTaskPreferenceManager preferenceManager = new NetworkTaskPreferenceManager(TestRegistry.getContext());
+        PreferenceManager preferenceManager = new PreferenceManager(TestRegistry.getContext());
         preferenceManager.removeAllPreferences();
     }
 
     @After
     public void afterEachTestMethod() {
-        NetworkTaskPreferenceManager preferenceManager = new NetworkTaskPreferenceManager(TestRegistry.getContext());
+        PreferenceManager preferenceManager = new PreferenceManager(TestRegistry.getContext());
         preferenceManager.removeAllPreferences();
     }
 
@@ -78,7 +78,7 @@ public class NetworkTaskTest {
 
     @Test
     public void testPreferenceValues() {
-        NetworkTaskPreferenceManager preferenceManager = new NetworkTaskPreferenceManager(TestRegistry.getContext());
+        PreferenceManager preferenceManager = new PreferenceManager(TestRegistry.getContext());
         preferenceManager.setPreferenceAccessType(AccessType.CONNECT);
         preferenceManager.setPreferenceAddress("host.com");
         preferenceManager.setPreferencePort(80);

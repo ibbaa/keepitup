@@ -21,7 +21,7 @@ import java.util.Objects;
 
 import de.ibba.keepitup.R;
 import de.ibba.keepitup.model.AccessType;
-import de.ibba.keepitup.resources.NetworkTaskPreferenceManager;
+import de.ibba.keepitup.resources.PreferenceManager;
 import de.ibba.keepitup.ui.dialog.NetworkTaskEditDialog;
 import de.ibba.keepitup.ui.dialog.SettingsInput;
 import de.ibba.keepitup.ui.dialog.SettingsInputDialog;
@@ -68,7 +68,7 @@ public class SettingsActivity extends AppCompatActivity {
         int id = item.getItemId();
         if (id == R.id.menu_action_reset) {
             Log.d(SettingsActivity.class.getName(), "menu_action_reset triggered");
-            NetworkTaskPreferenceManager preferenceManager = new NetworkTaskPreferenceManager(this);
+            PreferenceManager preferenceManager = new PreferenceManager(this);
             preferenceManager.removePreferenceAccessType();
             preferenceManager.removePreferenceAddress();
             preferenceManager.removePreferencePort();
@@ -83,7 +83,7 @@ public class SettingsActivity extends AppCompatActivity {
 
     private void prepareAccessTypeRadioButtons() {
         Log.d(NetworkTaskEditDialog.class.getName(), "prepareAccessTypeRadioButtons");
-        NetworkTaskPreferenceManager preferenceManager = new NetworkTaskPreferenceManager(this);
+        PreferenceManager preferenceManager = new PreferenceManager(this);
         accessTypeGroup = findViewById(R.id.radiogroup_settings_activity_accesstype);
         EnumMapping mapping = new EnumMapping(this);
         AccessType[] accessTypes = AccessType.values();
@@ -107,7 +107,7 @@ public class SettingsActivity extends AppCompatActivity {
 
     private void onAccessTypeChanged(RadioGroup group, int checkedId) {
         Log.d(NetworkTaskEditDialog.class.getName(), "onAccessTypeChanged");
-        NetworkTaskPreferenceManager preferenceManager = new NetworkTaskPreferenceManager(this);
+        PreferenceManager preferenceManager = new PreferenceManager(this);
         RadioButton selectedAccessTypeRadioButton = accessTypeGroup.findViewById(checkedId);
         if (selectedAccessTypeRadioButton != null) {
             AccessType accessType = (AccessType) selectedAccessTypeRadioButton.getTag();
@@ -120,7 +120,7 @@ public class SettingsActivity extends AppCompatActivity {
 
     private void prepareAddressField() {
         Log.d(SettingsActivity.class.getName(), "prepareAddressField");
-        NetworkTaskPreferenceManager preferenceManager = new NetworkTaskPreferenceManager(this);
+        PreferenceManager preferenceManager = new PreferenceManager(this);
         addressText = findViewById(R.id.textview_settings_activity_address);
         setAddress(preferenceManager.getPreferenceAddress());
         CardView addressCardView = findViewById(R.id.cardview_settings_activity_address);
@@ -129,7 +129,7 @@ public class SettingsActivity extends AppCompatActivity {
 
     private void preparePortField() {
         Log.d(SettingsActivity.class.getName(), "preparePortField");
-        NetworkTaskPreferenceManager preferenceManager = new NetworkTaskPreferenceManager(this);
+        PreferenceManager preferenceManager = new PreferenceManager(this);
         portText = findViewById(R.id.textview_settings_activity_port);
         setPort(String.valueOf(preferenceManager.getPreferencePort()));
         CardView portCardView = findViewById(R.id.cardview_settings_activity_port);
@@ -138,7 +138,7 @@ public class SettingsActivity extends AppCompatActivity {
 
     private void prepareIntervalField() {
         Log.d(SettingsActivity.class.getName(), "prepareIntervalField");
-        NetworkTaskPreferenceManager preferenceManager = new NetworkTaskPreferenceManager(this);
+        PreferenceManager preferenceManager = new PreferenceManager(this);
         intervalText = findViewById(R.id.textview_settings_activity_interval);
         setInterval(String.valueOf(preferenceManager.getPreferenceInterval()));
         CardView intervalCardView = findViewById(R.id.cardview_settings_activity_interval);
@@ -147,7 +147,7 @@ public class SettingsActivity extends AppCompatActivity {
 
     private void prepareOnlyWifiSwitch() {
         Log.d(SettingsActivity.class.getName(), "prepareOnlyWifiSwitch");
-        NetworkTaskPreferenceManager preferenceManager = new NetworkTaskPreferenceManager(this);
+        PreferenceManager preferenceManager = new PreferenceManager(this);
         onlyWifiSwitch = findViewById(R.id.switch_settings_activity_onlywifi);
         onlyWifiOnOffText = findViewById(R.id.textview_settings_activity_onlywifi_on_off);
         onlyWifiSwitch.setChecked(preferenceManager.getPreferenceOnlyWifi());
@@ -161,14 +161,14 @@ public class SettingsActivity extends AppCompatActivity {
 
     private void onOnlyWifiCheckedChanged(CompoundButton buttonView, boolean isChecked) {
         Log.d(NetworkTaskEditDialog.class.getName(), "onOnlyWifiCheckedChanged, new value is " + isChecked);
-        NetworkTaskPreferenceManager preferenceManager = new NetworkTaskPreferenceManager(this);
+        PreferenceManager preferenceManager = new PreferenceManager(this);
         preferenceManager.setPreferenceOnlyWifi(isChecked);
         prepareOnlyWifiOnOffText();
     }
 
     private void prepareNotificationSwitch() {
         Log.d(SettingsActivity.class.getName(), "prepareNotificationSwitch");
-        NetworkTaskPreferenceManager preferenceManager = new NetworkTaskPreferenceManager(this);
+        PreferenceManager preferenceManager = new PreferenceManager(this);
         notificationSwitch = findViewById(R.id.switch_settings_activity_notification);
         notificationOnOffText = findViewById(R.id.textview_settings_activity_notification_on_off);
         notificationSwitch.setChecked(preferenceManager.getPreferenceNotification());
@@ -182,7 +182,7 @@ public class SettingsActivity extends AppCompatActivity {
 
     private void onNotificationCheckedChanged(CompoundButton buttonView, boolean isChecked) {
         Log.d(NetworkTaskEditDialog.class.getName(), "onNotificationCheckedChanged, new value is " + isChecked);
-        NetworkTaskPreferenceManager preferenceManager = new NetworkTaskPreferenceManager(this);
+        PreferenceManager preferenceManager = new PreferenceManager(this);
         preferenceManager.setPreferenceNotification(isChecked);
         prepareNotificationOnOffText();
     }
@@ -241,7 +241,7 @@ public class SettingsActivity extends AppCompatActivity {
 
     public void onInputDialogOkClicked(SettingsInputDialog inputDialog, SettingsInput.Type type) {
         Log.d(SettingsActivity.class.getName(), "onInputDialogOkClicked, type is " + type + ", value is " + inputDialog.getValue());
-        NetworkTaskPreferenceManager preferenceManager = new NetworkTaskPreferenceManager(this);
+        PreferenceManager preferenceManager = new PreferenceManager(this);
         if (SettingsInput.Type.ADDRESS.equals(type)) {
             setAddress(inputDialog.getValue());
             preferenceManager.setPreferenceAddress(getAddress());

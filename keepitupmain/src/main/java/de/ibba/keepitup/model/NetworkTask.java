@@ -7,7 +7,7 @@ import android.os.PersistableBundle;
 import android.support.annotation.NonNull;
 
 import de.ibba.keepitup.R;
-import de.ibba.keepitup.resources.NetworkTaskPreferenceManager;
+import de.ibba.keepitup.resources.PreferenceManager;
 
 public class NetworkTask {
 
@@ -37,7 +37,7 @@ public class NetworkTask {
 
     public NetworkTask(Context context) {
         Resources resources = context.getResources();
-        NetworkTaskPreferenceManager preferenceManager = new NetworkTaskPreferenceManager(context);
+        PreferenceManager preferenceManager = new PreferenceManager(context);
         this.id = -1;
         this.index = -1;
         this.schedulerid = -1;
