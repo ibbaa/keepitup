@@ -17,13 +17,13 @@ import static org.junit.Assert.assertTrue;
 
 @SmallTest
 @RunWith(AndroidJUnit4.class)
-public class NetworkTaskPreferenceManagerTest {
+public class PreferenceManagerTest {
 
-    private NetworkTaskPreferenceManager preferenceManager;
+    private PreferenceManager preferenceManager;
 
     @Before
     public void beforeEachTestMethod() {
-        preferenceManager = new NetworkTaskPreferenceManager(TestRegistry.getContext());
+        preferenceManager = new PreferenceManager(TestRegistry.getContext());
         preferenceManager.removeAllPreferences();
     }
 
@@ -150,5 +150,29 @@ public class NetworkTaskPreferenceManagerTest {
         preferenceManager.setPreferenceNotification(true);
         preferenceManager.removePreferenceNotification();
         assertFalse(preferenceManager.getPreferenceNotification());
+    }
+
+    @Test
+    public void testGetSetRemoveConnectionTimeout() {
+        assertEquals(15, preferenceManager.getPreferenceConnectionTimeout());
+        preferenceManager.setPreferenceConnectionTimeout(10);
+        assertEquals(10, preferenceManager.getPreferenceConnectionTimeout());
+        preferenceManager.removeAllPreferences();
+        assertEquals(15, preferenceManager.getPreferenceConnectionTimeout());
+        preferenceManager.setPreferenceConnectionTimeout(2);
+        preferenceManager.removePreferenceConnectionTimeout();
+        assertEquals(15, preferenceManager.getPreferenceConnectionTimeout());
+    }
+
+    @Test
+    public void testGetSetRemoveReadTimeout() {
+        assertEquals(10, preferenceManager.getPreferenceReadTimeout());
+        preferenceManager.setPreferenceReadTimeout(15);
+        assertEquals(15, preferenceManager.getPreferenceReadTimeout());
+        preferenceManager.removeAllPreferences();
+        assertEquals(10, preferenceManager.getPreferenceReadTimeout());
+        preferenceManager.setPreferenceReadTimeout(2);
+        preferenceManager.removePreferenceReadTimeout();
+        assertEquals(10, preferenceManager.getPreferenceReadTimeout());
     }
 }

@@ -16,7 +16,7 @@ import java.util.Locale;
 
 import de.ibba.keepitup.db.LogDAO;
 import de.ibba.keepitup.db.NetworkTaskDAO;
-import de.ibba.keepitup.resources.NetworkTaskPreferenceManager;
+import de.ibba.keepitup.resources.PreferenceManager;
 import de.ibba.keepitup.service.NetworkTaskServiceScheduler;
 import de.ibba.keepitup.test.matcher.ChildDescendantAtPositionMatcher;
 import de.ibba.keepitup.test.matcher.DrawableMatcher;
@@ -33,7 +33,7 @@ public abstract class BaseUITest {
     private NetworkTaskDAO networkTaskDAO;
     private LogDAO logDAO;
     private NetworkTaskServiceScheduler scheduler;
-    private NetworkTaskPreferenceManager preferenceManager;
+    private PreferenceManager preferenceManager;
 
     @Before
     public void beforeEachTestMethod() {
@@ -49,7 +49,7 @@ public abstract class BaseUITest {
         if (handler != null) {
             handler.reset();
         }
-        preferenceManager = new NetworkTaskPreferenceManager(TestRegistry.getContext());
+        preferenceManager = new PreferenceManager(TestRegistry.getContext());
         preferenceManager.removeAllPreferences();
     }
 
@@ -104,7 +104,7 @@ public abstract class BaseUITest {
         return scheduler;
     }
 
-    public NetworkTaskPreferenceManager getPreferenceManager() {
+    public PreferenceManager getPreferenceManager() {
         return preferenceManager;
     }
 

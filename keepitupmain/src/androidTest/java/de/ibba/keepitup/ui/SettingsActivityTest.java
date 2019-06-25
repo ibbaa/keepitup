@@ -10,7 +10,7 @@ import org.junit.runner.RunWith;
 
 import de.ibba.keepitup.R;
 import de.ibba.keepitup.model.AccessType;
-import de.ibba.keepitup.resources.NetworkTaskPreferenceManager;
+import de.ibba.keepitup.resources.PreferenceManager;
 import de.ibba.keepitup.test.mock.TestRegistry;
 
 import static android.support.test.espresso.Espresso.onView;
@@ -42,7 +42,7 @@ public class SettingsActivityTest extends BaseUITest {
         launchRecyclerViewBaseActivity(rule);
         openActionBarOverflowOrOptionsMenu(TestRegistry.getContext());
         onView(withText("Settings")).perform(click());
-        NetworkTaskPreferenceManager preferenceManager = getPreferenceManager();
+        PreferenceManager preferenceManager = getPreferenceManager();
         assertEquals(AccessType.PING, preferenceManager.getPreferenceAccessType());
         assertEquals("192.168.178.1", preferenceManager.getPreferenceAddress());
         assertEquals(22, preferenceManager.getPreferencePort());
@@ -147,7 +147,7 @@ public class SettingsActivityTest extends BaseUITest {
         onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
         onView(withId(R.id.switch_settings_activity_onlywifi)).perform(click());
         onView(withId(R.id.switch_settings_activity_notification)).perform(click());
-        NetworkTaskPreferenceManager preferenceManager = getPreferenceManager();
+        PreferenceManager preferenceManager = getPreferenceManager();
         assertEquals(AccessType.DOWNLOAD, preferenceManager.getPreferenceAccessType());
         assertEquals("localhost", preferenceManager.getPreferenceAddress());
         assertEquals(80, preferenceManager.getPreferencePort());
@@ -170,7 +170,7 @@ public class SettingsActivityTest extends BaseUITest {
         onView(withId(R.id.textview_settings_activity_interval)).perform(click());
         onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("50"));
         onView(withId(R.id.imageview_dialog_settings_input_cancel)).perform(click());
-        NetworkTaskPreferenceManager preferenceManager = getPreferenceManager();
+        PreferenceManager preferenceManager = getPreferenceManager();
         assertEquals("192.168.178.1", preferenceManager.getPreferenceAddress());
         assertEquals(22, preferenceManager.getPreferencePort());
         assertEquals(15, preferenceManager.getPreferenceInterval());
