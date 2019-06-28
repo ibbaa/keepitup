@@ -43,5 +43,19 @@ public class SettingsInputTest {
         assertEquals("test", settingsInput.getValue());
         assertEquals("testfield", settingsInput.getField());
         assertThat(settingsInput.getValidators(), is(Arrays.asList("1", "2", "3")));
+        settingsInput = new SettingsInput(SettingsInput.Type.CONNECTIONTIMEOUT, "test", "testfield", Collections.singletonList("abc"));
+        bundle = settingsInput.toBundle();
+        settingsInput = new SettingsInput(bundle);
+        assertEquals(SettingsInput.Type.CONNECTIONTIMEOUT, settingsInput.getType());
+        assertEquals("test", settingsInput.getValue());
+        assertEquals("testfield", settingsInput.getField());
+        assertThat(settingsInput.getValidators(), is(Collections.singletonList("abc")));
+        settingsInput = new SettingsInput(SettingsInput.Type.READTIMEOUT, "test", "testfield", Arrays.asList("abc", "def"));
+        bundle = settingsInput.toBundle();
+        settingsInput = new SettingsInput(bundle);
+        assertEquals(SettingsInput.Type.READTIMEOUT, settingsInput.getType());
+        assertEquals("test", settingsInput.getValue());
+        assertEquals("testfield", settingsInput.getField());
+        assertThat(settingsInput.getValidators(), is(Arrays.asList("abc", "def")));
     }
 }
