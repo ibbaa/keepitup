@@ -11,7 +11,9 @@ public class SettingsInput {
     public enum Type {
         ADDRESS,
         PORT,
-        INTERVAL
+        INTERVAL,
+        CONNECTIONTIMEOUT,
+        READTIMEOUT
     }
 
     private final Type type;
