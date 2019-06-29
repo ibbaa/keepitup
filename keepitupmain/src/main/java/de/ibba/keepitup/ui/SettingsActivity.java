@@ -41,12 +41,15 @@ public class SettingsActivity extends AppCompatActivity {
     private TextView addressText;
     private TextView portText;
     private TextView intervalText;
+    private TextView intervalMinutesText;
     private Switch onlyWifiSwitch;
     private TextView onlyWifiOnOffText;
     private Switch notificationSwitch;
     private TextView notificationOnOffText;
     private TextView connectionTimeoutText;
+    private TextView connectionTimeoutSecondsText;
     private TextView readTimeoutText;
+    private TextView readTimeoutSecondsText;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -148,6 +151,7 @@ public class SettingsActivity extends AppCompatActivity {
         Log.d(SettingsActivity.class.getName(), "prepareIntervalField");
         PreferenceManager preferenceManager = new PreferenceManager(this);
         intervalText = findViewById(R.id.textview_settings_activity_interval);
+        intervalMinutesText = findViewById(R.id.textview_settings_activity_interval_minutes);
         setInterval(String.valueOf(preferenceManager.getPreferenceInterval()));
         CardView intervalCardView = findViewById(R.id.cardview_settings_activity_interval);
         intervalCardView.setOnClickListener(this::showIntervalInputDialog);
@@ -199,6 +203,7 @@ public class SettingsActivity extends AppCompatActivity {
         Log.d(SettingsActivity.class.getName(), "prepareIntervalField");
         PreferenceManager preferenceManager = new PreferenceManager(this);
         connectionTimeoutText = findViewById(R.id.textview_settings_activity_connection_timeout);
+        connectionTimeoutSecondsText = findViewById(R.id.textview_settings_activity_connection_timeout_seconds);
         setConnectionTimeout(String.valueOf(preferenceManager.getPreferenceConnectionTimeout()));
         CardView connectionTimeoutCardView = findViewById(R.id.cardview_settings_activity_connection_timeout);
         connectionTimeoutCardView.setOnClickListener(this::showConnectionTimeoutInputDialog);
@@ -208,6 +213,7 @@ public class SettingsActivity extends AppCompatActivity {
         Log.d(SettingsActivity.class.getName(), "prepareReadTimeoutField");
         PreferenceManager preferenceManager = new PreferenceManager(this);
         readTimeoutText = findViewById(R.id.textview_settings_activity_read_timeout);
+        readTimeoutSecondsText = findViewById(R.id.textview_settings_activity_read_timeout_seconds);
         setReadTimeout(String.valueOf(preferenceManager.getPreferenceReadTimeout()));
         CardView readTimeoutCardView = findViewById(R.id.cardview_settings_activity_read_timeout);
         readTimeoutCardView.setOnClickListener(this::showReadTimeoutInputDialog);
@@ -235,6 +241,10 @@ public class SettingsActivity extends AppCompatActivity {
 
     private void setInterval(String interval) {
         intervalText.setText(StringUtil.notNull(interval));
+        if (NumberUtil.isValidIntValue(interval)) {
+            int value = NumberUtil.getIntValue(interval, getResources().getInteger(R.integer.task_interval_default));
+            intervalMinutesText.setText(value == 1 ? getResources().getString(R.string.string_minute) : getResources().getString(R.string.string_minutes));
+        }
     }
 
     private String getConnectionTimeout() {
@@ -243,6 +253,10 @@ public class SettingsActivity extends AppCompatActivity {
 
     private void setConnectionTimeout(String connectionTimeout) {
         connectionTimeoutText.setText(StringUtil.notNull(connectionTimeout));
+        if (NumberUtil.isValidIntValue(connectionTimeout)) {
+            int value = NumberUtil.getIntValue(connectionTimeout, getResources().getInteger(R.integer.socket_connection_timeout_default));
+            connectionTimeoutSecondsText.setText(value == 1 ? getResources().getString(R.string.string_second) : getResources().getString(R.string.string_seconds));
+        }
     }
 
     private String getReadTimeout() {
@@ -251,6 +265,10 @@ public class SettingsActivity extends AppCompatActivity {
 
     private void setReadTimeout(String readTimeout) {
         readTimeoutText.setText(StringUtil.notNull(readTimeout));
+        if (NumberUtil.isValidIntValue(readTimeout)) {
+            int value = NumberUtil.getIntValue(readTimeout, getResources().getInteger(R.integer.socket_read_timeout_default));
+            readTimeoutSecondsText.setText(value == 1 ? getResources().getString(R.string.string_second) : getResources().getString(R.string.string_seconds));
+        }
     }
 
     private void showAddressInputDialog(View view) {

@@ -169,12 +169,31 @@
                         android:textStyle="bold"
                         android:text="@string/label_settings_activity_interval" />
 
-                    <TextView
-                        android:id="@+id/textview_settings_activity_interval"
-                        android:layout_width="wrap_content"
+                    <LinearLayout
+                        android:id="@+id/linearlayout_settings_activity_interval_value"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:textStyle="normal"
-                        android:text="" />
+                        android:layout_margin="@dimen/settings_activity_interval_margin"
+                        android:focusable="true"
+                        android:focusableInTouchMode="true"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:id="@+id/textview_settings_activity_interval"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textStyle="normal"
+                            android:text="" />
+
+                        <TextView
+                            android:id="@+id/textview_settings_activity_interval_minutes"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="@dimen/settings_activity_interval_minutes_margin"
+                            android:textStyle="normal"
+                            android:text="" />
+
+                    </LinearLayout>
 
                 </LinearLayout>
 
@@ -326,12 +345,31 @@
                         android:textStyle="bold"
                         android:text="@string/label_settings_activity_connection_timeout" />
 
-                    <TextView
-                        android:id="@+id/textview_settings_activity_connection_timeout"
-                        android:layout_width="wrap_content"
+                    <LinearLayout
+                        android:id="@+id/linearlayout_settings_activity_connection_timeout_value"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:textStyle="normal"
-                        android:text="" />
+                        android:layout_margin="@dimen/settings_activity_connection_timeout_margin"
+                        android:focusable="true"
+                        android:focusableInTouchMode="true"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:id="@+id/textview_settings_activity_connection_timeout"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textStyle="normal"
+                            android:text="" />
+
+                        <TextView
+                            android:id="@+id/textview_settings_activity_connection_timeout_seconds"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="@dimen/settings_activity_connection_timeout_seconds_margin"
+                            android:textStyle="normal"
+                            android:text="" />
+
+                    </LinearLayout>
 
                 </LinearLayout>
 
@@ -361,12 +399,31 @@
                         android:textStyle="bold"
                         android:text="@string/label_settings_activity_read_timeout" />
 
-                    <TextView
-                        android:id="@+id/textview_settings_activity_read_timeout"
-                        android:layout_width="wrap_content"
+                    <LinearLayout
+                        android:id="@+id/linearlayout_settings_activity_read_timeout_value"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:textStyle="normal"
-                        android:text="" />
+                        android:layout_margin="@dimen/settings_activity_read_timeout_margin"
+                        android:focusable="true"
+                        android:focusableInTouchMode="true"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:id="@+id/textview_settings_activity_read_timeout"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textStyle="normal"
+                            android:text="" />
+
+                        <TextView
+                            android:id="@+id/textview_settings_activity_read_timeout_seconds"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="@dimen/settings_activity_read_timeout_seconds_margin"
+                            android:textStyle="normal"
+                            android:text="" />
+
+                    </LinearLayout>
 
                 </LinearLayout>
 
