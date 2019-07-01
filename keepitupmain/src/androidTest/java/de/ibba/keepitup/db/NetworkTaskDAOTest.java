@@ -24,6 +24,7 @@ import static org.junit.Assert.assertTrue;
 @RunWith(AndroidJUnit4.class)
 public class NetworkTaskDAOTest {
 
+
     private NetworkTaskDAO networkTaskDAO;
 
     @Before
