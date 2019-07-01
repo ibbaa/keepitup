@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <integer name="ui_sync_refresh_interval">5</integer>
+    <integer name="scheduler_id_retry_count">10000000</integer>
     <string name="socket_connection_timeout_key">socket_connection_timeout_key</string>
     <string name="socket_read_timeout_key">socket_read_timeout_key</string>
     <integer name="socket_connection_timeout_default">15</integer>
