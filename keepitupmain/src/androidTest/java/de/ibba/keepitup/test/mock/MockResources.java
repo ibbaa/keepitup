@@ -32,6 +32,10 @@ public class MockResources extends Resources {
     private final Resources targetResources;
     private final Map<String, Integer> testStringResources;
     private final Map<Integer, String> targetStringResources;
+    private final Map<String, Integer> testIntegerResources;
+    private final Map<Integer, String> targetIntegerResources;
+    private final Map<String, Integer> testBooleanResources;
+    private final Map<Integer, String> targetBooleanResources;
 
     public MockResources(AssetManager assetManager, Resources testResources, Resources targetResources) {
         super(assetManager, null, null);
@@ -39,11 +43,19 @@ public class MockResources extends Resources {
         this.targetResources = targetResources;
         testStringResources = new HashMap<>();
         targetStringResources = new HashMap<>();
-        parseStringResources(de.ibba.keepitup.test.R.string.class, (String name, Integer value) -> testStringResources.put(name, value));
-        parseStringResources(de.ibba.keepitup.R.string.class, (String name, Integer value) -> targetStringResources.put(value, name));
+        testIntegerResources = new HashMap<>();
+        targetIntegerResources = new HashMap<>();
+        testBooleanResources = new HashMap<>();
+        targetBooleanResources = new HashMap<>();
+        parseResources(de.ibba.keepitup.test.R.string.class, (String name, Integer value) -> testStringResources.put(name, value));
+        parseResources(de.ibba.keepitup.R.string.class, (String name, Integer value) -> targetStringResources.put(value, name));
+        parseResources(de.ibba.keepitup.test.R.integer.class, (String name, Integer value) -> testIntegerResources.put(name, value));
+        parseResources(de.ibba.keepitup.R.integer.class, (String name, Integer value) -> targetIntegerResources.put(value, name));
+        parseResources(de.ibba.keepitup.test.R.bool.class, (String name, Integer value) -> testBooleanResources.put(name, value));
+        parseResources(de.ibba.keepitup.R.bool.class, (String name, Integer value) -> targetBooleanResources.put(value, name));
     }
 
-    private void parseStringResources(Class resources, BiConsumer<String, Integer> consumer) {
+    private void parseResources(Class resources, BiConsumer<String, Integer> consumer) {
         try {
             Field[] fields = resources.getDeclaredFields();
             for (Field currentField : fields) {
@@ -208,11 +220,21 @@ public class MockResources extends Resources {
 
     @Override
     public boolean getBoolean(int id) throws NotFoundException {
+        String resourceName = targetBooleanResources.get(id);
+        Integer testId = testBooleanResources.get(resourceName);
+        if (testId != null) {
+            return testResources.getBoolean(testId);
+        }
         return targetResources.getBoolean(id);
     }
 
     @Override
     public int getInteger(int id) throws NotFoundException {
+        String resourceName = targetIntegerResources.get(id);
+        Integer testId = testIntegerResources.get(resourceName);
+        if (testId != null) {
+            return testResources.getInteger(testId);
+        }
         return targetResources.getInteger(id);
     }
 
