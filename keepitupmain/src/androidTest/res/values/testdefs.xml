@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="test_string">abc</string>
+    <integer name="test_integer">1</integer>
+    <bool name="test_bool">true</bool>
+</resources>

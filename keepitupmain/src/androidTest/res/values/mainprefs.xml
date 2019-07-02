@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <integer name="scheduler_id_retry_count">100</integer>
+</resources>

@@ -9,8 +9,12 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import de.ibba.keepitup.model.AccessType;
+import de.ibba.keepitup.model.NetworkTask;
 import de.ibba.keepitup.test.mock.TestRegistry;
+import de.ibba.keepitup.test.mock.TestSchedulerIdGenerator;
 
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertTrue;
 
@@ -42,5 +46,29 @@ public class SchedulerIdGeneratorTest {
         assertTrue(schedulerId1.isValid());
         assertTrue(schedulerId2.isValid());
         assertNotEquals(schedulerId1.getId(), schedulerId2.getId());
+    }
+
+    @Test
+    public void testCreateUniqueSchedulerIdCounterExpired() {
+        NetworkTask task = getNetworkTask();
+        task = networkTaskDAO.insertNetworkTask(task);
+        TestSchedulerIdGenerator idGenerator = new TestSchedulerIdGenerator(TestRegistry.getContext(), task.getSchedulerId());
+        SchedulerIdGenerator.SchedulerId schedulerId = idGenerator.createUniqueSchedulerId(db);
+        assertFalse(schedulerId.isValid());
+    }
+
+    private NetworkTask getNetworkTask() {
+        NetworkTask task = new NetworkTask();
+        task.setId(0);
+        task.setIndex(1);
+        task.setSchedulerId(0);
+        task.setAddress("127.0.0.1");
+        task.setPort(80);
+        task.setAccessType(AccessType.PING);
+        task.setInterval(15);
+        task.setOnlyWifi(false);
+        task.setNotification(true);
+        task.setRunning(true);
+        return task;
     }
 }
