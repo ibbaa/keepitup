@@ -3,6 +3,8 @@ package de.ibba.keepitup.resources;
 import android.content.Context;
 import android.util.Log;
 
+import de.ibba.keepitup.notification.INotificatioManager;
+import de.ibba.keepitup.notification.SystemNotificationManager;
 import de.ibba.keepitup.service.IAlarmManager;
 import de.ibba.keepitup.service.SystemAlarmManager;
 import de.ibba.keepitup.ui.sync.IHandler;
@@ -15,6 +17,12 @@ public class SystemServiceFactory implements ServiceFactory {
     public IAlarmManager createAlarmManager(Context context) {
         Log.d(SystemServiceFactory.class.getName(), "createAlarmManager");
         return new SystemAlarmManager(context);
+    }
+
+    @Override
+    public INotificatioManager createNotificationManager(Context context) {
+        Log.d(SystemServiceFactory.class.getName(), "createNotificationManager");
+        return new SystemNotificationManager(context);
     }
 
     @Override

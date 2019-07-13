@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="notification_channel_id">KEEPITUP_NOTIFICATION_CHANNEL</string>
+    <string name="notification_channel_name">Keep it up notifications</string>
+    <string name="notification_channel_description">Keep it up notifications</string>
+    <string name="notification_title">Keep it up notification</string>
+    <string name="notification_text">Execution of network task %d for %s on %s failed</string>
+</resources>
