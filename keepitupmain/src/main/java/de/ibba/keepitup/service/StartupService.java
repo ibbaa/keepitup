@@ -5,6 +5,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
 
+import de.ibba.keepitup.notification.NotificationHandler;
+
 public class StartupService extends BroadcastReceiver {
 
     @Override
@@ -20,6 +22,7 @@ public class StartupService extends BroadcastReceiver {
     public void startup(Context context) {
         try {
             Log.d(StartupService.class.getName(), "Starting application.");
+            new NotificationHandler(context);
             NetworkTaskServiceScheduler scheduler = new NetworkTaskServiceScheduler(context);
             scheduler.startup();
         } catch (Exception exc) {

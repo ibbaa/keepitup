@@ -3,6 +3,7 @@ package de.ibba.keepitup.test.mock;
 import android.content.Context;
 import android.util.Log;
 
+import de.ibba.keepitup.notification.INotificatioManager;
 import de.ibba.keepitup.resources.ServiceFactory;
 import de.ibba.keepitup.service.IAlarmManager;
 import de.ibba.keepitup.ui.sync.IHandler;
@@ -14,6 +15,12 @@ public class TestServiceFactory implements ServiceFactory {
     public IAlarmManager createAlarmManager(Context context) {
         Log.d(TestServiceFactory.class.getName(), "createAlarmManager");
         return new MockAlarmManager();
+    }
+
+    @Override
+    public INotificatioManager createNotificationManager(Context context) {
+        Log.d(TestServiceFactory.class.getName(), "createNotificatioManager");
+        return new MockNotificationManager();
     }
 
     @Override
