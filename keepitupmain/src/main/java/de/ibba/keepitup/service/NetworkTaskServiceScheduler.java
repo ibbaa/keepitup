@@ -103,15 +103,15 @@ public class NetworkTaskServiceScheduler {
     }
 
     private boolean hasPendingAlarm(NetworkTask networkTask) {
-        Intent intent = new Intent(context, NetworkTaskBroadcastReceiver.class);
+        Intent intent = new Intent(getContext(), NetworkTaskBroadcastReceiver.class);
         intent.putExtras(networkTask.toBundle());
-        return PendingIntent.getBroadcast(context, networkTask.getSchedulerId(), intent, PendingIntent.FLAG_NO_CREATE) != null;
+        return PendingIntent.getBroadcast(getContext(), networkTask.getSchedulerId(), intent, PendingIntent.FLAG_NO_CREATE) != null;
     }
 
     private PendingIntent getPendingIntent(NetworkTask networkTask) {
-        Intent intent = new Intent(context, NetworkTaskBroadcastReceiver.class);
+        Intent intent = new Intent(getContext(), NetworkTaskBroadcastReceiver.class);
         intent.putExtras(networkTask.toBundle());
-        return PendingIntent.getBroadcast(context, networkTask.getSchedulerId(), intent, 0);
+        return PendingIntent.getBroadcast(getContext(), networkTask.getSchedulerId(), intent, 0);
     }
 
     private long getIntervalMilliseconds(NetworkTask networkTask) {
@@ -119,8 +119,8 @@ public class NetworkTaskServiceScheduler {
     }
 
     private IAlarmManager createAlarmManager() {
-        ServiceFactoryContributor factoryContributor = new ServiceFactoryContributor(context);
-        return factoryContributor.createServiceFactory().createAlarmManager(context);
+        ServiceFactoryContributor factoryContributor = new ServiceFactoryContributor(getContext());
+        return factoryContributor.createServiceFactory().createAlarmManager(getContext());
     }
 
     private Context getContext() {
