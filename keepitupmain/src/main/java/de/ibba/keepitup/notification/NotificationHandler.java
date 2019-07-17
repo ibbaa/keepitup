@@ -56,8 +56,9 @@ public class NotificationHandler {
         Log.d(NotificationHandler.class.getName(), "Building notification for network task " + task + " and timestamp " + timestamp);
         String title = getResources().getString(R.string.notification_title);
         String timestampText = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.MEDIUM).format(new Date(timestamp));
-        String addressText = String.format(getResources().getString(R.string.text_list_item_network_task_address), new EnumMapping(getContext()).getAccessTypeAddressText(task.getAccessType()));
-        String text = String.format(getResources().getString(R.string.notification_text), task.getIndex() + 1, addressText, timestampText);
+        String addressText = String.format(getResources().getString(R.string.notification_address), new EnumMapping(getContext()).getAccessTypeAddressText(task.getAccessType()));
+        String formattedAddressText = String.format(addressText, task.getAddress(), task.getPort());
+        String text = String.format(getResources().getString(R.string.notification_text), task.getIndex() + 1, formattedAddressText, timestampText);
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context, getChannelId())
                 .setSmallIcon(R.drawable.icon_notification)
                 .setContentTitle(title)
