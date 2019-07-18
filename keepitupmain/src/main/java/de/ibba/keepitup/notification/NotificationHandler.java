@@ -46,6 +46,10 @@ public class NotificationHandler {
         return getResources().getString(R.string.notification_channel_id);
     }
 
+    public INotificatioManager getNotificationManager() {
+        return notificationManager;
+    }
+
     public void sendNotification(NetworkTask task, long timestamp) {
         Log.d(NotificationHandler.class.getName(), "Sending notification for network task " + task + " and timestamp " + timestamp);
         Notification notification = buildNotification(task, timestamp);
