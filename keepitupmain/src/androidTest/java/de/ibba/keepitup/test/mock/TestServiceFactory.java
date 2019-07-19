@@ -1,6 +1,7 @@
 package de.ibba.keepitup.test.mock;
 
 import android.content.Context;
+import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
 import de.ibba.keepitup.notification.INotificatioManager;
@@ -21,6 +22,12 @@ public class TestServiceFactory implements ServiceFactory {
     public INotificatioManager createNotificationManager(Context context) {
         Log.d(TestServiceFactory.class.getName(), "createNotificatioManager");
         return new MockNotificationManager();
+    }
+
+    @Override
+    public NotificationCompat.Builder createNotificationBuilder(Context context, String channelId) {
+        Log.d(TestServiceFactory.class.getName(), "createNotificationBuilder");
+        return new MockNotificationBuilder(context, channelId);
     }
 
     @Override

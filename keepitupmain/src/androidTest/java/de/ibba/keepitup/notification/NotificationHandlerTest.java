@@ -1,7 +1,9 @@
 package de.ibba.keepitup.notification;
 
+import android.support.test.InstrumentationRegistry;
 import android.support.test.filters.MediumTest;
 import android.support.test.runner.AndroidJUnit4;
+import android.support.v4.app.NotificationCompat;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -9,9 +11,12 @@ import org.junit.runner.RunWith;
 
 import java.util.Calendar;
 import java.util.GregorianCalendar;
+import java.util.Locale;
 
+import de.ibba.keepitup.R;
 import de.ibba.keepitup.model.AccessType;
 import de.ibba.keepitup.model.NetworkTask;
+import de.ibba.keepitup.test.mock.MockNotificationBuilder;
 import de.ibba.keepitup.test.mock.MockNotificationManager;
 import de.ibba.keepitup.test.mock.TestRegistry;
 
@@ -27,21 +32,52 @@ public class NotificationHandlerTest {
 
     @Before
     public void beforeEachTestMethod() {
+        setLocale(Locale.US);
         notificationHandler = new NotificationHandler(TestRegistry.getContext());
         notificationManager = (MockNotificationManager) notificationHandler.getNotificationManager();
     }
 
+    public void setLocale(Locale locale) {
+        InstrumentationRegistry.getTargetContext().getResources().getConfiguration().setLocale(locale);
+    }
+
     @Test
     public void testSendNotification() {
-        NetworkTask networkTask = getNetworkTask();
+        NetworkTask networkTask = getNetworkTask1();
         long timestamp = new GregorianCalendar(1980, Calendar.MARCH, 17).getTime().getTime();
         notificationHandler.sendNotification(networkTask, timestamp);
         assertTrue(notificationManager.wasNotifyCalled());
         MockNotificationManager.NotifyCall notifyCall = notificationManager.getNotifyCalls().get(0);
         assertEquals(networkTask.getSchedulerId(), notifyCall.getId());
+        assertEquals("KEEPITUP_NOTIFICATION_CHANNEL", notifyCall.getNotification().getChannelId());
+        MockNotificationBuilder notificationBuilder = (MockNotificationBuilder) notificationHandler.getNotificationBuilder();
+        assertEquals(R.drawable.icon_notification, notificationBuilder.getSmallIcon());
+        assertEquals("Keep it up notification", notificationBuilder.getContentTitle());
+        assertEquals("Execution of network task 2 failed. Host: 127.0.0.1. Timestamp: Mar 17, 1980 12:00:00 AM", notificationBuilder.getContentText());
+        assertTrue(notificationBuilder.getStyle() instanceof NotificationCompat.BigTextStyle);
+        assertEquals(NotificationCompat.PRIORITY_DEFAULT, notificationBuilder.getPriority());
     }
 
-    private NetworkTask getNetworkTask() {
+    @Test
+    public void testNotificationText() {
+        NetworkTask networkTask = getNetworkTask1();
+        long timestamp = new GregorianCalendar(1995, Calendar.DECEMBER, 15, 13, 59, 51).getTime().getTime();
+        notificationHandler.sendNotification(networkTask, timestamp);
+        MockNotificationBuilder notificationBuilder = (MockNotificationBuilder) notificationHandler.getNotificationBuilder();
+        assertEquals("Execution of network task 2 failed. Host: 127.0.0.1. Timestamp: Dec 15, 1995 1:59:51 PM", notificationBuilder.getContentText());
+        networkTask = getNetworkTask2();
+        timestamp = new GregorianCalendar(2004, Calendar.FEBRUARY, 1, 5, 15, 51).getTime().getTime();
+        notificationHandler.sendNotification(networkTask, timestamp);
+        notificationBuilder = (MockNotificationBuilder) notificationHandler.getNotificationBuilder();
+        assertEquals("Execution of network task 6 failed. Host: host.com Port: 23. Timestamp: Feb 1, 2004 5:15:51 AM", notificationBuilder.getContentText());
+        networkTask = getNetworkTask3();
+        timestamp = new GregorianCalendar(2016, Calendar.JULY, 25, 15, 1, 1).getTime().getTime();
+        notificationHandler.sendNotification(networkTask, timestamp);
+        notificationBuilder = (MockNotificationBuilder) notificationHandler.getNotificationBuilder();
+        assertEquals("Execution of network task 11 failed. URL: http://www.test.com. Timestamp: Jul 25, 2016 3:01:01 PM", notificationBuilder.getContentText());
+    }
+
+    private NetworkTask getNetworkTask1() {
         NetworkTask task = new NetworkTask();
         task.setId(1);
         task.setIndex(1);
@@ -49,6 +85,34 @@ public class NotificationHandlerTest {
         task.setAddress("127.0.0.1");
         task.setPort(80);
         task.setAccessType(AccessType.PING);
+        task.setInterval(20);
+        task.setNotification(true);
+        task.setRunning(false);
+        return task;
+    }
+
+    private NetworkTask getNetworkTask2() {
+        NetworkTask task = new NetworkTask();
+        task.setId(1);
+        task.setIndex(5);
+        task.setSchedulerId(1);
+        task.setAddress("host.com");
+        task.setPort(23);
+        task.setAccessType(AccessType.CONNECT);
+        task.setInterval(20);
+        task.setNotification(true);
+        task.setRunning(false);
+        return task;
+    }
+
+    private NetworkTask getNetworkTask3() {
+        NetworkTask task = new NetworkTask();
+        task.setId(1);
+        task.setIndex(10);
+        task.setSchedulerId(1);
+        task.setAddress("http://www.test.com");
+        task.setPort(456);
+        task.setAccessType(AccessType.DOWNLOAD);
         task.setInterval(20);
         task.setNotification(true);
         task.setRunning(false);

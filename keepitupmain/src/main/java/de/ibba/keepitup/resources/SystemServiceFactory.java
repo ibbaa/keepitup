@@ -1,6 +1,7 @@
 package de.ibba.keepitup.resources;
 
 import android.content.Context;
+import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
 import de.ibba.keepitup.notification.INotificatioManager;
@@ -23,6 +24,12 @@ public class SystemServiceFactory implements ServiceFactory {
     public INotificatioManager createNotificationManager(Context context) {
         Log.d(SystemServiceFactory.class.getName(), "createNotificationManager");
         return new SystemNotificationManager(context);
+    }
+
+    @Override
+    public NotificationCompat.Builder createNotificationBuilder(Context context, String channelId) {
+        Log.d(SystemServiceFactory.class.getName(), "createNotificationBuilder");
+        return new NotificationCompat.Builder(context, channelId);
     }
 
     @Override
