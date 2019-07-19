@@ -20,6 +20,7 @@ public class NotificationHandler {
 
     private final Context context;
     private final INotificatioManager notificationManager;
+    private NotificationCompat.Builder notificationBuilder;
 
     public NotificationHandler(Context context) {
         this.context = context;
@@ -50,6 +51,10 @@ public class NotificationHandler {
         return notificationManager;
     }
 
+    public NotificationCompat.Builder getNotificationBuilder() {
+        return notificationBuilder;
+    }
+
     public void sendNotification(NetworkTask task, long timestamp) {
         Log.d(NotificationHandler.class.getName(), "Sending notification for network task " + task + " and timestamp " + timestamp);
         Notification notification = buildNotification(task, timestamp);
@@ -63,16 +68,12 @@ public class NotificationHandler {
         String addressText = String.format(getResources().getString(R.string.notification_address), new EnumMapping(getContext()).getAccessTypeAddressText(task.getAccessType()));
         String formattedAddressText = String.format(addressText, task.getAddress(), task.getPort());
         String text = String.format(getResources().getString(R.string.notification_text), task.getIndex() + 1, formattedAddressText, timestampText);
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(context, getChannelId())
-                .setSmallIcon(R.drawable.icon_notification)
-                .setContentTitle(title)
-                .setContentText(text)
-                .setStyle(new NotificationCompat.BigTextStyle().bigText(text))
-                .setPriority(NotificationCompat.PRIORITY_DEFAULT);
+        notificationBuilder = createNotificationBuilder();
+        notificationBuilder.setSmallIcon(R.drawable.icon_notification).setContentTitle(title).setContentText(text).setStyle(new NotificationCompat.BigTextStyle().bigText(text)).setPriority(NotificationCompat.PRIORITY_DEFAULT);
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
-            builder.setVibrate(getVibrationPattern());
+            notificationBuilder.setVibrate(getVibrationPattern());
         }
-        return builder.build();
+        return notificationBuilder.build();
     }
 
     private long[] getVibrationPattern() {
@@ -82,6 +83,11 @@ public class NotificationHandler {
     private INotificatioManager createNotificationManager() {
         ServiceFactoryContributor factoryContributor = new ServiceFactoryContributor(getContext());
         return factoryContributor.createServiceFactory().createNotificationManager(getContext());
+    }
+
+    private NotificationCompat.Builder createNotificationBuilder() {
+        ServiceFactoryContributor factoryContributor = new ServiceFactoryContributor(getContext());
+        return factoryContributor.createServiceFactory().createNotificationBuilder(getContext(), getChannelId());
     }
 
     private Context getContext() {
