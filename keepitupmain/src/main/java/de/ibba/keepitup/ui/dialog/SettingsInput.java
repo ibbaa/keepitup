@@ -12,8 +12,8 @@ public class SettingsInput {
         ADDRESS,
         PORT,
         INTERVAL,
-        CONNECTIONTIMEOUT,
-        READTIMEOUT
+        NETWORKTIMEOUT,
+        PINGCOUNT
     }
 
     private final Type type;

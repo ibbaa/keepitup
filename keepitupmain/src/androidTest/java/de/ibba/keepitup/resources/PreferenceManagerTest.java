@@ -153,26 +153,26 @@ public class PreferenceManagerTest {
     }
 
     @Test
-    public void testGetSetRemoveConnectionTimeout() {
-        assertEquals(15, preferenceManager.getPreferenceConnectionTimeout());
-        preferenceManager.setPreferenceConnectionTimeout(10);
-        assertEquals(10, preferenceManager.getPreferenceConnectionTimeout());
+    public void testGetSetRemoveNetworkTimeout() {
+        assertEquals(15, preferenceManager.getPreferenceNetworkTimeout());
+        preferenceManager.setPreferenceNetworkTimeout(10);
+        assertEquals(10, preferenceManager.getPreferenceNetworkTimeout());
         preferenceManager.removeAllPreferences();
-        assertEquals(15, preferenceManager.getPreferenceConnectionTimeout());
-        preferenceManager.setPreferenceConnectionTimeout(2);
-        preferenceManager.removePreferenceConnectionTimeout();
-        assertEquals(15, preferenceManager.getPreferenceConnectionTimeout());
+        assertEquals(15, preferenceManager.getPreferenceNetworkTimeout());
+        preferenceManager.setPreferenceNetworkTimeout(2);
+        preferenceManager.removePreferenceNetworkTimeout();
+        assertEquals(15, preferenceManager.getPreferenceNetworkTimeout());
     }
 
     @Test
-    public void testGetSetRemoveReadTimeout() {
-        assertEquals(10, preferenceManager.getPreferenceReadTimeout());
-        preferenceManager.setPreferenceReadTimeout(15);
-        assertEquals(15, preferenceManager.getPreferenceReadTimeout());
+    public void testGetSetRemovePingCount() {
+        assertEquals(3, preferenceManager.getPreferencePingCount());
+        preferenceManager.setPreferencePingCount(15);
+        assertEquals(15, preferenceManager.getPreferencePingCount());
         preferenceManager.removeAllPreferences();
-        assertEquals(10, preferenceManager.getPreferenceReadTimeout());
-        preferenceManager.setPreferenceReadTimeout(2);
-        preferenceManager.removePreferenceReadTimeout();
-        assertEquals(10, preferenceManager.getPreferenceReadTimeout());
+        assertEquals(3, preferenceManager.getPreferencePingCount());
+        preferenceManager.setPreferencePingCount(2);
+        preferenceManager.removePreferencePingCount();
+        assertEquals(3, preferenceManager.getPreferencePingCount());
     }
 }

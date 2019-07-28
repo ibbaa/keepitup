@@ -176,34 +176,34 @@ public class PreferenceManager {
         removePreferenceValue(getResources().getString(R.string.task_notification_key));
     }
 
-    public int getPreferenceConnectionTimeout() {
-        Log.d(PreferenceManager.class.getName(), "getPreferenceConnectionTimeout");
-        return getPreferenceInt(getResources().getString(R.string.socket_connection_timeout_key), getResources().getInteger(R.integer.socket_connection_timeout_default));
+    public int getPreferenceNetworkTimeout() {
+        Log.d(PreferenceManager.class.getName(), "getPreferenceNetworkTimeout");
+        return getPreferenceInt(getResources().getString(R.string.network_timeout_key), getResources().getInteger(R.integer.network_timeout_default));
     }
 
-    public void setPreferenceConnectionTimeout(int timeout) {
-        Log.d(PreferenceManager.class.getName(), "setPreferenceConnectionTimeout, timeout is " + timeout);
-        setPreferenceInt(getResources().getString(R.string.socket_connection_timeout_key), timeout);
+    public void setPreferenceNetworkTimeout(int timeout) {
+        Log.d(PreferenceManager.class.getName(), "setPreferenceNetworkTimeout, timeout is " + timeout);
+        setPreferenceInt(getResources().getString(R.string.network_timeout_key), timeout);
     }
 
-    public void removePreferenceConnectionTimeout() {
-        Log.d(PreferenceManager.class.getName(), "removePreferenceInterval");
-        removePreferenceValue(getResources().getString(R.string.socket_connection_timeout_key));
+    public void removePreferenceNetworkTimeout() {
+        Log.d(PreferenceManager.class.getName(), "removePreferenceNetworkTimeout");
+        removePreferenceValue(getResources().getString(R.string.network_timeout_key));
     }
 
-    public int getPreferenceReadTimeout() {
-        Log.d(PreferenceManager.class.getName(), "getPreferenceReadTimeout");
-        return getPreferenceInt(getResources().getString(R.string.socket_read_timeout_key), getResources().getInteger(R.integer.socket_read_timeout_default));
+    public int getPreferencePingCount() {
+        Log.d(PreferenceManager.class.getName(), "getPreferencePingCount");
+        return getPreferenceInt(getResources().getString(R.string.ping_count_key), getResources().getInteger(R.integer.ping_count_default));
     }
 
-    public void setPreferenceReadTimeout(int timeout) {
-        Log.d(PreferenceManager.class.getName(), "setPreferenceReadTimeout, timeout is " + timeout);
-        setPreferenceInt(getResources().getString(R.string.socket_read_timeout_key), timeout);
+    public void setPreferencePingCount(int timeout) {
+        Log.d(PreferenceManager.class.getName(), "setPreferencePingCount, timeout is " + timeout);
+        setPreferenceInt(getResources().getString(R.string.ping_count_key), timeout);
     }
 
-    public void removePreferenceReadTimeout() {
-        Log.d(PreferenceManager.class.getName(), "removePreferenceReadTimeout");
-        removePreferenceValue(getResources().getString(R.string.socket_read_timeout_key));
+    public void removePreferencePingCount() {
+        Log.d(PreferenceManager.class.getName(), "removePreferencePingCount");
+        removePreferenceValue(getResources().getString(R.string.ping_count_key));
     }
 
     private SharedPreferences getDefaultSharedPreferences() {
