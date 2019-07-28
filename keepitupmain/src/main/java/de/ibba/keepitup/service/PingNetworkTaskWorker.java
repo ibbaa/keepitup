@@ -4,7 +4,9 @@ import android.content.Context;
 import android.os.PowerManager;
 import android.util.Log;
 
-import de.ibba.keepitup.R;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+
 import de.ibba.keepitup.model.LogEntry;
 import de.ibba.keepitup.model.NetworkTask;
 
@@ -21,7 +23,24 @@ public class PingNetworkTaskWorker extends NetworkTaskWorker {
         logEntry.setNetworkTaskId(networkTask.getId());
         logEntry.setSuccess(true);
         logEntry.setTimestamp(System.currentTimeMillis());
-        logEntry.setMessage(getResources().getString(R.string.string_successful));
+
+        try {
+            Runtime runtime = Runtime.getRuntime();
+            String command = String.format("/system/bin/ping -c 3 -W 10 %s", networkTask.getAddress());
+            Process process = runtime.exec(command);
+            BufferedReader stdInput = new BufferedReader(new InputStreamReader(process.getInputStream()));
+            String s;
+            String res = "";
+            while ((s = stdInput.readLine()) != null) {
+                res += s + "\n";
+            }
+            logEntry.setMessage(res);
+            int ret = process.waitFor();
+            process.destroy();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
         return logEntry;
     }
 }
