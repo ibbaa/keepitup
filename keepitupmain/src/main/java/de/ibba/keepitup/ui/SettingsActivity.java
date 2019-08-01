@@ -28,7 +28,6 @@ import de.ibba.keepitup.ui.dialog.SettingsInputDialog;
 import de.ibba.keepitup.ui.mapping.EnumMapping;
 import de.ibba.keepitup.ui.validation.HostFieldValidator;
 import de.ibba.keepitup.ui.validation.IntervalFieldValidator;
-import de.ibba.keepitup.ui.validation.NetworkTimeoutFieldValidator;
 import de.ibba.keepitup.ui.validation.PingCountFieldValidator;
 import de.ibba.keepitup.ui.validation.PortFieldValidator;
 import de.ibba.keepitup.ui.validation.URLFieldValidator;
@@ -46,8 +45,6 @@ public class SettingsActivity extends AppCompatActivity {
     private TextView onlyWifiOnOffText;
     private Switch notificationSwitch;
     private TextView notificationOnOffText;
-    private TextView networkTimeoutText;
-    private TextView networkTimeoutSecondsText;
     private TextView pingCountText;
 
     @Override
@@ -61,7 +58,6 @@ public class SettingsActivity extends AppCompatActivity {
         prepareIntervalField();
         prepareOnlyWifiSwitch();
         prepareNotificationSwitch();
-        prepareNetworkTimeoutField();
         preparePingCountField();
     }
 
@@ -83,7 +79,6 @@ public class SettingsActivity extends AppCompatActivity {
             preferenceManager.removePreferenceInterval();
             preferenceManager.removePreferenceOnlyWifi();
             preferenceManager.removePreferenceNotification();
-            preferenceManager.removePreferenceNetworkTimeout();
             preferenceManager.removePreferencePingCount();
             recreate();
             return true;
@@ -198,16 +193,6 @@ public class SettingsActivity extends AppCompatActivity {
         prepareNotificationOnOffText();
     }
 
-    private void prepareNetworkTimeoutField() {
-        Log.d(SettingsActivity.class.getName(), "prepareIntervalField");
-        PreferenceManager preferenceManager = new PreferenceManager(this);
-        networkTimeoutText = findViewById(R.id.textview_settings_activity_network_timeout);
-        networkTimeoutSecondsText = findViewById(R.id.textview_settings_activity_network_timeout_seconds);
-        setNetworkTimeout(String.valueOf(preferenceManager.getPreferenceNetworkTimeout()));
-        CardView networkTimeoutCardView = findViewById(R.id.cardview_settings_activity_network_timeout);
-        networkTimeoutCardView.setOnClickListener(this::showNetworkTimeoutInputDialog);
-    }
-
     private void preparePingCountField() {
         Log.d(SettingsActivity.class.getName(), "preparePingCountField");
         PreferenceManager preferenceManager = new PreferenceManager(this);
@@ -245,18 +230,6 @@ public class SettingsActivity extends AppCompatActivity {
         }
     }
 
-    private String getNetworkTimeout() {
-        return StringUtil.notNull(networkTimeoutText.getText());
-    }
-
-    private void setNetworkTimeout(String networkTimeout) {
-        networkTimeoutText.setText(StringUtil.notNull(networkTimeout));
-        if (NumberUtil.isValidIntValue(networkTimeout)) {
-            int value = NumberUtil.getIntValue(networkTimeout, getResources().getInteger(R.integer.network_timeout_default));
-            networkTimeoutSecondsText.setText(value == 1 ? getResources().getString(R.string.string_second) : getResources().getString(R.string.string_seconds));
-        }
-    }
-
     private String getPingCount() {
         return StringUtil.notNull(pingCountText.getText());
     }
@@ -286,13 +259,6 @@ public class SettingsActivity extends AppCompatActivity {
         showInputDialog(input.toBundle());
     }
 
-    private void showNetworkTimeoutInputDialog(View view) {
-        Log.d(SettingsActivity.class.getName(), "showNetworkTimeoutInputDialog");
-        List<String> validators = Collections.singletonList(NetworkTimeoutFieldValidator.class.getName());
-        SettingsInput input = new SettingsInput(SettingsInput.Type.NETWORKTIMEOUT, getNetworkTimeout(), getResources().getString(R.string.label_settings_activity_network_timeout), validators);
-        showInputDialog(input.toBundle());
-    }
-
     private void showPingCountInputDialog(View view) {
         Log.d(SettingsActivity.class.getName(), "showPingCountInputDialog");
         List<String> validators = Collections.singletonList(PingCountFieldValidator.class.getName());
@@ -319,9 +285,6 @@ public class SettingsActivity extends AppCompatActivity {
         } else if (SettingsInput.Type.INTERVAL.equals(type)) {
             setInterval(inputDialog.getValue());
             preferenceManager.setPreferenceInterval(NumberUtil.getIntValue(getInterval(), getResources().getInteger(R.integer.task_interval_default)));
-        } else if (SettingsInput.Type.NETWORKTIMEOUT.equals(type)) {
-            setNetworkTimeout(inputDialog.getValue());
-            preferenceManager.setPreferenceNetworkTimeout(NumberUtil.getIntValue(getNetworkTimeout(), getResources().getInteger(R.integer.network_timeout_default)));
         } else if (SettingsInput.Type.PINGCOUNT.equals(type)) {
             setPingCount(inputDialog.getValue());
             preferenceManager.setPreferencePingCount(NumberUtil.getIntValue(getPingCount(), getResources().getInteger(R.integer.ping_count_default)));

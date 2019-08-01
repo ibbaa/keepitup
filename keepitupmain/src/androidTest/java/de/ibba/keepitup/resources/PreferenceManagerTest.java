@@ -153,18 +153,6 @@ public class PreferenceManagerTest {
     }
 
     @Test
-    public void testGetSetRemoveNetworkTimeout() {
-        assertEquals(15, preferenceManager.getPreferenceNetworkTimeout());
-        preferenceManager.setPreferenceNetworkTimeout(10);
-        assertEquals(10, preferenceManager.getPreferenceNetworkTimeout());
-        preferenceManager.removeAllPreferences();
-        assertEquals(15, preferenceManager.getPreferenceNetworkTimeout());
-        preferenceManager.setPreferenceNetworkTimeout(2);
-        preferenceManager.removePreferenceNetworkTimeout();
-        assertEquals(15, preferenceManager.getPreferenceNetworkTimeout());
-    }
-
-    @Test
     public void testGetSetRemovePingCount() {
         assertEquals(3, preferenceManager.getPreferencePingCount());
         preferenceManager.setPreferencePingCount(15);
