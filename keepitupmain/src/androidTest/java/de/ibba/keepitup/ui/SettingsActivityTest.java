@@ -50,7 +50,6 @@ public class SettingsActivityTest extends BaseUITest {
         assertEquals(15, preferenceManager.getPreferenceInterval());
         assertFalse(preferenceManager.getPreferenceOnlyWifi());
         assertFalse(preferenceManager.getPreferenceNotification());
-        assertEquals(15, preferenceManager.getPreferenceNetworkTimeout());
         assertEquals(3, preferenceManager.getPreferencePingCount());
         onView(withId(R.id.textview_settings_activity_accesstype_label)).check(matches(withText("Type")));
         onView(withId(R.id.radiogroup_settings_activity_accesstype)).check(matches(hasChildCount(3)));
@@ -68,9 +67,6 @@ public class SettingsActivityTest extends BaseUITest {
         onView(withId(R.id.textview_settings_activity_notification_label)).check(matches(withText("Notifications")));
         onView(withId(R.id.switch_settings_activity_notification)).check(matches(isNotChecked()));
         onView(withId(R.id.textview_settings_activity_notification_on_off)).check(matches(withText("no")));
-        onView(withId(R.id.textview_settings_activity_network_timeout_label)).check(matches(withText("Network timeout")));
-        onView(withId(R.id.textview_settings_activity_network_timeout)).check(matches(withText("15")));
-        onView(withId(R.id.textview_settings_activity_network_timeout_seconds)).check(matches(withText("seconds")));
         onView(withId(R.id.textview_settings_activity_ping_count_label)).check(matches(withText("Ping count")));
         onView(withId(R.id.textview_settings_activity_ping_count)).check(matches(withText("3")));
     }
@@ -93,10 +89,6 @@ public class SettingsActivityTest extends BaseUITest {
         onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
         onView(withId(R.id.switch_settings_activity_onlywifi)).perform(click());
         onView(withId(R.id.switch_settings_activity_notification)).perform(click());
-        onView(withId(R.id.textview_settings_activity_network_timeout)).perform(scrollTo());
-        onView(withId(R.id.textview_settings_activity_network_timeout)).perform(click());
-        onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("12"));
-        onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
         onView(withId(R.id.textview_settings_activity_ping_count)).perform(scrollTo());
         onView(withId(R.id.textview_settings_activity_ping_count)).perform(click());
         onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("25"));
@@ -115,8 +107,6 @@ public class SettingsActivityTest extends BaseUITest {
         onView(withId(R.id.textview_settings_activity_notification_label)).check(matches(withText("Notifications")));
         onView(withId(R.id.switch_settings_activity_notification)).check(matches(isChecked()));
         onView(withId(R.id.textview_settings_activity_notification_on_off)).check(matches(withText("yes")));
-        onView(withId(R.id.textview_settings_activity_network_timeout)).check(matches(withText("12")));
-        onView(withId(R.id.textview_settings_activity_network_timeout_seconds)).check(matches(withText("seconds")));
         onView(withId(R.id.textview_settings_activity_ping_count)).check(matches(withText("25")));
     }
 
@@ -128,10 +118,6 @@ public class SettingsActivityTest extends BaseUITest {
         onView(withId(R.id.textview_settings_activity_interval)).perform(click());
         onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("1"));
         onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
-        onView(withId(R.id.textview_settings_activity_network_timeout)).perform(scrollTo());
-        onView(withId(R.id.textview_settings_activity_network_timeout)).perform(click());
-        onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("1"));
-        onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
         onView(withId(R.id.textview_settings_activity_ping_count)).perform(scrollTo());
         onView(withId(R.id.textview_settings_activity_ping_count)).perform(click());
         onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("1"));
@@ -139,14 +125,8 @@ public class SettingsActivityTest extends BaseUITest {
         onView(withId(R.id.textview_settings_activity_interval_label)).check(matches(withText("Interval")));
         onView(withId(R.id.textview_settings_activity_interval)).check(matches(withText("1")));
         onView(withId(R.id.textview_settings_activity_interval_minutes)).check(matches(withText("minute")));
-        onView(withId(R.id.textview_settings_activity_network_timeout)).check(matches(withText("1")));
-        onView(withId(R.id.textview_settings_activity_network_timeout_seconds)).check(matches(withText("second")));
         onView(withId(R.id.textview_settings_activity_ping_count)).check(matches(withText("1")));
         onView(withId(R.id.textview_settings_activity_interval)).perform(click());
-        onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("11"));
-        onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
-        onView(withId(R.id.textview_settings_activity_network_timeout)).perform(scrollTo());
-        onView(withId(R.id.textview_settings_activity_network_timeout)).perform(click());
         onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("11"));
         onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
         onView(withId(R.id.textview_settings_activity_ping_count)).perform(scrollTo());
@@ -156,8 +136,6 @@ public class SettingsActivityTest extends BaseUITest {
         onView(withId(R.id.textview_settings_activity_interval_label)).check(matches(withText("Interval")));
         onView(withId(R.id.textview_settings_activity_interval)).check(matches(withText("11")));
         onView(withId(R.id.textview_settings_activity_interval_minutes)).check(matches(withText("minutes")));
-        onView(withId(R.id.textview_settings_activity_network_timeout)).check(matches(withText("11")));
-        onView(withId(R.id.textview_settings_activity_network_timeout_seconds)).check(matches(withText("seconds")));
         onView(withId(R.id.textview_settings_activity_ping_count)).check(matches(withText("11")));
     }
 
@@ -209,10 +187,6 @@ public class SettingsActivityTest extends BaseUITest {
         onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
         onView(withId(R.id.switch_settings_activity_onlywifi)).perform(click());
         onView(withId(R.id.switch_settings_activity_notification)).perform(click());
-        onView(withId(R.id.textview_settings_activity_network_timeout)).perform(scrollTo());
-        onView(withId(R.id.textview_settings_activity_network_timeout)).perform(click());
-        onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("2"));
-        onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
         onView(withId(R.id.textview_settings_activity_ping_count)).perform(scrollTo());
         onView(withId(R.id.textview_settings_activity_ping_count)).perform(click());
         onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("2"));
@@ -224,7 +198,6 @@ public class SettingsActivityTest extends BaseUITest {
         assertEquals(50, preferenceManager.getPreferenceInterval());
         assertTrue(preferenceManager.getPreferenceOnlyWifi());
         assertTrue(preferenceManager.getPreferenceNotification());
-        assertEquals(2, preferenceManager.getPreferenceNetworkTimeout());
         assertEquals(2, preferenceManager.getPreferencePingCount());
     }
 
@@ -242,10 +215,6 @@ public class SettingsActivityTest extends BaseUITest {
         onView(withId(R.id.textview_settings_activity_interval)).perform(click());
         onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("50"));
         onView(withId(R.id.imageview_dialog_settings_input_cancel)).perform(click());
-        onView(withId(R.id.textview_settings_activity_network_timeout)).perform(scrollTo());
-        onView(withId(R.id.textview_settings_activity_network_timeout)).perform(click());
-        onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("2"));
-        onView(withId(R.id.imageview_dialog_settings_input_cancel)).perform(click());
         onView(withId(R.id.textview_settings_activity_ping_count)).perform(scrollTo());
         onView(withId(R.id.textview_settings_activity_ping_count)).perform(click());
         onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("2"));
@@ -254,7 +223,6 @@ public class SettingsActivityTest extends BaseUITest {
         assertEquals("192.168.178.1", preferenceManager.getPreferenceAddress());
         assertEquals(22, preferenceManager.getPreferencePort());
         assertEquals(15, preferenceManager.getPreferenceInterval());
-        assertEquals(15, preferenceManager.getPreferenceNetworkTimeout());
         assertEquals(3, preferenceManager.getPreferencePingCount());
     }
 
@@ -358,40 +326,6 @@ public class SettingsActivityTest extends BaseUITest {
         onView(withId(R.id.edittext_dialog_settings_input_value)).check(matches(withTextColor(R.color.textColor)));
         onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
         onView(withId(R.id.textview_settings_activity_interval)).check(matches(withText("20")));
-    }
-
-    @Test
-    public void testNetworkTimeoutInput() {
-        launchRecyclerViewBaseActivity(rule);
-        openActionBarOverflowOrOptionsMenu(TestRegistry.getContext());
-        onView(withText("Settings")).perform(click());
-        onView(withId(R.id.textview_settings_activity_network_timeout)).perform(scrollTo());
-        onView(withId(R.id.textview_settings_activity_network_timeout)).perform(click());
-        onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("aa"));
-        onView(withId(R.id.edittext_dialog_settings_input_value)).check(matches(withTextColor(R.color.textErrorColor)));
-        onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
-        onView(allOf(withText("Network timeout"), withGridLayoutPosition(1, 0))).check(matches(isDisplayed()));
-        onView(allOf(withText("Invalid format"), withGridLayoutPosition(1, 1))).check(matches(isDisplayed()));
-        onView(withId(R.id.imageview_dialog_validator_error_ok)).perform(click());
-        onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("0"));
-        onView(withId(R.id.edittext_dialog_settings_input_value)).check(matches(withTextColor(R.color.textErrorColor)));
-        onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
-        onView(allOf(withText("Network timeout"), withGridLayoutPosition(1, 0))).check(matches(isDisplayed()));
-        onView(allOf(withText("Minimum: 1"), withGridLayoutPosition(1, 1))).check(matches(isDisplayed()));
-        onView(withId(R.id.imageview_dialog_validator_error_ok)).perform(click());
-        onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText(""));
-        onView(withId(R.id.edittext_dialog_settings_input_value)).check(matches(withTextColor(R.color.textErrorColor)));
-        onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
-        onView(allOf(withText("Network timeout"), withGridLayoutPosition(1, 0))).check(matches(isDisplayed()));
-        onView(allOf(withText("No value specified"), withGridLayoutPosition(1, 1))).check(matches(isDisplayed()));
-        onView(withId(R.id.imageview_dialog_validator_error_ok)).perform(click());
-        onView(withId(R.id.imageview_dialog_settings_input_cancel)).perform(click());
-        onView(withId(R.id.textview_settings_activity_network_timeout)).check(matches(withText("15")));
-        onView(withId(R.id.textview_settings_activity_network_timeout)).perform(click());
-        onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("21"));
-        onView(withId(R.id.edittext_dialog_settings_input_value)).check(matches(withTextColor(R.color.textColor)));
-        onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
-        onView(withId(R.id.textview_settings_activity_network_timeout)).check(matches(withText("21")));
     }
 
     @Test
