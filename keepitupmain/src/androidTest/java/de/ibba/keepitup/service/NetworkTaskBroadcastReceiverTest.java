@@ -32,7 +32,6 @@ public class NetworkTaskBroadcastReceiverTest {
         logDAO = new LogDAO(TestRegistry.getContext());
         logDAO.deleteAllLogs();
         broadcastReceiver = new NetworkTaskBroadcastReceiver();
-        broadcastReceiver.setSynchronous(true);
     }
 
     @After
