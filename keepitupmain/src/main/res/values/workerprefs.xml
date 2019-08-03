@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <bool name="worker_synchronous_execution">false</bool>
     <string name="ping_command_line">/system/bin/ping -c %d -W %d %s</string>
 </resources>
