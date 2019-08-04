@@ -13,7 +13,7 @@ public class PingCountFieldValidatorTest {
     @Test
     public void testValidate() {
         PingCountFieldValidator validator = new PingCountFieldValidator("testpingcount", TestRegistry.getContext());
-        ValidationResult result = validator.validate("30");
+        ValidationResult result = validator.validate("10");
         assertTrue(result.isValidationSuccessful());
         assertEquals("testpingcount", result.getFieldName());
         assertEquals("Validation successful", result.getMessage());
@@ -28,7 +28,7 @@ public class PingCountFieldValidatorTest {
         result = validator.validate(String.valueOf(Long.MAX_VALUE));
         assertFalse(result.isValidationSuccessful());
         assertEquals("testpingcount", result.getFieldName());
-        assertEquals("Maximum: 100", result.getMessage());
+        assertEquals("Maximum: 10", result.getMessage());
         result = validator.validate("");
         assertFalse(result.isValidationSuccessful());
         assertEquals("testpingcount", result.getFieldName());

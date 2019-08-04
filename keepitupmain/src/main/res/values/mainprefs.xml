@@ -5,5 +5,5 @@
     <string name="ping_count_key">ping_count_key</string>
     <integer name="ping_count_default">3</integer>
     <integer name="ping_count_minimum">1</integer>
-    <integer name="ping_count_maximum">100</integer>
+    <integer name="ping_count_maximum">10</integer>
 </resources>

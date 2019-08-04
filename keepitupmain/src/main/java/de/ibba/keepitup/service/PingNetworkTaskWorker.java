@@ -4,8 +4,10 @@ import android.content.Context;
 import android.os.PowerManager;
 import android.util.Log;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 import de.ibba.keepitup.model.LogEntry;
 import de.ibba.keepitup.model.NetworkTask;
@@ -25,22 +27,19 @@ public class PingNetworkTaskWorker extends NetworkTaskWorker {
         logEntry.setTimestamp(System.currentTimeMillis());
 
         try {
-            Runtime runtime = Runtime.getRuntime();
-            String command = String.format("/system/bin/ping -c 3 -W 10 %s", networkTask.getAddress());
-            Process process = runtime.exec(command);
-            BufferedReader stdInput = new BufferedReader(new InputStreamReader(process.getInputStream()));
-            String s;
-            String res = "";
-            while ((s = stdInput.readLine()) != null) {
-                res += s + "\n";
-            }
-            logEntry.setMessage(res);
-            int ret = process.waitFor();
-            process.destroy();
+            ExecutorService executorService = Executors.newSingleThreadExecutor();
+            Future<PingCommandResult> pingResultFuture = executorService.submit(getPingCommandExecutionCallable(networkTask));
+            PingCommandResult pingResult = pingResultFuture.get();
+            logEntry.setMessage(pingResult.getOutput());
+            executorService.shutdown();
         } catch (Exception e) {
             e.printStackTrace();
         }
 
         return logEntry;
+    }
+
+    protected Callable<PingCommandResult> getPingCommandExecutionCallable(NetworkTask networkTask) {
+        return new PingCommandExecutionCallable(getContext(), networkTask);
     }
 }
