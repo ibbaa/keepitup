@@ -60,7 +60,7 @@ public class NetworkTaskAdapter extends RecyclerView.Adapter<NetworkTaskViewHold
 
     private void bindStatus(@NonNull NetworkTaskViewHolder networkTaskViewHolder, NetworkTask networkTask) {
         String statusRunning = networkTask.isRunning() ? getResources().getString(R.string.string_running) : getResources().getString(R.string.string_stopped);
-        String formattedStatusText = String.format(getResources().getString(R.string.text_list_item_network_task_status), statusRunning);
+        String formattedStatusText = getResources().getString(R.string.text_list_item_network_task_status, statusRunning);
         int startStopImage = networkTask.isRunning() ? R.drawable.icon_stop_selector : R.drawable.icon_start_selector;
         String descriptionStartStopImage = networkTask.isRunning() ? getResources().getString(R.string.label_stop_network_task) : getResources().getString(R.string.label_start_network_task);
         Log.d(NetworkTaskAdapter.class.getName(), "binding status text " + formattedStatusText);
@@ -69,7 +69,7 @@ public class NetworkTaskAdapter extends RecyclerView.Adapter<NetworkTaskViewHold
 
     private void bindAccessType(@NonNull NetworkTaskViewHolder networkTaskViewHolder, NetworkTask networkTask) {
         String accessTypeText = new EnumMapping(getContext()).getAccessTypeText(networkTask.getAccessType());
-        String formattedAccessTypeText = String.format(getResources().getString(R.string.text_list_item_network_task_access_type), accessTypeText);
+        String formattedAccessTypeText = getResources().getString(R.string.text_list_item_network_task_access_type, accessTypeText);
         Log.d(NetworkTaskAdapter.class.getName(), "binding access type text " + formattedAccessTypeText);
         networkTaskViewHolder.setAccessType(formattedAccessTypeText);
     }
@@ -84,21 +84,21 @@ public class NetworkTaskAdapter extends RecyclerView.Adapter<NetworkTaskViewHold
     private void bindInterval(@NonNull NetworkTaskViewHolder networkTaskViewHolder, NetworkTask networkTask) {
         int interval = networkTask.getInterval();
         String intervalUnit = interval == 1 ? getResources().getString(R.string.string_minute) : getResources().getString(R.string.string_minutes);
-        String formattedIntervalText = String.format(getResources().getString(R.string.text_list_item_network_task_interval), interval, intervalUnit);
+        String formattedIntervalText = getResources().getString(R.string.text_list_item_network_task_interval, interval, intervalUnit);
         Log.d(NetworkTaskAdapter.class.getName(), "binding interval text " + formattedIntervalText);
         networkTaskViewHolder.setInterval(formattedIntervalText);
     }
 
     private void bindOnlyWifi(@NonNull NetworkTaskViewHolder networkTaskViewHolder, NetworkTask networkTask) {
         String onlyWifi = networkTask.isOnlyWifi() ? getResources().getString(R.string.string_yes) : getResources().getString(R.string.string_no);
-        String formattedOnlyWifiText = String.format(getResources().getString(R.string.text_list_item_network_task_onlywifi), onlyWifi);
+        String formattedOnlyWifiText = getResources().getString(R.string.text_list_item_network_task_onlywifi, onlyWifi);
         Log.d(NetworkTaskAdapter.class.getName(), "binding only wifi text " + formattedOnlyWifiText);
         networkTaskViewHolder.setOnlyWifi(formattedOnlyWifiText);
     }
 
     private void bindNotification(@NonNull NetworkTaskViewHolder networkTaskViewHolder, NetworkTask networkTask) {
         String sendNotification = networkTask.isNotification() ? getResources().getString(R.string.string_yes) : getResources().getString(R.string.string_no);
-        String formattedNotificationText = String.format(getResources().getString(R.string.text_list_item_network_task_notification), sendNotification);
+        String formattedNotificationText = getResources().getString(R.string.text_list_item_network_task_notification, sendNotification);
         Log.d(NetworkTaskAdapter.class.getName(), "binding notification text " + formattedNotificationText);
         networkTaskViewHolder.setNotification(formattedNotificationText);
     }
@@ -111,14 +111,14 @@ public class NetworkTaskAdapter extends RecyclerView.Adapter<NetworkTaskViewHold
         } else {
             timestampText = getResources().getString(R.string.string_not_executed);
         }
-        String formattedLastExecTimestampText = String.format(getResources().getString(R.string.text_list_item_network_task_last_exec_timestamp), timestampText);
+        String formattedLastExecTimestampText = getResources().getString(R.string.text_list_item_network_task_last_exec_timestamp, timestampText);
         Log.d(NetworkTaskAdapter.class.getName(), "binding last exec timestamp text " + formattedLastExecTimestampText);
         networkTaskViewHolder.setLastExecTimestamp(formattedLastExecTimestampText);
     }
 
     private void bindLastExecMessage(@NonNull NetworkTaskViewHolder networkTaskViewHolder, LogEntry logEntry) {
         if (wasExecuted(logEntry)) {
-            String formattedMessageText = String.format(getResources().getString(R.string.text_list_item_network_task_last_exec_message), logEntry.getMessage());
+            String formattedMessageText = getResources().getString(R.string.text_list_item_network_task_last_exec_message, logEntry.getMessage());
             Log.d(NetworkTaskAdapter.class.getName(), "binding and showing last exec message text " + formattedMessageText);
             networkTaskViewHolder.setLastExecMessage(formattedMessageText);
             networkTaskViewHolder.showLastExecMessageTextView();
