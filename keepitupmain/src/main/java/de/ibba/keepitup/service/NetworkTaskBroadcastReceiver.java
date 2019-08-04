@@ -22,21 +22,30 @@ public class NetworkTaskBroadcastReceiver extends BroadcastReceiver {
         NetworkTask task = new NetworkTask(Objects.requireNonNull(intent.getExtras()));
         Log.d(NetworkTaskBroadcastReceiver.class.getName(), "Received request for " + task);
         boolean synchronous = context.getResources().getBoolean(R.bool.worker_synchronous_execution);
+        int wakeLockTimeout = context.getResources().getInteger(R.integer.worker_execution_wakelock_timeout) * 1000;
         Log.d(NetworkTaskBroadcastReceiver.class.getName(), "Synchronoues execution is " + synchronous);
-        Log.d(NetworkTaskBroadcastReceiver.class.getName(), "Acquiring partial wake lock");
         PowerManager powerManager = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
-        PowerManager.WakeLock wakeLock = powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "KeepItUp:DataReadBroadcastReceiver");
-        wakeLock.acquire();
-        Log.d(NetworkTaskBroadcastReceiver.class.getName(), "Rescheduling " + task);
-        NetworkTaskServiceScheduler scheduler = new NetworkTaskServiceScheduler(context);
-        if (synchronous) {
-            doWork(context, task, wakeLock, true);
-            scheduler.reschedule(task, false);
-            Log.d(NetworkTaskBroadcastReceiver.class.getName(), "Releasing partial wake lock");
-            wakeLock.release();
-        } else {
-            scheduler.reschedule(task, false);
-            doWork(context, task, wakeLock, false);
+        PowerManager.WakeLock wakeLock = null;
+        try {
+            Log.d(NetworkTaskBroadcastReceiver.class.getName(), "Acquiring partial wake lock with a timeout of " + wakeLockTimeout + " msec");
+            wakeLock = powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "KeepItUp:DataReadBroadcastReceiver");
+            wakeLock.acquire(wakeLockTimeout);
+            Log.d(NetworkTaskBroadcastReceiver.class.getName(), "Rescheduling " + task);
+            NetworkTaskServiceScheduler scheduler = new NetworkTaskServiceScheduler(context);
+            if (synchronous) {
+                doWork(context, task, wakeLock, true);
+                scheduler.reschedule(task, false);
+            } else {
+                scheduler.reschedule(task, false);
+                doWork(context, task, wakeLock, false);
+            }
+        } catch (Exception exc) {
+            Log.e(NetworkTaskBroadcastReceiver.class.getName(), "Error executing worker", exc);
+        } finally {
+            if (wakeLock != null && synchronous && wakeLock.isHeld()) {
+                Log.d(NetworkTaskBroadcastReceiver.class.getName(), "Releasing partial wake lock");
+                wakeLock.release();
+            }
         }
     }
 

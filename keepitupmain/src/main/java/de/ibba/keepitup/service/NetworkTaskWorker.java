@@ -26,15 +26,16 @@ public abstract class NetworkTaskWorker implements Runnable {
     @Override
     public void run() {
         Log.d(NetworkTaskWorker.class.getName(), "Executing worker thread for " + networkTask);
-        LogEntry logEntry = execute(networkTask);
-        Log.d(NetworkTaskWorker.class.getName(), "Writing log entry to database " + logEntry);
-        LogDAO logDAO = new LogDAO(getContext());
-        logDAO.insertAndDeleteLog(logEntry);
-        if (wakeLock != null) {
-            Log.d(NetworkTaskWorker.class.getName(), "Releasing partial wake lock");
-            wakeLock.release();
-        } else {
-            Log.e(NetworkTaskWorker.class.getName(), "Wake lock is null");
+        try {
+            LogEntry logEntry = execute(networkTask);
+            Log.d(NetworkTaskWorker.class.getName(), "Writing log entry to database " + logEntry);
+            LogDAO logDAO = new LogDAO(getContext());
+            logDAO.insertAndDeleteLog(logEntry);
+        } finally {
+            if (wakeLock != null && wakeLock.isHeld()) {
+                Log.d(NetworkTaskWorker.class.getName(), "Releasing partial wake lock");
+                wakeLock.release();
+            }
         }
     }
 

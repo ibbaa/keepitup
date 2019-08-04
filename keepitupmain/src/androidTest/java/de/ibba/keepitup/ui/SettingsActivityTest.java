@@ -91,7 +91,7 @@ public class SettingsActivityTest extends BaseUITest {
         onView(withId(R.id.switch_settings_activity_notification)).perform(click());
         onView(withId(R.id.textview_settings_activity_ping_count)).perform(scrollTo());
         onView(withId(R.id.textview_settings_activity_ping_count)).perform(click());
-        onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("25"));
+        onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("10"));
         onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
         onView(withText("Download")).check(matches(isChecked()));
         onView(withId(R.id.textview_settings_activity_address_label)).check(matches(withText("Host / URL")));
@@ -107,7 +107,7 @@ public class SettingsActivityTest extends BaseUITest {
         onView(withId(R.id.textview_settings_activity_notification_label)).check(matches(withText("Notifications")));
         onView(withId(R.id.switch_settings_activity_notification)).check(matches(isChecked()));
         onView(withId(R.id.textview_settings_activity_notification_on_off)).check(matches(withText("yes")));
-        onView(withId(R.id.textview_settings_activity_ping_count)).check(matches(withText("25")));
+        onView(withId(R.id.textview_settings_activity_ping_count)).check(matches(withText("10")));
     }
 
     @Test
@@ -131,12 +131,12 @@ public class SettingsActivityTest extends BaseUITest {
         onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
         onView(withId(R.id.textview_settings_activity_ping_count)).perform(scrollTo());
         onView(withId(R.id.textview_settings_activity_ping_count)).perform(click());
-        onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("11"));
+        onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("8"));
         onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
         onView(withId(R.id.textview_settings_activity_interval_label)).check(matches(withText("Interval")));
         onView(withId(R.id.textview_settings_activity_interval)).check(matches(withText("11")));
         onView(withId(R.id.textview_settings_activity_interval_minutes)).check(matches(withText("minutes")));
-        onView(withId(R.id.textview_settings_activity_ping_count)).check(matches(withText("11")));
+        onView(withId(R.id.textview_settings_activity_ping_count)).check(matches(withText("8")));
     }
 
     @Test
@@ -360,7 +360,7 @@ public class SettingsActivityTest extends BaseUITest {
         onView(withId(R.id.edittext_dialog_settings_input_value)).check(matches(withTextColor(R.color.textErrorColor)));
         onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
         onView(allOf(withText("Ping count"), withGridLayoutPosition(1, 0))).check(matches(isDisplayed()));
-        onView(allOf(withText("Maximum: 100"), withGridLayoutPosition(1, 1))).check(matches(isDisplayed()));
+        onView(allOf(withText("Maximum: 10"), withGridLayoutPosition(1, 1))).check(matches(isDisplayed()));
         onView(withId(R.id.imageview_dialog_validator_error_ok)).perform(click());
         onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("5"));
         onView(withId(R.id.edittext_dialog_settings_input_value)).check(matches(withTextColor(R.color.textColor)));
