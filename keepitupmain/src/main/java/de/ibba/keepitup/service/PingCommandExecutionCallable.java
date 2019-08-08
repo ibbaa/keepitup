@@ -35,9 +35,8 @@ public class PingCommandExecutionCallable implements Callable<PingCommandResult>
             String command = getResources().getString(R.string.ping_command_line);
             int count = preferenceManager.getPreferencePingCount();
             int timeout = getResources().getInteger(R.integer.ping_timeout);
-            int deadline = getResources().getInteger(R.integer.ping_deadline);
             String host = networkTask.getAddress();
-            String formattedCommand = String.format(command, count, timeout, deadline, host);
+            String formattedCommand = String.format(command, count, timeout, host);
             Log.d(PingCommandExecutionCallable.class.getName(), "Executing ping command: " + formattedCommand);
             process = runtime.exec(formattedCommand);
             output = StreamUtil.inputStreamToString(process.getInputStream(), Charsets.US_ASCII);
