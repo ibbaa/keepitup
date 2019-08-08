@@ -26,6 +26,7 @@ public class NetworkTaskBroadcastReceiver extends BroadcastReceiver {
         Log.d(NetworkTaskBroadcastReceiver.class.getName(), "Synchronoues execution is " + synchronous);
         PowerManager powerManager = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
         PowerManager.WakeLock wakeLock = null;
+        ExecutorService executorService = Executors.newSingleThreadExecutor();
         try {
             Log.d(NetworkTaskBroadcastReceiver.class.getName(), "Acquiring partial wake lock with a timeout of " + wakeLockTimeout + " msec");
             wakeLock = powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "KeepItUp:DataReadBroadcastReceiver");
@@ -33,11 +34,11 @@ public class NetworkTaskBroadcastReceiver extends BroadcastReceiver {
             Log.d(NetworkTaskBroadcastReceiver.class.getName(), "Rescheduling " + task);
             NetworkTaskServiceScheduler scheduler = new NetworkTaskServiceScheduler(context);
             if (synchronous) {
-                doWork(context, task, wakeLock, true);
+                doWork(context, task, wakeLock, true, executorService);
                 scheduler.reschedule(task, false);
             } else {
                 scheduler.reschedule(task, false);
-                doWork(context, task, wakeLock, false);
+                doWork(context, task, wakeLock, false, executorService);
             }
         } catch (Exception exc) {
             Log.e(NetworkTaskBroadcastReceiver.class.getName(), "Error executing worker", exc);
@@ -46,10 +47,12 @@ public class NetworkTaskBroadcastReceiver extends BroadcastReceiver {
                 Log.d(NetworkTaskBroadcastReceiver.class.getName(), "Releasing partial wake lock");
                 wakeLock.release();
             }
+            Log.d(NetworkTaskBroadcastReceiver.class.getName(), "Shutting down ExecutorService");
+            executorService.shutdown();
         }
     }
 
-    private void doWork(Context context, NetworkTask task, PowerManager.WakeLock wakeLock, boolean synchronous) {
+    private void doWork(Context context, NetworkTask task, PowerManager.WakeLock wakeLock, boolean synchronous, ExecutorService executorService) {
         Log.d(NetworkTaskBroadcastReceiver.class.getName(), "Doing work for " + task);
         Log.d(NetworkTaskBroadcastReceiver.class.getName(), "Synchronous is " + synchronous);
         WorkerFactoryContributor workerFactoryContributor = new WorkerFactoryContributor(context);
@@ -62,9 +65,7 @@ public class NetworkTaskBroadcastReceiver extends BroadcastReceiver {
         } else {
             NetworkTaskWorker networkTaskWorker = workerFactory.createWorker(context, task, wakeLock);
             Log.d(NetworkTaskBroadcastReceiver.class.getName(), "Worker is " + networkTaskWorker.getClass().getName());
-            ExecutorService executorService = Executors.newSingleThreadExecutor();
             executorService.execute(networkTaskWorker);
-            executorService.shutdown();
         }
     }
 }
