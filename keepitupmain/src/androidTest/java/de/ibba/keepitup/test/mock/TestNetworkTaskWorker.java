@@ -17,7 +17,7 @@ public class TestNetworkTaskWorker extends NetworkTaskWorker {
 
     @Override
     public LogEntry execute(NetworkTask networkTask) {
-        Log.d(TestNetworkTaskWorker.class.getName(), "Executing PingNetworkTaskWorker for " + networkTask);
+        Log.d(TestNetworkTaskWorker.class.getName(), "Executing TestNetworkTaskWorker for " + networkTask);
         LogEntry logEntry = new LogEntry();
         logEntry.setNetworkTaskId(networkTask.getId());
         logEntry.setSuccess(true);
