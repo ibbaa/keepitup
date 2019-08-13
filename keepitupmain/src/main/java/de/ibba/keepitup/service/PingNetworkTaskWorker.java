@@ -14,6 +14,8 @@ import de.ibba.keepitup.R;
 import de.ibba.keepitup.model.LogEntry;
 import de.ibba.keepitup.model.NetworkTask;
 import de.ibba.keepitup.resources.PreferenceManager;
+import de.ibba.keepitup.service.network.PingCommand;
+import de.ibba.keepitup.service.network.PingCommandResult;
 import de.ibba.keepitup.util.ExceptionUtil;
 
 public class PingNetworkTaskWorker extends NetworkTaskWorker {
@@ -28,16 +30,16 @@ public class PingNetworkTaskWorker extends NetworkTaskWorker {
         LogEntry logEntry = new LogEntry();
         logEntry.setNetworkTaskId(networkTask.getId());
         logEntry.setTimestamp(System.currentTimeMillis());
-        Callable<PingCommandResult> pingCommandCallable = getPingCommandExecutionCallable(networkTask);
+        Callable<PingCommandResult> pingCommand = getPingCommand(networkTask);
         ExecutorService executorService = Executors.newSingleThreadExecutor();
         try {
             PreferenceManager preferenceManager = new PreferenceManager(getContext());
             int count = preferenceManager.getPreferencePingCount();
             int timeout = getResources().getInteger(R.integer.ping_timeout) * count * 2;
-            Log.d(PingNetworkTaskWorker.class.getName(), "Executing " + pingCommandCallable.getClass().getSimpleName() + " with a timeout of " + timeout);
-            Future<PingCommandResult> pingResultFuture = executorService.submit(pingCommandCallable);
+            Log.d(PingNetworkTaskWorker.class.getName(), "Executing " + pingCommand.getClass().getSimpleName() + " with a timeout of " + timeout);
+            Future<PingCommandResult> pingResultFuture = executorService.submit(pingCommand);
             PingCommandResult pingResult = pingResultFuture.get(timeout, TimeUnit.SECONDS);
-            Log.d(PingNetworkTaskWorker.class.getName(), pingCommandCallable.getClass().getSimpleName() + " returned " + pingResult);
+            Log.d(PingNetworkTaskWorker.class.getName(), pingCommand.getClass().getSimpleName() + " returned " + pingResult);
             if (pingResult.getException() == null && pingResult.getProcessReturnCode() == 0) {
                 Log.d(PingNetworkTaskWorker.class.getName(), "Ping was successful");
                 logEntry.setSuccess(true);
@@ -52,7 +54,7 @@ public class PingNetworkTaskWorker extends NetworkTaskWorker {
                 logEntry.setMessage(pingResult.getOutput());
             }
         } catch (Throwable exc) {
-            Log.d(PingNetworkTaskWorker.class.getName(), "Error executing " + pingCommandCallable.getClass().getName(), exc);
+            Log.d(PingNetworkTaskWorker.class.getName(), "Error executing " + pingCommand.getClass().getName(), exc);
             logEntry.setSuccess(false);
             logEntry.setMessage(getMessageFromException(exc));
         } finally {
@@ -67,7 +69,7 @@ public class PingNetworkTaskWorker extends NetworkTaskWorker {
         return ExceptionUtil.getLogableMessage(ExceptionUtil.getRootCause(exc));
     }
 
-    protected Callable<PingCommandResult> getPingCommandExecutionCallable(NetworkTask networkTask) {
-        return new PingCommandExecutionCallable(getContext(), networkTask);
+    protected Callable<PingCommandResult> getPingCommand(NetworkTask networkTask) {
+        return new PingCommand(getContext(), networkTask);
     }
 }

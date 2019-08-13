@@ -1,4 +1,4 @@
-package de.ibba.keepitup.service;
+package de.ibba.keepitup.service.network;
 
 import android.support.annotation.NonNull;
 

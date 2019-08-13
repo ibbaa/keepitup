@@ -10,7 +10,8 @@ import org.junit.runner.RunWith;
 import de.ibba.keepitup.model.AccessType;
 import de.ibba.keepitup.model.LogEntry;
 import de.ibba.keepitup.model.NetworkTask;
-import de.ibba.keepitup.test.mock.MockPingCommandExecutionCallable;
+import de.ibba.keepitup.service.network.PingCommandResult;
+import de.ibba.keepitup.test.mock.MockPingCommand;
 import de.ibba.keepitup.test.mock.TestPingNetworkTaskWorker;
 import de.ibba.keepitup.test.mock.TestRegistry;
 
@@ -32,7 +33,7 @@ public class PingNetworkTaskWorkerTest {
     @Test
     public void testSuccessfulCall() {
         PingCommandResult result = new PingCommandResult(0, "testoutput", null);
-        MockPingCommandExecutionCallable mockPingCommandExecutionCallable = new MockPingCommandExecutionCallable(TestRegistry.getContext(), getNetworkTask(), result);
+        MockPingCommand mockPingCommandExecutionCallable = new MockPingCommand(TestRegistry.getContext(), getNetworkTask(), result);
         pingNetworkTaskWorker.setMockPingCommandExecutionCallable(mockPingCommandExecutionCallable);
         LogEntry logEntry = pingNetworkTaskWorker.execute(getNetworkTask());
         assertEquals(45, logEntry.getNetworkTaskId());
@@ -45,7 +46,7 @@ public class PingNetworkTaskWorkerTest {
     public void testExceptionThrown() {
         IllegalArgumentException excpetion = new IllegalArgumentException("TestException");
         PingCommandResult result = new PingCommandResult(0, "testoutput", excpetion);
-        MockPingCommandExecutionCallable mockPingCommandExecutionCallable = new MockPingCommandExecutionCallable(TestRegistry.getContext(), getNetworkTask(), result);
+        MockPingCommand mockPingCommandExecutionCallable = new MockPingCommand(TestRegistry.getContext(), getNetworkTask(), result);
         pingNetworkTaskWorker.setMockPingCommandExecutionCallable(mockPingCommandExecutionCallable);
         LogEntry logEntry = pingNetworkTaskWorker.execute(getNetworkTask());
         assertEquals(45, logEntry.getNetworkTaskId());
@@ -57,7 +58,7 @@ public class PingNetworkTaskWorkerTest {
     @Test
     public void testFailureCodeReturned() {
         PingCommandResult result = new PingCommandResult(1, "testoutput", null);
-        MockPingCommandExecutionCallable mockPingCommandExecutionCallable = new MockPingCommandExecutionCallable(TestRegistry.getContext(), getNetworkTask(), result);
+        MockPingCommand mockPingCommandExecutionCallable = new MockPingCommand(TestRegistry.getContext(), getNetworkTask(), result);
         pingNetworkTaskWorker.setMockPingCommandExecutionCallable(mockPingCommandExecutionCallable);
         LogEntry logEntry = pingNetworkTaskWorker.execute(getNetworkTask());
         assertEquals(45, logEntry.getNetworkTaskId());

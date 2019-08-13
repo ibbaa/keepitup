@@ -3,14 +3,14 @@ package de.ibba.keepitup.test.mock;
 import android.content.Context;
 
 import de.ibba.keepitup.model.NetworkTask;
-import de.ibba.keepitup.service.PingCommandExecutionCallable;
-import de.ibba.keepitup.service.PingCommandResult;
+import de.ibba.keepitup.service.network.PingCommand;
+import de.ibba.keepitup.service.network.PingCommandResult;
 
-public class MockPingCommandExecutionCallable extends PingCommandExecutionCallable {
+public class MockPingCommand extends PingCommand {
 
     private final PingCommandResult pingCommandResult;
 
-    public MockPingCommandExecutionCallable(Context context, NetworkTask networkTask, PingCommandResult pingCommandResult) {
+    public MockPingCommand(Context context, NetworkTask networkTask, PingCommandResult pingCommandResult) {
         super(context, networkTask);
         this.pingCommandResult = pingCommandResult;
     }
