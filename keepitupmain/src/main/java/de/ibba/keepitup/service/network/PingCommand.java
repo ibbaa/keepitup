@@ -9,7 +9,6 @@ import com.google.common.base.Charsets;
 import java.util.concurrent.Callable;
 
 import de.ibba.keepitup.R;
-import de.ibba.keepitup.model.NetworkTask;
 import de.ibba.keepitup.resources.PreferenceManager;
 import de.ibba.keepitup.util.StreamUtil;
 import de.ibba.keepitup.util.StringUtil;
@@ -17,11 +16,13 @@ import de.ibba.keepitup.util.StringUtil;
 public class PingCommand implements Callable<PingCommandResult> {
 
     private final Context context;
-    private final NetworkTask networkTask;
+    private final String address;
+    private final boolean ip6;
 
-    public PingCommand(Context context, NetworkTask networkTask) {
+    public PingCommand(Context context, String address, boolean ip6) {
         this.context = context;
-        this.networkTask = networkTask;
+        this.address = address;
+        this.ip6 = ip6;
     }
 
     @Override
@@ -33,11 +34,10 @@ public class PingCommand implements Callable<PingCommandResult> {
         try {
             PreferenceManager preferenceManager = new PreferenceManager(context);
             Runtime runtime = Runtime.getRuntime();
-            String command = getResources().getString(R.string.ping_command_line);
+            String command = ip6 ? getResources().getString(R.string.ping6_command_line) : getResources().getString(R.string.ping_command_line);
             int count = preferenceManager.getPreferencePingCount();
             int timeout = getResources().getInteger(R.integer.ping_timeout);
-            String host = networkTask.getAddress();
-            String formattedCommand = String.format(command, count, timeout, host);
+            String formattedCommand = String.format(command, count, timeout, address);
             Log.d(PingCommand.class.getName(), "Executing ping command: " + formattedCommand);
             process = runtime.exec(formattedCommand);
             output = StreamUtil.inputStreamToString(process.getInputStream(), Charsets.US_ASCII);
@@ -60,11 +60,11 @@ public class PingCommand implements Callable<PingCommandResult> {
         }
     }
 
-    public Context getContext() {
+    private Context getContext() {
         return context;
     }
 
-    public Resources getResources() {
+    private Resources getResources() {
         return getContext().getResources();
     }
 }

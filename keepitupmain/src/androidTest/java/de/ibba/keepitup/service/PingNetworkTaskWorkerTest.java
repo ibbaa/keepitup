@@ -7,10 +7,14 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import java.net.InetAddress;
+
 import de.ibba.keepitup.model.AccessType;
 import de.ibba.keepitup.model.LogEntry;
 import de.ibba.keepitup.model.NetworkTask;
+import de.ibba.keepitup.service.network.DNSLookupResult;
 import de.ibba.keepitup.service.network.PingCommandResult;
+import de.ibba.keepitup.test.mock.MockDNSLookup;
 import de.ibba.keepitup.test.mock.MockPingCommand;
 import de.ibba.keepitup.test.mock.TestPingNetworkTaskWorker;
 import de.ibba.keepitup.test.mock.TestRegistry;
@@ -30,11 +34,18 @@ public class PingNetworkTaskWorkerTest {
         pingNetworkTaskWorker = new TestPingNetworkTaskWorker(TestRegistry.getContext(), getNetworkTask(), null);
     }
 
+    private void prepareTestPingNetworkTaskWorker(DNSLookupResult dnsLookupResult, PingCommandResult pingCommandResult) {
+        MockDNSLookup mockDNSLookup = new MockDNSLookup("127.0.0.1", dnsLookupResult);
+        MockPingCommand mockPingCommand = new MockPingCommand(TestRegistry.getContext(), "127.0.0.1", false, pingCommandResult);
+        pingNetworkTaskWorker.setMockDNSLookup(mockDNSLookup);
+        pingNetworkTaskWorker.setMockPingCommand(mockPingCommand);
+    }
+
     @Test
-    public void testSuccessfulCall() {
-        PingCommandResult result = new PingCommandResult(0, "testoutput", null);
-        MockPingCommand mockPingCommandExecutionCallable = new MockPingCommand(TestRegistry.getContext(), getNetworkTask(), result);
-        pingNetworkTaskWorker.setMockPingCommandExecutionCallable(mockPingCommandExecutionCallable);
+    public void testSuccessfulCall() throws Exception {
+        DNSLookupResult dnsLookupResult = new DNSLookupResult(InetAddress.getByName("127.0.0.1"), null);
+        PingCommandResult pingCommandResult = new PingCommandResult(0, "testoutput", null);
+        prepareTestPingNetworkTaskWorker(dnsLookupResult, pingCommandResult);
         LogEntry logEntry = pingNetworkTaskWorker.execute(getNetworkTask());
         assertEquals(45, logEntry.getNetworkTaskId());
         assertTrue(logEntry.getTimestamp() > -1);
@@ -43,11 +54,10 @@ public class PingNetworkTaskWorkerTest {
     }
 
     @Test
-    public void testExceptionThrown() {
-        IllegalArgumentException excpetion = new IllegalArgumentException("TestException");
-        PingCommandResult result = new PingCommandResult(0, "testoutput", excpetion);
-        MockPingCommand mockPingCommandExecutionCallable = new MockPingCommand(TestRegistry.getContext(), getNetworkTask(), result);
-        pingNetworkTaskWorker.setMockPingCommandExecutionCallable(mockPingCommandExecutionCallable);
+    public void testDNSLookupExceptionThrown() {
+        IllegalArgumentException exception = new IllegalArgumentException("TestException");
+        DNSLookupResult dnsLookupResult = new DNSLookupResult(null, exception);
+        prepareTestPingNetworkTaskWorker(dnsLookupResult, null);
         LogEntry logEntry = pingNetworkTaskWorker.execute(getNetworkTask());
         assertEquals(45, logEntry.getNetworkTaskId());
         assertTrue(logEntry.getTimestamp() > -1);
@@ -56,10 +66,23 @@ public class PingNetworkTaskWorkerTest {
     }
 
     @Test
-    public void testFailureCodeReturnedWithMessage() {
-        PingCommandResult result = new PingCommandResult(1, "testoutput", null);
-        MockPingCommand mockPingCommandExecutionCallable = new MockPingCommand(TestRegistry.getContext(), getNetworkTask(), result);
-        pingNetworkTaskWorker.setMockPingCommandExecutionCallable(mockPingCommandExecutionCallable);
+    public void testPingCommandExceptionThrown() throws Exception {
+        DNSLookupResult dnsLookupResult = new DNSLookupResult(InetAddress.getByName("127.0.0.1"), null);
+        IllegalArgumentException exception = new IllegalArgumentException("TestException");
+        PingCommandResult pingCommandResult = new PingCommandResult(0, "testoutput", exception);
+        prepareTestPingNetworkTaskWorker(dnsLookupResult, pingCommandResult);
+        LogEntry logEntry = pingNetworkTaskWorker.execute(getNetworkTask());
+        assertEquals(45, logEntry.getNetworkTaskId());
+        assertTrue(logEntry.getTimestamp() > -1);
+        assertFalse(logEntry.isSuccess());
+        assertEquals("IllegalArgumentException: TestException", logEntry.getMessage());
+    }
+
+    @Test
+    public void testFailureCodeReturnedWithMessage() throws Exception {
+        DNSLookupResult dnsLookupResult = new DNSLookupResult(InetAddress.getByName("127.0.0.1"), null);
+        PingCommandResult pingCommandResult = new PingCommandResult(1, "testoutput", null);
+        prepareTestPingNetworkTaskWorker(dnsLookupResult, pingCommandResult);
         LogEntry logEntry = pingNetworkTaskWorker.execute(getNetworkTask());
         assertEquals(45, logEntry.getNetworkTaskId());
         assertTrue(logEntry.getTimestamp() > -1);
@@ -68,10 +91,10 @@ public class PingNetworkTaskWorkerTest {
     }
 
     @Test
-    public void testFailureCodeReturnedWithoutMessage() {
-        PingCommandResult result = new PingCommandResult(1, "", null);
-        MockPingCommand mockPingCommandExecutionCallable = new MockPingCommand(TestRegistry.getContext(), getNetworkTask(), result);
-        pingNetworkTaskWorker.setMockPingCommandExecutionCallable(mockPingCommandExecutionCallable);
+    public void testFailureCodeReturnedWithoutMessage() throws Exception {
+        DNSLookupResult dnsLookupResult = new DNSLookupResult(InetAddress.getByName("127.0.0.1"), null);
+        PingCommandResult pingCommandResult = new PingCommandResult(1, "", null);
+        prepareTestPingNetworkTaskWorker(dnsLookupResult, pingCommandResult);
         LogEntry logEntry = pingNetworkTaskWorker.execute(getNetworkTask());
         assertEquals(45, logEntry.getNetworkTaskId());
         assertTrue(logEntry.getTimestamp() > -1);
