@@ -81,12 +81,15 @@ public class NetworkTaskHandlerTest extends BaseUITest {
         NetworkTask task2 = getNetworkTask2();
         handler.insertNetworkTask(task2);
         task1.setAddress("192.168.178.1");
+        LogEntry logEntry = getLogEntryWithNetworkTaskId(task1.getId());
+        logEntry = getLogDAO().insertAndDeleteLog(logEntry);
+        getAdapter().replaceItem(new NetworkTaskUIWrapper(task1, logEntry));
         handler.updateNetworkTask(task1);
         List<NetworkTask> tasks = getNetworkTaskDAO().readAllNetworkTasks();
         task1 = tasks.get(0);
         assertEquals("192.168.178.1", task1.getAddress());
         NetworkTaskUIWrapper adapterWrapper1 = getAdapter().getItem(0);
-        assertNull(adapterWrapper1.getLogEntry());
+        assertAreEqual(logEntry, adapterWrapper1.getLogEntry());
         assertEquals("192.168.178.1", adapterWrapper1.getNetworkTask().getAddress());
         assertAreEqual(task1, adapterWrapper1.getNetworkTask());
         assertFalse(task1.isRunning());
@@ -209,6 +212,14 @@ public class NetworkTaskHandlerTest extends BaseUITest {
         assertEquals(task1.isOnlyWifi(), task2.isOnlyWifi());
         assertEquals(task1.isNotification(), task2.isNotification());
         assertEquals(task1.isRunning(), task2.isRunning());
+    }
+
+    private void assertAreEqual(LogEntry entry1, LogEntry entry2) {
+        assertEquals(entry1.getId(), entry2.getId());
+        assertEquals(entry1.getNetworkTaskId(), entry2.getNetworkTaskId());
+        assertEquals(entry1.isSuccess(), entry2.isSuccess());
+        assertEquals(entry1.getTimestamp(), entry2.getTimestamp());
+        assertEquals(entry1.getMessage(), entry2.getMessage());
     }
 
     private NetworkTaskAdapter getAdapter() {

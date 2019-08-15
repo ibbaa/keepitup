@@ -11,8 +11,8 @@ public class StringUtil {
     }
 
     public static String trim(String value) {
-        if(value == null) {
-            return value;
+        if (value == null) {
+            return null;
         }
         return value.trim();
     }
