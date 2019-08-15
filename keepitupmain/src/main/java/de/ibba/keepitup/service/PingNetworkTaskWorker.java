@@ -11,6 +11,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 import de.ibba.keepitup.R;
 import de.ibba.keepitup.model.LogEntry;
@@ -61,8 +62,8 @@ public class PingNetworkTaskWorker extends NetworkTaskWorker {
     private InetAddress executeDNSLookup(ExecutorService executorService, String host, LogEntry logEntry) {
         Log.d(PingNetworkTaskWorker.class.getName(), "executeDNSLookup, host is " + host);
         Callable<DNSLookupResult> dnsLookup = getDNSLookup(host);
+        int timeout = getResources().getInteger(R.integer.dns_lookup_timeout);
         try {
-            int timeout = getResources().getInteger(R.integer.dns_lookup_timeout);
             Log.d(PingNetworkTaskWorker.class.getName(), "Executing " + dnsLookup.getClass().getSimpleName() + " with a timeout of " + timeout);
             Future<DNSLookupResult> dnsLookupResultFuture = executorService.submit(dnsLookup);
             DNSLookupResult dnsLookupResult = dnsLookupResultFuture.get(timeout, TimeUnit.SECONDS);
@@ -73,12 +74,12 @@ public class PingNetworkTaskWorker extends NetworkTaskWorker {
             } else {
                 Log.d(PingNetworkTaskWorker.class.getName(), "DNS lookup was not successful because of an exception", dnsLookupResult.getException());
                 logEntry.setSuccess(false);
-                logEntry.setMessage(getMessageFromException(dnsLookupResult.getException()));
+                logEntry.setMessage(getMessageFromException(getResources().getString(R.string.text_dns_lookup_error), dnsLookupResult.getException(), timeout));
             }
         } catch (Throwable exc) {
             Log.d(PingNetworkTaskWorker.class.getName(), "Error executing " + dnsLookup.getClass().getName(), exc);
             logEntry.setSuccess(false);
-            logEntry.setMessage(getMessageFromException(exc));
+            logEntry.setMessage(getMessageFromException(getResources().getString(R.string.text_dns_lookup_error), exc, timeout));
         }
         return null;
     }
@@ -86,10 +87,10 @@ public class PingNetworkTaskWorker extends NetworkTaskWorker {
     private void executePingCommand(ExecutorService executorService, String address, boolean ip6, LogEntry logEntry) {
         Log.d(PingNetworkTaskWorker.class.getName(), "executePingCommand, address is " + address + ", ip6 is " + ip6);
         Callable<PingCommandResult> pingCommand = getPingCommand(address, ip6);
+        PreferenceManager preferenceManager = new PreferenceManager(getContext());
+        int count = preferenceManager.getPreferencePingCount();
+        int timeout = getResources().getInteger(R.integer.ping_timeout) * count * 2;
         try {
-            PreferenceManager preferenceManager = new PreferenceManager(getContext());
-            int count = preferenceManager.getPreferencePingCount();
-            int timeout = getResources().getInteger(R.integer.ping_timeout) * count * 2;
             Log.d(PingNetworkTaskWorker.class.getName(), "Executing " + pingCommand.getClass().getSimpleName() + " with a timeout of " + timeout);
             Future<PingCommandResult> pingResultFuture = executorService.submit(pingCommand);
             PingCommandResult pingResult = pingResultFuture.get(timeout, TimeUnit.SECONDS);
@@ -101,28 +102,32 @@ public class PingNetworkTaskWorker extends NetworkTaskWorker {
             } else if (pingResult.getException() != null) {
                 Log.d(PingNetworkTaskWorker.class.getName(), "Ping was not successful because of an exception", pingResult.getException());
                 logEntry.setSuccess(false);
-                logEntry.setMessage(getMessageFromException(pingResult.getException()));
+                logEntry.setMessage(getMessageFromException(getResources().getString(R.string.text_ping_error), pingResult.getException(), timeout));
             } else {
                 Log.d(PingNetworkTaskWorker.class.getName(), "Ping was not successful because the ping command returned " + pingResult.getProcessReturnCode());
                 logEntry.setSuccess(false);
-                logEntry.setMessage(getFailureMessage(pingResult.getProcessReturnCode(), pingResult.getOutput()));
+                logEntry.setMessage(getPingFailureMessage(pingResult.getProcessReturnCode(), pingResult.getOutput()));
             }
         } catch (Throwable exc) {
             Log.d(PingNetworkTaskWorker.class.getName(), "Error executing " + pingCommand.getClass().getName(), exc);
             logEntry.setSuccess(false);
-            logEntry.setMessage(getMessageFromException(exc));
+            logEntry.setMessage(getMessageFromException(getResources().getString(R.string.text_ping_error), exc, timeout));
         }
     }
 
-    private String getMessageFromException(Throwable exc) {
-        return ExceptionUtil.getLogableMessage(ExceptionUtil.getRootCause(exc));
+    private String getMessageFromException(String prefixMessage, Throwable exc, int timeout) {
+        if (exc instanceof TimeoutException) {
+            String unit = timeout == 1 ? getResources().getString(R.string.string_second) : getResources().getString(R.string.string_seconds);
+            return prefixMessage + " " + getResources().getString(R.string.text_timeout, timeout) + " " + unit;
+        }
+        return prefixMessage + " " + ExceptionUtil.getLogableMessage(ExceptionUtil.getRootCause(exc));
     }
 
-    private String getFailureMessage(int returnCode, String output) {
+    private String getPingFailureMessage(int returnCode, String output) {
         if (StringUtil.isEmpty(output)) {
-            return getResources().getString(R.string.text_ping_process_error, returnCode);
+            return getResources().getString(R.string.text_ping_error) + " " + getResources().getString(R.string.text_ping_return_code_error, returnCode);
         }
-        return output;
+        return getResources().getString(R.string.text_ping_error) + " " + output;
     }
 
     protected Callable<DNSLookupResult> getDNSLookup(String host) {
