@@ -56,7 +56,7 @@ public class PingNetworkTaskWorkerTest {
     }
 
     @Test
-    public void testFailureCodeReturned() {
+    public void testFailureCodeReturnedWithMessage() {
         PingCommandResult result = new PingCommandResult(1, "testoutput", null);
         MockPingCommand mockPingCommandExecutionCallable = new MockPingCommand(TestRegistry.getContext(), getNetworkTask(), result);
         pingNetworkTaskWorker.setMockPingCommandExecutionCallable(mockPingCommandExecutionCallable);
@@ -65,6 +65,18 @@ public class PingNetworkTaskWorkerTest {
         assertTrue(logEntry.getTimestamp() > -1);
         assertFalse(logEntry.isSuccess());
         assertEquals("testoutput", logEntry.getMessage());
+    }
+
+    @Test
+    public void testFailureCodeReturnedWithoutMessage() {
+        PingCommandResult result = new PingCommandResult(1, "", null);
+        MockPingCommand mockPingCommandExecutionCallable = new MockPingCommand(TestRegistry.getContext(), getNetworkTask(), result);
+        pingNetworkTaskWorker.setMockPingCommandExecutionCallable(mockPingCommandExecutionCallable);
+        LogEntry logEntry = pingNetworkTaskWorker.execute(getNetworkTask());
+        assertEquals(45, logEntry.getNetworkTaskId());
+        assertTrue(logEntry.getTimestamp() > -1);
+        assertFalse(logEntry.isSuccess());
+        assertEquals("Ping failed. Return code: 1", logEntry.getMessage());
     }
 
     private NetworkTask getNetworkTask() {

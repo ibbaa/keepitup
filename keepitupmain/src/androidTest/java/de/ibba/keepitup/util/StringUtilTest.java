@@ -23,6 +23,14 @@ public class StringUtilTest {
     }
 
     @Test
+    public void testTrim() {
+        assertEquals(null, StringUtil.trim(null));
+        assertEquals("", StringUtil.trim(""));
+        assertEquals("", StringUtil.trim(" "));
+        assertEquals("abc", StringUtil.trim(" abc "));
+    }
+
+    @Test
     public void testIsEmpty() {
         assertTrue(StringUtil.isEmpty(null));
         assertTrue(StringUtil.isEmpty(""));
