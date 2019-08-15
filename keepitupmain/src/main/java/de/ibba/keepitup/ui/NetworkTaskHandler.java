@@ -70,7 +70,7 @@ class NetworkTaskHandler {
                 task = scheduler.cancel(task);
                 task = scheduler.schedule(task);
             }
-            getAdapter().replaceItem(new NetworkTaskUIWrapper(task, null));
+            getAdapter().replaceNetworkTask(task);
         } catch (Exception exc) {
             Log.e(NetworkTaskHandler.class.getName(), "Error updating task. Showing error dialog.", exc);
             showErrorDialog(getResources().getString(R.string.text_dialog_general_error_update_network_task));

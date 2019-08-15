@@ -8,6 +8,7 @@ import org.junit.runner.RunWith;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 @SmallTest
@@ -24,7 +25,7 @@ public class StringUtilTest {
 
     @Test
     public void testTrim() {
-        assertEquals(null, StringUtil.trim(null));
+        assertNull(StringUtil.trim(null));
         assertEquals("", StringUtil.trim(""));
         assertEquals("", StringUtil.trim(" "));
         assertEquals("abc", StringUtil.trim(" abc "));
