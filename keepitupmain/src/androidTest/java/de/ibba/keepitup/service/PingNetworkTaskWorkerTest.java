@@ -62,7 +62,7 @@ public class PingNetworkTaskWorkerTest {
         assertEquals(45, logEntry.getNetworkTaskId());
         assertTrue(logEntry.getTimestamp() > -1);
         assertFalse(logEntry.isSuccess());
-        assertEquals("IllegalArgumentException: TestException", logEntry.getMessage());
+        assertEquals("DNS lookup failed. IllegalArgumentException: TestException", logEntry.getMessage());
     }
 
     @Test
@@ -75,7 +75,7 @@ public class PingNetworkTaskWorkerTest {
         assertEquals(45, logEntry.getNetworkTaskId());
         assertTrue(logEntry.getTimestamp() > -1);
         assertFalse(logEntry.isSuccess());
-        assertEquals("IllegalArgumentException: TestException", logEntry.getMessage());
+        assertEquals("Ping failed. IllegalArgumentException: TestException", logEntry.getMessage());
     }
 
     @Test
@@ -87,7 +87,7 @@ public class PingNetworkTaskWorkerTest {
         assertEquals(45, logEntry.getNetworkTaskId());
         assertTrue(logEntry.getTimestamp() > -1);
         assertFalse(logEntry.isSuccess());
-        assertEquals("testoutput", logEntry.getMessage());
+        assertEquals("Ping failed. testoutput", logEntry.getMessage());
     }
 
     @Test
