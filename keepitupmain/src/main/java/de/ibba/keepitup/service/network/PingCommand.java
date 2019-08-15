@@ -12,6 +12,7 @@ import de.ibba.keepitup.R;
 import de.ibba.keepitup.model.NetworkTask;
 import de.ibba.keepitup.resources.PreferenceManager;
 import de.ibba.keepitup.util.StreamUtil;
+import de.ibba.keepitup.util.StringUtil;
 
 public class PingCommand implements Callable<PingCommandResult> {
 
@@ -40,6 +41,11 @@ public class PingCommand implements Callable<PingCommandResult> {
             Log.d(PingCommand.class.getName(), "Executing ping command: " + formattedCommand);
             process = runtime.exec(formattedCommand);
             output = StreamUtil.inputStreamToString(process.getInputStream(), Charsets.US_ASCII);
+            output = StringUtil.trim(output);
+            if (StringUtil.isEmpty(output)) {
+                output = StreamUtil.inputStreamToString(process.getErrorStream(), Charsets.US_ASCII);
+                output = StringUtil.trim(output);
+            }
             Log.d(PingCommand.class.getName(), "Ping output: " + output);
             returnCode = process.waitFor();
             Log.d(PingCommand.class.getName(), "Ping proccess return code: " + returnCode);

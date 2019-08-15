@@ -17,6 +17,7 @@ import de.ibba.keepitup.resources.PreferenceManager;
 import de.ibba.keepitup.service.network.PingCommand;
 import de.ibba.keepitup.service.network.PingCommandResult;
 import de.ibba.keepitup.util.ExceptionUtil;
+import de.ibba.keepitup.util.StringUtil;
 
 public class PingNetworkTaskWorker extends NetworkTaskWorker {
 
@@ -51,7 +52,7 @@ public class PingNetworkTaskWorker extends NetworkTaskWorker {
             } else {
                 Log.d(PingNetworkTaskWorker.class.getName(), "Ping was not successful because the ping command returned " + pingResult.getProcessReturnCode());
                 logEntry.setSuccess(false);
-                logEntry.setMessage(pingResult.getOutput());
+                logEntry.setMessage(getFailureMessage(pingResult.getProcessReturnCode(), pingResult.getOutput()));
             }
         } catch (Throwable exc) {
             Log.d(PingNetworkTaskWorker.class.getName(), "Error executing " + pingCommand.getClass().getName(), exc);
@@ -67,6 +68,13 @@ public class PingNetworkTaskWorker extends NetworkTaskWorker {
 
     private String getMessageFromException(Throwable exc) {
         return ExceptionUtil.getLogableMessage(ExceptionUtil.getRootCause(exc));
+    }
+
+    private String getFailureMessage(int returnCode, String output) {
+        if (StringUtil.isEmpty(output)) {
+            return getResources().getString(R.string.text_ping_process_error, returnCode);
+        }
+        return output;
     }
 
     protected Callable<PingCommandResult> getPingCommand(NetworkTask networkTask) {

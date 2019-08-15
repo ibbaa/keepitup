@@ -10,6 +10,13 @@ public class StringUtil {
         return value.toString();
     }
 
+    public static String trim(String value) {
+        if(value == null) {
+            return value;
+        }
+        return value.trim();
+    }
+
     public static boolean isEmpty(String value) {
         return value == null || value.isEmpty();
     }

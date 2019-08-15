@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="text_access_type_null">Type not specified.</string>
+    <string name="text_ping_process_error">Ping failed. Return code: %d</string>
 </resources>
