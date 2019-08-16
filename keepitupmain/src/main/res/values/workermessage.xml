@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="text_access_type_null">Type not specified.</string>
+    <string name="text_no_network_connection">No active network connection.</string>
+    <string name="text_no_wifi_connection">Skipped. No active wifi connection.</string>
     <string name="text_timeout">No response within %d</string>
     <string name="text_dns_lookup_error">DNS lookup failed.</string>
     <string name="text_ping_error">Ping failed.</string>

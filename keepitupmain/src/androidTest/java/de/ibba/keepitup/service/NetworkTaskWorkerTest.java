@@ -14,10 +14,12 @@ import de.ibba.keepitup.db.LogDAO;
 import de.ibba.keepitup.model.AccessType;
 import de.ibba.keepitup.model.LogEntry;
 import de.ibba.keepitup.model.NetworkTask;
+import de.ibba.keepitup.test.mock.MockNetworkManager;
 import de.ibba.keepitup.test.mock.TestNetworkTaskWorker;
 import de.ibba.keepitup.test.mock.TestRegistry;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 @MediumTest
@@ -38,9 +40,12 @@ public class NetworkTaskWorkerTest {
     }
 
     @Test
-    public void testLogWritten() {
+    public void testSuccessfulExecution() {
         NetworkTask task = getNetworkTask();
         TestNetworkTaskWorker testNetworkTaskWorker = new TestNetworkTaskWorker(TestRegistry.getContext(), task, null);
+        MockNetworkManager networkManager = (MockNetworkManager) testNetworkTaskWorker.getNetworkManager();
+        networkManager.setConnected(true);
+        networkManager.setConnectedWithWiFi(true);
         testNetworkTaskWorker.run();
         List<LogEntry> entries = logDAO.readAllLogsForNetworkTask(task.getId());
         assertEquals(1, entries.size());
@@ -49,6 +54,41 @@ public class NetworkTaskWorkerTest {
         assertTrue(entry.getTimestamp() > 0);
         assertTrue(entry.isSuccess());
         assertEquals("successful", entry.getMessage());
+    }
+
+    @Test
+    public void testNoNetworkConnection() {
+        NetworkTask task = getNetworkTask();
+        TestNetworkTaskWorker testNetworkTaskWorker = new TestNetworkTaskWorker(TestRegistry.getContext(), task, null);
+        MockNetworkManager networkManager = (MockNetworkManager) testNetworkTaskWorker.getNetworkManager();
+        networkManager.setConnected(false);
+        networkManager.setConnectedWithWiFi(false);
+        testNetworkTaskWorker.run();
+        List<LogEntry> entries = logDAO.readAllLogsForNetworkTask(task.getId());
+        assertEquals(1, entries.size());
+        LogEntry entry = entries.get(0);
+        assertEquals(task.getId(), entry.getNetworkTaskId());
+        assertTrue(entry.getTimestamp() > 0);
+        assertFalse(entry.isSuccess());
+        assertEquals("No active network connection.", entry.getMessage());
+    }
+
+    @Test
+    public void testNoWifiConnection() {
+        NetworkTask task = getNetworkTask();
+        task.setOnlyWifi(true);
+        TestNetworkTaskWorker testNetworkTaskWorker = new TestNetworkTaskWorker(TestRegistry.getContext(), task, null);
+        MockNetworkManager networkManager = (MockNetworkManager) testNetworkTaskWorker.getNetworkManager();
+        networkManager.setConnected(true);
+        networkManager.setConnectedWithWiFi(false);
+        testNetworkTaskWorker.run();
+        List<LogEntry> entries = logDAO.readAllLogsForNetworkTask(task.getId());
+        assertEquals(1, entries.size());
+        LogEntry entry = entries.get(0);
+        assertEquals(task.getId(), entry.getNetworkTaskId());
+        assertTrue(entry.getTimestamp() > 0);
+        assertFalse(entry.isSuccess());
+        assertEquals("Skipped. No active wifi connection.", entry.getMessage());
     }
 
     private NetworkTask getNetworkTask() {

@@ -7,7 +7,9 @@ import android.util.Log;
 import de.ibba.keepitup.notification.INotificatioManager;
 import de.ibba.keepitup.notification.SystemNotificationManager;
 import de.ibba.keepitup.service.IAlarmManager;
+import de.ibba.keepitup.service.INetworkManager;
 import de.ibba.keepitup.service.SystemAlarmManager;
+import de.ibba.keepitup.service.SystemNetworkManager;
 import de.ibba.keepitup.ui.sync.IHandler;
 import de.ibba.keepitup.ui.sync.SystemHandler;
 import de.ibba.keepitup.ui.sync.UISyncAsyncTask;
@@ -42,5 +44,11 @@ public class SystemServiceFactory implements ServiceFactory {
     public UISyncAsyncTask createUISyncAsyncTask() {
         Log.d(SystemServiceFactory.class.getName(), "createUISyncAsyncTask");
         return new UISyncAsyncTask();
+    }
+
+    @Override
+    public INetworkManager createNetworkManager(Context context) {
+        Log.d(SystemServiceFactory.class.getName(), "createNetworkManager");
+        return new SystemNetworkManager(context);
     }
 }

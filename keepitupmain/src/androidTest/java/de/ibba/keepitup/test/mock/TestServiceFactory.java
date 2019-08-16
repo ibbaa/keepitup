@@ -7,6 +7,7 @@ import android.util.Log;
 import de.ibba.keepitup.notification.INotificatioManager;
 import de.ibba.keepitup.resources.ServiceFactory;
 import de.ibba.keepitup.service.IAlarmManager;
+import de.ibba.keepitup.service.INetworkManager;
 import de.ibba.keepitup.ui.sync.IHandler;
 import de.ibba.keepitup.ui.sync.UISyncAsyncTask;
 
@@ -40,5 +41,11 @@ public class TestServiceFactory implements ServiceFactory {
     public UISyncAsyncTask createUISyncAsyncTask() {
         Log.d(TestServiceFactory.class.getName(), "createUISyncAsyncTask");
         return new MockUISyncAsyncTask();
+    }
+
+    @Override
+    public INetworkManager createNetworkManager(Context context) {
+        Log.d(TestServiceFactory.class.getName(), "createNetworkManager");
+        return new MockNetworkManager();
     }
 }
