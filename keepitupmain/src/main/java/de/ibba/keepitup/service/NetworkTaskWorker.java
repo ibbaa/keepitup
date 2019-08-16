@@ -38,6 +38,8 @@ public abstract class NetworkTaskWorker implements Runnable {
             Log.d(NetworkTaskWorker.class.getName(), "Writing log entry to database " + logEntry);
             LogDAO logDAO = new LogDAO(getContext());
             logDAO.insertAndDeleteLog(logEntry);
+        } catch (Exception exc) {
+            Log.d(NetworkTaskWorker.class.getName(), "Fatal errror while executing worker and writing log", exc);
         } finally {
             if (wakeLock != null && wakeLock.isHeld()) {
                 Log.d(NetworkTaskWorker.class.getName(), "Releasing partial wake lock");
