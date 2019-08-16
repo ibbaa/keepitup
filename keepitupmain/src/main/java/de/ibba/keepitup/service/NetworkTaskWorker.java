@@ -7,6 +7,7 @@ import android.util.Log;
 
 import de.ibba.keepitup.R;
 import de.ibba.keepitup.db.LogDAO;
+import de.ibba.keepitup.db.NetworkTaskDAO;
 import de.ibba.keepitup.model.LogEntry;
 import de.ibba.keepitup.model.NetworkTask;
 import de.ibba.keepitup.resources.ServiceFactoryContributor;
@@ -35,9 +36,13 @@ public abstract class NetworkTaskWorker implements Runnable {
             if (logEntry == null) {
                 logEntry = execute(networkTask);
             }
-            Log.d(NetworkTaskWorker.class.getName(), "Writing log entry to database " + logEntry);
-            LogDAO logDAO = new LogDAO(getContext());
-            logDAO.insertAndDeleteLog(logEntry);
+            if (doesNetworkTaskExist(networkTask)) {
+                Log.d(NetworkTaskWorker.class.getName(), "Writing log entry to database " + logEntry);
+                LogDAO logDAO = new LogDAO(getContext());
+                logDAO.insertAndDeleteLog(logEntry);
+            } else {
+                Log.d(NetworkTaskWorker.class.getName(), "Network task does no longer exist. Not writing log.");
+            }
         } catch (Exception exc) {
             Log.d(NetworkTaskWorker.class.getName(), "Fatal errror while executing worker and writing log", exc);
         } finally {
@@ -72,6 +77,12 @@ public abstract class NetworkTaskWorker implements Runnable {
     private INetworkManager createNetworkManager() {
         ServiceFactoryContributor factoryContributor = new ServiceFactoryContributor(getContext());
         return factoryContributor.createServiceFactory().createNetworkManager(getContext());
+    }
+
+    private boolean doesNetworkTaskExist(NetworkTask task) {
+        NetworkTaskDAO networkTaskDAO = new NetworkTaskDAO(getContext());
+        task = networkTaskDAO.readNetworkTask(task.getId());
+        return task != null;
     }
 
     public INetworkManager getNetworkManager() {
