@@ -11,6 +11,7 @@ import org.junit.runner.RunWith;
 import java.util.List;
 
 import de.ibba.keepitup.db.LogDAO;
+import de.ibba.keepitup.db.NetworkTaskDAO;
 import de.ibba.keepitup.model.AccessType;
 import de.ibba.keepitup.model.LogEntry;
 import de.ibba.keepitup.model.NetworkTask;
@@ -26,22 +27,27 @@ import static org.junit.Assert.assertTrue;
 @RunWith(AndroidJUnit4.class)
 public class NetworkTaskWorkerTest {
 
+    private NetworkTaskDAO networkTaskDAO;
     private LogDAO logDAO;
 
     @Before
     public void beforeEachTestMethod() {
+        networkTaskDAO = new NetworkTaskDAO(TestRegistry.getContext());
+        networkTaskDAO.deleteAllNetworkTasks();
         logDAO = new LogDAO(TestRegistry.getContext());
         logDAO.deleteAllLogs();
     }
 
     @After
     public void afterEachTestMethod() {
+        networkTaskDAO.deleteAllNetworkTasks();
         logDAO.deleteAllLogs();
     }
 
     @Test
     public void testSuccessfulExecution() {
         NetworkTask task = getNetworkTask();
+        networkTaskDAO.insertNetworkTask(task);
         TestNetworkTaskWorker testNetworkTaskWorker = new TestNetworkTaskWorker(TestRegistry.getContext(), task, null);
         MockNetworkManager networkManager = (MockNetworkManager) testNetworkTaskWorker.getNetworkManager();
         networkManager.setConnected(true);
@@ -57,8 +63,21 @@ public class NetworkTaskWorkerTest {
     }
 
     @Test
+    public void testNetworkTaskDoesNotExist() {
+        NetworkTask task = getNetworkTask();
+        TestNetworkTaskWorker testNetworkTaskWorker = new TestNetworkTaskWorker(TestRegistry.getContext(), task, null);
+        MockNetworkManager networkManager = (MockNetworkManager) testNetworkTaskWorker.getNetworkManager();
+        networkManager.setConnected(true);
+        networkManager.setConnectedWithWiFi(true);
+        testNetworkTaskWorker.run();
+        List<LogEntry> entries = logDAO.readAllLogsForNetworkTask(task.getId());
+        assertEquals(0, entries.size());
+    }
+
+    @Test
     public void testNoNetworkConnection() {
         NetworkTask task = getNetworkTask();
+        networkTaskDAO.insertNetworkTask(task);
         TestNetworkTaskWorker testNetworkTaskWorker = new TestNetworkTaskWorker(TestRegistry.getContext(), task, null);
         MockNetworkManager networkManager = (MockNetworkManager) testNetworkTaskWorker.getNetworkManager();
         networkManager.setConnected(false);
@@ -76,6 +95,7 @@ public class NetworkTaskWorkerTest {
     @Test
     public void testNoWifiConnection() {
         NetworkTask task = getNetworkTask();
+        networkTaskDAO.insertNetworkTask(task);
         task.setOnlyWifi(true);
         TestNetworkTaskWorker testNetworkTaskWorker = new TestNetworkTaskWorker(TestRegistry.getContext(), task, null);
         MockNetworkManager networkManager = (MockNetworkManager) testNetworkTaskWorker.getNetworkManager();
