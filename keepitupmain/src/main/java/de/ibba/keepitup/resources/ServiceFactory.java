@@ -5,6 +5,7 @@ import android.support.v4.app.NotificationCompat;
 
 import de.ibba.keepitup.notification.INotificatioManager;
 import de.ibba.keepitup.service.IAlarmManager;
+import de.ibba.keepitup.service.INetworkManager;
 import de.ibba.keepitup.ui.sync.IHandler;
 import de.ibba.keepitup.ui.sync.UISyncAsyncTask;
 
@@ -19,4 +20,6 @@ public interface ServiceFactory {
     IHandler createHandler();
 
     UISyncAsyncTask createUISyncAsyncTask();
+
+    INetworkManager createNetworkManager(Context context);
 }

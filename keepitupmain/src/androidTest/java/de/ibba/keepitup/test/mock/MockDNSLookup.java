@@ -13,7 +13,7 @@ public class MockDNSLookup extends DNSLookup {
     }
 
     @Override
-    public DNSLookupResult call() throws Exception {
+    public DNSLookupResult call() {
         return dnsLookupResult;
     }
 }

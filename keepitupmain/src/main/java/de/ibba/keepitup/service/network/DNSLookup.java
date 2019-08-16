@@ -14,7 +14,7 @@ public class DNSLookup implements Callable<DNSLookupResult> {
     }
 
     @Override
-    public DNSLookupResult call() throws Exception {
+    public DNSLookupResult call() {
         Log.d(DNSLookup.class.getName(), "call");
         try {
             InetAddress address = InetAddress.getByName(host);

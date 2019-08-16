@@ -13,6 +13,8 @@ public class TestNetworkTaskWorker extends NetworkTaskWorker {
 
     public TestNetworkTaskWorker(Context context, NetworkTask networkTask, PowerManager.WakeLock wakeLock) {
         super(context, networkTask, wakeLock);
+        ((MockNetworkManager) getNetworkManager()).setConnected(true);
+        ((MockNetworkManager) getNetworkManager()).setConnectedWithWiFi(true);
     }
 
     @Override
