@@ -52,6 +52,8 @@ class NetworkTaskHandler {
                 Log.e(NetworkTaskHandler.class.getName(), "Error inserting task into database. Showing error dialog.");
                 mainActivity.showErrorDialog(getResources().getString(R.string.text_dialog_general_error_insert_network_task));
             } else {
+                LogDAO logDAO = new LogDAO(mainActivity);
+                logDAO.deleteAllLogsForNetworkTask(task.getId());
                 getAdapter().addItem(new NetworkTaskUIWrapper(task, null));
             }
         } catch (Exception exc) {

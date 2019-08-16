@@ -34,9 +34,16 @@ public class NetworkTaskServiceScheduler {
 
     public NetworkTask reschedule(NetworkTask networkTask, boolean immediate) {
         Log.d(NetworkTaskServiceScheduler.class.getName(), "Reschedule network task " + networkTask + ", immediate is " + immediate);
-        if (hasPendingAlarm(networkTask)) {
-            Log.d(NetworkTaskServiceScheduler.class.getName(), "Network has pending alarm");
-            cancel(networkTask);
+        NetworkTask databaseTask = networkTaskDAO.readNetworkTask(networkTask.getId());
+        if (databaseTask == null) {
+            Log.d(NetworkTaskServiceScheduler.class.getName(), "Network task does no longer exist. Skipping reschedule.");
+            terminate(networkTask);
+            return networkTask;
+        }
+        if (!databaseTask.isRunning()) {
+            Log.d(NetworkTaskServiceScheduler.class.getName(), "Network task is no longer running. Skipping reschedule.");
+            terminate(networkTask);
+            return networkTask;
         }
         PendingIntent pendingIntent = getPendingIntent(networkTask);
         long delay = immediate ? 0 : getIntervalMilliseconds(networkTask);
@@ -115,7 +122,7 @@ public class NetworkTaskServiceScheduler {
     private PendingIntent getPendingIntent(NetworkTask networkTask) {
         Intent intent = new Intent(getContext(), NetworkTaskBroadcastReceiver.class);
         intent.putExtras(networkTask.toBundle());
-        return PendingIntent.getBroadcast(getContext(), networkTask.getSchedulerId(), intent, 0);
+        return PendingIntent.getBroadcast(getContext(), networkTask.getSchedulerId(), intent, PendingIntent.FLAG_CANCEL_CURRENT);
     }
 
     private long getIntervalMilliseconds(NetworkTask networkTask) {

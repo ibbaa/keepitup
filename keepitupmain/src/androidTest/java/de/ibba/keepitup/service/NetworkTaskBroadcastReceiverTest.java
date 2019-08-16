@@ -12,6 +12,7 @@ import org.junit.runner.RunWith;
 import java.util.List;
 
 import de.ibba.keepitup.db.LogDAO;
+import de.ibba.keepitup.db.NetworkTaskDAO;
 import de.ibba.keepitup.model.AccessType;
 import de.ibba.keepitup.model.LogEntry;
 import de.ibba.keepitup.model.NetworkTask;
@@ -24,11 +25,14 @@ import static org.junit.Assert.assertTrue;
 @RunWith(AndroidJUnit4.class)
 public class NetworkTaskBroadcastReceiverTest {
 
+    private NetworkTaskDAO networkTaskDAO;
     private LogDAO logDAO;
     private NetworkTaskBroadcastReceiver broadcastReceiver;
 
     @Before
     public void beforeEachTestMethod() {
+        networkTaskDAO = new NetworkTaskDAO(TestRegistry.getContext());
+        networkTaskDAO.deleteAllNetworkTasks();
         logDAO = new LogDAO(TestRegistry.getContext());
         logDAO.deleteAllLogs();
         broadcastReceiver = new NetworkTaskBroadcastReceiver();
@@ -36,12 +40,15 @@ public class NetworkTaskBroadcastReceiverTest {
 
     @After
     public void afterEachTestMethod() {
+        networkTaskDAO.deleteAllNetworkTasks();
         logDAO.deleteAllLogs();
     }
 
     @Test
     public void testLogWritten() {
         NetworkTask task = getNetworkTask();
+        task = networkTaskDAO.insertNetworkTask(task);
+        networkTaskDAO.updateNetworkTaskRunning(task.getId(), true);
         Intent intent = new Intent();
         intent.putExtras(task.toBundle());
         broadcastReceiver.onReceive(TestRegistry.getContext(), intent);
@@ -52,6 +59,28 @@ public class NetworkTaskBroadcastReceiverTest {
         assertTrue(entry.getTimestamp() > 0);
         assertTrue(entry.isSuccess());
         assertEquals("successful", entry.getMessage());
+    }
+
+    @Test
+    public void testExecutionSkippedNetworkTaskDoesNotExist() {
+        NetworkTask task = getNetworkTask();
+        Intent intent = new Intent();
+        intent.putExtras(task.toBundle());
+        broadcastReceiver.onReceive(TestRegistry.getContext(), intent);
+        List<LogEntry> entries = logDAO.readAllLogsForNetworkTask(task.getId());
+        assertEquals(0, entries.size());
+    }
+
+    @Test
+    public void testExecutionSkippedMarkedAsNotRunning() {
+        NetworkTask task = getNetworkTask();
+        task = networkTaskDAO.insertNetworkTask(task);
+        networkTaskDAO.updateNetworkTaskRunning(task.getId(), false);
+        Intent intent = new Intent();
+        intent.putExtras(task.toBundle());
+        broadcastReceiver.onReceive(TestRegistry.getContext(), intent);
+        List<LogEntry> entries = logDAO.readAllLogsForNetworkTask(task.getId());
+        assertEquals(0, entries.size());
     }
 
     private NetworkTask getNetworkTask() {
