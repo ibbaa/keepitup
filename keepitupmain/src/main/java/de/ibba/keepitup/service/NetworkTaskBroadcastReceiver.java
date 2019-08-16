@@ -11,6 +11,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import de.ibba.keepitup.R;
+import de.ibba.keepitup.db.NetworkTaskDAO;
 import de.ibba.keepitup.model.NetworkTask;
 import de.ibba.keepitup.resources.WorkerFactory;
 import de.ibba.keepitup.resources.WorkerFactoryContributor;
@@ -55,6 +56,10 @@ public class NetworkTaskBroadcastReceiver extends BroadcastReceiver {
     private void doWork(Context context, NetworkTask task, PowerManager.WakeLock wakeLock, boolean synchronous, ExecutorService executorService) {
         Log.d(NetworkTaskBroadcastReceiver.class.getName(), "Doing work for " + task);
         Log.d(NetworkTaskBroadcastReceiver.class.getName(), "Synchronous is " + synchronous);
+        if (!isNetworkTaskRunning(context, task)) {
+            Log.d(NetworkTaskBroadcastReceiver.class.getName(), "Network task has been marked as not running. Skipping execution");
+            return;
+        }
         WorkerFactoryContributor workerFactoryContributor = new WorkerFactoryContributor(context);
         WorkerFactory workerFactory = workerFactoryContributor.createWorkerFactory();
         Log.d(NetworkTaskBroadcastReceiver.class.getName(), "Worker factory is " + workerFactory.getClass().getName());
@@ -67,5 +72,11 @@ public class NetworkTaskBroadcastReceiver extends BroadcastReceiver {
             Log.d(NetworkTaskBroadcastReceiver.class.getName(), "Worker is " + networkTaskWorker.getClass().getName());
             executorService.execute(networkTaskWorker);
         }
+    }
+
+    private boolean isNetworkTaskRunning(Context context, NetworkTask task) {
+        NetworkTaskDAO networkTaskDAO = new NetworkTaskDAO(context);
+        task = networkTaskDAO.readNetworkTask(task.getId());
+        return task != null && task.isRunning();
     }
 }

@@ -18,7 +18,6 @@ import de.ibba.keepitup.test.mock.TestRegistry;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertTrue;
 
 @MediumTest
@@ -73,7 +72,6 @@ public class NetworkTaskServiceSchedulerTest {
         assertEquals(2, setAlarmCalls.size());
         MockAlarmManager.SetAlarmCall setAlarmCall2 = setAlarmCalls.get(1);
         assertEquals(0, setAlarmCall2.getDelay());
-        assertNotEquals(setAlarmCall1.getPendingIntent(), setAlarmCall2.getPendingIntent());
         task1 = scheduler.cancel(task1);
         assertFalse(task1.isRunning());
         assertTrue(task2.isRunning());
@@ -82,8 +80,6 @@ public class NetworkTaskServiceSchedulerTest {
         assertTrue(alarmManager.wasCancelAlarmCalled());
         List<MockAlarmManager.CancelAlarmCall> cancelAlarmCalls = alarmManager.getCancelAlarmCalls();
         assertEquals(1, cancelAlarmCalls.size());
-        MockAlarmManager.CancelAlarmCall cancelAlarmCall1 = cancelAlarmCalls.get(0);
-        assertEquals(setAlarmCall1.getPendingIntent(), cancelAlarmCall1.getPendingIntent());
         task2 = scheduler.cancel(task2);
         assertFalse(task1.isRunning());
         assertFalse(task2.isRunning());
@@ -92,9 +88,6 @@ public class NetworkTaskServiceSchedulerTest {
         assertTrue(alarmManager.wasCancelAlarmCalled());
         cancelAlarmCalls = alarmManager.getCancelAlarmCalls();
         assertEquals(2, cancelAlarmCalls.size());
-        MockAlarmManager.CancelAlarmCall cancelAlarmCall2 = cancelAlarmCalls.get(1);
-        assertEquals(setAlarmCall2.getPendingIntent(), cancelAlarmCall2.getPendingIntent());
-        assertNotEquals(cancelAlarmCall1.getPendingIntent(), cancelAlarmCall2.getPendingIntent());
     }
 
     @Test
@@ -108,45 +101,30 @@ public class NetworkTaskServiceSchedulerTest {
         assertFalse(task2.isRunning());
         assertFalse(isTaskMarkedAsRunningInDatabase(task1));
         assertFalse(isTaskMarkedAsRunningInDatabase(task2));
+        assertFalse(alarmManager.wasSetAlarmCalled());
+        assertTrue(alarmManager.wasCancelAlarmCalled());
+        alarmManager.reset();
+        task2.setRunning(true);
+        networkTaskDAO.updateNetworkTaskRunning(task2.getId(), true);
+        task2 = scheduler.reschedule(task2, false);
+        assertFalse(task1.isRunning());
+        assertTrue(task2.isRunning());
+        assertFalse(isTaskMarkedAsRunningInDatabase(task1));
+        assertTrue(isTaskMarkedAsRunningInDatabase(task2));
         assertTrue(alarmManager.wasSetAlarmCalled());
         assertFalse(alarmManager.wasCancelAlarmCalled());
         List<MockAlarmManager.SetAlarmCall> setAlarmCalls = alarmManager.getSetAlarmCalls();
         assertEquals(1, setAlarmCalls.size());
         MockAlarmManager.SetAlarmCall setAlarmCall1 = setAlarmCalls.get(0);
-        assertEquals(20 * 60 * 1000, setAlarmCall1.getDelay());
-        task2 = scheduler.reschedule(task2, false);
+        assertEquals(60 * 1000, setAlarmCall1.getDelay());
+        task2 = scheduler.terminate(task2);
         assertFalse(task1.isRunning());
-        assertFalse(task2.isRunning());
+        assertTrue(task2.isRunning());
         assertFalse(isTaskMarkedAsRunningInDatabase(task1));
-        assertFalse(isTaskMarkedAsRunningInDatabase(task2));
-        assertTrue(alarmManager.wasSetAlarmCalled());
-        assertFalse(alarmManager.wasCancelAlarmCalled());
-        setAlarmCalls = alarmManager.getSetAlarmCalls();
-        assertEquals(2, setAlarmCalls.size());
-        MockAlarmManager.SetAlarmCall setAlarmCall2 = setAlarmCalls.get(1);
-        assertEquals(60 * 1000, setAlarmCall2.getDelay());
-        assertNotEquals(setAlarmCall1.getPendingIntent(), setAlarmCall2.getPendingIntent());
-        task1 = scheduler.terminate(task1);
-        assertFalse(task1.isRunning());
-        assertFalse(task2.isRunning());
-        assertFalse(isTaskMarkedAsRunningInDatabase(task1));
-        assertFalse(isTaskMarkedAsRunningInDatabase(task2));
+        assertTrue(isTaskMarkedAsRunningInDatabase(task2));
         assertTrue(alarmManager.wasCancelAlarmCalled());
         List<MockAlarmManager.CancelAlarmCall> cancelAlarmCalls = alarmManager.getCancelAlarmCalls();
         assertEquals(1, cancelAlarmCalls.size());
-        MockAlarmManager.CancelAlarmCall cancelAlarmCall1 = cancelAlarmCalls.get(0);
-        assertEquals(setAlarmCall1.getPendingIntent(), cancelAlarmCall1.getPendingIntent());
-        task2 = scheduler.terminate(task2);
-        assertFalse(task1.isRunning());
-        assertFalse(task2.isRunning());
-        assertFalse(isTaskMarkedAsRunningInDatabase(task1));
-        assertFalse(isTaskMarkedAsRunningInDatabase(task2));
-        assertTrue(alarmManager.wasCancelAlarmCalled());
-        cancelAlarmCalls = alarmManager.getCancelAlarmCalls();
-        assertEquals(2, cancelAlarmCalls.size());
-        MockAlarmManager.CancelAlarmCall cancelAlarmCall2 = alarmManager.getCancelAlarmCalls().get(1);
-        assertEquals(setAlarmCall2.getPendingIntent(), cancelAlarmCall2.getPendingIntent());
-        assertNotEquals(cancelAlarmCall1.getPendingIntent(), cancelAlarmCall2.getPendingIntent());
     }
 
     @Test
@@ -197,15 +175,6 @@ public class NetworkTaskServiceSchedulerTest {
         assertFalse(isTaskMarkedAsRunningInDatabase(task1));
         assertFalse(isTaskMarkedAsRunningInDatabase(task2));
         assertTrue(alarmManager.wasCancelAlarmCalled());
-        List<MockAlarmManager.CancelAlarmCall> cancelAlarmCalls = alarmManager.getCancelAlarmCalls();
-        assertEquals(2, cancelAlarmCalls.size());
-        MockAlarmManager.SetAlarmCall setAlarmCall1 = alarmManager.getSetAlarmCalls().get(0);
-        MockAlarmManager.SetAlarmCall setAlarmCall2 = alarmManager.getSetAlarmCalls().get(1);
-        MockAlarmManager.CancelAlarmCall cancelAlarmCall1 = cancelAlarmCalls.get(0);
-        MockAlarmManager.CancelAlarmCall cancelAlarmCall2 = cancelAlarmCalls.get(1);
-        assertEquals(setAlarmCall1.getPendingIntent(), cancelAlarmCall1.getPendingIntent());
-        assertEquals(setAlarmCall2.getPendingIntent(), cancelAlarmCall2.getPendingIntent());
-        assertNotEquals(cancelAlarmCall1.getPendingIntent(), cancelAlarmCall2.getPendingIntent());
     }
 
     @Test
@@ -226,15 +195,6 @@ public class NetworkTaskServiceSchedulerTest {
         assertTrue(isTaskMarkedAsRunningInDatabase(task1));
         assertTrue(isTaskMarkedAsRunningInDatabase(task2));
         assertTrue(alarmManager.wasCancelAlarmCalled());
-        List<MockAlarmManager.CancelAlarmCall> cancelAlarmCalls = alarmManager.getCancelAlarmCalls();
-        assertEquals(2, cancelAlarmCalls.size());
-        MockAlarmManager.SetAlarmCall setAlarmCall1 = alarmManager.getSetAlarmCalls().get(0);
-        MockAlarmManager.SetAlarmCall setAlarmCall2 = alarmManager.getSetAlarmCalls().get(1);
-        MockAlarmManager.CancelAlarmCall cancelAlarmCall1 = cancelAlarmCalls.get(0);
-        MockAlarmManager.CancelAlarmCall cancelAlarmCall2 = cancelAlarmCalls.get(1);
-        assertEquals(setAlarmCall1.getPendingIntent(), cancelAlarmCall1.getPendingIntent());
-        assertEquals(setAlarmCall2.getPendingIntent(), cancelAlarmCall2.getPendingIntent());
-        assertNotEquals(cancelAlarmCall1.getPendingIntent(), cancelAlarmCall2.getPendingIntent());
     }
 
     private boolean isTaskMarkedAsRunningInDatabase(NetworkTask task) {
