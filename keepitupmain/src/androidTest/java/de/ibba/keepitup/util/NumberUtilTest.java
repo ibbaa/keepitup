@@ -42,4 +42,18 @@ public class NumberUtilTest {
         assertEquals(4, NumberUtil.getIntValue("xyz", 4));
         assertEquals(4, NumberUtil.getIntValue(null, 4));
     }
+
+    @Test
+    public void testDoubleValue() {
+        assertTrue(NumberUtil.isValidDoubleValue("1"));
+        assertTrue(NumberUtil.isValidDoubleValue("2.3"));
+        assertTrue(NumberUtil.isValidDoubleValue("23,000"));
+        assertFalse(NumberUtil.isValidDoubleValue("xyz"));
+        assertFalse(NumberUtil.isValidDoubleValue(null));
+        assertEquals(1, NumberUtil.getDoubleValue("1", 2), 0.01);
+        assertEquals(2.3, NumberUtil.getDoubleValue("2.3", 2), 0.01);
+        assertEquals(23000, NumberUtil.getDoubleValue("23,000", 2), 0.01);
+        assertEquals(2, NumberUtil.getDoubleValue("xyz", 2), 0.01);
+        assertEquals(2, NumberUtil.getDoubleValue(null, 2), 0.01);
+    }
 }
