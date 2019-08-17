@@ -45,6 +45,11 @@ public class NetworkTaskServiceScheduler {
             terminate(networkTask);
             return networkTask;
         }
+        if (databaseTask.getSchedulerId() != networkTask.getSchedulerId()) {
+            Log.d(NetworkTaskServiceScheduler.class.getName(), "Network task was updated. Skipping reschedule.");
+            terminate(networkTask);
+            return networkTask;
+        }
         PendingIntent pendingIntent = getPendingIntent(networkTask);
         long delay = immediate ? 0 : getIntervalMilliseconds(networkTask);
         if (immediate) {

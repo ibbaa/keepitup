@@ -36,7 +36,7 @@ public abstract class NetworkTaskWorker implements Runnable {
             if (logEntry == null) {
                 logEntry = execute(networkTask);
             }
-            if (doesNetworkTaskExist(networkTask)) {
+            if (isNetworkTaskValid(networkTask)) {
                 Log.d(NetworkTaskWorker.class.getName(), "Writing log entry to database " + logEntry);
                 LogDAO logDAO = new LogDAO(getContext());
                 logDAO.insertAndDeleteLog(logEntry);
@@ -79,10 +79,10 @@ public abstract class NetworkTaskWorker implements Runnable {
         return factoryContributor.createServiceFactory().createNetworkManager(getContext());
     }
 
-    private boolean doesNetworkTaskExist(NetworkTask task) {
+    private boolean isNetworkTaskValid(NetworkTask task) {
         NetworkTaskDAO networkTaskDAO = new NetworkTaskDAO(getContext());
-        task = networkTaskDAO.readNetworkTask(task.getId());
-        return task != null;
+        NetworkTask databaseTask = networkTaskDAO.readNetworkTask(task.getId());
+        return databaseTask != null && task.getSchedulerId() == databaseTask.getSchedulerId();
     }
 
     public INetworkManager getNetworkManager() {
