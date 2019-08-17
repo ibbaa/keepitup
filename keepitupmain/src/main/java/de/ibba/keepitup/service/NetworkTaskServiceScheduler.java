@@ -50,7 +50,7 @@ public class NetworkTaskServiceScheduler {
             terminate(networkTask);
             return networkTask;
         }
-        PendingIntent pendingIntent = getPendingIntent(networkTask);
+        PendingIntent pendingIntent = createPendingIntent(networkTask);
         long delay = immediate ? 0 : getIntervalMilliseconds(networkTask);
         if (immediate) {
             Log.d(NetworkTaskServiceScheduler.class.getName(), "scheduling alarm immediately");
@@ -70,9 +70,11 @@ public class NetworkTaskServiceScheduler {
 
     public NetworkTask terminate(NetworkTask networkTask) {
         Log.d(NetworkTaskServiceScheduler.class.getName(), "Terminating network task " + networkTask);
-        PendingIntent pendingIntent = getPendingIntent(networkTask);
-        alarmManager.cancelAlarm(pendingIntent);
-        pendingIntent.cancel();
+        if (hasPendingIntent(networkTask)) {
+            PendingIntent pendingIntent = getPendingIntent(networkTask);
+            alarmManager.cancelAlarm(pendingIntent);
+            pendingIntent.cancel();
+        }
         return networkTask;
     }
 
@@ -83,7 +85,7 @@ public class NetworkTaskServiceScheduler {
         for (NetworkTask currentTask : networkTasks) {
             if (currentTask.isRunning()) {
                 Log.d(NetworkTaskServiceScheduler.class.getName(), "Network task " + currentTask + " is marked as running.");
-                if (!hasPendingAlarm(currentTask)) {
+                if (!hasPendingIntent(currentTask)) {
                     Log.d(NetworkTaskServiceScheduler.class.getName(), "No pending alarm. Scheduling...");
                     reschedule(currentTask, true);
                 } else {
@@ -118,13 +120,19 @@ public class NetworkTaskServiceScheduler {
         return alarmManager;
     }
 
-    private boolean hasPendingAlarm(NetworkTask networkTask) {
+    private boolean hasPendingIntent(NetworkTask networkTask) {
         Intent intent = new Intent(getContext(), NetworkTaskBroadcastReceiver.class);
         intent.putExtras(networkTask.toBundle());
         return PendingIntent.getBroadcast(getContext(), networkTask.getSchedulerId(), intent, PendingIntent.FLAG_NO_CREATE) != null;
     }
 
     private PendingIntent getPendingIntent(NetworkTask networkTask) {
+        Intent intent = new Intent(getContext(), NetworkTaskBroadcastReceiver.class);
+        intent.putExtras(networkTask.toBundle());
+        return PendingIntent.getBroadcast(getContext(), networkTask.getSchedulerId(), intent, PendingIntent.FLAG_NO_CREATE);
+    }
+
+    private PendingIntent createPendingIntent(NetworkTask networkTask) {
         Intent intent = new Intent(getContext(), NetworkTaskBroadcastReceiver.class);
         intent.putExtras(networkTask.toBundle());
         return PendingIntent.getBroadcast(getContext(), networkTask.getSchedulerId(), intent, PendingIntent.FLAG_CANCEL_CURRENT);
