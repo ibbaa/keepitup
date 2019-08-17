@@ -102,7 +102,7 @@ public class NetworkTaskServiceSchedulerTest {
         assertFalse(isTaskMarkedAsRunningInDatabase(task1));
         assertFalse(isTaskMarkedAsRunningInDatabase(task2));
         assertFalse(alarmManager.wasSetAlarmCalled());
-        assertTrue(alarmManager.wasCancelAlarmCalled());
+        assertFalse(alarmManager.wasCancelAlarmCalled());
         alarmManager.reset();
         task2.setRunning(true);
         networkTaskDAO.updateNetworkTaskRunning(task2.getId(), true);
@@ -110,7 +110,7 @@ public class NetworkTaskServiceSchedulerTest {
         task2.setSchedulerId(schedulerId + 1);
         task2 = scheduler.reschedule(task2, false);
         assertFalse(alarmManager.wasSetAlarmCalled());
-        assertTrue(alarmManager.wasCancelAlarmCalled());
+        assertFalse(alarmManager.wasCancelAlarmCalled());
         task2.setSchedulerId(schedulerId);
         alarmManager.reset();
         task2 = scheduler.reschedule(task2, false);
