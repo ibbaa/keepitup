@@ -66,6 +66,11 @@ class NetworkTaskHandler {
     public void updateNetworkTask(NetworkTask task) {
         Log.d(NetworkTaskHandler.class.getName(), "updateNetworkTask for task " + task);
         try {
+            boolean running = task.isRunning();
+            if (running) {
+                Log.d(NetworkTaskHandler.class.getName(), "Network task is running. Cancelling.");
+                task = scheduler.cancel(task);
+            }
             NetworkTaskDAO dao = new NetworkTaskDAO(mainActivity);
             task = dao.updateNetworkTask(task);
             if (task.getSchedulerId() == SchedulerIdGenerator.ERROR_SCHEDULER_ID) {
@@ -73,9 +78,8 @@ class NetworkTaskHandler {
                 mainActivity.showErrorDialog(getResources().getString(R.string.text_dialog_general_error_update_network_task));
                 return;
             }
-            if (task.isRunning()) {
+            if (running) {
                 Log.d(NetworkTaskHandler.class.getName(), "Network task is running. Restarting.");
-                task = scheduler.cancel(task);
                 task = scheduler.schedule(task);
             }
             getAdapter().replaceNetworkTask(task);
