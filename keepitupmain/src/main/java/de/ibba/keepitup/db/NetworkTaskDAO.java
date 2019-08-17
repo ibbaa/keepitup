@@ -11,6 +11,7 @@ import java.util.List;
 
 import de.ibba.keepitup.model.AccessType;
 import de.ibba.keepitup.model.NetworkTask;
+import de.ibba.keepitup.model.SchedulerId;
 
 public class NetworkTaskDAO extends BaseDAO {
 
@@ -62,14 +63,14 @@ public class NetworkTaskDAO extends BaseDAO {
         ContentValues values = new ContentValues();
         NetworkTaskDBConstants dbConstants = new NetworkTaskDBConstants(getContext());
         SchedulerIdGenerator idGenerator = new SchedulerIdGenerator(getContext());
-        SchedulerIdGenerator.SchedulerId schedulerId = idGenerator.createUniqueSchedulerId(db);
+        SchedulerId schedulerId = idGenerator.createUniqueSchedulerId(db);
         if (!schedulerId.isValid()) {
             Log.e(NetworkTaskDAO.class.getName(), "Error inserting task into database. Scheduler dd generation failed");
             networkTask.setSchedulerId(SchedulerIdGenerator.ERROR_SCHEDULER_ID);
             networkTask.setId(-1);
             return networkTask;
         } else {
-            networkTask.setSchedulerId(schedulerId.getId());
+            networkTask.setSchedulerId(schedulerId.getSchedulerId());
         }
         values.put(dbConstants.getIndexColumnName(), networkTask.getIndex());
         values.put(dbConstants.getSchedulerIdColumnName(), networkTask.getSchedulerId());
@@ -116,13 +117,13 @@ public class NetworkTaskDAO extends BaseDAO {
         String selection = dbConstants.getIdColumnName() + " = ?";
         String[] selectionArgs = {String.valueOf(networkTask.getId())};
         SchedulerIdGenerator idGenerator = new SchedulerIdGenerator(getContext());
-        SchedulerIdGenerator.SchedulerId schedulerId = idGenerator.createUniqueSchedulerId(db);
+        SchedulerId schedulerId = idGenerator.createUniqueSchedulerId(db);
         if (!schedulerId.isValid()) {
             Log.e(NetworkTaskDAO.class.getName(), "Error updating task. Scheduler id generation failed");
             networkTask.setSchedulerId(SchedulerIdGenerator.ERROR_SCHEDULER_ID);
             return networkTask;
         } else {
-            networkTask.setSchedulerId(schedulerId.getId());
+            networkTask.setSchedulerId(schedulerId.getSchedulerId());
         }
         ContentValues values = new ContentValues();
         values.put(dbConstants.getSchedulerIdColumnName(), networkTask.getSchedulerId());
@@ -191,7 +192,7 @@ public class NetworkTaskDAO extends BaseDAO {
         NetworkTaskDBConstants dbConstants = new NetworkTaskDBConstants(getContext());
         int indexIdColumn = cursor.getColumnIndex(dbConstants.getIdColumnName());
         int indexIndexColumn = cursor.getColumnIndex(dbConstants.getIndexColumnName());
-        int schedulerIdIndexColumn = cursor.getColumnIndex(dbConstants.getSchedulerIdColumnName());
+        int indexSchedulerIdColumn = cursor.getColumnIndex(dbConstants.getSchedulerIdColumnName());
         int indexAddressColumn = cursor.getColumnIndex(dbConstants.getAddressColumnName());
         int indexPortColumn = cursor.getColumnIndex(dbConstants.getPortColumnName());
         int indexAccessTypeColumn = cursor.getColumnIndex(dbConstants.getAccessTypeColumnName());
@@ -201,7 +202,7 @@ public class NetworkTaskDAO extends BaseDAO {
         int indexRunningColumn = cursor.getColumnIndex(dbConstants.getRunningColumnName());
         networkTask.setId(cursor.getInt(indexIdColumn));
         networkTask.setIndex(cursor.getInt(indexIndexColumn));
-        networkTask.setSchedulerId(cursor.getInt(schedulerIdIndexColumn));
+        networkTask.setSchedulerId(cursor.getInt(indexSchedulerIdColumn));
         networkTask.setAddress(cursor.getString(indexAddressColumn));
         networkTask.setPort(cursor.getInt(indexPortColumn));
         if (cursor.isNull(indexAccessTypeColumn)) {

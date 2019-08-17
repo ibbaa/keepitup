@@ -80,7 +80,7 @@ public class LogDAO extends BaseDAO {
         LogEntry result = null;
         LogDBConstants dbConstants = new LogDBConstants(getContext());
         try {
-            cursor = db.rawQuery(dbConstants.getMostRecentLogStatement(), new String[]{String.valueOf(logEntry.getNetworkTaskId())});
+            cursor = db.rawQuery(dbConstants.getReadMostRecentLogStatement(), new String[]{String.valueOf(logEntry.getNetworkTaskId())});
             while (cursor.moveToNext()) {
                 int indexIdColumn = cursor.getColumnIndex(dbConstants.getIdColumnName());
                 if (!cursor.isNull(indexIdColumn)) {
@@ -104,7 +104,7 @@ public class LogDAO extends BaseDAO {
         List<LogEntry> result = new ArrayList<>();
         LogDBConstants dbConstants = new LogDBConstants(getContext());
         try {
-            cursor = db.rawQuery(dbConstants.getAllLogsStatement(), new String[]{String.valueOf(logEntry.getNetworkTaskId())});
+            cursor = db.rawQuery(dbConstants.getReadAllLogsStatement(), new String[]{String.valueOf(logEntry.getNetworkTaskId())});
             while (cursor.moveToNext()) {
                 int indexIdColumn = cursor.getColumnIndex(dbConstants.getIdColumnName());
                 if (!cursor.isNull(indexIdColumn)) {
@@ -159,7 +159,7 @@ public class LogDAO extends BaseDAO {
         Cursor result = null;
         LogDBConstants dbConstants = new LogDBConstants(getContext());
         try {
-            result = db.rawQuery(dbConstants.getOldestLogStatement(), new String[]{String.valueOf(logEntry.getNetworkTaskId())});
+            result = db.rawQuery(dbConstants.getReadOldestLogStatement(), new String[]{String.valueOf(logEntry.getNetworkTaskId())});
             if (result.moveToFirst()) {
                 int indexIdColumn = result.getColumnIndex(dbConstants.getIdColumnName());
                 if (!result.isNull(indexIdColumn)) {
