@@ -56,7 +56,7 @@ public class NetworkTaskBroadcastReceiver extends BroadcastReceiver {
     private void doWork(Context context, NetworkTask task, PowerManager.WakeLock wakeLock, boolean synchronous, ExecutorService executorService) {
         Log.d(NetworkTaskBroadcastReceiver.class.getName(), "Doing work for " + task);
         Log.d(NetworkTaskBroadcastReceiver.class.getName(), "Synchronous is " + synchronous);
-        if (!isNetworkTaskRunning(context, task)) {
+        if (!isNetworkTaskValid(context, task)) {
             Log.d(NetworkTaskBroadcastReceiver.class.getName(), "Network task has been marked as not running. Skipping execution");
             return;
         }
@@ -74,9 +74,9 @@ public class NetworkTaskBroadcastReceiver extends BroadcastReceiver {
         }
     }
 
-    private boolean isNetworkTaskRunning(Context context, NetworkTask task) {
+    private boolean isNetworkTaskValid(Context context, NetworkTask task) {
         NetworkTaskDAO networkTaskDAO = new NetworkTaskDAO(context);
-        task = networkTaskDAO.readNetworkTask(task.getId());
-        return task != null && task.isRunning();
+        NetworkTask databaseTask = networkTaskDAO.readNetworkTask(task.getId());
+        return databaseTask != null && databaseTask.isRunning() && databaseTask.getSchedulerId() == task.getSchedulerId();
     }
 }

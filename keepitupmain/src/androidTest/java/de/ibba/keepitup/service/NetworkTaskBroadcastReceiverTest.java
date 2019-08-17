@@ -82,6 +82,18 @@ public class NetworkTaskBroadcastReceiverTest {
         List<LogEntry> entries = logDAO.readAllLogsForNetworkTask(task.getId());
         assertEquals(0, entries.size());
     }
+    @Test
+    public void testExecutionSkippedNotValid() {
+        NetworkTask task = getNetworkTask();
+        task = networkTaskDAO.insertNetworkTask(task);
+        networkTaskDAO.updateNetworkTaskRunning(task.getId(), true);
+        task.setSchedulerId(task.getSchedulerId() + 1);
+        Intent intent = new Intent();
+        intent.putExtras(task.toBundle());
+        broadcastReceiver.onReceive(TestRegistry.getContext(), intent);
+        List<LogEntry> entries = logDAO.readAllLogsForNetworkTask(task.getId());
+        assertEquals(0, entries.size());
+    }
 
     private NetworkTask getNetworkTask() {
         NetworkTask networkTask = new NetworkTask();

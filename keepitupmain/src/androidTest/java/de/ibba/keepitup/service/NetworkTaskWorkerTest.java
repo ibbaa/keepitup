@@ -75,6 +75,20 @@ public class NetworkTaskWorkerTest {
     }
 
     @Test
+    public void testNetworkTaskIsNotValid() {
+        NetworkTask task = getNetworkTask();
+        task = networkTaskDAO.insertNetworkTask(task);
+        task.setSchedulerId(task.getSchedulerId() + 1);
+        TestNetworkTaskWorker testNetworkTaskWorker = new TestNetworkTaskWorker(TestRegistry.getContext(), task, null);
+        MockNetworkManager networkManager = (MockNetworkManager) testNetworkTaskWorker.getNetworkManager();
+        networkManager.setConnected(true);
+        networkManager.setConnectedWithWiFi(true);
+        testNetworkTaskWorker.run();
+        List<LogEntry> entries = logDAO.readAllLogsForNetworkTask(task.getId());
+        assertEquals(0, entries.size());
+    }
+
+    @Test
     public void testNoNetworkConnection() {
         NetworkTask task = getNetworkTask();
         networkTaskDAO.insertNetworkTask(task);

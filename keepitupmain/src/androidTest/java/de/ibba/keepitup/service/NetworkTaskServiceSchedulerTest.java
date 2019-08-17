@@ -106,6 +106,13 @@ public class NetworkTaskServiceSchedulerTest {
         alarmManager.reset();
         task2.setRunning(true);
         networkTaskDAO.updateNetworkTaskRunning(task2.getId(), true);
+        int schedulerId = task2.getSchedulerId();
+        task2.setSchedulerId(schedulerId + 1);
+        task2 = scheduler.reschedule(task2, false);
+        assertFalse(alarmManager.wasSetAlarmCalled());
+        assertTrue(alarmManager.wasCancelAlarmCalled());
+        task2.setSchedulerId(schedulerId);
+        alarmManager.reset();
         task2 = scheduler.reschedule(task2, false);
         assertFalse(task1.isRunning());
         assertTrue(task2.isRunning());
