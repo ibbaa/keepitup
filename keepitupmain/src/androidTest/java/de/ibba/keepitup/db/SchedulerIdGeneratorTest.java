@@ -46,6 +46,8 @@ public class SchedulerIdGeneratorTest {
         assertTrue(schedulerId1.isValid());
         assertTrue(schedulerId2.isValid());
         assertNotEquals(schedulerId1.getId(), schedulerId2.getId());
+        assertNotEquals(SchedulerIdGenerator.ERROR_SCHEDULER_ID, schedulerId1.getId());
+        assertNotEquals(SchedulerIdGenerator.ERROR_SCHEDULER_ID, schedulerId2.getId());
     }
 
     @Test

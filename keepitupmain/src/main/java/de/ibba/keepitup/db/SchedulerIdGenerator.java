@@ -11,6 +11,8 @@ import de.ibba.keepitup.R;
 
 public class SchedulerIdGenerator {
 
+    public final static int ERROR_SCHEDULER_ID = -1;
+
     private final static SecureRandom randomGenerator = new SecureRandom();
 
     private final Context context;
@@ -28,7 +30,7 @@ public class SchedulerIdGenerator {
         int schedulerId = createSchedulerId();
         Log.d(NetworkTaskDAO.class.getName(), "Created random scheduler id is " + schedulerId);
         int retryCount = context.getResources().getInteger(R.integer.scheduler_id_retry_count);
-        while (readSchedulerIdCount(schedulerId, db) > 0) {
+        while (readSchedulerIdCount(schedulerId, db) > 0 || schedulerId == ERROR_SCHEDULER_ID) {
             Log.d(NetworkTaskDAO.class.getName(), "Created random scheduler id exists. Creating new one.");
             schedulerId = createSchedulerId();
             retryCount--;
