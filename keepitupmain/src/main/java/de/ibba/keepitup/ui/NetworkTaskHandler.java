@@ -6,6 +6,7 @@ import android.util.Log;
 import de.ibba.keepitup.R;
 import de.ibba.keepitup.db.LogDAO;
 import de.ibba.keepitup.db.NetworkTaskDAO;
+import de.ibba.keepitup.db.SchedulerIdGenerator;
 import de.ibba.keepitup.model.NetworkTask;
 import de.ibba.keepitup.service.NetworkTaskServiceScheduler;
 import de.ibba.keepitup.ui.adapter.NetworkTaskAdapter;
@@ -66,7 +67,12 @@ class NetworkTaskHandler {
         Log.d(NetworkTaskHandler.class.getName(), "updateNetworkTask for task " + task);
         try {
             NetworkTaskDAO dao = new NetworkTaskDAO(mainActivity);
-            dao.updateNetworkTask(task);
+            task = dao.updateNetworkTask(task);
+            if (task.getSchedulerId() == SchedulerIdGenerator.ERROR_SCHEDULER_ID) {
+                Log.e(NetworkTaskHandler.class.getName(), "Error updating task. Showing error dialog.");
+                mainActivity.showErrorDialog(getResources().getString(R.string.text_dialog_general_error_update_network_task));
+                return;
+            }
             if (task.isRunning()) {
                 Log.d(NetworkTaskHandler.class.getName(), "Network task is running. Restarting.");
                 task = scheduler.cancel(task);

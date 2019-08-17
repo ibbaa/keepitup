@@ -82,6 +82,7 @@ public class NetworkTaskBroadcastReceiverTest {
         List<LogEntry> entries = logDAO.readAllLogsForNetworkTask(task.getId());
         assertEquals(0, entries.size());
     }
+
     @Test
     public void testExecutionSkippedNotValid() {
         NetworkTask task = getNetworkTask();

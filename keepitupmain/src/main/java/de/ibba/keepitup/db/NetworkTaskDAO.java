@@ -33,9 +33,9 @@ public class NetworkTaskDAO extends BaseDAO {
         executeDBOperationInTransaction((NetworkTask) null, this::deleteAllNetworkTasks);
     }
 
-    public void updateNetworkTask(NetworkTask networkTask) {
+    public NetworkTask updateNetworkTask(NetworkTask networkTask) {
         Log.d(NetworkTaskDAO.class.getName(), "Updating task with id " + networkTask.getId());
-        executeDBOperationInTransaction(networkTask, this::updateNetworkTask);
+        return executeDBOperationInTransaction(networkTask, this::updateNetworkTask);
     }
 
     public void updateNetworkTaskRunning(long taskId, boolean running) {
@@ -64,8 +64,10 @@ public class NetworkTaskDAO extends BaseDAO {
         SchedulerIdGenerator idGenerator = new SchedulerIdGenerator(getContext());
         SchedulerIdGenerator.SchedulerId schedulerId = idGenerator.createUniqueSchedulerId(db);
         if (!schedulerId.isValid()) {
-            Log.e(NetworkTaskDAO.class.getName(), "Error inserting task into database. Id generation failed");
-            networkTask.setSchedulerId(-1);
+            Log.e(NetworkTaskDAO.class.getName(), "Error inserting task into database. Scheduler dd generation failed");
+            networkTask.setSchedulerId(SchedulerIdGenerator.ERROR_SCHEDULER_ID);
+            networkTask.setId(-1);
+            return networkTask;
         } else {
             networkTask.setSchedulerId(schedulerId.getId());
         }
@@ -109,11 +111,21 @@ public class NetworkTaskDAO extends BaseDAO {
         return db.update(dbConstants.getTableName(), values, selection, selectionArgs);
     }
 
-    private int updateNetworkTask(NetworkTask networkTask, SQLiteDatabase db) {
+    private NetworkTask updateNetworkTask(NetworkTask networkTask, SQLiteDatabase db) {
         NetworkTaskDBConstants dbConstants = new NetworkTaskDBConstants(getContext());
         String selection = dbConstants.getIdColumnName() + " = ?";
         String[] selectionArgs = {String.valueOf(networkTask.getId())};
+        SchedulerIdGenerator idGenerator = new SchedulerIdGenerator(getContext());
+        SchedulerIdGenerator.SchedulerId schedulerId = idGenerator.createUniqueSchedulerId(db);
+        if (!schedulerId.isValid()) {
+            Log.e(NetworkTaskDAO.class.getName(), "Error updating task. Scheduler id generation failed");
+            networkTask.setSchedulerId(SchedulerIdGenerator.ERROR_SCHEDULER_ID);
+            return networkTask;
+        } else {
+            networkTask.setSchedulerId(schedulerId.getId());
+        }
         ContentValues values = new ContentValues();
+        values.put(dbConstants.getSchedulerIdColumnName(), networkTask.getSchedulerId());
         values.put(dbConstants.getAccessTypeColumnName(), networkTask.getAccessType() == null ? null : networkTask.getAccessType().getCode());
         values.put(dbConstants.getOnlyWifiColumnName(), networkTask.isOnlyWifi() ? 1 : 0);
         values.put(dbConstants.getNotificationColumnName(), networkTask.isNotification() ? 1 : 0);
@@ -121,7 +133,8 @@ public class NetworkTaskDAO extends BaseDAO {
         values.put(dbConstants.getPortColumnName(), networkTask.getPort());
         values.put(dbConstants.getAccessTypeColumnName(), networkTask.getAccessType() == null ? null : networkTask.getAccessType().getCode());
         values.put(dbConstants.getIntervalColumnName(), networkTask.getInterval());
-        return db.update(dbConstants.getTableName(), values, selection, selectionArgs);
+        db.update(dbConstants.getTableName(), values, selection, selectionArgs);
+        return networkTask;
     }
 
     private NetworkTask readNetworkTask(NetworkTask networkTask, SQLiteDatabase db) {

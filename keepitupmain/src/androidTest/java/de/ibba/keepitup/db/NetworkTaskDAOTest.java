@@ -163,8 +163,21 @@ public class NetworkTaskDAOTest {
         assertEquals(task2.isOnlyWifi(), readTask1.isOnlyWifi());
         assertEquals(task2.isNotification(), readTask1.isNotification());
         assertEquals(insertedTask1.getIndex(), readTask1.getIndex());
-        assertEquals(insertedTask1.getSchedulerId(), readTask1.getSchedulerId());
         assertEquals(insertedTask1.isRunning(), readTask1.isRunning());
+    }
+
+    @Test
+    public void testUpdateSchedulerIdChanged() {
+        NetworkTask insertedTask1 = getNetworkTask1();
+        networkTaskDAO.insertNetworkTask(insertedTask1);
+        List<NetworkTask> readTasks = networkTaskDAO.readAllNetworkTasks();
+        NetworkTask readTask1 = readTasks.get(0);
+        int schedulerId = readTask1.getSchedulerId();
+        readTask1.setAddress("abc.com");
+        networkTaskDAO.updateNetworkTask(readTask1);
+        readTasks = networkTaskDAO.readAllNetworkTasks();
+        readTask1 = readTasks.get(0);
+        assertNotEquals(schedulerId, readTask1.getSchedulerId());
     }
 
     private NetworkTask getNetworkTask1() {
