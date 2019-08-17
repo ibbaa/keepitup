@@ -18,6 +18,7 @@ import de.ibba.keepitup.test.mock.TestRegistry;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertTrue;
 
 @MediumTest
@@ -72,6 +73,7 @@ public class NetworkTaskServiceSchedulerTest {
         assertEquals(2, setAlarmCalls.size());
         MockAlarmManager.SetAlarmCall setAlarmCall2 = setAlarmCalls.get(1);
         assertEquals(0, setAlarmCall2.getDelay());
+        assertNotEquals(setAlarmCall1.getPendingIntent(), setAlarmCall2.getPendingIntent());
         task1 = scheduler.cancel(task1);
         assertFalse(task1.isRunning());
         assertTrue(task2.isRunning());
@@ -80,6 +82,8 @@ public class NetworkTaskServiceSchedulerTest {
         assertTrue(alarmManager.wasCancelAlarmCalled());
         List<MockAlarmManager.CancelAlarmCall> cancelAlarmCalls = alarmManager.getCancelAlarmCalls();
         assertEquals(1, cancelAlarmCalls.size());
+        MockAlarmManager.CancelAlarmCall cancelAlarmCall1 = cancelAlarmCalls.get(0);
+        assertEquals(setAlarmCall1.getPendingIntent(), cancelAlarmCall1.getPendingIntent());
         task2 = scheduler.cancel(task2);
         assertFalse(task1.isRunning());
         assertFalse(task2.isRunning());
@@ -88,6 +92,8 @@ public class NetworkTaskServiceSchedulerTest {
         assertTrue(alarmManager.wasCancelAlarmCalled());
         cancelAlarmCalls = alarmManager.getCancelAlarmCalls();
         assertEquals(2, cancelAlarmCalls.size());
+        MockAlarmManager.CancelAlarmCall cancelAlarmCall2 = cancelAlarmCalls.get(1);
+        assertEquals(setAlarmCall2.getPendingIntent(), cancelAlarmCall2.getPendingIntent());
     }
 
     @Test
@@ -132,6 +138,8 @@ public class NetworkTaskServiceSchedulerTest {
         assertTrue(alarmManager.wasCancelAlarmCalled());
         List<MockAlarmManager.CancelAlarmCall> cancelAlarmCalls = alarmManager.getCancelAlarmCalls();
         assertEquals(1, cancelAlarmCalls.size());
+        MockAlarmManager.CancelAlarmCall cancelAlarmCall1 = cancelAlarmCalls.get(0);
+        assertEquals(setAlarmCall1.getPendingIntent(), cancelAlarmCall1.getPendingIntent());
     }
 
     @Test
