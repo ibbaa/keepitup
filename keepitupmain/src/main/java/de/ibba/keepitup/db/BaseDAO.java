@@ -19,7 +19,7 @@ public abstract class BaseDAO {
         SQLiteDatabase db = null;
         T result;
         try {
-            db = dbOpenHelper.getWritableDatabase();
+            db = getDBOpenHelper().getWritableDatabase();
             db.beginTransaction();
             result = dbOperation.execute(modelObject, db);
             db.setTransactionSuccessful();

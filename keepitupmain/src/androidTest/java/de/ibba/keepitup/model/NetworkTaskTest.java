@@ -111,7 +111,7 @@ public class NetworkTaskTest {
     }
 
     @Test
-    public void testToBundle() {
+    public void testToBundleValues() {
         NetworkTask task = new NetworkTask();
         task.setId(1);
         task.setIndex(2);

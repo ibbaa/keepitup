@@ -50,7 +50,7 @@ class LogDBConstants {
         return "DROP TABLE IF EXISTS " + getTableName();
     }
 
-    public String getAllLogsStatement() {
+    public String getReadAllLogsStatement() {
         return "SELECT " +
                 getIdColumnName() + ", " +
                 getNetworkTaskIdColumnName() + ", " +
@@ -62,7 +62,7 @@ class LogDBConstants {
                 " ORDER BY " + getTimestampColumnName() + " DESC";
     }
 
-    public String getMostRecentLogStatement() {
+    public String getReadMostRecentLogStatement() {
         return "SELECT MAX(" + getTimestampColumnName() + "), " +
                 getIdColumnName() + ", " +
                 getNetworkTaskIdColumnName() + ", " +
@@ -72,7 +72,7 @@ class LogDBConstants {
                 " FROM " + getTableName() + " WHERE " + getNetworkTaskIdColumnName() + " = ?";
     }
 
-    public String getOldestLogStatement() {
+    public String getReadOldestLogStatement() {
         return "SELECT MIN(" + getTimestampColumnName() + ")," + getIdColumnName() + " FROM " + getTableName() +
                 " WHERE " + getNetworkTaskIdColumnName() + " = ?";
     }
