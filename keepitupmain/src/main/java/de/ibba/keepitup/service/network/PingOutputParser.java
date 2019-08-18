@@ -11,12 +11,13 @@ import de.ibba.keepitup.util.StringUtil;
 public class PingOutputParser {
 
     private final static Pattern PING = Pattern.compile("(.*(time)([=<]))([0-9]+(\\.[0-9]+)?)( ?)(\\S+).*");
-    private final static Pattern SUMMARY = Pattern.compile("(([0-9]+)\\s[\\w|\\s]+),\\s(([0-9]+)\\s[\\w|\\s]+),.*(time)\\s(.*)");
+    private final static Pattern SUMMARY = Pattern.compile("(([0-9]+)\\s[\\w|\\s]+),\\s(([0-9]+)\\s[\\w|\\s]+),\\s(([0-9]+(\\.[0-9]+)?)%\\s[\\w|\\s]+),.*(time)\\s(.*)");
 
     private boolean validInput;
     private int packetsTransmitted;
     private int packetsReceived;
     private double packetLoss;
+    private int validTimes;
     private double averageTime;
 
     public PingOutputParser() {
@@ -43,6 +44,10 @@ public class PingOutputParser {
         return packetLoss;
     }
 
+    public int getValidTimes() {
+        return validTimes;
+    }
+
     public double getAverageTime() {
         return averageTime;
     }
@@ -66,6 +71,13 @@ public class PingOutputParser {
                 setInvalid();
                 return;
             }
+            if (!parseFinalSummary(lines)) {
+                Log.d(PingOutputParser.class.getName(), "Final summary cannot be parsed.");
+                setInvalid();
+                return;
+            }
+            validInput = true;
+            Log.d(PingOutputParser.class.getName(), "Parsing was successul.");
         } catch (Exception exc) {
             Log.e(PingOutputParser.class.getName(), "Ping output parsing error", exc);
             setInvalid();
@@ -77,27 +89,29 @@ public class PingOutputParser {
         int timesParsed = 0;
         double timeSum = 0.0;
         for (String line : lines) {
+            line = line.trim();
             Matcher matcher = PING.matcher(line);
             if (matcher.matches()) {
+                Log.d(PingOutputParser.class.getName(), "Matching time value line: " + line);
                 if (matcher.groupCount() < 4) {
-                    Log.d(PingOutputParser.class.getName(), "Parsing error. Line is a valid ping line but time cannot be parsed.");
+                    Log.d(PingOutputParser.class.getName(), "Parsing error. Group count is invalid for a time value line.");
                     setInvalid();
                     return false;
                 }
                 String equalSign = matcher.group(3);
-                String number = matcher.group(4);
+                String time = matcher.group(4);
                 Log.d(PingOutputParser.class.getName(), "Parsed equal sign: " + equalSign);
-                Log.d(PingOutputParser.class.getName(), "Parsed number: " + number);
+                Log.d(PingOutputParser.class.getName(), "Parsed time value: " + time);
                 if ("<".equals(equalSign)) {
                     timesParsed++;
                 } else if ("=".equals(equalSign)) {
                     timesParsed++;
-                    if (!NumberUtil.isValidDoubleValue(number)) {
-                        Log.d(PingOutputParser.class.getName(), "Number " + number + " is not a valid double.");
+                    if (!NumberUtil.isValidDoubleValue(time)) {
+                        Log.d(PingOutputParser.class.getName(), "Time value " + time + " is not a valid double.");
                         setInvalid();
                         return false;
                     }
-                    timeSum += NumberUtil.getDoubleValue(number, 0.0);
+                    timeSum += NumberUtil.getDoubleValue(time, 0.0);
                 } else {
                     Log.d(PingOutputParser.class.getName(), "Equal sign " + equalSign + " is not valid.");
                     setInvalid();
@@ -105,8 +119,51 @@ public class PingOutputParser {
                 }
             }
         }
-        averageTime = timeSum / timesParsed;
+        validTimes = timesParsed;
+        averageTime = (timesParsed > 0) ? timeSum / timesParsed : 0;
         return true;
+    }
+
+    private boolean parseFinalSummary(String[] lines) {
+        Log.d(PingOutputParser.class.getName(), "parseFinalSummary");
+        for (int ii = lines.length - 1; ii >= 0; ii--) {
+            String line = lines[ii].trim();
+            Matcher matcher = SUMMARY.matcher(line);
+            if (matcher.matches()) {
+                Log.d(PingOutputParser.class.getName(), "Matching final summary line: " + lines[ii]);
+                if (matcher.groupCount() < 6) {
+                    Log.d(PingOutputParser.class.getName(), "Parsing error. Group count is invalid for a final summary line.");
+                    setInvalid();
+                    return false;
+                }
+                String transmitted = matcher.group(2);
+                String received = matcher.group(4);
+                String loss = matcher.group(6);
+                Log.d(PingOutputParser.class.getName(), "Parsed transmitted value: " + transmitted);
+                Log.d(PingOutputParser.class.getName(), "Parsed received value: " + received);
+                Log.d(PingOutputParser.class.getName(), "Parsed loss value: " + loss);
+                if (!NumberUtil.isValidIntValue(transmitted)) {
+                    Log.d(PingOutputParser.class.getName(), "Transmitted value " + transmitted + " is not a valid int.");
+                    setInvalid();
+                    return false;
+                }
+                if (!NumberUtil.isValidIntValue(received)) {
+                    Log.d(PingOutputParser.class.getName(), "Received value " + received + " is not a valid int.");
+                    setInvalid();
+                    return false;
+                }
+                if (!NumberUtil.isValidDoubleValue(loss)) {
+                    Log.d(PingOutputParser.class.getName(), "Loss value " + loss + " is not a valid double.");
+                    setInvalid();
+                    return false;
+                }
+                packetsTransmitted = NumberUtil.getIntValue(transmitted, 0);
+                packetsReceived = NumberUtil.getIntValue(received, 0);
+                packetLoss = NumberUtil.getDoubleValue(loss, 0.0);
+                return true;
+            }
+        }
+        return false;
     }
 
     private void setInvalid() {
@@ -114,6 +171,7 @@ public class PingOutputParser {
         packetsTransmitted = -1;
         packetsReceived = -1;
         packetLoss = 0.0;
+        validTimes = 0;
         averageTime = 0.0;
     }
 }
