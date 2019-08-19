@@ -23,11 +23,11 @@ import static org.junit.Assert.assertTrue;
 
 @MediumTest
 @RunWith(AndroidJUnit4.class)
-public class NetworkTaskBroadcastReceiverTest {
+public class NetworkTaskProcessBroadcastReceiverTest {
 
     private NetworkTaskDAO networkTaskDAO;
     private LogDAO logDAO;
-    private NetworkTaskBroadcastReceiver broadcastReceiver;
+    private NetworkTaskProcessBroadcastReceiver broadcastReceiver;
 
     @Before
     public void beforeEachTestMethod() {
@@ -35,7 +35,7 @@ public class NetworkTaskBroadcastReceiverTest {
         networkTaskDAO.deleteAllNetworkTasks();
         logDAO = new LogDAO(TestRegistry.getContext());
         logDAO.deleteAllLogs();
-        broadcastReceiver = new NetworkTaskBroadcastReceiver();
+        broadcastReceiver = new NetworkTaskProcessBroadcastReceiver();
     }
 
     @After

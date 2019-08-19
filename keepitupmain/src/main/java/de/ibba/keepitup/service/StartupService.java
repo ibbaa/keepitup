@@ -23,7 +23,7 @@ public class StartupService extends BroadcastReceiver {
         try {
             Log.d(StartupService.class.getName(), "Starting application.");
             new NotificationHandler(context);
-            NetworkTaskServiceScheduler scheduler = new NetworkTaskServiceScheduler(context);
+            NetworkTaskProcessServiceScheduler scheduler = new NetworkTaskProcessServiceScheduler(context);
             scheduler.startup();
         } catch (Exception exc) {
             Log.e(StartupService.class.getName(), "Error on starting pending network tasks.", exc);
@@ -33,7 +33,7 @@ public class StartupService extends BroadcastReceiver {
     public void terminate(Context context) {
         try {
             Log.d(StartupService.class.getName(), "Terminating application.");
-            NetworkTaskServiceScheduler scheduler = new NetworkTaskServiceScheduler(context);
+            NetworkTaskProcessServiceScheduler scheduler = new NetworkTaskProcessServiceScheduler(context);
             scheduler.terminateAll();
         } catch (Exception exc) {
             Log.e(StartupService.class.getName(), "Error on stopping network tasks.", exc);

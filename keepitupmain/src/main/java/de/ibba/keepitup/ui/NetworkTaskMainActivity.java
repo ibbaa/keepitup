@@ -1,6 +1,7 @@
 package de.ibba.keepitup.ui;
 
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -21,9 +22,11 @@ import de.ibba.keepitup.ui.adapter.NetworkTaskAdapter;
 import de.ibba.keepitup.ui.adapter.NetworkTaskUIWrapper;
 import de.ibba.keepitup.ui.dialog.NetworkTaskConfirmDialog;
 import de.ibba.keepitup.ui.dialog.NetworkTaskEditDialog;
-import de.ibba.keepitup.ui.sync.UISyncController;
+import de.ibba.keepitup.ui.sync.NetworkTaskMainUIBroadcastReceiver;
 
 public class NetworkTaskMainActivity extends RecyclerViewBaseActivity {
+
+    private NetworkTaskMainUIBroadcastReceiver broadcastReceiver;
 
     @Override
     protected int getRecyclerViewId() {
@@ -47,14 +50,25 @@ public class NetworkTaskMainActivity extends RecyclerViewBaseActivity {
     protected void onStart() {
         Log.d(NetworkTaskMainActivity.class.getName(), "onStart");
         super.onStart();
-        UISyncController.start((NetworkTaskAdapter) getAdapter());
+        registerReceiver();
     }
 
     @Override
     protected void onStop() {
         Log.d(NetworkTaskMainActivity.class.getName(), "onStop");
         super.onStop();
-        UISyncController.stop();
+        unregisterReceiver();
+    }
+
+    private void registerReceiver() {
+        broadcastReceiver = new NetworkTaskMainUIBroadcastReceiver((NetworkTaskAdapter) getAdapter());
+        registerReceiver(broadcastReceiver, new IntentFilter(NetworkTaskMainUIBroadcastReceiver.class.getName()));
+    }
+
+    private void unregisterReceiver() {
+        if (broadcastReceiver != null) {
+            unregisterReceiver(broadcastReceiver);
+        }
     }
 
     private List<NetworkTaskUIWrapper> readNetworkTasksFromDatabase() {

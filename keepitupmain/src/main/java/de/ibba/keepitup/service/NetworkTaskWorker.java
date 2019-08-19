@@ -1,6 +1,7 @@
 package de.ibba.keepitup.service;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.Resources;
 import android.os.PowerManager;
 import android.util.Log;
@@ -11,6 +12,7 @@ import de.ibba.keepitup.db.NetworkTaskDAO;
 import de.ibba.keepitup.model.LogEntry;
 import de.ibba.keepitup.model.NetworkTask;
 import de.ibba.keepitup.resources.ServiceFactoryContributor;
+import de.ibba.keepitup.ui.sync.NetworkTaskMainUIBroadcastReceiver;
 
 public abstract class NetworkTaskWorker implements Runnable {
 
@@ -40,6 +42,8 @@ public abstract class NetworkTaskWorker implements Runnable {
                 Log.d(NetworkTaskWorker.class.getName(), "Writing log entry to database " + logEntry);
                 LogDAO logDAO = new LogDAO(getContext());
                 logDAO.insertAndDeleteLog(logEntry);
+                Log.d(NetworkTaskWorker.class.getName(), "Notify UI");
+                sendUINotificationBroadcast();
             } else {
                 Log.d(NetworkTaskWorker.class.getName(), "Network task does no longer exist. Not writing log.");
             }
@@ -51,6 +55,13 @@ public abstract class NetworkTaskWorker implements Runnable {
                 wakeLock.release();
             }
         }
+    }
+
+    private void sendUINotificationBroadcast() {
+        Log.d(NetworkTaskWorker.class.getName(), "sendUINotificationBroadcast");
+        Intent intent = new Intent(NetworkTaskMainUIBroadcastReceiver.class.getName());
+        intent.putExtras(networkTask.toBundle());
+        getContext().sendBroadcast(intent);
     }
 
     private LogEntry checkExecution() {

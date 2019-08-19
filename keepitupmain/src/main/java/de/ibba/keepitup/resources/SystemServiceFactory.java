@@ -10,9 +10,6 @@ import de.ibba.keepitup.service.IAlarmManager;
 import de.ibba.keepitup.service.INetworkManager;
 import de.ibba.keepitup.service.SystemAlarmManager;
 import de.ibba.keepitup.service.SystemNetworkManager;
-import de.ibba.keepitup.ui.sync.IHandler;
-import de.ibba.keepitup.ui.sync.SystemHandler;
-import de.ibba.keepitup.ui.sync.UISyncAsyncTask;
 
 public class SystemServiceFactory implements ServiceFactory {
 
@@ -32,18 +29,6 @@ public class SystemServiceFactory implements ServiceFactory {
     public NotificationCompat.Builder createNotificationBuilder(Context context, String channelId) {
         Log.d(SystemServiceFactory.class.getName(), "createNotificationBuilder");
         return new NotificationCompat.Builder(context, channelId);
-    }
-
-    @Override
-    public IHandler createHandler() {
-        Log.d(SystemServiceFactory.class.getName(), "createHandler");
-        return new SystemHandler();
-    }
-
-    @Override
-    public UISyncAsyncTask createUISyncAsyncTask() {
-        Log.d(SystemServiceFactory.class.getName(), "createUISyncAsyncTask");
-        return new UISyncAsyncTask();
     }
 
     @Override

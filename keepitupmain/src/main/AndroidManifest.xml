@@ -45,7 +45,7 @@
                 android:value=".ui.NetworkTaskMainActivity" />
         </activity>
 
-        <receiver android:name=".service.NetworkTaskBroadcastReceiver" />
+        <receiver android:name=".service.NetworkTaskProcessBroadcastReceiver" />
 
         <receiver android:name=".service.StartupService">
             <intent-filter>

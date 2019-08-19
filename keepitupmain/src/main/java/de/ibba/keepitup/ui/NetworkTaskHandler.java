@@ -8,18 +8,18 @@ import de.ibba.keepitup.db.LogDAO;
 import de.ibba.keepitup.db.NetworkTaskDAO;
 import de.ibba.keepitup.db.SchedulerIdGenerator;
 import de.ibba.keepitup.model.NetworkTask;
-import de.ibba.keepitup.service.NetworkTaskServiceScheduler;
+import de.ibba.keepitup.service.NetworkTaskProcessServiceScheduler;
 import de.ibba.keepitup.ui.adapter.NetworkTaskAdapter;
 import de.ibba.keepitup.ui.adapter.NetworkTaskUIWrapper;
 
 class NetworkTaskHandler {
 
     private final NetworkTaskMainActivity mainActivity;
-    private final NetworkTaskServiceScheduler scheduler;
+    private final NetworkTaskProcessServiceScheduler scheduler;
 
     public NetworkTaskHandler(NetworkTaskMainActivity mainActivity) {
         this.mainActivity = mainActivity;
-        this.scheduler = new NetworkTaskServiceScheduler(mainActivity);
+        this.scheduler = new NetworkTaskProcessServiceScheduler(mainActivity);
     }
 
     public void startNetworkTask(NetworkTask task) {
