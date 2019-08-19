@@ -18,7 +18,6 @@ import de.ibba.keepitup.model.LogEntry;
 import de.ibba.keepitup.model.NetworkTask;
 import de.ibba.keepitup.ui.adapter.NetworkTaskAdapter;
 import de.ibba.keepitup.ui.adapter.NetworkTaskUIWrapper;
-import de.ibba.keepitup.ui.sync.UISyncController;
 
 import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.action.ViewActions.click;
@@ -217,32 +216,6 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
         onView(allOf(withId(R.id.imageview_list_item_network_task_start_stop), withChildDescendantAtPosition(withId(R.id.listview_main_activity_network_tasks), 0))).perform(click());
         onView(allOf(withId(R.id.imageview_list_item_network_task_start_stop), withChildDescendantAtPosition(withId(R.id.listview_main_activity_network_tasks), 0))).check(matches(withDrawable(R.drawable.icon_start_shadow)));
         assertFalse(getAdapter().getItem(0).getNetworkTask().isRunning());
-    }
-
-    @Test
-    public void testUISyncStart() {
-        assertFalse(UISyncController.isRunning());
-        launchRecyclerViewBaseActivity(rule);
-        assertTrue(UISyncController.isRunning());
-    }
-
-    @Test
-    public void testUISyncPerformed() {
-        NetworkTaskMainActivity activity = (NetworkTaskMainActivity) launchRecyclerViewBaseActivity(rule);
-        onView(allOf(withId(R.id.imageview_list_item_network_task_add), isDisplayed())).perform(click());
-        onView(withId(R.id.imageview_dialog_network_task_edit_ok)).perform(click());
-        NetworkTask task = getAdapter().getItem(0).getNetworkTask();
-        LogEntry logEntry = getLogEntryWithNetworkTaskId(task.getId());
-        getLogDAO().insertAndDeleteLog(logEntry);
-        onView(allOf(withId(R.id.textview_list_item_network_task_last_exec_timestamp), withChildDescendantAtPosition(withId(R.id.listview_main_activity_network_tasks), 0))).check(matches(withText("Last execution: not executed")));
-        stopUISyncController(activity);
-        startUISyncController(activity, getAdapter());
-        onView(allOf(withId(R.id.textview_list_item_network_task_last_exec_timestamp), withChildDescendantAtPosition(withId(R.id.listview_main_activity_network_tasks), 0))).check(matches(withText("Last execution: not executed")));
-        onView(allOf(withId(R.id.imageview_list_item_network_task_start_stop), withChildDescendantAtPosition(withId(R.id.listview_main_activity_network_tasks), 0))).perform(click());
-        stopUISyncController(activity);
-        startUISyncController(activity, getAdapter());
-        onView(allOf(withId(R.id.textview_list_item_network_task_last_exec_timestamp), withChildDescendantAtPosition(withId(R.id.listview_main_activity_network_tasks), 0))).check(matches(withText("Last execution: successful, Mar 17, 1980 12:00:00 AM")));
-        onView(allOf(withId(R.id.textview_list_item_network_task_last_exec_message), withChildDescendantAtPosition(withId(R.id.listview_main_activity_network_tasks), 0))).check(matches(withText("Last execution message: TestMessage")));
     }
 
     private void setTaskExecuted(NetworkTaskMainActivity activity, int position, Calendar calendar, boolean success, String message) {

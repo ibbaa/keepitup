@@ -17,38 +17,30 @@ import java.util.Locale;
 import de.ibba.keepitup.db.LogDAO;
 import de.ibba.keepitup.db.NetworkTaskDAO;
 import de.ibba.keepitup.resources.PreferenceManager;
-import de.ibba.keepitup.service.NetworkTaskServiceScheduler;
+import de.ibba.keepitup.service.NetworkTaskProcessServiceScheduler;
 import de.ibba.keepitup.test.matcher.ChildDescendantAtPositionMatcher;
 import de.ibba.keepitup.test.matcher.DrawableMatcher;
 import de.ibba.keepitup.test.matcher.GridLayoutPositionMatcher;
 import de.ibba.keepitup.test.matcher.ListSizeMatcher;
 import de.ibba.keepitup.test.matcher.TextColorMatcher;
-import de.ibba.keepitup.test.mock.MockHandler;
 import de.ibba.keepitup.test.mock.TestRegistry;
-import de.ibba.keepitup.ui.adapter.NetworkTaskAdapter;
-import de.ibba.keepitup.ui.sync.UISyncController;
 
 public abstract class BaseUITest {
 
     private NetworkTaskDAO networkTaskDAO;
     private LogDAO logDAO;
-    private NetworkTaskServiceScheduler scheduler;
+    private NetworkTaskProcessServiceScheduler scheduler;
     private PreferenceManager preferenceManager;
 
     @Before
     public void beforeEachTestMethod() {
-        scheduler = new NetworkTaskServiceScheduler(TestRegistry.getContext());
+        scheduler = new NetworkTaskProcessServiceScheduler(TestRegistry.getContext());
         scheduler.cancelAll();
         logDAO = new LogDAO(TestRegistry.getContext());
         logDAO.deleteAllLogs();
         networkTaskDAO = new NetworkTaskDAO(TestRegistry.getContext());
         networkTaskDAO.deleteAllNetworkTasks();
         setLocale(Locale.US);
-        UISyncController.injectContext(TestRegistry.getContext());
-        MockHandler handler = (MockHandler) UISyncController.getHandler();
-        if (handler != null) {
-            handler.reset();
-        }
         preferenceManager = new PreferenceManager(TestRegistry.getContext());
         preferenceManager.removeAllPreferences();
     }
@@ -58,10 +50,6 @@ public abstract class BaseUITest {
         scheduler.cancelAll();
         logDAO.deleteAllLogs();
         networkTaskDAO.deleteAllNetworkTasks();
-        MockHandler handler = (MockHandler) UISyncController.getHandler();
-        if (handler != null) {
-            handler.reset();
-        }
         preferenceManager.removeAllPreferences();
     }
 
@@ -74,16 +62,6 @@ public abstract class BaseUITest {
         activity.injectResources(TestRegistry.getContext().getResources());
         activity.setRequestedOrientation(Configuration.ORIENTATION_PORTRAIT);
         return activity;
-    }
-
-    public void startUISyncController(NetworkTaskMainActivity activity, NetworkTaskAdapter adapter) {
-        activity.runOnUiThread(() -> UISyncController.start(adapter));
-        InstrumentationRegistry.getInstrumentation().waitForIdleSync();
-    }
-
-    public void stopUISyncController(NetworkTaskMainActivity activity) {
-        activity.runOnUiThread(() -> UISyncController.stop());
-        InstrumentationRegistry.getInstrumentation().waitForIdleSync();
     }
 
     public void rotateScreen(NetworkTaskMainActivity activity) {
@@ -100,7 +78,7 @@ public abstract class BaseUITest {
         return logDAO;
     }
 
-    public NetworkTaskServiceScheduler getScheduler() {
+    public NetworkTaskProcessServiceScheduler getScheduler() {
         return scheduler;
     }
 

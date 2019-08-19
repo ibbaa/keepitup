@@ -23,15 +23,15 @@ import static org.junit.Assert.assertTrue;
 
 @MediumTest
 @RunWith(AndroidJUnit4.class)
-public class NetworkTaskServiceSchedulerTest {
+public class NetworkTaskProcessServiceSchedulerTest {
 
-    private NetworkTaskServiceScheduler scheduler;
+    private NetworkTaskProcessServiceScheduler scheduler;
     private NetworkTaskDAO networkTaskDAO;
     private MockAlarmManager alarmManager;
 
     @Before
     public void beforeEachTestMethod() {
-        scheduler = new NetworkTaskServiceScheduler(TestRegistry.getContext());
+        scheduler = new NetworkTaskProcessServiceScheduler(TestRegistry.getContext());
         scheduler.cancelAll();
         networkTaskDAO = new NetworkTaskDAO(TestRegistry.getContext());
         networkTaskDAO.deleteAllNetworkTasks();

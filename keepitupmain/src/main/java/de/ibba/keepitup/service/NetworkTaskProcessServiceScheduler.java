@@ -12,20 +12,20 @@ import de.ibba.keepitup.db.NetworkTaskDAO;
 import de.ibba.keepitup.model.NetworkTask;
 import de.ibba.keepitup.resources.ServiceFactoryContributor;
 
-public class NetworkTaskServiceScheduler {
+public class NetworkTaskProcessServiceScheduler {
 
     private final Context context;
     private final NetworkTaskDAO networkTaskDAO;
     private final IAlarmManager alarmManager;
 
-    public NetworkTaskServiceScheduler(Context context) {
+    public NetworkTaskProcessServiceScheduler(Context context) {
         this.context = context;
         this.networkTaskDAO = new NetworkTaskDAO(context);
         this.alarmManager = createAlarmManager();
     }
 
     public NetworkTask schedule(NetworkTask networkTask) {
-        Log.d(NetworkTaskServiceScheduler.class.getName(), "Schedule network task " + networkTask);
+        Log.d(NetworkTaskProcessServiceScheduler.class.getName(), "Schedule network task " + networkTask);
         networkTask.setRunning(true);
         networkTaskDAO.updateNetworkTaskRunning(networkTask.getId(), true);
         reschedule(networkTask, true);
@@ -33,43 +33,43 @@ public class NetworkTaskServiceScheduler {
     }
 
     public NetworkTask reschedule(NetworkTask networkTask, boolean immediate) {
-        Log.d(NetworkTaskServiceScheduler.class.getName(), "Reschedule network task " + networkTask + ", immediate is " + immediate);
+        Log.d(NetworkTaskProcessServiceScheduler.class.getName(), "Reschedule network task " + networkTask + ", immediate is " + immediate);
         NetworkTask databaseTask = networkTaskDAO.readNetworkTask(networkTask.getId());
         if (databaseTask == null) {
-            Log.d(NetworkTaskServiceScheduler.class.getName(), "Network task does no longer exist. Skipping reschedule.");
+            Log.d(NetworkTaskProcessServiceScheduler.class.getName(), "Network task does no longer exist. Skipping reschedule.");
             terminate(networkTask);
             return networkTask;
         }
         if (!databaseTask.isRunning()) {
-            Log.d(NetworkTaskServiceScheduler.class.getName(), "Network task is no longer running. Skipping reschedule.");
+            Log.d(NetworkTaskProcessServiceScheduler.class.getName(), "Network task is no longer running. Skipping reschedule.");
             terminate(networkTask);
             return networkTask;
         }
         if (databaseTask.getSchedulerId() != networkTask.getSchedulerId()) {
-            Log.d(NetworkTaskServiceScheduler.class.getName(), "Network task was updated. Skipping reschedule.");
+            Log.d(NetworkTaskProcessServiceScheduler.class.getName(), "Network task was updated. Skipping reschedule.");
             terminate(networkTask);
             return networkTask;
         }
         PendingIntent pendingIntent = createPendingIntent(networkTask);
         long delay = immediate ? 0 : getIntervalMilliseconds(networkTask);
         if (immediate) {
-            Log.d(NetworkTaskServiceScheduler.class.getName(), "scheduling alarm immediately");
+            Log.d(NetworkTaskProcessServiceScheduler.class.getName(), "scheduling alarm immediately");
         } else {
-            Log.d(NetworkTaskServiceScheduler.class.getName(), "scheduling alarm with delay of " + delay + " msec");
+            Log.d(NetworkTaskProcessServiceScheduler.class.getName(), "scheduling alarm with delay of " + delay + " msec");
         }
         alarmManager.setAlarm(delay, pendingIntent);
         return networkTask;
     }
 
     public NetworkTask cancel(NetworkTask networkTask) {
-        Log.d(NetworkTaskServiceScheduler.class.getName(), "Cancelling network task " + networkTask);
+        Log.d(NetworkTaskProcessServiceScheduler.class.getName(), "Cancelling network task " + networkTask);
         networkTask.setRunning(false);
         networkTaskDAO.updateNetworkTaskRunning(networkTask.getId(), false);
         return terminate(networkTask);
     }
 
     public NetworkTask terminate(NetworkTask networkTask) {
-        Log.d(NetworkTaskServiceScheduler.class.getName(), "Terminating network task " + networkTask);
+        Log.d(NetworkTaskProcessServiceScheduler.class.getName(), "Terminating network task " + networkTask);
         if (hasPendingIntent(networkTask)) {
             PendingIntent pendingIntent = getPendingIntent(networkTask);
             alarmManager.cancelAlarm(pendingIntent);
@@ -79,39 +79,39 @@ public class NetworkTaskServiceScheduler {
     }
 
     public void startup() {
-        Log.d(NetworkTaskServiceScheduler.class.getName(), "Starting all network tasks marked as running.");
+        Log.d(NetworkTaskProcessServiceScheduler.class.getName(), "Starting all network tasks marked as running.");
         List<NetworkTask> networkTasks = networkTaskDAO.readAllNetworkTasks();
-        Log.d(NetworkTaskServiceScheduler.class.getName(), "Database returned the following network tasks: " + (networkTasks.isEmpty() ? "no network tasks" : ""));
+        Log.d(NetworkTaskProcessServiceScheduler.class.getName(), "Database returned the following network tasks: " + (networkTasks.isEmpty() ? "no network tasks" : ""));
         for (NetworkTask currentTask : networkTasks) {
             if (currentTask.isRunning()) {
-                Log.d(NetworkTaskServiceScheduler.class.getName(), "Network task " + currentTask + " is marked as running.");
+                Log.d(NetworkTaskProcessServiceScheduler.class.getName(), "Network task " + currentTask + " is marked as running.");
                 if (!hasPendingIntent(currentTask)) {
-                    Log.d(NetworkTaskServiceScheduler.class.getName(), "No pending alarm. Scheduling...");
+                    Log.d(NetworkTaskProcessServiceScheduler.class.getName(), "No pending alarm. Scheduling...");
                     reschedule(currentTask, true);
                 } else {
-                    Log.d(NetworkTaskServiceScheduler.class.getName(), "Pending alarm already present.");
+                    Log.d(NetworkTaskProcessServiceScheduler.class.getName(), "Pending alarm already present.");
                 }
             } else {
-                Log.d(NetworkTaskServiceScheduler.class.getName(), "Network task " + currentTask + " is not marked as running.");
+                Log.d(NetworkTaskProcessServiceScheduler.class.getName(), "Network task " + currentTask + " is not marked as running.");
             }
         }
     }
 
     public void cancelAll() {
-        Log.d(NetworkTaskServiceScheduler.class.getName(), "Cancelling all network tasks.");
+        Log.d(NetworkTaskProcessServiceScheduler.class.getName(), "Cancelling all network tasks.");
         List<NetworkTask> networkTasks = networkTaskDAO.readAllNetworkTasks();
-        Log.d(NetworkTaskServiceScheduler.class.getName(), "Database returned the following network tasks: " + (networkTasks.isEmpty() ? "no network tasks" : ""));
+        Log.d(NetworkTaskProcessServiceScheduler.class.getName(), "Database returned the following network tasks: " + (networkTasks.isEmpty() ? "no network tasks" : ""));
         for (NetworkTask currentTask : networkTasks) {
-            Log.d(NetworkTaskServiceScheduler.class.getName(), "Cancelling network task " + currentTask);
+            Log.d(NetworkTaskProcessServiceScheduler.class.getName(), "Cancelling network task " + currentTask);
             cancel(currentTask);
         }
     }
 
     public void terminateAll() {
-        Log.d(NetworkTaskServiceScheduler.class.getName(), "Terminating all network tasks.");
+        Log.d(NetworkTaskProcessServiceScheduler.class.getName(), "Terminating all network tasks.");
         List<NetworkTask> networkTasks = networkTaskDAO.readAllNetworkTasks();
         for (NetworkTask currentTask : networkTasks) {
-            Log.d(NetworkTaskServiceScheduler.class.getName(), "Terminating network task " + currentTask);
+            Log.d(NetworkTaskProcessServiceScheduler.class.getName(), "Terminating network task " + currentTask);
             terminate(currentTask);
         }
     }
@@ -121,19 +121,19 @@ public class NetworkTaskServiceScheduler {
     }
 
     private boolean hasPendingIntent(NetworkTask networkTask) {
-        Intent intent = new Intent(getContext(), NetworkTaskBroadcastReceiver.class);
+        Intent intent = new Intent(getContext(), NetworkTaskProcessBroadcastReceiver.class);
         intent.putExtras(networkTask.toBundle());
         return PendingIntent.getBroadcast(getContext(), networkTask.getSchedulerId(), intent, PendingIntent.FLAG_NO_CREATE) != null;
     }
 
     private PendingIntent getPendingIntent(NetworkTask networkTask) {
-        Intent intent = new Intent(getContext(), NetworkTaskBroadcastReceiver.class);
+        Intent intent = new Intent(getContext(), NetworkTaskProcessBroadcastReceiver.class);
         intent.putExtras(networkTask.toBundle());
         return PendingIntent.getBroadcast(getContext(), networkTask.getSchedulerId(), intent, PendingIntent.FLAG_NO_CREATE);
     }
 
     private PendingIntent createPendingIntent(NetworkTask networkTask) {
-        Intent intent = new Intent(getContext(), NetworkTaskBroadcastReceiver.class);
+        Intent intent = new Intent(getContext(), NetworkTaskProcessBroadcastReceiver.class);
         intent.putExtras(networkTask.toBundle());
         return PendingIntent.getBroadcast(getContext(), networkTask.getSchedulerId(), intent, PendingIntent.FLAG_CANCEL_CURRENT);
     }
