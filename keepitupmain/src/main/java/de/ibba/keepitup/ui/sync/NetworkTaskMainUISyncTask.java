@@ -54,8 +54,12 @@ public class NetworkTaskMainUISyncTask extends AsyncTask<NetworkTask, Integer, N
         }
         NetworkTaskAdapter adapter = adapterRef.get();
         if (adapter != null) {
-            adapter.replaceItem(networkTaskWrapper);
-            adapter.notifyDataSetChanged();
+            try {
+                adapter.replaceItem(networkTaskWrapper);
+                adapter.notifyDataSetChanged();
+            } catch (Exception exc) {
+                Log.e(NetworkTaskMainUISyncTask.class.getName(), "Error updating adapter with networkTaskWrapper " + networkTaskWrapper, exc);
+            }
         }
     }
 
