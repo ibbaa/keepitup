@@ -39,11 +39,11 @@ public class NetworkTaskMainUISyncTaskTest extends BaseUITest {
     public void beforeEachTestMethod() {
         super.beforeEachTestMethod();
         activity = (NetworkTaskMainActivity) launchRecyclerViewBaseActivity(rule);
-        syncTask = new NetworkTaskMainUISyncTask();
         networkTaskDAO = new NetworkTaskDAO(TestRegistry.getContext());
         networkTaskDAO.deleteAllNetworkTasks();
         logDAO = new LogDAO(TestRegistry.getContext());
         logDAO.deleteAllLogs();
+        syncTask = new NetworkTaskMainUISyncTask(logDAO, (NetworkTaskAdapter) activity.getAdapter());
     }
 
     @After
@@ -57,8 +57,6 @@ public class NetworkTaskMainUISyncTaskTest extends BaseUITest {
         NetworkTask task = networkTaskDAO.insertNetworkTask(getNetworkTask());
         LogEntry logEntry1 = logDAO.insertAndDeleteLog(getLogEntryWithNetworkTaskId(task.getId(), new GregorianCalendar(1980, Calendar.MARCH, 17).getTime().getTime()));
         LogEntry logEntry2 = logDAO.insertAndDeleteLog(getLogEntryWithNetworkTaskId(task.getId(), new GregorianCalendar(1980, Calendar.MARCH, 18).getTime().getTime()));
-        NetworkTaskMainUISyncHolder syncHolder = new NetworkTaskMainUISyncHolder(task, (NetworkTaskAdapter) activity.getAdapter(), logDAO);
-        syncTask.doInBackground(syncHolder);
     }
 
     private NetworkTask getNetworkTask() {

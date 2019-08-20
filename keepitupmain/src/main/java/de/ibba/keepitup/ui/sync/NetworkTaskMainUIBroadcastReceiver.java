@@ -24,7 +24,7 @@ public class NetworkTaskMainUIBroadcastReceiver extends BroadcastReceiver {
         NetworkTask task = new NetworkTask(Objects.requireNonNull(intent.getExtras()));
         Log.d(NetworkTaskMainUIBroadcastReceiver.class.getName(), "Received request for " + task);
         LogDAO logDAO = new LogDAO(context);
-        NetworkTaskMainUISyncTask syncTask = new NetworkTaskMainUISyncTask();
-        syncTask.start(new NetworkTaskMainUISyncHolder(task, adapter, logDAO));
+        NetworkTaskMainUISyncTask syncTask = new NetworkTaskMainUISyncTask(logDAO, adapter);
+        syncTask.start(task);
     }
 }

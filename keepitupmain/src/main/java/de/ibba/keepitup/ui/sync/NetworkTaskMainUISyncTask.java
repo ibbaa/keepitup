@@ -9,21 +9,25 @@ import de.ibba.keepitup.model.NetworkTask;
 import de.ibba.keepitup.ui.adapter.NetworkTaskAdapter;
 import de.ibba.keepitup.ui.adapter.NetworkTaskUIWrapper;
 
-public class NetworkTaskMainUISyncTask extends AsyncTask<NetworkTaskMainUISyncHolder, Integer, NetworkTaskUIWrapper> {
+public class NetworkTaskMainUISyncTask extends AsyncTask<NetworkTask, Integer, NetworkTaskUIWrapper> {
 
-    private NetworkTaskMainUISyncHolder syncHolder;
+    private final LogDAO logDAO;
+    private final NetworkTaskAdapter adapter;
 
-    public void start(NetworkTaskMainUISyncHolder uiSyncHolder) {
-        super.execute(uiSyncHolder);
+    public NetworkTaskMainUISyncTask(LogDAO logDAO, NetworkTaskAdapter adapter) {
+        this.logDAO = logDAO;
+        this.adapter = adapter;
+    }
+
+    public void start(NetworkTask task) {
+        super.execute(task);
     }
 
     @Override
-    protected NetworkTaskUIWrapper doInBackground(NetworkTaskMainUISyncHolder... syncHolders) {
+    protected NetworkTaskUIWrapper doInBackground(NetworkTask... tasks) {
         Log.d(NetworkTaskMainUISyncTask.class.getName(), "doInBackground");
-        syncHolder = syncHolders[0];
-        NetworkTask networkTask = syncHolder.getNetworkTask();
+        NetworkTask networkTask = tasks[0];
         Log.d(NetworkTaskMainUISyncTask.class.getName(), "Updating log entry for network task " + networkTask);
-        LogDAO logDAO = syncHolder.getLogDAO();
         try {
             LogEntry logEntry = logDAO.readMostRecentLogForNetworkTask(networkTask.getId());
             if (logEntry != null) {
@@ -41,8 +45,9 @@ public class NetworkTaskMainUISyncTask extends AsyncTask<NetworkTaskMainUISyncHo
         if (networkTaskWrapper == null) {
             return;
         }
-        NetworkTaskAdapter adapter = syncHolder.getAdapter();
-        adapter.replaceItem(networkTaskWrapper);
-        adapter.notifyDataSetChanged();
+        if (adapter != null) {
+            adapter.replaceItem(networkTaskWrapper);
+            adapter.notifyDataSetChanged();
+        }
     }
 }
