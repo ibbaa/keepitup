@@ -174,7 +174,7 @@ public class NetworkTaskEditDialog extends DialogFragment {
         addressTextView.setText(mapping.getAccessTypeAddressLabel(accessType));
         TextView portTextView = dialogView.findViewById(R.id.textview_dialog_network_task_edit_port_label);
         LinearLayout portLinearLayout = dialogView.findViewById(R.id.linearlayout_dialog_network_task_edit_port);
-        if (accessType != null && accessType.needsPort()) {
+        if (accessType.needsPort()) {
             portTextView.setText(mapping.getAccessTypePortLabel(accessType));
             portTextView.setVisibility(View.VISIBLE);
             portEditText.setVisibility(View.VISIBLE);

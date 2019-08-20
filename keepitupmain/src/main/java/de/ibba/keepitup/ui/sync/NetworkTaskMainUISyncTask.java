@@ -1,7 +1,10 @@
 package de.ibba.keepitup.ui.sync;
 
+import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
+
+import java.lang.ref.WeakReference;
 
 import de.ibba.keepitup.db.LogDAO;
 import de.ibba.keepitup.model.LogEntry;
@@ -11,12 +14,12 @@ import de.ibba.keepitup.ui.adapter.NetworkTaskUIWrapper;
 
 public class NetworkTaskMainUISyncTask extends AsyncTask<NetworkTask, Integer, NetworkTaskUIWrapper> {
 
-    private final LogDAO logDAO;
-    private final NetworkTaskAdapter adapter;
+    private final WeakReference<Context> contextRef;
+    private final WeakReference<NetworkTaskAdapter> adapterRef;
 
-    public NetworkTaskMainUISyncTask(LogDAO logDAO, NetworkTaskAdapter adapter) {
-        this.logDAO = logDAO;
-        this.adapter = adapter;
+    public NetworkTaskMainUISyncTask(Context context, NetworkTaskAdapter adapter) {
+        this.contextRef = new WeakReference<>(context);
+        this.adapterRef = new WeakReference<>(adapter);
     }
 
     public void start(NetworkTask task) {
@@ -29,9 +32,13 @@ public class NetworkTaskMainUISyncTask extends AsyncTask<NetworkTask, Integer, N
         NetworkTask networkTask = tasks[0];
         Log.d(NetworkTaskMainUISyncTask.class.getName(), "Updating log entry for network task " + networkTask);
         try {
-            LogEntry logEntry = logDAO.readMostRecentLogForNetworkTask(networkTask.getId());
-            if (logEntry != null) {
-                return new NetworkTaskUIWrapper(networkTask, logEntry);
+            Context context = contextRef.get();
+            if (context != null) {
+                LogDAO logDAO = new LogDAO(context);
+                LogEntry logEntry = logDAO.readMostRecentLogForNetworkTask(networkTask.getId());
+                if (logEntry != null) {
+                    return new NetworkTaskUIWrapper(networkTask, logEntry);
+                }
             }
         } catch (Exception exc) {
             Log.e(NetworkTaskMainUISyncTask.class.getName(), "Error updating log entry for network task " + networkTask, exc);
@@ -45,9 +52,11 @@ public class NetworkTaskMainUISyncTask extends AsyncTask<NetworkTask, Integer, N
         if (networkTaskWrapper == null) {
             return;
         }
+        NetworkTaskAdapter adapter = adapterRef.get();
         if (adapter != null) {
             adapter.replaceItem(networkTaskWrapper);
             adapter.notifyDataSetChanged();
         }
     }
+
 }
