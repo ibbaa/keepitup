@@ -57,6 +57,18 @@ public class NetworkTaskMainUIInitTask extends AsyncTask<Void, Integer, List<Net
 
     @Override
     protected void onPostExecute(List<NetworkTaskUIWrapper> networkTaskUIWrappers) {
-        super.onPostExecute(networkTaskUIWrappers);
+        Log.d(NetworkTaskMainUIInitTask.class.getName(), "onPostExecute");
+        if (networkTaskUIWrappers == null) {
+            return;
+        }
+        try {
+            NetworkTaskAdapter adapter = adapterRef.get();
+            if (adapter != null) {
+                adapter.setItems(networkTaskUIWrappers);
+                adapter.notifyDataSetChanged();
+            }
+        } catch (Exception exc) {
+            Log.e(NetworkTaskMainUISyncTask.class.getName(), "Error updating adapter", exc);
+        }
     }
 }
