@@ -172,6 +172,11 @@ public class NetworkTaskAdapter extends RecyclerView.Adapter<NetworkTaskViewHold
         }
     }
 
+    public void setItems(List<NetworkTaskUIWrapper> networkTaskWrapperList) {
+        this.networkTaskWrapperList.clear();
+        this.networkTaskWrapperList.addAll(networkTaskWrapperList);
+    }
+
     public void updateIndex() {
         Log.d(NetworkTaskAdapter.class.getName(), "updateIndex");
         for (int ii = 0; ii < networkTaskWrapperList.size(); ii++) {
