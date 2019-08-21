@@ -64,11 +64,11 @@ public class NetworkTaskMainUIInitTask extends AsyncTask<Void, Integer, List<Net
         try {
             NetworkTaskAdapter adapter = adapterRef.get();
             if (adapter != null) {
-                adapter.setItems(networkTaskUIWrappers);
+                adapter.initItems(networkTaskUIWrappers);
                 adapter.notifyDataSetChanged();
             }
         } catch (Exception exc) {
-            Log.e(NetworkTaskMainUISyncTask.class.getName(), "Error updating adapter", exc);
+            Log.e(NetworkTaskMainUISyncTask.class.getName(), "Error initializing adapter", exc);
         }
     }
 }

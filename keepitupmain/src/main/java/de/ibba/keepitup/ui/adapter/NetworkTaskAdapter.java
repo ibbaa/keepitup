@@ -172,7 +172,7 @@ public class NetworkTaskAdapter extends RecyclerView.Adapter<NetworkTaskViewHold
         }
     }
 
-    public void setItems(List<NetworkTaskUIWrapper> networkTaskWrapperList) {
+    public void initItems(List<NetworkTaskUIWrapper> networkTaskWrapperList) {
         this.networkTaskWrapperList.clear();
         this.networkTaskWrapperList.addAll(networkTaskWrapperList);
     }
