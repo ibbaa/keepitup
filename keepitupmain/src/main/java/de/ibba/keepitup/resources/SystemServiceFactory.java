@@ -10,8 +10,6 @@ import de.ibba.keepitup.service.IAlarmManager;
 import de.ibba.keepitup.service.INetworkManager;
 import de.ibba.keepitup.service.SystemAlarmManager;
 import de.ibba.keepitup.service.SystemNetworkManager;
-import de.ibba.keepitup.ui.adapter.NetworkTaskAdapter;
-import de.ibba.keepitup.ui.sync.NetworkTaskMainUIInitTask;
 
 public class SystemServiceFactory implements ServiceFactory {
 
@@ -37,11 +35,5 @@ public class SystemServiceFactory implements ServiceFactory {
     public INetworkManager createNetworkManager(Context context) {
         Log.d(SystemServiceFactory.class.getName(), "createNetworkManager");
         return new SystemNetworkManager(context);
-    }
-
-    @Override
-    public NetworkTaskMainUIInitTask createUIInitTask(Context context, NetworkTaskAdapter adapter) {
-        Log.d(SystemServiceFactory.class.getName(), "createUIInitTask");
-        return new NetworkTaskMainUIInitTask(context, adapter);
     }
 }

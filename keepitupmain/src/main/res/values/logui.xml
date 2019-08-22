@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="activity_log_title">Log</string>
-    <string name="menu_action_refresh">Refresh</string>
+    <string name="menu_action_log_refresh">Refresh</string>
     <string name="text_list_item_log_entry_no_log">No logs present for network task %d</string>
     <string name="text_list_item_log_entry_title">Log entry for network task %d</string>
     <string name="text_list_item_log_entry_success">Execution %s</string>

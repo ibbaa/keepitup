@@ -1,5 +1,6 @@
 package de.ibba.keepitup.ui;
 
+import android.content.Context;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -19,6 +20,7 @@ public abstract class RecyclerViewBaseActivity extends AppCompatActivity {
     protected abstract RecyclerView.Adapter createAdapter();
 
     private Resources resources;
+    private Context context;
 
     public void injectResources(Resources resources) {
         this.resources = resources;

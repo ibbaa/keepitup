@@ -26,6 +26,7 @@ import de.ibba.keepitup.ui.sync.NetworkTaskMainUIInitTask;
 public class NetworkTaskMainActivity extends RecyclerViewBaseActivity {
 
     private NetworkTaskMainUIBroadcastReceiver broadcastReceiver;
+    private NetworkTaskMainUIInitTask uiInitTask;
 
     @Override
     protected int getRecyclerViewId() {
@@ -102,6 +103,11 @@ public class NetworkTaskMainActivity extends RecyclerViewBaseActivity {
             Log.d(NetworkTaskMainActivity.class.getName(), "menu_action_settings triggered");
             Intent intent = new Intent(this, SettingsActivity.class);
             startActivity(intent);
+            return true;
+        } else if (id == R.id.menu_action_main_refresh) {
+            Log.d(NetworkTaskMainActivity.class.getName(), "menu_action_main_refresh triggered");
+            NetworkTaskMainUIInitTask uiInitTask = new NetworkTaskMainUIInitTask(this, (NetworkTaskAdapter) getAdapter());
+            uiInitTask.start();
             return true;
         }
         return super.onOptionsItemSelected(item);

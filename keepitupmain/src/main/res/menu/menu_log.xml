@@ -2,6 +2,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="de.ibba.keepitup.ui.NetworkTaskLogActivity">
     <item
-        android:id="@+id/menu_action_refresh"
-        android:title="@string/menu_action_refresh" />
+        android:id="@+id/menu_action_log_refresh"
+        android:title="@string/menu_action_log_refresh" />
 </menu>
