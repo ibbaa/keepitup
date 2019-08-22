@@ -106,7 +106,25 @@ public class NetworkTaskMainUIInitTaskTest extends BaseUITest {
     }
 
     @Test
-    public void testAdapterUpdateSWithEmptyList() {
+    public void testNullAdapterUpdate() {
+        NetworkTask task1 = networkTaskDAO.insertNetworkTask(getNetworkTask1());
+        NetworkTask task2 = networkTaskDAO.insertNetworkTask(getNetworkTask2());
+        NetworkTask task3 = networkTaskDAO.insertNetworkTask(getNetworkTask3());
+        LogEntry logEntry1 = logDAO.insertAndDeleteLog(getLogEntryWithNetworkTaskId(task1.getId(), new GregorianCalendar(1980, Calendar.MARCH, 17).getTime().getTime()));
+        LogEntry logEntry2 = logDAO.insertAndDeleteLog(getLogEntryWithNetworkTaskId(task2.getId(), new GregorianCalendar(1981, Calendar.MARCH, 17).getTime().getTime()));
+        final NetworkTaskUIWrapper wrapper1 = new NetworkTaskUIWrapper(task1, logEntry1);
+        final NetworkTaskUIWrapper wrapper2 = new NetworkTaskUIWrapper(task2, logEntry2);
+        final NetworkTaskUIWrapper wrapper3 = new NetworkTaskUIWrapper(task3, null);
+        NetworkTaskAdapter adapter = (NetworkTaskAdapter) activity.getAdapter();
+        adapter.addItem(new NetworkTaskUIWrapper(task3, logEntry2));
+        NetworkTaskMainUIInitTask nullInitTask = new NetworkTaskMainUIInitTask(activity, null);
+        activity.runOnUiThread(() -> nullInitTask.onPostExecute(Arrays.asList(wrapper1, wrapper2, wrapper3)));
+        InstrumentationRegistry.getInstrumentation().waitForIdleSync();
+        assertEquals(1, adapter.getAllItems().size());
+    }
+
+    @Test
+    public void testAdapterUpdateWithEmptyList() {
         NetworkTask task1 = networkTaskDAO.insertNetworkTask(getNetworkTask1());
         NetworkTask task2 = networkTaskDAO.insertNetworkTask(getNetworkTask2());
         NetworkTask task3 = networkTaskDAO.insertNetworkTask(getNetworkTask3());

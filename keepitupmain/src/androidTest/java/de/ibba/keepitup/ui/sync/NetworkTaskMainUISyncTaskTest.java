@@ -26,6 +26,7 @@ import de.ibba.keepitup.ui.adapter.NetworkTaskAdapter;
 import de.ibba.keepitup.ui.adapter.NetworkTaskUIWrapper;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
 @MediumTest
 @RunWith(AndroidJUnit4.class)
@@ -84,6 +85,27 @@ public class NetworkTaskMainUISyncTaskTest extends BaseUITest {
         wrapper2 = adapter.getItem(1);
         assertAreEqual(task2, wrapper2.getNetworkTask());
         assertAreEqual(logEntry, wrapper2.getLogEntry());
+    }
+
+    @Test
+    public void testNullAdapterUpdate() {
+        NetworkTask task1 = networkTaskDAO.insertNetworkTask(getNetworkTask1());
+        NetworkTask task2 = networkTaskDAO.insertNetworkTask(getNetworkTask2());
+        NetworkTask task3 = networkTaskDAO.insertNetworkTask(getNetworkTask3());
+        LogEntry logEntry = logDAO.insertAndDeleteLog(getLogEntryWithNetworkTaskId(task2.getId(), new GregorianCalendar(1980, Calendar.MARCH, 17).getTime().getTime()));
+        NetworkTaskUIWrapper wrapper1 = new NetworkTaskUIWrapper(task1, null);
+        NetworkTaskUIWrapper wrapper2 = new NetworkTaskUIWrapper(task2, null);
+        NetworkTaskUIWrapper wrapper3 = new NetworkTaskUIWrapper(task3, null);
+        NetworkTaskAdapter adapter = (NetworkTaskAdapter) activity.getAdapter();
+        adapter.addItem(wrapper1);
+        adapter.addItem(wrapper2);
+        adapter.addItem(wrapper3);
+        NetworkTaskMainUISyncTask nullSyncTask = new NetworkTaskMainUISyncTask(activity, null);
+        activity.runOnUiThread(() -> nullSyncTask.onPostExecute(new NetworkTaskUIWrapper(task2, logEntry)));
+        InstrumentationRegistry.getInstrumentation().waitForIdleSync();
+        wrapper2 = adapter.getItem(1);
+        assertAreEqual(task2, wrapper2.getNetworkTask());
+        assertNull(wrapper2.getLogEntry());
     }
 
     private void assertAreEqual(NetworkTask task1, NetworkTask task2) {

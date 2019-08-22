@@ -19,11 +19,17 @@ import de.ibba.keepitup.ui.adapter.NetworkTaskUIWrapper;
 public class NetworkTaskMainUIInitTask extends AsyncTask<Void, Integer, List<NetworkTaskUIWrapper>> {
 
     private final WeakReference<Context> contextRef;
-    private final WeakReference<NetworkTaskAdapter> adapterRef;
+    private WeakReference<NetworkTaskAdapter> adapterRef;
 
     public NetworkTaskMainUIInitTask(Context context, NetworkTaskAdapter adapter) {
         this.contextRef = new WeakReference<>(context);
-        this.adapterRef = new WeakReference<>(adapter);
+        if (adapter != null) {
+            this.adapterRef = new WeakReference<>(adapter);
+        }
+    }
+
+    public void start() {
+        super.execute();
     }
 
     @Override
@@ -58,7 +64,7 @@ public class NetworkTaskMainUIInitTask extends AsyncTask<Void, Integer, List<Net
     @Override
     protected void onPostExecute(List<NetworkTaskUIWrapper> networkTaskUIWrappers) {
         Log.d(NetworkTaskMainUIInitTask.class.getName(), "onPostExecute");
-        if (networkTaskUIWrappers == null) {
+        if (networkTaskUIWrappers == null || adapterRef == null) {
             return;
         }
         try {
