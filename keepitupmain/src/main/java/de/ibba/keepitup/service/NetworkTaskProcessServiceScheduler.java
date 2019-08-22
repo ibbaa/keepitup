@@ -85,12 +85,7 @@ public class NetworkTaskProcessServiceScheduler {
         for (NetworkTask currentTask : networkTasks) {
             if (currentTask.isRunning()) {
                 Log.d(NetworkTaskProcessServiceScheduler.class.getName(), "Network task " + currentTask + " is marked as running.");
-                if (!hasPendingIntent(currentTask)) {
-                    Log.d(NetworkTaskProcessServiceScheduler.class.getName(), "No pending alarm. Scheduling...");
-                    reschedule(currentTask, true);
-                } else {
-                    Log.d(NetworkTaskProcessServiceScheduler.class.getName(), "Pending alarm already present.");
-                }
+                reschedule(currentTask, true);
             } else {
                 Log.d(NetworkTaskProcessServiceScheduler.class.getName(), "Network task " + currentTask + " is not marked as running.");
             }

@@ -64,8 +64,8 @@ public class NetworkTaskLogActivity extends RecyclerViewBaseActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
-        if (id == R.id.menu_action_refresh) {
-            Log.d(NetworkTaskLogActivity.class.getName(), "menu_action_refresh triggered");
+        if (id == R.id.menu_action_log_refresh) {
+            Log.d(NetworkTaskLogActivity.class.getName(), "menu_action_log_refresh triggered");
             if (getIntent() != null && getIntent().getExtras() != null) {
                 NetworkTask task = new NetworkTask(Objects.requireNonNull(getIntent().getExtras()));
                 List<LogEntry> logEntries = readLogEntriesFromDatabase(task);
