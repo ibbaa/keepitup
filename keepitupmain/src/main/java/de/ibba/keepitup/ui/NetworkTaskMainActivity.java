@@ -12,17 +12,16 @@ import android.view.View;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.TimeUnit;
 
 import de.ibba.keepitup.R;
-import de.ibba.keepitup.db.LogDAO;
-import de.ibba.keepitup.db.NetworkTaskDAO;
-import de.ibba.keepitup.model.LogEntry;
 import de.ibba.keepitup.model.NetworkTask;
 import de.ibba.keepitup.ui.adapter.NetworkTaskAdapter;
 import de.ibba.keepitup.ui.adapter.NetworkTaskUIWrapper;
 import de.ibba.keepitup.ui.dialog.NetworkTaskConfirmDialog;
 import de.ibba.keepitup.ui.dialog.NetworkTaskEditDialog;
 import de.ibba.keepitup.ui.sync.NetworkTaskMainUIBroadcastReceiver;
+import de.ibba.keepitup.ui.sync.NetworkTaskMainUIInitTask;
 
 public class NetworkTaskMainActivity extends RecyclerViewBaseActivity {
 
@@ -73,21 +72,14 @@ public class NetworkTaskMainActivity extends RecyclerViewBaseActivity {
 
     private List<NetworkTaskUIWrapper> readNetworkTasksFromDatabase() {
         Log.d(NetworkTaskMainActivity.class.getName(), "readNetworkTasksFromDatabase");
-        NetworkTaskDAO networkTaskDAO = new NetworkTaskDAO(this);
-        LogDAO logDAO = new LogDAO(this);
         try {
-            List<NetworkTaskUIWrapper> wrapperList = new ArrayList<>();
-            List<NetworkTask> tasks = networkTaskDAO.readAllNetworkTasks();
-            Log.d(NetworkTaskMainActivity.class.getName(), "Database returned the following network tasks: " + (tasks.isEmpty() ? "no network tasks" : ""));
-            for (NetworkTask currentTask : tasks) {
-                Log.d(NetworkTaskMainActivity.class.getName(), currentTask.toString());
-            }
-            for (NetworkTask currentTask : tasks) {
-                Log.d(NetworkTaskMainActivity.class.getName(), "Reading most recent log for " + currentTask.toString());
-                LogEntry logEntry = logDAO.readMostRecentLogForNetworkTask(currentTask.getId());
-                Log.d(NetworkTaskMainActivity.class.getName(), "Database returned the following log entry: " + (logEntry == null ? "no log entry" : logEntry.toString()));
-                NetworkTaskUIWrapper currentWrapper = new NetworkTaskUIWrapper(currentTask, logEntry);
-                wrapperList.add(currentWrapper);
+            NetworkTaskMainUIInitTask uiInitTask = new NetworkTaskMainUIInitTask(this, null);
+            uiInitTask.start();
+            List<NetworkTaskUIWrapper> wrapperList = uiInitTask.get(getResources().getInteger(R.integer.database_access_timeout), TimeUnit.SECONDS);
+            if (wrapperList == null) {
+                Log.e(NetworkTaskMainActivity.class.getName(), "Reading all network tasks from database returned null");
+                showErrorDialog(getResources().getString(R.string.text_dialog_general_error_read_network_tasks));
+                return new ArrayList<>();
             }
             return wrapperList;
         } catch (Exception exc) {

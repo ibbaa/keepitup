@@ -8,6 +8,8 @@ import de.ibba.keepitup.notification.INotificatioManager;
 import de.ibba.keepitup.resources.ServiceFactory;
 import de.ibba.keepitup.service.IAlarmManager;
 import de.ibba.keepitup.service.INetworkManager;
+import de.ibba.keepitup.ui.adapter.NetworkTaskAdapter;
+import de.ibba.keepitup.ui.sync.NetworkTaskMainUIInitTask;
 
 public class TestServiceFactory implements ServiceFactory {
 
@@ -33,5 +35,11 @@ public class TestServiceFactory implements ServiceFactory {
     public INetworkManager createNetworkManager(Context context) {
         Log.d(TestServiceFactory.class.getName(), "createNetworkManager");
         return new MockNetworkManager();
+    }
+
+    @Override
+    public NetworkTaskMainUIInitTask createUIInitTask(Context context, NetworkTaskAdapter adapter) {
+        Log.d(TestServiceFactory.class.getName(), "createUIInitTask");
+        return new MockNetworkTaskMainUIInitTask(context, adapter);
     }
 }

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <integer name="ui_sync_refresh_interval">5</integer>
+    <integer name="database_access_timeout">300</integer>
     <integer name="scheduler_id_retry_count">10000000</integer>
     <string name="ping_count_key">ping_count_key</string>
     <integer name="ping_count_default">3</integer>
