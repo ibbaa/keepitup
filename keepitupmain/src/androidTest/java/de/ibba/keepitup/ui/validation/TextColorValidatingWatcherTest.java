@@ -1,9 +1,10 @@
 package de.ibba.keepitup.ui.validation;
 
 import android.graphics.Color;
-import android.support.test.filters.SmallTest;
-import android.support.test.runner.AndroidJUnit4;
 import android.widget.EditText;
+
+import androidx.test.ext.junit.runners.AndroidJUnit4;
+import androidx.test.filters.SmallTest;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;

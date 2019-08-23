@@ -1,7 +1,8 @@
 package de.ibba.keepitup.resources;
 
 import android.content.Context;
-import android.support.v4.app.NotificationCompat;
+
+import androidx.core.app.NotificationCompat;
 
 import de.ibba.keepitup.notification.INotificatioManager;
 import de.ibba.keepitup.service.IAlarmManager;

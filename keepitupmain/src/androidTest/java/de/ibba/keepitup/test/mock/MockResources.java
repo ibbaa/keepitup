@@ -11,10 +11,11 @@ import android.graphics.Movie;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
 import android.util.TypedValue;
+
+import androidx.annotation.NonNull;
 
 import org.xmlpull.v1.XmlPullParserException;
 

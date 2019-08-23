@@ -1,7 +1,8 @@
 package de.ibba.keepitup.ui.dialog;
 
 import android.os.Bundle;
-import android.support.annotation.NonNull;
+
+import androidx.annotation.NonNull;
 
 import java.util.ArrayList;
 import java.util.List;

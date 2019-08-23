@@ -1,7 +1,8 @@
 package de.ibba.keepitup.test.matcher;
 
-import android.support.v7.widget.RecyclerView;
 import android.view.View;
+
+import androidx.recyclerview.widget.RecyclerView;
 
 import org.hamcrest.Description;
 import org.hamcrest.TypeSafeMatcher;

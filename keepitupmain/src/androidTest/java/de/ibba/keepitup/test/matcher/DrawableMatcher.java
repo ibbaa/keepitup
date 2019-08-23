@@ -7,9 +7,10 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.StateListDrawable;
 import android.graphics.drawable.VectorDrawable;
-import android.support.annotation.DrawableRes;
 import android.view.View;
 import android.widget.ImageView;
+
+import androidx.annotation.DrawableRes;
 
 import org.hamcrest.Description;
 import org.hamcrest.TypeSafeMatcher;

@@ -1,7 +1,7 @@
 package de.ibba.keepitup.service;
 
-import android.support.test.filters.MediumTest;
-import android.support.test.runner.AndroidJUnit4;
+import androidx.test.ext.junit.runners.AndroidJUnit4;
+import androidx.test.filters.MediumTest;
 
 import org.junit.Before;
 import org.junit.Test;

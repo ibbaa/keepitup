@@ -1,9 +1,10 @@
 package de.ibba.keepitup.test.matcher;
 
-import android.support.test.espresso.matcher.BoundedMatcher;
-import android.support.v4.content.ContextCompat;
 import android.view.View;
 import android.widget.TextView;
+
+import androidx.core.content.ContextCompat;
+import androidx.test.espresso.matcher.BoundedMatcher;
 
 import org.hamcrest.Description;
 

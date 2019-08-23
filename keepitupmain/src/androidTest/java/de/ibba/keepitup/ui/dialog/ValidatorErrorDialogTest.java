@@ -2,8 +2,9 @@ package de.ibba.keepitup.ui.dialog;
 
 import android.content.res.Configuration;
 import android.os.Bundle;
-import android.support.test.rule.ActivityTestRule;
 import android.widget.GridLayout;
+
+import androidx.test.rule.ActivityTestRule;
 
 import org.junit.Before;
 import org.junit.Rule;
@@ -15,11 +16,11 @@ import de.ibba.keepitup.ui.SettingsActivity;
 import de.ibba.keepitup.ui.validation.ValidationResult;
 import de.ibba.keepitup.util.BundleUtil;
 
-import static android.support.test.espresso.Espresso.onView;
-import static android.support.test.espresso.assertion.ViewAssertions.matches;
-import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
-import static android.support.test.espresso.matcher.ViewMatchers.withId;
-import static android.support.test.espresso.matcher.ViewMatchers.withText;
+import static androidx.test.espresso.Espresso.onView;
+import static androidx.test.espresso.assertion.ViewAssertions.matches;
+import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
+import static androidx.test.espresso.matcher.ViewMatchers.withId;
+import static androidx.test.espresso.matcher.ViewMatchers.withText;
 import static org.hamcrest.Matchers.allOf;
 
 public class ValidatorErrorDialogTest extends BaseUITest {

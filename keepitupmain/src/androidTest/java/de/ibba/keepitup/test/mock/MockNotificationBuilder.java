@@ -1,8 +1,9 @@
 package de.ibba.keepitup.test.mock;
 
 import android.content.Context;
-import android.support.annotation.NonNull;
-import android.support.v4.app.NotificationCompat;
+
+import androidx.annotation.NonNull;
+import androidx.core.app.NotificationCompat;
 
 public class MockNotificationBuilder extends NotificationCompat.Builder {
 

@@ -3,6 +3,8 @@ package de.ibba.keepitup.resources;
 import android.content.Context;
 import android.util.Log;
 
+import java.util.Objects;
+
 import de.ibba.keepitup.R;
 
 public class WorkerFactoryContributor {
@@ -18,7 +20,10 @@ public class WorkerFactoryContributor {
         Log.d(WorkerFactoryContributor.class.getName(), "Worker factory class name is " + factoryClassName);
         try {
             ClassLoader classloader = Thread.currentThread().getContextClassLoader();
-            Class<?> factoryClass = classloader.loadClass(factoryClassName);
+            if (classloader == null) {
+                classloader = this.getClass().getClassLoader();
+            }
+            Class<?> factoryClass = Objects.requireNonNull(classloader).loadClass(factoryClassName);
             Log.d(WorkerFactoryContributor.class.getName(), "Loaded worker factory class is " + factoryClass.getName());
             return (WorkerFactory) factoryClass.newInstance();
         } catch (Exception exc) {

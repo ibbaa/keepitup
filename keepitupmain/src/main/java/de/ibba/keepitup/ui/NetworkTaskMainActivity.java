@@ -3,15 +3,15 @@ package de.ibba.keepitup.ui;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
-import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
+import androidx.recyclerview.widget.RecyclerView;
+
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
 import de.ibba.keepitup.R;
@@ -187,7 +187,7 @@ public class NetworkTaskMainActivity extends RecyclerViewBaseActivity {
         Log.d(NetworkTaskMainActivity.class.getName(), "onConfirmDialogOkClicked for type " + type);
         if (NetworkTaskConfirmDialog.Type.DELETE.equals(type)) {
             Bundle arguments = confirmDialog.getArguments();
-            if (Objects.requireNonNull(arguments).containsKey(getConfirmDialogPositionKey())) {
+            if (arguments != null && arguments.containsKey(getConfirmDialogPositionKey())) {
                 NetworkTaskHandler handler = new NetworkTaskHandler(this);
                 int position = arguments.getInt(getConfirmDialogPositionKey());
                 NetworkTask task = ((NetworkTaskAdapter) getAdapter()).getItem(position).getNetworkTask();
