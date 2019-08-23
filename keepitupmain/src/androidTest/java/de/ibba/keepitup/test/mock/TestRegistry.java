@@ -1,11 +1,12 @@
 package de.ibba.keepitup.test.mock;
 
 import android.content.Context;
-import android.support.test.InstrumentationRegistry;
+
+import androidx.test.platform.app.InstrumentationRegistry;
 
 public class TestRegistry {
 
     public static Context getContext() {
-        return new MockContext(InstrumentationRegistry.getContext(), InstrumentationRegistry.getTargetContext());
+        return new MockContext(InstrumentationRegistry.getInstrumentation().getContext(), InstrumentationRegistry.getInstrumentation().getTargetContext());
     }
 }

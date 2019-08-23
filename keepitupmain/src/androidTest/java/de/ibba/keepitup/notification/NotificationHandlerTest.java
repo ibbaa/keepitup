@@ -1,9 +1,9 @@
 package de.ibba.keepitup.notification;
 
-import android.support.test.InstrumentationRegistry;
-import android.support.test.filters.MediumTest;
-import android.support.test.runner.AndroidJUnit4;
-import android.support.v4.app.NotificationCompat;
+import androidx.core.app.NotificationCompat;
+import androidx.test.ext.junit.runners.AndroidJUnit4;
+import androidx.test.filters.MediumTest;
+import androidx.test.platform.app.InstrumentationRegistry;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -38,7 +38,7 @@ public class NotificationHandlerTest {
     }
 
     public void setLocale(Locale locale) {
-        InstrumentationRegistry.getTargetContext().getResources().getConfiguration().setLocale(locale);
+        InstrumentationRegistry.getInstrumentation().getTargetContext().getResources().getConfiguration().setLocale(locale);
     }
 
     @Test

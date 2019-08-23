@@ -2,7 +2,8 @@ package de.ibba.keepitup.model;
 
 import android.os.Bundle;
 import android.os.PersistableBundle;
-import android.support.annotation.NonNull;
+
+import androidx.annotation.NonNull;
 
 public class LogEntry {
 

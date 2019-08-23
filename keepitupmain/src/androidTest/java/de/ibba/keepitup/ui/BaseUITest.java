@@ -3,10 +3,11 @@ package de.ibba.keepitup.ui;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
-import android.support.test.InstrumentationRegistry;
-import android.support.test.rule.ActivityTestRule;
 import android.view.View;
 import android.widget.GridLayout;
+
+import androidx.test.platform.app.InstrumentationRegistry;
+import androidx.test.rule.ActivityTestRule;
 
 import org.hamcrest.Matcher;
 import org.junit.After;
@@ -87,7 +88,7 @@ public abstract class BaseUITest {
     }
 
     public void setLocale(Locale locale) {
-        InstrumentationRegistry.getTargetContext().getResources().getConfiguration().setLocale(locale);
+        InstrumentationRegistry.getInstrumentation().getTargetContext().getResources().getConfiguration().setLocale(locale);
     }
 
     public static Matcher<View> withListSize(int size) {

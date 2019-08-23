@@ -5,11 +5,13 @@ import android.app.NotificationChannel;
 import android.content.Context;
 import android.content.res.Resources;
 import android.os.Build;
-import android.support.v4.app.NotificationCompat;
 import android.util.Log;
+
+import androidx.core.app.NotificationCompat;
 
 import java.text.DateFormat;
 import java.util.Date;
+import java.util.Objects;
 
 import de.ibba.keepitup.R;
 import de.ibba.keepitup.model.NetworkTask;
@@ -39,7 +41,7 @@ public class NotificationHandler {
             channel.setVibrationPattern(getVibrationPattern());
             channel.enableVibration(true);
             android.app.NotificationManager notificationManager = context.getSystemService(android.app.NotificationManager.class);
-            notificationManager.createNotificationChannel(channel);
+            Objects.requireNonNull(notificationManager).createNotificationChannel(channel);
         }
     }
 

@@ -5,6 +5,7 @@ import android.util.Log;
 import java.text.NumberFormat;
 import java.text.ParseException;
 import java.util.Locale;
+import java.util.Objects;
 
 public class NumberUtil {
 
@@ -66,7 +67,7 @@ public class NumberUtil {
         if (isValidDoubleValue(value)) {
             NumberFormat numberFormat = NumberFormat.getNumberInstance(Locale.US);
             try {
-                return numberFormat.parse(value.toString()).doubleValue();
+                return Objects.requireNonNull(numberFormat.parse(value.toString())).doubleValue();
             } catch (ParseException exc) {
                 Log.d(NumberUtil.class.getName(), "Parsing error, value == " + value, exc);
             }

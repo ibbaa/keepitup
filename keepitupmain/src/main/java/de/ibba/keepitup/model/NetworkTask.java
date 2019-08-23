@@ -4,7 +4,8 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.os.PersistableBundle;
-import android.support.annotation.NonNull;
+
+import androidx.annotation.NonNull;
 
 import de.ibba.keepitup.R;
 import de.ibba.keepitup.resources.PreferenceManager;

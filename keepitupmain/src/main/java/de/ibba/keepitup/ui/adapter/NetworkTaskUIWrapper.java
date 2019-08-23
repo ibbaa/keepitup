@@ -1,6 +1,6 @@
 package de.ibba.keepitup.ui.adapter;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import de.ibba.keepitup.model.LogEntry;
 import de.ibba.keepitup.model.NetworkTask;

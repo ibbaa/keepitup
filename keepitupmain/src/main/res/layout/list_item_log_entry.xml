@@ -13,7 +13,7 @@
         android:textStyle="normal"
         android:text="@string/text_list_item_log_entry_no_log" />
 
-    <android.support.v7.widget.CardView xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    <androidx.cardview.widget.CardView xmlns:card_view="http://schemas.android.com/apk/res-auto"
         android:id="@+id/cardview_list_item_log_entry"
         android:layout_gravity="center"
         android:layout_width="match_parent"
@@ -60,6 +60,6 @@
 
         </LinearLayout>
 
-    </android.support.v7.widget.CardView>
+    </androidx.cardview.widget.CardView>
 
 </LinearLayout>

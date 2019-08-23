@@ -3,6 +3,8 @@ package de.ibba.keepitup.resources;
 import android.content.Context;
 import android.util.Log;
 
+import java.util.Objects;
+
 import de.ibba.keepitup.R;
 
 public class ServiceFactoryContributor {
@@ -18,7 +20,10 @@ public class ServiceFactoryContributor {
         Log.d(ServiceFactoryContributor.class.getName(), "Service factory class name is " + factoryClassName);
         try {
             ClassLoader classloader = Thread.currentThread().getContextClassLoader();
-            Class<?> factoryClass = classloader.loadClass(factoryClassName);
+            if (classloader == null) {
+                classloader = this.getClass().getClassLoader();
+            }
+            Class<?> factoryClass = Objects.requireNonNull(classloader).loadClass(factoryClassName);
             Log.d(ServiceFactoryContributor.class.getName(), "Loaded service factory class is " + factoryClass.getName());
             return (ServiceFactory) factoryClass.newInstance();
         } catch (Exception exc) {
