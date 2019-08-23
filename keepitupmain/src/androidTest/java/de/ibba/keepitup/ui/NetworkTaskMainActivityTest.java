@@ -205,15 +205,19 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
 
     @Test
     public void testStartStopNetworkTask() {
-        launchRecyclerViewBaseActivity(rule);
+        NetworkTaskMainActivity activity = (NetworkTaskMainActivity) launchRecyclerViewBaseActivity(rule);
         onView(allOf(withId(R.id.imageview_list_item_network_task_add), isDisplayed())).perform(click());
         onView(withId(R.id.imageview_dialog_network_task_edit_ok)).perform(click());
         onView(allOf(withId(R.id.imageview_list_item_network_task_start_stop), withChildDescendantAtPosition(withId(R.id.listview_main_activity_network_tasks), 0))).check(matches(withDrawable(R.drawable.icon_start_shadow)));
         assertFalse(getAdapter().getItem(0).getNetworkTask().isRunning());
         onView(allOf(withId(R.id.imageview_list_item_network_task_start_stop), withChildDescendantAtPosition(withId(R.id.listview_main_activity_network_tasks), 0))).perform(click());
+        activity.runOnUiThread(() -> getAdapter().notifyDataSetChanged());
+        InstrumentationRegistry.getInstrumentation().waitForIdleSync();
         onView(allOf(withId(R.id.imageview_list_item_network_task_start_stop), withChildDescendantAtPosition(withId(R.id.listview_main_activity_network_tasks), 0))).check(matches(withDrawable(R.drawable.icon_stop_shadow)));
         assertTrue(getAdapter().getItem(0).getNetworkTask().isRunning());
         onView(allOf(withId(R.id.imageview_list_item_network_task_start_stop), withChildDescendantAtPosition(withId(R.id.listview_main_activity_network_tasks), 0))).perform(click());
+        activity.runOnUiThread(() -> getAdapter().notifyDataSetChanged());
+        InstrumentationRegistry.getInstrumentation().waitForIdleSync();
         onView(allOf(withId(R.id.imageview_list_item_network_task_start_stop), withChildDescendantAtPosition(withId(R.id.listview_main_activity_network_tasks), 0))).check(matches(withDrawable(R.drawable.icon_start_shadow)));
         assertFalse(getAdapter().getItem(0).getNetworkTask().isRunning());
     }
