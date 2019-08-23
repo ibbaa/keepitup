@@ -6,6 +6,7 @@ import android.content.res.Configuration;
 import android.view.View;
 import android.widget.GridLayout;
 
+import androidx.test.espresso.ViewAction;
 import androidx.test.platform.app.InstrumentationRegistry;
 import androidx.test.rule.ActivityTestRule;
 
@@ -25,6 +26,7 @@ import de.ibba.keepitup.test.matcher.GridLayoutPositionMatcher;
 import de.ibba.keepitup.test.matcher.ListSizeMatcher;
 import de.ibba.keepitup.test.matcher.TextColorMatcher;
 import de.ibba.keepitup.test.mock.TestRegistry;
+import de.ibba.keepitup.test.viewaction.WaitForViewAction;
 
 public abstract class BaseUITest {
 
@@ -113,5 +115,9 @@ public abstract class BaseUITest {
 
     public static Matcher<View> withTextColor(int expectedId) {
         return new TextColorMatcher(expectedId);
+    }
+
+    public static ViewAction waitFor(long time) {
+        return new WaitForViewAction(time);
     }
 }
