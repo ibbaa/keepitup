@@ -32,7 +32,7 @@ public class NetworkTaskMainUISyncTask extends AsyncTask<NetworkTask, Integer, N
     protected NetworkTaskUIWrapper doInBackground(NetworkTask... tasks) {
         Log.d(NetworkTaskMainUISyncTask.class.getName(), "doInBackground");
         NetworkTask networkTask = tasks[0];
-        Log.d(NetworkTaskMainUISyncTask.class.getName(), "Updating log entry for network task " + networkTask);
+        Log.d(NetworkTaskMainUISyncTask.class.getName(), "Reading log entry for network task " + networkTask);
         try {
             Context context = contextRef.get();
             if (context != null) {
@@ -43,7 +43,7 @@ public class NetworkTaskMainUISyncTask extends AsyncTask<NetworkTask, Integer, N
                 }
             }
         } catch (Exception exc) {
-            Log.e(NetworkTaskMainUISyncTask.class.getName(), "Error updating log entry for network task " + networkTask, exc);
+            Log.e(NetworkTaskMainUISyncTask.class.getName(), "Error reading log entry for network task " + networkTask, exc);
         }
         return null;
     }
@@ -57,6 +57,7 @@ public class NetworkTaskMainUISyncTask extends AsyncTask<NetworkTask, Integer, N
         NetworkTaskAdapter adapter = adapterRef.get();
         if (adapter != null) {
             try {
+                Log.d(NetworkTaskMainUISyncTask.class.getName(), "Updating adapter with networkTaskWrapper " + networkTaskWrapper);
                 adapter.replaceItem(networkTaskWrapper);
                 adapter.notifyDataSetChanged();
             } catch (Exception exc) {

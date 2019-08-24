@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.TimeUnit;
 
 import de.ibba.keepitup.R;
 import de.ibba.keepitup.db.LogDAO;
@@ -18,10 +19,16 @@ import de.ibba.keepitup.model.LogEntry;
 import de.ibba.keepitup.model.NetworkTask;
 import de.ibba.keepitup.ui.adapter.LogEntryAdapter;
 import de.ibba.keepitup.ui.sync.LogEntryUIBroadcastReceiver;
+import de.ibba.keepitup.ui.sync.LogEntryUIInitTask;
 
 public class NetworkTaskLogActivity extends RecyclerViewBaseActivity {
 
     private LogEntryUIBroadcastReceiver broadcastReceiver;
+    private LogEntryUIInitTask uiInitTask;
+
+    public void injectUIInitTask(LogEntryUIInitTask uiInitTask) {
+        this.uiInitTask = uiInitTask;
+    }
 
     @Override
     protected int getRecyclerViewId() {
@@ -75,11 +82,13 @@ public class NetworkTaskLogActivity extends RecyclerViewBaseActivity {
         Log.d(NetworkTaskLogActivity.class.getName(), "readLogEntriesFromDatabase");
         LogDAO logDAO = new LogDAO(this);
         try {
-            Log.d(NetworkTaskLogActivity.class.getName(), "Reading log entries for network task " + task);
-            List<LogEntry> logEntries = logDAO.readAllLogsForNetworkTask(task.getId());
-            Log.d(NetworkTaskLogActivity.class.getName(), "Database returned the following log entries: " + (logEntries.isEmpty() ? "no log entries" : ""));
-            for (LogEntry logEntry : logEntries) {
-                Log.d(NetworkTaskLogActivity.class.getName(), logEntry.toString());
+            LogEntryUIInitTask uiInitTask = getUIInitTask(null);
+            uiInitTask.start(task);
+            List<LogEntry> logEntries = uiInitTask.get(getResources().getInteger(R.integer.database_access_timeout), TimeUnit.SECONDS);
+            if (logEntries == null) {
+                Log.e(NetworkTaskLogActivity.class.getName(), "Reading all log entries from database returned null");
+                showErrorDialog(getResources().getString(R.string.text_dialog_general_error_read_log_entries));
+                return new ArrayList<>();
             }
             return logEntries;
         } catch (Exception exc) {
@@ -102,14 +111,21 @@ public class NetworkTaskLogActivity extends RecyclerViewBaseActivity {
             Log.d(NetworkTaskLogActivity.class.getName(), "menu_action_log_refresh triggered");
             if (getIntent() != null && getIntent().getExtras() != null) {
                 NetworkTask task = new NetworkTask(Objects.requireNonNull(getIntent().getExtras()));
-                List<LogEntry> logEntries = readLogEntriesFromDatabase(task);
-                ((LogEntryAdapter) getAdapter()).replaceItems(logEntries);
-                getAdapter().notifyDataSetChanged();
+                LogEntryUIInitTask uiInitTask = getUIInitTask((LogEntryAdapter) getAdapter());
+                uiInitTask.start(task);
+                return true;
             } else {
                 Log.e(NetworkTaskLogActivity.class.getName(), "No network task intent present");
             }
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private LogEntryUIInitTask getUIInitTask(LogEntryAdapter adapter) {
+        if (uiInitTask != null) {
+            return uiInitTask;
+        }
+        return new LogEntryUIInitTask(this, adapter);
     }
 }

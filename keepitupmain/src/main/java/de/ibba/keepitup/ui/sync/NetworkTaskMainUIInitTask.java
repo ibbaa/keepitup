@@ -38,6 +38,7 @@ public class NetworkTaskMainUIInitTask extends AsyncTask<Void, Integer, List<Net
         try {
             Context context = contextRef.get();
             if (context != null) {
+                Log.d(NetworkTaskMainUISyncTask.class.getName(), "Reading all network tasks");
                 List<NetworkTaskUIWrapper> wrapperList = new ArrayList<>();
                 NetworkTaskDAO networkTaskDAO = new NetworkTaskDAO(context);
                 List<NetworkTask> tasks = networkTaskDAO.readAllNetworkTasks();
@@ -70,6 +71,7 @@ public class NetworkTaskMainUIInitTask extends AsyncTask<Void, Integer, List<Net
         try {
             NetworkTaskAdapter adapter = adapterRef.get();
             if (adapter != null) {
+                Log.d(NetworkTaskMainUIInitTask.class.getName(), "Initializing adapter");
                 adapter.replaceItems(networkTaskUIWrappers);
                 adapter.notifyDataSetChanged();
             }
