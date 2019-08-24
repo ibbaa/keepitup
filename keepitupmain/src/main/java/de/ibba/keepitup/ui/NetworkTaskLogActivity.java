@@ -54,6 +54,9 @@ public class NetworkTaskLogActivity extends RecyclerViewBaseActivity {
         Log.d(NetworkTaskLogActivity.class.getName(), "onResume");
         super.onResume();
         registerReceiver();
+        NetworkTask task = new NetworkTask(Objects.requireNonNull(getIntent().getExtras()));
+        LogEntryUIInitTask uiInitTask = getUIInitTask((LogEntryAdapter) getAdapter());
+        uiInitTask.start(task);
     }
 
     @Override
