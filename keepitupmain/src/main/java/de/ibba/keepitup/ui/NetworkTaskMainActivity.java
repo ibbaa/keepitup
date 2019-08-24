@@ -28,6 +28,10 @@ public class NetworkTaskMainActivity extends RecyclerViewBaseActivity {
     private NetworkTaskMainUIBroadcastReceiver broadcastReceiver;
     private NetworkTaskMainUIInitTask uiInitTask;
 
+    public void injectUIInitTask(NetworkTaskMainUIInitTask uiInitTask) {
+        this.uiInitTask = uiInitTask;
+    }
+
     @Override
     protected int getRecyclerViewId() {
         return R.id.listview_main_activity_network_tasks;
@@ -74,7 +78,7 @@ public class NetworkTaskMainActivity extends RecyclerViewBaseActivity {
     private List<NetworkTaskUIWrapper> readNetworkTasksFromDatabase() {
         Log.d(NetworkTaskMainActivity.class.getName(), "readNetworkTasksFromDatabase");
         try {
-            NetworkTaskMainUIInitTask uiInitTask = new NetworkTaskMainUIInitTask(this, null);
+            NetworkTaskMainUIInitTask uiInitTask = getUIInitTask(null);
             uiInitTask.start();
             List<NetworkTaskUIWrapper> wrapperList = uiInitTask.get(getResources().getInteger(R.integer.database_access_timeout), TimeUnit.SECONDS);
             if (wrapperList == null) {
@@ -106,7 +110,7 @@ public class NetworkTaskMainActivity extends RecyclerViewBaseActivity {
             return true;
         } else if (id == R.id.menu_action_main_refresh) {
             Log.d(NetworkTaskMainActivity.class.getName(), "menu_action_main_refresh triggered");
-            NetworkTaskMainUIInitTask uiInitTask = new NetworkTaskMainUIInitTask(this, (NetworkTaskAdapter) getAdapter());
+            NetworkTaskMainUIInitTask uiInitTask = getUIInitTask((NetworkTaskAdapter) getAdapter());
             uiInitTask.start();
             return true;
         }
@@ -205,5 +209,12 @@ public class NetworkTaskMainActivity extends RecyclerViewBaseActivity {
     public void onConfirmDialogCancelClicked(NetworkTaskConfirmDialog confirmDialog) {
         Log.d(NetworkTaskMainActivity.class.getName(), "onConfirmDialogCancelClicked");
         confirmDialog.dismiss();
+    }
+
+    private NetworkTaskMainUIInitTask getUIInitTask(NetworkTaskAdapter adapter) {
+        if (uiInitTask != null) {
+            return uiInitTask;
+        }
+        return new NetworkTaskMainUIInitTask(this, adapter);
     }
 }
