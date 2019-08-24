@@ -17,7 +17,9 @@ import de.ibba.keepitup.R;
 import de.ibba.keepitup.model.AccessType;
 import de.ibba.keepitup.model.LogEntry;
 import de.ibba.keepitup.model.NetworkTask;
+import de.ibba.keepitup.test.mock.MockLogEntryUIInitTask;
 import de.ibba.keepitup.test.mock.TestRegistry;
+import de.ibba.keepitup.ui.adapter.LogEntryAdapter;
 
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.Espresso.openActionBarOverflowOrOptionsMenu;
@@ -76,7 +78,8 @@ public class NetworkTaskLogActivityTest extends BaseUITest {
         LogEntry entry2 = getLogEntry(task, new GregorianCalendar(1985, Calendar.DECEMBER, 24), true, "Message2");
         getLogDAO().insertAndDeleteLog(entry1);
         getLogDAO().insertAndDeleteLog(entry2);
-        launchRecyclerViewBaseActivity(rule, getNetworkTaskIntent(task));
+        NetworkTaskLogActivity activity = (NetworkTaskLogActivity) launchRecyclerViewBaseActivity(rule, getNetworkTaskIntent(task));
+        activity.injectUIInitTask(new MockLogEntryUIInitTask(TestRegistry.getContext(), (LogEntryAdapter) activity.getAdapter()));
         onView(withId(R.id.listview_log_activity_log_entries)).check(matches(withListSize(2)));
         LogEntry entry3 = getLogEntry(task, new GregorianCalendar(2016, Calendar.JULY, 1), true, "Message3");
         getLogDAO().insertAndDeleteLog(entry3);

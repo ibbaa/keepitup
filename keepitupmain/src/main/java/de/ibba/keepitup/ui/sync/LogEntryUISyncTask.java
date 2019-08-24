@@ -31,7 +31,7 @@ public class LogEntryUISyncTask extends AsyncTask<NetworkTask, Integer, LogEntry
     protected LogEntry doInBackground(NetworkTask... tasks) {
         Log.d(LogEntryUISyncTask.class.getName(), "doInBackground");
         NetworkTask networkTask = tasks[0];
-        Log.d(LogEntryUISyncTask.class.getName(), "Updating log entry for network task " + networkTask);
+        Log.d(LogEntryUISyncTask.class.getName(), "Reading log entry for network task " + networkTask);
         try {
             Context context = contextRef.get();
             if (context != null) {
@@ -39,7 +39,7 @@ public class LogEntryUISyncTask extends AsyncTask<NetworkTask, Integer, LogEntry
                 return logDAO.readMostRecentLogForNetworkTask(networkTask.getId());
             }
         } catch (Exception exc) {
-            Log.e(LogEntryUISyncTask.class.getName(), "Error updating log entry for network task " + networkTask, exc);
+            Log.e(LogEntryUISyncTask.class.getName(), "Error reading log entry for network task " + networkTask, exc);
         }
         return null;
     }
@@ -53,6 +53,7 @@ public class LogEntryUISyncTask extends AsyncTask<NetworkTask, Integer, LogEntry
         LogEntryAdapter adapter = adapterRef.get();
         if (adapter != null) {
             try {
+                Log.d(LogEntryUISyncTask.class.getName(), "Updating adapter with logEntry" + logEntry);
                 adapter.addItem(logEntry);
                 adapter.notifyDataSetChanged();
             } catch (Exception exc) {

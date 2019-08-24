@@ -56,8 +56,8 @@ public class NetworkTaskMainUIInitTaskTest extends BaseUITest {
 
     @After
     public void afterEachTestMethod() {
-        networkTaskDAO.deleteAllNetworkTasks();
         logDAO.deleteAllLogs();
+        networkTaskDAO.deleteAllNetworkTasks();
     }
 
     @Test

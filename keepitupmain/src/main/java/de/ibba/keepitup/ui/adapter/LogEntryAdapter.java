@@ -11,6 +11,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.text.DateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -27,8 +28,9 @@ public class LogEntryAdapter extends RecyclerView.Adapter<LogEntryViewHolder> {
 
     public LogEntryAdapter(NetworkTask networkTask, List<LogEntry> logEntries, NetworkTaskLogActivity logActivity) {
         this.networkTask = networkTask;
-        this.logEntries = logEntries;
+        this.logEntries = new ArrayList<>();
         this.logActivity = logActivity;
+        replaceItems(logEntries);
     }
 
     @NonNull
@@ -109,7 +111,8 @@ public class LogEntryAdapter extends RecyclerView.Adapter<LogEntryViewHolder> {
 
     public void replaceItems(List<LogEntry> logEntries) {
         this.logEntries.clear();
-        this.logEntries.addAll(logEntries);
+        int limit = getContext().getResources().getInteger(R.integer.log_count_maximum);
+        this.logEntries.addAll(logEntries.size() > limit ? logEntries.subList(0, limit) : logEntries);
     }
 
     private Context getContext() {
