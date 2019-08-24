@@ -51,27 +51,33 @@ public class NetworkTaskMainActivity extends RecyclerViewBaseActivity {
     }
 
     @Override
-    protected void onStart() {
-        Log.d(NetworkTaskMainActivity.class.getName(), "onStart");
-        super.onStart();
+    protected void onResume() {
+        Log.d(NetworkTaskMainActivity.class.getName(), "onResume");
+        super.onResume();
         registerReceiver();
+        NetworkTaskMainUIInitTask uiInitTask = getUIInitTask((NetworkTaskAdapter) getAdapter());
+        uiInitTask.start();
     }
 
     @Override
-    protected void onStop() {
-        Log.d(NetworkTaskMainActivity.class.getName(), "onStop");
-        super.onStop();
+    protected void onPause() {
+        Log.d(NetworkTaskMainActivity.class.getName(), "onPause");
+        super.onPause();
         unregisterReceiver();
     }
 
     private void registerReceiver() {
+        Log.d(NetworkTaskMainActivity.class.getName(), "registerReceiver");
+        unregisterReceiver();
         broadcastReceiver = new NetworkTaskMainUIBroadcastReceiver((NetworkTaskAdapter) getAdapter());
         registerReceiver(broadcastReceiver, new IntentFilter(NetworkTaskMainUIBroadcastReceiver.class.getName()));
     }
 
     private void unregisterReceiver() {
+        Log.d(NetworkTaskMainActivity.class.getName(), "unregisterReceiver");
         if (broadcastReceiver != null) {
             unregisterReceiver(broadcastReceiver);
+            broadcastReceiver = null;
         }
     }
 
