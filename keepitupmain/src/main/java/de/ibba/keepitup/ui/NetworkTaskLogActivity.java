@@ -1,5 +1,6 @@
 package de.ibba.keepitup.ui;
 
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -16,8 +17,11 @@ import de.ibba.keepitup.db.LogDAO;
 import de.ibba.keepitup.model.LogEntry;
 import de.ibba.keepitup.model.NetworkTask;
 import de.ibba.keepitup.ui.adapter.LogEntryAdapter;
+import de.ibba.keepitup.ui.sync.LogEntryUIBroadcastReceiver;
 
 public class NetworkTaskLogActivity extends RecyclerViewBaseActivity {
+
+    private LogEntryUIBroadcastReceiver broadcastReceiver;
 
     @Override
     protected int getRecyclerViewId() {
@@ -36,6 +40,35 @@ public class NetworkTaskLogActivity extends RecyclerViewBaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_log_network_task);
         initRecyclerView();
+    }
+
+    @Override
+    protected void onResume() {
+        Log.d(NetworkTaskLogActivity.class.getName(), "onResume");
+        super.onResume();
+        registerReceiver();
+    }
+
+    @Override
+    protected void onPause() {
+        Log.d(NetworkTaskLogActivity.class.getName(), "onPause");
+        super.onPause();
+        unregisterReceiver();
+    }
+
+    private void registerReceiver() {
+        Log.d(NetworkTaskLogActivity.class.getName(), "registerReceiver");
+        unregisterReceiver();
+        broadcastReceiver = new LogEntryUIBroadcastReceiver((LogEntryAdapter) getAdapter());
+        registerReceiver(broadcastReceiver, new IntentFilter(LogEntryUIBroadcastReceiver.class.getName()));
+    }
+
+    private void unregisterReceiver() {
+        Log.d(NetworkTaskLogActivity.class.getName(), "unregisterReceiver");
+        if (broadcastReceiver != null) {
+            unregisterReceiver(broadcastReceiver);
+            broadcastReceiver = null;
+        }
     }
 
     private List<LogEntry> readLogEntriesFromDatabase(NetworkTask task) {

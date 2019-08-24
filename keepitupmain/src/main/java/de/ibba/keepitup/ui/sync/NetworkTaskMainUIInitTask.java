@@ -70,7 +70,7 @@ public class NetworkTaskMainUIInitTask extends AsyncTask<Void, Integer, List<Net
         try {
             NetworkTaskAdapter adapter = adapterRef.get();
             if (adapter != null) {
-                adapter.initItems(networkTaskUIWrappers);
+                adapter.replaceItems(networkTaskUIWrappers);
                 adapter.notifyDataSetChanged();
             }
         } catch (Exception exc) {

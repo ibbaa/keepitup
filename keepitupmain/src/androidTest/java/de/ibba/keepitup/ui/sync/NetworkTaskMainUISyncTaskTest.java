@@ -53,8 +53,8 @@ public class NetworkTaskMainUISyncTaskTest extends BaseUITest {
 
     @After
     public void afterEachTestMethod() {
-        networkTaskDAO.deleteAllNetworkTasks();
         logDAO.deleteAllLogs();
+        networkTaskDAO.deleteAllNetworkTasks();
     }
 
     @Test

@@ -90,13 +90,26 @@ public class LogEntryAdapter extends RecyclerView.Adapter<LogEntryViewHolder> {
         logEntryViewHolder.setMessageText(formattedMessageText);
     }
 
+    public LogEntry getItem(int position) {
+        return logEntries.get(position);
+    }
+
     @Override
     public int getItemCount() {
-        return logEntries.size() + 1;
+        return logEntries.size() <= 0 ? 1 : logEntries.size();
+    }
+
+    public void addItem(LogEntry logEntry) {
+        this.logEntries.add(0, logEntry);
+        int limit = getContext().getResources().getInteger(R.integer.log_count_maximum);
+        if (logEntries.size() > limit && logEntries.size() > 0) {
+            logEntries.remove(logEntries.size() - 1);
+        }
     }
 
     public void replaceItems(List<LogEntry> logEntries) {
-        this.logEntries = logEntries;
+        this.logEntries.clear();
+        this.logEntries.addAll(logEntries);
     }
 
     private Context getContext() {

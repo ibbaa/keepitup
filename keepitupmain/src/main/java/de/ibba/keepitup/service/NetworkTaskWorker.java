@@ -12,6 +12,7 @@ import de.ibba.keepitup.db.NetworkTaskDAO;
 import de.ibba.keepitup.model.LogEntry;
 import de.ibba.keepitup.model.NetworkTask;
 import de.ibba.keepitup.resources.ServiceFactoryContributor;
+import de.ibba.keepitup.ui.sync.LogEntryUIBroadcastReceiver;
 import de.ibba.keepitup.ui.sync.NetworkTaskMainUIBroadcastReceiver;
 
 public abstract class NetworkTaskWorker implements Runnable {
@@ -59,9 +60,12 @@ public abstract class NetworkTaskWorker implements Runnable {
 
     private void sendUINotificationBroadcast() {
         Log.d(NetworkTaskWorker.class.getName(), "sendUINotificationBroadcast");
-        Intent intent = new Intent(NetworkTaskMainUIBroadcastReceiver.class.getName());
-        intent.putExtras(networkTask.toBundle());
-        getContext().sendBroadcast(intent);
+        Intent mainUIintent = new Intent(NetworkTaskMainUIBroadcastReceiver.class.getName());
+        mainUIintent.putExtras(networkTask.toBundle());
+        getContext().sendBroadcast(mainUIintent);
+        Intent logUIintent = new Intent(LogEntryUIBroadcastReceiver.class.getName());
+        logUIintent.putExtras(networkTask.toBundle());
+        getContext().sendBroadcast(logUIintent);
     }
 
     private LogEntry checkExecution() {
