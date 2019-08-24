@@ -1,6 +1,5 @@
 package de.ibba.keepitup.ui;
 
-import android.content.Context;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.util.Log;
@@ -16,12 +15,7 @@ import de.ibba.keepitup.util.BundleUtil;
 
 public abstract class RecyclerViewBaseActivity extends AppCompatActivity {
 
-    protected abstract int getRecyclerViewId();
-
-    protected abstract RecyclerView.Adapter createAdapter();
-
     private Resources resources;
-    private Context context;
 
     public void injectResources(Resources resources) {
         this.resources = resources;
@@ -34,6 +28,10 @@ public abstract class RecyclerViewBaseActivity extends AppCompatActivity {
         }
         return super.getResources();
     }
+
+    protected abstract int getRecyclerViewId();
+
+    protected abstract RecyclerView.Adapter createAdapter();
 
     protected void initRecyclerView() {
         RecyclerView recyclerView = findViewById(getRecyclerViewId());
