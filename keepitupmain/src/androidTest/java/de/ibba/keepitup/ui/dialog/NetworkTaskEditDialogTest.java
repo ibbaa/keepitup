@@ -363,6 +363,7 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         onView(withId(R.id.switch_dialog_network_task_edit_onlywifi)).perform(click());
         onView(withId(R.id.switch_dialog_network_task_edit_notification)).perform(click());
         rotateScreen(activity);
+        onView(isRoot()).perform(waitFor(1000));
         onView(withText("Connect")).check(matches(isChecked()));
         onView(withId(R.id.edittext_dialog_network_task_edit_address)).check(matches(withText("localhost")));
         onView(withId(R.id.edittext_dialog_network_task_edit_port)).check(matches(withText("80")));
@@ -373,6 +374,7 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         onView(withId(R.id.textview_dialog_network_task_edit_notification_on_off)).check(matches(withText("yes")));
         onView(withText("Download")).perform(click());
         rotateScreen(activity);
+        onView(isRoot()).perform(waitFor(1000));
         onView(withText("Download")).check(matches(isChecked()));
         onView(withId(R.id.edittext_dialog_network_task_edit_address)).check(matches(withText("localhost")));
         onView(withId(R.id.edittext_dialog_network_task_edit_interval)).check(matches(withText("60")));
@@ -388,7 +390,9 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         onView(withText("Ping")).check(matches(isChecked()));
         onView(withText("Download")).perform(click());
         rotateScreen(activity);
+        onView(isRoot()).perform(waitFor(1000));
         rotateScreen(activity);
+        onView(isRoot()).perform(waitFor(1000));
         pressBack();
         onView(allOf(withId(R.id.imageview_list_item_network_task_add), isDisplayed())).perform(click());
         onView(withText("Ping")).check(matches(isChecked()));
