@@ -74,12 +74,12 @@ public class PingNetworkTaskWorker extends NetworkTaskWorker {
             } else {
                 Log.d(PingNetworkTaskWorker.class.getName(), "DNS lookup was not successful because of an exception", dnsLookupResult.getException());
                 logEntry.setSuccess(false);
-                logEntry.setMessage(getMessageFromException(getResources().getString(R.string.text_dns_lookup_error), dnsLookupResult.getException(), timeout));
+                logEntry.setMessage(getMessageFromException(getResources().getString(R.string.text_dns_lookup_error, host), dnsLookupResult.getException(), timeout));
             }
         } catch (Throwable exc) {
             Log.d(PingNetworkTaskWorker.class.getName(), "Error executing " + dnsLookup.getClass().getName(), exc);
             logEntry.setSuccess(false);
-            logEntry.setMessage(getMessageFromException(getResources().getString(R.string.text_dns_lookup_error), exc, timeout));
+            logEntry.setMessage(getMessageFromException(getResources().getString(R.string.text_dns_lookup_error, host), exc, timeout));
         }
         return null;
     }
@@ -98,20 +98,20 @@ public class PingNetworkTaskWorker extends NetworkTaskWorker {
             if (pingResult.getException() == null && pingResult.getProcessReturnCode() == 0) {
                 Log.d(PingNetworkTaskWorker.class.getName(), "Ping was successful");
                 logEntry.setSuccess(true);
-                logEntry.setMessage(pingResult.getOutput());
+                logEntry.setMessage(getPingSuccessMessage(getAddress(address, ip6), pingResult.getOutput()));
             } else if (pingResult.getException() != null) {
                 Log.d(PingNetworkTaskWorker.class.getName(), "Ping was not successful because of an exception", pingResult.getException());
                 logEntry.setSuccess(false);
-                logEntry.setMessage(getMessageFromException(getResources().getString(R.string.text_ping_error), pingResult.getException(), timeout));
+                logEntry.setMessage(getMessageFromException(getResources().getString(R.string.text_ping_error, getAddress(address, ip6)), pingResult.getException(), timeout));
             } else {
                 Log.d(PingNetworkTaskWorker.class.getName(), "Ping was not successful because the ping command returned " + pingResult.getProcessReturnCode());
                 logEntry.setSuccess(false);
-                logEntry.setMessage(getPingFailureMessage(pingResult.getProcessReturnCode(), pingResult.getOutput()));
+                logEntry.setMessage(getPingFailureMessage(pingResult.getProcessReturnCode(), getAddress(address, ip6), pingResult.getOutput()));
             }
         } catch (Throwable exc) {
             Log.d(PingNetworkTaskWorker.class.getName(), "Error executing " + pingCommand.getClass().getName(), exc);
             logEntry.setSuccess(false);
-            logEntry.setMessage(getMessageFromException(getResources().getString(R.string.text_ping_error), exc, timeout));
+            logEntry.setMessage(getMessageFromException(getResources().getString(R.string.text_ping_error, getAddress(address, ip6)), exc, timeout));
         }
     }
 
@@ -123,11 +123,29 @@ public class PingNetworkTaskWorker extends NetworkTaskWorker {
         return prefixMessage + " " + ExceptionUtil.getLogableMessage(ExceptionUtil.getRootCause(exc));
     }
 
-    private String getPingFailureMessage(int returnCode, String output) {
+    private String getPingSuccessMessage(String address, String output) {
+        return getResources().getString(R.string.text_ping_success, address) + " " + output;
+    }
+
+    private String getPingFailureMessage(int returnCode, String address, String output) {
         if (StringUtil.isEmpty(output)) {
-            return getResources().getString(R.string.text_ping_error) + " " + getResources().getString(R.string.text_ping_return_code_error, returnCode);
+            return getResources().getString(R.string.text_ping_error, address) + " " + getResources().getString(R.string.text_ping_return_code_error, returnCode);
         }
-        return getResources().getString(R.string.text_ping_error) + " " + output;
+        return getResources().getString(R.string.text_ping_error, address) + " " + output;
+    }
+
+    /*private String getPingOutputMessage(String output) {
+        PingOutputParser parser = new PingOutputParser();
+        parser.parse(output);
+        if(!parser.isValidInput()) {
+            return output;
+        }
+
+    }*/
+
+    private String getAddress(String address, boolean ip6) {
+        String ipVersion = ip6 ? getResources().getString(R.string.string_IPv6) : getResources().getString(R.string.string_IPv4);
+        return address + " (" + ipVersion + ")";
     }
 
     protected Callable<DNSLookupResult> getDNSLookup(String host) {

@@ -192,7 +192,7 @@ public class PreferenceManager {
     }
 
     private SharedPreferences getDefaultSharedPreferences() {
-        return android.preference.PreferenceManager.getDefaultSharedPreferences(getContext());
+        return androidx.preference.PreferenceManager.getDefaultSharedPreferences(getContext());
     }
 
     private SharedPreferences.Editor getDefaultSharedPreferencesEditor() {

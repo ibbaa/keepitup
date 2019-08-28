@@ -4,7 +4,8 @@
     <string name="text_no_network_connection">No active network connection.</string>
     <string name="text_no_wifi_connection">Skipped. No active wifi connection.</string>
     <string name="text_timeout">No response within %d</string>
-    <string name="text_dns_lookup_error">DNS lookup failed.</string>
-    <string name="text_ping_error">Ping failed.</string>
+    <string name="text_dns_lookup_error">DNS lookup for %s failed.</string>
+    <string name="text_ping_success">Pinged %s successfully.</string>
+    <string name="text_ping_error">Ping to %s failed.</string>
     <string name="text_ping_return_code_error">Return code: %d</string>
 </resources>
