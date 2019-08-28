@@ -50,7 +50,7 @@ public class PingNetworkTaskWorkerTest {
         assertEquals(45, logEntry.getNetworkTaskId());
         assertTrue(logEntry.getTimestamp() > -1);
         assertTrue(logEntry.isSuccess());
-        assertEquals("testoutput", logEntry.getMessage());
+        assertEquals("Pinged 127.0.0.1 (IPv4) successfully. testoutput", logEntry.getMessage());
     }
 
     @Test
@@ -62,7 +62,7 @@ public class PingNetworkTaskWorkerTest {
         assertEquals(45, logEntry.getNetworkTaskId());
         assertTrue(logEntry.getTimestamp() > -1);
         assertFalse(logEntry.isSuccess());
-        assertEquals("DNS lookup failed. IllegalArgumentException: TestException", logEntry.getMessage());
+        assertEquals("DNS lookup for 127.0.0.1 failed. IllegalArgumentException: TestException", logEntry.getMessage());
     }
 
     @Test
@@ -75,7 +75,7 @@ public class PingNetworkTaskWorkerTest {
         assertEquals(45, logEntry.getNetworkTaskId());
         assertTrue(logEntry.getTimestamp() > -1);
         assertFalse(logEntry.isSuccess());
-        assertEquals("Ping failed. IllegalArgumentException: TestException", logEntry.getMessage());
+        assertEquals("Ping to 127.0.0.1 (IPv4) failed. IllegalArgumentException: TestException", logEntry.getMessage());
     }
 
     @Test
@@ -87,7 +87,7 @@ public class PingNetworkTaskWorkerTest {
         assertEquals(45, logEntry.getNetworkTaskId());
         assertTrue(logEntry.getTimestamp() > -1);
         assertFalse(logEntry.isSuccess());
-        assertEquals("Ping failed. testoutput", logEntry.getMessage());
+        assertEquals("Ping to 127.0.0.1 (IPv4) failed. testoutput", logEntry.getMessage());
     }
 
     @Test
@@ -99,7 +99,7 @@ public class PingNetworkTaskWorkerTest {
         assertEquals(45, logEntry.getNetworkTaskId());
         assertTrue(logEntry.getTimestamp() > -1);
         assertFalse(logEntry.isSuccess());
-        assertEquals("Ping failed. Return code: 1", logEntry.getMessage());
+        assertEquals("Ping to 127.0.0.1 (IPv4) failed. Return code: 1", logEntry.getMessage());
     }
 
     private NetworkTask getNetworkTask() {
