@@ -49,7 +49,7 @@ public abstract class NetworkTaskWorker implements Runnable {
                 Log.d(NetworkTaskWorker.class.getName(), "Network task does no longer exist. Not writing log.");
             }
         } catch (Exception exc) {
-            Log.d(NetworkTaskWorker.class.getName(), "Fatal errror while executing worker and writing log", exc);
+            Log.e(NetworkTaskWorker.class.getName(), "Fatal errror while executing worker and writing log", exc);
         } finally {
             if (wakeLock != null && wakeLock.isHeld()) {
                 Log.d(NetworkTaskWorker.class.getName(), "Releasing partial wake lock");

@@ -6,6 +6,8 @@ import android.util.Log;
 
 import java.net.Inet6Address;
 import java.net.InetAddress;
+import java.text.NumberFormat;
+import java.util.Locale;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -21,6 +23,7 @@ import de.ibba.keepitup.service.network.DNSLookup;
 import de.ibba.keepitup.service.network.DNSLookupResult;
 import de.ibba.keepitup.service.network.PingCommand;
 import de.ibba.keepitup.service.network.PingCommandResult;
+import de.ibba.keepitup.service.network.PingOutputParser;
 import de.ibba.keepitup.util.ExceptionUtil;
 import de.ibba.keepitup.util.StringUtil;
 
@@ -98,7 +101,7 @@ public class PingNetworkTaskWorker extends NetworkTaskWorker {
             if (pingResult.getException() == null && pingResult.getProcessReturnCode() == 0) {
                 Log.d(PingNetworkTaskWorker.class.getName(), "Ping was successful");
                 logEntry.setSuccess(true);
-                logEntry.setMessage(getPingSuccessMessage(getAddress(address, ip6), pingResult.getOutput()));
+                logEntry.setMessage(getPingSuccessMessage(getAddress(address, ip6), getPingOutputMessage(pingResult.getOutput())));
             } else if (pingResult.getException() != null) {
                 Log.d(PingNetworkTaskWorker.class.getName(), "Ping was not successful because of an exception", pingResult.getException());
                 logEntry.setSuccess(false);
@@ -106,7 +109,7 @@ public class PingNetworkTaskWorker extends NetworkTaskWorker {
             } else {
                 Log.d(PingNetworkTaskWorker.class.getName(), "Ping was not successful because the ping command returned " + pingResult.getProcessReturnCode());
                 logEntry.setSuccess(false);
-                logEntry.setMessage(getPingFailureMessage(pingResult.getProcessReturnCode(), getAddress(address, ip6), pingResult.getOutput()));
+                logEntry.setMessage(getPingFailureMessage(pingResult.getProcessReturnCode(), getAddress(address, ip6), getPingOutputMessage(pingResult.getOutput())));
             }
         } catch (Throwable exc) {
             Log.d(PingNetworkTaskWorker.class.getName(), "Error executing " + pingCommand.getClass().getName(), exc);
@@ -134,14 +137,23 @@ public class PingNetworkTaskWorker extends NetworkTaskWorker {
         return getResources().getString(R.string.text_ping_error, address) + " " + output;
     }
 
-    /*private String getPingOutputMessage(String output) {
+    private String getPingOutputMessage(String output) {
+        Log.d(PingNetworkTaskWorker.class.getName(), "getPingOutputMessage, output is " + output);
         PingOutputParser parser = new PingOutputParser();
-        parser.parse(output);
-        if(!parser.isValidInput()) {
+        try {
+            parser.parse(output);
+        } catch (Exception exc) {
+            Log.e(PingNetworkTaskWorker.class.getName(), "Error parsing ping output: " + output);
             return output;
         }
-
-    }*/
+        if (!parser.isValidInput()) {
+            return output;
+        }
+        NumberFormat numberFormat = NumberFormat.getNumberInstance(Locale.US);
+        String packetLoss = numberFormat.format(parser.getPacketLoss()) + "%";
+        String averageTime = numberFormat.format(parser.getAverageTime());
+        return getResources().getString(R.string.text_ping_message, parser.getPacketsTransmitted(), parser.getPacketsReceived(), packetLoss, averageTime);
+    }
 
     private String getAddress(String address, boolean ip6) {
         String ipVersion = ip6 ? getResources().getString(R.string.string_IPv6) : getResources().getString(R.string.string_IPv4);

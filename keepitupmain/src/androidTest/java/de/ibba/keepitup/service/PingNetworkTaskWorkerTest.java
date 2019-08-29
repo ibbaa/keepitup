@@ -42,7 +42,7 @@ public class PingNetworkTaskWorkerTest {
     }
 
     @Test
-    public void testSuccessfulCall() throws Exception {
+    public void testSuccessfulCallUnparseableResult() throws Exception {
         DNSLookupResult dnsLookupResult = new DNSLookupResult(InetAddress.getByName("127.0.0.1"), null);
         PingCommandResult pingCommandResult = new PingCommandResult(0, "testoutput", null);
         prepareTestPingNetworkTaskWorker(dnsLookupResult, pingCommandResult);
@@ -51,6 +51,18 @@ public class PingNetworkTaskWorkerTest {
         assertTrue(logEntry.getTimestamp() > -1);
         assertTrue(logEntry.isSuccess());
         assertEquals("Pinged 127.0.0.1 (IPv4) successfully. testoutput", logEntry.getMessage());
+    }
+
+    @Test
+    public void testSuccessfulCallParseableResult() throws Exception {
+        DNSLookupResult dnsLookupResult = new DNSLookupResult(InetAddress.getByName("127.0.0.1"), null);
+        PingCommandResult pingCommandResult = new PingCommandResult(0, getTestIP4Ping(), null);
+        prepareTestPingNetworkTaskWorker(dnsLookupResult, pingCommandResult);
+        LogEntry logEntry = pingNetworkTaskWorker.execute(getNetworkTask());
+        assertEquals(45, logEntry.getNetworkTaskId());
+        assertTrue(logEntry.getTimestamp() > -1);
+        assertTrue(logEntry.isSuccess());
+        assertEquals("Pinged 127.0.0.1 (IPv4) successfully. 3 packets transmitted. 3 packets received. 0% packet loss. 0.083 msec average time.", logEntry.getMessage());
     }
 
     @Test
@@ -79,7 +91,7 @@ public class PingNetworkTaskWorkerTest {
     }
 
     @Test
-    public void testFailureCodeReturnedWithMessage() throws Exception {
+    public void testFailureCodeReturnedWithMessageUnparseable() throws Exception {
         DNSLookupResult dnsLookupResult = new DNSLookupResult(InetAddress.getByName("127.0.0.1"), null);
         PingCommandResult pingCommandResult = new PingCommandResult(1, "testoutput", null);
         prepareTestPingNetworkTaskWorker(dnsLookupResult, pingCommandResult);
@@ -88,6 +100,18 @@ public class PingNetworkTaskWorkerTest {
         assertTrue(logEntry.getTimestamp() > -1);
         assertFalse(logEntry.isSuccess());
         assertEquals("Ping to 127.0.0.1 (IPv4) failed. testoutput", logEntry.getMessage());
+    }
+
+    @Test
+    public void testFailureCodeReturnedWithMessageParseable() throws Exception {
+        DNSLookupResult dnsLookupResult = new DNSLookupResult(InetAddress.getByName("127.0.0.1"), null);
+        PingCommandResult pingCommandResult = new PingCommandResult(1, getTestIP4Ping(), null);
+        prepareTestPingNetworkTaskWorker(dnsLookupResult, pingCommandResult);
+        LogEntry logEntry = pingNetworkTaskWorker.execute(getNetworkTask());
+        assertEquals(45, logEntry.getNetworkTaskId());
+        assertTrue(logEntry.getTimestamp() > -1);
+        assertFalse(logEntry.isSuccess());
+        assertEquals("Ping to 127.0.0.1 (IPv4) failed. 3 packets transmitted. 3 packets received. 0% packet loss. 0.083 msec average time.", logEntry.getMessage());
     }
 
     @Test
@@ -115,5 +139,15 @@ public class PingNetworkTaskWorkerTest {
         task.setNotification(true);
         task.setRunning(true);
         return task;
+    }
+
+    private String getTestIP4Ping() {
+        return "PING 127.0.0.1 (127.0.0.1) 56(84) bytes of data.\n" +
+                "64 bytes from 127.0.0.1: icmp_seq=1 ttl=64 time=0.084 ms\n" +
+                " 64 bytes from 127.0.0.1: icmp_seq=2 ttl=64 time=0.083 ms\n" +
+                "64 bytes from 127.0.0.1: icmp_seq=3 ttl=64 time=0.083 ms\n\n" +
+                "--- 127.0.0.1 ping statistics ---\n" +
+                "3 packets transmitted, 3 received, 0% packet loss, time 1998ms\n" +
+                "rtt min/avg/max/mdev = 0.083/0.083/0.084/0.007 ms";
     }
 }
