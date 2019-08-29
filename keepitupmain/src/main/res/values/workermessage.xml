@@ -8,4 +8,5 @@
     <string name="text_ping_success">Pinged %s successfully.</string>
     <string name="text_ping_error">Ping to %s failed.</string>
     <string name="text_ping_return_code_error">Return code: %d</string>
+    <string name="text_ping_message">%d packets transmitted. %d packets received. %s packet loss. %s msec average time.</string>
 </resources>
