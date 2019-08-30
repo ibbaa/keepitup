@@ -57,19 +57,19 @@ public class NotificationHandler {
         return notificationBuilder;
     }
 
-    public void sendNotification(NetworkTask task, long timestamp) {
-        Log.d(NotificationHandler.class.getName(), "Sending notification for network task " + task + " and timestamp " + timestamp);
-        Notification notification = buildNotification(task, timestamp);
+    public void sendNotification(NetworkTask task, long timestamp, String message) {
+        Log.d(NotificationHandler.class.getName(), "Sending notification for network task " + task + ", timestamp " + timestamp + ", message " + message);
+        Notification notification = buildNotification(task, timestamp, message);
         notificationManager.notify(task.getSchedulerId(), notification);
     }
 
-    private Notification buildNotification(NetworkTask task, long timestamp) {
-        Log.d(NotificationHandler.class.getName(), "Building notification for network task " + task + " and timestamp " + timestamp);
+    private Notification buildNotification(NetworkTask task, long timestamp, String message) {
+        Log.d(NotificationHandler.class.getName(), "Building notification for network task " + task + ", timestamp " + timestamp + ", message " + message);
         String title = getResources().getString(R.string.notification_title);
         String timestampText = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.MEDIUM).format(new Date(timestamp));
         String addressText = String.format(getResources().getString(R.string.notification_address), new EnumMapping(getContext()).getAccessTypeAddressText(task.getAccessType()));
         String formattedAddressText = String.format(addressText, task.getAddress(), task.getPort());
-        String text = String.format(getResources().getString(R.string.notification_text), task.getIndex() + 1, formattedAddressText, timestampText);
+        String text = String.format(getResources().getString(R.string.notification_text), task.getIndex() + 1, formattedAddressText, timestampText, message == null ? getResources().getString(R.string.string_none) : message);
         notificationBuilder = createNotificationBuilder();
         notificationBuilder.setSmallIcon(R.drawable.icon_notification).setContentTitle(title).setContentText(text).setStyle(new NotificationCompat.BigTextStyle().bigText(text)).setPriority(NotificationCompat.PRIORITY_DEFAULT);
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {

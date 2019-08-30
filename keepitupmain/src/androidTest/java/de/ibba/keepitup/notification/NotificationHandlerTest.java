@@ -45,7 +45,7 @@ public class NotificationHandlerTest {
     public void testSendNotification() {
         NetworkTask networkTask = getNetworkTask1();
         long timestamp = new GregorianCalendar(1980, Calendar.MARCH, 17).getTime().getTime();
-        notificationHandler.sendNotification(networkTask, timestamp);
+        notificationHandler.sendNotification(networkTask, timestamp, "Test");
         assertTrue(notificationManager.wasNotifyCalled());
         MockNotificationManager.NotifyCall notifyCall = notificationManager.getNotifyCalls().get(0);
         assertEquals(networkTask.getSchedulerId(), notifyCall.getId());
@@ -53,7 +53,7 @@ public class NotificationHandlerTest {
         MockNotificationBuilder notificationBuilder = (MockNotificationBuilder) notificationHandler.getNotificationBuilder();
         assertEquals(R.drawable.icon_notification, notificationBuilder.getSmallIcon());
         assertEquals("Keep it up notification", notificationBuilder.getContentTitle());
-        assertEquals("Execution of network task 2 failed. Host: 127.0.0.1. Timestamp: Mar 17, 1980 12:00:00 AM", notificationBuilder.getContentText());
+        assertEquals("Execution of network task 2 failed. Host: 127.0.0.1. Timestamp: Mar 17, 1980 12:00:00 AM. Message: Test", notificationBuilder.getContentText());
         assertTrue(notificationBuilder.getStyle() instanceof NotificationCompat.BigTextStyle);
         assertEquals(NotificationCompat.PRIORITY_DEFAULT, notificationBuilder.getPriority());
     }
@@ -62,19 +62,19 @@ public class NotificationHandlerTest {
     public void testNotificationText() {
         NetworkTask networkTask = getNetworkTask1();
         long timestamp = new GregorianCalendar(1995, Calendar.DECEMBER, 15, 13, 59, 51).getTime().getTime();
-        notificationHandler.sendNotification(networkTask, timestamp);
+        notificationHandler.sendNotification(networkTask, timestamp, null);
         MockNotificationBuilder notificationBuilder = (MockNotificationBuilder) notificationHandler.getNotificationBuilder();
-        assertEquals("Execution of network task 2 failed. Host: 127.0.0.1. Timestamp: Dec 15, 1995 1:59:51 PM", notificationBuilder.getContentText());
+        assertEquals("Execution of network task 2 failed. Host: 127.0.0.1. Timestamp: Dec 15, 1995 1:59:51 PM. Message: none", notificationBuilder.getContentText());
         networkTask = getNetworkTask2();
         timestamp = new GregorianCalendar(2004, Calendar.FEBRUARY, 1, 5, 15, 51).getTime().getTime();
-        notificationHandler.sendNotification(networkTask, timestamp);
+        notificationHandler.sendNotification(networkTask, timestamp, "message");
         notificationBuilder = (MockNotificationBuilder) notificationHandler.getNotificationBuilder();
-        assertEquals("Execution of network task 6 failed. Host: host.com Port: 23. Timestamp: Feb 1, 2004 5:15:51 AM", notificationBuilder.getContentText());
+        assertEquals("Execution of network task 6 failed. Host: host.com Port: 23. Timestamp: Feb 1, 2004 5:15:51 AM. Message: message", notificationBuilder.getContentText());
         networkTask = getNetworkTask3();
         timestamp = new GregorianCalendar(2016, Calendar.JULY, 25, 15, 1, 1).getTime().getTime();
-        notificationHandler.sendNotification(networkTask, timestamp);
+        notificationHandler.sendNotification(networkTask, timestamp, "xyz");
         notificationBuilder = (MockNotificationBuilder) notificationHandler.getNotificationBuilder();
-        assertEquals("Execution of network task 11 failed. URL: http://www.test.com. Timestamp: Jul 25, 2016 3:01:01 PM", notificationBuilder.getContentText());
+        assertEquals("Execution of network task 11 failed. URL: http://www.test.com. Timestamp: Jul 25, 2016 3:01:01 PM. Message: xyz", notificationBuilder.getContentText());
     }
 
     private NetworkTask getNetworkTask1() {

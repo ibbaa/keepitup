@@ -12,6 +12,7 @@
     <string name="string_not_executed">not executed</string>
     <string name="string_yes">yes</string>
     <string name="string_no">no</string>
+    <string name="string_none">none</string>
     <string name="string_IPv4">IPv4</string>
     <string name="string_IPv6">IPv6</string>
 </resources>
