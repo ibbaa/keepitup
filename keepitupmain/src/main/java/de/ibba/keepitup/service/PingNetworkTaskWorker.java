@@ -38,7 +38,6 @@ public class PingNetworkTaskWorker extends NetworkTaskWorker {
         Log.d(PingNetworkTaskWorker.class.getName(), "Executing PingNetworkTaskWorker for " + networkTask);
         LogEntry logEntry = new LogEntry();
         logEntry.setNetworkTaskId(networkTask.getId());
-        logEntry.setTimestamp(System.currentTimeMillis());
         ExecutorService executorService = Executors.newSingleThreadExecutor();
         try {
             InetAddress address = executeDNSLookup(executorService, networkTask.getAddress(), logEntry);
@@ -59,6 +58,7 @@ public class PingNetworkTaskWorker extends NetworkTaskWorker {
             executorService.shutdownNow();
         }
         Log.d(PingNetworkTaskWorker.class.getName(), "Returning " + logEntry);
+        logEntry.setTimestamp(System.currentTimeMillis());
         return logEntry;
     }
 
