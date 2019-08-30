@@ -163,4 +163,16 @@ public class PreferenceManagerTest {
         preferenceManager.removePreferencePingCount();
         assertEquals(3, preferenceManager.getPreferencePingCount());
     }
+
+    @Test
+    public void testGetSetRemovePreferenceNotificationInactiveNetwork() {
+        assertFalse(preferenceManager.getPreferenceNotificationInactiveNetwork());
+        preferenceManager.setPreferenceNotificationInactiveNetwork(true);
+        assertTrue(preferenceManager.getPreferenceNotificationInactiveNetwork());
+        preferenceManager.removeAllPreferences();
+        assertFalse(preferenceManager.getPreferenceNotificationInactiveNetwork());
+        preferenceManager.setPreferenceNotificationInactiveNetwork(true);
+        preferenceManager.removePreferenceNotificationInactiveNetwork();
+        assertFalse(preferenceManager.getPreferenceNotificationInactiveNetwork());
+    }
 }

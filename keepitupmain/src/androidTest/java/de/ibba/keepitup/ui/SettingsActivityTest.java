@@ -51,6 +51,7 @@ public class SettingsActivityTest extends BaseUITest {
         assertFalse(preferenceManager.getPreferenceOnlyWifi());
         assertFalse(preferenceManager.getPreferenceNotification());
         assertEquals(3, preferenceManager.getPreferencePingCount());
+        assertFalse(preferenceManager.getPreferenceNotificationInactiveNetwork());
         onView(withId(R.id.textview_settings_activity_accesstype_label)).check(matches(withText("Type")));
         onView(withId(R.id.radiogroup_settings_activity_accesstype)).check(matches(hasChildCount(3)));
         onView(withText("Ping")).check(matches(isChecked()));
@@ -69,6 +70,8 @@ public class SettingsActivityTest extends BaseUITest {
         onView(withId(R.id.textview_settings_activity_notification_on_off)).check(matches(withText("no")));
         onView(withId(R.id.textview_settings_activity_ping_count_label)).check(matches(withText("Ping count")));
         onView(withId(R.id.textview_settings_activity_ping_count)).check(matches(withText("3")));
+        onView(withId(R.id.textview_settings_activity_notification_inactive_network_label)).check(matches(withText("Notifications when network is not active")));
+        onView(withId(R.id.switch_settings_activity_notification_inactive_network)).check(matches(isNotChecked()));
     }
 
 
@@ -93,6 +96,8 @@ public class SettingsActivityTest extends BaseUITest {
         onView(withId(R.id.textview_settings_activity_ping_count)).perform(click());
         onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("10"));
         onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
+        onView(withId(R.id.switch_settings_activity_notification_inactive_network)).perform(scrollTo());
+        onView(withId(R.id.switch_settings_activity_notification_inactive_network)).perform(click());
         onView(withText("Download")).check(matches(isChecked()));
         onView(withId(R.id.textview_settings_activity_address_label)).check(matches(withText("Host / URL")));
         onView(withId(R.id.textview_settings_activity_address)).check(matches(withText("localhost")));
@@ -108,6 +113,9 @@ public class SettingsActivityTest extends BaseUITest {
         onView(withId(R.id.switch_settings_activity_notification)).check(matches(isChecked()));
         onView(withId(R.id.textview_settings_activity_notification_on_off)).check(matches(withText("yes")));
         onView(withId(R.id.textview_settings_activity_ping_count)).check(matches(withText("10")));
+        onView(withId(R.id.textview_settings_activity_notification_inactive_network_label)).check(matches(withText("Notifications when network is not active")));
+        onView(withId(R.id.switch_settings_activity_notification_inactive_network)).check(matches(isChecked()));
+        onView(withId(R.id.textview_settings_activity_notification_inactive_network_on_off)).check(matches(withText("yes")));
     }
 
     @Test
@@ -148,26 +156,52 @@ public class SettingsActivityTest extends BaseUITest {
         onView(withId(R.id.textview_settings_activity_onlywifi_on_off)).check(matches(withText("no")));
         onView(withId(R.id.switch_settings_activity_notification)).check(matches(isNotChecked()));
         onView(withId(R.id.textview_settings_activity_notification_on_off)).check(matches(withText("no")));
+        onView(withId(R.id.switch_settings_activity_notification_inactive_network)).check(matches(isNotChecked()));
+        onView(withId(R.id.textview_settings_activity_notification_inactive_network_on_off)).check(matches(withText("no")));
         onView(withId(R.id.switch_settings_activity_onlywifi)).perform(click());
         onView(withId(R.id.switch_settings_activity_onlywifi)).check(matches(isChecked()));
         onView(withId(R.id.textview_settings_activity_onlywifi_on_off)).check(matches(withText("yes")));
         onView(withId(R.id.switch_settings_activity_notification)).check(matches(isNotChecked()));
         onView(withId(R.id.textview_settings_activity_notification_on_off)).check(matches(withText("no")));
+        onView(withId(R.id.switch_settings_activity_notification_inactive_network)).check(matches(isNotChecked()));
+        onView(withId(R.id.textview_settings_activity_notification_inactive_network_on_off)).check(matches(withText("no")));
         onView(withId(R.id.switch_settings_activity_notification)).perform(click());
         onView(withId(R.id.switch_settings_activity_onlywifi)).check(matches(isChecked()));
         onView(withId(R.id.textview_settings_activity_onlywifi_on_off)).check(matches(withText("yes")));
         onView(withId(R.id.switch_settings_activity_notification)).check(matches(isChecked()));
         onView(withId(R.id.textview_settings_activity_notification_on_off)).check(matches(withText("yes")));
+        onView(withId(R.id.switch_settings_activity_notification_inactive_network)).check(matches(isNotChecked()));
+        onView(withId(R.id.textview_settings_activity_notification_inactive_network_on_off)).check(matches(withText("no")));
+        onView(withId(R.id.switch_settings_activity_notification_inactive_network)).perform(scrollTo());
+        onView(withId(R.id.switch_settings_activity_notification_inactive_network)).perform(click());
+        onView(withId(R.id.switch_settings_activity_onlywifi)).check(matches(isChecked()));
+        onView(withId(R.id.textview_settings_activity_onlywifi_on_off)).check(matches(withText("yes")));
+        onView(withId(R.id.switch_settings_activity_notification)).check(matches(isChecked()));
+        onView(withId(R.id.textview_settings_activity_notification_on_off)).check(matches(withText("yes")));
+        onView(withId(R.id.switch_settings_activity_notification_inactive_network)).check(matches(isChecked()));
+        onView(withId(R.id.textview_settings_activity_notification_inactive_network_on_off)).check(matches(withText("yes")));
         onView(withId(R.id.switch_settings_activity_onlywifi)).perform(click());
         onView(withId(R.id.switch_settings_activity_onlywifi)).check(matches(isNotChecked()));
         onView(withId(R.id.textview_settings_activity_onlywifi_on_off)).check(matches(withText("no")));
         onView(withId(R.id.switch_settings_activity_notification)).check(matches(isChecked()));
         onView(withId(R.id.textview_settings_activity_notification_on_off)).check(matches(withText("yes")));
+        onView(withId(R.id.switch_settings_activity_notification_inactive_network)).check(matches(isChecked()));
+        onView(withId(R.id.textview_settings_activity_notification_inactive_network_on_off)).check(matches(withText("yes")));
         onView(withId(R.id.switch_settings_activity_notification)).perform(click());
         onView(withId(R.id.switch_settings_activity_onlywifi)).check(matches(isNotChecked()));
         onView(withId(R.id.textview_settings_activity_onlywifi_on_off)).check(matches(withText("no")));
         onView(withId(R.id.switch_settings_activity_notification)).check(matches(isNotChecked()));
         onView(withId(R.id.textview_settings_activity_notification_on_off)).check(matches(withText("no")));
+        onView(withId(R.id.switch_settings_activity_notification_inactive_network)).check(matches(isChecked()));
+        onView(withId(R.id.textview_settings_activity_notification_inactive_network_on_off)).check(matches(withText("yes")));
+        onView(withId(R.id.switch_settings_activity_notification_inactive_network)).perform(scrollTo());
+        onView(withId(R.id.switch_settings_activity_notification_inactive_network)).perform(click());
+        onView(withId(R.id.switch_settings_activity_onlywifi)).check(matches(isNotChecked()));
+        onView(withId(R.id.textview_settings_activity_onlywifi_on_off)).check(matches(withText("no")));
+        onView(withId(R.id.switch_settings_activity_notification)).check(matches(isNotChecked()));
+        onView(withId(R.id.textview_settings_activity_notification_on_off)).check(matches(withText("no")));
+        onView(withId(R.id.switch_settings_activity_notification_inactive_network)).check(matches(isNotChecked()));
+        onView(withId(R.id.textview_settings_activity_notification_inactive_network_on_off)).check(matches(withText("no")));
     }
 
     @Test
@@ -191,6 +225,8 @@ public class SettingsActivityTest extends BaseUITest {
         onView(withId(R.id.textview_settings_activity_ping_count)).perform(click());
         onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("2"));
         onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
+        onView(withId(R.id.switch_settings_activity_notification_inactive_network)).perform(scrollTo());
+        onView(withId(R.id.switch_settings_activity_notification_inactive_network)).perform(click());
         PreferenceManager preferenceManager = getPreferenceManager();
         assertEquals(AccessType.DOWNLOAD, preferenceManager.getPreferenceAccessType());
         assertEquals("localhost", preferenceManager.getPreferenceAddress());
@@ -199,6 +235,7 @@ public class SettingsActivityTest extends BaseUITest {
         assertTrue(preferenceManager.getPreferenceOnlyWifi());
         assertTrue(preferenceManager.getPreferenceNotification());
         assertEquals(2, preferenceManager.getPreferencePingCount());
+        assertTrue(preferenceManager.getPreferenceNotificationInactiveNetwork());
     }
 
     @Test

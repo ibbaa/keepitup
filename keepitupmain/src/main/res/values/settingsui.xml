@@ -11,4 +11,5 @@
     <string name="label_settings_activity_accesstype">Type</string>
     <string name="label_settings_activity_global">Global settings</string>
     <string name="label_settings_activity_ping_count">Ping count</string>
+    <string name="label_settings_activity_notification_inactive_network">Notifications when network is not active</string>
 </resources>
