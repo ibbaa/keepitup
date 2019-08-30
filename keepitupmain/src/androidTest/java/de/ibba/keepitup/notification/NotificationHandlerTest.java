@@ -15,6 +15,7 @@ import java.util.Locale;
 
 import de.ibba.keepitup.R;
 import de.ibba.keepitup.model.AccessType;
+import de.ibba.keepitup.model.LogEntry;
 import de.ibba.keepitup.model.NetworkTask;
 import de.ibba.keepitup.test.mock.MockNotificationBuilder;
 import de.ibba.keepitup.test.mock.MockNotificationManager;
@@ -44,8 +45,8 @@ public class NotificationHandlerTest {
     @Test
     public void testSendNotification() {
         NetworkTask networkTask = getNetworkTask1();
-        long timestamp = new GregorianCalendar(1980, Calendar.MARCH, 17).getTime().getTime();
-        notificationHandler.sendNotification(networkTask, timestamp, "Test");
+        LogEntry logEntry = getLogEntry(new GregorianCalendar(1980, Calendar.MARCH, 17).getTime().getTime(), "Test");
+        notificationHandler.sendNotification(networkTask, logEntry);
         assertTrue(notificationManager.wasNotifyCalled());
         MockNotificationManager.NotifyCall notifyCall = notificationManager.getNotifyCalls().get(0);
         assertEquals(networkTask.getSchedulerId(), notifyCall.getId());
@@ -61,18 +62,18 @@ public class NotificationHandlerTest {
     @Test
     public void testNotificationText() {
         NetworkTask networkTask = getNetworkTask1();
-        long timestamp = new GregorianCalendar(1995, Calendar.DECEMBER, 15, 13, 59, 51).getTime().getTime();
-        notificationHandler.sendNotification(networkTask, timestamp, null);
+        LogEntry logEntry = getLogEntry(new GregorianCalendar(1995, Calendar.DECEMBER, 15, 13, 59, 51).getTime().getTime(), null);
+        notificationHandler.sendNotification(networkTask, logEntry);
         MockNotificationBuilder notificationBuilder = (MockNotificationBuilder) notificationHandler.getNotificationBuilder();
         assertEquals("Execution of network task 2 failed. Host: 127.0.0.1. Timestamp: Dec 15, 1995 1:59:51 PM. Message: none", notificationBuilder.getContentText());
         networkTask = getNetworkTask2();
-        timestamp = new GregorianCalendar(2004, Calendar.FEBRUARY, 1, 5, 15, 51).getTime().getTime();
-        notificationHandler.sendNotification(networkTask, timestamp, "message");
+        logEntry = getLogEntry(new GregorianCalendar(2004, Calendar.FEBRUARY, 1, 5, 15, 51).getTime().getTime(), "message");
+        notificationHandler.sendNotification(networkTask, logEntry);
         notificationBuilder = (MockNotificationBuilder) notificationHandler.getNotificationBuilder();
         assertEquals("Execution of network task 6 failed. Host: host.com Port: 23. Timestamp: Feb 1, 2004 5:15:51 AM. Message: message", notificationBuilder.getContentText());
         networkTask = getNetworkTask3();
-        timestamp = new GregorianCalendar(2016, Calendar.JULY, 25, 15, 1, 1).getTime().getTime();
-        notificationHandler.sendNotification(networkTask, timestamp, "xyz");
+        logEntry = getLogEntry(new GregorianCalendar(2016, Calendar.JULY, 25, 15, 1, 1).getTime().getTime(), "xyz");
+        notificationHandler.sendNotification(networkTask, logEntry);
         notificationBuilder = (MockNotificationBuilder) notificationHandler.getNotificationBuilder();
         assertEquals("Execution of network task 11 failed. URL: http://www.test.com. Timestamp: Jul 25, 2016 3:01:01 PM. Message: xyz", notificationBuilder.getContentText());
     }
@@ -117,5 +118,15 @@ public class NotificationHandlerTest {
         task.setNotification(true);
         task.setRunning(false);
         return task;
+    }
+
+    private LogEntry getLogEntry(long timestamp, String message) {
+        LogEntry logEntry = new LogEntry();
+        logEntry.setId(0);
+        logEntry.setNetworkTaskId(1);
+        logEntry.setSuccess(true);
+        logEntry.setTimestamp(timestamp);
+        logEntry.setMessage(message);
+        return logEntry;
     }
 }
