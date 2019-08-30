@@ -6,4 +6,6 @@
     <integer name="ping_count_default">3</integer>
     <integer name="ping_count_minimum">1</integer>
     <integer name="ping_count_maximum">10</integer>
+    <string name="notification_inactive_network_key">notification_inactive_network_key</string>
+    <bool name="notification_inactive_network_default">false</bool>
 </resources>

@@ -162,7 +162,7 @@ public class PreferenceManager {
     }
 
     public boolean getPreferenceNotification() {
-        Log.d(PreferenceManager.class.getName(), "getPreferenceOnlyWifi");
+        Log.d(PreferenceManager.class.getName(), "getPreferenceNotification");
         return getPreferenceBoolean(getResources().getString(R.string.task_notification_key), getResources().getBoolean(R.bool.task_notification_default));
     }
 
@@ -189,6 +189,21 @@ public class PreferenceManager {
     public void removePreferencePingCount() {
         Log.d(PreferenceManager.class.getName(), "removePreferencePingCount");
         removePreferenceValue(getResources().getString(R.string.ping_count_key));
+    }
+
+    public boolean getPreferenceNotificationInactiveNetwork() {
+        Log.d(PreferenceManager.class.getName(), "getPreferenceNotificationInactiveNetwork");
+        return getPreferenceBoolean(getResources().getString(R.string.notification_inactive_network_key), getResources().getBoolean(R.bool.notification_inactive_network_default));
+    }
+
+    public void setPreferenceNotificationInactiveNetwork(boolean notification) {
+        Log.d(PreferenceManager.class.getName(), "setPreferenceNotificationInactiveNetwork, notification is " + notification);
+        setPreferenceBoolean(getResources().getString(R.string.notification_inactive_network_key), notification);
+    }
+
+    public void removePreferenceNotificationInactiveNetwork() {
+        Log.d(PreferenceManager.class.getName(), "removePreferenceNotificationInactiveNetwork");
+        removePreferenceValue(getResources().getString(R.string.notification_inactive_network_key));
     }
 
     private SharedPreferences getDefaultSharedPreferences() {

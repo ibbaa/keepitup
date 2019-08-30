@@ -46,6 +46,8 @@ public class SettingsActivity extends AppCompatActivity {
     private Switch notificationSwitch;
     private TextView notificationOnOffText;
     private TextView pingCountText;
+    private Switch notificationInactiveNetworkSwitch;
+    private TextView notificationInactiveNetworkOnOffText;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -61,6 +63,7 @@ public class SettingsActivity extends AppCompatActivity {
         prepareOnlyWifiSwitch();
         prepareNotificationSwitch();
         preparePingCountField();
+        prepareNotificationInactiveNetworkSwitch();
     }
 
     @Override
@@ -82,6 +85,7 @@ public class SettingsActivity extends AppCompatActivity {
             preferenceManager.removePreferenceOnlyWifi();
             preferenceManager.removePreferenceNotification();
             preferenceManager.removePreferencePingCount();
+            preferenceManager.removePreferenceNotificationInactiveNetwork();
             recreate();
             return true;
         }
@@ -202,6 +206,27 @@ public class SettingsActivity extends AppCompatActivity {
         setPingCount(String.valueOf(preferenceManager.getPreferencePingCount()));
         CardView pingCountCardView = findViewById(R.id.cardview_settings_activity_ping_count);
         pingCountCardView.setOnClickListener(this::showPingCountInputDialog);
+    }
+
+    private void prepareNotificationInactiveNetworkSwitch() {
+        Log.d(SettingsActivity.class.getName(), "prepareNotificationInactiveNetworkSwitch");
+        PreferenceManager preferenceManager = new PreferenceManager(this);
+        notificationInactiveNetworkSwitch = findViewById(R.id.switch_settings_activity_notification_inactive_network);
+        notificationInactiveNetworkOnOffText = findViewById(R.id.textview_settings_activity_notification_inactive_network_on_off);
+        notificationInactiveNetworkSwitch.setChecked(preferenceManager.getPreferenceNotificationInactiveNetwork());
+        notificationInactiveNetworkSwitch.setOnCheckedChangeListener(this::onNotificationInactiveNetworkCheckedChanged);
+        prepareNotificationInactiveNetworkOnOffText();
+    }
+
+    private void prepareNotificationInactiveNetworkOnOffText() {
+        notificationInactiveNetworkOnOffText.setText(notificationInactiveNetworkSwitch.isChecked() ? getResources().getString(R.string.string_yes) : getResources().getString(R.string.string_no));
+    }
+
+    private void onNotificationInactiveNetworkCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+        Log.d(NetworkTaskEditDialog.class.getName(), "onNotificationInactiveNetworkCheckedChanged, new value is " + isChecked);
+        PreferenceManager preferenceManager = new PreferenceManager(this);
+        preferenceManager.setPreferenceNotificationInactiveNetwork(isChecked);
+        prepareNotificationInactiveNetworkOnOffText();
     }
 
     private String getAddress() {
