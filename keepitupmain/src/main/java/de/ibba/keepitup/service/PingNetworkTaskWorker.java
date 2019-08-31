@@ -13,18 +13,14 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 
 import de.ibba.keepitup.R;
 import de.ibba.keepitup.model.LogEntry;
 import de.ibba.keepitup.model.NetworkTask;
 import de.ibba.keepitup.resources.PreferenceManager;
-import de.ibba.keepitup.service.network.DNSLookup;
-import de.ibba.keepitup.service.network.DNSLookupResult;
 import de.ibba.keepitup.service.network.PingCommand;
 import de.ibba.keepitup.service.network.PingCommandResult;
 import de.ibba.keepitup.service.network.PingOutputParser;
-import de.ibba.keepitup.util.ExceptionUtil;
 import de.ibba.keepitup.util.StringUtil;
 
 public class PingNetworkTaskWorker extends NetworkTaskWorker {
@@ -62,31 +58,6 @@ public class PingNetworkTaskWorker extends NetworkTaskWorker {
         return logEntry;
     }
 
-    private InetAddress executeDNSLookup(ExecutorService executorService, String host, LogEntry logEntry) {
-        Log.d(PingNetworkTaskWorker.class.getName(), "executeDNSLookup, host is " + host);
-        Callable<DNSLookupResult> dnsLookup = getDNSLookup(host);
-        int timeout = getResources().getInteger(R.integer.dns_lookup_timeout);
-        try {
-            Log.d(PingNetworkTaskWorker.class.getName(), "Executing " + dnsLookup.getClass().getSimpleName() + " with a timeout of " + timeout);
-            Future<DNSLookupResult> dnsLookupResultFuture = executorService.submit(dnsLookup);
-            DNSLookupResult dnsLookupResult = dnsLookupResultFuture.get(timeout, TimeUnit.SECONDS);
-            Log.d(PingNetworkTaskWorker.class.getName(), dnsLookup.getClass().getSimpleName() + " returned " + dnsLookupResult);
-            if (dnsLookupResult.getException() == null) {
-                Log.d(PingNetworkTaskWorker.class.getName(), "DNS lookup was successful");
-                return dnsLookupResult.getAddress();
-            } else {
-                Log.d(PingNetworkTaskWorker.class.getName(), "DNS lookup was not successful because of an exception", dnsLookupResult.getException());
-                logEntry.setSuccess(false);
-                logEntry.setMessage(getMessageFromException(getResources().getString(R.string.text_dns_lookup_error, host), dnsLookupResult.getException(), timeout));
-            }
-        } catch (Throwable exc) {
-            Log.d(PingNetworkTaskWorker.class.getName(), "Error executing " + dnsLookup.getClass().getName(), exc);
-            logEntry.setSuccess(false);
-            logEntry.setMessage(getMessageFromException(getResources().getString(R.string.text_dns_lookup_error, host), exc, timeout));
-        }
-        return null;
-    }
-
     private void executePingCommand(ExecutorService executorService, String address, boolean ip6, LogEntry logEntry) {
         Log.d(PingNetworkTaskWorker.class.getName(), "executePingCommand, address is " + address + ", ip6 is " + ip6);
         Callable<PingCommandResult> pingCommand = getPingCommand(address, ip6);
@@ -116,14 +87,6 @@ public class PingNetworkTaskWorker extends NetworkTaskWorker {
             logEntry.setSuccess(false);
             logEntry.setMessage(getMessageFromException(getResources().getString(R.string.text_ping_error, getAddress(address, ip6)), exc, timeout));
         }
-    }
-
-    private String getMessageFromException(String prefixMessage, Throwable exc, int timeout) {
-        if (exc instanceof TimeoutException) {
-            String unit = timeout == 1 ? getResources().getString(R.string.string_second) : getResources().getString(R.string.string_seconds);
-            return prefixMessage + " " + getResources().getString(R.string.text_timeout, timeout) + " " + unit;
-        }
-        return prefixMessage + " " + ExceptionUtil.getLogableMessage(ExceptionUtil.getRootCause(exc));
     }
 
     private String getPingSuccessMessage(String address, String output) {
@@ -158,10 +121,6 @@ public class PingNetworkTaskWorker extends NetworkTaskWorker {
     private String getAddress(String address, boolean ip6) {
         String ipVersion = ip6 ? getResources().getString(R.string.string_IPv6) : getResources().getString(R.string.string_IPv4);
         return address + " (" + ipVersion + ")";
-    }
-
-    protected Callable<DNSLookupResult> getDNSLookup(String host) {
-        return new DNSLookup(host);
     }
 
     protected Callable<PingCommandResult> getPingCommand(String address, boolean ip6) {

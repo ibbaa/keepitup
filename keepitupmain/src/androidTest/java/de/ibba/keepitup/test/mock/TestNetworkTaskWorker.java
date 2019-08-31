@@ -11,10 +11,13 @@ import de.ibba.keepitup.service.NetworkTaskWorker;
 
 public class TestNetworkTaskWorker extends NetworkTaskWorker {
 
-    public TestNetworkTaskWorker(Context context, NetworkTask networkTask, PowerManager.WakeLock wakeLock) {
+    private final boolean success;
+
+    public TestNetworkTaskWorker(Context context, NetworkTask networkTask, PowerManager.WakeLock wakeLock, boolean success) {
         super(context, networkTask, wakeLock);
         ((MockNetworkManager) getNetworkManager()).setConnected(true);
         ((MockNetworkManager) getNetworkManager()).setConnectedWithWiFi(true);
+        this.success = success;
     }
 
     @Override
@@ -22,9 +25,9 @@ public class TestNetworkTaskWorker extends NetworkTaskWorker {
         Log.d(TestNetworkTaskWorker.class.getName(), "Executing TestNetworkTaskWorker for " + networkTask);
         LogEntry logEntry = new LogEntry();
         logEntry.setNetworkTaskId(networkTask.getId());
-        logEntry.setSuccess(true);
+        logEntry.setSuccess(success);
         logEntry.setTimestamp(System.currentTimeMillis());
-        logEntry.setMessage(getResources().getString(R.string.string_successful));
+        logEntry.setMessage(success ? getResources().getString(R.string.string_successful) : getResources().getString(R.string.string_not_successful));
         return logEntry;
     }
 }
