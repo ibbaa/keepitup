@@ -36,7 +36,7 @@ public class PingNetworkTaskWorker extends NetworkTaskWorker {
         logEntry.setNetworkTaskId(networkTask.getId());
         ExecutorService executorService = Executors.newSingleThreadExecutor();
         try {
-            InetAddress address = executeDNSLookup(executorService, networkTask.getAddress(), logEntry, true);
+            InetAddress address = executeDNSLookup(executorService, networkTask.getAddress(), logEntry, getResources().getBoolean(R.bool.network_prefer_ipv4));
             if (address != null) {
                 Log.d(PingNetworkTaskWorker.class.getName(), "executeDNSLookup returned " + address);
                 boolean ip6 = address instanceof Inet6Address;
@@ -72,20 +72,20 @@ public class PingNetworkTaskWorker extends NetworkTaskWorker {
             if (pingResult.getException() == null && pingResult.getProcessReturnCode() == 0) {
                 Log.d(PingNetworkTaskWorker.class.getName(), "Ping was successful");
                 logEntry.setSuccess(true);
-                logEntry.setMessage(getPingSuccessMessage(getAddress(address, ip6), getPingOutputMessage(pingResult.getOutput())));
+                logEntry.setMessage(getPingSuccessMessage(address, getPingOutputMessage(pingResult.getOutput())));
             } else if (pingResult.getException() != null) {
                 Log.d(PingNetworkTaskWorker.class.getName(), "Ping was not successful because of an exception", pingResult.getException());
                 logEntry.setSuccess(false);
-                logEntry.setMessage(getMessageFromException(getResources().getString(R.string.text_ping_error, getAddress(address, ip6)), pingResult.getException(), timeout));
+                logEntry.setMessage(getMessageFromException(getResources().getString(R.string.text_ping_error, address), pingResult.getException(), timeout));
             } else {
                 Log.d(PingNetworkTaskWorker.class.getName(), "Ping was not successful because the ping command returned " + pingResult.getProcessReturnCode());
                 logEntry.setSuccess(false);
-                logEntry.setMessage(getPingFailureMessage(pingResult.getProcessReturnCode(), getAddress(address, ip6), getPingOutputMessage(pingResult.getOutput())));
+                logEntry.setMessage(getPingFailureMessage(pingResult.getProcessReturnCode(), address, getPingOutputMessage(pingResult.getOutput())));
             }
         } catch (Throwable exc) {
             Log.d(PingNetworkTaskWorker.class.getName(), "Error executing " + pingCommand.getClass().getName(), exc);
             logEntry.setSuccess(false);
-            logEntry.setMessage(getMessageFromException(getResources().getString(R.string.text_ping_error, getAddress(address, ip6)), exc, timeout));
+            logEntry.setMessage(getMessageFromException(getResources().getString(R.string.text_ping_error, address), exc, timeout));
         }
     }
 
@@ -116,11 +116,6 @@ public class PingNetworkTaskWorker extends NetworkTaskWorker {
         String packetLoss = numberFormat.format(parser.getPacketLoss()) + "%";
         String averageTime = numberFormat.format(parser.getAverageTime());
         return getResources().getString(R.string.text_ping_message, parser.getPacketsTransmitted(), parser.getPacketsReceived(), packetLoss, averageTime);
-    }
-
-    private String getAddress(String address, boolean ip6) {
-        String ipVersion = ip6 ? getResources().getString(R.string.string_IPv6) : getResources().getString(R.string.string_IPv4);
-        return address + " (" + ipVersion + ")";
     }
 
     protected Callable<PingCommandResult> getPingCommand(String address, boolean ip6) {

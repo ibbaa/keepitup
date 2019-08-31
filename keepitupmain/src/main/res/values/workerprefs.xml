@@ -2,8 +2,4 @@
 <resources>
     <bool name="worker_synchronous_execution">false</bool>
     <integer name="worker_execution_wakelock_timeout">7200</integer>
-    <string name="ping_command_line">/system/bin/ping -c %d -W %d %s</string>
-    <string name="ping6_command_line">/system/bin/ping6 -c %d -W %d %s</string>
-    <integer name="ping_timeout">20</integer>
-    <integer name="dns_lookup_timeout">30</integer>
 </resources>

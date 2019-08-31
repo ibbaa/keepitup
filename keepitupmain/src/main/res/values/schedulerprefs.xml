@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <integer name="schedulerid_history_count_maximum">100</integer>
+    <integer name="scheduler_id_retry_count">10000000</integer>
 </resources>

@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Keep it up</string>
     <string name="string_running">Running</string>
     <string name="string_stopped">Stopped</string>
     <string name="string_minute">minute</string>
@@ -13,6 +12,4 @@
     <string name="string_yes">yes</string>
     <string name="string_no">no</string>
     <string name="string_none">none</string>
-    <string name="string_IPv4">IPv4</string>
-    <string name="string_IPv6">IPv6</string>
 </resources>
