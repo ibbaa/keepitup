@@ -8,6 +8,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.net.InetAddress;
+import java.util.Arrays;
+import java.util.Collections;
 
 import de.ibba.keepitup.model.AccessType;
 import de.ibba.keepitup.model.LogEntry;
@@ -43,7 +45,7 @@ public class PingNetworkTaskWorkerTest {
 
     @Test
     public void testSuccessfulCallUnparseableResult() throws Exception {
-        DNSLookupResult dnsLookupResult = new DNSLookupResult(InetAddress.getByName("127.0.0.1"), null);
+        DNSLookupResult dnsLookupResult = new DNSLookupResult(Arrays.asList(InetAddress.getByName("127.0.0.1"), InetAddress.getByName("::1")), null);
         PingCommandResult pingCommandResult = new PingCommandResult(0, "testoutput", null);
         prepareTestPingNetworkTaskWorker(dnsLookupResult, pingCommandResult);
         LogEntry logEntry = pingNetworkTaskWorker.execute(getNetworkTask());
@@ -55,20 +57,20 @@ public class PingNetworkTaskWorkerTest {
 
     @Test
     public void testSuccessfulCallParseableResult() throws Exception {
-        DNSLookupResult dnsLookupResult = new DNSLookupResult(InetAddress.getByName("127.0.0.1"), null);
+        DNSLookupResult dnsLookupResult = new DNSLookupResult(InetAddress.getByName("::1"), null);
         PingCommandResult pingCommandResult = new PingCommandResult(0, getTestIP4Ping(), null);
         prepareTestPingNetworkTaskWorker(dnsLookupResult, pingCommandResult);
         LogEntry logEntry = pingNetworkTaskWorker.execute(getNetworkTask());
         assertEquals(45, logEntry.getNetworkTaskId());
         assertTrue(logEntry.getTimestamp() > -1);
         assertTrue(logEntry.isSuccess());
-        assertEquals("Pinged 127.0.0.1 (IPv4) successfully. 3 packets transmitted. 3 packets received. 0% packet loss. 0.083 msec average time.", logEntry.getMessage());
+        assertEquals("Pinged ::1 (IPv6) successfully. 3 packets transmitted. 3 packets received. 0% packet loss. 0.083 msec average time.", logEntry.getMessage());
     }
 
     @Test
     public void testDNSLookupExceptionThrown() {
         IllegalArgumentException exception = new IllegalArgumentException("TestException");
-        DNSLookupResult dnsLookupResult = new DNSLookupResult(null, exception);
+        DNSLookupResult dnsLookupResult = new DNSLookupResult(Collections.emptyList(), exception);
         prepareTestPingNetworkTaskWorker(dnsLookupResult, null);
         LogEntry logEntry = pingNetworkTaskWorker.execute(getNetworkTask());
         assertEquals(45, logEntry.getNetworkTaskId());
