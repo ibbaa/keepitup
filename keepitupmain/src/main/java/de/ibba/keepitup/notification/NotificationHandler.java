@@ -2,7 +2,10 @@ package de.ibba.keepitup.notification;
 
 import android.app.Notification;
 import android.app.NotificationChannel;
+import android.app.PendingIntent;
+import android.app.TaskStackBuilder;
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.Resources;
 import android.os.Build;
 import android.util.Log;
@@ -17,6 +20,7 @@ import de.ibba.keepitup.R;
 import de.ibba.keepitup.model.LogEntry;
 import de.ibba.keepitup.model.NetworkTask;
 import de.ibba.keepitup.resources.ServiceFactoryContributor;
+import de.ibba.keepitup.ui.NetworkTaskMainActivity;
 import de.ibba.keepitup.ui.mapping.EnumMapping;
 
 public class NotificationHandler {
@@ -76,11 +80,21 @@ public class NotificationHandler {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
             notificationBuilder.setVibrate(getVibrationPattern());
         }
+        setMainActivityIntent(notificationBuilder);
         return notificationBuilder.build();
     }
 
     private long[] getVibrationPattern() {
         return new long[]{0, 500, 250, 500};
+    }
+
+    private void setMainActivityIntent(NotificationCompat.Builder builder) {
+        Intent mainActivityIntent = new Intent(getContext(), NetworkTaskMainActivity.class);
+        TaskStackBuilder stackBuilder = TaskStackBuilder.create(getContext());
+        stackBuilder.addNextIntentWithParentStack(mainActivityIntent);
+        PendingIntent resultPendingIntent = stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
+        builder.setContentIntent(resultPendingIntent);
+        builder.setAutoCancel(true);
     }
 
     private INotificatioManager createNotificationManager() {

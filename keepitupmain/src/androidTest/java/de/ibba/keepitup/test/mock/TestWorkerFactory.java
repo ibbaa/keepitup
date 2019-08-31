@@ -11,6 +11,6 @@ public class TestWorkerFactory implements WorkerFactory {
 
     @Override
     public NetworkTaskWorker createWorker(Context context, NetworkTask networkTask, PowerManager.WakeLock wakeLock) {
-        return new TestNetworkTaskWorker(context, networkTask, wakeLock);
+        return new TestNetworkTaskWorker(context, networkTask, wakeLock, true);
     }
 }
