@@ -52,7 +52,7 @@ public class PingNetworkTaskWorkerTest {
         assertEquals(45, logEntry.getNetworkTaskId());
         assertTrue(logEntry.getTimestamp() > -1);
         assertTrue(logEntry.isSuccess());
-        assertEquals("Pinged 127.0.0.1 (IPv4) successfully. testoutput", logEntry.getMessage());
+        assertEquals("Pinged 127.0.0.1 successfully. testoutput", logEntry.getMessage());
     }
 
     @Test
@@ -64,7 +64,7 @@ public class PingNetworkTaskWorkerTest {
         assertEquals(45, logEntry.getNetworkTaskId());
         assertTrue(logEntry.getTimestamp() > -1);
         assertTrue(logEntry.isSuccess());
-        assertEquals("Pinged ::1 (IPv6) successfully. 3 packets transmitted. 3 packets received. 0% packet loss. 0.083 msec average time.", logEntry.getMessage());
+        assertEquals("Pinged ::1 successfully. 3 packets transmitted. 3 packets received. 0% packet loss. 0.083 msec average time.", logEntry.getMessage());
     }
 
     @Test
@@ -89,7 +89,7 @@ public class PingNetworkTaskWorkerTest {
         assertEquals(45, logEntry.getNetworkTaskId());
         assertTrue(logEntry.getTimestamp() > -1);
         assertFalse(logEntry.isSuccess());
-        assertEquals("Ping to 127.0.0.1 (IPv4) failed. IllegalArgumentException: TestException", logEntry.getMessage());
+        assertEquals("Ping to 127.0.0.1 failed. IllegalArgumentException: TestException", logEntry.getMessage());
     }
 
     @Test
@@ -101,7 +101,7 @@ public class PingNetworkTaskWorkerTest {
         assertEquals(45, logEntry.getNetworkTaskId());
         assertTrue(logEntry.getTimestamp() > -1);
         assertFalse(logEntry.isSuccess());
-        assertEquals("Ping to 127.0.0.1 (IPv4) failed. testoutput", logEntry.getMessage());
+        assertEquals("Ping to 127.0.0.1 failed. testoutput", logEntry.getMessage());
     }
 
     @Test
@@ -113,7 +113,7 @@ public class PingNetworkTaskWorkerTest {
         assertEquals(45, logEntry.getNetworkTaskId());
         assertTrue(logEntry.getTimestamp() > -1);
         assertFalse(logEntry.isSuccess());
-        assertEquals("Ping to 127.0.0.1 (IPv4) failed. 3 packets transmitted. 3 packets received. 0% packet loss. 0.083 msec average time.", logEntry.getMessage());
+        assertEquals("Ping to 127.0.0.1 failed. 3 packets transmitted. 3 packets received. 0% packet loss. 0.083 msec average time.", logEntry.getMessage());
     }
 
     @Test
@@ -125,7 +125,7 @@ public class PingNetworkTaskWorkerTest {
         assertEquals(45, logEntry.getNetworkTaskId());
         assertTrue(logEntry.getTimestamp() > -1);
         assertFalse(logEntry.isSuccess());
-        assertEquals("Ping to 127.0.0.1 (IPv4) failed. Return code: 1", logEntry.getMessage());
+        assertEquals("Ping to 127.0.0.1 failed. Return code: 1", logEntry.getMessage());
     }
 
     private NetworkTask getNetworkTask() {
