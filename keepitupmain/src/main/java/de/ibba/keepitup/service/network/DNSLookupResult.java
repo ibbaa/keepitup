@@ -3,19 +3,26 @@ package de.ibba.keepitup.service.network;
 import androidx.annotation.NonNull;
 
 import java.net.InetAddress;
+import java.util.Collections;
+import java.util.List;
 
 public class DNSLookupResult {
 
-    private final InetAddress address;
+    private final List<InetAddress> addresses;
     private final Throwable exception;
 
     public DNSLookupResult(InetAddress address, Throwable exception) {
-        this.address = address;
+        this.addresses = Collections.singletonList(address);
         this.exception = exception;
     }
 
-    public InetAddress getAddress() {
-        return address;
+    public DNSLookupResult(List<InetAddress> addresses, Throwable exception) {
+        this.addresses = addresses;
+        this.exception = exception;
+    }
+
+    public List<InetAddress> getAddresses() {
+        return Collections.unmodifiableList(addresses);
     }
 
     public Throwable getException() {
@@ -26,7 +33,7 @@ public class DNSLookupResult {
     @Override
     public String toString() {
         return "DNSLookupResult{" +
-                "address=" + address +
+                "addresses=" + addresses +
                 ", exception=" + exception +
                 '}';
     }

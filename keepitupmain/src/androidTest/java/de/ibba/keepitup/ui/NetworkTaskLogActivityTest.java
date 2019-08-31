@@ -86,7 +86,7 @@ public class NetworkTaskLogActivityTest extends BaseUITest {
         getLogDAO().insertAndDeleteLog(entry3);
         openActionBarOverflowOrOptionsMenu(TestRegistry.getContext());
         onView(withText("Refresh")).perform(click());
-        onView(isRoot()).perform(waitFor(1000));
+        onView(isRoot()).perform(waitFor(2000));
         onView(withId(R.id.listview_log_activity_log_entries)).check(matches(withListSize(3)));
         onView(allOf(withId(R.id.textview_list_item_log_entry_title), withChildDescendantAtPosition(withId(R.id.listview_log_activity_log_entries), 0))).check(matches(withText("Log entry for network task 1")));
         onView(allOf(withId(R.id.textview_list_item_log_entry_success), withChildDescendantAtPosition(withId(R.id.listview_log_activity_log_entries), 0))).check(matches(withText("Execution successful")));

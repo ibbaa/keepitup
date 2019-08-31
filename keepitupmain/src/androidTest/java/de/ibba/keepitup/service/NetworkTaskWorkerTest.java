@@ -8,7 +8,11 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import java.net.InetAddress;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.Executors;
 
 import de.ibba.keepitup.db.LogDAO;
 import de.ibba.keepitup.db.NetworkTaskDAO;
@@ -17,6 +21,8 @@ import de.ibba.keepitup.model.LogEntry;
 import de.ibba.keepitup.model.NetworkTask;
 import de.ibba.keepitup.notification.NotificationHandler;
 import de.ibba.keepitup.resources.PreferenceManager;
+import de.ibba.keepitup.service.network.DNSLookupResult;
+import de.ibba.keepitup.test.mock.MockDNSLookup;
 import de.ibba.keepitup.test.mock.MockNetworkManager;
 import de.ibba.keepitup.test.mock.MockNotificationManager;
 import de.ibba.keepitup.test.mock.TestNetworkTaskWorker;
@@ -24,6 +30,7 @@ import de.ibba.keepitup.test.mock.TestRegistry;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 @MediumTest
@@ -213,6 +220,67 @@ public class NetworkTaskWorkerTest {
         assertFalse(notificationManager.wasNotifyCalled());
     }
 
+    @Test
+    public void testExecuteDNSLookupPreferIP4() throws Exception {
+        LogEntry logEntry = getLogEntry();
+        TestNetworkTaskWorker testNetworkTaskWorker = new TestNetworkTaskWorker(TestRegistry.getContext(), getNetworkTask(), null, true);
+        DNSLookupResult dnsLookupResult = new DNSLookupResult(Arrays.asList(InetAddress.getByName("::1"), InetAddress.getByName("127.0.0.1"), InetAddress.getByName("2a00:1450:4016:801::200e")), null);
+        testNetworkTaskWorker.setMockDNSLookup(new MockDNSLookup("127.0.0.1", dnsLookupResult));
+        InetAddress address = testNetworkTaskWorker.executeDNSLookup(Executors.newSingleThreadExecutor(), "host.com", logEntry, true);
+        assertEquals(InetAddress.getByName("127.0.0.1"), address);
+        assertTrue(logEntry.isSuccess());
+        assertEquals("DNS lookup for host.com successful. Resolved address is 127.0.0.1.", logEntry.getMessage());
+    }
+
+    @Test
+    public void testExecuteDNSLookupPreferIP6() throws Exception {
+        LogEntry logEntry = getLogEntry();
+        TestNetworkTaskWorker testNetworkTaskWorker = new TestNetworkTaskWorker(TestRegistry.getContext(), getNetworkTask(), null, true);
+        DNSLookupResult dnsLookupResult = new DNSLookupResult(Arrays.asList(InetAddress.getByName("::1"), InetAddress.getByName("127.0.0.1"), InetAddress.getByName("2a00:1450:4016:801::200e")), null);
+        testNetworkTaskWorker.setMockDNSLookup(new MockDNSLookup("127.0.0.1", dnsLookupResult));
+        InetAddress address = testNetworkTaskWorker.executeDNSLookup(Executors.newSingleThreadExecutor(), "host.com", logEntry, false);
+        assertEquals(InetAddress.getByName("::1"), address);
+        assertTrue(logEntry.isSuccess());
+        assertEquals("DNS lookup for host.com successful. Resolved address is ::1.", logEntry.getMessage());
+    }
+
+    @Test
+    public void testExecuteDNSLookupPreferIP6NoIP6AddressAvailable() throws Exception {
+        LogEntry logEntry = getLogEntry();
+        TestNetworkTaskWorker testNetworkTaskWorker = new TestNetworkTaskWorker(TestRegistry.getContext(), getNetworkTask(), null, true);
+        DNSLookupResult dnsLookupResult = new DNSLookupResult(Arrays.asList(InetAddress.getByName("127.0.0.1"), InetAddress.getByName("192.168.178.1")), null);
+        testNetworkTaskWorker.setMockDNSLookup(new MockDNSLookup("127.0.0.1", dnsLookupResult));
+        InetAddress address = testNetworkTaskWorker.executeDNSLookup(Executors.newSingleThreadExecutor(), "host.com", logEntry, false);
+        assertEquals(InetAddress.getByName("127.0.0.1"), address);
+        assertTrue(logEntry.isSuccess());
+        assertEquals("DNS lookup for host.com successful. Resolved address is 127.0.0.1.", logEntry.getMessage());
+    }
+
+    @Test
+    public void testExecuteDNSLookupNoAddresses() {
+        LogEntry logEntry = getLogEntry();
+        TestNetworkTaskWorker testNetworkTaskWorker = new TestNetworkTaskWorker(TestRegistry.getContext(), getNetworkTask(), null, true);
+        DNSLookupResult dnsLookupResult = new DNSLookupResult(Collections.emptyList(), null);
+        testNetworkTaskWorker.setMockDNSLookup(new MockDNSLookup("127.0.0.1", dnsLookupResult));
+        InetAddress address = testNetworkTaskWorker.executeDNSLookup(Executors.newSingleThreadExecutor(), "host.com", logEntry, true);
+        assertNull(address);
+        assertFalse(logEntry.isSuccess());
+        assertEquals("DNS lookup for host.com failed. No address for host.", logEntry.getMessage());
+    }
+
+    @Test
+    public void testExecuteDNSLookupExceptionThrown() {
+        LogEntry logEntry = getLogEntry();
+        TestNetworkTaskWorker testNetworkTaskWorker = new TestNetworkTaskWorker(TestRegistry.getContext(), getNetworkTask(), null, true);
+        IllegalArgumentException exception = new IllegalArgumentException("TestException");
+        DNSLookupResult dnsLookupResult = new DNSLookupResult(Collections.emptyList(), exception);
+        testNetworkTaskWorker.setMockDNSLookup(new MockDNSLookup("127.0.0.1", dnsLookupResult));
+        InetAddress address = testNetworkTaskWorker.executeDNSLookup(Executors.newSingleThreadExecutor(), "host.com", logEntry, true);
+        assertNull(address);
+        assertFalse(logEntry.isSuccess());
+        assertEquals("DNS lookup for host.com failed. IllegalArgumentException: TestException", logEntry.getMessage());
+    }
+
     private NetworkTask getNetworkTask() {
         NetworkTask task = new NetworkTask();
         task.setId(45);
@@ -226,5 +294,15 @@ public class NetworkTaskWorkerTest {
         task.setNotification(true);
         task.setRunning(true);
         return task;
+    }
+
+    private LogEntry getLogEntry() {
+        LogEntry insertedLogEntry1 = new LogEntry();
+        insertedLogEntry1.setId(0);
+        insertedLogEntry1.setNetworkTaskId(1);
+        insertedLogEntry1.setSuccess(true);
+        insertedLogEntry1.setTimestamp(123);
+        insertedLogEntry1.setMessage("TestMessage");
+        return insertedLogEntry1;
     }
 }

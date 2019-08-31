@@ -36,7 +36,7 @@ public class PingNetworkTaskWorker extends NetworkTaskWorker {
         logEntry.setNetworkTaskId(networkTask.getId());
         ExecutorService executorService = Executors.newSingleThreadExecutor();
         try {
-            InetAddress address = executeDNSLookup(executorService, networkTask.getAddress(), logEntry);
+            InetAddress address = executeDNSLookup(executorService, networkTask.getAddress(), logEntry, true);
             if (address != null) {
                 Log.d(PingNetworkTaskWorker.class.getName(), "executeDNSLookup returned " + address);
                 boolean ip6 = address instanceof Inet6Address;

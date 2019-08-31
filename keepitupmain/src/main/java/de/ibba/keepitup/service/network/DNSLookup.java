@@ -3,6 +3,8 @@ package de.ibba.keepitup.service.network;
 import android.util.Log;
 
 import java.net.InetAddress;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.concurrent.Callable;
 
 public class DNSLookup implements Callable<DNSLookupResult> {
@@ -17,11 +19,11 @@ public class DNSLookup implements Callable<DNSLookupResult> {
     public DNSLookupResult call() {
         Log.d(DNSLookup.class.getName(), "call");
         try {
-            InetAddress address = InetAddress.getByName(host);
-            return new DNSLookupResult(address, null);
+            InetAddress[] addresses = InetAddress.getAllByName(host);
+            return new DNSLookupResult(Arrays.asList(addresses), null);
         } catch (Exception exc) {
             Log.e(DNSLookup.class.getName(), "Error executing DNS lookup", exc);
-            return new DNSLookupResult(null, exc);
+            return new DNSLookupResult(Collections.emptyList(), exc);
         }
     }
 }
