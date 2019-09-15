@@ -9,6 +9,7 @@ import android.util.Log;
 import java.net.Inet4Address;
 import java.net.Inet6Address;
 import java.net.InetAddress;
+import java.net.SocketTimeoutException;
 import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
@@ -183,11 +184,15 @@ public abstract class NetworkTaskWorker implements Runnable {
     }
 
     protected String getMessageFromException(String prefixMessage, Throwable exc, int timeout) {
-        if (exc instanceof TimeoutException) {
+        if (isTimeout(exc)) {
             String unit = timeout == 1 ? getResources().getString(R.string.string_second) : getResources().getString(R.string.string_seconds);
-            return prefixMessage + " " + getResources().getString(R.string.text_timeout, timeout) + " " + unit;
+            return prefixMessage + " " + getResources().getString(R.string.text_timeout, timeout) + " " + unit + ".";
         }
         return prefixMessage + " " + ExceptionUtil.getLogableMessage(ExceptionUtil.getRootCause(exc));
+    }
+
+    private boolean isTimeout(Throwable exc) {
+        return exc instanceof TimeoutException || exc instanceof SocketTimeoutException;
     }
 
     private INetworkManager createNetworkManager() {
