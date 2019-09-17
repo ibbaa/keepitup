@@ -25,6 +25,16 @@ public class ConnectNetworkTaskWorker extends NetworkTaskWorker {
     }
 
     @Override
+    public int getMaxInstances() {
+        return getResources().getInteger(R.integer.connect_worker_max_instances);
+    }
+
+    @Override
+    public String getMaxInstancesErrorMessage(int activeInstances) {
+        return getResources().getString(R.string.text_connect_worker_max_instances_error, activeInstances);
+    }
+
+    @Override
     public LogEntry execute(NetworkTask networkTask) {
         Log.d(ConnectNetworkTaskWorker.class.getName(), "Executing ConnectNetworkTaskWorker for " + networkTask);
         LogEntry logEntry = new LogEntry();

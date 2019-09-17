@@ -13,4 +13,8 @@
     <string name="text_ping_message">%d packets transmitted. %d packets received. %s packet loss. %s msec average time.</string>
     <string name="text_connect_success">Connected to %s successfully.</string>
     <string name="text_connect_error">Connection to %s failed.</string>
+    <string name="text_null_worker_max_instances_error">Currently are %d attempts active, which is the maximum. Skipped execution.</string>
+    <string name="text_ping_worker_max_instances_error">Currently are %d ping attempts active, which is the maximum. Skipped execution.</string>
+    <string name="text_connect_worker_max_instances_error">Currently are %d connection attempts active, which is the maximum. Skipped execution.</string>
+    <string name="text_download_worker_max_instances_error">Currently are %d downloads active, which is the maximum. Skipped execution.</string>
 </resources>

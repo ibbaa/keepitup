@@ -25,6 +25,16 @@ public class TestNetworkTaskWorker extends NetworkTaskWorker {
     }
 
     @Override
+    public int getMaxInstances() {
+        return 10;
+    }
+
+    @Override
+    public String getMaxInstancesErrorMessage(int activeInstances) {
+        return "TestMaxInstancesError";
+    }
+
+    @Override
     public LogEntry execute(NetworkTask networkTask) {
         Log.d(TestNetworkTaskWorker.class.getName(), "Executing TestNetworkTaskWorker for " + networkTask);
         LogEntry logEntry = new LogEntry();

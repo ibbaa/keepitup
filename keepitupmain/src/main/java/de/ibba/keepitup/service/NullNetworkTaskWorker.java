@@ -15,6 +15,16 @@ public class NullNetworkTaskWorker extends NetworkTaskWorker {
     }
 
     @Override
+    public int getMaxInstances() {
+        return getResources().getInteger(R.integer.null_worker_max_instances);
+    }
+
+    @Override
+    public String getMaxInstancesErrorMessage(int activeInstances) {
+        return getResources().getString(R.string.text_null_worker_max_instances_error, activeInstances);
+    }
+
+    @Override
     public LogEntry execute(NetworkTask networkTask) {
         Log.d(NullNetworkTaskWorker.class.getName(), "Executing NullNetworkTaskWorker for " + networkTask);
         LogEntry logEntry = new LogEntry();
