@@ -222,6 +222,7 @@ public class NetworkTaskProcessServiceSchedulerTest {
         task.setId(1);
         task.setIndex(1);
         task.setSchedulerId(1);
+        task.setInstances(0);
         task.setAddress("127.0.0.1");
         task.setPort(80);
         task.setAccessType(AccessType.PING);
@@ -236,6 +237,7 @@ public class NetworkTaskProcessServiceSchedulerTest {
         task.setId(2);
         task.setIndex(10);
         task.setSchedulerId(2);
+        task.setInstances(0);
         task.setAddress("host.com");
         task.setPort(21);
         task.setAccessType(null);

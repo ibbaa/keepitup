@@ -286,6 +286,7 @@ public class NetworkTaskWorkerTest {
         task.setId(45);
         task.setIndex(1);
         task.setSchedulerId(0);
+        task.setInstances(0);
         task.setAddress("127.0.0.1");
         task.setPort(80);
         task.setAccessType(AccessType.PING);

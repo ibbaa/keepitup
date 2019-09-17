@@ -259,6 +259,7 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
         networkTask.setId(-1);
         networkTask.setIndex(-1);
         networkTask.setSchedulerId(-1);
+        networkTask.setInstances(0);
         networkTask.setAddress("127.0.0.1");
         networkTask.setPort(80);
         networkTask.setAccessType(AccessType.CONNECT);
@@ -274,6 +275,7 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
         networkTask.setId(-1);
         networkTask.setIndex(-1);
         networkTask.setSchedulerId(-1);
+        networkTask.setInstances(0);
         networkTask.setAddress("localhost");
         networkTask.setPort(22);
         networkTask.setAccessType(AccessType.PING);

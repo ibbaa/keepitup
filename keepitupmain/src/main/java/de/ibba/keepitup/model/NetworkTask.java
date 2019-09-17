@@ -15,6 +15,7 @@ public class NetworkTask {
     private long id;
     private int index;
     private int schedulerid;
+    private int instances;
     private String address;
     private int port;
     private AccessType accessType;
@@ -27,6 +28,7 @@ public class NetworkTask {
         this.id = -1;
         this.index = -1;
         this.schedulerid = -1;
+        this.instances = 0;
         this.address = null;
         this.port = 0;
         this.accessType = null;
@@ -42,6 +44,7 @@ public class NetworkTask {
         this.id = -1;
         this.index = -1;
         this.schedulerid = -1;
+        this.instances = 0;
         this.address = preferenceManager.getPreferenceAddress();
         this.port = preferenceManager.getPreferencePort();
         this.accessType = preferenceManager.getPreferenceAccessType();
@@ -59,6 +62,7 @@ public class NetworkTask {
         this.id = bundle.getLong("id");
         this.index = bundle.getInt("index");
         this.schedulerid = bundle.getInt("schedulerid");
+        this.instances = bundle.getInt("instances");
         this.address = bundle.getString("address");
         this.port = bundle.getInt("port");
         if (bundle.containsKey("accessType")) {
@@ -92,6 +96,14 @@ public class NetworkTask {
 
     public void setSchedulerId(int schedulerid) {
         this.schedulerid = schedulerid;
+    }
+
+    public int getInstances() {
+        return instances;
+    }
+
+    public void setInstances(int instances) {
+        this.instances = instances;
     }
 
     public String getAddress() {
@@ -155,6 +167,7 @@ public class NetworkTask {
         bundle.putLong("id", id);
         bundle.putInt("index", index);
         bundle.putInt("schedulerid", schedulerid);
+        bundle.putInt("instances", instances);
         if (address != null) {
             bundle.putString("address", address);
         }
@@ -180,6 +193,7 @@ public class NetworkTask {
                 "id=" + id +
                 ", index=" + index +
                 ", schedulerid=" + schedulerid +
+                ", instances=" + instances +
                 ", address='" + address + '\'' +
                 ", port=" + port +
                 ", accessType=" + accessType +

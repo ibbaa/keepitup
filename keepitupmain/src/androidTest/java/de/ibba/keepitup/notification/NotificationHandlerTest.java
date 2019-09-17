@@ -83,6 +83,7 @@ public class NotificationHandlerTest {
         task.setId(1);
         task.setIndex(1);
         task.setSchedulerId(1);
+        task.setInstances(0);
         task.setAddress("127.0.0.1");
         task.setPort(80);
         task.setAccessType(AccessType.PING);
@@ -97,6 +98,7 @@ public class NotificationHandlerTest {
         task.setId(1);
         task.setIndex(5);
         task.setSchedulerId(1);
+        task.setInstances(0);
         task.setAddress("host.com");
         task.setPort(23);
         task.setAccessType(AccessType.CONNECT);
@@ -111,6 +113,7 @@ public class NotificationHandlerTest {
         task.setId(1);
         task.setIndex(10);
         task.setSchedulerId(1);
+        task.setInstances(0);
         task.setAddress("http://www.test.com");
         task.setPort(456);
         task.setAccessType(AccessType.DOWNLOAD);
