@@ -107,7 +107,7 @@ public abstract class NetworkTaskWorker implements Runnable {
         }
         PreferenceManager preferenceManager = new PreferenceManager(getContext());
         if (!isConnected && !preferenceManager.getPreferenceNotificationInactiveNetwork()) {
-            Log.d(NetworkTaskWorker.class.getName(), "No active network connection amd notifications for inactive networks are disabled. Not sending notifications.");
+            Log.d(NetworkTaskWorker.class.getName(), "No active network connection and notifications for inactive networks are disabled. Not sending notifications.");
             return;
         }
         notificationHandler.sendNotification(networkTask, logEntry);
