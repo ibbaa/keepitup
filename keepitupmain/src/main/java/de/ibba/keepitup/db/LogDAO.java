@@ -50,6 +50,7 @@ public class LogDAO extends BaseDAO {
     }
 
     private LogEntry insertAndDeleteLog(LogEntry logEntry, SQLiteDatabase db) {
+        Log.d(LogDAO.class.getName(), "insertAndDeleteLog, log entry is " + logEntry);
         ContentValues values = new ContentValues();
         LogDBConstants dbConstants = new LogDBConstants(getContext());
         values.put(dbConstants.getNetworkTaskIdColumnName(), logEntry.getNetworkTaskId());
@@ -76,10 +77,12 @@ public class LogDAO extends BaseDAO {
     }
 
     private LogEntry readMostRecentLogForNetworkTask(LogEntry logEntry, SQLiteDatabase db) {
+        Log.d(LogDAO.class.getName(), "readMostRecentLogForNetworkTask, log entry is " + logEntry);
         Cursor cursor = null;
         LogEntry result = null;
         LogDBConstants dbConstants = new LogDBConstants(getContext());
         try {
+            Log.d(LogDAO.class.getName(), "Executing SQL " + dbConstants.getReadMostRecentLogStatement() + " with a parameter of " + logEntry.getNetworkTaskId());
             cursor = db.rawQuery(dbConstants.getReadMostRecentLogStatement(), new String[]{String.valueOf(logEntry.getNetworkTaskId())});
             while (cursor.moveToNext()) {
                 int indexIdColumn = cursor.getColumnIndex(dbConstants.getIdColumnName());
@@ -96,14 +99,17 @@ public class LogDAO extends BaseDAO {
                 }
             }
         }
+        Log.d(LogDAO.class.getName(), "readMostRecentLogForNetworkTask, returning " + result);
         return result;
     }
 
     private List<LogEntry> readAllLogsForNetworkTask(LogEntry logEntry, SQLiteDatabase db) {
+        Log.d(LogDAO.class.getName(), "readAllLogsForNetworkTask, log entry is " + logEntry);
         Cursor cursor = null;
         List<LogEntry> result = new ArrayList<>();
         LogDBConstants dbConstants = new LogDBConstants(getContext());
         try {
+            Log.d(LogDAO.class.getName(), "Executing SQL " + dbConstants.getReadAllLogsStatement() + " with a parameter of " + logEntry.getNetworkTaskId());
             cursor = db.rawQuery(dbConstants.getReadAllLogsStatement(), new String[]{String.valueOf(logEntry.getNetworkTaskId())});
             while (cursor.moveToNext()) {
                 int indexIdColumn = cursor.getColumnIndex(dbConstants.getIdColumnName());
@@ -121,27 +127,34 @@ public class LogDAO extends BaseDAO {
                 }
             }
         }
+        Log.d(LogDAO.class.getName(), "readMostRecentLogForNetworkTask, returning " + result);
         return result;
     }
 
     private int deleteAllLogsForNetworkTask(LogEntry logEntry, SQLiteDatabase db) {
+        Log.d(LogDAO.class.getName(), "deleteAllLogsForNetworkTask, log entry is " + logEntry);
         LogDBConstants dbConstants = new LogDBConstants(getContext());
         String whereClause = dbConstants.getNetworkTaskIdColumnName() + " = ?";
         return db.delete(dbConstants.getTableName(), whereClause, new String[]{String.valueOf(logEntry.getNetworkTaskId())});
     }
 
     private int deleteAllLogs(LogEntry logEntry, SQLiteDatabase db) {
+        Log.d(LogDAO.class.getName(), "deleteAllLogs, log entry is " + logEntry);
         LogDBConstants dbConstants = new LogDBConstants(getContext());
         return db.delete(dbConstants.getTableName(), null, null);
     }
 
     private long readLogCountForNetworkTask(LogEntry logEntry, SQLiteDatabase db) {
+        Log.d(LogDAO.class.getName(), "readLogCountForNetworkTask, log entry is " + logEntry);
         Cursor result = null;
         LogDBConstants dbConstants = new LogDBConstants(getContext());
         try {
+            Log.d(LogDAO.class.getName(), "Executing SQL " + dbConstants.getLogCountStatement() + " with a parameter of " + logEntry.getNetworkTaskId());
             result = db.rawQuery(dbConstants.getLogCountStatement(), new String[]{String.valueOf(logEntry.getNetworkTaskId())});
             if (result.moveToFirst()) {
-                return result.getLong(0);
+                long value = result.getLong(0);
+                Log.d(LogDAO.class.getName(), "readLogCountForNetworkTask, returning " + value);
+                return value;
             }
         } finally {
             if (result != null) {
@@ -152,18 +165,22 @@ public class LogDAO extends BaseDAO {
                 }
             }
         }
+        Log.d(LogDAO.class.getName(), "readLogCountForNetworkTask, returning -1");
         return -1;
     }
 
     private void deleteOldestLogForNetworkTask(LogEntry logEntry, SQLiteDatabase db) {
+        Log.d(LogDAO.class.getName(), "deleteOldestLogForNetworkTask, log entry is " + logEntry);
         Cursor result = null;
         LogDBConstants dbConstants = new LogDBConstants(getContext());
         try {
+            Log.d(LogDAO.class.getName(), "Executing SQL " + dbConstants.getReadOldestLogStatement() + " with a parameter of " + logEntry.getNetworkTaskId());
             result = db.rawQuery(dbConstants.getReadOldestLogStatement(), new String[]{String.valueOf(logEntry.getNetworkTaskId())});
             if (result.moveToFirst()) {
                 int indexIdColumn = result.getColumnIndex(dbConstants.getIdColumnName());
                 if (!result.isNull(indexIdColumn)) {
                     long id = result.getLong(indexIdColumn);
+                    Log.d(LogDAO.class.getName(), "Deleting for id " + id);
                     String selection = dbConstants.getIdColumnName() + " = ?";
                     String[] selectionArgs = {String.valueOf(id)};
                     db.delete(dbConstants.getTableName(), selection, selectionArgs);

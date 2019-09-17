@@ -30,6 +30,16 @@ public class PingNetworkTaskWorker extends NetworkTaskWorker {
     }
 
     @Override
+    public int getMaxInstances() {
+        return getResources().getInteger(R.integer.ping_worker_max_instances);
+    }
+
+    @Override
+    public String getMaxInstancesErrorMessage(int activeInstances) {
+        return getResources().getString(R.string.text_ping_worker_max_instances_error, activeInstances);
+    }
+
+    @Override
     public LogEntry execute(NetworkTask networkTask) {
         Log.d(PingNetworkTaskWorker.class.getName(), "Executing PingNetworkTaskWorker for " + networkTask);
         LogEntry logEntry = new LogEntry();

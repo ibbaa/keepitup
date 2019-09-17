@@ -47,29 +47,45 @@ public abstract class NetworkTaskWorker implements Runnable {
         this.notificationHandler = createNotificationHandler();
     }
 
+    public abstract int getMaxInstances();
+
+    public abstract String getMaxInstancesErrorMessage(int activeInstances);
+
     public abstract LogEntry execute(NetworkTask networkTask);
 
     @Override
     public void run() {
         Log.d(NetworkTaskWorker.class.getName(), "Executing worker thread for " + networkTask);
         try {
-            boolean isConnectedWithWifi = networkManager.isConnectedWithWiFi();
-            boolean isConnected = networkManager.isConnected();
-            LogEntry logEntry = checkExecution(isConnectedWithWifi, isConnected);
-            if (logEntry == null) {
-                logEntry = execute(networkTask);
-            } else {
-                Log.d(NetworkTaskWorker.class.getName(), "Skipping execution-");
+            LogEntry logEntry = checkInstances(networkTask);
+            if (logEntry != null) {
+                Log.d(NetworkTaskWorker.class.getName(), "Skipping execution. Too many active instances.");
+                writeLogEntry(logEntry, false);
+                return;
             }
-            if (isNetworkTaskValid(networkTask)) {
-                Log.d(NetworkTaskWorker.class.getName(), "Writing log entry to database " + logEntry);
-                LogDAO logDAO = new LogDAO(getContext());
-                logDAO.insertAndDeleteLog(logEntry);
-                Log.d(NetworkTaskWorker.class.getName(), "Notify UI");
-                sendUINotificationBroadcast();
-                sendSystemNotifications(networkTask, logEntry, isConnectedWithWifi, isConnected);
-            } else {
-                Log.d(NetworkTaskWorker.class.getName(), "Network task does no longer exist. Not writing log.");
+            NetworkTaskDAO networkTaskDAO = new NetworkTaskDAO(getContext());
+            Log.d(NetworkTaskWorker.class.getName(), "Increasing instances count.");
+            networkTaskDAO.increaseNetworkTaskInstances(networkTask.getSchedulerId());
+            try {
+                boolean isConnectedWithWifi = networkManager.isConnectedWithWiFi();
+                boolean isConnected = networkManager.isConnected();
+                Log.d(NetworkTaskWorker.class.getName(), "isConnectedWithWifi: " + isConnectedWithWifi);
+                Log.d(NetworkTaskWorker.class.getName(), "isConnectedWithWifi: " + isConnected);
+                logEntry = checkNetwork(isConnectedWithWifi, isConnected);
+                if (logEntry != null) {
+                    Log.d(NetworkTaskWorker.class.getName(), "Skipping execution because of the network state.");
+                    writeLogEntry(logEntry, shouldSendSystemNotification(networkTask, isConnectedWithWifi, isConnected));
+                    return;
+                }
+                logEntry = execute(networkTask);
+                if (isNetworkTaskValid(networkTask)) {
+                    writeLogEntry(logEntry, shouldSendSystemNotification(networkTask, logEntry));
+                } else {
+                    Log.d(NetworkTaskWorker.class.getName(), "Network task does no longer exist. Not writing log.");
+                }
+            } finally {
+                Log.d(NetworkTaskWorker.class.getName(), "Decreasing instances count.");
+                networkTaskDAO.decreaseNetworkTaskInstances(networkTask.getSchedulerId());
             }
         } catch (Exception exc) {
             Log.e(NetworkTaskWorker.class.getName(), "Fatal errror while executing worker and writing log", exc);
@@ -78,6 +94,17 @@ public abstract class NetworkTaskWorker implements Runnable {
                 Log.d(NetworkTaskWorker.class.getName(), "Releasing partial wake lock");
                 wakeLock.release();
             }
+        }
+    }
+
+    private void writeLogEntry(LogEntry logEntry, boolean sendSystemNotifiaction) {
+        Log.d(NetworkTaskWorker.class.getName(), "Writing log entry to database " + logEntry + ", sendSystemNotifiaction is " + sendSystemNotifiaction);
+        LogDAO logDAO = new LogDAO(getContext());
+        logDAO.insertAndDeleteLog(logEntry);
+        Log.d(NetworkTaskWorker.class.getName(), "Notify UI");
+        sendUINotificationBroadcast();
+        if (sendSystemNotifiaction) {
+            sendSystemNotifications(networkTask, logEntry);
         }
     }
 
@@ -91,30 +118,66 @@ public abstract class NetworkTaskWorker implements Runnable {
         getContext().sendBroadcast(logUIintent);
     }
 
-    private void sendSystemNotifications(NetworkTask networkTask, LogEntry logEntry, boolean isConnectedWithWifi, boolean isConnected) {
-        Log.d(NetworkTaskWorker.class.getName(), "sendSystemNotifications");
+    private boolean shouldSendSystemNotification(NetworkTask networkTask, LogEntry logEntry) {
+        Log.d(NetworkTaskWorker.class.getName(), "shouldSendSystemNotification");
         if (logEntry.isSuccess()) {
-            Log.d(NetworkTaskWorker.class.getName(), "Execution was successful. Not sending notifications.");
-            return;
+            Log.d(NetworkTaskWorker.class.getName(), "Execution was successful. Returning false.");
+            return false;
         }
         if (!networkTask.isNotification()) {
-            Log.d(NetworkTaskWorker.class.getName(), "Notifications for this network task are disabled. Not sending notifications.");
-            return;
+            Log.d(NetworkTaskWorker.class.getName(), "Notifications for this network task are disabled. Not sending notifications. Returning false.");
+            return false;
+        }
+        Log.d(NetworkTaskWorker.class.getName(), "Returning true.");
+        return true;
+    }
+
+    private boolean shouldSendSystemNotification(NetworkTask networkTask, boolean isConnectedWithWifi, boolean isConnected) {
+        Log.d(NetworkTaskWorker.class.getName(), "shouldSendSystemNotifiaction");
+        if (!networkTask.isNotification()) {
+            Log.d(NetworkTaskWorker.class.getName(), "Notifications for this network task are disabled. Returning false.");
+            return false;
         }
         if (!isConnectedWithWifi && networkTask.isOnlyWifi()) {
-            Log.d(NetworkTaskWorker.class.getName(), "No active wifi connection and network task should only be executed if wifi is active. Not sending notifications.");
-            return;
+            Log.d(NetworkTaskWorker.class.getName(), "No active wifi connection and network task should only be executed if wifi is active. Returning false.");
+            return false;
         }
         PreferenceManager preferenceManager = new PreferenceManager(getContext());
         if (!isConnected && !preferenceManager.getPreferenceNotificationInactiveNetwork()) {
-            Log.d(NetworkTaskWorker.class.getName(), "No active network connection and notifications for inactive networks are disabled. Not sending notifications.");
-            return;
+            Log.d(NetworkTaskWorker.class.getName(), "No active network connection and notifications for inactive networks are disabled. Returning false.");
+            return false;
         }
+        Log.d(NetworkTaskWorker.class.getName(), "Returning true.");
+        return true;
+    }
+
+    private void sendSystemNotifications(NetworkTask networkTask, LogEntry logEntry) {
+        Log.d(NetworkTaskWorker.class.getName(), "sendSystemNotifications for network task " + networkTask + " and log entry " + logEntry);
         notificationHandler.sendNotification(networkTask, logEntry);
     }
 
-    private LogEntry checkExecution(boolean isConnectedWithWifi, boolean isConnected) {
-        Log.d(NetworkTaskWorker.class.getName(), "checkExecution");
+    private LogEntry checkInstances(NetworkTask networkTask) {
+        Log.d(NetworkTaskWorker.class.getName(), "checkInstances");
+        LogEntry logEntry = new LogEntry();
+        logEntry.setNetworkTaskId(networkTask.getId());
+        logEntry.setTimestamp(System.currentTimeMillis());
+        NetworkTaskDAO networkTaskDAO = new NetworkTaskDAO(getContext());
+        int activeInstances = networkTaskDAO.readNetworkTaskInstances(networkTask.getSchedulerId());
+        int maxInstances = getMaxInstances();
+        Log.d(NetworkTaskWorker.class.getName(), "Currenty active instances: " + activeInstances);
+        Log.d(NetworkTaskWorker.class.getName(), "Max active instances: " + maxInstances);
+        if (activeInstances >= maxInstances) {
+            Log.d(NetworkTaskWorker.class.getName(), "Too many active instances.");
+            logEntry.setSuccess(false);
+            logEntry.setMessage(getMaxInstancesErrorMessage(activeInstances));
+            return logEntry;
+        }
+        Log.d(NetworkTaskWorker.class.getName(), "Active instances do not exceed the maximum.");
+        return null;
+    }
+
+    private LogEntry checkNetwork(boolean isConnectedWithWifi, boolean isConnected) {
+        Log.d(NetworkTaskWorker.class.getName(), "checkNetwork");
         LogEntry logEntry = new LogEntry();
         logEntry.setNetworkTaskId(networkTask.getId());
         logEntry.setTimestamp(System.currentTimeMillis());

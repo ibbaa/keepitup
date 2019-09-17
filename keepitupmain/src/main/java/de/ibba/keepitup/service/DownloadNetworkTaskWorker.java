@@ -15,6 +15,16 @@ public class DownloadNetworkTaskWorker extends NetworkTaskWorker {
     }
 
     @Override
+    public int getMaxInstances() {
+        return getResources().getInteger(R.integer.download_worker_max_instances);
+    }
+
+    @Override
+    public String getMaxInstancesErrorMessage(int activeInstances) {
+        return getResources().getString(R.string.text_download_worker_max_instances_error, activeInstances);
+    }
+
+    @Override
     public LogEntry execute(NetworkTask networkTask) {
         Log.d(DownloadNetworkTaskWorker.class.getName(), "Executing DownloadNetworkTaskWorker for " + networkTask);
         LogEntry logEntry = new LogEntry();

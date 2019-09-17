@@ -28,15 +28,18 @@ public class SchedulerIdHistoryDAO extends BaseDAO {
     }
 
     private int deleteAllSchedulerIds(NetworkTask networkTask, SQLiteDatabase db) {
+        Log.d(SchedulerIdHistoryDAO.class.getName(), "deleteAllSchedulerIds, networkTask is " + networkTask);
         SchedulerIdHistoryDBConstants dbConstants = new SchedulerIdHistoryDBConstants(getContext());
         return db.delete(dbConstants.getTableName(), null, null);
     }
 
     private List<SchedulerId> readAllSchedulerIds(SchedulerId scheduldeId, SQLiteDatabase db) {
+        Log.d(SchedulerIdHistoryDAO.class.getName(), "readAllSchedulerIds, scheduldeId is " + scheduldeId);
         Cursor cursor = null;
         List<SchedulerId> result = new ArrayList<>();
         SchedulerIdHistoryDBConstants dbConstants = new SchedulerIdHistoryDBConstants(getContext());
         try {
+            Log.d(SchedulerIdHistoryDAO.class.getName(), "Executing SQL " + dbConstants.getReadAllSchedulerIdHistoryEntriesStatement());
             cursor = db.rawQuery(dbConstants.getReadAllSchedulerIdHistoryEntriesStatement(), null);
             while (cursor.moveToNext()) {
                 int indexIdColumn = cursor.getColumnIndex(dbConstants.getIdColumnName());
@@ -54,6 +57,7 @@ public class SchedulerIdHistoryDAO extends BaseDAO {
                 }
             }
         }
+        Log.d(SchedulerIdHistoryDAO.class.getName(), "readAllSchedulerIds, returning " + result);
         return result;
     }
 
