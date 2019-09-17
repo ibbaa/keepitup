@@ -29,6 +29,10 @@ class NetworkTaskDBConstants {
         return getResources().getString(R.string.task_schedulerid_column_name);
     }
 
+    public String getInstancesColumnName() {
+        return getResources().getString(R.string.task_instances_column_name);
+    }
+
     public String getAddressColumnName() {
         return getResources().getString(R.string.task_address_column_name);
     }
@@ -62,6 +66,7 @@ class NetworkTaskDBConstants {
                 getIdColumnName() + " INTEGER PRIMARY KEY ASC, " +
                 getIndexColumnName() + " INTEGER NOT NULL, " +
                 getSchedulerIdColumnName() + " INTEGER, " +
+                getInstancesColumnName() + " INTEGER, " +
                 getAddressColumnName() + " TEXT, " +
                 getPortColumnName() + " INTEGER, " +
                 getAccessTypeColumnName() + " INTEGER, " +
@@ -80,6 +85,7 @@ class NetworkTaskDBConstants {
                 getIdColumnName() + ", " +
                 getIndexColumnName() + ", " +
                 getSchedulerIdColumnName() + ", " +
+                getInstancesColumnName() + ", " +
                 getAddressColumnName() + ", " +
                 getPortColumnName() + ", " +
                 getAccessTypeColumnName() + ", " +
@@ -97,6 +103,7 @@ class NetworkTaskDBConstants {
                 getIdColumnName() + ", " +
                 getIndexColumnName() + ", " +
                 getSchedulerIdColumnName() + ", " +
+                getInstancesColumnName() + ", " +
                 getAddressColumnName() + ", " +
                 getPortColumnName() + ", " +
                 getAccessTypeColumnName() + ", " +
@@ -110,6 +117,10 @@ class NetworkTaskDBConstants {
 
     public String getSchedulerIdCountStatement() {
         return "SELECT COUNT(*) FROM " + getTableName() + " WHERE " + getSchedulerIdColumnName() + " = ?";
+    }
+
+    public String getReadInstancesStatement() {
+        return "SELECT INSTANCES FROM " + getTableName() + " WHERE " + getSchedulerIdColumnName() + " = ?";
     }
 
     public String getUpdateIndexNetworkTasksStatement() {

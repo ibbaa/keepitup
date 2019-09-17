@@ -136,6 +136,7 @@ public class NetworkTaskHandlerTest extends BaseUITest {
         networkTask.setId(-1);
         networkTask.setIndex(-1);
         networkTask.setSchedulerId(-1);
+        networkTask.setInstances(0);
         networkTask.setAddress("127.0.0.1");
         networkTask.setPort(80);
         networkTask.setAccessType(AccessType.PING);
@@ -151,6 +152,7 @@ public class NetworkTaskHandlerTest extends BaseUITest {
         networkTask.setId(-1);
         networkTask.setIndex(-1);
         networkTask.setSchedulerId(-1);
+        networkTask.setInstances(0);
         networkTask.setAddress("localhost");
         networkTask.setPort(22);
         networkTask.setAccessType(AccessType.PING);
@@ -166,6 +168,7 @@ public class NetworkTaskHandlerTest extends BaseUITest {
         networkTask.setId(-1);
         networkTask.setIndex(-1);
         networkTask.setSchedulerId(-1);
+        networkTask.setInstances(0);
         networkTask.setAddress("192.168.178.100");
         networkTask.setPort(8080);
         networkTask.setAccessType(AccessType.CONNECT);
@@ -181,6 +184,7 @@ public class NetworkTaskHandlerTest extends BaseUITest {
         networkTask.setId(-1);
         networkTask.setIndex(-1);
         networkTask.setSchedulerId(-1);
+        networkTask.setInstances(0);
         networkTask.setAddress("192.168.178.200");
         networkTask.setPort(3389);
         networkTask.setAccessType(AccessType.CONNECT);
@@ -205,6 +209,7 @@ public class NetworkTaskHandlerTest extends BaseUITest {
         assertEquals(task1.getId(), task2.getId());
         assertEquals(task1.getIndex(), task2.getIndex());
         assertEquals(task1.getSchedulerId(), task2.getSchedulerId());
+        assertEquals(task1.getInstances(), task2.getInstances());
         assertEquals(task1.getAccessType(), task2.getAccessType());
         assertEquals(task1.getAddress(), task2.getAddress());
         assertEquals(task1.getPort(), task2.getPort());

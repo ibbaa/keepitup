@@ -42,6 +42,7 @@ public class NetworkTaskTest {
         assertEquals(-1, task.getId());
         assertEquals(-1, task.getIndex());
         assertEquals(-1, task.getSchedulerId());
+        assertEquals(0, task.getInstances());
         assertNull(task.getAddress());
         assertEquals(0, task.getPort());
         assertNull(task.getAccessType());
@@ -55,6 +56,7 @@ public class NetworkTaskTest {
         assertEquals(-1, task.getId());
         assertEquals(-1, task.getIndex());
         assertEquals(-1, task.getSchedulerId());
+        assertEquals(0, task.getInstances());
         assertNull(task.getAddress());
         assertEquals(0, task.getPort());
         assertNull(task.getAccessType());
@@ -68,6 +70,7 @@ public class NetworkTaskTest {
         assertEquals(-1, task.getId());
         assertEquals(-1, task.getIndex());
         assertEquals(-1, task.getSchedulerId());
+        assertEquals(0, task.getInstances());
         assertNull(task.getAddress());
         assertEquals(0, task.getPort());
         assertNull(task.getAccessType());
@@ -90,6 +93,7 @@ public class NetworkTaskTest {
         assertEquals(-1, task.getId());
         assertEquals(-1, task.getIndex());
         assertEquals(-1, task.getSchedulerId());
+        assertEquals(0, task.getInstances());
         assertEquals("host.com", task.getAddress());
         assertEquals(80, task.getPort());
         assertEquals(AccessType.CONNECT, task.getAccessType());
@@ -102,6 +106,7 @@ public class NetworkTaskTest {
         assertEquals(-1, task.getId());
         assertEquals(-1, task.getIndex());
         assertEquals(-1, task.getSchedulerId());
+        assertEquals(0, task.getInstances());
         assertEquals("192.168.178.1", task.getAddress());
         assertEquals(22, task.getPort());
         assertEquals(AccessType.PING, task.getAccessType());
@@ -117,6 +122,7 @@ public class NetworkTaskTest {
         task.setId(1);
         task.setIndex(2);
         task.setSchedulerId(3);
+        task.setInstances(3);
         task.setAddress("127.0.0.1");
         task.setPort(23);
         task.setAccessType(AccessType.PING);
@@ -127,6 +133,7 @@ public class NetworkTaskTest {
         assertEquals(1, task.getId());
         assertEquals(2, task.getIndex());
         assertEquals(3, task.getSchedulerId());
+        assertEquals(3, task.getInstances());
         assertEquals("127.0.0.1", task.getAddress());
         assertEquals(23, task.getPort());
         assertEquals(AccessType.PING, task.getAccessType());
@@ -140,6 +147,7 @@ public class NetworkTaskTest {
         assertEquals(1, task.getId());
         assertEquals(2, task.getIndex());
         assertEquals(3, task.getSchedulerId());
+        assertEquals(3, task.getInstances());
         assertEquals("127.0.0.1", task.getAddress());
         assertEquals(23, task.getPort());
         assertEquals(AccessType.PING, task.getAccessType());
@@ -153,6 +161,7 @@ public class NetworkTaskTest {
         assertEquals(1, task.getId());
         assertEquals(2, task.getIndex());
         assertEquals(3, task.getSchedulerId());
+        assertEquals(3, task.getInstances());
         assertEquals("127.0.0.1", task.getAddress());
         assertEquals(23, task.getPort());
         assertEquals(AccessType.PING, task.getAccessType());
