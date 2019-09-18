@@ -80,6 +80,44 @@ public class NetworkTaskWorkerTest {
     }
 
     @Test
+    public void testSuccessfulExecutionNumberInstances() {
+        NetworkTask task = getNetworkTask();
+        task = networkTaskDAO.insertNetworkTask(task);
+        TestNetworkTaskWorker testNetworkTaskWorker = new TestNetworkTaskWorker(TestRegistry.getContext(), task, null, true);
+        MockNetworkManager networkManager = (MockNetworkManager) testNetworkTaskWorker.getNetworkManager();
+        networkManager.setConnected(true);
+        networkManager.setConnectedWithWiFi(true);
+        int activeInstances = networkTaskDAO.readNetworkTaskInstances(task.getSchedulerId());
+        assertEquals(0, activeInstances);
+        testNetworkTaskWorker.run();
+        assertEquals(1, testNetworkTaskWorker.getInstancesOnExecute());
+        activeInstances = networkTaskDAO.readNetworkTaskInstances(task.getSchedulerId());
+        assertEquals(0, activeInstances);
+    }
+
+    @Test
+    public void testTooManyInstances() {
+        NetworkTask task = getNetworkTask();
+        task = networkTaskDAO.insertNetworkTask(task);
+        networkTaskDAO.increaseNetworkTaskInstances(task.getSchedulerId());
+        TestNetworkTaskWorker testNetworkTaskWorker = new TestNetworkTaskWorker(TestRegistry.getContext(), task, null, true, 1);
+        MockNetworkManager networkManager = (MockNetworkManager) testNetworkTaskWorker.getNetworkManager();
+        networkManager.setConnected(true);
+        networkManager.setConnectedWithWiFi(true);
+        testNetworkTaskWorker.run();
+        List<LogEntry> entries = logDAO.readAllLogsForNetworkTask(task.getId());
+        assertEquals(1, entries.size());
+        LogEntry entry = entries.get(0);
+        assertEquals(task.getId(), entry.getNetworkTaskId());
+        assertTrue(entry.getTimestamp() > 0);
+        assertFalse(entry.isSuccess());
+        assertEquals("TestMaxInstancesError 1", entry.getMessage());
+        NotificationHandler notificationHandler = testNetworkTaskWorker.getNotificationHandler();
+        MockNotificationManager notificationManager = (MockNotificationManager) notificationHandler.getNotificationManager();
+        assertFalse(notificationManager.wasNotifyCalled());
+    }
+
+    @Test
     public void testFailureWithNotification() {
         NetworkTask task = getNetworkTask();
         networkTaskDAO.insertNetworkTask(task);
@@ -120,6 +158,22 @@ public class NetworkTaskWorkerTest {
         NotificationHandler notificationHandler = testNetworkTaskWorker.getNotificationHandler();
         MockNotificationManager notificationManager = (MockNotificationManager) notificationHandler.getNotificationManager();
         assertFalse(notificationManager.wasNotifyCalled());
+    }
+
+    @Test
+    public void testFailureNumberInstances() {
+        NetworkTask task = getNetworkTask();
+        task = networkTaskDAO.insertNetworkTask(task);
+        TestNetworkTaskWorker testNetworkTaskWorker = new TestNetworkTaskWorker(TestRegistry.getContext(), task, null, false);
+        MockNetworkManager networkManager = (MockNetworkManager) testNetworkTaskWorker.getNetworkManager();
+        networkManager.setConnected(true);
+        networkManager.setConnectedWithWiFi(true);
+        int activeInstances = networkTaskDAO.readNetworkTaskInstances(task.getSchedulerId());
+        assertEquals(0, activeInstances);
+        testNetworkTaskWorker.run();
+        assertEquals(1, testNetworkTaskWorker.getInstancesOnExecute());
+        activeInstances = networkTaskDAO.readNetworkTaskInstances(task.getSchedulerId());
+        assertEquals(0, activeInstances);
     }
 
     @Test
@@ -199,6 +253,22 @@ public class NetworkTaskWorkerTest {
     }
 
     @Test
+    public void testNoNetworkConnectionNumberInstancesAfterExecution() {
+        NetworkTask task = getNetworkTask();
+        task = networkTaskDAO.insertNetworkTask(task);
+        TestNetworkTaskWorker testNetworkTaskWorker = new TestNetworkTaskWorker(TestRegistry.getContext(), task, null, true);
+        MockNetworkManager networkManager = (MockNetworkManager) testNetworkTaskWorker.getNetworkManager();
+        networkManager.setConnected(false);
+        networkManager.setConnectedWithWiFi(true);
+        int activeInstances = networkTaskDAO.readNetworkTaskInstances(task.getSchedulerId());
+        assertEquals(0, activeInstances);
+        testNetworkTaskWorker.run();
+        activeInstances = networkTaskDAO.readNetworkTaskInstances(task.getSchedulerId());
+        assertEquals(0, activeInstances);
+    }
+
+
+    @Test
     public void testNoWifiConnectionWithoutNotification() {
         NetworkTask task = getNetworkTask();
         networkTaskDAO.insertNetworkTask(task);
@@ -218,6 +288,22 @@ public class NetworkTaskWorkerTest {
         NotificationHandler notificationHandler = testNetworkTaskWorker.getNotificationHandler();
         MockNotificationManager notificationManager = (MockNotificationManager) notificationHandler.getNotificationManager();
         assertFalse(notificationManager.wasNotifyCalled());
+    }
+
+    @Test
+    public void testNoWifiConnectionNumberInstancesAfterExecution() {
+        NetworkTask task = getNetworkTask();
+        task = networkTaskDAO.insertNetworkTask(task);
+        task.setOnlyWifi(true);
+        TestNetworkTaskWorker testNetworkTaskWorker = new TestNetworkTaskWorker(TestRegistry.getContext(), task, null, true);
+        MockNetworkManager networkManager = (MockNetworkManager) testNetworkTaskWorker.getNetworkManager();
+        networkManager.setConnected(true);
+        networkManager.setConnectedWithWiFi(false);
+        int activeInstances = networkTaskDAO.readNetworkTaskInstances(task.getSchedulerId());
+        assertEquals(0, activeInstances);
+        testNetworkTaskWorker.run();
+        activeInstances = networkTaskDAO.readNetworkTaskInstances(task.getSchedulerId());
+        assertEquals(0, activeInstances);
     }
 
     @Test
@@ -285,7 +371,7 @@ public class NetworkTaskWorkerTest {
         NetworkTask task = new NetworkTask();
         task.setId(45);
         task.setIndex(1);
-        task.setSchedulerId(0);
+        task.setSchedulerId(123);
         task.setInstances(0);
         task.setAddress("127.0.0.1");
         task.setPort(80);
