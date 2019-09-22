@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="permission_external_read">android.permission.READ_EXTERNAL_STORAGE</string>
+    <string name="permission_external_write">android.permission.WRITE_EXTERNAL_STORAGE</string>
+    <integer name="permission_external_code">10</integer>
+</resources>

@@ -16,7 +16,6 @@ import de.ibba.keepitup.service.network.DNSLookupResult;
 public class TestNetworkTaskWorker extends NetworkTaskWorker {
 
     private MockDNSLookup mockDNSLookup;
-    private final NetworkTask networkTask;
     private final boolean success;
     private final int maxInstances;
     private int instancesOnExecute;
@@ -29,7 +28,6 @@ public class TestNetworkTaskWorker extends NetworkTaskWorker {
         super(context, networkTask, wakeLock);
         ((MockNetworkManager) getNetworkManager()).setConnected(true);
         ((MockNetworkManager) getNetworkManager()).setConnectedWithWiFi(true);
-        this.networkTask = networkTask;
         this.success = success;
         this.maxInstances = maxInstances;
         this.instancesOnExecute = -1;
