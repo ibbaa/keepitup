@@ -212,7 +212,7 @@ public class NetworkTaskMainActivity extends RecyclerViewBaseActivity {
                 Log.e(NetworkTaskMainActivity.class.getName(), NetworkTaskConfirmDialog.class.getSimpleName() + " arguments do not contain position key " + getConfirmDialogPositionKey());
             }
         } else {
-            Log.e(NetworkTaskMainActivity.class.getName(), "unknown type " + type);
+            Log.e(NetworkTaskMainActivity.class.getName(), "Unknown type " + type);
         }
         confirmDialog.dismiss();
     }
