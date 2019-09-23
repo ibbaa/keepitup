@@ -70,7 +70,7 @@ public class PermissionManager {
         }
     }
 
-    public void onExternalPermissionExplainDialogOkClicked(PermissionExplainDialog explainDialog, PermissionExplainDialog.Permission permission) {
+    public void onPermissionExplainDialogOkClicked(PermissionExplainDialog explainDialog, PermissionExplainDialog.Permission permission) {
         Log.d(PermissionManager.class.getName(), "onExternalPermissionExplainDialogOkClicked for permission " + permission);
         if (PermissionExplainDialog.Permission.EXTERNAL_STORAGE.equals(permission)) {
             if (shouldShowExternalStorageRationale()) {
@@ -80,7 +80,10 @@ public class PermissionManager {
             } else {
                 Log.d(PermissionManager.class.getName(), "shouldShowExternalStorageRational returned false");
             }
+        } else {
+            Log.d(PermissionManager.class.getName(), "Unknown permission " + permission);
         }
+        explainDialog.dismiss();
     }
 
     private boolean wasPermissionGranted(int[] grantResults) {
