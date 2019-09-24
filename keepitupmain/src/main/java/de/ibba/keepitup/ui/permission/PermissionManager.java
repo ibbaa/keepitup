@@ -1,25 +1,27 @@
 package de.ibba.keepitup.ui.permission;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.os.Build;
+import android.os.Bundle;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.fragment.app.FragmentActivity;
 
 import de.ibba.keepitup.R;
 import de.ibba.keepitup.ui.dialog.PermissionExplainDialog;
+import de.ibba.keepitup.util.BundleUtil;
 
 public class PermissionManager {
 
-    private final Activity activity;
+    private final FragmentActivity activity;
 
-    public PermissionManager(Activity activity) {
+    public PermissionManager(FragmentActivity activity) {
         this.activity = activity;
     }
 
@@ -66,7 +68,13 @@ public class PermissionManager {
         }
         Log.d(PermissionManager.class.getName(), "Permission for code " + requestCode + " was not granted");
         if (requestCode == getExternalStoragePermissionCode()) {
-            //Show external permission explain dialog
+            Log.d(PermissionManager.class.getName(), "Showing permission explain dialog for external storage");
+            PermissionExplainDialog permissionExplainDialog = new PermissionExplainDialog();
+            String message = getResources().getString(R.string.text_dialog_permission_explain_external_storage);
+            PermissionExplainDialog.Permission permission = PermissionExplainDialog.Permission.EXTERNAL_STORAGE;
+            Bundle bundle = BundleUtil.messagesToBundle(new String[]{PermissionExplainDialog.class.getSimpleName(), PermissionExplainDialog.Permission.class.getSimpleName()}, new String[]{message, permission.name()});
+            permissionExplainDialog.setArguments(bundle);
+            permissionExplainDialog.show(activity.getSupportFragmentManager(), PermissionExplainDialog.class.getName());
         }
     }
 
