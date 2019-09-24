@@ -1,6 +1,5 @@
 package de.ibba.keepitup.ui.dialog;
 
-import android.app.Activity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -11,6 +10,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.DialogFragment;
+import androidx.fragment.app.FragmentActivity;
 
 import java.util.Objects;
 
@@ -56,7 +56,7 @@ public class PermissionExplainDialog extends DialogFragment {
 
     private void onOkClicked(@SuppressWarnings("unused") View view) {
         Log.d(PermissionExplainDialog.class.getName(), "onOkClicked");
-        Activity activity = Objects.requireNonNull(getActivity());
+        FragmentActivity activity = Objects.requireNonNull(getActivity());
         PermissionManager permissionManager = new PermissionManager(activity);
         String permissionString = BundleUtil.bundleToMessage(PermissionExplainDialog.Permission.class.getSimpleName(), Objects.requireNonNull(getArguments()));
         if (StringUtil.isEmpty(permissionString)) {
