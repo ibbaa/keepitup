@@ -26,7 +26,7 @@ public class PermissionManager {
     }
 
     public boolean shouldAskForRuntimePermission() {
-        return (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M);
+        return Build.VERSION.SDK_INT >= Build.VERSION_CODES.M;
     }
 
     public boolean hasExternalStoragePermission() {
