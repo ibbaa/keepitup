@@ -25,6 +25,10 @@ public class PermissionManager {
         this.activity = activity;
     }
 
+    public boolean shouldAskForRuntimePermission() {
+        return (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M);
+    }
+
     public boolean hasExternalStoragePermission() {
         Log.d(PermissionManager.class.getName(), "hasExternalStoragePermission");
         String[] externalStoragePermissions = getExternalStoragePermission();
@@ -41,12 +45,7 @@ public class PermissionManager {
 
     public void requestExternalStoragePermission() {
         Log.d(PermissionManager.class.getName(), "requestExternalStoragePermission");
-        if (shouldShowExternalStorageRationale()) {
-            Log.d(PermissionManager.class.getName(), "shouldShowExternalStorageRational returned true");
-            requestPermission(getExternalStoragePermission(), getExternalStoragePermissionCode());
-        } else {
-            Log.d(PermissionManager.class.getName(), "shouldShowExternalStorageRational returned false");
-        }
+        requestPermission(getExternalStoragePermission(), getExternalStoragePermissionCode());
     }
 
     public void requestPermission(String[] permissions, int code) {
@@ -68,13 +67,19 @@ public class PermissionManager {
         }
         Log.d(PermissionManager.class.getName(), "Permission for code " + requestCode + " was not granted");
         if (requestCode == getExternalStoragePermissionCode()) {
-            Log.d(PermissionManager.class.getName(), "Showing permission explain dialog for external storage");
-            PermissionExplainDialog permissionExplainDialog = new PermissionExplainDialog();
-            String message = getResources().getString(R.string.text_dialog_permission_explain_external_storage);
-            PermissionExplainDialog.Permission permission = PermissionExplainDialog.Permission.EXTERNAL_STORAGE;
-            Bundle bundle = BundleUtil.messagesToBundle(new String[]{PermissionExplainDialog.class.getSimpleName(), PermissionExplainDialog.Permission.class.getSimpleName()}, new String[]{message, permission.name()});
-            permissionExplainDialog.setArguments(bundle);
-            permissionExplainDialog.show(activity.getSupportFragmentManager(), PermissionExplainDialog.class.getName());
+            Log.d(PermissionManager.class.getName(), "External storage permission was requested");
+            if (shouldShowExternalStorageRationale()) {
+                Log.d(PermissionManager.class.getName(), "Showing permission explain dialog for external storage");
+                PermissionExplainDialog permissionExplainDialog = new PermissionExplainDialog();
+                String message = getResources().getString(R.string.text_dialog_permission_explain_external_storage);
+                PermissionExplainDialog.Permission permission = PermissionExplainDialog.Permission.EXTERNAL_STORAGE;
+                Bundle bundle = BundleUtil.messagesToBundle(new String[]{PermissionExplainDialog.class.getSimpleName(), PermissionExplainDialog.Permission.class.getSimpleName()}, new String[]{message, permission.name()});
+                permissionExplainDialog.setArguments(bundle);
+                permissionExplainDialog.show(activity.getSupportFragmentManager(), PermissionExplainDialog.class.getName());
+            } else {
+                Log.d(PermissionManager.class.getName(), "shouldShowExternalStorageRational returned false, not showing explain dialog again");
+                Log.d(PermissionManager.class.getName(), "External storage permission was denied permanently");
+            }
         }
     }
 
