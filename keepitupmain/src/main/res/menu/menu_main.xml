@@ -2,8 +2,11 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="de.ibba.keepitup.ui.NetworkTaskMainActivity">
     <item
-        android:id="@+id/menu_action_settings"
-        android:title="@string/menu_action_settings" />
+        android:id="@+id/menu_action_defaults"
+        android:title="@string/menu_action_defaults" />
+    <item
+        android:id="@+id/menu_action_global_settings"
+        android:title="@string/menu_action_global_settings" />
     <item
         android:id="@+id/menu_action_main_refresh"
         android:title="@string/menu_action_main_refresh" />

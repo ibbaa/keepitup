@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="defaults_activity_defaults_margin">4dp</dimen>
+    <dimen name="defaults_activity_defaults_corner_radius">4dp</dimen>
+    <dimen name="defaults_activity_defaults_card_elevation">4dp</dimen>
+    <dimen name="defaults_activity_address_margin">4dp</dimen>
+    <dimen name="defaults_activity_address_corner_radius">4dp</dimen>
+    <dimen name="defaults_activity_address_card_elevation">4dp</dimen>
+    <dimen name="defaults_activity_port_margin">4dp</dimen>
+    <dimen name="defaults_activity_port_corner_radius">4dp</dimen>
+    <dimen name="defaults_activity_port_card_elevation">4dp</dimen>
+    <dimen name="defaults_activity_interval_margin">4dp</dimen>
+    <dimen name="defaults_activity_interval_minutes_margin">4dp</dimen>
+    <dimen name="defaults_activity_interval_corner_radius">4dp</dimen>
+    <dimen name="defaults_activity_interval_card_elevation">4dp</dimen>
+    <dimen name="defaults_activity_onlywifi_margin">4dp</dimen>
+    <dimen name="defaults_activity_onlywifi_corner_radius">4dp</dimen>
+    <dimen name="defaults_activity_onlywifi_card_elevation">4dp</dimen>
+    <dimen name="defaults_activity_notification_margin">4dp</dimen>
+    <dimen name="defaults_activity_notification_corner_radius">4dp</dimen>
+    <dimen name="defaults_activity_notification_card_elevation">4dp</dimen>
+    <dimen name="defaults_activity_accesstype_margin">4dp</dimen>
+    <dimen name="defaults_activity_accesstype_corner_radius">4dp</dimen>
+    <dimen name="defaults_activity_accesstype_card_elevation">4dp</dimen>
+</resources>

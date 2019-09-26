@@ -12,7 +12,7 @@ import org.junit.Test;
 
 import de.ibba.keepitup.R;
 import de.ibba.keepitup.ui.BaseUITest;
-import de.ibba.keepitup.ui.SettingsActivity;
+import de.ibba.keepitup.ui.GlobalSettingsActivity;
 import de.ibba.keepitup.ui.validation.ValidationResult;
 import de.ibba.keepitup.util.BundleUtil;
 
@@ -26,9 +26,9 @@ import static org.hamcrest.Matchers.allOf;
 public class ValidatorErrorDialogTest extends BaseUITest {
 
     @Rule
-    public final ActivityTestRule<SettingsActivity> rule = new ActivityTestRule<>(SettingsActivity.class, false, false);
+    public final ActivityTestRule<GlobalSettingsActivity> rule = new ActivityTestRule<>(GlobalSettingsActivity.class, false, false);
 
-    private SettingsActivity activity;
+    private GlobalSettingsActivity activity;
 
     @Before
     public void beforeEachTestMethod() {
