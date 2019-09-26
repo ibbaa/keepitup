@@ -19,7 +19,7 @@ import de.ibba.keepitup.R;
 import de.ibba.keepitup.test.mock.TestValidator1;
 import de.ibba.keepitup.test.mock.TestValidator2;
 import de.ibba.keepitup.ui.BaseUITest;
-import de.ibba.keepitup.ui.SettingsActivity;
+import de.ibba.keepitup.ui.GlobalSettingsActivity;
 
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
@@ -36,9 +36,9 @@ import static org.junit.Assert.assertEquals;
 public class SettingsInputDialogTest extends BaseUITest {
 
     @Rule
-    public final ActivityTestRule<SettingsActivity> rule = new ActivityTestRule<>(SettingsActivity.class, false, false);
+    public final ActivityTestRule<GlobalSettingsActivity> rule = new ActivityTestRule<>(GlobalSettingsActivity.class, false, false);
 
-    private SettingsActivity activity;
+    private GlobalSettingsActivity activity;
 
     @Before
     public void beforeEachTestMethod() {

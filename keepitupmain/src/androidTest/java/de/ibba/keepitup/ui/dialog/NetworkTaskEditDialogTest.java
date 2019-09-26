@@ -308,7 +308,7 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
     @Test
     public void testErrorColorOnOpenDialog() {
         openActionBarOverflowOrOptionsMenu(TestRegistry.getContext());
-        onView(withText("Settings")).perform(click());
+        onView(withText("Defaults")).perform(click());
         onView(withText("Download")).perform(click());
         onView(isRoot()).perform(ViewActions.pressBack());
         onView(allOf(withId(R.id.imageview_list_item_network_task_add), isDisplayed())).perform(click());
@@ -328,19 +328,19 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         onView(withId(R.id.textview_dialog_network_task_edit_notification_on_off)).check(matches(withText("no")));
         onView(withId(R.id.imageview_dialog_network_task_edit_cancel)).perform(click());
         openActionBarOverflowOrOptionsMenu(TestRegistry.getContext());
-        onView(withText("Settings")).perform(click());
+        onView(withText("Defaults")).perform(click());
         onView(withText("Connect")).perform(click());
-        onView(withId(R.id.textview_settings_activity_address)).perform(click());
+        onView(withId(R.id.textview_defaults_activity_address)).perform(click());
         onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("host.com"));
         onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
-        onView(withId(R.id.textview_settings_activity_port)).perform(click());
+        onView(withId(R.id.textview_defaults_activity_port)).perform(click());
         onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("80"));
         onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
-        onView(withId(R.id.textview_settings_activity_interval)).perform(click());
+        onView(withId(R.id.textview_defaults_activity_interval)).perform(click());
         onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("50"));
         onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
-        onView(withId(R.id.switch_settings_activity_onlywifi)).perform(click());
-        onView(withId(R.id.switch_settings_activity_notification)).perform(click());
+        onView(withId(R.id.switch_defaults_activity_onlywifi)).perform(click());
+        onView(withId(R.id.switch_defaults_activity_notification)).perform(click());
         onView(isRoot()).perform(ViewActions.pressBack());
         onView(allOf(withId(R.id.imageview_list_item_network_task_add), isDisplayed())).perform(click());
         onView(withText("Connect")).check(matches(isChecked()));

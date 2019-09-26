@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="global_settings_activity_global_margin">4dp</dimen>
+    <dimen name="global_settings_activity_global_corner_radius">4dp</dimen>
+    <dimen name="global_settings_activity_global_card_elevation">4dp</dimen>
+    <dimen name="global_settings_activity_ping_count_margin">4dp</dimen>
+    <dimen name="global_settings_activity_ping_count_corner_radius">4dp</dimen>
+    <dimen name="global_settings_activity_ping_count_card_elevation">4dp</dimen>
+    <dimen name="global_settings_activity_notification_inactive_network_margin">4dp</dimen>
+    <dimen name="global_settings_activity_notification_inactive_network_corner_radius">4dp</dimen>
+    <dimen name="global_settings_activity_notification_inactive_network_card_elevation">4dp</dimen>
+</resources>

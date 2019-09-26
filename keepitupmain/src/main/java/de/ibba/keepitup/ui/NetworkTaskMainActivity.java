@@ -113,9 +113,14 @@ public class NetworkTaskMainActivity extends RecyclerViewBaseActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
-        if (id == R.id.menu_action_settings) {
+        if (id == R.id.menu_action_defaults) {
             Log.d(NetworkTaskMainActivity.class.getName(), "menu_action_settings triggered");
-            Intent intent = new Intent(this, SettingsActivity.class);
+            Intent intent = new Intent(this, DefaultsActivity.class);
+            startActivity(intent);
+            return true;
+        } else if (id == R.id.menu_action_global_settings) {
+            Log.d(NetworkTaskMainActivity.class.getName(), "menu_action_settings triggered");
+            Intent intent = new Intent(this, GlobalSettingsActivity.class);
             startActivity(intent);
             return true;
         } else if (id == R.id.menu_action_main_refresh) {

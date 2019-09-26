@@ -29,8 +29,17 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".ui.SettingsActivity"
-            android:label="@string/activity_setting_title"
+            android:name=".ui.DefaultsActivity"
+            android:label="@string/activity_defaults_title"
+            android:theme="@style/AppTheme"
+            android:parentActivityName=".ui.NetworkTaskMainActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".ui.NetworkTaskMainActivity" />
+        </activity>
+        <activity
+            android:name=".ui.GlobalSettingsActivity"
+            android:label="@string/activity_global_settings_title"
             android:theme="@style/AppTheme"
             android:parentActivityName=".ui.NetworkTaskMainActivity">
             <meta-data

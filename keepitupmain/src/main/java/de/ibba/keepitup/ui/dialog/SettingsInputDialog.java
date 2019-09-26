@@ -20,7 +20,7 @@ import java.util.List;
 import java.util.Objects;
 
 import de.ibba.keepitup.R;
-import de.ibba.keepitup.ui.SettingsActivity;
+import de.ibba.keepitup.ui.SettingsInputActivity;
 import de.ibba.keepitup.ui.validation.FieldValidator;
 import de.ibba.keepitup.ui.validation.TextColorValidatingWatcher;
 import de.ibba.keepitup.ui.validation.ValidationResult;
@@ -82,7 +82,7 @@ public class SettingsInputDialog extends DialogFragment {
 
     private void onOkClicked(@SuppressWarnings("unused") View view) {
         Log.d(SettingsInputDialog.class.getName(), "onOkClicked");
-        SettingsActivity activity = (SettingsActivity) getActivity();
+        SettingsInputActivity activity = (SettingsInputActivity) getActivity();
         Bundle validationResult = validateInput();
         if (!hasErrors(validationResult)) {
             Log.d(SettingsInputDialog.class.getName(), "Validation was successful");
@@ -95,7 +95,7 @@ public class SettingsInputDialog extends DialogFragment {
 
     private void onCancelClicked(@SuppressWarnings("unused") View view) {
         Log.d(SettingsInputDialog.class.getName(), "onCancelClicked");
-        SettingsActivity activity = (SettingsActivity) getActivity();
+        SettingsInputActivity activity = (SettingsInputActivity) getActivity();
         Objects.requireNonNull(activity).onInputDialogCancelClicked(this);
     }
 

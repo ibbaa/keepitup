@@ -28,13 +28,12 @@ import de.ibba.keepitup.ui.dialog.SettingsInputDialog;
 import de.ibba.keepitup.ui.mapping.EnumMapping;
 import de.ibba.keepitup.ui.validation.HostFieldValidator;
 import de.ibba.keepitup.ui.validation.IntervalFieldValidator;
-import de.ibba.keepitup.ui.validation.PingCountFieldValidator;
 import de.ibba.keepitup.ui.validation.PortFieldValidator;
 import de.ibba.keepitup.ui.validation.URLFieldValidator;
 import de.ibba.keepitup.util.NumberUtil;
 import de.ibba.keepitup.util.StringUtil;
 
-public class SettingsActivity extends AppCompatActivity {
+public class DefaultsActivity extends AppCompatActivity implements SettingsInputActivity {
 
     private RadioGroup accessTypeGroup;
     private TextView addressText;
@@ -45,9 +44,6 @@ public class SettingsActivity extends AppCompatActivity {
     private TextView onlyWifiOnOffText;
     private Switch notificationSwitch;
     private TextView notificationOnOffText;
-    private TextView pingCountText;
-    private Switch notificationInactiveNetworkSwitch;
-    private TextView notificationInactiveNetworkOnOffText;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -55,28 +51,26 @@ public class SettingsActivity extends AppCompatActivity {
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
-        setContentView(R.layout.activity_settings);
+        setContentView(R.layout.activity_defaults);
         prepareAccessTypeRadioButtons();
         prepareAddressField();
         preparePortField();
         prepareIntervalField();
         prepareOnlyWifiSwitch();
         prepareNotificationSwitch();
-        preparePingCountField();
-        prepareNotificationInactiveNetworkSwitch();
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_settings, menu);
+        getMenuInflater().inflate(R.menu.menu_defaults, menu);
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
-        if (id == R.id.menu_action_reset) {
-            Log.d(SettingsActivity.class.getName(), "menu_action_reset triggered");
+        if (id == R.id.menu_action_defaults_reset) {
+            Log.d(DefaultsActivity.class.getName(), "menu_action_reset triggered");
             PreferenceManager preferenceManager = new PreferenceManager(this);
             preferenceManager.removePreferenceAccessType();
             preferenceManager.removePreferenceAddress();
@@ -84,8 +78,6 @@ public class SettingsActivity extends AppCompatActivity {
             preferenceManager.removePreferenceInterval();
             preferenceManager.removePreferenceOnlyWifi();
             preferenceManager.removePreferenceNotification();
-            preferenceManager.removePreferencePingCount();
-            preferenceManager.removePreferenceNotificationInactiveNetwork();
             recreate();
             return true;
         }
@@ -93,9 +85,9 @@ public class SettingsActivity extends AppCompatActivity {
     }
 
     private void prepareAccessTypeRadioButtons() {
-        Log.d(NetworkTaskEditDialog.class.getName(), "prepareAccessTypeRadioButtons");
+        Log.d(DefaultsActivity.class.getName(), "prepareAccessTypeRadioButtons");
         PreferenceManager preferenceManager = new PreferenceManager(this);
-        accessTypeGroup = findViewById(R.id.radiogroup_settings_activity_accesstype);
+        accessTypeGroup = findViewById(R.id.radiogroup_defaults_activity_accesstype);
         EnumMapping mapping = new EnumMapping(this);
         AccessType[] accessTypes = AccessType.values();
         AccessType type = preferenceManager.getPreferenceAccessType();
@@ -130,38 +122,38 @@ public class SettingsActivity extends AppCompatActivity {
     }
 
     private void prepareAddressField() {
-        Log.d(SettingsActivity.class.getName(), "prepareAddressField");
+        Log.d(DefaultsActivity.class.getName(), "prepareAddressField");
         PreferenceManager preferenceManager = new PreferenceManager(this);
-        addressText = findViewById(R.id.textview_settings_activity_address);
+        addressText = findViewById(R.id.textview_defaults_activity_address);
         setAddress(preferenceManager.getPreferenceAddress());
-        CardView addressCardView = findViewById(R.id.cardview_settings_activity_address);
+        CardView addressCardView = findViewById(R.id.cardview_defaults_activity_address);
         addressCardView.setOnClickListener(this::showAddressInputDialog);
     }
 
     private void preparePortField() {
-        Log.d(SettingsActivity.class.getName(), "preparePortField");
+        Log.d(DefaultsActivity.class.getName(), "preparePortField");
         PreferenceManager preferenceManager = new PreferenceManager(this);
-        portText = findViewById(R.id.textview_settings_activity_port);
+        portText = findViewById(R.id.textview_defaults_activity_port);
         setPort(String.valueOf(preferenceManager.getPreferencePort()));
-        CardView portCardView = findViewById(R.id.cardview_settings_activity_port);
+        CardView portCardView = findViewById(R.id.cardview_defaults_activity_port);
         portCardView.setOnClickListener(this::showPortInputDialog);
     }
 
     private void prepareIntervalField() {
-        Log.d(SettingsActivity.class.getName(), "prepareIntervalField");
+        Log.d(DefaultsActivity.class.getName(), "prepareIntervalField");
         PreferenceManager preferenceManager = new PreferenceManager(this);
-        intervalText = findViewById(R.id.textview_settings_activity_interval);
-        intervalMinutesText = findViewById(R.id.textview_settings_activity_interval_minutes);
+        intervalText = findViewById(R.id.textview_defaults_activity_interval);
+        intervalMinutesText = findViewById(R.id.textview_defaults_activity_interval_minutes);
         setInterval(String.valueOf(preferenceManager.getPreferenceInterval()));
-        CardView intervalCardView = findViewById(R.id.cardview_settings_activity_interval);
+        CardView intervalCardView = findViewById(R.id.cardview_defaults_activity_interval);
         intervalCardView.setOnClickListener(this::showIntervalInputDialog);
     }
 
     private void prepareOnlyWifiSwitch() {
-        Log.d(SettingsActivity.class.getName(), "prepareOnlyWifiSwitch");
+        Log.d(DefaultsActivity.class.getName(), "prepareOnlyWifiSwitch");
         PreferenceManager preferenceManager = new PreferenceManager(this);
-        onlyWifiSwitch = findViewById(R.id.switch_settings_activity_onlywifi);
-        onlyWifiOnOffText = findViewById(R.id.textview_settings_activity_onlywifi_on_off);
+        onlyWifiSwitch = findViewById(R.id.switch_defaults_activity_onlywifi);
+        onlyWifiOnOffText = findViewById(R.id.textview_defaults_activity_onlywifi_on_off);
         onlyWifiSwitch.setChecked(preferenceManager.getPreferenceOnlyWifi());
         onlyWifiSwitch.setOnCheckedChangeListener(this::onOnlyWifiCheckedChanged);
         prepareOnlyWifiOnOffText();
@@ -172,17 +164,17 @@ public class SettingsActivity extends AppCompatActivity {
     }
 
     private void onOnlyWifiCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-        Log.d(NetworkTaskEditDialog.class.getName(), "onOnlyWifiCheckedChanged, new value is " + isChecked);
+        Log.d(DefaultsActivity.class.getName(), "onOnlyWifiCheckedChanged, new value is " + isChecked);
         PreferenceManager preferenceManager = new PreferenceManager(this);
         preferenceManager.setPreferenceOnlyWifi(isChecked);
         prepareOnlyWifiOnOffText();
     }
 
     private void prepareNotificationSwitch() {
-        Log.d(SettingsActivity.class.getName(), "prepareNotificationSwitch");
+        Log.d(DefaultsActivity.class.getName(), "prepareNotificationSwitch");
         PreferenceManager preferenceManager = new PreferenceManager(this);
-        notificationSwitch = findViewById(R.id.switch_settings_activity_notification);
-        notificationOnOffText = findViewById(R.id.textview_settings_activity_notification_on_off);
+        notificationSwitch = findViewById(R.id.switch_defaults_activity_notification);
+        notificationOnOffText = findViewById(R.id.textview_defaults_activity_notification_on_off);
         notificationSwitch.setChecked(preferenceManager.getPreferenceNotification());
         notificationSwitch.setOnCheckedChangeListener(this::onNotificationCheckedChanged);
         prepareNotificationOnOffText();
@@ -193,40 +185,10 @@ public class SettingsActivity extends AppCompatActivity {
     }
 
     private void onNotificationCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-        Log.d(NetworkTaskEditDialog.class.getName(), "onNotificationCheckedChanged, new value is " + isChecked);
+        Log.d(DefaultsActivity.class.getName(), "onNotificationCheckedChanged, new value is " + isChecked);
         PreferenceManager preferenceManager = new PreferenceManager(this);
         preferenceManager.setPreferenceNotification(isChecked);
         prepareNotificationOnOffText();
-    }
-
-    private void preparePingCountField() {
-        Log.d(SettingsActivity.class.getName(), "preparePingCountField");
-        PreferenceManager preferenceManager = new PreferenceManager(this);
-        pingCountText = findViewById(R.id.textview_settings_activity_ping_count);
-        setPingCount(String.valueOf(preferenceManager.getPreferencePingCount()));
-        CardView pingCountCardView = findViewById(R.id.cardview_settings_activity_ping_count);
-        pingCountCardView.setOnClickListener(this::showPingCountInputDialog);
-    }
-
-    private void prepareNotificationInactiveNetworkSwitch() {
-        Log.d(SettingsActivity.class.getName(), "prepareNotificationInactiveNetworkSwitch");
-        PreferenceManager preferenceManager = new PreferenceManager(this);
-        notificationInactiveNetworkSwitch = findViewById(R.id.switch_settings_activity_notification_inactive_network);
-        notificationInactiveNetworkOnOffText = findViewById(R.id.textview_settings_activity_notification_inactive_network_on_off);
-        notificationInactiveNetworkSwitch.setChecked(preferenceManager.getPreferenceNotificationInactiveNetwork());
-        notificationInactiveNetworkSwitch.setOnCheckedChangeListener(this::onNotificationInactiveNetworkCheckedChanged);
-        prepareNotificationInactiveNetworkOnOffText();
-    }
-
-    private void prepareNotificationInactiveNetworkOnOffText() {
-        notificationInactiveNetworkOnOffText.setText(notificationInactiveNetworkSwitch.isChecked() ? getResources().getString(R.string.string_yes) : getResources().getString(R.string.string_no));
-    }
-
-    private void onNotificationInactiveNetworkCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-        Log.d(NetworkTaskEditDialog.class.getName(), "onNotificationInactiveNetworkCheckedChanged, new value is " + isChecked);
-        PreferenceManager preferenceManager = new PreferenceManager(this);
-        preferenceManager.setPreferenceNotificationInactiveNetwork(isChecked);
-        prepareNotificationInactiveNetworkOnOffText();
     }
 
     private String getAddress() {
@@ -257,51 +219,36 @@ public class SettingsActivity extends AppCompatActivity {
         }
     }
 
-    private String getPingCount() {
-        return StringUtil.notNull(pingCountText.getText());
-    }
-
-    private void setPingCount(String pingCount) {
-        pingCountText.setText(StringUtil.notNull(pingCount));
-    }
-
     private void showAddressInputDialog(View view) {
-        Log.d(SettingsActivity.class.getName(), "showAddressInputDialog");
+        Log.d(DefaultsActivity.class.getName(), "showAddressInputDialog");
         List<String> validators = Arrays.asList(HostFieldValidator.class.getName(), URLFieldValidator.class.getName());
-        SettingsInput input = new SettingsInput(SettingsInput.Type.ADDRESS, getAddress(), getResources().getString(R.string.label_settings_activity_address), validators);
+        SettingsInput input = new SettingsInput(SettingsInput.Type.ADDRESS, getAddress(), getResources().getString(R.string.label_defaults_activity_address), validators);
         showInputDialog(input.toBundle());
     }
 
     private void showPortInputDialog(View view) {
-        Log.d(SettingsActivity.class.getName(), "showPortInputDialog");
+        Log.d(DefaultsActivity.class.getName(), "showPortInputDialog");
         List<String> validators = Collections.singletonList(PortFieldValidator.class.getName());
-        SettingsInput input = new SettingsInput(SettingsInput.Type.PORT, getPort(), getResources().getString(R.string.label_settings_activity_port), validators);
+        SettingsInput input = new SettingsInput(SettingsInput.Type.PORT, getPort(), getResources().getString(R.string.label_defaults_activity_port), validators);
         showInputDialog(input.toBundle());
     }
 
     private void showIntervalInputDialog(View view) {
-        Log.d(SettingsActivity.class.getName(), "showIntervalInputDialog");
+        Log.d(DefaultsActivity.class.getName(), "showIntervalInputDialog");
         List<String> validators = Collections.singletonList(IntervalFieldValidator.class.getName());
-        SettingsInput input = new SettingsInput(SettingsInput.Type.INTERVAL, getInterval(), getResources().getString(R.string.label_settings_activity_interval), validators);
-        showInputDialog(input.toBundle());
-    }
-
-    private void showPingCountInputDialog(View view) {
-        Log.d(SettingsActivity.class.getName(), "showPingCountInputDialog");
-        List<String> validators = Collections.singletonList(PingCountFieldValidator.class.getName());
-        SettingsInput input = new SettingsInput(SettingsInput.Type.PINGCOUNT, getPingCount(), getResources().getString(R.string.label_settings_activity_ping_count), validators);
+        SettingsInput input = new SettingsInput(SettingsInput.Type.INTERVAL, getInterval(), getResources().getString(R.string.label_defaults_activity_interval), validators);
         showInputDialog(input.toBundle());
     }
 
     private void showInputDialog(Bundle bundle) {
-        Log.d(SettingsActivity.class.getName(), "showInputDialog, opening SettingsInputDialog");
+        Log.d(DefaultsActivity.class.getName(), "showInputDialog, opening SettingsInputDialog");
         SettingsInputDialog inputDialog = new SettingsInputDialog();
         inputDialog.setArguments(bundle);
-        inputDialog.show(getSupportFragmentManager(), SettingsInputDialog.class.getName());
+        inputDialog.show(getSupportFragmentManager(), DefaultsActivity.class.getName());
     }
 
     public void onInputDialogOkClicked(SettingsInputDialog inputDialog, SettingsInput.Type type) {
-        Log.d(SettingsActivity.class.getName(), "onInputDialogOkClicked, type is " + type + ", value is " + inputDialog.getValue());
+        Log.d(DefaultsActivity.class.getName(), "onInputDialogOkClicked, type is " + type + ", value is " + inputDialog.getValue());
         PreferenceManager preferenceManager = new PreferenceManager(this);
         if (SettingsInput.Type.ADDRESS.equals(type)) {
             setAddress(inputDialog.getValue());
@@ -312,17 +259,14 @@ public class SettingsActivity extends AppCompatActivity {
         } else if (SettingsInput.Type.INTERVAL.equals(type)) {
             setInterval(inputDialog.getValue());
             preferenceManager.setPreferenceInterval(NumberUtil.getIntValue(getInterval(), getResources().getInteger(R.integer.task_interval_default)));
-        } else if (SettingsInput.Type.PINGCOUNT.equals(type)) {
-            setPingCount(inputDialog.getValue());
-            preferenceManager.setPreferencePingCount(NumberUtil.getIntValue(getPingCount(), getResources().getInteger(R.integer.ping_count_default)));
         } else {
-            Log.e(SettingsActivity.class.getName(), "type " + type + " unknown");
+            Log.e(DefaultsActivity.class.getName(), "type " + type + " unknown");
         }
         inputDialog.dismiss();
     }
 
     public void onInputDialogCancelClicked(SettingsInputDialog inputDialog) {
-        Log.d(SettingsActivity.class.getName(), "onInputDialogCancelClicked");
+        Log.d(DefaultsActivity.class.getName(), "onInputDialogCancelClicked");
         inputDialog.dismiss();
     }
 }

@@ -1,0 +1,310 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/layout_defaults_activity"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="de.ibba.keepitup.ui.DefaultsActivity">
+
+    <ScrollView
+        android:id="@+id/scrollview_defaults_activity"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent">
+
+        <LinearLayout
+            android:id="@+id/linearlayout_defaults_activity"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:orientation="vertical"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <androidx.cardview.widget.CardView xmlns:card_view="http://schemas.android.com/apk/res-auto"
+                android:id="@+id/cardview_defaults_activity_defaults"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/defaults_activity_defaults_margin"
+                card_view:cardCornerRadius="@dimen/defaults_activity_defaults_corner_radius"
+                app:cardElevation="@dimen/defaults_activity_defaults_card_elevation">
+
+                <TextView
+                    android:id="@+id/textview_defaults_activity_defaults_label"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/defaults_activity_defaults_margin"
+                    android:textStyle="bold"
+                    android:text="@string/label_defaults_activity_defaults" />
+
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView xmlns:card_view="http://schemas.android.com/apk/res-auto"
+                android:id="@+id/cardview_defaults_activity_accesstype"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/defaults_activity_accesstype_margin"
+                card_view:cardCornerRadius="@dimen/defaults_activity_accesstype_corner_radius"
+                app:cardElevation="@dimen/defaults_activity_accesstype_card_elevation">
+
+                <LinearLayout
+                    android:id="@+id/linearlayout_defaults_activity_accesstype"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/defaults_activity_accesstype_margin"
+                    android:focusable="true"
+                    android:focusableInTouchMode="true"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/textview_defaults_activity_accesstype_label"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textStyle="bold"
+                        android:text="@string/label_defaults_activity_accesstype" />
+
+                    <RadioGroup
+                        android:id="@+id/radiogroup_defaults_activity_accesstype"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+
+                </LinearLayout>
+
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView xmlns:card_view="http://schemas.android.com/apk/res-auto"
+                android:id="@+id/cardview_defaults_activity_address"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/defaults_activity_address_margin"
+                card_view:cardCornerRadius="@dimen/defaults_activity_address_corner_radius"
+                app:cardElevation="@dimen/defaults_activity_address_card_elevation">
+
+                <LinearLayout
+                    android:id="@+id/linearlayout_defaults_activity_address"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/defaults_activity_address_margin"
+                    android:focusable="true"
+                    android:focusableInTouchMode="true"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/textview_defaults_activity_address_label"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textStyle="bold"
+                        android:text="@string/label_defaults_activity_address" />
+
+                    <TextView
+                        android:id="@+id/textview_defaults_activity_address"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textStyle="normal"
+                        android:text="" />
+
+                </LinearLayout>
+
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView xmlns:card_view="http://schemas.android.com/apk/res-auto"
+                android:id="@+id/cardview_defaults_activity_port"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/defaults_activity_port_margin"
+                card_view:cardCornerRadius="@dimen/defaults_activity_port_corner_radius"
+                app:cardElevation="@dimen/defaults_activity_port_card_elevation">
+
+                <LinearLayout
+                    android:id="@+id/linearlayout_defaults_activity_port"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/defaults_activity_port_margin"
+                    android:focusable="true"
+                    android:focusableInTouchMode="true"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/textview_defaults_activity_port_label"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textStyle="bold"
+                        android:text="@string/label_defaults_activity_port" />
+
+                    <TextView
+                        android:id="@+id/textview_defaults_activity_port"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textStyle="normal"
+                        android:text="" />
+
+                </LinearLayout>
+
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView xmlns:card_view="http://schemas.android.com/apk/res-auto"
+                android:id="@+id/cardview_defaults_activity_interval"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/defaults_activity_interval_margin"
+                card_view:cardCornerRadius="@dimen/defaults_activity_interval_corner_radius"
+                app:cardElevation="@dimen/defaults_activity_interval_card_elevation">
+
+                <LinearLayout
+                    android:id="@+id/linearlayout_defaults_activity_interval"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/defaults_activity_interval_margin"
+                    android:focusable="true"
+                    android:focusableInTouchMode="true"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/textview_defaults_activity_interval_label"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textStyle="bold"
+                        android:text="@string/label_defaults_activity_interval" />
+
+                    <LinearLayout
+                        android:id="@+id/linearlayout_defaults_activity_interval_value"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="@dimen/defaults_activity_interval_margin"
+                        android:focusable="true"
+                        android:focusableInTouchMode="true"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:id="@+id/textview_defaults_activity_interval"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textStyle="normal"
+                            android:text="" />
+
+                        <TextView
+                            android:id="@+id/textview_defaults_activity_interval_minutes"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="@dimen/defaults_activity_interval_minutes_margin"
+                            android:textStyle="normal"
+                            android:text="" />
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView xmlns:card_view="http://schemas.android.com/apk/res-auto"
+                android:id="@+id/cardview_defaults_activity_onlywifi"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/defaults_activity_onlywifi_margin"
+                card_view:cardCornerRadius="@dimen/defaults_activity_onlywifi_corner_radius"
+                app:cardElevation="@dimen/defaults_activity_onlywifi_card_elevation">
+
+                <LinearLayout
+                    android:id="@+id/linearlayout_defaults_activity_onlywifi"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/defaults_activity_onlywifi_margin"
+                    android:focusable="true"
+                    android:focusableInTouchMode="true"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/textview_defaults_activity_onlywifi_label"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textStyle="bold"
+                        android:text="@string/label_defaults_activity_onlywifi" />
+
+                    <LinearLayout
+                        android:id="@+id/linearlayout_defaults_activity_onlywifi_onoff"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="@dimen/defaults_activity_onlywifi_margin"
+                        android:focusable="true"
+                        android:focusableInTouchMode="true"
+                        android:orientation="horizontal">
+
+                        <Switch
+                            android:id="@+id/switch_defaults_activity_onlywifi"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:showText="false" />
+
+                        <TextView
+                            android:id="@+id/textview_defaults_activity_onlywifi_on_off"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textStyle="bold"
+                            android:text="" />
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView xmlns:card_view="http://schemas.android.com/apk/res-auto"
+                android:id="@+id/cardview_defaults_activity_notification"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/defaults_activity_notification_margin"
+                card_view:cardCornerRadius="@dimen/defaults_activity_notification_corner_radius"
+                app:cardElevation="@dimen/defaults_activity_notification_card_elevation">
+
+                <LinearLayout
+                    android:id="@+id/linearlayout_defaults_activity_notification"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/defaults_activity_notification_margin"
+                    android:focusable="true"
+                    android:focusableInTouchMode="true"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/textview_defaults_activity_notification_label"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textStyle="bold"
+                        android:text="@string/label_defaults_activity_notification" />
+
+                    <LinearLayout
+                        android:id="@+id/linearlayout_defaults_activity_notification_on_off"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="@dimen/defaults_activity_notification_margin"
+                        android:focusable="true"
+                        android:focusableInTouchMode="true"
+                        android:orientation="horizontal">
+
+                        <Switch
+                            android:id="@+id/switch_defaults_activity_notification"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:showText="false" />
+
+                        <TextView
+                            android:id="@+id/textview_defaults_activity_notification_on_off"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textStyle="bold"
+                            android:text="" />
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+            </androidx.cardview.widget.CardView>
+
+        </LinearLayout>
+
+    </ScrollView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
