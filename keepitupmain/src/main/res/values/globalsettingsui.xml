@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="activity_global_settings_title">Global_settings</string>
+    <string name="activity_global_settings_title">Global Settings</string>
     <string name="menu_action_global_settings_reset">Reset</string>
     <string name="label_global_settings_activity_global">Global settings</string>
     <string name="label_global_settings_activity_ping_count">Ping count</string>
