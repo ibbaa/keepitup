@@ -209,7 +209,7 @@ public class NetworkTaskWorkerTest {
     }
 
     @Test
-    public void testNoNetworkConnectionWithoutNotifiaction() {
+    public void testNoNetworkConnectionWithoutNotification() {
         NetworkTask task = getNetworkTask();
         networkTaskDAO.insertNetworkTask(task);
         TestNetworkTaskWorker testNetworkTaskWorker = new TestNetworkTaskWorker(TestRegistry.getContext(), task, null, true);
@@ -231,7 +231,7 @@ public class NetworkTaskWorkerTest {
     }
 
     @Test
-    public void testNoNetworkConnectionWithNotifiaction() {
+    public void testNoNetworkConnectionWithNotification() {
         NetworkTask task = getNetworkTask();
         networkTaskDAO.insertNetworkTask(task);
         TestNetworkTaskWorker testNetworkTaskWorker = new TestNetworkTaskWorker(TestRegistry.getContext(), task, null, true);

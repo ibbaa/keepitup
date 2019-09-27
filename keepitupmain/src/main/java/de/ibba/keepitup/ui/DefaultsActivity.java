@@ -12,7 +12,6 @@ import android.widget.RadioGroup;
 import android.widget.Switch;
 import android.widget.TextView;
 
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 
 import java.util.Arrays;
@@ -33,7 +32,7 @@ import de.ibba.keepitup.ui.validation.URLFieldValidator;
 import de.ibba.keepitup.util.NumberUtil;
 import de.ibba.keepitup.util.StringUtil;
 
-public class DefaultsActivity extends AppCompatActivity implements SettingsInputActivity {
+public class DefaultsActivity extends SettingsInputActivity {
 
     private RadioGroup accessTypeGroup;
     private TextView addressText;
@@ -78,7 +77,7 @@ public class DefaultsActivity extends AppCompatActivity implements SettingsInput
             preferenceManager.removePreferenceInterval();
             preferenceManager.removePreferenceOnlyWifi();
             preferenceManager.removePreferenceNotification();
-            recreate();
+            recreateActivity();
             return true;
         }
         return super.onOptionsItemSelected(item);
@@ -88,6 +87,7 @@ public class DefaultsActivity extends AppCompatActivity implements SettingsInput
         Log.d(DefaultsActivity.class.getName(), "prepareAccessTypeRadioButtons");
         PreferenceManager preferenceManager = new PreferenceManager(this);
         accessTypeGroup = findViewById(R.id.radiogroup_defaults_activity_accesstype);
+        accessTypeGroup.setOnCheckedChangeListener(null);
         EnumMapping mapping = new EnumMapping(this);
         AccessType[] accessTypes = AccessType.values();
         AccessType type = preferenceManager.getPreferenceAccessType();
@@ -154,6 +154,7 @@ public class DefaultsActivity extends AppCompatActivity implements SettingsInput
         PreferenceManager preferenceManager = new PreferenceManager(this);
         onlyWifiSwitch = findViewById(R.id.switch_defaults_activity_onlywifi);
         onlyWifiOnOffText = findViewById(R.id.textview_defaults_activity_onlywifi_on_off);
+        onlyWifiSwitch.setOnCheckedChangeListener(null);
         onlyWifiSwitch.setChecked(preferenceManager.getPreferenceOnlyWifi());
         onlyWifiSwitch.setOnCheckedChangeListener(this::onOnlyWifiCheckedChanged);
         prepareOnlyWifiOnOffText();
@@ -175,6 +176,7 @@ public class DefaultsActivity extends AppCompatActivity implements SettingsInput
         PreferenceManager preferenceManager = new PreferenceManager(this);
         notificationSwitch = findViewById(R.id.switch_defaults_activity_notification);
         notificationOnOffText = findViewById(R.id.textview_defaults_activity_notification_on_off);
+        notificationSwitch.setOnCheckedChangeListener(null);
         notificationSwitch.setChecked(preferenceManager.getPreferenceNotification());
         notificationSwitch.setOnCheckedChangeListener(this::onNotificationCheckedChanged);
         prepareNotificationOnOffText();

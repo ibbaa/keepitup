@@ -9,7 +9,6 @@ import android.widget.CompoundButton;
 import android.widget.Switch;
 import android.widget.TextView;
 
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 
 import java.util.Collections;
@@ -17,14 +16,13 @@ import java.util.List;
 
 import de.ibba.keepitup.R;
 import de.ibba.keepitup.resources.PreferenceManager;
-import de.ibba.keepitup.ui.dialog.NetworkTaskEditDialog;
 import de.ibba.keepitup.ui.dialog.SettingsInput;
 import de.ibba.keepitup.ui.dialog.SettingsInputDialog;
 import de.ibba.keepitup.ui.validation.PingCountFieldValidator;
 import de.ibba.keepitup.util.NumberUtil;
 import de.ibba.keepitup.util.StringUtil;
 
-public class GlobalSettingsActivity extends AppCompatActivity implements SettingsInputActivity {
+public class GlobalSettingsActivity extends SettingsInputActivity {
 
     private TextView pingCountText;
     private Switch notificationInactiveNetworkSwitch;
@@ -55,7 +53,7 @@ public class GlobalSettingsActivity extends AppCompatActivity implements Setting
             PreferenceManager preferenceManager = new PreferenceManager(this);
             preferenceManager.removePreferencePingCount();
             preferenceManager.removePreferenceNotificationInactiveNetwork();
-            recreate();
+            recreateActivity();
             return true;
         }
         return super.onOptionsItemSelected(item);

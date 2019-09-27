@@ -128,7 +128,6 @@ public class DefaultsActivityTest extends BaseUITest {
         onView(withId(R.id.textview_defaults_activity_onlywifi_on_off)).check(matches(withText("no")));
         onView(withId(R.id.switch_defaults_activity_notification)).check(matches(isNotChecked()));
         onView(withId(R.id.textview_defaults_activity_notification_on_off)).check(matches(withText("no")));
-        ;
         onView(withId(R.id.switch_defaults_activity_onlywifi)).perform(click());
         onView(withId(R.id.switch_defaults_activity_onlywifi)).check(matches(isChecked()));
         onView(withId(R.id.textview_defaults_activity_onlywifi_on_off)).check(matches(withText("yes")));
