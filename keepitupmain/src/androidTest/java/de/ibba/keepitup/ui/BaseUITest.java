@@ -1,5 +1,6 @@
 package de.ibba.keepitup.ui;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
@@ -56,6 +57,17 @@ public abstract class BaseUITest {
         preferenceManager.removeAllPreferences();
     }
 
+    public SettingsInputActivity launchSettingsInputActivity(ActivityTestRule<?> rule) {
+        return launchSettingsInputActivity(rule, null);
+    }
+
+    public SettingsInputActivity launchSettingsInputActivity(ActivityTestRule<?> rule, Intent intent) {
+        SettingsInputActivity activity = (SettingsInputActivity) rule.launchActivity(intent);
+        activity.injectResources(TestRegistry.getContext().getResources());
+        activity.setRequestedOrientation(Configuration.ORIENTATION_PORTRAIT);
+        return activity;
+    }
+
     public RecyclerViewBaseActivity launchRecyclerViewBaseActivity(ActivityTestRule<?> rule) {
         return launchRecyclerViewBaseActivity(rule, null);
     }
@@ -67,7 +79,7 @@ public abstract class BaseUITest {
         return activity;
     }
 
-    public void rotateScreen(NetworkTaskMainActivity activity) {
+    public void rotateScreen(Activity activity) {
         int orientation = TestRegistry.getContext().getResources().getConfiguration().orientation;
         activity.setRequestedOrientation((orientation == Configuration.ORIENTATION_PORTRAIT) ? ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE : ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         InstrumentationRegistry.getInstrumentation().waitForIdleSync();
