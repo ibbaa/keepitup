@@ -5,4 +5,7 @@
     <string name="label_global_settings_activity_global">Global settings</string>
     <string name="label_global_settings_activity_ping_count">Ping count</string>
     <string name="label_global_settings_activity_notification_inactive_network">Notifications when network is not active</string>
+    <string name="label_global_settings_activity_download_external_storage">Download to an external storage folder</string>
+    <string name="label_global_settings_activity_download_folder">Download folder</string>
+    <string name="label_global_settings_activity_download_keep">Keep downloaded files</string>
 </resources>
