@@ -9,4 +9,13 @@
     <dimen name="global_settings_activity_notification_inactive_network_margin">4dp</dimen>
     <dimen name="global_settings_activity_notification_inactive_network_corner_radius">4dp</dimen>
     <dimen name="global_settings_activity_notification_inactive_network_card_elevation">4dp</dimen>
+    <dimen name="global_settings_activity_download_external_storage_margin">4dp</dimen>
+    <dimen name="global_settings_activity_download_external_storage_corner_radius">4dp</dimen>
+    <dimen name="global_settings_activity_download_external_storage_card_elevation">4dp</dimen>
+    <dimen name="global_settings_activity_download_folder_margin">4dp</dimen>
+    <dimen name="global_settings_activity_download_folder_corner_radius">4dp</dimen>
+    <dimen name="global_settings_activity_download_folder_card_elevation">4dp</dimen>
+    <dimen name="global_settings_activity_download_keep_margin">4dp</dimen>
+    <dimen name="global_settings_activity_download_keep_corner_radius">4dp</dimen>
+    <dimen name="global_settings_activity_download_keep_card_elevation">4dp</dimen>
 </resources>

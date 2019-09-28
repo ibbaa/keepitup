@@ -27,6 +27,11 @@ public class GlobalSettingsActivity extends SettingsInputActivity {
     private TextView pingCountText;
     private Switch notificationInactiveNetworkSwitch;
     private TextView notificationInactiveNetworkOnOffText;
+    private Switch downloadExternalStorageSwitch;
+    private TextView downloadExternalStorageOnOffText;
+    private TextView downloadFolderText;
+    private Switch downloadKeepSwitch;
+    private TextView downloadKeepOnOffText;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -37,6 +42,9 @@ public class GlobalSettingsActivity extends SettingsInputActivity {
         setContentView(R.layout.activity_global_settings);
         preparePingCountField();
         prepareNotificationInactiveNetworkSwitch();
+        prepareDownloadExternalStorageSwitch();
+        prepareDownloadFolderField();
+        prepareDownloadKeepSwitch();
     }
 
     @Override
@@ -53,6 +61,9 @@ public class GlobalSettingsActivity extends SettingsInputActivity {
             PreferenceManager preferenceManager = new PreferenceManager(this);
             preferenceManager.removePreferencePingCount();
             preferenceManager.removePreferenceNotificationInactiveNetwork();
+            preferenceManager.removePreferenceDownloadExternalStorage();
+            preferenceManager.removePreferenceDownloadFolder();
+            preferenceManager.removePreferenceDownloadKeep();
             recreateActivity();
             return true;
         }
@@ -90,12 +101,72 @@ public class GlobalSettingsActivity extends SettingsInputActivity {
         prepareNotificationInactiveNetworkOnOffText();
     }
 
+    private void prepareDownloadExternalStorageSwitch() {
+        Log.d(GlobalSettingsActivity.class.getName(), "prepareDownloadExternalStorageSwitch");
+        PreferenceManager preferenceManager = new PreferenceManager(this);
+        downloadExternalStorageSwitch = findViewById(R.id.switch_global_settings_activity_download_external_storage);
+        downloadExternalStorageOnOffText = findViewById(R.id.textview_global_settings_activity_download_external_storage_on_off);
+        downloadExternalStorageSwitch.setOnCheckedChangeListener(null);
+        downloadExternalStorageSwitch.setChecked(preferenceManager.getPreferenceDownloadExternalStorage());
+        downloadExternalStorageSwitch.setOnCheckedChangeListener(this::onDownloadExternalStorageCheckedChanged);
+        prepareDownloadExternalStorageOnOffText();
+    }
+
+    private void prepareDownloadExternalStorageOnOffText() {
+        downloadExternalStorageOnOffText.setText(downloadExternalStorageSwitch.isChecked() ? getResources().getString(R.string.string_yes) : getResources().getString(R.string.string_no));
+    }
+
+    private void onDownloadExternalStorageCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+        Log.d(GlobalSettingsActivity.class.getName(), "onDownloadExternalStorageCheckedChanged, new value is " + isChecked);
+        PreferenceManager preferenceManager = new PreferenceManager(this);
+        preferenceManager.setPreferenceDownloadExternalStorage(isChecked);
+        prepareDownloadExternalStorageOnOffText();
+    }
+
+    private void prepareDownloadFolderField() {
+        Log.d(GlobalSettingsActivity.class.getName(), "prepareDownloadFolderField");
+        PreferenceManager preferenceManager = new PreferenceManager(this);
+        downloadFolderText = findViewById(R.id.textview_global_settings_activity_download_folder);
+        setDownloadFolder(String.valueOf(preferenceManager.getPreferenceDownloadFolder()));
+        CardView downloadFolderCardView = findViewById(R.id.cardview_global_settings_activity_download_folder);
+    }
+
+    private void prepareDownloadKeepSwitch() {
+        Log.d(GlobalSettingsActivity.class.getName(), "prepareDownloadKeepSwitch");
+        PreferenceManager preferenceManager = new PreferenceManager(this);
+        downloadKeepSwitch = findViewById(R.id.switch_global_settings_activity_download_keep);
+        downloadKeepOnOffText = findViewById(R.id.textview_global_settings_activity_download_keep_on_off);
+        downloadKeepSwitch.setOnCheckedChangeListener(null);
+        downloadKeepSwitch.setChecked(preferenceManager.getPreferenceDownloadKeep());
+        downloadKeepSwitch.setOnCheckedChangeListener(this::onDownloadKeepCheckedChanged);
+        prepareDownloadKeepOnOffText();
+    }
+
+    private void prepareDownloadKeepOnOffText() {
+        downloadKeepOnOffText.setText(downloadKeepSwitch.isChecked() ? getResources().getString(R.string.string_yes) : getResources().getString(R.string.string_no));
+    }
+
+    private void onDownloadKeepCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+        Log.d(GlobalSettingsActivity.class.getName(), "onDownloadKeepCheckedChanged, new value is " + isChecked);
+        PreferenceManager preferenceManager = new PreferenceManager(this);
+        preferenceManager.setPreferenceDownloadKeep(isChecked);
+        prepareDownloadKeepOnOffText();
+    }
+
     private String getPingCount() {
         return StringUtil.notNull(pingCountText.getText());
     }
 
     private void setPingCount(String pingCount) {
         pingCountText.setText(StringUtil.notNull(pingCount));
+    }
+
+    private String getDownloadFolder() {
+        return StringUtil.notNull(downloadFolderText.getText());
+    }
+
+    private void setDownloadFolder(String downloadFolder) {
+        downloadFolderText.setText(StringUtil.notNull(downloadFolder));
     }
 
     private void showPingCountInputDialog(View view) {

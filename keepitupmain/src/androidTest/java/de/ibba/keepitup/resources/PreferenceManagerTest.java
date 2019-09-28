@@ -175,4 +175,40 @@ public class PreferenceManagerTest {
         preferenceManager.removePreferenceNotificationInactiveNetwork();
         assertFalse(preferenceManager.getPreferenceNotificationInactiveNetwork());
     }
+
+    @Test
+    public void testGetSetRemovePreferenceDownloadExternalStorage() {
+        assertFalse(preferenceManager.getPreferenceDownloadExternalStorage());
+        preferenceManager.setPreferenceDownloadExternalStorage(true);
+        assertTrue(preferenceManager.getPreferenceDownloadExternalStorage());
+        preferenceManager.removeAllPreferences();
+        assertFalse(preferenceManager.getPreferenceDownloadExternalStorage());
+        preferenceManager.setPreferenceDownloadExternalStorage(true);
+        preferenceManager.removePreferenceDownloadExternalStorage();
+        assertFalse(preferenceManager.getPreferenceDownloadExternalStorage());
+    }
+
+    @Test
+    public void testGetSetRemovePreferenceDownloadFolder() {
+        assertEquals("", preferenceManager.getPreferenceDownloadFolder());
+        preferenceManager.setPreferenceDownloadFolder("Folder");
+        assertEquals("Folder", preferenceManager.getPreferenceDownloadFolder());
+        preferenceManager.removeAllPreferences();
+        assertEquals("", preferenceManager.getPreferenceDownloadFolder());
+        preferenceManager.setPreferenceDownloadFolder("Folder");
+        preferenceManager.removePreferenceDownloadFolder();
+        assertEquals("", preferenceManager.getPreferenceDownloadFolder());
+    }
+
+    @Test
+    public void testGetSetRemovePreferenceDownloadKeep() {
+        assertFalse(preferenceManager.getPreferenceDownloadKeep());
+        preferenceManager.setPreferenceDownloadKeep(true);
+        assertTrue(preferenceManager.getPreferenceDownloadKeep());
+        preferenceManager.removeAllPreferences();
+        assertFalse(preferenceManager.getPreferenceDownloadKeep());
+        preferenceManager.setPreferenceDownloadKeep(true);
+        preferenceManager.removePreferenceDownloadKeep();
+        assertFalse(preferenceManager.getPreferenceDownloadKeep());
+    }
 }

@@ -206,6 +206,51 @@ public class PreferenceManager {
         removePreferenceValue(getResources().getString(R.string.notification_inactive_network_key));
     }
 
+    public boolean getPreferenceDownloadExternalStorage() {
+        Log.d(PreferenceManager.class.getName(), "getPreferenceDownloadExternalStorage");
+        return getPreferenceBoolean(getResources().getString(R.string.download_external_storage_key), getResources().getBoolean(R.bool.download_external_storage_default));
+    }
+
+    public void setPreferenceDownloadExternalStorage(boolean downloadExternalStorage) {
+        Log.d(PreferenceManager.class.getName(), "setPreferenceDownloadExternalStorage, downloadExternalStorage is " + downloadExternalStorage);
+        setPreferenceBoolean(getResources().getString(R.string.download_external_storage_key), downloadExternalStorage);
+    }
+
+    public void removePreferenceDownloadExternalStorage() {
+        Log.d(PreferenceManager.class.getName(), "removePreferenceDownloadExternalStorage");
+        removePreferenceValue(getResources().getString(R.string.download_external_storage_key));
+    }
+
+    public String getPreferenceDownloadFolder() {
+        Log.d(PreferenceManager.class.getName(), "getPreferenceDownloadFolder");
+        return getPreferenceString(getResources().getString(R.string.download_folder_key), getResources().getString(R.string.download_folder_default));
+    }
+
+    public void setPreferenceDownloadFolder(String downloadFolder) {
+        Log.d(PreferenceManager.class.getName(), "setPreferenceDownloadFolder, downloadFolder is " + downloadFolder);
+        setPreferenceString(getResources().getString(R.string.download_folder_key), downloadFolder);
+    }
+
+    public void removePreferenceDownloadFolder() {
+        Log.d(PreferenceManager.class.getName(), "removePreferenceDownloadFolder");
+        removePreferenceValue(getResources().getString(R.string.download_folder_key));
+    }
+
+    public boolean getPreferenceDownloadKeep() {
+        Log.d(PreferenceManager.class.getName(), "getPreferenceDownloadKeep");
+        return getPreferenceBoolean(getResources().getString(R.string.download_keep_key), getResources().getBoolean(R.bool.download_keep_default));
+    }
+
+    public void setPreferenceDownloadKeep(boolean downloadKeep) {
+        Log.d(PreferenceManager.class.getName(), "setPreferenceDownloadKeep, downloadKeep is " + downloadKeep);
+        setPreferenceBoolean(getResources().getString(R.string.download_keep_key), downloadKeep);
+    }
+
+    public void removePreferenceDownloadKeep() {
+        Log.d(PreferenceManager.class.getName(), "removePreferenceDownloadKeep");
+        removePreferenceValue(getResources().getString(R.string.download_keep_key));
+    }
+
     private SharedPreferences getDefaultSharedPreferences() {
         return androidx.preference.PreferenceManager.getDefaultSharedPreferences(getContext());
     }
