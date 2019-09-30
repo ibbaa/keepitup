@@ -224,21 +224,21 @@ public class DefaultsActivity extends SettingsInputActivity {
     private void showAddressInputDialog(View view) {
         Log.d(DefaultsActivity.class.getName(), "showAddressInputDialog");
         List<String> validators = Arrays.asList(HostFieldValidator.class.getName(), URLFieldValidator.class.getName());
-        SettingsInput input = new SettingsInput(SettingsInput.Type.ADDRESS, getAddress(), getResources().getString(R.string.label_defaults_activity_address), validators);
+        SettingsInput input = new SettingsInput(SettingsInput.Type.ADDRESS, getAddress(), getResources().getString(R.string.label_activity_defaults_address), validators);
         showInputDialog(input.toBundle());
     }
 
     private void showPortInputDialog(View view) {
         Log.d(DefaultsActivity.class.getName(), "showPortInputDialog");
         List<String> validators = Collections.singletonList(PortFieldValidator.class.getName());
-        SettingsInput input = new SettingsInput(SettingsInput.Type.PORT, getPort(), getResources().getString(R.string.label_defaults_activity_port), validators);
+        SettingsInput input = new SettingsInput(SettingsInput.Type.PORT, getPort(), getResources().getString(R.string.label_activity_defaults_port), validators);
         showInputDialog(input.toBundle());
     }
 
     private void showIntervalInputDialog(View view) {
         Log.d(DefaultsActivity.class.getName(), "showIntervalInputDialog");
         List<String> validators = Collections.singletonList(IntervalFieldValidator.class.getName());
-        SettingsInput input = new SettingsInput(SettingsInput.Type.INTERVAL, getInterval(), getResources().getString(R.string.label_defaults_activity_interval), validators);
+        SettingsInput input = new SettingsInput(SettingsInput.Type.INTERVAL, getInterval(), getResources().getString(R.string.label_activity_defaults_interval), validators);
         showInputDialog(input.toBundle());
     }
 

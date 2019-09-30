@@ -38,7 +38,7 @@
                     android:layout_height="wrap_content"
                     android:layout_margin="@dimen/defaults_activity_defaults_margin"
                     android:textStyle="bold"
-                    android:text="@string/label_defaults_activity_defaults" />
+                    android:text="@string/label_activity_defaults_defaults" />
 
             </androidx.cardview.widget.CardView>
 
@@ -64,7 +64,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:textStyle="bold"
-                        android:text="@string/label_defaults_activity_accesstype" />
+                        android:text="@string/label_activity_defaults_accesstype" />
 
                     <RadioGroup
                         android:id="@+id/radiogroup_defaults_activity_accesstype"
@@ -97,7 +97,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:textStyle="bold"
-                        android:text="@string/label_defaults_activity_address" />
+                        android:text="@string/label_activity_defaults_address" />
 
                     <TextView
                         android:id="@+id/textview_defaults_activity_address"
@@ -132,7 +132,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:textStyle="bold"
-                        android:text="@string/label_defaults_activity_port" />
+                        android:text="@string/label_activity_defaults_port" />
 
                     <TextView
                         android:id="@+id/textview_defaults_activity_port"
@@ -167,7 +167,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:textStyle="bold"
-                        android:text="@string/label_defaults_activity_interval" />
+                        android:text="@string/label_activity_defaults_interval" />
 
                     <LinearLayout
                         android:id="@+id/linearlayout_defaults_activity_interval_value"
@@ -221,7 +221,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:textStyle="bold"
-                        android:text="@string/label_defaults_activity_onlywifi" />
+                        android:text="@string/label_activity_defaults_onlywifi" />
 
                     <LinearLayout
                         android:id="@+id/linearlayout_defaults_activity_onlywifi_onoff"
@@ -273,7 +273,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:textStyle="bold"
-                        android:text="@string/label_defaults_activity_notification" />
+                        android:text="@string/label_activity_defaults_notification" />
 
                     <LinearLayout
                         android:id="@+id/linearlayout_defaults_activity_notification_on_off"

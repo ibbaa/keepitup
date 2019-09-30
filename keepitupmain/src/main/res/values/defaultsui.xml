@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="activity_defaults_title">Defaults</string>
-    <string name="menu_action_defaults_reset">Reset</string>
-    <string name="label_defaults_activity_defaults">Defaults</string>
-    <string name="label_defaults_activity_address">Host / URL</string>
-    <string name="label_defaults_activity_port">Port</string>
-    <string name="label_defaults_activity_interval">Interval</string>
-    <string name="label_defaults_activity_onlywifi">Only on WiFi</string>
-    <string name="label_defaults_activity_notification">Notifications</string>
-    <string name="label_defaults_activity_accesstype">Type</string>
+    <string name="menu_action_activity_defaults_reset">Reset</string>
+    <string name="label_activity_defaults_defaults">Defaults</string>
+    <string name="label_activity_defaults_address">Host / URL</string>
+    <string name="label_activity_defaults_port">Port</string>
+    <string name="label_activity_defaults_interval">Interval</string>
+    <string name="label_activity_defaults_onlywifi">Only on WiFi</string>
+    <string name="label_activity_defaults_notification">Notifications</string>
+    <string name="label_activity_defaults_accesstype">Type</string>
 </resources>

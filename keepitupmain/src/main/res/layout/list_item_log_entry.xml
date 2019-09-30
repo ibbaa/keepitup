@@ -11,7 +11,7 @@
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/list_item_log_entry_margin"
         android:textStyle="normal"
-        android:text="@string/text_list_item_log_entry_no_log" />
+        android:text="@string/text_activity_log_list_item_log_entry_no_log" />
 
     <androidx.cardview.widget.CardView xmlns:card_view="http://schemas.android.com/apk/res-auto"
         android:id="@+id/cardview_list_item_log_entry"
@@ -35,28 +35,28 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textStyle="bold"
-                android:text="@string/text_list_item_log_entry_title" />
+                android:text="@string/text_activity_log_list_item_log_entry_title" />
 
             <TextView
                 android:id="@+id/textview_list_item_log_entry_success"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textStyle="normal"
-                android:text="@string/text_list_item_log_entry_success" />
+                android:text="@string/text_activity_log_list_item_log_entry_success" />
 
             <TextView
                 android:id="@+id/textview_list_item_log_entry_timestamp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textStyle="normal"
-                android:text="@string/text_list_item_log_entry_timestamp" />
+                android:text="@string/text_activity_log_list_item_log_entry_timestamp" />
 
             <TextView
                 android:id="@+id/textview_list_item_log_entry_message"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textStyle="normal"
-                android:text="@string/text_list_item_log_entry_message" />
+                android:text="@string/text_activity_log_list_item_log_entry_message" />
 
         </LinearLayout>
 
