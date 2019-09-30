@@ -121,13 +121,21 @@ public class GlobalSettingsActivity extends SettingsInputActivity {
         PreferenceManager preferenceManager = new PreferenceManager(this);
         preferenceManager.setPreferenceDownloadExternalStorage(isChecked);
         prepareDownloadExternalStorageOnOffText();
+        prepareDownloadFolderField();
+        prepareDownloadKeepSwitch();
     }
 
     private void prepareDownloadFolderField() {
         Log.d(GlobalSettingsActivity.class.getName(), "prepareDownloadFolderField");
         PreferenceManager preferenceManager = new PreferenceManager(this);
         downloadFolderText = findViewById(R.id.textview_global_settings_activity_download_folder);
-        setDownloadFolder(String.valueOf(preferenceManager.getPreferenceDownloadFolder()));
+        if (downloadExternalStorageSwitch.isChecked()) {
+            setDownloadFolder(String.valueOf(preferenceManager.getPreferenceDownloadFolder()));
+            downloadFolderText.setEnabled(true);
+        } else {
+            setDownloadFolder(getResources().getString(R.string.text_activity_global_settings_download_folder_internal));
+            downloadFolderText.setEnabled(false);
+        }
         CardView downloadFolderCardView = findViewById(R.id.cardview_global_settings_activity_download_folder);
     }
 
@@ -136,9 +144,16 @@ public class GlobalSettingsActivity extends SettingsInputActivity {
         PreferenceManager preferenceManager = new PreferenceManager(this);
         downloadKeepSwitch = findViewById(R.id.switch_global_settings_activity_download_keep);
         downloadKeepOnOffText = findViewById(R.id.textview_global_settings_activity_download_keep_on_off);
-        downloadKeepSwitch.setOnCheckedChangeListener(null);
-        downloadKeepSwitch.setChecked(preferenceManager.getPreferenceDownloadKeep());
-        downloadKeepSwitch.setOnCheckedChangeListener(this::onDownloadKeepCheckedChanged);
+        if (downloadExternalStorageSwitch.isChecked()) {
+            downloadKeepSwitch.setOnCheckedChangeListener(null);
+            downloadKeepSwitch.setChecked(preferenceManager.getPreferenceDownloadKeep());
+            downloadKeepSwitch.setOnCheckedChangeListener(this::onDownloadKeepCheckedChanged);
+            downloadKeepSwitch.setEnabled(true);
+        } else {
+            downloadKeepSwitch.setOnCheckedChangeListener(null);
+            downloadKeepSwitch.setChecked(false);
+            downloadKeepSwitch.setEnabled(false);
+        }
         prepareDownloadKeepOnOffText();
     }
 
