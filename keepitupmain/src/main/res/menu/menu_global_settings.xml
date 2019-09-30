@@ -2,6 +2,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="de.ibba.keepitup.ui.GlobalSettingsActivity">
     <item
-        android:id="@+id/menu_action_global_settings_reset"
+        android:id="@+id/menu_action_activity_global_settings_reset"
         android:title="@string/menu_action_activity_global_settings_reset" />
 </menu>

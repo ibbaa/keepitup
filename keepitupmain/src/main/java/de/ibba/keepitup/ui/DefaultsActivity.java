@@ -68,7 +68,7 @@ public class DefaultsActivity extends SettingsInputActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
-        if (id == R.id.menu_action_defaults_reset) {
+        if (id == R.id.menu_action_activity_defaults_reset) {
             Log.d(DefaultsActivity.class.getName(), "menu_action_reset triggered");
             PreferenceManager preferenceManager = new PreferenceManager(this);
             preferenceManager.removePreferenceAccessType();
