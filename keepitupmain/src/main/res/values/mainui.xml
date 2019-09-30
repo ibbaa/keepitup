@@ -1,21 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="label_add_network_task">Add network task</string>
-    <string name="label_start_network_task">Start</string>
-    <string name="label_stop_network_task">Stop</string>
-    <string name="label_delete_network_task">Delete network task</string>
-    <string name="label_edit_network_task">Edit network task</string>
-    <string name="label_log_network_task">Display log</string>
-    <string name="menu_action_defaults">Defaults</string>
-    <string name="menu_action_global_settings">Settings</string>
-    <string name="menu_action_main_refresh">Refresh</string>
-    <string name="text_list_item_network_task_title">Network task</string>
-    <string name="text_list_item_network_task_status">Status: %s</string>
-    <string name="text_list_item_network_task_access_type">Type: %s</string>
-    <string name="text_list_item_network_task_address">%s</string>
-    <string name="text_list_item_network_task_interval">Interval: %d %s</string>
-    <string name="text_list_item_network_task_notification">Notification on failure: %s</string>
-    <string name="text_list_item_network_task_onlywifi">Only on WiFi: %s</string>
-    <string name="text_list_item_network_task_last_exec_timestamp">Last execution: %s</string>
-    <string name="text_list_item_network_task_last_exec_message">Last execution message: %s</string>
+    <string name="label_activity_main_add_network_task">Add network task</string>
+    <string name="label_activity_main_start_network_task">Start</string>
+    <string name="label_activity_main_stop_network_task">Stop</string>
+    <string name="label_activity_main_delete_network_task">Delete network task</string>
+    <string name="label_activity_main_edit_network_task">Edit network task</string>
+    <string name="label_activity_main_log_network_task">Display log</string>
+    <string name="menu_action_activity_main_defaults">Defaults</string>
+    <string name="menu_action_activity_main_global_settings">Settings</string>
+    <string name="menu_action_activity_main_refresh">Refresh</string>
+    <string name="text_activity_main_list_item_network_task_title">Network task</string>
+    <string name="text_activity_main_list_item_network_task_status">Status: %s</string>
+    <string name="text_activity_main_list_item_network_task_access_type">Type: %s</string>
+    <string name="text_activity_main_list_item_network_task_address">%s</string>
+    <string name="text_activity_main_list_item_network_task_interval">Interval: %d %s</string>
+    <string name="text_activity_main_list_item_network_task_notification">Notification on failure: %s</string>
+    <string name="text_activity_main_list_item_network_task_onlywifi">Only on WiFi: %s</string>
+    <string name="text_activity_main_list_item_network_task_last_exec_timestamp">Last execution: %s</string>
+    <string name="text_activity_main_list_item_network_task_last_exec_message">Last execution message: %s</string>
 </resources>

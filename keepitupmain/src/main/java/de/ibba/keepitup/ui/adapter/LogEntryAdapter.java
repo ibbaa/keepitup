@@ -66,29 +66,29 @@ public class LogEntryAdapter extends RecyclerView.Adapter<LogEntryViewHolder> {
     }
 
     private void bindNoLog(@NonNull LogEntryViewHolder logEntryViewHolder) {
-        String formattedNoLogText = getResources().getString(R.string.text_list_item_log_entry_no_log, networkTask.getIndex() + 1);
+        String formattedNoLogText = getResources().getString(R.string.text_activity_log_list_item_log_entry_no_log, networkTask.getIndex() + 1);
         logEntryViewHolder.setNoLogText(formattedNoLogText);
     }
 
     private void bindTitle(@NonNull LogEntryViewHolder logEntryViewHolder) {
-        String formattedTitleText = getResources().getString(R.string.text_list_item_log_entry_title, networkTask.getIndex() + 1);
+        String formattedTitleText = getResources().getString(R.string.text_activity_log_list_item_log_entry_title, networkTask.getIndex() + 1);
         logEntryViewHolder.setTitleText(formattedTitleText);
     }
 
     private void bindSuccess(@NonNull LogEntryViewHolder logEntryViewHolder, LogEntry logEntry) {
         String successText = logEntry.isSuccess() ? getResources().getString(R.string.string_successful) : getResources().getString(R.string.string_not_successful);
-        String formattedSuccessText = getResources().getString(R.string.text_list_item_log_entry_success, successText);
+        String formattedSuccessText = getResources().getString(R.string.text_activity_log_list_item_log_entry_success, successText);
         logEntryViewHolder.setSuccessText(formattedSuccessText);
     }
 
     private void bindTimestamp(@NonNull LogEntryViewHolder logEntryViewHolder, LogEntry logEntry) {
         String timestampText = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.MEDIUM).format(new Date(logEntry.getTimestamp()));
-        String formattedTimestampText = getResources().getString(R.string.text_list_item_log_entry_timestamp, timestampText);
+        String formattedTimestampText = getResources().getString(R.string.text_activity_log_list_item_log_entry_timestamp, timestampText);
         logEntryViewHolder.setTimestampText(formattedTimestampText);
     }
 
     private void bindMessage(@NonNull LogEntryViewHolder logEntryViewHolder, LogEntry logEntry) {
-        String formattedMessageText = getResources().getString(R.string.text_list_item_log_entry_message, logEntry.getMessage());
+        String formattedMessageText = getResources().getString(R.string.text_activity_log_list_item_log_entry_message, logEntry.getMessage());
         logEntryViewHolder.setMessageText(formattedMessageText);
     }
 

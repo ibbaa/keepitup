@@ -172,7 +172,7 @@ public class GlobalSettingsActivity extends SettingsInputActivity {
     private void showPingCountInputDialog(View view) {
         Log.d(GlobalSettingsActivity.class.getName(), "showPingCountInputDialog");
         List<String> validators = Collections.singletonList(PingCountFieldValidator.class.getName());
-        SettingsInput input = new SettingsInput(SettingsInput.Type.PINGCOUNT, getPingCount(), getResources().getString(R.string.label_global_settings_activity_ping_count), validators);
+        SettingsInput input = new SettingsInput(SettingsInput.Type.PINGCOUNT, getPingCount(), getResources().getString(R.string.label_activity_global_settings_ping_count), validators);
         showInputDialog(input.toBundle());
     }
 

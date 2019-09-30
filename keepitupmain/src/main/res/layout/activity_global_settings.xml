@@ -38,7 +38,7 @@
                     android:layout_height="wrap_content"
                     android:layout_margin="@dimen/global_settings_activity_global_margin"
                     android:textStyle="bold"
-                    android:text="@string/label_global_settings_activity_global" />
+                    android:text="@string/label_activity_global_settings_global" />
 
             </androidx.cardview.widget.CardView>
 
@@ -64,7 +64,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:textStyle="bold"
-                        android:text="@string/label_global_settings_activity_ping_count" />
+                        android:text="@string/label_activity_global_settings_ping_count" />
 
                     <LinearLayout
                         android:id="@+id/linearlayout_global_settings_activity_ping_count_value"
@@ -110,7 +110,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:textStyle="bold"
-                        android:text="@string/label_global_settings_activity_notification_inactive_network" />
+                        android:text="@string/label_activity_global_settings_notification_inactive_network" />
 
                     <LinearLayout
                         android:id="@+id/linearlayout_global_settings_activity_notification_inactive_network_on_off"
@@ -162,7 +162,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:textStyle="bold"
-                        android:text="@string/label_global_settings_activity_download_external_storage" />
+                        android:text="@string/label_activity_global_settings_download_external_storage" />
 
                     <LinearLayout
                         android:id="@+id/linearlayout_global_settings_activity_download_external_storage_on_off"
@@ -214,7 +214,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:textStyle="bold"
-                        android:text="@string/label_global_settings_activity_download_folder" />
+                        android:text="@string/label_activity_global_settings_download_folder" />
 
                     <LinearLayout
                         android:id="@+id/linearlayout_global_settings_activity_download_folder_value"
@@ -260,7 +260,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:textStyle="bold"
-                        android:text="@string/label_global_settings_activity_download_keep" />
+                        android:text="@string/label_activity_global_settings_download_keep" />
 
                     <LinearLayout
                         android:id="@+id/linearlayout_global_settings_activity_download_keep_on_off"
