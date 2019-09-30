@@ -56,7 +56,7 @@ public class GlobalSettingsActivity extends SettingsInputActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
-        if (id == R.id.menu_action_global_settings_reset) {
+        if (id == R.id.menu_action_activity_global_settings_reset) {
             Log.d(GlobalSettingsActivity.class.getName(), "menu_action_reset triggered");
             PreferenceManager preferenceManager = new PreferenceManager(this);
             preferenceManager.removePreferencePingCount();
