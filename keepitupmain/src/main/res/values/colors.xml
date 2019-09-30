@@ -3,6 +3,7 @@
     <color name="colorPrimary">#e0dde3</color>
     <color name="colorPrimaryDark">#888888</color>
     <color name="textColor">#000000</color>
+    <color name="textColorDisabled">#888888</color>
     <color name="textColorPrimary">#666666</color>
     <color name="colorAccent">#e0dde3</color>
     <color name="statusBarColor">#666666</color>
