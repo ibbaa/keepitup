@@ -15,7 +15,7 @@ import androidx.fragment.app.FragmentActivity;
 import java.util.Objects;
 
 import de.ibba.keepitup.R;
-import de.ibba.keepitup.ui.permission.PermissionManager;
+import de.ibba.keepitup.permission.PermissionManager;
 import de.ibba.keepitup.util.BundleUtil;
 import de.ibba.keepitup.util.StringUtil;
 
