@@ -1,4 +1,4 @@
-package de.ibba.keepitup.ui.permission;
+package de.ibba.keepitup.permission;
 
 import android.content.Context;
 import android.content.pm.PackageManager;
@@ -94,7 +94,7 @@ public class PermissionManager {
                 Log.d(PermissionManager.class.getName(), "shouldShowExternalStorageRational returned false");
             }
         } else {
-            Log.d(PermissionManager.class.getName(), "Unknown permission " + permission);
+            Log.e(PermissionManager.class.getName(), "Unknown permission " + permission);
         }
         explainDialog.dismiss();
     }

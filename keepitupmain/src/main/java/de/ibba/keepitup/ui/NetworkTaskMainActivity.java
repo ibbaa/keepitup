@@ -2,15 +2,12 @@ package de.ibba.keepitup.ui;
 
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.RequiresApi;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
@@ -23,7 +20,6 @@ import de.ibba.keepitup.ui.adapter.NetworkTaskAdapter;
 import de.ibba.keepitup.ui.adapter.NetworkTaskUIWrapper;
 import de.ibba.keepitup.ui.dialog.NetworkTaskConfirmDialog;
 import de.ibba.keepitup.ui.dialog.NetworkTaskEditDialog;
-import de.ibba.keepitup.ui.permission.PermissionManager;
 import de.ibba.keepitup.ui.sync.NetworkTaskMainUIBroadcastReceiver;
 import de.ibba.keepitup.ui.sync.NetworkTaskMainUIInitTask;
 
@@ -225,14 +221,6 @@ public class NetworkTaskMainActivity extends RecyclerViewBaseActivity {
     public void onConfirmDialogCancelClicked(NetworkTaskConfirmDialog confirmDialog) {
         Log.d(NetworkTaskMainActivity.class.getName(), "onConfirmDialogCancelClicked");
         confirmDialog.dismiss();
-    }
-
-    @RequiresApi(api = Build.VERSION_CODES.M)
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        Log.d(NetworkTaskMainActivity.class.getName(), "onRequestPermissionsResult for code " + requestCode);
-        PermissionManager permissionManager = new PermissionManager(this);
-        permissionManager.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
 
     private NetworkTaskMainUIInitTask getUIInitTask(NetworkTaskAdapter adapter) {
