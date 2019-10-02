@@ -124,7 +124,9 @@ public class GlobalSettingsActivity extends SettingsInputActivity {
         PermissionManager permissionManager = new PermissionManager(this);
         if (isChecked && !permissionManager.hasExternalStoragePermission()) {
             Log.d(GlobalSettingsActivity.class.getName(), "Requesting external storage permission");
-            permissionManager.requestExternalStoragePermission();
+            if (permissionManager.shouldAskForRuntimePermission()) {
+                permissionManager.requestExternalStoragePermission();
+            }
         }
         prepareDownloadControls(isChecked);
     }
