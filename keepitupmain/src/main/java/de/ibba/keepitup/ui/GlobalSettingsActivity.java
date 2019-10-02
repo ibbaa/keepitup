@@ -126,6 +126,8 @@ public class GlobalSettingsActivity extends SettingsInputActivity {
             Log.d(GlobalSettingsActivity.class.getName(), "Requesting external storage permission");
             if (permissionManager.shouldAskForRuntimePermission()) {
                 permissionManager.requestExternalStoragePermission();
+            } else {
+                Log.d(GlobalSettingsActivity.class.getName(), "Requesting external storage permission skipped. Android version on this device does not support this feature.");
             }
         }
         prepareDownloadControls(isChecked);
