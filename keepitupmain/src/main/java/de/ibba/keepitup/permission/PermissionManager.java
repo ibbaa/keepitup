@@ -17,7 +17,7 @@ import de.ibba.keepitup.R;
 import de.ibba.keepitup.ui.dialog.PermissionExplainDialog;
 import de.ibba.keepitup.util.BundleUtil;
 
-public class PermissionManager {
+public class PermissionManager implements IPermissionManager {
 
     private final FragmentActivity activity;
 
@@ -25,10 +25,12 @@ public class PermissionManager {
         this.activity = activity;
     }
 
+    @Override
     public boolean shouldAskForRuntimePermission() {
         return Build.VERSION.SDK_INT >= Build.VERSION_CODES.M;
     }
 
+    @Override
     public boolean hasExternalStoragePermission() {
         Log.d(PermissionManager.class.getName(), "hasExternalStoragePermission");
         String[] externalStoragePermissions = getExternalStoragePermission();
@@ -43,22 +45,26 @@ public class PermissionManager {
         return true;
     }
 
+    @Override
     public void requestExternalStoragePermission() {
         Log.d(PermissionManager.class.getName(), "requestExternalStoragePermission");
         requestPermission(getExternalStoragePermission(), getExternalStoragePermissionCode());
     }
 
+    @Override
     public void requestPermission(String[] permissions, int code) {
         Log.d(PermissionManager.class.getName(), "requestPermission for code " + code);
         ActivityCompat.requestPermissions(activity, permissions, code);
     }
 
+    @Override
     public boolean hasPermission(String permission) {
         Log.d(PermissionManager.class.getName(), "hasPermission for permission " + permission);
         return ContextCompat.checkSelfPermission(getContext(), permission) == PackageManager.PERMISSION_GRANTED;
     }
 
     @RequiresApi(api = Build.VERSION_CODES.M)
+    @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         Log.d(PermissionManager.class.getName(), "onRequestPermissionsResult for code " + requestCode);
         if (wasPermissionGranted(grantResults)) {
