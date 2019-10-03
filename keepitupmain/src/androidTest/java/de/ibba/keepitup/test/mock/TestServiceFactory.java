@@ -4,8 +4,10 @@ import android.content.Context;
 import android.util.Log;
 
 import androidx.core.app.NotificationCompat;
+import androidx.fragment.app.FragmentActivity;
 
 import de.ibba.keepitup.notification.INotificatioManager;
+import de.ibba.keepitup.permission.IPermissionManager;
 import de.ibba.keepitup.resources.ServiceFactory;
 import de.ibba.keepitup.service.IAlarmManager;
 import de.ibba.keepitup.service.INetworkManager;
@@ -34,5 +36,11 @@ public class TestServiceFactory implements ServiceFactory {
     public INetworkManager createNetworkManager(Context context) {
         Log.d(TestServiceFactory.class.getName(), "createNetworkManager");
         return new MockNetworkManager();
+    }
+
+    @Override
+    public IPermissionManager createPermissionManager(FragmentActivity activity) {
+        Log.d(TestServiceFactory.class.getName(), "createPermissionManager");
+        return new MockPermissionManager();
     }
 }

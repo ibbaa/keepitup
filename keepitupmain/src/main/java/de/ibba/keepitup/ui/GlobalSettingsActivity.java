@@ -18,8 +18,9 @@ import java.util.Collections;
 import java.util.List;
 
 import de.ibba.keepitup.R;
-import de.ibba.keepitup.permission.PermissionManager;
+import de.ibba.keepitup.permission.IPermissionManager;
 import de.ibba.keepitup.resources.PreferenceManager;
+import de.ibba.keepitup.resources.ServiceFactoryContributor;
 import de.ibba.keepitup.ui.dialog.SettingsInput;
 import de.ibba.keepitup.ui.dialog.SettingsInputDialog;
 import de.ibba.keepitup.ui.validation.PingCountFieldValidator;
@@ -36,6 +37,11 @@ public class GlobalSettingsActivity extends SettingsInputActivity {
     private TextView downloadFolderText;
     private Switch downloadKeepSwitch;
     private TextView downloadKeepOnOffText;
+    private IPermissionManager permissionManager;
+
+    public void injectPermissionManager(IPermissionManager permissionManager) {
+        this.permissionManager = permissionManager;
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -121,7 +127,7 @@ public class GlobalSettingsActivity extends SettingsInputActivity {
 
     private void onDownloadExternalStorageCheckedChanged(CompoundButton buttonView, boolean isChecked) {
         Log.d(GlobalSettingsActivity.class.getName(), "onDownloadExternalStorageCheckedChanged, new value is " + isChecked);
-        PermissionManager permissionManager = new PermissionManager(this);
+        IPermissionManager permissionManager = createPermissionManager();
         if (isChecked && !permissionManager.hasExternalStoragePermission()) {
             Log.d(GlobalSettingsActivity.class.getName(), "Requesting external storage permission");
             if (permissionManager.shouldAskForRuntimePermission()) {
@@ -135,7 +141,7 @@ public class GlobalSettingsActivity extends SettingsInputActivity {
 
     private void prepareDownloadControls(boolean isChecked) {
         Log.d(GlobalSettingsActivity.class.getName(), "prepareDownloadControls, isChecked is " + isChecked);
-        PermissionManager permissionManager = new PermissionManager(this);
+        IPermissionManager permissionManager = createPermissionManager();
         PreferenceManager preferenceManager = new PreferenceManager(this);
         if (isChecked && !permissionManager.hasExternalStoragePermission()) {
             Log.d(GlobalSettingsActivity.class.getName(), "External storage permission is not granted");
@@ -247,8 +253,16 @@ public class GlobalSettingsActivity extends SettingsInputActivity {
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         Log.d(GlobalSettingsActivity.class.getName(), "onRequestPermissionsResult for code " + requestCode);
-        PermissionManager permissionManager = new PermissionManager(this);
+        IPermissionManager permissionManager = createPermissionManager();
         permissionManager.onRequestPermissionsResult(requestCode, permissions, grantResults);
         prepareDownloadControls(true);
+    }
+
+    private IPermissionManager createPermissionManager() {
+        if (permissionManager != null) {
+            return permissionManager;
+        }
+        ServiceFactoryContributor factoryContributor = new ServiceFactoryContributor(this);
+        return factoryContributor.createServiceFactory().createPermissionManager(this);
     }
 }
