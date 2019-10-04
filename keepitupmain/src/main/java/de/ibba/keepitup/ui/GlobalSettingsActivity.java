@@ -19,8 +19,8 @@ import java.util.List;
 
 import de.ibba.keepitup.R;
 import de.ibba.keepitup.permission.IPermissionManager;
+import de.ibba.keepitup.permission.PermissionManager;
 import de.ibba.keepitup.resources.PreferenceManager;
-import de.ibba.keepitup.resources.ServiceFactoryContributor;
 import de.ibba.keepitup.ui.dialog.SettingsInput;
 import de.ibba.keepitup.ui.dialog.SettingsInputDialog;
 import de.ibba.keepitup.ui.validation.PingCountFieldValidator;
@@ -114,11 +114,19 @@ public class GlobalSettingsActivity extends SettingsInputActivity {
     private void prepareDownloadExternalStorageSwitch() {
         Log.d(GlobalSettingsActivity.class.getName(), "prepareDownloadExternalStorageSwitch");
         PreferenceManager preferenceManager = new PreferenceManager(this);
+        IPermissionManager permissionManager = createPermissionManager();
         downloadExternalStorageSwitch = findViewById(R.id.switch_global_settings_activity_download_external_storage);
         downloadExternalStorageOnOffText = findViewById(R.id.textview_global_settings_activity_download_external_storage_on_off);
         downloadExternalStorageSwitch.setOnCheckedChangeListener(null);
-        prepareDownloadControls(preferenceManager.getPreferenceDownloadExternalStorage());
-        downloadExternalStorageSwitch.setOnCheckedChangeListener(this::onDownloadExternalStorageCheckedChanged);
+        if(!permissionManager.hasExternalStoragePermission() && !permissionManager.shouldAskForRuntimePermission()) {
+            Log.d(GlobalSettingsActivity.class.getName(), "External storage permission is not granted and requesting this permission is not supported.");
+            downloadExternalStorageSwitch.setChecked(false);
+            downloadExternalStorageSwitch.setEnabled(false);
+            preferenceManager.setPreferenceDownloadExternalStorage(false);
+        } else {
+            prepareDownloadControls(preferenceManager.getPreferenceDownloadExternalStorage());
+            downloadExternalStorageSwitch.setOnCheckedChangeListener(this::onDownloadExternalStorageCheckedChanged);
+        }
     }
 
     private void prepareDownloadExternalStorageOnOffText() {
@@ -262,7 +270,6 @@ public class GlobalSettingsActivity extends SettingsInputActivity {
         if (permissionManager != null) {
             return permissionManager;
         }
-        ServiceFactoryContributor factoryContributor = new ServiceFactoryContributor(this);
-        return factoryContributor.createServiceFactory().createPermissionManager(this);
+        return new PermissionManager(this);
     }
 }

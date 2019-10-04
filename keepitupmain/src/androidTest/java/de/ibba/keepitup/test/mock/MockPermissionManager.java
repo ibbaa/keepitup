@@ -16,6 +16,14 @@ public class MockPermissionManager implements IPermissionManager {
         reset();
     }
 
+    public MockPermissionManager(boolean shouldAskForRuntimePermission, boolean hasExternalStoragePermission, boolean hasPermission) {
+        this.shouldAskForRuntimePermission = shouldAskForRuntimePermission;
+        this.hasExternalStoragePermission = hasExternalStoragePermission;
+        this.hasPermission = hasPermission;
+        this.requestExternalStoragePermissionCalls = 0;
+        this.requestPermissionCalls = 0;
+    }
+
     public void reset() {
         this.shouldAskForRuntimePermission = false;
         this.hasExternalStoragePermission = true;

@@ -19,11 +19,13 @@ import static androidx.test.espresso.action.ViewActions.replaceText;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.matcher.ViewMatchers.isChecked;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
+import static androidx.test.espresso.matcher.ViewMatchers.isEnabled;
 import static androidx.test.espresso.matcher.ViewMatchers.isNotChecked;
 import static androidx.test.espresso.matcher.ViewMatchers.isRoot;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
 import static org.hamcrest.Matchers.allOf;
+import static org.hamcrest.core.IsNot.not;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -45,6 +47,15 @@ public class GlobalSettingsActivityTest extends BaseUITest {
         onView(withId(R.id.textview_global_settings_activity_ping_count)).check(matches(withText("3")));
         onView(withId(R.id.textview_global_settings_activity_notification_inactive_network_label)).check(matches(withText("Notifications when network is not active")));
         onView(withId(R.id.switch_global_settings_activity_notification_inactive_network)).check(matches(isNotChecked()));
+        onView(withId(R.id.textview_global_settings_activity_download_external_storage_label)).check(matches(withText("Download to an external storage folder")));
+        onView(withId(R.id.switch_global_settings_activity_download_external_storage)).check(matches(isNotChecked()));
+        onView(withId(R.id.switch_global_settings_activity_download_external_storage)).check(matches(isEnabled()));
+        onView(withId(R.id.textview_global_settings_activity_download_folder_label)).check(matches(withText("Download folder")));
+        onView(withId(R.id.textview_global_settings_activity_download_folder)).check(matches(withText("Internal storage folder")));
+        onView(withId(R.id.textview_global_settings_activity_download_folder)).check(matches(not(isEnabled())));
+        onView(withId(R.id.textview_global_settings_activity_download_keep_label)).check(matches(withText("Keep downloaded files")));
+        onView(withId(R.id.switch_global_settings_activity_download_keep)).check(matches(isNotChecked()));
+        onView(withId(R.id.switch_global_settings_activity_download_keep)).check(matches(not(isEnabled())));
     }
 
     @Test
@@ -54,10 +65,22 @@ public class GlobalSettingsActivityTest extends BaseUITest {
         onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("10"));
         onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
         onView(withId(R.id.switch_global_settings_activity_notification_inactive_network)).perform(click());
+        onView(withId(R.id.switch_global_settings_activity_download_external_storage)).perform(click());
+        onView(withId(R.id.switch_global_settings_activity_download_keep)).perform(click());
+        onView(withId(R.id.textview_global_settings_activity_ping_count_label)).check(matches(withText("Ping count")));
         onView(withId(R.id.textview_global_settings_activity_ping_count)).check(matches(withText("10")));
         onView(withId(R.id.textview_global_settings_activity_notification_inactive_network_label)).check(matches(withText("Notifications when network is not active")));
         onView(withId(R.id.switch_global_settings_activity_notification_inactive_network)).check(matches(isChecked()));
         onView(withId(R.id.textview_global_settings_activity_notification_inactive_network_on_off)).check(matches(withText("yes")));
+        onView(withId(R.id.textview_global_settings_activity_download_external_storage_label)).check(matches(withText("Download to an external storage folder")));
+        onView(withId(R.id.switch_global_settings_activity_download_external_storage)).check(matches(isChecked()));
+        onView(withId(R.id.switch_global_settings_activity_download_external_storage)).check(matches(isEnabled()));
+        onView(withId(R.id.textview_global_settings_activity_download_folder_label)).check(matches(withText("Download folder")));
+        onView(withId(R.id.textview_global_settings_activity_download_folder)).check(matches(withText("")));
+        onView(withId(R.id.textview_global_settings_activity_download_folder)).check(matches(isEnabled()));
+        onView(withId(R.id.textview_global_settings_activity_download_keep_label)).check(matches(withText("Keep downloaded files")));
+        onView(withId(R.id.switch_global_settings_activity_download_keep)).check(matches(isChecked()));
+        onView(withId(R.id.switch_global_settings_activity_download_keep)).check(matches(isEnabled()));
     }
 
     @Test
@@ -71,6 +94,23 @@ public class GlobalSettingsActivityTest extends BaseUITest {
         onView(withId(R.id.switch_global_settings_activity_notification_inactive_network)).perform(click());
         onView(withId(R.id.switch_global_settings_activity_notification_inactive_network)).check(matches(isNotChecked()));
         onView(withId(R.id.textview_global_settings_activity_notification_inactive_network_on_off)).check(matches(withText("no")));
+        onView(withId(R.id.switch_global_settings_activity_download_external_storage)).check(matches(isNotChecked()));
+        onView(withId(R.id.textview_global_settings_activity_download_external_storage_on_off)).check(matches(withText("no")));
+        onView(withId(R.id.switch_global_settings_activity_download_external_storage)).perform(click());
+        onView(withId(R.id.switch_global_settings_activity_download_external_storage)).check(matches(isChecked()));
+        onView(withId(R.id.textview_global_settings_activity_download_external_storage_on_off)).check(matches(withText("yes")));
+        onView(withId(R.id.switch_global_settings_activity_download_external_storage)).perform(click());
+        onView(withId(R.id.switch_global_settings_activity_download_external_storage)).check(matches(isNotChecked()));
+        onView(withId(R.id.textview_global_settings_activity_download_external_storage_on_off)).check(matches(withText("no")));
+        onView(withId(R.id.switch_global_settings_activity_download_external_storage)).perform(click());
+        onView(withId(R.id.switch_global_settings_activity_download_keep)).check(matches(isNotChecked()));
+        onView(withId(R.id.textview_global_settings_activity_download_keep_on_off)).check(matches(withText("no")));
+        onView(withId(R.id.switch_global_settings_activity_download_keep)).perform(click());
+        onView(withId(R.id.switch_global_settings_activity_download_keep)).check(matches(isChecked()));
+        onView(withId(R.id.textview_global_settings_activity_download_keep_on_off)).check(matches(withText("yes")));
+        onView(withId(R.id.switch_global_settings_activity_download_keep)).perform(click());
+        onView(withId(R.id.switch_global_settings_activity_download_keep)).check(matches(isNotChecked()));
+        onView(withId(R.id.textview_global_settings_activity_download_keep_on_off)).check(matches(withText("no")));
     }
 
     @Test
@@ -80,9 +120,13 @@ public class GlobalSettingsActivityTest extends BaseUITest {
         onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("2"));
         onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
         onView(withId(R.id.switch_global_settings_activity_notification_inactive_network)).perform(click());
+        onView(withId(R.id.switch_global_settings_activity_download_external_storage)).perform(click());
+        onView(withId(R.id.switch_global_settings_activity_download_keep)).perform(click());
         PreferenceManager preferenceManager = getPreferenceManager();
         assertEquals(2, preferenceManager.getPreferencePingCount());
         assertTrue(preferenceManager.getPreferenceNotificationInactiveNetwork());
+        assertTrue(preferenceManager.getPreferenceDownloadExternalStorage());
+        assertTrue(preferenceManager.getPreferenceDownloadKeep());
     }
 
     @Test
@@ -139,15 +183,27 @@ public class GlobalSettingsActivityTest extends BaseUITest {
         onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("2"));
         onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
         onView(withId(R.id.switch_global_settings_activity_notification_inactive_network)).perform(click());
+        onView(withId(R.id.switch_global_settings_activity_download_external_storage)).perform(click());
+        onView(withId(R.id.switch_global_settings_activity_download_keep)).perform(click());
         openActionBarOverflowOrOptionsMenu(TestRegistry.getContext());
         onView(withText("Reset")).perform(click());
         onView(withId(R.id.textview_global_settings_activity_ping_count_label)).check(matches(withText("Ping count")));
         onView(withId(R.id.textview_global_settings_activity_ping_count)).check(matches(withText("3")));
         onView(withId(R.id.textview_global_settings_activity_notification_inactive_network_label)).check(matches(withText("Notifications when network is not active")));
         onView(withId(R.id.switch_global_settings_activity_notification_inactive_network)).check(matches(isNotChecked()));
+        onView(withId(R.id.textview_global_settings_activity_download_external_storage_label)).check(matches(withText("Download to an external storage folder")));
+        onView(withId(R.id.switch_global_settings_activity_download_external_storage)).check(matches(isNotChecked()));
+        onView(withId(R.id.textview_global_settings_activity_download_folder_label)).check(matches(withText("Download folder")));
+        onView(withId(R.id.textview_global_settings_activity_download_folder)).check(matches(withText("Internal storage folder")));
+        onView(withId(R.id.textview_global_settings_activity_download_folder)).check(matches(not(isEnabled())));
+        onView(withId(R.id.textview_global_settings_activity_download_keep_label)).check(matches(withText("Keep downloaded files")));
+        onView(withId(R.id.switch_global_settings_activity_download_keep)).check(matches(isNotChecked()));
+        onView(withId(R.id.switch_global_settings_activity_download_keep)).check(matches(not(isEnabled())));
         PreferenceManager preferenceManager = getPreferenceManager();
         assertEquals(3, preferenceManager.getPreferencePingCount());
         assertFalse(preferenceManager.getPreferenceNotificationInactiveNetwork());
+        assertFalse(preferenceManager.getPreferenceDownloadExternalStorage());
+        assertFalse(preferenceManager.getPreferenceDownloadKeep());
     }
 
     @Test
@@ -157,15 +213,41 @@ public class GlobalSettingsActivityTest extends BaseUITest {
         onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("2"));
         onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
         onView(withId(R.id.switch_global_settings_activity_notification_inactive_network)).perform(click());
+        onView(withId(R.id.switch_global_settings_activity_download_external_storage)).perform(click());
+        onView(withId(R.id.switch_global_settings_activity_download_keep)).perform(click());
         rotateScreen(activity);
         onView(isRoot()).perform(waitFor(1000));
         onView(withId(R.id.textview_global_settings_activity_ping_count)).check(matches(withText("2")));
         onView(withId(R.id.switch_global_settings_activity_notification_inactive_network)).check(matches(isChecked()));
         onView(withId(R.id.textview_global_settings_activity_notification_inactive_network_on_off)).check(matches(withText("yes")));
+        onView(withId(R.id.switch_global_settings_activity_download_external_storage)).check(matches(isChecked()));
+        onView(withId(R.id.textview_global_settings_activity_download_external_storage_on_off)).check(matches(withText("yes")));
+        onView(withId(R.id.switch_global_settings_activity_download_keep)).check(matches(isChecked()));
+        onView(withId(R.id.textview_global_settings_activity_download_keep_on_off)).check(matches(withText("yes")));
         rotateScreen(activity);
         onView(isRoot()).perform(waitFor(1000));
         onView(withId(R.id.textview_global_settings_activity_ping_count)).check(matches(withText("2")));
         onView(withId(R.id.switch_global_settings_activity_notification_inactive_network)).check(matches(isChecked()));
         onView(withId(R.id.textview_global_settings_activity_notification_inactive_network_on_off)).check(matches(withText("yes")));
+        onView(withId(R.id.switch_global_settings_activity_download_external_storage)).check(matches(isChecked()));
+        onView(withId(R.id.textview_global_settings_activity_download_external_storage_on_off)).check(matches(withText("yes")));
+        onView(withId(R.id.switch_global_settings_activity_download_keep)).check(matches(isChecked()));
+        onView(withId(R.id.textview_global_settings_activity_download_keep_on_off)).check(matches(withText("yes")));
     }
+
+    /*@Test
+    public void testDownloadExternalStorageNoPermissionNoRuntimeGrant() {
+        GlobalSettingsActivity activity = (GlobalSettingsActivity) launchSettingsInputActivity(rule);
+        MockPermissionManager permissionManager = new MockPermissionManager(false, false, false);
+        activity.injectPermissionManager(permissionManager);
+        onView(withId(R.id.textview_global_settings_activity_download_external_storage_label)).check(matches(withText("Download to an external storage folder")));
+        onView(withId(R.id.switch_global_settings_activity_download_external_storage)).check(matches(isNotChecked()));
+        onView(withId(R.id.switch_global_settings_activity_download_external_storage)).check(matches(not(isEnabled())));
+        onView(withId(R.id.textview_global_settings_activity_download_folder_label)).check(matches(withText("Download folder")));
+        onView(withId(R.id.textview_global_settings_activity_download_folder)).check(matches(withText("Internal storage folder")));
+        onView(withId(R.id.textview_global_settings_activity_download_folder)).check(matches(not(isEnabled())));
+        onView(withId(R.id.textview_global_settings_activity_download_keep_label)).check(matches(withText("Keep downloaded files")));
+        onView(withId(R.id.switch_global_settings_activity_download_keep)).check(matches(isNotChecked()));
+        onView(withId(R.id.switch_global_settings_activity_download_keep)).check(matches(not(isEnabled())));
+    }*/
 }
