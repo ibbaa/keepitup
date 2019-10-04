@@ -1,5 +1,6 @@
 package de.ibba.keepitup.ui.dialog;
 
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -35,9 +36,15 @@ public class GeneralErrorDialog extends DialogFragment {
         return view;
     }
 
+    public String getTypefaceStyleKey() {
+        return GeneralErrorDialog.class.getSimpleName() + "TypefaceStyle";
+    }
+
     private void prepareErrorMessage(View view, String message) {
         Log.d(GeneralErrorDialog.class.getName(), "prepareErrorMessage");
         TextView messageText = view.findViewById(R.id.textview_dialog_general_error_message);
+        int style = Objects.requireNonNull(getArguments()).getInt(getTypefaceStyleKey(), Typeface.BOLD);
+        messageText.setTypeface(null, style);
         messageText.setText(message);
     }
 

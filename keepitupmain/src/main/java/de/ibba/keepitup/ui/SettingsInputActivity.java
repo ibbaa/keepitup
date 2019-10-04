@@ -1,12 +1,16 @@
 package de.ibba.keepitup.ui;
 
 import android.content.res.Resources;
+import android.graphics.Typeface;
+import android.os.Bundle;
 import android.util.Log;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import de.ibba.keepitup.ui.dialog.GeneralErrorDialog;
 import de.ibba.keepitup.ui.dialog.SettingsInput;
 import de.ibba.keepitup.ui.dialog.SettingsInputDialog;
+import de.ibba.keepitup.util.BundleUtil;
 
 public abstract class SettingsInputActivity extends AppCompatActivity {
 
@@ -27,6 +31,19 @@ public abstract class SettingsInputActivity extends AppCompatActivity {
     public abstract void onInputDialogOkClicked(SettingsInputDialog inputDialog, SettingsInput.Type type);
 
     public abstract void onInputDialogCancelClicked(SettingsInputDialog inputDialog);
+
+    protected void showErrorDialog(String errorMessage) {
+        showErrorDialog(errorMessage, Typeface.BOLD);
+    }
+
+    protected void showErrorDialog(String errorMessage, int typeface) {
+        Log.d(RecyclerViewBaseActivity.class.getName(), "showErrorDialog with message " + errorMessage);
+        GeneralErrorDialog errorDialog = new GeneralErrorDialog();
+        Bundle bundle = BundleUtil.messageToBundle(GeneralErrorDialog.class.getSimpleName(), errorMessage);
+        bundle.putInt(errorDialog.getTypefaceStyleKey(), typeface);
+        errorDialog.setArguments(bundle);
+        errorDialog.show(getSupportFragmentManager(), GeneralErrorDialog.class.getName());
+    }
 
     protected void recreateActivity() {
         Log.d(SettingsInputActivity.class.getName(), "recreateActivity");
