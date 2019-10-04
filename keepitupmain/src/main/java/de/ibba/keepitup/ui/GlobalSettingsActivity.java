@@ -21,9 +21,11 @@ import de.ibba.keepitup.R;
 import de.ibba.keepitup.permission.IPermissionManager;
 import de.ibba.keepitup.permission.PermissionManager;
 import de.ibba.keepitup.resources.PreferenceManager;
+import de.ibba.keepitup.ui.dialog.GeneralErrorDialog;
 import de.ibba.keepitup.ui.dialog.SettingsInput;
 import de.ibba.keepitup.ui.dialog.SettingsInputDialog;
 import de.ibba.keepitup.ui.validation.PingCountFieldValidator;
+import de.ibba.keepitup.util.BundleUtil;
 import de.ibba.keepitup.util.NumberUtil;
 import de.ibba.keepitup.util.StringUtil;
 
@@ -118,15 +120,15 @@ public class GlobalSettingsActivity extends SettingsInputActivity {
         downloadExternalStorageSwitch = findViewById(R.id.switch_global_settings_activity_download_external_storage);
         downloadExternalStorageOnOffText = findViewById(R.id.textview_global_settings_activity_download_external_storage_on_off);
         downloadExternalStorageSwitch.setOnCheckedChangeListener(null);
-        if (!permissionManager.hasExternalStoragePermission() && !permissionManager.shouldAskForRuntimePermission()) {
-            Log.d(GlobalSettingsActivity.class.getName(), "External storage permission is not granted and requesting this permission is not supported.");
+        if (!permissionManager.hasExternalStoragePermission()) {
+            Log.d(GlobalSettingsActivity.class.getName(), "External storage permission is not granted.");
             downloadExternalStorageSwitch.setChecked(false);
-            downloadExternalStorageSwitch.setEnabled(false);
             preferenceManager.setPreferenceDownloadExternalStorage(false);
         } else {
+            Log.d(GlobalSettingsActivity.class.getName(), "External storage permission is granted.");
             prepareDownloadControls(preferenceManager.getPreferenceDownloadExternalStorage());
-            downloadExternalStorageSwitch.setOnCheckedChangeListener(this::onDownloadExternalStorageCheckedChanged);
         }
+        downloadExternalStorageSwitch.setOnCheckedChangeListener(this::onDownloadExternalStorageCheckedChanged);
     }
 
     private void prepareDownloadExternalStorageOnOffText() {
@@ -141,7 +143,10 @@ public class GlobalSettingsActivity extends SettingsInputActivity {
             if (permissionManager.shouldAskForRuntimePermission()) {
                 permissionManager.requestExternalStoragePermission();
             } else {
-                Log.d(GlobalSettingsActivity.class.getName(), "Requesting external storage permission skipped. Android version on this device does not support this feature.");
+                Log.d(GlobalSettingsActivity.class.getName(), "Requesting external storage permission skipped. Android version on this device does not support this feature. Showing error dialog.");
+                GeneralErrorDialog errorDialog = new GeneralErrorDialog();
+                errorDialog.setArguments(BundleUtil.messageToBundle(GeneralErrorDialog.class.getSimpleName(), getResources().getString(R.string.text_dialog_general_error_external_storage_permission)));
+                errorDialog.show(getSupportFragmentManager(), GeneralErrorDialog.class.getName());
             }
         }
         prepareDownloadControls(isChecked);
@@ -154,12 +159,10 @@ public class GlobalSettingsActivity extends SettingsInputActivity {
         if (isChecked && !permissionManager.hasExternalStoragePermission()) {
             Log.d(GlobalSettingsActivity.class.getName(), "External storage permission is not granted");
             downloadExternalStorageSwitch.setChecked(false);
-            downloadExternalStorageSwitch.setEnabled(false);
             preferenceManager.setPreferenceDownloadExternalStorage(false);
         } else {
             Log.d(GlobalSettingsActivity.class.getName(), "External storage permission is granted");
             downloadExternalStorageSwitch.setChecked(isChecked);
-            downloadExternalStorageSwitch.setEnabled(true);
             preferenceManager.setPreferenceDownloadExternalStorage(isChecked);
         }
         prepareDownloadExternalStorageOnOffText();

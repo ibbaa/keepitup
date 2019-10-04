@@ -52,7 +52,6 @@ public class GlobalSettingsActivityTest extends BaseUITest {
         onView(withId(R.id.switch_global_settings_activity_notification_inactive_network)).check(matches(isNotChecked()));
         onView(withId(R.id.textview_global_settings_activity_download_external_storage_label)).check(matches(withText("Download to an external storage folder")));
         onView(withId(R.id.switch_global_settings_activity_download_external_storage)).check(matches(isNotChecked()));
-        onView(withId(R.id.switch_global_settings_activity_download_external_storage)).check(matches(isEnabled()));
         onView(withId(R.id.textview_global_settings_activity_download_folder_label)).check(matches(withText("Download folder")));
         onView(withId(R.id.textview_global_settings_activity_download_folder)).check(matches(withText("Internal storage folder")));
         onView(withId(R.id.textview_global_settings_activity_download_folder)).check(matches(not(isEnabled())));
@@ -77,7 +76,6 @@ public class GlobalSettingsActivityTest extends BaseUITest {
         onView(withId(R.id.textview_global_settings_activity_notification_inactive_network_on_off)).check(matches(withText("yes")));
         onView(withId(R.id.textview_global_settings_activity_download_external_storage_label)).check(matches(withText("Download to an external storage folder")));
         onView(withId(R.id.switch_global_settings_activity_download_external_storage)).check(matches(isChecked()));
-        onView(withId(R.id.switch_global_settings_activity_download_external_storage)).check(matches(isEnabled()));
         onView(withId(R.id.textview_global_settings_activity_download_folder_label)).check(matches(withText("Download folder")));
         onView(withId(R.id.textview_global_settings_activity_download_folder)).check(matches(withText("")));
         onView(withId(R.id.textview_global_settings_activity_download_folder)).check(matches(isEnabled()));
@@ -190,7 +188,6 @@ public class GlobalSettingsActivityTest extends BaseUITest {
         onView(withId(R.id.switch_global_settings_activity_download_external_storage)).check(matches(isEnabled()));
         onView(withId(R.id.textview_global_settings_activity_download_folder_label)).check(matches(withText("Download folder")));
         onView(withId(R.id.textview_global_settings_activity_download_folder)).check(matches(withText("Internal storage folder")));
-        onView(withId(R.id.textview_global_settings_activity_download_folder)).check(matches(not(isEnabled())));
         onView(withId(R.id.textview_global_settings_activity_download_keep_label)).check(matches(withText("Keep downloaded files")));
         onView(withId(R.id.switch_global_settings_activity_download_keep)).check(matches(isNotChecked()));
         onView(withId(R.id.switch_global_settings_activity_download_keep)).check(matches(not(isEnabled())));
@@ -214,7 +211,6 @@ public class GlobalSettingsActivityTest extends BaseUITest {
         onView(withId(R.id.switch_global_settings_activity_download_external_storage)).perform(click());
         onView(withId(R.id.textview_global_settings_activity_download_external_storage_label)).check(matches(withText("Download to an external storage folder")));
         onView(withId(R.id.switch_global_settings_activity_download_external_storage)).check(matches(isNotChecked()));
-        onView(withId(R.id.switch_global_settings_activity_download_external_storage)).check(matches(isEnabled()));
         onView(withId(R.id.textview_global_settings_activity_download_folder_label)).check(matches(withText("Download folder")));
         onView(withId(R.id.textview_global_settings_activity_download_folder)).check(matches(withText("Internal storage folder")));
         onView(withId(R.id.textview_global_settings_activity_download_folder)).check(matches(not(isEnabled())));
@@ -312,9 +308,11 @@ public class GlobalSettingsActivityTest extends BaseUITest {
         assertFalse(preferenceManager.getPreferenceDownloadExternalStorage());
         assertFalse(preferenceManager.getPreferenceDownloadKeep());
         onView(withId(R.id.switch_global_settings_activity_download_external_storage)).perform(click());
+        assertEquals(1, activity.getSupportFragmentManager().getFragments().size());
+        onView(withId(R.id.imageview_dialog_general_error_ok)).perform(click());
+        assertEquals(0, activity.getSupportFragmentManager().getFragments().size());
         onView(withId(R.id.textview_global_settings_activity_download_external_storage_label)).check(matches(withText("Download to an external storage folder")));
         onView(withId(R.id.switch_global_settings_activity_download_external_storage)).check(matches(isNotChecked()));
-        onView(withId(R.id.switch_global_settings_activity_download_external_storage)).check(matches(not(isEnabled())));
         onView(withId(R.id.textview_global_settings_activity_download_folder_label)).check(matches(withText("Download folder")));
         onView(withId(R.id.textview_global_settings_activity_download_folder)).check(matches(withText("Internal storage folder")));
         onView(withId(R.id.textview_global_settings_activity_download_folder)).check(matches(not(isEnabled())));
@@ -345,7 +343,6 @@ public class GlobalSettingsActivityTest extends BaseUITest {
         onView(withId(R.id.switch_global_settings_activity_download_external_storage)).perform(click());
         onView(withId(R.id.textview_global_settings_activity_download_external_storage_label)).check(matches(withText("Download to an external storage folder")));
         onView(withId(R.id.switch_global_settings_activity_download_external_storage)).check(matches(isNotChecked()));
-        onView(withId(R.id.switch_global_settings_activity_download_external_storage)).check(matches(not(isEnabled())));
         onView(withId(R.id.textview_global_settings_activity_download_folder_label)).check(matches(withText("Download folder")));
         onView(withId(R.id.textview_global_settings_activity_download_folder)).check(matches(withText("Internal storage folder")));
         onView(withId(R.id.textview_global_settings_activity_download_folder)).check(matches(not(isEnabled())));

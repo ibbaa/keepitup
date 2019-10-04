@@ -14,6 +14,7 @@ import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentActivity;
 
 import de.ibba.keepitup.R;
+import de.ibba.keepitup.ui.dialog.GeneralErrorDialog;
 import de.ibba.keepitup.ui.dialog.PermissionExplainDialog;
 import de.ibba.keepitup.util.BundleUtil;
 
@@ -84,7 +85,10 @@ public class PermissionManager implements IPermissionManager {
                 permissionExplainDialog.show(activity.getSupportFragmentManager(), PermissionExplainDialog.class.getName());
             } else {
                 Log.d(PermissionManager.class.getName(), "shouldShowExternalStorageRational returned false, not showing explain dialog again");
-                Log.d(PermissionManager.class.getName(), "External storage permission was denied permanently");
+                Log.d(PermissionManager.class.getName(), "External storage permission was denied permanently. Showing error dialog.");
+                GeneralErrorDialog errorDialog = new GeneralErrorDialog();
+                errorDialog.setArguments(BundleUtil.messageToBundle(GeneralErrorDialog.class.getSimpleName(), getResources().getString(R.string.text_dialog_general_error_external_storage_permission)));
+                errorDialog.show(activity.getSupportFragmentManager(), GeneralErrorDialog.class.getName());
             }
         }
     }
