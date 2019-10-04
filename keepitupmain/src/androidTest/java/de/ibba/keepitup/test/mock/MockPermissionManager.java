@@ -52,6 +52,14 @@ public class MockPermissionManager implements IPermissionManager {
         return requestPermissionCalls;
     }
 
+    public boolean wasRequestExternalStoragePermissionCalled() {
+        return requestExternalStoragePermissionCalls > 0;
+    }
+
+    public boolean wasRequestPermissionCalled() {
+        return requestPermissionCalls > 0;
+    }
+
     @Override
     public boolean shouldAskForRuntimePermission() {
         return shouldAskForRuntimePermission;

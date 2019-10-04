@@ -10,6 +10,7 @@ import org.junit.runner.RunWith;
 
 import de.ibba.keepitup.R;
 import de.ibba.keepitup.resources.PreferenceManager;
+import de.ibba.keepitup.test.mock.MockPermissionManager;
 import de.ibba.keepitup.test.mock.TestRegistry;
 
 import static androidx.test.espresso.Espresso.onView;
@@ -43,6 +44,8 @@ public class GlobalSettingsActivityTest extends BaseUITest {
         PreferenceManager preferenceManager = getPreferenceManager();
         assertEquals(3, preferenceManager.getPreferencePingCount());
         assertFalse(preferenceManager.getPreferenceNotificationInactiveNetwork());
+        assertFalse(preferenceManager.getPreferenceDownloadExternalStorage());
+        assertFalse(preferenceManager.getPreferenceDownloadKeep());
         onView(withId(R.id.textview_global_settings_activity_ping_count_label)).check(matches(withText("Ping count")));
         onView(withId(R.id.textview_global_settings_activity_ping_count)).check(matches(withText("3")));
         onView(withId(R.id.textview_global_settings_activity_notification_inactive_network_label)).check(matches(withText("Notifications when network is not active")));
@@ -177,6 +180,63 @@ public class GlobalSettingsActivityTest extends BaseUITest {
     }
 
     @Test
+    public void testDownloadControls() {
+        launchSettingsInputActivity(rule);
+        PreferenceManager preferenceManager = getPreferenceManager();
+        assertFalse(preferenceManager.getPreferenceDownloadExternalStorage());
+        assertFalse(preferenceManager.getPreferenceDownloadKeep());
+        onView(withId(R.id.textview_global_settings_activity_download_external_storage_label)).check(matches(withText("Download to an external storage folder")));
+        onView(withId(R.id.switch_global_settings_activity_download_external_storage)).check(matches(isNotChecked()));
+        onView(withId(R.id.switch_global_settings_activity_download_external_storage)).check(matches(isEnabled()));
+        onView(withId(R.id.textview_global_settings_activity_download_folder_label)).check(matches(withText("Download folder")));
+        onView(withId(R.id.textview_global_settings_activity_download_folder)).check(matches(withText("Internal storage folder")));
+        onView(withId(R.id.textview_global_settings_activity_download_folder)).check(matches(not(isEnabled())));
+        onView(withId(R.id.textview_global_settings_activity_download_keep_label)).check(matches(withText("Keep downloaded files")));
+        onView(withId(R.id.switch_global_settings_activity_download_keep)).check(matches(isNotChecked()));
+        onView(withId(R.id.switch_global_settings_activity_download_keep)).check(matches(not(isEnabled())));
+        onView(withId(R.id.switch_global_settings_activity_download_external_storage)).perform(click());
+        onView(withId(R.id.textview_global_settings_activity_download_external_storage_label)).check(matches(withText("Download to an external storage folder")));
+        onView(withId(R.id.switch_global_settings_activity_download_external_storage)).check(matches(isChecked()));
+        onView(withId(R.id.textview_global_settings_activity_download_folder_label)).check(matches(withText("Download folder")));
+        onView(withId(R.id.textview_global_settings_activity_download_folder)).check(matches(withText("")));
+        onView(withId(R.id.textview_global_settings_activity_download_folder)).check(matches(isEnabled()));
+        onView(withId(R.id.textview_global_settings_activity_download_keep_label)).check(matches(withText("Keep downloaded files")));
+        onView(withId(R.id.switch_global_settings_activity_download_keep)).check(matches(not(isChecked())));
+        onView(withId(R.id.switch_global_settings_activity_download_keep)).check(matches(isEnabled()));
+        assertTrue(preferenceManager.getPreferenceDownloadExternalStorage());
+        assertFalse(preferenceManager.getPreferenceDownloadKeep());
+        onView(withId(R.id.switch_global_settings_activity_download_keep)).perform(click());
+        onView(withId(R.id.textview_global_settings_activity_download_keep_label)).check(matches(withText("Keep downloaded files")));
+        onView(withId(R.id.switch_global_settings_activity_download_keep)).check(matches(isChecked()));
+        onView(withId(R.id.switch_global_settings_activity_download_keep)).check(matches(isEnabled()));
+        assertTrue(preferenceManager.getPreferenceDownloadExternalStorage());
+        assertTrue(preferenceManager.getPreferenceDownloadKeep());
+        onView(withId(R.id.switch_global_settings_activity_download_external_storage)).perform(click());
+        onView(withId(R.id.textview_global_settings_activity_download_external_storage_label)).check(matches(withText("Download to an external storage folder")));
+        onView(withId(R.id.switch_global_settings_activity_download_external_storage)).check(matches(isNotChecked()));
+        onView(withId(R.id.switch_global_settings_activity_download_external_storage)).check(matches(isEnabled()));
+        onView(withId(R.id.textview_global_settings_activity_download_folder_label)).check(matches(withText("Download folder")));
+        onView(withId(R.id.textview_global_settings_activity_download_folder)).check(matches(withText("Internal storage folder")));
+        onView(withId(R.id.textview_global_settings_activity_download_folder)).check(matches(not(isEnabled())));
+        onView(withId(R.id.textview_global_settings_activity_download_keep_label)).check(matches(withText("Keep downloaded files")));
+        onView(withId(R.id.switch_global_settings_activity_download_keep)).check(matches(isNotChecked()));
+        onView(withId(R.id.switch_global_settings_activity_download_keep)).check(matches(not(isEnabled())));
+        assertFalse(preferenceManager.getPreferenceDownloadExternalStorage());
+        assertTrue(preferenceManager.getPreferenceDownloadKeep());
+        onView(withId(R.id.switch_global_settings_activity_download_external_storage)).perform(click());
+        onView(withId(R.id.textview_global_settings_activity_download_external_storage_label)).check(matches(withText("Download to an external storage folder")));
+        onView(withId(R.id.switch_global_settings_activity_download_external_storage)).check(matches(isChecked()));
+        onView(withId(R.id.textview_global_settings_activity_download_folder_label)).check(matches(withText("Download folder")));
+        onView(withId(R.id.textview_global_settings_activity_download_folder)).check(matches(withText("")));
+        onView(withId(R.id.textview_global_settings_activity_download_folder)).check(matches(isEnabled()));
+        onView(withId(R.id.textview_global_settings_activity_download_keep_label)).check(matches(withText("Keep downloaded files")));
+        onView(withId(R.id.switch_global_settings_activity_download_keep)).check(matches(isChecked()));
+        onView(withId(R.id.switch_global_settings_activity_download_keep)).check(matches(isEnabled()));
+        assertTrue(preferenceManager.getPreferenceDownloadExternalStorage());
+        assertTrue(preferenceManager.getPreferenceDownloadKeep());
+    }
+
+    @Test
     public void testResetValues() {
         launchSettingsInputActivity(rule);
         onView(withId(R.id.textview_global_settings_activity_ping_count)).perform(click());
@@ -235,11 +295,23 @@ public class GlobalSettingsActivityTest extends BaseUITest {
         onView(withId(R.id.textview_global_settings_activity_download_keep_on_off)).check(matches(withText("yes")));
     }
 
-    /*@Test
+    @Test
     public void testDownloadExternalStorageNoPermissionNoRuntimeGrant() {
         GlobalSettingsActivity activity = (GlobalSettingsActivity) launchSettingsInputActivity(rule);
         MockPermissionManager permissionManager = new MockPermissionManager(false, false, false);
         activity.injectPermissionManager(permissionManager);
+        onView(withId(R.id.textview_global_settings_activity_download_external_storage_label)).check(matches(withText("Download to an external storage folder")));
+        onView(withId(R.id.switch_global_settings_activity_download_external_storage)).check(matches(isNotChecked()));
+        onView(withId(R.id.textview_global_settings_activity_download_folder_label)).check(matches(withText("Download folder")));
+        onView(withId(R.id.textview_global_settings_activity_download_folder)).check(matches(withText("Internal storage folder")));
+        onView(withId(R.id.textview_global_settings_activity_download_folder)).check(matches(not(isEnabled())));
+        onView(withId(R.id.textview_global_settings_activity_download_keep_label)).check(matches(withText("Keep downloaded files")));
+        onView(withId(R.id.switch_global_settings_activity_download_keep)).check(matches(isNotChecked()));
+        onView(withId(R.id.switch_global_settings_activity_download_keep)).check(matches(not(isEnabled())));
+        PreferenceManager preferenceManager = getPreferenceManager();
+        assertFalse(preferenceManager.getPreferenceDownloadExternalStorage());
+        assertFalse(preferenceManager.getPreferenceDownloadKeep());
+        onView(withId(R.id.switch_global_settings_activity_download_external_storage)).perform(click());
         onView(withId(R.id.textview_global_settings_activity_download_external_storage_label)).check(matches(withText("Download to an external storage folder")));
         onView(withId(R.id.switch_global_settings_activity_download_external_storage)).check(matches(isNotChecked()));
         onView(withId(R.id.switch_global_settings_activity_download_external_storage)).check(matches(not(isEnabled())));
@@ -249,5 +321,39 @@ public class GlobalSettingsActivityTest extends BaseUITest {
         onView(withId(R.id.textview_global_settings_activity_download_keep_label)).check(matches(withText("Keep downloaded files")));
         onView(withId(R.id.switch_global_settings_activity_download_keep)).check(matches(isNotChecked()));
         onView(withId(R.id.switch_global_settings_activity_download_keep)).check(matches(not(isEnabled())));
-    }*/
+        assertFalse(preferenceManager.getPreferenceDownloadExternalStorage());
+        assertFalse(preferenceManager.getPreferenceDownloadKeep());
+        assertFalse(permissionManager.wasRequestExternalStoragePermissionCalled());
+    }
+
+    @Test
+    public void testDownloadExternalStorageNoPermissionRuntimeGrant() {
+        GlobalSettingsActivity activity = (GlobalSettingsActivity) launchSettingsInputActivity(rule);
+        MockPermissionManager permissionManager = new MockPermissionManager(true, false, false);
+        activity.injectPermissionManager(permissionManager);
+        onView(withId(R.id.textview_global_settings_activity_download_external_storage_label)).check(matches(withText("Download to an external storage folder")));
+        onView(withId(R.id.switch_global_settings_activity_download_external_storage)).check(matches(isNotChecked()));
+        onView(withId(R.id.textview_global_settings_activity_download_folder_label)).check(matches(withText("Download folder")));
+        onView(withId(R.id.textview_global_settings_activity_download_folder)).check(matches(withText("Internal storage folder")));
+        onView(withId(R.id.textview_global_settings_activity_download_folder)).check(matches(not(isEnabled())));
+        onView(withId(R.id.textview_global_settings_activity_download_keep_label)).check(matches(withText("Keep downloaded files")));
+        onView(withId(R.id.switch_global_settings_activity_download_keep)).check(matches(isNotChecked()));
+        onView(withId(R.id.switch_global_settings_activity_download_keep)).check(matches(not(isEnabled())));
+        PreferenceManager preferenceManager = getPreferenceManager();
+        assertFalse(preferenceManager.getPreferenceDownloadExternalStorage());
+        assertFalse(preferenceManager.getPreferenceDownloadKeep());
+        onView(withId(R.id.switch_global_settings_activity_download_external_storage)).perform(click());
+        onView(withId(R.id.textview_global_settings_activity_download_external_storage_label)).check(matches(withText("Download to an external storage folder")));
+        onView(withId(R.id.switch_global_settings_activity_download_external_storage)).check(matches(isNotChecked()));
+        onView(withId(R.id.switch_global_settings_activity_download_external_storage)).check(matches(not(isEnabled())));
+        onView(withId(R.id.textview_global_settings_activity_download_folder_label)).check(matches(withText("Download folder")));
+        onView(withId(R.id.textview_global_settings_activity_download_folder)).check(matches(withText("Internal storage folder")));
+        onView(withId(R.id.textview_global_settings_activity_download_folder)).check(matches(not(isEnabled())));
+        onView(withId(R.id.textview_global_settings_activity_download_keep_label)).check(matches(withText("Keep downloaded files")));
+        onView(withId(R.id.switch_global_settings_activity_download_keep)).check(matches(isNotChecked()));
+        onView(withId(R.id.switch_global_settings_activity_download_keep)).check(matches(not(isEnabled())));
+        assertFalse(preferenceManager.getPreferenceDownloadExternalStorage());
+        assertFalse(preferenceManager.getPreferenceDownloadKeep());
+        assertTrue(permissionManager.wasRequestExternalStoragePermissionCalled());
+    }
 }
