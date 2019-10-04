@@ -118,7 +118,7 @@ public class GlobalSettingsActivity extends SettingsInputActivity {
         downloadExternalStorageSwitch = findViewById(R.id.switch_global_settings_activity_download_external_storage);
         downloadExternalStorageOnOffText = findViewById(R.id.textview_global_settings_activity_download_external_storage_on_off);
         downloadExternalStorageSwitch.setOnCheckedChangeListener(null);
-        if(!permissionManager.hasExternalStoragePermission() && !permissionManager.shouldAskForRuntimePermission()) {
+        if (!permissionManager.hasExternalStoragePermission() && !permissionManager.shouldAskForRuntimePermission()) {
             Log.d(GlobalSettingsActivity.class.getName(), "External storage permission is not granted and requesting this permission is not supported.");
             downloadExternalStorageSwitch.setChecked(false);
             downloadExternalStorageSwitch.setEnabled(false);
