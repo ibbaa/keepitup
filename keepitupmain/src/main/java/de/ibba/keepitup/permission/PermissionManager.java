@@ -3,6 +3,7 @@ package de.ibba.keepitup.permission;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
+import android.graphics.Typeface;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
@@ -87,7 +88,9 @@ public class PermissionManager implements IPermissionManager {
                 Log.d(PermissionManager.class.getName(), "shouldShowExternalStorageRational returned false, not showing explain dialog again");
                 Log.d(PermissionManager.class.getName(), "External storage permission was denied permanently. Showing error dialog.");
                 GeneralErrorDialog errorDialog = new GeneralErrorDialog();
-                errorDialog.setArguments(BundleUtil.messageToBundle(GeneralErrorDialog.class.getSimpleName(), getResources().getString(R.string.text_dialog_general_error_external_storage_permission)));
+                Bundle bundle = BundleUtil.messageToBundle(GeneralErrorDialog.class.getSimpleName(), getResources().getString(R.string.text_dialog_general_error_external_storage_permission));
+                bundle.putInt(errorDialog.getTypefaceStyleKey(), Typeface.NORMAL);
+                errorDialog.setArguments(bundle);
                 errorDialog.show(activity.getSupportFragmentManager(), GeneralErrorDialog.class.getName());
             }
         }

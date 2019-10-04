@@ -1,5 +1,6 @@
 package de.ibba.keepitup.ui;
 
+import android.graphics.Typeface;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
@@ -21,11 +22,9 @@ import de.ibba.keepitup.R;
 import de.ibba.keepitup.permission.IPermissionManager;
 import de.ibba.keepitup.permission.PermissionManager;
 import de.ibba.keepitup.resources.PreferenceManager;
-import de.ibba.keepitup.ui.dialog.GeneralErrorDialog;
 import de.ibba.keepitup.ui.dialog.SettingsInput;
 import de.ibba.keepitup.ui.dialog.SettingsInputDialog;
 import de.ibba.keepitup.ui.validation.PingCountFieldValidator;
-import de.ibba.keepitup.util.BundleUtil;
 import de.ibba.keepitup.util.NumberUtil;
 import de.ibba.keepitup.util.StringUtil;
 
@@ -144,9 +143,7 @@ public class GlobalSettingsActivity extends SettingsInputActivity {
                 permissionManager.requestExternalStoragePermission();
             } else {
                 Log.d(GlobalSettingsActivity.class.getName(), "Requesting external storage permission skipped. Android version on this device does not support this feature. Showing error dialog.");
-                GeneralErrorDialog errorDialog = new GeneralErrorDialog();
-                errorDialog.setArguments(BundleUtil.messageToBundle(GeneralErrorDialog.class.getSimpleName(), getResources().getString(R.string.text_dialog_general_error_external_storage_permission)));
-                errorDialog.show(getSupportFragmentManager(), GeneralErrorDialog.class.getName());
+                showErrorDialog(getResources().getString(R.string.text_dialog_general_error_external_storage_permission), Typeface.NORMAL);
             }
         }
         prepareDownloadControls(isChecked);

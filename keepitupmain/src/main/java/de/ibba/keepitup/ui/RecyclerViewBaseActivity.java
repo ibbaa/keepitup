@@ -1,6 +1,7 @@
 package de.ibba.keepitup.ui;
 
 import android.content.res.Resources;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.util.Log;
 
@@ -47,9 +48,15 @@ public abstract class RecyclerViewBaseActivity extends AppCompatActivity {
     }
 
     protected void showErrorDialog(String errorMessage) {
+        showErrorDialog(errorMessage, Typeface.BOLD);
+    }
+
+    protected void showErrorDialog(String errorMessage, int typeface) {
         Log.d(RecyclerViewBaseActivity.class.getName(), "showErrorDialog with message " + errorMessage);
         GeneralErrorDialog errorDialog = new GeneralErrorDialog();
-        errorDialog.setArguments(BundleUtil.messageToBundle(GeneralErrorDialog.class.getSimpleName(), errorMessage));
+        Bundle bundle = BundleUtil.messageToBundle(GeneralErrorDialog.class.getSimpleName(), errorMessage);
+        bundle.putInt(errorDialog.getTypefaceStyleKey(), typeface);
+        errorDialog.setArguments(bundle);
         errorDialog.show(getSupportFragmentManager(), GeneralErrorDialog.class.getName());
     }
 
