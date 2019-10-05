@@ -1,5 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <string name="label_dialog_permission_explain_ok">@android:string/ok</string>
-    <string name="text_dialog_permission_explain_external_storage">Downloading to an external storage folder requires the permission to access the external storage. You can change your decision later on in the android app settings.</string>
-</resources>
