@@ -1,7 +1,5 @@
 package de.ibba.keepitup.ui;
 
-import android.graphics.Typeface;
-import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -11,16 +9,12 @@ import android.widget.CompoundButton;
 import android.widget.Switch;
 import android.widget.TextView;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.RequiresApi;
 import androidx.cardview.widget.CardView;
 
 import java.util.Collections;
 import java.util.List;
 
 import de.ibba.keepitup.R;
-import de.ibba.keepitup.permission.IPermissionManager;
-import de.ibba.keepitup.permission.PermissionManager;
 import de.ibba.keepitup.resources.PreferenceManager;
 import de.ibba.keepitup.ui.dialog.SettingsInput;
 import de.ibba.keepitup.ui.dialog.SettingsInputDialog;
@@ -38,11 +32,6 @@ public class GlobalSettingsActivity extends SettingsInputActivity {
     private TextView downloadFolderText;
     private Switch downloadKeepSwitch;
     private TextView downloadKeepOnOffText;
-    private IPermissionManager permissionManager;
-
-    public void injectPermissionManager(IPermissionManager permissionManager) {
-        this.permissionManager = permissionManager;
-    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -115,19 +104,12 @@ public class GlobalSettingsActivity extends SettingsInputActivity {
     private void prepareDownloadExternalStorageSwitch() {
         Log.d(GlobalSettingsActivity.class.getName(), "prepareDownloadExternalStorageSwitch");
         PreferenceManager preferenceManager = new PreferenceManager(this);
-        IPermissionManager permissionManager = createPermissionManager();
         downloadExternalStorageSwitch = findViewById(R.id.switch_global_settings_activity_download_external_storage);
         downloadExternalStorageOnOffText = findViewById(R.id.textview_global_settings_activity_download_external_storage_on_off);
         downloadExternalStorageSwitch.setOnCheckedChangeListener(null);
-        if (!permissionManager.hasExternalStoragePermission()) {
-            Log.d(GlobalSettingsActivity.class.getName(), "External storage permission is not granted.");
-            downloadExternalStorageSwitch.setChecked(false);
-            preferenceManager.setPreferenceDownloadExternalStorage(false);
-        } else {
-            Log.d(GlobalSettingsActivity.class.getName(), "External storage permission is granted.");
-            prepareDownloadControls(preferenceManager.getPreferenceDownloadExternalStorage());
-        }
+        downloadExternalStorageSwitch.setChecked(preferenceManager.getPreferenceDownloadExternalStorage());
         downloadExternalStorageSwitch.setOnCheckedChangeListener(this::onDownloadExternalStorageCheckedChanged);
+        prepareDownloadExternalStorageOnOffText();
     }
 
     private void prepareDownloadExternalStorageOnOffText() {
@@ -136,32 +118,8 @@ public class GlobalSettingsActivity extends SettingsInputActivity {
 
     private void onDownloadExternalStorageCheckedChanged(CompoundButton buttonView, boolean isChecked) {
         Log.d(GlobalSettingsActivity.class.getName(), "onDownloadExternalStorageCheckedChanged, new value is " + isChecked);
-        IPermissionManager permissionManager = createPermissionManager();
-        if (isChecked && !permissionManager.hasExternalStoragePermission()) {
-            Log.d(GlobalSettingsActivity.class.getName(), "Requesting external storage permission");
-            if (permissionManager.shouldAskForRuntimePermission()) {
-                permissionManager.requestExternalStoragePermission();
-            } else {
-                Log.d(GlobalSettingsActivity.class.getName(), "Requesting external storage permission skipped. Android version on this device does not support this feature. Showing error dialog.");
-                showErrorDialog(getResources().getString(R.string.text_dialog_general_error_external_storage_permission), Typeface.NORMAL);
-            }
-        }
-        prepareDownloadControls(isChecked);
-    }
-
-    private void prepareDownloadControls(boolean isChecked) {
-        Log.d(GlobalSettingsActivity.class.getName(), "prepareDownloadControls, isChecked is " + isChecked);
-        IPermissionManager permissionManager = createPermissionManager();
         PreferenceManager preferenceManager = new PreferenceManager(this);
-        if (isChecked && !permissionManager.hasExternalStoragePermission()) {
-            Log.d(GlobalSettingsActivity.class.getName(), "External storage permission is not granted");
-            downloadExternalStorageSwitch.setChecked(false);
-            preferenceManager.setPreferenceDownloadExternalStorage(false);
-        } else {
-            Log.d(GlobalSettingsActivity.class.getName(), "External storage permission is granted");
-            downloadExternalStorageSwitch.setChecked(isChecked);
-            preferenceManager.setPreferenceDownloadExternalStorage(isChecked);
-        }
+        preferenceManager.setPreferenceDownloadExternalStorage(isChecked);
         prepareDownloadExternalStorageOnOffText();
         prepareDownloadFolderField();
         prepareDownloadKeepSwitch();
@@ -255,21 +213,5 @@ public class GlobalSettingsActivity extends SettingsInputActivity {
     public void onInputDialogCancelClicked(SettingsInputDialog inputDialog) {
         Log.d(GlobalSettingsActivity.class.getName(), "onInputDialogCancelClicked");
         inputDialog.dismiss();
-    }
-
-    @RequiresApi(api = Build.VERSION_CODES.M)
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        Log.d(GlobalSettingsActivity.class.getName(), "onRequestPermissionsResult for code " + requestCode);
-        IPermissionManager permissionManager = createPermissionManager();
-        permissionManager.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        prepareDownloadControls(true);
-    }
-
-    private IPermissionManager createPermissionManager() {
-        if (permissionManager != null) {
-            return permissionManager;
-        }
-        return new PermissionManager(this);
     }
 }
