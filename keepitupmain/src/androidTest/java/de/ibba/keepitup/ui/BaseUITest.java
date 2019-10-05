@@ -1,6 +1,5 @@
 package de.ibba.keepitup.ui;
 
-import android.Manifest;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
@@ -11,12 +10,10 @@ import android.widget.GridLayout;
 import androidx.test.espresso.ViewAction;
 import androidx.test.platform.app.InstrumentationRegistry;
 import androidx.test.rule.ActivityTestRule;
-import androidx.test.rule.GrantPermissionRule;
 
 import org.hamcrest.Matcher;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Rule;
 
 import java.util.Locale;
 
@@ -33,12 +30,6 @@ import de.ibba.keepitup.test.mock.TestRegistry;
 import de.ibba.keepitup.test.viewaction.WaitForViewAction;
 
 public abstract class BaseUITest {
-
-    @Rule
-    public GrantPermissionRule permissionRuleReadExternal = GrantPermissionRule.grant(android.Manifest.permission.READ_EXTERNAL_STORAGE);
-
-    @Rule
-    public GrantPermissionRule permissionRuleWriteExternal = GrantPermissionRule.grant(Manifest.permission.WRITE_EXTERNAL_STORAGE);
 
     private NetworkTaskDAO networkTaskDAO;
     private LogDAO logDAO;
