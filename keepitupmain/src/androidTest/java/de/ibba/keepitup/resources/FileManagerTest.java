@@ -27,7 +27,7 @@ public class FileManagerTest {
         fileManager = new FileManager(TestRegistry.getContext());
         fileManager.deleteDirectory(fileManager.getInternalDownloadDirectory());
         fileManager.deleteDirectory(fileManager.getExternalDownloadDirectory(fileManager.getDefaultDownloadDirectoryName()));
-        fileManager.deleteDirectory(fileManager.getExternalDownloadDirectory("test"));
+        fileManager.deleteDirectory(fileManager.getExternalDownloadDirectory("test/download"));
     }
 
     @After
@@ -71,13 +71,13 @@ public class FileManagerTest {
     @Test
     public void testGetExternalDownloadDirectory() {
         File externalRootDir = fileManager.getExternalRootDirectory();
-        File downloadDir = new File(externalRootDir, "test");
+        File downloadDir = new File(externalRootDir, "test/download");
         assertFalse(downloadDir.exists());
-        File externalDownloadDir = fileManager.getExternalDownloadDirectory("test");
+        File externalDownloadDir = fileManager.getExternalDownloadDirectory("test/download");
         assertTrue(externalDownloadDir.exists());
         assertTrue(downloadDir.exists());
         assertEquals(externalDownloadDir, downloadDir);
-        externalDownloadDir = fileManager.getExternalDownloadDirectory("test");
+        externalDownloadDir = fileManager.getExternalDownloadDirectory("test/download");
         assertTrue(externalDownloadDir.exists());
         assertTrue(downloadDir.exists());
         assertEquals(externalDownloadDir, downloadDir);
