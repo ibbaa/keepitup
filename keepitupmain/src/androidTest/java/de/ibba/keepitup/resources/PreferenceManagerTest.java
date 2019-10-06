@@ -190,14 +190,14 @@ public class PreferenceManagerTest {
 
     @Test
     public void testGetSetRemovePreferenceDownloadFolder() {
-        assertEquals("", preferenceManager.getPreferenceDownloadFolder());
+        assertEquals("download", preferenceManager.getPreferenceDownloadFolder());
         preferenceManager.setPreferenceDownloadFolder("Folder");
         assertEquals("Folder", preferenceManager.getPreferenceDownloadFolder());
         preferenceManager.removeAllPreferences();
-        assertEquals("", preferenceManager.getPreferenceDownloadFolder());
+        assertEquals("download", preferenceManager.getPreferenceDownloadFolder());
         preferenceManager.setPreferenceDownloadFolder("Folder");
         preferenceManager.removePreferenceDownloadFolder();
-        assertEquals("", preferenceManager.getPreferenceDownloadFolder());
+        assertEquals("download", preferenceManager.getPreferenceDownloadFolder());
     }
 
     @Test

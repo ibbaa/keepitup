@@ -6,11 +6,13 @@ import android.content.Intent;
 import android.util.Log;
 
 import de.ibba.keepitup.notification.NotificationHandler;
+import de.ibba.keepitup.resources.FileManager;
 
 public class StartupService extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
+        Log.d(StartupService.class.getName(), "onReceive.");
         if (Intent.ACTION_BOOT_COMPLETED.equals(intent.getAction())) {
             Log.d(StartupService.class.getName(), "Received system boot event. Startup.");
             startup(context);
@@ -20,19 +22,29 @@ public class StartupService extends BroadcastReceiver {
     }
 
     public void startup(Context context) {
+        Log.d(StartupService.class.getName(), "Starting application.");
         try {
-            Log.d(StartupService.class.getName(), "Starting application.");
+            Log.d(StartupService.class.getName(), "Init notification channels.");
             new NotificationHandler(context);
+            Log.d(StartupService.class.getName(), "Starting pending network tasks.");
             NetworkTaskProcessServiceScheduler scheduler = new NetworkTaskProcessServiceScheduler(context);
             scheduler.startup();
         } catch (Exception exc) {
             Log.e(StartupService.class.getName(), "Error on starting pending network tasks.", exc);
         }
+        try {
+            Log.d(StartupService.class.getName(), "Deleting internal download files.");
+            FileManager fileManager = new FileManager(context);
+            fileManager.deleteDirectory(fileManager.getInternalDownloadDirectory());
+        } catch (Exception exc) {
+            Log.e(StartupService.class.getName(), "Error on deleting internal download files", exc);
+        }
     }
 
     public void terminate(Context context) {
+        Log.d(StartupService.class.getName(), "Terminating application.");
         try {
-            Log.d(StartupService.class.getName(), "Terminating application.");
+            Log.d(StartupService.class.getName(), "Stopping pending network tasks.");
             NetworkTaskProcessServiceScheduler scheduler = new NetworkTaskProcessServiceScheduler(context);
             scheduler.terminateAll();
         } catch (Exception exc) {

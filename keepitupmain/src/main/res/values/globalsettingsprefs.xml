@@ -9,7 +9,7 @@
     <string name="download_external_storage_key">download_external_storage_key</string>
     <bool name="download_external_storage_default">false</bool>
     <string name="download_folder_key">download_folder_key</string>
-    <string name="download_folder_default" />
+    <string name="download_folder_default">download</string>
     <string name="download_keep_key">download_keep_key</string>
     <bool name="download_keep_default">false</bool>
 </resources>
