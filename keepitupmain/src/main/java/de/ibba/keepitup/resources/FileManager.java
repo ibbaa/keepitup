@@ -107,13 +107,21 @@ public class FileManager {
     }
 
     public boolean deleteDirectory(File directory) {
-        File[] files = directory.listFiles();
-        if (files != null) {
-            for (File file : files) {
-                deleteDirectory(file);
+        Log.d(FileManager.class.getName(), "deleteDirectory, directory is " + directory);
+        try {
+            File[] files = directory.listFiles();
+            if (files != null) {
+                for (File file : files) {
+                    if (!deleteDirectory(file)) {
+                        Log.d(FileManager.class.getName(), "Deletion of the file/directory failed: " + file.getAbsolutePath());
+                    }
+                }
             }
+            return directory.delete();
+        } catch (Exception exc) {
+            Log.e(FileManager.class.getName(), "Error deleting directory", exc);
+            return false;
         }
-        return directory.delete();
     }
 
     private Context getContext() {
