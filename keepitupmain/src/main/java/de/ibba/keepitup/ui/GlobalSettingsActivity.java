@@ -16,6 +16,7 @@ import java.util.List;
 
 import de.ibba.keepitup.R;
 import de.ibba.keepitup.resources.PreferenceManager;
+import de.ibba.keepitup.ui.dialog.DownloadFolderEditDialog;
 import de.ibba.keepitup.ui.dialog.SettingsInput;
 import de.ibba.keepitup.ui.dialog.SettingsInputDialog;
 import de.ibba.keepitup.ui.validation.PingCountFieldValidator;
@@ -213,5 +214,15 @@ public class GlobalSettingsActivity extends SettingsInputActivity {
     public void onInputDialogCancelClicked(SettingsInputDialog inputDialog) {
         Log.d(GlobalSettingsActivity.class.getName(), "onInputDialogCancelClicked");
         inputDialog.dismiss();
+    }
+
+    public void onDownloadFolderEditDialogOkClicked(DownloadFolderEditDialog editDialog) {
+        Log.d(GlobalSettingsActivity.class.getName(), "onDownloadFolderEditDialogOkClicked");
+        editDialog.dismiss();
+    }
+
+    public void onDownloadFolderEditDialogCancelClicked(DownloadFolderEditDialog editDialog) {
+        Log.d(GlobalSettingsActivity.class.getName(), "onDownloadFolderEditDialogCancelClicked");
+        editDialog.dismiss();
     }
 }
