@@ -1,6 +1,7 @@
 package de.ibba.keepitup.ui.dialog;
 
 import android.os.Bundle;
+import android.text.InputType;
 
 import androidx.annotation.NonNull;
 
@@ -10,10 +11,20 @@ import java.util.List;
 public class SettingsInput {
 
     public enum Type {
-        ADDRESS,
-        PORT,
-        INTERVAL,
-        PINGCOUNT
+        ADDRESS(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_URI | InputType.TYPE_TEXT_FLAG_MULTI_LINE),
+        PORT(InputType.TYPE_CLASS_NUMBER),
+        INTERVAL(InputType.TYPE_CLASS_NUMBER),
+        PINGCOUNT(InputType.TYPE_CLASS_NUMBER);
+
+        private int inputType;
+
+        Type(int inputType) {
+            this.inputType = inputType;
+        }
+
+        public int getInputType() {
+            return inputType;
+        }
     }
 
     private final Type type;

@@ -56,6 +56,7 @@ public class SettingsInputDialog extends DialogFragment {
         Log.d(SettingsInputDialog.class.getName(), "prepareValueTextField");
         valueEditText = dialogView.findViewById(R.id.edittext_dialog_settings_input_value);
         valueEditText.setText(StringUtil.notNull(input.getValue()));
+        valueEditText.setInputType(input.getType().getInputType());
         prepareValueEditTextListener();
     }
 
