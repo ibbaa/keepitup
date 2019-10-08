@@ -1,6 +1,7 @@
 package de.ibba.keepitup.ui.dialog;
 
 import android.os.Bundle;
+import android.text.InputType;
 
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.SmallTest;
@@ -34,6 +35,7 @@ public class SettingsInputTest {
         bundle = settingsInput.toBundle();
         settingsInput = new SettingsInput(bundle);
         assertEquals(SettingsInput.Type.ADDRESS, settingsInput.getType());
+        assertEquals(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_URI | InputType.TYPE_TEXT_FLAG_MULTI_LINE, settingsInput.getType().getInputType());
         assertEquals("", settingsInput.getValue());
         assertEquals("", settingsInput.getField());
         assertTrue(settingsInput.getValidators().isEmpty());
@@ -41,13 +43,23 @@ public class SettingsInputTest {
         bundle = settingsInput.toBundle();
         settingsInput = new SettingsInput(bundle);
         assertEquals(SettingsInput.Type.PORT, settingsInput.getType());
+        assertEquals(InputType.TYPE_CLASS_NUMBER, settingsInput.getType().getInputType());
         assertEquals("test", settingsInput.getValue());
         assertEquals("testfield", settingsInput.getField());
         assertThat(settingsInput.getValidators(), is(Arrays.asList("1", "2", "3")));
+        settingsInput = new SettingsInput(SettingsInput.Type.INTERVAL, "xyz", "testfield", Collections.singletonList("1"));
+        bundle = settingsInput.toBundle();
+        settingsInput = new SettingsInput(bundle);
+        assertEquals(SettingsInput.Type.INTERVAL, settingsInput.getType());
+        assertEquals(InputType.TYPE_CLASS_NUMBER, settingsInput.getType().getInputType());
+        assertEquals("xyz", settingsInput.getValue());
+        assertEquals("testfield", settingsInput.getField());
+        assertThat(settingsInput.getValidators(), is(Collections.singletonList("1")));
         settingsInput = new SettingsInput(SettingsInput.Type.PINGCOUNT, "test", "testfield", Arrays.asList("abc", "def"));
         bundle = settingsInput.toBundle();
         settingsInput = new SettingsInput(bundle);
         assertEquals(SettingsInput.Type.PINGCOUNT, settingsInput.getType());
+        assertEquals(InputType.TYPE_CLASS_NUMBER, settingsInput.getType().getInputType());
         assertEquals("test", settingsInput.getValue());
         assertEquals("testfield", settingsInput.getField());
         assertThat(settingsInput.getValidators(), is(Arrays.asList("abc", "def")));
