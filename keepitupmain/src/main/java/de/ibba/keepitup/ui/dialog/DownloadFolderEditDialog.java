@@ -17,6 +17,7 @@ import java.util.Objects;
 import de.ibba.keepitup.R;
 import de.ibba.keepitup.ui.GlobalSettingsActivity;
 import de.ibba.keepitup.util.BundleUtil;
+import de.ibba.keepitup.util.StringUtil;
 
 public class DownloadFolderEditDialog extends DialogFragment {
 
@@ -49,6 +50,10 @@ public class DownloadFolderEditDialog extends DialogFragment {
 
     public String getDownloadFolderKey() {
         return DownloadFolderEditDialog.class.getSimpleName() + "Folder";
+    }
+
+    public String getDownloadFolder() {
+        return StringUtil.notNull(folderEditText.getText());
     }
 
     private void prepareDownloadFolderRoot(String root) {
