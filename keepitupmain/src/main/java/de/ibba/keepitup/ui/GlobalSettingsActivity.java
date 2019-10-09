@@ -11,15 +11,18 @@ import android.widget.TextView;
 
 import androidx.cardview.widget.CardView;
 
+import java.io.File;
 import java.util.Collections;
 import java.util.List;
 
 import de.ibba.keepitup.R;
+import de.ibba.keepitup.resources.FileManager;
 import de.ibba.keepitup.resources.PreferenceManager;
 import de.ibba.keepitup.ui.dialog.DownloadFolderEditDialog;
 import de.ibba.keepitup.ui.dialog.SettingsInput;
 import de.ibba.keepitup.ui.dialog.SettingsInputDialog;
 import de.ibba.keepitup.ui.validation.PingCountFieldValidator;
+import de.ibba.keepitup.util.BundleUtil;
 import de.ibba.keepitup.util.NumberUtil;
 import de.ibba.keepitup.util.StringUtil;
 
@@ -133,11 +136,12 @@ public class GlobalSettingsActivity extends SettingsInputActivity {
         if (downloadExternalStorageSwitch.isChecked()) {
             setDownloadFolder(String.valueOf(preferenceManager.getPreferenceDownloadFolder()));
             downloadFolderText.setEnabled(true);
+            downloadFolderText.setOnClickListener(this::showDownloadFolderEditDialog);
         } else {
             setDownloadFolder(getResources().getString(R.string.text_activity_global_settings_download_folder_internal));
             downloadFolderText.setEnabled(false);
+            downloadFolderText.setOnClickListener(null);
         }
-        CardView downloadFolderCardView = findViewById(R.id.cardview_global_settings_activity_download_folder);
     }
 
     private void prepareDownloadKeepSwitch() {
@@ -192,11 +196,35 @@ public class GlobalSettingsActivity extends SettingsInputActivity {
         showInputDialog(input.toBundle());
     }
 
+    private void showDownloadFolderEditDialog(View view) {
+        Log.d(DefaultsActivity.class.getName(), "showDownloadFolderEditDialog");
+        DownloadFolderEditDialog editDialog = new DownloadFolderEditDialog();
+        String root = getExternalRootDirectory();
+        Log.d(GlobalSettingsActivity.class.getName(), "External root is " + root);
+        if (root == null) {
+            //TODO
+        }
+        Bundle bundle = BundleUtil.messagesToBundle(new String[]{editDialog.getDownloadFolderRootKey(), editDialog.getDownloadFolderKey()}, new String[]{root, "Folder"});
+        editDialog.setArguments(bundle);
+        editDialog.show(getSupportFragmentManager(), GlobalSettingsActivity.class.getName());
+
+    }
+
     private void showInputDialog(Bundle bundle) {
         Log.d(GlobalSettingsActivity.class.getName(), "showInputDialog, opening SettingsInputDialog");
         SettingsInputDialog inputDialog = new SettingsInputDialog();
         inputDialog.setArguments(bundle);
         inputDialog.show(getSupportFragmentManager(), GlobalSettingsActivity.class.getName());
+    }
+
+    private String getExternalRootDirectory() {
+        Log.d(GlobalSettingsActivity.class.getName(), "getExternalRootDirectory");
+        FileManager fileManager = new FileManager(this);
+        File root = fileManager.getExternalRootDirectory();
+        if (root == null) {
+            return null;
+        }
+        return root.getAbsolutePath();
     }
 
     public void onInputDialogOkClicked(SettingsInputDialog inputDialog, SettingsInput.Type type) {
