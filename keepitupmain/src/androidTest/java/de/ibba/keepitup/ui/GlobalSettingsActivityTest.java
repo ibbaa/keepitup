@@ -25,6 +25,7 @@ import static androidx.test.espresso.matcher.ViewMatchers.isRoot;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
 import static org.hamcrest.Matchers.allOf;
+import static org.hamcrest.Matchers.endsWith;
 import static org.hamcrest.core.IsNot.not;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -76,7 +77,7 @@ public class GlobalSettingsActivityTest extends BaseUITest {
         onView(withId(R.id.textview_global_settings_activity_download_external_storage_label)).check(matches(withText("Download to an external storage folder")));
         onView(withId(R.id.switch_global_settings_activity_download_external_storage)).check(matches(isChecked()));
         onView(withId(R.id.textview_global_settings_activity_download_folder_label)).check(matches(withText("Download folder")));
-        onView(withId(R.id.textview_global_settings_activity_download_folder)).check(matches(withText("download")));
+        onView(withId(R.id.textview_global_settings_activity_download_folder)).check(matches(withText(endsWith("download"))));
         onView(withId(R.id.textview_global_settings_activity_download_folder)).check(matches(isEnabled()));
         onView(withId(R.id.textview_global_settings_activity_download_keep_label)).check(matches(withText("Keep downloaded files")));
         onView(withId(R.id.switch_global_settings_activity_download_keep)).check(matches(isChecked()));
@@ -194,7 +195,7 @@ public class GlobalSettingsActivityTest extends BaseUITest {
         onView(withId(R.id.textview_global_settings_activity_download_external_storage_label)).check(matches(withText("Download to an external storage folder")));
         onView(withId(R.id.switch_global_settings_activity_download_external_storage)).check(matches(isChecked()));
         onView(withId(R.id.textview_global_settings_activity_download_folder_label)).check(matches(withText("Download folder")));
-        onView(withId(R.id.textview_global_settings_activity_download_folder)).check(matches(withText("download")));
+        onView(withId(R.id.textview_global_settings_activity_download_folder)).check(matches(withText(endsWith("download"))));
         onView(withId(R.id.textview_global_settings_activity_download_folder)).check(matches(isEnabled()));
         onView(withId(R.id.textview_global_settings_activity_download_keep_label)).check(matches(withText("Keep downloaded files")));
         onView(withId(R.id.switch_global_settings_activity_download_keep)).check(matches(not(isChecked())));
@@ -222,7 +223,7 @@ public class GlobalSettingsActivityTest extends BaseUITest {
         onView(withId(R.id.textview_global_settings_activity_download_external_storage_label)).check(matches(withText("Download to an external storage folder")));
         onView(withId(R.id.switch_global_settings_activity_download_external_storage)).check(matches(isChecked()));
         onView(withId(R.id.textview_global_settings_activity_download_folder_label)).check(matches(withText("Download folder")));
-        onView(withId(R.id.textview_global_settings_activity_download_folder)).check(matches(withText("download")));
+        onView(withId(R.id.textview_global_settings_activity_download_folder)).check(matches(withText(endsWith("download"))));
         onView(withId(R.id.textview_global_settings_activity_download_folder)).check(matches(isEnabled()));
         onView(withId(R.id.textview_global_settings_activity_download_keep_label)).check(matches(withText("Keep downloaded files")));
         onView(withId(R.id.switch_global_settings_activity_download_keep)).check(matches(isChecked()));
