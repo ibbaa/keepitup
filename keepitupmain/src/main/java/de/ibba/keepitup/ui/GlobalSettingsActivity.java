@@ -134,9 +134,23 @@ public class GlobalSettingsActivity extends SettingsInputActivity {
         PreferenceManager preferenceManager = new PreferenceManager(this);
         downloadFolderText = findViewById(R.id.textview_global_settings_activity_download_folder);
         if (downloadExternalStorageSwitch.isChecked()) {
-            setDownloadFolder(String.valueOf(preferenceManager.getPreferenceDownloadFolder()));
-            downloadFolderText.setEnabled(true);
-            downloadFolderText.setOnClickListener(this::showDownloadFolderEditDialog);
+            String downloadFolder = getExternalDownloadFolder();
+            if (downloadFolder != null) {
+                setDownloadFolder(downloadFolder);
+                downloadFolderText.setEnabled(true);
+                downloadFolderText.setOnClickListener(this::showDownloadFolderEditDialog);
+            } else {
+                Log.d(GlobalSettingsActivity.class.getName(), "Reset to internal folder.");
+                setDownloadFolder(getResources().getString(R.string.text_activity_global_settings_download_folder_internal));
+                downloadFolderText.setEnabled(false);
+                downloadFolderText.setOnClickListener(null);
+                preferenceManager.setPreferenceDownloadExternalStorage(false);
+                downloadExternalStorageSwitch.setChecked(false);
+                prepareDownloadExternalStorageOnOffText();
+                prepareDownloadKeepSwitch();
+                Log.d(GlobalSettingsActivity.class.getName(), "Showing error dialog.");
+                showErrorDialog(getResources().getString(R.string.text_dialog_general_error_external_root_access));
+            }
         } else {
             setDownloadFolder(getResources().getString(R.string.text_activity_global_settings_download_folder_internal));
             downloadFolderText.setEnabled(false);
@@ -199,12 +213,19 @@ public class GlobalSettingsActivity extends SettingsInputActivity {
     private void showDownloadFolderEditDialog(View view) {
         Log.d(DefaultsActivity.class.getName(), "showDownloadFolderEditDialog");
         DownloadFolderEditDialog editDialog = new DownloadFolderEditDialog();
-        String root = getExternalRootDirectory();
-        Log.d(GlobalSettingsActivity.class.getName(), "External root is " + root);
+        String root = getExternalRootFolder();
         if (root == null) {
-            //TODO
+            Log.d(GlobalSettingsActivity.class.getName(), "Showing error dialog.");
+            showErrorDialog(getResources().getString(R.string.text_dialog_general_error_external_root_access));
+            return;
         }
-        Bundle bundle = BundleUtil.messagesToBundle(new String[]{editDialog.getDownloadFolderRootKey(), editDialog.getDownloadFolderKey()}, new String[]{root, "Folder"});
+        String folder = getPreferenceDownloadFolder();
+        if (folder == null) {
+            Log.d(GlobalSettingsActivity.class.getName(), "Showing error dialog.");
+            showErrorDialog(getResources().getString(R.string.text_dialog_general_error_external_root_access));
+            return;
+        }
+        Bundle bundle = BundleUtil.messagesToBundle(new String[]{editDialog.getDownloadFolderRootKey(), editDialog.getDownloadFolderKey()}, new String[]{root, folder});
         editDialog.setArguments(bundle);
         editDialog.show(getSupportFragmentManager(), GlobalSettingsActivity.class.getName());
 
@@ -217,14 +238,41 @@ public class GlobalSettingsActivity extends SettingsInputActivity {
         inputDialog.show(getSupportFragmentManager(), GlobalSettingsActivity.class.getName());
     }
 
-    private String getExternalRootDirectory() {
-        Log.d(GlobalSettingsActivity.class.getName(), "getExternalRootDirectory");
+    private String getExternalRootFolder() {
+        Log.d(GlobalSettingsActivity.class.getName(), "getExternalRootFolder");
         FileManager fileManager = new FileManager(this);
         File root = fileManager.getExternalRootDirectory();
+        Log.d(GlobalSettingsActivity.class.getName(), "External root folder is " + root);
         if (root == null) {
             return null;
         }
         return root.getAbsolutePath();
+    }
+
+    private String getPreferenceDownloadFolder() {
+        Log.d(GlobalSettingsActivity.class.getName(), "getPreferenceDownloadFolder");
+        PreferenceManager preferenceManager = new PreferenceManager(this);
+        String folder = preferenceManager.getPreferenceDownloadFolder();
+        FileManager fileManager = new FileManager(this);
+        File downloadFolder = fileManager.getExternalDownloadDirectory(folder);
+        Log.d(GlobalSettingsActivity.class.getName(), "External download folder is " + downloadFolder);
+        if (downloadFolder == null) {
+            return null;
+        }
+        return folder;
+    }
+
+    private String getExternalDownloadFolder() {
+        Log.d(GlobalSettingsActivity.class.getName(), "getExternalDownloadFolder");
+        PreferenceManager preferenceManager = new PreferenceManager(this);
+        String folder = preferenceManager.getPreferenceDownloadFolder();
+        FileManager fileManager = new FileManager(this);
+        File downloadFolder = fileManager.getExternalDownloadDirectory(folder);
+        Log.d(GlobalSettingsActivity.class.getName(), "External download folder is " + downloadFolder);
+        if (downloadFolder == null) {
+            return null;
+        }
+        return downloadFolder.getAbsolutePath();
     }
 
     public void onInputDialogOkClicked(SettingsInputDialog inputDialog, SettingsInput.Type type) {
@@ -246,6 +294,19 @@ public class GlobalSettingsActivity extends SettingsInputActivity {
 
     public void onDownloadFolderEditDialogOkClicked(DownloadFolderEditDialog editDialog) {
         Log.d(GlobalSettingsActivity.class.getName(), "onDownloadFolderEditDialogOkClicked");
+        FileManager fileManager = new FileManager(this);
+        PreferenceManager preferenceManager = new PreferenceManager(this);
+        String folder = editDialog.getDownloadFolder();
+        File downloadFolder = fileManager.getExternalDownloadDirectory(folder);
+        Log.d(GlobalSettingsActivity.class.getName(), "External download folder is " + downloadFolder);
+        if (downloadFolder == null) {
+            editDialog.dismiss();
+            Log.d(GlobalSettingsActivity.class.getName(), "Showing error dialog.");
+            showErrorDialog(getResources().getString(R.string.text_dialog_general_error_external_download_create));
+            return;
+        }
+        preferenceManager.setPreferenceDownloadFolder(folder);
+        setDownloadFolder(downloadFolder.getAbsolutePath());
         editDialog.dismiss();
     }
 

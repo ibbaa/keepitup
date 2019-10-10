@@ -8,4 +8,6 @@
     <string name="text_dialog_general_error_read_network_tasks">Fatal error reading network tasks.</string>
     <string name="text_dialog_general_error_delete_network_task">Fatal error deleting network task.</string>
     <string name="text_dialog_general_error_read_log_entries">Fatal error reading log data.</string>
+    <string name="text_dialog_general_error_external_root_access">Error accessing external files directory.</string>
+    <string name="text_dialog_general_error_external_download_create">Error creating download directory.</string>
 </resources>
