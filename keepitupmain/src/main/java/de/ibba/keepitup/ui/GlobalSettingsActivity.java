@@ -17,6 +17,7 @@ import java.util.List;
 
 import de.ibba.keepitup.R;
 import de.ibba.keepitup.resources.FileManager;
+import de.ibba.keepitup.resources.IFileManager;
 import de.ibba.keepitup.resources.PreferenceManager;
 import de.ibba.keepitup.ui.dialog.DownloadFolderEditDialog;
 import de.ibba.keepitup.ui.dialog.SettingsInput;
@@ -36,6 +37,11 @@ public class GlobalSettingsActivity extends SettingsInputActivity {
     private TextView downloadFolderText;
     private Switch downloadKeepSwitch;
     private TextView downloadKeepOnOffText;
+    private IFileManager fileManager;
+
+    public void injectFileManager(IFileManager fileManager) {
+        this.fileManager = fileManager;
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -240,7 +246,7 @@ public class GlobalSettingsActivity extends SettingsInputActivity {
 
     private String getExternalRootFolder() {
         Log.d(GlobalSettingsActivity.class.getName(), "getExternalRootFolder");
-        FileManager fileManager = new FileManager(this);
+        IFileManager fileManager = getFileManager();
         File root = fileManager.getExternalRootDirectory();
         Log.d(GlobalSettingsActivity.class.getName(), "External root folder is " + root);
         if (root == null) {
@@ -253,7 +259,7 @@ public class GlobalSettingsActivity extends SettingsInputActivity {
         Log.d(GlobalSettingsActivity.class.getName(), "getPreferenceDownloadFolder");
         PreferenceManager preferenceManager = new PreferenceManager(this);
         String folder = preferenceManager.getPreferenceDownloadFolder();
-        FileManager fileManager = new FileManager(this);
+        IFileManager fileManager = getFileManager();
         File downloadFolder = fileManager.getExternalDownloadDirectory(folder);
         Log.d(GlobalSettingsActivity.class.getName(), "External download folder is " + downloadFolder);
         if (downloadFolder == null) {
@@ -266,7 +272,7 @@ public class GlobalSettingsActivity extends SettingsInputActivity {
         Log.d(GlobalSettingsActivity.class.getName(), "getExternalDownloadFolder");
         PreferenceManager preferenceManager = new PreferenceManager(this);
         String folder = preferenceManager.getPreferenceDownloadFolder();
-        FileManager fileManager = new FileManager(this);
+        IFileManager fileManager = getFileManager();
         File downloadFolder = fileManager.getExternalDownloadDirectory(folder);
         Log.d(GlobalSettingsActivity.class.getName(), "External download folder is " + downloadFolder);
         if (downloadFolder == null) {
@@ -294,7 +300,7 @@ public class GlobalSettingsActivity extends SettingsInputActivity {
 
     public void onDownloadFolderEditDialogOkClicked(DownloadFolderEditDialog editDialog) {
         Log.d(GlobalSettingsActivity.class.getName(), "onDownloadFolderEditDialogOkClicked");
-        FileManager fileManager = new FileManager(this);
+        IFileManager fileManager = getFileManager();
         PreferenceManager preferenceManager = new PreferenceManager(this);
         String folder = editDialog.getDownloadFolder();
         File downloadFolder = fileManager.getExternalDownloadDirectory(folder);
@@ -313,5 +319,12 @@ public class GlobalSettingsActivity extends SettingsInputActivity {
     public void onDownloadFolderEditDialogCancelClicked(DownloadFolderEditDialog editDialog) {
         Log.d(GlobalSettingsActivity.class.getName(), "onDownloadFolderEditDialogCancelClicked");
         editDialog.dismiss();
+    }
+
+    private IFileManager getFileManager() {
+        if (fileManager != null) {
+            return fileManager;
+        }
+        return new FileManager(this);
     }
 }

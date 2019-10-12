@@ -8,7 +8,7 @@ import java.io.File;
 
 import de.ibba.keepitup.R;
 
-public class FileManager {
+public class FileManager implements IFileManager {
 
     private final Context context;
 

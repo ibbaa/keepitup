@@ -127,6 +127,7 @@ public class GlobalSettingsActivityTest extends BaseUITest {
         assertEquals(2, preferenceManager.getPreferencePingCount());
         assertTrue(preferenceManager.getPreferenceNotificationInactiveNetwork());
         assertTrue(preferenceManager.getPreferenceDownloadExternalStorage());
+        assertEquals("download", preferenceManager.getPreferenceDownloadFolder());
         assertTrue(preferenceManager.getPreferenceDownloadKeep());
     }
 
@@ -182,6 +183,7 @@ public class GlobalSettingsActivityTest extends BaseUITest {
         launchSettingsInputActivity(rule);
         PreferenceManager preferenceManager = getPreferenceManager();
         assertFalse(preferenceManager.getPreferenceDownloadExternalStorage());
+        assertEquals("download", preferenceManager.getPreferenceDownloadFolder());
         assertFalse(preferenceManager.getPreferenceDownloadKeep());
         onView(withId(R.id.textview_global_settings_activity_download_external_storage_label)).check(matches(withText("Download to an external storage folder")));
         onView(withId(R.id.switch_global_settings_activity_download_external_storage)).check(matches(isNotChecked()));
@@ -201,6 +203,7 @@ public class GlobalSettingsActivityTest extends BaseUITest {
         onView(withId(R.id.switch_global_settings_activity_download_keep)).check(matches(not(isChecked())));
         onView(withId(R.id.switch_global_settings_activity_download_keep)).check(matches(isEnabled()));
         assertTrue(preferenceManager.getPreferenceDownloadExternalStorage());
+        assertEquals("download", preferenceManager.getPreferenceDownloadFolder());
         assertFalse(preferenceManager.getPreferenceDownloadKeep());
         onView(withId(R.id.switch_global_settings_activity_download_keep)).perform(click());
         onView(withId(R.id.textview_global_settings_activity_download_keep_label)).check(matches(withText("Keep downloaded files")));
@@ -218,6 +221,7 @@ public class GlobalSettingsActivityTest extends BaseUITest {
         onView(withId(R.id.switch_global_settings_activity_download_keep)).check(matches(isNotChecked()));
         onView(withId(R.id.switch_global_settings_activity_download_keep)).check(matches(not(isEnabled())));
         assertFalse(preferenceManager.getPreferenceDownloadExternalStorage());
+        assertEquals("download", preferenceManager.getPreferenceDownloadFolder());
         assertTrue(preferenceManager.getPreferenceDownloadKeep());
         onView(withId(R.id.switch_global_settings_activity_download_external_storage)).perform(click());
         onView(withId(R.id.textview_global_settings_activity_download_external_storage_label)).check(matches(withText("Download to an external storage folder")));
@@ -229,7 +233,21 @@ public class GlobalSettingsActivityTest extends BaseUITest {
         onView(withId(R.id.switch_global_settings_activity_download_keep)).check(matches(isChecked()));
         onView(withId(R.id.switch_global_settings_activity_download_keep)).check(matches(isEnabled()));
         assertTrue(preferenceManager.getPreferenceDownloadExternalStorage());
+        assertEquals("download", preferenceManager.getPreferenceDownloadFolder());
         assertTrue(preferenceManager.getPreferenceDownloadKeep());
+    }
+
+    @Test
+    public void testDownloadFolderDialogOpen() {
+        SettingsInputActivity activity = launchSettingsInputActivity(rule);
+        onView(withId(R.id.switch_global_settings_activity_download_external_storage)).perform(click());
+        onView(withId(R.id.textview_global_settings_activity_download_folder)).perform(click());
+        assertEquals(1, activity.getSupportFragmentManager().getFragments().size());
+        onView(withId(R.id.imageview_dialog_download_folder_edit_cancel)).perform(click());
+        assertEquals(0, activity.getSupportFragmentManager().getFragments().size());
+        onView(withId(R.id.switch_global_settings_activity_download_external_storage)).perform(click());
+        onView(withId(R.id.textview_global_settings_activity_download_folder)).perform(click());
+        assertEquals(0, activity.getSupportFragmentManager().getFragments().size());
     }
 
     @Test
@@ -259,6 +277,7 @@ public class GlobalSettingsActivityTest extends BaseUITest {
         assertEquals(3, preferenceManager.getPreferencePingCount());
         assertFalse(preferenceManager.getPreferenceNotificationInactiveNetwork());
         assertFalse(preferenceManager.getPreferenceDownloadExternalStorage());
+        assertEquals("download", preferenceManager.getPreferenceDownloadFolder());
         assertFalse(preferenceManager.getPreferenceDownloadKeep());
     }
 
