@@ -4,6 +4,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.MediumTest;
 import androidx.test.rule.ActivityTestRule;
 
+import org.hamcrest.Matchers;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
@@ -12,6 +13,7 @@ import org.junit.runner.RunWith;
 
 import de.ibba.keepitup.R;
 import de.ibba.keepitup.resources.PreferenceManager;
+import de.ibba.keepitup.test.mock.MockFileManager;
 import de.ibba.keepitup.test.mock.TestRegistry;
 
 import static androidx.test.espresso.Espresso.onView;
@@ -146,7 +148,7 @@ public class GlobalSettingsActivityTest extends BaseUITest {
     }
 
     @Test
-    public void testSetPreferencesCancel() {
+    public void testSetPingCountPreferencesCancel() {
         launchSettingsInputActivity(rule);
         onView(withId(R.id.textview_global_settings_activity_ping_count)).perform(click());
         onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("2"));
@@ -282,6 +284,60 @@ public class GlobalSettingsActivityTest extends BaseUITest {
         onView(withId(R.id.imageview_dialog_download_folder_edit_ok)).perform(click());
         onView(withId(R.id.textview_global_settings_activity_download_folder)).check(matches(withText(endsWith("test"))));
         assertEquals("test", preferenceManager.getPreferenceDownloadFolder());
+    }
+
+    @Test
+    public void testDownloadControlsFileError() {
+        GlobalSettingsActivity activity = (GlobalSettingsActivity) launchSettingsInputActivity(rule);
+        PreferenceManager preferenceManager = getPreferenceManager();
+        MockFileManager mockFileManager = new MockFileManager();
+        activity.injectFileManager(mockFileManager);
+        onView(withId(R.id.switch_global_settings_activity_download_external_storage)).perform(click());
+        assertEquals(1, activity.getSupportFragmentManager().getFragments().size());
+        onView(withId(R.id.textview_dialog_general_error_message)).check(matches(withText("Error accessing external files directory.")));
+        onView(withId(R.id.imageview_dialog_general_error_ok)).perform(click());
+        onView(withId(R.id.textview_global_settings_activity_download_external_storage_label)).check(matches(withText("Download to an external storage folder")));
+        onView(withId(R.id.switch_global_settings_activity_download_external_storage)).check(matches(isNotChecked()));
+        onView(withId(R.id.textview_global_settings_activity_download_folder_label)).check(matches(withText("Download folder")));
+        onView(withId(R.id.textview_global_settings_activity_download_folder)).check(matches(withText("Internal storage folder")));
+        onView(withId(R.id.textview_global_settings_activity_download_folder)).check(matches(Matchers.not(isEnabled())));
+        onView(withId(R.id.textview_global_settings_activity_download_keep_label)).check(matches(withText("Keep downloaded files")));
+        onView(withId(R.id.switch_global_settings_activity_download_keep)).check(matches(isNotChecked()));
+        assertFalse(preferenceManager.getPreferenceDownloadExternalStorage());
+    }
+
+    @Test
+    public void testDownloadFolderDialogFileError() {
+        GlobalSettingsActivity activity = (GlobalSettingsActivity) launchSettingsInputActivity(rule);
+        PreferenceManager preferenceManager = getPreferenceManager();
+        onView(withId(R.id.switch_global_settings_activity_download_external_storage)).perform(click());
+        MockFileManager mockFileManager = new MockFileManager();
+        activity.injectFileManager(mockFileManager);
+        onView(withId(R.id.textview_global_settings_activity_download_folder)).perform(click());
+        assertEquals(1, activity.getSupportFragmentManager().getFragments().size());
+        onView(withId(R.id.textview_dialog_general_error_message)).check(matches(withText("Error accessing external files directory.")));
+        onView(withId(R.id.imageview_dialog_general_error_ok)).perform(click());
+        onView(withId(R.id.textview_global_settings_activity_download_external_storage_label)).check(matches(withText("Download to an external storage folder")));
+        onView(withId(R.id.switch_global_settings_activity_download_external_storage)).check(matches(isChecked()));
+        onView(withId(R.id.textview_global_settings_activity_download_folder_label)).check(matches(withText("Download folder")));
+        onView(withId(R.id.textview_global_settings_activity_download_folder)).check(matches(withText(endsWith("download"))));
+    }
+
+    @Test
+    public void testDownloadFolderDialogOkFileError() {
+        GlobalSettingsActivity activity = (GlobalSettingsActivity) launchSettingsInputActivity(rule);
+        PreferenceManager preferenceManager = getPreferenceManager();
+        onView(withId(R.id.switch_global_settings_activity_download_external_storage)).perform(click());
+        onView(withId(R.id.textview_global_settings_activity_download_folder)).perform(click());
+        MockFileManager mockFileManager = new MockFileManager();
+        activity.injectFileManager(mockFileManager);
+        onView(withId(R.id.edittext_dialog_download_folder_edit_folder)).perform(replaceText("test"));
+        onView(withId(R.id.imageview_dialog_download_folder_edit_ok)).perform(click());
+        assertEquals(1, activity.getSupportFragmentManager().getFragments().size());
+        onView(withId(R.id.textview_dialog_general_error_message)).check(matches(withText("Error creating download directory.")));
+        onView(withId(R.id.imageview_dialog_general_error_ok)).perform(click());
+        onView(withId(R.id.textview_global_settings_activity_download_folder)).check(matches(withText(endsWith("download"))));
+        assertEquals("download", preferenceManager.getPreferenceDownloadFolder());
     }
 
     @Test
