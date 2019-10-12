@@ -4,6 +4,8 @@ import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.MediumTest;
 import androidx.test.rule.ActivityTestRule;
 
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -37,6 +39,18 @@ public class GlobalSettingsActivityTest extends BaseUITest {
 
     @Rule
     public final ActivityTestRule<GlobalSettingsActivity> rule = new ActivityTestRule<>(GlobalSettingsActivity.class, false, false);
+
+    @Before
+    public void beforeEachTestMethod() {
+        super.beforeEachTestMethod();
+        getFileManager().deleteDirectory(getFileManager().getExternalDownloadDirectory("test"));
+    }
+
+    @After
+    public void afterEachTestMethod() {
+        super.afterEachTestMethod();
+        getFileManager().deleteDirectory(getFileManager().getExternalDownloadDirectory("test"));
+    }
 
     @Test
     public void testDisplayDefaultValues() {
@@ -248,6 +262,26 @@ public class GlobalSettingsActivityTest extends BaseUITest {
         onView(withId(R.id.switch_global_settings_activity_download_external_storage)).perform(click());
         onView(withId(R.id.textview_global_settings_activity_download_folder)).perform(click());
         assertEquals(0, activity.getSupportFragmentManager().getFragments().size());
+    }
+
+    @Test
+    public void testDownloadFolderDialogOkCancel() {
+        SettingsInputActivity activity = launchSettingsInputActivity(rule);
+        PreferenceManager preferenceManager = getPreferenceManager();
+        assertEquals("download", preferenceManager.getPreferenceDownloadFolder());
+        onView(withId(R.id.switch_global_settings_activity_download_external_storage)).perform(click());
+        onView(withId(R.id.textview_global_settings_activity_download_folder)).perform(click());
+        onView(withId(R.id.edittext_dialog_download_folder_edit_folder)).check(matches(withText("download")));
+        onView(withId(R.id.edittext_dialog_download_folder_edit_folder)).perform(replaceText("test"));
+        onView(withId(R.id.imageview_dialog_download_folder_edit_cancel)).perform(click());
+        onView(withId(R.id.textview_global_settings_activity_download_folder)).check(matches(withText(endsWith("download"))));
+        assertEquals("download", preferenceManager.getPreferenceDownloadFolder());
+        onView(withId(R.id.textview_global_settings_activity_download_folder)).perform(click());
+        onView(withId(R.id.edittext_dialog_download_folder_edit_folder)).check(matches(withText("download")));
+        onView(withId(R.id.edittext_dialog_download_folder_edit_folder)).perform(replaceText("test"));
+        onView(withId(R.id.imageview_dialog_download_folder_edit_ok)).perform(click());
+        onView(withId(R.id.textview_global_settings_activity_download_folder)).check(matches(withText(endsWith("test"))));
+        assertEquals("test", preferenceManager.getPreferenceDownloadFolder());
     }
 
     @Test
