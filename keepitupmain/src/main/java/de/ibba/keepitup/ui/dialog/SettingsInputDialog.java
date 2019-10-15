@@ -61,6 +61,7 @@ public class SettingsInputDialog extends DialogFragment {
     }
 
     private void prepareValueEditTextListener() {
+        Log.d(SettingsInputDialog.class.getName(), "prepareValueEditTextListener");
         if (valueEditTextWatcher != null) {
             valueEditText.removeTextChangedListener(valueEditTextWatcher);
             valueEditTextWatcher = null;
