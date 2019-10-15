@@ -84,6 +84,16 @@ public class FileManagerTest {
     }
 
     @Test
+    public void testGetExternalDownloadDirectoryEmpty() {
+        File externalRootDir = fileManager.getExternalRootDirectory();
+        File downloadDir = new File(externalRootDir, "");
+        assertTrue(downloadDir.exists());
+        File externalDownloadDir = fileManager.getExternalDownloadDirectory("");
+        assertTrue(externalDownloadDir.exists());
+        assertEquals(externalDownloadDir, downloadDir);
+    }
+
+    @Test
     public void testDeleteDirectory() throws Exception {
         File internalDownloadDir = fileManager.getInternalDownloadDirectory();
         assertEquals(0, internalDownloadDir.listFiles().length);

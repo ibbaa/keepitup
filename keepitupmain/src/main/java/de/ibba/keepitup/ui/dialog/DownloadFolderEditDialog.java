@@ -22,8 +22,9 @@ import de.ibba.keepitup.util.StringUtil;
 public class DownloadFolderEditDialog extends DialogFragment {
 
     private View dialogView;
-    private TextView rootfolderText;
+    private TextView absoluteFolderText;
     private EditText folderEditText;
+    private DownloadFolderEditWatcher folderEditTextWatcher;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -38,8 +39,8 @@ public class DownloadFolderEditDialog extends DialogFragment {
         dialogView = inflater.inflate(R.layout.dialog_download_folder_edit, container);
         String root = BundleUtil.bundleToMessage(getDownloadFolderRootKey(), Objects.requireNonNull(getArguments()));
         String folder = BundleUtil.bundleToMessage(getDownloadFolderKey(), Objects.requireNonNull(getArguments()));
-        prepareDownloadFolderRoot(root);
-        prepareDownloadFolder(folder);
+        prepareDownloadFolderAbsolute(root, folder);
+        prepareDownloadFolder(root, folder);
         prepareOkCancelImageButtons();
         return dialogView;
     }
@@ -56,16 +57,27 @@ public class DownloadFolderEditDialog extends DialogFragment {
         return StringUtil.notNull(folderEditText.getText());
     }
 
-    private void prepareDownloadFolderRoot(String root) {
-        Log.d(DownloadFolderEditDialog.class.getName(), "prepareDownloadFolderRoot");
-        rootfolderText = dialogView.findViewById(R.id.textview_dialog_download_folder_edit_root);
-        rootfolderText.setText(root);
+    private void prepareDownloadFolderAbsolute(String root, String folder) {
+        Log.d(DownloadFolderEditDialog.class.getName(), "prepareDownloadFolderAbsolute");
+        absoluteFolderText = dialogView.findViewById(R.id.textview_dialog_download_folder_edit_root);
+        absoluteFolderText.setText(getAbsoluteDownloadFolder(root, folder));
     }
 
-    private void prepareDownloadFolder(String folder) {
+    private void prepareDownloadFolder(String root, String folder) {
         Log.d(DownloadFolderEditDialog.class.getName(), "prepareDownloadFolder");
         folderEditText = dialogView.findViewById(R.id.edittext_dialog_download_folder_edit_folder);
         folderEditText.setText(folder);
+        prepareFolderEditTextWatcher(root);
+    }
+
+    private void prepareFolderEditTextWatcher(String root) {
+        Log.d(DownloadFolderEditDialog.class.getName(), "prepareFolderEditTextWatcher");
+        if (folderEditTextWatcher != null) {
+            folderEditText.removeTextChangedListener(folderEditTextWatcher);
+            folderEditTextWatcher = null;
+        }
+        folderEditTextWatcher = new DownloadFolderEditWatcher(root, absoluteFolderText);
+        folderEditText.addTextChangedListener(folderEditTextWatcher);
     }
 
     private void prepareOkCancelImageButtons() {
@@ -86,5 +98,12 @@ public class DownloadFolderEditDialog extends DialogFragment {
         Log.d(DownloadFolderEditDialog.class.getName(), "onCancelClicked");
         GlobalSettingsActivity activity = (GlobalSettingsActivity) getActivity();
         Objects.requireNonNull(activity).onDownloadFolderEditDialogCancelClicked(this);
+    }
+
+    private String getAbsoluteDownloadFolder(String root, String folder) {
+        if (StringUtil.isEmpty(folder)) {
+            return root;
+        }
+        return root + "/" + folder;
     }
 }
