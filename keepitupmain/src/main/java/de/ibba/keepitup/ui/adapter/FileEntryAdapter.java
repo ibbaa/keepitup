@@ -40,7 +40,7 @@ public class FileEntryAdapter extends RecyclerView.Adapter<FileEntryViewHolder> 
         Log.d(FileEntryAdapter.class.getName(), "onBindViewHolder");
         if (position < fileEntries.size()) {
             FileEntry fileEntry = fileEntries.get(position);
-
+            bindFileName(fileEntryViewHolder, fileEntry);
         }
     }
 
