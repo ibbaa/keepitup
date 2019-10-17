@@ -4,4 +4,7 @@
     <dimen name="textview_dialog_download_folder_edit_root_padding_top">0dp</dimen>
     <dimen name="edittext_dialog_download_folder_edit_folder_margin_left">8dp</dimen>
     <dimen name="edittext_dialog_download_folder_edit_folder_width">200dp</dimen>
+    <dimen name="list_item_file_entry_margin">4dp</dimen>
+    <dimen name="list_item_file_entry_corner_radius">4dp</dimen>
+    <dimen name="list_item_file_entry_card_elevation">4dp</dimen>
 </resources>

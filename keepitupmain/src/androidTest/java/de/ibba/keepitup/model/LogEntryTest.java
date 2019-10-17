@@ -61,6 +61,7 @@ public class LogEntryTest {
         assertEquals("Message", logEntry.getMessage());
         PersistableBundle persistableBundle = logEntry.toPersistableBundle();
         assertNotNull(persistableBundle);
+        logEntry = new LogEntry(persistableBundle);
         assertEquals(1, logEntry.getId());
         assertEquals(2, logEntry.getNetworkTaskId());
         assertEquals(timestamp, logEntry.getTimestamp());

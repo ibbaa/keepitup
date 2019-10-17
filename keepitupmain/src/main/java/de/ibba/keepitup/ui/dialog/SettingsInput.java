@@ -16,7 +16,7 @@ public class SettingsInput {
         INTERVAL(InputType.TYPE_CLASS_NUMBER),
         PINGCOUNT(InputType.TYPE_CLASS_NUMBER);
 
-        private int inputType;
+        private final int inputType;
 
         Type(int inputType) {
             this.inputType = inputType;

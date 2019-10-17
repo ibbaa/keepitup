@@ -23,7 +23,7 @@ import de.ibba.keepitup.ui.NetworkTaskLogActivity;
 public class LogEntryAdapter extends RecyclerView.Adapter<LogEntryViewHolder> {
 
     private final NetworkTask networkTask;
-    private List<LogEntry> logEntries;
+    private final List<LogEntry> logEntries;
     private final NetworkTaskLogActivity logActivity;
 
     public LogEntryAdapter(NetworkTask networkTask, List<LogEntry> logEntries, NetworkTaskLogActivity logActivity) {
