@@ -11,6 +11,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.text.DateFormat;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -27,8 +28,9 @@ public class NetworkTaskAdapter extends RecyclerView.Adapter<NetworkTaskViewHold
     private final NetworkTaskMainActivity mainActivity;
 
     public NetworkTaskAdapter(List<NetworkTaskUIWrapper> networkTaskWrapperList, NetworkTaskMainActivity mainActivity) {
-        this.networkTaskWrapperList = networkTaskWrapperList;
+        this.networkTaskWrapperList = new ArrayList<>();
         this.mainActivity = mainActivity;
+        replaceItems(networkTaskWrapperList);
     }
 
     @NonNull
