@@ -95,7 +95,7 @@ public class MockFileManager implements IFileManager {
 
     public static class DeieteDirectoryCall {
 
-        private File directory;
+        private final File directory;
 
         public DeieteDirectoryCall(File directory) {
             this.directory = directory;

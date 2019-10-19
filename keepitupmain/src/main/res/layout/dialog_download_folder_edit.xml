@@ -40,13 +40,13 @@
             android:text="" />
 
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/listview_dialog_download_folder_edit_files"
+            android:id="@+id/listview_dialog_download_folder_edit_file_entries"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/listview_dialog_download_folder_edit_files_margin"
             android:padding="@dimen/listview_dialog_download_folder_edit_files_padding"
             android:layout_gravity="fill_horizontal"
-            android:scrollbars="vertical" />
+            android:scrollbars="none" />
 
         <LinearLayout
             android:id="@+id/linearlayout_dialog_download_folder_edit_ok_cancel"

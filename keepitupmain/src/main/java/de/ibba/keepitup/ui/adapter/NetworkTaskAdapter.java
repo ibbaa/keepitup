@@ -62,6 +62,7 @@ public class NetworkTaskAdapter extends RecyclerView.Adapter<NetworkTaskViewHold
     }
 
     private void bindStatus(@NonNull NetworkTaskViewHolder networkTaskViewHolder, NetworkTask networkTask) {
+        Log.d(NetworkTaskAdapter.class.getName(), "bindStatus, networkTask is " + networkTask);
         String statusRunning = networkTask.isRunning() ? getResources().getString(R.string.string_running) : getResources().getString(R.string.string_stopped);
         String formattedStatusText = getResources().getString(R.string.text_activity_main_list_item_network_task_status, statusRunning);
         int startStopImage = networkTask.isRunning() ? R.drawable.icon_stop_selector : R.drawable.icon_start_selector;
@@ -71,6 +72,7 @@ public class NetworkTaskAdapter extends RecyclerView.Adapter<NetworkTaskViewHold
     }
 
     private void bindAccessType(@NonNull NetworkTaskViewHolder networkTaskViewHolder, NetworkTask networkTask) {
+        Log.d(NetworkTaskAdapter.class.getName(), "bindAccessType, networkTask is " + networkTask);
         String accessTypeText = new EnumMapping(getContext()).getAccessTypeText(networkTask.getAccessType());
         String formattedAccessTypeText = getResources().getString(R.string.text_activity_main_list_item_network_task_access_type, accessTypeText);
         Log.d(NetworkTaskAdapter.class.getName(), "binding access type text " + formattedAccessTypeText);
@@ -78,6 +80,7 @@ public class NetworkTaskAdapter extends RecyclerView.Adapter<NetworkTaskViewHold
     }
 
     private void bindAddress(@NonNull NetworkTaskViewHolder networkTaskViewHolder, NetworkTask networkTask) {
+        Log.d(NetworkTaskAdapter.class.getName(), "bindAddress, networkTask is " + networkTask);
         String addressText = String.format(getResources().getString(R.string.text_activity_main_list_item_network_task_address), new EnumMapping(getContext()).getAccessTypeAddressText(networkTask.getAccessType()));
         String formattedAddressText = String.format(addressText, networkTask.getAddress(), networkTask.getPort());
         Log.d(NetworkTaskAdapter.class.getName(), "binding address text " + formattedAddressText);
@@ -85,6 +88,7 @@ public class NetworkTaskAdapter extends RecyclerView.Adapter<NetworkTaskViewHold
     }
 
     private void bindInterval(@NonNull NetworkTaskViewHolder networkTaskViewHolder, NetworkTask networkTask) {
+        Log.d(NetworkTaskAdapter.class.getName(), "bindInterval, networkTask is " + networkTask);
         int interval = networkTask.getInterval();
         String intervalUnit = interval == 1 ? getResources().getString(R.string.string_minute) : getResources().getString(R.string.string_minutes);
         String formattedIntervalText = getResources().getString(R.string.text_activity_main_list_item_network_task_interval, interval, intervalUnit);
@@ -93,6 +97,7 @@ public class NetworkTaskAdapter extends RecyclerView.Adapter<NetworkTaskViewHold
     }
 
     private void bindOnlyWifi(@NonNull NetworkTaskViewHolder networkTaskViewHolder, NetworkTask networkTask) {
+        Log.d(NetworkTaskAdapter.class.getName(), "bindOnlyWifi, networkTask is " + networkTask);
         String onlyWifi = networkTask.isOnlyWifi() ? getResources().getString(R.string.string_yes) : getResources().getString(R.string.string_no);
         String formattedOnlyWifiText = getResources().getString(R.string.text_activity_main_list_item_network_task_onlywifi, onlyWifi);
         Log.d(NetworkTaskAdapter.class.getName(), "binding only wifi text " + formattedOnlyWifiText);
@@ -100,6 +105,7 @@ public class NetworkTaskAdapter extends RecyclerView.Adapter<NetworkTaskViewHold
     }
 
     private void bindNotification(@NonNull NetworkTaskViewHolder networkTaskViewHolder, NetworkTask networkTask) {
+        Log.d(NetworkTaskAdapter.class.getName(), "bindNotification, networkTask is " + networkTask);
         String sendNotification = networkTask.isNotification() ? getResources().getString(R.string.string_yes) : getResources().getString(R.string.string_no);
         String formattedNotificationText = getResources().getString(R.string.text_activity_main_list_item_network_task_notification, sendNotification);
         Log.d(NetworkTaskAdapter.class.getName(), "binding notification text " + formattedNotificationText);
@@ -107,6 +113,7 @@ public class NetworkTaskAdapter extends RecyclerView.Adapter<NetworkTaskViewHold
     }
 
     private void bindLastExecTimestamp(@NonNull NetworkTaskViewHolder networkTaskViewHolder, LogEntry logEntry) {
+        Log.d(NetworkTaskAdapter.class.getName(), "bindLastExecTimestamp, logEntry is " + logEntry);
         String timestampText;
         if (wasExecuted(logEntry)) {
             timestampText = logEntry.isSuccess() ? getResources().getString(R.string.string_successful) : getResources().getString(R.string.string_not_successful);
@@ -120,6 +127,7 @@ public class NetworkTaskAdapter extends RecyclerView.Adapter<NetworkTaskViewHold
     }
 
     private void bindLastExecMessage(@NonNull NetworkTaskViewHolder networkTaskViewHolder, LogEntry logEntry) {
+        Log.d(NetworkTaskAdapter.class.getName(), "bindLastExecMessage, logEntry is " + logEntry);
         if (wasExecuted(logEntry)) {
             String formattedMessageText = getResources().getString(R.string.text_activity_main_list_item_network_task_last_exec_message, logEntry.getMessage());
             Log.d(NetworkTaskAdapter.class.getName(), "binding and showing last exec message text " + formattedMessageText);
@@ -202,6 +210,11 @@ public class NetworkTaskAdapter extends RecyclerView.Adapter<NetworkTaskViewHold
     }
 
     public NetworkTaskUIWrapper getItem(int position) {
+        Log.d(LogEntryAdapter.class.getName(), "getItem for position " + position);
+        if (position < 0 || position >= networkTaskWrapperList.size()) {
+            Log.e(LogEntryAdapter.class.getName(), "position " + position + " is invalid");
+            return null;
+        }
         return networkTaskWrapperList.get(position);
     }
 

@@ -32,7 +32,7 @@ public class DownloadFolderEditDialog extends DialogFragment {
     private TextView absoluteFolderText;
     private EditText folderEditText;
     private DownloadFolderEditWatcher folderEditTextWatcher;
-    private RecyclerView folderRecyclerView;
+    private RecyclerView fileEntriesRecyclerView;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -90,11 +90,12 @@ public class DownloadFolderEditDialog extends DialogFragment {
     }
 
     private void prepareDownloadFolderRecyclerView() {
-        folderRecyclerView = dialogView.findViewById(R.id.listview_dialog_download_folder_edit_files);
+        Log.d(DownloadFolderEditDialog.class.getName(), "prepareDownloadFolderRecyclerView");
+        fileEntriesRecyclerView = dialogView.findViewById(R.id.listview_dialog_download_folder_edit_file_entries);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getActivity());
-        folderRecyclerView.setLayoutManager(layoutManager);
-        folderRecyclerView.setItemAnimator(new DefaultItemAnimator());
-        folderRecyclerView.setAdapter(createAdapter());
+        fileEntriesRecyclerView.setLayoutManager(layoutManager);
+        fileEntriesRecyclerView.setItemAnimator(new DefaultItemAnimator());
+        fileEntriesRecyclerView.setAdapter(createAdapter());
     }
 
     private void prepareOkCancelImageButtons() {
@@ -124,8 +125,24 @@ public class DownloadFolderEditDialog extends DialogFragment {
         return root + "/" + folder;
     }
 
+    public void onFileEntryClicked(View view, int position) {
+        Log.d(DownloadFolderEditDialog.class.getName(), "onFileEntryClicked, position is " + position);
+        getAdapter().selectItem(position);
+    }
+
+    public RecyclerView getFileEntriesRecyclerView() {
+        return fileEntriesRecyclerView;
+    }
+
+    public FileEntryAdapter getAdapter() {
+        return (FileEntryAdapter) getFileEntriesRecyclerView().getAdapter();
+    }
+
     private RecyclerView.Adapter createAdapter() {
         List<FileEntry> entries = new ArrayList<>();
+        FileEntry entry0 = new FileEntry();
+        entry0.setName("Download");
+        entry0.setDirectory(true);
         FileEntry entry1 = new FileEntry();
         entry1.setName("Download");
         entry1.setDirectory(true);
@@ -135,9 +152,38 @@ public class DownloadFolderEditDialog extends DialogFragment {
         FileEntry entry3 = new FileEntry();
         entry3.setName("xyz");
         entry3.setDirectory(true);
+        FileEntry entry4 = new FileEntry();
+        entry4.setName("Download");
+        entry4.setDirectory(true);
+        FileEntry entry5 = new FileEntry();
+        entry5.setName("Test");
+        entry5.setDirectory(false);
+        FileEntry entry6 = new FileEntry();
+        entry6.setName("xyz");
+        entry6.setDirectory(true);
+        FileEntry entry7 = new FileEntry();
+        entry7.setName("Download1");
+        entry7.setDirectory(true);
+        FileEntry entry8 = new FileEntry();
+        entry8.setName("Test");
+        entry8.setDirectory(false);
+        FileEntry entry9 = new FileEntry();
+        entry9.setName("xyz");
+        entry9.setDirectory(true);
+        FileEntry entry10 = new FileEntry();
+        entry10.setName("xyz");
+        entry10.setDirectory(true);
+        entries.add(entry0);
         entries.add(entry1);
         entries.add(entry2);
-        entries.add(entry3);
-        return new FileEntryAdapter(entries, getActivity());
+        /*entries.add(entry3);
+        entries.add(entry4);
+        entries.add(entry5);
+        entries.add(entry6);
+        entries.add(entry7);
+        entries.add(entry8);
+        entries.add(entry9);
+        entries.add(entry10);*/
+        return new FileEntryAdapter(entries, this);
     }
 }
