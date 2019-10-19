@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/layout_list_item_network_task"
@@ -10,15 +11,15 @@
         android:layout_gravity="center"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/list_item_network_task_margin"
-        card_view:cardCornerRadius="@dimen/list_item_network_task_corner_radius"
-        app:cardElevation="@dimen/list_item_network_task_card_elevation">
+        android:layout_margin="@dimen/cardview_list_item_network_task_margin"
+        card_view:cardCornerRadius="@dimen/cardview_list_item_network_task_corner_radius"
+        app:cardElevation="@dimen/cardview_list_item_network_task_card_elevation">
 
         <GridLayout
             android:id="@+id/gridlayout_list_item_network_task"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="@dimen/list_item_network_task_margin"
+            android:layout_margin="@dimen/gridlayout_list_item_network_task_margin"
             android:columnCount="3">
 
             <TextView
@@ -59,8 +60,8 @@
                 android:id="@+id/imageview_list_item_network_task_start_stop"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/list_item_network_task_start_stop_margin_top"
-                android:layout_marginLeft="@dimen/list_item_network_task_start_stop_margin_left"
+                android:layout_marginTop="@dimen/imageview_list_item_network_task_start_stop_margin_top"
+                android:layout_marginLeft="@dimen/imageview_list_item_network_task_start_stop_margin_left"
                 android:layout_row="1"
                 android:layout_column="1"
                 android:clickable="true"

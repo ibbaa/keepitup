@@ -28,15 +28,15 @@
                 android:id="@+id/cardview_defaults_activity_defaults"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="@dimen/defaults_activity_defaults_margin"
-                card_view:cardCornerRadius="@dimen/defaults_activity_defaults_corner_radius"
-                app:cardElevation="@dimen/defaults_activity_defaults_card_elevation">
+                android:layout_margin="@dimen/cardview_defaults_activity_defaults_margin"
+                card_view:cardCornerRadius="@dimen/cardview_defaults_activity_defaults_corner_radius"
+                app:cardElevation="@dimen/cardview_defaults_activity_defaults_card_elevation">
 
                 <TextView
                     android:id="@+id/textview_defaults_activity_defaults_label"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_margin="@dimen/defaults_activity_defaults_margin"
+                    android:layout_margin="@dimen/textview_defaults_activity_defaults_margin"
                     android:textStyle="bold"
                     android:text="@string/label_activity_defaults_defaults" />
 
@@ -46,15 +46,15 @@
                 android:id="@+id/cardview_defaults_activity_accesstype"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="@dimen/defaults_activity_accesstype_margin"
-                card_view:cardCornerRadius="@dimen/defaults_activity_accesstype_corner_radius"
-                app:cardElevation="@dimen/defaults_activity_accesstype_card_elevation">
+                android:layout_margin="@dimen/cardview_defaults_activity_accesstype_margin"
+                card_view:cardCornerRadius="@dimen/cardview_defaults_activity_accesstype_corner_radius"
+                app:cardElevation="@dimen/cardview_defaults_activity_accesstype_card_elevation">
 
                 <LinearLayout
                     android:id="@+id/linearlayout_defaults_activity_accesstype"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_margin="@dimen/defaults_activity_accesstype_margin"
+                    android:layout_margin="@dimen/linearlayout_defaults_activity_accesstype_margin"
                     android:focusable="true"
                     android:focusableInTouchMode="true"
                     android:orientation="vertical">
@@ -79,15 +79,15 @@
                 android:id="@+id/cardview_defaults_activity_address"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="@dimen/defaults_activity_address_margin"
-                card_view:cardCornerRadius="@dimen/defaults_activity_address_corner_radius"
-                app:cardElevation="@dimen/defaults_activity_address_card_elevation">
+                android:layout_margin="@dimen/cardview_defaults_activity_address_margin"
+                card_view:cardCornerRadius="@dimen/cardview_defaults_activity_address_corner_radius"
+                app:cardElevation="@dimen/cardview_defaults_activity_address_card_elevation">
 
                 <LinearLayout
                     android:id="@+id/linearlayout_defaults_activity_address"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_margin="@dimen/defaults_activity_address_margin"
+                    android:layout_margin="@dimen/linearlayout_defaults_activity_address_margin"
                     android:focusable="true"
                     android:focusableInTouchMode="true"
                     android:orientation="vertical">
@@ -114,15 +114,15 @@
                 android:id="@+id/cardview_defaults_activity_port"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="@dimen/defaults_activity_port_margin"
-                card_view:cardCornerRadius="@dimen/defaults_activity_port_corner_radius"
-                app:cardElevation="@dimen/defaults_activity_port_card_elevation">
+                android:layout_margin="@dimen/cardview_defaults_activity_port_margin"
+                card_view:cardCornerRadius="@dimen/cardview_defaults_activity_port_corner_radius"
+                app:cardElevation="@dimen/cardview_defaults_activity_port_card_elevation">
 
                 <LinearLayout
                     android:id="@+id/linearlayout_defaults_activity_port"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_margin="@dimen/defaults_activity_port_margin"
+                    android:layout_margin="@dimen/linearlayout_defaults_activity_port_margin"
                     android:focusable="true"
                     android:focusableInTouchMode="true"
                     android:orientation="vertical">
@@ -149,15 +149,15 @@
                 android:id="@+id/cardview_defaults_activity_interval"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="@dimen/defaults_activity_interval_margin"
-                card_view:cardCornerRadius="@dimen/defaults_activity_interval_corner_radius"
-                app:cardElevation="@dimen/defaults_activity_interval_card_elevation">
+                android:layout_margin="@dimen/cardview_defaults_activity_interval_margin"
+                card_view:cardCornerRadius="@dimen/cardview_defaults_activity_interval_corner_radius"
+                app:cardElevation="@dimen/cardview_defaults_activity_interval_card_elevation">
 
                 <LinearLayout
                     android:id="@+id/linearlayout_defaults_activity_interval"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_margin="@dimen/defaults_activity_interval_margin"
+                    android:layout_margin="@dimen/linearlayout_defaults_activity_interval_margin"
                     android:focusable="true"
                     android:focusableInTouchMode="true"
                     android:orientation="vertical">
@@ -173,7 +173,7 @@
                         android:id="@+id/linearlayout_defaults_activity_interval_value"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_margin="@dimen/defaults_activity_interval_margin"
+                        android:layout_margin="@dimen/linearlayout_defaults_activity_interval_margin"
                         android:focusable="true"
                         android:focusableInTouchMode="true"
                         android:orientation="horizontal">
@@ -189,7 +189,7 @@
                             android:id="@+id/textview_defaults_activity_interval_minutes"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginLeft="@dimen/defaults_activity_interval_minutes_margin"
+                            android:layout_marginLeft="@dimen/textview_defaults_activity_interval_minutes_margin"
                             android:textStyle="normal"
                             android:text="" />
 
@@ -203,15 +203,15 @@
                 android:id="@+id/cardview_defaults_activity_onlywifi"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="@dimen/defaults_activity_onlywifi_margin"
-                card_view:cardCornerRadius="@dimen/defaults_activity_onlywifi_corner_radius"
-                app:cardElevation="@dimen/defaults_activity_onlywifi_card_elevation">
+                android:layout_margin="@dimen/cardview_defaults_activity_onlywifi_margin"
+                card_view:cardCornerRadius="@dimen/cardview_defaults_activity_onlywifi_corner_radius"
+                app:cardElevation="@dimen/cardview_defaults_activity_onlywifi_card_elevation">
 
                 <LinearLayout
                     android:id="@+id/linearlayout_defaults_activity_onlywifi"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_margin="@dimen/defaults_activity_onlywifi_margin"
+                    android:layout_margin="@dimen/linearlayout_defaults_activity_onlywifi_margin"
                     android:focusable="true"
                     android:focusableInTouchMode="true"
                     android:orientation="vertical">
@@ -227,7 +227,7 @@
                         android:id="@+id/linearlayout_defaults_activity_onlywifi_onoff"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_margin="@dimen/defaults_activity_onlywifi_margin"
+                        android:layout_margin="@dimen/linearlayout_defaults_activity_onlywifi_margin"
                         android:focusable="true"
                         android:focusableInTouchMode="true"
                         android:orientation="horizontal">
@@ -255,15 +255,15 @@
                 android:id="@+id/cardview_defaults_activity_notification"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="@dimen/defaults_activity_notification_margin"
-                card_view:cardCornerRadius="@dimen/defaults_activity_notification_corner_radius"
-                app:cardElevation="@dimen/defaults_activity_notification_card_elevation">
+                android:layout_margin="@dimen/cardview_defaults_activity_notification_margin"
+                card_view:cardCornerRadius="@dimen/cardview_defaults_activity_notification_corner_radius"
+                app:cardElevation="@dimen/cardview_defaults_activity_notification_card_elevation">
 
                 <LinearLayout
                     android:id="@+id/linearlayout_defaults_activity_notification"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_margin="@dimen/defaults_activity_notification_margin"
+                    android:layout_margin="@dimen/linearlayout_defaults_activity_notification_margin"
                     android:focusable="true"
                     android:focusableInTouchMode="true"
                     android:orientation="vertical">
@@ -279,7 +279,7 @@
                         android:id="@+id/linearlayout_defaults_activity_notification_on_off"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_margin="@dimen/defaults_activity_notification_margin"
+                        android:layout_margin="@dimen/linearlayout_defaults_activity_notification_margin"
                         android:focusable="true"
                         android:focusableInTouchMode="true"
                         android:orientation="horizontal">

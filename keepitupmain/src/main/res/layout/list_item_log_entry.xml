@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/layout_list_item_log_entry"
@@ -9,7 +10,7 @@
         android:id="@+id/textview_list_item_log_entry_no_log"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/list_item_log_entry_margin"
+        android:layout_margin="@dimen/cardview_list_item_log_entry_margin"
         android:textStyle="normal"
         android:text="@string/text_activity_log_list_item_log_entry_no_log" />
 
@@ -18,15 +19,15 @@
         android:layout_gravity="center"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/list_item_log_entry_margin"
-        card_view:cardCornerRadius="@dimen/list_item_log_entry_corner_radius"
-        app:cardElevation="@dimen/list_item_log_entry_card_elevation">
+        android:layout_margin="@dimen/cardview_list_item_log_entry_margin"
+        card_view:cardCornerRadius="@dimen/cardview_list_item_log_entry_corner_radius"
+        app:cardElevation="@dimen/cardview_list_item_log_entry_card_elevation">
 
         <LinearLayout
             android:id="@+id/linearlayout_list_item_log_entry"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="@dimen/list_item_log_entry_margin"
+            android:layout_margin="@dimen/linearlayout_list_item_log_entry_margin"
             android:orientation="vertical"
             app:layout_constraintTop_toTopOf="parent">
 
