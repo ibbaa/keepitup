@@ -11,11 +11,18 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.DialogFragment;
+import androidx.recyclerview.widget.DefaultItemAnimator;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 import de.ibba.keepitup.R;
+import de.ibba.keepitup.model.FileEntry;
 import de.ibba.keepitup.ui.GlobalSettingsActivity;
+import de.ibba.keepitup.ui.adapter.FileEntryAdapter;
 import de.ibba.keepitup.util.BundleUtil;
 import de.ibba.keepitup.util.StringUtil;
 
@@ -25,6 +32,7 @@ public class DownloadFolderEditDialog extends DialogFragment {
     private TextView absoluteFolderText;
     private EditText folderEditText;
     private DownloadFolderEditWatcher folderEditTextWatcher;
+    private RecyclerView folderRecyclerView;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -41,6 +49,7 @@ public class DownloadFolderEditDialog extends DialogFragment {
         String folder = BundleUtil.bundleToMessage(getDownloadFolderKey(), Objects.requireNonNull(getArguments()));
         prepareDownloadFolderAbsolute(root, folder);
         prepareDownloadFolder(root, folder);
+        prepareDownloadFolderRecyclerView();
         prepareOkCancelImageButtons();
         return dialogView;
     }
@@ -80,6 +89,14 @@ public class DownloadFolderEditDialog extends DialogFragment {
         folderEditText.addTextChangedListener(folderEditTextWatcher);
     }
 
+    private void prepareDownloadFolderRecyclerView() {
+        folderRecyclerView = dialogView.findViewById(R.id.listview_dialog_download_folder_edit_files);
+        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getActivity());
+        folderRecyclerView.setLayoutManager(layoutManager);
+        folderRecyclerView.setItemAnimator(new DefaultItemAnimator());
+        folderRecyclerView.setAdapter(createAdapter());
+    }
+
     private void prepareOkCancelImageButtons() {
         Log.d(DownloadFolderEditDialog.class.getName(), "prepareOkCancelImageButtons");
         ImageView okImage = dialogView.findViewById(R.id.imageview_dialog_download_folder_edit_ok);
@@ -105,5 +122,22 @@ public class DownloadFolderEditDialog extends DialogFragment {
             return root;
         }
         return root + "/" + folder;
+    }
+
+    private RecyclerView.Adapter createAdapter() {
+        List<FileEntry> entries = new ArrayList<>();
+        FileEntry entry1 = new FileEntry();
+        entry1.setName("Download");
+        entry1.setDirectory(true);
+        FileEntry entry2 = new FileEntry();
+        entry2.setName("Test");
+        entry2.setDirectory(false);
+        FileEntry entry3 = new FileEntry();
+        entry3.setName("xyz");
+        entry3.setDirectory(true);
+        entries.add(entry1);
+        entries.add(entry2);
+        entries.add(entry3);
+        return new FileEntryAdapter(entries, getActivity());
     }
 }

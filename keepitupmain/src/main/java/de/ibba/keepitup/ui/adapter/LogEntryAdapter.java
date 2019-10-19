@@ -18,18 +18,17 @@ import java.util.List;
 import de.ibba.keepitup.R;
 import de.ibba.keepitup.model.LogEntry;
 import de.ibba.keepitup.model.NetworkTask;
-import de.ibba.keepitup.ui.NetworkTaskLogActivity;
 
 public class LogEntryAdapter extends RecyclerView.Adapter<LogEntryViewHolder> {
 
     private final NetworkTask networkTask;
     private final List<LogEntry> logEntries;
-    private final NetworkTaskLogActivity logActivity;
+    private final Context context;
 
-    public LogEntryAdapter(NetworkTask networkTask, List<LogEntry> logEntries, NetworkTaskLogActivity logActivity) {
+    public LogEntryAdapter(NetworkTask networkTask, List<LogEntry> logEntries, Context context) {
         this.networkTask = networkTask;
         this.logEntries = new ArrayList<>();
-        this.logActivity = logActivity;
+        this.context = context;
         replaceItems(logEntries);
     }
 
@@ -116,7 +115,7 @@ public class LogEntryAdapter extends RecyclerView.Adapter<LogEntryViewHolder> {
     }
 
     private Context getContext() {
-        return logActivity;
+        return context;
     }
 
     private Resources getResources() {

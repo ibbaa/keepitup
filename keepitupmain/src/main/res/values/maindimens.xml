@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <dimen name="list_item_network_task_margin">4dp</dimen>
-    <dimen name="list_item_network_task_corner_radius">4dp</dimen>
-    <dimen name="list_item_network_task_card_elevation">4dp</dimen>
-    <dimen name="list_item_network_task_start_stop_margin_top">2dp</dimen>
-    <dimen name="list_item_network_task_start_stop_margin_left">5dp</dimen>
+    <dimen name="cardview_list_item_network_task_margin">4dp</dimen>
+    <dimen name="cardview_list_item_network_task_corner_radius">4dp</dimen>
+    <dimen name="cardview_list_item_network_task_card_elevation">4dp</dimen>
+    <dimen name="gridlayout_list_item_network_task_margin">4dp</dimen>
+    <dimen name="imageview_list_item_network_task_start_stop_margin_top">2dp</dimen>
+    <dimen name="imageview_list_item_network_task_start_stop_margin_left">5dp</dimen>
 </resources>

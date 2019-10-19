@@ -28,15 +28,15 @@
                 android:id="@+id/cardview_global_settings_activity_global"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="@dimen/global_settings_activity_global_margin"
-                card_view:cardCornerRadius="@dimen/global_settings_activity_global_corner_radius"
-                app:cardElevation="@dimen/global_settings_activity_global_card_elevation">
+                android:layout_margin="@dimen/cardview_global_settings_activity_global_margin"
+                card_view:cardCornerRadius="@dimen/cardview_global_settings_activity_global_corner_radius"
+                app:cardElevation="@dimen/cardview_global_settings_activity_global_card_elevation">
 
                 <TextView
                     android:id="@+id/textview_global_settings_activity_global_label"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_margin="@dimen/global_settings_activity_global_margin"
+                    android:layout_margin="@dimen/textview_global_settings_activity_global_margin"
                     android:textStyle="bold"
                     android:text="@string/label_activity_global_settings_global" />
 
@@ -46,15 +46,15 @@
                 android:id="@+id/cardview_global_settings_activity_ping_count"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="@dimen/global_settings_activity_ping_count_margin"
-                card_view:cardCornerRadius="@dimen/global_settings_activity_ping_count_corner_radius"
-                app:cardElevation="@dimen/global_settings_activity_ping_count_card_elevation">
+                android:layout_margin="@dimen/cardview_global_settings_activity_ping_count_margin"
+                card_view:cardCornerRadius="@dimen/cardview_global_settings_activity_ping_count_corner_radius"
+                app:cardElevation="@dimen/cardview_global_settings_activity_ping_count_card_elevation">
 
                 <LinearLayout
                     android:id="@+id/linearlayout_global_settings_activity_ping_count"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_margin="@dimen/global_settings_activity_ping_count_margin"
+                    android:layout_margin="@dimen/linearlayout_global_settings_activity_ping_count_margin"
                     android:focusable="true"
                     android:focusableInTouchMode="true"
                     android:orientation="vertical">
@@ -70,7 +70,7 @@
                         android:id="@+id/linearlayout_global_settings_activity_ping_count_value"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_margin="@dimen/global_settings_activity_ping_count_margin"
+                        android:layout_margin="@dimen/linearlayout_global_settings_activity_ping_count_margin"
                         android:focusable="true"
                         android:focusableInTouchMode="true"
                         android:orientation="horizontal">
@@ -92,15 +92,15 @@
                 android:id="@+id/cardview_global_settings_activity_notification_inactive_network"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="@dimen/global_settings_activity_notification_inactive_network_margin"
-                card_view:cardCornerRadius="@dimen/global_settings_activity_notification_inactive_network_corner_radius"
-                app:cardElevation="@dimen/global_settings_activity_notification_inactive_network_card_elevation">
+                android:layout_margin="@dimen/cardview_global_settings_activity_notification_inactive_network_margin"
+                card_view:cardCornerRadius="@dimen/cardview_global_settings_activity_notification_inactive_network_corner_radius"
+                app:cardElevation="@dimen/cardview_global_settings_activity_notification_inactive_network_card_elevation">
 
                 <LinearLayout
                     android:id="@+id/linearlayout_global_settings_activity_notification_inactive_network"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_margin="@dimen/global_settings_activity_notification_inactive_network_margin"
+                    android:layout_margin="@dimen/linearlayout_global_settings_activity_notification_inactive_network_margin"
                     android:focusable="true"
                     android:focusableInTouchMode="true"
                     android:orientation="vertical">
@@ -116,7 +116,7 @@
                         android:id="@+id/linearlayout_global_settings_activity_notification_inactive_network_on_off"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_margin="@dimen/global_settings_activity_notification_inactive_network_margin"
+                        android:layout_margin="@dimen/linearlayout_global_settings_activity_notification_inactive_network_margin"
                         android:focusable="true"
                         android:focusableInTouchMode="true"
                         android:orientation="horizontal">
@@ -144,15 +144,15 @@
                 android:id="@+id/cardview_global_settings_activity_download_external_storage"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="@dimen/global_settings_activity_download_external_storage_margin"
-                card_view:cardCornerRadius="@dimen/global_settings_activity_download_external_storage_corner_radius"
-                app:cardElevation="@dimen/global_settings_activity_download_external_storage_card_elevation">
+                android:layout_margin="@dimen/cardview_global_settings_activity_download_external_storage_margin"
+                card_view:cardCornerRadius="@dimen/cardview_global_settings_activity_download_external_storage_corner_radius"
+                app:cardElevation="@dimen/cardview_global_settings_activity_download_external_storage_card_elevation">
 
                 <LinearLayout
                     android:id="@+id/linearlayout_global_settings_activity_download_external_storage"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_margin="@dimen/global_settings_activity_download_external_storage_margin"
+                    android:layout_margin="@dimen/linearlayout_global_settings_activity_download_external_storage_margin"
                     android:focusable="true"
                     android:focusableInTouchMode="true"
                     android:orientation="vertical">
@@ -168,7 +168,7 @@
                         android:id="@+id/linearlayout_global_settings_activity_download_external_storage_on_off"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_margin="@dimen/global_settings_activity_download_external_storage_margin"
+                        android:layout_margin="@dimen/linearlayout_global_settings_activity_download_external_storage_margin"
                         android:focusable="true"
                         android:focusableInTouchMode="true"
                         android:orientation="horizontal">
@@ -196,15 +196,15 @@
                 android:id="@+id/cardview_global_settings_activity_download_folder"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="@dimen/global_settings_activity_download_folder_margin"
-                card_view:cardCornerRadius="@dimen/global_settings_activity_download_folder_corner_radius"
-                app:cardElevation="@dimen/global_settings_activity_download_folder_card_elevation">
+                android:layout_margin="@dimen/cardview_global_settings_activity_download_folder_margin"
+                card_view:cardCornerRadius="@dimen/cardview_global_settings_activity_download_folder_corner_radius"
+                app:cardElevation="@dimen/cardview_global_settings_activity_download_folder_card_elevation">
 
                 <LinearLayout
                     android:id="@+id/linearlayout_global_settings_activity_download_folder"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_margin="@dimen/global_settings_activity_download_folder_margin"
+                    android:layout_margin="@dimen/linearlayout_global_settings_activity_download_folder_margin"
                     android:focusable="true"
                     android:focusableInTouchMode="true"
                     android:orientation="vertical">
@@ -220,7 +220,7 @@
                         android:id="@+id/linearlayout_global_settings_activity_download_folder_value"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_margin="@dimen/global_settings_activity_download_folder_margin"
+                        android:layout_margin="@dimen/linearlayout_global_settings_activity_download_folder_margin"
                         android:focusable="true"
                         android:focusableInTouchMode="true"
                         android:orientation="horizontal">
@@ -243,15 +243,15 @@
                 android:id="@+id/cardview_global_settings_activity_download_keep"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="@dimen/global_settings_activity_download_keep_margin"
-                card_view:cardCornerRadius="@dimen/global_settings_activity_download_keep_corner_radius"
-                app:cardElevation="@dimen/global_settings_activity_download_keep_card_elevation">
+                android:layout_margin="@dimen/cardview_global_settings_activity_download_keep_margin"
+                card_view:cardCornerRadius="@dimen/cardview_global_settings_activity_download_keep_corner_radius"
+                app:cardElevation="@dimen/cardview_global_settings_activity_download_keep_card_elevation">
 
                 <LinearLayout
                     android:id="@+id/linearlayout_global_settings_activity_download_keep"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_margin="@dimen/global_settings_activity_download_keep_margin"
+                    android:layout_margin="@dimen/linearlayout_global_settings_activity_download_keep_margin"
                     android:focusable="true"
                     android:focusableInTouchMode="true"
                     android:orientation="vertical">
@@ -267,7 +267,7 @@
                         android:id="@+id/linearlayout_global_settings_activity_download_keep_on_off"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_margin="@dimen/global_settings_activity_download_keep_margin"
+                        android:layout_margin="@dimen/linearlayout_global_settings_activity_download_keep_margin"
                         android:focusable="true"
                         android:focusableInTouchMode="true"
                         android:orientation="horizontal">

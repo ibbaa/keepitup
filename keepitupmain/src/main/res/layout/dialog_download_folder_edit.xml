@@ -15,7 +15,7 @@
 
         <TextView
             android:id="@+id/textview_dialog_download_folder_edit_label"
-            android:layout_width="@dimen/textview_dialog_download_folder_edit_root_width"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textStyle="bold"
             android:labelFor="@id/edittext_dialog_download_folder_edit_folder"
@@ -23,7 +23,7 @@
 
         <TextView
             android:id="@+id/textview_dialog_download_folder_edit_root"
-            android:layout_width="@dimen/textview_dialog_download_folder_edit_root_width"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:paddingTop="@dimen/textview_dialog_download_folder_edit_root_padding_top"
             android:text="" />
@@ -31,9 +31,10 @@
         <EditText
             android:id="@+id/edittext_dialog_download_folder_edit_folder"
             style="@style/DialogEditTextTheme"
-            android:layout_width="@dimen/edittext_dialog_download_folder_edit_folder_width"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/edittext_dialog_download_folder_edit_folder_margin_left"
+            android:layout_marginBottom="@dimen/edittext_dialog_download_folder_edit_folder_margin_bottom"
             android:importantForAutofill="no"
             android:inputType="textMultiLine"
             android:text="" />
@@ -42,7 +43,9 @@
             android:id="@+id/listview_dialog_download_folder_edit_files"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
+            android:layout_margin="@dimen/listview_dialog_download_folder_edit_files_margin"
+            android:padding="@dimen/listview_dialog_download_folder_edit_files_padding"
+            android:layout_gravity="fill_horizontal"
             android:scrollbars="vertical" />
 
         <LinearLayout
