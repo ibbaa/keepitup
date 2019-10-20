@@ -8,7 +8,7 @@ public interface IFileManager {
 
     File getInternalRootDirectory();
 
-    File getExternalDownloadDirectory(String downloadDirectoryName);
+    File getExternalDirectory(String directoryName);
 
     File getExternalRootDirectory();
 

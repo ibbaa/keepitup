@@ -45,13 +45,13 @@ public class GlobalSettingsActivityTest extends BaseUITest {
     @Before
     public void beforeEachTestMethod() {
         super.beforeEachTestMethod();
-        getFileManager().deleteDirectory(getFileManager().getExternalDownloadDirectory("test"));
+        getFileManager().deleteDirectory(getFileManager().getExternalDirectory("test"));
     }
 
     @After
     public void afterEachTestMethod() {
         super.afterEachTestMethod();
-        getFileManager().deleteDirectory(getFileManager().getExternalDownloadDirectory("test"));
+        getFileManager().deleteDirectory(getFileManager().getExternalDirectory("test"));
     }
 
     @Test
@@ -259,7 +259,7 @@ public class GlobalSettingsActivityTest extends BaseUITest {
         onView(withId(R.id.switch_global_settings_activity_download_external_storage)).perform(click());
         onView(withId(R.id.textview_global_settings_activity_download_folder)).perform(click());
         assertEquals(1, activity.getSupportFragmentManager().getFragments().size());
-        onView(withId(R.id.imageview_dialog_download_folder_edit_cancel)).perform(click());
+        onView(withId(R.id.imageview_dialog_folder_choose_edit_cancel)).perform(click());
         assertEquals(0, activity.getSupportFragmentManager().getFragments().size());
         onView(withId(R.id.switch_global_settings_activity_download_external_storage)).perform(click());
         onView(withId(R.id.textview_global_settings_activity_download_folder)).perform(click());
@@ -273,15 +273,15 @@ public class GlobalSettingsActivityTest extends BaseUITest {
         assertEquals("download", preferenceManager.getPreferenceDownloadFolder());
         onView(withId(R.id.switch_global_settings_activity_download_external_storage)).perform(click());
         onView(withId(R.id.textview_global_settings_activity_download_folder)).perform(click());
-        onView(withId(R.id.edittext_dialog_download_folder_edit_folder)).check(matches(withText("download")));
-        onView(withId(R.id.edittext_dialog_download_folder_edit_folder)).perform(replaceText("test"));
-        onView(withId(R.id.imageview_dialog_download_folder_edit_cancel)).perform(click());
+        onView(withId(R.id.edittext_dialog_folder_choose_edit_folder)).check(matches(withText("download")));
+        onView(withId(R.id.edittext_dialog_folder_choose_edit_folder)).perform(replaceText("test"));
+        onView(withId(R.id.imageview_dialog_folder_choose_edit_cancel)).perform(click());
         onView(withId(R.id.textview_global_settings_activity_download_folder)).check(matches(withText(endsWith("download"))));
         assertEquals("download", preferenceManager.getPreferenceDownloadFolder());
         onView(withId(R.id.textview_global_settings_activity_download_folder)).perform(click());
-        onView(withId(R.id.edittext_dialog_download_folder_edit_folder)).check(matches(withText("download")));
-        onView(withId(R.id.edittext_dialog_download_folder_edit_folder)).perform(replaceText("test"));
-        onView(withId(R.id.imageview_dialog_download_folder_edit_ok)).perform(click());
+        onView(withId(R.id.edittext_dialog_folder_choose_edit_folder)).check(matches(withText("download")));
+        onView(withId(R.id.edittext_dialog_folder_choose_edit_folder)).perform(replaceText("test"));
+        onView(withId(R.id.imageview_dialog_folder_choose_edit_ok)).perform(click());
         onView(withId(R.id.textview_global_settings_activity_download_folder)).check(matches(withText(endsWith("test"))));
         assertEquals("test", preferenceManager.getPreferenceDownloadFolder());
     }
@@ -309,7 +309,6 @@ public class GlobalSettingsActivityTest extends BaseUITest {
     @Test
     public void testDownloadFolderDialogFileError() {
         GlobalSettingsActivity activity = (GlobalSettingsActivity) launchSettingsInputActivity(rule);
-        PreferenceManager preferenceManager = getPreferenceManager();
         onView(withId(R.id.switch_global_settings_activity_download_external_storage)).perform(click());
         MockFileManager mockFileManager = new MockFileManager();
         activity.injectFileManager(mockFileManager);
@@ -331,8 +330,8 @@ public class GlobalSettingsActivityTest extends BaseUITest {
         onView(withId(R.id.textview_global_settings_activity_download_folder)).perform(click());
         MockFileManager mockFileManager = new MockFileManager();
         activity.injectFileManager(mockFileManager);
-        onView(withId(R.id.edittext_dialog_download_folder_edit_folder)).perform(replaceText("test"));
-        onView(withId(R.id.imageview_dialog_download_folder_edit_ok)).perform(click());
+        onView(withId(R.id.edittext_dialog_folder_choose_edit_folder)).perform(replaceText("test"));
+        onView(withId(R.id.imageview_dialog_folder_choose_edit_ok)).perform(click());
         assertEquals(1, activity.getSupportFragmentManager().getFragments().size());
         onView(withId(R.id.textview_dialog_general_error_message)).check(matches(withText("Error creating download directory.")));
         onView(withId(R.id.imageview_dialog_general_error_ok)).perform(click());

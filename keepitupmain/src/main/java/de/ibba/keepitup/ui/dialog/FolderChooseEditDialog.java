@@ -22,50 +22,50 @@ import java.util.Objects;
 
 import de.ibba.keepitup.R;
 import de.ibba.keepitup.model.FileEntry;
-import de.ibba.keepitup.ui.GlobalSettingsActivity;
+import de.ibba.keepitup.ui.SettingsInputActivity;
 import de.ibba.keepitup.ui.adapter.FileEntryAdapter;
 import de.ibba.keepitup.util.BundleUtil;
 import de.ibba.keepitup.util.StringUtil;
 
-public class DownloadFolderEditDialog extends DialogFragment {
+public class FolderChooseEditDialog extends DialogFragment {
 
     private View dialogView;
     private TextView absoluteFolderText;
     private EditText folderEditText;
-    private DownloadFolderEditWatcher folderEditTextWatcher;
+    private FolderChooseEditWatcher folderEditTextWatcher;
     private CheckBox showFilesCheckBox;
     private RecyclerView fileEntriesRecyclerView;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        Log.d(DownloadFolderEditDialog.class.getName(), "onCreate");
+        Log.d(FolderChooseEditDialog.class.getName(), "onCreate");
         super.onCreate(savedInstanceState);
         setStyle(DialogFragment.STYLE_NO_FRAME, R.style.DialogTheme);
     }
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        Log.d(DownloadFolderEditDialog.class.getName(), "onCreateView");
-        dialogView = inflater.inflate(R.layout.dialog_download_folder_edit, container);
-        String root = BundleUtil.bundleToMessage(getDownloadFolderRootKey(), Objects.requireNonNull(getArguments()));
-        String folder = BundleUtil.bundleToMessage(getDownloadFolderKey(), Objects.requireNonNull(getArguments()));
-        prepareDownloadFolderAbsolute(root, folder);
-        prepareDownloadFolder(root, folder);
+        Log.d(FolderChooseEditDialog.class.getName(), "onCreateView");
+        dialogView = inflater.inflate(R.layout.dialog_folder_choose_edit, container);
+        String root = BundleUtil.bundleToMessage(getFolderRootKey(), Objects.requireNonNull(getArguments()));
+        String folder = BundleUtil.bundleToMessage(getFolderKey(), Objects.requireNonNull(getArguments()));
+        prepareFolderAbsolute(root, folder);
+        prepareFolder(root, folder);
         prepareShowFilesCheckBox();
-        prepareDownloadFolderRecyclerView();
+        prepareFolderRecyclerView();
         prepareOkCancelImageButtons();
         return dialogView;
     }
 
-    public String getDownloadFolderRootKey() {
-        return DownloadFolderEditDialog.class.getSimpleName() + "Root";
+    public String getFolderRootKey() {
+        return FolderChooseEditDialog.class.getSimpleName() + "Root";
     }
 
-    public String getDownloadFolderKey() {
-        return DownloadFolderEditDialog.class.getSimpleName() + "Folder";
+    public String getFolderKey() {
+        return FolderChooseEditDialog.class.getSimpleName() + "Folder";
     }
 
-    public String getDownloadFolder() {
+    public String getFolder() {
         return StringUtil.notNull(folderEditText.getText());
     }
 
@@ -73,37 +73,37 @@ public class DownloadFolderEditDialog extends DialogFragment {
         return showFilesCheckBox.isChecked();
     }
 
-    private void prepareDownloadFolderAbsolute(String root, String folder) {
-        Log.d(DownloadFolderEditDialog.class.getName(), "prepareDownloadFolderAbsolute");
-        absoluteFolderText = dialogView.findViewById(R.id.textview_dialog_download_folder_edit_root);
-        absoluteFolderText.setText(getAbsoluteDownloadFolder(root, folder));
+    private void prepareFolderAbsolute(String root, String folder) {
+        Log.d(FolderChooseEditDialog.class.getName(), "prepareFolderAbsolute");
+        absoluteFolderText = dialogView.findViewById(R.id.textview_dialog_folder_choose_edit_root);
+        absoluteFolderText.setText(getAbsoluteFolder(root, folder));
     }
 
-    private void prepareDownloadFolder(String root, String folder) {
-        Log.d(DownloadFolderEditDialog.class.getName(), "prepareDownloadFolder");
-        folderEditText = dialogView.findViewById(R.id.edittext_dialog_download_folder_edit_folder);
+    private void prepareFolder(String root, String folder) {
+        Log.d(FolderChooseEditDialog.class.getName(), "prepareFolder");
+        folderEditText = dialogView.findViewById(R.id.edittext_dialog_folder_choose_edit_folder);
         folderEditText.setText(folder);
         prepareFolderEditTextWatcher(root);
     }
 
     private void prepareFolderEditTextWatcher(String root) {
-        Log.d(DownloadFolderEditDialog.class.getName(), "prepareFolderEditTextWatcher");
+        Log.d(FolderChooseEditDialog.class.getName(), "prepareFolderEditTextWatcher");
         if (folderEditTextWatcher != null) {
             folderEditText.removeTextChangedListener(folderEditTextWatcher);
             folderEditTextWatcher = null;
         }
-        folderEditTextWatcher = new DownloadFolderEditWatcher(root, absoluteFolderText);
+        folderEditTextWatcher = new FolderChooseEditWatcher(root, absoluteFolderText);
         folderEditText.addTextChangedListener(folderEditTextWatcher);
     }
 
     private void prepareShowFilesCheckBox() {
-        Log.d(DownloadFolderEditDialog.class.getName(), "prepareShowFilesCheckBox");
-        showFilesCheckBox = dialogView.findViewById(R.id.checkbox_dialog_download_folder_edit_show_files);
+        Log.d(FolderChooseEditDialog.class.getName(), "prepareShowFilesCheckBox");
+        showFilesCheckBox = dialogView.findViewById(R.id.checkbox_dialog_folder_choose_edit_show_files);
     }
 
-    private void prepareDownloadFolderRecyclerView() {
-        Log.d(DownloadFolderEditDialog.class.getName(), "prepareDownloadFolderRecyclerView");
-        fileEntriesRecyclerView = dialogView.findViewById(R.id.listview_dialog_download_folder_edit_file_entries);
+    private void prepareFolderRecyclerView() {
+        Log.d(FolderChooseEditDialog.class.getName(), "prepareFolderRecyclerView");
+        fileEntriesRecyclerView = dialogView.findViewById(R.id.listview_dialog_folder_choose_edit_file_entries);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getActivity());
         fileEntriesRecyclerView.setLayoutManager(layoutManager);
         fileEntriesRecyclerView.setItemAnimator(new DefaultItemAnimator());
@@ -111,26 +111,26 @@ public class DownloadFolderEditDialog extends DialogFragment {
     }
 
     private void prepareOkCancelImageButtons() {
-        Log.d(DownloadFolderEditDialog.class.getName(), "prepareOkCancelImageButtons");
-        ImageView okImage = dialogView.findViewById(R.id.imageview_dialog_download_folder_edit_ok);
-        ImageView cancelImage = dialogView.findViewById(R.id.imageview_dialog_download_folder_edit_cancel);
+        Log.d(FolderChooseEditDialog.class.getName(), "prepareOkCancelImageButtons");
+        ImageView okImage = dialogView.findViewById(R.id.imageview_dialog_folder_choose_edit_ok);
+        ImageView cancelImage = dialogView.findViewById(R.id.imageview_dialog_folder_choose_edit_cancel);
         okImage.setOnClickListener(this::onOkClicked);
         cancelImage.setOnClickListener(this::onCancelClicked);
     }
 
     private void onOkClicked(@SuppressWarnings("unused") View view) {
-        Log.d(DownloadFolderEditDialog.class.getName(), "onOkClicked");
-        GlobalSettingsActivity activity = (GlobalSettingsActivity) getActivity();
-        Objects.requireNonNull(activity).onDownloadFolderEditDialogOkClicked(this);
+        Log.d(FolderChooseEditDialog.class.getName(), "onOkClicked");
+        SettingsInputActivity activity = (SettingsInputActivity) getActivity();
+        Objects.requireNonNull(activity).onFolderChooseEditDialogOkClicked(this);
     }
 
     private void onCancelClicked(@SuppressWarnings("unused") View view) {
-        Log.d(DownloadFolderEditDialog.class.getName(), "onCancelClicked");
-        GlobalSettingsActivity activity = (GlobalSettingsActivity) getActivity();
-        Objects.requireNonNull(activity).onDownloadFolderEditDialogCancelClicked(this);
+        Log.d(FolderChooseEditDialog.class.getName(), "onCancelClicked");
+        SettingsInputActivity activity = (SettingsInputActivity) getActivity();
+        Objects.requireNonNull(activity).onFolderChooseEditDialogCancelClicked(this);
     }
 
-    private String getAbsoluteDownloadFolder(String root, String folder) {
+    private String getAbsoluteFolder(String root, String folder) {
         if (StringUtil.isEmpty(folder)) {
             return root;
         }
@@ -138,7 +138,7 @@ public class DownloadFolderEditDialog extends DialogFragment {
     }
 
     public void onFileEntryClicked(View view, int position) {
-        Log.d(DownloadFolderEditDialog.class.getName(), "onFileEntryClicked, position is " + position);
+        Log.d(FolderChooseEditDialog.class.getName(), "onFileEntryClicked, position is " + position);
         getAdapter().selectItem(position);
     }
 

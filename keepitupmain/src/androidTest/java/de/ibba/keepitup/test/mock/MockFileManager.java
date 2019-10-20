@@ -74,7 +74,7 @@ public class MockFileManager implements IFileManager {
     }
 
     @Override
-    public File getExternalDownloadDirectory(String downloadDirectoryName) {
+    public File getExternalDirectory(String downloadDirectoryName) {
         return externalDownloadDirectory;
     }
 

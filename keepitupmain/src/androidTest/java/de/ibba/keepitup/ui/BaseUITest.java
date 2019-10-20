@@ -51,7 +51,7 @@ public abstract class BaseUITest {
         preferenceManager.removeAllPreferences();
         fileManager = new FileManager(TestRegistry.getContext());
         fileManager.deleteDirectory(fileManager.getInternalDownloadDirectory());
-        fileManager.deleteDirectory(fileManager.getExternalDownloadDirectory(fileManager.getDefaultDownloadDirectoryName()));
+        fileManager.deleteDirectory(fileManager.getExternalDirectory(fileManager.getDefaultDownloadDirectoryName()));
     }
 
     @After
@@ -62,7 +62,7 @@ public abstract class BaseUITest {
         preferenceManager.removeAllPreferences();
         fileManager = new FileManager(TestRegistry.getContext());
         fileManager.deleteDirectory(fileManager.getInternalDownloadDirectory());
-        fileManager.deleteDirectory(fileManager.getExternalDownloadDirectory(fileManager.getDefaultDownloadDirectoryName()));
+        fileManager.deleteDirectory(fileManager.getExternalDirectory(fileManager.getDefaultDownloadDirectoryName()));
     }
 
     public FileManager getFileManager() {

@@ -58,26 +58,26 @@ public class FileManager implements IFileManager {
         return null;
     }
 
-    public File getExternalDownloadDirectory(String downloadDirectoryName) {
-        Log.d(FileManager.class.getName(), "getExternalDownloadDirectory, downloadDirectoryName is " + downloadDirectoryName);
+    public File getExternalDirectory(String directoryName) {
+        Log.d(FileManager.class.getName(), "getExternalDirectory, directoryName is " + directoryName);
         try {
-            File externalDir = getExternalRootDirectory();
-            if (externalDir == null) {
+            File externalRootDir = getExternalRootDirectory();
+            if (externalRootDir == null) {
                 Log.d(FileManager.class.getName(), "Cannot access external files root directory.");
                 return null;
             }
-            Log.d(FileManager.class.getName(), "External files root directory is " + externalDir.getAbsolutePath());
-            File externalDownloadDir = new File(externalDir, downloadDirectoryName);
-            Log.d(FileManager.class.getName(), "External files download directory is " + externalDownloadDir.getAbsolutePath());
-            if (externalDownloadDir.exists()) {
-                Log.d(FileManager.class.getName(), "External files download directory does exist.");
-                return externalDownloadDir;
+            Log.d(FileManager.class.getName(), "External files root directory is " + externalRootDir.getAbsolutePath());
+            File externalDir = new File(externalRootDir, directoryName);
+            Log.d(FileManager.class.getName(), "External files directory is " + externalDir.getAbsolutePath());
+            if (externalDir.exists()) {
+                Log.d(FileManager.class.getName(), "External files directory does exist.");
+                return externalDir;
             } else {
-                Log.d(FileManager.class.getName(), "External files download directory does not exist. Creating.");
-                if (externalDownloadDir.mkdirs()) {
-                    return externalDownloadDir;
+                Log.d(FileManager.class.getName(), "External files directory does not exist. Creating.");
+                if (externalDir.mkdirs()) {
+                    return externalDir;
                 }
-                Log.e(FileManager.class.getName(), "Failure on creating the directory " + externalDownloadDir.getAbsolutePath());
+                Log.e(FileManager.class.getName(), "Failure on creating the directory " + externalDir.getAbsolutePath());
             }
         } catch (Exception exc) {
             Log.e(FileManager.class.getName(), "Error accessing external files root directory", exc);
