@@ -5,6 +5,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -32,6 +33,7 @@ public class DownloadFolderEditDialog extends DialogFragment {
     private TextView absoluteFolderText;
     private EditText folderEditText;
     private DownloadFolderEditWatcher folderEditTextWatcher;
+    private CheckBox showFilesCheckBox;
     private RecyclerView fileEntriesRecyclerView;
 
     @Override
@@ -49,6 +51,7 @@ public class DownloadFolderEditDialog extends DialogFragment {
         String folder = BundleUtil.bundleToMessage(getDownloadFolderKey(), Objects.requireNonNull(getArguments()));
         prepareDownloadFolderAbsolute(root, folder);
         prepareDownloadFolder(root, folder);
+        prepareShowFilesCheckBox();
         prepareDownloadFolderRecyclerView();
         prepareOkCancelImageButtons();
         return dialogView;
@@ -64,6 +67,10 @@ public class DownloadFolderEditDialog extends DialogFragment {
 
     public String getDownloadFolder() {
         return StringUtil.notNull(folderEditText.getText());
+    }
+
+    public boolean isShowFiles() {
+        return showFilesCheckBox.isChecked();
     }
 
     private void prepareDownloadFolderAbsolute(String root, String folder) {
@@ -87,6 +94,11 @@ public class DownloadFolderEditDialog extends DialogFragment {
         }
         folderEditTextWatcher = new DownloadFolderEditWatcher(root, absoluteFolderText);
         folderEditText.addTextChangedListener(folderEditTextWatcher);
+    }
+
+    private void prepareShowFilesCheckBox() {
+        Log.d(DownloadFolderEditDialog.class.getName(), "prepareShowFilesCheckBox");
+        showFilesCheckBox = dialogView.findViewById(R.id.checkbox_dialog_download_folder_edit_show_files);
     }
 
     private void prepareDownloadFolderRecyclerView() {
