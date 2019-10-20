@@ -19,7 +19,7 @@ import de.ibba.keepitup.R;
 import de.ibba.keepitup.resources.FileManager;
 import de.ibba.keepitup.resources.IFileManager;
 import de.ibba.keepitup.resources.PreferenceManager;
-import de.ibba.keepitup.ui.dialog.DownloadFolderEditDialog;
+import de.ibba.keepitup.ui.dialog.FolderChooseEditDialog;
 import de.ibba.keepitup.ui.dialog.SettingsInput;
 import de.ibba.keepitup.ui.dialog.SettingsInputDialog;
 import de.ibba.keepitup.ui.validation.PingCountFieldValidator;
@@ -218,7 +218,7 @@ public class GlobalSettingsActivity extends SettingsInputActivity {
 
     private void showDownloadFolderEditDialog(View view) {
         Log.d(DefaultsActivity.class.getName(), "showDownloadFolderEditDialog");
-        DownloadFolderEditDialog editDialog = new DownloadFolderEditDialog();
+        FolderChooseEditDialog editDialog = new FolderChooseEditDialog();
         String root = getExternalRootFolder();
         if (root == null) {
             Log.d(GlobalSettingsActivity.class.getName(), "Showing error dialog.");
@@ -231,7 +231,7 @@ public class GlobalSettingsActivity extends SettingsInputActivity {
             showErrorDialog(getResources().getString(R.string.text_dialog_general_error_external_root_access));
             return;
         }
-        Bundle bundle = BundleUtil.messagesToBundle(new String[]{editDialog.getDownloadFolderRootKey(), editDialog.getDownloadFolderKey()}, new String[]{root, folder});
+        Bundle bundle = BundleUtil.messagesToBundle(new String[]{editDialog.getFolderRootKey(), editDialog.getFolderKey()}, new String[]{root, folder});
         editDialog.setArguments(bundle);
         editDialog.show(getSupportFragmentManager(), GlobalSettingsActivity.class.getName());
 
@@ -257,15 +257,12 @@ public class GlobalSettingsActivity extends SettingsInputActivity {
 
     private String getPreferenceDownloadFolder() {
         Log.d(GlobalSettingsActivity.class.getName(), "getPreferenceDownloadFolder");
-        PreferenceManager preferenceManager = new PreferenceManager(this);
-        String folder = preferenceManager.getPreferenceDownloadFolder();
-        IFileManager fileManager = getFileManager();
-        File downloadFolder = fileManager.getExternalDownloadDirectory(folder);
-        Log.d(GlobalSettingsActivity.class.getName(), "External download folder is " + downloadFolder);
+        String downloadFolder = getExternalDownloadFolder();
         if (downloadFolder == null) {
             return null;
         }
-        return folder;
+        PreferenceManager preferenceManager = new PreferenceManager(this);
+        return preferenceManager.getPreferenceDownloadFolder();
     }
 
     private String getExternalDownloadFolder() {
@@ -273,7 +270,7 @@ public class GlobalSettingsActivity extends SettingsInputActivity {
         PreferenceManager preferenceManager = new PreferenceManager(this);
         String folder = preferenceManager.getPreferenceDownloadFolder();
         IFileManager fileManager = getFileManager();
-        File downloadFolder = fileManager.getExternalDownloadDirectory(folder);
+        File downloadFolder = fileManager.getExternalDirectory(folder);
         Log.d(GlobalSettingsActivity.class.getName(), "External download folder is " + downloadFolder);
         if (downloadFolder == null) {
             return null;
@@ -281,6 +278,7 @@ public class GlobalSettingsActivity extends SettingsInputActivity {
         return downloadFolder.getAbsolutePath();
     }
 
+    @Override
     public void onInputDialogOkClicked(SettingsInputDialog inputDialog, SettingsInput.Type type) {
         Log.d(GlobalSettingsActivity.class.getName(), "onInputDialogOkClicked, type is " + type + ", value is " + inputDialog.getValue());
         PreferenceManager preferenceManager = new PreferenceManager(this);
@@ -293,17 +291,13 @@ public class GlobalSettingsActivity extends SettingsInputActivity {
         inputDialog.dismiss();
     }
 
-    public void onInputDialogCancelClicked(SettingsInputDialog inputDialog) {
-        Log.d(GlobalSettingsActivity.class.getName(), "onInputDialogCancelClicked");
-        inputDialog.dismiss();
-    }
-
-    public void onDownloadFolderEditDialogOkClicked(DownloadFolderEditDialog editDialog) {
-        Log.d(GlobalSettingsActivity.class.getName(), "onDownloadFolderEditDialogOkClicked");
+    @Override
+    public void onFolderChooseEditDialogOkClicked(FolderChooseEditDialog editDialog) {
+        Log.d(GlobalSettingsActivity.class.getName(), "onFolderChooseEditDialogOkClicked");
         IFileManager fileManager = getFileManager();
         PreferenceManager preferenceManager = new PreferenceManager(this);
-        String folder = editDialog.getDownloadFolder();
-        File downloadFolder = fileManager.getExternalDownloadDirectory(folder);
+        String folder = editDialog.getFolder();
+        File downloadFolder = fileManager.getExternalDirectory(folder);
         Log.d(GlobalSettingsActivity.class.getName(), "External download folder is " + downloadFolder);
         if (downloadFolder == null) {
             editDialog.dismiss();
@@ -313,11 +307,6 @@ public class GlobalSettingsActivity extends SettingsInputActivity {
         }
         preferenceManager.setPreferenceDownloadFolder(folder);
         setDownloadFolder(downloadFolder.getAbsolutePath());
-        editDialog.dismiss();
-    }
-
-    public void onDownloadFolderEditDialogCancelClicked(DownloadFolderEditDialog editDialog) {
-        Log.d(GlobalSettingsActivity.class.getName(), "onDownloadFolderEditDialogCancelClicked");
         editDialog.dismiss();
     }
 

@@ -15,19 +15,19 @@ import java.util.List;
 
 import de.ibba.keepitup.R;
 import de.ibba.keepitup.model.FileEntry;
-import de.ibba.keepitup.ui.dialog.DownloadFolderEditDialog;
+import de.ibba.keepitup.ui.dialog.FolderChooseEditDialog;
 
 public class FileEntryAdapter extends RecyclerView.Adapter<FileEntryViewHolder> {
 
     private final List<FileEntry> fileEntries;
-    private final DownloadFolderEditDialog downloadFolderEditDialog;
+    private final FolderChooseEditDialog folderChooseEditDialog;
     private final RecyclerView fileEntriesRecyclerView;
     private int selected;
 
-    public FileEntryAdapter(List<FileEntry> fileEntries, DownloadFolderEditDialog downloadFolderEditDialog) {
+    public FileEntryAdapter(List<FileEntry> fileEntries, FolderChooseEditDialog folderChooseEditDialog) {
         this.fileEntries = new ArrayList<>();
-        this.downloadFolderEditDialog = downloadFolderEditDialog;
-        this.fileEntriesRecyclerView = downloadFolderEditDialog.getFileEntriesRecyclerView();
+        this.folderChooseEditDialog = folderChooseEditDialog;
+        this.fileEntriesRecyclerView = folderChooseEditDialog.getFileEntriesRecyclerView();
         this.selected = -1;
         replaceItems(fileEntries);
     }
@@ -37,7 +37,7 @@ public class FileEntryAdapter extends RecyclerView.Adapter<FileEntryViewHolder> 
     public FileEntryViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int viewType) {
         Log.d(FileEntryAdapter.class.getName(), "onCreateViewHolder");
         View itemView = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.list_item_file_entry, viewGroup, false);
-        return new FileEntryViewHolder(itemView, downloadFolderEditDialog);
+        return new FileEntryViewHolder(itemView, folderChooseEditDialog);
     }
 
     @Override
@@ -127,7 +127,7 @@ public class FileEntryAdapter extends RecyclerView.Adapter<FileEntryViewHolder> 
     }
 
     private Context getContext() {
-        return downloadFolderEditDialog.getActivity();
+        return folderChooseEditDialog.getActivity();
     }
 
     private Resources getResources() {

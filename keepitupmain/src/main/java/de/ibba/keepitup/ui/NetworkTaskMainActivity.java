@@ -22,6 +22,7 @@ import de.ibba.keepitup.ui.dialog.NetworkTaskConfirmDialog;
 import de.ibba.keepitup.ui.dialog.NetworkTaskEditDialog;
 import de.ibba.keepitup.ui.sync.NetworkTaskMainUIBroadcastReceiver;
 import de.ibba.keepitup.ui.sync.NetworkTaskMainUIInitTask;
+import de.ibba.keepitup.util.BundleUtil;
 
 public class NetworkTaskMainActivity extends RecyclerViewBaseActivity {
 
@@ -197,6 +198,19 @@ public class NetworkTaskMainActivity extends RecyclerViewBaseActivity {
     public void onEditDialogCancelClicked(NetworkTaskEditDialog editDialog) {
         Log.d(NetworkTaskMainActivity.class.getName(), "onEditDialogCancelClicked");
         editDialog.dismiss();
+    }
+
+    private void showConfirmDialog(String confirmMessage, NetworkTaskConfirmDialog.Type type, int position) {
+        Log.d(NetworkTaskMainActivity.class.getName(), "showConfirmDialog with message " + confirmMessage + " for type " + type + " and position " + position);
+        NetworkTaskConfirmDialog confirmDialog = new NetworkTaskConfirmDialog();
+        Bundle bundle = BundleUtil.messagesToBundle(new String[]{NetworkTaskConfirmDialog.class.getSimpleName(), NetworkTaskConfirmDialog.Type.class.getSimpleName()}, new String[]{confirmMessage, type.name()});
+        bundle.putInt(getConfirmDialogPositionKey(), position);
+        confirmDialog.setArguments(bundle);
+        confirmDialog.show(getSupportFragmentManager(), NetworkTaskConfirmDialog.class.getName());
+    }
+
+    private String getConfirmDialogPositionKey() {
+        return NetworkTaskConfirmDialog.class.getSimpleName() + ".position";
     }
 
     public void onConfirmDialogOkClicked(NetworkTaskConfirmDialog confirmDialog, NetworkTaskConfirmDialog.Type type) {

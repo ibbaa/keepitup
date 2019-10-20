@@ -7,6 +7,7 @@ import android.util.Log;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import de.ibba.keepitup.ui.dialog.FolderChooseEditDialog;
 import de.ibba.keepitup.ui.dialog.GeneralErrorDialog;
 import de.ibba.keepitup.ui.dialog.SettingsInput;
 import de.ibba.keepitup.ui.dialog.SettingsInputDialog;
@@ -28,9 +29,25 @@ public abstract class SettingsInputActivity extends AppCompatActivity {
         return super.getResources();
     }
 
-    public abstract void onInputDialogOkClicked(SettingsInputDialog inputDialog, SettingsInput.Type type);
+    public void onInputDialogOkClicked(SettingsInputDialog inputDialog, SettingsInput.Type type) {
+        Log.d(SettingsInputActivity.class.getName(), "onInputDialogOkClicked, type is " + type + ", value is " + inputDialog.getValue());
+        inputDialog.dismiss();
+    }
 
-    public abstract void onInputDialogCancelClicked(SettingsInputDialog inputDialog);
+    public void onInputDialogCancelClicked(SettingsInputDialog inputDialog) {
+        Log.d(SettingsInputActivity.class.getName(), "onInputDialogCancelClicked");
+        inputDialog.dismiss();
+    }
+
+    public void onFolderChooseEditDialogOkClicked(FolderChooseEditDialog editDialog) {
+        Log.d(SettingsInputActivity.class.getName(), "onFolderChooseEditDialogOkClicked");
+        editDialog.dismiss();
+    }
+
+    public void onFolderChooseEditDialogCancelClicked(FolderChooseEditDialog editDialog) {
+        Log.d(SettingsInputActivity.class.getName(), "onFolderChooseEditDialogOkClicked");
+        editDialog.dismiss();
+    }
 
     protected void recreateActivity() {
         Log.d(SettingsInputActivity.class.getName(), "recreateActivity");

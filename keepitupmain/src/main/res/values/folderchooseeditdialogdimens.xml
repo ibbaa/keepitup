@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <dimen name="textview_dialog_folder_choose_edit_root_padding_top">0dp</dimen>
+    <dimen name="edittext_dialog_folder_choose_edit_folder_margin_left">4dp</dimen>
+    <dimen name="edittext_dialog_folder_choose_edit_folder_margin_bottom">4dp</dimen>
+    <dimen name="listview_dialog_folder_choose_edit_file_entries_margin">0dp</dimen>
+    <dimen name="listview_dialog_folder_choose_edit_file_entries_padding">0dp</dimen>
+    <dimen name="linearlayout_dialog_folder_choose_edit_show_files_margin_left">0dp</dimen>
+    <dimen name="linearlayout_dialog_folder_choose_edit_show_files_padding">0dp</dimen>
     <dimen name="layout_list_item_file_entry_margin">2dp</dimen>
     <dimen name="layout_list_item_file_entry_padding">0dp</dimen>
-    <dimen name="textview_dialog_download_folder_edit_root_padding_top">0dp</dimen>
-    <dimen name="edittext_dialog_download_folder_edit_folder_margin_left">4dp</dimen>
-    <dimen name="edittext_dialog_download_folder_edit_folder_margin_bottom">4dp</dimen>
-    <dimen name="listview_dialog_download_folder_edit_file_entries_margin">0dp</dimen>
-    <dimen name="listview_dialog_download_folder_edit_file_entries_padding">0dp</dimen>
-    <dimen name="linearlayout_dialog_download_folder_edit_show_files_margin_left">0dp</dimen>
-    <dimen name="linearlayout_dialog_download_folder_edit_show_files_padding">0dp</dimen>
     <dimen name="cardview_list_item_file_entry_margin">4dp</dimen>
     <dimen name="linearlayout_list_item_file_entry_margin">4dp</dimen>
     <dimen name="linearlayout_list_item_file_entry_padding">0dp</dimen>

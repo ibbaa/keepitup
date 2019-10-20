@@ -249,6 +249,7 @@ public class DefaultsActivity extends SettingsInputActivity {
         inputDialog.show(getSupportFragmentManager(), DefaultsActivity.class.getName());
     }
 
+    @Override
     public void onInputDialogOkClicked(SettingsInputDialog inputDialog, SettingsInput.Type type) {
         Log.d(DefaultsActivity.class.getName(), "onInputDialogOkClicked, type is " + type + ", value is " + inputDialog.getValue());
         PreferenceManager preferenceManager = new PreferenceManager(this);
@@ -264,11 +265,6 @@ public class DefaultsActivity extends SettingsInputActivity {
         } else {
             Log.e(DefaultsActivity.class.getName(), "type " + type + " unknown");
         }
-        inputDialog.dismiss();
-    }
-
-    public void onInputDialogCancelClicked(SettingsInputDialog inputDialog) {
-        Log.d(DefaultsActivity.class.getName(), "onInputDialogCancelClicked");
         inputDialog.dismiss();
     }
 }

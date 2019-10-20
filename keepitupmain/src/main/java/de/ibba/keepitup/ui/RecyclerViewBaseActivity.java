@@ -11,7 +11,6 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import de.ibba.keepitup.ui.dialog.GeneralErrorDialog;
-import de.ibba.keepitup.ui.dialog.NetworkTaskConfirmDialog;
 import de.ibba.keepitup.util.BundleUtil;
 
 public abstract class RecyclerViewBaseActivity extends AppCompatActivity {
@@ -58,18 +57,5 @@ public abstract class RecyclerViewBaseActivity extends AppCompatActivity {
         bundle.putInt(errorDialog.getTypefaceStyleKey(), typeface);
         errorDialog.setArguments(bundle);
         errorDialog.show(getSupportFragmentManager(), GeneralErrorDialog.class.getName());
-    }
-
-    protected void showConfirmDialog(String confirmMessage, NetworkTaskConfirmDialog.Type type, int position) {
-        Log.d(RecyclerViewBaseActivity.class.getName(), "showConfirmDialog with message " + confirmMessage + " for type " + type + " and position " + position);
-        NetworkTaskConfirmDialog confirmDialog = new NetworkTaskConfirmDialog();
-        Bundle bundle = BundleUtil.messagesToBundle(new String[]{NetworkTaskConfirmDialog.class.getSimpleName(), NetworkTaskConfirmDialog.Type.class.getSimpleName()}, new String[]{confirmMessage, type.name()});
-        bundle.putInt(getConfirmDialogPositionKey(), position);
-        confirmDialog.setArguments(bundle);
-        confirmDialog.show(getSupportFragmentManager(), NetworkTaskConfirmDialog.class.getName());
-    }
-
-    protected String getConfirmDialogPositionKey() {
-        return NetworkTaskConfirmDialog.class.getSimpleName() + ".position";
     }
 }
