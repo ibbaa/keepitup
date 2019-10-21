@@ -15,19 +15,19 @@ import java.util.List;
 
 import de.ibba.keepitup.R;
 import de.ibba.keepitup.model.FileEntry;
-import de.ibba.keepitup.ui.dialog.FolderChooseEditDialog;
+import de.ibba.keepitup.ui.dialog.FolderChooseDialog;
 
 public class FileEntryAdapter extends RecyclerView.Adapter<FileEntryViewHolder> {
 
     private final List<FileEntry> fileEntries;
-    private final FolderChooseEditDialog folderChooseEditDialog;
+    private final FolderChooseDialog folderChooseDialog;
     private final RecyclerView fileEntriesRecyclerView;
     private int selected;
 
-    public FileEntryAdapter(List<FileEntry> fileEntries, FolderChooseEditDialog folderChooseEditDialog) {
+    public FileEntryAdapter(List<FileEntry> fileEntries, FolderChooseDialog folderChooseDialog) {
         this.fileEntries = new ArrayList<>();
-        this.folderChooseEditDialog = folderChooseEditDialog;
-        this.fileEntriesRecyclerView = folderChooseEditDialog.getFileEntriesRecyclerView();
+        this.folderChooseDialog = folderChooseDialog;
+        this.fileEntriesRecyclerView = folderChooseDialog.getFileEntriesRecyclerView();
         this.selected = -1;
         replaceItems(fileEntries);
     }
@@ -37,7 +37,7 @@ public class FileEntryAdapter extends RecyclerView.Adapter<FileEntryViewHolder> 
     public FileEntryViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int viewType) {
         Log.d(FileEntryAdapter.class.getName(), "onCreateViewHolder");
         View itemView = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.list_item_file_entry, viewGroup, false);
-        return new FileEntryViewHolder(itemView, folderChooseEditDialog);
+        return new FileEntryViewHolder(itemView, folderChooseDialog);
     }
 
     @Override
@@ -83,7 +83,7 @@ public class FileEntryAdapter extends RecyclerView.Adapter<FileEntryViewHolder> 
             Log.e(LogEntryAdapter.class.getName(), "position " + position + " is invalid");
             return;
         }
-        if (selected > 0) {
+        if (selected >= 0) {
             unselectItem(selected);
         }
         selected = position;
@@ -127,7 +127,7 @@ public class FileEntryAdapter extends RecyclerView.Adapter<FileEntryViewHolder> 
     }
 
     private Context getContext() {
-        return folderChooseEditDialog.getActivity();
+        return folderChooseDialog.getActivity();
     }
 
     private Resources getResources() {

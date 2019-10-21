@@ -19,7 +19,7 @@ import de.ibba.keepitup.R;
 import de.ibba.keepitup.resources.FileManager;
 import de.ibba.keepitup.resources.IFileManager;
 import de.ibba.keepitup.resources.PreferenceManager;
-import de.ibba.keepitup.ui.dialog.FolderChooseEditDialog;
+import de.ibba.keepitup.ui.dialog.FolderChooseDialog;
 import de.ibba.keepitup.ui.dialog.SettingsInput;
 import de.ibba.keepitup.ui.dialog.SettingsInputDialog;
 import de.ibba.keepitup.ui.validation.PingCountFieldValidator;
@@ -144,7 +144,7 @@ public class GlobalSettingsActivity extends SettingsInputActivity {
             if (downloadFolder != null) {
                 setDownloadFolder(downloadFolder);
                 downloadFolderText.setEnabled(true);
-                downloadFolderText.setOnClickListener(this::showDownloadFolderEditDialog);
+                downloadFolderText.setOnClickListener(this::showDownloadFolderChooseDialog);
             } else {
                 Log.d(GlobalSettingsActivity.class.getName(), "Reset to internal folder.");
                 setDownloadFolder(getResources().getString(R.string.text_activity_global_settings_download_folder_internal));
@@ -216,9 +216,9 @@ public class GlobalSettingsActivity extends SettingsInputActivity {
         showInputDialog(input.toBundle());
     }
 
-    private void showDownloadFolderEditDialog(View view) {
-        Log.d(DefaultsActivity.class.getName(), "showDownloadFolderEditDialog");
-        FolderChooseEditDialog editDialog = new FolderChooseEditDialog();
+    private void showDownloadFolderChooseDialog(View view) {
+        Log.d(DefaultsActivity.class.getName(), "showDownloadFolderChooseDialog");
+        FolderChooseDialog folderChooseDialog = new FolderChooseDialog();
         String root = getExternalRootFolder();
         if (root == null) {
             Log.d(GlobalSettingsActivity.class.getName(), "Showing error dialog.");
@@ -231,9 +231,9 @@ public class GlobalSettingsActivity extends SettingsInputActivity {
             showErrorDialog(getResources().getString(R.string.text_dialog_general_error_external_root_access));
             return;
         }
-        Bundle bundle = BundleUtil.messagesToBundle(new String[]{editDialog.getFolderRootKey(), editDialog.getFolderKey()}, new String[]{root, folder});
-        editDialog.setArguments(bundle);
-        editDialog.show(getSupportFragmentManager(), GlobalSettingsActivity.class.getName());
+        Bundle bundle = BundleUtil.messagesToBundle(new String[]{folderChooseDialog.getFolderRootKey(), folderChooseDialog.getFolderKey()}, new String[]{root, folder});
+        folderChooseDialog.setArguments(bundle);
+        folderChooseDialog.show(getSupportFragmentManager(), GlobalSettingsActivity.class.getName());
 
     }
 
@@ -292,7 +292,7 @@ public class GlobalSettingsActivity extends SettingsInputActivity {
     }
 
     @Override
-    public void onFolderChooseEditDialogOkClicked(FolderChooseEditDialog editDialog) {
+    public void onFolderChooseEditDialogOkClicked(FolderChooseDialog editDialog) {
         Log.d(GlobalSettingsActivity.class.getName(), "onFolderChooseEditDialogOkClicked");
         IFileManager fileManager = getFileManager();
         PreferenceManager preferenceManager = new PreferenceManager(this);

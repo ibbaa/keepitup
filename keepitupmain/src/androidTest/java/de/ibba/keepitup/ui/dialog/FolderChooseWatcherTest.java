@@ -15,13 +15,13 @@ import static org.junit.Assert.assertEquals;
 
 @SmallTest
 @RunWith(AndroidJUnit4.class)
-public class FolderChooseEditWatcherTest {
+public class FolderChooseWatcherTest {
 
     @Test
     public void testChangeAbsoluteFolderText() {
         TextView testAbsoluteFolderText = new TextView(TestRegistry.getContext());
         testAbsoluteFolderText.setText("test");
-        FolderChooseEditWatcher watcher = new FolderChooseEditWatcher("root", testAbsoluteFolderText);
+        FolderChooseWatcher watcher = new FolderChooseWatcher("root", testAbsoluteFolderText);
         watcher.afterTextChanged(null);
         assertEquals("test", testAbsoluteFolderText.getText());
         watcher.afterTextChanged(new SpannableStringBuilder(""));
