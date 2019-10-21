@@ -11,17 +11,17 @@ import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import de.ibba.keepitup.R;
-import de.ibba.keepitup.ui.dialog.FolderChooseEditDialog;
+import de.ibba.keepitup.ui.dialog.FolderChooseDialog;
 
 public class FileEntryViewHolder extends RecyclerView.ViewHolder {
 
-    private final FolderChooseEditDialog folderChooseEditDialog;
+    private final FolderChooseDialog folderChooseDialog;
     private final CardView fileEntryCardView;
     private final TextView fileNameText;
 
-    public FileEntryViewHolder(@NonNull View itemView, FolderChooseEditDialog folderChooseEditDialog) {
+    public FileEntryViewHolder(@NonNull View itemView, FolderChooseDialog folderChooseDialog) {
         super(itemView);
-        this.folderChooseEditDialog = folderChooseEditDialog;
+        this.folderChooseDialog = folderChooseDialog;
         fileEntryCardView = itemView.findViewById(R.id.cardview_list_item_file_entry);
         fileEntryCardView.setOnClickListener(this::onFileEntryClicked);
         fileNameText = itemView.findViewById(R.id.textview_list_item_file_entry_name);
@@ -48,11 +48,11 @@ public class FileEntryViewHolder extends RecyclerView.ViewHolder {
     }
 
     private void onFileEntryClicked(View view) {
-        folderChooseEditDialog.onFileEntryClicked(view, getAdapterPosition());
+        folderChooseDialog.onFileEntryClicked(view, getAdapterPosition());
     }
 
     private Context getContext() {
-        return folderChooseEditDialog.getActivity();
+        return folderChooseDialog.getActivity();
     }
 
     private Resources getResources() {

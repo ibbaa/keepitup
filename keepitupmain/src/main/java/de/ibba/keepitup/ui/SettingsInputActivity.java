@@ -7,7 +7,7 @@ import android.util.Log;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import de.ibba.keepitup.ui.dialog.FolderChooseEditDialog;
+import de.ibba.keepitup.ui.dialog.FolderChooseDialog;
 import de.ibba.keepitup.ui.dialog.GeneralErrorDialog;
 import de.ibba.keepitup.ui.dialog.SettingsInput;
 import de.ibba.keepitup.ui.dialog.SettingsInputDialog;
@@ -39,12 +39,12 @@ public abstract class SettingsInputActivity extends AppCompatActivity {
         inputDialog.dismiss();
     }
 
-    public void onFolderChooseEditDialogOkClicked(FolderChooseEditDialog editDialog) {
+    public void onFolderChooseEditDialogOkClicked(FolderChooseDialog editDialog) {
         Log.d(SettingsInputActivity.class.getName(), "onFolderChooseEditDialogOkClicked");
         editDialog.dismiss();
     }
 
-    public void onFolderChooseEditDialogCancelClicked(FolderChooseEditDialog editDialog) {
+    public void onFolderChooseEditDialogCancelClicked(FolderChooseDialog editDialog) {
         Log.d(SettingsInputActivity.class.getName(), "onFolderChooseEditDialogOkClicked");
         editDialog.dismiss();
     }

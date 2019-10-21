@@ -27,26 +27,26 @@ import de.ibba.keepitup.ui.adapter.FileEntryAdapter;
 import de.ibba.keepitup.util.BundleUtil;
 import de.ibba.keepitup.util.StringUtil;
 
-public class FolderChooseEditDialog extends DialogFragment {
+public class FolderChooseDialog extends DialogFragment {
 
     private View dialogView;
     private TextView absoluteFolderText;
     private EditText folderEditText;
-    private FolderChooseEditWatcher folderEditTextWatcher;
+    private FolderChooseWatcher folderChooseTextWatcher;
     private CheckBox showFilesCheckBox;
     private RecyclerView fileEntriesRecyclerView;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        Log.d(FolderChooseEditDialog.class.getName(), "onCreate");
+        Log.d(FolderChooseDialog.class.getName(), "onCreate");
         super.onCreate(savedInstanceState);
         setStyle(DialogFragment.STYLE_NO_FRAME, R.style.DialogTheme);
     }
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        Log.d(FolderChooseEditDialog.class.getName(), "onCreateView");
-        dialogView = inflater.inflate(R.layout.dialog_folder_choose_edit, container);
+        Log.d(FolderChooseDialog.class.getName(), "onCreateView");
+        dialogView = inflater.inflate(R.layout.dialog_folder_choose, container);
         String root = BundleUtil.bundleToMessage(getFolderRootKey(), Objects.requireNonNull(getArguments()));
         String folder = BundleUtil.bundleToMessage(getFolderKey(), Objects.requireNonNull(getArguments()));
         prepareFolderAbsolute(root, folder);
@@ -58,11 +58,11 @@ public class FolderChooseEditDialog extends DialogFragment {
     }
 
     public String getFolderRootKey() {
-        return FolderChooseEditDialog.class.getSimpleName() + "Root";
+        return FolderChooseDialog.class.getSimpleName() + "Root";
     }
 
     public String getFolderKey() {
-        return FolderChooseEditDialog.class.getSimpleName() + "Folder";
+        return FolderChooseDialog.class.getSimpleName() + "Folder";
     }
 
     public String getFolder() {
@@ -74,36 +74,36 @@ public class FolderChooseEditDialog extends DialogFragment {
     }
 
     private void prepareFolderAbsolute(String root, String folder) {
-        Log.d(FolderChooseEditDialog.class.getName(), "prepareFolderAbsolute");
-        absoluteFolderText = dialogView.findViewById(R.id.textview_dialog_folder_choose_edit_root);
+        Log.d(FolderChooseDialog.class.getName(), "prepareFolderAbsolute");
+        absoluteFolderText = dialogView.findViewById(R.id.textview_dialog_folder_choose_root);
         absoluteFolderText.setText(getAbsoluteFolder(root, folder));
     }
 
     private void prepareFolder(String root, String folder) {
-        Log.d(FolderChooseEditDialog.class.getName(), "prepareFolder");
-        folderEditText = dialogView.findViewById(R.id.edittext_dialog_folder_choose_edit_folder);
+        Log.d(FolderChooseDialog.class.getName(), "prepareFolder");
+        folderEditText = dialogView.findViewById(R.id.edittext_dialog_folder_choose_folder);
         folderEditText.setText(folder);
-        prepareFolderEditTextWatcher(root);
+        prepareFolderChooseTextWatcher(root);
     }
 
-    private void prepareFolderEditTextWatcher(String root) {
-        Log.d(FolderChooseEditDialog.class.getName(), "prepareFolderEditTextWatcher");
-        if (folderEditTextWatcher != null) {
-            folderEditText.removeTextChangedListener(folderEditTextWatcher);
-            folderEditTextWatcher = null;
+    private void prepareFolderChooseTextWatcher(String root) {
+        Log.d(FolderChooseDialog.class.getName(), "prepareFolderChooseTextWatcher");
+        if (folderChooseTextWatcher != null) {
+            folderEditText.removeTextChangedListener(folderChooseTextWatcher);
+            folderChooseTextWatcher = null;
         }
-        folderEditTextWatcher = new FolderChooseEditWatcher(root, absoluteFolderText);
-        folderEditText.addTextChangedListener(folderEditTextWatcher);
+        folderChooseTextWatcher = new FolderChooseWatcher(root, absoluteFolderText);
+        folderEditText.addTextChangedListener(folderChooseTextWatcher);
     }
 
     private void prepareShowFilesCheckBox() {
-        Log.d(FolderChooseEditDialog.class.getName(), "prepareShowFilesCheckBox");
-        showFilesCheckBox = dialogView.findViewById(R.id.checkbox_dialog_folder_choose_edit_show_files);
+        Log.d(FolderChooseDialog.class.getName(), "prepareShowFilesCheckBox");
+        showFilesCheckBox = dialogView.findViewById(R.id.checkbox_dialog_folder_choose_show_files);
     }
 
     private void prepareFolderRecyclerView() {
-        Log.d(FolderChooseEditDialog.class.getName(), "prepareFolderRecyclerView");
-        fileEntriesRecyclerView = dialogView.findViewById(R.id.listview_dialog_folder_choose_edit_file_entries);
+        Log.d(FolderChooseDialog.class.getName(), "prepareFolderRecyclerView");
+        fileEntriesRecyclerView = dialogView.findViewById(R.id.listview_dialog_folder_choose_file_entries);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getActivity());
         fileEntriesRecyclerView.setLayoutManager(layoutManager);
         fileEntriesRecyclerView.setItemAnimator(new DefaultItemAnimator());
@@ -111,21 +111,21 @@ public class FolderChooseEditDialog extends DialogFragment {
     }
 
     private void prepareOkCancelImageButtons() {
-        Log.d(FolderChooseEditDialog.class.getName(), "prepareOkCancelImageButtons");
-        ImageView okImage = dialogView.findViewById(R.id.imageview_dialog_folder_choose_edit_ok);
-        ImageView cancelImage = dialogView.findViewById(R.id.imageview_dialog_folder_choose_edit_cancel);
+        Log.d(FolderChooseDialog.class.getName(), "prepareOkCancelImageButtons");
+        ImageView okImage = dialogView.findViewById(R.id.imageview_dialog_folder_choose_ok);
+        ImageView cancelImage = dialogView.findViewById(R.id.imageview_dialog_folder_choose_cancel);
         okImage.setOnClickListener(this::onOkClicked);
         cancelImage.setOnClickListener(this::onCancelClicked);
     }
 
     private void onOkClicked(@SuppressWarnings("unused") View view) {
-        Log.d(FolderChooseEditDialog.class.getName(), "onOkClicked");
+        Log.d(FolderChooseDialog.class.getName(), "onOkClicked");
         SettingsInputActivity activity = (SettingsInputActivity) getActivity();
         Objects.requireNonNull(activity).onFolderChooseEditDialogOkClicked(this);
     }
 
     private void onCancelClicked(@SuppressWarnings("unused") View view) {
-        Log.d(FolderChooseEditDialog.class.getName(), "onCancelClicked");
+        Log.d(FolderChooseDialog.class.getName(), "onCancelClicked");
         SettingsInputActivity activity = (SettingsInputActivity) getActivity();
         Objects.requireNonNull(activity).onFolderChooseEditDialogCancelClicked(this);
     }
@@ -138,7 +138,7 @@ public class FolderChooseEditDialog extends DialogFragment {
     }
 
     public void onFileEntryClicked(View view, int position) {
-        Log.d(FolderChooseEditDialog.class.getName(), "onFileEntryClicked, position is " + position);
+        Log.d(FolderChooseDialog.class.getName(), "onFileEntryClicked, position is " + position);
         getAdapter().selectItem(position);
     }
 
