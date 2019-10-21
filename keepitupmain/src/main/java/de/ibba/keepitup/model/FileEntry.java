@@ -48,4 +48,12 @@ public class FileEntry {
     public Bundle toBundle() {
         return new Bundle(toPersistableBundle());
     }
+
+    @Override
+    public String toString() {
+        return "FileEntry{" +
+                "name='" + name + '\'' +
+                ", directory=" + directory +
+                '}';
+    }
 }
