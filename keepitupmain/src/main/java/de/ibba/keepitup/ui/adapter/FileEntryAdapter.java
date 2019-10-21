@@ -20,12 +20,14 @@ import de.ibba.keepitup.ui.dialog.FolderChooseDialog;
 public class FileEntryAdapter extends RecyclerView.Adapter<FileEntryViewHolder> {
 
     private final List<FileEntry> fileEntries;
+    private final List<FileEntry> fileEntriesFoldersOnly;
     private final FolderChooseDialog folderChooseDialog;
     private final RecyclerView fileEntriesRecyclerView;
     private int selected;
 
     public FileEntryAdapter(List<FileEntry> fileEntries, FolderChooseDialog folderChooseDialog) {
         this.fileEntries = new ArrayList<>();
+        this.fileEntriesFoldersOnly = new ArrayList<>();
         this.folderChooseDialog = folderChooseDialog;
         this.fileEntriesRecyclerView = folderChooseDialog.getFileEntriesRecyclerView();
         this.selected = -1;
@@ -43,8 +45,8 @@ public class FileEntryAdapter extends RecyclerView.Adapter<FileEntryViewHolder> 
     @Override
     public void onBindViewHolder(@NonNull FileEntryViewHolder fileEntryViewHolder, int position) {
         Log.d(FileEntryAdapter.class.getName(), "onBindViewHolder");
-        if (position < fileEntries.size()) {
-            FileEntry fileEntry = fileEntries.get(position);
+        if (position < getfileEntries().size()) {
+            FileEntry fileEntry = getfileEntries().get(position);
             bindFileName(fileEntryViewHolder, fileEntry);
         }
     }
@@ -65,7 +67,7 @@ public class FileEntryAdapter extends RecyclerView.Adapter<FileEntryViewHolder> 
             Log.e(LogEntryAdapter.class.getName(), "position " + position + " is invalid");
             return null;
         }
-        return fileEntries.get(position);
+        return getfileEntries().get(position);
     }
 
     public FileEntry getSelectedItem() {
@@ -82,6 +84,13 @@ public class FileEntryAdapter extends RecyclerView.Adapter<FileEntryViewHolder> 
         if (position < 0 || position >= getItemCount()) {
             Log.e(LogEntryAdapter.class.getName(), "position " + position + " is invalid");
             return;
+        }
+        FileEntry entry = getItem(position);
+        if (entry != null && !entry.isDirectory()) {
+            Log.d(FileEntryAdapter.class.getName(), "item " + entry + " is a file. Select skipped.");
+            return;
+        } else {
+            Log.d(FileEntryAdapter.class.getName(), "item " + entry + " is a directory. Selecting.");
         }
         if (selected >= 0) {
             unselectItem(selected);
@@ -113,7 +122,7 @@ public class FileEntryAdapter extends RecyclerView.Adapter<FileEntryViewHolder> 
 
     @Override
     public int getItemCount() {
-        return fileEntries.size();
+        return getfileEntries().size();
     }
 
     public FileEntryViewHolder getViewHolder(int position) {
@@ -124,6 +133,18 @@ public class FileEntryAdapter extends RecyclerView.Adapter<FileEntryViewHolder> 
     public void replaceItems(List<FileEntry> fileEntries) {
         this.fileEntries.clear();
         this.fileEntries.addAll(fileEntries);
+        for (FileEntry currentEntry : fileEntries) {
+            if (currentEntry.isDirectory()) {
+                this.fileEntriesFoldersOnly.add(currentEntry);
+            }
+        }
+    }
+
+    private List<FileEntry> getfileEntries() {
+        if (folderChooseDialog.isShowFiles()) {
+            return fileEntries;
+        }
+        return fileEntriesFoldersOnly;
     }
 
     private Context getContext() {

@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -22,6 +23,7 @@ import java.util.Objects;
 
 import de.ibba.keepitup.R;
 import de.ibba.keepitup.model.FileEntry;
+import de.ibba.keepitup.ui.GlobalSettingsActivity;
 import de.ibba.keepitup.ui.SettingsInputActivity;
 import de.ibba.keepitup.ui.adapter.FileEntryAdapter;
 import de.ibba.keepitup.util.BundleUtil;
@@ -99,6 +101,12 @@ public class FolderChooseDialog extends DialogFragment {
     private void prepareShowFilesCheckBox() {
         Log.d(FolderChooseDialog.class.getName(), "prepareShowFilesCheckBox");
         showFilesCheckBox = dialogView.findViewById(R.id.checkbox_dialog_folder_choose_show_files);
+        showFilesCheckBox.setOnCheckedChangeListener(this::onShowFilesCheckedChanged);
+    }
+
+    private void onShowFilesCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+        Log.d(GlobalSettingsActivity.class.getName(), "onShowFilesCheckedChanged, new value is " + isChecked);
+        getAdapter().notifyDataSetChanged();
     }
 
     private void prepareFolderRecyclerView() {
