@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Typeface;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -17,6 +18,7 @@ public class FileEntryViewHolder extends RecyclerView.ViewHolder {
 
     private final FolderChooseDialog folderChooseDialog;
     private final CardView fileEntryCardView;
+    private final ImageView fileNameImage;
     private final TextView fileNameText;
 
     public FileEntryViewHolder(@NonNull View itemView, FolderChooseDialog folderChooseDialog) {
@@ -24,6 +26,7 @@ public class FileEntryViewHolder extends RecyclerView.ViewHolder {
         this.folderChooseDialog = folderChooseDialog;
         fileEntryCardView = itemView.findViewById(R.id.cardview_list_item_file_entry);
         fileEntryCardView.setOnClickListener(this::onFileEntryClicked);
+        fileNameImage = itemView.findViewById(R.id.imageview_list_item_file_entry_name);
         fileNameText = itemView.findViewById(R.id.textview_list_item_file_entry_name);
     }
 
@@ -45,6 +48,11 @@ public class FileEntryViewHolder extends RecyclerView.ViewHolder {
 
     public void setFileNameTextBold() {
         fileNameText.setTypeface(null, Typeface.BOLD);
+    }
+
+    public void setFileNameImage(String description, int image) {
+        fileNameImage.setImageResource(image);
+        fileNameImage.setContentDescription(description);
     }
 
     private void onFileEntryClicked(View view) {

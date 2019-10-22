@@ -55,8 +55,10 @@ public class FileEntryAdapter extends RecyclerView.Adapter<FileEntryViewHolder> 
         Log.d(FileEntryAdapter.class.getName(), "bindFileName fo file entry " + fileEntry);
         fileEntryViewHolder.setFileNameText(fileEntry.getName());
         if (fileEntry.isDirectory()) {
+            fileEntryViewHolder.setFileNameImage(fileEntry.getName(), R.drawable.icon_folder);
             fileEntryViewHolder.setFileNameTextBold();
         } else {
+            fileEntryViewHolder.setFileNameImage(fileEntry.getName(), R.drawable.icon_file);
             fileEntryViewHolder.setFileNameTextNormal();
         }
     }
@@ -85,38 +87,30 @@ public class FileEntryAdapter extends RecyclerView.Adapter<FileEntryViewHolder> 
             Log.e(LogEntryAdapter.class.getName(), "position " + position + " is invalid");
             return;
         }
-        FileEntry entry = getItem(position);
-        if (entry != null && !entry.isDirectory()) {
-            Log.d(FileEntryAdapter.class.getName(), "item " + entry + " is a file. Select skipped.");
-            return;
-        } else {
-            Log.d(FileEntryAdapter.class.getName(), "item " + entry + " is a directory. Selecting.");
-        }
-        if (selected >= 0) {
-            unselectItem(selected);
-        }
+        unselectItem();
         selected = position;
         FileEntryViewHolder selectedViewHolder = getViewHolder(position);
         if (selectedViewHolder != null) {
-            Log.d(FileEntryAdapter.class.getName(), "select item");
+            Log.d(FileEntryAdapter.class.getName(), "select item for position " + position);
             selectedViewHolder.setFileEntrySelected();
         } else {
             Log.d(LogEntryAdapter.class.getName(), "item is null");
         }
     }
 
-    public void unselectItem(int position) {
-        Log.d(FileEntryAdapter.class.getName(), "unselectItem for position " + position);
-        if (position < 0 || position >= getItemCount()) {
-            Log.e(LogEntryAdapter.class.getName(), "position " + position + " is invalid");
-            return;
-        }
-        FileEntryViewHolder viewHolder = getViewHolder(position);
-        if (viewHolder != null) {
-            Log.d(FileEntryAdapter.class.getName(), "unselect item");
-            viewHolder.setFileEntryUnselected();
+    public void unselectItem() {
+        Log.d(FileEntryAdapter.class.getName(), "unselectItem");
+        if (selected >= 0) {
+            FileEntryViewHolder viewHolder = getViewHolder(selected);
+            if (viewHolder != null) {
+                Log.d(FileEntryAdapter.class.getName(), "unselect item for position " + selected);
+                viewHolder.setFileEntryUnselected();
+            } else {
+                Log.d(LogEntryAdapter.class.getName(), "selected item view holder is null");
+            }
+            selected = -1;
         } else {
-            Log.d(LogEntryAdapter.class.getName(), "item is null");
+            Log.d(FileEntryAdapter.class.getName(), "No item selected. Nothing to unselect.");
         }
     }
 

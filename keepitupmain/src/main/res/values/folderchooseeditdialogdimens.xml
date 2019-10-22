@@ -12,6 +12,10 @@
     <dimen name="cardview_list_item_file_entry_margin">4dp</dimen>
     <dimen name="linearlayout_list_item_file_entry_margin">4dp</dimen>
     <dimen name="linearlayout_list_item_file_entry_padding">0dp</dimen>
+    <dimen name="linearlayout_list_item_file_entry_name_margin">0dp</dimen>
+    <dimen name="linearlayout_list_item_file_entry_name_padding">0dp</dimen>
+    <dimen name="imageview_list_item_file_entry_name_margin">0dp</dimen>
+    <dimen name="imageview_list_item_file_entry_name_padding">0dp</dimen>
     <dimen name="cardview_list_item_file_entry_corner_radius">4dp</dimen>
     <dimen name="cardview_list_item_file_entry_card_elevation">4dp</dimen>
     <dimen name="cardview_list_item_file_entry_card_elevation_selected">1dp</dimen>
