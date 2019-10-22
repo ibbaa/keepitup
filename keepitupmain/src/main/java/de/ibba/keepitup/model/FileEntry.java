@@ -3,6 +3,8 @@ package de.ibba.keepitup.model;
 import android.os.Bundle;
 import android.os.PersistableBundle;
 
+import androidx.annotation.NonNull;
+
 public class FileEntry {
 
     private String name;
@@ -49,6 +51,7 @@ public class FileEntry {
         return new Bundle(toPersistableBundle());
     }
 
+    @NonNull
     @Override
     public String toString() {
         return "FileEntry{" +

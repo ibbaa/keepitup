@@ -49,10 +49,9 @@ public class FolderChooseDialog extends DialogFragment {
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         Log.d(FolderChooseDialog.class.getName(), "onCreateView");
         dialogView = inflater.inflate(R.layout.dialog_folder_choose, container);
-        String root = BundleUtil.bundleToMessage(getFolderRootKey(), Objects.requireNonNull(getArguments()));
         String folder = BundleUtil.bundleToMessage(getFolderKey(), Objects.requireNonNull(getArguments()));
-        prepareFolderAbsolute(root, folder);
-        prepareFolder(root, folder);
+        prepareFolderAbsolute(folder);
+        prepareFolder(folder);
         prepareShowFilesCheckBox();
         prepareFolderRecyclerView();
         prepareOkCancelImageButtons();
@@ -75,26 +74,34 @@ public class FolderChooseDialog extends DialogFragment {
         return showFilesCheckBox.isChecked();
     }
 
-    private void prepareFolderAbsolute(String root, String folder) {
-        Log.d(FolderChooseDialog.class.getName(), "prepareFolderAbsolute");
-        absoluteFolderText = dialogView.findViewById(R.id.textview_dialog_folder_choose_root);
-        absoluteFolderText.setText(getAbsoluteFolder(root, folder));
+    public String getRoot() {
+        return BundleUtil.bundleToMessage(getFolderRootKey(), Objects.requireNonNull(getArguments()));
     }
 
-    private void prepareFolder(String root, String folder) {
+    public TextView getAbsoluteFolderText() {
+        return absoluteFolderText;
+    }
+
+    private void prepareFolderAbsolute(String folder) {
+        Log.d(FolderChooseDialog.class.getName(), "prepareFolderAbsolute");
+        absoluteFolderText = dialogView.findViewById(R.id.textview_dialog_folder_choose_root);
+        absoluteFolderText.setText(getAbsoluteFolder(getRoot(), folder));
+    }
+
+    private void prepareFolder(String folder) {
         Log.d(FolderChooseDialog.class.getName(), "prepareFolder");
         folderEditText = dialogView.findViewById(R.id.edittext_dialog_folder_choose_folder);
         folderEditText.setText(folder);
-        prepareFolderChooseTextWatcher(root);
+        prepareFolderChooseTextWatcher();
     }
 
-    private void prepareFolderChooseTextWatcher(String root) {
+    private void prepareFolderChooseTextWatcher() {
         Log.d(FolderChooseDialog.class.getName(), "prepareFolderChooseTextWatcher");
         if (folderChooseTextWatcher != null) {
             folderEditText.removeTextChangedListener(folderChooseTextWatcher);
             folderChooseTextWatcher = null;
         }
-        folderChooseTextWatcher = new FolderChooseWatcher(root, absoluteFolderText);
+        folderChooseTextWatcher = new FolderChooseWatcher(this);
         folderEditText.addTextChangedListener(folderChooseTextWatcher);
     }
 
@@ -147,7 +154,26 @@ public class FolderChooseDialog extends DialogFragment {
 
     public void onFileEntryClicked(View view, int position) {
         Log.d(FolderChooseDialog.class.getName(), "onFileEntryClicked, position is " + position);
+        FileEntry selectedEntry = getAdapter().getItem(position);
+        if (selectedEntry == null) {
+            Log.e(FolderChooseDialog.class.getName(), "selected entry is null");
+            return;
+        }
+        if (!selectedEntry.isDirectory()) {
+            Log.d(FolderChooseDialog.class.getName(), "selected entry " + selectedEntry + " is a file. Select skipped.");
+            return;
+        }
         getAdapter().selectItem(position);
+        if (folderChooseTextWatcher != null) {
+            folderEditText.removeTextChangedListener(folderChooseTextWatcher);
+            folderChooseTextWatcher = null;
+        }
+        String folderName = selectedEntry.getName();
+        Log.d(FolderChooseDialog.class.getName(), "prepare selected folder name " + folderName);
+        absoluteFolderText.setText(getAbsoluteFolder(getRoot(), folderName));
+        folderEditText.setText(folderName);
+        folderChooseTextWatcher = new FolderChooseWatcher(this);
+        folderEditText.addTextChangedListener(folderChooseTextWatcher);
     }
 
     public RecyclerView getFileEntriesRecyclerView() {

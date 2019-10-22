@@ -26,14 +26,32 @@
             android:orientation="vertical"
             app:layout_constraintTop_toTopOf="parent">
 
-            <TextView
-                android:id="@+id/textview_list_item_file_entry_name"
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:id="@+id/linearlayout_list_item_file_entry_name"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="@dimen/textview_list_item_file_entry_margin"
-                android:padding="@dimen/textview_list_item_file_entry_padding"
-                android:textStyle="normal"
-                android:text="" />
+                android:layout_margin="@dimen/linearlayout_list_item_file_entry_name_margin"
+                android:padding="@dimen/linearlayout_list_item_file_entry_name_padding"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:id="@+id/imageview_list_item_file_entry_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/imageview_list_item_file_entry_name_margin"
+                    android:padding="@dimen/imageview_list_item_file_entry_name_padding"
+                    android:layout_gravity="left" />
+
+                <TextView
+                    android:id="@+id/textview_list_item_file_entry_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/textview_list_item_file_entry_margin"
+                    android:padding="@dimen/textview_list_item_file_entry_padding"
+                    android:textStyle="normal"
+                    android:text="" />
+
+            </LinearLayout>
 
         </LinearLayout>
 

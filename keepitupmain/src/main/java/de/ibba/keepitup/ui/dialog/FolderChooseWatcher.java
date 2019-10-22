@@ -3,16 +3,13 @@ package de.ibba.keepitup.ui.dialog;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
-import android.widget.TextView;
 
 public class FolderChooseWatcher implements TextWatcher {
 
-    private final String root;
-    private final TextView absoluteFolderText;
+    private final FolderChooseDialog dialog;
 
-    public FolderChooseWatcher(String root, TextView absoluteFolderText) {
-        this.root = root;
-        this.absoluteFolderText = absoluteFolderText;
+    public FolderChooseWatcher(FolderChooseDialog dialog) {
+        this.dialog = dialog;
     }
 
     @Override
@@ -29,7 +26,8 @@ public class FolderChooseWatcher implements TextWatcher {
     public void afterTextChanged(Editable seq) {
         Log.d(FolderChooseWatcher.class.getName(), "afterTextChanged");
         if (seq != null) {
-            absoluteFolderText.setText(getAbsoluteDownloadFolder(root, seq));
+            dialog.getAbsoluteFolderText().setText(getAbsoluteDownloadFolder(dialog.getRoot(), seq));
+            dialog.getAdapter().unselectItem();
         }
     }
 
