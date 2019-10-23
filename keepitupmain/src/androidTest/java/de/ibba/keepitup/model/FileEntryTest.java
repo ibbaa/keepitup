@@ -23,16 +23,19 @@ public class FileEntryTest {
         FileEntry fileEntry = new FileEntry();
         assertTrue(fileEntry.getName().isEmpty());
         assertFalse(fileEntry.isDirectory());
+        assertFalse(fileEntry.isParent());
         PersistableBundle persistableBundle = fileEntry.toPersistableBundle();
         assertNotNull(persistableBundle);
         fileEntry = new FileEntry(persistableBundle);
         assertTrue(fileEntry.getName().isEmpty());
         assertFalse(fileEntry.isDirectory());
+        assertFalse(fileEntry.isParent());
         Bundle bundle = fileEntry.toBundle();
         assertNotNull(bundle);
         fileEntry = new FileEntry(bundle);
         assertTrue(fileEntry.getName().isEmpty());
         assertFalse(fileEntry.isDirectory());
+        assertFalse(fileEntry.isParent());
     }
 
     @Test
@@ -40,17 +43,21 @@ public class FileEntryTest {
         FileEntry fileEntry = new FileEntry();
         fileEntry.setName("directory");
         fileEntry.setDirectory(true);
+        fileEntry.setParent(true);
         assertEquals("directory", fileEntry.getName());
         assertTrue(fileEntry.isDirectory());
+        assertTrue(fileEntry.isParent());
         PersistableBundle persistableBundle = fileEntry.toPersistableBundle();
         assertNotNull(persistableBundle);
         fileEntry = new FileEntry(persistableBundle);
         assertEquals("directory", fileEntry.getName());
         assertTrue(fileEntry.isDirectory());
+        assertTrue(fileEntry.isParent());
         Bundle bundle = fileEntry.toBundle();
         assertNotNull(bundle);
         fileEntry = new FileEntry(bundle);
         assertEquals("directory", fileEntry.getName());
         assertTrue(fileEntry.isDirectory());
+        assertTrue(fileEntry.isParent());
     }
 }

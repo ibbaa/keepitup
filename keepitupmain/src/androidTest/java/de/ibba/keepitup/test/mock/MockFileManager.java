@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import de.ibba.keepitup.model.FileEntry;
 import de.ibba.keepitup.resources.IFileManager;
 
 public class MockFileManager implements IFileManager {
@@ -16,6 +17,9 @@ public class MockFileManager implements IFileManager {
     private File externalDownloadDirectory;
     private File externalRootDirectory;
     private String defaultDownloadDirectoryName;
+    private String parent;
+    private List<FileEntry> fileEntries;
+    private boolean deleteDiractory;
 
     public MockFileManager() {
         deieteDirectoryCalls = new ArrayList<>();
@@ -24,6 +28,9 @@ public class MockFileManager implements IFileManager {
         externalDownloadDirectory = null;
         externalRootDirectory = null;
         defaultDownloadDirectoryName = null;
+        parent = null;
+        fileEntries = Collections.emptyList();
+        deleteDiractory = true;
     }
 
     public List<DeieteDirectoryCall> getDeieteDirectoryCalls() {
@@ -37,6 +44,9 @@ public class MockFileManager implements IFileManager {
         externalDownloadDirectory = null;
         externalRootDirectory = null;
         defaultDownloadDirectoryName = null;
+        parent = null;
+        fileEntries = Collections.emptyList();
+        deleteDiractory = true;
     }
 
     public void setInternalDownloadDirectory(File internalDownloadDirectory) {
@@ -59,7 +69,19 @@ public class MockFileManager implements IFileManager {
         this.defaultDownloadDirectoryName = defaultDownloadDirectoryName;
     }
 
-    public boolean wasdeieteDirectoryCalled() {
+    public void setParent(String parent) {
+        this.parent = parent;
+    }
+
+    public void setFileEntries(List<FileEntry> fileEntries) {
+        this.fileEntries = fileEntries;
+    }
+
+    public void setDeleteDiractory(boolean deleteDiractory) {
+        this.deleteDiractory = deleteDiractory;
+    }
+
+    public boolean wasDeieteDirectoryCalled() {
         return !deieteDirectoryCalls.isEmpty();
     }
 
@@ -89,8 +111,19 @@ public class MockFileManager implements IFileManager {
     }
 
     @Override
+    public String getParent(String root, String absoluteFolder) {
+        return parent;
+    }
+
+    @Override
+    public List<FileEntry> getFiles(String root, String absoluteFolder) {
+        return fileEntries;
+    }
+
+    @Override
     public boolean deleteDirectory(File directory) {
-        return false;
+        deieteDirectoryCalls.add(new DeieteDirectoryCall(directory));
+        return deleteDiractory;
     }
 
     public static class DeieteDirectoryCall {
