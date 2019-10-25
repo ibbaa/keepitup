@@ -17,7 +17,10 @@ public class MockFileManager implements IFileManager {
     private File externalDownloadDirectory;
     private File externalRootDirectory;
     private String defaultDownloadDirectoryName;
-    private String parent;
+    private String relativeSibling;
+    private String relativeParent;
+    private String absoluteParent;
+    private String absoluteFolder;
     private List<FileEntry> fileEntries;
     private boolean deleteDiractory;
 
@@ -28,7 +31,10 @@ public class MockFileManager implements IFileManager {
         externalDownloadDirectory = null;
         externalRootDirectory = null;
         defaultDownloadDirectoryName = null;
-        parent = null;
+        relativeSibling = null;
+        relativeParent = null;
+        absoluteParent = null;
+        absoluteFolder = null;
         fileEntries = Collections.emptyList();
         deleteDiractory = true;
     }
@@ -44,7 +50,10 @@ public class MockFileManager implements IFileManager {
         externalDownloadDirectory = null;
         externalRootDirectory = null;
         defaultDownloadDirectoryName = null;
-        parent = null;
+        relativeSibling = null;
+        relativeParent = null;
+        absoluteParent = null;
+        absoluteFolder = null;
         fileEntries = Collections.emptyList();
         deleteDiractory = true;
     }
@@ -69,8 +78,20 @@ public class MockFileManager implements IFileManager {
         this.defaultDownloadDirectoryName = defaultDownloadDirectoryName;
     }
 
-    public void setParent(String parent) {
-        this.parent = parent;
+    public void setRelativeSibling(String relativeSibling) {
+        this.relativeSibling = relativeSibling;
+    }
+
+    public void setRelativeParent(String relativeParent) {
+        this.relativeParent = relativeParent;
+    }
+
+    public void setAbsoluteParent(String absoluteParent) {
+        this.absoluteParent = absoluteParent;
+    }
+
+    public void setAbsoluteFolder(String absoluteFolder) {
+        this.absoluteFolder = absoluteFolder;
     }
 
     public void setFileEntries(List<FileEntry> fileEntries) {
@@ -111,8 +132,23 @@ public class MockFileManager implements IFileManager {
     }
 
     @Override
-    public String getParent(String root, String absoluteFolder) {
-        return parent;
+    public String getRelativeSibling(String folder, String sibling) {
+        return relativeSibling;
+    }
+
+    @Override
+    public String getRelativeParent(String folder) {
+        return relativeParent;
+    }
+
+    @Override
+    public String getAbsoluteParent(String root, String absoluteFolder) {
+        return absoluteParent;
+    }
+
+    @Override
+    public String getAbsoluteFolder(String root, String absoluteFolder) {
+        return absoluteFolder;
     }
 
     @Override

@@ -17,7 +17,13 @@ public interface IFileManager {
 
     String getDefaultDownloadDirectoryName();
 
-    String getParent(String root, String absoluteFolder);
+    String getRelativeSibling(String folder, String sibling);
+
+    String getRelativeParent(String folder);
+
+    String getAbsoluteParent(String root, String absoluteFolder);
+
+    String getAbsoluteFolder(String root, String absoluteFolder);
 
     List<FileEntry> getFiles(String root, String absoluteFolder);
 

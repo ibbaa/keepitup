@@ -100,16 +100,44 @@ public class FileManagerTest {
     }
 
     @Test
-    public void testGetParent() {
+    public void testGetRelativeSibling() {
+        assertEquals("", fileManager.getRelativeSibling(null, null));
+        assertEquals("", fileManager.getRelativeSibling("", ""));
+        assertEquals("download", fileManager.getRelativeSibling("download", ""));
+        assertEquals("xyz", fileManager.getRelativeSibling("download", "xyz"));
+        assertEquals("download/test/xyz", fileManager.getRelativeSibling("download/test/test", "xyz"));
+    }
+
+    @Test
+    public void testGetRelativeParent() {
+        assertEquals("", fileManager.getRelativeParent(null));
+        assertEquals("", fileManager.getRelativeParent(""));
+        assertEquals("", fileManager.getRelativeParent("folder"));
+        assertEquals("/", fileManager.getRelativeParent("/folder"));
+        assertEquals("/folder", fileManager.getRelativeParent("/folder/test"));
+        assertEquals("folder", fileManager.getRelativeParent("folder/test/"));
+    }
+
+    @Test
+    public void testGetAbsoluteParent() {
         File externalRootDir = fileManager.getExternalRootDirectory();
-        String parent = fileManager.getParent(externalRootDir.getAbsolutePath(), externalRootDir.getAbsolutePath());
+        String parent = fileManager.getAbsoluteParent(externalRootDir.getAbsolutePath(), externalRootDir.getAbsolutePath());
         assertEquals(new File(parent), externalRootDir);
         File externalDir = fileManager.getExternalDirectory(fileManager.getDefaultDownloadDirectoryName());
-        parent = fileManager.getParent(externalRootDir.getAbsolutePath(), externalDir.getAbsolutePath());
+        parent = fileManager.getAbsoluteParent(externalRootDir.getAbsolutePath(), externalDir.getAbsolutePath());
         assertEquals(new File(parent), externalRootDir);
         externalDir = fileManager.getExternalDirectory("test/download");
-        parent = fileManager.getParent(externalRootDir.getAbsolutePath(), externalDir.getAbsolutePath());
+        parent = fileManager.getAbsoluteParent(externalRootDir.getAbsolutePath(), externalDir.getAbsolutePath());
         assertEquals(new File(parent), new File(externalRootDir, "test"));
+    }
+
+    @Test
+    public void testGetAbsoluteFolder() {
+        assertEquals("root", fileManager.getAbsoluteFolder("root", null));
+        assertEquals("root", fileManager.getAbsoluteFolder("root", ""));
+        assertEquals("root/folder", fileManager.getAbsoluteFolder("root", "folder"));
+        assertEquals("root/folder", fileManager.getAbsoluteFolder("root/", "folder"));
+        assertEquals("root/folder/download", fileManager.getAbsoluteFolder("root/", "folder/download"));
     }
 
     @Test

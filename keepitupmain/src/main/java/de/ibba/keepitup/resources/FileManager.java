@@ -11,6 +11,7 @@ import java.util.List;
 
 import de.ibba.keepitup.R;
 import de.ibba.keepitup.model.FileEntry;
+import de.ibba.keepitup.util.StringUtil;
 
 public class FileManager implements IFileManager {
 
@@ -110,13 +111,55 @@ public class FileManager implements IFileManager {
         return downloadDir;
     }
 
-    public String getParent(String root, String absoluteFolder) {
-        Log.d(FileManager.class.getName(), "getParent, root is " + root + ", absoluteFolder is " + absoluteFolder);
+    public String getRelativeSibling(String folder, String sibling) {
+        Log.d(FileManager.class.getName(), "getRelativeSibling, folder is " + folder + ", siblimg is " + sibling);
+        if (folder == null) {
+            folder = "";
+        }
+        if (StringUtil.isEmpty(sibling)) {
+            return folder;
+        }
+        try {
+            File folderFile = new File(folder);
+            String parent = folderFile.getParent();
+            if (parent == null) {
+                return sibling;
+            }
+            if (!parent.endsWith("/")) {
+                parent += "/";
+            }
+            return parent + sibling;
+        } catch (Exception exc) {
+            Log.e(FileManager.class.getName(), "Error accessing parent directory", exc);
+            return null;
+        }
+    }
+
+    public String getRelativeParent(String folder) {
+        Log.d(FileManager.class.getName(), "getRelativeParent, folder is " + folder);
+        if (folder == null) {
+            return "";
+        }
+        try {
+            File folderFile = new File(folder);
+            String parent = folderFile.getParent();
+            if (parent == null) {
+                return "";
+            }
+            return parent;
+        } catch (Exception exc) {
+            Log.e(FileManager.class.getName(), "Error accessing parent directory", exc);
+            return null;
+        }
+    }
+
+    public String getAbsoluteParent(String root, String absoluteFolder) {
+        Log.d(FileManager.class.getName(), "getAbsoluteParent, root is " + root + ", absoluteFolder is " + absoluteFolder);
         try {
             File rootFile = new File(root);
             File absoluteFolderFile = new File(absoluteFolder);
             if (rootFile.equals(absoluteFolderFile)) {
-                Log.d(FileManager.class.getName(), "getParent, root and absoluteFolder are identical");
+                Log.d(FileManager.class.getName(), "getAbsoluteParent, root and absoluteFolder are identical");
                 return absoluteFolder;
             }
             File parentFile = absoluteFolderFile.getParentFile();
@@ -130,6 +173,18 @@ public class FileManager implements IFileManager {
             Log.e(FileManager.class.getName(), "Error accessing parent directory", exc);
             return null;
         }
+    }
+
+    @Override
+    public String getAbsoluteFolder(String root, String folder) {
+        Log.d(FileManager.class.getName(), "getAbsoluteFolder, root is " + root + ", folder is " + folder);
+        if (folder == null || folder.length() == 0) {
+            return root;
+        }
+        if (!root.endsWith("/")) {
+            root += "/";
+        }
+        return root + folder;
     }
 
     public List<FileEntry> getFiles(String root, String absoluteFolder) {
