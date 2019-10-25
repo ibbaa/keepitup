@@ -25,6 +25,8 @@ public interface IFileManager {
 
     String getAbsoluteFolder(String root, String absoluteFolder);
 
+    String getNestedFolder(String folder1, String folder2);
+
     List<FileEntry> getFiles(String root, String absoluteFolder);
 
     boolean deleteDirectory(File directory);

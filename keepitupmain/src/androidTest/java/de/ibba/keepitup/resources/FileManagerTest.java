@@ -141,6 +141,16 @@ public class FileManagerTest {
     }
 
     @Test
+    public void testGetNestedFolder() {
+        assertEquals("", fileManager.getNestedFolder(null, null));
+        assertEquals("", fileManager.getNestedFolder("", ""));
+        assertEquals("folder", fileManager.getNestedFolder("folder", null));
+        assertEquals("folder", fileManager.getNestedFolder("", "folder"));
+        assertEquals("folder/folder", fileManager.getNestedFolder("folder", "folder"));
+        assertEquals("test/xyz/folder", fileManager.getNestedFolder("test/xyz/", "folder"));
+    }
+
+    @Test
     public void testGetFilesRoot() throws Exception {
         File externalRootDir = fileManager.getExternalRootDirectory();
         File file1 = new File(externalRootDir, "file1");

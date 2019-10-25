@@ -21,6 +21,7 @@ public class FileManager implements IFileManager {
         this.context = context;
     }
 
+    @Override
     public File getInternalDownloadDirectory() {
         Log.d(FileManager.class.getName(), "getInternalDownloadDirectory");
         try {
@@ -49,6 +50,7 @@ public class FileManager implements IFileManager {
         return null;
     }
 
+    @Override
     public File getInternalRootDirectory() {
         Log.d(FileManager.class.getName(), "getInternalRootDirectory");
         try {
@@ -63,6 +65,7 @@ public class FileManager implements IFileManager {
         return null;
     }
 
+    @Override
     public File getExternalDirectory(String directoryName) {
         Log.d(FileManager.class.getName(), "getExternalDirectory, directoryName is " + directoryName);
         try {
@@ -90,6 +93,7 @@ public class FileManager implements IFileManager {
         return null;
     }
 
+    @Override
     public File getExternalRootDirectory() {
         Log.d(FileManager.class.getName(), "getExternalRootDirectory");
         try {
@@ -104,6 +108,7 @@ public class FileManager implements IFileManager {
         return null;
     }
 
+    @Override
     public String getDefaultDownloadDirectoryName() {
         Log.d(FileManager.class.getName(), "getDefaultDownloadDirectoryName");
         String downloadDir = getResources().getString(R.string.download_folder_default);
@@ -111,11 +116,10 @@ public class FileManager implements IFileManager {
         return downloadDir;
     }
 
+    @Override
     public String getRelativeSibling(String folder, String sibling) {
         Log.d(FileManager.class.getName(), "getRelativeSibling, folder is " + folder + ", siblimg is " + sibling);
-        if (folder == null) {
-            folder = "";
-        }
+        folder = StringUtil.notNull(folder);
         if (StringUtil.isEmpty(sibling)) {
             return folder;
         }
@@ -135,11 +139,10 @@ public class FileManager implements IFileManager {
         }
     }
 
+    @Override
     public String getRelativeParent(String folder) {
         Log.d(FileManager.class.getName(), "getRelativeParent, folder is " + folder);
-        if (folder == null) {
-            return "";
-        }
+        folder = StringUtil.notNull(folder);
         try {
             File folderFile = new File(folder);
             String parent = folderFile.getParent();
@@ -153,6 +156,7 @@ public class FileManager implements IFileManager {
         }
     }
 
+    @Override
     public String getAbsoluteParent(String root, String absoluteFolder) {
         Log.d(FileManager.class.getName(), "getAbsoluteParent, root is " + root + ", absoluteFolder is " + absoluteFolder);
         try {
@@ -178,13 +182,26 @@ public class FileManager implements IFileManager {
     @Override
     public String getAbsoluteFolder(String root, String folder) {
         Log.d(FileManager.class.getName(), "getAbsoluteFolder, root is " + root + ", folder is " + folder);
-        if (folder == null || folder.length() == 0) {
+        if (StringUtil.isEmpty(folder)) {
             return root;
         }
         if (!root.endsWith("/")) {
             root += "/";
         }
         return root + folder;
+    }
+
+    @Override
+    public String getNestedFolder(String folder1, String folder2) {
+        Log.d(FileManager.class.getName(), "getNestedFolder, folder1 is " + folder1 + ", folder2 is " + folder2);
+        folder2 = StringUtil.notNull(folder2);
+        if (StringUtil.isEmpty(folder1)) {
+            return folder2;
+        }
+        if (!folder1.endsWith("/") && !folder2.isEmpty()) {
+            folder1 += "/";
+        }
+        return folder1 + folder2;
     }
 
     public List<FileEntry> getFiles(String root, String absoluteFolder) {
@@ -221,6 +238,7 @@ public class FileManager implements IFileManager {
         }
     }
 
+    @Override
     public boolean deleteDirectory(File directory) {
         Log.d(FileManager.class.getName(), "deleteDirectory, directory is " + directory);
         try {
