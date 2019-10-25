@@ -21,6 +21,7 @@ public class MockFileManager implements IFileManager {
     private String relativeParent;
     private String absoluteParent;
     private String absoluteFolder;
+    private String nestedFolder;
     private List<FileEntry> fileEntries;
     private boolean deleteDiractory;
 
@@ -35,6 +36,7 @@ public class MockFileManager implements IFileManager {
         relativeParent = null;
         absoluteParent = null;
         absoluteFolder = null;
+        nestedFolder = null;
         fileEntries = Collections.emptyList();
         deleteDiractory = true;
     }
@@ -54,6 +56,7 @@ public class MockFileManager implements IFileManager {
         relativeParent = null;
         absoluteParent = null;
         absoluteFolder = null;
+        nestedFolder = null;
         fileEntries = Collections.emptyList();
         deleteDiractory = true;
     }
@@ -92,6 +95,10 @@ public class MockFileManager implements IFileManager {
 
     public void setAbsoluteFolder(String absoluteFolder) {
         this.absoluteFolder = absoluteFolder;
+    }
+
+    public void setNestedFolder(String nestedFolder) {
+        this.nestedFolder = nestedFolder;
     }
 
     public void setFileEntries(List<FileEntry> fileEntries) {
@@ -149,6 +156,11 @@ public class MockFileManager implements IFileManager {
     @Override
     public String getAbsoluteFolder(String root, String absoluteFolder) {
         return absoluteFolder;
+    }
+
+    @Override
+    public String getNestedFolder(String folder1, String folder2) {
+        return nestedFolder;
     }
 
     @Override
