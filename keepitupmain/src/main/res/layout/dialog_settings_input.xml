@@ -26,7 +26,7 @@
                 android:layout_width="@dimen/edittext_dialog_settings_input_value_width"
                 android:layout_height="wrap_content"
                 android:importantForAutofill="no"
-                android:inputType="textUri|textMultiLine"
+                android:inputType="textUri|textMultiLine|textNoSuggestions"
                 android:maxLines="@integer/edittext_dialog_settings_input_value_max_lines"
                 android:text="" />
 

@@ -7,6 +7,8 @@ import android.util.Log;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import de.ibba.keepitup.resources.FileManager;
+import de.ibba.keepitup.resources.IFileManager;
 import de.ibba.keepitup.ui.dialog.FolderChooseDialog;
 import de.ibba.keepitup.ui.dialog.GeneralErrorDialog;
 import de.ibba.keepitup.ui.dialog.SettingsInput;
@@ -16,9 +18,14 @@ import de.ibba.keepitup.util.BundleUtil;
 public abstract class SettingsInputActivity extends AppCompatActivity {
 
     private Resources resources;
+    private IFileManager fileManager;
 
     public void injectResources(Resources resources) {
         this.resources = resources;
+    }
+
+    public void injectFileManager(IFileManager fileManager) {
+        this.fileManager = fileManager;
     }
 
     @Override
@@ -27,6 +34,13 @@ public abstract class SettingsInputActivity extends AppCompatActivity {
             return resources;
         }
         return super.getResources();
+    }
+
+    public IFileManager getFileManager() {
+        if (fileManager != null) {
+            return fileManager;
+        }
+        return new FileManager(this);
     }
 
     public void onInputDialogOkClicked(SettingsInputDialog inputDialog, SettingsInput.Type type) {

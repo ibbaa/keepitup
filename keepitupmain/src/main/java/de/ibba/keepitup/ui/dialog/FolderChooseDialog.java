@@ -1,5 +1,7 @@
 package de.ibba.keepitup.ui.dialog;
 
+import android.app.Activity;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -17,13 +19,16 @@ import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import java.util.ArrayList;
+import java.io.File;
+import java.io.IOException;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
 import de.ibba.keepitup.R;
 import de.ibba.keepitup.model.FileEntry;
 import de.ibba.keepitup.resources.FileManager;
+import de.ibba.keepitup.resources.IFileManager;
 import de.ibba.keepitup.ui.GlobalSettingsActivity;
 import de.ibba.keepitup.ui.SettingsInputActivity;
 import de.ibba.keepitup.ui.adapter.FileEntryAdapter;
@@ -38,6 +43,7 @@ public class FolderChooseDialog extends DialogFragment {
     private FolderChooseWatcher folderChooseTextWatcher;
     private CheckBox showFilesCheckBox;
     private RecyclerView fileEntriesRecyclerView;
+    private String selectionFolder;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -83,6 +89,10 @@ public class FolderChooseDialog extends DialogFragment {
         return absoluteFolderText;
     }
 
+    private String getSelectionFolder() {
+        return selectionFolder;
+    }
+
     private void prepareFolderAbsolute(String folder) {
         Log.d(FolderChooseDialog.class.getName(), "prepareFolderAbsolute");
         absoluteFolderText = dialogView.findViewById(R.id.textview_dialog_folder_choose_root);
@@ -93,6 +103,7 @@ public class FolderChooseDialog extends DialogFragment {
         Log.d(FolderChooseDialog.class.getName(), "prepareFolder");
         folderEditText = dialogView.findViewById(R.id.edittext_dialog_folder_choose_folder);
         folderEditText.setText(folder);
+        selectionFolder = folder;
         prepareFolderChooseTextWatcher();
     }
 
@@ -147,7 +158,7 @@ public class FolderChooseDialog extends DialogFragment {
     }
 
     private String getAbsoluteFolder(String root, String folder) {
-        return new FileManager(getActivity()).getAbsoluteFolder(root, folder);
+        return getFileManager().getAbsoluteFolder(root, folder);
     }
 
     public void onFileEntryClicked(View view, int position) {
@@ -170,6 +181,7 @@ public class FolderChooseDialog extends DialogFragment {
         Log.d(FolderChooseDialog.class.getName(), "prepare selected folder name " + folderName);
         absoluteFolderText.setText(getAbsoluteFolder(getRoot(), folderName));
         folderEditText.setText(folderName);
+        selectionFolder = folderName;
         folderChooseTextWatcher = new FolderChooseWatcher(this);
         folderEditText.addTextChangedListener(folderChooseTextWatcher);
     }
@@ -182,52 +194,71 @@ public class FolderChooseDialog extends DialogFragment {
         return (FileEntryAdapter) getFileEntriesRecyclerView().getAdapter();
     }
 
+    private IFileManager getFileManager() {
+        Log.d(FolderChooseDialog.class.getName(), "getFileManager");
+        Activity activity = getActivity();
+        if (activity instanceof SettingsInputActivity) {
+            Log.d(FolderChooseDialog.class.getName(), "Returning file manager from Activity.");
+            return ((SettingsInputActivity) activity).getFileManager();
+        }
+        Log.d(FolderChooseDialog.class.getName(), "Returning new file manager.");
+        return new FileManager(activity);
+    }
+
     private RecyclerView.Adapter createAdapter() {
-        List<FileEntry> entries = new ArrayList<>();
-        FileEntry entry0 = new FileEntry();
-        entry0.setName("Download");
-        entry0.setDirectory(true);
-        FileEntry entry1 = new FileEntry();
-        entry1.setName("Download");
-        entry1.setDirectory(true);
-        FileEntry entry2 = new FileEntry();
-        entry2.setName("Test");
-        entry2.setDirectory(false);
-        FileEntry entry3 = new FileEntry();
-        entry3.setName("xyz");
-        entry3.setDirectory(true);
-        FileEntry entry4 = new FileEntry();
-        entry4.setName("Download");
-        entry4.setDirectory(true);
-        FileEntry entry5 = new FileEntry();
-        entry5.setName("Test");
-        entry5.setDirectory(false);
-        FileEntry entry6 = new FileEntry();
-        entry6.setName("xyz");
-        entry6.setDirectory(true);
-        FileEntry entry7 = new FileEntry();
-        entry7.setName("Download1");
-        entry7.setDirectory(true);
-        FileEntry entry8 = new FileEntry();
-        entry8.setName("Test");
-        entry8.setDirectory(false);
-        FileEntry entry9 = new FileEntry();
-        entry9.setName("xyz");
-        entry9.setDirectory(true);
-        FileEntry entry10 = new FileEntry();
-        entry10.setName("xyz");
-        entry10.setDirectory(true);
-        entries.add(entry0);
-        entries.add(entry1);
-        entries.add(entry2);
-        /*entries.add(entry3);
-        entries.add(entry4);
-        entries.add(entry5);
-        entries.add(entry6);
-        entries.add(entry7);
-        entries.add(entry8);
-        entries.add(entry9);
-        entries.add(entry10);*/
-        return new FileEntryAdapter(entries, this);
+        Log.d(FolderChooseDialog.class.getName(), "createAdapter");
+        String aboluteFolder = getAbsoluteFolder(getRoot(), getSelectionFolder());
+        IFileManager fileManager = getFileManager();
+        String parent = fileManager.getAbsoluteParent(getRoot(), aboluteFolder);
+        if (parent == null) {
+            Log.e(FolderChooseDialog.class.getName(), "File manager returned null as parent");
+            showErrorDialog(getResources().getString(R.string.text_dialog_general_error_list_folder_files));
+            return new FileEntryAdapter(Collections.emptyList(), this);
+        }
+        try {
+            File file1 = new File(parent, "test1");
+            File file2 = new File(parent, "test2");
+            File file3 = new File(parent, "test3");
+            file1.mkdir();
+            file2.mkdir();
+            file3.createNewFile();
+        } catch (IOException exc) {
+            exc.printStackTrace();
+        }
+        List<FileEntry> entries = readFiles(parent);
+        FileEntryAdapter adapter = new FileEntryAdapter(entries, this);
+        adapter.selectItemByName(getSelectionFolder());
+        adapter.notifyDataSetChanged();
+        return adapter;
+    }
+
+    private List<FileEntry> readFiles(String folder) {
+        Log.d(FolderChooseDialog.class.getName(), "readFiles, folder is " + folder);
+        IFileManager fileManager = getFileManager();
+        String root = getRoot();
+        List<FileEntry> entries = fileManager.getFiles(root, folder);
+        if (entries == null) {
+            Log.e(FolderChooseDialog.class.getName(), "File manager returned null as folder file list");
+            showErrorDialog(getResources().getString(R.string.text_dialog_general_error_list_folder_files));
+            return Collections.emptyList();
+        }
+        Log.d(FolderChooseDialog.class.getName(), "File manager returned the following file entries: " + (entries.isEmpty() ? "no file entries" : ""));
+        for (FileEntry entry : entries) {
+            Log.d(FolderChooseDialog.class.getName(), entry.toString());
+        }
+        return entries;
+    }
+
+    private void showErrorDialog(String errorMessage) {
+        showErrorDialog(errorMessage, Typeface.BOLD);
+    }
+
+    private void showErrorDialog(String errorMessage, int typeface) {
+        Log.d(FolderChooseDialog.class.getName(), "showErrorDialog with message " + errorMessage);
+        GeneralErrorDialog errorDialog = new GeneralErrorDialog();
+        Bundle bundle = BundleUtil.messageToBundle(GeneralErrorDialog.class.getSimpleName(), errorMessage);
+        bundle.putInt(errorDialog.getTypefaceStyleKey(), typeface);
+        errorDialog.setArguments(bundle);
+        errorDialog.show(Objects.requireNonNull(getFragmentManager()), GeneralErrorDialog.class.getName());
     }
 }
