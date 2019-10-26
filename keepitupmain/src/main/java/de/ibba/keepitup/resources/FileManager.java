@@ -118,7 +118,7 @@ public class FileManager implements IFileManager {
 
     @Override
     public String getRelativeSibling(String folder, String sibling) {
-        Log.d(FileManager.class.getName(), "getRelativeSibling, folder is " + folder + ", siblimg is " + sibling);
+        Log.d(FileManager.class.getName(), "getRelativeSibling, folder is " + folder + ", sibling is " + sibling);
         folder = StringUtil.notNull(folder);
         if (StringUtil.isEmpty(sibling)) {
             return folder;
