@@ -88,6 +88,12 @@ public class FileEntryAdapter extends RecyclerView.Adapter<FileEntryViewHolder> 
         return getItem(selected);
     }
 
+    public boolean isItemSelected() {
+        boolean isItemSelected = selected >= 0;
+        Log.d(FileEntryAdapter.class.getName(), "isItemSelected, returning " + isItemSelected);
+        return isItemSelected;
+    }
+
     public void selectItemByName(String folder) {
         Log.d(FileEntryAdapter.class.getName(), "selectItemByName for folder " + folder);
         List<FileEntry> entries = getFileEntries();

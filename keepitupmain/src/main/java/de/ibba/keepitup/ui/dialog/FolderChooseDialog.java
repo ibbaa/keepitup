@@ -172,16 +172,28 @@ public class FolderChooseDialog extends DialogFragment {
             Log.d(FolderChooseDialog.class.getName(), "selected entry " + selectedEntry + " is a file. Select skipped.");
             return;
         }
+        String folderName = selectedEntry.getName();
+        Log.d(FolderChooseDialog.class.getName(), "Prepare selected folder name " + folderName);
+        IFileManager fileManager = getFileManager();
+        String nestedFolder;
+        if (getAdapter().isItemSelected()) {
+            nestedFolder = fileManager.getRelativeSibling(selectionFolder, folderName);
+        } else {
+            nestedFolder = fileManager.getNestedFolder(selectionFolder, folderName);
+        }
+        if (nestedFolder == null) {
+            Log.e(FolderChooseDialog.class.getName(), "Error preparing selected folder");
+            return;
+        }
+        Log.d(FolderChooseDialog.class.getName(), "Selected folder name is " + nestedFolder);
         getAdapter().selectItem(position);
         if (folderChooseTextWatcher != null) {
             folderEditText.removeTextChangedListener(folderChooseTextWatcher);
             folderChooseTextWatcher = null;
         }
-        String folderName = selectedEntry.getName();
-        Log.d(FolderChooseDialog.class.getName(), "prepare selected folder name " + folderName);
-        absoluteFolderText.setText(getAbsoluteFolder(getRoot(), folderName));
-        folderEditText.setText(folderName);
-        selectionFolder = folderName;
+        folderEditText.setText(nestedFolder);
+        absoluteFolderText.setText(getAbsoluteFolder(getRoot(), nestedFolder));
+        selectionFolder = nestedFolder;
         folderChooseTextWatcher = new FolderChooseWatcher(this);
         folderEditText.addTextChangedListener(folderChooseTextWatcher);
     }
