@@ -16,7 +16,6 @@ import java.util.Collections;
 import java.util.List;
 
 import de.ibba.keepitup.R;
-import de.ibba.keepitup.resources.FileManager;
 import de.ibba.keepitup.resources.IFileManager;
 import de.ibba.keepitup.resources.PreferenceManager;
 import de.ibba.keepitup.ui.dialog.FolderChooseDialog;
@@ -37,11 +36,6 @@ public class GlobalSettingsActivity extends SettingsInputActivity {
     private TextView downloadFolderText;
     private Switch downloadKeepSwitch;
     private TextView downloadKeepOnOffText;
-    private IFileManager fileManager;
-
-    public void injectFileManager(IFileManager fileManager) {
-        this.fileManager = fileManager;
-    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -308,12 +302,5 @@ public class GlobalSettingsActivity extends SettingsInputActivity {
         preferenceManager.setPreferenceDownloadFolder(folder);
         setDownloadFolder(downloadFolder.getAbsolutePath());
         editDialog.dismiss();
-    }
-
-    private IFileManager getFileManager() {
-        if (fileManager != null) {
-            return fileManager;
-        }
-        return new FileManager(this);
     }
 }

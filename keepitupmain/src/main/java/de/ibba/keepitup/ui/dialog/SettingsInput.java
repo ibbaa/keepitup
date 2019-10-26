@@ -11,7 +11,7 @@ import java.util.List;
 public class SettingsInput {
 
     public enum Type {
-        ADDRESS(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_URI | InputType.TYPE_TEXT_FLAG_MULTI_LINE),
+        ADDRESS(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_URI | InputType.TYPE_TEXT_FLAG_MULTI_LINE | InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS),
         PORT(InputType.TYPE_CLASS_NUMBER),
         INTERVAL(InputType.TYPE_CLASS_NUMBER),
         PINGCOUNT(InputType.TYPE_CLASS_NUMBER);

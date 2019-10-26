@@ -35,7 +35,7 @@ public class SettingsInputTest {
         bundle = settingsInput.toBundle();
         settingsInput = new SettingsInput(bundle);
         assertEquals(SettingsInput.Type.ADDRESS, settingsInput.getType());
-        assertEquals(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_URI | InputType.TYPE_TEXT_FLAG_MULTI_LINE, settingsInput.getType().getInputType());
+        assertEquals(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_URI | InputType.TYPE_TEXT_FLAG_MULTI_LINE | InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS, settingsInput.getType().getInputType());
         assertEquals("", settingsInput.getValue());
         assertEquals("", settingsInput.getField());
         assertTrue(settingsInput.getValidators().isEmpty());

@@ -61,7 +61,7 @@
                     android:layout_width="@dimen/edittext_dialog_network_task_edit_address_width"
                     android:layout_height="wrap_content"
                     android:importantForAutofill="no"
-                    android:inputType="textUri|textMultiLine"
+                    android:inputType="textUri|textMultiLine|textNoSuggestions"
                     android:maxLines="@integer/edittext_dialog_network_task_edit_address_max_lines"
                     android:text="" />
 

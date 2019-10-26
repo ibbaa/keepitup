@@ -210,6 +210,10 @@ public class FileManager implements IFileManager {
             File rootFile = new File(root);
             File absoluteFolderFile = new File(absoluteFolder);
             File[] files = absoluteFolderFile.listFiles();
+            if (files != null) {
+                Log.d(FileManager.class.getName(), "listFiles returned " + files.length + " files");
+                Log.d(FileManager.class.getName(), "Creating entries...");
+            }
             if (files != null && files.length > 0) {
                 List<FileEntry> fileEntries = new ArrayList<>(files.length + 1);
                 if (!rootFile.equals(absoluteFolderFile)) {
