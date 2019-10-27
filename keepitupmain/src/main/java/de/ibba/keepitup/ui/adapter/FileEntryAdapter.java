@@ -152,6 +152,7 @@ public class FileEntryAdapter extends RecyclerView.Adapter<FileEntryViewHolder> 
     }
 
     public void replaceItems(List<FileEntry> fileEntries) {
+        selected = -1;
         this.fileEntries.clear();
         this.fileEntries.addAll(fileEntries);
         for (FileEntry currentEntry : fileEntries) {

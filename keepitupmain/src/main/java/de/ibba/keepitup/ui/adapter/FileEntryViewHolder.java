@@ -26,6 +26,7 @@ public class FileEntryViewHolder extends RecyclerView.ViewHolder {
         this.folderChooseDialog = folderChooseDialog;
         fileEntryCardView = itemView.findViewById(R.id.cardview_list_item_file_entry);
         fileEntryCardView.setOnClickListener(this::onFileEntryClicked);
+        fileEntryCardView.setOnLongClickListener(this::onFileEntryLongClicked);
         fileNameImage = itemView.findViewById(R.id.imageview_list_item_file_entry_name);
         fileNameText = itemView.findViewById(R.id.textview_list_item_file_entry_name);
     }
@@ -57,6 +58,10 @@ public class FileEntryViewHolder extends RecyclerView.ViewHolder {
 
     private void onFileEntryClicked(View view) {
         folderChooseDialog.onFileEntryClicked(view, getAdapterPosition());
+    }
+
+    private boolean onFileEntryLongClicked(View view) {
+        return folderChooseDialog.onFileEntryLongClicked(view, getAdapterPosition());
     }
 
     private Context getContext() {
