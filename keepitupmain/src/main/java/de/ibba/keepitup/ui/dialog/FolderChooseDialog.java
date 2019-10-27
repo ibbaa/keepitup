@@ -163,6 +163,17 @@ public class FolderChooseDialog extends DialogFragment {
 
     public void onFileEntryClicked(View view, int position) {
         Log.d(FolderChooseDialog.class.getName(), "onFileEntryClicked, position is " + position);
+        selectEntry(position);
+    }
+
+    public boolean onFileEntryLongClicked(View view, int position) {
+        Log.d(FolderChooseDialog.class.getName(), "onFileEntryLongClicked, position is " + position);
+        selectEntry(position);
+        return true;
+    }
+
+    private void selectEntry(int position) {
+        Log.d(FolderChooseDialog.class.getName(), "selectEntry, position is " + position);
         FileEntry selectedEntry = getAdapter().getItem(position);
         if (selectedEntry == null) {
             Log.e(FolderChooseDialog.class.getName(), "selected entry is null");
@@ -176,7 +187,9 @@ public class FolderChooseDialog extends DialogFragment {
         Log.d(FolderChooseDialog.class.getName(), "Prepare selected folder name " + folderName);
         IFileManager fileManager = getFileManager();
         String nestedFolder;
-        if (getAdapter().isItemSelected()) {
+        if (selectedEntry.isParent()) {
+            nestedFolder = fileManager.getRelativeParent(selectionFolder);
+        } else if (getAdapter().isItemSelected()) {
             nestedFolder = fileManager.getRelativeSibling(selectionFolder, folderName);
         } else {
             nestedFolder = fileManager.getNestedFolder(selectionFolder, folderName);
@@ -210,7 +223,7 @@ public class FolderChooseDialog extends DialogFragment {
         Log.d(FolderChooseDialog.class.getName(), "getFileManager");
         Activity activity = getActivity();
         if (activity instanceof SettingsInputActivity) {
-            Log.d(FolderChooseDialog.class.getName(), "Returning file manager from Activity.");
+            Log.d(FolderChooseDialog.class.getName(), "Returning file manager from activity.");
             return ((SettingsInputActivity) activity).getFileManager();
         }
         Log.d(FolderChooseDialog.class.getName(), "Returning new file manager.");
@@ -231,6 +244,26 @@ public class FolderChooseDialog extends DialogFragment {
             File file1 = new File(parent, "test1");
             File file2 = new File(parent, "test2");
             File file3 = new File(parent, "test3");
+            file1.mkdir();
+            file2.mkdir();
+            file3.createNewFile();
+        } catch (IOException exc) {
+            exc.printStackTrace();
+        }
+        try {
+            File file1 = new File(parent + "/test1", "testNested11");
+            File file2 = new File(parent + "/test1", "testNested12");
+            File file3 = new File(parent + "/test1", "testNested13");
+            file1.mkdir();
+            file2.mkdir();
+            file3.createNewFile();
+        } catch (IOException exc) {
+            exc.printStackTrace();
+        }
+        try {
+            File file1 = new File(parent + "/test2", "testNested21");
+            File file2 = new File(parent + "/test2", "testNested22");
+            File file3 = new File(parent + "/test2", "testNested23");
             file1.mkdir();
             file2.mkdir();
             file3.createNewFile();
