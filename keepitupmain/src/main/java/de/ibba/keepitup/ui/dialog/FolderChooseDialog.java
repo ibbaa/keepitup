@@ -168,7 +168,20 @@ public class FolderChooseDialog extends DialogFragment {
 
     public boolean onFileEntryLongClicked(View view, int position) {
         Log.d(FolderChooseDialog.class.getName(), "onFileEntryLongClicked, position is " + position);
+        FileEntry selectedEntry = getAdapter().getItem(position);
+        if (selectedEntry == null) {
+            Log.e(FolderChooseDialog.class.getName(), "selected entry is null");
+            return true;
+        }
+        if (!selectedEntry.isDirectory()) {
+            Log.d(FolderChooseDialog.class.getName(), "selected entry " + selectedEntry + " is a file. Select skipped.");
+            return true;
+        }
         selectEntry(position);
+        List<FileEntry> entries = readFiles(getFileManager().getAbsoluteFolder(getRoot(), getSelectionFolder()));
+        FileEntryAdapter adapter = getAdapter();
+        adapter.replaceItems(entries);
+        adapter.notifyDataSetChanged();
         return true;
     }
 
@@ -187,12 +200,30 @@ public class FolderChooseDialog extends DialogFragment {
         Log.d(FolderChooseDialog.class.getName(), "Prepare selected folder name " + folderName);
         IFileManager fileManager = getFileManager();
         String nestedFolder;
-        if (selectedEntry.isParent()) {
-            nestedFolder = fileManager.getRelativeParent(selectionFolder);
-        } else if (getAdapter().isItemSelected()) {
-            nestedFolder = fileManager.getRelativeSibling(selectionFolder, folderName);
+        boolean isItemSelected = getAdapter().isItemSelected();
+        boolean isParentItemSelected = getAdapter().isParentItemSelected();
+        if (isItemSelected && !isParentItemSelected) {
+            Log.d(FolderChooseDialog.class.getName(), "A non-parent item is currently selected.");
+            if (selectedEntry.isParent()) {
+                Log.d(FolderChooseDialog.class.getName(), "New selected item is the parent item. Selecting parent folder.");
+                nestedFolder = fileManager.getRelativeParent(getSelectionFolder());
+            } else {
+                Log.d(FolderChooseDialog.class.getName(), "New selected item is not the parent item. Selecting sibling folder.");
+                nestedFolder = fileManager.getRelativeSibling(getSelectionFolder(), folderName);
+            }
         } else {
-            nestedFolder = fileManager.getNestedFolder(selectionFolder, folderName);
+            if (isParentItemSelected) {
+                Log.d(FolderChooseDialog.class.getName(), "The parent item is currenty selected.");
+            } else {
+                Log.d(FolderChooseDialog.class.getName(), "No item is currenty selected.");
+            }
+            if (selectedEntry.isParent()) {
+                Log.d(FolderChooseDialog.class.getName(), "New selected item is the parent item. Keeping selected folder.");
+                nestedFolder = getSelectionFolder();
+            } else {
+                Log.d(FolderChooseDialog.class.getName(), "New selected item is not the parent item. Nesting folder.");
+                nestedFolder = fileManager.getNestedFolder(getSelectionFolder(), folderName);
+            }
         }
         if (nestedFolder == null) {
             Log.e(FolderChooseDialog.class.getName(), "Error preparing selected folder");
