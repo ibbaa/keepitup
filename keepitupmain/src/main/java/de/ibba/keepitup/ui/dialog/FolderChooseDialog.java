@@ -166,23 +166,22 @@ public class FolderChooseDialog extends DialogFragment {
         selectEntry(position);
     }
 
-    public boolean onFileEntryLongClicked(View view, int position) {
-        Log.d(FolderChooseDialog.class.getName(), "onFileEntryLongClicked, position is " + position);
+    public void onFileOpenClicked(View view, int position) {
+        Log.d(FolderChooseDialog.class.getName(), "onFileOpenClicked, position is " + position);
         FileEntry selectedEntry = getAdapter().getItem(position);
         if (selectedEntry == null) {
             Log.e(FolderChooseDialog.class.getName(), "selected entry is null");
-            return true;
+            return;
         }
         if (!selectedEntry.isDirectory()) {
             Log.d(FolderChooseDialog.class.getName(), "selected entry " + selectedEntry + " is a file. Select skipped.");
-            return true;
+            return;
         }
         selectEntry(position);
         List<FileEntry> entries = readFiles(getFileManager().getAbsoluteFolder(getRoot(), getSelectionFolder()));
         FileEntryAdapter adapter = getAdapter();
         adapter.replaceItems(entries);
         adapter.notifyDataSetChanged();
-        return true;
     }
 
     private void selectEntry(int position) {

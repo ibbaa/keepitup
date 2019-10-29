@@ -10,11 +10,13 @@ public class FileEntry {
     private String name;
     private boolean directory;
     private boolean parent;
+    private boolean canVisit;
 
     public FileEntry() {
         this.name = "";
         this.directory = false;
         this.parent = false;
+        this.canVisit = true;
     }
 
     public FileEntry(PersistableBundle bundle) {
@@ -25,6 +27,7 @@ public class FileEntry {
         this.name = bundle.getString("name");
         this.directory = bundle.getInt("directory") >= 1;
         this.parent = bundle.getInt("parent") >= 1;
+        this.canVisit = bundle.getInt("canVisit") >= 1;
     }
 
     public String getName() {
@@ -51,11 +54,20 @@ public class FileEntry {
         this.parent = parent;
     }
 
+    public boolean canVisit() {
+        return canVisit;
+    }
+
+    public void setCanVisit(boolean canVisit) {
+        this.canVisit = canVisit;
+    }
+
     public PersistableBundle toPersistableBundle() {
         PersistableBundle bundle = new PersistableBundle();
         bundle.putString("name", name);
         bundle.putInt("directory", directory ? 1 : 0);
         bundle.putInt("parent", parent ? 1 : 0);
+        bundle.putInt("canVisit", canVisit ? 1 : 0);
         return bundle;
     }
 
@@ -70,6 +82,7 @@ public class FileEntry {
                 "name='" + name + '\'' +
                 ", directory=" + directory +
                 ", parent=" + parent +
+                ", canVisit=" + canVisit +
                 '}';
     }
 }
