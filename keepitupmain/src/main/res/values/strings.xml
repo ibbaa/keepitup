@@ -12,4 +12,5 @@
     <string name="string_yes">yes</string>
     <string name="string_no">no</string>
     <string name="string_none">none</string>
+    <string name="string_open">Open</string>
 </resources>

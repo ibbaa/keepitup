@@ -55,11 +55,17 @@ public class FileEntryAdapter extends RecyclerView.Adapter<FileEntryViewHolder> 
         Log.d(FileEntryAdapter.class.getName(), "bindFileName fo file entry " + fileEntry);
         fileEntryViewHolder.setFileNameText(fileEntry.getName());
         if (fileEntry.isDirectory()) {
-            fileEntryViewHolder.setFileNameImage(fileEntry.getName(), R.drawable.icon_folder);
+            fileEntryViewHolder.setFileSymbolImage(fileEntry.getName(), R.drawable.icon_folder);
             fileEntryViewHolder.setFileNameTextBold();
+            if (fileEntry.canVisit()) {
+                fileEntryViewHolder.setFileOpenImageVisible();
+            } else {
+                fileEntryViewHolder.setFileOpenImageInvisible();
+            }
         } else {
-            fileEntryViewHolder.setFileNameImage(fileEntry.getName(), R.drawable.icon_file);
+            fileEntryViewHolder.setFileSymbolImage(fileEntry.getName(), R.drawable.icon_file);
             fileEntryViewHolder.setFileNameTextNormal();
+            fileEntryViewHolder.setFileOpenImageInvisible();
         }
         if (selected == position) {
             Log.d(FileEntryAdapter.class.getName(), "file entry is selected");

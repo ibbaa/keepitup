@@ -18,17 +18,19 @@ public class FileEntryViewHolder extends RecyclerView.ViewHolder {
 
     private final FolderChooseDialog folderChooseDialog;
     private final CardView fileEntryCardView;
-    private final ImageView fileNameImage;
+    private final ImageView fileSymbolImage;
     private final TextView fileNameText;
+    private final ImageView fileOpenImage;
 
     public FileEntryViewHolder(@NonNull View itemView, FolderChooseDialog folderChooseDialog) {
         super(itemView);
         this.folderChooseDialog = folderChooseDialog;
         fileEntryCardView = itemView.findViewById(R.id.cardview_list_item_file_entry);
         fileEntryCardView.setOnClickListener(this::onFileEntryClicked);
-        fileEntryCardView.setOnLongClickListener(this::onFileEntryLongClicked);
-        fileNameImage = itemView.findViewById(R.id.imageview_list_item_file_entry_name);
+        fileSymbolImage = itemView.findViewById(R.id.imageview_list_item_file_entry_symbol);
         fileNameText = itemView.findViewById(R.id.textview_list_item_file_entry_name);
+        fileOpenImage = itemView.findViewById(R.id.imageview_list_item_file_entry_open);
+        fileOpenImage.setOnClickListener(this::onFileOpenClicked);
     }
 
     public void setFileEntrySelected() {
@@ -51,17 +53,25 @@ public class FileEntryViewHolder extends RecyclerView.ViewHolder {
         fileNameText.setTypeface(null, Typeface.BOLD);
     }
 
-    public void setFileNameImage(String description, int image) {
-        fileNameImage.setImageResource(image);
-        fileNameImage.setContentDescription(description);
+    public void setFileOpenImageVisible() {
+        fileOpenImage.setVisibility(View.VISIBLE);
+    }
+
+    public void setFileOpenImageInvisible() {
+        fileOpenImage.setVisibility(View.INVISIBLE);
+    }
+
+    public void setFileSymbolImage(String description, int image) {
+        fileSymbolImage.setImageResource(image);
+        fileSymbolImage.setContentDescription(description);
     }
 
     private void onFileEntryClicked(View view) {
         folderChooseDialog.onFileEntryClicked(view, getAdapterPosition());
     }
 
-    private boolean onFileEntryLongClicked(View view) {
-        return folderChooseDialog.onFileEntryLongClicked(view, getAdapterPosition());
+    private void onFileOpenClicked(View view) {
+        folderChooseDialog.onFileOpenClicked(view, getAdapterPosition());
     }
 
     private Context getContext() {
