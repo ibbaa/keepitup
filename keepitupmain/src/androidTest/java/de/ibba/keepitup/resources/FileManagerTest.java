@@ -162,11 +162,13 @@ public class FileManagerTest {
         assertTrue(dir2.mkdir());
         assertTrue(file2.createNewFile());
         List<FileEntry> entries = fileManager.getFiles(externalRootDir.getAbsolutePath(), externalRootDir.getAbsolutePath());
-        assertEquals(4, entries.size());
-        assertTrue(containsEntry(entries, getFileEntry("file1", false, false)));
-        assertTrue(containsEntry(entries, getFileEntry("dir1", true, false)));
-        assertTrue(containsEntry(entries, getFileEntry("dir2", true, false)));
-        assertTrue(containsEntry(entries, getFileEntry("file2", false, false)));
+        assertEquals(5, entries.size());
+        FileEntry entry0 = entries.get(0);
+        assertTrue(areEnrtriesEqual(entry0, getFileEntry("..", true, true, false)));
+        assertTrue(containsEntry(entries, getFileEntry("file1", false, false, false)));
+        assertTrue(containsEntry(entries, getFileEntry("dir1", true, false, true)));
+        assertTrue(containsEntry(entries, getFileEntry("dir2", true, false, true)));
+        assertTrue(containsEntry(entries, getFileEntry("file2", false, false, false)));
     }
 
     @Test
@@ -184,11 +186,11 @@ public class FileManagerTest {
         List<FileEntry> entries = fileManager.getFiles(externalRootDir.getAbsolutePath(), externalDir.getAbsolutePath());
         assertEquals(5, entries.size());
         FileEntry entry0 = entries.get(0);
-        assertTrue(areEnrtriesEqual(entry0, getFileEntry("..", true, true)));
-        assertTrue(containsEntry(entries, getFileEntry("file1", false, false)));
-        assertTrue(containsEntry(entries, getFileEntry("dir1", true, false)));
-        assertTrue(containsEntry(entries, getFileEntry("dir2", true, false)));
-        assertTrue(containsEntry(entries, getFileEntry("file2", false, false)));
+        assertTrue(areEnrtriesEqual(entry0, getFileEntry("..", true, true, true)));
+        assertTrue(containsEntry(entries, getFileEntry("file1", false, false, false)));
+        assertTrue(containsEntry(entries, getFileEntry("dir1", true, false, true)));
+        assertTrue(containsEntry(entries, getFileEntry("dir2", true, false, true)));
+        assertTrue(containsEntry(entries, getFileEntry("file2", false, false, false)));
     }
 
     @Test
@@ -208,11 +210,12 @@ public class FileManagerTest {
         assertTrue(new File(fileManager.getExternalRootDirectory(), "test").exists());
     }
 
-    private FileEntry getFileEntry(String name, boolean directory, boolean parent) {
+    private FileEntry getFileEntry(String name, boolean directory, boolean parent, boolean canVisit) {
         FileEntry fileEntry = new FileEntry();
         fileEntry.setName(name);
         fileEntry.setDirectory(directory);
         fileEntry.setParent(parent);
+        fileEntry.setCanVisit(canVisit);
         return fileEntry;
     }
 
@@ -230,6 +233,9 @@ public class FileManagerTest {
             return false;
         }
         if (entry1.isDirectory() != entry2.isDirectory()) {
+            return false;
+        }
+        if (entry1.canVisit() != entry2.canVisit()) {
             return false;
         }
         return entry1.isParent() == entry2.isParent();
