@@ -177,23 +177,38 @@ public class FolderChooseDialog extends DialogFragment {
             Log.d(FolderChooseDialog.class.getName(), "selected entry " + selectedEntry + " is a file. Select skipped.");
             return;
         }
-        selectEntry(position);
-        List<FileEntry> entries = readFiles(getFileManager().getAbsoluteFolder(getRoot(), getSelectionFolder()));
+        List<FileEntry> entries;
+        if (!selectEntry(position)) {
+            Log.e(FolderChooseDialog.class.getName(), "Error selecting entry for position " + position);
+            return;
+        }
+        if (selectedEntry.isParent()) {
+            entries = readFiles(getFileManager().getAbsoluteParent(getRoot(), getAbsoluteFolder(getRoot(), getSelectionFolder())));
+        } else {
+            entries = readFiles(getFileManager().getAbsoluteFolder(getRoot(), getSelectionFolder()));
+        }
         FileEntryAdapter adapter = getAdapter();
+        adapter.unselectItem();
         adapter.replaceItems(entries);
+        if (selectedEntry.isParent()) {
+            adapter.selectItemByName(getSelectionFolder());
+        }
         adapter.notifyDataSetChanged();
+        if (!adapter.isItemSelected() && selectedEntry.isParent()) {
+            setFolders(getFileManager().getRelativeParent(getSelectionFolder()));
+        }
     }
 
-    private void selectEntry(int position) {
+    private boolean selectEntry(int position) {
         Log.d(FolderChooseDialog.class.getName(), "selectEntry, position is " + position);
         FileEntry selectedEntry = getAdapter().getItem(position);
         if (selectedEntry == null) {
             Log.e(FolderChooseDialog.class.getName(), "selected entry is null");
-            return;
+            return false;
         }
         if (!selectedEntry.isDirectory()) {
             Log.d(FolderChooseDialog.class.getName(), "selected entry " + selectedEntry + " is a file. Select skipped.");
-            return;
+            return false;
         }
         String folderName = selectedEntry.getName();
         Log.d(FolderChooseDialog.class.getName(), "Prepare selected folder name " + folderName);
@@ -226,10 +241,15 @@ public class FolderChooseDialog extends DialogFragment {
         }
         if (nestedFolder == null) {
             Log.e(FolderChooseDialog.class.getName(), "Error preparing selected folder");
-            return;
+            return false;
         }
         Log.d(FolderChooseDialog.class.getName(), "Selected folder name is " + nestedFolder);
         getAdapter().selectItem(position);
+        setFolders(nestedFolder);
+        return true;
+    }
+
+    private void setFolders(String nestedFolder) {
         if (folderChooseTextWatcher != null) {
             folderEditText.removeTextChangedListener(folderChooseTextWatcher);
             folderChooseTextWatcher = null;
@@ -271,9 +291,11 @@ public class FolderChooseDialog extends DialogFragment {
             return new FileEntryAdapter(Collections.emptyList(), this);
         }
         try {
-            File file1 = new File(parent, "test1");
-            File file2 = new File(parent, "test2");
-            File file3 = new File(parent, "test3");
+            File fileDownload = new File(getRoot(), "download");
+            File file1 = new File(getRoot(), "test1");
+            File file2 = new File(getRoot(), "test2");
+            File file3 = new File(getRoot(), "test3");
+            fileDownload.mkdir();
             file1.mkdir();
             file2.mkdir();
             file3.createNewFile();
@@ -281,9 +303,9 @@ public class FolderChooseDialog extends DialogFragment {
             exc.printStackTrace();
         }
         try {
-            File file1 = new File(parent + "/test1", "testNested11");
-            File file2 = new File(parent + "/test1", "testNested12");
-            File file3 = new File(parent + "/test1", "testNested13");
+            File file1 = new File(getRoot() + "/test1", "testNested11");
+            File file2 = new File(getRoot() + "/test1", "testNested12");
+            File file3 = new File(getRoot() + "/test1", "testNested13");
             file1.mkdir();
             file2.mkdir();
             file3.createNewFile();
@@ -291,9 +313,9 @@ public class FolderChooseDialog extends DialogFragment {
             exc.printStackTrace();
         }
         try {
-            File file1 = new File(parent + "/test2", "testNested21");
-            File file2 = new File(parent + "/test2", "testNested22");
-            File file3 = new File(parent + "/test2", "testNested23");
+            File file1 = new File(getRoot() + "/test2", "testNested21");
+            File file2 = new File(getRoot() + "/test2", "testNested22");
+            File file3 = new File(getRoot() + "/test2", "testNested23");
             file1.mkdir();
             file2.mkdir();
             file3.createNewFile();

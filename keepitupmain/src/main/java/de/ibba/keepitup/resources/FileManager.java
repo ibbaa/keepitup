@@ -6,7 +6,6 @@ import android.util.Log;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import de.ibba.keepitup.R;
@@ -214,28 +213,36 @@ public class FileManager implements IFileManager {
                 Log.d(FileManager.class.getName(), "listFiles returned " + files.length + " files");
                 Log.d(FileManager.class.getName(), "Creating entries...");
             }
+            List<FileEntry> fileEntries = new ArrayList<>();
+            Log.d(FileManager.class.getName(), "Creating parent entry");
+            FileEntry parentEntry = new FileEntry();
+            parentEntry.setName("..");
+            parentEntry.setDirectory(true);
+            parentEntry.setParent(true);
+            if (absoluteFolderFile.equals(rootFile)) {
+                Log.d(FileManager.class.getName(), "Folder is the root folder. Setting canVisit to false.");
+                parentEntry.setCanVisit(false);
+            } else {
+                Log.d(FileManager.class.getName(), "Folder is not the root folder. Setting canVisit to true.");
+                parentEntry.setCanVisit(true);
+            }
+            Log.d(FileManager.class.getName(), "Adding parent entry " + parentEntry);
+            fileEntries.add(parentEntry);
             if (files != null && files.length > 0) {
-                List<FileEntry> fileEntries = new ArrayList<>(files.length + 1);
-                if (!rootFile.equals(absoluteFolderFile)) {
-                    FileEntry fileEntry = new FileEntry();
-                    fileEntry.setName("..");
-                    fileEntry.setDirectory(true);
-                    fileEntry.setParent(true);
-                    Log.d(FileManager.class.getName(), "Folder is not the root folder. Adding parent entry " + fileEntry);
-                    fileEntries.add(fileEntry);
-                }
+                Log.d(FileManager.class.getName(), "Creating file entries");
                 for (File file : files) {
                     FileEntry fileEntry = new FileEntry();
                     fileEntry.setName(file.getName());
                     fileEntry.setDirectory(file.isDirectory());
                     fileEntry.setParent(false);
+                    fileEntry.setCanVisit(file.isDirectory());
                     Log.d(FileManager.class.getName(), "Adding entry " + fileEntry);
                     fileEntries.add(fileEntry);
                 }
                 return fileEntries;
             }
-            Log.d(FileManager.class.getName(), "file list is empty");
-            return Collections.emptyList();
+            Log.d(FileManager.class.getName(), "File list is empty.");
+            return fileEntries;
         } catch (Exception exc) {
             Log.e(FileManager.class.getName(), "Error listing files in directory", exc);
             return null;

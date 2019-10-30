@@ -172,6 +172,7 @@ public class FileEntryAdapter extends RecyclerView.Adapter<FileEntryViewHolder> 
         selected = -1;
         this.fileEntries.clear();
         this.fileEntries.addAll(fileEntries);
+        fileEntriesFoldersOnly.clear();
         for (FileEntry currentEntry : fileEntries) {
             if (currentEntry.isDirectory()) {
                 this.fileEntriesFoldersOnly.add(currentEntry);
