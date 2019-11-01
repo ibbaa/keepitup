@@ -286,7 +286,7 @@ public class GlobalSettingsActivity extends SettingsInputActivity {
     }
 
     @Override
-    public void onFolderChooseEditDialogOkClicked(FolderChooseDialog editDialog) {
+    public void onFolderChooseDialogOkClicked(FolderChooseDialog editDialog) {
         Log.d(GlobalSettingsActivity.class.getName(), "onFolderChooseEditDialogOkClicked");
         IFileManager fileManager = getFileManager();
         PreferenceManager preferenceManager = new PreferenceManager(this);

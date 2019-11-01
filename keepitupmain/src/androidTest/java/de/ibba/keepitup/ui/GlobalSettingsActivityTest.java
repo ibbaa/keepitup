@@ -5,11 +5,11 @@ import androidx.test.filters.MediumTest;
 import androidx.test.rule.ActivityTestRule;
 
 import org.hamcrest.Matchers;
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
+import java.io.File;
 
 import de.ibba.keepitup.R;
 import de.ibba.keepitup.resources.PreferenceManager;
@@ -41,18 +41,6 @@ public class GlobalSettingsActivityTest extends BaseUITest {
 
     @Rule
     public final ActivityTestRule<GlobalSettingsActivity> rule = new ActivityTestRule<>(GlobalSettingsActivity.class, false, false);
-
-    @Before
-    public void beforeEachTestMethod() {
-        super.beforeEachTestMethod();
-        getFileManager().deleteDirectory(getFileManager().getExternalDirectory("test"));
-    }
-
-    @After
-    public void afterEachTestMethod() {
-        super.afterEachTestMethod();
-        getFileManager().deleteDirectory(getFileManager().getExternalDirectory("test"));
-    }
 
     @Test
     public void testDisplayDefaultValues() {
@@ -268,7 +256,7 @@ public class GlobalSettingsActivityTest extends BaseUITest {
 
     @Test
     public void testDownloadFolderDialogOkCancel() {
-        SettingsInputActivity activity = launchSettingsInputActivity(rule);
+        launchSettingsInputActivity(rule);
         PreferenceManager preferenceManager = getPreferenceManager();
         assertEquals("download", preferenceManager.getPreferenceDownloadFolder());
         onView(withId(R.id.switch_global_settings_activity_download_external_storage)).perform(click());
@@ -278,12 +266,15 @@ public class GlobalSettingsActivityTest extends BaseUITest {
         onView(withId(R.id.imageview_dialog_folder_choose_cancel)).perform(click());
         onView(withId(R.id.textview_global_settings_activity_download_folder)).check(matches(withText(endsWith("download"))));
         assertEquals("download", preferenceManager.getPreferenceDownloadFolder());
+        File testFile = new File(getFileManager().getExternalRootDirectory(), "test");
+        assertFalse(testFile.exists());
         onView(withId(R.id.textview_global_settings_activity_download_folder)).perform(click());
         onView(withId(R.id.edittext_dialog_folder_choose_folder)).check(matches(withText("download")));
         onView(withId(R.id.edittext_dialog_folder_choose_folder)).perform(replaceText("test"));
         onView(withId(R.id.imageview_dialog_folder_choose_ok)).perform(click());
         onView(withId(R.id.textview_global_settings_activity_download_folder)).check(matches(withText(endsWith("test"))));
         assertEquals("test", preferenceManager.getPreferenceDownloadFolder());
+        assertTrue(testFile.exists());
     }
 
     @Test

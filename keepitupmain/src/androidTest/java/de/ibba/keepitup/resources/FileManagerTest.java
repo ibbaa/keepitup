@@ -28,9 +28,6 @@ public class FileManagerTest {
     public void beforeEachTestMethod() {
         fileManager = new FileManager(TestRegistry.getContext());
         fileManager.deleteDirectory(fileManager.getInternalDownloadDirectory());
-        fileManager.deleteDirectory(fileManager.getExternalDirectory("test/download"));
-        fileManager.deleteDirectory(fileManager.getExternalDirectory("test"));
-        fileManager.deleteDirectory(fileManager.getExternalDirectory(fileManager.getDefaultDownloadDirectoryName()));
         fileManager.deleteDirectory(fileManager.getExternalRootDirectory());
 
     }
@@ -38,9 +35,6 @@ public class FileManagerTest {
     @After
     public void afterEachTestMethod() {
         fileManager.deleteDirectory(fileManager.getInternalDownloadDirectory());
-        fileManager.deleteDirectory(fileManager.getExternalDirectory("test/download"));
-        fileManager.deleteDirectory(fileManager.getExternalDirectory("test"));
-        fileManager.deleteDirectory(fileManager.getExternalDirectory(fileManager.getDefaultDownloadDirectoryName()));
         fileManager.deleteDirectory(fileManager.getExternalRootDirectory());
     }
 
@@ -163,12 +157,11 @@ public class FileManagerTest {
         assertTrue(file2.createNewFile());
         List<FileEntry> entries = fileManager.getFiles(externalRootDir.getAbsolutePath(), externalRootDir.getAbsolutePath());
         assertEquals(5, entries.size());
-        FileEntry entry0 = entries.get(0);
-        assertTrue(areEnrtriesEqual(entry0, getFileEntry("..", true, true, false)));
-        assertTrue(containsEntry(entries, getFileEntry("file1", false, false, false)));
-        assertTrue(containsEntry(entries, getFileEntry("dir1", true, false, true)));
-        assertTrue(containsEntry(entries, getFileEntry("dir2", true, false, true)));
-        assertTrue(containsEntry(entries, getFileEntry("file2", false, false, false)));
+        assertTrue(areEnrtriesEqual(entries.get(0), getFileEntry("..", true, true, false)));
+        assertTrue(areEnrtriesEqual(entries.get(1), getFileEntry("dir1", true, false, true)));
+        assertTrue(areEnrtriesEqual(entries.get(2), getFileEntry("dir2", true, false, true)));
+        assertTrue(areEnrtriesEqual(entries.get(3), getFileEntry("file1", false, false, false)));
+        assertTrue(areEnrtriesEqual(entries.get(4), getFileEntry("file2", false, false, false)));
     }
 
     @Test
@@ -186,11 +179,11 @@ public class FileManagerTest {
         List<FileEntry> entries = fileManager.getFiles(externalRootDir.getAbsolutePath(), externalDir.getAbsolutePath());
         assertEquals(5, entries.size());
         FileEntry entry0 = entries.get(0);
-        assertTrue(areEnrtriesEqual(entry0, getFileEntry("..", true, true, true)));
-        assertTrue(containsEntry(entries, getFileEntry("file1", false, false, false)));
-        assertTrue(containsEntry(entries, getFileEntry("dir1", true, false, true)));
-        assertTrue(containsEntry(entries, getFileEntry("dir2", true, false, true)));
-        assertTrue(containsEntry(entries, getFileEntry("file2", false, false, false)));
+        assertTrue(areEnrtriesEqual(entries.get(0), getFileEntry("..", true, true, true)));
+        assertTrue(areEnrtriesEqual(entries.get(1), getFileEntry("dir1", true, false, true)));
+        assertTrue(areEnrtriesEqual(entries.get(2), getFileEntry("dir2", true, false, true)));
+        assertTrue(areEnrtriesEqual(entries.get(3), getFileEntry("file1", false, false, false)));
+        assertTrue(areEnrtriesEqual(entries.get(4), getFileEntry("file2", false, false, false)));
     }
 
     @Test
@@ -217,15 +210,6 @@ public class FileManagerTest {
         fileEntry.setParent(parent);
         fileEntry.setCanVisit(canVisit);
         return fileEntry;
-    }
-
-    private boolean containsEntry(List<FileEntry> entries, FileEntry entry) {
-        for (FileEntry currentEntry : entries) {
-            if (areEnrtriesEqual(currentEntry, entry)) {
-                return true;
-            }
-        }
-        return false;
     }
 
     private boolean areEnrtriesEqual(FileEntry entry1, FileEntry entry2) {

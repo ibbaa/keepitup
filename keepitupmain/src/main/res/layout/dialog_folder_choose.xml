@@ -22,7 +22,7 @@
             android:text="@string/label_dialog_folder_choose_folder" />
 
         <TextView
-            android:id="@+id/textview_dialog_folder_choose_root"
+            android:id="@+id/textview_dialog_folder_choose_absolute"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:paddingTop="@dimen/textview_dialog_folder_choose_root_padding_top"
