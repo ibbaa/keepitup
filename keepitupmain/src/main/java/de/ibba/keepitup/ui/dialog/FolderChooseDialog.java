@@ -19,8 +19,6 @@ import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import java.io.File;
-import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
@@ -95,7 +93,7 @@ public class FolderChooseDialog extends DialogFragment {
 
     private void prepareFolderAbsolute(String folder) {
         Log.d(FolderChooseDialog.class.getName(), "prepareFolderAbsolute");
-        absoluteFolderText = dialogView.findViewById(R.id.textview_dialog_folder_choose_root);
+        absoluteFolderText = dialogView.findViewById(R.id.textview_dialog_folder_choose_absolute);
         absoluteFolderText.setText(getAbsoluteFolder(getRoot(), folder));
     }
 
@@ -125,7 +123,10 @@ public class FolderChooseDialog extends DialogFragment {
 
     private void onShowFilesCheckedChanged(CompoundButton buttonView, boolean isChecked) {
         Log.d(GlobalSettingsActivity.class.getName(), "onShowFilesCheckedChanged, new value is " + isChecked);
-        getAdapter().notifyDataSetChanged();
+        FileEntryAdapter adapter = getAdapter();
+        adapter.unselectItem();
+        adapter.notifyDataSetChanged();
+        adapter.selectItemByName(getSelectionFolder());
     }
 
     private void prepareFolderRecyclerView() {
@@ -148,13 +149,13 @@ public class FolderChooseDialog extends DialogFragment {
     private void onOkClicked(@SuppressWarnings("unused") View view) {
         Log.d(FolderChooseDialog.class.getName(), "onOkClicked");
         SettingsInputActivity activity = (SettingsInputActivity) getActivity();
-        Objects.requireNonNull(activity).onFolderChooseEditDialogOkClicked(this);
+        Objects.requireNonNull(activity).onFolderChooseDialogOkClicked(this);
     }
 
     private void onCancelClicked(@SuppressWarnings("unused") View view) {
         Log.d(FolderChooseDialog.class.getName(), "onCancelClicked");
         SettingsInputActivity activity = (SettingsInputActivity) getActivity();
-        Objects.requireNonNull(activity).onFolderChooseEditDialogCancelClicked(this);
+        Objects.requireNonNull(activity).onFolderChooseDialogCancelClicked(this);
     }
 
     private String getAbsoluteFolder(String root, String folder) {
@@ -290,7 +291,7 @@ public class FolderChooseDialog extends DialogFragment {
             showErrorDialog(getResources().getString(R.string.text_dialog_general_error_list_folder_files));
             return new FileEntryAdapter(Collections.emptyList(), this);
         }
-        try {
+        /*try {
             File fileDownload = new File(getRoot(), "download");
             File file1 = new File(getRoot(), "test1");
             File file2 = new File(getRoot(), "test2");
@@ -321,7 +322,7 @@ public class FolderChooseDialog extends DialogFragment {
             file3.createNewFile();
         } catch (IOException exc) {
             exc.printStackTrace();
-        }
+        }*/
         List<FileEntry> entries = readFiles(parent);
         FileEntryAdapter adapter = new FileEntryAdapter(entries, this);
         adapter.selectItemByName(getSelectionFolder());

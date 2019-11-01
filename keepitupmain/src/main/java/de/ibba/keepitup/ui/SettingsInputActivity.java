@@ -53,13 +53,13 @@ public abstract class SettingsInputActivity extends AppCompatActivity {
         inputDialog.dismiss();
     }
 
-    public void onFolderChooseEditDialogOkClicked(FolderChooseDialog editDialog) {
-        Log.d(SettingsInputActivity.class.getName(), "onFolderChooseEditDialogOkClicked");
+    public void onFolderChooseDialogOkClicked(FolderChooseDialog editDialog) {
+        Log.d(SettingsInputActivity.class.getName(), "onFolderChooseDialogOkClicked");
         editDialog.dismiss();
     }
 
-    public void onFolderChooseEditDialogCancelClicked(FolderChooseDialog editDialog) {
-        Log.d(SettingsInputActivity.class.getName(), "onFolderChooseEditDialogOkClicked");
+    public void onFolderChooseDialogCancelClicked(FolderChooseDialog editDialog) {
+        Log.d(SettingsInputActivity.class.getName(), "onFolderChooseDialogOkClicked");
         editDialog.dismiss();
     }
 
