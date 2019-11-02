@@ -127,6 +127,9 @@ public class FolderChooseDialog extends DialogFragment {
         adapter.unselectItem();
         adapter.notifyDataSetChanged();
         adapter.selectItemByName(getSelectionFolder());
+        if (!adapter.isItemSelected()) {
+            selectionFolder = getFileManager().getRelativeParent(selectionFolder);
+        }
     }
 
     private void prepareFolderRecyclerView() {
@@ -326,6 +329,9 @@ public class FolderChooseDialog extends DialogFragment {
         List<FileEntry> entries = readFiles(parent);
         FileEntryAdapter adapter = new FileEntryAdapter(entries, this);
         adapter.selectItemByName(getSelectionFolder());
+        if (!adapter.isItemSelected()) {
+            selectionFolder = fileManager.getRelativeParent(selectionFolder);
+        }
         adapter.notifyDataSetChanged();
         return adapter;
     }
