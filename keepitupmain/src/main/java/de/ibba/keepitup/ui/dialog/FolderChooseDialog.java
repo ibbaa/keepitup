@@ -94,7 +94,10 @@ public class FolderChooseDialog extends DialogFragment {
     private void prepareFolderAbsolute(String folder) {
         Log.d(FolderChooseDialog.class.getName(), "prepareFolderAbsolute");
         absoluteFolderText = dialogView.findViewById(R.id.textview_dialog_folder_choose_absolute);
-        absoluteFolderText.setText(getAbsoluteFolder(getRoot(), folder));
+        String absoluteFolder = getAbsoluteFolder(getRoot(), folder);
+        if (absoluteFolder != null) {
+            absoluteFolderText.setText(absoluteFolder);
+        }
     }
 
     private void prepareFolder(String folder) {
@@ -129,6 +132,7 @@ public class FolderChooseDialog extends DialogFragment {
         adapter.selectItemByName(getSelectionFolder());
         if (!adapter.isItemSelected()) {
             selectionFolder = getFileManager().getRelativeParent(selectionFolder);
+            selectionFolder = checkAndShowFatalErrorDialog(selectionFolder);
         }
     }
 
@@ -187,7 +191,13 @@ public class FolderChooseDialog extends DialogFragment {
             return;
         }
         if (selectedEntry.isParent()) {
-            entries = readFiles(getFileManager().getAbsoluteParent(getRoot(), getAbsoluteFolder(getRoot(), getSelectionFolder())));
+            String folder = getAbsoluteFolder(getRoot(), getSelectionFolder());
+            if (folder != null) {
+                entries = readFiles(getFileManager().getAbsoluteParent(getRoot(), folder));
+            } else {
+                entries = Collections.emptyList();
+                showErrorDialog(getResources().getString(R.string.text_dialog_general_error_file_access));
+            }
         } else {
             entries = readFiles(getFileManager().getAbsoluteFolder(getRoot(), getSelectionFolder()));
         }
@@ -254,12 +264,20 @@ public class FolderChooseDialog extends DialogFragment {
     }
 
     private void setFolders(String nestedFolder) {
+        if (nestedFolder == null) {
+            resetFiles();
+            showErrorDialog(getResources().getString(R.string.text_dialog_general_error_file_access));
+            return;
+        }
         if (folderChooseTextWatcher != null) {
             folderEditText.removeTextChangedListener(folderChooseTextWatcher);
             folderChooseTextWatcher = null;
         }
         folderEditText.setText(nestedFolder);
-        absoluteFolderText.setText(getAbsoluteFolder(getRoot(), nestedFolder));
+        String folder = getAbsoluteFolder(getRoot(), nestedFolder);
+        if (folder != null) {
+            absoluteFolderText.setText(folder);
+        }
         selectionFolder = nestedFolder;
         folderChooseTextWatcher = new FolderChooseWatcher(this);
         folderEditText.addTextChangedListener(folderChooseTextWatcher);
@@ -287,6 +305,11 @@ public class FolderChooseDialog extends DialogFragment {
     private RecyclerView.Adapter createAdapter() {
         Log.d(FolderChooseDialog.class.getName(), "createAdapter");
         String aboluteFolder = getAbsoluteFolder(getRoot(), getSelectionFolder());
+        if (aboluteFolder == null) {
+            Log.e(FolderChooseDialog.class.getName(), "File manager returned null as parent");
+            showErrorDialog(getResources().getString(R.string.text_dialog_general_error_list_folder_files));
+            return new FileEntryAdapter(Collections.emptyList(), this);
+        }
         IFileManager fileManager = getFileManager();
         String parent = fileManager.getAbsoluteParent(getRoot(), aboluteFolder);
         if (parent == null) {
@@ -331,6 +354,7 @@ public class FolderChooseDialog extends DialogFragment {
         adapter.selectItemByName(getSelectionFolder());
         if (!adapter.isItemSelected()) {
             selectionFolder = fileManager.getRelativeParent(selectionFolder);
+            selectionFolder = checkAndShowFatalErrorDialog(selectionFolder);
         }
         adapter.notifyDataSetChanged();
         return adapter;
@@ -338,6 +362,11 @@ public class FolderChooseDialog extends DialogFragment {
 
     private List<FileEntry> readFiles(String folder) {
         Log.d(FolderChooseDialog.class.getName(), "readFiles, folder is " + folder);
+        if (folder == null) {
+            Log.e(FolderChooseDialog.class.getName(), "File manager returned null as folder file list");
+            showErrorDialog(getResources().getString(R.string.text_dialog_general_error_list_folder_files));
+            return Collections.emptyList();
+        }
         IFileManager fileManager = getFileManager();
         String root = getRoot();
         List<FileEntry> entries = fileManager.getFiles(root, folder);
@@ -351,6 +380,25 @@ public class FolderChooseDialog extends DialogFragment {
             Log.d(FolderChooseDialog.class.getName(), entry.toString());
         }
         return entries;
+    }
+
+    private String checkAndShowFatalErrorDialog(String folder) {
+        Log.d(FolderChooseDialog.class.getName(), "checkAndShowFatalErrorDialog for folder " + folder);
+        if (folder != null) {
+            return folder;
+        }
+        Log.e(FolderChooseDialog.class.getName(), "Folder is null");
+        resetFiles();
+        showErrorDialog(getResources().getString(R.string.text_dialog_general_error_file_access));
+        return "";
+    }
+
+    private void resetFiles() {
+        Log.d(FolderChooseDialog.class.getName(), "resetFiles");
+        FileEntryAdapter adapter = getAdapter();
+        adapter.unselectItem();
+        adapter.replaceItems(Collections.emptyList());
+        adapter.notifyDataSetChanged();
     }
 
     private void showErrorDialog(String errorMessage) {
