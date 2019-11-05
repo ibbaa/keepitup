@@ -28,7 +28,10 @@ public class FolderChooseWatcher implements TextWatcher {
     public void afterTextChanged(Editable seq) {
         Log.d(FolderChooseWatcher.class.getName(), "afterTextChanged");
         if (seq != null) {
-            dialog.getAbsoluteFolderText().setText(getAbsoluteFolder(dialog.getRoot(), seq));
+            String folder = getAbsoluteFolder(dialog.getRoot(), seq);
+            if (folder != null) {
+                dialog.getAbsoluteFolderText().setText(getAbsoluteFolder(dialog.getRoot(), seq));
+            }
         }
     }
 
