@@ -801,6 +801,83 @@ public class FolderChooseDialogTest extends BaseUITest {
         onView(withId(R.id.imageview_dialog_folder_choose_cancel)).perform(click());
     }
 
+    @Test
+    public void testVisitFolderLevel2InputAndOpen() {
+        FolderChooseDialog dialog = openFolderChooseDialog("folder1/folder1_folder1");
+        onView(withId(R.id.textview_dialog_folder_choose_absolute)).check(matches(withText(root + "/folder1/folder1_folder1")));
+        onView(withId(R.id.edittext_dialog_folder_choose_folder)).check(matches(withText("folder1/folder1_folder1")));
+        onView(withId(R.id.edittext_dialog_folder_choose_folder)).perform(replaceText("folder2/xyz/download"));
+        onView(allOf(withId(R.id.imageview_list_item_file_entry_open), withChildDescendantAtPosition(withId(R.id.listview_dialog_folder_choose_file_entries), 3))).perform(click());
+        onView(withId(R.id.textview_dialog_folder_choose_absolute)).check(matches(withText(root + "/folder1/folder1_folder2")));
+        onView(withId(R.id.edittext_dialog_folder_choose_folder)).check(matches(withText("folder1/folder1_folder2")));
+        onView(withId(R.id.listview_dialog_folder_choose_file_entries)).check(matches(withListSize(1)));
+        onView(allOf(withId(R.id.imageview_list_item_file_entry_symbol), withChildDescendantAtPosition(withId(R.id.listview_dialog_folder_choose_file_entries), 0))).check(matches(withDrawable(R.drawable.icon_folder)));
+        onView(allOf(withId(R.id.textview_list_item_file_entry_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_folder_choose_file_entries), 0))).check(matches(withText("..")));
+        onView(allOf(withId(R.id.imageview_list_item_file_entry_open), withChildDescendantAtPosition(withId(R.id.listview_dialog_folder_choose_file_entries), 0))).check(matches(withDrawable(R.drawable.icon_folder_open_shadow)));
+        FileEntryAdapter adapter = dialog.getAdapter();
+        assertEquals(1, adapter.getItemCount());
+        assertTrue(areEnrtriesEqual(adapter.getItem(0), getFileEntry("..", true, true, true)));
+        assertFalse(adapter.isItemSelected());
+        onView(allOf(withId(R.id.imageview_list_item_file_entry_open), withChildDescendantAtPosition(withId(R.id.listview_dialog_folder_choose_file_entries), 0))).perform(click());
+        onView(withId(R.id.textview_dialog_folder_choose_absolute)).check(matches(withText(root + "/folder1/folder1_folder2")));
+        onView(withId(R.id.edittext_dialog_folder_choose_folder)).check(matches(withText("folder1/folder1_folder2")));
+        onView(withId(R.id.listview_dialog_folder_choose_file_entries)).check(matches(withListSize(4)));
+        onView(allOf(withId(R.id.imageview_list_item_file_entry_symbol), withChildDescendantAtPosition(withId(R.id.listview_dialog_folder_choose_file_entries), 0))).check(matches(withDrawable(R.drawable.icon_folder)));
+        onView(allOf(withId(R.id.textview_list_item_file_entry_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_folder_choose_file_entries), 0))).check(matches(withText("..")));
+        onView(allOf(withId(R.id.imageview_list_item_file_entry_open), withChildDescendantAtPosition(withId(R.id.listview_dialog_folder_choose_file_entries), 0))).check(matches(withDrawable(R.drawable.icon_folder_open_shadow)));
+        onView(allOf(withId(R.id.imageview_list_item_file_entry_symbol), withChildDescendantAtPosition(withId(R.id.listview_dialog_folder_choose_file_entries), 1))).check(matches(withDrawable(R.drawable.icon_file)));
+        onView(allOf(withId(R.id.textview_list_item_file_entry_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_folder_choose_file_entries), 1))).check(matches(withText("folder1_file1")));
+        onView(allOf(withId(R.id.imageview_list_item_file_entry_open), withChildDescendantAtPosition(withId(R.id.listview_dialog_folder_choose_file_entries), 1))).check(matches(not(isDisplayed())));
+        onView(allOf(withId(R.id.imageview_list_item_file_entry_symbol), withChildDescendantAtPosition(withId(R.id.listview_dialog_folder_choose_file_entries), 2))).check(matches(withDrawable(R.drawable.icon_folder)));
+        onView(allOf(withId(R.id.textview_list_item_file_entry_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_folder_choose_file_entries), 2))).check(matches(withText("folder1_folder1")));
+        onView(allOf(withId(R.id.imageview_list_item_file_entry_open), withChildDescendantAtPosition(withId(R.id.listview_dialog_folder_choose_file_entries), 2))).check(matches(withDrawable(R.drawable.icon_folder_open_shadow)));
+        onView(allOf(withId(R.id.imageview_list_item_file_entry_symbol), withChildDescendantAtPosition(withId(R.id.listview_dialog_folder_choose_file_entries), 3))).check(matches(withDrawable(R.drawable.icon_folder)));
+        onView(allOf(withId(R.id.textview_list_item_file_entry_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_folder_choose_file_entries), 3))).check(matches(withText("folder1_folder2")));
+        onView(allOf(withId(R.id.imageview_list_item_file_entry_open), withChildDescendantAtPosition(withId(R.id.listview_dialog_folder_choose_file_entries), 3))).check(matches(withDrawable(R.drawable.icon_folder_open_shadow)));
+        assertEquals(4, adapter.getItemCount());
+        assertTrue(areEnrtriesEqual(adapter.getItem(0), getFileEntry("..", true, true, true)));
+        assertTrue(areEnrtriesEqual(adapter.getItem(1), getFileEntry("folder1_file1", false, false, false)));
+        assertTrue(areEnrtriesEqual(adapter.getItem(2), getFileEntry("folder1_folder1", true, false, true)));
+        assertTrue(areEnrtriesEqual(adapter.getItem(3), getFileEntry("folder1_folder2", true, false, true)));
+        assertTrue(areEnrtriesEqual(adapter.getSelectedItem(), getFileEntry("folder1_folder2", true, false, true)));
+        assertTrue(adapter.isItemSelected());
+        onView(withId(R.id.imageview_dialog_folder_choose_cancel)).perform(click());
+    }
+
+    @Test
+    public void testVisitFolderLevel3InputAndOpen() {
+        FolderChooseDialog dialog = openFolderChooseDialog("folder2/folder2_folder2/folder2_folder2_folder1");
+        onView(withId(R.id.textview_dialog_folder_choose_absolute)).check(matches(withText(root + "/folder2/folder2_folder2/folder2_folder2_folder1")));
+        onView(withId(R.id.edittext_dialog_folder_choose_folder)).check(matches(withText("folder2/folder2_folder2/folder2_folder2_folder1")));
+        onView(allOf(withId(R.id.imageview_list_item_file_entry_open), withChildDescendantAtPosition(withId(R.id.listview_dialog_folder_choose_file_entries), 1))).perform(click());
+        onView(withId(R.id.textview_dialog_folder_choose_absolute)).check(matches(withText(root + "/folder2/folder2_folder2/folder2_folder2_folder1")));
+        onView(withId(R.id.edittext_dialog_folder_choose_folder)).check(matches(withText("folder2/folder2_folder2/folder2_folder2_folder1")));
+        onView(withId(R.id.listview_dialog_folder_choose_file_entries)).check(matches(withListSize(1)));
+        onView(allOf(withId(R.id.imageview_list_item_file_entry_symbol), withChildDescendantAtPosition(withId(R.id.listview_dialog_folder_choose_file_entries), 0))).check(matches(withDrawable(R.drawable.icon_folder)));
+        onView(allOf(withId(R.id.textview_list_item_file_entry_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_folder_choose_file_entries), 0))).check(matches(withText("..")));
+        onView(allOf(withId(R.id.imageview_list_item_file_entry_open), withChildDescendantAtPosition(withId(R.id.listview_dialog_folder_choose_file_entries), 0))).check(matches(withDrawable(R.drawable.icon_folder_open_shadow)));
+        FileEntryAdapter adapter = dialog.getAdapter();
+        assertEquals(1, adapter.getItemCount());
+        assertTrue(areEnrtriesEqual(adapter.getItem(0), getFileEntry("..", true, true, true)));
+        assertFalse(adapter.isItemSelected());
+        onView(allOf(withId(R.id.imageview_list_item_file_entry_open), withChildDescendantAtPosition(withId(R.id.listview_dialog_folder_choose_file_entries), 0))).perform(click());
+        onView(withId(R.id.textview_dialog_folder_choose_absolute)).check(matches(withText(root + "/folder2/folder2_folder2/folder2_folder2_folder1")));
+        onView(withId(R.id.edittext_dialog_folder_choose_folder)).check(matches(withText("folder2/folder2_folder2/folder2_folder2_folder1")));
+        onView(withId(R.id.listview_dialog_folder_choose_file_entries)).check(matches(withListSize(2)));
+        onView(allOf(withId(R.id.imageview_list_item_file_entry_symbol), withChildDescendantAtPosition(withId(R.id.listview_dialog_folder_choose_file_entries), 0))).check(matches(withDrawable(R.drawable.icon_folder)));
+        onView(allOf(withId(R.id.textview_list_item_file_entry_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_folder_choose_file_entries), 0))).check(matches(withText("..")));
+        onView(allOf(withId(R.id.imageview_list_item_file_entry_open), withChildDescendantAtPosition(withId(R.id.listview_dialog_folder_choose_file_entries), 0))).check(matches(withDrawable(R.drawable.icon_folder_open_shadow)));
+        onView(allOf(withId(R.id.imageview_list_item_file_entry_symbol), withChildDescendantAtPosition(withId(R.id.listview_dialog_folder_choose_file_entries), 1))).check(matches(withDrawable(R.drawable.icon_folder)));
+        onView(allOf(withId(R.id.textview_list_item_file_entry_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_folder_choose_file_entries), 1))).check(matches(withText("folder2_folder2_folder1")));
+        onView(allOf(withId(R.id.imageview_list_item_file_entry_open), withChildDescendantAtPosition(withId(R.id.listview_dialog_folder_choose_file_entries), 1))).check(matches(withDrawable(R.drawable.icon_folder_open_shadow)));
+        assertEquals(2, adapter.getItemCount());
+        assertTrue(areEnrtriesEqual(adapter.getItem(0), getFileEntry("..", true, true, true)));
+        assertTrue(areEnrtriesEqual(adapter.getItem(1), getFileEntry("folder2_folder2_folder1", true, false, true)));
+        assertTrue(areEnrtriesEqual(adapter.getSelectedItem(), getFileEntry("folder2_folder2_folder1", true, false, true)));
+        assertTrue(adapter.isItemSelected());
+        onView(withId(R.id.imageview_dialog_folder_choose_cancel)).perform(click());
+    }
+
     private FolderChooseDialog openFolderChooseDialog(String folder) {
         FolderChooseDialog folderChooseDialog = new FolderChooseDialog();
         Bundle bundle = BundleUtil.messagesToBundle(new String[]{folderChooseDialog.getFolderRootKey(), folderChooseDialog.getFolderKey()}, new String[]{root, folder});
