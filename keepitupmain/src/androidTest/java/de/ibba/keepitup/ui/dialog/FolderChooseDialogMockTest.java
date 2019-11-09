@@ -11,7 +11,11 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import java.util.Arrays;
+import java.util.List;
+
 import de.ibba.keepitup.R;
+import de.ibba.keepitup.model.FileEntry;
 import de.ibba.keepitup.test.mock.MockFileManager;
 import de.ibba.keepitup.ui.BaseUITest;
 import de.ibba.keepitup.ui.GlobalSettingsActivity;
@@ -87,5 +91,30 @@ public class FolderChooseDialogMockTest extends BaseUITest {
         fileManager.setAbsoluteParent("absoluteParent");
         fileManager.setAbsoluteFolder("absoluteFolder");
         fileManager.setNestedFolder("nestedFolder");
+        fileManager.setFileEntries(getTestFileEntries());
+    }
+
+    private List<FileEntry> getTestFileEntries() {
+        FileEntry fileEntry1 = new FileEntry();
+        fileEntry1.setName("dir1");
+        fileEntry1.setDirectory(true);
+        fileEntry1.setParent(false);
+        fileEntry1.setCanVisit(true);
+        FileEntry fileEntry2 = new FileEntry();
+        fileEntry2.setName("dir2");
+        fileEntry2.setDirectory(true);
+        fileEntry2.setParent(true);
+        fileEntry2.setCanVisit(false);
+        FileEntry fileEntry3 = new FileEntry();
+        fileEntry3.setName("file1");
+        fileEntry3.setDirectory(false);
+        fileEntry3.setParent(false);
+        fileEntry3.setCanVisit(true);
+        FileEntry fileEntry4 = new FileEntry();
+        fileEntry4.setName("file2");
+        fileEntry4.setDirectory(false);
+        fileEntry4.setParent(false);
+        fileEntry4.setCanVisit(false);
+        return Arrays.asList(new FileEntry[]{fileEntry1, fileEntry2, fileEntry3, fileEntry4});
     }
 }
