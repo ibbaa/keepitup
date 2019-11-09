@@ -115,52 +115,52 @@ public class MockFileManager implements IFileManager {
 
     @Override
     public File getInternalDownloadDirectory() {
-        return internalDownloadDirectory;
+        return this.internalDownloadDirectory;
     }
 
     @Override
     public File getInternalRootDirectory() {
-        return internalRootDirectory;
+        return this.internalRootDirectory;
     }
 
     @Override
     public File getExternalDirectory(String downloadDirectoryName) {
-        return externalDownloadDirectory;
+        return this.externalDownloadDirectory;
     }
 
     @Override
     public File getExternalRootDirectory() {
-        return externalRootDirectory;
+        return this.externalRootDirectory;
     }
 
     @Override
     public String getDefaultDownloadDirectoryName() {
-        return defaultDownloadDirectoryName;
+        return this.defaultDownloadDirectoryName;
     }
 
     @Override
     public String getRelativeSibling(String folder, String sibling) {
-        return relativeSibling;
+        return this.relativeSibling;
     }
 
     @Override
     public String getRelativeParent(String folder) {
-        return relativeParent;
+        return this.relativeParent;
     }
 
     @Override
     public String getAbsoluteParent(String root, String absoluteFolder) {
-        return absoluteParent;
+        return this.absoluteParent;
     }
 
     @Override
     public String getAbsoluteFolder(String root, String absoluteFolder) {
-        return absoluteFolder;
+        return this.absoluteFolder;
     }
 
     @Override
     public String getNestedFolder(String folder1, String folder2) {
-        return nestedFolder;
+        return this.nestedFolder;
     }
 
     @Override

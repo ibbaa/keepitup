@@ -304,14 +304,14 @@ public class FolderChooseDialog extends DialogFragment {
 
     private RecyclerView.Adapter createAdapter() {
         Log.d(FolderChooseDialog.class.getName(), "createAdapter");
-        String aboluteFolder = getAbsoluteFolder(getRoot(), getSelectionFolder());
-        if (aboluteFolder == null) {
+        String absoluteFolder = getAbsoluteFolder(getRoot(), getSelectionFolder());
+        if (absoluteFolder == null) {
             Log.e(FolderChooseDialog.class.getName(), "File manager returned null as parent");
             showErrorDialog(getResources().getString(R.string.text_dialog_general_error_list_folder_files));
             return new FileEntryAdapter(Collections.emptyList(), this);
         }
         IFileManager fileManager = getFileManager();
-        String parent = fileManager.getAbsoluteParent(getRoot(), aboluteFolder);
+        String parent = fileManager.getAbsoluteParent(getRoot(), absoluteFolder);
         if (parent == null) {
             Log.e(FolderChooseDialog.class.getName(), "File manager returned null as parent");
             showErrorDialog(getResources().getString(R.string.text_dialog_general_error_list_folder_files));
