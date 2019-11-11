@@ -354,7 +354,11 @@ public class FolderChooseDialog extends DialogFragment {
         adapter.selectItemByName(getSelectionFolder());
         if (!adapter.isItemSelected()) {
             selectionFolder = fileManager.getRelativeParent(selectionFolder);
-            selectionFolder = checkAndShowFatalErrorDialog(selectionFolder);
+            if (selectionFolder == null) {
+                Log.e(FolderChooseDialog.class.getName(), "selectionFolder is null");
+                showErrorDialog(getResources().getString(R.string.text_dialog_general_error_file_access));
+                adapter = new FileEntryAdapter(Collections.emptyList(), this);
+            }
         }
         adapter.notifyDataSetChanged();
         return adapter;
