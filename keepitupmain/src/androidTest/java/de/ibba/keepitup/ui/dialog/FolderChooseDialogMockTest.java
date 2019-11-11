@@ -48,7 +48,7 @@ public class FolderChooseDialogMockTest extends BaseUITest {
     }
 
     @Test
-    public void testFolderError() {
+    public void testAbsoluteFolderError() {
         fileManager.setAbsoluteFolder(null);
         FolderChooseDialog dialog = openFolderChooseDialog("folder");
         onView(withId(R.id.textview_dialog_general_error_message)).check(matches(withText("Fatal error reading file list from folder.")));
@@ -56,6 +56,7 @@ public class FolderChooseDialogMockTest extends BaseUITest {
         onView(withId(R.id.listview_dialog_folder_choose_file_entries)).check(matches(withListSize(0)));
         FileEntryAdapter adapter = dialog.getAdapter();
         assertEquals(0, adapter.getItemCount());
+        assertEquals("", dialog.getAbsoluteFolderText().getText());
         setMockFileManagerData();
         fileManager.setAbsoluteParent(null);
         openFolderChooseDialog("folder");
@@ -72,6 +73,16 @@ public class FolderChooseDialogMockTest extends BaseUITest {
         onView(withId(R.id.textview_dialog_general_error_message)).check(matches(withText("Fatal error reading file list from folder.")));
         onView(withId(R.id.imageview_dialog_general_error_ok)).perform(click());
         onView(withId(R.id.listview_dialog_folder_choose_file_entries)).check(matches(withListSize(0)));
+        FileEntryAdapter adapter = dialog.getAdapter();
+        assertEquals(0, adapter.getItemCount());
+    }
+
+    @Test
+    public void testInitialFolderEmptyError() {
+        fileManager.setRelativeParent(null);
+        FolderChooseDialog dialog = openFolderChooseDialog("folder");
+        onView(withId(R.id.textview_dialog_general_error_message)).check(matches(withText("Fatal file error.")));
+        onView(withId(R.id.imageview_dialog_general_error_ok)).perform(click());
         FileEntryAdapter adapter = dialog.getAdapter();
         assertEquals(0, adapter.getItemCount());
     }
