@@ -27,6 +27,8 @@ import static androidx.test.espresso.action.ViewActions.click;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
+import static junit.framework.TestCase.assertTrue;
+import static org.hamcrest.Matchers.allOf;
 import static org.junit.Assert.assertEquals;
 
 @MediumTest
@@ -87,6 +89,28 @@ public class FolderChooseDialogMockTest extends BaseUITest {
         assertEquals(0, adapter.getItemCount());
     }
 
+    @Test
+    public void testSelectFileParentIsSelectedError() {
+        FolderChooseDialog dialog = openFolderChooseDialog("folder");
+        onView(withId(R.id.edittext_dialog_folder_choose_folder)).check(matches(withText("folder")));
+        FileEntryAdapter adapter = dialog.getAdapter();
+        adapter.selectItem(0);
+        fileManager.setRelativeParent(null);
+        onView(allOf(withId(R.id.textview_list_item_file_entry_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_folder_choose_file_entries), 1))).perform(click());
+        assertTrue(areEnrtriesEqual(adapter.getSelectedItem(), getFileEntry("dir1", true, false, true)));
+    }
+
+    @Test
+    public void testSelectFileNonParentIsSelectedError() {
+        FolderChooseDialog dialog = openFolderChooseDialog("folder");
+        onView(withId(R.id.edittext_dialog_folder_choose_folder)).check(matches(withText("folder")));
+        FileEntryAdapter adapter = dialog.getAdapter();
+        adapter.selectItem(2);
+        fileManager.setRelativeSibling(null);
+        onView(allOf(withId(R.id.textview_list_item_file_entry_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_folder_choose_file_entries), 0))).perform(click());
+        assertTrue(areEnrtriesEqual(adapter.getSelectedItem(), getFileEntry("dir3", true, false, true)));
+    }
+
     private FolderChooseDialog openFolderChooseDialog(String folder) {
         FolderChooseDialog folderChooseDialog = new FolderChooseDialog();
         Bundle bundle = BundleUtil.messagesToBundle(new String[]{folderChooseDialog.getFolderRootKey(), folderChooseDialog.getFolderKey()}, new String[]{"root", folder});
@@ -117,8 +141,8 @@ public class FolderChooseDialogMockTest extends BaseUITest {
         fileEntry2.setParent(true);
         fileEntry2.setCanVisit(false);
         FileEntry fileEntry3 = new FileEntry();
-        fileEntry3.setName("file1");
-        fileEntry3.setDirectory(false);
+        fileEntry3.setName("dir3");
+        fileEntry3.setDirectory(true);
         fileEntry3.setParent(false);
         fileEntry3.setCanVisit(true);
         FileEntry fileEntry4 = new FileEntry();
@@ -126,6 +150,28 @@ public class FolderChooseDialogMockTest extends BaseUITest {
         fileEntry4.setDirectory(false);
         fileEntry4.setParent(false);
         fileEntry4.setCanVisit(false);
-        return Arrays.asList(new FileEntry[]{fileEntry1, fileEntry2, fileEntry3, fileEntry4});
+        return Arrays.asList(fileEntry1, fileEntry2, fileEntry3, fileEntry4);
+    }
+
+    private FileEntry getFileEntry(String name, boolean directory, boolean parent, boolean canVisit) {
+        FileEntry fileEntry = new FileEntry();
+        fileEntry.setName(name);
+        fileEntry.setDirectory(directory);
+        fileEntry.setParent(parent);
+        fileEntry.setCanVisit(canVisit);
+        return fileEntry;
+    }
+
+    private boolean areEnrtriesEqual(FileEntry entry1, FileEntry entry2) {
+        if (!entry1.getName().equals(entry2.getName())) {
+            return false;
+        }
+        if (entry1.isDirectory() != entry2.isDirectory()) {
+            return false;
+        }
+        if (entry1.canVisit() != entry2.canVisit()) {
+            return false;
+        }
+        return entry1.isParent() == entry2.isParent();
     }
 }
