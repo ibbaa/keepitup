@@ -30,6 +30,7 @@ import static androidx.test.espresso.matcher.ViewMatchers.withText;
 import static junit.framework.TestCase.assertTrue;
 import static org.hamcrest.Matchers.allOf;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 
 @MediumTest
 @RunWith(AndroidJUnit4.class)
@@ -109,6 +110,29 @@ public class FolderChooseDialogMockTest extends BaseUITest {
         fileManager.setRelativeSibling(null);
         onView(allOf(withId(R.id.textview_list_item_file_entry_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_folder_choose_file_entries), 0))).perform(click());
         assertTrue(areEnrtriesEqual(adapter.getSelectedItem(), getFileEntry("dir3", true, false, true)));
+    }
+
+    @Test
+    public void testSelectFileNonParentNotSelectedError() {
+        FolderChooseDialog dialog = openFolderChooseDialog("folder");
+        onView(withId(R.id.edittext_dialog_folder_choose_folder)).check(matches(withText("folder")));
+        fileManager.setNestedFolder(null);
+        onView(allOf(withId(R.id.textview_list_item_file_entry_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_folder_choose_file_entries), 0))).perform(click());
+        FileEntryAdapter adapter = dialog.getAdapter();
+        assertFalse(adapter.isItemSelected());
+    }
+
+    @Test
+    public void testOpenFileNonParentError() {
+        FolderChooseDialog dialog = openFolderChooseDialog("folder");
+        onView(withId(R.id.edittext_dialog_folder_choose_folder)).check(matches(withText("folder")));
+        fileManager.setAbsoluteFolder(null);
+        onView(allOf(withId(R.id.imageview_list_item_file_entry_open), withChildDescendantAtPosition(withId(R.id.listview_dialog_folder_choose_file_entries), 0))).perform(click());
+        onView(withId(R.id.textview_dialog_general_error_message)).check(matches(withText("Fatal error reading file list from folder.")));
+        onView(withId(R.id.imageview_dialog_general_error_ok)).perform(click());
+        onView(withId(R.id.listview_dialog_folder_choose_file_entries)).check(matches(withListSize(0)));
+        FileEntryAdapter adapter = dialog.getAdapter();
+        assertEquals(0, adapter.getItemCount());
     }
 
     private FolderChooseDialog openFolderChooseDialog(String folder) {
