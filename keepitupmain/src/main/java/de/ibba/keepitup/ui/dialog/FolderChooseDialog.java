@@ -317,38 +317,6 @@ public class FolderChooseDialog extends DialogFragment {
             showErrorDialog(getResources().getString(R.string.text_dialog_general_error_list_folder_files));
             return new FileEntryAdapter(Collections.emptyList(), this);
         }
-        /*try {
-            File fileDownload = new File(getRoot(), "download");
-            File file1 = new File(getRoot(), "test1");
-            File file2 = new File(getRoot(), "test2");
-            File file3 = new File(getRoot(), "test3");
-            fileDownload.mkdir();
-            file1.mkdir();
-            file2.mkdir();
-            file3.createNewFile();
-        } catch (IOException exc) {
-            exc.printStackTrace();
-        }
-        try {
-            File file1 = new File(getRoot() + "/test1", "testNested11");
-            File file2 = new File(getRoot() + "/test1", "testNested12");
-            File file3 = new File(getRoot() + "/test1", "testNested13");
-            file1.mkdir();
-            file2.mkdir();
-            file3.createNewFile();
-        } catch (IOException exc) {
-            exc.printStackTrace();
-        }
-        try {
-            File file1 = new File(getRoot() + "/test2", "testNested21");
-            File file2 = new File(getRoot() + "/test2", "testNested22");
-            File file3 = new File(getRoot() + "/test2", "testNested23");
-            file1.mkdir();
-            file2.mkdir();
-            file3.createNewFile();
-        } catch (IOException exc) {
-            exc.printStackTrace();
-        }*/
         List<FileEntry> entries = readFiles(parent);
         FileEntryAdapter adapter = new FileEntryAdapter(entries, this);
         adapter.selectItemByName(getSelectionFolder());

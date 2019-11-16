@@ -149,12 +149,51 @@ public class FolderChooseDialogMockTest extends BaseUITest {
     }
 
     @Test
+    public void testOpenFileParentRelativeParentError() {
+        FolderChooseDialog dialog = openFolderChooseDialog("folder");
+        onView(withId(R.id.edittext_dialog_folder_choose_folder)).check(matches(withText("folder")));
+        fileManager.setRelativeParent(null);
+        onView(allOf(withId(R.id.imageview_list_item_file_entry_open), withChildDescendantAtPosition(withId(R.id.listview_dialog_folder_choose_file_entries), 1))).perform(click());
+        onView(withId(R.id.textview_dialog_general_error_message)).check(matches(withText("Fatal file error.")));
+        onView(withId(R.id.imageview_dialog_general_error_ok)).perform(click());
+        onView(withId(R.id.listview_dialog_folder_choose_file_entries)).check(matches(withListSize(0)));
+        FileEntryAdapter adapter = dialog.getAdapter();
+        assertEquals(0, adapter.getItemCount());
+    }
+
+    @Test
+    public void testOpenFileParentRelativeParent() {
+        FolderChooseDialog dialog = openFolderChooseDialog("folder");
+        onView(withId(R.id.edittext_dialog_folder_choose_folder)).check(matches(withText("folder")));
+        onView(allOf(withId(R.id.imageview_list_item_file_entry_open), withChildDescendantAtPosition(withId(R.id.listview_dialog_folder_choose_file_entries), 1))).perform(click());
+        onView(withId(R.id.textview_dialog_folder_choose_absolute)).check(matches(withText("absoluteFolder")));
+        onView(withId(R.id.edittext_dialog_folder_choose_folder)).check(matches(withText("relativeParent")));
+        assertEquals("relativeParent", dialog.getFolder());
+        onView(withId(R.id.listview_dialog_folder_choose_file_entries)).check(matches(withListSize(4)));
+        FileEntryAdapter adapter = dialog.getAdapter();
+        assertEquals(4, adapter.getItemCount());
+    }
+
+    @Test
     public void testOpenFileNonParentError() {
         FolderChooseDialog dialog = openFolderChooseDialog("folder");
         onView(withId(R.id.edittext_dialog_folder_choose_folder)).check(matches(withText("folder")));
         fileManager.setAbsoluteFolder(null);
         onView(allOf(withId(R.id.imageview_list_item_file_entry_open), withChildDescendantAtPosition(withId(R.id.listview_dialog_folder_choose_file_entries), 0))).perform(click());
         onView(withId(R.id.textview_dialog_general_error_message)).check(matches(withText("Fatal error reading file list from folder.")));
+        onView(withId(R.id.imageview_dialog_general_error_ok)).perform(click());
+        onView(withId(R.id.listview_dialog_folder_choose_file_entries)).check(matches(withListSize(0)));
+        FileEntryAdapter adapter = dialog.getAdapter();
+        assertEquals(0, adapter.getItemCount());
+    }
+
+    @Test
+    public void testShowFilesError() {
+        FolderChooseDialog dialog = openFolderChooseDialog("folder");
+        onView(withId(R.id.edittext_dialog_folder_choose_folder)).check(matches(withText("folder")));
+        fileManager.setRelativeParent(null);
+        onView(withId(R.id.checkbox_dialog_folder_choose_show_files)).perform(click());
+        onView(withId(R.id.textview_dialog_general_error_message)).check(matches(withText("Fatal file error.")));
         onView(withId(R.id.imageview_dialog_general_error_ok)).perform(click());
         onView(withId(R.id.listview_dialog_folder_choose_file_entries)).check(matches(withListSize(0)));
         FileEntryAdapter adapter = dialog.getAdapter();
