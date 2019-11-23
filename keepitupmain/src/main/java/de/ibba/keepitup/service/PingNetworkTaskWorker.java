@@ -70,9 +70,9 @@ public class PingNetworkTaskWorker extends NetworkTaskWorker {
 
     private void executePingCommand(ExecutorService executorService, String address, boolean ip6, LogEntry logEntry) {
         Log.d(PingNetworkTaskWorker.class.getName(), "executePingCommand, address is " + address + ", ip6 is " + ip6);
-        Callable<PingCommandResult> pingCommand = getPingCommand(address, ip6);
         PreferenceManager preferenceManager = new PreferenceManager(getContext());
         int count = preferenceManager.getPreferencePingCount();
+        Callable<PingCommandResult> pingCommand = getPingCommand(address, count, ip6);
         int timeout = getResources().getInteger(R.integer.ping_timeout) * count * 2;
         try {
             Log.d(PingNetworkTaskWorker.class.getName(), "Executing " + pingCommand.getClass().getSimpleName() + " with a timeout of " + timeout);
@@ -128,7 +128,7 @@ public class PingNetworkTaskWorker extends NetworkTaskWorker {
         return getResources().getString(R.string.text_ping_message, parser.getPacketsTransmitted(), parser.getPacketsReceived(), packetLoss, averageTime);
     }
 
-    protected Callable<PingCommandResult> getPingCommand(String address, boolean ip6) {
-        return new PingCommand(getContext(), address, ip6);
+    protected Callable<PingCommandResult> getPingCommand(String address, int pingCount, boolean ip6) {
+        return new PingCommand(getContext(), address, pingCount, ip6);
     }
 }

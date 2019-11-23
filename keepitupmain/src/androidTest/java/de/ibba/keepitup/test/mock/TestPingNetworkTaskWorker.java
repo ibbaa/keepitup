@@ -33,7 +33,7 @@ public class TestPingNetworkTaskWorker extends PingNetworkTaskWorker {
     }
 
     @Override
-    protected Callable<PingCommandResult> getPingCommand(String address, boolean ip6) {
+    protected Callable<PingCommandResult> getPingCommand(String address, int pingCount, boolean ip6) {
         return mockPingCommand;
     }
 }
