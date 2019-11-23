@@ -9,7 +9,6 @@ import com.google.common.base.Charsets;
 import java.util.concurrent.Callable;
 
 import de.ibba.keepitup.R;
-import de.ibba.keepitup.resources.PreferenceManager;
 import de.ibba.keepitup.util.StreamUtil;
 import de.ibba.keepitup.util.StringUtil;
 
@@ -17,11 +16,13 @@ public class PingCommand implements Callable<PingCommandResult> {
 
     private final Context context;
     private final String address;
+    private final int pingCount;
     private final boolean ip6;
 
-    public PingCommand(Context context, String address, boolean ip6) {
+    public PingCommand(Context context, String address, int pingCount, boolean ip6) {
         this.context = context;
         this.address = address;
+        this.pingCount = pingCount;
         this.ip6 = ip6;
     }
 
@@ -32,12 +33,10 @@ public class PingCommand implements Callable<PingCommandResult> {
         int returnCode = -1;
         Process process = null;
         try {
-            PreferenceManager preferenceManager = new PreferenceManager(context);
             Runtime runtime = Runtime.getRuntime();
             String command = ip6 ? getResources().getString(R.string.ping6_command_line) : getResources().getString(R.string.ping_command_line);
-            int count = preferenceManager.getPreferencePingCount();
             int timeout = getResources().getInteger(R.integer.ping_timeout);
-            String formattedCommand = String.format(command, count, timeout, address);
+            String formattedCommand = String.format(command, pingCount, timeout, address);
             Log.d(PingCommand.class.getName(), "Executing ping command: " + formattedCommand);
             process = runtime.exec(formattedCommand);
             output = StreamUtil.inputStreamToString(process.getInputStream(), Charsets.US_ASCII);
