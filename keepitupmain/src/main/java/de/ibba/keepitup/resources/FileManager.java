@@ -2,18 +2,27 @@ package de.ibba.keepitup.resources;
 
 import android.content.Context;
 import android.content.res.Resources;
+import android.net.Uri;
 import android.util.Log;
+import android.webkit.MimeTypeMap;
 
 import java.io.File;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import de.ibba.keepitup.R;
 import de.ibba.keepitup.model.FileEntry;
+import de.ibba.keepitup.util.FileUtil;
 import de.ibba.keepitup.util.StringUtil;
+import de.ibba.keepitup.util.URLUtil;
 
 public class FileManager implements IFileManager {
+
+    private static final Pattern CONTENT_DISPOSITION = Pattern.compile("attachment;\\s*filename\\s*=\\s*\"([^\"]*)\"", Pattern.CASE_INSENSITIVE);
 
     private final Context context;
 
@@ -269,6 +278,110 @@ public class FileManager implements IFileManager {
             Log.e(FileManager.class.getName(), "Error deleting directory", exc);
             return false;
         }
+    }
+
+    @Override
+    public String getDownloadFileName(String url, String contentDisposition, String mimeType) {
+        Log.d(FileManager.class.getName(), "getDownloadFileName, url is " + url + ", contentDisposition is " + contentDisposition + ", mimeType is " + mimeType);
+        String fileName = null;
+        if (!StringUtil.isEmpty(contentDisposition)) {
+            fileName = parseContentDisposition(contentDisposition);
+            if (fileName != null) {
+                int index = fileName.lastIndexOf('/') + 1;
+                if (index > 0) {
+                    fileName = fileName.substring(index);
+                }
+            }
+            Log.d(FileManager.class.getName(), "File name extracted from content disposition is " + fileName);
+        }
+        if (!isValidFileName(fileName)) {
+            fileName = extractFileNameFromURL(url);
+            Log.d(FileManager.class.getName(), "File name extracted from URL is " + fileName);
+        }
+        if (!isValidFileName(fileName)) {
+            fileName = createFileNameFromHost(url);
+            Log.d(FileManager.class.getName(), "File name extracted from host is " + fileName);
+        }
+        if (!isValidFileName(fileName)) {
+            Log.d(FileManager.class.getName(), "File name is invalid.");
+            fileName = "";
+        }
+        String fileNameWithoutExtension = cleanUp(FileUtil.getFileNameWithoutExtension(fileName));
+        String extension = cleanUp(FileUtil.getFileNameExtension(fileName));
+        Log.d(FileManager.class.getName(), "File name without extension is " + fileNameWithoutExtension);
+        Log.d(FileManager.class.getName(), "File name extension is " + extension);
+        if (!isValidFileName(fileNameWithoutExtension)) {
+            fileNameWithoutExtension = "downloadfile";
+            Log.d(FileManager.class.getName(), "File name without extension is invalid. Setting to " + fileNameWithoutExtension);
+        }
+        if (StringUtil.isEmpty(extension)) {
+            Log.d(FileManager.class.getName(), "File name extension is empty.");
+            if (!StringUtil.isEmpty(mimeType)) {
+                extension = MimeTypeMap.getSingleton().getExtensionFromMimeType(mimeType);
+                Log.d(FileManager.class.getName(), "File name extension extracted from mime type is " + extension);
+            } else {
+                Log.d(FileManager.class.getName(), "No mime type specified.");
+            }
+        }
+        if (!StringUtil.isEmpty(extension)) {
+            String fileNameWithExtension = fileNameWithoutExtension + "." + extension;
+            Log.d(FileManager.class.getName(), "Returing file name " + fileNameWithExtension);
+            return fileNameWithExtension;
+        }
+        Log.d(FileManager.class.getName(), "Returing file name " + fileNameWithoutExtension);
+        return fileNameWithoutExtension;
+    }
+
+    private static String parseContentDisposition(String contentDisposition) {
+        Log.d(FileManager.class.getName(), "parseContentDisposition, contentDisposition is " + contentDisposition);
+        try {
+            Matcher matcher = CONTENT_DISPOSITION.matcher(contentDisposition);
+            if (matcher.find()) {
+                return matcher.group(1);
+            }
+        } catch (Exception exc) {
+            Log.d(FileManager.class.getName(), "Exception parsing content disposition " + contentDisposition, exc);
+        }
+        return null;
+    }
+
+    private static String extractFileNameFromURL(String url) {
+        Log.d(FileManager.class.getName(), "extractFileNameFromURL, url is " + url);
+        try {
+            String fileName = new File(new URI(URLUtil.encodeURL(url)).getPath()).getName();
+            return Uri.decode(fileName);
+        } catch (Exception exc) {
+            Log.d(FileManager.class.getName(), "Exception extracting file name from URL " + url, exc);
+        }
+        return null;
+    }
+
+    private static String createFileNameFromHost(String url) {
+        Log.d(FileManager.class.getName(), "createFileNameFromHost, url is " + url);
+        try {
+            String host = new URI(URLUtil.encodeURL(url)).getHost();
+            if (!StringUtil.isEmpty(host)) {
+                return host.replaceAll("\\.", "_");
+            }
+        } catch (Exception exc) {
+            Log.d(FileManager.class.getName(), "Exception creating file name from URL " + url, exc);
+        }
+        return null;
+    }
+
+    private static boolean isValidFileName(String fileName) {
+        if (StringUtil.isEmpty(fileName)) {
+            return false;
+        }
+        return !cleanUp(fileName).replaceAll("\\.", "").isEmpty();
+    }
+
+    private static String cleanUp(String name) {
+        Log.d(FileManager.class.getName(), "cleanUp, name is " + name);
+        if (StringUtil.isEmpty(name)) {
+            return name;
+        }
+        return name.replaceAll("/", "");
     }
 
     private Context getContext() {

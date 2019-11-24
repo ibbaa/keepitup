@@ -30,4 +30,6 @@ public interface IFileManager {
     List<FileEntry> getFiles(String root, String absoluteFolder);
 
     boolean deleteDirectory(File directory);
+
+    String getDownloadFileName(String url, String contentDisposition, String mimeType);
 }

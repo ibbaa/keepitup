@@ -203,6 +203,45 @@ public class FileManagerTest {
         assertTrue(new File(fileManager.getExternalRootDirectory(), "test").exists());
     }
 
+    @Test
+    public void testGetDownloadFileNameContentDisposition() {
+        assertEquals("xyz.jpg", fileManager.getDownloadFileName("http://www.host.com", "attachment; filename=\"xyz.jpg\"", "image/jpeg"));
+        assertEquals("xyz.jpg", fileManager.getDownloadFileName("http://www.host.com", "attachment;filename=\"xyz.jpg\"", "image/jpeg"));
+        assertEquals("xyz.jpg", fileManager.getDownloadFileName("http://www.host.com", "attachment;filename=\"xyz\"", "image/jpeg"));
+        assertEquals("xyz.jpg", fileManager.getDownloadFileName("http://www.host.com", "attachment;  filename  = \"xyz\" ", "image/jpeg"));
+        assertEquals("xyz.mp3", fileManager.getDownloadFileName("http://www.host.com", "attachment;  filename  = \"abc/xyz/xyz\" ", "audio/mpeg"));
+        assertEquals("x y z.txt", fileManager.getDownloadFileName("http://www.host.com", "attachment;  filename  = \"abc/xyz/x y z\" ", "text/plain"));
+        assertEquals("xy z.ab c", fileManager.getDownloadFileName("http://www.host.com", "attachment;  filename  = \"123/xy z.ab c\" ", "text/plain"));
+        assertEquals("  .ab c", fileManager.getDownloadFileName("http://www.host.com", "attachment;  filename  = \"123/  .ab c\" ", "text/plain"));
+        assertEquals(" xyz.bin", fileManager.getDownloadFileName("http://www.host.com", "attachment;  filename  = \"abc/xyz/ xyz.bin\" ", "text/plain"));
+        assertEquals("downloadfile.txt", fileManager.getDownloadFileName(null, "attachment;  filename  = \"abc/xyz/..\" ", "text/plain"));
+        assertEquals("downloadfile.txt", fileManager.getDownloadFileName(null, "attachment;  filename  = \"abc/xyz/......\" ", "text/plain"));
+        assertEquals("downloadfile.htm", fileManager.getDownloadFileName(null, "attachment;  filename  = \"123/.", "text/html"));
+    }
+
+    @Test
+    public void testGetDownloadFileNameURL() {
+        assertEquals("xyz.jpg", fileManager.getDownloadFileName("http://www.host.com/xyz.jpg", null, null));
+        assertEquals("xyz.abc", fileManager.getDownloadFileName("http://www.host.com/xyz.abc", "test", null));
+        assertEquals("xyz.abc", fileManager.getDownloadFileName("http://www.host.com/123/xyz.abc", "attachment filename  = \"test\"", "image/jpeg"));
+        assertEquals("xyz.a b c", fileManager.getDownloadFileName("http://www.host.com/123/xyz.a b c", "", "image/jpeg"));
+        assertEquals("xy z.abc", fileManager.getDownloadFileName("http://www.host.com/123/xy z.abc", "attachment filename  = \"test\"", "image/jpeg"));
+        assertEquals("www_host_com.jpg", fileManager.getDownloadFileName("http://www.host.com/..", null, "image/jpeg"));
+        assertEquals("www_host_com.htm", fileManager.getDownloadFileName("http://www.host.com/abc/..", null, "text/html"));
+        assertEquals("www_host_com.jpg", fileManager.getDownloadFileName("http://www.host.com/......", null, "image/jpeg"));
+        assertEquals("www_host_com.jpg", fileManager.getDownloadFileName("http://www.host.com/xyz//......", null, "image/jpeg"));
+    }
+
+    @Test
+    public void testGetDownloadFileNameHost() {
+        assertEquals("www_host_com", fileManager.getDownloadFileName("http://www.host.com", null, null));
+        assertEquals("www_host_com.css", fileManager.getDownloadFileName("http://www.host.com", null, "text/css"));
+        assertEquals("abcd.css", fileManager.getDownloadFileName("http://abcd", "abc", "text/css"));
+        assertEquals("127_0_0_1.css", fileManager.getDownloadFileName("http://127.0.0.1///......", "abc", "text/css"));
+        assertEquals("[3ffe:1900:4545:3:200:f8ff:fe21:67cf].zip", fileManager.getDownloadFileName("ftp://[3ffe:1900:4545:3:200:f8ff:fe21:67cf]", "", "application/zip"));
+        assertEquals("downloadfile.rtf", fileManager.getDownloadFileName("http://www.h ost.com", "", "text/rtf"));
+    }
+
     private FileEntry getFileEntry(String name, boolean directory, boolean parent, boolean canVisit) {
         FileEntry fileEntry = new FileEntry();
         fileEntry.setName(name);
