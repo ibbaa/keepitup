@@ -24,6 +24,7 @@ public class MockFileManager implements IFileManager {
     private String nestedFolder;
     private List<FileEntry> fileEntries;
     private boolean deleteDiractory;
+    private String downloadFileName;
 
     public MockFileManager() {
         deieteDirectoryCalls = new ArrayList<>();
@@ -39,6 +40,7 @@ public class MockFileManager implements IFileManager {
         nestedFolder = null;
         fileEntries = Collections.emptyList();
         deleteDiractory = true;
+        downloadFileName = null;
     }
 
     public List<DeieteDirectoryCall> getDeieteDirectoryCalls() {
@@ -59,6 +61,7 @@ public class MockFileManager implements IFileManager {
         nestedFolder = null;
         fileEntries = Collections.emptyList();
         deleteDiractory = true;
+        downloadFileName = null;
     }
 
     public void setInternalDownloadDirectory(File internalDownloadDirectory) {
@@ -107,6 +110,10 @@ public class MockFileManager implements IFileManager {
 
     public void setDeleteDiractory(boolean deleteDiractory) {
         this.deleteDiractory = deleteDiractory;
+    }
+
+    public void setDownloadFileName(String downloadFileName) {
+        this.downloadFileName = downloadFileName;
     }
 
     public boolean wasDeieteDirectoryCalled() {
@@ -172,6 +179,11 @@ public class MockFileManager implements IFileManager {
     public boolean deleteDirectory(File directory) {
         deieteDirectoryCalls.add(new DeieteDirectoryCall(directory));
         return deleteDiractory;
+    }
+
+    @Override
+    public String getDownloadFileName(String url, String contentDisposition, String mimeType) {
+        return downloadFileName;
     }
 
     public static class DeieteDirectoryCall {

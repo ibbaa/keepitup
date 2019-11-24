@@ -51,5 +51,6 @@ public class URLUtilTest {
         assertEquals("http://www.host.com/t%20est?x=1", URLUtil.encodeURL("http://www.host.com/t est?x=1"));
         assertEquals("http://test/%E2%80%A5/test", URLUtil.encodeURL("http://test/‥/test"));
         assertEquals("www.ho st.com/t est?x=1", URLUtil.encodeURL("www.ho st.com/t est?x=1"));
+        assertEquals("http://[3ffe:1900:4545:3:200:f8ff:fe21:67cf]", URLUtil.encodeURL("http://[3ffe:1900:4545:3:200:f8ff:fe21:67cf]"));
     }
 }
