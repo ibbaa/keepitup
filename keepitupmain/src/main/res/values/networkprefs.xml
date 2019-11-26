@@ -6,5 +6,9 @@
     <string name="ping6_command_line">/system/bin/ping6 -c %d -W %d %s</string>
     <integer name="ping_timeout">20</integer>
     <integer name="connect_timeout">20</integer>
+    <integer name="download_timeout">10800</integer>
+    <integer name="download_connect_timeout">30</integer>
+    <integer name="download_read_timeout">30</integer>
+    <integer name="download_valid_poll_interval">300</integer>
     <integer name="dns_lookup_timeout">30</integer>
 </resources>
