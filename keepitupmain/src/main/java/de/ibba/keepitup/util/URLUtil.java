@@ -61,7 +61,7 @@ public class URLUtil {
             return null;
         }
         try {
-            URL url = new URL(encodeURL(inputUrl));
+            URL url = new URL(encodedInputUrl);
             String host;
             if (inputHost == null) {
                 host = url.getHost();
