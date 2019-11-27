@@ -39,6 +39,7 @@ public class ConnectCommand implements Callable<ConnectCommandResult> {
             return new ConnectCommandResult(false, exc);
         } finally {
             try {
+                Log.d(ConnectCommand.class.getName(), "Closing socket");
                 socket.close();
             } catch (Exception exc) {
                 Log.e(ConnectCommand.class.getName(), "Error closing socket", exc);

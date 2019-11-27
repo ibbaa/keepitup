@@ -22,6 +22,7 @@ public class URLUtil {
     }
 
     public static boolean isValidURL(String inputUrl) {
+        Log.d(URLUtil.class.getName(), "isValidURL, inputUrl is " + inputUrl);
         try {
             URL url = new URL(inputUrl);
             @SuppressWarnings("unused") URI uri = new URI(url.getProtocol(), url.getUserInfo(), IDN.toASCII(url.getHost()), url.getPort(), url.getPath(), url.getQuery(), url.getRef());
@@ -33,6 +34,7 @@ public class URLUtil {
     }
 
     public static String prefixHTTPProtocol(String inputUrl) {
+        Log.d(URLUtil.class.getName(), "prefixHTTPProtocol, inputUrl is " + inputUrl);
         if (inputUrl.toLowerCase().startsWith("http://") || inputUrl.toLowerCase().startsWith("https://")) {
             return inputUrl;
         }
@@ -40,6 +42,7 @@ public class URLUtil {
     }
 
     public static String encodeURL(String inputUrl) {
+        Log.d(URLUtil.class.getName(), "encodeURL, inputUrl is " + inputUrl);
         try {
             URL url = new URL(inputUrl);
             URI uri = new URI(url.getProtocol(), url.getUserInfo(), IDN.toASCII(url.getHost()), url.getPort(), url.getPath(), url.getQuery(), url.getRef());
@@ -48,5 +51,28 @@ public class URLUtil {
             Log.d(URLUtil.class.getName(), "Exception parsing url " + inputUrl, exc);
         }
         return inputUrl;
+    }
+
+    public static URL getURL(String inputUrl, String inputHost) {
+        Log.d(URLUtil.class.getName(), "getURL, inputUrl is " + inputUrl + ", inputHost is " + inputHost);
+        String encodedInputUrl = encodeURL(inputUrl);
+        if (!isValidURL(encodedInputUrl)) {
+            Log.d(URLUtil.class.getName(), "URL " + encodedInputUrl + " is invalid");
+            return null;
+        }
+        try {
+            URL url = new URL(encodeURL(inputUrl));
+            String host;
+            if (inputHost == null) {
+                host = url.getHost();
+            } else {
+                host = inputHost;
+            }
+            URI uri = new URI(url.getProtocol(), url.getUserInfo(), IDN.toASCII(host), url.getPort(), url.getPath(), url.getQuery(), url.getRef());
+            return uri.toURL();
+        } catch (MalformedURLException | URISyntaxException exc) {
+            Log.d(URLUtil.class.getName(), "Exception parsing url " + inputUrl, exc);
+        }
+        return null;
     }
 }
