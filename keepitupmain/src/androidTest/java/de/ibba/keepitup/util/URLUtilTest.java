@@ -10,6 +10,7 @@ import java.net.URL;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
@@ -60,26 +61,31 @@ public class URLUtilTest {
     @Test
     public void testGetURL() {
         URL url = URLUtil.getURL("http://www.host.com", null);
+        assertNotNull(url);
         assertEquals("www.host.com", url.getHost());
         assertFalse(url.getPort() > 0);
         assertTrue(StringUtil.isEmpty(url.getQuery()));
         assertTrue(StringUtil.isEmpty(url.getPath()));
         url = URLUtil.getURL("http://www.host.com:8080/test/url?query", null);
+        assertNotNull(url);
         assertEquals("www.host.com", url.getHost());
         assertEquals(8080, url.getPort());
         assertEquals("query", url.getQuery());
         assertEquals("/test/url", url.getPath());
         url = URLUtil.getURL("http://www.host.com", "127.0.0.1");
+        assertNotNull(url);
         assertEquals("127.0.0.1", url.getHost());
         assertFalse(url.getPort() > 0);
         assertTrue(StringUtil.isEmpty(url.getQuery()));
         assertTrue(StringUtil.isEmpty(url.getPath()));
         url = URLUtil.getURL("http://www.host.com:8080/test/url?query", "xyz");
+        assertNotNull(url);
         assertEquals("xyz", url.getHost());
         assertEquals(8080, url.getPort());
         assertEquals("query", url.getQuery());
         assertEquals("/test/url", url.getPath());
         url = URLUtil.getURL("http://www.host.com:8080/test", "3ffe:1900:4545:3:200:f8ff:fe21:67cf");
+        assertNotNull(url);
         assertEquals("[3ffe:1900:4545:3:200:f8ff:fe21:67cf]", url.getHost());
         assertEquals(8080, url.getPort());
         assertTrue(StringUtil.isEmpty(url.getQuery()));

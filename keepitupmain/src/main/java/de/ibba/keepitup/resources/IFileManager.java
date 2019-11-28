@@ -1,6 +1,7 @@
 package de.ibba.keepitup.resources;
 
 import java.io.File;
+import java.net.URL;
 import java.util.List;
 
 import de.ibba.keepitup.model.FileEntry;
@@ -31,5 +32,5 @@ public interface IFileManager {
 
     boolean deleteDirectory(File directory);
 
-    String getDownloadFileName(String url, String contentDisposition, String mimeType);
+    String getDownloadFileName(URL url, String contentDisposition, String mimeType);
 }
