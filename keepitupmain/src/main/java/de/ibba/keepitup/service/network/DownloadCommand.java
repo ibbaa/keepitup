@@ -7,7 +7,6 @@ import android.util.Log;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
-import java.net.InetAddress;
 import java.net.URL;
 import java.util.concurrent.Callable;
 import java.util.concurrent.Executors;
@@ -23,18 +22,16 @@ public class DownloadCommand implements Callable<DownloadCommandResult> {
 
     private final Context context;
     private final NetworkTask networkTask;
-    private final String baseURL;
-    private final InetAddress address;
+    private final URL url;
     private final String folder;
     private final boolean delete;
     private ScheduledExecutorService executorService;
     private AtomicBoolean valid;
 
-    public DownloadCommand(Context context, NetworkTask networkTask, String baseURL, InetAddress address, String folder, boolean delete) {
+    public DownloadCommand(Context context, NetworkTask networkTask, URL url, String folder, boolean delete) {
         this.context = context;
         this.networkTask = networkTask;
-        this.baseURL = baseURL;
-        this.address = address;
+        this.url = url;
         this.folder = folder;
         this.delete = delete;
     }

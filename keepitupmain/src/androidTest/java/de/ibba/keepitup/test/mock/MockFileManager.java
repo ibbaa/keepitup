@@ -1,6 +1,7 @@
 package de.ibba.keepitup.test.mock;
 
 import java.io.File;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -182,7 +183,7 @@ public class MockFileManager implements IFileManager {
     }
 
     @Override
-    public String getDownloadFileName(String url, String contentDisposition, String mimeType) {
+    public String getDownloadFileName(URL url, String contentDisposition, String mimeType) {
         return downloadFileName;
     }
 

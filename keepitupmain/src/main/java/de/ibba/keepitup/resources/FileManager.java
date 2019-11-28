@@ -7,7 +7,7 @@ import android.util.Log;
 import android.webkit.MimeTypeMap;
 
 import java.io.File;
-import java.net.URI;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -18,7 +18,6 @@ import de.ibba.keepitup.R;
 import de.ibba.keepitup.model.FileEntry;
 import de.ibba.keepitup.util.FileUtil;
 import de.ibba.keepitup.util.StringUtil;
-import de.ibba.keepitup.util.URLUtil;
 
 public class FileManager implements IFileManager {
 
@@ -281,7 +280,7 @@ public class FileManager implements IFileManager {
     }
 
     @Override
-    public String getDownloadFileName(String url, String contentDisposition, String mimeType) {
+    public String getDownloadFileName(URL url, String contentDisposition, String mimeType) {
         Log.d(FileManager.class.getName(), "getDownloadFileName, url is " + url + ", contentDisposition is " + contentDisposition + ", mimeType is " + mimeType);
         String fileName = null;
         if (!StringUtil.isEmpty(contentDisposition)) {
@@ -345,10 +344,10 @@ public class FileManager implements IFileManager {
         return null;
     }
 
-    private static String extractFileNameFromURL(String url) {
+    private static String extractFileNameFromURL(URL url) {
         Log.d(FileManager.class.getName(), "extractFileNameFromURL, url is " + url);
         try {
-            String fileName = new File(new URI(URLUtil.encodeURL(url)).getPath()).getName();
+            String fileName = new File(url.toURI().getPath()).getName();
             return Uri.decode(fileName);
         } catch (Exception exc) {
             Log.d(FileManager.class.getName(), "Exception extracting file name from URL " + url, exc);
@@ -356,10 +355,10 @@ public class FileManager implements IFileManager {
         return null;
     }
 
-    private static String createFileNameFromHost(String url) {
+    private static String createFileNameFromHost(URL url) {
         Log.d(FileManager.class.getName(), "createFileNameFromHost, url is " + url);
         try {
-            String host = new URI(URLUtil.encodeURL(url)).getHost();
+            String host = url.toURI().getHost();
             if (!StringUtil.isEmpty(host)) {
                 return host.replaceAll("\\.", "_");
             }
