@@ -11,4 +11,5 @@
     <integer name="download_read_timeout">30</integer>
     <integer name="download_valid_poll_interval">300</integer>
     <integer name="dns_lookup_timeout">30</integer>
+    <string name="http_header_content_disposition">Content-Disposition</string>
 </resources>

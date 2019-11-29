@@ -5,9 +5,11 @@ import android.content.res.Resources;
 import android.util.Log;
 
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.URLConnection;
 import java.util.concurrent.Callable;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -17,6 +19,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import de.ibba.keepitup.R;
 import de.ibba.keepitup.db.NetworkTaskDAO;
 import de.ibba.keepitup.model.NetworkTask;
+import de.ibba.keepitup.util.HTTPUtil;
 
 public class DownloadCommand implements Callable<DownloadCommandResult> {
 
@@ -25,7 +28,6 @@ public class DownloadCommand implements Callable<DownloadCommandResult> {
     private final URL url;
     private final String folder;
     private final boolean delete;
-    private ScheduledExecutorService executorService;
     private AtomicBoolean valid;
 
     public DownloadCommand(Context context, NetworkTask networkTask, URL url, String folder, boolean delete) {
@@ -39,7 +41,7 @@ public class DownloadCommand implements Callable<DownloadCommandResult> {
     @Override
     public DownloadCommandResult call() {
         Log.d(DownloadCommand.class.getName(), "call");
-        HttpURLConnection httpConnection = null;
+        URLConnection connection = null;
         InputStream inputStream = null;
         FileOutputStream outputStream = null;
         boolean connectSuccess = false;
@@ -48,9 +50,24 @@ public class DownloadCommand implements Callable<DownloadCommandResult> {
         int httpCode = Integer.MAX_VALUE;
         String httpMessage = null;
         String fileName = null;
-        executorService = Executors.newScheduledThreadPool(1);
+        ScheduledExecutorService executorService = Executors.newScheduledThreadPool(1);
         valid.set(true);
         try {
+            Log.d(DownloadCommand.class.getName(), "Establishing connection to " + url);
+            connection = openConnection();
+            if (connection == null) {
+                Log.d(DownloadCommand.class.getName(), "Error establishing connection to " + url);
+                return new DownloadCommandResult(connectSuccess, downloadSuccess, deleteSuccess, httpCode, httpMessage, fileName, null);
+            }
+            connectSuccess = true;
+            if (HTTPUtil.isHTTPConnection(connection)) {
+                HttpURLConnection httpConnection = (HttpURLConnection) connection;
+                httpCode = httpConnection.getResponseCode();
+                httpMessage = httpConnection.getResponseMessage();
+                if (httpCode != HttpURLConnection.HTTP_OK) {
+                    return new DownloadCommandResult(connectSuccess, downloadSuccess, deleteSuccess, httpCode, httpMessage, fileName, null);
+                }
+            }
             int pollInterval = getResources().getInteger(R.integer.download_valid_poll_interval);
             Log.d(DownloadCommand.class.getName(), "Scheduling verify valid polling thread with an interval of " + pollInterval);
             executorService.scheduleWithFixedDelay(this::verifyValid, 0, pollInterval, TimeUnit.SECONDS);
@@ -59,12 +76,27 @@ public class DownloadCommand implements Callable<DownloadCommandResult> {
             Log.e(DownloadCommand.class.getName(), "Error executing download command", exc);
             return new DownloadCommandResult(connectSuccess, downloadSuccess, deleteSuccess, httpCode, httpMessage, fileName, exc);
         } finally {
-            closeResources(httpConnection, inputStream, outputStream);
+            closeResources(connection, inputStream, outputStream, executorService);
         }
     }
 
-    private URL getAddressURL() {
-        return null;
+    private URLConnection openConnection() throws IOException {
+        Log.d(DownloadCommand.class.getName(), "openConnection");
+        if (url == null) {
+            Log.e(DownloadCommand.class.getName(), "URL is null");
+            return null;
+        }
+        URLConnection connection = url.openConnection();
+        if (connection == null) {
+            Log.e(DownloadCommand.class.getName(), "Connection is null");
+            return null;
+        }
+        connection.setConnectTimeout(getResources().getInteger(R.integer.download_connect_timeout));
+        connection.setReadTimeout(getResources().getInteger(R.integer.download_read_timeout));
+        connection.setDoInput(true);
+        connection.setDoOutput(false);
+        connection.connect();
+        return connection;
     }
 
     private void verifyValid() {
@@ -79,7 +111,7 @@ public class DownloadCommand implements Callable<DownloadCommandResult> {
         }
     }
 
-    private void closeResources(HttpURLConnection httpConnection, InputStream inputStream, FileOutputStream outputStream) {
+    private void closeResources(URLConnection connection, InputStream inputStream, FileOutputStream outputStream, ScheduledExecutorService executorService) {
         Log.d(DownloadCommand.class.getName(), "closeResources");
         try {
             if (outputStream != null) {
@@ -98,9 +130,9 @@ public class DownloadCommand implements Callable<DownloadCommandResult> {
             Log.e(DownloadCommand.class.getName(), "Error closing input stream", exc);
         }
         try {
-            if (httpConnection != null) {
+            if (HTTPUtil.isHTTPConnection(connection)) {
                 Log.d(DownloadCommand.class.getName(), "Disconnecting http connection");
-                httpConnection.disconnect();
+                ((HttpURLConnection) connection).disconnect();
             }
         } catch (Exception exc) {
             Log.e(DownloadCommand.class.getName(), "Error closing http connection", exc);
