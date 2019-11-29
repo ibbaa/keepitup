@@ -183,7 +183,7 @@ public class MockFileManager implements IFileManager {
     }
 
     @Override
-    public String getDownloadFileName(URL url, String contentDisposition, String mimeType) {
+    public String getDownloadFileName(URL url, String specifiedFileName, String mimeType) {
         return downloadFileName;
     }
 

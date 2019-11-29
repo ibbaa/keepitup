@@ -11,8 +11,6 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import de.ibba.keepitup.R;
 import de.ibba.keepitup.model.FileEntry;
@@ -20,8 +18,6 @@ import de.ibba.keepitup.util.FileUtil;
 import de.ibba.keepitup.util.StringUtil;
 
 public class FileManager implements IFileManager {
-
-    private static final Pattern CONTENT_DISPOSITION = Pattern.compile("attachment;\\s*filename\\s*=\\s*\"([^\"]*)\"", Pattern.CASE_INSENSITIVE);
 
     private final Context context;
 
@@ -280,18 +276,12 @@ public class FileManager implements IFileManager {
     }
 
     @Override
-    public String getDownloadFileName(URL url, String contentDisposition, String mimeType) {
-        Log.d(FileManager.class.getName(), "getDownloadFileName, url is " + url + ", contentDisposition is " + contentDisposition + ", mimeType is " + mimeType);
+    public String getDownloadFileName(URL url, String specifiedFileName, String mimeType) {
+        Log.d(FileManager.class.getName(), "getDownloadFileName, url is " + url + ", specifiedFileName is " + specifiedFileName + ", mimeType is " + mimeType);
         String fileName = null;
-        if (!StringUtil.isEmpty(contentDisposition)) {
-            fileName = parseContentDisposition(contentDisposition);
-            if (fileName != null) {
-                int index = fileName.lastIndexOf('/') + 1;
-                if (index > 0) {
-                    fileName = fileName.substring(index);
-                }
-            }
-            Log.d(FileManager.class.getName(), "File name extracted from content disposition is " + fileName);
+        if (!StringUtil.isEmpty(specifiedFileName)) {
+            fileName = specifiedFileName;
+            Log.d(FileManager.class.getName(), "Specified file name is " + fileName);
         }
         if (!isValidFileName(fileName)) {
             fileName = extractFileNameFromURL(url);
@@ -305,8 +295,8 @@ public class FileManager implements IFileManager {
             Log.d(FileManager.class.getName(), "File name is invalid.");
             fileName = "";
         }
-        String fileNameWithoutExtension = cleanUp(FileUtil.getFileNameWithoutExtension(fileName));
-        String extension = cleanUp(FileUtil.getFileNameExtension(fileName));
+        String fileNameWithoutExtension = FileUtil.getFileNameWithoutExtension(fileName);
+        String extension = FileUtil.getFileNameExtension(fileName);
         Log.d(FileManager.class.getName(), "File name without extension is " + fileNameWithoutExtension);
         Log.d(FileManager.class.getName(), "File name extension is " + extension);
         if (!isValidFileName(fileNameWithoutExtension)) {
@@ -324,24 +314,11 @@ public class FileManager implements IFileManager {
         }
         if (!StringUtil.isEmpty(extension)) {
             String fileNameWithExtension = fileNameWithoutExtension + "." + extension;
-            Log.d(FileManager.class.getName(), "Returing file name " + fileNameWithExtension);
+            Log.d(FileManager.class.getName(), "Returning file name " + fileNameWithExtension);
             return fileNameWithExtension;
         }
-        Log.d(FileManager.class.getName(), "Returing file name " + fileNameWithoutExtension);
+        Log.d(FileManager.class.getName(), "Returning file name " + fileNameWithoutExtension);
         return fileNameWithoutExtension;
-    }
-
-    private static String parseContentDisposition(String contentDisposition) {
-        Log.d(FileManager.class.getName(), "parseContentDisposition, contentDisposition is " + contentDisposition);
-        try {
-            Matcher matcher = CONTENT_DISPOSITION.matcher(contentDisposition);
-            if (matcher.find()) {
-                return matcher.group(1);
-            }
-        } catch (Exception exc) {
-            Log.d(FileManager.class.getName(), "Exception parsing content disposition " + contentDisposition, exc);
-        }
-        return null;
     }
 
     private static String extractFileNameFromURL(URL url) {
@@ -372,15 +349,7 @@ public class FileManager implements IFileManager {
         if (StringUtil.isEmpty(fileName)) {
             return false;
         }
-        return !cleanUp(fileName).replaceAll("\\.", "").isEmpty();
-    }
-
-    private static String cleanUp(String name) {
-        Log.d(FileManager.class.getName(), "cleanUp, name is " + name);
-        if (StringUtil.isEmpty(name)) {
-            return name;
-        }
-        return name.replaceAll("/", "");
+        return !fileName.replaceAll("/", "").replaceAll("\\.", "").isEmpty();
     }
 
     private Context getContext() {
