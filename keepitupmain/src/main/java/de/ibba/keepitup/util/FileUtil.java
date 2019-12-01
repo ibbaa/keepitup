@@ -17,4 +17,18 @@ public class FileUtil {
         int extensionIndex = fileName.lastIndexOf('.');
         return fileName.substring(0, extensionIndex < 0 ? fileName.length() : extensionIndex);
     }
+
+    public static String suffixFileName(String fileName, String suffix) {
+        if (StringUtil.isEmpty(fileName)) {
+            return "";
+        }
+        if (StringUtil.isEmpty(suffix)) {
+            return fileName;
+        }
+        String extension = getFileNameExtension(fileName);
+        if (!StringUtil.isEmpty(extension)) {
+            return getFileNameWithoutExtension(fileName) + "_" + suffix + "." + extension;
+        }
+        return getFileNameWithoutExtension(fileName) + "_" + suffix;
+    }
 }
