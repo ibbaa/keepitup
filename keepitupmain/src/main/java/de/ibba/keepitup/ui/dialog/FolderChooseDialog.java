@@ -25,8 +25,8 @@ import java.util.Objects;
 
 import de.ibba.keepitup.R;
 import de.ibba.keepitup.model.FileEntry;
-import de.ibba.keepitup.service.FileManager;
 import de.ibba.keepitup.service.IFileManager;
+import de.ibba.keepitup.service.SystemFileManager;
 import de.ibba.keepitup.ui.GlobalSettingsActivity;
 import de.ibba.keepitup.ui.SettingsInputActivity;
 import de.ibba.keepitup.ui.adapter.FileEntryAdapter;
@@ -299,7 +299,7 @@ public class FolderChooseDialog extends DialogFragment {
             return ((SettingsInputActivity) activity).getFileManager();
         }
         Log.d(FolderChooseDialog.class.getName(), "Returning new file manager.");
-        return new FileManager(activity);
+        return new SystemFileManager(activity);
     }
 
     private RecyclerView.Adapter createAdapter() {

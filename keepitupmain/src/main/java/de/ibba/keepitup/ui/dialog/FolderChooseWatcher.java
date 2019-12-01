@@ -4,7 +4,7 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
 
-import de.ibba.keepitup.service.FileManager;
+import de.ibba.keepitup.service.SystemFileManager;
 
 public class FolderChooseWatcher implements TextWatcher {
 
@@ -36,6 +36,6 @@ public class FolderChooseWatcher implements TextWatcher {
     }
 
     private String getAbsoluteFolder(String root, CharSequence folder) {
-        return new FileManager(dialog.getActivity()).getAbsoluteFolder(root, String.valueOf(folder));
+        return new SystemFileManager(dialog.getActivity()).getAbsoluteFolder(root, String.valueOf(folder));
     }
 }

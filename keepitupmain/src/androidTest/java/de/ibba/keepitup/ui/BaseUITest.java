@@ -20,8 +20,9 @@ import java.util.Locale;
 import de.ibba.keepitup.db.LogDAO;
 import de.ibba.keepitup.db.NetworkTaskDAO;
 import de.ibba.keepitup.resources.PreferenceManager;
-import de.ibba.keepitup.service.FileManager;
+import de.ibba.keepitup.service.IFileManager;
 import de.ibba.keepitup.service.NetworkTaskProcessServiceScheduler;
+import de.ibba.keepitup.service.SystemFileManager;
 import de.ibba.keepitup.test.matcher.ChildDescendantAtPositionMatcher;
 import de.ibba.keepitup.test.matcher.DrawableMatcher;
 import de.ibba.keepitup.test.matcher.GridLayoutPositionMatcher;
@@ -36,7 +37,7 @@ public abstract class BaseUITest {
     private LogDAO logDAO;
     private NetworkTaskProcessServiceScheduler scheduler;
     private PreferenceManager preferenceManager;
-    private FileManager fileManager;
+    private IFileManager fileManager;
 
     @Before
     public void beforeEachTestMethod() {
@@ -49,7 +50,7 @@ public abstract class BaseUITest {
         setLocale(Locale.US);
         preferenceManager = new PreferenceManager(TestRegistry.getContext());
         preferenceManager.removeAllPreferences();
-        fileManager = new FileManager(TestRegistry.getContext());
+        fileManager = new SystemFileManager(TestRegistry.getContext());
         fileManager.deleteDirectory(fileManager.getInternalDownloadDirectory());
         fileManager.deleteDirectory(fileManager.getExternalRootDirectory());
     }
@@ -60,12 +61,12 @@ public abstract class BaseUITest {
         logDAO.deleteAllLogs();
         networkTaskDAO.deleteAllNetworkTasks();
         preferenceManager.removeAllPreferences();
-        fileManager = new FileManager(TestRegistry.getContext());
+        fileManager = new SystemFileManager(TestRegistry.getContext());
         fileManager.deleteDirectory(fileManager.getInternalDownloadDirectory());
         fileManager.deleteDirectory(fileManager.getExternalRootDirectory());
     }
 
-    public FileManager getFileManager() {
+    public IFileManager getFileManager() {
         return fileManager;
     }
 

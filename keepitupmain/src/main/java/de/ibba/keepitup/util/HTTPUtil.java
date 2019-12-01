@@ -9,7 +9,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import de.ibba.keepitup.R;
-import de.ibba.keepitup.service.FileManager;
+import de.ibba.keepitup.service.SystemFileManager;
 
 public class HTTPUtil {
 
@@ -25,7 +25,7 @@ public class HTTPUtil {
     }
 
     public static String getFileNameFromContentDisposition(String contentDisposition) {
-        Log.d(FileManager.class.getName(), "getFileNameFromContentDisposition, contentDisposition is " + contentDisposition);
+        Log.d(HTTPUtil.class.getName(), "getFileNameFromContentDisposition, contentDisposition is " + contentDisposition);
         try {
             Matcher matcher = CONTENT_DISPOSITION.matcher(contentDisposition);
             if (matcher.find()) {
@@ -36,17 +36,17 @@ public class HTTPUtil {
                         fileName = fileName.substring(index);
                     }
                 }
-                Log.d(FileManager.class.getName(), "Extracted file name is " + fileName);
+                Log.d(SystemFileManager.class.getName(), "Extracted file name is " + fileName);
                 return fileName;
             }
         } catch (Exception exc) {
-            Log.d(FileManager.class.getName(), "Exception parsing content disposition " + contentDisposition, exc);
+            Log.d(SystemFileManager.class.getName(), "Exception parsing content disposition " + contentDisposition, exc);
         }
         return null;
     }
 
     public static String getMimeTypeFromContentType(String contentType) {
-        Log.d(FileManager.class.getName(), "getMimeTypeFromContentType, contentType is " + contentType);
+        Log.d(HTTPUtil.class.getName(), "getMimeTypeFromContentType, contentType is " + contentType);
         if (contentType == null) {
             return null;
         }
@@ -58,11 +58,11 @@ public class HTTPUtil {
             Matcher matcher = MIME_TYPE.matcher(contentType);
             if (matcher.matches()) {
                 String mimeType = matcher.group(1);
-                Log.d(FileManager.class.getName(), "Extracted mime type is " + mimeType);
+                Log.d(SystemFileManager.class.getName(), "Extracted mime type is " + mimeType);
                 return mimeType;
             }
         } catch (Exception exc) {
-            Log.d(FileManager.class.getName(), "Exception parsing content type " + contentType, exc);
+            Log.d(SystemFileManager.class.getName(), "Exception parsing content type " + contentType, exc);
         }
         return null;
     }
