@@ -1,4 +1,4 @@
-package de.ibba.keepitup.resources;
+package de.ibba.keepitup.service;
 
 import java.io.File;
 import java.net.URL;

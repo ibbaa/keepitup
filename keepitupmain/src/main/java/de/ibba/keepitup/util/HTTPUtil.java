@@ -9,7 +9,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import de.ibba.keepitup.R;
-import de.ibba.keepitup.resources.FileManager;
+import de.ibba.keepitup.service.FileManager;
 
 public class HTTPUtil {
 

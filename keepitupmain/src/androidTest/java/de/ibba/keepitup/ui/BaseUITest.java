@@ -19,8 +19,8 @@ import java.util.Locale;
 
 import de.ibba.keepitup.db.LogDAO;
 import de.ibba.keepitup.db.NetworkTaskDAO;
-import de.ibba.keepitup.resources.FileManager;
 import de.ibba.keepitup.resources.PreferenceManager;
+import de.ibba.keepitup.service.FileManager;
 import de.ibba.keepitup.service.NetworkTaskProcessServiceScheduler;
 import de.ibba.keepitup.test.matcher.ChildDescendantAtPositionMatcher;
 import de.ibba.keepitup.test.matcher.DrawableMatcher;

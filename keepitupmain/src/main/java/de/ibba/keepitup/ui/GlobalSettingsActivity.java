@@ -16,8 +16,8 @@ import java.util.Collections;
 import java.util.List;
 
 import de.ibba.keepitup.R;
-import de.ibba.keepitup.resources.IFileManager;
 import de.ibba.keepitup.resources.PreferenceManager;
+import de.ibba.keepitup.service.IFileManager;
 import de.ibba.keepitup.ui.dialog.FolderChooseDialog;
 import de.ibba.keepitup.ui.dialog.SettingsInput;
 import de.ibba.keepitup.ui.dialog.SettingsInputDialog;

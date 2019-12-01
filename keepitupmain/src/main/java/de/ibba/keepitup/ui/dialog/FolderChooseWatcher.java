@@ -4,7 +4,7 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
 
-import de.ibba.keepitup.resources.FileManager;
+import de.ibba.keepitup.service.FileManager;
 
 public class FolderChooseWatcher implements TextWatcher {
 
