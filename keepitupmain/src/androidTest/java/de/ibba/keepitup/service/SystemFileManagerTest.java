@@ -25,13 +25,13 @@ import static org.junit.Assert.assertTrue;
 
 @SmallTest
 @RunWith(AndroidJUnit4.class)
-public class FileManagerTest {
+public class SystemFileManagerTest {
 
-    private FileManager fileManager;
+    private SystemFileManager fileManager;
 
     @Before
     public void beforeEachTestMethod() {
-        fileManager = new FileManager(TestRegistry.getContext());
+        fileManager = new SystemFileManager(TestRegistry.getContext());
         MockTimeService timeService = (MockTimeService) fileManager.getTimeService();
         timeService.setTimestamp(getTestTimestamp());
         fileManager.deleteDirectory(fileManager.getInternalDownloadDirectory());

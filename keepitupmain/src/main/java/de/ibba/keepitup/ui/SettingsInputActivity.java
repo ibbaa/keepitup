@@ -7,8 +7,8 @@ import android.util.Log;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import de.ibba.keepitup.service.FileManager;
 import de.ibba.keepitup.service.IFileManager;
+import de.ibba.keepitup.service.SystemFileManager;
 import de.ibba.keepitup.ui.dialog.FolderChooseDialog;
 import de.ibba.keepitup.ui.dialog.GeneralErrorDialog;
 import de.ibba.keepitup.ui.dialog.SettingsInput;
@@ -40,7 +40,7 @@ public abstract class SettingsInputActivity extends AppCompatActivity {
         if (fileManager != null) {
             return fileManager;
         }
-        return new FileManager(this);
+        return new SystemFileManager(this);
     }
 
     public void onInputDialogOkClicked(SettingsInputDialog inputDialog, SettingsInput.Type type) {
