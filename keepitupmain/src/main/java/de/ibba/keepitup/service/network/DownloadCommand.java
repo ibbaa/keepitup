@@ -80,7 +80,6 @@ public class DownloadCommand implements Callable<DownloadCommandResult> {
         }
     }
 
-
     private URLConnection openConnection() throws IOException {
         Log.d(DownloadCommand.class.getName(), "openConnection");
         if (url == null) {
