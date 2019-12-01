@@ -31,4 +31,21 @@ public class FileUtilTest {
         assertEquals("test", FileUtil.getFileNameWithoutExtension("test"));
         assertEquals("test.wav", FileUtil.getFileNameWithoutExtension("test.wav.mp3"));
     }
+
+    @Test
+    public void testSuffixFileName() {
+        assertEquals("", FileUtil.suffixFileName(null, "abc"));
+        assertEquals("", FileUtil.suffixFileName("", "abc"));
+        assertEquals("", FileUtil.suffixFileName("", null));
+        assertEquals("", FileUtil.suffixFileName("", ""));
+        assertEquals("test", FileUtil.suffixFileName("test", null));
+        assertEquals("test", FileUtil.suffixFileName("test", ""));
+        assertEquals("test.jpg", FileUtil.suffixFileName("test.jpg", null));
+        assertEquals("test.jpg", FileUtil.suffixFileName("test.jpg", ""));
+        assertEquals("test_test.jpg", FileUtil.suffixFileName("test.jpg", "test"));
+        assertEquals("_test.jpg", FileUtil.suffixFileName(".jpg", "test"));
+        assertEquals("test.wav_123.mp3", FileUtil.suffixFileName("test.wav.mp3", "123"));
+        assertEquals("test.._test.jpg", FileUtil.suffixFileName("test...jpg", "test"));
+        assertEquals("test_abc", FileUtil.suffixFileName("test", "abc"));
+    }
 }

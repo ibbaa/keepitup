@@ -14,7 +14,6 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 import de.ibba.keepitup.R;
 import de.ibba.keepitup.db.NetworkTaskDAO;
@@ -28,7 +27,8 @@ public class DownloadCommand implements Callable<DownloadCommandResult> {
     private final URL url;
     private final String folder;
     private final boolean delete;
-    private AtomicBoolean valid;
+    private boolean valid;
+    private int notRunningCount;
 
     public DownloadCommand(Context context, NetworkTask networkTask, URL url, String folder, boolean delete) {
         this.context = context;
@@ -51,13 +51,13 @@ public class DownloadCommand implements Callable<DownloadCommandResult> {
         String httpMessage = null;
         String fileName = null;
         ScheduledExecutorService executorService = Executors.newScheduledThreadPool(1);
-        valid.set(true);
+        initializeValid();
         try {
             Log.d(DownloadCommand.class.getName(), "Establishing connection to " + url);
             connection = openConnection();
             if (connection == null) {
                 Log.d(DownloadCommand.class.getName(), "Error establishing connection to " + url);
-                return new DownloadCommandResult(connectSuccess, downloadSuccess, deleteSuccess, httpCode, httpMessage, fileName, null);
+                return createDownloadCommandResult(connectSuccess, downloadSuccess, deleteSuccess, httpCode, httpMessage, fileName, null);
             }
             connectSuccess = true;
             if (HTTPUtil.isHTTPConnection(connection)) {
@@ -65,20 +65,21 @@ public class DownloadCommand implements Callable<DownloadCommandResult> {
                 httpCode = httpConnection.getResponseCode();
                 httpMessage = httpConnection.getResponseMessage();
                 if (httpCode != HttpURLConnection.HTTP_OK) {
-                    return new DownloadCommandResult(connectSuccess, downloadSuccess, deleteSuccess, httpCode, httpMessage, fileName, null);
+                    return createDownloadCommandResult(connectSuccess, downloadSuccess, deleteSuccess, httpCode, httpMessage, fileName, null);
                 }
             }
             int pollInterval = getResources().getInteger(R.integer.download_valid_poll_interval);
             Log.d(DownloadCommand.class.getName(), "Scheduling verify valid polling thread with an interval of " + pollInterval);
             executorService.scheduleWithFixedDelay(this::verifyValid, 0, pollInterval, TimeUnit.SECONDS);
-            return new DownloadCommandResult(connectSuccess, downloadSuccess, deleteSuccess, httpCode, httpMessage, fileName, null);
+            return createDownloadCommandResult(connectSuccess, downloadSuccess, deleteSuccess, httpCode, httpMessage, fileName, null);
         } catch (Exception exc) {
             Log.e(DownloadCommand.class.getName(), "Error executing download command", exc);
-            return new DownloadCommandResult(connectSuccess, downloadSuccess, deleteSuccess, httpCode, httpMessage, fileName, exc);
+            return createDownloadCommandResult(connectSuccess, downloadSuccess, deleteSuccess, httpCode, httpMessage, fileName, exc);
         } finally {
             closeResources(connection, inputStream, outputStream, executorService);
         }
     }
+
 
     private URLConnection openConnection() throws IOException {
         Log.d(DownloadCommand.class.getName(), "openConnection");
@@ -99,15 +100,32 @@ public class DownloadCommand implements Callable<DownloadCommandResult> {
         return connection;
     }
 
-    private void verifyValid() {
+    private synchronized DownloadCommandResult createDownloadCommandResult(boolean connectSuccess, boolean downloadSuccess, boolean deleteSuccess, int httpCode, String httpMessage, String fileName, Exception exc) {
+        return new DownloadCommandResult(connectSuccess, downloadSuccess, deleteSuccess, valid, notRunningCount >= 2, httpCode, httpMessage, fileName, exc);
+    }
+
+    private synchronized void initializeValid() {
+        valid = true;
+        notRunningCount = 0;
+    }
+
+    private synchronized void verifyValid() {
         NetworkTaskDAO networkTaskDAO = new NetworkTaskDAO(getContext());
         NetworkTask databaseTask = networkTaskDAO.readNetworkTask(networkTask.getId());
-        if (databaseTask == null || !databaseTask.isRunning()) {
-            valid.set(false);
+        if (databaseTask == null || networkTask.getSchedulerId() != databaseTask.getSchedulerId()) {
+            valid = false;
+            notRunningCount = 0;
             return;
         }
-        if (networkTask.getSchedulerId() != databaseTask.getSchedulerId()) {
-            valid.set(false);
+        if (databaseTask.isRunning()) {
+            valid = true;
+            notRunningCount = 0;
+            return;
+        }
+        valid = true;
+        notRunningCount++;
+        if (notRunningCount >= 2) {
+            valid = false;
         }
     }
 
