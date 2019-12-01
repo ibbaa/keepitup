@@ -1,4 +1,4 @@
-package de.ibba.keepitup.resources;
+package de.ibba.keepitup.service;
 
 import android.content.Context;
 import android.content.res.Resources;
@@ -17,7 +17,7 @@ import java.util.Locale;
 
 import de.ibba.keepitup.R;
 import de.ibba.keepitup.model.FileEntry;
-import de.ibba.keepitup.service.ITimeService;
+import de.ibba.keepitup.resources.ServiceFactoryContributor;
 import de.ibba.keepitup.util.FileUtil;
 import de.ibba.keepitup.util.StringUtil;
 
@@ -399,9 +399,13 @@ public class FileManager implements IFileManager {
         return null;
     }
 
+    public ITimeService getTimeService() {
+        return timeService;
+    }
+
     private String getTimestampSuffix() {
         SimpleDateFormat fileNameDateFormat = new SimpleDateFormat(getResources().getString(R.string.timestamp_suffix_file_pattern), Locale.US);
-        return fileNameDateFormat.format(new Date(timeService.getCurrentTimestamp()));
+        return fileNameDateFormat.format(new Date(getTimeService().getCurrentTimestamp()));
     }
 
     private String getNumberSuffix(int number) {

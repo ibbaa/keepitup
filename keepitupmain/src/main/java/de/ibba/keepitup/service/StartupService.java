@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.util.Log;
 
 import de.ibba.keepitup.notification.NotificationHandler;
-import de.ibba.keepitup.resources.FileManager;
 
 public class StartupService extends BroadcastReceiver {
 

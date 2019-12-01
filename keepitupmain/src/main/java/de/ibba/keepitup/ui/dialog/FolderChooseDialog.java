@@ -25,8 +25,8 @@ import java.util.Objects;
 
 import de.ibba.keepitup.R;
 import de.ibba.keepitup.model.FileEntry;
-import de.ibba.keepitup.resources.FileManager;
-import de.ibba.keepitup.resources.IFileManager;
+import de.ibba.keepitup.service.FileManager;
+import de.ibba.keepitup.service.IFileManager;
 import de.ibba.keepitup.ui.GlobalSettingsActivity;
 import de.ibba.keepitup.ui.SettingsInputActivity;
 import de.ibba.keepitup.ui.adapter.FileEntryAdapter;

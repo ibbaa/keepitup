@@ -103,7 +103,7 @@ public class SchedulerIdGenerator {
         SchedulerIdHistoryDBConstants dbConstants = new SchedulerIdHistoryDBConstants(getContext());
         ContentValues values = new ContentValues();
         values.put(dbConstants.getSchedulerIdColumnName(), schedulerId);
-        values.put(dbConstants.getTimestampColumnName(), timeService.getCurrentTimestamp());
+        values.put(dbConstants.getTimestampColumnName(), getTimeService().getCurrentTimestamp());
         long rowid = db.insert(dbConstants.getTableName(), null, values);
         if (rowid < 0) {
             Log.e(SchedulerIdGenerator.class.getName(), "Error inserting scheduler id into history. Insert returned -1.");
@@ -170,12 +170,16 @@ public class SchedulerIdGenerator {
         }
     }
 
+    public ITimeService getTimeService() {
+        return timeService;
+    }
+
     private SchedulerId createSchedulerIdResult(int schedulerId, boolean valid) {
         SchedulerId schedulerIdObj = new SchedulerId();
         schedulerIdObj.setId(-1);
         schedulerIdObj.setValid(valid);
         schedulerIdObj.setSchedulerId(schedulerId);
-        schedulerIdObj.setTimestamp(timeService.getCurrentTimestamp());
+        schedulerIdObj.setTimestamp(getTimeService().getCurrentTimestamp());
         return schedulerIdObj;
     }
 

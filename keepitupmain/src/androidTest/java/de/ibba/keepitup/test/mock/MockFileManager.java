@@ -7,7 +7,7 @@ import java.util.Collections;
 import java.util.List;
 
 import de.ibba.keepitup.model.FileEntry;
-import de.ibba.keepitup.resources.IFileManager;
+import de.ibba.keepitup.service.IFileManager;
 
 public class MockFileManager implements IFileManager {
 

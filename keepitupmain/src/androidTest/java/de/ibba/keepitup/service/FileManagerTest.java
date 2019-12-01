@@ -1,4 +1,4 @@
-package de.ibba.keepitup.resources;
+package de.ibba.keepitup.service;
 
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.SmallTest;
@@ -10,9 +10,12 @@ import org.junit.runner.RunWith;
 
 import java.io.File;
 import java.net.URL;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 import java.util.List;
 
 import de.ibba.keepitup.model.FileEntry;
+import de.ibba.keepitup.test.mock.MockTimeService;
 import de.ibba.keepitup.test.mock.TestRegistry;
 import de.ibba.keepitup.util.URLUtil;
 
@@ -29,6 +32,8 @@ public class FileManagerTest {
     @Before
     public void beforeEachTestMethod() {
         fileManager = new FileManager(TestRegistry.getContext());
+        MockTimeService timeService = (MockTimeService) fileManager.getTimeService();
+        timeService.setTimestamp(getTestTimestamp());
         fileManager.deleteDirectory(fileManager.getInternalDownloadDirectory());
         fileManager.deleteDirectory(fileManager.getExternalRootDirectory());
 
@@ -250,7 +255,29 @@ public class FileManagerTest {
         File file = new File(fileManager.getInternalDownloadDirectory().getAbsolutePath(), fileName);
         assertTrue(file.createNewFile());
         fileName = fileManager.getValidFileName(fileManager.getInternalDownloadDirectory().getAbsolutePath(), "test.file");
+        assertEquals("test_1985.12.24_01_01_01.file", fileName);
+        file = new File(fileManager.getInternalDownloadDirectory().getAbsolutePath(), fileName);
+        assertTrue(file.createNewFile());
+        fileName = fileManager.getValidFileName(fileManager.getInternalDownloadDirectory().getAbsolutePath(), "test.file");
+        assertEquals("test_1985.12.24_01_01_01_(1).file", fileName);
+        file = new File(fileManager.getInternalDownloadDirectory().getAbsolutePath(), fileName);
+        assertTrue(file.createNewFile());
+        fileName = fileManager.getValidFileName(fileManager.getInternalDownloadDirectory().getAbsolutePath(), "test.file");
+        assertEquals("test_1985.12.24_01_01_01_(2).file", fileName);
+        file = new File(fileManager.getInternalDownloadDirectory().getAbsolutePath(), "test_1985.12.24_01_01_01.file");
+        assertTrue(file.delete());
+        fileName = fileManager.getValidFileName(fileManager.getInternalDownloadDirectory().getAbsolutePath(), "test.file");
+        assertEquals("test_1985.12.24_01_01_01.file", fileName);
+        file = new File(fileManager.getInternalDownloadDirectory().getAbsolutePath(), "test.file");
+        assertTrue(file.delete());
+        fileName = fileManager.getValidFileName(fileManager.getInternalDownloadDirectory().getAbsolutePath(), "test.file");
+        assertEquals("test.file", fileName);
+    }
 
+    private long getTestTimestamp() {
+        Calendar calendar = new GregorianCalendar(1985, Calendar.DECEMBER, 24, 1, 1, 1);
+        calendar.set(Calendar.MILLISECOND, 999);
+        return calendar.getTimeInMillis();
     }
 
     private FileEntry getFileEntry(String name, boolean directory, boolean parent, boolean canVisit) {
