@@ -9,6 +9,7 @@ import de.ibba.keepitup.notification.INotificatioManager;
 import de.ibba.keepitup.resources.ServiceFactory;
 import de.ibba.keepitup.service.IAlarmManager;
 import de.ibba.keepitup.service.INetworkManager;
+import de.ibba.keepitup.service.ITimeService;
 
 public class TestServiceFactory implements ServiceFactory {
 
@@ -34,5 +35,11 @@ public class TestServiceFactory implements ServiceFactory {
     public INetworkManager createNetworkManager(Context context) {
         Log.d(TestServiceFactory.class.getName(), "createNetworkManager");
         return new MockNetworkManager();
+    }
+
+    @Override
+    public ITimeService createTimeService() {
+        Log.d(TestServiceFactory.class.getName(), "createTimeService");
+        return new MockTimeService();
     }
 }

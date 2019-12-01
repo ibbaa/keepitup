@@ -38,6 +38,7 @@ public abstract class NetworkTaskWorker implements Runnable {
     private final PowerManager.WakeLock wakeLock;
     private final INetworkManager networkManager;
     private final NotificationHandler notificationHandler;
+    private final ITimeService timeService;
 
     public NetworkTaskWorker(Context context, NetworkTask networkTask, PowerManager.WakeLock wakeLock) {
         this.context = context;
@@ -45,6 +46,7 @@ public abstract class NetworkTaskWorker implements Runnable {
         this.wakeLock = wakeLock;
         this.networkManager = createNetworkManager();
         this.notificationHandler = createNotificationHandler();
+        this.timeService = createTimeService();
     }
 
     public abstract int getMaxInstances();
@@ -160,7 +162,7 @@ public abstract class NetworkTaskWorker implements Runnable {
         Log.d(NetworkTaskWorker.class.getName(), "checkInstances");
         LogEntry logEntry = new LogEntry();
         logEntry.setNetworkTaskId(networkTask.getId());
-        logEntry.setTimestamp(System.currentTimeMillis());
+        logEntry.setTimestamp(getTimeService().getCurrentTimestamp());
         NetworkTaskDAO networkTaskDAO = new NetworkTaskDAO(getContext());
         int activeInstances = networkTaskDAO.readNetworkTaskInstances(networkTask.getSchedulerId());
         int maxInstances = getMaxInstances();
@@ -180,7 +182,7 @@ public abstract class NetworkTaskWorker implements Runnable {
         Log.d(NetworkTaskWorker.class.getName(), "checkNetwork");
         LogEntry logEntry = new LogEntry();
         logEntry.setNetworkTaskId(networkTask.getId());
-        logEntry.setTimestamp(System.currentTimeMillis());
+        logEntry.setTimestamp(getTimeService().getCurrentTimestamp());
         if (!isConnected) {
             Log.d(NetworkTaskWorker.class.getName(), "No active network connection.");
             logEntry.setSuccess(false);
@@ -267,6 +269,11 @@ public abstract class NetworkTaskWorker implements Runnable {
         return new NotificationHandler(getContext());
     }
 
+    private ITimeService createTimeService() {
+        ServiceFactoryContributor factoryContributor = new ServiceFactoryContributor(getContext());
+        return factoryContributor.createServiceFactory().createTimeService();
+    }
+
     private boolean isNetworkTaskValid(NetworkTask task) {
         NetworkTaskDAO networkTaskDAO = new NetworkTaskDAO(getContext());
         NetworkTask databaseTask = networkTaskDAO.readNetworkTask(task.getId());
@@ -279,6 +286,10 @@ public abstract class NetworkTaskWorker implements Runnable {
 
     public NotificationHandler getNotificationHandler() {
         return notificationHandler;
+    }
+
+    public ITimeService getTimeService() {
+        return timeService;
     }
 
     protected Callable<DNSLookupResult> getDNSLookup(String host) {

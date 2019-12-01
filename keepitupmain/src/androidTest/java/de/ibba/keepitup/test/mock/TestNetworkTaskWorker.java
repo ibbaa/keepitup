@@ -55,7 +55,7 @@ public class TestNetworkTaskWorker extends NetworkTaskWorker {
         LogEntry logEntry = new LogEntry();
         logEntry.setNetworkTaskId(networkTask.getId());
         logEntry.setSuccess(success);
-        logEntry.setTimestamp(System.currentTimeMillis());
+        logEntry.setTimestamp(getTimeService().getCurrentTimestamp());
         logEntry.setMessage(success ? getResources().getString(R.string.string_successful) : getResources().getString(R.string.string_not_successful));
         return logEntry;
     }

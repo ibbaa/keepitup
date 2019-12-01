@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="timestamp_suffix_file_pattern">yyyy.MM.dd_HH_mm_ss</string>
+    <integer name="max_duplicate_file_number">9999</integer>
+</resources>

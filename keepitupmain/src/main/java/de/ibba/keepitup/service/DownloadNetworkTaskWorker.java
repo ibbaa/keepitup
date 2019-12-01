@@ -30,7 +30,7 @@ public class DownloadNetworkTaskWorker extends NetworkTaskWorker {
         LogEntry logEntry = new LogEntry();
         logEntry.setNetworkTaskId(networkTask.getId());
         logEntry.setSuccess(true);
-        logEntry.setTimestamp(System.currentTimeMillis());
+        logEntry.setTimestamp(getTimeService().getCurrentTimestamp());
         logEntry.setMessage(getResources().getString(R.string.string_successful));
         return logEntry;
     }

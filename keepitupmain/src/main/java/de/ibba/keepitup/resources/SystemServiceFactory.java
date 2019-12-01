@@ -9,8 +9,10 @@ import de.ibba.keepitup.notification.INotificatioManager;
 import de.ibba.keepitup.notification.SystemNotificationManager;
 import de.ibba.keepitup.service.IAlarmManager;
 import de.ibba.keepitup.service.INetworkManager;
+import de.ibba.keepitup.service.ITimeService;
 import de.ibba.keepitup.service.SystemAlarmManager;
 import de.ibba.keepitup.service.SystemNetworkManager;
+import de.ibba.keepitup.service.SystemTimeService;
 
 public class SystemServiceFactory implements ServiceFactory {
 
@@ -36,5 +38,11 @@ public class SystemServiceFactory implements ServiceFactory {
     public INetworkManager createNetworkManager(Context context) {
         Log.d(SystemServiceFactory.class.getName(), "createNetworkManager");
         return new SystemNetworkManager(context);
+    }
+
+    @Override
+    public ITimeService createTimeService() {
+        Log.d(SystemServiceFactory.class.getName(), "createTimeService");
+        return new SystemTimeService();
     }
 }
