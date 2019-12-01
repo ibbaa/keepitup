@@ -10,7 +10,9 @@ import org.junit.runner.RunWith;
 
 import java.net.InetAddress;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Collections;
+import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.concurrent.Executors;
 
@@ -25,6 +27,7 @@ import de.ibba.keepitup.service.network.DNSLookupResult;
 import de.ibba.keepitup.test.mock.MockDNSLookup;
 import de.ibba.keepitup.test.mock.MockNetworkManager;
 import de.ibba.keepitup.test.mock.MockNotificationManager;
+import de.ibba.keepitup.test.mock.MockTimeService;
 import de.ibba.keepitup.test.mock.TestNetworkTaskWorker;
 import de.ibba.keepitup.test.mock.TestRegistry;
 
@@ -63,6 +66,7 @@ public class NetworkTaskWorkerTest {
         NetworkTask task = getNetworkTask();
         networkTaskDAO.insertNetworkTask(task);
         TestNetworkTaskWorker testNetworkTaskWorker = new TestNetworkTaskWorker(TestRegistry.getContext(), task, null, true);
+        setCurrentTime(testNetworkTaskWorker);
         MockNetworkManager networkManager = (MockNetworkManager) testNetworkTaskWorker.getNetworkManager();
         networkManager.setConnected(true);
         networkManager.setConnectedWithWiFi(true);
@@ -71,7 +75,7 @@ public class NetworkTaskWorkerTest {
         assertEquals(1, entries.size());
         LogEntry entry = entries.get(0);
         assertEquals(task.getId(), entry.getNetworkTaskId());
-        assertTrue(entry.getTimestamp() > 0);
+        assertEquals(getTestTimestamp(), entry.getTimestamp());
         assertTrue(entry.isSuccess());
         assertEquals("successful", entry.getMessage());
         NotificationHandler notificationHandler = testNetworkTaskWorker.getNotificationHandler();
@@ -101,6 +105,7 @@ public class NetworkTaskWorkerTest {
         task = networkTaskDAO.insertNetworkTask(task);
         networkTaskDAO.increaseNetworkTaskInstances(task.getSchedulerId());
         TestNetworkTaskWorker testNetworkTaskWorker = new TestNetworkTaskWorker(TestRegistry.getContext(), task, null, true, 1);
+        setCurrentTime(testNetworkTaskWorker);
         MockNetworkManager networkManager = (MockNetworkManager) testNetworkTaskWorker.getNetworkManager();
         networkManager.setConnected(true);
         networkManager.setConnectedWithWiFi(true);
@@ -109,7 +114,7 @@ public class NetworkTaskWorkerTest {
         assertEquals(1, entries.size());
         LogEntry entry = entries.get(0);
         assertEquals(task.getId(), entry.getNetworkTaskId());
-        assertTrue(entry.getTimestamp() > 0);
+        assertEquals(getTestTimestamp(), entry.getTimestamp());
         assertFalse(entry.isSuccess());
         assertEquals("TestMaxInstancesError 1", entry.getMessage());
         NotificationHandler notificationHandler = testNetworkTaskWorker.getNotificationHandler();
@@ -122,6 +127,7 @@ public class NetworkTaskWorkerTest {
         NetworkTask task = getNetworkTask();
         networkTaskDAO.insertNetworkTask(task);
         TestNetworkTaskWorker testNetworkTaskWorker = new TestNetworkTaskWorker(TestRegistry.getContext(), task, null, false);
+        setCurrentTime(testNetworkTaskWorker);
         MockNetworkManager networkManager = (MockNetworkManager) testNetworkTaskWorker.getNetworkManager();
         networkManager.setConnected(true);
         networkManager.setConnectedWithWiFi(true);
@@ -130,7 +136,7 @@ public class NetworkTaskWorkerTest {
         assertEquals(1, entries.size());
         LogEntry entry = entries.get(0);
         assertEquals(task.getId(), entry.getNetworkTaskId());
-        assertTrue(entry.getTimestamp() > 0);
+        assertEquals(getTestTimestamp(), entry.getTimestamp());
         assertFalse(entry.isSuccess());
         assertEquals("failed", entry.getMessage());
         NotificationHandler notificationHandler = testNetworkTaskWorker.getNotificationHandler();
@@ -144,6 +150,7 @@ public class NetworkTaskWorkerTest {
         task.setNotification(false);
         networkTaskDAO.insertNetworkTask(task);
         TestNetworkTaskWorker testNetworkTaskWorker = new TestNetworkTaskWorker(TestRegistry.getContext(), task, null, false);
+        setCurrentTime(testNetworkTaskWorker);
         MockNetworkManager networkManager = (MockNetworkManager) testNetworkTaskWorker.getNetworkManager();
         networkManager.setConnected(true);
         networkManager.setConnectedWithWiFi(true);
@@ -152,7 +159,7 @@ public class NetworkTaskWorkerTest {
         assertEquals(1, entries.size());
         LogEntry entry = entries.get(0);
         assertEquals(task.getId(), entry.getNetworkTaskId());
-        assertTrue(entry.getTimestamp() > 0);
+        assertEquals(getTestTimestamp(), entry.getTimestamp());
         assertFalse(entry.isSuccess());
         assertEquals("failed", entry.getMessage());
         NotificationHandler notificationHandler = testNetworkTaskWorker.getNotificationHandler();
@@ -213,6 +220,7 @@ public class NetworkTaskWorkerTest {
         NetworkTask task = getNetworkTask();
         networkTaskDAO.insertNetworkTask(task);
         TestNetworkTaskWorker testNetworkTaskWorker = new TestNetworkTaskWorker(TestRegistry.getContext(), task, null, true);
+        setCurrentTime(testNetworkTaskWorker);
         MockNetworkManager networkManager = (MockNetworkManager) testNetworkTaskWorker.getNetworkManager();
         networkManager.setConnected(false);
         networkManager.setConnectedWithWiFi(false);
@@ -222,7 +230,7 @@ public class NetworkTaskWorkerTest {
         assertEquals(1, entries.size());
         LogEntry entry = entries.get(0);
         assertEquals(task.getId(), entry.getNetworkTaskId());
-        assertTrue(entry.getTimestamp() > 0);
+        assertEquals(getTestTimestamp(), entry.getTimestamp());
         assertFalse(entry.isSuccess());
         assertEquals("No active network connection.", entry.getMessage());
         NotificationHandler notificationHandler = testNetworkTaskWorker.getNotificationHandler();
@@ -235,6 +243,7 @@ public class NetworkTaskWorkerTest {
         NetworkTask task = getNetworkTask();
         networkTaskDAO.insertNetworkTask(task);
         TestNetworkTaskWorker testNetworkTaskWorker = new TestNetworkTaskWorker(TestRegistry.getContext(), task, null, true);
+        setCurrentTime(testNetworkTaskWorker);
         MockNetworkManager networkManager = (MockNetworkManager) testNetworkTaskWorker.getNetworkManager();
         networkManager.setConnected(false);
         networkManager.setConnectedWithWiFi(false);
@@ -244,7 +253,7 @@ public class NetworkTaskWorkerTest {
         assertEquals(1, entries.size());
         LogEntry entry = entries.get(0);
         assertEquals(task.getId(), entry.getNetworkTaskId());
-        assertTrue(entry.getTimestamp() > 0);
+        assertEquals(getTestTimestamp(), entry.getTimestamp());
         assertFalse(entry.isSuccess());
         assertEquals("No active network connection.", entry.getMessage());
         NotificationHandler notificationHandler = testNetworkTaskWorker.getNotificationHandler();
@@ -274,6 +283,7 @@ public class NetworkTaskWorkerTest {
         networkTaskDAO.insertNetworkTask(task);
         task.setOnlyWifi(true);
         TestNetworkTaskWorker testNetworkTaskWorker = new TestNetworkTaskWorker(TestRegistry.getContext(), task, null, true);
+        setCurrentTime(testNetworkTaskWorker);
         MockNetworkManager networkManager = (MockNetworkManager) testNetworkTaskWorker.getNetworkManager();
         networkManager.setConnected(true);
         networkManager.setConnectedWithWiFi(false);
@@ -282,7 +292,7 @@ public class NetworkTaskWorkerTest {
         assertEquals(1, entries.size());
         LogEntry entry = entries.get(0);
         assertEquals(task.getId(), entry.getNetworkTaskId());
-        assertTrue(entry.getTimestamp() > 0);
+        assertEquals(getTestTimestamp(), entry.getTimestamp());
         assertFalse(entry.isSuccess());
         assertEquals("Skipped. No active wifi connection.", entry.getMessage());
         NotificationHandler notificationHandler = testNetworkTaskWorker.getNotificationHandler();
@@ -365,6 +375,17 @@ public class NetworkTaskWorkerTest {
         assertNull(address);
         assertFalse(logEntry.isSuccess());
         assertEquals("DNS lookup for host.com failed. IllegalArgumentException: TestException", logEntry.getMessage());
+    }
+
+    private void setCurrentTime(TestNetworkTaskWorker testNetworkTaskWorker) {
+        MockTimeService timeService = (MockTimeService) testNetworkTaskWorker.getTimeService();
+        timeService.setTimestamp(getTestTimestamp());
+    }
+
+    private long getTestTimestamp() {
+        Calendar calendar = new GregorianCalendar(1985, Calendar.DECEMBER, 24, 1, 1, 1);
+        calendar.set(Calendar.MILLISECOND, 999);
+        return calendar.getTimeInMillis();
     }
 
     private NetworkTask getNetworkTask() {

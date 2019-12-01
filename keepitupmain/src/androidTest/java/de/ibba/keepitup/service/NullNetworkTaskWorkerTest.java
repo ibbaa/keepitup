@@ -6,14 +6,17 @@ import androidx.test.filters.MediumTest;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import java.util.Calendar;
+import java.util.GregorianCalendar;
+
 import de.ibba.keepitup.model.AccessType;
 import de.ibba.keepitup.model.LogEntry;
 import de.ibba.keepitup.model.NetworkTask;
+import de.ibba.keepitup.test.mock.MockTimeService;
 import de.ibba.keepitup.test.mock.TestRegistry;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
 
 @MediumTest
 @RunWith(AndroidJUnit4.class)
@@ -22,11 +25,23 @@ public class NullNetworkTaskWorkerTest {
     @Test
     public void testLogReturned() {
         NullNetworkTaskWorker nullNetworkTaskWorker = new NullNetworkTaskWorker(TestRegistry.getContext(), getNetworkTask(), null);
+        setCurrentTime(nullNetworkTaskWorker);
         LogEntry logEntry = nullNetworkTaskWorker.execute(getNetworkTask());
         assertEquals(45, logEntry.getNetworkTaskId());
-        assertTrue(logEntry.getTimestamp() > -1);
+        assertEquals(getTestTimestamp(), logEntry.getTimestamp());
         assertFalse(logEntry.isSuccess());
         assertEquals("Type not specified.", logEntry.getMessage());
+    }
+
+    private void setCurrentTime(NullNetworkTaskWorker nullNetworkTaskWorker) {
+        MockTimeService timeService = (MockTimeService) nullNetworkTaskWorker.getTimeService();
+        timeService.setTimestamp(getTestTimestamp());
+    }
+
+    private long getTestTimestamp() {
+        Calendar calendar = new GregorianCalendar(1985, Calendar.DECEMBER, 24, 1, 1, 1);
+        calendar.set(Calendar.MILLISECOND, 999);
+        return calendar.getTimeInMillis();
     }
 
     private NetworkTask getNetworkTask() {

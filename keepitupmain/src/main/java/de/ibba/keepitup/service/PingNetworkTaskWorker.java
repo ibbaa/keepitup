@@ -64,7 +64,7 @@ public class PingNetworkTaskWorker extends NetworkTaskWorker {
             executorService.shutdownNow();
         }
         Log.d(PingNetworkTaskWorker.class.getName(), "Returning " + logEntry);
-        logEntry.setTimestamp(System.currentTimeMillis());
+        logEntry.setTimestamp(getTimeService().getCurrentTimestamp());
         return logEntry;
     }
 

@@ -7,6 +7,7 @@ import androidx.core.app.NotificationCompat;
 import de.ibba.keepitup.notification.INotificatioManager;
 import de.ibba.keepitup.service.IAlarmManager;
 import de.ibba.keepitup.service.INetworkManager;
+import de.ibba.keepitup.service.ITimeService;
 
 public interface ServiceFactory {
 
@@ -17,4 +18,6 @@ public interface ServiceFactory {
     NotificationCompat.Builder createNotificationBuilder(Context context, String channelId);
 
     INetworkManager createNetworkManager(Context context);
+
+    ITimeService createTimeService();
 }

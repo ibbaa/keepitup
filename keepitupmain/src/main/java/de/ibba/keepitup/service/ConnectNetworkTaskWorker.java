@@ -59,7 +59,7 @@ public class ConnectNetworkTaskWorker extends NetworkTaskWorker {
             executorService.shutdownNow();
         }
         Log.d(ConnectNetworkTaskWorker.class.getName(), "Returning " + logEntry);
-        logEntry.setTimestamp(System.currentTimeMillis());
+        logEntry.setTimestamp(getTimeService().getCurrentTimestamp());
         return logEntry;
     }
 

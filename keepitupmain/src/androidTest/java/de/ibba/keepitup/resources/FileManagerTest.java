@@ -243,6 +243,16 @@ public class FileManagerTest {
         assertEquals("downloadfile.rtf", fileManager.getDownloadFileName(new URL(URLUtil.encodeURL("http://www.h ost.com")), "", "text/rtf"));
     }
 
+    @Test
+    public void testGetValidFileName() throws Exception {
+        String fileName = fileManager.getValidFileName(fileManager.getInternalDownloadDirectory().getAbsolutePath(), "test.file");
+        assertEquals("test.file", fileName);
+        File file = new File(fileManager.getInternalDownloadDirectory().getAbsolutePath(), fileName);
+        assertTrue(file.createNewFile());
+        fileName = fileManager.getValidFileName(fileManager.getInternalDownloadDirectory().getAbsolutePath(), "test.file");
+
+    }
+
     private FileEntry getFileEntry(String name, boolean directory, boolean parent, boolean canVisit) {
         FileEntry fileEntry = new FileEntry();
         fileEntry.setName(name);

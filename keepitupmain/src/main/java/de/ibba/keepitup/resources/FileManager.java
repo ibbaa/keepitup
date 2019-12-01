@@ -8,21 +8,27 @@ import android.webkit.MimeTypeMap;
 
 import java.io.File;
 import java.net.URL;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import de.ibba.keepitup.R;
 import de.ibba.keepitup.model.FileEntry;
+import de.ibba.keepitup.service.ITimeService;
 import de.ibba.keepitup.util.FileUtil;
 import de.ibba.keepitup.util.StringUtil;
 
 public class FileManager implements IFileManager {
 
     private final Context context;
+    private final ITimeService timeService;
 
     public FileManager(Context context) {
         this.context = context;
+        this.timeService = createTimeService();
     }
 
     @Override
@@ -350,6 +356,61 @@ public class FileManager implements IFileManager {
             return false;
         }
         return !fileName.replaceAll("/", "").replaceAll("\\.", "").isEmpty();
+    }
+
+    @Override
+    public String getValidFileName(String folder, String file) {
+        Log.d(FileManager.class.getName(), "getValidFileName, folder is " + folder + ", file is " + file);
+        try {
+            File dir = new File(folder);
+            if (!dir.exists()) {
+                if (!dir.mkdirs()) {
+                    Log.e(FileManager.class.getName(), "Error creating " + folder);
+                    return null;
+                }
+            }
+            File resultingFile = new File(dir, file);
+            if (!resultingFile.exists()) {
+                Log.d(FileManager.class.getName(), "File " + resultingFile + " does not exist");
+                return file;
+            }
+            Log.d(FileManager.class.getName(), "File " + resultingFile + " does exist");
+            String timestampFileName = FileUtil.suffixFileName(file, getTimestampSuffix());
+            resultingFile = new File(dir, timestampFileName);
+            if (!resultingFile.exists()) {
+                Log.d(FileManager.class.getName(), "File " + resultingFile + " does not exist");
+                return timestampFileName;
+            }
+            Log.d(FileManager.class.getName(), "File " + resultingFile + " does exist");
+            int maxDuplicateFileNumber = getResources().getInteger(R.integer.max_duplicate_file_number);
+            for (int ii = 1; ii <= maxDuplicateFileNumber; ii++) {
+                String numberFileName = FileUtil.suffixFileName(timestampFileName, getNumberSuffix(ii));
+                resultingFile = new File(dir, numberFileName);
+                if (!resultingFile.exists()) {
+                    Log.d(FileManager.class.getName(), "File " + resultingFile + " does not exist");
+                    return numberFileName;
+                }
+                Log.d(FileManager.class.getName(), "File " + resultingFile + " does exist");
+            }
+            Log.d(FileManager.class.getName(), "Unable to find valid file name");
+        } catch (Exception exc) {
+            Log.e(FileManager.class.getName(), "Error creating valid file name", exc);
+        }
+        return null;
+    }
+
+    private String getTimestampSuffix() {
+        SimpleDateFormat fileNameDateFormat = new SimpleDateFormat(getResources().getString(R.string.timestamp_suffix_file_pattern), Locale.US);
+        return fileNameDateFormat.format(new Date(timeService.getCurrentTimestamp()));
+    }
+
+    private String getNumberSuffix(int number) {
+        return "(" + number + ")";
+    }
+
+    private ITimeService createTimeService() {
+        ServiceFactoryContributor factoryContributor = new ServiceFactoryContributor(getContext());
+        return factoryContributor.createServiceFactory().createTimeService();
     }
 
     private Context getContext() {

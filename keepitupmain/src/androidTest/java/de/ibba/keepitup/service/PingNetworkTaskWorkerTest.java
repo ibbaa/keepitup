@@ -9,7 +9,9 @@ import org.junit.runner.RunWith;
 
 import java.net.InetAddress;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Collections;
+import java.util.GregorianCalendar;
 
 import de.ibba.keepitup.model.AccessType;
 import de.ibba.keepitup.model.LogEntry;
@@ -18,6 +20,7 @@ import de.ibba.keepitup.service.network.DNSLookupResult;
 import de.ibba.keepitup.service.network.PingCommandResult;
 import de.ibba.keepitup.test.mock.MockDNSLookup;
 import de.ibba.keepitup.test.mock.MockPingCommand;
+import de.ibba.keepitup.test.mock.MockTimeService;
 import de.ibba.keepitup.test.mock.TestPingNetworkTaskWorker;
 import de.ibba.keepitup.test.mock.TestRegistry;
 
@@ -41,6 +44,8 @@ public class PingNetworkTaskWorkerTest {
         MockPingCommand mockPingCommand = new MockPingCommand(TestRegistry.getContext(), "127.0.0.1", 3, false, pingCommandResult);
         pingNetworkTaskWorker.setMockDNSLookup(mockDNSLookup);
         pingNetworkTaskWorker.setMockPingCommand(mockPingCommand);
+        MockTimeService timeService = (MockTimeService) pingNetworkTaskWorker.getTimeService();
+        timeService.setTimestamp(getTestTimestamp());
     }
 
     @Test
@@ -50,7 +55,7 @@ public class PingNetworkTaskWorkerTest {
         prepareTestPingNetworkTaskWorker(dnsLookupResult, pingCommandResult);
         LogEntry logEntry = pingNetworkTaskWorker.execute(getNetworkTask());
         assertEquals(45, logEntry.getNetworkTaskId());
-        assertTrue(logEntry.getTimestamp() > -1);
+        assertEquals(getTestTimestamp(), logEntry.getTimestamp());
         assertTrue(logEntry.isSuccess());
         assertEquals("Pinged 127.0.0.1 successfully. testoutput", logEntry.getMessage());
     }
@@ -62,7 +67,7 @@ public class PingNetworkTaskWorkerTest {
         prepareTestPingNetworkTaskWorker(dnsLookupResult, pingCommandResult);
         LogEntry logEntry = pingNetworkTaskWorker.execute(getNetworkTask());
         assertEquals(45, logEntry.getNetworkTaskId());
-        assertTrue(logEntry.getTimestamp() > -1);
+        assertEquals(getTestTimestamp(), logEntry.getTimestamp());
         assertTrue(logEntry.isSuccess());
         assertEquals("Pinged ::1 successfully. 3 packets transmitted. 3 packets received. 0% packet loss. 0.083 msec average time.", logEntry.getMessage());
     }
@@ -74,7 +79,7 @@ public class PingNetworkTaskWorkerTest {
         prepareTestPingNetworkTaskWorker(dnsLookupResult, null);
         LogEntry logEntry = pingNetworkTaskWorker.execute(getNetworkTask());
         assertEquals(45, logEntry.getNetworkTaskId());
-        assertTrue(logEntry.getTimestamp() > -1);
+        assertEquals(getTestTimestamp(), logEntry.getTimestamp());
         assertFalse(logEntry.isSuccess());
         assertEquals("DNS lookup for 127.0.0.1 failed. IllegalArgumentException: TestException", logEntry.getMessage());
     }
@@ -87,7 +92,7 @@ public class PingNetworkTaskWorkerTest {
         prepareTestPingNetworkTaskWorker(dnsLookupResult, pingCommandResult);
         LogEntry logEntry = pingNetworkTaskWorker.execute(getNetworkTask());
         assertEquals(45, logEntry.getNetworkTaskId());
-        assertTrue(logEntry.getTimestamp() > -1);
+        assertEquals(getTestTimestamp(), logEntry.getTimestamp());
         assertFalse(logEntry.isSuccess());
         assertEquals("Ping to 127.0.0.1 failed. IllegalArgumentException: TestException", logEntry.getMessage());
     }
@@ -99,7 +104,7 @@ public class PingNetworkTaskWorkerTest {
         prepareTestPingNetworkTaskWorker(dnsLookupResult, pingCommandResult);
         LogEntry logEntry = pingNetworkTaskWorker.execute(getNetworkTask());
         assertEquals(45, logEntry.getNetworkTaskId());
-        assertTrue(logEntry.getTimestamp() > -1);
+        assertEquals(getTestTimestamp(), logEntry.getTimestamp());
         assertFalse(logEntry.isSuccess());
         assertEquals("Ping to 127.0.0.1 failed. testoutput", logEntry.getMessage());
     }
@@ -111,7 +116,7 @@ public class PingNetworkTaskWorkerTest {
         prepareTestPingNetworkTaskWorker(dnsLookupResult, pingCommandResult);
         LogEntry logEntry = pingNetworkTaskWorker.execute(getNetworkTask());
         assertEquals(45, logEntry.getNetworkTaskId());
-        assertTrue(logEntry.getTimestamp() > -1);
+        assertEquals(getTestTimestamp(), logEntry.getTimestamp());
         assertFalse(logEntry.isSuccess());
         assertEquals("Ping to 127.0.0.1 failed. 3 packets transmitted. 3 packets received. 0% packet loss. 0.083 msec average time.", logEntry.getMessage());
     }
@@ -123,9 +128,15 @@ public class PingNetworkTaskWorkerTest {
         prepareTestPingNetworkTaskWorker(dnsLookupResult, pingCommandResult);
         LogEntry logEntry = pingNetworkTaskWorker.execute(getNetworkTask());
         assertEquals(45, logEntry.getNetworkTaskId());
-        assertTrue(logEntry.getTimestamp() > -1);
+        assertEquals(getTestTimestamp(), logEntry.getTimestamp());
         assertFalse(logEntry.isSuccess());
         assertEquals("Ping to 127.0.0.1 failed. Return code: 1", logEntry.getMessage());
+    }
+
+    private long getTestTimestamp() {
+        Calendar calendar = new GregorianCalendar(1985, Calendar.DECEMBER, 24, 1, 1, 1);
+        calendar.set(Calendar.MILLISECOND, 999);
+        return calendar.getTimeInMillis();
     }
 
     private NetworkTask getNetworkTask() {

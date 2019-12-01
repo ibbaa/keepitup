@@ -33,4 +33,6 @@ public interface IFileManager {
     boolean deleteDirectory(File directory);
 
     String getDownloadFileName(URL url, String specifiedFileName, String mimeType);
+
+    String getValidFileName(String folder, String file);
 }

@@ -11,6 +11,8 @@ import java.security.SecureRandom;
 
 import de.ibba.keepitup.R;
 import de.ibba.keepitup.model.SchedulerId;
+import de.ibba.keepitup.resources.ServiceFactoryContributor;
+import de.ibba.keepitup.service.ITimeService;
 
 public class SchedulerIdGenerator {
 
@@ -19,9 +21,11 @@ public class SchedulerIdGenerator {
     private final static SecureRandom randomGenerator = new SecureRandom();
 
     private final Context context;
+    private final ITimeService timeService;
 
     public SchedulerIdGenerator(Context context) {
         this.context = context;
+        this.timeService = createTimeService();
     }
 
     public int createSchedulerId() {
@@ -99,7 +103,7 @@ public class SchedulerIdGenerator {
         SchedulerIdHistoryDBConstants dbConstants = new SchedulerIdHistoryDBConstants(getContext());
         ContentValues values = new ContentValues();
         values.put(dbConstants.getSchedulerIdColumnName(), schedulerId);
-        values.put(dbConstants.getTimestampColumnName(), System.currentTimeMillis());
+        values.put(dbConstants.getTimestampColumnName(), timeService.getCurrentTimestamp());
         long rowid = db.insert(dbConstants.getTableName(), null, values);
         if (rowid < 0) {
             Log.e(SchedulerIdGenerator.class.getName(), "Error inserting scheduler id into history. Insert returned -1.");
@@ -171,8 +175,13 @@ public class SchedulerIdGenerator {
         schedulerIdObj.setId(-1);
         schedulerIdObj.setValid(valid);
         schedulerIdObj.setSchedulerId(schedulerId);
-        schedulerIdObj.setTimestamp(System.currentTimeMillis());
+        schedulerIdObj.setTimestamp(timeService.getCurrentTimestamp());
         return schedulerIdObj;
+    }
+
+    private ITimeService createTimeService() {
+        ServiceFactoryContributor factoryContributor = new ServiceFactoryContributor(getContext());
+        return factoryContributor.createServiceFactory().createTimeService();
     }
 
     private Context getContext() {

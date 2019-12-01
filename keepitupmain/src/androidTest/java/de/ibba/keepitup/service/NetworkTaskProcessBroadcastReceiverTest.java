@@ -10,6 +10,8 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 import java.util.List;
 
 import de.ibba.keepitup.db.LogDAO;
@@ -57,7 +59,7 @@ public class NetworkTaskProcessBroadcastReceiverTest {
         assertEquals(1, entries.size());
         LogEntry entry = entries.get(0);
         assertEquals(task.getId(), entry.getNetworkTaskId());
-        assertTrue(entry.getTimestamp() > 0);
+        assertEquals(getTestTimestamp(), entry.getTimestamp());
         assertTrue(entry.isSuccess());
         assertEquals("successful", entry.getMessage());
     }
@@ -95,6 +97,12 @@ public class NetworkTaskProcessBroadcastReceiverTest {
         broadcastReceiver.onReceive(TestRegistry.getContext(), intent);
         List<LogEntry> entries = logDAO.readAllLogsForNetworkTask(task.getId());
         assertEquals(0, entries.size());
+    }
+
+    private long getTestTimestamp() {
+        Calendar calendar = new GregorianCalendar(1970, Calendar.JANUARY, 1, 0, 0, 0);
+        calendar.set(Calendar.MILLISECOND, 1);
+        return calendar.getTimeInMillis();
     }
 
     private NetworkTask getNetworkTask() {

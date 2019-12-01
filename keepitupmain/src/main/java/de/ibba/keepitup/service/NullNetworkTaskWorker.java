@@ -30,7 +30,7 @@ public class NullNetworkTaskWorker extends NetworkTaskWorker {
         LogEntry logEntry = new LogEntry();
         logEntry.setNetworkTaskId(networkTask.getId());
         logEntry.setSuccess(false);
-        logEntry.setTimestamp(System.currentTimeMillis());
+        logEntry.setTimestamp(getTimeService().getCurrentTimestamp());
         logEntry.setMessage(getResources().getString(R.string.text_access_type_null));
         return logEntry;
     }
