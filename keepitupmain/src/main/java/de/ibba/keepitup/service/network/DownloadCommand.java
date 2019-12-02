@@ -18,6 +18,8 @@ import java.util.concurrent.TimeUnit;
 import de.ibba.keepitup.R;
 import de.ibba.keepitup.db.NetworkTaskDAO;
 import de.ibba.keepitup.model.NetworkTask;
+import de.ibba.keepitup.service.IFileManager;
+import de.ibba.keepitup.service.SystemFileManager;
 import de.ibba.keepitup.util.HTTPUtil;
 
 public class DownloadCommand implements Callable<DownloadCommandResult> {
@@ -65,8 +67,14 @@ public class DownloadCommand implements Callable<DownloadCommandResult> {
                 httpCode = httpConnection.getResponseCode();
                 httpMessage = httpConnection.getResponseMessage();
                 if (httpCode != HttpURLConnection.HTTP_OK) {
+                    Log.d(DownloadCommand.class.getName(), "Connection successful but HTTP return code " + httpCode + " is not HTTP_OK");
                     return createDownloadCommandResult(connectSuccess, downloadSuccess, deleteSuccess, httpCode, httpMessage, fileName, null);
                 }
+            }
+            fileName = getFileName(connection);
+            if (fileName == null) {
+                Log.d(DownloadCommand.class.getName(), "Connection successful but download file name could not be determined");
+                return createDownloadCommandResult(connectSuccess, downloadSuccess, deleteSuccess, httpCode, httpMessage, fileName, null);
             }
             int pollInterval = getResources().getInteger(R.integer.download_valid_poll_interval);
             Log.d(DownloadCommand.class.getName(), "Scheduling verify valid polling thread with an interval of " + pollInterval);
@@ -97,6 +105,24 @@ public class DownloadCommand implements Callable<DownloadCommandResult> {
         connection.setDoOutput(false);
         connection.connect();
         return connection;
+    }
+
+    private String getFileName(URLConnection connection) {
+        Log.d(DownloadCommand.class.getName(), "getFileName");
+        String contentDisposition = HTTPUtil.getContentDisposition(getContext(), connection);
+        String contentType = connection.getContentType();
+        Log.d(DownloadCommand.class.getName(), "Content-Disposition header is " + contentDisposition);
+        Log.d(DownloadCommand.class.getName(), "Content-Type header is " + contentType);
+        String contentDispositionFileName = HTTPUtil.getFileNameFromContentDisposition(contentDisposition);
+        String mimeType = HTTPUtil.getMimeTypeFromContentType(contentType);
+        Log.d(DownloadCommand.class.getName(), "Parsed file name from content disposition is " + contentDispositionFileName);
+        Log.d(DownloadCommand.class.getName(), "Parsed mime type from content type is " + mimeType);
+        IFileManager fileManager = getFileManager();
+        String fileName = fileManager.getDownloadFileName(url, contentDispositionFileName, mimeType);
+        Log.d(DownloadCommand.class.getName(), "Download file name is " + fileName);
+        String validFileName = fileManager.getValidFileName(folder, fileName);
+        Log.d(DownloadCommand.class.getName(), "Adjusted valid file name is " + validFileName);
+        return validFileName;
     }
 
     private synchronized DownloadCommandResult createDownloadCommandResult(boolean connectSuccess, boolean downloadSuccess, boolean deleteSuccess, int httpCode, String httpMessage, String fileName, Exception exc) {
@@ -158,6 +184,10 @@ public class DownloadCommand implements Callable<DownloadCommandResult> {
             Log.d(DownloadCommand.class.getName(), "Shutting down ScheduledExecutorService for polling thread");
             executorService.shutdownNow();
         }
+    }
+
+    private IFileManager getFileManager() {
+        return new SystemFileManager(getContext());
     }
 
     private Context getContext() {
