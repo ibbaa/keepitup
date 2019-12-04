@@ -21,12 +21,12 @@ public class StreamUtil {
     }
 
     public static boolean inputStreamToOutputStream(InputStream inputStream, OutputStream outputStream, Interrupt interrupt) throws Exception {
-        int read;
+        int read = -1;
         if (interrupt == null) {
             interrupt = () -> true;
         }
         byte[] buffer = new byte[BUFFER_SIZE_4096];
-        while ((read = inputStream.read(buffer, 0, BUFFER_SIZE_4096)) >= 0 && interrupt.shouldContinue()) {
+        while (interrupt.shouldContinue() && (read = inputStream.read(buffer, 0, BUFFER_SIZE_4096)) >= 0) {
             outputStream.write(buffer, 0, read);
         }
         return read < 0;

@@ -9,7 +9,10 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.util.Arrays;
 
+import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 
 @SmallTest
@@ -20,5 +23,65 @@ public class StreamUtilTest {
     public void testInputStreamToString() throws Exception {
         ByteArrayInputStream stream = new ByteArrayInputStream("Test".getBytes(Charsets.US_ASCII));
         assertEquals("Test", StreamUtil.inputStreamToString(stream, Charsets.US_ASCII));
+    }
+
+    @Test
+    public void testInputStreamToOutputStream() throws Exception {
+        ByteArrayInputStream inputStream = new ByteArrayInputStream("Test".getBytes(Charsets.US_ASCII));
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        StreamUtil.inputStreamToOutputStream(inputStream, outputStream, null);
+        assertEquals("Test", new String(outputStream.toByteArray(), Charsets.US_ASCII));
+        inputStream = new ByteArrayInputStream("Test".getBytes(Charsets.US_ASCII));
+        outputStream = new ByteArrayOutputStream();
+        StreamUtil.inputStreamToOutputStream(inputStream, outputStream, () -> true);
+        assertEquals("Test", new String(outputStream.toByteArray(), Charsets.US_ASCII));
+        inputStream = new ByteArrayInputStream("Test".getBytes(Charsets.US_ASCII));
+        outputStream = new ByteArrayOutputStream();
+        StreamUtil.inputStreamToOutputStream(inputStream, outputStream, () -> false);
+        assertEquals(0, outputStream.toByteArray().length);
+        inputStream = new ByteArrayInputStream(getTestByteArray());
+        outputStream = new ByteArrayOutputStream();
+        StreamUtil.inputStreamToOutputStream(inputStream, outputStream, () -> true);
+        assertArrayEquals(getTestByteArray(), outputStream.toByteArray());
+        inputStream = new ByteArrayInputStream(getTestByteArray());
+        outputStream = new ByteArrayOutputStream();
+        TestInterrupt testInterrupt = new TestInterrupt(1);
+        StreamUtil.inputStreamToOutputStream(inputStream, outputStream, testInterrupt::shouldContinue);
+        assertArrayEquals(getTestByteArrayOfSize(4096), outputStream.toByteArray());
+        inputStream = new ByteArrayInputStream(getTestByteArray());
+        outputStream = new ByteArrayOutputStream();
+        testInterrupt = new TestInterrupt(2);
+        StreamUtil.inputStreamToOutputStream(inputStream, outputStream, testInterrupt::shouldContinue);
+        assertArrayEquals(getTestByteArrayOfSize(8192), outputStream.toByteArray());
+    }
+
+    private byte[] getTestByteArray() {
+        byte[] bytes = new byte[10000];
+        Arrays.fill(bytes, (byte) 5);
+        return bytes;
+    }
+
+    private byte[] getTestByteArrayOfSize(int size) {
+        byte[] bytes = new byte[size];
+        Arrays.fill(bytes, (byte) 5);
+        return bytes;
+    }
+
+    private class TestInterrupt implements StreamUtil.Interrupt {
+
+        private int countdown;
+
+        public TestInterrupt(int countdown) {
+            this.countdown = countdown;
+        }
+
+        @Override
+        public boolean shouldContinue() {
+            if (countdown > 0) {
+                countdown--;
+                return true;
+            }
+            return false;
+        }
     }
 }
