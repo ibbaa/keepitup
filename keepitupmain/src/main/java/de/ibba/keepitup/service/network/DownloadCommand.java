@@ -129,6 +129,10 @@ public class DownloadCommand implements Callable<DownloadCommandResult> {
         return new DownloadCommandResult(connectSuccess, downloadSuccess, deleteSuccess, valid, notRunningCount >= 2, httpCode, httpMessage, fileName, exc);
     }
 
+    private synchronized boolean isValid() {
+        return valid;
+    }
+
     private synchronized void initializeValid() {
         valid = true;
         notRunningCount = 0;
