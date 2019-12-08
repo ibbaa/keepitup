@@ -6,6 +6,7 @@ public class DownloadCommandResult {
 
     private final boolean connectSuccess;
     private final boolean downloadSuccess;
+    private final boolean partialDownloadSuccess;
     private final boolean deleteSuccess;
     private final boolean valid;
     private final boolean stopped;
@@ -14,9 +15,10 @@ public class DownloadCommandResult {
     private final String fileName;
     private final Throwable exception;
 
-    public DownloadCommandResult(boolean connectSuccess, boolean downloadSuccess, boolean deleteSuccess, boolean valid, boolean stopped, int httpResponseCode, String httpResponseMessage, String fileName, Throwable exception) {
+    public DownloadCommandResult(boolean connectSuccess, boolean downloadSuccess, boolean partialDownloadSuccess, boolean deleteSuccess, boolean valid, boolean stopped, int httpResponseCode, String httpResponseMessage, String fileName, Throwable exception) {
         this.connectSuccess = connectSuccess;
         this.downloadSuccess = downloadSuccess;
+        this.partialDownloadSuccess = partialDownloadSuccess;
         this.deleteSuccess = deleteSuccess;
         this.valid = valid;
         this.stopped = stopped;
@@ -32,6 +34,10 @@ public class DownloadCommandResult {
 
     public boolean isDownloadSuccess() {
         return downloadSuccess;
+    }
+
+    public boolean isPartialDownloadSuccess() {
+        return partialDownloadSuccess;
     }
 
     public boolean isDeleteSuccess() {
@@ -68,6 +74,7 @@ public class DownloadCommandResult {
         return "DownloadCommandResult{" +
                 "connectSuccess=" + connectSuccess +
                 ", downloadSuccess=" + downloadSuccess +
+                ", partialDownloadSuccess=" + partialDownloadSuccess +
                 ", deleteSuccess=" + deleteSuccess +
                 ", valid=" + valid +
                 ", stopped=" + stopped +
