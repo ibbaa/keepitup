@@ -71,7 +71,7 @@ public class DownloadCommand implements Callable<DownloadCommandResult> {
                 HttpURLConnection httpConnection = (HttpURLConnection) connection;
                 httpCode = httpConnection.getResponseCode();
                 httpMessage = httpConnection.getResponseMessage();
-                if (httpCode != HttpURLConnection.HTTP_OK) {
+                if (HTTPUtil.isHTTPReturnCodeOk(httpCode)) {
                     Log.d(DownloadCommand.class.getName(), "Connection successful but HTTP return code " + httpCode + " is not HTTP_OK");
                     return createDownloadCommandResult(true, false, false, false, httpCode, httpMessage, null, null);
                 }

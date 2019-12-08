@@ -20,6 +20,10 @@ public class HTTPUtil {
         return connection instanceof HttpURLConnection;
     }
 
+    public static boolean isHTTPReturnCodeOk(int returnCode) {
+        return returnCode == HttpURLConnection.HTTP_OK;
+    }
+
     public static String getContentDisposition(Context context, URLConnection connection) {
         return connection.getHeaderField(context.getResources().getString(R.string.http_header_content_disposition));
     }

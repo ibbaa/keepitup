@@ -6,12 +6,22 @@ import androidx.test.filters.SmallTest;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import java.net.HttpURLConnection;
+
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 @SmallTest
 @RunWith(AndroidJUnit4.class)
 public class HTTPUtilTest {
+
+    @Test
+    public void testIsHTTPReturnCodeOk() {
+        assertTrue(HTTPUtil.isHTTPReturnCodeOk(HttpURLConnection.HTTP_OK));
+        assertFalse(HTTPUtil.isHTTPReturnCodeOk(HttpURLConnection.HTTP_GONE));
+    }
 
     @Test
     public void testGetFileNameFromContentDisposition() {
