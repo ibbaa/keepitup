@@ -46,12 +46,12 @@ public class StreamUtilTest {
         inputStream = new ByteArrayInputStream(getTestByteArray());
         outputStream = new ByteArrayOutputStream();
         TestInterrupt testInterrupt = new TestInterrupt(1);
-        StreamUtil.inputStreamToOutputStream(inputStream, outputStream, testInterrupt::shouldContinue);
+        StreamUtil.inputStreamToOutputStream(inputStream, outputStream, testInterrupt);
         assertArrayEquals(getTestByteArrayOfSize(4096), outputStream.toByteArray());
         inputStream = new ByteArrayInputStream(getTestByteArray());
         outputStream = new ByteArrayOutputStream();
         testInterrupt = new TestInterrupt(2);
-        StreamUtil.inputStreamToOutputStream(inputStream, outputStream, testInterrupt::shouldContinue);
+        StreamUtil.inputStreamToOutputStream(inputStream, outputStream, testInterrupt);
         assertArrayEquals(getTestByteArrayOfSize(8192), outputStream.toByteArray());
     }
 

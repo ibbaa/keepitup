@@ -30,9 +30,9 @@ public interface IFileManager {
 
     List<FileEntry> getFiles(String root, String absoluteFolder);
 
-    boolean deleteDirectory(File directory);
+    boolean delete(File file);
 
     String getDownloadFileName(URL url, String specifiedFileName, String mimeType);
 
-    String getValidFileName(String folder, String file);
+    String getValidFileName(File folder, String file);
 }

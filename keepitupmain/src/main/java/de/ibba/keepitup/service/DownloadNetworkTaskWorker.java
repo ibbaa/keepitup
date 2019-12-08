@@ -4,9 +4,21 @@ import android.content.Context;
 import android.os.PowerManager;
 import android.util.Log;
 
+import java.io.File;
+import java.net.Inet6Address;
+import java.net.InetAddress;
+import java.net.URL;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
 import de.ibba.keepitup.R;
 import de.ibba.keepitup.model.LogEntry;
 import de.ibba.keepitup.model.NetworkTask;
+import de.ibba.keepitup.resources.PreferenceManager;
+import de.ibba.keepitup.service.network.DownloadCommand;
+import de.ibba.keepitup.service.network.DownloadCommandResult;
+import de.ibba.keepitup.util.URLUtil;
 
 public class DownloadNetworkTaskWorker extends NetworkTaskWorker {
 
@@ -29,9 +41,114 @@ public class DownloadNetworkTaskWorker extends NetworkTaskWorker {
         Log.d(DownloadNetworkTaskWorker.class.getName(), "Executing DownloadNetworkTaskWorker for " + networkTask);
         LogEntry logEntry = new LogEntry();
         logEntry.setNetworkTaskId(networkTask.getId());
-        logEntry.setSuccess(true);
+        ExecutorService executorService = Executors.newSingleThreadExecutor();
+        try {
+            InetAddress address = executeDNSLookup(executorService, networkTask.getAddress(), logEntry, getResources().getBoolean(R.bool.network_prefer_ipv4));
+            if (address != null) {
+                Log.d(DownloadNetworkTaskWorker.class.getName(), "executeDNSLookup returned " + address);
+                boolean ip6 = address instanceof Inet6Address;
+                if (ip6) {
+                    Log.d(DownloadNetworkTaskWorker.class.getName(), address + " is an IPv6 address");
+                } else {
+                    Log.d(DownloadNetworkTaskWorker.class.getName(), address + " is an IPv4 address");
+                }
+                executeDownloadCommand(executorService, address.getHostAddress(), networkTask, logEntry);
+            } else {
+                Log.e(DownloadNetworkTaskWorker.class.getName(), "executeDNSLookup returned null. DNSLookup failed.");
+            }
+        } finally {
+            Log.d(DownloadNetworkTaskWorker.class.getName(), "Shutting down ExecutorService");
+            executorService.shutdownNow();
+        }
+        Log.d(DownloadNetworkTaskWorker.class.getName(), "Returning " + logEntry);
         logEntry.setTimestamp(getTimeService().getCurrentTimestamp());
-        logEntry.setMessage(getResources().getString(R.string.string_successful));
         return logEntry;
+    }
+
+    private void executeDownloadCommand(ExecutorService executorService, String address, NetworkTask networkTask, LogEntry logEntry) {
+        Log.d(DownloadNetworkTaskWorker.class.getName(), "executeDownloadCommand, address is " + address + ", networkTask is " + networkTask);
+        PreferenceManager preferenceManager = new PreferenceManager(getContext());
+        IFileManager fileManager = getFileManager();
+        String baseURL = networkTask.getAddress();
+        URL url = determineURL(baseURL, address);
+        if (url == null) {
+            Log.d(DownloadNetworkTaskWorker.class.getName(), "Determined url is null");
+            logEntry.setSuccess(false);
+            logEntry.setMessage(getResources().getString(R.string.text_download_url_error, baseURL));
+            return;
+        } else {
+            Log.d(DownloadNetworkTaskWorker.class.getName(), "URL is " + url.toExternalForm());
+        }
+        File folder = determineDownloadFolder();
+        if (folder == null) {
+            Log.d(DownloadNetworkTaskWorker.class.getName(), "Determined folder is null");
+            String folderMessage = preferenceManager.getPreferenceDownloadExternalStorage() ? preferenceManager.getPreferenceDownloadFolder() : fileManager.getDefaultDownloadDirectoryName();
+            logEntry.setSuccess(false);
+            logEntry.setMessage(getResources().getString(R.string.text_download_folder_error, folderMessage));
+            return;
+        } else {
+            Log.d(DownloadNetworkTaskWorker.class.getName(), "Download folder is " + folder.getAbsolutePath());
+        }
+        boolean delete = determineDeleteDownloadedFile();
+        Log.d(DownloadNetworkTaskWorker.class.getName(), "Delete downloaded file: " + delete);
+        Callable<DownloadCommandResult> downloadCommand = getDownloadCommand(networkTask, url, folder, delete);
+        int timeout = getResources().getInteger(R.integer.download_timeout);
+        try {
+
+        } catch (Throwable exc) {
+            Log.d(DownloadNetworkTaskWorker.class.getName(), "Error executing " + downloadCommand.getClass().getName(), exc);
+            logEntry.setSuccess(false);
+            logEntry.setMessage(getMessageFromException(getResources().getString(R.string.text_download_error, address), exc, timeout));
+        }
+    }
+
+    private URL determineURL(String baseURL, String address) {
+        Log.d(DownloadNetworkTaskWorker.class.getName(), "determineURL, baseURL is " + baseURL + ", address is " + address);
+        URL url = URLUtil.getURL(baseURL, address);
+        Log.d(DownloadNetworkTaskWorker.class.getName(), "URL with address modification is " + url);
+        if (url == null) {
+            Log.d(DownloadNetworkTaskWorker.class.getName(), "Error creating valid url from the specified url " + baseURL + " and the address " + address);
+            Log.d(DownloadNetworkTaskWorker.class.getName(), "Trying specified url without address modification.");
+            url = URLUtil.getURL(baseURL, null);
+            Log.d(DownloadNetworkTaskWorker.class.getName(), "URL without address modification is " + url);
+            if (url == null) {
+                Log.d(DownloadNetworkTaskWorker.class.getName(), "Error creating valid url from the specified url " + baseURL);
+                return null;
+            }
+        }
+        return url;
+    }
+
+    private File determineDownloadFolder() {
+        Log.d(DownloadNetworkTaskWorker.class.getName(), "determineDownloadFolder");
+        PreferenceManager preferenceManager = new PreferenceManager(getContext());
+        IFileManager fileManager = getFileManager();
+        if (preferenceManager.getPreferenceDownloadExternalStorage()) {
+            Log.d(DownloadNetworkTaskWorker.class.getName(), "Determining external download folder");
+            String preferenceDownloadFolder = preferenceManager.getPreferenceDownloadFolder();
+            Log.d(DownloadNetworkTaskWorker.class.getName(), "Specified folder is " + preferenceDownloadFolder);
+            return fileManager.getExternalDirectory(preferenceDownloadFolder);
+        }
+        Log.d(DownloadNetworkTaskWorker.class.getName(), "Determining internal download folder");
+        return fileManager.getInternalDownloadDirectory();
+    }
+
+    private boolean determineDeleteDownloadedFile() {
+        Log.d(DownloadNetworkTaskWorker.class.getName(), "determineDeleteDownloadedFile");
+        PreferenceManager preferenceManager = new PreferenceManager(getContext());
+        if (preferenceManager.getPreferenceDownloadExternalStorage()) {
+            Log.d(DownloadNetworkTaskWorker.class.getName(), "Downloading to external folder. Using keep downloaded files switch.");
+            return !preferenceManager.getPreferenceDownloadKeep();
+        }
+        Log.d(DownloadNetworkTaskWorker.class.getName(), "Downloading to internal folder. Always delete.");
+        return true;
+    }
+
+    protected IFileManager getFileManager() {
+        return new SystemFileManager(getContext());
+    }
+
+    protected Callable<DownloadCommandResult> getDownloadCommand(NetworkTask networkTask, URL url, File folder, boolean delete) {
+        return new DownloadCommand(getContext(), networkTask, url, folder, delete);
     }
 }

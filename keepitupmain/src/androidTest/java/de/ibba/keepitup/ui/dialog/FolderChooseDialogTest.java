@@ -129,7 +129,7 @@ public class FolderChooseDialogTest extends BaseUITest {
 
     @Test
     public void testDisplayInitialFileListLevel1Empty() {
-        getFileManager().deleteDirectory(getFileManager().getExternalRootDirectory());
+        getFileManager().delete(getFileManager().getExternalRootDirectory());
         FolderChooseDialog dialog = openFolderChooseDialog("xyz");
         onView(withId(R.id.textview_dialog_folder_choose_absolute)).check(matches(withText(root + "/xyz")));
         onView(withId(R.id.edittext_dialog_folder_choose_folder)).check(matches(withText("xyz")));
