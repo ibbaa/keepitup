@@ -59,7 +59,7 @@ public abstract class NetworkTaskWorker implements Runnable {
     public void run() {
         Log.d(NetworkTaskWorker.class.getName(), "Executing worker thread for " + networkTask);
         try {
-            LogEntry logEntry = checkInstances(networkTask);
+            LogEntry logEntry = checkInstances();
             if (logEntry != null) {
                 Log.d(NetworkTaskWorker.class.getName(), "Skipping execution. Too many active instances.");
                 writeLogEntry(logEntry, false);
@@ -76,12 +76,12 @@ public abstract class NetworkTaskWorker implements Runnable {
                 logEntry = checkNetwork(isConnectedWithWifi, isConnected);
                 if (logEntry != null) {
                     Log.d(NetworkTaskWorker.class.getName(), "Skipping execution because of the network state.");
-                    writeLogEntry(logEntry, shouldSendSystemNotification(networkTask, isConnectedWithWifi, isConnected));
+                    writeLogEntry(logEntry, shouldSendSystemNotification(isConnectedWithWifi, isConnected));
                     return;
                 }
                 logEntry = execute(networkTask);
-                if (isNetworkTaskValid(networkTask)) {
-                    writeLogEntry(logEntry, shouldSendSystemNotification(networkTask, logEntry));
+                if (isNetworkTaskValid()) {
+                    writeLogEntry(logEntry, shouldSendSystemNotification(logEntry));
                 } else {
                     Log.d(NetworkTaskWorker.class.getName(), "Network task does no longer exist. Not writing log.");
                 }
@@ -106,7 +106,7 @@ public abstract class NetworkTaskWorker implements Runnable {
         Log.d(NetworkTaskWorker.class.getName(), "Notify UI");
         sendUINotificationBroadcast();
         if (sendSystemNotifiaction) {
-            sendSystemNotifications(networkTask, logEntry);
+            sendSystemNotifications(logEntry);
         }
     }
 
@@ -120,7 +120,7 @@ public abstract class NetworkTaskWorker implements Runnable {
         getContext().sendBroadcast(logUIintent);
     }
 
-    private boolean shouldSendSystemNotification(NetworkTask networkTask, LogEntry logEntry) {
+    private boolean shouldSendSystemNotification(LogEntry logEntry) {
         Log.d(NetworkTaskWorker.class.getName(), "shouldSendSystemNotification");
         if (logEntry.isSuccess()) {
             Log.d(NetworkTaskWorker.class.getName(), "Execution was successful. Returning false.");
@@ -134,7 +134,7 @@ public abstract class NetworkTaskWorker implements Runnable {
         return true;
     }
 
-    private boolean shouldSendSystemNotification(NetworkTask networkTask, boolean isConnectedWithWifi, boolean isConnected) {
+    private boolean shouldSendSystemNotification(boolean isConnectedWithWifi, boolean isConnected) {
         Log.d(NetworkTaskWorker.class.getName(), "shouldSendSystemNotifiaction");
         if (!networkTask.isNotification()) {
             Log.d(NetworkTaskWorker.class.getName(), "Notifications for this network task are disabled. Returning false.");
@@ -153,12 +153,12 @@ public abstract class NetworkTaskWorker implements Runnable {
         return true;
     }
 
-    private void sendSystemNotifications(NetworkTask networkTask, LogEntry logEntry) {
-        Log.d(NetworkTaskWorker.class.getName(), "sendSystemNotifications for network task " + networkTask + " and log entry " + logEntry);
+    private void sendSystemNotifications(LogEntry logEntry) {
+        Log.d(NetworkTaskWorker.class.getName(), "sendSystemNotifications for log entry " + logEntry);
         notificationHandler.sendNotification(networkTask, logEntry);
     }
 
-    private LogEntry checkInstances(NetworkTask networkTask) {
+    private LogEntry checkInstances() {
         Log.d(NetworkTaskWorker.class.getName(), "checkInstances");
         LogEntry logEntry = new LogEntry();
         logEntry.setNetworkTaskId(networkTask.getId());
@@ -274,10 +274,10 @@ public abstract class NetworkTaskWorker implements Runnable {
         return factoryContributor.createServiceFactory().createTimeService();
     }
 
-    private boolean isNetworkTaskValid(NetworkTask task) {
+    private boolean isNetworkTaskValid() {
         NetworkTaskDAO networkTaskDAO = new NetworkTaskDAO(getContext());
-        NetworkTask databaseTask = networkTaskDAO.readNetworkTask(task.getId());
-        return databaseTask != null && task.getSchedulerId() == databaseTask.getSchedulerId();
+        NetworkTask databaseTask = networkTaskDAO.readNetworkTask(networkTask.getId());
+        return databaseTask != null && networkTask.getSchedulerId() == databaseTask.getSchedulerId();
     }
 
     public INetworkManager getNetworkManager() {

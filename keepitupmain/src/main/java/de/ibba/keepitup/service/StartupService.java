@@ -34,7 +34,7 @@ public class StartupService extends BroadcastReceiver {
         try {
             Log.d(StartupService.class.getName(), "Deleting internal download files.");
             IFileManager fileManager = new SystemFileManager(context);
-            fileManager.deleteDirectory(fileManager.getInternalDownloadDirectory());
+            fileManager.delete(fileManager.getInternalDownloadDirectory());
         } catch (Exception exc) {
             Log.e(StartupService.class.getName(), "Error on deleting internal download files", exc);
         }

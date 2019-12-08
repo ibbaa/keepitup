@@ -4,9 +4,12 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.util.Log;
 
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
@@ -21,18 +24,19 @@ import de.ibba.keepitup.model.NetworkTask;
 import de.ibba.keepitup.service.IFileManager;
 import de.ibba.keepitup.service.SystemFileManager;
 import de.ibba.keepitup.util.HTTPUtil;
+import de.ibba.keepitup.util.StreamUtil;
 
 public class DownloadCommand implements Callable<DownloadCommandResult> {
 
     private final Context context;
     private final NetworkTask networkTask;
     private final URL url;
-    private final String folder;
+    private final File folder;
     private final boolean delete;
     private boolean valid;
     private int notRunningCount;
 
-    public DownloadCommand(Context context, NetworkTask networkTask, URL url, String folder, boolean delete) {
+    public DownloadCommand(Context context, NetworkTask networkTask, URL url, File folder, boolean delete) {
         this.context = context;
         this.networkTask = networkTask;
         this.url = url;
@@ -59,7 +63,7 @@ public class DownloadCommand implements Callable<DownloadCommandResult> {
             connection = openConnection();
             if (connection == null) {
                 Log.d(DownloadCommand.class.getName(), "Error establishing connection to " + url);
-                return createDownloadCommandResult(connectSuccess, downloadSuccess, deleteSuccess, httpCode, httpMessage, fileName, null);
+                return createDownloadCommandResult(false, false, false, httpCode, null, null, null);
             }
             connectSuccess = true;
             if (HTTPUtil.isHTTPConnection(connection)) {
@@ -68,18 +72,31 @@ public class DownloadCommand implements Callable<DownloadCommandResult> {
                 httpMessage = httpConnection.getResponseMessage();
                 if (httpCode != HttpURLConnection.HTTP_OK) {
                     Log.d(DownloadCommand.class.getName(), "Connection successful but HTTP return code " + httpCode + " is not HTTP_OK");
-                    return createDownloadCommandResult(connectSuccess, downloadSuccess, deleteSuccess, httpCode, httpMessage, fileName, null);
+                    return createDownloadCommandResult(true, false, false, httpCode, httpMessage, null, null);
                 }
             }
+            Log.d(DownloadCommand.class.getName(), "Connection established.");
             fileName = getFileName(connection);
             if (fileName == null) {
                 Log.d(DownloadCommand.class.getName(), "Connection successful but download file name could not be determined");
-                return createDownloadCommandResult(connectSuccess, downloadSuccess, deleteSuccess, httpCode, httpMessage, fileName, null);
+                return createDownloadCommandResult(true, false, false, httpCode, httpMessage, null, null);
             }
+            Log.d(DownloadCommand.class.getName(), "Using file name " + fileName);
+            Log.d(DownloadCommand.class.getName(), "Opening streams...");
+            inputStream = connection.getInputStream();
+            outputStream = getOutputStream(fileName);
             int pollInterval = getResources().getInteger(R.integer.download_valid_poll_interval);
             Log.d(DownloadCommand.class.getName(), "Scheduling verify valid polling thread with an interval of " + pollInterval);
             executorService.scheduleWithFixedDelay(this::verifyValid, 0, pollInterval, TimeUnit.SECONDS);
-            return createDownloadCommandResult(connectSuccess, downloadSuccess, deleteSuccess, httpCode, httpMessage, fileName, null);
+            Log.d(DownloadCommand.class.getName(), "Startimg download...");
+            downloadSuccess = StreamUtil.inputStreamToOutputStream(inputStream, outputStream, this::isValid);
+            flushAndCloseOutputStream(outputStream);
+            Log.d(DownloadCommand.class.getName(), "Download successful: " + downloadSuccess);
+            if (delete) {
+                Log.d(DownloadCommand.class.getName(), "Deleting downloaded file...");
+                deleteSuccess = deleteDownloadedFile(fileName);
+            }
+            return createDownloadCommandResult(true, downloadSuccess, deleteSuccess, httpCode, httpMessage, fileName, null);
         } catch (Exception exc) {
             Log.e(DownloadCommand.class.getName(), "Error executing download command", exc);
             return createDownloadCommandResult(connectSuccess, downloadSuccess, deleteSuccess, httpCode, httpMessage, fileName, exc);
@@ -107,6 +124,22 @@ public class DownloadCommand implements Callable<DownloadCommandResult> {
         return connection;
     }
 
+    private FileOutputStream getOutputStream(String fileName) throws FileNotFoundException {
+        return new FileOutputStream(new File(folder, fileName));
+    }
+
+    private void flushAndCloseOutputStream(OutputStream outputStream) {
+        Log.d(DownloadCommand.class.getName(), "flushAndCloseOutputStream");
+        try {
+            if (outputStream != null) {
+                outputStream.flush();
+                outputStream.close();
+            }
+        } catch (Exception exc) {
+            Log.e(DownloadCommand.class.getName(), "Error closing output stream", exc);
+        }
+    }
+
     private String getFileName(URLConnection connection) {
         Log.d(DownloadCommand.class.getName(), "getFileName");
         String contentDisposition = HTTPUtil.getContentDisposition(getContext(), connection);
@@ -123,6 +156,13 @@ public class DownloadCommand implements Callable<DownloadCommandResult> {
         String validFileName = fileManager.getValidFileName(folder, fileName);
         Log.d(DownloadCommand.class.getName(), "Adjusted valid file name is " + validFileName);
         return validFileName;
+    }
+
+    private boolean deleteDownloadedFile(String fileName) {
+        Log.d(DownloadCommand.class.getName(), "deleteDownloadedFile. fileName is " + fileName);
+        File file = new File(folder, fileName);
+        IFileManager fileManager = getFileManager();
+        return fileManager.delete(file);
     }
 
     private synchronized DownloadCommandResult createDownloadCommandResult(boolean connectSuccess, boolean downloadSuccess, boolean deleteSuccess, int httpCode, String httpMessage, String fileName, Exception exc) {
@@ -160,14 +200,7 @@ public class DownloadCommand implements Callable<DownloadCommandResult> {
 
     private void closeResources(URLConnection connection, InputStream inputStream, FileOutputStream outputStream, ScheduledExecutorService executorService) {
         Log.d(DownloadCommand.class.getName(), "closeResources");
-        try {
-            if (outputStream != null) {
-                Log.d(DownloadCommand.class.getName(), "Closing output stream");
-                outputStream.close();
-            }
-        } catch (Exception exc) {
-            Log.e(DownloadCommand.class.getName(), "Error closing output stream", exc);
-        }
+        flushAndCloseOutputStream(outputStream);
         try {
             if (inputStream != null) {
                 Log.d(DownloadCommand.class.getName(), "Closing input stream");

@@ -51,8 +51,8 @@ public abstract class BaseUITest {
         preferenceManager = new PreferenceManager(TestRegistry.getContext());
         preferenceManager.removeAllPreferences();
         fileManager = new SystemFileManager(TestRegistry.getContext());
-        fileManager.deleteDirectory(fileManager.getInternalDownloadDirectory());
-        fileManager.deleteDirectory(fileManager.getExternalRootDirectory());
+        fileManager.delete(fileManager.getInternalDownloadDirectory());
+        fileManager.delete(fileManager.getExternalRootDirectory());
     }
 
     @After
@@ -62,8 +62,8 @@ public abstract class BaseUITest {
         networkTaskDAO.deleteAllNetworkTasks();
         preferenceManager.removeAllPreferences();
         fileManager = new SystemFileManager(TestRegistry.getContext());
-        fileManager.deleteDirectory(fileManager.getInternalDownloadDirectory());
-        fileManager.deleteDirectory(fileManager.getExternalRootDirectory());
+        fileManager.delete(fileManager.getInternalDownloadDirectory());
+        fileManager.delete(fileManager.getExternalRootDirectory());
     }
 
     public IFileManager getFileManager() {

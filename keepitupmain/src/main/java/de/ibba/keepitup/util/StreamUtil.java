@@ -1,5 +1,7 @@
 package de.ibba.keepitup.util;
 
+import android.util.Log;
+
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.charset.Charset;
@@ -10,6 +12,7 @@ public class StreamUtil {
     private static final int BUFFER_SIZE_4096 = 4096;
 
     public static String inputStreamToString(InputStream stream, Charset charset) throws Exception {
+        Log.d(StreamUtil.class.getName(), "inputStreamToString");
         byte[] buffer = new byte[BUFFER_SIZE_1024];
         StringBuilder stringBuilder = new StringBuilder();
         int read;
@@ -21,15 +24,26 @@ public class StreamUtil {
     }
 
     public static boolean inputStreamToOutputStream(InputStream inputStream, OutputStream outputStream, Interrupt interrupt) throws Exception {
+        Log.d(StreamUtil.class.getName(), "inputStreamToOutputStream");
         int read = -1;
         if (interrupt == null) {
             interrupt = () -> true;
         }
         byte[] buffer = new byte[BUFFER_SIZE_4096];
         while (interrupt.shouldContinue() && (read = inputStream.read(buffer, 0, BUFFER_SIZE_4096)) >= 0) {
+            Log.d(StreamUtil.class.getName(), "Writing next chunk...");
             outputStream.write(buffer, 0, read);
         }
-        return read < 0;
+        Log.d(StreamUtil.class.getName(), "Finished.");
+        boolean success = read < 0;
+        if (success) {
+            Log.d(StreamUtil.class.getName(), "Download was successful.");
+        } else if (!interrupt.shouldContinue()) {
+            Log.d(StreamUtil.class.getName(), "Download was interrupted.");
+        } else {
+            Log.d(StreamUtil.class.getName(), "Download was not successful for an unknown reason.");
+        }
+        return success;
     }
 
     @FunctionalInterface

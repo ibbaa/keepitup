@@ -263,20 +263,20 @@ public class SystemFileManager implements IFileManager {
     }
 
     @Override
-    public boolean deleteDirectory(File directory) {
-        Log.d(SystemFileManager.class.getName(), "deleteDirectory, directory is " + directory);
+    public boolean delete(File file) {
+        Log.d(SystemFileManager.class.getName(), "delete, file is " + file);
         try {
-            File[] files = directory.listFiles();
+            File[] files = file.listFiles();
             if (files != null) {
-                for (File file : files) {
-                    if (!deleteDirectory(file)) {
+                for (File currentFile : files) {
+                    if (!delete(currentFile)) {
                         Log.d(SystemFileManager.class.getName(), "Deletion of the file/directory failed: " + file.getAbsolutePath());
                     }
                 }
             }
-            return directory.delete();
+            return file.delete();
         } catch (Exception exc) {
-            Log.e(SystemFileManager.class.getName(), "Error deleting directory", exc);
+            Log.e(SystemFileManager.class.getName(), "Error deleting file/directory", exc);
             return false;
         }
     }
@@ -359,24 +359,23 @@ public class SystemFileManager implements IFileManager {
     }
 
     @Override
-    public String getValidFileName(String folder, String file) {
+    public String getValidFileName(File folder, String file) {
         Log.d(SystemFileManager.class.getName(), "getValidFileName, folder is " + folder + ", file is " + file);
         try {
-            File dir = new File(folder);
-            if (!dir.exists()) {
-                if (!dir.mkdirs()) {
+            if (!folder.exists()) {
+                if (!folder.mkdirs()) {
                     Log.e(SystemFileManager.class.getName(), "Error creating " + folder);
                     return null;
                 }
             }
-            File resultingFile = new File(dir, file);
+            File resultingFile = new File(folder, file);
             if (!resultingFile.exists()) {
                 Log.d(SystemFileManager.class.getName(), "File " + resultingFile + " does not exist");
                 return file;
             }
             Log.d(SystemFileManager.class.getName(), "File " + resultingFile + " does exist");
             String timestampFileName = FileUtil.suffixFileName(file, getTimestampSuffix());
-            resultingFile = new File(dir, timestampFileName);
+            resultingFile = new File(folder, timestampFileName);
             if (!resultingFile.exists()) {
                 Log.d(SystemFileManager.class.getName(), "File " + resultingFile + " does not exist");
                 return timestampFileName;
@@ -385,7 +384,7 @@ public class SystemFileManager implements IFileManager {
             int maxDuplicateFileNumber = getResources().getInteger(R.integer.max_duplicate_file_number);
             for (int ii = 1; ii <= maxDuplicateFileNumber; ii++) {
                 String numberFileName = FileUtil.suffixFileName(timestampFileName, getNumberSuffix(ii));
-                resultingFile = new File(dir, numberFileName);
+                resultingFile = new File(folder, numberFileName);
                 if (!resultingFile.exists()) {
                     Log.d(SystemFileManager.class.getName(), "File " + resultingFile + " does not exist");
                     return numberFileName;

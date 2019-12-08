@@ -34,15 +34,15 @@ public class SystemFileManagerTest {
         fileManager = new SystemFileManager(TestRegistry.getContext());
         MockTimeService timeService = (MockTimeService) fileManager.getTimeService();
         timeService.setTimestamp(getTestTimestamp());
-        fileManager.deleteDirectory(fileManager.getInternalDownloadDirectory());
-        fileManager.deleteDirectory(fileManager.getExternalRootDirectory());
+        fileManager.delete(fileManager.getInternalDownloadDirectory());
+        fileManager.delete(fileManager.getExternalRootDirectory());
 
     }
 
     @After
     public void afterEachTestMethod() {
-        fileManager.deleteDirectory(fileManager.getInternalDownloadDirectory());
-        fileManager.deleteDirectory(fileManager.getExternalRootDirectory());
+        fileManager.delete(fileManager.getInternalDownloadDirectory());
+        fileManager.delete(fileManager.getExternalRootDirectory());
     }
 
     @Test
@@ -202,12 +202,23 @@ public class SystemFileManagerTest {
         File testDirectory = new File(internalDownloadDir, "testdirectory");
         assertTrue(testDirectory.mkdir());
         assertEquals(2, internalDownloadDir.listFiles().length);
-        fileManager.deleteDirectory(fileManager.getInternalDownloadDirectory());
+        fileManager.delete(fileManager.getInternalDownloadDirectory());
         assertFalse(internalDownloadDir.exists());
         File externalDir = fileManager.getExternalDirectory("test/download");
-        fileManager.deleteDirectory(externalDir);
+        fileManager.delete(externalDir);
         assertFalse(externalDir.exists());
         assertTrue(new File(fileManager.getExternalRootDirectory(), "test").exists());
+    }
+
+    @Test
+    public void testDeleteFile() throws Exception {
+        File internalDownloadDir = fileManager.getInternalDownloadDirectory();
+        assertEquals(0, internalDownloadDir.listFiles().length);
+        File testFile = new File(internalDownloadDir, "testfile");
+        assertTrue(testFile.createNewFile());
+        fileManager.delete(testFile);
+        assertFalse(testFile.exists());
+        assertTrue(internalDownloadDir.exists());
     }
 
     @Test
@@ -250,27 +261,27 @@ public class SystemFileManagerTest {
 
     @Test
     public void testGetValidFileName() throws Exception {
-        String fileName = fileManager.getValidFileName(fileManager.getInternalDownloadDirectory().getAbsolutePath(), "test.file");
+        String fileName = fileManager.getValidFileName(fileManager.getInternalDownloadDirectory(), "test.file");
         assertEquals("test.file", fileName);
         File file = new File(fileManager.getInternalDownloadDirectory().getAbsolutePath(), fileName);
         assertTrue(file.createNewFile());
-        fileName = fileManager.getValidFileName(fileManager.getInternalDownloadDirectory().getAbsolutePath(), "test.file");
+        fileName = fileManager.getValidFileName(fileManager.getInternalDownloadDirectory(), "test.file");
         assertEquals("test_1985.12.24_01_01_01.file", fileName);
         file = new File(fileManager.getInternalDownloadDirectory().getAbsolutePath(), fileName);
         assertTrue(file.createNewFile());
-        fileName = fileManager.getValidFileName(fileManager.getInternalDownloadDirectory().getAbsolutePath(), "test.file");
+        fileName = fileManager.getValidFileName(fileManager.getInternalDownloadDirectory(), "test.file");
         assertEquals("test_1985.12.24_01_01_01_(1).file", fileName);
         file = new File(fileManager.getInternalDownloadDirectory().getAbsolutePath(), fileName);
         assertTrue(file.createNewFile());
-        fileName = fileManager.getValidFileName(fileManager.getInternalDownloadDirectory().getAbsolutePath(), "test.file");
+        fileName = fileManager.getValidFileName(fileManager.getInternalDownloadDirectory(), "test.file");
         assertEquals("test_1985.12.24_01_01_01_(2).file", fileName);
         file = new File(fileManager.getInternalDownloadDirectory().getAbsolutePath(), "test_1985.12.24_01_01_01.file");
         assertTrue(file.delete());
-        fileName = fileManager.getValidFileName(fileManager.getInternalDownloadDirectory().getAbsolutePath(), "test.file");
+        fileName = fileManager.getValidFileName(fileManager.getInternalDownloadDirectory(), "test.file");
         assertEquals("test_1985.12.24_01_01_01.file", fileName);
         file = new File(fileManager.getInternalDownloadDirectory().getAbsolutePath(), "test.file");
         assertTrue(file.delete());
-        fileName = fileManager.getValidFileName(fileManager.getInternalDownloadDirectory().getAbsolutePath(), "test.file");
+        fileName = fileManager.getValidFileName(fileManager.getInternalDownloadDirectory(), "test.file");
         assertEquals("test.file", fileName);
     }
 
