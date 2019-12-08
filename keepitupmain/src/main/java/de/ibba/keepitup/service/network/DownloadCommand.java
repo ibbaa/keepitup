@@ -52,6 +52,7 @@ public class DownloadCommand implements Callable<DownloadCommandResult> {
         FileOutputStream outputStream = null;
         boolean connectSuccess = false;
         boolean downloadSuccess = false;
+        boolean partialDownloadSuccess = false;
         boolean deleteSuccess = false;
         int httpCode = Integer.MAX_VALUE;
         String httpMessage = null;
@@ -63,7 +64,7 @@ public class DownloadCommand implements Callable<DownloadCommandResult> {
             connection = openConnection();
             if (connection == null) {
                 Log.d(DownloadCommand.class.getName(), "Error establishing connection to " + url);
-                return createDownloadCommandResult(false, false, false, httpCode, null, null, null);
+                return createDownloadCommandResult(false, false, false, false, httpCode, null, null, null);
             }
             connectSuccess = true;
             if (HTTPUtil.isHTTPConnection(connection)) {
@@ -72,14 +73,14 @@ public class DownloadCommand implements Callable<DownloadCommandResult> {
                 httpMessage = httpConnection.getResponseMessage();
                 if (httpCode != HttpURLConnection.HTTP_OK) {
                     Log.d(DownloadCommand.class.getName(), "Connection successful but HTTP return code " + httpCode + " is not HTTP_OK");
-                    return createDownloadCommandResult(true, false, false, httpCode, httpMessage, null, null);
+                    return createDownloadCommandResult(true, false, false, false, httpCode, httpMessage, null, null);
                 }
             }
             Log.d(DownloadCommand.class.getName(), "Connection established.");
             fileName = getFileName(connection);
             if (fileName == null) {
                 Log.d(DownloadCommand.class.getName(), "Connection successful but download file name could not be determined");
-                return createDownloadCommandResult(true, false, false, httpCode, httpMessage, null, null);
+                return createDownloadCommandResult(true, false, false, false, httpCode, httpMessage, null, null);
             }
             Log.d(DownloadCommand.class.getName(), "Using file name " + fileName);
             Log.d(DownloadCommand.class.getName(), "Opening streams...");
@@ -90,16 +91,18 @@ public class DownloadCommand implements Callable<DownloadCommandResult> {
             executorService.scheduleWithFixedDelay(this::verifyValid, 0, pollInterval, TimeUnit.SECONDS);
             Log.d(DownloadCommand.class.getName(), "Startimg download...");
             downloadSuccess = StreamUtil.inputStreamToOutputStream(inputStream, outputStream, this::isValid);
+            partialDownloadSuccess = downloadedFileExists(fileName);
             flushAndCloseOutputStream(outputStream);
             Log.d(DownloadCommand.class.getName(), "Download successful: " + downloadSuccess);
-            if (delete) {
+            Log.d(DownloadCommand.class.getName(), "Partial download successful: " + partialDownloadSuccess);
+            if (delete && partialDownloadSuccess) {
                 Log.d(DownloadCommand.class.getName(), "Deleting downloaded file...");
                 deleteSuccess = deleteDownloadedFile(fileName);
             }
-            return createDownloadCommandResult(true, downloadSuccess, deleteSuccess, httpCode, httpMessage, fileName, null);
+            return createDownloadCommandResult(true, downloadSuccess, partialDownloadSuccess, deleteSuccess, httpCode, httpMessage, fileName, null);
         } catch (Exception exc) {
             Log.e(DownloadCommand.class.getName(), "Error executing download command", exc);
-            return createDownloadCommandResult(connectSuccess, downloadSuccess, deleteSuccess, httpCode, httpMessage, fileName, exc);
+            return createDownloadCommandResult(connectSuccess, downloadSuccess, partialDownloadSuccess, deleteSuccess, httpCode, httpMessage, fileName, exc);
         } finally {
             closeResources(connection, inputStream, outputStream, executorService);
         }
@@ -161,16 +164,18 @@ public class DownloadCommand implements Callable<DownloadCommandResult> {
     private boolean deleteDownloadedFile(String fileName) {
         Log.d(DownloadCommand.class.getName(), "deleteDownloadedFile. fileName is " + fileName);
         File file = new File(folder, fileName);
-        if (!file.exists()) {
-            Log.d(DownloadCommand.class.getName(), file.getAbsolutePath() + " does not exist.");
-            return true;
-        }
         IFileManager fileManager = getFileManager();
         return fileManager.delete(file);
     }
 
-    private synchronized DownloadCommandResult createDownloadCommandResult(boolean connectSuccess, boolean downloadSuccess, boolean deleteSuccess, int httpCode, String httpMessage, String fileName, Exception exc) {
-        return new DownloadCommandResult(connectSuccess, downloadSuccess, deleteSuccess, valid, notRunningCount >= 2, httpCode, httpMessage, fileName, exc);
+    private boolean downloadedFileExists(String fileName) {
+        Log.d(DownloadCommand.class.getName(), "downloadedFileExists. fileName is " + fileName);
+        File file = new File(folder, fileName);
+        return file.exists();
+    }
+
+    private synchronized DownloadCommandResult createDownloadCommandResult(boolean connectSuccess, boolean downloadSuccess, boolean partialDownloadSuccess, boolean deleteSuccess, int httpCode, String httpMessage, String fileName, Exception exc) {
+        return new DownloadCommandResult(connectSuccess, downloadSuccess, partialDownloadSuccess, deleteSuccess, valid, notRunningCount >= 2, httpCode, httpMessage, fileName, exc);
     }
 
     private synchronized boolean isValid() {
