@@ -161,6 +161,10 @@ public class DownloadCommand implements Callable<DownloadCommandResult> {
     private boolean deleteDownloadedFile(String fileName) {
         Log.d(DownloadCommand.class.getName(), "deleteDownloadedFile. fileName is " + fileName);
         File file = new File(folder, fileName);
+        if (!file.exists()) {
+            Log.d(DownloadCommand.class.getName(), file.getAbsolutePath() + " does not exist.");
+            return true;
+        }
         IFileManager fileManager = getFileManager();
         return fileManager.delete(file);
     }
