@@ -11,6 +11,8 @@ import java.net.URL;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
 
 import de.ibba.keepitup.R;
 import de.ibba.keepitup.model.LogEntry;
@@ -94,11 +96,28 @@ public class DownloadNetworkTaskWorker extends NetworkTaskWorker {
         Callable<DownloadCommandResult> downloadCommand = getDownloadCommand(networkTask, url, folder, delete);
         int timeout = getResources().getInteger(R.integer.download_timeout);
         try {
-
+            Future<DownloadCommandResult> downloadResultFuture = executorService.submit(downloadCommand);
+            DownloadCommandResult downloadResult = downloadResultFuture.get(timeout, TimeUnit.SECONDS);
+            Log.d(PingNetworkTaskWorker.class.getName(), downloadCommand.getClass().getSimpleName() + " returned " + downloadResult);
+            if (!downloadResult.isConnectSuccess()) {
+                prepareConnectErrorMessage(downloadResult, url, timeout, logEntry);
+                return;
+            }
         } catch (Throwable exc) {
             Log.d(DownloadNetworkTaskWorker.class.getName(), "Error executing " + downloadCommand.getClass().getName(), exc);
             logEntry.setSuccess(false);
             logEntry.setMessage(getMessageFromException(getResources().getString(R.string.text_download_error, address), exc, timeout));
+        }
+    }
+
+    private void prepareConnectErrorMessage(DownloadCommandResult downloadResult, URL url, int timeout, LogEntry logEntry) {
+        String connectMessage = getResources().getString(R.string.text_download_connect_error, URLUtil.getHostAndPort(url));
+        logEntry.setSuccess(false);
+        Throwable exc = downloadResult.getException();
+        if (exc == null) {
+            logEntry.setMessage(connectMessage);
+        } else {
+            logEntry.setMessage(getMessageFromException(connectMessage, exc, timeout));
         }
     }
 
