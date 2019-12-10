@@ -20,6 +20,7 @@ import de.ibba.keepitup.model.NetworkTask;
 import de.ibba.keepitup.resources.PreferenceManager;
 import de.ibba.keepitup.service.network.DownloadCommand;
 import de.ibba.keepitup.service.network.DownloadCommandResult;
+import de.ibba.keepitup.util.HTTPUtil;
 import de.ibba.keepitup.util.URLUtil;
 
 public class DownloadNetworkTaskWorker extends NetworkTaskWorker {
@@ -100,17 +101,24 @@ public class DownloadNetworkTaskWorker extends NetworkTaskWorker {
             DownloadCommandResult downloadResult = downloadResultFuture.get(timeout, TimeUnit.SECONDS);
             Log.d(PingNetworkTaskWorker.class.getName(), downloadCommand.getClass().getSimpleName() + " returned " + downloadResult);
             if (!downloadResult.isConnectSuccess()) {
+                Log.d(DownloadNetworkTaskWorker.class.getName(), "Connection failed. Preparing error message.");
                 prepareConnectErrorMessage(downloadResult, url, timeout, logEntry);
+                return;
+            }
+            if (!HTTPUtil.isHTTPReturnCodeOk(downloadResult.getHttpResponseCode())) {
+                Log.d(DownloadNetworkTaskWorker.class.getName(), "HTTP return code is not HTTP_OK. Preparing error message.");
+                prepareHTTPReturnCodeErrorMessage(downloadResult, url, timeout, logEntry);
                 return;
             }
         } catch (Throwable exc) {
             Log.d(DownloadNetworkTaskWorker.class.getName(), "Error executing " + downloadCommand.getClass().getName(), exc);
             logEntry.setSuccess(false);
-            logEntry.setMessage(getMessageFromException(getResources().getString(R.string.text_download_error, address), exc, timeout));
+            logEntry.setMessage(getMessageFromException(getResources().getString(R.string.text_download_error, url.toExternalForm()), exc, timeout));
         }
     }
 
     private void prepareConnectErrorMessage(DownloadCommandResult downloadResult, URL url, int timeout, LogEntry logEntry) {
+        Log.d(DownloadNetworkTaskWorker.class.getName(), "prepareConnectErrorMessage");
         String connectMessage = getResources().getString(R.string.text_download_connect_error, URLUtil.getHostAndPort(url));
         logEntry.setSuccess(false);
         Throwable exc = downloadResult.getException();
@@ -118,6 +126,19 @@ public class DownloadNetworkTaskWorker extends NetworkTaskWorker {
             logEntry.setMessage(connectMessage);
         } else {
             logEntry.setMessage(getMessageFromException(connectMessage, exc, timeout));
+        }
+    }
+
+    private void prepareHTTPReturnCodeErrorMessage(DownloadCommandResult downloadResult, URL url, int timeout, LogEntry logEntry) {
+        Log.d(DownloadNetworkTaskWorker.class.getName(), "prepareHTTPReturnCodeErrorMessage");
+        String downloadError = getResources().getString(R.string.text_download_error, url.toExternalForm());
+        String httpMessage = getResources().getString(R.string.text_download_http_error, downloadResult.getHttpResponseCode(), downloadResult.getHttpResponseMessage());
+        String message = downloadError + ". " + httpMessage;
+        Throwable exc = downloadResult.getException();
+        if (exc == null) {
+            logEntry.setMessage(message);
+        } else {
+            logEntry.setMessage(getMessageFromException(message, exc, timeout));
         }
     }
 
