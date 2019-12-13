@@ -5,13 +5,15 @@ import androidx.annotation.NonNull;
 public class LogFileEntry {
 
     private long timestamp;
+    private String thread;
     private LogLevel level;
     private String tag;
     private String message;
     private Throwable throwable;
 
-    public LogFileEntry(long timestamp, LogLevel level, String tag, String message, Throwable throwable) {
+    public LogFileEntry(long timestamp, String thread, LogLevel level, String tag, String message, Throwable throwable) {
         this.timestamp = timestamp;
+        this.thread = thread;
         this.level = level;
         this.tag = tag;
         this.message = message;
@@ -20,6 +22,10 @@ public class LogFileEntry {
 
     public long getTimestamp() {
         return timestamp;
+    }
+
+    public String getThread() {
+        return thread;
     }
 
     public LogLevel getLevel() {
@@ -43,6 +49,7 @@ public class LogFileEntry {
     public String toString() {
         return "LogFileEntry{" +
                 "timestamp=" + timestamp +
+                ", thread='" + thread + '\'' +
                 ", level=" + level +
                 ", tag='" + tag + '\'' +
                 ", message='" + message + '\'' +
