@@ -13,6 +13,7 @@ import java.net.SocketTimeoutException;
 import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
@@ -199,10 +200,12 @@ public abstract class NetworkTaskWorker implements Runnable {
         return null;
     }
 
-    public InetAddress executeDNSLookup(ExecutorService executorService, String host, LogEntry logEntry, boolean preferIp4) {
+    public InetAddress executeDNSLookup(String host, LogEntry logEntry, boolean preferIp4) {
         Log.d(NetworkTaskWorker.class.getName(), "executeDNSLookup, host is " + host + ", preferIp4 is " + preferIp4);
         Callable<DNSLookupResult> dnsLookup = getDNSLookup(host);
         int timeout = getResources().getInteger(R.integer.dns_lookup_timeout);
+        Log.d(NetworkTaskWorker.class.getName(), "Creating ExecutorService");
+        ExecutorService executorService = Executors.newSingleThreadExecutor();
         try {
             Log.d(NetworkTaskWorker.class.getName(), "Executing " + dnsLookup.getClass().getSimpleName() + " with a timeout of " + timeout);
             Future<DNSLookupResult> dnsLookupResultFuture = executorService.submit(dnsLookup);
@@ -232,6 +235,9 @@ public abstract class NetworkTaskWorker implements Runnable {
             Log.e(NetworkTaskWorker.class.getName(), "Error executing " + dnsLookup.getClass().getName(), exc);
             logEntry.setSuccess(false);
             logEntry.setMessage(getMessageFromException(getResources().getString(R.string.text_dns_lookup_error, host), exc, timeout));
+        } finally {
+            Log.d(NetworkTaskWorker.class.getName(), "Shutting down ExecutorService");
+            executorService.shutdownNow();
         }
         return null;
     }

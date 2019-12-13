@@ -14,7 +14,6 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.GregorianCalendar;
 import java.util.List;
-import java.util.concurrent.Executors;
 
 import de.ibba.keepitup.db.LogDAO;
 import de.ibba.keepitup.db.NetworkTaskDAO;
@@ -322,7 +321,7 @@ public class NetworkTaskWorkerTest {
         TestNetworkTaskWorker testNetworkTaskWorker = new TestNetworkTaskWorker(TestRegistry.getContext(), getNetworkTask(), null, true);
         DNSLookupResult dnsLookupResult = new DNSLookupResult(Arrays.asList(InetAddress.getByName("::1"), InetAddress.getByName("127.0.0.1"), InetAddress.getByName("2a00:1450:4016:801::200e")), null);
         testNetworkTaskWorker.setMockDNSLookup(new MockDNSLookup("127.0.0.1", dnsLookupResult));
-        InetAddress address = testNetworkTaskWorker.executeDNSLookup(Executors.newSingleThreadExecutor(), "host.com", logEntry, true);
+        InetAddress address = testNetworkTaskWorker.executeDNSLookup("host.com", logEntry, true);
         assertEquals(InetAddress.getByName("127.0.0.1"), address);
         assertTrue(logEntry.isSuccess());
         assertEquals("DNS lookup for host.com successful. Resolved address is 127.0.0.1.", logEntry.getMessage());
@@ -334,7 +333,7 @@ public class NetworkTaskWorkerTest {
         TestNetworkTaskWorker testNetworkTaskWorker = new TestNetworkTaskWorker(TestRegistry.getContext(), getNetworkTask(), null, true);
         DNSLookupResult dnsLookupResult = new DNSLookupResult(Arrays.asList(InetAddress.getByName("::1"), InetAddress.getByName("127.0.0.1"), InetAddress.getByName("2a00:1450:4016:801::200e")), null);
         testNetworkTaskWorker.setMockDNSLookup(new MockDNSLookup("127.0.0.1", dnsLookupResult));
-        InetAddress address = testNetworkTaskWorker.executeDNSLookup(Executors.newSingleThreadExecutor(), "host.com", logEntry, false);
+        InetAddress address = testNetworkTaskWorker.executeDNSLookup("host.com", logEntry, false);
         assertEquals(InetAddress.getByName("::1"), address);
         assertTrue(logEntry.isSuccess());
         assertEquals("DNS lookup for host.com successful. Resolved address is ::1.", logEntry.getMessage());
@@ -346,7 +345,7 @@ public class NetworkTaskWorkerTest {
         TestNetworkTaskWorker testNetworkTaskWorker = new TestNetworkTaskWorker(TestRegistry.getContext(), getNetworkTask(), null, true);
         DNSLookupResult dnsLookupResult = new DNSLookupResult(Arrays.asList(InetAddress.getByName("127.0.0.1"), InetAddress.getByName("192.168.178.1")), null);
         testNetworkTaskWorker.setMockDNSLookup(new MockDNSLookup("127.0.0.1", dnsLookupResult));
-        InetAddress address = testNetworkTaskWorker.executeDNSLookup(Executors.newSingleThreadExecutor(), "host.com", logEntry, false);
+        InetAddress address = testNetworkTaskWorker.executeDNSLookup("host.com", logEntry, false);
         assertEquals(InetAddress.getByName("127.0.0.1"), address);
         assertTrue(logEntry.isSuccess());
         assertEquals("DNS lookup for host.com successful. Resolved address is 127.0.0.1.", logEntry.getMessage());
@@ -358,7 +357,7 @@ public class NetworkTaskWorkerTest {
         TestNetworkTaskWorker testNetworkTaskWorker = new TestNetworkTaskWorker(TestRegistry.getContext(), getNetworkTask(), null, true);
         DNSLookupResult dnsLookupResult = new DNSLookupResult(Collections.emptyList(), null);
         testNetworkTaskWorker.setMockDNSLookup(new MockDNSLookup("127.0.0.1", dnsLookupResult));
-        InetAddress address = testNetworkTaskWorker.executeDNSLookup(Executors.newSingleThreadExecutor(), "host.com", logEntry, true);
+        InetAddress address = testNetworkTaskWorker.executeDNSLookup("host.com", logEntry, true);
         assertNull(address);
         assertFalse(logEntry.isSuccess());
         assertEquals("DNS lookup for host.com failed. No address for host.", logEntry.getMessage());
@@ -371,7 +370,7 @@ public class NetworkTaskWorkerTest {
         IllegalArgumentException exception = new IllegalArgumentException("TestException");
         DNSLookupResult dnsLookupResult = new DNSLookupResult(Collections.emptyList(), exception);
         testNetworkTaskWorker.setMockDNSLookup(new MockDNSLookup("127.0.0.1", dnsLookupResult));
-        InetAddress address = testNetworkTaskWorker.executeDNSLookup(Executors.newSingleThreadExecutor(), "host.com", logEntry, true);
+        InetAddress address = testNetworkTaskWorker.executeDNSLookup("host.com", logEntry, true);
         assertNull(address);
         assertFalse(logEntry.isSuccess());
         assertEquals("DNS lookup for host.com failed. IllegalArgumentException: TestException", logEntry.getMessage());

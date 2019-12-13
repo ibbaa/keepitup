@@ -39,34 +39,30 @@ public class ConnectNetworkTaskWorker extends NetworkTaskWorker {
         Log.d(ConnectNetworkTaskWorker.class.getName(), "Executing ConnectNetworkTaskWorker for " + networkTask);
         LogEntry logEntry = new LogEntry();
         logEntry.setNetworkTaskId(networkTask.getId());
-        ExecutorService executorService = Executors.newSingleThreadExecutor();
-        try {
-            InetAddress address = executeDNSLookup(executorService, networkTask.getAddress(), logEntry, getResources().getBoolean(R.bool.network_prefer_ipv4));
-            if (address != null) {
-                Log.d(ConnectNetworkTaskWorker.class.getName(), "executeDNSLookup returned " + address);
-                boolean ip6 = address instanceof Inet6Address;
-                if (ip6) {
-                    Log.d(ConnectNetworkTaskWorker.class.getName(), address + " is an IPv6 address");
-                } else {
-                    Log.d(ConnectNetworkTaskWorker.class.getName(), address + " is an IPv4 address");
-                }
-                executeConnectCommand(executorService, address, networkTask.getPort(), ip6, logEntry);
+        InetAddress address = executeDNSLookup(networkTask.getAddress(), logEntry, getResources().getBoolean(R.bool.network_prefer_ipv4));
+        if (address != null) {
+            Log.d(ConnectNetworkTaskWorker.class.getName(), "executeDNSLookup returned " + address);
+            boolean ip6 = address instanceof Inet6Address;
+            if (ip6) {
+                Log.d(ConnectNetworkTaskWorker.class.getName(), address + " is an IPv6 address");
             } else {
-                Log.e(ConnectNetworkTaskWorker.class.getName(), "executeDNSLookup returned null. DNSLookup failed.");
+                Log.d(ConnectNetworkTaskWorker.class.getName(), address + " is an IPv4 address");
             }
-        } finally {
-            Log.d(ConnectNetworkTaskWorker.class.getName(), "Shutting down ExecutorService");
-            executorService.shutdownNow();
+            executeConnectCommand(address, networkTask.getPort(), ip6, logEntry);
+        } else {
+            Log.e(ConnectNetworkTaskWorker.class.getName(), "executeDNSLookup returned null. DNSLookup failed.");
         }
         Log.d(ConnectNetworkTaskWorker.class.getName(), "Returning " + logEntry);
         logEntry.setTimestamp(getTimeService().getCurrentTimestamp());
         return logEntry;
     }
 
-    private void executeConnectCommand(ExecutorService executorService, InetAddress address, int port, boolean ip6, LogEntry logEntry) {
+    private void executeConnectCommand(InetAddress address, int port, boolean ip6, LogEntry logEntry) {
         Log.d(ConnectNetworkTaskWorker.class.getName(), "executeConnectCommand, address is " + address + ", port is " + port);
         Callable<ConnectCommandResult> connectCommand = getConnectCommand(address, port);
         int connectTimeout = getResources().getInteger(R.integer.connect_timeout);
+        Log.d(ConnectNetworkTaskWorker.class.getName(), "Creating ExecutorService");
+        ExecutorService executorService = Executors.newSingleThreadExecutor();
         try {
             Log.d(ConnectNetworkTaskWorker.class.getName(), "Executing " + connectCommand.getClass().getSimpleName() + " with a timeout of " + connectTimeout * 2);
             Future<ConnectCommandResult> connectResultFuture = executorService.submit(connectCommand);
@@ -89,6 +85,9 @@ public class ConnectNetworkTaskWorker extends NetworkTaskWorker {
             Log.d(ConnectNetworkTaskWorker.class.getName(), "Error executing " + connectCommand.getClass().getName(), exc);
             logEntry.setSuccess(false);
             logEntry.setMessage(getMessageFromException(getResources().getString(R.string.text_connect_error, getAddressWithPort(address.getHostAddress(), port, ip6)), exc, connectTimeout * 2));
+        } finally {
+            Log.d(ConnectNetworkTaskWorker.class.getName(), "Shutting down ExecutorService");
+            executorService.shutdownNow();
         }
     }
 

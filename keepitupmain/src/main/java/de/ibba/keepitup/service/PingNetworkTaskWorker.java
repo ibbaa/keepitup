@@ -44,36 +44,32 @@ public class PingNetworkTaskWorker extends NetworkTaskWorker {
         Log.d(PingNetworkTaskWorker.class.getName(), "Executing PingNetworkTaskWorker for " + networkTask);
         LogEntry logEntry = new LogEntry();
         logEntry.setNetworkTaskId(networkTask.getId());
-        ExecutorService executorService = Executors.newSingleThreadExecutor();
-        try {
-            InetAddress address = executeDNSLookup(executorService, networkTask.getAddress(), logEntry, getResources().getBoolean(R.bool.network_prefer_ipv4));
-            if (address != null) {
-                Log.d(PingNetworkTaskWorker.class.getName(), "executeDNSLookup returned " + address);
-                boolean ip6 = address instanceof Inet6Address;
-                if (ip6) {
-                    Log.d(PingNetworkTaskWorker.class.getName(), address + " is an IPv6 address");
-                } else {
-                    Log.d(PingNetworkTaskWorker.class.getName(), address + " is an IPv4 address");
-                }
-                executePingCommand(executorService, address.getHostAddress(), ip6, logEntry);
+        InetAddress address = executeDNSLookup(networkTask.getAddress(), logEntry, getResources().getBoolean(R.bool.network_prefer_ipv4));
+        if (address != null) {
+            Log.d(PingNetworkTaskWorker.class.getName(), "executeDNSLookup returned " + address);
+            boolean ip6 = address instanceof Inet6Address;
+            if (ip6) {
+                Log.d(PingNetworkTaskWorker.class.getName(), address + " is an IPv6 address");
             } else {
-                Log.e(PingNetworkTaskWorker.class.getName(), "executeDNSLookup returned null. DNSLookup failed.");
+                Log.d(PingNetworkTaskWorker.class.getName(), address + " is an IPv4 address");
             }
-        } finally {
-            Log.d(PingNetworkTaskWorker.class.getName(), "Shutting down ExecutorService");
-            executorService.shutdownNow();
+            executePingCommand(address.getHostAddress(), ip6, logEntry);
+        } else {
+            Log.e(PingNetworkTaskWorker.class.getName(), "executeDNSLookup returned null. DNSLookup failed.");
         }
         Log.d(PingNetworkTaskWorker.class.getName(), "Returning " + logEntry);
         logEntry.setTimestamp(getTimeService().getCurrentTimestamp());
         return logEntry;
     }
 
-    private void executePingCommand(ExecutorService executorService, String address, boolean ip6, LogEntry logEntry) {
+    private void executePingCommand(String address, boolean ip6, LogEntry logEntry) {
         Log.d(PingNetworkTaskWorker.class.getName(), "executePingCommand, address is " + address + ", ip6 is " + ip6);
         PreferenceManager preferenceManager = new PreferenceManager(getContext());
         int count = preferenceManager.getPreferencePingCount();
         Callable<PingCommandResult> pingCommand = getPingCommand(address, count, ip6);
         int timeout = getResources().getInteger(R.integer.ping_timeout) * count * 2;
+        Log.d(PingNetworkTaskWorker.class.getName(), "Creating ExecutorService");
+        ExecutorService executorService = Executors.newSingleThreadExecutor();
         try {
             Log.d(PingNetworkTaskWorker.class.getName(), "Executing " + pingCommand.getClass().getSimpleName() + " with a timeout of " + timeout);
             Future<PingCommandResult> pingResultFuture = executorService.submit(pingCommand);
@@ -96,6 +92,9 @@ public class PingNetworkTaskWorker extends NetworkTaskWorker {
             Log.d(PingNetworkTaskWorker.class.getName(), "Error executing " + pingCommand.getClass().getName(), exc);
             logEntry.setSuccess(false);
             logEntry.setMessage(getMessageFromException(getResources().getString(R.string.text_ping_error, address), exc, timeout));
+        } finally {
+            Log.d(PingNetworkTaskWorker.class.getName(), "Shutting down ExecutorService");
+            executorService.shutdownNow();
         }
     }
 

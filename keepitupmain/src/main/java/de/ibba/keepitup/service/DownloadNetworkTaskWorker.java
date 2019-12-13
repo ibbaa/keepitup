@@ -44,31 +44,25 @@ public class DownloadNetworkTaskWorker extends NetworkTaskWorker {
         Log.d(DownloadNetworkTaskWorker.class.getName(), "Executing DownloadNetworkTaskWorker for " + networkTask);
         LogEntry logEntry = new LogEntry();
         logEntry.setNetworkTaskId(networkTask.getId());
-        ExecutorService executorService = Executors.newSingleThreadExecutor();
-        try {
-            InetAddress address = executeDNSLookup(executorService, networkTask.getAddress(), logEntry, getResources().getBoolean(R.bool.network_prefer_ipv4));
-            if (address != null) {
-                Log.d(DownloadNetworkTaskWorker.class.getName(), "executeDNSLookup returned " + address);
-                boolean ip6 = address instanceof Inet6Address;
-                if (ip6) {
-                    Log.d(DownloadNetworkTaskWorker.class.getName(), address + " is an IPv6 address");
-                } else {
-                    Log.d(DownloadNetworkTaskWorker.class.getName(), address + " is an IPv4 address");
-                }
-                executeDownloadCommand(executorService, address.getHostAddress(), networkTask, logEntry);
+        InetAddress address = executeDNSLookup(networkTask.getAddress(), logEntry, getResources().getBoolean(R.bool.network_prefer_ipv4));
+        if (address != null) {
+            Log.d(DownloadNetworkTaskWorker.class.getName(), "executeDNSLookup returned " + address);
+            boolean ip6 = address instanceof Inet6Address;
+            if (ip6) {
+                Log.d(DownloadNetworkTaskWorker.class.getName(), address + " is an IPv6 address");
             } else {
-                Log.e(DownloadNetworkTaskWorker.class.getName(), "executeDNSLookup returned null. DNSLookup failed.");
+                Log.d(DownloadNetworkTaskWorker.class.getName(), address + " is an IPv4 address");
             }
-        } finally {
-            Log.d(DownloadNetworkTaskWorker.class.getName(), "Shutting down ExecutorService");
-            executorService.shutdownNow();
+            executeDownloadCommand(address.getHostAddress(), networkTask, logEntry);
+        } else {
+            Log.e(DownloadNetworkTaskWorker.class.getName(), "executeDNSLookup returned null. DNSLookup failed.");
         }
         Log.d(DownloadNetworkTaskWorker.class.getName(), "Returning " + logEntry);
         logEntry.setTimestamp(getTimeService().getCurrentTimestamp());
         return logEntry;
     }
 
-    private void executeDownloadCommand(ExecutorService executorService, String address, NetworkTask networkTask, LogEntry logEntry) {
+    private void executeDownloadCommand(String address, NetworkTask networkTask, LogEntry logEntry) {
         Log.d(DownloadNetworkTaskWorker.class.getName(), "executeDownloadCommand, address is " + address + ", networkTask is " + networkTask);
         PreferenceManager preferenceManager = new PreferenceManager(getContext());
         IFileManager fileManager = getFileManager();
@@ -96,6 +90,8 @@ public class DownloadNetworkTaskWorker extends NetworkTaskWorker {
         Log.d(DownloadNetworkTaskWorker.class.getName(), "Delete downloaded file: " + delete);
         Callable<DownloadCommandResult> downloadCommand = getDownloadCommand(networkTask, url, folder, delete);
         int timeout = getResources().getInteger(R.integer.download_timeout);
+        Log.d(DownloadNetworkTaskWorker.class.getName(), "Creating ExecutorService");
+        ExecutorService executorService = Executors.newSingleThreadExecutor();
         try {
             Future<DownloadCommandResult> downloadResultFuture = executorService.submit(downloadCommand);
             DownloadCommandResult downloadResult = downloadResultFuture.get(timeout, TimeUnit.SECONDS);
@@ -114,6 +110,9 @@ public class DownloadNetworkTaskWorker extends NetworkTaskWorker {
             Log.d(DownloadNetworkTaskWorker.class.getName(), "Error executing " + downloadCommand.getClass().getName(), exc);
             logEntry.setSuccess(false);
             logEntry.setMessage(getMessageFromException(getResources().getString(R.string.text_download_error, url.toExternalForm()), exc, timeout));
+        } finally {
+            Log.d(DownloadNetworkTaskWorker.class.getName(), "Shutting down ExecutorService");
+            executorService.shutdownNow();
         }
     }
 
