@@ -57,7 +57,7 @@ public class DownloadCommand implements Callable<DownloadCommandResult> {
         int httpCode = Integer.MAX_VALUE;
         String httpMessage = null;
         String fileName = null;
-        ScheduledExecutorService executorService = Executors.newScheduledThreadPool(1);
+        ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor();
         initializeValid();
         try {
             Log.d(DownloadCommand.class.getName(), "Establishing connection to " + url);
@@ -188,22 +188,27 @@ public class DownloadCommand implements Callable<DownloadCommandResult> {
     }
 
     private synchronized void verifyValid() {
-        NetworkTaskDAO networkTaskDAO = new NetworkTaskDAO(getContext());
-        NetworkTask databaseTask = networkTaskDAO.readNetworkTask(networkTask.getId());
-        if (databaseTask == null || networkTask.getSchedulerId() != databaseTask.getSchedulerId()) {
-            valid = false;
-            notRunningCount = 0;
-            return;
-        }
-        if (databaseTask.isRunning()) {
+        try {
+            NetworkTaskDAO networkTaskDAO = new NetworkTaskDAO(getContext());
+            NetworkTask databaseTask = networkTaskDAO.readNetworkTask(networkTask.getId());
+            if (databaseTask == null || networkTask.getSchedulerId() != databaseTask.getSchedulerId()) {
+                valid = false;
+                notRunningCount = 0;
+                return;
+            }
+            if (databaseTask.isRunning()) {
+                valid = true;
+                notRunningCount = 0;
+                return;
+            }
             valid = true;
-            notRunningCount = 0;
-            return;
-        }
-        valid = true;
-        notRunningCount++;
-        if (notRunningCount >= 2) {
-            valid = false;
+            notRunningCount++;
+            if (notRunningCount >= 2) {
+                valid = false;
+            }
+        } catch (Exception exc) {
+            Log.e(DownloadCommand.class.getName(), "Exception while verifying valid state.");
+            valid = true;
         }
     }
 

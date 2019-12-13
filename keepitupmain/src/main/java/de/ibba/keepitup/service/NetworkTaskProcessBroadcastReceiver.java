@@ -27,6 +27,7 @@ public class NetworkTaskProcessBroadcastReceiver extends BroadcastReceiver {
         Log.d(NetworkTaskProcessBroadcastReceiver.class.getName(), "Synchronoues execution is " + synchronous);
         PowerManager powerManager = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
         PowerManager.WakeLock wakeLock = null;
+        Log.d(NetworkTaskProcessBroadcastReceiver.class.getName(), "Creating ExecutorService");
         ExecutorService executorService = Executors.newSingleThreadExecutor();
         try {
             Log.d(NetworkTaskProcessBroadcastReceiver.class.getName(), "Acquiring partial wake lock with a timeout of " + wakeLockTimeout + " msec");
