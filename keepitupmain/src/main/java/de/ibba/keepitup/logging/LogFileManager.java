@@ -86,7 +86,7 @@ public class LogFileManager {
         return null;
     }
 
-    private String getTimestampSuffix(long timestamp) {
+    public String getTimestampSuffix(long timestamp) {
         SimpleDateFormat fileNameDateFormat = new SimpleDateFormat(SUFFIX_FILE_PATTERN, Locale.US);
         return fileNameDateFormat.format(new Date(timestamp));
     }

@@ -107,6 +107,11 @@ public class LogFileManagerTest {
         assertEquals("test.file", fileName);
     }
 
+    @Test
+    public void testGetTimestampSuffix() {
+        assertEquals("1985.12.24_01_01_01.999", logFileManager.getTimestampSuffix(getTestTimestamp()));
+    }
+
     private File getTestLogFileFolder() {
         File dir = TestRegistry.getContext().getFilesDir();
         File logDir = new File(dir, "logdir");
