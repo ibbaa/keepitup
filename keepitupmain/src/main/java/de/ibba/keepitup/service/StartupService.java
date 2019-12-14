@@ -22,6 +22,7 @@ public class StartupService extends BroadcastReceiver {
 
     public void startup(Context context) {
         Log.d(StartupService.class.getName(), "Starting application.");
+        de.ibba.keepitup.logging.Log.initialize(null);
         try {
             Log.d(StartupService.class.getName(), "Init notification channels.");
             new NotificationHandler(context);

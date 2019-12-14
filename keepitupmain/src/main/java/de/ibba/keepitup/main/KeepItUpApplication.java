@@ -11,7 +11,6 @@ public class KeepItUpApplication extends Application {
     public void onCreate() {
         Log.d(KeepItUpApplication.class.getName(), "onCreate");
         super.onCreate();
-        de.ibba.keepitup.logging.Log.initialize(null);
         StartupService startupService = new StartupService();
         startupService.startup(this);
     }
