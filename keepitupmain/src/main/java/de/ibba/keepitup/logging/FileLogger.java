@@ -7,8 +7,6 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -31,8 +29,6 @@ public class FileLogger implements ILogger {
 
     private final LinkedBlockingQueue<LogFileEntry> logQueue;
     private AtomicBoolean logThreadActive;
-
-    private ExecutorService logThreadExecutor;
 
     public FileLogger(String logDirectory) {
         this(DEFAULT_MAX_LEVEL, DEFAULT_MAX_FILE_SIZE, DEFAULT_ARCHIVE_FILE_COUNT, logDirectory, DEFAULT_LOG_FILE_BASE_NAME);
@@ -74,7 +70,6 @@ public class FileLogger implements ILogger {
         this.logFileName = logFileName;
         this.logQueue = new LinkedBlockingQueue<>();
         this.logThreadActive = new AtomicBoolean(false);
-        this.logThreadExecutor = Executors.newSingleThreadExecutor();
     }
 
     @Override
@@ -90,7 +85,8 @@ public class FileLogger implements ILogger {
             logQueue.offer(logEntry, LOG_QUEUE_PUT_TIMEOUT, TimeUnit.MILLISECONDS);
             if (!logThreadActive.get()) {
                 logThreadActive.set(true);
-                logThreadExecutor.execute(this::doLog);
+                Thread logThread = new Thread(this::doLog);
+                logThread.start();
             }
         } catch (InterruptedException exc) {
             //Do nothing
