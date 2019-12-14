@@ -1,17 +1,28 @@
 package de.ibba.keepitup.logging;
 
+import java.util.concurrent.locks.ReentrantReadWriteLock;
+
 import de.ibba.keepitup.BuildConfig;
 
 public class Log {
 
+    private static final ReentrantReadWriteLock debugLoggerLock = new ReentrantReadWriteLock();
+
     private static ILogger debugLogger;
 
-    public static synchronized void initialize(ILogger debugLogger) {
+    public static void initialize(ILogger debugLogger) {
+        debugLoggerLock.writeLock().lock();
         Log.debugLogger = debugLogger;
+        debugLoggerLock.writeLock().unlock();
     }
 
-    private static synchronized ILogger getLogger() {
-        return debugLogger;
+    private static ILogger getLogger() {
+        debugLoggerLock.readLock().lock();
+        try {
+            return debugLogger;
+        } finally {
+            debugLoggerLock.readLock().unlock();
+        }
     }
 
     public static void i(String tag, String message) {
