@@ -57,7 +57,7 @@ public class LogFileManager {
         }
     }
 
-    public String getValidFileName(File folder, String file, long timestamp) {
+    public String getValidFileName(File folder, String file, Long timestamp) {
         try {
             if (!folder.exists()) {
                 if (!folder.mkdirs()) {
@@ -68,10 +68,13 @@ public class LogFileManager {
             if (!resultingFile.exists()) {
                 return file;
             }
-            String timestampFileName = suffixFileName(file, getTimestampSuffix(timestamp));
-            resultingFile = new File(folder, timestampFileName);
-            if (!resultingFile.exists()) {
-                return timestampFileName;
+            String timestampFileName = file;
+            if (timestamp != null) {
+                timestampFileName = suffixFileName(file, getTimestampSuffix(timestamp.longValue()));
+                resultingFile = new File(folder, timestampFileName);
+                if (!resultingFile.exists()) {
+                    return timestampFileName;
+                }
             }
             for (int ii = 1; ii <= MAX_DUPLICATE_FILES; ii++) {
                 String numberFileName = FileUtil.suffixFileName(timestampFileName, getNumberSuffix(ii));
