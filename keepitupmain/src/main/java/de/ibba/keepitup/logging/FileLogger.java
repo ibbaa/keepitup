@@ -10,6 +10,7 @@ import java.io.OutputStream;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.locks.ReentrantLock;
 
 public class FileLogger implements ILogger {
 
@@ -20,6 +21,9 @@ public class FileLogger implements ILogger {
 
     private final static int LOG_QUEUE_PUT_TIMEOUT = 500;
     private final static int LOG_QUEUE_TAKE_TIMEOUT = 60000;
+
+    private final static ReentrantLock loggerLock = new ReentrantLock();
+    private final static ReentrantLock housekeepingLock = new ReentrantLock();
 
     private final LogLevel maxLevel;
     private final int maxFileSize;
@@ -95,39 +99,39 @@ public class FileLogger implements ILogger {
 
     private void doLog() {
         OutputStream logstream = null;
-        synchronized (FileLogger.class) {
-            try {
-                File logFile = new File(logDirectory, logFileName);
-                long fileSize = 0;
-                if (logFile.exists()) {
-                    fileSize = logFile.length();
-                }
-                logstream = initializeLogStream(logFile);
-                LogFileManager fileManager = new LogFileManager();
-                LogFormatter formatter = new LogFormatter();
-                LogFileEntry entry;
-                while ((entry = logQueue.poll(LOG_QUEUE_TAKE_TIMEOUT, TimeUnit.MILLISECONDS)) != null) {
-                    byte[] message = formatter.formatLogFileEntry(entry, Charsets.UTF_8);
-                    logstream.write(message);
-                    fileSize += message.length;
-                    if (fileSize >= maxFileSize) {
-                        closeLogStream(logstream);
-                        String newFileName = fileManager.getValidFileName(new File(logDirectory), logFileName, System.currentTimeMillis());
-                        if (newFileName != null) {
-                            if (logFile.renameTo(new File(newFileName))) {
-                                logFile = new File(logDirectory, logFileName);
-                                fileSize = 0;
-                                logstream = initializeLogStream(logFile);
-                            }
+        try {
+            loggerLock.lock();
+            File logFile = new File(logDirectory, logFileName);
+            long fileSize = 0;
+            if (logFile.exists()) {
+                fileSize = logFile.length();
+            }
+            logstream = initializeLogStream(logFile);
+            LogFileManager fileManager = new LogFileManager();
+            LogFormatter formatter = new LogFormatter();
+            LogFileEntry entry;
+            while ((entry = logQueue.poll(LOG_QUEUE_TAKE_TIMEOUT, TimeUnit.MILLISECONDS)) != null) {
+                byte[] message = formatter.formatLogFileEntry(entry, Charsets.UTF_8);
+                logstream.write(message);
+                fileSize += message.length;
+                if (fileSize >= maxFileSize) {
+                    closeLogStream(logstream);
+                    String newFileName = fileManager.getValidFileName(new File(logDirectory), logFileName, System.currentTimeMillis());
+                    if (newFileName != null) {
+                        if (logFile.renameTo(new File(newFileName))) {
+                            logFile = new File(logDirectory, logFileName);
+                            fileSize = 0;
+                            logstream = initializeLogStream(logFile);
                         }
                     }
                 }
-            } catch (Exception exc) {
-                //Do nothing
-            } finally {
-                logThreadActive.set(false);
-                closeLogStream(logstream);
             }
+        } catch (Exception exc) {
+            //Do nothing
+        } finally {
+            logThreadActive.set(false);
+            closeLogStream(logstream);
+            loggerLock.unlock();
         }
     }
 
