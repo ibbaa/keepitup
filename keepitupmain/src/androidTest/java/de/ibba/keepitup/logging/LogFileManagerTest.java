@@ -80,7 +80,7 @@ public class LogFileManagerTest {
     }
 
     @Test
-    public void testGetValidFileName() throws Exception {
+    public void testGetValidFileNameWithTimestamp() throws Exception {
         File logDir = getTestLogFileFolder();
         long testTimestamp = getTestTimestamp();
         String fileName = logFileManager.getValidFileName(logDir, "test.file", testTimestamp);
@@ -105,6 +105,25 @@ public class LogFileManagerTest {
         assertTrue(file.delete());
         fileName = logFileManager.getValidFileName(logDir, "test.file", testTimestamp);
         assertEquals("test.file", fileName);
+    }
+
+    @Test
+    public void testGetValidFileNameWithoutTimestamp() throws Exception {
+        File logDir = getTestLogFileFolder();
+        String fileName = logFileManager.getValidFileName(logDir, "test.file", null);
+        assertEquals("test.file", fileName);
+        File file = new File(logDir.getAbsolutePath(), fileName);
+        assertTrue(file.createNewFile());
+        fileName = logFileManager.getValidFileName(logDir, "test.file", null);
+        assertEquals("test_(1).file", fileName);
+        file = new File(logDir.getAbsolutePath(), fileName);
+        assertTrue(file.createNewFile());
+        fileName = logFileManager.getValidFileName(logDir, "test.file", null);
+        assertEquals("test_(2).file", fileName);
+        file = new File(logDir.getAbsolutePath(), "test_(1).file");
+        assertTrue(file.delete());
+        fileName = logFileManager.getValidFileName(logDir, "test.file", null);
+        assertEquals("test_(1).file", fileName);
     }
 
     @Test
