@@ -14,7 +14,6 @@ import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
 import de.ibba.keepitup.R;
-import de.ibba.keepitup.db.LogDAO;
 import de.ibba.keepitup.model.LogEntry;
 import de.ibba.keepitup.model.NetworkTask;
 import de.ibba.keepitup.ui.adapter.LogEntryAdapter;
@@ -83,7 +82,6 @@ public class NetworkTaskLogActivity extends RecyclerViewBaseActivity {
 
     private List<LogEntry> readLogEntriesFromDatabase(NetworkTask task) {
         Log.d(NetworkTaskLogActivity.class.getName(), "readLogEntriesFromDatabase");
-        LogDAO logDAO = new LogDAO(this);
         try {
             LogEntryUIInitTask uiInitTask = getUIInitTask(null);
             uiInitTask.start(task);
