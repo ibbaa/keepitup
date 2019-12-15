@@ -1,15 +1,23 @@
 package de.ibba.keepitup.logging;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
 import de.ibba.keepitup.util.FileUtil;
 import de.ibba.keepitup.util.StringUtil;
 
 public class LogFileManager {
 
+    private static final int BUFFER_SIZE_1024 = 1024;
     private final static int MAX_DUPLICATE_FILES = 99;
     private final static String SUFFIX_FILE_PATTERN = "yyyy.MM.dd_HH_mm_ss.SSS";
 
@@ -96,5 +104,70 @@ public class LogFileManager {
 
     private String getNumberSuffix(int number) {
         return "(" + number + ")";
+    }
+
+    public void zipFiles(List<File> files, File zipFile) {
+        if (zipFile.exists()) {
+            if (!zipFile.delete()) {
+                return;
+            }
+        }
+        ZipOutputStream zipOutputStream = null;
+        try {
+            zipOutputStream = new ZipOutputStream(new FileOutputStream("sample.zip"));
+            for (File currentFile : files) {
+                if (currentFile.exists() && currentFile.isFile()) {
+                    writeFileToZip(currentFile, zipOutputStream);
+                }
+            }
+            for (File currentFile : files) {
+                if (currentFile.exists() && currentFile.isFile()) {
+                    currentFile.delete();
+                }
+            }
+        } catch (FileNotFoundException exc) {
+            //do nothing
+        } finally {
+            if (zipOutputStream != null) {
+                try {
+                    zipOutputStream.flush();
+                    zipOutputStream.close();
+                } catch (IOException e) {
+                    //do nothing
+                }
+            }
+        }
+    }
+
+    private void writeFileToZip(File file, ZipOutputStream zipOutputStream) {
+        FileInputStream fileInputStream = null;
+        ZipEntry zipEntry = null;
+        try {
+            fileInputStream = new FileInputStream(file);
+            zipEntry = new ZipEntry(file.getName());
+            zipOutputStream.putNextEntry(zipEntry);
+            byte[] buffer = new byte[1024];
+            int read;
+            while ((read = fileInputStream.read(buffer, 0, BUFFER_SIZE_1024)) >= 0) {
+                zipOutputStream.write(buffer, 0, read);
+            }
+        } catch (Exception exc) {
+            //do nothing
+        } finally {
+            if (zipEntry != null) {
+                try {
+                    zipOutputStream.closeEntry();
+                } catch (IOException e) {
+                    //do nothing
+                }
+            }
+            if (fileInputStream != null) {
+                try {
+                    fileInputStream.close();
+                } catch (IOException e) {
+                    //do nothing
+                }
+            }
+        }
     }
 }

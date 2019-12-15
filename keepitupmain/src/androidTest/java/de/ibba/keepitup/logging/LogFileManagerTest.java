@@ -3,11 +3,14 @@ package de.ibba.keepitup.logging;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.SmallTest;
 
+import com.google.common.base.Charsets;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
@@ -131,6 +134,12 @@ public class LogFileManagerTest {
         assertEquals("1985.12.24_01_01_01.999", logFileManager.getTimestampSuffix(getTestTimestamp()));
     }
 
+    @Test
+    public void testZipFiles() {
+        File logDir = getTestLogFileFolder();
+        //TODO
+    }
+
     private File getTestLogFileFolder() {
         File dir = TestRegistry.getContext().getFilesDir();
         File logDir = new File(dir, "logdir");
@@ -138,6 +147,15 @@ public class LogFileManagerTest {
             assertTrue(logDir.mkdirs());
         }
         return logDir;
+    }
+
+    private File createTestFile(File dir, String name, String content) throws Exception {
+        File file = new File(dir, name);
+        FileOutputStream outputStream = new FileOutputStream(file);
+        outputStream.write(content.getBytes(Charsets.UTF_8));
+        outputStream.flush();
+        outputStream.close();
+        return file;
     }
 
     private long getTestTimestamp() {
