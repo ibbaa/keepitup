@@ -9,15 +9,22 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
 
 import de.ibba.keepitup.test.mock.TestRegistry;
 
+import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 @SmallTest
@@ -135,9 +142,41 @@ public class LogFileManagerTest {
     }
 
     @Test
-    public void testZipFiles() {
+    public void testZipFiles() throws Exception {
         File logDir = getTestLogFileFolder();
-        //TODO
+        File file1 = createTestFile(logDir, "test1.txt", "Test1Text");
+        File file2 = createTestFile(logDir, "test2.txt", "Test2Text");
+        File file3 = createTestFile(logDir, "test3.txt", "Test3Text");
+        File file4 = createTestFile(logDir, "test4.txt", "Test4Text");
+        File file5 = createTestFile(logDir, "test5.txt", "Test5Text");
+        assertTrue(file5.delete());
+        File file6 = new File(logDir, "test6");
+        assertTrue(file6.mkdirs());
+        File zipFile = new File(logDir, "test.zip");
+        logFileManager.zipFiles(Arrays.asList(file1, file2, file3, file4, file5, file6), zipFile);
+        File[] files = logDir.listFiles();
+        assertEquals(2, files.length);
+        zipFile = files[0].getName().equals("test.zip") ? files[0] : files[1];
+        assertEquals("test.zip", zipFile.getName());
+        ZipInputStream zipInputStream = new ZipInputStream(new FileInputStream(zipFile));
+        ZipEntry entry1 = zipInputStream.getNextEntry();
+        byte[] content1 = getZipEntryContent(zipInputStream);
+        ZipEntry entry2 = zipInputStream.getNextEntry();
+        byte[] content2 = getZipEntryContent(zipInputStream);
+        ZipEntry entry3 = zipInputStream.getNextEntry();
+        byte[] content3 = getZipEntryContent(zipInputStream);
+        ZipEntry entry4 = zipInputStream.getNextEntry();
+        byte[] content4 = getZipEntryContent(zipInputStream);
+        assertNull(zipInputStream.getNextEntry());
+        assertEquals("test1.txt", entry1.getName());
+        assertEquals("test2.txt", entry2.getName());
+        assertEquals("test3.txt", entry3.getName());
+        assertEquals("test4.txt", entry4.getName());
+        assertArrayEquals("Test1Text".getBytes(Charsets.UTF_8), content1);
+        assertArrayEquals("Test2Text".getBytes(Charsets.UTF_8), content2);
+        assertArrayEquals("Test3Text".getBytes(Charsets.UTF_8), content3);
+        assertArrayEquals("Test4Text".getBytes(Charsets.UTF_8), content4);
+        zipInputStream.close();
     }
 
     private File getTestLogFileFolder() {
@@ -156,6 +195,16 @@ public class LogFileManagerTest {
         outputStream.flush();
         outputStream.close();
         return file;
+    }
+
+    private byte[] getZipEntryContent(ZipInputStream zipInputStream) throws Exception {
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        byte[] buffer = new byte[20];
+        int read;
+        while ((read = zipInputStream.read(buffer, 0, 20)) >= 0) {
+            outputStream.write(buffer, 0, read);
+        }
+        return outputStream.toByteArray();
     }
 
     private long getTestTimestamp() {
