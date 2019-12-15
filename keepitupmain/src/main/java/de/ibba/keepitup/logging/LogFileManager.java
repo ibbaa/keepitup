@@ -78,7 +78,7 @@ public class LogFileManager {
             }
             String timestampFileName = file;
             if (timestamp != null) {
-                timestampFileName = suffixFileName(file, getTimestampSuffix(timestamp.longValue()));
+                timestampFileName = suffixFileName(file, getTimestampSuffix(timestamp));
                 resultingFile = new File(folder, timestampFileName);
                 if (!resultingFile.exists()) {
                     return timestampFileName;
@@ -114,7 +114,7 @@ public class LogFileManager {
         }
         ZipOutputStream zipOutputStream = null;
         try {
-            zipOutputStream = new ZipOutputStream(new FileOutputStream("sample.zip"));
+            zipOutputStream = new ZipOutputStream(new FileOutputStream(zipFile));
             for (File currentFile : files) {
                 if (currentFile.exists() && currentFile.isFile()) {
                     writeFileToZip(currentFile, zipOutputStream);
@@ -140,13 +140,11 @@ public class LogFileManager {
     }
 
     private void writeFileToZip(File file, ZipOutputStream zipOutputStream) {
-        FileInputStream fileInputStream = null;
         ZipEntry zipEntry = null;
-        try {
-            fileInputStream = new FileInputStream(file);
+        try (FileInputStream fileInputStream = new FileInputStream(file)) {
             zipEntry = new ZipEntry(file.getName());
             zipOutputStream.putNextEntry(zipEntry);
-            byte[] buffer = new byte[1024];
+            byte[] buffer = new byte[BUFFER_SIZE_1024];
             int read;
             while ((read = fileInputStream.read(buffer, 0, BUFFER_SIZE_1024)) >= 0) {
                 zipOutputStream.write(buffer, 0, read);
@@ -157,13 +155,6 @@ public class LogFileManager {
             if (zipEntry != null) {
                 try {
                     zipOutputStream.closeEntry();
-                } catch (IOException e) {
-                    //do nothing
-                }
-            }
-            if (fileInputStream != null) {
-                try {
-                    fileInputStream.close();
                 } catch (IOException e) {
                     //do nothing
                 }
