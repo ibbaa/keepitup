@@ -9,13 +9,16 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.InputStream;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
+import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
@@ -179,6 +182,18 @@ public class LogFileManagerTest {
         zipInputStream.close();
     }
 
+    @Test
+    public void testWriteListToFile() throws Exception {
+        File logDir = getTestLogFileFolder();
+        List<?> data = Arrays.asList("Test", 3, null, "12345");
+        File file = new File(logDir, "test.txt");
+        logFileManager.writeListToFile(data, file);
+        File[] files = logDir.listFiles();
+        assertEquals(1, files.length);
+        String fileContent = getFileContent(new File(logDir, "test.txt"));
+        assertEquals("Test" + System.lineSeparator() + "3" + System.lineSeparator() + "12345" + System.lineSeparator(), fileContent);
+    }
+
     private File getTestLogFileFolder() {
         File dir = TestRegistry.getContext().getFilesDir();
         File logDir = new File(dir, "logdir");
@@ -195,6 +210,18 @@ public class LogFileManagerTest {
         outputStream.flush();
         outputStream.close();
         return file;
+    }
+
+    private String getFileContent(File file) throws Exception {
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        InputStream inputStream = new BufferedInputStream(new FileInputStream(file));
+        byte[] buffer = new byte[50];
+        int read;
+        while ((read = inputStream.read(buffer, 0, 50)) >= 0) {
+            outputStream.write(buffer, 0, read);
+        }
+        inputStream.close();
+        return new String(outputStream.toByteArray(), Charsets.UTF_8);
     }
 
     private byte[] getZipEntryContent(ZipInputStream zipInputStream) throws Exception {
