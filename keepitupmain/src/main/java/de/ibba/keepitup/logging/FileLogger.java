@@ -14,7 +14,7 @@ import java.util.concurrent.locks.ReentrantLock;
 
 public class FileLogger implements ILogger {
 
-    private final static LogLevel DEFAULT_MAX_LEVEL = LogLevel.DEBUG;
+    private final static LogLevel DEFAULT_LOG_LEVEL = LogLevel.DEBUG;
     private final static int DEFAULT_MAX_FILE_SIZE = 1024 * 1024;
     private final static int DEFAULT_ARCHIVE_FILE_COUNT = 50;
     private final static String DEFAULT_LOG_FILE_BASE_NAME = "keepitup.log";
@@ -34,19 +34,19 @@ public class FileLogger implements ILogger {
     private AtomicBoolean logThreadActive;
 
     public FileLogger(String logDirectory) {
-        this(DEFAULT_MAX_LEVEL, DEFAULT_MAX_FILE_SIZE, DEFAULT_ARCHIVE_FILE_COUNT, logDirectory, DEFAULT_LOG_FILE_BASE_NAME);
+        this(DEFAULT_LOG_LEVEL, DEFAULT_MAX_FILE_SIZE, DEFAULT_ARCHIVE_FILE_COUNT, logDirectory, DEFAULT_LOG_FILE_BASE_NAME);
     }
 
     public FileLogger(int maxFileSize, String logDirectory) {
-        this(DEFAULT_MAX_LEVEL, maxFileSize, DEFAULT_ARCHIVE_FILE_COUNT, logDirectory, DEFAULT_LOG_FILE_BASE_NAME);
+        this(DEFAULT_LOG_LEVEL, maxFileSize, DEFAULT_ARCHIVE_FILE_COUNT, logDirectory, DEFAULT_LOG_FILE_BASE_NAME);
     }
 
     public FileLogger(String logDirectory, String logFileName) {
-        this(DEFAULT_MAX_LEVEL, DEFAULT_MAX_FILE_SIZE, DEFAULT_ARCHIVE_FILE_COUNT, logDirectory, logFileName);
+        this(DEFAULT_LOG_LEVEL, DEFAULT_MAX_FILE_SIZE, DEFAULT_ARCHIVE_FILE_COUNT, logDirectory, logFileName);
     }
 
     public FileLogger(int maxFileSize, int archiveFileCount, String logDirectory) {
-        this(DEFAULT_MAX_LEVEL, maxFileSize, archiveFileCount, logDirectory, DEFAULT_LOG_FILE_BASE_NAME);
+        this(DEFAULT_LOG_LEVEL, maxFileSize, archiveFileCount, logDirectory, DEFAULT_LOG_FILE_BASE_NAME);
     }
 
     public FileLogger(LogLevel maxLevel, String logDirectory) {
