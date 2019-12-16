@@ -1,10 +1,14 @@
 package de.ibba.keepitup.logging;
 
+import com.google.common.base.Charsets;
+
+import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -155,6 +159,35 @@ public class LogFileManager {
             if (zipEntry != null) {
                 try {
                     zipOutputStream.closeEntry();
+                } catch (IOException e) {
+                    //do nothing
+                }
+            }
+        }
+    }
+
+    public void writeListToFile(List<?> objects, File file) {
+        if (file.exists()) {
+            if (!file.delete()) {
+                return;
+            }
+        }
+        OutputStream outputStream = null;
+        try {
+            outputStream = new BufferedOutputStream(new FileOutputStream(file));
+            for (Object object : objects) {
+                if (object != null) {
+                    String data = object.toString() + System.lineSeparator();
+                    outputStream.write(data.getBytes(Charsets.UTF_8));
+                }
+            }
+        } catch (Exception exc) {
+            //do nothing
+        } finally {
+            if (outputStream != null) {
+                try {
+                    outputStream.flush();
+                    outputStream.close();
                 } catch (IOException e) {
                     //do nothing
                 }

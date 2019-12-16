@@ -23,7 +23,6 @@ public class FileLogger implements ILogger {
     private final static int LOG_QUEUE_TAKE_TIMEOUT = 60000;
 
     private final static ReentrantLock loggerLock = new ReentrantLock();
-    private final static ReentrantLock housekeepingLock = new ReentrantLock();
 
     private final LogLevel maxLevel;
     private final int maxFileSize;
@@ -98,7 +97,7 @@ public class FileLogger implements ILogger {
     }
 
     private void doLog() {
-        OutputStream logstream = null;
+        OutputStream logStream = null;
         try {
             loggerLock.lock();
             File logFile = new File(logDirectory, logFileName);
@@ -106,23 +105,30 @@ public class FileLogger implements ILogger {
             if (logFile.exists()) {
                 fileSize = logFile.length();
             }
-            logstream = initializeLogStream(logFile);
+            logStream = initializeLogStream(logFile);
             LogFileManager fileManager = new LogFileManager();
             LogFormatter formatter = new LogFormatter();
             LogFileEntry entry;
             while ((entry = logQueue.poll(LOG_QUEUE_TAKE_TIMEOUT, TimeUnit.MILLISECONDS)) != null) {
                 byte[] message = formatter.formatLogFileEntry(entry, Charsets.UTF_8);
-                logstream.write(message);
+                logStream.write(message);
                 fileSize += message.length;
                 if (fileSize >= maxFileSize) {
-                    closeLogStream(logstream);
+                    closeLogStream(logStream);
                     String newFileName = fileManager.getValidFileName(new File(logDirectory), logFileName, System.currentTimeMillis());
                     if (newFileName != null) {
-                        if (logFile.renameTo(new File(newFileName))) {
+                        if (logFile.renameTo(new File(new File(logDirectory), newFileName))) {
                             logFile = new File(logDirectory, logFileName);
                             fileSize = 0;
-                            logstream = initializeLogStream(logFile);
+                            logStream = initializeLogStream(logFile);
+                            Housekeeper housekeeper = new Housekeeper(logDirectory, logFileName, archiveFileCount, this::shouldBeArchived);
+                            Thread housekeepingThread = new Thread(housekeeper);
+                            housekeepingThread.start();
+                        } else {
+                            return;
                         }
+                    } else {
+                        return;
                     }
                 }
             }
@@ -130,9 +136,19 @@ public class FileLogger implements ILogger {
             //Do nothing
         } finally {
             logThreadActive.set(false);
-            closeLogStream(logstream);
+            closeLogStream(logStream);
             loggerLock.unlock();
         }
+    }
+
+    private boolean shouldBeArchived(File dir, String name) {
+        if (logFileName.equals(name)) {
+            return false;
+        }
+        LogFileManager fileManager = new LogFileManager();
+        String logFileBaseName = fileManager.getFileNameWithoutExtension(logFileName);
+        String logFileSuffix = fileManager.getFileNameExtension(logFileName);
+        return name.startsWith(logFileBaseName) && name.endsWith(logFileSuffix);
     }
 
     private OutputStream initializeLogStream(File logFile) throws IOException {
