@@ -211,4 +211,28 @@ public class PreferenceManagerTest {
         preferenceManager.removePreferenceDownloadKeep();
         assertFalse(preferenceManager.getPreferenceDownloadKeep());
     }
+
+    @Test
+    public void testGetSetRemovePreferenceFileLoggerEnabled() {
+        assertFalse(preferenceManager.getPreferenceFileLoggerEnabled());
+        preferenceManager.setPreferenceFileLoggerEnabled(true);
+        assertTrue(preferenceManager.getPreferenceFileLoggerEnabled());
+        preferenceManager.removeAllPreferences();
+        assertFalse(preferenceManager.getPreferenceFileLoggerEnabled());
+        preferenceManager.setPreferenceFileLoggerEnabled(true);
+        preferenceManager.removePreferenceFileLoggerEnabled();
+        assertFalse(preferenceManager.getPreferenceFileLoggerEnabled());
+    }
+
+    @Test
+    public void testGetSetRemovePreferenceFileDumpEnabled() {
+        assertFalse(preferenceManager.getPreferenceFileDumpEnabled());
+        preferenceManager.setPreferenceFileDumpEnabled(true);
+        assertTrue(preferenceManager.getPreferenceFileDumpEnabled());
+        preferenceManager.removeAllPreferences();
+        assertFalse(preferenceManager.getPreferenceFileDumpEnabled());
+        preferenceManager.setPreferenceFileDumpEnabled(true);
+        preferenceManager.removePreferenceFileDumpEnabled();
+        assertFalse(preferenceManager.getPreferenceFileDumpEnabled());
+    }
 }

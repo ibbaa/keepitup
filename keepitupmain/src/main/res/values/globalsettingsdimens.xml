@@ -9,19 +9,12 @@
     <dimen name="cardview_global_settings_activity_ping_count_card_elevation">4dp</dimen>
     <dimen name="linearlayout_global_settings_activity_ping_count_margin">4dp</dimen>
     <dimen name="cardview_global_settings_activity_notification_inactive_network_margin">4dp</dimen>
-    <dimen name="cardview_global_settings_activity_notification_inactive_network_corner_radius">
-        4dp
-    </dimen>
-    <dimen name="cardview_global_settings_activity_notification_inactive_network_card_elevation">
-        4dp
-    </dimen>
-    <dimen name="linearlayout_global_settings_activity_notification_inactive_network_margin">4dp
-    </dimen>
+    <dimen name="cardview_global_settings_activity_notification_inactive_network_corner_radius">4dp</dimen>
+    <dimen name="cardview_global_settings_activity_notification_inactive_network_card_elevation">4dp</dimen>
+    <dimen name="linearlayout_global_settings_activity_notification_inactive_network_margin">4dp</dimen>
     <dimen name="cardview_global_settings_activity_download_external_storage_margin">4dp</dimen>
-    <dimen name="cardview_global_settings_activity_download_external_storage_corner_radius">4dp
-    </dimen>
-    <dimen name="cardview_global_settings_activity_download_external_storage_card_elevation">4dp
-    </dimen>
+    <dimen name="cardview_global_settings_activity_download_external_storage_corner_radius">4dp</dimen>
+    <dimen name="cardview_global_settings_activity_download_external_storage_card_elevation">4dp</dimen>
     <dimen name="linearlayout_global_settings_activity_download_external_storage_margin">4dp</dimen>
     <dimen name="cardview_global_settings_activity_download_folder_margin">4dp</dimen>
     <dimen name="cardview_global_settings_activity_download_folder_corner_radius">4dp</dimen>
@@ -31,4 +24,16 @@
     <dimen name="cardview_global_settings_activity_download_keep_corner_radius">4dp</dimen>
     <dimen name="cardview_global_settings_activity_download_keep_card_elevation">4dp</dimen>
     <dimen name="linearlayout_global_settings_activity_download_keep_margin">4dp</dimen>
+    <dimen name="cardview_global_settings_activity_debug_margin">4dp</dimen>
+    <dimen name="cardview_global_settings_activity_debug_corner_radius">4dp</dimen>
+    <dimen name="cardview_global_settings_activity_debug_card_elevation">4dp</dimen>
+    <dimen name="textview_global_settings_activity_debug_margin">4dp</dimen>
+    <dimen name="cardview_global_settings_activity_file_logger_enabled_margin">4dp</dimen>
+    <dimen name="cardview_global_settings_activity_file_logger_enabled_corner_radius">4dp</dimen>
+    <dimen name="cardview_global_settings_activity_file_logger_enabled_card_elevation">4dp</dimen>
+    <dimen name="linearlayout_global_settings_activity_file_logger_enabled_margin">4dp</dimen>
+    <dimen name="cardview_global_settings_activity_file_dump_enabled_margin">4dp</dimen>
+    <dimen name="cardview_global_settings_activity_file_dump_enabled_corner_radius">4dp</dimen>
+    <dimen name="cardview_global_settings_activity_file_dump_enabled_card_elevation">4dp</dimen>
+    <dimen name="linearlayout_global_settings_activity_file_dump_enabled_margin">4dp</dimen>
 </resources>
