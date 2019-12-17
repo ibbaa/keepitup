@@ -15,6 +15,7 @@ import java.io.File;
 import java.util.Collections;
 import java.util.List;
 
+import de.ibba.keepitup.BuildConfig;
 import de.ibba.keepitup.R;
 import de.ibba.keepitup.resources.PreferenceManager;
 import de.ibba.keepitup.service.IFileManager;
@@ -36,6 +37,10 @@ public class GlobalSettingsActivity extends SettingsInputActivity {
     private TextView downloadFolderText;
     private Switch downloadKeepSwitch;
     private TextView downloadKeepOnOffText;
+    private Switch fileLoggerEnabledSwitch;
+    private TextView fileLoggerEnabledOnOffText;
+    private Switch fileDumpEnabledSwitch;
+    private TextView fileDumpEnabledOnOffText;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -49,6 +54,9 @@ public class GlobalSettingsActivity extends SettingsInputActivity {
         prepareDownloadExternalStorageSwitch();
         prepareDownloadFolderField();
         prepareDownloadKeepSwitch();
+        prepareDebugSettingsLabel();
+        prepareFileLoggerEnabledSwitch();
+        prepareFileDumpEnabledSwitch();
     }
 
     @Override
@@ -68,6 +76,8 @@ public class GlobalSettingsActivity extends SettingsInputActivity {
             preferenceManager.removePreferenceDownloadExternalStorage();
             preferenceManager.removePreferenceDownloadFolder();
             preferenceManager.removePreferenceDownloadKeep();
+            preferenceManager.removePreferenceFileLoggerEnabled();
+            preferenceManager.removePreferenceFileDumpEnabled();
             recreateActivity();
             return true;
         }
@@ -185,6 +195,78 @@ public class GlobalSettingsActivity extends SettingsInputActivity {
         PreferenceManager preferenceManager = new PreferenceManager(this);
         preferenceManager.setPreferenceDownloadKeep(isChecked);
         prepareDownloadKeepOnOffText();
+    }
+
+    private void prepareDebugSettingsLabel() {
+        Log.d(GlobalSettingsActivity.class.getName(), "prepareDebugSettingsLabel");
+        CardView debugSettingsLabel = findViewById(R.id.cardview_global_settings_activity_debug);
+        if (BuildConfig.DEBUG) {
+            Log.d(GlobalSettingsActivity.class.getName(), "Debug version. Enabling debug settings.");
+            debugSettingsLabel.setVisibility(View.VISIBLE);
+        } else {
+            Log.d(GlobalSettingsActivity.class.getName(), "Release version. Enabling debug settings.");
+            debugSettingsLabel.setVisibility(View.GONE);
+        }
+    }
+
+    private void prepareFileLoggerEnabledSwitch() {
+        Log.d(GlobalSettingsActivity.class.getName(), "prepareFileLoggerEnabled");
+        CardView fileLoggerEnabledLabel = findViewById(R.id.cardview_global_settings_activity_file_logger_enabled);
+        fileLoggerEnabledSwitch = findViewById(R.id.switch_global_settings_activity_file_logger_enabled);
+        fileLoggerEnabledOnOffText = findViewById(R.id.textview_global_settings_activity_file_logger_enabled_on_off);
+        if (BuildConfig.DEBUG) {
+            Log.d(GlobalSettingsActivity.class.getName(), "Debug version. Enabling debug settings.");
+            fileLoggerEnabledLabel.setVisibility(View.VISIBLE);
+            PreferenceManager preferenceManager = new PreferenceManager(this);
+            fileLoggerEnabledSwitch.setOnCheckedChangeListener(null);
+            fileLoggerEnabledSwitch.setChecked(preferenceManager.getPreferenceFileLoggerEnabled());
+            fileLoggerEnabledSwitch.setOnCheckedChangeListener(this::onFileLoggerEnabledCheckedChanged);
+            prepareFileLoggerEnabledOnOffText();
+        } else {
+            Log.d(GlobalSettingsActivity.class.getName(), "Release version. Enabling debug settings.");
+            fileLoggerEnabledLabel.setVisibility(View.GONE);
+        }
+    }
+
+    private void prepareFileLoggerEnabledOnOffText() {
+        fileLoggerEnabledOnOffText.setText(fileLoggerEnabledSwitch.isChecked() ? getResources().getString(R.string.string_yes) : getResources().getString(R.string.string_no));
+    }
+
+    private void onFileLoggerEnabledCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+        Log.d(GlobalSettingsActivity.class.getName(), "onFileLoggerEnabledCheckedChanged, new value is " + isChecked);
+        PreferenceManager preferenceManager = new PreferenceManager(this);
+        preferenceManager.setPreferenceFileLoggerEnabled(isChecked);
+        prepareFileLoggerEnabledOnOffText();
+    }
+
+    private void prepareFileDumpEnabledSwitch() {
+        Log.d(GlobalSettingsActivity.class.getName(), "prepareFileDumpEnabledSwitch");
+        CardView fileDumpEnabledLabel = findViewById(R.id.cardview_global_settings_activity_file_logger_enabled);
+        fileDumpEnabledSwitch = findViewById(R.id.switch_global_settings_activity_file_dump_enabled);
+        fileDumpEnabledOnOffText = findViewById(R.id.textview_global_settings_activity_file_dump_enabled_on_off);
+        if (BuildConfig.DEBUG) {
+            Log.d(GlobalSettingsActivity.class.getName(), "Debug version. Enabling debug settings.");
+            fileDumpEnabledLabel.setVisibility(View.VISIBLE);
+            PreferenceManager preferenceManager = new PreferenceManager(this);
+            fileDumpEnabledSwitch.setOnCheckedChangeListener(null);
+            fileDumpEnabledSwitch.setChecked(preferenceManager.getPreferenceFileDumpEnabled());
+            fileDumpEnabledSwitch.setOnCheckedChangeListener(this::onFileDumpEnabledCheckedChanged);
+            prepareFileDumpEnabledOnOffText();
+        } else {
+            Log.d(GlobalSettingsActivity.class.getName(), "Release version. Enabling debug settings.");
+            fileDumpEnabledLabel.setVisibility(View.GONE);
+        }
+    }
+
+    private void prepareFileDumpEnabledOnOffText() {
+        fileDumpEnabledOnOffText.setText(fileDumpEnabledSwitch.isChecked() ? getResources().getString(R.string.string_yes) : getResources().getString(R.string.string_no));
+    }
+
+    private void onFileDumpEnabledCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+        Log.d(GlobalSettingsActivity.class.getName(), "onFileDumpEnabledCheckedChanged, new value is " + isChecked);
+        PreferenceManager preferenceManager = new PreferenceManager(this);
+        preferenceManager.setPreferenceFileDumpEnabled(isChecked);
+        prepareFileDumpEnabledOnOffText();
     }
 
     private String getPingCount() {

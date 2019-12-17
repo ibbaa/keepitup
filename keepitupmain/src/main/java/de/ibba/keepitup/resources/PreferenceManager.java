@@ -251,6 +251,36 @@ public class PreferenceManager {
         removePreferenceValue(getResources().getString(R.string.download_keep_key));
     }
 
+    public boolean getPreferenceFileLoggerEnabled() {
+        Log.d(PreferenceManager.class.getName(), "getPreferenceFileLoggerEnabled");
+        return getPreferenceBoolean(getResources().getString(R.string.file_logger_enabled_key), getResources().getBoolean(R.bool.file_logger_enabled_default));
+    }
+
+    public void setPreferenceFileLoggerEnabled(boolean fileLoggerEnabled) {
+        Log.d(PreferenceManager.class.getName(), "setPreferenceFileLoggerEnabled, fileLoggerEnabled is " + fileLoggerEnabled);
+        setPreferenceBoolean(getResources().getString(R.string.file_logger_enabled_key), fileLoggerEnabled);
+    }
+
+    public void removePreferenceFileLoggerEnabled() {
+        Log.d(PreferenceManager.class.getName(), "removePreferenceFileLoggerEnabled");
+        removePreferenceValue(getResources().getString(R.string.file_logger_enabled_key));
+    }
+
+    public boolean getPreferenceFileDumpEnabled() {
+        Log.d(PreferenceManager.class.getName(), "getPreferenceFileDumpEnabled");
+        return getPreferenceBoolean(getResources().getString(R.string.file_dump_enabled_key), getResources().getBoolean(R.bool.file_dump_enabled_default));
+    }
+
+    public void setPreferenceFileDumpEnabled(boolean fileDumpEnabled) {
+        Log.d(PreferenceManager.class.getName(), "setPreferenceFileDumpEnabled, fileDumpEnabled is " + fileDumpEnabled);
+        setPreferenceBoolean(getResources().getString(R.string.file_dump_enabled_key), fileDumpEnabled);
+    }
+
+    public void removePreferenceFileDumpEnabled() {
+        Log.d(PreferenceManager.class.getName(), "removePreferenceFileDumpEnabled");
+        removePreferenceValue(getResources().getString(R.string.file_dump_enabled_key));
+    }
+
     private SharedPreferences getDefaultSharedPreferences() {
         return androidx.preference.PreferenceManager.getDefaultSharedPreferences(getContext());
     }
