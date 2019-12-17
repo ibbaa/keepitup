@@ -19,12 +19,23 @@
 # If you keep the line number information, uncomment this to
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
+-dontobfuscate
+-keep public class de.ibba.keepitup.ui.validation.* {
+    public <methods>;
+}
 -keep public class de.ibba.keepitup.resources.SystemServiceFactory
 -keep public class de.ibba.keepitup.resources.SystemWorkerFactory
--keep public class de.ibba.keepitup.service.PingNetworkTaskWorker
--keep public class de.ibba.keepitup.service.ConnectNetworkTaskWorker
--keep public class de.ibba.keepitup.service.DownloadNetworkTaskWorker
+-keep public class de.ibba.keepitup.service.PingNetworkTaskWorker {
+    public <methods>;
+}
+-keep public class de.ibba.keepitup.service.ConnectNetworkTaskWorker {
+    public <methods>;
+}
+-keep public class de.ibba.keepitup.service.DownloadNetworkTaskWorker {
+    public <methods>;
+}
 -dontwarn com.google.**
+-dontwarn java.lang.ClassValue
 -assumenosideeffects class android.util.Log {
     public static *** d(...);
     public static *** v(...);
