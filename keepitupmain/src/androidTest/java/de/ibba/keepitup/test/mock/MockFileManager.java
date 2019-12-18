@@ -15,7 +15,7 @@ public class MockFileManager implements IFileManager {
 
     private File internalDownloadDirectory;
     private File internalRootDirectory;
-    private File externalDownloadDirectory;
+    private File externalDirectory;
     private File externalRootDirectory;
     private String defaultDownloadDirectoryName;
     private String relativeSibling;
@@ -32,7 +32,7 @@ public class MockFileManager implements IFileManager {
         deieteCalls = new ArrayList<>();
         internalDownloadDirectory = null;
         internalRootDirectory = null;
-        externalDownloadDirectory = null;
+        externalDirectory = null;
         externalRootDirectory = null;
         defaultDownloadDirectoryName = null;
         relativeSibling = null;
@@ -54,7 +54,7 @@ public class MockFileManager implements IFileManager {
         deieteCalls.clear();
         internalDownloadDirectory = null;
         internalRootDirectory = null;
-        externalDownloadDirectory = null;
+        externalDirectory = null;
         externalRootDirectory = null;
         defaultDownloadDirectoryName = null;
         relativeSibling = null;
@@ -76,8 +76,8 @@ public class MockFileManager implements IFileManager {
         this.internalRootDirectory = internalRootDirectory;
     }
 
-    public void setExternalDownloadDirectory(File externalDownloadDirectory) {
-        this.externalDownloadDirectory = externalDownloadDirectory;
+    public void setExternalDirectory(File externalDirectory) {
+        this.externalDirectory = externalDirectory;
     }
 
     public void setExternalRootDirectory(File externalRootDirectory) {
@@ -139,8 +139,8 @@ public class MockFileManager implements IFileManager {
     }
 
     @Override
-    public File getExternalDirectory(String downloadDirectoryName) {
-        return this.externalDownloadDirectory;
+    public File getExternalDirectory(String directoryName) {
+        return this.externalDirectory;
     }
 
     @Override

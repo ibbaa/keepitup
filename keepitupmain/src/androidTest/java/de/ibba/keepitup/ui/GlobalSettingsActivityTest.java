@@ -12,6 +12,8 @@ import org.junit.runner.RunWith;
 import java.io.File;
 
 import de.ibba.keepitup.R;
+import de.ibba.keepitup.logging.Dump;
+import de.ibba.keepitup.logging.Log;
 import de.ibba.keepitup.resources.PreferenceManager;
 import de.ibba.keepitup.test.mock.MockFileManager;
 import de.ibba.keepitup.test.mock.TestRegistry;
@@ -20,6 +22,7 @@ import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.Espresso.openActionBarOverflowOrOptionsMenu;
 import static androidx.test.espresso.action.ViewActions.click;
 import static androidx.test.espresso.action.ViewActions.replaceText;
+import static androidx.test.espresso.action.ViewActions.scrollTo;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.matcher.ViewMatchers.isChecked;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
@@ -33,6 +36,8 @@ import static org.hamcrest.Matchers.endsWith;
 import static org.hamcrest.core.IsNot.not;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 @MediumTest
@@ -62,6 +67,11 @@ public class GlobalSettingsActivityTest extends BaseUITest {
         onView(withId(R.id.textview_global_settings_activity_download_keep_label)).check(matches(withText("Keep downloaded files")));
         onView(withId(R.id.switch_global_settings_activity_download_keep)).check(matches(isNotChecked()));
         onView(withId(R.id.switch_global_settings_activity_download_keep)).check(matches(not(isEnabled())));
+        onView(withId(R.id.switch_global_settings_activity_file_logger_enabled)).check(matches(isNotChecked()));
+        onView(withId(R.id.switch_global_settings_activity_file_dump_enabled)).perform(scrollTo());
+        onView(withId(R.id.switch_global_settings_activity_file_dump_enabled)).check(matches(isNotChecked()));
+        onView(withId(R.id.textview_global_settings_activity_log_folder)).check(matches(withText(endsWith("log"))));
+        onView(withId(R.id.textview_global_settings_activity_log_folder)).check(matches(not(isEnabled())));
     }
 
     @Test
@@ -73,6 +83,9 @@ public class GlobalSettingsActivityTest extends BaseUITest {
         onView(withId(R.id.switch_global_settings_activity_notification_inactive_network)).perform(click());
         onView(withId(R.id.switch_global_settings_activity_download_external_storage)).perform(click());
         onView(withId(R.id.switch_global_settings_activity_download_keep)).perform(click());
+        onView(withId(R.id.switch_global_settings_activity_file_logger_enabled)).perform(click());
+        onView(withId(R.id.switch_global_settings_activity_file_dump_enabled)).perform(scrollTo());
+        onView(withId(R.id.switch_global_settings_activity_file_dump_enabled)).perform(click());
         onView(withId(R.id.textview_global_settings_activity_ping_count_label)).check(matches(withText("Ping count")));
         onView(withId(R.id.textview_global_settings_activity_ping_count)).check(matches(withText("10")));
         onView(withId(R.id.textview_global_settings_activity_notification_inactive_network_label)).check(matches(withText("Notifications when network is not active")));
@@ -86,6 +99,10 @@ public class GlobalSettingsActivityTest extends BaseUITest {
         onView(withId(R.id.textview_global_settings_activity_download_keep_label)).check(matches(withText("Keep downloaded files")));
         onView(withId(R.id.switch_global_settings_activity_download_keep)).check(matches(isChecked()));
         onView(withId(R.id.switch_global_settings_activity_download_keep)).check(matches(isEnabled()));
+        onView(withId(R.id.switch_global_settings_activity_file_logger_enabled)).check(matches(isChecked()));
+        onView(withId(R.id.switch_global_settings_activity_file_dump_enabled)).check(matches(isChecked()));
+        onView(withId(R.id.textview_global_settings_activity_log_folder)).check(matches(withText(endsWith("log"))));
+        onView(withId(R.id.textview_global_settings_activity_log_folder)).check(matches(not(isEnabled())));
     }
 
     @Test
@@ -116,6 +133,23 @@ public class GlobalSettingsActivityTest extends BaseUITest {
         onView(withId(R.id.switch_global_settings_activity_download_keep)).perform(click());
         onView(withId(R.id.switch_global_settings_activity_download_keep)).check(matches(isNotChecked()));
         onView(withId(R.id.textview_global_settings_activity_download_keep_on_off)).check(matches(withText("no")));
+        onView(withId(R.id.switch_global_settings_activity_file_logger_enabled)).check(matches(isNotChecked()));
+        onView(withId(R.id.textview_global_settings_activity_file_logger_enabled_on_off)).check(matches(withText("no")));
+        onView(withId(R.id.switch_global_settings_activity_file_logger_enabled)).perform(click());
+        onView(withId(R.id.switch_global_settings_activity_file_logger_enabled)).check(matches(isChecked()));
+        onView(withId(R.id.textview_global_settings_activity_file_logger_enabled_on_off)).check(matches(withText("yes")));
+        onView(withId(R.id.switch_global_settings_activity_file_logger_enabled)).perform(click());
+        onView(withId(R.id.switch_global_settings_activity_file_logger_enabled)).check(matches(isNotChecked()));
+        onView(withId(R.id.textview_global_settings_activity_file_logger_enabled_on_off)).check(matches(withText("no")));
+        onView(withId(R.id.switch_global_settings_activity_file_dump_enabled)).perform(scrollTo());
+        onView(withId(R.id.switch_global_settings_activity_file_dump_enabled)).check(matches(isNotChecked()));
+        onView(withId(R.id.textview_global_settings_activity_file_dump_enabled_on_off)).check(matches(withText("no")));
+        onView(withId(R.id.switch_global_settings_activity_file_dump_enabled)).perform(click());
+        onView(withId(R.id.switch_global_settings_activity_file_dump_enabled)).check(matches(isChecked()));
+        onView(withId(R.id.textview_global_settings_activity_file_dump_enabled_on_off)).check(matches(withText("yes")));
+        onView(withId(R.id.switch_global_settings_activity_file_dump_enabled)).perform(click());
+        onView(withId(R.id.switch_global_settings_activity_file_dump_enabled)).check(matches(isNotChecked()));
+        onView(withId(R.id.textview_global_settings_activity_file_dump_enabled_on_off)).check(matches(withText("no")));
     }
 
     @Test
@@ -127,12 +161,17 @@ public class GlobalSettingsActivityTest extends BaseUITest {
         onView(withId(R.id.switch_global_settings_activity_notification_inactive_network)).perform(click());
         onView(withId(R.id.switch_global_settings_activity_download_external_storage)).perform(click());
         onView(withId(R.id.switch_global_settings_activity_download_keep)).perform(click());
+        onView(withId(R.id.switch_global_settings_activity_file_logger_enabled)).perform(click());
+        onView(withId(R.id.switch_global_settings_activity_file_dump_enabled)).perform(scrollTo());
+        onView(withId(R.id.switch_global_settings_activity_file_dump_enabled)).perform(click());
         PreferenceManager preferenceManager = getPreferenceManager();
         assertEquals(2, preferenceManager.getPreferencePingCount());
         assertTrue(preferenceManager.getPreferenceNotificationInactiveNetwork());
         assertTrue(preferenceManager.getPreferenceDownloadExternalStorage());
         assertEquals("download", preferenceManager.getPreferenceDownloadFolder());
         assertTrue(preferenceManager.getPreferenceDownloadKeep());
+        assertTrue(preferenceManager.getPreferenceFileLoggerEnabled());
+        assertTrue(preferenceManager.getPreferenceFileDumpEnabled());
     }
 
     @Test
@@ -331,6 +370,23 @@ public class GlobalSettingsActivityTest extends BaseUITest {
     }
 
     @Test
+    public void testFileLoggerInitialized() {
+        launchSettingsInputActivity(rule);
+        assertNull(Log.getLogger());
+        assertNull(Dump.getDump());
+        onView(withId(R.id.switch_global_settings_activity_file_logger_enabled)).perform(click());
+        onView(withId(R.id.switch_global_settings_activity_file_dump_enabled)).perform(scrollTo());
+        onView(withId(R.id.switch_global_settings_activity_file_dump_enabled)).perform(click());
+        assertNotNull(Log.getLogger());
+        assertNotNull(Dump.getDump());
+        onView(withId(R.id.switch_global_settings_activity_file_logger_enabled)).perform(click());
+        onView(withId(R.id.switch_global_settings_activity_file_dump_enabled)).perform(scrollTo());
+        onView(withId(R.id.switch_global_settings_activity_file_dump_enabled)).perform(click());
+        assertNull(Log.getLogger());
+        assertNull(Dump.getDump());
+    }
+
+    @Test
     public void testResetValues() {
         launchSettingsInputActivity(rule);
         onView(withId(R.id.textview_global_settings_activity_ping_count)).perform(click());
@@ -339,6 +395,9 @@ public class GlobalSettingsActivityTest extends BaseUITest {
         onView(withId(R.id.switch_global_settings_activity_notification_inactive_network)).perform(click());
         onView(withId(R.id.switch_global_settings_activity_download_external_storage)).perform(click());
         onView(withId(R.id.switch_global_settings_activity_download_keep)).perform(click());
+        onView(withId(R.id.switch_global_settings_activity_file_logger_enabled)).perform(click());
+        onView(withId(R.id.switch_global_settings_activity_file_dump_enabled)).perform(scrollTo());
+        onView(withId(R.id.switch_global_settings_activity_file_dump_enabled)).perform(click());
         openActionBarOverflowOrOptionsMenu(TestRegistry.getContext());
         onView(withText("Reset")).perform(click());
         onView(withId(R.id.textview_global_settings_activity_ping_count_label)).check(matches(withText("Ping count")));
@@ -353,12 +412,16 @@ public class GlobalSettingsActivityTest extends BaseUITest {
         onView(withId(R.id.textview_global_settings_activity_download_keep_label)).check(matches(withText("Keep downloaded files")));
         onView(withId(R.id.switch_global_settings_activity_download_keep)).check(matches(isNotChecked()));
         onView(withId(R.id.switch_global_settings_activity_download_keep)).check(matches(not(isEnabled())));
+        onView(withId(R.id.switch_global_settings_activity_file_logger_enabled)).check(matches(isNotChecked()));
+        onView(withId(R.id.switch_global_settings_activity_file_dump_enabled)).check(matches(isNotChecked()));
         PreferenceManager preferenceManager = getPreferenceManager();
         assertEquals(3, preferenceManager.getPreferencePingCount());
         assertFalse(preferenceManager.getPreferenceNotificationInactiveNetwork());
         assertFalse(preferenceManager.getPreferenceDownloadExternalStorage());
         assertEquals("download", preferenceManager.getPreferenceDownloadFolder());
         assertFalse(preferenceManager.getPreferenceDownloadKeep());
+        assertFalse(preferenceManager.getPreferenceFileLoggerEnabled());
+        assertFalse(preferenceManager.getPreferenceFileDumpEnabled());
     }
 
     @Test
@@ -370,6 +433,9 @@ public class GlobalSettingsActivityTest extends BaseUITest {
         onView(withId(R.id.switch_global_settings_activity_notification_inactive_network)).perform(click());
         onView(withId(R.id.switch_global_settings_activity_download_external_storage)).perform(click());
         onView(withId(R.id.switch_global_settings_activity_download_keep)).perform(click());
+        onView(withId(R.id.switch_global_settings_activity_file_logger_enabled)).perform(click());
+        onView(withId(R.id.switch_global_settings_activity_file_dump_enabled)).perform(scrollTo());
+        onView(withId(R.id.switch_global_settings_activity_file_dump_enabled)).perform(click());
         rotateScreen(activity);
         onView(isRoot()).perform(waitFor(1000));
         onView(withId(R.id.textview_global_settings_activity_ping_count)).check(matches(withText("2")));
@@ -379,6 +445,10 @@ public class GlobalSettingsActivityTest extends BaseUITest {
         onView(withId(R.id.textview_global_settings_activity_download_external_storage_on_off)).check(matches(withText("yes")));
         onView(withId(R.id.switch_global_settings_activity_download_keep)).check(matches(isChecked()));
         onView(withId(R.id.textview_global_settings_activity_download_keep_on_off)).check(matches(withText("yes")));
+        onView(withId(R.id.switch_global_settings_activity_file_logger_enabled)).check(matches(isChecked()));
+        onView(withId(R.id.textview_global_settings_activity_file_logger_enabled_on_off)).check(matches(withText("yes")));
+        onView(withId(R.id.switch_global_settings_activity_file_dump_enabled)).check(matches(isChecked()));
+        onView(withId(R.id.textview_global_settings_activity_file_dump_enabled_on_off)).check(matches(withText("yes")));
         rotateScreen(activity);
         onView(isRoot()).perform(waitFor(1000));
         onView(withId(R.id.textview_global_settings_activity_ping_count)).check(matches(withText("2")));
@@ -388,5 +458,9 @@ public class GlobalSettingsActivityTest extends BaseUITest {
         onView(withId(R.id.textview_global_settings_activity_download_external_storage_on_off)).check(matches(withText("yes")));
         onView(withId(R.id.switch_global_settings_activity_download_keep)).check(matches(isChecked()));
         onView(withId(R.id.textview_global_settings_activity_download_keep_on_off)).check(matches(withText("yes")));
+        onView(withId(R.id.switch_global_settings_activity_file_logger_enabled)).check(matches(isChecked()));
+        onView(withId(R.id.textview_global_settings_activity_file_logger_enabled_on_off)).check(matches(withText("yes")));
+        onView(withId(R.id.switch_global_settings_activity_file_dump_enabled)).check(matches(isChecked()));
+        onView(withId(R.id.textview_global_settings_activity_file_dump_enabled_on_off)).check(matches(withText("yes")));
     }
 }

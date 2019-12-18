@@ -3,13 +3,9 @@
     <string name="file_logger_log_level_default">DEBUG</string>
     <integer name="file_logger_max_file_size_default">1048576</integer>
     <integer name="file_logger_archive_file_count_default">50</integer>
-    <string name="file_logger_dlog_file_base_name_default">keepitup.log</string>
+    <string name="file_logger_log_file_base_name_default">keepitup.log</string>
     <string name="file_logger_log_directory_default">log</string>
-    <bool name="file_logger_enabled_default">false</bool>
-    <string name="file_logger_enabled_key">file_logger_enabled_key</string>
     <integer name="file_dump_archive_file_count_default">20</integer>
-    <string name="file_dump_dump_file_extension_default">log</string>
+    <string name="file_dump_dump_file_extension_default">txt</string>
     <string name="file_dump_dump_directory_default">log</string>
-    <bool name="file_dump_enabled_default">false</bool>
-    <string name="file_dump_enabled_key">file_dump_enabled_key</string>
 </resources>

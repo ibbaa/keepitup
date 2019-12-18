@@ -16,7 +16,7 @@ public class Dump {
         dumpLock.writeLock().unlock();
     }
 
-    private static IDump getDump() {
+    public static IDump getDump() {
         dumpLock.readLock().lock();
         try {
             return dump;

@@ -50,6 +50,7 @@ public class FolderChooseDialogTest extends BaseUITest {
         root = getFileManager().getExternalRootDirectory().getAbsolutePath();
         createTestFiles();
         activity = (GlobalSettingsActivity) launchSettingsInputActivity(rule);
+        getFileManager().delete(getFileManager().getExternalDirectory("log"));
     }
 
     @Test

@@ -19,6 +19,8 @@ import java.util.Locale;
 
 import de.ibba.keepitup.db.LogDAO;
 import de.ibba.keepitup.db.NetworkTaskDAO;
+import de.ibba.keepitup.logging.Dump;
+import de.ibba.keepitup.logging.Log;
 import de.ibba.keepitup.resources.PreferenceManager;
 import de.ibba.keepitup.service.IFileManager;
 import de.ibba.keepitup.service.NetworkTaskProcessServiceScheduler;
@@ -41,6 +43,8 @@ public abstract class BaseUITest {
 
     @Before
     public void beforeEachTestMethod() {
+        Log.initialize(null);
+        Dump.initialize(null);
         scheduler = new NetworkTaskProcessServiceScheduler(TestRegistry.getContext());
         scheduler.cancelAll();
         logDAO = new LogDAO(TestRegistry.getContext());
@@ -57,6 +61,8 @@ public abstract class BaseUITest {
 
     @After
     public void afterEachTestMethod() {
+        Log.initialize(null);
+        Dump.initialize(null);
         scheduler.cancelAll();
         logDAO.deleteAllLogs();
         networkTaskDAO.deleteAllNetworkTasks();
