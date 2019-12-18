@@ -12,4 +12,5 @@
     <string name="label_activity_global_settings_debug">Debug settings</string>
     <string name="label_activity_global_settings_file_logger_enabled">External file logging</string>
     <string name="label_activity_global_settings_file_dump_enabled">Database dump</string>
+    <string name="label_activity_global_settings_log_folder">Log folder</string>
 </resources>

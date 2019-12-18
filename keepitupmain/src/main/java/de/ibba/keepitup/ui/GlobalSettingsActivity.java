@@ -24,6 +24,7 @@ import de.ibba.keepitup.ui.dialog.SettingsInput;
 import de.ibba.keepitup.ui.dialog.SettingsInputDialog;
 import de.ibba.keepitup.ui.validation.PingCountFieldValidator;
 import de.ibba.keepitup.util.BundleUtil;
+import de.ibba.keepitup.util.DebugUtil;
 import de.ibba.keepitup.util.NumberUtil;
 import de.ibba.keepitup.util.StringUtil;
 
@@ -41,6 +42,7 @@ public class GlobalSettingsActivity extends SettingsInputActivity {
     private TextView fileLoggerEnabledOnOffText;
     private Switch fileDumpEnabledSwitch;
     private TextView fileDumpEnabledOnOffText;
+    private TextView logFolderText;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -57,6 +59,7 @@ public class GlobalSettingsActivity extends SettingsInputActivity {
         prepareDebugSettingsLabel();
         prepareFileLoggerEnabledSwitch();
         prepareFileDumpEnabledSwitch();
+        prepareLogFolderField();
     }
 
     @Override
@@ -145,11 +148,13 @@ public class GlobalSettingsActivity extends SettingsInputActivity {
         downloadFolderText = findViewById(R.id.textview_global_settings_activity_download_folder);
         if (downloadExternalStorageSwitch.isChecked()) {
             String downloadFolder = getExternalDownloadFolder();
+            Log.d(GlobalSettingsActivity.class.getName(), "External download folder is " + downloadFolder);
             if (downloadFolder != null) {
                 setDownloadFolder(downloadFolder);
                 downloadFolderText.setEnabled(true);
                 downloadFolderText.setOnClickListener(this::showDownloadFolderChooseDialog);
             } else {
+                Log.e(GlobalSettingsActivity.class.getName(), "Error accessing download folder.");
                 Log.d(GlobalSettingsActivity.class.getName(), "Reset to internal folder.");
                 setDownloadFolder(getResources().getString(R.string.text_activity_global_settings_download_folder_internal));
                 downloadFolderText.setEnabled(false);
@@ -237,6 +242,11 @@ public class GlobalSettingsActivity extends SettingsInputActivity {
         PreferenceManager preferenceManager = new PreferenceManager(this);
         preferenceManager.setPreferenceFileLoggerEnabled(isChecked);
         prepareFileLoggerEnabledOnOffText();
+        if (isChecked) {
+            de.ibba.keepitup.logging.Log.initialize(DebugUtil.getFileLogger(this, getFileManager()));
+        } else {
+            de.ibba.keepitup.logging.Log.initialize(null);
+        }
     }
 
     private void prepareFileDumpEnabledSwitch() {
@@ -253,7 +263,7 @@ public class GlobalSettingsActivity extends SettingsInputActivity {
             fileDumpEnabledSwitch.setOnCheckedChangeListener(this::onFileDumpEnabledCheckedChanged);
             prepareFileDumpEnabledOnOffText();
         } else {
-            Log.d(GlobalSettingsActivity.class.getName(), "Release version. Enabling debug settings.");
+            Log.d(GlobalSettingsActivity.class.getName(), "Release version. Disabling debug settings.");
             fileDumpEnabledLabel.setVisibility(View.GONE);
         }
     }
@@ -267,6 +277,36 @@ public class GlobalSettingsActivity extends SettingsInputActivity {
         PreferenceManager preferenceManager = new PreferenceManager(this);
         preferenceManager.setPreferenceFileDumpEnabled(isChecked);
         prepareFileDumpEnabledOnOffText();
+        if (isChecked) {
+            de.ibba.keepitup.logging.Dump.initialize(DebugUtil.getFileDump(this, getFileManager()));
+        } else {
+            de.ibba.keepitup.logging.Dump.initialize(null);
+        }
+    }
+
+    private void prepareLogFolderField() {
+        Log.d(GlobalSettingsActivity.class.getName(), "prepareLogFolderField");
+        CardView logFolderLabel = findViewById(R.id.cardview_global_settings_activity_log_folder);
+        logFolderText = findViewById(R.id.textview_global_settings_activity_log_folder);
+        logFolderText.setEnabled(false);
+        if (BuildConfig.DEBUG) {
+            Log.d(GlobalSettingsActivity.class.getName(), "Debug version. Enabling debug settings.");
+            logFolderLabel.setVisibility(View.VISIBLE);
+            String logFolder = getExternalLogFolder();
+            Log.d(GlobalSettingsActivity.class.getName(), "External log folder is " + logFolder);
+            if (logFolder == null) {
+                Log.e(GlobalSettingsActivity.class.getName(), "Error accessing log folder.");
+                setLogFolder("");
+                Log.d(GlobalSettingsActivity.class.getName(), "Showing error dialog.");
+                showErrorDialog(getResources().getString(R.string.text_dialog_general_error_external_root_access));
+            } else {
+                setLogFolder(logFolder);
+            }
+        } else {
+            Log.d(GlobalSettingsActivity.class.getName(), "Release version. Diabling debug settings.");
+            logFolderLabel.setVisibility(View.GONE);
+            setLogFolder("");
+        }
     }
 
     private String getPingCount() {
@@ -285,6 +325,10 @@ public class GlobalSettingsActivity extends SettingsInputActivity {
         downloadFolderText.setText(StringUtil.notNull(downloadFolder));
     }
 
+    private void setLogFolder(String logFolder) {
+        logFolderText.setText(StringUtil.notNull(logFolder));
+    }
+
     private void showPingCountInputDialog(View view) {
         Log.d(GlobalSettingsActivity.class.getName(), "showPingCountInputDialog");
         List<String> validators = Collections.singletonList(PingCountFieldValidator.class.getName());
@@ -296,13 +340,17 @@ public class GlobalSettingsActivity extends SettingsInputActivity {
         Log.d(DefaultsActivity.class.getName(), "showDownloadFolderChooseDialog");
         FolderChooseDialog folderChooseDialog = new FolderChooseDialog();
         String root = getExternalRootFolder();
+        Log.d(GlobalSettingsActivity.class.getName(), "External root folder is " + root);
         if (root == null) {
+            Log.e(GlobalSettingsActivity.class.getName(), "Error accessing root folder.");
             Log.d(GlobalSettingsActivity.class.getName(), "Showing error dialog.");
             showErrorDialog(getResources().getString(R.string.text_dialog_general_error_external_root_access));
             return;
         }
         String folder = getPreferenceDownloadFolder();
+        Log.d(GlobalSettingsActivity.class.getName(), "Preference download folder is " + folder);
         if (folder == null) {
+            Log.e(GlobalSettingsActivity.class.getName(), "Error accessing download folder.");
             Log.d(GlobalSettingsActivity.class.getName(), "Showing error dialog.");
             showErrorDialog(getResources().getString(R.string.text_dialog_general_error_external_root_access));
             return;
@@ -354,6 +402,19 @@ public class GlobalSettingsActivity extends SettingsInputActivity {
         return downloadFolder.getAbsolutePath();
     }
 
+    private String getExternalLogFolder() {
+        Log.d(GlobalSettingsActivity.class.getName(), "getExternalLogFolder");
+        PreferenceManager preferenceManager = new PreferenceManager(this);
+        String folder = getResources().getString(R.string.file_dump_dump_directory_default);
+        IFileManager fileManager = getFileManager();
+        File logFolder = fileManager.getExternalDirectory(folder);
+        Log.d(GlobalSettingsActivity.class.getName(), "External log folder is " + logFolder);
+        if (logFolder == null) {
+            return null;
+        }
+        return logFolder.getAbsolutePath();
+    }
+
     @Override
     public void onInputDialogOkClicked(SettingsInputDialog inputDialog, SettingsInput.Type type) {
         Log.d(GlobalSettingsActivity.class.getName(), "onInputDialogOkClicked, type is " + type + ", value is " + inputDialog.getValue());
@@ -376,6 +437,7 @@ public class GlobalSettingsActivity extends SettingsInputActivity {
         File downloadFolder = fileManager.getExternalDirectory(folder);
         Log.d(GlobalSettingsActivity.class.getName(), "External download folder is " + downloadFolder);
         if (downloadFolder == null) {
+            Log.e(GlobalSettingsActivity.class.getName(), "Error accessing download folder.");
             editDialog.dismiss();
             Log.d(GlobalSettingsActivity.class.getName(), "Showing error dialog.");
             showErrorDialog(getResources().getString(R.string.text_dialog_general_error_external_download_create));

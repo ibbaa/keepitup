@@ -16,7 +16,7 @@ public class Log {
         debugLoggerLock.writeLock().unlock();
     }
 
-    private static ILogger getLogger() {
+    public static ILogger getLogger() {
         debugLoggerLock.readLock().lock();
         try {
             return debugLogger;

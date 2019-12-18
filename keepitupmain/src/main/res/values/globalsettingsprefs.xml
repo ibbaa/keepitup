@@ -12,4 +12,8 @@
     <string name="download_folder_default">download</string>
     <string name="download_keep_key">download_keep_key</string>
     <bool name="download_keep_default">false</bool>
+    <string name="file_dump_enabled_key">file_dump_enabled_key</string>
+    <bool name="file_dump_enabled_default">false</bool>
+    <string name="file_logger_enabled_key">file_logger_enabled_key</string>
+    <bool name="file_logger_enabled_default">false</bool>
 </resources>
