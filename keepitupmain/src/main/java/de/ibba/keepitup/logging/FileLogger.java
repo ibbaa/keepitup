@@ -100,7 +100,11 @@ public class FileLogger implements ILogger {
         OutputStream logStream = null;
         try {
             loggerLock.lock();
-            File logFile = new File(logDirectory, logFileName);
+            File logFolder = new File(logDirectory);
+            if (!logFolder.exists()) {
+                logFolder.mkdirs();
+            }
+            File logFile = new File(logFolder, logFileName);
             long fileSize = 0;
             if (logFile.exists()) {
                 fileSize = logFile.length();
