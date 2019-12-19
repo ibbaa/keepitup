@@ -7,6 +7,8 @@ import java.util.concurrent.locks.ReentrantLock;
 
 public class Housekeeper implements Runnable {
 
+    private final static String ZIP_FILE_EXTENSION = "zip";
+
     private final static ReentrantLock housekeepingLock = new ReentrantLock();
 
     private final String directory;
@@ -33,7 +35,8 @@ public class Housekeeper implements Runnable {
             }
             if (filesToArchive != null && filesToArchive.length >= archiveFileCount) {
                 LogFileManager fileManager = new LogFileManager();
-                String zipFileName = fileManager.suffixFileName(baseFileName, fileManager.getTimestampSuffix(System.currentTimeMillis()));
+                String zipFileName = fileManager.getFileNameWithoutExtension(baseFileName) + "." + ZIP_FILE_EXTENSION;
+                zipFileName = fileManager.suffixFileName(zipFileName, fileManager.getTimestampSuffix(System.currentTimeMillis()));
                 zipFileName = fileManager.getValidFileName(new File(directory), zipFileName, null);
                 fileManager.zipFiles(Arrays.asList(filesToArchive), new File(directory, zipFileName));
             }

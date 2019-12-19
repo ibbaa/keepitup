@@ -15,7 +15,7 @@ import java.util.concurrent.locks.ReentrantLock;
 public class FileLogger implements ILogger {
 
     private final static LogLevel DEFAULT_LOG_LEVEL = LogLevel.DEBUG;
-    private final static int DEFAULT_MAX_FILE_SIZE = 1024 * 1024;
+    private final static int DEFAULT_MAX_FILE_SIZE = 1024 * 1024 * 10;
     private final static int DEFAULT_ARCHIVE_FILE_COUNT = 50;
     private final static String DEFAULT_LOG_FILE_BASE_NAME = "keepitup.log";
 
