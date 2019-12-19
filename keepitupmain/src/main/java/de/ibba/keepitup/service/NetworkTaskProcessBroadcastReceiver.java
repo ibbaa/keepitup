@@ -4,7 +4,6 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.os.PowerManager;
-import android.util.Log;
 
 import java.util.Objects;
 import java.util.concurrent.ExecutorService;
@@ -12,6 +11,7 @@ import java.util.concurrent.Executors;
 
 import de.ibba.keepitup.R;
 import de.ibba.keepitup.db.NetworkTaskDAO;
+import de.ibba.keepitup.logging.Log;
 import de.ibba.keepitup.model.NetworkTask;
 import de.ibba.keepitup.resources.WorkerFactory;
 import de.ibba.keepitup.resources.WorkerFactoryContributor;

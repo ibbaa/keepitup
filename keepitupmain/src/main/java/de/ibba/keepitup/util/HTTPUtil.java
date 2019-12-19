@@ -1,7 +1,6 @@
 package de.ibba.keepitup.util;
 
 import android.content.Context;
-import android.util.Log;
 
 import java.net.HttpURLConnection;
 import java.net.URLConnection;
@@ -9,6 +8,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import de.ibba.keepitup.R;
+import de.ibba.keepitup.logging.Log;
 import de.ibba.keepitup.service.SystemFileManager;
 
 public class HTTPUtil {

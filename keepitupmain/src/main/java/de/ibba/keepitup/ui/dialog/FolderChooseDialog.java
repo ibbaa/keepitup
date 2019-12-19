@@ -3,7 +3,6 @@ package de.ibba.keepitup.ui.dialog;
 import android.app.Activity;
 import android.graphics.Typeface;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,6 +23,7 @@ import java.util.List;
 import java.util.Objects;
 
 import de.ibba.keepitup.R;
+import de.ibba.keepitup.logging.Log;
 import de.ibba.keepitup.model.FileEntry;
 import de.ibba.keepitup.service.IFileManager;
 import de.ibba.keepitup.service.SystemFileManager;

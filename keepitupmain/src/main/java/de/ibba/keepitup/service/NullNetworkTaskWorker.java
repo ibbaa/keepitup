@@ -2,9 +2,9 @@ package de.ibba.keepitup.service;
 
 import android.content.Context;
 import android.os.PowerManager;
-import android.util.Log;
 
 import de.ibba.keepitup.R;
+import de.ibba.keepitup.logging.Log;
 import de.ibba.keepitup.model.LogEntry;
 import de.ibba.keepitup.model.NetworkTask;
 

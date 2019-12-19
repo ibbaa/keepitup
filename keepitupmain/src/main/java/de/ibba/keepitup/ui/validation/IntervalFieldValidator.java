@@ -1,9 +1,9 @@
 package de.ibba.keepitup.ui.validation;
 
 import android.content.Context;
-import android.util.Log;
 
 import de.ibba.keepitup.R;
+import de.ibba.keepitup.logging.Log;
 
 public class IntervalFieldValidator extends BaseIntegerValidator implements FieldValidator {
 

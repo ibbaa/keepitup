@@ -2,8 +2,8 @@ package de.ibba.keepitup.ui.dialog;
 
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 
+import de.ibba.keepitup.logging.Log;
 import de.ibba.keepitup.service.SystemFileManager;
 
 public class FolderChooseWatcher implements TextWatcher {

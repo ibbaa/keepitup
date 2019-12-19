@@ -2,10 +2,10 @@ package de.ibba.keepitup.resources;
 
 import android.content.Context;
 import android.os.PowerManager;
-import android.util.Log;
 
 import java.lang.reflect.Constructor;
 
+import de.ibba.keepitup.logging.Log;
 import de.ibba.keepitup.model.AccessType;
 import de.ibba.keepitup.model.NetworkTask;
 import de.ibba.keepitup.service.NetworkTaskWorker;

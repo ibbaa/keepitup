@@ -2,8 +2,9 @@ package de.ibba.keepitup.ui.validation;
 
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.widget.EditText;
+
+import de.ibba.keepitup.logging.Log;
 
 public class TextColorValidatingWatcher implements TextWatcher {
 

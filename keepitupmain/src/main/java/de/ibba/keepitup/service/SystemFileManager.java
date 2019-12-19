@@ -3,7 +3,6 @@ package de.ibba.keepitup.service;
 import android.content.Context;
 import android.content.res.Resources;
 import android.net.Uri;
-import android.util.Log;
 import android.webkit.MimeTypeMap;
 
 import java.io.File;
@@ -16,6 +15,7 @@ import java.util.List;
 import java.util.Locale;
 
 import de.ibba.keepitup.R;
+import de.ibba.keepitup.logging.Log;
 import de.ibba.keepitup.model.FileEntry;
 import de.ibba.keepitup.resources.ServiceFactoryContributor;
 import de.ibba.keepitup.util.FileUtil;

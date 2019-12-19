@@ -1,11 +1,11 @@
 package de.ibba.keepitup.util;
 
-import android.util.Log;
-
 import java.text.NumberFormat;
 import java.text.ParseException;
 import java.util.Locale;
 import java.util.Objects;
+
+import de.ibba.keepitup.logging.Log;
 
 public class NumberUtil {
 

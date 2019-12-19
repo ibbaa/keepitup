@@ -1,11 +1,11 @@
 package de.ibba.keepitup.service.network;
 
-import android.util.Log;
-
 import java.net.InetAddress;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.concurrent.Callable;
+
+import de.ibba.keepitup.logging.Log;
 
 public class DNSLookup implements Callable<DNSLookupResult> {
 

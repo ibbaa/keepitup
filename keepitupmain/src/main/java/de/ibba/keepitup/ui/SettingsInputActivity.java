@@ -3,10 +3,10 @@ package de.ibba.keepitup.ui;
 import android.content.res.Resources;
 import android.graphics.Typeface;
 import android.os.Bundle;
-import android.util.Log;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import de.ibba.keepitup.logging.Log;
 import de.ibba.keepitup.service.IFileManager;
 import de.ibba.keepitup.service.SystemFileManager;
 import de.ibba.keepitup.ui.dialog.FolderChooseDialog;

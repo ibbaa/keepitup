@@ -2,11 +2,11 @@ package de.ibba.keepitup.ui.mapping;
 
 import android.content.Context;
 import android.content.res.Resources;
-import android.util.Log;
 
 import java.lang.reflect.Constructor;
 
 import de.ibba.keepitup.R;
+import de.ibba.keepitup.logging.Log;
 import de.ibba.keepitup.model.AccessType;
 import de.ibba.keepitup.ui.validation.NullValidator;
 import de.ibba.keepitup.ui.validation.Validator;

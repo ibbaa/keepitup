@@ -3,7 +3,8 @@ package de.ibba.keepitup.service;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.util.Log;
+
+import de.ibba.keepitup.logging.Log;
 
 @SuppressWarnings({"deprecation", "RedundantSuppression"})
 public class SystemNetworkManager implements INetworkManager {

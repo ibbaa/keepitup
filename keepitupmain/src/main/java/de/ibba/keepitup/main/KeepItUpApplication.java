@@ -1,8 +1,8 @@
 package de.ibba.keepitup.main;
 
 import android.app.Application;
-import android.util.Log;
 
+import de.ibba.keepitup.logging.Log;
 import de.ibba.keepitup.service.StartupService;
 
 public class KeepItUpApplication extends Application {

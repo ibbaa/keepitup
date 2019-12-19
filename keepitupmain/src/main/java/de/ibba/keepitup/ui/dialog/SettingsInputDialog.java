@@ -2,7 +2,6 @@ package de.ibba.keepitup.ui.dialog;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,6 +19,7 @@ import java.util.List;
 import java.util.Objects;
 
 import de.ibba.keepitup.R;
+import de.ibba.keepitup.logging.Log;
 import de.ibba.keepitup.ui.SettingsInputActivity;
 import de.ibba.keepitup.ui.validation.FieldValidator;
 import de.ibba.keepitup.ui.validation.TextColorValidatingWatcher;

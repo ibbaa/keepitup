@@ -1,12 +1,12 @@
 package de.ibba.keepitup.ui;
 
 import android.content.res.Resources;
-import android.util.Log;
 
 import de.ibba.keepitup.R;
 import de.ibba.keepitup.db.LogDAO;
 import de.ibba.keepitup.db.NetworkTaskDAO;
 import de.ibba.keepitup.db.SchedulerIdGenerator;
+import de.ibba.keepitup.logging.Log;
 import de.ibba.keepitup.model.NetworkTask;
 import de.ibba.keepitup.service.NetworkTaskProcessServiceScheduler;
 import de.ibba.keepitup.ui.adapter.NetworkTaskAdapter;

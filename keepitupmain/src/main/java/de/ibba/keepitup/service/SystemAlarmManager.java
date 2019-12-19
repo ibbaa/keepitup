@@ -5,7 +5,8 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.os.Build;
 import android.os.SystemClock;
-import android.util.Log;
+
+import de.ibba.keepitup.logging.Log;
 
 public class SystemAlarmManager implements IAlarmManager {
 

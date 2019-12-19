@@ -1,11 +1,11 @@
 package de.ibba.keepitup.resources;
 
 import android.content.Context;
-import android.util.Log;
 
 import java.util.Objects;
 
 import de.ibba.keepitup.R;
+import de.ibba.keepitup.logging.Log;
 
 public class WorkerFactoryContributor {
 

@@ -5,11 +5,11 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.util.Log;
 
 import java.security.SecureRandom;
 
 import de.ibba.keepitup.R;
+import de.ibba.keepitup.logging.Log;
 import de.ibba.keepitup.model.SchedulerId;
 import de.ibba.keepitup.resources.ServiceFactoryContributor;
 import de.ibba.keepitup.service.ITimeService;

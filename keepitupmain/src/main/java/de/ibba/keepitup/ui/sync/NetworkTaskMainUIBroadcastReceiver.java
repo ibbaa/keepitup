@@ -3,10 +3,10 @@ package de.ibba.keepitup.ui.sync;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.util.Log;
 
 import java.util.Objects;
 
+import de.ibba.keepitup.logging.Log;
 import de.ibba.keepitup.model.NetworkTask;
 import de.ibba.keepitup.ui.adapter.NetworkTaskAdapter;
 

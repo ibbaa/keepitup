@@ -3,7 +3,8 @@ package de.ibba.keepitup.notification;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.content.Context;
-import android.util.Log;
+
+import de.ibba.keepitup.logging.Log;
 
 public class SystemNotificationManager implements INotificatioManager {
 
