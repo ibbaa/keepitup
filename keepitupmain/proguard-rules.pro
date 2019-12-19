@@ -36,7 +36,9 @@
 }
 -dontwarn com.google.**
 -dontwarn java.lang.ClassValue
--assumenosideeffects class android.util.Log {
-    public static *** d(...);
-    public static *** v(...);
+-assumenosideeffects class de.ibba.keepitup.logging.Log {
+     public static *** d(...);
+ }
+-assumenosideeffects class de.ibba.keepitup.logging.Dump {
+    public static *** dump(...);
 }
