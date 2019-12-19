@@ -51,11 +51,15 @@ public class FileDump implements IDump {
                 if (objectsToDump == null || objectsToDump.isEmpty()) {
                     return;
                 }
+                File dumpFolder = new File(dumpDirectory);
+                if (!dumpFolder.exists()) {
+                    dumpFolder.mkdirs();
+                }
                 LogFileManager fileManager = new LogFileManager();
                 String baseDumpFileName = objectsToDump.get(0).getClass().getSimpleName().toLowerCase() + "." + dumpFileExtension;
                 String dumpFileName = fileManager.suffixFileName(baseDumpFileName, fileManager.getTimestampSuffix(System.currentTimeMillis()));
-                dumpFileName = fileManager.getValidFileName(new File(dumpDirectory), dumpFileName, null);
-                fileManager.writeListToFile(objectsToDump, new File(dumpDirectory, dumpFileName));
+                dumpFileName = fileManager.getValidFileName(dumpFolder, dumpFileName, null);
+                fileManager.writeListToFile(objectsToDump, new File(dumpFolder, dumpFileName));
                 Housekeeper housekeeper = new Housekeeper(dumpDirectory, baseDumpFileName, archiveFileCount, new DumpFilenameFilter(baseDumpFileName));
                 Thread housekeepingThread = new Thread(housekeeper);
                 housekeepingThread.start();
