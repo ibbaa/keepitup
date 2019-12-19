@@ -2,7 +2,6 @@ package de.ibba.keepitup.service;
 
 import android.content.Context;
 import android.os.PowerManager;
-import android.util.Log;
 
 import java.net.Inet6Address;
 import java.net.InetAddress;
@@ -13,6 +12,7 @@ import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
 import de.ibba.keepitup.R;
+import de.ibba.keepitup.logging.Log;
 import de.ibba.keepitup.model.LogEntry;
 import de.ibba.keepitup.model.NetworkTask;
 import de.ibba.keepitup.service.network.ConnectCommand;

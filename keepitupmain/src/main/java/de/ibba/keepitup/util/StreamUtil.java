@@ -1,10 +1,10 @@
 package de.ibba.keepitup.util;
 
-import android.util.Log;
-
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.charset.Charset;
+
+import de.ibba.keepitup.logging.Log;
 
 public class StreamUtil {
 

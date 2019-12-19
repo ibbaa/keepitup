@@ -1,7 +1,6 @@
 package de.ibba.keepitup.ui;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -17,6 +16,8 @@ import java.util.List;
 
 import de.ibba.keepitup.BuildConfig;
 import de.ibba.keepitup.R;
+import de.ibba.keepitup.logging.Dump;
+import de.ibba.keepitup.logging.Log;
 import de.ibba.keepitup.resources.PreferenceManager;
 import de.ibba.keepitup.service.IFileManager;
 import de.ibba.keepitup.ui.dialog.FolderChooseDialog;
@@ -243,9 +244,9 @@ public class GlobalSettingsActivity extends SettingsInputActivity {
         preferenceManager.setPreferenceFileLoggerEnabled(isChecked);
         prepareFileLoggerEnabledOnOffText();
         if (isChecked) {
-            de.ibba.keepitup.logging.Log.initialize(DebugUtil.getFileLogger(this, getFileManager()));
+            Log.initialize(DebugUtil.getFileLogger(this, getFileManager()));
         } else {
-            de.ibba.keepitup.logging.Log.initialize(null);
+            Log.initialize(null);
         }
     }
 
@@ -278,9 +279,9 @@ public class GlobalSettingsActivity extends SettingsInputActivity {
         preferenceManager.setPreferenceFileDumpEnabled(isChecked);
         prepareFileDumpEnabledOnOffText();
         if (isChecked) {
-            de.ibba.keepitup.logging.Dump.initialize(DebugUtil.getFileDump(this, getFileManager()));
+            Dump.initialize(DebugUtil.getFileDump(this, getFileManager()));
         } else {
-            de.ibba.keepitup.logging.Dump.initialize(null);
+            Dump.initialize(null);
         }
     }
 

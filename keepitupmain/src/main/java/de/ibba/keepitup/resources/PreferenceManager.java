@@ -3,9 +3,9 @@ package de.ibba.keepitup.resources;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
-import android.util.Log;
 
 import de.ibba.keepitup.R;
+import de.ibba.keepitup.logging.Log;
 import de.ibba.keepitup.model.AccessType;
 
 public class PreferenceManager {

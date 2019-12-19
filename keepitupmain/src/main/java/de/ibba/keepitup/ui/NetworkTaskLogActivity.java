@@ -2,7 +2,6 @@ package de.ibba.keepitup.ui;
 
 import android.content.IntentFilter;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -14,6 +13,7 @@ import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
 import de.ibba.keepitup.R;
+import de.ibba.keepitup.logging.Log;
 import de.ibba.keepitup.model.LogEntry;
 import de.ibba.keepitup.model.NetworkTask;
 import de.ibba.keepitup.ui.adapter.LogEntryAdapter;

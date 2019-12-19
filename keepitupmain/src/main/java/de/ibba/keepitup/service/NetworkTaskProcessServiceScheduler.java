@@ -4,11 +4,11 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
-import android.util.Log;
 
 import java.util.List;
 
 import de.ibba.keepitup.db.NetworkTaskDAO;
+import de.ibba.keepitup.logging.Log;
 import de.ibba.keepitup.model.NetworkTask;
 import de.ibba.keepitup.resources.ServiceFactoryContributor;
 

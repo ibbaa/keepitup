@@ -2,7 +2,6 @@ package de.ibba.keepitup.ui.dialog;
 
 import android.graphics.Typeface;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,6 +17,7 @@ import java.util.List;
 import java.util.Objects;
 
 import de.ibba.keepitup.R;
+import de.ibba.keepitup.logging.Log;
 import de.ibba.keepitup.ui.validation.ValidationResult;
 import de.ibba.keepitup.util.BundleUtil;
 

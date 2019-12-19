@@ -2,7 +2,6 @@ package de.ibba.keepitup.ui.sync;
 
 import android.content.Context;
 import android.os.AsyncTask;
-import android.util.Log;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -10,6 +9,7 @@ import java.util.List;
 
 import de.ibba.keepitup.db.LogDAO;
 import de.ibba.keepitup.db.NetworkTaskDAO;
+import de.ibba.keepitup.logging.Log;
 import de.ibba.keepitup.model.LogEntry;
 import de.ibba.keepitup.model.NetworkTask;
 import de.ibba.keepitup.ui.NetworkTaskMainActivity;

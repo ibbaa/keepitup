@@ -1,7 +1,6 @@
 package de.ibba.keepitup.util;
 
 import android.content.Context;
-import android.util.Log;
 
 import java.io.File;
 
@@ -10,6 +9,7 @@ import de.ibba.keepitup.logging.FileDump;
 import de.ibba.keepitup.logging.FileLogger;
 import de.ibba.keepitup.logging.IDump;
 import de.ibba.keepitup.logging.ILogger;
+import de.ibba.keepitup.logging.Log;
 import de.ibba.keepitup.logging.LogLevel;
 import de.ibba.keepitup.service.IFileManager;
 

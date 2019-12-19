@@ -2,7 +2,6 @@ package de.ibba.keepitup.service.network;
 
 import android.content.Context;
 import android.content.res.Resources;
-import android.util.Log;
 
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
@@ -11,6 +10,7 @@ import java.net.SocketAddress;
 import java.util.concurrent.Callable;
 
 import de.ibba.keepitup.R;
+import de.ibba.keepitup.logging.Log;
 
 public class ConnectCommand implements Callable<ConnectCommandResult> {
 

@@ -2,13 +2,13 @@ package de.ibba.keepitup.service.network;
 
 import android.content.Context;
 import android.content.res.Resources;
-import android.util.Log;
 
 import com.google.common.base.Charsets;
 
 import java.util.concurrent.Callable;
 
 import de.ibba.keepitup.R;
+import de.ibba.keepitup.logging.Log;
 import de.ibba.keepitup.util.StreamUtil;
 import de.ibba.keepitup.util.StringUtil;
 

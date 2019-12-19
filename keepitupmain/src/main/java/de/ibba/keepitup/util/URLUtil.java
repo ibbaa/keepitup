@@ -1,7 +1,5 @@
 package de.ibba.keepitup.util;
 
-import android.util.Log;
-
 import com.google.common.net.InetAddresses;
 import com.google.common.net.InternetDomainName;
 
@@ -10,6 +8,8 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+
+import de.ibba.keepitup.logging.Log;
 
 public class URLUtil {
 

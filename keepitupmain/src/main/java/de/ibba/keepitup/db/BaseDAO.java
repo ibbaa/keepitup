@@ -2,7 +2,8 @@ package de.ibba.keepitup.db;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
-import android.util.Log;
+
+import de.ibba.keepitup.logging.Log;
 
 public abstract class BaseDAO {
 

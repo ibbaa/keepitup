@@ -3,13 +3,13 @@ package de.ibba.keepitup.ui;
 import android.content.res.Resources;
 import android.graphics.Typeface;
 import android.os.Bundle;
-import android.util.Log;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import de.ibba.keepitup.logging.Log;
 import de.ibba.keepitup.ui.dialog.GeneralErrorDialog;
 import de.ibba.keepitup.util.BundleUtil;
 

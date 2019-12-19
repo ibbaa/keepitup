@@ -2,7 +2,6 @@ package de.ibba.keepitup.service.network;
 
 import android.content.Context;
 import android.content.res.Resources;
-import android.util.Log;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -20,6 +19,7 @@ import java.util.concurrent.TimeUnit;
 
 import de.ibba.keepitup.R;
 import de.ibba.keepitup.db.NetworkTaskDAO;
+import de.ibba.keepitup.logging.Log;
 import de.ibba.keepitup.model.NetworkTask;
 import de.ibba.keepitup.service.IFileManager;
 import de.ibba.keepitup.service.SystemFileManager;

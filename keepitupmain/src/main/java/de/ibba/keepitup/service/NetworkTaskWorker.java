@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.os.PowerManager;
-import android.util.Log;
 
 import java.net.Inet4Address;
 import java.net.Inet6Address;
@@ -21,6 +20,7 @@ import java.util.concurrent.TimeoutException;
 import de.ibba.keepitup.R;
 import de.ibba.keepitup.db.LogDAO;
 import de.ibba.keepitup.db.NetworkTaskDAO;
+import de.ibba.keepitup.logging.Log;
 import de.ibba.keepitup.model.LogEntry;
 import de.ibba.keepitup.model.NetworkTask;
 import de.ibba.keepitup.notification.NotificationHandler;

@@ -2,7 +2,6 @@ package de.ibba.keepitup.ui.adapter;
 
 import android.content.Context;
 import android.content.res.Resources;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,6 +16,7 @@ import java.util.Date;
 import java.util.List;
 
 import de.ibba.keepitup.R;
+import de.ibba.keepitup.logging.Log;
 import de.ibba.keepitup.model.LogEntry;
 import de.ibba.keepitup.model.NetworkTask;
 import de.ibba.keepitup.ui.NetworkTaskMainActivity;

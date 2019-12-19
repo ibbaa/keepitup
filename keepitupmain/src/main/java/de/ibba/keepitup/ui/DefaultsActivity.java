@@ -1,7 +1,6 @@
 package de.ibba.keepitup.ui;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -19,6 +18,7 @@ import java.util.Collections;
 import java.util.List;
 
 import de.ibba.keepitup.R;
+import de.ibba.keepitup.logging.Log;
 import de.ibba.keepitup.model.AccessType;
 import de.ibba.keepitup.resources.PreferenceManager;
 import de.ibba.keepitup.ui.dialog.NetworkTaskEditDialog;

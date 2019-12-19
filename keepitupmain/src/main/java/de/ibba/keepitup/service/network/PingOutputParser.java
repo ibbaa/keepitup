@@ -1,10 +1,9 @@
 package de.ibba.keepitup.service.network;
 
-import android.util.Log;
-
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import de.ibba.keepitup.logging.Log;
 import de.ibba.keepitup.util.NumberUtil;
 import de.ibba.keepitup.util.StringUtil;
 

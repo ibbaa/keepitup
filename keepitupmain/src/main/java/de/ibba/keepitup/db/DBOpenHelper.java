@@ -3,9 +3,9 @@ package de.ibba.keepitup.db;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.util.Log;
 
 import de.ibba.keepitup.R;
+import de.ibba.keepitup.logging.Log;
 
 class DBOpenHelper extends SQLiteOpenHelper {
 
