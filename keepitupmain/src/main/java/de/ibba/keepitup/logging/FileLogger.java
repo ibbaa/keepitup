@@ -20,7 +20,7 @@ public class FileLogger implements ILogger {
     private final static String DEFAULT_LOG_FILE_BASE_NAME = "keepitup.log";
 
     private final static int LOG_QUEUE_PUT_TIMEOUT = 500;
-    private final static int LOG_QUEUE_TAKE_TIMEOUT = 60000;
+    private final static int LOG_QUEUE_TAKE_TIMEOUT = 1000;
 
     private final static ReentrantLock loggerLock = new ReentrantLock();
 
