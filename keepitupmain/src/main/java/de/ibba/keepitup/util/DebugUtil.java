@@ -54,9 +54,10 @@ public class DebugUtil {
         String dumpDirectory = dumpDirectoryFile.getAbsolutePath();
         int archiveFileCount = context.getResources().getInteger(R.integer.file_dump_archive_file_count_default);
         String dumpFileExtension = context.getResources().getString(R.string.file_dump_dump_file_extension_default);
+        String emptyMessage = context.getResources().getString(R.string.file_dump_empty_message_default);
         Log.d(DebugUtil.class.getName(), "dumpDirectory is " + dumpDirectory);
         Log.d(DebugUtil.class.getName(), "archiveFileCount is " + archiveFileCount);
         Log.d(DebugUtil.class.getName(), "dumpFileExtension is " + dumpFileExtension);
-        return new FileDump(dumpDirectory, archiveFileCount, dumpFileExtension);
+        return new FileDump(dumpDirectory, archiveFileCount, dumpFileExtension, emptyMessage);
     }
 }

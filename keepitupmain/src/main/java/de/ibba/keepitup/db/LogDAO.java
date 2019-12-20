@@ -24,9 +24,7 @@ public class LogDAO extends BaseDAO {
         Log.d(LogDAO.class.getName(), "Inserting log entry " + logEntry + " and deleting oldest log entry");
         LogEntry returnedEntry = executeDBOperationInTransaction(logEntry, this::insertAndDeleteLog);
         Log.d(LogDAO.class.getName(), "Inserted log entry is " + returnedEntry);
-        if (BuildConfig.DEBUG) {
-            Dump.dump(LogDAO.class.getName(), "Dump after insertAndDeleteLog call", this::readAllLogs);
-        }
+        dumpDatabase("Dump after insertAndDeleteLog call");
         return returnedEntry;
     }
 
@@ -60,16 +58,19 @@ public class LogDAO extends BaseDAO {
         LogEntry entry = new LogEntry();
         entry.setNetworkTaskId(networkTaskId);
         executeDBOperationInTransaction(entry, this::deleteAllLogsForNetworkTask);
-        if (BuildConfig.DEBUG) {
-            Dump.dump(LogDAO.class.getName(), "Dump after deleteAllLogsForNetworkTask call", this::readAllLogs);
-        }
+        dumpDatabase("Dump after deleteAllLogsForNetworkTask call");
     }
 
     public void deleteAllLogs() {
         Log.d(LogDAO.class.getName(), "Deleting all log entries");
         executeDBOperationInTransaction((LogEntry) null, this::deleteAllLogs);
+        dumpDatabase("Dump after deleteAllLogs call");
+    }
+
+    private void dumpDatabase(String message) {
         if (BuildConfig.DEBUG) {
-            Dump.dump(LogDAO.class.getName(), "Dump after deleteAllLogs call", this::readAllLogs);
+            LogDAO logDAO = new LogDAO(getContext());
+            Dump.dump(LogDAO.class.getName(), message, LogEntry.class.getSimpleName().toLowerCase(), logDAO::readAllLogs);
         }
     }
 

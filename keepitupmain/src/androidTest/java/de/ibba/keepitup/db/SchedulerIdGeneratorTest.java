@@ -12,6 +12,7 @@ import org.junit.runner.RunWith;
 
 import java.util.List;
 
+import de.ibba.keepitup.logging.Dump;
 import de.ibba.keepitup.model.AccessType;
 import de.ibba.keepitup.model.NetworkTask;
 import de.ibba.keepitup.model.SchedulerId;
@@ -33,6 +34,7 @@ public class SchedulerIdGeneratorTest {
 
     @Before
     public void beforeEachTestMethod() {
+        Dump.initialize(null);
         networkTaskDAO = new NetworkTaskDAO(TestRegistry.getContext());
         schedulerIdHistoryDAO = new SchedulerIdHistoryDAO(TestRegistry.getContext());
         networkTaskDAO.deleteAllNetworkTasks();

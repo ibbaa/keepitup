@@ -25,43 +25,27 @@ public class NetworkTaskDAO extends BaseDAO {
         Log.d(NetworkTaskDAO.class.getName(), "Inserting task " + networkTask);
         NetworkTask returnedTask = executeDBOperationInTransaction(networkTask, this::insertNetworkTask);
         Log.d(NetworkTaskDAO.class.getName(), "Inserted task is " + returnedTask);
-        if (BuildConfig.DEBUG) {
-            Dump.dump(NetworkTaskDAO.class.getName(), "Dump after insertNetworkTask call", this::readAllNetworkTasks);
-            SchedulerIdHistoryDAO historyDAO = new SchedulerIdHistoryDAO(getContext());
-            Dump.dump(NetworkTaskDAO.class.getName(), "Dump after insertNetworkTask call", historyDAO::readAllSchedulerIds);
-        }
+        dumpDatabase("Dump after insertNetworkTask call");
         return returnedTask;
     }
 
     public void deleteNetworkTask(NetworkTask networkTask) {
         Log.d(NetworkTaskDAO.class.getName(), "Deleting task with id " + networkTask.getId());
         executeDBOperationInTransaction(networkTask, this::deleteNetworkTask);
-        if (BuildConfig.DEBUG) {
-            Dump.dump(NetworkTaskDAO.class.getName(), "Dump after deleteNetworkTask call", this::readAllNetworkTasks);
-            SchedulerIdHistoryDAO historyDAO = new SchedulerIdHistoryDAO(getContext());
-            Dump.dump(NetworkTaskDAO.class.getName(), "Dump after deleteNetworkTask call", historyDAO::readAllSchedulerIds);
-        }
+        dumpDatabase("Dump after deleteNetworkTask call");
     }
 
     public void deleteAllNetworkTasks() {
         Log.d(NetworkTaskDAO.class.getName(), "Deleting all tasks");
         executeDBOperationInTransaction((NetworkTask) null, this::deleteAllNetworkTasks);
-        if (BuildConfig.DEBUG) {
-            Dump.dump(NetworkTaskDAO.class.getName(), "Dump after deleteAllNetworkTasks call", this::readAllNetworkTasks);
-            SchedulerIdHistoryDAO historyDAO = new SchedulerIdHistoryDAO(getContext());
-            Dump.dump(NetworkTaskDAO.class.getName(), "Dump after deleteAllNetworkTasks call", historyDAO::readAllSchedulerIds);
-        }
+        dumpDatabase("Dump after deleteAllNetworkTasks call");
     }
 
     public NetworkTask updateNetworkTask(NetworkTask networkTask) {
         Log.d(NetworkTaskDAO.class.getName(), "Updating task with id " + networkTask.getId());
         NetworkTask returnedTask = executeDBOperationInTransaction(networkTask, this::updateNetworkTask);
         Log.d(NetworkTaskDAO.class.getName(), "Updated task is " + returnedTask);
-        if (BuildConfig.DEBUG) {
-            Dump.dump(NetworkTaskDAO.class.getName(), "Dump after updateNetworkTask call", this::readAllNetworkTasks);
-            SchedulerIdHistoryDAO historyDAO = new SchedulerIdHistoryDAO(getContext());
-            Dump.dump(NetworkTaskDAO.class.getName(), "Dump after updateNetworkTask call", historyDAO::readAllSchedulerIds);
-        }
+        dumpDatabase("Dump after updateNetworkTask call");
         return returnedTask;
     }
 
@@ -71,11 +55,7 @@ public class NetworkTaskDAO extends BaseDAO {
         networkTask.setId(taskId);
         networkTask.setRunning(running);
         executeDBOperationInTransaction(networkTask, this::updateNetworkTaskRunning);
-        if (BuildConfig.DEBUG) {
-            Dump.dump(NetworkTaskDAO.class.getName(), "Dump after updateNetworkTaskRunning call", this::readAllNetworkTasks);
-            SchedulerIdHistoryDAO historyDAO = new SchedulerIdHistoryDAO(getContext());
-            Dump.dump(NetworkTaskDAO.class.getName(), "Dump after updateNetworkTaskRunning call", historyDAO::readAllSchedulerIds);
-        }
+        dumpDatabase("Dump after updateNetworkTaskRunning call");
     }
 
     public int readNetworkTaskInstances(int schedulerId) {
@@ -92,11 +72,7 @@ public class NetworkTaskDAO extends BaseDAO {
         NetworkTask networkTask = new NetworkTask();
         networkTask.setSchedulerId(schedulerId);
         executeDBOperationInTransaction(networkTask, this::increaseNetworkTaskInstances);
-        if (BuildConfig.DEBUG) {
-            Dump.dump(NetworkTaskDAO.class.getName(), "Dump after increaseNetworkTaskInstances call", this::readAllNetworkTasks);
-            SchedulerIdHistoryDAO historyDAO = new SchedulerIdHistoryDAO(getContext());
-            Dump.dump(NetworkTaskDAO.class.getName(), "Dump after increaseNetworkTaskInstances call", historyDAO::readAllSchedulerIds);
-        }
+        dumpDatabase("Dump after increaseNetworkTaskInstances call");
     }
 
     public void decreaseNetworkTaskInstances(int schedulerId) {
@@ -104,21 +80,13 @@ public class NetworkTaskDAO extends BaseDAO {
         NetworkTask networkTask = new NetworkTask();
         networkTask.setSchedulerId(schedulerId);
         executeDBOperationInTransaction(networkTask, this::decreaseNetworkTaskInstances);
-        if (BuildConfig.DEBUG) {
-            Dump.dump(NetworkTaskDAO.class.getName(), "Dump after decreaseNetworkTaskInstances call", this::readAllNetworkTasks);
-            SchedulerIdHistoryDAO historyDAO = new SchedulerIdHistoryDAO(getContext());
-            Dump.dump(NetworkTaskDAO.class.getName(), "Dump after decreaseNetworkTaskInstances call", historyDAO::readAllSchedulerIds);
-        }
+        dumpDatabase("Dump after decreaseNetworkTaskInstances call");
     }
 
     public void resetAllNetworkTaskInstances() {
         Log.d(NetworkTaskDAO.class.getName(), "Resetting instances of all tasks");
         executeDBOperationInTransaction((NetworkTask) null, this::resetAllNetworkTaskInstances);
-        if (BuildConfig.DEBUG) {
-            Dump.dump(NetworkTaskDAO.class.getName(), "Dump after resetAllNetworkTaskInstances call", this::readAllNetworkTasks);
-            SchedulerIdHistoryDAO historyDAO = new SchedulerIdHistoryDAO(getContext());
-            Dump.dump(NetworkTaskDAO.class.getName(), "Dump after resetAllNetworkTaskInstances call", historyDAO::readAllSchedulerIds);
-        }
+        dumpDatabase("Dump after resetAllNetworkTaskInstances call");
     }
 
     public NetworkTask readNetworkTask(long taskId) {
@@ -135,6 +103,15 @@ public class NetworkTaskDAO extends BaseDAO {
         List<NetworkTask> taskList = executeDBOperationInTransaction((NetworkTask) null, this::readAllNetworkTasks);
         Log.d(NetworkTaskDAO.class.getName(), "Number of tasks read: " + taskList.size());
         return taskList;
+    }
+
+    private void dumpDatabase(String message) {
+        if (BuildConfig.DEBUG) {
+            NetworkTaskDAO networkTaskDAO = new NetworkTaskDAO(getContext());
+            Dump.dump(NetworkTaskDAO.class.getName(), message, NetworkTask.class.getSimpleName().toLowerCase(), networkTaskDAO::readAllNetworkTasks);
+            SchedulerIdHistoryDAO historyDAO = new SchedulerIdHistoryDAO(getContext());
+            Dump.dump(NetworkTaskDAO.class.getName(), message, SchedulerId.class.getSimpleName().toLowerCase(), historyDAO::readAllSchedulerIds);
+        }
     }
 
     private NetworkTask insertNetworkTask(NetworkTask networkTask, SQLiteDatabase db) {
