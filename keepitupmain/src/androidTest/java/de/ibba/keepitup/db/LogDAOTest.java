@@ -157,6 +157,37 @@ public class LogDAOTest {
         assertEquals(2, readLogEntry2.getTimestamp());
     }
 
+    @Test
+    public void testReadAllLogs() {
+        LogEntry insertedLogEntry1 = getLogEntry1();
+        insertedLogEntry1.setTimestamp(10);
+        insertedLogEntry1 = logDAO.insertAndDeleteLog(insertedLogEntry1);
+        LogEntry insertedLogEntry2 = getLogEntry2();
+        insertedLogEntry2.setTimestamp(9);
+        insertedLogEntry2 = logDAO.insertAndDeleteLog(insertedLogEntry2);
+        LogEntry insertedLogEntry3 = getLogEntry3();
+        insertedLogEntry3.setTimestamp(8);
+        insertedLogEntry3 = logDAO.insertAndDeleteLog(insertedLogEntry3);
+        LogEntry insertedLogEntry4 = getLogEntryWithNetworkTaskId(4);
+        insertedLogEntry4.setTimestamp(7);
+        insertedLogEntry4 = logDAO.insertAndDeleteLog(insertedLogEntry4);
+        LogEntry insertedLogEntry5 = getLogEntryWithNetworkTaskId(5);
+        insertedLogEntry5.setTimestamp(6);
+        insertedLogEntry5 = logDAO.insertAndDeleteLog(insertedLogEntry5);
+        List<LogEntry> allEntries = logDAO.readAllLogs();
+        assertEquals(5, allEntries.size());
+        assertAreEqual(insertedLogEntry1, allEntries.get(0));
+        assertAreEqual(insertedLogEntry2, allEntries.get(1));
+        assertAreEqual(insertedLogEntry3, allEntries.get(2));
+        assertAreEqual(insertedLogEntry4, allEntries.get(3));
+        assertAreEqual(insertedLogEntry5, allEntries.get(4));
+        allEntries = logDAO.readAllLogsForNetworkTask(1);
+        assertEquals(3, allEntries.size());
+        assertAreEqual(insertedLogEntry1, allEntries.get(0));
+        assertAreEqual(insertedLogEntry2, allEntries.get(1));
+        assertAreEqual(insertedLogEntry3, allEntries.get(2));
+    }
+
     private LogEntry getLogEntry1() {
         LogEntry insertedLogEntry1 = new LogEntry();
         insertedLogEntry1.setId(0);
