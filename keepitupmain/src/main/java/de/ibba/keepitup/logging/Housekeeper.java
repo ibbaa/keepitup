@@ -3,10 +3,13 @@ package de.ibba.keepitup.logging;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.util.Arrays;
+import java.util.concurrent.locks.ReentrantLock;
 
-public class Housekeeper {
+public class Housekeeper implements Runnable {
 
     private final static String ZIP_FILE_EXTENSION = "zip";
+
+    private final static ReentrantLock housekeepingLock = new ReentrantLock();
 
     private final String directory;
     private final String baseFileName;
@@ -20,8 +23,14 @@ public class Housekeeper {
         this.filter = filter;
     }
 
-    public void doHousekeeping() {
+    public void doHousekeepingNow() {
+        run();
+    }
+
+    @Override
+    public void run() {
         try {
+            housekeepingLock.lock();
             File[] filesToArchive;
             if (filter == null) {
                 filesToArchive = new File(directory).listFiles();
@@ -37,6 +46,8 @@ public class Housekeeper {
             }
         } catch (Exception exc) {
             //Do nothing
+        } finally {
+            housekeepingLock.unlock();
         }
     }
 }

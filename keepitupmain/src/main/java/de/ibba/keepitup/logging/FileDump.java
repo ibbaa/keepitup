@@ -7,7 +7,7 @@ import java.util.concurrent.locks.ReentrantLock;
 
 public class FileDump implements IDump {
 
-    private final static int DEFAULT_ARCHIVE_FILE_COUNT = 20;
+    private final static int DEFAULT_ARCHIVE_FILE_COUNT = 50;
     private final static String DEFAULT_DUMP_FILE_EXTENSION = "txt";
     private final static String DEFAULT_EMPTY_MESSAGE = "No entries.";
 
@@ -83,7 +83,7 @@ public class FileDump implements IDump {
                 dumpFileName = fileManager.getValidFileName(dumpFolder, dumpFileName, null);
                 fileManager.writeListToFile(header, emptyMessage, objectsToDump, new File(dumpFolder, dumpFileName));
                 Housekeeper housekeeper = new Housekeeper(dumpDirectory, baseDumpFileName, archiveFileCount, new DumpFilenameFilter(baseDumpFileName));
-                housekeeper.doHousekeeping();
+                housekeeper.doHousekeepingNow();
             } catch (Exception exc) {
                 //Do nothing
             } finally {
