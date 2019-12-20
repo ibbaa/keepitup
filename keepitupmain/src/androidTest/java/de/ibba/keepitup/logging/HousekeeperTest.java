@@ -44,21 +44,21 @@ public class HousekeeperTest {
         File[] files = logDir.listFiles();
         assertEquals(0, files.length);
         Housekeeper housekeeper = new Housekeeper(logDir.getAbsolutePath(), "test.log", 5, null);
-        housekeeper.doHousekeeping();
+        housekeeper.doHousekeepingNow();
         files = logDir.listFiles();
         assertEquals(0, files.length);
         createTestFile(logDir, "test1.txt", "Test1Text");
         createTestFile(logDir, "test2.txt", "Test2Text");
         files = logDir.listFiles();
         assertEquals(2, files.length);
-        housekeeper.doHousekeeping();
+        housekeeper.doHousekeepingNow();
         files = logDir.listFiles();
         assertEquals(2, files.length);
         createTestFile(logDir, "test3.txt", "Test3Text");
         createTestFile(logDir, "test4.txt", "Test4Text");
         files = logDir.listFiles();
         assertEquals(4, files.length);
-        housekeeper.doHousekeeping();
+        housekeeper.doHousekeepingNow();
         files = logDir.listFiles();
         assertEquals(4, files.length);
         createTestFile(logDir, "test5.log", "Test3Text");
@@ -66,7 +66,7 @@ public class HousekeeperTest {
         files = logDir.listFiles();
         assertEquals(6, files.length);
         housekeeper = new Housekeeper(logDir.getAbsolutePath(), "test.log", 5, (File dir, String name) -> name.endsWith("txt"));
-        housekeeper.doHousekeeping();
+        housekeeper.doHousekeepingNow();
         files = logDir.listFiles();
         assertEquals(6, files.length);
     }
@@ -82,7 +82,7 @@ public class HousekeeperTest {
         createTestFile(logDir, "test5.txt", "Test5Text");
         createTestFile(logDir, "test6.log", "Test6Text");
         createTestFile(logDir, "test7.log", "Test7Text");
-        housekeeper.doHousekeeping();
+        housekeeper.doHousekeepingNow();
         File[] files = logDir.listFiles();
         assertEquals(3, files.length);
         assertTrue(containsFile(files, "test6", "log"));
