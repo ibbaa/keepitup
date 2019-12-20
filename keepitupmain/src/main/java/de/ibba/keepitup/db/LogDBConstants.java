@@ -50,7 +50,7 @@ class LogDBConstants {
         return "DROP TABLE IF EXISTS " + getTableName();
     }
 
-    public String getReadAllLogsStatement() {
+    public String getReadAllLogsForNetworkTaskStatement() {
         return "SELECT " +
                 getIdColumnName() + ", " +
                 getNetworkTaskIdColumnName() + ", " +
@@ -59,6 +59,17 @@ class LogDBConstants {
                 getMessageColumnName() +
                 " FROM " + getTableName() +
                 " WHERE " + getNetworkTaskIdColumnName() + " = ?" +
+                " ORDER BY " + getTimestampColumnName() + " DESC";
+    }
+
+    public String getReadAllLogsStatement() {
+        return "SELECT " +
+                getIdColumnName() + ", " +
+                getNetworkTaskIdColumnName() + ", " +
+                getTimestampColumnName() + ", " +
+                getSuccessColumnName() + ", " +
+                getMessageColumnName() +
+                " FROM " + getTableName() +
                 " ORDER BY " + getTimestampColumnName() + " DESC";
     }
 

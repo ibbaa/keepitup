@@ -8,7 +8,9 @@ import android.database.sqlite.SQLiteDatabase;
 import java.util.ArrayList;
 import java.util.List;
 
+import de.ibba.keepitup.BuildConfig;
 import de.ibba.keepitup.R;
+import de.ibba.keepitup.logging.Dump;
 import de.ibba.keepitup.logging.Log;
 import de.ibba.keepitup.model.LogEntry;
 
@@ -19,34 +21,56 @@ public class LogDAO extends BaseDAO {
     }
 
     public LogEntry insertAndDeleteLog(LogEntry logEntry) {
-        Log.d(NetworkTaskDAO.class.getName(), "Inserting log entry " + logEntry + " and deleting oldest log entry");
-        return executeDBOperationInTransaction(logEntry, this::insertAndDeleteLog);
+        Log.d(LogDAO.class.getName(), "Inserting log entry " + logEntry + " and deleting oldest log entry");
+        LogEntry returnedEntry = executeDBOperationInTransaction(logEntry, this::insertAndDeleteLog);
+        Log.d(LogDAO.class.getName(), "Inserted log entry is " + returnedEntry);
+        if (BuildConfig.DEBUG) {
+            Dump.dump(LogDAO.class.getName(), "Dump after insertAndDeleteLog call", this::readAllLogs);
+        }
+        return returnedEntry;
     }
 
     public LogEntry readMostRecentLogForNetworkTask(long networkTaskId) {
-        Log.d(NetworkTaskDAO.class.getName(), "Reading most recent log entry for network task with id " + networkTaskId);
+        Log.d(LogDAO.class.getName(), "Reading most recent log entry for network task with id " + networkTaskId);
         LogEntry entry = new LogEntry();
         entry.setNetworkTaskId(networkTaskId);
-        return executeDBOperationInTransaction(entry, this::readMostRecentLogForNetworkTask);
+        LogEntry returnedEntry = executeDBOperationInTransaction(entry, this::readMostRecentLogForNetworkTask);
+        Log.d(LogDAO.class.getName(), "Read log entry is " + returnedEntry);
+        return returnedEntry;
     }
 
     public List<LogEntry> readAllLogsForNetworkTask(long networkTaskId) {
-        Log.d(NetworkTaskDAO.class.getName(), "Reading all log entries for network task with id " + networkTaskId);
+        Log.d(LogDAO.class.getName(), "Reading all log entries for network task with id " + networkTaskId);
         LogEntry entry = new LogEntry();
         entry.setNetworkTaskId(networkTaskId);
-        return executeDBOperationInTransaction(entry, this::readAllLogsForNetworkTask);
+        List<LogEntry> logEntries = executeDBOperationInTransaction(entry, this::readAllLogsForNetworkTask);
+        Log.d(LogDAO.class.getName(), "Number of log entries read: " + logEntries.size());
+        return logEntries;
+    }
+
+    public List<LogEntry> readAllLogs() {
+        Log.d(LogDAO.class.getName(), "Reading all log entries");
+        List<LogEntry> logEntries = executeDBOperationInTransaction((LogEntry) null, this::readAllLogs);
+        Log.d(LogDAO.class.getName(), "Number of log entries read: " + logEntries.size());
+        return logEntries;
     }
 
     public void deleteAllLogsForNetworkTask(long networkTaskId) {
-        Log.d(NetworkTaskDAO.class.getName(), "Deleting all log entries for network task with id " + networkTaskId);
+        Log.d(LogDAO.class.getName(), "Deleting all log entries for network task with id " + networkTaskId);
         LogEntry entry = new LogEntry();
         entry.setNetworkTaskId(networkTaskId);
         executeDBOperationInTransaction(entry, this::deleteAllLogsForNetworkTask);
+        if (BuildConfig.DEBUG) {
+            Dump.dump(LogDAO.class.getName(), "Dump after deleteAllLogsForNetworkTask call", this::readAllLogs);
+        }
     }
 
     public void deleteAllLogs() {
-        Log.d(NetworkTaskDAO.class.getName(), "Deleting all log entries");
+        Log.d(LogDAO.class.getName(), "Deleting all log entries");
         executeDBOperationInTransaction((LogEntry) null, this::deleteAllLogs);
+        if (BuildConfig.DEBUG) {
+            Dump.dump(LogDAO.class.getName(), "Dump after deleteAllLogs call", this::readAllLogs);
+        }
     }
 
     private LogEntry insertAndDeleteLog(LogEntry logEntry, SQLiteDatabase db) {
@@ -95,7 +119,7 @@ public class LogDAO extends BaseDAO {
                 try {
                     cursor.close();
                 } catch (Throwable exc) {
-                    Log.e(NetworkTaskDAO.class.getName(), "Error closing result cursor", exc);
+                    Log.e(LogDAO.class.getName(), "Error closing result cursor", exc);
                 }
             }
         }
@@ -109,8 +133,8 @@ public class LogDAO extends BaseDAO {
         List<LogEntry> result = new ArrayList<>();
         LogDBConstants dbConstants = new LogDBConstants(getContext());
         try {
-            Log.d(LogDAO.class.getName(), "Executing SQL " + dbConstants.getReadAllLogsStatement() + " with a parameter of " + logEntry.getNetworkTaskId());
-            cursor = db.rawQuery(dbConstants.getReadAllLogsStatement(), new String[]{String.valueOf(logEntry.getNetworkTaskId())});
+            Log.d(LogDAO.class.getName(), "Executing SQL " + dbConstants.getReadAllLogsForNetworkTaskStatement() + " with a parameter of " + logEntry.getNetworkTaskId());
+            cursor = db.rawQuery(dbConstants.getReadAllLogsForNetworkTaskStatement(), new String[]{String.valueOf(logEntry.getNetworkTaskId())});
             while (cursor.moveToNext()) {
                 int indexIdColumn = cursor.getColumnIndex(dbConstants.getIdColumnName());
                 if (!cursor.isNull(indexIdColumn)) {
@@ -123,11 +147,39 @@ public class LogDAO extends BaseDAO {
                 try {
                     cursor.close();
                 } catch (Throwable exc) {
-                    Log.e(NetworkTaskDAO.class.getName(), "Error closing result cursor", exc);
+                    Log.e(LogDAO.class.getName(), "Error closing result cursor", exc);
                 }
             }
         }
-        Log.d(LogDAO.class.getName(), "readMostRecentLogForNetworkTask, returning " + result);
+        Log.d(LogDAO.class.getName(), "readAllLogsForNetworkTask, returning " + result);
+        return result;
+    }
+
+    private List<LogEntry> readAllLogs(LogEntry logEntry, SQLiteDatabase db) {
+        Log.d(LogDAO.class.getName(), "readAllLogs, log entry is " + logEntry);
+        Cursor cursor = null;
+        List<LogEntry> result = new ArrayList<>();
+        LogDBConstants dbConstants = new LogDBConstants(getContext());
+        try {
+            Log.d(LogDAO.class.getName(), "Executing SQL " + dbConstants.getReadAllLogsStatement());
+            cursor = db.rawQuery(dbConstants.getReadAllLogsStatement(), null);
+            while (cursor.moveToNext()) {
+                int indexIdColumn = cursor.getColumnIndex(dbConstants.getIdColumnName());
+                if (!cursor.isNull(indexIdColumn)) {
+                    LogEntry mappedLogEntry = mapCursorToLogEntry(cursor);
+                    result.add(mappedLogEntry);
+                }
+            }
+        } finally {
+            if (cursor != null) {
+                try {
+                    cursor.close();
+                } catch (Throwable exc) {
+                    Log.e(LogDAO.class.getName(), "Error closing result cursor", exc);
+                }
+            }
+        }
+        Log.d(LogDAO.class.getName(), "readAllLogs, returning " + result);
         return result;
     }
 
