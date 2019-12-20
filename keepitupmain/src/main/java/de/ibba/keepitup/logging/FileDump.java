@@ -3,6 +3,7 @@ package de.ibba.keepitup.logging;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.util.List;
+import java.util.concurrent.locks.ReentrantLock;
 
 public class FileDump implements IDump {
 
@@ -14,6 +15,8 @@ public class FileDump implements IDump {
     private final String dumpFileExtension;
     private final String emptyMessage;
     private final String dumpDirectory;
+
+    private final static ReentrantLock dumpLock = new ReentrantLock();
 
     public FileDump(String dumpDirectory) {
         this(dumpDirectory, DEFAULT_ARCHIVE_FILE_COUNT, DEFAULT_DUMP_FILE_EXTENSION, DEFAULT_EMPTY_MESSAGE);
@@ -58,6 +61,7 @@ public class FileDump implements IDump {
         @Override
         public void run() {
             try {
+                dumpLock.lock();
                 List<?> objectsToDump = source.objectsToDump();
                 File dumpFolder = new File(dumpDirectory);
                 if (!dumpFolder.exists()) {
@@ -79,10 +83,11 @@ public class FileDump implements IDump {
                 dumpFileName = fileManager.getValidFileName(dumpFolder, dumpFileName, null);
                 fileManager.writeListToFile(header, emptyMessage, objectsToDump, new File(dumpFolder, dumpFileName));
                 Housekeeper housekeeper = new Housekeeper(dumpDirectory, baseDumpFileName, archiveFileCount, new DumpFilenameFilter(baseDumpFileName));
-                Thread housekeepingThread = new Thread(housekeeper);
-                housekeepingThread.start();
+                housekeeper.doHousekeeping();
             } catch (Exception exc) {
                 //Do nothing
+            } finally {
+                dumpLock.unlock();
             }
         }
     }
