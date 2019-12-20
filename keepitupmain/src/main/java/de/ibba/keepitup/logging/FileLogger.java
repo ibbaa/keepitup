@@ -126,8 +126,7 @@ public class FileLogger implements ILogger {
                             fileSize = 0;
                             logStream = initializeLogStream(logFile);
                             Housekeeper housekeeper = new Housekeeper(logDirectory, logFileName, archiveFileCount, this::shouldBeArchived);
-                            Thread housekeepingThread = new Thread(housekeeper);
-                            housekeepingThread.start();
+                            housekeeper.doHousekeeping();
                         } else {
                             return;
                         }
