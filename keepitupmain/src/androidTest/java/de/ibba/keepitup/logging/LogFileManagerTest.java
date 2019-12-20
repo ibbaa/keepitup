@@ -184,14 +184,19 @@ public class LogFileManagerTest {
 
     @Test
     public void testWriteListToFile() throws Exception {
+        String nl = System.lineSeparator();
         File logDir = getTestLogFileFolder();
         List<?> data = Arrays.asList("Test", 3, null, "12345");
         File file = new File(logDir, "test.txt");
-        logFileManager.writeListToFile(data, file);
+        logFileManager.writeListToFile(null, data, file);
         File[] files = logDir.listFiles();
         assertEquals(1, files.length);
         String fileContent = getFileContent(new File(logDir, "test.txt"));
-        assertEquals("Test" + System.lineSeparator() + "3" + System.lineSeparator() + "12345" + System.lineSeparator(), fileContent);
+        assertEquals("Test" + nl + "3" + nl + "12345" + nl, fileContent);
+        file = new File(logDir, "testwithheader.txt");
+        logFileManager.writeListToFile("header", data, file);
+        fileContent = getFileContent(new File(logDir, "testwithheader.txt"));
+        assertEquals("header" + nl + "Test" + nl + "3" + nl + "12345" + nl, fileContent);
     }
 
     private File getTestLogFileFolder() {

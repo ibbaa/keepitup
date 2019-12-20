@@ -166,7 +166,7 @@ public class LogFileManager {
         }
     }
 
-    public void writeListToFile(List<?> objects, File file) {
+    public void writeListToFile(String header, List<?> objects, File file) {
         if (file.exists()) {
             if (!file.delete()) {
                 return;
@@ -175,6 +175,10 @@ public class LogFileManager {
         OutputStream outputStream = null;
         try {
             outputStream = new BufferedOutputStream(new FileOutputStream(file));
+            if (header != null) {
+                header = header + System.lineSeparator();
+                outputStream.write(header.getBytes(Charsets.UTF_8));
+            }
             for (Object object : objects) {
                 if (object != null) {
                     String data = object.toString() + System.lineSeparator();

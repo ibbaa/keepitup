@@ -25,12 +25,16 @@ public class Dump {
         }
     }
 
-    public static void dump(IDumpSource source) {
+    public static void dump(String tag, String message, IDumpSource source) {
         if (BuildConfig.DEBUG) {
             IDump dump = getDump();
             if (dump != null) {
-                dump.dump(source);
+                dump.dump(tag, message, source);
             }
         }
+    }
+
+    public static void dump(IDumpSource source) {
+        dump(null, null, source);
     }
 }
