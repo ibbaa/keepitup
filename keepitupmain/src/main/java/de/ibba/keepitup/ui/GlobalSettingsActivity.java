@@ -243,7 +243,7 @@ public class GlobalSettingsActivity extends SettingsInputActivity {
         PreferenceManager preferenceManager = new PreferenceManager(this);
         preferenceManager.setPreferenceFileLoggerEnabled(isChecked);
         prepareFileLoggerEnabledOnOffText();
-        if (isChecked) {
+        if (isChecked && BuildConfig.DEBUG) {
             Log.initialize(DebugUtil.getFileLogger(this, getFileManager()));
         } else {
             Log.initialize(null);
@@ -278,7 +278,7 @@ public class GlobalSettingsActivity extends SettingsInputActivity {
         PreferenceManager preferenceManager = new PreferenceManager(this);
         preferenceManager.setPreferenceFileDumpEnabled(isChecked);
         prepareFileDumpEnabledOnOffText();
-        if (isChecked) {
+        if (isChecked && BuildConfig.DEBUG) {
             Dump.initialize(DebugUtil.getFileDump(this, getFileManager()));
         } else {
             Dump.initialize(null);
