@@ -7,5 +7,6 @@
     <string name="file_logger_log_directory_default">log</string>
     <integer name="file_dump_archive_file_count_default">20</integer>
     <string name="file_dump_dump_file_extension_default">txt</string>
+    <string name="file_dump_empty_message_default">No entries.</string>
     <string name="file_dump_dump_directory_default">log</string>
 </resources>

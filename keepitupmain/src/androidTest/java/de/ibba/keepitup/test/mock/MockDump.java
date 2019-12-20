@@ -15,8 +15,8 @@ public class MockDump implements IDump {
     }
 
     @Override
-    public void dump(String tag, String message, IDumpSource source) {
-        dumpCalls.add(new DumpCall(tag, message, source));
+    public void dump(String tag, String message, String baseFileName, IDumpSource source) {
+        dumpCalls.add(new DumpCall(tag, message, baseFileName, source));
     }
 
     public void reset() {
@@ -39,11 +39,13 @@ public class MockDump implements IDump {
 
         private final String tag;
         private final String message;
+        private final String baseFileName;
         private final IDumpSource dumpSource;
 
-        public DumpCall(String tag, String message, IDumpSource dumpSource) {
+        public DumpCall(String tag, String message, String baseFileName, IDumpSource dumpSource) {
             this.tag = tag;
             this.message = message;
+            this.baseFileName = baseFileName;
             this.dumpSource = dumpSource;
         }
 
@@ -53,6 +55,10 @@ public class MockDump implements IDump {
 
         public String getMessage() {
             return message;
+        }
+
+        public String getBaseFileName() {
+            return baseFileName;
         }
 
         public IDumpSource getDumpSource() {

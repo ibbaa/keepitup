@@ -166,7 +166,7 @@ public class LogFileManager {
         }
     }
 
-    public void writeListToFile(String header, List<?> objects, File file) {
+    public void writeListToFile(String header, String emptyMessage, List<?> objects, File file) {
         if (file.exists()) {
             if (!file.delete()) {
                 return;
@@ -179,10 +179,17 @@ public class LogFileManager {
                 header = header + System.lineSeparator();
                 outputStream.write(header.getBytes(Charsets.UTF_8));
             }
-            for (Object object : objects) {
-                if (object != null) {
-                    String data = object.toString() + System.lineSeparator();
-                    outputStream.write(data.getBytes(Charsets.UTF_8));
+            if (objects == null || objects.isEmpty()) {
+                if (emptyMessage != null) {
+                    emptyMessage = emptyMessage + System.lineSeparator();
+                    outputStream.write(emptyMessage.getBytes(Charsets.UTF_8));
+                }
+            } else {
+                for (Object object : objects) {
+                    if (object != null) {
+                        String data = object.toString() + System.lineSeparator();
+                        outputStream.write(data.getBytes(Charsets.UTF_8));
+                    }
                 }
             }
         } catch (Exception exc) {

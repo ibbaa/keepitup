@@ -15,6 +15,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
@@ -188,15 +189,42 @@ public class LogFileManagerTest {
         File logDir = getTestLogFileFolder();
         List<?> data = Arrays.asList("Test", 3, null, "12345");
         File file = new File(logDir, "test.txt");
-        logFileManager.writeListToFile(null, data, file);
+        logFileManager.writeListToFile(null, null, data, file);
         File[] files = logDir.listFiles();
         assertEquals(1, files.length);
         String fileContent = getFileContent(new File(logDir, "test.txt"));
         assertEquals("Test" + nl + "3" + nl + "12345" + nl, fileContent);
         file = new File(logDir, "testwithheader.txt");
-        logFileManager.writeListToFile("header", data, file);
+        logFileManager.writeListToFile("header", null, data, file);
         fileContent = getFileContent(new File(logDir, "testwithheader.txt"));
         assertEquals("header" + nl + "Test" + nl + "3" + nl + "12345" + nl, fileContent);
+    }
+
+    @Test
+    public void testWriteListToFileEmpty() throws Exception {
+        String nl = System.lineSeparator();
+        File logDir = getTestLogFileFolder();
+        File file = new File(logDir, "test.txt");
+        logFileManager.writeListToFile(null, null, null, file);
+        File[] files = logDir.listFiles();
+        assertEquals(1, files.length);
+        String fileContent = getFileContent(new File(logDir, "test.txt"));
+        assertTrue(fileContent.isEmpty());
+        file.delete();
+        logFileManager.writeListToFile(null, null, new ArrayList<>(), file);
+        assertEquals(1, files.length);
+        fileContent = getFileContent(new File(logDir, "test.txt"));
+        assertTrue(fileContent.isEmpty());
+        file.delete();
+        logFileManager.writeListToFile(null, "empty", new ArrayList<>(), file);
+        assertEquals(1, files.length);
+        fileContent = getFileContent(new File(logDir, "test.txt"));
+        assertEquals("empty" + nl, fileContent);
+        file.delete();
+        logFileManager.writeListToFile("header", "empty", new ArrayList<>(), file);
+        assertEquals(1, files.length);
+        fileContent = getFileContent(new File(logDir, "test.txt"));
+        assertEquals("header" + nl + "empty" + nl, fileContent);
     }
 
     private File getTestLogFileFolder() {

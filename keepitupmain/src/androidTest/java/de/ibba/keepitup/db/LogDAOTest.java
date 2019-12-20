@@ -10,6 +10,7 @@ import org.junit.runner.RunWith;
 
 import java.util.List;
 
+import de.ibba.keepitup.logging.Dump;
 import de.ibba.keepitup.model.LogEntry;
 import de.ibba.keepitup.test.mock.TestRegistry;
 
@@ -25,6 +26,7 @@ public class LogDAOTest {
 
     @Before
     public void beforeEachTestMethod() {
+        Dump.initialize(null);
         logDAO = new LogDAO(TestRegistry.getContext());
         logDAO.deleteAllLogs();
     }

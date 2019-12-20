@@ -5,8 +5,14 @@ import android.content.Context;
 import android.content.Intent;
 
 import de.ibba.keepitup.BuildConfig;
+import de.ibba.keepitup.db.LogDAO;
+import de.ibba.keepitup.db.NetworkTaskDAO;
+import de.ibba.keepitup.db.SchedulerIdHistoryDAO;
 import de.ibba.keepitup.logging.Dump;
 import de.ibba.keepitup.logging.Log;
+import de.ibba.keepitup.model.LogEntry;
+import de.ibba.keepitup.model.NetworkTask;
+import de.ibba.keepitup.model.SchedulerId;
 import de.ibba.keepitup.notification.NotificationHandler;
 import de.ibba.keepitup.resources.PreferenceManager;
 import de.ibba.keepitup.util.DebugUtil;
@@ -40,6 +46,7 @@ public class StartupService extends BroadcastReceiver {
                 }
                 if (isFileDumpEnabled) {
                     Dump.initialize(DebugUtil.getFileDump(context, fileManager));
+                    dumpDatabase("Dump on application startup", context);
                 } else {
                     Dump.initialize(null);
                 }
@@ -66,6 +73,17 @@ public class StartupService extends BroadcastReceiver {
             fileManager.delete(fileManager.getInternalDownloadDirectory());
         } catch (Exception exc) {
             Log.e(StartupService.class.getName(), "Error on deleting internal download files", exc);
+        }
+    }
+
+    private void dumpDatabase(String message, Context context) {
+        if (BuildConfig.DEBUG) {
+            NetworkTaskDAO networkTaskDAO = new NetworkTaskDAO(context);
+            Dump.dump(StartupService.class.getName(), message, NetworkTask.class.getSimpleName().toLowerCase(), networkTaskDAO::readAllNetworkTasks);
+            SchedulerIdHistoryDAO historyDAO = new SchedulerIdHistoryDAO(context);
+            Dump.dump(StartupService.class.getName(), message, SchedulerId.class.getSimpleName().toLowerCase(), historyDAO::readAllSchedulerIds);
+            LogDAO logDAO = new LogDAO(context);
+            Dump.dump(StartupService.class.getName(), message, LogEntry.class.getSimpleName().toLowerCase(), logDAO::readAllLogs);
         }
     }
 
