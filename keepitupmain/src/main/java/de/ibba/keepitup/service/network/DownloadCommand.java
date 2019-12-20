@@ -25,6 +25,7 @@ import de.ibba.keepitup.service.IFileManager;
 import de.ibba.keepitup.service.SystemFileManager;
 import de.ibba.keepitup.util.HTTPUtil;
 import de.ibba.keepitup.util.StreamUtil;
+import de.ibba.keepitup.util.StringUtil;
 
 public class DownloadCommand implements Callable<DownloadCommandResult> {
 
@@ -52,7 +53,7 @@ public class DownloadCommand implements Callable<DownloadCommandResult> {
         FileOutputStream outputStream = null;
         boolean connectSuccess = false;
         boolean downloadSuccess = false;
-        boolean partialDownloadSuccess = false;
+        boolean partialDownloadSuccess;
         boolean deleteSuccess = false;
         int httpCode = Integer.MAX_VALUE;
         String httpMessage = null;
@@ -91,9 +92,9 @@ public class DownloadCommand implements Callable<DownloadCommandResult> {
             executorService.scheduleWithFixedDelay(this::verifyValid, 0, pollInterval, TimeUnit.SECONDS);
             Log.d(DownloadCommand.class.getName(), "Startimg download...");
             downloadSuccess = StreamUtil.inputStreamToOutputStream(inputStream, outputStream, this::isValid);
-            partialDownloadSuccess = downloadedFileExists(fileName);
-            flushAndCloseOutputStream(outputStream);
             Log.d(DownloadCommand.class.getName(), "Download successful: " + downloadSuccess);
+            flushAndCloseOutputStream(outputStream);
+            partialDownloadSuccess = downloadedFileExists(fileName);
             Log.d(DownloadCommand.class.getName(), "Partial download successful: " + partialDownloadSuccess);
             if (delete && partialDownloadSuccess) {
                 Log.d(DownloadCommand.class.getName(), "Deleting downloaded file...");
@@ -102,6 +103,14 @@ public class DownloadCommand implements Callable<DownloadCommandResult> {
             return createDownloadCommandResult(true, downloadSuccess, partialDownloadSuccess, deleteSuccess, httpCode, httpMessage, fileName, null);
         } catch (Exception exc) {
             Log.e(DownloadCommand.class.getName(), "Error executing download command", exc);
+            Log.e(DownloadCommand.class.getName(), "Try closing stream.");
+            flushAndCloseOutputStream(outputStream);
+            partialDownloadSuccess = downloadedFileExists(fileName);
+            Log.d(DownloadCommand.class.getName(), "Partial download successful: " + partialDownloadSuccess);
+            if (delete && partialDownloadSuccess) {
+                Log.d(DownloadCommand.class.getName(), "Deleting downloaded file...");
+                deleteSuccess = deleteDownloadedFile(fileName);
+            }
             return createDownloadCommandResult(connectSuccess, downloadSuccess, partialDownloadSuccess, deleteSuccess, httpCode, httpMessage, fileName, exc);
         } finally {
             closeResources(connection, inputStream, outputStream, executorService);
@@ -163,15 +172,31 @@ public class DownloadCommand implements Callable<DownloadCommandResult> {
 
     private boolean deleteDownloadedFile(String fileName) {
         Log.d(DownloadCommand.class.getName(), "deleteDownloadedFile. fileName is " + fileName);
-        File file = new File(folder, fileName);
-        IFileManager fileManager = getFileManager();
-        return fileManager.delete(file);
+        if (StringUtil.isEmpty(fileName)) {
+            return false;
+        }
+        try {
+            File file = new File(folder, fileName);
+            IFileManager fileManager = getFileManager();
+            return fileManager.delete(file);
+        } catch (Exception e) {
+            Log.e(DownloadCommand.class.getName(), "Error deleting file " + fileName);
+            return false;
+        }
     }
 
     private boolean downloadedFileExists(String fileName) {
         Log.d(DownloadCommand.class.getName(), "downloadedFileExists. fileName is " + fileName);
-        File file = new File(folder, fileName);
-        return file.exists();
+        if (StringUtil.isEmpty(fileName)) {
+            return false;
+        }
+        try {
+            File file = new File(folder, fileName);
+            return file.exists();
+        } catch (Exception exc) {
+            Log.e(DownloadCommand.class.getName(), "Error checking if file " + fileName + " exists.");
+            return false;
+        }
     }
 
     private synchronized DownloadCommandResult createDownloadCommandResult(boolean connectSuccess, boolean downloadSuccess, boolean partialDownloadSuccess, boolean deleteSuccess, int httpCode, String httpMessage, String fileName, Exception exc) {
