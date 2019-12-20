@@ -28,19 +28,25 @@ public class FileDump implements IDump {
     }
 
     @Override
-    public void dump(IDumpSource source) {
+    public void dump(String tag, String message, IDumpSource source) {
         if (source == null) {
             return;
         }
-        Thread dumpThread = new Thread(new DumpThread(source));
+        LogFileEntry logEntry = null;
+        if (tag != null && message != null) {
+            logEntry = new LogFileEntry(System.currentTimeMillis(), Thread.currentThread().getName(), LogLevel.DEBUG, tag, message, null);
+        }
+        Thread dumpThread = new Thread(new DumpThread(logEntry, source));
         dumpThread.start();
     }
 
     private class DumpThread implements Runnable {
 
+        private final LogFileEntry logEntry;
         private final IDumpSource source;
 
-        public DumpThread(IDumpSource source) {
+        public DumpThread(LogFileEntry logEntry, IDumpSource source) {
+            this.logEntry = logEntry;
             this.source = source;
         }
 
@@ -56,10 +62,13 @@ public class FileDump implements IDump {
                     dumpFolder.mkdirs();
                 }
                 LogFileManager fileManager = new LogFileManager();
+                LogFormatter formatter = new LogFormatter();
                 String baseDumpFileName = objectsToDump.get(0).getClass().getSimpleName().toLowerCase() + "." + dumpFileExtension;
-                String dumpFileName = fileManager.suffixFileName(baseDumpFileName, fileManager.getTimestampSuffix(System.currentTimeMillis()));
+                long timestamp = logEntry != null ? logEntry.getTimestamp() : System.currentTimeMillis();
+                String header = logEntry != null ? formatter.formatLogFileEntry(logEntry) : null;
+                String dumpFileName = fileManager.suffixFileName(baseDumpFileName, fileManager.getTimestampSuffix(timestamp));
                 dumpFileName = fileManager.getValidFileName(dumpFolder, dumpFileName, null);
-                fileManager.writeListToFile(objectsToDump, new File(dumpFolder, dumpFileName));
+                fileManager.writeListToFile(header, objectsToDump, new File(dumpFolder, dumpFileName));
                 Housekeeper housekeeper = new Housekeeper(dumpDirectory, baseDumpFileName, archiveFileCount, new DumpFilenameFilter(baseDumpFileName));
                 Thread housekeepingThread = new Thread(housekeeper);
                 housekeepingThread.start();

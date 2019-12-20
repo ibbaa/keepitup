@@ -2,5 +2,5 @@ package de.ibba.keepitup.logging;
 
 public interface IDump {
 
-    void dump(IDumpSource source);
+    void dump(String tag, String message, IDumpSource source);
 }
