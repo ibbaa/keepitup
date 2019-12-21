@@ -80,7 +80,9 @@ public abstract class NetworkTaskWorker implements Runnable {
                     writeLogEntry(logEntry, shouldSendSystemNotification(isConnectedWithWifi, isConnected));
                     return;
                 }
+                Log.d(NetworkTaskWorker.class.getName(), "Executing task...");
                 logEntry = execute(networkTask);
+                Log.d(NetworkTaskWorker.class.getName(), "Th executed task returned " + logEntry);
                 if (isNetworkTaskValid()) {
                     writeLogEntry(logEntry, shouldSendSystemNotification(logEntry));
                 } else {
@@ -101,7 +103,7 @@ public abstract class NetworkTaskWorker implements Runnable {
     }
 
     private void writeLogEntry(LogEntry logEntry, boolean sendSystemNotifiaction) {
-        Log.d(NetworkTaskWorker.class.getName(), "Writing log entry to database " + logEntry + ", sendSystemNotifiaction is " + sendSystemNotifiaction);
+        Log.d(NetworkTaskWorker.class.getName(), "Writing log entry " + logEntry + " to database, sendSystemNotifiaction is " + sendSystemNotifiaction);
         LogDAO logDAO = new LogDAO(getContext());
         logDAO.insertAndDeleteLog(logEntry);
         Log.d(NetworkTaskWorker.class.getName(), "Notify UI");
