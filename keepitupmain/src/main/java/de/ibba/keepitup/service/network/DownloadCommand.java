@@ -53,7 +53,7 @@ public class DownloadCommand implements Callable<DownloadCommandResult> {
         FileOutputStream outputStream = null;
         boolean connectSuccess = false;
         boolean downloadSuccess = false;
-        boolean partialDownloadSuccess;
+        boolean fileExists;
         boolean deleteSuccess = false;
         int httpCode = Integer.MAX_VALUE;
         String httpMessage = null;
@@ -94,24 +94,24 @@ public class DownloadCommand implements Callable<DownloadCommandResult> {
             downloadSuccess = StreamUtil.inputStreamToOutputStream(inputStream, outputStream, this::isValid);
             Log.d(DownloadCommand.class.getName(), "Download successful: " + downloadSuccess);
             flushAndCloseOutputStream(outputStream);
-            partialDownloadSuccess = downloadedFileExists(fileName);
-            Log.d(DownloadCommand.class.getName(), "Partial download successful: " + partialDownloadSuccess);
-            if (delete && partialDownloadSuccess) {
+            fileExists = downloadedFileExists(fileName);
+            Log.d(DownloadCommand.class.getName(), "Partial download successful: " + fileExists);
+            if (delete && fileExists) {
                 Log.d(DownloadCommand.class.getName(), "Deleting downloaded file...");
                 deleteSuccess = deleteDownloadedFile(fileName);
             }
-            return createDownloadCommandResult(true, downloadSuccess, partialDownloadSuccess, deleteSuccess, httpCode, httpMessage, fileName, null);
+            return createDownloadCommandResult(true, downloadSuccess, fileExists, deleteSuccess, httpCode, httpMessage, fileName, null);
         } catch (Exception exc) {
             Log.e(DownloadCommand.class.getName(), "Error executing download command", exc);
             Log.e(DownloadCommand.class.getName(), "Try closing stream.");
             flushAndCloseOutputStream(outputStream);
-            partialDownloadSuccess = downloadedFileExists(fileName);
-            Log.d(DownloadCommand.class.getName(), "Partial download successful: " + partialDownloadSuccess);
-            if (delete && partialDownloadSuccess) {
+            fileExists = downloadedFileExists(fileName);
+            Log.d(DownloadCommand.class.getName(), "Partial download successful: " + fileExists);
+            if (delete && fileExists) {
                 Log.d(DownloadCommand.class.getName(), "Deleting downloaded file...");
                 deleteSuccess = deleteDownloadedFile(fileName);
             }
-            return createDownloadCommandResult(connectSuccess, downloadSuccess, partialDownloadSuccess, deleteSuccess, httpCode, httpMessage, fileName, exc);
+            return createDownloadCommandResult(connectSuccess, downloadSuccess, fileExists, deleteSuccess, httpCode, httpMessage, fileName, exc);
         } finally {
             closeResources(connection, inputStream, outputStream, executorService);
         }
@@ -199,8 +199,8 @@ public class DownloadCommand implements Callable<DownloadCommandResult> {
         }
     }
 
-    private synchronized DownloadCommandResult createDownloadCommandResult(boolean connectSuccess, boolean downloadSuccess, boolean partialDownloadSuccess, boolean deleteSuccess, int httpCode, String httpMessage, String fileName, Exception exc) {
-        return new DownloadCommandResult(connectSuccess, downloadSuccess, partialDownloadSuccess, deleteSuccess, valid, notRunningCount >= 2, httpCode, httpMessage, fileName, exc);
+    private synchronized DownloadCommandResult createDownloadCommandResult(boolean connectSuccess, boolean downloadSuccess, boolean fileExists, boolean deleteSuccess, int httpCode, String httpMessage, String fileName, Exception exc) {
+        return new DownloadCommandResult(connectSuccess, downloadSuccess, fileExists, deleteSuccess, valid, notRunningCount >= 2, httpCode, httpMessage, fileName, exc);
     }
 
     private synchronized boolean isValid() {

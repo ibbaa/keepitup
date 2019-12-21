@@ -18,6 +18,11 @@
     <string name="text_download_http_error">Server return code %d %s.</string>
     <string name="text_download_url_error">Download not possible. The url %s is invalid.</string>
     <string name="text_download_folder_error">Download not possible. The download folder %s does not exist and cannot be created.</string>
+    <string name="text_download_unknown_error">Download from %s failed for an unknown reason.</string>
+    <string name="text_download_success">Download from %s was successful.</string>
+    <string name="text_download_file">Download file: %s.</string>
+    <string name="text_download_delete">The file was deleted after download.</string>
+    <string name="text_download_delete_error">The deletion of the downloaded file failed.</string>
     <string name="text_null_worker_max_instances_error">Currently are %d attempts active, which is the maximum. Skipped execution.</string>
     <string name="text_ping_worker_max_instances_error">Currently are %d ping attempts active, which is the maximum. Skipped execution.</string>
     <string name="text_connect_worker_max_instances_error">Currently are %d connection attempts active, which is the maximum. Skipped execution.</string>
