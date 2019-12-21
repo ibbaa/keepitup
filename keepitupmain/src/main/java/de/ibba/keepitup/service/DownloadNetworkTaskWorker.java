@@ -129,33 +129,33 @@ public class DownloadNetworkTaskWorker extends NetworkTaskWorker {
     private void prepareConnectError(DownloadCommandResult downloadResult, URL url, int timeout, LogEntry logEntry) {
         Log.d(DownloadNetworkTaskWorker.class.getName(), "prepareConnectErrorMessage");
         String connectMessage = getResources().getString(R.string.text_download_connect_error, URLUtil.getHostAndPort(url));
-        logEntry.setSuccess(false);
-        Throwable exc = downloadResult.getException();
-        if (exc == null) {
-            logEntry.setMessage(connectMessage);
-        } else {
-            logEntry.setMessage(getMessageFromException(connectMessage, exc, timeout));
-        }
+        prepareError(downloadResult, url, timeout, logEntry, connectMessage);
     }
 
     private void prepareHTTPReturnCodeError(DownloadCommandResult downloadResult, URL url, int timeout, LogEntry logEntry) {
         Log.d(DownloadNetworkTaskWorker.class.getName(), "prepareHTTPReturnCodeErrorMessage");
-        logEntry.setSuccess(false);
         String downloadError = getResources().getString(R.string.text_download_error, url.toExternalForm());
         String httpMessage = getResources().getString(R.string.text_download_http_error, downloadResult.getHttpResponseCode(), downloadResult.getHttpResponseMessage());
         String message = downloadError + " " + httpMessage;
-        Throwable exc = downloadResult.getException();
-        if (exc == null) {
-            logEntry.setMessage(message);
-        } else {
-            logEntry.setMessage(getMessageFromException(message, exc, timeout));
-        }
+        prepareError(downloadResult, url, timeout, logEntry, message);
     }
 
     private void prepareUnknownError(DownloadCommandResult downloadResult, URL url, int timeout, LogEntry logEntry) {
         Log.d(DownloadNetworkTaskWorker.class.getName(), "prepareUnknownErrorMessage");
         logEntry.setSuccess(false);
-        String message = getResources().getString(R.string.text_download_unknown_error, url.toExternalForm());
+        Throwable exc = downloadResult.getException();
+        String message;
+        if (exc == null) {
+            message = getResources().getString(R.string.text_download_unknown_error, url.toExternalForm());
+        } else {
+            message = getResources().getString(R.string.text_download_error, url.toExternalForm());
+        }
+        prepareError(downloadResult, url, timeout, logEntry, message);
+    }
+
+    private void prepareError(DownloadCommandResult downloadResult, URL url, int timeout, LogEntry logEntry, String message) {
+        Log.d(DownloadNetworkTaskWorker.class.getName(), "prepareError");
+        logEntry.setSuccess(false);
         Throwable exc = downloadResult.getException();
         if (exc == null) {
             logEntry.setMessage(message);
