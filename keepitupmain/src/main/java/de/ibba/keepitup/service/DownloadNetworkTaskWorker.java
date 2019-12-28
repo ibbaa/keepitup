@@ -121,7 +121,7 @@ public class DownloadNetworkTaskWorker extends NetworkTaskWorker {
                 prepareStoppedError(downloadResult, url, timeout, folder, delete, logEntry);
                 return;
             }
-            if (downloadResult.isValid()) {
+            if (!downloadResult.isValid()) {
                 Log.d(DownloadNetworkTaskWorker.class.getName(), "The network task is invalid. Preparing error message.");
                 prepareInvalidError(downloadResult, url, timeout, folder, delete, logEntry);
                 return;
