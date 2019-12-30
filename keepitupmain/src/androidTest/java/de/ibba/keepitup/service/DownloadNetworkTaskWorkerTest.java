@@ -32,6 +32,7 @@ import de.ibba.keepitup.test.mock.TestRegistry;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 @MediumTest
 @RunWith(AndroidJUnit4.class)
@@ -417,6 +418,255 @@ public class DownloadNetworkTaskWorkerTest {
         assertEquals(getTestTimestamp(), logEntry.getTimestamp());
         assertFalse(logEntry.isSuccess());
         assertEquals("The download was stopped because the network task is no longer valid. The file was partially downloaded. The partially downloaded file was deleted. Exception: Test", logEntry.getMessage());
+    }
+
+    @Test
+    public void testDownloadUnknownErrorFileDoesNotExist() throws Exception {
+        DNSLookupResult dnsLookupResult = new DNSLookupResult(Arrays.asList(InetAddress.getByName("127.0.0.1"), InetAddress.getByName("::1")), null);
+        DownloadCommandResult downloadCommandResult = new DownloadCommandResult(true, false, false, false, true, false, HttpURLConnection.HTTP_OK, null, null, null);
+        prepareTestDownloadNetworkTaskWorker(dnsLookupResult, downloadCommandResult);
+        LogEntry logEntry = downloadNetworkTaskWorker.execute(getNetworkTask());
+        assertEquals(45, logEntry.getNetworkTaskId());
+        assertEquals(getTestTimestamp(), logEntry.getTimestamp());
+        assertFalse(logEntry.isSuccess());
+        assertEquals("The download from http://127.0.0.1 failed for an unknown reason.", logEntry.getMessage());
+    }
+
+    @Test
+    public void testDownloadUnknownErrorFileDoesNotExistWithException() throws Exception {
+        DNSLookupResult dnsLookupResult = new DNSLookupResult(Arrays.asList(InetAddress.getByName("127.0.0.1"), InetAddress.getByName("::1")), null);
+        DownloadCommandResult downloadCommandResult = new DownloadCommandResult(true, false, false, false, true, false, HttpURLConnection.HTTP_OK, null, null, new Exception("Test"));
+        prepareTestDownloadNetworkTaskWorker(dnsLookupResult, downloadCommandResult);
+        LogEntry logEntry = downloadNetworkTaskWorker.execute(getNetworkTask());
+        assertEquals(45, logEntry.getNetworkTaskId());
+        assertEquals(getTestTimestamp(), logEntry.getTimestamp());
+        assertFalse(logEntry.isSuccess());
+        assertEquals("The download from http://127.0.0.1 failed. Exception: Test", logEntry.getMessage());
+    }
+
+    @Test
+    public void testDownloadUnknownErrorFileExistNotDelete() throws Exception {
+        DNSLookupResult dnsLookupResult = new DNSLookupResult(Arrays.asList(InetAddress.getByName("127.0.0.1"), InetAddress.getByName("::1")), null);
+        DownloadCommandResult downloadCommandResult = new DownloadCommandResult(true, false, true, false, true, false, HttpURLConnection.HTTP_OK, null, "testfile", null);
+        prepareTestDownloadNetworkTaskWorker(dnsLookupResult, downloadCommandResult);
+        preferenceManager.setPreferenceDownloadKeep(true);
+        preferenceManager.setPreferenceDownloadExternalStorage(true);
+        fileManager.setExternalDirectory(new File("Test"));
+        LogEntry logEntry = downloadNetworkTaskWorker.execute(getNetworkTask());
+        assertEquals(45, logEntry.getNetworkTaskId());
+        assertEquals(getTestTimestamp(), logEntry.getTimestamp());
+        assertFalse(logEntry.isSuccess());
+        assertEquals("The download from http://127.0.0.1 failed for an unknown reason. The file was partially downloaded. Downloaded file: /Test/testfile.", logEntry.getMessage());
+    }
+
+    @Test
+    public void testDownloadUnknownErrorFileExistNotDeleteWithException() throws Exception {
+        DNSLookupResult dnsLookupResult = new DNSLookupResult(Arrays.asList(InetAddress.getByName("127.0.0.1"), InetAddress.getByName("::1")), null);
+        DownloadCommandResult downloadCommandResult = new DownloadCommandResult(true, false, true, false, true, false, HttpURLConnection.HTTP_OK, null, "testfile", new Exception("Test"));
+        prepareTestDownloadNetworkTaskWorker(dnsLookupResult, downloadCommandResult);
+        preferenceManager.setPreferenceDownloadKeep(true);
+        preferenceManager.setPreferenceDownloadExternalStorage(true);
+        fileManager.setExternalDirectory(new File("Test"));
+        LogEntry logEntry = downloadNetworkTaskWorker.execute(getNetworkTask());
+        assertEquals(45, logEntry.getNetworkTaskId());
+        assertEquals(getTestTimestamp(), logEntry.getTimestamp());
+        assertFalse(logEntry.isSuccess());
+        assertEquals("The download from http://127.0.0.1 failed. The file was partially downloaded. Downloaded file: /Test/testfile. Exception: Test", logEntry.getMessage());
+    }
+
+    @Test
+    public void testDownloadUnknownErrorFileExistDeleteFailedInternalStorage() throws Exception {
+        DNSLookupResult dnsLookupResult = new DNSLookupResult(Arrays.asList(InetAddress.getByName("127.0.0.1"), InetAddress.getByName("::1")), null);
+        DownloadCommandResult downloadCommandResult = new DownloadCommandResult(true, false, true, false, true, false, HttpURLConnection.HTTP_OK, null, "testfile", null);
+        prepareTestDownloadNetworkTaskWorker(dnsLookupResult, downloadCommandResult);
+        LogEntry logEntry = downloadNetworkTaskWorker.execute(getNetworkTask());
+        assertEquals(45, logEntry.getNetworkTaskId());
+        assertEquals(getTestTimestamp(), logEntry.getTimestamp());
+        assertFalse(logEntry.isSuccess());
+        assertEquals("The download from http://127.0.0.1 failed for an unknown reason. The file was partially downloaded. The deletion of the partially_downloaded file failed.", logEntry.getMessage());
+    }
+
+    @Test
+    public void testDownloadUnknownErrorFileExistDeleteFailedInternalStorageWithException() throws Exception {
+        DNSLookupResult dnsLookupResult = new DNSLookupResult(Arrays.asList(InetAddress.getByName("127.0.0.1"), InetAddress.getByName("::1")), null);
+        DownloadCommandResult downloadCommandResult = new DownloadCommandResult(true, false, true, false, true, false, HttpURLConnection.HTTP_OK, null, "testfile", new Exception("Test"));
+        prepareTestDownloadNetworkTaskWorker(dnsLookupResult, downloadCommandResult);
+        LogEntry logEntry = downloadNetworkTaskWorker.execute(getNetworkTask());
+        assertEquals(45, logEntry.getNetworkTaskId());
+        assertEquals(getTestTimestamp(), logEntry.getTimestamp());
+        assertFalse(logEntry.isSuccess());
+        assertEquals("The download from http://127.0.0.1 failed. The file was partially downloaded. The deletion of the partially_downloaded file failed. Exception: Test", logEntry.getMessage());
+    }
+
+    @Test
+    public void testDownloadUnknownErrorFileExistDeleteFailedExternalStorage() throws Exception {
+        DNSLookupResult dnsLookupResult = new DNSLookupResult(Arrays.asList(InetAddress.getByName("127.0.0.1"), InetAddress.getByName("::1")), null);
+        DownloadCommandResult downloadCommandResult = new DownloadCommandResult(true, false, true, false, true, false, HttpURLConnection.HTTP_OK, null, "testfile", null);
+        prepareTestDownloadNetworkTaskWorker(dnsLookupResult, downloadCommandResult);
+        preferenceManager.setPreferenceDownloadKeep(false);
+        preferenceManager.setPreferenceDownloadExternalStorage(true);
+        fileManager.setExternalDirectory(new File("Test"));
+        LogEntry logEntry = downloadNetworkTaskWorker.execute(getNetworkTask());
+        assertEquals(45, logEntry.getNetworkTaskId());
+        assertEquals(getTestTimestamp(), logEntry.getTimestamp());
+        assertFalse(logEntry.isSuccess());
+        assertEquals("The download from http://127.0.0.1 failed for an unknown reason. The file was partially downloaded. The deletion of the partially_downloaded file failed.", logEntry.getMessage());
+    }
+
+    @Test
+    public void testDownloadUnknownErrorFileExistDeleteFailedExternalStorageWithException() throws Exception {
+        DNSLookupResult dnsLookupResult = new DNSLookupResult(Arrays.asList(InetAddress.getByName("127.0.0.1"), InetAddress.getByName("::1")), null);
+        DownloadCommandResult downloadCommandResult = new DownloadCommandResult(true, false, true, false, true, false, HttpURLConnection.HTTP_OK, null, "testfile", new Exception("Test"));
+        prepareTestDownloadNetworkTaskWorker(dnsLookupResult, downloadCommandResult);
+        preferenceManager.setPreferenceDownloadKeep(false);
+        preferenceManager.setPreferenceDownloadExternalStorage(true);
+        fileManager.setExternalDirectory(new File("Test"));
+        LogEntry logEntry = downloadNetworkTaskWorker.execute(getNetworkTask());
+        assertEquals(45, logEntry.getNetworkTaskId());
+        assertEquals(getTestTimestamp(), logEntry.getTimestamp());
+        assertFalse(logEntry.isSuccess());
+        assertEquals("The download from http://127.0.0.1 failed. The file was partially downloaded. The deletion of the partially_downloaded file failed. Exception: Test", logEntry.getMessage());
+    }
+
+    @Test
+    public void testDownloadUnknownErrorFileExistDeleteSuccess() throws Exception {
+        DNSLookupResult dnsLookupResult = new DNSLookupResult(Arrays.asList(InetAddress.getByName("127.0.0.1"), InetAddress.getByName("::1")), null);
+        DownloadCommandResult downloadCommandResult = new DownloadCommandResult(true, false, true, true, true, false, HttpURLConnection.HTTP_OK, null, "testfile", null);
+        prepareTestDownloadNetworkTaskWorker(dnsLookupResult, downloadCommandResult);
+        LogEntry logEntry = downloadNetworkTaskWorker.execute(getNetworkTask());
+        assertEquals(45, logEntry.getNetworkTaskId());
+        assertEquals(getTestTimestamp(), logEntry.getTimestamp());
+        assertFalse(logEntry.isSuccess());
+        assertEquals("The download from http://127.0.0.1 failed for an unknown reason. The file was partially downloaded. The partially downloaded file was deleted.", logEntry.getMessage());
+    }
+
+    @Test
+    public void testDownloadUnknownErrorFileExistDeleteSuccessWithException() throws Exception {
+        DNSLookupResult dnsLookupResult = new DNSLookupResult(Arrays.asList(InetAddress.getByName("127.0.0.1"), InetAddress.getByName("::1")), null);
+        DownloadCommandResult downloadCommandResult = new DownloadCommandResult(true, false, true, true, true, false, HttpURLConnection.HTTP_OK, null, "testfile", new Exception("Test"));
+        prepareTestDownloadNetworkTaskWorker(dnsLookupResult, downloadCommandResult);
+        LogEntry logEntry = downloadNetworkTaskWorker.execute(getNetworkTask());
+        assertEquals(45, logEntry.getNetworkTaskId());
+        assertEquals(getTestTimestamp(), logEntry.getTimestamp());
+        assertFalse(logEntry.isSuccess());
+        assertEquals("The download from http://127.0.0.1 failed. The file was partially downloaded. The partially downloaded file was deleted. Exception: Test", logEntry.getMessage());
+    }
+
+    @Test
+    public void testDownloadExceptionOnCommandExecution() throws Exception {
+        DNSLookupResult dnsLookupResult = new DNSLookupResult(Arrays.asList(InetAddress.getByName("127.0.0.1"), InetAddress.getByName("::1")), null);
+        RuntimeException exception = new RuntimeException("Test");
+        prepareTestDownloadNetworkTaskWorker(dnsLookupResult, exception);
+        LogEntry logEntry = downloadNetworkTaskWorker.execute(getNetworkTask());
+        assertEquals(45, logEntry.getNetworkTaskId());
+        assertEquals(getTestTimestamp(), logEntry.getTimestamp());
+        assertFalse(logEntry.isSuccess());
+        assertEquals("The download from http://127.0.0.1 failed. RuntimeException: Test", logEntry.getMessage());
+    }
+
+    @Test
+    public void testDownloadSuccessFileDoesNotExist() throws Exception {
+        DNSLookupResult dnsLookupResult = new DNSLookupResult(Arrays.asList(InetAddress.getByName("127.0.0.1"), InetAddress.getByName("::1")), null);
+        DownloadCommandResult downloadCommandResult = new DownloadCommandResult(true, true, false, false, true, false, HttpURLConnection.HTTP_OK, null, null, null);
+        prepareTestDownloadNetworkTaskWorker(dnsLookupResult, downloadCommandResult);
+        LogEntry logEntry = downloadNetworkTaskWorker.execute(getNetworkTask());
+        assertEquals(45, logEntry.getNetworkTaskId());
+        assertEquals(getTestTimestamp(), logEntry.getTimestamp());
+        assertFalse(logEntry.isSuccess());
+        assertEquals("The download from http://127.0.0.1 failed for an unknown reason.", logEntry.getMessage());
+    }
+
+    @Test
+    public void testDownloadSuccessFileDoesNotExistWithException() throws Exception {
+        DNSLookupResult dnsLookupResult = new DNSLookupResult(Arrays.asList(InetAddress.getByName("127.0.0.1"), InetAddress.getByName("::1")), null);
+        DownloadCommandResult downloadCommandResult = new DownloadCommandResult(true, true, false, false, true, false, HttpURLConnection.HTTP_OK, null, null, new Exception("Test"));
+        prepareTestDownloadNetworkTaskWorker(dnsLookupResult, downloadCommandResult);
+        LogEntry logEntry = downloadNetworkTaskWorker.execute(getNetworkTask());
+        assertEquals(45, logEntry.getNetworkTaskId());
+        assertEquals(getTestTimestamp(), logEntry.getTimestamp());
+        assertFalse(logEntry.isSuccess());
+        assertEquals("The download from http://127.0.0.1 failed. Exception: Test", logEntry.getMessage());
+    }
+
+    @Test
+    public void testDownloadSuccessFileExistNotDelete() throws Exception {
+        DNSLookupResult dnsLookupResult = new DNSLookupResult(Arrays.asList(InetAddress.getByName("127.0.0.1"), InetAddress.getByName("::1")), null);
+        DownloadCommandResult downloadCommandResult = new DownloadCommandResult(true, true, true, false, true, false, HttpURLConnection.HTTP_OK, null, "testfile", null);
+        prepareTestDownloadNetworkTaskWorker(dnsLookupResult, downloadCommandResult);
+        preferenceManager.setPreferenceDownloadKeep(true);
+        preferenceManager.setPreferenceDownloadExternalStorage(true);
+        fileManager.setExternalDirectory(new File("Test"));
+        LogEntry logEntry = downloadNetworkTaskWorker.execute(getNetworkTask());
+        assertEquals(45, logEntry.getNetworkTaskId());
+        assertEquals(getTestTimestamp(), logEntry.getTimestamp());
+        assertTrue(logEntry.isSuccess());
+        assertEquals("The download from http://127.0.0.1 was successful. Downloaded file: /Test/testfile.", logEntry.getMessage());
+    }
+
+    @Test
+    public void testDownloadSuccessFileExistDeleteSuccess() throws Exception {
+        DNSLookupResult dnsLookupResult = new DNSLookupResult(Arrays.asList(InetAddress.getByName("127.0.0.1"), InetAddress.getByName("::1")), null);
+        DownloadCommandResult downloadCommandResult = new DownloadCommandResult(true, true, true, true, true, false, HttpURLConnection.HTTP_OK, null, "testfile", null);
+        prepareTestDownloadNetworkTaskWorker(dnsLookupResult, downloadCommandResult);
+        LogEntry logEntry = downloadNetworkTaskWorker.execute(getNetworkTask());
+        assertEquals(45, logEntry.getNetworkTaskId());
+        assertEquals(getTestTimestamp(), logEntry.getTimestamp());
+        assertTrue(logEntry.isSuccess());
+        assertEquals("The download from http://127.0.0.1 was successful. The file was deleted after download.", logEntry.getMessage());
+    }
+
+    @Test
+    public void testDownloadSuccessFileExistDeleteFailedInternalStorage() throws Exception {
+        DNSLookupResult dnsLookupResult = new DNSLookupResult(Arrays.asList(InetAddress.getByName("127.0.0.1"), InetAddress.getByName("::1")), null);
+        DownloadCommandResult downloadCommandResult = new DownloadCommandResult(true, true, true, false, true, false, HttpURLConnection.HTTP_OK, null, "testfile", null);
+        prepareTestDownloadNetworkTaskWorker(dnsLookupResult, downloadCommandResult);
+        LogEntry logEntry = downloadNetworkTaskWorker.execute(getNetworkTask());
+        assertEquals(45, logEntry.getNetworkTaskId());
+        assertEquals(getTestTimestamp(), logEntry.getTimestamp());
+        assertTrue(logEntry.isSuccess());
+        assertEquals("The download from http://127.0.0.1 was successful. The deletion of the downloaded file failed.", logEntry.getMessage());
+    }
+
+    @Test
+    public void testDownloadSuccessFileExistDeleteFailedInternalStorageWithException() throws Exception {
+        DNSLookupResult dnsLookupResult = new DNSLookupResult(Arrays.asList(InetAddress.getByName("127.0.0.1"), InetAddress.getByName("::1")), null);
+        DownloadCommandResult downloadCommandResult = new DownloadCommandResult(true, true, true, false, true, false, HttpURLConnection.HTTP_OK, null, "testfile", new Exception("Test"));
+        prepareTestDownloadNetworkTaskWorker(dnsLookupResult, downloadCommandResult);
+        LogEntry logEntry = downloadNetworkTaskWorker.execute(getNetworkTask());
+        assertEquals(45, logEntry.getNetworkTaskId());
+        assertEquals(getTestTimestamp(), logEntry.getTimestamp());
+        assertTrue(logEntry.isSuccess());
+        assertEquals("The download from http://127.0.0.1 was successful. The deletion of the downloaded file failed. Exception: Test", logEntry.getMessage());
+    }
+
+    @Test
+    public void testDownloadSuccessFileExistDeleteFailedExternalStorage() throws Exception {
+        DNSLookupResult dnsLookupResult = new DNSLookupResult(Arrays.asList(InetAddress.getByName("127.0.0.1"), InetAddress.getByName("::1")), null);
+        DownloadCommandResult downloadCommandResult = new DownloadCommandResult(true, true, true, false, true, false, HttpURLConnection.HTTP_OK, null, "testfile", null);
+        prepareTestDownloadNetworkTaskWorker(dnsLookupResult, downloadCommandResult);
+        preferenceManager.setPreferenceDownloadKeep(false);
+        preferenceManager.setPreferenceDownloadExternalStorage(true);
+        fileManager.setExternalDirectory(new File("Test"));
+        LogEntry logEntry = downloadNetworkTaskWorker.execute(getNetworkTask());
+        assertEquals(45, logEntry.getNetworkTaskId());
+        assertEquals(getTestTimestamp(), logEntry.getTimestamp());
+        assertTrue(logEntry.isSuccess());
+        assertEquals("The download from http://127.0.0.1 was successful. The deletion of the downloaded file failed.", logEntry.getMessage());
+    }
+
+    @Test
+    public void testDownloadSuccessFileExistDeleteFailedExternalStorageWithException() throws Exception {
+        DNSLookupResult dnsLookupResult = new DNSLookupResult(Arrays.asList(InetAddress.getByName("127.0.0.1"), InetAddress.getByName("::1")), null);
+        DownloadCommandResult downloadCommandResult = new DownloadCommandResult(true, true, true, false, true, false, HttpURLConnection.HTTP_OK, null, "testfile", new Exception("Test"));
+        prepareTestDownloadNetworkTaskWorker(dnsLookupResult, downloadCommandResult);
+        preferenceManager.setPreferenceDownloadKeep(false);
+        preferenceManager.setPreferenceDownloadExternalStorage(true);
+        fileManager.setExternalDirectory(new File("Test"));
+        LogEntry logEntry = downloadNetworkTaskWorker.execute(getNetworkTask());
+        assertEquals(45, logEntry.getNetworkTaskId());
+        assertEquals(getTestTimestamp(), logEntry.getTimestamp());
+        assertTrue(logEntry.isSuccess());
+        assertEquals("The download from http://127.0.0.1 was successful. The deletion of the downloaded file failed. Exception: Test", logEntry.getMessage());
     }
 
     private long getTestTimestamp() {
