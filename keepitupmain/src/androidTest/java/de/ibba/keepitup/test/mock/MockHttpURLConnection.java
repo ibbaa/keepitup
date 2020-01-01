@@ -14,7 +14,7 @@ public class MockHttpURLConnection extends HttpURLConnection {
     private int respondeCode;
     private String responseMessage;
 
-    protected MockHttpURLConnection(URL url) {
+    public MockHttpURLConnection(URL url) {
         super(url);
         reset();
     }
@@ -56,6 +56,10 @@ public class MockHttpURLConnection extends HttpURLConnection {
 
     public void setInputStream(InputStream inputStream) {
         mockURLConnection.setInputStream(inputStream);
+    }
+
+    public void setExceptionOnInputStream(IOException exceptionOnInputStream) {
+        mockURLConnection.setExceptionOnInputStream(exceptionOnInputStream);
     }
 
     @Override
