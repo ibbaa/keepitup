@@ -55,7 +55,7 @@ public class DownloadCommand implements Callable<DownloadCommandResult> {
         boolean downloadSuccess = false;
         boolean fileExists;
         boolean deleteSuccess = false;
-        int httpCode = Integer.MAX_VALUE;
+        int httpCode = -1;
         String httpMessage = null;
         String fileName = null;
         ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor();
@@ -117,7 +117,7 @@ public class DownloadCommand implements Callable<DownloadCommandResult> {
         }
     }
 
-    private URLConnection openConnection() throws IOException {
+    protected URLConnection openConnection() throws IOException {
         Log.d(DownloadCommand.class.getName(), "openConnection");
         if (url == null) {
             Log.e(DownloadCommand.class.getName(), "URL is null");
@@ -262,7 +262,7 @@ public class DownloadCommand implements Callable<DownloadCommandResult> {
         }
     }
 
-    private IFileManager getFileManager() {
+    protected IFileManager getFileManager() {
         return new SystemFileManager(getContext());
     }
 

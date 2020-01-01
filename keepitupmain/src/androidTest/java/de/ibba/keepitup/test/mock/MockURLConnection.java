@@ -16,8 +16,9 @@ public class MockURLConnection extends URLConnection {
     private Map<String, List<String>> headers;
     private InputStream inputStream;
     private String contentType;
+    private IOException exceptionOnInputStream;
 
-    protected MockURLConnection(URL url) {
+    public MockURLConnection(URL url) {
         super(url);
         reset();
     }
@@ -27,6 +28,7 @@ public class MockURLConnection extends URLConnection {
         connected = false;
         inputStream = null;
         contentType = null;
+        exceptionOnInputStream = null;
     }
 
     @Override
@@ -62,11 +64,18 @@ public class MockURLConnection extends URLConnection {
 
     @Override
     public InputStream getInputStream() throws IOException {
+        if (exceptionOnInputStream != null) {
+            throw exceptionOnInputStream;
+        }
         return inputStream;
     }
 
     public void setInputStream(InputStream inputStream) {
         this.inputStream = inputStream;
+    }
+
+    public void setExceptionOnInputStream(IOException exceptionOnInputStream) {
+        this.exceptionOnInputStream = exceptionOnInputStream;
     }
 
     @Override
