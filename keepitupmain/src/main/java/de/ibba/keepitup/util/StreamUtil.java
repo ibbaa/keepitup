@@ -25,7 +25,7 @@ public class StreamUtil {
 
     public static boolean inputStreamToOutputStream(InputStream inputStream, OutputStream outputStream, Interrupt interrupt) throws Exception {
         Log.d(StreamUtil.class.getName(), "inputStreamToOutputStream");
-        int read = -1;
+        int read = 0;
         if (interrupt == null) {
             interrupt = () -> true;
         }

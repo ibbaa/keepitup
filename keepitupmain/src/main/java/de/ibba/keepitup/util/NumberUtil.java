@@ -1,7 +1,6 @@
 package de.ibba.keepitup.util;
 
 import java.text.NumberFormat;
-import java.text.ParseException;
 import java.util.Locale;
 import java.util.Objects;
 
@@ -16,7 +15,7 @@ public class NumberUtil {
         try {
             Long.valueOf(value.toString());
             return true;
-        } catch (NumberFormatException exc) {
+        } catch (Exception exc) {
             Log.d(NumberUtil.class.getName(), "Parsing error, value == " + value, exc);
         }
         return false;
@@ -36,7 +35,7 @@ public class NumberUtil {
         try {
             Integer.valueOf(value.toString());
             return true;
-        } catch (NumberFormatException exc) {
+        } catch (Exception exc) {
             Log.d(NumberUtil.class.getName(), "Parsing error, value == " + value, exc);
         }
         return false;
@@ -57,7 +56,7 @@ public class NumberUtil {
             NumberFormat numberFormat = NumberFormat.getNumberInstance(Locale.US);
             numberFormat.parse(value.toString());
             return true;
-        } catch (ParseException exc) {
+        } catch (Exception exc) {
             Log.d(NumberUtil.class.getName(), "Parsing error, value == " + value, exc);
         }
         return false;
@@ -68,7 +67,7 @@ public class NumberUtil {
             NumberFormat numberFormat = NumberFormat.getNumberInstance(Locale.US);
             try {
                 return Objects.requireNonNull(numberFormat.parse(value.toString())).doubleValue();
-            } catch (ParseException exc) {
+            } catch (Exception exc) {
                 Log.d(NumberUtil.class.getName(), "Parsing error, value == " + value, exc);
             }
         }
