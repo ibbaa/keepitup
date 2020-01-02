@@ -35,18 +35,44 @@
                 android:focusable="true"
                 android:text="@string/text_activity_main_list_item_network_task_title" />
 
-            <ImageView
-                android:id="@+id/imageview_list_item_network_task_delete"
+            <LinearLayout
+                android:id="@+id/linearlayout_list_item_network_task_delete_edit_log"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="right|top"
                 android:layout_row="0"
                 android:layout_column="2"
-                android:layout_rowSpan="2"
-                android:clickable="true"
-                android:focusable="true"
-                android:contentDescription="@string/label_activity_main_delete_network_task"
-                app:srcCompat="@drawable/icon_delete_selector" />
+                android:layout_rowSpan="8"
+                android:orientation="vertical">
+
+                <ImageView
+                    android:id="@+id/imageview_list_item_network_task_delete"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:contentDescription="@string/label_activity_main_delete_network_task"
+                    app:srcCompat="@drawable/icon_delete_selector" />
+
+                <ImageView
+                    android:id="@+id/imageview_list_item_network_task_edit"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:contentDescription="@string/label_activity_main_edit_network_task"
+                    app:srcCompat="@drawable/icon_edit_selector" />
+
+                <ImageView
+                    android:id="@+id/imageview_list_item_network_task_log"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:contentDescription="@string/label_activity_main_log_network_task"
+                    app:srcCompat="@drawable/icon_log_selector" />
+
+            </LinearLayout>
 
             <TextView
                 android:id="@+id/textview_list_item_network_task_status"
@@ -83,19 +109,6 @@
                 android:textStyle="normal"
                 android:text="@string/text_activity_main_list_item_network_task_access_type" />
 
-            <ImageView
-                android:id="@+id/imageview_list_item_network_task_edit"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="right|top"
-                android:layout_row="2"
-                android:layout_column="2"
-                android:layout_rowSpan="2"
-                android:clickable="true"
-                android:focusable="true"
-                android:contentDescription="@string/label_activity_main_edit_network_task"
-                app:srcCompat="@drawable/icon_edit_selector" />
-
             <TextView
                 android:id="@+id/textview_list_item_network_task_address"
                 android:layout_width="0dp"
@@ -117,19 +130,6 @@
                 android:layout_columnSpan="2"
                 android:textStyle="normal"
                 android:text="@string/text_activity_main_list_item_network_task_interval" />
-
-            <ImageView
-                android:id="@+id/imageview_list_item_network_task_log"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="right|top"
-                android:layout_row="4"
-                android:layout_column="2"
-                android:layout_rowSpan="2"
-                android:clickable="true"
-                android:focusable="true"
-                android:contentDescription="@string/label_activity_main_log_network_task"
-                app:srcCompat="@drawable/icon_log_selector" />
 
             <TextView
                 android:id="@+id/textview_list_item_network_task_onlywifi"
