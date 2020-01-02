@@ -60,13 +60,13 @@ public class ConnectNetworkTaskWorker extends NetworkTaskWorker {
     private void executeConnectCommand(InetAddress address, int port, boolean ip6, LogEntry logEntry) {
         Log.d(ConnectNetworkTaskWorker.class.getName(), "executeConnectCommand, address is " + address + ", port is " + port);
         Callable<ConnectCommandResult> connectCommand = getConnectCommand(address, port);
-        int connectTimeout = getResources().getInteger(R.integer.connect_timeout);
+        int connectTimeout = getResources().getInteger(R.integer.connect_timeout) * 2;
         Log.d(ConnectNetworkTaskWorker.class.getName(), "Creating ExecutorService");
         ExecutorService executorService = Executors.newSingleThreadExecutor();
         try {
-            Log.d(ConnectNetworkTaskWorker.class.getName(), "Executing " + connectCommand.getClass().getSimpleName() + " with a timeout of " + connectTimeout * 2);
+            Log.d(ConnectNetworkTaskWorker.class.getName(), "Executing " + connectCommand.getClass().getSimpleName() + " with a timeout of " + connectTimeout);
             Future<ConnectCommandResult> connectResultFuture = executorService.submit(connectCommand);
-            ConnectCommandResult connectResult = connectResultFuture.get(connectTimeout * 2, TimeUnit.SECONDS);
+            ConnectCommandResult connectResult = connectResultFuture.get(connectTimeout, TimeUnit.SECONDS);
             Log.d(ConnectNetworkTaskWorker.class.getName(), connectCommand.getClass().getSimpleName() + " returned " + connectResult);
             if (connectResult.isSuccess()) {
                 Log.d(ConnectNetworkTaskWorker.class.getName(), "Connect was successful");
@@ -84,7 +84,7 @@ public class ConnectNetworkTaskWorker extends NetworkTaskWorker {
         } catch (Throwable exc) {
             Log.d(ConnectNetworkTaskWorker.class.getName(), "Error executing " + connectCommand.getClass().getName(), exc);
             logEntry.setSuccess(false);
-            logEntry.setMessage(getMessageFromException(getResources().getString(R.string.text_connect_error, getAddressWithPort(address.getHostAddress(), port, ip6)), exc, connectTimeout * 2));
+            logEntry.setMessage(getMessageFromException(getResources().getString(R.string.text_connect_error, getAddressWithPort(address.getHostAddress(), port, ip6)), exc, connectTimeout));
         } finally {
             Log.d(ConnectNetworkTaskWorker.class.getName(), "Shutting down ExecutorService");
             executorService.shutdownNow();

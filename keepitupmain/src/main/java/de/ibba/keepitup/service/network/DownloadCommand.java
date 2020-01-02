@@ -128,8 +128,8 @@ public class DownloadCommand implements Callable<DownloadCommandResult> {
             Log.e(DownloadCommand.class.getName(), "Connection is null");
             return null;
         }
-        connection.setConnectTimeout(getResources().getInteger(R.integer.download_connect_timeout));
-        connection.setReadTimeout(getResources().getInteger(R.integer.download_read_timeout));
+        connection.setConnectTimeout(getResources().getInteger(R.integer.download_connect_timeout) * 1000);
+        connection.setReadTimeout(getResources().getInteger(R.integer.download_read_timeout) * 1000);
         connection.setDoInput(true);
         connection.setDoOutput(false);
         connection.connect();
