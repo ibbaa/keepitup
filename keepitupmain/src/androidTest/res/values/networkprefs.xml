@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <integer name="download_valid_poll_interval">1</integer>
+</resources>

@@ -203,7 +203,7 @@ public class DownloadCommand implements Callable<DownloadCommandResult> {
         return new DownloadCommandResult(connectSuccess, downloadSuccess, fileExists, deleteSuccess, valid, notRunningCount >= 2, httpCode, httpMessage, fileName, exc);
     }
 
-    private synchronized boolean isValid() {
+    public synchronized boolean isValid() {
         return valid;
     }
 
@@ -213,22 +213,27 @@ public class DownloadCommand implements Callable<DownloadCommandResult> {
     }
 
     private synchronized void verifyValid() {
+        Log.d(DownloadCommand.class.getName(), "verifyValid");
         try {
             NetworkTaskDAO networkTaskDAO = new NetworkTaskDAO(getContext());
             NetworkTask databaseTask = networkTaskDAO.readNetworkTask(networkTask.getId());
             if (databaseTask == null || networkTask.getSchedulerId() != databaseTask.getSchedulerId()) {
+                Log.d(DownloadCommand.class.getName(), "verifyValid, network task is not valid");
                 valid = false;
                 notRunningCount = 0;
                 return;
             }
             if (databaseTask.isRunning()) {
+                Log.d(DownloadCommand.class.getName(), "verifyValid, network task is valid and running");
                 valid = true;
                 notRunningCount = 0;
                 return;
             }
+            Log.d(DownloadCommand.class.getName(), "verifyValid, network task is not running");
             valid = true;
             notRunningCount++;
             if (notRunningCount >= 2) {
+                Log.d(DownloadCommand.class.getName(), "verifyValid, network task is not running, not running count exceeded");
                 valid = false;
             }
         } catch (Exception exc) {

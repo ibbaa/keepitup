@@ -58,6 +58,7 @@ public class MockURLConnection extends URLConnection {
         List<String> values = headers.get(name);
         if (values == null) {
             values = new ArrayList<>();
+            headers.put(name, values);
         }
         values.add(value);
     }

@@ -4,9 +4,7 @@ import com.google.common.net.InetAddresses;
 import com.google.common.net.InternetDomainName;
 
 import java.net.IDN;
-import java.net.MalformedURLException;
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.net.URL;
 
 import de.ibba.keepitup.logging.Log;
@@ -27,7 +25,7 @@ public class URLUtil {
             URL url = new URL(inputUrl);
             @SuppressWarnings("unused") URI uri = new URI(url.getProtocol(), url.getUserInfo(), IDN.toASCII(url.getHost()), url.getPort(), url.getPath(), url.getQuery(), url.getRef());
             return !StringUtil.isEmpty(IDN.toASCII(url.getHost()));
-        } catch (MalformedURLException | URISyntaxException exc) {
+        } catch (Exception exc) {
             Log.d(URLUtil.class.getName(), "Exception parsing url " + inputUrl, exc);
         }
         return false;
@@ -47,7 +45,7 @@ public class URLUtil {
             URL url = new URL(inputUrl);
             URI uri = new URI(url.getProtocol(), url.getUserInfo(), IDN.toASCII(url.getHost()), url.getPort(), url.getPath(), url.getQuery(), url.getRef());
             return uri.toASCIIString();
-        } catch (MalformedURLException | URISyntaxException exc) {
+        } catch (Exception exc) {
             Log.d(URLUtil.class.getName(), "Exception parsing url " + inputUrl, exc);
         }
         return inputUrl;
@@ -78,7 +76,7 @@ public class URLUtil {
             }
             URI uri = new URI(url.getProtocol(), url.getUserInfo(), IDN.toASCII(host), url.getPort(), url.getPath(), url.getQuery(), url.getRef());
             return uri.toURL();
-        } catch (MalformedURLException | URISyntaxException exc) {
+        } catch (Exception exc) {
             Log.d(URLUtil.class.getName(), "Exception parsing url " + inputUrl, exc);
         }
         return null;
