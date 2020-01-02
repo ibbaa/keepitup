@@ -96,6 +96,7 @@ public class DownloadCommandTest {
         assertEquals("not found", result.getHttpResponseMessage());
         assertNull(result.getFileName());
         assertNull(result.getException());
+        assertTrue(urlConnection.isDisconnected());
     }
 
     @Test
@@ -116,6 +117,7 @@ public class DownloadCommandTest {
         assertEquals("Everything ok", result.getHttpResponseMessage());
         assertNull(result.getFileName());
         assertNull(result.getException());
+        assertTrue(urlConnection.isDisconnected());
     }
 
     @Test
@@ -138,6 +140,7 @@ public class DownloadCommandTest {
         assertEquals("test.jpg", result.getFileName());
         assertTrue(result.getException() instanceof IOException);
         assertEquals("Test", result.getException().getMessage());
+        assertTrue(urlConnection.isDisconnected());
     }
 
     @Test
@@ -159,6 +162,7 @@ public class DownloadCommandTest {
         assertEquals("test.jpg", result.getFileName());
         assertTrue(result.getException() instanceof IOException);
         assertEquals("Test", result.getException().getMessage());
+        assertTrue(urlConnection.isDisconnected());
     }
 
     @Test
@@ -181,6 +185,7 @@ public class DownloadCommandTest {
         assertEquals("www_host_com.jpg", result.getFileName());
         assertTrue(result.getException() instanceof IOException);
         assertEquals("Test", result.getException().getMessage());
+        assertTrue(urlConnection.isDisconnected());
     }
 
     @Test
@@ -204,6 +209,7 @@ public class DownloadCommandTest {
         assertEquals("Everything ok", result.getHttpResponseMessage());
         assertEquals("test.jpg", result.getFileName());
         assertNull(result.getException());
+        assertTrue(urlConnection.isDisconnected());
     }
 
     @Test
@@ -227,6 +233,7 @@ public class DownloadCommandTest {
         assertEquals("Everything ok", result.getHttpResponseMessage());
         assertEquals("test.jpg", result.getFileName());
         assertNull(result.getException());
+        assertTrue(urlConnection.isDisconnected());
     }
 
     private NetworkTask getNetworkTask() {
