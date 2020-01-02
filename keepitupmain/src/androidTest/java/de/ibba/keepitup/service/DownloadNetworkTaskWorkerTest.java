@@ -89,7 +89,7 @@ public class DownloadNetworkTaskWorkerTest {
         assertEquals(45, logEntry.getNetworkTaskId());
         assertEquals(getTestTimestamp(), logEntry.getTimestamp());
         assertFalse(logEntry.isSuccess());
-        assertEquals("DNS lookup for http://127.0.0.1 failed. IllegalArgumentException: TestException", logEntry.getMessage());
+        assertEquals("DNS lookup for 127.0.0.1 failed. IllegalArgumentException: TestException", logEntry.getMessage());
     }
 
     @Test
@@ -141,7 +141,7 @@ public class DownloadNetworkTaskWorkerTest {
         assertEquals(45, logEntry.getNetworkTaskId());
         assertEquals(getTestTimestamp(), logEntry.getTimestamp());
         assertFalse(logEntry.isSuccess());
-        assertEquals("Connection to 127.0.0.1 failed.", logEntry.getMessage());
+        assertEquals("Connection to 127.0.0.1:80 failed.", logEntry.getMessage());
     }
 
     @Test
@@ -153,7 +153,7 @@ public class DownloadNetworkTaskWorkerTest {
         assertEquals(45, logEntry.getNetworkTaskId());
         assertEquals(getTestTimestamp(), logEntry.getTimestamp());
         assertFalse(logEntry.isSuccess());
-        assertEquals("The download from http://127.0.0.1 failed. Server return code 404 message.", logEntry.getMessage());
+        assertEquals("The download from http://127.0.0.1:80 failed. Server return code 404 message.", logEntry.getMessage());
     }
 
     @Test
@@ -429,7 +429,7 @@ public class DownloadNetworkTaskWorkerTest {
         assertEquals(45, logEntry.getNetworkTaskId());
         assertEquals(getTestTimestamp(), logEntry.getTimestamp());
         assertFalse(logEntry.isSuccess());
-        assertEquals("The download from http://127.0.0.1 failed for an unknown reason.", logEntry.getMessage());
+        assertEquals("The download from http://127.0.0.1:80 failed for an unknown reason.", logEntry.getMessage());
     }
 
     @Test
@@ -441,7 +441,7 @@ public class DownloadNetworkTaskWorkerTest {
         assertEquals(45, logEntry.getNetworkTaskId());
         assertEquals(getTestTimestamp(), logEntry.getTimestamp());
         assertFalse(logEntry.isSuccess());
-        assertEquals("The download from http://127.0.0.1 failed. Exception: Test", logEntry.getMessage());
+        assertEquals("The download from http://127.0.0.1:80 failed. Exception: Test", logEntry.getMessage());
     }
 
     @Test
@@ -456,7 +456,7 @@ public class DownloadNetworkTaskWorkerTest {
         assertEquals(45, logEntry.getNetworkTaskId());
         assertEquals(getTestTimestamp(), logEntry.getTimestamp());
         assertFalse(logEntry.isSuccess());
-        assertEquals("The download from http://127.0.0.1 failed for an unknown reason. The file was partially downloaded. Downloaded file: /Test/testfile.", logEntry.getMessage());
+        assertEquals("The download from http://127.0.0.1:80 failed for an unknown reason. The file was partially downloaded. Downloaded file: /Test/testfile.", logEntry.getMessage());
     }
 
     @Test
@@ -471,7 +471,7 @@ public class DownloadNetworkTaskWorkerTest {
         assertEquals(45, logEntry.getNetworkTaskId());
         assertEquals(getTestTimestamp(), logEntry.getTimestamp());
         assertFalse(logEntry.isSuccess());
-        assertEquals("The download from http://127.0.0.1 failed. The file was partially downloaded. Downloaded file: /Test/testfile. Exception: Test", logEntry.getMessage());
+        assertEquals("The download from http://127.0.0.1:80 failed. The file was partially downloaded. Downloaded file: /Test/testfile. Exception: Test", logEntry.getMessage());
     }
 
     @Test
@@ -483,7 +483,7 @@ public class DownloadNetworkTaskWorkerTest {
         assertEquals(45, logEntry.getNetworkTaskId());
         assertEquals(getTestTimestamp(), logEntry.getTimestamp());
         assertFalse(logEntry.isSuccess());
-        assertEquals("The download from http://127.0.0.1 failed for an unknown reason. The file was partially downloaded. The deletion of the partially_downloaded file failed.", logEntry.getMessage());
+        assertEquals("The download from http://127.0.0.1:80 failed for an unknown reason. The file was partially downloaded. The deletion of the partially_downloaded file failed.", logEntry.getMessage());
     }
 
     @Test
@@ -495,7 +495,7 @@ public class DownloadNetworkTaskWorkerTest {
         assertEquals(45, logEntry.getNetworkTaskId());
         assertEquals(getTestTimestamp(), logEntry.getTimestamp());
         assertFalse(logEntry.isSuccess());
-        assertEquals("The download from http://127.0.0.1 failed. The file was partially downloaded. The deletion of the partially_downloaded file failed. Exception: Test", logEntry.getMessage());
+        assertEquals("The download from http://127.0.0.1:80 failed. The file was partially downloaded. The deletion of the partially_downloaded file failed. Exception: Test", logEntry.getMessage());
     }
 
     @Test
@@ -510,7 +510,7 @@ public class DownloadNetworkTaskWorkerTest {
         assertEquals(45, logEntry.getNetworkTaskId());
         assertEquals(getTestTimestamp(), logEntry.getTimestamp());
         assertFalse(logEntry.isSuccess());
-        assertEquals("The download from http://127.0.0.1 failed for an unknown reason. The file was partially downloaded. The deletion of the partially_downloaded file failed.", logEntry.getMessage());
+        assertEquals("The download from http://127.0.0.1:80 failed for an unknown reason. The file was partially downloaded. The deletion of the partially_downloaded file failed.", logEntry.getMessage());
     }
 
     @Test
@@ -525,7 +525,7 @@ public class DownloadNetworkTaskWorkerTest {
         assertEquals(45, logEntry.getNetworkTaskId());
         assertEquals(getTestTimestamp(), logEntry.getTimestamp());
         assertFalse(logEntry.isSuccess());
-        assertEquals("The download from http://127.0.0.1 failed. The file was partially downloaded. The deletion of the partially_downloaded file failed. Exception: Test", logEntry.getMessage());
+        assertEquals("The download from http://127.0.0.1:80 failed. The file was partially downloaded. The deletion of the partially_downloaded file failed. Exception: Test", logEntry.getMessage());
     }
 
     @Test
@@ -537,7 +537,7 @@ public class DownloadNetworkTaskWorkerTest {
         assertEquals(45, logEntry.getNetworkTaskId());
         assertEquals(getTestTimestamp(), logEntry.getTimestamp());
         assertFalse(logEntry.isSuccess());
-        assertEquals("The download from http://127.0.0.1 failed for an unknown reason. The file was partially downloaded. The partially downloaded file was deleted.", logEntry.getMessage());
+        assertEquals("The download from http://127.0.0.1:80 failed for an unknown reason. The file was partially downloaded. The partially downloaded file was deleted.", logEntry.getMessage());
     }
 
     @Test
@@ -549,7 +549,7 @@ public class DownloadNetworkTaskWorkerTest {
         assertEquals(45, logEntry.getNetworkTaskId());
         assertEquals(getTestTimestamp(), logEntry.getTimestamp());
         assertFalse(logEntry.isSuccess());
-        assertEquals("The download from http://127.0.0.1 failed. The file was partially downloaded. The partially downloaded file was deleted. Exception: Test", logEntry.getMessage());
+        assertEquals("The download from http://127.0.0.1:80 failed. The file was partially downloaded. The partially downloaded file was deleted. Exception: Test", logEntry.getMessage());
     }
 
     @Test
@@ -561,7 +561,7 @@ public class DownloadNetworkTaskWorkerTest {
         assertEquals(45, logEntry.getNetworkTaskId());
         assertEquals(getTestTimestamp(), logEntry.getTimestamp());
         assertFalse(logEntry.isSuccess());
-        assertEquals("The download from http://127.0.0.1 failed. RuntimeException: Test", logEntry.getMessage());
+        assertEquals("The download from http://127.0.0.1:80 failed. RuntimeException: Test", logEntry.getMessage());
     }
 
     @Test
@@ -573,7 +573,7 @@ public class DownloadNetworkTaskWorkerTest {
         assertEquals(45, logEntry.getNetworkTaskId());
         assertEquals(getTestTimestamp(), logEntry.getTimestamp());
         assertFalse(logEntry.isSuccess());
-        assertEquals("The download from http://127.0.0.1 failed for an unknown reason.", logEntry.getMessage());
+        assertEquals("The download from http://127.0.0.1:80 failed for an unknown reason.", logEntry.getMessage());
     }
 
     @Test
@@ -585,7 +585,7 @@ public class DownloadNetworkTaskWorkerTest {
         assertEquals(45, logEntry.getNetworkTaskId());
         assertEquals(getTestTimestamp(), logEntry.getTimestamp());
         assertFalse(logEntry.isSuccess());
-        assertEquals("The download from http://127.0.0.1 failed. Exception: Test", logEntry.getMessage());
+        assertEquals("The download from http://127.0.0.1:80 failed. Exception: Test", logEntry.getMessage());
     }
 
     @Test
@@ -600,7 +600,7 @@ public class DownloadNetworkTaskWorkerTest {
         assertEquals(45, logEntry.getNetworkTaskId());
         assertEquals(getTestTimestamp(), logEntry.getTimestamp());
         assertTrue(logEntry.isSuccess());
-        assertEquals("The download from http://127.0.0.1 was successful. Downloaded file: /Test/testfile.", logEntry.getMessage());
+        assertEquals("The download from http://127.0.0.1:80 was successful. Downloaded file: /Test/testfile.", logEntry.getMessage());
     }
 
     @Test
@@ -612,7 +612,7 @@ public class DownloadNetworkTaskWorkerTest {
         assertEquals(45, logEntry.getNetworkTaskId());
         assertEquals(getTestTimestamp(), logEntry.getTimestamp());
         assertTrue(logEntry.isSuccess());
-        assertEquals("The download from http://127.0.0.1 was successful. The file was deleted after download.", logEntry.getMessage());
+        assertEquals("The download from http://127.0.0.1:80 was successful. The file was deleted after download.", logEntry.getMessage());
     }
 
     @Test
@@ -624,7 +624,7 @@ public class DownloadNetworkTaskWorkerTest {
         assertEquals(45, logEntry.getNetworkTaskId());
         assertEquals(getTestTimestamp(), logEntry.getTimestamp());
         assertTrue(logEntry.isSuccess());
-        assertEquals("The download from http://127.0.0.1 was successful. The deletion of the downloaded file failed.", logEntry.getMessage());
+        assertEquals("The download from http://127.0.0.1:80 was successful. The deletion of the downloaded file failed.", logEntry.getMessage());
     }
 
     @Test
@@ -636,7 +636,7 @@ public class DownloadNetworkTaskWorkerTest {
         assertEquals(45, logEntry.getNetworkTaskId());
         assertEquals(getTestTimestamp(), logEntry.getTimestamp());
         assertTrue(logEntry.isSuccess());
-        assertEquals("The download from http://127.0.0.1 was successful. The deletion of the downloaded file failed. Exception: Test", logEntry.getMessage());
+        assertEquals("The download from http://127.0.0.1:80 was successful. The deletion of the downloaded file failed. Exception: Test", logEntry.getMessage());
     }
 
     @Test
@@ -651,7 +651,7 @@ public class DownloadNetworkTaskWorkerTest {
         assertEquals(45, logEntry.getNetworkTaskId());
         assertEquals(getTestTimestamp(), logEntry.getTimestamp());
         assertTrue(logEntry.isSuccess());
-        assertEquals("The download from http://127.0.0.1 was successful. The deletion of the downloaded file failed.", logEntry.getMessage());
+        assertEquals("The download from http://127.0.0.1:80 was successful. The deletion of the downloaded file failed.", logEntry.getMessage());
     }
 
     @Test
@@ -666,7 +666,7 @@ public class DownloadNetworkTaskWorkerTest {
         assertEquals(45, logEntry.getNetworkTaskId());
         assertEquals(getTestTimestamp(), logEntry.getTimestamp());
         assertTrue(logEntry.isSuccess());
-        assertEquals("The download from http://127.0.0.1 was successful. The deletion of the downloaded file failed. Exception: Test", logEntry.getMessage());
+        assertEquals("The download from http://127.0.0.1:80 was successful. The deletion of the downloaded file failed. Exception: Test", logEntry.getMessage());
     }
 
     private long getTestTimestamp() {
@@ -681,7 +681,7 @@ public class DownloadNetworkTaskWorkerTest {
         task.setIndex(1);
         task.setSchedulerId(0);
         task.setInstances(0);
-        task.setAddress("http://127.0.0.1");
+        task.setAddress("http://127.0.0.1:80");
         task.setPort(80);
         task.setAccessType(AccessType.DOWNLOAD);
         task.setInterval(15);

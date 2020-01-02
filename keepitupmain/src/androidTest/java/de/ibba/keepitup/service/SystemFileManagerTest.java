@@ -232,8 +232,9 @@ public class SystemFileManagerTest {
         assertEquals("  .ab c", fileManager.getDownloadFileName(new URL(URLUtil.encodeURL("http://www.host.com")), "  .ab c", "text/plain"));
         assertEquals("downloadfile.txt", fileManager.getDownloadFileName(null, "..", "text/plain"));
         assertEquals("downloadfile.txt", fileManager.getDownloadFileName(null, "....//..", "text/plain"));
-        assertEquals("downloadfile.htm", fileManager.getDownloadFileName(null, null, "text/html"));
-        assertEquals("downloadfile.htm", fileManager.getDownloadFileName(null, "", "text/html"));
+        assertTrue(verifyHTMLFile("downloadfile", fileManager.getDownloadFileName(null, null, "text/html")));
+        assertTrue(verifyHTMLFile("downloadfile", fileManager.getDownloadFileName(null, "", "text/html")));
+
     }
 
     @Test
@@ -244,7 +245,7 @@ public class SystemFileManagerTest {
         assertEquals("xyz.a b c", fileManager.getDownloadFileName(new URL(URLUtil.encodeURL("http://www.host.com/123/xyz.a b c")), "", "image/jpeg"));
         assertEquals("xy z.abc", fileManager.getDownloadFileName(new URL(URLUtil.encodeURL("http://www.host.com/123/xy z.abc")), "", "image/jpeg"));
         assertEquals("www_host_com.jpg", fileManager.getDownloadFileName(new URL(URLUtil.encodeURL("http://www.host.com/..")), null, "image/jpeg"));
-        assertEquals("www_host_com.htm", fileManager.getDownloadFileName(new URL(URLUtil.encodeURL("http://www.host.com/abc/..")), null, "text/html"));
+        assertTrue(verifyHTMLFile("www_host_com", fileManager.getDownloadFileName(new URL(URLUtil.encodeURL("http://www.host.com/abc/..")), null, "text/html")));
         assertEquals("www_host_com.jpg", fileManager.getDownloadFileName(new URL(URLUtil.encodeURL("http://www.host.com/......")), null, "image/jpeg"));
         assertEquals("www_host_com.jpg", fileManager.getDownloadFileName(new URL(URLUtil.encodeURL("http://www.host.com/xyz//......")), null, "image/jpeg"));
     }
@@ -283,6 +284,13 @@ public class SystemFileManagerTest {
         assertTrue(file.delete());
         fileName = fileManager.getValidFileName(fileManager.getInternalDownloadDirectory(), "test.file");
         assertEquals("test.file", fileName);
+    }
+
+    private boolean verifyHTMLFile(String baseName, String file) {
+        if (file.endsWith("htm") || file.endsWith("html")) {
+            return file.startsWith(baseName);
+        }
+        return false;
     }
 
     private long getTestTimestamp() {

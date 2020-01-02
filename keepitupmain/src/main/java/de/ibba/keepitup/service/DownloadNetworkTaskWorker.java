@@ -44,18 +44,25 @@ public class DownloadNetworkTaskWorker extends NetworkTaskWorker {
         Log.d(DownloadNetworkTaskWorker.class.getName(), "Executing DownloadNetworkTaskWorker for " + networkTask);
         LogEntry logEntry = new LogEntry();
         logEntry.setNetworkTaskId(networkTask.getId());
-        InetAddress address = executeDNSLookup(networkTask.getAddress(), logEntry, getResources().getBoolean(R.bool.network_prefer_ipv4));
-        if (address != null) {
-            Log.d(DownloadNetworkTaskWorker.class.getName(), "executeDNSLookup returned " + address);
-            boolean ip6 = address instanceof Inet6Address;
-            if (ip6) {
-                Log.d(DownloadNetworkTaskWorker.class.getName(), address + " is an IPv6 address");
-            } else {
-                Log.d(DownloadNetworkTaskWorker.class.getName(), address + " is an IPv4 address");
-            }
-            executeDownloadCommand(address.getHostAddress(), networkTask, logEntry);
+        URL url = determineURL(networkTask.getAddress());
+        if (url == null) {
+            Log.d(DownloadNetworkTaskWorker.class.getName(), "Determined url is null");
+            logEntry.setSuccess(false);
+            logEntry.setMessage(getResources().getString(R.string.text_download_url_error, networkTask.getAddress()));
         } else {
-            Log.e(DownloadNetworkTaskWorker.class.getName(), "executeDNSLookup returned null. DNSLookup failed.");
+            InetAddress address = executeDNSLookup(url.getHost(), logEntry, getResources().getBoolean(R.bool.network_prefer_ipv4));
+            if (address != null) {
+                Log.d(DownloadNetworkTaskWorker.class.getName(), "executeDNSLookup returned " + address);
+                boolean ip6 = address instanceof Inet6Address;
+                if (ip6) {
+                    Log.d(DownloadNetworkTaskWorker.class.getName(), address + " is an IPv6 address");
+                } else {
+                    Log.d(DownloadNetworkTaskWorker.class.getName(), address + " is an IPv4 address");
+                }
+                executeDownloadCommand(address.getHostAddress(), networkTask, logEntry);
+            } else {
+                Log.e(DownloadNetworkTaskWorker.class.getName(), "executeDNSLookup returned null. DNSLookup failed.");
+            }
         }
         Log.d(DownloadNetworkTaskWorker.class.getName(), "Returning " + logEntry);
         logEntry.setTimestamp(getTimeService().getCurrentTimestamp());
@@ -226,6 +233,11 @@ public class DownloadNetworkTaskWorker extends NetworkTaskWorker {
                 logEntry.setMessage(getMessageFromException(message, exc, timeout));
             }
         }
+    }
+
+    private URL determineURL(String baseURL) {
+        Log.d(DownloadNetworkTaskWorker.class.getName(), "determineURL, baseURL is " + baseURL);
+        return URLUtil.getURL(baseURL, null);
     }
 
     private URL determineURL(String baseURL, String address) {

@@ -8,7 +8,6 @@ import android.os.PowerManager;
 import java.net.Inet4Address;
 import java.net.Inet6Address;
 import java.net.InetAddress;
-import java.net.SocketTimeoutException;
 import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
@@ -265,7 +264,7 @@ public abstract class NetworkTaskWorker implements Runnable {
     }
 
     private boolean isTimeout(Throwable exc) {
-        return exc instanceof TimeoutException || exc instanceof SocketTimeoutException;
+        return exc instanceof TimeoutException;
     }
 
     private INetworkManager createNetworkManager() {

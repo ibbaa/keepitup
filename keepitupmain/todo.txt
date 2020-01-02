@@ -1,4 +1,4 @@
 - UI displacements
-- DNS lookup download address
 - test download
 - DownloadCommand unit test
+- version dialog
