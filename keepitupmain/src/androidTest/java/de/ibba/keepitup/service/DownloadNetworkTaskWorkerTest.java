@@ -14,7 +14,6 @@ import java.net.InetAddress;
 import java.net.URL;
 import java.util.Arrays;
 import java.util.Calendar;
-import java.util.Collections;
 import java.util.GregorianCalendar;
 
 import de.ibba.keepitup.model.AccessType;
@@ -78,18 +77,6 @@ public class DownloadNetworkTaskWorkerTest {
 
     private void prepareTestDownloadNetworkTaskWorker(DNSLookupResult dnsLookupResult, RuntimeException exception) throws Exception {
         prepareTestDownloadNetworkTaskWorker(dnsLookupResult, null, exception);
-    }
-
-    @Test
-    public void testDNSLookupExceptionThrown() throws Exception {
-        IllegalArgumentException exception = new IllegalArgumentException("TestException");
-        DNSLookupResult dnsLookupResult = new DNSLookupResult(Collections.emptyList(), exception);
-        prepareTestDownloadNetworkTaskWorker(dnsLookupResult, (DownloadCommandResult) null);
-        LogEntry logEntry = downloadNetworkTaskWorker.execute(getNetworkTask());
-        assertEquals(45, logEntry.getNetworkTaskId());
-        assertEquals(getTestTimestamp(), logEntry.getTimestamp());
-        assertFalse(logEntry.isSuccess());
-        assertEquals("DNS lookup for 127.0.0.1 failed. IllegalArgumentException: TestException", logEntry.getMessage());
     }
 
     @Test
