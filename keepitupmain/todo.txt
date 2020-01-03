@@ -1,4 +1,2 @@
-- UI displacements
 - test download
-- DownloadCommand unit test
 - version dialog

@@ -4,8 +4,6 @@ import android.content.Context;
 import android.os.PowerManager;
 
 import java.io.File;
-import java.net.Inet6Address;
-import java.net.InetAddress;
 import java.net.URL;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
@@ -44,37 +42,17 @@ public class DownloadNetworkTaskWorker extends NetworkTaskWorker {
         Log.d(DownloadNetworkTaskWorker.class.getName(), "Executing DownloadNetworkTaskWorker for " + networkTask);
         LogEntry logEntry = new LogEntry();
         logEntry.setNetworkTaskId(networkTask.getId());
-        URL url = determineURL(networkTask.getAddress());
-        if (url == null) {
-            Log.d(DownloadNetworkTaskWorker.class.getName(), "Determined url is null");
-            logEntry.setSuccess(false);
-            logEntry.setMessage(getResources().getString(R.string.text_download_url_error, networkTask.getAddress()));
-        } else {
-            InetAddress address = executeDNSLookup(url.getHost(), logEntry, getResources().getBoolean(R.bool.network_prefer_ipv4));
-            if (address != null) {
-                Log.d(DownloadNetworkTaskWorker.class.getName(), "executeDNSLookup returned " + address);
-                boolean ip6 = address instanceof Inet6Address;
-                if (ip6) {
-                    Log.d(DownloadNetworkTaskWorker.class.getName(), address + " is an IPv6 address");
-                } else {
-                    Log.d(DownloadNetworkTaskWorker.class.getName(), address + " is an IPv4 address");
-                }
-                executeDownloadCommand(address.getHostAddress(), networkTask, logEntry);
-            } else {
-                Log.e(DownloadNetworkTaskWorker.class.getName(), "executeDNSLookup returned null. DNSLookup failed.");
-            }
-        }
-        Log.d(DownloadNetworkTaskWorker.class.getName(), "Returning " + logEntry);
+        executeDownloadCommand(networkTask, logEntry);
         logEntry.setTimestamp(getTimeService().getCurrentTimestamp());
         return logEntry;
     }
 
-    private void executeDownloadCommand(String address, NetworkTask networkTask, LogEntry logEntry) {
-        Log.d(DownloadNetworkTaskWorker.class.getName(), "executeDownloadCommand, address is " + address + ", networkTask is " + networkTask);
+    private void executeDownloadCommand(NetworkTask networkTask, LogEntry logEntry) {
+        Log.d(DownloadNetworkTaskWorker.class.getName(), "executeDownloadCommand, networkTask is " + networkTask);
         PreferenceManager preferenceManager = new PreferenceManager(getContext());
         IFileManager fileManager = getFileManager();
         String baseURL = networkTask.getAddress();
-        URL url = determineURL(baseURL, address);
+        URL url = determineURL(baseURL);
         if (url == null) {
             Log.d(DownloadNetworkTaskWorker.class.getName(), "Determined url is null");
             logEntry.setSuccess(false);
@@ -238,23 +216,6 @@ public class DownloadNetworkTaskWorker extends NetworkTaskWorker {
     private URL determineURL(String baseURL) {
         Log.d(DownloadNetworkTaskWorker.class.getName(), "determineURL, baseURL is " + baseURL);
         return URLUtil.getURL(baseURL, null);
-    }
-
-    private URL determineURL(String baseURL, String address) {
-        Log.d(DownloadNetworkTaskWorker.class.getName(), "determineURL, baseURL is " + baseURL + ", address is " + address);
-        URL url = URLUtil.getURL(baseURL, address);
-        Log.d(DownloadNetworkTaskWorker.class.getName(), "URL with address modification is " + url);
-        if (url == null) {
-            Log.d(DownloadNetworkTaskWorker.class.getName(), "Error creating valid url from the specified url " + baseURL + " and the address " + address);
-            Log.d(DownloadNetworkTaskWorker.class.getName(), "Trying specified url without address modification.");
-            url = URLUtil.getURL(baseURL, null);
-            Log.d(DownloadNetworkTaskWorker.class.getName(), "URL without address modification is " + url);
-            if (url == null) {
-                Log.d(DownloadNetworkTaskWorker.class.getName(), "Error creating valid url from the specified url " + baseURL);
-                return null;
-            }
-        }
-        return url;
     }
 
     private File determineDownloadFolder() {

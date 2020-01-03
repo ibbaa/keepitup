@@ -77,7 +77,7 @@ public class URLUtilTest {
         assertFalse(url.getPort() > 0);
         assertTrue(StringUtil.isEmpty(url.getQuery()));
         assertTrue(StringUtil.isEmpty(url.getPath()));
-        url = URLUtil.getURL("http://www.host.com:8080/test/url?query", null);
+        url = URLUtil.getURL("http://www.host.com:8080/test/url?query");
         assertNotNull(url);
         assertEquals("www.host.com", url.getHost());
         assertEquals(8080, url.getPort());

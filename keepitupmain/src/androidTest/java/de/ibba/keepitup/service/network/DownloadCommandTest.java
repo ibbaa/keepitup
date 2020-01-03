@@ -3,12 +3,18 @@ package de.ibba.keepitup.service.network;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.MediumTest;
 
+import com.google.common.base.Charsets;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import java.io.BufferedInputStream;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
@@ -22,6 +28,7 @@ import de.ibba.keepitup.service.SystemFileManager;
 import de.ibba.keepitup.test.mock.BlockingTestInputStream;
 import de.ibba.keepitup.test.mock.MockFileManager;
 import de.ibba.keepitup.test.mock.MockHttpURLConnection;
+import de.ibba.keepitup.test.mock.MockURLConnection;
 import de.ibba.keepitup.test.mock.TestDownloadCommand;
 import de.ibba.keepitup.test.mock.TestRegistry;
 
@@ -236,6 +243,112 @@ public class DownloadCommandTest {
         assertTrue(urlConnection.isDisconnected());
     }
 
+    @Test
+    public void testSuccessNotDelete() throws Exception {
+        NetworkTask task = networkTaskDAO.insertNetworkTask(getNetworkTask());
+        File externalDir = fileManager.getExternalDirectory(fileManager.getDefaultDownloadDirectoryName());
+        TestDownloadCommand downloadCommand = new TestDownloadCommand(TestRegistry.getContext(), task, null, externalDir, false);
+        ByteArrayInputStream inputStream = new ByteArrayInputStream("TestData".getBytes(Charsets.UTF_8));
+        MockHttpURLConnection urlConnection = prepareHttpURLConnection(inputStream);
+        downloadCommand.setURLConnection(urlConnection);
+        urlConnection.addHeader("Content-Disposition", "attachment; filename=\"test.txt\"");
+        DownloadCommandResult result = downloadCommand.call();
+        assertTrue(result.isConnectSuccess());
+        assertTrue(result.isDownloadSuccess());
+        assertTrue(result.fileExists());
+        assertFalse(result.isDeleteSuccess());
+        assertTrue(result.isValid());
+        assertFalse(result.isStopped());
+        assertEquals(HttpURLConnection.HTTP_OK, result.getHttpResponseCode());
+        assertEquals("Everything ok", result.getHttpResponseMessage());
+        assertEquals("test.txt", result.getFileName());
+        assertNull(result.getException());
+        assertTrue(urlConnection.isDisconnected());
+        File downloadedFile = new File(externalDir, "test.txt");
+        assertTrue(downloadedFile.exists());
+        assertEquals("TestData", getFileContent(downloadedFile));
+    }
+
+    @Test
+    public void testSuccessNonHTTPNotDelete() throws Exception {
+        NetworkTask task = networkTaskDAO.insertNetworkTask(getNetworkTask());
+        File externalDir = fileManager.getExternalDirectory(fileManager.getDefaultDownloadDirectoryName());
+        TestDownloadCommand downloadCommand = new TestDownloadCommand(TestRegistry.getContext(), task, new URL("http://www.host.com"), externalDir, false);
+        ByteArrayInputStream inputStream = new ByteArrayInputStream("TestData".getBytes(Charsets.UTF_8));
+        MockURLConnection urlConnection = new MockURLConnection(new URL("http://test"));
+        urlConnection.setInputStream(inputStream);
+        downloadCommand.setURLConnection(urlConnection);
+        urlConnection.setContentType("text/plain");
+        DownloadCommandResult result = downloadCommand.call();
+        assertTrue(result.isConnectSuccess());
+        assertTrue(result.isDownloadSuccess());
+        assertTrue(result.fileExists());
+        assertFalse(result.isDeleteSuccess());
+        assertTrue(result.isValid());
+        assertFalse(result.isStopped());
+        assertEquals(-1, result.getHttpResponseCode());
+        assertNull(result.getHttpResponseMessage());
+        assertEquals("www_host_com.txt", result.getFileName());
+        assertNull(result.getException());
+        File downloadedFile = new File(externalDir, "www_host_com.txt");
+        assertTrue(downloadedFile.exists());
+        assertEquals("TestData", getFileContent(downloadedFile));
+    }
+
+    @Test
+    public void testSuccessDelete() throws Exception {
+        NetworkTask task = networkTaskDAO.insertNetworkTask(getNetworkTask());
+        File externalDir = fileManager.getExternalDirectory(fileManager.getDefaultDownloadDirectoryName());
+        TestDownloadCommand downloadCommand = new TestDownloadCommand(TestRegistry.getContext(), task, new URL("http://www.host.com/test.jpg"), externalDir, true);
+        ByteArrayInputStream inputStream = new ByteArrayInputStream("TestData".getBytes(Charsets.UTF_8));
+        MockHttpURLConnection urlConnection = prepareHttpURLConnection(inputStream);
+        downloadCommand.setURLConnection(urlConnection);
+        DownloadCommandResult result = downloadCommand.call();
+        assertTrue(result.isConnectSuccess());
+        assertTrue(result.isDownloadSuccess());
+        assertTrue(result.fileExists());
+        assertTrue(result.isDeleteSuccess());
+        assertTrue(result.isValid());
+        assertFalse(result.isStopped());
+        assertEquals(HttpURLConnection.HTTP_OK, result.getHttpResponseCode());
+        assertEquals("Everything ok", result.getHttpResponseMessage());
+        assertEquals("test.jpg", result.getFileName());
+        assertNull(result.getException());
+        assertTrue(urlConnection.isDisconnected());
+        File downloadedFile = new File(externalDir, "test.jpg");
+        assertFalse(downloadedFile.exists());
+    }
+
+    @Test
+    public void testSuccessDeleteFailed() throws Exception {
+        NetworkTask task = networkTaskDAO.insertNetworkTask(getNetworkTask());
+        File externalDir = fileManager.getExternalDirectory(fileManager.getDefaultDownloadDirectoryName());
+        TestDownloadCommand downloadCommand = new TestDownloadCommand(TestRegistry.getContext(), task, null, externalDir, true);
+        ByteArrayInputStream inputStream = new ByteArrayInputStream("TestData".getBytes(Charsets.UTF_8));
+        MockHttpURLConnection urlConnection = prepareHttpURLConnection(inputStream);
+        downloadCommand.setURLConnection(urlConnection);
+        MockFileManager fileManager = new MockFileManager();
+        fileManager.setDownloadFileName("test.txt");
+        fileManager.setValidFileName("test.txt");
+        fileManager.setDelete(false);
+        downloadCommand.setFileManager(fileManager);
+        DownloadCommandResult result = downloadCommand.call();
+        assertTrue(result.isConnectSuccess());
+        assertTrue(result.isDownloadSuccess());
+        assertTrue(result.fileExists());
+        assertFalse(result.isDeleteSuccess());
+        assertTrue(result.isValid());
+        assertFalse(result.isStopped());
+        assertEquals(HttpURLConnection.HTTP_OK, result.getHttpResponseCode());
+        assertEquals("Everything ok", result.getHttpResponseMessage());
+        assertEquals("test.txt", result.getFileName());
+        assertNull(result.getException());
+        assertTrue(urlConnection.isDisconnected());
+        File downloadedFile = new File(externalDir, "test.txt");
+        assertTrue(downloadedFile.exists());
+        assertEquals("TestData", getFileContent(downloadedFile));
+    }
+
     private NetworkTask getNetworkTask() {
         NetworkTask task = new NetworkTask();
         task.setId(0);
@@ -257,5 +370,17 @@ public class DownloadCommandTest {
         task.setSchedulerId(otherTask.getSchedulerId());
         task.setId(otherTask.getId());
         return task;
+    }
+
+    private String getFileContent(File file) throws Exception {
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        InputStream inputStream = new BufferedInputStream(new FileInputStream(file));
+        byte[] buffer = new byte[50];
+        int read;
+        while ((read = inputStream.read(buffer, 0, 50)) >= 0) {
+            outputStream.write(buffer, 0, read);
+        }
+        inputStream.close();
+        return new String(outputStream.toByteArray(), Charsets.UTF_8);
     }
 }

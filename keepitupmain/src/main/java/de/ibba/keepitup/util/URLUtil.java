@@ -59,6 +59,10 @@ public class URLUtil {
         return url.getHost() + ":" + port;
     }
 
+    public static URL getURL(String inputUrl) {
+        return getURL(inputUrl, null);
+    }
+
     public static URL getURL(String inputUrl, String inputHost) {
         Log.d(URLUtil.class.getName(), "getURL, inputUrl is " + inputUrl + ", inputHost is " + inputHost);
         String encodedInputUrl = encodeURL(inputUrl);
