@@ -18,6 +18,8 @@ import de.ibba.keepitup.logging.Log;
 import de.ibba.keepitup.model.NetworkTask;
 import de.ibba.keepitup.ui.adapter.NetworkTaskAdapter;
 import de.ibba.keepitup.ui.adapter.NetworkTaskUIWrapper;
+import de.ibba.keepitup.ui.dialog.GeneralErrorDialog;
+import de.ibba.keepitup.ui.dialog.InfoDialog;
 import de.ibba.keepitup.ui.dialog.NetworkTaskConfirmDialog;
 import de.ibba.keepitup.ui.dialog.NetworkTaskEditDialog;
 import de.ibba.keepitup.ui.sync.NetworkTaskMainUIBroadcastReceiver;
@@ -124,6 +126,11 @@ public class NetworkTaskMainActivity extends RecyclerViewBaseActivity {
             Log.d(NetworkTaskMainActivity.class.getName(), "menu_action_main_refresh triggered");
             NetworkTaskMainUIInitTask uiInitTask = getUIInitTask((NetworkTaskAdapter) getAdapter());
             uiInitTask.start();
+            return true;
+        } else if (id == R.id.menu_action_activity_main_info) {
+            Log.d(NetworkTaskMainActivity.class.getName(), "menu_action_activity_main_info triggered");
+            InfoDialog infoDialog = new InfoDialog();
+            infoDialog.show(getSupportFragmentManager(), GeneralErrorDialog.class.getName());
             return true;
         }
         return super.onOptionsItemSelected(item);
