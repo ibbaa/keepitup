@@ -11,6 +11,31 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
+        <LinearLayout
+            android:id="@+id/linearlayout_dialog_info_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:id="@+id/imageview_dialog_info_title_icon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/imageview_dialog_info_title_icon_padding"
+                android:contentDescription="@string/app_name"
+                android:src="@drawable/icon_app" />
+
+            <TextView
+                android:id="@+id/textview_dialog_info_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/textview_dialog_info_title_margin_top"
+                android:padding="@dimen/textview_dialog_info_title_padding"
+                android:textStyle="bold"
+                android:text="@string/app_name" />
+
+        </LinearLayout>
+
         <ImageView
             android:id="@+id/imageview_dialog_info_ok"
             android:layout_width="wrap_content"
