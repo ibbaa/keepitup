@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="imageview_dialog_info_title_icon_padding">2dp</dimen>
+    <dimen name="textview_dialog_info_title_padding">2dp</dimen>
+    <dimen name="textview_dialog_info_title_margin_top">2dp</dimen>
+</resources>
