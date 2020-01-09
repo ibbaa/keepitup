@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="label_dialog_info_version">Version</string>
+    <string name="label_dialog_info_build_type">Build type</string>
+    <string name="label_dialog_info_build_timestamp">Build time</string>
+</resources>
