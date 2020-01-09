@@ -15,6 +15,7 @@
             android:id="@+id/linearlayout_dialog_info_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
             android:orientation="horizontal">
 
             <ImageView
@@ -35,6 +36,80 @@
                 android:text="@string/app_name" />
 
         </LinearLayout>
+
+        <GridLayout
+            android:id="@+id/gridlayout_dialog_info_content"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:columnCount="2">
+
+            <TextView
+                android:id="@+id/textview_dialog_info_version_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="0dp"
+                android:padding="@dimen/textview_dialog_info_version_label_padding"
+                android:layout_row="0"
+                android:layout_column="0"
+                android:textStyle="bold"
+                android:text="@string/label_dialog_info_version" />
+
+            <TextView
+                android:id="@+id/textview_dialog_info_version"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="0dp"
+                android:padding="@dimen/textview_dialog_info_version_padding"
+                android:textStyle="normal"
+                android:layout_row="0"
+                android:layout_column="1"
+                android:text="" />
+
+            <TextView
+                android:id="@+id/textview_dialog_info_build_type_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="0dp"
+                android:padding="@dimen/textview_dialog_info_build_type_label_padding"
+                android:layout_row="1"
+                android:layout_column="0"
+                android:textStyle="bold"
+                android:text="@string/label_dialog_info_build_type" />
+
+            <TextView
+                android:id="@+id/textview_dialog_info_build_type"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="0dp"
+                android:padding="@dimen/textview_dialog_info_build_type_padding"
+                android:layout_row="1"
+                android:layout_column="1"
+                android:textStyle="normal"
+                android:text="" />
+
+            <TextView
+                android:id="@+id/textview_dialog_info_build_timestamp_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="0dp"
+                android:padding="@dimen/textview_dialog_info_build_timestamp_label_padding"
+                android:layout_row="2"
+                android:layout_column="0"
+                android:textStyle="bold"
+                android:text="@string/label_dialog_info_build_timestamp" />
+
+            <TextView
+                android:id="@+id/textview_dialog_info_build_timestamp_"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="0dp"
+                android:padding="@dimen/textview_dialog_info_build_timestamp_padding"
+                android:layout_row="2"
+                android:layout_column="1"
+                android:textStyle="normal"
+                android:text="" />
+
+        </GridLayout>
 
         <ImageView
             android:id="@+id/imageview_dialog_info_ok"
