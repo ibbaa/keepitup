@@ -3,10 +3,20 @@
     <dimen name="imageview_dialog_info_title_icon_padding">2dp</dimen>
     <dimen name="textview_dialog_info_title_padding">2dp</dimen>
     <dimen name="textview_dialog_info_title_margin_top">2dp</dimen>
+    <dimen name="textview_dialog_info_version_label_margin_top">0dp</dimen>
     <dimen name="textview_dialog_info_version_label_padding">4dp</dimen>
+    <dimen name="textview_dialog_info_version_margin_top">0dp</dimen>
     <dimen name="textview_dialog_info_version_padding">4dp</dimen>
+    <dimen name="textview_dialog_info_build_type_label_margin_top">0dp</dimen>
     <dimen name="textview_dialog_info_build_type_label_padding">4dp</dimen>
+    <dimen name="textview_dialog_info_build_type_margin_top">0dp</dimen>
     <dimen name="textview_dialog_info_build_type_padding">4dp</dimen>
+    <dimen name="textview_dialog_info_build_timestamp_label_margin_top">0dp</dimen>
     <dimen name="textview_dialog_info_build_timestamp_label_padding">4dp</dimen>
+    <dimen name="textview_dialog_info_build_timestamp_margin_top">0dp</dimen>
     <dimen name="textview_dialog_info_build_timestamp_padding">4dp</dimen>
+    <dimen name="textview_dialog_info_copyright_padding">0dp</dimen>
+    <dimen name="textview_dialog_info_copyright_text_size">8sp</dimen>
+    <dimen name="textview_dialog_info_license_padding">2dp</dimen>
+    <dimen name="textview_dialog_info_license_text_size">8sp</dimen>
 </resources>

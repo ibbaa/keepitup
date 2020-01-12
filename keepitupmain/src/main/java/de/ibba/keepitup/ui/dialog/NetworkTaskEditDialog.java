@@ -285,7 +285,7 @@ public class NetworkTaskEditDialog extends DialogFragment {
             Objects.requireNonNull(activity).onEditDialogOkClicked(this);
         } else {
             Log.d(NetworkTaskEditDialog.class.getName(), "Validation failed");
-            showErrorDialog(validationResult);
+            showValidatorErrorDialog(validationResult);
         }
     }
 
@@ -386,8 +386,8 @@ public class NetworkTaskEditDialog extends DialogFragment {
         return validator;
     }
 
-    private void showErrorDialog(Bundle bundle) {
-        Log.d(NetworkTaskEditDialog.class.getName(), "showErrorDialog, opening ValidatorErrorDialog");
+    private void showValidatorErrorDialog(Bundle bundle) {
+        Log.d(NetworkTaskEditDialog.class.getName(), "showValidatorErrorDialog");
         ValidatorErrorDialog errorDialog = new ValidatorErrorDialog();
         errorDialog.setArguments(bundle);
         errorDialog.show(Objects.requireNonNull(getFragmentManager()), ValidatorErrorDialog.class.getName());

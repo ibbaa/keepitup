@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="label_dialog_raw_text_ok">@android:string/ok</string>
+    <string name="text_dialog_raw_text_fatal_error">Fatal error reading text info</string>
+</resources>

@@ -11,7 +11,10 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.DialogFragment;
 
 import java.text.DateFormat;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.Objects;
 
 import de.ibba.keepitup.BuildConfig;
 import de.ibba.keepitup.R;
@@ -30,13 +33,15 @@ public class InfoDialog extends DialogFragment {
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         Log.d(InfoDialog.class.getName(), "onCreateView");
         View view = inflater.inflate(R.layout.dialog_info, container);
-        prepareContent(view);
+        prepareBuildInfo(view);
+        prepareCopyright(view);
+        prepareLicense(view);
         prepareOkImageButton(view);
         return view;
     }
 
-    private void prepareContent(View view) {
-        Log.d(InfoDialog.class.getName(), "prepareContent");
+    private void prepareBuildInfo(View view) {
+        Log.d(InfoDialog.class.getName(), "prepareBuildInfo");
         TextView versionText = view.findViewById(R.id.textview_dialog_info_version);
         versionText.setText(BuildConfig.VERSION_NAME);
         TextView buildTypeText = view.findViewById(R.id.textview_dialog_info_build_type);
@@ -46,10 +51,41 @@ public class InfoDialog extends DialogFragment {
         buildTimeText.setText(buildTime);
     }
 
+    private void prepareCopyright(View view) {
+        Log.d(InfoDialog.class.getName(), "prepareCopyright");
+        TextView copyrightText = view.findViewById(R.id.textview_dialog_info_copyright);
+        Calendar buildDate = new GregorianCalendar();
+        buildDate.setTime(new Date(BuildConfig.TIMESTAMP));
+        int buildYear = buildDate.get(GregorianCalendar.YEAR);
+        int releaseYear = BuildConfig.RELEASE_YEAR;
+        String copyrightYear = String.valueOf(releaseYear);
+        if (buildYear > releaseYear) {
+            copyrightYear += " - " + buildYear;
+        }
+        String copyright = String.format(getResources().getString(R.string.text_dialog_info_copyright), copyrightYear);
+        copyrightText.setText(copyright);
+    }
+
+    private void prepareLicense(View view) {
+        Log.d(InfoDialog.class.getName(), "prepareLicense");
+        TextView licenseText = view.findViewById(R.id.textview_dialog_info_license);
+        licenseText.setOnClickListener(this::onLicenseClicked);
+    }
+
     private void prepareOkImageButton(View view) {
         Log.d(InfoDialog.class.getName(), "prepareOkImageButton");
         ImageView okImage = view.findViewById(R.id.imageview_dialog_info_ok);
         okImage.setOnClickListener(this::onOkClicked);
+    }
+
+    private void onLicenseClicked(@SuppressWarnings("unused") View view) {
+        Log.d(InfoDialog.class.getName(), "onLicenseClicked");
+        RawTextDialog licenseDialog = new RawTextDialog();
+        Bundle bundle = new Bundle();
+        bundle.putInt(licenseDialog.getResourceIdKey(), R.raw.license);
+        licenseDialog.setArguments(bundle);
+        Log.d(InfoDialog.class.getName(), "Opening license dialog.");
+        licenseDialog.show(Objects.requireNonNull(getFragmentManager()), RawTextDialog.class.getName());
     }
 
     private void onOkClicked(@SuppressWarnings("unused") View view) {
