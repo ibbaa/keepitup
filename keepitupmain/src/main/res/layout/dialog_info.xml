@@ -38,7 +38,7 @@
         </LinearLayout>
 
         <GridLayout
-            android:id="@+id/gridlayout_dialog_info_content"
+            android:id="@+id/gridlayout_dialog_info_build_info"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:columnCount="2">
@@ -47,7 +47,7 @@
                 android:id="@+id/textview_dialog_info_version_label"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="0dp"
+                android:layout_marginTop="@dimen/textview_dialog_info_version_label_margin_top"
                 android:padding="@dimen/textview_dialog_info_version_label_padding"
                 android:layout_row="0"
                 android:layout_column="0"
@@ -58,7 +58,7 @@
                 android:id="@+id/textview_dialog_info_version"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="0dp"
+                android:layout_marginTop="@dimen/textview_dialog_info_version_margin_top"
                 android:padding="@dimen/textview_dialog_info_version_padding"
                 android:textStyle="normal"
                 android:layout_row="0"
@@ -69,7 +69,7 @@
                 android:id="@+id/textview_dialog_info_build_type_label"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="0dp"
+                android:layout_marginTop="@dimen/textview_dialog_info_build_type_label_margin_top"
                 android:padding="@dimen/textview_dialog_info_build_type_label_padding"
                 android:layout_row="1"
                 android:layout_column="0"
@@ -80,7 +80,7 @@
                 android:id="@+id/textview_dialog_info_build_type"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="0dp"
+                android:layout_marginTop="@dimen/textview_dialog_info_build_type_margin_top"
                 android:padding="@dimen/textview_dialog_info_build_type_padding"
                 android:layout_row="1"
                 android:layout_column="1"
@@ -91,7 +91,7 @@
                 android:id="@+id/textview_dialog_info_build_timestamp_label"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="0dp"
+                android:layout_marginTop="@dimen/textview_dialog_info_build_timestamp_label_margin_top"
                 android:padding="@dimen/textview_dialog_info_build_timestamp_label_padding"
                 android:layout_row="2"
                 android:layout_column="0"
@@ -102,7 +102,7 @@
                 android:id="@+id/textview_dialog_info_build_timestamp_"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="0dp"
+                android:layout_marginTop="@dimen/textview_dialog_info_build_timestamp_margin_top"
                 android:padding="@dimen/textview_dialog_info_build_timestamp_padding"
                 android:layout_row="2"
                 android:layout_column="1"
@@ -111,6 +111,29 @@
 
         </GridLayout>
 
+        <TextView
+            android:id="@+id/textview_dialog_info_copyright"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:padding="@dimen/textview_dialog_info_copyright_padding"
+            android:textStyle="normal"
+            android:textSize="@dimen/textview_dialog_info_copyright_text_size"
+            android:text="" />
+
+        <TextView
+            android:id="@+id/textview_dialog_info_license"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:gravity="center"
+            android:padding="@dimen/textview_dialog_info_license_padding"
+            android:textStyle="normal"
+            android:textSize="@dimen/textview_dialog_info_license_text_size"
+            android:clickable="true"
+            android:focusable="true"
+            android:text="@string/text_dialog_info_license" />
+
         <ImageView
             android:id="@+id/imageview_dialog_info_ok"
             android:layout_width="wrap_content"
@@ -118,7 +141,7 @@
             android:layout_gravity="center"
             android:clickable="true"
             android:focusable="true"
-            android:contentDescription="@string/label_dialog_general_error_ok"
+            android:contentDescription="@string/label_dialog_info_ok"
             app:srcCompat="@drawable/icon_ok_selector" />
     </LinearLayout>
 </ScrollView>

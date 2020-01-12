@@ -18,7 +18,6 @@ import de.ibba.keepitup.logging.Log;
 import de.ibba.keepitup.model.NetworkTask;
 import de.ibba.keepitup.ui.adapter.NetworkTaskAdapter;
 import de.ibba.keepitup.ui.adapter.NetworkTaskUIWrapper;
-import de.ibba.keepitup.ui.dialog.GeneralErrorDialog;
 import de.ibba.keepitup.ui.dialog.InfoDialog;
 import de.ibba.keepitup.ui.dialog.NetworkTaskConfirmDialog;
 import de.ibba.keepitup.ui.dialog.NetworkTaskEditDialog;
@@ -130,7 +129,7 @@ public class NetworkTaskMainActivity extends RecyclerViewBaseActivity {
         } else if (id == R.id.menu_action_activity_main_info) {
             Log.d(NetworkTaskMainActivity.class.getName(), "menu_action_activity_main_info triggered");
             InfoDialog infoDialog = new InfoDialog();
-            infoDialog.show(getSupportFragmentManager(), GeneralErrorDialog.class.getName());
+            infoDialog.show(getSupportFragmentManager(), InfoDialog.class.getName());
             return true;
         }
         return super.onOptionsItemSelected(item);
@@ -147,7 +146,7 @@ public class NetworkTaskMainActivity extends RecyclerViewBaseActivity {
         NetworkTaskEditDialog editDialog = new NetworkTaskEditDialog();
         NetworkTask task = new NetworkTask(this);
         editDialog.setArguments(task.toBundle());
-        Log.d(NetworkTaskMainActivity.class.getName(), "opening " + NetworkTaskEditDialog.class.getSimpleName());
+        Log.d(NetworkTaskMainActivity.class.getName(), "Opening " + NetworkTaskEditDialog.class.getSimpleName());
         editDialog.show(getSupportFragmentManager(), NetworkTaskEditDialog.class.getName());
     }
 
@@ -175,7 +174,7 @@ public class NetworkTaskMainActivity extends RecyclerViewBaseActivity {
         Log.d(NetworkTaskMainActivity.class.getName(), "onMainEditClicked for network task " + task);
         NetworkTaskEditDialog editDialog = new NetworkTaskEditDialog();
         editDialog.setArguments(task.toBundle());
-        Log.d(NetworkTaskMainActivity.class.getName(), "opening " + NetworkTaskEditDialog.class.getSimpleName());
+        Log.d(NetworkTaskMainActivity.class.getName(), "Opening " + NetworkTaskEditDialog.class.getSimpleName());
         editDialog.show(getSupportFragmentManager(), NetworkTaskEditDialog.class.getName());
     }
 

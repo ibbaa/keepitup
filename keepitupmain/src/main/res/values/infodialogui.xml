@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="label_dialog_info_ok">@android:string/ok</string>
     <string name="label_dialog_info_version">Version</string>
     <string name="label_dialog_info_build_type">Build type</string>
     <string name="label_dialog_info_build_timestamp">Build time</string>
+    <string name="text_dialog_info_copyright">Copyright %s Alwin Ibba</string>
+    <string name="text_dialog_info_license">This software is open source and released under the terms of the MIT license. Please click here to display the license text.</string>
 </resources>
