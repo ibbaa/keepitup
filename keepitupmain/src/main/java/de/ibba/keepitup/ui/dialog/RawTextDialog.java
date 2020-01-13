@@ -45,13 +45,17 @@ public class RawTextDialog extends DialogFragment {
     private void prepareContent(View view) {
         Log.d(RawTextDialog.class.getName(), "prepareContent");
         TextView messageText = view.findViewById(R.id.textview_dialog_raw_text_message);
-        int textResourceId = Objects.requireNonNull(getArguments()).getInt(getResourceIdKey());
+        Bundle arguments = Objects.requireNonNull(getArguments());
+        int textResourceId = arguments.getInt(getResourceIdKey());
         InputStream inputStream = null;
         try {
             Log.d(RawTextDialog.class.getName(), "Reading text");
             inputStream = getResources().openRawResource(textResourceId);
             String text = StreamUtil.inputStreamToString(inputStream, Charsets.UTF_8);
-            Log.d(RawTextDialog.class.getName(), "Text is " + text);
+            Log.d(RawTextDialog.class.getName(), "Raw text is " + text);
+            text = doReplacements(arguments, text);
+            Log.d(RawTextDialog.class.getName(), "Text with applied replacements is " + text);
+            messageText.setText(text);
         } catch (Exception exc) {
             Log.e(RawTextDialog.class.getName(), "Error while reading text from resource.", exc);
             messageText.setText(getResources().getString(R.string.text_dialog_raw_text_fatal_error));
@@ -65,6 +69,19 @@ public class RawTextDialog extends DialogFragment {
                 }
             }
         }
+    }
+
+    private String doReplacements(Bundle arguments, String text) {
+        for (String key : arguments.keySet()) {
+            String replacement = "@" + key + "@";
+            Object value = arguments.get(key);
+            if (value instanceof String) {
+                if (text.contains(replacement)) {
+                    text = text.replaceAll(replacement, value.toString());
+                }
+            }
+        }
+        return text;
     }
 
     private void prepareOkImageButton(View view) {

@@ -6,4 +6,5 @@
     <string name="label_dialog_info_build_timestamp">Build time</string>
     <string name="text_dialog_info_copyright">Copyright %s Alwin Ibba</string>
     <string name="text_dialog_info_license">This software is open source and released under the terms of the MIT license. Please click here to display the license text.</string>
+    <string name="text_dialog_info_github">Github page: https://github.com/ibbaa</string>
 </resources>

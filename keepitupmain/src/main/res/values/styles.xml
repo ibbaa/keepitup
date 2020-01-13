@@ -7,6 +7,7 @@
         <item name="colorAccent">@color/colorAccent</item>
         <item name="android:textColor">@color/textColor</item>
         <item name="android:textColorPrimary">@color/textColorPrimary</item>
+        <item name="android:textColorLink">@color/textColorPrimary</item>
         <item name="android:statusBarColor">@color/statusBarColor</item>
         <item name="android:windowBackground">@color/windowBackground</item>
     </style>

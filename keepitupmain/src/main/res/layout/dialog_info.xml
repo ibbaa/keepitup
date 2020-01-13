@@ -134,6 +134,17 @@
             android:focusable="true"
             android:text="@string/text_dialog_info_license" />
 
+        <TextView
+            android:id="@+id/textview_dialog_info_github"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:padding="@dimen/textview_dialog_info_github_padding"
+            android:textStyle="normal"
+            android:textSize="@dimen/textview_dialog_info_github_text_size"
+            android:autoLink="web"
+            android:text="@string/text_dialog_info_github" />
+
         <ImageView
             android:id="@+id/imageview_dialog_info_ok"
             android:layout_width="wrap_content"
