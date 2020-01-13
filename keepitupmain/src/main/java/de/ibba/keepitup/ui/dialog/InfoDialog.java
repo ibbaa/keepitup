@@ -19,6 +19,7 @@ import java.util.Objects;
 import de.ibba.keepitup.BuildConfig;
 import de.ibba.keepitup.R;
 import de.ibba.keepitup.logging.Log;
+import de.ibba.keepitup.util.BundleUtil;
 
 public class InfoDialog extends DialogFragment {
 
@@ -54,16 +55,7 @@ public class InfoDialog extends DialogFragment {
     private void prepareCopyright(View view) {
         Log.d(InfoDialog.class.getName(), "prepareCopyright");
         TextView copyrightText = view.findViewById(R.id.textview_dialog_info_copyright);
-        Calendar buildDate = new GregorianCalendar();
-        buildDate.setTime(new Date(BuildConfig.TIMESTAMP));
-        int buildYear = buildDate.get(GregorianCalendar.YEAR);
-        int releaseYear = BuildConfig.RELEASE_YEAR;
-        String copyrightYear = String.valueOf(releaseYear);
-        if (buildYear > releaseYear) {
-            copyrightYear += " - " + buildYear;
-        }
-        String copyright = String.format(getResources().getString(R.string.text_dialog_info_copyright), copyrightYear);
-        copyrightText.setText(copyright);
+        copyrightText.setText(getCopyrightText());
     }
 
     private void prepareLicense(View view) {
@@ -81,7 +73,7 @@ public class InfoDialog extends DialogFragment {
     private void onLicenseClicked(@SuppressWarnings("unused") View view) {
         Log.d(InfoDialog.class.getName(), "onLicenseClicked");
         RawTextDialog licenseDialog = new RawTextDialog();
-        Bundle bundle = new Bundle();
+        Bundle bundle = BundleUtil.messageToBundle(getResources().getString(R.string.dialog_info_copyright_key), getCopyrightText());
         bundle.putInt(licenseDialog.getResourceIdKey(), R.raw.license);
         licenseDialog.setArguments(bundle);
         Log.d(InfoDialog.class.getName(), "Opening license dialog.");
@@ -91,5 +83,17 @@ public class InfoDialog extends DialogFragment {
     private void onOkClicked(@SuppressWarnings("unused") View view) {
         Log.d(InfoDialog.class.getName(), "onOkClicked");
         dismiss();
+    }
+
+    private String getCopyrightText() {
+        Calendar buildDate = new GregorianCalendar();
+        buildDate.setTime(new Date(BuildConfig.TIMESTAMP));
+        int buildYear = buildDate.get(GregorianCalendar.YEAR);
+        int releaseYear = BuildConfig.RELEASE_YEAR;
+        String copyrightYear = String.valueOf(releaseYear);
+        if (buildYear > releaseYear) {
+            copyrightYear += " - " + buildYear;
+        }
+        return String.format(getResources().getString(R.string.text_dialog_info_copyright), copyrightYear);
     }
 }
