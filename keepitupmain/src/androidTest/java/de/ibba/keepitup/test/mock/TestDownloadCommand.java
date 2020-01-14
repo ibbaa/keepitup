@@ -3,7 +3,6 @@ package de.ibba.keepitup.test.mock;
 import android.content.Context;
 
 import java.io.File;
-import java.io.IOException;
 import java.net.URL;
 import java.net.URLConnection;
 
@@ -35,7 +34,7 @@ public class TestDownloadCommand extends DownloadCommand {
     }
 
     @Override
-    protected URLConnection openConnection() throws IOException {
+    protected URLConnection openConnection() {
         return urlConnection;
     }
 

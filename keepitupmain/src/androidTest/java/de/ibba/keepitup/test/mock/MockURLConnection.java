@@ -80,7 +80,7 @@ public class MockURLConnection extends URLConnection {
     }
 
     @Override
-    public void connect() throws IOException {
+    public void connect() {
         connected = true;
     }
 
