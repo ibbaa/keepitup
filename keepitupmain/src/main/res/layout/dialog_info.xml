@@ -145,6 +145,18 @@
             android:autoLink="web"
             android:text="@string/text_dialog_info_github" />
 
+        <TextView
+            android:id="@+id/textview_dialog_info_thirdparty"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:padding="@dimen/textview_dialog_info_thirdparty_padding"
+            android:textStyle="normal"
+            android:textSize="@dimen/textview_dialog_info_thirdparty_text_size"
+            android:clickable="true"
+            android:focusable="true"
+            android:text="" />
+
         <ImageView
             android:id="@+id/imageview_dialog_info_ok"
             android:layout_width="wrap_content"

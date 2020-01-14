@@ -72,7 +72,7 @@ public class MockHttpURLConnection extends HttpURLConnection {
     }
 
     @Override
-    public int getResponseCode() throws IOException {
+    public int getResponseCode() {
         return respondeCode;
     }
 
@@ -81,7 +81,7 @@ public class MockHttpURLConnection extends HttpURLConnection {
     }
 
     @Override
-    public String getResponseMessage() throws IOException {
+    public String getResponseMessage() {
         return responseMessage;
     }
 

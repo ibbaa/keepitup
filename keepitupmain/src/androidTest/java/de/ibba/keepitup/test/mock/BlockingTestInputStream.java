@@ -1,6 +1,5 @@
 package de.ibba.keepitup.test.mock;
 
-import java.io.IOException;
 import java.io.InputStream;
 
 public class BlockingTestInputStream extends InputStream {
@@ -12,7 +11,7 @@ public class BlockingTestInputStream extends InputStream {
     }
 
     @Override
-    public int read() throws IOException {
+    public int read() {
         if (signal.doContinue()) {
             try {
                 Thread.sleep(1000);
