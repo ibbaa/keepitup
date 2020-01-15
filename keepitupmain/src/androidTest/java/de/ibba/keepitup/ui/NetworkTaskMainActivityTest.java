@@ -236,7 +236,7 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
         getLogDAO().insertAndDeleteLog(entry);
         openActionBarOverflowOrOptionsMenu(TestRegistry.getContext());
         onView(withText("Refresh")).perform(click());
-        onView(isRoot()).perform(waitFor(2000));
+        onView(isRoot()).perform(waitFor(3000));
         onView(withId(R.id.listview_main_activity_network_tasks)).check(matches(withListSize(2)));
         onView(allOf(withId(R.id.textview_list_item_network_task_last_exec_timestamp), withChildDescendantAtPosition(withId(R.id.listview_main_activity_network_tasks), 0))).check(matches(withText("Last execution: successful, Mar 17, 1980 12:00:00 AM")));
         onView(allOf(withId(R.id.textview_list_item_network_task_last_exec_message), withChildDescendantAtPosition(withId(R.id.listview_main_activity_network_tasks), 0))).check(matches(withText("Last execution message: TestMessage")));
