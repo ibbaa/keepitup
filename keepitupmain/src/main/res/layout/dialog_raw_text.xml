@@ -12,12 +12,12 @@
         android:orientation="vertical">
 
         <TextView
-            android:id="@+id/textview_dialog_raw_text_message"
+            android:id="@+id/textview_dialog_raw_text_content"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:textStyle="normal"
-            android:text="Test" />
+            android:text="" />
 
         <ImageView
             android:id="@+id/imageview_dialog_raw_text_ok"

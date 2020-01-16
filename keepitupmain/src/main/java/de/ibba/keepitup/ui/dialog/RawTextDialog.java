@@ -44,7 +44,7 @@ public class RawTextDialog extends DialogFragment {
 
     private void prepareContent(View view) {
         Log.d(RawTextDialog.class.getName(), "prepareContent");
-        TextView messageText = view.findViewById(R.id.textview_dialog_raw_text_message);
+        TextView messageText = view.findViewById(R.id.textview_dialog_raw_text_content);
         Bundle arguments = Objects.requireNonNull(getArguments());
         int textResourceId = arguments.getInt(getResourceIdKey());
         InputStream inputStream = null;
