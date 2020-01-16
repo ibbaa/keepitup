@@ -1,5 +1,6 @@
 package de.ibba.keepitup.ui.dialog;
 
+import androidx.test.espresso.action.ViewActions;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.MediumTest;
 import androidx.test.rule.ActivityTestRule;
@@ -20,7 +21,9 @@ import de.ibba.keepitup.ui.NetworkTaskMainActivity;
 
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
+import static androidx.test.espresso.assertion.ViewAssertions.doesNotExist;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
+import static androidx.test.espresso.matcher.ViewMatchers.isRoot;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
 import static org.hamcrest.CoreMatchers.containsString;
@@ -67,13 +70,25 @@ public class InfoDialogTest extends BaseUITest {
         onView(withId(R.id.textview_dialog_info_license)).check(matches(withText("This software is open source and released under the terms of the MIT license. Please click here to display the license text.")));
         onView(withId(R.id.textview_dialog_info_license)).perform(click());
         assertEquals(2, activity.getSupportFragmentManager().getFragments().size());
-        onView(withId(R.id.textview_dialog_raw_text_message)).check(matches(withText(containsString("MIT License"))));
-        onView(withId(R.id.textview_dialog_raw_text_message)).check(matches(withText(containsString("Copyright"))));
-        onView(withId(R.id.textview_dialog_raw_text_message)).check(matches(withText(containsString("Alwin Ibba"))));
-        onView(withId(R.id.textview_dialog_raw_text_message)).check(matches(withText(containsString(String.valueOf(BuildConfig.RELEASE_YEAR)))));
-        onView(withId(R.id.textview_dialog_raw_text_message)).check(matches(withText(containsString(getBuildYear()))));
-        onView(withId(R.id.textview_dialog_raw_text_message)).check(matches(withText(containsString("Permission is hereby granted, free of charge"))));
+        onView(withId(R.id.textview_dialog_raw_text_content)).check(matches(withText(containsString("MIT License"))));
+        onView(withId(R.id.textview_dialog_raw_text_content)).check(matches(withText(containsString("Copyright"))));
+        onView(withId(R.id.textview_dialog_raw_text_content)).check(matches(withText(containsString("Alwin Ibba"))));
+        onView(withId(R.id.textview_dialog_raw_text_content)).check(matches(withText(containsString(String.valueOf(BuildConfig.RELEASE_YEAR)))));
+        onView(withId(R.id.textview_dialog_raw_text_content)).check(matches(withText(containsString(getBuildYear()))));
+        onView(withId(R.id.textview_dialog_raw_text_content)).check(matches(withText(containsString("Permission is hereby granted, free of charge"))));
     }
+
+    @Test
+    public void testThirdparty() {
+        InfoDialog infoDialog = new InfoDialog();
+        infoDialog.show(activity.getSupportFragmentManager(), InfoDialog.class.getName());
+        onView(withId(R.id.textview_dialog_info_thirdparty)).check(matches(withText("Thirdparty licences")));
+        onView(withId(R.id.textview_dialog_info_thirdparty)).perform(click());
+        onView(withId(R.id.textview_dialog_info_thirdparty)).check(doesNotExist());
+        onView(isRoot()).perform(ViewActions.pressBack());
+        onView(withId(R.id.textview_dialog_info_thirdparty)).check(matches(withText("Thirdparty licences")));
+    }
+
 
     private String getBuildYear() {
         Calendar calendar = new GregorianCalendar();
