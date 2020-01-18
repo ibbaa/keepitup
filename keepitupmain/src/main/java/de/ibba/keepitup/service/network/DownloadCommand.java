@@ -68,7 +68,9 @@ public class DownloadCommand implements Callable<DownloadCommandResult> {
                 return createDownloadCommandResult(false, false, false, false, httpCode, null, null, null);
             }
             connectSuccess = true;
+            Log.d(DownloadCommand.class.getName(), "Connection established.");
             if (HTTPUtil.isHTTPConnection(connection)) {
+                Log.d(DownloadCommand.class.getName(), "Download is an HTTP download.");
                 HttpURLConnection httpConnection = (HttpURLConnection) connection;
                 httpCode = httpConnection.getResponseCode();
                 httpMessage = httpConnection.getResponseMessage();
@@ -76,8 +78,9 @@ public class DownloadCommand implements Callable<DownloadCommandResult> {
                     Log.d(DownloadCommand.class.getName(), "Connection successful but HTTP return code " + httpCode + " is not HTTP_OK");
                     return createDownloadCommandResult(true, false, false, false, httpCode, httpMessage, null, null);
                 }
+            } else {
+                Log.d(DownloadCommand.class.getName(), "Download is not an HTTP download.");
             }
-            Log.d(DownloadCommand.class.getName(), "Connection established.");
             fileName = getFileName(connection);
             if (fileName == null) {
                 Log.d(DownloadCommand.class.getName(), "Connection successful but download file name could not be determined");
