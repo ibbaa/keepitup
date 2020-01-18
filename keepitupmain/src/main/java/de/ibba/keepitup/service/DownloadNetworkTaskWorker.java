@@ -80,13 +80,13 @@ public class DownloadNetworkTaskWorker extends NetworkTaskWorker {
         try {
             Future<DownloadCommandResult> downloadResultFuture = executorService.submit(downloadCommand);
             DownloadCommandResult downloadResult = downloadResultFuture.get(timeout, TimeUnit.SECONDS);
-            Log.d(PingNetworkTaskWorker.class.getName(), downloadCommand.getClass().getSimpleName() + " returned " + downloadResult);
+            Log.d(DownloadNetworkTaskWorker.class.getName(), downloadCommand.getClass().getSimpleName() + " returned " + downloadResult);
             if (!downloadResult.isConnectSuccess()) {
                 Log.d(DownloadNetworkTaskWorker.class.getName(), "Connection failed. Preparing error message.");
                 prepareConnectError(downloadResult, url, timeout, folder, delete, logEntry);
                 return;
             }
-            if (downloadResult.getHttpResponseCode() > 0 && !HTTPUtil.isHTTPReturnCodeOk(downloadResult.getHttpResponseCode())) {
+            if (downloadResult.getHttpResponseCode() >= 0 && !HTTPUtil.isHTTPReturnCodeOk(downloadResult.getHttpResponseCode())) {
                 Log.d(DownloadNetworkTaskWorker.class.getName(), "HTTP download and HTTP return code is not HTTP_OK. Preparing error message.");
                 prepareHTTPReturnCodeError(downloadResult, url, timeout, folder, delete, logEntry);
                 return;
