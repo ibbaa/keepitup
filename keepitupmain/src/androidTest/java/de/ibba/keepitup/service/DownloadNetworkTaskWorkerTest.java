@@ -144,6 +144,18 @@ public class DownloadNetworkTaskWorkerTest {
     }
 
     @Test
+    public void testHTTPResponseCodeNonHTTP() throws Exception {
+        DNSLookupResult dnsLookupResult = new DNSLookupResult(Arrays.asList(InetAddress.getByName("127.0.0.1"), InetAddress.getByName("::1")), null);
+        DownloadCommandResult downloadCommandResult = new DownloadCommandResult(true, true, true, true, true, false, -1, "message", null, null);
+        prepareTestDownloadNetworkTaskWorker(dnsLookupResult, downloadCommandResult);
+        LogEntry logEntry = downloadNetworkTaskWorker.execute(getNetworkTask());
+        assertEquals(45, logEntry.getNetworkTaskId());
+        assertEquals(getTestTimestamp(), logEntry.getTimestamp());
+        assertTrue(logEntry.isSuccess());
+        assertEquals("The download from http://127.0.0.1:80 was successful. The file was deleted after download.", logEntry.getMessage());
+    }
+
+    @Test
     public void testDownloadStoppedFileDoesNotExist() throws Exception {
         DNSLookupResult dnsLookupResult = new DNSLookupResult(Arrays.asList(InetAddress.getByName("127.0.0.1"), InetAddress.getByName("::1")), null);
         DownloadCommandResult downloadCommandResult = new DownloadCommandResult(true, false, false, false, false, true, HttpURLConnection.HTTP_OK, null, null, null);

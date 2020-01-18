@@ -81,7 +81,7 @@ public abstract class NetworkTaskWorker implements Runnable {
                 }
                 Log.d(NetworkTaskWorker.class.getName(), "Executing task...");
                 logEntry = execute(networkTask);
-                Log.d(NetworkTaskWorker.class.getName(), "Th executed task returned " + logEntry);
+                Log.d(NetworkTaskWorker.class.getName(), "The executed task returned " + logEntry);
                 if (isNetworkTaskValid()) {
                     writeLogEntry(logEntry, shouldSendSystemNotification(logEntry));
                 } else {

@@ -86,8 +86,8 @@ public class DownloadNetworkTaskWorker extends NetworkTaskWorker {
                 prepareConnectError(downloadResult, url, timeout, folder, delete, logEntry);
                 return;
             }
-            if (!HTTPUtil.isHTTPReturnCodeOk(downloadResult.getHttpResponseCode())) {
-                Log.d(DownloadNetworkTaskWorker.class.getName(), "HTTP return code is not HTTP_OK. Preparing error message.");
+            if (downloadResult.getHttpResponseCode() > 0 && !HTTPUtil.isHTTPReturnCodeOk(downloadResult.getHttpResponseCode())) {
+                Log.d(DownloadNetworkTaskWorker.class.getName(), "HTTP download and HTTP return code is not HTTP_OK. Preparing error message.");
                 prepareHTTPReturnCodeError(downloadResult, url, timeout, folder, delete, logEntry);
                 return;
             }
