@@ -229,6 +229,7 @@ public class NetworkTaskMainActivity extends RecyclerViewBaseActivity {
                 NetworkTask task = ((NetworkTaskAdapter) getAdapter()).getItem(position).getNetworkTask();
                 Log.d(NetworkTaskMainActivity.class.getName(), "Deleting " + task);
                 handler.deleteNetworkTask(task);
+                getAdapter().notifyDataSetChanged();
             } else {
                 Log.e(NetworkTaskMainActivity.class.getName(), NetworkTaskConfirmDialog.class.getSimpleName() + " arguments do not contain position key " + getConfirmDialogPositionKey());
             }
