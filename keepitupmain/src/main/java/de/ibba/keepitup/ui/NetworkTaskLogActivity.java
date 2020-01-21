@@ -2,8 +2,6 @@ package de.ibba.keepitup.ui;
 
 import android.content.IntentFilter;
 import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuItem;
 
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -97,30 +95,6 @@ public class NetworkTaskLogActivity extends RecyclerViewBaseActivity {
             showErrorDialog(getResources().getString(R.string.text_dialog_general_error_read_log_entries));
             return new ArrayList<>();
         }
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_log, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-        if (id == R.id.menu_action_activity_log_refresh) {
-            Log.d(NetworkTaskLogActivity.class.getName(), "menu_action_log_refresh triggered");
-            if (getIntent() != null && getIntent().getExtras() != null) {
-                NetworkTask task = new NetworkTask(Objects.requireNonNull(getIntent().getExtras()));
-                LogEntryUIInitTask uiInitTask = getUIInitTask((LogEntryAdapter) getAdapter());
-                uiInitTask.start(task);
-                return true;
-            } else {
-                Log.e(NetworkTaskLogActivity.class.getName(), "No network task intent present");
-            }
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
     }
 
     private LogEntryUIInitTask getUIInitTask(LogEntryAdapter adapter) {

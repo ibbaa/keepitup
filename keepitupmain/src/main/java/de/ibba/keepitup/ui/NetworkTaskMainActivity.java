@@ -121,11 +121,6 @@ public class NetworkTaskMainActivity extends RecyclerViewBaseActivity {
             Intent intent = new Intent(this, GlobalSettingsActivity.class);
             startActivity(intent);
             return true;
-        } else if (id == R.id.menu_action_activity_main_refresh) {
-            Log.d(NetworkTaskMainActivity.class.getName(), "menu_action_main_refresh triggered");
-            NetworkTaskMainUIInitTask uiInitTask = getUIInitTask((NetworkTaskAdapter) getAdapter());
-            uiInitTask.start();
-            return true;
         } else if (id == R.id.menu_action_activity_main_info) {
             Log.d(NetworkTaskMainActivity.class.getName(), "menu_action_activity_main_info triggered");
             InfoDialog infoDialog = new InfoDialog();

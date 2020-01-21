@@ -8,7 +8,6 @@
     <string name="label_activity_main_log_network_task">Display log</string>
     <string name="menu_action_activity_main_defaults">Defaults</string>
     <string name="menu_action_activity_main_global_settings">Settings</string>
-    <string name="menu_action_activity_main_refresh">Refresh</string>
     <string name="menu_action_activity_main_info">Info</string>
     <string name="text_activity_main_list_item_network_task_title">Network task</string>
     <string name="text_activity_main_list_item_network_task_status">Status: %s</string>
