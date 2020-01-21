@@ -17,16 +17,11 @@ import de.ibba.keepitup.R;
 import de.ibba.keepitup.model.AccessType;
 import de.ibba.keepitup.model.LogEntry;
 import de.ibba.keepitup.model.NetworkTask;
-import de.ibba.keepitup.test.mock.MockLogEntryUIInitTask;
 import de.ibba.keepitup.test.mock.TestRegistry;
-import de.ibba.keepitup.ui.adapter.LogEntryAdapter;
 
 import static androidx.test.espresso.Espresso.onView;
-import static androidx.test.espresso.Espresso.openActionBarOverflowOrOptionsMenu;
-import static androidx.test.espresso.action.ViewActions.click;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
-import static androidx.test.espresso.matcher.ViewMatchers.isRoot;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
 import static org.hamcrest.Matchers.allOf;
@@ -70,28 +65,6 @@ public class NetworkTaskLogActivityTest extends BaseUITest {
         onView(allOf(withId(R.id.textview_list_item_log_entry_success), withChildDescendantAtPosition(withId(R.id.listview_log_activity_log_entries), 1))).check(matches(withText("Execution failed")));
         onView(allOf(withId(R.id.textview_list_item_log_entry_timestamp), withChildDescendantAtPosition(withId(R.id.listview_log_activity_log_entries), 1))).check(matches(withText("Timestamp: Mar 17, 1980 12:00:00 AM")));
         onView(allOf(withId(R.id.textview_list_item_log_entry_message), withChildDescendantAtPosition(withId(R.id.listview_log_activity_log_entries), 1))).check(matches(withText("Message: Message1")));
-    }
-
-    @Test
-    public void testRefresh() {
-        NetworkTask task = insertNetworkTask();
-        LogEntry entry1 = getLogEntry(task, new GregorianCalendar(1980, Calendar.MARCH, 17), false, "Message1");
-        LogEntry entry2 = getLogEntry(task, new GregorianCalendar(1985, Calendar.DECEMBER, 24), true, "Message2");
-        getLogDAO().insertAndDeleteLog(entry1);
-        getLogDAO().insertAndDeleteLog(entry2);
-        NetworkTaskLogActivity activity = (NetworkTaskLogActivity) launchRecyclerViewBaseActivity(rule, getNetworkTaskIntent(task));
-        activity.injectUIInitTask(new MockLogEntryUIInitTask(TestRegistry.getContext(), (LogEntryAdapter) activity.getAdapter()));
-        onView(withId(R.id.listview_log_activity_log_entries)).check(matches(withListSize(2)));
-        LogEntry entry3 = getLogEntry(task, new GregorianCalendar(2016, Calendar.JULY, 1), true, "Message3");
-        getLogDAO().insertAndDeleteLog(entry3);
-        openActionBarOverflowOrOptionsMenu(TestRegistry.getContext());
-        onView(withText("Refresh")).perform(click());
-        onView(isRoot()).perform(waitFor(3000));
-        onView(withId(R.id.listview_log_activity_log_entries)).check(matches(withListSize(3)));
-        onView(allOf(withId(R.id.textview_list_item_log_entry_title), withChildDescendantAtPosition(withId(R.id.listview_log_activity_log_entries), 0))).check(matches(withText("Log entry for network task 1")));
-        onView(allOf(withId(R.id.textview_list_item_log_entry_success), withChildDescendantAtPosition(withId(R.id.listview_log_activity_log_entries), 0))).check(matches(withText("Execution successful")));
-        onView(allOf(withId(R.id.textview_list_item_log_entry_timestamp), withChildDescendantAtPosition(withId(R.id.listview_log_activity_log_entries), 0))).check(matches(withText("Timestamp: Jul 1, 2016 12:00:00 AM")));
-        onView(allOf(withId(R.id.textview_list_item_log_entry_message), withChildDescendantAtPosition(withId(R.id.listview_log_activity_log_entries), 0))).check(matches(withText("Message: Message3")));
     }
 
     private NetworkTask insertNetworkTask() {

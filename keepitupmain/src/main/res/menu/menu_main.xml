@@ -8,9 +8,6 @@
         android:id="@+id/menu_action_activity_main_global_settings"
         android:title="@string/menu_action_activity_main_global_settings" />
     <item
-        android:id="@+id/menu_action_activity_main_refresh"
-        android:title="@string/menu_action_activity_main_refresh" />
-    <item
         android:id="@+id/menu_action_activity_main_info"
         android:title="@string/menu_action_activity_main_info" />
 </menu>
