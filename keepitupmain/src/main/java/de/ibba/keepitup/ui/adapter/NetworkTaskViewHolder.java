@@ -29,7 +29,6 @@ public class NetworkTaskViewHolder extends RecyclerView.ViewHolder {
     public NetworkTaskViewHolder(@NonNull View itemView, NetworkTaskMainActivity mainActivity) {
         super(itemView);
         this.mainActivity = mainActivity;
-        itemView.setOnClickListener(this::onStartStopClicked);
         cardView = itemView.findViewById(R.id.cardview_list_item_network_task);
         startStopImage = itemView.findViewById(R.id.imageview_list_item_network_task_start_stop);
         startStopImage.setOnClickListener(this::onStartStopClicked);
@@ -40,6 +39,7 @@ public class NetworkTaskViewHolder extends RecyclerView.ViewHolder {
         ImageView logImage = itemView.findViewById(R.id.imageview_list_item_network_task_log);
         logImage.setOnClickListener(this::onLogClicked);
         statusText = itemView.findViewById(R.id.textview_list_item_network_task_status);
+        statusText.setOnClickListener(this::onStartStopClicked);
         accessTypeText = itemView.findViewById(R.id.textview_list_item_network_task_accesstype);
         addressText = itemView.findViewById(R.id.textview_list_item_network_task_address);
         intervalText = itemView.findViewById(R.id.textview_list_item_network_task_interval);
