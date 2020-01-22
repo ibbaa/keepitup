@@ -57,11 +57,11 @@ public class NetworkTaskMainUISyncTask extends AsyncTask<NetworkTask, Integer, N
         NetworkTaskAdapter adapter = adapterRef.get();
         if (adapter != null) {
             try {
-                Log.d(NetworkTaskMainUISyncTask.class.getName(), "Updating adapter with networkTaskWrapper " + networkTaskWrapper);
-                adapter.replaceItem(networkTaskWrapper);
+                Log.d(NetworkTaskMainUISyncTask.class.getName(), "Updating adapter with log entry " + networkTaskWrapper.getLogEntry());
+                adapter.replaceLogEntry(networkTaskWrapper.getNetworkTask(), networkTaskWrapper.getLogEntry());
                 adapter.notifyDataSetChanged();
             } catch (Exception exc) {
-                Log.e(NetworkTaskMainUISyncTask.class.getName(), "Error updating adapter with networkTaskWrapper " + networkTaskWrapper, exc);
+                Log.e(NetworkTaskMainUISyncTask.class.getName(), "Error updating adapter with log entry " + networkTaskWrapper.getLogEntry(), exc);
             }
         }
     }

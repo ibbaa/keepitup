@@ -183,6 +183,17 @@ public class NetworkTaskAdapter extends RecyclerView.Adapter<NetworkTaskViewHold
         }
     }
 
+    public void replaceLogEntry(NetworkTask task, LogEntry logEntry) {
+        Log.d(NetworkTaskAdapter.class.getName(), "replaceLogEntry " + logEntry);
+        for (int ii = 0; ii < networkTaskWrapperList.size(); ii++) {
+            NetworkTaskUIWrapper currentTask = networkTaskWrapperList.get(ii);
+            if (task.getId() == currentTask.getId()) {
+                networkTaskWrapperList.set(ii, new NetworkTaskUIWrapper(currentTask.getNetworkTask(), logEntry));
+                return;
+            }
+        }
+    }
+
     public void replaceItems(List<NetworkTaskUIWrapper> networkTaskWrapperList) {
         this.networkTaskWrapperList.clear();
         this.networkTaskWrapperList.addAll(networkTaskWrapperList);
