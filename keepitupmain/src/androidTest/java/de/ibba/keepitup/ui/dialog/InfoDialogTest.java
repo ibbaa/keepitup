@@ -64,7 +64,7 @@ public class InfoDialogTest extends BaseUITest {
     }
 
     @Test
-    public void testLicense() throws Exception {
+    public void testLicense() {
         InfoDialog infoDialog = new InfoDialog();
         infoDialog.show(activity.getSupportFragmentManager(), InfoDialog.class.getName());
         onView(withId(R.id.textview_dialog_info_license)).check(matches(withText("This software is open source and released under the terms of the MIT license. Please click here to display the license text.")));
@@ -93,7 +93,6 @@ public class InfoDialogTest extends BaseUITest {
     private String getBuildYear() {
         Calendar calendar = new GregorianCalendar();
         calendar.setTime(new Date(BuildConfig.TIMESTAMP));
-        String test = String.valueOf(calendar.get(Calendar.YEAR));
-        return test;
+        return String.valueOf(calendar.get(Calendar.YEAR));
     }
 }

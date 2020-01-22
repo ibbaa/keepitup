@@ -1,5 +1,6 @@
 package de.ibba.keepitup.ui;
 
+import androidx.test.espresso.action.ViewActions;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.MediumTest;
 import androidx.test.platform.app.InstrumentationRegistry;
@@ -16,12 +17,15 @@ import de.ibba.keepitup.R;
 import de.ibba.keepitup.model.AccessType;
 import de.ibba.keepitup.model.LogEntry;
 import de.ibba.keepitup.model.NetworkTask;
+import de.ibba.keepitup.test.mock.TestRegistry;
 import de.ibba.keepitup.ui.adapter.NetworkTaskAdapter;
 import de.ibba.keepitup.ui.adapter.NetworkTaskUIWrapper;
 
 import static androidx.test.espresso.Espresso.onView;
+import static androidx.test.espresso.Espresso.openActionBarOverflowOrOptionsMenu;
 import static androidx.test.espresso.action.ViewActions.click;
 import static androidx.test.espresso.action.ViewActions.replaceText;
+import static androidx.test.espresso.assertion.ViewAssertions.doesNotExist;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.isRoot;
@@ -219,6 +223,26 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
         onView(isRoot()).perform(waitFor(1000));
         onView(allOf(withId(R.id.imageview_list_item_network_task_start_stop), withChildDescendantAtPosition(withId(R.id.listview_main_activity_network_tasks), 0))).check(matches(withDrawable(R.drawable.icon_start_shadow)));
         assertFalse(getAdapter().getItem(0).getNetworkTask().isRunning());
+    }
+
+    @Test
+    public void testMenuOptions() {
+        launchRecyclerViewBaseActivity(rule);
+        openActionBarOverflowOrOptionsMenu(TestRegistry.getContext());
+        onView(withText("Defaults")).perform(click());
+        onView(withId(R.id.textview_defaults_activity_defaults_label)).check(matches(withText("Defaults")));
+        onView(isRoot()).perform(ViewActions.pressBack());
+        onView(withId(R.id.textview_dialog_info_thirdparty)).check(doesNotExist());
+        openActionBarOverflowOrOptionsMenu(TestRegistry.getContext());
+        onView(withText("Settings")).perform(click());
+        onView(withId(R.id.textview_global_settings_activity_global_label)).check(matches(withText("Global settings")));
+        onView(isRoot()).perform(ViewActions.pressBack());
+        onView(withId(R.id.textview_global_settings_activity_global_label)).check(doesNotExist());
+        openActionBarOverflowOrOptionsMenu(TestRegistry.getContext());
+        onView(withText("Info")).perform(click());
+        onView(withId(R.id.textview_dialog_info_title)).check(matches(withText("Keep it up")));
+        onView(withId(R.id.imageview_dialog_info_ok)).perform(click());
+        onView(withId(R.id.textview_dialog_info_title)).check(doesNotExist());
     }
 
     private void setTaskExecuted(NetworkTaskMainActivity activity, int position, Calendar calendar, boolean success, String message) {
