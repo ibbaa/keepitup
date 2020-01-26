@@ -24,7 +24,6 @@ public class StartupService extends BroadcastReceiver {
         Log.d(StartupService.class.getName(), "onReceive.");
         if (Intent.ACTION_BOOT_COMPLETED.equals(intent.getAction())) {
             Log.d(StartupService.class.getName(), "Received system boot event. Startup.");
-            startup(context);
         } else {
             Log.e(StartupService.class.getName(), "The received intent is not Intent.ACTION_BOOT_COMPLETED.");
         }
