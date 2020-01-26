@@ -27,6 +27,10 @@ public class HTTPUtil {
         return connection.getHeaderField(context.getResources().getString(R.string.http_header_content_disposition));
     }
 
+    public static String getLocation(Context context, URLConnection connection) {
+        return connection.getHeaderField(context.getResources().getString(R.string.http_header_content_location));
+    }
+
     public static String getFileNameFromContentDisposition(String contentDisposition) {
         Log.d(HTTPUtil.class.getName(), "getFileNameFromContentDisposition, contentDisposition is " + contentDisposition);
         if (contentDisposition == null) {

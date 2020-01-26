@@ -107,6 +107,26 @@ public class DownloadCommandTest {
     }
 
     @Test
+    public void testHTTPResponseCodeNotOkWithLocationHeader() throws Exception {
+        TestDownloadCommand downloadCommand = new TestDownloadCommand(TestRegistry.getContext(), null, null, null, true);
+        MockHttpURLConnection urlConnection = prepareHttpURLConnection(HttpURLConnection.HTTP_MOVED_PERM, "moved", null);
+        urlConnection.addHeader("Location", "new location");
+        downloadCommand.setURLConnection(urlConnection);
+        DownloadCommandResult result = downloadCommand.call();
+        assertTrue(result.isConnectSuccess());
+        assertFalse(result.isDownloadSuccess());
+        assertFalse(result.fileExists());
+        assertFalse(result.isDeleteSuccess());
+        assertTrue(result.isValid());
+        assertFalse(result.isStopped());
+        assertEquals(HttpURLConnection.HTTP_MOVED_PERM, result.getHttpResponseCode());
+        assertEquals("moved Location: new location", result.getHttpResponseMessage());
+        assertNull(result.getFileName());
+        assertNull(result.getException());
+        assertTrue(urlConnection.isDisconnected());
+    }
+
+    @Test
     public void testFileNameIsNull() throws Exception {
         TestDownloadCommand downloadCommand = new TestDownloadCommand(TestRegistry.getContext(), null, null, null, true);
         MockHttpURLConnection urlConnection = prepareHttpURLConnection(null);

@@ -74,6 +74,7 @@ public class DownloadCommand implements Callable<DownloadCommandResult> {
                 HttpURLConnection httpConnection = (HttpURLConnection) connection;
                 httpCode = httpConnection.getResponseCode();
                 httpMessage = httpConnection.getResponseMessage();
+                httpMessage += getLocationHeader(connection);
                 if (!HTTPUtil.isHTTPReturnCodeOk(httpCode)) {
                     Log.d(DownloadCommand.class.getName(), "Connection successful but HTTP return code " + httpCode + " is not HTTP_OK");
                     return createDownloadCommandResult(true, false, false, false, httpCode, httpMessage, null, null);
@@ -153,6 +154,14 @@ public class DownloadCommand implements Callable<DownloadCommandResult> {
         } catch (Exception exc) {
             Log.e(DownloadCommand.class.getName(), "Error closing output stream", exc);
         }
+    }
+
+    private String getLocationHeader(URLConnection connection) {
+        String location = HTTPUtil.getLocation(getContext(), connection);
+        if (!StringUtil.isEmpty(location)) {
+            return " " + getResources().getString(R.string.http_header_content_location) + ": " + location;
+        }
+        return "";
     }
 
     private String getFileName(URLConnection connection) {
