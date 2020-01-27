@@ -6,7 +6,6 @@ import android.os.PowerManager;
 import java.net.Inet6Address;
 import java.net.InetAddress;
 import java.text.NumberFormat;
-import java.util.Locale;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -121,10 +120,14 @@ public class PingNetworkTaskWorker extends NetworkTaskWorker {
         if (!parser.isValidInput()) {
             return output;
         }
-        NumberFormat numberFormat = NumberFormat.getNumberInstance(Locale.US);
+        NumberFormat numberFormat = NumberFormat.getNumberInstance();
         String packetLoss = numberFormat.format(parser.getPacketLoss()) + "%";
         String averageTime = numberFormat.format(parser.getAverageTime());
-        return getResources().getString(R.string.text_ping_message, parser.getPacketsTransmitted(), parser.getPacketsReceived(), packetLoss, averageTime);
+        String message = getResources().getString(R.string.text_ping_message, parser.getPacketsTransmitted(), parser.getPacketsReceived(), packetLoss);
+        if (parser.getValidTimes() > 0) {
+            message += " " + getResources().getString(R.string.text_ping_time, averageTime);
+        }
+        return message;
     }
 
     protected Callable<PingCommandResult> getPingCommand(String address, int pingCount, boolean ip6) {

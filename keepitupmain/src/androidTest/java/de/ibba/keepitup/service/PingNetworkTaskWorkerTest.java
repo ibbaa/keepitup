@@ -122,6 +122,18 @@ public class PingNetworkTaskWorkerTest {
     }
 
     @Test
+    public void testFailureCodeReturnedWithMessageParseable100Loss() throws Exception {
+        DNSLookupResult dnsLookupResult = new DNSLookupResult(InetAddress.getByName("192.168.178.12"), null);
+        PingCommandResult pingCommandResult = new PingCommandResult(1, getTestIP4PingFailure(), null);
+        prepareTestPingNetworkTaskWorker(dnsLookupResult, pingCommandResult);
+        LogEntry logEntry = pingNetworkTaskWorker.execute(getNetworkTask());
+        assertEquals(45, logEntry.getNetworkTaskId());
+        assertEquals(getTestTimestamp(), logEntry.getTimestamp());
+        assertFalse(logEntry.isSuccess());
+        assertEquals("Ping to 192.168.178.12 failed. 3 packets transmitted. 0 packets received. 100% packet loss.", logEntry.getMessage());
+    }
+
+    @Test
     public void testFailureCodeReturnedWithoutMessage() throws Exception {
         DNSLookupResult dnsLookupResult = new DNSLookupResult(InetAddress.getByName("127.0.0.1"), null);
         PingCommandResult pingCommandResult = new PingCommandResult(1, "", null);
@@ -163,5 +175,11 @@ public class PingNetworkTaskWorkerTest {
                 "--- 127.0.0.1 ping statistics ---\n" +
                 "3 packets transmitted, 3 received, 0% packet loss, time 1998ms\n" +
                 "rtt min/avg/max/mdev = 0.083/0.083/0.084/0.007 ms";
+    }
+
+    private String getTestIP4PingFailure() {
+        return "PING 192.168.178.12 (192.168.178.12) 56(84) bytes of data.\n" +
+                "--- 192.168.178.12 ping statistics ---\n" +
+                "3 packets transmitted, 0 received, 100% packet loss, time 2008ms";
     }
 }
