@@ -10,7 +10,8 @@
     <string name="text_ping_success">Pinged %s successfully.</string>
     <string name="text_ping_error">Ping to %s failed.</string>
     <string name="text_ping_return_code_error">Return code: %d</string>
-    <string name="text_ping_message">%d packets transmitted. %d packets received. %s packet loss. %s msec average time.</string>
+    <string name="text_ping_message">%d packets transmitted. %d packets received. %s packet loss.</string>
+    <string name="text_ping_time">%s msec average time.</string>
     <string name="text_connect_success">Connected to %s successfully.</string>
     <string name="text_connect_error">Connection to %s failed.</string>
     <string name="text_download_error">The download from %s failed.</string>
