@@ -171,6 +171,11 @@ public class NetworkTaskProcessServiceSchedulerTest {
         scheduler.startup();
         assertTrue(isTaskMarkedAsRunningInDatabase(task1));
         assertTrue(isTaskMarkedAsRunningInDatabase(task2));
+        assertFalse(alarmManager.wasSetAlarmCalled());
+        scheduler.terminate(task2);
+        scheduler.startup();
+        assertTrue(isTaskMarkedAsRunningInDatabase(task1));
+        assertTrue(isTaskMarkedAsRunningInDatabase(task2));
         assertTrue(alarmManager.wasSetAlarmCalled());
     }
 
