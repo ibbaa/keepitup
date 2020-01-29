@@ -379,6 +379,7 @@ public class NetworkTaskWorkerTest {
     private void setCurrentTime(TestNetworkTaskWorker testNetworkTaskWorker) {
         MockTimeService timeService = (MockTimeService) testNetworkTaskWorker.getTimeService();
         timeService.setTimestamp(getTestTimestamp());
+        timeService.setTimestamp2(getTestTimestamp());
     }
 
     private long getTestTimestamp() {
