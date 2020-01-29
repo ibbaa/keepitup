@@ -46,6 +46,7 @@ public class PingNetworkTaskWorkerTest {
         pingNetworkTaskWorker.setMockPingCommand(mockPingCommand);
         MockTimeService timeService = (MockTimeService) pingNetworkTaskWorker.getTimeService();
         timeService.setTimestamp(getTestTimestamp());
+        timeService.setTimestamp2(getTestTimestamp());
     }
 
     @Test

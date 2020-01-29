@@ -13,9 +13,10 @@ public class DownloadCommandResult {
     private final int httpResponseCode;
     private final String httpResponseMessage;
     private final String fileName;
+    private final long duration;
     private final Throwable exception;
 
-    public DownloadCommandResult(boolean connectSuccess, boolean downloadSuccess, boolean fileExists, boolean deleteSuccess, boolean valid, boolean stopped, int httpResponseCode, String httpResponseMessage, String fileName, Throwable exception) {
+    public DownloadCommandResult(boolean connectSuccess, boolean downloadSuccess, boolean fileExists, boolean deleteSuccess, boolean valid, boolean stopped, int httpResponseCode, String httpResponseMessage, String fileName, long duration, Throwable exception) {
         this.connectSuccess = connectSuccess;
         this.downloadSuccess = downloadSuccess;
         this.fileExists = fileExists;
@@ -25,6 +26,7 @@ public class DownloadCommandResult {
         this.httpResponseCode = httpResponseCode;
         this.httpResponseMessage = httpResponseMessage;
         this.fileName = fileName;
+        this.duration = duration;
         this.exception = exception;
     }
 
@@ -64,6 +66,10 @@ public class DownloadCommandResult {
         return fileName;
     }
 
+    public long getDuration() {
+        return duration;
+    }
+
     public Throwable getException() {
         return exception;
     }
@@ -81,6 +87,7 @@ public class DownloadCommandResult {
                 ", httpResponseCode=" + httpResponseCode +
                 ", httpResponseMessage='" + httpResponseMessage + '\'' +
                 ", fileName='" + fileName + '\'' +
+                ", duration=" + duration +
                 ", exception=" + exception +
                 '}';
     }

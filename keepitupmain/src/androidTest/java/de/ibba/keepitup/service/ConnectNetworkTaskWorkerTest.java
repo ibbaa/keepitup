@@ -46,12 +46,13 @@ public class ConnectNetworkTaskWorkerTest {
         connectNetworkTaskWorker.setMockConnectCommand(mockConnectCommand);
         MockTimeService timeService = (MockTimeService) connectNetworkTaskWorker.getTimeService();
         timeService.setTimestamp(getTestTimestamp());
+        timeService.setTimestamp2(getTestTimestamp());
     }
 
     @Test
     public void testSuccessfulCall() throws Exception {
         DNSLookupResult dnsLookupResult = new DNSLookupResult(Arrays.asList(InetAddress.getByName("127.0.0.1"), InetAddress.getByName("::1")), null);
-        ConnectCommandResult connectCommandResult = new ConnectCommandResult(true, null);
+        ConnectCommandResult connectCommandResult = new ConnectCommandResult(true, 0, null);
         prepareTestConnectNetworkTaskWorker(dnsLookupResult, connectCommandResult);
         LogEntry logEntry = connectNetworkTaskWorker.execute(getNetworkTask());
         assertEquals(45, logEntry.getNetworkTaskId());
@@ -76,7 +77,7 @@ public class ConnectNetworkTaskWorkerTest {
     public void testConnectCommandExceptionThrown() throws Exception {
         DNSLookupResult dnsLookupResult = new DNSLookupResult(InetAddress.getByName("127.0.0.1"), null);
         IllegalArgumentException exception = new IllegalArgumentException("TestException");
-        ConnectCommandResult connectCommandResult = new ConnectCommandResult(false, exception);
+        ConnectCommandResult connectCommandResult = new ConnectCommandResult(false, 0, exception);
         prepareTestConnectNetworkTaskWorker(dnsLookupResult, connectCommandResult);
         LogEntry logEntry = connectNetworkTaskWorker.execute(getNetworkTask());
         assertEquals(45, logEntry.getNetworkTaskId());
@@ -88,7 +89,7 @@ public class ConnectNetworkTaskWorkerTest {
     @Test
     public void testConnectCommandFailedWithoutException() throws Exception {
         DNSLookupResult dnsLookupResult = new DNSLookupResult(InetAddress.getByName("127.0.0.1"), null);
-        ConnectCommandResult connectCommandResult = new ConnectCommandResult(false, null);
+        ConnectCommandResult connectCommandResult = new ConnectCommandResult(false, 0, null);
         prepareTestConnectNetworkTaskWorker(dnsLookupResult, connectCommandResult);
         LogEntry logEntry = connectNetworkTaskWorker.execute(getNetworkTask());
         assertEquals(45, logEntry.getNetworkTaskId());

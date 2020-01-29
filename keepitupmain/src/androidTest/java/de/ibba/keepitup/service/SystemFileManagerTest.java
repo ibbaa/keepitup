@@ -34,6 +34,7 @@ public class SystemFileManagerTest {
         fileManager = new SystemFileManager(TestRegistry.getContext());
         MockTimeService timeService = (MockTimeService) fileManager.getTimeService();
         timeService.setTimestamp(getTestTimestamp());
+        timeService.setTimestamp2(getTestTimestamp());
         fileManager.delete(fileManager.getInternalDownloadDirectory());
         fileManager.delete(fileManager.getExternalRootDirectory());
 
