@@ -2,6 +2,7 @@ package de.ibba.keepitup.service;
 
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.MediumTest;
+import androidx.test.platform.app.InstrumentationRegistry;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -12,6 +13,7 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.GregorianCalendar;
+import java.util.Locale;
 
 import de.ibba.keepitup.model.AccessType;
 import de.ibba.keepitup.model.LogEntry;
@@ -36,6 +38,7 @@ public class PingNetworkTaskWorkerTest {
 
     @Before
     public void beforeEachTestMethod() {
+        InstrumentationRegistry.getInstrumentation().getTargetContext().getResources().getConfiguration().setLocale(Locale.US);
         pingNetworkTaskWorker = new TestPingNetworkTaskWorker(TestRegistry.getContext(), getNetworkTask(), null);
     }
 
@@ -70,7 +73,19 @@ public class PingNetworkTaskWorkerTest {
         assertEquals(45, logEntry.getNetworkTaskId());
         assertEquals(getTestTimestamp(), logEntry.getTimestamp());
         assertTrue(logEntry.isSuccess());
-        assertEquals("Pinged ::1 successfully. 3 packets transmitted. 3 packets received. 0% packet loss. 0.083 msec average time.", logEntry.getMessage());
+        assertEquals("Pinged ::1 successfully. 3 packets transmitted. 3 packets received. 0% packet loss. 0.08 msec average time.", logEntry.getMessage());
+    }
+
+    @Test
+    public void testSuccessfulCallParseableResultAverageTime() throws Exception {
+        DNSLookupResult dnsLookupResult = new DNSLookupResult(InetAddress.getByName("127.0.0.1"), null);
+        PingCommandResult pingCommandResult = new PingCommandResult(0, getTestIP4PingAverageTime(), null);
+        prepareTestPingNetworkTaskWorker(dnsLookupResult, pingCommandResult);
+        LogEntry logEntry = pingNetworkTaskWorker.execute(getNetworkTask());
+        assertEquals(45, logEntry.getNetworkTaskId());
+        assertEquals(getTestTimestamp(), logEntry.getTimestamp());
+        assertTrue(logEntry.isSuccess());
+        assertEquals("Pinged 127.0.0.1 successfully. 3 packets transmitted. 3 packets received. 0% packet loss. 2 sec average time.", logEntry.getMessage());
     }
 
     @Test
@@ -119,7 +134,7 @@ public class PingNetworkTaskWorkerTest {
         assertEquals(45, logEntry.getNetworkTaskId());
         assertEquals(getTestTimestamp(), logEntry.getTimestamp());
         assertFalse(logEntry.isSuccess());
-        assertEquals("Ping to 127.0.0.1 failed. 3 packets transmitted. 3 packets received. 0% packet loss. 0.083 msec average time.", logEntry.getMessage());
+        assertEquals("Ping to 127.0.0.1 failed. 3 packets transmitted. 3 packets received. 0% packet loss. 0.08 msec average time.", logEntry.getMessage());
     }
 
     @Test
@@ -173,6 +188,16 @@ public class PingNetworkTaskWorkerTest {
                 "64 bytes from 127.0.0.1: icmp_seq=1 ttl=64 time=0.084 ms\n" +
                 " 64 bytes from 127.0.0.1: icmp_seq=2 ttl=64 time=0.083 ms\n" +
                 "64 bytes from 127.0.0.1: icmp_seq=3 ttl=64 time=0.083 ms\n\n" +
+                "--- 127.0.0.1 ping statistics ---\n" +
+                "3 packets transmitted, 3 received, 0% packet loss, time 1998ms\n" +
+                "rtt min/avg/max/mdev = 0.083/0.083/0.084/0.007 ms";
+    }
+
+    private String getTestIP4PingAverageTime() {
+        return "PING 127.0.0.1 (127.0.0.1) 56(84) bytes of data.\n" +
+                "64 bytes from 127.0.0.1: icmp_seq=1 ttl=64 time=1000 ms\n" +
+                " 64 bytes from 127.0.0.1: icmp_seq=2 ttl=64 time=2000 ms\n" +
+                "64 bytes from 127.0.0.1: icmp_seq=3 ttl=64 time=3000 ms\n\n" +
                 "--- 127.0.0.1 ping statistics ---\n" +
                 "3 packets transmitted, 3 received, 0% packet loss, time 1998ms\n" +
                 "rtt min/avg/max/mdev = 0.083/0.083/0.084/0.007 ms";
