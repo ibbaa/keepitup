@@ -15,6 +15,7 @@ import de.ibba.keepitup.R;
 import de.ibba.keepitup.logging.Log;
 import de.ibba.keepitup.model.LogEntry;
 import de.ibba.keepitup.model.NetworkTask;
+import de.ibba.keepitup.resources.PreferenceManager;
 import de.ibba.keepitup.service.network.ConnectCommand;
 import de.ibba.keepitup.service.network.ConnectCommandResult;
 
@@ -59,8 +60,10 @@ public class ConnectNetworkTaskWorker extends NetworkTaskWorker {
 
     private void executeConnectCommand(InetAddress address, int port, boolean ip6, LogEntry logEntry) {
         Log.d(ConnectNetworkTaskWorker.class.getName(), "executeConnectCommand, address is " + address + ", port is " + port);
+        PreferenceManager preferenceManager = new PreferenceManager(getContext());
+        int count = preferenceManager.getPreferencePingCount();
         Callable<ConnectCommandResult> connectCommand = getConnectCommand(address, port);
-        int connectTimeout = getResources().getInteger(R.integer.connect_timeout) * 2;
+        int connectTimeout = getResources().getInteger(R.integer.connect_timeout) * count * 2;
         Log.d(ConnectNetworkTaskWorker.class.getName(), "Creating ExecutorService");
         ExecutorService executorService = Executors.newSingleThreadExecutor();
         try {
@@ -101,6 +104,6 @@ public class ConnectNetworkTaskWorker extends NetworkTaskWorker {
     }
 
     protected Callable<ConnectCommandResult> getConnectCommand(InetAddress address, int port) {
-        return new ConnectCommand(getContext(), address, port);
+        return new ConnectCommand(getContext(), address, port, 1);
     }
 }
