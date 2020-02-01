@@ -181,14 +181,29 @@ public class PreferenceManager {
         return getPreferenceInt(getResources().getString(R.string.ping_count_key), getResources().getInteger(R.integer.ping_count_default));
     }
 
-    public void setPreferencePingCount(int timeout) {
-        Log.d(PreferenceManager.class.getName(), "setPreferencePingCount, timeout is " + timeout);
-        setPreferenceInt(getResources().getString(R.string.ping_count_key), timeout);
+    public void setPreferencePingCount(int count) {
+        Log.d(PreferenceManager.class.getName(), "setPreferencePingCount, count is " + count);
+        setPreferenceInt(getResources().getString(R.string.ping_count_key), count);
     }
 
     public void removePreferencePingCount() {
         Log.d(PreferenceManager.class.getName(), "removePreferencePingCount");
         removePreferenceValue(getResources().getString(R.string.ping_count_key));
+    }
+
+    public int getPreferenceConnectCount() {
+        Log.d(PreferenceManager.class.getName(), "getPreferenceConnectCount");
+        return getPreferenceInt(getResources().getString(R.string.connect_count_key), getResources().getInteger(R.integer.connect_count_default));
+    }
+
+    public void setPreferenceConnectCount(int count) {
+        Log.d(PreferenceManager.class.getName(), "setPreferenceConnectCount, count is " + count);
+        setPreferenceInt(getResources().getString(R.string.connect_count_key), count);
+    }
+
+    public void removePreferenceConnectCount() {
+        Log.d(PreferenceManager.class.getName(), "removePreferenceConnectCount");
+        removePreferenceValue(getResources().getString(R.string.connect_count_key));
     }
 
     public boolean getPreferenceNotificationInactiveNetwork() {

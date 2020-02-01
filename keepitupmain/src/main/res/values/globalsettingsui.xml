@@ -4,6 +4,7 @@
     <string name="menu_action_activity_global_settings_reset">Reset</string>
     <string name="label_activity_global_settings_global">Global settings</string>
     <string name="label_activity_global_settings_ping_count">Ping count</string>
+    <string name="label_activity_global_settings_connect_count">Connect count</string>
     <string name="label_activity_global_settings_notification_inactive_network">Notifications when network is not active</string>
     <string name="label_activity_global_settings_download_external_storage">Download to an external storage folder</string>
     <string name="label_activity_global_settings_download_folder">Download folder</string>

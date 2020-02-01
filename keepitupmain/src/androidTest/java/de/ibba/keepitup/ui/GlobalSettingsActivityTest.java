@@ -57,6 +57,8 @@ public class GlobalSettingsActivityTest extends BaseUITest {
         assertFalse(preferenceManager.getPreferenceDownloadKeep());
         onView(withId(R.id.textview_global_settings_activity_ping_count_label)).check(matches(withText("Ping count")));
         onView(withId(R.id.textview_global_settings_activity_ping_count)).check(matches(withText("3")));
+        onView(withId(R.id.textview_global_settings_activity_connect_count_label)).check(matches(withText("Connect count")));
+        onView(withId(R.id.textview_global_settings_activity_connect_count)).check(matches(withText("1")));
         onView(withId(R.id.textview_global_settings_activity_notification_inactive_network_label)).check(matches(withText("Notifications when network is not active")));
         onView(withId(R.id.switch_global_settings_activity_notification_inactive_network)).check(matches(isNotChecked()));
         onView(withId(R.id.textview_global_settings_activity_download_external_storage_label)).check(matches(withText("Download to an external storage folder")));
@@ -80,14 +82,20 @@ public class GlobalSettingsActivityTest extends BaseUITest {
         onView(withId(R.id.textview_global_settings_activity_ping_count)).perform(click());
         onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("10"));
         onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
+        onView(withId(R.id.textview_global_settings_activity_connect_count)).perform(click());
+        onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("10"));
+        onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
         onView(withId(R.id.switch_global_settings_activity_notification_inactive_network)).perform(click());
         onView(withId(R.id.switch_global_settings_activity_download_external_storage)).perform(click());
         onView(withId(R.id.switch_global_settings_activity_download_keep)).perform(click());
+        onView(withId(R.id.switch_global_settings_activity_file_logger_enabled)).perform(scrollTo());
         onView(withId(R.id.switch_global_settings_activity_file_logger_enabled)).perform(click());
         onView(withId(R.id.switch_global_settings_activity_file_dump_enabled)).perform(scrollTo());
         onView(withId(R.id.switch_global_settings_activity_file_dump_enabled)).perform(click());
         onView(withId(R.id.textview_global_settings_activity_ping_count_label)).check(matches(withText("Ping count")));
         onView(withId(R.id.textview_global_settings_activity_ping_count)).check(matches(withText("10")));
+        onView(withId(R.id.textview_global_settings_activity_connect_count_label)).check(matches(withText("Connect count")));
+        onView(withId(R.id.textview_global_settings_activity_connect_count)).check(matches(withText("10")));
         onView(withId(R.id.textview_global_settings_activity_notification_inactive_network_label)).check(matches(withText("Notifications when network is not active")));
         onView(withId(R.id.switch_global_settings_activity_notification_inactive_network)).check(matches(isChecked()));
         onView(withId(R.id.textview_global_settings_activity_notification_inactive_network_on_off)).check(matches(withText("yes")));
@@ -135,6 +143,7 @@ public class GlobalSettingsActivityTest extends BaseUITest {
         onView(withId(R.id.textview_global_settings_activity_download_keep_on_off)).check(matches(withText("no")));
         onView(withId(R.id.switch_global_settings_activity_file_logger_enabled)).check(matches(isNotChecked()));
         onView(withId(R.id.textview_global_settings_activity_file_logger_enabled_on_off)).check(matches(withText("no")));
+        onView(withId(R.id.switch_global_settings_activity_file_logger_enabled)).perform(scrollTo());
         onView(withId(R.id.switch_global_settings_activity_file_logger_enabled)).perform(click());
         onView(withId(R.id.switch_global_settings_activity_file_logger_enabled)).check(matches(isChecked()));
         onView(withId(R.id.textview_global_settings_activity_file_logger_enabled_on_off)).check(matches(withText("yes")));
@@ -158,14 +167,19 @@ public class GlobalSettingsActivityTest extends BaseUITest {
         onView(withId(R.id.textview_global_settings_activity_ping_count)).perform(click());
         onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("2"));
         onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
+        onView(withId(R.id.textview_global_settings_activity_connect_count)).perform(click());
+        onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("5"));
+        onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
         onView(withId(R.id.switch_global_settings_activity_notification_inactive_network)).perform(click());
         onView(withId(R.id.switch_global_settings_activity_download_external_storage)).perform(click());
         onView(withId(R.id.switch_global_settings_activity_download_keep)).perform(click());
+        onView(withId(R.id.switch_global_settings_activity_file_logger_enabled)).perform(scrollTo());
         onView(withId(R.id.switch_global_settings_activity_file_logger_enabled)).perform(click());
         onView(withId(R.id.switch_global_settings_activity_file_dump_enabled)).perform(scrollTo());
         onView(withId(R.id.switch_global_settings_activity_file_dump_enabled)).perform(click());
         PreferenceManager preferenceManager = getPreferenceManager();
         assertEquals(2, preferenceManager.getPreferencePingCount());
+        assertEquals(5, preferenceManager.getPreferenceConnectCount());
         assertTrue(preferenceManager.getPreferenceNotificationInactiveNetwork());
         assertTrue(preferenceManager.getPreferenceDownloadExternalStorage());
         assertEquals("download", preferenceManager.getPreferenceDownloadFolder());
@@ -219,6 +233,53 @@ public class GlobalSettingsActivityTest extends BaseUITest {
         onView(withId(R.id.edittext_dialog_settings_input_value)).check(matches(withTextColor(R.color.textColor)));
         onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
         onView(withId(R.id.textview_global_settings_activity_ping_count)).check(matches(withText("5")));
+    }
+
+    @Test
+    public void testSetConnectCountPreferencesCancel() {
+        launchSettingsInputActivity(rule);
+        onView(withId(R.id.textview_global_settings_activity_connect_count)).perform(click());
+        onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("3"));
+        onView(withId(R.id.imageview_dialog_settings_input_cancel)).perform(click());
+        PreferenceManager preferenceManager = getPreferenceManager();
+        assertEquals(3, preferenceManager.getPreferencePingCount());
+    }
+
+    @Test
+    public void testConnectCountInput() {
+        launchSettingsInputActivity(rule);
+        onView(withId(R.id.textview_global_settings_activity_connect_count)).perform(click());
+        onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("1 0"));
+        onView(withId(R.id.edittext_dialog_settings_input_value)).check(matches(withTextColor(R.color.textErrorColor)));
+        onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
+        onView(allOf(withText("Connect count"), withGridLayoutPosition(1, 0))).check(matches(isDisplayed()));
+        onView(allOf(withText("Invalid format"), withGridLayoutPosition(1, 1))).check(matches(isDisplayed()));
+        onView(withId(R.id.imageview_dialog_validator_error_ok)).perform(click());
+        onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("0"));
+        onView(withId(R.id.edittext_dialog_settings_input_value)).check(matches(withTextColor(R.color.textErrorColor)));
+        onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
+        onView(allOf(withText("Connect count"), withGridLayoutPosition(1, 0))).check(matches(isDisplayed()));
+        onView(allOf(withText("Minimum: 1"), withGridLayoutPosition(1, 1))).check(matches(isDisplayed()));
+        onView(withId(R.id.imageview_dialog_validator_error_ok)).perform(click());
+        onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText(""));
+        onView(withId(R.id.edittext_dialog_settings_input_value)).check(matches(withTextColor(R.color.textErrorColor)));
+        onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
+        onView(allOf(withText("Connect count"), withGridLayoutPosition(1, 0))).check(matches(isDisplayed()));
+        onView(allOf(withText("No value specified"), withGridLayoutPosition(1, 1))).check(matches(isDisplayed()));
+        onView(withId(R.id.imageview_dialog_validator_error_ok)).perform(click());
+        onView(withId(R.id.imageview_dialog_settings_input_cancel)).perform(click());
+        onView(withId(R.id.textview_global_settings_activity_connect_count)).check(matches(withText("1")));
+        onView(withId(R.id.textview_global_settings_activity_connect_count)).perform(click());
+        onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("333"));
+        onView(withId(R.id.edittext_dialog_settings_input_value)).check(matches(withTextColor(R.color.textErrorColor)));
+        onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
+        onView(allOf(withText("Connect count"), withGridLayoutPosition(1, 0))).check(matches(isDisplayed()));
+        onView(allOf(withText("Maximum: 10"), withGridLayoutPosition(1, 1))).check(matches(isDisplayed()));
+        onView(withId(R.id.imageview_dialog_validator_error_ok)).perform(click());
+        onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("5"));
+        onView(withId(R.id.edittext_dialog_settings_input_value)).check(matches(withTextColor(R.color.textColor)));
+        onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
+        onView(withId(R.id.textview_global_settings_activity_connect_count)).check(matches(withText("5")));
     }
 
     @Test
@@ -374,11 +435,13 @@ public class GlobalSettingsActivityTest extends BaseUITest {
         launchSettingsInputActivity(rule);
         assertNull(Log.getLogger());
         assertNull(Dump.getDump());
+        onView(withId(R.id.switch_global_settings_activity_file_logger_enabled)).perform(scrollTo());
         onView(withId(R.id.switch_global_settings_activity_file_logger_enabled)).perform(click());
         onView(withId(R.id.switch_global_settings_activity_file_dump_enabled)).perform(scrollTo());
         onView(withId(R.id.switch_global_settings_activity_file_dump_enabled)).perform(click());
         assertNotNull(Log.getLogger());
         assertNotNull(Dump.getDump());
+        onView(withId(R.id.switch_global_settings_activity_file_logger_enabled)).perform(scrollTo());
         onView(withId(R.id.switch_global_settings_activity_file_logger_enabled)).perform(click());
         onView(withId(R.id.switch_global_settings_activity_file_dump_enabled)).perform(scrollTo());
         onView(withId(R.id.switch_global_settings_activity_file_dump_enabled)).perform(click());
@@ -392,9 +455,13 @@ public class GlobalSettingsActivityTest extends BaseUITest {
         onView(withId(R.id.textview_global_settings_activity_ping_count)).perform(click());
         onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("2"));
         onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
+        onView(withId(R.id.textview_global_settings_activity_connect_count)).perform(click());
+        onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("4"));
+        onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
         onView(withId(R.id.switch_global_settings_activity_notification_inactive_network)).perform(click());
         onView(withId(R.id.switch_global_settings_activity_download_external_storage)).perform(click());
         onView(withId(R.id.switch_global_settings_activity_download_keep)).perform(click());
+        onView(withId(R.id.switch_global_settings_activity_file_logger_enabled)).perform(scrollTo());
         onView(withId(R.id.switch_global_settings_activity_file_logger_enabled)).perform(click());
         onView(withId(R.id.switch_global_settings_activity_file_dump_enabled)).perform(scrollTo());
         onView(withId(R.id.switch_global_settings_activity_file_dump_enabled)).perform(click());
@@ -402,6 +469,8 @@ public class GlobalSettingsActivityTest extends BaseUITest {
         onView(withText("Reset")).perform(click());
         onView(withId(R.id.textview_global_settings_activity_ping_count_label)).check(matches(withText("Ping count")));
         onView(withId(R.id.textview_global_settings_activity_ping_count)).check(matches(withText("3")));
+        onView(withId(R.id.textview_global_settings_activity_connect_count_label)).check(matches(withText("Connect count")));
+        onView(withId(R.id.textview_global_settings_activity_connect_count)).check(matches(withText("1")));
         onView(withId(R.id.textview_global_settings_activity_notification_inactive_network_label)).check(matches(withText("Notifications when network is not active")));
         onView(withId(R.id.switch_global_settings_activity_notification_inactive_network)).check(matches(isNotChecked()));
         onView(withId(R.id.textview_global_settings_activity_download_external_storage_label)).check(matches(withText("Download to an external storage folder")));
@@ -416,6 +485,7 @@ public class GlobalSettingsActivityTest extends BaseUITest {
         onView(withId(R.id.switch_global_settings_activity_file_dump_enabled)).check(matches(isNotChecked()));
         PreferenceManager preferenceManager = getPreferenceManager();
         assertEquals(3, preferenceManager.getPreferencePingCount());
+        assertEquals(1, preferenceManager.getPreferenceConnectCount());
         assertFalse(preferenceManager.getPreferenceNotificationInactiveNetwork());
         assertFalse(preferenceManager.getPreferenceDownloadExternalStorage());
         assertEquals("download", preferenceManager.getPreferenceDownloadFolder());
@@ -433,6 +503,7 @@ public class GlobalSettingsActivityTest extends BaseUITest {
         onView(withId(R.id.switch_global_settings_activity_notification_inactive_network)).perform(click());
         onView(withId(R.id.switch_global_settings_activity_download_external_storage)).perform(click());
         onView(withId(R.id.switch_global_settings_activity_download_keep)).perform(click());
+        onView(withId(R.id.switch_global_settings_activity_file_logger_enabled)).perform(scrollTo());
         onView(withId(R.id.switch_global_settings_activity_file_logger_enabled)).perform(click());
         onView(withId(R.id.switch_global_settings_activity_file_dump_enabled)).perform(scrollTo());
         onView(withId(R.id.switch_global_settings_activity_file_dump_enabled)).perform(click());
