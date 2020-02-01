@@ -75,7 +75,7 @@ public class DownloadCommandTest {
     }
 
     @Test
-    public void testConectionFailed() {
+    public void testConnectionFailed() {
         TestDownloadCommand downloadCommand = new TestDownloadCommand(TestRegistry.getContext(), null, null, null, true);
         setCurrentTime(downloadCommand);
         DownloadCommandResult result = downloadCommand.call();

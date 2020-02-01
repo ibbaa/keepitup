@@ -5,12 +5,18 @@ import androidx.annotation.NonNull;
 public class ConnectCommandResult {
 
     private final boolean success;
-    private final long duration;
+    private final int attempts;
+    private final int successfulAttempts;
+    private final int timeoutAttempts;
+    private final double averageTime;
     private final Throwable exception;
 
-    public ConnectCommandResult(boolean success, long duration, Throwable exception) {
+    public ConnectCommandResult(boolean success, int attempts, int successfulAttempts, int timeoutAttempts, double averageTime, Throwable exception) {
         this.success = success;
-        this.duration = duration;
+        this.attempts = attempts;
+        this.successfulAttempts = successfulAttempts;
+        this.timeoutAttempts = timeoutAttempts;
+        this.averageTime = averageTime;
         this.exception = exception;
     }
 
@@ -18,8 +24,20 @@ public class ConnectCommandResult {
         return success;
     }
 
-    public long getDuration() {
-        return duration;
+    public int getAttempts() {
+        return attempts;
+    }
+
+    public int getSuccessfulAttempts() {
+        return successfulAttempts;
+    }
+
+    public int getTimeoutAttempts() {
+        return timeoutAttempts;
+    }
+
+    public double getAverageTime() {
+        return averageTime;
     }
 
     public Throwable getException() {
@@ -31,7 +49,10 @@ public class ConnectCommandResult {
     public String toString() {
         return "ConnectCommandResult{" +
                 "success=" + success +
-                ", duration=" + duration +
+                ", attempts=" + attempts +
+                ", successfulAttempts=" + successfulAttempts +
+                ", timeoutAttempts=" + timeoutAttempts +
+                ", averageTime=" + averageTime +
                 ", exception=" + exception +
                 '}';
     }
