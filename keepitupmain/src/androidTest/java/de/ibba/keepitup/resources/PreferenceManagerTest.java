@@ -165,6 +165,18 @@ public class PreferenceManagerTest {
     }
 
     @Test
+    public void testGetSetRemoveConnectCount() {
+        assertEquals(1, preferenceManager.getPreferenceConnectCount());
+        preferenceManager.setPreferenceConnectCount(15);
+        assertEquals(15, preferenceManager.getPreferenceConnectCount());
+        preferenceManager.removeAllPreferences();
+        assertEquals(1, preferenceManager.getPreferenceConnectCount());
+        preferenceManager.setPreferenceConnectCount(2);
+        preferenceManager.removePreferenceConnectCount();
+        assertEquals(1, preferenceManager.getPreferenceConnectCount());
+    }
+
+    @Test
     public void testGetSetRemovePreferenceNotificationInactiveNetwork() {
         assertFalse(preferenceManager.getPreferenceNotificationInactiveNetwork());
         preferenceManager.setPreferenceNotificationInactiveNetwork(true);

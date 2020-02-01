@@ -14,7 +14,8 @@ public class SettingsInput {
         ADDRESS(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_URI | InputType.TYPE_TEXT_FLAG_MULTI_LINE | InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS),
         PORT(InputType.TYPE_CLASS_NUMBER),
         INTERVAL(InputType.TYPE_CLASS_NUMBER),
-        PINGCOUNT(InputType.TYPE_CLASS_NUMBER);
+        PINGCOUNT(InputType.TYPE_CLASS_NUMBER),
+        CONNECTCOUNT(InputType.TYPE_CLASS_NUMBER);
 
         private final int inputType;
 

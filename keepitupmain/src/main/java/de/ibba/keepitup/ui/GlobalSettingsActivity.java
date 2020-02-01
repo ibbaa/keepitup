@@ -23,6 +23,7 @@ import de.ibba.keepitup.service.IFileManager;
 import de.ibba.keepitup.ui.dialog.FolderChooseDialog;
 import de.ibba.keepitup.ui.dialog.SettingsInput;
 import de.ibba.keepitup.ui.dialog.SettingsInputDialog;
+import de.ibba.keepitup.ui.validation.ConnectCountFieldValidator;
 import de.ibba.keepitup.ui.validation.PingCountFieldValidator;
 import de.ibba.keepitup.util.BundleUtil;
 import de.ibba.keepitup.util.DebugUtil;
@@ -32,6 +33,7 @@ import de.ibba.keepitup.util.StringUtil;
 public class GlobalSettingsActivity extends SettingsInputActivity {
 
     private TextView pingCountText;
+    private TextView connectCountText;
     private Switch notificationInactiveNetworkSwitch;
     private TextView notificationInactiveNetworkOnOffText;
     private Switch downloadExternalStorageSwitch;
@@ -53,6 +55,7 @@ public class GlobalSettingsActivity extends SettingsInputActivity {
         }
         setContentView(R.layout.activity_global_settings);
         preparePingCountField();
+        prepareConnectCountField();
         prepareNotificationInactiveNetworkSwitch();
         prepareDownloadExternalStorageSwitch();
         prepareDownloadFolderField();
@@ -76,6 +79,7 @@ public class GlobalSettingsActivity extends SettingsInputActivity {
             Log.d(GlobalSettingsActivity.class.getName(), "menu_action_reset triggered");
             PreferenceManager preferenceManager = new PreferenceManager(this);
             preferenceManager.removePreferencePingCount();
+            preferenceManager.removePreferenceConnectCount();
             preferenceManager.removePreferenceNotificationInactiveNetwork();
             preferenceManager.removePreferenceDownloadExternalStorage();
             preferenceManager.removePreferenceDownloadFolder();
@@ -95,6 +99,15 @@ public class GlobalSettingsActivity extends SettingsInputActivity {
         setPingCount(String.valueOf(preferenceManager.getPreferencePingCount()));
         CardView pingCountCardView = findViewById(R.id.cardview_global_settings_activity_ping_count);
         pingCountCardView.setOnClickListener(this::showPingCountInputDialog);
+    }
+
+    private void prepareConnectCountField() {
+        Log.d(GlobalSettingsActivity.class.getName(), "prepareConnectCountField");
+        PreferenceManager preferenceManager = new PreferenceManager(this);
+        connectCountText = findViewById(R.id.textview_global_settings_activity_connect_count);
+        setConnectCount(String.valueOf(preferenceManager.getPreferenceConnectCount()));
+        CardView connectCountCardView = findViewById(R.id.cardview_global_settings_activity_connect_count);
+        connectCountCardView.setOnClickListener(this::showConnectCountInputDialog);
     }
 
     private void prepareNotificationInactiveNetworkSwitch() {
@@ -318,6 +331,14 @@ public class GlobalSettingsActivity extends SettingsInputActivity {
         pingCountText.setText(StringUtil.notNull(pingCount));
     }
 
+    private String getConnectCount() {
+        return StringUtil.notNull(connectCountText.getText());
+    }
+
+    private void setConnectCount(String connectCount) {
+        connectCountText.setText(StringUtil.notNull(connectCount));
+    }
+
     private String getDownloadFolder() {
         return StringUtil.notNull(downloadFolderText.getText());
     }
@@ -334,6 +355,13 @@ public class GlobalSettingsActivity extends SettingsInputActivity {
         Log.d(GlobalSettingsActivity.class.getName(), "showPingCountInputDialog");
         List<String> validators = Collections.singletonList(PingCountFieldValidator.class.getName());
         SettingsInput input = new SettingsInput(SettingsInput.Type.PINGCOUNT, getPingCount(), getResources().getString(R.string.label_activity_global_settings_ping_count), validators);
+        showInputDialog(input.toBundle());
+    }
+
+    private void showConnectCountInputDialog(View view) {
+        Log.d(GlobalSettingsActivity.class.getName(), "showConnectCountInputDialog");
+        List<String> validators = Collections.singletonList(ConnectCountFieldValidator.class.getName());
+        SettingsInput input = new SettingsInput(SettingsInput.Type.CONNECTCOUNT, getConnectCount(), getResources().getString(R.string.label_activity_global_settings_connect_count), validators);
         showInputDialog(input.toBundle());
     }
 
@@ -423,6 +451,9 @@ public class GlobalSettingsActivity extends SettingsInputActivity {
         if (SettingsInput.Type.PINGCOUNT.equals(type)) {
             setPingCount(inputDialog.getValue());
             preferenceManager.setPreferencePingCount(NumberUtil.getIntValue(getPingCount(), getResources().getInteger(R.integer.ping_count_default)));
+        } else if (SettingsInput.Type.CONNECTCOUNT.equals(type)) {
+            setConnectCount(inputDialog.getValue());
+            preferenceManager.setPreferenceConnectCount(NumberUtil.getIntValue(getConnectCount(), getResources().getInteger(R.integer.connect_count_default)));
         } else {
             Log.e(GlobalSettingsActivity.class.getName(), "type " + type + " unknown");
         }
