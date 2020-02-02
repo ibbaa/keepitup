@@ -14,6 +14,14 @@
     <string name="text_ping_time">%s average time.</string>
     <string name="text_connect_success">Connected to %s successfully.</string>
     <string name="text_connect_error">Connection to %s failed.</string>
+    <string name="text_connect_attempt">%d connection attempt.</string>
+    <string name="text_connect_attempts">%d connection attempts.</string>
+    <string name="text_connect_attempt_successful">%d successful connection attempt.</string>
+    <string name="text_connect_attempts_successful">%d successful connection attempts.</string>
+    <string name="text_connect_timeout">%d timeout.</string>
+    <string name="text_connect_timeouts">%d timeouts.</string>
+    <string name="text_connect_time">%s average time.</string>
+    <string name="text_connect_last_error">Last error:</string>
     <string name="text_download_error">The download from %s failed.</string>
     <string name="text_download_connect_error">Connection to %s failed.</string>
     <string name="text_download_http_error">Server return code %d %s.</string>

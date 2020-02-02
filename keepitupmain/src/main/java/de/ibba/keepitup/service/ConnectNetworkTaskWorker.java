@@ -18,6 +18,7 @@ import de.ibba.keepitup.model.NetworkTask;
 import de.ibba.keepitup.resources.PreferenceManager;
 import de.ibba.keepitup.service.network.ConnectCommand;
 import de.ibba.keepitup.service.network.ConnectCommandResult;
+import de.ibba.keepitup.util.StringUtil;
 
 public class ConnectNetworkTaskWorker extends NetworkTaskWorker {
 
@@ -61,8 +62,8 @@ public class ConnectNetworkTaskWorker extends NetworkTaskWorker {
     private void executeConnectCommand(InetAddress address, int port, boolean ip6, LogEntry logEntry) {
         Log.d(ConnectNetworkTaskWorker.class.getName(), "executeConnectCommand, address is " + address + ", port is " + port);
         PreferenceManager preferenceManager = new PreferenceManager(getContext());
-        int count = preferenceManager.getPreferencePingCount();
-        Callable<ConnectCommandResult> connectCommand = getConnectCommand(address, port);
+        int count = preferenceManager.getPreferenceConnectCount();
+        Callable<ConnectCommandResult> connectCommand = getConnectCommand(address, port, count);
         int connectTimeout = getResources().getInteger(R.integer.connect_timeout) * count * 2;
         Log.d(ConnectNetworkTaskWorker.class.getName(), "Creating ExecutorService");
         ExecutorService executorService = Executors.newSingleThreadExecutor();
@@ -72,17 +73,13 @@ public class ConnectNetworkTaskWorker extends NetworkTaskWorker {
             ConnectCommandResult connectResult = connectResultFuture.get(connectTimeout, TimeUnit.SECONDS);
             Log.d(ConnectNetworkTaskWorker.class.getName(), connectCommand.getClass().getSimpleName() + " returned " + connectResult);
             if (connectResult.isSuccess()) {
-                Log.d(ConnectNetworkTaskWorker.class.getName(), "Connect was successful");
+                Log.d(ConnectNetworkTaskWorker.class.getName(), "Connect was successful.");
                 logEntry.setSuccess(true);
-                logEntry.setMessage(getConnectSuccessMessage(address.getHostAddress(), port, ip6));
-            } else if (connectResult.getException() != null) {
-                Log.d(ConnectNetworkTaskWorker.class.getName(), "Connect was not successful because of an exception", connectResult.getException());
-                logEntry.setSuccess(false);
-                logEntry.setMessage(getMessageFromException(getResources().getString(R.string.text_connect_error, getAddressWithPort(address.getHostAddress(), port, ip6)), connectResult.getException(), connectTimeout));
+                logEntry.setMessage(getConnectSuccessMessage(connectResult, address.getHostAddress(), port, ip6, connectTimeout));
             } else {
-                Log.d(ConnectNetworkTaskWorker.class.getName(), "Connect was not successful for an unknown reason");
+                Log.d(ConnectNetworkTaskWorker.class.getName(), "Connect was not successful.");
                 logEntry.setSuccess(false);
-                logEntry.setMessage(getResources().getString(R.string.text_connect_error, getAddressWithPort(address.getHostAddress(), port, ip6)));
+                logEntry.setMessage(getConnectFailedMessage(connectResult, address.getHostAddress(), port, ip6, connectTimeout));
             }
         } catch (Throwable exc) {
             Log.d(ConnectNetworkTaskWorker.class.getName(), "Error executing " + connectCommand.getClass().getName(), exc);
@@ -94,8 +91,41 @@ public class ConnectNetworkTaskWorker extends NetworkTaskWorker {
         }
     }
 
-    private String getConnectSuccessMessage(String address, int port, boolean ip6) {
-        return getResources().getString(R.string.text_connect_success, getAddressWithPort(address, port, ip6));
+    private String getConnectSuccessMessage(ConnectCommandResult connectResult, String address, int port, boolean ip6, int connectTimeout) {
+        String successMessage = getResources().getString(R.string.text_connect_success, getAddressWithPort(address, port, ip6));
+        successMessage = successMessage + " " + getConnectStatsMessage(connectResult);
+        Throwable exc = connectResult.getException();
+        if (exc != null) {
+            successMessage = successMessage + " " + getResources().getString(R.string.text_connect_last_error);
+            return getMessageFromException(successMessage, exc, connectTimeout);
+        }
+        return successMessage;
+    }
+
+    private String getConnectFailedMessage(ConnectCommandResult connectResult, String address, int port, boolean ip6, int connectTimeout) {
+        String failedMessage = getResources().getString(R.string.text_connect_error, getAddressWithPort(address, port, ip6));
+        failedMessage = failedMessage + " " + getConnectStatsMessage(connectResult);
+        Throwable exc = connectResult.getException();
+        if (exc != null) {
+            failedMessage = failedMessage + " " + getResources().getString(R.string.text_connect_last_error);
+            return getMessageFromException(failedMessage, exc, connectTimeout);
+        }
+        return failedMessage;
+    }
+
+    private String getConnectStatsMessage(ConnectCommandResult connectResult) {
+        int attempts = connectResult.getAttempts();
+        int successfulAttempts = connectResult.getSuccessfulAttempts();
+        int timeouts = connectResult.getTimeoutAttempts();
+        String attemptsMessage = attempts == 1 ? getResources().getString(R.string.text_connect_attempt, attempts) : getResources().getString(R.string.text_connect_attempts, attempts);
+        String successfulAttemptsMessage = successfulAttempts == 1 ? getResources().getString(R.string.text_connect_attempt_successful, successfulAttempts) : getResources().getString(R.string.text_connect_attempts_successful, successfulAttempts);
+        String timeoutsMessage = timeouts == 1 ? getResources().getString(R.string.text_connect_timeout, timeouts) : getResources().getString(R.string.text_connect_timeouts, timeouts);
+        if (successfulAttempts > 0) {
+            String averageTime = StringUtil.formatTimeRange(connectResult.getAverageTime(), getContext());
+            String averageTimeMessage = getResources().getString(R.string.text_connect_time, averageTime);
+            return attemptsMessage + " " + successfulAttemptsMessage + " " + timeoutsMessage + " " + averageTimeMessage;
+        }
+        return attemptsMessage + " " + successfulAttemptsMessage + " " + timeoutsMessage;
     }
 
     private String getAddressWithPort(String address, int port, boolean ip6) {
@@ -103,7 +133,7 @@ public class ConnectNetworkTaskWorker extends NetworkTaskWorker {
         return addressPort + ":" + port;
     }
 
-    protected Callable<ConnectCommandResult> getConnectCommand(InetAddress address, int port) {
-        return new ConnectCommand(getContext(), address, port, 1);
+    protected Callable<ConnectCommandResult> getConnectCommand(InetAddress address, int port, int connectCount) {
+        return new ConnectCommand(getContext(), address, port, connectCount);
     }
 }

@@ -34,7 +34,7 @@ public class TestConnectNetworkTaskWorker extends ConnectNetworkTaskWorker {
     }
 
     @Override
-    protected Callable<ConnectCommandResult> getConnectCommand(InetAddress address, int port) {
+    protected Callable<ConnectCommandResult> getConnectCommand(InetAddress address, int port, int connectCount) {
         return mockConnectCommand;
     }
 }
