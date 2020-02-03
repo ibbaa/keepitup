@@ -121,8 +121,13 @@ public class PingNetworkTaskWorker extends NetworkTaskWorker {
             return output;
         }
         NumberFormat numberFormat = NumberFormat.getNumberInstance();
+        int packetsTransmitted = parser.getPacketsTransmitted();
+        int packetsReceived = parser.getPacketsReceived();
         String packetLoss = numberFormat.format(parser.getPacketLoss()) + "%";
-        String message = getResources().getString(R.string.text_ping_message, parser.getPacketsTransmitted(), parser.getPacketsReceived(), packetLoss);
+        String packetsTransmittedMessage = packetsTransmitted == 1 ? getResources().getString(R.string.text_ping_packet_transmitted, packetsTransmitted) : getResources().getString(R.string.text_ping_packets_transmitted, packetsTransmitted);
+        String packetsReceivedMessage = packetsReceived == 1 ? getResources().getString(R.string.text_ping_packet_received, packetsReceived) : getResources().getString(R.string.text_ping_packets_received, packetsReceived);
+        String packetLossMessage = getResources().getString(R.string.text_ping_packet_loss, packetLoss);
+        String message = packetsTransmittedMessage + " " + packetsReceivedMessage + " " + packetLossMessage;
         if (parser.getValidTimes() > 0) {
             String averageTime = StringUtil.formatTimeRange(parser.getAverageTime(), getContext());
             message += " " + getResources().getString(R.string.text_ping_time, averageTime);
