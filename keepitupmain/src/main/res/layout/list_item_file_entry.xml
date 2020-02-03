@@ -60,6 +60,7 @@
                     android:padding="@dimen/imageview_list_item_file_entry_open_padding"
                     android:layout_weight="1"
                     android:text="@string/string_open"
+                    android:contentDescription="@string/string_open"
                     app:srcCompat="@drawable/icon_folder_open_selector" />
 
             </LinearLayout>
