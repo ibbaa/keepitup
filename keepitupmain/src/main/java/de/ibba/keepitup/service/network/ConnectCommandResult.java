@@ -8,14 +8,16 @@ public class ConnectCommandResult {
     private final int attempts;
     private final int successfulAttempts;
     private final int timeoutAttempts;
+    private final int errorAttempts;
     private final double averageTime;
     private final Throwable exception;
 
-    public ConnectCommandResult(boolean success, int attempts, int successfulAttempts, int timeoutAttempts, double averageTime, Throwable exception) {
+    public ConnectCommandResult(boolean success, int attempts, int successfulAttempts, int timeoutAttempts, int errorAttempts, double averageTime, Throwable exception) {
         this.success = success;
         this.attempts = attempts;
         this.successfulAttempts = successfulAttempts;
         this.timeoutAttempts = timeoutAttempts;
+        this.errorAttempts = errorAttempts;
         this.averageTime = averageTime;
         this.exception = exception;
     }
@@ -36,6 +38,10 @@ public class ConnectCommandResult {
         return timeoutAttempts;
     }
 
+    public int getErrorAttempts() {
+        return errorAttempts;
+    }
+
     public double getAverageTime() {
         return averageTime;
     }
@@ -52,6 +58,7 @@ public class ConnectCommandResult {
                 ", attempts=" + attempts +
                 ", successfulAttempts=" + successfulAttempts +
                 ", timeoutAttempts=" + timeoutAttempts +
+                ", errorAttempts=" + errorAttempts +
                 ", averageTime=" + averageTime +
                 ", exception=" + exception +
                 '}';
