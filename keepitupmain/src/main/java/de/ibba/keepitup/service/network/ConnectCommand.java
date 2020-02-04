@@ -38,6 +38,7 @@ public class ConnectCommand implements Callable<ConnectCommandResult> {
         int attempts = 0;
         int successfulAttempts = 0;
         int timeouts = 0;
+        int errors = 0;
         long overallTime = 0;
         Exception exception = null;
         for (int ii = 0; ii < connectCount; ii++) {
@@ -55,6 +56,7 @@ public class ConnectCommand implements Callable<ConnectCommandResult> {
                 }
             } catch (Exception exc) {
                 Log.e(ConnectCommand.class.getName(), "Connection error", exc);
+                errors++;
                 exception = exc;
             }
         }
@@ -65,7 +67,7 @@ public class ConnectCommand implements Callable<ConnectCommandResult> {
         double averageTime = successfulAttempts > 0 ? (double) overallTime / successfulAttempts : 0;
         Log.d(ConnectCommand.class.getName(), "Average time:  " + averageTime);
         Log.d(ConnectCommand.class.getName(), "Exception:  " + exception);
-        return new ConnectCommandResult(successfulAttempts > 0, attempts, successfulAttempts, timeouts, averageTime, exception);
+        return new ConnectCommandResult(successfulAttempts > 0, attempts, successfulAttempts, timeouts, errors, averageTime, exception);
     }
 
     protected ConnectionResult connect() throws IOException {

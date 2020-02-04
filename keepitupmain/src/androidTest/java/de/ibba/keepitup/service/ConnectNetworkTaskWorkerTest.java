@@ -50,15 +50,53 @@ public class ConnectNetworkTaskWorkerTest {
     }
 
     @Test
-    public void testSuccessfulCall() throws Exception {
+    public void testSuccessfulCallOneAttempt() throws Exception {
         DNSLookupResult dnsLookupResult = new DNSLookupResult(Arrays.asList(InetAddress.getByName("127.0.0.1"), InetAddress.getByName("::1")), null);
-        ConnectCommandResult connectCommandResult = new ConnectCommandResult(true, 1, 1, 0, 1, null);
+        ConnectCommandResult connectCommandResult = new ConnectCommandResult(true, 1, 1, 0, 0, 1, null);
         prepareTestConnectNetworkTaskWorker(dnsLookupResult, connectCommandResult);
         LogEntry logEntry = connectNetworkTaskWorker.execute(getNetworkTask());
         assertEquals(45, logEntry.getNetworkTaskId());
         assertEquals(getTestTimestamp(), logEntry.getTimestamp());
         assertTrue(logEntry.isSuccess());
-        assertEquals("Connected to 127.0.0.1:22 successfully.", logEntry.getMessage());
+        assertEquals("Connected to 127.0.0.1:22 successfully. 1 connection attempt. 1 successful connection attempt. 0 timeouts. 0 other errors. 1 msec average time.", logEntry.getMessage());
+    }
+
+    @Test
+    public void testSuccessfulCallMultipleAttempts() throws Exception {
+        DNSLookupResult dnsLookupResult = new DNSLookupResult(Arrays.asList(InetAddress.getByName("127.0.0.1"), InetAddress.getByName("::1")), null);
+        ConnectCommandResult connectCommandResult = new ConnectCommandResult(true, 3, 3, 0, 0, 1000, null);
+        prepareTestConnectNetworkTaskWorker(dnsLookupResult, connectCommandResult);
+        LogEntry logEntry = connectNetworkTaskWorker.execute(getNetworkTask());
+        assertEquals(45, logEntry.getNetworkTaskId());
+        assertEquals(getTestTimestamp(), logEntry.getTimestamp());
+        assertTrue(logEntry.isSuccess());
+        assertEquals("Connected to 127.0.0.1:22 successfully. 3 connection attempts. 3 successful connection attempts. 0 timeouts. 0 other errors. 1 sec average time.", logEntry.getMessage());
+    }
+
+    @Test
+    public void testSuccessfulCallOneAttemptWithExceptiont() throws Exception {
+        DNSLookupResult dnsLookupResult = new DNSLookupResult(Arrays.asList(InetAddress.getByName("127.0.0.1"), InetAddress.getByName("::1")), null);
+        IllegalArgumentException exception = new IllegalArgumentException("TestException");
+        ConnectCommandResult connectCommandResult = new ConnectCommandResult(true, 1, 1, 0, 0, 5000, exception);
+        prepareTestConnectNetworkTaskWorker(dnsLookupResult, connectCommandResult);
+        LogEntry logEntry = connectNetworkTaskWorker.execute(getNetworkTask());
+        assertEquals(45, logEntry.getNetworkTaskId());
+        assertEquals(getTestTimestamp(), logEntry.getTimestamp());
+        assertTrue(logEntry.isSuccess());
+        assertEquals("Connected to 127.0.0.1:22 successfully. 1 connection attempt. 1 successful connection attempt. 0 timeouts. 0 other errors. 5 sec average time. Last error: IllegalArgumentException: TestException", logEntry.getMessage());
+    }
+
+    @Test
+    public void testSuccessfulCallMultipleErrorsWithExceptiont() throws Exception {
+        DNSLookupResult dnsLookupResult = new DNSLookupResult(Arrays.asList(InetAddress.getByName("127.0.0.1"), InetAddress.getByName("::1")), null);
+        IllegalArgumentException exception = new IllegalArgumentException("TestException");
+        ConnectCommandResult connectCommandResult = new ConnectCommandResult(true, 10, 7, 1, 2, 3, exception);
+        prepareTestConnectNetworkTaskWorker(dnsLookupResult, connectCommandResult);
+        LogEntry logEntry = connectNetworkTaskWorker.execute(getNetworkTask());
+        assertEquals(45, logEntry.getNetworkTaskId());
+        assertEquals(getTestTimestamp(), logEntry.getTimestamp());
+        assertTrue(logEntry.isSuccess());
+        assertEquals("Connected to 127.0.0.1:22 successfully. 10 connection attempts. 7 successful connection attempts. 1 timeout. 2 other errors. 3 msec average time. Last error: IllegalArgumentException: TestException", logEntry.getMessage());
     }
 
     @Test
@@ -74,28 +112,78 @@ public class ConnectNetworkTaskWorkerTest {
     }
 
     @Test
-    public void testConnectCommandExceptionThrown() throws Exception {
+    public void testFailureOneTimeout() throws Exception {
         DNSLookupResult dnsLookupResult = new DNSLookupResult(InetAddress.getByName("127.0.0.1"), null);
-        IllegalArgumentException exception = new IllegalArgumentException("TestException");
-        ConnectCommandResult connectCommandResult = new ConnectCommandResult(false, 1, 0, 0, 1, exception);
+        ConnectCommandResult connectCommandResult = new ConnectCommandResult(false, 1, 0, 1, 0, 500, null);
         prepareTestConnectNetworkTaskWorker(dnsLookupResult, connectCommandResult);
         LogEntry logEntry = connectNetworkTaskWorker.execute(getNetworkTask());
         assertEquals(45, logEntry.getNetworkTaskId());
         assertEquals(getTestTimestamp(), logEntry.getTimestamp());
         assertFalse(logEntry.isSuccess());
-        assertEquals("Connection to 127.0.0.1:22 failed. IllegalArgumentException: TestException", logEntry.getMessage());
+        assertEquals("Connection to 127.0.0.1:22 failed. 1 connection attempt. 0 successful connection attempts. 1 timeout. 0 other errors.", logEntry.getMessage());
     }
 
     @Test
-    public void testConnectCommandFailedWithoutException() throws Exception {
+    public void testFailureMultipleTimeouts() throws Exception {
         DNSLookupResult dnsLookupResult = new DNSLookupResult(InetAddress.getByName("127.0.0.1"), null);
-        ConnectCommandResult connectCommandResult = new ConnectCommandResult(false, 1, 0, 0, 1, null);
+        ConnectCommandResult connectCommandResult = new ConnectCommandResult(false, 10, 0, 10, 0, 500, null);
         prepareTestConnectNetworkTaskWorker(dnsLookupResult, connectCommandResult);
         LogEntry logEntry = connectNetworkTaskWorker.execute(getNetworkTask());
         assertEquals(45, logEntry.getNetworkTaskId());
         assertEquals(getTestTimestamp(), logEntry.getTimestamp());
         assertFalse(logEntry.isSuccess());
-        assertEquals("Connection to 127.0.0.1:22 failed.", logEntry.getMessage());
+        assertEquals("Connection to 127.0.0.1:22 failed. 10 connection attempts. 0 successful connection attempts. 10 timeouts. 0 other errors.", logEntry.getMessage());
+    }
+
+    @Test
+    public void testFailureOneErrorExceptionThrown() throws Exception {
+        DNSLookupResult dnsLookupResult = new DNSLookupResult(InetAddress.getByName("127.0.0.1"), null);
+        IllegalArgumentException exception = new IllegalArgumentException("TestException");
+        ConnectCommandResult connectCommandResult = new ConnectCommandResult(false, 1, 0, 0, 1, 500, exception);
+        prepareTestConnectNetworkTaskWorker(dnsLookupResult, connectCommandResult);
+        LogEntry logEntry = connectNetworkTaskWorker.execute(getNetworkTask());
+        assertEquals(45, logEntry.getNetworkTaskId());
+        assertEquals(getTestTimestamp(), logEntry.getTimestamp());
+        assertFalse(logEntry.isSuccess());
+        assertEquals("Connection to 127.0.0.1:22 failed. 1 connection attempt. 0 successful connection attempts. 0 timeouts. 1 other error. Last error: IllegalArgumentException: TestException", logEntry.getMessage());
+    }
+
+    @Test
+    public void testFailureMultipleErrorsExceptionThrown() throws Exception {
+        DNSLookupResult dnsLookupResult = new DNSLookupResult(InetAddress.getByName("127.0.0.1"), null);
+        IllegalArgumentException exception = new IllegalArgumentException("TestException");
+        ConnectCommandResult connectCommandResult = new ConnectCommandResult(false, 5, 0, 0, 5, 500, exception);
+        prepareTestConnectNetworkTaskWorker(dnsLookupResult, connectCommandResult);
+        LogEntry logEntry = connectNetworkTaskWorker.execute(getNetworkTask());
+        assertEquals(45, logEntry.getNetworkTaskId());
+        assertEquals(getTestTimestamp(), logEntry.getTimestamp());
+        assertFalse(logEntry.isSuccess());
+        assertEquals("Connection to 127.0.0.1:22 failed. 5 connection attempts. 0 successful connection attempts. 0 timeouts. 5 other errors. Last error: IllegalArgumentException: TestException", logEntry.getMessage());
+    }
+
+    @Test
+    public void testFailureWithoutException() throws Exception {
+        DNSLookupResult dnsLookupResult = new DNSLookupResult(InetAddress.getByName("127.0.0.1"), null);
+        ConnectCommandResult connectCommandResult = new ConnectCommandResult(false, 1, 0, 0, 1, 1, null);
+        prepareTestConnectNetworkTaskWorker(dnsLookupResult, connectCommandResult);
+        LogEntry logEntry = connectNetworkTaskWorker.execute(getNetworkTask());
+        assertEquals(45, logEntry.getNetworkTaskId());
+        assertEquals(getTestTimestamp(), logEntry.getTimestamp());
+        assertFalse(logEntry.isSuccess());
+        assertEquals("Connection to 127.0.0.1:22 failed. 1 connection attempt. 0 successful connection attempts. 0 timeouts. 1 other error.", logEntry.getMessage());
+    }
+
+    @Test
+    public void testFailureMultipleErrorsAndTimeoutsExceptionThrown() throws Exception {
+        DNSLookupResult dnsLookupResult = new DNSLookupResult(InetAddress.getByName("127.0.0.1"), null);
+        IllegalArgumentException exception = new IllegalArgumentException("TestException");
+        ConnectCommandResult connectCommandResult = new ConnectCommandResult(false, 5, 0, 3, 2, 500, exception);
+        prepareTestConnectNetworkTaskWorker(dnsLookupResult, connectCommandResult);
+        LogEntry logEntry = connectNetworkTaskWorker.execute(getNetworkTask());
+        assertEquals(45, logEntry.getNetworkTaskId());
+        assertEquals(getTestTimestamp(), logEntry.getTimestamp());
+        assertFalse(logEntry.isSuccess());
+        assertEquals("Connection to 127.0.0.1:22 failed. 5 connection attempts. 0 successful connection attempts. 3 timeouts. 2 other errors. Last error: IllegalArgumentException: TestException", logEntry.getMessage());
     }
 
     private long getTestTimestamp() {
