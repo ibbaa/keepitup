@@ -43,6 +43,7 @@
     <string name="text_download_partial_delete">The partially downloaded file was deleted.</string>
     <string name="text_download_delete_error">The deletion of the downloaded file failed.</string>
     <string name="text_download_partial_delete_error">The deletion of the partially_downloaded file failed.</string>
+    <string name="text_download_time">%s download time.</string>
     <string name="text_null_worker_max_instances_error">Currently are %d attempts active, which is the maximum. Skipped execution.</string>
     <string name="text_ping_worker_max_instances_error">Currently are %d ping attempts active, which is the maximum. Skipped execution.</string>
     <string name="text_connect_worker_max_instances_error">Currently are %d connection attempts active, which is the maximum. Skipped execution.</string>

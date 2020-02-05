@@ -19,6 +19,7 @@ import de.ibba.keepitup.resources.PreferenceManager;
 import de.ibba.keepitup.service.network.DownloadCommand;
 import de.ibba.keepitup.service.network.DownloadCommandResult;
 import de.ibba.keepitup.util.HTTPUtil;
+import de.ibba.keepitup.util.StringUtil;
 import de.ibba.keepitup.util.URLUtil;
 
 public class DownloadNetworkTaskWorker extends NetworkTaskWorker {
@@ -179,6 +180,8 @@ public class DownloadNetworkTaskWorker extends NetworkTaskWorker {
                     message += " " + getResources().getString(R.string.text_download_partial_delete_error);
                 }
             }
+            String durationMessage = getResources().getString(R.string.text_download_time, StringUtil.formatTimeRange(downloadResult.getDuration(), getContext()));
+            message += " " + durationMessage;
         }
         Throwable exc = downloadResult.getException();
         if (exc == null) {
@@ -192,18 +195,19 @@ public class DownloadNetworkTaskWorker extends NetworkTaskWorker {
         Log.d(DownloadNetworkTaskWorker.class.getName(), "prepareSuccess");
         logEntry.setSuccess(true);
         String successMessage = getResources().getString(R.string.text_download_success, url.toExternalForm());
+        String durationMessage = getResources().getString(R.string.text_download_time, StringUtil.formatTimeRange(downloadResult.getDuration(), getContext()));
         if (!delete) {
             String fileMessage = getResources().getString(R.string.text_download_file, new File(folder, downloadResult.getFileName()).getAbsolutePath());
-            logEntry.setMessage(successMessage + " " + fileMessage);
+            logEntry.setMessage(successMessage + " " + fileMessage + " " + durationMessage);
             return;
         }
         if (downloadResult.isDeleteSuccess()) {
             String deleteMessage = getResources().getString(R.string.text_download_delete);
-            logEntry.setMessage(successMessage + " " + deleteMessage);
+            logEntry.setMessage(successMessage + " " + deleteMessage + " " + durationMessage);
         } else {
             Log.d(DownloadNetworkTaskWorker.class.getName(), "The download was successful but the file could not be deleted.");
             String deleteErrorMessage = getResources().getString(R.string.text_download_delete_error);
-            String message = successMessage + " " + deleteErrorMessage;
+            String message = successMessage + " " + deleteErrorMessage + " " + durationMessage;
             Throwable exc = downloadResult.getException();
             if (exc == null) {
                 logEntry.setMessage(message);
