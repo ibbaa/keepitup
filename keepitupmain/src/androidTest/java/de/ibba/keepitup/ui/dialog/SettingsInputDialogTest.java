@@ -49,7 +49,7 @@ public class SettingsInputDialogTest extends BaseUITest {
 
     @Test
     public void testGetValue() {
-        SettingsInputDialog inputDialog = new SettingsInputDialog();
+        SettingsInputDialog inputDialog = new SettingsInputDialog(activity);
         SettingsInput input = new SettingsInput(SettingsInput.Type.ADDRESS, "abc", "field", Collections.emptyList());
         inputDialog.setArguments(input.toBundle());
         inputDialog.show(activity.getSupportFragmentManager(), SettingsInputDialog.class.getName());
@@ -59,7 +59,7 @@ public class SettingsInputDialogTest extends BaseUITest {
 
     @Test
     public void testValidation() {
-        SettingsInputDialog inputDialog = new SettingsInputDialog();
+        SettingsInputDialog inputDialog = new SettingsInputDialog(activity);
         SettingsInput input = new SettingsInput(SettingsInput.Type.ADDRESS, "abc", "field", Arrays.asList(TestValidator1.class.getName(), TestValidator2.class.getName(), TestValidator2.class.getName()));
         inputDialog.setArguments(input.toBundle());
         inputDialog.show(activity.getSupportFragmentManager(), SettingsInputDialog.class.getName());
@@ -78,7 +78,7 @@ public class SettingsInputDialogTest extends BaseUITest {
 
     @Test
     public void testTextColor() {
-        SettingsInputDialog inputDialog = new SettingsInputDialog();
+        SettingsInputDialog inputDialog = new SettingsInputDialog(activity);
         SettingsInput input = new SettingsInput(SettingsInput.Type.ADDRESS, "success", "field", Arrays.asList(TestValidator1.class.getName(), TestValidator1.class.getName()));
         inputDialog.setArguments(input.toBundle());
         inputDialog.show(activity.getSupportFragmentManager(), SettingsInputDialog.class.getName());
@@ -91,7 +91,7 @@ public class SettingsInputDialogTest extends BaseUITest {
 
     @Test
     public void testCancel() {
-        SettingsInputDialog inputDialog = new SettingsInputDialog();
+        SettingsInputDialog inputDialog = new SettingsInputDialog(activity);
         SettingsInput input = new SettingsInput(SettingsInput.Type.ADDRESS, "abc", "field", Arrays.asList(TestValidator1.class.getName(), TestValidator1.class.getName()));
         inputDialog.setArguments(input.toBundle());
         inputDialog.show(activity.getSupportFragmentManager(), SettingsInputDialog.class.getName());

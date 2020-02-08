@@ -201,7 +201,7 @@ public class FolderChooseDialogMockTest extends BaseUITest {
     }
 
     private FolderChooseDialog openFolderChooseDialog(String folder) {
-        FolderChooseDialog folderChooseDialog = new FolderChooseDialog();
+        FolderChooseDialog folderChooseDialog = new FolderChooseDialog(activity);
         Bundle bundle = BundleUtil.messagesToBundle(new String[]{folderChooseDialog.getFolderRootKey(), folderChooseDialog.getFolderKey()}, new String[]{"root", folder});
         folderChooseDialog.setArguments(bundle);
         folderChooseDialog.show(activity.getSupportFragmentManager(), GlobalSettingsActivity.class.getName());

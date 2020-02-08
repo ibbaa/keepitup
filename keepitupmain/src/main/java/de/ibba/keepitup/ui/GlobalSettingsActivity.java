@@ -367,7 +367,7 @@ public class GlobalSettingsActivity extends SettingsInputActivity {
 
     private void showDownloadFolderChooseDialog(View view) {
         Log.d(DefaultsActivity.class.getName(), "showDownloadFolderChooseDialog");
-        FolderChooseDialog folderChooseDialog = new FolderChooseDialog();
+        FolderChooseDialog folderChooseDialog = new FolderChooseDialog(this);
         String root = getExternalRootFolder();
         Log.d(GlobalSettingsActivity.class.getName(), "External root folder is " + root);
         if (root == null) {
@@ -392,7 +392,7 @@ public class GlobalSettingsActivity extends SettingsInputActivity {
 
     private void showInputDialog(Bundle bundle) {
         Log.d(GlobalSettingsActivity.class.getName(), "showInputDialog, opening SettingsInputDialog");
-        SettingsInputDialog inputDialog = new SettingsInputDialog();
+        SettingsInputDialog inputDialog = new SettingsInputDialog(this);
         inputDialog.setArguments(bundle);
         inputDialog.show(getSupportFragmentManager(), GlobalSettingsActivity.class.getName());
     }
