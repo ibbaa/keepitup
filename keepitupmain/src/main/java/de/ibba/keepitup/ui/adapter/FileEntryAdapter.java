@@ -52,7 +52,7 @@ public class FileEntryAdapter extends RecyclerView.Adapter<FileEntryViewHolder> 
     }
 
     private void bindFileName(@NonNull FileEntryViewHolder fileEntryViewHolder, FileEntry fileEntry, int position) {
-        Log.d(FileEntryAdapter.class.getName(), "bindFileName fo file entry " + fileEntry);
+        Log.d(FileEntryAdapter.class.getName(), "bindFileName for file entry " + fileEntry);
         fileEntryViewHolder.setFileNameText(fileEntry.getName());
         if (fileEntry.isDirectory()) {
             fileEntryViewHolder.setFileSymbolImage(fileEntry.getName(), R.drawable.icon_folder);

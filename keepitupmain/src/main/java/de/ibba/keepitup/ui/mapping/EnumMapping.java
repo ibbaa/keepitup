@@ -8,6 +8,7 @@ import java.lang.reflect.Constructor;
 import de.ibba.keepitup.R;
 import de.ibba.keepitup.logging.Log;
 import de.ibba.keepitup.model.AccessType;
+import de.ibba.keepitup.ui.dialog.ContextOption;
 import de.ibba.keepitup.ui.validation.NullValidator;
 import de.ibba.keepitup.ui.validation.Validator;
 
@@ -66,6 +67,11 @@ public class EnumMapping {
         }
         Log.d(EnumMapping.class.getName(), "returning NullValidator");
         return new NullValidator(getContext());
+    }
+
+    public String getContextOptionName(ContextOption contextOption) {
+        Log.d(EnumMapping.class.getName(), "getContextOptionName for context option " + contextOption);
+        return getResources().getString(getResources().getIdentifier(contextOption.getClass().getSimpleName() + "_" + contextOption.name() + "_name", "string", context.getPackageName()));
     }
 
     private Context getContext() {
