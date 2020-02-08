@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/layout_list_item_file_entry"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="@dimen/layout_list_item_context_option_entry_margin"
+    android:padding="@dimen/layout_list_item_context_option_entry_padding"
+    android:orientation="vertical">
+
+    <androidx.cardview.widget.CardView xmlns:card_view="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/cardview_list_item_context_option_entry"
+        android:layout_gravity="fill_horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/cardview_list_item_context_option_entry_margin"
+        card_view:cardCornerRadius="@dimen/cardview_list_item_context_option_entry_corner_radius"
+        app:cardElevation="@dimen/cardview_list_item_context_option_entry_card_elevation">
+
+        <LinearLayout
+            android:id="@+id/linearlayout_list_item_context_option_entry"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/linearlayout_list_item_context_option_entry_margin"
+            android:padding="@dimen/linearlayout_list_item_context_option_entry_padding"
+            android:orientation="vertical"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <TextView
+                android:id="@+id/textview_list_item_context_option_entry_name"
+                android:layout_width="@dimen/textview_list_item_context_option_entry_name_width"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/textview_list_item_context_option_entry_name_margin"
+                android:padding="@dimen/textview_list_item_context_option_entry_name_padding"
+                android:layout_weight="4"
+                android:textStyle="normal"
+                android:text="" />
+
+        </LinearLayout>
+
+    </androidx.cardview.widget.CardView>
+
+</LinearLayout>

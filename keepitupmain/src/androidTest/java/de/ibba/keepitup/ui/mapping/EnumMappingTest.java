@@ -9,6 +9,7 @@ import org.junit.runner.RunWith;
 
 import de.ibba.keepitup.model.AccessType;
 import de.ibba.keepitup.test.mock.TestRegistry;
+import de.ibba.keepitup.ui.dialog.ContextOption;
 import de.ibba.keepitup.ui.validation.NullValidator;
 import de.ibba.keepitup.ui.validation.StandardHostPortValidator;
 
@@ -44,5 +45,11 @@ public class EnumMappingTest {
     public void testGetValidator() {
         assertTrue(enumMapping.getValidator(null) instanceof NullValidator);
         assertTrue(enumMapping.getValidator(AccessType.PING) instanceof StandardHostPortValidator);
+    }
+
+    @Test
+    public void testGetContextOptionName() {
+        assertEquals("Copy", enumMapping.getContextOptionName(ContextOption.COPY));
+        assertEquals("Paste", enumMapping.getContextOptionName(ContextOption.PASTE));
     }
 }
