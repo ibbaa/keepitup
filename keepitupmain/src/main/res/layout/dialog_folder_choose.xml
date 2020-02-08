@@ -76,7 +76,7 @@
             android:id="@+id/linearlayout_dialog_folder_choose_ok_cancel"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingTop="@dimen/linearlayout_dialog_network_task_confirm_ok_cancel_padding_top"
+            android:paddingTop="@dimen/linearlayout_dialog_folder_choose_ok_cancel_padding_top"
             android:orientation="horizontal">
 
             <ImageView
@@ -86,7 +86,7 @@
                 android:layout_weight="1"
                 android:clickable="true"
                 android:focusable="true"
-                android:contentDescription="@string/label_dialog_network_task_confirm_ok"
+                android:contentDescription="@string/label_dialog_folder_choose_ok"
                 app:srcCompat="@drawable/icon_ok_selector" />
 
             <ImageView
@@ -96,7 +96,7 @@
                 android:layout_weight="1"
                 android:clickable="true"
                 android:focusable="true"
-                android:contentDescription="@string/label_dialog_network_task_confirm_cancel"
+                android:contentDescription="@string/label_dialog_folder_choose_cancel"
                 app:srcCompat="@drawable/icon_cancel_selector" />
 
         </LinearLayout>

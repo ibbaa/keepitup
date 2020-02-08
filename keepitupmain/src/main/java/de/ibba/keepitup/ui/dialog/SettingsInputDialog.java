@@ -20,7 +20,7 @@ import java.util.Objects;
 
 import de.ibba.keepitup.R;
 import de.ibba.keepitup.logging.Log;
-import de.ibba.keepitup.ui.SettingsInputActivity;
+import de.ibba.keepitup.ui.SettingsInputSupport;
 import de.ibba.keepitup.ui.validation.FieldValidator;
 import de.ibba.keepitup.ui.validation.TextColorValidatingWatcher;
 import de.ibba.keepitup.ui.validation.ValidationResult;
@@ -29,10 +29,15 @@ import de.ibba.keepitup.util.StringUtil;
 
 public class SettingsInputDialog extends DialogFragment {
 
+    private SettingsInputSupport settingsInputSupport;
     private View dialogView;
     private SettingsInput input;
     private EditText valueEditText;
     private TextColorValidatingWatcher valueEditTextWatcher;
+
+    public SettingsInputDialog(SettingsInputSupport settingsInputSupport) {
+        this.settingsInputSupport = settingsInputSupport;
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -84,11 +89,10 @@ public class SettingsInputDialog extends DialogFragment {
 
     private void onOkClicked(@SuppressWarnings("unused") View view) {
         Log.d(SettingsInputDialog.class.getName(), "onOkClicked");
-        SettingsInputActivity activity = (SettingsInputActivity) getActivity();
         Bundle validationResult = validateInput();
         if (!hasErrors(validationResult)) {
             Log.d(SettingsInputDialog.class.getName(), "Validation was successful");
-            Objects.requireNonNull(activity).onInputDialogOkClicked(this, input.getType());
+            settingsInputSupport.onInputDialogOkClicked(this, input.getType());
         } else {
             Log.d(SettingsInputDialog.class.getName(), "Validation failed");
             showErrorDialog(validationResult);
@@ -97,8 +101,7 @@ public class SettingsInputDialog extends DialogFragment {
 
     private void onCancelClicked(@SuppressWarnings("unused") View view) {
         Log.d(SettingsInputDialog.class.getName(), "onCancelClicked");
-        SettingsInputActivity activity = (SettingsInputActivity) getActivity();
-        Objects.requireNonNull(activity).onInputDialogCancelClicked(this);
+        settingsInputSupport.onInputDialogCancelClicked(this);
     }
 
     private boolean hasErrors(Bundle bundle) {

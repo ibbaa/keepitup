@@ -15,7 +15,7 @@ import de.ibba.keepitup.ui.dialog.SettingsInput;
 import de.ibba.keepitup.ui.dialog.SettingsInputDialog;
 import de.ibba.keepitup.util.BundleUtil;
 
-public abstract class SettingsInputActivity extends AppCompatActivity {
+public abstract class SettingsInputActivity extends AppCompatActivity implements SettingsInputSupport, FolderChooseSupport {
 
     private Resources resources;
     private IFileManager fileManager;
@@ -53,14 +53,14 @@ public abstract class SettingsInputActivity extends AppCompatActivity {
         inputDialog.dismiss();
     }
 
-    public void onFolderChooseDialogOkClicked(FolderChooseDialog editDialog) {
+    public void onFolderChooseDialogOkClicked(FolderChooseDialog chooseDialog) {
         Log.d(SettingsInputActivity.class.getName(), "onFolderChooseDialogOkClicked");
-        editDialog.dismiss();
+        chooseDialog.dismiss();
     }
 
-    public void onFolderChooseDialogCancelClicked(FolderChooseDialog editDialog) {
+    public void onFolderChooseDialogCancelClicked(FolderChooseDialog chooseDialog) {
         Log.d(SettingsInputActivity.class.getName(), "onFolderChooseDialogOkClicked");
-        editDialog.dismiss();
+        chooseDialog.dismiss();
     }
 
     protected void recreateActivity() {

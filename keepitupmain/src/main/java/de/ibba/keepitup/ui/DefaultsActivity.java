@@ -244,7 +244,7 @@ public class DefaultsActivity extends SettingsInputActivity {
 
     private void showInputDialog(Bundle bundle) {
         Log.d(DefaultsActivity.class.getName(), "showInputDialog, opening SettingsInputDialog");
-        SettingsInputDialog inputDialog = new SettingsInputDialog();
+        SettingsInputDialog inputDialog = new SettingsInputDialog(this);
         inputDialog.setArguments(bundle);
         inputDialog.show(getSupportFragmentManager(), DefaultsActivity.class.getName());
     }

@@ -93,14 +93,14 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
         assertEquals(1, getAdapter().getItem(1).getNetworkTask().getIndex());
         assertEquals(2, getAdapter().getItem(2).getNetworkTask().getIndex());
         onView(allOf(withId(R.id.imageview_list_item_network_task_delete), withChildDescendantAtPosition(withId(R.id.listview_main_activity_network_tasks), 1))).perform(click());
-        onView(withId(R.id.imageview_dialog_network_task_confirm_cancel)).perform(click());
+        onView(withId(R.id.imageview_dialog_confirm_cancel)).perform(click());
         onView(withId(R.id.listview_main_activity_network_tasks)).check(matches(withListSize(4)));
         assertEquals(4, getAdapter().getItemCount());
         assertEquals(0, getAdapter().getItem(0).getNetworkTask().getIndex());
         assertEquals(1, getAdapter().getItem(1).getNetworkTask().getIndex());
         assertEquals(2, getAdapter().getItem(2).getNetworkTask().getIndex());
         onView(allOf(withId(R.id.imageview_list_item_network_task_delete), withChildDescendantAtPosition(withId(R.id.listview_main_activity_network_tasks), 1))).perform(click());
-        onView(withId(R.id.imageview_dialog_network_task_confirm_ok)).perform(click());
+        onView(withId(R.id.imageview_dialog_confirm_ok)).perform(click());
         onView(withId(R.id.listview_main_activity_network_tasks)).check(matches(withListSize(3)));
         assertEquals(3, getAdapter().getItemCount());
         assertEquals(0, getAdapter().getItem(0).getNetworkTask().getIndex());

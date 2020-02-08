@@ -18,14 +18,14 @@ import de.ibba.keepitup.logging.Log;
 import de.ibba.keepitup.model.NetworkTask;
 import de.ibba.keepitup.ui.adapter.NetworkTaskAdapter;
 import de.ibba.keepitup.ui.adapter.NetworkTaskUIWrapper;
+import de.ibba.keepitup.ui.dialog.ConfirmDialog;
 import de.ibba.keepitup.ui.dialog.InfoDialog;
-import de.ibba.keepitup.ui.dialog.NetworkTaskConfirmDialog;
 import de.ibba.keepitup.ui.dialog.NetworkTaskEditDialog;
 import de.ibba.keepitup.ui.sync.NetworkTaskMainUIBroadcastReceiver;
 import de.ibba.keepitup.ui.sync.NetworkTaskMainUIInitTask;
 import de.ibba.keepitup.util.BundleUtil;
 
-public class NetworkTaskMainActivity extends RecyclerViewBaseActivity {
+public class NetworkTaskMainActivity extends RecyclerViewBaseActivity implements ConfirmSupport {
 
     private NetworkTaskMainUIBroadcastReceiver broadcastReceiver;
     private NetworkTaskMainUIInitTask uiInitTask;
@@ -160,8 +160,8 @@ public class NetworkTaskMainActivity extends RecyclerViewBaseActivity {
     }
 
     public void onMainDeleteClicked(int position) {
-        Log.d(NetworkTaskMainActivity.class.getName(), "onMainDeleteClicked for position " + position + ", opening " + NetworkTaskConfirmDialog.class.getSimpleName() + " for type " + NetworkTaskConfirmDialog.Type.DELETE);
-        showConfirmDialog(getResources().getString(R.string.text_dialog_network_task_confirm_delete_network_task), NetworkTaskConfirmDialog.Type.DELETE, position);
+        Log.d(NetworkTaskMainActivity.class.getName(), "onMainDeleteClicked for position " + position + ", opening " + ConfirmDialog.class.getSimpleName() + " for type " + ConfirmDialog.Type.DELETE);
+        showConfirmDialog(getResources().getString(R.string.text_dialog_confirm_delete_network_task), ConfirmDialog.Type.DELETE, position);
     }
 
     public void onMainEditClicked(int position) {
@@ -201,22 +201,22 @@ public class NetworkTaskMainActivity extends RecyclerViewBaseActivity {
         editDialog.dismiss();
     }
 
-    private void showConfirmDialog(String confirmMessage, NetworkTaskConfirmDialog.Type type, int position) {
+    private void showConfirmDialog(String confirmMessage, ConfirmDialog.Type type, int position) {
         Log.d(NetworkTaskMainActivity.class.getName(), "showConfirmDialog with message " + confirmMessage + " for type " + type + " and position " + position);
-        NetworkTaskConfirmDialog confirmDialog = new NetworkTaskConfirmDialog();
-        Bundle bundle = BundleUtil.messagesToBundle(new String[]{NetworkTaskConfirmDialog.class.getSimpleName(), NetworkTaskConfirmDialog.Type.class.getSimpleName()}, new String[]{confirmMessage, type.name()});
+        ConfirmDialog confirmDialog = new ConfirmDialog(this);
+        Bundle bundle = BundleUtil.messagesToBundle(new String[]{ConfirmDialog.class.getSimpleName(), ConfirmDialog.Type.class.getSimpleName()}, new String[]{confirmMessage, type.name()});
         bundle.putInt(getConfirmDialogPositionKey(), position);
         confirmDialog.setArguments(bundle);
-        confirmDialog.show(getSupportFragmentManager(), NetworkTaskConfirmDialog.class.getName());
+        confirmDialog.show(getSupportFragmentManager(), ConfirmDialog.class.getName());
     }
 
     private String getConfirmDialogPositionKey() {
-        return NetworkTaskConfirmDialog.class.getSimpleName() + ".position";
+        return ConfirmDialog.class.getSimpleName() + ".position";
     }
 
-    public void onConfirmDialogOkClicked(NetworkTaskConfirmDialog confirmDialog, NetworkTaskConfirmDialog.Type type) {
+    public void onConfirmDialogOkClicked(ConfirmDialog confirmDialog, ConfirmDialog.Type type) {
         Log.d(NetworkTaskMainActivity.class.getName(), "onConfirmDialogOkClicked for type " + type);
-        if (NetworkTaskConfirmDialog.Type.DELETE.equals(type)) {
+        if (ConfirmDialog.Type.DELETE.equals(type)) {
             Bundle arguments = confirmDialog.getArguments();
             if (arguments != null && arguments.containsKey(getConfirmDialogPositionKey())) {
                 NetworkTaskHandler handler = new NetworkTaskHandler(this);
@@ -226,7 +226,7 @@ public class NetworkTaskMainActivity extends RecyclerViewBaseActivity {
                 handler.deleteNetworkTask(task);
                 getAdapter().notifyDataSetChanged();
             } else {
-                Log.e(NetworkTaskMainActivity.class.getName(), NetworkTaskConfirmDialog.class.getSimpleName() + " arguments do not contain position key " + getConfirmDialogPositionKey());
+                Log.e(NetworkTaskMainActivity.class.getName(), ConfirmDialog.class.getSimpleName() + " arguments do not contain position key " + getConfirmDialogPositionKey());
             }
         } else {
             Log.e(NetworkTaskMainActivity.class.getName(), "Unknown type " + type);
@@ -234,7 +234,7 @@ public class NetworkTaskMainActivity extends RecyclerViewBaseActivity {
         confirmDialog.dismiss();
     }
 
-    public void onConfirmDialogCancelClicked(NetworkTaskConfirmDialog confirmDialog) {
+    public void onConfirmDialogCancelClicked(ConfirmDialog confirmDialog) {
         Log.d(NetworkTaskMainActivity.class.getName(), "onConfirmDialogCancelClicked");
         confirmDialog.dismiss();
     }

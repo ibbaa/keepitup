@@ -1,6 +1,5 @@
 package de.ibba.keepitup.ui.dialog;
 
-import android.app.Activity;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -26,15 +25,15 @@ import de.ibba.keepitup.R;
 import de.ibba.keepitup.logging.Log;
 import de.ibba.keepitup.model.FileEntry;
 import de.ibba.keepitup.service.IFileManager;
-import de.ibba.keepitup.service.SystemFileManager;
+import de.ibba.keepitup.ui.FolderChooseSupport;
 import de.ibba.keepitup.ui.GlobalSettingsActivity;
-import de.ibba.keepitup.ui.SettingsInputActivity;
 import de.ibba.keepitup.ui.adapter.FileEntryAdapter;
 import de.ibba.keepitup.util.BundleUtil;
 import de.ibba.keepitup.util.StringUtil;
 
 public class FolderChooseDialog extends DialogFragment {
 
+    private FolderChooseSupport folderChooseSupport;
     private View dialogView;
     private TextView absoluteFolderText;
     private EditText folderEditText;
@@ -42,6 +41,10 @@ public class FolderChooseDialog extends DialogFragment {
     private CheckBox showFilesCheckBox;
     private RecyclerView fileEntriesRecyclerView;
     private String selectionFolder;
+
+    public FolderChooseDialog(de.ibba.keepitup.ui.FolderChooseSupport folderChooseSupport) {
+        this.folderChooseSupport = folderChooseSupport;
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -155,14 +158,12 @@ public class FolderChooseDialog extends DialogFragment {
 
     private void onOkClicked(@SuppressWarnings("unused") View view) {
         Log.d(FolderChooseDialog.class.getName(), "onOkClicked");
-        SettingsInputActivity activity = (SettingsInputActivity) getActivity();
-        Objects.requireNonNull(activity).onFolderChooseDialogOkClicked(this);
+        folderChooseSupport.onFolderChooseDialogOkClicked(this);
     }
 
     private void onCancelClicked(@SuppressWarnings("unused") View view) {
         Log.d(FolderChooseDialog.class.getName(), "onCancelClicked");
-        SettingsInputActivity activity = (SettingsInputActivity) getActivity();
-        Objects.requireNonNull(activity).onFolderChooseDialogCancelClicked(this);
+        folderChooseSupport.onFolderChooseDialogCancelClicked(this);
     }
 
     private String getAbsoluteFolder(String root, String folder) {
@@ -293,13 +294,7 @@ public class FolderChooseDialog extends DialogFragment {
 
     private IFileManager getFileManager() {
         Log.d(FolderChooseDialog.class.getName(), "getFileManager");
-        Activity activity = getActivity();
-        if (activity instanceof SettingsInputActivity) {
-            Log.d(FolderChooseDialog.class.getName(), "Returning file manager from activity.");
-            return ((SettingsInputActivity) activity).getFileManager();
-        }
-        Log.d(FolderChooseDialog.class.getName(), "Returning new file manager.");
-        return new SystemFileManager(activity);
+        return folderChooseSupport.getFileManager();
     }
 
     private RecyclerView.Adapter createAdapter() {
