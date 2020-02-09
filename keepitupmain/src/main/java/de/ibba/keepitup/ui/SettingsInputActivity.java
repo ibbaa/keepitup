@@ -78,7 +78,7 @@ public abstract class SettingsInputActivity extends AppCompatActivity implements
     protected void showErrorDialog(String errorMessage, int typeface) {
         Log.d(SettingsInputActivity.class.getName(), "showErrorDialog with message " + errorMessage);
         GeneralErrorDialog errorDialog = new GeneralErrorDialog();
-        Bundle bundle = BundleUtil.messageToBundle(GeneralErrorDialog.class.getSimpleName(), errorMessage);
+        Bundle bundle = BundleUtil.stringToBundle(GeneralErrorDialog.class.getSimpleName(), errorMessage);
         bundle.putInt(errorDialog.getTypefaceStyleKey(), typeface);
         errorDialog.setArguments(bundle);
         errorDialog.show(getSupportFragmentManager(), GeneralErrorDialog.class.getName());

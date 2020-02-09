@@ -204,7 +204,7 @@ public class NetworkTaskMainActivity extends RecyclerViewBaseActivity implements
     private void showConfirmDialog(String confirmMessage, ConfirmDialog.Type type, int position) {
         Log.d(NetworkTaskMainActivity.class.getName(), "showConfirmDialog with message " + confirmMessage + " for type " + type + " and position " + position);
         ConfirmDialog confirmDialog = new ConfirmDialog(this);
-        Bundle bundle = BundleUtil.messagesToBundle(new String[]{ConfirmDialog.class.getSimpleName(), ConfirmDialog.Type.class.getSimpleName()}, new String[]{confirmMessage, type.name()});
+        Bundle bundle = BundleUtil.stringsToBundle(new String[]{ConfirmDialog.class.getSimpleName(), ConfirmDialog.Type.class.getSimpleName()}, new String[]{confirmMessage, type.name()});
         bundle.putInt(getConfirmDialogPositionKey(), position);
         confirmDialog.setArguments(bundle);
         confirmDialog.show(getSupportFragmentManager(), ConfirmDialog.class.getName());

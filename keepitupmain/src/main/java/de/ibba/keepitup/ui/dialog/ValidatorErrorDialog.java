@@ -34,10 +34,14 @@ public class ValidatorErrorDialog extends DialogFragment {
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         Log.d(ValidatorErrorDialog.class.getName(), "onCreateView");
         View view = inflater.inflate(R.layout.dialog_validator_error, container);
-        List<ValidationResult> resultList = BundleUtil.indexedBundleToValidationResultList(Objects.requireNonNull(getArguments()));
+        List<ValidationResult> resultList = BundleUtil.validationResultListFromBundle(getValidationResultBaseKey(), Objects.requireNonNull(getArguments()));
         prepareErrorMessages(view, resultList);
         prepareOkButton(view, resultList.size() + 1);
         return view;
+    }
+
+    public String getValidationResultBaseKey() {
+        return ValidatorErrorDialog.class.getSimpleName() + "ValidationResult";
     }
 
     private void prepareErrorMessages(View view, List<ValidationResult> resultList) {

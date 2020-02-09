@@ -384,7 +384,7 @@ public class GlobalSettingsActivity extends SettingsInputActivity {
             showErrorDialog(getResources().getString(R.string.text_dialog_general_error_external_root_access));
             return;
         }
-        Bundle bundle = BundleUtil.messagesToBundle(new String[]{folderChooseDialog.getFolderRootKey(), folderChooseDialog.getFolderKey()}, new String[]{root, folder});
+        Bundle bundle = BundleUtil.stringsToBundle(new String[]{folderChooseDialog.getFolderRootKey(), folderChooseDialog.getFolderKey()}, new String[]{root, folder});
         folderChooseDialog.setArguments(bundle);
         folderChooseDialog.show(getSupportFragmentManager(), GlobalSettingsActivity.class.getName());
 

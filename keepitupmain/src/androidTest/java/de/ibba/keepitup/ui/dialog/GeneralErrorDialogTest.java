@@ -37,7 +37,7 @@ public class GeneralErrorDialogTest extends BaseUITest {
     @Test
     public void testErrorMessage() {
         GeneralErrorDialog errorDialog = new GeneralErrorDialog();
-        errorDialog.setArguments(BundleUtil.messageToBundle(GeneralErrorDialog.class.getSimpleName(), "Message"));
+        errorDialog.setArguments(BundleUtil.stringToBundle(GeneralErrorDialog.class.getSimpleName(), "Message"));
         errorDialog.show(activity.getSupportFragmentManager(), GeneralErrorDialog.class.getName());
         onView(withId(R.id.textview_dialog_general_error_message)).check(matches(withText("Message")));
     }

@@ -10,6 +10,8 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 
+import java.util.Arrays;
+
 import de.ibba.keepitup.R;
 import de.ibba.keepitup.ui.BaseUITest;
 import de.ibba.keepitup.ui.GlobalSettingsActivity;
@@ -40,9 +42,9 @@ public class ValidatorErrorDialogTest extends BaseUITest {
     @Test
     public void testErrorMessage() {
         ValidatorErrorDialog errorDialog = new ValidatorErrorDialog();
-        Bundle bundle = new Bundle();
-        BundleUtil.addValidationResultToIndexedBundle(bundle, new ValidationResult(false, "field1", "message1"));
-        BundleUtil.addValidationResultToIndexedBundle(bundle, new ValidationResult(false, "field2", "message2"));
+        ValidationResult result1 = new ValidationResult(false, "field1", "message1");
+        ValidationResult result2 = new ValidationResult(false, "field2", "message2");
+        Bundle bundle = BundleUtil.validationResultListToBundle(errorDialog.getValidationResultBaseKey(), Arrays.asList(result1, result2));
         errorDialog.setArguments(bundle);
         errorDialog.show(activity.getSupportFragmentManager(), ValidatorErrorDialog.class.getName());
         onView(allOf(withText("field1"), withGridLayoutPosition(1, 0))).check(matches(isDisplayed()));

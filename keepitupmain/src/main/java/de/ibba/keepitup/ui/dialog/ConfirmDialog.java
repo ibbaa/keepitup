@@ -41,7 +41,7 @@ public class ConfirmDialog extends DialogFragment {
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         Log.d(ConfirmDialog.class.getName(), "onCreateView");
         View view = inflater.inflate(R.layout.dialog_confirm, container);
-        String message = BundleUtil.bundleToMessage(ConfirmDialog.class.getSimpleName(), Objects.requireNonNull(getArguments()));
+        String message = BundleUtil.stringFromBundle(ConfirmDialog.class.getSimpleName(), Objects.requireNonNull(getArguments()));
         prepareConfirmMessage(view, message);
         prepareOkCancelImageButtons(view);
         return view;
@@ -63,7 +63,7 @@ public class ConfirmDialog extends DialogFragment {
 
     private void onOkClicked(@SuppressWarnings("unused") View view) {
         Log.d(ConfirmDialog.class.getName(), "onOkClicked");
-        String typeString = BundleUtil.bundleToMessage(ConfirmDialog.Type.class.getSimpleName(), Objects.requireNonNull(getArguments()));
+        String typeString = BundleUtil.stringFromBundle(ConfirmDialog.Type.class.getSimpleName(), Objects.requireNonNull(getArguments()));
         if (StringUtil.isEmpty(typeString)) {
             Log.e(ConfirmDialog.class.getName(), ConfirmDialog.Type.class.getSimpleName() + " not specified.");
             confirmSupport.onConfirmDialogOkClicked(this, null);

@@ -38,7 +38,7 @@ public class ConfirmDialogTest extends BaseUITest {
     @Test
     public void testConfirmMessage() {
         ConfirmDialog confirmDialog = new ConfirmDialog(activity);
-        confirmDialog.setArguments(BundleUtil.messageToBundle(ConfirmDialog.class.getSimpleName(), "Message"));
+        confirmDialog.setArguments(BundleUtil.stringToBundle(ConfirmDialog.class.getSimpleName(), "Message"));
         confirmDialog.show(activity.getSupportFragmentManager(), ConfirmDialog.class.getName());
         onView(withId(R.id.textview_dialog_confirm_message)).check(matches(withText("Message")));
         onView(withId(R.id.imageview_dialog_confirm_cancel)).perform(click());
