@@ -11,6 +11,14 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
+        <TextView
+            android:id="@+id/textview_dialog_context_options_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:textStyle="bold"
+            android:text="@string/label_dialog_context_options_title" />
+
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/listview_dialog_context_options_entries"
             android:layout_width="match_parent"
@@ -21,8 +29,8 @@
             android:scrollbars="none" />
 
         <ImageView
-            android:id="@+id/imageview_dialog_context_options_ok"
-            android:layout_width="wrap_content"
+            android:id="@+id/imageview_dialog_context_options_cancel"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:clickable="true"

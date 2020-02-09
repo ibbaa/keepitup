@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.DialogFragment;
@@ -11,8 +12,14 @@ import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+
 import de.ibba.keepitup.R;
 import de.ibba.keepitup.logging.Log;
+import de.ibba.keepitup.ui.adapter.ContextOptionEntryAdapter;
+import de.ibba.keepitup.util.BundleUtil;
 
 public class ContextOptionsDialog extends DialogFragment {
 
@@ -31,6 +38,7 @@ public class ContextOptionsDialog extends DialogFragment {
         Log.d(ContextOptionsDialog.class.getName(), "onCreateView");
         dialogView = inflater.inflate(R.layout.dialog_context_options, container);
         prepareFolderRecyclerView();
+        prepareCancelImageButton(dialogView);
         return dialogView;
     }
 
@@ -47,11 +55,37 @@ public class ContextOptionsDialog extends DialogFragment {
         contextOptionEntriesRecyclerView.setAdapter(createAdapter());
     }
 
+    private void prepareCancelImageButton(View view) {
+        Log.d(ContextOptionsDialog.class.getName(), "prepareCancelImageButton");
+        ImageView cacnelImage = view.findViewById(R.id.imageview_dialog_context_options_cancel);
+        cacnelImage.setOnClickListener(this::onCancelClicked);
+    }
+
+    public ContextOptionEntryAdapter getAdapter() {
+        return (ContextOptionEntryAdapter) getContextOptionEntriesRecyclerView().getAdapter();
+    }
+
     private RecyclerView.Adapter createAdapter() {
-        return null;
+        Log.d(ContextOptionsDialog.class.getName(), "createAdapter");
+        List<String> contextOptionStrings = BundleUtil.stringListFromBundle(ContextOption.class.getSimpleName(), Objects.requireNonNull(getArguments()));
+        List<ContextOption> contextOptionList = new ArrayList<>();
+        for (String contextOptionString : contextOptionStrings) {
+            try {
+                contextOptionList.add(ContextOption.valueOf(contextOptionString));
+            } catch (IllegalArgumentException exc) {
+                Log.e(ContextOptionsDialog.class.getName(), ContextOption.class.getSimpleName() + "." + contextOptionString + " does not exist");
+            }
+        }
+        return new ContextOptionEntryAdapter(contextOptionList, this);
+    }
+
+    private void onCancelClicked(@SuppressWarnings("unused") View view) {
+        Log.d(ContextOptionsDialog.class.getName(), "onCancelClicked");
+        dismiss();
     }
 
     public void onContextOptionEntryClicked(View view, int position) {
         Log.d(ContextOptionsDialog.class.getName(), "onContextOptionEntryClicked, position is " + position);
+        getAdapter().selectItem(position);
     }
 }

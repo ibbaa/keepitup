@@ -29,9 +29,10 @@
             <TextView
                 android:id="@+id/textview_list_item_context_option_entry_name"
                 android:layout_width="@dimen/textview_list_item_context_option_entry_name_width"
-                android:layout_height="wrap_content"
+                android:layout_height="@dimen/textview_list_item_context_option_entry_name_height"
                 android:layout_margin="@dimen/textview_list_item_context_option_entry_name_margin"
                 android:padding="@dimen/textview_list_item_context_option_entry_name_padding"
+                android:gravity="center_horizontal"
                 android:layout_weight="4"
                 android:textStyle="normal"
                 android:text="" />
