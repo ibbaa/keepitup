@@ -89,7 +89,7 @@ public class SettingsInputDialog extends DialogFragment {
 
     private void onOkClicked(@SuppressWarnings("unused") View view) {
         Log.d(SettingsInputDialog.class.getName(), "onOkClicked");
-        Bundle validationResult = validateInput();
+        List<ValidationResult> validationResult = validateInput();
         if (!hasErrors(validationResult)) {
             Log.d(SettingsInputDialog.class.getName(), "Validation was successful");
             settingsInputSupport.onInputDialogOkClicked(this, input.getType());
@@ -104,8 +104,8 @@ public class SettingsInputDialog extends DialogFragment {
         settingsInputSupport.onInputDialogCancelClicked(this);
     }
 
-    private boolean hasErrors(Bundle bundle) {
-        return !bundle.isEmpty();
+    private boolean hasErrors(List<ValidationResult> validationResult) {
+        return !validationResult.isEmpty();
     }
 
     private boolean validateValue(EditText editText) {
@@ -123,9 +123,8 @@ public class SettingsInputDialog extends DialogFragment {
         return false;
     }
 
-    private Bundle validateInput() {
+    private List<ValidationResult> validateInput() {
         Log.d(SettingsInputDialog.class.getName(), "validateInput");
-        Bundle bundle = new Bundle();
         List<FieldValidator> validators = getValidators();
         List<ValidationResult> validationResults = new ArrayList<>();
         for (FieldValidator validator : validators) {
@@ -134,16 +133,13 @@ public class SettingsInputDialog extends DialogFragment {
             Log.d(SettingsInputDialog.class.getName(), "Validation result: " + result);
             if (result.isValidationSuccessful()) {
                 Log.d(SettingsInputDialog.class.getName(), "Validation successful.");
-                return new Bundle();
+                return Collections.emptyList();
             }
             if (!result.isValidationSuccessful() && !containsValidationResult(validationResults, result)) {
                 validationResults.add(result);
             }
         }
-        for (ValidationResult currentResult : validationResults) {
-            BundleUtil.addValidationResultToIndexedBundle(bundle, currentResult);
-        }
-        return bundle;
+        return validationResults;
     }
 
     private boolean containsValidationResult(List<ValidationResult> validationResults, ValidationResult result) {
@@ -190,10 +186,10 @@ public class SettingsInputDialog extends DialogFragment {
         return null;
     }
 
-    private void showErrorDialog(Bundle bundle) {
+    private void showErrorDialog(List<ValidationResult> validationResult) {
         Log.d(SettingsInputDialog.class.getName(), "showErrorDialog, opening ValidatorErrorDialog");
         ValidatorErrorDialog errorDialog = new ValidatorErrorDialog();
-        errorDialog.setArguments(bundle);
+        errorDialog.setArguments(BundleUtil.validationResultListToBundle(errorDialog.getValidationResultBaseKey(), validationResult));
         errorDialog.show(Objects.requireNonNull(getFragmentManager()), ValidatorErrorDialog.class.getName());
     }
 

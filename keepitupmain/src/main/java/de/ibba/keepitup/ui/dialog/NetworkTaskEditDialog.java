@@ -17,6 +17,8 @@ import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.DialogFragment;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 import de.ibba.keepitup.R;
@@ -279,7 +281,7 @@ public class NetworkTaskEditDialog extends DialogFragment {
     private void onOkClicked(@SuppressWarnings("unused") View view) {
         Log.d(NetworkTaskEditDialog.class.getName(), "onOkClicked");
         NetworkTaskMainActivity activity = (NetworkTaskMainActivity) getActivity();
-        Bundle validationResult = validateFinalInput();
+        List<ValidationResult> validationResult = validateFinalInput();
         if (!hasErrors(validationResult)) {
             Log.d(NetworkTaskEditDialog.class.getName(), "Validation was successful");
             Objects.requireNonNull(activity).onEditDialogOkClicked(this);
@@ -305,8 +307,8 @@ public class NetworkTaskEditDialog extends DialogFragment {
         prepareNotificationOnOffText();
     }
 
-    private boolean hasErrors(Bundle bundle) {
-        return !bundle.isEmpty();
+    private boolean hasErrors(List<ValidationResult> validationResult) {
+        return !validationResult.isEmpty();
     }
 
     private void validateInput() {
@@ -327,20 +329,20 @@ public class NetworkTaskEditDialog extends DialogFragment {
         }
     }
 
-    private Bundle validateFinalInput() {
+    private List<ValidationResult> validateFinalInput() {
         Log.d(NetworkTaskEditDialog.class.getName(), "validateFinalInput");
-        Bundle bundle = new Bundle();
+        List<ValidationResult> validationResultList = new ArrayList<>();
         Validator validator = getValidator();
         ValidationResult result = validator.validateAddress(getAddress());
         Log.d(NetworkTaskEditDialog.class.getName(), "address validation result: " + result);
         if (!result.isValidationSuccessful()) {
-            BundleUtil.addValidationResultToIndexedBundle(bundle, result);
+            validationResultList.add(result);
         }
         if (isPortVisible()) {
             result = validator.validatePort(getPort());
             Log.d(NetworkTaskEditDialog.class.getName(), "port validation result: " + result);
             if (!result.isValidationSuccessful()) {
-                BundleUtil.addValidationResultToIndexedBundle(bundle, result);
+                validationResultList.add(result);
             }
         } else {
             Log.d(NetworkTaskEditDialog.class.getName(), "port validation skipped");
@@ -348,9 +350,9 @@ public class NetworkTaskEditDialog extends DialogFragment {
         result = validator.validateInterval(getInterval());
         Log.d(NetworkTaskEditDialog.class.getName(), "interval validation result: " + result);
         if (!result.isValidationSuccessful()) {
-            BundleUtil.addValidationResultToIndexedBundle(bundle, result);
+            validationResultList.add(result);
         }
-        return bundle;
+        return validationResultList;
     }
 
     private boolean validateAddress(EditText editText) {
@@ -386,10 +388,10 @@ public class NetworkTaskEditDialog extends DialogFragment {
         return validator;
     }
 
-    private void showValidatorErrorDialog(Bundle bundle) {
+    private void showValidatorErrorDialog(List<ValidationResult> validationResult) {
         Log.d(NetworkTaskEditDialog.class.getName(), "showValidatorErrorDialog");
         ValidatorErrorDialog errorDialog = new ValidatorErrorDialog();
-        errorDialog.setArguments(bundle);
+        errorDialog.setArguments(BundleUtil.validationResultListToBundle(errorDialog.getValidationResultBaseKey(), validationResult));
         errorDialog.show(Objects.requireNonNull(getFragmentManager()), ValidatorErrorDialog.class.getName());
     }
 

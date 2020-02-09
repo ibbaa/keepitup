@@ -90,7 +90,7 @@ public class InfoDialog extends DialogFragment {
     private void onLicenseClicked(@SuppressWarnings("unused") View view) {
         Log.d(InfoDialog.class.getName(), "onLicenseClicked");
         RawTextDialog licenseDialog = new RawTextDialog();
-        Bundle bundle = BundleUtil.messageToBundle(getResources().getString(R.string.dialog_info_copyright_key), getCopyrightText());
+        Bundle bundle = BundleUtil.stringToBundle(getResources().getString(R.string.dialog_info_copyright_key), getCopyrightText());
         bundle.putInt(licenseDialog.getResourceIdKey(), R.raw.license);
         licenseDialog.setArguments(bundle);
         Log.d(InfoDialog.class.getName(), "Opening license dialog.");

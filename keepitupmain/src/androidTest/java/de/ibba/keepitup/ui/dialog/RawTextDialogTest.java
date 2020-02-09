@@ -40,7 +40,7 @@ public class RawTextDialogTest extends BaseUITest {
     @Test
     public void testContent() {
         RawTextDialog rawTextDialog = new RawTextDialog();
-        Bundle bundle = BundleUtil.messageToBundle("COPYRIGHT", "TESTTESTTEST");
+        Bundle bundle = BundleUtil.stringToBundle("COPYRIGHT", "TESTTESTTEST");
         bundle.putInt(rawTextDialog.getResourceIdKey(), R.raw.license);
         rawTextDialog.setArguments(bundle);
         rawTextDialog.show(activity.getSupportFragmentManager(), RawTextDialog.class.getName());

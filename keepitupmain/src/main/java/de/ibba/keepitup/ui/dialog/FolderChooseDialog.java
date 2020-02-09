@@ -57,7 +57,7 @@ public class FolderChooseDialog extends DialogFragment {
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         Log.d(FolderChooseDialog.class.getName(), "onCreateView");
         dialogView = inflater.inflate(R.layout.dialog_folder_choose, container);
-        String folder = BundleUtil.bundleToMessage(getFolderKey(), Objects.requireNonNull(getArguments()));
+        String folder = BundleUtil.stringFromBundle(getFolderKey(), Objects.requireNonNull(getArguments()));
         prepareFolderAbsolute(folder);
         prepareFolder(folder);
         prepareShowFilesCheckBox();
@@ -83,7 +83,7 @@ public class FolderChooseDialog extends DialogFragment {
     }
 
     public String getRoot() {
-        return BundleUtil.bundleToMessage(getFolderRootKey(), Objects.requireNonNull(getArguments()));
+        return BundleUtil.stringFromBundle(getFolderRootKey(), Objects.requireNonNull(getArguments()));
     }
 
     public TextView getAbsoluteFolderText() {
@@ -375,7 +375,7 @@ public class FolderChooseDialog extends DialogFragment {
     private void showErrorDialog(String errorMessage, int typeface) {
         Log.d(FolderChooseDialog.class.getName(), "showErrorDialog with message " + errorMessage);
         GeneralErrorDialog errorDialog = new GeneralErrorDialog();
-        Bundle bundle = BundleUtil.messageToBundle(GeneralErrorDialog.class.getSimpleName(), errorMessage);
+        Bundle bundle = BundleUtil.stringToBundle(GeneralErrorDialog.class.getSimpleName(), errorMessage);
         bundle.putInt(errorDialog.getTypefaceStyleKey(), typeface);
         errorDialog.setArguments(bundle);
         errorDialog.show(Objects.requireNonNull(getFragmentManager()), GeneralErrorDialog.class.getName());
