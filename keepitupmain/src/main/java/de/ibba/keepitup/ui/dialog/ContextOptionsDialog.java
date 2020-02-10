@@ -18,13 +18,19 @@ import java.util.Objects;
 
 import de.ibba.keepitup.R;
 import de.ibba.keepitup.logging.Log;
+import de.ibba.keepitup.ui.ContextOptionsSupport;
 import de.ibba.keepitup.ui.adapter.ContextOptionEntryAdapter;
 import de.ibba.keepitup.util.BundleUtil;
 
 public class ContextOptionsDialog extends DialogFragment {
 
+    private ContextOptionsSupport contextOptionsSupport;
     private View dialogView;
     private RecyclerView contextOptionEntriesRecyclerView;
+
+    public ContextOptionsDialog(ContextOptionsSupport contextOptionsSupport) {
+        this.contextOptionsSupport = contextOptionsSupport;
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -40,6 +46,10 @@ public class ContextOptionsDialog extends DialogFragment {
         prepareFolderRecyclerView();
         prepareCancelImageButton(dialogView);
         return dialogView;
+    }
+
+    public String getSourceResourceIdKey() {
+        return ContextOptionsDialog.class.getSimpleName() + "SourceResourceId";
     }
 
     public RecyclerView getContextOptionEntriesRecyclerView() {
@@ -87,5 +97,10 @@ public class ContextOptionsDialog extends DialogFragment {
     public void onContextOptionEntryClicked(View view, int position) {
         Log.d(ContextOptionsDialog.class.getName(), "onContextOptionEntryClicked, position is " + position);
         getAdapter().selectItem(position);
+        int sourceResourceId = Objects.requireNonNull(getArguments()).getInt(getSourceResourceIdKey());
+        ContextOption contextOption = getAdapter().getItem(position);
+        Log.d(ContextOptionsDialog.class.getName(), "sourceResourceId is " + sourceResourceId);
+        Log.d(ContextOptionsDialog.class.getName(), "contextOption is " + contextOption);
+        contextOptionsSupport.onContextOptionsDialogEntryClicked(this, sourceResourceId, contextOption);
     }
 }
