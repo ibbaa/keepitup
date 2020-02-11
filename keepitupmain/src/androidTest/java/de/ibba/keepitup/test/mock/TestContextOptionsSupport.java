@@ -1,5 +1,6 @@
 package de.ibba.keepitup.test.mock;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -11,8 +12,8 @@ public class TestContextOptionsSupport implements ContextOptionsSupport {
 
     private final List<OnContextOptionsDialogEntryClickedCall> onContextOptionsDialogEntryClickedCalls;
 
-    public TestContextOptionsSupport(List<OnContextOptionsDialogEntryClickedCall> onContextOptionsDialogEntryClickedCalls) {
-        this.onContextOptionsDialogEntryClickedCalls = onContextOptionsDialogEntryClickedCalls;
+    public TestContextOptionsSupport() {
+        this.onContextOptionsDialogEntryClickedCalls = new ArrayList<>();
     }
 
     public void reset() {
@@ -21,6 +22,10 @@ public class TestContextOptionsSupport implements ContextOptionsSupport {
 
     public List<OnContextOptionsDialogEntryClickedCall> getOnContextOptionsDialogEntryClickedCalls() {
         return Collections.unmodifiableList(onContextOptionsDialogEntryClickedCalls);
+    }
+
+    public boolean wasOnContextOptionsDialogEntryClickedCalled() {
+        return !onContextOptionsDialogEntryClickedCalls.isEmpty();
     }
 
     @Override
