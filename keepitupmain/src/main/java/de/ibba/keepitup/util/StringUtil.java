@@ -23,8 +23,12 @@ public class StringUtil {
         return value.trim();
     }
 
+    public static boolean isEmpty(CharSequence value) {
+        return value == null || value.length() <= 0;
+    }
+
     public static boolean isEmpty(String value) {
-        return value == null || value.isEmpty();
+        return isEmpty((CharSequence) value);
     }
 
     public static String notNull(String value) {

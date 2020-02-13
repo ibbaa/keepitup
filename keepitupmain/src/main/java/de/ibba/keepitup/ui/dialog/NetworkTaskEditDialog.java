@@ -1,6 +1,7 @@
 package de.ibba.keepitup.ui.dialog;
 
 import android.os.Bundle;
+import android.text.Editable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,6 +19,7 @@ import androidx.core.content.ContextCompat;
 import androidx.fragment.app.DialogFragment;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
@@ -25,6 +27,7 @@ import de.ibba.keepitup.R;
 import de.ibba.keepitup.logging.Log;
 import de.ibba.keepitup.model.AccessType;
 import de.ibba.keepitup.model.NetworkTask;
+import de.ibba.keepitup.ui.ContextOptionsSupport;
 import de.ibba.keepitup.ui.NetworkTaskMainActivity;
 import de.ibba.keepitup.ui.mapping.EnumMapping;
 import de.ibba.keepitup.ui.validation.TextColorValidatingWatcher;
@@ -34,7 +37,7 @@ import de.ibba.keepitup.util.BundleUtil;
 import de.ibba.keepitup.util.NumberUtil;
 import de.ibba.keepitup.util.StringUtil;
 
-public class NetworkTaskEditDialog extends DialogFragment {
+public class NetworkTaskEditDialog extends DialogFragment implements ContextOptionsSupport {
 
     private View dialogView;
     private NetworkTask task;
@@ -156,6 +159,7 @@ public class NetworkTaskEditDialog extends DialogFragment {
         Log.d(NetworkTaskEditDialog.class.getName(), "prepareAddressTextFields with address of " + task.getAddress() + " and port of " + task.getPort());
         addressEditText = dialogView.findViewById(R.id.edittext_dialog_network_task_edit_address);
         prepareAddressEditTextListener();
+        addressEditText.setOnLongClickListener(this::onAdressLongClicked);
         addressEditText.setText(StringUtil.notNull(task.getAddress()));
         portEditText = dialogView.findViewById(R.id.edittext_dialog_network_task_edit_port);
         preparePortEditTextListener();
@@ -190,6 +194,7 @@ public class NetworkTaskEditDialog extends DialogFragment {
     }
 
     private void prepareAddressEditTextListener() {
+        Log.d(NetworkTaskEditDialog.class.getName(), "prepareAddressEditTextListener");
         if (addressEditTextWatcher != null) {
             addressEditText.removeTextChangedListener(addressEditTextWatcher);
             addressEditTextWatcher = null;
@@ -198,7 +203,14 @@ public class NetworkTaskEditDialog extends DialogFragment {
         addressEditText.addTextChangedListener(addressEditTextWatcher);
     }
 
+    private boolean onAdressLongClicked(View view) {
+        Log.d(NetworkTaskEditDialog.class.getName(), "onAdressLongClicked");
+        showContextOptionsDialog(addressEditText);
+        return true;
+    }
+
     private void preparePortEditTextListener() {
+        Log.d(NetworkTaskEditDialog.class.getName(), "preparePortEditTextListener");
         if (portEditTextWatcher != null) {
             portEditText.removeTextChangedListener(portEditTextWatcher);
             portEditTextWatcher = null;
@@ -215,6 +227,7 @@ public class NetworkTaskEditDialog extends DialogFragment {
     }
 
     private void prepareIntervalEditTextListener() {
+        Log.d(NetworkTaskEditDialog.class.getName(), "prepareIntervalEditTextListener");
         if (intervalEditTextWatcher != null) {
             intervalEditText.removeTextChangedListener(intervalEditTextWatcher);
             intervalEditTextWatcher = null;
@@ -388,11 +401,35 @@ public class NetworkTaskEditDialog extends DialogFragment {
         return validator;
     }
 
+    private void showContextOptionsDialog(EditText editText) {
+        Log.d(NetworkTaskEditDialog.class.getName(), "showContextOptionsDialog");
+        Editable text = editText.getText();
+        String[] options;
+        if (StringUtil.isEmpty(text)) {
+            options = new String[]{ContextOption.PASTE.name()};
+        } else {
+            editText.selectAll();
+            options = new String[]{ContextOption.COPY.name(), ContextOption.PASTE.name()};
+        }
+        Log.d(NetworkTaskEditDialog.class.getName(), "options are " + Arrays.toString(options));
+        ContextOptionsDialog contextOptionsDialog = new ContextOptionsDialog(this);
+        Bundle bundle = BundleUtil.stringListToBundle(ContextOption.class.getSimpleName(), Arrays.asList(options));
+        bundle.putInt(contextOptionsDialog.getSourceResourceIdKey(), editText.getId());
+        contextOptionsDialog.setArguments(bundle);
+        contextOptionsDialog.show(Objects.requireNonNull(getFragmentManager()), ContextOptionsDialog.class.getName());
+    }
+
     private void showValidatorErrorDialog(List<ValidationResult> validationResult) {
         Log.d(NetworkTaskEditDialog.class.getName(), "showValidatorErrorDialog");
         ValidatorErrorDialog errorDialog = new ValidatorErrorDialog();
         errorDialog.setArguments(BundleUtil.validationResultListToBundle(errorDialog.getValidationResultBaseKey(), validationResult));
         errorDialog.show(Objects.requireNonNull(getFragmentManager()), ValidatorErrorDialog.class.getName());
+    }
+
+    @Override
+    public void onContextOptionsDialogEntryClicked(ContextOptionsDialog contextOptionsDialog, int sourceResourceId, ContextOption option) {
+        Log.d(NetworkTaskEditDialog.class.getName(), "onContextOptionsDialogEntryClicked, sourceResourceId is " + sourceResourceId + ", option is " + option);
+        contextOptionsDialog.dismiss();
     }
 
     private int getColor(int colorid) {
