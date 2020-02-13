@@ -67,6 +67,13 @@ public class ContextOptionsDialogTest extends BaseUITest {
         onView(withId(R.id.textview_dialog_context_options_title)).check(matches(withText("Text options")));
         onView(allOf(withId(R.id.textview_list_item_context_option_entry_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options_entries), 0))).check(matches(withText("Copy")));
         onView(withId(R.id.imageview_dialog_context_options_cancel)).perform(click());
+        bundle = BundleUtil.stringListToBundle(ContextOption.class.getSimpleName(), Collections.emptyList());
+        bundle.putInt(contextOptionsDialog.getSourceResourceIdKey(), 1);
+        contextOptionsDialog.setArguments(bundle);
+        contextOptionsDialog.show(activity.getSupportFragmentManager(), ContextOptionsDialog.class.getName());
+        onView(withId(R.id.listview_dialog_context_options_entries)).check(matches(withListSize(0)));
+        onView(withId(R.id.textview_dialog_context_options_title)).check(matches(withText("Text options")));
+        onView(withId(R.id.imageview_dialog_context_options_cancel)).perform(click());
     }
 
     @Test
