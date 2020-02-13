@@ -52,7 +52,7 @@ public class ContextOptionEntryAdapter extends RecyclerView.Adapter<ContextOptio
     }
 
     private void bindContextOptionName(@NonNull ContextOptionEntryViewHolder contextOptionEntryViewHolder, String name, int position) {
-        Log.d(ContextOptionEntryAdapter.class.getName(), "bindContextOptionName foe name " + name);
+        Log.d(ContextOptionEntryAdapter.class.getName(), "bindContextOptionName for name " + name);
         contextOptionEntryViewHolder.setContextOptionText(name);
     }
 
