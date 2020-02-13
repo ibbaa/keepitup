@@ -19,7 +19,6 @@ import androidx.core.content.ContextCompat;
 import androidx.fragment.app.DialogFragment;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
@@ -404,16 +403,23 @@ public class NetworkTaskEditDialog extends DialogFragment implements ContextOpti
     private void showContextOptionsDialog(EditText editText) {
         Log.d(NetworkTaskEditDialog.class.getName(), "showContextOptionsDialog");
         Editable text = editText.getText();
-        String[] options;
-        if (StringUtil.isEmpty(text)) {
-            options = new String[]{ContextOption.PASTE.name()};
-        } else {
+        List<String> options = new ArrayList<>();
+        if (!StringUtil.isEmpty(text)) {
             editText.selectAll();
-            options = new String[]{ContextOption.COPY.name(), ContextOption.PASTE.name()};
+            options.add(ContextOption.COPY.name());
         }
-        Log.d(NetworkTaskEditDialog.class.getName(), "options are " + Arrays.toString(options));
+        //TODO: add clipboard handlung
+        if (true) {
+            options.add(ContextOption.PASTE.name());
+        }
+        Log.d(NetworkTaskEditDialog.class.getName(), "options are " + options);
+        if (options.isEmpty()) {
+            Log.d(NetworkTaskEditDialog.class.getName(), "Not showing dialog because options are empty");
+            return;
+        }
+        Log.d(NetworkTaskEditDialog.class.getName(), "Showing dialog...");
         ContextOptionsDialog contextOptionsDialog = new ContextOptionsDialog(this);
-        Bundle bundle = BundleUtil.stringListToBundle(ContextOption.class.getSimpleName(), Arrays.asList(options));
+        Bundle bundle = BundleUtil.stringListToBundle(ContextOption.class.getSimpleName(), options);
         bundle.putInt(contextOptionsDialog.getSourceResourceIdKey(), editText.getId());
         contextOptionsDialog.setArguments(bundle);
         contextOptionsDialog.show(Objects.requireNonNull(getFragmentManager()), ContextOptionsDialog.class.getName());
