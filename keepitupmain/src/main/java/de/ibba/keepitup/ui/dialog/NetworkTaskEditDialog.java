@@ -1,7 +1,6 @@
 package de.ibba.keepitup.ui.dialog;
 
 import android.os.Bundle;
-import android.text.Editable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,6 +26,7 @@ import de.ibba.keepitup.logging.Log;
 import de.ibba.keepitup.model.AccessType;
 import de.ibba.keepitup.model.NetworkTask;
 import de.ibba.keepitup.ui.ContextOptionsSupport;
+import de.ibba.keepitup.ui.ContextOptionsSupportDelegate;
 import de.ibba.keepitup.ui.NetworkTaskMainActivity;
 import de.ibba.keepitup.ui.clipboard.IClipboardManager;
 import de.ibba.keepitup.ui.clipboard.SystemClipboardManager;
@@ -37,7 +37,6 @@ import de.ibba.keepitup.ui.validation.Validator;
 import de.ibba.keepitup.util.BundleUtil;
 import de.ibba.keepitup.util.NumberUtil;
 import de.ibba.keepitup.util.StringUtil;
-import de.ibba.keepitup.util.UIUtil;
 
 public class NetworkTaskEditDialog extends DialogFragment implements ContextOptionsSupport {
 
@@ -174,7 +173,7 @@ public class NetworkTaskEditDialog extends DialogFragment implements ContextOpti
         Log.d(NetworkTaskEditDialog.class.getName(), "prepareAddressTextFields with address of " + task.getAddress() + " and port of " + task.getPort());
         addressEditText = dialogView.findViewById(R.id.edittext_dialog_network_task_edit_address);
         prepareAddressEditTextListener();
-        addressEditText.setOnLongClickListener(this::onAdressLongClicked);
+        addressEditText.setOnLongClickListener(this::onEditTextLongClicked);
         addressEditText.setText(StringUtil.notNull(task.getAddress()));
         portEditText = dialogView.findViewById(R.id.edittext_dialog_network_task_edit_port);
         preparePortEditTextListener();
@@ -216,12 +215,6 @@ public class NetworkTaskEditDialog extends DialogFragment implements ContextOpti
         }
         addressEditTextWatcher = new TextColorValidatingWatcher(addressEditText, this::validateAddress, getColor(R.color.textColor), getColor(R.color.textErrorColor));
         addressEditText.addTextChangedListener(addressEditTextWatcher);
-    }
-
-    private boolean onAdressLongClicked(View view) {
-        Log.d(NetworkTaskEditDialog.class.getName(), "onAdressLongClicked");
-        showContextOptionsDialog(addressEditText);
-        return true;
     }
 
     private void preparePortEditTextListener() {
@@ -416,46 +409,27 @@ public class NetworkTaskEditDialog extends DialogFragment implements ContextOpti
         return validator;
     }
 
-    private void showContextOptionsDialog(EditText editText) {
-        Log.d(NetworkTaskEditDialog.class.getName(), "showContextOptionsDialog");
-        Editable text = editText.getText();
-        List<String> options = new ArrayList<>();
-        if (!StringUtil.isEmpty(text)) {
-            editText.selectAll();
-            options.add(ContextOption.COPY.name());
-        }
-        if (doesClipboardContainSuitableData(editText)) {
-            options.add(ContextOption.PASTE.name());
-        }
-        Log.d(NetworkTaskEditDialog.class.getName(), "options are " + options);
-        if (options.isEmpty()) {
-            Log.d(NetworkTaskEditDialog.class.getName(), "Not showing dialog because options are empty");
-            return;
-        }
-        Log.d(NetworkTaskEditDialog.class.getName(), "Showing dialog...");
-        ContextOptionsDialog contextOptionsDialog = new ContextOptionsDialog(this);
-        Bundle bundle = BundleUtil.stringListToBundle(ContextOption.class.getSimpleName(), options);
-        bundle.putInt(contextOptionsDialog.getSourceResourceIdKey(), editText.getId());
-        contextOptionsDialog.setArguments(bundle);
-        contextOptionsDialog.show(Objects.requireNonNull(getFragmentManager()), ContextOptionsDialog.class.getName());
-    }
-
-    private boolean doesClipboardContainSuitableData(EditText editText) {
-        Log.d(NetworkTaskEditDialog.class.getName(), "doesClipboardContainSuitableData");
-        boolean isNumericField = UIUtil.isInpuTypeNumber(editText.getInputType());
-        if (!isNumericField) {
-            Log.d(NetworkTaskEditDialog.class.getName(), "Field is not numeric");
-            return getClipboardManager().hasData();
-        }
-        Log.d(NetworkTaskEditDialog.class.getName(), "Field is numeric");
-        return getClipboardManager().hasNumericIntegerData();
-    }
-
     private void showValidatorErrorDialog(List<ValidationResult> validationResult) {
         Log.d(NetworkTaskEditDialog.class.getName(), "showValidatorErrorDialog");
         ValidatorErrorDialog errorDialog = new ValidatorErrorDialog();
         errorDialog.setArguments(BundleUtil.validationResultListToBundle(errorDialog.getValidationResultBaseKey(), validationResult));
         errorDialog.show(Objects.requireNonNull(getFragmentManager()), ValidatorErrorDialog.class.getName());
+    }
+
+
+    private void showContextOptionsDialog(EditText editText) {
+        Log.d(NetworkTaskEditDialog.class.getName(), "showContextOptionsDialog");
+        new ContextOptionsSupportDelegate(Objects.requireNonNull(getFragmentManager()), this, getClipboardManager()).showContextOptionsDialog(editText);
+    }
+
+    private boolean onEditTextLongClicked(View view) {
+        Log.d(NetworkTaskEditDialog.class.getName(), "onEditTextLongClicked");
+        if (view instanceof EditText) {
+            showContextOptionsDialog((EditText) view);
+            return true;
+        }
+        Log.e(NetworkTaskEditDialog.class.getName(), "view is not an instance of EditTest");
+        return false;
     }
 
     @Override
