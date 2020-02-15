@@ -28,6 +28,8 @@ import de.ibba.keepitup.model.AccessType;
 import de.ibba.keepitup.model.NetworkTask;
 import de.ibba.keepitup.ui.ContextOptionsSupport;
 import de.ibba.keepitup.ui.NetworkTaskMainActivity;
+import de.ibba.keepitup.ui.clipboard.IClipboardManager;
+import de.ibba.keepitup.ui.clipboard.SystemClipboardManager;
 import de.ibba.keepitup.ui.mapping.EnumMapping;
 import de.ibba.keepitup.ui.validation.TextColorValidatingWatcher;
 import de.ibba.keepitup.ui.validation.ValidationResult;
@@ -35,6 +37,7 @@ import de.ibba.keepitup.ui.validation.Validator;
 import de.ibba.keepitup.util.BundleUtil;
 import de.ibba.keepitup.util.NumberUtil;
 import de.ibba.keepitup.util.StringUtil;
+import de.ibba.keepitup.util.UIUtil;
 
 public class NetworkTaskEditDialog extends DialogFragment implements ContextOptionsSupport {
 
@@ -51,6 +54,19 @@ public class NetworkTaskEditDialog extends DialogFragment implements ContextOpti
     private Switch notificationSwitch;
     private TextView onlyWifiOnOffText;
     private TextView notificationOnOffText;
+
+    private IClipboardManager clipboardManager;
+
+    public void injectResources(IClipboardManager clipboardManager) {
+        this.clipboardManager = clipboardManager;
+    }
+
+    public IClipboardManager getClipboardManager() {
+        if (clipboardManager != null) {
+            return clipboardManager;
+        }
+        return new SystemClipboardManager(requireContext());
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -408,8 +424,7 @@ public class NetworkTaskEditDialog extends DialogFragment implements ContextOpti
             editText.selectAll();
             options.add(ContextOption.COPY.name());
         }
-        //TODO: add clipboard handlung
-        if (true) {
+        if (doesClipboardContainSuitableData(editText)) {
             options.add(ContextOption.PASTE.name());
         }
         Log.d(NetworkTaskEditDialog.class.getName(), "options are " + options);
@@ -423,6 +438,17 @@ public class NetworkTaskEditDialog extends DialogFragment implements ContextOpti
         bundle.putInt(contextOptionsDialog.getSourceResourceIdKey(), editText.getId());
         contextOptionsDialog.setArguments(bundle);
         contextOptionsDialog.show(Objects.requireNonNull(getFragmentManager()), ContextOptionsDialog.class.getName());
+    }
+
+    private boolean doesClipboardContainSuitableData(EditText editText) {
+        Log.d(NetworkTaskEditDialog.class.getName(), "doesClipboardContainSuitableData");
+        boolean isNumericField = UIUtil.isInpuTypeNumber(editText.getInputType());
+        if (!isNumericField) {
+            Log.d(NetworkTaskEditDialog.class.getName(), "Field is not numeric");
+            return getClipboardManager().hasData();
+        }
+        Log.d(NetworkTaskEditDialog.class.getName(), "Field is numeric");
+        return getClipboardManager().hasNumericIntegerData();
     }
 
     private void showValidatorErrorDialog(List<ValidationResult> validationResult) {
