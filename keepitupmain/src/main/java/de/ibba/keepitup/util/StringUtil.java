@@ -49,4 +49,11 @@ public class StringUtil {
         numberFormat.setMaximumFractionDigits(2);
         return numberFormat.format(timeRange) + " " + unit;
     }
+
+    public static boolean isTextSelected(String text, int selectionStart, int selectionEnd) {
+        if (selectionStart < 0 || selectionEnd < 0 || selectionStart > selectionEnd) {
+            return false;
+        }
+        return selectionStart <= text.length() && selectionEnd <= text.length();
+    }
 }
