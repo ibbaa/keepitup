@@ -176,6 +176,7 @@ public class NetworkTaskEditDialog extends DialogFragment implements ContextOpti
         addressEditText.setOnLongClickListener(this::onEditTextLongClicked);
         addressEditText.setText(StringUtil.notNull(task.getAddress()));
         portEditText = dialogView.findViewById(R.id.edittext_dialog_network_task_edit_port);
+        portEditText.setOnLongClickListener(this::onEditTextLongClicked);
         preparePortEditTextListener();
         portEditText.setText(String.valueOf(task.getPort()));
     }
@@ -231,6 +232,7 @@ public class NetworkTaskEditDialog extends DialogFragment implements ContextOpti
         Log.d(NetworkTaskEditDialog.class.getName(), "prepareIntervalTextField with interval of " + task.getInterval());
         intervalEditText = dialogView.findViewById(R.id.edittext_dialog_network_task_edit_interval);
         prepareIntervalEditTextListener();
+        intervalEditText.setOnLongClickListener(this::onEditTextLongClicked);
         intervalEditText.setText(String.valueOf(task.getInterval()));
     }
 
@@ -435,6 +437,22 @@ public class NetworkTaskEditDialog extends DialogFragment implements ContextOpti
     @Override
     public void onContextOptionsDialogEntryClicked(ContextOptionsDialog contextOptionsDialog, int sourceResourceId, ContextOption option) {
         Log.d(NetworkTaskEditDialog.class.getName(), "onContextOptionsDialogEntryClicked, sourceResourceId is " + sourceResourceId + ", option is " + option);
+        ContextOptionsSupportDelegate contextOptionsSupportDelegatenew = new ContextOptionsSupportDelegate(Objects.requireNonNull(getFragmentManager()), this, getClipboardManager());
+        EditText editText = null;
+        if (addressEditText.getId() == sourceResourceId) {
+            Log.d(NetworkTaskEditDialog.class.getName(), "Source field is the address field");
+            editText = addressEditText;
+        } else if (portEditText.getId() == sourceResourceId) {
+            Log.d(NetworkTaskEditDialog.class.getName(), "Source field is the port field");
+            editText = portEditText;
+        } else if (intervalEditText.getId() == sourceResourceId) {
+            Log.d(NetworkTaskEditDialog.class.getName(), "Source field is the interval field");
+            editText = intervalEditText;
+        }
+        if (editText != null) {
+            contextOptionsSupportDelegatenew.handleContextOption(editText, option);
+            editText.setSelection(editText.getText().length());
+        }
         contextOptionsDialog.dismiss();
     }
 

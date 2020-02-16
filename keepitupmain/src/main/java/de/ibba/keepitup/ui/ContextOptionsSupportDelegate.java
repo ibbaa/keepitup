@@ -53,6 +53,49 @@ public class ContextOptionsSupportDelegate {
         contextOptionsDialog.show(fragmentManager, ContextOptionsDialog.class.getName());
     }
 
+    public void handleContextOption(EditText editText, ContextOption option) {
+        Log.d(ContextOptionsSupportDelegate.class.getName(), "handleContextOption, option is " + option);
+        if (ContextOption.COPY.equals(option)) {
+            String text = StringUtil.notNull(editText.getText());
+            Log.d(ContextOptionsSupportDelegate.class.getName(), "Text field content is " + text);
+            int selectionStart = editText.getSelectionStart();
+            int selectionEnd = editText.getSelectionEnd();
+            Log.d(ContextOptionsSupportDelegate.class.getName(), "Selection start is " + selectionStart);
+            Log.d(ContextOptionsSupportDelegate.class.getName(), "Selection end is " + selectionEnd);
+            if (StringUtil.isTextSelected(text, selectionStart, selectionEnd)) {
+                Log.d(ContextOptionsSupportDelegate.class.getName(), "Selection is valid");
+                text = text.substring(selectionStart, selectionEnd);
+                Log.d(ContextOptionsSupportDelegate.class.getName(), "Selected text is " + text);
+            }
+            Log.d(ContextOptionsSupportDelegate.class.getName(), "Copying to clipboard");
+            clipboardManager.putData(StringUtil.notNull(text));
+        }
+        if (ContextOption.PASTE.equals(option)) {
+            if (doesClipboardContainSuitableData(editText)) {
+                String text = StringUtil.notNull(clipboardManager.getData());
+                Log.d(ContextOptionsSupportDelegate.class.getName(), "Clipboard content is " + text);
+                String textFieldText = StringUtil.notNull(editText.getText());
+                Log.d(ContextOptionsSupportDelegate.class.getName(), "Text field content is " + text);
+                int selectionStart = editText.getSelectionStart();
+                int selectionEnd = editText.getSelectionEnd();
+                Log.d(ContextOptionsSupportDelegate.class.getName(), "Selection start is " + selectionStart);
+                Log.d(ContextOptionsSupportDelegate.class.getName(), "Selection end is " + selectionEnd);
+                String prefixString = "";
+                String suffixString = "";
+                if (StringUtil.isTextSelected(textFieldText, 0, selectionStart)) {
+                    prefixString = textFieldText.substring(0, selectionStart);
+                }
+                if (StringUtil.isTextSelected(textFieldText, selectionEnd, textFieldText.length())) {
+                    suffixString = textFieldText.substring(selectionEnd);
+                }
+                String finalText = prefixString + text + suffixString;
+                Log.d(ContextOptionsSupportDelegate.class.getName(), "Pasting to text field: " + finalText);
+                editText.setText(prefixString + text + suffixString);
+            }
+            Log.d(ContextOptionsSupportDelegate.class.getName(), "Clipboard does not contain suitable data for paste");
+        }
+    }
+
     private boolean doesClipboardContainSuitableData(EditText editText) {
         Log.d(ContextOptionsSupportDelegate.class.getName(), "doesClipboardContainSuitableData");
         boolean isNumericField = UIUtil.isInpuTypeNumber(editText.getInputType());
