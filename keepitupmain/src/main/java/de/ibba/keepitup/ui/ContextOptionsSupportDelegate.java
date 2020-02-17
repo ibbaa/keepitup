@@ -90,7 +90,7 @@ public class ContextOptionsSupportDelegate {
                 }
                 String finalText = prefixString + text + suffixString;
                 Log.d(ContextOptionsSupportDelegate.class.getName(), "Pasting to text field: " + finalText);
-                editText.setText(prefixString + text + suffixString);
+                editText.setText(finalText);
             }
             Log.d(ContextOptionsSupportDelegate.class.getName(), "Clipboard does not contain suitable data for paste");
         }

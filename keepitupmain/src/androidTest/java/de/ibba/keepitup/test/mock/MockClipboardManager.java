@@ -30,4 +30,8 @@ public class MockClipboardManager implements IClipboardManager {
     public void putData(String data) {
         this.data = data;
     }
+
+    public void clearData() {
+        this.data = null;
+    }
 }
