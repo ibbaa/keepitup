@@ -68,11 +68,10 @@ public class StringUtilTest {
 
     @Test
     public void testIsTextSelected() {
-        assertTrue(StringUtil.isTextSelected("", 0, 0));
         assertTrue(StringUtil.isTextSelected("1", 0, 1));
-        assertTrue(StringUtil.isTextSelected("12", 1, 1));
         assertTrue(StringUtil.isTextSelected("Test", 0, 4));
         assertTrue(StringUtil.isTextSelected("Test", 1, 2));
+        assertFalse(StringUtil.isTextSelected("", 0, 0));
         assertFalse(StringUtil.isTextSelected("", -1, 0));
         assertFalse(StringUtil.isTextSelected("", 0, -1));
         assertFalse(StringUtil.isTextSelected("", -1, -1));
@@ -82,5 +81,6 @@ public class StringUtilTest {
         assertFalse(StringUtil.isTextSelected("Test", -1, -1));
         assertFalse(StringUtil.isTextSelected("Test", 1, 0));
         assertFalse(StringUtil.isTextSelected("Test", 0, 5));
+        assertFalse(StringUtil.isTextSelected("TestTest", 5, 5));
     }
 }

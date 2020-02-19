@@ -54,6 +54,6 @@ public class StringUtil {
         if (selectionStart < 0 || selectionEnd < 0 || selectionStart > selectionEnd) {
             return false;
         }
-        return selectionStart <= text.length() && selectionEnd <= text.length();
+        return selectionStart <= text.length() && selectionEnd <= text.length() && selectionStart != selectionEnd;
     }
 }

@@ -156,4 +156,118 @@ public class ContextOptionsSupportDelegateTest extends BaseUITest {
         onView(withId(R.id.imageview_dialog_context_options_cancel)).check(matches(isDisplayed()));
         onView(withId(R.id.imageview_dialog_context_options_cancel)).perform(click());
     }
+
+    @Test
+    public void testHandleContextOptionNull() {
+        clipboardManager.clearData();
+        EditText editText = new EditText(TestRegistry.getContext());
+        editText.setText("");
+        contextOptionsSupportDelegate.handleContextOption(editText, null);
+        assertTrue(editText.getText().toString().isEmpty());
+        assertFalse(clipboardManager.hasData());
+    }
+
+    @Test
+    public void testHandleContextOptionCopyNoSelection() {
+        clipboardManager.clearData();
+        EditText editText = new EditText(TestRegistry.getContext());
+        editText.setText("abc");
+        editText.setSelection(0, 0);
+        contextOptionsSupportDelegate.handleContextOption(editText, ContextOption.COPY);
+        assertEquals("abc", editText.getText().toString());
+        assertTrue(clipboardManager.hasData());
+        assertEquals("abc", clipboardManager.getData());
+        editText.setText("abc");
+        editText.setSelection(2, 1);
+        contextOptionsSupportDelegate.handleContextOption(editText, ContextOption.COPY);
+        assertEquals("abc", editText.getText().toString());
+        assertTrue(clipboardManager.hasData());
+        assertEquals("abc", clipboardManager.getData());
+        editText.setText("");
+        editText.setSelection(0, 0);
+        contextOptionsSupportDelegate.handleContextOption(editText, ContextOption.COPY);
+        assertEquals("", editText.getText().toString());
+        assertTrue(clipboardManager.hasData());
+        assertEquals("", clipboardManager.getData());
+    }
+
+    @Test
+    public void testHandleContextOptionCopySelection() {
+        clipboardManager.clearData();
+        EditText editText = new EditText(TestRegistry.getContext());
+        editText.setText("abcabc");
+        editText.setSelection(3, 6);
+        contextOptionsSupportDelegate.handleContextOption(editText, ContextOption.COPY);
+        assertEquals("abcabc", editText.getText().toString());
+        assertTrue(clipboardManager.hasData());
+        assertEquals("abc", clipboardManager.getData());
+        editText.setSelection(5, 6);
+        contextOptionsSupportDelegate.handleContextOption(editText, ContextOption.COPY);
+        assertEquals("abcabc", editText.getText().toString());
+        assertTrue(clipboardManager.hasData());
+        assertEquals("c", clipboardManager.getData());
+    }
+
+    @Test
+    public void testHandleContextOptionPasteNoData() {
+        clipboardManager.clearData();
+        EditText editText = new EditText(TestRegistry.getContext());
+        editText.setText("abc");
+        editText.setSelection(0, 0);
+        contextOptionsSupportDelegate.handleContextOption(editText, ContextOption.PASTE);
+        assertEquals("abc", editText.getText().toString());
+        assertFalse(clipboardManager.hasData());
+    }
+
+    @Test
+    public void testHandleContextOptionPasteNoNumericIntegerData() {
+        clipboardManager.clearData();
+        clipboardManager.putData("xyz");
+        EditText editText = new EditText(TestRegistry.getContext());
+        editText.setInputType(InputType.TYPE_CLASS_NUMBER);
+        editText.setText("abc");
+        editText.setSelection(0, 0);
+        contextOptionsSupportDelegate.handleContextOption(editText, ContextOption.PASTE);
+        assertEquals("abc", editText.getText().toString());
+        assertTrue(clipboardManager.hasData());
+        assertEquals("xyz", clipboardManager.getData());
+    }
+
+    @Test
+    public void testHandleContextOptionPasteNoSelection() {
+        clipboardManager.clearData();
+        clipboardManager.putData("xyz");
+        EditText editText = new EditText(TestRegistry.getContext());
+        editText.setText("abc");
+        editText.setSelection(0, 0);
+        contextOptionsSupportDelegate.handleContextOption(editText, ContextOption.PASTE);
+        assertEquals("xyz", editText.getText().toString());
+        assertTrue(clipboardManager.hasData());
+        assertEquals("xyz", clipboardManager.getData());
+    }
+
+    @Test
+    public void testHandleContextOptionPasteSelection() {
+        clipboardManager.clearData();
+        clipboardManager.putData("xyz");
+        EditText editText = new EditText(TestRegistry.getContext());
+        editText.setText("abcabc");
+        editText.setSelection(2, 3);
+        contextOptionsSupportDelegate.handleContextOption(editText, ContextOption.PASTE);
+        assertEquals("abxyzabc", editText.getText().toString());
+        assertTrue(clipboardManager.hasData());
+        assertEquals("xyz", clipboardManager.getData());
+        editText.setText("abcabc");
+        editText.selectAll();
+        contextOptionsSupportDelegate.handleContextOption(editText, ContextOption.PASTE);
+        assertEquals("xyz", editText.getText().toString());
+        assertTrue(clipboardManager.hasData());
+        assertEquals("xyz", clipboardManager.getData());
+        editText.setText("abcabc");
+        editText.setSelection(1, 6);
+        contextOptionsSupportDelegate.handleContextOption(editText, ContextOption.PASTE);
+        assertEquals("axyz", editText.getText().toString());
+        assertTrue(clipboardManager.hasData());
+        assertEquals("xyz", clipboardManager.getData());
+    }
 }
