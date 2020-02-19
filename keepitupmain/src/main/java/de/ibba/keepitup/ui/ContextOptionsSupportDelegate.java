@@ -69,8 +69,7 @@ public class ContextOptionsSupportDelegate {
             }
             Log.d(ContextOptionsSupportDelegate.class.getName(), "Copying to clipboard");
             clipboardManager.putData(StringUtil.notNull(text));
-        }
-        if (ContextOption.PASTE.equals(option)) {
+        } else if (ContextOption.PASTE.equals(option)) {
             if (doesClipboardContainSuitableData(editText)) {
                 String text = StringUtil.notNull(clipboardManager.getData());
                 Log.d(ContextOptionsSupportDelegate.class.getName(), "Clipboard content is " + text);
@@ -82,11 +81,13 @@ public class ContextOptionsSupportDelegate {
                 Log.d(ContextOptionsSupportDelegate.class.getName(), "Selection end is " + selectionEnd);
                 String prefixString = "";
                 String suffixString = "";
-                if (StringUtil.isTextSelected(textFieldText, 0, selectionStart)) {
-                    prefixString = textFieldText.substring(0, selectionStart);
-                }
-                if (StringUtil.isTextSelected(textFieldText, selectionEnd, textFieldText.length())) {
-                    suffixString = textFieldText.substring(selectionEnd);
+                if (StringUtil.isTextSelected(textFieldText, selectionStart, selectionEnd)) {
+                    if (StringUtil.isTextSelected(textFieldText, 0, selectionStart)) {
+                        prefixString = textFieldText.substring(0, selectionStart);
+                    }
+                    if (StringUtil.isTextSelected(textFieldText, selectionEnd, textFieldText.length())) {
+                        suffixString = textFieldText.substring(selectionEnd);
+                    }
                 }
                 String finalText = prefixString + text + suffixString;
                 Log.d(ContextOptionsSupportDelegate.class.getName(), "Pasting to text field: " + finalText);
@@ -94,6 +95,8 @@ public class ContextOptionsSupportDelegate {
             } else {
                 Log.d(ContextOptionsSupportDelegate.class.getName(), "Clipboard does not contain suitable data for paste");
             }
+        } else {
+            Log.d(ContextOptionsSupportDelegate.class.getName(), "Unknown option: " + option);
         }
     }
 
