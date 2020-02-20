@@ -56,7 +56,7 @@ public class NetworkTaskEditDialog extends DialogFragment implements ContextOpti
 
     private IClipboardManager clipboardManager;
 
-    public void injectResources(IClipboardManager clipboardManager) {
+    public void injectClipboardManager(IClipboardManager clipboardManager) {
         this.clipboardManager = clipboardManager;
     }
 
