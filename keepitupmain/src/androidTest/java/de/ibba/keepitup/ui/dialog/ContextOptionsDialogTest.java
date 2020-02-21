@@ -115,4 +115,16 @@ public class ContextOptionsDialogTest extends BaseUITest {
         assertEquals(ContextOption.PASTE, call.getOption());
         onView(withId(R.id.imageview_dialog_context_options_cancel)).perform(click());
     }
+
+    @Test
+    public void testOptionClickedNullCallback() {
+        ContextOptionsDialog contextOptionsDialog = new ContextOptionsDialog(null);
+        Bundle bundle = BundleUtil.stringListToBundle(ContextOption.class.getSimpleName(), Arrays.asList(ContextOption.COPY.name(), ContextOption.PASTE.name()));
+        bundle.putInt(contextOptionsDialog.getSourceResourceIdKey(), 1);
+        contextOptionsDialog.setArguments(bundle);
+        contextOptionsDialog.show(activity.getSupportFragmentManager(), ContextOptionsDialog.class.getName());
+        onView(withId(R.id.listview_dialog_context_options_entries)).check(matches(withListSize(2)));
+        onView(allOf(withId(R.id.textview_list_item_context_option_entry_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options_entries), 0))).perform(click());
+        assertFalse(testContextOptionsSupport.wasOnContextOptionsDialogEntryClickedCalled());
+    }
 }

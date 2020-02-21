@@ -101,6 +101,8 @@ public class ContextOptionsDialog extends DialogFragment {
         ContextOption contextOption = getAdapter().getItem(position);
         Log.d(ContextOptionsDialog.class.getName(), "sourceResourceId is " + sourceResourceId);
         Log.d(ContextOptionsDialog.class.getName(), "contextOption is " + contextOption);
-        contextOptionsSupport.onContextOptionsDialogEntryClicked(this, sourceResourceId, contextOption);
+        if (contextOptionsSupport != null) {
+            contextOptionsSupport.onContextOptionsDialogEntryClicked(this, sourceResourceId, contextOption);
+        }
     }
 }
