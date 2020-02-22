@@ -17,20 +17,20 @@ import de.ibba.keepitup.util.BundleUtil;
 import de.ibba.keepitup.util.StringUtil;
 import de.ibba.keepitup.util.UIUtil;
 
-public class ContextOptionsSupportDelegate {
+public class ContextOptionsSupportManager {
 
     private final FragmentManager fragmentManager;
     private final ContextOptionsSupport contextOptionsSupport;
     private final IClipboardManager clipboardManager;
 
-    public ContextOptionsSupportDelegate(FragmentManager fragmentManager, ContextOptionsSupport contextOptionsSupport, IClipboardManager clipboardManager) {
+    public ContextOptionsSupportManager(FragmentManager fragmentManager, ContextOptionsSupport contextOptionsSupport, IClipboardManager clipboardManager) {
         this.fragmentManager = fragmentManager;
         this.contextOptionsSupport = contextOptionsSupport;
         this.clipboardManager = clipboardManager;
     }
 
     public void showContextOptionsDialog(EditText editText) {
-        Log.d(ContextOptionsSupportDelegate.class.getName(), "showContextOptionsDialog");
+        Log.d(ContextOptionsSupportManager.class.getName(), "showContextOptionsDialog");
         Editable text = editText.getText();
         List<String> options = new ArrayList<>();
         if (!StringUtil.isEmpty(text)) {
@@ -40,12 +40,12 @@ public class ContextOptionsSupportDelegate {
         if (doesClipboardContainSuitableData(editText)) {
             options.add(ContextOption.PASTE.name());
         }
-        Log.d(ContextOptionsSupportDelegate.class.getName(), "options are " + options);
+        Log.d(ContextOptionsSupportManager.class.getName(), "options are " + options);
         if (options.isEmpty()) {
-            Log.d(ContextOptionsSupportDelegate.class.getName(), "Not showing dialog because options are empty");
+            Log.d(ContextOptionsSupportManager.class.getName(), "Not showing dialog because options are empty");
             return;
         }
-        Log.d(ContextOptionsSupportDelegate.class.getName(), "Showing dialog...");
+        Log.d(ContextOptionsSupportManager.class.getName(), "Showing dialog...");
         ContextOptionsDialog contextOptionsDialog = new ContextOptionsDialog(contextOptionsSupport);
         Bundle bundle = BundleUtil.stringListToBundle(ContextOption.class.getSimpleName(), options);
         bundle.putInt(contextOptionsDialog.getSourceResourceIdKey(), editText.getId());
@@ -54,31 +54,31 @@ public class ContextOptionsSupportDelegate {
     }
 
     public void handleContextOption(EditText editText, ContextOption option) {
-        Log.d(ContextOptionsSupportDelegate.class.getName(), "handleContextOption, option is " + option);
+        Log.d(ContextOptionsSupportManager.class.getName(), "handleContextOption, option is " + option);
         if (ContextOption.COPY.equals(option)) {
             String text = StringUtil.notNull(editText.getText());
-            Log.d(ContextOptionsSupportDelegate.class.getName(), "Text field content is " + text);
+            Log.d(ContextOptionsSupportManager.class.getName(), "Text field content is " + text);
             int selectionStart = editText.getSelectionStart();
             int selectionEnd = editText.getSelectionEnd();
-            Log.d(ContextOptionsSupportDelegate.class.getName(), "Selection start is " + selectionStart);
-            Log.d(ContextOptionsSupportDelegate.class.getName(), "Selection end is " + selectionEnd);
+            Log.d(ContextOptionsSupportManager.class.getName(), "Selection start is " + selectionStart);
+            Log.d(ContextOptionsSupportManager.class.getName(), "Selection end is " + selectionEnd);
             if (StringUtil.isTextSelected(text, selectionStart, selectionEnd)) {
-                Log.d(ContextOptionsSupportDelegate.class.getName(), "Selection is valid");
+                Log.d(ContextOptionsSupportManager.class.getName(), "Selection is valid");
                 text = text.substring(selectionStart, selectionEnd);
-                Log.d(ContextOptionsSupportDelegate.class.getName(), "Selected text is " + text);
+                Log.d(ContextOptionsSupportManager.class.getName(), "Selected text is " + text);
             }
-            Log.d(ContextOptionsSupportDelegate.class.getName(), "Copying to clipboard");
+            Log.d(ContextOptionsSupportManager.class.getName(), "Copying to clipboard");
             clipboardManager.putData(StringUtil.notNull(text));
         } else if (ContextOption.PASTE.equals(option)) {
             if (doesClipboardContainSuitableData(editText)) {
                 String text = StringUtil.notNull(clipboardManager.getData());
-                Log.d(ContextOptionsSupportDelegate.class.getName(), "Clipboard content is " + text);
+                Log.d(ContextOptionsSupportManager.class.getName(), "Clipboard content is " + text);
                 String textFieldText = StringUtil.notNull(editText.getText());
-                Log.d(ContextOptionsSupportDelegate.class.getName(), "Text field content is " + text);
+                Log.d(ContextOptionsSupportManager.class.getName(), "Text field content is " + text);
                 int selectionStart = editText.getSelectionStart();
                 int selectionEnd = editText.getSelectionEnd();
-                Log.d(ContextOptionsSupportDelegate.class.getName(), "Selection start is " + selectionStart);
-                Log.d(ContextOptionsSupportDelegate.class.getName(), "Selection end is " + selectionEnd);
+                Log.d(ContextOptionsSupportManager.class.getName(), "Selection start is " + selectionStart);
+                Log.d(ContextOptionsSupportManager.class.getName(), "Selection end is " + selectionEnd);
                 String prefixString = "";
                 String suffixString = "";
                 if (StringUtil.isTextSelected(textFieldText, selectionStart, selectionEnd)) {
@@ -90,24 +90,24 @@ public class ContextOptionsSupportDelegate {
                     }
                 }
                 String finalText = prefixString + text + suffixString;
-                Log.d(ContextOptionsSupportDelegate.class.getName(), "Pasting to text field: " + finalText);
+                Log.d(ContextOptionsSupportManager.class.getName(), "Pasting to text field: " + finalText);
                 editText.setText(finalText);
             } else {
-                Log.d(ContextOptionsSupportDelegate.class.getName(), "Clipboard does not contain suitable data for paste");
+                Log.d(ContextOptionsSupportManager.class.getName(), "Clipboard does not contain suitable data for paste");
             }
         } else {
-            Log.d(ContextOptionsSupportDelegate.class.getName(), "Unknown option: " + option);
+            Log.d(ContextOptionsSupportManager.class.getName(), "Unknown option: " + option);
         }
     }
 
     private boolean doesClipboardContainSuitableData(EditText editText) {
-        Log.d(ContextOptionsSupportDelegate.class.getName(), "doesClipboardContainSuitableData");
+        Log.d(ContextOptionsSupportManager.class.getName(), "doesClipboardContainSuitableData");
         boolean isNumericField = UIUtil.isInpuTypeNumber(editText.getInputType());
         if (!isNumericField) {
-            Log.d(ContextOptionsSupportDelegate.class.getName(), "Field is not numeric");
+            Log.d(ContextOptionsSupportManager.class.getName(), "Field is not numeric");
             return clipboardManager.hasData();
         }
-        Log.d(ContextOptionsSupportDelegate.class.getName(), "Field is numeric");
+        Log.d(ContextOptionsSupportManager.class.getName(), "Field is numeric");
         return clipboardManager.hasNumericIntegerData();
     }
 }

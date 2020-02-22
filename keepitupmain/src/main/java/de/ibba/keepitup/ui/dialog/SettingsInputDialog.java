@@ -20,14 +20,18 @@ import java.util.Objects;
 
 import de.ibba.keepitup.R;
 import de.ibba.keepitup.logging.Log;
+import de.ibba.keepitup.ui.ContextOptionsSupport;
+import de.ibba.keepitup.ui.ContextOptionsSupportManager;
 import de.ibba.keepitup.ui.SettingsInputSupport;
+import de.ibba.keepitup.ui.clipboard.IClipboardManager;
+import de.ibba.keepitup.ui.clipboard.SystemClipboardManager;
 import de.ibba.keepitup.ui.validation.FieldValidator;
 import de.ibba.keepitup.ui.validation.TextColorValidatingWatcher;
 import de.ibba.keepitup.ui.validation.ValidationResult;
 import de.ibba.keepitup.util.BundleUtil;
 import de.ibba.keepitup.util.StringUtil;
 
-public class SettingsInputDialog extends DialogFragment {
+public class SettingsInputDialog extends DialogFragment implements ContextOptionsSupport {
 
     private SettingsInputSupport settingsInputSupport;
     private View dialogView;
@@ -35,8 +39,21 @@ public class SettingsInputDialog extends DialogFragment {
     private EditText valueEditText;
     private TextColorValidatingWatcher valueEditTextWatcher;
 
+    private IClipboardManager clipboardManager;
+
     public SettingsInputDialog(SettingsInputSupport settingsInputSupport) {
         this.settingsInputSupport = settingsInputSupport;
+    }
+
+    public void injectClipboardManager(IClipboardManager clipboardManager) {
+        this.clipboardManager = clipboardManager;
+    }
+
+    public IClipboardManager getClipboardManager() {
+        if (clipboardManager != null) {
+            return clipboardManager;
+        }
+        return new SystemClipboardManager(requireContext());
     }
 
     @Override
@@ -60,6 +77,7 @@ public class SettingsInputDialog extends DialogFragment {
     private void prepareValueTextField() {
         Log.d(SettingsInputDialog.class.getName(), "prepareValueTextField");
         valueEditText = dialogView.findViewById(R.id.edittext_dialog_settings_input_value);
+        valueEditText.setOnLongClickListener(this::onValueEditTextLongClicked);
         valueEditText.setText(StringUtil.notNull(input.getValue()));
         valueEditText.setInputType(input.getType().getInputType());
         prepareValueEditTextListener();
@@ -191,6 +209,31 @@ public class SettingsInputDialog extends DialogFragment {
         ValidatorErrorDialog errorDialog = new ValidatorErrorDialog();
         errorDialog.setArguments(BundleUtil.validationResultListToBundle(errorDialog.getValidationResultBaseKey(), validationResult));
         errorDialog.show(Objects.requireNonNull(getFragmentManager()), ValidatorErrorDialog.class.getName());
+    }
+
+    private boolean onValueEditTextLongClicked(View view) {
+        Log.d(SettingsInputDialog.class.getName(), "onValueEditTextLongClicked");
+        showContextOptionsDialog((EditText) view);
+        return true;
+    }
+
+    private void showContextOptionsDialog(EditText editText) {
+        Log.d(NetworkTaskEditDialog.class.getName(), "showContextOptionsDialog");
+        new ContextOptionsSupportManager(Objects.requireNonNull(getFragmentManager()), this, getClipboardManager()).showContextOptionsDialog(editText);
+    }
+
+    @Override
+    public void onContextOptionsDialogEntryClicked(ContextOptionsDialog contextOptionsDialog, int sourceResourceId, ContextOption option) {
+        Log.d(SettingsInputDialog.class.getName(), "onContextOptionsDialogEntryClicked, sourceResourceId is " + sourceResourceId + ", option is " + option);
+        ContextOptionsSupportManager contextOptionsSupportManager = new ContextOptionsSupportManager(Objects.requireNonNull(getFragmentManager()), this, getClipboardManager());
+        if (valueEditText.getId() == sourceResourceId) {
+            Log.e(SettingsInputDialog.class.getName(), "Source field is the correct value input field.");
+            contextOptionsSupportManager.handleContextOption(valueEditText, option);
+            valueEditText.setSelection(valueEditText.getText().length());
+        } else {
+            Log.e(SettingsInputDialog.class.getName(), "Source field is undefined.");
+        }
+        contextOptionsDialog.dismiss();
     }
 
     private int getColor(int colorid) {

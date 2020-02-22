@@ -26,7 +26,7 @@ import de.ibba.keepitup.logging.Log;
 import de.ibba.keepitup.model.AccessType;
 import de.ibba.keepitup.model.NetworkTask;
 import de.ibba.keepitup.ui.ContextOptionsSupport;
-import de.ibba.keepitup.ui.ContextOptionsSupportDelegate;
+import de.ibba.keepitup.ui.ContextOptionsSupportManager;
 import de.ibba.keepitup.ui.NetworkTaskMainActivity;
 import de.ibba.keepitup.ui.clipboard.IClipboardManager;
 import de.ibba.keepitup.ui.clipboard.SystemClipboardManager;
@@ -421,7 +421,7 @@ public class NetworkTaskEditDialog extends DialogFragment implements ContextOpti
 
     private void showContextOptionsDialog(EditText editText) {
         Log.d(NetworkTaskEditDialog.class.getName(), "showContextOptionsDialog");
-        new ContextOptionsSupportDelegate(Objects.requireNonNull(getFragmentManager()), this, getClipboardManager()).showContextOptionsDialog(editText);
+        new ContextOptionsSupportManager(Objects.requireNonNull(getFragmentManager()), this, getClipboardManager()).showContextOptionsDialog(editText);
     }
 
     private boolean onEditTextLongClicked(View view) {
@@ -437,7 +437,7 @@ public class NetworkTaskEditDialog extends DialogFragment implements ContextOpti
     @Override
     public void onContextOptionsDialogEntryClicked(ContextOptionsDialog contextOptionsDialog, int sourceResourceId, ContextOption option) {
         Log.d(NetworkTaskEditDialog.class.getName(), "onContextOptionsDialogEntryClicked, sourceResourceId is " + sourceResourceId + ", option is " + option);
-        ContextOptionsSupportDelegate contextOptionsSupportDelegatenew = new ContextOptionsSupportDelegate(Objects.requireNonNull(getFragmentManager()), this, getClipboardManager());
+        ContextOptionsSupportManager contextOptionsSupportManager = new ContextOptionsSupportManager(Objects.requireNonNull(getFragmentManager()), this, getClipboardManager());
         EditText editText = null;
         if (addressEditText.getId() == sourceResourceId) {
             Log.d(NetworkTaskEditDialog.class.getName(), "Source field is the address field");
@@ -450,8 +450,10 @@ public class NetworkTaskEditDialog extends DialogFragment implements ContextOpti
             editText = intervalEditText;
         }
         if (editText != null) {
-            contextOptionsSupportDelegatenew.handleContextOption(editText, option);
+            contextOptionsSupportManager.handleContextOption(editText, option);
             editText.setSelection(editText.getText().length());
+        } else {
+            Log.e(NetworkTaskEditDialog.class.getName(), "Source field is undefined.");
         }
         contextOptionsDialog.dismiss();
     }
