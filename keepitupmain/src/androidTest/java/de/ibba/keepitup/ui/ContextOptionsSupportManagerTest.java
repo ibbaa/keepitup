@@ -32,7 +32,7 @@ import static org.junit.Assert.assertTrue;
 
 @MediumTest
 @RunWith(AndroidJUnit4.class)
-public class ContextOptionsSupportDelegateTest extends BaseUITest {
+public class ContextOptionsSupportManagerTest extends BaseUITest {
 
     @Rule
     public final ActivityTestRule<NetworkTaskMainActivity> rule = new ActivityTestRule<>(NetworkTaskMainActivity.class, false, false);
@@ -40,7 +40,7 @@ public class ContextOptionsSupportDelegateTest extends BaseUITest {
     private NetworkTaskMainActivity activity;
     private TestContextOptionsSupport contextOptionsSupport;
     private MockClipboardManager clipboardManager;
-    private ContextOptionsSupportDelegate contextOptionsSupportDelegate;
+    private ContextOptionsSupportManager contextOptionsSupportManager;
 
     @Before
     public void beforeEachTestMethod() {
@@ -48,7 +48,7 @@ public class ContextOptionsSupportDelegateTest extends BaseUITest {
         activity = (NetworkTaskMainActivity) launchRecyclerViewBaseActivity(rule);
         contextOptionsSupport = new TestContextOptionsSupport();
         clipboardManager = new MockClipboardManager();
-        contextOptionsSupportDelegate = new ContextOptionsSupportDelegate(activity.getSupportFragmentManager(), contextOptionsSupport, clipboardManager);
+        contextOptionsSupportManager = new ContextOptionsSupportManager(activity.getSupportFragmentManager(), contextOptionsSupport, clipboardManager);
     }
 
     @Test
@@ -56,7 +56,7 @@ public class ContextOptionsSupportDelegateTest extends BaseUITest {
         clipboardManager.clearData();
         EditText editText = new EditText(TestRegistry.getContext());
         editText.setText("");
-        contextOptionsSupportDelegate.showContextOptionsDialog(editText);
+        contextOptionsSupportManager.showContextOptionsDialog(editText);
         onView(withId(R.id.imageview_dialog_context_options_cancel)).check(doesNotExist());
     }
 
@@ -65,7 +65,7 @@ public class ContextOptionsSupportDelegateTest extends BaseUITest {
         clipboardManager.clearData();
         EditText editText = new EditText(TestRegistry.getContext());
         editText.setText("abc");
-        contextOptionsSupportDelegate.showContextOptionsDialog(editText);
+        contextOptionsSupportManager.showContextOptionsDialog(editText);
         onView(withId(R.id.listview_dialog_context_options_entries)).check(matches(withListSize(1)));
         onView(withId(R.id.textview_dialog_context_options_title)).check(matches(withText("Text options")));
         onView(allOf(withId(R.id.textview_list_item_context_option_entry_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options_entries), 0))).check(matches(withText("Copy")));
@@ -76,7 +76,7 @@ public class ContextOptionsSupportDelegateTest extends BaseUITest {
         assertEquals(editText.getId(), call.getSourceResourceId());
         assertEquals(ContextOption.COPY, call.getOption());
         contextOptionsSupport.reset();
-        contextOptionsSupportDelegate.showContextOptionsDialog(editText);
+        contextOptionsSupportManager.showContextOptionsDialog(editText);
         onView(withId(R.id.imageview_dialog_context_options_cancel)).perform(click());
         assertFalse(contextOptionsSupport.wasOnContextOptionsDialogEntryClickedCalled());
     }
@@ -87,7 +87,7 @@ public class ContextOptionsSupportDelegateTest extends BaseUITest {
         clipboardManager.putData("abc");
         EditText editText = new EditText(TestRegistry.getContext());
         editText.setText("");
-        contextOptionsSupportDelegate.showContextOptionsDialog(editText);
+        contextOptionsSupportManager.showContextOptionsDialog(editText);
         onView(withId(R.id.listview_dialog_context_options_entries)).check(matches(withListSize(1)));
         onView(withId(R.id.textview_dialog_context_options_title)).check(matches(withText("Text options")));
         onView(allOf(withId(R.id.textview_list_item_context_option_entry_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options_entries), 0))).check(matches(withText("Paste")));
@@ -98,7 +98,7 @@ public class ContextOptionsSupportDelegateTest extends BaseUITest {
         assertEquals(editText.getId(), call.getSourceResourceId());
         assertEquals(ContextOption.PASTE, call.getOption());
         contextOptionsSupport.reset();
-        contextOptionsSupportDelegate.showContextOptionsDialog(editText);
+        contextOptionsSupportManager.showContextOptionsDialog(editText);
         onView(withId(R.id.imageview_dialog_context_options_cancel)).perform(click());
         assertFalse(contextOptionsSupport.wasOnContextOptionsDialogEntryClickedCalled());
     }
@@ -109,7 +109,7 @@ public class ContextOptionsSupportDelegateTest extends BaseUITest {
         clipboardManager.putData("abc");
         EditText editText = new EditText(TestRegistry.getContext());
         editText.setText("abc");
-        contextOptionsSupportDelegate.showContextOptionsDialog(editText);
+        contextOptionsSupportManager.showContextOptionsDialog(editText);
         onView(withId(R.id.listview_dialog_context_options_entries)).check(matches(withListSize(2)));
         onView(withId(R.id.textview_dialog_context_options_title)).check(matches(withText("Text options")));
         onView(allOf(withId(R.id.textview_list_item_context_option_entry_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options_entries), 0))).check(matches(withText("Copy")));
@@ -121,7 +121,7 @@ public class ContextOptionsSupportDelegateTest extends BaseUITest {
         assertEquals(editText.getId(), call.getSourceResourceId());
         assertEquals(ContextOption.COPY, call.getOption());
         contextOptionsSupport.reset();
-        contextOptionsSupportDelegate.showContextOptionsDialog(editText);
+        contextOptionsSupportManager.showContextOptionsDialog(editText);
         onView(withId(R.id.listview_dialog_context_options_entries)).check(matches(withListSize(2)));
         onView(allOf(withId(R.id.textview_list_item_context_option_entry_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options_entries), 1))).perform(click());
         assertTrue(contextOptionsSupport.wasOnContextOptionsDialogEntryClickedCalled());
@@ -129,7 +129,7 @@ public class ContextOptionsSupportDelegateTest extends BaseUITest {
         assertEquals(editText.getId(), call.getSourceResourceId());
         assertEquals(ContextOption.PASTE, call.getOption());
         contextOptionsSupport.reset();
-        contextOptionsSupportDelegate.showContextOptionsDialog(editText);
+        contextOptionsSupportManager.showContextOptionsDialog(editText);
         onView(withId(R.id.imageview_dialog_context_options_cancel)).perform(click());
         assertFalse(contextOptionsSupport.wasOnContextOptionsDialogEntryClickedCalled());
     }
@@ -141,14 +141,14 @@ public class ContextOptionsSupportDelegateTest extends BaseUITest {
         EditText editText = new EditText(TestRegistry.getContext());
         editText.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL);
         editText.setText("abc");
-        contextOptionsSupportDelegate.showContextOptionsDialog(editText);
+        contextOptionsSupportManager.showContextOptionsDialog(editText);
         onView(withId(R.id.listview_dialog_context_options_entries)).check(matches(withListSize(1)));
         onView(withId(R.id.textview_dialog_context_options_title)).check(matches(withText("Text options")));
         onView(allOf(withId(R.id.textview_list_item_context_option_entry_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options_entries), 0))).check(matches(withText("Copy")));
         onView(withId(R.id.imageview_dialog_context_options_cancel)).check(matches(isDisplayed()));
         onView(withId(R.id.imageview_dialog_context_options_cancel)).perform(click());
         clipboardManager.putData("123");
-        contextOptionsSupportDelegate.showContextOptionsDialog(editText);
+        contextOptionsSupportManager.showContextOptionsDialog(editText);
         onView(withId(R.id.listview_dialog_context_options_entries)).check(matches(withListSize(2)));
         onView(withId(R.id.textview_dialog_context_options_title)).check(matches(withText("Text options")));
         onView(allOf(withId(R.id.textview_list_item_context_option_entry_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options_entries), 0))).check(matches(withText("Copy")));
@@ -162,7 +162,7 @@ public class ContextOptionsSupportDelegateTest extends BaseUITest {
         clipboardManager.clearData();
         EditText editText = new EditText(TestRegistry.getContext());
         editText.setText("");
-        contextOptionsSupportDelegate.handleContextOption(editText, null);
+        contextOptionsSupportManager.handleContextOption(editText, null);
         assertTrue(editText.getText().toString().isEmpty());
         assertFalse(clipboardManager.hasData());
     }
@@ -173,19 +173,19 @@ public class ContextOptionsSupportDelegateTest extends BaseUITest {
         EditText editText = new EditText(TestRegistry.getContext());
         editText.setText("abc");
         editText.setSelection(0, 0);
-        contextOptionsSupportDelegate.handleContextOption(editText, ContextOption.COPY);
+        contextOptionsSupportManager.handleContextOption(editText, ContextOption.COPY);
         assertEquals("abc", editText.getText().toString());
         assertTrue(clipboardManager.hasData());
         assertEquals("abc", clipboardManager.getData());
         editText.setText("abc");
         editText.setSelection(2, 1);
-        contextOptionsSupportDelegate.handleContextOption(editText, ContextOption.COPY);
+        contextOptionsSupportManager.handleContextOption(editText, ContextOption.COPY);
         assertEquals("abc", editText.getText().toString());
         assertTrue(clipboardManager.hasData());
         assertEquals("abc", clipboardManager.getData());
         editText.setText("");
         editText.setSelection(0, 0);
-        contextOptionsSupportDelegate.handleContextOption(editText, ContextOption.COPY);
+        contextOptionsSupportManager.handleContextOption(editText, ContextOption.COPY);
         assertEquals("", editText.getText().toString());
         assertTrue(clipboardManager.hasData());
         assertEquals("", clipboardManager.getData());
@@ -197,12 +197,12 @@ public class ContextOptionsSupportDelegateTest extends BaseUITest {
         EditText editText = new EditText(TestRegistry.getContext());
         editText.setText("abcabc");
         editText.setSelection(3, 6);
-        contextOptionsSupportDelegate.handleContextOption(editText, ContextOption.COPY);
+        contextOptionsSupportManager.handleContextOption(editText, ContextOption.COPY);
         assertEquals("abcabc", editText.getText().toString());
         assertTrue(clipboardManager.hasData());
         assertEquals("abc", clipboardManager.getData());
         editText.setSelection(5, 6);
-        contextOptionsSupportDelegate.handleContextOption(editText, ContextOption.COPY);
+        contextOptionsSupportManager.handleContextOption(editText, ContextOption.COPY);
         assertEquals("abcabc", editText.getText().toString());
         assertTrue(clipboardManager.hasData());
         assertEquals("c", clipboardManager.getData());
@@ -214,7 +214,7 @@ public class ContextOptionsSupportDelegateTest extends BaseUITest {
         EditText editText = new EditText(TestRegistry.getContext());
         editText.setText("abc");
         editText.setSelection(0, 0);
-        contextOptionsSupportDelegate.handleContextOption(editText, ContextOption.PASTE);
+        contextOptionsSupportManager.handleContextOption(editText, ContextOption.PASTE);
         assertEquals("abc", editText.getText().toString());
         assertFalse(clipboardManager.hasData());
     }
@@ -227,7 +227,7 @@ public class ContextOptionsSupportDelegateTest extends BaseUITest {
         editText.setInputType(InputType.TYPE_CLASS_NUMBER);
         editText.setText("abc");
         editText.setSelection(0, 0);
-        contextOptionsSupportDelegate.handleContextOption(editText, ContextOption.PASTE);
+        contextOptionsSupportManager.handleContextOption(editText, ContextOption.PASTE);
         assertEquals("abc", editText.getText().toString());
         assertTrue(clipboardManager.hasData());
         assertEquals("xyz", clipboardManager.getData());
@@ -240,7 +240,7 @@ public class ContextOptionsSupportDelegateTest extends BaseUITest {
         EditText editText = new EditText(TestRegistry.getContext());
         editText.setText("abc");
         editText.setSelection(0, 0);
-        contextOptionsSupportDelegate.handleContextOption(editText, ContextOption.PASTE);
+        contextOptionsSupportManager.handleContextOption(editText, ContextOption.PASTE);
         assertEquals("xyz", editText.getText().toString());
         assertTrue(clipboardManager.hasData());
         assertEquals("xyz", clipboardManager.getData());
@@ -253,19 +253,19 @@ public class ContextOptionsSupportDelegateTest extends BaseUITest {
         EditText editText = new EditText(TestRegistry.getContext());
         editText.setText("abcabc");
         editText.setSelection(2, 3);
-        contextOptionsSupportDelegate.handleContextOption(editText, ContextOption.PASTE);
+        contextOptionsSupportManager.handleContextOption(editText, ContextOption.PASTE);
         assertEquals("abxyzabc", editText.getText().toString());
         assertTrue(clipboardManager.hasData());
         assertEquals("xyz", clipboardManager.getData());
         editText.setText("abcabc");
         editText.selectAll();
-        contextOptionsSupportDelegate.handleContextOption(editText, ContextOption.PASTE);
+        contextOptionsSupportManager.handleContextOption(editText, ContextOption.PASTE);
         assertEquals("xyz", editText.getText().toString());
         assertTrue(clipboardManager.hasData());
         assertEquals("xyz", clipboardManager.getData());
         editText.setText("abcabc");
         editText.setSelection(1, 6);
-        contextOptionsSupportDelegate.handleContextOption(editText, ContextOption.PASTE);
+        contextOptionsSupportManager.handleContextOption(editText, ContextOption.PASTE);
         assertEquals("axyz", editText.getText().toString());
         assertTrue(clipboardManager.hasData());
         assertEquals("xyz", clipboardManager.getData());

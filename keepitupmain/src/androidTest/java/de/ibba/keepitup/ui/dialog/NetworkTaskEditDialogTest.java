@@ -446,6 +446,167 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         assertEquals("test", clipboardManager.getData());
     }
 
+    @Test
+    public void testAddressPasteOption() {
+        onView(allOf(withId(R.id.imageview_list_item_network_task_add), isDisplayed())).perform(click());
+        MockClipboardManager clipboardManager = prepareMockClipboardManager();
+        clipboardManager.putData("abc");
+        onView(withId(R.id.edittext_dialog_network_task_edit_address)).perform(replaceText(""));
+        onView(withId(R.id.edittext_dialog_network_task_edit_address)).perform(longClick());
+        assertEquals(2, activity.getSupportFragmentManager().getFragments().size());
+        onView(withId(R.id.listview_dialog_context_options_entries)).check(matches(withListSize(1)));
+        onView(withId(R.id.textview_dialog_context_options_title)).check(matches(withText("Text options")));
+        onView(allOf(withId(R.id.textview_list_item_context_option_entry_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options_entries), 0))).check(matches(withText("Paste")));
+        onView(withId(R.id.imageview_dialog_context_options_cancel)).check(matches(isDisplayed()));
+        onView(allOf(withId(R.id.textview_list_item_context_option_entry_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options_entries), 0))).perform(click());
+        assertEquals(1, activity.getSupportFragmentManager().getFragments().size());
+        onView(withId(R.id.edittext_dialog_network_task_edit_address)).check(matches(withText("abc")));
+        assertTrue(clipboardManager.hasData());
+        assertEquals("abc", clipboardManager.getData());
+    }
+
+    @Test
+    public void testPortCopyPasteNoOption() {
+        onView(allOf(withId(R.id.imageview_list_item_network_task_add), isDisplayed())).perform(click());
+        MockClipboardManager clipboardManager = prepareMockClipboardManager();
+        onView(withText("Connect")).perform(click());
+        onView(withId(R.id.edittext_dialog_network_task_edit_port)).perform(replaceText(""));
+        onView(withId(R.id.edittext_dialog_network_task_edit_port)).perform(longClick());
+        assertEquals(1, activity.getSupportFragmentManager().getFragments().size());
+        clipboardManager.putData("abc");
+        onView(withId(R.id.edittext_dialog_network_task_edit_port)).perform(longClick());
+        assertEquals(1, activity.getSupportFragmentManager().getFragments().size());
+    }
+
+    @Test
+    public void testPortCopyPasteCancel() {
+        onView(allOf(withId(R.id.imageview_list_item_network_task_add), isDisplayed())).perform(click());
+        MockClipboardManager clipboardManager = prepareMockClipboardManager();
+        clipboardManager.putData("11");
+        onView(withText("Connect")).perform(click());
+        onView(withId(R.id.edittext_dialog_network_task_edit_port)).perform(replaceText("25"));
+        onView(withId(R.id.edittext_dialog_network_task_edit_port)).perform(longClick());
+        assertEquals(2, activity.getSupportFragmentManager().getFragments().size());
+        onView(withId(R.id.listview_dialog_context_options_entries)).check(matches(withListSize(2)));
+        onView(withId(R.id.textview_dialog_context_options_title)).check(matches(withText("Text options")));
+        onView(allOf(withId(R.id.textview_list_item_context_option_entry_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options_entries), 0))).check(matches(withText("Copy")));
+        onView(allOf(withId(R.id.textview_list_item_context_option_entry_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options_entries), 1))).check(matches(withText("Paste")));
+        onView(withId(R.id.imageview_dialog_context_options_cancel)).check(matches(isDisplayed()));
+        onView(withId(R.id.imageview_dialog_context_options_cancel)).perform(click());
+        assertEquals(1, activity.getSupportFragmentManager().getFragments().size());
+        onView(withId(R.id.edittext_dialog_network_task_edit_port)).check(matches(withText("25")));
+        assertTrue(clipboardManager.hasData());
+        assertEquals("11", clipboardManager.getData());
+    }
+
+    @Test
+    public void testPortCopyOption() {
+        onView(allOf(withId(R.id.imageview_list_item_network_task_add), isDisplayed())).perform(click());
+        MockClipboardManager clipboardManager = prepareMockClipboardManager();
+        onView(withText("Connect")).perform(click());
+        onView(withId(R.id.edittext_dialog_network_task_edit_port)).perform(replaceText("33"));
+        onView(withId(R.id.edittext_dialog_network_task_edit_port)).perform(longClick());
+        assertEquals(2, activity.getSupportFragmentManager().getFragments().size());
+        onView(withId(R.id.listview_dialog_context_options_entries)).check(matches(withListSize(1)));
+        onView(withId(R.id.textview_dialog_context_options_title)).check(matches(withText("Text options")));
+        onView(allOf(withId(R.id.textview_list_item_context_option_entry_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options_entries), 0))).check(matches(withText("Copy")));
+        onView(withId(R.id.imageview_dialog_context_options_cancel)).check(matches(isDisplayed()));
+        onView(allOf(withId(R.id.textview_list_item_context_option_entry_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options_entries), 0))).perform(click());
+        assertEquals(1, activity.getSupportFragmentManager().getFragments().size());
+        assertTrue(clipboardManager.hasData());
+        assertEquals("33", clipboardManager.getData());
+    }
+
+    @Test
+    public void testPortPasteOption() {
+        onView(allOf(withId(R.id.imageview_list_item_network_task_add), isDisplayed())).perform(click());
+        MockClipboardManager clipboardManager = prepareMockClipboardManager();
+        clipboardManager.putData("67");
+        onView(withText("Connect")).perform(click());
+        onView(withId(R.id.edittext_dialog_network_task_edit_port)).perform(replaceText(""));
+        onView(withId(R.id.edittext_dialog_network_task_edit_port)).perform(longClick());
+        assertEquals(2, activity.getSupportFragmentManager().getFragments().size());
+        onView(withId(R.id.listview_dialog_context_options_entries)).check(matches(withListSize(1)));
+        onView(withId(R.id.textview_dialog_context_options_title)).check(matches(withText("Text options")));
+        onView(allOf(withId(R.id.textview_list_item_context_option_entry_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options_entries), 0))).check(matches(withText("Paste")));
+        onView(withId(R.id.imageview_dialog_context_options_cancel)).check(matches(isDisplayed()));
+        onView(allOf(withId(R.id.textview_list_item_context_option_entry_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options_entries), 0))).perform(click());
+        assertEquals(1, activity.getSupportFragmentManager().getFragments().size());
+        onView(withId(R.id.edittext_dialog_network_task_edit_port)).check(matches(withText("67")));
+        assertTrue(clipboardManager.hasData());
+        assertEquals("67", clipboardManager.getData());
+    }
+
+    @Test
+    public void testIntervalCopyPasteNoOption() {
+        onView(allOf(withId(R.id.imageview_list_item_network_task_add), isDisplayed())).perform(click());
+        MockClipboardManager clipboardManager = prepareMockClipboardManager();
+        onView(withId(R.id.edittext_dialog_network_task_edit_interval)).perform(replaceText(""));
+        onView(withId(R.id.edittext_dialog_network_task_edit_interval)).perform(longClick());
+        assertEquals(1, activity.getSupportFragmentManager().getFragments().size());
+        clipboardManager.putData("abc");
+        onView(withId(R.id.edittext_dialog_network_task_edit_interval)).perform(longClick());
+        assertEquals(1, activity.getSupportFragmentManager().getFragments().size());
+    }
+
+    @Test
+    public void testIntervalCopyPasteCancel() {
+        onView(allOf(withId(R.id.imageview_list_item_network_task_add), isDisplayed())).perform(click());
+        MockClipboardManager clipboardManager = prepareMockClipboardManager();
+        clipboardManager.putData("11");
+        onView(withId(R.id.edittext_dialog_network_task_edit_interval)).perform(replaceText("25"));
+        onView(withId(R.id.edittext_dialog_network_task_edit_interval)).perform(longClick());
+        assertEquals(2, activity.getSupportFragmentManager().getFragments().size());
+        onView(withId(R.id.listview_dialog_context_options_entries)).check(matches(withListSize(2)));
+        onView(withId(R.id.textview_dialog_context_options_title)).check(matches(withText("Text options")));
+        onView(allOf(withId(R.id.textview_list_item_context_option_entry_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options_entries), 0))).check(matches(withText("Copy")));
+        onView(allOf(withId(R.id.textview_list_item_context_option_entry_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options_entries), 1))).check(matches(withText("Paste")));
+        onView(withId(R.id.imageview_dialog_context_options_cancel)).check(matches(isDisplayed()));
+        onView(withId(R.id.imageview_dialog_context_options_cancel)).perform(click());
+        assertEquals(1, activity.getSupportFragmentManager().getFragments().size());
+        onView(withId(R.id.edittext_dialog_network_task_edit_interval)).check(matches(withText("25")));
+        assertTrue(clipboardManager.hasData());
+        assertEquals("11", clipboardManager.getData());
+    }
+
+    @Test
+    public void testIntervalCopyOption() {
+        onView(allOf(withId(R.id.imageview_list_item_network_task_add), isDisplayed())).perform(click());
+        MockClipboardManager clipboardManager = prepareMockClipboardManager();
+        onView(withText("Connect")).perform(click());
+        onView(withId(R.id.edittext_dialog_network_task_edit_interval)).perform(replaceText("33"));
+        onView(withId(R.id.edittext_dialog_network_task_edit_interval)).perform(longClick());
+        assertEquals(2, activity.getSupportFragmentManager().getFragments().size());
+        onView(withId(R.id.listview_dialog_context_options_entries)).check(matches(withListSize(1)));
+        onView(withId(R.id.textview_dialog_context_options_title)).check(matches(withText("Text options")));
+        onView(allOf(withId(R.id.textview_list_item_context_option_entry_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options_entries), 0))).check(matches(withText("Copy")));
+        onView(withId(R.id.imageview_dialog_context_options_cancel)).check(matches(isDisplayed()));
+        onView(allOf(withId(R.id.textview_list_item_context_option_entry_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options_entries), 0))).perform(click());
+        assertEquals(1, activity.getSupportFragmentManager().getFragments().size());
+        assertTrue(clipboardManager.hasData());
+        assertEquals("33", clipboardManager.getData());
+    }
+
+    @Test
+    public void testIntervalPasteOption() {
+        onView(allOf(withId(R.id.imageview_list_item_network_task_add), isDisplayed())).perform(click());
+        MockClipboardManager clipboardManager = prepareMockClipboardManager();
+        clipboardManager.putData("67");
+        onView(withText("Connect")).perform(click());
+        onView(withId(R.id.edittext_dialog_network_task_edit_interval)).perform(replaceText(""));
+        onView(withId(R.id.edittext_dialog_network_task_edit_interval)).perform(longClick());
+        assertEquals(2, activity.getSupportFragmentManager().getFragments().size());
+        onView(withId(R.id.listview_dialog_context_options_entries)).check(matches(withListSize(1)));
+        onView(withId(R.id.textview_dialog_context_options_title)).check(matches(withText("Text options")));
+        onView(allOf(withId(R.id.textview_list_item_context_option_entry_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options_entries), 0))).check(matches(withText("Paste")));
+        onView(withId(R.id.imageview_dialog_context_options_cancel)).check(matches(isDisplayed()));
+        onView(allOf(withId(R.id.textview_list_item_context_option_entry_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options_entries), 0))).perform(click());
+        assertEquals(1, activity.getSupportFragmentManager().getFragments().size());
+        onView(withId(R.id.edittext_dialog_network_task_edit_interval)).check(matches(withText("67")));
+        assertTrue(clipboardManager.hasData());
+        assertEquals("67", clipboardManager.getData());
+    }
+
     private MockClipboardManager prepareMockClipboardManager() {
         NetworkTaskEditDialog dialog = (NetworkTaskEditDialog) activity.getSupportFragmentManager().getFragments().get(0);
         MockClipboardManager clipboardManager = new MockClipboardManager();
