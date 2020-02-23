@@ -442,6 +442,7 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         onView(withId(R.id.imageview_dialog_context_options_cancel)).check(matches(isDisplayed()));
         onView(allOf(withId(R.id.textview_list_item_context_option_entry_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options_entries), 0))).perform(click());
         assertEquals(1, activity.getSupportFragmentManager().getFragments().size());
+        onView(withId(R.id.edittext_dialog_network_task_edit_address)).check(matches(withText("test")));
         assertTrue(clipboardManager.hasData());
         assertEquals("test", clipboardManager.getData());
     }
@@ -513,6 +514,7 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         onView(withId(R.id.imageview_dialog_context_options_cancel)).check(matches(isDisplayed()));
         onView(allOf(withId(R.id.textview_list_item_context_option_entry_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options_entries), 0))).perform(click());
         assertEquals(1, activity.getSupportFragmentManager().getFragments().size());
+        onView(withId(R.id.edittext_dialog_network_task_edit_port)).check(matches(withText("33")));
         assertTrue(clipboardManager.hasData());
         assertEquals("33", clipboardManager.getData());
     }
@@ -583,6 +585,7 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         onView(withId(R.id.imageview_dialog_context_options_cancel)).check(matches(isDisplayed()));
         onView(allOf(withId(R.id.textview_list_item_context_option_entry_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options_entries), 0))).perform(click());
         assertEquals(1, activity.getSupportFragmentManager().getFragments().size());
+        onView(withId(R.id.edittext_dialog_network_task_edit_interval)).check(matches(withText("33")));
         assertTrue(clipboardManager.hasData());
         assertEquals("33", clipboardManager.getData());
     }
