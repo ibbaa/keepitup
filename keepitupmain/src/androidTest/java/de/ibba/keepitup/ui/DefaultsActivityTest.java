@@ -11,7 +11,9 @@ import org.junit.runner.RunWith;
 import de.ibba.keepitup.R;
 import de.ibba.keepitup.model.AccessType;
 import de.ibba.keepitup.resources.PreferenceManager;
+import de.ibba.keepitup.test.mock.MockClipboardManager;
 import de.ibba.keepitup.test.mock.TestRegistry;
+import de.ibba.keepitup.ui.dialog.SettingsInputDialog;
 
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.Espresso.openActionBarOverflowOrOptionsMenu;
@@ -220,6 +222,14 @@ public class DefaultsActivityTest extends BaseUITest {
     }
 
     @Test
+    public void testAddressCopyPasteOption() {
+        DefaultsActivity activity = (DefaultsActivity) launchSettingsInputActivity(rule);
+        onView(withId(R.id.textview_defaults_activity_address)).perform(click());
+        SettingsInputDialog inputDialog = (SettingsInputDialog)activity.getSupportFragmentManager().getFragments().get(0);
+        MockClipboardManager clipboardManager = prepareMockClipboardManager(inputDialog);
+    }
+
+    @Test
     public void testPortInput() {
         launchSettingsInputActivity(rule);
         onView(withId(R.id.textview_defaults_activity_port)).perform(click());
@@ -358,5 +368,12 @@ public class DefaultsActivityTest extends BaseUITest {
         onView(withId(R.id.textview_defaults_activity_onlywifi_on_off)).check(matches(withText("yes")));
         onView(withId(R.id.switch_defaults_activity_notification)).check(matches(isChecked()));
         onView(withId(R.id.textview_defaults_activity_notification_on_off)).check(matches(withText("yes")));
+    }
+
+    private MockClipboardManager prepareMockClipboardManager(SettingsInputDialog inputDialog) {
+        MockClipboardManager clipboardManager = new MockClipboardManager();
+        clipboardManager.clearData();
+        inputDialog.injectClipboardManager(clipboardManager);
+        return clipboardManager;
     }
 }
