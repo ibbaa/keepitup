@@ -18,6 +18,7 @@ import de.ibba.keepitup.ui.dialog.SettingsInputDialog;
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.Espresso.openActionBarOverflowOrOptionsMenu;
 import static androidx.test.espresso.action.ViewActions.click;
+import static androidx.test.espresso.action.ViewActions.longClick;
 import static androidx.test.espresso.action.ViewActions.replaceText;
 import static androidx.test.espresso.assertion.ViewAssertions.doesNotExist;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
@@ -225,8 +226,23 @@ public class DefaultsActivityTest extends BaseUITest {
     public void testAddressCopyPasteOption() {
         DefaultsActivity activity = (DefaultsActivity) launchSettingsInputActivity(rule);
         onView(withId(R.id.textview_defaults_activity_address)).perform(click());
-        SettingsInputDialog inputDialog = (SettingsInputDialog)activity.getSupportFragmentManager().getFragments().get(0);
+        SettingsInputDialog inputDialog = (SettingsInputDialog) activity.getSupportFragmentManager().getFragments().get(0);
         MockClipboardManager clipboardManager = prepareMockClipboardManager(inputDialog);
+        clipboardManager.putData("data");
+        onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("localhost"));
+        onView(withId(R.id.edittext_dialog_settings_input_value)).perform(longClick());
+        assertEquals(2, activity.getSupportFragmentManager().getFragments().size());
+        onView(withId(R.id.listview_dialog_context_options_entries)).check(matches(withListSize(2)));
+        onView(withId(R.id.textview_dialog_context_options_title)).check(matches(withText("Text options")));
+        onView(allOf(withId(R.id.textview_list_item_context_option_entry_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options_entries), 0))).check(matches(withText("Copy")));
+        onView(allOf(withId(R.id.textview_list_item_context_option_entry_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options_entries), 1))).check(matches(withText("Paste")));
+        onView(allOf(withId(R.id.textview_list_item_context_option_entry_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options_entries), 1))).perform(click());
+        assertEquals(1, activity.getSupportFragmentManager().getFragments().size());
+        onView(withId(R.id.edittext_dialog_settings_input_value)).check(matches(withText("data")));
+        assertTrue(clipboardManager.hasData());
+        assertEquals("data", clipboardManager.getData());
+        onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
+        onView(withId(R.id.textview_defaults_activity_address)).check(matches(withText("data")));
     }
 
     @Test
@@ -261,6 +277,29 @@ public class DefaultsActivityTest extends BaseUITest {
     }
 
     @Test
+    public void testPortCopyPasteOption() {
+        DefaultsActivity activity = (DefaultsActivity) launchSettingsInputActivity(rule);
+        onView(withId(R.id.textview_defaults_activity_port)).perform(click());
+        SettingsInputDialog inputDialog = (SettingsInputDialog) activity.getSupportFragmentManager().getFragments().get(0);
+        MockClipboardManager clipboardManager = prepareMockClipboardManager(inputDialog);
+        clipboardManager.putData("1234");
+        onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("456"));
+        onView(withId(R.id.edittext_dialog_settings_input_value)).perform(longClick());
+        assertEquals(2, activity.getSupportFragmentManager().getFragments().size());
+        onView(withId(R.id.listview_dialog_context_options_entries)).check(matches(withListSize(2)));
+        onView(withId(R.id.textview_dialog_context_options_title)).check(matches(withText("Text options")));
+        onView(allOf(withId(R.id.textview_list_item_context_option_entry_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options_entries), 0))).check(matches(withText("Copy")));
+        onView(allOf(withId(R.id.textview_list_item_context_option_entry_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options_entries), 1))).check(matches(withText("Paste")));
+        onView(allOf(withId(R.id.textview_list_item_context_option_entry_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options_entries), 0))).perform(click());
+        assertEquals(1, activity.getSupportFragmentManager().getFragments().size());
+        onView(withId(R.id.edittext_dialog_settings_input_value)).check(matches(withText("456")));
+        assertTrue(clipboardManager.hasData());
+        assertEquals("456", clipboardManager.getData());
+        onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
+        onView(withId(R.id.textview_defaults_activity_port)).check(matches(withText("456")));
+    }
+
+    @Test
     public void testIntervalInput() {
         launchSettingsInputActivity(rule);
         onView(withId(R.id.textview_defaults_activity_interval)).perform(click());
@@ -289,6 +328,29 @@ public class DefaultsActivityTest extends BaseUITest {
         onView(withId(R.id.edittext_dialog_settings_input_value)).check(matches(withTextColor(R.color.textColor)));
         onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
         onView(withId(R.id.textview_defaults_activity_interval)).check(matches(withText("20")));
+    }
+
+    @Test
+    public void testIntervalCopyPasteOption() {
+        DefaultsActivity activity = (DefaultsActivity) launchSettingsInputActivity(rule);
+        onView(withId(R.id.textview_defaults_activity_interval)).perform(click());
+        SettingsInputDialog inputDialog = (SettingsInputDialog) activity.getSupportFragmentManager().getFragments().get(0);
+        MockClipboardManager clipboardManager = prepareMockClipboardManager(inputDialog);
+        clipboardManager.putData("111");
+        onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("222"));
+        onView(withId(R.id.edittext_dialog_settings_input_value)).perform(longClick());
+        assertEquals(2, activity.getSupportFragmentManager().getFragments().size());
+        onView(withId(R.id.listview_dialog_context_options_entries)).check(matches(withListSize(2)));
+        onView(withId(R.id.textview_dialog_context_options_title)).check(matches(withText("Text options")));
+        onView(allOf(withId(R.id.textview_list_item_context_option_entry_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options_entries), 0))).check(matches(withText("Copy")));
+        onView(allOf(withId(R.id.textview_list_item_context_option_entry_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options_entries), 1))).check(matches(withText("Paste")));
+        onView(allOf(withId(R.id.textview_list_item_context_option_entry_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options_entries), 1))).perform(click());
+        assertEquals(1, activity.getSupportFragmentManager().getFragments().size());
+        onView(withId(R.id.edittext_dialog_settings_input_value)).check(matches(withText("111")));
+        assertTrue(clipboardManager.hasData());
+        assertEquals("111", clipboardManager.getData());
+        onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
+        onView(withId(R.id.textview_defaults_activity_interval)).check(matches(withText("111")));
     }
 
     @Test
