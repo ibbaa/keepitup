@@ -38,9 +38,6 @@ android {
             signingConfig signingConfigs.config
         }
     }
-    packagingOptions {
-        exclude 'META-INF/*.version'
-    }
 }
 
 dependencies {
