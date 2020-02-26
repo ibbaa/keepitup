@@ -15,12 +15,15 @@ import de.ibba.keepitup.R;
 import de.ibba.keepitup.logging.Dump;
 import de.ibba.keepitup.logging.Log;
 import de.ibba.keepitup.resources.PreferenceManager;
+import de.ibba.keepitup.test.mock.MockClipboardManager;
 import de.ibba.keepitup.test.mock.MockFileManager;
 import de.ibba.keepitup.test.mock.TestRegistry;
+import de.ibba.keepitup.ui.dialog.SettingsInputDialog;
 
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.Espresso.openActionBarOverflowOrOptionsMenu;
 import static androidx.test.espresso.action.ViewActions.click;
+import static androidx.test.espresso.action.ViewActions.longClick;
 import static androidx.test.espresso.action.ViewActions.replaceText;
 import static androidx.test.espresso.action.ViewActions.scrollTo;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
@@ -236,6 +239,29 @@ public class GlobalSettingsActivityTest extends BaseUITest {
     }
 
     @Test
+    public void testPingCountCopyPasteOption() {
+        GlobalSettingsActivity activity = (GlobalSettingsActivity) launchSettingsInputActivity(rule);
+        onView(withId(R.id.textview_global_settings_activity_ping_count)).perform(click());
+        SettingsInputDialog inputDialog = (SettingsInputDialog) activity.getSupportFragmentManager().getFragments().get(0);
+        MockClipboardManager clipboardManager = prepareMockClipboardManager(inputDialog);
+        clipboardManager.putData("5");
+        onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("6"));
+        onView(withId(R.id.edittext_dialog_settings_input_value)).perform(longClick());
+        assertEquals(2, activity.getSupportFragmentManager().getFragments().size());
+        onView(withId(R.id.listview_dialog_context_options_entries)).check(matches(withListSize(2)));
+        onView(withId(R.id.textview_dialog_context_options_title)).check(matches(withText("Text options")));
+        onView(allOf(withId(R.id.textview_list_item_context_option_entry_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options_entries), 0))).check(matches(withText("Copy")));
+        onView(allOf(withId(R.id.textview_list_item_context_option_entry_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options_entries), 1))).check(matches(withText("Paste")));
+        onView(allOf(withId(R.id.textview_list_item_context_option_entry_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options_entries), 0))).perform(click());
+        assertEquals(1, activity.getSupportFragmentManager().getFragments().size());
+        onView(withId(R.id.edittext_dialog_settings_input_value)).check(matches(withText("6")));
+        assertTrue(clipboardManager.hasData());
+        assertEquals("6", clipboardManager.getData());
+        onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
+        onView(withId(R.id.textview_global_settings_activity_ping_count)).check(matches(withText("6")));
+    }
+
+    @Test
     public void testSetConnectCountPreferencesCancel() {
         launchSettingsInputActivity(rule);
         onView(withId(R.id.textview_global_settings_activity_connect_count)).perform(click());
@@ -280,6 +306,29 @@ public class GlobalSettingsActivityTest extends BaseUITest {
         onView(withId(R.id.edittext_dialog_settings_input_value)).check(matches(withTextColor(R.color.textColor)));
         onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
         onView(withId(R.id.textview_global_settings_activity_connect_count)).check(matches(withText("5")));
+    }
+
+    @Test
+    public void testConnectCountCopyPasteOption() {
+        GlobalSettingsActivity activity = (GlobalSettingsActivity) launchSettingsInputActivity(rule);
+        onView(withId(R.id.textview_global_settings_activity_connect_count)).perform(click());
+        SettingsInputDialog inputDialog = (SettingsInputDialog) activity.getSupportFragmentManager().getFragments().get(0);
+        MockClipboardManager clipboardManager = prepareMockClipboardManager(inputDialog);
+        clipboardManager.putData("10");
+        onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("11"));
+        onView(withId(R.id.edittext_dialog_settings_input_value)).perform(longClick());
+        assertEquals(2, activity.getSupportFragmentManager().getFragments().size());
+        onView(withId(R.id.listview_dialog_context_options_entries)).check(matches(withListSize(2)));
+        onView(withId(R.id.textview_dialog_context_options_title)).check(matches(withText("Text options")));
+        onView(allOf(withId(R.id.textview_list_item_context_option_entry_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options_entries), 0))).check(matches(withText("Copy")));
+        onView(allOf(withId(R.id.textview_list_item_context_option_entry_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options_entries), 1))).check(matches(withText("Paste")));
+        onView(allOf(withId(R.id.textview_list_item_context_option_entry_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options_entries), 1))).perform(click());
+        assertEquals(1, activity.getSupportFragmentManager().getFragments().size());
+        onView(withId(R.id.edittext_dialog_settings_input_value)).check(matches(withText("10")));
+        assertTrue(clipboardManager.hasData());
+        assertEquals("10", clipboardManager.getData());
+        onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
+        onView(withId(R.id.textview_global_settings_activity_connect_count)).check(matches(withText("10")));
     }
 
     @Test
@@ -533,5 +582,12 @@ public class GlobalSettingsActivityTest extends BaseUITest {
         onView(withId(R.id.textview_global_settings_activity_file_logger_enabled_on_off)).check(matches(withText("yes")));
         onView(withId(R.id.switch_global_settings_activity_file_dump_enabled)).check(matches(isChecked()));
         onView(withId(R.id.textview_global_settings_activity_file_dump_enabled_on_off)).check(matches(withText("yes")));
+    }
+
+    private MockClipboardManager prepareMockClipboardManager(SettingsInputDialog inputDialog) {
+        MockClipboardManager clipboardManager = new MockClipboardManager();
+        clipboardManager.clearData();
+        inputDialog.injectClipboardManager(clipboardManager);
+        return clipboardManager;
     }
 }
