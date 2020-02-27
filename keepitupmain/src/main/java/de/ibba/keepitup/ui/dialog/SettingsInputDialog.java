@@ -218,7 +218,7 @@ public class SettingsInputDialog extends DialogFragment implements ContextOption
     }
 
     private void showContextOptionsDialog(EditText editText) {
-        Log.d(NetworkTaskEditDialog.class.getName(), "showContextOptionsDialog");
+        Log.d(SettingsInputDialog.class.getName(), "showContextOptionsDialog");
         new ContextOptionsSupportManager(Objects.requireNonNull(getFragmentManager()), this, getClipboardManager()).showContextOptionsDialog(editText);
     }
 
