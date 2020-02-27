@@ -25,13 +25,17 @@ import de.ibba.keepitup.R;
 import de.ibba.keepitup.logging.Log;
 import de.ibba.keepitup.model.FileEntry;
 import de.ibba.keepitup.service.IFileManager;
+import de.ibba.keepitup.ui.ContextOptionsSupport;
+import de.ibba.keepitup.ui.ContextOptionsSupportManager;
 import de.ibba.keepitup.ui.FolderChooseSupport;
 import de.ibba.keepitup.ui.GlobalSettingsActivity;
 import de.ibba.keepitup.ui.adapter.FileEntryAdapter;
+import de.ibba.keepitup.ui.clipboard.IClipboardManager;
+import de.ibba.keepitup.ui.clipboard.SystemClipboardManager;
 import de.ibba.keepitup.util.BundleUtil;
 import de.ibba.keepitup.util.StringUtil;
 
-public class FolderChooseDialog extends DialogFragment {
+public class FolderChooseDialog extends DialogFragment implements ContextOptionsSupport {
 
     private FolderChooseSupport folderChooseSupport;
     private View dialogView;
@@ -42,8 +46,21 @@ public class FolderChooseDialog extends DialogFragment {
     private RecyclerView fileEntriesRecyclerView;
     private String selectionFolder;
 
+    private IClipboardManager clipboardManager;
+
     public FolderChooseDialog(de.ibba.keepitup.ui.FolderChooseSupport folderChooseSupport) {
         this.folderChooseSupport = folderChooseSupport;
+    }
+
+    public void injectClipboardManager(IClipboardManager clipboardManager) {
+        this.clipboardManager = clipboardManager;
+    }
+
+    public IClipboardManager getClipboardManager() {
+        if (clipboardManager != null) {
+            return clipboardManager;
+        }
+        return new SystemClipboardManager(requireContext());
     }
 
     @Override
@@ -106,6 +123,7 @@ public class FolderChooseDialog extends DialogFragment {
     private void prepareFolder(String folder) {
         Log.d(FolderChooseDialog.class.getName(), "prepareFolder");
         folderEditText = dialogView.findViewById(R.id.edittext_dialog_folder_choose_folder);
+        folderEditText.setOnLongClickListener(this::onFolderEditTextLongClicked);
         folderEditText.setText(folder);
         selectionFolder = folder;
         prepareFolderChooseTextWatcher();
@@ -366,6 +384,31 @@ public class FolderChooseDialog extends DialogFragment {
         adapter.unselectItem();
         adapter.replaceItems(Collections.emptyList());
         adapter.notifyDataSetChanged();
+    }
+
+    private boolean onFolderEditTextLongClicked(View view) {
+        Log.d(FolderChooseDialog.class.getName(), "onFolderEditTextLongClicked");
+        showContextOptionsDialog((EditText) view);
+        return true;
+    }
+
+    private void showContextOptionsDialog(EditText editText) {
+        Log.d(FolderChooseDialog.class.getName(), "showContextOptionsDialog");
+        new ContextOptionsSupportManager(Objects.requireNonNull(getFragmentManager()), this, getClipboardManager()).showContextOptionsDialog(editText);
+    }
+
+    @Override
+    public void onContextOptionsDialogEntryClicked(ContextOptionsDialog contextOptionsDialog, int sourceResourceId, ContextOption option) {
+        Log.d(SettingsInputDialog.class.getName(), "onContextOptionsDialogEntryClicked, sourceResourceId is " + sourceResourceId + ", option is " + option);
+        ContextOptionsSupportManager contextOptionsSupportManager = new ContextOptionsSupportManager(Objects.requireNonNull(getFragmentManager()), this, getClipboardManager());
+        if (folderEditText.getId() == sourceResourceId) {
+            Log.e(SettingsInputDialog.class.getName(), "Source field is the correct folder input field.");
+            contextOptionsSupportManager.handleContextOption(folderEditText, option);
+            folderEditText.setSelection(folderEditText.getText().length());
+        } else {
+            Log.e(SettingsInputDialog.class.getName(), "Source field is undefined.");
+        }
+        contextOptionsDialog.dismiss();
     }
 
     private void showErrorDialog(String errorMessage) {
