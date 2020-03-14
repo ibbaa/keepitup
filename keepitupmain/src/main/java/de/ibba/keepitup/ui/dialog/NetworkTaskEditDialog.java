@@ -280,6 +280,10 @@ public class NetworkTaskEditDialog extends DialogFragment implements ContextOpti
         cancelImage.setOnClickListener(this::onCancelClicked);
     }
 
+    public NetworkTask getInitialNetworkTask() {
+        return task;
+    }
+
     public NetworkTask getNetworkTask() {
         NetworkTask task = new NetworkTask(Objects.requireNonNull(getArguments()));
         AccessType accessType = getAccessType();

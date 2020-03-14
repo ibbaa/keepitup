@@ -35,6 +35,7 @@ import static org.hamcrest.Matchers.allOf;
 import static org.hamcrest.core.IsNot.not;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertTrue;
 
 @MediumTest
@@ -189,6 +190,25 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
         onView(allOf(withId(R.id.textview_list_item_network_task_interval), withChildDescendantAtPosition(withId(R.id.listview_main_activity_network_tasks), 0))).check(matches(withText("Interval: 60 minutes")));
         onView(allOf(withId(R.id.textview_list_item_network_task_onlywifi), withChildDescendantAtPosition(withId(R.id.listview_main_activity_network_tasks), 0))).check(matches(withText("Only on WiFi: yes")));
         onView(allOf(withId(R.id.textview_list_item_network_task_notification), withChildDescendantAtPosition(withId(R.id.listview_main_activity_network_tasks), 0))).check(matches(withText("Notification on failure: yes")));
+    }
+
+    @Test
+    public void testEditNetworkTaskValueChanged() {
+        launchRecyclerViewBaseActivity(rule);
+        onView(allOf(withId(R.id.imageview_list_item_network_task_add), isDisplayed())).perform(click());
+        onView(withId(R.id.imageview_dialog_network_task_edit_ok)).perform(click());
+        NetworkTask taskBefore = getNetworkTaskDAO().readAllNetworkTasks().get(0);
+        onView(allOf(withId(R.id.imageview_list_item_network_task_edit), withChildDescendantAtPosition(withId(R.id.listview_main_activity_network_tasks), 0))).perform(click());
+        onView(withId(R.id.edittext_dialog_network_task_edit_address)).perform(replaceText("localhost"));
+        onView(withId(R.id.imageview_dialog_network_task_edit_ok)).perform(click());
+        NetworkTask taskAfter = getNetworkTaskDAO().readAllNetworkTasks().get(0);
+        assertEquals(taskBefore.getAccessType(), taskAfter.getAccessType());
+        assertNotEquals(taskBefore.getAddress(), taskAfter.getAddress());
+        assertEquals(taskBefore.getPort(), taskAfter.getPort());
+        assertEquals(taskBefore.getInterval(), taskAfter.getInterval());
+        assertEquals(taskBefore.isNotification(), taskAfter.isNotification());
+        assertEquals(taskBefore.isOnlyWifi(), taskAfter.isOnlyWifi());
+        assertNotEquals(taskBefore.getSchedulerId(), taskAfter.getSchedulerId());
     }
 
     @Test
