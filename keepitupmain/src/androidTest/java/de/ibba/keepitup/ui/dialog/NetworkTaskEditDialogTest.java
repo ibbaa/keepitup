@@ -146,7 +146,7 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
     public void testGetInitialNetworkTask() {
         onView(allOf(withId(R.id.imageview_list_item_network_task_add), isDisplayed())).perform(click());
         NetworkTaskEditDialog dialog = (NetworkTaskEditDialog) activity.getSupportFragmentManager().getFragments().get(0);
-        assertAreEqual(dialog.getInitialNetworkTask(), dialog.getNetworkTask());
+        assertTrue(dialog.getInitialNetworkTask().isEqual(dialog.getNetworkTask()));
         onView(withText("Connect")).perform(click());
         onView(withId(R.id.edittext_dialog_network_task_edit_address)).perform(replaceText("localhost"));
         NetworkTask initialTask = dialog.getInitialNetworkTask();
@@ -656,19 +656,5 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         clipboardManager.clearData();
         dialog.injectClipboardManager(clipboardManager);
         return clipboardManager;
-    }
-
-    private void assertAreEqual(NetworkTask task1, NetworkTask task2) {
-        assertEquals(task1.getId(), task2.getId());
-        assertEquals(task1.getIndex(), task2.getIndex());
-        assertEquals(task1.getSchedulerId(), task2.getSchedulerId());
-        assertEquals(task1.getInstances(), task2.getInstances());
-        assertEquals(task1.getAccessType(), task2.getAccessType());
-        assertEquals(task1.getAddress(), task2.getAddress());
-        assertEquals(task1.getPort(), task2.getPort());
-        assertEquals(task1.getInterval(), task2.getInterval());
-        assertEquals(task1.isOnlyWifi(), task2.isOnlyWifi());
-        assertEquals(task1.isNotification(), task2.isNotification());
-        assertEquals(task1.isRunning(), task2.isRunning());
     }
 }

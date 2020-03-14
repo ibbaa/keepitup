@@ -30,6 +30,7 @@ import de.ibba.keepitup.ui.adapter.NetworkTaskUIWrapper;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 @MediumTest
 @RunWith(AndroidJUnit4.class)
@@ -72,11 +73,11 @@ public class NetworkTaskMainUIInitTaskTest extends BaseUITest {
         NetworkTaskUIWrapper wrapper1 = wrapperList.get(0);
         NetworkTaskUIWrapper wrapper2 = wrapperList.get(1);
         NetworkTaskUIWrapper wrapper3 = wrapperList.get(2);
-        assertAreEqual(task1, wrapper1.getNetworkTask());
-        assertAreEqual(logEntry1, wrapper1.getLogEntry());
-        assertAreEqual(task2, wrapper2.getNetworkTask());
-        assertAreEqual(logEntry2, wrapper2.getLogEntry());
-        assertAreEqual(task3, wrapper3.getNetworkTask());
+        assertTrue(task1.isEqual(wrapper1.getNetworkTask()));
+        assertTrue(logEntry1.isEqual(wrapper1.getLogEntry()));
+        assertTrue(task2.isEqual(wrapper2.getNetworkTask()));
+        assertTrue(logEntry2.isEqual(wrapper2.getLogEntry()));
+        assertTrue(task3.isEqual(wrapper3.getNetworkTask()));
         assertNull(wrapper3.getLogEntry());
     }
 
@@ -97,11 +98,11 @@ public class NetworkTaskMainUIInitTaskTest extends BaseUITest {
         NetworkTaskUIWrapper adapterWrapper1 = adapter.getItem(0);
         NetworkTaskUIWrapper adapterWrapper2 = adapter.getItem(1);
         NetworkTaskUIWrapper adapterWrapper3 = adapter.getItem(2);
-        assertAreEqual(task1, adapterWrapper1.getNetworkTask());
-        assertAreEqual(logEntry1, adapterWrapper1.getLogEntry());
-        assertAreEqual(task2, adapterWrapper2.getNetworkTask());
-        assertAreEqual(logEntry2, adapterWrapper2.getLogEntry());
-        assertAreEqual(task3, adapterWrapper3.getNetworkTask());
+        assertTrue(task1.isEqual(wrapper1.getNetworkTask()));
+        assertTrue(logEntry1.isEqual(wrapper1.getLogEntry()));
+        assertTrue(task2.isEqual(wrapper2.getNetworkTask()));
+        assertTrue(logEntry2.isEqual(wrapper2.getLogEntry()));
+        assertTrue(task3.isEqual(wrapper3.getNetworkTask()));
         assertNull(wrapper3.getLogEntry());
     }
 
@@ -140,28 +141,6 @@ public class NetworkTaskMainUIInitTaskTest extends BaseUITest {
         activity.runOnUiThread(() -> initTask.onPostExecute(Collections.emptyList()));
         InstrumentationRegistry.getInstrumentation().waitForIdleSync();
         assertEquals(0, adapter.getAllItems().size());
-    }
-
-    private void assertAreEqual(NetworkTask task1, NetworkTask task2) {
-        assertEquals(task1.getId(), task2.getId());
-        assertEquals(task1.getIndex(), task2.getIndex());
-        assertEquals(task1.getSchedulerId(), task2.getSchedulerId());
-        assertEquals(task1.getInstances(), task2.getInstances());
-        assertEquals(task1.getAccessType(), task2.getAccessType());
-        assertEquals(task1.getAddress(), task2.getAddress());
-        assertEquals(task1.getPort(), task2.getPort());
-        assertEquals(task1.getInterval(), task2.getInterval());
-        assertEquals(task1.isOnlyWifi(), task2.isOnlyWifi());
-        assertEquals(task1.isNotification(), task2.isNotification());
-        assertEquals(task1.isRunning(), task2.isRunning());
-    }
-
-    private void assertAreEqual(LogEntry entry1, LogEntry entry2) {
-        assertEquals(entry1.getId(), entry2.getId());
-        assertEquals(entry1.getNetworkTaskId(), entry2.getNetworkTaskId());
-        assertEquals(entry1.isSuccess(), entry2.isSuccess());
-        assertEquals(entry1.getTimestamp(), entry2.getTimestamp());
-        assertEquals(entry1.getMessage(), entry2.getMessage());
     }
 
     private NetworkTask getNetworkTask1() {

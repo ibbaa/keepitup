@@ -27,6 +27,7 @@ import de.ibba.keepitup.ui.NetworkTaskLogActivity;
 import de.ibba.keepitup.ui.adapter.LogEntryAdapter;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 @MediumTest
 @RunWith(AndroidJUnit4.class)
@@ -63,7 +64,7 @@ public class LogEntryUISyncTaskTest extends BaseUITest {
         LogEntry logEntry = logDAO.insertAndDeleteLog(getLogEntryWithNetworkTaskId(task.getId(), new GregorianCalendar(1980, Calendar.MARCH, 17).getTime().getTime()));
         logDAO.insertAndDeleteLog(getLogEntryWithNetworkTaskId(task.getId(), new GregorianCalendar(1980, Calendar.MARCH, 15).getTime().getTime()));
         LogEntry syncLogEntry = syncTask.doInBackground(task);
-        assertAreEqual(logEntry, syncLogEntry);
+        assertTrue(logEntry.isEqual(syncLogEntry));
     }
 
     @Test
@@ -74,7 +75,7 @@ public class LogEntryUISyncTaskTest extends BaseUITest {
         InstrumentationRegistry.getInstrumentation().waitForIdleSync();
         LogEntryAdapter adapter = (LogEntryAdapter) activity.getAdapter();
         LogEntry adapterLogEntry = adapter.getItem(0);
-        assertAreEqual(logEntry, adapterLogEntry);
+        assertTrue(logEntry.isEqual(adapterLogEntry));
     }
 
     @Test
@@ -108,14 +109,6 @@ public class LogEntryUISyncTaskTest extends BaseUITest {
         activity.runOnUiThread(() -> syncTask.onPostExecute(logEntry2));
         InstrumentationRegistry.getInstrumentation().waitForIdleSync();
         assertEquals(100, adapter.getItemCount());
-    }
-
-    private void assertAreEqual(LogEntry entry1, LogEntry entry2) {
-        assertEquals(entry1.getId(), entry2.getId());
-        assertEquals(entry1.getNetworkTaskId(), entry2.getNetworkTaskId());
-        assertEquals(entry1.isSuccess(), entry2.isSuccess());
-        assertEquals(entry1.getTimestamp(), entry2.getTimestamp());
-        assertEquals(entry1.getMessage(), entry2.getMessage());
     }
 
     private NetworkTask getNetworkTask() {

@@ -7,6 +7,8 @@ import android.os.PersistableBundle;
 
 import androidx.annotation.NonNull;
 
+import java.util.Objects;
+
 import de.ibba.keepitup.R;
 import de.ibba.keepitup.resources.PreferenceManager;
 
@@ -184,6 +186,71 @@ public class NetworkTask {
 
     public Bundle toBundle() {
         return new Bundle(toPersistableBundle());
+    }
+
+    public boolean isEqual(NetworkTask other) {
+        if (other == null || getClass() != other.getClass()) {
+            return false;
+        }
+        if (id != other.id) {
+            return false;
+        }
+        if (index != other.index) {
+            return false;
+        }
+        if (schedulerid != other.schedulerid) {
+            return false;
+        }
+        if (instances != other.instances) {
+            return false;
+        }
+        if (port != other.port) {
+            return false;
+        }
+        if (interval != other.interval) {
+            return false;
+        }
+        if (onlyWifi != other.onlyWifi) {
+            return false;
+        }
+        if (notification != other.notification) {
+            return false;
+        }
+        if (running != other.running) {
+            return false;
+        }
+        if (!Objects.equals(address, other.address)) {
+            return false;
+        }
+        if (!Objects.equals(accessType, other.accessType)) {
+            return false;
+        }
+        return true;
+    }
+
+    public boolean isTechnicallyEqual(NetworkTask other) {
+        if (other == null || getClass() != other.getClass()) {
+            return false;
+        }
+        if (port != other.port) {
+            return false;
+        }
+        if (interval != other.interval) {
+            return false;
+        }
+        if (onlyWifi != other.onlyWifi) {
+            return false;
+        }
+        if (notification != other.notification) {
+            return false;
+        }
+        if (!Objects.equals(address, other.address)) {
+            return false;
+        }
+        if (!Objects.equals(accessType, other.accessType)) {
+            return false;
+        }
+        return true;
     }
 
     @NonNull

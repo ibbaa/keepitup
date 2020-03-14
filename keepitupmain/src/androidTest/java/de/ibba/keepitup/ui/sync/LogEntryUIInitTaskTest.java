@@ -30,6 +30,7 @@ import de.ibba.keepitup.ui.NetworkTaskLogActivity;
 import de.ibba.keepitup.ui.adapter.LogEntryAdapter;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 @MediumTest
 @RunWith(AndroidJUnit4.class)
@@ -68,9 +69,9 @@ public class LogEntryUIInitTaskTest extends BaseUITest {
         LogEntry logEntry3 = logDAO.insertAndDeleteLog(getLogEntryWithNetworkTaskId(task.getId(), new GregorianCalendar(1982, Calendar.MARCH, 17).getTime().getTime()));
         List<LogEntry> syncLogEntries = initTask.doInBackground(task);
         assertEquals(3, syncLogEntries.size());
-        assertAreEqual(logEntry3, syncLogEntries.get(0));
-        assertAreEqual(logEntry2, syncLogEntries.get(1));
-        assertAreEqual(logEntry1, syncLogEntries.get(2));
+        assertTrue(logEntry3.isEqual(syncLogEntries.get(0)));
+        assertTrue(logEntry2.isEqual(syncLogEntries.get(1)));
+        assertTrue(logEntry1.isEqual(syncLogEntries.get(2)));
     }
 
     @Test
@@ -85,9 +86,9 @@ public class LogEntryUIInitTaskTest extends BaseUITest {
         activity.runOnUiThread(() -> initTask.onPostExecute(Arrays.asList(logEntry1, logEntry2, logEntry3)));
         InstrumentationRegistry.getInstrumentation().waitForIdleSync();
         assertEquals(3, adapter.getItemCount());
-        assertAreEqual(logEntry1, adapter.getItem(0));
-        assertAreEqual(logEntry2, adapter.getItem(1));
-        assertAreEqual(logEntry3, adapter.getItem(2));
+        assertTrue(logEntry1.isEqual(adapter.getItem(0)));
+        assertTrue(logEntry2.isEqual(adapter.getItem(1)));
+        assertTrue(logEntry3.isEqual(adapter.getItem(2)));
     }
 
     @Test
@@ -117,14 +118,6 @@ public class LogEntryUIInitTaskTest extends BaseUITest {
         InstrumentationRegistry.getInstrumentation().waitForIdleSync();
         LogEntryAdapter adapter = (LogEntryAdapter) activity.getAdapter();
         assertEquals(100, adapter.getItemCount());
-    }
-
-    private void assertAreEqual(LogEntry entry1, LogEntry entry2) {
-        assertEquals(entry1.getId(), entry2.getId());
-        assertEquals(entry1.getNetworkTaskId(), entry2.getNetworkTaskId());
-        assertEquals(entry1.isSuccess(), entry2.isSuccess());
-        assertEquals(entry1.getTimestamp(), entry2.getTimestamp());
-        assertEquals(entry1.getMessage(), entry2.getMessage());
     }
 
     private NetworkTask getNetworkTask() {

@@ -170,4 +170,96 @@ public class NetworkTaskTest {
         assertTrue(task.isNotification());
         assertTrue(task.isRunning());
     }
+
+    @Test
+    public void testIsEqual() {
+        NetworkTask networkTask1 = new NetworkTask();
+        NetworkTask networkTask2 = new NetworkTask();
+        assertTrue(networkTask1.isEqual(networkTask2));
+        networkTask1.setId(0);
+        assertFalse(networkTask1.isEqual(networkTask2));
+        networkTask2.setId(0);
+        assertTrue(networkTask1.isEqual(networkTask2));
+        networkTask1.setAccessType(AccessType.DOWNLOAD);
+        assertFalse(networkTask1.isEqual(networkTask2));
+        networkTask2.setAccessType(AccessType.DOWNLOAD);
+        assertTrue(networkTask1.isEqual(networkTask2));
+        networkTask1.setAddress("123");
+        assertFalse(networkTask1.isEqual(networkTask2));
+        networkTask2.setAddress("123");
+        assertTrue(networkTask1.isEqual(networkTask2));
+        networkTask1.setIndex(5);
+        assertFalse(networkTask1.isEqual(networkTask2));
+        networkTask2.setIndex(5);
+        assertTrue(networkTask1.isEqual(networkTask2));
+        networkTask1.setInstances(8);
+        assertFalse(networkTask1.isEqual(networkTask2));
+        networkTask2.setInstances(8);
+        assertTrue(networkTask1.isEqual(networkTask2));
+        networkTask1.setInterval(1);
+        assertFalse(networkTask1.isEqual(networkTask2));
+        networkTask2.setInterval(1);
+        assertTrue(networkTask1.isEqual(networkTask2));
+        networkTask1.setNotification(true);
+        assertFalse(networkTask1.isEqual(networkTask2));
+        networkTask2.setNotification(true);
+        assertTrue(networkTask1.isEqual(networkTask2));
+        networkTask1.setOnlyWifi(true);
+        assertFalse(networkTask1.isEqual(networkTask2));
+        networkTask2.setOnlyWifi(true);
+        assertTrue(networkTask1.isEqual(networkTask2));
+        networkTask1.setPort(10);
+        assertFalse(networkTask1.isEqual(networkTask2));
+        networkTask2.setPort(10);
+        assertTrue(networkTask1.isEqual(networkTask2));
+        networkTask1.setRunning(true);
+        assertFalse(networkTask1.isEqual(networkTask2));
+        networkTask2.setRunning(true);
+        assertTrue(networkTask1.isEqual(networkTask2));
+        networkTask1.setSchedulerId(11);
+        assertFalse(networkTask1.isEqual(networkTask2));
+        networkTask2.setSchedulerId(11);
+        assertTrue(networkTask1.isEqual(networkTask2));
+    }
+
+    @Test
+    public void testIsTechnicallyEqual() {
+        NetworkTask networkTask1 = new NetworkTask();
+        NetworkTask networkTask2 = new NetworkTask();
+        assertTrue(networkTask1.isTechnicallyEqual(networkTask2));
+        networkTask1.setId(0);
+        assertTrue(networkTask1.isTechnicallyEqual(networkTask2));
+        networkTask1.setSchedulerId(1);
+        assertTrue(networkTask1.isTechnicallyEqual(networkTask2));
+        networkTask1.setRunning(true);
+        assertTrue(networkTask1.isTechnicallyEqual(networkTask2));
+        networkTask1.setInstances(6);
+        assertTrue(networkTask1.isTechnicallyEqual(networkTask2));
+        networkTask1.setIndex(2);
+        assertTrue(networkTask1.isTechnicallyEqual(networkTask2));
+        networkTask1.setPort(9);
+        assertFalse(networkTask1.isTechnicallyEqual(networkTask2));
+        networkTask2.setPort(9);
+        assertTrue(networkTask1.isTechnicallyEqual(networkTask2));
+        networkTask1.setAddress("123");
+        assertFalse(networkTask1.isTechnicallyEqual(networkTask2));
+        networkTask2.setAddress("123");
+        assertTrue(networkTask1.isTechnicallyEqual(networkTask2));
+        networkTask1.setOnlyWifi(true);
+        assertFalse(networkTask1.isTechnicallyEqual(networkTask2));
+        networkTask2.setOnlyWifi(true);
+        assertTrue(networkTask1.isTechnicallyEqual(networkTask2));
+        networkTask1.setNotification(true);
+        assertFalse(networkTask1.isTechnicallyEqual(networkTask2));
+        networkTask2.setNotification(true);
+        assertTrue(networkTask1.isTechnicallyEqual(networkTask2));
+        networkTask1.setInterval(5);
+        assertFalse(networkTask1.isTechnicallyEqual(networkTask2));
+        networkTask2.setInterval(5);
+        assertTrue(networkTask1.isTechnicallyEqual(networkTask2));
+        networkTask1.setAccessType(AccessType.CONNECT);
+        assertFalse(networkTask1.isTechnicallyEqual(networkTask2));
+        networkTask2.setAccessType(AccessType.CONNECT);
+        assertTrue(networkTask1.isTechnicallyEqual(networkTask2));
+    }
 }

@@ -212,6 +212,18 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
     }
 
     @Test
+    public void testEditNetworkTaskValueNotChanged() {
+        launchRecyclerViewBaseActivity(rule);
+        onView(allOf(withId(R.id.imageview_list_item_network_task_add), isDisplayed())).perform(click());
+        onView(withId(R.id.imageview_dialog_network_task_edit_ok)).perform(click());
+        NetworkTask taskBefore = getNetworkTaskDAO().readAllNetworkTasks().get(0);
+        onView(allOf(withId(R.id.imageview_list_item_network_task_edit), withChildDescendantAtPosition(withId(R.id.listview_main_activity_network_tasks), 0))).perform(click());
+        onView(withId(R.id.imageview_dialog_network_task_edit_ok)).perform(click());
+        NetworkTask taskAfter = getNetworkTaskDAO().readAllNetworkTasks().get(0);
+        assertTrue(taskBefore.isEqual(taskAfter));
+    }
+
+    @Test
     public void testDisplayLog() {
         launchRecyclerViewBaseActivity(rule);
         onView(allOf(withId(R.id.imageview_list_item_network_task_add), isDisplayed())).perform(click());
