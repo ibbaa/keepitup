@@ -47,9 +47,9 @@ public class NetworkTaskDAOTest {
         assertEquals(1, readTasks.size());
         NetworkTask readTask = readTasks.get(0);
         assertTrue(readTask.getId() > 0);
-        assertAreEqual(insertedTask1, readTask);
+        assertTrue(insertedTask1.isEqual(readTask));
         readTask = networkTaskDAO.readNetworkTask(readTask.getId());
-        assertAreEqual(insertedTask1, readTask);
+        assertTrue(insertedTask1.isEqual(readTask));
         NetworkTask insertedTask2 = getNetworkTask2();
         NetworkTask insertedTask3 = getNetworkTask3();
         networkTaskDAO.insertNetworkTask(insertedTask2);
@@ -62,18 +62,18 @@ public class NetworkTaskDAOTest {
         assertTrue(readTask1.getId() > 0);
         assertTrue(readTask2.getId() > 0);
         assertTrue(readTask3.getId() > 0);
-        assertAreEqual(insertedTask1, readTask1);
-        assertAreEqual(insertedTask2, readTask2);
-        assertAreEqual(insertedTask3, readTask3);
+        assertTrue(insertedTask1.isEqual(readTask1));
+        assertTrue(insertedTask2.isEqual(readTask2));
+        assertTrue(insertedTask3.isEqual(readTask3));
         assertEquals(1, readTask1.getIndex());
         assertEquals(10, readTask2.getIndex());
         assertEquals(5, readTask3.getIndex());
         readTask1 = networkTaskDAO.readNetworkTask(readTask1.getId());
         readTask2 = networkTaskDAO.readNetworkTask(readTask2.getId());
         readTask3 = networkTaskDAO.readNetworkTask(readTask3.getId());
-        assertAreEqual(insertedTask1, readTask1);
-        assertAreEqual(insertedTask2, readTask2);
-        assertAreEqual(insertedTask3, readTask3);
+        assertTrue(insertedTask1.isEqual(readTask1));
+        assertTrue(insertedTask2.isEqual(readTask2));
+        assertTrue(insertedTask3.isEqual(readTask3));
         networkTaskDAO.deleteNetworkTask(readTask2);
         readTask2 = networkTaskDAO.readNetworkTask(readTask2.getId());
         assertNull(readTask2);
@@ -164,7 +164,7 @@ public class NetworkTaskDAOTest {
         NetworkTask task2 = getNetworkTask2();
         task2.setId(readTask1.getId());
         networkTaskDAO.updateNetworkTask(task2);
-        assertAreEqual(insertedTask1, readTask1);
+        assertTrue(insertedTask1.isEqual(readTask1));
         readTask1 = networkTaskDAO.readNetworkTask(readTask1.getId());
         assertEquals(task2.getAccessType(), readTask1.getAccessType());
         assertEquals(task2.getAddress(), readTask1.getAddress());
@@ -301,19 +301,5 @@ public class NetworkTaskDAOTest {
         task.setNotification(false);
         task.setRunning(false);
         return task;
-    }
-
-    private void assertAreEqual(NetworkTask task1, NetworkTask task2) {
-        assertEquals(task1.getId(), task2.getId());
-        assertEquals(task1.getIndex(), task2.getIndex());
-        assertEquals(task1.getSchedulerId(), task2.getSchedulerId());
-        assertEquals(task1.getInstances(), task2.getInstances());
-        assertEquals(task1.getAccessType(), task2.getAccessType());
-        assertEquals(task1.getAddress(), task2.getAddress());
-        assertEquals(task1.getPort(), task2.getPort());
-        assertEquals(task1.getInterval(), task2.getInterval());
-        assertEquals(task1.isOnlyWifi(), task2.isOnlyWifi());
-        assertEquals(task1.isNotification(), task2.isNotification());
-        assertEquals(task1.isRunning(), task2.isRunning());
     }
 }

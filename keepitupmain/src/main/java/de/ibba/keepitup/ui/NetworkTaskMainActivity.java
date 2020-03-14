@@ -188,11 +188,19 @@ public class NetworkTaskMainActivity extends RecyclerViewBaseActivity implements
         if (task.getId() < 0) {
             Log.d(NetworkTaskMainActivity.class.getName(), "Network task is new, inserting " + task);
             handler.insertNetworkTask(task);
+            getAdapter().notifyDataSetChanged();
         } else {
-            Log.d(NetworkTaskMainActivity.class.getName(), "Updating " + task);
-            handler.updateNetworkTask(task);
+            NetworkTask initialTask = editDialog.getInitialNetworkTask();
+            Log.d(NetworkTaskMainActivity.class.getName(), "Initial network task is " + initialTask);
+            if (initialTask.isTechnicallyEqual(task)) {
+                Log.d(NetworkTaskMainActivity.class.getName(), "Initial network task and network task are technically equal.");
+                Log.d(NetworkTaskMainActivity.class.getName(), "No changes were made. Skipping update.");
+            } else {
+                Log.d(NetworkTaskMainActivity.class.getName(), "Updating " + task);
+                handler.updateNetworkTask(task);
+                getAdapter().notifyDataSetChanged();
+            }
         }
-        getAdapter().notifyDataSetChanged();
         editDialog.dismiss();
     }
 

@@ -76,4 +76,31 @@ public class LogEntryTest {
         assertTrue(logEntry.isSuccess());
         assertEquals("Message", logEntry.getMessage());
     }
+
+    @Test
+    public void testIsEqual() {
+        LogEntry logEntry1 = new LogEntry();
+        LogEntry logEntry2 = new LogEntry();
+        assertTrue(logEntry1.isEqual(logEntry2));
+        logEntry1.setId(0);
+        assertFalse(logEntry1.isEqual(logEntry2));
+        logEntry2.setId(0);
+        assertTrue(logEntry1.isEqual(logEntry2));
+        logEntry1.setNetworkTaskId(22);
+        assertFalse(logEntry1.isEqual(logEntry2));
+        logEntry2.setNetworkTaskId(22);
+        assertTrue(logEntry1.isEqual(logEntry2));
+        logEntry1.setTimestamp(123);
+        assertFalse(logEntry1.isEqual(logEntry2));
+        logEntry2.setTimestamp(123);
+        assertTrue(logEntry1.isEqual(logEntry2));
+        logEntry1.setSuccess(true);
+        assertFalse(logEntry1.isEqual(logEntry2));
+        logEntry2.setSuccess(true);
+        assertTrue(logEntry1.isEqual(logEntry2));
+        logEntry1.setMessage("message");
+        assertFalse(logEntry1.isEqual(logEntry2));
+        logEntry2.setMessage("message");
+        assertTrue(logEntry1.isEqual(logEntry2));
+    }
 }

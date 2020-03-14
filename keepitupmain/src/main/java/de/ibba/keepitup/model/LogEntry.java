@@ -5,6 +5,8 @@ import android.os.PersistableBundle;
 
 import androidx.annotation.NonNull;
 
+import java.util.Objects;
+
 public class LogEntry {
 
     private long id;
@@ -87,6 +89,28 @@ public class LogEntry {
 
     public Bundle toBundle() {
         return new Bundle(toPersistableBundle());
+    }
+
+    public boolean isEqual(LogEntry other) {
+        if (other == null || getClass() != other.getClass()) {
+            return false;
+        }
+        if (id != other.id) {
+            return false;
+        }
+        if (networktaskid != other.networktaskid) {
+            return false;
+        }
+        if (success != other.success) {
+            return false;
+        }
+        if (timestamp != other.timestamp) {
+            return false;
+        }
+        if (!Objects.equals(message, other.message)) {
+            return false;
+        }
+        return true;
     }
 
     @NonNull
