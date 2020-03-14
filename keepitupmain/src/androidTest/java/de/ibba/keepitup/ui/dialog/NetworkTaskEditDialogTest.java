@@ -37,6 +37,7 @@ import static org.hamcrest.Matchers.allOf;
 import static org.hamcrest.Matchers.not;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
@@ -139,6 +140,45 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         assertEquals(60, task.getInterval());
         assertTrue(task.isOnlyWifi());
         assertTrue(task.isNotification());
+    }
+
+    @Test
+    public void testGetInitialNetworkTask() {
+        onView(allOf(withId(R.id.imageview_list_item_network_task_add), isDisplayed())).perform(click());
+        NetworkTaskEditDialog dialog = (NetworkTaskEditDialog) activity.getSupportFragmentManager().getFragments().get(0);
+        assertAreEqual(dialog.getInitialNetworkTask(), dialog.getNetworkTask());
+        onView(withText("Connect")).perform(click());
+        onView(withId(R.id.edittext_dialog_network_task_edit_address)).perform(replaceText("localhost"));
+        NetworkTask initialTask = dialog.getInitialNetworkTask();
+        NetworkTask task = dialog.getNetworkTask();
+        assertEquals(initialTask.getId(), task.getId());
+        assertEquals(initialTask.getIndex(), task.getIndex());
+        assertEquals(initialTask.getSchedulerId(), task.getSchedulerId());
+        assertEquals(initialTask.getInstances(), task.getInstances());
+        assertNotEquals(initialTask.getAccessType(), task.getAccessType());
+        assertNotEquals(initialTask.getAddress(), task.getAddress());
+        assertEquals(initialTask.getPort(), task.getPort());
+        assertEquals(initialTask.getInterval(), task.getInterval());
+        assertEquals(initialTask.isOnlyWifi(), task.isOnlyWifi());
+        assertEquals(initialTask.isNotification(), task.isNotification());
+        assertEquals(initialTask.isRunning(), task.isRunning());
+        onView(withId(R.id.edittext_dialog_network_task_edit_port)).perform(replaceText("80"));
+        onView(withId(R.id.edittext_dialog_network_task_edit_interval)).perform(replaceText("60"));
+        onView(withId(R.id.switch_dialog_network_task_edit_onlywifi)).perform(click());
+        onView(withId(R.id.switch_dialog_network_task_edit_notification)).perform(click());
+        initialTask = dialog.getInitialNetworkTask();
+        task = dialog.getNetworkTask();
+        assertEquals(initialTask.getId(), task.getId());
+        assertEquals(initialTask.getIndex(), task.getIndex());
+        assertEquals(initialTask.getSchedulerId(), task.getSchedulerId());
+        assertEquals(initialTask.getInstances(), task.getInstances());
+        assertNotEquals(initialTask.getAccessType(), task.getAccessType());
+        assertNotEquals(initialTask.getAddress(), task.getAddress());
+        assertNotEquals(initialTask.getPort(), task.getPort());
+        assertNotEquals(initialTask.getInterval(), task.getInterval());
+        assertNotEquals(initialTask.isOnlyWifi(), task.isOnlyWifi());
+        assertNotEquals(initialTask.isNotification(), task.isNotification());
+        assertEquals(initialTask.isRunning(), task.isRunning());
     }
 
     @Test
@@ -616,5 +656,19 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         clipboardManager.clearData();
         dialog.injectClipboardManager(clipboardManager);
         return clipboardManager;
+    }
+
+    private void assertAreEqual(NetworkTask task1, NetworkTask task2) {
+        assertEquals(task1.getId(), task2.getId());
+        assertEquals(task1.getIndex(), task2.getIndex());
+        assertEquals(task1.getSchedulerId(), task2.getSchedulerId());
+        assertEquals(task1.getInstances(), task2.getInstances());
+        assertEquals(task1.getAccessType(), task2.getAccessType());
+        assertEquals(task1.getAddress(), task2.getAddress());
+        assertEquals(task1.getPort(), task2.getPort());
+        assertEquals(task1.getInterval(), task2.getInterval());
+        assertEquals(task1.isOnlyWifi(), task2.isOnlyWifi());
+        assertEquals(task1.isNotification(), task2.isNotification());
+        assertEquals(task1.isRunning(), task2.isRunning());
     }
 }
