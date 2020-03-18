@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <bool name="worker_synchronous_execution">false</bool>
+    <bool name="worker_add_to_pool">true</bool>
     <integer name="worker_execution_wakelock_timeout">12600</integer>
     <integer name="null_worker_max_instances">99999999</integer>
     <integer name="ping_worker_max_instances">100</integer>

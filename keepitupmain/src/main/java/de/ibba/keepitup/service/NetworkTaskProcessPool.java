@@ -7,6 +7,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Future;
 
+import de.ibba.keepitup.logging.Log;
+
 public class NetworkTaskProcessPool {
 
     private Map<Integer, List<Future<?>>> futurePool;
@@ -16,8 +18,10 @@ public class NetworkTaskProcessPool {
     }
 
     public synchronized void pool(int schedulerId, Future<?> future) {
+        Log.d(NetworkTaskProcessPool.class.getName(), "pool, schedulerId is " + schedulerId);
         cleanUp();
         List<Future<?>> futureList = futurePool.get(schedulerId);
+        Log.d(NetworkTaskProcessPool.class.getName(), "futureList is " + futureList);
         if (futureList == null) {
             futureList = new ArrayList<>();
             futurePool.put(schedulerId, futureList);
@@ -26,7 +30,9 @@ public class NetworkTaskProcessPool {
     }
 
     public synchronized void cancel(int schedulerId) {
+        Log.d(NetworkTaskProcessPool.class.getName(), "cancel, schedulerId is " + schedulerId);
         List<Future<?>> futureList = futurePool.get(schedulerId);
+        Log.d(NetworkTaskProcessPool.class.getName(), "futureList is " + futureList);
         if (futureList == null) {
             return;
         }
@@ -37,6 +43,7 @@ public class NetworkTaskProcessPool {
     }
 
     public void cleanUp() {
+        Log.d(NetworkTaskProcessPool.class.getName(), "cleanUp");
         Iterator<Integer> keyIterator = futurePool.keySet().iterator();
         while (keyIterator.hasNext()) {
             cleanUp(keyIterator.next());
@@ -44,7 +51,9 @@ public class NetworkTaskProcessPool {
     }
 
     public void cleanUp(int schedulerId) {
+        Log.d(NetworkTaskProcessPool.class.getName(), "cleanUp, schedulerId is " + schedulerId);
         List<Future<?>> futureList = futurePool.get(schedulerId);
+        Log.d(NetworkTaskProcessPool.class.getName(), "futureList is " + futureList);
         if (futureList == null) {
             return;
         }

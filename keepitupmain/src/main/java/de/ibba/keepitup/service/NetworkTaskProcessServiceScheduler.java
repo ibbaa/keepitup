@@ -18,10 +18,19 @@ public class NetworkTaskProcessServiceScheduler {
     private final NetworkTaskDAO networkTaskDAO;
     private final IAlarmManager alarmManager;
 
+    private static NetworkTaskProcessPool processPool;
+
     public NetworkTaskProcessServiceScheduler(Context context) {
         this.context = context;
         this.networkTaskDAO = new NetworkTaskDAO(context);
         this.alarmManager = createAlarmManager();
+    }
+
+    public synchronized static NetworkTaskProcessPool getNetworkTaskProcessPool() {
+        if (processPool == null) {
+            processPool = new NetworkTaskProcessPool();
+        }
+        return processPool;
     }
 
     public NetworkTask schedule(NetworkTask networkTask) {
@@ -75,6 +84,7 @@ public class NetworkTaskProcessServiceScheduler {
             alarmManager.cancelAlarm(pendingIntent);
             pendingIntent.cancel();
         }
+        getNetworkTaskProcessPool().cancel(networkTask.getSchedulerId());
         return networkTask;
     }
 
