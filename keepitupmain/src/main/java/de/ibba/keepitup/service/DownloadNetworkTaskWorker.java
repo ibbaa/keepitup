@@ -78,8 +78,9 @@ public class DownloadNetworkTaskWorker extends NetworkTaskWorker {
         int timeout = getResources().getInteger(R.integer.download_timeout);
         Log.d(DownloadNetworkTaskWorker.class.getName(), "Creating ExecutorService");
         ExecutorService executorService = Executors.newSingleThreadExecutor();
+        Future<DownloadCommandResult> downloadResultFuture = null;
         try {
-            Future<DownloadCommandResult> downloadResultFuture = executorService.submit(downloadCommand);
+            downloadResultFuture = executorService.submit(downloadCommand);
             DownloadCommandResult downloadResult = downloadResultFuture.get(timeout, TimeUnit.SECONDS);
             Log.d(DownloadNetworkTaskWorker.class.getName(), downloadCommand.getClass().getSimpleName() + " returned " + downloadResult);
             if (!downloadResult.isConnectSuccess()) {
@@ -118,6 +119,10 @@ public class DownloadNetworkTaskWorker extends NetworkTaskWorker {
             Log.d(DownloadNetworkTaskWorker.class.getName(), "Error executing " + downloadCommand.getClass().getName(), exc);
             logEntry.setSuccess(false);
             logEntry.setMessage(getMessageFromException(getResources().getString(R.string.text_download_error, url.toExternalForm()), exc, timeout));
+            if (downloadResultFuture != null && isInterrupted(exc)) {
+                Log.d(DownloadNetworkTaskWorker.class.getName(), "Cancelling " + downloadCommand.getClass().getSimpleName());
+                downloadResultFuture.cancel(true);
+            }
         } finally {
             Log.d(DownloadNetworkTaskWorker.class.getName(), "Shutting down ExecutorService");
             executorService.shutdownNow();

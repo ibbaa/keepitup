@@ -207,9 +207,10 @@ public abstract class NetworkTaskWorker implements Runnable {
         int timeout = getResources().getInteger(R.integer.dns_lookup_timeout);
         Log.d(NetworkTaskWorker.class.getName(), "Creating ExecutorService");
         ExecutorService executorService = Executors.newSingleThreadExecutor();
+        Future<DNSLookupResult> dnsLookupResultFuture = null;
         try {
             Log.d(NetworkTaskWorker.class.getName(), "Executing " + dnsLookup.getClass().getSimpleName() + " with a timeout of " + timeout);
-            Future<DNSLookupResult> dnsLookupResultFuture = executorService.submit(dnsLookup);
+            dnsLookupResultFuture = executorService.submit(dnsLookup);
             DNSLookupResult dnsLookupResult = dnsLookupResultFuture.get(timeout, TimeUnit.SECONDS);
             Log.d(NetworkTaskWorker.class.getName(), dnsLookup.getClass().getSimpleName() + " returned " + dnsLookupResult);
             if (dnsLookupResult.getException() == null) {
@@ -239,6 +240,10 @@ public abstract class NetworkTaskWorker implements Runnable {
         } finally {
             Log.d(NetworkTaskWorker.class.getName(), "Shutting down ExecutorService");
             executorService.shutdownNow();
+            if (dnsLookupResultFuture != null && Thread.interrupted()) {
+                Log.d(NetworkTaskWorker.class.getName(), "Cancelling " + dnsLookup.getClass().getSimpleName());
+                dnsLookupResultFuture.cancel(true);
+            }
         }
         return null;
     }
@@ -260,11 +265,19 @@ public abstract class NetworkTaskWorker implements Runnable {
             String unit = timeout == 1 ? getResources().getString(R.string.string_second) : getResources().getString(R.string.string_seconds);
             return prefixMessage + " " + getResources().getString(R.string.text_timeout, timeout) + " " + unit + ".";
         }
+        if (isInterrupted(exc)) {
+            String unit = timeout == 1 ? getResources().getString(R.string.string_second) : getResources().getString(R.string.string_seconds);
+            return prefixMessage + " " + getResources().getString(R.string.text_interrupted);
+        }
         return prefixMessage + " " + ExceptionUtil.getLogableMessage(ExceptionUtil.getRootCause(exc));
     }
 
     private boolean isTimeout(Throwable exc) {
         return exc instanceof TimeoutException;
+    }
+
+    protected boolean isInterrupted(Throwable exc) {
+        return exc instanceof InterruptedException;
     }
 
     private INetworkManager createNetworkManager() {

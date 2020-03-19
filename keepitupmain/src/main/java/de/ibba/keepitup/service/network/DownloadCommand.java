@@ -37,7 +37,7 @@ public class DownloadCommand implements Callable<DownloadCommandResult> {
     private final File folder;
     private final boolean delete;
     private boolean valid;
-    private int notRunningCount;
+    private boolean stopped;
     private final ITimeService timeService;
 
     public DownloadCommand(Context context, NetworkTask networkTask, URL url, File folder, boolean delete) {
@@ -225,16 +225,16 @@ public class DownloadCommand implements Callable<DownloadCommandResult> {
     }
 
     private synchronized DownloadCommandResult createDownloadCommandResult(boolean connectSuccess, boolean downloadSuccess, boolean fileExists, boolean deleteSuccess, int httpCode, String httpMessage, String fileName, long duration, Exception exc) {
-        return new DownloadCommandResult(connectSuccess, downloadSuccess, fileExists, deleteSuccess, valid, notRunningCount >= 2, httpCode, httpMessage, fileName, duration, exc);
+        return new DownloadCommandResult(connectSuccess, downloadSuccess, fileExists, deleteSuccess, valid, stopped, httpCode, httpMessage, fileName, duration, exc);
     }
 
     public synchronized boolean isValid() {
-        return valid;
+        return valid && !Thread.currentThread().isInterrupted();
     }
 
     private synchronized void initializeValid() {
         valid = true;
-        notRunningCount = 0;
+        stopped = false;
     }
 
     private synchronized void verifyValid() {
@@ -245,25 +245,22 @@ public class DownloadCommand implements Callable<DownloadCommandResult> {
             if (databaseTask == null || networkTask.getSchedulerId() != databaseTask.getSchedulerId()) {
                 Log.d(DownloadCommand.class.getName(), "verifyValid, network task is not valid");
                 valid = false;
-                notRunningCount = 0;
+                stopped = false;
                 return;
             }
             if (databaseTask.isRunning()) {
                 Log.d(DownloadCommand.class.getName(), "verifyValid, network task is valid and running");
                 valid = true;
-                notRunningCount = 0;
+                stopped = false;
                 return;
             }
             Log.d(DownloadCommand.class.getName(), "verifyValid, network task is not running");
-            valid = true;
-            notRunningCount++;
-            if (notRunningCount >= 2) {
-                Log.d(DownloadCommand.class.getName(), "verifyValid, network task is not running, not running count exceeded");
-                valid = false;
-            }
+            valid = false;
+            stopped = true;
         } catch (Exception exc) {
             Log.e(DownloadCommand.class.getName(), "Exception while verifying valid state.");
             valid = true;
+            stopped = false;
         }
     }
 

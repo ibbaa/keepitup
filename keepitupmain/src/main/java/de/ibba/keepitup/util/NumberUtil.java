@@ -23,7 +23,7 @@ public class NumberUtil {
 
     public static long getLongValue(Object value, long defaultValue) {
         if (isValidLongValue(value)) {
-            return Long.valueOf(value.toString());
+            return Long.parseLong(value.toString());
         }
         return defaultValue;
     }
@@ -43,7 +43,7 @@ public class NumberUtil {
 
     public static int getIntValue(Object value, int defaultValue) {
         if (isValidIntValue(value)) {
-            return Integer.valueOf(value.toString());
+            return Integer.parseInt(value.toString());
         }
         return defaultValue;
     }

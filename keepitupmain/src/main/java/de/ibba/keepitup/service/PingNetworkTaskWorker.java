@@ -69,9 +69,10 @@ public class PingNetworkTaskWorker extends NetworkTaskWorker {
         int timeout = getResources().getInteger(R.integer.ping_timeout) * count * 2;
         Log.d(PingNetworkTaskWorker.class.getName(), "Creating ExecutorService");
         ExecutorService executorService = Executors.newSingleThreadExecutor();
+        Future<PingCommandResult> pingResultFuture = null;
         try {
             Log.d(PingNetworkTaskWorker.class.getName(), "Executing " + pingCommand.getClass().getSimpleName() + " with a timeout of " + timeout);
-            Future<PingCommandResult> pingResultFuture = executorService.submit(pingCommand);
+            pingResultFuture = executorService.submit(pingCommand);
             PingCommandResult pingResult = pingResultFuture.get(timeout, TimeUnit.SECONDS);
             Log.d(PingNetworkTaskWorker.class.getName(), pingCommand.getClass().getSimpleName() + " returned " + pingResult);
             if (pingResult.getException() == null && pingResult.getProcessReturnCode() == 0) {
@@ -91,6 +92,10 @@ public class PingNetworkTaskWorker extends NetworkTaskWorker {
             Log.d(PingNetworkTaskWorker.class.getName(), "Error executing " + pingCommand.getClass().getName(), exc);
             logEntry.setSuccess(false);
             logEntry.setMessage(getMessageFromException(getResources().getString(R.string.text_ping_error, address), exc, timeout));
+            if (pingResultFuture != null && isInterrupted(exc)) {
+                Log.d(PingNetworkTaskWorker.class.getName(), "Cancelling " + pingCommand.getClass().getSimpleName());
+                pingResultFuture.cancel(true);
+            }
         } finally {
             Log.d(PingNetworkTaskWorker.class.getName(), "Shutting down ExecutorService");
             executorService.shutdownNow();
