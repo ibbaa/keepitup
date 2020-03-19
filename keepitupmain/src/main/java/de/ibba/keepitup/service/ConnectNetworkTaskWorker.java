@@ -67,9 +67,10 @@ public class ConnectNetworkTaskWorker extends NetworkTaskWorker {
         int connectTimeout = getResources().getInteger(R.integer.connect_timeout) * count * 2;
         Log.d(ConnectNetworkTaskWorker.class.getName(), "Creating ExecutorService");
         ExecutorService executorService = Executors.newSingleThreadExecutor();
+        Future<ConnectCommandResult> connectResultFuture = null;
         try {
             Log.d(ConnectNetworkTaskWorker.class.getName(), "Executing " + connectCommand.getClass().getSimpleName() + " with a timeout of " + connectTimeout);
-            Future<ConnectCommandResult> connectResultFuture = executorService.submit(connectCommand);
+            connectResultFuture = executorService.submit(connectCommand);
             ConnectCommandResult connectResult = connectResultFuture.get(connectTimeout, TimeUnit.SECONDS);
             Log.d(ConnectNetworkTaskWorker.class.getName(), connectCommand.getClass().getSimpleName() + " returned " + connectResult);
             if (connectResult.isSuccess()) {
@@ -85,6 +86,10 @@ public class ConnectNetworkTaskWorker extends NetworkTaskWorker {
             Log.d(ConnectNetworkTaskWorker.class.getName(), "Error executing " + connectCommand.getClass().getName(), exc);
             logEntry.setSuccess(false);
             logEntry.setMessage(getMessageFromException(getResources().getString(R.string.text_connect_failure, getAddressWithPort(address.getHostAddress(), port, ip6)), exc, connectTimeout));
+            if (connectResultFuture != null && isInterrupted(exc)) {
+                Log.d(ConnectNetworkTaskWorker.class.getName(), "Cancelling " + connectCommand.getClass().getSimpleName());
+                connectResultFuture.cancel(true);
+            }
         } finally {
             Log.d(ConnectNetworkTaskWorker.class.getName(), "Shutting down ExecutorService");
             executorService.shutdownNow();
