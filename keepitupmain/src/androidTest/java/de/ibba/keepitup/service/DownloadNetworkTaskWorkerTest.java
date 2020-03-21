@@ -39,13 +39,11 @@ import static org.junit.Assert.assertTrue;
 @RunWith(AndroidJUnit4.class)
 public class DownloadNetworkTaskWorkerTest {
 
-    private TestDownloadNetworkTaskWorker downloadNetworkTaskWorker;
     private MockFileManager fileManager;
     private PreferenceManager preferenceManager;
 
     @Before
     public void beforeEachTestMethod() {
-        downloadNetworkTaskWorker = new TestDownloadNetworkTaskWorker(TestRegistry.getContext(), getNetworkTask(), null);
         fileManager = new MockFileManager();
         fileManager.setInternalDownloadDirectory(new File("test"));
         preferenceManager = new PreferenceManager(TestRegistry.getContext());
@@ -59,7 +57,8 @@ public class DownloadNetworkTaskWorkerTest {
         preferenceManager.removeAllPreferences();
     }
 
-    private void prepareTestDownloadNetworkTaskWorker(DNSLookupResult dnsLookupResult, DownloadCommandResult downloadCommandResult, RuntimeException exception) throws Exception {
+    private TestDownloadNetworkTaskWorker prepareTestDownloadNetworkTaskWorker(DNSLookupResult dnsLookupResult, DownloadCommandResult downloadCommandResult, RuntimeException exception) throws Exception {
+        TestDownloadNetworkTaskWorker downloadNetworkTaskWorker = new TestDownloadNetworkTaskWorker(TestRegistry.getContext(), getNetworkTask(), null);
         MockDNSLookup mockDNSLookup = new MockDNSLookup("127.0.0.1", dnsLookupResult);
         MockDownloadCommand mockDownloadCommand;
         if (exception == null) {
@@ -73,20 +72,35 @@ public class DownloadNetworkTaskWorkerTest {
         MockTimeService timeService = (MockTimeService) downloadNetworkTaskWorker.getTimeService();
         timeService.setTimestamp(getTestTimestamp());
         timeService.setTimestamp2(getTestTimestamp());
+        return downloadNetworkTaskWorker;
     }
 
-    private void prepareTestDownloadNetworkTaskWorker(DNSLookupResult dnsLookupResult, DownloadCommandResult downloadCommandResult) throws Exception {
-        prepareTestDownloadNetworkTaskWorker(dnsLookupResult, downloadCommandResult, null);
+    private TestDownloadNetworkTaskWorker prepareBlockingTestDownloadNetworkTaskWorker(DNSLookupResult dnsLookupResult, DownloadCommandResult downloadCommandResult) throws Exception {
+        TestDownloadNetworkTaskWorker downloadNetworkTaskWorker = new TestDownloadNetworkTaskWorker(TestRegistry.getContext(), getNetworkTask(), null);
+        MockDNSLookup mockDNSLookup = new MockDNSLookup("127.0.0.1", dnsLookupResult);
+        MockDownloadCommand mockDownloadCommand;
+        mockDownloadCommand = new MockDownloadCommand(TestRegistry.getContext(), getNetworkTask(), new URL("http://127.0.0.1"), new File("folder"), true, downloadCommandResult, true);
+        downloadNetworkTaskWorker.setMockDNSLookup(mockDNSLookup);
+        downloadNetworkTaskWorker.setMockDownloadCommand(mockDownloadCommand);
+        downloadNetworkTaskWorker.setMockFileManager(fileManager);
+        MockTimeService timeService = (MockTimeService) downloadNetworkTaskWorker.getTimeService();
+        timeService.setTimestamp(getTestTimestamp());
+        timeService.setTimestamp2(getTestTimestamp());
+        return downloadNetworkTaskWorker;
     }
 
-    private void prepareTestDownloadNetworkTaskWorker(DNSLookupResult dnsLookupResult, RuntimeException exception) throws Exception {
-        prepareTestDownloadNetworkTaskWorker(dnsLookupResult, null, exception);
+    private TestDownloadNetworkTaskWorker prepareTestDownloadNetworkTaskWorker(DNSLookupResult dnsLookupResult, DownloadCommandResult downloadCommandResult) throws Exception {
+        return prepareTestDownloadNetworkTaskWorker(dnsLookupResult, downloadCommandResult, null);
+    }
+
+    private TestDownloadNetworkTaskWorker prepareTestDownloadNetworkTaskWorker(DNSLookupResult dnsLookupResult, RuntimeException exception) throws Exception {
+        return prepareTestDownloadNetworkTaskWorker(dnsLookupResult, null, exception);
     }
 
     @Test
     public void testInvalidURL() throws Exception {
         DNSLookupResult dnsLookupResult = new DNSLookupResult(Arrays.asList(InetAddress.getByName("127.0.0.1"), InetAddress.getByName("::1")), null);
-        prepareTestDownloadNetworkTaskWorker(dnsLookupResult, (DownloadCommandResult) null);
+        TestDownloadNetworkTaskWorker downloadNetworkTaskWorker = prepareTestDownloadNetworkTaskWorker(dnsLookupResult, (DownloadCommandResult) null);
         NetworkTask networkTask = getNetworkTask();
         networkTask.setAddress("invalid url");
         LogEntry logEntry = downloadNetworkTaskWorker.execute(networkTask);
@@ -99,7 +113,7 @@ public class DownloadNetworkTaskWorkerTest {
     @Test
     public void testInvalidInternalFolder() throws Exception {
         DNSLookupResult dnsLookupResult = new DNSLookupResult(Arrays.asList(InetAddress.getByName("127.0.0.1"), InetAddress.getByName("::1")), null);
-        prepareTestDownloadNetworkTaskWorker(dnsLookupResult, (DownloadCommandResult) null);
+        TestDownloadNetworkTaskWorker downloadNetworkTaskWorker = prepareTestDownloadNetworkTaskWorker(dnsLookupResult, (DownloadCommandResult) null);
         preferenceManager.setPreferenceDownloadExternalStorage(false);
         fileManager.setInternalDownloadDirectory(null);
         fileManager.setDefaultDownloadDirectoryName("download");
@@ -113,7 +127,7 @@ public class DownloadNetworkTaskWorkerTest {
     @Test
     public void testInvalidExternalFolder() throws Exception {
         DNSLookupResult dnsLookupResult = new DNSLookupResult(Arrays.asList(InetAddress.getByName("127.0.0.1"), InetAddress.getByName("::1")), null);
-        prepareTestDownloadNetworkTaskWorker(dnsLookupResult, (DownloadCommandResult) null);
+        TestDownloadNetworkTaskWorker downloadNetworkTaskWorker = prepareTestDownloadNetworkTaskWorker(dnsLookupResult, (DownloadCommandResult) null);
         preferenceManager.setPreferenceDownloadExternalStorage(true);
         fileManager.setExternalDirectory(null);
         LogEntry logEntry = downloadNetworkTaskWorker.execute(getNetworkTask());
@@ -127,7 +141,7 @@ public class DownloadNetworkTaskWorkerTest {
     public void testConnectionFailed() throws Exception {
         DNSLookupResult dnsLookupResult = new DNSLookupResult(Arrays.asList(InetAddress.getByName("127.0.0.1"), InetAddress.getByName("::1")), null);
         DownloadCommandResult downloadCommandResult = new DownloadCommandResult(false, false, false, false, false, false, -1, null, null, 0, null);
-        prepareTestDownloadNetworkTaskWorker(dnsLookupResult, downloadCommandResult);
+        TestDownloadNetworkTaskWorker downloadNetworkTaskWorker = prepareTestDownloadNetworkTaskWorker(dnsLookupResult, downloadCommandResult);
         LogEntry logEntry = downloadNetworkTaskWorker.execute(getNetworkTask());
         assertEquals(45, logEntry.getNetworkTaskId());
         assertEquals(getTestTimestamp(), logEntry.getTimestamp());
@@ -139,7 +153,7 @@ public class DownloadNetworkTaskWorkerTest {
     public void testHTTPResponseCodeNotOk() throws Exception {
         DNSLookupResult dnsLookupResult = new DNSLookupResult(Arrays.asList(InetAddress.getByName("127.0.0.1"), InetAddress.getByName("::1")), null);
         DownloadCommandResult downloadCommandResult = new DownloadCommandResult(true, false, false, false, false, false, HttpURLConnection.HTTP_NOT_FOUND, "message", null, 20, null);
-        prepareTestDownloadNetworkTaskWorker(dnsLookupResult, downloadCommandResult);
+        TestDownloadNetworkTaskWorker downloadNetworkTaskWorker = prepareTestDownloadNetworkTaskWorker(dnsLookupResult, downloadCommandResult);
         LogEntry logEntry = downloadNetworkTaskWorker.execute(getNetworkTask());
         assertEquals(45, logEntry.getNetworkTaskId());
         assertEquals(getTestTimestamp(), logEntry.getTimestamp());
@@ -151,7 +165,7 @@ public class DownloadNetworkTaskWorkerTest {
     public void testHTTPResponseCodeNonHTTP() throws Exception {
         DNSLookupResult dnsLookupResult = new DNSLookupResult(Arrays.asList(InetAddress.getByName("127.0.0.1"), InetAddress.getByName("::1")), null);
         DownloadCommandResult downloadCommandResult = new DownloadCommandResult(true, true, true, true, true, false, -1, "message", null, 20, null);
-        prepareTestDownloadNetworkTaskWorker(dnsLookupResult, downloadCommandResult);
+        TestDownloadNetworkTaskWorker downloadNetworkTaskWorker = prepareTestDownloadNetworkTaskWorker(dnsLookupResult, downloadCommandResult);
         LogEntry logEntry = downloadNetworkTaskWorker.execute(getNetworkTask());
         assertEquals(45, logEntry.getNetworkTaskId());
         assertEquals(getTestTimestamp(), logEntry.getTimestamp());
@@ -163,7 +177,7 @@ public class DownloadNetworkTaskWorkerTest {
     public void testDownloadStoppedFileDoesNotExist() throws Exception {
         DNSLookupResult dnsLookupResult = new DNSLookupResult(Arrays.asList(InetAddress.getByName("127.0.0.1"), InetAddress.getByName("::1")), null);
         DownloadCommandResult downloadCommandResult = new DownloadCommandResult(true, false, false, false, false, true, HttpURLConnection.HTTP_OK, null, null, 0, null);
-        prepareTestDownloadNetworkTaskWorker(dnsLookupResult, downloadCommandResult);
+        TestDownloadNetworkTaskWorker downloadNetworkTaskWorker = prepareTestDownloadNetworkTaskWorker(dnsLookupResult, downloadCommandResult);
         LogEntry logEntry = downloadNetworkTaskWorker.execute(getNetworkTask());
         assertEquals(45, logEntry.getNetworkTaskId());
         assertEquals(getTestTimestamp(), logEntry.getTimestamp());
@@ -175,7 +189,7 @@ public class DownloadNetworkTaskWorkerTest {
     public void testDownloadStoppedFileDoesNotExistWithException() throws Exception {
         DNSLookupResult dnsLookupResult = new DNSLookupResult(Arrays.asList(InetAddress.getByName("127.0.0.1"), InetAddress.getByName("::1")), null);
         DownloadCommandResult downloadCommandResult = new DownloadCommandResult(true, false, false, false, false, true, HttpURLConnection.HTTP_OK, null, null, 0, new Exception("Test"));
-        prepareTestDownloadNetworkTaskWorker(dnsLookupResult, downloadCommandResult);
+        TestDownloadNetworkTaskWorker downloadNetworkTaskWorker = prepareTestDownloadNetworkTaskWorker(dnsLookupResult, downloadCommandResult);
         LogEntry logEntry = downloadNetworkTaskWorker.execute(getNetworkTask());
         assertEquals(45, logEntry.getNetworkTaskId());
         assertEquals(getTestTimestamp(), logEntry.getTimestamp());
@@ -187,7 +201,7 @@ public class DownloadNetworkTaskWorkerTest {
     public void testDownloadStoppedFileExistNotDelete() throws Exception {
         DNSLookupResult dnsLookupResult = new DNSLookupResult(Arrays.asList(InetAddress.getByName("127.0.0.1"), InetAddress.getByName("::1")), null);
         DownloadCommandResult downloadCommandResult = new DownloadCommandResult(true, false, true, false, false, true, HttpURLConnection.HTTP_OK, null, "testfile", 1000, null);
-        prepareTestDownloadNetworkTaskWorker(dnsLookupResult, downloadCommandResult);
+        TestDownloadNetworkTaskWorker downloadNetworkTaskWorker = prepareTestDownloadNetworkTaskWorker(dnsLookupResult, downloadCommandResult);
         preferenceManager.setPreferenceDownloadKeep(true);
         preferenceManager.setPreferenceDownloadExternalStorage(true);
         fileManager.setExternalDirectory(new File("Test"));
@@ -202,7 +216,7 @@ public class DownloadNetworkTaskWorkerTest {
     public void testDownloadStoppedFileExistNotDeleteWithException() throws Exception {
         DNSLookupResult dnsLookupResult = new DNSLookupResult(Arrays.asList(InetAddress.getByName("127.0.0.1"), InetAddress.getByName("::1")), null);
         DownloadCommandResult downloadCommandResult = new DownloadCommandResult(true, false, true, false, false, true, HttpURLConnection.HTTP_OK, null, "testfile", 10000, new Exception("Test"));
-        prepareTestDownloadNetworkTaskWorker(dnsLookupResult, downloadCommandResult);
+        TestDownloadNetworkTaskWorker downloadNetworkTaskWorker = prepareTestDownloadNetworkTaskWorker(dnsLookupResult, downloadCommandResult);
         preferenceManager.setPreferenceDownloadKeep(true);
         preferenceManager.setPreferenceDownloadExternalStorage(true);
         fileManager.setExternalDirectory(new File("Test"));
@@ -217,7 +231,7 @@ public class DownloadNetworkTaskWorkerTest {
     public void testDownloadStoppedFileExistDeleteFailedInternalStorage() throws Exception {
         DNSLookupResult dnsLookupResult = new DNSLookupResult(Arrays.asList(InetAddress.getByName("127.0.0.1"), InetAddress.getByName("::1")), null);
         DownloadCommandResult downloadCommandResult = new DownloadCommandResult(true, false, true, false, false, true, HttpURLConnection.HTTP_OK, null, "testfile", 1, null);
-        prepareTestDownloadNetworkTaskWorker(dnsLookupResult, downloadCommandResult);
+        TestDownloadNetworkTaskWorker downloadNetworkTaskWorker = prepareTestDownloadNetworkTaskWorker(dnsLookupResult, downloadCommandResult);
         LogEntry logEntry = downloadNetworkTaskWorker.execute(getNetworkTask());
         assertEquals(45, logEntry.getNetworkTaskId());
         assertEquals(getTestTimestamp(), logEntry.getTimestamp());
@@ -229,7 +243,7 @@ public class DownloadNetworkTaskWorkerTest {
     public void testDownloadStoppedFileExistDeleteFailedInternalStorageWithException() throws Exception {
         DNSLookupResult dnsLookupResult = new DNSLookupResult(Arrays.asList(InetAddress.getByName("127.0.0.1"), InetAddress.getByName("::1")), null);
         DownloadCommandResult downloadCommandResult = new DownloadCommandResult(true, false, true, false, false, true, HttpURLConnection.HTTP_OK, null, "testfile", 5, new Exception("Test"));
-        prepareTestDownloadNetworkTaskWorker(dnsLookupResult, downloadCommandResult);
+        TestDownloadNetworkTaskWorker downloadNetworkTaskWorker = prepareTestDownloadNetworkTaskWorker(dnsLookupResult, downloadCommandResult);
         LogEntry logEntry = downloadNetworkTaskWorker.execute(getNetworkTask());
         assertEquals(45, logEntry.getNetworkTaskId());
         assertEquals(getTestTimestamp(), logEntry.getTimestamp());
@@ -241,7 +255,7 @@ public class DownloadNetworkTaskWorkerTest {
     public void testDownloadStoppedFileExistDeleteFailedExternalStorage() throws Exception {
         DNSLookupResult dnsLookupResult = new DNSLookupResult(Arrays.asList(InetAddress.getByName("127.0.0.1"), InetAddress.getByName("::1")), null);
         DownloadCommandResult downloadCommandResult = new DownloadCommandResult(true, false, true, false, false, true, HttpURLConnection.HTTP_OK, null, "testfile", 100000, null);
-        prepareTestDownloadNetworkTaskWorker(dnsLookupResult, downloadCommandResult);
+        TestDownloadNetworkTaskWorker downloadNetworkTaskWorker = prepareTestDownloadNetworkTaskWorker(dnsLookupResult, downloadCommandResult);
         preferenceManager.setPreferenceDownloadKeep(false);
         preferenceManager.setPreferenceDownloadExternalStorage(true);
         fileManager.setExternalDirectory(new File("Test"));
@@ -256,7 +270,7 @@ public class DownloadNetworkTaskWorkerTest {
     public void testDownloadStoppedFileExistDeleteFailedExternalStorageWithException() throws Exception {
         DNSLookupResult dnsLookupResult = new DNSLookupResult(Arrays.asList(InetAddress.getByName("127.0.0.1"), InetAddress.getByName("::1")), null);
         DownloadCommandResult downloadCommandResult = new DownloadCommandResult(true, false, true, false, false, true, HttpURLConnection.HTTP_OK, null, "testfile", 9, new Exception("Test"));
-        prepareTestDownloadNetworkTaskWorker(dnsLookupResult, downloadCommandResult);
+        TestDownloadNetworkTaskWorker downloadNetworkTaskWorker = prepareTestDownloadNetworkTaskWorker(dnsLookupResult, downloadCommandResult);
         preferenceManager.setPreferenceDownloadKeep(false);
         preferenceManager.setPreferenceDownloadExternalStorage(true);
         fileManager.setExternalDirectory(new File("Test"));
@@ -271,7 +285,7 @@ public class DownloadNetworkTaskWorkerTest {
     public void testDownloadStoppedFileExistDeleteSuccess() throws Exception {
         DNSLookupResult dnsLookupResult = new DNSLookupResult(Arrays.asList(InetAddress.getByName("127.0.0.1"), InetAddress.getByName("::1")), null);
         DownloadCommandResult downloadCommandResult = new DownloadCommandResult(true, false, true, true, false, true, HttpURLConnection.HTTP_OK, null, "testfile", 1, null);
-        prepareTestDownloadNetworkTaskWorker(dnsLookupResult, downloadCommandResult);
+        TestDownloadNetworkTaskWorker downloadNetworkTaskWorker = prepareTestDownloadNetworkTaskWorker(dnsLookupResult, downloadCommandResult);
         LogEntry logEntry = downloadNetworkTaskWorker.execute(getNetworkTask());
         assertEquals(45, logEntry.getNetworkTaskId());
         assertEquals(getTestTimestamp(), logEntry.getTimestamp());
@@ -283,7 +297,7 @@ public class DownloadNetworkTaskWorkerTest {
     public void testDownloadStoppedFileExistDeleteSuccessWithException() throws Exception {
         DNSLookupResult dnsLookupResult = new DNSLookupResult(Arrays.asList(InetAddress.getByName("127.0.0.1"), InetAddress.getByName("::1")), null);
         DownloadCommandResult downloadCommandResult = new DownloadCommandResult(true, false, true, true, false, true, HttpURLConnection.HTTP_OK, null, "testfile", 1, new Exception("Test"));
-        prepareTestDownloadNetworkTaskWorker(dnsLookupResult, downloadCommandResult);
+        TestDownloadNetworkTaskWorker downloadNetworkTaskWorker = prepareTestDownloadNetworkTaskWorker(dnsLookupResult, downloadCommandResult);
         LogEntry logEntry = downloadNetworkTaskWorker.execute(getNetworkTask());
         assertEquals(45, logEntry.getNetworkTaskId());
         assertEquals(getTestTimestamp(), logEntry.getTimestamp());
@@ -295,7 +309,7 @@ public class DownloadNetworkTaskWorkerTest {
     public void testDownloadInvalidFileDoesNotExist() throws Exception {
         DNSLookupResult dnsLookupResult = new DNSLookupResult(Arrays.asList(InetAddress.getByName("127.0.0.1"), InetAddress.getByName("::1")), null);
         DownloadCommandResult downloadCommandResult = new DownloadCommandResult(true, false, false, false, false, false, HttpURLConnection.HTTP_OK, null, null, 0, null);
-        prepareTestDownloadNetworkTaskWorker(dnsLookupResult, downloadCommandResult);
+        TestDownloadNetworkTaskWorker downloadNetworkTaskWorker = prepareTestDownloadNetworkTaskWorker(dnsLookupResult, downloadCommandResult);
         LogEntry logEntry = downloadNetworkTaskWorker.execute(getNetworkTask());
         assertEquals(45, logEntry.getNetworkTaskId());
         assertEquals(getTestTimestamp(), logEntry.getTimestamp());
@@ -307,7 +321,7 @@ public class DownloadNetworkTaskWorkerTest {
     public void testDownloadInvalidFileDoesNotExistWithException() throws Exception {
         DNSLookupResult dnsLookupResult = new DNSLookupResult(Arrays.asList(InetAddress.getByName("127.0.0.1"), InetAddress.getByName("::1")), null);
         DownloadCommandResult downloadCommandResult = new DownloadCommandResult(true, false, false, false, false, false, HttpURLConnection.HTTP_OK, null, null, 0, new Exception("Test"));
-        prepareTestDownloadNetworkTaskWorker(dnsLookupResult, downloadCommandResult);
+        TestDownloadNetworkTaskWorker downloadNetworkTaskWorker = prepareTestDownloadNetworkTaskWorker(dnsLookupResult, downloadCommandResult);
         LogEntry logEntry = downloadNetworkTaskWorker.execute(getNetworkTask());
         assertEquals(45, logEntry.getNetworkTaskId());
         assertEquals(getTestTimestamp(), logEntry.getTimestamp());
@@ -319,7 +333,7 @@ public class DownloadNetworkTaskWorkerTest {
     public void testDownloadInvalidFileExistNotDelete() throws Exception {
         DNSLookupResult dnsLookupResult = new DNSLookupResult(Arrays.asList(InetAddress.getByName("127.0.0.1"), InetAddress.getByName("::1")), null);
         DownloadCommandResult downloadCommandResult = new DownloadCommandResult(true, false, true, false, false, false, HttpURLConnection.HTTP_OK, null, "testfile", 3600000, null);
-        prepareTestDownloadNetworkTaskWorker(dnsLookupResult, downloadCommandResult);
+        TestDownloadNetworkTaskWorker downloadNetworkTaskWorker = prepareTestDownloadNetworkTaskWorker(dnsLookupResult, downloadCommandResult);
         preferenceManager.setPreferenceDownloadKeep(true);
         preferenceManager.setPreferenceDownloadExternalStorage(true);
         fileManager.setExternalDirectory(new File("Test"));
@@ -334,7 +348,7 @@ public class DownloadNetworkTaskWorkerTest {
     public void testDownloadInvalidFileExistNotDeleteWithException() throws Exception {
         DNSLookupResult dnsLookupResult = new DNSLookupResult(Arrays.asList(InetAddress.getByName("127.0.0.1"), InetAddress.getByName("::1")), null);
         DownloadCommandResult downloadCommandResult = new DownloadCommandResult(true, false, true, false, false, false, HttpURLConnection.HTTP_OK, null, "testfile", 3, new Exception("Test"));
-        prepareTestDownloadNetworkTaskWorker(dnsLookupResult, downloadCommandResult);
+        TestDownloadNetworkTaskWorker downloadNetworkTaskWorker = prepareTestDownloadNetworkTaskWorker(dnsLookupResult, downloadCommandResult);
         preferenceManager.setPreferenceDownloadKeep(true);
         preferenceManager.setPreferenceDownloadExternalStorage(true);
         fileManager.setExternalDirectory(new File("Test"));
@@ -349,7 +363,7 @@ public class DownloadNetworkTaskWorkerTest {
     public void testDownloadInvalidFileExistDeleteFailedInternalStorage() throws Exception {
         DNSLookupResult dnsLookupResult = new DNSLookupResult(Arrays.asList(InetAddress.getByName("127.0.0.1"), InetAddress.getByName("::1")), null);
         DownloadCommandResult downloadCommandResult = new DownloadCommandResult(true, false, true, false, false, false, HttpURLConnection.HTTP_OK, null, "testfile", 1000, null);
-        prepareTestDownloadNetworkTaskWorker(dnsLookupResult, downloadCommandResult);
+        TestDownloadNetworkTaskWorker downloadNetworkTaskWorker = prepareTestDownloadNetworkTaskWorker(dnsLookupResult, downloadCommandResult);
         LogEntry logEntry = downloadNetworkTaskWorker.execute(getNetworkTask());
         assertEquals(45, logEntry.getNetworkTaskId());
         assertEquals(getTestTimestamp(), logEntry.getTimestamp());
@@ -361,7 +375,7 @@ public class DownloadNetworkTaskWorkerTest {
     public void testDownloadInvalidFileExistDeleteFailedInternalStorageWithExcpetion() throws Exception {
         DNSLookupResult dnsLookupResult = new DNSLookupResult(Arrays.asList(InetAddress.getByName("127.0.0.1"), InetAddress.getByName("::1")), null);
         DownloadCommandResult downloadCommandResult = new DownloadCommandResult(true, false, true, false, false, false, HttpURLConnection.HTTP_OK, null, "testfile", 12000, new Exception("Test"));
-        prepareTestDownloadNetworkTaskWorker(dnsLookupResult, downloadCommandResult);
+        TestDownloadNetworkTaskWorker downloadNetworkTaskWorker = prepareTestDownloadNetworkTaskWorker(dnsLookupResult, downloadCommandResult);
         LogEntry logEntry = downloadNetworkTaskWorker.execute(getNetworkTask());
         assertEquals(45, logEntry.getNetworkTaskId());
         assertEquals(getTestTimestamp(), logEntry.getTimestamp());
@@ -373,7 +387,7 @@ public class DownloadNetworkTaskWorkerTest {
     public void testDownloadInvalidFileExistDeleteFailedExternalStorage() throws Exception {
         DNSLookupResult dnsLookupResult = new DNSLookupResult(Arrays.asList(InetAddress.getByName("127.0.0.1"), InetAddress.getByName("::1")), null);
         DownloadCommandResult downloadCommandResult = new DownloadCommandResult(true, false, true, false, false, false, HttpURLConnection.HTTP_OK, null, "testfile", 20000, null);
-        prepareTestDownloadNetworkTaskWorker(dnsLookupResult, downloadCommandResult);
+        TestDownloadNetworkTaskWorker downloadNetworkTaskWorker = prepareTestDownloadNetworkTaskWorker(dnsLookupResult, downloadCommandResult);
         preferenceManager.setPreferenceDownloadKeep(false);
         preferenceManager.setPreferenceDownloadExternalStorage(true);
         fileManager.setExternalDirectory(new File("Test"));
@@ -388,7 +402,7 @@ public class DownloadNetworkTaskWorkerTest {
     public void testDownloadInvalidFileExistDeleteFailedExternalStorageWithException() throws Exception {
         DNSLookupResult dnsLookupResult = new DNSLookupResult(Arrays.asList(InetAddress.getByName("127.0.0.1"), InetAddress.getByName("::1")), null);
         DownloadCommandResult downloadCommandResult = new DownloadCommandResult(true, false, true, false, false, false, HttpURLConnection.HTTP_OK, null, "testfile", 7200000, new Exception("Test"));
-        prepareTestDownloadNetworkTaskWorker(dnsLookupResult, downloadCommandResult);
+        TestDownloadNetworkTaskWorker downloadNetworkTaskWorker = prepareTestDownloadNetworkTaskWorker(dnsLookupResult, downloadCommandResult);
         preferenceManager.setPreferenceDownloadKeep(false);
         preferenceManager.setPreferenceDownloadExternalStorage(true);
         fileManager.setExternalDirectory(new File("Test"));
@@ -403,7 +417,7 @@ public class DownloadNetworkTaskWorkerTest {
     public void testDownloadInvalidFileExistDeleteSuccess() throws Exception {
         DNSLookupResult dnsLookupResult = new DNSLookupResult(Arrays.asList(InetAddress.getByName("127.0.0.1"), InetAddress.getByName("::1")), null);
         DownloadCommandResult downloadCommandResult = new DownloadCommandResult(true, false, true, true, false, false, HttpURLConnection.HTTP_OK, null, "testfile", 50, null);
-        prepareTestDownloadNetworkTaskWorker(dnsLookupResult, downloadCommandResult);
+        TestDownloadNetworkTaskWorker downloadNetworkTaskWorker = prepareTestDownloadNetworkTaskWorker(dnsLookupResult, downloadCommandResult);
         LogEntry logEntry = downloadNetworkTaskWorker.execute(getNetworkTask());
         assertEquals(45, logEntry.getNetworkTaskId());
         assertEquals(getTestTimestamp(), logEntry.getTimestamp());
@@ -415,7 +429,7 @@ public class DownloadNetworkTaskWorkerTest {
     public void testDownloadInvalidFileExistDeleteSuccessWithException() throws Exception {
         DNSLookupResult dnsLookupResult = new DNSLookupResult(Arrays.asList(InetAddress.getByName("127.0.0.1"), InetAddress.getByName("::1")), null);
         DownloadCommandResult downloadCommandResult = new DownloadCommandResult(true, false, true, true, false, false, HttpURLConnection.HTTP_OK, null, "testfile", 3, new Exception("Test"));
-        prepareTestDownloadNetworkTaskWorker(dnsLookupResult, downloadCommandResult);
+        TestDownloadNetworkTaskWorker downloadNetworkTaskWorker = prepareTestDownloadNetworkTaskWorker(dnsLookupResult, downloadCommandResult);
         LogEntry logEntry = downloadNetworkTaskWorker.execute(getNetworkTask());
         assertEquals(45, logEntry.getNetworkTaskId());
         assertEquals(getTestTimestamp(), logEntry.getTimestamp());
@@ -427,7 +441,7 @@ public class DownloadNetworkTaskWorkerTest {
     public void testDownloadUnknownErrorFileDoesNotExist() throws Exception {
         DNSLookupResult dnsLookupResult = new DNSLookupResult(Arrays.asList(InetAddress.getByName("127.0.0.1"), InetAddress.getByName("::1")), null);
         DownloadCommandResult downloadCommandResult = new DownloadCommandResult(true, false, false, false, true, false, HttpURLConnection.HTTP_OK, null, null, 0, null);
-        prepareTestDownloadNetworkTaskWorker(dnsLookupResult, downloadCommandResult);
+        TestDownloadNetworkTaskWorker downloadNetworkTaskWorker = prepareTestDownloadNetworkTaskWorker(dnsLookupResult, downloadCommandResult);
         LogEntry logEntry = downloadNetworkTaskWorker.execute(getNetworkTask());
         assertEquals(45, logEntry.getNetworkTaskId());
         assertEquals(getTestTimestamp(), logEntry.getTimestamp());
@@ -439,7 +453,7 @@ public class DownloadNetworkTaskWorkerTest {
     public void testDownloadUnknownErrorFileDoesNotExistWithException() throws Exception {
         DNSLookupResult dnsLookupResult = new DNSLookupResult(Arrays.asList(InetAddress.getByName("127.0.0.1"), InetAddress.getByName("::1")), null);
         DownloadCommandResult downloadCommandResult = new DownloadCommandResult(true, false, false, false, true, false, HttpURLConnection.HTTP_OK, null, null, 0, new Exception("Test"));
-        prepareTestDownloadNetworkTaskWorker(dnsLookupResult, downloadCommandResult);
+        TestDownloadNetworkTaskWorker downloadNetworkTaskWorker = prepareTestDownloadNetworkTaskWorker(dnsLookupResult, downloadCommandResult);
         LogEntry logEntry = downloadNetworkTaskWorker.execute(getNetworkTask());
         assertEquals(45, logEntry.getNetworkTaskId());
         assertEquals(getTestTimestamp(), logEntry.getTimestamp());
@@ -451,7 +465,7 @@ public class DownloadNetworkTaskWorkerTest {
     public void testDownloadUnknownErrorFileExistNotDelete() throws Exception {
         DNSLookupResult dnsLookupResult = new DNSLookupResult(Arrays.asList(InetAddress.getByName("127.0.0.1"), InetAddress.getByName("::1")), null);
         DownloadCommandResult downloadCommandResult = new DownloadCommandResult(true, false, true, false, true, false, HttpURLConnection.HTTP_OK, null, "testfile", 2000, null);
-        prepareTestDownloadNetworkTaskWorker(dnsLookupResult, downloadCommandResult);
+        TestDownloadNetworkTaskWorker downloadNetworkTaskWorker = prepareTestDownloadNetworkTaskWorker(dnsLookupResult, downloadCommandResult);
         preferenceManager.setPreferenceDownloadKeep(true);
         preferenceManager.setPreferenceDownloadExternalStorage(true);
         fileManager.setExternalDirectory(new File("Test"));
@@ -466,7 +480,7 @@ public class DownloadNetworkTaskWorkerTest {
     public void testDownloadUnknownErrorFileExistNotDeleteWithException() throws Exception {
         DNSLookupResult dnsLookupResult = new DNSLookupResult(Arrays.asList(InetAddress.getByName("127.0.0.1"), InetAddress.getByName("::1")), null);
         DownloadCommandResult downloadCommandResult = new DownloadCommandResult(true, false, true, false, true, false, HttpURLConnection.HTTP_OK, null, "testfile", 44, new Exception("Test"));
-        prepareTestDownloadNetworkTaskWorker(dnsLookupResult, downloadCommandResult);
+        TestDownloadNetworkTaskWorker downloadNetworkTaskWorker = prepareTestDownloadNetworkTaskWorker(dnsLookupResult, downloadCommandResult);
         preferenceManager.setPreferenceDownloadKeep(true);
         preferenceManager.setPreferenceDownloadExternalStorage(true);
         fileManager.setExternalDirectory(new File("Test"));
@@ -481,7 +495,7 @@ public class DownloadNetworkTaskWorkerTest {
     public void testDownloadUnknownErrorFileExistDeleteFailedInternalStorage() throws Exception {
         DNSLookupResult dnsLookupResult = new DNSLookupResult(Arrays.asList(InetAddress.getByName("127.0.0.1"), InetAddress.getByName("::1")), null);
         DownloadCommandResult downloadCommandResult = new DownloadCommandResult(true, false, true, false, true, false, HttpURLConnection.HTTP_OK, null, "testfile", 1000, null);
-        prepareTestDownloadNetworkTaskWorker(dnsLookupResult, downloadCommandResult);
+        TestDownloadNetworkTaskWorker downloadNetworkTaskWorker = prepareTestDownloadNetworkTaskWorker(dnsLookupResult, downloadCommandResult);
         LogEntry logEntry = downloadNetworkTaskWorker.execute(getNetworkTask());
         assertEquals(45, logEntry.getNetworkTaskId());
         assertEquals(getTestTimestamp(), logEntry.getTimestamp());
@@ -493,7 +507,7 @@ public class DownloadNetworkTaskWorkerTest {
     public void testDownloadUnknownErrorFileExistDeleteFailedInternalStorageWithException() throws Exception {
         DNSLookupResult dnsLookupResult = new DNSLookupResult(Arrays.asList(InetAddress.getByName("127.0.0.1"), InetAddress.getByName("::1")), null);
         DownloadCommandResult downloadCommandResult = new DownloadCommandResult(true, false, true, false, true, false, HttpURLConnection.HTTP_OK, null, "testfile", 1, new Exception("Test"));
-        prepareTestDownloadNetworkTaskWorker(dnsLookupResult, downloadCommandResult);
+        TestDownloadNetworkTaskWorker downloadNetworkTaskWorker = prepareTestDownloadNetworkTaskWorker(dnsLookupResult, downloadCommandResult);
         LogEntry logEntry = downloadNetworkTaskWorker.execute(getNetworkTask());
         assertEquals(45, logEntry.getNetworkTaskId());
         assertEquals(getTestTimestamp(), logEntry.getTimestamp());
@@ -505,7 +519,7 @@ public class DownloadNetworkTaskWorkerTest {
     public void testDownloadUnknownErrorFileExistDeleteFailedExternalStorage() throws Exception {
         DNSLookupResult dnsLookupResult = new DNSLookupResult(Arrays.asList(InetAddress.getByName("127.0.0.1"), InetAddress.getByName("::1")), null);
         DownloadCommandResult downloadCommandResult = new DownloadCommandResult(true, false, true, false, true, false, HttpURLConnection.HTTP_OK, null, "testfile", 3, null);
-        prepareTestDownloadNetworkTaskWorker(dnsLookupResult, downloadCommandResult);
+        TestDownloadNetworkTaskWorker downloadNetworkTaskWorker = prepareTestDownloadNetworkTaskWorker(dnsLookupResult, downloadCommandResult);
         preferenceManager.setPreferenceDownloadKeep(false);
         preferenceManager.setPreferenceDownloadExternalStorage(true);
         fileManager.setExternalDirectory(new File("Test"));
@@ -520,7 +534,7 @@ public class DownloadNetworkTaskWorkerTest {
     public void testDownloadUnknownErrorFileExistDeleteFailedExternalStorageWithException() throws Exception {
         DNSLookupResult dnsLookupResult = new DNSLookupResult(Arrays.asList(InetAddress.getByName("127.0.0.1"), InetAddress.getByName("::1")), null);
         DownloadCommandResult downloadCommandResult = new DownloadCommandResult(true, false, true, false, true, false, HttpURLConnection.HTTP_OK, null, "testfile", 500000, new Exception("Test"));
-        prepareTestDownloadNetworkTaskWorker(dnsLookupResult, downloadCommandResult);
+        TestDownloadNetworkTaskWorker downloadNetworkTaskWorker = prepareTestDownloadNetworkTaskWorker(dnsLookupResult, downloadCommandResult);
         preferenceManager.setPreferenceDownloadKeep(false);
         preferenceManager.setPreferenceDownloadExternalStorage(true);
         fileManager.setExternalDirectory(new File("Test"));
@@ -535,7 +549,7 @@ public class DownloadNetworkTaskWorkerTest {
     public void testDownloadUnknownErrorFileExistDeleteSuccess() throws Exception {
         DNSLookupResult dnsLookupResult = new DNSLookupResult(Arrays.asList(InetAddress.getByName("127.0.0.1"), InetAddress.getByName("::1")), null);
         DownloadCommandResult downloadCommandResult = new DownloadCommandResult(true, false, true, true, true, false, HttpURLConnection.HTTP_OK, null, "testfile", 2, null);
-        prepareTestDownloadNetworkTaskWorker(dnsLookupResult, downloadCommandResult);
+        TestDownloadNetworkTaskWorker downloadNetworkTaskWorker = prepareTestDownloadNetworkTaskWorker(dnsLookupResult, downloadCommandResult);
         LogEntry logEntry = downloadNetworkTaskWorker.execute(getNetworkTask());
         assertEquals(45, logEntry.getNetworkTaskId());
         assertEquals(getTestTimestamp(), logEntry.getTimestamp());
@@ -547,7 +561,7 @@ public class DownloadNetworkTaskWorkerTest {
     public void testDownloadUnknownErrorFileExistDeleteSuccessWithException() throws Exception {
         DNSLookupResult dnsLookupResult = new DNSLookupResult(Arrays.asList(InetAddress.getByName("127.0.0.1"), InetAddress.getByName("::1")), null);
         DownloadCommandResult downloadCommandResult = new DownloadCommandResult(true, false, true, true, true, false, HttpURLConnection.HTTP_OK, null, "testfile", 5, new Exception("Test"));
-        prepareTestDownloadNetworkTaskWorker(dnsLookupResult, downloadCommandResult);
+        TestDownloadNetworkTaskWorker downloadNetworkTaskWorker = prepareTestDownloadNetworkTaskWorker(dnsLookupResult, downloadCommandResult);
         LogEntry logEntry = downloadNetworkTaskWorker.execute(getNetworkTask());
         assertEquals(45, logEntry.getNetworkTaskId());
         assertEquals(getTestTimestamp(), logEntry.getTimestamp());
@@ -559,7 +573,7 @@ public class DownloadNetworkTaskWorkerTest {
     public void testDownloadExceptionOnCommandExecution() throws Exception {
         DNSLookupResult dnsLookupResult = new DNSLookupResult(Arrays.asList(InetAddress.getByName("127.0.0.1"), InetAddress.getByName("::1")), null);
         RuntimeException exception = new RuntimeException("Test");
-        prepareTestDownloadNetworkTaskWorker(dnsLookupResult, exception);
+        TestDownloadNetworkTaskWorker downloadNetworkTaskWorker = prepareTestDownloadNetworkTaskWorker(dnsLookupResult, exception);
         LogEntry logEntry = downloadNetworkTaskWorker.execute(getNetworkTask());
         assertEquals(45, logEntry.getNetworkTaskId());
         assertEquals(getTestTimestamp(), logEntry.getTimestamp());
@@ -571,7 +585,7 @@ public class DownloadNetworkTaskWorkerTest {
     public void testDownloadSuccessFileDoesNotExist() throws Exception {
         DNSLookupResult dnsLookupResult = new DNSLookupResult(Arrays.asList(InetAddress.getByName("127.0.0.1"), InetAddress.getByName("::1")), null);
         DownloadCommandResult downloadCommandResult = new DownloadCommandResult(true, true, false, false, true, false, HttpURLConnection.HTTP_OK, null, null, 0, null);
-        prepareTestDownloadNetworkTaskWorker(dnsLookupResult, downloadCommandResult);
+        TestDownloadNetworkTaskWorker downloadNetworkTaskWorker = prepareTestDownloadNetworkTaskWorker(dnsLookupResult, downloadCommandResult);
         LogEntry logEntry = downloadNetworkTaskWorker.execute(getNetworkTask());
         assertEquals(45, logEntry.getNetworkTaskId());
         assertEquals(getTestTimestamp(), logEntry.getTimestamp());
@@ -583,7 +597,7 @@ public class DownloadNetworkTaskWorkerTest {
     public void testDownloadSuccessFileDoesNotExistWithException() throws Exception {
         DNSLookupResult dnsLookupResult = new DNSLookupResult(Arrays.asList(InetAddress.getByName("127.0.0.1"), InetAddress.getByName("::1")), null);
         DownloadCommandResult downloadCommandResult = new DownloadCommandResult(true, true, false, false, true, false, HttpURLConnection.HTTP_OK, null, null, 0, new Exception("Test"));
-        prepareTestDownloadNetworkTaskWorker(dnsLookupResult, downloadCommandResult);
+        TestDownloadNetworkTaskWorker downloadNetworkTaskWorker = prepareTestDownloadNetworkTaskWorker(dnsLookupResult, downloadCommandResult);
         LogEntry logEntry = downloadNetworkTaskWorker.execute(getNetworkTask());
         assertEquals(45, logEntry.getNetworkTaskId());
         assertEquals(getTestTimestamp(), logEntry.getTimestamp());
@@ -595,7 +609,7 @@ public class DownloadNetworkTaskWorkerTest {
     public void testDownloadSuccessFileExistNotDelete() throws Exception {
         DNSLookupResult dnsLookupResult = new DNSLookupResult(Arrays.asList(InetAddress.getByName("127.0.0.1"), InetAddress.getByName("::1")), null);
         DownloadCommandResult downloadCommandResult = new DownloadCommandResult(true, true, true, false, true, false, HttpURLConnection.HTTP_OK, null, "testfile", 100, null);
-        prepareTestDownloadNetworkTaskWorker(dnsLookupResult, downloadCommandResult);
+        TestDownloadNetworkTaskWorker downloadNetworkTaskWorker = prepareTestDownloadNetworkTaskWorker(dnsLookupResult, downloadCommandResult);
         preferenceManager.setPreferenceDownloadKeep(true);
         preferenceManager.setPreferenceDownloadExternalStorage(true);
         fileManager.setExternalDirectory(new File("Test"));
@@ -610,7 +624,7 @@ public class DownloadNetworkTaskWorkerTest {
     public void testDownloadSuccessFileExistDeleteSuccess() throws Exception {
         DNSLookupResult dnsLookupResult = new DNSLookupResult(Arrays.asList(InetAddress.getByName("127.0.0.1"), InetAddress.getByName("::1")), null);
         DownloadCommandResult downloadCommandResult = new DownloadCommandResult(true, true, true, true, true, false, HttpURLConnection.HTTP_OK, null, "testfile", 999, null);
-        prepareTestDownloadNetworkTaskWorker(dnsLookupResult, downloadCommandResult);
+        TestDownloadNetworkTaskWorker downloadNetworkTaskWorker = prepareTestDownloadNetworkTaskWorker(dnsLookupResult, downloadCommandResult);
         LogEntry logEntry = downloadNetworkTaskWorker.execute(getNetworkTask());
         assertEquals(45, logEntry.getNetworkTaskId());
         assertEquals(getTestTimestamp(), logEntry.getTimestamp());
@@ -622,7 +636,7 @@ public class DownloadNetworkTaskWorkerTest {
     public void testDownloadSuccessFileExistDeleteFailedInternalStorage() throws Exception {
         DNSLookupResult dnsLookupResult = new DNSLookupResult(Arrays.asList(InetAddress.getByName("127.0.0.1"), InetAddress.getByName("::1")), null);
         DownloadCommandResult downloadCommandResult = new DownloadCommandResult(true, true, true, false, true, false, HttpURLConnection.HTTP_OK, null, "testfile", 333, null);
-        prepareTestDownloadNetworkTaskWorker(dnsLookupResult, downloadCommandResult);
+        TestDownloadNetworkTaskWorker downloadNetworkTaskWorker = prepareTestDownloadNetworkTaskWorker(dnsLookupResult, downloadCommandResult);
         LogEntry logEntry = downloadNetworkTaskWorker.execute(getNetworkTask());
         assertEquals(45, logEntry.getNetworkTaskId());
         assertEquals(getTestTimestamp(), logEntry.getTimestamp());
@@ -634,7 +648,7 @@ public class DownloadNetworkTaskWorkerTest {
     public void testDownloadSuccessFileExistDeleteFailedInternalStorageWithException() throws Exception {
         DNSLookupResult dnsLookupResult = new DNSLookupResult(Arrays.asList(InetAddress.getByName("127.0.0.1"), InetAddress.getByName("::1")), null);
         DownloadCommandResult downloadCommandResult = new DownloadCommandResult(true, true, true, false, true, false, HttpURLConnection.HTTP_OK, null, "testfile", 33000, new Exception("Test"));
-        prepareTestDownloadNetworkTaskWorker(dnsLookupResult, downloadCommandResult);
+        TestDownloadNetworkTaskWorker downloadNetworkTaskWorker = prepareTestDownloadNetworkTaskWorker(dnsLookupResult, downloadCommandResult);
         LogEntry logEntry = downloadNetworkTaskWorker.execute(getNetworkTask());
         assertEquals(45, logEntry.getNetworkTaskId());
         assertEquals(getTestTimestamp(), logEntry.getTimestamp());
@@ -646,7 +660,7 @@ public class DownloadNetworkTaskWorkerTest {
     public void testDownloadSuccessFileExistDeleteFailedExternalStorage() throws Exception {
         DNSLookupResult dnsLookupResult = new DNSLookupResult(Arrays.asList(InetAddress.getByName("127.0.0.1"), InetAddress.getByName("::1")), null);
         DownloadCommandResult downloadCommandResult = new DownloadCommandResult(true, true, true, false, true, false, HttpURLConnection.HTTP_OK, null, "testfile", 1000, null);
-        prepareTestDownloadNetworkTaskWorker(dnsLookupResult, downloadCommandResult);
+        TestDownloadNetworkTaskWorker downloadNetworkTaskWorker = prepareTestDownloadNetworkTaskWorker(dnsLookupResult, downloadCommandResult);
         preferenceManager.setPreferenceDownloadKeep(false);
         preferenceManager.setPreferenceDownloadExternalStorage(true);
         fileManager.setExternalDirectory(new File("Test"));
@@ -661,7 +675,7 @@ public class DownloadNetworkTaskWorkerTest {
     public void testDownloadSuccessFileExistDeleteFailedExternalStorageWithException() throws Exception {
         DNSLookupResult dnsLookupResult = new DNSLookupResult(Arrays.asList(InetAddress.getByName("127.0.0.1"), InetAddress.getByName("::1")), null);
         DownloadCommandResult downloadCommandResult = new DownloadCommandResult(true, true, true, false, true, false, HttpURLConnection.HTTP_OK, null, "testfile", 22, new Exception("Test"));
-        prepareTestDownloadNetworkTaskWorker(dnsLookupResult, downloadCommandResult);
+        TestDownloadNetworkTaskWorker downloadNetworkTaskWorker = prepareTestDownloadNetworkTaskWorker(dnsLookupResult, downloadCommandResult);
         preferenceManager.setPreferenceDownloadKeep(false);
         preferenceManager.setPreferenceDownloadExternalStorage(true);
         fileManager.setExternalDirectory(new File("Test"));
