@@ -16,8 +16,15 @@ import java.net.URL;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
+import java.util.List;
 import java.util.Locale;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
+import de.ibba.keepitup.db.LogDAO;
+import de.ibba.keepitup.db.NetworkTaskDAO;
+import de.ibba.keepitup.logging.Dump;
 import de.ibba.keepitup.model.AccessType;
 import de.ibba.keepitup.model.LogEntry;
 import de.ibba.keepitup.model.NetworkTask;
@@ -41,13 +48,20 @@ public class DownloadNetworkTaskWorkerTest {
 
     private MockFileManager fileManager;
     private PreferenceManager preferenceManager;
+    private NetworkTaskDAO networkTaskDAO;
+    private LogDAO logDAO;
 
     @Before
     public void beforeEachTestMethod() {
+        Dump.initialize(null);
         fileManager = new MockFileManager();
         fileManager.setInternalDownloadDirectory(new File("test"));
         preferenceManager = new PreferenceManager(TestRegistry.getContext());
         preferenceManager.removeAllPreferences();
+        networkTaskDAO = new NetworkTaskDAO(TestRegistry.getContext());
+        networkTaskDAO.deleteAllNetworkTasks();
+        logDAO = new LogDAO(TestRegistry.getContext());
+        logDAO.deleteAllLogs();
         InstrumentationRegistry.getInstrumentation().getTargetContext().getResources().getConfiguration().setLocale(Locale.US);
     }
 
@@ -55,6 +69,8 @@ public class DownloadNetworkTaskWorkerTest {
     public void afterEachTestMethod() {
         fileManager.reset();
         preferenceManager.removeAllPreferences();
+        logDAO.deleteAllLogs();
+        networkTaskDAO.deleteAllNetworkTasks();
     }
 
     private TestDownloadNetworkTaskWorker prepareTestDownloadNetworkTaskWorker(DNSLookupResult dnsLookupResult, DownloadCommandResult downloadCommandResult, RuntimeException exception) throws Exception {
@@ -75,11 +91,11 @@ public class DownloadNetworkTaskWorkerTest {
         return downloadNetworkTaskWorker;
     }
 
-    private TestDownloadNetworkTaskWorker prepareBlockingTestDownloadNetworkTaskWorker(DNSLookupResult dnsLookupResult, DownloadCommandResult downloadCommandResult) throws Exception {
-        TestDownloadNetworkTaskWorker downloadNetworkTaskWorker = new TestDownloadNetworkTaskWorker(TestRegistry.getContext(), getNetworkTask(), null);
+    private TestDownloadNetworkTaskWorker prepareBlockingTestDownloadNetworkTaskWorker(DNSLookupResult dnsLookupResult, DownloadCommandResult downloadCommandResult, NetworkTask task) throws Exception {
+        TestDownloadNetworkTaskWorker downloadNetworkTaskWorker = new TestDownloadNetworkTaskWorker(TestRegistry.getContext(), task, null);
         MockDNSLookup mockDNSLookup = new MockDNSLookup("127.0.0.1", dnsLookupResult);
         MockDownloadCommand mockDownloadCommand;
-        mockDownloadCommand = new MockDownloadCommand(TestRegistry.getContext(), getNetworkTask(), new URL("http://127.0.0.1"), new File("folder"), true, downloadCommandResult, true);
+        mockDownloadCommand = new MockDownloadCommand(TestRegistry.getContext(), task, new URL("http://127.0.0.1"), new File("folder"), true, downloadCommandResult, true);
         downloadNetworkTaskWorker.setMockDNSLookup(mockDNSLookup);
         downloadNetworkTaskWorker.setMockDownloadCommand(mockDownloadCommand);
         downloadNetworkTaskWorker.setMockFileManager(fileManager);
@@ -684,6 +700,29 @@ public class DownloadNetworkTaskWorkerTest {
         assertEquals(getTestTimestamp(), logEntry.getTimestamp());
         assertTrue(logEntry.isSuccess());
         assertEquals("The download from http://127.0.0.1:80 was successful. The deletion of the downloaded file failed. 22 msec download time. Exception: Test", logEntry.getMessage());
+    }
+
+    @Test
+    public void testDownloadThreadInterrupted() throws Exception {
+        NetworkTask task = networkTaskDAO.insertNetworkTask(getNetworkTask());
+        DNSLookupResult dnsLookupResult = new DNSLookupResult(Arrays.asList(InetAddress.getByName("127.0.0.1"), InetAddress.getByName("::1")), null);
+        DownloadCommandResult downloadCommandResult = new DownloadCommandResult(true, true, true, false, true, false, HttpURLConnection.HTTP_OK, null, "testfile", 100, null);
+        TestDownloadNetworkTaskWorker downloadNetworkTaskWorker = prepareBlockingTestDownloadNetworkTaskWorker(dnsLookupResult, downloadCommandResult, task);
+        ExecutorService executorService = Executors.newSingleThreadExecutor();
+        Future<?> downloadFuture = executorService.submit(downloadNetworkTaskWorker);
+        MockDownloadCommand downloadCommand = (MockDownloadCommand) downloadNetworkTaskWorker.getDownloadCommand(null, null, null, false);
+        downloadCommand.waitUntilReady();
+        downloadFuture.cancel(true);
+        List<LogEntry> logs = logDAO.readAllLogsForNetworkTask(task.getId());
+        while (logs.isEmpty()) {
+            Thread.sleep(1000);
+            logs = logDAO.readAllLogsForNetworkTask(task.getId());
+        }
+        assertEquals(1, logs.size());
+        LogEntry logEntry = logs.get(0);
+        assertFalse(logEntry.isSuccess());
+        assertEquals(getTestTimestamp(), logEntry.getTimestamp());
+        assertEquals("The download from http://127.0.0.1:80 failed. The task was stopped manually.", logEntry.getMessage());
     }
 
     private long getTestTimestamp() {

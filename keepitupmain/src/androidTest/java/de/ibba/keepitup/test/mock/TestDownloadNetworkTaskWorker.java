@@ -21,6 +21,8 @@ public class TestDownloadNetworkTaskWorker extends DownloadNetworkTaskWorker {
 
     public TestDownloadNetworkTaskWorker(Context context, NetworkTask networkTask, PowerManager.WakeLock wakeLock) {
         super(context, networkTask, wakeLock);
+        ((MockNetworkManager) getNetworkManager()).setConnected(true);
+        ((MockNetworkManager) getNetworkManager()).setConnectedWithWiFi(true);
     }
 
     public void setMockDNSLookup(MockDNSLookup mockDNSLookup) {
@@ -41,7 +43,7 @@ public class TestDownloadNetworkTaskWorker extends DownloadNetworkTaskWorker {
     }
 
     @Override
-    protected Callable<DownloadCommandResult> getDownloadCommand(NetworkTask networkTask, URL url, File folder, boolean delete) {
+    public Callable<DownloadCommandResult> getDownloadCommand(NetworkTask networkTask, URL url, File folder, boolean delete) {
         return mockDownloadCommand;
     }
 
