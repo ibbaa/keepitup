@@ -19,18 +19,24 @@ public class TestNetworkTaskWorker extends NetworkTaskWorker {
     private final boolean success;
     private final int maxInstances;
     private int instancesOnExecute;
+    private final boolean interrupted;
 
     public TestNetworkTaskWorker(Context context, NetworkTask networkTask, PowerManager.WakeLock wakeLock, boolean success) {
         this(context, networkTask, wakeLock, success, 10);
     }
 
     public TestNetworkTaskWorker(Context context, NetworkTask networkTask, PowerManager.WakeLock wakeLock, boolean success, int maxInstances) {
+        this(context, networkTask, wakeLock, success, 10, false);
+    }
+
+    public TestNetworkTaskWorker(Context context, NetworkTask networkTask, PowerManager.WakeLock wakeLock, boolean success, int maxInstances, boolean interrupted) {
         super(context, networkTask, wakeLock);
         ((MockNetworkManager) getNetworkManager()).setConnected(true);
         ((MockNetworkManager) getNetworkManager()).setConnectedWithWiFi(true);
         this.success = success;
         this.maxInstances = maxInstances;
         this.instancesOnExecute = -1;
+        this.interrupted = interrupted;
     }
 
     @Override
@@ -48,7 +54,7 @@ public class TestNetworkTaskWorker extends NetworkTaskWorker {
     }
 
     @Override
-    public LogEntry execute(NetworkTask networkTask) {
+    public ExecutionResult execute(NetworkTask networkTask) {
         Log.d(TestNetworkTaskWorker.class.getName(), "Executing TestNetworkTaskWorker for " + networkTask);
         NetworkTaskDAO networkTaskDAO = new NetworkTaskDAO(getContext());
         instancesOnExecute = networkTaskDAO.readNetworkTaskInstances(networkTask.getSchedulerId());
@@ -57,7 +63,7 @@ public class TestNetworkTaskWorker extends NetworkTaskWorker {
         logEntry.setSuccess(success);
         logEntry.setTimestamp(getTimeService().getCurrentTimestamp());
         logEntry.setMessage(success ? getResources().getString(R.string.string_successful) : getResources().getString(R.string.string_not_successful));
-        return logEntry;
+        return new ExecutionResult(interrupted, logEntry);
     }
 
     public void setMockDNSLookup(MockDNSLookup mockDNSLookup) {

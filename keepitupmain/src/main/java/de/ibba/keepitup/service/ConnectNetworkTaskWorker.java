@@ -37,12 +37,11 @@ public class ConnectNetworkTaskWorker extends NetworkTaskWorker {
     }
 
     @Override
-    public LogEntry execute(NetworkTask networkTask) {
+    public ExecutionResult execute(NetworkTask networkTask) {
         Log.d(ConnectNetworkTaskWorker.class.getName(), "Executing ConnectNetworkTaskWorker for " + networkTask);
-        LogEntry logEntry = new LogEntry();
-        logEntry.setNetworkTaskId(networkTask.getId());
-        InetAddress address = executeDNSLookup(networkTask.getAddress(), logEntry, getResources().getBoolean(R.bool.network_prefer_ipv4));
-        if (address != null) {
+        DNSExecutionResult dnsExecutionResult = executeDNSLookup(networkTask.getAddress(), getResources().getBoolean(R.bool.network_prefer_ipv4));
+        if (dnsExecutionResult.getAddress() != null) {
+            InetAddress address = dnsExecutionResult.getAddress();
             Log.d(ConnectNetworkTaskWorker.class.getName(), "executeDNSLookup returned " + address);
             boolean ip6 = address instanceof Inet6Address;
             if (ip6) {
@@ -50,16 +49,26 @@ public class ConnectNetworkTaskWorker extends NetworkTaskWorker {
             } else {
                 Log.d(ConnectNetworkTaskWorker.class.getName(), address + " is an IPv4 address");
             }
-            executeConnectCommand(address, networkTask.getPort(), ip6, logEntry);
+            ExecutionResult connectExecutionResult = executeConnectCommand(address, networkTask.getPort(), ip6);
+            LogEntry logEntry = connectExecutionResult.getLogEntry();
+            completeLogEntry(networkTask, logEntry);
+            Log.d(ConnectNetworkTaskWorker.class.getName(), "Returning " + connectExecutionResult);
+            return connectExecutionResult;
         } else {
             Log.e(ConnectNetworkTaskWorker.class.getName(), "executeDNSLookup returned null. DNSLookup failed.");
         }
-        Log.d(ConnectNetworkTaskWorker.class.getName(), "Returning " + logEntry);
-        logEntry.setTimestamp(getTimeService().getCurrentTimestamp());
-        return logEntry;
+        LogEntry logEntry = dnsExecutionResult.getLogEntry();
+        completeLogEntry(networkTask, logEntry);
+        Log.d(ConnectNetworkTaskWorker.class.getName(), "Returning " + dnsExecutionResult);
+        return dnsExecutionResult;
     }
 
-    private void executeConnectCommand(InetAddress address, int port, boolean ip6, LogEntry logEntry) {
+    private void completeLogEntry(NetworkTask networkTask, LogEntry logEntry) {
+        logEntry.setNetworkTaskId(networkTask.getId());
+        logEntry.setTimestamp(getTimeService().getCurrentTimestamp());
+    }
+
+    private ExecutionResult executeConnectCommand(InetAddress address, int port, boolean ip6) {
         Log.d(ConnectNetworkTaskWorker.class.getName(), "executeConnectCommand, address is " + address + ", port is " + port);
         PreferenceManager preferenceManager = new PreferenceManager(getContext());
         int count = preferenceManager.getPreferenceConnectCount();
@@ -68,6 +77,8 @@ public class ConnectNetworkTaskWorker extends NetworkTaskWorker {
         Log.d(ConnectNetworkTaskWorker.class.getName(), "Creating ExecutorService");
         ExecutorService executorService = Executors.newSingleThreadExecutor();
         Future<ConnectCommandResult> connectResultFuture = null;
+        LogEntry logEntry = new LogEntry();
+        boolean interrupted = false;
         try {
             Log.d(ConnectNetworkTaskWorker.class.getName(), "Executing " + connectCommand.getClass().getSimpleName() + " with a timeout of " + connectTimeout);
             connectResultFuture = executorService.submit(connectCommand);
@@ -89,11 +100,13 @@ public class ConnectNetworkTaskWorker extends NetworkTaskWorker {
             if (connectResultFuture != null && isInterrupted(exc)) {
                 Log.d(ConnectNetworkTaskWorker.class.getName(), "Cancelling " + connectCommand.getClass().getSimpleName());
                 connectResultFuture.cancel(true);
+                interrupted = true;
             }
         } finally {
             Log.d(ConnectNetworkTaskWorker.class.getName(), "Shutting down ExecutorService");
             executorService.shutdownNow();
         }
+        return new ExecutionResult(interrupted, logEntry);
     }
 
     private String getConnectSuccessMessage(ConnectCommandResult connectResult, String address, int port, boolean ip6, int connectTimeout) {

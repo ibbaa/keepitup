@@ -5,6 +5,8 @@ import android.content.Intent;
 import android.content.res.Resources;
 import android.os.PowerManager;
 
+import androidx.annotation.NonNull;
+
 import java.net.Inet4Address;
 import java.net.Inet6Address;
 import java.net.InetAddress;
@@ -53,7 +55,7 @@ public abstract class NetworkTaskWorker implements Runnable {
 
     public abstract String getMaxInstancesErrorMessage(int activeInstances);
 
-    public abstract LogEntry execute(NetworkTask networkTask);
+    public abstract ExecutionResult execute(NetworkTask networkTask);
 
     @Override
     public void run() {
@@ -80,10 +82,11 @@ public abstract class NetworkTaskWorker implements Runnable {
                     return;
                 }
                 Log.d(NetworkTaskWorker.class.getName(), "Executing task...");
-                logEntry = execute(networkTask);
+                ExecutionResult executionResult = execute(networkTask);
                 Log.d(NetworkTaskWorker.class.getName(), "The executed task returned " + logEntry);
                 if (isNetworkTaskValid()) {
-                    writeLogEntry(logEntry, shouldSendSystemNotification(logEntry));
+                    logEntry = executionResult.getLogEntry();
+                    writeLogEntry(logEntry, shouldSendSystemNotification(executionResult));
                 } else {
                     Log.d(NetworkTaskWorker.class.getName(), "Network task does no longer exist. Not writing log.");
                 }
@@ -122,8 +125,13 @@ public abstract class NetworkTaskWorker implements Runnable {
         getContext().sendBroadcast(logUIintent);
     }
 
-    private boolean shouldSendSystemNotification(LogEntry logEntry) {
+    private boolean shouldSendSystemNotification(ExecutionResult executionResult) {
         Log.d(NetworkTaskWorker.class.getName(), "shouldSendSystemNotification");
+        if(executionResult.isInterrupted()) {
+            Log.d(NetworkTaskWorker.class.getName(), "Execution was interrupted. Returning false.");
+            return false;
+        }
+        LogEntry logEntry = executionResult.getLogEntry();
         if (logEntry.isSuccess()) {
             Log.d(NetworkTaskWorker.class.getName(), "Execution was successful. Returning false.");
             return false;
@@ -201,13 +209,15 @@ public abstract class NetworkTaskWorker implements Runnable {
         return null;
     }
 
-    public InetAddress executeDNSLookup(String host, LogEntry logEntry, boolean preferIp4) {
+    public DNSExecutionResult executeDNSLookup(String host, boolean preferIp4) {
         Log.d(NetworkTaskWorker.class.getName(), "executeDNSLookup, host is " + host + ", preferIp4 is " + preferIp4);
         Callable<DNSLookupResult> dnsLookup = getDNSLookup(host);
         int timeout = getResources().getInteger(R.integer.dns_lookup_timeout);
         Log.d(NetworkTaskWorker.class.getName(), "Creating ExecutorService");
         ExecutorService executorService = Executors.newSingleThreadExecutor();
         Future<DNSLookupResult> dnsLookupResultFuture = null;
+        LogEntry logEntry = new LogEntry();
+        boolean interrupted = false;
         try {
             Log.d(NetworkTaskWorker.class.getName(), "Executing " + dnsLookup.getClass().getSimpleName() + " with a timeout of " + timeout);
             dnsLookupResultFuture = executorService.submit(dnsLookup);
@@ -226,7 +236,7 @@ public abstract class NetworkTaskWorker implements Runnable {
                     Log.d(NetworkTaskWorker.class.getName(), "Resolved address is " + address);
                     logEntry.setSuccess(true);
                     logEntry.setMessage(getResources().getString(R.string.text_dns_lookup_successful, host, address.getHostAddress()));
-                    return address;
+                    return new DNSExecutionResult(interrupted, logEntry, address);
                 }
             } else {
                 Log.d(NetworkTaskWorker.class.getName(), "DNS lookup was not successful because of an exception", dnsLookupResult.getException());
@@ -237,15 +247,16 @@ public abstract class NetworkTaskWorker implements Runnable {
             Log.e(NetworkTaskWorker.class.getName(), "Error executing " + dnsLookup.getClass().getName(), exc);
             logEntry.setSuccess(false);
             logEntry.setMessage(getMessageFromException(getResources().getString(R.string.text_dns_lookup_error, host), exc, timeout));
+            if (dnsLookupResultFuture != null && isInterrupted(exc)) {
+                Log.d(NetworkTaskWorker.class.getName(), "Cancelling " + dnsLookup.getClass().getSimpleName());
+                dnsLookupResultFuture.cancel(true);
+                interrupted = true;
+            }
         } finally {
             Log.d(NetworkTaskWorker.class.getName(), "Shutting down ExecutorService");
             executorService.shutdownNow();
-            if (dnsLookupResultFuture != null && Thread.interrupted()) {
-                Log.d(NetworkTaskWorker.class.getName(), "Cancelling " + dnsLookup.getClass().getSimpleName());
-                dnsLookupResultFuture.cancel(true);
-            }
         }
-        return null;
+        return new DNSExecutionResult(interrupted, logEntry, null);
     }
 
     private InetAddress findAddress(List<InetAddress> addresses, boolean preferIp4) {
@@ -322,5 +333,57 @@ public abstract class NetworkTaskWorker implements Runnable {
 
     public Resources getResources() {
         return getContext().getResources();
+    }
+
+    public static class DNSExecutionResult extends ExecutionResult{
+
+        private final InetAddress address;
+
+        public DNSExecutionResult(boolean interrupted, LogEntry logEntry, InetAddress address) {
+            super(interrupted, logEntry);
+            this.address = address;
+        }
+
+        public InetAddress getAddress() {
+            return address;
+        }
+
+        @NonNull
+        @Override
+        public String toString() {
+            return "DNSExecutionResult{" +
+                    "address=" + address +
+                    ", interrupted=" + isInterrupted() +
+                    ", logEntry=" + getLogEntry() +
+                    '}';
+        }
+    }
+
+    public static class ExecutionResult {
+
+        private final boolean interrupted;
+        private final LogEntry logEntry;
+
+        public ExecutionResult(boolean interrupted, LogEntry logEntry) {
+            this.interrupted = interrupted;
+            this.logEntry = logEntry;
+        }
+
+        public boolean isInterrupted() {
+            return interrupted;
+        }
+
+        public LogEntry getLogEntry() {
+            return logEntry;
+        }
+
+        @NonNull
+        @Override
+        public String toString() {
+            return "ExecutionResult{" +
+                    "interrupted=" + interrupted +
+                    ", logEntry=" + logEntry +
+                    '}';
+        }
     }
 }
