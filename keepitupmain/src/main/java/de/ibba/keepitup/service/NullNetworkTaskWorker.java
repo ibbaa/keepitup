@@ -25,13 +25,13 @@ public class NullNetworkTaskWorker extends NetworkTaskWorker {
     }
 
     @Override
-    public LogEntry execute(NetworkTask networkTask) {
+    public ExecutionResult execute(NetworkTask networkTask) {
         Log.d(NullNetworkTaskWorker.class.getName(), "Executing NullNetworkTaskWorker for " + networkTask);
         LogEntry logEntry = new LogEntry();
         logEntry.setNetworkTaskId(networkTask.getId());
         logEntry.setSuccess(false);
         logEntry.setTimestamp(getTimeService().getCurrentTimestamp());
         logEntry.setMessage(getResources().getString(R.string.text_access_type_null));
-        return logEntry;
+        return new ExecutionResult(false, logEntry);
     }
 }

@@ -39,12 +39,11 @@ public class PingNetworkTaskWorker extends NetworkTaskWorker {
     }
 
     @Override
-    public LogEntry execute(NetworkTask networkTask) {
+    public ExecutionResult execute(NetworkTask networkTask) {
         Log.d(PingNetworkTaskWorker.class.getName(), "Executing PingNetworkTaskWorker for " + networkTask);
-        LogEntry logEntry = new LogEntry();
-        logEntry.setNetworkTaskId(networkTask.getId());
-        InetAddress address = executeDNSLookup(networkTask.getAddress(), logEntry, getResources().getBoolean(R.bool.network_prefer_ipv4));
-        if (address != null) {
+        DNSExecutionResult dnsExecutionResult = executeDNSLookup(networkTask.getAddress(), getResources().getBoolean(R.bool.network_prefer_ipv4));
+        if (dnsExecutionResult.getAddress() != null) {
+            InetAddress address = dnsExecutionResult.getAddress();
             Log.d(PingNetworkTaskWorker.class.getName(), "executeDNSLookup returned " + address);
             boolean ip6 = address instanceof Inet6Address;
             if (ip6) {
@@ -52,16 +51,26 @@ public class PingNetworkTaskWorker extends NetworkTaskWorker {
             } else {
                 Log.d(PingNetworkTaskWorker.class.getName(), address + " is an IPv4 address");
             }
-            executePingCommand(address.getHostAddress(), ip6, logEntry);
+            ExecutionResult pingExecutionResult = executePingCommand(address.getHostAddress(), ip6);
+            LogEntry logEntry = pingExecutionResult.getLogEntry();
+            completeLogEntry(networkTask, logEntry);
+            Log.d(PingNetworkTaskWorker.class.getName(), "Returning " + pingExecutionResult);
+            return pingExecutionResult;
         } else {
             Log.e(PingNetworkTaskWorker.class.getName(), "executeDNSLookup returned null. DNSLookup failed.");
         }
-        Log.d(PingNetworkTaskWorker.class.getName(), "Returning " + logEntry);
-        logEntry.setTimestamp(getTimeService().getCurrentTimestamp());
-        return logEntry;
+        LogEntry logEntry = dnsExecutionResult.getLogEntry();
+        completeLogEntry(networkTask, logEntry);
+        Log.d(PingNetworkTaskWorker.class.getName(), "Returning " + dnsExecutionResult);
+        return dnsExecutionResult;
     }
 
-    private void executePingCommand(String address, boolean ip6, LogEntry logEntry) {
+    private void completeLogEntry(NetworkTask networkTask, LogEntry logEntry) {
+        logEntry.setNetworkTaskId(networkTask.getId());
+        logEntry.setTimestamp(getTimeService().getCurrentTimestamp());
+    }
+
+    private ExecutionResult executePingCommand(String address, boolean ip6) {
         Log.d(PingNetworkTaskWorker.class.getName(), "executePingCommand, address is " + address + ", ip6 is " + ip6);
         PreferenceManager preferenceManager = new PreferenceManager(getContext());
         int count = preferenceManager.getPreferencePingCount();
@@ -70,6 +79,8 @@ public class PingNetworkTaskWorker extends NetworkTaskWorker {
         Log.d(PingNetworkTaskWorker.class.getName(), "Creating ExecutorService");
         ExecutorService executorService = Executors.newSingleThreadExecutor();
         Future<PingCommandResult> pingResultFuture = null;
+        LogEntry logEntry = new LogEntry();
+        boolean interrupted = false;
         try {
             Log.d(PingNetworkTaskWorker.class.getName(), "Executing " + pingCommand.getClass().getSimpleName() + " with a timeout of " + timeout);
             pingResultFuture = executorService.submit(pingCommand);
@@ -95,11 +106,13 @@ public class PingNetworkTaskWorker extends NetworkTaskWorker {
             if (pingResultFuture != null && isInterrupted(exc)) {
                 Log.d(PingNetworkTaskWorker.class.getName(), "Cancelling " + pingCommand.getClass().getSimpleName());
                 pingResultFuture.cancel(true);
+                interrupted = true;
             }
         } finally {
             Log.d(PingNetworkTaskWorker.class.getName(), "Shutting down ExecutorService");
             executorService.shutdownNow();
         }
+        return new ExecutionResult(interrupted, logEntry);
     }
 
     private String getPingSuccessMessage(String address, String output) {
