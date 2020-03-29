@@ -28,12 +28,14 @@ import de.ibba.keepitup.logging.Dump;
 import de.ibba.keepitup.model.AccessType;
 import de.ibba.keepitup.model.LogEntry;
 import de.ibba.keepitup.model.NetworkTask;
+import de.ibba.keepitup.notification.NotificationHandler;
 import de.ibba.keepitup.resources.PreferenceManager;
 import de.ibba.keepitup.service.network.DNSLookupResult;
 import de.ibba.keepitup.service.network.DownloadCommandResult;
 import de.ibba.keepitup.test.mock.MockDNSLookup;
 import de.ibba.keepitup.test.mock.MockDownloadCommand;
 import de.ibba.keepitup.test.mock.MockFileManager;
+import de.ibba.keepitup.test.mock.MockNotificationManager;
 import de.ibba.keepitup.test.mock.MockTimeService;
 import de.ibba.keepitup.test.mock.TestDownloadNetworkTaskWorker;
 import de.ibba.keepitup.test.mock.TestRegistry;
@@ -768,6 +770,9 @@ public class DownloadNetworkTaskWorkerTest {
         assertFalse(logEntry.isSuccess());
         assertEquals(getTestTimestamp(), logEntry.getTimestamp());
         assertEquals("The download from http://127.0.0.1:80 failed. The task was stopped manually.", logEntry.getMessage());
+        NotificationHandler notificationHandler = downloadNetworkTaskWorker.getNotificationHandler();
+        MockNotificationManager notificationManager = (MockNotificationManager) notificationHandler.getNotificationManager();
+        assertFalse(notificationManager.wasNotifyCalled());
     }
 
     private long getTestTimestamp() {

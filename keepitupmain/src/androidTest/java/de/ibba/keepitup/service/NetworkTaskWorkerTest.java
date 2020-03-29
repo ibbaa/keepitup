@@ -122,6 +122,28 @@ public class NetworkTaskWorkerTest {
     }
 
     @Test
+    public void testInterrupted() {
+        NetworkTask task = getNetworkTask();
+        task = networkTaskDAO.insertNetworkTask(task);
+        TestNetworkTaskWorker testNetworkTaskWorker = new TestNetworkTaskWorker(TestRegistry.getContext(), task, null, false, 10, true);
+        setCurrentTime(testNetworkTaskWorker);
+        MockNetworkManager networkManager = (MockNetworkManager) testNetworkTaskWorker.getNetworkManager();
+        networkManager.setConnected(true);
+        networkManager.setConnectedWithWiFi(true);
+        testNetworkTaskWorker.run();
+        List<LogEntry> entries = logDAO.readAllLogsForNetworkTask(task.getId());
+        assertEquals(1, entries.size());
+        LogEntry entry = entries.get(0);
+        assertEquals(task.getId(), entry.getNetworkTaskId());
+        assertEquals(getTestTimestamp(), entry.getTimestamp());
+        assertFalse(entry.isSuccess());
+        assertEquals("failed", entry.getMessage());
+        NotificationHandler notificationHandler = testNetworkTaskWorker.getNotificationHandler();
+        MockNotificationManager notificationManager = (MockNotificationManager) notificationHandler.getNotificationManager();
+        assertFalse(notificationManager.wasNotifyCalled());
+    }
+
+    @Test
     public void testFailureWithNotification() {
         NetworkTask task = getNetworkTask();
         networkTaskDAO.insertNetworkTask(task);
