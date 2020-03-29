@@ -83,7 +83,7 @@ public abstract class NetworkTaskWorker implements Runnable {
                 }
                 Log.d(NetworkTaskWorker.class.getName(), "Executing task...");
                 ExecutionResult executionResult = execute(networkTask);
-                Log.d(NetworkTaskWorker.class.getName(), "The executed task returned " + logEntry);
+                Log.d(NetworkTaskWorker.class.getName(), "The executed task returned " + executionResult);
                 if (isNetworkTaskValid()) {
                     logEntry = executionResult.getLogEntry();
                     writeLogEntry(logEntry, shouldSendSystemNotification(executionResult));
@@ -127,7 +127,7 @@ public abstract class NetworkTaskWorker implements Runnable {
 
     private boolean shouldSendSystemNotification(ExecutionResult executionResult) {
         Log.d(NetworkTaskWorker.class.getName(), "shouldSendSystemNotification");
-        if(executionResult.isInterrupted()) {
+        if (executionResult.isInterrupted()) {
             Log.d(NetworkTaskWorker.class.getName(), "Execution was interrupted. Returning false.");
             return false;
         }
@@ -236,7 +236,7 @@ public abstract class NetworkTaskWorker implements Runnable {
                     Log.d(NetworkTaskWorker.class.getName(), "Resolved address is " + address);
                     logEntry.setSuccess(true);
                     logEntry.setMessage(getResources().getString(R.string.text_dns_lookup_successful, host, address.getHostAddress()));
-                    return new DNSExecutionResult(interrupted, logEntry, address);
+                    return new DNSExecutionResult(false, logEntry, address);
                 }
             } else {
                 Log.d(NetworkTaskWorker.class.getName(), "DNS lookup was not successful because of an exception", dnsLookupResult.getException());
@@ -335,7 +335,7 @@ public abstract class NetworkTaskWorker implements Runnable {
         return getContext().getResources();
     }
 
-    public static class DNSExecutionResult extends ExecutionResult{
+    public static class DNSExecutionResult extends ExecutionResult {
 
         private final InetAddress address;
 

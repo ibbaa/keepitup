@@ -61,7 +61,7 @@ public class DownloadNetworkTaskWorker extends NetworkTaskWorker {
             Log.d(DownloadNetworkTaskWorker.class.getName(), "Determined url is null");
             logEntry.setSuccess(false);
             logEntry.setMessage(getResources().getString(R.string.text_download_url_error, baseURL));
-            return new ExecutionResult(interrupted, logEntry);
+            return new ExecutionResult(false, logEntry);
         } else {
             Log.d(DownloadNetworkTaskWorker.class.getName(), "URL is " + url.toExternalForm());
         }
@@ -71,7 +71,7 @@ public class DownloadNetworkTaskWorker extends NetworkTaskWorker {
             String folderMessage = preferenceManager.getPreferenceDownloadExternalStorage() ? preferenceManager.getPreferenceDownloadFolder() : fileManager.getDefaultDownloadDirectoryName();
             logEntry.setSuccess(false);
             logEntry.setMessage(getResources().getString(R.string.text_download_folder_error, folderMessage));
-            return new ExecutionResult(interrupted, logEntry);
+            return new ExecutionResult(false, logEntry);
         } else {
             Log.d(DownloadNetworkTaskWorker.class.getName(), "Download folder is " + folder.getAbsolutePath());
         }
@@ -89,32 +89,32 @@ public class DownloadNetworkTaskWorker extends NetworkTaskWorker {
             if (!downloadResult.isConnectSuccess()) {
                 Log.d(DownloadNetworkTaskWorker.class.getName(), "Connection failed. Preparing error message.");
                 prepareConnectError(downloadResult, url, timeout, folder, delete, logEntry);
-                return new ExecutionResult(interrupted, logEntry);
+                return new ExecutionResult(false, logEntry);
             }
             if (downloadResult.getHttpResponseCode() >= 0 && !HTTPUtil.isHTTPReturnCodeOk(downloadResult.getHttpResponseCode())) {
                 Log.d(DownloadNetworkTaskWorker.class.getName(), "HTTP download and HTTP return code is not HTTP_OK. Preparing error message.");
                 prepareHTTPReturnCodeError(downloadResult, url, timeout, folder, delete, logEntry);
-                return new ExecutionResult(interrupted, logEntry);
+                return new ExecutionResult(false, logEntry);
             }
             if (downloadResult.isDownloadSuccess()) {
                 if (!downloadResult.fileExists()) {
                     Log.d(DownloadNetworkTaskWorker.class.getName(), "The download was successful but the downloaded file does not exist. Preparing error message.");
                     prepareUnknownError(downloadResult, url, timeout, folder, delete, logEntry);
-                    return new ExecutionResult(interrupted, logEntry);
+                    return new ExecutionResult(false, logEntry);
                 }
                 Log.d(DownloadNetworkTaskWorker.class.getName(), "The download was successful. Preparing message.");
                 prepareSuccess(downloadResult, url, timeout, folder, delete, logEntry);
-                return new ExecutionResult(interrupted, logEntry);
+                return new ExecutionResult(false, logEntry);
             }
             if (downloadResult.isStopped()) {
                 Log.d(DownloadNetworkTaskWorker.class.getName(), "The download was stopped. Preparing error message.");
                 prepareStoppedError(downloadResult, url, timeout, folder, delete, logEntry);
-                return new ExecutionResult(interrupted, logEntry);
+                return new ExecutionResult(false, logEntry);
             }
             if (!downloadResult.isValid()) {
                 Log.d(DownloadNetworkTaskWorker.class.getName(), "The network task is invalid. Preparing error message.");
                 prepareInvalidError(downloadResult, url, timeout, folder, delete, logEntry);
-                return new ExecutionResult(interrupted, logEntry);
+                return new ExecutionResult(false, logEntry);
             }
             Log.d(DownloadNetworkTaskWorker.class.getName(), "The download failed for an unknown reason.");
             prepareUnknownError(downloadResult, url, timeout, folder, delete, logEntry);
@@ -125,6 +125,7 @@ public class DownloadNetworkTaskWorker extends NetworkTaskWorker {
             if (downloadResultFuture != null && isInterrupted(exc)) {
                 Log.d(DownloadNetworkTaskWorker.class.getName(), "Cancelling " + downloadCommand.getClass().getSimpleName());
                 downloadResultFuture.cancel(true);
+                interrupted = true;
             }
         } finally {
             Log.d(DownloadNetworkTaskWorker.class.getName(), "Shutting down ExecutorService");
