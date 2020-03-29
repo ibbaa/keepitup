@@ -26,7 +26,7 @@ public class TestNetworkTaskWorker extends NetworkTaskWorker {
     }
 
     public TestNetworkTaskWorker(Context context, NetworkTask networkTask, PowerManager.WakeLock wakeLock, boolean success, int maxInstances) {
-        this(context, networkTask, wakeLock, success, 10, false);
+        this(context, networkTask, wakeLock, success, maxInstances, false);
     }
 
     public TestNetworkTaskWorker(Context context, NetworkTask networkTask, PowerManager.WakeLock wakeLock, boolean success, int maxInstances, boolean interrupted) {

@@ -26,7 +26,8 @@ public class NullNetworkTaskWorkerTest {
     public void testLogReturned() {
         NullNetworkTaskWorker nullNetworkTaskWorker = new NullNetworkTaskWorker(TestRegistry.getContext(), getNetworkTask(), null);
         setCurrentTime(nullNetworkTaskWorker);
-        LogEntry logEntry = nullNetworkTaskWorker.execute(getNetworkTask());
+        NetworkTaskWorker.ExecutionResult executionResult = nullNetworkTaskWorker.execute(getNetworkTask());
+        LogEntry logEntry = executionResult.getLogEntry();
         assertEquals(45, logEntry.getNetworkTaskId());
         assertEquals(getTestTimestamp(), logEntry.getTimestamp());
         assertFalse(logEntry.isSuccess());
