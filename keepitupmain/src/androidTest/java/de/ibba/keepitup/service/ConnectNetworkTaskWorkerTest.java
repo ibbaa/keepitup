@@ -54,7 +54,8 @@ public class ConnectNetworkTaskWorkerTest {
         DNSLookupResult dnsLookupResult = new DNSLookupResult(Arrays.asList(InetAddress.getByName("127.0.0.1"), InetAddress.getByName("::1")), null);
         ConnectCommandResult connectCommandResult = new ConnectCommandResult(true, 1, 1, 0, 0, 1, null);
         prepareTestConnectNetworkTaskWorker(dnsLookupResult, connectCommandResult);
-        LogEntry logEntry = connectNetworkTaskWorker.execute(getNetworkTask());
+        NetworkTaskWorker.ExecutionResult executionResult = connectNetworkTaskWorker.execute(getNetworkTask());
+        LogEntry logEntry = executionResult.getLogEntry();
         assertEquals(45, logEntry.getNetworkTaskId());
         assertEquals(getTestTimestamp(), logEntry.getTimestamp());
         assertTrue(logEntry.isSuccess());
@@ -66,7 +67,8 @@ public class ConnectNetworkTaskWorkerTest {
         DNSLookupResult dnsLookupResult = new DNSLookupResult(Arrays.asList(InetAddress.getByName("127.0.0.1"), InetAddress.getByName("::1")), null);
         ConnectCommandResult connectCommandResult = new ConnectCommandResult(true, 3, 3, 0, 0, 1000, null);
         prepareTestConnectNetworkTaskWorker(dnsLookupResult, connectCommandResult);
-        LogEntry logEntry = connectNetworkTaskWorker.execute(getNetworkTask());
+        NetworkTaskWorker.ExecutionResult executionResult = connectNetworkTaskWorker.execute(getNetworkTask());
+        LogEntry logEntry = executionResult.getLogEntry();
         assertEquals(45, logEntry.getNetworkTaskId());
         assertEquals(getTestTimestamp(), logEntry.getTimestamp());
         assertTrue(logEntry.isSuccess());
@@ -79,7 +81,8 @@ public class ConnectNetworkTaskWorkerTest {
         IllegalArgumentException exception = new IllegalArgumentException("TestException");
         ConnectCommandResult connectCommandResult = new ConnectCommandResult(true, 1, 1, 0, 0, 5000, exception);
         prepareTestConnectNetworkTaskWorker(dnsLookupResult, connectCommandResult);
-        LogEntry logEntry = connectNetworkTaskWorker.execute(getNetworkTask());
+        NetworkTaskWorker.ExecutionResult executionResult = connectNetworkTaskWorker.execute(getNetworkTask());
+        LogEntry logEntry = executionResult.getLogEntry();
         assertEquals(45, logEntry.getNetworkTaskId());
         assertEquals(getTestTimestamp(), logEntry.getTimestamp());
         assertTrue(logEntry.isSuccess());
@@ -92,7 +95,8 @@ public class ConnectNetworkTaskWorkerTest {
         IllegalArgumentException exception = new IllegalArgumentException("TestException");
         ConnectCommandResult connectCommandResult = new ConnectCommandResult(true, 10, 7, 1, 2, 3, exception);
         prepareTestConnectNetworkTaskWorker(dnsLookupResult, connectCommandResult);
-        LogEntry logEntry = connectNetworkTaskWorker.execute(getNetworkTask());
+        NetworkTaskWorker.ExecutionResult executionResult = connectNetworkTaskWorker.execute(getNetworkTask());
+        LogEntry logEntry = executionResult.getLogEntry();
         assertEquals(45, logEntry.getNetworkTaskId());
         assertEquals(getTestTimestamp(), logEntry.getTimestamp());
         assertTrue(logEntry.isSuccess());
@@ -104,7 +108,8 @@ public class ConnectNetworkTaskWorkerTest {
         IllegalArgumentException exception = new IllegalArgumentException("TestException");
         DNSLookupResult dnsLookupResult = new DNSLookupResult(Collections.emptyList(), exception);
         prepareTestConnectNetworkTaskWorker(dnsLookupResult, null);
-        LogEntry logEntry = connectNetworkTaskWorker.execute(getNetworkTask());
+        NetworkTaskWorker.ExecutionResult executionResult = connectNetworkTaskWorker.execute(getNetworkTask());
+        LogEntry logEntry = executionResult.getLogEntry();
         assertEquals(45, logEntry.getNetworkTaskId());
         assertEquals(getTestTimestamp(), logEntry.getTimestamp());
         assertFalse(logEntry.isSuccess());
@@ -116,7 +121,8 @@ public class ConnectNetworkTaskWorkerTest {
         DNSLookupResult dnsLookupResult = new DNSLookupResult(InetAddress.getByName("127.0.0.1"), null);
         ConnectCommandResult connectCommandResult = new ConnectCommandResult(false, 1, 0, 1, 0, 500, null);
         prepareTestConnectNetworkTaskWorker(dnsLookupResult, connectCommandResult);
-        LogEntry logEntry = connectNetworkTaskWorker.execute(getNetworkTask());
+        NetworkTaskWorker.ExecutionResult executionResult = connectNetworkTaskWorker.execute(getNetworkTask());
+        LogEntry logEntry = executionResult.getLogEntry();
         assertEquals(45, logEntry.getNetworkTaskId());
         assertEquals(getTestTimestamp(), logEntry.getTimestamp());
         assertFalse(logEntry.isSuccess());
@@ -128,7 +134,8 @@ public class ConnectNetworkTaskWorkerTest {
         DNSLookupResult dnsLookupResult = new DNSLookupResult(InetAddress.getByName("127.0.0.1"), null);
         ConnectCommandResult connectCommandResult = new ConnectCommandResult(false, 10, 0, 10, 0, 500, null);
         prepareTestConnectNetworkTaskWorker(dnsLookupResult, connectCommandResult);
-        LogEntry logEntry = connectNetworkTaskWorker.execute(getNetworkTask());
+        NetworkTaskWorker.ExecutionResult executionResult = connectNetworkTaskWorker.execute(getNetworkTask());
+        LogEntry logEntry = executionResult.getLogEntry();
         assertEquals(45, logEntry.getNetworkTaskId());
         assertEquals(getTestTimestamp(), logEntry.getTimestamp());
         assertFalse(logEntry.isSuccess());
@@ -141,7 +148,8 @@ public class ConnectNetworkTaskWorkerTest {
         IllegalArgumentException exception = new IllegalArgumentException("TestException");
         ConnectCommandResult connectCommandResult = new ConnectCommandResult(false, 1, 0, 0, 1, 500, exception);
         prepareTestConnectNetworkTaskWorker(dnsLookupResult, connectCommandResult);
-        LogEntry logEntry = connectNetworkTaskWorker.execute(getNetworkTask());
+        NetworkTaskWorker.ExecutionResult executionResult = connectNetworkTaskWorker.execute(getNetworkTask());
+        LogEntry logEntry = executionResult.getLogEntry();
         assertEquals(45, logEntry.getNetworkTaskId());
         assertEquals(getTestTimestamp(), logEntry.getTimestamp());
         assertFalse(logEntry.isSuccess());
@@ -154,7 +162,8 @@ public class ConnectNetworkTaskWorkerTest {
         IllegalArgumentException exception = new IllegalArgumentException("TestException");
         ConnectCommandResult connectCommandResult = new ConnectCommandResult(false, 5, 0, 0, 5, 500, exception);
         prepareTestConnectNetworkTaskWorker(dnsLookupResult, connectCommandResult);
-        LogEntry logEntry = connectNetworkTaskWorker.execute(getNetworkTask());
+        NetworkTaskWorker.ExecutionResult executionResult = connectNetworkTaskWorker.execute(getNetworkTask());
+        LogEntry logEntry = executionResult.getLogEntry();
         assertEquals(45, logEntry.getNetworkTaskId());
         assertEquals(getTestTimestamp(), logEntry.getTimestamp());
         assertFalse(logEntry.isSuccess());
@@ -166,7 +175,8 @@ public class ConnectNetworkTaskWorkerTest {
         DNSLookupResult dnsLookupResult = new DNSLookupResult(InetAddress.getByName("127.0.0.1"), null);
         ConnectCommandResult connectCommandResult = new ConnectCommandResult(false, 1, 0, 0, 1, 1, null);
         prepareTestConnectNetworkTaskWorker(dnsLookupResult, connectCommandResult);
-        LogEntry logEntry = connectNetworkTaskWorker.execute(getNetworkTask());
+        NetworkTaskWorker.ExecutionResult executionResult = connectNetworkTaskWorker.execute(getNetworkTask());
+        LogEntry logEntry = executionResult.getLogEntry();
         assertEquals(45, logEntry.getNetworkTaskId());
         assertEquals(getTestTimestamp(), logEntry.getTimestamp());
         assertFalse(logEntry.isSuccess());
@@ -179,7 +189,8 @@ public class ConnectNetworkTaskWorkerTest {
         IllegalArgumentException exception = new IllegalArgumentException("TestException");
         ConnectCommandResult connectCommandResult = new ConnectCommandResult(false, 5, 0, 3, 2, 500, exception);
         prepareTestConnectNetworkTaskWorker(dnsLookupResult, connectCommandResult);
-        LogEntry logEntry = connectNetworkTaskWorker.execute(getNetworkTask());
+        NetworkTaskWorker.ExecutionResult executionResult = connectNetworkTaskWorker.execute(getNetworkTask());
+        LogEntry logEntry = executionResult.getLogEntry();
         assertEquals(45, logEntry.getNetworkTaskId());
         assertEquals(getTestTimestamp(), logEntry.getTimestamp());
         assertFalse(logEntry.isSuccess());
