@@ -83,6 +83,14 @@ public class NetworkTaskDAO extends BaseDAO {
         dumpDatabase("Dump after decreaseNetworkTaskInstances call");
     }
 
+    public void resetNetworkTaskInstances(long taskId) {
+        Log.d(NetworkTaskDAO.class.getName(), "Resetting instances of task with id " + taskId);
+        NetworkTask networkTask = new NetworkTask();
+        networkTask.setId(taskId);
+        executeDBOperationInTransaction(networkTask, this::resetNetworkTaskInstances);
+        dumpDatabase("Dump after resetNetworkTaskInstances call");
+    }
+
     public void resetAllNetworkTaskInstances() {
         Log.d(NetworkTaskDAO.class.getName(), "Resetting instances of all tasks");
         executeDBOperationInTransaction((NetworkTask) null, this::resetAllNetworkTaskInstances);
@@ -210,6 +218,16 @@ public class NetworkTaskDAO extends BaseDAO {
         ContentValues values = new ContentValues();
         values.put(dbConstants.getInstancesColumnName(), networkTask.getInstances());
         Log.d(NetworkTaskDAO.class.getName(), "Updating instances to " + networkTask.getInstances());
+        return db.update(dbConstants.getTableName(), values, selection, selectionArgs);
+    }
+
+    private int resetNetworkTaskInstances(NetworkTask networkTask, SQLiteDatabase db) {
+        Log.d(NetworkTaskDAO.class.getName(), "resetNetworkTaskInstances, task is " + networkTask);
+        NetworkTaskDBConstants dbConstants = new NetworkTaskDBConstants(getContext());
+        String selection = dbConstants.getIdColumnName() + " = ?";
+        String[] selectionArgs = {String.valueOf(networkTask.getId())};
+        ContentValues values = new ContentValues();
+        values.put(dbConstants.getInstancesColumnName(), 0);
         return db.update(dbConstants.getTableName(), values, selection, selectionArgs);
     }
 

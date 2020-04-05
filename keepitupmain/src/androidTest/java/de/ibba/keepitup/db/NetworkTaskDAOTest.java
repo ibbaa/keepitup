@@ -204,7 +204,7 @@ public class NetworkTaskDAOTest {
     }
 
     @Test
-    public void testIncreaseResetAllInstances() {
+    public void testIncreaseResetInstances() {
         NetworkTask insertedTask1 = getNetworkTask1();
         NetworkTask insertedTask2 = getNetworkTask2();
         insertedTask1 = networkTaskDAO.insertNetworkTask(insertedTask1);
@@ -219,6 +219,12 @@ public class NetworkTaskDAOTest {
         assertEquals(0, networkTaskDAO.readNetworkTaskInstances(insertedTask2.getId()));
         networkTaskDAO.increaseNetworkTaskInstances(insertedTask2.getId());
         assertEquals(2, networkTaskDAO.readNetworkTaskInstances(insertedTask1.getId()));
+        assertEquals(1, networkTaskDAO.readNetworkTaskInstances(insertedTask2.getId()));
+        networkTaskDAO.resetNetworkTaskInstances(insertedTask1.getId());
+        assertEquals(0, networkTaskDAO.readNetworkTaskInstances(insertedTask1.getId()));
+        assertEquals(1, networkTaskDAO.readNetworkTaskInstances(insertedTask2.getId()));
+        networkTaskDAO.increaseNetworkTaskInstances(insertedTask1.getId());
+        assertEquals(1, networkTaskDAO.readNetworkTaskInstances(insertedTask1.getId()));
         assertEquals(1, networkTaskDAO.readNetworkTaskInstances(insertedTask2.getId()));
         networkTaskDAO.resetAllNetworkTaskInstances();
         assertEquals(0, networkTaskDAO.readNetworkTaskInstances(insertedTask1.getId()));
