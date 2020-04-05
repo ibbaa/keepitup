@@ -90,11 +90,11 @@ public class NetworkTaskWorkerTest {
         MockNetworkManager networkManager = (MockNetworkManager) testNetworkTaskWorker.getNetworkManager();
         networkManager.setConnected(true);
         networkManager.setConnectedWithWiFi(true);
-        int activeInstances = networkTaskDAO.readNetworkTaskInstances(task.getSchedulerId());
+        int activeInstances = networkTaskDAO.readNetworkTaskInstances(task.getId());
         assertEquals(0, activeInstances);
         testNetworkTaskWorker.run();
         assertEquals(1, testNetworkTaskWorker.getInstancesOnExecute());
-        activeInstances = networkTaskDAO.readNetworkTaskInstances(task.getSchedulerId());
+        activeInstances = networkTaskDAO.readNetworkTaskInstances(task.getId());
         assertEquals(0, activeInstances);
     }
 
@@ -102,7 +102,7 @@ public class NetworkTaskWorkerTest {
     public void testTooManyInstances() {
         NetworkTask task = getNetworkTask();
         task = networkTaskDAO.insertNetworkTask(task);
-        networkTaskDAO.increaseNetworkTaskInstances(task.getSchedulerId());
+        networkTaskDAO.increaseNetworkTaskInstances(task.getId());
         TestNetworkTaskWorker testNetworkTaskWorker = new TestNetworkTaskWorker(TestRegistry.getContext(), task, null, true, 1);
         setCurrentTime(testNetworkTaskWorker);
         MockNetworkManager networkManager = (MockNetworkManager) testNetworkTaskWorker.getNetworkManager();
@@ -196,11 +196,11 @@ public class NetworkTaskWorkerTest {
         MockNetworkManager networkManager = (MockNetworkManager) testNetworkTaskWorker.getNetworkManager();
         networkManager.setConnected(true);
         networkManager.setConnectedWithWiFi(true);
-        int activeInstances = networkTaskDAO.readNetworkTaskInstances(task.getSchedulerId());
+        int activeInstances = networkTaskDAO.readNetworkTaskInstances(task.getId());
         assertEquals(0, activeInstances);
         testNetworkTaskWorker.run();
         assertEquals(1, testNetworkTaskWorker.getInstancesOnExecute());
-        activeInstances = networkTaskDAO.readNetworkTaskInstances(task.getSchedulerId());
+        activeInstances = networkTaskDAO.readNetworkTaskInstances(task.getId());
         assertEquals(0, activeInstances);
     }
 
@@ -290,10 +290,10 @@ public class NetworkTaskWorkerTest {
         MockNetworkManager networkManager = (MockNetworkManager) testNetworkTaskWorker.getNetworkManager();
         networkManager.setConnected(false);
         networkManager.setConnectedWithWiFi(true);
-        int activeInstances = networkTaskDAO.readNetworkTaskInstances(task.getSchedulerId());
+        int activeInstances = networkTaskDAO.readNetworkTaskInstances(task.getId());
         assertEquals(0, activeInstances);
         testNetworkTaskWorker.run();
-        activeInstances = networkTaskDAO.readNetworkTaskInstances(task.getSchedulerId());
+        activeInstances = networkTaskDAO.readNetworkTaskInstances(task.getId());
         assertEquals(0, activeInstances);
     }
 
@@ -330,10 +330,10 @@ public class NetworkTaskWorkerTest {
         MockNetworkManager networkManager = (MockNetworkManager) testNetworkTaskWorker.getNetworkManager();
         networkManager.setConnected(true);
         networkManager.setConnectedWithWiFi(false);
-        int activeInstances = networkTaskDAO.readNetworkTaskInstances(task.getSchedulerId());
+        int activeInstances = networkTaskDAO.readNetworkTaskInstances(task.getId());
         assertEquals(0, activeInstances);
         testNetworkTaskWorker.run();
-        activeInstances = networkTaskDAO.readNetworkTaskInstances(task.getSchedulerId());
+        activeInstances = networkTaskDAO.readNetworkTaskInstances(task.getId());
         assertEquals(0, activeInstances);
     }
 

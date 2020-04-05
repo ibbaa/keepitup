@@ -97,7 +97,7 @@ public class NetworkTaskDAOTest {
         NetworkTask insertedTask1 = getNetworkTask1();
         insertedTask1 = networkTaskDAO.insertNetworkTask(insertedTask1);
         assertEquals(0, insertedTask1.getInstances());
-        assertEquals(0, networkTaskDAO.readNetworkTaskInstances(insertedTask1.getSchedulerId()));
+        assertEquals(0, networkTaskDAO.readNetworkTaskInstances(insertedTask1.getId()));
     }
 
     @Test
@@ -200,7 +200,7 @@ public class NetworkTaskDAOTest {
         readTask1.setInstances(5);
         readTask1 = networkTaskDAO.updateNetworkTask(readTask1);
         assertEquals(0, readTask1.getInstances());
-        assertEquals(0, networkTaskDAO.readNetworkTaskInstances(readTask1.getSchedulerId()));
+        assertEquals(0, networkTaskDAO.readNetworkTaskInstances(readTask1.getId()));
     }
 
     @Test
@@ -209,20 +209,20 @@ public class NetworkTaskDAOTest {
         NetworkTask insertedTask2 = getNetworkTask2();
         insertedTask1 = networkTaskDAO.insertNetworkTask(insertedTask1);
         insertedTask2 = networkTaskDAO.insertNetworkTask(insertedTask2);
-        assertEquals(0, networkTaskDAO.readNetworkTaskInstances(insertedTask1.getSchedulerId()));
-        assertEquals(0, networkTaskDAO.readNetworkTaskInstances(insertedTask2.getSchedulerId()));
-        networkTaskDAO.increaseNetworkTaskInstances(insertedTask1.getSchedulerId());
-        assertEquals(1, networkTaskDAO.readNetworkTaskInstances(insertedTask1.getSchedulerId()));
-        assertEquals(0, networkTaskDAO.readNetworkTaskInstances(insertedTask2.getSchedulerId()));
-        networkTaskDAO.increaseNetworkTaskInstances(insertedTask1.getSchedulerId());
-        assertEquals(2, networkTaskDAO.readNetworkTaskInstances(insertedTask1.getSchedulerId()));
-        assertEquals(0, networkTaskDAO.readNetworkTaskInstances(insertedTask2.getSchedulerId()));
-        networkTaskDAO.increaseNetworkTaskInstances(insertedTask2.getSchedulerId());
-        assertEquals(2, networkTaskDAO.readNetworkTaskInstances(insertedTask1.getSchedulerId()));
-        assertEquals(1, networkTaskDAO.readNetworkTaskInstances(insertedTask2.getSchedulerId()));
+        assertEquals(0, networkTaskDAO.readNetworkTaskInstances(insertedTask1.getId()));
+        assertEquals(0, networkTaskDAO.readNetworkTaskInstances(insertedTask2.getId()));
+        networkTaskDAO.increaseNetworkTaskInstances(insertedTask1.getId());
+        assertEquals(1, networkTaskDAO.readNetworkTaskInstances(insertedTask1.getId()));
+        assertEquals(0, networkTaskDAO.readNetworkTaskInstances(insertedTask2.getId()));
+        networkTaskDAO.increaseNetworkTaskInstances(insertedTask1.getId());
+        assertEquals(2, networkTaskDAO.readNetworkTaskInstances(insertedTask1.getId()));
+        assertEquals(0, networkTaskDAO.readNetworkTaskInstances(insertedTask2.getId()));
+        networkTaskDAO.increaseNetworkTaskInstances(insertedTask2.getId());
+        assertEquals(2, networkTaskDAO.readNetworkTaskInstances(insertedTask1.getId()));
+        assertEquals(1, networkTaskDAO.readNetworkTaskInstances(insertedTask2.getId()));
         networkTaskDAO.resetAllNetworkTaskInstances();
-        assertEquals(0, networkTaskDAO.readNetworkTaskInstances(insertedTask1.getSchedulerId()));
-        assertEquals(0, networkTaskDAO.readNetworkTaskInstances(insertedTask2.getSchedulerId()));
+        assertEquals(0, networkTaskDAO.readNetworkTaskInstances(insertedTask1.getId()));
+        assertEquals(0, networkTaskDAO.readNetworkTaskInstances(insertedTask2.getId()));
     }
 
     @Test
@@ -231,28 +231,28 @@ public class NetworkTaskDAOTest {
         NetworkTask insertedTask2 = getNetworkTask2();
         insertedTask1 = networkTaskDAO.insertNetworkTask(insertedTask1);
         insertedTask2 = networkTaskDAO.insertNetworkTask(insertedTask2);
-        networkTaskDAO.increaseNetworkTaskInstances(insertedTask1.getSchedulerId());
-        networkTaskDAO.increaseNetworkTaskInstances(insertedTask1.getSchedulerId());
-        networkTaskDAO.increaseNetworkTaskInstances(insertedTask1.getSchedulerId());
-        networkTaskDAO.increaseNetworkTaskInstances(insertedTask1.getSchedulerId());
-        networkTaskDAO.increaseNetworkTaskInstances(insertedTask1.getSchedulerId());
-        assertEquals(5, networkTaskDAO.readNetworkTaskInstances(insertedTask1.getSchedulerId()));
-        assertEquals(0, networkTaskDAO.readNetworkTaskInstances(insertedTask2.getSchedulerId()));
-        networkTaskDAO.decreaseNetworkTaskInstances(insertedTask1.getSchedulerId());
-        networkTaskDAO.decreaseNetworkTaskInstances(insertedTask2.getSchedulerId());
-        assertEquals(4, networkTaskDAO.readNetworkTaskInstances(insertedTask1.getSchedulerId()));
-        assertEquals(0, networkTaskDAO.readNetworkTaskInstances(insertedTask2.getSchedulerId()));
-        networkTaskDAO.decreaseNetworkTaskInstances(insertedTask1.getSchedulerId());
-        networkTaskDAO.decreaseNetworkTaskInstances(insertedTask2.getSchedulerId());
-        assertEquals(3, networkTaskDAO.readNetworkTaskInstances(insertedTask1.getSchedulerId()));
-        assertEquals(0, networkTaskDAO.readNetworkTaskInstances(insertedTask2.getSchedulerId()));
-        networkTaskDAO.decreaseNetworkTaskInstances(insertedTask1.getSchedulerId());
-        networkTaskDAO.decreaseNetworkTaskInstances(insertedTask1.getSchedulerId());
-        networkTaskDAO.decreaseNetworkTaskInstances(insertedTask1.getSchedulerId());
-        networkTaskDAO.decreaseNetworkTaskInstances(insertedTask1.getSchedulerId());
-        networkTaskDAO.decreaseNetworkTaskInstances(insertedTask1.getSchedulerId());
-        assertEquals(0, networkTaskDAO.readNetworkTaskInstances(insertedTask1.getSchedulerId()));
-        assertEquals(0, networkTaskDAO.readNetworkTaskInstances(insertedTask2.getSchedulerId()));
+        networkTaskDAO.increaseNetworkTaskInstances(insertedTask1.getId());
+        networkTaskDAO.increaseNetworkTaskInstances(insertedTask1.getId());
+        networkTaskDAO.increaseNetworkTaskInstances(insertedTask1.getId());
+        networkTaskDAO.increaseNetworkTaskInstances(insertedTask1.getId());
+        networkTaskDAO.increaseNetworkTaskInstances(insertedTask1.getId());
+        assertEquals(5, networkTaskDAO.readNetworkTaskInstances(insertedTask1.getId()));
+        assertEquals(0, networkTaskDAO.readNetworkTaskInstances(insertedTask2.getId()));
+        networkTaskDAO.decreaseNetworkTaskInstances(insertedTask1.getId());
+        networkTaskDAO.decreaseNetworkTaskInstances(insertedTask2.getId());
+        assertEquals(4, networkTaskDAO.readNetworkTaskInstances(insertedTask1.getId()));
+        assertEquals(0, networkTaskDAO.readNetworkTaskInstances(insertedTask2.getId()));
+        networkTaskDAO.decreaseNetworkTaskInstances(insertedTask1.getId());
+        networkTaskDAO.decreaseNetworkTaskInstances(insertedTask2.getId());
+        assertEquals(3, networkTaskDAO.readNetworkTaskInstances(insertedTask1.getId()));
+        assertEquals(0, networkTaskDAO.readNetworkTaskInstances(insertedTask2.getId()));
+        networkTaskDAO.decreaseNetworkTaskInstances(insertedTask1.getId());
+        networkTaskDAO.decreaseNetworkTaskInstances(insertedTask1.getId());
+        networkTaskDAO.decreaseNetworkTaskInstances(insertedTask1.getId());
+        networkTaskDAO.decreaseNetworkTaskInstances(insertedTask1.getId());
+        networkTaskDAO.decreaseNetworkTaskInstances(insertedTask1.getId());
+        assertEquals(0, networkTaskDAO.readNetworkTaskInstances(insertedTask1.getId()));
+        assertEquals(0, networkTaskDAO.readNetworkTaskInstances(insertedTask2.getId()));
     }
 
     private NetworkTask getNetworkTask1() {

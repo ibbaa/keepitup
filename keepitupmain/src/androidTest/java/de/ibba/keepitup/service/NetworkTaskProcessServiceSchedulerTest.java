@@ -180,6 +180,22 @@ public class NetworkTaskProcessServiceSchedulerTest {
     }
 
     @Test
+    public void testStartupInstancesReset() {
+        NetworkTask task1 = getNetworkTask1();
+        NetworkTask task2 = getNetworkTask2();
+        task1 = networkTaskDAO.insertNetworkTask(task1);
+        task2 = networkTaskDAO.insertNetworkTask(task2);
+        networkTaskDAO.increaseNetworkTaskInstances(task1.getId());
+        networkTaskDAO.increaseNetworkTaskInstances(task2.getId());
+        networkTaskDAO.increaseNetworkTaskInstances(task2.getId());
+        assertEquals(1, networkTaskDAO.readNetworkTaskInstances(task1.getId()));
+        assertEquals(2, networkTaskDAO.readNetworkTaskInstances(task2.getId()));
+        scheduler.startup();
+        assertEquals(0, networkTaskDAO.readNetworkTaskInstances(task1.getId()));
+        assertEquals(0, networkTaskDAO.readNetworkTaskInstances(task2.getId()));
+    }
+
+    @Test
     public void testCancelAll() {
         NetworkTask task1 = getNetworkTask1();
         NetworkTask task2 = getNetworkTask2();
