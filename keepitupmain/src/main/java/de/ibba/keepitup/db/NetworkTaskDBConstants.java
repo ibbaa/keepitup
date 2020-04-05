@@ -120,7 +120,7 @@ class NetworkTaskDBConstants {
     }
 
     public String getReadInstancesStatement() {
-        return "SELECT INSTANCES FROM " + getTableName() + " WHERE " + getSchedulerIdColumnName() + " = ?";
+        return "SELECT INSTANCES FROM " + getTableName() + " WHERE " + getIdColumnName() + " = ?";
     }
 
     public String getUpdateIndexNetworkTasksStatement() {

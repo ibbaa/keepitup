@@ -69,7 +69,7 @@ public abstract class NetworkTaskWorker implements Runnable {
             }
             NetworkTaskDAO networkTaskDAO = new NetworkTaskDAO(getContext());
             Log.d(NetworkTaskWorker.class.getName(), "Increasing instances count.");
-            networkTaskDAO.increaseNetworkTaskInstances(networkTask.getSchedulerId());
+            networkTaskDAO.increaseNetworkTaskInstances(networkTask.getId());
             try {
                 boolean isConnectedWithWifi = networkManager.isConnectedWithWiFi();
                 boolean isConnected = networkManager.isConnected();
@@ -92,7 +92,7 @@ public abstract class NetworkTaskWorker implements Runnable {
                 }
             } finally {
                 Log.d(NetworkTaskWorker.class.getName(), "Decreasing instances count.");
-                networkTaskDAO.decreaseNetworkTaskInstances(networkTask.getSchedulerId());
+                networkTaskDAO.decreaseNetworkTaskInstances(networkTask.getId());
             }
         } catch (Exception exc) {
             Log.e(NetworkTaskWorker.class.getName(), "Fatal errror while executing worker and writing log", exc);
@@ -174,7 +174,7 @@ public abstract class NetworkTaskWorker implements Runnable {
         logEntry.setNetworkTaskId(networkTask.getId());
         logEntry.setTimestamp(getTimeService().getCurrentTimestamp());
         NetworkTaskDAO networkTaskDAO = new NetworkTaskDAO(getContext());
-        int activeInstances = networkTaskDAO.readNetworkTaskInstances(networkTask.getSchedulerId());
+        int activeInstances = networkTaskDAO.readNetworkTaskInstances(networkTask.getId());
         int maxInstances = getMaxInstances();
         Log.d(NetworkTaskWorker.class.getName(), "Currenty active instances: " + activeInstances);
         Log.d(NetworkTaskWorker.class.getName(), "Max active instances: " + maxInstances);

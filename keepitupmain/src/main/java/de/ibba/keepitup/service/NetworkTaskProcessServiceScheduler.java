@@ -90,6 +90,7 @@ public class NetworkTaskProcessServiceScheduler {
 
     public void startup() {
         Log.d(NetworkTaskProcessServiceScheduler.class.getName(), "Starting all network tasks marked as running.");
+        networkTaskDAO.resetAllNetworkTaskInstances();
         List<NetworkTask> networkTasks = networkTaskDAO.readAllNetworkTasks();
         Log.d(NetworkTaskProcessServiceScheduler.class.getName(), "Database returned the following network tasks: " + (networkTasks.isEmpty() ? "no network tasks" : ""));
         for (NetworkTask currentTask : networkTasks) {

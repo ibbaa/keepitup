@@ -57,7 +57,7 @@ public class TestNetworkTaskWorker extends NetworkTaskWorker {
     public ExecutionResult execute(NetworkTask networkTask) {
         Log.d(TestNetworkTaskWorker.class.getName(), "Executing TestNetworkTaskWorker for " + networkTask);
         NetworkTaskDAO networkTaskDAO = new NetworkTaskDAO(getContext());
-        instancesOnExecute = networkTaskDAO.readNetworkTaskInstances(networkTask.getSchedulerId());
+        instancesOnExecute = networkTaskDAO.readNetworkTaskInstances(networkTask.getId());
         LogEntry logEntry = new LogEntry();
         logEntry.setNetworkTaskId(networkTask.getId());
         logEntry.setSuccess(success);

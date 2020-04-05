@@ -58,27 +58,27 @@ public class NetworkTaskDAO extends BaseDAO {
         dumpDatabase("Dump after updateNetworkTaskRunning call");
     }
 
-    public int readNetworkTaskInstances(int schedulerId) {
-        Log.d(NetworkTaskDAO.class.getName(), "Reading instances value of task with scheduler id " + schedulerId);
+    public int readNetworkTaskInstances(long taskId) {
+        Log.d(NetworkTaskDAO.class.getName(), "Reading instances value of task with id " + taskId);
         NetworkTask networkTask = new NetworkTask();
-        networkTask.setSchedulerId(schedulerId);
+        networkTask.setId(taskId);
         int readInstances = executeDBOperationInTransaction(networkTask, this::readNetworkTaskInstances);
-        Log.d(NetworkTaskDAO.class.getName(), "Number of instances of task with scheduler id " + schedulerId + " is " + readInstances);
+        Log.d(NetworkTaskDAO.class.getName(), "Number of instances of task with id " + taskId + " is " + readInstances);
         return readInstances;
     }
 
-    public void increaseNetworkTaskInstances(int schedulerId) {
-        Log.d(NetworkTaskDAO.class.getName(), "Increasing instances of task with scheduler id " + schedulerId);
+    public void increaseNetworkTaskInstances(long taskId) {
+        Log.d(NetworkTaskDAO.class.getName(), "Increasing instances of task with id " + taskId);
         NetworkTask networkTask = new NetworkTask();
-        networkTask.setSchedulerId(schedulerId);
+        networkTask.setId(taskId);
         executeDBOperationInTransaction(networkTask, this::increaseNetworkTaskInstances);
         dumpDatabase("Dump after increaseNetworkTaskInstances call");
     }
 
-    public void decreaseNetworkTaskInstances(int schedulerId) {
-        Log.d(NetworkTaskDAO.class.getName(), "Decreasing instances of task with scheduler id " + schedulerId);
+    public void decreaseNetworkTaskInstances(long taskId) {
+        Log.d(NetworkTaskDAO.class.getName(), "Decreasing instances of task with id " + taskId);
         NetworkTask networkTask = new NetworkTask();
-        networkTask.setSchedulerId(schedulerId);
+        networkTask.setId(taskId);
         executeDBOperationInTransaction(networkTask, this::decreaseNetworkTaskInstances);
         dumpDatabase("Dump after decreaseNetworkTaskInstances call");
     }
@@ -187,8 +187,8 @@ public class NetworkTaskDAO extends BaseDAO {
             networkTask.setInstances(instances + 1);
         }
         NetworkTaskDBConstants dbConstants = new NetworkTaskDBConstants(getContext());
-        String selection = dbConstants.getSchedulerIdColumnName() + " = ?";
-        String[] selectionArgs = {String.valueOf(networkTask.getSchedulerId())};
+        String selection = dbConstants.getIdColumnName() + " = ?";
+        String[] selectionArgs = {String.valueOf(networkTask.getId())};
         ContentValues values = new ContentValues();
         values.put(dbConstants.getInstancesColumnName(), networkTask.getInstances());
         Log.d(NetworkTaskDAO.class.getName(), "Updating instances to " + networkTask.getInstances());
@@ -205,8 +205,8 @@ public class NetworkTaskDAO extends BaseDAO {
             networkTask.setInstances(instances - 1);
         }
         NetworkTaskDBConstants dbConstants = new NetworkTaskDBConstants(getContext());
-        String selection = dbConstants.getSchedulerIdColumnName() + " = ?";
-        String[] selectionArgs = {String.valueOf(networkTask.getSchedulerId())};
+        String selection = dbConstants.getIdColumnName() + " = ?";
+        String[] selectionArgs = {String.valueOf(networkTask.getId())};
         ContentValues values = new ContentValues();
         values.put(dbConstants.getInstancesColumnName(), networkTask.getInstances());
         Log.d(NetworkTaskDAO.class.getName(), "Updating instances to " + networkTask.getInstances());
@@ -257,8 +257,8 @@ public class NetworkTaskDAO extends BaseDAO {
         Cursor cursor = null;
         NetworkTaskDBConstants dbConstants = new NetworkTaskDBConstants(getContext());
         try {
-            Log.d(NetworkTaskDAO.class.getName(), "Executing SQL " + dbConstants.getReadInstancesStatement() + " with a parameter of " + networkTask.getSchedulerId());
-            cursor = db.rawQuery(dbConstants.getReadInstancesStatement(), new String[]{String.valueOf(networkTask.getSchedulerId())});
+            Log.d(NetworkTaskDAO.class.getName(), "Executing SQL " + dbConstants.getReadInstancesStatement() + " with a parameter of " + networkTask.getId());
+            cursor = db.rawQuery(dbConstants.getReadInstancesStatement(), new String[]{String.valueOf(networkTask.getId())});
             if (cursor.moveToFirst()) {
                 int value = cursor.getInt(0);
                 Log.d(NetworkTaskDAO.class.getName(), "readNetworkTaskInstances, returning " + value);
