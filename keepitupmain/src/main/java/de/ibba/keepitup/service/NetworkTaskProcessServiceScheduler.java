@@ -98,9 +98,11 @@ public class NetworkTaskProcessServiceScheduler {
                 if (!hasPendingIntent(currentTask)) {
                     Log.d(NetworkTaskProcessServiceScheduler.class.getName(), "Network task " + currentTask + " is not scheduled. Rescheduling...");
                     reschedule(currentTask, true);
+                    networkTaskDAO.resetNetworkTaskInstances(currentTask.getId());
                 }
             } else {
                 Log.d(NetworkTaskProcessServiceScheduler.class.getName(), "Network task " + currentTask + " is not marked as running.");
+                networkTaskDAO.resetNetworkTaskInstances(currentTask.getId());
             }
         }
     }

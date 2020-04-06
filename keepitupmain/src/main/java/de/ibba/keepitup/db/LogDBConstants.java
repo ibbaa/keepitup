@@ -92,6 +92,11 @@ class LogDBConstants {
         return "SELECT COUNT(*) FROM " + getTableName() + " WHERE " + getNetworkTaskIdColumnName() + " = ?";
     }
 
+    public String getDeleteOrphanLogsStatement() {
+        NetworkTaskDBConstants networkTaskDBConstants = new NetworkTaskDBConstants(context);
+        return "DELETE FROM " + getTableName() + " WHERE " + getNetworkTaskIdColumnName() + " NOT IN (SELECT " + networkTaskDBConstants.getIdColumnName() + " FROM " + networkTaskDBConstants.getTableName() + "):";
+    }
+
     private Resources getResources() {
         return context.getResources();
     }

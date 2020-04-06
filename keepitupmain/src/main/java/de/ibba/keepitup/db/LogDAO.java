@@ -61,6 +61,12 @@ public class LogDAO extends BaseDAO {
         dumpDatabase("Dump after deleteAllLogsForNetworkTask call");
     }
 
+    public void deleteAllOrphanLogs() {
+        Log.d(LogDAO.class.getName(), "Deleting all orphan log entries");
+        executeDBOperationInTransaction((LogEntry) null, this::deleteAllOrphanLogs);
+        dumpDatabase("Dump after deleteAllOrphanLogs call");
+    }
+
     public void deleteAllLogs() {
         Log.d(LogDAO.class.getName(), "Deleting all log entries");
         executeDBOperationInTransaction((LogEntry) null, this::deleteAllLogs);
@@ -189,6 +195,14 @@ public class LogDAO extends BaseDAO {
         LogDBConstants dbConstants = new LogDBConstants(getContext());
         String whereClause = dbConstants.getNetworkTaskIdColumnName() + " = ?";
         return db.delete(dbConstants.getTableName(), whereClause, new String[]{String.valueOf(logEntry.getNetworkTaskId())});
+    }
+
+    private int deleteAllOrphanLogs(LogEntry logEntry, SQLiteDatabase db) {
+        Log.d(LogDAO.class.getName(), "deleteAllOprhanLogs, log entry is " + logEntry);
+        LogDBConstants dbConstants = new LogDBConstants(getContext());
+        Log.d(LogDAO.class.getName(), "Executing SQL " + dbConstants.getDeleteOrphanLogsStatement());
+        db.execSQL(dbConstants.getDeleteOrphanLogsStatement());
+        return -1;
     }
 
     private int deleteAllLogs(LogEntry logEntry, SQLiteDatabase db) {
