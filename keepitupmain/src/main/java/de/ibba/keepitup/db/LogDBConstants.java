@@ -94,7 +94,7 @@ class LogDBConstants {
 
     public String getDeleteOrphanLogsStatement() {
         NetworkTaskDBConstants networkTaskDBConstants = new NetworkTaskDBConstants(context);
-        return "DELETE FROM " + getTableName() + " WHERE " + getNetworkTaskIdColumnName() + " NOT IN (SELECT " + networkTaskDBConstants.getIdColumnName() + " FROM " + networkTaskDBConstants.getTableName() + "):";
+        return "DELETE FROM " + getTableName() + " WHERE " + getNetworkTaskIdColumnName() + " NOT IN (SELECT " + networkTaskDBConstants.getIdColumnName() + " FROM " + networkTaskDBConstants.getTableName() + ");";
     }
 
     private Resources getResources() {
