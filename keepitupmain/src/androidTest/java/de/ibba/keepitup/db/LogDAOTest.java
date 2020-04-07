@@ -11,10 +11,13 @@ import org.junit.runner.RunWith;
 import java.util.List;
 
 import de.ibba.keepitup.logging.Dump;
+import de.ibba.keepitup.model.AccessType;
 import de.ibba.keepitup.model.LogEntry;
+import de.ibba.keepitup.model.NetworkTask;
 import de.ibba.keepitup.test.mock.TestRegistry;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
@@ -23,17 +26,22 @@ import static org.junit.Assert.assertTrue;
 public class LogDAOTest {
 
     private LogDAO logDAO;
+    private NetworkTaskDAO networkTaskDAO;
 
     @Before
     public void beforeEachTestMethod() {
         Dump.initialize(null);
         logDAO = new LogDAO(TestRegistry.getContext());
         logDAO.deleteAllLogs();
+        networkTaskDAO = new NetworkTaskDAO(TestRegistry.getContext());
+        networkTaskDAO = new NetworkTaskDAO(TestRegistry.getContext());
+        networkTaskDAO.deleteAllNetworkTasks();
     }
 
     @After
     public void afterEachTestMethod() {
         logDAO.deleteAllLogs();
+        networkTaskDAO.deleteAllNetworkTasks();
     }
 
     @Test
@@ -188,6 +196,61 @@ public class LogDAOTest {
         assertTrue(insertedLogEntry1.isEqual(allEntries.get(0)));
         assertTrue(insertedLogEntry2.isEqual(allEntries.get(1)));
         assertTrue(insertedLogEntry3.isEqual(allEntries.get(2)));
+    }
+
+    @Test
+    public void testDeleteAllOrphanLogs() {
+        NetworkTask task1 = getNetworkTask();
+        NetworkTask task2 = getNetworkTask();
+        NetworkTask task3 = getNetworkTask();
+        task1 = networkTaskDAO.insertNetworkTask(task1);
+        task2 = networkTaskDAO.insertNetworkTask(task2);
+        task3 = networkTaskDAO.insertNetworkTask(task3);
+        networkTaskDAO.deleteNetworkTask(task3);
+        LogEntry entry11 = getLogEntryWithNetworkTaskId(task1.getId());
+        LogEntry entry12 = getLogEntryWithNetworkTaskId(task1.getId());
+        entry11 = logDAO.insertAndDeleteLog(entry11);
+        entry12 = logDAO.insertAndDeleteLog(entry12);
+        LogEntry entry21 = getLogEntryWithNetworkTaskId(task2.getId());
+        entry21 = logDAO.insertAndDeleteLog(entry21);
+        LogEntry orphan1 = getLogEntryWithNetworkTaskId(task3.getId());
+        LogEntry orphan2 = getLogEntryWithNetworkTaskId(task3.getId());
+        orphan1 = logDAO.insertAndDeleteLog(orphan1);
+        orphan2 = logDAO.insertAndDeleteLog(orphan2);
+        assertEquals(5, logDAO.readAllLogs().size());
+        logDAO.deleteAllOrphanLogs();
+        List<LogEntry> logEntries = logDAO.readAllLogs();
+        assertEquals(3, logEntries.size());
+        assertTrue(containsLogEntry(logEntries, entry11));
+        assertTrue(containsLogEntry(logEntries, entry12));
+        assertTrue(containsLogEntry(logEntries, entry21));
+        assertFalse(containsLogEntry(logEntries, orphan1));
+        assertFalse(containsLogEntry(logEntries, orphan2));
+    }
+
+    private boolean containsLogEntry(List<LogEntry> logEntries, LogEntry entry) {
+        for (LogEntry currentEntry : logEntries) {
+            if (currentEntry.isEqual(entry)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private NetworkTask getNetworkTask() {
+        NetworkTask task = new NetworkTask();
+        task.setId(0);
+        task.setIndex(1);
+        task.setSchedulerId(0);
+        task.setInstances(1);
+        task.setAddress("127.0.0.1");
+        task.setPort(80);
+        task.setAccessType(AccessType.PING);
+        task.setInterval(15);
+        task.setOnlyWifi(false);
+        task.setNotification(true);
+        task.setRunning(true);
+        return task;
     }
 
     private LogEntry getLogEntry1() {

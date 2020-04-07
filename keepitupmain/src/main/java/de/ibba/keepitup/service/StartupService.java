@@ -33,30 +33,45 @@ public class StartupService extends BroadcastReceiver {
         Log.d(StartupService.class.getName(), "Starting application.");
         if (BuildConfig.DEBUG) {
             Log.d(StartupService.class.getName(), "Debug version. Initialize logging.");
-            try {
-                PreferenceManager preferenceManager = new PreferenceManager(context);
-                IFileManager fileManager = new SystemFileManager(context);
-                boolean isFileLoggerEnabled = preferenceManager.getPreferenceFileLoggerEnabled();
-                boolean isFileDumpEnabled = preferenceManager.getPreferenceFileDumpEnabled();
-                if (isFileLoggerEnabled) {
-                    Log.initialize(DebugUtil.getFileLogger(context, fileManager));
-                } else {
-                    Log.initialize(null);
-                }
-                if (isFileDumpEnabled) {
-                    Dump.initialize(DebugUtil.getFileDump(context, fileManager));
-                    dumpDatabase("Dump on application startup", context);
-                } else {
-                    Dump.initialize(null);
-                }
-            } catch (Exception exc) {
-                Log.e(StartupService.class.getName(), "Error initializing logging.", exc);
-            }
+            initializeLogging(context);
         } else {
             Log.d(StartupService.class.getName(), "Release version. Disable logging.");
             Log.initialize(null);
             Dump.initialize(null);
         }
+        Log.d(StartupService.class.getName(), "Initialize scheduler.");
+        initializeScheduler(context);
+        Log.d(StartupService.class.getName(), "Cleanup files");
+        cleanupFiles(context);
+        Log.d(StartupService.class.getName(), "Cleanup logs");
+        cleanupLogs(context);
+    }
+
+    private void initializeLogging(Context context) {
+        Log.d(StartupService.class.getName(), "initializeLogging");
+        try {
+            PreferenceManager preferenceManager = new PreferenceManager(context);
+            IFileManager fileManager = new SystemFileManager(context);
+            boolean isFileLoggerEnabled = preferenceManager.getPreferenceFileLoggerEnabled();
+            boolean isFileDumpEnabled = preferenceManager.getPreferenceFileDumpEnabled();
+            if (isFileLoggerEnabled) {
+                Log.initialize(DebugUtil.getFileLogger(context, fileManager));
+            } else {
+                Log.initialize(null);
+            }
+            if (isFileDumpEnabled) {
+                Dump.initialize(DebugUtil.getFileDump(context, fileManager));
+                dumpDatabase("Dump on application startup", context);
+            } else {
+                Dump.initialize(null);
+            }
+        } catch (Exception exc) {
+            Log.e(StartupService.class.getName(), "Error initializing logging.", exc);
+        }
+    }
+
+    private void initializeScheduler(Context context) {
+        Log.d(StartupService.class.getName(), "initializeScheduler");
         try {
             Log.d(StartupService.class.getName(), "Init notification channels.");
             new NotificationHandler(context);
@@ -66,12 +81,27 @@ public class StartupService extends BroadcastReceiver {
         } catch (Exception exc) {
             Log.e(StartupService.class.getName(), "Error on starting pending network tasks.", exc);
         }
+    }
+
+    private void cleanupFiles(Context context) {
+        Log.d(StartupService.class.getName(), "cleanupFiles");
         try {
             Log.d(StartupService.class.getName(), "Deleting internal download files.");
             IFileManager fileManager = new SystemFileManager(context);
             fileManager.delete(fileManager.getInternalDownloadDirectory());
         } catch (Exception exc) {
             Log.e(StartupService.class.getName(), "Error on deleting internal download files", exc);
+        }
+    }
+
+    private void cleanupLogs(Context context) {
+        Log.d(StartupService.class.getName(), "cleanupLogs");
+        try {
+            Log.d(StartupService.class.getName(), "Deleting orphan logs.");
+            LogDAO logDAO = new LogDAO(context);
+            logDAO.deleteAllOrphanLogs();
+        } catch (Exception exc) {
+            Log.e(StartupService.class.getName(), "Error on cleaning up logs", exc);
         }
     }
 
