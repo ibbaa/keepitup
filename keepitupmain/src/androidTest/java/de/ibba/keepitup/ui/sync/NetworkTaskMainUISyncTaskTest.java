@@ -68,7 +68,7 @@ public class NetworkTaskMainUISyncTaskTest extends BaseUITest {
     }
 
     @Test
-    public void testAdapterUpdate() {
+    public void testAdapterLogUpdate() {
         NetworkTask task1 = networkTaskDAO.insertNetworkTask(getNetworkTask1());
         NetworkTask task2 = networkTaskDAO.insertNetworkTask(getNetworkTask2());
         NetworkTask task3 = networkTaskDAO.insertNetworkTask(getNetworkTask3());
@@ -88,25 +88,26 @@ public class NetworkTaskMainUISyncTaskTest extends BaseUITest {
     }
 
     @Test
-    public void testTaskNotUpdated() {
+    public void testAdapterTaskAndLogUpdate() {
         NetworkTask task1 = networkTaskDAO.insertNetworkTask(getNetworkTask1());
         NetworkTask task2 = networkTaskDAO.insertNetworkTask(getNetworkTask2());
         NetworkTask task3 = networkTaskDAO.insertNetworkTask(getNetworkTask3());
         LogEntry logEntry = logDAO.insertAndDeleteLog(getLogEntryWithNetworkTaskId(task2.getId(), new GregorianCalendar(1980, Calendar.MARCH, 17).getTime().getTime()));
         NetworkTaskUIWrapper wrapper1 = new NetworkTaskUIWrapper(task1, null);
-        NetworkTaskUIWrapper wrapper2 = new NetworkTaskUIWrapper(task2, null);
+        NetworkTaskUIWrapper wrapper2 = new NetworkTaskUIWrapper(task2, logEntry);
         NetworkTaskUIWrapper wrapper3 = new NetworkTaskUIWrapper(task3, null);
         NetworkTaskAdapter adapter = (NetworkTaskAdapter) activity.getAdapter();
         adapter.addItem(wrapper1);
         adapter.addItem(wrapper2);
         adapter.addItem(wrapper3);
-        NetworkTask otherTask = getNetworkTask1();
-        otherTask.setId(task2.getId());
-        activity.runOnUiThread(() -> syncTask.onPostExecute(new NetworkTaskUIWrapper(otherTask, logEntry)));
+        networkTaskDAO.increaseNetworkTaskInstances(task2.getId());
+        NetworkTask updatedTask2 = networkTaskDAO.readNetworkTask(task2.getId());
+        LogEntry otherLogEntry = logDAO.insertAndDeleteLog(getLogEntryWithNetworkTaskId(task2.getId(), new GregorianCalendar(1980, Calendar.MARCH, 18).getTime().getTime()));
+        activity.runOnUiThread(() -> syncTask.onPostExecute(new NetworkTaskUIWrapper(updatedTask2, otherLogEntry)));
         InstrumentationRegistry.getInstrumentation().waitForIdleSync();
         wrapper2 = adapter.getItem(1);
-        assertTrue(task2.isEqual(wrapper2.getNetworkTask()));
-        assertTrue(logEntry.isEqual(wrapper2.getLogEntry()));
+        assertTrue(updatedTask2.isEqual(wrapper2.getNetworkTask()));
+        assertTrue(otherLogEntry.isEqual(wrapper2.getLogEntry()));
     }
 
     @Test
