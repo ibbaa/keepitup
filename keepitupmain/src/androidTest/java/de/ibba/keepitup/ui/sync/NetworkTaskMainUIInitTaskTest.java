@@ -95,9 +95,9 @@ public class NetworkTaskMainUIInitTaskTest extends BaseUITest {
         adapter.addItem(new NetworkTaskUIWrapper(task3, logEntry2));
         activity.runOnUiThread(() -> initTask.onPostExecute(Arrays.asList(wrapper1, wrapper2, wrapper3)));
         InstrumentationRegistry.getInstrumentation().waitForIdleSync();
-        NetworkTaskUIWrapper adapterWrapper1 = adapter.getItem(0);
-        NetworkTaskUIWrapper adapterWrapper2 = adapter.getItem(1);
-        NetworkTaskUIWrapper adapterWrapper3 = adapter.getItem(2);
+        adapter.getItem(0);
+        adapter.getItem(1);
+        adapter.getItem(2);
         assertTrue(task1.isEqual(wrapper1.getNetworkTask()));
         assertTrue(logEntry1.isEqual(wrapper1.getLogEntry()));
         assertTrue(task2.isEqual(wrapper2.getNetworkTask()));

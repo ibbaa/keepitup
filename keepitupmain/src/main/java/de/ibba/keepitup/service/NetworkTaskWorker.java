@@ -70,6 +70,7 @@ public abstract class NetworkTaskWorker implements Runnable {
             NetworkTaskDAO networkTaskDAO = new NetworkTaskDAO(getContext());
             Log.d(NetworkTaskWorker.class.getName(), "Increasing instances count.");
             networkTaskDAO.increaseNetworkTaskInstances(networkTask.getId());
+            sendNetworkTaskUINotificationBroadcast();
             try {
                 boolean isConnectedWithWifi = networkManager.isConnectedWithWiFi();
                 boolean isConnected = networkManager.isConnected();
@@ -93,6 +94,7 @@ public abstract class NetworkTaskWorker implements Runnable {
             } finally {
                 Log.d(NetworkTaskWorker.class.getName(), "Decreasing instances count.");
                 networkTaskDAO.decreaseNetworkTaskInstances(networkTask.getId());
+                sendNetworkTaskUINotificationBroadcast();
             }
         } catch (Exception exc) {
             Log.e(NetworkTaskWorker.class.getName(), "Fatal errror while executing worker and writing log", exc);
@@ -109,17 +111,22 @@ public abstract class NetworkTaskWorker implements Runnable {
         LogDAO logDAO = new LogDAO(getContext());
         logDAO.insertAndDeleteLog(logEntry);
         Log.d(NetworkTaskWorker.class.getName(), "Notify UI");
-        sendUINotificationBroadcast();
+        sendNetworkTaskUINotificationBroadcast();
+        sendLogEntryUINotificationBroadcast();
         if (sendSystemNotifiaction) {
             sendSystemNotifications(logEntry);
         }
     }
 
-    private void sendUINotificationBroadcast() {
-        Log.d(NetworkTaskWorker.class.getName(), "sendUINotificationBroadcast");
+    private void sendNetworkTaskUINotificationBroadcast() {
+        Log.d(NetworkTaskWorker.class.getName(), "sendNetworkTaskUINotificationBroadcast");
         Intent mainUIintent = new Intent(NetworkTaskMainUIBroadcastReceiver.class.getName());
         mainUIintent.putExtras(networkTask.toBundle());
         getContext().sendBroadcast(mainUIintent);
+    }
+
+    private void sendLogEntryUINotificationBroadcast() {
+        Log.d(NetworkTaskWorker.class.getName(), "sendLogEntryUINotificationBroadcast");
         Intent logUIintent = new Intent(LogEntryUIBroadcastReceiver.class.getName());
         logUIintent.putExtras(networkTask.toBundle());
         getContext().sendBroadcast(logUIintent);
