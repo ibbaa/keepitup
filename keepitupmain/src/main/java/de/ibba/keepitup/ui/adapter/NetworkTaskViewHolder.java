@@ -17,6 +17,7 @@ public class NetworkTaskViewHolder extends RecyclerView.ViewHolder {
     private final CardView cardView;
     private final ImageView startStopImage;
     private final TextView statusText;
+    private final TextView instancesText;
     private final TextView accessTypeText;
     private final TextView addressText;
     private final TextView intervalText;
@@ -40,6 +41,7 @@ public class NetworkTaskViewHolder extends RecyclerView.ViewHolder {
         logImage.setOnClickListener(this::onLogClicked);
         statusText = itemView.findViewById(R.id.textview_list_item_network_task_status);
         statusText.setOnClickListener(this::onStartStopClicked);
+        instancesText = itemView.findViewById(R.id.textview_list_item_network_task_instances);
         accessTypeText = itemView.findViewById(R.id.textview_list_item_network_task_accesstype);
         addressText = itemView.findViewById(R.id.textview_list_item_network_task_address);
         intervalText = itemView.findViewById(R.id.textview_list_item_network_task_interval);
@@ -55,6 +57,10 @@ public class NetworkTaskViewHolder extends RecyclerView.ViewHolder {
         statusText.setText(status);
         startStopImage.setImageResource(startStopImageResource);
         startStopImage.setContentDescription(descriptionStartStopImage);
+    }
+
+    public void setInstances(String instances) {
+        instancesText.setText(instances);
     }
 
     public void setAccessType(String accessType) {

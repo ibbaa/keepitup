@@ -121,7 +121,9 @@ public abstract class NetworkTaskWorker implements Runnable {
     private void sendNetworkTaskUINotificationBroadcast() {
         Log.d(NetworkTaskWorker.class.getName(), "sendNetworkTaskUINotificationBroadcast");
         Intent mainUIintent = new Intent(NetworkTaskMainUIBroadcastReceiver.class.getName());
-        mainUIintent.putExtras(networkTask.toBundle());
+        NetworkTaskDAO networkTaskDAO = new NetworkTaskDAO(getContext());
+        NetworkTask readNetworkTask = networkTaskDAO.readNetworkTask(networkTask.getId());
+        mainUIintent.putExtras(readNetworkTask.toBundle());
         getContext().sendBroadcast(mainUIintent);
     }
 

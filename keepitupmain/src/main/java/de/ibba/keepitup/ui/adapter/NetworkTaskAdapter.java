@@ -48,6 +48,7 @@ public class NetworkTaskAdapter extends RecyclerView.Adapter<NetworkTaskViewHold
             NetworkTask networkTask = networkTaskWrapperList.get(position).getNetworkTask();
             LogEntry logEntry = networkTaskWrapperList.get(position).getLogEntry();
             bindStatus(networkTaskViewHolder, networkTask);
+            bindInstances(networkTaskViewHolder, networkTask);
             bindAccessType(networkTaskViewHolder, networkTask);
             bindAddress(networkTaskViewHolder, networkTask);
             bindInterval(networkTaskViewHolder, networkTask);
@@ -63,12 +64,20 @@ public class NetworkTaskAdapter extends RecyclerView.Adapter<NetworkTaskViewHold
 
     private void bindStatus(@NonNull NetworkTaskViewHolder networkTaskViewHolder, NetworkTask networkTask) {
         Log.d(NetworkTaskAdapter.class.getName(), "bindStatus, networkTask is " + networkTask);
-        String statusRunning = networkTask.isRunning() ? getResources().getString(R.string.string_running) : getResources().getString(R.string.string_stopped);
+        String statusRunning = networkTask.isRunning() ? getResources().getString(R.string.string_started) : getResources().getString(R.string.string_stopped);
         String formattedStatusText = getResources().getString(R.string.text_activity_main_list_item_network_task_status, statusRunning);
         int startStopImage = networkTask.isRunning() ? R.drawable.icon_stop_selector : R.drawable.icon_start_selector;
         String descriptionStartStopImage = networkTask.isRunning() ? getResources().getString(R.string.label_activity_main_stop_network_task) : getResources().getString(R.string.label_activity_main_start_network_task);
         Log.d(NetworkTaskAdapter.class.getName(), "binding status text " + formattedStatusText);
         networkTaskViewHolder.setStatus(formattedStatusText, descriptionStartStopImage, startStopImage);
+    }
+
+    private void bindInstances(@NonNull NetworkTaskViewHolder networkTaskViewHolder, NetworkTask networkTask) {
+        Log.d(NetworkTaskAdapter.class.getName(), "bindStatus, networkTask is " + networkTask);
+        int instances = networkTask.getInstances();
+        String formattedInstancesText = getResources().getString(R.string.text_activity_main_list_item_network_task_instances, instances);
+        Log.d(NetworkTaskAdapter.class.getName(), "binding instances text " + formattedInstancesText);
+        networkTaskViewHolder.setInstances(formattedInstancesText);
     }
 
     private void bindAccessType(@NonNull NetworkTaskViewHolder networkTaskViewHolder, NetworkTask networkTask) {
