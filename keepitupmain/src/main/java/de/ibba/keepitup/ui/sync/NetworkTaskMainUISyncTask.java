@@ -6,7 +6,6 @@ import android.os.AsyncTask;
 import java.lang.ref.WeakReference;
 
 import de.ibba.keepitup.db.LogDAO;
-import de.ibba.keepitup.db.NetworkTaskDAO;
 import de.ibba.keepitup.logging.Log;
 import de.ibba.keepitup.model.LogEntry;
 import de.ibba.keepitup.model.NetworkTask;
@@ -37,8 +36,6 @@ public class NetworkTaskMainUISyncTask extends AsyncTask<NetworkTask, Integer, N
         try {
             Context context = contextRef.get();
             if (context != null) {
-                NetworkTaskDAO networkTaskDAO = new NetworkTaskDAO(context);
-                networkTask = networkTaskDAO.readNetworkTask(networkTask.getId());
                 LogDAO logDAO = new LogDAO(context);
                 LogEntry logEntry = logDAO.readMostRecentLogForNetworkTask(networkTask.getId());
                 if (logEntry != null) {
@@ -60,11 +57,11 @@ public class NetworkTaskMainUISyncTask extends AsyncTask<NetworkTask, Integer, N
         NetworkTaskAdapter adapter = adapterRef.get();
         if (adapter != null) {
             try {
-                Log.d(NetworkTaskMainUISyncTask.class.getName(), "Updating adapter with log entry " + networkTaskWrapper.getLogEntry());
+                Log.d(NetworkTaskMainUISyncTask.class.getName(), "Updating adapter with network task ui wrapper " + networkTaskWrapper);
                 adapter.replaceItem(networkTaskWrapper);
                 adapter.notifyDataSetChanged();
             } catch (Exception exc) {
-                Log.e(NetworkTaskMainUISyncTask.class.getName(), "Error updating adapter with log entry " + networkTaskWrapper.getLogEntry(), exc);
+                Log.e(NetworkTaskMainUISyncTask.class.getName(), "Updating adapter with network task ui wrapper " + networkTaskWrapper, exc);
             }
         }
     }

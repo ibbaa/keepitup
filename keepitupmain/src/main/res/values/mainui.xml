@@ -11,6 +11,7 @@
     <string name="menu_action_activity_main_info">Info</string>
     <string name="text_activity_main_list_item_network_task_title">Network task</string>
     <string name="text_activity_main_list_item_network_task_status">Status: %s</string>
+    <string name="text_activity_main_list_item_network_task_instances">Instances: %d active</string>
     <string name="text_activity_main_list_item_network_task_access_type">Type: %s</string>
     <string name="text_activity_main_list_item_network_task_address">%s</string>
     <string name="text_activity_main_list_item_network_task_interval">Interval: %d %s</string>
