@@ -58,6 +58,7 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
         onView(allOf(withId(R.id.textview_list_item_network_task_title), withChildDescendantAtPosition(withId(R.id.listview_main_activity_network_tasks), 0))).check(matches(withText("Network task")));
         onView(allOf(withId(R.id.textview_list_item_network_task_status), withChildDescendantAtPosition(withId(R.id.listview_main_activity_network_tasks), 0))).check(matches(withText("Status: Stopped")));
         onView(allOf(withId(R.id.imageview_list_item_network_task_start_stop), withChildDescendantAtPosition(withId(R.id.listview_main_activity_network_tasks), 0))).check(matches(withDrawable(R.drawable.icon_start_shadow)));
+        onView(allOf(withId(R.id.textview_list_item_network_task_instances), withChildDescendantAtPosition(withId(R.id.listview_main_activity_network_tasks), 0))).check(matches(withText("Instances: 0 active")));
         onView(allOf(withId(R.id.textview_list_item_network_task_accesstype), withChildDescendantAtPosition(withId(R.id.listview_main_activity_network_tasks), 0))).check(matches(withText("Type: Connect")));
         onView(allOf(withId(R.id.textview_list_item_network_task_address), withChildDescendantAtPosition(withId(R.id.listview_main_activity_network_tasks), 0))).check(matches(withText("Host: 127.0.0.1 Port: 80")));
         onView(allOf(withId(R.id.textview_list_item_network_task_interval), withChildDescendantAtPosition(withId(R.id.listview_main_activity_network_tasks), 0))).check(matches(withText("Interval: 15 minutes")));
@@ -68,6 +69,7 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
         onView(allOf(withId(R.id.textview_list_item_network_task_title), withChildDescendantAtPosition(withId(R.id.listview_main_activity_network_tasks), 1))).check(matches(withText("Network task")));
         onView(allOf(withId(R.id.textview_list_item_network_task_status), withChildDescendantAtPosition(withId(R.id.listview_main_activity_network_tasks), 1))).check(matches(withText("Status: Stopped")));
         onView(allOf(withId(R.id.imageview_list_item_network_task_start_stop), withChildDescendantAtPosition(withId(R.id.listview_main_activity_network_tasks), 1))).check(matches(withDrawable(R.drawable.icon_start_shadow)));
+        onView(allOf(withId(R.id.textview_list_item_network_task_instances), withChildDescendantAtPosition(withId(R.id.listview_main_activity_network_tasks), 1))).check(matches(withText("Instances: 0 active")));
         onView(allOf(withId(R.id.textview_list_item_network_task_accesstype), withChildDescendantAtPosition(withId(R.id.listview_main_activity_network_tasks), 1))).check(matches(withText("Type: Ping")));
         onView(allOf(withId(R.id.textview_list_item_network_task_address), withChildDescendantAtPosition(withId(R.id.listview_main_activity_network_tasks), 1))).check(matches(withText("Host: localhost")));
         onView(allOf(withId(R.id.textview_list_item_network_task_interval), withChildDescendantAtPosition(withId(R.id.listview_main_activity_network_tasks), 1))).check(matches(withText("Interval: 40 minutes")));
@@ -86,26 +88,20 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
         onView(allOf(withId(R.id.imageview_list_item_network_task_add), isDisplayed())).perform(click());
         onView(withId(R.id.imageview_dialog_network_task_edit_ok)).perform(click());
         onView(withId(R.id.listview_main_activity_network_tasks)).check(matches(withListSize(3)));
-        onView(allOf(withId(R.id.imageview_list_item_network_task_add), isDisplayed())).perform(click());
-        onView(withId(R.id.imageview_dialog_network_task_edit_ok)).perform(click());
-        onView(withId(R.id.listview_main_activity_network_tasks)).check(matches(withListSize(4)));
-        assertEquals(4, getAdapter().getItemCount());
+        assertEquals(3, getAdapter().getItemCount());
         assertEquals(0, getAdapter().getItem(0).getNetworkTask().getIndex());
         assertEquals(1, getAdapter().getItem(1).getNetworkTask().getIndex());
-        assertEquals(2, getAdapter().getItem(2).getNetworkTask().getIndex());
         onView(allOf(withId(R.id.imageview_list_item_network_task_delete), withChildDescendantAtPosition(withId(R.id.listview_main_activity_network_tasks), 1))).perform(click());
         onView(withId(R.id.imageview_dialog_confirm_cancel)).perform(click());
-        onView(withId(R.id.listview_main_activity_network_tasks)).check(matches(withListSize(4)));
-        assertEquals(4, getAdapter().getItemCount());
-        assertEquals(0, getAdapter().getItem(0).getNetworkTask().getIndex());
-        assertEquals(1, getAdapter().getItem(1).getNetworkTask().getIndex());
-        assertEquals(2, getAdapter().getItem(2).getNetworkTask().getIndex());
-        onView(allOf(withId(R.id.imageview_list_item_network_task_delete), withChildDescendantAtPosition(withId(R.id.listview_main_activity_network_tasks), 1))).perform(click());
-        onView(withId(R.id.imageview_dialog_confirm_ok)).perform(click());
         onView(withId(R.id.listview_main_activity_network_tasks)).check(matches(withListSize(3)));
         assertEquals(3, getAdapter().getItemCount());
         assertEquals(0, getAdapter().getItem(0).getNetworkTask().getIndex());
         assertEquals(1, getAdapter().getItem(1).getNetworkTask().getIndex());
+        onView(allOf(withId(R.id.imageview_list_item_network_task_delete), withChildDescendantAtPosition(withId(R.id.listview_main_activity_network_tasks), 1))).perform(click());
+        onView(withId(R.id.imageview_dialog_confirm_ok)).perform(click());
+        onView(withId(R.id.listview_main_activity_network_tasks)).check(matches(withListSize(2)));
+        assertEquals(2, getAdapter().getItemCount());
+        assertEquals(0, getAdapter().getItem(0).getNetworkTask().getIndex());
     }
 
     @Test
@@ -116,6 +112,7 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
         onView(allOf(withId(R.id.textview_list_item_network_task_title), withChildDescendantAtPosition(withId(R.id.listview_main_activity_network_tasks), 0))).check(matches(withText("Network task")));
         onView(allOf(withId(R.id.textview_list_item_network_task_status), withChildDescendantAtPosition(withId(R.id.listview_main_activity_network_tasks), 0))).check(matches(withText("Status: Stopped")));
         onView(allOf(withId(R.id.imageview_list_item_network_task_start_stop), withChildDescendantAtPosition(withId(R.id.listview_main_activity_network_tasks), 0))).check(matches(withDrawable(R.drawable.icon_start_shadow)));
+        onView(allOf(withId(R.id.textview_list_item_network_task_instances), withChildDescendantAtPosition(withId(R.id.listview_main_activity_network_tasks), 0))).check(matches(withText("Instances: 0 active")));
         onView(allOf(withId(R.id.textview_list_item_network_task_accesstype), withChildDescendantAtPosition(withId(R.id.listview_main_activity_network_tasks), 0))).check(matches(withText("Type: Ping")));
         onView(allOf(withId(R.id.textview_list_item_network_task_address), withChildDescendantAtPosition(withId(R.id.listview_main_activity_network_tasks), 0))).check(matches(withText("Host: 192.168.178.1")));
         onView(allOf(withId(R.id.textview_list_item_network_task_interval), withChildDescendantAtPosition(withId(R.id.listview_main_activity_network_tasks), 0))).check(matches(withText("Interval: 15 minutes")));
@@ -130,9 +127,11 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
         onView(withId(R.id.switch_dialog_network_task_edit_onlywifi)).perform(click());
         onView(withId(R.id.switch_dialog_network_task_edit_notification)).perform(click());
         onView(withId(R.id.imageview_dialog_network_task_edit_ok)).perform(click());
+        setTaskInstances(activity, 1, 1);
         onView(allOf(withId(R.id.textview_list_item_network_task_title), withChildDescendantAtPosition(withId(R.id.listview_main_activity_network_tasks), 1))).check(matches(withText("Network task")));
         onView(allOf(withId(R.id.textview_list_item_network_task_status), withChildDescendantAtPosition(withId(R.id.listview_main_activity_network_tasks), 1))).check(matches(withText("Status: Stopped")));
         onView(allOf(withId(R.id.imageview_list_item_network_task_start_stop), withChildDescendantAtPosition(withId(R.id.listview_main_activity_network_tasks), 1))).check(matches(withDrawable(R.drawable.icon_start_shadow)));
+        onView(allOf(withId(R.id.textview_list_item_network_task_instances), withChildDescendantAtPosition(withId(R.id.listview_main_activity_network_tasks), 1))).check(matches(withText("Instances: 1 active")));
         onView(allOf(withId(R.id.textview_list_item_network_task_accesstype), withChildDescendantAtPosition(withId(R.id.listview_main_activity_network_tasks), 1))).check(matches(withText("Type: Connect")));
         onView(allOf(withId(R.id.textview_list_item_network_task_address), withChildDescendantAtPosition(withId(R.id.listview_main_activity_network_tasks), 1))).check(matches(withText("Host: localhost Port: 80")));
         onView(allOf(withId(R.id.textview_list_item_network_task_interval), withChildDescendantAtPosition(withId(R.id.listview_main_activity_network_tasks), 1))).check(matches(withText("Interval: 60 minutes")));
@@ -143,6 +142,8 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
         onView(allOf(withId(R.id.textview_list_item_network_task_last_exec_timestamp), withChildDescendantAtPosition(withId(R.id.listview_main_activity_network_tasks), 1))).check(matches(withText("Last execution: successful, Mar 17, 1980 12:00:00 AM")));
         onView(allOf(withId(R.id.textview_list_item_network_task_last_exec_message), withChildDescendantAtPosition(withId(R.id.listview_main_activity_network_tasks), 1))).check(matches(withText("Last execution message: Success")));
         setTaskExecuted(activity, 1, new GregorianCalendar(2020, Calendar.DECEMBER, 1), false, "connection failed");
+        setTaskInstances(activity, 1, 2);
+        onView(allOf(withId(R.id.textview_list_item_network_task_instances), withChildDescendantAtPosition(withId(R.id.listview_main_activity_network_tasks), 1))).check(matches(withText("Instances: 2 active")));
         onView(allOf(withId(R.id.textview_list_item_network_task_last_exec_timestamp), withChildDescendantAtPosition(withId(R.id.listview_main_activity_network_tasks), 1))).check(matches(withText("Last execution: failed, Dec 1, 2020 12:00:00 AM")));
         onView(allOf(withId(R.id.textview_list_item_network_task_last_exec_message), withChildDescendantAtPosition(withId(R.id.listview_main_activity_network_tasks), 1))).check(matches(withText("Last execution message: connection failed")));
         onView(allOf(withId(R.id.imageview_list_item_network_task_add), isDisplayed())).perform(click());
@@ -155,6 +156,7 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
         onView(allOf(withId(R.id.textview_list_item_network_task_title), withChildDescendantAtPosition(withId(R.id.listview_main_activity_network_tasks), 2))).check(matches(withText("Network task")));
         onView(allOf(withId(R.id.textview_list_item_network_task_status), withChildDescendantAtPosition(withId(R.id.listview_main_activity_network_tasks), 2))).check(matches(withText("Status: Stopped")));
         onView(allOf(withId(R.id.imageview_list_item_network_task_start_stop), withChildDescendantAtPosition(withId(R.id.listview_main_activity_network_tasks), 2))).check(matches(withDrawable(R.drawable.icon_start_shadow)));
+        onView(allOf(withId(R.id.textview_list_item_network_task_instances), withChildDescendantAtPosition(withId(R.id.listview_main_activity_network_tasks), 2))).check(matches(withText("Instances: 0 active")));
         onView(allOf(withId(R.id.textview_list_item_network_task_accesstype), withChildDescendantAtPosition(withId(R.id.listview_main_activity_network_tasks), 2))).check(matches(withText("Type: Download")));
         onView(allOf(withId(R.id.textview_list_item_network_task_address), withChildDescendantAtPosition(withId(R.id.listview_main_activity_network_tasks), 2))).check(matches(withText("URL: http://test")));
         onView(allOf(withId(R.id.textview_list_item_network_task_interval), withChildDescendantAtPosition(withId(R.id.listview_main_activity_network_tasks), 2))).check(matches(withText("Interval: 60 minutes")));
@@ -284,6 +286,16 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
         logEntry.setSuccess(success);
         logEntry.setTimestamp(calendar.getTime().getTime());
         logEntry.setMessage(message);
+        getAdapter().replaceItem(new NetworkTaskUIWrapper(task, logEntry));
+        activity.runOnUiThread(() -> getAdapter().notifyDataSetChanged());
+        InstrumentationRegistry.getInstrumentation().waitForIdleSync();
+    }
+
+    private void setTaskInstances(NetworkTaskMainActivity activity, int position, int instances) {
+        NetworkTaskUIWrapper wrapper = getAdapter().getItem(position);
+        NetworkTask task = wrapper.getNetworkTask();
+        LogEntry logEntry = wrapper.getLogEntry();
+        task.setInstances(instances);
         getAdapter().replaceItem(new NetworkTaskUIWrapper(task, logEntry));
         activity.runOnUiThread(() -> getAdapter().notifyDataSetChanged());
         InstrumentationRegistry.getInstrumentation().waitForIdleSync();
