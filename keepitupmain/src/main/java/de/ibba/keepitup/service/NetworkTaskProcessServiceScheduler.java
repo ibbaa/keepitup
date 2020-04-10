@@ -94,12 +94,9 @@ public class NetworkTaskProcessServiceScheduler {
         Log.d(NetworkTaskProcessServiceScheduler.class.getName(), "Database returned the following network tasks: " + (networkTasks.isEmpty() ? "no network tasks" : ""));
         for (NetworkTask currentTask : networkTasks) {
             if (currentTask.isRunning()) {
-                Log.d(NetworkTaskProcessServiceScheduler.class.getName(), "Network task " + currentTask + " is marked as running.");
-                if (!hasPendingIntent(currentTask)) {
-                    Log.d(NetworkTaskProcessServiceScheduler.class.getName(), "Network task " + currentTask + " is not scheduled. Rescheduling...");
-                    reschedule(currentTask, true);
-                    networkTaskDAO.resetNetworkTaskInstances(currentTask.getId());
-                }
+                Log.d(NetworkTaskProcessServiceScheduler.class.getName(), "Network task " + currentTask + " is marked as running. Rescheduling...");
+                networkTaskDAO.resetNetworkTaskInstances(currentTask.getId());
+                reschedule(currentTask, false);
             } else {
                 Log.d(NetworkTaskProcessServiceScheduler.class.getName(), "Network task " + currentTask + " is not marked as running.");
                 networkTaskDAO.resetNetworkTaskInstances(currentTask.getId());
