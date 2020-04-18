@@ -3,4 +3,5 @@
     <string name="label_dialog_confirm_ok">@android:string/ok</string>
     <string name="label_dialog_confirm_cancel">@android:string/cancel</string>
     <string name="text_dialog_confirm_delete_network_task">Really delete?</string>
+    <string name="text_dialog_confirm_delete_logs">Really delete?</string>
 </resources>

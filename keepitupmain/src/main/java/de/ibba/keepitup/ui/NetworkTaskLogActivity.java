@@ -2,6 +2,8 @@ package de.ibba.keepitup.ui;
 
 import android.content.IntentFilter;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -15,6 +17,7 @@ import de.ibba.keepitup.logging.Log;
 import de.ibba.keepitup.model.LogEntry;
 import de.ibba.keepitup.model.NetworkTask;
 import de.ibba.keepitup.ui.adapter.LogEntryAdapter;
+import de.ibba.keepitup.ui.dialog.ConfirmDialog;
 import de.ibba.keepitup.ui.sync.LogEntryUIBroadcastReceiver;
 import de.ibba.keepitup.ui.sync.LogEntryUIInitTask;
 
@@ -95,6 +98,41 @@ public class NetworkTaskLogActivity extends RecyclerViewBaseActivity {
             showErrorDialog(getResources().getString(R.string.text_dialog_general_error_read_log_entries));
             return new ArrayList<>();
         }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_log, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        if (id == R.id.menu_action_activity_log_delete) {
+            Log.d(NetworkTaskLogActivity.class.getName(), "menu_action_activity_log_delete triggered");
+            showConfirmDialog(getResources().getString(R.string.text_dialog_confirm_delete_logs), ConfirmDialog.Type.DELETELOGS);
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    public void onConfirmDialogOkClicked(ConfirmDialog confirmDialog, ConfirmDialog.Type type) {
+        Log.d(NetworkTaskLogActivity.class.getName(), "onConfirmDialogOkClicked for type " + type);
+        if (ConfirmDialog.Type.DELETELOGS.equals(type)) {
+            NetworkTask task = new NetworkTask(Objects.requireNonNull(getIntent().getExtras()));
+            LogHandler handler = new LogHandler(this);
+            handler.deleteLogsForNetworkTask(task);
+            getAdapter().notifyDataSetChanged();
+        } else {
+            Log.e(NetworkTaskLogActivity.class.getName(), "Unknown type " + type);
+        }
+        confirmDialog.dismiss();
+    }
+
+    public void onConfirmDialogCancelClicked(ConfirmDialog confirmDialog) {
+        Log.d(NetworkTaskLogActivity.class.getName(), "onConfirmDialogCancelClicked");
+        confirmDialog.dismiss();
     }
 
     private LogEntryUIInitTask getUIInitTask(LogEntryAdapter adapter) {

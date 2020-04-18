@@ -23,7 +23,8 @@ public class ConfirmDialog extends DialogFragment {
     private ConfirmSupport confirmSupport;
 
     public enum Type {
-        DELETE
+        DELETETASK,
+        DELETELOGS
     }
 
     public ConfirmDialog(ConfirmSupport confirmSupport) {
