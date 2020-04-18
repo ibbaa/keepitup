@@ -25,6 +25,8 @@ import de.ibba.keepitup.ui.NetworkTaskMainActivity;
 import de.ibba.keepitup.ui.adapter.NetworkTaskAdapter;
 import de.ibba.keepitup.ui.adapter.NetworkTaskUIWrapper;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
@@ -108,6 +110,25 @@ public class NetworkTaskMainUISyncTaskTest extends BaseUITest {
         wrapper2 = adapter.getItem(1);
         assertTrue(updatedTask2.isEqual(wrapper2.getNetworkTask()));
         assertTrue(otherLogEntry.isEqual(wrapper2.getLogEntry()));
+    }
+
+    @Test
+    public void testAdapterTaskUpdate() {
+        NetworkTask task = networkTaskDAO.insertNetworkTask(getNetworkTask1());
+        NetworkTaskAdapter adapter = (NetworkTaskAdapter) activity.getAdapter();
+        NetworkTaskUIWrapper wrapper = new NetworkTaskUIWrapper(task, null);
+        adapter.addItem(wrapper);
+        networkTaskDAO.increaseNetworkTaskInstances(task.getId());
+        NetworkTask updatedTask = networkTaskDAO.readNetworkTask(task.getId());
+        final NetworkTaskUIWrapper newWrapper = syncTask.doInBackground(updatedTask);
+        assertNotNull(newWrapper);
+        activity.runOnUiThread(() -> syncTask.onPostExecute(newWrapper));
+        InstrumentationRegistry.getInstrumentation().waitForIdleSync();
+        adapter = (NetworkTaskAdapter) activity.getAdapter();
+        assertEquals(2, adapter.getItemCount());
+        wrapper = adapter.getItem(0);
+        assertTrue(updatedTask.isEqual(wrapper.getNetworkTask()));
+        assertNull(wrapper.getLogEntry());
     }
 
     @Test

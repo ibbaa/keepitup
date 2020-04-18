@@ -38,9 +38,7 @@ public class NetworkTaskMainUISyncTask extends AsyncTask<NetworkTask, Integer, N
             if (context != null) {
                 LogDAO logDAO = new LogDAO(context);
                 LogEntry logEntry = logDAO.readMostRecentLogForNetworkTask(networkTask.getId());
-                if (logEntry != null) {
-                    return new NetworkTaskUIWrapper(networkTask, logEntry);
-                }
+                return new NetworkTaskUIWrapper(networkTask, logEntry);
             }
         } catch (Exception exc) {
             Log.e(NetworkTaskMainUISyncTask.class.getName(), "Error reading log entry for network task " + networkTask, exc);

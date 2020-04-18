@@ -14,7 +14,6 @@ import com.google.common.base.Charsets;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Objects;
 
 import de.ibba.keepitup.R;
 import de.ibba.keepitup.logging.Log;
@@ -45,7 +44,7 @@ public class RawTextDialog extends DialogFragment {
     private void prepareContent(View view) {
         Log.d(RawTextDialog.class.getName(), "prepareContent");
         TextView messageText = view.findViewById(R.id.textview_dialog_raw_text_content);
-        Bundle arguments = Objects.requireNonNull(getArguments());
+        Bundle arguments = requireArguments();
         int textResourceId = arguments.getInt(getResourceIdKey());
         InputStream inputStream = null;
         try {
