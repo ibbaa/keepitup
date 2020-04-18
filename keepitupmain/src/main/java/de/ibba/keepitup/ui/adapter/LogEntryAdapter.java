@@ -120,9 +120,15 @@ public class LogEntryAdapter extends RecyclerView.Adapter<LogEntryViewHolder> {
     }
 
     public void replaceItems(List<LogEntry> logEntries) {
+        Log.d(LogEntryAdapter.class.getName(), "replaceItems");
         this.logEntries.clear();
         int limit = getContext().getResources().getInteger(R.integer.log_count_maximum);
         this.logEntries.addAll(logEntries.size() > limit ? logEntries.subList(0, limit) : logEntries);
+    }
+
+    public void removeItems() {
+        Log.d(LogEntryAdapter.class.getName(), "removeItems");
+        this.logEntries.clear();
     }
 
     private Context getContext() {

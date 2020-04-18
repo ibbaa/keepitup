@@ -116,6 +116,7 @@ public class NetworkTaskHandlerTest extends BaseUITest {
         getLogDAO().insertAndDeleteLog(logEntry);
         getLogDAO().insertAndDeleteLog(logEntry);
         getLogDAO().insertAndDeleteLog(logEntry);
+        assertEquals(5, activity.getAdapter().getItemCount());
         handler.startNetworkTask(task2);
         handler.deleteNetworkTask(task2);
         assertFalse(task2.isRunning());
@@ -129,6 +130,7 @@ public class NetworkTaskHandlerTest extends BaseUITest {
         assertEquals(0, task1.getIndex());
         assertEquals(1, task3.getIndex());
         assertEquals(2, task4.getIndex());
+        assertEquals(4, activity.getAdapter().getItemCount());
     }
 
     private NetworkTask getNetworkTask1() {
