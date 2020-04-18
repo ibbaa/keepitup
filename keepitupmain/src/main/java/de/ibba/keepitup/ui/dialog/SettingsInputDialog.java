@@ -16,7 +16,6 @@ import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
 
 import de.ibba.keepitup.R;
 import de.ibba.keepitup.logging.Log;
@@ -67,7 +66,7 @@ public class SettingsInputDialog extends DialogFragment implements ContextOption
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         Log.d(SettingsInputDialog.class.getName(), "onCreateView");
         dialogView = inflater.inflate(R.layout.dialog_settings_input, container);
-        input = new SettingsInput(Objects.requireNonNull(getArguments()));
+        input = new SettingsInput(requireArguments());
         Log.d(SettingsInputDialog.class.getName(), "settings input is " + input);
         prepareValueTextField();
         prepareOkCancelImageButtons();
@@ -195,7 +194,7 @@ public class SettingsInputDialog extends DialogFragment implements ContextOption
 
     private FieldValidator getValidator(String validatorClassName) {
         try {
-            Class<?> validatorClass = Objects.requireNonNull(getContext()).getClassLoader().loadClass(validatorClassName);
+            Class<?> validatorClass = requireContext().getClassLoader().loadClass(validatorClassName);
             Constructor<?> validatorClassConstructor = validatorClass.getConstructor(String.class, Context.class);
             return (FieldValidator) validatorClassConstructor.newInstance(input.getField(), getContext());
         } catch (Throwable exc) {
@@ -208,7 +207,7 @@ public class SettingsInputDialog extends DialogFragment implements ContextOption
         Log.d(SettingsInputDialog.class.getName(), "showErrorDialog, opening ValidatorErrorDialog");
         ValidatorErrorDialog errorDialog = new ValidatorErrorDialog();
         errorDialog.setArguments(BundleUtil.validationResultListToBundle(errorDialog.getValidationResultBaseKey(), validationResult));
-        errorDialog.show(Objects.requireNonNull(getFragmentManager()), ValidatorErrorDialog.class.getName());
+        errorDialog.show(getParentFragmentManager(), ValidatorErrorDialog.class.getName());
     }
 
     private boolean onValueEditTextLongClicked(View view) {
@@ -219,13 +218,13 @@ public class SettingsInputDialog extends DialogFragment implements ContextOption
 
     private void showContextOptionsDialog(EditText editText) {
         Log.d(SettingsInputDialog.class.getName(), "showContextOptionsDialog");
-        new ContextOptionsSupportManager(Objects.requireNonNull(getFragmentManager()), this, getClipboardManager()).showContextOptionsDialog(editText);
+        new ContextOptionsSupportManager(getParentFragmentManager(), this, getClipboardManager()).showContextOptionsDialog(editText);
     }
 
     @Override
     public void onContextOptionsDialogEntryClicked(ContextOptionsDialog contextOptionsDialog, int sourceResourceId, ContextOption option) {
         Log.d(SettingsInputDialog.class.getName(), "onContextOptionsDialogEntryClicked, sourceResourceId is " + sourceResourceId + ", option is " + option);
-        ContextOptionsSupportManager contextOptionsSupportManager = new ContextOptionsSupportManager(Objects.requireNonNull(getFragmentManager()), this, getClipboardManager());
+        ContextOptionsSupportManager contextOptionsSupportManager = new ContextOptionsSupportManager(getParentFragmentManager(), this, getClipboardManager());
         if (valueEditText.getId() == sourceResourceId) {
             Log.e(SettingsInputDialog.class.getName(), "Source field is the correct value input field.");
             contextOptionsSupportManager.handleContextOption(valueEditText, option);

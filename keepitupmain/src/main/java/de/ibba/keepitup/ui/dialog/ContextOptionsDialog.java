@@ -14,7 +14,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 import de.ibba.keepitup.R;
 import de.ibba.keepitup.logging.Log;
@@ -77,7 +76,7 @@ public class ContextOptionsDialog extends DialogFragment {
 
     private RecyclerView.Adapter createAdapter() {
         Log.d(ContextOptionsDialog.class.getName(), "createAdapter");
-        List<String> contextOptionStrings = BundleUtil.stringListFromBundle(ContextOption.class.getSimpleName(), Objects.requireNonNull(getArguments()));
+        List<String> contextOptionStrings = BundleUtil.stringListFromBundle(ContextOption.class.getSimpleName(), requireArguments());
         List<ContextOption> contextOptionList = new ArrayList<>();
         for (String contextOptionString : contextOptionStrings) {
             try {
@@ -97,7 +96,7 @@ public class ContextOptionsDialog extends DialogFragment {
     public void onContextOptionEntryClicked(View view, int position) {
         Log.d(ContextOptionsDialog.class.getName(), "onContextOptionEntryClicked, position is " + position);
         getAdapter().selectItem(position);
-        int sourceResourceId = Objects.requireNonNull(getArguments()).getInt(getSourceResourceIdKey());
+        int sourceResourceId = requireArguments().getInt(getSourceResourceIdKey());
         ContextOption contextOption = getAdapter().getItem(position);
         Log.d(ContextOptionsDialog.class.getName(), "sourceResourceId is " + sourceResourceId);
         Log.d(ContextOptionsDialog.class.getName(), "contextOption is " + contextOption);

@@ -78,7 +78,7 @@ public class NetworkTaskEditDialog extends DialogFragment implements ContextOpti
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         Log.d(NetworkTaskEditDialog.class.getName(), "onCreateView");
         dialogView = inflater.inflate(R.layout.dialog_network_task_edit, container);
-        task = new NetworkTask(Objects.requireNonNull(getArguments()));
+        task = new NetworkTask(requireArguments());
         prepareAccessTypeRadioButtons(savedInstanceState);
         prepareAddressTextFields();
         prepareAddressTextFieldsVisibility();
@@ -285,7 +285,7 @@ public class NetworkTaskEditDialog extends DialogFragment implements ContextOpti
     }
 
     public NetworkTask getNetworkTask() {
-        NetworkTask task = new NetworkTask(Objects.requireNonNull(getArguments()));
+        NetworkTask task = new NetworkTask(requireArguments());
         AccessType accessType = getAccessType();
         if (accessType != null) {
             task.setAccessType(accessType);
@@ -419,13 +419,13 @@ public class NetworkTaskEditDialog extends DialogFragment implements ContextOpti
         Log.d(NetworkTaskEditDialog.class.getName(), "showValidatorErrorDialog");
         ValidatorErrorDialog errorDialog = new ValidatorErrorDialog();
         errorDialog.setArguments(BundleUtil.validationResultListToBundle(errorDialog.getValidationResultBaseKey(), validationResult));
-        errorDialog.show(Objects.requireNonNull(getFragmentManager()), ValidatorErrorDialog.class.getName());
+        errorDialog.show(getParentFragmentManager(), ValidatorErrorDialog.class.getName());
     }
 
 
     private void showContextOptionsDialog(EditText editText) {
         Log.d(NetworkTaskEditDialog.class.getName(), "showContextOptionsDialog");
-        new ContextOptionsSupportManager(Objects.requireNonNull(getFragmentManager()), this, getClipboardManager()).showContextOptionsDialog(editText);
+        new ContextOptionsSupportManager(getParentFragmentManager(), this, getClipboardManager()).showContextOptionsDialog(editText);
     }
 
     private boolean onEditTextLongClicked(View view) {
@@ -441,7 +441,7 @@ public class NetworkTaskEditDialog extends DialogFragment implements ContextOpti
     @Override
     public void onContextOptionsDialogEntryClicked(ContextOptionsDialog contextOptionsDialog, int sourceResourceId, ContextOption option) {
         Log.d(NetworkTaskEditDialog.class.getName(), "onContextOptionsDialogEntryClicked, sourceResourceId is " + sourceResourceId + ", option is " + option);
-        ContextOptionsSupportManager contextOptionsSupportManager = new ContextOptionsSupportManager(Objects.requireNonNull(getFragmentManager()), this, getClipboardManager());
+        ContextOptionsSupportManager contextOptionsSupportManager = new ContextOptionsSupportManager(getParentFragmentManager(), this, getClipboardManager());
         EditText editText = null;
         if (addressEditText.getId() == sourceResourceId) {
             Log.d(NetworkTaskEditDialog.class.getName(), "Source field is the address field");

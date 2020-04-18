@@ -20,7 +20,6 @@ import java.text.DateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
-import java.util.Objects;
 
 import de.ibba.keepitup.BuildConfig;
 import de.ibba.keepitup.R;
@@ -94,7 +93,7 @@ public class InfoDialog extends DialogFragment {
         bundle.putInt(licenseDialog.getResourceIdKey(), R.raw.license);
         licenseDialog.setArguments(bundle);
         Log.d(InfoDialog.class.getName(), "Opening license dialog.");
-        licenseDialog.show(Objects.requireNonNull(getFragmentManager()), RawTextDialog.class.getName());
+        licenseDialog.show(getParentFragmentManager(), RawTextDialog.class.getName());
     }
 
     private void onThirdpartyClicked(@SuppressWarnings("unused") View view) {

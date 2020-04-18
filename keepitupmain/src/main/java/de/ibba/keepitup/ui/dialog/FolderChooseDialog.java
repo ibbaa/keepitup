@@ -19,7 +19,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
 
 import de.ibba.keepitup.R;
 import de.ibba.keepitup.logging.Log;
@@ -74,7 +73,7 @@ public class FolderChooseDialog extends DialogFragment implements ContextOptions
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         Log.d(FolderChooseDialog.class.getName(), "onCreateView");
         dialogView = inflater.inflate(R.layout.dialog_folder_choose, container);
-        String folder = BundleUtil.stringFromBundle(getFolderKey(), Objects.requireNonNull(getArguments()));
+        String folder = BundleUtil.stringFromBundle(getFolderKey(), requireArguments());
         prepareFolderAbsolute(folder);
         prepareFolder(folder);
         prepareShowFilesCheckBox();
@@ -100,7 +99,7 @@ public class FolderChooseDialog extends DialogFragment implements ContextOptions
     }
 
     public String getRoot() {
-        return BundleUtil.stringFromBundle(getFolderRootKey(), Objects.requireNonNull(getArguments()));
+        return BundleUtil.stringFromBundle(getFolderRootKey(), requireArguments());
     }
 
     public TextView getAbsoluteFolderText() {
@@ -394,13 +393,13 @@ public class FolderChooseDialog extends DialogFragment implements ContextOptions
 
     private void showContextOptionsDialog(EditText editText) {
         Log.d(FolderChooseDialog.class.getName(), "showContextOptionsDialog");
-        new ContextOptionsSupportManager(Objects.requireNonNull(getFragmentManager()), this, getClipboardManager()).showContextOptionsDialog(editText);
+        new ContextOptionsSupportManager(getParentFragmentManager(), this, getClipboardManager()).showContextOptionsDialog(editText);
     }
 
     @Override
     public void onContextOptionsDialogEntryClicked(ContextOptionsDialog contextOptionsDialog, int sourceResourceId, ContextOption option) {
         Log.d(SettingsInputDialog.class.getName(), "onContextOptionsDialogEntryClicked, sourceResourceId is " + sourceResourceId + ", option is " + option);
-        ContextOptionsSupportManager contextOptionsSupportManager = new ContextOptionsSupportManager(Objects.requireNonNull(getFragmentManager()), this, getClipboardManager());
+        ContextOptionsSupportManager contextOptionsSupportManager = new ContextOptionsSupportManager(getParentFragmentManager(), this, getClipboardManager());
         if (folderEditText.getId() == sourceResourceId) {
             Log.e(SettingsInputDialog.class.getName(), "Source field is the correct folder input field.");
             contextOptionsSupportManager.handleContextOption(folderEditText, option);
@@ -421,6 +420,6 @@ public class FolderChooseDialog extends DialogFragment implements ContextOptions
         Bundle bundle = BundleUtil.stringToBundle(GeneralErrorDialog.class.getSimpleName(), errorMessage);
         bundle.putInt(errorDialog.getTypefaceStyleKey(), typeface);
         errorDialog.setArguments(bundle);
-        errorDialog.show(Objects.requireNonNull(getFragmentManager()), GeneralErrorDialog.class.getName());
+        errorDialog.show(getParentFragmentManager(), GeneralErrorDialog.class.getName());
     }
 }

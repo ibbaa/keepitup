@@ -11,8 +11,6 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.DialogFragment;
 
-import java.util.Objects;
-
 import de.ibba.keepitup.R;
 import de.ibba.keepitup.logging.Log;
 import de.ibba.keepitup.util.BundleUtil;
@@ -30,7 +28,7 @@ public class GeneralErrorDialog extends DialogFragment {
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         Log.d(GeneralErrorDialog.class.getName(), "onCreateView");
         View view = inflater.inflate(R.layout.dialog_general_error, container);
-        String message = BundleUtil.stringFromBundle(GeneralErrorDialog.class.getSimpleName(), Objects.requireNonNull(getArguments()));
+        String message = BundleUtil.stringFromBundle(GeneralErrorDialog.class.getSimpleName(), requireArguments());
         prepareErrorMessage(view, message);
         prepareOkImageButton(view);
         return view;
@@ -43,7 +41,7 @@ public class GeneralErrorDialog extends DialogFragment {
     private void prepareErrorMessage(View view, String message) {
         Log.d(GeneralErrorDialog.class.getName(), "prepareErrorMessage");
         TextView messageText = view.findViewById(R.id.textview_dialog_general_error_message);
-        int style = Objects.requireNonNull(getArguments()).getInt(getTypefaceStyleKey(), Typeface.BOLD);
+        int style = requireArguments().getInt(getTypefaceStyleKey(), Typeface.BOLD);
         messageText.setTypeface(null, style);
         messageText.setText(message);
     }

@@ -14,7 +14,6 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.DialogFragment;
 
 import java.util.List;
-import java.util.Objects;
 
 import de.ibba.keepitup.R;
 import de.ibba.keepitup.logging.Log;
@@ -34,7 +33,7 @@ public class ValidatorErrorDialog extends DialogFragment {
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         Log.d(ValidatorErrorDialog.class.getName(), "onCreateView");
         View view = inflater.inflate(R.layout.dialog_validator_error, container);
-        List<ValidationResult> resultList = BundleUtil.validationResultListFromBundle(getValidationResultBaseKey(), Objects.requireNonNull(getArguments()));
+        List<ValidationResult> resultList = BundleUtil.validationResultListFromBundle(getValidationResultBaseKey(), requireArguments());
         prepareErrorMessages(view, resultList);
         prepareOkButton(view, resultList.size() + 1);
         return view;

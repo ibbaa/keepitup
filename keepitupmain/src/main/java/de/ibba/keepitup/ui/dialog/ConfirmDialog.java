@@ -10,8 +10,6 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.DialogFragment;
 
-import java.util.Objects;
-
 import de.ibba.keepitup.R;
 import de.ibba.keepitup.logging.Log;
 import de.ibba.keepitup.ui.ConfirmSupport;
@@ -42,7 +40,7 @@ public class ConfirmDialog extends DialogFragment {
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         Log.d(ConfirmDialog.class.getName(), "onCreateView");
         View view = inflater.inflate(R.layout.dialog_confirm, container);
-        String message = BundleUtil.stringFromBundle(ConfirmDialog.class.getSimpleName(), Objects.requireNonNull(getArguments()));
+        String message = BundleUtil.stringFromBundle(ConfirmDialog.class.getSimpleName(), requireArguments());
         prepareConfirmMessage(view, message);
         prepareOkCancelImageButtons(view);
         return view;
@@ -64,7 +62,7 @@ public class ConfirmDialog extends DialogFragment {
 
     private void onOkClicked(@SuppressWarnings("unused") View view) {
         Log.d(ConfirmDialog.class.getName(), "onOkClicked");
-        String typeString = BundleUtil.stringFromBundle(ConfirmDialog.Type.class.getSimpleName(), Objects.requireNonNull(getArguments()));
+        String typeString = BundleUtil.stringFromBundle(ConfirmDialog.Type.class.getSimpleName(), requireArguments());
         if (StringUtil.isEmpty(typeString)) {
             Log.e(ConfirmDialog.class.getName(), ConfirmDialog.Type.class.getSimpleName() + " not specified.");
             confirmSupport.onConfirmDialogOkClicked(this, null);
