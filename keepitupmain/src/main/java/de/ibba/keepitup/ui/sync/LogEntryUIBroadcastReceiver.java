@@ -22,6 +22,15 @@ public class LogEntryUIBroadcastReceiver extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
         NetworkTask task = new NetworkTask(Objects.requireNonNull(intent.getExtras()));
         Log.d(LogEntryUIBroadcastReceiver.class.getName(), "Received request for " + task);
+        if(task.getId() == adapter.getNetworkTask().getId()) {
+            doSync(context, task);
+        } else {
+            Log.d(LogEntryUIBroadcastReceiver.class.getName(), "The received request task does not match the adapter task. Skipping sync.");
+        }
+    }
+
+    protected void doSync(Context context, NetworkTask task) {
+        Log.d(LogEntryUIBroadcastReceiver.class.getName(), "doSync, task is " + task);
         LogEntryUISyncTask syncTask = new LogEntryUISyncTask(context, adapter);
         syncTask.start(task);
     }
