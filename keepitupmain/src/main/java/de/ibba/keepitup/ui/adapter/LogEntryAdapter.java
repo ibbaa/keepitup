@@ -131,6 +131,10 @@ public class LogEntryAdapter extends RecyclerView.Adapter<LogEntryViewHolder> {
         this.logEntries.clear();
     }
 
+    public NetworkTask getNetworkTask() {
+        return networkTask;
+    }
+
     private Context getContext() {
         return context;
     }

@@ -106,14 +106,14 @@ public abstract class NetworkTaskWorker implements Runnable {
         }
     }
 
-    private void writeLogEntry(LogEntry logEntry, boolean sendSystemNotifiaction) {
-        Log.d(NetworkTaskWorker.class.getName(), "Writing log entry " + logEntry + " to database, sendSystemNotifiaction is " + sendSystemNotifiaction);
+    private void writeLogEntry(LogEntry logEntry, boolean sendSystemNotification) {
+        Log.d(NetworkTaskWorker.class.getName(), "Writing log entry " + logEntry + " to database, sendSystemNotification is " + sendSystemNotification);
         LogDAO logDAO = new LogDAO(getContext());
         logDAO.insertAndDeleteLog(logEntry);
         Log.d(NetworkTaskWorker.class.getName(), "Notify UI");
         sendNetworkTaskUINotificationBroadcast();
         sendLogEntryUINotificationBroadcast();
-        if (sendSystemNotifiaction) {
+        if (sendSystemNotification) {
             sendSystemNotifications(logEntry);
         }
     }
