@@ -10,6 +10,7 @@ public class StreamUtil {
 
     private static final int BUFFER_SIZE_1024 = 1024;
     private static final int BUFFER_SIZE_4096 = 4096;
+    private static final int PART_SIZE = 1024 * 1024 * 10;
 
     public static String inputStreamToString(InputStream stream, Charset charset) throws Exception {
         Log.d(StreamUtil.class.getName(), "inputStreamToString");
@@ -30,11 +31,19 @@ public class StreamUtil {
             interrupt = () -> true;
         }
         byte[] buffer = new byte[BUFFER_SIZE_4096];
+        int partsProgress = 0;
+        int bytesDownloaded = 0;
+        Log.d(StreamUtil.class.getName(), "Startíng download.");
         while (interrupt.shouldContinue() && (read = inputStream.read(buffer, 0, BUFFER_SIZE_4096)) >= 0) {
-            Log.d(StreamUtil.class.getName(), "Writing next chunk...");
             outputStream.write(buffer, 0, read);
+            bytesDownloaded += read;
+            if(bytesDownloaded / PART_SIZE > partsProgress) {
+                partsProgress++;
+                Log.d(StreamUtil.class.getName(), "Download progress: " + bytesDownloaded + " bytes.");
+            }
         }
-        Log.d(StreamUtil.class.getName(), "Finished.");
+        Log.d(StreamUtil.class.getName(), "Bytes downloaded: " + bytesDownloaded);
+        Log.d(StreamUtil.class.getName(), "Finished download.");
         boolean success = read < 0;
         if (success) {
             Log.d(StreamUtil.class.getName(), "Download was successful.");
