@@ -2,6 +2,7 @@ package de.ibba.keepitup.service;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -42,15 +43,15 @@ public class NetworkTaskProcessPool {
         futurePool.remove(schedulerId);
     }
 
-    public void cleanUp() {
+    public synchronized void cleanUp() {
         Log.d(NetworkTaskProcessPool.class.getName(), "cleanUp");
-        Iterator<Integer> keyIterator = futurePool.keySet().iterator();
+        Iterator<Integer> keyIterator = new HashSet<>(futurePool.keySet()).iterator();
         while (keyIterator.hasNext()) {
             cleanUp(keyIterator.next());
         }
     }
 
-    public void cleanUp(int schedulerId) {
+    public synchronized void cleanUp(int schedulerId) {
         Log.d(NetworkTaskProcessPool.class.getName(), "cleanUp, schedulerId is " + schedulerId);
         List<Future<?>> futureList = futurePool.get(schedulerId);
         Log.d(NetworkTaskProcessPool.class.getName(), "futureList is " + futureList);

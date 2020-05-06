@@ -87,4 +87,19 @@ public class NetworkTaskProcessPoolTest {
         assertFalse(future3.isCancelled());
         assertFalse(future4.isCancelled());
     }
+
+    @Test
+    public void testCleanUpMultipleSchedulerIdsAndFutures() {
+        MockFuture<?> future1 = new MockFuture<>();
+        MockFuture<?> future2 = new MockFuture<>();
+        MockFuture<?> future3 = new MockFuture<>();
+        processPool.pool(1, future1);
+        processPool.pool(2, future2);
+        future1.setDone(true);
+        processPool.pool(2, future3);
+        processPool.cancel(2);
+        assertFalse(future1.isCancelled());
+        assertTrue(future2.isCancelled());
+        assertTrue(future3.isCancelled());
+    }
 }

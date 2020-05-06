@@ -37,7 +37,7 @@ public class StreamUtil {
         while (interrupt.shouldContinue() && (read = inputStream.read(buffer, 0, BUFFER_SIZE_4096)) >= 0) {
             outputStream.write(buffer, 0, read);
             bytesDownloaded += read;
-            if(bytesDownloaded / PART_SIZE > partsProgress) {
+            if (bytesDownloaded / PART_SIZE > partsProgress) {
                 partsProgress++;
                 Log.d(StreamUtil.class.getName(), "Download progress: " + bytesDownloaded + " bytes.");
             }
