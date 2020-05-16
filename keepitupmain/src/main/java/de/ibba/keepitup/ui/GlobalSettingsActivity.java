@@ -5,6 +5,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.CompoundButton;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.Switch;
 import android.widget.TextView;
 
@@ -37,6 +39,7 @@ public class GlobalSettingsActivity extends SettingsInputActivity {
     private Switch notificationInactiveNetworkSwitch;
     private TextView notificationInactiveNetworkOnOffText;
     private Switch downloadExternalStorageSwitch;
+    private RadioGroup externalStorageType;
     private TextView downloadExternalStorageOnOffText;
     private TextView downloadFolderText;
     private Switch downloadKeepSwitch;
@@ -58,6 +61,7 @@ public class GlobalSettingsActivity extends SettingsInputActivity {
         prepareConnectCountField();
         prepareNotificationInactiveNetworkSwitch();
         prepareDownloadExternalStorageSwitch();
+        prepareExternalStorageTypeRadioGroup();
         prepareDownloadFolderField();
         prepareDownloadKeepSwitch();
         prepareDebugSettingsLabel();
@@ -82,6 +86,7 @@ public class GlobalSettingsActivity extends SettingsInputActivity {
             preferenceManager.removePreferenceConnectCount();
             preferenceManager.removePreferenceNotificationInactiveNetwork();
             preferenceManager.removePreferenceDownloadExternalStorage();
+            preferenceManager.removePreferenceExternalStorageType();
             preferenceManager.removePreferenceDownloadFolder();
             preferenceManager.removePreferenceDownloadKeep();
             preferenceManager.removePreferenceFileLoggerEnabled();
@@ -154,6 +159,52 @@ public class GlobalSettingsActivity extends SettingsInputActivity {
         prepareDownloadExternalStorageOnOffText();
         prepareDownloadFolderField();
         prepareDownloadKeepSwitch();
+    }
+
+    private void prepareExternalStorageTypeRadioGroup() {
+        Log.d(GlobalSettingsActivity.class.getName(), "prepareExternalStorageTypeRadioGroup");
+        externalStorageType = findViewById(R.id.radiogroup_global_settings_activity_external_storage_type);
+        IFileManager fileManager = getFileManager();
+        if (fileManager.isSDCardSupported()) {
+            Log.d(GlobalSettingsActivity.class.getName(), "SD card is supported");
+            RadioButton primaryStorageTypeButton = findViewById(R.id.radiobutton_global_settings_activity_external_storage_type_primary);
+            RadioButton sdCardStorageTypeButton = findViewById(R.id.radiobutton_global_settings_activity_external_storage_type_sdcard);
+            sdCardStorageTypeButton.setVisibility(View.VISIBLE);
+            PreferenceManager preferenceManager = new PreferenceManager(this);
+            int externalStorage = preferenceManager.getPreferenceExternalStorageType();
+            Log.d(GlobalSettingsActivity.class.getName(), "externalStorage is " + externalStorage);
+            if (externalStorage <= 0) {
+                primaryStorageTypeButton.setChecked(true);
+                sdCardStorageTypeButton.setChecked(false);
+            } else {
+                primaryStorageTypeButton.setChecked(false);
+                sdCardStorageTypeButton.setChecked(true);
+            }
+            externalStorageType.setEnabled(true);
+            externalStorageType.setOnCheckedChangeListener(this::onExternalStorageTypeChanged);
+        } else {
+            Log.d(GlobalSettingsActivity.class.getName(), "SD card is not supported");
+            RadioButton primaryStorageTypeButton = findViewById(R.id.radiobutton_global_settings_activity_external_storage_type_primary);
+            RadioButton sdCardStorageTypeButton = findViewById(R.id.radiobutton_global_settings_activity_external_storage_type_sdcard);
+            primaryStorageTypeButton.setChecked(true);
+            sdCardStorageTypeButton.setChecked(false);
+            sdCardStorageTypeButton.setVisibility(View.GONE);
+            externalStorageType.setEnabled(false);
+            externalStorageType.setOnCheckedChangeListener(null);
+        }
+    }
+
+    private void onExternalStorageTypeChanged(RadioGroup group, int checkedId) {
+        Log.d(GlobalSettingsActivity.class.getName(), "onExternalStorageTypeChanged");
+        PreferenceManager preferenceManager = new PreferenceManager(this);
+        int checkedExternalStorage = group.getCheckedRadioButtonId();
+        if (R.id.radiobutton_global_settings_activity_external_storage_type_sdcard == checkedExternalStorage) {
+            Log.d(GlobalSettingsActivity.class.getName(), "SD card selected as external storage type");
+            preferenceManager.setPreferenceExternalStorageType(1);
+        } else {
+            Log.d(GlobalSettingsActivity.class.getName(), "Primary selected as external storage type");
+            preferenceManager.setPreferenceExternalStorageType(0);
+        }
     }
 
     private void prepareDownloadFolderField() {
