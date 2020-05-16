@@ -236,6 +236,21 @@ public class PreferenceManager {
         removePreferenceValue(getResources().getString(R.string.download_external_storage_key));
     }
 
+    public int getPreferenceExternalStorageType() {
+        Log.d(PreferenceManager.class.getName(), "getPreferenceExternalStorageType");
+        return getPreferenceInt(getResources().getString(R.string.external_storage_type_key), getResources().getInteger(R.integer.external_storage_type_default));
+    }
+
+    public void setPreferenceExternalStorageType(int externalStorageType) {
+        Log.d(PreferenceManager.class.getName(), "setPreferenceExternalStorageType, externalStorageType is " + externalStorageType);
+        setPreferenceInt(getResources().getString(R.string.external_storage_type_key), externalStorageType);
+    }
+
+    public void removePreferenceExternalStorageType() {
+        Log.d(PreferenceManager.class.getName(), "removePreferenceExternalStorageType");
+        removePreferenceValue(getResources().getString(R.string.external_storage_type_key));
+    }
+
     public String getPreferenceDownloadFolder() {
         Log.d(PreferenceManager.class.getName(), "getPreferenceDownloadFolder");
         return getPreferenceString(getResources().getString(R.string.download_folder_key), getResources().getString(R.string.download_folder_default));

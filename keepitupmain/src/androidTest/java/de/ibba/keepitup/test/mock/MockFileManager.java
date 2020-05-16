@@ -11,12 +11,12 @@ import de.ibba.keepitup.service.IFileManager;
 
 public class MockFileManager implements IFileManager {
 
-    private final List<DeieteCall> deieteCalls;
+    private final List<DeleteCall> deieteCalls;
 
     private File internalDownloadDirectory;
     private File internalRootDirectory;
-    private File externalDirectory;
-    private File externalRootDirectory;
+    private ArrayList<File> externalDirectories;
+    private ArrayList<File> externalRootDirectories;
     private String defaultDownloadDirectoryName;
     private String relativeSibling;
     private String relativeParent;
@@ -27,13 +27,14 @@ public class MockFileManager implements IFileManager {
     private boolean delete;
     private String downloadFileName;
     private String validFileName;
+    private boolean sdCardSupported;
 
     public MockFileManager() {
         deieteCalls = new ArrayList<>();
         internalDownloadDirectory = null;
         internalRootDirectory = null;
-        externalDirectory = null;
-        externalRootDirectory = null;
+        externalDirectories = new ArrayList<>();
+        externalRootDirectories = new ArrayList<>();
         defaultDownloadDirectoryName = null;
         relativeSibling = null;
         relativeParent = null;
@@ -44,9 +45,10 @@ public class MockFileManager implements IFileManager {
         delete = true;
         downloadFileName = null;
         validFileName = null;
+        sdCardSupported = false;
     }
 
-    public List<DeieteCall> getDeieteCalls() {
+    public List<DeleteCall> getDeieteCalls() {
         return Collections.unmodifiableList(deieteCalls);
     }
 
@@ -54,8 +56,8 @@ public class MockFileManager implements IFileManager {
         deieteCalls.clear();
         internalDownloadDirectory = null;
         internalRootDirectory = null;
-        externalDirectory = null;
-        externalRootDirectory = null;
+        externalDirectories = new ArrayList<>();
+        externalRootDirectories = new ArrayList<>();
         defaultDownloadDirectoryName = null;
         relativeSibling = null;
         relativeParent = null;
@@ -66,6 +68,7 @@ public class MockFileManager implements IFileManager {
         delete = true;
         downloadFileName = null;
         validFileName = null;
+        sdCardSupported = false;
     }
 
     public void setInternalDownloadDirectory(File internalDownloadDirectory) {
@@ -76,12 +79,20 @@ public class MockFileManager implements IFileManager {
         this.internalRootDirectory = internalRootDirectory;
     }
 
-    public void setExternalDirectory(File externalDirectory) {
-        this.externalDirectory = externalDirectory;
+    public void setExternalDirectory(File externalDirectory, int externalStorage) {
+        int size = externalDirectories.size();
+        for (int ii = size; ii <= externalStorage + 1; ii++) {
+            externalDirectories.add(null);
+        }
+        this.externalDirectories.set(externalStorage, externalDirectory);
     }
 
-    public void setExternalRootDirectory(File externalRootDirectory) {
-        this.externalRootDirectory = externalRootDirectory;
+    public void setExternalRootDirectory(File externalRootDirectory, int externalStorage) {
+        int size = externalRootDirectories.size();
+        for (int ii = size; ii <= externalStorage + 1; ii++) {
+            externalRootDirectories.add(null);
+        }
+        this.externalRootDirectories.set(externalStorage, externalRootDirectory);
     }
 
     public void setDefaultDownloadDirectoryName(String defaultDownloadDirectoryName) {
@@ -124,6 +135,10 @@ public class MockFileManager implements IFileManager {
         this.validFileName = validFileName;
     }
 
+    public void setSdCardSupported(boolean sdCardSupported) {
+        this.sdCardSupported = sdCardSupported;
+    }
+
     public boolean wasDeieteDirectoryCalled() {
         return !deieteCalls.isEmpty();
     }
@@ -139,13 +154,13 @@ public class MockFileManager implements IFileManager {
     }
 
     @Override
-    public File getExternalDirectory(String directoryName) {
-        return this.externalDirectory;
+    public File getExternalDirectory(String directoryName, int externalStorage) {
+        return this.externalDirectories.get(externalStorage);
     }
 
     @Override
-    public File getExternalRootDirectory() {
-        return this.externalRootDirectory;
+    public File getExternalRootDirectory(int externalStorage) {
+        return this.externalRootDirectories.get(externalStorage);
     }
 
     @Override
@@ -185,7 +200,7 @@ public class MockFileManager implements IFileManager {
 
     @Override
     public boolean delete(File file) {
-        deieteCalls.add(new DeieteCall(file));
+        deieteCalls.add(new DeleteCall(file));
         return delete;
     }
 
@@ -199,11 +214,16 @@ public class MockFileManager implements IFileManager {
         return validFileName;
     }
 
-    public static class DeieteCall {
+    @Override
+    public boolean isSDCardSupported() {
+        return sdCardSupported;
+    }
+
+    public static class DeleteCall {
 
         private final File file;
 
-        public DeieteCall(File file) {
+        public DeleteCall(File file) {
             this.file = file;
         }
 

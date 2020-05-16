@@ -28,7 +28,7 @@ public class DebugUtil {
         int maxLogFileSize = context.getResources().getInteger(R.integer.file_logger_max_file_size_default);
         int archiveFileCount = context.getResources().getInteger(R.integer.file_logger_archive_file_count_default);
         String relativeLogDirectory = context.getResources().getString(R.string.file_logger_log_directory_default);
-        File logDirectoryFile = fileManager.getExternalDirectory(relativeLogDirectory);
+        File logDirectoryFile = fileManager.getExternalDirectory(relativeLogDirectory, 0);
         if (logDirectoryFile == null) {
             Log.e(DebugUtil.class.getName(), "Error accessing log folder.");
             return null;
@@ -46,7 +46,7 @@ public class DebugUtil {
     public static IDump getFileDump(Context context, IFileManager fileManager) {
         Log.d(DebugUtil.class.getName(), "getFileDump");
         String relativeDumpDirectory = context.getResources().getString(R.string.file_dump_dump_directory_default);
-        File dumpDirectoryFile = fileManager.getExternalDirectory(relativeDumpDirectory);
+        File dumpDirectoryFile = fileManager.getExternalDirectory(relativeDumpDirectory, 0);
         if (dumpDirectoryFile == null) {
             Log.e(DebugUtil.class.getName(), "Error accessing dump folder.");
             return null;
