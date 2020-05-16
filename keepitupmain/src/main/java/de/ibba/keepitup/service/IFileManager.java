@@ -12,9 +12,9 @@ public interface IFileManager {
 
     File getInternalRootDirectory();
 
-    File getExternalDirectory(String directoryName);
+    File getExternalDirectory(String directoryName, int externalStorage);
 
-    File getExternalRootDirectory();
+    File getExternalRootDirectory(int externalStorage);
 
     String getDefaultDownloadDirectoryName();
 
@@ -35,4 +35,6 @@ public interface IFileManager {
     String getDownloadFileName(URL url, String specifiedFileName, String mimeType);
 
     String getValidFileName(File folder, String file);
+
+    boolean isSDCardSupported();
 }

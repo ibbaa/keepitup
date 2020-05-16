@@ -149,7 +149,7 @@ public class DownloadNetworkTaskWorkerTest {
         DNSLookupResult dnsLookupResult = new DNSLookupResult(Arrays.asList(InetAddress.getByName("127.0.0.1"), InetAddress.getByName("::1")), null);
         TestDownloadNetworkTaskWorker downloadNetworkTaskWorker = prepareTestDownloadNetworkTaskWorker(dnsLookupResult, (DownloadCommandResult) null);
         preferenceManager.setPreferenceDownloadExternalStorage(true);
-        fileManager.setExternalDirectory(null);
+        fileManager.setExternalDirectory(null, 0);
         NetworkTaskWorker.ExecutionResult executionResult = downloadNetworkTaskWorker.execute(getNetworkTask());
         LogEntry logEntry = executionResult.getLogEntry();
         assertEquals(45, logEntry.getNetworkTaskId());
@@ -230,7 +230,7 @@ public class DownloadNetworkTaskWorkerTest {
         TestDownloadNetworkTaskWorker downloadNetworkTaskWorker = prepareTestDownloadNetworkTaskWorker(dnsLookupResult, downloadCommandResult);
         preferenceManager.setPreferenceDownloadKeep(true);
         preferenceManager.setPreferenceDownloadExternalStorage(true);
-        fileManager.setExternalDirectory(new File("Test"));
+        fileManager.setExternalDirectory(new File("Test"), 0);
         NetworkTaskWorker.ExecutionResult executionResult = downloadNetworkTaskWorker.execute(getNetworkTask());
         LogEntry logEntry = executionResult.getLogEntry();
         assertEquals(45, logEntry.getNetworkTaskId());
@@ -246,7 +246,7 @@ public class DownloadNetworkTaskWorkerTest {
         TestDownloadNetworkTaskWorker downloadNetworkTaskWorker = prepareTestDownloadNetworkTaskWorker(dnsLookupResult, downloadCommandResult);
         preferenceManager.setPreferenceDownloadKeep(true);
         preferenceManager.setPreferenceDownloadExternalStorage(true);
-        fileManager.setExternalDirectory(new File("Test"));
+        fileManager.setExternalDirectory(new File("Test"), 0);
         NetworkTaskWorker.ExecutionResult executionResult = downloadNetworkTaskWorker.execute(getNetworkTask());
         LogEntry logEntry = executionResult.getLogEntry();
         assertEquals(45, logEntry.getNetworkTaskId());
@@ -288,7 +288,7 @@ public class DownloadNetworkTaskWorkerTest {
         TestDownloadNetworkTaskWorker downloadNetworkTaskWorker = prepareTestDownloadNetworkTaskWorker(dnsLookupResult, downloadCommandResult);
         preferenceManager.setPreferenceDownloadKeep(false);
         preferenceManager.setPreferenceDownloadExternalStorage(true);
-        fileManager.setExternalDirectory(new File("Test"));
+        fileManager.setExternalDirectory(new File("Test"), 0);
         NetworkTaskWorker.ExecutionResult executionResult = downloadNetworkTaskWorker.execute(getNetworkTask());
         LogEntry logEntry = executionResult.getLogEntry();
         assertEquals(45, logEntry.getNetworkTaskId());
@@ -304,7 +304,7 @@ public class DownloadNetworkTaskWorkerTest {
         TestDownloadNetworkTaskWorker downloadNetworkTaskWorker = prepareTestDownloadNetworkTaskWorker(dnsLookupResult, downloadCommandResult);
         preferenceManager.setPreferenceDownloadKeep(false);
         preferenceManager.setPreferenceDownloadExternalStorage(true);
-        fileManager.setExternalDirectory(new File("Test"));
+        fileManager.setExternalDirectory(new File("Test"), 0);
         NetworkTaskWorker.ExecutionResult executionResult = downloadNetworkTaskWorker.execute(getNetworkTask());
         LogEntry logEntry = executionResult.getLogEntry();
         assertEquals(45, logEntry.getNetworkTaskId());
@@ -372,7 +372,7 @@ public class DownloadNetworkTaskWorkerTest {
         TestDownloadNetworkTaskWorker downloadNetworkTaskWorker = prepareTestDownloadNetworkTaskWorker(dnsLookupResult, downloadCommandResult);
         preferenceManager.setPreferenceDownloadKeep(true);
         preferenceManager.setPreferenceDownloadExternalStorage(true);
-        fileManager.setExternalDirectory(new File("Test"));
+        fileManager.setExternalDirectory(new File("Test"), 0);
         NetworkTaskWorker.ExecutionResult executionResult = downloadNetworkTaskWorker.execute(getNetworkTask());
         LogEntry logEntry = executionResult.getLogEntry();
         assertEquals(45, logEntry.getNetworkTaskId());
@@ -388,7 +388,7 @@ public class DownloadNetworkTaskWorkerTest {
         TestDownloadNetworkTaskWorker downloadNetworkTaskWorker = prepareTestDownloadNetworkTaskWorker(dnsLookupResult, downloadCommandResult);
         preferenceManager.setPreferenceDownloadKeep(true);
         preferenceManager.setPreferenceDownloadExternalStorage(true);
-        fileManager.setExternalDirectory(new File("Test"));
+        fileManager.setExternalDirectory(new File("Test"), 0);
         NetworkTaskWorker.ExecutionResult executionResult = downloadNetworkTaskWorker.execute(getNetworkTask());
         LogEntry logEntry = executionResult.getLogEntry();
         assertEquals(45, logEntry.getNetworkTaskId());
@@ -430,7 +430,7 @@ public class DownloadNetworkTaskWorkerTest {
         TestDownloadNetworkTaskWorker downloadNetworkTaskWorker = prepareTestDownloadNetworkTaskWorker(dnsLookupResult, downloadCommandResult);
         preferenceManager.setPreferenceDownloadKeep(false);
         preferenceManager.setPreferenceDownloadExternalStorage(true);
-        fileManager.setExternalDirectory(new File("Test"));
+        fileManager.setExternalDirectory(new File("Test"), 0);
         NetworkTaskWorker.ExecutionResult executionResult = downloadNetworkTaskWorker.execute(getNetworkTask());
         LogEntry logEntry = executionResult.getLogEntry();
         assertEquals(45, logEntry.getNetworkTaskId());
@@ -446,7 +446,7 @@ public class DownloadNetworkTaskWorkerTest {
         TestDownloadNetworkTaskWorker downloadNetworkTaskWorker = prepareTestDownloadNetworkTaskWorker(dnsLookupResult, downloadCommandResult);
         preferenceManager.setPreferenceDownloadKeep(false);
         preferenceManager.setPreferenceDownloadExternalStorage(true);
-        fileManager.setExternalDirectory(new File("Test"));
+        fileManager.setExternalDirectory(new File("Test"), 0);
         NetworkTaskWorker.ExecutionResult executionResult = downloadNetworkTaskWorker.execute(getNetworkTask());
         LogEntry logEntry = executionResult.getLogEntry();
         assertEquals(45, logEntry.getNetworkTaskId());
@@ -514,7 +514,7 @@ public class DownloadNetworkTaskWorkerTest {
         TestDownloadNetworkTaskWorker downloadNetworkTaskWorker = prepareTestDownloadNetworkTaskWorker(dnsLookupResult, downloadCommandResult);
         preferenceManager.setPreferenceDownloadKeep(true);
         preferenceManager.setPreferenceDownloadExternalStorage(true);
-        fileManager.setExternalDirectory(new File("Test"));
+        fileManager.setExternalDirectory(new File("Test"), 0);
         NetworkTaskWorker.ExecutionResult executionResult = downloadNetworkTaskWorker.execute(getNetworkTask());
         LogEntry logEntry = executionResult.getLogEntry();
         assertEquals(45, logEntry.getNetworkTaskId());
@@ -530,7 +530,7 @@ public class DownloadNetworkTaskWorkerTest {
         TestDownloadNetworkTaskWorker downloadNetworkTaskWorker = prepareTestDownloadNetworkTaskWorker(dnsLookupResult, downloadCommandResult);
         preferenceManager.setPreferenceDownloadKeep(true);
         preferenceManager.setPreferenceDownloadExternalStorage(true);
-        fileManager.setExternalDirectory(new File("Test"));
+        fileManager.setExternalDirectory(new File("Test"), 0);
         NetworkTaskWorker.ExecutionResult executionResult = downloadNetworkTaskWorker.execute(getNetworkTask());
         LogEntry logEntry = executionResult.getLogEntry();
         assertEquals(45, logEntry.getNetworkTaskId());
@@ -572,7 +572,7 @@ public class DownloadNetworkTaskWorkerTest {
         TestDownloadNetworkTaskWorker downloadNetworkTaskWorker = prepareTestDownloadNetworkTaskWorker(dnsLookupResult, downloadCommandResult);
         preferenceManager.setPreferenceDownloadKeep(false);
         preferenceManager.setPreferenceDownloadExternalStorage(true);
-        fileManager.setExternalDirectory(new File("Test"));
+        fileManager.setExternalDirectory(new File("Test"), 0);
         NetworkTaskWorker.ExecutionResult executionResult = downloadNetworkTaskWorker.execute(getNetworkTask());
         LogEntry logEntry = executionResult.getLogEntry();
         assertEquals(45, logEntry.getNetworkTaskId());
@@ -588,7 +588,7 @@ public class DownloadNetworkTaskWorkerTest {
         TestDownloadNetworkTaskWorker downloadNetworkTaskWorker = prepareTestDownloadNetworkTaskWorker(dnsLookupResult, downloadCommandResult);
         preferenceManager.setPreferenceDownloadKeep(false);
         preferenceManager.setPreferenceDownloadExternalStorage(true);
-        fileManager.setExternalDirectory(new File("Test"));
+        fileManager.setExternalDirectory(new File("Test"), 0);
         NetworkTaskWorker.ExecutionResult executionResult = downloadNetworkTaskWorker.execute(getNetworkTask());
         LogEntry logEntry = executionResult.getLogEntry();
         assertEquals(45, logEntry.getNetworkTaskId());
@@ -669,7 +669,7 @@ public class DownloadNetworkTaskWorkerTest {
         TestDownloadNetworkTaskWorker downloadNetworkTaskWorker = prepareTestDownloadNetworkTaskWorker(dnsLookupResult, downloadCommandResult);
         preferenceManager.setPreferenceDownloadKeep(true);
         preferenceManager.setPreferenceDownloadExternalStorage(true);
-        fileManager.setExternalDirectory(new File("Test"));
+        fileManager.setExternalDirectory(new File("Test"), 0);
         NetworkTaskWorker.ExecutionResult executionResult = downloadNetworkTaskWorker.execute(getNetworkTask());
         LogEntry logEntry = executionResult.getLogEntry();
         assertEquals(45, logEntry.getNetworkTaskId());
@@ -724,7 +724,7 @@ public class DownloadNetworkTaskWorkerTest {
         TestDownloadNetworkTaskWorker downloadNetworkTaskWorker = prepareTestDownloadNetworkTaskWorker(dnsLookupResult, downloadCommandResult);
         preferenceManager.setPreferenceDownloadKeep(false);
         preferenceManager.setPreferenceDownloadExternalStorage(true);
-        fileManager.setExternalDirectory(new File("Test"));
+        fileManager.setExternalDirectory(new File("Test"), 0);
         NetworkTaskWorker.ExecutionResult executionResult = downloadNetworkTaskWorker.execute(getNetworkTask());
         LogEntry logEntry = executionResult.getLogEntry();
         assertEquals(45, logEntry.getNetworkTaskId());
@@ -740,7 +740,7 @@ public class DownloadNetworkTaskWorkerTest {
         TestDownloadNetworkTaskWorker downloadNetworkTaskWorker = prepareTestDownloadNetworkTaskWorker(dnsLookupResult, downloadCommandResult);
         preferenceManager.setPreferenceDownloadKeep(false);
         preferenceManager.setPreferenceDownloadExternalStorage(true);
-        fileManager.setExternalDirectory(new File("Test"));
+        fileManager.setExternalDirectory(new File("Test"), 0);
         NetworkTaskWorker.ExecutionResult executionResult = downloadNetworkTaskWorker.execute(getNetworkTask());
         LogEntry logEntry = executionResult.getLogEntry();
         assertEquals(45, logEntry.getNetworkTaskId());

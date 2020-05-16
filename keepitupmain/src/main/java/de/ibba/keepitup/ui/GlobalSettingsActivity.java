@@ -400,7 +400,7 @@ public class GlobalSettingsActivity extends SettingsInputActivity {
     private String getExternalRootFolder() {
         Log.d(GlobalSettingsActivity.class.getName(), "getExternalRootFolder");
         IFileManager fileManager = getFileManager();
-        File root = fileManager.getExternalRootDirectory();
+        File root = fileManager.getExternalRootDirectory(0);
         Log.d(GlobalSettingsActivity.class.getName(), "External root folder is " + root);
         if (root == null) {
             return null;
@@ -423,7 +423,7 @@ public class GlobalSettingsActivity extends SettingsInputActivity {
         PreferenceManager preferenceManager = new PreferenceManager(this);
         String folder = preferenceManager.getPreferenceDownloadFolder();
         IFileManager fileManager = getFileManager();
-        File downloadFolder = fileManager.getExternalDirectory(folder);
+        File downloadFolder = fileManager.getExternalDirectory(folder, 0);
         Log.d(GlobalSettingsActivity.class.getName(), "External download folder is " + downloadFolder);
         if (downloadFolder == null) {
             return null;
@@ -436,7 +436,7 @@ public class GlobalSettingsActivity extends SettingsInputActivity {
         PreferenceManager preferenceManager = new PreferenceManager(this);
         String folder = getResources().getString(R.string.file_dump_dump_directory_default);
         IFileManager fileManager = getFileManager();
-        File logFolder = fileManager.getExternalDirectory(folder);
+        File logFolder = fileManager.getExternalDirectory(folder, 0);
         Log.d(GlobalSettingsActivity.class.getName(), "External log folder is " + logFolder);
         if (logFolder == null) {
             return null;
@@ -466,7 +466,7 @@ public class GlobalSettingsActivity extends SettingsInputActivity {
         IFileManager fileManager = getFileManager();
         PreferenceManager preferenceManager = new PreferenceManager(this);
         String folder = editDialog.getFolder();
-        File downloadFolder = fileManager.getExternalDirectory(folder);
+        File downloadFolder = fileManager.getExternalDirectory(folder, 0);
         Log.d(GlobalSettingsActivity.class.getName(), "External download folder is " + downloadFolder);
         if (downloadFolder == null) {
             Log.e(GlobalSettingsActivity.class.getName(), "Error accessing download folder.");

@@ -36,14 +36,14 @@ public class SystemFileManagerTest {
         timeService.setTimestamp(getTestTimestamp());
         timeService.setTimestamp2(getTestTimestamp());
         fileManager.delete(fileManager.getInternalDownloadDirectory());
-        fileManager.delete(fileManager.getExternalRootDirectory());
+        fileManager.delete(fileManager.getExternalRootDirectory(0));
 
     }
 
     @After
     public void afterEachTestMethod() {
         fileManager.delete(fileManager.getInternalDownloadDirectory());
-        fileManager.delete(fileManager.getExternalRootDirectory());
+        fileManager.delete(fileManager.getExternalRootDirectory(0));
     }
 
     @Test
@@ -63,14 +63,14 @@ public class SystemFileManagerTest {
 
     @Test
     public void testGetExternalDirectoryDefaultDownloadDirectory() {
-        File externalRootDir = fileManager.getExternalRootDirectory();
+        File externalRootDir = fileManager.getExternalRootDirectory(0);
         File downloadDir = new File(externalRootDir, fileManager.getDefaultDownloadDirectoryName());
         assertFalse(downloadDir.exists());
-        File externalDir = fileManager.getExternalDirectory(fileManager.getDefaultDownloadDirectoryName());
+        File externalDir = fileManager.getExternalDirectory(fileManager.getDefaultDownloadDirectoryName(), 0);
         assertTrue(externalDir.exists());
         assertTrue(downloadDir.exists());
         assertEquals(externalDir, downloadDir);
-        externalDir = fileManager.getExternalDirectory(fileManager.getDefaultDownloadDirectoryName());
+        externalDir = fileManager.getExternalDirectory(fileManager.getDefaultDownloadDirectoryName(), 0);
         assertTrue(externalDir.exists());
         assertTrue(downloadDir.exists());
         assertEquals(externalDir, downloadDir);
@@ -78,14 +78,14 @@ public class SystemFileManagerTest {
 
     @Test
     public void testGetExternalDirectory() {
-        File externalRootDir = fileManager.getExternalRootDirectory();
+        File externalRootDir = fileManager.getExternalRootDirectory(0);
         File dir = new File(externalRootDir, "test/download");
         assertFalse(dir.exists());
-        File externalDir = fileManager.getExternalDirectory("test/download");
+        File externalDir = fileManager.getExternalDirectory("test/download", 0);
         assertTrue(externalDir.exists());
         assertTrue(dir.exists());
         assertEquals(externalDir, dir);
-        externalDir = fileManager.getExternalDirectory("test/download");
+        externalDir = fileManager.getExternalDirectory("test/download", 0);
         assertTrue(externalDir.exists());
         assertTrue(dir.exists());
         assertEquals(externalDir, dir);
@@ -93,10 +93,10 @@ public class SystemFileManagerTest {
 
     @Test
     public void testGetExternalDirectoryEmpty() {
-        File externalRootDir = fileManager.getExternalRootDirectory();
+        File externalRootDir = fileManager.getExternalRootDirectory(0);
         File dir = new File(externalRootDir, "");
         assertTrue(dir.exists());
-        File externalDir = fileManager.getExternalDirectory("");
+        File externalDir = fileManager.getExternalDirectory("", 0);
         assertTrue(externalDir.exists());
         assertEquals(externalDir, dir);
     }
@@ -122,13 +122,13 @@ public class SystemFileManagerTest {
 
     @Test
     public void testGetAbsoluteParent() {
-        File externalRootDir = fileManager.getExternalRootDirectory();
+        File externalRootDir = fileManager.getExternalRootDirectory(0);
         String parent = fileManager.getAbsoluteParent(externalRootDir.getAbsolutePath(), externalRootDir.getAbsolutePath());
         assertEquals(new File(parent), externalRootDir);
-        File externalDir = fileManager.getExternalDirectory(fileManager.getDefaultDownloadDirectoryName());
+        File externalDir = fileManager.getExternalDirectory(fileManager.getDefaultDownloadDirectoryName(), 0);
         parent = fileManager.getAbsoluteParent(externalRootDir.getAbsolutePath(), externalDir.getAbsolutePath());
         assertEquals(new File(parent), externalRootDir);
-        externalDir = fileManager.getExternalDirectory("test/download");
+        externalDir = fileManager.getExternalDirectory("test/download", 0);
         parent = fileManager.getAbsoluteParent(externalRootDir.getAbsolutePath(), externalDir.getAbsolutePath());
         assertEquals(new File(parent), new File(externalRootDir, "test"));
     }
@@ -154,7 +154,7 @@ public class SystemFileManagerTest {
 
     @Test
     public void testGetFilesRoot() throws Exception {
-        File externalRootDir = fileManager.getExternalRootDirectory();
+        File externalRootDir = fileManager.getExternalRootDirectory(0);
         File file1 = new File(externalRootDir, "file1");
         File dir1 = new File(externalRootDir, "dir1");
         File dir2 = new File(externalRootDir, "dir2");
@@ -165,17 +165,17 @@ public class SystemFileManagerTest {
         assertTrue(file2.createNewFile());
         List<FileEntry> entries = fileManager.getFiles(externalRootDir.getAbsolutePath(), externalRootDir.getAbsolutePath());
         assertEquals(5, entries.size());
-        assertTrue(areEnrtriesEqual(entries.get(0), getFileEntry("..", true, true, false)));
-        assertTrue(areEnrtriesEqual(entries.get(1), getFileEntry("dir1", true, false, true)));
-        assertTrue(areEnrtriesEqual(entries.get(2), getFileEntry("dir2", true, false, true)));
-        assertTrue(areEnrtriesEqual(entries.get(3), getFileEntry("file1", false, false, false)));
-        assertTrue(areEnrtriesEqual(entries.get(4), getFileEntry("file2", false, false, false)));
+        assertTrue(areEntriesEqual(entries.get(0), getFileEntry("..", true, true, false)));
+        assertTrue(areEntriesEqual(entries.get(1), getFileEntry("dir1", true, false, true)));
+        assertTrue(areEntriesEqual(entries.get(2), getFileEntry("dir2", true, false, true)));
+        assertTrue(areEntriesEqual(entries.get(3), getFileEntry("file1", false, false, false)));
+        assertTrue(areEntriesEqual(entries.get(4), getFileEntry("file2", false, false, false)));
     }
 
     @Test
     public void testGetFilesNonRoot() throws Exception {
-        File externalRootDir = fileManager.getExternalRootDirectory();
-        File externalDir = fileManager.getExternalDirectory("test/download");
+        File externalRootDir = fileManager.getExternalRootDirectory(0);
+        File externalDir = fileManager.getExternalDirectory("test/download", 0);
         File file1 = new File(externalDir, "file1");
         File dir1 = new File(externalDir, "dir1");
         File dir2 = new File(externalDir, "dir2");
@@ -187,11 +187,11 @@ public class SystemFileManagerTest {
         List<FileEntry> entries = fileManager.getFiles(externalRootDir.getAbsolutePath(), externalDir.getAbsolutePath());
         assertEquals(5, entries.size());
         FileEntry entry0 = entries.get(0);
-        assertTrue(areEnrtriesEqual(entries.get(0), getFileEntry("..", true, true, true)));
-        assertTrue(areEnrtriesEqual(entries.get(1), getFileEntry("dir1", true, false, true)));
-        assertTrue(areEnrtriesEqual(entries.get(2), getFileEntry("dir2", true, false, true)));
-        assertTrue(areEnrtriesEqual(entries.get(3), getFileEntry("file1", false, false, false)));
-        assertTrue(areEnrtriesEqual(entries.get(4), getFileEntry("file2", false, false, false)));
+        assertTrue(areEntriesEqual(entries.get(0), getFileEntry("..", true, true, true)));
+        assertTrue(areEntriesEqual(entries.get(1), getFileEntry("dir1", true, false, true)));
+        assertTrue(areEntriesEqual(entries.get(2), getFileEntry("dir2", true, false, true)));
+        assertTrue(areEntriesEqual(entries.get(3), getFileEntry("file1", false, false, false)));
+        assertTrue(areEntriesEqual(entries.get(4), getFileEntry("file2", false, false, false)));
     }
 
     @Test
@@ -205,10 +205,10 @@ public class SystemFileManagerTest {
         assertEquals(2, internalDownloadDir.listFiles().length);
         fileManager.delete(fileManager.getInternalDownloadDirectory());
         assertFalse(internalDownloadDir.exists());
-        File externalDir = fileManager.getExternalDirectory("test/download");
+        File externalDir = fileManager.getExternalDirectory("test/download", 0);
         fileManager.delete(externalDir);
         assertFalse(externalDir.exists());
-        assertTrue(new File(fileManager.getExternalRootDirectory(), "test").exists());
+        assertTrue(new File(fileManager.getExternalRootDirectory(0), "test").exists());
     }
 
     @Test
@@ -309,7 +309,7 @@ public class SystemFileManagerTest {
         return fileEntry;
     }
 
-    private boolean areEnrtriesEqual(FileEntry entry1, FileEntry entry2) {
+    private boolean areEntriesEqual(FileEntry entry1, FileEntry entry2) {
         if (!entry1.getName().equals(entry2.getName())) {
             return false;
         }

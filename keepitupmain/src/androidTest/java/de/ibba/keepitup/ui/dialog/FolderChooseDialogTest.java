@@ -49,10 +49,10 @@ public class FolderChooseDialogTest extends BaseUITest {
     @Before
     public void beforeEachTestMethod() {
         super.beforeEachTestMethod();
-        root = getFileManager().getExternalRootDirectory().getAbsolutePath();
+        root = getFileManager().getExternalRootDirectory(0).getAbsolutePath();
         createTestFiles();
         activity = (GlobalSettingsActivity) launchSettingsInputActivity(rule);
-        getFileManager().delete(getFileManager().getExternalDirectory("log"));
+        getFileManager().delete(getFileManager().getExternalDirectory("log", 0));
     }
 
     @Test
@@ -132,7 +132,7 @@ public class FolderChooseDialogTest extends BaseUITest {
 
     @Test
     public void testDisplayInitialFileListLevel1Empty() {
-        getFileManager().delete(getFileManager().getExternalRootDirectory());
+        getFileManager().delete(getFileManager().getExternalRootDirectory(0));
         FolderChooseDialog dialog = openFolderChooseDialog("xyz");
         onView(withId(R.id.textview_dialog_folder_choose_absolute)).check(matches(withText(root + "/xyz")));
         onView(withId(R.id.edittext_dialog_folder_choose_folder)).check(matches(withText("xyz")));

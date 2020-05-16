@@ -3,6 +3,7 @@ package de.ibba.keepitup.service;
 import android.content.Context;
 import android.content.res.Resources;
 import android.net.Uri;
+import android.os.Environment;
 import android.webkit.MimeTypeMap;
 
 import java.io.File;
@@ -76,10 +77,10 @@ public class SystemFileManager implements IFileManager {
     }
 
     @Override
-    public File getExternalDirectory(String directoryName) {
-        Log.d(SystemFileManager.class.getName(), "getExternalDirectory, directoryName is " + directoryName);
+    public File getExternalDirectory(String directoryName, int externalStorage) {
+        Log.d(SystemFileManager.class.getName(), "getExternalDirectory, directoryName is " + directoryName + ", externalStorage is " + externalStorage);
         try {
-            File externalRootDir = getExternalRootDirectory();
+            File externalRootDir = getExternalRootDirectory(externalStorage);
             if (externalRootDir == null) {
                 Log.d(SystemFileManager.class.getName(), "Cannot access external files root directory.");
                 return null;
@@ -104,13 +105,18 @@ public class SystemFileManager implements IFileManager {
     }
 
     @Override
-    public File getExternalRootDirectory() {
-        Log.d(SystemFileManager.class.getName(), "getExternalRootDirectory");
+    public File getExternalRootDirectory(int externalStorage) {
+        Log.d(SystemFileManager.class.getName(), "getExternalRootDirectory, externalStorage is " + externalStorage);
         try {
-            File externalDir = getContext().getExternalFilesDir(null);
-            if (externalDir != null) {
-                Log.d(SystemFileManager.class.getName(), "External files root directory is " + externalDir.getAbsolutePath());
-                return externalDir;
+            File[] externalDirs = getContext().getExternalFilesDirs(null);
+            if (externalDirs != null) {
+                if (externalDirs.length - 1 >= externalStorage) {
+                    File externalDir = externalDirs[externalStorage];
+                    Log.d(SystemFileManager.class.getName(), "External files root directory is " + externalDir.getAbsolutePath());
+                    return externalDir;
+                } else {
+                    Log.d(SystemFileManager.class.getName(), "External strorage " + externalStorage + " is not available");
+                }
             }
         } catch (Exception exc) {
             Log.e(SystemFileManager.class.getName(), "Error accessing external files directory", exc);
@@ -396,6 +402,36 @@ public class SystemFileManager implements IFileManager {
             Log.e(SystemFileManager.class.getName(), "Error creating valid file name", exc);
         }
         return null;
+    }
+
+    @Override
+    public boolean isSDCardSupported() {
+        Log.d(SystemFileManager.class.getName(), "isSDCardSupported");
+        try {
+            File[] externalDirs = getContext().getExternalFilesDirs(null);
+            if (externalDirs == null) {
+                Log.e(SystemFileManager.class.getName(), "getExternalFilesDirs returned null");
+                return false;
+            }
+            if (externalDirs.length <= 1) {
+                Log.d(SystemFileManager.class.getName(), "SD card is not supported");
+                return false;
+            }
+            File sdCardRootDirectory = externalDirs[1];
+            if (sdCardRootDirectory == null) {
+                Log.d(SystemFileManager.class.getName(), "SD card is supported but root directroy is null");
+                return false;
+            }
+            String sdCardState = Environment.getExternalStorageState(sdCardRootDirectory);
+            Log.d(SystemFileManager.class.getName(), "SD card state is " + sdCardState);
+            if (Environment.MEDIA_MOUNTED.equals(sdCardState)) {
+                Log.d(SystemFileManager.class.getName(), "SD card is mounted and ready");
+                return true;
+            }
+        } catch (Exception exc) {
+            Log.e(SystemFileManager.class.getName(), "Error accessing external files directories", exc);
+        }
+        return false;
     }
 
     public ITimeService getTimeService() {

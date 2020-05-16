@@ -201,6 +201,18 @@ public class PreferenceManagerTest {
     }
 
     @Test
+    public void testGetSetRemovePreferenceExternalStorageType() {
+        assertEquals(0, preferenceManager.getPreferenceExternalStorageType());
+        preferenceManager.setPreferenceExternalStorageType(1);
+        assertEquals(1, preferenceManager.getPreferenceExternalStorageType());
+        preferenceManager.removeAllPreferences();
+        assertEquals(0, preferenceManager.getPreferenceExternalStorageType());
+        preferenceManager.setPreferenceExternalStorageType(1);
+        preferenceManager.removePreferenceExternalStorageType();
+        assertEquals(0, preferenceManager.getPreferenceExternalStorageType());
+    }
+
+    @Test
     public void testGetSetRemovePreferenceDownloadFolder() {
         assertEquals("download", preferenceManager.getPreferenceDownloadFolder());
         preferenceManager.setPreferenceDownloadFolder("Folder");

@@ -28,17 +28,17 @@ public class DebugUtilTest {
 
     @Test
     public void testGetFileLogger() {
-        fileManager.setExternalDirectory(null);
+        fileManager.setExternalDirectory(null, 0);
         assertNull(DebugUtil.getFileLogger(TestRegistry.getContext(), fileManager));
-        fileManager.setExternalDirectory(new File("Test"));
+        fileManager.setExternalDirectory(new File("Test"), 0);
         assertNotNull(DebugUtil.getFileLogger(TestRegistry.getContext(), fileManager));
     }
 
     @Test
     public void testGetFileDump() {
-        fileManager.setExternalDirectory(null);
+        fileManager.setExternalDirectory(null, 0);
         assertNull(DebugUtil.getFileDump(TestRegistry.getContext(), fileManager));
-        fileManager.setExternalDirectory(new File("Test"));
+        fileManager.setExternalDirectory(new File("Test"), 0);
         assertNotNull(DebugUtil.getFileDump(TestRegistry.getContext(), fileManager));
     }
 }
