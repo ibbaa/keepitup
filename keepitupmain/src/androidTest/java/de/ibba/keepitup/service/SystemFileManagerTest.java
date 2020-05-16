@@ -21,6 +21,7 @@ import de.ibba.keepitup.util.URLUtil;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertTrue;
 
 @SmallTest
@@ -37,13 +38,14 @@ public class SystemFileManagerTest {
         timeService.setTimestamp2(getTestTimestamp());
         fileManager.delete(fileManager.getInternalDownloadDirectory());
         fileManager.delete(fileManager.getExternalRootDirectory(0));
-
+        fileManager.delete(fileManager.getExternalRootDirectory(1));
     }
 
     @After
     public void afterEachTestMethod() {
         fileManager.delete(fileManager.getInternalDownloadDirectory());
         fileManager.delete(fileManager.getExternalRootDirectory(0));
+        fileManager.delete(fileManager.getExternalRootDirectory(1));
     }
 
     @Test
@@ -99,6 +101,22 @@ public class SystemFileManagerTest {
         File externalDir = fileManager.getExternalDirectory("", 0);
         assertTrue(externalDir.exists());
         assertEquals(externalDir, dir);
+    }
+
+    @Test
+    public void testGetDifferentExternalDirectories() {
+        File externalRootDir1 = fileManager.getExternalRootDirectory(0);
+        File externalRootDir2 = fileManager.getExternalRootDirectory(1);
+        assertNotEquals(externalRootDir1, externalRootDir2);
+        File dir1 = new File(externalRootDir1, "test/download");
+        File dir2 = new File(externalRootDir2, "test/download");
+        File externalDir1 = fileManager.getExternalDirectory("test/download", 0);
+        File externalDir2 = fileManager.getExternalDirectory("test/download", 1);
+        assertNotEquals(externalDir1, externalDir2);
+        assertTrue(externalDir1.exists());
+        assertTrue(externalDir2.exists());
+        assertEquals(externalDir1, dir1);
+        assertEquals(externalDir2, dir2);
     }
 
     @Test
