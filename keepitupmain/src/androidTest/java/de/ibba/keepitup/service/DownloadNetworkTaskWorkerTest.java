@@ -58,6 +58,7 @@ public class DownloadNetworkTaskWorkerTest {
         Dump.initialize(null);
         fileManager = new MockFileManager();
         fileManager.setInternalDownloadDirectory(new File("test"));
+        fileManager.setSDCardSupported(false);
         preferenceManager = new PreferenceManager(TestRegistry.getContext());
         preferenceManager.removeAllPreferences();
         networkTaskDAO = new NetworkTaskDAO(TestRegistry.getContext());
@@ -676,6 +677,62 @@ public class DownloadNetworkTaskWorkerTest {
         assertEquals(getTestTimestamp(), logEntry.getTimestamp());
         assertTrue(logEntry.isSuccess());
         assertEquals("The download from http://127.0.0.1:80 was successful. Downloaded file: /Test/testfile. 100 msec download time.", logEntry.getMessage());
+    }
+
+    @Test
+    public void testDownloadSuccessSDCardNotSupported() throws Exception {
+        DNSLookupResult dnsLookupResult = new DNSLookupResult(Arrays.asList(InetAddress.getByName("127.0.0.1"), InetAddress.getByName("::1")), null);
+        DownloadCommandResult downloadCommandResult = new DownloadCommandResult(true, true, true, false, true, false, HttpURLConnection.HTTP_OK, null, "testfile", 100, null);
+        TestDownloadNetworkTaskWorker downloadNetworkTaskWorker = prepareTestDownloadNetworkTaskWorker(dnsLookupResult, downloadCommandResult);
+        preferenceManager.setPreferenceDownloadKeep(true);
+        preferenceManager.setPreferenceDownloadExternalStorage(true);
+        preferenceManager.setPreferenceExternalStorageType(1);
+        fileManager.setExternalDirectory(new File("Test0"), 0);
+        fileManager.setExternalDirectory(new File("Test1"), 1);
+        NetworkTaskWorker.ExecutionResult executionResult = downloadNetworkTaskWorker.execute(getNetworkTask());
+        LogEntry logEntry = executionResult.getLogEntry();
+        assertEquals(45, logEntry.getNetworkTaskId());
+        assertEquals(getTestTimestamp(), logEntry.getTimestamp());
+        assertTrue(logEntry.isSuccess());
+        assertEquals("The download from http://127.0.0.1:80 was successful. Downloaded file: /Test0/testfile. 100 msec download time.", logEntry.getMessage());
+    }
+
+    @Test
+    public void testDownloadSuccessSDCardNotSupportedSDCard() throws Exception {
+        DNSLookupResult dnsLookupResult = new DNSLookupResult(Arrays.asList(InetAddress.getByName("127.0.0.1"), InetAddress.getByName("::1")), null);
+        DownloadCommandResult downloadCommandResult = new DownloadCommandResult(true, true, true, false, true, false, HttpURLConnection.HTTP_OK, null, "testfile", 100, null);
+        TestDownloadNetworkTaskWorker downloadNetworkTaskWorker = prepareTestDownloadNetworkTaskWorker(dnsLookupResult, downloadCommandResult);
+        preferenceManager.setPreferenceDownloadKeep(true);
+        preferenceManager.setPreferenceDownloadExternalStorage(true);
+        preferenceManager.setPreferenceExternalStorageType(1);
+        fileManager.setSDCardSupported(true);
+        fileManager.setExternalDirectory(new File("Test0"), 0);
+        fileManager.setExternalDirectory(new File("Test1"), 1);
+        NetworkTaskWorker.ExecutionResult executionResult = downloadNetworkTaskWorker.execute(getNetworkTask());
+        LogEntry logEntry = executionResult.getLogEntry();
+        assertEquals(45, logEntry.getNetworkTaskId());
+        assertEquals(getTestTimestamp(), logEntry.getTimestamp());
+        assertTrue(logEntry.isSuccess());
+        assertEquals("The download from http://127.0.0.1:80 was successful. Downloaded file: /Test1/testfile. 100 msec download time.", logEntry.getMessage());
+    }
+
+    @Test
+    public void testDownloadSuccessSDCardNotSupportedPrimary() throws Exception {
+        DNSLookupResult dnsLookupResult = new DNSLookupResult(Arrays.asList(InetAddress.getByName("127.0.0.1"), InetAddress.getByName("::1")), null);
+        DownloadCommandResult downloadCommandResult = new DownloadCommandResult(true, true, true, false, true, false, HttpURLConnection.HTTP_OK, null, "testfile", 100, null);
+        TestDownloadNetworkTaskWorker downloadNetworkTaskWorker = prepareTestDownloadNetworkTaskWorker(dnsLookupResult, downloadCommandResult);
+        preferenceManager.setPreferenceDownloadKeep(true);
+        preferenceManager.setPreferenceDownloadExternalStorage(true);
+        preferenceManager.setPreferenceExternalStorageType(0);
+        fileManager.setSDCardSupported(true);
+        fileManager.setExternalDirectory(new File("Test0"), 0);
+        fileManager.setExternalDirectory(new File("Test1"), 1);
+        NetworkTaskWorker.ExecutionResult executionResult = downloadNetworkTaskWorker.execute(getNetworkTask());
+        LogEntry logEntry = executionResult.getLogEntry();
+        assertEquals(45, logEntry.getNetworkTaskId());
+        assertEquals(getTestTimestamp(), logEntry.getTimestamp());
+        assertTrue(logEntry.isSuccess());
+        assertEquals("The download from http://127.0.0.1:80 was successful. Downloaded file: /Test0/testfile. 100 msec download time.", logEntry.getMessage());
     }
 
     @Test

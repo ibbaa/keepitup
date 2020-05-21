@@ -240,7 +240,13 @@ public class DownloadNetworkTaskWorker extends NetworkTaskWorker {
             Log.d(DownloadNetworkTaskWorker.class.getName(), "Determining external download folder");
             String preferenceDownloadFolder = preferenceManager.getPreferenceDownloadFolder();
             Log.d(DownloadNetworkTaskWorker.class.getName(), "Specified folder is " + preferenceDownloadFolder);
-            return fileManager.getExternalDirectory(preferenceDownloadFolder, 0);
+            if (fileManager.isSDCardSupported()) {
+                Log.d(DownloadNetworkTaskWorker.class.getName(), "SD card is supported");
+                return fileManager.getExternalDirectory(preferenceDownloadFolder, preferenceManager.getPreferenceExternalStorageType());
+            } else {
+                Log.d(DownloadNetworkTaskWorker.class.getName(), "SD card is not supported");
+                return fileManager.getExternalDirectory(preferenceDownloadFolder, 0);
+            }
         }
         Log.d(DownloadNetworkTaskWorker.class.getName(), "Determining internal download folder");
         return fileManager.getInternalDownloadDirectory();
