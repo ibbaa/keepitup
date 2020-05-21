@@ -135,7 +135,7 @@ public class MockFileManager implements IFileManager {
         this.validFileName = validFileName;
     }
 
-    public void setSdCardSupported(boolean sdCardSupported) {
+    public void setSDCardSupported(boolean sdCardSupported) {
         this.sdCardSupported = sdCardSupported;
     }
 

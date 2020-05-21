@@ -166,7 +166,9 @@ public class GlobalSettingsActivity extends SettingsInputActivity {
         Log.d(GlobalSettingsActivity.class.getName(), "prepareExternalStorageTypeRadioGroup");
         externalStorageType = findViewById(R.id.radiogroup_global_settings_activity_external_storage_type);
         IFileManager fileManager = getFileManager();
-        if (downloadExternalStorageSwitch.isChecked() && fileManager.isSDCardSupported()) {
+        boolean sdCardSupported = fileManager.isSDCardSupported();
+        Log.d(GlobalSettingsActivity.class.getName(), "SD card supported: " + sdCardSupported);
+        if (downloadExternalStorageSwitch.isChecked() && sdCardSupported) {
             RadioButton primaryStorageTypeButton = findViewById(R.id.radiobutton_global_settings_activity_external_storage_type_primary);
             RadioButton sdCardStorageTypeButton = findViewById(R.id.radiobutton_global_settings_activity_external_storage_type_sdcard);
             sdCardStorageTypeButton.setVisibility(View.VISIBLE);
@@ -460,8 +462,10 @@ public class GlobalSettingsActivity extends SettingsInputActivity {
         IFileManager fileManager = getFileManager();
         File root;
         if (fileManager.isSDCardSupported()) {
+            Log.d(GlobalSettingsActivity.class.getName(), "SD card is supported");
             root = fileManager.getExternalRootDirectory(preferenceManager.getPreferenceExternalStorageType());
         } else {
+            Log.d(GlobalSettingsActivity.class.getName(), "SD card is not supported");
             root = fileManager.getExternalRootDirectory(0);
         }
         Log.d(GlobalSettingsActivity.class.getName(), "External root folder is " + root);
@@ -488,8 +492,10 @@ public class GlobalSettingsActivity extends SettingsInputActivity {
         IFileManager fileManager = getFileManager();
         File downloadFolder;
         if (fileManager.isSDCardSupported()) {
+            Log.d(GlobalSettingsActivity.class.getName(), "SD card is supported");
             downloadFolder = fileManager.getExternalDirectory(folder, preferenceManager.getPreferenceExternalStorageType());
         } else {
+            Log.d(GlobalSettingsActivity.class.getName(), "SD card is not supported");
             downloadFolder = fileManager.getExternalDirectory(folder, 0);
         }
         Log.d(GlobalSettingsActivity.class.getName(), "External download folder is " + downloadFolder);
