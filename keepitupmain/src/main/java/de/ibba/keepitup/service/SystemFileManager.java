@@ -419,7 +419,7 @@ public class SystemFileManager implements IFileManager {
             }
             File sdCardRootDirectory = externalDirs[1];
             if (sdCardRootDirectory == null) {
-                Log.d(SystemFileManager.class.getName(), "SD card is supported but root directroy is null");
+                Log.d(SystemFileManager.class.getName(), "SD card is supported but root directory is null");
                 return false;
             }
             String sdCardState = Environment.getExternalStorageState(sdCardRootDirectory);
@@ -428,6 +428,7 @@ public class SystemFileManager implements IFileManager {
                 Log.d(SystemFileManager.class.getName(), "SD card is mounted and ready");
                 return true;
             }
+            Log.d(SystemFileManager.class.getName(), "SD card is not mounted");
         } catch (Exception exc) {
             Log.e(SystemFileManager.class.getName(), "Error accessing external files directories", exc);
         }
