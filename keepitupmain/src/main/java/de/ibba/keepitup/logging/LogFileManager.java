@@ -16,9 +16,6 @@ import java.util.Locale;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
-import de.ibba.keepitup.util.FileUtil;
-import de.ibba.keepitup.util.StringUtil;
-
 public class LogFileManager {
 
     private static final int BUFFER_SIZE_1024 = 1024;
@@ -49,7 +46,7 @@ public class LogFileManager {
             return fileName;
         }
         String extension = getFileNameExtension(fileName);
-        if (!StringUtil.isEmpty(extension)) {
+        if (extension != null && extension.length() > 0) {
             return getFileNameWithoutExtension(fileName) + "_" + suffix + "." + extension;
         }
         return getFileNameWithoutExtension(fileName) + "_" + suffix;
@@ -89,7 +86,7 @@ public class LogFileManager {
                 }
             }
             for (int ii = 1; ii <= MAX_DUPLICATE_FILES; ii++) {
-                String numberFileName = FileUtil.suffixFileName(timestampFileName, getNumberSuffix(ii));
+                String numberFileName = suffixFileName(timestampFileName, getNumberSuffix(ii));
                 resultingFile = new File(folder, numberFileName);
                 if (!resultingFile.exists()) {
                     return numberFileName;
