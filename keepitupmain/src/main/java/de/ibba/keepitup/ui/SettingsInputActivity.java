@@ -8,17 +8,21 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import de.ibba.keepitup.logging.Log;
 import de.ibba.keepitup.service.IFileManager;
+import de.ibba.keepitup.service.IPowerManager;
 import de.ibba.keepitup.service.SystemFileManager;
+import de.ibba.keepitup.service.SystemPowerManager;
+import de.ibba.keepitup.ui.dialog.BatteryOptimizationDialog;
 import de.ibba.keepitup.ui.dialog.FolderChooseDialog;
 import de.ibba.keepitup.ui.dialog.GeneralErrorDialog;
 import de.ibba.keepitup.ui.dialog.SettingsInput;
 import de.ibba.keepitup.ui.dialog.SettingsInputDialog;
 import de.ibba.keepitup.util.BundleUtil;
 
-public abstract class SettingsInputActivity extends AppCompatActivity implements SettingsInputSupport, FolderChooseSupport {
+public abstract class SettingsInputActivity extends AppCompatActivity implements SettingsInputSupport, FolderChooseSupport, BatteryOptimizationSupport {
 
     private Resources resources;
     private IFileManager fileManager;
+    private IPowerManager powerManager;
 
     public void injectResources(Resources resources) {
         this.resources = resources;
@@ -26,6 +30,10 @@ public abstract class SettingsInputActivity extends AppCompatActivity implements
 
     public void injectFileManager(IFileManager fileManager) {
         this.fileManager = fileManager;
+    }
+
+    public void injectPowerManager(IPowerManager powerManager) {
+        this.powerManager = powerManager;
     }
 
     @Override
@@ -36,11 +44,20 @@ public abstract class SettingsInputActivity extends AppCompatActivity implements
         return super.getResources();
     }
 
+    @Override
     public IFileManager getFileManager() {
         if (fileManager != null) {
             return fileManager;
         }
         return new SystemFileManager(this);
+    }
+
+    @Override
+    public IPowerManager getPowerManager() {
+        if (powerManager != null) {
+            return powerManager;
+        }
+        return new SystemPowerManager(this);
     }
 
     public void onInputDialogOkClicked(SettingsInputDialog inputDialog, SettingsInput.Type type) {
@@ -61,6 +78,12 @@ public abstract class SettingsInputActivity extends AppCompatActivity implements
     public void onFolderChooseDialogCancelClicked(FolderChooseDialog chooseDialog) {
         Log.d(SettingsInputActivity.class.getName(), "onFolderChooseDialogOkClicked");
         chooseDialog.dismiss();
+    }
+
+    @Override
+    public void onBatteryOptimizationDialogOkClicked(BatteryOptimizationDialog batteryOptimizationDialog) {
+        Log.d(SettingsInputActivity.class.getName(), "onFolderChooseDialogOkClicked");
+        batteryOptimizationDialog.dismiss();
     }
 
     protected void recreateActivity() {

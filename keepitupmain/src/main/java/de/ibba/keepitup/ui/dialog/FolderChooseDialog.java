@@ -47,7 +47,7 @@ public class FolderChooseDialog extends DialogFragment implements ContextOptions
 
     private IClipboardManager clipboardManager;
 
-    public FolderChooseDialog(de.ibba.keepitup.ui.FolderChooseSupport folderChooseSupport) {
+    public FolderChooseDialog(FolderChooseSupport folderChooseSupport) {
         this.folderChooseSupport = folderChooseSupport;
     }
 

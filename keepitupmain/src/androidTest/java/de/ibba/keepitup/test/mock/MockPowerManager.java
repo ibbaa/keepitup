@@ -1,7 +1,5 @@
 package de.ibba.keepitup.test.mock;
 
-import android.content.Context;
-
 import de.ibba.keepitup.service.IPowerManager;
 
 public class MockPowerManager implements IPowerManager {
@@ -33,7 +31,7 @@ public class MockPowerManager implements IPowerManager {
     }
 
     @Override
-    public boolean isBatteryOptimized(Context context) {
+    public boolean isBatteryOptimized() {
         return batteryOptimized;
     }
 }

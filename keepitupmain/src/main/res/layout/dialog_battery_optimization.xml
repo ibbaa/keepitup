@@ -15,6 +15,7 @@
             android:id="@+id/textview_dialog_battery_optimization_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
             android:layout_marginTop="@dimen/textview_dialog_battery_optimization_title_margin_top"
             android:padding="@dimen/textview_dialog_battery_optimization_title_padding"
             android:textStyle="bold"
@@ -25,6 +26,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
+            android:gravity="center"
             android:padding="@dimen/textview_dialog_battery_optimization_info_padding"
             android:textStyle="normal"
             android:textSize="@dimen/textview_dialog_battery_optimization_info_text_size"
@@ -41,16 +43,16 @@
             android:textSize="@dimen/textview_dialog_battery_optimization_link_text_size"
             android:clickable="true"
             android:focusable="true"
-            android:text="@string/text_dialog_battery_optimization_link" />
+            android:text="" />
 
         <ImageView
-            android:id="@+id/imageview_dialog_akku_ok"
+            android:id="@+id/imageview_dialog_battery_optimization_ok"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:clickable="true"
             android:focusable="true"
-            android:contentDescription="@string/label_dialog_info_ok"
+            android:contentDescription="@string/label_dialog_battery_optimization_ok"
             app:srcCompat="@drawable/icon_ok_selector" />
     </LinearLayout>
 </ScrollView>
