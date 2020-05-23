@@ -3,7 +3,7 @@
     <dimen name="textview_dialog_battery_optimization_title_padding">2dp</dimen>
     <dimen name="textview_dialog_battery_optimization_title_margin_top">2dp</dimen>
     <dimen name="textview_dialog_battery_optimization_info_padding">2dp</dimen>
-    <dimen name="textview_dialog_battery_optimization_info_text_size">8sp</dimen>
+    <dimen name="textview_dialog_battery_optimization_info_text_size">10sp</dimen>
     <dimen name="textview_dialog_battery_optimization_link_padding">2dp</dimen>
-    <dimen name="textview_dialog_battery_optimization_link_text_size">8sp</dimen>
+    <dimen name="textview_dialog_battery_optimization_link_text_size">10sp</dimen>
 </resources>

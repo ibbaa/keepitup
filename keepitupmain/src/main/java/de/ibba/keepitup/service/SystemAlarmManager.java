@@ -19,7 +19,7 @@ public class SystemAlarmManager implements IAlarmManager {
     @Override
     public void setAlarm(long delay, PendingIntent pendingIntent) {
         Log.d(SystemAlarmManager.class.getName(), "Setting alarm with a delay of " + delay);
-        if (Build.VERSION.SDK_INT >= 23) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             alarmManager.setExactAndAllowWhileIdle(AlarmManager.ELAPSED_REALTIME_WAKEUP, SystemClock.elapsedRealtime() + delay, pendingIntent);
         } else {
             alarmManager.setExact(AlarmManager.ELAPSED_REALTIME_WAKEUP, SystemClock.elapsedRealtime() + delay, pendingIntent);
