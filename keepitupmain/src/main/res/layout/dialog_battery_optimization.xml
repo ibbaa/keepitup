@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/scrollview_dialog_akku"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent">
+
+    <LinearLayout
+        android:id="@+id/linearlayout_dialog_battery_optimization"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/textview_dialog_battery_optimization_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/textview_dialog_battery_optimization_title_margin_top"
+            android:padding="@dimen/textview_dialog_battery_optimization_title_padding"
+            android:textStyle="bold"
+            android:text="@string/label_dialog_battery_optimization_title" />
+
+        <TextView
+            android:id="@+id/textview_dialog_battery_optimization_info"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:padding="@dimen/textview_dialog_battery_optimization_info_padding"
+            android:textStyle="normal"
+            android:textSize="@dimen/textview_dialog_battery_optimization_info_text_size"
+            android:text="" />
+
+        <TextView
+            android:id="@+id/textview_dialog_battery_optimization_link"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:gravity="center"
+            android:padding="@dimen/textview_dialog_battery_optimization_link_padding"
+            android:textStyle="normal"
+            android:textSize="@dimen/textview_dialog_battery_optimization_link_text_size"
+            android:clickable="true"
+            android:focusable="true"
+            android:text="@string/text_dialog_battery_optimization_link" />
+
+        <ImageView
+            android:id="@+id/imageview_dialog_akku_ok"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:clickable="true"
+            android:focusable="true"
+            android:contentDescription="@string/label_dialog_info_ok"
+            app:srcCompat="@drawable/icon_ok_selector" />
+    </LinearLayout>
+</ScrollView>

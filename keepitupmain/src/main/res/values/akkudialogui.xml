@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="label_dialog_battery_optimization_title">Battery Optimization</string>
+    <string name="text_dialog_battery_optimization_info_active">Battery optimization is active for this app.</string>
+    <string name="text_dialog_battery_optimization_info_not_active">Battery optimization is not active for this app.</string>
+    <string name="text_dialog_battery_optimization_info">%s. Active battery optimization may cause the network tasks to be triggered less often as configured by the interval setting if the device is unplugged. You can change the battery optimization setting for the app in the Android settings. Turning off battery optimization may result in higher power consumption.</string>
+    <string name="text_dialog_battery_optimization_link">Click here to change battery optimization settings</string>
+</resources>
