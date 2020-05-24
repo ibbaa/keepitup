@@ -1,5 +1,6 @@
 package de.ibba.keepitup.ui.dialog;
 
+import android.app.Activity;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,15 +19,9 @@ import de.ibba.keepitup.util.StringUtil;
 
 public class ConfirmDialog extends DialogFragment {
 
-    private ConfirmSupport confirmSupport;
-
     public enum Type {
         DELETETASK,
         DELETELOGS
-    }
-
-    public ConfirmDialog(ConfirmSupport confirmSupport) {
-        this.confirmSupport = confirmSupport;
     }
 
     @Override
@@ -62,6 +57,12 @@ public class ConfirmDialog extends DialogFragment {
 
     private void onOkClicked(@SuppressWarnings("unused") View view) {
         Log.d(ConfirmDialog.class.getName(), "onOkClicked");
+        ConfirmSupport confirmSupport = getConfirmSupport();
+        if (confirmSupport == null) {
+            Log.e(ConfirmDialog.class.getName(), "confirmSupport is null");
+            dismiss();
+            return;
+        }
         String typeString = BundleUtil.stringFromBundle(ConfirmDialog.Type.class.getSimpleName(), requireArguments());
         if (StringUtil.isEmpty(typeString)) {
             Log.e(ConfirmDialog.class.getName(), ConfirmDialog.Type.class.getSimpleName() + " not specified.");
@@ -79,6 +80,25 @@ public class ConfirmDialog extends DialogFragment {
 
     private void onCancelClicked(@SuppressWarnings("unused") View view) {
         Log.d(ConfirmDialog.class.getName(), "onCancelClicked");
-        confirmSupport.onConfirmDialogCancelClicked(this);
+        ConfirmSupport confirmSupport = getConfirmSupport();
+        if (confirmSupport != null) {
+            confirmSupport.onConfirmDialogCancelClicked(this);
+        } else {
+            Log.e(ConfirmDialog.class.getName(), "confirmSupport is null");
+            dismiss();
+        }
+    }
+
+    private ConfirmSupport getConfirmSupport() {
+        Activity activity = getActivity();
+        if (activity == null) {
+            Log.e(ConfirmDialog.class.getName(), "getConfirmSupport, activity is null");
+            return null;
+        }
+        if (!(activity instanceof ConfirmSupport)) {
+            Log.e(ConfirmDialog.class.getName(), "getConfirmSupport, activity is not an instance of " + ConfirmSupport.class.getSimpleName());
+            return null;
+        }
+        return (ConfirmSupport) activity;
     }
 }
