@@ -1,5 +1,6 @@
 package de.ibba.keepitup.ui.dialog;
 
+import android.app.Activity;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -24,9 +25,9 @@ import de.ibba.keepitup.R;
 import de.ibba.keepitup.logging.Log;
 import de.ibba.keepitup.model.FileEntry;
 import de.ibba.keepitup.service.IFileManager;
+import de.ibba.keepitup.service.SystemFileManager;
 import de.ibba.keepitup.ui.ContextOptionsSupport;
 import de.ibba.keepitup.ui.ContextOptionsSupportManager;
-import de.ibba.keepitup.ui.FolderChooseAware;
 import de.ibba.keepitup.ui.FolderChooseSupport;
 import de.ibba.keepitup.ui.GlobalSettingsActivity;
 import de.ibba.keepitup.ui.adapter.FileEntryAdapter;
@@ -35,9 +36,8 @@ import de.ibba.keepitup.ui.clipboard.SystemClipboardManager;
 import de.ibba.keepitup.util.BundleUtil;
 import de.ibba.keepitup.util.StringUtil;
 
-public class FolderChooseDialog extends DialogFragment implements FolderChooseAware, ContextOptionsSupport {
+public class FolderChooseDialog extends DialogFragment implements ContextOptionsSupport {
 
-    private FolderChooseSupport folderChooseSupport;
     private View dialogView;
     private TextView absoluteFolderText;
     private EditText folderEditText;
@@ -47,19 +47,6 @@ public class FolderChooseDialog extends DialogFragment implements FolderChooseAw
     private String selectionFolder;
 
     private IClipboardManager clipboardManager;
-
-    public FolderChooseDialog() {
-
-    }
-
-    public FolderChooseDialog(FolderChooseSupport folderChooseSupport) {
-        this.folderChooseSupport = folderChooseSupport;
-    }
-
-    @Override
-    public void setFolderChooseSupport(FolderChooseSupport folderChooseSupport) {
-        this.folderChooseSupport = folderChooseSupport;
-    }
 
     public void injectClipboardManager(IClipboardManager clipboardManager) {
         this.clipboardManager = clipboardManager;
@@ -185,12 +172,24 @@ public class FolderChooseDialog extends DialogFragment implements FolderChooseAw
 
     private void onOkClicked(@SuppressWarnings("unused") View view) {
         Log.d(FolderChooseDialog.class.getName(), "onOkClicked");
-        folderChooseSupport.onFolderChooseDialogOkClicked(this);
+        FolderChooseSupport folderChooseSupport = getFolderChooseSupport();
+        if (folderChooseSupport != null) {
+            folderChooseSupport.onFolderChooseDialogOkClicked(this);
+        } else {
+            Log.e(FolderChooseDialog.class.getName(), "folderChooseSupport is null");
+            dismiss();
+        }
     }
 
     private void onCancelClicked(@SuppressWarnings("unused") View view) {
         Log.d(FolderChooseDialog.class.getName(), "onCancelClicked");
-        folderChooseSupport.onFolderChooseDialogCancelClicked(this);
+        FolderChooseSupport folderChooseSupport = getFolderChooseSupport();
+        if (folderChooseSupport != null) {
+            folderChooseSupport.onFolderChooseDialogCancelClicked(this);
+        } else {
+            Log.e(FolderChooseDialog.class.getName(), "folderChooseSupport is null");
+            dismiss();
+        }
     }
 
     private String getAbsoluteFolder(String root, String folder) {
@@ -321,7 +320,12 @@ public class FolderChooseDialog extends DialogFragment implements FolderChooseAw
 
     private IFileManager getFileManager() {
         Log.d(FolderChooseDialog.class.getName(), "getFileManager");
-        return folderChooseSupport.getFileManager();
+        FolderChooseSupport folderChooseSupport = getFolderChooseSupport();
+        if (folderChooseSupport != null) {
+            return folderChooseSupport.getFileManager();
+        }
+        Log.e(FolderChooseDialog.class.getName(), "folderChooseSupport is null");
+        return new SystemFileManager(getContext());
     }
 
     private RecyclerView.Adapter createAdapter() {
@@ -431,5 +435,18 @@ public class FolderChooseDialog extends DialogFragment implements FolderChooseAw
         bundle.putInt(errorDialog.getTypefaceStyleKey(), typeface);
         errorDialog.setArguments(bundle);
         errorDialog.show(getParentFragmentManager(), GeneralErrorDialog.class.getName());
+    }
+
+    private FolderChooseSupport getFolderChooseSupport() {
+        Activity activity = getActivity();
+        if (activity == null) {
+            Log.e(FolderChooseDialog.class.getName(), "getFolderChooseSupport, activity is null");
+            return null;
+        }
+        if (!(activity instanceof FolderChooseSupport)) {
+            Log.e(FolderChooseDialog.class.getName(), "getFolderChooseSupport, activity is not an instance of " + FolderChooseSupport.class.getSimpleName());
+            return null;
+        }
+        return (FolderChooseSupport) activity;
     }
 }

@@ -1,5 +1,6 @@
 package de.ibba.keepitup.ui.dialog;
 
+import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -21,7 +22,6 @@ import de.ibba.keepitup.R;
 import de.ibba.keepitup.logging.Log;
 import de.ibba.keepitup.ui.ContextOptionsSupport;
 import de.ibba.keepitup.ui.ContextOptionsSupportManager;
-import de.ibba.keepitup.ui.SettingsInputAware;
 import de.ibba.keepitup.ui.SettingsInputSupport;
 import de.ibba.keepitup.ui.clipboard.IClipboardManager;
 import de.ibba.keepitup.ui.clipboard.SystemClipboardManager;
@@ -31,28 +31,14 @@ import de.ibba.keepitup.ui.validation.ValidationResult;
 import de.ibba.keepitup.util.BundleUtil;
 import de.ibba.keepitup.util.StringUtil;
 
-public class SettingsInputDialog extends DialogFragment implements SettingsInputAware, ContextOptionsSupport {
+public class SettingsInputDialog extends DialogFragment implements ContextOptionsSupport {
 
-    private SettingsInputSupport settingsInputSupport;
     private View dialogView;
     private SettingsInput input;
     private EditText valueEditText;
     private TextColorValidatingWatcher valueEditTextWatcher;
 
     private IClipboardManager clipboardManager;
-
-    public SettingsInputDialog() {
-
-    }
-
-    public SettingsInputDialog(SettingsInputSupport settingsInputSupport) {
-        this.settingsInputSupport = settingsInputSupport;
-    }
-
-    @Override
-    public void setSettingsInputSupport(SettingsInputSupport settingsInputSupport) {
-        this.settingsInputSupport = settingsInputSupport;
-    }
 
     public void injectClipboardManager(IClipboardManager clipboardManager) {
         this.clipboardManager = clipboardManager;
@@ -119,7 +105,13 @@ public class SettingsInputDialog extends DialogFragment implements SettingsInput
         List<ValidationResult> validationResult = validateInput();
         if (!hasErrors(validationResult)) {
             Log.d(SettingsInputDialog.class.getName(), "Validation was successful");
-            settingsInputSupport.onInputDialogOkClicked(this, input.getType());
+            SettingsInputSupport settingsInputSupport = getSettingsInputSupport();
+            if (settingsInputSupport != null) {
+                settingsInputSupport.onInputDialogOkClicked(this, input.getType());
+            } else {
+                Log.e(SettingsInputDialog.class.getName(), "settingsInputSupport is null");
+                dismiss();
+            }
         } else {
             Log.d(SettingsInputDialog.class.getName(), "Validation failed");
             showErrorDialog(validationResult);
@@ -128,7 +120,13 @@ public class SettingsInputDialog extends DialogFragment implements SettingsInput
 
     private void onCancelClicked(@SuppressWarnings("unused") View view) {
         Log.d(SettingsInputDialog.class.getName(), "onCancelClicked");
-        settingsInputSupport.onInputDialogCancelClicked(this);
+        SettingsInputSupport settingsInputSupport = getSettingsInputSupport();
+        if (settingsInputSupport != null) {
+            settingsInputSupport.onInputDialogCancelClicked(this);
+        } else {
+            Log.e(SettingsInputDialog.class.getName(), "settingsInputSupport is null");
+            dismiss();
+        }
     }
 
     private boolean hasErrors(List<ValidationResult> validationResult) {
@@ -247,5 +245,18 @@ public class SettingsInputDialog extends DialogFragment implements SettingsInput
 
     private int getColor(int colorid) {
         return ContextCompat.getColor(requireContext(), colorid);
+    }
+
+    private SettingsInputSupport getSettingsInputSupport() {
+        Activity activity = getActivity();
+        if (activity == null) {
+            Log.e(SettingsInputDialog.class.getName(), "getSettingsInputSupport, activity is null");
+            return null;
+        }
+        if (!(activity instanceof SettingsInputSupport)) {
+            Log.e(SettingsInputDialog.class.getName(), "getSettingsInputSupport, activity is not an instance of " + SettingsInputSupport.class.getSimpleName());
+            return null;
+        }
+        return (SettingsInputSupport) activity;
     }
 }

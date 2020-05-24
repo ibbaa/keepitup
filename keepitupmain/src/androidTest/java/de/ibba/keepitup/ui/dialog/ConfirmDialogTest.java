@@ -17,6 +17,7 @@ import de.ibba.keepitup.util.BundleUtil;
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
+import static androidx.test.espresso.matcher.ViewMatchers.isRoot;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
 
@@ -37,9 +38,24 @@ public class ConfirmDialogTest extends BaseUITest {
 
     @Test
     public void testConfirmMessage() {
-        ConfirmDialog confirmDialog = new ConfirmDialog(activity);
+        ConfirmDialog confirmDialog = new ConfirmDialog();
         confirmDialog.setArguments(BundleUtil.stringToBundle(ConfirmDialog.class.getSimpleName(), "Message"));
         confirmDialog.show(activity.getSupportFragmentManager(), ConfirmDialog.class.getName());
+        onView(withId(R.id.textview_dialog_confirm_message)).check(matches(withText("Message")));
+        onView(withId(R.id.imageview_dialog_confirm_cancel)).perform(click());
+    }
+
+    @Test
+    public void testConfirmMessageScreenRotation() {
+        ConfirmDialog confirmDialog = new ConfirmDialog();
+        confirmDialog.setArguments(BundleUtil.stringToBundle(ConfirmDialog.class.getSimpleName(), "Message"));
+        confirmDialog.show(activity.getSupportFragmentManager(), ConfirmDialog.class.getName());
+        onView(withId(R.id.textview_dialog_confirm_message)).check(matches(withText("Message")));
+        rotateScreen(activity);
+        onView(isRoot()).perform(waitFor(1000));
+        onView(withId(R.id.textview_dialog_confirm_message)).check(matches(withText("Message")));
+        rotateScreen(activity);
+        onView(isRoot()).perform(waitFor(1000));
         onView(withId(R.id.textview_dialog_confirm_message)).check(matches(withText("Message")));
         onView(withId(R.id.imageview_dialog_confirm_cancel)).perform(click());
     }

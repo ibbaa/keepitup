@@ -46,7 +46,7 @@ public class BatteryOptimizationDialogTest extends BaseUITest {
     @Test
     public void testBatteryOptimizationActive() {
         powerManager.setBatteryOptimized(true);
-        BatteryOptimizationDialog batteryOptimizationDialog = new BatteryOptimizationDialog(activity);
+        BatteryOptimizationDialog batteryOptimizationDialog = new BatteryOptimizationDialog();
         batteryOptimizationDialog.show(activity.getSupportFragmentManager(), BatteryOptimizationDialog.class.getName());
         onView(withId(R.id.textview_dialog_battery_optimization_title)).check(matches(withText("Battery Optimization")));
         onView(withId(R.id.textview_dialog_battery_optimization_info)).check(matches(withText(startsWith("Battery optimization is active for this app."))));
@@ -57,7 +57,7 @@ public class BatteryOptimizationDialogTest extends BaseUITest {
     @Test
     public void testBatteryOptimizationNotActive() {
         powerManager.setBatteryOptimized(false);
-        BatteryOptimizationDialog batteryOptimizationDialog = new BatteryOptimizationDialog(activity);
+        BatteryOptimizationDialog batteryOptimizationDialog = new BatteryOptimizationDialog();
         batteryOptimizationDialog.show(activity.getSupportFragmentManager(), BatteryOptimizationDialog.class.getName());
         onView(withId(R.id.textview_dialog_battery_optimization_title)).check(matches(withText("Battery Optimization")));
         onView(withId(R.id.textview_dialog_battery_optimization_info)).check(matches(withText(startsWith("Battery optimization is not active for this app."))));
@@ -67,7 +67,7 @@ public class BatteryOptimizationDialogTest extends BaseUITest {
 
     @Test
     public void testBatteryOptimizationScreenRotation() {
-        BatteryOptimizationDialog batteryOptimizationDialog = new BatteryOptimizationDialog(activity);
+        BatteryOptimizationDialog batteryOptimizationDialog = new BatteryOptimizationDialog();
         batteryOptimizationDialog.show(activity.getSupportFragmentManager(), BatteryOptimizationDialog.class.getName());
         onView(withId(R.id.textview_dialog_battery_optimization_title)).check(matches(withText("Battery Optimization")));
         onView(withId(R.id.textview_dialog_battery_optimization_info)).check(matches(withText(startsWith("Battery optimization is active for this app."))));

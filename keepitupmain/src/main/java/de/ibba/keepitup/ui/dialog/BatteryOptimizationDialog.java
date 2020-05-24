@@ -1,5 +1,6 @@
 package de.ibba.keepitup.ui.dialog;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
@@ -19,25 +20,10 @@ import androidx.fragment.app.DialogFragment;
 import de.ibba.keepitup.R;
 import de.ibba.keepitup.logging.Log;
 import de.ibba.keepitup.service.IPowerManager;
-import de.ibba.keepitup.ui.BatteryOptimizationAware;
+import de.ibba.keepitup.service.SystemPowerManager;
 import de.ibba.keepitup.ui.BatteryOptimizationSupport;
 
-public class BatteryOptimizationDialog extends DialogFragment implements BatteryOptimizationAware {
-
-    private BatteryOptimizationSupport batteryOptimizationSupport;
-
-    public BatteryOptimizationDialog() {
-
-    }
-
-    public BatteryOptimizationDialog(BatteryOptimizationSupport batteryOptimizationSupport) {
-        this.batteryOptimizationSupport = batteryOptimizationSupport;
-    }
-
-    @Override
-    public void setBatteryOptimizationSupport(BatteryOptimizationSupport batteryOptimizationSupport) {
-        this.batteryOptimizationSupport = batteryOptimizationSupport;
-    }
+public class BatteryOptimizationDialog extends DialogFragment {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -91,11 +77,35 @@ public class BatteryOptimizationDialog extends DialogFragment implements Battery
 
     private void onOkClicked(@SuppressWarnings("unused") View view) {
         Log.d(BatteryOptimizationDialog.class.getName(), "onOkClicked");
-        batteryOptimizationSupport.onBatteryOptimizationDialogOkClicked(this);
+        BatteryOptimizationSupport batteryOptimizationSupport = getBatteryOptimizationSupport();
+        if (batteryOptimizationSupport != null) {
+            batteryOptimizationSupport.onBatteryOptimizationDialogOkClicked(this);
+        } else {
+            Log.e(SettingsInputDialog.class.getName(), "batteryOptimizationSupport is null");
+            dismiss();
+        }
     }
 
     private IPowerManager getPowerManager() {
         Log.d(BatteryOptimizationDialog.class.getName(), "getPowerManager");
-        return batteryOptimizationSupport.getPowerManager();
+        BatteryOptimizationSupport batteryOptimizationSupport = getBatteryOptimizationSupport();
+        if (batteryOptimizationSupport != null) {
+            return batteryOptimizationSupport.getPowerManager();
+        }
+        Log.e(BatteryOptimizationDialog.class.getName(), "batteryOptimizationSupport is null");
+        return new SystemPowerManager(getContext());
+    }
+
+    private BatteryOptimizationSupport getBatteryOptimizationSupport() {
+        Activity activity = getActivity();
+        if (activity == null) {
+            Log.e(BatteryOptimizationDialog.class.getName(), "getBatteryOptimizationSupport, activity is null");
+            return null;
+        }
+        if (!(activity instanceof BatteryOptimizationSupport)) {
+            Log.e(BatteryOptimizationDialog.class.getName(), "getBatteryOptimizationSupport, activity is not an instance of " + BatteryOptimizationSupport.class.getSimpleName());
+            return null;
+        }
+        return (BatteryOptimizationSupport) activity;
     }
 }
