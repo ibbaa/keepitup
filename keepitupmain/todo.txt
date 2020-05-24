@@ -1,0 +1,4 @@
+- selection key bug in FolderChooseDialog on screen rotation
+- bug with screen rotation with ContextOptionSupport
+- screen rotation tests
+- Battery optimization dialog in GlobalSettingsActivity

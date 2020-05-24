@@ -80,6 +80,9 @@ public abstract class SettingsInputActivity extends AppCompatActivity implements
             if (currentFragment instanceof FolderChooseAware) {
                 ((FolderChooseAware) currentFragment).setFolderChooseSupport(this);
             }
+            if (currentFragment instanceof BatteryOptimizationAware) {
+                ((BatteryOptimizationAware) currentFragment).setBatteryOptimizationSupport(this);
+            }
         }
     }
 

@@ -18,6 +18,7 @@ import de.ibba.keepitup.util.BundleUtil;
 
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
+import static androidx.test.espresso.matcher.ViewMatchers.isRoot;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
 import static org.hamcrest.CoreMatchers.containsString;
@@ -44,6 +45,28 @@ public class RawTextDialogTest extends BaseUITest {
         bundle.putInt(rawTextDialog.getResourceIdKey(), R.raw.license);
         rawTextDialog.setArguments(bundle);
         rawTextDialog.show(activity.getSupportFragmentManager(), RawTextDialog.class.getName());
+        onView(withId(R.id.textview_dialog_raw_text_content)).check(matches(withText(containsString("MIT License"))));
+        onView(withId(R.id.textview_dialog_raw_text_content)).check(matches(withText(containsString("TESTTESTTEST"))));
+        onView(withId(R.id.textview_dialog_raw_text_content)).check(matches(withText(containsString("Permission is hereby granted, free of charge"))));
+    }
+
+    @Test
+    public void testContentScreenRotation() {
+        RawTextDialog rawTextDialog = new RawTextDialog();
+        Bundle bundle = BundleUtil.stringToBundle("COPYRIGHT", "TESTTESTTEST");
+        bundle.putInt(rawTextDialog.getResourceIdKey(), R.raw.license);
+        rawTextDialog.setArguments(bundle);
+        rawTextDialog.show(activity.getSupportFragmentManager(), RawTextDialog.class.getName());
+        onView(withId(R.id.textview_dialog_raw_text_content)).check(matches(withText(containsString("MIT License"))));
+        onView(withId(R.id.textview_dialog_raw_text_content)).check(matches(withText(containsString("TESTTESTTEST"))));
+        onView(withId(R.id.textview_dialog_raw_text_content)).check(matches(withText(containsString("Permission is hereby granted, free of charge"))));
+        rotateScreen(activity);
+        onView(isRoot()).perform(waitFor(1000));
+        onView(withId(R.id.textview_dialog_raw_text_content)).check(matches(withText(containsString("MIT License"))));
+        onView(withId(R.id.textview_dialog_raw_text_content)).check(matches(withText(containsString("TESTTESTTEST"))));
+        onView(withId(R.id.textview_dialog_raw_text_content)).check(matches(withText(containsString("Permission is hereby granted, free of charge"))));
+        rotateScreen(activity);
+        onView(isRoot()).perform(waitFor(1000));
         onView(withId(R.id.textview_dialog_raw_text_content)).check(matches(withText(containsString("MIT License"))));
         onView(withId(R.id.textview_dialog_raw_text_content)).check(matches(withText(containsString("TESTTESTTEST"))));
         onView(withId(R.id.textview_dialog_raw_text_content)).check(matches(withText(containsString("Permission is hereby granted, free of charge"))));
