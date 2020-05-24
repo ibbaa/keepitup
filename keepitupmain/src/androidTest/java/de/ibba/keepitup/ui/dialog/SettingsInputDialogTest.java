@@ -28,6 +28,7 @@ import static androidx.test.espresso.action.ViewActions.longClick;
 import static androidx.test.espresso.action.ViewActions.replaceText;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
+import static androidx.test.espresso.matcher.ViewMatchers.isRoot;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
 import static org.hamcrest.Matchers.allOf;
@@ -226,6 +227,25 @@ public class SettingsInputDialogTest extends BaseUITest {
         onView(withId(R.id.edittext_dialog_settings_input_value)).check(matches(withText("22")));
         assertTrue(clipboardManager.hasData());
         assertEquals("22", clipboardManager.getData());
+    }
+
+    @Test
+    public void testStateSavedOnScreenRotation() {
+        SettingsInputDialog inputDialog = new SettingsInputDialog(activity);
+        SettingsInput input = new SettingsInput(SettingsInput.Type.ADDRESS, "abc", "field", Collections.emptyList());
+        inputDialog.setArguments(input.toBundle());
+        inputDialog.show(activity.getSupportFragmentManager(), SettingsInputDialog.class.getName());
+        onView(withId(R.id.edittext_dialog_settings_input_value)).check(matches(withText("abc")));
+        rotateScreen(activity);
+        onView(isRoot()).perform(waitFor(1000));
+        onView(withId(R.id.edittext_dialog_settings_input_value)).check(matches(withText("abc")));
+        onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("test"));
+        rotateScreen(activity);
+        onView(isRoot()).perform(waitFor(1000));
+        onView(withId(R.id.edittext_dialog_settings_input_value)).check(matches(withText("test")));
+        inputDialog = (SettingsInputDialog) rule.getActivity().getSupportFragmentManager().getFragments().get(0);
+        onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
+        assertEquals("test", inputDialog.getValue());
     }
 
     private MockClipboardManager prepareMockClipboardManager(SettingsInputDialog inputDialog) {

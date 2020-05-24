@@ -5,6 +5,9 @@ import android.graphics.Typeface;
 import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
+
+import java.util.List;
 
 import de.ibba.keepitup.logging.Log;
 import de.ibba.keepitup.service.IFileManager;
@@ -58,6 +61,26 @@ public abstract class SettingsInputActivity extends AppCompatActivity implements
             return powerManager;
         }
         return new SystemPowerManager(this);
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        List<Fragment> fragments = getSupportFragmentManager().getFragments();
+        if (fragments != null) {
+            restoreFragments(fragments);
+        }
+    }
+
+    private void restoreFragments(List<Fragment> fragments) {
+        for (Fragment currentFragment : fragments) {
+            if (currentFragment instanceof SettingsInputAware) {
+                ((SettingsInputAware) currentFragment).setSettingsInputSupport(this);
+            }
+            if (currentFragment instanceof FolderChooseAware) {
+                ((FolderChooseAware) currentFragment).setFolderChooseSupport(this);
+            }
+        }
     }
 
     public void onInputDialogOkClicked(SettingsInputDialog inputDialog, SettingsInput.Type type) {

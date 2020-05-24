@@ -26,6 +26,7 @@ import de.ibba.keepitup.model.FileEntry;
 import de.ibba.keepitup.service.IFileManager;
 import de.ibba.keepitup.ui.ContextOptionsSupport;
 import de.ibba.keepitup.ui.ContextOptionsSupportManager;
+import de.ibba.keepitup.ui.FolderChooseAware;
 import de.ibba.keepitup.ui.FolderChooseSupport;
 import de.ibba.keepitup.ui.GlobalSettingsActivity;
 import de.ibba.keepitup.ui.adapter.FileEntryAdapter;
@@ -34,7 +35,7 @@ import de.ibba.keepitup.ui.clipboard.SystemClipboardManager;
 import de.ibba.keepitup.util.BundleUtil;
 import de.ibba.keepitup.util.StringUtil;
 
-public class FolderChooseDialog extends DialogFragment implements ContextOptionsSupport {
+public class FolderChooseDialog extends DialogFragment implements FolderChooseAware, ContextOptionsSupport {
 
     private FolderChooseSupport folderChooseSupport;
     private View dialogView;
@@ -47,7 +48,16 @@ public class FolderChooseDialog extends DialogFragment implements ContextOptions
 
     private IClipboardManager clipboardManager;
 
+    public FolderChooseDialog() {
+
+    }
+
     public FolderChooseDialog(FolderChooseSupport folderChooseSupport) {
+        this.folderChooseSupport = folderChooseSupport;
+    }
+
+    @Override
+    public void setFolderChooseSupport(FolderChooseSupport folderChooseSupport) {
         this.folderChooseSupport = folderChooseSupport;
     }
 
