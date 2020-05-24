@@ -21,6 +21,7 @@ import de.ibba.keepitup.R;
 import de.ibba.keepitup.logging.Log;
 import de.ibba.keepitup.ui.ContextOptionsSupport;
 import de.ibba.keepitup.ui.ContextOptionsSupportManager;
+import de.ibba.keepitup.ui.SettingsInputAware;
 import de.ibba.keepitup.ui.SettingsInputSupport;
 import de.ibba.keepitup.ui.clipboard.IClipboardManager;
 import de.ibba.keepitup.ui.clipboard.SystemClipboardManager;
@@ -30,7 +31,7 @@ import de.ibba.keepitup.ui.validation.ValidationResult;
 import de.ibba.keepitup.util.BundleUtil;
 import de.ibba.keepitup.util.StringUtil;
 
-public class SettingsInputDialog extends DialogFragment implements ContextOptionsSupport {
+public class SettingsInputDialog extends DialogFragment implements SettingsInputAware, ContextOptionsSupport {
 
     private SettingsInputSupport settingsInputSupport;
     private View dialogView;
@@ -40,7 +41,16 @@ public class SettingsInputDialog extends DialogFragment implements ContextOption
 
     private IClipboardManager clipboardManager;
 
+    public SettingsInputDialog() {
+
+    }
+
     public SettingsInputDialog(SettingsInputSupport settingsInputSupport) {
+        this.settingsInputSupport = settingsInputSupport;
+    }
+
+    @Override
+    public void setSettingsInputSupport(SettingsInputSupport settingsInputSupport) {
         this.settingsInputSupport = settingsInputSupport;
     }
 

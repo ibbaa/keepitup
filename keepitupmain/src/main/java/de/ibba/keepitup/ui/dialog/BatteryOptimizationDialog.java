@@ -19,13 +19,23 @@ import androidx.fragment.app.DialogFragment;
 import de.ibba.keepitup.R;
 import de.ibba.keepitup.logging.Log;
 import de.ibba.keepitup.service.IPowerManager;
+import de.ibba.keepitup.ui.BatteryOptimizationAware;
 import de.ibba.keepitup.ui.BatteryOptimizationSupport;
 
-public class BatteryOptimizationDialog extends DialogFragment {
+public class BatteryOptimizationDialog extends DialogFragment implements BatteryOptimizationAware {
 
     private BatteryOptimizationSupport batteryOptimizationSupport;
 
+    public BatteryOptimizationDialog() {
+
+    }
+
     public BatteryOptimizationDialog(BatteryOptimizationSupport batteryOptimizationSupport) {
+        this.batteryOptimizationSupport = batteryOptimizationSupport;
+    }
+
+    @Override
+    public void setBatteryOptimizationSupport(BatteryOptimizationSupport batteryOptimizationSupport) {
         this.batteryOptimizationSupport = batteryOptimizationSupport;
     }
 
