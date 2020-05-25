@@ -89,6 +89,25 @@ public class InfoDialogTest extends BaseUITest {
         onView(withId(R.id.textview_dialog_info_thirdparty)).check(matches(withText("Thirdparty licences")));
     }
 
+    @Test
+    public void testScreenRotation() {
+        InfoDialog infoDialog = new InfoDialog();
+        infoDialog.show(activity.getSupportFragmentManager(), InfoDialog.class.getName());
+        onView(withId(R.id.textview_dialog_info_version)).check(matches(withText(BuildConfig.VERSION_NAME)));
+        onView(withId(R.id.textview_dialog_info_copyright)).check(matches(withText(containsString("Copyright"))));
+        onView(withId(R.id.textview_dialog_info_thirdparty)).check(matches(withText("Thirdparty licences")));
+        rotateScreen(activity);
+        onView(isRoot()).perform(waitFor(1000));
+        onView(withId(R.id.textview_dialog_info_version)).check(matches(withText(BuildConfig.VERSION_NAME)));
+        onView(withId(R.id.textview_dialog_info_copyright)).check(matches(withText(containsString("Copyright"))));
+        onView(withId(R.id.textview_dialog_info_thirdparty)).check(matches(withText("Thirdparty licences")));
+        rotateScreen(activity);
+        onView(isRoot()).perform(waitFor(1000));
+        onView(withId(R.id.textview_dialog_info_version)).check(matches(withText(BuildConfig.VERSION_NAME)));
+        onView(withId(R.id.textview_dialog_info_copyright)).check(matches(withText(containsString("Copyright"))));
+        onView(withId(R.id.textview_dialog_info_thirdparty)).check(matches(withText("Thirdparty licences")));
+        onView(withId(R.id.imageview_dialog_info_ok)).perform(click());
+    }
 
     private String getBuildYear() {
         Calendar calendar = new GregorianCalendar();
