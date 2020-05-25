@@ -24,6 +24,7 @@ import static androidx.test.espresso.Espresso.openActionBarOverflowOrOptionsMenu
 import static androidx.test.espresso.action.ViewActions.click;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
+import static androidx.test.espresso.matcher.ViewMatchers.isRoot;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
 import static org.hamcrest.Matchers.allOf;
@@ -85,6 +86,38 @@ public class NetworkTaskLogActivityTest extends BaseUITest {
         openActionBarOverflowOrOptionsMenu(TestRegistry.getContext());
         onView(withText("Delete logs")).perform(click());
         onView(withId(R.id.imageview_dialog_confirm_ok)).perform(click());
+        onView(withId(R.id.listview_log_activity_log_entries)).check(matches(withListSize(1)));
+    }
+
+    @Test
+    public void testScreenRotation() {
+        NetworkTask task = insertNetworkTask();
+        LogEntry entry1 = getLogEntry(task, new GregorianCalendar(1980, Calendar.MARCH, 17), false, "Message1");
+        LogEntry entry2 = getLogEntry(task, new GregorianCalendar(1985, Calendar.DECEMBER, 24), true, "Message2");
+        getLogDAO().insertAndDeleteLog(entry1);
+        getLogDAO().insertAndDeleteLog(entry2);
+        NetworkTaskLogActivity activity = (NetworkTaskLogActivity) launchRecyclerViewBaseActivity(rule, getNetworkTaskIntent(task));
+        onView(withId(R.id.listview_log_activity_log_entries)).check(matches(withListSize(2)));
+        rotateScreen(activity);
+        onView(isRoot()).perform(waitFor(1000));
+        onView(withId(R.id.listview_log_activity_log_entries)).check(matches(withListSize(2)));
+        onView(allOf(withId(R.id.textview_list_item_log_entry_no_log), withChildDescendantAtPosition(withId(R.id.listview_log_activity_log_entries), 0))).check(matches(not(isDisplayed())));
+        onView(allOf(withId(R.id.textview_list_item_log_entry_no_log), withChildDescendantAtPosition(withId(R.id.listview_log_activity_log_entries), 1))).check(matches(not(isDisplayed())));
+        onView(allOf(withId(R.id.cardview_list_item_log_entry), withChildDescendantAtPosition(withId(R.id.listview_log_activity_log_entries), 0))).check(matches(isDisplayed()));
+        onView(allOf(withId(R.id.textview_list_item_log_entry_title), withChildDescendantAtPosition(withId(R.id.listview_log_activity_log_entries), 0))).check(matches(withText("Log entry for network task 1")));
+        onView(allOf(withId(R.id.textview_list_item_log_entry_success), withChildDescendantAtPosition(withId(R.id.listview_log_activity_log_entries), 0))).check(matches(withText("Execution successful")));
+        onView(allOf(withId(R.id.textview_list_item_log_entry_timestamp), withChildDescendantAtPosition(withId(R.id.listview_log_activity_log_entries), 0))).check(matches(withText("Timestamp: Dec 24, 1985 12:00:00 AM")));
+        onView(allOf(withId(R.id.textview_list_item_log_entry_message), withChildDescendantAtPosition(withId(R.id.listview_log_activity_log_entries), 0))).check(matches(withText("Message: Message2")));
+        onView(allOf(withId(R.id.cardview_list_item_log_entry), withChildDescendantAtPosition(withId(R.id.listview_log_activity_log_entries), 1))).check(matches(isDisplayed()));
+        onView(allOf(withId(R.id.textview_list_item_log_entry_title), withChildDescendantAtPosition(withId(R.id.listview_log_activity_log_entries), 1))).check(matches(withText("Log entry for network task 1")));
+        onView(allOf(withId(R.id.textview_list_item_log_entry_success), withChildDescendantAtPosition(withId(R.id.listview_log_activity_log_entries), 1))).check(matches(withText("Execution failed")));
+        onView(allOf(withId(R.id.textview_list_item_log_entry_timestamp), withChildDescendantAtPosition(withId(R.id.listview_log_activity_log_entries), 1))).check(matches(withText("Timestamp: Mar 17, 1980 12:00:00 AM")));
+        onView(allOf(withId(R.id.textview_list_item_log_entry_message), withChildDescendantAtPosition(withId(R.id.listview_log_activity_log_entries), 1))).check(matches(withText("Message: Message1")));
+        openActionBarOverflowOrOptionsMenu(TestRegistry.getContext());
+        onView(withText("Delete logs")).perform(click());
+        onView(withId(R.id.imageview_dialog_confirm_ok)).perform(click());
+        rotateScreen(activity);
+        onView(isRoot()).perform(waitFor(1000));
         onView(withId(R.id.listview_log_activity_log_entries)).check(matches(withListSize(1)));
     }
 
