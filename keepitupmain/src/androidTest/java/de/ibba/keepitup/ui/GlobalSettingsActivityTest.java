@@ -655,6 +655,9 @@ public class GlobalSettingsActivityTest extends BaseUITest {
         onView(withId(R.id.textview_global_settings_activity_ping_count)).perform(click());
         onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("2"));
         onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
+        onView(withId(R.id.textview_global_settings_activity_connect_count)).perform(click());
+        onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("2"));
+        onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
         onView(withId(R.id.switch_global_settings_activity_notification_inactive_network)).perform(click());
         onView(withId(R.id.switch_global_settings_activity_download_external_storage)).perform(click());
         onView(withId(R.id.radiobutton_global_settings_activity_external_storage_type_sdcard)).perform(click());
@@ -666,6 +669,7 @@ public class GlobalSettingsActivityTest extends BaseUITest {
         rotateScreen(activity);
         onView(isRoot()).perform(waitFor(1000));
         onView(withId(R.id.textview_global_settings_activity_ping_count)).check(matches(withText("2")));
+        onView(withId(R.id.textview_global_settings_activity_connect_count)).check(matches(withText("2")));
         onView(withId(R.id.switch_global_settings_activity_notification_inactive_network)).check(matches(isChecked()));
         onView(withId(R.id.textview_global_settings_activity_notification_inactive_network_on_off)).check(matches(withText("yes")));
         onView(withId(R.id.switch_global_settings_activity_download_external_storage)).check(matches(isChecked()));
@@ -683,6 +687,7 @@ public class GlobalSettingsActivityTest extends BaseUITest {
         rotateScreen(activity);
         onView(isRoot()).perform(waitFor(1000));
         onView(withId(R.id.textview_global_settings_activity_ping_count)).check(matches(withText("2")));
+        onView(withId(R.id.textview_global_settings_activity_connect_count)).check(matches(withText("2")));
         onView(withId(R.id.switch_global_settings_activity_notification_inactive_network)).check(matches(isChecked()));
         onView(withId(R.id.textview_global_settings_activity_notification_inactive_network_on_off)).check(matches(withText("yes")));
         onView(withId(R.id.switch_global_settings_activity_download_external_storage)).check(matches(isChecked()));
@@ -697,6 +702,41 @@ public class GlobalSettingsActivityTest extends BaseUITest {
         onView(withId(R.id.textview_global_settings_activity_file_logger_enabled_on_off)).check(matches(withText("yes")));
         onView(withId(R.id.switch_global_settings_activity_file_dump_enabled)).check(matches(isChecked()));
         onView(withId(R.id.textview_global_settings_activity_file_dump_enabled_on_off)).check(matches(withText("yes")));
+    }
+
+    @Test
+    public void testConfirmDialogOnScreenRotation() {
+        SettingsInputActivity activity = launchSettingsInputActivity(rule);
+        onView(withId(R.id.textview_global_settings_activity_connect_count)).perform(click());
+        onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("6"));
+        rotateScreen(activity);
+        onView(isRoot()).perform(waitFor(1000));
+        onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("2"));
+        rotateScreen(activity);
+        onView(isRoot()).perform(waitFor(1000));
+        onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
+        onView(withId(R.id.textview_global_settings_activity_connect_count)).check(matches(withText("2")));
+    }
+
+    @Test
+    public void testValidationErrorScreenRotation() {
+        SettingsInputActivity activity = launchSettingsInputActivity(rule);
+        onView(withId(R.id.textview_global_settings_activity_ping_count)).perform(click());
+        onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("a"));
+        onView(withId(R.id.edittext_dialog_settings_input_value)).check(matches(withTextColor(R.color.textErrorColor)));
+        onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
+        onView(allOf(withText("Ping count"), withGridLayoutPosition(1, 0))).check(matches(isDisplayed()));
+        onView(allOf(withText("Invalid format"), withGridLayoutPosition(1, 1))).check(matches(isDisplayed()));
+        rotateScreen(activity);
+        onView(isRoot()).perform(waitFor(1000));
+        onView(allOf(withText("Ping count"), withGridLayoutPosition(1, 0))).check(matches(isDisplayed()));
+        onView(allOf(withText("Invalid format"), withGridLayoutPosition(1, 1))).check(matches(isDisplayed()));
+        rotateScreen(activity);
+        onView(isRoot()).perform(waitFor(1000));
+        onView(allOf(withText("Ping count"), withGridLayoutPosition(1, 0))).check(matches(isDisplayed()));
+        onView(allOf(withText("Invalid format"), withGridLayoutPosition(1, 1))).check(matches(isDisplayed()));
+        onView(withId(R.id.imageview_dialog_validator_error_ok)).perform(click());
+        onView(withId(R.id.imageview_dialog_settings_input_cancel)).perform(click());
     }
 
     private MockClipboardManager prepareMockClipboardManager(SettingsInputDialog inputDialog) {

@@ -67,4 +67,27 @@ public class FileEntryTest {
         assertTrue(fileEntry.isParent());
         assertFalse(fileEntry.canVisit());
     }
+
+    @Test
+    public void testIsEqual() {
+        FileEntry fileEntry1 = new FileEntry();
+        FileEntry fileEntry2 = new FileEntry();
+        assertTrue(fileEntry1.isEqual(fileEntry2));
+        fileEntry1.setName("name");
+        assertFalse(fileEntry1.isEqual(fileEntry2));
+        fileEntry2.setName("name");
+        assertTrue(fileEntry1.isEqual(fileEntry2));
+        fileEntry1.setDirectory(true);
+        assertFalse(fileEntry1.isEqual(fileEntry2));
+        fileEntry2.setDirectory(true);
+        assertTrue(fileEntry1.isEqual(fileEntry2));
+        fileEntry1.setParent(true);
+        assertFalse(fileEntry1.isEqual(fileEntry2));
+        fileEntry2.setParent(true);
+        assertTrue(fileEntry1.isEqual(fileEntry2));
+        fileEntry1.setCanVisit(false);
+        assertFalse(fileEntry1.isEqual(fileEntry2));
+        fileEntry2.setCanVisit(false);
+        assertTrue(fileEntry1.isEqual(fileEntry2));
+    }
 }
