@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import de.ibba.keepitup.model.FileEntry;
 import de.ibba.keepitup.ui.validation.ValidationResult;
 
 public class BundleUtil {
@@ -125,5 +126,27 @@ public class BundleUtil {
             }
         }
         return validationResultList;
+    }
+
+    public static Bundle fileEntryListToBundle(String baseKey, List<FileEntry> fileEntryList) {
+        if (baseKey == null || fileEntryList == null) {
+            return new Bundle();
+        }
+        List<Bundle> bundleList = new ArrayList<>();
+        for (FileEntry entry : fileEntryList) {
+            bundleList.add(entry.toBundle());
+        }
+        return bundleListToBundle(baseKey, bundleList);
+    }
+
+    public static List<FileEntry> fileEntryListFromBundle(String baseKey, Bundle bundle) {
+        List<Bundle> bundleList = bundleListFromBundle(baseKey, bundle);
+        List<FileEntry> entryList = new ArrayList<>();
+        for (Bundle currentBundle : bundleList) {
+            if (currentBundle != null) {
+                entryList.add(new FileEntry(currentBundle));
+            }
+        }
+        return entryList;
     }
 }

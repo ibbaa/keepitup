@@ -432,6 +432,44 @@ public class DefaultsActivityTest extends BaseUITest {
         onView(withId(R.id.textview_defaults_activity_notification_on_off)).check(matches(withText("yes")));
     }
 
+    @Test
+    public void testConfirmDialogOnScreenRotation() {
+        SettingsInputActivity activity = launchSettingsInputActivity(rule);
+        onView(withId(R.id.textview_defaults_activity_address)).perform(click());
+        onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("localhost"));
+        rotateScreen(activity);
+        onView(isRoot()).perform(waitFor(1000));
+        onView(withId(R.id.imageview_dialog_settings_input_cancel)).perform(click());
+        onView(withId(R.id.textview_defaults_activity_address)).check(matches(withText("192.168.178.1")));
+        onView(withId(R.id.textview_defaults_activity_address)).perform(click());
+        onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("localhost"));
+        rotateScreen(activity);
+        onView(isRoot()).perform(waitFor(1000));
+        onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
+        onView(withId(R.id.textview_defaults_activity_address)).check(matches(withText("localhost")));
+    }
+
+    @Test
+    public void testValidationErrorScreenRotation() {
+        SettingsInputActivity activity = launchSettingsInputActivity(rule);
+        onView(withId(R.id.textview_defaults_activity_port)).perform(click());
+        onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("1a"));
+        onView(withId(R.id.edittext_dialog_settings_input_value)).check(matches(withTextColor(R.color.textErrorColor)));
+        onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
+        onView(allOf(withText("Port"), withGridLayoutPosition(1, 0))).check(matches(isDisplayed()));
+        onView(allOf(withText("Invalid format"), withGridLayoutPosition(1, 1))).check(matches(isDisplayed()));
+        rotateScreen(activity);
+        onView(isRoot()).perform(waitFor(1000));
+        onView(allOf(withText("Port"), withGridLayoutPosition(1, 0))).check(matches(isDisplayed()));
+        onView(allOf(withText("Invalid format"), withGridLayoutPosition(1, 1))).check(matches(isDisplayed()));
+        rotateScreen(activity);
+        onView(isRoot()).perform(waitFor(1000));
+        onView(allOf(withText("Port"), withGridLayoutPosition(1, 0))).check(matches(isDisplayed()));
+        onView(allOf(withText("Invalid format"), withGridLayoutPosition(1, 1))).check(matches(isDisplayed()));
+        onView(withId(R.id.imageview_dialog_validator_error_ok)).perform(click());
+        onView(withId(R.id.imageview_dialog_settings_input_cancel)).perform(click());
+    }
+
     private MockClipboardManager prepareMockClipboardManager(SettingsInputDialog inputDialog) {
         MockClipboardManager clipboardManager = new MockClipboardManager();
         clipboardManager.clearData();

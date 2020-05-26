@@ -11,6 +11,7 @@ import org.junit.runner.RunWith;
 import java.util.Arrays;
 import java.util.List;
 
+import de.ibba.keepitup.model.FileEntry;
 import de.ibba.keepitup.ui.validation.ValidationResult;
 
 import static org.junit.Assert.assertEquals;
@@ -168,5 +169,47 @@ public class BundleUtilTest {
         List<ValidationResult> validationResultList = BundleUtil.validationResultListFromBundle("key", bundle);
         assertTrue(result1.isEqual(validationResultList.get(0)));
         assertTrue(result2.isEqual(validationResultList.get(1)));
+    }
+
+    @Test
+    public void testFileEntryListToBundle() {
+        FileEntry entry1 = getFileEntry("test1", true, false, false);
+        FileEntry entry2 = getFileEntry("test2", false, true, true);
+        Bundle bundle = BundleUtil.fileEntryListToBundle("key", Arrays.asList(entry1, entry2));
+        FileEntry otherEntry1 = new FileEntry(bundle.getBundle("key0"));
+        FileEntry otherEntry2 = new FileEntry(bundle.getBundle("key1"));
+        assertTrue(entry1.isEqual(otherEntry1));
+        assertTrue(entry2.isEqual(otherEntry2));
+    }
+
+    @Test
+    public void testFileEntryListFromBundle() {
+        Bundle bundle = new Bundle();
+        FileEntry entry1 = getFileEntry("test1", true, false, false);
+        FileEntry entry2 = getFileEntry("test2", false, true, true);
+        bundle.putBundle("key0", entry1.toBundle());
+        bundle.putBundle("key1", entry2.toBundle());
+        List<FileEntry> entryList = BundleUtil.fileEntryListFromBundle("key", bundle);
+        assertTrue(entry1.isEqual(entryList.get(0)));
+        assertTrue(entry2.isEqual(entryList.get(1)));
+    }
+
+    @Test
+    public void testFileEntryListToAndFromBundle() {
+        FileEntry entry1 = getFileEntry("test1", true, false, false);
+        FileEntry entry2 = getFileEntry("test2", false, true, true);
+        Bundle bundle = BundleUtil.fileEntryListToBundle("key", Arrays.asList(entry1, entry2));
+        List<FileEntry> entryList = BundleUtil.fileEntryListFromBundle("key", bundle);
+        assertTrue(entry1.isEqual(entryList.get(0)));
+        assertTrue(entry2.isEqual(entryList.get(1)));
+    }
+
+    private FileEntry getFileEntry(String name, boolean directory, boolean parent, boolean canVisit) {
+        FileEntry fileEntry = new FileEntry();
+        fileEntry.setName(name);
+        fileEntry.setDirectory(directory);
+        fileEntry.setParent(parent);
+        fileEntry.setCanVisit(canVisit);
+        return fileEntry;
     }
 }

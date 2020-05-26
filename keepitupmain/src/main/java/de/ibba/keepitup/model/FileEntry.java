@@ -5,6 +5,8 @@ import android.os.PersistableBundle;
 
 import androidx.annotation.NonNull;
 
+import java.util.Objects;
+
 public class FileEntry {
 
     private String name;
@@ -73,6 +75,25 @@ public class FileEntry {
 
     public Bundle toBundle() {
         return new Bundle(toPersistableBundle());
+    }
+
+    public boolean isEqual(FileEntry other) {
+        if (other == null || getClass() != other.getClass()) {
+            return false;
+        }
+        if (!Objects.equals(name, other.name)) {
+            return false;
+        }
+        if (directory != other.directory) {
+            return false;
+        }
+        if (parent != other.parent) {
+            return false;
+        }
+        if (canVisit != other.canVisit) {
+            return false;
+        }
+        return true;
     }
 
     @NonNull
