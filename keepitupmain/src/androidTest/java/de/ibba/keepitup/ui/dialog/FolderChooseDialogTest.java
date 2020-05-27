@@ -1027,12 +1027,114 @@ public class FolderChooseDialogTest extends BaseUITest {
         onView(withId(R.id.imageview_dialog_folder_choose_cancel)).perform(click());
     }
 
+    @Test
+    public void testIdenticalFileNameOpen() {
+        getFileManager().delete(getFileManager().getExternalRootDirectory(0));
+        getFileManager().delete(getFileManager().getExternalRootDirectory(1));
+        createIdenticalNameTestFiles();
+        FolderChooseDialog dialog = openFolderChooseDialog("download");
+        onView(withId(R.id.textview_dialog_folder_choose_absolute)).check(matches(withText(root + "/download")));
+        assertEquals("download", dialog.getFolder());
+        onView(withId(R.id.edittext_dialog_folder_choose_folder)).check(matches(withText("download")));
+        onView(allOf(withId(R.id.imageview_list_item_file_entry_open), withChildDescendantAtPosition(withId(R.id.listview_dialog_folder_choose_file_entries), 1))).perform(click());
+        onView(withId(R.id.textview_dialog_folder_choose_absolute)).check(matches(withText(root + "/download")));
+        onView(withId(R.id.edittext_dialog_folder_choose_folder)).check(matches(withText("download")));
+        assertEquals("download", dialog.getFolder());
+        onView(withId(R.id.listview_dialog_folder_choose_file_entries)).check(matches(withListSize(2)));
+        onView(allOf(withId(R.id.imageview_list_item_file_entry_symbol), withChildDescendantAtPosition(withId(R.id.listview_dialog_folder_choose_file_entries), 0))).check(matches(withDrawable(R.drawable.icon_folder)));
+        onView(allOf(withId(R.id.textview_list_item_file_entry_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_folder_choose_file_entries), 0))).check(matches(withText("..")));
+        onView(allOf(withId(R.id.imageview_list_item_file_entry_open), withChildDescendantAtPosition(withId(R.id.listview_dialog_folder_choose_file_entries), 0))).check(matches(withDrawable(R.drawable.icon_folder_open_shadow)));
+        onView(allOf(withId(R.id.imageview_list_item_file_entry_symbol), withChildDescendantAtPosition(withId(R.id.listview_dialog_folder_choose_file_entries), 1))).check(matches(withDrawable(R.drawable.icon_folder)));
+        onView(allOf(withId(R.id.textview_list_item_file_entry_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_folder_choose_file_entries), 1))).check(matches(withText("download")));
+        FileEntryAdapter adapter = dialog.getAdapter();
+        assertEquals(2, adapter.getItemCount());
+        assertTrue(areEntriesEqual(adapter.getItem(0), getFileEntry("..", true, true, true)));
+        assertTrue(areEntriesEqual(adapter.getItem(1), getFileEntry("download", true, false, true)));
+        assertFalse(adapter.isItemSelected());
+        onView(allOf(withId(R.id.imageview_list_item_file_entry_open), withChildDescendantAtPosition(withId(R.id.listview_dialog_folder_choose_file_entries), 1))).perform(click());
+        onView(withId(R.id.textview_dialog_folder_choose_absolute)).check(matches(withText(root + "/download/download")));
+        onView(withId(R.id.edittext_dialog_folder_choose_folder)).check(matches(withText("download/download")));
+        assertEquals("download/download", dialog.getFolder());
+        onView(withId(R.id.listview_dialog_folder_choose_file_entries)).check(matches(withListSize(2)));
+        onView(allOf(withId(R.id.imageview_list_item_file_entry_symbol), withChildDescendantAtPosition(withId(R.id.listview_dialog_folder_choose_file_entries), 0))).check(matches(withDrawable(R.drawable.icon_folder)));
+        onView(allOf(withId(R.id.textview_list_item_file_entry_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_folder_choose_file_entries), 0))).check(matches(withText("..")));
+        onView(allOf(withId(R.id.imageview_list_item_file_entry_open), withChildDescendantAtPosition(withId(R.id.listview_dialog_folder_choose_file_entries), 0))).check(matches(withDrawable(R.drawable.icon_folder_open_shadow)));
+        onView(allOf(withId(R.id.imageview_list_item_file_entry_symbol), withChildDescendantAtPosition(withId(R.id.listview_dialog_folder_choose_file_entries), 1))).check(matches(withDrawable(R.drawable.icon_folder)));
+        onView(allOf(withId(R.id.textview_list_item_file_entry_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_folder_choose_file_entries), 1))).check(matches(withText("download")));
+        assertEquals(2, adapter.getItemCount());
+        assertTrue(areEntriesEqual(adapter.getItem(0), getFileEntry("..", true, true, true)));
+        assertTrue(areEntriesEqual(adapter.getItem(1), getFileEntry("download", true, false, true)));
+        assertFalse(adapter.isItemSelected());
+        onView(allOf(withId(R.id.imageview_list_item_file_entry_open), withChildDescendantAtPosition(withId(R.id.listview_dialog_folder_choose_file_entries), 1))).perform(click());
+        onView(withId(R.id.textview_dialog_folder_choose_absolute)).check(matches(withText(root + "/download/download/download")));
+        onView(withId(R.id.edittext_dialog_folder_choose_folder)).check(matches(withText("download/download/download")));
+        assertEquals("download/download/download", dialog.getFolder());
+        onView(withId(R.id.listview_dialog_folder_choose_file_entries)).check(matches(withListSize(1)));
+        onView(allOf(withId(R.id.imageview_list_item_file_entry_symbol), withChildDescendantAtPosition(withId(R.id.listview_dialog_folder_choose_file_entries), 0))).check(matches(withDrawable(R.drawable.icon_folder)));
+        onView(allOf(withId(R.id.textview_list_item_file_entry_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_folder_choose_file_entries), 0))).check(matches(withText("..")));
+        assertEquals(1, adapter.getItemCount());
+        assertTrue(areEntriesEqual(adapter.getItem(0), getFileEntry("..", true, true, true)));
+        assertFalse(adapter.isItemSelected());
+        onView(allOf(withId(R.id.imageview_list_item_file_entry_open), withChildDescendantAtPosition(withId(R.id.listview_dialog_folder_choose_file_entries), 0))).perform(click());
+        onView(withId(R.id.textview_dialog_folder_choose_absolute)).check(matches(withText(root + "/download/download/download")));
+        onView(withId(R.id.edittext_dialog_folder_choose_folder)).check(matches(withText("download/download/download")));
+        assertEquals("download/download/download", dialog.getFolder());
+        onView(withId(R.id.listview_dialog_folder_choose_file_entries)).check(matches(withListSize(2)));
+        onView(allOf(withId(R.id.imageview_list_item_file_entry_symbol), withChildDescendantAtPosition(withId(R.id.listview_dialog_folder_choose_file_entries), 0))).check(matches(withDrawable(R.drawable.icon_folder)));
+        onView(allOf(withId(R.id.textview_list_item_file_entry_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_folder_choose_file_entries), 0))).check(matches(withText("..")));
+        onView(allOf(withId(R.id.imageview_list_item_file_entry_open), withChildDescendantAtPosition(withId(R.id.listview_dialog_folder_choose_file_entries), 0))).check(matches(withDrawable(R.drawable.icon_folder_open_shadow)));
+        onView(allOf(withId(R.id.imageview_list_item_file_entry_symbol), withChildDescendantAtPosition(withId(R.id.listview_dialog_folder_choose_file_entries), 1))).check(matches(withDrawable(R.drawable.icon_folder)));
+        onView(allOf(withId(R.id.textview_list_item_file_entry_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_folder_choose_file_entries), 1))).check(matches(withText("download")));
+        assertEquals(2, adapter.getItemCount());
+        assertTrue(areEntriesEqual(adapter.getItem(0), getFileEntry("..", true, true, true)));
+        assertTrue(areEntriesEqual(adapter.getItem(1), getFileEntry("download", true, false, true)));
+        assertTrue(adapter.isItemSelected());
+        onView(allOf(withId(R.id.imageview_list_item_file_entry_open), withChildDescendantAtPosition(withId(R.id.listview_dialog_folder_choose_file_entries), 0))).perform(click());
+        onView(withId(R.id.textview_dialog_folder_choose_absolute)).check(matches(withText(root + "/download/download")));
+        onView(withId(R.id.edittext_dialog_folder_choose_folder)).check(matches(withText("download/download")));
+        assertEquals("download/download", dialog.getFolder());
+        onView(withId(R.id.listview_dialog_folder_choose_file_entries)).check(matches(withListSize(2)));
+        onView(allOf(withId(R.id.imageview_list_item_file_entry_symbol), withChildDescendantAtPosition(withId(R.id.listview_dialog_folder_choose_file_entries), 0))).check(matches(withDrawable(R.drawable.icon_folder)));
+        onView(allOf(withId(R.id.textview_list_item_file_entry_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_folder_choose_file_entries), 0))).check(matches(withText("..")));
+        onView(allOf(withId(R.id.imageview_list_item_file_entry_open), withChildDescendantAtPosition(withId(R.id.listview_dialog_folder_choose_file_entries), 0))).check(matches(withDrawable(R.drawable.icon_folder_open_shadow)));
+        onView(allOf(withId(R.id.imageview_list_item_file_entry_symbol), withChildDescendantAtPosition(withId(R.id.listview_dialog_folder_choose_file_entries), 1))).check(matches(withDrawable(R.drawable.icon_folder)));
+        onView(allOf(withId(R.id.textview_list_item_file_entry_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_folder_choose_file_entries), 1))).check(matches(withText("download")));
+        assertEquals(2, adapter.getItemCount());
+        assertTrue(areEntriesEqual(adapter.getItem(0), getFileEntry("..", true, true, true)));
+        assertTrue(areEntriesEqual(adapter.getItem(1), getFileEntry("download", true, false, true)));
+        assertTrue(adapter.isItemSelected());
+        onView(allOf(withId(R.id.imageview_list_item_file_entry_open), withChildDescendantAtPosition(withId(R.id.listview_dialog_folder_choose_file_entries), 0))).perform(click());
+        onView(withId(R.id.textview_dialog_folder_choose_absolute)).check(matches(withText(root + "/download")));
+        onView(withId(R.id.edittext_dialog_folder_choose_folder)).check(matches(withText("download")));
+        assertEquals("download", dialog.getFolder());
+        onView(withId(R.id.listview_dialog_folder_choose_file_entries)).check(matches(withListSize(2)));
+        onView(allOf(withId(R.id.imageview_list_item_file_entry_symbol), withChildDescendantAtPosition(withId(R.id.listview_dialog_folder_choose_file_entries), 0))).check(matches(withDrawable(R.drawable.icon_folder)));
+        onView(allOf(withId(R.id.textview_list_item_file_entry_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_folder_choose_file_entries), 0))).check(matches(withText("..")));
+        onView(allOf(withId(R.id.imageview_list_item_file_entry_open), withChildDescendantAtPosition(withId(R.id.listview_dialog_folder_choose_file_entries), 0))).check(matches(withDrawable(R.drawable.icon_folder_open_shadow)));
+        onView(allOf(withId(R.id.imageview_list_item_file_entry_symbol), withChildDescendantAtPosition(withId(R.id.listview_dialog_folder_choose_file_entries), 1))).check(matches(withDrawable(R.drawable.icon_folder)));
+        onView(allOf(withId(R.id.textview_list_item_file_entry_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_folder_choose_file_entries), 1))).check(matches(withText("download")));
+        assertEquals(2, adapter.getItemCount());
+        assertTrue(areEntriesEqual(adapter.getItem(0), getFileEntry("..", true, true, false)));
+        assertTrue(areEntriesEqual(adapter.getItem(1), getFileEntry("download", true, false, true)));
+        assertTrue(adapter.isItemSelected());
+        onView(withId(R.id.imageview_dialog_folder_choose_cancel)).perform(click());
+    }
+
     private FolderChooseDialog openFolderChooseDialog(String folder) {
         FolderChooseDialog folderChooseDialog = new FolderChooseDialog();
         Bundle bundle = BundleUtil.stringsToBundle(new String[]{folderChooseDialog.getFolderRootKey(), folderChooseDialog.getFolderKey()}, new String[]{root, folder});
         folderChooseDialog.setArguments(bundle);
         folderChooseDialog.show(activity.getSupportFragmentManager(), GlobalSettingsActivity.class.getName());
         return folderChooseDialog;
+    }
+
+    private void createIdenticalNameTestFiles() {
+        File downloadFolder1 = new File(root, "download");
+        assertTrue(downloadFolder1.mkdir());
+        File downloadFolder2 = new File(downloadFolder1, "download");
+        assertTrue(downloadFolder2.mkdir());
+        File downloadFolder3 = new File(downloadFolder2, "download");
+        assertTrue(downloadFolder3.mkdir());
     }
 
     private void createTestFiles() {
