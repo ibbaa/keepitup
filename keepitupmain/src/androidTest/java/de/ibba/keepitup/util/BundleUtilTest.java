@@ -9,12 +9,14 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import de.ibba.keepitup.model.FileEntry;
 import de.ibba.keepitup.ui.validation.ValidationResult;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
@@ -54,17 +56,35 @@ public class BundleUtilTest {
 
     @Test
     public void testStringListToBundle() {
-        Bundle bundle = BundleUtil.stringListToBundle("key", Arrays.asList("string1", "string2"));
+        Bundle bundle = BundleUtil.stringListToBundle("key", null);
+        assertNotNull(bundle);
+        assertTrue(bundle.isEmpty());
+        bundle = BundleUtil.stringListToBundle("key", Collections.emptyList());
+        assertNotNull(bundle);
+        assertTrue(bundle.isEmpty());
+        bundle = BundleUtil.stringListToBundle(null, Arrays.asList("string1", "string2"));
+        assertNotNull(bundle);
+        assertTrue(bundle.isEmpty());
+        bundle = BundleUtil.stringListToBundle("key", Arrays.asList("string1", "string2"));
         assertEquals("string1", bundle.getString("key0"));
         assertEquals("string2", bundle.getString("key1"));
     }
 
     @Test
     public void testStringListFromBundle() {
+        List<String> list = BundleUtil.stringListFromBundle("key", null);
+        assertNotNull(list);
+        assertTrue(list.isEmpty());
+        list = BundleUtil.stringListFromBundle("key", new Bundle());
+        assertNotNull(list);
+        assertTrue(list.isEmpty());
         Bundle bundle = new Bundle();
         bundle.putString("key0", "string1");
         bundle.putString("key1", "string2");
-        List<String> list = BundleUtil.stringListFromBundle("key", bundle);
+        list = BundleUtil.stringListFromBundle(null, bundle);
+        assertNotNull(list);
+        assertTrue(list.isEmpty());
+        list = BundleUtil.stringListFromBundle("key", bundle);
         assertEquals("string1", list.get(0));
         assertEquals("string2", list.get(1));
     }
@@ -79,9 +99,15 @@ public class BundleUtilTest {
 
     @Test
     public void testBundleToBundle() {
+        Bundle bundle = BundleUtil.bundleToBundle("key", null);
+        assertNotNull(bundle);
+        assertTrue(bundle.isEmpty());
         Bundle nestedBundle = new Bundle();
         nestedBundle.putString("key", "message");
-        Bundle bundle = BundleUtil.bundleToBundle("key", nestedBundle);
+        bundle = BundleUtil.bundleToBundle(null, nestedBundle);
+        assertNotNull(bundle);
+        assertTrue(bundle.isEmpty());
+        bundle = BundleUtil.bundleToBundle("key", nestedBundle);
         assertEquals("message", bundle.getBundle("key").getString("key"));
         assertTrue(BundleUtil.bundleToBundle(null, nestedBundle).isEmpty());
         assertTrue(BundleUtil.bundleToBundle("", null).isEmpty());
@@ -89,6 +115,7 @@ public class BundleUtilTest {
 
     @Test
     public void testBundleFromBundle() {
+        assertNull(BundleUtil.bundleFromBundle(null, null));
         Bundle bundle = new Bundle();
         Bundle nestedBundle = new Bundle();
         nestedBundle.putString("key", "message");
@@ -96,6 +123,20 @@ public class BundleUtilTest {
         assertEquals("message", BundleUtil.bundleFromBundle("key", bundle).getString("key"));
         assertNull(BundleUtil.bundleFromBundle(null, bundle));
         assertNull(BundleUtil.bundleFromBundle("key", null));
+    }
+
+    @Test
+    public void testEmptyBundleListToBundle() {
+        Bundle nestedBundle1 = new Bundle();
+        nestedBundle1.putString("key1", "message1");
+        Bundle nestedBundle2 = new Bundle();
+        nestedBundle2.putString("key2", "message2");
+        Bundle bundle = BundleUtil.bundleListToBundle(null, Arrays.asList(nestedBundle1, nestedBundle2));
+        assertNotNull(bundle);
+        assertTrue(bundle.isEmpty());
+        bundle = BundleUtil.bundleListToBundle("key", null);
+        assertNotNull(bundle);
+        assertTrue(bundle.isEmpty());
     }
 
     @Test
@@ -109,6 +150,23 @@ public class BundleUtilTest {
         assertEquals("message2", bundle.getBundle("key1").getString("key2"));
         assertTrue(BundleUtil.bundleListToBundle(null, Arrays.asList(nestedBundle1, nestedBundle2)).isEmpty());
         assertTrue(BundleUtil.bundleListToBundle("key", null).isEmpty());
+    }
+
+    @Test
+    public void testBundleListFromEmptyBundle() {
+        Bundle bundle = new Bundle();
+        Bundle nestedBundle1 = new Bundle();
+        nestedBundle1.putString("key1", "message1");
+        Bundle nestedBundle2 = new Bundle();
+        nestedBundle2.putString("key2", "message2");
+        bundle.putBundle("key0", nestedBundle1);
+        bundle.putBundle("key1", nestedBundle2);
+        List<Bundle> list = BundleUtil.bundleListFromBundle(null, bundle);
+        assertNotNull(list);
+        assertTrue(list.isEmpty());
+        list = BundleUtil.bundleListFromBundle("key", null);
+        assertNotNull(list);
+        assertTrue(list.isEmpty());
     }
 
     @Test
@@ -136,6 +194,27 @@ public class BundleUtilTest {
         assertEquals(2, list.size());
         assertEquals("message1", list.get(0).getString("key1"));
         assertEquals("message2", list.get(1).getString("key2"));
+    }
+
+    @Test
+    public void testEmptyValidationResultListToBundle() {
+        Bundle bundle = BundleUtil.validationResultListToBundle("key", null);
+        assertNotNull(bundle);
+        assertTrue(bundle.isEmpty());
+        bundle = BundleUtil.validationResultListToBundle("key", Collections.emptyList());
+        assertNotNull(bundle);
+        assertTrue(bundle.isEmpty());
+    }
+
+    @Test
+    public void testValidationResultListFromEmptyBundle() {
+        List<ValidationResult> validationResultList = BundleUtil.validationResultListFromBundle("key", null);
+        assertNotNull(validationResultList);
+        assertTrue(validationResultList.isEmpty());
+        Bundle bundle = new Bundle();
+        validationResultList = BundleUtil.validationResultListFromBundle("key", bundle);
+        assertNotNull(validationResultList);
+        assertTrue(validationResultList.isEmpty());
     }
 
     @Test
@@ -169,6 +248,27 @@ public class BundleUtilTest {
         List<ValidationResult> validationResultList = BundleUtil.validationResultListFromBundle("key", bundle);
         assertTrue(result1.isEqual(validationResultList.get(0)));
         assertTrue(result2.isEqual(validationResultList.get(1)));
+    }
+
+    @Test
+    public void testEmptyFileEntryListToBundle() {
+        Bundle bundle = BundleUtil.fileEntryListToBundle("key", null);
+        assertNotNull(bundle);
+        assertTrue(bundle.isEmpty());
+        bundle = BundleUtil.fileEntryListToBundle("key", Collections.emptyList());
+        assertNotNull(bundle);
+        assertTrue(bundle.isEmpty());
+    }
+
+    @Test
+    public void testFileEntryListFromEmptyBundle() {
+        List<FileEntry> entryList = BundleUtil.fileEntryListFromBundle("key", null);
+        assertNotNull(entryList);
+        assertTrue(entryList.isEmpty());
+        Bundle bundle = new Bundle();
+        entryList = BundleUtil.fileEntryListFromBundle("key", bundle);
+        assertNotNull(entryList);
+        assertTrue(entryList.isEmpty());
     }
 
     @Test

@@ -2,6 +2,7 @@ package de.ibba.keepitup.ui.adapter;
 
 import android.content.Context;
 import android.content.res.Resources;
+import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,6 +17,7 @@ import de.ibba.keepitup.R;
 import de.ibba.keepitup.logging.Log;
 import de.ibba.keepitup.model.FileEntry;
 import de.ibba.keepitup.ui.dialog.FolderChooseDialog;
+import de.ibba.keepitup.util.BundleUtil;
 
 public class FileEntryAdapter extends RecyclerView.Adapter<FileEntryViewHolder> {
 
@@ -185,6 +187,29 @@ public class FileEntryAdapter extends RecyclerView.Adapter<FileEntryViewHolder> 
             return fileEntries;
         }
         return fileEntriesFoldersOnly;
+    }
+
+    public Bundle saveStateToBundle() {
+        Log.d(FileEntryAdapter.class.getName(), "saveStateToBundle");
+        Bundle bundle = BundleUtil.fileEntryListToBundle(getFileEntryKey(), fileEntries);
+        bundle.putInt(getSelectedKey(), selected);
+        return bundle;
+    }
+
+    public void restoreStateFromBundle(Bundle bundle) {
+        Log.d(FileEntryAdapter.class.getName(), "restoreStateFromBundle");
+        replaceItems(BundleUtil.fileEntryListFromBundle(getFileEntryKey(), bundle));
+        if (bundle.containsKey(getSelectedKey())) {
+            selected = bundle.getInt(getSelectedKey());
+        }
+    }
+
+    private String getFileEntryKey() {
+        return FileEntryAdapter.class.getSimpleName() + "FileEntry";
+    }
+
+    private String getSelectedKey() {
+        return FileEntryAdapter.class.getSimpleName() + "Selected";
     }
 
     private Context getContext() {
