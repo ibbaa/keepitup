@@ -739,6 +739,23 @@ public class GlobalSettingsActivityTest extends BaseUITest {
         onView(withId(R.id.imageview_dialog_settings_input_cancel)).perform(click());
     }
 
+    @Test
+    public void testValidationErrorColorScreenRotation() {
+        SettingsInputActivity activity = launchSettingsInputActivity(rule);
+        onView(withId(R.id.textview_global_settings_activity_ping_count)).perform(click());
+        onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("a"));
+        onView(withId(R.id.edittext_dialog_settings_input_value)).check(matches(withTextColor(R.color.textErrorColor)));
+        rotateScreen(activity);
+        onView(isRoot()).perform(waitFor(1000));
+        onView(withId(R.id.edittext_dialog_settings_input_value)).check(matches(withText("a")));
+        onView(withId(R.id.edittext_dialog_settings_input_value)).check(matches(withTextColor(R.color.textErrorColor)));
+        rotateScreen(activity);
+        onView(isRoot()).perform(waitFor(1000));
+        onView(withId(R.id.edittext_dialog_settings_input_value)).check(matches(withText("a")));
+        onView(withId(R.id.edittext_dialog_settings_input_value)).check(matches(withTextColor(R.color.textErrorColor)));
+        onView(withId(R.id.imageview_dialog_settings_input_cancel)).perform(click());
+    }
+
     private MockClipboardManager prepareMockClipboardManager(SettingsInputDialog inputDialog) {
         MockClipboardManager clipboardManager = new MockClipboardManager();
         clipboardManager.clearData();

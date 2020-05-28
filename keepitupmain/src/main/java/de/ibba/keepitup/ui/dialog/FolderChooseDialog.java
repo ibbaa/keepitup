@@ -70,13 +70,34 @@ public class FolderChooseDialog extends DialogFragment implements ContextOptions
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         Log.d(FolderChooseDialog.class.getName(), "onCreateView");
         dialogView = inflater.inflate(R.layout.dialog_folder_choose, container);
-        String folder = BundleUtil.stringFromBundle(getFolderKey(), requireArguments());
+        boolean containsSavedState = containsSavedState(savedInstanceState);
+        Log.d(FolderChooseDialog.class.getName(), "containsSavedState is " + containsSavedState);
+        String folder = containsSavedState ? savedInstanceState.getString(getSelectionFolderKey()) : BundleUtil.stringFromBundle(getFolderKey(), requireArguments());
+        Bundle adapterState = containsSavedState ? savedInstanceState.getBundle(getFileEntryAdapterKey()) : null;
         prepareFolderAbsolute(folder);
         prepareFolder(folder);
         prepareShowFilesCheckBox();
-        prepareFolderRecyclerView();
+        prepareFolderRecyclerView(adapterState);
         prepareOkCancelImageButtons();
         return dialogView;
+    }
+
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        Log.d(FolderChooseDialog.class.getName(), "onSaveInstanceState");
+        super.onSaveInstanceState(outState);
+        outState.putString(getSelectionFolderKey(), selectionFolder);
+        Bundle adapterBundle = getAdapter().saveStateToBundle();
+        outState.putBundle(getFileEntryAdapterKey(), adapterBundle);
+    }
+
+    private boolean containsSavedState(Bundle savedInstanceState) {
+        Log.d(FolderChooseDialog.class.getName(), "containsSavedState");
+        if (savedInstanceState == null) {
+            Log.d(FolderChooseDialog.class.getName(), "savedInstanceState bundle is null");
+            return false;
+        }
+        return savedInstanceState.containsKey(getSelectionFolderKey()) && savedInstanceState.containsKey(getFileEntryAdapterKey());
     }
 
     public String getFolderRootKey() {
@@ -85,6 +106,14 @@ public class FolderChooseDialog extends DialogFragment implements ContextOptions
 
     public String getFolderKey() {
         return FolderChooseDialog.class.getSimpleName() + "Folder";
+    }
+
+    private String getSelectionFolderKey() {
+        return FolderChooseDialog.class.getSimpleName() + "SelectionFolder";
+    }
+
+    private String getFileEntryAdapterKey() {
+        return FolderChooseDialog.class.getSimpleName() + "FileEntryAdapter";
     }
 
     public String getFolder() {
@@ -153,13 +182,14 @@ public class FolderChooseDialog extends DialogFragment implements ContextOptions
         }
     }
 
-    private void prepareFolderRecyclerView() {
+    private void prepareFolderRecyclerView(Bundle adapterState) {
         Log.d(FolderChooseDialog.class.getName(), "prepareFolderRecyclerView");
         fileEntriesRecyclerView = dialogView.findViewById(R.id.listview_dialog_folder_choose_file_entries);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getActivity());
         fileEntriesRecyclerView.setLayoutManager(layoutManager);
         fileEntriesRecyclerView.setItemAnimator(new DefaultItemAnimator());
-        fileEntriesRecyclerView.setAdapter(createAdapter());
+        RecyclerView.Adapter adapter = adapterState == null ? createAdapter() : restoreAdapter(adapterState);
+        fileEntriesRecyclerView.setAdapter(adapter);
     }
 
     private void prepareOkCancelImageButtons() {
@@ -326,6 +356,13 @@ public class FolderChooseDialog extends DialogFragment implements ContextOptions
         }
         Log.e(FolderChooseDialog.class.getName(), "folderChooseSupport is null");
         return new SystemFileManager(getContext());
+    }
+
+    private RecyclerView.Adapter restoreAdapter(Bundle adapterState) {
+        Log.d(FolderChooseDialog.class.getName(), "restoreAdapter");
+        FileEntryAdapter adapter = new FileEntryAdapter(Collections.emptyList(), this);
+        adapter.restoreStateFromBundle(adapterState);
+        return adapter;
     }
 
     private RecyclerView.Adapter createAdapter() {
