@@ -32,7 +32,7 @@ public abstract class RecyclerViewBaseActivity extends AppCompatActivity impleme
 
     protected abstract int getRecyclerViewId();
 
-    protected abstract RecyclerView.Adapter createAdapter();
+    protected abstract RecyclerView.Adapter<?> createAdapter();
 
     protected void initRecyclerView() {
         RecyclerView recyclerView = findViewById(getRecyclerViewId());
@@ -42,7 +42,7 @@ public abstract class RecyclerViewBaseActivity extends AppCompatActivity impleme
         recyclerView.setAdapter(createAdapter());
     }
 
-    public RecyclerView.Adapter getAdapter() {
+    public RecyclerView.Adapter<?> getAdapter() {
         RecyclerView recyclerView = findViewById(getRecyclerViewId());
         return recyclerView.getAdapter();
     }

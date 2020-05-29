@@ -56,7 +56,7 @@ public class MockResources extends Resources {
         parseResources(de.ibba.keepitup.R.bool.class, (String name, Integer value) -> targetBooleanResources.put(value, name));
     }
 
-    private void parseResources(Class resources, BiConsumer<String, Integer> consumer) {
+    private void parseResources(Class<?> resources, BiConsumer<String, Integer> consumer) {
         try {
             Field[] fields = resources.getDeclaredFields();
             for (Field currentField : fields) {

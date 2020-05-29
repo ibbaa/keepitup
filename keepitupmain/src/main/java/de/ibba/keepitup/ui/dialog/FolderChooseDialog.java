@@ -188,7 +188,7 @@ public class FolderChooseDialog extends DialogFragment implements ContextOptions
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getActivity());
         fileEntriesRecyclerView.setLayoutManager(layoutManager);
         fileEntriesRecyclerView.setItemAnimator(new DefaultItemAnimator());
-        RecyclerView.Adapter adapter = adapterState == null ? createAdapter() : restoreAdapter(adapterState);
+        RecyclerView.Adapter<?> adapter = adapterState == null ? createAdapter() : restoreAdapter(adapterState);
         fileEntriesRecyclerView.setAdapter(adapter);
     }
 
@@ -358,14 +358,14 @@ public class FolderChooseDialog extends DialogFragment implements ContextOptions
         return new SystemFileManager(getContext());
     }
 
-    private RecyclerView.Adapter restoreAdapter(Bundle adapterState) {
+    private RecyclerView.Adapter<?> restoreAdapter(Bundle adapterState) {
         Log.d(FolderChooseDialog.class.getName(), "restoreAdapter");
         FileEntryAdapter adapter = new FileEntryAdapter(Collections.emptyList(), this);
         adapter.restoreStateFromBundle(adapterState);
         return adapter;
     }
 
-    private RecyclerView.Adapter createAdapter() {
+    private RecyclerView.Adapter<?> createAdapter() {
         Log.d(FolderChooseDialog.class.getName(), "createAdapter");
         String absoluteFolder = getAbsoluteFolder(getRoot(), getSelectionFolder());
         if (absoluteFolder == null) {
