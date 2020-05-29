@@ -74,7 +74,7 @@ public class ContextOptionsDialog extends DialogFragment {
         return (ContextOptionEntryAdapter) getContextOptionEntriesRecyclerView().getAdapter();
     }
 
-    private RecyclerView.Adapter createAdapter() {
+    private RecyclerView.Adapter<?> createAdapter() {
         Log.d(ContextOptionsDialog.class.getName(), "createAdapter");
         List<String> contextOptionStrings = BundleUtil.stringListFromBundle(ContextOption.class.getSimpleName(), requireArguments());
         List<ContextOption> contextOptionList = new ArrayList<>();

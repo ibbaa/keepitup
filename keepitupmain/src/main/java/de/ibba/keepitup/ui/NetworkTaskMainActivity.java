@@ -39,7 +39,7 @@ public class NetworkTaskMainActivity extends RecyclerViewBaseActivity {
     }
 
     @Override
-    protected RecyclerView.Adapter createAdapter() {
+    protected RecyclerView.Adapter<?> createAdapter() {
         return new NetworkTaskAdapter(readNetworkTasksFromDatabase(), this);
     }
 

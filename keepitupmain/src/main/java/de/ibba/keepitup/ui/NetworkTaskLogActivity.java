@@ -36,7 +36,7 @@ public class NetworkTaskLogActivity extends RecyclerViewBaseActivity {
     }
 
     @Override
-    protected RecyclerView.Adapter createAdapter() {
+    protected RecyclerView.Adapter<?> createAdapter() {
         NetworkTask task = new NetworkTask(Objects.requireNonNull(getIntent().getExtras()));
         return new LogEntryAdapter(task, readLogEntriesFromDatabase(task), this);
     }
