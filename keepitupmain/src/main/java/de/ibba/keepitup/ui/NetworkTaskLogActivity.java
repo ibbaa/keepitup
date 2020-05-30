@@ -24,11 +24,6 @@ import de.ibba.keepitup.ui.sync.LogEntryUIInitTask;
 public class NetworkTaskLogActivity extends RecyclerViewBaseActivity {
 
     private LogEntryUIBroadcastReceiver broadcastReceiver;
-    private LogEntryUIInitTask uiInitTask;
-
-    public void injectUIInitTask(LogEntryUIInitTask uiInitTask) {
-        this.uiInitTask = uiInitTask;
-    }
 
     @Override
     protected int getRecyclerViewId() {
@@ -136,9 +131,6 @@ public class NetworkTaskLogActivity extends RecyclerViewBaseActivity {
     }
 
     private LogEntryUIInitTask getUIInitTask(LogEntryAdapter adapter) {
-        if (uiInitTask != null) {
-            return uiInitTask;
-        }
         return new LogEntryUIInitTask(this, adapter);
     }
 }
