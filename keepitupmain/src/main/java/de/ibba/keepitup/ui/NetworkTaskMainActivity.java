@@ -27,11 +27,6 @@ import de.ibba.keepitup.ui.sync.NetworkTaskMainUIInitTask;
 public class NetworkTaskMainActivity extends RecyclerViewBaseActivity {
 
     private NetworkTaskMainUIBroadcastReceiver broadcastReceiver;
-    private NetworkTaskMainUIInitTask uiInitTask;
-
-    public void injectUIInitTask(NetworkTaskMainUIInitTask uiInitTask) {
-        this.uiInitTask = uiInitTask;
-    }
 
     @Override
     protected int getRecyclerViewId() {
@@ -234,9 +229,6 @@ public class NetworkTaskMainActivity extends RecyclerViewBaseActivity {
     }
 
     private NetworkTaskMainUIInitTask getUIInitTask(NetworkTaskAdapter adapter) {
-        if (uiInitTask != null) {
-            return uiInitTask;
-        }
         return new NetworkTaskMainUIInitTask(this, adapter);
     }
 }
