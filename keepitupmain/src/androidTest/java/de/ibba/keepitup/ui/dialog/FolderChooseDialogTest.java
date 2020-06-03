@@ -26,6 +26,7 @@ import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
 import static androidx.test.espresso.action.ViewActions.longClick;
 import static androidx.test.espresso.action.ViewActions.replaceText;
+import static androidx.test.espresso.action.ViewActions.swipeUp;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.isRoot;
@@ -2390,6 +2391,30 @@ public class FolderChooseDialogTest extends BaseUITest {
         assertTrue(areEntriesEqual(adapter.getItem(0), getFileEntry("..", true, true, false)));
         assertTrue(areEntriesEqual(adapter.getItem(1), getFileEntry("download", true, false, true)));
         assertTrue(adapter.isItemSelected());
+        onView(withId(R.id.imageview_dialog_folder_choose_cancel)).perform(click());
+    }
+
+    @Test
+    public void testSelectSwipeScreenRotation() {
+        FolderChooseDialog dialog = openFolderChooseDialog("folder2");
+        onView(withId(R.id.textview_dialog_folder_choose_absolute)).check(matches(withText(root + "/folder2")));
+        onView(withId(R.id.edittext_dialog_folder_choose_folder)).check(matches(withText("folder2")));
+        assertEquals("folder2", dialog.getFolder());
+        rotateScreen(activity);
+        onView(isRoot()).perform(waitFor(1000));
+        deleteLogFolder();
+        onView(withId(R.id.scrollview_dialog_folder_choose)).perform(swipeUp());
+        onView(allOf(withId(R.id.textview_list_item_file_entry_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_folder_choose_file_entries), 5))).perform(click());
+        onView(withId(R.id.textview_dialog_folder_choose_absolute)).check(matches(withText(root + "/folder3")));
+        onView(withId(R.id.edittext_dialog_folder_choose_folder)).check(matches(withText("folder3")));
+        assertEquals("folder3", getDialog().getFolder());
+        rotateScreen(activity);
+        onView(isRoot()).perform(waitFor(1000));
+        deleteLogFolder();
+        onView(allOf(withId(R.id.textview_list_item_file_entry_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_folder_choose_file_entries), 4))).perform(click());
+        onView(withId(R.id.textview_dialog_folder_choose_absolute)).check(matches(withText(root + "/folder2")));
+        onView(withId(R.id.edittext_dialog_folder_choose_folder)).check(matches(withText("folder2")));
+        assertEquals("folder2", getDialog().getFolder());
         onView(withId(R.id.imageview_dialog_folder_choose_cancel)).perform(click());
     }
 
