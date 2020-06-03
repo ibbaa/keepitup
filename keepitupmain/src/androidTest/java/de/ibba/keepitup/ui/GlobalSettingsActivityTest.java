@@ -26,6 +26,7 @@ import static androidx.test.espresso.action.ViewActions.click;
 import static androidx.test.espresso.action.ViewActions.longClick;
 import static androidx.test.espresso.action.ViewActions.replaceText;
 import static androidx.test.espresso.action.ViewActions.scrollTo;
+import static androidx.test.espresso.action.ViewActions.swipeUp;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.matcher.ViewMatchers.hasChildCount;
 import static androidx.test.espresso.matcher.ViewMatchers.isChecked;
@@ -754,6 +755,28 @@ public class GlobalSettingsActivityTest extends BaseUITest {
         onView(withId(R.id.edittext_dialog_settings_input_value)).check(matches(withText("a")));
         onView(withId(R.id.edittext_dialog_settings_input_value)).check(matches(withTextColor(R.color.textErrorColor)));
         onView(withId(R.id.imageview_dialog_settings_input_cancel)).perform(click());
+    }
+
+    @Test
+    public void testDownloadFolderDialogScreenRotation() {
+        SettingsInputActivity activity = launchSettingsInputActivity(rule);
+        PreferenceManager preferenceManager = getPreferenceManager();
+        assertEquals("download", preferenceManager.getPreferenceDownloadFolder());
+        onView(withId(R.id.switch_global_settings_activity_download_external_storage)).perform(click());
+        onView(withId(R.id.textview_global_settings_activity_download_folder)).perform(click());
+        onView(withId(R.id.edittext_dialog_folder_choose_folder)).check(matches(withText("download")));
+        rotateScreen(activity);
+        onView(isRoot()).perform(waitFor(1000));
+        File testFile = new File(getFileManager().getExternalRootDirectory(0), "test");
+        assertFalse(testFile.exists());
+        onView(withId(R.id.edittext_dialog_folder_choose_folder)).perform(replaceText("test"));
+        onView(withId(R.id.scrollview_dialog_folder_choose)).perform(swipeUp());
+        onView(withId(R.id.imageview_dialog_folder_choose_ok)).perform(click());
+        onView(withId(R.id.textview_global_settings_activity_download_folder)).check(matches(withText(endsWith("test"))));
+        assertEquals("test", preferenceManager.getPreferenceDownloadFolder());
+        assertTrue(testFile.exists());
+        rotateScreen(activity);
+        onView(isRoot()).perform(waitFor(1000));
     }
 
     private MockClipboardManager prepareMockClipboardManager(SettingsInputDialog inputDialog) {
