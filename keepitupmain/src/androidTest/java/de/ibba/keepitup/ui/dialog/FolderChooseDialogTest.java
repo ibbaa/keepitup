@@ -2404,14 +2404,14 @@ public class FolderChooseDialogTest extends BaseUITest {
         onView(isRoot()).perform(waitFor(1000));
         deleteLogFolder();
         onView(withId(R.id.scrollview_dialog_folder_choose)).perform(swipeUp());
-        onView(allOf(withId(R.id.textview_list_item_file_entry_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_folder_choose_file_entries), 5))).perform(click());
+        onView(allOf(withId(R.id.textview_list_item_file_entry_name), withText("folder3"))).perform(click());
         onView(withId(R.id.textview_dialog_folder_choose_absolute)).check(matches(withText(root + "/folder3")));
         onView(withId(R.id.edittext_dialog_folder_choose_folder)).check(matches(withText("folder3")));
         assertEquals("folder3", getDialog().getFolder());
         rotateScreen(activity);
         onView(isRoot()).perform(waitFor(1000));
         deleteLogFolder();
-        onView(allOf(withId(R.id.textview_list_item_file_entry_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_folder_choose_file_entries), 4))).perform(click());
+        onView(allOf(withId(R.id.textview_list_item_file_entry_name), withText("folder2"))).perform(click());
         onView(withId(R.id.textview_dialog_folder_choose_absolute)).check(matches(withText(root + "/folder2")));
         onView(withId(R.id.edittext_dialog_folder_choose_folder)).check(matches(withText("folder2")));
         assertEquals("folder2", getDialog().getFolder());
