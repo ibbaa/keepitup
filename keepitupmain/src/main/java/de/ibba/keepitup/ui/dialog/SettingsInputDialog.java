@@ -230,7 +230,7 @@ public class SettingsInputDialog extends DialogFragment implements ContextOption
     }
 
     @Override
-    public void onContextOptionsDialogEntryClicked(ContextOptionsDialog contextOptionsDialog, int sourceResourceId, ContextOption option) {
+    public void onContextOptionsDialogClicked(ContextOptionsDialog contextOptionsDialog, int sourceResourceId, ContextOption option) {
         Log.d(SettingsInputDialog.class.getName(), "onContextOptionsDialogEntryClicked, sourceResourceId is " + sourceResourceId + ", option is " + option);
         ContextOptionsSupportManager contextOptionsSupportManager = new ContextOptionsSupportManager(getParentFragmentManager(), this, getClipboardManager());
         if (valueEditText.getId() == sourceResourceId) {

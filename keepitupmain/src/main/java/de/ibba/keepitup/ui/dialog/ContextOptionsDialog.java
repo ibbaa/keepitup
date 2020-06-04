@@ -18,14 +18,14 @@ import java.util.List;
 import de.ibba.keepitup.R;
 import de.ibba.keepitup.logging.Log;
 import de.ibba.keepitup.ui.ContextOptionsSupport;
-import de.ibba.keepitup.ui.adapter.ContextOptionEntryAdapter;
+import de.ibba.keepitup.ui.adapter.ContextOptionAdapter;
 import de.ibba.keepitup.util.BundleUtil;
 
 public class ContextOptionsDialog extends DialogFragment {
 
     private ContextOptionsSupport contextOptionsSupport;
     private View dialogView;
-    private RecyclerView contextOptionEntriesRecyclerView;
+    private RecyclerView contextOptionRecyclerView;
 
     public ContextOptionsDialog(ContextOptionsSupport contextOptionsSupport) {
         this.contextOptionsSupport = contextOptionsSupport;
@@ -51,17 +51,17 @@ public class ContextOptionsDialog extends DialogFragment {
         return ContextOptionsDialog.class.getSimpleName() + "SourceResourceId";
     }
 
-    public RecyclerView getContextOptionEntriesRecyclerView() {
-        return contextOptionEntriesRecyclerView;
+    public RecyclerView getContextOptionRecyclerView() {
+        return contextOptionRecyclerView;
     }
 
     private void prepareFolderRecyclerView() {
         Log.d(ContextOptionsDialog.class.getName(), "prepareFolderRecyclerView");
-        contextOptionEntriesRecyclerView = dialogView.findViewById(R.id.listview_dialog_context_options_entries);
+        contextOptionRecyclerView = dialogView.findViewById(R.id.listview_dialog_context_options);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getActivity());
-        contextOptionEntriesRecyclerView.setLayoutManager(layoutManager);
-        contextOptionEntriesRecyclerView.setItemAnimator(new DefaultItemAnimator());
-        contextOptionEntriesRecyclerView.setAdapter(createAdapter());
+        contextOptionRecyclerView.setLayoutManager(layoutManager);
+        contextOptionRecyclerView.setItemAnimator(new DefaultItemAnimator());
+        contextOptionRecyclerView.setAdapter(createAdapter());
     }
 
     private void prepareCancelImageButton(View view) {
@@ -70,8 +70,8 @@ public class ContextOptionsDialog extends DialogFragment {
         cacnelImage.setOnClickListener(this::onCancelClicked);
     }
 
-    public ContextOptionEntryAdapter getAdapter() {
-        return (ContextOptionEntryAdapter) getContextOptionEntriesRecyclerView().getAdapter();
+    public ContextOptionAdapter getAdapter() {
+        return (ContextOptionAdapter) getContextOptionRecyclerView().getAdapter();
     }
 
     private RecyclerView.Adapter<?> createAdapter() {
@@ -85,7 +85,7 @@ public class ContextOptionsDialog extends DialogFragment {
                 Log.e(ContextOptionsDialog.class.getName(), ContextOption.class.getSimpleName() + "." + contextOptionString + " does not exist");
             }
         }
-        return new ContextOptionEntryAdapter(contextOptionList, this);
+        return new ContextOptionAdapter(contextOptionList, this);
     }
 
     private void onCancelClicked(@SuppressWarnings("unused") View view) {
@@ -93,15 +93,15 @@ public class ContextOptionsDialog extends DialogFragment {
         dismiss();
     }
 
-    public void onContextOptionEntryClicked(View view, int position) {
-        Log.d(ContextOptionsDialog.class.getName(), "onContextOptionEntryClicked, position is " + position);
+    public void onContextOptionClicked(View view, int position) {
+        Log.d(ContextOptionsDialog.class.getName(), "onContextOptionClicked, position is " + position);
         getAdapter().selectItem(position);
         int sourceResourceId = requireArguments().getInt(getSourceResourceIdKey());
         ContextOption contextOption = getAdapter().getItem(position);
         Log.d(ContextOptionsDialog.class.getName(), "sourceResourceId is " + sourceResourceId);
         Log.d(ContextOptionsDialog.class.getName(), "contextOption is " + contextOption);
         if (contextOptionsSupport != null) {
-            contextOptionsSupport.onContextOptionsDialogEntryClicked(this, sourceResourceId, contextOption);
+            contextOptionsSupport.onContextOptionsDialogClicked(this, sourceResourceId, contextOption);
         }
     }
 }

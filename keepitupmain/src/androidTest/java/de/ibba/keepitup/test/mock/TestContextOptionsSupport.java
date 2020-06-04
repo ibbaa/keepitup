@@ -29,7 +29,7 @@ public class TestContextOptionsSupport implements ContextOptionsSupport {
     }
 
     @Override
-    public void onContextOptionsDialogEntryClicked(ContextOptionsDialog contextOptionsDialog, int sourceResourceId, ContextOption option) {
+    public void onContextOptionsDialogClicked(ContextOptionsDialog contextOptionsDialog, int sourceResourceId, ContextOption option) {
         onContextOptionsDialogEntryClickedCalls.add(new OnContextOptionsDialogEntryClickedCall(contextOptionsDialog, sourceResourceId, option));
     }
 

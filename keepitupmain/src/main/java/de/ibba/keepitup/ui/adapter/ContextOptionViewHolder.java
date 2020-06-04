@@ -12,18 +12,18 @@ import androidx.recyclerview.widget.RecyclerView;
 import de.ibba.keepitup.R;
 import de.ibba.keepitup.ui.dialog.ContextOptionsDialog;
 
-public class ContextOptionEntryViewHolder extends RecyclerView.ViewHolder {
+public class ContextOptionViewHolder extends RecyclerView.ViewHolder {
 
     private final ContextOptionsDialog contextOptionsDialog;
-    private final CardView contextOptionEntryCardView;
+    private final CardView contextOptionCardView;
     private final TextView contextOptionText;
 
-    public ContextOptionEntryViewHolder(@NonNull View itemView, ContextOptionsDialog contextOptionsDialog) {
+    public ContextOptionViewHolder(@NonNull View itemView, ContextOptionsDialog contextOptionsDialog) {
         super(itemView);
         this.contextOptionsDialog = contextOptionsDialog;
-        contextOptionEntryCardView = itemView.findViewById(R.id.cardview_list_item_context_option_entry);
-        contextOptionEntryCardView.setOnClickListener(this::onContextOptionEntryClicked);
-        contextOptionText = itemView.findViewById(R.id.textview_list_item_context_option_entry_name);
+        contextOptionCardView = itemView.findViewById(R.id.cardview_list_item_context_option);
+        contextOptionCardView.setOnClickListener(this::onContextOptionClicked);
+        contextOptionText = itemView.findViewById(R.id.textview_list_item_context_option_name);
     }
 
     public void setContextOptionText(String text) {
@@ -31,15 +31,15 @@ public class ContextOptionEntryViewHolder extends RecyclerView.ViewHolder {
     }
 
     public void setContextOptionEntrySelected() {
-        contextOptionEntryCardView.setCardElevation(getResources().getDimension(R.dimen.cardview_list_item_context_option_entry_card_elevation_selected));
+        contextOptionCardView.setCardElevation(getResources().getDimension(R.dimen.cardview_list_item_context_option_card_elevation_selected));
     }
 
     public void setContextOptionEntryUnselected() {
-        contextOptionEntryCardView.setCardElevation(getResources().getDimension(R.dimen.cardview_list_item_context_option_entry_card_elevation));
+        contextOptionCardView.setCardElevation(getResources().getDimension(R.dimen.cardview_list_item_context_option_card_elevation));
     }
 
-    private void onContextOptionEntryClicked(View view) {
-        contextOptionsDialog.onContextOptionEntryClicked(view, getAdapterPosition());
+    private void onContextOptionClicked(View view) {
+        contextOptionsDialog.onContextOptionClicked(view, getAdapterPosition());
     }
 
     private Context getContext() {

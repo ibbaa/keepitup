@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <dimen name="listview_dialog_context_options_entries_margin">0dp</dimen>
-    <dimen name="listview_dialog_context_options_entries_padding">0dp</dimen>
-    <dimen name="layout_list_item_context_option_entry_margin">2dp</dimen>
-    <dimen name="layout_list_item_context_option_entry_padding">0dp</dimen>
-    <dimen name="cardview_list_item_context_option_entry_margin">4dp</dimen>
-    <dimen name="cardview_list_item_context_option_entry_corner_radius">4dp</dimen>
-    <dimen name="cardview_list_item_context_option_entry_card_elevation">4dp</dimen>
-    <dimen name="cardview_list_item_context_option_entry_card_elevation_selected">1dp</dimen>
-    <dimen name="linearlayout_list_item_context_option_entry_margin">0dp</dimen>
-    <dimen name="linearlayout_list_item_context_option_entry_padding">4dp</dimen>
-    <dimen name="textview_list_item_context_option_entry_name_width">120dp</dimen>
-    <dimen name="textview_list_item_context_option_entry_name_height">0dp</dimen>
-    <dimen name="textview_list_item_context_option_entry_name_margin">2dp</dimen>
-    <dimen name="textview_list_item_context_option_entry_name_padding">0dp</dimen>
+    <dimen name="listview_dialog_context_options_margin">0dp</dimen>
+    <dimen name="listview_dialog_context_options_padding">0dp</dimen>
+    <dimen name="layout_list_item_context_option_margin">2dp</dimen>
+    <dimen name="layout_list_item_context_option_padding">0dp</dimen>
+    <dimen name="cardview_list_item_context_option_margin">4dp</dimen>
+    <dimen name="cardview_list_item_context_option_corner_radius">4dp</dimen>
+    <dimen name="cardview_list_item_context_option_card_elevation">4dp</dimen>
+    <dimen name="cardview_list_item_context_option_card_elevation_selected">1dp</dimen>
+    <dimen name="linearlayout_list_item_context_option_margin">0dp</dimen>
+    <dimen name="linearlayout_list_item_context_option_padding">4dp</dimen>
+    <dimen name="textview_list_item_context_option_name_width">120dp</dimen>
+    <dimen name="textview_list_item_context_option_name_height">0dp</dimen>
+    <dimen name="textview_list_item_context_option_name_margin">2dp</dimen>
+    <dimen name="textview_list_item_context_option_name_padding">0dp</dimen>
 </resources>
