@@ -7,6 +7,7 @@ import java.util.Collections;
 import java.util.List;
 
 import de.ibba.keepitup.model.FileEntry;
+import de.ibba.keepitup.ui.dialog.ContextOption;
 import de.ibba.keepitup.ui.validation.ValidationResult;
 
 public class BundleUtil {
@@ -148,5 +149,30 @@ public class BundleUtil {
             }
         }
         return entryList;
+    }
+
+    public static Bundle contextOptionListToBundle(String baseKey, List<ContextOption> contextOptionList) {
+        if (baseKey == null || contextOptionList == null) {
+            return new Bundle();
+        }
+        List<Bundle> bundleList = new ArrayList<>();
+        for (ContextOption contextOption : contextOptionList) {
+            bundleList.add(contextOption.toBundle());
+        }
+        return bundleListToBundle(baseKey, bundleList);
+    }
+
+    public static List<ContextOption> contextOptionListFromBundle(String baseKey, Bundle bundle) {
+        List<Bundle> bundleList = bundleListFromBundle(baseKey, bundle);
+        List<ContextOption> contextOptionList = new ArrayList<>();
+        for (Bundle currentBundle : bundleList) {
+            if (currentBundle != null) {
+                ContextOption contextOption = ContextOption.fromBundle(currentBundle);
+                if (contextOption != null) {
+                    contextOptionList.add(contextOption);
+                }
+            }
+        }
+        return contextOptionList;
     }
 }

@@ -13,6 +13,7 @@ import java.util.Collections;
 import java.util.List;
 
 import de.ibba.keepitup.model.FileEntry;
+import de.ibba.keepitup.ui.dialog.ContextOption;
 import de.ibba.keepitup.ui.validation.ValidationResult;
 
 import static org.junit.Assert.assertEquals;
@@ -302,6 +303,54 @@ public class BundleUtilTest {
         List<FileEntry> entryList = BundleUtil.fileEntryListFromBundle("key", bundle);
         assertTrue(entry1.isEqual(entryList.get(0)));
         assertTrue(entry2.isEqual(entryList.get(1)));
+    }
+
+    @Test
+    public void testEmptyContextOptionListToBundle() {
+        Bundle bundle = BundleUtil.contextOptionListToBundle("key", null);
+        assertNotNull(bundle);
+        assertTrue(bundle.isEmpty());
+        bundle = BundleUtil.contextOptionListToBundle("key", Collections.emptyList());
+        assertNotNull(bundle);
+        assertTrue(bundle.isEmpty());
+    }
+
+    @Test
+    public void testContextOptionListFromEmptyBundle() {
+        List<ContextOption> contextOptionList = BundleUtil.contextOptionListFromBundle("key", null);
+        assertNotNull(contextOptionList);
+        assertTrue(contextOptionList.isEmpty());
+        Bundle bundle = new Bundle();
+        contextOptionList = BundleUtil.contextOptionListFromBundle("key", bundle);
+        assertNotNull(contextOptionList);
+        assertTrue(contextOptionList.isEmpty());
+    }
+
+    @Test
+    public void testContextOptionListToBundle() {
+        Bundle bundle = BundleUtil.contextOptionListToBundle("key", Arrays.asList(ContextOption.COPY, ContextOption.PASTE));
+        ContextOption otherContextOption1 = ContextOption.fromBundle(bundle.getBundle("key0"));
+        ContextOption otherContextOption2 = ContextOption.fromBundle(bundle.getBundle("key1"));
+        assertEquals(ContextOption.COPY, otherContextOption1);
+        assertEquals(ContextOption.PASTE, otherContextOption2);
+    }
+
+    @Test
+    public void testContextOptionListFromBundle() {
+        Bundle bundle = new Bundle();
+        bundle.putBundle("key0", ContextOption.COPY.toBundle());
+        bundle.putBundle("key1", ContextOption.PASTE.toBundle());
+        List<ContextOption> contextOptionList = BundleUtil.contextOptionListFromBundle("key", bundle);
+        assertEquals(ContextOption.COPY, contextOptionList.get(0));
+        assertEquals(ContextOption.PASTE, contextOptionList.get(1));
+    }
+
+    @Test
+    public void testContextOptionListToAndFromBundle() {
+        Bundle bundle = BundleUtil.contextOptionListToBundle("key", Arrays.asList(ContextOption.COPY, ContextOption.PASTE));
+        List<ContextOption> contextOptionList = BundleUtil.contextOptionListFromBundle("key", bundle);
+        assertEquals(ContextOption.COPY, contextOptionList.get(0));
+        assertEquals(ContextOption.PASTE, contextOptionList.get(1));
     }
 
     private FileEntry getFileEntry(String name, boolean directory, boolean parent, boolean canVisit) {

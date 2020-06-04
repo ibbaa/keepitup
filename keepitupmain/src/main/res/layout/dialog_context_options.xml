@@ -20,11 +20,11 @@
             android:text="@string/label_dialog_context_options_title" />
 
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/listview_dialog_context_options_entries"
+            android:id="@+id/listview_dialog_context_options"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="@dimen/listview_dialog_context_options_entries_margin"
-            android:padding="@dimen/listview_dialog_context_options_entries_padding"
+            android:layout_margin="@dimen/listview_dialog_context_options_margin"
+            android:padding="@dimen/listview_dialog_context_options_padding"
             android:layout_gravity="fill_horizontal"
             android:scrollbars="none" />
 
