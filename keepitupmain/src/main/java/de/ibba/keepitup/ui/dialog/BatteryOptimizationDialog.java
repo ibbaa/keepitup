@@ -97,6 +97,7 @@ public class BatteryOptimizationDialog extends DialogFragment {
     }
 
     private BatteryOptimizationSupport getBatteryOptimizationSupport() {
+        Log.d(BatteryOptimizationDialog.class.getName(), "getBatteryOptimizationSupport");
         Activity activity = getActivity();
         if (activity == null) {
             Log.e(BatteryOptimizationDialog.class.getName(), "getBatteryOptimizationSupport, activity is null");

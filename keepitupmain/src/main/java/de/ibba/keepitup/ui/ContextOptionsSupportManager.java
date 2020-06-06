@@ -20,12 +20,10 @@ import de.ibba.keepitup.util.UIUtil;
 public class ContextOptionsSupportManager {
 
     private final FragmentManager fragmentManager;
-    private final ContextOptionsSupport contextOptionsSupport;
     private final IClipboardManager clipboardManager;
 
-    public ContextOptionsSupportManager(FragmentManager fragmentManager, ContextOptionsSupport contextOptionsSupport, IClipboardManager clipboardManager) {
+    public ContextOptionsSupportManager(FragmentManager fragmentManager, IClipboardManager clipboardManager) {
         this.fragmentManager = fragmentManager;
-        this.contextOptionsSupport = contextOptionsSupport;
         this.clipboardManager = clipboardManager;
     }
 
@@ -46,7 +44,7 @@ public class ContextOptionsSupportManager {
             return;
         }
         Log.d(ContextOptionsSupportManager.class.getName(), "Showing dialog...");
-        ContextOptionsDialog contextOptionsDialog = new ContextOptionsDialog(contextOptionsSupport);
+        ContextOptionsDialog contextOptionsDialog = createContextOptionsDialog();
         Bundle bundle = BundleUtil.stringListToBundle(ContextOption.class.getSimpleName(), options);
         bundle.putInt(contextOptionsDialog.getSourceResourceIdKey(), editText.getId());
         contextOptionsDialog.setArguments(bundle);
@@ -109,5 +107,9 @@ public class ContextOptionsSupportManager {
         }
         Log.d(ContextOptionsSupportManager.class.getName(), "Field is numeric");
         return clipboardManager.hasNumericIntegerData();
+    }
+
+    protected ContextOptionsDialog createContextOptionsDialog() {
+        return new ContextOptionsDialog();
     }
 }

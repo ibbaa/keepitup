@@ -15,6 +15,7 @@ import org.junit.runner.RunWith;
 import de.ibba.keepitup.R;
 import de.ibba.keepitup.test.mock.MockClipboardManager;
 import de.ibba.keepitup.test.mock.TestContextOptionsSupport;
+import de.ibba.keepitup.test.mock.TestContextOptionsSupportManager;
 import de.ibba.keepitup.test.mock.TestRegistry;
 import de.ibba.keepitup.ui.dialog.ContextOption;
 
@@ -38,17 +39,15 @@ public class ContextOptionsSupportManagerTest extends BaseUITest {
     public final ActivityTestRule<NetworkTaskMainActivity> rule = new ActivityTestRule<>(NetworkTaskMainActivity.class, false, false);
 
     private NetworkTaskMainActivity activity;
-    private TestContextOptionsSupport contextOptionsSupport;
     private MockClipboardManager clipboardManager;
-    private ContextOptionsSupportManager contextOptionsSupportManager;
+    private TestContextOptionsSupportManager contextOptionsSupportManager;
 
     @Before
     public void beforeEachTestMethod() {
         super.beforeEachTestMethod();
         activity = (NetworkTaskMainActivity) launchRecyclerViewBaseActivity(rule);
-        contextOptionsSupport = new TestContextOptionsSupport();
         clipboardManager = new MockClipboardManager();
-        contextOptionsSupportManager = new ContextOptionsSupportManager(activity.getSupportFragmentManager(), contextOptionsSupport, clipboardManager);
+        contextOptionsSupportManager = new TestContextOptionsSupportManager(activity.getSupportFragmentManager(), clipboardManager);
     }
 
     @Test
@@ -71,10 +70,12 @@ public class ContextOptionsSupportManagerTest extends BaseUITest {
         onView(allOf(withId(R.id.textview_list_item_context_option_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options), 0))).check(matches(withText("Copy")));
         onView(withId(R.id.imageview_dialog_context_options_cancel)).check(matches(isDisplayed()));
         onView(allOf(withId(R.id.textview_list_item_context_option_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options), 0))).perform(click());
+        TestContextOptionsSupport contextOptionsSupport = (TestContextOptionsSupport) contextOptionsSupportManager.getTestContextOptionsDialog().getContextOptionsSupport();
         assertTrue(contextOptionsSupport.wasOnContextOptionsDialogEntryClickedCalled());
         TestContextOptionsSupport.OnContextOptionsDialogEntryClickedCall call = contextOptionsSupport.getOnContextOptionsDialogEntryClickedCalls().get(0);
         assertEquals(editText.getId(), call.getSourceResourceId());
         assertEquals(ContextOption.COPY, call.getOption());
+        onView(withId(R.id.imageview_dialog_context_options_cancel)).perform(click());
         contextOptionsSupport.reset();
         contextOptionsSupportManager.showContextOptionsDialog(editText);
         onView(withId(R.id.imageview_dialog_context_options_cancel)).perform(click());
@@ -93,10 +94,12 @@ public class ContextOptionsSupportManagerTest extends BaseUITest {
         onView(allOf(withId(R.id.textview_list_item_context_option_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options), 0))).check(matches(withText("Paste")));
         onView(withId(R.id.imageview_dialog_context_options_cancel)).check(matches(isDisplayed()));
         onView(allOf(withId(R.id.textview_list_item_context_option_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options), 0))).perform(click());
+        TestContextOptionsSupport contextOptionsSupport = (TestContextOptionsSupport) contextOptionsSupportManager.getTestContextOptionsDialog().getContextOptionsSupport();
         assertTrue(contextOptionsSupport.wasOnContextOptionsDialogEntryClickedCalled());
         TestContextOptionsSupport.OnContextOptionsDialogEntryClickedCall call = contextOptionsSupport.getOnContextOptionsDialogEntryClickedCalls().get(0);
         assertEquals(editText.getId(), call.getSourceResourceId());
         assertEquals(ContextOption.PASTE, call.getOption());
+        onView(withId(R.id.imageview_dialog_context_options_cancel)).perform(click());
         contextOptionsSupport.reset();
         contextOptionsSupportManager.showContextOptionsDialog(editText);
         onView(withId(R.id.imageview_dialog_context_options_cancel)).perform(click());
@@ -116,10 +119,12 @@ public class ContextOptionsSupportManagerTest extends BaseUITest {
         onView(allOf(withId(R.id.textview_list_item_context_option_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options), 1))).check(matches(withText("Paste")));
         onView(withId(R.id.imageview_dialog_context_options_cancel)).check(matches(isDisplayed()));
         onView(allOf(withId(R.id.textview_list_item_context_option_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options), 0))).perform(click());
+        TestContextOptionsSupport contextOptionsSupport = (TestContextOptionsSupport) contextOptionsSupportManager.getTestContextOptionsDialog().getContextOptionsSupport();
         assertTrue(contextOptionsSupport.wasOnContextOptionsDialogEntryClickedCalled());
         TestContextOptionsSupport.OnContextOptionsDialogEntryClickedCall call = contextOptionsSupport.getOnContextOptionsDialogEntryClickedCalls().get(0);
         assertEquals(editText.getId(), call.getSourceResourceId());
         assertEquals(ContextOption.COPY, call.getOption());
+        onView(withId(R.id.imageview_dialog_context_options_cancel)).perform(click());
         contextOptionsSupport.reset();
         contextOptionsSupportManager.showContextOptionsDialog(editText);
         onView(withId(R.id.listview_dialog_context_options)).check(matches(withListSize(2)));
@@ -128,6 +133,7 @@ public class ContextOptionsSupportManagerTest extends BaseUITest {
         call = contextOptionsSupport.getOnContextOptionsDialogEntryClickedCalls().get(0);
         assertEquals(editText.getId(), call.getSourceResourceId());
         assertEquals(ContextOption.PASTE, call.getOption());
+        onView(withId(R.id.imageview_dialog_context_options_cancel)).perform(click());
         contextOptionsSupport.reset();
         contextOptionsSupportManager.showContextOptionsDialog(editText);
         onView(withId(R.id.imageview_dialog_context_options_cancel)).perform(click());

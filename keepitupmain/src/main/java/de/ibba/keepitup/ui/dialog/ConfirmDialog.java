@@ -90,6 +90,7 @@ public class ConfirmDialog extends DialogFragment {
     }
 
     private ConfirmSupport getConfirmSupport() {
+        Log.d(ConfirmDialog.class.getName(), "getConfirmSupport");
         Activity activity = getActivity();
         if (activity == null) {
             Log.e(ConfirmDialog.class.getName(), "getConfirmSupport, activity is null");
