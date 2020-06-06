@@ -226,13 +226,13 @@ public class SettingsInputDialog extends DialogFragment implements ContextOption
 
     private void showContextOptionsDialog(EditText editText) {
         Log.d(SettingsInputDialog.class.getName(), "showContextOptionsDialog");
-        new ContextOptionsSupportManager(getParentFragmentManager(), this, getClipboardManager()).showContextOptionsDialog(editText);
+        new ContextOptionsSupportManager(getParentFragmentManager(), getClipboardManager()).showContextOptionsDialog(editText);
     }
 
     @Override
     public void onContextOptionsDialogClicked(ContextOptionsDialog contextOptionsDialog, int sourceResourceId, ContextOption option) {
         Log.d(SettingsInputDialog.class.getName(), "onContextOptionsDialogEntryClicked, sourceResourceId is " + sourceResourceId + ", option is " + option);
-        ContextOptionsSupportManager contextOptionsSupportManager = new ContextOptionsSupportManager(getParentFragmentManager(), this, getClipboardManager());
+        ContextOptionsSupportManager contextOptionsSupportManager = new ContextOptionsSupportManager(getParentFragmentManager(), getClipboardManager());
         if (valueEditText.getId() == sourceResourceId) {
             Log.e(SettingsInputDialog.class.getName(), "Source field is the correct value input field.");
             contextOptionsSupportManager.handleContextOption(valueEditText, option);
@@ -248,6 +248,7 @@ public class SettingsInputDialog extends DialogFragment implements ContextOption
     }
 
     private SettingsInputSupport getSettingsInputSupport() {
+        Log.d(SettingsInputDialog.class.getName(), "getSettingsInputSupport");
         Activity activity = getActivity();
         if (activity == null) {
             Log.e(SettingsInputDialog.class.getName(), "getSettingsInputSupport, activity is null");

@@ -15,6 +15,7 @@ import java.util.Arrays;
 import java.util.Collections;
 
 import de.ibba.keepitup.R;
+import de.ibba.keepitup.test.mock.TestContextOptionsDialog;
 import de.ibba.keepitup.test.mock.TestContextOptionsSupport;
 import de.ibba.keepitup.ui.BaseUITest;
 import de.ibba.keepitup.ui.NetworkTaskMainActivity;
@@ -38,18 +39,16 @@ public class ContextOptionsDialogTest extends BaseUITest {
     public final ActivityTestRule<NetworkTaskMainActivity> rule = new ActivityTestRule<>(NetworkTaskMainActivity.class, false, false);
 
     private NetworkTaskMainActivity activity;
-    private TestContextOptionsSupport testContextOptionsSupport;
 
     @Before
     public void beforeEachTestMethod() {
         super.beforeEachTestMethod();
         activity = (NetworkTaskMainActivity) launchRecyclerViewBaseActivity(rule);
-        testContextOptionsSupport = new TestContextOptionsSupport();
     }
 
     @Test
     public void testDisplayOptions() {
-        ContextOptionsDialog contextOptionsDialog = new ContextOptionsDialog(testContextOptionsSupport);
+        ContextOptionsDialog contextOptionsDialog = new ContextOptionsDialog();
         Bundle bundle = BundleUtil.stringListToBundle(ContextOption.class.getSimpleName(), Arrays.asList(ContextOption.COPY.name(), ContextOption.PASTE.name()));
         bundle.putInt(contextOptionsDialog.getSourceResourceIdKey(), 1);
         contextOptionsDialog.setArguments(bundle);
@@ -78,25 +77,27 @@ public class ContextOptionsDialogTest extends BaseUITest {
 
     @Test
     public void testCancel() {
-        ContextOptionsDialog contextOptionsDialog = new ContextOptionsDialog(testContextOptionsSupport);
+        TestContextOptionsDialog contextOptionsDialog = new TestContextOptionsDialog();
         Bundle bundle = BundleUtil.stringListToBundle(ContextOption.class.getSimpleName(), Arrays.asList(ContextOption.COPY.name(), ContextOption.PASTE.name()));
         bundle.putInt(contextOptionsDialog.getSourceResourceIdKey(), 1);
         contextOptionsDialog.setArguments(bundle);
         contextOptionsDialog.show(activity.getSupportFragmentManager(), ContextOptionsDialog.class.getName());
         onView(withId(R.id.listview_dialog_context_options)).check(matches(withListSize(2)));
         onView(withId(R.id.imageview_dialog_context_options_cancel)).perform(click());
+        TestContextOptionsSupport testContextOptionsSupport = (TestContextOptionsSupport) contextOptionsDialog.getContextOptionsSupport();
         assertFalse(testContextOptionsSupport.wasOnContextOptionsDialogEntryClickedCalled());
     }
 
     @Test
     public void testOptionClicked() {
-        ContextOptionsDialog contextOptionsDialog = new ContextOptionsDialog(testContextOptionsSupport);
+        TestContextOptionsDialog contextOptionsDialog = new TestContextOptionsDialog();
         Bundle bundle = BundleUtil.stringListToBundle(ContextOption.class.getSimpleName(), Arrays.asList(ContextOption.COPY.name(), ContextOption.PASTE.name()));
         bundle.putInt(contextOptionsDialog.getSourceResourceIdKey(), 1);
         contextOptionsDialog.setArguments(bundle);
         contextOptionsDialog.show(activity.getSupportFragmentManager(), ContextOptionsDialog.class.getName());
         onView(withId(R.id.listview_dialog_context_options)).check(matches(withListSize(2)));
         onView(allOf(withId(R.id.textview_list_item_context_option_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options), 0))).perform(click());
+        TestContextOptionsSupport testContextOptionsSupport = (TestContextOptionsSupport) contextOptionsDialog.getContextOptionsSupport();
         assertTrue(testContextOptionsSupport.wasOnContextOptionsDialogEntryClickedCalled());
         TestContextOptionsSupport.OnContextOptionsDialogEntryClickedCall call = testContextOptionsSupport.getOnContextOptionsDialogEntryClickedCalls().get(0);
         assertEquals(1, call.getSourceResourceId());
@@ -114,17 +115,5 @@ public class ContextOptionsDialogTest extends BaseUITest {
         assertEquals(2, call.getSourceResourceId());
         assertEquals(ContextOption.PASTE, call.getOption());
         onView(withId(R.id.imageview_dialog_context_options_cancel)).perform(click());
-    }
-
-    @Test
-    public void testOptionClickedNullCallback() {
-        ContextOptionsDialog contextOptionsDialog = new ContextOptionsDialog(null);
-        Bundle bundle = BundleUtil.stringListToBundle(ContextOption.class.getSimpleName(), Arrays.asList(ContextOption.COPY.name(), ContextOption.PASTE.name()));
-        bundle.putInt(contextOptionsDialog.getSourceResourceIdKey(), 1);
-        contextOptionsDialog.setArguments(bundle);
-        contextOptionsDialog.show(activity.getSupportFragmentManager(), ContextOptionsDialog.class.getName());
-        onView(withId(R.id.listview_dialog_context_options)).check(matches(withListSize(2)));
-        onView(allOf(withId(R.id.textview_list_item_context_option_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options), 0))).perform(click());
-        assertFalse(testContextOptionsSupport.wasOnContextOptionsDialogEntryClickedCalled());
     }
 }
