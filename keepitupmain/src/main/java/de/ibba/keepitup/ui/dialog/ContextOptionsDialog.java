@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import de.ibba.keepitup.R;
@@ -40,26 +41,51 @@ public class ContextOptionsDialog extends DialogFragment {
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         Log.d(ContextOptionsDialog.class.getName(), "onCreateView");
         dialogView = inflater.inflate(R.layout.dialog_context_options, container);
-        prepareFolderRecyclerView();
+        boolean containsSavedState = containsSavedState(savedInstanceState);
+        Log.d(ContextOptionsDialog.class.getName(), "containsSavedState is " + containsSavedState);
+        Bundle adapterState = containsSavedState ? savedInstanceState.getBundle(getContextOptionAdapterKey()) : null;
+        prepareFolderRecyclerView(adapterState);
         prepareCancelImageButton(dialogView);
         return dialogView;
+    }
+
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        Log.d(ContextOptionsDialog.class.getName(), "onSaveInstanceState");
+        super.onSaveInstanceState(outState);
+        Bundle adapterBundle = getAdapter().saveStateToBundle();
+        outState.putBundle(getContextOptionAdapterKey(), adapterBundle);
+    }
+
+    private boolean containsSavedState(Bundle savedInstanceState) {
+        Log.d(ContextOptionsDialog.class.getName(), "containsSavedState");
+        if (savedInstanceState == null) {
+            Log.d(ContextOptionsDialog.class.getName(), "savedInstanceState bundle is null");
+            return false;
+        }
+        return savedInstanceState.containsKey(getContextOptionAdapterKey());
     }
 
     public String getSourceResourceIdKey() {
         return ContextOptionsDialog.class.getSimpleName() + "SourceResourceId";
     }
 
+    private String getContextOptionAdapterKey() {
+        return ContextOptionsDialog.class.getSimpleName() + "ContextOptionAdapter";
+    }
+
     public RecyclerView getContextOptionRecyclerView() {
         return contextOptionRecyclerView;
     }
 
-    private void prepareFolderRecyclerView() {
+    private void prepareFolderRecyclerView(Bundle adapterState) {
         Log.d(ContextOptionsDialog.class.getName(), "prepareFolderRecyclerView");
         contextOptionRecyclerView = dialogView.findViewById(R.id.listview_dialog_context_options);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getActivity());
         contextOptionRecyclerView.setLayoutManager(layoutManager);
         contextOptionRecyclerView.setItemAnimator(new DefaultItemAnimator());
-        contextOptionRecyclerView.setAdapter(createAdapter());
+        RecyclerView.Adapter<?> adapter = adapterState == null ? createAdapter() : restoreAdapter(adapterState);
+        contextOptionRecyclerView.setAdapter(adapter);
     }
 
     private void prepareCancelImageButton(View view) {
@@ -70,6 +96,13 @@ public class ContextOptionsDialog extends DialogFragment {
 
     public ContextOptionAdapter getAdapter() {
         return (ContextOptionAdapter) getContextOptionRecyclerView().getAdapter();
+    }
+
+    private RecyclerView.Adapter<?> restoreAdapter(Bundle adapterState) {
+        Log.d(FolderChooseDialog.class.getName(), "restoreAdapter");
+        ContextOptionAdapter adapter = new ContextOptionAdapter(Collections.emptyList(), this);
+        adapter.restoreStateFromBundle(adapterState);
+        return adapter;
     }
 
     private RecyclerView.Adapter<?> createAdapter() {
