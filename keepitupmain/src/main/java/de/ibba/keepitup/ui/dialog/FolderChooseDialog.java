@@ -100,6 +100,7 @@ public class FolderChooseDialog extends DialogFragment implements ContextOptions
         return savedInstanceState.containsKey(getSelectionFolderKey()) && savedInstanceState.containsKey(getFileEntryAdapterKey());
     }
 
+
     public String getFolderRootKey() {
         return FolderChooseDialog.class.getSimpleName() + "Root";
     }
