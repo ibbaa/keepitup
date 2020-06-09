@@ -145,7 +145,7 @@ public class ContextOptionsDialog extends DialogFragment {
         List<Fragment> fragments = getParentFragmentManager().getFragments();
         if (fragments != null) {
             for (Fragment fragment : fragments) {
-                if (fragment != null && fragment instanceof ContextOptionsSupport) {
+                if (fragment instanceof ContextOptionsSupport) {
                     return (ContextOptionsSupport) fragment;
                 }
             }
