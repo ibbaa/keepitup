@@ -283,6 +283,35 @@ public class GlobalSettingsActivityTest extends BaseUITest {
     }
 
     @Test
+    public void testPingCountCopyPasteOptionScreenRotation() {
+        GlobalSettingsActivity activity = (GlobalSettingsActivity) launchSettingsInputActivity(rule);
+        onView(withId(R.id.textview_global_settings_activity_ping_count)).perform(click());
+        SettingsInputDialog inputDialog = (SettingsInputDialog) activity.getSupportFragmentManager().getFragments().get(0);
+        MockClipboardManager clipboardManager = prepareMockClipboardManager(inputDialog);
+        clipboardManager.putData("5");
+        onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("6"));
+        onView(withId(R.id.edittext_dialog_settings_input_value)).perform(longClick());
+        rotateScreen(activity);
+        onView(isRoot()).perform(waitFor(1000));
+        assertEquals(2, getActivity().getSupportFragmentManager().getFragments().size());
+        onView(withId(R.id.listview_dialog_context_options)).check(matches(withListSize(2)));
+        onView(withId(R.id.textview_dialog_context_options_title)).check(matches(withText("Text options")));
+        onView(allOf(withId(R.id.textview_list_item_context_option_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options), 0))).check(matches(withText("Copy")));
+        onView(allOf(withId(R.id.textview_list_item_context_option_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options), 1))).check(matches(withText("Paste")));
+        rotateScreen(activity);
+        onView(isRoot()).perform(waitFor(1000));
+        clipboardManager = prepareMockClipboardManager(getDialog());
+        clipboardManager.putData("5");
+        onView(allOf(withId(R.id.textview_list_item_context_option_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options), 0))).perform(click());
+        assertEquals(1, getActivity().getSupportFragmentManager().getFragments().size());
+        onView(withId(R.id.edittext_dialog_settings_input_value)).check(matches(withText("6")));
+        assertTrue(clipboardManager.hasData());
+        assertEquals("6", clipboardManager.getData());
+        onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
+        onView(withId(R.id.textview_global_settings_activity_ping_count)).check(matches(withText("6")));
+    }
+
+    @Test
     public void testSetConnectCountPreferencesCancel() {
         launchSettingsInputActivity(rule);
         onView(withId(R.id.textview_global_settings_activity_connect_count)).perform(click());
@@ -345,6 +374,34 @@ public class GlobalSettingsActivityTest extends BaseUITest {
         onView(allOf(withId(R.id.textview_list_item_context_option_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options), 1))).check(matches(withText("Paste")));
         onView(allOf(withId(R.id.textview_list_item_context_option_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options), 1))).perform(click());
         assertEquals(1, activity.getSupportFragmentManager().getFragments().size());
+        onView(withId(R.id.edittext_dialog_settings_input_value)).check(matches(withText("10")));
+        assertTrue(clipboardManager.hasData());
+        assertEquals("10", clipboardManager.getData());
+        onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
+        onView(withId(R.id.textview_global_settings_activity_connect_count)).check(matches(withText("10")));
+    }
+
+    @Test
+    public void testConnectCountCopyPasteOptionScreenRotation() {
+        GlobalSettingsActivity activity = (GlobalSettingsActivity) launchSettingsInputActivity(rule);
+        onView(withId(R.id.textview_global_settings_activity_connect_count)).perform(click());
+        onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("11"));
+        rotateScreen(activity);
+        onView(isRoot()).perform(waitFor(1000));
+        MockClipboardManager clipboardManager = prepareMockClipboardManager(getDialog());
+        clipboardManager.putData("10");
+        onView(withId(R.id.edittext_dialog_settings_input_value)).perform(longClick());
+        assertEquals(2, getActivity().getSupportFragmentManager().getFragments().size());
+        onView(withId(R.id.listview_dialog_context_options)).check(matches(withListSize(2)));
+        onView(withId(R.id.textview_dialog_context_options_title)).check(matches(withText("Text options")));
+        onView(allOf(withId(R.id.textview_list_item_context_option_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options), 0))).check(matches(withText("Copy")));
+        onView(allOf(withId(R.id.textview_list_item_context_option_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options), 1))).check(matches(withText("Paste")));
+        rotateScreen(activity);
+        onView(isRoot()).perform(waitFor(1000));
+        clipboardManager = prepareMockClipboardManager(getDialog());
+        clipboardManager.putData("10");
+        onView(allOf(withId(R.id.textview_list_item_context_option_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options), 1))).perform(click());
+        assertEquals(1, getActivity().getSupportFragmentManager().getFragments().size());
         onView(withId(R.id.edittext_dialog_settings_input_value)).check(matches(withText("10")));
         assertTrue(clipboardManager.hasData());
         assertEquals("10", clipboardManager.getData());
@@ -706,7 +763,7 @@ public class GlobalSettingsActivityTest extends BaseUITest {
     }
 
     @Test
-    public void testConfirmDialogOnScreenRotation() {
+    public void testConfirmDialogScreenRotation() {
         SettingsInputActivity activity = launchSettingsInputActivity(rule);
         onView(withId(R.id.textview_global_settings_activity_connect_count)).perform(click());
         onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("6"));
@@ -777,6 +834,14 @@ public class GlobalSettingsActivityTest extends BaseUITest {
         assertTrue(testFile.exists());
         rotateScreen(activity);
         onView(isRoot()).perform(waitFor(1000));
+    }
+
+    private SettingsInputDialog getDialog() {
+        return (SettingsInputDialog) getActivity().getSupportFragmentManager().getFragments().get(0);
+    }
+
+    private GlobalSettingsActivity getActivity() {
+        return (GlobalSettingsActivity) rule.getActivity();
     }
 
     private MockClipboardManager prepareMockClipboardManager(SettingsInputDialog inputDialog) {
