@@ -80,6 +80,7 @@ public class GlobalSettingsActivityTest extends BaseUITest {
         onView(withId(R.id.textview_activity_global_settings_download_folder_label)).check(matches(withText("Download folder")));
         onView(withId(R.id.textview_activity_global_settings_download_folder)).check(matches(withText("Internal storage folder")));
         onView(withId(R.id.textview_activity_global_settings_download_folder)).check(matches(not(isEnabled())));
+        onView(withId(R.id.switch_activity_global_settings_download_keep)).perform(scrollTo());
         onView(withId(R.id.textview_activity_global_settings_download_keep_label)).check(matches(withText("Keep downloaded files")));
         onView(withId(R.id.switch_activity_global_settings_download_keep)).check(matches(isNotChecked()));
         onView(withId(R.id.switch_activity_global_settings_download_keep)).check(matches(not(isEnabled())));
@@ -102,6 +103,7 @@ public class GlobalSettingsActivityTest extends BaseUITest {
         onView(withId(R.id.switch_activity_global_settings_notification_inactive_network)).perform(click());
         onView(withId(R.id.switch_activity_global_settings_download_external_storage)).perform(click());
         onView(withId(R.id.radiobutton_activity_global_settings_external_storage_type_sdcard)).perform(click());
+        onView(withId(R.id.switch_activity_global_settings_download_keep)).perform(scrollTo());
         onView(withId(R.id.switch_activity_global_settings_download_keep)).perform(click());
         onView(withId(R.id.switch_activity_global_settings_file_logger_enabled)).perform(scrollTo());
         onView(withId(R.id.switch_activity_global_settings_file_logger_enabled)).perform(click());
@@ -155,6 +157,7 @@ public class GlobalSettingsActivityTest extends BaseUITest {
         onView(withId(R.id.switch_activity_global_settings_download_external_storage)).check(matches(isNotChecked()));
         onView(withId(R.id.textview_activity_global_settings_download_external_storage_on_off)).check(matches(withText("no")));
         onView(withId(R.id.switch_activity_global_settings_download_external_storage)).perform(click());
+        onView(withId(R.id.switch_activity_global_settings_download_keep)).perform(scrollTo());
         onView(withId(R.id.switch_activity_global_settings_download_keep)).check(matches(isNotChecked()));
         onView(withId(R.id.textview_activity_global_settings_download_keep_on_off)).check(matches(withText("no")));
         onView(withId(R.id.switch_activity_global_settings_download_keep)).perform(click());
@@ -195,6 +198,7 @@ public class GlobalSettingsActivityTest extends BaseUITest {
         onView(withId(R.id.switch_activity_global_settings_notification_inactive_network)).perform(click());
         onView(withId(R.id.switch_activity_global_settings_download_external_storage)).perform(click());
         onView(withId(R.id.radiobutton_activity_global_settings_external_storage_type_sdcard)).perform(click());
+        onView(withId(R.id.switch_activity_global_settings_download_keep)).perform(scrollTo());
         onView(withId(R.id.switch_activity_global_settings_download_keep)).perform(click());
         onView(withId(R.id.switch_activity_global_settings_file_logger_enabled)).perform(scrollTo());
         onView(withId(R.id.switch_activity_global_settings_file_logger_enabled)).perform(click());
@@ -455,6 +459,7 @@ public class GlobalSettingsActivityTest extends BaseUITest {
         assertEquals(1, preferenceManager.getPreferenceExternalStorageType());
         assertEquals("download", preferenceManager.getPreferenceDownloadFolder());
         assertFalse(preferenceManager.getPreferenceDownloadKeep());
+        onView(withId(R.id.switch_activity_global_settings_download_keep)).perform(scrollTo());
         onView(withId(R.id.switch_activity_global_settings_download_keep)).perform(click());
         onView(withId(R.id.textview_activity_global_settings_download_keep_label)).check(matches(withText("Keep downloaded files")));
         onView(withId(R.id.switch_activity_global_settings_download_keep)).check(matches(isChecked()));
@@ -665,6 +670,7 @@ public class GlobalSettingsActivityTest extends BaseUITest {
         onView(withId(R.id.switch_activity_global_settings_notification_inactive_network)).perform(click());
         onView(withId(R.id.switch_activity_global_settings_download_external_storage)).perform(click());
         onView(withId(R.id.radiobutton_activity_global_settings_external_storage_type_sdcard)).perform(click());
+        onView(withId(R.id.switch_activity_global_settings_download_keep)).perform(scrollTo());
         onView(withId(R.id.switch_activity_global_settings_download_keep)).perform(click());
         onView(withId(R.id.switch_activity_global_settings_file_logger_enabled)).perform(scrollTo());
         onView(withId(R.id.switch_activity_global_settings_file_logger_enabled)).perform(click());
@@ -719,6 +725,7 @@ public class GlobalSettingsActivityTest extends BaseUITest {
         onView(withId(R.id.switch_activity_global_settings_notification_inactive_network)).perform(click());
         onView(withId(R.id.switch_activity_global_settings_download_external_storage)).perform(click());
         onView(withId(R.id.radiobutton_activity_global_settings_external_storage_type_sdcard)).perform(click());
+        onView(withId(R.id.switch_activity_global_settings_download_keep)).perform(scrollTo());
         onView(withId(R.id.switch_activity_global_settings_download_keep)).perform(click());
         onView(withId(R.id.switch_activity_global_settings_file_logger_enabled)).perform(scrollTo());
         onView(withId(R.id.switch_activity_global_settings_file_logger_enabled)).perform(click());

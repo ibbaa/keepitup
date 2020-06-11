@@ -297,7 +297,7 @@
 
             </androidx.cardview.widget.CardView>
 
-            <!--androidx.cardview.widget.CardView xmlns:card_view="http://schemas.android.com/apk/res-auto"
+            <androidx.cardview.widget.CardView xmlns:card_view="http://schemas.android.com/apk/res-auto"
                 android:id="@+id/cardview_activity_global_settings_battery_optimization"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -341,7 +341,7 @@
 
                 </LinearLayout>
 
-            </androidx.cardview.widget.CardView>-->
+            </androidx.cardview.widget.CardView>
 
             <androidx.cardview.widget.CardView xmlns:card_view="http://schemas.android.com/apk/res-auto"
                 android:id="@+id/cardview_activity_global_settings_download_folder"
