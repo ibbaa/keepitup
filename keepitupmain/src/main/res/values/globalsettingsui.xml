@@ -8,8 +8,9 @@
     <string name="label_activity_global_settings_notification_inactive_network">Notifications when network is not active</string>
     <string name="label_activity_global_settings_download_external_storage">Download to an external storage folder</string>
     <string name="label_activity_global_settings_external_storage_type">External storage type</string>
-    <string name="text_global_settings_activity_external_storage_type_primary">Primary</string>
-    <string name="text_global_settings_activity_external_storage_type_sdcard">SD card</string>
+    <string name="text_activity_global_settings_external_storage_type_primary">Primary</string>
+    <string name="text_activity_global_settings_external_storage_type_sdcard">SD card</string>
+    <string name="label_activity_global_settings_battery_optimization">Battery Optimization</string>
     <string name="label_activity_global_settings_download_folder">Download folder</string>
     <string name="label_activity_global_settings_download_keep">Keep downloaded files</string>
     <string name="text_activity_global_settings_download_folder_internal">Internal storage folder</string>

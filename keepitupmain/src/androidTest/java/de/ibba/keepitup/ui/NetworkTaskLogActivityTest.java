@@ -41,10 +41,10 @@ public class NetworkTaskLogActivityTest extends BaseUITest {
     public void testInitializeActivityNoData() {
         NetworkTask task = insertNetworkTask();
         launchRecyclerViewBaseActivity(rule, getNetworkTaskIntent(task));
-        onView(withId(R.id.listview_log_activity_log_entries)).check(matches(withListSize(1)));
-        onView(allOf(withId(R.id.textview_list_item_log_entry_no_log), withChildDescendantAtPosition(withId(R.id.listview_log_activity_log_entries), 0))).check(matches(isDisplayed()));
-        onView(allOf(withId(R.id.textview_list_item_log_entry_no_log), withChildDescendantAtPosition(withId(R.id.listview_log_activity_log_entries), 0))).check(matches(withText("No logs present for network task 1")));
-        onView(allOf(withId(R.id.cardview_list_item_log_entry), withChildDescendantAtPosition(withId(R.id.listview_log_activity_log_entries), 0))).check(matches(not(isDisplayed())));
+        onView(withId(R.id.listview_activity_log_log_entries)).check(matches(withListSize(1)));
+        onView(allOf(withId(R.id.textview_list_item_log_entry_no_log), withChildDescendantAtPosition(withId(R.id.listview_activity_log_log_entries), 0))).check(matches(isDisplayed()));
+        onView(allOf(withId(R.id.textview_list_item_log_entry_no_log), withChildDescendantAtPosition(withId(R.id.listview_activity_log_log_entries), 0))).check(matches(withText("No logs present for network task 1")));
+        onView(allOf(withId(R.id.cardview_list_item_log_entry), withChildDescendantAtPosition(withId(R.id.listview_activity_log_log_entries), 0))).check(matches(not(isDisplayed())));
     }
 
     @Test
@@ -55,19 +55,19 @@ public class NetworkTaskLogActivityTest extends BaseUITest {
         getLogDAO().insertAndDeleteLog(entry1);
         getLogDAO().insertAndDeleteLog(entry2);
         launchRecyclerViewBaseActivity(rule, getNetworkTaskIntent(task));
-        onView(withId(R.id.listview_log_activity_log_entries)).check(matches(withListSize(2)));
-        onView(allOf(withId(R.id.textview_list_item_log_entry_no_log), withChildDescendantAtPosition(withId(R.id.listview_log_activity_log_entries), 0))).check(matches(not(isDisplayed())));
-        onView(allOf(withId(R.id.textview_list_item_log_entry_no_log), withChildDescendantAtPosition(withId(R.id.listview_log_activity_log_entries), 1))).check(matches(not(isDisplayed())));
-        onView(allOf(withId(R.id.cardview_list_item_log_entry), withChildDescendantAtPosition(withId(R.id.listview_log_activity_log_entries), 0))).check(matches(isDisplayed()));
-        onView(allOf(withId(R.id.textview_list_item_log_entry_title), withChildDescendantAtPosition(withId(R.id.listview_log_activity_log_entries), 0))).check(matches(withText("Log entry for network task 1")));
-        onView(allOf(withId(R.id.textview_list_item_log_entry_success), withChildDescendantAtPosition(withId(R.id.listview_log_activity_log_entries), 0))).check(matches(withText("Execution successful")));
-        onView(allOf(withId(R.id.textview_list_item_log_entry_timestamp), withChildDescendantAtPosition(withId(R.id.listview_log_activity_log_entries), 0))).check(matches(withText("Timestamp: Dec 24, 1985 12:00:00 AM")));
-        onView(allOf(withId(R.id.textview_list_item_log_entry_message), withChildDescendantAtPosition(withId(R.id.listview_log_activity_log_entries), 0))).check(matches(withText("Message: Message2")));
-        onView(allOf(withId(R.id.cardview_list_item_log_entry), withChildDescendantAtPosition(withId(R.id.listview_log_activity_log_entries), 1))).check(matches(isDisplayed()));
-        onView(allOf(withId(R.id.textview_list_item_log_entry_title), withChildDescendantAtPosition(withId(R.id.listview_log_activity_log_entries), 1))).check(matches(withText("Log entry for network task 1")));
-        onView(allOf(withId(R.id.textview_list_item_log_entry_success), withChildDescendantAtPosition(withId(R.id.listview_log_activity_log_entries), 1))).check(matches(withText("Execution failed")));
-        onView(allOf(withId(R.id.textview_list_item_log_entry_timestamp), withChildDescendantAtPosition(withId(R.id.listview_log_activity_log_entries), 1))).check(matches(withText("Timestamp: Mar 17, 1980 12:00:00 AM")));
-        onView(allOf(withId(R.id.textview_list_item_log_entry_message), withChildDescendantAtPosition(withId(R.id.listview_log_activity_log_entries), 1))).check(matches(withText("Message: Message1")));
+        onView(withId(R.id.listview_activity_log_log_entries)).check(matches(withListSize(2)));
+        onView(allOf(withId(R.id.textview_list_item_log_entry_no_log), withChildDescendantAtPosition(withId(R.id.listview_activity_log_log_entries), 0))).check(matches(not(isDisplayed())));
+        onView(allOf(withId(R.id.textview_list_item_log_entry_no_log), withChildDescendantAtPosition(withId(R.id.listview_activity_log_log_entries), 1))).check(matches(not(isDisplayed())));
+        onView(allOf(withId(R.id.cardview_list_item_log_entry), withChildDescendantAtPosition(withId(R.id.listview_activity_log_log_entries), 0))).check(matches(isDisplayed()));
+        onView(allOf(withId(R.id.textview_list_item_log_entry_title), withChildDescendantAtPosition(withId(R.id.listview_activity_log_log_entries), 0))).check(matches(withText("Log entry for network task 1")));
+        onView(allOf(withId(R.id.textview_list_item_log_entry_success), withChildDescendantAtPosition(withId(R.id.listview_activity_log_log_entries), 0))).check(matches(withText("Execution successful")));
+        onView(allOf(withId(R.id.textview_list_item_log_entry_timestamp), withChildDescendantAtPosition(withId(R.id.listview_activity_log_log_entries), 0))).check(matches(withText("Timestamp: Dec 24, 1985 12:00:00 AM")));
+        onView(allOf(withId(R.id.textview_list_item_log_entry_message), withChildDescendantAtPosition(withId(R.id.listview_activity_log_log_entries), 0))).check(matches(withText("Message: Message2")));
+        onView(allOf(withId(R.id.cardview_list_item_log_entry), withChildDescendantAtPosition(withId(R.id.listview_activity_log_log_entries), 1))).check(matches(isDisplayed()));
+        onView(allOf(withId(R.id.textview_list_item_log_entry_title), withChildDescendantAtPosition(withId(R.id.listview_activity_log_log_entries), 1))).check(matches(withText("Log entry for network task 1")));
+        onView(allOf(withId(R.id.textview_list_item_log_entry_success), withChildDescendantAtPosition(withId(R.id.listview_activity_log_log_entries), 1))).check(matches(withText("Execution failed")));
+        onView(allOf(withId(R.id.textview_list_item_log_entry_timestamp), withChildDescendantAtPosition(withId(R.id.listview_activity_log_log_entries), 1))).check(matches(withText("Timestamp: Mar 17, 1980 12:00:00 AM")));
+        onView(allOf(withId(R.id.textview_list_item_log_entry_message), withChildDescendantAtPosition(withId(R.id.listview_activity_log_log_entries), 1))).check(matches(withText("Message: Message1")));
     }
 
     @Test
@@ -78,15 +78,15 @@ public class NetworkTaskLogActivityTest extends BaseUITest {
         getLogDAO().insertAndDeleteLog(entry1);
         getLogDAO().insertAndDeleteLog(entry2);
         launchRecyclerViewBaseActivity(rule, getNetworkTaskIntent(task));
-        onView(withId(R.id.listview_log_activity_log_entries)).check(matches(withListSize(2)));
+        onView(withId(R.id.listview_activity_log_log_entries)).check(matches(withListSize(2)));
         openActionBarOverflowOrOptionsMenu(TestRegistry.getContext());
         onView(withText("Delete logs")).perform(click());
         onView(withId(R.id.imageview_dialog_confirm_cancel)).perform(click());
-        onView(withId(R.id.listview_log_activity_log_entries)).check(matches(withListSize(2)));
+        onView(withId(R.id.listview_activity_log_log_entries)).check(matches(withListSize(2)));
         openActionBarOverflowOrOptionsMenu(TestRegistry.getContext());
         onView(withText("Delete logs")).perform(click());
         onView(withId(R.id.imageview_dialog_confirm_ok)).perform(click());
-        onView(withId(R.id.listview_log_activity_log_entries)).check(matches(withListSize(1)));
+        onView(withId(R.id.listview_activity_log_log_entries)).check(matches(withListSize(1)));
     }
 
     @Test
@@ -97,28 +97,28 @@ public class NetworkTaskLogActivityTest extends BaseUITest {
         getLogDAO().insertAndDeleteLog(entry1);
         getLogDAO().insertAndDeleteLog(entry2);
         NetworkTaskLogActivity activity = (NetworkTaskLogActivity) launchRecyclerViewBaseActivity(rule, getNetworkTaskIntent(task));
-        onView(withId(R.id.listview_log_activity_log_entries)).check(matches(withListSize(2)));
+        onView(withId(R.id.listview_activity_log_log_entries)).check(matches(withListSize(2)));
         rotateScreen(activity);
         onView(isRoot()).perform(waitFor(1000));
-        onView(withId(R.id.listview_log_activity_log_entries)).check(matches(withListSize(2)));
-        onView(allOf(withId(R.id.textview_list_item_log_entry_no_log), withChildDescendantAtPosition(withId(R.id.listview_log_activity_log_entries), 0))).check(matches(not(isDisplayed())));
-        onView(allOf(withId(R.id.textview_list_item_log_entry_no_log), withChildDescendantAtPosition(withId(R.id.listview_log_activity_log_entries), 1))).check(matches(not(isDisplayed())));
-        onView(allOf(withId(R.id.cardview_list_item_log_entry), withChildDescendantAtPosition(withId(R.id.listview_log_activity_log_entries), 0))).check(matches(isDisplayed()));
-        onView(allOf(withId(R.id.textview_list_item_log_entry_title), withChildDescendantAtPosition(withId(R.id.listview_log_activity_log_entries), 0))).check(matches(withText("Log entry for network task 1")));
-        onView(allOf(withId(R.id.textview_list_item_log_entry_success), withChildDescendantAtPosition(withId(R.id.listview_log_activity_log_entries), 0))).check(matches(withText("Execution successful")));
-        onView(allOf(withId(R.id.textview_list_item_log_entry_timestamp), withChildDescendantAtPosition(withId(R.id.listview_log_activity_log_entries), 0))).check(matches(withText("Timestamp: Dec 24, 1985 12:00:00 AM")));
-        onView(allOf(withId(R.id.textview_list_item_log_entry_message), withChildDescendantAtPosition(withId(R.id.listview_log_activity_log_entries), 0))).check(matches(withText("Message: Message2")));
-        onView(allOf(withId(R.id.cardview_list_item_log_entry), withChildDescendantAtPosition(withId(R.id.listview_log_activity_log_entries), 1))).check(matches(isDisplayed()));
-        onView(allOf(withId(R.id.textview_list_item_log_entry_title), withChildDescendantAtPosition(withId(R.id.listview_log_activity_log_entries), 1))).check(matches(withText("Log entry for network task 1")));
-        onView(allOf(withId(R.id.textview_list_item_log_entry_success), withChildDescendantAtPosition(withId(R.id.listview_log_activity_log_entries), 1))).check(matches(withText("Execution failed")));
-        onView(allOf(withId(R.id.textview_list_item_log_entry_timestamp), withChildDescendantAtPosition(withId(R.id.listview_log_activity_log_entries), 1))).check(matches(withText("Timestamp: Mar 17, 1980 12:00:00 AM")));
-        onView(allOf(withId(R.id.textview_list_item_log_entry_message), withChildDescendantAtPosition(withId(R.id.listview_log_activity_log_entries), 1))).check(matches(withText("Message: Message1")));
+        onView(withId(R.id.listview_activity_log_log_entries)).check(matches(withListSize(2)));
+        onView(allOf(withId(R.id.textview_list_item_log_entry_no_log), withChildDescendantAtPosition(withId(R.id.listview_activity_log_log_entries), 0))).check(matches(not(isDisplayed())));
+        onView(allOf(withId(R.id.textview_list_item_log_entry_no_log), withChildDescendantAtPosition(withId(R.id.listview_activity_log_log_entries), 1))).check(matches(not(isDisplayed())));
+        onView(allOf(withId(R.id.cardview_list_item_log_entry), withChildDescendantAtPosition(withId(R.id.listview_activity_log_log_entries), 0))).check(matches(isDisplayed()));
+        onView(allOf(withId(R.id.textview_list_item_log_entry_title), withChildDescendantAtPosition(withId(R.id.listview_activity_log_log_entries), 0))).check(matches(withText("Log entry for network task 1")));
+        onView(allOf(withId(R.id.textview_list_item_log_entry_success), withChildDescendantAtPosition(withId(R.id.listview_activity_log_log_entries), 0))).check(matches(withText("Execution successful")));
+        onView(allOf(withId(R.id.textview_list_item_log_entry_timestamp), withChildDescendantAtPosition(withId(R.id.listview_activity_log_log_entries), 0))).check(matches(withText("Timestamp: Dec 24, 1985 12:00:00 AM")));
+        onView(allOf(withId(R.id.textview_list_item_log_entry_message), withChildDescendantAtPosition(withId(R.id.listview_activity_log_log_entries), 0))).check(matches(withText("Message: Message2")));
+        onView(allOf(withId(R.id.cardview_list_item_log_entry), withChildDescendantAtPosition(withId(R.id.listview_activity_log_log_entries), 1))).check(matches(isDisplayed()));
+        onView(allOf(withId(R.id.textview_list_item_log_entry_title), withChildDescendantAtPosition(withId(R.id.listview_activity_log_log_entries), 1))).check(matches(withText("Log entry for network task 1")));
+        onView(allOf(withId(R.id.textview_list_item_log_entry_success), withChildDescendantAtPosition(withId(R.id.listview_activity_log_log_entries), 1))).check(matches(withText("Execution failed")));
+        onView(allOf(withId(R.id.textview_list_item_log_entry_timestamp), withChildDescendantAtPosition(withId(R.id.listview_activity_log_log_entries), 1))).check(matches(withText("Timestamp: Mar 17, 1980 12:00:00 AM")));
+        onView(allOf(withId(R.id.textview_list_item_log_entry_message), withChildDescendantAtPosition(withId(R.id.listview_activity_log_log_entries), 1))).check(matches(withText("Message: Message1")));
         openActionBarOverflowOrOptionsMenu(TestRegistry.getContext());
         onView(withText("Delete logs")).perform(click());
         onView(withId(R.id.imageview_dialog_confirm_ok)).perform(click());
         rotateScreen(activity);
         onView(isRoot()).perform(waitFor(1000));
-        onView(withId(R.id.listview_log_activity_log_entries)).check(matches(withListSize(1)));
+        onView(withId(R.id.listview_activity_log_log_entries)).check(matches(withListSize(1)));
     }
 
     private NetworkTask insertNetworkTask() {

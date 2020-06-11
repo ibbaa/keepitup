@@ -86,7 +86,7 @@ public class DefaultsActivity extends SettingsInputActivity {
     private void prepareAccessTypeRadioButtons() {
         Log.d(DefaultsActivity.class.getName(), "prepareAccessTypeRadioButtons");
         PreferenceManager preferenceManager = new PreferenceManager(this);
-        accessTypeGroup = findViewById(R.id.radiogroup_defaults_activity_accesstype);
+        accessTypeGroup = findViewById(R.id.radiogroup_activity_defaults_accesstype);
         accessTypeGroup.setOnCheckedChangeListener(null);
         EnumMapping mapping = new EnumMapping(this);
         AccessType[] accessTypes = AccessType.values();
@@ -124,36 +124,36 @@ public class DefaultsActivity extends SettingsInputActivity {
     private void prepareAddressField() {
         Log.d(DefaultsActivity.class.getName(), "prepareAddressField");
         PreferenceManager preferenceManager = new PreferenceManager(this);
-        addressText = findViewById(R.id.textview_defaults_activity_address);
+        addressText = findViewById(R.id.textview_activity_defaults_address);
         setAddress(preferenceManager.getPreferenceAddress());
-        CardView addressCardView = findViewById(R.id.cardview_defaults_activity_address);
+        CardView addressCardView = findViewById(R.id.cardview_activity_defaults_address);
         addressCardView.setOnClickListener(this::showAddressInputDialog);
     }
 
     private void preparePortField() {
         Log.d(DefaultsActivity.class.getName(), "preparePortField");
         PreferenceManager preferenceManager = new PreferenceManager(this);
-        portText = findViewById(R.id.textview_defaults_activity_port);
+        portText = findViewById(R.id.textview_activity_defaults_port);
         setPort(String.valueOf(preferenceManager.getPreferencePort()));
-        CardView portCardView = findViewById(R.id.cardview_defaults_activity_port);
+        CardView portCardView = findViewById(R.id.cardview_activity_defaults_port);
         portCardView.setOnClickListener(this::showPortInputDialog);
     }
 
     private void prepareIntervalField() {
         Log.d(DefaultsActivity.class.getName(), "prepareIntervalField");
         PreferenceManager preferenceManager = new PreferenceManager(this);
-        intervalText = findViewById(R.id.textview_defaults_activity_interval);
-        intervalMinutesText = findViewById(R.id.textview_defaults_activity_interval_minutes);
+        intervalText = findViewById(R.id.textview_activity_defaults_interval);
+        intervalMinutesText = findViewById(R.id.textview_activity_defaults_interval_minutes);
         setInterval(String.valueOf(preferenceManager.getPreferenceInterval()));
-        CardView intervalCardView = findViewById(R.id.cardview_defaults_activity_interval);
+        CardView intervalCardView = findViewById(R.id.cardview_activity_defaults_interval);
         intervalCardView.setOnClickListener(this::showIntervalInputDialog);
     }
 
     private void prepareOnlyWifiSwitch() {
         Log.d(DefaultsActivity.class.getName(), "prepareOnlyWifiSwitch");
         PreferenceManager preferenceManager = new PreferenceManager(this);
-        onlyWifiSwitch = findViewById(R.id.switch_defaults_activity_onlywifi);
-        onlyWifiOnOffText = findViewById(R.id.textview_defaults_activity_onlywifi_on_off);
+        onlyWifiSwitch = findViewById(R.id.switch_activity_defaults_onlywifi);
+        onlyWifiOnOffText = findViewById(R.id.textview_activity_defaults_onlywifi_on_off);
         onlyWifiSwitch.setOnCheckedChangeListener(null);
         onlyWifiSwitch.setChecked(preferenceManager.getPreferenceOnlyWifi());
         onlyWifiSwitch.setOnCheckedChangeListener(this::onOnlyWifiCheckedChanged);
@@ -174,8 +174,8 @@ public class DefaultsActivity extends SettingsInputActivity {
     private void prepareNotificationSwitch() {
         Log.d(DefaultsActivity.class.getName(), "prepareNotificationSwitch");
         PreferenceManager preferenceManager = new PreferenceManager(this);
-        notificationSwitch = findViewById(R.id.switch_defaults_activity_notification);
-        notificationOnOffText = findViewById(R.id.textview_defaults_activity_notification_on_off);
+        notificationSwitch = findViewById(R.id.switch_activity_defaults_notification);
+        notificationOnOffText = findViewById(R.id.textview_activity_defaults_notification_on_off);
         notificationSwitch.setOnCheckedChangeListener(null);
         notificationSwitch.setChecked(preferenceManager.getPreferenceNotification());
         notificationSwitch.setOnCheckedChangeListener(this::onNotificationCheckedChanged);

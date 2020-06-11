@@ -51,116 +51,116 @@ public class DefaultsActivityTest extends BaseUITest {
         assertEquals(15, preferenceManager.getPreferenceInterval());
         assertFalse(preferenceManager.getPreferenceOnlyWifi());
         assertFalse(preferenceManager.getPreferenceNotification());
-        onView(withId(R.id.textview_defaults_activity_accesstype_label)).check(matches(withText("Type")));
-        onView(withId(R.id.radiogroup_defaults_activity_accesstype)).check(matches(hasChildCount(3)));
+        onView(withId(R.id.textview_activity_defaults_accesstype_label)).check(matches(withText("Type")));
+        onView(withId(R.id.radiogroup_activity_defaults_accesstype)).check(matches(hasChildCount(3)));
         onView(withText("Ping")).check(matches(isChecked()));
-        onView(withId(R.id.textview_defaults_activity_address_label)).check(matches(withText("Host / URL")));
-        onView(withId(R.id.textview_defaults_activity_address)).check(matches(withText("192.168.178.1")));
-        onView(withId(R.id.textview_defaults_activity_port_label)).check(matches(withText("Port")));
-        onView(withId(R.id.textview_defaults_activity_port)).check(matches(withText("22")));
-        onView(withId(R.id.textview_defaults_activity_interval_label)).check(matches(withText("Interval")));
-        onView(withId(R.id.textview_defaults_activity_interval)).check(matches(withText("15")));
-        onView(withId(R.id.textview_defaults_activity_interval_minutes)).check(matches(withText("minutes")));
-        onView(withId(R.id.textview_defaults_activity_onlywifi_label)).check(matches(withText("Only on WiFi")));
-        onView(withId(R.id.switch_defaults_activity_onlywifi)).check(matches(isNotChecked()));
-        onView(withId(R.id.textview_defaults_activity_onlywifi_on_off)).check(matches(withText("no")));
-        onView(withId(R.id.textview_defaults_activity_notification_label)).check(matches(withText("Notifications")));
-        onView(withId(R.id.switch_defaults_activity_notification)).check(matches(isNotChecked()));
-        onView(withId(R.id.textview_defaults_activity_notification_on_off)).check(matches(withText("no")));
+        onView(withId(R.id.textview_activity_defaults_address_label)).check(matches(withText("Host / URL")));
+        onView(withId(R.id.textview_activity_defaults_address)).check(matches(withText("192.168.178.1")));
+        onView(withId(R.id.textview_activity_defaults_port_label)).check(matches(withText("Port")));
+        onView(withId(R.id.textview_activity_defaults_port)).check(matches(withText("22")));
+        onView(withId(R.id.textview_activity_defaults_interval_label)).check(matches(withText("Interval")));
+        onView(withId(R.id.textview_activity_defaults_interval)).check(matches(withText("15")));
+        onView(withId(R.id.textview_activity_defaults_interval_minutes)).check(matches(withText("minutes")));
+        onView(withId(R.id.textview_activity_defaults_onlywifi_label)).check(matches(withText("Only on WiFi")));
+        onView(withId(R.id.switch_activity_defaults_onlywifi)).check(matches(isNotChecked()));
+        onView(withId(R.id.textview_activity_defaults_onlywifi_on_off)).check(matches(withText("no")));
+        onView(withId(R.id.textview_activity_defaults_notification_label)).check(matches(withText("Notifications")));
+        onView(withId(R.id.switch_activity_defaults_notification)).check(matches(isNotChecked()));
+        onView(withId(R.id.textview_activity_defaults_notification_on_off)).check(matches(withText("no")));
     }
 
     @Test
     public void testDisplayValues() {
         launchSettingsInputActivity(rule);
         onView(withText("Download")).perform(click());
-        onView(withId(R.id.textview_defaults_activity_address)).perform(click());
+        onView(withId(R.id.textview_activity_defaults_address)).perform(click());
         onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("localhost"));
         onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
-        onView(withId(R.id.textview_defaults_activity_port)).perform(click());
+        onView(withId(R.id.textview_activity_defaults_port)).perform(click());
         onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("80"));
         onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
-        onView(withId(R.id.textview_defaults_activity_interval)).perform(click());
+        onView(withId(R.id.textview_activity_defaults_interval)).perform(click());
         onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("11"));
         onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
-        onView(withId(R.id.switch_defaults_activity_onlywifi)).perform(click());
-        onView(withId(R.id.switch_defaults_activity_notification)).perform(click());
+        onView(withId(R.id.switch_activity_defaults_onlywifi)).perform(click());
+        onView(withId(R.id.switch_activity_defaults_notification)).perform(click());
         onView(withText("Download")).check(matches(isChecked()));
-        onView(withId(R.id.textview_defaults_activity_address_label)).check(matches(withText("Host / URL")));
-        onView(withId(R.id.textview_defaults_activity_address)).check(matches(withText("localhost")));
-        onView(withId(R.id.textview_defaults_activity_port_label)).check(matches(withText("Port")));
-        onView(withId(R.id.textview_defaults_activity_port)).check(matches(withText("80")));
-        onView(withId(R.id.textview_defaults_activity_interval_label)).check(matches(withText("Interval")));
-        onView(withId(R.id.textview_defaults_activity_interval)).check(matches(withText("11")));
-        onView(withId(R.id.textview_defaults_activity_interval_minutes)).check(matches(withText("minutes")));
-        onView(withId(R.id.textview_defaults_activity_onlywifi_label)).check(matches(withText("Only on WiFi")));
-        onView(withId(R.id.switch_defaults_activity_onlywifi)).check(matches(isChecked()));
-        onView(withId(R.id.textview_defaults_activity_onlywifi_on_off)).check(matches(withText("yes")));
-        onView(withId(R.id.textview_defaults_activity_notification_label)).check(matches(withText("Notifications")));
-        onView(withId(R.id.switch_defaults_activity_notification)).check(matches(isChecked()));
-        onView(withId(R.id.textview_defaults_activity_notification_on_off)).check(matches(withText("yes")));
+        onView(withId(R.id.textview_activity_defaults_address_label)).check(matches(withText("Host / URL")));
+        onView(withId(R.id.textview_activity_defaults_address)).check(matches(withText("localhost")));
+        onView(withId(R.id.textview_activity_defaults_port_label)).check(matches(withText("Port")));
+        onView(withId(R.id.textview_activity_defaults_port)).check(matches(withText("80")));
+        onView(withId(R.id.textview_activity_defaults_interval_label)).check(matches(withText("Interval")));
+        onView(withId(R.id.textview_activity_defaults_interval)).check(matches(withText("11")));
+        onView(withId(R.id.textview_activity_defaults_interval_minutes)).check(matches(withText("minutes")));
+        onView(withId(R.id.textview_activity_defaults_onlywifi_label)).check(matches(withText("Only on WiFi")));
+        onView(withId(R.id.switch_activity_defaults_onlywifi)).check(matches(isChecked()));
+        onView(withId(R.id.textview_activity_defaults_onlywifi_on_off)).check(matches(withText("yes")));
+        onView(withId(R.id.textview_activity_defaults_notification_label)).check(matches(withText("Notifications")));
+        onView(withId(R.id.switch_activity_defaults_notification)).check(matches(isChecked()));
+        onView(withId(R.id.textview_activity_defaults_notification_on_off)).check(matches(withText("yes")));
     }
 
     @Test
     public void testMinutesAndSeconds() {
         launchSettingsInputActivity(rule);
-        onView(withId(R.id.textview_defaults_activity_interval)).perform(click());
+        onView(withId(R.id.textview_activity_defaults_interval)).perform(click());
         onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("1"));
         onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
-        onView(withId(R.id.textview_defaults_activity_interval_label)).check(matches(withText("Interval")));
-        onView(withId(R.id.textview_defaults_activity_interval)).check(matches(withText("1")));
-        onView(withId(R.id.textview_defaults_activity_interval_minutes)).check(matches(withText("minute")));
-        onView(withId(R.id.textview_defaults_activity_interval)).perform(click());
+        onView(withId(R.id.textview_activity_defaults_interval_label)).check(matches(withText("Interval")));
+        onView(withId(R.id.textview_activity_defaults_interval)).check(matches(withText("1")));
+        onView(withId(R.id.textview_activity_defaults_interval_minutes)).check(matches(withText("minute")));
+        onView(withId(R.id.textview_activity_defaults_interval)).perform(click());
         onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("11"));
         onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
-        onView(withId(R.id.textview_defaults_activity_interval_label)).check(matches(withText("Interval")));
-        onView(withId(R.id.textview_defaults_activity_interval)).check(matches(withText("11")));
-        onView(withId(R.id.textview_defaults_activity_interval_minutes)).check(matches(withText("minutes")));
+        onView(withId(R.id.textview_activity_defaults_interval_label)).check(matches(withText("Interval")));
+        onView(withId(R.id.textview_activity_defaults_interval)).check(matches(withText("11")));
+        onView(withId(R.id.textview_activity_defaults_interval_minutes)).check(matches(withText("minutes")));
     }
 
     @Test
     public void testSwitchYesNoText() {
         launchSettingsInputActivity(rule);
-        onView(withId(R.id.switch_defaults_activity_onlywifi)).check(matches(isNotChecked()));
-        onView(withId(R.id.textview_defaults_activity_onlywifi_on_off)).check(matches(withText("no")));
-        onView(withId(R.id.switch_defaults_activity_notification)).check(matches(isNotChecked()));
-        onView(withId(R.id.textview_defaults_activity_notification_on_off)).check(matches(withText("no")));
-        onView(withId(R.id.switch_defaults_activity_onlywifi)).perform(click());
-        onView(withId(R.id.switch_defaults_activity_onlywifi)).check(matches(isChecked()));
-        onView(withId(R.id.textview_defaults_activity_onlywifi_on_off)).check(matches(withText("yes")));
-        onView(withId(R.id.switch_defaults_activity_notification)).check(matches(isNotChecked()));
-        onView(withId(R.id.textview_defaults_activity_notification_on_off)).check(matches(withText("no")));
-        onView(withId(R.id.switch_defaults_activity_notification)).perform(click());
-        onView(withId(R.id.switch_defaults_activity_onlywifi)).check(matches(isChecked()));
-        onView(withId(R.id.textview_defaults_activity_onlywifi_on_off)).check(matches(withText("yes")));
-        onView(withId(R.id.switch_defaults_activity_notification)).check(matches(isChecked()));
-        onView(withId(R.id.textview_defaults_activity_notification_on_off)).check(matches(withText("yes")));
-        onView(withId(R.id.switch_defaults_activity_onlywifi)).perform(click());
-        onView(withId(R.id.switch_defaults_activity_onlywifi)).check(matches(isNotChecked()));
-        onView(withId(R.id.textview_defaults_activity_onlywifi_on_off)).check(matches(withText("no")));
-        onView(withId(R.id.switch_defaults_activity_notification)).check(matches(isChecked()));
-        onView(withId(R.id.textview_defaults_activity_notification_on_off)).check(matches(withText("yes")));
-        onView(withId(R.id.switch_defaults_activity_notification)).perform(click());
-        onView(withId(R.id.switch_defaults_activity_onlywifi)).check(matches(isNotChecked()));
-        onView(withId(R.id.textview_defaults_activity_onlywifi_on_off)).check(matches(withText("no")));
-        onView(withId(R.id.switch_defaults_activity_notification)).check(matches(isNotChecked()));
-        onView(withId(R.id.textview_defaults_activity_notification_on_off)).check(matches(withText("no")));
+        onView(withId(R.id.switch_activity_defaults_onlywifi)).check(matches(isNotChecked()));
+        onView(withId(R.id.textview_activity_defaults_onlywifi_on_off)).check(matches(withText("no")));
+        onView(withId(R.id.switch_activity_defaults_notification)).check(matches(isNotChecked()));
+        onView(withId(R.id.textview_activity_defaults_notification_on_off)).check(matches(withText("no")));
+        onView(withId(R.id.switch_activity_defaults_onlywifi)).perform(click());
+        onView(withId(R.id.switch_activity_defaults_onlywifi)).check(matches(isChecked()));
+        onView(withId(R.id.textview_activity_defaults_onlywifi_on_off)).check(matches(withText("yes")));
+        onView(withId(R.id.switch_activity_defaults_notification)).check(matches(isNotChecked()));
+        onView(withId(R.id.textview_activity_defaults_notification_on_off)).check(matches(withText("no")));
+        onView(withId(R.id.switch_activity_defaults_notification)).perform(click());
+        onView(withId(R.id.switch_activity_defaults_onlywifi)).check(matches(isChecked()));
+        onView(withId(R.id.textview_activity_defaults_onlywifi_on_off)).check(matches(withText("yes")));
+        onView(withId(R.id.switch_activity_defaults_notification)).check(matches(isChecked()));
+        onView(withId(R.id.textview_activity_defaults_notification_on_off)).check(matches(withText("yes")));
+        onView(withId(R.id.switch_activity_defaults_onlywifi)).perform(click());
+        onView(withId(R.id.switch_activity_defaults_onlywifi)).check(matches(isNotChecked()));
+        onView(withId(R.id.textview_activity_defaults_onlywifi_on_off)).check(matches(withText("no")));
+        onView(withId(R.id.switch_activity_defaults_notification)).check(matches(isChecked()));
+        onView(withId(R.id.textview_activity_defaults_notification_on_off)).check(matches(withText("yes")));
+        onView(withId(R.id.switch_activity_defaults_notification)).perform(click());
+        onView(withId(R.id.switch_activity_defaults_onlywifi)).check(matches(isNotChecked()));
+        onView(withId(R.id.textview_activity_defaults_onlywifi_on_off)).check(matches(withText("no")));
+        onView(withId(R.id.switch_activity_defaults_notification)).check(matches(isNotChecked()));
+        onView(withId(R.id.textview_activity_defaults_notification_on_off)).check(matches(withText("no")));
     }
 
     @Test
     public void testSetPreferencesOk() {
         launchSettingsInputActivity(rule);
         onView(withText("Download")).perform(click());
-        onView(withId(R.id.textview_defaults_activity_address)).perform(click());
+        onView(withId(R.id.textview_activity_defaults_address)).perform(click());
         onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("localhost"));
         onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
-        onView(withId(R.id.textview_defaults_activity_port)).perform(click());
+        onView(withId(R.id.textview_activity_defaults_port)).perform(click());
         onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("80"));
         onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
-        onView(withId(R.id.textview_defaults_activity_interval)).perform(click());
+        onView(withId(R.id.textview_activity_defaults_interval)).perform(click());
         onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("50"));
         onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
-        onView(withId(R.id.switch_defaults_activity_onlywifi)).perform(click());
-        onView(withId(R.id.switch_defaults_activity_notification)).perform(click());
+        onView(withId(R.id.switch_activity_defaults_onlywifi)).perform(click());
+        onView(withId(R.id.switch_activity_defaults_notification)).perform(click());
         PreferenceManager preferenceManager = getPreferenceManager();
         assertEquals(AccessType.DOWNLOAD, preferenceManager.getPreferenceAccessType());
         assertEquals("localhost", preferenceManager.getPreferenceAddress());
@@ -173,13 +173,13 @@ public class DefaultsActivityTest extends BaseUITest {
     @Test
     public void testSetPreferencesCancel() {
         launchSettingsInputActivity(rule);
-        onView(withId(R.id.textview_defaults_activity_address)).perform(click());
+        onView(withId(R.id.textview_activity_defaults_address)).perform(click());
         onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("localhost"));
         onView(withId(R.id.imageview_dialog_settings_input_cancel)).perform(click());
-        onView(withId(R.id.textview_defaults_activity_port)).perform(click());
+        onView(withId(R.id.textview_activity_defaults_port)).perform(click());
         onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("80"));
         onView(withId(R.id.imageview_dialog_settings_input_cancel)).perform(click());
-        onView(withId(R.id.textview_defaults_activity_interval)).perform(click());
+        onView(withId(R.id.textview_activity_defaults_interval)).perform(click());
         onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("50"));
         onView(withId(R.id.imageview_dialog_settings_input_cancel)).perform(click());
         PreferenceManager preferenceManager = getPreferenceManager();
@@ -191,7 +191,7 @@ public class DefaultsActivityTest extends BaseUITest {
     @Test
     public void testAddressInput() {
         launchSettingsInputActivity(rule);
-        onView(withId(R.id.textview_defaults_activity_address)).perform(click());
+        onView(withId(R.id.textview_activity_defaults_address)).perform(click());
         onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("1 2.33"));
         onView(withId(R.id.edittext_dialog_settings_input_value)).check(matches(withTextColor(R.color.textErrorColor)));
         onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
@@ -209,24 +209,24 @@ public class DefaultsActivityTest extends BaseUITest {
         onView(allOf(withText("No value specified"), withGridLayoutPosition(2, 1))).check(doesNotExist());
         onView(withId(R.id.imageview_dialog_validator_error_ok)).perform(click());
         onView(withId(R.id.imageview_dialog_settings_input_cancel)).perform(click());
-        onView(withId(R.id.textview_defaults_activity_address)).check(matches(withText("192.168.178.1")));
-        onView(withId(R.id.textview_defaults_activity_address)).perform(click());
+        onView(withId(R.id.textview_activity_defaults_address)).check(matches(withText("192.168.178.1")));
+        onView(withId(R.id.textview_activity_defaults_address)).perform(click());
         onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("host.com"));
         onView(withId(R.id.edittext_dialog_settings_input_value)).check(matches(withTextColor(R.color.textColor)));
         onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
-        onView(withId(R.id.textview_defaults_activity_address)).check(matches(withText("host.com")));
-        onView(withId(R.id.textview_defaults_activity_address)).perform(click());
+        onView(withId(R.id.textview_activity_defaults_address)).check(matches(withText("host.com")));
+        onView(withId(R.id.textview_activity_defaults_address)).perform(click());
         onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("192.168.2.100"));
         onView(withId(R.id.edittext_dialog_settings_input_value)).check(matches(withTextColor(R.color.textColor)));
         onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
-        onView(withId(R.id.textview_defaults_activity_address)).check(matches(withText("192.168.2.100")));
+        onView(withId(R.id.textview_activity_defaults_address)).check(matches(withText("192.168.2.100")));
     }
 
     @Test
     public void testAddressCopyPasteOption() {
         DefaultsActivity activity = (DefaultsActivity) launchSettingsInputActivity(rule);
-        onView(withId(R.id.textview_defaults_activity_address)).perform(click());
-        SettingsInputDialog inputDialog = (SettingsInputDialog) activity.getSupportFragmentManager().getFragments().get(0);
+        onView(withId(R.id.textview_activity_defaults_address)).perform(click());
+        SettingsInputDialog inputDialog = getDialog();
         MockClipboardManager clipboardManager = prepareMockClipboardManager(inputDialog);
         clipboardManager.putData("data");
         onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("localhost"));
@@ -242,13 +242,42 @@ public class DefaultsActivityTest extends BaseUITest {
         assertTrue(clipboardManager.hasData());
         assertEquals("data", clipboardManager.getData());
         onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
-        onView(withId(R.id.textview_defaults_activity_address)).check(matches(withText("data")));
+        onView(withId(R.id.textview_activity_defaults_address)).check(matches(withText("data")));
+    }
+
+    @Test
+    public void testAddressCopyPasteOptionScreenRotation() {
+        DefaultsActivity activity = (DefaultsActivity) launchSettingsInputActivity(rule);
+        onView(withId(R.id.textview_activity_defaults_address)).perform(click());
+        SettingsInputDialog inputDialog = getDialog();
+        MockClipboardManager clipboardManager = prepareMockClipboardManager(inputDialog);
+        clipboardManager.putData("data");
+        onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("localhost"));
+        onView(withId(R.id.edittext_dialog_settings_input_value)).perform(longClick());
+        rotateScreen(activity);
+        onView(isRoot()).perform(waitFor(1000));
+        assertEquals(2, getActivity().getSupportFragmentManager().getFragments().size());
+        onView(withId(R.id.listview_dialog_context_options)).check(matches(withListSize(2)));
+        onView(withId(R.id.textview_dialog_context_options_title)).check(matches(withText("Text options")));
+        onView(allOf(withId(R.id.textview_list_item_context_option_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options), 0))).check(matches(withText("Copy")));
+        onView(allOf(withId(R.id.textview_list_item_context_option_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options), 1))).check(matches(withText("Paste")));
+        rotateScreen(activity);
+        onView(isRoot()).perform(waitFor(1000));
+        clipboardManager = prepareMockClipboardManager(getDialog());
+        clipboardManager.putData("data");
+        onView(allOf(withId(R.id.textview_list_item_context_option_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options), 1))).perform(click());
+        assertEquals(1, getActivity().getSupportFragmentManager().getFragments().size());
+        onView(withId(R.id.edittext_dialog_settings_input_value)).check(matches(withText("data")));
+        assertTrue(clipboardManager.hasData());
+        assertEquals("data", clipboardManager.getData());
+        onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
+        onView(withId(R.id.textview_activity_defaults_address)).check(matches(withText("data")));
     }
 
     @Test
     public void testPortInput() {
         launchSettingsInputActivity(rule);
-        onView(withId(R.id.textview_defaults_activity_port)).perform(click());
+        onView(withId(R.id.textview_activity_defaults_port)).perform(click());
         onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("1a"));
         onView(withId(R.id.edittext_dialog_settings_input_value)).check(matches(withTextColor(R.color.textErrorColor)));
         onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
@@ -268,19 +297,19 @@ public class DefaultsActivityTest extends BaseUITest {
         onView(allOf(withText("No value specified"), withGridLayoutPosition(1, 1))).check(matches(isDisplayed()));
         onView(withId(R.id.imageview_dialog_validator_error_ok)).perform(click());
         onView(withId(R.id.imageview_dialog_settings_input_cancel)).perform(click());
-        onView(withId(R.id.textview_defaults_activity_port)).check(matches(withText("22")));
-        onView(withId(R.id.textview_defaults_activity_port)).perform(click());
+        onView(withId(R.id.textview_activity_defaults_port)).check(matches(withText("22")));
+        onView(withId(R.id.textview_activity_defaults_port)).perform(click());
         onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("80"));
         onView(withId(R.id.edittext_dialog_settings_input_value)).check(matches(withTextColor(R.color.textColor)));
         onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
-        onView(withId(R.id.textview_defaults_activity_port)).check(matches(withText("80")));
+        onView(withId(R.id.textview_activity_defaults_port)).check(matches(withText("80")));
     }
 
     @Test
     public void testPortCopyPasteOption() {
         DefaultsActivity activity = (DefaultsActivity) launchSettingsInputActivity(rule);
-        onView(withId(R.id.textview_defaults_activity_port)).perform(click());
-        SettingsInputDialog inputDialog = (SettingsInputDialog) activity.getSupportFragmentManager().getFragments().get(0);
+        onView(withId(R.id.textview_activity_defaults_port)).perform(click());
+        SettingsInputDialog inputDialog = getDialog();
         MockClipboardManager clipboardManager = prepareMockClipboardManager(inputDialog);
         clipboardManager.putData("1234");
         onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("456"));
@@ -296,13 +325,41 @@ public class DefaultsActivityTest extends BaseUITest {
         assertTrue(clipboardManager.hasData());
         assertEquals("456", clipboardManager.getData());
         onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
-        onView(withId(R.id.textview_defaults_activity_port)).check(matches(withText("456")));
+        onView(withId(R.id.textview_activity_defaults_port)).check(matches(withText("456")));
+    }
+
+    @Test
+    public void testPortCopyPasteOptionScreenRotation() {
+        DefaultsActivity activity = (DefaultsActivity) launchSettingsInputActivity(rule);
+        onView(withId(R.id.textview_activity_defaults_port)).perform(click());
+        onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("456"));
+        rotateScreen(activity);
+        onView(isRoot()).perform(waitFor(1000));
+        MockClipboardManager clipboardManager = prepareMockClipboardManager(getDialog());
+        clipboardManager.putData("1234");
+        onView(withId(R.id.edittext_dialog_settings_input_value)).perform(longClick());
+        assertEquals(2, getActivity().getSupportFragmentManager().getFragments().size());
+        onView(withId(R.id.listview_dialog_context_options)).check(matches(withListSize(2)));
+        onView(withId(R.id.textview_dialog_context_options_title)).check(matches(withText("Text options")));
+        onView(allOf(withId(R.id.textview_list_item_context_option_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options), 0))).check(matches(withText("Copy")));
+        onView(allOf(withId(R.id.textview_list_item_context_option_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options), 1))).check(matches(withText("Paste")));
+        rotateScreen(activity);
+        onView(isRoot()).perform(waitFor(1000));
+        clipboardManager = prepareMockClipboardManager(getDialog());
+        clipboardManager.putData("1234");
+        onView(allOf(withId(R.id.textview_list_item_context_option_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options), 0))).perform(click());
+        assertEquals(1, getActivity().getSupportFragmentManager().getFragments().size());
+        onView(withId(R.id.edittext_dialog_settings_input_value)).check(matches(withText("456")));
+        assertTrue(clipboardManager.hasData());
+        assertEquals("456", clipboardManager.getData());
+        onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
+        onView(withId(R.id.textview_activity_defaults_port)).check(matches(withText("456")));
     }
 
     @Test
     public void testIntervalInput() {
         launchSettingsInputActivity(rule);
-        onView(withId(R.id.textview_defaults_activity_interval)).perform(click());
+        onView(withId(R.id.textview_activity_defaults_interval)).perform(click());
         onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("xyz"));
         onView(withId(R.id.edittext_dialog_settings_input_value)).check(matches(withTextColor(R.color.textErrorColor)));
         onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
@@ -322,19 +379,19 @@ public class DefaultsActivityTest extends BaseUITest {
         onView(allOf(withText("No value specified"), withGridLayoutPosition(1, 1))).check(matches(isDisplayed()));
         onView(withId(R.id.imageview_dialog_validator_error_ok)).perform(click());
         onView(withId(R.id.imageview_dialog_settings_input_cancel)).perform(click());
-        onView(withId(R.id.textview_defaults_activity_interval)).check(matches(withText("15")));
-        onView(withId(R.id.textview_defaults_activity_interval)).perform(click());
+        onView(withId(R.id.textview_activity_defaults_interval)).check(matches(withText("15")));
+        onView(withId(R.id.textview_activity_defaults_interval)).perform(click());
         onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("20"));
         onView(withId(R.id.edittext_dialog_settings_input_value)).check(matches(withTextColor(R.color.textColor)));
         onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
-        onView(withId(R.id.textview_defaults_activity_interval)).check(matches(withText("20")));
+        onView(withId(R.id.textview_activity_defaults_interval)).check(matches(withText("20")));
     }
 
     @Test
     public void testIntervalCopyPasteOption() {
         DefaultsActivity activity = (DefaultsActivity) launchSettingsInputActivity(rule);
-        onView(withId(R.id.textview_defaults_activity_interval)).perform(click());
-        SettingsInputDialog inputDialog = (SettingsInputDialog) activity.getSupportFragmentManager().getFragments().get(0);
+        onView(withId(R.id.textview_activity_defaults_interval)).perform(click());
+        SettingsInputDialog inputDialog = getDialog();
         MockClipboardManager clipboardManager = prepareMockClipboardManager(inputDialog);
         clipboardManager.putData("111");
         onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("222"));
@@ -350,40 +407,69 @@ public class DefaultsActivityTest extends BaseUITest {
         assertTrue(clipboardManager.hasData());
         assertEquals("111", clipboardManager.getData());
         onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
-        onView(withId(R.id.textview_defaults_activity_interval)).check(matches(withText("111")));
+        onView(withId(R.id.textview_activity_defaults_interval)).check(matches(withText("111")));
+    }
+
+    @Test
+    public void testIntervalCopyPasteOptionScreenRotation() {
+        DefaultsActivity activity = (DefaultsActivity) launchSettingsInputActivity(rule);
+        onView(withId(R.id.textview_activity_defaults_interval)).perform(click());
+        SettingsInputDialog inputDialog = getDialog();
+        MockClipboardManager clipboardManager = prepareMockClipboardManager(inputDialog);
+        clipboardManager.putData("111");
+        onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("222"));
+        onView(withId(R.id.edittext_dialog_settings_input_value)).perform(longClick());
+        rotateScreen(activity);
+        onView(isRoot()).perform(waitFor(1000));
+        clipboardManager = prepareMockClipboardManager(getDialog());
+        clipboardManager.putData("111");
+        assertEquals(2, getActivity().getSupportFragmentManager().getFragments().size());
+        onView(withId(R.id.listview_dialog_context_options)).check(matches(withListSize(2)));
+        onView(withId(R.id.textview_dialog_context_options_title)).check(matches(withText("Text options")));
+        onView(allOf(withId(R.id.textview_list_item_context_option_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options), 0))).check(matches(withText("Copy")));
+        onView(allOf(withId(R.id.textview_list_item_context_option_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options), 1))).check(matches(withText("Paste")));
+        onView(allOf(withId(R.id.textview_list_item_context_option_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options), 1))).perform(click());
+        assertEquals(1, getActivity().getSupportFragmentManager().getFragments().size());
+        onView(withId(R.id.edittext_dialog_settings_input_value)).check(matches(withText("111")));
+        assertTrue(clipboardManager.hasData());
+        assertEquals("111", clipboardManager.getData());
+        rotateScreen(activity);
+        onView(isRoot()).perform(waitFor(1000));
+        onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
+        onView(withId(R.id.textview_activity_defaults_interval)).check(matches(withText("111")));
     }
 
     @Test
     public void testResetValues() {
         launchSettingsInputActivity(rule);
         onView(withText("Download")).perform(click());
-        onView(withId(R.id.textview_defaults_activity_address)).perform(click());
+        onView(withId(R.id.textview_activity_defaults_address)).perform(click());
         onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("localhost"));
         onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
-        onView(withId(R.id.textview_defaults_activity_port)).perform(click());
+        onView(withId(R.id.textview_activity_defaults_port)).perform(click());
         onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("80"));
         onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
-        onView(withId(R.id.textview_defaults_activity_interval)).perform(click());
+        onView(withId(R.id.textview_activity_defaults_interval)).perform(click());
         onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("11"));
         onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
-        onView(withId(R.id.switch_defaults_activity_onlywifi)).perform(click());
-        onView(withId(R.id.switch_defaults_activity_notification)).perform(click());
+        onView(withId(R.id.switch_activity_defaults_onlywifi)).perform(click());
+        onView(withId(R.id.switch_activity_defaults_notification)).perform(click());
         openActionBarOverflowOrOptionsMenu(TestRegistry.getContext());
         onView(withText("Reset")).perform(click());
         onView(withText("Ping")).check(matches(isChecked()));
-        onView(withId(R.id.textview_defaults_activity_address_label)).check(matches(withText("Host / URL")));
-        onView(withId(R.id.textview_defaults_activity_address)).check(matches(withText("192.168.178.1")));
-        onView(withId(R.id.textview_defaults_activity_port_label)).check(matches(withText("Port")));
-        onView(withId(R.id.textview_defaults_activity_port)).check(matches(withText("22")));
-        onView(withId(R.id.textview_defaults_activity_interval_label)).check(matches(withText("Interval")));
-        onView(withId(R.id.textview_defaults_activity_interval)).check(matches(withText("15")));
-        onView(withId(R.id.textview_defaults_activity_interval_minutes)).check(matches(withText("minutes")));
-        onView(withId(R.id.textview_defaults_activity_onlywifi_label)).check(matches(withText("Only on WiFi")));
-        onView(withId(R.id.switch_defaults_activity_onlywifi)).check(matches(isNotChecked()));
-        onView(withId(R.id.textview_defaults_activity_onlywifi_on_off)).check(matches(withText("no")));
-        onView(withId(R.id.textview_defaults_activity_notification_label)).check(matches(withText("Notifications")));
-        onView(withId(R.id.switch_defaults_activity_notification)).check(matches(isNotChecked()));
-        onView(withId(R.id.textview_defaults_activity_notification_on_off)).check(matches(withText("no")));
+        onView(withId(R.id.textview_activity_defaults_address_label)).check(matches(withText("Host / URL")));
+        onView(withId(R.id.textview_activity_defaults_address)).check(matches(withText("192.168.178.1")));
+        onView(withId(R.id.textview_activity_defaults_port_label)).check(matches(withText("Port")));
+        onView(withId(R.id.textview_activity_defaults_port)).check(matches(withText("22")));
+        onView(withId(R.id.textview_activity_defaults_interval_label)).check(matches(withText("Interval")));
+        onView(withId(R.id.textview_activity_defaults_interval)).check(matches(withText("15")));
+        onView(withId(R.id.textview_activity_defaults_interval_minutes)).check(matches(withText("minutes")));
+        onView(withId(R.id.textview_activity_defaults_onlywifi_label)).check(matches(withText("Only on WiFi")));
+        onView(withId(R.id.switch_activity_defaults_onlywifi)).check(matches(isNotChecked()));
+        onView(withId(R.id.textview_activity_defaults_onlywifi_on_off)).check(matches(withText("no")));
+        onView(withId(R.id.textview_activity_defaults_notification_label)).check(matches(withText("Notifications")));
+        onView(withId(R.id.switch_activity_defaults_notification)).check(matches(isNotChecked()));
+        onView(withId(R.id.textview_activity_defaults_notification_on_off)).check(matches(withText("no")));
         PreferenceManager preferenceManager = getPreferenceManager();
         assertEquals(AccessType.PING, preferenceManager.getPreferenceAccessType());
         assertEquals("192.168.178.1", preferenceManager.getPreferenceAddress());
@@ -397,62 +483,62 @@ public class DefaultsActivityTest extends BaseUITest {
     public void testPreserveValuesOnScreenRotation() {
         SettingsInputActivity activity = launchSettingsInputActivity(rule);
         onView(withText("Connect")).perform(click());
-        onView(withId(R.id.textview_defaults_activity_address)).perform(click());
+        onView(withId(R.id.textview_activity_defaults_address)).perform(click());
         onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("localhost"));
         onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
-        onView(withId(R.id.textview_defaults_activity_port)).perform(click());
+        onView(withId(R.id.textview_activity_defaults_port)).perform(click());
         onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("80"));
         onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
-        onView(withId(R.id.textview_defaults_activity_interval)).perform(click());
+        onView(withId(R.id.textview_activity_defaults_interval)).perform(click());
         onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("11"));
         onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
-        onView(withId(R.id.switch_defaults_activity_onlywifi)).perform(click());
-        onView(withId(R.id.switch_defaults_activity_notification)).perform(click());
+        onView(withId(R.id.switch_activity_defaults_onlywifi)).perform(click());
+        onView(withId(R.id.switch_activity_defaults_notification)).perform(click());
         rotateScreen(activity);
         onView(isRoot()).perform(waitFor(1000));
         onView(withText("Connect")).check(matches(isChecked()));
-        onView(withId(R.id.textview_defaults_activity_address)).check(matches(withText("localhost")));
-        onView(withId(R.id.textview_defaults_activity_port)).check(matches(withText("80")));
-        onView(withId(R.id.textview_defaults_activity_interval)).check(matches(withText("11")));
-        onView(withId(R.id.textview_defaults_activity_interval_minutes)).check(matches(withText("minutes")));
-        onView(withId(R.id.switch_defaults_activity_onlywifi)).check(matches(isChecked()));
-        onView(withId(R.id.textview_defaults_activity_onlywifi_on_off)).check(matches(withText("yes")));
-        onView(withId(R.id.switch_defaults_activity_notification)).check(matches(isChecked()));
-        onView(withId(R.id.textview_defaults_activity_notification_on_off)).check(matches(withText("yes")));
+        onView(withId(R.id.textview_activity_defaults_address)).check(matches(withText("localhost")));
+        onView(withId(R.id.textview_activity_defaults_port)).check(matches(withText("80")));
+        onView(withId(R.id.textview_activity_defaults_interval)).check(matches(withText("11")));
+        onView(withId(R.id.textview_activity_defaults_interval_minutes)).check(matches(withText("minutes")));
+        onView(withId(R.id.switch_activity_defaults_onlywifi)).check(matches(isChecked()));
+        onView(withId(R.id.textview_activity_defaults_onlywifi_on_off)).check(matches(withText("yes")));
+        onView(withId(R.id.switch_activity_defaults_notification)).check(matches(isChecked()));
+        onView(withId(R.id.textview_activity_defaults_notification_on_off)).check(matches(withText("yes")));
         rotateScreen(activity);
         onView(isRoot()).perform(waitFor(1000));
         onView(withText("Connect")).check(matches(isChecked()));
-        onView(withId(R.id.textview_defaults_activity_address)).check(matches(withText("localhost")));
-        onView(withId(R.id.textview_defaults_activity_port)).check(matches(withText("80")));
-        onView(withId(R.id.textview_defaults_activity_interval)).check(matches(withText("11")));
-        onView(withId(R.id.textview_defaults_activity_interval_minutes)).check(matches(withText("minutes")));
-        onView(withId(R.id.switch_defaults_activity_onlywifi)).check(matches(isChecked()));
-        onView(withId(R.id.textview_defaults_activity_onlywifi_on_off)).check(matches(withText("yes")));
-        onView(withId(R.id.switch_defaults_activity_notification)).check(matches(isChecked()));
-        onView(withId(R.id.textview_defaults_activity_notification_on_off)).check(matches(withText("yes")));
+        onView(withId(R.id.textview_activity_defaults_address)).check(matches(withText("localhost")));
+        onView(withId(R.id.textview_activity_defaults_port)).check(matches(withText("80")));
+        onView(withId(R.id.textview_activity_defaults_interval)).check(matches(withText("11")));
+        onView(withId(R.id.textview_activity_defaults_interval_minutes)).check(matches(withText("minutes")));
+        onView(withId(R.id.switch_activity_defaults_onlywifi)).check(matches(isChecked()));
+        onView(withId(R.id.textview_activity_defaults_onlywifi_on_off)).check(matches(withText("yes")));
+        onView(withId(R.id.switch_activity_defaults_notification)).check(matches(isChecked()));
+        onView(withId(R.id.textview_activity_defaults_notification_on_off)).check(matches(withText("yes")));
     }
 
     @Test
     public void testConfirmDialogOnScreenRotation() {
         SettingsInputActivity activity = launchSettingsInputActivity(rule);
-        onView(withId(R.id.textview_defaults_activity_address)).perform(click());
+        onView(withId(R.id.textview_activity_defaults_address)).perform(click());
         onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("localhost"));
         rotateScreen(activity);
         onView(isRoot()).perform(waitFor(1000));
         onView(withId(R.id.imageview_dialog_settings_input_cancel)).perform(click());
-        onView(withId(R.id.textview_defaults_activity_address)).check(matches(withText("192.168.178.1")));
-        onView(withId(R.id.textview_defaults_activity_address)).perform(click());
+        onView(withId(R.id.textview_activity_defaults_address)).check(matches(withText("192.168.178.1")));
+        onView(withId(R.id.textview_activity_defaults_address)).perform(click());
         onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("localhost"));
         rotateScreen(activity);
         onView(isRoot()).perform(waitFor(1000));
         onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
-        onView(withId(R.id.textview_defaults_activity_address)).check(matches(withText("localhost")));
+        onView(withId(R.id.textview_activity_defaults_address)).check(matches(withText("localhost")));
     }
 
     @Test
     public void testValidationErrorScreenRotation() {
         SettingsInputActivity activity = launchSettingsInputActivity(rule);
-        onView(withId(R.id.textview_defaults_activity_port)).perform(click());
+        onView(withId(R.id.textview_activity_defaults_port)).perform(click());
         onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("1a"));
         onView(withId(R.id.edittext_dialog_settings_input_value)).check(matches(withTextColor(R.color.textErrorColor)));
         onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
@@ -468,6 +554,14 @@ public class DefaultsActivityTest extends BaseUITest {
         onView(allOf(withText("Invalid format"), withGridLayoutPosition(1, 1))).check(matches(isDisplayed()));
         onView(withId(R.id.imageview_dialog_validator_error_ok)).perform(click());
         onView(withId(R.id.imageview_dialog_settings_input_cancel)).perform(click());
+    }
+
+    private SettingsInputDialog getDialog() {
+        return (SettingsInputDialog) getActivity().getSupportFragmentManager().getFragments().get(0);
+    }
+
+    private DefaultsActivity getActivity() {
+        return (DefaultsActivity) rule.getActivity();
     }
 
     private MockClipboardManager prepareMockClipboardManager(SettingsInputDialog inputDialog) {

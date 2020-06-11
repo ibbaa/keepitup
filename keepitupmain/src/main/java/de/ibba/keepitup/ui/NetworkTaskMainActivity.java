@@ -30,7 +30,7 @@ public class NetworkTaskMainActivity extends RecyclerViewBaseActivity {
 
     @Override
     protected int getRecyclerViewId() {
-        return R.id.listview_main_activity_network_tasks;
+        return R.id.listview_activity_main_network_tasks;
     }
 
     @Override
