@@ -27,7 +27,7 @@ public class NetworkTaskLogActivity extends RecyclerViewBaseActivity {
 
     @Override
     protected int getRecyclerViewId() {
-        return R.id.listview_log_activity_log_entries;
+        return R.id.listview_activity_log_log_entries;
     }
 
     @Override

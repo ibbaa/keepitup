@@ -100,26 +100,26 @@ public class GlobalSettingsActivity extends SettingsInputActivity {
     private void preparePingCountField() {
         Log.d(GlobalSettingsActivity.class.getName(), "preparePingCountField");
         PreferenceManager preferenceManager = new PreferenceManager(this);
-        pingCountText = findViewById(R.id.textview_global_settings_activity_ping_count);
+        pingCountText = findViewById(R.id.textview_activity_global_settings_ping_count);
         setPingCount(String.valueOf(preferenceManager.getPreferencePingCount()));
-        CardView pingCountCardView = findViewById(R.id.cardview_global_settings_activity_ping_count);
+        CardView pingCountCardView = findViewById(R.id.cardview_activity_global_settings_ping_count);
         pingCountCardView.setOnClickListener(this::showPingCountInputDialog);
     }
 
     private void prepareConnectCountField() {
         Log.d(GlobalSettingsActivity.class.getName(), "prepareConnectCountField");
         PreferenceManager preferenceManager = new PreferenceManager(this);
-        connectCountText = findViewById(R.id.textview_global_settings_activity_connect_count);
+        connectCountText = findViewById(R.id.textview_activity_global_settings_connect_count);
         setConnectCount(String.valueOf(preferenceManager.getPreferenceConnectCount()));
-        CardView connectCountCardView = findViewById(R.id.cardview_global_settings_activity_connect_count);
+        CardView connectCountCardView = findViewById(R.id.cardview_activity_global_settings_connect_count);
         connectCountCardView.setOnClickListener(this::showConnectCountInputDialog);
     }
 
     private void prepareNotificationInactiveNetworkSwitch() {
         Log.d(GlobalSettingsActivity.class.getName(), "prepareNotificationInactiveNetworkSwitch");
         PreferenceManager preferenceManager = new PreferenceManager(this);
-        notificationInactiveNetworkSwitch = findViewById(R.id.switch_global_settings_activity_notification_inactive_network);
-        notificationInactiveNetworkOnOffText = findViewById(R.id.textview_global_settings_activity_notification_inactive_network_on_off);
+        notificationInactiveNetworkSwitch = findViewById(R.id.switch_activity_global_settings_notification_inactive_network);
+        notificationInactiveNetworkOnOffText = findViewById(R.id.textview_activity_global_settings_notification_inactive_network_on_off);
         notificationInactiveNetworkSwitch.setOnCheckedChangeListener(null);
         notificationInactiveNetworkSwitch.setChecked(preferenceManager.getPreferenceNotificationInactiveNetwork());
         notificationInactiveNetworkSwitch.setOnCheckedChangeListener(this::onNotificationInactiveNetworkCheckedChanged);
@@ -140,8 +140,8 @@ public class GlobalSettingsActivity extends SettingsInputActivity {
     private void prepareDownloadExternalStorageSwitch() {
         Log.d(GlobalSettingsActivity.class.getName(), "prepareDownloadExternalStorageSwitch");
         PreferenceManager preferenceManager = new PreferenceManager(this);
-        downloadExternalStorageSwitch = findViewById(R.id.switch_global_settings_activity_download_external_storage);
-        downloadExternalStorageOnOffText = findViewById(R.id.textview_global_settings_activity_download_external_storage_on_off);
+        downloadExternalStorageSwitch = findViewById(R.id.switch_activity_global_settings_download_external_storage);
+        downloadExternalStorageOnOffText = findViewById(R.id.textview_activity_global_settings_download_external_storage_on_off);
         downloadExternalStorageSwitch.setOnCheckedChangeListener(null);
         downloadExternalStorageSwitch.setChecked(preferenceManager.getPreferenceDownloadExternalStorage());
         downloadExternalStorageSwitch.setOnCheckedChangeListener(this::onDownloadExternalStorageCheckedChanged);
@@ -164,13 +164,13 @@ public class GlobalSettingsActivity extends SettingsInputActivity {
 
     private void prepareExternalStorageTypeRadioGroup() {
         Log.d(GlobalSettingsActivity.class.getName(), "prepareExternalStorageTypeRadioGroup");
-        externalStorageType = findViewById(R.id.radiogroup_global_settings_activity_external_storage_type);
+        externalStorageType = findViewById(R.id.radiogroup_activity_global_settings_external_storage_type);
         IFileManager fileManager = getFileManager();
         boolean sdCardSupported = fileManager.isSDCardSupported();
         Log.d(GlobalSettingsActivity.class.getName(), "SD card supported: " + sdCardSupported);
         if (downloadExternalStorageSwitch.isChecked() && sdCardSupported) {
-            RadioButton primaryStorageTypeButton = findViewById(R.id.radiobutton_global_settings_activity_external_storage_type_primary);
-            RadioButton sdCardStorageTypeButton = findViewById(R.id.radiobutton_global_settings_activity_external_storage_type_sdcard);
+            RadioButton primaryStorageTypeButton = findViewById(R.id.radiobutton_activity_global_settings_external_storage_type_primary);
+            RadioButton sdCardStorageTypeButton = findViewById(R.id.radiobutton_activity_global_settings_external_storage_type_sdcard);
             sdCardStorageTypeButton.setVisibility(View.VISIBLE);
             PreferenceManager preferenceManager = new PreferenceManager(this);
             int externalStorage = preferenceManager.getPreferenceExternalStorageType();
@@ -188,8 +188,8 @@ public class GlobalSettingsActivity extends SettingsInputActivity {
             externalStorageType.setOnCheckedChangeListener(this::onExternalStorageTypeChanged);
         } else {
             externalStorageType.setOnCheckedChangeListener(null);
-            RadioButton primaryStorageTypeButton = findViewById(R.id.radiobutton_global_settings_activity_external_storage_type_primary);
-            RadioButton sdCardStorageTypeButton = findViewById(R.id.radiobutton_global_settings_activity_external_storage_type_sdcard);
+            RadioButton primaryStorageTypeButton = findViewById(R.id.radiobutton_activity_global_settings_external_storage_type_primary);
+            RadioButton sdCardStorageTypeButton = findViewById(R.id.radiobutton_activity_global_settings_external_storage_type_sdcard);
             primaryStorageTypeButton.setChecked(true);
             sdCardStorageTypeButton.setChecked(false);
             externalStorageType.setEnabled(false);
@@ -205,7 +205,7 @@ public class GlobalSettingsActivity extends SettingsInputActivity {
         Log.d(GlobalSettingsActivity.class.getName(), "onExternalStorageTypeChanged");
         PreferenceManager preferenceManager = new PreferenceManager(this);
         int checkedExternalStorage = group.getCheckedRadioButtonId();
-        if (R.id.radiobutton_global_settings_activity_external_storage_type_sdcard == checkedExternalStorage) {
+        if (R.id.radiobutton_activity_global_settings_external_storage_type_sdcard == checkedExternalStorage) {
             Log.d(GlobalSettingsActivity.class.getName(), "SD card selected as external storage type");
             preferenceManager.setPreferenceExternalStorageType(1);
         } else {
@@ -218,7 +218,7 @@ public class GlobalSettingsActivity extends SettingsInputActivity {
     private void prepareDownloadFolderField() {
         Log.d(GlobalSettingsActivity.class.getName(), "prepareDownloadFolderField");
         PreferenceManager preferenceManager = new PreferenceManager(this);
-        downloadFolderText = findViewById(R.id.textview_global_settings_activity_download_folder);
+        downloadFolderText = findViewById(R.id.textview_activity_global_settings_download_folder);
         if (downloadExternalStorageSwitch.isChecked()) {
             String downloadFolder = getExternalDownloadFolder();
             Log.d(GlobalSettingsActivity.class.getName(), "External download folder is " + downloadFolder);
@@ -249,8 +249,8 @@ public class GlobalSettingsActivity extends SettingsInputActivity {
     private void prepareDownloadKeepSwitch() {
         Log.d(GlobalSettingsActivity.class.getName(), "prepareDownloadKeepSwitch");
         PreferenceManager preferenceManager = new PreferenceManager(this);
-        downloadKeepSwitch = findViewById(R.id.switch_global_settings_activity_download_keep);
-        downloadKeepOnOffText = findViewById(R.id.textview_global_settings_activity_download_keep_on_off);
+        downloadKeepSwitch = findViewById(R.id.switch_activity_global_settings_download_keep);
+        downloadKeepOnOffText = findViewById(R.id.textview_activity_global_settings_download_keep_on_off);
         if (downloadExternalStorageSwitch.isChecked()) {
             downloadKeepSwitch.setOnCheckedChangeListener(null);
             downloadKeepSwitch.setChecked(preferenceManager.getPreferenceDownloadKeep());
@@ -277,7 +277,7 @@ public class GlobalSettingsActivity extends SettingsInputActivity {
 
     private void prepareDebugSettingsLabel() {
         Log.d(GlobalSettingsActivity.class.getName(), "prepareDebugSettingsLabel");
-        CardView debugSettingsLabel = findViewById(R.id.cardview_global_settings_activity_debug);
+        CardView debugSettingsLabel = findViewById(R.id.cardview_activity_global_settings_debug);
         if (BuildConfig.DEBUG) {
             Log.d(GlobalSettingsActivity.class.getName(), "Debug version. Enabling debug settings.");
             debugSettingsLabel.setVisibility(View.VISIBLE);
@@ -289,9 +289,9 @@ public class GlobalSettingsActivity extends SettingsInputActivity {
 
     private void prepareFileLoggerEnabledSwitch() {
         Log.d(GlobalSettingsActivity.class.getName(), "prepareFileLoggerEnabled");
-        CardView fileLoggerEnabledLabel = findViewById(R.id.cardview_global_settings_activity_file_logger_enabled);
-        fileLoggerEnabledSwitch = findViewById(R.id.switch_global_settings_activity_file_logger_enabled);
-        fileLoggerEnabledOnOffText = findViewById(R.id.textview_global_settings_activity_file_logger_enabled_on_off);
+        CardView fileLoggerEnabledLabel = findViewById(R.id.cardview_activity_global_settings_file_logger_enabled);
+        fileLoggerEnabledSwitch = findViewById(R.id.switch_activity_global_settings_file_logger_enabled);
+        fileLoggerEnabledOnOffText = findViewById(R.id.textview_activity_global_settings_file_logger_enabled_on_off);
         if (BuildConfig.DEBUG) {
             Log.d(GlobalSettingsActivity.class.getName(), "Debug version. Enabling debug settings.");
             fileLoggerEnabledLabel.setVisibility(View.VISIBLE);
@@ -324,9 +324,9 @@ public class GlobalSettingsActivity extends SettingsInputActivity {
 
     private void prepareFileDumpEnabledSwitch() {
         Log.d(GlobalSettingsActivity.class.getName(), "prepareFileDumpEnabledSwitch");
-        CardView fileDumpEnabledLabel = findViewById(R.id.cardview_global_settings_activity_file_logger_enabled);
-        fileDumpEnabledSwitch = findViewById(R.id.switch_global_settings_activity_file_dump_enabled);
-        fileDumpEnabledOnOffText = findViewById(R.id.textview_global_settings_activity_file_dump_enabled_on_off);
+        CardView fileDumpEnabledLabel = findViewById(R.id.cardview_activity_global_settings_file_logger_enabled);
+        fileDumpEnabledSwitch = findViewById(R.id.switch_activity_global_settings_file_dump_enabled);
+        fileDumpEnabledOnOffText = findViewById(R.id.textview_activity_global_settings_file_dump_enabled_on_off);
         if (BuildConfig.DEBUG) {
             Log.d(GlobalSettingsActivity.class.getName(), "Debug version. Enabling debug settings.");
             fileDumpEnabledLabel.setVisibility(View.VISIBLE);
@@ -359,8 +359,8 @@ public class GlobalSettingsActivity extends SettingsInputActivity {
 
     private void prepareLogFolderField() {
         Log.d(GlobalSettingsActivity.class.getName(), "prepareLogFolderField");
-        CardView logFolderLabel = findViewById(R.id.cardview_global_settings_activity_log_folder);
-        logFolderText = findViewById(R.id.textview_global_settings_activity_log_folder);
+        CardView logFolderLabel = findViewById(R.id.cardview_activity_global_settings_log_folder);
+        logFolderText = findViewById(R.id.textview_activity_global_settings_log_folder);
         logFolderText.setEnabled(false);
         if (BuildConfig.DEBUG) {
             Log.d(GlobalSettingsActivity.class.getName(), "Debug version. Enabling debug settings.");
