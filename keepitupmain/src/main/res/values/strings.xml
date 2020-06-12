@@ -15,6 +15,6 @@
     <string name="string_open">Open</string>
     <string name="string_sec">sec</string>
     <string name="string_msec">msec</string>
-    <string name="string_active">active</string>
-    <string name="string_inactive">inactive</string>
+    <string name="string_active">Active</string>
+    <string name="string_inactive">Inactive</string>
 </resources>

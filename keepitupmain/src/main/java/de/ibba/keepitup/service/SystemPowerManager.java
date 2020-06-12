@@ -4,6 +4,8 @@ import android.content.Context;
 import android.os.Build;
 import android.os.PowerManager;
 
+import de.ibba.keepitup.logging.Log;
+
 public class SystemPowerManager implements IPowerManager {
 
     private String packageName;
@@ -16,14 +18,19 @@ public class SystemPowerManager implements IPowerManager {
 
     @Override
     public boolean supportsBatteryOptimization() {
-        return Build.VERSION.SDK_INT >= Build.VERSION_CODES.M;
+        boolean supportsBatteryOptimization = Build.VERSION.SDK_INT >= Build.VERSION_CODES.M;
+        Log.d(SystemPowerManager.class.getName(), "supportsBatteryOptimization: " + supportsBatteryOptimization);
+        return supportsBatteryOptimization;
     }
 
     @Override
     public boolean isBatteryOptimized() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            return !powerManager.isIgnoringBatteryOptimizations(packageName);
+            boolean isBatteryOptimized = !powerManager.isIgnoringBatteryOptimizations(packageName);
+            Log.d(SystemPowerManager.class.getName(), "isBatteryOptimized: " + isBatteryOptimized);
+            return isBatteryOptimized;
         }
+        Log.d(SystemPowerManager.class.getName(), "isBatteryOptimized: false");
         return false;
     }
 }
