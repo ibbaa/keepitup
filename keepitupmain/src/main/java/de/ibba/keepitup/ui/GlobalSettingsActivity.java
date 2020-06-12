@@ -22,6 +22,8 @@ import de.ibba.keepitup.logging.Dump;
 import de.ibba.keepitup.logging.Log;
 import de.ibba.keepitup.resources.PreferenceManager;
 import de.ibba.keepitup.service.IFileManager;
+import de.ibba.keepitup.service.IPowerManager;
+import de.ibba.keepitup.ui.dialog.BatteryOptimizationDialog;
 import de.ibba.keepitup.ui.dialog.FolderChooseDialog;
 import de.ibba.keepitup.ui.dialog.SettingsInput;
 import de.ibba.keepitup.ui.dialog.SettingsInputDialog;
@@ -43,6 +45,7 @@ public class GlobalSettingsActivity extends SettingsInputActivity {
     private TextView downloadExternalStorageOnOffText;
     private TextView downloadFolderText;
     private Switch downloadKeepSwitch;
+    private TextView batteryOptimizationText;
     private TextView downloadKeepOnOffText;
     private Switch fileLoggerEnabledSwitch;
     private TextView fileLoggerEnabledOnOffText;
@@ -64,6 +67,7 @@ public class GlobalSettingsActivity extends SettingsInputActivity {
         prepareExternalStorageTypeRadioGroup();
         prepareDownloadFolderField();
         prepareDownloadKeepSwitch();
+        prepareBatteryOptimizationField();
         prepareDebugSettingsLabel();
         prepareFileLoggerEnabledSwitch();
         prepareFileDumpEnabledSwitch();
@@ -218,20 +222,21 @@ public class GlobalSettingsActivity extends SettingsInputActivity {
     private void prepareDownloadFolderField() {
         Log.d(GlobalSettingsActivity.class.getName(), "prepareDownloadFolderField");
         PreferenceManager preferenceManager = new PreferenceManager(this);
+        CardView downloadFolderCardView = findViewById(R.id.cardview_activity_global_settings_download_folder);
         downloadFolderText = findViewById(R.id.textview_activity_global_settings_download_folder);
         if (downloadExternalStorageSwitch.isChecked()) {
             String downloadFolder = getExternalDownloadFolder();
             Log.d(GlobalSettingsActivity.class.getName(), "External download folder is " + downloadFolder);
             if (downloadFolder != null) {
                 setDownloadFolder(downloadFolder);
-                downloadFolderText.setEnabled(true);
-                downloadFolderText.setOnClickListener(this::showDownloadFolderChooseDialog);
+                downloadFolderCardView.setEnabled(true);
+                downloadFolderCardView.setOnClickListener(this::showDownloadFolderChooseDialog);
             } else {
                 Log.e(GlobalSettingsActivity.class.getName(), "Error accessing download folder.");
                 Log.d(GlobalSettingsActivity.class.getName(), "Reset to internal folder.");
                 setDownloadFolder(getResources().getString(R.string.text_activity_global_settings_download_folder_internal));
-                downloadFolderText.setEnabled(false);
-                downloadFolderText.setOnClickListener(null);
+                downloadFolderCardView.setEnabled(false);
+                downloadFolderCardView.setOnClickListener(null);
                 preferenceManager.setPreferenceDownloadExternalStorage(false);
                 downloadExternalStorageSwitch.setChecked(false);
                 prepareDownloadExternalStorageOnOffText();
@@ -241,8 +246,8 @@ public class GlobalSettingsActivity extends SettingsInputActivity {
             }
         } else {
             setDownloadFolder(getResources().getString(R.string.text_activity_global_settings_download_folder_internal));
-            downloadFolderText.setEnabled(false);
-            downloadFolderText.setOnClickListener(null);
+            downloadFolderCardView.setEnabled(false);
+            downloadFolderCardView.setOnClickListener(null);
         }
     }
 
@@ -275,26 +280,49 @@ public class GlobalSettingsActivity extends SettingsInputActivity {
         prepareDownloadKeepOnOffText();
     }
 
+    private void prepareBatteryOptimizationField() {
+        Log.d(GlobalSettingsActivity.class.getName(), "prepareBatteryOptimizationField");
+        CardView batteryOptimizationCardView = findViewById(R.id.cardview_activity_global_settings_battery_optimization);
+        batteryOptimizationText = findViewById(R.id.textview_activity_global_settings_battery_optimization);
+        IPowerManager powerManager = getPowerManager();
+        if (powerManager.isBatteryOptimized()) {
+            Log.d(GlobalSettingsActivity.class.getName(), "Battery optimization is active");
+            batteryOptimizationText.setText(R.string.string_active);
+        } else {
+            Log.d(GlobalSettingsActivity.class.getName(), "Battery optimization is inactive");
+            batteryOptimizationText.setText(R.string.string_inactive);
+        }
+        if (powerManager.supportsBatteryOptimization()) {
+            Log.d(GlobalSettingsActivity.class.getName(), "Battery optimization is supported");
+            batteryOptimizationCardView.setOnClickListener(this::showBatteryOptimizationDialog);
+            batteryOptimizationCardView.setEnabled(true);
+        } else {
+            Log.d(GlobalSettingsActivity.class.getName(), "Battery optimization is not supported");
+            batteryOptimizationCardView.setOnClickListener(null);
+            batteryOptimizationCardView.setEnabled(false);
+        }
+    }
+
     private void prepareDebugSettingsLabel() {
         Log.d(GlobalSettingsActivity.class.getName(), "prepareDebugSettingsLabel");
-        CardView debugSettingsLabel = findViewById(R.id.cardview_activity_global_settings_debug);
+        CardView debugSettingsCardView = findViewById(R.id.cardview_activity_global_settings_debug);
         if (BuildConfig.DEBUG) {
             Log.d(GlobalSettingsActivity.class.getName(), "Debug version. Enabling debug settings.");
-            debugSettingsLabel.setVisibility(View.VISIBLE);
+            debugSettingsCardView.setVisibility(View.VISIBLE);
         } else {
             Log.d(GlobalSettingsActivity.class.getName(), "Release version. Enabling debug settings.");
-            debugSettingsLabel.setVisibility(View.GONE);
+            debugSettingsCardView.setVisibility(View.GONE);
         }
     }
 
     private void prepareFileLoggerEnabledSwitch() {
         Log.d(GlobalSettingsActivity.class.getName(), "prepareFileLoggerEnabled");
-        CardView fileLoggerEnabledLabel = findViewById(R.id.cardview_activity_global_settings_file_logger_enabled);
+        CardView fileLoggerEnabledCardView = findViewById(R.id.cardview_activity_global_settings_file_logger_enabled);
         fileLoggerEnabledSwitch = findViewById(R.id.switch_activity_global_settings_file_logger_enabled);
         fileLoggerEnabledOnOffText = findViewById(R.id.textview_activity_global_settings_file_logger_enabled_on_off);
         if (BuildConfig.DEBUG) {
             Log.d(GlobalSettingsActivity.class.getName(), "Debug version. Enabling debug settings.");
-            fileLoggerEnabledLabel.setVisibility(View.VISIBLE);
+            fileLoggerEnabledCardView.setVisibility(View.VISIBLE);
             PreferenceManager preferenceManager = new PreferenceManager(this);
             fileLoggerEnabledSwitch.setOnCheckedChangeListener(null);
             fileLoggerEnabledSwitch.setChecked(preferenceManager.getPreferenceFileLoggerEnabled());
@@ -302,7 +330,7 @@ public class GlobalSettingsActivity extends SettingsInputActivity {
             prepareFileLoggerEnabledOnOffText();
         } else {
             Log.d(GlobalSettingsActivity.class.getName(), "Release version. Enabling debug settings.");
-            fileLoggerEnabledLabel.setVisibility(View.GONE);
+            fileLoggerEnabledCardView.setVisibility(View.GONE);
         }
     }
 
@@ -324,12 +352,12 @@ public class GlobalSettingsActivity extends SettingsInputActivity {
 
     private void prepareFileDumpEnabledSwitch() {
         Log.d(GlobalSettingsActivity.class.getName(), "prepareFileDumpEnabledSwitch");
-        CardView fileDumpEnabledLabel = findViewById(R.id.cardview_activity_global_settings_file_logger_enabled);
+        CardView fileDumpEnabledCardView = findViewById(R.id.cardview_activity_global_settings_file_logger_enabled);
         fileDumpEnabledSwitch = findViewById(R.id.switch_activity_global_settings_file_dump_enabled);
         fileDumpEnabledOnOffText = findViewById(R.id.textview_activity_global_settings_file_dump_enabled_on_off);
         if (BuildConfig.DEBUG) {
             Log.d(GlobalSettingsActivity.class.getName(), "Debug version. Enabling debug settings.");
-            fileDumpEnabledLabel.setVisibility(View.VISIBLE);
+            fileDumpEnabledCardView.setVisibility(View.VISIBLE);
             PreferenceManager preferenceManager = new PreferenceManager(this);
             fileDumpEnabledSwitch.setOnCheckedChangeListener(null);
             fileDumpEnabledSwitch.setChecked(preferenceManager.getPreferenceFileDumpEnabled());
@@ -337,7 +365,7 @@ public class GlobalSettingsActivity extends SettingsInputActivity {
             prepareFileDumpEnabledOnOffText();
         } else {
             Log.d(GlobalSettingsActivity.class.getName(), "Release version. Disabling debug settings.");
-            fileDumpEnabledLabel.setVisibility(View.GONE);
+            fileDumpEnabledCardView.setVisibility(View.GONE);
         }
     }
 
@@ -359,12 +387,12 @@ public class GlobalSettingsActivity extends SettingsInputActivity {
 
     private void prepareLogFolderField() {
         Log.d(GlobalSettingsActivity.class.getName(), "prepareLogFolderField");
-        CardView logFolderLabel = findViewById(R.id.cardview_activity_global_settings_log_folder);
+        CardView logFolderCardView = findViewById(R.id.cardview_activity_global_settings_log_folder);
         logFolderText = findViewById(R.id.textview_activity_global_settings_log_folder);
         logFolderText.setEnabled(false);
         if (BuildConfig.DEBUG) {
             Log.d(GlobalSettingsActivity.class.getName(), "Debug version. Enabling debug settings.");
-            logFolderLabel.setVisibility(View.VISIBLE);
+            logFolderCardView.setVisibility(View.VISIBLE);
             String logFolder = getExternalLogFolder();
             Log.d(GlobalSettingsActivity.class.getName(), "External log folder is " + logFolder);
             if (logFolder == null) {
@@ -377,7 +405,7 @@ public class GlobalSettingsActivity extends SettingsInputActivity {
             }
         } else {
             Log.d(GlobalSettingsActivity.class.getName(), "Release version. Diabling debug settings.");
-            logFolderLabel.setVisibility(View.GONE);
+            logFolderCardView.setVisibility(View.GONE);
             setLogFolder("");
         }
     }
@@ -454,6 +482,12 @@ public class GlobalSettingsActivity extends SettingsInputActivity {
         SettingsInputDialog inputDialog = new SettingsInputDialog();
         inputDialog.setArguments(bundle);
         inputDialog.show(getSupportFragmentManager(), GlobalSettingsActivity.class.getName());
+    }
+
+    private void showBatteryOptimizationDialog(View view) {
+        Log.d(GlobalSettingsActivity.class.getName(), "showBatteryOptimizationDialog");
+        BatteryOptimizationDialog batteryOptimizationDialog = new BatteryOptimizationDialog();
+        batteryOptimizationDialog.show(getSupportFragmentManager(), BatteryOptimizationDialog.class.getName());
     }
 
     private String getExternalRootFolder() {
@@ -557,5 +591,12 @@ public class GlobalSettingsActivity extends SettingsInputActivity {
         preferenceManager.setPreferenceDownloadFolder(folder);
         setDownloadFolder(downloadFolder.getAbsolutePath());
         editDialog.dismiss();
+    }
+
+    @Override
+    public void onBatteryOptimizationDialogOkClicked(BatteryOptimizationDialog batteryOptimizationDialog) {
+        Log.d(SettingsInputActivity.class.getName(), "onBatteryOptimizationDialogOkClicked");
+        prepareBatteryOptimizationField();
+        batteryOptimizationDialog.dismiss();
     }
 }

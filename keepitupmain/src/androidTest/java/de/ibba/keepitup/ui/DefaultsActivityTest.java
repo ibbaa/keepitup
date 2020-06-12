@@ -561,7 +561,7 @@ public class DefaultsActivityTest extends BaseUITest {
     }
 
     private DefaultsActivity getActivity() {
-        return (DefaultsActivity) rule.getActivity();
+        return rule.getActivity();
     }
 
     private MockClipboardManager prepareMockClipboardManager(SettingsInputDialog inputDialog) {

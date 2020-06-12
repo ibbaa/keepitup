@@ -82,7 +82,7 @@ public abstract class SettingsInputActivity extends AppCompatActivity implements
 
     @Override
     public void onBatteryOptimizationDialogOkClicked(BatteryOptimizationDialog batteryOptimizationDialog) {
-        Log.d(SettingsInputActivity.class.getName(), "onFolderChooseDialogOkClicked");
+        Log.d(SettingsInputActivity.class.getName(), "onBatteryOptimizationDialogOkClicked");
         batteryOptimizationDialog.dismiss();
     }
 

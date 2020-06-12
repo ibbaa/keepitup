@@ -17,6 +17,7 @@ import de.ibba.keepitup.logging.Log;
 import de.ibba.keepitup.resources.PreferenceManager;
 import de.ibba.keepitup.test.mock.MockClipboardManager;
 import de.ibba.keepitup.test.mock.MockFileManager;
+import de.ibba.keepitup.test.mock.MockPowerManager;
 import de.ibba.keepitup.test.mock.TestRegistry;
 import de.ibba.keepitup.ui.dialog.SettingsInputDialog;
 
@@ -38,6 +39,7 @@ import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
 import static org.hamcrest.Matchers.allOf;
 import static org.hamcrest.Matchers.endsWith;
+import static org.hamcrest.Matchers.startsWith;
 import static org.hamcrest.core.IsNot.not;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -79,7 +81,7 @@ public class GlobalSettingsActivityTest extends BaseUITest {
         onView(withId(R.id.radiobutton_activity_global_settings_external_storage_type_sdcard)).check(matches(not(isEnabled())));
         onView(withId(R.id.textview_activity_global_settings_download_folder_label)).check(matches(withText("Download folder")));
         onView(withId(R.id.textview_activity_global_settings_download_folder)).check(matches(withText("Internal storage folder")));
-        onView(withId(R.id.textview_activity_global_settings_download_folder)).check(matches(not(isEnabled())));
+        onView(withId(R.id.cardview_activity_global_settings_download_folder)).check(matches(not(isEnabled())));
         onView(withId(R.id.switch_activity_global_settings_download_keep)).perform(scrollTo());
         onView(withId(R.id.textview_activity_global_settings_download_keep_label)).check(matches(withText("Keep downloaded files")));
         onView(withId(R.id.switch_activity_global_settings_download_keep)).check(matches(isNotChecked()));
@@ -478,7 +480,7 @@ public class GlobalSettingsActivityTest extends BaseUITest {
         onView(withId(R.id.radiobutton_activity_global_settings_external_storage_type_sdcard)).check(matches(not(isEnabled())));
         onView(withId(R.id.textview_activity_global_settings_download_folder_label)).check(matches(withText("Download folder")));
         onView(withId(R.id.textview_activity_global_settings_download_folder)).check(matches(withText("Internal storage folder")));
-        onView(withId(R.id.textview_activity_global_settings_download_folder)).check(matches(not(isEnabled())));
+        onView(withId(R.id.cardview_activity_global_settings_download_folder)).check(matches(not(isEnabled())));
         onView(withId(R.id.textview_activity_global_settings_download_keep_label)).check(matches(withText("Keep downloaded files")));
         onView(withId(R.id.switch_activity_global_settings_download_keep)).check(matches(isNotChecked()));
         onView(withId(R.id.switch_activity_global_settings_download_keep)).check(matches(not(isEnabled())));
@@ -509,6 +511,63 @@ public class GlobalSettingsActivityTest extends BaseUITest {
     }
 
     @Test
+    public void testBatteryOptimizationDialog() {
+        SettingsInputActivity activity = launchSettingsInputActivity(rule);
+        MockPowerManager powerManager = new MockPowerManager();
+        activity.injectPowerManager(powerManager);
+        onView(withId(R.id.textview_activity_global_settings_battery_optimization_label)).check(matches(withText("Battery Optimization")));
+        onView(withId(R.id.textview_activity_global_settings_battery_optimization)).check(matches(withText("Active")));
+        onView(withId(R.id.cardview_activity_global_settings_battery_optimization)).perform(click());
+        assertEquals(1, activity.getSupportFragmentManager().getFragments().size());
+        onView(withId(R.id.textview_dialog_battery_optimization_info)).check(matches(withText(startsWith("Battery optimization is active for this app."))));
+        powerManager.setBatteryOptimized(false);
+        onView(withId(R.id.imageview_dialog_battery_optimization_ok)).perform(click());
+        assertEquals(0, activity.getSupportFragmentManager().getFragments().size());
+        onView(withId(R.id.textview_activity_global_settings_battery_optimization_label)).check(matches(withText("Battery Optimization")));
+        onView(withId(R.id.textview_activity_global_settings_battery_optimization)).check(matches(withText("Inactive")));
+        onView(withId(R.id.cardview_activity_global_settings_battery_optimization)).perform(click());
+        assertEquals(1, activity.getSupportFragmentManager().getFragments().size());
+        onView(withId(R.id.textview_dialog_battery_optimization_info)).check(matches(withText(startsWith("Battery optimization is not active for this app."))));
+        powerManager.setBatteryOptimized(true);
+        onView(withId(R.id.imageview_dialog_battery_optimization_ok)).perform(click());
+        assertEquals(0, activity.getSupportFragmentManager().getFragments().size());
+        onView(withId(R.id.textview_activity_global_settings_battery_optimization_label)).check(matches(withText("Battery Optimization")));
+        onView(withId(R.id.textview_activity_global_settings_battery_optimization)).check(matches(withText("Active")));
+    }
+
+    @Test
+    public void testBatteryOptimizationDialogScreenRotation() {
+        SettingsInputActivity activity = launchSettingsInputActivity(rule);
+        MockPowerManager powerManager = new MockPowerManager();
+        activity.injectPowerManager(powerManager);
+        onView(withId(R.id.textview_activity_global_settings_battery_optimization_label)).check(matches(withText("Battery Optimization")));
+        onView(withId(R.id.textview_activity_global_settings_battery_optimization)).check(matches(withText("Active")));
+        onView(withId(R.id.cardview_activity_global_settings_battery_optimization)).perform(click());
+        rotateScreen(activity);
+        onView(isRoot()).perform(waitFor(1000));
+        assertEquals(1, getActivity().getSupportFragmentManager().getFragments().size());
+        powerManager = new MockPowerManager();
+        getActivity().injectPowerManager(powerManager);
+        onView(withId(R.id.textview_dialog_battery_optimization_info)).check(matches(withText(startsWith("Battery optimization is active for this app."))));
+        powerManager.setBatteryOptimized(false);
+        onView(withId(R.id.imageview_dialog_battery_optimization_ok)).perform(click());
+        assertEquals(0, getActivity().getSupportFragmentManager().getFragments().size());
+        onView(withId(R.id.textview_activity_global_settings_battery_optimization_label)).check(matches(withText("Battery Optimization")));
+        onView(withId(R.id.textview_activity_global_settings_battery_optimization)).check(matches(withText("Inactive")));
+        onView(withId(R.id.cardview_activity_global_settings_battery_optimization)).perform(scrollTo());
+        onView(withId(R.id.cardview_activity_global_settings_battery_optimization)).perform(click());
+        rotateScreen(activity);
+        onView(isRoot()).perform(waitFor(1000));
+        powerManager = new MockPowerManager();
+        getActivity().injectPowerManager(powerManager);
+        powerManager.setBatteryOptimized(true);
+        onView(withId(R.id.imageview_dialog_battery_optimization_ok)).perform(click());
+        assertEquals(0, getActivity().getSupportFragmentManager().getFragments().size());
+        onView(withId(R.id.textview_activity_global_settings_battery_optimization_label)).check(matches(withText("Battery Optimization")));
+        onView(withId(R.id.textview_activity_global_settings_battery_optimization)).check(matches(withText("Active")));
+    }
+
+    @Test
     public void testExternalStorageType() {
         launchSettingsInputActivity(rule);
         PreferenceManager preferenceManager = getPreferenceManager();
@@ -523,7 +582,7 @@ public class GlobalSettingsActivityTest extends BaseUITest {
         onView(withId(R.id.radiobutton_activity_global_settings_external_storage_type_sdcard)).check(matches(isEnabled()));
         assertEquals(0, preferenceManager.getPreferenceExternalStorageType());
         String downloadPrimary = getText(withId(R.id.textview_activity_global_settings_download_folder));
-        onView(withId(R.id.textview_activity_global_settings_download_folder)).perform(click());
+        onView(withId(R.id.cardview_activity_global_settings_download_folder)).perform(click());
         String downloadPrimaryDialog = getText(withId(R.id.textview_dialog_folder_choose_absolute));
         assertEquals(downloadPrimary, downloadPrimaryDialog);
         onView(withId(R.id.imageview_dialog_folder_choose_cancel)).perform(click());
@@ -531,14 +590,14 @@ public class GlobalSettingsActivityTest extends BaseUITest {
         assertEquals(1, preferenceManager.getPreferenceExternalStorageType());
         String downloadSDCard = getText(withId(R.id.textview_activity_global_settings_download_folder));
         assertNotEquals(downloadPrimary, downloadSDCard);
-        onView(withId(R.id.textview_activity_global_settings_download_folder)).perform(click());
+        onView(withId(R.id.cardview_activity_global_settings_download_folder)).perform(click());
         String downloadSDCardDialog = getText(withId(R.id.textview_dialog_folder_choose_absolute));
         assertEquals(downloadSDCard, downloadSDCardDialog);
         onView(withId(R.id.imageview_dialog_folder_choose_cancel)).perform(click());
         onView(withId(R.id.radiobutton_activity_global_settings_external_storage_type_primary)).perform(click());
         assertEquals(0, preferenceManager.getPreferenceExternalStorageType());
         String downloadPrimary2 = getText(withId(R.id.textview_activity_global_settings_download_folder));
-        onView(withId(R.id.textview_activity_global_settings_download_folder)).perform(click());
+        onView(withId(R.id.cardview_activity_global_settings_download_folder)).perform(click());
         String downloadPrimaryDialog2 = getText(withId(R.id.textview_dialog_folder_choose_absolute));
         assertEquals(downloadPrimary2, downloadPrimaryDialog2);
         onView(withId(R.id.imageview_dialog_folder_choose_cancel)).perform(click());
@@ -548,12 +607,12 @@ public class GlobalSettingsActivityTest extends BaseUITest {
     public void testDownloadFolderDialogOpen() {
         SettingsInputActivity activity = launchSettingsInputActivity(rule);
         onView(withId(R.id.switch_activity_global_settings_download_external_storage)).perform(click());
-        onView(withId(R.id.textview_activity_global_settings_download_folder)).perform(click());
+        onView(withId(R.id.cardview_activity_global_settings_download_folder)).perform(click());
         assertEquals(1, activity.getSupportFragmentManager().getFragments().size());
         onView(withId(R.id.imageview_dialog_folder_choose_cancel)).perform(click());
         assertEquals(0, activity.getSupportFragmentManager().getFragments().size());
         onView(withId(R.id.switch_activity_global_settings_download_external_storage)).perform(click());
-        onView(withId(R.id.textview_activity_global_settings_download_folder)).perform(click());
+        onView(withId(R.id.cardview_activity_global_settings_download_folder)).perform(click());
         assertEquals(0, activity.getSupportFragmentManager().getFragments().size());
     }
 
@@ -563,7 +622,7 @@ public class GlobalSettingsActivityTest extends BaseUITest {
         PreferenceManager preferenceManager = getPreferenceManager();
         assertEquals("download", preferenceManager.getPreferenceDownloadFolder());
         onView(withId(R.id.switch_activity_global_settings_download_external_storage)).perform(click());
-        onView(withId(R.id.textview_activity_global_settings_download_folder)).perform(click());
+        onView(withId(R.id.cardview_activity_global_settings_download_folder)).perform(click());
         onView(withId(R.id.edittext_dialog_folder_choose_folder)).check(matches(withText("download")));
         onView(withId(R.id.edittext_dialog_folder_choose_folder)).perform(replaceText("test"));
         onView(withId(R.id.imageview_dialog_folder_choose_cancel)).perform(click());
@@ -571,7 +630,7 @@ public class GlobalSettingsActivityTest extends BaseUITest {
         assertEquals("download", preferenceManager.getPreferenceDownloadFolder());
         File testFile = new File(getFileManager().getExternalRootDirectory(0), "test");
         assertFalse(testFile.exists());
-        onView(withId(R.id.textview_activity_global_settings_download_folder)).perform(click());
+        onView(withId(R.id.cardview_activity_global_settings_download_folder)).perform(click());
         onView(withId(R.id.edittext_dialog_folder_choose_folder)).check(matches(withText("download")));
         onView(withId(R.id.edittext_dialog_folder_choose_folder)).perform(replaceText("test"));
         onView(withId(R.id.imageview_dialog_folder_choose_ok)).perform(click());
@@ -596,7 +655,7 @@ public class GlobalSettingsActivityTest extends BaseUITest {
         onView(withId(R.id.switch_activity_global_settings_download_external_storage)).check(matches(isNotChecked()));
         onView(withId(R.id.textview_activity_global_settings_download_folder_label)).check(matches(withText("Download folder")));
         onView(withId(R.id.textview_activity_global_settings_download_folder)).check(matches(withText("Internal storage folder")));
-        onView(withId(R.id.textview_activity_global_settings_download_folder)).check(matches(Matchers.not(isEnabled())));
+        onView(withId(R.id.cardview_activity_global_settings_download_folder)).check(matches(Matchers.not(isEnabled())));
         onView(withId(R.id.textview_activity_global_settings_download_keep_label)).check(matches(withText("Keep downloaded files")));
         onView(withId(R.id.switch_activity_global_settings_download_keep)).check(matches(isNotChecked()));
         assertFalse(preferenceManager.getPreferenceDownloadExternalStorage());
@@ -610,7 +669,7 @@ public class GlobalSettingsActivityTest extends BaseUITest {
         mockFileManager.setExternalDirectory(null, 0);
         mockFileManager.setExternalRootDirectory(null, 0);
         activity.injectFileManager(mockFileManager);
-        onView(withId(R.id.textview_activity_global_settings_download_folder)).perform(click());
+        onView(withId(R.id.cardview_activity_global_settings_download_folder)).perform(click());
         assertEquals(1, activity.getSupportFragmentManager().getFragments().size());
         onView(withId(R.id.textview_dialog_general_error_message)).check(matches(withText("Error accessing external files directory.")));
         onView(withId(R.id.imageview_dialog_general_error_ok)).perform(click());
@@ -625,7 +684,7 @@ public class GlobalSettingsActivityTest extends BaseUITest {
         GlobalSettingsActivity activity = (GlobalSettingsActivity) launchSettingsInputActivity(rule);
         PreferenceManager preferenceManager = getPreferenceManager();
         onView(withId(R.id.switch_activity_global_settings_download_external_storage)).perform(click());
-        onView(withId(R.id.textview_activity_global_settings_download_folder)).perform(click());
+        onView(withId(R.id.cardview_activity_global_settings_download_folder)).perform(click());
         MockFileManager mockFileManager = new MockFileManager();
         mockFileManager.setExternalDirectory(null, 0);
         mockFileManager.setExternalRootDirectory(null, 0);
@@ -695,7 +754,7 @@ public class GlobalSettingsActivityTest extends BaseUITest {
         onView(withId(R.id.radiobutton_activity_global_settings_external_storage_type_sdcard)).check(matches(not(isEnabled())));
         onView(withId(R.id.textview_activity_global_settings_download_folder_label)).check(matches(withText("Download folder")));
         onView(withId(R.id.textview_activity_global_settings_download_folder)).check(matches(withText("Internal storage folder")));
-        onView(withId(R.id.textview_activity_global_settings_download_folder)).check(matches(not(isEnabled())));
+        onView(withId(R.id.cardview_activity_global_settings_download_folder)).check(matches(not(isEnabled())));
         onView(withId(R.id.textview_activity_global_settings_download_keep_label)).check(matches(withText("Keep downloaded files")));
         onView(withId(R.id.switch_activity_global_settings_download_keep)).check(matches(isNotChecked()));
         onView(withId(R.id.switch_activity_global_settings_download_keep)).check(matches(not(isEnabled())));
@@ -827,7 +886,7 @@ public class GlobalSettingsActivityTest extends BaseUITest {
         PreferenceManager preferenceManager = getPreferenceManager();
         assertEquals("download", preferenceManager.getPreferenceDownloadFolder());
         onView(withId(R.id.switch_activity_global_settings_download_external_storage)).perform(click());
-        onView(withId(R.id.textview_activity_global_settings_download_folder)).perform(click());
+        onView(withId(R.id.cardview_activity_global_settings_download_folder)).perform(click());
         onView(withId(R.id.edittext_dialog_folder_choose_folder)).check(matches(withText("download")));
         rotateScreen(activity);
         onView(isRoot()).perform(waitFor(1000));
@@ -848,7 +907,7 @@ public class GlobalSettingsActivityTest extends BaseUITest {
     }
 
     private GlobalSettingsActivity getActivity() {
-        return (GlobalSettingsActivity) rule.getActivity();
+        return rule.getActivity();
     }
 
     private MockClipboardManager prepareMockClipboardManager(SettingsInputDialog inputDialog) {
