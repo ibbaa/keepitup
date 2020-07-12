@@ -15,6 +15,7 @@ public class NetworkTaskViewHolder extends RecyclerView.ViewHolder {
 
     private final NetworkTaskMainActivity mainActivity;
     private final CardView cardView;
+    private final TextView titleText;
     private final ImageView startStopImage;
     private final TextView statusText;
     private final TextView instancesText;
@@ -31,6 +32,7 @@ public class NetworkTaskViewHolder extends RecyclerView.ViewHolder {
         super(itemView);
         this.mainActivity = mainActivity;
         cardView = itemView.findViewById(R.id.cardview_list_item_network_task);
+        titleText = itemView.findViewById(R.id.textview_list_item_network_task_title);
         startStopImage = itemView.findViewById(R.id.imageview_list_item_network_task_start_stop);
         startStopImage.setOnClickListener(this::onStartStopClicked);
         ImageView deleteImage = itemView.findViewById(R.id.imageview_list_item_network_task_delete);
@@ -51,6 +53,10 @@ public class NetworkTaskViewHolder extends RecyclerView.ViewHolder {
         lastExecMessageText = itemView.findViewById(R.id.textview_list_item_network_task_last_exec_message);
         addImage = itemView.findViewById(R.id.imageview_list_item_network_task_add);
         addImage.setOnClickListener(mainActivity::onMainAddClicked);
+    }
+
+    public void setTitle(String title) {
+        titleText.setText(title);
     }
 
     public void setStatus(String status, String descriptionStartStopImage, int startStopImageResource) {
