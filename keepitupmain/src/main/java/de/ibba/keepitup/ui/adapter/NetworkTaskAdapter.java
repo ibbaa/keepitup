@@ -47,6 +47,7 @@ public class NetworkTaskAdapter extends RecyclerView.Adapter<NetworkTaskViewHold
         if (position < networkTaskWrapperList.size()) {
             NetworkTask networkTask = networkTaskWrapperList.get(position).getNetworkTask();
             LogEntry logEntry = networkTaskWrapperList.get(position).getLogEntry();
+            bindTitle(networkTaskViewHolder, networkTask);
             bindStatus(networkTaskViewHolder, networkTask);
             bindInstances(networkTaskViewHolder, networkTask);
             bindAccessType(networkTaskViewHolder, networkTask);
@@ -60,6 +61,12 @@ public class NetworkTaskAdapter extends RecyclerView.Adapter<NetworkTaskViewHold
         } else {
             networkTaskViewHolder.showAddNetworkTaskImage();
         }
+    }
+
+    private void bindTitle(@NonNull NetworkTaskViewHolder networkTaskViewHolder, NetworkTask networkTask) {
+        Log.d(NetworkTaskAdapter.class.getName(), "bindTitle, networkTask is " + networkTask);
+        String formattedTitleText = getResources().getString(R.string.text_activity_main_list_item_network_task_title, networkTask.getIndex() + 1);
+        networkTaskViewHolder.setTitle(formattedTitleText);
     }
 
     private void bindStatus(@NonNull NetworkTaskViewHolder networkTaskViewHolder, NetworkTask networkTask) {
