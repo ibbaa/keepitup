@@ -37,12 +37,12 @@ public class NetworkTaskProcessServiceScheduler {
         Log.d(NetworkTaskProcessServiceScheduler.class.getName(), "Schedule network task " + networkTask);
         networkTask.setRunning(true);
         networkTaskDAO.updateNetworkTaskRunning(networkTask.getId(), true);
-        reschedule(networkTask, true, true);
+        reschedule(networkTask, true);
         return networkTask;
     }
 
-    public NetworkTask reschedule(NetworkTask networkTask, boolean immediate, boolean cancelCurrentIfPresent) {
-        Log.d(NetworkTaskProcessServiceScheduler.class.getName(), "Reschedule network task " + networkTask + ", immediate is " + immediate + ", cancelCurrentIfPresent is " + cancelCurrentIfPresent);
+    public NetworkTask reschedule(NetworkTask networkTask, boolean immediate) {
+        Log.d(NetworkTaskProcessServiceScheduler.class.getName(), "Reschedule network task " + networkTask + ", immediate is " + immediate);
         NetworkTask databaseTask = networkTaskDAO.readNetworkTask(networkTask.getId());
         if (databaseTask == null) {
             Log.d(NetworkTaskProcessServiceScheduler.class.getName(), "Network task does no longer exist. Skipping reschedule.");
@@ -59,19 +59,7 @@ public class NetworkTaskProcessServiceScheduler {
             terminate(networkTask);
             return networkTask;
         }
-        PendingIntent pendingIntent;
-        if (cancelCurrentIfPresent) {
-            Log.d(NetworkTaskProcessServiceScheduler.class.getName(), "cancelCurrentIfPresent is true. Creating new pending intent.");
-            pendingIntent = createPendingIntent(networkTask);
-        } else {
-            if (hasPendingIntent(networkTask)) {
-                Log.d(NetworkTaskProcessServiceScheduler.class.getName(), "cancelCurrentIfPresent is false. Pending intent already exists. Reusing prending intent.");
-                pendingIntent = getPendingIntent(networkTask);
-            } else {
-                Log.d(NetworkTaskProcessServiceScheduler.class.getName(), "cancelCurrentIfPresent is false. Pending does not exist. Creating new pending intent.");
-                pendingIntent = createPendingIntent(networkTask);
-            }
-        }
+        PendingIntent pendingIntent = createPendingIntent(networkTask);
         long delay = immediate ? 0 : getIntervalMilliseconds(networkTask);
         if (immediate) {
             Log.d(NetworkTaskProcessServiceScheduler.class.getName(), "scheduling alarm immediately");
@@ -108,7 +96,7 @@ public class NetworkTaskProcessServiceScheduler {
             if (currentTask.isRunning()) {
                 Log.d(NetworkTaskProcessServiceScheduler.class.getName(), "Network task " + currentTask + " is marked as running. Rescheduling...");
                 networkTaskDAO.resetNetworkTaskInstances(currentTask.getId());
-                reschedule(currentTask, false, false);
+                reschedule(currentTask, false);
             } else {
                 Log.d(NetworkTaskProcessServiceScheduler.class.getName(), "Network task " + currentTask + " is not marked as running.");
                 networkTaskDAO.resetNetworkTaskInstances(currentTask.getId());
