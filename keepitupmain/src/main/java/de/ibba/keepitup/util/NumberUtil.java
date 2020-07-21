@@ -73,4 +73,11 @@ public class NumberUtil {
         }
         return defaultValue;
     }
+
+    public static long ensurePositive(long value) {
+        if (value < 0) {
+            return 0;
+        }
+        return value;
+    }
 }

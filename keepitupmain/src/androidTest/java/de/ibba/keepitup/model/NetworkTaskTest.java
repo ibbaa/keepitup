@@ -50,6 +50,7 @@ public class NetworkTaskTest {
         assertFalse(task.isOnlyWifi());
         assertFalse(task.isNotification());
         assertFalse(task.isRunning());
+        assertEquals(-1, task.getLastScheduled());
         PersistableBundle persistableBundle = task.toPersistableBundle();
         assertNotNull(persistableBundle);
         task = new NetworkTask(persistableBundle);
@@ -64,6 +65,7 @@ public class NetworkTaskTest {
         assertFalse(task.isOnlyWifi());
         assertFalse(task.isNotification());
         assertFalse(task.isRunning());
+        assertEquals(-1, task.getLastScheduled());
         Bundle bundle = task.toBundle();
         assertNotNull(bundle);
         task = new NetworkTask(bundle);
@@ -78,6 +80,7 @@ public class NetworkTaskTest {
         assertFalse(task.isOnlyWifi());
         assertFalse(task.isNotification());
         assertFalse(task.isRunning());
+        assertEquals(-1, task.getLastScheduled());
     }
 
     @Test
@@ -101,6 +104,7 @@ public class NetworkTaskTest {
         assertTrue(task.isOnlyWifi());
         assertTrue(task.isNotification());
         assertFalse(task.isRunning());
+        assertEquals(-1, task.getLastScheduled());
         preferenceManager.removeAllPreferences();
         task = new NetworkTask(TestRegistry.getContext());
         assertEquals(-1, task.getId());
@@ -114,10 +118,12 @@ public class NetworkTaskTest {
         assertFalse(task.isOnlyWifi());
         assertFalse(task.isNotification());
         assertFalse(task.isRunning());
+        assertEquals(-1, task.getLastScheduled());
     }
 
     @Test
     public void testToBundleValues() {
+        long timestamp = System.currentTimeMillis();
         NetworkTask task = new NetworkTask();
         task.setId(1);
         task.setIndex(2);
@@ -130,6 +136,7 @@ public class NetworkTaskTest {
         task.setOnlyWifi(true);
         task.setNotification(true);
         task.setRunning(true);
+        task.setLastScheduled(timestamp);
         assertEquals(1, task.getId());
         assertEquals(2, task.getIndex());
         assertEquals(3, task.getSchedulerId());
@@ -141,6 +148,7 @@ public class NetworkTaskTest {
         assertTrue(task.isOnlyWifi());
         assertTrue(task.isNotification());
         assertTrue(task.isRunning());
+        assertEquals(timestamp, task.getLastScheduled());
         PersistableBundle persistableBundle = task.toPersistableBundle();
         assertNotNull(persistableBundle);
         task = new NetworkTask(persistableBundle);
@@ -155,6 +163,7 @@ public class NetworkTaskTest {
         assertTrue(task.isOnlyWifi());
         assertTrue(task.isNotification());
         assertTrue(task.isRunning());
+        assertEquals(timestamp, task.getLastScheduled());
         Bundle bundle = task.toBundle();
         assertNotNull(bundle);
         task = new NetworkTask(bundle);
@@ -169,6 +178,7 @@ public class NetworkTaskTest {
         assertTrue(task.isOnlyWifi());
         assertTrue(task.isNotification());
         assertTrue(task.isRunning());
+        assertEquals(timestamp, task.getLastScheduled());
     }
 
     @Test
@@ -219,6 +229,10 @@ public class NetworkTaskTest {
         networkTask1.setSchedulerId(11);
         assertFalse(networkTask1.isEqual(networkTask2));
         networkTask2.setSchedulerId(11);
+        assertTrue(networkTask1.isEqual(networkTask2));
+        networkTask1.setLastScheduled(25);
+        assertFalse(networkTask1.isEqual(networkTask2));
+        networkTask2.setLastScheduled(25);
         assertTrue(networkTask1.isEqual(networkTask2));
     }
 

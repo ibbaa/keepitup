@@ -15,6 +15,7 @@ import de.ibba.keepitup.R;
 import de.ibba.keepitup.logging.Log;
 import de.ibba.keepitup.resources.ServiceFactoryContributor;
 import de.ibba.keepitup.service.ITimeService;
+import de.ibba.keepitup.util.NumberUtil;
 
 public class ConnectCommand implements Callable<ConnectCommandResult> {
 
@@ -80,11 +81,11 @@ public class ConnectCommand implements Callable<ConnectCommandResult> {
             Log.d(ConnectCommand.class.getName(), "Connecting to " + sockaddr.toString());
             socket.connect(sockaddr, timeout * 1000);
             long end = timeService.getCurrentTimestamp();
-            return new ConnectionResult(true, end - start);
+            return new ConnectionResult(true, NumberUtil.ensurePositive(end - start));
         } catch (SocketTimeoutException exc) {
             Log.e(ConnectCommand.class.getName(), "Connection timeout", exc);
             long end = timeService.getCurrentTimestamp();
-            return new ConnectionResult(false, end - start);
+            return new ConnectionResult(false, NumberUtil.ensurePositive(end - start));
         } finally {
             try {
                 Log.d(ConnectCommand.class.getName(), "Closing socket");

@@ -5,7 +5,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
 
+import java.text.SimpleDateFormat;
 import java.util.List;
+import java.util.Locale;
 
 import de.ibba.keepitup.db.NetworkTaskDAO;
 import de.ibba.keepitup.logging.Log;
@@ -14,9 +16,12 @@ import de.ibba.keepitup.resources.ServiceFactoryContributor;
 
 public class NetworkTaskProcessServiceScheduler {
 
+    private final static String LOG_TIMESTAMP_PATTERN = "yyyy-MM-dd HH:mm:ss.SSS";
+
     private final Context context;
     private final NetworkTaskDAO networkTaskDAO;
     private final IAlarmManager alarmManager;
+    private final ITimeService timeService;
 
     private static NetworkTaskProcessPool processPool;
 
@@ -24,6 +29,7 @@ public class NetworkTaskProcessServiceScheduler {
         this.context = context;
         this.networkTaskDAO = new NetworkTaskDAO(context);
         this.alarmManager = createAlarmManager();
+        this.timeService = createTimeService();
     }
 
     public synchronized static NetworkTaskProcessPool getNetworkTaskProcessPool() {
@@ -67,6 +73,11 @@ public class NetworkTaskProcessServiceScheduler {
             Log.d(NetworkTaskProcessServiceScheduler.class.getName(), "scheduling alarm with delay of " + delay + " msec");
         }
         alarmManager.setAlarm(delay, pendingIntent);
+        Log.d(NetworkTaskProcessServiceScheduler.class.getName(), "scheduling alarm immediately");
+        long timestamp = timeService.getCurrentTimestamp();
+        networkTaskDAO.updateNetworkTaskLastScheduled(networkTask.getId(), timestamp);
+        SimpleDateFormat logTimestampDateFormat = new SimpleDateFormat(LOG_TIMESTAMP_PATTERN, Locale.US);
+        Log.d(NetworkTaskProcessServiceScheduler.class.getName(), "Updated last scheduled timestamp to " + timestamp + " (" + logTimestampDateFormat.format(timestamp) + ")");
         return networkTask;
     }
 
@@ -153,6 +164,11 @@ public class NetworkTaskProcessServiceScheduler {
     private IAlarmManager createAlarmManager() {
         ServiceFactoryContributor factoryContributor = new ServiceFactoryContributor(getContext());
         return factoryContributor.createServiceFactory().createAlarmManager(getContext());
+    }
+
+    private ITimeService createTimeService() {
+        ServiceFactoryContributor factoryContributor = new ServiceFactoryContributor(getContext());
+        return factoryContributor.createServiceFactory().createTimeService();
     }
 
     private Context getContext() {

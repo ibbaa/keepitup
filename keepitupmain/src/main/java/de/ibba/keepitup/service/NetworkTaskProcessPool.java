@@ -12,7 +12,7 @@ import de.ibba.keepitup.logging.Log;
 
 public class NetworkTaskProcessPool {
 
-    private Map<Integer, List<Future<?>>> futurePool;
+    private final Map<Integer, List<Future<?>>> futurePool;
 
     public NetworkTaskProcessPool() {
         this.futurePool = new HashMap<>();
