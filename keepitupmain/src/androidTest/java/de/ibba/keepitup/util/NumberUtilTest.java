@@ -56,4 +56,13 @@ public class NumberUtilTest {
         assertEquals(2, NumberUtil.getDoubleValue("xyz", 2), 0.01);
         assertEquals(2, NumberUtil.getDoubleValue(null, 2), 0.01);
     }
+
+    @Test
+    public void testEnsurePositive() {
+        assertEquals(0, NumberUtil.ensurePositive(0));
+        assertEquals(0, NumberUtil.ensurePositive(-1));
+        assertEquals(0, NumberUtil.ensurePositive(Long.MIN_VALUE));
+        assertEquals(1, NumberUtil.ensurePositive(1));
+        assertEquals(Long.MAX_VALUE, NumberUtil.ensurePositive(Long.MAX_VALUE));
+    }
 }

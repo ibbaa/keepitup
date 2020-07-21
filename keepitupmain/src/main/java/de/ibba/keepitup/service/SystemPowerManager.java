@@ -8,8 +8,8 @@ import de.ibba.keepitup.logging.Log;
 
 public class SystemPowerManager implements IPowerManager {
 
-    private String packageName;
-    private PowerManager powerManager;
+    private final String packageName;
+    private final PowerManager powerManager;
 
     public SystemPowerManager(Context context) {
         this.packageName = context.getPackageName();

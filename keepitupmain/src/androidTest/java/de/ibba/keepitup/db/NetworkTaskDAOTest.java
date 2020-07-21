@@ -101,6 +101,13 @@ public class NetworkTaskDAOTest {
     }
 
     @Test
+    public void testInsertResetLastScheduled() {
+        NetworkTask insertedTask1 = getNetworkTask1();
+        insertedTask1 = networkTaskDAO.insertNetworkTask(insertedTask1);
+        assertEquals(-1, insertedTask1.getLastScheduled());
+    }
+
+    @Test
     public void testDeleteIndexCleanup() {
         NetworkTask insertedTask1 = new NetworkTask();
         NetworkTask insertedTask2 = new NetworkTask();
@@ -153,6 +160,7 @@ public class NetworkTaskDAOTest {
         assertEquals(insertedTask1.getSchedulerId(), readTask1.getSchedulerId());
         assertEquals(insertedTask1.getInstances(), readTask1.getInstances());
         assertFalse(readTask1.isRunning());
+        assertEquals(-1, readTask1.getLastScheduled());
     }
 
     @Test
@@ -174,6 +182,7 @@ public class NetworkTaskDAOTest {
         assertEquals(task2.isNotification(), readTask1.isNotification());
         assertEquals(insertedTask1.getIndex(), readTask1.getIndex());
         assertEquals(insertedTask1.isRunning(), readTask1.isRunning());
+        assertEquals(-1, readTask1.getLastScheduled());
     }
 
     @Test
@@ -261,6 +270,18 @@ public class NetworkTaskDAOTest {
         assertEquals(0, networkTaskDAO.readNetworkTaskInstances(insertedTask2.getId()));
     }
 
+    @Test
+    public void testUpdateNetworkTaskLastScheduled() {
+        NetworkTask insertedTask1 = getNetworkTask1();
+        insertedTask1 = networkTaskDAO.insertNetworkTask(insertedTask1);
+        networkTaskDAO.updateNetworkTaskLastScheduled(insertedTask1.getId(), 125);
+        NetworkTask readTask1 = networkTaskDAO.readNetworkTask(insertedTask1.getId());
+        assertEquals(125, readTask1.getLastScheduled());
+        networkTaskDAO.resetNetworkTaskLastScheduled(readTask1.getId());
+        readTask1 = networkTaskDAO.readNetworkTask(insertedTask1.getId());
+        assertEquals(-1, readTask1.getLastScheduled());
+    }
+
     private NetworkTask getNetworkTask1() {
         NetworkTask task = new NetworkTask();
         task.setId(0);
@@ -274,6 +295,7 @@ public class NetworkTaskDAOTest {
         task.setOnlyWifi(false);
         task.setNotification(true);
         task.setRunning(true);
+        task.setLastScheduled(0);
         return task;
     }
 
@@ -290,6 +312,7 @@ public class NetworkTaskDAOTest {
         task.setOnlyWifi(true);
         task.setNotification(false);
         task.setRunning(false);
+        task.setLastScheduled(0);
         return task;
     }
 
@@ -306,6 +329,7 @@ public class NetworkTaskDAOTest {
         task.setOnlyWifi(false);
         task.setNotification(false);
         task.setRunning(false);
+        task.setLastScheduled(0);
         return task;
     }
 }

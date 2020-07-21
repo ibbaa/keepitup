@@ -26,6 +26,7 @@ import de.ibba.keepitup.service.IFileManager;
 import de.ibba.keepitup.service.ITimeService;
 import de.ibba.keepitup.service.SystemFileManager;
 import de.ibba.keepitup.util.HTTPUtil;
+import de.ibba.keepitup.util.NumberUtil;
 import de.ibba.keepitup.util.StreamUtil;
 import de.ibba.keepitup.util.StringUtil;
 
@@ -71,7 +72,7 @@ public class DownloadCommand implements Callable<DownloadCommandResult> {
             if (connection == null) {
                 Log.d(DownloadCommand.class.getName(), "Error establishing connection to " + url);
                 long end = timeService.getCurrentTimestamp();
-                return createDownloadCommandResult(false, false, false, false, httpCode, null, null, end - start, null);
+                return createDownloadCommandResult(false, false, false, false, httpCode, null, null, NumberUtil.ensurePositive(end - start), null);
             }
             connectSuccess = true;
             Log.d(DownloadCommand.class.getName(), "Connection established.");
@@ -86,7 +87,7 @@ public class DownloadCommand implements Callable<DownloadCommandResult> {
                 if (!HTTPUtil.isHTTPReturnCodeOk(httpCode)) {
                     Log.d(DownloadCommand.class.getName(), "Connection successful but HTTP return code " + httpCode + " is not HTTP_OK");
                     long end = timeService.getCurrentTimestamp();
-                    return createDownloadCommandResult(true, false, false, false, httpCode, httpMessage, null, end - start, null);
+                    return createDownloadCommandResult(true, false, false, false, httpCode, httpMessage, null, NumberUtil.ensurePositive(end - start), null);
                 }
             } else {
                 Log.d(DownloadCommand.class.getName(), "Download is not an HTTP download.");
@@ -95,7 +96,7 @@ public class DownloadCommand implements Callable<DownloadCommandResult> {
             if (fileName == null) {
                 Log.d(DownloadCommand.class.getName(), "Connection successful but download file name could not be determined");
                 long end = timeService.getCurrentTimestamp();
-                return createDownloadCommandResult(true, false, false, false, httpCode, httpMessage, null, end - start, null);
+                return createDownloadCommandResult(true, false, false, false, httpCode, httpMessage, null, NumberUtil.ensurePositive(end - start), null);
             }
             Log.d(DownloadCommand.class.getName(), "Using file name " + fileName);
             Log.d(DownloadCommand.class.getName(), "Opening streams...");
@@ -115,7 +116,7 @@ public class DownloadCommand implements Callable<DownloadCommandResult> {
                 deleteSuccess = deleteDownloadedFile(fileName);
             }
             long end = timeService.getCurrentTimestamp();
-            return createDownloadCommandResult(true, downloadSuccess, fileExists, deleteSuccess, httpCode, httpMessage, fileName, end - start, null);
+            return createDownloadCommandResult(true, downloadSuccess, fileExists, deleteSuccess, httpCode, httpMessage, fileName, NumberUtil.ensurePositive(end - start), null);
         } catch (Exception exc) {
             Log.e(DownloadCommand.class.getName(), "Error executing download command", exc);
             Log.e(DownloadCommand.class.getName(), "Try closing stream.");
@@ -127,7 +128,7 @@ public class DownloadCommand implements Callable<DownloadCommandResult> {
                 deleteSuccess = deleteDownloadedFile(fileName);
             }
             long end = timeService.getCurrentTimestamp();
-            return createDownloadCommandResult(connectSuccess, downloadSuccess, fileExists, deleteSuccess, httpCode, httpMessage, fileName, end - start, exc);
+            return createDownloadCommandResult(connectSuccess, downloadSuccess, fileExists, deleteSuccess, httpCode, httpMessage, fileName, NumberUtil.ensurePositive(end - start), exc);
         } finally {
             closeResources(connection, inputStream, outputStream, executorService);
         }

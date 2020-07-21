@@ -25,6 +25,7 @@ public class NetworkTask {
     private boolean onlyWifi;
     private boolean notification;
     private boolean running;
+    private long lastScheduled;
 
     public NetworkTask() {
         this.id = -1;
@@ -38,6 +39,7 @@ public class NetworkTask {
         this.onlyWifi = false;
         this.notification = false;
         this.running = false;
+        this.lastScheduled = -1;
     }
 
     public NetworkTask(Context context) {
@@ -47,6 +49,7 @@ public class NetworkTask {
         this.index = -1;
         this.schedulerid = -1;
         this.instances = 0;
+        this.lastScheduled = -1;
         this.address = preferenceManager.getPreferenceAddress();
         this.port = preferenceManager.getPreferencePort();
         this.accessType = preferenceManager.getPreferenceAccessType();
@@ -74,6 +77,7 @@ public class NetworkTask {
         this.onlyWifi = bundle.getInt("onlywifi") >= 1;
         this.notification = bundle.getInt("notification") >= 1;
         this.running = bundle.getInt("running") >= 1;
+        this.lastScheduled = bundle.getLong("lastScheduled");
     }
 
     public long getId() {
@@ -164,6 +168,14 @@ public class NetworkTask {
         this.running = running;
     }
 
+    public long getLastScheduled() {
+        return lastScheduled;
+    }
+
+    public void setLastScheduled(long lastScheduled) {
+        this.lastScheduled = lastScheduled;
+    }
+
     public PersistableBundle toPersistableBundle() {
         PersistableBundle bundle = new PersistableBundle();
         bundle.putLong("id", id);
@@ -181,6 +193,7 @@ public class NetworkTask {
         bundle.putInt("onlywifi", onlyWifi ? 1 : 0);
         bundle.putInt("notification", notification ? 1 : 0);
         bundle.putInt("running", running ? 1 : 0);
+        bundle.putLong("lastScheduled", lastScheduled);
         return bundle;
     }
 
@@ -202,6 +215,9 @@ public class NetworkTask {
             return false;
         }
         if (instances != other.instances) {
+            return false;
+        }
+        if (lastScheduled != other.lastScheduled) {
             return false;
         }
         if (port != other.port) {
@@ -268,6 +284,7 @@ public class NetworkTask {
                 ", onlyWifi=" + onlyWifi +
                 ", notification=" + notification +
                 ", running=" + running +
+                ", lastScheduled=" + lastScheduled +
                 '}';
     }
 }
