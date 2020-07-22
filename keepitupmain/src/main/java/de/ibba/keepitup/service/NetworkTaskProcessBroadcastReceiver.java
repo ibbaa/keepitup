@@ -39,9 +39,9 @@ public class NetworkTaskProcessBroadcastReceiver extends BroadcastReceiver {
             NetworkTaskProcessServiceScheduler scheduler = new NetworkTaskProcessServiceScheduler(context);
             if (synchronous) {
                 doWork(context, task, wakeLock, true, false, executorService);
-                scheduler.reschedule(task, false);
+                scheduler.reschedule(task, NetworkTaskProcessServiceScheduler.Delay.INTERVAL);
             } else {
-                scheduler.reschedule(task, false);
+                scheduler.reschedule(task, NetworkTaskProcessServiceScheduler.Delay.INTERVAL);
                 doWork(context, task, wakeLock, false, addToPool, executorService);
             }
         } catch (Exception exc) {

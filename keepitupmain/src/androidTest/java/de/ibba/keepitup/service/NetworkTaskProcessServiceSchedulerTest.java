@@ -16,6 +16,7 @@ import de.ibba.keepitup.model.NetworkTask;
 import de.ibba.keepitup.test.mock.MockAlarmManager;
 import de.ibba.keepitup.test.mock.TestRegistry;
 
+import static de.ibba.keepitup.service.NetworkTaskProcessServiceScheduler.Delay;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
@@ -102,7 +103,7 @@ public class NetworkTaskProcessServiceSchedulerTest {
         NetworkTask task2 = getNetworkTask2();
         task1 = networkTaskDAO.insertNetworkTask(task1);
         task2 = networkTaskDAO.insertNetworkTask(task2);
-        task1 = scheduler.reschedule(task1, false);
+        task1 = scheduler.reschedule(task1, Delay.INTERVAL);
         assertFalse(task1.isRunning());
         assertFalse(task2.isRunning());
         assertFalse(isTaskMarkedAsRunningInDatabase(task1));
@@ -114,12 +115,12 @@ public class NetworkTaskProcessServiceSchedulerTest {
         networkTaskDAO.updateNetworkTaskRunning(task2.getId(), true);
         int schedulerId = task2.getSchedulerId();
         task2.setSchedulerId(schedulerId + 1);
-        task2 = scheduler.reschedule(task2, false);
+        task2 = scheduler.reschedule(task2, Delay.INTERVAL);
         assertFalse(alarmManager.wasSetAlarmCalled());
         assertFalse(alarmManager.wasCancelAlarmCalled());
         task2.setSchedulerId(schedulerId);
         alarmManager.reset();
-        task2 = scheduler.reschedule(task2, false);
+        task2 = scheduler.reschedule(task2, Delay.INTERVAL);
         assertFalse(task1.isRunning());
         assertTrue(task2.isRunning());
         assertFalse(isTaskMarkedAsRunningInDatabase(task1));
@@ -258,6 +259,7 @@ public class NetworkTaskProcessServiceSchedulerTest {
         task.setInterval(20);
         task.setNotification(true);
         task.setRunning(false);
+        task.setLastScheduled(1);
         return task;
     }
 
@@ -273,6 +275,7 @@ public class NetworkTaskProcessServiceSchedulerTest {
         task.setInterval(1);
         task.setNotification(false);
         task.setRunning(false);
+        task.setLastScheduled(1);
         return task;
     }
 }

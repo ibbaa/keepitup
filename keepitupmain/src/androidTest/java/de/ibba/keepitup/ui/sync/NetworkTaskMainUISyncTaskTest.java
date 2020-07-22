@@ -165,6 +165,7 @@ public class NetworkTaskMainUISyncTaskTest extends BaseUITest {
         task.setOnlyWifi(false);
         task.setNotification(true);
         task.setRunning(true);
+        task.setLastScheduled(1);
         return task;
     }
 
@@ -181,6 +182,7 @@ public class NetworkTaskMainUISyncTaskTest extends BaseUITest {
         task.setOnlyWifi(false);
         task.setNotification(true);
         task.setRunning(false);
+        task.setLastScheduled(1);
         return task;
     }
 
@@ -197,6 +199,7 @@ public class NetworkTaskMainUISyncTaskTest extends BaseUITest {
         task.setOnlyWifi(true);
         task.setNotification(true);
         task.setRunning(true);
+        task.setLastScheduled(1);
         return task;
     }
 
