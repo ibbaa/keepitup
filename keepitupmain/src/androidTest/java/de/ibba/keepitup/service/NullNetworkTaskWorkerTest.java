@@ -59,6 +59,7 @@ public class NullNetworkTaskWorkerTest {
         task.setOnlyWifi(false);
         task.setNotification(true);
         task.setRunning(true);
+        task.setLastScheduled(1);
         return task;
     }
 }

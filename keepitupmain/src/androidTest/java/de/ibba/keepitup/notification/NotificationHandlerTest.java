@@ -90,6 +90,7 @@ public class NotificationHandlerTest {
         task.setInterval(20);
         task.setNotification(true);
         task.setRunning(false);
+        task.setLastScheduled(1);
         return task;
     }
 
@@ -105,6 +106,7 @@ public class NotificationHandlerTest {
         task.setInterval(20);
         task.setNotification(true);
         task.setRunning(false);
+        task.setLastScheduled(1);
         return task;
     }
 
@@ -120,6 +122,7 @@ public class NotificationHandlerTest {
         task.setInterval(20);
         task.setNotification(true);
         task.setRunning(false);
+        task.setLastScheduled(1);
         return task;
     }
 

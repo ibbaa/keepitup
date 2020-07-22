@@ -118,6 +118,7 @@ public class NetworkTaskProcessBroadcastReceiverTest {
         networkTask.setOnlyWifi(false);
         networkTask.setNotification(true);
         networkTask.setRunning(false);
+        networkTask.setLastScheduled(1);
         return networkTask;
     }
 }

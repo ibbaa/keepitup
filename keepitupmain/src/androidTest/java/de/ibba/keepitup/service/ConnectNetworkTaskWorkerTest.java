@@ -216,6 +216,7 @@ public class ConnectNetworkTaskWorkerTest {
         task.setOnlyWifi(false);
         task.setNotification(true);
         task.setRunning(true);
+        task.setLastScheduled(1);
         return task;
     }
 }

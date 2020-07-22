@@ -13,6 +13,7 @@ import de.ibba.keepitup.db.NetworkTaskDAO;
 import de.ibba.keepitup.logging.Log;
 import de.ibba.keepitup.model.NetworkTask;
 import de.ibba.keepitup.resources.ServiceFactoryContributor;
+import de.ibba.keepitup.util.NumberUtil;
 
 public class NetworkTaskProcessServiceScheduler {
 
@@ -24,6 +25,12 @@ public class NetworkTaskProcessServiceScheduler {
     private final ITimeService timeService;
 
     private static NetworkTaskProcessPool processPool;
+
+    public static enum Delay {
+        IMMEDIATE,
+        INTERVAL,
+        LASTSCHEDULED
+    }
 
     public NetworkTaskProcessServiceScheduler(Context context) {
         this.context = context;
@@ -43,12 +50,12 @@ public class NetworkTaskProcessServiceScheduler {
         Log.d(NetworkTaskProcessServiceScheduler.class.getName(), "Schedule network task " + networkTask);
         networkTask.setRunning(true);
         networkTaskDAO.updateNetworkTaskRunning(networkTask.getId(), true);
-        reschedule(networkTask, true);
+        reschedule(networkTask, Delay.IMMEDIATE);
         return networkTask;
     }
 
-    public NetworkTask reschedule(NetworkTask networkTask, boolean immediate) {
-        Log.d(NetworkTaskProcessServiceScheduler.class.getName(), "Reschedule network task " + networkTask + ", immediate is " + immediate);
+    public NetworkTask reschedule(NetworkTask networkTask, Delay delay) {
+        Log.d(NetworkTaskProcessServiceScheduler.class.getName(), "Reschedule network task " + networkTask + ", delay is " + delay);
         NetworkTask databaseTask = networkTaskDAO.readNetworkTask(networkTask.getId());
         if (databaseTask == null) {
             Log.d(NetworkTaskProcessServiceScheduler.class.getName(), "Network task does no longer exist. Skipping reschedule.");
@@ -65,16 +72,24 @@ public class NetworkTaskProcessServiceScheduler {
             terminate(networkTask);
             return networkTask;
         }
+        long delayMillis;
         PendingIntent pendingIntent = createPendingIntent(networkTask);
-        long delay = immediate ? 0 : getIntervalMilliseconds(networkTask);
-        if (immediate) {
-            Log.d(NetworkTaskProcessServiceScheduler.class.getName(), "scheduling alarm immediately");
+        if (Delay.IMMEDIATE.equals(delay)) {
+            Log.d(NetworkTaskProcessServiceScheduler.class.getName(), "Delay is IMMEDIATE. Scheduling alarm immediately.");
+            delayMillis = 0;
+        } else if (Delay.INTERVAL.equals(delay)) {
+            delayMillis = getIntervalMilliseconds(networkTask);
+            Log.d(NetworkTaskProcessServiceScheduler.class.getName(), "Delay is INTERVAL. Scheduling alarm with delay of " + delayMillis + " msec");
+        } else if (Delay.LASTSCHEDULED.equals(delay)) {
+            delayMillis = getLastScheduledMilliseconds(networkTask);
+            Log.d(NetworkTaskProcessServiceScheduler.class.getName(), "Delay is LASTSCHEDULED. Scheduling alarm with delay of " + delayMillis + " msec");
         } else {
-            Log.d(NetworkTaskProcessServiceScheduler.class.getName(), "scheduling alarm with delay of " + delay + " msec");
+            Log.e(NetworkTaskProcessServiceScheduler.class.getName(), "Delay is undefined. Scheduling alarm immediately.");
+            delayMillis = 0;
         }
-        alarmManager.setAlarm(delay, pendingIntent);
-        Log.d(NetworkTaskProcessServiceScheduler.class.getName(), "scheduling alarm immediately");
+        alarmManager.setAlarm(delayMillis, pendingIntent);
         long timestamp = timeService.getCurrentTimestamp();
+        networkTask.setLastScheduled(timestamp);
         networkTaskDAO.updateNetworkTaskLastScheduled(networkTask.getId(), timestamp);
         SimpleDateFormat logTimestampDateFormat = new SimpleDateFormat(LOG_TIMESTAMP_PATTERN, Locale.US);
         Log.d(NetworkTaskProcessServiceScheduler.class.getName(), "Updated last scheduled timestamp to " + timestamp + " (" + logTimestampDateFormat.format(timestamp) + ")");
@@ -107,10 +122,11 @@ public class NetworkTaskProcessServiceScheduler {
             if (currentTask.isRunning()) {
                 Log.d(NetworkTaskProcessServiceScheduler.class.getName(), "Network task " + currentTask + " is marked as running. Rescheduling...");
                 networkTaskDAO.resetNetworkTaskInstances(currentTask.getId());
-                reschedule(currentTask, false);
+                reschedule(currentTask, Delay.LASTSCHEDULED);
             } else {
                 Log.d(NetworkTaskProcessServiceScheduler.class.getName(), "Network task " + currentTask + " is not marked as running.");
                 networkTaskDAO.resetNetworkTaskInstances(currentTask.getId());
+                networkTaskDAO.resetNetworkTaskLastScheduled(currentTask.getId());
             }
         }
     }
@@ -159,6 +175,17 @@ public class NetworkTaskProcessServiceScheduler {
 
     private long getIntervalMilliseconds(NetworkTask networkTask) {
         return 60 * 1000 * networkTask.getInterval();
+    }
+
+    private long getLastScheduledMilliseconds(NetworkTask networkTask) {
+        long lastScheduled = networkTask.getLastScheduled();
+        if (lastScheduled < 0) {
+            return 0;
+        }
+        long timestamp = timeService.getCurrentTimestamp();
+        long interval = getIntervalMilliseconds(networkTask);
+        long timeDifference = NumberUtil.ensurePositive(timestamp - lastScheduled);
+        return NumberUtil.ensurePositive(interval - timeDifference);
     }
 
     private IAlarmManager createAlarmManager() {
