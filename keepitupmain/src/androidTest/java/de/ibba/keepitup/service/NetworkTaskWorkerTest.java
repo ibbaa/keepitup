@@ -63,7 +63,7 @@ public class NetworkTaskWorkerTest {
     @Test
     public void testSuccessfulExecution() {
         NetworkTask task = getNetworkTask();
-        networkTaskDAO.insertNetworkTask(task);
+        task = networkTaskDAO.insertNetworkTask(task);
         TestNetworkTaskWorker testNetworkTaskWorker = new TestNetworkTaskWorker(TestRegistry.getContext(), task, null, true);
         setCurrentTime(testNetworkTaskWorker);
         MockNetworkManager networkManager = (MockNetworkManager) testNetworkTaskWorker.getNetworkManager();
@@ -75,6 +75,7 @@ public class NetworkTaskWorkerTest {
         LogEntry entry = entries.get(0);
         assertEquals(task.getId(), entry.getNetworkTaskId());
         assertEquals(getTestTimestamp(), entry.getTimestamp());
+        assertLastScheduledInDatabase(task, getTestTimestamp());
         assertTrue(entry.isSuccess());
         assertEquals("successful", entry.getMessage());
         NotificationHandler notificationHandler = testNetworkTaskWorker.getNotificationHandler();
@@ -87,6 +88,7 @@ public class NetworkTaskWorkerTest {
         NetworkTask task = getNetworkTask();
         task = networkTaskDAO.insertNetworkTask(task);
         TestNetworkTaskWorker testNetworkTaskWorker = new TestNetworkTaskWorker(TestRegistry.getContext(), task, null, true);
+        setCurrentTime(testNetworkTaskWorker);
         MockNetworkManager networkManager = (MockNetworkManager) testNetworkTaskWorker.getNetworkManager();
         networkManager.setConnected(true);
         networkManager.setConnectedWithWiFi(true);
@@ -96,6 +98,7 @@ public class NetworkTaskWorkerTest {
         assertEquals(1, testNetworkTaskWorker.getInstancesOnExecute());
         activeInstances = networkTaskDAO.readNetworkTaskInstances(task.getId());
         assertEquals(0, activeInstances);
+        assertLastScheduledInDatabase(task, getTestTimestamp());
     }
 
     @Test
@@ -114,6 +117,7 @@ public class NetworkTaskWorkerTest {
         LogEntry entry = entries.get(0);
         assertEquals(task.getId(), entry.getNetworkTaskId());
         assertEquals(getTestTimestamp(), entry.getTimestamp());
+        assertLastScheduledInDatabase(task, getTestTimestamp());
         assertFalse(entry.isSuccess());
         assertEquals("TestMaxInstancesError 1", entry.getMessage());
         NotificationHandler notificationHandler = testNetworkTaskWorker.getNotificationHandler();
@@ -136,6 +140,7 @@ public class NetworkTaskWorkerTest {
         LogEntry entry = entries.get(0);
         assertEquals(task.getId(), entry.getNetworkTaskId());
         assertEquals(getTestTimestamp(), entry.getTimestamp());
+        assertLastScheduledInDatabase(task, getTestTimestamp());
         assertFalse(entry.isSuccess());
         assertEquals("failed", entry.getMessage());
         NotificationHandler notificationHandler = testNetworkTaskWorker.getNotificationHandler();
@@ -158,6 +163,7 @@ public class NetworkTaskWorkerTest {
         LogEntry entry = entries.get(0);
         assertEquals(task.getId(), entry.getNetworkTaskId());
         assertEquals(getTestTimestamp(), entry.getTimestamp());
+        assertLastScheduledInDatabase(task, getTestTimestamp());
         assertFalse(entry.isSuccess());
         assertEquals("failed", entry.getMessage());
         NotificationHandler notificationHandler = testNetworkTaskWorker.getNotificationHandler();
@@ -181,6 +187,7 @@ public class NetworkTaskWorkerTest {
         LogEntry entry = entries.get(0);
         assertEquals(task.getId(), entry.getNetworkTaskId());
         assertEquals(getTestTimestamp(), entry.getTimestamp());
+        assertLastScheduledInDatabase(task, getTestTimestamp());
         assertFalse(entry.isSuccess());
         assertEquals("failed", entry.getMessage());
         NotificationHandler notificationHandler = testNetworkTaskWorker.getNotificationHandler();
@@ -193,6 +200,7 @@ public class NetworkTaskWorkerTest {
         NetworkTask task = getNetworkTask();
         task = networkTaskDAO.insertNetworkTask(task);
         TestNetworkTaskWorker testNetworkTaskWorker = new TestNetworkTaskWorker(TestRegistry.getContext(), task, null, false);
+        setCurrentTime(testNetworkTaskWorker);
         MockNetworkManager networkManager = (MockNetworkManager) testNetworkTaskWorker.getNetworkManager();
         networkManager.setConnected(true);
         networkManager.setConnectedWithWiFi(true);
@@ -202,12 +210,14 @@ public class NetworkTaskWorkerTest {
         assertEquals(1, testNetworkTaskWorker.getInstancesOnExecute());
         activeInstances = networkTaskDAO.readNetworkTaskInstances(task.getId());
         assertEquals(0, activeInstances);
+        assertLastScheduledInDatabase(task, getTestTimestamp());
     }
 
     @Test
     public void testNetworkTaskDoesNotExist() {
         NetworkTask task = getNetworkTask();
         TestNetworkTaskWorker testNetworkTaskWorker = new TestNetworkTaskWorker(TestRegistry.getContext(), task, null, false);
+        setCurrentTime(testNetworkTaskWorker);
         MockNetworkManager networkManager = (MockNetworkManager) testNetworkTaskWorker.getNetworkManager();
         networkManager.setConnected(true);
         networkManager.setConnectedWithWiFi(true);
@@ -225,6 +235,7 @@ public class NetworkTaskWorkerTest {
         task = networkTaskDAO.insertNetworkTask(task);
         task.setSchedulerId(task.getSchedulerId() + 1);
         TestNetworkTaskWorker testNetworkTaskWorker = new TestNetworkTaskWorker(TestRegistry.getContext(), task, null, false);
+        setCurrentTime(testNetworkTaskWorker);
         MockNetworkManager networkManager = (MockNetworkManager) testNetworkTaskWorker.getNetworkManager();
         networkManager.setConnected(true);
         networkManager.setConnectedWithWiFi(true);
@@ -234,6 +245,7 @@ public class NetworkTaskWorkerTest {
         NotificationHandler notificationHandler = testNetworkTaskWorker.getNotificationHandler();
         MockNotificationManager notificationManager = (MockNotificationManager) notificationHandler.getNotificationManager();
         assertFalse(notificationManager.wasNotifyCalled());
+        assertLastScheduledInDatabase(task, getTestTimestamp());
     }
 
     @Test
@@ -252,6 +264,7 @@ public class NetworkTaskWorkerTest {
         LogEntry entry = entries.get(0);
         assertEquals(task.getId(), entry.getNetworkTaskId());
         assertEquals(getTestTimestamp(), entry.getTimestamp());
+        assertLastScheduledInDatabase(task, getTestTimestamp());
         assertFalse(entry.isSuccess());
         assertEquals("No active network connection.", entry.getMessage());
         NotificationHandler notificationHandler = testNetworkTaskWorker.getNotificationHandler();
@@ -275,6 +288,7 @@ public class NetworkTaskWorkerTest {
         LogEntry entry = entries.get(0);
         assertEquals(task.getId(), entry.getNetworkTaskId());
         assertEquals(getTestTimestamp(), entry.getTimestamp());
+        assertLastScheduledInDatabase(task, getTestTimestamp());
         assertFalse(entry.isSuccess());
         assertEquals("No active network connection.", entry.getMessage());
         NotificationHandler notificationHandler = testNetworkTaskWorker.getNotificationHandler();
@@ -287,6 +301,7 @@ public class NetworkTaskWorkerTest {
         NetworkTask task = getNetworkTask();
         task = networkTaskDAO.insertNetworkTask(task);
         TestNetworkTaskWorker testNetworkTaskWorker = new TestNetworkTaskWorker(TestRegistry.getContext(), task, null, true);
+        setCurrentTime(testNetworkTaskWorker);
         MockNetworkManager networkManager = (MockNetworkManager) testNetworkTaskWorker.getNetworkManager();
         networkManager.setConnected(false);
         networkManager.setConnectedWithWiFi(true);
@@ -295,6 +310,7 @@ public class NetworkTaskWorkerTest {
         testNetworkTaskWorker.run();
         activeInstances = networkTaskDAO.readNetworkTaskInstances(task.getId());
         assertEquals(0, activeInstances);
+        assertLastScheduledInDatabase(task, getTestTimestamp());
     }
 
 
@@ -314,6 +330,7 @@ public class NetworkTaskWorkerTest {
         LogEntry entry = entries.get(0);
         assertEquals(task.getId(), entry.getNetworkTaskId());
         assertEquals(getTestTimestamp(), entry.getTimestamp());
+        assertLastScheduledInDatabase(task, getTestTimestamp());
         assertFalse(entry.isSuccess());
         assertEquals("Skipped. No active wifi connection.", entry.getMessage());
         NotificationHandler notificationHandler = testNetworkTaskWorker.getNotificationHandler();
@@ -327,6 +344,7 @@ public class NetworkTaskWorkerTest {
         task = networkTaskDAO.insertNetworkTask(task);
         task.setOnlyWifi(true);
         TestNetworkTaskWorker testNetworkTaskWorker = new TestNetworkTaskWorker(TestRegistry.getContext(), task, null, true);
+        setCurrentTime(testNetworkTaskWorker);
         MockNetworkManager networkManager = (MockNetworkManager) testNetworkTaskWorker.getNetworkManager();
         networkManager.setConnected(true);
         networkManager.setConnectedWithWiFi(false);
@@ -335,6 +353,7 @@ public class NetworkTaskWorkerTest {
         testNetworkTaskWorker.run();
         activeInstances = networkTaskDAO.readNetworkTaskInstances(task.getId());
         assertEquals(0, activeInstances);
+        assertLastScheduledInDatabase(task, getTestTimestamp());
     }
 
     @Test
@@ -415,6 +434,11 @@ public class NetworkTaskWorkerTest {
         return calendar.getTimeInMillis();
     }
 
+    private void assertLastScheduledInDatabase(NetworkTask task, long value) {
+        task = networkTaskDAO.readNetworkTask(task.getId());
+        assertEquals(value, task.getLastScheduled());
+    }
+
     private NetworkTask getNetworkTask() {
         NetworkTask task = new NetworkTask();
         task.setId(45);
@@ -430,15 +454,5 @@ public class NetworkTaskWorkerTest {
         task.setRunning(true);
         task.setLastScheduled(1);
         return task;
-    }
-
-    private LogEntry getLogEntry() {
-        LogEntry insertedLogEntry1 = new LogEntry();
-        insertedLogEntry1.setId(0);
-        insertedLogEntry1.setNetworkTaskId(1);
-        insertedLogEntry1.setSuccess(true);
-        insertedLogEntry1.setTimestamp(123);
-        insertedLogEntry1.setMessage("TestMessage");
-        return insertedLogEntry1;
     }
 }

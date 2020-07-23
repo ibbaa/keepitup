@@ -89,8 +89,6 @@ public class NetworkTaskProcessServiceScheduler {
         }
         alarmManager.setAlarm(delayMillis, pendingIntent);
         long timestamp = timeService.getCurrentTimestamp();
-        networkTask.setLastScheduled(timestamp);
-        networkTaskDAO.updateNetworkTaskLastScheduled(networkTask.getId(), timestamp);
         SimpleDateFormat logTimestampDateFormat = new SimpleDateFormat(LOG_TIMESTAMP_PATTERN, Locale.US);
         Log.d(NetworkTaskProcessServiceScheduler.class.getName(), "Updated last scheduled timestamp to " + timestamp + " (" + logTimestampDateFormat.format(timestamp) + ")");
         return networkTask;
@@ -100,6 +98,7 @@ public class NetworkTaskProcessServiceScheduler {
         Log.d(NetworkTaskProcessServiceScheduler.class.getName(), "Cancelling network task " + networkTask);
         networkTask.setRunning(false);
         networkTaskDAO.updateNetworkTaskRunning(networkTask.getId(), false);
+        networkTask.setLastScheduled(-1);
         return terminate(networkTask);
     }
 
@@ -196,6 +195,10 @@ public class NetworkTaskProcessServiceScheduler {
     private ITimeService createTimeService() {
         ServiceFactoryContributor factoryContributor = new ServiceFactoryContributor(getContext());
         return factoryContributor.createServiceFactory().createTimeService();
+    }
+
+    public ITimeService getTimeService() {
+        return timeService;
     }
 
     private Context getContext() {

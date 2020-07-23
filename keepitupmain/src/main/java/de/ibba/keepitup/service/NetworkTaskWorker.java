@@ -61,13 +61,15 @@ public abstract class NetworkTaskWorker implements Runnable {
     public void run() {
         Log.d(NetworkTaskWorker.class.getName(), "Executing worker thread for " + networkTask);
         try {
+            NetworkTaskDAO networkTaskDAO = new NetworkTaskDAO(getContext());
+            Log.d(NetworkTaskWorker.class.getName(), "Updating last scheduled time.");
+            networkTaskDAO.updateNetworkTaskLastScheduled(networkTask.getId(), getTimeService().getCurrentTimestamp());
             LogEntry logEntry = checkInstances();
             if (logEntry != null) {
                 Log.d(NetworkTaskWorker.class.getName(), "Skipping execution. Too many active instances.");
                 writeLogEntry(logEntry, false);
                 return;
             }
-            NetworkTaskDAO networkTaskDAO = new NetworkTaskDAO(getContext());
             Log.d(NetworkTaskWorker.class.getName(), "Increasing instances count.");
             networkTaskDAO.increaseNetworkTaskInstances(networkTask.getId());
             sendNetworkTaskUINotificationBroadcast();
