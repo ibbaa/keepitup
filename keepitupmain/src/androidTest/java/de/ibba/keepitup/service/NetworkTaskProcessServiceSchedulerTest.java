@@ -14,6 +14,7 @@ import de.ibba.keepitup.db.NetworkTaskDAO;
 import de.ibba.keepitup.model.AccessType;
 import de.ibba.keepitup.model.NetworkTask;
 import de.ibba.keepitup.test.mock.MockAlarmManager;
+import de.ibba.keepitup.test.mock.MockTimeService;
 import de.ibba.keepitup.test.mock.TestRegistry;
 
 import static de.ibba.keepitup.service.NetworkTaskProcessServiceScheduler.Delay;
@@ -29,6 +30,7 @@ public class NetworkTaskProcessServiceSchedulerTest {
     private NetworkTaskProcessServiceScheduler scheduler;
     private NetworkTaskDAO networkTaskDAO;
     private MockAlarmManager alarmManager;
+    private MockTimeService timeService;
 
     @Before
     public void beforeEachTestMethod() {
@@ -38,6 +40,7 @@ public class NetworkTaskProcessServiceSchedulerTest {
         networkTaskDAO.deleteAllNetworkTasks();
         alarmManager = (MockAlarmManager) scheduler.getAlarmManager();
         alarmManager.reset();
+        timeService = (MockTimeService) scheduler.getTimeService();
     }
 
     @After
@@ -52,6 +55,7 @@ public class NetworkTaskProcessServiceSchedulerTest {
         NetworkTask task2 = getNetworkTask2();
         task1 = networkTaskDAO.insertNetworkTask(task1);
         task2 = networkTaskDAO.insertNetworkTask(task2);
+        setTestTime(125);
         task1 = scheduler.schedule(task1);
         assertTrue(task1.isRunning());
         assertFalse(task2.isRunning());
@@ -98,11 +102,12 @@ public class NetworkTaskProcessServiceSchedulerTest {
     }
 
     @Test
-    public void testRescheduleTerminate() {
+    public void testRescheduleTerminateInterval() {
         NetworkTask task1 = getNetworkTask1();
         NetworkTask task2 = getNetworkTask2();
         task1 = networkTaskDAO.insertNetworkTask(task1);
         task2 = networkTaskDAO.insertNetworkTask(task2);
+        setTestTime(125);
         task1 = scheduler.reschedule(task1, Delay.INTERVAL);
         assertFalse(task1.isRunning());
         assertFalse(task2.isRunning());
@@ -144,11 +149,88 @@ public class NetworkTaskProcessServiceSchedulerTest {
     }
 
     @Test
+    public void testRescheduleTerminateImmediate() {
+        NetworkTask task1 = getNetworkTask1();
+        task1 = networkTaskDAO.insertNetworkTask(task1);
+        setTestTime(125);
+        task1.setRunning(true);
+        networkTaskDAO.updateNetworkTaskRunning(task1.getId(), true);
+        task1 = scheduler.reschedule(task1, Delay.IMMEDIATE);
+        List<MockAlarmManager.SetAlarmCall> setAlarmCalls = alarmManager.getSetAlarmCalls();
+        assertEquals(1, setAlarmCalls.size());
+        MockAlarmManager.SetAlarmCall setAlarmCall1 = setAlarmCalls.get(0);
+        assertEquals(0, setAlarmCall1.getDelay());
+    }
+
+    @Test
+    public void testRescheduleTerminateLastScheduledZero() {
+        NetworkTask task1 = getNetworkTask1();
+        task1 = networkTaskDAO.insertNetworkTask(task1);
+        setTestTime(125);
+        task1.setRunning(true);
+        networkTaskDAO.updateNetworkTaskRunning(task1.getId(), true);
+        task1.setLastScheduled(-125);
+        task1 = scheduler.reschedule(task1, Delay.LASTSCHEDULED);
+        List<MockAlarmManager.SetAlarmCall> setAlarmCalls = alarmManager.getSetAlarmCalls();
+        assertEquals(1, setAlarmCalls.size());
+        MockAlarmManager.SetAlarmCall setAlarmCall1 = setAlarmCalls.get(0);
+        assertEquals(0, setAlarmCall1.getDelay());
+        alarmManager.reset();
+        setTestTime(Long.MAX_VALUE);
+        task1.setLastScheduled(1);
+        task1 = scheduler.reschedule(task1, Delay.LASTSCHEDULED);
+        setAlarmCalls = alarmManager.getSetAlarmCalls();
+        assertEquals(1, setAlarmCalls.size());
+        setAlarmCall1 = setAlarmCalls.get(0);
+        assertEquals(0, setAlarmCall1.getDelay());
+        alarmManager.reset();
+        setTestTime(20 * 60 * 1000 + 1);
+        task1.setLastScheduled(1);
+        task1 = scheduler.reschedule(task1, Delay.LASTSCHEDULED);
+        setAlarmCalls = alarmManager.getSetAlarmCalls();
+        assertEquals(1, setAlarmCalls.size());
+        setAlarmCall1 = setAlarmCalls.get(0);
+        assertEquals(0, setAlarmCall1.getDelay());
+    }
+
+    @Test
+    public void testRescheduleTerminateLastScheduledPositive() {
+        NetworkTask task1 = getNetworkTask1();
+        task1 = networkTaskDAO.insertNetworkTask(task1);
+        setTestTime(125);
+        task1.setRunning(true);
+        networkTaskDAO.updateNetworkTaskRunning(task1.getId(), true);
+        task1.setLastScheduled(125);
+        task1 = scheduler.reschedule(task1, Delay.LASTSCHEDULED);
+        List<MockAlarmManager.SetAlarmCall> setAlarmCalls = alarmManager.getSetAlarmCalls();
+        assertEquals(1, setAlarmCalls.size());
+        MockAlarmManager.SetAlarmCall setAlarmCall1 = setAlarmCalls.get(0);
+        assertEquals(20 * 60 * 1000, setAlarmCall1.getDelay());
+        alarmManager.reset();
+        setTestTime(125);
+        task1.setLastScheduled(124);
+        task1 = scheduler.reschedule(task1, Delay.LASTSCHEDULED);
+        setAlarmCalls = alarmManager.getSetAlarmCalls();
+        assertEquals(1, setAlarmCalls.size());
+        setAlarmCall1 = setAlarmCalls.get(0);
+        assertEquals(20 * 60 * 1000 - 1, setAlarmCall1.getDelay());
+        alarmManager.reset();
+        setTestTime(20 * 60 * 1000);
+        task1.setLastScheduled(1);
+        task1 = scheduler.reschedule(task1, Delay.LASTSCHEDULED);
+        setAlarmCalls = alarmManager.getSetAlarmCalls();
+        assertEquals(1, setAlarmCalls.size());
+        setAlarmCall1 = setAlarmCalls.get(0);
+        assertEquals(1, setAlarmCall1.getDelay());
+    }
+
+    @Test
     public void testStartup() {
         NetworkTask task1 = getNetworkTask1();
         NetworkTask task2 = getNetworkTask2();
         task1 = networkTaskDAO.insertNetworkTask(task1);
         task2 = networkTaskDAO.insertNetworkTask(task2);
+        setTestTime(125);
         networkTaskDAO.increaseNetworkTaskInstances(task2.getId());
         assertEquals(1, networkTaskDAO.readNetworkTaskInstances(task2.getId()));
         scheduler.startup();
@@ -164,6 +246,9 @@ public class NetworkTaskProcessServiceSchedulerTest {
         networkTaskDAO.increaseNetworkTaskInstances(task1.getId());
         assertEquals(1, networkTaskDAO.readNetworkTaskInstances(task1.getId()));
         alarmManager.reset();
+        setTestTime(126);
+        task1.setLastScheduled(125);
+        networkTaskDAO.updateNetworkTaskLastScheduled(task1.getId(), 125);
         scheduler.startup();
         assertTrue(isTaskMarkedAsRunningInDatabase(task1));
         assertFalse(isTaskMarkedAsRunningInDatabase(task2));
@@ -172,13 +257,16 @@ public class NetworkTaskProcessServiceSchedulerTest {
         List<MockAlarmManager.SetAlarmCall> setAlarmCalls = alarmManager.getSetAlarmCalls();
         assertEquals(1, setAlarmCalls.size());
         MockAlarmManager.SetAlarmCall setAlarmCall1 = setAlarmCalls.get(0);
-        assertEquals(1200000, setAlarmCall1.getDelay());
+        assertEquals(1200000 - 1, setAlarmCall1.getDelay());
         networkTaskDAO.increaseNetworkTaskInstances(task1.getId());
         networkTaskDAO.increaseNetworkTaskInstances(task2.getId());
         assertEquals(1, networkTaskDAO.readNetworkTaskInstances(task1.getId()));
         assertEquals(1, networkTaskDAO.readNetworkTaskInstances(task2.getId()));
         scheduler.schedule(task2);
         alarmManager.reset();
+        setTestTime(Long.MAX_VALUE);
+        task1.setLastScheduled(125);
+        networkTaskDAO.updateNetworkTaskLastScheduled(task1.getId(), 125);
         scheduler.startup();
         assertTrue(isTaskMarkedAsRunningInDatabase(task1));
         assertTrue(isTaskMarkedAsRunningInDatabase(task2));
@@ -187,9 +275,9 @@ public class NetworkTaskProcessServiceSchedulerTest {
         assertTrue(alarmManager.wasSetAlarmCalled());
         assertEquals(2, setAlarmCalls.size());
         setAlarmCall1 = setAlarmCalls.get(0);
-        assertEquals(1200000, setAlarmCall1.getDelay());
+        assertEquals(0, setAlarmCall1.getDelay());
         MockAlarmManager.SetAlarmCall setAlarmCall2 = setAlarmCalls.get(1);
-        assertEquals(60000, setAlarmCall2.getDelay());
+        assertEquals(0, setAlarmCall2.getDelay());
         scheduler.terminate(task2);
         scheduler.startup();
         assertTrue(isTaskMarkedAsRunningInDatabase(task1));
@@ -205,6 +293,10 @@ public class NetworkTaskProcessServiceSchedulerTest {
         task2 = networkTaskDAO.insertNetworkTask(task2);
         task1 = scheduler.schedule(task1);
         task2 = scheduler.schedule(task2);
+        task1.setLastScheduled(125);
+        task2.setLastScheduled(125);
+        networkTaskDAO.updateNetworkTaskLastScheduled(task1.getId(), 125);
+        networkTaskDAO.updateNetworkTaskLastScheduled(task2.getId(), 125);
         assertTrue(task1.isRunning());
         assertTrue(task2.isRunning());
         assertTrue(isTaskMarkedAsRunningInDatabase(task1));
@@ -212,6 +304,8 @@ public class NetworkTaskProcessServiceSchedulerTest {
         scheduler.cancelAll();
         assertFalse(isTaskMarkedAsRunningInDatabase(task1));
         assertFalse(isTaskMarkedAsRunningInDatabase(task2));
+        assertLastScheduledInDatabase(task1, -1);
+        assertLastScheduledInDatabase(task1, -1);
         assertTrue(alarmManager.wasCancelAlarmCalled());
     }
 
@@ -228,6 +322,10 @@ public class NetworkTaskProcessServiceSchedulerTest {
         assertEquals(2, networkTaskDAO.readNetworkTaskInstances(task2.getId()));
         task1 = scheduler.schedule(task1);
         task2 = scheduler.schedule(task2);
+        task1.setLastScheduled(125);
+        task2.setLastScheduled(125);
+        networkTaskDAO.updateNetworkTaskLastScheduled(task1.getId(), 125);
+        networkTaskDAO.updateNetworkTaskLastScheduled(task2.getId(), 125);
         assertTrue(task1.isRunning());
         assertTrue(task2.isRunning());
         assertTrue(isTaskMarkedAsRunningInDatabase(task1));
@@ -237,6 +335,8 @@ public class NetworkTaskProcessServiceSchedulerTest {
         assertTrue(task2.isRunning());
         assertTrue(isTaskMarkedAsRunningInDatabase(task1));
         assertTrue(isTaskMarkedAsRunningInDatabase(task2));
+        assertLastScheduledInDatabase(task1, 125);
+        assertLastScheduledInDatabase(task1, 125);
         assertTrue(alarmManager.wasCancelAlarmCalled());
         assertEquals(0, networkTaskDAO.readNetworkTaskInstances(task1.getId()));
         assertEquals(0, networkTaskDAO.readNetworkTaskInstances(task2.getId()));
@@ -245,6 +345,11 @@ public class NetworkTaskProcessServiceSchedulerTest {
     private boolean isTaskMarkedAsRunningInDatabase(NetworkTask task) {
         task = networkTaskDAO.readNetworkTask(task.getId());
         return task.isRunning();
+    }
+
+    private void assertLastScheduledInDatabase(NetworkTask task, long value) {
+        task = networkTaskDAO.readNetworkTask(task.getId());
+        assertEquals(value, task.getLastScheduled());
     }
 
     private NetworkTask getNetworkTask1() {
@@ -277,5 +382,10 @@ public class NetworkTaskProcessServiceSchedulerTest {
         task.setRunning(false);
         task.setLastScheduled(1);
         return task;
+    }
+
+    private void setTestTime(long time) {
+        timeService.setTimestamp(time);
+        timeService.setTimestamp2(time);
     }
 }
