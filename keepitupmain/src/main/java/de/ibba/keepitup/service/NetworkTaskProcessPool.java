@@ -60,7 +60,7 @@ public class NetworkTaskProcessPool {
         }
         List<Future<?>> cleanedFutureList = new ArrayList<>();
         for (Future<?> currentFuture : futureList) {
-            if (!currentFuture.isDone() && !currentFuture.isCancelled()) {
+            if (currentFuture != null && !currentFuture.isDone() && !currentFuture.isCancelled()) {
                 cleanedFutureList.add(currentFuture);
             }
         }
@@ -69,5 +69,21 @@ public class NetworkTaskProcessPool {
         } else {
             futurePool.put(schedulerId, cleanedFutureList);
         }
+    }
+
+    public synchronized boolean hasActive() {
+        Log.d(NetworkTaskProcessPool.class.getName(), "hasActive");
+        Iterator<Integer> keyIterator = new HashSet<>(futurePool.keySet()).iterator();
+        while (keyIterator.hasNext()) {
+            List<Future<?>> futureList = futurePool.get(keyIterator.next());
+            if (futureList != null) {
+                for (Future<?> currentFuture : futureList) {
+                    if (currentFuture != null && !currentFuture.isDone() && !currentFuture.isCancelled()) {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
     }
 }
