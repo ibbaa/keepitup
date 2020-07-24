@@ -81,6 +81,7 @@ public class NetworkTaskLogActivity extends RecyclerViewBaseActivity {
 
     private void registerMenuAdapterDataObserver() {
         Log.d(NetworkTaskLogActivity.class.getName(), "registerMenuAdapterDataObserver");
+        unregisterMenuAdapterDataObserver();
         if (menuAdapterDataObserver == null) {
             menuAdapterDataObserver = new MenuAdapterDataObserver();
             getAdapter().registerAdapterDataObserver(menuAdapterDataObserver);
