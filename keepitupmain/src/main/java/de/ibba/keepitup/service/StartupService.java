@@ -39,10 +39,16 @@ public class StartupService extends BroadcastReceiver {
             Log.initialize(null);
             Dump.initialize(null);
         }
+        Log.d(StartupService.class.getName(), "Checking active instances");
+        if (!NetworkTaskProcessServiceScheduler.getNetworkTaskProcessPool().hasActive()) {
+            Log.d(StartupService.class.getName(), "There are no active instances");
+            Log.d(StartupService.class.getName(), "Reset instances");
+            resetInstances(context);
+            Log.d(StartupService.class.getName(), "Cleanup files");
+            cleanupFiles(context);
+        }
         Log.d(StartupService.class.getName(), "Initialize scheduler.");
         initializeScheduler(context);
-        Log.d(StartupService.class.getName(), "Cleanup files");
-        cleanupFiles(context);
         Log.d(StartupService.class.getName(), "Cleanup logs");
         cleanupLogs(context);
     }
@@ -80,6 +86,16 @@ public class StartupService extends BroadcastReceiver {
             scheduler.startup();
         } catch (Exception exc) {
             Log.e(StartupService.class.getName(), "Error on starting pending network tasks.", exc);
+        }
+    }
+
+    private void resetInstances(Context context) {
+        Log.d(StartupService.class.getName(), "resetInstances");
+        try {
+            NetworkTaskDAO networkTaskDAO = new NetworkTaskDAO(context);
+            networkTaskDAO.resetAllNetworkTaskInstances();
+        } catch (Exception exc) {
+            Log.e(StartupService.class.getName(), "Error on resetting instances", exc);
         }
     }
 

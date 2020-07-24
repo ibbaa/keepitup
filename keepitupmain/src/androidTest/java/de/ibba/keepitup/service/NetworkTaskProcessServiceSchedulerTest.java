@@ -252,13 +252,12 @@ public class NetworkTaskProcessServiceSchedulerTest {
         scheduler.startup();
         assertTrue(isTaskMarkedAsRunningInDatabase(task1));
         assertFalse(isTaskMarkedAsRunningInDatabase(task2));
-        assertEquals(0, networkTaskDAO.readNetworkTaskInstances(task1.getId()));
+        assertEquals(1, networkTaskDAO.readNetworkTaskInstances(task1.getId()));
         assertTrue(alarmManager.wasSetAlarmCalled());
         List<MockAlarmManager.SetAlarmCall> setAlarmCalls = alarmManager.getSetAlarmCalls();
         assertEquals(1, setAlarmCalls.size());
         MockAlarmManager.SetAlarmCall setAlarmCall1 = setAlarmCalls.get(0);
         assertEquals(1200000 - 1, setAlarmCall1.getDelay());
-        networkTaskDAO.increaseNetworkTaskInstances(task1.getId());
         networkTaskDAO.increaseNetworkTaskInstances(task2.getId());
         assertEquals(1, networkTaskDAO.readNetworkTaskInstances(task1.getId()));
         assertEquals(1, networkTaskDAO.readNetworkTaskInstances(task2.getId()));
@@ -270,8 +269,8 @@ public class NetworkTaskProcessServiceSchedulerTest {
         scheduler.startup();
         assertTrue(isTaskMarkedAsRunningInDatabase(task1));
         assertTrue(isTaskMarkedAsRunningInDatabase(task2));
-        assertEquals(0, networkTaskDAO.readNetworkTaskInstances(task1.getId()));
-        assertEquals(0, networkTaskDAO.readNetworkTaskInstances(task2.getId()));
+        assertEquals(1, networkTaskDAO.readNetworkTaskInstances(task1.getId()));
+        assertEquals(1, networkTaskDAO.readNetworkTaskInstances(task2.getId()));
         assertTrue(alarmManager.wasSetAlarmCalled());
         assertEquals(2, setAlarmCalls.size());
         setAlarmCall1 = setAlarmCalls.get(0);

@@ -102,4 +102,19 @@ public class NetworkTaskProcessPoolTest {
         assertTrue(future2.isCancelled());
         assertTrue(future3.isCancelled());
     }
+
+    @Test
+    public void testHasActive() {
+        MockFuture<?> future1 = new MockFuture<>();
+        MockFuture<?> future2 = new MockFuture<>();
+        MockFuture<?> future3 = new MockFuture<>();
+        processPool.pool(1, future1);
+        processPool.pool(2, future2);
+        processPool.pool(2, future3);
+        assertTrue(processPool.hasActive());
+        processPool.cancel(2);
+        assertTrue(processPool.hasActive());
+        future1.setDone(true);
+        assertFalse(processPool.hasActive());
+    }
 }

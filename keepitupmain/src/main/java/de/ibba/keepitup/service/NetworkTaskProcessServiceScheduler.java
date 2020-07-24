@@ -26,7 +26,7 @@ public class NetworkTaskProcessServiceScheduler {
 
     private static NetworkTaskProcessPool processPool;
 
-    public static enum Delay {
+    public enum Delay {
         IMMEDIATE,
         INTERVAL,
         LASTSCHEDULED
@@ -40,7 +40,9 @@ public class NetworkTaskProcessServiceScheduler {
     }
 
     public synchronized static NetworkTaskProcessPool getNetworkTaskProcessPool() {
+        Log.d(NetworkTaskProcessServiceScheduler.class.getName(), "getNetworkTaskProcessPool");
         if (processPool == null) {
+            Log.d(NetworkTaskProcessServiceScheduler.class.getName(), "processPool is null. Creating...");
             processPool = new NetworkTaskProcessPool();
         }
         return processPool;
@@ -120,7 +122,6 @@ public class NetworkTaskProcessServiceScheduler {
         for (NetworkTask currentTask : networkTasks) {
             if (currentTask.isRunning()) {
                 Log.d(NetworkTaskProcessServiceScheduler.class.getName(), "Network task " + currentTask + " is marked as running. Rescheduling...");
-                networkTaskDAO.resetNetworkTaskInstances(currentTask.getId());
                 reschedule(currentTask, Delay.LASTSCHEDULED);
             } else {
                 Log.d(NetworkTaskProcessServiceScheduler.class.getName(), "Network task " + currentTask + " is not marked as running.");
