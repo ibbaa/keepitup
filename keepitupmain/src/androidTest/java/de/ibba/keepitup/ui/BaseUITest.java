@@ -37,6 +37,12 @@ import de.ibba.keepitup.test.viewaction.WaitForViewAction;
 
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.matcher.ViewMatchers.isAssignableFrom;
+import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
+import static androidx.test.espresso.matcher.ViewMatchers.withClassName;
+import static androidx.test.espresso.matcher.ViewMatchers.withContentDescription;
+import static org.hamcrest.Matchers.allOf;
+import static org.hamcrest.Matchers.anyOf;
+import static org.hamcrest.Matchers.endsWith;
 
 public abstract class BaseUITest {
 
@@ -153,6 +159,10 @@ public abstract class BaseUITest {
 
     public static Matcher<View> withTextColor(int expectedId) {
         return new TextColorMatcher(expectedId);
+    }
+
+    public static Matcher<View> withOverflowButton() {
+        return anyOf(allOf(isDisplayed(), withContentDescription("More options")), allOf(isDisplayed(), withClassName(endsWith("OverflowMenuButton"))));
     }
 
     public static ViewAction waitFor(long time) {

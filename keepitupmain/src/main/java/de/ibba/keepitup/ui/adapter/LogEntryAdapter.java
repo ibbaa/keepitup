@@ -110,6 +110,10 @@ public class LogEntryAdapter extends RecyclerView.Adapter<LogEntryViewHolder> {
         return logEntries.size() <= 0 ? 1 : logEntries.size();
     }
 
+    public boolean hasValidEntries() {
+        return logEntries.size() > 0;
+    }
+
     public void addItem(LogEntry logEntry) {
         Log.d(LogEntryAdapter.class.getName(), "addItem " + logEntry);
         this.logEntries.add(0, logEntry);
