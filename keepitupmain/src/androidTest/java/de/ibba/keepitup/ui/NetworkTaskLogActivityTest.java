@@ -22,6 +22,7 @@ import de.ibba.keepitup.test.mock.TestRegistry;
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.Espresso.openActionBarOverflowOrOptionsMenu;
 import static androidx.test.espresso.action.ViewActions.click;
+import static androidx.test.espresso.assertion.ViewAssertions.doesNotExist;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.isRoot;
@@ -87,6 +88,7 @@ public class NetworkTaskLogActivityTest extends BaseUITest {
         onView(withText("Delete logs")).perform(click());
         onView(withId(R.id.imageview_dialog_confirm_ok)).perform(click());
         onView(withId(R.id.listview_activity_log_log_entries)).check(matches(withListSize(1)));
+        onView(withOverflowButton()).check(doesNotExist());
     }
 
     @Test
@@ -119,6 +121,7 @@ public class NetworkTaskLogActivityTest extends BaseUITest {
         rotateScreen(activity);
         onView(isRoot()).perform(waitFor(1000));
         onView(withId(R.id.listview_activity_log_log_entries)).check(matches(withListSize(1)));
+        onView(withOverflowButton()).check(doesNotExist());
     }
 
     private NetworkTask insertNetworkTask() {

@@ -24,6 +24,7 @@ import de.ibba.keepitup.ui.sync.LogEntryUIInitTask;
 public class NetworkTaskLogActivity extends RecyclerViewBaseActivity {
 
     private LogEntryUIBroadcastReceiver broadcastReceiver;
+    private MenuAdapterDataObserver menuAdapterDataObserver;
 
     @Override
     protected int getRecyclerViewId() {
@@ -59,6 +60,7 @@ public class NetworkTaskLogActivity extends RecyclerViewBaseActivity {
         Log.d(NetworkTaskLogActivity.class.getName(), "onPause");
         super.onPause();
         unregisterReceiver();
+        unregisterMenuAdapterDataObserver();
     }
 
     private void registerReceiver() {
@@ -73,6 +75,22 @@ public class NetworkTaskLogActivity extends RecyclerViewBaseActivity {
         if (broadcastReceiver != null) {
             unregisterReceiver(broadcastReceiver);
             broadcastReceiver = null;
+        }
+    }
+
+    private void registerMenuAdapterDataObserver() {
+        Log.d(NetworkTaskLogActivity.class.getName(), "registerMenuAdapterDataObserver");
+        if (menuAdapterDataObserver == null) {
+            menuAdapterDataObserver = new MenuAdapterDataObserver();
+            getAdapter().registerAdapterDataObserver(menuAdapterDataObserver);
+        }
+    }
+
+    private void unregisterMenuAdapterDataObserver() {
+        Log.d(NetworkTaskLogActivity.class.getName(), "unregisterMenuAdapterDataObserver");
+        if (menuAdapterDataObserver != null) {
+            getAdapter().unregisterAdapterDataObserver(menuAdapterDataObserver);
+            menuAdapterDataObserver = null;
         }
     }
 
@@ -97,7 +115,18 @@ public class NetworkTaskLogActivity extends RecyclerViewBaseActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
+        Log.d(NetworkTaskLogActivity.class.getName(), "onCreateOptionsMenu");
         getMenuInflater().inflate(R.menu.menu_log, menu);
+        MenuItem item = menu.findItem(R.id.menu_action_activity_log_delete);
+        LogEntryAdapter adapter = (LogEntryAdapter) getAdapter();
+        if (adapter.hasValidEntries()) {
+            Log.d(NetworkTaskLogActivity.class.getName(), "Adapter has valid entries. Showing log delete menu item.");
+            item.setVisible(true);
+        } else {
+            Log.d(NetworkTaskLogActivity.class.getName(), "Adapter has no valid entries. Hiding log delete menu item.");
+            item.setVisible(false);
+        }
+        registerMenuAdapterDataObserver();
         return true;
     }
 
@@ -132,5 +161,12 @@ public class NetworkTaskLogActivity extends RecyclerViewBaseActivity {
 
     private LogEntryUIInitTask getUIInitTask(LogEntryAdapter adapter) {
         return new LogEntryUIInitTask(this, adapter);
+    }
+
+    private class MenuAdapterDataObserver extends RecyclerView.AdapterDataObserver {
+        @Override
+        public void onChanged() {
+            invalidateOptionsMenu();
+        }
     }
 }
