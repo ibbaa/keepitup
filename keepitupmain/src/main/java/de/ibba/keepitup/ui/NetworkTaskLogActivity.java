@@ -50,6 +50,7 @@ public class NetworkTaskLogActivity extends RecyclerViewBaseActivity {
         Log.d(NetworkTaskLogActivity.class.getName(), "onResume");
         super.onResume();
         registerReceiver();
+        registerMenuAdapterDataObserver();
         NetworkTask task = new NetworkTask(Objects.requireNonNull(getIntent().getExtras()));
         LogEntryUIInitTask uiInitTask = getUIInitTask((LogEntryAdapter) getAdapter());
         uiInitTask.start(task);
@@ -126,7 +127,6 @@ public class NetworkTaskLogActivity extends RecyclerViewBaseActivity {
             Log.d(NetworkTaskLogActivity.class.getName(), "Adapter has no valid entries. Hiding log delete menu item.");
             item.setVisible(false);
         }
-        registerMenuAdapterDataObserver();
         return true;
     }
 
