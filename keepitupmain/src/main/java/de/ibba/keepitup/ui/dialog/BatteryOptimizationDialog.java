@@ -66,7 +66,7 @@ public class BatteryOptimizationDialog extends DialogFragment {
         okImage.setOnClickListener(this::onOkClicked);
     }
 
-    private void onBatteryOptimizationLinkClicked(@SuppressWarnings("unused") View view) {
+    private void onBatteryOptimizationLinkClicked(View view) {
         Log.d(BatteryOptimizationDialog.class.getName(), "onBatteryOptimizationLinkClicked");
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             Intent intent = new Intent();
@@ -75,7 +75,7 @@ public class BatteryOptimizationDialog extends DialogFragment {
         }
     }
 
-    private void onOkClicked(@SuppressWarnings("unused") View view) {
+    private void onOkClicked(View view) {
         Log.d(BatteryOptimizationDialog.class.getName(), "onOkClicked");
         BatteryOptimizationSupport batteryOptimizationSupport = getBatteryOptimizationSupport();
         if (batteryOptimizationSupport != null) {

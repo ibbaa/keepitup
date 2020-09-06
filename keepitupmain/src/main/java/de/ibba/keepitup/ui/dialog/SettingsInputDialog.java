@@ -100,7 +100,7 @@ public class SettingsInputDialog extends DialogFragment implements ContextOption
         return StringUtil.notNull(valueEditText.getText());
     }
 
-    private void onOkClicked(@SuppressWarnings("unused") View view) {
+    private void onOkClicked(View view) {
         Log.d(SettingsInputDialog.class.getName(), "onOkClicked");
         List<ValidationResult> validationResult = validateInput();
         if (!hasErrors(validationResult)) {
@@ -118,7 +118,7 @@ public class SettingsInputDialog extends DialogFragment implements ContextOption
         }
     }
 
-    private void onCancelClicked(@SuppressWarnings("unused") View view) {
+    private void onCancelClicked(View view) {
         Log.d(SettingsInputDialog.class.getName(), "onCancelClicked");
         SettingsInputSupport settingsInputSupport = getSettingsInputSupport();
         if (settingsInputSupport != null) {

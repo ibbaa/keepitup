@@ -52,7 +52,7 @@ public class GeneralErrorDialog extends DialogFragment {
         okImage.setOnClickListener(this::onOkClicked);
     }
 
-    private void onOkClicked(@SuppressWarnings("unused") View view) {
+    private void onOkClicked(View view) {
         Log.d(GeneralErrorDialog.class.getName(), "onOkClicked");
         dismiss();
     }
