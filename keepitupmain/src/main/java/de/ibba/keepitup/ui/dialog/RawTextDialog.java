@@ -89,7 +89,7 @@ public class RawTextDialog extends DialogFragment {
         okImage.setOnClickListener(this::onOkClicked);
     }
 
-    private void onOkClicked(@SuppressWarnings("unused") View view) {
+    private void onOkClicked(View view) {
         Log.d(RawTextDialog.class.getName(), "onOkClicked");
         dismiss();
     }

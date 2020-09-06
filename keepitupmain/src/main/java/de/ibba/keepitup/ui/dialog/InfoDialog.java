@@ -86,7 +86,7 @@ public class InfoDialog extends DialogFragment {
         okImage.setOnClickListener(this::onOkClicked);
     }
 
-    private void onLicenseClicked(@SuppressWarnings("unused") View view) {
+    private void onLicenseClicked(View view) {
         Log.d(InfoDialog.class.getName(), "onLicenseClicked");
         RawTextDialog licenseDialog = new RawTextDialog();
         Bundle bundle = BundleUtil.stringToBundle(getResources().getString(R.string.dialog_info_copyright_key), getCopyrightText());
@@ -96,13 +96,13 @@ public class InfoDialog extends DialogFragment {
         licenseDialog.show(getParentFragmentManager(), RawTextDialog.class.getName());
     }
 
-    private void onThirdpartyClicked(@SuppressWarnings("unused") View view) {
+    private void onThirdpartyClicked(View view) {
         Log.d(InfoDialog.class.getName(), "onThirdpartyClicked");
         OssLicensesMenuActivity.setActivityTitle(getString(R.string.text_dialog_info_thirdparty_title));
         startActivity(new Intent(getActivity(), OssLicensesMenuActivity.class));
     }
 
-    private void onOkClicked(@SuppressWarnings("unused") View view) {
+    private void onOkClicked(View view) {
         Log.d(InfoDialog.class.getName(), "onOkClicked");
         dismiss();
     }

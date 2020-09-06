@@ -28,12 +28,12 @@ public class TextColorValidatingWatcherTest {
         assertEquals(Color.RED, testEditText.getCurrentTextColor());
     }
 
-    @SuppressWarnings({"unused", "SameReturnValue"})
+    @SuppressWarnings({"SameReturnValue"})
     private boolean validateTrue(EditText editText) {
         return true;
     }
 
-    @SuppressWarnings({"unused", "SameReturnValue"})
+    @SuppressWarnings({"SameReturnValue"})
     private boolean validateFalse(EditText editText) {
         return false;
     }

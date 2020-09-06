@@ -55,7 +55,7 @@ public class ConfirmDialog extends DialogFragment {
         cancelImage.setOnClickListener(this::onCancelClicked);
     }
 
-    private void onOkClicked(@SuppressWarnings("unused") View view) {
+    private void onOkClicked(View view) {
         Log.d(ConfirmDialog.class.getName(), "onOkClicked");
         ConfirmSupport confirmSupport = getConfirmSupport();
         if (confirmSupport == null) {
@@ -78,7 +78,7 @@ public class ConfirmDialog extends DialogFragment {
         confirmSupport.onConfirmDialogOkClicked(this, type);
     }
 
-    private void onCancelClicked(@SuppressWarnings("unused") View view) {
+    private void onCancelClicked(View view) {
         Log.d(ConfirmDialog.class.getName(), "onCancelClicked");
         ConfirmSupport confirmSupport = getConfirmSupport();
         if (confirmSupport != null) {

@@ -119,7 +119,7 @@ public class ContextOptionsDialog extends DialogFragment {
         return new ContextOptionAdapter(contextOptionList, this);
     }
 
-    private void onCancelClicked(@SuppressWarnings("unused") View view) {
+    private void onCancelClicked(View view) {
         Log.d(ContextOptionsDialog.class.getName(), "onCancelClicked");
         dismiss();
     }

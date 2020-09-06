@@ -860,19 +860,19 @@ public class FolderChooseDialogTest extends BaseUITest {
         FileEntryAdapter adapter = dialog.getAdapter();
         assertTrue(areEntriesEqual(adapter.getSelectedItem(), getFileEntry("folder2", true, false, true)));
         assertTrue(adapter.isItemSelected());
-        onView(allOf(withId(R.id.textview_list_item_file_entry_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_folder_choose_file_entries), 3))).perform(click());
+        selectEntry(3);
         onView(withId(R.id.textview_dialog_folder_choose_absolute)).check(matches(withText(root + "/folder1")));
         onView(withId(R.id.edittext_dialog_folder_choose_folder)).check(matches(withText("folder1")));
         assertEquals("folder1", dialog.getFolder());
         assertTrue(areEntriesEqual(adapter.getSelectedItem(), getFileEntry("folder1", true, false, true)));
         assertTrue(adapter.isItemSelected());
-        onView(allOf(withId(R.id.textview_list_item_file_entry_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_folder_choose_file_entries), 1))).perform(click());
+        selectEntry(1);
         onView(withId(R.id.textview_dialog_folder_choose_absolute)).check(matches(withText(root + "/folder1")));
         onView(withId(R.id.edittext_dialog_folder_choose_folder)).check(matches(withText("folder1")));
         assertEquals("folder1", dialog.getFolder());
         assertTrue(areEntriesEqual(adapter.getSelectedItem(), getFileEntry("folder1", true, false, true)));
         assertTrue(adapter.isItemSelected());
-        onView(allOf(withId(R.id.textview_list_item_file_entry_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_folder_choose_file_entries), 0))).perform(click());
+        selectEntry(0);
         onView(withId(R.id.textview_dialog_folder_choose_absolute)).check(matches(withText(root)));
         onView(withId(R.id.edittext_dialog_folder_choose_folder)).check(matches(withText("")));
         assertTrue(areEntriesEqual(adapter.getSelectedItem(), getFileEntry("..", true, true, false)));
@@ -890,7 +890,7 @@ public class FolderChooseDialogTest extends BaseUITest {
         FileEntryAdapter adapter = dialog.getAdapter();
         assertTrue(areEntriesEqual(adapter.getSelectedItem(), getFileEntry("folder2", true, false, true)));
         assertTrue(adapter.isItemSelected());
-        onView(allOf(withId(R.id.textview_list_item_file_entry_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_folder_choose_file_entries), 3))).perform(click());
+        selectEntry(3);
         onView(withId(R.id.textview_dialog_folder_choose_absolute)).check(matches(withText(root + "/folder1")));
         onView(withId(R.id.edittext_dialog_folder_choose_folder)).check(matches(withText("folder1")));
         assertEquals("folder1", dialog.getFolder());
@@ -903,7 +903,7 @@ public class FolderChooseDialogTest extends BaseUITest {
         adapter = getAdapter();
         assertTrue(areEntriesEqual(adapter.getSelectedItem(), getFileEntry("folder1", true, false, true)));
         assertTrue(adapter.isItemSelected());
-        onView(allOf(withId(R.id.textview_list_item_file_entry_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_folder_choose_file_entries), 1))).perform(click());
+        selectEntry(1);
         onView(withId(R.id.textview_dialog_folder_choose_absolute)).check(matches(withText(root + "/folder1")));
         onView(withId(R.id.edittext_dialog_folder_choose_folder)).check(matches(withText("folder1")));
         assertTrue(areEntriesEqual(adapter.getSelectedItem(), getFileEntry("folder1", true, false, true)));
@@ -911,7 +911,7 @@ public class FolderChooseDialogTest extends BaseUITest {
         rotateScreen(activity);
         onView(isRoot()).perform(waitFor(1000));
         deleteLogFolder();
-        onView(allOf(withId(R.id.textview_list_item_file_entry_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_folder_choose_file_entries), 0))).perform(click());
+        selectEntry(0);
         onView(withId(R.id.textview_dialog_folder_choose_absolute)).check(matches(withText(root)));
         onView(withId(R.id.edittext_dialog_folder_choose_folder)).check(matches(withText("")));
         adapter = getAdapter();
@@ -929,19 +929,19 @@ public class FolderChooseDialogTest extends BaseUITest {
         assertEquals("xyz", dialog.getFolder());
         FileEntryAdapter adapter = dialog.getAdapter();
         assertFalse(adapter.isItemSelected());
-        onView(allOf(withId(R.id.textview_list_item_file_entry_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_folder_choose_file_entries), 3))).perform(click());
+        selectEntry(3);
         onView(withId(R.id.textview_dialog_folder_choose_absolute)).check(matches(withText(root + "/folder1")));
         onView(withId(R.id.edittext_dialog_folder_choose_folder)).check(matches(withText("folder1")));
         assertEquals("folder1", dialog.getFolder());
         assertTrue(areEntriesEqual(adapter.getSelectedItem(), getFileEntry("folder1", true, false, true)));
         assertTrue(adapter.isItemSelected());
-        onView(allOf(withId(R.id.textview_list_item_file_entry_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_folder_choose_file_entries), 1))).perform(click());
+        selectEntry(1);
         onView(withId(R.id.textview_dialog_folder_choose_absolute)).check(matches(withText(root + "/folder1")));
         onView(withId(R.id.edittext_dialog_folder_choose_folder)).check(matches(withText("folder1")));
         assertEquals("folder1", dialog.getFolder());
         assertTrue(areEntriesEqual(adapter.getSelectedItem(), getFileEntry("folder1", true, false, true)));
         assertTrue(adapter.isItemSelected());
-        onView(allOf(withId(R.id.textview_list_item_file_entry_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_folder_choose_file_entries), 0))).perform(click());
+        selectEntry(0);
         onView(withId(R.id.textview_dialog_folder_choose_absolute)).check(matches(withText(root)));
         onView(withId(R.id.edittext_dialog_folder_choose_folder)).check(matches(withText("")));
         assertEquals("", dialog.getFolder());
@@ -958,7 +958,7 @@ public class FolderChooseDialogTest extends BaseUITest {
         assertEquals("xyz", dialog.getFolder());
         FileEntryAdapter adapter = dialog.getAdapter();
         assertFalse(adapter.isItemSelected());
-        onView(allOf(withId(R.id.textview_list_item_file_entry_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_folder_choose_file_entries), 3))).perform(click());
+        selectEntry(3);
         onView(withId(R.id.textview_dialog_folder_choose_absolute)).check(matches(withText(root + "/folder1")));
         onView(withId(R.id.edittext_dialog_folder_choose_folder)).check(matches(withText("folder1")));
         assertEquals("folder1", dialog.getFolder());
@@ -973,7 +973,7 @@ public class FolderChooseDialogTest extends BaseUITest {
         adapter = getAdapter();
         assertTrue(areEntriesEqual(adapter.getSelectedItem(), getFileEntry("folder1", true, false, true)));
         assertTrue(adapter.isItemSelected());
-        onView(allOf(withId(R.id.textview_list_item_file_entry_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_folder_choose_file_entries), 1))).perform(click());
+        selectEntry(1);
         onView(withId(R.id.textview_dialog_folder_choose_absolute)).check(matches(withText(root + "/folder1")));
         onView(withId(R.id.edittext_dialog_folder_choose_folder)).check(matches(withText("folder1")));
         assertEquals("folder1", getDialog().getFolder());
@@ -982,7 +982,7 @@ public class FolderChooseDialogTest extends BaseUITest {
         rotateScreen(activity);
         onView(isRoot()).perform(waitFor(1000));
         deleteLogFolder();
-        onView(allOf(withId(R.id.textview_list_item_file_entry_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_folder_choose_file_entries), 0))).perform(click());
+        selectEntry(0);
         onView(withId(R.id.textview_dialog_folder_choose_absolute)).check(matches(withText(root)));
         onView(withId(R.id.edittext_dialog_folder_choose_folder)).check(matches(withText("")));
         assertEquals("", getDialog().getFolder());
@@ -1001,19 +1001,19 @@ public class FolderChooseDialogTest extends BaseUITest {
         FileEntryAdapter adapter = dialog.getAdapter();
         assertTrue(areEntriesEqual(adapter.getSelectedItem(), getFileEntry("folder2_folder2", true, false, true)));
         assertTrue(adapter.isItemSelected());
-        onView(allOf(withId(R.id.textview_list_item_file_entry_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_folder_choose_file_entries), 3))).perform(click());
+        selectEntry(3);
         onView(withId(R.id.textview_dialog_folder_choose_absolute)).check(matches(withText(root + "/folder2/folder2_folder1")));
         onView(withId(R.id.edittext_dialog_folder_choose_folder)).check(matches(withText("folder2/folder2_folder1")));
         assertEquals("folder2/folder2_folder1", dialog.getFolder());
         assertTrue(areEntriesEqual(adapter.getSelectedItem(), getFileEntry("folder2_folder1", true, false, true)));
         assertTrue(adapter.isItemSelected());
-        onView(allOf(withId(R.id.textview_list_item_file_entry_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_folder_choose_file_entries), 1))).perform(click());
+        selectEntry(1);
         onView(withId(R.id.textview_dialog_folder_choose_absolute)).check(matches(withText(root + "/folder2/folder2_folder1")));
         onView(withId(R.id.edittext_dialog_folder_choose_folder)).check(matches(withText("folder2/folder2_folder1")));
         assertEquals("folder2/folder2_folder1", dialog.getFolder());
         assertTrue(areEntriesEqual(adapter.getSelectedItem(), getFileEntry("folder2_folder1", true, false, true)));
         assertTrue(adapter.isItemSelected());
-        onView(allOf(withId(R.id.textview_list_item_file_entry_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_folder_choose_file_entries), 0))).perform(click());
+        selectEntry(0);
         onView(withId(R.id.textview_dialog_folder_choose_absolute)).check(matches(withText(root + "/folder2")));
         onView(withId(R.id.edittext_dialog_folder_choose_folder)).check(matches(withText("folder2")));
         assertEquals("folder2", dialog.getFolder());
@@ -1031,7 +1031,7 @@ public class FolderChooseDialogTest extends BaseUITest {
         FileEntryAdapter adapter = dialog.getAdapter();
         assertTrue(areEntriesEqual(adapter.getSelectedItem(), getFileEntry("folder2_folder2", true, false, true)));
         assertTrue(adapter.isItemSelected());
-        onView(allOf(withId(R.id.textview_list_item_file_entry_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_folder_choose_file_entries), 3))).perform(click());
+        selectEntry(3);
         onView(withId(R.id.textview_dialog_folder_choose_absolute)).check(matches(withText(root + "/folder2/folder2_folder1")));
         onView(withId(R.id.edittext_dialog_folder_choose_folder)).check(matches(withText("folder2/folder2_folder1")));
         assertEquals("folder2/folder2_folder1", dialog.getFolder());
@@ -1046,7 +1046,7 @@ public class FolderChooseDialogTest extends BaseUITest {
         adapter = getAdapter();
         assertTrue(areEntriesEqual(adapter.getSelectedItem(), getFileEntry("folder2_folder1", true, false, true)));
         assertTrue(adapter.isItemSelected());
-        onView(allOf(withId(R.id.textview_list_item_file_entry_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_folder_choose_file_entries), 1))).perform(click());
+        selectEntry(1);
         onView(withId(R.id.textview_dialog_folder_choose_absolute)).check(matches(withText(root + "/folder2/folder2_folder1")));
         onView(withId(R.id.edittext_dialog_folder_choose_folder)).check(matches(withText("folder2/folder2_folder1")));
         assertEquals("folder2/folder2_folder1", dialog.getFolder());
@@ -1056,7 +1056,7 @@ public class FolderChooseDialogTest extends BaseUITest {
         onView(isRoot()).perform(waitFor(1000));
         deleteLogFolder();
         adapter = getAdapter();
-        onView(allOf(withId(R.id.textview_list_item_file_entry_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_folder_choose_file_entries), 0))).perform(click());
+        selectEntry(0);
         onView(withId(R.id.textview_dialog_folder_choose_absolute)).check(matches(withText(root + "/folder2")));
         onView(withId(R.id.edittext_dialog_folder_choose_folder)).check(matches(withText("folder2")));
         assertEquals("folder2", getDialog().getFolder());
@@ -1073,19 +1073,19 @@ public class FolderChooseDialogTest extends BaseUITest {
         assertEquals("folder2/xyz", dialog.getFolder());
         FileEntryAdapter adapter = dialog.getAdapter();
         assertFalse(adapter.isItemSelected());
-        onView(allOf(withId(R.id.textview_list_item_file_entry_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_folder_choose_file_entries), 3))).perform(click());
+        selectEntry(3);
         onView(withId(R.id.textview_dialog_folder_choose_absolute)).check(matches(withText(root + "/folder2/folder2_folder1")));
         onView(withId(R.id.edittext_dialog_folder_choose_folder)).check(matches(withText("folder2/folder2_folder1")));
         assertEquals("folder2/folder2_folder1", dialog.getFolder());
         assertTrue(areEntriesEqual(adapter.getSelectedItem(), getFileEntry("folder2_folder1", true, false, true)));
         assertTrue(adapter.isItemSelected());
-        onView(allOf(withId(R.id.textview_list_item_file_entry_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_folder_choose_file_entries), 1))).perform(click());
+        selectEntry(1);
         onView(withId(R.id.textview_dialog_folder_choose_absolute)).check(matches(withText(root + "/folder2/folder2_folder1")));
         onView(withId(R.id.edittext_dialog_folder_choose_folder)).check(matches(withText("folder2/folder2_folder1")));
         assertEquals("folder2/folder2_folder1", dialog.getFolder());
         assertTrue(areEntriesEqual(adapter.getSelectedItem(), getFileEntry("folder2_folder1", true, false, true)));
         assertTrue(adapter.isItemSelected());
-        onView(allOf(withId(R.id.textview_list_item_file_entry_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_folder_choose_file_entries), 0))).perform(click());
+        selectEntry(0);
         onView(withId(R.id.textview_dialog_folder_choose_absolute)).check(matches(withText(root + "/folder2")));
         onView(withId(R.id.edittext_dialog_folder_choose_folder)).check(matches(withText("folder2")));
         assertEquals("folder2", dialog.getFolder());
@@ -1102,7 +1102,7 @@ public class FolderChooseDialogTest extends BaseUITest {
         assertEquals("folder2/xyz", dialog.getFolder());
         FileEntryAdapter adapter = dialog.getAdapter();
         assertFalse(adapter.isItemSelected());
-        onView(allOf(withId(R.id.textview_list_item_file_entry_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_folder_choose_file_entries), 3))).perform(click());
+        selectEntry(3);
         onView(withId(R.id.textview_dialog_folder_choose_absolute)).check(matches(withText(root + "/folder2/folder2_folder1")));
         onView(withId(R.id.edittext_dialog_folder_choose_folder)).check(matches(withText("folder2/folder2_folder1")));
         assertEquals("folder2/folder2_folder1", dialog.getFolder());
@@ -1117,7 +1117,7 @@ public class FolderChooseDialogTest extends BaseUITest {
         adapter = getAdapter();
         assertTrue(areEntriesEqual(adapter.getSelectedItem(), getFileEntry("folder2_folder1", true, false, true)));
         assertTrue(adapter.isItemSelected());
-        onView(allOf(withId(R.id.textview_list_item_file_entry_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_folder_choose_file_entries), 1))).perform(click());
+        selectEntry(1);
         onView(withId(R.id.textview_dialog_folder_choose_absolute)).check(matches(withText(root + "/folder2/folder2_folder1")));
         onView(withId(R.id.edittext_dialog_folder_choose_folder)).check(matches(withText("folder2/folder2_folder1")));
         assertEquals("folder2/folder2_folder1", getDialog().getFolder());
@@ -1126,7 +1126,7 @@ public class FolderChooseDialogTest extends BaseUITest {
         rotateScreen(activity);
         onView(isRoot()).perform(waitFor(1000));
         deleteLogFolder();
-        onView(allOf(withId(R.id.textview_list_item_file_entry_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_folder_choose_file_entries), 0))).perform(click());
+        selectEntry(0);
         onView(withId(R.id.textview_dialog_folder_choose_absolute)).check(matches(withText(root + "/folder2")));
         onView(withId(R.id.edittext_dialog_folder_choose_folder)).check(matches(withText("folder2")));
         assertEquals("folder2", getDialog().getFolder());
@@ -1142,7 +1142,7 @@ public class FolderChooseDialogTest extends BaseUITest {
         onView(withId(R.id.textview_dialog_folder_choose_absolute)).check(matches(withText(root + "/folder2")));
         onView(withId(R.id.edittext_dialog_folder_choose_folder)).check(matches(withText("folder2")));
         assertEquals("folder2", dialog.getFolder());
-        onView(allOf(withId(R.id.imageview_list_item_file_entry_open), withChildDescendantAtPosition(withId(R.id.listview_dialog_folder_choose_file_entries), 3))).perform(click());
+        openEntry(3);
         onView(withId(R.id.textview_dialog_folder_choose_absolute)).check(matches(withText(root + "/folder1")));
         onView(withId(R.id.edittext_dialog_folder_choose_folder)).check(matches(withText("folder1")));
         assertEquals("folder1", dialog.getFolder());
@@ -1166,13 +1166,13 @@ public class FolderChooseDialogTest extends BaseUITest {
         assertTrue(areEntriesEqual(adapter.getItem(2), getFileEntry("folder1_folder1", true, false, true)));
         assertTrue(areEntriesEqual(adapter.getItem(3), getFileEntry("folder1_folder2", true, false, true)));
         assertFalse(adapter.isItemSelected());
-        onView(allOf(withId(R.id.textview_list_item_file_entry_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_folder_choose_file_entries), 2))).perform(click());
+        selectEntry(2);
         onView(withId(R.id.textview_dialog_folder_choose_absolute)).check(matches(withText(root + "/folder1/folder1_folder1")));
         onView(withId(R.id.edittext_dialog_folder_choose_folder)).check(matches(withText("folder1/folder1_folder1")));
         assertEquals("folder1/folder1_folder1", dialog.getFolder());
         assertTrue(areEntriesEqual(adapter.getSelectedItem(), getFileEntry("folder1_folder1", true, false, true)));
         assertTrue(adapter.isItemSelected());
-        onView(allOf(withId(R.id.imageview_list_item_file_entry_open), withChildDescendantAtPosition(withId(R.id.listview_dialog_folder_choose_file_entries), 0))).perform(click());
+        openEntry(0);
         onView(withId(R.id.textview_dialog_folder_choose_absolute)).check(matches(withText(root + "/folder1")));
         onView(withId(R.id.edittext_dialog_folder_choose_folder)).check(matches(withText("folder1")));
         assertEquals("folder1", dialog.getFolder());
@@ -1213,11 +1213,11 @@ public class FolderChooseDialogTest extends BaseUITest {
         onView(withId(R.id.textview_dialog_folder_choose_absolute)).check(matches(withText(root + "/folder2")));
         onView(withId(R.id.edittext_dialog_folder_choose_folder)).check(matches(withText("folder2")));
         assertEquals("folder2", dialog.getFolder());
-        onView(allOf(withId(R.id.imageview_list_item_file_entry_open), withChildDescendantAtPosition(withId(R.id.listview_dialog_folder_choose_file_entries), 3))).perform(click());
+        openEntry(3);
         onView(withId(R.id.textview_dialog_folder_choose_absolute)).check(matches(withText(root + "/folder1")));
         onView(withId(R.id.edittext_dialog_folder_choose_folder)).check(matches(withText("folder1")));
         assertEquals("folder1", dialog.getFolder());
-        onView(allOf(withId(R.id.textview_list_item_file_entry_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_folder_choose_file_entries), 2))).perform(click());
+        selectEntry(2);
         onView(withId(R.id.textview_dialog_folder_choose_absolute)).check(matches(withText(root + "/folder1/folder1_folder1")));
         onView(withId(R.id.edittext_dialog_folder_choose_folder)).check(matches(withText("folder1/folder1_folder1")));
         assertEquals("folder1/folder1_folder1", dialog.getFolder());
@@ -1233,7 +1233,7 @@ public class FolderChooseDialogTest extends BaseUITest {
         adapter = getAdapter();
         assertTrue(areEntriesEqual(adapter.getSelectedItem(), getFileEntry("folder1_folder1", true, false, true)));
         assertTrue(adapter.isItemSelected());
-        onView(allOf(withId(R.id.imageview_list_item_file_entry_open), withChildDescendantAtPosition(withId(R.id.listview_dialog_folder_choose_file_entries), 0))).perform(click());
+        openEntry(0);
         onView(withId(R.id.textview_dialog_folder_choose_absolute)).check(matches(withText(root + "/folder1")));
         onView(withId(R.id.edittext_dialog_folder_choose_folder)).check(matches(withText("folder1")));
         assertEquals("folder1", getDialog().getFolder());
@@ -1290,7 +1290,7 @@ public class FolderChooseDialogTest extends BaseUITest {
         onView(withId(R.id.textview_dialog_folder_choose_absolute)).check(matches(withText(root + "/folder4")));
         onView(withId(R.id.edittext_dialog_folder_choose_folder)).check(matches(withText("folder4")));
         assertEquals("folder4", dialog.getFolder());
-        onView(allOf(withId(R.id.imageview_list_item_file_entry_open), withChildDescendantAtPosition(withId(R.id.listview_dialog_folder_choose_file_entries), 4))).perform(click());
+        openEntry(4);
         onView(withId(R.id.textview_dialog_folder_choose_absolute)).check(matches(withText(root + "/folder2")));
         onView(withId(R.id.edittext_dialog_folder_choose_folder)).check(matches(withText("folder2")));
         assertEquals("folder2", dialog.getFolder());
@@ -1318,13 +1318,13 @@ public class FolderChooseDialogTest extends BaseUITest {
         assertTrue(areEntriesEqual(adapter.getItem(3), getFileEntry("folder2_folder1", true, false, true)));
         assertTrue(areEntriesEqual(adapter.getItem(4), getFileEntry("folder2_folder2", true, false, true)));
         assertFalse(adapter.isItemSelected());
-        onView(allOf(withId(R.id.textview_list_item_file_entry_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_folder_choose_file_entries), 3))).perform(click());
+        selectEntry(3);
         onView(withId(R.id.textview_dialog_folder_choose_absolute)).check(matches(withText(root + "/folder2/folder2_folder1")));
         onView(withId(R.id.edittext_dialog_folder_choose_folder)).check(matches(withText("folder2/folder2_folder1")));
         assertEquals("folder2/folder2_folder1", dialog.getFolder());
         assertTrue(areEntriesEqual(adapter.getSelectedItem(), getFileEntry("folder2_folder1", true, false, true)));
         assertTrue(adapter.isItemSelected());
-        onView(allOf(withId(R.id.imageview_list_item_file_entry_open), withChildDescendantAtPosition(withId(R.id.listview_dialog_folder_choose_file_entries), 0))).perform(click());
+        openEntry(0);
         onView(withId(R.id.textview_dialog_folder_choose_absolute)).check(matches(withText(root + "/folder2")));
         onView(withId(R.id.edittext_dialog_folder_choose_folder)).check(matches(withText("folder2")));
         assertEquals("folder2", dialog.getFolder());
@@ -1365,11 +1365,11 @@ public class FolderChooseDialogTest extends BaseUITest {
         onView(withId(R.id.textview_dialog_folder_choose_absolute)).check(matches(withText(root + "/folder4")));
         onView(withId(R.id.edittext_dialog_folder_choose_folder)).check(matches(withText("folder4")));
         assertEquals("folder4", dialog.getFolder());
-        onView(allOf(withId(R.id.imageview_list_item_file_entry_open), withChildDescendantAtPosition(withId(R.id.listview_dialog_folder_choose_file_entries), 4))).perform(click());
+        openEntry(4);
         onView(withId(R.id.textview_dialog_folder_choose_absolute)).check(matches(withText(root + "/folder2")));
         onView(withId(R.id.edittext_dialog_folder_choose_folder)).check(matches(withText("folder2")));
         assertEquals("folder2", dialog.getFolder());
-        onView(allOf(withId(R.id.textview_list_item_file_entry_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_folder_choose_file_entries), 3))).perform(click());
+        selectEntry(3);
         onView(withId(R.id.textview_dialog_folder_choose_absolute)).check(matches(withText(root + "/folder2/folder2_folder1")));
         onView(withId(R.id.edittext_dialog_folder_choose_folder)).check(matches(withText("folder2/folder2_folder1")));
         assertEquals("folder2/folder2_folder1", dialog.getFolder());
@@ -1391,7 +1391,7 @@ public class FolderChooseDialogTest extends BaseUITest {
         assertTrue(areEntriesEqual(adapter.getItem(4), getFileEntry("folder2_folder2", true, false, true)));
         assertTrue(areEntriesEqual(adapter.getSelectedItem(), getFileEntry("folder2_folder1", true, false, true)));
         assertTrue(adapter.isItemSelected());
-        onView(allOf(withId(R.id.imageview_list_item_file_entry_open), withChildDescendantAtPosition(withId(R.id.listview_dialog_folder_choose_file_entries), 0))).perform(click());
+        openEntry(0);
         onView(withId(R.id.textview_dialog_folder_choose_absolute)).check(matches(withText(root + "/folder2")));
         onView(withId(R.id.edittext_dialog_folder_choose_folder)).check(matches(withText("folder2")));
         assertEquals("folder2", getDialog().getFolder());
@@ -1448,7 +1448,7 @@ public class FolderChooseDialogTest extends BaseUITest {
         onView(withId(R.id.textview_dialog_folder_choose_absolute)).check(matches(withText(root + "/folder1/folder1_folder1")));
         onView(withId(R.id.edittext_dialog_folder_choose_folder)).check(matches(withText("folder1/folder1_folder1")));
         assertEquals("folder1/folder1_folder1", dialog.getFolder());
-        onView(allOf(withId(R.id.imageview_list_item_file_entry_open), withChildDescendantAtPosition(withId(R.id.listview_dialog_folder_choose_file_entries), 2))).perform(click());
+        openEntry(2);
         onView(withId(R.id.textview_dialog_folder_choose_absolute)).check(matches(withText(root + "/folder1/folder1_folder1")));
         onView(withId(R.id.edittext_dialog_folder_choose_folder)).check(matches(withText("folder1/folder1_folder1")));
         assertEquals("folder1/folder1_folder1", dialog.getFolder());
@@ -1460,7 +1460,7 @@ public class FolderChooseDialogTest extends BaseUITest {
         assertEquals(1, adapter.getItemCount());
         assertTrue(areEntriesEqual(adapter.getItem(0), getFileEntry("..", true, true, true)));
         assertFalse(adapter.isItemSelected());
-        onView(allOf(withId(R.id.imageview_list_item_file_entry_open), withChildDescendantAtPosition(withId(R.id.listview_dialog_folder_choose_file_entries), 0))).perform(click());
+        openEntry(0);
         onView(withId(R.id.textview_dialog_folder_choose_absolute)).check(matches(withText(root + "/folder1/folder1_folder1")));
         onView(withId(R.id.edittext_dialog_folder_choose_folder)).check(matches(withText("folder1/folder1_folder1")));
         assertEquals("folder1/folder1_folder1", dialog.getFolder());
@@ -1493,7 +1493,7 @@ public class FolderChooseDialogTest extends BaseUITest {
         onView(withId(R.id.textview_dialog_folder_choose_absolute)).check(matches(withText(root + "/folder1/folder1_folder1")));
         onView(withId(R.id.edittext_dialog_folder_choose_folder)).check(matches(withText("folder1/folder1_folder1")));
         assertEquals("folder1/folder1_folder1", dialog.getFolder());
-        onView(allOf(withId(R.id.imageview_list_item_file_entry_open), withChildDescendantAtPosition(withId(R.id.listview_dialog_folder_choose_file_entries), 2))).perform(click());
+        openEntry(2);
         onView(withId(R.id.textview_dialog_folder_choose_absolute)).check(matches(withText(root + "/folder1/folder1_folder1")));
         onView(withId(R.id.edittext_dialog_folder_choose_folder)).check(matches(withText("folder1/folder1_folder1")));
         assertEquals("folder1/folder1_folder1", dialog.getFolder());
@@ -1504,7 +1504,7 @@ public class FolderChooseDialogTest extends BaseUITest {
         rotateScreen(activity);
         onView(isRoot()).perform(waitFor(1000));
         deleteLogFolder();
-        onView(allOf(withId(R.id.imageview_list_item_file_entry_open), withChildDescendantAtPosition(withId(R.id.listview_dialog_folder_choose_file_entries), 0))).perform(click());
+        openEntry(0);
         onView(withId(R.id.textview_dialog_folder_choose_absolute)).check(matches(withText(root + "/folder1/folder1_folder1")));
         onView(withId(R.id.edittext_dialog_folder_choose_folder)).check(matches(withText("folder1/folder1_folder1")));
         assertEquals("folder1/folder1_folder1", getDialog().getFolder());
@@ -1552,7 +1552,7 @@ public class FolderChooseDialogTest extends BaseUITest {
         onView(withId(R.id.textview_dialog_folder_choose_absolute)).check(matches(withText(root + "/folder1/folder1_folder5")));
         onView(withId(R.id.edittext_dialog_folder_choose_folder)).check(matches(withText("folder1/folder1_folder5")));
         assertEquals("folder1/folder1_folder5", dialog.getFolder());
-        onView(allOf(withId(R.id.imageview_list_item_file_entry_open), withChildDescendantAtPosition(withId(R.id.listview_dialog_folder_choose_file_entries), 2))).perform(click());
+        openEntry(2);
         onView(withId(R.id.textview_dialog_folder_choose_absolute)).check(matches(withText(root + "/folder1/folder1_folder1")));
         onView(withId(R.id.edittext_dialog_folder_choose_folder)).check(matches(withText("folder1/folder1_folder1")));
         assertEquals("folder1/folder1_folder1", dialog.getFolder());
@@ -1564,7 +1564,7 @@ public class FolderChooseDialogTest extends BaseUITest {
         assertEquals(1, adapter.getItemCount());
         assertTrue(areEntriesEqual(adapter.getItem(0), getFileEntry("..", true, true, true)));
         assertFalse(adapter.isItemSelected());
-        onView(allOf(withId(R.id.imageview_list_item_file_entry_open), withChildDescendantAtPosition(withId(R.id.listview_dialog_folder_choose_file_entries), 0))).perform(click());
+        openEntry(0);
         onView(withId(R.id.textview_dialog_folder_choose_absolute)).check(matches(withText(root + "/folder1/folder1_folder1")));
         onView(withId(R.id.edittext_dialog_folder_choose_folder)).check(matches(withText("folder1/folder1_folder1")));
         assertEquals("folder1/folder1_folder1", dialog.getFolder());
@@ -1597,7 +1597,7 @@ public class FolderChooseDialogTest extends BaseUITest {
         onView(withId(R.id.textview_dialog_folder_choose_absolute)).check(matches(withText(root + "/folder1/folder1_folder5")));
         onView(withId(R.id.edittext_dialog_folder_choose_folder)).check(matches(withText("folder1/folder1_folder5")));
         assertEquals("folder1/folder1_folder5", dialog.getFolder());
-        onView(allOf(withId(R.id.imageview_list_item_file_entry_open), withChildDescendantAtPosition(withId(R.id.listview_dialog_folder_choose_file_entries), 2))).perform(click());
+        openEntry(2);
         onView(withId(R.id.textview_dialog_folder_choose_absolute)).check(matches(withText(root + "/folder1/folder1_folder1")));
         onView(withId(R.id.edittext_dialog_folder_choose_folder)).check(matches(withText("folder1/folder1_folder1")));
         assertEquals("folder1/folder1_folder1", dialog.getFolder());
@@ -1608,7 +1608,7 @@ public class FolderChooseDialogTest extends BaseUITest {
         rotateScreen(activity);
         onView(isRoot()).perform(waitFor(1000));
         deleteLogFolder();
-        onView(allOf(withId(R.id.imageview_list_item_file_entry_open), withChildDescendantAtPosition(withId(R.id.listview_dialog_folder_choose_file_entries), 0))).perform(click());
+        openEntry(0);
         onView(withId(R.id.textview_dialog_folder_choose_absolute)).check(matches(withText(root + "/folder1/folder1_folder1")));
         onView(withId(R.id.edittext_dialog_folder_choose_folder)).check(matches(withText("folder1/folder1_folder1")));
         assertEquals("folder1/folder1_folder1", getDialog().getFolder());
@@ -1658,7 +1658,7 @@ public class FolderChooseDialogTest extends BaseUITest {
         assertEquals("folder2", dialog.getFolder());
         onView(withId(R.id.edittext_dialog_folder_choose_folder)).perform(replaceText("folder2/xyz/download"));
         assertEquals("folder2/xyz/download", dialog.getFolder());
-        onView(allOf(withId(R.id.textview_list_item_file_entry_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_folder_choose_file_entries), 3))).perform(click());
+        selectEntry(3);
         onView(withId(R.id.textview_dialog_folder_choose_absolute)).check(matches(withText(root + "/folder1")));
         onView(withId(R.id.edittext_dialog_folder_choose_folder)).check(matches(withText("folder1")));
         assertEquals("folder1", dialog.getFolder());
@@ -1721,7 +1721,7 @@ public class FolderChooseDialogTest extends BaseUITest {
         rotateScreen(activity);
         onView(isRoot()).perform(waitFor(1000));
         deleteLogFolder();
-        onView(allOf(withId(R.id.textview_list_item_file_entry_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_folder_choose_file_entries), 3))).perform(click());
+        selectEntry(3);
         onView(withId(R.id.textview_dialog_folder_choose_absolute)).check(matches(withText(root + "/folder1")));
         onView(withId(R.id.edittext_dialog_folder_choose_folder)).check(matches(withText("folder1")));
         assertEquals("folder1", getDialog().getFolder());
@@ -1765,7 +1765,7 @@ public class FolderChooseDialogTest extends BaseUITest {
         onView(withId(R.id.edittext_dialog_folder_choose_folder)).check(matches(withText("folder2")));
         onView(withId(R.id.edittext_dialog_folder_choose_folder)).perform(replaceText("folder2/abc"));
         assertEquals("folder2/abc", dialog.getFolder());
-        onView(allOf(withId(R.id.imageview_list_item_file_entry_open), withChildDescendantAtPosition(withId(R.id.listview_dialog_folder_choose_file_entries), 3))).perform(click());
+        openEntry(3);
         onView(withId(R.id.textview_dialog_folder_choose_absolute)).check(matches(withText(root + "/folder1")));
         onView(withId(R.id.edittext_dialog_folder_choose_folder)).check(matches(withText("folder1")));
         assertEquals("folder1", dialog.getFolder());
@@ -1789,7 +1789,7 @@ public class FolderChooseDialogTest extends BaseUITest {
         assertTrue(areEntriesEqual(adapter.getItem(2), getFileEntry("folder1_folder1", true, false, true)));
         assertTrue(areEntriesEqual(adapter.getItem(3), getFileEntry("folder1_folder2", true, false, true)));
         assertFalse(adapter.isItemSelected());
-        onView(allOf(withId(R.id.imageview_list_item_file_entry_open), withChildDescendantAtPosition(withId(R.id.listview_dialog_folder_choose_file_entries), 0))).perform(click());
+        openEntry(0);
         onView(withId(R.id.textview_dialog_folder_choose_absolute)).check(matches(withText(root + "/folder1")));
         onView(withId(R.id.edittext_dialog_folder_choose_folder)).check(matches(withText("folder1")));
         assertEquals("folder1", dialog.getFolder());
@@ -1868,7 +1868,7 @@ public class FolderChooseDialogTest extends BaseUITest {
         assertTrue(areEntriesEqual(adapter.getItem(5), getFileEntry("folder3", true, false, true)));
         assertTrue(areEntriesEqual(adapter.getSelectedItem(), getFileEntry("folder2", true, false, true)));
         assertTrue(adapter.isItemSelected());
-        onView(allOf(withId(R.id.imageview_list_item_file_entry_open), withChildDescendantAtPosition(withId(R.id.listview_dialog_folder_choose_file_entries), 3))).perform(click());
+        openEntry(3);
         onView(withId(R.id.textview_dialog_folder_choose_absolute)).check(matches(withText(root + "/folder1")));
         onView(withId(R.id.edittext_dialog_folder_choose_folder)).check(matches(withText("folder1")));
         assertEquals("folder1", getDialog().getFolder());
@@ -2011,7 +2011,7 @@ public class FolderChooseDialogTest extends BaseUITest {
         assertEquals("folder1/folder1_folder1", dialog.getFolder());
         onView(withId(R.id.edittext_dialog_folder_choose_folder)).perform(replaceText("folder2/xyz/download"));
         assertEquals("folder2/xyz/download", dialog.getFolder());
-        onView(allOf(withId(R.id.textview_list_item_file_entry_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_folder_choose_file_entries), 3))).perform(click());
+        selectEntry(3);
         onView(withId(R.id.textview_dialog_folder_choose_absolute)).check(matches(withText(root + "/folder1/folder1_folder2")));
         onView(withId(R.id.edittext_dialog_folder_choose_folder)).check(matches(withText("folder1/folder1_folder2")));
         assertEquals("folder1/folder1_folder2", dialog.getFolder());
@@ -2064,7 +2064,7 @@ public class FolderChooseDialogTest extends BaseUITest {
         rotateScreen(activity);
         onView(isRoot()).perform(waitFor(1000));
         deleteLogFolder();
-        onView(allOf(withId(R.id.textview_list_item_file_entry_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_folder_choose_file_entries), 3))).perform(click());
+        selectEntry(3);
         onView(withId(R.id.textview_dialog_folder_choose_absolute)).check(matches(withText(root + "/folder1/folder1_folder2")));
         onView(withId(R.id.edittext_dialog_folder_choose_folder)).check(matches(withText("folder1/folder1_folder2")));
         assertEquals("folder1/folder1_folder2", getDialog().getFolder());
@@ -2100,7 +2100,7 @@ public class FolderChooseDialogTest extends BaseUITest {
         assertEquals("folder1/folder1_folder1", dialog.getFolder());
         onView(withId(R.id.edittext_dialog_folder_choose_folder)).perform(replaceText("folder2/xyz/download"));
         assertEquals("folder2/xyz/download", dialog.getFolder());
-        onView(allOf(withId(R.id.imageview_list_item_file_entry_open), withChildDescendantAtPosition(withId(R.id.listview_dialog_folder_choose_file_entries), 3))).perform(click());
+        openEntry(3);
         onView(withId(R.id.textview_dialog_folder_choose_absolute)).check(matches(withText(root + "/folder1/folder1_folder2")));
         onView(withId(R.id.edittext_dialog_folder_choose_folder)).check(matches(withText("folder1/folder1_folder2")));
         assertEquals("folder1/folder1_folder2", dialog.getFolder());
@@ -2112,7 +2112,7 @@ public class FolderChooseDialogTest extends BaseUITest {
         assertEquals(1, adapter.getItemCount());
         assertTrue(areEntriesEqual(adapter.getItem(0), getFileEntry("..", true, true, true)));
         assertFalse(adapter.isItemSelected());
-        onView(allOf(withId(R.id.imageview_list_item_file_entry_open), withChildDescendantAtPosition(withId(R.id.listview_dialog_folder_choose_file_entries), 0))).perform(click());
+        openEntry(0);
         onView(withId(R.id.textview_dialog_folder_choose_absolute)).check(matches(withText(root + "/folder1/folder1_folder2")));
         onView(withId(R.id.edittext_dialog_folder_choose_folder)).check(matches(withText("folder1/folder1_folder2")));
         assertEquals("folder1/folder1_folder2", dialog.getFolder());
@@ -2157,7 +2157,7 @@ public class FolderChooseDialogTest extends BaseUITest {
         onView(withId(R.id.textview_dialog_folder_choose_absolute)).check(matches(withText(root + "/folder2/xyz/download123")));
         onView(withId(R.id.edittext_dialog_folder_choose_folder)).check(matches(withText("folder2/xyz/download123")));
         assertEquals("folder2/xyz/download123", getDialog().getFolder());
-        onView(allOf(withId(R.id.imageview_list_item_file_entry_open), withChildDescendantAtPosition(withId(R.id.listview_dialog_folder_choose_file_entries), 0))).perform(click());
+        openEntry(0);
         FileEntryAdapter adapter = getAdapter();
         assertEquals(6, adapter.getItemCount());
         assertTrue(areEntriesEqual(adapter.getItem(0), getFileEntry("..", true, true, false)));
@@ -2287,7 +2287,7 @@ public class FolderChooseDialogTest extends BaseUITest {
         assertEquals("folder2/folder2_folder2/folder2_folder2_folder1", dialog.getFolder());
         onView(withId(R.id.edittext_dialog_folder_choose_folder)).perform(replaceText("folder2/xyz/download"));
         assertEquals("folder2/xyz/download", dialog.getFolder());
-        onView(allOf(withId(R.id.imageview_list_item_file_entry_open), withChildDescendantAtPosition(withId(R.id.listview_dialog_folder_choose_file_entries), 1))).perform(click());
+        openEntry(1);
         onView(withId(R.id.textview_dialog_folder_choose_absolute)).check(matches(withText(root + "/folder2/folder2_folder2/folder2_folder2_folder1")));
         onView(withId(R.id.edittext_dialog_folder_choose_folder)).check(matches(withText("folder2/folder2_folder2/folder2_folder2_folder1")));
         assertEquals("folder2/folder2_folder2/folder2_folder2_folder1", dialog.getFolder());
@@ -2299,7 +2299,7 @@ public class FolderChooseDialogTest extends BaseUITest {
         assertEquals(1, adapter.getItemCount());
         assertTrue(areEntriesEqual(adapter.getItem(0), getFileEntry("..", true, true, true)));
         assertFalse(adapter.isItemSelected());
-        onView(allOf(withId(R.id.imageview_list_item_file_entry_open), withChildDescendantAtPosition(withId(R.id.listview_dialog_folder_choose_file_entries), 0))).perform(click());
+        openEntry(0);
         onView(withId(R.id.textview_dialog_folder_choose_absolute)).check(matches(withText(root + "/folder2/folder2_folder2/folder2_folder2_folder1")));
         onView(withId(R.id.edittext_dialog_folder_choose_folder)).check(matches(withText("folder2/folder2_folder2/folder2_folder2_folder1")));
         assertEquals("folder2/folder2_folder2/folder2_folder2_folder1", dialog.getFolder());
@@ -2329,7 +2329,7 @@ public class FolderChooseDialogTest extends BaseUITest {
         deleteLogFolder();
         onView(withId(R.id.edittext_dialog_folder_choose_folder)).perform(replaceText("folder2/xyz/download"));
         assertEquals("folder2/xyz/download", getDialog().getFolder());
-        onView(allOf(withId(R.id.imageview_list_item_file_entry_open), withChildDescendantAtPosition(withId(R.id.listview_dialog_folder_choose_file_entries), 1))).perform(click());
+        openEntry(1);
         onView(withId(R.id.textview_dialog_folder_choose_absolute)).check(matches(withText(root + "/folder2/folder2_folder2/folder2_folder2_folder1")));
         onView(withId(R.id.edittext_dialog_folder_choose_folder)).check(matches(withText("folder2/folder2_folder2/folder2_folder2_folder1")));
         assertEquals("folder2/folder2_folder2/folder2_folder2_folder1", getDialog().getFolder());
@@ -2344,7 +2344,7 @@ public class FolderChooseDialogTest extends BaseUITest {
         rotateScreen(activity);
         onView(isRoot()).perform(waitFor(1000));
         deleteLogFolder();
-        onView(allOf(withId(R.id.imageview_list_item_file_entry_open), withChildDescendantAtPosition(withId(R.id.listview_dialog_folder_choose_file_entries), 0))).perform(click());
+        openEntry(0);
         onView(withId(R.id.textview_dialog_folder_choose_absolute)).check(matches(withText(root + "/folder2/folder2_folder2/folder2_folder2_folder1")));
         onView(withId(R.id.edittext_dialog_folder_choose_folder)).check(matches(withText("folder2/folder2_folder2/folder2_folder2_folder1")));
         assertEquals("folder2/folder2_folder2/folder2_folder2_folder1", getDialog().getFolder());
@@ -2373,7 +2373,7 @@ public class FolderChooseDialogTest extends BaseUITest {
         onView(withId(R.id.textview_dialog_folder_choose_absolute)).check(matches(withText(root + "/download")));
         assertEquals("download", dialog.getFolder());
         onView(withId(R.id.edittext_dialog_folder_choose_folder)).check(matches(withText("download")));
-        onView(allOf(withId(R.id.imageview_list_item_file_entry_open), withChildDescendantAtPosition(withId(R.id.listview_dialog_folder_choose_file_entries), 1))).perform(click());
+        openEntry(1);
         onView(withId(R.id.textview_dialog_folder_choose_absolute)).check(matches(withText(root + "/download")));
         onView(withId(R.id.edittext_dialog_folder_choose_folder)).check(matches(withText("download")));
         assertEquals("download", dialog.getFolder());
@@ -2388,7 +2388,7 @@ public class FolderChooseDialogTest extends BaseUITest {
         assertTrue(areEntriesEqual(adapter.getItem(0), getFileEntry("..", true, true, true)));
         assertTrue(areEntriesEqual(adapter.getItem(1), getFileEntry("download", true, false, true)));
         assertFalse(adapter.isItemSelected());
-        onView(allOf(withId(R.id.imageview_list_item_file_entry_open), withChildDescendantAtPosition(withId(R.id.listview_dialog_folder_choose_file_entries), 1))).perform(click());
+        openEntry(1);
         onView(withId(R.id.textview_dialog_folder_choose_absolute)).check(matches(withText(root + "/download/download")));
         onView(withId(R.id.edittext_dialog_folder_choose_folder)).check(matches(withText("download/download")));
         assertEquals("download/download", dialog.getFolder());
@@ -2402,7 +2402,7 @@ public class FolderChooseDialogTest extends BaseUITest {
         assertTrue(areEntriesEqual(adapter.getItem(0), getFileEntry("..", true, true, true)));
         assertTrue(areEntriesEqual(adapter.getItem(1), getFileEntry("download", true, false, true)));
         assertFalse(adapter.isItemSelected());
-        onView(allOf(withId(R.id.imageview_list_item_file_entry_open), withChildDescendantAtPosition(withId(R.id.listview_dialog_folder_choose_file_entries), 1))).perform(click());
+        openEntry(1);
         onView(withId(R.id.textview_dialog_folder_choose_absolute)).check(matches(withText(root + "/download/download/download")));
         onView(withId(R.id.edittext_dialog_folder_choose_folder)).check(matches(withText("download/download/download")));
         assertEquals("download/download/download", dialog.getFolder());
@@ -2412,7 +2412,7 @@ public class FolderChooseDialogTest extends BaseUITest {
         assertEquals(1, adapter.getItemCount());
         assertTrue(areEntriesEqual(adapter.getItem(0), getFileEntry("..", true, true, true)));
         assertFalse(adapter.isItemSelected());
-        onView(allOf(withId(R.id.imageview_list_item_file_entry_open), withChildDescendantAtPosition(withId(R.id.listview_dialog_folder_choose_file_entries), 0))).perform(click());
+        openEntry(0);
         onView(withId(R.id.textview_dialog_folder_choose_absolute)).check(matches(withText(root + "/download/download/download")));
         onView(withId(R.id.edittext_dialog_folder_choose_folder)).check(matches(withText("download/download/download")));
         assertEquals("download/download/download", dialog.getFolder());
@@ -2440,7 +2440,7 @@ public class FolderChooseDialogTest extends BaseUITest {
         assertTrue(areEntriesEqual(adapter.getItem(0), getFileEntry("..", true, true, true)));
         assertTrue(areEntriesEqual(adapter.getItem(1), getFileEntry("download", true, false, true)));
         assertTrue(adapter.isItemSelected());
-        onView(allOf(withId(R.id.imageview_list_item_file_entry_open), withChildDescendantAtPosition(withId(R.id.listview_dialog_folder_choose_file_entries), 0))).perform(click());
+        openEntry(0);
         onView(withId(R.id.textview_dialog_folder_choose_absolute)).check(matches(withText(root + "/download")));
         onView(withId(R.id.edittext_dialog_folder_choose_folder)).check(matches(withText("download")));
         assertEquals("download", dialog.getFolder());
@@ -2462,10 +2462,10 @@ public class FolderChooseDialogTest extends BaseUITest {
         getFileManager().delete(getFileManager().getExternalRootDirectory(0));
         getFileManager().delete(getFileManager().getExternalRootDirectory(1));
         createIdenticalNameTestFiles();
-        FolderChooseDialog dialog = openFolderChooseDialog("download");
-        onView(allOf(withId(R.id.imageview_list_item_file_entry_open), withChildDescendantAtPosition(withId(R.id.listview_dialog_folder_choose_file_entries), 1))).perform(click());
-        onView(allOf(withId(R.id.imageview_list_item_file_entry_open), withChildDescendantAtPosition(withId(R.id.listview_dialog_folder_choose_file_entries), 1))).perform(click());
-        onView(allOf(withId(R.id.imageview_list_item_file_entry_open), withChildDescendantAtPosition(withId(R.id.listview_dialog_folder_choose_file_entries), 1))).perform(click());
+        openFolderChooseDialog("download");
+        openEntry(1);
+        openEntry(1);
+        openEntry(1);
         rotateScreen(activity);
         onView(isRoot()).perform(waitFor(1000));
         deleteLogFolder();
@@ -2479,9 +2479,9 @@ public class FolderChooseDialogTest extends BaseUITest {
         assertEquals(1, adapter.getItemCount());
         assertTrue(areEntriesEqual(adapter.getItem(0), getFileEntry("..", true, true, true)));
         assertFalse(adapter.isItemSelected());
-        onView(allOf(withId(R.id.imageview_list_item_file_entry_open), withChildDescendantAtPosition(withId(R.id.listview_dialog_folder_choose_file_entries), 0))).perform(click());
-        onView(allOf(withId(R.id.imageview_list_item_file_entry_open), withChildDescendantAtPosition(withId(R.id.listview_dialog_folder_choose_file_entries), 0))).perform(click());
-        onView(allOf(withId(R.id.imageview_list_item_file_entry_open), withChildDescendantAtPosition(withId(R.id.listview_dialog_folder_choose_file_entries), 0))).perform(click());
+        openEntry(0);
+        openEntry(0);
+        openEntry(0);
         rotateScreen(activity);
         onView(isRoot()).perform(waitFor(1000));
         deleteLogFolder();
@@ -2531,7 +2531,18 @@ public class FolderChooseDialogTest extends BaseUITest {
         Bundle bundle = BundleUtil.stringsToBundle(new String[]{folderChooseDialog.getFolderRootKey(), folderChooseDialog.getFolderKey()}, new String[]{root, folder});
         folderChooseDialog.setArguments(bundle);
         folderChooseDialog.show(activity.getSupportFragmentManager(), GlobalSettingsActivity.class.getName());
+        onView(isRoot()).perform(waitFor(1000));
         return folderChooseDialog;
+    }
+
+    private void openEntry(int index) {
+        onView(isRoot()).perform(waitFor(1000));
+        onView(allOf(withId(R.id.imageview_list_item_file_entry_open), withChildDescendantAtPosition(withId(R.id.listview_dialog_folder_choose_file_entries), index))).perform(click());
+    }
+
+    private void selectEntry(int index) {
+        onView(isRoot()).perform(waitFor(1000));
+        onView(allOf(withId(R.id.textview_list_item_file_entry_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_folder_choose_file_entries), index))).perform(click());
     }
 
     private FolderChooseDialog getDialog() {

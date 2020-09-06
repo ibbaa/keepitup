@@ -201,7 +201,7 @@ public class FolderChooseDialog extends DialogFragment implements ContextOptions
         cancelImage.setOnClickListener(this::onCancelClicked);
     }
 
-    private void onOkClicked(@SuppressWarnings("unused") View view) {
+    private void onOkClicked(View view) {
         Log.d(FolderChooseDialog.class.getName(), "onOkClicked");
         FolderChooseSupport folderChooseSupport = getFolderChooseSupport();
         if (folderChooseSupport != null) {
@@ -212,7 +212,7 @@ public class FolderChooseDialog extends DialogFragment implements ContextOptions
         }
     }
 
-    private void onCancelClicked(@SuppressWarnings("unused") View view) {
+    private void onCancelClicked(View view) {
         Log.d(FolderChooseDialog.class.getName(), "onCancelClicked");
         FolderChooseSupport folderChooseSupport = getFolderChooseSupport();
         if (folderChooseSupport != null) {

@@ -6,7 +6,6 @@ import java.text.NumberFormat;
 
 import de.ibba.keepitup.R;
 
-@SuppressWarnings("unused")
 public class StringUtil {
 
     public static String getStringValue(Object value, String defaultValue) {

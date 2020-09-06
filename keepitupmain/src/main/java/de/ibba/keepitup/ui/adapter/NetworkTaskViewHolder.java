@@ -115,19 +115,19 @@ public class NetworkTaskViewHolder extends RecyclerView.ViewHolder {
         addImage.setVisibility(View.VISIBLE);
     }
 
-    private void onStartStopClicked(@SuppressWarnings("unused") View view) {
+    private void onStartStopClicked(View view) {
         mainActivity.onMainStartStopClicked(getAdapterPosition());
     }
 
-    private void onDeleteClicked(@SuppressWarnings("unused") View view) {
+    private void onDeleteClicked(View view) {
         mainActivity.onMainDeleteClicked(getAdapterPosition());
     }
 
-    private void onEditClicked(@SuppressWarnings("unused") View view) {
+    private void onEditClicked(View view) {
         mainActivity.onMainEditClicked(getAdapterPosition());
     }
 
-    private void onLogClicked(@SuppressWarnings("unused") View view) {
+    private void onLogClicked(View view) {
         mainActivity.onMainLogClicked(getAdapterPosition());
     }
 }

@@ -305,7 +305,7 @@ public class NetworkTaskEditDialog extends DialogFragment implements ContextOpti
         return task;
     }
 
-    private void onOkClicked(@SuppressWarnings("unused") View view) {
+    private void onOkClicked(View view) {
         Log.d(NetworkTaskEditDialog.class.getName(), "onOkClicked");
         NetworkTaskMainActivity activity = (NetworkTaskMainActivity) getActivity();
         List<ValidationResult> validationResult = validateFinalInput();
@@ -318,7 +318,7 @@ public class NetworkTaskEditDialog extends DialogFragment implements ContextOpti
         }
     }
 
-    private void onCancelClicked(@SuppressWarnings("unused") View view) {
+    private void onCancelClicked(View view) {
         Log.d(NetworkTaskEditDialog.class.getName(), "onCancelClicked");
         NetworkTaskMainActivity activity = (NetworkTaskMainActivity) getActivity();
         Objects.requireNonNull(activity).onEditDialogCancelClicked(this);
