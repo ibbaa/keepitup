@@ -13,6 +13,7 @@ import org.junit.runner.RunWith;
 
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 
 import de.ibba.keepitup.R;
 import de.ibba.keepitup.test.mock.TestContextOptionsDialog;
@@ -24,6 +25,7 @@ import de.ibba.keepitup.util.BundleUtil;
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
+import static androidx.test.espresso.matcher.ViewMatchers.isRoot;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
 import static org.hamcrest.Matchers.allOf;
@@ -51,28 +53,18 @@ public class ContextOptionsDialogTest extends BaseUITest {
 
     @Test
     public void testDisplayOptions() {
-        ContextOptionsDialog contextOptionsDialog = new ContextOptionsDialog();
-        Bundle bundle = BundleUtil.stringListToBundle(ContextOption.class.getSimpleName(), Arrays.asList(ContextOption.COPY.name(), ContextOption.PASTE.name()));
-        bundle.putInt(contextOptionsDialog.getSourceResourceIdKey(), 1);
-        contextOptionsDialog.setArguments(bundle);
-        contextOptionsDialog.show(getActivity(activityScenario).getSupportFragmentManager(), ContextOptionsDialog.class.getName());
+        openContextOptionDialog(Arrays.asList(ContextOption.COPY.name(), ContextOption.PASTE.name()));
         onView(withId(R.id.listview_dialog_context_options)).check(matches(withListSize(2)));
         onView(withId(R.id.textview_dialog_context_options_title)).check(matches(withText("Text options")));
         onView(allOf(withId(R.id.textview_list_item_context_option_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options), 0))).check(matches(withText("Copy")));
         onView(allOf(withId(R.id.textview_list_item_context_option_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options), 1))).check(matches(withText("Paste")));
         onView(withId(R.id.imageview_dialog_context_options_cancel)).perform(click());
-        bundle = BundleUtil.stringListToBundle(ContextOption.class.getSimpleName(), Collections.singletonList(ContextOption.COPY.name()));
-        bundle.putInt(contextOptionsDialog.getSourceResourceIdKey(), 1);
-        contextOptionsDialog.setArguments(bundle);
-        contextOptionsDialog.show(getActivity(activityScenario).getSupportFragmentManager(), ContextOptionsDialog.class.getName());
+        openContextOptionDialog(Collections.singletonList(ContextOption.COPY.name()));
         onView(withId(R.id.listview_dialog_context_options)).check(matches(withListSize(1)));
         onView(withId(R.id.textview_dialog_context_options_title)).check(matches(withText("Text options")));
         onView(allOf(withId(R.id.textview_list_item_context_option_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options), 0))).check(matches(withText("Copy")));
         onView(withId(R.id.imageview_dialog_context_options_cancel)).perform(click());
-        bundle = BundleUtil.stringListToBundle(ContextOption.class.getSimpleName(), Collections.emptyList());
-        bundle.putInt(contextOptionsDialog.getSourceResourceIdKey(), 1);
-        contextOptionsDialog.setArguments(bundle);
-        contextOptionsDialog.show(getActivity(activityScenario).getSupportFragmentManager(), ContextOptionsDialog.class.getName());
+        openContextOptionDialog(Collections.emptyList());
         onView(withId(R.id.listview_dialog_context_options)).check(matches(withListSize(0)));
         onView(withId(R.id.textview_dialog_context_options_title)).check(matches(withText("Text options")));
         onView(withId(R.id.imageview_dialog_context_options_cancel)).perform(click());
@@ -80,11 +72,7 @@ public class ContextOptionsDialogTest extends BaseUITest {
 
     @Test
     public void testDisplayOptionsTwoOptionsScreenRotation() {
-        ContextOptionsDialog contextOptionsDialog = new ContextOptionsDialog();
-        Bundle bundle = BundleUtil.stringListToBundle(ContextOption.class.getSimpleName(), Arrays.asList(ContextOption.COPY.name(), ContextOption.PASTE.name()));
-        bundle.putInt(contextOptionsDialog.getSourceResourceIdKey(), 1);
-        contextOptionsDialog.setArguments(bundle);
-        contextOptionsDialog.show(getActivity(activityScenario).getSupportFragmentManager(), ContextOptionsDialog.class.getName());
+        openContextOptionDialog(Arrays.asList(ContextOption.COPY.name(), ContextOption.PASTE.name()));
         onView(withId(R.id.listview_dialog_context_options)).check(matches(withListSize(2)));
         onView(withId(R.id.textview_dialog_context_options_title)).check(matches(withText("Text options")));
         onView(allOf(withId(R.id.textview_list_item_context_option_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options), 0))).check(matches(withText("Copy")));
@@ -104,11 +92,7 @@ public class ContextOptionsDialogTest extends BaseUITest {
 
     @Test
     public void testDisplayOptionsOneOptionScreenRotation() {
-        ContextOptionsDialog contextOptionsDialog = new ContextOptionsDialog();
-        Bundle bundle = BundleUtil.stringListToBundle(ContextOption.class.getSimpleName(), Collections.singletonList(ContextOption.COPY.name()));
-        bundle.putInt(contextOptionsDialog.getSourceResourceIdKey(), 1);
-        contextOptionsDialog.setArguments(bundle);
-        contextOptionsDialog.show(getActivity(activityScenario).getSupportFragmentManager(), ContextOptionsDialog.class.getName());
+        openContextOptionDialog(Collections.singletonList(ContextOption.COPY.name()));
         onView(withId(R.id.listview_dialog_context_options)).check(matches(withListSize(1)));
         onView(withId(R.id.textview_dialog_context_options_title)).check(matches(withText("Text options")));
         onView(allOf(withId(R.id.textview_list_item_context_option_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options), 0))).check(matches(withText("Copy")));
@@ -122,11 +106,7 @@ public class ContextOptionsDialogTest extends BaseUITest {
 
     @Test
     public void testCancel() {
-        TestContextOptionsDialog contextOptionsDialog = new TestContextOptionsDialog();
-        Bundle bundle = BundleUtil.stringListToBundle(ContextOption.class.getSimpleName(), Arrays.asList(ContextOption.COPY.name(), ContextOption.PASTE.name()));
-        bundle.putInt(contextOptionsDialog.getSourceResourceIdKey(), 1);
-        contextOptionsDialog.setArguments(bundle);
-        contextOptionsDialog.show(getActivity(activityScenario).getSupportFragmentManager(), ContextOptionsDialog.class.getName());
+        TestContextOptionsDialog contextOptionsDialog = openTestContextOptionDialog(Arrays.asList(ContextOption.COPY.name(), ContextOption.PASTE.name()));
         onView(withId(R.id.listview_dialog_context_options)).check(matches(withListSize(2)));
         onView(withId(R.id.imageview_dialog_context_options_cancel)).perform(click());
         TestContextOptionsSupport testContextOptionsSupport = (TestContextOptionsSupport) contextOptionsDialog.getContextOptionsSupport();
@@ -135,11 +115,7 @@ public class ContextOptionsDialogTest extends BaseUITest {
 
     @Test
     public void testOptionClicked() {
-        TestContextOptionsDialog contextOptionsDialog = new TestContextOptionsDialog();
-        Bundle bundle = BundleUtil.stringListToBundle(ContextOption.class.getSimpleName(), Arrays.asList(ContextOption.COPY.name(), ContextOption.PASTE.name()));
-        bundle.putInt(contextOptionsDialog.getSourceResourceIdKey(), 1);
-        contextOptionsDialog.setArguments(bundle);
-        contextOptionsDialog.show(getActivity(activityScenario).getSupportFragmentManager(), ContextOptionsDialog.class.getName());
+        TestContextOptionsDialog contextOptionsDialog = openTestContextOptionDialog(Arrays.asList(ContextOption.COPY.name(), ContextOption.PASTE.name()));
         onView(withId(R.id.listview_dialog_context_options)).check(matches(withListSize(2)));
         onView(allOf(withId(R.id.textview_list_item_context_option_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options), 0))).perform(click());
         TestContextOptionsSupport testContextOptionsSupport = (TestContextOptionsSupport) contextOptionsDialog.getContextOptionsSupport();
@@ -149,26 +125,20 @@ public class ContextOptionsDialogTest extends BaseUITest {
         assertEquals(ContextOption.COPY, call.getOption());
         onView(withId(R.id.imageview_dialog_context_options_cancel)).perform(click());
         testContextOptionsSupport.reset();
-        bundle = BundleUtil.stringListToBundle(ContextOption.class.getSimpleName(), Arrays.asList(ContextOption.COPY.name(), ContextOption.PASTE.name()));
-        bundle.putInt(contextOptionsDialog.getSourceResourceIdKey(), 2);
-        contextOptionsDialog.setArguments(bundle);
-        contextOptionsDialog.show(getActivity(activityScenario).getSupportFragmentManager(), ContextOptionsDialog.class.getName());
+        contextOptionsDialog = openTestContextOptionDialog(Arrays.asList(ContextOption.COPY.name(), ContextOption.PASTE.name()));
+        testContextOptionsSupport = (TestContextOptionsSupport) contextOptionsDialog.getContextOptionsSupport();
         onView(withId(R.id.listview_dialog_context_options)).check(matches(withListSize(2)));
         onView(allOf(withId(R.id.textview_list_item_context_option_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options), 1))).perform(click());
         assertTrue(testContextOptionsSupport.wasOnContextOptionsDialogEntryClickedCalled());
         call = testContextOptionsSupport.getOnContextOptionsDialogEntryClickedCalls().get(0);
-        assertEquals(2, call.getSourceResourceId());
+        assertEquals(1, call.getSourceResourceId());
         assertEquals(ContextOption.PASTE, call.getOption());
         onView(withId(R.id.imageview_dialog_context_options_cancel)).perform(click());
     }
 
     @Test
     public void testOptionClickedTwoOptionsScreenRotation() {
-        TestContextOptionsDialog contextOptionsDialog = new TestContextOptionsDialog();
-        Bundle bundle = BundleUtil.stringListToBundle(ContextOption.class.getSimpleName(), Arrays.asList(ContextOption.COPY.name(), ContextOption.PASTE.name()));
-        bundle.putInt(contextOptionsDialog.getSourceResourceIdKey(), 1);
-        contextOptionsDialog.setArguments(bundle);
-        contextOptionsDialog.show(getActivity(activityScenario).getSupportFragmentManager(), ContextOptionsDialog.class.getName());
+        TestContextOptionsDialog contextOptionsDialog = openTestContextOptionDialog(Arrays.asList(ContextOption.COPY.name(), ContextOption.PASTE.name()));
         rotateScreen(activityScenario);
         onView(allOf(withId(R.id.textview_list_item_context_option_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options), 0))).perform(click());
         contextOptionsDialog = getDialog();
@@ -183,11 +153,7 @@ public class ContextOptionsDialogTest extends BaseUITest {
 
     @Test
     public void testOptionClickedOneOptionScreenRotation() {
-        TestContextOptionsDialog contextOptionsDialog = new TestContextOptionsDialog();
-        Bundle bundle = BundleUtil.stringListToBundle(ContextOption.class.getSimpleName(), Collections.singletonList(ContextOption.PASTE.name()));
-        bundle.putInt(contextOptionsDialog.getSourceResourceIdKey(), 2);
-        contextOptionsDialog.setArguments(bundle);
-        contextOptionsDialog.show(getActivity(activityScenario).getSupportFragmentManager(), ContextOptionsDialog.class.getName());
+        TestContextOptionsDialog contextOptionsDialog = openTestContextOptionDialog(Collections.singletonList(ContextOption.PASTE.name()));
         rotateScreen(activityScenario);
         rotateScreen(activityScenario);
         onView(allOf(withId(R.id.textview_list_item_context_option_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options), 0))).perform(click());
@@ -195,9 +161,29 @@ public class ContextOptionsDialogTest extends BaseUITest {
         TestContextOptionsSupport testContextOptionsSupport = (TestContextOptionsSupport) contextOptionsDialog.getContextOptionsSupport();
         assertTrue(testContextOptionsSupport.wasOnContextOptionsDialogEntryClickedCalled());
         TestContextOptionsSupport.OnContextOptionsDialogEntryClickedCall call = testContextOptionsSupport.getOnContextOptionsDialogEntryClickedCalls().get(0);
-        assertEquals(2, call.getSourceResourceId());
+        assertEquals(1, call.getSourceResourceId());
         assertEquals(ContextOption.PASTE, call.getOption());
         onView(withId(R.id.imageview_dialog_context_options_cancel)).perform(click());
+    }
+
+    private ContextOptionsDialog openContextOptionDialog(List<String> contextOptions) {
+        ContextOptionsDialog contextOptionsDialog = new ContextOptionsDialog();
+        Bundle bundle = BundleUtil.stringListToBundle(ContextOption.class.getSimpleName(), contextOptions);
+        bundle.putInt(contextOptionsDialog.getSourceResourceIdKey(), 1);
+        contextOptionsDialog.setArguments(bundle);
+        contextOptionsDialog.show(getActivity(activityScenario).getSupportFragmentManager(), ContextOptionsDialog.class.getName());
+        onView(isRoot()).perform(waitFor(500));
+        return contextOptionsDialog;
+    }
+
+    private TestContextOptionsDialog openTestContextOptionDialog(List<String> contextOptions) {
+        TestContextOptionsDialog contextOptionsDialog = new TestContextOptionsDialog();
+        Bundle bundle = BundleUtil.stringListToBundle(ContextOption.class.getSimpleName(), contextOptions);
+        bundle.putInt(contextOptionsDialog.getSourceResourceIdKey(), 1);
+        contextOptionsDialog.setArguments(bundle);
+        contextOptionsDialog.show(getActivity(activityScenario).getSupportFragmentManager(), ContextOptionsDialog.class.getName());
+        onView(isRoot()).perform(waitFor(500));
+        return contextOptionsDialog;
     }
 
     private TestContextOptionsDialog getDialog() {

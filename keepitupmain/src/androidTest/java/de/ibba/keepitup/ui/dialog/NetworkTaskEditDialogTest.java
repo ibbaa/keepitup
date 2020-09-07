@@ -846,6 +846,7 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
     }
 
     private MockClipboardManager prepareMockClipboardManager() {
+        onView(isRoot()).perform(waitFor(500));
         NetworkTaskEditDialog dialog = (NetworkTaskEditDialog) getActivity(activityScenario).getSupportFragmentManager().getFragments().get(0);
         MockClipboardManager clipboardManager = new MockClipboardManager();
         clipboardManager.clearData();

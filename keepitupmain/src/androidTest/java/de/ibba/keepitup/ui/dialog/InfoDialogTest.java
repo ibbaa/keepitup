@@ -49,8 +49,7 @@ public class InfoDialogTest extends BaseUITest {
 
     @Test
     public void testBuildInfo() {
-        InfoDialog infoDialog = new InfoDialog();
-        infoDialog.show(getActivity(activityScenario).getSupportFragmentManager(), InfoDialog.class.getName());
+        openInfoDialog();
         onView(withId(R.id.textview_dialog_info_version)).check(matches(withText(BuildConfig.VERSION_NAME)));
         onView(withId(R.id.textview_dialog_info_build_type)).check(matches(withText(BuildConfig.BUILD_TYPE.toUpperCase())));
         onView(withId(R.id.textview_dialog_info_build_timestamp_)).check(matches(withText(containsString(getBuildYear()))));
@@ -58,8 +57,7 @@ public class InfoDialogTest extends BaseUITest {
 
     @Test
     public void testCopyright() {
-        InfoDialog infoDialog = new InfoDialog();
-        infoDialog.show(getActivity(activityScenario).getSupportFragmentManager(), InfoDialog.class.getName());
+        openInfoDialog();
         onView(withId(R.id.textview_dialog_info_copyright)).check(matches(withText(containsString("Copyright"))));
         onView(withId(R.id.textview_dialog_info_copyright)).check(matches(withText(containsString("Alwin Ibba"))));
         onView(withId(R.id.textview_dialog_info_copyright)).check(matches(withText(containsString(String.valueOf(BuildConfig.RELEASE_YEAR)))));
@@ -68,8 +66,7 @@ public class InfoDialogTest extends BaseUITest {
 
     @Test
     public void testLicense() {
-        InfoDialog infoDialog = new InfoDialog();
-        infoDialog.show(getActivity(activityScenario).getSupportFragmentManager(), InfoDialog.class.getName());
+        openInfoDialog();
         onView(withId(R.id.textview_dialog_info_license)).check(matches(withText("This software is open source and released under the terms of the MIT license. Please click here to display the license text.")));
         onView(withId(R.id.textview_dialog_info_license)).perform(click());
         assertEquals(2, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
@@ -83,8 +80,7 @@ public class InfoDialogTest extends BaseUITest {
 
     @Test
     public void testThirdparty() {
-        InfoDialog infoDialog = new InfoDialog();
-        infoDialog.show(getActivity(activityScenario).getSupportFragmentManager(), InfoDialog.class.getName());
+        openInfoDialog();
         onView(withId(R.id.textview_dialog_info_thirdparty)).check(matches(withText("Thirdparty licences")));
         onView(withId(R.id.textview_dialog_info_thirdparty)).perform(click());
         onView(withId(R.id.textview_dialog_info_thirdparty)).check(doesNotExist());
@@ -94,8 +90,7 @@ public class InfoDialogTest extends BaseUITest {
 
     @Test
     public void testScreenRotation() {
-        InfoDialog infoDialog = new InfoDialog();
-        infoDialog.show(getActivity(activityScenario).getSupportFragmentManager(), InfoDialog.class.getName());
+        openInfoDialog();
         onView(withId(R.id.textview_dialog_info_version)).check(matches(withText(BuildConfig.VERSION_NAME)));
         onView(withId(R.id.textview_dialog_info_copyright)).check(matches(withText(containsString("Copyright"))));
         onView(withId(R.id.textview_dialog_info_thirdparty)).check(matches(withText("Thirdparty licences")));
@@ -108,6 +103,12 @@ public class InfoDialogTest extends BaseUITest {
         onView(withId(R.id.textview_dialog_info_copyright)).check(matches(withText(containsString("Copyright"))));
         onView(withId(R.id.textview_dialog_info_thirdparty)).check(matches(withText("Thirdparty licences")));
         onView(withId(R.id.imageview_dialog_info_ok)).perform(click());
+    }
+
+    private void openInfoDialog() {
+        InfoDialog infoDialog = new InfoDialog();
+        infoDialog.show(getActivity(activityScenario).getSupportFragmentManager(), InfoDialog.class.getName());
+        onView(isRoot()).perform(waitFor(500));
     }
 
     private String getBuildYear() {

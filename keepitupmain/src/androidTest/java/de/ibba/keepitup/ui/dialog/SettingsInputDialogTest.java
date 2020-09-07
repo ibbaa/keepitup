@@ -27,6 +27,7 @@ import static androidx.test.espresso.action.ViewActions.longClick;
 import static androidx.test.espresso.action.ViewActions.replaceText;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
+import static androidx.test.espresso.matcher.ViewMatchers.isRoot;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
 import static org.hamcrest.Matchers.allOf;
@@ -53,20 +54,18 @@ public class SettingsInputDialogTest extends BaseUITest {
 
     @Test
     public void testGetValue() {
-        SettingsInputDialog inputDialog = new SettingsInputDialog();
         SettingsInput input = new SettingsInput(SettingsInput.Type.ADDRESS, "abc", "field", Collections.emptyList());
-        inputDialog.setArguments(input.toBundle());
-        inputDialog.show(getActivity(activityScenario).getSupportFragmentManager(), SettingsInputDialog.class.getName());
+        SettingsInputDialog inputDialog = openSettingsInputDialog(input);
+        onView(isRoot()).perform(waitFor(500));
         onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
         assertEquals("abc", inputDialog.getValue());
     }
 
     @Test
     public void testValidation() {
-        SettingsInputDialog inputDialog = new SettingsInputDialog();
         SettingsInput input = new SettingsInput(SettingsInput.Type.ADDRESS, "abc", "field", Arrays.asList(TestValidator1.class.getName(), TestValidator2.class.getName(), TestValidator2.class.getName()));
-        inputDialog.setArguments(input.toBundle());
-        inputDialog.show(getActivity(activityScenario).getSupportFragmentManager(), SettingsInputDialog.class.getName());
+        openSettingsInputDialog(input);
+        onView(isRoot()).perform(waitFor(500));
         onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
         assertEquals(2, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
         onView(allOf(withText("field"), withGridLayoutPosition(1, 0))).check(matches(isDisplayed()));
@@ -82,10 +81,9 @@ public class SettingsInputDialogTest extends BaseUITest {
 
     @Test
     public void testTextColor() {
-        SettingsInputDialog inputDialog = new SettingsInputDialog();
         SettingsInput input = new SettingsInput(SettingsInput.Type.ADDRESS, "success", "field", Arrays.asList(TestValidator1.class.getName(), TestValidator1.class.getName()));
-        inputDialog.setArguments(input.toBundle());
-        inputDialog.show(getActivity(activityScenario).getSupportFragmentManager(), SettingsInputDialog.class.getName());
+        openSettingsInputDialog(input);
+        onView(isRoot()).perform(waitFor(500));
         onView(withId(R.id.edittext_dialog_settings_input_value)).check(matches(withTextColor(R.color.textColor)));
         onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("failure"));
         onView(withId(R.id.edittext_dialog_settings_input_value)).check(matches(withTextColor(R.color.textErrorColor)));
@@ -95,20 +93,18 @@ public class SettingsInputDialogTest extends BaseUITest {
 
     @Test
     public void testCancel() {
-        SettingsInputDialog inputDialog = new SettingsInputDialog();
         SettingsInput input = new SettingsInput(SettingsInput.Type.ADDRESS, "abc", "field", Arrays.asList(TestValidator1.class.getName(), TestValidator1.class.getName()));
-        inputDialog.setArguments(input.toBundle());
-        inputDialog.show(getActivity(activityScenario).getSupportFragmentManager(), SettingsInputDialog.class.getName());
+        openSettingsInputDialog(input);
+        onView(isRoot()).perform(waitFor(500));
         onView(withId(R.id.imageview_dialog_settings_input_cancel)).perform(click());
         assertEquals(0, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
     }
 
     @Test
     public void testCopyPasteNoOption() {
-        SettingsInputDialog inputDialog = new SettingsInputDialog();
         SettingsInput input = new SettingsInput(SettingsInput.Type.ADDRESS, "success", "field", Arrays.asList(TestValidator1.class.getName(), TestValidator1.class.getName()));
-        inputDialog.setArguments(input.toBundle());
-        inputDialog.show(getActivity(activityScenario).getSupportFragmentManager(), SettingsInputDialog.class.getName());
+        SettingsInputDialog inputDialog = openSettingsInputDialog(input);
+        onView(isRoot()).perform(waitFor(500));
         prepareMockClipboardManager(inputDialog);
         onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText(""));
         onView(withId(R.id.edittext_dialog_settings_input_value)).perform(longClick());
@@ -117,10 +113,9 @@ public class SettingsInputDialogTest extends BaseUITest {
 
     @Test
     public void testCopyPasteNoOptionNumericIntegerData() {
-        SettingsInputDialog inputDialog = new SettingsInputDialog();
         SettingsInput input = new SettingsInput(SettingsInput.Type.CONNECTCOUNT, "success", "field", Arrays.asList(TestValidator1.class.getName(), TestValidator1.class.getName()));
-        inputDialog.setArguments(input.toBundle());
-        inputDialog.show(getActivity(activityScenario).getSupportFragmentManager(), SettingsInputDialog.class.getName());
+        SettingsInputDialog inputDialog = openSettingsInputDialog(input);
+        onView(isRoot()).perform(waitFor(500));
         MockClipboardManager clipboardManager = prepareMockClipboardManager(inputDialog);
         clipboardManager.putData("abc");
         onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText(""));
@@ -130,10 +125,9 @@ public class SettingsInputDialogTest extends BaseUITest {
 
     @Test
     public void testCopyPasteCancel() {
-        SettingsInputDialog inputDialog = new SettingsInputDialog();
         SettingsInput input = new SettingsInput(SettingsInput.Type.ADDRESS, "success", "field", Arrays.asList(TestValidator1.class.getName(), TestValidator1.class.getName()));
-        inputDialog.setArguments(input.toBundle());
-        inputDialog.show(getActivity(activityScenario).getSupportFragmentManager(), SettingsInputDialog.class.getName());
+        SettingsInputDialog inputDialog = openSettingsInputDialog(input);
+        onView(isRoot()).perform(waitFor(500));
         MockClipboardManager clipboardManager = prepareMockClipboardManager(inputDialog);
         clipboardManager.putData("abc");
         onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("test"));
@@ -153,10 +147,9 @@ public class SettingsInputDialogTest extends BaseUITest {
 
     @Test
     public void testCopyPasteCancelScreenRotation() {
-        SettingsInputDialog inputDialog = new SettingsInputDialog();
         SettingsInput input = new SettingsInput(SettingsInput.Type.ADDRESS, "success", "field", Arrays.asList(TestValidator1.class.getName(), TestValidator1.class.getName()));
-        inputDialog.setArguments(input.toBundle());
-        inputDialog.show(getActivity(activityScenario).getSupportFragmentManager(), SettingsInputDialog.class.getName());
+        openSettingsInputDialog(input);
+        onView(isRoot()).perform(waitFor(500));
         onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("test"));
         rotateScreen(activityScenario);
         MockClipboardManager clipboardManager = prepareMockClipboardManager(getDialog());
@@ -176,10 +169,9 @@ public class SettingsInputDialogTest extends BaseUITest {
 
     @Test
     public void testCopyOption() {
-        SettingsInputDialog inputDialog = new SettingsInputDialog();
         SettingsInput input = new SettingsInput(SettingsInput.Type.ADDRESS, "success", "field", Arrays.asList(TestValidator1.class.getName(), TestValidator1.class.getName()));
-        inputDialog.setArguments(input.toBundle());
-        inputDialog.show(getActivity(activityScenario).getSupportFragmentManager(), SettingsInputDialog.class.getName());
+        SettingsInputDialog inputDialog = openSettingsInputDialog(input);
+        onView(isRoot()).perform(waitFor(500));
         MockClipboardManager clipboardManager = prepareMockClipboardManager(inputDialog);
         onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("test"));
         onView(withId(R.id.edittext_dialog_settings_input_value)).perform(longClick());
@@ -197,10 +189,9 @@ public class SettingsInputDialogTest extends BaseUITest {
 
     @Test
     public void testCopyOptionScreenRotation() {
-        SettingsInputDialog inputDialog = new SettingsInputDialog();
         SettingsInput input = new SettingsInput(SettingsInput.Type.ADDRESS, "success", "field", Arrays.asList(TestValidator1.class.getName(), TestValidator1.class.getName()));
-        inputDialog.setArguments(input.toBundle());
-        inputDialog.show(getActivity(activityScenario).getSupportFragmentManager(), SettingsInputDialog.class.getName());
+        SettingsInputDialog inputDialog = openSettingsInputDialog(input);
+        onView(isRoot()).perform(waitFor(500));
         prepareMockClipboardManager(inputDialog);
         onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("test"));
         onView(withId(R.id.edittext_dialog_settings_input_value)).perform(longClick());
@@ -221,10 +212,9 @@ public class SettingsInputDialogTest extends BaseUITest {
 
     @Test
     public void testPasteOption() {
-        SettingsInputDialog inputDialog = new SettingsInputDialog();
         SettingsInput input = new SettingsInput(SettingsInput.Type.ADDRESS, "success", "field", Arrays.asList(TestValidator1.class.getName(), TestValidator1.class.getName()));
-        inputDialog.setArguments(input.toBundle());
-        inputDialog.show(getActivity(activityScenario).getSupportFragmentManager(), SettingsInputDialog.class.getName());
+        SettingsInputDialog inputDialog = openSettingsInputDialog(input);
+        onView(isRoot()).perform(waitFor(500));
         MockClipboardManager clipboardManager = prepareMockClipboardManager(inputDialog);
         clipboardManager.putData("abc");
         onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText(""));
@@ -242,10 +232,9 @@ public class SettingsInputDialogTest extends BaseUITest {
 
     @Test
     public void testPasteOptionScreenRotation() {
-        SettingsInputDialog inputDialog = new SettingsInputDialog();
         SettingsInput input = new SettingsInput(SettingsInput.Type.ADDRESS, "success", "field", Arrays.asList(TestValidator1.class.getName(), TestValidator1.class.getName()));
-        inputDialog.setArguments(input.toBundle());
-        inputDialog.show(getActivity(activityScenario).getSupportFragmentManager(), SettingsInputDialog.class.getName());
+        SettingsInputDialog inputDialog = openSettingsInputDialog(input);
+        onView(isRoot()).perform(waitFor(500));
         onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText(""));
         rotateScreen(activityScenario);
         MockClipboardManager clipboardManager = prepareMockClipboardManager(getDialog());
@@ -267,10 +256,9 @@ public class SettingsInputDialogTest extends BaseUITest {
 
     @Test
     public void testCopyPasteOption() {
-        SettingsInputDialog inputDialog = new SettingsInputDialog();
         SettingsInput input = new SettingsInput(SettingsInput.Type.PORT, "success", "field", Arrays.asList(TestValidator1.class.getName(), TestValidator1.class.getName()));
-        inputDialog.setArguments(input.toBundle());
-        inputDialog.show(getActivity(activityScenario).getSupportFragmentManager(), SettingsInputDialog.class.getName());
+        SettingsInputDialog inputDialog = openSettingsInputDialog(input);
+        onView(isRoot()).perform(waitFor(500));
         MockClipboardManager clipboardManager = prepareMockClipboardManager(inputDialog);
         clipboardManager.putData("11");
         onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("33"));
@@ -303,10 +291,9 @@ public class SettingsInputDialogTest extends BaseUITest {
 
     @Test
     public void testCopyPasteOptionScreenRotation() {
-        SettingsInputDialog inputDialog = new SettingsInputDialog();
         SettingsInput input = new SettingsInput(SettingsInput.Type.PORT, "success", "field", Arrays.asList(TestValidator1.class.getName(), TestValidator1.class.getName()));
-        inputDialog.setArguments(input.toBundle());
-        inputDialog.show(getActivity(activityScenario).getSupportFragmentManager(), SettingsInputDialog.class.getName());
+        SettingsInputDialog inputDialog = openSettingsInputDialog(input);
+        onView(isRoot()).perform(waitFor(500));
         MockClipboardManager clipboardManager = prepareMockClipboardManager(inputDialog);
         clipboardManager.putData("11");
         onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("33"));
@@ -344,10 +331,9 @@ public class SettingsInputDialogTest extends BaseUITest {
 
     @Test
     public void testStateSavedOnScreenRotation() {
-        SettingsInputDialog inputDialog = new SettingsInputDialog();
         SettingsInput input = new SettingsInput(SettingsInput.Type.ADDRESS, "abc", "field", Collections.emptyList());
-        inputDialog.setArguments(input.toBundle());
-        inputDialog.show(getActivity(activityScenario).getSupportFragmentManager(), SettingsInputDialog.class.getName());
+        SettingsInputDialog inputDialog = openSettingsInputDialog(input);
+        onView(isRoot()).perform(waitFor(500));
         onView(withId(R.id.edittext_dialog_settings_input_value)).check(matches(withText("abc")));
         rotateScreen(activityScenario);
         onView(withId(R.id.edittext_dialog_settings_input_value)).check(matches(withText("abc")));
@@ -365,6 +351,15 @@ public class SettingsInputDialogTest extends BaseUITest {
         inputDialog.injectClipboardManager(clipboardManager);
         return clipboardManager;
     }
+
+    private SettingsInputDialog openSettingsInputDialog(SettingsInput input) {
+        SettingsInputDialog inputDialog = new SettingsInputDialog();
+        inputDialog.setArguments(input.toBundle());
+        inputDialog.show(getActivity(activityScenario).getSupportFragmentManager(), SettingsInputDialog.class.getName());
+        onView(isRoot()).perform(waitFor(500));
+        return inputDialog;
+    }
+
 
     private SettingsInputDialog getDialog() {
         return (SettingsInputDialog) getActivity(activityScenario).getSupportFragmentManager().getFragments().get(0);
