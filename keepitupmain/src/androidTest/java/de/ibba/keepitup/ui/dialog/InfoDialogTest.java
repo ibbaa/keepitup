@@ -1,12 +1,12 @@
 package de.ibba.keepitup.ui.dialog;
 
+import androidx.test.core.app.ActivityScenario;
 import androidx.test.espresso.action.ViewActions;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.MediumTest;
-import androidx.test.rule.ActivityTestRule;
 
+import org.junit.After;
 import org.junit.Before;
-import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -33,21 +33,24 @@ import static org.junit.Assert.assertEquals;
 @RunWith(AndroidJUnit4.class)
 public class InfoDialogTest extends BaseUITest {
 
-    @Rule
-    public final ActivityTestRule<NetworkTaskMainActivity> rule = new ActivityTestRule<>(NetworkTaskMainActivity.class, false, false);
-
-    private NetworkTaskMainActivity activity;
+    private ActivityScenario<?> activityScenario;
 
     @Before
     public void beforeEachTestMethod() {
         super.beforeEachTestMethod();
-        activity = (NetworkTaskMainActivity) launchRecyclerViewBaseActivity(rule);
+        activityScenario = launchRecyclerViewBaseActivity(NetworkTaskMainActivity.class);
+    }
+
+    @After
+    public void afterEachTestMethod() {
+        super.afterEachTestMethod();
+        activityScenario.close();
     }
 
     @Test
     public void testBuildInfo() {
         InfoDialog infoDialog = new InfoDialog();
-        infoDialog.show(activity.getSupportFragmentManager(), InfoDialog.class.getName());
+        infoDialog.show(getActivity(activityScenario).getSupportFragmentManager(), InfoDialog.class.getName());
         onView(withId(R.id.textview_dialog_info_version)).check(matches(withText(BuildConfig.VERSION_NAME)));
         onView(withId(R.id.textview_dialog_info_build_type)).check(matches(withText(BuildConfig.BUILD_TYPE.toUpperCase())));
         onView(withId(R.id.textview_dialog_info_build_timestamp_)).check(matches(withText(containsString(getBuildYear()))));
@@ -56,7 +59,7 @@ public class InfoDialogTest extends BaseUITest {
     @Test
     public void testCopyright() {
         InfoDialog infoDialog = new InfoDialog();
-        infoDialog.show(activity.getSupportFragmentManager(), InfoDialog.class.getName());
+        infoDialog.show(getActivity(activityScenario).getSupportFragmentManager(), InfoDialog.class.getName());
         onView(withId(R.id.textview_dialog_info_copyright)).check(matches(withText(containsString("Copyright"))));
         onView(withId(R.id.textview_dialog_info_copyright)).check(matches(withText(containsString("Alwin Ibba"))));
         onView(withId(R.id.textview_dialog_info_copyright)).check(matches(withText(containsString(String.valueOf(BuildConfig.RELEASE_YEAR)))));
@@ -66,10 +69,10 @@ public class InfoDialogTest extends BaseUITest {
     @Test
     public void testLicense() {
         InfoDialog infoDialog = new InfoDialog();
-        infoDialog.show(activity.getSupportFragmentManager(), InfoDialog.class.getName());
+        infoDialog.show(getActivity(activityScenario).getSupportFragmentManager(), InfoDialog.class.getName());
         onView(withId(R.id.textview_dialog_info_license)).check(matches(withText("This software is open source and released under the terms of the MIT license. Please click here to display the license text.")));
         onView(withId(R.id.textview_dialog_info_license)).perform(click());
-        assertEquals(2, activity.getSupportFragmentManager().getFragments().size());
+        assertEquals(2, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
         onView(withId(R.id.textview_dialog_raw_text_content)).check(matches(withText(containsString("MIT License"))));
         onView(withId(R.id.textview_dialog_raw_text_content)).check(matches(withText(containsString("Copyright"))));
         onView(withId(R.id.textview_dialog_raw_text_content)).check(matches(withText(containsString("Alwin Ibba"))));
@@ -81,7 +84,7 @@ public class InfoDialogTest extends BaseUITest {
     @Test
     public void testThirdparty() {
         InfoDialog infoDialog = new InfoDialog();
-        infoDialog.show(activity.getSupportFragmentManager(), InfoDialog.class.getName());
+        infoDialog.show(getActivity(activityScenario).getSupportFragmentManager(), InfoDialog.class.getName());
         onView(withId(R.id.textview_dialog_info_thirdparty)).check(matches(withText("Thirdparty licences")));
         onView(withId(R.id.textview_dialog_info_thirdparty)).perform(click());
         onView(withId(R.id.textview_dialog_info_thirdparty)).check(doesNotExist());
@@ -92,17 +95,15 @@ public class InfoDialogTest extends BaseUITest {
     @Test
     public void testScreenRotation() {
         InfoDialog infoDialog = new InfoDialog();
-        infoDialog.show(activity.getSupportFragmentManager(), InfoDialog.class.getName());
+        infoDialog.show(getActivity(activityScenario).getSupportFragmentManager(), InfoDialog.class.getName());
         onView(withId(R.id.textview_dialog_info_version)).check(matches(withText(BuildConfig.VERSION_NAME)));
         onView(withId(R.id.textview_dialog_info_copyright)).check(matches(withText(containsString("Copyright"))));
         onView(withId(R.id.textview_dialog_info_thirdparty)).check(matches(withText("Thirdparty licences")));
-        rotateScreen(activity);
-        onView(isRoot()).perform(waitFor(1000));
+        rotateScreen(activityScenario);
         onView(withId(R.id.textview_dialog_info_version)).check(matches(withText(BuildConfig.VERSION_NAME)));
         onView(withId(R.id.textview_dialog_info_copyright)).check(matches(withText(containsString("Copyright"))));
         onView(withId(R.id.textview_dialog_info_thirdparty)).check(matches(withText("Thirdparty licences")));
-        rotateScreen(activity);
-        onView(isRoot()).perform(waitFor(1000));
+        rotateScreen(activityScenario);
         onView(withId(R.id.textview_dialog_info_version)).check(matches(withText(BuildConfig.VERSION_NAME)));
         onView(withId(R.id.textview_dialog_info_copyright)).check(matches(withText(containsString("Copyright"))));
         onView(withId(R.id.textview_dialog_info_thirdparty)).check(matches(withText("Thirdparty licences")));

@@ -3,12 +3,12 @@ package de.ibba.keepitup.ui;
 import android.text.InputType;
 import android.widget.EditText;
 
+import androidx.test.core.app.ActivityScenario;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.MediumTest;
-import androidx.test.rule.ActivityTestRule;
 
+import org.junit.After;
 import org.junit.Before;
-import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -35,19 +35,22 @@ import static org.junit.Assert.assertTrue;
 @RunWith(AndroidJUnit4.class)
 public class ContextOptionsSupportManagerTest extends BaseUITest {
 
-    @Rule
-    public final ActivityTestRule<NetworkTaskMainActivity> rule = new ActivityTestRule<>(NetworkTaskMainActivity.class, false, false);
-
-    private NetworkTaskMainActivity activity;
+    private ActivityScenario<?> activityScenario;
     private MockClipboardManager clipboardManager;
     private TestContextOptionsSupportManager contextOptionsSupportManager;
 
     @Before
     public void beforeEachTestMethod() {
         super.beforeEachTestMethod();
-        activity = (NetworkTaskMainActivity) launchRecyclerViewBaseActivity(rule);
+        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class);
         clipboardManager = new MockClipboardManager();
-        contextOptionsSupportManager = new TestContextOptionsSupportManager(activity.getSupportFragmentManager(), clipboardManager);
+        contextOptionsSupportManager = new TestContextOptionsSupportManager(getActivity(activityScenario).getSupportFragmentManager(), clipboardManager);
+    }
+
+    @After
+    public void afterEachTestMethod() {
+        super.afterEachTestMethod();
+        activityScenario.close();
     }
 
     @Test

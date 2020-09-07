@@ -2,12 +2,12 @@ package de.ibba.keepitup.ui.dialog;
 
 import android.os.Bundle;
 
+import androidx.test.core.app.ActivityScenario;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.MediumTest;
-import androidx.test.rule.ActivityTestRule;
 
+import org.junit.After;
 import org.junit.Before;
-import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -36,18 +36,21 @@ import static org.junit.Assert.assertFalse;
 @RunWith(AndroidJUnit4.class)
 public class FolderChooseDialogMockTest extends BaseUITest {
 
-    @Rule
-    public final ActivityTestRule<GlobalSettingsActivity> rule = new ActivityTestRule<>(GlobalSettingsActivity.class, false, false);
-
-    private GlobalSettingsActivity activity;
+    private ActivityScenario<?> activityScenario;
     private MockFileManager fileManager;
 
     @Before
     public void beforeEachTestMethod() {
         super.beforeEachTestMethod();
-        activity = (GlobalSettingsActivity) launchSettingsInputActivity(rule);
+        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class);
         setMockFileManagerData();
-        activity.injectFileManager(fileManager);
+        activityScenario.onActivity(activity -> ((GlobalSettingsActivity) activity).injectFileManager(fileManager));
+    }
+
+    @After
+    public void afterEachTestMethod() {
+        super.afterEachTestMethod();
+        activityScenario.close();
     }
 
     @Test
@@ -204,7 +207,7 @@ public class FolderChooseDialogMockTest extends BaseUITest {
         FolderChooseDialog folderChooseDialog = new FolderChooseDialog();
         Bundle bundle = BundleUtil.stringsToBundle(new String[]{folderChooseDialog.getFolderRootKey(), folderChooseDialog.getFolderKey()}, new String[]{"root", folder});
         folderChooseDialog.setArguments(bundle);
-        folderChooseDialog.show(activity.getSupportFragmentManager(), GlobalSettingsActivity.class.getName());
+        folderChooseDialog.show(getActivity(activityScenario).getSupportFragmentManager(), GlobalSettingsActivity.class.getName());
         return folderChooseDialog;
     }
 
