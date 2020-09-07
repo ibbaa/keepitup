@@ -155,7 +155,7 @@ public class NetworkTaskProcessServiceSchedulerTest {
         setTestTime(125);
         task1.setRunning(true);
         networkTaskDAO.updateNetworkTaskRunning(task1.getId(), true);
-        task1 = scheduler.reschedule(task1, Delay.IMMEDIATE);
+        scheduler.reschedule(task1, Delay.IMMEDIATE);
         List<MockAlarmManager.SetAlarmCall> setAlarmCalls = alarmManager.getSetAlarmCalls();
         assertEquals(1, setAlarmCalls.size());
         MockAlarmManager.SetAlarmCall setAlarmCall1 = setAlarmCalls.get(0);
@@ -186,7 +186,7 @@ public class NetworkTaskProcessServiceSchedulerTest {
         alarmManager.reset();
         setTestTime(20 * 60 * 1000 + 1);
         task1.setLastScheduled(1);
-        task1 = scheduler.reschedule(task1, Delay.LASTSCHEDULED);
+        scheduler.reschedule(task1, Delay.LASTSCHEDULED);
         setAlarmCalls = alarmManager.getSetAlarmCalls();
         assertEquals(1, setAlarmCalls.size());
         setAlarmCall1 = setAlarmCalls.get(0);
@@ -217,7 +217,7 @@ public class NetworkTaskProcessServiceSchedulerTest {
         alarmManager.reset();
         setTestTime(20 * 60 * 1000);
         task1.setLastScheduled(1);
-        task1 = scheduler.reschedule(task1, Delay.LASTSCHEDULED);
+        scheduler.reschedule(task1, Delay.LASTSCHEDULED);
         setAlarmCalls = alarmManager.getSetAlarmCalls();
         assertEquals(1, setAlarmCalls.size());
         setAlarmCall1 = setAlarmCalls.get(0);
