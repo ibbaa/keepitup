@@ -17,6 +17,7 @@ import de.ibba.keepitup.ui.GlobalSettingsActivity;
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
+import static androidx.test.espresso.matcher.ViewMatchers.isRoot;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
 import static org.hamcrest.Matchers.startsWith;
@@ -45,8 +46,7 @@ public class BatteryOptimizationDialogTest extends BaseUITest {
     @Test
     public void testBatteryOptimizationActive() {
         powerManager.setBatteryOptimized(true);
-        BatteryOptimizationDialog batteryOptimizationDialog = new BatteryOptimizationDialog();
-        batteryOptimizationDialog.show(getActivity(activityScenario).getSupportFragmentManager(), BatteryOptimizationDialog.class.getName());
+        openBatteryOptimizationDialog();
         onView(withId(R.id.textview_dialog_battery_optimization_title)).check(matches(withText("Battery Optimization")));
         onView(withId(R.id.textview_dialog_battery_optimization_info)).check(matches(withText(startsWith("Battery optimization is active for this app."))));
         onView(withId(R.id.textview_dialog_battery_optimization_link)).check(matches(withText("Click here to change battery optimization settings")));
@@ -56,8 +56,7 @@ public class BatteryOptimizationDialogTest extends BaseUITest {
     @Test
     public void testBatteryOptimizationNotActive() {
         powerManager.setBatteryOptimized(false);
-        BatteryOptimizationDialog batteryOptimizationDialog = new BatteryOptimizationDialog();
-        batteryOptimizationDialog.show(getActivity(activityScenario).getSupportFragmentManager(), BatteryOptimizationDialog.class.getName());
+        openBatteryOptimizationDialog();
         onView(withId(R.id.textview_dialog_battery_optimization_title)).check(matches(withText("Battery Optimization")));
         onView(withId(R.id.textview_dialog_battery_optimization_info)).check(matches(withText(startsWith("Battery optimization is not active for this app."))));
         onView(withId(R.id.textview_dialog_battery_optimization_link)).check(matches(withText("Click here to change battery optimization settings")));
@@ -66,18 +65,23 @@ public class BatteryOptimizationDialogTest extends BaseUITest {
 
     @Test
     public void testBatteryOptimizationScreenRotation() {
+        openBatteryOptimizationDialog();
+        onView(withId(R.id.textview_dialog_battery_optimization_title)).check(matches(withText("Battery Optimization")));
+        onView(withId(R.id.textview_dialog_battery_optimization_info)).check(matches(withText(startsWith("Battery optimization is active for this app."))));
+        onView(withId(R.id.textview_dialog_battery_optimization_link)).check(matches(withText("Click here to change battery optimization settings")));
+        rotateScreen(activityScenario);
+        onView(withId(R.id.textview_dialog_battery_optimization_title)).check(matches(withText("Battery Optimization")));
+        onView(withId(R.id.textview_dialog_battery_optimization_info)).check(matches(withText(startsWith("Battery optimization is active for this app."))));
+        onView(withId(R.id.textview_dialog_battery_optimization_link)).check(matches(withText("Click here to change battery optimization settings")));
+        rotateScreen(activityScenario);
+        onView(withId(R.id.textview_dialog_battery_optimization_title)).check(matches(withText("Battery Optimization")));
+        onView(withId(R.id.textview_dialog_battery_optimization_info)).check(matches(withText(startsWith("Battery optimization is active for this app."))));
+        onView(withId(R.id.textview_dialog_battery_optimization_link)).check(matches(withText("Click here to change battery optimization settings")));
+    }
+
+    private void openBatteryOptimizationDialog() {
         BatteryOptimizationDialog batteryOptimizationDialog = new BatteryOptimizationDialog();
         batteryOptimizationDialog.show(getActivity(activityScenario).getSupportFragmentManager(), BatteryOptimizationDialog.class.getName());
-        onView(withId(R.id.textview_dialog_battery_optimization_title)).check(matches(withText("Battery Optimization")));
-        onView(withId(R.id.textview_dialog_battery_optimization_info)).check(matches(withText(startsWith("Battery optimization is active for this app."))));
-        onView(withId(R.id.textview_dialog_battery_optimization_link)).check(matches(withText("Click here to change battery optimization settings")));
-        rotateScreen(activityScenario);
-        onView(withId(R.id.textview_dialog_battery_optimization_title)).check(matches(withText("Battery Optimization")));
-        onView(withId(R.id.textview_dialog_battery_optimization_info)).check(matches(withText(startsWith("Battery optimization is active for this app."))));
-        onView(withId(R.id.textview_dialog_battery_optimization_link)).check(matches(withText("Click here to change battery optimization settings")));
-        rotateScreen(activityScenario);
-        onView(withId(R.id.textview_dialog_battery_optimization_title)).check(matches(withText("Battery Optimization")));
-        onView(withId(R.id.textview_dialog_battery_optimization_info)).check(matches(withText(startsWith("Battery optimization is active for this app."))));
-        onView(withId(R.id.textview_dialog_battery_optimization_link)).check(matches(withText("Click here to change battery optimization settings")));
+        onView(isRoot()).perform(waitFor(500));
     }
 }
