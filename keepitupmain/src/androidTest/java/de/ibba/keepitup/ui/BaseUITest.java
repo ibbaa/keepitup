@@ -104,7 +104,7 @@ public abstract class BaseUITest {
 
     public ActivityScenario<? extends SettingsInputActivity> launchSettingsInputActivity(Intent intent) {
         ActivityScenario<? extends SettingsInputActivity> activityScenario = ActivityScenario.launch(intent);
-        activityScenario.onActivity(activity -> ((SettingsInputActivity) activity).injectResources(TestRegistry.getContext().getResources()));
+        activityScenario.onActivity(activity -> activity.injectResources(TestRegistry.getContext().getResources()));
         activityScenario.onActivity(activity -> activity.setRequestedOrientation(Configuration.ORIENTATION_PORTRAIT));
         return activityScenario;
     }
@@ -116,7 +116,7 @@ public abstract class BaseUITest {
 
     public ActivityScenario<? extends RecyclerViewBaseActivity> launchRecyclerViewBaseActivity(Intent intent) {
         ActivityScenario<? extends RecyclerViewBaseActivity> activityScenario = ActivityScenario.launch(intent);
-        activityScenario.onActivity(activity -> ((RecyclerViewBaseActivity) activity).injectResources(TestRegistry.getContext().getResources()));
+        activityScenario.onActivity(activity -> activity.injectResources(TestRegistry.getContext().getResources()));
         activityScenario.onActivity(activity -> activity.setRequestedOrientation(Configuration.ORIENTATION_PORTRAIT));
         return activityScenario;
     }
