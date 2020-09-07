@@ -232,7 +232,7 @@
                         android:focusableInTouchMode="true"
                         android:orientation="horizontal">
 
-                        <Switch
+                        <com.google.android.material.switchmaterial.SwitchMaterial
                             android:id="@+id/switch_activity_defaults_onlywifi"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
@@ -284,7 +284,7 @@
                         android:focusableInTouchMode="true"
                         android:orientation="horizontal">
 
-                        <Switch
+                        <com.google.android.material.switchmaterial.SwitchMaterial
                             android:id="@+id/switch_activity_defaults_notification"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"

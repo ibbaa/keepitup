@@ -167,7 +167,7 @@
                         android:focusableInTouchMode="true"
                         android:orientation="horizontal">
 
-                        <Switch
+                        <com.google.android.material.switchmaterial.SwitchMaterial
                             android:id="@+id/switch_activity_global_settings_notification_inactive_network"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
@@ -219,7 +219,7 @@
                         android:focusableInTouchMode="true"
                         android:orientation="horizontal">
 
-                        <Switch
+                        <com.google.android.material.switchmaterial.SwitchMaterial
                             android:id="@+id/switch_activity_global_settings_download_external_storage"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
@@ -423,7 +423,7 @@
                         android:focusableInTouchMode="true"
                         android:orientation="horizontal">
 
-                        <Switch
+                        <com.google.android.material.switchmaterial.SwitchMaterial
                             android:id="@+id/switch_activity_global_settings_download_keep"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
@@ -493,7 +493,7 @@
                         android:focusableInTouchMode="true"
                         android:orientation="horizontal">
 
-                        <Switch
+                        <com.google.android.material.switchmaterial.SwitchMaterial
                             android:id="@+id/switch_activity_global_settings_file_logger_enabled"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
@@ -545,7 +545,7 @@
                         android:focusableInTouchMode="true"
                         android:orientation="horizontal">
 
-                        <Switch
+                        <com.google.android.material.switchmaterial.SwitchMaterial
                             android:id="@+id/switch_activity_global_settings_file_dump_enabled"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"

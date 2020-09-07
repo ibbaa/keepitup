@@ -10,12 +10,13 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
-import android.widget.Switch;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.DialogFragment;
+
+import com.google.android.material.switchmaterial.SwitchMaterial;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -49,8 +50,8 @@ public class NetworkTaskEditDialog extends DialogFragment implements ContextOpti
     private TextColorValidatingWatcher portEditTextWatcher;
     private EditText intervalEditText;
     private TextColorValidatingWatcher intervalEditTextWatcher;
-    private Switch onlyWifiSwitch;
-    private Switch notificationSwitch;
+    private SwitchMaterial onlyWifiSwitch;
+    private SwitchMaterial notificationSwitch;
     private TextView onlyWifiOnOffText;
     private TextView notificationOnOffText;
 

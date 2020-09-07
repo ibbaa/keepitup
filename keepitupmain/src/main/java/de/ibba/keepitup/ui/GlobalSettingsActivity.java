@@ -7,10 +7,11 @@ import android.view.View;
 import android.widget.CompoundButton;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
-import android.widget.Switch;
 import android.widget.TextView;
 
 import androidx.cardview.widget.CardView;
+
+import com.google.android.material.switchmaterial.SwitchMaterial;
 
 import java.io.File;
 import java.util.Collections;
@@ -38,18 +39,18 @@ public class GlobalSettingsActivity extends SettingsInputActivity {
 
     private TextView pingCountText;
     private TextView connectCountText;
-    private Switch notificationInactiveNetworkSwitch;
+    private SwitchMaterial notificationInactiveNetworkSwitch;
     private TextView notificationInactiveNetworkOnOffText;
-    private Switch downloadExternalStorageSwitch;
+    private SwitchMaterial downloadExternalStorageSwitch;
     private RadioGroup externalStorageType;
     private TextView downloadExternalStorageOnOffText;
     private TextView downloadFolderText;
-    private Switch downloadKeepSwitch;
+    private SwitchMaterial downloadKeepSwitch;
     private TextView batteryOptimizationText;
     private TextView downloadKeepOnOffText;
-    private Switch fileLoggerEnabledSwitch;
+    private SwitchMaterial fileLoggerEnabledSwitch;
     private TextView fileLoggerEnabledOnOffText;
-    private Switch fileDumpEnabledSwitch;
+    private SwitchMaterial fileDumpEnabledSwitch;
     private TextView fileDumpEnabledOnOffText;
     private TextView logFolderText;
 
