@@ -1,12 +1,12 @@
 package de.ibba.keepitup.ui.dialog;
 
+import androidx.test.core.app.ActivityScenario;
 import androidx.test.espresso.action.ViewActions;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.MediumTest;
-import androidx.test.rule.ActivityTestRule;
 
+import org.junit.After;
 import org.junit.Before;
-import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -45,15 +45,18 @@ import static org.junit.Assert.assertTrue;
 @RunWith(AndroidJUnit4.class)
 public class NetworkTaskEditDialogTest extends BaseUITest {
 
-    @Rule
-    public final ActivityTestRule<NetworkTaskMainActivity> rule = new ActivityTestRule<>(NetworkTaskMainActivity.class, false, false);
-
-    private NetworkTaskMainActivity activity;
+    private ActivityScenario<?> activityScenario;
 
     @Before
     public void beforeEachTestMethod() {
         super.beforeEachTestMethod();
-        activity = (NetworkTaskMainActivity) launchRecyclerViewBaseActivity(rule);
+        activityScenario = launchRecyclerViewBaseActivity(NetworkTaskMainActivity.class);
+    }
+
+    @After
+    public void afterEachTestMethod() {
+        super.afterEachTestMethod();
+        activityScenario.close();
     }
 
     @Test
@@ -67,7 +70,7 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         onView(withId(R.id.textview_dialog_network_task_edit_onlywifi_on_off)).check(matches(withText("no")));
         onView(withId(R.id.switch_dialog_network_task_edit_notification)).check(matches(isNotChecked()));
         onView(withId(R.id.textview_dialog_network_task_edit_notification_on_off)).check(matches(withText("no")));
-        NetworkTaskEditDialog dialog = (NetworkTaskEditDialog) activity.getSupportFragmentManager().getFragments().get(0);
+        NetworkTaskEditDialog dialog = (NetworkTaskEditDialog) getActivity(activityScenario).getSupportFragmentManager().getFragments().get(0);
         NetworkTask task = dialog.getNetworkTask();
         assertNotNull(task);
         assertEquals(AccessType.PING, task.getAccessType());
@@ -115,7 +118,7 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         onView(withId(R.id.edittext_dialog_network_task_edit_interval)).perform(replaceText("60"));
         onView(withId(R.id.switch_dialog_network_task_edit_onlywifi)).perform(click());
         onView(withId(R.id.switch_dialog_network_task_edit_notification)).perform(click());
-        NetworkTaskEditDialog dialog = (NetworkTaskEditDialog) activity.getSupportFragmentManager().getFragments().get(0);
+        NetworkTaskEditDialog dialog = (NetworkTaskEditDialog) getActivity(activityScenario).getSupportFragmentManager().getFragments().get(0);
         NetworkTask task = dialog.getNetworkTask();
         assertNotNull(task);
         assertEquals(AccessType.CONNECT, task.getAccessType());
@@ -145,7 +148,7 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
     @Test
     public void testGetInitialNetworkTask() {
         onView(allOf(withId(R.id.imageview_list_item_network_task_add), isDisplayed())).perform(click());
-        NetworkTaskEditDialog dialog = (NetworkTaskEditDialog) activity.getSupportFragmentManager().getFragments().get(0);
+        NetworkTaskEditDialog dialog = (NetworkTaskEditDialog) getActivity(activityScenario).getSupportFragmentManager().getFragments().get(0);
         assertTrue(dialog.getInitialNetworkTask().isEqual(dialog.getNetworkTask()));
         onView(withText("Connect")).perform(click());
         onView(withId(R.id.edittext_dialog_network_task_edit_address)).perform(replaceText("localhost"));
@@ -226,13 +229,13 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
     @Test
     public void testOnOkCancelClickedDialogDismissed() {
         onView(allOf(withId(R.id.imageview_list_item_network_task_add), isDisplayed())).perform(click());
-        assertEquals(1, activity.getSupportFragmentManager().getFragments().size());
+        assertEquals(1, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
         onView(withId(R.id.imageview_dialog_network_task_edit_cancel)).perform(click());
-        assertEquals(0, activity.getSupportFragmentManager().getFragments().size());
+        assertEquals(0, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
         onView(withId(R.id.imageview_list_item_network_task_add)).perform(click());
-        assertEquals(1, activity.getSupportFragmentManager().getFragments().size());
+        assertEquals(1, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
         onView(withId(R.id.imageview_dialog_network_task_edit_ok)).perform(click());
-        assertEquals(0, activity.getSupportFragmentManager().getFragments().size());
+        assertEquals(0, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
     }
 
     @Test
@@ -243,7 +246,7 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         onView(withId(R.id.edittext_dialog_network_task_edit_port)).perform(replaceText("99999"));
         onView(withId(R.id.edittext_dialog_network_task_edit_interval)).perform(replaceText("0"));
         onView(withId(R.id.imageview_dialog_network_task_edit_ok)).perform(click());
-        assertEquals(2, activity.getSupportFragmentManager().getFragments().size());
+        assertEquals(2, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
         onView(withText("Host")).check(matches(isDisplayed()));
         onView(withText("No valid host or IP address")).check(matches(isDisplayed()));
         onView(withText("Port")).check(matches(isDisplayed()));
@@ -251,10 +254,10 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         onView(withText("Interval")).check(matches(isDisplayed()));
         onView(withText("Minimum: 1")).check(matches(isDisplayed()));
         onView(withId(R.id.imageview_dialog_validator_error_ok)).perform(click());
-        assertEquals(1, activity.getSupportFragmentManager().getFragments().size());
+        assertEquals(1, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
         onView(withId(R.id.edittext_dialog_network_task_edit_port)).perform(replaceText("80"));
         onView(withId(R.id.imageview_dialog_network_task_edit_ok)).perform(click());
-        assertEquals(2, activity.getSupportFragmentManager().getFragments().size());
+        assertEquals(2, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
         onView(withText("Host")).check(matches(isDisplayed()));
         onView(withText("No valid host or IP address")).check(matches(isDisplayed()));
         onView(withText("Port")).check(doesNotExist());
@@ -262,9 +265,9 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         onView(withText("Interval")).check(matches(isDisplayed()));
         onView(withText("Minimum: 1")).check(matches(isDisplayed()));
         onView(withId(R.id.imageview_dialog_validator_error_ok)).perform(click());
-        assertEquals(1, activity.getSupportFragmentManager().getFragments().size());
+        assertEquals(1, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
         onView(withId(R.id.imageview_dialog_network_task_edit_cancel)).perform(click());
-        assertEquals(0, activity.getSupportFragmentManager().getFragments().size());
+        assertEquals(0, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
     }
 
     @Test
@@ -274,17 +277,17 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         onView(withId(R.id.edittext_dialog_network_task_edit_address)).perform(replaceText("http:/test"));
         onView(withId(R.id.edittext_dialog_network_task_edit_interval)).perform(replaceText("0"));
         onView(withId(R.id.imageview_dialog_network_task_edit_ok)).perform(click());
-        assertEquals(2, activity.getSupportFragmentManager().getFragments().size());
+        assertEquals(2, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
         onView(withText("URL")).check(matches(isDisplayed()));
         onView(withText("No valid URL")).check(matches(isDisplayed()));
         onView(withText("Interval")).check(matches(isDisplayed()));
         onView(withText("Minimum: 1")).check(matches(isDisplayed()));
         onView(withId(R.id.imageview_dialog_validator_error_ok)).perform(click());
-        assertEquals(1, activity.getSupportFragmentManager().getFragments().size());
+        assertEquals(1, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
         onView(withId(R.id.edittext_dialog_network_task_edit_address)).perform(replaceText("http://test"));
         onView(withId(R.id.edittext_dialog_network_task_edit_interval)).perform(replaceText("55"));
         onView(withId(R.id.imageview_dialog_network_task_edit_ok)).perform(click());
-        assertEquals(0, activity.getSupportFragmentManager().getFragments().size());
+        assertEquals(0, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
     }
 
     @Test
@@ -295,7 +298,7 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         onView(withId(R.id.edittext_dialog_network_task_edit_port)).perform(replaceText(""));
         onView(withId(R.id.edittext_dialog_network_task_edit_interval)).perform(replaceText(""));
         onView(withId(R.id.imageview_dialog_network_task_edit_ok)).perform(click());
-        assertEquals(2, activity.getSupportFragmentManager().getFragments().size());
+        assertEquals(2, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
         onView(withText("Host")).check(matches(isDisplayed()));
         onView(allOf(withText("No value specified"), withGridLayoutPosition(1, 1))).check(matches(isDisplayed()));
         onView(withText("Port")).check(matches(isDisplayed()));
@@ -303,9 +306,9 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         onView(withText("Interval")).check(matches(isDisplayed()));
         onView(allOf(withText("No value specified"), withGridLayoutPosition(3, 1))).check(matches(isDisplayed()));
         onView(withId(R.id.imageview_dialog_validator_error_ok)).perform(click());
-        assertEquals(1, activity.getSupportFragmentManager().getFragments().size());
+        assertEquals(1, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
         onView(withId(R.id.imageview_dialog_network_task_edit_cancel)).perform(click());
-        assertEquals(0, activity.getSupportFragmentManager().getFragments().size());
+        assertEquals(0, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
     }
 
     @Test
@@ -404,8 +407,7 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         onView(withId(R.id.edittext_dialog_network_task_edit_interval)).perform(replaceText("60"));
         onView(withId(R.id.switch_dialog_network_task_edit_onlywifi)).perform(click());
         onView(withId(R.id.switch_dialog_network_task_edit_notification)).perform(click());
-        rotateScreen(activity);
-        onView(isRoot()).perform(waitFor(1000));
+        rotateScreen(activityScenario);
         onView(withText("Connect")).check(matches(isChecked()));
         onView(withId(R.id.edittext_dialog_network_task_edit_address)).check(matches(withText("localhost")));
         onView(withId(R.id.edittext_dialog_network_task_edit_port)).check(matches(withText("80")));
@@ -415,8 +417,7 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         onView(withId(R.id.switch_dialog_network_task_edit_notification)).check(matches(isChecked()));
         onView(withId(R.id.textview_dialog_network_task_edit_notification_on_off)).check(matches(withText("yes")));
         onView(withText("Download")).perform(click());
-        rotateScreen(activity);
-        onView(isRoot()).perform(waitFor(1000));
+        rotateScreen(activityScenario);
         onView(withText("Download")).check(matches(isChecked()));
         onView(withId(R.id.edittext_dialog_network_task_edit_address)).check(matches(withText("localhost")));
         onView(withId(R.id.edittext_dialog_network_task_edit_interval)).check(matches(withText("60")));
@@ -431,10 +432,8 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         onView(allOf(withId(R.id.imageview_list_item_network_task_add), isDisplayed())).perform(click());
         onView(withText("Ping")).check(matches(isChecked()));
         onView(withText("Download")).perform(click());
-        rotateScreen(activity);
-        onView(isRoot()).perform(waitFor(1000));
-        rotateScreen(activity);
-        onView(isRoot()).perform(waitFor(1000));
+        rotateScreen(activityScenario);
+        rotateScreen(activityScenario);
         pressBack();
         onView(allOf(withId(R.id.imageview_list_item_network_task_add), isDisplayed())).perform(click());
         onView(withText("Ping")).check(matches(isChecked()));
@@ -446,7 +445,7 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         prepareMockClipboardManager();
         onView(withId(R.id.edittext_dialog_network_task_edit_address)).perform(replaceText(""));
         onView(withId(R.id.edittext_dialog_network_task_edit_address)).perform(longClick());
-        assertEquals(1, activity.getSupportFragmentManager().getFragments().size());
+        assertEquals(1, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
     }
 
     @Test
@@ -456,14 +455,14 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         clipboardManager.putData("abc");
         onView(withId(R.id.edittext_dialog_network_task_edit_address)).perform(replaceText("test"));
         onView(withId(R.id.edittext_dialog_network_task_edit_address)).perform(longClick());
-        assertEquals(2, activity.getSupportFragmentManager().getFragments().size());
+        assertEquals(2, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
         onView(withId(R.id.listview_dialog_context_options)).check(matches(withListSize(2)));
         onView(withId(R.id.textview_dialog_context_options_title)).check(matches(withText("Text options")));
         onView(allOf(withId(R.id.textview_list_item_context_option_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options), 0))).check(matches(withText("Copy")));
         onView(allOf(withId(R.id.textview_list_item_context_option_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options), 1))).check(matches(withText("Paste")));
         onView(withId(R.id.imageview_dialog_context_options_cancel)).check(matches(isDisplayed()));
         onView(withId(R.id.imageview_dialog_context_options_cancel)).perform(click());
-        assertEquals(1, activity.getSupportFragmentManager().getFragments().size());
+        assertEquals(1, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
         onView(withId(R.id.edittext_dialog_network_task_edit_address)).check(matches(withText("test")));
         assertTrue(clipboardManager.hasData());
         assertEquals("abc", clipboardManager.getData());
@@ -476,18 +475,16 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         clipboardManager.putData("abc");
         onView(withId(R.id.edittext_dialog_network_task_edit_address)).perform(replaceText("test"));
         onView(withId(R.id.edittext_dialog_network_task_edit_address)).perform(longClick());
-        rotateScreen(activity);
-        onView(isRoot()).perform(waitFor(1000));
-        assertEquals(2, getActivity().getSupportFragmentManager().getFragments().size());
+        rotateScreen(activityScenario);
+        assertEquals(2, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
         onView(withId(R.id.listview_dialog_context_options)).check(matches(withListSize(2)));
         onView(withId(R.id.textview_dialog_context_options_title)).check(matches(withText("Text options")));
         onView(allOf(withId(R.id.textview_list_item_context_option_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options), 0))).check(matches(withText("Copy")));
         onView(allOf(withId(R.id.textview_list_item_context_option_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options), 1))).check(matches(withText("Paste")));
         onView(withId(R.id.imageview_dialog_context_options_cancel)).check(matches(isDisplayed()));
         onView(withId(R.id.imageview_dialog_context_options_cancel)).perform(click());
-        rotateScreen(activity);
-        onView(isRoot()).perform(waitFor(1000));
-        assertEquals(1, getActivity().getSupportFragmentManager().getFragments().size());
+        rotateScreen(activityScenario);
+        assertEquals(1, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
         onView(withId(R.id.edittext_dialog_network_task_edit_address)).check(matches(withText("test")));
     }
 
@@ -497,13 +494,13 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         MockClipboardManager clipboardManager = prepareMockClipboardManager();
         onView(withId(R.id.edittext_dialog_network_task_edit_address)).perform(replaceText("test"));
         onView(withId(R.id.edittext_dialog_network_task_edit_address)).perform(longClick());
-        assertEquals(2, activity.getSupportFragmentManager().getFragments().size());
+        assertEquals(2, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
         onView(withId(R.id.listview_dialog_context_options)).check(matches(withListSize(1)));
         onView(withId(R.id.textview_dialog_context_options_title)).check(matches(withText("Text options")));
         onView(allOf(withId(R.id.textview_list_item_context_option_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options), 0))).check(matches(withText("Copy")));
         onView(withId(R.id.imageview_dialog_context_options_cancel)).check(matches(isDisplayed()));
         onView(allOf(withId(R.id.textview_list_item_context_option_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options), 0))).perform(click());
-        assertEquals(1, activity.getSupportFragmentManager().getFragments().size());
+        assertEquals(1, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
         onView(withId(R.id.edittext_dialog_network_task_edit_address)).check(matches(withText("test")));
         assertTrue(clipboardManager.hasData());
         assertEquals("test", clipboardManager.getData());
@@ -515,20 +512,18 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         MockClipboardManager clipboardManager = prepareMockClipboardManager();
         onView(withId(R.id.edittext_dialog_network_task_edit_address)).perform(replaceText("test"));
         onView(withId(R.id.edittext_dialog_network_task_edit_address)).perform(longClick());
-        rotateScreen(activity);
-        onView(isRoot()).perform(waitFor(1000));
+        rotateScreen(activityScenario);
         clipboardManager = prepareMockClipboardManager();
         onView(withId(R.id.listview_dialog_context_options)).check(matches(withListSize(1)));
         onView(withId(R.id.textview_dialog_context_options_title)).check(matches(withText("Text options")));
         onView(allOf(withId(R.id.textview_list_item_context_option_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options), 0))).check(matches(withText("Copy")));
         onView(withId(R.id.imageview_dialog_context_options_cancel)).check(matches(isDisplayed()));
         onView(allOf(withId(R.id.textview_list_item_context_option_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options), 0))).perform(click());
-        assertEquals(1, getActivity().getSupportFragmentManager().getFragments().size());
+        assertEquals(1, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
         onView(withId(R.id.edittext_dialog_network_task_edit_address)).check(matches(withText("test")));
         assertTrue(clipboardManager.hasData());
         assertEquals("test", clipboardManager.getData());
-        rotateScreen(activity);
-        onView(isRoot()).perform(waitFor(1000));
+        rotateScreen(activityScenario);
     }
 
     @Test
@@ -538,13 +533,13 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         clipboardManager.putData("abc");
         onView(withId(R.id.edittext_dialog_network_task_edit_address)).perform(replaceText(""));
         onView(withId(R.id.edittext_dialog_network_task_edit_address)).perform(longClick());
-        assertEquals(2, activity.getSupportFragmentManager().getFragments().size());
+        assertEquals(2, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
         onView(withId(R.id.listview_dialog_context_options)).check(matches(withListSize(1)));
         onView(withId(R.id.textview_dialog_context_options_title)).check(matches(withText("Text options")));
         onView(allOf(withId(R.id.textview_list_item_context_option_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options), 0))).check(matches(withText("Paste")));
         onView(withId(R.id.imageview_dialog_context_options_cancel)).check(matches(isDisplayed()));
         onView(allOf(withId(R.id.textview_list_item_context_option_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options), 0))).perform(click());
-        assertEquals(1, activity.getSupportFragmentManager().getFragments().size());
+        assertEquals(1, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
         onView(withId(R.id.edittext_dialog_network_task_edit_address)).check(matches(withText("abc")));
         assertTrue(clipboardManager.hasData());
         assertEquals("abc", clipboardManager.getData());
@@ -553,23 +548,21 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
     @Test
     public void testAddressPasteOptionScreenRotation() {
         onView(allOf(withId(R.id.imageview_list_item_network_task_add), isDisplayed())).perform(click());
-        rotateScreen(activity);
-        onView(isRoot()).perform(waitFor(1000));
+        rotateScreen(activityScenario);
         MockClipboardManager clipboardManager = prepareMockClipboardManager();
         clipboardManager.putData("abc");
         onView(withId(R.id.edittext_dialog_network_task_edit_address)).perform(replaceText(""));
         onView(withId(R.id.edittext_dialog_network_task_edit_address)).perform(longClick());
-        assertEquals(2, getActivity().getSupportFragmentManager().getFragments().size());
+        assertEquals(2, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
         onView(withId(R.id.listview_dialog_context_options)).check(matches(withListSize(1)));
         onView(withId(R.id.textview_dialog_context_options_title)).check(matches(withText("Text options")));
         onView(allOf(withId(R.id.textview_list_item_context_option_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options), 0))).check(matches(withText("Paste")));
         onView(withId(R.id.imageview_dialog_context_options_cancel)).check(matches(isDisplayed()));
-        rotateScreen(activity);
-        onView(isRoot()).perform(waitFor(1000));
+        rotateScreen(activityScenario);
         clipboardManager = prepareMockClipboardManager();
         clipboardManager.putData("abc");
         onView(allOf(withId(R.id.textview_list_item_context_option_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options), 0))).perform(click());
-        assertEquals(1, getActivity().getSupportFragmentManager().getFragments().size());
+        assertEquals(1, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
         onView(withId(R.id.edittext_dialog_network_task_edit_address)).check(matches(withText("abc")));
         assertTrue(clipboardManager.hasData());
         assertEquals("abc", clipboardManager.getData());
@@ -582,10 +575,10 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         onView(withText("Connect")).perform(click());
         onView(withId(R.id.edittext_dialog_network_task_edit_port)).perform(replaceText(""));
         onView(withId(R.id.edittext_dialog_network_task_edit_port)).perform(longClick());
-        assertEquals(1, activity.getSupportFragmentManager().getFragments().size());
+        assertEquals(1, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
         clipboardManager.putData("abc");
         onView(withId(R.id.edittext_dialog_network_task_edit_port)).perform(longClick());
-        assertEquals(1, activity.getSupportFragmentManager().getFragments().size());
+        assertEquals(1, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
     }
 
     @Test
@@ -596,14 +589,14 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         onView(withText("Connect")).perform(click());
         onView(withId(R.id.edittext_dialog_network_task_edit_port)).perform(replaceText("25"));
         onView(withId(R.id.edittext_dialog_network_task_edit_port)).perform(longClick());
-        assertEquals(2, activity.getSupportFragmentManager().getFragments().size());
+        assertEquals(2, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
         onView(withId(R.id.listview_dialog_context_options)).check(matches(withListSize(2)));
         onView(withId(R.id.textview_dialog_context_options_title)).check(matches(withText("Text options")));
         onView(allOf(withId(R.id.textview_list_item_context_option_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options), 0))).check(matches(withText("Copy")));
         onView(allOf(withId(R.id.textview_list_item_context_option_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options), 1))).check(matches(withText("Paste")));
         onView(withId(R.id.imageview_dialog_context_options_cancel)).check(matches(isDisplayed()));
         onView(withId(R.id.imageview_dialog_context_options_cancel)).perform(click());
-        assertEquals(1, activity.getSupportFragmentManager().getFragments().size());
+        assertEquals(1, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
         onView(withId(R.id.edittext_dialog_network_task_edit_port)).check(matches(withText("25")));
         assertTrue(clipboardManager.hasData());
         assertEquals("11", clipboardManager.getData());
@@ -617,18 +610,16 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         onView(withText("Connect")).perform(click());
         onView(withId(R.id.edittext_dialog_network_task_edit_port)).perform(replaceText("25"));
         onView(withId(R.id.edittext_dialog_network_task_edit_port)).perform(longClick());
-        rotateScreen(activity);
-        onView(isRoot()).perform(waitFor(1000));
-        assertEquals(2, getActivity().getSupportFragmentManager().getFragments().size());
+        rotateScreen(activityScenario);
+        assertEquals(2, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
         onView(withId(R.id.listview_dialog_context_options)).check(matches(withListSize(2)));
         onView(withId(R.id.textview_dialog_context_options_title)).check(matches(withText("Text options")));
         onView(allOf(withId(R.id.textview_list_item_context_option_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options), 0))).check(matches(withText("Copy")));
         onView(allOf(withId(R.id.textview_list_item_context_option_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options), 1))).check(matches(withText("Paste")));
         onView(withId(R.id.imageview_dialog_context_options_cancel)).check(matches(isDisplayed()));
-        rotateScreen(activity);
-        onView(isRoot()).perform(waitFor(1000));
+        rotateScreen(activityScenario);
         onView(withId(R.id.imageview_dialog_context_options_cancel)).perform(click());
-        assertEquals(1, getActivity().getSupportFragmentManager().getFragments().size());
+        assertEquals(1, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
         onView(withId(R.id.edittext_dialog_network_task_edit_port)).check(matches(withText("25")));
     }
 
@@ -639,13 +630,13 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         onView(withText("Connect")).perform(click());
         onView(withId(R.id.edittext_dialog_network_task_edit_port)).perform(replaceText("33"));
         onView(withId(R.id.edittext_dialog_network_task_edit_port)).perform(longClick());
-        assertEquals(2, activity.getSupportFragmentManager().getFragments().size());
+        assertEquals(2, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
         onView(withId(R.id.listview_dialog_context_options)).check(matches(withListSize(1)));
         onView(withId(R.id.textview_dialog_context_options_title)).check(matches(withText("Text options")));
         onView(allOf(withId(R.id.textview_list_item_context_option_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options), 0))).check(matches(withText("Copy")));
         onView(withId(R.id.imageview_dialog_context_options_cancel)).check(matches(isDisplayed()));
         onView(allOf(withId(R.id.textview_list_item_context_option_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options), 0))).perform(click());
-        assertEquals(1, activity.getSupportFragmentManager().getFragments().size());
+        assertEquals(1, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
         onView(withId(R.id.edittext_dialog_network_task_edit_port)).check(matches(withText("33")));
         assertTrue(clipboardManager.hasData());
         assertEquals("33", clipboardManager.getData());
@@ -658,18 +649,16 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         onView(withText("Connect")).perform(click());
         onView(withId(R.id.edittext_dialog_network_task_edit_port)).perform(replaceText("33"));
         onView(withId(R.id.edittext_dialog_network_task_edit_port)).perform(longClick());
-        rotateScreen(activity);
-        onView(isRoot()).perform(waitFor(1000));
-        assertEquals(2, getActivity().getSupportFragmentManager().getFragments().size());
+        rotateScreen(activityScenario);
+        assertEquals(2, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
         onView(withId(R.id.listview_dialog_context_options)).check(matches(withListSize(1)));
         onView(withId(R.id.textview_dialog_context_options_title)).check(matches(withText("Text options")));
         onView(allOf(withId(R.id.textview_list_item_context_option_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options), 0))).check(matches(withText("Copy")));
         onView(withId(R.id.imageview_dialog_context_options_cancel)).check(matches(isDisplayed()));
-        rotateScreen(activity);
-        onView(isRoot()).perform(waitFor(1000));
+        rotateScreen(activityScenario);
         clipboardManager = prepareMockClipboardManager();
         onView(allOf(withId(R.id.textview_list_item_context_option_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options), 0))).perform(click());
-        assertEquals(1, getActivity().getSupportFragmentManager().getFragments().size());
+        assertEquals(1, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
         onView(withId(R.id.edittext_dialog_network_task_edit_port)).check(matches(withText("33")));
         assertTrue(clipboardManager.hasData());
         assertEquals("33", clipboardManager.getData());
@@ -683,13 +672,13 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         onView(withText("Connect")).perform(click());
         onView(withId(R.id.edittext_dialog_network_task_edit_port)).perform(replaceText(""));
         onView(withId(R.id.edittext_dialog_network_task_edit_port)).perform(longClick());
-        assertEquals(2, activity.getSupportFragmentManager().getFragments().size());
+        assertEquals(2, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
         onView(withId(R.id.listview_dialog_context_options)).check(matches(withListSize(1)));
         onView(withId(R.id.textview_dialog_context_options_title)).check(matches(withText("Text options")));
         onView(allOf(withId(R.id.textview_list_item_context_option_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options), 0))).check(matches(withText("Paste")));
         onView(withId(R.id.imageview_dialog_context_options_cancel)).check(matches(isDisplayed()));
         onView(allOf(withId(R.id.textview_list_item_context_option_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options), 0))).perform(click());
-        assertEquals(1, activity.getSupportFragmentManager().getFragments().size());
+        assertEquals(1, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
         onView(withId(R.id.edittext_dialog_network_task_edit_port)).check(matches(withText("67")));
         assertTrue(clipboardManager.hasData());
         assertEquals("67", clipboardManager.getData());
@@ -700,22 +689,20 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         onView(allOf(withId(R.id.imageview_list_item_network_task_add), isDisplayed())).perform(click());
         onView(withText("Connect")).perform(click());
         onView(withId(R.id.edittext_dialog_network_task_edit_port)).perform(replaceText(""));
-        rotateScreen(activity);
-        onView(isRoot()).perform(waitFor(1000));
+        rotateScreen(activityScenario);
         MockClipboardManager clipboardManager = prepareMockClipboardManager();
         clipboardManager.putData("67");
         onView(withId(R.id.edittext_dialog_network_task_edit_port)).perform(longClick());
-        assertEquals(2, getActivity().getSupportFragmentManager().getFragments().size());
+        assertEquals(2, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
         onView(withId(R.id.listview_dialog_context_options)).check(matches(withListSize(1)));
         onView(withId(R.id.textview_dialog_context_options_title)).check(matches(withText("Text options")));
         onView(allOf(withId(R.id.textview_list_item_context_option_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options), 0))).check(matches(withText("Paste")));
         onView(withId(R.id.imageview_dialog_context_options_cancel)).check(matches(isDisplayed()));
-        rotateScreen(activity);
-        onView(isRoot()).perform(waitFor(1000));
+        rotateScreen(activityScenario);
         clipboardManager = prepareMockClipboardManager();
         clipboardManager.putData("67");
         onView(allOf(withId(R.id.textview_list_item_context_option_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options), 0))).perform(click());
-        assertEquals(1, getActivity().getSupportFragmentManager().getFragments().size());
+        assertEquals(1, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
         onView(withId(R.id.edittext_dialog_network_task_edit_port)).check(matches(withText("67")));
         assertTrue(clipboardManager.hasData());
         assertEquals("67", clipboardManager.getData());
@@ -727,10 +714,10 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         MockClipboardManager clipboardManager = prepareMockClipboardManager();
         onView(withId(R.id.edittext_dialog_network_task_edit_interval)).perform(replaceText(""));
         onView(withId(R.id.edittext_dialog_network_task_edit_interval)).perform(longClick());
-        assertEquals(1, activity.getSupportFragmentManager().getFragments().size());
+        assertEquals(1, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
         clipboardManager.putData("abc");
         onView(withId(R.id.edittext_dialog_network_task_edit_interval)).perform(longClick());
-        assertEquals(1, activity.getSupportFragmentManager().getFragments().size());
+        assertEquals(1, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
     }
 
     @Test
@@ -740,14 +727,14 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         clipboardManager.putData("11");
         onView(withId(R.id.edittext_dialog_network_task_edit_interval)).perform(replaceText("25"));
         onView(withId(R.id.edittext_dialog_network_task_edit_interval)).perform(longClick());
-        assertEquals(2, activity.getSupportFragmentManager().getFragments().size());
+        assertEquals(2, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
         onView(withId(R.id.listview_dialog_context_options)).check(matches(withListSize(2)));
         onView(withId(R.id.textview_dialog_context_options_title)).check(matches(withText("Text options")));
         onView(allOf(withId(R.id.textview_list_item_context_option_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options), 0))).check(matches(withText("Copy")));
         onView(allOf(withId(R.id.textview_list_item_context_option_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options), 1))).check(matches(withText("Paste")));
         onView(withId(R.id.imageview_dialog_context_options_cancel)).check(matches(isDisplayed()));
         onView(withId(R.id.imageview_dialog_context_options_cancel)).perform(click());
-        assertEquals(1, activity.getSupportFragmentManager().getFragments().size());
+        assertEquals(1, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
         onView(withId(R.id.edittext_dialog_network_task_edit_interval)).check(matches(withText("25")));
         assertTrue(clipboardManager.hasData());
         assertEquals("11", clipboardManager.getData());
@@ -760,18 +747,16 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         clipboardManager.putData("11");
         onView(withId(R.id.edittext_dialog_network_task_edit_interval)).perform(replaceText("25"));
         onView(withId(R.id.edittext_dialog_network_task_edit_interval)).perform(longClick());
-        rotateScreen(activity);
-        onView(isRoot()).perform(waitFor(1000));
-        rotateScreen(activity);
-        onView(isRoot()).perform(waitFor(1000));
-        assertEquals(2, getActivity().getSupportFragmentManager().getFragments().size());
+        rotateScreen(activityScenario);
+        rotateScreen(activityScenario);
+        assertEquals(2, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
         onView(withId(R.id.listview_dialog_context_options)).check(matches(withListSize(2)));
         onView(withId(R.id.textview_dialog_context_options_title)).check(matches(withText("Text options")));
         onView(allOf(withId(R.id.textview_list_item_context_option_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options), 0))).check(matches(withText("Copy")));
         onView(allOf(withId(R.id.textview_list_item_context_option_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options), 1))).check(matches(withText("Paste")));
         onView(withId(R.id.imageview_dialog_context_options_cancel)).check(matches(isDisplayed()));
         onView(withId(R.id.imageview_dialog_context_options_cancel)).perform(click());
-        assertEquals(1, getActivity().getSupportFragmentManager().getFragments().size());
+        assertEquals(1, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
         onView(withId(R.id.edittext_dialog_network_task_edit_interval)).check(matches(withText("25")));
     }
 
@@ -782,13 +767,13 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         onView(withText("Connect")).perform(click());
         onView(withId(R.id.edittext_dialog_network_task_edit_interval)).perform(replaceText("33"));
         onView(withId(R.id.edittext_dialog_network_task_edit_interval)).perform(longClick());
-        assertEquals(2, activity.getSupportFragmentManager().getFragments().size());
+        assertEquals(2, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
         onView(withId(R.id.listview_dialog_context_options)).check(matches(withListSize(1)));
         onView(withId(R.id.textview_dialog_context_options_title)).check(matches(withText("Text options")));
         onView(allOf(withId(R.id.textview_list_item_context_option_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options), 0))).check(matches(withText("Copy")));
         onView(withId(R.id.imageview_dialog_context_options_cancel)).check(matches(isDisplayed()));
         onView(allOf(withId(R.id.textview_list_item_context_option_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options), 0))).perform(click());
-        assertEquals(1, activity.getSupportFragmentManager().getFragments().size());
+        assertEquals(1, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
         onView(withId(R.id.edittext_dialog_network_task_edit_interval)).check(matches(withText("33")));
         assertTrue(clipboardManager.hasData());
         assertEquals("33", clipboardManager.getData());
@@ -801,21 +786,19 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         onView(withText("Connect")).perform(click());
         onView(withId(R.id.edittext_dialog_network_task_edit_interval)).perform(replaceText("33"));
         onView(withId(R.id.edittext_dialog_network_task_edit_interval)).perform(longClick());
-        rotateScreen(activity);
-        onView(isRoot()).perform(waitFor(1000));
+        rotateScreen(activityScenario);
         clipboardManager = prepareMockClipboardManager();
-        assertEquals(2, getActivity().getSupportFragmentManager().getFragments().size());
+        assertEquals(2, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
         onView(withId(R.id.listview_dialog_context_options)).check(matches(withListSize(1)));
         onView(withId(R.id.textview_dialog_context_options_title)).check(matches(withText("Text options")));
         onView(allOf(withId(R.id.textview_list_item_context_option_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options), 0))).check(matches(withText("Copy")));
         onView(withId(R.id.imageview_dialog_context_options_cancel)).check(matches(isDisplayed()));
         onView(allOf(withId(R.id.textview_list_item_context_option_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options), 0))).perform(click());
-        assertEquals(1, getActivity().getSupportFragmentManager().getFragments().size());
+        assertEquals(1, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
         onView(withId(R.id.edittext_dialog_network_task_edit_interval)).check(matches(withText("33")));
         assertTrue(clipboardManager.hasData());
         assertEquals("33", clipboardManager.getData());
-        rotateScreen(activity);
-        onView(isRoot()).perform(waitFor(1000));
+        rotateScreen(activityScenario);
     }
 
     @Test
@@ -826,13 +809,13 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         onView(withText("Connect")).perform(click());
         onView(withId(R.id.edittext_dialog_network_task_edit_interval)).perform(replaceText(""));
         onView(withId(R.id.edittext_dialog_network_task_edit_interval)).perform(longClick());
-        assertEquals(2, activity.getSupportFragmentManager().getFragments().size());
+        assertEquals(2, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
         onView(withId(R.id.listview_dialog_context_options)).check(matches(withListSize(1)));
         onView(withId(R.id.textview_dialog_context_options_title)).check(matches(withText("Text options")));
         onView(allOf(withId(R.id.textview_list_item_context_option_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options), 0))).check(matches(withText("Paste")));
         onView(withId(R.id.imageview_dialog_context_options_cancel)).check(matches(isDisplayed()));
         onView(allOf(withId(R.id.textview_list_item_context_option_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options), 0))).perform(click());
-        assertEquals(1, activity.getSupportFragmentManager().getFragments().size());
+        assertEquals(1, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
         onView(withId(R.id.edittext_dialog_network_task_edit_interval)).check(matches(withText("67")));
         assertTrue(clipboardManager.hasData());
         assertEquals("67", clipboardManager.getData());
@@ -843,36 +826,30 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         onView(allOf(withId(R.id.imageview_list_item_network_task_add), isDisplayed())).perform(click());
         onView(withText("Connect")).perform(click());
         onView(withId(R.id.edittext_dialog_network_task_edit_interval)).perform(replaceText(""));
-        rotateScreen(activity);
-        onView(isRoot()).perform(waitFor(1000));
+        rotateScreen(activityScenario);
         MockClipboardManager clipboardManager = prepareMockClipboardManager();
         clipboardManager.putData("67");
         onView(withId(R.id.edittext_dialog_network_task_edit_interval)).perform(longClick());
-        rotateScreen(activity);
-        onView(isRoot()).perform(waitFor(1000));
+        rotateScreen(activityScenario);
         clipboardManager = prepareMockClipboardManager();
         clipboardManager.putData("67");
-        assertEquals(2, getActivity().getSupportFragmentManager().getFragments().size());
+        assertEquals(2, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
         onView(withId(R.id.listview_dialog_context_options)).check(matches(withListSize(1)));
         onView(withId(R.id.textview_dialog_context_options_title)).check(matches(withText("Text options")));
         onView(allOf(withId(R.id.textview_list_item_context_option_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options), 0))).check(matches(withText("Paste")));
         onView(withId(R.id.imageview_dialog_context_options_cancel)).check(matches(isDisplayed()));
         onView(allOf(withId(R.id.textview_list_item_context_option_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options), 0))).perform(click());
-        assertEquals(1, getActivity().getSupportFragmentManager().getFragments().size());
+        assertEquals(1, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
         onView(withId(R.id.edittext_dialog_network_task_edit_interval)).check(matches(withText("67")));
         assertTrue(clipboardManager.hasData());
         assertEquals("67", clipboardManager.getData());
     }
 
     private MockClipboardManager prepareMockClipboardManager() {
-        NetworkTaskEditDialog dialog = (NetworkTaskEditDialog) getActivity().getSupportFragmentManager().getFragments().get(0);
+        NetworkTaskEditDialog dialog = (NetworkTaskEditDialog) getActivity(activityScenario).getSupportFragmentManager().getFragments().get(0);
         MockClipboardManager clipboardManager = new MockClipboardManager();
         clipboardManager.clearData();
         dialog.injectClipboardManager(clipboardManager);
         return clipboardManager;
-    }
-
-    private NetworkTaskMainActivity getActivity() {
-        return rule.getActivity();
     }
 }

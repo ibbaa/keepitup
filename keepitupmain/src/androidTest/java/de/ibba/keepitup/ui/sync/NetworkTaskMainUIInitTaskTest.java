@@ -1,13 +1,12 @@
 package de.ibba.keepitup.ui.sync;
 
+import androidx.test.core.app.ActivityScenario;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.MediumTest;
 import androidx.test.platform.app.InstrumentationRegistry;
-import androidx.test.rule.ActivityTestRule;
 
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -36,10 +35,7 @@ import static org.junit.Assert.assertTrue;
 @RunWith(AndroidJUnit4.class)
 public class NetworkTaskMainUIInitTaskTest extends BaseUITest {
 
-    @Rule
-    public final ActivityTestRule<NetworkTaskMainActivity> rule = new ActivityTestRule<>(NetworkTaskMainActivity.class, false, false);
-
-    private NetworkTaskMainActivity activity;
+    private ActivityScenario<?> activityScenario;
     private NetworkTaskMainUIInitTask initTask;
     private NetworkTaskDAO networkTaskDAO;
     private LogDAO logDAO;
@@ -47,8 +43,8 @@ public class NetworkTaskMainUIInitTaskTest extends BaseUITest {
     @Before
     public void beforeEachTestMethod() {
         super.beforeEachTestMethod();
-        activity = (NetworkTaskMainActivity) launchRecyclerViewBaseActivity(rule);
-        initTask = new NetworkTaskMainUIInitTask(activity, (NetworkTaskAdapter) activity.getAdapter());
+        activityScenario = launchRecyclerViewBaseActivity(NetworkTaskMainActivity.class);
+        initTask = new NetworkTaskMainUIInitTask(getActivity(activityScenario), getAdapter(activityScenario));
         networkTaskDAO = new NetworkTaskDAO(TestRegistry.getContext());
         networkTaskDAO.deleteAllNetworkTasks();
         logDAO = new LogDAO(TestRegistry.getContext());
@@ -57,8 +53,10 @@ public class NetworkTaskMainUIInitTaskTest extends BaseUITest {
 
     @After
     public void afterEachTestMethod() {
+        super.afterEachTestMethod();
         logDAO.deleteAllLogs();
         networkTaskDAO.deleteAllNetworkTasks();
+        activityScenario.close();
     }
 
     @Test
@@ -91,9 +89,9 @@ public class NetworkTaskMainUIInitTaskTest extends BaseUITest {
         final NetworkTaskUIWrapper wrapper1 = new NetworkTaskUIWrapper(task1, logEntry1);
         final NetworkTaskUIWrapper wrapper2 = new NetworkTaskUIWrapper(task2, logEntry2);
         final NetworkTaskUIWrapper wrapper3 = new NetworkTaskUIWrapper(task3, null);
-        NetworkTaskAdapter adapter = (NetworkTaskAdapter) activity.getAdapter();
+        NetworkTaskAdapter adapter = getAdapter(activityScenario);
         adapter.addItem(new NetworkTaskUIWrapper(task3, logEntry2));
-        activity.runOnUiThread(() -> initTask.onPostExecute(Arrays.asList(wrapper1, wrapper2, wrapper3)));
+        getActivity(activityScenario).runOnUiThread(() -> initTask.onPostExecute(Arrays.asList(wrapper1, wrapper2, wrapper3)));
         InstrumentationRegistry.getInstrumentation().waitForIdleSync();
         adapter.getItem(0);
         adapter.getItem(1);
@@ -116,10 +114,10 @@ public class NetworkTaskMainUIInitTaskTest extends BaseUITest {
         final NetworkTaskUIWrapper wrapper1 = new NetworkTaskUIWrapper(task1, logEntry1);
         final NetworkTaskUIWrapper wrapper2 = new NetworkTaskUIWrapper(task2, logEntry2);
         final NetworkTaskUIWrapper wrapper3 = new NetworkTaskUIWrapper(task3, null);
-        NetworkTaskAdapter adapter = (NetworkTaskAdapter) activity.getAdapter();
+        NetworkTaskAdapter adapter = getAdapter(activityScenario);
         adapter.addItem(new NetworkTaskUIWrapper(task3, logEntry2));
-        NetworkTaskMainUIInitTask nullInitTask = new NetworkTaskMainUIInitTask(activity, null);
-        activity.runOnUiThread(() -> nullInitTask.onPostExecute(Arrays.asList(wrapper1, wrapper2, wrapper3)));
+        NetworkTaskMainUIInitTask nullInitTask = new NetworkTaskMainUIInitTask(getActivity(activityScenario), null);
+        getActivity(activityScenario).runOnUiThread(() -> nullInitTask.onPostExecute(Arrays.asList(wrapper1, wrapper2, wrapper3)));
         InstrumentationRegistry.getInstrumentation().waitForIdleSync();
         assertEquals(1, adapter.getAllItems().size());
     }
@@ -134,11 +132,11 @@ public class NetworkTaskMainUIInitTaskTest extends BaseUITest {
         NetworkTaskUIWrapper wrapper1 = new NetworkTaskUIWrapper(task1, logEntry1);
         NetworkTaskUIWrapper wrapper2 = new NetworkTaskUIWrapper(task2, logEntry2);
         NetworkTaskUIWrapper wrapper3 = new NetworkTaskUIWrapper(task3, null);
-        NetworkTaskAdapter adapter = (NetworkTaskAdapter) activity.getAdapter();
+        NetworkTaskAdapter adapter = getAdapter(activityScenario);
         adapter.addItem(wrapper1);
         adapter.addItem(wrapper2);
         adapter.addItem(wrapper3);
-        activity.runOnUiThread(() -> initTask.onPostExecute(Collections.emptyList()));
+        getActivity(activityScenario).runOnUiThread(() -> initTask.onPostExecute(Collections.emptyList()));
         InstrumentationRegistry.getInstrumentation().waitForIdleSync();
         assertEquals(0, adapter.getAllItems().size());
     }
@@ -199,5 +197,13 @@ public class NetworkTaskMainUIInitTaskTest extends BaseUITest {
         logEntry.setTimestamp(timestamp);
         logEntry.setMessage("TestMessage");
         return logEntry;
+    }
+
+    private NetworkTaskAdapter getAdapter(ActivityScenario<?> activityScenario) {
+        return (NetworkTaskAdapter) getNetworkTaskMainActivity(activityScenario).getAdapter();
+    }
+
+    private NetworkTaskMainActivity getNetworkTaskMainActivity(ActivityScenario<?> activityScenario) {
+        return (NetworkTaskMainActivity) super.getActivity(activityScenario);
     }
 }

@@ -1,6 +1,5 @@
 package de.ibba.keepitup.ui;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
@@ -8,16 +7,18 @@ import android.view.View;
 import android.widget.GridLayout;
 import android.widget.TextView;
 
+import androidx.fragment.app.FragmentActivity;
+import androidx.test.core.app.ActivityScenario;
 import androidx.test.espresso.UiController;
 import androidx.test.espresso.ViewAction;
 import androidx.test.platform.app.InstrumentationRegistry;
-import androidx.test.rule.ActivityTestRule;
 
 import org.hamcrest.Matcher;
 import org.junit.After;
 import org.junit.Before;
 
 import java.util.Locale;
+import java.util.concurrent.atomic.AtomicReference;
 
 import de.ibba.keepitup.db.LogDAO;
 import de.ibba.keepitup.db.NetworkTaskDAO;
@@ -38,6 +39,7 @@ import de.ibba.keepitup.test.viewaction.WaitForViewAction;
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.matcher.ViewMatchers.isAssignableFrom;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
+import static androidx.test.espresso.matcher.ViewMatchers.isRoot;
 import static androidx.test.espresso.matcher.ViewMatchers.withClassName;
 import static androidx.test.espresso.matcher.ViewMatchers.withContentDescription;
 import static org.hamcrest.Matchers.allOf;
@@ -89,32 +91,41 @@ public abstract class BaseUITest {
         return fileManager;
     }
 
-    public SettingsInputActivity launchSettingsInputActivity(ActivityTestRule<?> rule) {
-        return launchSettingsInputActivity(rule, null);
+    public FragmentActivity getActivity(ActivityScenario<?> scenario) {
+        final AtomicReference<FragmentActivity> reference = new AtomicReference<>();
+        scenario.onActivity(activtity -> reference.set((FragmentActivity) activtity));
+        return reference.get();
     }
 
-    public SettingsInputActivity launchSettingsInputActivity(ActivityTestRule<?> rule, Intent intent) {
-        SettingsInputActivity activity = (SettingsInputActivity) rule.launchActivity(intent);
-        activity.injectResources(TestRegistry.getContext().getResources());
-        activity.setRequestedOrientation(Configuration.ORIENTATION_PORTRAIT);
-        return activity;
+    public ActivityScenario<? extends SettingsInputActivity> launchSettingsInputActivity(Class<? extends SettingsInputActivity> clazz) {
+        Intent intent = new Intent(TestRegistry.getContext(), clazz);
+        return launchSettingsInputActivity(intent);
     }
 
-    public RecyclerViewBaseActivity launchRecyclerViewBaseActivity(ActivityTestRule<?> rule) {
-        return launchRecyclerViewBaseActivity(rule, null);
+    public ActivityScenario<? extends SettingsInputActivity> launchSettingsInputActivity(Intent intent) {
+        ActivityScenario<? extends SettingsInputActivity> activityScenario = ActivityScenario.launch(intent);
+        activityScenario.onActivity(activity -> ((SettingsInputActivity) activity).injectResources(TestRegistry.getContext().getResources()));
+        activityScenario.onActivity(activity -> activity.setRequestedOrientation(Configuration.ORIENTATION_PORTRAIT));
+        return activityScenario;
     }
 
-    public RecyclerViewBaseActivity launchRecyclerViewBaseActivity(ActivityTestRule<?> rule, Intent intent) {
-        RecyclerViewBaseActivity activity = (RecyclerViewBaseActivity) rule.launchActivity(intent);
-        activity.injectResources(TestRegistry.getContext().getResources());
-        activity.setRequestedOrientation(Configuration.ORIENTATION_PORTRAIT);
-        return activity;
+    public ActivityScenario<? extends RecyclerViewBaseActivity> launchRecyclerViewBaseActivity(Class<? extends RecyclerViewBaseActivity> clazz) {
+        Intent intent = new Intent(TestRegistry.getContext(), clazz);
+        return launchRecyclerViewBaseActivity(intent);
     }
 
-    public void rotateScreen(Activity activity) {
+    public ActivityScenario<? extends RecyclerViewBaseActivity> launchRecyclerViewBaseActivity(Intent intent) {
+        ActivityScenario<? extends RecyclerViewBaseActivity> activityScenario = ActivityScenario.launch(intent);
+        activityScenario.onActivity(activity -> ((RecyclerViewBaseActivity) activity).injectResources(TestRegistry.getContext().getResources()));
+        activityScenario.onActivity(activity -> activity.setRequestedOrientation(Configuration.ORIENTATION_PORTRAIT));
+        return activityScenario;
+    }
+
+    public void rotateScreen(ActivityScenario<?> activityScenario) {
         int orientation = TestRegistry.getContext().getResources().getConfiguration().orientation;
-        activity.setRequestedOrientation((orientation == Configuration.ORIENTATION_PORTRAIT) ? ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE : ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+        activityScenario.onActivity(activity -> activity.setRequestedOrientation((orientation == Configuration.ORIENTATION_PORTRAIT) ? ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE : ActivityInfo.SCREEN_ORIENTATION_PORTRAIT));
         InstrumentationRegistry.getInstrumentation().waitForIdleSync();
+        onView(isRoot()).perform(waitFor(1000));
     }
 
     public NetworkTaskDAO getNetworkTaskDAO() {

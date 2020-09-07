@@ -1,11 +1,11 @@
 package de.ibba.keepitup.ui.dialog;
 
+import androidx.test.core.app.ActivityScenario;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.MediumTest;
-import androidx.test.rule.ActivityTestRule;
 
+import org.junit.After;
 import org.junit.Before;
-import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -17,7 +17,6 @@ import de.ibba.keepitup.util.BundleUtil;
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
-import static androidx.test.espresso.matcher.ViewMatchers.isRoot;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
 
@@ -25,22 +24,25 @@ import static androidx.test.espresso.matcher.ViewMatchers.withText;
 @RunWith(AndroidJUnit4.class)
 public class ConfirmDialogTest extends BaseUITest {
 
-    @Rule
-    public final ActivityTestRule<NetworkTaskMainActivity> rule = new ActivityTestRule<>(NetworkTaskMainActivity.class, false, false);
-
-    private NetworkTaskMainActivity activity;
+    private ActivityScenario<?> activityScenario;
 
     @Before
     public void beforeEachTestMethod() {
         super.beforeEachTestMethod();
-        activity = (NetworkTaskMainActivity) launchRecyclerViewBaseActivity(rule);
+        activityScenario = ActivityScenario.launch(NetworkTaskMainActivity.class);
+    }
+
+    @After
+    public void afterEachTestMethod() {
+        super.afterEachTestMethod();
+        activityScenario.close();
     }
 
     @Test
     public void testConfirmMessage() {
         ConfirmDialog confirmDialog = new ConfirmDialog();
         confirmDialog.setArguments(BundleUtil.stringToBundle(ConfirmDialog.class.getSimpleName(), "Message"));
-        confirmDialog.show(activity.getSupportFragmentManager(), ConfirmDialog.class.getName());
+        confirmDialog.show(getActivity(activityScenario).getSupportFragmentManager(), ConfirmDialog.class.getName());
         onView(withId(R.id.textview_dialog_confirm_message)).check(matches(withText("Message")));
         onView(withId(R.id.imageview_dialog_confirm_cancel)).perform(click());
     }
@@ -49,13 +51,11 @@ public class ConfirmDialogTest extends BaseUITest {
     public void testConfirmMessageScreenRotation() {
         ConfirmDialog confirmDialog = new ConfirmDialog();
         confirmDialog.setArguments(BundleUtil.stringToBundle(ConfirmDialog.class.getSimpleName(), "Message"));
-        confirmDialog.show(activity.getSupportFragmentManager(), ConfirmDialog.class.getName());
+        confirmDialog.show(getActivity(activityScenario).getSupportFragmentManager(), ConfirmDialog.class.getName());
         onView(withId(R.id.textview_dialog_confirm_message)).check(matches(withText("Message")));
-        rotateScreen(activity);
-        onView(isRoot()).perform(waitFor(1000));
+        rotateScreen(activityScenario);
         onView(withId(R.id.textview_dialog_confirm_message)).check(matches(withText("Message")));
-        rotateScreen(activity);
-        onView(isRoot()).perform(waitFor(1000));
+        rotateScreen(activityScenario);
         onView(withId(R.id.textview_dialog_confirm_message)).check(matches(withText("Message")));
         onView(withId(R.id.imageview_dialog_confirm_cancel)).perform(click());
     }

@@ -2,14 +2,13 @@ package de.ibba.keepitup.ui.sync;
 
 import android.content.Intent;
 
+import androidx.test.core.app.ActivityScenario;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.MediumTest;
 import androidx.test.platform.app.InstrumentationRegistry;
-import androidx.test.rule.ActivityTestRule;
 
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -33,10 +32,7 @@ import static org.junit.Assert.assertTrue;
 @RunWith(AndroidJUnit4.class)
 public class LogEntryUISyncTaskTest extends BaseUITest {
 
-    @Rule
-    public final ActivityTestRule<NetworkTaskLogActivity> rule = new ActivityTestRule<>(NetworkTaskLogActivity.class, false, false);
-
-    private NetworkTaskLogActivity activity;
+    private ActivityScenario<?> activityScenario;
     private LogEntryUISyncTask syncTask;
     private NetworkTaskDAO networkTaskDAO;
     private LogDAO logDAO;
@@ -44,8 +40,8 @@ public class LogEntryUISyncTaskTest extends BaseUITest {
     @Before
     public void beforeEachTestMethod() {
         super.beforeEachTestMethod();
-        activity = (NetworkTaskLogActivity) launchRecyclerViewBaseActivity(rule, getNetworkTaskIntent(getNetworkTask()));
-        syncTask = new LogEntryUISyncTask(activity, (LogEntryAdapter) activity.getAdapter());
+        activityScenario = launchRecyclerViewBaseActivity(getNetworkTaskIntent(getNetworkTask()));
+        syncTask = new LogEntryUISyncTask(getActivity(activityScenario), getAdapter(activityScenario));
         networkTaskDAO = new NetworkTaskDAO(TestRegistry.getContext());
         networkTaskDAO.deleteAllNetworkTasks();
         logDAO = new LogDAO(TestRegistry.getContext());
@@ -54,8 +50,10 @@ public class LogEntryUISyncTaskTest extends BaseUITest {
 
     @After
     public void afterEachTestMethod() {
+        super.afterEachTestMethod();
         logDAO.deleteAllLogs();
         networkTaskDAO.deleteAllNetworkTasks();
+        activityScenario.close();
     }
 
     @Test
@@ -71,9 +69,9 @@ public class LogEntryUISyncTaskTest extends BaseUITest {
     public void testAdapterUpdate() {
         NetworkTask task = networkTaskDAO.insertNetworkTask(getNetworkTask());
         LogEntry logEntry = logDAO.insertAndDeleteLog(getLogEntryWithNetworkTaskId(task.getId(), new GregorianCalendar(1980, Calendar.MARCH, 17).getTime().getTime()));
-        activity.runOnUiThread(() -> syncTask.onPostExecute(logEntry));
+        getActivity(activityScenario).runOnUiThread(() -> syncTask.onPostExecute(logEntry));
         InstrumentationRegistry.getInstrumentation().waitForIdleSync();
-        LogEntryAdapter adapter = (LogEntryAdapter) activity.getAdapter();
+        LogEntryAdapter adapter = getAdapter(activityScenario);
         LogEntry adapterLogEntry = adapter.getItem(0);
         assertTrue(logEntry.isEqual(adapterLogEntry));
     }
@@ -83,14 +81,14 @@ public class LogEntryUISyncTaskTest extends BaseUITest {
         NetworkTask task = networkTaskDAO.insertNetworkTask(getNetworkTask());
         LogEntry logEntry1 = logDAO.insertAndDeleteLog(getLogEntryWithNetworkTaskId(task.getId(), new GregorianCalendar(1980, Calendar.MARCH, 17).getTime().getTime()));
         LogEntry logEntry2 = logDAO.insertAndDeleteLog(getLogEntryWithNetworkTaskId(task.getId(), new GregorianCalendar(1980, Calendar.MARCH, 17).getTime().getTime()));
-        activity.runOnUiThread(() -> syncTask.onPostExecute(logEntry1));
-        activity.runOnUiThread(() -> syncTask.onPostExecute(logEntry2));
+        getActivity(activityScenario).runOnUiThread(() -> syncTask.onPostExecute(logEntry1));
+        getActivity(activityScenario).runOnUiThread(() -> syncTask.onPostExecute(logEntry2));
         InstrumentationRegistry.getInstrumentation().waitForIdleSync();
-        LogEntryAdapter adapter = (LogEntryAdapter) activity.getAdapter();
+        LogEntryAdapter adapter = getAdapter(activityScenario);
         assertEquals(2, adapter.getItemCount());
         LogEntry logEntry3 = logDAO.insertAndDeleteLog(getLogEntryWithNetworkTaskId(task.getId(), new GregorianCalendar(1980, Calendar.MARCH, 17).getTime().getTime()));
-        LogEntryUISyncTask nullSyncTask = new LogEntryUISyncTask(activity, null);
-        activity.runOnUiThread(() -> nullSyncTask.onPostExecute(logEntry3));
+        LogEntryUISyncTask nullSyncTask = new LogEntryUISyncTask(getActivity(activityScenario), null);
+        getActivity(activityScenario).runOnUiThread(() -> nullSyncTask.onPostExecute(logEntry3));
         InstrumentationRegistry.getInstrumentation().waitForIdleSync();
         assertEquals(2, adapter.getItemCount());
     }
@@ -100,13 +98,13 @@ public class LogEntryUISyncTaskTest extends BaseUITest {
         NetworkTask task = networkTaskDAO.insertNetworkTask(getNetworkTask());
         for (int ii = 0; ii < 100; ii++) {
             LogEntry logEntry1 = logDAO.insertAndDeleteLog(getLogEntryWithNetworkTaskId(task.getId(), new GregorianCalendar(1980, Calendar.MARCH, 17).getTime().getTime()));
-            activity.runOnUiThread(() -> syncTask.onPostExecute(logEntry1));
+            getActivity(activityScenario).runOnUiThread(() -> syncTask.onPostExecute(logEntry1));
         }
         InstrumentationRegistry.getInstrumentation().waitForIdleSync();
-        LogEntryAdapter adapter = (LogEntryAdapter) activity.getAdapter();
+        LogEntryAdapter adapter = getAdapter(activityScenario);
         assertEquals(100, adapter.getItemCount());
         LogEntry logEntry2 = logDAO.insertAndDeleteLog(getLogEntryWithNetworkTaskId(task.getId(), new GregorianCalendar(1980, Calendar.MARCH, 17).getTime().getTime()));
-        activity.runOnUiThread(() -> syncTask.onPostExecute(logEntry2));
+        getActivity(activityScenario).runOnUiThread(() -> syncTask.onPostExecute(logEntry2));
         InstrumentationRegistry.getInstrumentation().waitForIdleSync();
         assertEquals(100, adapter.getItemCount());
     }
@@ -142,5 +140,13 @@ public class LogEntryUISyncTaskTest extends BaseUITest {
         Intent intent = new Intent(TestRegistry.getContext(), NetworkTaskLogActivity.class);
         intent.putExtras(task.toBundle());
         return intent;
+    }
+
+    private LogEntryAdapter getAdapter(ActivityScenario<?> activityScenario) {
+        return (LogEntryAdapter) getNetworkTaskLogActivity(activityScenario).getAdapter();
+    }
+
+    private NetworkTaskLogActivity getNetworkTaskLogActivity(ActivityScenario<?> activityScenario) {
+        return (NetworkTaskLogActivity) super.getActivity(activityScenario);
     }
 }

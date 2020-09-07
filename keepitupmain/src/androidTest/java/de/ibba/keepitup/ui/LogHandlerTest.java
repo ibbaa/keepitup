@@ -2,9 +2,8 @@ package de.ibba.keepitup.ui;
 
 import android.content.Intent;
 
-import androidx.test.rule.ActivityTestRule;
+import androidx.test.core.app.ActivityScenario;
 
-import org.junit.Rule;
 import org.junit.Test;
 
 import java.util.List;
@@ -19,16 +18,13 @@ import static org.junit.Assert.assertEquals;
 
 public class LogHandlerTest extends BaseUITest {
 
-    @Rule
-    public final ActivityTestRule<NetworkTaskLogActivity> rule = new ActivityTestRule<>(NetworkTaskLogActivity.class, false, false);
-
     @Test
     public void testDeleteNetworkTask() {
         NetworkTask task1 = getNetworkTask();
         task1 = getNetworkTaskDAO().insertNetworkTask(task1);
-        NetworkTaskLogActivity activity = (NetworkTaskLogActivity) launchRecyclerViewBaseActivity(rule, getNetworkTaskIntent(task1));
-        LogHandler handler = new LogHandler(activity);
-        LogEntryAdapter adapter = (LogEntryAdapter) activity.getAdapter();
+        ActivityScenario<?> activityScenario = launchRecyclerViewBaseActivity(getNetworkTaskIntent(task1));
+        LogHandler handler = new LogHandler((NetworkTaskLogActivity) getActivity(activityScenario));
+        LogEntryAdapter adapter = (LogEntryAdapter) ((NetworkTaskLogActivity) getActivity(activityScenario)).getAdapter();
         NetworkTask task2 = getNetworkTask();
         task2 = getNetworkTaskDAO().insertNetworkTask(task2);
         LogEntry logEntry1 = getLogEntryWithNetworkTaskId(task1.getId());
@@ -54,6 +50,7 @@ public class LogHandlerTest extends BaseUITest {
         logEntries2 = getLogDAO().readAllLogsForNetworkTask(task2.getId());
         assertEquals(2, logEntries2.size());
         assertEquals(1, adapter.getItemCount());
+        activityScenario.close();
     }
 
     private NetworkTask getNetworkTask() {

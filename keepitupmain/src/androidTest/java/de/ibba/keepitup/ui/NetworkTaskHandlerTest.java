@@ -1,9 +1,9 @@
 package de.ibba.keepitup.ui;
 
-import androidx.test.rule.ActivityTestRule;
+import androidx.test.core.app.ActivityScenario;
 
+import org.junit.After;
 import org.junit.Before;
-import org.junit.Rule;
 import org.junit.Test;
 
 import java.util.List;
@@ -21,17 +21,20 @@ import static org.junit.Assert.assertTrue;
 
 public class NetworkTaskHandlerTest extends BaseUITest {
 
-    @Rule
-    public final ActivityTestRule<NetworkTaskMainActivity> rule = new ActivityTestRule<>(NetworkTaskMainActivity.class, false, false);
-
-    private NetworkTaskMainActivity activity;
+    private ActivityScenario<?> activityScenario;
     private NetworkTaskHandler handler;
 
     @Before
     public void beforeEachTestMethod() {
         super.beforeEachTestMethod();
-        activity = (NetworkTaskMainActivity) launchRecyclerViewBaseActivity(rule);
-        handler = new NetworkTaskHandler(activity);
+        activityScenario = ActivityScenario.launch(NetworkTaskMainActivity.class);
+        handler = new NetworkTaskHandler((NetworkTaskMainActivity) getActivity(activityScenario));
+    }
+
+    @After
+    public void afterEachTestMethod() {
+        super.afterEachTestMethod();
+        activityScenario.close();
     }
 
     @Test
@@ -55,7 +58,7 @@ public class NetworkTaskHandlerTest extends BaseUITest {
         List<NetworkTask> tasks = getNetworkTaskDAO().readAllNetworkTasks();
         assertEquals(1, tasks.size());
         assertEquals(1, getAdapter().getNextIndex());
-        assertEquals(2, activity.getAdapter().getItemCount());
+        assertEquals(2, getAdapter().getItemCount());
         task1 = tasks.get(0);
         assertEquals(0, task1.getIndex());
         assertTrue(task1.getId() >= 0);
@@ -67,7 +70,7 @@ public class NetworkTaskHandlerTest extends BaseUITest {
         tasks = getNetworkTaskDAO().readAllNetworkTasks();
         assertEquals(2, tasks.size());
         assertEquals(2, getAdapter().getNextIndex());
-        assertEquals(3, activity.getAdapter().getItemCount());
+        assertEquals(3, getAdapter().getItemCount());
         task2 = tasks.get(1);
         NetworkTaskUIWrapper adapterWrapper2 = getAdapter().getItem(1);
         assertNull(adapterWrapper2.getLogEntry());
@@ -116,7 +119,7 @@ public class NetworkTaskHandlerTest extends BaseUITest {
         getLogDAO().insertAndDeleteLog(logEntry);
         getLogDAO().insertAndDeleteLog(logEntry);
         getLogDAO().insertAndDeleteLog(logEntry);
-        assertEquals(5, activity.getAdapter().getItemCount());
+        assertEquals(5, getAdapter().getItemCount());
         handler.startNetworkTask(task2);
         handler.deleteNetworkTask(task2);
         assertFalse(task2.isRunning());
@@ -130,7 +133,7 @@ public class NetworkTaskHandlerTest extends BaseUITest {
         assertEquals(0, task1.getIndex());
         assertEquals(1, task3.getIndex());
         assertEquals(2, task4.getIndex());
-        assertEquals(4, activity.getAdapter().getItemCount());
+        assertEquals(4, getAdapter().getItemCount());
     }
 
     private NetworkTask getNetworkTask1() {
@@ -208,6 +211,6 @@ public class NetworkTaskHandlerTest extends BaseUITest {
     }
 
     private NetworkTaskAdapter getAdapter() {
-        return (NetworkTaskAdapter) activity.getAdapter();
+        return (NetworkTaskAdapter) ((NetworkTaskMainActivity) getActivity(activityScenario)).getAdapter();
     }
 }

@@ -1,13 +1,12 @@
 package de.ibba.keepitup.ui.dialog;
 
-import android.content.res.Configuration;
 import android.os.Bundle;
 import android.widget.GridLayout;
 
-import androidx.test.rule.ActivityTestRule;
+import androidx.test.core.app.ActivityScenario;
 
+import org.junit.After;
 import org.junit.Before;
-import org.junit.Rule;
 import org.junit.Test;
 
 import java.util.Arrays;
@@ -21,23 +20,24 @@ import de.ibba.keepitup.util.BundleUtil;
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
-import static androidx.test.espresso.matcher.ViewMatchers.isRoot;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
 import static org.hamcrest.Matchers.allOf;
 
 public class ValidatorErrorDialogTest extends BaseUITest {
 
-    @Rule
-    public final ActivityTestRule<GlobalSettingsActivity> rule = new ActivityTestRule<>(GlobalSettingsActivity.class, false, false);
-
-    private GlobalSettingsActivity activity;
+    private ActivityScenario<?> activityScenario;
 
     @Before
     public void beforeEachTestMethod() {
         super.beforeEachTestMethod();
-        activity = rule.launchActivity(null);
-        activity.setRequestedOrientation(Configuration.ORIENTATION_PORTRAIT);
+        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class);
+    }
+
+    @After
+    public void afterEachTestMethod() {
+        super.afterEachTestMethod();
+        activityScenario.close();
     }
 
     @Test
@@ -47,7 +47,7 @@ public class ValidatorErrorDialogTest extends BaseUITest {
         ValidationResult result2 = new ValidationResult(false, "field2", "message2");
         Bundle bundle = BundleUtil.validationResultListToBundle(errorDialog.getValidationResultBaseKey(), Arrays.asList(result1, result2));
         errorDialog.setArguments(bundle);
-        errorDialog.show(activity.getSupportFragmentManager(), ValidatorErrorDialog.class.getName());
+        errorDialog.show(getActivity(activityScenario).getSupportFragmentManager(), ValidatorErrorDialog.class.getName());
         onView(allOf(withText("field1"), withGridLayoutPosition(1, 0))).check(matches(isDisplayed()));
         onView(allOf(withText("message1"), withGridLayoutPosition(1, 1))).check(matches(isDisplayed()));
         onView(allOf(withText("field2"), withGridLayoutPosition(2, 0))).check(matches(isDisplayed()));
@@ -62,19 +62,17 @@ public class ValidatorErrorDialogTest extends BaseUITest {
         ValidationResult result2 = new ValidationResult(false, "field2", "message2");
         Bundle bundle = BundleUtil.validationResultListToBundle(errorDialog.getValidationResultBaseKey(), Arrays.asList(result1, result2));
         errorDialog.setArguments(bundle);
-        errorDialog.show(activity.getSupportFragmentManager(), ValidatorErrorDialog.class.getName());
+        errorDialog.show(getActivity(activityScenario).getSupportFragmentManager(), ValidatorErrorDialog.class.getName());
         onView(allOf(withText("field1"), withGridLayoutPosition(1, 0))).check(matches(isDisplayed()));
         onView(allOf(withText("message1"), withGridLayoutPosition(1, 1))).check(matches(isDisplayed()));
         onView(allOf(withText("field2"), withGridLayoutPosition(2, 0))).check(matches(isDisplayed()));
         onView(allOf(withText("message2"), withGridLayoutPosition(2, 1))).check(matches(isDisplayed()));
-        rotateScreen(activity);
-        onView(isRoot()).perform(waitFor(1000));
+        rotateScreen(activityScenario);
         onView(allOf(withText("field1"), withGridLayoutPosition(1, 0))).check(matches(isDisplayed()));
         onView(allOf(withText("message1"), withGridLayoutPosition(1, 1))).check(matches(isDisplayed()));
         onView(allOf(withText("field2"), withGridLayoutPosition(2, 0))).check(matches(isDisplayed()));
         onView(allOf(withText("message2"), withGridLayoutPosition(2, 1))).check(matches(isDisplayed()));
-        rotateScreen(activity);
-        onView(isRoot()).perform(waitFor(1000));
+        rotateScreen(activityScenario);
         onView(allOf(withText("field1"), withGridLayoutPosition(1, 0))).check(matches(isDisplayed()));
         onView(allOf(withText("message1"), withGridLayoutPosition(1, 1))).check(matches(isDisplayed()));
         onView(allOf(withText("field2"), withGridLayoutPosition(2, 0))).check(matches(isDisplayed()));

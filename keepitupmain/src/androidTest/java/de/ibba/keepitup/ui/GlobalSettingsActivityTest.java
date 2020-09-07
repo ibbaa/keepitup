@@ -1,11 +1,12 @@
 package de.ibba.keepitup.ui;
 
+import androidx.test.core.app.ActivityScenario;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.MediumTest;
-import androidx.test.rule.ActivityTestRule;
 
 import org.hamcrest.Matchers;
-import org.junit.Rule;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -34,7 +35,6 @@ import static androidx.test.espresso.matcher.ViewMatchers.isChecked;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.isEnabled;
 import static androidx.test.espresso.matcher.ViewMatchers.isNotChecked;
-import static androidx.test.espresso.matcher.ViewMatchers.isRoot;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
 import static org.hamcrest.Matchers.allOf;
@@ -52,12 +52,22 @@ import static org.junit.Assert.assertTrue;
 @RunWith(AndroidJUnit4.class)
 public class GlobalSettingsActivityTest extends BaseUITest {
 
-    @Rule
-    public final ActivityTestRule<GlobalSettingsActivity> rule = new ActivityTestRule<>(GlobalSettingsActivity.class, false, false);
+    private ActivityScenario<?> activityScenario;
+
+    @Before
+    public void beforeEachTestMethod() {
+        super.beforeEachTestMethod();
+        activityScenario = ActivityScenario.launch(GlobalSettingsActivity.class);
+    }
+
+    @After
+    public void afterEachTestMethod() {
+        super.afterEachTestMethod();
+        activityScenario.close();
+    }
 
     @Test
     public void testDisplayDefaultValues() {
-        launchSettingsInputActivity(rule);
         PreferenceManager preferenceManager = getPreferenceManager();
         assertEquals(3, preferenceManager.getPreferencePingCount());
         assertFalse(preferenceManager.getPreferenceNotificationInactiveNetwork());
@@ -95,7 +105,6 @@ public class GlobalSettingsActivityTest extends BaseUITest {
 
     @Test
     public void testDisplayValues() {
-        launchSettingsInputActivity(rule);
         onView(withId(R.id.textview_activity_global_settings_ping_count)).perform(click());
         onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("10"));
         onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
@@ -141,7 +150,6 @@ public class GlobalSettingsActivityTest extends BaseUITest {
 
     @Test
     public void testSwitchYesNoText() {
-        launchSettingsInputActivity(rule);
         onView(withId(R.id.switch_activity_global_settings_notification_inactive_network)).check(matches(isNotChecked()));
         onView(withId(R.id.textview_activity_global_settings_notification_inactive_network_on_off)).check(matches(withText("no")));
         onView(withId(R.id.switch_activity_global_settings_notification_inactive_network)).perform(click());
@@ -190,7 +198,6 @@ public class GlobalSettingsActivityTest extends BaseUITest {
 
     @Test
     public void testSetPreferencesOk() {
-        launchSettingsInputActivity(rule);
         onView(withId(R.id.textview_activity_global_settings_ping_count)).perform(click());
         onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("2"));
         onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
@@ -220,7 +227,6 @@ public class GlobalSettingsActivityTest extends BaseUITest {
 
     @Test
     public void testSetPingCountPreferencesCancel() {
-        launchSettingsInputActivity(rule);
         onView(withId(R.id.textview_activity_global_settings_ping_count)).perform(click());
         onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("2"));
         onView(withId(R.id.imageview_dialog_settings_input_cancel)).perform(click());
@@ -230,7 +236,6 @@ public class GlobalSettingsActivityTest extends BaseUITest {
 
     @Test
     public void testPingCountInput() {
-        launchSettingsInputActivity(rule);
         onView(withId(R.id.textview_activity_global_settings_ping_count)).perform(click());
         onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("1 0"));
         onView(withId(R.id.edittext_dialog_settings_input_value)).check(matches(withTextColor(R.color.textErrorColor)));
@@ -267,20 +272,19 @@ public class GlobalSettingsActivityTest extends BaseUITest {
 
     @Test
     public void testPingCountCopyPasteOption() {
-        GlobalSettingsActivity activity = (GlobalSettingsActivity) launchSettingsInputActivity(rule);
         onView(withId(R.id.textview_activity_global_settings_ping_count)).perform(click());
-        SettingsInputDialog inputDialog = (SettingsInputDialog) activity.getSupportFragmentManager().getFragments().get(0);
+        SettingsInputDialog inputDialog = (SettingsInputDialog) getActivity(activityScenario).getSupportFragmentManager().getFragments().get(0);
         MockClipboardManager clipboardManager = prepareMockClipboardManager(inputDialog);
         clipboardManager.putData("5");
         onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("6"));
         onView(withId(R.id.edittext_dialog_settings_input_value)).perform(longClick());
-        assertEquals(2, activity.getSupportFragmentManager().getFragments().size());
+        assertEquals(2, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
         onView(withId(R.id.listview_dialog_context_options)).check(matches(withListSize(2)));
         onView(withId(R.id.textview_dialog_context_options_title)).check(matches(withText("Text options")));
         onView(allOf(withId(R.id.textview_list_item_context_option_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options), 0))).check(matches(withText("Copy")));
         onView(allOf(withId(R.id.textview_list_item_context_option_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options), 1))).check(matches(withText("Paste")));
         onView(allOf(withId(R.id.textview_list_item_context_option_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options), 0))).perform(click());
-        assertEquals(1, activity.getSupportFragmentManager().getFragments().size());
+        assertEquals(1, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
         onView(withId(R.id.edittext_dialog_settings_input_value)).check(matches(withText("6")));
         assertTrue(clipboardManager.hasData());
         assertEquals("6", clipboardManager.getData());
@@ -290,26 +294,23 @@ public class GlobalSettingsActivityTest extends BaseUITest {
 
     @Test
     public void testPingCountCopyPasteOptionScreenRotation() {
-        GlobalSettingsActivity activity = (GlobalSettingsActivity) launchSettingsInputActivity(rule);
         onView(withId(R.id.textview_activity_global_settings_ping_count)).perform(click());
-        SettingsInputDialog inputDialog = (SettingsInputDialog) activity.getSupportFragmentManager().getFragments().get(0);
+        SettingsInputDialog inputDialog = (SettingsInputDialog) getActivity(activityScenario).getSupportFragmentManager().getFragments().get(0);
         MockClipboardManager clipboardManager = prepareMockClipboardManager(inputDialog);
         clipboardManager.putData("5");
         onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("6"));
         onView(withId(R.id.edittext_dialog_settings_input_value)).perform(longClick());
-        rotateScreen(activity);
-        onView(isRoot()).perform(waitFor(1000));
-        assertEquals(2, getActivity().getSupportFragmentManager().getFragments().size());
+        rotateScreen(activityScenario);
+        assertEquals(2, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
         onView(withId(R.id.listview_dialog_context_options)).check(matches(withListSize(2)));
         onView(withId(R.id.textview_dialog_context_options_title)).check(matches(withText("Text options")));
         onView(allOf(withId(R.id.textview_list_item_context_option_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options), 0))).check(matches(withText("Copy")));
         onView(allOf(withId(R.id.textview_list_item_context_option_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options), 1))).check(matches(withText("Paste")));
-        rotateScreen(activity);
-        onView(isRoot()).perform(waitFor(1000));
+        rotateScreen(activityScenario);
         clipboardManager = prepareMockClipboardManager(getDialog());
         clipboardManager.putData("5");
         onView(allOf(withId(R.id.textview_list_item_context_option_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options), 0))).perform(click());
-        assertEquals(1, getActivity().getSupportFragmentManager().getFragments().size());
+        assertEquals(1, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
         onView(withId(R.id.edittext_dialog_settings_input_value)).check(matches(withText("6")));
         assertTrue(clipboardManager.hasData());
         assertEquals("6", clipboardManager.getData());
@@ -319,7 +320,6 @@ public class GlobalSettingsActivityTest extends BaseUITest {
 
     @Test
     public void testSetConnectCountPreferencesCancel() {
-        launchSettingsInputActivity(rule);
         onView(withId(R.id.textview_activity_global_settings_connect_count)).perform(click());
         onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("3"));
         onView(withId(R.id.imageview_dialog_settings_input_cancel)).perform(click());
@@ -329,7 +329,6 @@ public class GlobalSettingsActivityTest extends BaseUITest {
 
     @Test
     public void testConnectCountInput() {
-        launchSettingsInputActivity(rule);
         onView(withId(R.id.textview_activity_global_settings_connect_count)).perform(click());
         onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("1 0"));
         onView(withId(R.id.edittext_dialog_settings_input_value)).check(matches(withTextColor(R.color.textErrorColor)));
@@ -366,20 +365,19 @@ public class GlobalSettingsActivityTest extends BaseUITest {
 
     @Test
     public void testConnectCountCopyPasteOption() {
-        GlobalSettingsActivity activity = (GlobalSettingsActivity) launchSettingsInputActivity(rule);
         onView(withId(R.id.textview_activity_global_settings_connect_count)).perform(click());
-        SettingsInputDialog inputDialog = (SettingsInputDialog) activity.getSupportFragmentManager().getFragments().get(0);
+        SettingsInputDialog inputDialog = (SettingsInputDialog) getActivity(activityScenario).getSupportFragmentManager().getFragments().get(0);
         MockClipboardManager clipboardManager = prepareMockClipboardManager(inputDialog);
         clipboardManager.putData("10");
         onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("11"));
         onView(withId(R.id.edittext_dialog_settings_input_value)).perform(longClick());
-        assertEquals(2, activity.getSupportFragmentManager().getFragments().size());
+        assertEquals(2, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
         onView(withId(R.id.listview_dialog_context_options)).check(matches(withListSize(2)));
         onView(withId(R.id.textview_dialog_context_options_title)).check(matches(withText("Text options")));
         onView(allOf(withId(R.id.textview_list_item_context_option_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options), 0))).check(matches(withText("Copy")));
         onView(allOf(withId(R.id.textview_list_item_context_option_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options), 1))).check(matches(withText("Paste")));
         onView(allOf(withId(R.id.textview_list_item_context_option_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options), 1))).perform(click());
-        assertEquals(1, activity.getSupportFragmentManager().getFragments().size());
+        assertEquals(1, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
         onView(withId(R.id.edittext_dialog_settings_input_value)).check(matches(withText("10")));
         assertTrue(clipboardManager.hasData());
         assertEquals("10", clipboardManager.getData());
@@ -389,25 +387,22 @@ public class GlobalSettingsActivityTest extends BaseUITest {
 
     @Test
     public void testConnectCountCopyPasteOptionScreenRotation() {
-        GlobalSettingsActivity activity = (GlobalSettingsActivity) launchSettingsInputActivity(rule);
         onView(withId(R.id.textview_activity_global_settings_connect_count)).perform(click());
         onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("11"));
-        rotateScreen(activity);
-        onView(isRoot()).perform(waitFor(1000));
+        rotateScreen(activityScenario);
         MockClipboardManager clipboardManager = prepareMockClipboardManager(getDialog());
         clipboardManager.putData("10");
         onView(withId(R.id.edittext_dialog_settings_input_value)).perform(longClick());
-        assertEquals(2, getActivity().getSupportFragmentManager().getFragments().size());
+        assertEquals(2, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
         onView(withId(R.id.listview_dialog_context_options)).check(matches(withListSize(2)));
         onView(withId(R.id.textview_dialog_context_options_title)).check(matches(withText("Text options")));
         onView(allOf(withId(R.id.textview_list_item_context_option_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options), 0))).check(matches(withText("Copy")));
         onView(allOf(withId(R.id.textview_list_item_context_option_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options), 1))).check(matches(withText("Paste")));
-        rotateScreen(activity);
-        onView(isRoot()).perform(waitFor(1000));
+        rotateScreen(activityScenario);
         clipboardManager = prepareMockClipboardManager(getDialog());
         clipboardManager.putData("10");
         onView(allOf(withId(R.id.textview_list_item_context_option_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options), 1))).perform(click());
-        assertEquals(1, getActivity().getSupportFragmentManager().getFragments().size());
+        assertEquals(1, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
         onView(withId(R.id.edittext_dialog_settings_input_value)).check(matches(withText("10")));
         assertTrue(clipboardManager.hasData());
         assertEquals("10", clipboardManager.getData());
@@ -417,7 +412,6 @@ public class GlobalSettingsActivityTest extends BaseUITest {
 
     @Test
     public void testDownloadControls() {
-        launchSettingsInputActivity(rule);
         PreferenceManager preferenceManager = getPreferenceManager();
         assertFalse(preferenceManager.getPreferenceDownloadExternalStorage());
         assertEquals(0, preferenceManager.getPreferenceExternalStorageType());
@@ -512,64 +506,59 @@ public class GlobalSettingsActivityTest extends BaseUITest {
 
     @Test
     public void testBatteryOptimizationDialog() {
-        SettingsInputActivity activity = launchSettingsInputActivity(rule);
         MockPowerManager powerManager = new MockPowerManager();
-        activity.injectPowerManager(powerManager);
+        activityScenario.onActivity(activity -> ((GlobalSettingsActivity) activity).injectPowerManager(powerManager));
         onView(withId(R.id.textview_activity_global_settings_battery_optimization_label)).check(matches(withText("Battery Optimization")));
         onView(withId(R.id.textview_activity_global_settings_battery_optimization)).check(matches(withText("Active")));
         onView(withId(R.id.cardview_activity_global_settings_battery_optimization)).perform(click());
-        assertEquals(1, activity.getSupportFragmentManager().getFragments().size());
+        assertEquals(1, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
         onView(withId(R.id.textview_dialog_battery_optimization_info)).check(matches(withText(startsWith("Battery optimization is active for this app."))));
         powerManager.setBatteryOptimized(false);
         onView(withId(R.id.imageview_dialog_battery_optimization_ok)).perform(click());
-        assertEquals(0, activity.getSupportFragmentManager().getFragments().size());
+        assertEquals(0, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
         onView(withId(R.id.textview_activity_global_settings_battery_optimization_label)).check(matches(withText("Battery Optimization")));
         onView(withId(R.id.textview_activity_global_settings_battery_optimization)).check(matches(withText("Inactive")));
         onView(withId(R.id.cardview_activity_global_settings_battery_optimization)).perform(click());
-        assertEquals(1, activity.getSupportFragmentManager().getFragments().size());
+        assertEquals(1, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
         onView(withId(R.id.textview_dialog_battery_optimization_info)).check(matches(withText(startsWith("Battery optimization is not active for this app."))));
         powerManager.setBatteryOptimized(true);
         onView(withId(R.id.imageview_dialog_battery_optimization_ok)).perform(click());
-        assertEquals(0, activity.getSupportFragmentManager().getFragments().size());
+        assertEquals(0, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
         onView(withId(R.id.textview_activity_global_settings_battery_optimization_label)).check(matches(withText("Battery Optimization")));
         onView(withId(R.id.textview_activity_global_settings_battery_optimization)).check(matches(withText("Active")));
     }
 
     @Test
     public void testBatteryOptimizationDialogScreenRotation() {
-        SettingsInputActivity activity = launchSettingsInputActivity(rule);
-        MockPowerManager powerManager = new MockPowerManager();
-        activity.injectPowerManager(powerManager);
+        final MockPowerManager powerManager1 = new MockPowerManager();
+        activityScenario.onActivity(activity -> ((GlobalSettingsActivity) activity).injectPowerManager(powerManager1));
         onView(withId(R.id.textview_activity_global_settings_battery_optimization_label)).check(matches(withText("Battery Optimization")));
         onView(withId(R.id.textview_activity_global_settings_battery_optimization)).check(matches(withText("Active")));
         onView(withId(R.id.cardview_activity_global_settings_battery_optimization)).perform(click());
-        rotateScreen(activity);
-        onView(isRoot()).perform(waitFor(1000));
-        assertEquals(1, getActivity().getSupportFragmentManager().getFragments().size());
-        powerManager = new MockPowerManager();
-        getActivity().injectPowerManager(powerManager);
+        rotateScreen(activityScenario);
+        assertEquals(1, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
+        final MockPowerManager powerManager2 = new MockPowerManager();
+        activityScenario.onActivity(activity -> ((GlobalSettingsActivity) activity).injectPowerManager(powerManager2));
         onView(withId(R.id.textview_dialog_battery_optimization_info)).check(matches(withText(startsWith("Battery optimization is active for this app."))));
-        powerManager.setBatteryOptimized(false);
+        powerManager2.setBatteryOptimized(false);
         onView(withId(R.id.imageview_dialog_battery_optimization_ok)).perform(click());
-        assertEquals(0, getActivity().getSupportFragmentManager().getFragments().size());
+        assertEquals(0, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
         onView(withId(R.id.textview_activity_global_settings_battery_optimization_label)).check(matches(withText("Battery Optimization")));
         onView(withId(R.id.textview_activity_global_settings_battery_optimization)).check(matches(withText("Inactive")));
         onView(withId(R.id.cardview_activity_global_settings_battery_optimization)).perform(scrollTo());
         onView(withId(R.id.cardview_activity_global_settings_battery_optimization)).perform(click());
-        rotateScreen(activity);
-        onView(isRoot()).perform(waitFor(1000));
-        powerManager = new MockPowerManager();
-        getActivity().injectPowerManager(powerManager);
-        powerManager.setBatteryOptimized(true);
+        rotateScreen(activityScenario);
+        final MockPowerManager powerManager3 = new MockPowerManager();
+        activityScenario.onActivity(activity -> ((GlobalSettingsActivity) activity).injectPowerManager(powerManager3));
+        powerManager3.setBatteryOptimized(true);
         onView(withId(R.id.imageview_dialog_battery_optimization_ok)).perform(click());
-        assertEquals(0, getActivity().getSupportFragmentManager().getFragments().size());
+        assertEquals(0, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
         onView(withId(R.id.textview_activity_global_settings_battery_optimization_label)).check(matches(withText("Battery Optimization")));
         onView(withId(R.id.textview_activity_global_settings_battery_optimization)).check(matches(withText("Active")));
     }
 
     @Test
     public void testExternalStorageType() {
-        launchSettingsInputActivity(rule);
         PreferenceManager preferenceManager = getPreferenceManager();
         assertEquals(0, preferenceManager.getPreferenceExternalStorageType());
         onView(withId(R.id.switch_activity_global_settings_download_external_storage)).perform(click());
@@ -605,20 +594,18 @@ public class GlobalSettingsActivityTest extends BaseUITest {
 
     @Test
     public void testDownloadFolderDialogOpen() {
-        SettingsInputActivity activity = launchSettingsInputActivity(rule);
         onView(withId(R.id.switch_activity_global_settings_download_external_storage)).perform(click());
         onView(withId(R.id.cardview_activity_global_settings_download_folder)).perform(click());
-        assertEquals(1, activity.getSupportFragmentManager().getFragments().size());
+        assertEquals(1, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
         onView(withId(R.id.imageview_dialog_folder_choose_cancel)).perform(click());
-        assertEquals(0, activity.getSupportFragmentManager().getFragments().size());
+        assertEquals(0, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
         onView(withId(R.id.switch_activity_global_settings_download_external_storage)).perform(click());
         onView(withId(R.id.cardview_activity_global_settings_download_folder)).perform(click());
-        assertEquals(0, activity.getSupportFragmentManager().getFragments().size());
+        assertEquals(0, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
     }
 
     @Test
     public void testDownloadFolderDialogOkCancel() {
-        launchSettingsInputActivity(rule);
         PreferenceManager preferenceManager = getPreferenceManager();
         assertEquals("download", preferenceManager.getPreferenceDownloadFolder());
         onView(withId(R.id.switch_activity_global_settings_download_external_storage)).perform(click());
@@ -641,14 +628,13 @@ public class GlobalSettingsActivityTest extends BaseUITest {
 
     @Test
     public void testDownloadControlsFileError() {
-        GlobalSettingsActivity activity = (GlobalSettingsActivity) launchSettingsInputActivity(rule);
         PreferenceManager preferenceManager = getPreferenceManager();
         MockFileManager mockFileManager = new MockFileManager();
         mockFileManager.setExternalDirectory(null, 0);
         mockFileManager.setExternalRootDirectory(null, 0);
-        activity.injectFileManager(mockFileManager);
+        activityScenario.onActivity(activity -> ((GlobalSettingsActivity) activity).injectFileManager(mockFileManager));
         onView(withId(R.id.switch_activity_global_settings_download_external_storage)).perform(click());
-        assertEquals(1, activity.getSupportFragmentManager().getFragments().size());
+        assertEquals(1, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
         onView(withId(R.id.textview_dialog_general_error_message)).check(matches(withText("Error accessing external files directory.")));
         onView(withId(R.id.imageview_dialog_general_error_ok)).perform(click());
         onView(withId(R.id.textview_activity_global_settings_download_external_storage_label)).check(matches(withText("Download to an external storage folder")));
@@ -663,14 +649,13 @@ public class GlobalSettingsActivityTest extends BaseUITest {
 
     @Test
     public void testDownloadFolderDialogFileError() {
-        GlobalSettingsActivity activity = (GlobalSettingsActivity) launchSettingsInputActivity(rule);
         onView(withId(R.id.switch_activity_global_settings_download_external_storage)).perform(click());
         MockFileManager mockFileManager = new MockFileManager();
         mockFileManager.setExternalDirectory(null, 0);
         mockFileManager.setExternalRootDirectory(null, 0);
-        activity.injectFileManager(mockFileManager);
+        activityScenario.onActivity(activity -> ((GlobalSettingsActivity) activity).injectFileManager(mockFileManager));
         onView(withId(R.id.cardview_activity_global_settings_download_folder)).perform(click());
-        assertEquals(1, activity.getSupportFragmentManager().getFragments().size());
+        assertEquals(1, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
         onView(withId(R.id.textview_dialog_general_error_message)).check(matches(withText("Error accessing external files directory.")));
         onView(withId(R.id.imageview_dialog_general_error_ok)).perform(click());
         onView(withId(R.id.textview_activity_global_settings_download_external_storage_label)).check(matches(withText("Download to an external storage folder")));
@@ -681,17 +666,16 @@ public class GlobalSettingsActivityTest extends BaseUITest {
 
     @Test
     public void testDownloadFolderDialogOkFileError() {
-        GlobalSettingsActivity activity = (GlobalSettingsActivity) launchSettingsInputActivity(rule);
         PreferenceManager preferenceManager = getPreferenceManager();
         onView(withId(R.id.switch_activity_global_settings_download_external_storage)).perform(click());
         onView(withId(R.id.cardview_activity_global_settings_download_folder)).perform(click());
         MockFileManager mockFileManager = new MockFileManager();
         mockFileManager.setExternalDirectory(null, 0);
         mockFileManager.setExternalRootDirectory(null, 0);
-        activity.injectFileManager(mockFileManager);
+        activityScenario.onActivity(activity -> ((GlobalSettingsActivity) activity).injectFileManager(mockFileManager));
         onView(withId(R.id.edittext_dialog_folder_choose_folder)).perform(replaceText("test"));
         onView(withId(R.id.imageview_dialog_folder_choose_ok)).perform(click());
-        assertEquals(1, activity.getSupportFragmentManager().getFragments().size());
+        assertEquals(1, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
         onView(withId(R.id.textview_dialog_general_error_message)).check(matches(withText("Error creating download directory.")));
         onView(withId(R.id.imageview_dialog_general_error_ok)).perform(click());
         onView(withId(R.id.textview_activity_global_settings_download_folder)).check(matches(withText(endsWith("download"))));
@@ -700,7 +684,6 @@ public class GlobalSettingsActivityTest extends BaseUITest {
 
     @Test
     public void testFileLoggerInitialized() {
-        launchSettingsInputActivity(rule);
         assertNull(Log.getLogger());
         assertNull(Dump.getDump());
         onView(withId(R.id.switch_activity_global_settings_file_logger_enabled)).perform(scrollTo());
@@ -719,7 +702,6 @@ public class GlobalSettingsActivityTest extends BaseUITest {
 
     @Test
     public void testResetValues() {
-        launchSettingsInputActivity(rule);
         onView(withId(R.id.textview_activity_global_settings_ping_count)).perform(click());
         onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("2"));
         onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
@@ -774,7 +756,6 @@ public class GlobalSettingsActivityTest extends BaseUITest {
 
     @Test
     public void testPreserveValuesOnScreenRotation() {
-        SettingsInputActivity activity = launchSettingsInputActivity(rule);
         onView(withId(R.id.textview_activity_global_settings_ping_count)).perform(click());
         onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("2"));
         onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
@@ -790,8 +771,7 @@ public class GlobalSettingsActivityTest extends BaseUITest {
         onView(withId(R.id.switch_activity_global_settings_file_logger_enabled)).perform(click());
         onView(withId(R.id.switch_activity_global_settings_file_dump_enabled)).perform(scrollTo());
         onView(withId(R.id.switch_activity_global_settings_file_dump_enabled)).perform(click());
-        rotateScreen(activity);
-        onView(isRoot()).perform(waitFor(1000));
+        rotateScreen(activityScenario);
         onView(withId(R.id.textview_activity_global_settings_ping_count)).check(matches(withText("2")));
         onView(withId(R.id.textview_activity_global_settings_connect_count)).check(matches(withText("2")));
         onView(withId(R.id.switch_activity_global_settings_notification_inactive_network)).check(matches(isChecked()));
@@ -808,8 +788,7 @@ public class GlobalSettingsActivityTest extends BaseUITest {
         onView(withId(R.id.textview_activity_global_settings_file_logger_enabled_on_off)).check(matches(withText("yes")));
         onView(withId(R.id.switch_activity_global_settings_file_dump_enabled)).check(matches(isChecked()));
         onView(withId(R.id.textview_activity_global_settings_file_dump_enabled_on_off)).check(matches(withText("yes")));
-        rotateScreen(activity);
-        onView(isRoot()).perform(waitFor(1000));
+        rotateScreen(activityScenario);
         onView(withId(R.id.textview_activity_global_settings_ping_count)).check(matches(withText("2")));
         onView(withId(R.id.textview_activity_global_settings_connect_count)).check(matches(withText("2")));
         onView(withId(R.id.switch_activity_global_settings_notification_inactive_network)).check(matches(isChecked()));
@@ -830,33 +809,27 @@ public class GlobalSettingsActivityTest extends BaseUITest {
 
     @Test
     public void testConfirmDialogScreenRotation() {
-        SettingsInputActivity activity = launchSettingsInputActivity(rule);
         onView(withId(R.id.textview_activity_global_settings_connect_count)).perform(click());
         onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("6"));
-        rotateScreen(activity);
-        onView(isRoot()).perform(waitFor(1000));
+        rotateScreen(activityScenario);
         onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("2"));
-        rotateScreen(activity);
-        onView(isRoot()).perform(waitFor(1000));
+        rotateScreen(activityScenario);
         onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
         onView(withId(R.id.textview_activity_global_settings_connect_count)).check(matches(withText("2")));
     }
 
     @Test
     public void testValidationErrorScreenRotation() {
-        SettingsInputActivity activity = launchSettingsInputActivity(rule);
         onView(withId(R.id.textview_activity_global_settings_ping_count)).perform(click());
         onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("a"));
         onView(withId(R.id.edittext_dialog_settings_input_value)).check(matches(withTextColor(R.color.textErrorColor)));
         onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
         onView(allOf(withText("Ping count"), withGridLayoutPosition(1, 0))).check(matches(isDisplayed()));
         onView(allOf(withText("Invalid format"), withGridLayoutPosition(1, 1))).check(matches(isDisplayed()));
-        rotateScreen(activity);
-        onView(isRoot()).perform(waitFor(1000));
+        rotateScreen(activityScenario);
         onView(allOf(withText("Ping count"), withGridLayoutPosition(1, 0))).check(matches(isDisplayed()));
         onView(allOf(withText("Invalid format"), withGridLayoutPosition(1, 1))).check(matches(isDisplayed()));
-        rotateScreen(activity);
-        onView(isRoot()).perform(waitFor(1000));
+        rotateScreen(activityScenario);
         onView(allOf(withText("Ping count"), withGridLayoutPosition(1, 0))).check(matches(isDisplayed()));
         onView(allOf(withText("Invalid format"), withGridLayoutPosition(1, 1))).check(matches(isDisplayed()));
         onView(withId(R.id.imageview_dialog_validator_error_ok)).perform(click());
@@ -865,16 +838,13 @@ public class GlobalSettingsActivityTest extends BaseUITest {
 
     @Test
     public void testValidationErrorColorScreenRotation() {
-        SettingsInputActivity activity = launchSettingsInputActivity(rule);
         onView(withId(R.id.textview_activity_global_settings_ping_count)).perform(click());
         onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("a"));
         onView(withId(R.id.edittext_dialog_settings_input_value)).check(matches(withTextColor(R.color.textErrorColor)));
-        rotateScreen(activity);
-        onView(isRoot()).perform(waitFor(1000));
+        rotateScreen(activityScenario);
         onView(withId(R.id.edittext_dialog_settings_input_value)).check(matches(withText("a")));
         onView(withId(R.id.edittext_dialog_settings_input_value)).check(matches(withTextColor(R.color.textErrorColor)));
-        rotateScreen(activity);
-        onView(isRoot()).perform(waitFor(1000));
+        rotateScreen(activityScenario);
         onView(withId(R.id.edittext_dialog_settings_input_value)).check(matches(withText("a")));
         onView(withId(R.id.edittext_dialog_settings_input_value)).check(matches(withTextColor(R.color.textErrorColor)));
         onView(withId(R.id.imageview_dialog_settings_input_cancel)).perform(click());
@@ -882,14 +852,12 @@ public class GlobalSettingsActivityTest extends BaseUITest {
 
     @Test
     public void testDownloadFolderDialogScreenRotation() {
-        SettingsInputActivity activity = launchSettingsInputActivity(rule);
         PreferenceManager preferenceManager = getPreferenceManager();
         assertEquals("download", preferenceManager.getPreferenceDownloadFolder());
         onView(withId(R.id.switch_activity_global_settings_download_external_storage)).perform(click());
         onView(withId(R.id.cardview_activity_global_settings_download_folder)).perform(click());
         onView(withId(R.id.edittext_dialog_folder_choose_folder)).check(matches(withText("download")));
-        rotateScreen(activity);
-        onView(isRoot()).perform(waitFor(1000));
+        rotateScreen(activityScenario);
         File testFile = new File(getFileManager().getExternalRootDirectory(0), "test");
         assertFalse(testFile.exists());
         onView(withId(R.id.edittext_dialog_folder_choose_folder)).perform(replaceText("test"));
@@ -898,16 +866,11 @@ public class GlobalSettingsActivityTest extends BaseUITest {
         onView(withId(R.id.textview_activity_global_settings_download_folder)).check(matches(withText(endsWith("test"))));
         assertEquals("test", preferenceManager.getPreferenceDownloadFolder());
         assertTrue(testFile.exists());
-        rotateScreen(activity);
-        onView(isRoot()).perform(waitFor(1000));
+        rotateScreen(activityScenario);
     }
 
     private SettingsInputDialog getDialog() {
-        return (SettingsInputDialog) getActivity().getSupportFragmentManager().getFragments().get(0);
-    }
-
-    private GlobalSettingsActivity getActivity() {
-        return rule.getActivity();
+        return (SettingsInputDialog) getActivity(activityScenario).getSupportFragmentManager().getFragments().get(0);
     }
 
     private MockClipboardManager prepareMockClipboardManager(SettingsInputDialog inputDialog) {

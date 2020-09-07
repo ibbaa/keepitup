@@ -1,10 +1,11 @@
 package de.ibba.keepitup.ui;
 
+import androidx.test.core.app.ActivityScenario;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.MediumTest;
-import androidx.test.rule.ActivityTestRule;
 
-import org.junit.Rule;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -26,7 +27,6 @@ import static androidx.test.espresso.matcher.ViewMatchers.hasChildCount;
 import static androidx.test.espresso.matcher.ViewMatchers.isChecked;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.isNotChecked;
-import static androidx.test.espresso.matcher.ViewMatchers.isRoot;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
 import static org.hamcrest.Matchers.allOf;
@@ -38,12 +38,22 @@ import static org.junit.Assert.assertTrue;
 @RunWith(AndroidJUnit4.class)
 public class DefaultsActivityTest extends BaseUITest {
 
-    @Rule
-    public final ActivityTestRule<DefaultsActivity> rule = new ActivityTestRule<>(DefaultsActivity.class, false, false);
+    private ActivityScenario<?> activityScenario;
+
+    @Before
+    public void beforeEachTestMethod() {
+        super.beforeEachTestMethod();
+        activityScenario = ActivityScenario.launch(DefaultsActivity.class);
+    }
+
+    @After
+    public void afterEachTestMethod() {
+        super.afterEachTestMethod();
+        activityScenario.close();
+    }
 
     @Test
     public void testDisplayDefaultValues() {
-        launchSettingsInputActivity(rule);
         PreferenceManager preferenceManager = getPreferenceManager();
         assertEquals(AccessType.PING, preferenceManager.getPreferenceAccessType());
         assertEquals("192.168.178.1", preferenceManager.getPreferenceAddress());
@@ -71,7 +81,6 @@ public class DefaultsActivityTest extends BaseUITest {
 
     @Test
     public void testDisplayValues() {
-        launchSettingsInputActivity(rule);
         onView(withText("Download")).perform(click());
         onView(withId(R.id.textview_activity_defaults_address)).perform(click());
         onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("localhost"));
@@ -102,7 +111,6 @@ public class DefaultsActivityTest extends BaseUITest {
 
     @Test
     public void testMinutesAndSeconds() {
-        launchSettingsInputActivity(rule);
         onView(withId(R.id.textview_activity_defaults_interval)).perform(click());
         onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("1"));
         onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
@@ -119,7 +127,6 @@ public class DefaultsActivityTest extends BaseUITest {
 
     @Test
     public void testSwitchYesNoText() {
-        launchSettingsInputActivity(rule);
         onView(withId(R.id.switch_activity_defaults_onlywifi)).check(matches(isNotChecked()));
         onView(withId(R.id.textview_activity_defaults_onlywifi_on_off)).check(matches(withText("no")));
         onView(withId(R.id.switch_activity_defaults_notification)).check(matches(isNotChecked()));
@@ -148,7 +155,6 @@ public class DefaultsActivityTest extends BaseUITest {
 
     @Test
     public void testSetPreferencesOk() {
-        launchSettingsInputActivity(rule);
         onView(withText("Download")).perform(click());
         onView(withId(R.id.textview_activity_defaults_address)).perform(click());
         onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("localhost"));
@@ -172,7 +178,6 @@ public class DefaultsActivityTest extends BaseUITest {
 
     @Test
     public void testSetPreferencesCancel() {
-        launchSettingsInputActivity(rule);
         onView(withId(R.id.textview_activity_defaults_address)).perform(click());
         onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("localhost"));
         onView(withId(R.id.imageview_dialog_settings_input_cancel)).perform(click());
@@ -190,7 +195,6 @@ public class DefaultsActivityTest extends BaseUITest {
 
     @Test
     public void testAddressInput() {
-        launchSettingsInputActivity(rule);
         onView(withId(R.id.textview_activity_defaults_address)).perform(click());
         onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("1 2.33"));
         onView(withId(R.id.edittext_dialog_settings_input_value)).check(matches(withTextColor(R.color.textErrorColor)));
@@ -224,20 +228,19 @@ public class DefaultsActivityTest extends BaseUITest {
 
     @Test
     public void testAddressCopyPasteOption() {
-        DefaultsActivity activity = (DefaultsActivity) launchSettingsInputActivity(rule);
         onView(withId(R.id.textview_activity_defaults_address)).perform(click());
         SettingsInputDialog inputDialog = getDialog();
         MockClipboardManager clipboardManager = prepareMockClipboardManager(inputDialog);
         clipboardManager.putData("data");
         onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("localhost"));
         onView(withId(R.id.edittext_dialog_settings_input_value)).perform(longClick());
-        assertEquals(2, activity.getSupportFragmentManager().getFragments().size());
+        assertEquals(2, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
         onView(withId(R.id.listview_dialog_context_options)).check(matches(withListSize(2)));
         onView(withId(R.id.textview_dialog_context_options_title)).check(matches(withText("Text options")));
         onView(allOf(withId(R.id.textview_list_item_context_option_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options), 0))).check(matches(withText("Copy")));
         onView(allOf(withId(R.id.textview_list_item_context_option_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options), 1))).check(matches(withText("Paste")));
         onView(allOf(withId(R.id.textview_list_item_context_option_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options), 1))).perform(click());
-        assertEquals(1, activity.getSupportFragmentManager().getFragments().size());
+        assertEquals(1, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
         onView(withId(R.id.edittext_dialog_settings_input_value)).check(matches(withText("data")));
         assertTrue(clipboardManager.hasData());
         assertEquals("data", clipboardManager.getData());
@@ -247,26 +250,23 @@ public class DefaultsActivityTest extends BaseUITest {
 
     @Test
     public void testAddressCopyPasteOptionScreenRotation() {
-        DefaultsActivity activity = (DefaultsActivity) launchSettingsInputActivity(rule);
         onView(withId(R.id.textview_activity_defaults_address)).perform(click());
         SettingsInputDialog inputDialog = getDialog();
         MockClipboardManager clipboardManager = prepareMockClipboardManager(inputDialog);
         clipboardManager.putData("data");
         onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("localhost"));
         onView(withId(R.id.edittext_dialog_settings_input_value)).perform(longClick());
-        rotateScreen(activity);
-        onView(isRoot()).perform(waitFor(1000));
-        assertEquals(2, getActivity().getSupportFragmentManager().getFragments().size());
+        rotateScreen(activityScenario);
+        assertEquals(2, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
         onView(withId(R.id.listview_dialog_context_options)).check(matches(withListSize(2)));
         onView(withId(R.id.textview_dialog_context_options_title)).check(matches(withText("Text options")));
         onView(allOf(withId(R.id.textview_list_item_context_option_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options), 0))).check(matches(withText("Copy")));
         onView(allOf(withId(R.id.textview_list_item_context_option_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options), 1))).check(matches(withText("Paste")));
-        rotateScreen(activity);
-        onView(isRoot()).perform(waitFor(1000));
+        rotateScreen(activityScenario);
         clipboardManager = prepareMockClipboardManager(getDialog());
         clipboardManager.putData("data");
         onView(allOf(withId(R.id.textview_list_item_context_option_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options), 1))).perform(click());
-        assertEquals(1, getActivity().getSupportFragmentManager().getFragments().size());
+        assertEquals(1, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
         onView(withId(R.id.edittext_dialog_settings_input_value)).check(matches(withText("data")));
         assertTrue(clipboardManager.hasData());
         assertEquals("data", clipboardManager.getData());
@@ -276,7 +276,6 @@ public class DefaultsActivityTest extends BaseUITest {
 
     @Test
     public void testPortInput() {
-        launchSettingsInputActivity(rule);
         onView(withId(R.id.textview_activity_defaults_port)).perform(click());
         onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("1a"));
         onView(withId(R.id.edittext_dialog_settings_input_value)).check(matches(withTextColor(R.color.textErrorColor)));
@@ -307,20 +306,19 @@ public class DefaultsActivityTest extends BaseUITest {
 
     @Test
     public void testPortCopyPasteOption() {
-        DefaultsActivity activity = (DefaultsActivity) launchSettingsInputActivity(rule);
         onView(withId(R.id.textview_activity_defaults_port)).perform(click());
         SettingsInputDialog inputDialog = getDialog();
         MockClipboardManager clipboardManager = prepareMockClipboardManager(inputDialog);
         clipboardManager.putData("1234");
         onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("456"));
         onView(withId(R.id.edittext_dialog_settings_input_value)).perform(longClick());
-        assertEquals(2, activity.getSupportFragmentManager().getFragments().size());
+        assertEquals(2, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
         onView(withId(R.id.listview_dialog_context_options)).check(matches(withListSize(2)));
         onView(withId(R.id.textview_dialog_context_options_title)).check(matches(withText("Text options")));
         onView(allOf(withId(R.id.textview_list_item_context_option_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options), 0))).check(matches(withText("Copy")));
         onView(allOf(withId(R.id.textview_list_item_context_option_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options), 1))).check(matches(withText("Paste")));
         onView(allOf(withId(R.id.textview_list_item_context_option_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options), 0))).perform(click());
-        assertEquals(1, activity.getSupportFragmentManager().getFragments().size());
+        assertEquals(1, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
         onView(withId(R.id.edittext_dialog_settings_input_value)).check(matches(withText("456")));
         assertTrue(clipboardManager.hasData());
         assertEquals("456", clipboardManager.getData());
@@ -330,25 +328,22 @@ public class DefaultsActivityTest extends BaseUITest {
 
     @Test
     public void testPortCopyPasteOptionScreenRotation() {
-        DefaultsActivity activity = (DefaultsActivity) launchSettingsInputActivity(rule);
         onView(withId(R.id.textview_activity_defaults_port)).perform(click());
         onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("456"));
-        rotateScreen(activity);
-        onView(isRoot()).perform(waitFor(1000));
+        rotateScreen(activityScenario);
         MockClipboardManager clipboardManager = prepareMockClipboardManager(getDialog());
         clipboardManager.putData("1234");
         onView(withId(R.id.edittext_dialog_settings_input_value)).perform(longClick());
-        assertEquals(2, getActivity().getSupportFragmentManager().getFragments().size());
+        assertEquals(2, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
         onView(withId(R.id.listview_dialog_context_options)).check(matches(withListSize(2)));
         onView(withId(R.id.textview_dialog_context_options_title)).check(matches(withText("Text options")));
         onView(allOf(withId(R.id.textview_list_item_context_option_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options), 0))).check(matches(withText("Copy")));
         onView(allOf(withId(R.id.textview_list_item_context_option_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options), 1))).check(matches(withText("Paste")));
-        rotateScreen(activity);
-        onView(isRoot()).perform(waitFor(1000));
+        rotateScreen(activityScenario);
         clipboardManager = prepareMockClipboardManager(getDialog());
         clipboardManager.putData("1234");
         onView(allOf(withId(R.id.textview_list_item_context_option_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options), 0))).perform(click());
-        assertEquals(1, getActivity().getSupportFragmentManager().getFragments().size());
+        assertEquals(1, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
         onView(withId(R.id.edittext_dialog_settings_input_value)).check(matches(withText("456")));
         assertTrue(clipboardManager.hasData());
         assertEquals("456", clipboardManager.getData());
@@ -358,7 +353,6 @@ public class DefaultsActivityTest extends BaseUITest {
 
     @Test
     public void testIntervalInput() {
-        launchSettingsInputActivity(rule);
         onView(withId(R.id.textview_activity_defaults_interval)).perform(click());
         onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("xyz"));
         onView(withId(R.id.edittext_dialog_settings_input_value)).check(matches(withTextColor(R.color.textErrorColor)));
@@ -389,20 +383,19 @@ public class DefaultsActivityTest extends BaseUITest {
 
     @Test
     public void testIntervalCopyPasteOption() {
-        DefaultsActivity activity = (DefaultsActivity) launchSettingsInputActivity(rule);
         onView(withId(R.id.textview_activity_defaults_interval)).perform(click());
         SettingsInputDialog inputDialog = getDialog();
         MockClipboardManager clipboardManager = prepareMockClipboardManager(inputDialog);
         clipboardManager.putData("111");
         onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("222"));
         onView(withId(R.id.edittext_dialog_settings_input_value)).perform(longClick());
-        assertEquals(2, activity.getSupportFragmentManager().getFragments().size());
+        assertEquals(2, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
         onView(withId(R.id.listview_dialog_context_options)).check(matches(withListSize(2)));
         onView(withId(R.id.textview_dialog_context_options_title)).check(matches(withText("Text options")));
         onView(allOf(withId(R.id.textview_list_item_context_option_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options), 0))).check(matches(withText("Copy")));
         onView(allOf(withId(R.id.textview_list_item_context_option_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options), 1))).check(matches(withText("Paste")));
         onView(allOf(withId(R.id.textview_list_item_context_option_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options), 1))).perform(click());
-        assertEquals(1, activity.getSupportFragmentManager().getFragments().size());
+        assertEquals(1, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
         onView(withId(R.id.edittext_dialog_settings_input_value)).check(matches(withText("111")));
         assertTrue(clipboardManager.hasData());
         assertEquals("111", clipboardManager.getData());
@@ -412,36 +405,32 @@ public class DefaultsActivityTest extends BaseUITest {
 
     @Test
     public void testIntervalCopyPasteOptionScreenRotation() {
-        DefaultsActivity activity = (DefaultsActivity) launchSettingsInputActivity(rule);
         onView(withId(R.id.textview_activity_defaults_interval)).perform(click());
         SettingsInputDialog inputDialog = getDialog();
         MockClipboardManager clipboardManager = prepareMockClipboardManager(inputDialog);
         clipboardManager.putData("111");
         onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("222"));
         onView(withId(R.id.edittext_dialog_settings_input_value)).perform(longClick());
-        rotateScreen(activity);
-        onView(isRoot()).perform(waitFor(1000));
+        rotateScreen(activityScenario);
         clipboardManager = prepareMockClipboardManager(getDialog());
         clipboardManager.putData("111");
-        assertEquals(2, getActivity().getSupportFragmentManager().getFragments().size());
+        assertEquals(2, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
         onView(withId(R.id.listview_dialog_context_options)).check(matches(withListSize(2)));
         onView(withId(R.id.textview_dialog_context_options_title)).check(matches(withText("Text options")));
         onView(allOf(withId(R.id.textview_list_item_context_option_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options), 0))).check(matches(withText("Copy")));
         onView(allOf(withId(R.id.textview_list_item_context_option_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options), 1))).check(matches(withText("Paste")));
         onView(allOf(withId(R.id.textview_list_item_context_option_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options), 1))).perform(click());
-        assertEquals(1, getActivity().getSupportFragmentManager().getFragments().size());
+        assertEquals(1, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
         onView(withId(R.id.edittext_dialog_settings_input_value)).check(matches(withText("111")));
         assertTrue(clipboardManager.hasData());
         assertEquals("111", clipboardManager.getData());
-        rotateScreen(activity);
-        onView(isRoot()).perform(waitFor(1000));
+        rotateScreen(activityScenario);
         onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
         onView(withId(R.id.textview_activity_defaults_interval)).check(matches(withText("111")));
     }
 
     @Test
     public void testResetValues() {
-        launchSettingsInputActivity(rule);
         onView(withText("Download")).perform(click());
         onView(withId(R.id.textview_activity_defaults_address)).perform(click());
         onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("localhost"));
@@ -481,7 +470,6 @@ public class DefaultsActivityTest extends BaseUITest {
 
     @Test
     public void testPreserveValuesOnScreenRotation() {
-        SettingsInputActivity activity = launchSettingsInputActivity(rule);
         onView(withText("Connect")).perform(click());
         onView(withId(R.id.textview_activity_defaults_address)).perform(click());
         onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("localhost"));
@@ -494,8 +482,7 @@ public class DefaultsActivityTest extends BaseUITest {
         onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
         onView(withId(R.id.switch_activity_defaults_onlywifi)).perform(click());
         onView(withId(R.id.switch_activity_defaults_notification)).perform(click());
-        rotateScreen(activity);
-        onView(isRoot()).perform(waitFor(1000));
+        rotateScreen(activityScenario);
         onView(withText("Connect")).check(matches(isChecked()));
         onView(withId(R.id.textview_activity_defaults_address)).check(matches(withText("localhost")));
         onView(withId(R.id.textview_activity_defaults_port)).check(matches(withText("80")));
@@ -505,8 +492,7 @@ public class DefaultsActivityTest extends BaseUITest {
         onView(withId(R.id.textview_activity_defaults_onlywifi_on_off)).check(matches(withText("yes")));
         onView(withId(R.id.switch_activity_defaults_notification)).check(matches(isChecked()));
         onView(withId(R.id.textview_activity_defaults_notification_on_off)).check(matches(withText("yes")));
-        rotateScreen(activity);
-        onView(isRoot()).perform(waitFor(1000));
+        rotateScreen(activityScenario);
         onView(withText("Connect")).check(matches(isChecked()));
         onView(withId(R.id.textview_activity_defaults_address)).check(matches(withText("localhost")));
         onView(withId(R.id.textview_activity_defaults_port)).check(matches(withText("80")));
@@ -520,36 +506,30 @@ public class DefaultsActivityTest extends BaseUITest {
 
     @Test
     public void testConfirmDialogOnScreenRotation() {
-        SettingsInputActivity activity = launchSettingsInputActivity(rule);
         onView(withId(R.id.textview_activity_defaults_address)).perform(click());
         onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("localhost"));
-        rotateScreen(activity);
-        onView(isRoot()).perform(waitFor(1000));
+        rotateScreen(activityScenario);
         onView(withId(R.id.imageview_dialog_settings_input_cancel)).perform(click());
         onView(withId(R.id.textview_activity_defaults_address)).check(matches(withText("192.168.178.1")));
         onView(withId(R.id.textview_activity_defaults_address)).perform(click());
         onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("localhost"));
-        rotateScreen(activity);
-        onView(isRoot()).perform(waitFor(1000));
+        rotateScreen(activityScenario);
         onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
         onView(withId(R.id.textview_activity_defaults_address)).check(matches(withText("localhost")));
     }
 
     @Test
     public void testValidationErrorScreenRotation() {
-        SettingsInputActivity activity = launchSettingsInputActivity(rule);
         onView(withId(R.id.textview_activity_defaults_port)).perform(click());
         onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("1a"));
         onView(withId(R.id.edittext_dialog_settings_input_value)).check(matches(withTextColor(R.color.textErrorColor)));
         onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
         onView(allOf(withText("Port"), withGridLayoutPosition(1, 0))).check(matches(isDisplayed()));
         onView(allOf(withText("Invalid format"), withGridLayoutPosition(1, 1))).check(matches(isDisplayed()));
-        rotateScreen(activity);
-        onView(isRoot()).perform(waitFor(1000));
+        rotateScreen(activityScenario);
         onView(allOf(withText("Port"), withGridLayoutPosition(1, 0))).check(matches(isDisplayed()));
         onView(allOf(withText("Invalid format"), withGridLayoutPosition(1, 1))).check(matches(isDisplayed()));
-        rotateScreen(activity);
-        onView(isRoot()).perform(waitFor(1000));
+        rotateScreen(activityScenario);
         onView(allOf(withText("Port"), withGridLayoutPosition(1, 0))).check(matches(isDisplayed()));
         onView(allOf(withText("Invalid format"), withGridLayoutPosition(1, 1))).check(matches(isDisplayed()));
         onView(withId(R.id.imageview_dialog_validator_error_ok)).perform(click());
@@ -557,11 +537,7 @@ public class DefaultsActivityTest extends BaseUITest {
     }
 
     private SettingsInputDialog getDialog() {
-        return (SettingsInputDialog) getActivity().getSupportFragmentManager().getFragments().get(0);
-    }
-
-    private DefaultsActivity getActivity() {
-        return rule.getActivity();
+        return (SettingsInputDialog) getActivity(activityScenario).getSupportFragmentManager().getFragments().get(0);
     }
 
     private MockClipboardManager prepareMockClipboardManager(SettingsInputDialog inputDialog) {
