@@ -8,10 +8,11 @@ import android.widget.CompoundButton;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
-import android.widget.Switch;
 import android.widget.TextView;
 
 import androidx.cardview.widget.CardView;
+
+import com.google.android.material.switchmaterial.SwitchMaterial;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -39,9 +40,9 @@ public class DefaultsActivity extends SettingsInputActivity {
     private TextView portText;
     private TextView intervalText;
     private TextView intervalMinutesText;
-    private Switch onlyWifiSwitch;
+    private SwitchMaterial onlyWifiSwitch;
     private TextView onlyWifiOnOffText;
-    private Switch notificationSwitch;
+    private SwitchMaterial notificationSwitch;
     private TextView notificationOnOffText;
 
     @Override
