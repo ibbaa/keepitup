@@ -5,9 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
 
-import java.text.SimpleDateFormat;
 import java.util.List;
-import java.util.Locale;
 
 import de.ibba.keepitup.db.NetworkTaskDAO;
 import de.ibba.keepitup.logging.Log;
@@ -16,8 +14,6 @@ import de.ibba.keepitup.resources.ServiceFactoryContributor;
 import de.ibba.keepitup.util.NumberUtil;
 
 public class NetworkTaskProcessServiceScheduler {
-
-    private final static String LOG_TIMESTAMP_PATTERN = "yyyy-MM-dd HH:mm:ss.SSS";
 
     private final Context context;
     private final NetworkTaskDAO networkTaskDAO;
@@ -90,9 +86,6 @@ public class NetworkTaskProcessServiceScheduler {
             delayMillis = 0;
         }
         alarmManager.setAlarm(delayMillis, pendingIntent);
-        long timestamp = timeService.getCurrentTimestamp();
-        SimpleDateFormat logTimestampDateFormat = new SimpleDateFormat(LOG_TIMESTAMP_PATTERN, Locale.US);
-        Log.d(NetworkTaskProcessServiceScheduler.class.getName(), "Updated last scheduled timestamp to " + timestamp + " (" + logTimestampDateFormat.format(timestamp) + ")");
         return networkTask;
     }
 

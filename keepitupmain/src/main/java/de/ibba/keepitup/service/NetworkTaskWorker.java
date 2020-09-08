@@ -10,7 +10,9 @@ import androidx.annotation.NonNull;
 import java.net.Inet4Address;
 import java.net.Inet6Address;
 import java.net.InetAddress;
+import java.text.SimpleDateFormat;
 import java.util.List;
+import java.util.Locale;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -34,6 +36,8 @@ import de.ibba.keepitup.ui.sync.NetworkTaskMainUIBroadcastReceiver;
 import de.ibba.keepitup.util.ExceptionUtil;
 
 public abstract class NetworkTaskWorker implements Runnable {
+
+    private final static String LOG_TIMESTAMP_PATTERN = "yyyy-MM-dd HH:mm:ss.SSS";
 
     private final Context context;
     private final NetworkTask networkTask;
@@ -63,7 +67,10 @@ public abstract class NetworkTaskWorker implements Runnable {
         try {
             NetworkTaskDAO networkTaskDAO = new NetworkTaskDAO(getContext());
             Log.d(NetworkTaskWorker.class.getName(), "Updating last scheduled time.");
-            networkTaskDAO.updateNetworkTaskLastScheduled(networkTask.getId(), getTimeService().getCurrentTimestamp());
+            long timestamp = timeService.getCurrentTimestamp();
+            networkTaskDAO.updateNetworkTaskLastScheduled(networkTask.getId(), timestamp);
+            SimpleDateFormat logTimestampDateFormat = new SimpleDateFormat(LOG_TIMESTAMP_PATTERN, Locale.US);
+            Log.d(NetworkTaskWorker.class.getName(), "Updated last scheduled timestamp to " + timestamp + " (" + logTimestampDateFormat.format(timestamp) + ")");
             LogEntry logEntry = checkInstances();
             if (logEntry != null) {
                 Log.d(NetworkTaskWorker.class.getName(), "Skipping execution. Too many active instances.");
