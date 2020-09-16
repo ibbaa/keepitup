@@ -45,7 +45,7 @@ public class NotificationHandlerTest {
     @Test
     public void testSendNotification() {
         NetworkTask networkTask = getNetworkTask1();
-        LogEntry logEntry = getLogEntry(new GregorianCalendar(1980, Calendar.MARCH, 17).getTime().getTime(), "Test");
+        LogEntry logEntry = getLogEntry(new GregorianCalendar(1981, Calendar.MARCH, 17).getTime().getTime(), "Test");
         notificationHandler.sendNotification(networkTask, logEntry);
         assertTrue(notificationManager.wasNotifyCalled());
         MockNotificationManager.NotifyCall notifyCall = notificationManager.getNotifyCalls().get(0);
