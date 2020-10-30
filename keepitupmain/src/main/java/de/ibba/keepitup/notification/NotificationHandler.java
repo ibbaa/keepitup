@@ -7,6 +7,8 @@ import android.app.TaskStackBuilder;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
+import android.media.RingtoneManager;
+import android.net.Uri;
 import android.os.Build;
 
 import androidx.core.app.NotificationCompat;
@@ -79,7 +81,10 @@ public class NotificationHandler {
         notificationBuilder.setSmallIcon(R.drawable.icon_notification).setContentTitle(title).setContentText(text).setStyle(new NotificationCompat.BigTextStyle().bigText(text)).setPriority(NotificationCompat.PRIORITY_DEFAULT);
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
             notificationBuilder.setVibrate(getVibrationPattern());
+            Uri soundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+            notificationBuilder.setSound(soundUri);
         }
+        notificationBuilder.setCategory(NotificationCompat.CATEGORY_ERROR);
         setMainActivityIntent(notificationBuilder);
         return notificationBuilder.build();
     }
