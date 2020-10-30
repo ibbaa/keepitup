@@ -296,7 +296,9 @@ public class MockResources extends Resources {
 
     @Override
     public void updateConfiguration(Configuration config, DisplayMetrics metrics) {
-        targetResources.updateConfiguration(config, metrics);
+        if (targetResources != null) {
+            targetResources.updateConfiguration(config, metrics);
+        }
     }
 
     @Override
