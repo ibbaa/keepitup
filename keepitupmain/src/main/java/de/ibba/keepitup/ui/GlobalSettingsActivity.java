@@ -570,11 +570,11 @@ public class GlobalSettingsActivity extends SettingsInputActivity {
     }
 
     @Override
-    public void onFolderChooseDialogOkClicked(FolderChooseDialog editDialog) {
+    public void onFolderChooseDialogOkClicked(FolderChooseDialog folderChooseDialog) {
         Log.d(GlobalSettingsActivity.class.getName(), "onFolderChooseEditDialogOkClicked");
         IFileManager fileManager = getFileManager();
         PreferenceManager preferenceManager = new PreferenceManager(this);
-        String folder = editDialog.getFolder();
+        String folder = folderChooseDialog.getFolder();
         File downloadFolder;
         if (fileManager.isSDCardSupported()) {
             downloadFolder = fileManager.getExternalDirectory(folder, preferenceManager.getPreferenceExternalStorageType());
@@ -584,14 +584,14 @@ public class GlobalSettingsActivity extends SettingsInputActivity {
         Log.d(GlobalSettingsActivity.class.getName(), "External download folder is " + downloadFolder);
         if (downloadFolder == null) {
             Log.e(GlobalSettingsActivity.class.getName(), "Error accessing download folder.");
-            editDialog.dismiss();
+            folderChooseDialog.dismiss();
             Log.d(GlobalSettingsActivity.class.getName(), "Showing error dialog.");
             showErrorDialog(getResources().getString(R.string.text_dialog_general_error_external_download_create));
             return;
         }
         preferenceManager.setPreferenceDownloadFolder(folder);
         setDownloadFolder(downloadFolder.getAbsolutePath());
-        editDialog.dismiss();
+        folderChooseDialog.dismiss();
     }
 
     @Override
