@@ -196,28 +196,28 @@ public class SystemFileManager implements IFileManager {
     }
 
     @Override
-    public String getAbsoluteFolder(String root, String folder) {
-        Log.d(SystemFileManager.class.getName(), "getAbsoluteFolder, root is " + root + ", folder is " + folder);
-        if (StringUtil.isEmpty(folder)) {
+    public String getAbsolutePath(String root, String path) {
+        Log.d(SystemFileManager.class.getName(), "getAbsolutePath, root is " + root + ", path is " + path);
+        if (StringUtil.isEmpty(path)) {
             return root;
         }
         if (!root.endsWith("/")) {
             root += "/";
         }
-        return root + folder;
+        return root + path;
     }
 
     @Override
-    public String getNestedFolder(String folder1, String folder2) {
-        Log.d(SystemFileManager.class.getName(), "getNestedFolder, folder1 is " + folder1 + ", folder2 is " + folder2);
-        folder2 = StringUtil.notNull(folder2);
-        if (StringUtil.isEmpty(folder1)) {
-            return folder2;
+    public String getNestedPath(String path1, String path2) {
+        Log.d(SystemFileManager.class.getName(), "getNestedFolder, path1 is " + path1 + ", path2 is " + path2);
+        path2 = StringUtil.notNull(path2);
+        if (StringUtil.isEmpty(path1)) {
+            return path2;
         }
-        if (!folder1.endsWith("/") && !folder2.isEmpty()) {
-            folder1 += "/";
+        if (!path1.endsWith("/") && !path2.isEmpty()) {
+            path1 += "/";
         }
-        return folder1 + folder2;
+        return path1 + path2;
     }
 
     public List<FileEntry> getFiles(String root, String absoluteFolder) {

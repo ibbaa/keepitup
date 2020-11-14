@@ -13,7 +13,13 @@ import de.ibba.keepitup.ui.validation.ValidationResult;
 public class BundleUtil {
 
     public static Bundle stringToBundle(String key, String text) {
-        Bundle bundle = new Bundle();
+        return stringToBundle(key, text, new Bundle());
+    }
+
+    public static Bundle stringToBundle(String key, String text, Bundle bundle) {
+        if (bundle == null) {
+            bundle = new Bundle();
+        }
         if (key == null || text == null) {
             return bundle;
         }
@@ -64,6 +70,28 @@ public class BundleUtil {
             }
         }
         return resultList;
+    }
+
+    public static Bundle booleanToBundle(String key, boolean value) {
+        return booleanToBundle(key, value, new Bundle());
+    }
+
+    public static Bundle booleanToBundle(String key, boolean value, Bundle bundle) {
+        if (bundle == null) {
+            bundle = new Bundle();
+        }
+        if (key == null) {
+            return bundle;
+        }
+        bundle.putBoolean(key, value);
+        return bundle;
+    }
+
+    public static boolean booleanFromBundle(String key, Bundle bundle) {
+        if (bundle == null || key == null) {
+            return false;
+        }
+        return bundle.getBoolean(key);
     }
 
     public static Bundle bundleToBundle(String key, Bundle bundle) {

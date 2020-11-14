@@ -473,6 +473,7 @@ public class GlobalSettingsActivity extends SettingsInputActivity {
             return;
         }
         Bundle bundle = BundleUtil.stringsToBundle(new String[]{folderChooseDialog.getFolderRootKey(), folderChooseDialog.getFolderKey()}, new String[]{root, folder});
+        bundle = BundleUtil.booleanToBundle(folderChooseDialog.getSupportsFileSelectionKey(), false, bundle);
         folderChooseDialog.setArguments(bundle);
         folderChooseDialog.show(getSupportFragmentManager(), GlobalSettingsActivity.class.getName());
 

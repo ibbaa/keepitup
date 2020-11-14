@@ -40,6 +40,37 @@
             android:text="" />
 
         <LinearLayout
+            android:id="@+id/linearlayout_dialog_folder_choose_file"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/linearlayout_dialog_folder_choose_file_padding"
+            android:layout_marginLeft="@dimen/linearlayout_dialog_folder_choose_file_margin_left"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/textview_dialog_folder_choose_file_label"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textStyle="bold"
+                android:labelFor="@id/edittext_dialog_folder_choose_file"
+                android:text="@string/label_dialog_folder_choose_file" />
+
+            <EditText
+                android:id="@+id/edittext_dialog_folder_choose_file"
+                style="@style/DialogEditTextTheme"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/edittext_dialog_folder_choose_file_margin_left"
+                android:layout_marginBottom="@dimen/edittext_dialog_folder_choose_file_margin_bottom"
+                android:importantForAutofill="no"
+                android:inputType="textNoSuggestions"
+                android:text="TestTest" />
+
+        </LinearLayout>
+
+        <LinearLayout
             android:id="@+id/linearlayout_dialog_folder_choose_show_files"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
