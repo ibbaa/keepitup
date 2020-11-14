@@ -36,6 +36,6 @@ public class FolderChooseWatcher implements TextWatcher {
     }
 
     private String getAbsoluteFolder(String root, CharSequence folder) {
-        return new SystemFileManager(dialog.getActivity()).getAbsoluteFolder(root, String.valueOf(folder));
+        return new SystemFileManager(dialog.getActivity()).getAbsolutePath(root, String.valueOf(folder));
     }
 }

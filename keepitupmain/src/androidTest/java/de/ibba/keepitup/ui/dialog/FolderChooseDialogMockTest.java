@@ -55,7 +55,7 @@ public class FolderChooseDialogMockTest extends BaseUITest {
 
     @Test
     public void testAbsoluteFolderError() {
-        fileManager.setAbsoluteFolder(null);
+        fileManager.setAbsolutePath(null);
         FolderChooseDialog dialog = openFolderChooseDialog("folder");
         onView(withId(R.id.textview_dialog_general_error_message)).check(matches(withText("Fatal error reading file list from folder.")));
         onView(withId(R.id.imageview_dialog_general_error_ok)).perform(click());
@@ -119,7 +119,7 @@ public class FolderChooseDialogMockTest extends BaseUITest {
     public void testSelectFileNonParentNotSelectedError() {
         FolderChooseDialog dialog = openFolderChooseDialog("folder");
         onView(withId(R.id.edittext_dialog_folder_choose_folder)).check(matches(withText("folder")));
-        fileManager.setNestedFolder(null);
+        fileManager.setNestedPath(null);
         onView(allOf(withId(R.id.textview_list_item_file_entry_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_folder_choose_file_entries), 0))).perform(click());
         FileEntryAdapter adapter = dialog.getAdapter();
         assertFalse(adapter.isItemSelected());
@@ -129,7 +129,7 @@ public class FolderChooseDialogMockTest extends BaseUITest {
     public void testOpenFileParentAbsoluteFolderError() {
         FolderChooseDialog dialog = openFolderChooseDialog("folder");
         onView(withId(R.id.edittext_dialog_folder_choose_folder)).check(matches(withText("folder")));
-        fileManager.setAbsoluteFolder(null);
+        fileManager.setAbsolutePath(null);
         onView(allOf(withId(R.id.imageview_list_item_file_entry_open), withChildDescendantAtPosition(withId(R.id.listview_dialog_folder_choose_file_entries), 1))).perform(click());
         onView(withId(R.id.textview_dialog_general_error_message)).check(matches(withText("Fatal file error.")));
         onView(withId(R.id.imageview_dialog_general_error_ok)).perform(click());
@@ -181,7 +181,7 @@ public class FolderChooseDialogMockTest extends BaseUITest {
     public void testOpenFileNonParentError() {
         FolderChooseDialog dialog = openFolderChooseDialog("folder");
         onView(withId(R.id.edittext_dialog_folder_choose_folder)).check(matches(withText("folder")));
-        fileManager.setAbsoluteFolder(null);
+        fileManager.setAbsolutePath(null);
         onView(allOf(withId(R.id.imageview_list_item_file_entry_open), withChildDescendantAtPosition(withId(R.id.listview_dialog_folder_choose_file_entries), 0))).perform(click());
         onView(withId(R.id.textview_dialog_general_error_message)).check(matches(withText("Fatal error reading file list from folder.")));
         onView(withId(R.id.imageview_dialog_general_error_ok)).perform(click());
@@ -206,6 +206,7 @@ public class FolderChooseDialogMockTest extends BaseUITest {
     private FolderChooseDialog openFolderChooseDialog(String folder) {
         FolderChooseDialog folderChooseDialog = new FolderChooseDialog();
         Bundle bundle = BundleUtil.stringsToBundle(new String[]{folderChooseDialog.getFolderRootKey(), folderChooseDialog.getFolderKey()}, new String[]{"root", folder});
+        bundle = BundleUtil.booleanToBundle(folderChooseDialog.getSupportsFileSelectionKey(), false, bundle);
         folderChooseDialog.setArguments(bundle);
         folderChooseDialog.show(getActivity(activityScenario).getSupportFragmentManager(), GlobalSettingsActivity.class.getName());
         return folderChooseDialog;
@@ -216,8 +217,8 @@ public class FolderChooseDialogMockTest extends BaseUITest {
         fileManager.setRelativeSibling("relativeSibling");
         fileManager.setRelativeParent("relativeParent");
         fileManager.setAbsoluteParent("absoluteParent");
-        fileManager.setAbsoluteFolder("absoluteFolder");
-        fileManager.setNestedFolder("nestedFolder");
+        fileManager.setAbsolutePath("absoluteFolder");
+        fileManager.setNestedPath("nestedFolder");
         fileManager.setFileEntries(getTestFileEntries());
     }
 

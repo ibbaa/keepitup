@@ -10,6 +10,7 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -41,10 +42,13 @@ public class FolderChooseDialog extends DialogFragment implements ContextOptions
     private View dialogView;
     private TextView absoluteFolderText;
     private EditText folderEditText;
+    private EditText fileEditText;
     private FolderChooseWatcher folderChooseTextWatcher;
     private CheckBox showFilesCheckBox;
     private RecyclerView fileEntriesRecyclerView;
+    private boolean supportsFileSelection;
     private String selectionFolder;
+    private String selectionFile;
 
     private IClipboardManager clipboardManager;
 
@@ -70,12 +74,20 @@ public class FolderChooseDialog extends DialogFragment implements ContextOptions
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         Log.d(FolderChooseDialog.class.getName(), "onCreateView");
         dialogView = inflater.inflate(R.layout.dialog_folder_choose, container);
+        supportsFileSelection = BundleUtil.booleanFromBundle(getSupportsFileSelectionKey(), requireArguments());
         boolean containsSavedState = containsSavedState(savedInstanceState);
         Log.d(FolderChooseDialog.class.getName(), "containsSavedState is " + containsSavedState);
         String folder = containsSavedState ? savedInstanceState.getString(getSelectionFolderKey()) : BundleUtil.stringFromBundle(getFolderKey(), requireArguments());
+        String file = "";
+        if (supportsFileSelection) {
+            file = containsSavedState ? savedInstanceState.getString(getSelectionFileKey()) : BundleUtil.stringFromBundle(getFileKey(), requireArguments());
+        }
+        Log.d(FolderChooseDialog.class.getName(), "folder is " + folder);
+        Log.d(FolderChooseDialog.class.getName(), "file is " + file);
         Bundle adapterState = containsSavedState ? savedInstanceState.getBundle(getFileEntryAdapterKey()) : null;
         prepareFolderAbsolute(folder);
         prepareFolder(folder);
+        prepareFile(file);
         prepareShowFilesCheckBox();
         prepareFolderRecyclerView(adapterState);
         prepareOkCancelImageButtons();
@@ -87,6 +99,9 @@ public class FolderChooseDialog extends DialogFragment implements ContextOptions
         Log.d(FolderChooseDialog.class.getName(), "onSaveInstanceState");
         super.onSaveInstanceState(outState);
         outState.putString(getSelectionFolderKey(), selectionFolder);
+        if (supportsFileSelection) {
+            outState.putString(getSelectionFileKey(), selectionFile);
+        }
         Bundle adapterBundle = getAdapter().saveStateToBundle();
         outState.putBundle(getFileEntryAdapterKey(), adapterBundle);
     }
@@ -100,7 +115,6 @@ public class FolderChooseDialog extends DialogFragment implements ContextOptions
         return savedInstanceState.containsKey(getSelectionFolderKey()) && savedInstanceState.containsKey(getFileEntryAdapterKey());
     }
 
-
     public String getFolderRootKey() {
         return FolderChooseDialog.class.getSimpleName() + "Root";
     }
@@ -109,20 +123,40 @@ public class FolderChooseDialog extends DialogFragment implements ContextOptions
         return FolderChooseDialog.class.getSimpleName() + "Folder";
     }
 
+    public String getFileKey() {
+        return FolderChooseDialog.class.getSimpleName() + "File";
+    }
+
+    public String getSupportsFileSelectionKey() {
+        return FolderChooseDialog.class.getSimpleName() + "SupportsFileSelection";
+    }
+
     private String getSelectionFolderKey() {
         return FolderChooseDialog.class.getSimpleName() + "SelectionFolder";
+    }
+
+    private String getSelectionFileKey() {
+        return FolderChooseDialog.class.getSimpleName() + "SelectionFile";
     }
 
     private String getFileEntryAdapterKey() {
         return FolderChooseDialog.class.getSimpleName() + "FileEntryAdapter";
     }
 
+    public boolean getSupportsFileSelection() {
+        return supportsFileSelection;
+    }
+
     public String getFolder() {
         return StringUtil.notNull(folderEditText.getText());
     }
 
+    public String getFile() {
+        return StringUtil.notNull(fileEditText.getText());
+    }
+
     public boolean isShowFiles() {
-        return showFilesCheckBox.isChecked();
+        return showFilesCheckBox.isChecked() || supportsFileSelection;
     }
 
     public String getRoot() {
@@ -147,7 +181,7 @@ public class FolderChooseDialog extends DialogFragment implements ContextOptions
     }
 
     private void prepareFolder(String folder) {
-        Log.d(FolderChooseDialog.class.getName(), "prepareFolder");
+        Log.d(FolderChooseDialog.class.getName(), "prepareFolder, folder is " + folder);
         folderEditText = dialogView.findViewById(R.id.edittext_dialog_folder_choose_folder);
         folderEditText.setOnLongClickListener(this::onFolderEditTextLongClicked);
         folderEditText.setText(folder);
@@ -165,10 +199,34 @@ public class FolderChooseDialog extends DialogFragment implements ContextOptions
         folderEditText.addTextChangedListener(folderChooseTextWatcher);
     }
 
+    private void prepareFile(String file) {
+        Log.d(FolderChooseDialog.class.getName(), "prepareFile, file is " + file);
+        fileEditText = dialogView.findViewById(R.id.edittext_dialog_folder_choose_file);
+        fileEditText.setText(file);
+        selectionFile = file;
+        Log.d(FolderChooseDialog.class.getName(), "supportsFileSelection: " + supportsFileSelection);
+        LinearLayout fileLayout = dialogView.findViewById(R.id.linearlayout_dialog_folder_choose_file);
+        if (supportsFileSelection) {
+            fileEditText.setOnLongClickListener(this::onFileEditTextLongClicked);
+            fileLayout.setVisibility(View.VISIBLE);
+        } else {
+            fileEditText.setOnLongClickListener(null);
+            fileLayout.setVisibility(View.GONE);
+        }
+    }
+
     private void prepareShowFilesCheckBox() {
         Log.d(FolderChooseDialog.class.getName(), "prepareShowFilesCheckBox");
         showFilesCheckBox = dialogView.findViewById(R.id.checkbox_dialog_folder_choose_show_files);
-        showFilesCheckBox.setOnCheckedChangeListener(this::onShowFilesCheckedChanged);
+        Log.d(FolderChooseDialog.class.getName(), "supportsFileSelection: " + supportsFileSelection);
+        LinearLayout showFilesLayout = dialogView.findViewById(R.id.linearlayout_dialog_folder_choose_show_files);
+        if (supportsFileSelection) {
+            showFilesLayout.setVisibility(View.GONE);
+            showFilesCheckBox.setOnCheckedChangeListener(null);
+        } else {
+            showFilesLayout.setVisibility(View.VISIBLE);
+            showFilesCheckBox.setOnCheckedChangeListener(this::onShowFilesCheckedChanged);
+        }
     }
 
     private void onShowFilesCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -224,7 +282,7 @@ public class FolderChooseDialog extends DialogFragment implements ContextOptions
     }
 
     private String getAbsoluteFolder(String root, String folder) {
-        return getFileManager().getAbsoluteFolder(root, folder);
+        return getFileManager().getAbsolutePath(root, folder);
     }
 
     public void onFileEntryClicked(View view, int position) {
@@ -257,7 +315,7 @@ public class FolderChooseDialog extends DialogFragment implements ContextOptions
                 showErrorDialog(getResources().getString(R.string.text_dialog_general_error_file_access));
             }
         } else {
-            entries = readFiles(getFileManager().getAbsoluteFolder(getRoot(), getSelectionFolder()));
+            entries = readFiles(getFileManager().getAbsolutePath(getRoot(), getSelectionFolder()));
         }
         FileEntryAdapter adapter = getAdapter();
         adapter.unselectItem();
@@ -308,7 +366,7 @@ public class FolderChooseDialog extends DialogFragment implements ContextOptions
                 nestedFolder = getSelectionFolder();
             } else {
                 Log.d(FolderChooseDialog.class.getName(), "New selected item is not the parent item. Nesting folder.");
-                nestedFolder = fileManager.getNestedFolder(getSelectionFolder(), folderName);
+                nestedFolder = fileManager.getNestedPath(getSelectionFolder(), folderName);
             }
         }
         if (nestedFolder == null) {
@@ -443,6 +501,12 @@ public class FolderChooseDialog extends DialogFragment implements ContextOptions
         return true;
     }
 
+    private boolean onFileEditTextLongClicked(View view) {
+        Log.d(FolderChooseDialog.class.getName(), "onFileEditTextLongClicked");
+        showContextOptionsDialog((EditText) view);
+        return true;
+    }
+
     private void showContextOptionsDialog(EditText editText) {
         Log.d(FolderChooseDialog.class.getName(), "showContextOptionsDialog");
         new ContextOptionsSupportManager(getParentFragmentManager(), getClipboardManager()).showContextOptionsDialog(editText);
@@ -453,9 +517,13 @@ public class FolderChooseDialog extends DialogFragment implements ContextOptions
         Log.d(SettingsInputDialog.class.getName(), "onContextOptionsDialogEntryClicked, sourceResourceId is " + sourceResourceId + ", option is " + option);
         ContextOptionsSupportManager contextOptionsSupportManager = new ContextOptionsSupportManager(getParentFragmentManager(), getClipboardManager());
         if (folderEditText.getId() == sourceResourceId) {
-            Log.e(SettingsInputDialog.class.getName(), "Source field is the correct folder input field.");
+            Log.d(SettingsInputDialog.class.getName(), "Source field is the folder input field.");
             contextOptionsSupportManager.handleContextOption(folderEditText, option);
             folderEditText.setSelection(folderEditText.getText().length());
+        } else if (fileEditText.getId() == sourceResourceId) {
+            Log.d(SettingsInputDialog.class.getName(), "Source field is the file input field.");
+            contextOptionsSupportManager.handleContextOption(fileEditText, option);
+            fileEditText.setSelection(fileEditText.getText().length());
         } else {
             Log.e(SettingsInputDialog.class.getName(), "Source field is undefined.");
         }

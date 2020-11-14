@@ -21,8 +21,8 @@ public class MockFileManager implements IFileManager {
     private String relativeSibling;
     private String relativeParent;
     private String absoluteParent;
-    private String absoluteFolder;
-    private String nestedFolder;
+    private String absolutePath;
+    private String nestedPath;
     private List<FileEntry> fileEntries;
     private boolean delete;
     private String downloadFileName;
@@ -39,8 +39,8 @@ public class MockFileManager implements IFileManager {
         relativeSibling = null;
         relativeParent = null;
         absoluteParent = null;
-        absoluteFolder = null;
-        nestedFolder = null;
+        absolutePath = null;
+        nestedPath = null;
         fileEntries = Collections.emptyList();
         delete = true;
         downloadFileName = null;
@@ -62,8 +62,8 @@ public class MockFileManager implements IFileManager {
         relativeSibling = null;
         relativeParent = null;
         absoluteParent = null;
-        absoluteFolder = null;
-        nestedFolder = null;
+        absolutePath = null;
+        nestedPath = null;
         fileEntries = Collections.emptyList();
         delete = true;
         downloadFileName = null;
@@ -111,12 +111,12 @@ public class MockFileManager implements IFileManager {
         this.absoluteParent = absoluteParent;
     }
 
-    public void setAbsoluteFolder(String absoluteFolder) {
-        this.absoluteFolder = absoluteFolder;
+    public void setAbsolutePath(String absolutePath) {
+        this.absolutePath = absolutePath;
     }
 
-    public void setNestedFolder(String nestedFolder) {
-        this.nestedFolder = nestedFolder;
+    public void setNestedPath(String nestedPath) {
+        this.nestedPath = nestedPath;
     }
 
     public void setFileEntries(List<FileEntry> fileEntries) {
@@ -184,13 +184,13 @@ public class MockFileManager implements IFileManager {
     }
 
     @Override
-    public String getAbsoluteFolder(String root, String absoluteFolder) {
-        return this.absoluteFolder;
+    public String getAbsolutePath(String root, String absoluteFolder) {
+        return this.absolutePath;
     }
 
     @Override
-    public String getNestedFolder(String folder1, String folder2) {
-        return this.nestedFolder;
+    public String getNestedPath(String folder1, String folder2) {
+        return this.nestedPath;
     }
 
     @Override

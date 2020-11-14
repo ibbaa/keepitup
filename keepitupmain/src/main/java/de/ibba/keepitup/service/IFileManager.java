@@ -24,9 +24,9 @@ public interface IFileManager {
 
     String getAbsoluteParent(String root, String absoluteFolder);
 
-    String getAbsoluteFolder(String root, String absoluteFolder);
+    String getAbsolutePath(String root, String path);
 
-    String getNestedFolder(String folder1, String folder2);
+    String getNestedPath(String path1, String path2);
 
     List<FileEntry> getFiles(String root, String absoluteFolder);
 

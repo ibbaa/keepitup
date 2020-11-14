@@ -152,22 +152,24 @@ public class SystemFileManagerTest {
     }
 
     @Test
-    public void testGetAbsoluteFolder() {
-        assertEquals("root", fileManager.getAbsoluteFolder("root", null));
-        assertEquals("root", fileManager.getAbsoluteFolder("root", ""));
-        assertEquals("root/folder", fileManager.getAbsoluteFolder("root", "folder"));
-        assertEquals("root/folder", fileManager.getAbsoluteFolder("root/", "folder"));
-        assertEquals("root/folder/download", fileManager.getAbsoluteFolder("root/", "folder/download"));
+    public void testGetAbsolutePath() {
+        assertEquals("root", fileManager.getAbsolutePath("root", null));
+        assertEquals("root", fileManager.getAbsolutePath("root", ""));
+        assertEquals("root/folder", fileManager.getAbsolutePath("root", "folder"));
+        assertEquals("root/folder", fileManager.getAbsolutePath("root/", "folder"));
+        assertEquals("root/folder/download", fileManager.getAbsolutePath("root/", "folder/download"));
+        assertEquals("root/folder/download/file.txt", fileManager.getAbsolutePath("root/folder/download", "file.txt"));
     }
 
     @Test
-    public void testGetNestedFolder() {
-        assertEquals("", fileManager.getNestedFolder(null, null));
-        assertEquals("", fileManager.getNestedFolder("", ""));
-        assertEquals("folder", fileManager.getNestedFolder("folder", null));
-        assertEquals("folder", fileManager.getNestedFolder("", "folder"));
-        assertEquals("folder/folder", fileManager.getNestedFolder("folder", "folder"));
-        assertEquals("test/xyz/folder", fileManager.getNestedFolder("test/xyz/", "folder"));
+    public void testGetNestedPath() {
+        assertEquals("", fileManager.getNestedPath(null, null));
+        assertEquals("", fileManager.getNestedPath("", ""));
+        assertEquals("folder", fileManager.getNestedPath("folder", null));
+        assertEquals("folder", fileManager.getNestedPath("", "folder"));
+        assertEquals("folder/folder", fileManager.getNestedPath("folder", "folder"));
+        assertEquals("test/xyz/folder", fileManager.getNestedPath("test/xyz/", "folder"));
+        assertEquals("test/xyz/file.txt", fileManager.getNestedPath("test/xyz/", "file.txt"));
     }
 
     @Test

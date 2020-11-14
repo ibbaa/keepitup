@@ -17,6 +17,7 @@ import de.ibba.keepitup.ui.dialog.ContextOption;
 import de.ibba.keepitup.ui.validation.ValidationResult;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
@@ -31,6 +32,17 @@ public class BundleUtilTest {
         assertEquals("message", bundle.getString("key"));
         assertTrue(BundleUtil.stringToBundle(null, "message").isEmpty());
         assertTrue(BundleUtil.stringToBundle("", null).isEmpty());
+    }
+
+    @Test
+    public void testStringToBundleProvidedBundle() {
+        Bundle bundle = BundleUtil.stringToBundle("key", "message", null);
+        assertEquals("message", bundle.getString("key"));
+        bundle = new Bundle();
+        bundle.putBoolean("otherkey", true);
+        bundle = BundleUtil.stringToBundle("key", "message", bundle);
+        assertEquals("message", bundle.getString("key"));
+        assertTrue(bundle.getBoolean("otherkey"));
     }
 
     @Test
@@ -96,6 +108,39 @@ public class BundleUtilTest {
         List<String> list = BundleUtil.stringListFromBundle("key", bundle);
         assertEquals("string1", list.get(0));
         assertEquals("string2", list.get(1));
+    }
+
+    @Test
+    public void testBooleanToBundle() {
+        Bundle bundle = BundleUtil.booleanToBundle("key", false);
+        assertFalse(bundle.getBoolean("key"));
+        bundle = BundleUtil.booleanToBundle("key", true);
+        assertTrue(bundle.getBoolean("key"));
+        assertTrue(BundleUtil.booleanToBundle(null, false).isEmpty());
+    }
+
+    @Test
+    public void testBooleanToBundleProvidedBundle() {
+        Bundle bundle = BundleUtil.booleanToBundle("key", true, null);
+        assertTrue(bundle.getBoolean("key"));
+        bundle = new Bundle();
+        bundle.putString("otherkey", "message");
+        bundle = BundleUtil.booleanToBundle("key", true, bundle);
+        assertTrue(bundle.getBoolean("key"));
+        assertEquals("message", bundle.getString("otherkey"));
+    }
+
+    @Test
+    public void testBooleanFromBundle() {
+        Bundle bundle = new Bundle();
+        bundle.putBoolean("key", false);
+        assertFalse(BundleUtil.booleanFromBundle("key", bundle));
+        bundle = new Bundle();
+        bundle.putBoolean("key", true);
+        assertTrue(BundleUtil.booleanFromBundle("key", bundle));
+        assertFalse(BundleUtil.booleanFromBundle("xyz", bundle));
+        assertFalse(BundleUtil.booleanFromBundle(null, bundle));
+        assertFalse(BundleUtil.booleanFromBundle("key", null));
     }
 
     @Test
