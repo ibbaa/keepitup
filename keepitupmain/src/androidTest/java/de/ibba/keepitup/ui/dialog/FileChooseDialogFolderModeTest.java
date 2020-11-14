@@ -40,7 +40,7 @@ import static org.junit.Assert.assertFalse;
 
 @MediumTest
 @RunWith(AndroidJUnit4.class)
-public class FileChooseDialogTest extends BaseUITest {
+public class FileChooseDialogFolderModeTest extends BaseUITest {
 
     private ActivityScenario<?> activityScenario;
     private String root;
@@ -2480,7 +2480,7 @@ public class FileChooseDialogTest extends BaseUITest {
     private FileChooseDialog openFileChooseDialog(String folder) {
         FileChooseDialog fileChooseDialog = new FileChooseDialog();
         Bundle bundle = BundleUtil.stringsToBundle(new String[]{fileChooseDialog.getFolderRootKey(), fileChooseDialog.getFolderKey()}, new String[]{root, folder});
-        bundle = BundleUtil.booleanToBundle(fileChooseDialog.getFileModeKey(), false, bundle);
+        bundle = BundleUtil.stringToBundle(fileChooseDialog.getFileModeKey(), FileChooseDialog.Mode.FOLDER.name(), bundle);
         fileChooseDialog.setArguments(bundle);
         fileChooseDialog.show(getActivity(activityScenario).getSupportFragmentManager(), GlobalSettingsActivity.class.getName());
         onView(isRoot()).perform(waitFor(1000));

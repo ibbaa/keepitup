@@ -206,7 +206,7 @@ public class FileChooseDialogMockTest extends BaseUITest {
     private FileChooseDialog openFileChooseDialog(String folder) {
         FileChooseDialog fileChooseDialog = new FileChooseDialog();
         Bundle bundle = BundleUtil.stringsToBundle(new String[]{fileChooseDialog.getFolderRootKey(), fileChooseDialog.getFolderKey()}, new String[]{"root", folder});
-        bundle = BundleUtil.booleanToBundle(fileChooseDialog.getFileModeKey(), false, bundle);
+        bundle = BundleUtil.stringToBundle(fileChooseDialog.getFileModeKey(), FileChooseDialog.Mode.FOLDER.name(), bundle);
         fileChooseDialog.setArguments(bundle);
         fileChooseDialog.show(getActivity(activityScenario).getSupportFragmentManager(), GlobalSettingsActivity.class.getName());
         return fileChooseDialog;
