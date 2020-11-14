@@ -90,8 +90,8 @@ public class ContextOptionsDialog extends DialogFragment {
 
     private void prepareCancelImageButton(View view) {
         Log.d(ContextOptionsDialog.class.getName(), "prepareCancelImageButton");
-        ImageView cacnelImage = view.findViewById(R.id.imageview_dialog_context_options_cancel);
-        cacnelImage.setOnClickListener(this::onCancelClicked);
+        ImageView cancelImage = view.findViewById(R.id.imageview_dialog_context_options_cancel);
+        cancelImage.setOnClickListener(this::onCancelClicked);
     }
 
     public ContextOptionAdapter getAdapter() {
@@ -99,7 +99,7 @@ public class ContextOptionsDialog extends DialogFragment {
     }
 
     private RecyclerView.Adapter<?> restoreAdapter(Bundle adapterState) {
-        Log.d(FolderChooseDialog.class.getName(), "restoreAdapter");
+        Log.d(ContextOptionsDialog.class.getName(), "restoreAdapter");
         ContextOptionAdapter adapter = new ContextOptionAdapter(Collections.emptyList(), this);
         adapter.restoreStateFromBundle(adapterState);
         return adapter;

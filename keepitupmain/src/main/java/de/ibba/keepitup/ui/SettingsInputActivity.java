@@ -12,13 +12,13 @@ import de.ibba.keepitup.service.IPowerManager;
 import de.ibba.keepitup.service.SystemFileManager;
 import de.ibba.keepitup.service.SystemPowerManager;
 import de.ibba.keepitup.ui.dialog.BatteryOptimizationDialog;
-import de.ibba.keepitup.ui.dialog.FolderChooseDialog;
+import de.ibba.keepitup.ui.dialog.FileChooseDialog;
 import de.ibba.keepitup.ui.dialog.GeneralErrorDialog;
 import de.ibba.keepitup.ui.dialog.SettingsInput;
 import de.ibba.keepitup.ui.dialog.SettingsInputDialog;
 import de.ibba.keepitup.util.BundleUtil;
 
-public abstract class SettingsInputActivity extends AppCompatActivity implements SettingsInputSupport, FolderChooseSupport, BatteryOptimizationSupport {
+public abstract class SettingsInputActivity extends AppCompatActivity implements SettingsInputSupport, FileChooseSupport, BatteryOptimizationSupport {
 
     private Resources resources;
     private IFileManager fileManager;
@@ -70,12 +70,12 @@ public abstract class SettingsInputActivity extends AppCompatActivity implements
         inputDialog.dismiss();
     }
 
-    public void onFolderChooseDialogOkClicked(FolderChooseDialog chooseDialog) {
+    public void onFileChooseDialogOkClicked(FileChooseDialog chooseDialog, FileChooseDialog.Type type) {
         Log.d(SettingsInputActivity.class.getName(), "onFolderChooseDialogOkClicked");
         chooseDialog.dismiss();
     }
 
-    public void onFolderChooseDialogCancelClicked(FolderChooseDialog chooseDialog) {
+    public void onFileChooseDialogCancelClicked(FileChooseDialog chooseDialog) {
         Log.d(SettingsInputActivity.class.getName(), "onFolderChooseDialogOkClicked");
         chooseDialog.dismiss();
     }
