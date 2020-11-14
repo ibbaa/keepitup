@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <dimen name="textview_dialog_folder_choose_root_padding_top">0dp</dimen>
-    <dimen name="edittext_dialog_folder_choose_folder_margin_left">4dp</dimen>
-    <dimen name="edittext_dialog_folder_choose_folder_margin_bottom">4dp</dimen>
-    <dimen name="listview_dialog_folder_choose_file_entries_margin">0dp</dimen>
-    <dimen name="listview_dialog_folder_choose_file_entries_padding">0dp</dimen>
-    <dimen name="linearlayout_dialog_folder_choose_show_files_margin_left">0dp</dimen>
-    <dimen name="linearlayout_dialog_folder_choose_show_files_padding">0dp</dimen>
-    <dimen name="linearlayout_dialog_folder_choose_file_margin_left">0dp</dimen>
-    <dimen name="linearlayout_dialog_folder_choose_file_padding">0dp</dimen>
-    <dimen name="edittext_dialog_folder_choose_file_margin_left">4dp</dimen>
-    <dimen name="edittext_dialog_folder_choose_file_margin_bottom">4dp</dimen>
-    <dimen name="linearlayout_dialog_folder_choose_ok_cancel_padding_top">0dp</dimen>
+    <dimen name="textview_dialog_file_choose_root_padding_top">0dp</dimen>
+    <dimen name="edittext_dialog_file_choose_folder_margin_left">4dp</dimen>
+    <dimen name="edittext_dialog_file_choose_folder_margin_bottom">4dp</dimen>
+    <dimen name="listview_dialog_file_choose_file_entries_margin">0dp</dimen>
+    <dimen name="listview_dialog_file_choose_file_entries_padding">0dp</dimen>
+    <dimen name="linearlayout_dialog_file_choose_show_files_margin_left">0dp</dimen>
+    <dimen name="linearlayout_dialog_file_choose_show_files_padding">0dp</dimen>
+    <dimen name="linearlayout_dialog_file_choose_file_margin_left">0dp</dimen>
+    <dimen name="linearlayout_dialog_file_choose_file_padding">0dp</dimen>
+    <dimen name="edittext_dialog_file_choose_file_margin_left">4dp</dimen>
+    <dimen name="edittext_dialog_file_choose_file_margin_bottom">4dp</dimen>
+    <dimen name="linearlayout_dialog_file_choose_ok_cancel_padding_top">0dp</dimen>
     <dimen name="layout_list_item_file_entry_margin">2dp</dimen>
     <dimen name="layout_list_item_file_entry_padding">0dp</dimen>
     <dimen name="cardview_list_item_file_entry_margin">4dp</dimen>

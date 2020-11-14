@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/scrollview_dialog_folder_choose"
+    android:id="@+id/scrollview_dialog_file_choose"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent">
 
     <LinearLayout
-        android:id="@+id/linearlayout_dialog_folder_choose"
+        android:id="@+id/linearlayout_dialog_file_choose"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:focusable="true"
@@ -14,56 +14,56 @@
         android:orientation="vertical">
 
         <TextView
-            android:id="@+id/textview_dialog_folder_choose_label"
+            android:id="@+id/textview_dialog_file_choose_label"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textStyle="bold"
-            android:labelFor="@id/edittext_dialog_folder_choose_folder"
-            android:text="@string/label_dialog_folder_choose_folder" />
+            android:labelFor="@id/edittext_dialog_file_choose_folder"
+            android:text="@string/label_dialog_file_choose_folder" />
 
         <TextView
-            android:id="@+id/textview_dialog_folder_choose_absolute"
+            android:id="@+id/textview_dialog_file_choose_absolute"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingTop="@dimen/textview_dialog_folder_choose_root_padding_top"
+            android:paddingTop="@dimen/textview_dialog_file_choose_root_padding_top"
             android:text="" />
 
         <EditText
-            android:id="@+id/edittext_dialog_folder_choose_folder"
+            android:id="@+id/edittext_dialog_file_choose_folder"
             style="@style/DialogEditTextTheme"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/edittext_dialog_folder_choose_folder_margin_left"
-            android:layout_marginBottom="@dimen/edittext_dialog_folder_choose_folder_margin_bottom"
+            android:layout_marginLeft="@dimen/edittext_dialog_file_choose_folder_margin_left"
+            android:layout_marginBottom="@dimen/edittext_dialog_file_choose_folder_margin_bottom"
             android:importantForAutofill="no"
             android:inputType="textMultiLine|textNoSuggestions"
             android:text="" />
 
         <LinearLayout
-            android:id="@+id/linearlayout_dialog_folder_choose_file"
+            android:id="@+id/linearlayout_dialog_file_choose_file"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="@dimen/linearlayout_dialog_folder_choose_file_padding"
-            android:layout_marginLeft="@dimen/linearlayout_dialog_folder_choose_file_margin_left"
+            android:padding="@dimen/linearlayout_dialog_file_choose_file_padding"
+            android:layout_marginLeft="@dimen/linearlayout_dialog_file_choose_file_margin_left"
             android:focusable="true"
             android:focusableInTouchMode="true"
             android:orientation="vertical">
 
             <TextView
-                android:id="@+id/textview_dialog_folder_choose_file_label"
+                android:id="@+id/textview_dialog_file_choose_file_label"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textStyle="bold"
-                android:labelFor="@id/edittext_dialog_folder_choose_file"
-                android:text="@string/label_dialog_folder_choose_file" />
+                android:labelFor="@id/edittext_dialog_file_choose_file"
+                android:text="@string/label_dialog_file_choose_file" />
 
             <EditText
-                android:id="@+id/edittext_dialog_folder_choose_file"
+                android:id="@+id/edittext_dialog_file_choose_file"
                 style="@style/DialogEditTextTheme"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/edittext_dialog_folder_choose_file_margin_left"
-                android:layout_marginBottom="@dimen/edittext_dialog_folder_choose_file_margin_bottom"
+                android:layout_marginLeft="@dimen/edittext_dialog_file_choose_file_margin_left"
+                android:layout_marginBottom="@dimen/edittext_dialog_file_choose_file_margin_bottom"
                 android:importantForAutofill="no"
                 android:inputType="textNoSuggestions"
                 android:text="TestTest" />
@@ -71,63 +71,63 @@
         </LinearLayout>
 
         <LinearLayout
-            android:id="@+id/linearlayout_dialog_folder_choose_show_files"
+            android:id="@+id/linearlayout_dialog_file_choose_show_files"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="@dimen/linearlayout_dialog_folder_choose_show_files_padding"
-            android:layout_marginLeft="@dimen/linearlayout_dialog_folder_choose_show_files_margin_left"
+            android:padding="@dimen/linearlayout_dialog_file_choose_show_files_padding"
+            android:layout_marginLeft="@dimen/linearlayout_dialog_file_choose_show_files_margin_left"
             android:focusable="true"
             android:focusableInTouchMode="true"
             android:orientation="horizontal">
 
             <CheckBox
-                android:id="@+id/checkbox_dialog_folder_choose_show_files"
+                android:id="@+id/checkbox_dialog_file_choose_show_files"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:checked="true" />
 
             <TextView
-                android:id="@+id/textview_dialog_folder_choose_show_files"
+                android:id="@+id/textview_dialog_file_choose_show_files"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/label_dialog_folder_choose_show_files" />
+                android:text="@string/label_dialog_file_choose_show_files" />
 
         </LinearLayout>
 
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/listview_dialog_folder_choose_file_entries"
+            android:id="@+id/listview_dialog_file_choose_file_entries"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="@dimen/listview_dialog_folder_choose_file_entries_margin"
-            android:padding="@dimen/listview_dialog_folder_choose_file_entries_padding"
+            android:layout_margin="@dimen/listview_dialog_file_choose_file_entries_margin"
+            android:padding="@dimen/listview_dialog_file_choose_file_entries_padding"
             android:layout_gravity="fill_horizontal"
             android:scrollbars="none" />
 
         <LinearLayout
-            android:id="@+id/linearlayout_dialog_folder_choose_ok_cancel"
+            android:id="@+id/linearlayout_dialog_file_choose_ok_cancel"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingTop="@dimen/linearlayout_dialog_folder_choose_ok_cancel_padding_top"
+            android:paddingTop="@dimen/linearlayout_dialog_file_choose_ok_cancel_padding_top"
             android:orientation="horizontal">
 
             <ImageView
-                android:id="@+id/imageview_dialog_folder_choose_ok"
+                android:id="@+id/imageview_dialog_file_choose_ok"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:clickable="true"
                 android:focusable="true"
-                android:contentDescription="@string/label_dialog_folder_choose_ok"
+                android:contentDescription="@string/label_dialog_file_choose_ok"
                 app:srcCompat="@drawable/icon_ok_selector" />
 
             <ImageView
-                android:id="@+id/imageview_dialog_folder_choose_cancel"
+                android:id="@+id/imageview_dialog_file_choose_cancel"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:clickable="true"
                 android:focusable="true"
-                android:contentDescription="@string/label_dialog_folder_choose_cancel"
+                android:contentDescription="@string/label_dialog_file_choose_cancel"
                 app:srcCompat="@drawable/icon_cancel_selector" />
 
         </LinearLayout>

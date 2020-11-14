@@ -12,17 +12,17 @@ import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import de.ibba.keepitup.R;
-import de.ibba.keepitup.ui.dialog.FolderChooseDialog;
+import de.ibba.keepitup.ui.dialog.FileChooseDialog;
 
 public class FileEntryViewHolder extends RecyclerView.ViewHolder {
 
-    private final FolderChooseDialog folderChooseDialog;
+    private final FileChooseDialog folderChooseDialog;
     private final CardView fileEntryCardView;
     private final ImageView fileSymbolImage;
     private final TextView fileNameText;
     private final ImageView fileOpenImage;
 
-    public FileEntryViewHolder(@NonNull View itemView, FolderChooseDialog folderChooseDialog) {
+    public FileEntryViewHolder(@NonNull View itemView, FileChooseDialog folderChooseDialog) {
         super(itemView);
         this.folderChooseDialog = folderChooseDialog;
         fileEntryCardView = itemView.findViewById(R.id.cardview_list_item_file_entry);

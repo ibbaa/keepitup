@@ -25,7 +25,7 @@ import de.ibba.keepitup.resources.PreferenceManager;
 import de.ibba.keepitup.service.IFileManager;
 import de.ibba.keepitup.service.IPowerManager;
 import de.ibba.keepitup.ui.dialog.BatteryOptimizationDialog;
-import de.ibba.keepitup.ui.dialog.FolderChooseDialog;
+import de.ibba.keepitup.ui.dialog.FileChooseDialog;
 import de.ibba.keepitup.ui.dialog.SettingsInput;
 import de.ibba.keepitup.ui.dialog.SettingsInputDialog;
 import de.ibba.keepitup.ui.validation.ConnectCountFieldValidator;
@@ -455,7 +455,7 @@ public class GlobalSettingsActivity extends SettingsInputActivity {
 
     private void showDownloadFolderChooseDialog(View view) {
         Log.d(DefaultsActivity.class.getName(), "showDownloadFolderChooseDialog");
-        FolderChooseDialog folderChooseDialog = new FolderChooseDialog();
+        FileChooseDialog fileChooseDialog = new FileChooseDialog();
         String root = getExternalRootFolder();
         Log.d(GlobalSettingsActivity.class.getName(), "External root folder is " + root);
         if (root == null) {
@@ -472,11 +472,9 @@ public class GlobalSettingsActivity extends SettingsInputActivity {
             showErrorDialog(getResources().getString(R.string.text_dialog_general_error_external_root_access));
             return;
         }
-        Bundle bundle = BundleUtil.stringsToBundle(new String[]{folderChooseDialog.getFolderRootKey(), folderChooseDialog.getFolderKey()}, new String[]{root, folder});
-        bundle = BundleUtil.booleanToBundle(folderChooseDialog.getSupportsFileSelectionKey(), false, bundle);
-        folderChooseDialog.setArguments(bundle);
-        folderChooseDialog.show(getSupportFragmentManager(), GlobalSettingsActivity.class.getName());
-
+        Bundle bundle = BundleUtil.stringsToBundle(new String[]{fileChooseDialog.getFolderRootKey(), fileChooseDialog.getFolderKey(), fileChooseDialog.getFileModeKey(), fileChooseDialog.getTypeKey()}, new String[]{root, folder, FileChooseDialog.Mode.FOLDER.name(), FileChooseDialog.Type.DOWNLOADFOLDER.name()});
+        fileChooseDialog.setArguments(bundle);
+        fileChooseDialog.show(getSupportFragmentManager(), GlobalSettingsActivity.class.getName());
     }
 
     private void showInputDialog(Bundle bundle) {
@@ -571,27 +569,31 @@ public class GlobalSettingsActivity extends SettingsInputActivity {
     }
 
     @Override
-    public void onFolderChooseDialogOkClicked(FolderChooseDialog folderChooseDialog) {
-        Log.d(GlobalSettingsActivity.class.getName(), "onFolderChooseEditDialogOkClicked");
+    public void onFileChooseDialogOkClicked(FileChooseDialog folderChooseDialog, FileChooseDialog.Type type) {
+        Log.d(GlobalSettingsActivity.class.getName(), "onFolderChooseEditDialogOkClicked, type is " + type);
         IFileManager fileManager = getFileManager();
         PreferenceManager preferenceManager = new PreferenceManager(this);
-        String folder = folderChooseDialog.getFolder();
-        File downloadFolder;
-        if (fileManager.isSDCardSupported()) {
-            downloadFolder = fileManager.getExternalDirectory(folder, preferenceManager.getPreferenceExternalStorageType());
+        if (FileChooseDialog.Type.DOWNLOADFOLDER.equals(type)) {
+            String folder = folderChooseDialog.getFolder();
+            File downloadFolder;
+            if (fileManager.isSDCardSupported()) {
+                downloadFolder = fileManager.getExternalDirectory(folder, preferenceManager.getPreferenceExternalStorageType());
+            } else {
+                downloadFolder = fileManager.getExternalDirectory(folder, 0);
+            }
+            Log.d(GlobalSettingsActivity.class.getName(), "External download folder is " + downloadFolder);
+            if (downloadFolder == null) {
+                Log.e(GlobalSettingsActivity.class.getName(), "Error accessing download folder.");
+                folderChooseDialog.dismiss();
+                Log.d(GlobalSettingsActivity.class.getName(), "Showing error dialog.");
+                showErrorDialog(getResources().getString(R.string.text_dialog_general_error_external_download_create));
+                return;
+            }
+            preferenceManager.setPreferenceDownloadFolder(folder);
+            setDownloadFolder(downloadFolder.getAbsolutePath());
         } else {
-            downloadFolder = fileManager.getExternalDirectory(folder, 0);
+            Log.e(GlobalSettingsActivity.class.getName(), "Unknown type " + type);
         }
-        Log.d(GlobalSettingsActivity.class.getName(), "External download folder is " + downloadFolder);
-        if (downloadFolder == null) {
-            Log.e(GlobalSettingsActivity.class.getName(), "Error accessing download folder.");
-            folderChooseDialog.dismiss();
-            Log.d(GlobalSettingsActivity.class.getName(), "Showing error dialog.");
-            showErrorDialog(getResources().getString(R.string.text_dialog_general_error_external_download_create));
-            return;
-        }
-        preferenceManager.setPreferenceDownloadFolder(folder);
-        setDownloadFolder(downloadFolder.getAbsolutePath());
         folderChooseDialog.dismiss();
     }
 

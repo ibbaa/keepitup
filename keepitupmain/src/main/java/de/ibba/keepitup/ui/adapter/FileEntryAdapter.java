@@ -16,18 +16,18 @@ import java.util.List;
 import de.ibba.keepitup.R;
 import de.ibba.keepitup.logging.Log;
 import de.ibba.keepitup.model.FileEntry;
-import de.ibba.keepitup.ui.dialog.FolderChooseDialog;
+import de.ibba.keepitup.ui.dialog.FileChooseDialog;
 import de.ibba.keepitup.util.BundleUtil;
 
 public class FileEntryAdapter extends RecyclerView.Adapter<FileEntryViewHolder> {
 
     private final List<FileEntry> fileEntries;
     private final List<FileEntry> fileEntriesFoldersOnly;
-    private final FolderChooseDialog folderChooseDialog;
+    private final FileChooseDialog folderChooseDialog;
     private final RecyclerView fileEntriesRecyclerView;
     private int selected;
 
-    public FileEntryAdapter(List<FileEntry> fileEntries, FolderChooseDialog folderChooseDialog) {
+    public FileEntryAdapter(List<FileEntry> fileEntries, FileChooseDialog folderChooseDialog) {
         this.fileEntries = new ArrayList<>();
         this.fileEntriesFoldersOnly = new ArrayList<>();
         this.folderChooseDialog = folderChooseDialog;
@@ -100,6 +100,28 @@ public class FileEntryAdapter extends RecyclerView.Adapter<FileEntryViewHolder> 
         boolean isItemSelected = selected >= 0;
         Log.d(FileEntryAdapter.class.getName(), "isItemSelected, returning " + isItemSelected);
         return isItemSelected;
+    }
+
+    public boolean isFileItemSelected() {
+        Log.d(FileEntryAdapter.class.getName(), "isFileItemSelected");
+        FileEntry entry = getSelectedItem();
+        if (entry == null) {
+            Log.d(FileEntryAdapter.class.getName(), "no item selected, returning false");
+            return false;
+        }
+        Log.d(FileEntryAdapter.class.getName(), "currently selected item is " + entry);
+        return !entry.isDirectory();
+    }
+
+    public boolean isFolderItemSelected() {
+        Log.d(FileEntryAdapter.class.getName(), "isFolderItemSelected");
+        FileEntry entry = getSelectedItem();
+        if (entry == null) {
+            Log.d(FileEntryAdapter.class.getName(), "no item selected, returning false");
+            return false;
+        }
+        Log.d(FileEntryAdapter.class.getName(), "currently selected item is " + entry);
+        return entry.isDirectory();
     }
 
     public boolean isParentItemSelected() {
