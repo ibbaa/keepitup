@@ -88,7 +88,7 @@ public abstract class NetworkTaskWorker implements Runnable {
                 logEntry = checkNetwork(isConnectedWithWifi, isConnected);
                 if (logEntry != null) {
                     Log.d(NetworkTaskWorker.class.getName(), "Skipping execution because of the network state.");
-                    writeLogEntry(logEntry, shouldSendSystemNotification(isConnectedWithWifi, isConnected));
+                    writeLogEntry(logEntry, shouldSendErrorNotification(isConnectedWithWifi, isConnected));
                     return;
                 }
                 Log.d(NetworkTaskWorker.class.getName(), "Executing task...");
@@ -96,7 +96,7 @@ public abstract class NetworkTaskWorker implements Runnable {
                 Log.d(NetworkTaskWorker.class.getName(), "The executed task returned " + executionResult);
                 if (isNetworkTaskValid()) {
                     logEntry = executionResult.getLogEntry();
-                    writeLogEntry(logEntry, shouldSendSystemNotification(executionResult));
+                    writeLogEntry(logEntry, shouldSendErrorNotification(executionResult));
                 } else {
                     Log.d(NetworkTaskWorker.class.getName(), "Network task does no longer exist. Not writing log.");
                 }
@@ -115,15 +115,15 @@ public abstract class NetworkTaskWorker implements Runnable {
         }
     }
 
-    private void writeLogEntry(LogEntry logEntry, boolean sendSystemNotification) {
-        Log.d(NetworkTaskWorker.class.getName(), "Writing log entry " + logEntry + " to database, sendSystemNotification is " + sendSystemNotification);
+    private void writeLogEntry(LogEntry logEntry, boolean sendErrorNotification) {
+        Log.d(NetworkTaskWorker.class.getName(), "Writing log entry " + logEntry + " to database, sendErrorNotification is " + sendErrorNotification);
         LogDAO logDAO = new LogDAO(getContext());
         logDAO.insertAndDeleteLog(logEntry);
         Log.d(NetworkTaskWorker.class.getName(), "Notify UI");
         sendNetworkTaskUINotificationBroadcast();
         sendLogEntryUINotificationBroadcast();
-        if (sendSystemNotification) {
-            sendSystemNotifications(logEntry);
+        if (sendErrorNotification) {
+            sendErrorNotification(logEntry);
         }
     }
 
@@ -143,8 +143,8 @@ public abstract class NetworkTaskWorker implements Runnable {
         getContext().sendBroadcast(logUIintent);
     }
 
-    private boolean shouldSendSystemNotification(ExecutionResult executionResult) {
-        Log.d(NetworkTaskWorker.class.getName(), "shouldSendSystemNotification");
+    private boolean shouldSendErrorNotification(ExecutionResult executionResult) {
+        Log.d(NetworkTaskWorker.class.getName(), "shouldSendErrorNotification");
         if (executionResult.isInterrupted()) {
             Log.d(NetworkTaskWorker.class.getName(), "Execution was interrupted. Returning false.");
             return false;
@@ -162,8 +162,8 @@ public abstract class NetworkTaskWorker implements Runnable {
         return true;
     }
 
-    private boolean shouldSendSystemNotification(boolean isConnectedWithWifi, boolean isConnected) {
-        Log.d(NetworkTaskWorker.class.getName(), "shouldSendSystemNotifiaction");
+    private boolean shouldSendErrorNotification(boolean isConnectedWithWifi, boolean isConnected) {
+        Log.d(NetworkTaskWorker.class.getName(), "shouldSendErrorNotification");
         if (!networkTask.isNotification()) {
             Log.d(NetworkTaskWorker.class.getName(), "Notifications for this network task are disabled. Returning false.");
             return false;
@@ -181,9 +181,9 @@ public abstract class NetworkTaskWorker implements Runnable {
         return true;
     }
 
-    private void sendSystemNotifications(LogEntry logEntry) {
-        Log.d(NetworkTaskWorker.class.getName(), "sendSystemNotifications for log entry " + logEntry);
-        notificationHandler.sendNotification(networkTask, logEntry);
+    private void sendErrorNotification(LogEntry logEntry) {
+        Log.d(NetworkTaskWorker.class.getName(), "sendErrorNotification for log entry " + logEntry);
+        notificationHandler.sendErrorNotification(networkTask, logEntry);
     }
 
     private LogEntry checkInstances() {

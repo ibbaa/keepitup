@@ -27,12 +27,16 @@ public class SystemClipboardManager implements IClipboardManager {
         }
         ClipDescription description = clipboardManager.getPrimaryClipDescription();
         Log.d(SystemClipboardManager.class.getName(), "Clipboard description is " + description);
-        if (description != null && description.hasMimeType(ClipDescription.MIMETYPE_TEXT_PLAIN)) {
+        if (description != null && hasCompatibleMimeType(description)) {
             Log.d(SystemClipboardManager.class.getName(), "Clipboard has suitable data");
             return true;
         }
         Log.d(SystemClipboardManager.class.getName(), "Clipboard does not have suitable data");
         return false;
+    }
+
+    private boolean hasCompatibleMimeType(ClipDescription description) {
+        return description.hasMimeType(ClipDescription.MIMETYPE_TEXT_PLAIN) || description.hasMimeType(ClipDescription.MIMETYPE_TEXT_HTML) || description.hasMimeType(ClipDescription.MIMETYPE_TEXT_URILIST);
     }
 
     @Override

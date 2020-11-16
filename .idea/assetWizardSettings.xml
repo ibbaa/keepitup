@@ -202,7 +202,7 @@
                                             <option name="values">
                                               <map>
                                                 <entry key="color" value="000000" />
-                                                <entry key="imagePath" value="J:\de\icon_notification.png" />
+                                                <entry key="imagePath" value="H:\git\repos\keepitup\keepitupmain\img\icon_notification_foreground.png" />
                                               </map>
                                             </option>
                                           </PersistentState>
@@ -235,8 +235,8 @@
                                   <option name="values">
                                     <map>
                                       <entry key="assetType" value="IMAGE" />
-                                      <entry key="imageAsset" value="J:\de\icon_notification.png" />
-                                      <entry key="outputName" value="icon_notification" />
+                                      <entry key="imageAsset" value="H:\git\repos\keepitup\keepitupmain\img\icon_notification_foreground.png" />
+                                      <entry key="outputName" value="icon_notification_foreground" />
                                     </map>
                                   </option>
                                 </PersistentState>
@@ -317,6 +317,11 @@
                                 </PersistentState>
                               </value>
                             </entry>
+                          </map>
+                        </option>
+                        <option name="values">
+                          <map>
+                            <entry key="outputIconType" value="NOTIFICATION" />
                           </map>
                         </option>
                       </PersistentState>
