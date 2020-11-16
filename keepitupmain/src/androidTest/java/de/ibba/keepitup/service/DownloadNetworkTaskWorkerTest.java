@@ -826,7 +826,7 @@ public class DownloadNetworkTaskWorkerTest {
         LogEntry logEntry = logs.get(0);
         assertFalse(logEntry.isSuccess());
         assertEquals(getTestTimestamp(), logEntry.getTimestamp());
-        assertEquals("The download from http://127.0.0.1:80 failed. The task was stopped manually.", logEntry.getMessage());
+        assertEquals("The download from http://127.0.0.1:80 failed. The task was stopped.", logEntry.getMessage());
         NotificationHandler notificationHandler = downloadNetworkTaskWorker.getNotificationHandler();
         MockNotificationManager notificationManager = (MockNotificationManager) notificationHandler.getNotificationManager();
         assertFalse(notificationManager.wasNotifyCalled());
