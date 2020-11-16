@@ -105,7 +105,7 @@ public class DownloadCommand implements Callable<DownloadCommandResult> {
             int pollInterval = getResources().getInteger(R.integer.download_valid_poll_interval);
             Log.d(DownloadCommand.class.getName(), "Scheduling verify valid polling thread with an interval of " + pollInterval);
             executorService.scheduleWithFixedDelay(this::verifyValid, 0, pollInterval, TimeUnit.SECONDS);
-            Log.d(DownloadCommand.class.getName(), "Startimg download...");
+            Log.d(DownloadCommand.class.getName(), "Starting download...");
             downloadSuccess = StreamUtil.inputStreamToOutputStream(inputStream, outputStream, this::isValid);
             Log.d(DownloadCommand.class.getName(), "Download successful: " + downloadSuccess);
             flushAndCloseOutputStream(outputStream);
