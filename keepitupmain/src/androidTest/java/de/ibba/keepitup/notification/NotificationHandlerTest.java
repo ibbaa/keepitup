@@ -1,5 +1,7 @@
 package de.ibba.keepitup.notification;
 
+import android.app.Notification;
+
 import androidx.core.app.NotificationCompat;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.MediumTest;
@@ -43,15 +45,15 @@ public class NotificationHandlerTest {
     }
 
     @Test
-    public void testSendNotification() {
+    public void testSendErrorNotification() {
         NetworkTask networkTask = getNetworkTask1();
         LogEntry logEntry = getLogEntry(new GregorianCalendar(1980, Calendar.MARCH, 17).getTime().getTime(), "Test");
-        notificationHandler.sendNotification(networkTask, logEntry);
+        notificationHandler.sendErrorNotification(networkTask, logEntry);
         assertTrue(notificationManager.wasNotifyCalled());
         MockNotificationManager.NotifyCall notifyCall = notificationManager.getNotifyCalls().get(0);
         assertEquals(networkTask.getSchedulerId(), notifyCall.getId());
-        assertEquals("KEEPITUP_NOTIFICATION_CHANNEL", notifyCall.getNotification().getChannelId());
-        MockNotificationBuilder notificationBuilder = (MockNotificationBuilder) notificationHandler.getNotificationBuilder();
+        assertEquals("KEEPITUP_ERROR_NOTIFICATION_CHANNEL", notifyCall.getNotification().getChannelId());
+        MockNotificationBuilder notificationBuilder = (MockNotificationBuilder) notificationHandler.getErrorNotificationBuilder();
         assertEquals(R.drawable.icon_notification, notificationBuilder.getSmallIcon());
         assertEquals("Keep it up notification", notificationBuilder.getContentTitle());
         assertEquals("Execution of network task 2 failed. Host: 127.0.0.1. Timestamp: Mar 17, 1980 12:00:00 AM. Message: Test", notificationBuilder.getContentText());
@@ -60,22 +62,35 @@ public class NotificationHandlerTest {
     }
 
     @Test
-    public void testNotificationText() {
+    public void testErrorNotificationText() {
         NetworkTask networkTask = getNetworkTask1();
         LogEntry logEntry = getLogEntry(new GregorianCalendar(1995, Calendar.DECEMBER, 15, 13, 59, 51).getTime().getTime(), null);
-        notificationHandler.sendNotification(networkTask, logEntry);
-        MockNotificationBuilder notificationBuilder = (MockNotificationBuilder) notificationHandler.getNotificationBuilder();
+        notificationHandler.sendErrorNotification(networkTask, logEntry);
+        MockNotificationBuilder notificationBuilder = (MockNotificationBuilder) notificationHandler.getErrorNotificationBuilder();
         assertEquals("Execution of network task 2 failed. Host: 127.0.0.1. Timestamp: Dec 15, 1995 1:59:51 PM. Message: none", notificationBuilder.getContentText());
         networkTask = getNetworkTask2();
         logEntry = getLogEntry(new GregorianCalendar(2004, Calendar.FEBRUARY, 1, 5, 15, 51).getTime().getTime(), "message");
-        notificationHandler.sendNotification(networkTask, logEntry);
-        notificationBuilder = (MockNotificationBuilder) notificationHandler.getNotificationBuilder();
+        notificationHandler.sendErrorNotification(networkTask, logEntry);
+        notificationBuilder = (MockNotificationBuilder) notificationHandler.getErrorNotificationBuilder();
         assertEquals("Execution of network task 6 failed. Host: host.com Port: 23. Timestamp: Feb 1, 2004 5:15:51 AM. Message: message", notificationBuilder.getContentText());
         networkTask = getNetworkTask3();
         logEntry = getLogEntry(new GregorianCalendar(2016, Calendar.JULY, 25, 15, 1, 1).getTime().getTime(), "xyz");
-        notificationHandler.sendNotification(networkTask, logEntry);
-        notificationBuilder = (MockNotificationBuilder) notificationHandler.getNotificationBuilder();
+        notificationHandler.sendErrorNotification(networkTask, logEntry);
+        notificationBuilder = (MockNotificationBuilder) notificationHandler.getErrorNotificationBuilder();
         assertEquals("Execution of network task 11 failed. URL: http://www.test.com. Timestamp: Jul 25, 2016 3:01:01 PM. Message: xyz", notificationBuilder.getContentText());
+    }
+
+    @Test
+    public void testBuildForegroundNotification() {
+        Notification notification = notificationHandler.buildForegroundNotification();
+        assertEquals("KEEPITUP_FOREGROUND_NOTIFICATION_CHANNEL", notification.getChannelId());
+        MockNotificationBuilder notificationBuilder = (MockNotificationBuilder) notificationHandler.getForegroundNotificationBuilder();
+        assertEquals("Keep it up notification", notificationBuilder.getContentTitle());
+        assertEquals("Network task running...", notificationBuilder.getContentText());
+        assertEquals(R.drawable.icon_notification_foreground, notificationBuilder.getSmallIcon());
+        assertTrue(notificationBuilder.getStyle() instanceof NotificationCompat.BigTextStyle);
+        assertEquals(NotificationCompat.PRIORITY_LOW, notificationBuilder.getPriority());
+
     }
 
     private NetworkTask getNetworkTask1() {
