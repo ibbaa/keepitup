@@ -1,4 +1,3 @@
-- selection key bug in FolderChooseDialog on screen rotation
-- bug with screen rotation with ContextOptionSupport
-- screen rotation tests
-- Battery optimization dialog in GlobalSettingsActivity
+- Zwischenablage funktioniert nicht aus anderen Apps
+- Download löscht bei Abbruch Datei nicht
+- Samsung im Dialog seltsame Überblendung
