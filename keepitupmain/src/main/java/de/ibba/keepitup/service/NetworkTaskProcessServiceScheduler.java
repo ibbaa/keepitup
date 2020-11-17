@@ -101,21 +101,17 @@ public class NetworkTaskProcessServiceScheduler {
     }
 
     public NetworkTask cancel(NetworkTask networkTask) {
-        return cancel(networkTask, true);
-    }
-
-    public NetworkTask cancel(NetworkTask networkTask, boolean stopService) {
-        Log.d(NetworkTaskProcessServiceScheduler.class.getName(), "Cancelling network task " + networkTask + "stopService is " + stopService);
+        Log.d(NetworkTaskProcessServiceScheduler.class.getName(), "Cancelling network task " + networkTask);
         networkTask.setRunning(false);
         networkTaskDAO.updateNetworkTaskRunning(networkTask.getId(), false);
         networkTask.setLastScheduled(-1);
         terminate(networkTask);
         boolean useForegroundService = getContext().getResources().getBoolean(R.bool.worker_use_foreground_service);
         Log.d(NetworkTaskProcessServiceScheduler.class.getName(), "useForegroundService is " + useForegroundService);
-        if (stopService && useForegroundService) {
+        if (useForegroundService) {
             int running = networkTaskDAO.readNetworkTasksRunning();
             Log.d(NetworkTaskProcessServiceScheduler.class.getName(), "Running tasks: " + running);
-            if (running >= 0) {
+            if (running <= 0) {
                 Log.d(NetworkTaskProcessServiceScheduler.class.getName(), "No running tasks. Stopping service.");
                 Intent intent = new Intent(getContext(), NetworkTaskRunningNotificationService.class);
                 intent.putExtras(networkTask.toBundle());
@@ -168,7 +164,7 @@ public class NetworkTaskProcessServiceScheduler {
         Log.d(NetworkTaskProcessServiceScheduler.class.getName(), "Database returned the following network tasks: " + (networkTasks.isEmpty() ? "no network tasks" : ""));
         for (NetworkTask currentTask : networkTasks) {
             Log.d(NetworkTaskProcessServiceScheduler.class.getName(), "Cancelling network task " + currentTask);
-            cancel(currentTask, false);
+            cancel(currentTask);
         }
     }
 

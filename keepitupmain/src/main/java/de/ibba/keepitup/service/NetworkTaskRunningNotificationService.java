@@ -41,8 +41,7 @@ class NetworkTaskRunningNotificationService extends Service {
     @Override
     public void onDestroy() {
         Log.d(NetworkTaskRunningNotificationService.class.getName(), "onDestroy");
-        NetworkTaskProcessServiceScheduler scheduler = new NetworkTaskProcessServiceScheduler(this);
-        scheduler.cancelAll();
+        NetworkTaskProcessServiceScheduler.getNetworkTaskProcessPool().cancelAll();
         stopForeground(true);
     }
 
