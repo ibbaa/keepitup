@@ -2,4 +2,5 @@
 <resources>
     <bool name="worker_synchronous_execution">true</bool>
     <bool name="worker_add_to_pool">false</bool>
+    <bool name="worker_use_foreground_service">false</bool>
 </resources>

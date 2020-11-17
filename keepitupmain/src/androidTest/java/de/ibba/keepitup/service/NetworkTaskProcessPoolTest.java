@@ -43,6 +43,23 @@ public class NetworkTaskProcessPoolTest {
     }
 
     @Test
+    public void testPoolCancelAll() {
+        MockFuture<?> future1 = new MockFuture<>();
+        MockFuture<?> future2 = new MockFuture<>();
+        MockFuture<?> future3 = new MockFuture<>();
+        MockFuture<?> future4 = new MockFuture<>();
+        processPool.pool(1, future1);
+        processPool.pool(1, future2);
+        processPool.pool(2, future3);
+        processPool.pool(3, future4);
+        processPool.cancelAll();
+        assertTrue(future1.isCancelled());
+        assertTrue(future2.isCancelled());
+        assertTrue(future3.isCancelled());
+        assertTrue(future4.isCancelled());
+    }
+
+    @Test
     public void testCleanUp() {
         MockFuture<?> future1 = new MockFuture<>();
         MockFuture<?> future2 = new MockFuture<>();

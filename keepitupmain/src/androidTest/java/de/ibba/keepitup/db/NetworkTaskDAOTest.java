@@ -164,6 +164,19 @@ public class NetworkTaskDAOTest {
     }
 
     @Test
+    public void testReadNumberNetworkTasksRunning() {
+        NetworkTask insertedTask1 = getNetworkTask1();
+        NetworkTask insertedTask2 = getNetworkTask2();
+        NetworkTask insertedTask3 = getNetworkTask3();
+        insertedTask1 = networkTaskDAO.insertNetworkTask(insertedTask1);
+        insertedTask2 = networkTaskDAO.insertNetworkTask(insertedTask2);
+        insertedTask3 = networkTaskDAO.insertNetworkTask(insertedTask3);
+        assertEquals(1, networkTaskDAO.readNetworkTasksRunning());
+        networkTaskDAO.updateNetworkTaskRunning(insertedTask3.getId(), true);
+        assertEquals(2, networkTaskDAO.readNetworkTasksRunning());
+    }
+
+    @Test
     public void testUpdate() {
         NetworkTask insertedTask1 = getNetworkTask1();
         networkTaskDAO.insertNetworkTask(insertedTask1);
