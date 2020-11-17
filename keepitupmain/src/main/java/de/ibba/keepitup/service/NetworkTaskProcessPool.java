@@ -43,6 +43,21 @@ public class NetworkTaskProcessPool {
         futurePool.remove(schedulerId);
     }
 
+    public synchronized void cancelAll() {
+        Log.d(NetworkTaskProcessPool.class.getName(), "cancelAll");
+        Iterator<Integer> keyIterator = new HashSet<>(futurePool.keySet()).iterator();
+        while (keyIterator.hasNext()) {
+            List<Future<?>> futureList = futurePool.get(keyIterator.next());
+            if (futureList != null) {
+                for (Future<?> currentFuture : futureList) {
+                    if (currentFuture != null && !currentFuture.isDone() && !currentFuture.isCancelled()) {
+                        currentFuture.cancel(true);
+                    }
+                }
+            }
+        }
+    }
+
     public synchronized void cleanUp() {
         Log.d(NetworkTaskProcessPool.class.getName(), "cleanUp");
         Iterator<Integer> keyIterator = new HashSet<>(futurePool.keySet()).iterator();

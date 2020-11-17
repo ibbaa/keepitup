@@ -7,6 +7,7 @@ import android.content.res.Resources;
 
 import java.util.List;
 
+import de.ibba.keepitup.R;
 import de.ibba.keepitup.db.NetworkTaskDAO;
 import de.ibba.keepitup.logging.Log;
 import de.ibba.keepitup.model.NetworkTask;
@@ -46,9 +47,19 @@ public class NetworkTaskProcessServiceScheduler {
 
     public NetworkTask schedule(NetworkTask networkTask) {
         Log.d(NetworkTaskProcessServiceScheduler.class.getName(), "Schedule network task " + networkTask);
+        boolean useForegroundService = getContext().getResources().getBoolean(R.bool.worker_use_foreground_service);
+        Log.d(NetworkTaskProcessServiceScheduler.class.getName(), "useForegroundService is " + useForegroundService);
         networkTask.setRunning(true);
         networkTaskDAO.updateNetworkTaskRunning(networkTask.getId(), true);
-        reschedule(networkTask, Delay.IMMEDIATE);
+        if (useForegroundService) {
+            Log.d(NetworkTaskProcessServiceScheduler.class.getName(), "Starting service...");
+            Intent intent = new Intent(getContext(), NetworkTaskRunningNotificationService.class);
+            intent.putExtras(networkTask.toBundle());
+            intent.putExtra(NetworkTaskRunningNotificationService.getRescheduleDelayKey(), Delay.IMMEDIATE.name());
+            getContext().startService(intent);
+        } else {
+            reschedule(networkTask, Delay.IMMEDIATE);
+        }
         return networkTask;
     }
 
@@ -90,11 +101,28 @@ public class NetworkTaskProcessServiceScheduler {
     }
 
     public NetworkTask cancel(NetworkTask networkTask) {
-        Log.d(NetworkTaskProcessServiceScheduler.class.getName(), "Cancelling network task " + networkTask);
+        return cancel(networkTask, true);
+    }
+
+    public NetworkTask cancel(NetworkTask networkTask, boolean stopService) {
+        Log.d(NetworkTaskProcessServiceScheduler.class.getName(), "Cancelling network task " + networkTask + "stopService is " + stopService);
         networkTask.setRunning(false);
         networkTaskDAO.updateNetworkTaskRunning(networkTask.getId(), false);
         networkTask.setLastScheduled(-1);
-        return terminate(networkTask);
+        terminate(networkTask);
+        boolean useForegroundService = getContext().getResources().getBoolean(R.bool.worker_use_foreground_service);
+        Log.d(NetworkTaskProcessServiceScheduler.class.getName(), "useForegroundService is " + useForegroundService);
+        if (stopService && useForegroundService) {
+            int running = networkTaskDAO.readNetworkTasksRunning();
+            Log.d(NetworkTaskProcessServiceScheduler.class.getName(), "Running tasks: " + running);
+            if (running >= 0) {
+                Log.d(NetworkTaskProcessServiceScheduler.class.getName(), "No running tasks. Stopping service.");
+                Intent intent = new Intent(getContext(), NetworkTaskRunningNotificationService.class);
+                intent.putExtras(networkTask.toBundle());
+                getContext().stopService(intent);
+            }
+        }
+        return networkTask;
     }
 
     public NetworkTask terminate(NetworkTask networkTask) {
@@ -115,7 +143,17 @@ public class NetworkTaskProcessServiceScheduler {
         for (NetworkTask currentTask : networkTasks) {
             if (currentTask.isRunning()) {
                 Log.d(NetworkTaskProcessServiceScheduler.class.getName(), "Network task " + currentTask + " is marked as running. Rescheduling...");
-                reschedule(currentTask, Delay.LASTSCHEDULED);
+                boolean useForegroundService = getContext().getResources().getBoolean(R.bool.worker_use_foreground_service);
+                Log.d(NetworkTaskProcessServiceScheduler.class.getName(), "useForegroundService is " + useForegroundService);
+                if (useForegroundService) {
+                    Log.d(NetworkTaskProcessServiceScheduler.class.getName(), "Starting service...");
+                    Intent intent = new Intent(getContext(), NetworkTaskRunningNotificationService.class);
+                    intent.putExtras(currentTask.toBundle());
+                    intent.putExtra(NetworkTaskRunningNotificationService.getRescheduleDelayKey(), Delay.LASTSCHEDULED.name());
+                    getContext().startService(intent);
+                } else {
+                    reschedule(currentTask, Delay.LASTSCHEDULED);
+                }
             } else {
                 Log.d(NetworkTaskProcessServiceScheduler.class.getName(), "Network task " + currentTask + " is not marked as running.");
                 networkTaskDAO.resetNetworkTaskInstances(currentTask.getId());
@@ -130,7 +168,7 @@ public class NetworkTaskProcessServiceScheduler {
         Log.d(NetworkTaskProcessServiceScheduler.class.getName(), "Database returned the following network tasks: " + (networkTasks.isEmpty() ? "no network tasks" : ""));
         for (NetworkTask currentTask : networkTasks) {
             Log.d(NetworkTaskProcessServiceScheduler.class.getName(), "Cancelling network task " + currentTask);
-            cancel(currentTask);
+            cancel(currentTask, false);
         }
     }
 

@@ -126,6 +126,10 @@ class NetworkTaskDBConstants {
         return "SELECT COUNT(*) FROM " + getTableName() + " WHERE " + getSchedulerIdColumnName() + " = ?";
     }
 
+    public String getRunningCountStatement() {
+        return "SELECT COUNT(*) FROM " + getTableName() + " WHERE " + getRunningColumnName() + " = ?";
+    }
+
     public String getReadInstancesStatement() {
         return "SELECT INSTANCES FROM " + getTableName() + " WHERE " + getIdColumnName() + " = ?";
     }

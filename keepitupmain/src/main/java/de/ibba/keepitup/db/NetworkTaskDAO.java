@@ -59,6 +59,13 @@ public class NetworkTaskDAO extends BaseDAO {
         dumpDatabase("Dump after updateNetworkTaskRunning call");
     }
 
+    public int readNetworkTasksRunning() {
+        Log.d(NetworkTaskDAO.class.getName(), "Reading number of running tasks");
+        int runningTasks = executeDBOperationInTransaction((NetworkTask) null, this::readNetworkTasksRunning);
+        Log.d(NetworkTaskDAO.class.getName(), "Number of running tasks " + runningTasks);
+        return runningTasks;
+    }
+
     public int readNetworkTaskInstances(long taskId) {
         Log.d(NetworkTaskDAO.class.getName(), "Reading instances value of task with id " + taskId);
         NetworkTask networkTask = new NetworkTask();
@@ -204,6 +211,31 @@ public class NetworkTaskDAO extends BaseDAO {
         values.put(dbConstants.getLastScheduledColumnName(), networkTask.getLastScheduled());
         Log.d(NetworkTaskDAO.class.getName(), "Updating to " + networkTask.isRunning());
         return db.update(dbConstants.getTableName(), values, selection, selectionArgs);
+    }
+
+    private int readNetworkTasksRunning(NetworkTask networkTask, SQLiteDatabase db) {
+        Log.d(NetworkTaskDAO.class.getName(), "readNetworkTasksRunning, task is " + networkTask);
+        Cursor cursor = null;
+        NetworkTaskDBConstants dbConstants = new NetworkTaskDBConstants(getContext());
+        try {
+            Log.d(NetworkTaskDAO.class.getName(), "Executing SQL " + dbConstants.getRunningCountStatement() + " with a parameter of 1");
+            cursor = db.rawQuery(dbConstants.getRunningCountStatement(), new String[]{"1"});
+            if (cursor.moveToFirst()) {
+                int value = cursor.getInt(0);
+                Log.d(NetworkTaskDAO.class.getName(), "readNetworkTasksRunning, returning " + value);
+                return value;
+            }
+        } finally {
+            if (cursor != null) {
+                try {
+                    cursor.close();
+                } catch (Throwable exc) {
+                    Log.e(NetworkTaskDAO.class.getName(), "Error closing result cursor", exc);
+                }
+            }
+        }
+        Log.d(NetworkTaskDAO.class.getName(), "readNumberNetworkTasksRunning, returning -1");
+        return -1;
     }
 
     private int increaseNetworkTaskInstances(NetworkTask networkTask, SQLiteDatabase db) {
