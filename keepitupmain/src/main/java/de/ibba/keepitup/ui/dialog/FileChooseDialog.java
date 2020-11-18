@@ -116,7 +116,7 @@ public class FileChooseDialog extends DialogFragment implements ContextOptionsSu
         try {
             return Mode.valueOf(modeString);
         } catch (IllegalArgumentException exc) {
-            Log.e(ConfirmDialog.class.getName(), Mode.class.getSimpleName() + "." + modeString + " does not exist");
+            Log.e(FileChooseDialog.class.getName(), Mode.class.getSimpleName() + "." + modeString + " does not exist", exc);
             Log.d(FileChooseDialog.class.getName(), "No mode specified. Using " + Mode.FOLDER);
             return Mode.FOLDER;
         }

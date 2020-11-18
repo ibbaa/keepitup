@@ -18,6 +18,10 @@ public class NetworkTaskProcessPool {
         this.futurePool = new HashMap<>();
     }
 
+    public void reset() {
+        futurePool.clear();
+    }
+
     public synchronized void pool(int schedulerId, Future<?> future) {
         Log.d(NetworkTaskProcessPool.class.getName(), "pool, schedulerId is " + schedulerId);
         cleanUp();
