@@ -36,6 +36,7 @@ public class NetworkTaskProcessServiceSchedulerTest {
     public void beforeEachTestMethod() {
         scheduler = new NetworkTaskProcessServiceScheduler(TestRegistry.getContext());
         scheduler.cancelAll();
+        NetworkTaskProcessServiceScheduler.getNetworkTaskProcessPool().reset();
         networkTaskDAO = new NetworkTaskDAO(TestRegistry.getContext());
         networkTaskDAO.deleteAllNetworkTasks();
         alarmManager = (MockAlarmManager) scheduler.getAlarmManager();
@@ -46,6 +47,7 @@ public class NetworkTaskProcessServiceSchedulerTest {
     @After
     public void afterEachTestMethod() {
         scheduler.cancelAll();
+        NetworkTaskProcessServiceScheduler.getNetworkTaskProcessPool().reset();
         networkTaskDAO.deleteAllNetworkTasks();
     }
 

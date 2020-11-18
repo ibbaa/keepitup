@@ -60,6 +60,7 @@ public abstract class BaseUITest {
         Dump.initialize(null);
         scheduler = new NetworkTaskProcessServiceScheduler(TestRegistry.getContext());
         scheduler.cancelAll();
+        NetworkTaskProcessServiceScheduler.getNetworkTaskProcessPool().reset();
         logDAO = new LogDAO(TestRegistry.getContext());
         logDAO.deleteAllLogs();
         networkTaskDAO = new NetworkTaskDAO(TestRegistry.getContext());
@@ -78,6 +79,7 @@ public abstract class BaseUITest {
         Log.initialize(null);
         Dump.initialize(null);
         scheduler.cancelAll();
+        NetworkTaskProcessServiceScheduler.getNetworkTaskProcessPool().reset();
         logDAO.deleteAllLogs();
         networkTaskDAO.deleteAllNetworkTasks();
         preferenceManager.removeAllPreferences();

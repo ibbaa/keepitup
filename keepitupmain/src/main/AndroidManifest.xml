@@ -64,7 +64,9 @@
             </intent-filter>
         </receiver>
 
-        <service android:name=".service.NetworkTaskRunningNotificationService" />
+        <service
+            android:name=".service.NetworkTaskRunningNotificationService"
+            android:foregroundServiceType="dataSync" />
 
     </application>
 
