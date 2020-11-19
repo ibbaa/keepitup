@@ -55,7 +55,7 @@ public class NotificationHandlerTest {
         assertEquals("KEEPITUP_ERROR_NOTIFICATION_CHANNEL", notifyCall.getNotification().getChannelId());
         MockNotificationBuilder notificationBuilder = (MockNotificationBuilder) notificationHandler.getErrorNotificationBuilder();
         assertEquals(R.drawable.icon_notification, notificationBuilder.getSmallIcon());
-        assertEquals("Keep it up notification", notificationBuilder.getContentTitle());
+        assertEquals("Keep it up", notificationBuilder.getContentTitle());
         assertEquals("Execution of network task 2 failed. Host: 127.0.0.1. Timestamp: Mar 17, 1980 12:00:00 AM. Message: Test", notificationBuilder.getContentText());
         assertTrue(notificationBuilder.getStyle() instanceof NotificationCompat.BigTextStyle);
         assertEquals(NotificationCompat.PRIORITY_DEFAULT, notificationBuilder.getPriority());
@@ -85,7 +85,7 @@ public class NotificationHandlerTest {
         Notification notification = notificationHandler.buildForegroundNotification();
         assertEquals("KEEPITUP_FOREGROUND_NOTIFICATION_CHANNEL", notification.getChannelId());
         MockNotificationBuilder notificationBuilder = (MockNotificationBuilder) notificationHandler.getForegroundNotificationBuilder();
-        assertEquals("Keep it up notification", notificationBuilder.getContentTitle());
+        assertEquals("Keep it up", notificationBuilder.getContentTitle());
         assertEquals("Network task running...", notificationBuilder.getContentText());
         assertEquals(R.drawable.icon_notification_foreground, notificationBuilder.getSmallIcon());
         assertTrue(notificationBuilder.getStyle() instanceof NotificationCompat.BigTextStyle);

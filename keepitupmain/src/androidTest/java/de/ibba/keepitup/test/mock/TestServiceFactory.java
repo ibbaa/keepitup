@@ -5,7 +5,7 @@ import android.util.Log;
 
 import androidx.core.app.NotificationCompat;
 
-import de.ibba.keepitup.notification.INotificatioManager;
+import de.ibba.keepitup.notification.INotificationManager;
 import de.ibba.keepitup.resources.ServiceFactory;
 import de.ibba.keepitup.service.IAlarmManager;
 import de.ibba.keepitup.service.INetworkManager;
@@ -20,7 +20,7 @@ public class TestServiceFactory implements ServiceFactory {
     }
 
     @Override
-    public INotificatioManager createNotificationManager(Context context) {
+    public INotificationManager createNotificationManager(Context context) {
         Log.d(TestServiceFactory.class.getName(), "createNotificatioManager");
         return new MockNotificationManager();
     }

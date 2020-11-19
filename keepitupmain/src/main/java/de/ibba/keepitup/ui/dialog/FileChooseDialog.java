@@ -288,7 +288,7 @@ public class FileChooseDialog extends DialogFragment implements ContextOptionsSu
         FileEntryAdapter adapter = getAdapter();
         adapter.unselectItem();
         adapter.notifyDataSetChanged();
-        adapter.selectItemByName(getSelectionFolder());
+        adapter.selectFolderByName(getSelectionFolder());
         if (!adapter.isItemSelected()) {
             selectionFolder = getFileManager().getRelativeParent(selectionFolder);
             selectionFolder = checkAndShowFatalErrorDialog(selectionFolder);
@@ -380,10 +380,10 @@ public class FileChooseDialog extends DialogFragment implements ContextOptionsSu
         adapter.unselectItem();
         adapter.replaceItems(entries);
         if (isFileMode()) {
-            adapter.selectItemByName(getFile());
+            adapter.selectFileByName(getFile());
         } else {
             if (selectedEntry.isParent()) {
-                adapter.selectItemByName(getSelectionFolder());
+                adapter.selectFolderByName(getSelectionFolder());
             }
         }
         adapter.notifyDataSetChanged();
@@ -476,9 +476,9 @@ public class FileChooseDialog extends DialogFragment implements ContextOptionsSu
             }
         } else {
             if (isParentItemSelected) {
-                Log.d(FileChooseDialog.class.getName(), "The parent item is currenty selected.");
+                Log.d(FileChooseDialog.class.getName(), "The parent item is currently selected.");
             } else {
-                Log.d(FileChooseDialog.class.getName(), "No item is currenty selected.");
+                Log.d(FileChooseDialog.class.getName(), "No item is currently selected.");
             }
             if (selectedEntry.isParent()) {
                 Log.d(FileChooseDialog.class.getName(), "New selected item is the parent item. Keeping selected folder.");
@@ -567,11 +567,11 @@ public class FileChooseDialog extends DialogFragment implements ContextOptionsSu
             }
             List<FileEntry> entries = readFiles(parent);
             adapter = new FileEntryAdapter(entries, this);
-            adapter.selectItemByName(getSelectionFolder());
+            adapter.selectFolderByName(getSelectionFolder());
         } else {
             List<FileEntry> entries = readFiles(absoluteFolder);
             adapter = new FileEntryAdapter(entries, this);
-            adapter.selectItemByName(getFile());
+            adapter.selectFileByName(getFile());
         }
         if (!adapter.isItemSelected() && !isFileMode()) {
             selectionFolder = fileManager.getRelativeParent(selectionFolder);

@@ -95,7 +95,7 @@ public abstract class BaseUITest {
 
     public FragmentActivity getActivity(ActivityScenario<?> scenario) {
         final AtomicReference<FragmentActivity> reference = new AtomicReference<>();
-        scenario.onActivity(activtity -> reference.set((FragmentActivity) activtity));
+        scenario.onActivity(activity -> reference.set((FragmentActivity) activity));
         return reference.get();
     }
 

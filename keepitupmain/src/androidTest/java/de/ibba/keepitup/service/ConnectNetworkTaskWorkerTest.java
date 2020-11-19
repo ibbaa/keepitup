@@ -76,7 +76,7 @@ public class ConnectNetworkTaskWorkerTest {
     }
 
     @Test
-    public void testSuccessfulCallOneAttemptWithExceptiont() throws Exception {
+    public void testSuccessfulCallOneAttemptWithException() throws Exception {
         DNSLookupResult dnsLookupResult = new DNSLookupResult(Arrays.asList(InetAddress.getByName("127.0.0.1"), InetAddress.getByName("::1")), null);
         IllegalArgumentException exception = new IllegalArgumentException("TestException");
         ConnectCommandResult connectCommandResult = new ConnectCommandResult(true, 1, 1, 0, 0, 5000, exception);
@@ -90,7 +90,7 @@ public class ConnectNetworkTaskWorkerTest {
     }
 
     @Test
-    public void testSuccessfulCallMultipleErrorsWithExceptiont() throws Exception {
+    public void testSuccessfulCallMultipleErrorsWithException() throws Exception {
         DNSLookupResult dnsLookupResult = new DNSLookupResult(Arrays.asList(InetAddress.getByName("127.0.0.1"), InetAddress.getByName("::1")), null);
         IllegalArgumentException exception = new IllegalArgumentException("TestException");
         ConnectCommandResult connectCommandResult = new ConnectCommandResult(true, 10, 7, 1, 2, 3, exception);

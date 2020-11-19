@@ -47,7 +47,7 @@ public class PingCommand implements Callable<PingCommandResult> {
             }
             Log.d(PingCommand.class.getName(), "Ping output: " + output);
             returnCode = process.waitFor();
-            Log.d(PingCommand.class.getName(), "Ping proccess return code: " + returnCode);
+            Log.d(PingCommand.class.getName(), "Ping process return code: " + returnCode);
             return new PingCommandResult(returnCode, output, null);
         } catch (Exception exc) {
             Log.e(PingCommand.class.getName(), "Error executing ping command", exc);

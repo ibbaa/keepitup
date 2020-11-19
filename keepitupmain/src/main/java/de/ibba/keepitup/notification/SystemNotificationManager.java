@@ -6,7 +6,7 @@ import android.content.Context;
 
 import de.ibba.keepitup.logging.Log;
 
-public class SystemNotificationManager implements INotificatioManager {
+public class SystemNotificationManager implements INotificationManager {
 
     private final NotificationManager notificationManager;
 

@@ -35,8 +35,8 @@ public class SchedulerIdHistoryDAO extends BaseDAO {
         return db.delete(dbConstants.getTableName(), null, null);
     }
 
-    private List<SchedulerId> readAllSchedulerIds(SchedulerId scheduldeId, SQLiteDatabase db) {
-        Log.d(SchedulerIdHistoryDAO.class.getName(), "readAllSchedulerIds, scheduldeId is " + scheduldeId);
+    private List<SchedulerId> readAllSchedulerIds(SchedulerId schedulerId, SQLiteDatabase db) {
+        Log.d(SchedulerIdHistoryDAO.class.getName(), "readAllSchedulerIds, schedulerId is " + schedulerId);
         Cursor cursor = null;
         List<SchedulerId> result = new ArrayList<>();
         SchedulerIdHistoryDBConstants dbConstants = new SchedulerIdHistoryDBConstants(getContext());

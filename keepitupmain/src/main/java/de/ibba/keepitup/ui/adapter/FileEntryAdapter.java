@@ -90,7 +90,7 @@ public class FileEntryAdapter extends RecyclerView.Adapter<FileEntryViewHolder> 
     public FileEntry getSelectedItem() {
         Log.d(FileEntryAdapter.class.getName(), "getSelectedItem");
         if (selected < 0) {
-            Log.d(FileEntryAdapter.class.getName(), "no item is selected, returing null");
+            Log.d(FileEntryAdapter.class.getName(), "no item is selected, returning null");
             return null;
         }
         return getItem(selected);
@@ -135,18 +135,30 @@ public class FileEntryAdapter extends RecyclerView.Adapter<FileEntryViewHolder> 
         return entry.isParent();
     }
 
-    public void selectItemByName(String folder) {
-        Log.d(FileEntryAdapter.class.getName(), "selectItemByName for folder " + folder);
+    public void selectFolderByName(String folder) {
+        Log.d(FileEntryAdapter.class.getName(), "selectFolderByName for folder " + folder);
+        selectItemByName(folder, true);
+    }
+
+    public void selectFileByName(String file) {
+        Log.d(FileEntryAdapter.class.getName(), "selectFileByName for file " + file);
+        selectItemByName(file, false);
+    }
+
+    private void selectItemByName(String name, boolean folder) {
+        Log.d(FileEntryAdapter.class.getName(), "selectItemByName for name " + name + ",folder is " + folder);
         List<FileEntry> entries = getFileEntries();
         for (int ii = 0; ii < entries.size(); ii++) {
             FileEntry entry = entries.get(ii);
-            if (folder.equals(entry.getName()) || folder.endsWith("/" + entry.getName())) {
-                Log.d(FileEntryAdapter.class.getName(), "Found item to select at position " + ii);
-                selectItem(ii);
-                return;
+            if (folder == entry.isDirectory()) {
+                if (name.equals(entry.getName()) || name.endsWith("/" + entry.getName())) {
+                    Log.d(FileEntryAdapter.class.getName(), "Found item to select at position " + ii);
+                    selectItem(ii);
+                    return;
+                }
             }
         }
-        Log.d(FileEntryAdapter.class.getName(), "No item found matching the specified folder.");
+        Log.d(FileEntryAdapter.class.getName(), "No item found matching the specified name.");
     }
 
     public void selectItem(int position) {

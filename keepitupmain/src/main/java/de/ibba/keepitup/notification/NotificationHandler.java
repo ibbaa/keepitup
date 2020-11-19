@@ -29,7 +29,7 @@ import de.ibba.keepitup.ui.mapping.EnumMapping;
 public class NotificationHandler {
 
     private final Context context;
-    private final INotificatioManager notificationManager;
+    private final INotificationManager notificationManager;
     private NotificationCompat.Builder errorNotificationBuilder;
     private NotificationCompat.Builder foregroundNotificationBuilder;
 
@@ -80,7 +80,7 @@ public class NotificationHandler {
         return getResources().getString(R.string.notification_foreground_channel_id);
     }
 
-    public INotificatioManager getNotificationManager() {
+    public INotificationManager getNotificationManager() {
         return notificationManager;
     }
 
@@ -143,7 +143,7 @@ public class NotificationHandler {
         builder.setAutoCancel(true);
     }
 
-    private INotificatioManager createNotificationManager() {
+    private INotificationManager createNotificationManager() {
         ServiceFactoryContributor factoryContributor = new ServiceFactoryContributor(getContext());
         return factoryContributor.createServiceFactory().createNotificationManager(getContext());
     }
