@@ -9,6 +9,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.io.File;
+import java.io.IOException;
 import java.net.URL;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
@@ -22,6 +23,7 @@ import de.ibba.keepitup.util.URLUtil;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 @SmallTest
@@ -36,14 +38,14 @@ public class SystemFileManagerTest {
         MockTimeService timeService = (MockTimeService) fileManager.getTimeService();
         timeService.setTimestamp(getTestTimestamp());
         timeService.setTimestamp2(getTestTimestamp());
-        fileManager.delete(fileManager.getInternalDownloadDirectory());
+        fileManager.delete(fileManager.getInternalRootDirectory());
         fileManager.delete(fileManager.getExternalRootDirectory(0));
         fileManager.delete(fileManager.getExternalRootDirectory(1));
     }
 
     @After
     public void afterEachTestMethod() {
-        fileManager.delete(fileManager.getInternalDownloadDirectory());
+        fileManager.delete(fileManager.getInternalRootDirectory());
         fileManager.delete(fileManager.getExternalRootDirectory(0));
         fileManager.delete(fileManager.getExternalRootDirectory(1));
     }
@@ -61,6 +63,15 @@ public class SystemFileManagerTest {
         assertTrue(internalDownloadDir.exists());
         assertTrue(downloadDir.exists());
         assertEquals(internalDownloadDir, downloadDir);
+    }
+
+    @Test
+    public void testGetInternalDownloadDirectoryError() throws IOException {
+        File internalRootDir = fileManager.getInternalRootDirectory();
+        File downloadDir = new File(internalRootDir, fileManager.getDefaultDownloadDirectoryName());
+        assertTrue(downloadDir.createNewFile());
+        File internalDownloadDir = fileManager.getInternalDownloadDirectory();
+        assertNull(internalDownloadDir);
     }
 
     @Test
@@ -91,6 +102,17 @@ public class SystemFileManagerTest {
         assertTrue(externalDir.exists());
         assertTrue(dir.exists());
         assertEquals(externalDir, dir);
+    }
+
+    @Test
+    public void testGetExternalDirectoryError() throws IOException {
+        File externalRootDir = fileManager.getExternalRootDirectory(0);
+        File dir = new File(externalRootDir, "test");
+        assertTrue(dir.mkdir());
+        File file = new File(dir, "download");
+        assertTrue(file.createNewFile());
+        File externalDir = fileManager.getExternalDirectory("test/download", 0);
+        assertNull(externalDir);
     }
 
     @Test
