@@ -6,7 +6,7 @@
     <string name="notification_foreground_channel_id">KEEPITUP_FOREGROUND_NOTIFICATION_CHANNEL</string>
     <string name="notification_foreground_channel_name">Keep it up foreground notifications</string>
     <string name="notification_foreground_channel_description">Keep it up foreground notifications</string>
-    <string name="notification_title">Keep it up notification</string>
+    <string name="notification_title">Keep it up</string>
     <string name="notification_address">%s</string>
     <string name="notification_error_text">Execution of network task %d failed. %s. Timestamp: %s. Message: %s</string>
     <string name="notification_foreground_text">Network task running...</string>
