@@ -39,7 +39,7 @@ public class HousekeeperTest {
     }
 
     @Test
-    public void testLimitNotExcedded() throws Exception {
+    public void testLimitNotExceeded() throws Exception {
         File logDir = getTestLogFileFolder();
         File[] files = logDir.listFiles();
         assertEquals(0, files.length);

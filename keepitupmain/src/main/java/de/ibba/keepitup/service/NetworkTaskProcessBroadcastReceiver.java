@@ -26,7 +26,7 @@ public class NetworkTaskProcessBroadcastReceiver extends BroadcastReceiver {
         boolean synchronous = context.getResources().getBoolean(R.bool.worker_synchronous_execution);
         boolean addToPool = context.getResources().getBoolean(R.bool.worker_add_to_pool);
         int wakeLockTimeout = context.getResources().getInteger(R.integer.worker_execution_wakelock_timeout) * 1000;
-        Log.d(NetworkTaskProcessBroadcastReceiver.class.getName(), "Synchronoues execution is " + synchronous);
+        Log.d(NetworkTaskProcessBroadcastReceiver.class.getName(), "Synchronous execution is " + synchronous);
         PowerManager powerManager = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
         PowerManager.WakeLock wakeLock = null;
         Log.d(NetworkTaskProcessBroadcastReceiver.class.getName(), "Creating ExecutorService");

@@ -101,7 +101,7 @@ public class FileChooseDialogMockTest extends BaseUITest {
         adapter.selectItem(0);
         fileManager.setRelativeParent(null);
         onView(allOf(withId(R.id.textview_list_item_file_entry_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_file_choose_file_entries), 1))).perform(click());
-        assertTrue(areEnrtriesEqual(adapter.getSelectedItem(), getFileEntry("dir1", true, false, true)));
+        assertTrue(areEntriesEqual(adapter.getSelectedItem(), getFileEntry("dir1", true, false, true)));
     }
 
     @Test
@@ -112,7 +112,7 @@ public class FileChooseDialogMockTest extends BaseUITest {
         adapter.selectItem(2);
         fileManager.setRelativeSibling(null);
         onView(allOf(withId(R.id.textview_list_item_file_entry_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_file_choose_file_entries), 0))).perform(click());
-        assertTrue(areEnrtriesEqual(adapter.getSelectedItem(), getFileEntry("dir3", true, false, true)));
+        assertTrue(areEntriesEqual(adapter.getSelectedItem(), getFileEntry("dir3", true, false, true)));
     }
 
     @Test
@@ -255,7 +255,7 @@ public class FileChooseDialogMockTest extends BaseUITest {
         return fileEntry;
     }
 
-    private boolean areEnrtriesEqual(FileEntry entry1, FileEntry entry2) {
+    private boolean areEntriesEqual(FileEntry entry1, FileEntry entry2) {
         if (!entry1.getName().equals(entry2.getName())) {
             return false;
         }

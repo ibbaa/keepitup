@@ -194,7 +194,7 @@ public abstract class NetworkTaskWorker implements Runnable {
         NetworkTaskDAO networkTaskDAO = new NetworkTaskDAO(getContext());
         int activeInstances = networkTaskDAO.readNetworkTaskInstances(networkTask.getId());
         int maxInstances = getMaxInstances();
-        Log.d(NetworkTaskWorker.class.getName(), "Currenty active instances: " + activeInstances);
+        Log.d(NetworkTaskWorker.class.getName(), "Currently active instances: " + activeInstances);
         Log.d(NetworkTaskWorker.class.getName(), "Max active instances: " + maxInstances);
         if (activeInstances >= maxInstances) {
             Log.d(NetworkTaskWorker.class.getName(), "Too many active instances.");

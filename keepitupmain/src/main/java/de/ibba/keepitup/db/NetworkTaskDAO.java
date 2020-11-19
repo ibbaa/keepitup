@@ -159,7 +159,7 @@ public class NetworkTaskDAO extends BaseDAO {
             networkTask.setId(-1);
             return networkTask;
         } else {
-            Log.d(NetworkTaskDAO.class.getName(), "Generated schduler id is " + schedulerId.getSchedulerId());
+            Log.d(NetworkTaskDAO.class.getName(), "Generated scheduler id is " + schedulerId.getSchedulerId());
             networkTask.setSchedulerId(schedulerId.getSchedulerId());
         }
         networkTask.setInstances(0);
@@ -325,7 +325,7 @@ public class NetworkTaskDAO extends BaseDAO {
             networkTask.setSchedulerId(SchedulerIdGenerator.ERROR_SCHEDULER_ID);
             return networkTask;
         } else {
-            Log.d(NetworkTaskDAO.class.getName(), "Generated schduler id is " + schedulerId.getSchedulerId());
+            Log.d(NetworkTaskDAO.class.getName(), "Generated scheduler id is " + schedulerId.getSchedulerId());
             networkTask.setSchedulerId(schedulerId.getSchedulerId());
         }
         networkTask.setInstances(0);

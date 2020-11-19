@@ -76,7 +76,7 @@ public class PingOutputParser {
                 return;
             }
             validInput = true;
-            Log.d(PingOutputParser.class.getName(), "Parsing was successul.");
+            Log.d(PingOutputParser.class.getName(), "Parsing was successful.");
         } catch (Exception exc) {
             Log.e(PingOutputParser.class.getName(), "Ping output parsing error", exc);
             setInvalid();

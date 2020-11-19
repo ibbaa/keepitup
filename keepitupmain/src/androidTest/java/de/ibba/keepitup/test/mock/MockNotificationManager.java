@@ -6,9 +6,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import de.ibba.keepitup.notification.INotificatioManager;
+import de.ibba.keepitup.notification.INotificationManager;
 
-public class MockNotificationManager implements INotificatioManager {
+public class MockNotificationManager implements INotificationManager {
 
     private final List<NotifyCall> notifyCalls;
 

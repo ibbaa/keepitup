@@ -198,7 +198,7 @@ public class LogDAO extends BaseDAO {
     }
 
     private int deleteAllOrphanLogs(LogEntry logEntry, SQLiteDatabase db) {
-        Log.d(LogDAO.class.getName(), "deleteAllOprhanLogs, log entry is " + logEntry);
+        Log.d(LogDAO.class.getName(), "deleteAllOrphanLogs, log entry is " + logEntry);
         LogDBConstants dbConstants = new LogDBConstants(getContext());
         Log.d(LogDAO.class.getName(), "Executing SQL " + dbConstants.getDeleteOrphanLogsStatement());
         db.execSQL(dbConstants.getDeleteOrphanLogsStatement());

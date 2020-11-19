@@ -412,7 +412,7 @@ public class DownloadNetworkTaskWorkerTest {
     }
 
     @Test
-    public void testDownloadInvalidFileExistDeleteFailedInternalStorageWithExcpetion() throws Exception {
+    public void testDownloadInvalidFileExistDeleteFailedInternalStorageWithException() throws Exception {
         DNSLookupResult dnsLookupResult = new DNSLookupResult(Arrays.asList(InetAddress.getByName("127.0.0.1"), InetAddress.getByName("::1")), null);
         DownloadCommandResult downloadCommandResult = new DownloadCommandResult(true, false, true, false, false, false, HttpURLConnection.HTTP_OK, null, "testfile", 12000, new Exception("Test"));
         TestDownloadNetworkTaskWorker downloadNetworkTaskWorker = prepareTestDownloadNetworkTaskWorker(dnsLookupResult, downloadCommandResult);

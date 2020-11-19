@@ -405,7 +405,7 @@ public class GlobalSettingsActivity extends SettingsInputActivity {
                 setLogFolder(logFolder);
             }
         } else {
-            Log.d(GlobalSettingsActivity.class.getName(), "Release version. Diabling debug settings.");
+            Log.d(GlobalSettingsActivity.class.getName(), "Release version. Disabling debug settings.");
             logFolderCardView.setVisibility(View.GONE);
             setLogFolder("");
         }
