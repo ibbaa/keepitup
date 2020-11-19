@@ -11,6 +11,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.io.File;
+import java.io.IOException;
 
 import de.ibba.keepitup.R;
 import de.ibba.keepitup.logging.Dump;
@@ -624,6 +625,24 @@ public class GlobalSettingsActivityTest extends BaseUITest {
         onView(withId(R.id.textview_activity_global_settings_download_folder)).check(matches(withText(endsWith("test"))));
         assertEquals("test", preferenceManager.getPreferenceDownloadFolder());
         assertTrue(testFile.exists());
+    }
+
+    @Test
+    public void testDownloadFolderDialogErrorFileExists() throws IOException {
+        PreferenceManager preferenceManager = getPreferenceManager();
+        File root = getFileManager().getExternalRootDirectory(0);
+        File test = new File(root, "test");
+        assertTrue(test.createNewFile());
+        onView(withId(R.id.switch_activity_global_settings_download_external_storage)).perform(click());
+        onView(withId(R.id.cardview_activity_global_settings_download_folder)).perform(click());
+        onView(withId(R.id.edittext_dialog_file_choose_folder)).check(matches(withText("download")));
+        onView(withId(R.id.edittext_dialog_file_choose_folder)).perform(replaceText("test"));
+        onView(withId(R.id.imageview_dialog_file_choose_ok)).perform(click());
+        assertEquals(1, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
+        onView(withId(R.id.textview_dialog_general_error_message)).check(matches(withText("Error creating download directory.")));
+        onView(withId(R.id.imageview_dialog_general_error_ok)).perform(click());
+        onView(withId(R.id.textview_activity_global_settings_download_folder)).check(matches(withText(endsWith("download"))));
+        assertEquals("download", preferenceManager.getPreferenceDownloadFolder());
     }
 
     @Test

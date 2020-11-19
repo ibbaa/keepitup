@@ -45,7 +45,7 @@ public class SystemFileManager implements IFileManager {
             String downloadDir = getDefaultDownloadDirectoryName();
             File internalDownloadDir = new File(internalDir, downloadDir);
             Log.d(SystemFileManager.class.getName(), "Internal files download directory is " + internalDownloadDir.getAbsolutePath());
-            if (internalDownloadDir.exists()) {
+            if (internalDownloadDir.exists() && internalDownloadDir.isDirectory()) {
                 Log.d(SystemFileManager.class.getName(), "Internal files download directory does exist.");
                 return internalDownloadDir;
             } else {
@@ -88,7 +88,7 @@ public class SystemFileManager implements IFileManager {
             Log.d(SystemFileManager.class.getName(), "External files root directory is " + externalRootDir.getAbsolutePath());
             File externalDir = new File(externalRootDir, directoryName);
             Log.d(SystemFileManager.class.getName(), "External files directory is " + externalDir.getAbsolutePath());
-            if (externalDir.exists()) {
+            if (externalDir.exists() && externalDir.isDirectory()) {
                 Log.d(SystemFileManager.class.getName(), "External files directory does exist.");
                 return externalDir;
             } else {
