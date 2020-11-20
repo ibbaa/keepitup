@@ -472,7 +472,8 @@ public class GlobalSettingsActivity extends SettingsInputActivity {
             showErrorDialog(getResources().getString(R.string.text_dialog_general_error_external_root_access));
             return;
         }
-        Bundle bundle = BundleUtil.stringsToBundle(new String[]{fileChooseDialog.getFolderRootKey(), fileChooseDialog.getFolderKey(), fileChooseDialog.getFileModeKey(), fileChooseDialog.getTypeKey()}, new String[]{root, folder, FileChooseDialog.Mode.FOLDER.name(), FileChooseDialog.Type.DOWNLOADFOLDER.name()});
+        Bundle bundle = BundleUtil.stringsToBundle(new String[]{fileChooseDialog.getFolderRootKey(), fileChooseDialog.getFolderKey(), fileChooseDialog.getFileModeKey(), fileChooseDialog.getTypeKey()}, new String[]{root, folder, FileChooseDialog.Mode.FILE.name(), FileChooseDialog.Type.DOWNLOADFOLDER.name()});
+        bundle = BundleUtil.stringToBundle(fileChooseDialog.getFileKey(), "file1", bundle);
         fileChooseDialog.setArguments(bundle);
         fileChooseDialog.show(getSupportFragmentManager(), GlobalSettingsActivity.class.getName());
     }
