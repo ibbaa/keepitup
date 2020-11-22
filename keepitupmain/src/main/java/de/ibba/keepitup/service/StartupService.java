@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 
 import de.ibba.keepitup.BuildConfig;
+import de.ibba.keepitup.db.DBOpenHelper;
 import de.ibba.keepitup.db.LogDAO;
 import de.ibba.keepitup.db.NetworkTaskDAO;
 import de.ibba.keepitup.db.SchedulerIdHistoryDAO;
@@ -31,6 +32,7 @@ public class StartupService extends BroadcastReceiver {
 
     public void startup(Context context) {
         Log.d(StartupService.class.getName(), "Starting application.");
+        initializeDatabase(context);
         if (BuildConfig.DEBUG) {
             Log.d(StartupService.class.getName(), "Debug version. Initialize logging.");
             initializeLogging(context);
@@ -51,6 +53,20 @@ public class StartupService extends BroadcastReceiver {
         initializeScheduler(context);
         Log.d(StartupService.class.getName(), "Cleanup logs");
         cleanupLogs(context);
+    }
+
+    private void initializeDatabase(Context context) {
+        Log.d(StartupService.class.getName(), "initializeDatabase");
+        DBOpenHelper.getInstance(context).getWritableDatabase();
+    }
+
+    private void shutdownDatabase(Context context) {
+        Log.d(StartupService.class.getName(), "shutdownDatabase");
+        try {
+            DBOpenHelper.getInstance(context).getWritableDatabase().close();
+        } catch (Exception exc) {
+            Log.e(StartupService.class.getName(), "Error shutting down database", exc);
+        }
     }
 
     private void initializeLogging(Context context) {
@@ -141,5 +157,6 @@ public class StartupService extends BroadcastReceiver {
         } catch (Exception exc) {
             Log.e(StartupService.class.getName(), "Error on stopping network tasks.", exc);
         }
+        shutdownDatabase(context);
     }
 }
