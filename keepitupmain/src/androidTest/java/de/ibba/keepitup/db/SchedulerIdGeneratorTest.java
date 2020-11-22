@@ -39,7 +39,7 @@ public class SchedulerIdGeneratorTest {
         schedulerIdHistoryDAO = new SchedulerIdHistoryDAO(TestRegistry.getContext());
         networkTaskDAO.deleteAllNetworkTasks();
         schedulerIdHistoryDAO.deleteAllSchedulerIds();
-        db = new DBOpenHelper(TestRegistry.getContext()).getWritableDatabase();
+        db = DBOpenHelper.getInstance(TestRegistry.getContext()).getWritableDatabase();
     }
 
     @After

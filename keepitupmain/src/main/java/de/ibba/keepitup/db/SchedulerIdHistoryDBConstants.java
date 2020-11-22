@@ -1,36 +1,37 @@
 package de.ibba.keepitup.db;
 
 import android.content.Context;
-import android.content.res.Resources;
 
 import de.ibba.keepitup.R;
 
 public class SchedulerIdHistoryDBConstants {
 
-    private final Context context;
+    private final String tableName;
+    private final String idColumnName;
+    private final String schedulerIdColumnName;
+    private final String timestampColumnName;
 
     public SchedulerIdHistoryDBConstants(Context context) {
-        this.context = context;
+        tableName = context.getResources().getString(R.string.schedulerid_table_name);
+        idColumnName = context.getResources().getString(R.string.schedulerid_history_id_column_name);
+        schedulerIdColumnName = context.getResources().getString(R.string.schedulerid_history_schedulerid_column_name);
+        timestampColumnName = context.getResources().getString(R.string.schedulerid_history_timestamp_column_name);
     }
 
     public String getTableName() {
-        return getResources().getString(R.string.schedulerid_table_name);
+        return tableName;
     }
 
     public String getIdColumnName() {
-        return getResources().getString(R.string.schedulerid_history_id_column_name);
+        return idColumnName;
     }
 
     public String getSchedulerIdColumnName() {
-        return getResources().getString(R.string.schedulerid_history_schedulerid_column_name);
+        return schedulerIdColumnName;
     }
 
     public String getTimestampColumnName() {
-        return getResources().getString(R.string.schedulerid_history_timestamp_column_name);
-    }
-
-    private Resources getResources() {
-        return context.getResources();
+        return timestampColumnName;
     }
 
     public String getCreateTableStatement() {

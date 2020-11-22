@@ -411,7 +411,6 @@ public class FileChooseDialogFileModeTest extends BaseUITest {
         assertEquals(1, adapter.getItemCount());
         assertTrue(areEntriesEqual(adapter.getItem(0), getFileEntry("..", true, true, false)));
         assertFalse(adapter.isItemSelected());
-        onView(withId(R.id.imageview_dialog_file_choose_cancel)).perform(click());
         rotateScreen(activityScenario);
         deleteLogFolder();
         onView(withId(R.id.textview_dialog_file_choose_absolute)).check(matches(withText(root + "/xyz")));
@@ -519,8 +518,7 @@ public class FileChooseDialogFileModeTest extends BaseUITest {
         assertTrue(adapter.isItemSelected());
         assertTrue(adapter.isFileItemSelected());
         assertFalse(adapter.isFolderItemSelected());
-        rotateScreen(activityScenario);
-        deleteLogFolder();
+        onView(withId(R.id.imageview_dialog_file_choose_cancel)).perform(click());
     }
 
     @Test

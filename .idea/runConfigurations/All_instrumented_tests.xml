@@ -1,5 +1,5 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="All instrumented tests" type="AndroidTestRunConfigurationType" factoryName="Android Instrumented Tests">
+  <configuration default="false" name="All instrumented tests" type="AndroidTestRunConfigurationType" factoryName="Android Instrumented Tests" singleton="false">
     <module name="keepitup.keepitupmain" />
     <option name="TESTING_TYPE" value="0" />
     <option name="METHOD_NAME" value="" />
@@ -12,7 +12,7 @@
     <option name="SHOW_LOGCAT_AUTOMATICALLY" value="false" />
     <option name="SKIP_NOOP_APK_INSTALLATIONS" value="true" />
     <option name="FORCE_STOP_RUNNING_APP" value="true" />
-    <option name="TARGET_SELECTION_MODE" value="SHOW_DIALOG" />
+    <option name="TARGET_SELECTION_MODE" value="DEVICE_AND_SNAPSHOT_COMBO_BOX" />
     <option name="SELECTED_CLOUD_MATRIX_CONFIGURATION_ID" value="-1" />
     <option name="SELECTED_CLOUD_MATRIX_PROJECT_ID" value="" />
     <option name="DEBUGGER_TYPE" value="Auto" />

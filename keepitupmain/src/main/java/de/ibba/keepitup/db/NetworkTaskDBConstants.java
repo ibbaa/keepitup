@@ -1,68 +1,91 @@
 package de.ibba.keepitup.db;
 
 import android.content.Context;
-import android.content.res.Resources;
 
 import de.ibba.keepitup.R;
 
 class NetworkTaskDBConstants {
 
-    private final Context context;
+    private final String tableName;
+    private final String idColumnName;
+    private final String indexColumnName;
+    private final String schedulerIdColumnName;
+    private final String instancesColumnName;
+    private final String addressColumnName;
+    private final String portColumnName;
+    private final String accessTypeColumnName;
+    private final String intervalColumnName;
+    private final String onlyWifiColumnName;
+    private final String notificationColumnName;
+    private final String runningColumnName;
+    private final String lastScheduledColumnName;
 
     public NetworkTaskDBConstants(Context context) {
-        this.context = context;
+        tableName = context.getResources().getString(R.string.task_table_name);
+        idColumnName = context.getResources().getString(R.string.task_id_column_name);
+        indexColumnName = context.getResources().getString(R.string.task_index_column_name);
+        schedulerIdColumnName = context.getResources().getString(R.string.task_schedulerid_column_name);
+        instancesColumnName = context.getResources().getString(R.string.task_instances_column_name);
+        addressColumnName = context.getResources().getString(R.string.task_address_column_name);
+        portColumnName = context.getResources().getString(R.string.task_port_column_name);
+        accessTypeColumnName = context.getResources().getString(R.string.task_accesstype_column_name);
+        intervalColumnName = context.getResources().getString(R.string.task_interval_column_name);
+        onlyWifiColumnName = context.getResources().getString(R.string.task_onlywifi_column_name);
+        notificationColumnName = context.getResources().getString(R.string.task_notification_column_name);
+        runningColumnName = context.getResources().getString(R.string.task_running_column_name);
+        lastScheduledColumnName = context.getResources().getString(R.string.task_lastscheduled_column_name);
     }
 
     public String getTableName() {
-        return getResources().getString(R.string.task_table_name);
+        return tableName;
     }
 
     public String getIdColumnName() {
-        return getResources().getString(R.string.task_id_column_name);
+        return idColumnName;
     }
 
     public String getIndexColumnName() {
-        return getResources().getString(R.string.task_index_column_name);
+        return indexColumnName;
     }
 
     public String getSchedulerIdColumnName() {
-        return getResources().getString(R.string.task_schedulerid_column_name);
+        return schedulerIdColumnName;
     }
 
     public String getInstancesColumnName() {
-        return getResources().getString(R.string.task_instances_column_name);
+        return instancesColumnName;
     }
 
     public String getAddressColumnName() {
-        return getResources().getString(R.string.task_address_column_name);
+        return addressColumnName;
     }
 
     public String getPortColumnName() {
-        return getResources().getString(R.string.task_port_column_name);
+        return portColumnName;
     }
 
     public String getAccessTypeColumnName() {
-        return getResources().getString(R.string.task_accesstype_column_name);
+        return accessTypeColumnName;
     }
 
     public String getIntervalColumnName() {
-        return getResources().getString(R.string.task_interval_column_name);
+        return intervalColumnName;
     }
 
     public String getOnlyWifiColumnName() {
-        return getResources().getString(R.string.task_onlywifi_column_name);
+        return onlyWifiColumnName;
     }
 
     public String getNotificationColumnName() {
-        return getResources().getString(R.string.task_notification_column_name);
+        return notificationColumnName;
     }
 
     public String getRunningColumnName() {
-        return getResources().getString(R.string.task_running_column_name);
+        return runningColumnName;
     }
 
     public String getLastScheduledColumnName() {
-        return getResources().getString(R.string.task_lastscheduled_column_name);
+        return lastScheduledColumnName;
     }
 
     public String getCreateTableStatement() {
@@ -136,9 +159,5 @@ class NetworkTaskDBConstants {
 
     public String getUpdateIndexNetworkTasksStatement() {
         return "UPDATE " + getTableName() + " SET " + getIndexColumnName() + " = " + getIndexColumnName() + " - 1 WHERE " + getIndexColumnName() + " > ?;";
-    }
-
-    private Resources getResources() {
-        return context.getResources();
     }
 }

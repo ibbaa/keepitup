@@ -1,40 +1,51 @@
 package de.ibba.keepitup.db;
 
 import android.content.Context;
-import android.content.res.Resources;
 
 import de.ibba.keepitup.R;
 
 class LogDBConstants {
 
-    private final Context context;
+    private final NetworkTaskDBConstants networkTaskDBConstants;
+    private final String tableName;
+    private final String idColumnName;
+    private final String networkTaskIdColumnName;
+    private final String timestampColumnName;
+    private final String successColumnName;
+    private final String messageColumnName;
 
     public LogDBConstants(Context context) {
-        this.context = context;
+        networkTaskDBConstants = new NetworkTaskDBConstants(context);
+        tableName = context.getResources().getString(R.string.log_table_name);
+        idColumnName = context.getResources().getString(R.string.log_id_column_name);
+        networkTaskIdColumnName = context.getResources().getString(R.string.log_taskid_column_name);
+        timestampColumnName = context.getResources().getString(R.string.log_timestamp_column_name);
+        successColumnName = context.getResources().getString(R.string.log_success_column_name);
+        messageColumnName = context.getResources().getString(R.string.log_message_column_name);
     }
 
     public String getTableName() {
-        return getResources().getString(R.string.log_table_name);
+        return tableName;
     }
 
     public String getIdColumnName() {
-        return getResources().getString(R.string.log_id_column_name);
+        return idColumnName;
     }
 
     public String getNetworkTaskIdColumnName() {
-        return getResources().getString(R.string.log_taskid_column_name);
+        return networkTaskIdColumnName;
     }
 
     public String getTimestampColumnName() {
-        return getResources().getString(R.string.log_timestamp_column_name);
+        return timestampColumnName;
     }
 
     public String getSuccessColumnName() {
-        return getResources().getString(R.string.log_success_column_name);
+        return successColumnName;
     }
 
     public String getMessageColumnName() {
-        return getResources().getString(R.string.log_message_column_name);
+        return messageColumnName;
     }
 
     public String getCreateTableStatement() {
@@ -93,11 +104,6 @@ class LogDBConstants {
     }
 
     public String getDeleteOrphanLogsStatement() {
-        NetworkTaskDBConstants networkTaskDBConstants = new NetworkTaskDBConstants(context);
         return "DELETE FROM " + getTableName() + " WHERE " + getNetworkTaskIdColumnName() + " NOT IN (SELECT " + networkTaskDBConstants.getIdColumnName() + " FROM " + networkTaskDBConstants.getTableName() + ");";
-    }
-
-    private Resources getResources() {
-        return context.getResources();
     }
 }
