@@ -4,6 +4,7 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
+import android.os.Build;
 
 import java.util.List;
 
@@ -53,10 +54,7 @@ public class NetworkTaskProcessServiceScheduler {
         networkTaskDAO.updateNetworkTaskRunning(networkTask.getId(), true);
         if (useForegroundService) {
             Log.d(NetworkTaskProcessServiceScheduler.class.getName(), "Starting service...");
-            Intent intent = new Intent(getContext(), NetworkTaskRunningNotificationService.class);
-            intent.putExtras(networkTask.toBundle());
-            intent.putExtra(NetworkTaskRunningNotificationService.getRescheduleDelayKey(), Delay.IMMEDIATE.name());
-            getContext().startService(intent);
+            startService(networkTask, Delay.IMMEDIATE);
         } else {
             reschedule(networkTask, Delay.IMMEDIATE);
         }
@@ -143,10 +141,7 @@ public class NetworkTaskProcessServiceScheduler {
                 Log.d(NetworkTaskProcessServiceScheduler.class.getName(), "useForegroundService is " + useForegroundService);
                 if (useForegroundService) {
                     Log.d(NetworkTaskProcessServiceScheduler.class.getName(), "Starting service...");
-                    Intent intent = new Intent(getContext(), NetworkTaskRunningNotificationService.class);
-                    intent.putExtras(currentTask.toBundle());
-                    intent.putExtra(NetworkTaskRunningNotificationService.getRescheduleDelayKey(), Delay.LASTSCHEDULED.name());
-                    getContext().startService(intent);
+                    startService(currentTask, Delay.LASTSCHEDULED);
                 } else {
                     reschedule(currentTask, Delay.LASTSCHEDULED);
                 }
@@ -213,6 +208,24 @@ public class NetworkTaskProcessServiceScheduler {
         long interval = getIntervalMilliseconds(networkTask);
         long timeDifference = NumberUtil.ensurePositive(timestamp - lastScheduled);
         return NumberUtil.ensurePositive(interval - timeDifference);
+    }
+
+    private void startService(NetworkTask task, Delay delay) {
+        Log.d(NetworkTaskProcessServiceScheduler.class.getName(), "startService for network task " + task + " with delay " + delay);
+        try {
+            Intent intent = new Intent(getContext(), NetworkTaskRunningNotificationService.class);
+            intent.putExtras(task.toBundle());
+            intent.putExtra(NetworkTaskRunningNotificationService.getRescheduleDelayKey(), delay.name());
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                getContext().startForegroundService(intent);
+            } else {
+                getContext().startService(intent);
+            }
+        } catch (Exception exc) {
+            Log.e(NetworkTaskProcessServiceScheduler.class.getName(), "Error starting the foreground service.", exc);
+            Log.d(NetworkTaskProcessServiceScheduler.class.getName(), "Scheduling without service");
+            reschedule(task, delay);
+        }
     }
 
     private IAlarmManager createAlarmManager() {
