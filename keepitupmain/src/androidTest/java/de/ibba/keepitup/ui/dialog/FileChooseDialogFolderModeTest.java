@@ -2281,6 +2281,8 @@ public class FileChooseDialogFolderModeTest extends BaseUITest {
         onView(allOf(withId(R.id.textview_list_item_context_option_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options), 1))).check(matches(withText("Paste")));
         onView(withId(R.id.imageview_dialog_context_options_cancel)).check(matches(isDisplayed()));
         onView(allOf(withId(R.id.textview_list_item_context_option_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options), 1))).perform(click());
+        onView(withId(R.id.textview_dialog_file_choose_absolute)).check(matches(withText(root + "/test2/test2")));
+        onView(withId(R.id.edittext_dialog_file_choose_folder)).check(matches(withText("test2/test2")));
         assertEquals("test2/test2", dialog.getFolder());
         assertEquals("test2/test2", clipboardManager.getData());
         onView(withId(R.id.listview_dialog_file_choose_file_entries)).check(matches(withListSize(6)));
@@ -2337,6 +2339,8 @@ public class FileChooseDialogFolderModeTest extends BaseUITest {
         onView(allOf(withId(R.id.textview_list_item_context_option_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options), 1))).check(matches(withText("Paste")));
         onView(withId(R.id.imageview_dialog_context_options_cancel)).check(matches(isDisplayed()));
         onView(allOf(withId(R.id.textview_list_item_context_option_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options), 1))).perform(click());
+        onView(withId(R.id.textview_dialog_file_choose_absolute)).check(matches(withText(root + "/test2/test2")));
+        onView(withId(R.id.edittext_dialog_file_choose_folder)).check(matches(withText("test2/test2")));
         assertEquals("test2/test2", getDialog().getFolder());
         assertEquals("test2/test2", clipboardManager.getData());
         FileEntryAdapter adapter = getDialog().getAdapter();
