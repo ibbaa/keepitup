@@ -116,7 +116,7 @@ public class FileChooseDialogFileModeTest extends BaseUITest {
         onView(withId(R.id.edittext_dialog_file_choose_file)).check(matches(withText("file1")));
         assertEquals("", getDialog().getFolder());
         assertEquals("file1", getDialog().getFile());
-        FileEntryAdapter adapter = getDialog().getAdapter();
+        FileEntryAdapter adapter = getAdapter();
         assertEquals(5, adapter.getItemCount());
         assertTrue(areEntriesEqual(adapter.getItem(0), getFileEntry("..", true, true, false)));
         assertTrue(areEntriesEqual(adapter.getItem(1), getFileEntry("file1", false, false, false)));
@@ -150,7 +150,7 @@ public class FileChooseDialogFileModeTest extends BaseUITest {
         onView(allOf(withId(R.id.imageview_list_item_file_entry_symbol), withChildDescendantAtPosition(withId(R.id.listview_dialog_file_choose_file_entries), 4))).check(matches(withDrawable(R.drawable.icon_folder)));
         onView(allOf(withId(R.id.textview_list_item_file_entry_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_file_choose_file_entries), 4))).check(matches(withText("folder2")));
         onView(allOf(withId(R.id.imageview_list_item_file_entry_open), withChildDescendantAtPosition(withId(R.id.listview_dialog_file_choose_file_entries), 4))).check(matches(withDrawable(R.drawable.icon_folder_open_shadow)));
-        adapter = getDialog().getAdapter();
+        adapter = getAdapter();
         assertEquals(5, adapter.getItemCount());
         assertTrue(areEntriesEqual(adapter.getItem(0), getFileEntry("..", true, true, false)));
         assertTrue(areEntriesEqual(adapter.getItem(1), getFileEntry("file1", false, false, false)));
@@ -216,7 +216,7 @@ public class FileChooseDialogFileModeTest extends BaseUITest {
         onView(withId(R.id.edittext_dialog_file_choose_file)).check(matches(withText("file3")));
         assertEquals("", getDialog().getFolder());
         assertEquals("file3", getDialog().getFile());
-        FileEntryAdapter adapter = getDialog().getAdapter();
+        FileEntryAdapter adapter = getAdapter();
         assertEquals(5, adapter.getItemCount());
         assertTrue(areEntriesEqual(adapter.getItem(0), getFileEntry("..", true, true, false)));
         assertTrue(areEntriesEqual(adapter.getItem(1), getFileEntry("file1", false, false, false)));
@@ -249,7 +249,7 @@ public class FileChooseDialogFileModeTest extends BaseUITest {
         onView(allOf(withId(R.id.imageview_list_item_file_entry_symbol), withChildDescendantAtPosition(withId(R.id.listview_dialog_file_choose_file_entries), 4))).check(matches(withDrawable(R.drawable.icon_folder)));
         onView(allOf(withId(R.id.textview_list_item_file_entry_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_file_choose_file_entries), 4))).check(matches(withText("folder2")));
         onView(allOf(withId(R.id.imageview_list_item_file_entry_open), withChildDescendantAtPosition(withId(R.id.listview_dialog_file_choose_file_entries), 4))).check(matches(withDrawable(R.drawable.icon_folder_open_shadow)));
-        adapter = getDialog().getAdapter();
+        adapter = getAdapter();
         assertEquals(5, adapter.getItemCount());
         assertTrue(areEntriesEqual(adapter.getItem(0), getFileEntry("..", true, true, false)));
         assertTrue(areEntriesEqual(adapter.getItem(1), getFileEntry("file1", false, false, false)));
@@ -314,7 +314,7 @@ public class FileChooseDialogFileModeTest extends BaseUITest {
         onView(withId(R.id.edittext_dialog_file_choose_file)).check(matches(withText("folder2")));
         assertEquals("", getDialog().getFolder());
         assertEquals("folder2", getDialog().getFile());
-        FileEntryAdapter adapter = getDialog().getAdapter();
+        FileEntryAdapter adapter = getAdapter();
         assertEquals(5, adapter.getItemCount());
         assertTrue(areEntriesEqual(adapter.getItem(0), getFileEntry("..", true, true, false)));
         assertTrue(areEntriesEqual(adapter.getItem(1), getFileEntry("file1", false, false, false)));
@@ -347,7 +347,7 @@ public class FileChooseDialogFileModeTest extends BaseUITest {
         onView(allOf(withId(R.id.imageview_list_item_file_entry_symbol), withChildDescendantAtPosition(withId(R.id.listview_dialog_file_choose_file_entries), 4))).check(matches(withDrawable(R.drawable.icon_folder)));
         onView(allOf(withId(R.id.textview_list_item_file_entry_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_file_choose_file_entries), 4))).check(matches(withText("folder2")));
         onView(allOf(withId(R.id.imageview_list_item_file_entry_open), withChildDescendantAtPosition(withId(R.id.listview_dialog_file_choose_file_entries), 4))).check(matches(withDrawable(R.drawable.icon_folder_open_shadow)));
-        adapter = getDialog().getAdapter();
+        adapter = getAdapter();
         assertEquals(5, adapter.getItemCount());
         assertTrue(areEntriesEqual(adapter.getItem(0), getFileEntry("..", true, true, false)));
         assertTrue(areEntriesEqual(adapter.getItem(1), getFileEntry("file1", false, false, false)));
@@ -408,7 +408,7 @@ public class FileChooseDialogFileModeTest extends BaseUITest {
         onView(allOf(withId(R.id.imageview_list_item_file_entry_symbol), withChildDescendantAtPosition(withId(R.id.listview_dialog_file_choose_file_entries), 0))).check(matches(withDrawable(R.drawable.icon_folder)));
         onView(allOf(withId(R.id.textview_list_item_file_entry_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_file_choose_file_entries), 0))).check(matches(withText("..")));
         onView(allOf(withId(R.id.imageview_list_item_file_entry_open), withChildDescendantAtPosition(withId(R.id.listview_dialog_file_choose_file_entries), 0))).check(matches(not(isDisplayed())));
-        adapter = getDialog().getAdapter();
+        adapter = getAdapter();
         assertEquals(1, adapter.getItemCount());
         assertTrue(areEntriesEqual(adapter.getItem(0), getFileEntry("..", true, true, false)));
         assertFalse(adapter.isItemSelected());
@@ -423,7 +423,7 @@ public class FileChooseDialogFileModeTest extends BaseUITest {
         onView(allOf(withId(R.id.imageview_list_item_file_entry_symbol), withChildDescendantAtPosition(withId(R.id.listview_dialog_file_choose_file_entries), 0))).check(matches(withDrawable(R.drawable.icon_folder)));
         onView(allOf(withId(R.id.textview_list_item_file_entry_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_file_choose_file_entries), 0))).check(matches(withText("..")));
         onView(allOf(withId(R.id.imageview_list_item_file_entry_open), withChildDescendantAtPosition(withId(R.id.listview_dialog_file_choose_file_entries), 0))).check(matches(not(isDisplayed())));
-        adapter = getDialog().getAdapter();
+        adapter = getAdapter();
         assertEquals(1, adapter.getItemCount());
         assertTrue(areEntriesEqual(adapter.getItem(0), getFileEntry("..", true, true, false)));
         assertFalse(adapter.isItemSelected());
@@ -479,7 +479,7 @@ public class FileChooseDialogFileModeTest extends BaseUITest {
         onView(withId(R.id.edittext_dialog_file_choose_file)).check(matches(withText("folder1_file1")));
         assertEquals("folder1", getDialog().getFolder());
         assertEquals("folder1_file1", getDialog().getFile());
-        FileEntryAdapter adapter = getDialog().getAdapter();
+        FileEntryAdapter adapter = getAdapter();
         assertEquals(4, adapter.getItemCount());
         assertTrue(areEntriesEqual(adapter.getItem(0), getFileEntry("..", true, true, true)));
         assertTrue(areEntriesEqual(adapter.getItem(1), getFileEntry("folder1_file1", false, false, false)));
@@ -509,7 +509,7 @@ public class FileChooseDialogFileModeTest extends BaseUITest {
         onView(allOf(withId(R.id.imageview_list_item_file_entry_symbol), withChildDescendantAtPosition(withId(R.id.listview_dialog_file_choose_file_entries), 3))).check(matches(withDrawable(R.drawable.icon_folder)));
         onView(allOf(withId(R.id.textview_list_item_file_entry_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_file_choose_file_entries), 3))).check(matches(withText("folder1_folder2")));
         onView(allOf(withId(R.id.imageview_list_item_file_entry_open), withChildDescendantAtPosition(withId(R.id.listview_dialog_file_choose_file_entries), 3))).check(matches(withDrawable(R.drawable.icon_folder_open_shadow)));
-        adapter = getDialog().getAdapter();
+        adapter = getAdapter();
         assertEquals(4, adapter.getItemCount());
         assertTrue(areEntriesEqual(adapter.getItem(0), getFileEntry("..", true, true, true)));
         assertTrue(areEntriesEqual(adapter.getItem(1), getFileEntry("folder1_file1", false, false, false)));
@@ -569,7 +569,7 @@ public class FileChooseDialogFileModeTest extends BaseUITest {
         onView(withId(R.id.edittext_dialog_file_choose_folder)).check(matches(withText("folder1")));
         assertEquals("folder1", getDialog().getFolder());
         assertEquals("folder1_file2", getDialog().getFile());
-        FileEntryAdapter adapter = getDialog().getAdapter();
+        FileEntryAdapter adapter = getAdapter();
         assertEquals(4, adapter.getItemCount());
         assertTrue(areEntriesEqual(adapter.getItem(0), getFileEntry("..", true, true, true)));
         assertTrue(areEntriesEqual(adapter.getItem(1), getFileEntry("folder1_file1", false, false, false)));
@@ -598,7 +598,7 @@ public class FileChooseDialogFileModeTest extends BaseUITest {
         onView(allOf(withId(R.id.imageview_list_item_file_entry_symbol), withChildDescendantAtPosition(withId(R.id.listview_dialog_file_choose_file_entries), 3))).check(matches(withDrawable(R.drawable.icon_folder)));
         onView(allOf(withId(R.id.textview_list_item_file_entry_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_file_choose_file_entries), 3))).check(matches(withText("folder1_folder2")));
         onView(allOf(withId(R.id.imageview_list_item_file_entry_open), withChildDescendantAtPosition(withId(R.id.listview_dialog_file_choose_file_entries), 3))).check(matches(withDrawable(R.drawable.icon_folder_open_shadow)));
-        adapter = getDialog().getAdapter();
+        adapter = getAdapter();
         assertEquals(4, adapter.getItemCount());
         assertTrue(areEntriesEqual(adapter.getItem(0), getFileEntry("..", true, true, true)));
         assertTrue(areEntriesEqual(adapter.getItem(1), getFileEntry("folder1_file1", false, false, false)));
@@ -657,7 +657,7 @@ public class FileChooseDialogFileModeTest extends BaseUITest {
         onView(withId(R.id.edittext_dialog_file_choose_folder)).check(matches(withText("folder1")));
         assertEquals("folder1", dialog.getFolder());
         assertEquals("folder1_folder2", dialog.getFile());
-        FileEntryAdapter adapter = getDialog().getAdapter();
+        FileEntryAdapter adapter = getAdapter();
         assertEquals(4, adapter.getItemCount());
         assertTrue(areEntriesEqual(adapter.getItem(0), getFileEntry("..", true, true, true)));
         assertTrue(areEntriesEqual(adapter.getItem(1), getFileEntry("folder1_file1", false, false, false)));
@@ -686,7 +686,7 @@ public class FileChooseDialogFileModeTest extends BaseUITest {
         onView(allOf(withId(R.id.imageview_list_item_file_entry_symbol), withChildDescendantAtPosition(withId(R.id.listview_dialog_file_choose_file_entries), 3))).check(matches(withDrawable(R.drawable.icon_folder)));
         onView(allOf(withId(R.id.textview_list_item_file_entry_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_file_choose_file_entries), 3))).check(matches(withText("folder1_folder2")));
         onView(allOf(withId(R.id.imageview_list_item_file_entry_open), withChildDescendantAtPosition(withId(R.id.listview_dialog_file_choose_file_entries), 3))).check(matches(withDrawable(R.drawable.icon_folder_open_shadow)));
-        adapter = getDialog().getAdapter();
+        adapter = getAdapter();
         assertEquals(4, adapter.getItemCount());
         assertTrue(areEntriesEqual(adapter.getItem(0), getFileEntry("..", true, true, true)));
         assertTrue(areEntriesEqual(adapter.getItem(1), getFileEntry("folder1_file1", false, false, false)));
@@ -750,7 +750,7 @@ public class FileChooseDialogFileModeTest extends BaseUITest {
         onView(withId(R.id.edittext_dialog_file_choose_file)).check(matches(withText("file2")));
         assertEquals("", getDialog().getFolder());
         assertEquals("file2", getDialog().getFile());
-        adapter = getDialog().getAdapter();
+        adapter = getAdapter();
         assertTrue(adapter.isItemSelected());
         assertTrue(adapter.isFileItemSelected());
         assertFalse(adapter.isFolderItemSelected());
@@ -770,7 +770,7 @@ public class FileChooseDialogFileModeTest extends BaseUITest {
         onView(withId(R.id.edittext_dialog_file_choose_file)).check(matches(withText("file1")));
         assertEquals("", getDialog().getFolder());
         assertEquals("file1", getDialog().getFile());
-        adapter = getDialog().getAdapter();
+        adapter = getAdapter();
         assertTrue(adapter.isItemSelected());
         assertTrue(adapter.isFileItemSelected());
         assertFalse(adapter.isFolderItemSelected());
@@ -780,7 +780,7 @@ public class FileChooseDialogFileModeTest extends BaseUITest {
         onView(withId(R.id.edittext_dialog_file_choose_file)).check(matches(withText("file2")));
         assertEquals("", getDialog().getFolder());
         assertEquals("file2", getDialog().getFile());
-        adapter = getDialog().getAdapter();
+        adapter = getAdapter();
         assertTrue(adapter.isItemSelected());
         assertTrue(adapter.isFileItemSelected());
         assertFalse(adapter.isFolderItemSelected());
@@ -836,7 +836,7 @@ public class FileChooseDialogFileModeTest extends BaseUITest {
         onView(withId(R.id.edittext_dialog_file_choose_file)).check(matches(withText("xyz")));
         assertEquals("", getDialog().getFolder());
         assertEquals("xyz", getDialog().getFile());
-        adapter = getDialog().getAdapter();
+        adapter = getAdapter();
         assertFalse(adapter.isItemSelected());
         assertFalse(adapter.isFileItemSelected());
         assertFalse(adapter.isFolderItemSelected());
@@ -856,7 +856,7 @@ public class FileChooseDialogFileModeTest extends BaseUITest {
         onView(withId(R.id.edittext_dialog_file_choose_file)).check(matches(withText("file1")));
         assertEquals("", getDialog().getFolder());
         assertEquals("file1", getDialog().getFile());
-        adapter = getDialog().getAdapter();
+        adapter = getAdapter();
         assertTrue(adapter.isItemSelected());
         assertTrue(adapter.isFileItemSelected());
         assertFalse(adapter.isFolderItemSelected());
@@ -866,7 +866,7 @@ public class FileChooseDialogFileModeTest extends BaseUITest {
         onView(withId(R.id.edittext_dialog_file_choose_file)).check(matches(withText("file2")));
         assertEquals("", getDialog().getFolder());
         assertEquals("file2", getDialog().getFile());
-        adapter = getDialog().getAdapter();
+        adapter = getAdapter();
         assertTrue(adapter.isItemSelected());
         assertTrue(adapter.isFileItemSelected());
         assertFalse(adapter.isFolderItemSelected());
@@ -925,7 +925,7 @@ public class FileChooseDialogFileModeTest extends BaseUITest {
         onView(withId(R.id.edittext_dialog_file_choose_file)).check(matches(withText("folder2_file2")));
         assertEquals("folder2", getDialog().getFolder());
         assertEquals("folder2_file2", getDialog().getFile());
-        adapter = getDialog().getAdapter();
+        adapter = getAdapter();
         assertTrue(adapter.isItemSelected());
         assertTrue(adapter.isFileItemSelected());
         assertFalse(adapter.isFolderItemSelected());
@@ -935,7 +935,7 @@ public class FileChooseDialogFileModeTest extends BaseUITest {
         onView(withId(R.id.edittext_dialog_file_choose_file)).check(matches(withText("folder2_file1")));
         assertEquals("folder2", getDialog().getFolder());
         assertEquals("folder2_file1", getDialog().getFile());
-        adapter = getDialog().getAdapter();
+        adapter = getAdapter();
         assertTrue(adapter.isItemSelected());
         assertTrue(adapter.isFileItemSelected());
         assertFalse(adapter.isFolderItemSelected());
@@ -946,7 +946,7 @@ public class FileChooseDialogFileModeTest extends BaseUITest {
         onView(withId(R.id.edittext_dialog_file_choose_file)).check(matches(withText("folder2_file1")));
         assertEquals("folder2", getDialog().getFolder());
         assertEquals("folder2_file1", getDialog().getFile());
-        adapter = getDialog().getAdapter();
+        adapter = getAdapter();
         assertTrue(adapter.isItemSelected());
         assertTrue(adapter.isFileItemSelected());
         assertFalse(adapter.isFolderItemSelected());
@@ -956,7 +956,7 @@ public class FileChooseDialogFileModeTest extends BaseUITest {
         onView(withId(R.id.edittext_dialog_file_choose_file)).check(matches(withText("folder2_file2")));
         assertEquals("folder2", getDialog().getFolder());
         assertEquals("folder2_file2", getDialog().getFile());
-        adapter = getDialog().getAdapter();
+        adapter = getAdapter();
         assertTrue(adapter.isItemSelected());
         assertTrue(adapter.isFileItemSelected());
         assertFalse(adapter.isFolderItemSelected());
@@ -1015,7 +1015,7 @@ public class FileChooseDialogFileModeTest extends BaseUITest {
         onView(withId(R.id.edittext_dialog_file_choose_file)).check(matches(withText("xyz")));
         assertEquals("folder2", getDialog().getFolder());
         assertEquals("xyz", getDialog().getFile());
-        adapter = getDialog().getAdapter();
+        adapter = getAdapter();
         assertFalse(adapter.isItemSelected());
         assertFalse(adapter.isFileItemSelected());
         assertFalse(adapter.isFolderItemSelected());
@@ -1025,7 +1025,7 @@ public class FileChooseDialogFileModeTest extends BaseUITest {
         onView(withId(R.id.edittext_dialog_file_choose_file)).check(matches(withText("folder2_file1")));
         assertEquals("folder2", getDialog().getFolder());
         assertEquals("folder2_file1", getDialog().getFile());
-        adapter = getDialog().getAdapter();
+        adapter = getAdapter();
         assertTrue(adapter.isItemSelected());
         assertTrue(adapter.isFileItemSelected());
         assertFalse(adapter.isFolderItemSelected());
@@ -1036,7 +1036,7 @@ public class FileChooseDialogFileModeTest extends BaseUITest {
         onView(withId(R.id.edittext_dialog_file_choose_file)).check(matches(withText("folder2_file1")));
         assertEquals("folder2", getDialog().getFolder());
         assertEquals("folder2_file1", getDialog().getFile());
-        adapter = getDialog().getAdapter();
+        adapter = getAdapter();
         assertTrue(adapter.isItemSelected());
         assertTrue(adapter.isFileItemSelected());
         assertFalse(adapter.isFolderItemSelected());
@@ -1046,7 +1046,7 @@ public class FileChooseDialogFileModeTest extends BaseUITest {
         onView(withId(R.id.edittext_dialog_file_choose_file)).check(matches(withText("folder2_file2")));
         assertEquals("folder2", getDialog().getFolder());
         assertEquals("folder2_file2", getDialog().getFile());
-        adapter = getDialog().getAdapter();
+        adapter = getAdapter();
         assertTrue(adapter.isItemSelected());
         assertTrue(adapter.isFileItemSelected());
         assertFalse(adapter.isFolderItemSelected());
@@ -1114,7 +1114,7 @@ public class FileChooseDialogFileModeTest extends BaseUITest {
         onView(withId(R.id.edittext_dialog_file_choose_file)).check(matches(withText("file1")));
         assertEquals("folder1", getDialog().getFolder());
         assertEquals("file1", getDialog().getFile());
-        adapter = getDialog().getAdapter();
+        adapter = getAdapter();
         assertTrue(adapter.isItemSelected());
         assertFalse(adapter.isFileItemSelected());
         assertTrue(adapter.isFolderItemSelected());
@@ -1201,7 +1201,7 @@ public class FileChooseDialogFileModeTest extends BaseUITest {
         onView(withId(R.id.edittext_dialog_file_choose_file)).check(matches(withText("xyz")));
         assertEquals("folder1", getDialog().getFolder());
         assertEquals("xyz", getDialog().getFile());
-        adapter = getDialog().getAdapter();
+        adapter = getAdapter();
         assertTrue(adapter.isItemSelected());
         assertFalse(adapter.isFileItemSelected());
         assertTrue(adapter.isFolderItemSelected());
@@ -1288,7 +1288,7 @@ public class FileChooseDialogFileModeTest extends BaseUITest {
         onView(withId(R.id.edittext_dialog_file_choose_file)).check(matches(withText("folder2_file2")));
         assertEquals("folder2/folder2_folder1", getDialog().getFolder());
         assertEquals("folder2_file2", getDialog().getFile());
-        adapter = getDialog().getAdapter();
+        adapter = getAdapter();
         assertTrue(adapter.isItemSelected());
         assertFalse(adapter.isFileItemSelected());
         assertTrue(adapter.isFolderItemSelected());
@@ -1308,7 +1308,7 @@ public class FileChooseDialogFileModeTest extends BaseUITest {
         onView(withId(R.id.edittext_dialog_file_choose_file)).check(matches(withText("folder2_file1")));
         assertEquals("folder2", getDialog().getFolder());
         assertEquals("folder2_file1", getDialog().getFile());
-        adapter = getDialog().getAdapter();
+        adapter = getAdapter();
         assertTrue(adapter.isItemSelected());
         assertTrue(adapter.isFileItemSelected());
         assertFalse(adapter.isFolderItemSelected());
@@ -1376,7 +1376,7 @@ public class FileChooseDialogFileModeTest extends BaseUITest {
         onView(withId(R.id.edittext_dialog_file_choose_file)).check(matches(withText("xyz")));
         assertEquals("folder2/folder2_folder1", getDialog().getFolder());
         assertEquals("xyz", getDialog().getFile());
-        adapter = getDialog().getAdapter();
+        adapter = getAdapter();
         assertTrue(adapter.isItemSelected());
         assertFalse(adapter.isFileItemSelected());
         assertTrue(adapter.isFolderItemSelected());
@@ -1396,7 +1396,7 @@ public class FileChooseDialogFileModeTest extends BaseUITest {
         onView(withId(R.id.edittext_dialog_file_choose_file)).check(matches(withText("folder2_file1")));
         assertEquals("folder2", getDialog().getFolder());
         assertEquals("folder2_file1", getDialog().getFile());
-        adapter = getDialog().getAdapter();
+        adapter = getAdapter();
         assertTrue(adapter.isItemSelected());
         assertTrue(adapter.isFileItemSelected());
         assertFalse(adapter.isFolderItemSelected());
@@ -1559,7 +1559,7 @@ public class FileChooseDialogFileModeTest extends BaseUITest {
         onView(withId(R.id.edittext_dialog_file_choose_file)).check(matches(withText("file1")));
         assertEquals("folder1", getDialog().getFolder());
         assertEquals("file1", getDialog().getFile());
-        adapter = getDialog().getAdapter();
+        adapter = getAdapter();
         assertEquals(4, adapter.getItemCount());
         assertTrue(areEntriesEqual(adapter.getItem(0), getFileEntry("..", true, true, true)));
         assertTrue(areEntriesEqual(adapter.getItem(1), getFileEntry("folder1_file1", false, false, false)));
@@ -1591,7 +1591,7 @@ public class FileChooseDialogFileModeTest extends BaseUITest {
         onView(withId(R.id.edittext_dialog_file_choose_file)).check(matches(withText("folder1_file1")));
         assertEquals("folder1/folder1_folder1", getDialog().getFolder());
         assertEquals("folder1_file1", getDialog().getFile());
-        adapter = getDialog().getAdapter();
+        adapter = getAdapter();
         assertEquals(4, adapter.getItemCount());
         assertTrue(areEntriesEqual(adapter.getItem(0), getFileEntry("..", true, true, true)));
         assertTrue(areEntriesEqual(adapter.getItem(1), getFileEntry("folder1_file1", false, false, false)));
@@ -1704,7 +1704,7 @@ public class FileChooseDialogFileModeTest extends BaseUITest {
         onView(withId(R.id.edittext_dialog_file_choose_file)).check(matches(withText("xyz")));
         assertEquals("folder1", getDialog().getFolder());
         assertEquals("xyz", getDialog().getFile());
-        adapter = getDialog().getAdapter();
+        adapter = getAdapter();
         assertEquals(4, adapter.getItemCount());
         assertTrue(areEntriesEqual(adapter.getItem(0), getFileEntry("..", true, true, true)));
         assertTrue(areEntriesEqual(adapter.getItem(1), getFileEntry("folder1_file1", false, false, false)));
@@ -1856,7 +1856,7 @@ public class FileChooseDialogFileModeTest extends BaseUITest {
         onView(withId(R.id.edittext_dialog_file_choose_file)).check(matches(withText("folder1_file1")));
         assertEquals("folder1/folder1_folder2", getDialog().getFolder());
         assertEquals("folder1_file1", getDialog().getFile());
-        adapter = getDialog().getAdapter();
+        adapter = getAdapter();
         assertEquals(1, adapter.getItemCount());
         assertTrue(areEntriesEqual(adapter.getItem(0), getFileEntry("..", true, true, true)));
         assertFalse(adapter.isItemSelected());
@@ -1884,7 +1884,7 @@ public class FileChooseDialogFileModeTest extends BaseUITest {
         onView(withId(R.id.edittext_dialog_file_choose_file)).check(matches(withText("folder1_file1")));
         assertEquals("folder1", getDialog().getFolder());
         assertEquals("folder1_file1", getDialog().getFile());
-        adapter = getDialog().getAdapter();
+        adapter = getAdapter();
         assertEquals(4, adapter.getItemCount());
         assertTrue(areEntriesEqual(adapter.getItem(0), getFileEntry("..", true, true, true)));
         assertTrue(areEntriesEqual(adapter.getItem(1), getFileEntry("folder1_file1", false, false, false)));
@@ -2003,7 +2003,7 @@ public class FileChooseDialogFileModeTest extends BaseUITest {
         onView(withId(R.id.edittext_dialog_file_choose_file)).check(matches(withText("xyz")));
         assertEquals("folder1/folder1_folder2", getDialog().getFolder());
         assertEquals("xyz", getDialog().getFile());
-        adapter = getDialog().getAdapter();
+        adapter = getAdapter();
         assertEquals(1, adapter.getItemCount());
         assertTrue(areEntriesEqual(adapter.getItem(0), getFileEntry("..", true, true, true)));
         assertFalse(adapter.isItemSelected());
@@ -2030,7 +2030,7 @@ public class FileChooseDialogFileModeTest extends BaseUITest {
         onView(withId(R.id.edittext_dialog_file_choose_file)).check(matches(withText("xyz")));
         assertEquals("folder1", getDialog().getFolder());
         assertEquals("xyz", getDialog().getFile());
-        adapter = getDialog().getAdapter();
+        adapter = getAdapter();
         assertEquals(4, adapter.getItemCount());
         assertTrue(areEntriesEqual(adapter.getItem(0), getFileEntry("..", true, true, true)));
         assertTrue(areEntriesEqual(adapter.getItem(1), getFileEntry("folder1_file1", false, false, false)));
@@ -2151,7 +2151,7 @@ public class FileChooseDialogFileModeTest extends BaseUITest {
         onView(withId(R.id.edittext_dialog_file_choose_file)).check(matches(withText("file25")));
         assertEquals("", getDialog().getFolder());
         assertEquals("file25", getDialog().getFile());
-        adapter = getDialog().getAdapter();
+        adapter = getAdapter();
         assertEquals(5, adapter.getItemCount());
         assertTrue(areEntriesEqual(adapter.getItem(0), getFileEntry("..", true, true, false)));
         assertTrue(areEntriesEqual(adapter.getItem(1), getFileEntry("file1", false, false, false)));
@@ -2350,7 +2350,7 @@ public class FileChooseDialogFileModeTest extends BaseUITest {
         onView(withId(R.id.edittext_dialog_file_choose_file)).check(matches(withText("file25")));
         assertEquals("xyz", getDialog().getFolder());
         assertEquals("file25", getDialog().getFile());
-        adapter = getDialog().getAdapter();
+        adapter = getAdapter();
         assertEquals(5, adapter.getItemCount());
         assertTrue(areEntriesEqual(adapter.getItem(0), getFileEntry("..", true, true, false)));
         assertTrue(areEntriesEqual(adapter.getItem(1), getFileEntry("file1", false, false, false)));
@@ -2367,7 +2367,7 @@ public class FileChooseDialogFileModeTest extends BaseUITest {
         onView(withId(R.id.edittext_dialog_file_choose_file)).check(matches(withText("file1")));
         assertEquals("", getDialog().getFolder());
         assertEquals("file1", getDialog().getFile());
-        adapter = getDialog().getAdapter();
+        adapter = getAdapter();
         assertEquals(5, adapter.getItemCount());
         assertTrue(areEntriesEqual(adapter.getItem(0), getFileEntry("..", true, true, false)));
         assertTrue(areEntriesEqual(adapter.getItem(1), getFileEntry("file1", false, false, false)));
@@ -2385,7 +2385,7 @@ public class FileChooseDialogFileModeTest extends BaseUITest {
         onView(withId(R.id.edittext_dialog_file_choose_file)).check(matches(withText("file1")));
         assertEquals("", getDialog().getFolder());
         assertEquals("file1", getDialog().getFile());
-        adapter = getDialog().getAdapter();
+        adapter = getAdapter();
         assertEquals(5, adapter.getItemCount());
         assertTrue(areEntriesEqual(adapter.getItem(0), getFileEntry("..", true, true, false)));
         assertTrue(areEntriesEqual(adapter.getItem(1), getFileEntry("file1", false, false, false)));
@@ -2402,7 +2402,7 @@ public class FileChooseDialogFileModeTest extends BaseUITest {
         onView(withId(R.id.edittext_dialog_file_choose_file)).check(matches(withText("file1")));
         assertEquals("folder2", getDialog().getFolder());
         assertEquals("file1", getDialog().getFile());
-        adapter = getDialog().getAdapter();
+        adapter = getAdapter();
         assertEquals(5, adapter.getItemCount());
         assertTrue(areEntriesEqual(adapter.getItem(0), getFileEntry("..", true, true, false)));
         assertTrue(areEntriesEqual(adapter.getItem(1), getFileEntry("file1", false, false, false)));
@@ -2519,7 +2519,7 @@ public class FileChooseDialogFileModeTest extends BaseUITest {
         onView(withId(R.id.edittext_dialog_file_choose_file)).check(matches(withText("file25")));
         assertEquals("", getDialog().getFolder());
         assertEquals("file25", getDialog().getFile());
-        adapter = getDialog().getAdapter();
+        adapter = getAdapter();
         assertEquals(5, adapter.getItemCount());
         assertTrue(areEntriesEqual(adapter.getItem(0), getFileEntry("..", true, true, false)));
         assertTrue(areEntriesEqual(adapter.getItem(1), getFileEntry("file1", false, false, false)));
@@ -2537,7 +2537,7 @@ public class FileChooseDialogFileModeTest extends BaseUITest {
         onView(withId(R.id.edittext_dialog_file_choose_file)).check(matches(withText("file25")));
         assertEquals("", getDialog().getFolder());
         assertEquals("file25", getDialog().getFile());
-        adapter = getDialog().getAdapter();
+        adapter = getAdapter();
         assertEquals(5, adapter.getItemCount());
         assertTrue(areEntriesEqual(adapter.getItem(0), getFileEntry("..", true, true, false)));
         assertTrue(areEntriesEqual(adapter.getItem(1), getFileEntry("file1", false, false, false)));
@@ -2554,7 +2554,7 @@ public class FileChooseDialogFileModeTest extends BaseUITest {
         onView(withId(R.id.edittext_dialog_file_choose_file)).check(matches(withText("file25")));
         assertEquals("folder1", getDialog().getFolder());
         assertEquals("file25", getDialog().getFile());
-        adapter = getDialog().getAdapter();
+        adapter = getAdapter();
         assertEquals(4, adapter.getItemCount());
         assertTrue(areEntriesEqual(adapter.getItem(0), getFileEntry("..", true, true, true)));
         assertTrue(areEntriesEqual(adapter.getItem(1), getFileEntry("folder1_file1", false, false, false)));
@@ -2682,7 +2682,7 @@ public class FileChooseDialogFileModeTest extends BaseUITest {
         onView(withId(R.id.edittext_dialog_file_choose_file)).check(matches(withText("file25")));
         assertEquals("xyz", getDialog().getFolder());
         assertEquals("file25", getDialog().getFile());
-        adapter = getDialog().getAdapter();
+        adapter = getAdapter();
         assertEquals(5, adapter.getItemCount());
         assertTrue(areEntriesEqual(adapter.getItem(0), getFileEntry("..", true, true, false)));
         assertTrue(areEntriesEqual(adapter.getItem(1), getFileEntry("file1", false, false, false)));
@@ -2700,7 +2700,7 @@ public class FileChooseDialogFileModeTest extends BaseUITest {
         onView(withId(R.id.edittext_dialog_file_choose_file)).check(matches(withText("file25")));
         assertEquals("xyz", getDialog().getFolder());
         assertEquals("file25", getDialog().getFile());
-        adapter = getDialog().getAdapter();
+        adapter = getAdapter();
         assertEquals(5, adapter.getItemCount());
         assertTrue(areEntriesEqual(adapter.getItem(0), getFileEntry("..", true, true, false)));
         assertTrue(areEntriesEqual(adapter.getItem(1), getFileEntry("file1", false, false, false)));
@@ -2718,7 +2718,7 @@ public class FileChooseDialogFileModeTest extends BaseUITest {
         onView(withId(R.id.edittext_dialog_file_choose_file)).check(matches(withText("file25")));
         assertEquals("folder2", getDialog().getFolder());
         assertEquals("file25", getDialog().getFile());
-        adapter = getDialog().getAdapter();
+        adapter = getAdapter();
         assertEquals(4, adapter.getItemCount());
         assertTrue(areEntriesEqual(adapter.getItem(0), getFileEntry("..", true, true, true)));
         assertTrue(areEntriesEqual(adapter.getItem(1), getFileEntry("folder2_file1", false, false, false)));
@@ -2811,7 +2811,7 @@ public class FileChooseDialogFileModeTest extends BaseUITest {
         onView(withId(R.id.edittext_dialog_file_choose_file)).check(matches(withText("file3")));
         assertEquals("", getDialog().getFolder());
         assertEquals("file3", getDialog().getFile());
-        FileEntryAdapter adapter = getDialog().getAdapter();
+        FileEntryAdapter adapter = getAdapter();
         assertEquals(5, adapter.getItemCount());
         assertTrue(areEntriesEqual(adapter.getItem(0), getFileEntry("..", true, true, false)));
         assertTrue(areEntriesEqual(adapter.getItem(1), getFileEntry("file1", false, false, false)));
@@ -2950,7 +2950,7 @@ public class FileChooseDialogFileModeTest extends BaseUITest {
         assertEquals("file3", getDialog().getFolder());
         assertEquals("file3", getDialog().getFile());
         assertEquals("file3", clipboardManager.getData());
-        FileEntryAdapter adapter = getDialog().getAdapter();
+        FileEntryAdapter adapter = getAdapter();
         assertEquals(5, adapter.getItemCount());
         assertTrue(areEntriesEqual(adapter.getItem(0), getFileEntry("..", true, true, false)));
         assertTrue(areEntriesEqual(adapter.getItem(1), getFileEntry("file1", false, false, false)));
@@ -3081,7 +3081,7 @@ public class FileChooseDialogFileModeTest extends BaseUITest {
         onView(withId(R.id.edittext_dialog_file_choose_file)).check(matches(withText("file25")));
         assertEquals("folder1", getDialog().getFolder());
         assertEquals("file25", getDialog().getFile());
-        adapter = getDialog().getAdapter();
+        adapter = getAdapter();
         assertEquals(4, adapter.getItemCount());
         assertTrue(areEntriesEqual(adapter.getItem(0), getFileEntry("..", true, true, true)));
         assertTrue(areEntriesEqual(adapter.getItem(1), getFileEntry("folder1_file1", false, false, false)));
@@ -3113,7 +3113,7 @@ public class FileChooseDialogFileModeTest extends BaseUITest {
         onView(withId(R.id.edittext_dialog_file_choose_file)).check(matches(withText("file25")));
         assertEquals("folder1", dialog.getFolder());
         assertEquals("file25", dialog.getFile());
-        adapter = getDialog().getAdapter();
+        adapter = getAdapter();
         assertEquals(4, adapter.getItemCount());
         assertTrue(areEntriesEqual(adapter.getItem(0), getFileEntry("..", true, true, true)));
         assertTrue(areEntriesEqual(adapter.getItem(1), getFileEntry("folder1_file1", false, false, false)));
@@ -3232,7 +3232,7 @@ public class FileChooseDialogFileModeTest extends BaseUITest {
         onView(withId(R.id.edittext_dialog_file_choose_file)).check(matches(withText("file25")));
         assertEquals("folderxy", getDialog().getFolder());
         assertEquals("file25", getDialog().getFile());
-        adapter = getDialog().getAdapter();
+        adapter = getAdapter();
         assertEquals(4, adapter.getItemCount());
         assertTrue(areEntriesEqual(adapter.getItem(0), getFileEntry("..", true, true, true)));
         assertTrue(areEntriesEqual(adapter.getItem(1), getFileEntry("folder1_file1", false, false, false)));
@@ -3248,7 +3248,7 @@ public class FileChooseDialogFileModeTest extends BaseUITest {
         onView(withId(R.id.edittext_dialog_file_choose_file)).check(matches(withText("file25")));
         assertEquals("folder1", dialog.getFolder());
         assertEquals("file25", dialog.getFile());
-        adapter = getDialog().getAdapter();
+        adapter = getAdapter();
         assertEquals(4, adapter.getItemCount());
         assertTrue(areEntriesEqual(adapter.getItem(0), getFileEntry("..", true, true, true)));
         assertTrue(areEntriesEqual(adapter.getItem(1), getFileEntry("folder1_file1", false, false, false)));
@@ -3265,7 +3265,7 @@ public class FileChooseDialogFileModeTest extends BaseUITest {
         onView(withId(R.id.edittext_dialog_file_choose_file)).check(matches(withText("file25")));
         assertEquals("folder1", dialog.getFolder());
         assertEquals("file25", dialog.getFile());
-        adapter = getDialog().getAdapter();
+        adapter = getAdapter();
         assertEquals(4, adapter.getItemCount());
         assertTrue(areEntriesEqual(adapter.getItem(0), getFileEntry("..", true, true, true)));
         assertTrue(areEntriesEqual(adapter.getItem(1), getFileEntry("folder1_file1", false, false, false)));
@@ -3361,7 +3361,7 @@ public class FileChooseDialogFileModeTest extends BaseUITest {
         onView(withId(R.id.edittext_dialog_file_choose_file)).check(matches(withText("file25")));
         assertEquals("folder1", getDialog().getFolder());
         assertEquals("file25", getDialog().getFile());
-        adapter = getDialog().getAdapter();
+        adapter = getAdapter();
         assertEquals(4, adapter.getItemCount());
         assertTrue(areEntriesEqual(adapter.getItem(0), getFileEntry("..", true, true, true)));
         assertTrue(areEntriesEqual(adapter.getItem(1), getFileEntry("folder1_file1", false, false, false)));
@@ -3377,7 +3377,7 @@ public class FileChooseDialogFileModeTest extends BaseUITest {
         onView(withId(R.id.edittext_dialog_file_choose_file)).check(matches(withText("file25")));
         assertEquals("", getDialog().getFolder());
         assertEquals("file25", getDialog().getFile());
-        adapter = getDialog().getAdapter();
+        adapter = getAdapter();
         assertEquals(5, adapter.getItemCount());
         assertTrue(areEntriesEqual(adapter.getItem(0), getFileEntry("..", true, true, false)));
         assertTrue(areEntriesEqual(adapter.getItem(1), getFileEntry("file1", false, false, false)));
@@ -3394,7 +3394,7 @@ public class FileChooseDialogFileModeTest extends BaseUITest {
         onView(withId(R.id.edittext_dialog_file_choose_file)).check(matches(withText("file25")));
         assertEquals("", getDialog().getFolder());
         assertEquals("file25", getDialog().getFile());
-        adapter = getDialog().getAdapter();
+        adapter = getAdapter();
         assertEquals(5, adapter.getItemCount());
         assertTrue(areEntriesEqual(adapter.getItem(0), getFileEntry("..", true, true, false)));
         assertTrue(areEntriesEqual(adapter.getItem(1), getFileEntry("file1", false, false, false)));
@@ -3517,7 +3517,7 @@ public class FileChooseDialogFileModeTest extends BaseUITest {
         onView(withId(R.id.edittext_dialog_file_choose_file)).check(matches(withText("file25")));
         assertEquals("xyz", getDialog().getFolder());
         assertEquals("file25", getDialog().getFile());
-        adapter = getDialog().getAdapter();
+        adapter = getAdapter();
         assertEquals(4, adapter.getItemCount());
         assertTrue(areEntriesEqual(adapter.getItem(0), getFileEntry("..", true, true, true)));
         assertTrue(areEntriesEqual(adapter.getItem(1), getFileEntry("folder2_file1", false, false, false)));
@@ -3534,7 +3534,7 @@ public class FileChooseDialogFileModeTest extends BaseUITest {
         onView(withId(R.id.edittext_dialog_file_choose_file)).check(matches(withText("file25")));
         assertEquals("", getDialog().getFolder());
         assertEquals("file25", getDialog().getFile());
-        adapter = getDialog().getAdapter();
+        adapter = getAdapter();
         assertEquals(5, adapter.getItemCount());
         assertTrue(areEntriesEqual(adapter.getItem(0), getFileEntry("..", true, true, false)));
         assertTrue(areEntriesEqual(adapter.getItem(1), getFileEntry("file1", false, false, false)));
@@ -3551,7 +3551,7 @@ public class FileChooseDialogFileModeTest extends BaseUITest {
         onView(withId(R.id.edittext_dialog_file_choose_file)).check(matches(withText("file25")));
         assertEquals("", getDialog().getFolder());
         assertEquals("file25", getDialog().getFile());
-        adapter = getDialog().getAdapter();
+        adapter = getAdapter();
         assertEquals(5, adapter.getItemCount());
         assertTrue(areEntriesEqual(adapter.getItem(0), getFileEntry("..", true, true, false)));
         assertTrue(areEntriesEqual(adapter.getItem(1), getFileEntry("file1", false, false, false)));
@@ -3640,7 +3640,7 @@ public class FileChooseDialogFileModeTest extends BaseUITest {
         onView(withId(R.id.edittext_dialog_file_choose_file)).check(matches(withText("file3")));
         assertEquals("folder1", getDialog().getFolder());
         assertEquals("file3", getDialog().getFile());
-        FileEntryAdapter adapter = getDialog().getAdapter();
+        FileEntryAdapter adapter = getAdapter();
         assertEquals(4, adapter.getItemCount());
         assertTrue(areEntriesEqual(adapter.getItem(0), getFileEntry("..", true, true, true)));
         assertTrue(areEntriesEqual(adapter.getItem(1), getFileEntry("folder1_file1", false, false, false)));
@@ -3770,7 +3770,7 @@ public class FileChooseDialogFileModeTest extends BaseUITest {
         assertEquals("file3", getDialog().getFolder());
         assertEquals("file3", getDialog().getFile());
         assertEquals("file3", clipboardManager.getData());
-        FileEntryAdapter adapter = getDialog().getAdapter();
+        FileEntryAdapter adapter = getAdapter();
         assertEquals(4, adapter.getItemCount());
         assertTrue(areEntriesEqual(adapter.getItem(0), getFileEntry("..", true, true, true)));
         assertTrue(areEntriesEqual(adapter.getItem(1), getFileEntry("folder2_file1", false, false, false)));
@@ -3795,6 +3795,18 @@ public class FileChooseDialogFileModeTest extends BaseUITest {
         onView(allOf(withId(R.id.textview_list_item_file_entry_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_file_choose_file_entries), 3))).check(matches(withText("folder2_folder1")));
         onView(allOf(withId(R.id.imageview_list_item_file_entry_open), withChildDescendantAtPosition(withId(R.id.listview_dialog_file_choose_file_entries), 3))).check(matches(withDrawable(R.drawable.icon_folder_open_shadow)));
         onView(withId(R.id.imageview_dialog_file_choose_cancel)).perform(click());
+    }
+
+    @Test
+    public void testIdenticalFolderNameOpen() {
+        getFileManager().delete(getFileManager().getExternalRootDirectory(0));
+        getFileManager().delete(getFileManager().getExternalRootDirectory(1));
+        createIdenticalNameTestFiles();
+        FileChooseDialog dialog = openFileChooseDialog("", "file");
+        onView(withId(R.id.textview_dialog_file_choose_absolute)).check(matches(withText(root + "/file")));
+        assertEquals("", dialog.getFolder());
+        assertEquals("file", dialog.getFolder());
+        onView(withId(R.id.edittext_dialog_file_choose_folder)).check(matches(withText("download")));
     }
 
     private FileChooseDialog openFileChooseDialog(String folder, String file) {
@@ -3823,7 +3835,26 @@ public class FileChooseDialogFileModeTest extends BaseUITest {
     }
 
     private FileEntryAdapter getAdapter() {
-        return getDialog().getAdapter();
+        return getAdapter();
+    }
+
+    private void createIdenticalNameTestFiles() {
+        try {
+            File downloadFolder1 = new File(root, "download");
+            File file1 = new File(root, "file");
+            assertTrue(downloadFolder1.mkdir());
+            assertTrue(file1.createNewFile());
+            File downloadFolder2 = new File(downloadFolder1, "download");
+            File File2 = new File(downloadFolder1, "file");
+            assertTrue(downloadFolder2.mkdirs());
+            assertTrue(File2.createNewFile());
+            File downloadFolder3 = new File(downloadFolder2, "download");
+            File File3 = new File(downloadFolder2, "file");
+            assertTrue(downloadFolder3.mkdirs());
+            assertTrue(File3.createNewFile());
+        } catch (IOException exc) {
+            throw new RuntimeException(exc);
+        }
     }
 
     private void createTestFiles() {
