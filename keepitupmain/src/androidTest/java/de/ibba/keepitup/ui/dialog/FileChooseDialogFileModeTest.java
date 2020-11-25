@@ -26,6 +26,7 @@ import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
 import static androidx.test.espresso.action.ViewActions.longClick;
 import static androidx.test.espresso.action.ViewActions.replaceText;
+import static androidx.test.espresso.action.ViewActions.swipeUp;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.isRoot;
@@ -3804,9 +3805,173 @@ public class FileChooseDialogFileModeTest extends BaseUITest {
         createIdenticalNameTestFiles();
         FileChooseDialog dialog = openFileChooseDialog("", "file");
         onView(withId(R.id.textview_dialog_file_choose_absolute)).check(matches(withText(root + "/file")));
+        onView(withId(R.id.edittext_dialog_file_choose_folder)).check(matches(withText("")));
+        onView(withId(R.id.edittext_dialog_file_choose_file)).check(matches(withText("file")));
         assertEquals("", dialog.getFolder());
-        assertEquals("file", dialog.getFolder());
+        assertEquals("file", dialog.getFile());
+        FileEntryAdapter adapter = dialog.getAdapter();
+        assertEquals(3, adapter.getItemCount());
+        assertTrue(areEntriesEqual(adapter.getItem(0), getFileEntry("..", true, true, false)));
+        assertTrue(areEntriesEqual(adapter.getItem(1), getFileEntry("download", true, false, true)));
+        assertTrue(areEntriesEqual(adapter.getItem(2), getFileEntry("file", false, false, false)));
+        assertTrue(areEntriesEqual(adapter.getSelectedItem(), getFileEntry("file", false, false, false)));
+        assertTrue(adapter.isItemSelected());
+        assertTrue(adapter.isFileItemSelected());
+        assertFalse(adapter.isFolderItemSelected());
+        openEntry(1);
+        onView(withId(R.id.textview_dialog_file_choose_absolute)).check(matches(withText(root + "/download/file")));
         onView(withId(R.id.edittext_dialog_file_choose_folder)).check(matches(withText("download")));
+        onView(withId(R.id.edittext_dialog_file_choose_file)).check(matches(withText("file")));
+        assertEquals("download", dialog.getFolder());
+        assertEquals("file", dialog.getFile());
+        assertEquals(3, adapter.getItemCount());
+        assertTrue(areEntriesEqual(adapter.getItem(0), getFileEntry("..", true, true, true)));
+        assertTrue(areEntriesEqual(adapter.getItem(1), getFileEntry("download", true, false, true)));
+        assertTrue(areEntriesEqual(adapter.getItem(2), getFileEntry("file", false, false, false)));
+        assertTrue(areEntriesEqual(adapter.getSelectedItem(), getFileEntry("file", false, false, false)));
+        assertTrue(adapter.isItemSelected());
+        assertTrue(adapter.isFileItemSelected());
+        assertFalse(adapter.isFolderItemSelected());
+        openEntry(1);
+        onView(withId(R.id.textview_dialog_file_choose_absolute)).check(matches(withText(root + "/download/download/file")));
+        onView(withId(R.id.edittext_dialog_file_choose_folder)).check(matches(withText("download/download")));
+        onView(withId(R.id.edittext_dialog_file_choose_file)).check(matches(withText("file")));
+        assertEquals("download/download", dialog.getFolder());
+        assertEquals("file", dialog.getFile());
+        assertEquals(3, adapter.getItemCount());
+        assertTrue(areEntriesEqual(adapter.getItem(0), getFileEntry("..", true, true, true)));
+        assertTrue(areEntriesEqual(adapter.getItem(1), getFileEntry("download", true, false, true)));
+        assertTrue(areEntriesEqual(adapter.getItem(2), getFileEntry("file", false, false, false)));
+        assertTrue(areEntriesEqual(adapter.getSelectedItem(), getFileEntry("file", false, false, false)));
+        assertTrue(adapter.isItemSelected());
+        assertTrue(adapter.isFileItemSelected());
+        assertFalse(adapter.isFolderItemSelected());
+        openEntry(1);
+        onView(withId(R.id.textview_dialog_file_choose_absolute)).check(matches(withText(root + "/download/download/download/file")));
+        onView(withId(R.id.edittext_dialog_file_choose_folder)).check(matches(withText("download/download/download")));
+        onView(withId(R.id.edittext_dialog_file_choose_file)).check(matches(withText("file")));
+        assertEquals("download/download/download", dialog.getFolder());
+        assertEquals("file", dialog.getFile());
+        assertEquals(1, adapter.getItemCount());
+        assertTrue(areEntriesEqual(adapter.getItem(0), getFileEntry("..", true, true, true)));
+        assertFalse(adapter.isItemSelected());
+        assertFalse(adapter.isFileItemSelected());
+        assertFalse(adapter.isFolderItemSelected());
+        openEntry(0);
+        onView(withId(R.id.textview_dialog_file_choose_absolute)).check(matches(withText(root + "/download/download/file")));
+        onView(withId(R.id.edittext_dialog_file_choose_folder)).check(matches(withText("download/download")));
+        onView(withId(R.id.edittext_dialog_file_choose_file)).check(matches(withText("file")));
+        assertEquals("download/download", dialog.getFolder());
+        assertEquals("file", dialog.getFile());
+        assertEquals(3, adapter.getItemCount());
+        assertTrue(areEntriesEqual(adapter.getItem(0), getFileEntry("..", true, true, true)));
+        assertTrue(areEntriesEqual(adapter.getItem(1), getFileEntry("download", true, false, true)));
+        assertTrue(areEntriesEqual(adapter.getItem(2), getFileEntry("file", false, false, false)));
+        assertTrue(areEntriesEqual(adapter.getSelectedItem(), getFileEntry("file", false, false, false)));
+        assertTrue(adapter.isItemSelected());
+        assertTrue(adapter.isFileItemSelected());
+        assertFalse(adapter.isFolderItemSelected());
+        openEntry(0);
+        onView(withId(R.id.textview_dialog_file_choose_absolute)).check(matches(withText(root + "/download/file")));
+        onView(withId(R.id.edittext_dialog_file_choose_folder)).check(matches(withText("download")));
+        onView(withId(R.id.edittext_dialog_file_choose_file)).check(matches(withText("file")));
+        assertEquals("download", dialog.getFolder());
+        assertEquals("file", dialog.getFile());
+        assertEquals(3, adapter.getItemCount());
+        assertTrue(areEntriesEqual(adapter.getItem(0), getFileEntry("..", true, true, true)));
+        assertTrue(areEntriesEqual(adapter.getItem(1), getFileEntry("download", true, false, true)));
+        assertTrue(areEntriesEqual(adapter.getItem(2), getFileEntry("file", false, false, false)));
+        assertTrue(areEntriesEqual(adapter.getSelectedItem(), getFileEntry("file", false, false, false)));
+        assertTrue(adapter.isItemSelected());
+        assertTrue(adapter.isFileItemSelected());
+        assertFalse(adapter.isFolderItemSelected());
+        openEntry(0);
+        onView(withId(R.id.textview_dialog_file_choose_absolute)).check(matches(withText(root + "/file")));
+        onView(withId(R.id.edittext_dialog_file_choose_folder)).check(matches(withText("")));
+        onView(withId(R.id.edittext_dialog_file_choose_file)).check(matches(withText("file")));
+        assertEquals("", dialog.getFolder());
+        assertEquals("file", dialog.getFile());
+        assertEquals(3, adapter.getItemCount());
+        assertTrue(areEntriesEqual(adapter.getItem(0), getFileEntry("..", true, true, false)));
+        assertTrue(areEntriesEqual(adapter.getItem(1), getFileEntry("download", true, false, true)));
+        assertTrue(areEntriesEqual(adapter.getItem(2), getFileEntry("file", false, false, false)));
+        assertTrue(areEntriesEqual(adapter.getSelectedItem(), getFileEntry("file", false, false, false)));
+        assertTrue(adapter.isItemSelected());
+        assertTrue(adapter.isFileItemSelected());
+        assertFalse(adapter.isFolderItemSelected());
+        onView(withId(R.id.imageview_dialog_file_choose_cancel)).perform(click());
+    }
+
+    @Test
+    public void testIdenticalFolderNameOpenScreenRotation() {
+        getFileManager().delete(getFileManager().getExternalRootDirectory(0));
+        getFileManager().delete(getFileManager().getExternalRootDirectory(1));
+        createIdenticalNameTestFiles();
+        openFileChooseDialog("", "file");
+        openEntry(1);
+        openEntry(1);
+        openEntry(1);
+        rotateScreen(activityScenario);
+        deleteLogFolder();
+        onView(withId(R.id.textview_dialog_file_choose_absolute)).check(matches(withText(root + "/download/download/download/file")));
+        onView(withId(R.id.edittext_dialog_file_choose_folder)).check(matches(withText("download/download/download")));
+        onView(withId(R.id.edittext_dialog_file_choose_file)).check(matches(withText("file")));
+        assertEquals("download/download/download", getDialog().getFolder());
+        assertEquals("file", getDialog().getFile());
+        FileEntryAdapter adapter = getAdapter();
+        assertEquals(1, adapter.getItemCount());
+        assertTrue(areEntriesEqual(adapter.getItem(0), getFileEntry("..", true, true, true)));
+        assertFalse(adapter.isItemSelected());
+        assertFalse(adapter.isFileItemSelected());
+        assertFalse(adapter.isFolderItemSelected());
+        openEntry(0);
+        openEntry(0);
+        openEntry(0);
+        rotateScreen(activityScenario);
+        deleteLogFolder();
+        onView(withId(R.id.textview_dialog_file_choose_absolute)).check(matches(withText(root + "/file")));
+        onView(withId(R.id.edittext_dialog_file_choose_folder)).check(matches(withText("")));
+        onView(withId(R.id.edittext_dialog_file_choose_file)).check(matches(withText("file")));
+        assertEquals("", getDialog().getFolder());
+        assertEquals("file", getDialog().getFile());
+        adapter = getAdapter();
+        assertEquals(3, adapter.getItemCount());
+        assertTrue(areEntriesEqual(adapter.getItem(0), getFileEntry("..", true, true, false)));
+        assertTrue(areEntriesEqual(adapter.getItem(1), getFileEntry("download", true, false, true)));
+        assertTrue(areEntriesEqual(adapter.getItem(2), getFileEntry("file", false, false, false)));
+        assertTrue(areEntriesEqual(adapter.getSelectedItem(), getFileEntry("file", false, false, false)));
+        assertTrue(adapter.isItemSelected());
+        assertTrue(adapter.isFileItemSelected());
+        assertFalse(adapter.isFolderItemSelected());
+        onView(withId(R.id.imageview_dialog_file_choose_cancel)).perform(click());
+    }
+
+    @Test
+    public void testSelectSwipeScreenRotation() {
+        FileChooseDialog dialog = openFileChooseDialog("", "file1");
+        onView(withId(R.id.textview_dialog_file_choose_absolute)).check(matches(withText(root + "/file1")));
+        onView(withId(R.id.edittext_dialog_file_choose_folder)).check(matches(withText("")));
+        onView(withId(R.id.edittext_dialog_file_choose_file)).check(matches(withText("file1")));
+        assertEquals("", getDialog().getFolder());
+        assertEquals("file1", getDialog().getFile());
+        rotateScreen(activityScenario);
+        deleteLogFolder();
+        onView(withId(R.id.scrollview_dialog_file_choose)).perform(swipeUp());
+        onView(allOf(withId(R.id.textview_list_item_file_entry_name), withText("folder2"))).perform(click());
+        onView(withId(R.id.textview_dialog_file_choose_absolute)).check(matches(withText(root + "/folder2/file1")));
+        onView(withId(R.id.edittext_dialog_file_choose_folder)).check(matches(withText("folder2")));
+        onView(withId(R.id.edittext_dialog_file_choose_file)).check(matches(withText("file1")));
+        assertEquals("folder2", getDialog().getFolder());
+        assertEquals("file1", getDialog().getFile());
+        rotateScreen(activityScenario);
+        deleteLogFolder();
+        onView(withId(R.id.scrollview_dialog_file_choose)).perform(swipeUp());
+        onView(allOf(withId(R.id.textview_list_item_file_entry_name), withText("folder2"))).perform(click());
+        onView(withId(R.id.textview_dialog_file_choose_absolute)).check(matches(withText(root + "/folder2/file1")));
+        onView(withId(R.id.edittext_dialog_file_choose_folder)).check(matches(withText("folder2")));
+        onView(withId(R.id.edittext_dialog_file_choose_file)).check(matches(withText("file1")));
+        assertEquals("folder2", getDialog().getFolder());
+        assertEquals("file1", getDialog().getFile());
     }
 
     private FileChooseDialog openFileChooseDialog(String folder, String file) {
@@ -3835,7 +4000,7 @@ public class FileChooseDialogFileModeTest extends BaseUITest {
     }
 
     private FileEntryAdapter getAdapter() {
-        return getAdapter();
+        return getDialog().getAdapter();
     }
 
     private void createIdenticalNameTestFiles() {
