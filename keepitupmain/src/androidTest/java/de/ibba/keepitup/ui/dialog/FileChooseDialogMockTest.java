@@ -25,6 +25,7 @@ import de.ibba.keepitup.util.BundleUtil;
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
+import static androidx.test.espresso.matcher.ViewMatchers.isRoot;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
 import static junit.framework.TestCase.assertTrue;
@@ -73,9 +74,39 @@ public class FileChooseDialogMockTest extends BaseUITest {
     }
 
     @Test
+    public void testAbsoluteFolderErrorWithFile() {
+        fileManager.setAbsolutePath(null);
+        FileChooseDialog dialog = openFileChooseDialog("folder", "file");
+        onView(withId(R.id.textview_dialog_general_error_message)).check(matches(withText("Fatal error reading file list from folder.")));
+        onView(withId(R.id.imageview_dialog_general_error_ok)).perform(click());
+        onView(withId(R.id.listview_dialog_file_choose_file_entries)).check(matches(withListSize(0)));
+        FileEntryAdapter adapter = dialog.getAdapter();
+        assertEquals(0, adapter.getItemCount());
+        assertEquals("", dialog.getAbsoluteFolderText().getText());
+        setMockFileManagerData();
+        fileManager.setAbsoluteParent(null);
+        openFileChooseDialog("folder");
+        onView(withId(R.id.textview_dialog_general_error_message)).check(matches(withText("Fatal error reading file list from folder.")));
+        onView(withId(R.id.imageview_dialog_general_error_ok)).perform(click());
+        onView(withId(R.id.listview_dialog_file_choose_file_entries)).check(matches(withListSize(0)));
+        assertEquals(0, adapter.getItemCount());
+    }
+
+    @Test
     public void testFileListError() {
         fileManager.setFileEntries(null);
         FileChooseDialog dialog = openFileChooseDialog("folder");
+        onView(withId(R.id.textview_dialog_general_error_message)).check(matches(withText("Fatal error reading file list from folder.")));
+        onView(withId(R.id.imageview_dialog_general_error_ok)).perform(click());
+        onView(withId(R.id.listview_dialog_file_choose_file_entries)).check(matches(withListSize(0)));
+        FileEntryAdapter adapter = dialog.getAdapter();
+        assertEquals(0, adapter.getItemCount());
+    }
+
+    @Test
+    public void testFileListErrorWithFile() {
+        fileManager.setFileEntries(null);
+        FileChooseDialog dialog = openFileChooseDialog("folder", "file");
         onView(withId(R.id.textview_dialog_general_error_message)).check(matches(withText("Fatal error reading file list from folder.")));
         onView(withId(R.id.imageview_dialog_general_error_ok)).perform(click());
         onView(withId(R.id.listview_dialog_file_choose_file_entries)).check(matches(withListSize(0)));
@@ -105,8 +136,30 @@ public class FileChooseDialogMockTest extends BaseUITest {
     }
 
     @Test
+    public void testSelectFileParentIsSelectedErrorWithFile() {
+        FileChooseDialog dialog = openFileChooseDialog("folder", "file");
+        onView(withId(R.id.edittext_dialog_file_choose_folder)).check(matches(withText("folder")));
+        FileEntryAdapter adapter = dialog.getAdapter();
+        adapter.selectItem(0);
+        fileManager.setRelativeParent(null);
+        onView(allOf(withId(R.id.textview_list_item_file_entry_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_file_choose_file_entries), 1))).perform(click());
+        assertTrue(areEntriesEqual(adapter.getSelectedItem(), getFileEntry("dir1", true, false, true)));
+    }
+
+    @Test
     public void testSelectFileNonParentIsSelectedError() {
         FileChooseDialog dialog = openFileChooseDialog("folder");
+        onView(withId(R.id.edittext_dialog_file_choose_folder)).check(matches(withText("folder")));
+        FileEntryAdapter adapter = dialog.getAdapter();
+        adapter.selectItem(2);
+        fileManager.setRelativeSibling(null);
+        onView(allOf(withId(R.id.textview_list_item_file_entry_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_file_choose_file_entries), 0))).perform(click());
+        assertTrue(areEntriesEqual(adapter.getSelectedItem(), getFileEntry("dir3", true, false, true)));
+    }
+
+    @Test
+    public void testSelectFileNonParentIsSelectedErrorWithFile() {
+        FileChooseDialog dialog = openFileChooseDialog("folder", "file");
         onView(withId(R.id.edittext_dialog_file_choose_folder)).check(matches(withText("folder")));
         FileEntryAdapter adapter = dialog.getAdapter();
         adapter.selectItem(2);
@@ -203,12 +256,24 @@ public class FileChooseDialogMockTest extends BaseUITest {
         assertEquals(0, adapter.getItemCount());
     }
 
+
     private FileChooseDialog openFileChooseDialog(String folder) {
         FileChooseDialog fileChooseDialog = new FileChooseDialog();
         Bundle bundle = BundleUtil.stringsToBundle(new String[]{fileChooseDialog.getFolderRootKey(), fileChooseDialog.getFolderKey()}, new String[]{"root", folder});
         bundle = BundleUtil.stringToBundle(fileChooseDialog.getFileModeKey(), FileChooseDialog.Mode.FOLDER.name(), bundle);
         fileChooseDialog.setArguments(bundle);
         fileChooseDialog.show(getActivity(activityScenario).getSupportFragmentManager(), GlobalSettingsActivity.class.getName());
+        return fileChooseDialog;
+    }
+
+    private FileChooseDialog openFileChooseDialog(String folder, String file) {
+        FileChooseDialog fileChooseDialog = new FileChooseDialog();
+        Bundle bundle = BundleUtil.stringsToBundle(new String[]{fileChooseDialog.getFolderRootKey(), fileChooseDialog.getFolderKey()}, new String[]{"root", folder});
+        bundle = BundleUtil.stringToBundle(fileChooseDialog.getFileModeKey(), FileChooseDialog.Mode.FILE.name(), bundle);
+        bundle = BundleUtil.stringToBundle(fileChooseDialog.getFileKey(), file, bundle);
+        fileChooseDialog.setArguments(bundle);
+        fileChooseDialog.show(getActivity(activityScenario).getSupportFragmentManager(), GlobalSettingsActivity.class.getName());
+        onView(isRoot()).perform(waitFor(1000));
         return fileChooseDialog;
     }
 
