@@ -49,7 +49,7 @@ class LogDBConstants {
     }
 
     public String getCreateTableStatement() {
-        return ("CREATE TABLE " + getTableName() + "(") +
+        return ("CREATE TABLE IF NOT EXISTS  " + getTableName() + "(") +
                 getIdColumnName() + " INTEGER PRIMARY KEY ASC, " +
                 getNetworkTaskIdColumnName() + " INTEGER NOT NULL, " +
                 getTimestampColumnName() + " INTEGER NOT NULL, " +
