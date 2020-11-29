@@ -49,10 +49,10 @@ public class StartupService extends BroadcastReceiver {
             Log.d(StartupService.class.getName(), "Cleanup files");
             cleanupFiles(context);
         }
-        Log.d(StartupService.class.getName(), "Initialize scheduler.");
-        initializeScheduler(context);
         Log.d(StartupService.class.getName(), "Cleanup logs");
         cleanupLogs(context);
+        Log.d(StartupService.class.getName(), "Initialize scheduler.");
+        initializeScheduler(context);
     }
 
     private void initializeDatabase(Context context) {
