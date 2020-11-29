@@ -35,7 +35,7 @@ public class SchedulerIdHistoryDBConstants {
     }
 
     public String getCreateTableStatement() {
-        return ("CREATE TABLE " + getTableName() + "(") +
+        return ("CREATE TABLE IF NOT EXISTS " + getTableName() + "(") +
                 getIdColumnName() + " INTEGER PRIMARY KEY ASC, " +
                 getSchedulerIdColumnName() + " INTEGER NOT NULL, " +
                 getTimestampColumnName() + " INTEGER NOT NULL);";

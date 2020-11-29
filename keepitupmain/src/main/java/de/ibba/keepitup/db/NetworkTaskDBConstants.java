@@ -89,7 +89,7 @@ class NetworkTaskDBConstants {
     }
 
     public String getCreateTableStatement() {
-        return ("CREATE TABLE " + getTableName() + "(") +
+        return ("CREATE TABLE IF NOT EXISTS " + getTableName() + "(") +
                 getIdColumnName() + " INTEGER PRIMARY KEY ASC, " +
                 getIndexColumnName() + " INTEGER NOT NULL, " +
                 getSchedulerIdColumnName() + " INTEGER, " +
