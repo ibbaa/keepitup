@@ -70,7 +70,7 @@ public class DefaultsActivity extends SettingsInputActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         if (id == R.id.menu_action_activity_defaults_reset) {
-            Log.d(DefaultsActivity.class.getName(), "menu_action_reset triggered");
+            Log.d(DefaultsActivity.class.getName(), "menu_action_activity_defaults_reset triggered");
             PreferenceManager preferenceManager = new PreferenceManager(this);
             preferenceManager.removePreferenceAccessType();
             preferenceManager.removePreferenceAddress();

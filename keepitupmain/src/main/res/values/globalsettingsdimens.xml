@@ -36,20 +36,4 @@
     <dimen name="cardview_activity_global_settings_download_keep_corner_radius">4dp</dimen>
     <dimen name="cardview_activity_global_settings_download_keep_card_elevation">4dp</dimen>
     <dimen name="linearlayout_activity_global_settings_download_keep_margin">4dp</dimen>
-    <dimen name="cardview_activity_global_settings_debug_margin">4dp</dimen>
-    <dimen name="cardview_activity_global_settings_debug_corner_radius">4dp</dimen>
-    <dimen name="cardview_activity_global_settings_debug_card_elevation">4dp</dimen>
-    <dimen name="textview_activity_global_settings_debug_margin">4dp</dimen>
-    <dimen name="cardview_activity_global_settings_file_logger_enabled_margin">4dp</dimen>
-    <dimen name="cardview_activity_global_settings_file_logger_enabled_corner_radius">4dp</dimen>
-    <dimen name="cardview_activity_global_settings_file_logger_enabled_card_elevation">4dp</dimen>
-    <dimen name="linearlayout_activity_global_settings_file_logger_enabled_margin">4dp</dimen>
-    <dimen name="cardview_activity_global_settings_file_dump_enabled_margin">4dp</dimen>
-    <dimen name="cardview_activity_global_settings_file_dump_enabled_corner_radius">4dp</dimen>
-    <dimen name="cardview_activity_global_settings_file_dump_enabled_card_elevation">4dp</dimen>
-    <dimen name="linearlayout_activity_global_settings_file_dump_enabled_margin">4dp</dimen>
-    <dimen name="cardview_activity_global_settings_log_folder_margin">4dp</dimen>
-    <dimen name="cardview_activity_global_settings_log_folder_corner_radius">4dp</dimen>
-    <dimen name="cardview_activity_global_settings_log_folder_card_elevation">4dp</dimen>
-    <dimen name="linearlayout_activity_global_settings_log_folder_margin">4dp</dimen>
 </resources>

@@ -14,8 +14,4 @@
     <string name="label_activity_global_settings_download_folder">Download folder</string>
     <string name="label_activity_global_settings_download_keep">Keep downloaded files</string>
     <string name="text_activity_global_settings_download_folder_internal">Internal storage folder</string>
-    <string name="label_activity_global_settings_debug">Debug settings</string>
-    <string name="label_activity_global_settings_file_logger_enabled">External file logging</string>
-    <string name="label_activity_global_settings_file_dump_enabled">Database dump</string>
-    <string name="label_activity_global_settings_log_folder">Log folder</string>
 </resources>

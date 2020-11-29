@@ -304,6 +304,11 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
         onView(isRoot()).perform(ViewActions.pressBack());
         onView(withId(R.id.textview_activity_global_settings_global_label)).check(doesNotExist());
         openActionBarOverflowOrOptionsMenu(TestRegistry.getContext());
+        onView(withText("System")).perform(click());
+        onView(withId(R.id.textview_activity_system_debug_label)).check(matches(withText("Debug settings")));
+        onView(isRoot()).perform(ViewActions.pressBack());
+        onView(withId(R.id.textview_activity_system_debug_label)).check(doesNotExist());
+        openActionBarOverflowOrOptionsMenu(TestRegistry.getContext());
         onView(withText("Info")).perform(click());
         onView(withId(R.id.textview_dialog_info_title)).check(matches(withText("Keep it up")));
         onView(withId(R.id.imageview_dialog_info_ok)).perform(click());
