@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="cardview_activity_system_debug_margin">4dp</dimen>
+    <dimen name="cardview_activity_system_debug_corner_radius">4dp</dimen>
+    <dimen name="cardview_activity_system_debug_card_elevation">4dp</dimen>
+    <dimen name="textview_activity_system_debug_margin">4dp</dimen>
+    <dimen name="cardview_activity_system_file_logger_enabled_margin">4dp</dimen>
+    <dimen name="cardview_activity_system_file_logger_enabled_corner_radius">4dp</dimen>
+    <dimen name="cardview_activity_system_file_logger_enabled_card_elevation">4dp</dimen>
+    <dimen name="linearlayout_activity_system_file_logger_enabled_margin">4dp</dimen>
+    <dimen name="cardview_activity_system_file_dump_enabled_margin">4dp</dimen>
+    <dimen name="cardview_activity_system_file_dump_enabled_corner_radius">4dp</dimen>
+    <dimen name="cardview_activity_system_file_dump_enabled_card_elevation">4dp</dimen>
+    <dimen name="linearlayout_activity_system_file_dump_enabled_margin">4dp</dimen>
+    <dimen name="cardview_activity_system_log_folder_margin">4dp</dimen>
+    <dimen name="cardview_activity_system_log_folder_corner_radius">4dp</dimen>
+    <dimen name="cardview_activity_system_log_folder_card_elevation">4dp</dimen>
+    <dimen name="linearlayout_activity_system_log_folder_margin">4dp</dimen>
+</resources>

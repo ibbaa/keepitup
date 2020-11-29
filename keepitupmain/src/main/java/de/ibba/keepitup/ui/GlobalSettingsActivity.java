@@ -17,9 +17,7 @@ import java.io.File;
 import java.util.Collections;
 import java.util.List;
 
-import de.ibba.keepitup.BuildConfig;
 import de.ibba.keepitup.R;
-import de.ibba.keepitup.logging.Dump;
 import de.ibba.keepitup.logging.Log;
 import de.ibba.keepitup.resources.PreferenceManager;
 import de.ibba.keepitup.service.IFileManager;
@@ -31,7 +29,6 @@ import de.ibba.keepitup.ui.dialog.SettingsInputDialog;
 import de.ibba.keepitup.ui.validation.ConnectCountFieldValidator;
 import de.ibba.keepitup.ui.validation.PingCountFieldValidator;
 import de.ibba.keepitup.util.BundleUtil;
-import de.ibba.keepitup.util.DebugUtil;
 import de.ibba.keepitup.util.NumberUtil;
 import de.ibba.keepitup.util.StringUtil;
 
@@ -48,11 +45,6 @@ public class GlobalSettingsActivity extends SettingsInputActivity {
     private SwitchMaterial downloadKeepSwitch;
     private TextView batteryOptimizationText;
     private TextView downloadKeepOnOffText;
-    private SwitchMaterial fileLoggerEnabledSwitch;
-    private TextView fileLoggerEnabledOnOffText;
-    private SwitchMaterial fileDumpEnabledSwitch;
-    private TextView fileDumpEnabledOnOffText;
-    private TextView logFolderText;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -69,10 +61,6 @@ public class GlobalSettingsActivity extends SettingsInputActivity {
         prepareDownloadFolderField();
         prepareDownloadKeepSwitch();
         prepareBatteryOptimizationField();
-        prepareDebugSettingsLabel();
-        prepareFileLoggerEnabledSwitch();
-        prepareFileDumpEnabledSwitch();
-        prepareLogFolderField();
     }
 
     @Override
@@ -85,7 +73,7 @@ public class GlobalSettingsActivity extends SettingsInputActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         if (id == R.id.menu_action_activity_global_settings_reset) {
-            Log.d(GlobalSettingsActivity.class.getName(), "menu_action_reset triggered");
+            Log.d(GlobalSettingsActivity.class.getName(), "menu_action_activity_global_settings_reset triggered");
             PreferenceManager preferenceManager = new PreferenceManager(this);
             preferenceManager.removePreferencePingCount();
             preferenceManager.removePreferenceConnectCount();
@@ -94,8 +82,6 @@ public class GlobalSettingsActivity extends SettingsInputActivity {
             preferenceManager.removePreferenceExternalStorageType();
             preferenceManager.removePreferenceDownloadFolder();
             preferenceManager.removePreferenceDownloadKeep();
-            preferenceManager.removePreferenceFileLoggerEnabled();
-            preferenceManager.removePreferenceFileDumpEnabled();
             recreateActivity();
             return true;
         }
@@ -304,113 +290,6 @@ public class GlobalSettingsActivity extends SettingsInputActivity {
         }
     }
 
-    private void prepareDebugSettingsLabel() {
-        Log.d(GlobalSettingsActivity.class.getName(), "prepareDebugSettingsLabel");
-        CardView debugSettingsCardView = findViewById(R.id.cardview_activity_global_settings_debug);
-        if (BuildConfig.DEBUG) {
-            Log.d(GlobalSettingsActivity.class.getName(), "Debug version. Enabling debug settings.");
-            debugSettingsCardView.setVisibility(View.VISIBLE);
-        } else {
-            Log.d(GlobalSettingsActivity.class.getName(), "Release version. Enabling debug settings.");
-            debugSettingsCardView.setVisibility(View.GONE);
-        }
-    }
-
-    private void prepareFileLoggerEnabledSwitch() {
-        Log.d(GlobalSettingsActivity.class.getName(), "prepareFileLoggerEnabled");
-        CardView fileLoggerEnabledCardView = findViewById(R.id.cardview_activity_global_settings_file_logger_enabled);
-        fileLoggerEnabledSwitch = findViewById(R.id.switch_activity_global_settings_file_logger_enabled);
-        fileLoggerEnabledOnOffText = findViewById(R.id.textview_activity_global_settings_file_logger_enabled_on_off);
-        if (BuildConfig.DEBUG) {
-            Log.d(GlobalSettingsActivity.class.getName(), "Debug version. Enabling debug settings.");
-            fileLoggerEnabledCardView.setVisibility(View.VISIBLE);
-            PreferenceManager preferenceManager = new PreferenceManager(this);
-            fileLoggerEnabledSwitch.setOnCheckedChangeListener(null);
-            fileLoggerEnabledSwitch.setChecked(preferenceManager.getPreferenceFileLoggerEnabled());
-            fileLoggerEnabledSwitch.setOnCheckedChangeListener(this::onFileLoggerEnabledCheckedChanged);
-            prepareFileLoggerEnabledOnOffText();
-        } else {
-            Log.d(GlobalSettingsActivity.class.getName(), "Release version. Enabling debug settings.");
-            fileLoggerEnabledCardView.setVisibility(View.GONE);
-        }
-    }
-
-    private void prepareFileLoggerEnabledOnOffText() {
-        fileLoggerEnabledOnOffText.setText(fileLoggerEnabledSwitch.isChecked() ? getResources().getString(R.string.string_yes) : getResources().getString(R.string.string_no));
-    }
-
-    private void onFileLoggerEnabledCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-        Log.d(GlobalSettingsActivity.class.getName(), "onFileLoggerEnabledCheckedChanged, new value is " + isChecked);
-        PreferenceManager preferenceManager = new PreferenceManager(this);
-        preferenceManager.setPreferenceFileLoggerEnabled(isChecked);
-        prepareFileLoggerEnabledOnOffText();
-        if (isChecked && BuildConfig.DEBUG) {
-            Log.initialize(DebugUtil.getFileLogger(this, getFileManager()));
-        } else {
-            Log.initialize(null);
-        }
-    }
-
-    private void prepareFileDumpEnabledSwitch() {
-        Log.d(GlobalSettingsActivity.class.getName(), "prepareFileDumpEnabledSwitch");
-        CardView fileDumpEnabledCardView = findViewById(R.id.cardview_activity_global_settings_file_logger_enabled);
-        fileDumpEnabledSwitch = findViewById(R.id.switch_activity_global_settings_file_dump_enabled);
-        fileDumpEnabledOnOffText = findViewById(R.id.textview_activity_global_settings_file_dump_enabled_on_off);
-        if (BuildConfig.DEBUG) {
-            Log.d(GlobalSettingsActivity.class.getName(), "Debug version. Enabling debug settings.");
-            fileDumpEnabledCardView.setVisibility(View.VISIBLE);
-            PreferenceManager preferenceManager = new PreferenceManager(this);
-            fileDumpEnabledSwitch.setOnCheckedChangeListener(null);
-            fileDumpEnabledSwitch.setChecked(preferenceManager.getPreferenceFileDumpEnabled());
-            fileDumpEnabledSwitch.setOnCheckedChangeListener(this::onFileDumpEnabledCheckedChanged);
-            prepareFileDumpEnabledOnOffText();
-        } else {
-            Log.d(GlobalSettingsActivity.class.getName(), "Release version. Disabling debug settings.");
-            fileDumpEnabledCardView.setVisibility(View.GONE);
-        }
-    }
-
-    private void prepareFileDumpEnabledOnOffText() {
-        fileDumpEnabledOnOffText.setText(fileDumpEnabledSwitch.isChecked() ? getResources().getString(R.string.string_yes) : getResources().getString(R.string.string_no));
-    }
-
-    private void onFileDumpEnabledCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-        Log.d(GlobalSettingsActivity.class.getName(), "onFileDumpEnabledCheckedChanged, new value is " + isChecked);
-        PreferenceManager preferenceManager = new PreferenceManager(this);
-        preferenceManager.setPreferenceFileDumpEnabled(isChecked);
-        prepareFileDumpEnabledOnOffText();
-        if (isChecked && BuildConfig.DEBUG) {
-            Dump.initialize(DebugUtil.getFileDump(this, getFileManager()));
-        } else {
-            Dump.initialize(null);
-        }
-    }
-
-    private void prepareLogFolderField() {
-        Log.d(GlobalSettingsActivity.class.getName(), "prepareLogFolderField");
-        CardView logFolderCardView = findViewById(R.id.cardview_activity_global_settings_log_folder);
-        logFolderText = findViewById(R.id.textview_activity_global_settings_log_folder);
-        logFolderText.setEnabled(false);
-        if (BuildConfig.DEBUG) {
-            Log.d(GlobalSettingsActivity.class.getName(), "Debug version. Enabling debug settings.");
-            logFolderCardView.setVisibility(View.VISIBLE);
-            String logFolder = getExternalLogFolder();
-            Log.d(GlobalSettingsActivity.class.getName(), "External log folder is " + logFolder);
-            if (logFolder == null) {
-                Log.e(GlobalSettingsActivity.class.getName(), "Error accessing log folder.");
-                setLogFolder("");
-                Log.d(GlobalSettingsActivity.class.getName(), "Showing error dialog.");
-                showErrorDialog(getResources().getString(R.string.text_dialog_general_error_external_root_access));
-            } else {
-                setLogFolder(logFolder);
-            }
-        } else {
-            Log.d(GlobalSettingsActivity.class.getName(), "Release version. Disabling debug settings.");
-            logFolderCardView.setVisibility(View.GONE);
-            setLogFolder("");
-        }
-    }
-
     private String getPingCount() {
         return StringUtil.notNull(pingCountText.getText());
     }
@@ -433,10 +312,6 @@ public class GlobalSettingsActivity extends SettingsInputActivity {
 
     private void setDownloadFolder(String downloadFolder) {
         downloadFolderText.setText(StringUtil.notNull(downloadFolder));
-    }
-
-    private void setLogFolder(String logFolder) {
-        logFolderText.setText(StringUtil.notNull(logFolder));
     }
 
     private void showPingCountInputDialog(View view) {
@@ -537,19 +412,6 @@ public class GlobalSettingsActivity extends SettingsInputActivity {
             return null;
         }
         return downloadFolder.getAbsolutePath();
-    }
-
-    private String getExternalLogFolder() {
-        Log.d(GlobalSettingsActivity.class.getName(), "getExternalLogFolder");
-        PreferenceManager preferenceManager = new PreferenceManager(this);
-        String folder = getResources().getString(R.string.file_logger_log_directory_default);
-        IFileManager fileManager = getFileManager();
-        File logFolder = fileManager.getExternalDirectory(folder, 0);
-        Log.d(GlobalSettingsActivity.class.getName(), "External log folder is " + logFolder);
-        if (logFolder == null) {
-            return null;
-        }
-        return logFolder.getAbsolutePath();
     }
 
     @Override

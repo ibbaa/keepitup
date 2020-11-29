@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="activity_system_title">System</string>
+    <string name="menu_action_activity_system_reset">Reset</string>
+    <string name="label_activity_system_debug">Debug settings</string>
+    <string name="label_activity_system_file_logger_enabled">External file logging</string>
+    <string name="label_activity_system_file_dump_enabled">Database dump</string>
+    <string name="label_activity_system_log_folder">Log folder</string>
+</resources>
