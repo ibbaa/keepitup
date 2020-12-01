@@ -18,6 +18,7 @@ import de.ibba.keepitup.R;
 import de.ibba.keepitup.logging.Dump;
 import de.ibba.keepitup.logging.Log;
 import de.ibba.keepitup.resources.PreferenceManager;
+import de.ibba.keepitup.resources.PreferenceSetup;
 import de.ibba.keepitup.service.IFileManager;
 import de.ibba.keepitup.util.DebugUtil;
 import de.ibba.keepitup.util.StringUtil;
@@ -54,9 +55,8 @@ public class SystemActivity extends SettingsInputActivity {
         int id = item.getItemId();
         if (id == R.id.menu_action_activity_system_reset) {
             Log.d(SystemActivity.class.getName(), "menu_action_activity_system_reset triggered");
-            PreferenceManager preferenceManager = new PreferenceManager(this);
-            preferenceManager.removePreferenceFileLoggerEnabled();
-            preferenceManager.removePreferenceFileDumpEnabled();
+            PreferenceSetup preferenceSetup = new PreferenceSetup(this);
+            preferenceSetup.removeSystemSettings();
             recreateActivity();
             return true;
         }
