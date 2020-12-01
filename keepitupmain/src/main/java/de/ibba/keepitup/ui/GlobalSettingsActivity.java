@@ -20,6 +20,7 @@ import java.util.List;
 import de.ibba.keepitup.R;
 import de.ibba.keepitup.logging.Log;
 import de.ibba.keepitup.resources.PreferenceManager;
+import de.ibba.keepitup.resources.PreferenceSetup;
 import de.ibba.keepitup.service.IFileManager;
 import de.ibba.keepitup.service.IPowerManager;
 import de.ibba.keepitup.ui.dialog.BatteryOptimizationDialog;
@@ -74,14 +75,8 @@ public class GlobalSettingsActivity extends SettingsInputActivity {
         int id = item.getItemId();
         if (id == R.id.menu_action_activity_global_settings_reset) {
             Log.d(GlobalSettingsActivity.class.getName(), "menu_action_activity_global_settings_reset triggered");
-            PreferenceManager preferenceManager = new PreferenceManager(this);
-            preferenceManager.removePreferencePingCount();
-            preferenceManager.removePreferenceConnectCount();
-            preferenceManager.removePreferenceNotificationInactiveNetwork();
-            preferenceManager.removePreferenceDownloadExternalStorage();
-            preferenceManager.removePreferenceExternalStorageType();
-            preferenceManager.removePreferenceDownloadFolder();
-            preferenceManager.removePreferenceDownloadKeep();
+            PreferenceSetup preferenceSetup = new PreferenceSetup(this);
+            preferenceSetup.removeGlobalSettings();
             recreateActivity();
             return true;
         }

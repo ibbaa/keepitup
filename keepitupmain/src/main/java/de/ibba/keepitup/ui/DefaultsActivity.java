@@ -22,6 +22,7 @@ import de.ibba.keepitup.R;
 import de.ibba.keepitup.logging.Log;
 import de.ibba.keepitup.model.AccessType;
 import de.ibba.keepitup.resources.PreferenceManager;
+import de.ibba.keepitup.resources.PreferenceSetup;
 import de.ibba.keepitup.ui.dialog.NetworkTaskEditDialog;
 import de.ibba.keepitup.ui.dialog.SettingsInput;
 import de.ibba.keepitup.ui.dialog.SettingsInputDialog;
@@ -71,13 +72,8 @@ public class DefaultsActivity extends SettingsInputActivity {
         int id = item.getItemId();
         if (id == R.id.menu_action_activity_defaults_reset) {
             Log.d(DefaultsActivity.class.getName(), "menu_action_activity_defaults_reset triggered");
-            PreferenceManager preferenceManager = new PreferenceManager(this);
-            preferenceManager.removePreferenceAccessType();
-            preferenceManager.removePreferenceAddress();
-            preferenceManager.removePreferencePort();
-            preferenceManager.removePreferenceInterval();
-            preferenceManager.removePreferenceOnlyWifi();
-            preferenceManager.removePreferenceNotification();
+            PreferenceSetup preferenceSetup = new PreferenceSetup(this);
+            preferenceSetup.removeDefaults();
             recreateActivity();
             return true;
         }
