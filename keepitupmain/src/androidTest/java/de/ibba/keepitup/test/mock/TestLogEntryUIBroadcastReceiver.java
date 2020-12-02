@@ -1,7 +1,7 @@
 package de.ibba.keepitup.test.mock;
 
 
-import android.content.Context;
+import android.app.Activity;
 
 import de.ibba.keepitup.model.NetworkTask;
 import de.ibba.keepitup.ui.adapter.LogEntryAdapter;
@@ -11,8 +11,8 @@ public class TestLogEntryUIBroadcastReceiver extends LogEntryUIBroadcastReceiver
 
     private boolean doSyncCalled;
 
-    public TestLogEntryUIBroadcastReceiver(LogEntryAdapter adapter) {
-        super(adapter);
+    public TestLogEntryUIBroadcastReceiver(Activity activity, LogEntryAdapter adapter) {
+        super(activity, adapter);
         doSyncCalled = false;
     }
 
@@ -25,7 +25,7 @@ public class TestLogEntryUIBroadcastReceiver extends LogEntryUIBroadcastReceiver
     }
 
     @Override
-    protected void doSync(Context context, NetworkTask task) {
+    protected void doSync(NetworkTask task) {
         doSyncCalled = true;
     }
 }

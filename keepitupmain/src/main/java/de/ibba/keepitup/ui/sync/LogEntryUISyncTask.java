@@ -1,7 +1,7 @@
 package de.ibba.keepitup.ui.sync;
 
+import android.app.Activity;
 import android.content.Context;
-import android.os.AsyncTask;
 
 import java.lang.ref.WeakReference;
 
@@ -11,29 +11,27 @@ import de.ibba.keepitup.model.LogEntry;
 import de.ibba.keepitup.model.NetworkTask;
 import de.ibba.keepitup.ui.adapter.LogEntryAdapter;
 
-public class LogEntryUISyncTask extends AsyncTask<NetworkTask, Integer, LogEntry> {
+public class LogEntryUISyncTask extends UIBackgroundTask<LogEntry> {
 
-    private final WeakReference<Context> contextRef;
-    private WeakReference<LogEntryAdapter> adapterRef;
+    private final WeakReference<LogEntryAdapter> adapterRef;
+    private final NetworkTask networkTask;
 
-    public LogEntryUISyncTask(Context context, LogEntryAdapter adapter) {
-        this.contextRef = new WeakReference<>(context);
+    public LogEntryUISyncTask(Activity activity, NetworkTask networkTask, LogEntryAdapter adapter) {
+        super(activity);
+        this.networkTask = networkTask;
         if (adapter != null) {
             this.adapterRef = new WeakReference<>(adapter);
+        } else {
+            this.adapterRef = null;
         }
     }
 
-    public void start(NetworkTask task) {
-        super.execute(task);
-    }
-
     @Override
-    protected LogEntry doInBackground(NetworkTask... tasks) {
-        Log.d(LogEntryUISyncTask.class.getName(), "doInBackground");
-        NetworkTask networkTask = tasks[0];
+    protected LogEntry runInBackground() {
+        Log.d(LogEntryUISyncTask.class.getName(), "runInBackground");
         Log.d(LogEntryUISyncTask.class.getName(), "Reading log entry for network task " + networkTask);
         try {
-            Context context = contextRef.get();
+            Context context = getActivity();
             if (context != null) {
                 LogDAO logDAO = new LogDAO(context);
                 return logDAO.readMostRecentLogForNetworkTask(networkTask.getId());
@@ -45,8 +43,8 @@ public class LogEntryUISyncTask extends AsyncTask<NetworkTask, Integer, LogEntry
     }
 
     @Override
-    protected void onPostExecute(LogEntry logEntry) {
-        Log.d(LogEntryUISyncTask.class.getName(), "onPostExecute, logEntry is " + logEntry);
+    protected void runOnUIThread(LogEntry logEntry) {
+        Log.d(LogEntryUISyncTask.class.getName(), "runOnUIThread, logEntry is " + logEntry);
         if (logEntry == null || adapterRef == null) {
             return;
         }

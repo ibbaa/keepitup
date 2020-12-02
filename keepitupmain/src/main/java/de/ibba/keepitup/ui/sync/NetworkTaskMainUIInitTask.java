@@ -1,7 +1,7 @@
 package de.ibba.keepitup.ui.sync;
 
+import android.app.Activity;
 import android.content.Context;
-import android.os.AsyncTask;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -16,27 +16,24 @@ import de.ibba.keepitup.ui.NetworkTaskMainActivity;
 import de.ibba.keepitup.ui.adapter.NetworkTaskAdapter;
 import de.ibba.keepitup.ui.adapter.NetworkTaskUIWrapper;
 
-public class NetworkTaskMainUIInitTask extends AsyncTask<Void, Integer, List<NetworkTaskUIWrapper>> {
+public class NetworkTaskMainUIInitTask extends UIBackgroundTask<List<NetworkTaskUIWrapper>> {
 
-    private final WeakReference<Context> contextRef;
-    private WeakReference<NetworkTaskAdapter> adapterRef;
+    private final WeakReference<NetworkTaskAdapter> adapterRef;
 
-    public NetworkTaskMainUIInitTask(Context context, NetworkTaskAdapter adapter) {
-        this.contextRef = new WeakReference<>(context);
+    public NetworkTaskMainUIInitTask(Activity activity, NetworkTaskAdapter adapter) {
+        super(activity);
         if (adapter != null) {
             this.adapterRef = new WeakReference<>(adapter);
+        } else {
+            adapterRef = null;
         }
     }
 
-    public void start() {
-        super.execute();
-    }
-
     @Override
-    protected List<NetworkTaskUIWrapper> doInBackground(Void... voids) {
-        Log.d(NetworkTaskMainUISyncTask.class.getName(), "doInBackground");
+    protected List<NetworkTaskUIWrapper> runInBackground() {
+        Log.d(NetworkTaskMainUISyncTask.class.getName(), "runInBackground");
         try {
-            Context context = contextRef.get();
+            Context context = getActivity();
             if (context != null) {
                 Log.d(NetworkTaskMainUISyncTask.class.getName(), "Reading all network tasks");
                 List<NetworkTaskUIWrapper> wrapperList = new ArrayList<>();
@@ -63,8 +60,8 @@ public class NetworkTaskMainUIInitTask extends AsyncTask<Void, Integer, List<Net
     }
 
     @Override
-    protected void onPostExecute(List<NetworkTaskUIWrapper> networkTaskUIWrappers) {
-        Log.d(NetworkTaskMainUIInitTask.class.getName(), "onPostExecute");
+    protected void runOnUIThread(List<NetworkTaskUIWrapper> networkTaskUIWrappers) {
+        Log.d(NetworkTaskMainUIInitTask.class.getName(), "runOnUIThread");
         if (networkTaskUIWrappers == null || adapterRef == null) {
             return;
         }
