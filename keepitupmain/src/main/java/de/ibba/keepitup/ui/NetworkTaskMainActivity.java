@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
 import de.ibba.keepitup.R;
@@ -23,6 +24,7 @@ import de.ibba.keepitup.ui.dialog.InfoDialog;
 import de.ibba.keepitup.ui.dialog.NetworkTaskEditDialog;
 import de.ibba.keepitup.ui.sync.NetworkTaskMainUIBroadcastReceiver;
 import de.ibba.keepitup.ui.sync.NetworkTaskMainUIInitTask;
+import de.ibba.keepitup.util.ThreadUtil;
 
 public class NetworkTaskMainActivity extends RecyclerViewBaseActivity {
 
@@ -52,7 +54,7 @@ public class NetworkTaskMainActivity extends RecyclerViewBaseActivity {
         super.onResume();
         registerReceiver();
         NetworkTaskMainUIInitTask uiInitTask = getUIInitTask((NetworkTaskAdapter) getAdapter());
-        uiInitTask.start();
+        ThreadUtil.exexute(uiInitTask);
     }
 
     @Override
@@ -65,7 +67,7 @@ public class NetworkTaskMainActivity extends RecyclerViewBaseActivity {
     private void registerReceiver() {
         Log.d(NetworkTaskMainActivity.class.getName(), "registerReceiver");
         unregisterReceiver();
-        broadcastReceiver = new NetworkTaskMainUIBroadcastReceiver((NetworkTaskAdapter) getAdapter());
+        broadcastReceiver = new NetworkTaskMainUIBroadcastReceiver(this, (NetworkTaskAdapter) getAdapter());
         registerReceiver(broadcastReceiver, new IntentFilter(NetworkTaskMainUIBroadcastReceiver.class.getName()));
     }
 
@@ -81,8 +83,8 @@ public class NetworkTaskMainActivity extends RecyclerViewBaseActivity {
         Log.d(NetworkTaskMainActivity.class.getName(), "readNetworkTasksFromDatabase");
         try {
             NetworkTaskMainUIInitTask uiInitTask = getUIInitTask(null);
-            uiInitTask.start();
-            List<NetworkTaskUIWrapper> wrapperList = uiInitTask.get(getResources().getInteger(R.integer.database_access_timeout), TimeUnit.SECONDS);
+            Future<List<NetworkTaskUIWrapper>> wrapperListFuture = ThreadUtil.exexute(uiInitTask);
+            List<NetworkTaskUIWrapper> wrapperList = wrapperListFuture.get(getResources().getInteger(R.integer.database_access_timeout), TimeUnit.SECONDS);
             if (wrapperList == null) {
                 Log.e(NetworkTaskMainActivity.class.getName(), "Reading all network tasks from database returned null");
                 showErrorDialog(getResources().getString(R.string.text_dialog_general_error_read_network_tasks));

@@ -1,7 +1,7 @@
 package de.ibba.keepitup.ui.sync;
 
+import android.app.Activity;
 import android.content.Context;
-import android.os.AsyncTask;
 
 import java.lang.ref.WeakReference;
 import java.util.List;
@@ -12,29 +12,27 @@ import de.ibba.keepitup.model.LogEntry;
 import de.ibba.keepitup.model.NetworkTask;
 import de.ibba.keepitup.ui.adapter.LogEntryAdapter;
 
-public class LogEntryUIInitTask extends AsyncTask<NetworkTask, Integer, List<LogEntry>> {
+public class LogEntryUIInitTask extends UIBackgroundTask<List<LogEntry>> {
 
-    private final WeakReference<Context> contextRef;
-    private WeakReference<LogEntryAdapter> adapterRef;
+    private final WeakReference<LogEntryAdapter> adapterRef;
+    private final NetworkTask networkTask;
 
-    public LogEntryUIInitTask(Context context, LogEntryAdapter adapter) {
-        this.contextRef = new WeakReference<>(context);
+    public LogEntryUIInitTask(Activity activity, NetworkTask networkTask, LogEntryAdapter adapter) {
+        super(activity);
+        this.networkTask = networkTask;
         if (adapter != null) {
             this.adapterRef = new WeakReference<>(adapter);
+        } else {
+            this.adapterRef = null;
         }
     }
 
-    public void start(NetworkTask task) {
-        super.execute(task);
-    }
-
     @Override
-    protected List<LogEntry> doInBackground(NetworkTask... tasks) {
-        Log.d(LogEntryUIInitTask.class.getName(), "doInBackground");
-        NetworkTask networkTask = tasks[0];
+    protected List<LogEntry> runInBackground() {
+        Log.d(LogEntryUIInitTask.class.getName(), "runInBackground");
         Log.d(LogEntryUISyncTask.class.getName(), "Reading log entries for network task " + networkTask);
         try {
-            Context context = contextRef.get();
+            Context context = getActivity();
             if (context != null) {
                 LogDAO logDAO = new LogDAO(context);
                 List<LogEntry> logEntries = logDAO.readAllLogsForNetworkTask(networkTask.getId());
@@ -51,8 +49,8 @@ public class LogEntryUIInitTask extends AsyncTask<NetworkTask, Integer, List<Log
     }
 
     @Override
-    protected void onPostExecute(List<LogEntry> logEntries) {
-        Log.d(LogEntryUIInitTask.class.getName(), "onPostExecute");
+    protected void runOnUIThread(List<LogEntry> logEntries) {
+        Log.d(LogEntryUIInitTask.class.getName(), "runOnUIThread");
         if (logEntries == null || adapterRef == null) {
             return;
         }

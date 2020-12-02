@@ -66,7 +66,7 @@ public class NetworkTaskMainUIInitTaskTest extends BaseUITest {
         NetworkTask task3 = networkTaskDAO.insertNetworkTask(getNetworkTask3());
         LogEntry logEntry1 = logDAO.insertAndDeleteLog(getLogEntryWithNetworkTaskId(task1.getId(), new GregorianCalendar(1980, Calendar.MARCH, 17).getTime().getTime()));
         LogEntry logEntry2 = logDAO.insertAndDeleteLog(getLogEntryWithNetworkTaskId(task2.getId(), new GregorianCalendar(1981, Calendar.MARCH, 17).getTime().getTime()));
-        List<NetworkTaskUIWrapper> wrapperList = initTask.doInBackground();
+        List<NetworkTaskUIWrapper> wrapperList = initTask.runInBackground();
         assertEquals(3, wrapperList.size());
         NetworkTaskUIWrapper wrapper1 = wrapperList.get(0);
         NetworkTaskUIWrapper wrapper2 = wrapperList.get(1);
@@ -91,7 +91,7 @@ public class NetworkTaskMainUIInitTaskTest extends BaseUITest {
         final NetworkTaskUIWrapper wrapper3 = new NetworkTaskUIWrapper(task3, null);
         NetworkTaskAdapter adapter = getAdapter(activityScenario);
         adapter.addItem(new NetworkTaskUIWrapper(task3, logEntry2));
-        getActivity(activityScenario).runOnUiThread(() -> initTask.onPostExecute(Arrays.asList(wrapper1, wrapper2, wrapper3)));
+        initTask.runOnUIThread(Arrays.asList(wrapper1, wrapper2, wrapper3));
         InstrumentationRegistry.getInstrumentation().waitForIdleSync();
         adapter.getItem(0);
         adapter.getItem(1);
@@ -117,7 +117,7 @@ public class NetworkTaskMainUIInitTaskTest extends BaseUITest {
         NetworkTaskAdapter adapter = getAdapter(activityScenario);
         adapter.addItem(new NetworkTaskUIWrapper(task3, logEntry2));
         NetworkTaskMainUIInitTask nullInitTask = new NetworkTaskMainUIInitTask(getActivity(activityScenario), null);
-        getActivity(activityScenario).runOnUiThread(() -> nullInitTask.onPostExecute(Arrays.asList(wrapper1, wrapper2, wrapper3)));
+        nullInitTask.runOnUIThread(Arrays.asList(wrapper1, wrapper2, wrapper3));
         InstrumentationRegistry.getInstrumentation().waitForIdleSync();
         assertEquals(1, adapter.getAllItems().size());
     }
@@ -136,7 +136,7 @@ public class NetworkTaskMainUIInitTaskTest extends BaseUITest {
         adapter.addItem(wrapper1);
         adapter.addItem(wrapper2);
         adapter.addItem(wrapper3);
-        getActivity(activityScenario).runOnUiThread(() -> initTask.onPostExecute(Collections.emptyList()));
+        initTask.runOnUIThread(Collections.emptyList());
         InstrumentationRegistry.getInstrumentation().waitForIdleSync();
         assertEquals(0, adapter.getAllItems().size());
     }

@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
 import de.ibba.keepitup.R;
@@ -20,6 +21,7 @@ import de.ibba.keepitup.ui.adapter.LogEntryAdapter;
 import de.ibba.keepitup.ui.dialog.ConfirmDialog;
 import de.ibba.keepitup.ui.sync.LogEntryUIBroadcastReceiver;
 import de.ibba.keepitup.ui.sync.LogEntryUIInitTask;
+import de.ibba.keepitup.util.ThreadUtil;
 
 public class NetworkTaskLogActivity extends RecyclerViewBaseActivity {
 
@@ -52,8 +54,8 @@ public class NetworkTaskLogActivity extends RecyclerViewBaseActivity {
         registerReceiver();
         registerMenuAdapterDataObserver();
         NetworkTask task = new NetworkTask(Objects.requireNonNull(getIntent().getExtras()));
-        LogEntryUIInitTask uiInitTask = getUIInitTask((LogEntryAdapter) getAdapter());
-        uiInitTask.start(task);
+        LogEntryUIInitTask uiInitTask = getUIInitTask(task, (LogEntryAdapter) getAdapter());
+        ThreadUtil.exexute(uiInitTask);
     }
 
     @Override
@@ -67,7 +69,7 @@ public class NetworkTaskLogActivity extends RecyclerViewBaseActivity {
     private void registerReceiver() {
         Log.d(NetworkTaskLogActivity.class.getName(), "registerReceiver");
         unregisterReceiver();
-        broadcastReceiver = new LogEntryUIBroadcastReceiver((LogEntryAdapter) getAdapter());
+        broadcastReceiver = new LogEntryUIBroadcastReceiver(this, (LogEntryAdapter) getAdapter());
         registerReceiver(broadcastReceiver, new IntentFilter(LogEntryUIBroadcastReceiver.class.getName()));
     }
 
@@ -99,9 +101,9 @@ public class NetworkTaskLogActivity extends RecyclerViewBaseActivity {
     private List<LogEntry> readLogEntriesFromDatabase(NetworkTask task) {
         Log.d(NetworkTaskLogActivity.class.getName(), "readLogEntriesFromDatabase");
         try {
-            LogEntryUIInitTask uiInitTask = getUIInitTask(null);
-            uiInitTask.start(task);
-            List<LogEntry> logEntries = uiInitTask.get(getResources().getInteger(R.integer.database_access_timeout), TimeUnit.SECONDS);
+            LogEntryUIInitTask uiInitTask = getUIInitTask(task, null);
+            Future<List<LogEntry>> logEntriesFuture = ThreadUtil.exexute(uiInitTask);
+            List<LogEntry> logEntries = logEntriesFuture.get(getResources().getInteger(R.integer.database_access_timeout), TimeUnit.SECONDS);
             if (logEntries == null) {
                 Log.e(NetworkTaskLogActivity.class.getName(), "Reading all log entries from database returned null");
                 showErrorDialog(getResources().getString(R.string.text_dialog_general_error_read_log_entries));
@@ -160,8 +162,8 @@ public class NetworkTaskLogActivity extends RecyclerViewBaseActivity {
         confirmDialog.dismiss();
     }
 
-    private LogEntryUIInitTask getUIInitTask(LogEntryAdapter adapter) {
-        return new LogEntryUIInitTask(this, adapter);
+    private LogEntryUIInitTask getUIInitTask(NetworkTask task, LogEntryAdapter adapter) {
+        return new LogEntryUIInitTask(this, task, adapter);
     }
 
     private class MenuAdapterDataObserver extends RecyclerView.AdapterDataObserver {

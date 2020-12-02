@@ -1,7 +1,7 @@
 package de.ibba.keepitup.ui.sync;
 
+import android.app.Activity;
 import android.content.Context;
-import android.os.AsyncTask;
 
 import java.lang.ref.WeakReference;
 
@@ -12,29 +12,27 @@ import de.ibba.keepitup.model.NetworkTask;
 import de.ibba.keepitup.ui.adapter.NetworkTaskAdapter;
 import de.ibba.keepitup.ui.adapter.NetworkTaskUIWrapper;
 
-public class NetworkTaskMainUISyncTask extends AsyncTask<NetworkTask, Integer, NetworkTaskUIWrapper> {
+public class NetworkTaskMainUISyncTask extends UIBackgroundTask<NetworkTaskUIWrapper> {
 
-    private final WeakReference<Context> contextRef;
-    private WeakReference<NetworkTaskAdapter> adapterRef;
+    private final WeakReference<NetworkTaskAdapter> adapterRef;
+    private final NetworkTask networkTask;
 
-    public NetworkTaskMainUISyncTask(Context context, NetworkTaskAdapter adapter) {
-        this.contextRef = new WeakReference<>(context);
+    public NetworkTaskMainUISyncTask(Activity activity, NetworkTask networkTask, NetworkTaskAdapter adapter) {
+        super(activity);
+        this.networkTask = networkTask;
         if (adapter != null) {
             this.adapterRef = new WeakReference<>(adapter);
+        } else {
+            this.adapterRef = null;
         }
     }
 
-    public void start(NetworkTask task) {
-        super.execute(task);
-    }
-
     @Override
-    protected NetworkTaskUIWrapper doInBackground(NetworkTask... tasks) {
-        Log.d(NetworkTaskMainUISyncTask.class.getName(), "doInBackground");
-        NetworkTask networkTask = tasks[0];
+    protected NetworkTaskUIWrapper runInBackground() {
+        Log.d(NetworkTaskMainUISyncTask.class.getName(), "runInBackground");
         Log.d(NetworkTaskMainUISyncTask.class.getName(), "Reading log entry for network task " + networkTask);
         try {
-            Context context = contextRef.get();
+            Context context = getActivity();
             if (context != null) {
                 LogDAO logDAO = new LogDAO(context);
                 LogEntry logEntry = logDAO.readMostRecentLogForNetworkTask(networkTask.getId());
@@ -47,8 +45,8 @@ public class NetworkTaskMainUISyncTask extends AsyncTask<NetworkTask, Integer, N
     }
 
     @Override
-    protected void onPostExecute(NetworkTaskUIWrapper networkTaskWrapper) {
-        Log.d(NetworkTaskMainUISyncTask.class.getName(), "onPostExecute, networkTaskWrapper is " + networkTaskWrapper);
+    protected void runOnUIThread(NetworkTaskUIWrapper networkTaskWrapper) {
+        Log.d(NetworkTaskMainUISyncTask.class.getName(), "runOnUIThread, networkTaskWrapper is " + networkTaskWrapper);
         if (networkTaskWrapper == null || adapterRef == null) {
             return;
         }
