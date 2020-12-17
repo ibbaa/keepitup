@@ -68,4 +68,31 @@ public class DBSetupTest {
         assertTrue(schedulerIdHistoryDAO.readAllSchedulerIds().isEmpty());
         assertTrue(logDAO.readAllLogs().isEmpty());
     }
+
+    @Test
+    public void dropCreateNetworkTaskTable() {
+        networkTaskDAO.insertNetworkTask(new NetworkTask());
+        assertFalse(networkTaskDAO.readAllNetworkTasks().isEmpty());
+        setup.dropNetworkTaskTable(TestRegistry.getContext());
+        setup.createNetworkTaskTable(TestRegistry.getContext());
+        assertTrue(networkTaskDAO.readAllNetworkTasks().isEmpty());
+    }
+
+    @Test
+    public void dropCreateLogTable() {
+        logDAO.insertAndDeleteLog(new LogEntry());
+        assertFalse(logDAO.readAllLogs().isEmpty());
+        setup.dropLogTable(TestRegistry.getContext());
+        setup.createLogTable(TestRegistry.getContext());
+        assertTrue(logDAO.readAllLogs().isEmpty());
+    }
+
+    @Test
+    public void dropCreateSchedulerIdHistoryTable() {
+        networkTaskDAO.insertNetworkTask(new NetworkTask());
+        assertFalse(schedulerIdHistoryDAO.readAllSchedulerIds().isEmpty());
+        setup.dropSchedulerIdHistoryTable(TestRegistry.getContext());
+        setup.createSchedulerIdHistoryTable(TestRegistry.getContext());
+        assertTrue(schedulerIdHistoryDAO.readAllSchedulerIds().isEmpty());
+    }
 }
