@@ -94,6 +94,28 @@ public class BundleUtil {
         return bundle.getBoolean(key);
     }
 
+    public static Bundle integerToBundle(String key, int value) {
+        return integerToBundle(key, value, new Bundle());
+    }
+
+    public static Bundle integerToBundle(String key, int value, Bundle bundle) {
+        if (bundle == null) {
+            bundle = new Bundle();
+        }
+        if (key == null) {
+            return bundle;
+        }
+        bundle.putInt(key, value);
+        return bundle;
+    }
+
+    public static int integerFromBundle(String key, Bundle bundle) {
+        if (bundle == null || key == null || !bundle.containsKey(key)) {
+            return -1;
+        }
+        return bundle.getInt(key);
+    }
+
     public static Bundle bundleToBundle(String key, Bundle bundle) {
         Bundle resultBundle = new Bundle();
         if (key == null || bundle == null) {

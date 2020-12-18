@@ -63,8 +63,8 @@ public abstract class RecyclerViewBaseActivity extends AppCompatActivity impleme
     protected void showConfirmDialog(String confirmMessage, ConfirmDialog.Type type, int position) {
         Log.d(RecyclerViewBaseActivity.class.getName(), "showConfirmDialog with message " + confirmMessage + " for type " + type + " and position " + position);
         ConfirmDialog confirmDialog = new ConfirmDialog();
-        Bundle bundle = BundleUtil.stringsToBundle(new String[]{ConfirmDialog.class.getSimpleName(), ConfirmDialog.Type.class.getSimpleName()}, new String[]{confirmMessage, type.name()});
-        bundle.putInt(getConfirmDialogPositionKey(), position);
+        Bundle bundle = BundleUtil.stringsToBundle(new String[]{confirmDialog.getMessageKey(), confirmDialog.getTypeKey()}, new String[]{confirmMessage, type.name()});
+        bundle.putInt(confirmDialog.getPositionKey(), position);
         confirmDialog.setArguments(bundle);
         confirmDialog.show(getSupportFragmentManager(), ConfirmDialog.class.getName());
     }
@@ -72,12 +72,8 @@ public abstract class RecyclerViewBaseActivity extends AppCompatActivity impleme
     protected void showConfirmDialog(String confirmMessage, ConfirmDialog.Type type) {
         Log.d(RecyclerViewBaseActivity.class.getName(), "showConfirmDialog with message " + confirmMessage + " for type " + type);
         ConfirmDialog confirmDialog = new ConfirmDialog();
-        Bundle bundle = BundleUtil.stringsToBundle(new String[]{ConfirmDialog.class.getSimpleName(), ConfirmDialog.Type.class.getSimpleName()}, new String[]{confirmMessage, type.name()});
+        Bundle bundle = BundleUtil.stringsToBundle(new String[]{confirmDialog.getMessageKey(), confirmDialog.getTypeKey()}, new String[]{confirmMessage, type.name()});
         confirmDialog.setArguments(bundle);
         confirmDialog.show(getSupportFragmentManager(), ConfirmDialog.class.getName());
-    }
-
-    protected String getConfirmDialogPositionKey() {
-        return ConfirmDialog.class.getSimpleName() + ".position";
     }
 }

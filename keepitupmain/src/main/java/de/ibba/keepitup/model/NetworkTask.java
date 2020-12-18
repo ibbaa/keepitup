@@ -7,6 +7,8 @@ import android.os.PersistableBundle;
 
 import androidx.annotation.NonNull;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 
 import de.ibba.keepitup.R;
@@ -43,13 +45,9 @@ public class NetworkTask {
     }
 
     public NetworkTask(Context context) {
+        this();
         Resources resources = context.getResources();
         PreferenceManager preferenceManager = new PreferenceManager(context);
-        this.id = -1;
-        this.index = -1;
-        this.schedulerid = -1;
-        this.instances = 0;
-        this.lastScheduled = -1;
         this.address = preferenceManager.getPreferenceAddress();
         this.port = preferenceManager.getPreferencePort();
         this.accessType = preferenceManager.getPreferenceAccessType();
@@ -64,6 +62,7 @@ public class NetworkTask {
     }
 
     public NetworkTask(Bundle bundle) {
+        this();
         this.id = bundle.getLong("id");
         this.index = bundle.getInt("index");
         this.schedulerid = bundle.getInt("schedulerid");
@@ -78,6 +77,46 @@ public class NetworkTask {
         this.notification = bundle.getInt("notification") >= 1;
         this.running = bundle.getInt("running") >= 1;
         this.lastScheduled = bundle.getLong("lastScheduled");
+    }
+
+    public NetworkTask(Map<String, ?> map) {
+        this();
+        if (map.get("id") != null) {
+            this.id = (Long) map.get("id");
+        }
+        if (map.get("index") != null) {
+            this.index = (Integer) map.get("index");
+        }
+        if (map.get("schedulerid") != null) {
+            this.schedulerid = (Integer) map.get("schedulerid");
+        }
+        if (map.get("instances") != null) {
+            this.instances = (Integer) map.get("instances");
+        }
+        if (map.get("address") != null) {
+            this.address = (String) map.get("address");
+        }
+        if (map.get("port") != null) {
+            this.port = (Integer) map.get("port");
+        }
+        if (map.get("accessType") != null) {
+            accessType = AccessType.forCode((Integer) map.get("accessType"));
+        }
+        if (map.get("interval") != null) {
+            this.interval = (Integer) map.get("interval");
+        }
+        if (map.get("onlyWifi") != null) {
+            this.onlyWifi = (Boolean) map.get("onlyWifi");
+        }
+        if (map.get("notification") != null) {
+            this.notification = (Boolean) map.get("notification");
+        }
+        if (map.get("running") != null) {
+            this.running = (Boolean) map.get("running");
+        }
+        if (map.get("lastScheduled") != null) {
+            this.lastScheduled = (Long) map.get("lastScheduled");
+        }
     }
 
     public long getId() {
@@ -199,6 +238,27 @@ public class NetworkTask {
 
     public Bundle toBundle() {
         return new Bundle(toPersistableBundle());
+    }
+
+    public Map<String, ?> toMap() {
+        Map<String, Object> map = new HashMap<>();
+        map.put("id", id);
+        map.put("index", index);
+        map.put("schedulerid", schedulerid);
+        map.put("instances", instances);
+        if (address != null) {
+            map.put("address", address);
+        }
+        map.put("port", port);
+        if (accessType != null) {
+            map.put("accessType", accessType.getCode());
+        }
+        map.put("interval", interval);
+        map.put("onlyWifi", onlyWifi);
+        map.put("notification", notification);
+        map.put("running", running);
+        map.put("lastScheduled", lastScheduled);
+        return map;
     }
 
     public boolean isEqual(NetworkTask other) {

@@ -668,7 +668,7 @@ public class FileChooseDialog extends DialogFragment implements ContextOptionsSu
     private void showErrorDialog(String errorMessage, int typeface) {
         Log.d(FileChooseDialog.class.getName(), "showErrorDialog with message " + errorMessage);
         GeneralErrorDialog errorDialog = new GeneralErrorDialog();
-        Bundle bundle = BundleUtil.stringToBundle(GeneralErrorDialog.class.getSimpleName(), errorMessage);
+        Bundle bundle = BundleUtil.stringToBundle(errorDialog.getMessageKey(), errorMessage);
         bundle.putInt(errorDialog.getTypefaceStyleKey(), typeface);
         errorDialog.setArguments(bundle);
         errorDialog.show(getParentFragmentManager(), GeneralErrorDialog.class.getName());

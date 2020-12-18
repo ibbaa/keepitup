@@ -7,6 +7,8 @@ import android.view.View;
 import android.widget.GridLayout;
 import android.widget.TextView;
 
+import androidx.fragment.app.DialogFragment;
+import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 import androidx.test.core.app.ActivityScenario;
 import androidx.test.espresso.UiController;
@@ -17,6 +19,7 @@ import org.hamcrest.Matcher;
 import org.junit.After;
 import org.junit.Before;
 
+import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -35,6 +38,7 @@ import de.ibba.keepitup.test.matcher.ListSizeMatcher;
 import de.ibba.keepitup.test.matcher.TextColorMatcher;
 import de.ibba.keepitup.test.mock.TestRegistry;
 import de.ibba.keepitup.test.viewaction.WaitForViewAction;
+import de.ibba.keepitup.ui.dialog.FileChooseDialog;
 
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.matcher.ViewMatchers.isAssignableFrom;
@@ -128,6 +132,17 @@ public abstract class BaseUITest {
         activityScenario.onActivity(activity -> activity.setRequestedOrientation((orientation == Configuration.ORIENTATION_PORTRAIT) ? ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE : ActivityInfo.SCREEN_ORIENTATION_PORTRAIT));
         InstrumentationRegistry.getInstrumentation().waitForIdleSync();
         onView(isRoot()).perform(waitFor(1000));
+    }
+
+    public DialogFragment getDialog(ActivityScenario<?> scenario, Class<? extends DialogFragment> clazz) {
+        List<Fragment> fragments = getActivity(scenario).getSupportFragmentManager().getFragments();
+        int size = fragments.size();
+        for (int ii = size - 1; ii >= 0; ii--) {
+            if (clazz.isInstance(fragments.get(ii))) {
+                return (DialogFragment) fragments.get(ii);
+            }
+        }
+        return null;
     }
 
     public NetworkTaskDAO getNetworkTaskDAO() {

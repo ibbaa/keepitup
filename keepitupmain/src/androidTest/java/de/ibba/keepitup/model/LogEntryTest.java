@@ -9,6 +9,9 @@ import androidx.test.filters.SmallTest;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -43,6 +46,25 @@ public class LogEntryTest {
         assertEquals(-1, logEntry.getTimestamp());
         assertFalse(logEntry.isSuccess());
         assertNull(logEntry.getMessage());
+        Map<String, ?> map = logEntry.toMap();
+        assertNotNull(map);
+        logEntry = new LogEntry(map);
+        assertEquals(-1, logEntry.getId());
+        assertEquals(-1, logEntry.getNetworkTaskId());
+        assertEquals(-1, logEntry.getTimestamp());
+        assertFalse(logEntry.isSuccess());
+        assertNull(logEntry.getMessage());
+    }
+
+    @Test
+    public void testEmptyMap() {
+        Map<String, ?> map = new HashMap<>();
+        LogEntry logEntry = new LogEntry(map);
+        assertEquals(-1, logEntry.getId());
+        assertEquals(-1, logEntry.getNetworkTaskId());
+        assertEquals(-1, logEntry.getTimestamp());
+        assertFalse(logEntry.isSuccess());
+        assertNull(logEntry.getMessage());
     }
 
     @Test
@@ -70,6 +92,25 @@ public class LogEntryTest {
         Bundle bundle = logEntry.toBundle();
         assertNotNull(bundle);
         logEntry = new LogEntry(bundle);
+        assertEquals(1, logEntry.getId());
+        assertEquals(2, logEntry.getNetworkTaskId());
+        assertEquals(timestamp, logEntry.getTimestamp());
+        assertTrue(logEntry.isSuccess());
+        assertEquals("Message", logEntry.getMessage());
+    }
+
+    @Test
+    public void testToMap() {
+        long timestamp = System.currentTimeMillis();
+        LogEntry logEntry = new LogEntry();
+        logEntry.setId(1);
+        logEntry.setNetworkTaskId(2);
+        logEntry.setTimestamp(timestamp);
+        logEntry.setSuccess(true);
+        logEntry.setMessage("Message");
+        Map<String, ?> map = logEntry.toMap();
+        assertNotNull(map);
+        logEntry = new LogEntry(map);
         assertEquals(1, logEntry.getId());
         assertEquals(2, logEntry.getNetworkTaskId());
         assertEquals(timestamp, logEntry.getTimestamp());

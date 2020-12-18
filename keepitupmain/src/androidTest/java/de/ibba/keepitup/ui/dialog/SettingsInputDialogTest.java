@@ -360,8 +360,7 @@ public class SettingsInputDialogTest extends BaseUITest {
         return inputDialog;
     }
 
-
     private SettingsInputDialog getDialog() {
-        return (SettingsInputDialog) getActivity(activityScenario).getSupportFragmentManager().getFragments().get(0);
+        return (SettingsInputDialog) getDialog(activityScenario, SettingsInputDialog.class);
     }
 }

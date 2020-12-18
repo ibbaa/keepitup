@@ -5,6 +5,9 @@ import android.os.PersistableBundle;
 
 import androidx.annotation.NonNull;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class SchedulerId {
 
     private long id;
@@ -24,10 +27,27 @@ public class SchedulerId {
     }
 
     public SchedulerId(Bundle bundle) {
+        this();
         this.id = bundle.getLong("id");
         this.valid = bundle.getInt("valid") >= 1;
         this.schedulerid = bundle.getInt("schedulerid");
         this.timestamp = bundle.getLong("timestamp");
+    }
+
+    public SchedulerId(Map<String, ?> map) {
+        this();
+        if (map.get("id") != null) {
+            this.id = (Long) map.get("id");
+        }
+        if (map.get("valid") != null) {
+            this.valid = (Boolean) map.get("valid");
+        }
+        if (map.get("schedulerid") != null) {
+            this.schedulerid = (Integer) map.get("schedulerid");
+        }
+        if (map.get("timestamp") != null) {
+            this.timestamp = (Long) map.get("timestamp");
+        }
     }
 
     public long getId() {
@@ -73,6 +93,15 @@ public class SchedulerId {
 
     public Bundle toBundle() {
         return new Bundle(toPersistableBundle());
+    }
+
+    public Map<String, ?> toMap() {
+        Map<String, Object> map = new HashMap<>();
+        map.put("id", id);
+        map.put("schedulerid", schedulerid);
+        map.put("valid", valid);
+        map.put("timestamp", timestamp);
+        return map;
     }
 
     @NonNull

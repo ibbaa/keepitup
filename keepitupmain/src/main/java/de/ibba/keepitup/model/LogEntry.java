@@ -5,6 +5,8 @@ import android.os.PersistableBundle;
 
 import androidx.annotation.NonNull;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 
 public class LogEntry {
@@ -28,11 +30,31 @@ public class LogEntry {
     }
 
     public LogEntry(Bundle bundle) {
+        this();
         this.id = bundle.getLong("id");
         this.networktaskid = bundle.getLong("networktaskid");
         this.success = bundle.getInt("success") >= 1;
         this.timestamp = bundle.getLong("timestamp");
         this.message = bundle.getString("message");
+    }
+
+    public LogEntry(Map<String, ?> map) {
+        this();
+        if (map.get("id") != null) {
+            this.id = (Long) map.get("id");
+        }
+        if (map.get("networktaskid") != null) {
+            this.networktaskid = (Long) map.get("networktaskid");
+        }
+        if (map.get("success") != null) {
+            this.success = (Boolean) map.get("success");
+        }
+        if (map.get("timestamp") != null) {
+            this.timestamp = (Long) map.get("timestamp");
+        }
+        if (map.get("message") != null) {
+            this.message = (String) map.get("message");
+        }
     }
 
     public long getId() {
@@ -89,6 +111,18 @@ public class LogEntry {
 
     public Bundle toBundle() {
         return new Bundle(toPersistableBundle());
+    }
+
+    public Map<String, ?> toMap() {
+        Map<String, Object> map = new HashMap<>();
+        map.put("id", id);
+        map.put("networktaskid", networktaskid);
+        map.put("success", success);
+        map.put("timestamp", timestamp);
+        if (message != null) {
+            map.put("message", message);
+        }
+        return map;
     }
 
     public boolean isEqual(LogEntry other) {

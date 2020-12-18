@@ -13,6 +13,14 @@
         android:focusableInTouchMode="true"
         android:orientation="vertical">
 
+        <ProgressBar
+            android:id="@+id/progressbar_dialog_confirm_progress"
+            style="@android:style/Widget.DeviceDefault.Light.ProgressBar.Small"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:indeterminate="true" />
+
         <TextView
             android:id="@+id/textview_dialog_confirm_message"
             android:layout_width="wrap_content"

@@ -60,7 +60,7 @@ public class GeneralErrorDialogTest extends BaseUITest {
 
     private void openGeneralErrorDialog() {
         GeneralErrorDialog errorDialog = new GeneralErrorDialog();
-        errorDialog.setArguments(BundleUtil.stringToBundle(GeneralErrorDialog.class.getSimpleName(), "Message"));
+        errorDialog.setArguments(BundleUtil.stringToBundle(errorDialog.getMessageKey(), "Message"));
         errorDialog.show(getActivity(activityScenario).getSupportFragmentManager(), GeneralErrorDialog.class.getName());
         onView(isRoot()).perform(waitFor(500));
     }

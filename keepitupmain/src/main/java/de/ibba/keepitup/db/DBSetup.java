@@ -25,17 +25,17 @@ public class DBSetup {
     }
 
     public void createNetworkTaskTable(SQLiteDatabase db) {
-        Log.i(DBOpenHelper.class.getName(), "Creating database table " + networkTaskDBConstants.getTableName());
+        Log.d(DBOpenHelper.class.getName(), "Creating database table " + networkTaskDBConstants.getTableName());
         db.execSQL(networkTaskDBConstants.getCreateTableStatement());
     }
 
     public void createLogTable(SQLiteDatabase db) {
-        Log.i(DBOpenHelper.class.getName(), "Creating database table " + logDBConstants.getTableName());
+        Log.d(DBOpenHelper.class.getName(), "Creating database table " + logDBConstants.getTableName());
         db.execSQL(logDBConstants.getCreateTableStatement());
     }
 
     public void createSchedulerIdHistoryTable(SQLiteDatabase db) {
-        Log.i(DBOpenHelper.class.getName(), "Creating database table " + schedulerIdDBConstants.getTableName());
+        Log.d(DBOpenHelper.class.getName(), "Creating database table " + schedulerIdDBConstants.getTableName());
         db.execSQL(schedulerIdDBConstants.getCreateTableStatement());
     }
 
@@ -47,17 +47,17 @@ public class DBSetup {
     }
 
     public void dropNetworkTaskTable(SQLiteDatabase db) {
-        Log.i(DBOpenHelper.class.getName(), "Dropping database table " + networkTaskDBConstants.getTableName());
+        Log.d(DBOpenHelper.class.getName(), "Dropping database table " + networkTaskDBConstants.getTableName());
         db.execSQL(networkTaskDBConstants.getDropTableStatement());
     }
 
     public void dropLogTable(SQLiteDatabase db) {
-        Log.i(DBOpenHelper.class.getName(), "Dropping database table " + logDBConstants.getTableName());
+        Log.d(DBOpenHelper.class.getName(), "Dropping database table " + logDBConstants.getTableName());
         db.execSQL(logDBConstants.getDropTableStatement());
     }
 
     public void dropSchedulerIdHistoryTable(SQLiteDatabase db) {
-        Log.i(DBOpenHelper.class.getName(), "Dropping database table " + schedulerIdDBConstants.getTableName());
+        Log.d(DBOpenHelper.class.getName(), "Dropping database table " + schedulerIdDBConstants.getTableName());
         db.execSQL(schedulerIdDBConstants.getDropTableStatement());
     }
 
@@ -101,5 +101,20 @@ public class DBSetup {
 
     public void recreateTables(Context context) {
         recreateTables(DBOpenHelper.getInstance(context).getWritableDatabase());
+    }
+
+    public void deleteAllNetworkTasks(Context context) {
+        NetworkTaskDAO dao = new NetworkTaskDAO(context);
+        dao.deleteAllNetworkTasks();
+    }
+
+    public void deleteAllLogs(Context context) {
+        LogDAO dao = new LogDAO(context);
+        dao.deleteAllLogs();
+    }
+
+    public void deleteAllSchedulerIds(Context context) {
+        SchedulerIdHistoryDAO dao = new SchedulerIdHistoryDAO(context);
+        dao.deleteAllSchedulerIds();
     }
 }

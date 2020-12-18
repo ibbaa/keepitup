@@ -2953,7 +2953,7 @@ public class FileChooseDialogFolderModeTest extends BaseUITest {
     }
 
     private FileChooseDialog getDialog() {
-        return (FileChooseDialog) getActivity(activityScenario).getSupportFragmentManager().getFragments().get(0);
+        return (FileChooseDialog) getDialog(activityScenario, FileChooseDialog.class);
     }
 
     private FileEntryAdapter getAdapter() {

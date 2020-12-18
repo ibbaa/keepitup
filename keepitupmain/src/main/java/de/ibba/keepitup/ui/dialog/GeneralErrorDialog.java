@@ -28,10 +28,14 @@ public class GeneralErrorDialog extends DialogFragment {
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         Log.d(GeneralErrorDialog.class.getName(), "onCreateView");
         View view = inflater.inflate(R.layout.dialog_general_error, container);
-        String message = BundleUtil.stringFromBundle(GeneralErrorDialog.class.getSimpleName(), requireArguments());
+        String message = BundleUtil.stringFromBundle(getMessageKey(), requireArguments());
         prepareErrorMessage(view, message);
         prepareOkImageButton(view);
         return view;
+    }
+
+    public String getMessageKey() {
+        return GeneralErrorDialog.class.getSimpleName() + "Message";
     }
 
     public String getTypefaceStyleKey() {
