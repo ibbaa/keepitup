@@ -144,6 +144,39 @@ public class BundleUtilTest {
     }
 
     @Test
+    public void testIntegerToBundle() {
+        Bundle bundle = BundleUtil.integerToBundle("key", 0);
+        assertEquals(0, bundle.getInt("key"));
+        bundle = BundleUtil.integerToBundle("key", 5);
+        assertEquals(5, bundle.getInt("key"));
+        assertTrue(BundleUtil.integerToBundle(null, 5).isEmpty());
+    }
+
+    @Test
+    public void testIntegerToBundleProvidedBundle() {
+        Bundle bundle = BundleUtil.integerToBundle("key", 0, null);
+        assertEquals(0, bundle.getInt("key"));
+        bundle = new Bundle();
+        bundle.putString("otherkey", "message");
+        bundle = BundleUtil.integerToBundle("key", 5, bundle);
+        assertEquals(5, bundle.getInt("key"));
+        assertEquals("message", bundle.getString("otherkey"));
+    }
+
+    @Test
+    public void testIntegerFromBundle() {
+        Bundle bundle = new Bundle();
+        bundle.putInt("key", 1);
+        assertEquals(1, BundleUtil.integerFromBundle("key", bundle));
+        bundle = new Bundle();
+        bundle.putInt("key", -1);
+        assertEquals(-1, BundleUtil.integerFromBundle("key", bundle));
+        assertEquals(-1, BundleUtil.integerFromBundle("xyz", bundle));
+        assertEquals(-1, BundleUtil.integerFromBundle(null, bundle));
+        assertEquals(-1, BundleUtil.integerFromBundle("key", null));
+    }
+
+    @Test
     public void testBundleToBundle() {
         Bundle bundle = BundleUtil.bundleToBundle("key", null);
         assertNotNull(bundle);

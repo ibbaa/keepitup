@@ -187,6 +187,6 @@ public class ContextOptionsDialogTest extends BaseUITest {
     }
 
     private TestContextOptionsDialog getDialog() {
-        return (TestContextOptionsDialog) getActivity(activityScenario).getSupportFragmentManager().getFragments().get(0);
+        return (TestContextOptionsDialog) getDialog(activityScenario, TestContextOptionsDialog.class);
     }
 }

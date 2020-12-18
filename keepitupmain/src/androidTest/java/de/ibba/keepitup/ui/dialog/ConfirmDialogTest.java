@@ -1,8 +1,11 @@
 package de.ibba.keepitup.ui.dialog;
 
+import android.os.Bundle;
+
 import androidx.test.core.app.ActivityScenario;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.MediumTest;
+import androidx.test.platform.app.InstrumentationRegistry;
 
 import org.junit.After;
 import org.junit.Before;
@@ -17,9 +20,12 @@ import de.ibba.keepitup.util.BundleUtil;
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
+import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.isRoot;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
+import static org.hamcrest.Matchers.allOf;
+import static org.hamcrest.Matchers.not;
 
 @MediumTest
 @RunWith(AndroidJUnit4.class)
@@ -57,11 +63,42 @@ public class ConfirmDialogTest extends BaseUITest {
         onView(withId(R.id.imageview_dialog_confirm_cancel)).perform(click());
     }
 
+    @Test
+    public void testProgressBar() {
+        ConfirmDialog confirmDialog = openConfirmDialog();
+        onView(withId(R.id.progressbar_dialog_confirm_progress)).check(matches(not(isDisplayed())));
+        getActivity(activityScenario).runOnUiThread(() -> confirmDialog.showProgressBar());
+        onView(withId(R.id.progressbar_dialog_confirm_progress)).check(matches(isDisplayed()));
+        getActivity(activityScenario).runOnUiThread(() -> confirmDialog.hideProgressBar());
+        onView(withId(R.id.progressbar_dialog_confirm_progress)).check(matches(not(isDisplayed())));
+        onView(withId(R.id.imageview_dialog_confirm_cancel)).perform(click());
+    }
 
-    private void openConfirmDialog() {
+    @Test
+    public void testProgressBarScreenRotation() {
+        ConfirmDialog confirmDialog = openConfirmDialog();
+        onView(withId(R.id.progressbar_dialog_confirm_progress)).check(matches(not(isDisplayed())));
+        getActivity(activityScenario).runOnUiThread(() -> confirmDialog.showProgressBar());
+        onView(withId(R.id.progressbar_dialog_confirm_progress)).check(matches(isDisplayed()));
+        rotateScreen(activityScenario);
+        getActivity(activityScenario).runOnUiThread(() -> getDialog().showProgressBar());
+        onView(withId(R.id.progressbar_dialog_confirm_progress)).check(matches(isDisplayed()));
+        getActivity(activityScenario).runOnUiThread(() -> getDialog().hideProgressBar());
+        onView(withId(R.id.progressbar_dialog_confirm_progress)).check(matches(not(isDisplayed())));
+        rotateScreen(activityScenario);
+        onView(withId(R.id.progressbar_dialog_confirm_progress)).check(matches(not(isDisplayed())));
+        onView(withId(R.id.imageview_dialog_confirm_cancel)).perform(click());
+    }
+
+    private ConfirmDialog openConfirmDialog() {
         ConfirmDialog confirmDialog = new ConfirmDialog();
-        confirmDialog.setArguments(BundleUtil.stringToBundle(ConfirmDialog.class.getSimpleName(), "Message"));
+        confirmDialog.setArguments(BundleUtil.stringToBundle(confirmDialog.getMessageKey(), "Message"));
         confirmDialog.show(getActivity(activityScenario).getSupportFragmentManager(), ConfirmDialog.class.getName());
         onView(isRoot()).perform(waitFor(500));
+        return confirmDialog;
+    }
+
+    private ConfirmDialog getDialog() {
+        return (ConfirmDialog) getDialog(activityScenario, ConfirmDialog.class);
     }
 }

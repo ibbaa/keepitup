@@ -24,6 +24,7 @@ import de.ibba.keepitup.ui.dialog.InfoDialog;
 import de.ibba.keepitup.ui.dialog.NetworkTaskEditDialog;
 import de.ibba.keepitup.ui.sync.NetworkTaskMainUIBroadcastReceiver;
 import de.ibba.keepitup.ui.sync.NetworkTaskMainUIInitTask;
+import de.ibba.keepitup.util.BundleUtil;
 import de.ibba.keepitup.util.ThreadUtil;
 
 public class NetworkTaskMainActivity extends RecyclerViewBaseActivity {
@@ -213,16 +214,15 @@ public class NetworkTaskMainActivity extends RecyclerViewBaseActivity {
     public void onConfirmDialogOkClicked(ConfirmDialog confirmDialog, ConfirmDialog.Type type) {
         Log.d(NetworkTaskMainActivity.class.getName(), "onConfirmDialogOkClicked for type " + type);
         if (ConfirmDialog.Type.DELETETASK.equals(type)) {
-            Bundle arguments = confirmDialog.getArguments();
-            if (arguments != null && arguments.containsKey(getConfirmDialogPositionKey())) {
+            int position = confirmDialog.getPosition();
+            if (position >= 0) {
                 NetworkTaskHandler handler = new NetworkTaskHandler(this);
-                int position = arguments.getInt(getConfirmDialogPositionKey());
                 NetworkTask task = ((NetworkTaskAdapter) getAdapter()).getItem(position).getNetworkTask();
                 Log.d(NetworkTaskMainActivity.class.getName(), "Deleting " + task);
                 handler.deleteNetworkTask(task);
                 getAdapter().notifyDataSetChanged();
             } else {
-                Log.e(NetworkTaskMainActivity.class.getName(), ConfirmDialog.class.getSimpleName() + " arguments do not contain position key " + getConfirmDialogPositionKey());
+                Log.e(NetworkTaskMainActivity.class.getName(), ConfirmDialog.class.getSimpleName() + " arguments do not contain position key " + confirmDialog.getPositionKey());
             }
         } else {
             Log.e(NetworkTaskMainActivity.class.getName(), "Unknown type " + type);

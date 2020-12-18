@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -24,6 +25,8 @@ public class ConfirmDialog extends DialogFragment {
         DELETELOGS
     }
 
+    private ProgressBar progressBar;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         Log.d(ConfirmDialog.class.getName(), "onCreate");
@@ -35,10 +38,41 @@ public class ConfirmDialog extends DialogFragment {
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         Log.d(ConfirmDialog.class.getName(), "onCreateView");
         View view = inflater.inflate(R.layout.dialog_confirm, container);
-        String message = BundleUtil.stringFromBundle(ConfirmDialog.class.getSimpleName(), requireArguments());
+        String message = BundleUtil.stringFromBundle(getMessageKey(), requireArguments());
+        prepareProgressBar(view);
         prepareConfirmMessage(view, message);
         prepareOkCancelImageButtons(view);
         return view;
+    }
+
+    public String getPositionKey() {
+        return ConfirmDialog.class.getSimpleName() + "Position";
+    }
+
+    public String getMessageKey() {
+        return ConfirmDialog.class.getSimpleName() + "Message";
+    }
+
+    public String getTypeKey() {
+        return ConfirmDialog.Type.class.getSimpleName();
+    }
+
+    public int getPosition() {
+        return BundleUtil.integerFromBundle(getPositionKey(), requireArguments());
+    }
+
+    public void showProgressBar() {
+        progressBar.setVisibility(View.VISIBLE);
+    }
+
+    public void hideProgressBar() {
+        progressBar.setVisibility(View.GONE);
+    }
+
+    private void prepareProgressBar(View view) {
+        Log.d(ConfirmDialog.class.getName(), "prepareProgressBar");
+        progressBar = view.findViewById(R.id.progressbar_dialog_confirm_progress);
+        hideProgressBar();
     }
 
     private void prepareConfirmMessage(View view, String message) {
@@ -63,7 +97,7 @@ public class ConfirmDialog extends DialogFragment {
             dismiss();
             return;
         }
-        String typeString = BundleUtil.stringFromBundle(ConfirmDialog.Type.class.getSimpleName(), requireArguments());
+        String typeString = BundleUtil.stringFromBundle(getTypeKey(), requireArguments());
         if (StringUtil.isEmpty(typeString)) {
             Log.e(ConfirmDialog.class.getName(), ConfirmDialog.Type.class.getSimpleName() + " not specified.");
             confirmSupport.onConfirmDialogOkClicked(this, null);
