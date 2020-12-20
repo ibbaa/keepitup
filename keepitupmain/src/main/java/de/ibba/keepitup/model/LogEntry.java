@@ -141,10 +141,7 @@ public class LogEntry {
         if (timestamp != other.timestamp) {
             return false;
         }
-        if (!Objects.equals(message, other.message)) {
-            return false;
-        }
-        return true;
+        return Objects.equals(message, other.message);
     }
 
     @NonNull

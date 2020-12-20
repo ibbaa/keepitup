@@ -4,12 +4,12 @@ import androidx.annotation.NonNull;
 
 public class LogFileEntry {
 
-    private long timestamp;
-    private String thread;
-    private LogLevel level;
-    private String tag;
-    private String message;
-    private Throwable throwable;
+    private final long timestamp;
+    private final String thread;
+    private final LogLevel level;
+    private final String tag;
+    private final String message;
+    private final Throwable throwable;
 
     public LogFileEntry(long timestamp, String thread, LogLevel level, String tag, String message, Throwable throwable) {
         this.timestamp = timestamp;

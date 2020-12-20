@@ -298,10 +298,7 @@ public class NetworkTask {
         if (!Objects.equals(address, other.address)) {
             return false;
         }
-        if (!Objects.equals(accessType, other.accessType)) {
-            return false;
-        }
-        return true;
+        return Objects.equals(accessType, other.accessType);
     }
 
     public boolean isTechnicallyEqual(NetworkTask other) {
@@ -323,10 +320,7 @@ public class NetworkTask {
         if (!Objects.equals(address, other.address)) {
             return false;
         }
-        if (!Objects.equals(accessType, other.accessType)) {
-            return false;
-        }
-        return true;
+        return Objects.equals(accessType, other.accessType);
     }
 
     @NonNull

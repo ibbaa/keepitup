@@ -115,10 +115,14 @@ public class PreferenceSetupTest {
 
     @Test
     public void testImportSystemSettingsEmpty() {
+        preferenceManager.setPreferenceImportFolder("folderImport");
+        preferenceManager.setPreferenceExportFolder("folderExport");
         preferenceManager.setPreferenceFileLoggerEnabled(true);
         preferenceManager.setPreferenceFileDumpEnabled(true);
         Map<String, ?> systemSettings = new HashMap<>();
         setup.importSystemSettings(systemSettings);
+        assertEquals("config", preferenceManager.getPreferenceImportFolder());
+        assertEquals("config", preferenceManager.getPreferenceExportFolder());
         assertFalse(preferenceManager.getPreferenceFileLoggerEnabled());
         assertFalse(preferenceManager.getPreferenceFileDumpEnabled());
     }
@@ -126,9 +130,13 @@ public class PreferenceSetupTest {
     @Test
     public void testImportSystemSetValues() {
         Map<String, Object> systemSettings = new HashMap<>();
+        systemSettings.put("preferenceImportFolder", "folderImport");
+        systemSettings.put("preferenceExportFolder", "folderExport");
         systemSettings.put("preferenceFileLoggerEnabled", true);
         systemSettings.put("preferenceFileDumpEnabled", true);
         setup.importSystemSettings(systemSettings);
+        assertEquals("folderImport", preferenceManager.getPreferenceImportFolder());
+        assertEquals("folderExport", preferenceManager.getPreferenceExportFolder());
         assertTrue(preferenceManager.getPreferenceFileLoggerEnabled());
         assertTrue(preferenceManager.getPreferenceFileDumpEnabled());
     }
@@ -208,17 +216,25 @@ public class PreferenceSetupTest {
     @Test
     public void testExportSystemSettingsDefaultValues() {
         Map<String, ?> systemSettings = setup.exportSystemSettings();
+        assertEquals(systemSettings.get("preferenceImportFolder"), preferenceManager.getPreferenceImportFolder());
+        assertEquals(systemSettings.get("preferenceExportFolder"), preferenceManager.getPreferenceExportFolder());
         assertEquals(systemSettings.get("preferenceFileLoggerEnabled"), preferenceManager.getPreferenceFileLoggerEnabled());
         assertEquals(systemSettings.get("preferenceFileDumpEnabled"), preferenceManager.getPreferenceFileDumpEnabled());
     }
 
     @Test
     public void testExportSystemSettingsSetValues() {
+        preferenceManager.setPreferenceImportFolder("folderImport");
+        preferenceManager.setPreferenceExportFolder("folderExport");
         preferenceManager.setPreferenceFileLoggerEnabled(true);
         preferenceManager.setPreferenceFileDumpEnabled(true);
         Map<String, ?> systemSettings = setup.exportSystemSettings();
+        assertEquals("folderImport", preferenceManager.getPreferenceImportFolder());
+        assertEquals("folderExport", preferenceManager.getPreferenceExportFolder());
         assertTrue(preferenceManager.getPreferenceFileLoggerEnabled());
         assertTrue(preferenceManager.getPreferenceFileDumpEnabled());
+        assertEquals(systemSettings.get("preferenceImportFolder"), preferenceManager.getPreferenceImportFolder());
+        assertEquals(systemSettings.get("preferenceExportFolder"), preferenceManager.getPreferenceExportFolder());
         assertEquals(systemSettings.get("preferenceFileLoggerEnabled"), preferenceManager.getPreferenceFileLoggerEnabled());
         assertEquals(systemSettings.get("preferenceFileDumpEnabled"), preferenceManager.getPreferenceFileDumpEnabled());
     }
@@ -276,12 +292,18 @@ public class PreferenceSetupTest {
 
     @Test
     public void testImportExportSystemSettings() {
+        preferenceManager.setPreferenceImportFolder("folderImport");
+        preferenceManager.setPreferenceExportFolder("folderExport");
         preferenceManager.setPreferenceFileLoggerEnabled(true);
         preferenceManager.setPreferenceFileDumpEnabled(true);
         Map<String, ?> systemSettings = setup.exportSystemSettings();
         setup.importSystemSettings(systemSettings);
+        assertEquals("folderImport", preferenceManager.getPreferenceImportFolder());
+        assertEquals("folderExport", preferenceManager.getPreferenceExportFolder());
         assertTrue(preferenceManager.getPreferenceFileLoggerEnabled());
         assertTrue(preferenceManager.getPreferenceFileDumpEnabled());
+        assertEquals(systemSettings.get("preferenceImportFolder"), preferenceManager.getPreferenceImportFolder());
+        assertEquals(systemSettings.get("preferenceExportFolder"), preferenceManager.getPreferenceExportFolder());
         assertEquals(systemSettings.get("preferenceFileLoggerEnabled"), preferenceManager.getPreferenceFileLoggerEnabled());
         assertEquals(systemSettings.get("preferenceFileDumpEnabled"), preferenceManager.getPreferenceFileDumpEnabled());
     }
@@ -324,9 +346,13 @@ public class PreferenceSetupTest {
 
     @Test
     public void testRemoveSystemSettings() {
+        preferenceManager.setPreferenceImportFolder("folderImport");
+        preferenceManager.setPreferenceExportFolder("folderExport");
         preferenceManager.setPreferenceFileLoggerEnabled(true);
         preferenceManager.setPreferenceFileDumpEnabled(true);
         setup.removeSystemSettings();
+        assertEquals("config", preferenceManager.getPreferenceImportFolder());
+        assertEquals("config", preferenceManager.getPreferenceExportFolder());
         assertFalse(preferenceManager.getPreferenceFileLoggerEnabled());
         assertFalse(preferenceManager.getPreferenceFileDumpEnabled());
     }

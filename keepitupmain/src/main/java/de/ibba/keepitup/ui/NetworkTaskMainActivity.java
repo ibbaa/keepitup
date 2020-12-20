@@ -24,7 +24,6 @@ import de.ibba.keepitup.ui.dialog.InfoDialog;
 import de.ibba.keepitup.ui.dialog.NetworkTaskEditDialog;
 import de.ibba.keepitup.ui.sync.NetworkTaskMainUIBroadcastReceiver;
 import de.ibba.keepitup.ui.sync.NetworkTaskMainUIInitTask;
-import de.ibba.keepitup.util.BundleUtil;
 import de.ibba.keepitup.util.ThreadUtil;
 
 public class NetworkTaskMainActivity extends RecyclerViewBaseActivity {

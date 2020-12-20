@@ -31,7 +31,7 @@ public class FileLogger implements ILogger {
     private final String logFileName;
 
     private final LinkedBlockingQueue<LogFileEntry> logQueue;
-    private AtomicBoolean logThreadActive;
+    private final AtomicBoolean logThreadActive;
 
     public FileLogger(String logDirectory) {
         this(DEFAULT_LOG_LEVEL, DEFAULT_MAX_FILE_SIZE, DEFAULT_ARCHIVE_FILE_COUNT, logDirectory, DEFAULT_LOG_FILE_BASE_NAME);
