@@ -90,10 +90,7 @@ public class FileEntry {
         if (parent != other.parent) {
             return false;
         }
-        if (canVisit != other.canVisit) {
-            return false;
-        }
-        return true;
+        return canVisit == other.canVisit;
     }
 
     @NonNull

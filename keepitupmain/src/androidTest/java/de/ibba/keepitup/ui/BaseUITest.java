@@ -38,7 +38,6 @@ import de.ibba.keepitup.test.matcher.ListSizeMatcher;
 import de.ibba.keepitup.test.matcher.TextColorMatcher;
 import de.ibba.keepitup.test.mock.TestRegistry;
 import de.ibba.keepitup.test.viewaction.WaitForViewAction;
-import de.ibba.keepitup.ui.dialog.FileChooseDialog;
 
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.matcher.ViewMatchers.isAssignableFrom;

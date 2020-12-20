@@ -8,10 +8,9 @@ import java.util.Map;
 import de.ibba.keepitup.logging.Log;
 import de.ibba.keepitup.model.AccessType;
 
-@SuppressWarnings("ConditionCoveredByFurtherCondition")
 public class PreferenceSetup {
 
-    private PreferenceManager preferenceManager;
+    private final PreferenceManager preferenceManager;
 
     public PreferenceSetup(Context context) {
         preferenceManager = new PreferenceManager(context);
@@ -45,6 +44,8 @@ public class PreferenceSetup {
     public Map<String, ?> exportSystemSettings() {
         Log.d(PreferenceSetup.class.getName(), "exportSystemSettings");
         Map<String, Object> systemSettings = new HashMap<>();
+        systemSettings.put("preferenceImportFolder", preferenceManager.getPreferenceImportFolder());
+        systemSettings.put("preferenceExportFolder", preferenceManager.getPreferenceExportFolder());
         systemSettings.put("preferenceFileLoggerEnabled", preferenceManager.getPreferenceFileLoggerEnabled());
         systemSettings.put("preferenceFileDumpEnabled", preferenceManager.getPreferenceFileDumpEnabled());
         return systemSettings;
@@ -138,6 +139,18 @@ public class PreferenceSetup {
 
     public void importSystemSettings(Map<String, ?> systemSettings) {
         Log.d(PreferenceSetup.class.getName(), "importSystemSettings");
+        Object importFolder = systemSettings.get("preferenceImportFolder");
+        if (importFolder instanceof String) {
+            preferenceManager.setPreferenceImportFolder((String) importFolder);
+        } else {
+            preferenceManager.removePreferenceImportFolder();
+        }
+        Object exportFolder = systemSettings.get("preferenceExportFolder");
+        if (exportFolder instanceof String) {
+            preferenceManager.setPreferenceExportFolder((String) exportFolder);
+        } else {
+            preferenceManager.removePreferenceExportFolder();
+        }
         Object fileLoggerEnabled = systemSettings.get("preferenceFileLoggerEnabled");
         if (fileLoggerEnabled instanceof Boolean) {
             preferenceManager.setPreferenceFileLoggerEnabled((Boolean) fileLoggerEnabled);
@@ -175,6 +188,8 @@ public class PreferenceSetup {
 
     public void removeSystemSettings() {
         Log.d(PreferenceSetup.class.getName(), "removeSystemSettings");
+        preferenceManager.removePreferenceImportFolder();
+        preferenceManager.removePreferenceExportFolder();
         preferenceManager.removePreferenceFileLoggerEnabled();
         preferenceManager.removePreferenceFileDumpEnabled();
     }

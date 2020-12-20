@@ -1,11 +1,8 @@
 package de.ibba.keepitup.ui.dialog;
 
-import android.os.Bundle;
-
 import androidx.test.core.app.ActivityScenario;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.MediumTest;
-import androidx.test.platform.app.InstrumentationRegistry;
 
 import org.junit.After;
 import org.junit.Before;
@@ -24,7 +21,6 @@ import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.isRoot;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
-import static org.hamcrest.Matchers.allOf;
 import static org.hamcrest.Matchers.not;
 
 @MediumTest
@@ -67,9 +63,9 @@ public class ConfirmDialogTest extends BaseUITest {
     public void testProgressBar() {
         ConfirmDialog confirmDialog = openConfirmDialog();
         onView(withId(R.id.progressbar_dialog_confirm_progress)).check(matches(not(isDisplayed())));
-        getActivity(activityScenario).runOnUiThread(() -> confirmDialog.showProgressBar());
+        getActivity(activityScenario).runOnUiThread(confirmDialog::showProgressBar);
         onView(withId(R.id.progressbar_dialog_confirm_progress)).check(matches(isDisplayed()));
-        getActivity(activityScenario).runOnUiThread(() -> confirmDialog.hideProgressBar());
+        getActivity(activityScenario).runOnUiThread(confirmDialog::hideProgressBar);
         onView(withId(R.id.progressbar_dialog_confirm_progress)).check(matches(not(isDisplayed())));
         onView(withId(R.id.imageview_dialog_confirm_cancel)).perform(click());
     }
@@ -78,7 +74,7 @@ public class ConfirmDialogTest extends BaseUITest {
     public void testProgressBarScreenRotation() {
         ConfirmDialog confirmDialog = openConfirmDialog();
         onView(withId(R.id.progressbar_dialog_confirm_progress)).check(matches(not(isDisplayed())));
-        getActivity(activityScenario).runOnUiThread(() -> confirmDialog.showProgressBar());
+        getActivity(activityScenario).runOnUiThread(confirmDialog::showProgressBar);
         onView(withId(R.id.progressbar_dialog_confirm_progress)).check(matches(isDisplayed()));
         rotateScreen(activityScenario);
         getActivity(activityScenario).runOnUiThread(() -> getDialog().showProgressBar());

@@ -281,6 +281,36 @@ public class PreferenceManager {
         removePreferenceValue(getResources().getString(R.string.download_keep_key));
     }
 
+    public String getPreferenceImportFolder() {
+        Log.d(PreferenceManager.class.getName(), "getPreferenceImportFolder");
+        return getPreferenceString(getResources().getString(R.string.import_folder_key), getResources().getString(R.string.import_folder_default));
+    }
+
+    public void setPreferenceImportFolder(String importFolder) {
+        Log.d(PreferenceManager.class.getName(), "setPreferenceImportFolder, importFolder is " + importFolder);
+        setPreferenceString(getResources().getString(R.string.import_folder_key), importFolder);
+    }
+
+    public void removePreferenceImportFolder() {
+        Log.d(PreferenceManager.class.getName(), "removePreferenceImportFolder");
+        removePreferenceValue(getResources().getString(R.string.import_folder_key));
+    }
+
+    public String getPreferenceExportFolder() {
+        Log.d(PreferenceManager.class.getName(), "getPreferenceExportFolder");
+        return getPreferenceString(getResources().getString(R.string.export_folder_key), getResources().getString(R.string.export_folder_default));
+    }
+
+    public void setPreferenceExportFolder(String exportFolder) {
+        Log.d(PreferenceManager.class.getName(), "setPreferenceExportFolder, importFolder is " + exportFolder);
+        setPreferenceString(getResources().getString(R.string.export_folder_key), exportFolder);
+    }
+
+    public void removePreferenceExportFolder() {
+        Log.d(PreferenceManager.class.getName(), "removePreferenceExportFolder");
+        removePreferenceValue(getResources().getString(R.string.export_folder_key));
+    }
+
     public boolean getPreferenceFileLoggerEnabled() {
         Log.d(PreferenceManager.class.getName(), "getPreferenceFileLoggerEnabled");
         return getPreferenceBoolean(getResources().getString(R.string.file_logger_enabled_key), getResources().getBoolean(R.bool.file_logger_enabled_default));

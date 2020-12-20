@@ -2,7 +2,6 @@ package de.ibba.keepitup.ui.dialog;
 
 import android.os.Bundle;
 
-import androidx.fragment.app.Fragment;
 import androidx.test.core.app.ActivityScenario;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.MediumTest;
@@ -14,7 +13,6 @@ import org.junit.runner.RunWith;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.List;
 
 import de.ibba.keepitup.R;
 import de.ibba.keepitup.model.FileEntry;
