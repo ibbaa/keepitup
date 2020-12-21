@@ -61,6 +61,24 @@ public class DBSetup {
         db.execSQL(schedulerIdDBConstants.getDropTableStatement());
     }
 
+    public void recreateNetworkTaskTable(SQLiteDatabase db) {
+        Log.d(DBSetup.class.getName(), "recreateNetworkTaskTable");
+        dropNetworkTaskTable(db);
+        createNetworkTaskTable(db);
+    }
+
+    public void recreateLogTable(SQLiteDatabase db) {
+        Log.d(DBSetup.class.getName(), "recreateLogTable");
+        dropLogTable(db);
+        createLogTable(db);
+    }
+
+    public void recreateSchedulerIdHistoryTable(SQLiteDatabase db) {
+        Log.d(DBSetup.class.getName(), "recreateSchedulerIdHistoryTable");
+        dropSchedulerIdHistoryTable(db);
+        createSchedulerIdHistoryTable(db);
+    }
+
     public void recreateTables(SQLiteDatabase db) {
         Log.d(DBSetup.class.getName(), "recreateTables");
         dropTables(db);
@@ -97,6 +115,24 @@ public class DBSetup {
 
     public void dropSchedulerIdHistoryTable(Context context) {
         dropSchedulerIdHistoryTable(DBOpenHelper.getInstance(context).getWritableDatabase());
+    }
+
+    public void recreateNetworkTaskTable(Context context) {
+        Log.d(DBSetup.class.getName(), "recreateNetworkTaskTable");
+        dropNetworkTaskTable(DBOpenHelper.getInstance(context).getWritableDatabase());
+        createNetworkTaskTable(DBOpenHelper.getInstance(context).getWritableDatabase());
+    }
+
+    public void recreateLogTable(Context context) {
+        Log.d(DBSetup.class.getName(), "recreateLogTable");
+        dropLogTable(DBOpenHelper.getInstance(context).getWritableDatabase());
+        createLogTable(DBOpenHelper.getInstance(context).getWritableDatabase());
+    }
+
+    public void recreateSchedulerIdHistoryTable(Context context) {
+        Log.d(DBSetup.class.getName(), "recreateSchedulerIdHistoryTable");
+        dropSchedulerIdHistoryTable(DBOpenHelper.getInstance(context).getWritableDatabase());
+        createSchedulerIdHistoryTable(DBOpenHelper.getInstance(context).getWritableDatabase());
     }
 
     public void recreateTables(Context context) {

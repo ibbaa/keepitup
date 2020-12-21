@@ -42,7 +42,7 @@ public class LogEntryUIInitTaskTest extends BaseUITest {
     @Before
     public void beforeEachTestMethod() {
         super.beforeEachTestMethod();
-        activityScenario = launchRecyclerViewBaseActivity(getNetworkTaskIntent(getNetworkTask()));
+        activityScenario = launchRecyclerViewBaseActivity(getNetworkTaskLogIntent(getNetworkTask()));
         networkTaskDAO = new NetworkTaskDAO(TestRegistry.getContext());
         networkTaskDAO.deleteAllNetworkTasks();
         logDAO = new LogDAO(TestRegistry.getContext());
@@ -146,7 +146,7 @@ public class LogEntryUIInitTaskTest extends BaseUITest {
         return logEntry;
     }
 
-    private Intent getNetworkTaskIntent(NetworkTask task) {
+    private Intent getNetworkTaskLogIntent(NetworkTask task) {
         Intent intent = new Intent(TestRegistry.getContext(), NetworkTaskLogActivity.class);
         intent.putExtras(task.toBundle());
         return intent;
