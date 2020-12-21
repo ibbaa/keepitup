@@ -22,7 +22,7 @@ public class LogHandlerTest extends BaseUITest {
     public void testDeleteNetworkTask() {
         NetworkTask task1 = getNetworkTask();
         task1 = getNetworkTaskDAO().insertNetworkTask(task1);
-        ActivityScenario<?> activityScenario = launchRecyclerViewBaseActivity(getNetworkTaskIntent(task1));
+        ActivityScenario<?> activityScenario = launchRecyclerViewBaseActivity(getNetworkTaskLogIntent(task1));
         LogHandler handler = new LogHandler((NetworkTaskLogActivity) getActivity(activityScenario));
         LogEntryAdapter adapter = (LogEntryAdapter) ((NetworkTaskLogActivity) getActivity(activityScenario)).getAdapter();
         NetworkTask task2 = getNetworkTask();
@@ -79,7 +79,7 @@ public class LogHandlerTest extends BaseUITest {
         return logEntry;
     }
 
-    private Intent getNetworkTaskIntent(NetworkTask task) {
+    private Intent getNetworkTaskLogIntent(NetworkTask task) {
         Intent intent = new Intent(TestRegistry.getContext(), NetworkTaskLogActivity.class);
         intent.putExtras(task.toBundle());
         return intent;

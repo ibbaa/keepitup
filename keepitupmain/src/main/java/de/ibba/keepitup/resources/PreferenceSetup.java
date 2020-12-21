@@ -90,7 +90,7 @@ public class PreferenceSetup {
             preferenceManager.removePreferenceDownloadFolder();
         }
         Object downloadKeep = globalSettings.get("preferenceDownloadKeep");
-        if (downloadKeep != null && downloadKeep instanceof Boolean) {
+        if (downloadKeep instanceof Boolean) {
             preferenceManager.setPreferenceDownloadKeep((Boolean) downloadKeep);
         } else {
             preferenceManager.removePreferenceDownloadKeep();

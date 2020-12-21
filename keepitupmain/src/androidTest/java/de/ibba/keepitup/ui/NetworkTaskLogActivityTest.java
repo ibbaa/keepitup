@@ -36,7 +36,7 @@ public class NetworkTaskLogActivityTest extends BaseUITest {
     @Test
     public void testInitializeActivityNoData() {
         NetworkTask task = insertNetworkTask();
-        ActivityScenario<?> activityScenario = launchRecyclerViewBaseActivity(getNetworkTaskIntent(task));
+        ActivityScenario<?> activityScenario = launchRecyclerViewBaseActivity(getNetworkTaskLogIntent(task));
         onView(withId(R.id.listview_activity_log_log_entries)).check(matches(withListSize(1)));
         onView(allOf(withId(R.id.textview_list_item_log_entry_no_log), withChildDescendantAtPosition(withId(R.id.listview_activity_log_log_entries), 0))).check(matches(isDisplayed()));
         onView(allOf(withId(R.id.textview_list_item_log_entry_no_log), withChildDescendantAtPosition(withId(R.id.listview_activity_log_log_entries), 0))).check(matches(withText("No logs present for network task 1")));
@@ -51,7 +51,7 @@ public class NetworkTaskLogActivityTest extends BaseUITest {
         LogEntry entry2 = getLogEntry(task, new GregorianCalendar(1985, Calendar.DECEMBER, 24), true, "Message2");
         getLogDAO().insertAndDeleteLog(entry1);
         getLogDAO().insertAndDeleteLog(entry2);
-        ActivityScenario<?> activityScenario = launchRecyclerViewBaseActivity(getNetworkTaskIntent(task));
+        ActivityScenario<?> activityScenario = launchRecyclerViewBaseActivity(getNetworkTaskLogIntent(task));
         onView(withId(R.id.listview_activity_log_log_entries)).check(matches(withListSize(2)));
         onView(allOf(withId(R.id.textview_list_item_log_entry_no_log), withChildDescendantAtPosition(withId(R.id.listview_activity_log_log_entries), 0))).check(matches(not(isDisplayed())));
         onView(allOf(withId(R.id.textview_list_item_log_entry_no_log), withChildDescendantAtPosition(withId(R.id.listview_activity_log_log_entries), 1))).check(matches(not(isDisplayed())));
@@ -75,7 +75,7 @@ public class NetworkTaskLogActivityTest extends BaseUITest {
         LogEntry entry2 = getLogEntry(task, new GregorianCalendar(1985, Calendar.DECEMBER, 24), true, "Message2");
         getLogDAO().insertAndDeleteLog(entry1);
         getLogDAO().insertAndDeleteLog(entry2);
-        ActivityScenario<?> activityScenario = launchRecyclerViewBaseActivity(getNetworkTaskIntent(task));
+        ActivityScenario<?> activityScenario = launchRecyclerViewBaseActivity(getNetworkTaskLogIntent(task));
         onView(withId(R.id.listview_activity_log_log_entries)).check(matches(withListSize(2)));
         openActionBarOverflowOrOptionsMenu(TestRegistry.getContext());
         onView(withText("Delete logs")).perform(click());
@@ -96,7 +96,7 @@ public class NetworkTaskLogActivityTest extends BaseUITest {
         LogEntry entry2 = getLogEntry(task, new GregorianCalendar(1985, Calendar.DECEMBER, 24), true, "Message2");
         getLogDAO().insertAndDeleteLog(entry1);
         getLogDAO().insertAndDeleteLog(entry2);
-        ActivityScenario<?> activityScenario = launchRecyclerViewBaseActivity(getNetworkTaskIntent(task));
+        ActivityScenario<?> activityScenario = launchRecyclerViewBaseActivity(getNetworkTaskLogIntent(task));
         onView(withId(R.id.listview_activity_log_log_entries)).check(matches(withListSize(2)));
         rotateScreen(activityScenario);
         onView(withId(R.id.listview_activity_log_log_entries)).check(matches(withListSize(2)));
@@ -126,7 +126,7 @@ public class NetworkTaskLogActivityTest extends BaseUITest {
         return getNetworkTaskDAO().insertNetworkTask(task);
     }
 
-    private Intent getNetworkTaskIntent(NetworkTask task) {
+    private Intent getNetworkTaskLogIntent(NetworkTask task) {
         Intent intent = new Intent(TestRegistry.getContext(), NetworkTaskLogActivity.class);
         intent.putExtras(task.toBundle());
         return intent;
