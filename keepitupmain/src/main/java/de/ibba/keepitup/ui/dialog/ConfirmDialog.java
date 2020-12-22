@@ -22,7 +22,8 @@ public class ConfirmDialog extends DialogFragment {
 
     public enum Type {
         DELETETASK,
-        DELETELOGS
+        DELETELOGS,
+        RESETCONFIG
     }
 
     private ProgressBar progressBar;
@@ -39,8 +40,10 @@ public class ConfirmDialog extends DialogFragment {
         Log.d(ConfirmDialog.class.getName(), "onCreateView");
         View view = inflater.inflate(R.layout.dialog_confirm, container);
         String message = BundleUtil.stringFromBundle(getMessageKey(), requireArguments());
+        String description = BundleUtil.stringFromBundle(getDescriptionKey(), requireArguments());
         prepareProgressBar(view);
         prepareConfirmMessage(view, message);
+        prepareConfirmDescription(view, description);
         prepareOkCancelImageButtons(view);
         return view;
     }
@@ -51,6 +54,10 @@ public class ConfirmDialog extends DialogFragment {
 
     public String getMessageKey() {
         return ConfirmDialog.class.getSimpleName() + "Message";
+    }
+
+    public String getDescriptionKey() {
+        return ConfirmDialog.class.getSimpleName() + "Description";
     }
 
     public String getTypeKey() {
@@ -76,9 +83,21 @@ public class ConfirmDialog extends DialogFragment {
     }
 
     private void prepareConfirmMessage(View view, String message) {
-        Log.d(ConfirmDialog.class.getName(), "prepareConfirmMessage");
+        Log.d(ConfirmDialog.class.getName(), "prepareConfirmMessage, message is " + message);
         TextView messageText = view.findViewById(R.id.textview_dialog_confirm_message);
         messageText.setText(message);
+    }
+
+    private void prepareConfirmDescription(View view, String description) {
+        Log.d(ConfirmDialog.class.getName(), "prepareConfirmDescription, description is " + description);
+        TextView descriptionText = view.findViewById(R.id.textview_dialog_confirm_description);
+        if (StringUtil.isEmpty(description)) {
+            descriptionText.setText("");
+            descriptionText.setVisibility(View.GONE);
+        } else {
+            descriptionText.setText(description);
+            descriptionText.setVisibility(View.VISIBLE);
+        }
     }
 
     private void prepareOkCancelImageButtons(View view) {

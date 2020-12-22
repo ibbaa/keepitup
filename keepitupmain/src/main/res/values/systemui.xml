@@ -2,6 +2,8 @@
 <resources>
     <string name="activity_system_title">System</string>
     <string name="menu_action_activity_system_reset">Reset</string>
+    <string name="label_activity_system_config">Configuration</string>
+    <string name="label_activity_system_config_reset">Reset configuration</string>
     <string name="label_activity_system_debug">Debug settings</string>
     <string name="label_activity_system_file_logger_enabled">External file logging</string>
     <string name="label_activity_system_file_dump_enabled">Database dump</string>

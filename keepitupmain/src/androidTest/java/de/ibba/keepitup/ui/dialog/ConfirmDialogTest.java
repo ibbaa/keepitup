@@ -45,6 +45,7 @@ public class ConfirmDialogTest extends BaseUITest {
     public void testConfirmMessage() {
         openConfirmDialog();
         onView(withId(R.id.textview_dialog_confirm_message)).check(matches(withText("Message")));
+        onView(withId(R.id.textview_dialog_confirm_description)).check(matches(not(isDisplayed())));
         onView(withId(R.id.imageview_dialog_confirm_cancel)).perform(click());
     }
 
@@ -52,10 +53,35 @@ public class ConfirmDialogTest extends BaseUITest {
     public void testConfirmMessageScreenRotation() {
         openConfirmDialog();
         onView(withId(R.id.textview_dialog_confirm_message)).check(matches(withText("Message")));
+        onView(withId(R.id.textview_dialog_confirm_description)).check(matches(not(isDisplayed())));
         rotateScreen(activityScenario);
         onView(withId(R.id.textview_dialog_confirm_message)).check(matches(withText("Message")));
+        onView(withId(R.id.textview_dialog_confirm_description)).check(matches(not(isDisplayed())));
         rotateScreen(activityScenario);
         onView(withId(R.id.textview_dialog_confirm_message)).check(matches(withText("Message")));
+        onView(withId(R.id.textview_dialog_confirm_description)).check(matches(not(isDisplayed())));
+        onView(withId(R.id.imageview_dialog_confirm_cancel)).perform(click());
+    }
+
+    @Test
+    public void testConfirmMessageWithDescription() {
+        openConfirmDialogWithDescription();
+        onView(withId(R.id.textview_dialog_confirm_message)).check(matches(withText("Message")));
+        onView(withId(R.id.textview_dialog_confirm_description)).check(matches(withText("Description")));
+        onView(withId(R.id.imageview_dialog_confirm_cancel)).perform(click());
+    }
+
+    @Test
+    public void testConfirmMessageWithDescriptionScreenRotation() {
+        openConfirmDialogWithDescription();
+        onView(withId(R.id.textview_dialog_confirm_message)).check(matches(withText("Message")));
+        onView(withId(R.id.textview_dialog_confirm_description)).check(matches(withText("Description")));
+        rotateScreen(activityScenario);
+        onView(withId(R.id.textview_dialog_confirm_message)).check(matches(withText("Message")));
+        onView(withId(R.id.textview_dialog_confirm_description)).check(matches(withText("Description")));
+        rotateScreen(activityScenario);
+        onView(withId(R.id.textview_dialog_confirm_message)).check(matches(withText("Message")));
+        onView(withId(R.id.textview_dialog_confirm_description)).check(matches(withText("Description")));
         onView(withId(R.id.imageview_dialog_confirm_cancel)).perform(click());
     }
 
@@ -89,6 +115,14 @@ public class ConfirmDialogTest extends BaseUITest {
     private ConfirmDialog openConfirmDialog() {
         ConfirmDialog confirmDialog = new ConfirmDialog();
         confirmDialog.setArguments(BundleUtil.stringToBundle(confirmDialog.getMessageKey(), "Message"));
+        confirmDialog.show(getActivity(activityScenario).getSupportFragmentManager(), ConfirmDialog.class.getName());
+        onView(isRoot()).perform(waitFor(500));
+        return confirmDialog;
+    }
+
+    private ConfirmDialog openConfirmDialogWithDescription() {
+        ConfirmDialog confirmDialog = new ConfirmDialog();
+        confirmDialog.setArguments(BundleUtil.stringsToBundle(new String[]{confirmDialog.getMessageKey(), confirmDialog.getDescriptionKey()}, new String[]{"Message", "Description"}));
         confirmDialog.show(getActivity(activityScenario).getSupportFragmentManager(), ConfirmDialog.class.getName());
         onView(isRoot()).perform(waitFor(500));
         return confirmDialog;

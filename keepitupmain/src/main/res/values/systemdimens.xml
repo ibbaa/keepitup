@@ -1,5 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <dimen name="cardview_activity_system_config_margin">4dp</dimen>
+    <dimen name="cardview_activity_system_config_corner_radius">4dp</dimen>
+    <dimen name="cardview_activity_system_config_card_elevation">4dp</dimen>
+    <dimen name="textview_activity_system_config_margin">4dp</dimen>
+    <dimen name="cardview_activity_system_config_reset_margin">4dp</dimen>
+    <dimen name="cardview_activity_system_config_reset_corner_radius">4dp</dimen>
+    <dimen name="cardview_activity_system_config_reset_card_elevation">4dp</dimen>
+    <dimen name="textview_activity_system_config_reset_margin">4dp</dimen>
     <dimen name="cardview_activity_system_debug_margin">4dp</dimen>
     <dimen name="cardview_activity_system_debug_corner_radius">4dp</dimen>
     <dimen name="cardview_activity_system_debug_card_elevation">4dp</dimen>

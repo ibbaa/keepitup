@@ -20,6 +20,7 @@ import de.ibba.keepitup.logging.Log;
 import de.ibba.keepitup.resources.PreferenceManager;
 import de.ibba.keepitup.resources.PreferenceSetup;
 import de.ibba.keepitup.service.IFileManager;
+import de.ibba.keepitup.ui.dialog.ConfirmDialog;
 import de.ibba.keepitup.util.DebugUtil;
 import de.ibba.keepitup.util.StringUtil;
 
@@ -38,6 +39,7 @@ public class SystemActivity extends SettingsInputActivity {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
         setContentView(R.layout.activity_system);
+        prepareConfigurationResetField();
         prepareDebugSettingsLabel();
         prepareFileLoggerEnabledSwitch();
         prepareFileDumpEnabledSwitch();
@@ -61,6 +63,12 @@ public class SystemActivity extends SettingsInputActivity {
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void prepareConfigurationResetField() {
+        Log.d(GlobalSettingsActivity.class.getName(), "prepareConfigurationResetField");
+        CardView configurationResetView = findViewById(R.id.cardview_activity_system_config_reset);
+        configurationResetView.setOnClickListener(this::showConfirmDialog);
     }
 
     private void prepareDebugSettingsLabel() {
@@ -172,6 +180,13 @@ public class SystemActivity extends SettingsInputActivity {
 
     private void setLogFolder(String logFolder) {
         logFolderText.setText(StringUtil.notNull(logFolder));
+    }
+
+    private void showConfirmDialog(View view) {
+        Log.d(GlobalSettingsActivity.class.getName(), "showConfirmDialog");
+        String message = getResources().getString(R.string.text_dialog_confirm_config_reset);
+        String desciption = getResources().getString(R.string.text_dialog_confirm_config_reset_description);
+        showConfirmDialog(message, desciption, ConfirmDialog.Type.RESETCONFIG);
     }
 
     private String getExternalLogFolder() {
