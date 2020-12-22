@@ -25,6 +25,42 @@
             app:layout_constraintTop_toTopOf="parent">
 
             <androidx.cardview.widget.CardView xmlns:card_view="http://schemas.android.com/apk/res-auto"
+                android:id="@+id/cardview_activity_system_config"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/cardview_activity_system_config_margin"
+                card_view:cardCornerRadius="@dimen/cardview_activity_system_config_corner_radius"
+                app:cardElevation="@dimen/cardview_activity_system_config_card_elevation">
+
+                <TextView
+                    android:id="@+id/textview_activity_system_config_label"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/textview_activity_system_config_margin"
+                    android:textStyle="bold"
+                    android:text="@string/label_activity_system_config" />
+
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView xmlns:card_view="http://schemas.android.com/apk/res-auto"
+                android:id="@+id/cardview_activity_system_config_reset"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/cardview_activity_system_config_reset_margin"
+                card_view:cardCornerRadius="@dimen/cardview_activity_system_config_reset_corner_radius"
+                app:cardElevation="@dimen/cardview_activity_system_config_reset_card_elevation">
+
+                <TextView
+                    android:id="@+id/textview_activity_system_config_reset_label"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/textview_activity_system_config_reset_margin"
+                    android:textStyle="bold"
+                    android:text="@string/label_activity_system_config_reset" />
+
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView xmlns:card_view="http://schemas.android.com/apk/res-auto"
                 android:id="@+id/cardview_activity_system_debug"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

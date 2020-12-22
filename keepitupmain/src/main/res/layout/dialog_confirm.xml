@@ -29,6 +29,13 @@
             android:textStyle="bold"
             android:text="" />
 
+        <TextView
+            android:id="@+id/textview_dialog_confirm_description"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="" />
+
         <LinearLayout
             android:id="@+id/linearlayout_dialog_confirm_ok_cancel"
             android:layout_width="match_parent"
