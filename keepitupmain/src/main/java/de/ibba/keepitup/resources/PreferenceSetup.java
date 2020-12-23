@@ -193,4 +193,9 @@ public class PreferenceSetup {
         preferenceManager.removePreferenceFileLoggerEnabled();
         preferenceManager.removePreferenceFileDumpEnabled();
     }
+
+    public void removeAllSettings() {
+        Log.d(PreferenceSetup.class.getName(), "removeAllSettings");
+        preferenceManager.removeAllPreferences();
+    }
 }

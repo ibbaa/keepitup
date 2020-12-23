@@ -12,6 +12,8 @@ import androidx.cardview.widget.CardView;
 import com.google.android.material.switchmaterial.SwitchMaterial;
 
 import java.io.File;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
 
 import de.ibba.keepitup.BuildConfig;
 import de.ibba.keepitup.R;
@@ -21,8 +23,10 @@ import de.ibba.keepitup.resources.PreferenceManager;
 import de.ibba.keepitup.resources.PreferenceSetup;
 import de.ibba.keepitup.service.IFileManager;
 import de.ibba.keepitup.ui.dialog.ConfirmDialog;
+import de.ibba.keepitup.ui.sync.DBPurgeTask;
 import de.ibba.keepitup.util.DebugUtil;
 import de.ibba.keepitup.util.StringUtil;
+import de.ibba.keepitup.util.ThreadUtil;
 
 public class SystemActivity extends SettingsInputActivity {
 
@@ -31,6 +35,12 @@ public class SystemActivity extends SettingsInputActivity {
     private SwitchMaterial fileDumpEnabledSwitch;
     private TextView fileDumpEnabledOnOffText;
     private TextView logFolderText;
+
+    private DBPurgeTask purgeTask;
+
+    public void injectPurgeTask(DBPurgeTask purgeTask) {
+        this.purgeTask = purgeTask;
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -66,7 +76,7 @@ public class SystemActivity extends SettingsInputActivity {
     }
 
     private void prepareConfigurationResetField() {
-        Log.d(GlobalSettingsActivity.class.getName(), "prepareConfigurationResetField");
+        Log.d(SystemActivity.class.getName(), "prepareConfigurationResetField");
         CardView configurationResetView = findViewById(R.id.cardview_activity_system_config_reset);
         configurationResetView.setOnClickListener(this::showConfirmDialog);
     }
@@ -183,10 +193,56 @@ public class SystemActivity extends SettingsInputActivity {
     }
 
     private void showConfirmDialog(View view) {
-        Log.d(GlobalSettingsActivity.class.getName(), "showConfirmDialog");
+        Log.d(SystemActivity.class.getName(), "showConfirmDialog");
         String message = getResources().getString(R.string.text_dialog_confirm_config_reset);
         String desciption = getResources().getString(R.string.text_dialog_confirm_config_reset_description);
         showConfirmDialog(message, desciption, ConfirmDialog.Type.RESETCONFIG);
+    }
+
+    @Override
+    public void onConfirmDialogOkClicked(ConfirmDialog confirmDialog, ConfirmDialog.Type type) {
+        Log.d(SystemActivity.class.getName(), "onConfirmDialogOkClicked for type " + type);
+        if (ConfirmDialog.Type.RESETCONFIG.equals(type)) {
+            if (purgeDatabase()) {
+                resetPreferences();
+            } else {
+                Log.e(SystemActivity.class.getName(), "Purge error. Skipping preferences reset. ");
+            }
+        } else {
+            Log.e(SystemActivity.class.getName(), "Unknown type " + type);
+        }
+        confirmDialog.dismiss();
+    }
+
+    private void resetPreferences() {
+        Log.d(SystemActivity.class.getName(), "resetPreferences");
+        PreferenceSetup preferenceSetup = new PreferenceSetup(this);
+        preferenceSetup.removeAllSettings();
+        recreateActivity();
+    }
+
+    private boolean purgeDatabase() {
+        Log.d(SystemActivity.class.getName(), "purgeDatabase");
+        try {
+            DBPurgeTask purgeTask = getPurgeTask();
+            Future<Boolean> purgeFuture = ThreadUtil.exexute(purgeTask);
+            int dropTableRetry = getResources().getInteger(R.integer.drop_table_retry_count);
+            int dropTableTimeout = getResources().getInteger(R.integer.drop_table_timeout);
+            int deleteTableRetry = getResources().getInteger(R.integer.delete_table_retry_count);
+            int deleteTableTimeout = getResources().getInteger(R.integer.delete_table_timeout);
+            int timeout = (dropTableRetry * dropTableTimeout + deleteTableRetry * deleteTableTimeout) * 2;
+            Boolean purgeResult = purgeFuture.get(timeout, TimeUnit.MILLISECONDS);
+            Log.e(SystemActivity.class.getName(), "Purge task result: " + purgeResult);
+            if (purgeResult != null && !purgeResult) {
+                showErrorDialog(getResources().getString(R.string.text_dialog_general_error_db_purge));
+                return false;
+            }
+        } catch (Exception exc) {
+            Log.e(SystemActivity.class.getName(), "Error on executing the purge task.", exc);
+            showErrorDialog(getResources().getString(R.string.text_dialog_general_error_db_purge));
+            return false;
+        }
+        return true;
     }
 
     private String getExternalLogFolder() {
@@ -199,5 +255,12 @@ public class SystemActivity extends SettingsInputActivity {
             return null;
         }
         return logFolder.getAbsolutePath();
+    }
+
+    private DBPurgeTask getPurgeTask() {
+        if (purgeTask != null) {
+            return purgeTask;
+        }
+        return new DBPurgeTask(this);
     }
 }
