@@ -25,6 +25,7 @@ import java.util.concurrent.atomic.AtomicReference;
 
 import de.ibba.keepitup.db.LogDAO;
 import de.ibba.keepitup.db.NetworkTaskDAO;
+import de.ibba.keepitup.db.SchedulerIdHistoryDAO;
 import de.ibba.keepitup.logging.Dump;
 import de.ibba.keepitup.logging.Log;
 import de.ibba.keepitup.resources.PreferenceManager;
@@ -53,6 +54,7 @@ public abstract class BaseUITest {
 
     private NetworkTaskDAO networkTaskDAO;
     private LogDAO logDAO;
+    private SchedulerIdHistoryDAO schedulerIdHistoryDAO;
     private NetworkTaskProcessServiceScheduler scheduler;
     private PreferenceManager preferenceManager;
     private IFileManager fileManager;
@@ -68,6 +70,8 @@ public abstract class BaseUITest {
         logDAO.deleteAllLogs();
         networkTaskDAO = new NetworkTaskDAO(TestRegistry.getContext());
         networkTaskDAO.deleteAllNetworkTasks();
+        schedulerIdHistoryDAO = new SchedulerIdHistoryDAO(TestRegistry.getContext());
+        schedulerIdHistoryDAO.deleteAllSchedulerIds();
         setLocale(Locale.US);
         preferenceManager = new PreferenceManager(TestRegistry.getContext());
         preferenceManager.removeAllPreferences();
@@ -85,6 +89,7 @@ public abstract class BaseUITest {
         NetworkTaskProcessServiceScheduler.getNetworkTaskProcessPool().reset();
         logDAO.deleteAllLogs();
         networkTaskDAO.deleteAllNetworkTasks();
+        schedulerIdHistoryDAO.deleteAllSchedulerIds();
         preferenceManager.removeAllPreferences();
         fileManager = new SystemFileManager(TestRegistry.getContext());
         fileManager.delete(fileManager.getInternalDownloadDirectory());
@@ -150,6 +155,10 @@ public abstract class BaseUITest {
 
     public LogDAO getLogDAO() {
         return logDAO;
+    }
+
+    public SchedulerIdHistoryDAO getSchedulerIdHistoryDAO() {
+        return schedulerIdHistoryDAO;
     }
 
     public NetworkTaskProcessServiceScheduler getScheduler() {

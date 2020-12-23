@@ -23,10 +23,11 @@ public class DBPurgeTask extends UIBackgroundTask<Boolean> {
             if (context != null) {
                 DBSetup setup = new DBSetup(context);
                 int dropTableRetry = context.getResources().getInteger(R.integer.drop_table_retry_count);
+                int dropTableTimeout = context.getResources().getInteger(R.integer.drop_table_timeout);
                 while (dropTableRetry > 0) {
                     boolean dropSuccess = purgeTables(context, setup::recreateLogTable, setup::recreateNetworkTaskTable, setup::recreateSchedulerIdHistoryTable);
                     if (!dropSuccess) {
-                        TimeUnit.MILLISECONDS.sleep(500);
+                        TimeUnit.MILLISECONDS.sleep(dropTableTimeout);
                     } else {
                         return true;
                     }
@@ -34,10 +35,11 @@ public class DBPurgeTask extends UIBackgroundTask<Boolean> {
                 }
                 Log.d(DBPurgeTask.class.getName(), "Dropping the tables was not successful");
                 int deleteTableRetry = context.getResources().getInteger(R.integer.delete_table_retry_count);
+                int deleteTableTimeout = context.getResources().getInteger(R.integer.delete_table_timeout);
                 while (deleteTableRetry > 0) {
                     boolean deleteSuccess = purgeTables(context, setup::deleteAllLogs, setup::deleteAllNetworkTasks, setup::deleteAllSchedulerIds);
                     if (!deleteSuccess) {
-                        TimeUnit.MILLISECONDS.sleep(500);
+                        TimeUnit.MILLISECONDS.sleep(deleteTableTimeout);
                     } else {
                         return true;
                     }

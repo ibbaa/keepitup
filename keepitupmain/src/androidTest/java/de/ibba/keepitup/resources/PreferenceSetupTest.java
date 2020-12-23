@@ -356,4 +356,41 @@ public class PreferenceSetupTest {
         assertFalse(preferenceManager.getPreferenceFileLoggerEnabled());
         assertFalse(preferenceManager.getPreferenceFileDumpEnabled());
     }
+
+    @Test
+    public void testAllSettings() {
+        preferenceManager.setPreferencePingCount(5);
+        preferenceManager.setPreferenceConnectCount(10);
+        preferenceManager.setPreferenceNotificationInactiveNetwork(true);
+        preferenceManager.setPreferenceDownloadExternalStorage(true);
+        preferenceManager.setPreferenceExternalStorageType(30);
+        preferenceManager.setPreferenceDownloadFolder("folder");
+        preferenceManager.setPreferenceDownloadKeep(true);
+        preferenceManager.setPreferenceAccessType(AccessType.CONNECT);
+        preferenceManager.setPreferenceAddress("address");
+        preferenceManager.setPreferencePort(123);
+        preferenceManager.setPreferenceInterval(456);
+        preferenceManager.setPreferenceOnlyWifi(true);
+        preferenceManager.setPreferenceNotification(true);
+        preferenceManager.setPreferenceImportFolder("folderImport");
+        preferenceManager.setPreferenceExportFolder("folderExport");
+        preferenceManager.setPreferenceFileLoggerEnabled(true);
+        preferenceManager.setPreferenceFileDumpEnabled(true);
+        setup.removeAllSettings();
+        assertEquals(3, preferenceManager.getPreferencePingCount());
+        assertEquals(1, preferenceManager.getPreferenceConnectCount());
+        assertFalse(preferenceManager.getPreferenceNotificationInactiveNetwork());
+        assertFalse(preferenceManager.getPreferenceDownloadExternalStorage());
+        assertEquals(0, preferenceManager.getPreferenceExternalStorageType());
+        assertEquals("download", preferenceManager.getPreferenceDownloadFolder());
+        assertFalse(preferenceManager.getPreferenceDownloadKeep());
+        assertEquals(AccessType.PING, preferenceManager.getPreferenceAccessType());
+        assertEquals("192.168.178.1", preferenceManager.getPreferenceAddress());
+        assertEquals(22, preferenceManager.getPreferencePort());
+        assertEquals(15, preferenceManager.getPreferenceInterval());
+        assertFalse(preferenceManager.getPreferenceOnlyWifi());
+        assertFalse(preferenceManager.getPreferenceNotification());
+        assertFalse(preferenceManager.getPreferenceFileLoggerEnabled());
+        assertFalse(preferenceManager.getPreferenceFileDumpEnabled());
+    }
 }
