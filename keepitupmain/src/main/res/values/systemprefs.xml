@@ -1,9 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <integer name="drop_table_retry_count">5</integer>
-    <integer name="delete_table_retry_count">5</integer>
-    <integer name="drop_table_timeout">500</integer>
-    <integer name="delete_table_timeout">500</integer>
     <string name="import_folder_key">import_folder_key</string>
     <string name="import_folder_default">config</string>
     <string name="export_folder_key">export_folder_key</string>

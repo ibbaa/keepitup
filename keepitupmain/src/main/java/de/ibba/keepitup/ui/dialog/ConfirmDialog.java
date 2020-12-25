@@ -6,7 +6,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -26,8 +25,6 @@ public class ConfirmDialog extends DialogFragment {
         RESETCONFIG
     }
 
-    private ProgressBar progressBar;
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         Log.d(ConfirmDialog.class.getName(), "onCreate");
@@ -41,7 +38,6 @@ public class ConfirmDialog extends DialogFragment {
         View view = inflater.inflate(R.layout.dialog_confirm, container);
         String message = BundleUtil.stringFromBundle(getMessageKey(), requireArguments());
         String description = BundleUtil.stringFromBundle(getDescriptionKey(), requireArguments());
-        prepareProgressBar(view);
         prepareConfirmMessage(view, message);
         prepareConfirmDescription(view, description);
         prepareOkCancelImageButtons(view);
@@ -66,20 +62,6 @@ public class ConfirmDialog extends DialogFragment {
 
     public int getPosition() {
         return BundleUtil.integerFromBundle(getPositionKey(), requireArguments());
-    }
-
-    public void showProgressBar() {
-        progressBar.setVisibility(View.VISIBLE);
-    }
-
-    public void hideProgressBar() {
-        progressBar.setVisibility(View.GONE);
-    }
-
-    private void prepareProgressBar(View view) {
-        Log.d(ConfirmDialog.class.getName(), "prepareProgressBar");
-        progressBar = view.findViewById(R.id.progressbar_dialog_confirm_progress);
-        hideProgressBar();
     }
 
     private void prepareConfirmMessage(View view, String message) {

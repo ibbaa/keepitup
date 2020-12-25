@@ -5,6 +5,9 @@ import android.graphics.Typeface;
 import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
+
+import java.util.List;
 
 import de.ibba.keepitup.logging.Log;
 import de.ibba.keepitup.service.IFileManager;
@@ -15,6 +18,7 @@ import de.ibba.keepitup.ui.dialog.BatteryOptimizationDialog;
 import de.ibba.keepitup.ui.dialog.ConfirmDialog;
 import de.ibba.keepitup.ui.dialog.FileChooseDialog;
 import de.ibba.keepitup.ui.dialog.GeneralErrorDialog;
+import de.ibba.keepitup.ui.dialog.ProgressDialog;
 import de.ibba.keepitup.ui.dialog.SettingsInput;
 import de.ibba.keepitup.ui.dialog.SettingsInputDialog;
 import de.ibba.keepitup.util.BundleUtil;
@@ -130,5 +134,26 @@ public abstract class SettingsInputActivity extends AppCompatActivity implements
         Bundle bundle = BundleUtil.stringsToBundle(new String[]{confirmDialog.getMessageKey(), confirmDialog.getDescriptionKey(), confirmDialog.getTypeKey()}, new String[]{confirmMessage, description, type.name()});
         confirmDialog.setArguments(bundle);
         confirmDialog.show(getSupportFragmentManager(), ConfirmDialog.class.getName());
+    }
+
+    protected ProgressDialog showProgressDialog() {
+        Log.d(SettingsInputActivity.class.getName(), "showProgressDialog");
+        ProgressDialog progressDialog = new ProgressDialog();
+        progressDialog.show(getSupportFragmentManager(), ProgressDialog.class.getName());
+        return progressDialog;
+    }
+
+    protected void closeProgressDialog() {
+        Log.d(SettingsInputActivity.class.getName(), "closeProgressDialog");
+        List<Fragment> fragments = getSupportFragmentManager().getFragments();
+        for (Fragment fragment : fragments) {
+            if (fragment instanceof ProgressDialog) {
+                try {
+                    ((ProgressDialog) fragment).dismiss();
+                } catch (Exception exc) {
+                    Log.d(SettingsInputActivity.class.getName(), "Error closing ProgressDialog", exc);
+                }
+            }
+        }
     }
 }

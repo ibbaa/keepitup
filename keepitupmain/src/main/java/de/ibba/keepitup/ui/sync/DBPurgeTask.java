@@ -8,6 +8,7 @@ import java.util.concurrent.TimeUnit;
 import de.ibba.keepitup.R;
 import de.ibba.keepitup.db.DBSetup;
 import de.ibba.keepitup.logging.Log;
+import de.ibba.keepitup.ui.DBPurgeSupport;
 
 public class DBPurgeTask extends UIBackgroundTask<Boolean> {
 
@@ -84,7 +85,16 @@ public class DBPurgeTask extends UIBackgroundTask<Boolean> {
 
     @Override
     protected void runOnUIThread(Boolean success) {
-        Log.d(DBPurgeTask.class.getName(), "runOnUIThread");
+        Log.d(DBPurgeTask.class.getName(), "runOnUIThread, success is " + success);
+        if (success == null) {
+            success = false;
+        }
+        Context context = getActivity();
+        if (context != null) {
+            if (context instanceof DBPurgeSupport) {
+                ((DBPurgeSupport) context).onPurgeDone(success);
+            }
+        }
     }
 
     @FunctionalInterface

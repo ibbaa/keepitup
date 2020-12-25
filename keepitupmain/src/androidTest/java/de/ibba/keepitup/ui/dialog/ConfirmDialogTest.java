@@ -85,33 +85,6 @@ public class ConfirmDialogTest extends BaseUITest {
         onView(withId(R.id.imageview_dialog_confirm_cancel)).perform(click());
     }
 
-    @Test
-    public void testProgressBar() {
-        ConfirmDialog confirmDialog = openConfirmDialog();
-        onView(withId(R.id.progressbar_dialog_confirm_progress)).check(matches(not(isDisplayed())));
-        getActivity(activityScenario).runOnUiThread(confirmDialog::showProgressBar);
-        onView(withId(R.id.progressbar_dialog_confirm_progress)).check(matches(isDisplayed()));
-        getActivity(activityScenario).runOnUiThread(confirmDialog::hideProgressBar);
-        onView(withId(R.id.progressbar_dialog_confirm_progress)).check(matches(not(isDisplayed())));
-        onView(withId(R.id.imageview_dialog_confirm_cancel)).perform(click());
-    }
-
-    @Test
-    public void testProgressBarScreenRotation() {
-        ConfirmDialog confirmDialog = openConfirmDialog();
-        onView(withId(R.id.progressbar_dialog_confirm_progress)).check(matches(not(isDisplayed())));
-        getActivity(activityScenario).runOnUiThread(confirmDialog::showProgressBar);
-        onView(withId(R.id.progressbar_dialog_confirm_progress)).check(matches(isDisplayed()));
-        rotateScreen(activityScenario);
-        getActivity(activityScenario).runOnUiThread(() -> getDialog().showProgressBar());
-        onView(withId(R.id.progressbar_dialog_confirm_progress)).check(matches(isDisplayed()));
-        getActivity(activityScenario).runOnUiThread(() -> getDialog().hideProgressBar());
-        onView(withId(R.id.progressbar_dialog_confirm_progress)).check(matches(not(isDisplayed())));
-        rotateScreen(activityScenario);
-        onView(withId(R.id.progressbar_dialog_confirm_progress)).check(matches(not(isDisplayed())));
-        onView(withId(R.id.imageview_dialog_confirm_cancel)).perform(click());
-    }
-
     private ConfirmDialog openConfirmDialog() {
         ConfirmDialog confirmDialog = new ConfirmDialog();
         confirmDialog.setArguments(BundleUtil.stringToBundle(confirmDialog.getMessageKey(), "Message"));
@@ -126,9 +99,5 @@ public class ConfirmDialogTest extends BaseUITest {
         confirmDialog.show(getActivity(activityScenario).getSupportFragmentManager(), ConfirmDialog.class.getName());
         onView(isRoot()).perform(waitFor(500));
         return confirmDialog;
-    }
-
-    private ConfirmDialog getDialog() {
-        return (ConfirmDialog) getDialog(activityScenario, ConfirmDialog.class);
     }
 }
