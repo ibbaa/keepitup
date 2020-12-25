@@ -16,6 +16,8 @@ import de.ibba.keepitup.model.AccessType;
 import de.ibba.keepitup.model.LogEntry;
 import de.ibba.keepitup.model.NetworkTask;
 import de.ibba.keepitup.resources.PreferenceManager;
+import de.ibba.keepitup.service.NetworkTaskProcessServiceScheduler;
+import de.ibba.keepitup.test.mock.MockAlarmManager;
 import de.ibba.keepitup.test.mock.MockDBPurgeTask;
 import de.ibba.keepitup.test.mock.TestRegistry;
 import de.ibba.keepitup.ui.sync.DBPurgeTask;
@@ -44,11 +46,15 @@ import static org.junit.Assert.assertTrue;
 public class SystemActivityTest extends BaseUITest {
 
     private ActivityScenario<?> activityScenario;
+    private MockAlarmManager alarmManager;
 
     @Before
     public void beforeEachTestMethod() {
         super.beforeEachTestMethod();
         activityScenario = launchSettingsInputActivity(SystemActivity.class);
+        ((SystemActivity) getActivity(activityScenario)).injectScheduler(getScheduler());
+        alarmManager = (MockAlarmManager) getScheduler().getAlarmManager();
+        alarmManager.reset();
     }
 
     @After
@@ -59,8 +65,7 @@ public class SystemActivityTest extends BaseUITest {
 
     @Test
     public void testResetConfigurationCancel() {
-        getNetworkTaskDAO().insertNetworkTask(new NetworkTask());
-        getNetworkTaskDAO().insertNetworkTask(new NetworkTask());
+        insertAndScheduleNetworkTask();
         getLogDAO().insertAndDeleteLog(new LogEntry());
         getLogDAO().insertAndDeleteLog(new LogEntry());
         assertFalse(getNetworkTaskDAO().readAllNetworkTasks().isEmpty());
@@ -89,6 +94,7 @@ public class SystemActivityTest extends BaseUITest {
         onView(withId(R.id.switch_activity_system_file_dump_enabled)).perform(click());
         onView(withId(R.id.cardview_activity_system_config_reset)).perform(click());
         onView(withId(R.id.imageview_dialog_confirm_cancel)).perform(click());
+        assertFalse(alarmManager.wasCancelAlarmCalled());
         assertFalse(getNetworkTaskDAO().readAllNetworkTasks().isEmpty());
         assertFalse(getSchedulerIdHistoryDAO().readAllSchedulerIds().isEmpty());
         assertFalse(getLogDAO().readAllLogs().isEmpty());
@@ -113,8 +119,7 @@ public class SystemActivityTest extends BaseUITest {
 
     @Test
     public void testResetConfigurationCancelScreenRotation() {
-        getNetworkTaskDAO().insertNetworkTask(new NetworkTask());
-        getNetworkTaskDAO().insertNetworkTask(new NetworkTask());
+        insertAndScheduleNetworkTask();
         getLogDAO().insertAndDeleteLog(new LogEntry());
         getLogDAO().insertAndDeleteLog(new LogEntry());
         assertFalse(getNetworkTaskDAO().readAllNetworkTasks().isEmpty());
@@ -144,7 +149,9 @@ public class SystemActivityTest extends BaseUITest {
         onView(withId(R.id.cardview_activity_system_config_reset)).perform(click());
         rotateScreen(activityScenario);
         rotateScreen(activityScenario);
+        ((SystemActivity) getActivity(activityScenario)).injectScheduler(getScheduler());
         onView(withId(R.id.imageview_dialog_confirm_cancel)).perform(click());
+        assertFalse(alarmManager.wasCancelAlarmCalled());
         assertFalse(getNetworkTaskDAO().readAllNetworkTasks().isEmpty());
         assertFalse(getSchedulerIdHistoryDAO().readAllSchedulerIds().isEmpty());
         assertFalse(getLogDAO().readAllLogs().isEmpty());
@@ -169,8 +176,7 @@ public class SystemActivityTest extends BaseUITest {
 
     @Test
     public void testResetConfiguration() {
-        getNetworkTaskDAO().insertNetworkTask(new NetworkTask());
-        getNetworkTaskDAO().insertNetworkTask(new NetworkTask());
+        insertAndScheduleNetworkTask();
         getLogDAO().insertAndDeleteLog(new LogEntry());
         getLogDAO().insertAndDeleteLog(new LogEntry());
         assertFalse(getNetworkTaskDAO().readAllNetworkTasks().isEmpty());
@@ -199,6 +205,7 @@ public class SystemActivityTest extends BaseUITest {
         onView(withId(R.id.switch_activity_system_file_dump_enabled)).perform(click());
         onView(withId(R.id.cardview_activity_system_config_reset)).perform(click());
         onView(withId(R.id.imageview_dialog_confirm_ok)).perform(click());
+        assertTrue(alarmManager.wasCancelAlarmCalled());
         assertEquals(3, getPreferenceManager().getPreferencePingCount());
         assertEquals(1, getPreferenceManager().getPreferenceConnectCount());
         assertFalse(getPreferenceManager().getPreferenceNotificationInactiveNetwork());
@@ -218,8 +225,7 @@ public class SystemActivityTest extends BaseUITest {
 
     @Test
     public void testResetConfigurationScreenRotation() {
-        getNetworkTaskDAO().insertNetworkTask(new NetworkTask());
-        getNetworkTaskDAO().insertNetworkTask(new NetworkTask());
+        insertAndScheduleNetworkTask();
         getLogDAO().insertAndDeleteLog(new LogEntry());
         getLogDAO().insertAndDeleteLog(new LogEntry());
         assertFalse(getNetworkTaskDAO().readAllNetworkTasks().isEmpty());
@@ -249,7 +255,9 @@ public class SystemActivityTest extends BaseUITest {
         onView(withId(R.id.cardview_activity_system_config_reset)).perform(click());
         rotateScreen(activityScenario);
         rotateScreen(activityScenario);
+        ((SystemActivity) getActivity(activityScenario)).injectScheduler(getScheduler());
         onView(withId(R.id.imageview_dialog_confirm_ok)).perform(click());
+        assertTrue(alarmManager.wasCancelAlarmCalled());
         assertEquals(3, getPreferenceManager().getPreferencePingCount());
         assertEquals(1, getPreferenceManager().getPreferenceConnectCount());
         assertFalse(getPreferenceManager().getPreferenceNotificationInactiveNetwork());
@@ -270,8 +278,7 @@ public class SystemActivityTest extends BaseUITest {
     @Test
     public void testResetConfigurationError() {
         injectPurgeTask(getMockDBPurgeTask(false));
-        getNetworkTaskDAO().insertNetworkTask(new NetworkTask());
-        getNetworkTaskDAO().insertNetworkTask(new NetworkTask());
+        insertAndScheduleNetworkTask();
         getLogDAO().insertAndDeleteLog(new LogEntry());
         getLogDAO().insertAndDeleteLog(new LogEntry());
         assertFalse(getNetworkTaskDAO().readAllNetworkTasks().isEmpty());
@@ -300,6 +307,7 @@ public class SystemActivityTest extends BaseUITest {
         onView(withId(R.id.switch_activity_system_file_dump_enabled)).perform(click());
         onView(withId(R.id.cardview_activity_system_config_reset)).perform(click());
         onView(withId(R.id.imageview_dialog_confirm_ok)).perform(click());
+        assertTrue(alarmManager.wasCancelAlarmCalled());
         onView(withId(R.id.textview_dialog_general_error_message)).check(matches(isDisplayed()));
         onView(withId(R.id.imageview_dialog_general_error_ok)).perform(click());
         assertEquals(0, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
@@ -328,8 +336,7 @@ public class SystemActivityTest extends BaseUITest {
     @Test
     public void testResetConfigurationErrorScreenRotation() {
         injectPurgeTask(getMockDBPurgeTask(false));
-        getNetworkTaskDAO().insertNetworkTask(new NetworkTask());
-        getNetworkTaskDAO().insertNetworkTask(new NetworkTask());
+        insertAndScheduleNetworkTask();
         getLogDAO().insertAndDeleteLog(new LogEntry());
         getLogDAO().insertAndDeleteLog(new LogEntry());
         assertFalse(getNetworkTaskDAO().readAllNetworkTasks().isEmpty());
@@ -358,6 +365,7 @@ public class SystemActivityTest extends BaseUITest {
         onView(withId(R.id.switch_activity_system_file_dump_enabled)).perform(click());
         onView(withId(R.id.cardview_activity_system_config_reset)).perform(click());
         onView(withId(R.id.imageview_dialog_confirm_ok)).perform(click());
+        assertTrue(alarmManager.wasCancelAlarmCalled());
         onView(withId(R.id.textview_dialog_general_error_message)).check(matches(isDisplayed()));
         rotateScreen(activityScenario);
         rotateScreen(activityScenario);
@@ -491,6 +499,15 @@ public class SystemActivityTest extends BaseUITest {
         onView(withId(R.id.textview_activity_system_file_logger_enabled_on_off)).check(matches(withText("yes")));
         onView(withId(R.id.switch_activity_system_file_dump_enabled)).check(matches(isChecked()));
         onView(withId(R.id.textview_activity_system_file_dump_enabled_on_off)).check(matches(withText("yes")));
+    }
+
+    private void insertAndScheduleNetworkTask() {
+        NetworkTask task1 = getNetworkTaskDAO().insertNetworkTask(new NetworkTask());
+        NetworkTask task2 = getNetworkTaskDAO().insertNetworkTask(new NetworkTask());
+        getNetworkTaskDAO().updateNetworkTaskRunning(task1.getId(), true);
+        getNetworkTaskDAO().updateNetworkTaskRunning(task2.getId(), true);
+        getScheduler().reschedule(task1, NetworkTaskProcessServiceScheduler.Delay.INTERVAL);
+        getScheduler().reschedule(task2, NetworkTaskProcessServiceScheduler.Delay.INTERVAL);
     }
 
     private MockDBPurgeTask getMockDBPurgeTask(boolean success) {

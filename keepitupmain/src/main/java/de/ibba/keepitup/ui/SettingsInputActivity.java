@@ -5,6 +5,7 @@ import android.graphics.Typeface;
 import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 
 import java.util.List;
@@ -125,7 +126,7 @@ public abstract class SettingsInputActivity extends AppCompatActivity implements
         Bundle bundle = BundleUtil.stringToBundle(errorDialog.getMessageKey(), errorMessage);
         bundle.putInt(errorDialog.getTypefaceStyleKey(), typeface);
         errorDialog.setArguments(bundle);
-        errorDialog.show(getSupportFragmentManager(), GeneralErrorDialog.class.getName());
+        showDialog(errorDialog, GeneralErrorDialog.class.getName());
     }
 
     protected void showConfirmDialog(String confirmMessage, String description, ConfirmDialog.Type type) {
@@ -133,13 +134,13 @@ public abstract class SettingsInputActivity extends AppCompatActivity implements
         ConfirmDialog confirmDialog = new ConfirmDialog();
         Bundle bundle = BundleUtil.stringsToBundle(new String[]{confirmDialog.getMessageKey(), confirmDialog.getDescriptionKey(), confirmDialog.getTypeKey()}, new String[]{confirmMessage, description, type.name()});
         confirmDialog.setArguments(bundle);
-        confirmDialog.show(getSupportFragmentManager(), ConfirmDialog.class.getName());
+        showDialog(confirmDialog, ConfirmDialog.class.getName());
     }
 
     protected ProgressDialog showProgressDialog() {
         Log.d(SettingsInputActivity.class.getName(), "showProgressDialog");
         ProgressDialog progressDialog = new ProgressDialog();
-        progressDialog.show(getSupportFragmentManager(), ProgressDialog.class.getName());
+        showDialog(progressDialog, ProgressDialog.class.getName());
         return progressDialog;
     }
 
@@ -154,6 +155,14 @@ public abstract class SettingsInputActivity extends AppCompatActivity implements
                     Log.d(SettingsInputActivity.class.getName(), "Error closing ProgressDialog", exc);
                 }
             }
+        }
+    }
+
+    private void showDialog(DialogFragment dialog, String name) {
+        try {
+            dialog.show(getSupportFragmentManager(), name);
+        } catch (Exception exc) {
+            Log.d(SettingsInputActivity.class.getName(), "Error opening dialog", exc);
         }
     }
 }

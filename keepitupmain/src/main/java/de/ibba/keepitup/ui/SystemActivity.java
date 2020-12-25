@@ -22,6 +22,7 @@ import de.ibba.keepitup.logging.Log;
 import de.ibba.keepitup.resources.PreferenceManager;
 import de.ibba.keepitup.resources.PreferenceSetup;
 import de.ibba.keepitup.service.IFileManager;
+import de.ibba.keepitup.service.NetworkTaskProcessServiceScheduler;
 import de.ibba.keepitup.ui.dialog.ConfirmDialog;
 import de.ibba.keepitup.ui.sync.DBPurgeTask;
 import de.ibba.keepitup.util.DebugUtil;
@@ -37,9 +38,14 @@ public class SystemActivity extends SettingsInputActivity implements DBPurgeSupp
     private TextView logFolderText;
 
     private DBPurgeTask purgeTask;
+    private NetworkTaskProcessServiceScheduler scheduler;
 
     public void injectPurgeTask(DBPurgeTask purgeTask) {
         this.purgeTask = purgeTask;
+    }
+
+    public void injectScheduler(NetworkTaskProcessServiceScheduler scheduler) {
+        this.scheduler = scheduler;
     }
 
     @Override
@@ -195,14 +201,15 @@ public class SystemActivity extends SettingsInputActivity implements DBPurgeSupp
     private void showConfirmDialog(View view) {
         Log.d(SystemActivity.class.getName(), "showConfirmDialog");
         String message = getResources().getString(R.string.text_dialog_confirm_config_reset);
-        String desciption = getResources().getString(R.string.text_dialog_confirm_config_reset_description);
-        showConfirmDialog(message, desciption, ConfirmDialog.Type.RESETCONFIG);
+        String description = getResources().getString(R.string.text_dialog_confirm_config_reset_description);
+        showConfirmDialog(message, description, ConfirmDialog.Type.RESETCONFIG);
     }
 
     @Override
     public void onConfirmDialogOkClicked(ConfirmDialog confirmDialog, ConfirmDialog.Type type) {
         Log.d(SystemActivity.class.getName(), "onConfirmDialogOkClicked for type " + type);
         if (ConfirmDialog.Type.RESETCONFIG.equals(type)) {
+            terminateAllNetworkTasks();
             confirmDialog.dismiss();
             showProgressDialog();
             purgeDatabase();
@@ -227,6 +234,12 @@ public class SystemActivity extends SettingsInputActivity implements DBPurgeSupp
         PreferenceSetup preferenceSetup = new PreferenceSetup(this);
         preferenceSetup.removeAllSettings();
         recreateActivity();
+    }
+
+    private void terminateAllNetworkTasks() {
+        Log.d(SystemActivity.class.getName(), "terminateAllNetworkTasks");
+        NetworkTaskProcessServiceScheduler scheduler = getScheduler();
+        scheduler.terminateAll();
     }
 
     protected void purgeDatabase() {
@@ -265,5 +278,12 @@ public class SystemActivity extends SettingsInputActivity implements DBPurgeSupp
             return purgeTask;
         }
         return new DBPurgeTask(this);
+    }
+
+    private NetworkTaskProcessServiceScheduler getScheduler() {
+        if (scheduler != null) {
+            return scheduler;
+        }
+        return new NetworkTaskProcessServiceScheduler(this);
     }
 }

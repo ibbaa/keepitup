@@ -5,6 +5,7 @@ import android.graphics.Typeface;
 import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.DialogFragment;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -57,7 +58,7 @@ public abstract class RecyclerViewBaseActivity extends AppCompatActivity impleme
         Bundle bundle = BundleUtil.stringToBundle(GeneralErrorDialog.class.getSimpleName(), errorMessage);
         bundle.putInt(errorDialog.getTypefaceStyleKey(), typeface);
         errorDialog.setArguments(bundle);
-        errorDialog.show(getSupportFragmentManager(), GeneralErrorDialog.class.getName());
+        showDialog(errorDialog, GeneralErrorDialog.class.getName());
     }
 
     protected void showConfirmDialog(String confirmMessage, ConfirmDialog.Type type, int position) {
@@ -66,7 +67,7 @@ public abstract class RecyclerViewBaseActivity extends AppCompatActivity impleme
         Bundle bundle = BundleUtil.stringsToBundle(new String[]{confirmDialog.getMessageKey(), confirmDialog.getTypeKey()}, new String[]{confirmMessage, type.name()});
         bundle.putInt(confirmDialog.getPositionKey(), position);
         confirmDialog.setArguments(bundle);
-        confirmDialog.show(getSupportFragmentManager(), ConfirmDialog.class.getName());
+        showDialog(confirmDialog, ConfirmDialog.class.getName());
     }
 
     protected void showConfirmDialog(String confirmMessage, ConfirmDialog.Type type) {
@@ -74,6 +75,14 @@ public abstract class RecyclerViewBaseActivity extends AppCompatActivity impleme
         ConfirmDialog confirmDialog = new ConfirmDialog();
         Bundle bundle = BundleUtil.stringsToBundle(new String[]{confirmDialog.getMessageKey(), confirmDialog.getTypeKey()}, new String[]{confirmMessage, type.name()});
         confirmDialog.setArguments(bundle);
-        confirmDialog.show(getSupportFragmentManager(), ConfirmDialog.class.getName());
+        showDialog(confirmDialog, ConfirmDialog.class.getName());
+    }
+
+    private void showDialog(DialogFragment dialog, String name) {
+        try {
+            dialog.show(getSupportFragmentManager(), name);
+        } catch (Exception exc) {
+            Log.d(SettingsInputActivity.class.getName(), "Error opening dialog", exc);
+        }
     }
 }
