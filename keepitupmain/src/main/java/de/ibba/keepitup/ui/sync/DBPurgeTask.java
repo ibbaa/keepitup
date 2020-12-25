@@ -89,10 +89,10 @@ public class DBPurgeTask extends UIBackgroundTask<Boolean> {
         if (success == null) {
             success = false;
         }
-        Context context = getActivity();
-        if (context != null) {
-            if (context instanceof DBPurgeSupport) {
-                ((DBPurgeSupport) context).onPurgeDone(success);
+        Activity activity = getActivity();
+        if (activity != null && !activity.isDestroyed()) {
+            if (activity instanceof DBPurgeSupport) {
+                ((DBPurgeSupport) activity).onPurgeDone(success);
             }
         }
     }
