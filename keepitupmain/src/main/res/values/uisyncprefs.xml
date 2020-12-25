@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <bool name="uisync_synchronous_execution">false</bool>
+    <integer name="drop_table_retry_count">5</integer>
+    <integer name="delete_table_retry_count">5</integer>
+    <integer name="drop_table_timeout">500</integer>
+    <integer name="delete_table_timeout">500</integer>
+</resources>

@@ -27,7 +27,7 @@ public class NetworkTaskHandlerTest extends BaseUITest {
     @Before
     public void beforeEachTestMethod() {
         super.beforeEachTestMethod();
-        activityScenario = ActivityScenario.launch(NetworkTaskMainActivity.class);
+        activityScenario = launchRecyclerViewBaseActivity(NetworkTaskMainActivity.class);
         handler = new NetworkTaskHandler((NetworkTaskMainActivity) getActivity(activityScenario));
     }
 

@@ -54,7 +54,7 @@ public class GlobalSettingsActivityTest extends BaseUITest {
     @Before
     public void beforeEachTestMethod() {
         super.beforeEachTestMethod();
-        activityScenario = ActivityScenario.launch(GlobalSettingsActivity.class);
+        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class);
     }
 
     @After

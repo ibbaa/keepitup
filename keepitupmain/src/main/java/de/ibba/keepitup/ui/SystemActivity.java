@@ -28,7 +28,7 @@ import de.ibba.keepitup.util.DebugUtil;
 import de.ibba.keepitup.util.StringUtil;
 import de.ibba.keepitup.util.ThreadUtil;
 
-public class SystemActivity extends SettingsInputActivity {
+public class SystemActivity extends SettingsInputActivity implements DBPurgeSupport {
 
     private SwitchMaterial fileLoggerEnabledSwitch;
     private TextView fileLoggerEnabledOnOffText;
@@ -203,15 +203,23 @@ public class SystemActivity extends SettingsInputActivity {
     public void onConfirmDialogOkClicked(ConfirmDialog confirmDialog, ConfirmDialog.Type type) {
         Log.d(SystemActivity.class.getName(), "onConfirmDialogOkClicked for type " + type);
         if (ConfirmDialog.Type.RESETCONFIG.equals(type)) {
-            if (purgeDatabase()) {
-                resetPreferences();
-            } else {
-                Log.e(SystemActivity.class.getName(), "Purge error. Skipping preferences reset. ");
-            }
+            confirmDialog.dismiss();
+            showProgressDialog();
+            purgeDatabase();
         } else {
             Log.e(SystemActivity.class.getName(), "Unknown type " + type);
         }
-        confirmDialog.dismiss();
+    }
+
+    @Override
+    public void onPurgeDone(boolean success) {
+        Log.d(SystemActivity.class.getName(), "onPurgeDone, success is " + success);
+        closeProgressDialog();
+        if (success) {
+            resetPreferences();
+        } else {
+            showErrorDialog(getResources().getString(R.string.text_dialog_general_error_db_purge));
+        }
     }
 
     private void resetPreferences() {
@@ -221,28 +229,23 @@ public class SystemActivity extends SettingsInputActivity {
         recreateActivity();
     }
 
-    private boolean purgeDatabase() {
+    protected void purgeDatabase() {
         Log.d(SystemActivity.class.getName(), "purgeDatabase");
-        try {
-            DBPurgeTask purgeTask = getPurgeTask();
-            Future<Boolean> purgeFuture = ThreadUtil.exexute(purgeTask);
-            int dropTableRetry = getResources().getInteger(R.integer.drop_table_retry_count);
-            int dropTableTimeout = getResources().getInteger(R.integer.drop_table_timeout);
-            int deleteTableRetry = getResources().getInteger(R.integer.delete_table_retry_count);
-            int deleteTableTimeout = getResources().getInteger(R.integer.delete_table_timeout);
-            int timeout = (dropTableRetry * dropTableTimeout + deleteTableRetry * deleteTableTimeout) * 2;
-            Boolean purgeResult = purgeFuture.get(timeout, TimeUnit.MILLISECONDS);
-            Log.e(SystemActivity.class.getName(), "Purge task result: " + purgeResult);
-            if (purgeResult != null && !purgeResult) {
-                showErrorDialog(getResources().getString(R.string.text_dialog_general_error_db_purge));
-                return false;
+        DBPurgeTask purgeTask = getPurgeTask();
+        Future<Boolean> purgeFuture = ThreadUtil.exexute(purgeTask);
+        boolean synchronousExecution = getResources().getBoolean(R.bool.uisync_synchronous_execution);
+        if (synchronousExecution) {
+            try {
+                int dropTableRetry = getResources().getInteger(R.integer.drop_table_retry_count);
+                int dropTableTimeout = getResources().getInteger(R.integer.drop_table_timeout);
+                int deleteTableRetry = getResources().getInteger(R.integer.delete_table_retry_count);
+                int deleteTableTimeout = getResources().getInteger(R.integer.delete_table_timeout);
+                int timeout = (dropTableRetry * dropTableTimeout + deleteTableRetry * deleteTableTimeout) * 2;
+                purgeFuture.get(timeout, TimeUnit.MILLISECONDS);
+            } catch (Exception exc) {
+                Log.d(SystemActivity.class.getName(), "Error waiting for purge execution", exc);
             }
-        } catch (Exception exc) {
-            Log.e(SystemActivity.class.getName(), "Error on executing the purge task.", exc);
-            showErrorDialog(getResources().getString(R.string.text_dialog_general_error_db_purge));
-            return false;
         }
-        return true;
     }
 
     private String getExternalLogFolder() {

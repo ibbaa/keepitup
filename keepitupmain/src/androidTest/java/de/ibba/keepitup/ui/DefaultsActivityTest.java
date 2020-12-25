@@ -43,7 +43,7 @@ public class DefaultsActivityTest extends BaseUITest {
     @Before
     public void beforeEachTestMethod() {
         super.beforeEachTestMethod();
-        activityScenario = ActivityScenario.launch(DefaultsActivity.class);
+        activityScenario = launchSettingsInputActivity(DefaultsActivity.class);
     }
 
     @After

@@ -18,6 +18,7 @@ import de.ibba.keepitup.model.NetworkTask;
 import de.ibba.keepitup.resources.PreferenceManager;
 import de.ibba.keepitup.test.mock.MockDBPurgeTask;
 import de.ibba.keepitup.test.mock.TestRegistry;
+import de.ibba.keepitup.ui.sync.DBPurgeTask;
 
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.Espresso.openActionBarOverflowOrOptionsMenu;
@@ -47,7 +48,7 @@ public class SystemActivityTest extends BaseUITest {
     @Before
     public void beforeEachTestMethod() {
         super.beforeEachTestMethod();
-        activityScenario = ActivityScenario.launch(SystemActivity.class);
+        activityScenario = launchSettingsInputActivity(SystemActivity.class);
     }
 
     @After
@@ -268,9 +269,7 @@ public class SystemActivityTest extends BaseUITest {
 
     @Test
     public void testResetConfigurationError() {
-        SystemActivity activity = (SystemActivity) getActivity(activityScenario);
-        MockDBPurgeTask mockPurgeTask = new MockDBPurgeTask(activity, false);
-        activity.injectPurgeTask(mockPurgeTask);
+        injectPurgeTask(getMockDBPurgeTask(false));
         getNetworkTaskDAO().insertNetworkTask(new NetworkTask());
         getNetworkTaskDAO().insertNetworkTask(new NetworkTask());
         getLogDAO().insertAndDeleteLog(new LogEntry());
@@ -328,9 +327,7 @@ public class SystemActivityTest extends BaseUITest {
 
     @Test
     public void testResetConfigurationErrorScreenRotation() {
-        SystemActivity activity = (SystemActivity) getActivity(activityScenario);
-        MockDBPurgeTask mockPurgeTask = new MockDBPurgeTask(activity, false);
-        activity.injectPurgeTask(mockPurgeTask);
+        injectPurgeTask(getMockDBPurgeTask(false));
         getNetworkTaskDAO().insertNetworkTask(new NetworkTask());
         getNetworkTaskDAO().insertNetworkTask(new NetworkTask());
         getLogDAO().insertAndDeleteLog(new LogEntry());
@@ -494,5 +491,14 @@ public class SystemActivityTest extends BaseUITest {
         onView(withId(R.id.textview_activity_system_file_logger_enabled_on_off)).check(matches(withText("yes")));
         onView(withId(R.id.switch_activity_system_file_dump_enabled)).check(matches(isChecked()));
         onView(withId(R.id.textview_activity_system_file_dump_enabled_on_off)).check(matches(withText("yes")));
+    }
+
+    private MockDBPurgeTask getMockDBPurgeTask(boolean success) {
+        return new MockDBPurgeTask(getActivity(activityScenario), success);
+    }
+
+    private void injectPurgeTask(DBPurgeTask purgeTask) {
+        SystemActivity activity = (SystemActivity) getActivity(activityScenario);
+        activity.injectPurgeTask(purgeTask);
     }
 }
