@@ -3,7 +3,13 @@ package de.ibba.keepitup.db;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
 import de.ibba.keepitup.logging.Log;
+import de.ibba.keepitup.model.LogEntry;
+import de.ibba.keepitup.model.NetworkTask;
 
 public class DBSetup {
 
@@ -119,20 +125,17 @@ public class DBSetup {
 
     public void recreateNetworkTaskTable(Context context) {
         Log.d(DBSetup.class.getName(), "recreateNetworkTaskTable");
-        dropNetworkTaskTable(DBOpenHelper.getInstance(context).getWritableDatabase());
-        createNetworkTaskTable(DBOpenHelper.getInstance(context).getWritableDatabase());
+        recreateNetworkTaskTable(DBOpenHelper.getInstance(context).getWritableDatabase());
     }
 
     public void recreateLogTable(Context context) {
         Log.d(DBSetup.class.getName(), "recreateLogTable");
-        dropLogTable(DBOpenHelper.getInstance(context).getWritableDatabase());
-        createLogTable(DBOpenHelper.getInstance(context).getWritableDatabase());
+        recreateLogTable(DBOpenHelper.getInstance(context).getWritableDatabase());
     }
 
     public void recreateSchedulerIdHistoryTable(Context context) {
         Log.d(DBSetup.class.getName(), "recreateSchedulerIdHistoryTable");
-        dropSchedulerIdHistoryTable(DBOpenHelper.getInstance(context).getWritableDatabase());
-        createSchedulerIdHistoryTable(DBOpenHelper.getInstance(context).getWritableDatabase());
+        recreateSchedulerIdHistoryTable(DBOpenHelper.getInstance(context).getWritableDatabase());
     }
 
     public void recreateTables(Context context) {
@@ -152,5 +155,39 @@ public class DBSetup {
     public void deleteAllSchedulerIds(Context context) {
         SchedulerIdHistoryDAO dao = new SchedulerIdHistoryDAO(context);
         dao.deleteAllSchedulerIds();
+    }
+
+    public List<Map<String, ?>> exportNetworkTasks(Context context) {
+        NetworkTaskDAO dao = new NetworkTaskDAO(context);
+        List<NetworkTask> taskList = dao.readAllNetworkTasks();
+        List<Map<String, ?>> exportedList = new ArrayList<>();
+        for (NetworkTask task : taskList) {
+            exportedList.add(task.toMap());
+        }
+        return exportedList;
+    }
+
+    public List<Map<String, ?>> exportLogsForNetworkTask(Context context, long networkTaskId) {
+        LogDAO dao = new LogDAO(context);
+        List<LogEntry> logList = dao.readAllLogsForNetworkTask(networkTaskId);
+        List<Map<String, ?>> exportedList = new ArrayList<>();
+        for (LogEntry entry : logList) {
+            exportedList.add(entry.toMap());
+        }
+        return exportedList;
+    }
+
+    public void importNetworkTaskWithLogs(Context context, Map<String, ?> taskMap, List<Map<String, ?>> logList) {
+        NetworkTaskDAO networkTaskDAO = new NetworkTaskDAO(context);
+        LogDAO logDAO = new LogDAO(context);
+        NetworkTask task = new NetworkTask(taskMap);
+        task = networkTaskDAO.insertNetworkTask(task);
+        if (task.getId() > 0) {
+            for (Map<String, ?> logMap : logList) {
+                LogEntry entry = new LogEntry(logMap);
+                entry.setNetworkTaskId(task.getId());
+                logDAO.insertAndDeleteLog(entry);
+            }
+        }
     }
 }
