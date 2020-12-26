@@ -178,11 +178,18 @@ public class DBSetup {
     }
 
     public void importNetworkTaskWithLogs(Context context, Map<String, ?> taskMap, List<Map<String, ?>> logList) {
+        importNetworkTaskWithLogs(context, taskMap, logList, true);
+    }
+
+    public void importNetworkTaskWithLogs(Context context, Map<String, ?> taskMap, List<Map<String, ?>> logList, boolean resetRunnning) {
         NetworkTaskDAO networkTaskDAO = new NetworkTaskDAO(context);
         LogDAO logDAO = new LogDAO(context);
         NetworkTask task = new NetworkTask(taskMap);
+        if (resetRunnning) {
+            task.setRunning(false);
+        }
         task = networkTaskDAO.insertNetworkTask(task);
-        if (task.getId() > 0) {
+        if (task.getId() > 0 && logList != null) {
             for (Map<String, ?> logMap : logList) {
                 LogEntry entry = new LogEntry(logMap);
                 entry.setNetworkTaskId(task.getId());

@@ -150,6 +150,9 @@ public class DBSetupTest {
         assertEquals(1, task1.getIndex());
         assertEquals(2, task2.getIndex());
         assertEquals(3, task3.getIndex());
+        assertTrue(task1.isRunning());
+        assertFalse(task2.isRunning());
+        assertFalse(task3.isRunning());
     }
 
     @Test
@@ -185,9 +188,22 @@ public class DBSetupTest {
         List<LogEntry> entryList = logDAO.readAllLogsForNetworkTask(task.getId());
         assertEquals(3, entryList.size());
         assertTrue(task.isTechnicallyEqual(getNetworkTask1()));
+        assertFalse(task.isRunning());
         logEntryEquals(entryList.get(0), getLogEntry1(task.getId()));
         logEntryEquals(entryList.get(1), getLogEntry2(task.getId()));
         logEntryEquals(entryList.get(2), getLogEntry3(task.getId()));
+    }
+
+    @Test
+    public void testImportNetworkTaskWithLogsNotResetRunning() {
+        Map<String, ?> taskMap = getNetworkTask1().toMap();
+        assertTrue(networkTaskDAO.readAllNetworkTasks().isEmpty());
+        setup.importNetworkTaskWithLogs(TestRegistry.getContext(), taskMap, null, false);
+        List<NetworkTask> taskList = networkTaskDAO.readAllNetworkTasks();
+        assertEquals(1, taskList.size());
+        NetworkTask task = taskList.get(0);
+        assertTrue(task.isTechnicallyEqual(getNetworkTask1()));
+        assertTrue(task.isRunning());
     }
 
     private void logEntryEquals(LogEntry entry1, LogEntry entry2) {
