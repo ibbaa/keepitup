@@ -71,7 +71,7 @@ public class JSONUtilTest {
         assertEquals("value", jsonObj.get("stringKey"));
         assertEquals(5, jsonObj.get("intKey"));
         assertEquals(8L, jsonObj.get("longKey"));
-        assertEquals(Double.valueOf(10), jsonObj.get("doubleKey"));
+        assertEquals(10d, jsonObj.get("doubleKey"));
         assertTrue((boolean) jsonObj.get("booleanKey"));
     }
 

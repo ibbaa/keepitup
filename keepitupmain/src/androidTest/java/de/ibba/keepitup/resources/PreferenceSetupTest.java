@@ -98,7 +98,7 @@ public class PreferenceSetupTest {
     @Test
     public void testImportDefaultsSetValues() {
         Map<String, Object> defaults = new HashMap<>();
-        defaults.put("preferenceAccessType", AccessType.CONNECT);
+        defaults.put("preferenceAccessType", AccessType.CONNECT.getCode());
         defaults.put("preferenceAddress", "address");
         defaults.put("preferencePort", 123);
         defaults.put("preferenceInterval", 456);
@@ -182,7 +182,7 @@ public class PreferenceSetupTest {
     @Test
     public void testExportDefaultsDefaultValues() {
         Map<String, ?> defaults = setup.exportDefaults();
-        assertEquals(defaults.get("preferenceAccessType"), preferenceManager.getPreferenceAccessType());
+        assertEquals(defaults.get("preferenceAccessType"), preferenceManager.getPreferenceAccessType().getCode());
         assertEquals(defaults.get("preferenceAddress"), preferenceManager.getPreferenceAddress());
         assertEquals(defaults.get("preferencePort"), preferenceManager.getPreferencePort());
         assertEquals(defaults.get("preferenceInterval"), preferenceManager.getPreferenceInterval());
@@ -205,7 +205,7 @@ public class PreferenceSetupTest {
         assertEquals(456, preferenceManager.getPreferenceInterval());
         assertTrue(preferenceManager.getPreferenceOnlyWifi());
         assertTrue(preferenceManager.getPreferenceNotification());
-        assertEquals(defaults.get("preferenceAccessType"), preferenceManager.getPreferenceAccessType());
+        assertEquals(defaults.get("preferenceAccessType"), preferenceManager.getPreferenceAccessType().getCode());
         assertEquals(defaults.get("preferenceAddress"), preferenceManager.getPreferenceAddress());
         assertEquals(defaults.get("preferencePort"), preferenceManager.getPreferencePort());
         assertEquals(defaults.get("preferenceInterval"), preferenceManager.getPreferenceInterval());
@@ -282,7 +282,7 @@ public class PreferenceSetupTest {
         assertEquals(456, preferenceManager.getPreferenceInterval());
         assertTrue(preferenceManager.getPreferenceOnlyWifi());
         assertTrue(preferenceManager.getPreferenceNotification());
-        assertEquals(defaults.get("preferenceAccessType"), preferenceManager.getPreferenceAccessType());
+        assertEquals(defaults.get("preferenceAccessType"), preferenceManager.getPreferenceAccessType().getCode());
         assertEquals(defaults.get("preferenceAddress"), preferenceManager.getPreferenceAddress());
         assertEquals(defaults.get("preferencePort"), preferenceManager.getPreferencePort());
         assertEquals(defaults.get("preferenceInterval"), preferenceManager.getPreferenceInterval());

@@ -33,24 +33,24 @@ public class StreamUtil {
         byte[] buffer = new byte[BUFFER_SIZE_4096];
         int partsProgress = 0;
         int bytesDownloaded = 0;
-        Log.d(StreamUtil.class.getName(), "Startíng download.");
+        Log.d(StreamUtil.class.getName(), "Startíng...");
         while (interrupt.shouldContinue() && (read = inputStream.read(buffer, 0, BUFFER_SIZE_4096)) >= 0) {
             outputStream.write(buffer, 0, read);
             bytesDownloaded += read;
             if (bytesDownloaded / PART_SIZE > partsProgress) {
                 partsProgress++;
-                Log.d(StreamUtil.class.getName(), "Download progress: " + bytesDownloaded + " bytes.");
+                Log.d(StreamUtil.class.getName(), "Progress: " + bytesDownloaded + " bytes.");
             }
         }
-        Log.d(StreamUtil.class.getName(), "Bytes downloaded: " + bytesDownloaded);
-        Log.d(StreamUtil.class.getName(), "Finished download.");
+        Log.d(StreamUtil.class.getName(), "Bytes transmitted: " + bytesDownloaded);
+        Log.d(StreamUtil.class.getName(), "Finished.");
         boolean success = read < 0;
         if (success) {
-            Log.d(StreamUtil.class.getName(), "Download was successful.");
+            Log.d(StreamUtil.class.getName(), "Transmission was successful.");
         } else if (!interrupt.shouldContinue()) {
-            Log.d(StreamUtil.class.getName(), "Download was interrupted.");
+            Log.d(StreamUtil.class.getName(), "Transmission was interrupted.");
         } else {
-            Log.d(StreamUtil.class.getName(), "Download was not successful for an unknown reason.");
+            Log.d(StreamUtil.class.getName(), "Transmission was not successful for an unknown reason.");
         }
         return success;
     }

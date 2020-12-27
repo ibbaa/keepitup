@@ -32,7 +32,7 @@ public class PreferenceSetup {
     public Map<String, ?> exportDefaults() {
         Log.d(PreferenceSetup.class.getName(), "exportDefaults");
         Map<String, Object> defaults = new HashMap<>();
-        defaults.put("preferenceAccessType", preferenceManager.getPreferenceAccessType());
+        defaults.put("preferenceAccessType", preferenceManager.getPreferenceAccessType() != null ? preferenceManager.getPreferenceAccessType().getCode() : -1);
         defaults.put("preferenceAddress", preferenceManager.getPreferenceAddress());
         defaults.put("preferencePort", preferenceManager.getPreferencePort());
         defaults.put("preferenceInterval", preferenceManager.getPreferenceInterval());
@@ -100,8 +100,8 @@ public class PreferenceSetup {
     public void importDefaults(Map<String, ?> defaults) {
         Log.d(PreferenceSetup.class.getName(), "importDefaults");
         Object accessType = defaults.get("preferenceAccessType");
-        if (accessType instanceof AccessType) {
-            preferenceManager.setPreferenceAccessType((AccessType) accessType);
+        if (accessType instanceof Integer) {
+            preferenceManager.setPreferenceAccessType(AccessType.forCode((Integer) accessType));
         } else {
             preferenceManager.removePreferenceAccessType();
         }
