@@ -8,6 +8,8 @@ import androidx.annotation.NonNull;
 import java.util.HashMap;
 import java.util.Map;
 
+import de.ibba.keepitup.util.NumberUtil;
+
 public class SchedulerId {
 
     private long id;
@@ -36,17 +38,17 @@ public class SchedulerId {
 
     public SchedulerId(Map<String, ?> map) {
         this();
-        if (map.get("id") != null) {
-            this.id = (Long) map.get("id");
+        if (NumberUtil.isValidLongValue(map.get("id"))) {
+            this.id = NumberUtil.getLongValue(map.get("id"), -1);
         }
         if (map.get("valid") != null) {
-            this.valid = (Boolean) map.get("valid");
+            this.valid = Boolean.parseBoolean(map.get("valid").toString());
         }
-        if (map.get("schedulerid") != null) {
-            this.schedulerid = (Integer) map.get("schedulerid");
+        if (NumberUtil.isValidIntValue(map.get("schedulerid"))) {
+            this.schedulerid = NumberUtil.getIntValue(map.get("schedulerid"), 0);
         }
-        if (map.get("timestamp") != null) {
-            this.timestamp = (Long) map.get("timestamp");
+        if (NumberUtil.isValidLongValue(map.get("timestamp"))) {
+            this.timestamp = NumberUtil.getLongValue(map.get("timestamp"), -1);
         }
     }
 

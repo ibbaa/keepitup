@@ -62,6 +62,34 @@ public class SchedulerIdTest {
     }
 
     @Test
+    public void testInvalidMap() {
+        Map<String, Object> map = new HashMap<>();
+        map.put("id", "id");
+        map.put("schedulerid", "schedulerid");
+        map.put("valid", "valid");
+        map.put("timestamp", "timestamp");
+        SchedulerId schedulerId = new SchedulerId(map);
+        assertEquals(-1, schedulerId.getId());
+        assertEquals(-1, schedulerId.getSchedulerId());
+        assertEquals(-1, schedulerId.getTimestamp());
+        assertFalse(schedulerId.isValid());
+    }
+
+    @Test
+    public void testMapStringValues() {
+        Map<String, Object> map = new HashMap<>();
+        map.put("id", "1");
+        map.put("schedulerid", "2");
+        map.put("valid", "true");
+        map.put("timestamp", "3");
+        SchedulerId schedulerId = new SchedulerId(map);
+        assertEquals(1, schedulerId.getId());
+        assertEquals(2, schedulerId.getSchedulerId());
+        assertEquals(3, schedulerId.getTimestamp());
+        assertTrue(schedulerId.isValid());
+    }
+
+    @Test
     public void testToBundleValues() {
         SchedulerId schedulerId = new SchedulerId();
         schedulerId.setId(100);

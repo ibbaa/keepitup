@@ -68,6 +68,38 @@ public class LogEntryTest {
     }
 
     @Test
+    public void testInvalidMap() {
+        Map<String, Object> map = new HashMap<>();
+        map.put("id", "id");
+        map.put("networktaskid", "networktaskid");
+        map.put("success", "success");
+        map.put("timestamp", "timestamp");
+        map.put("message", null);
+        LogEntry logEntry = new LogEntry(map);
+        assertEquals(-1, logEntry.getId());
+        assertEquals(-1, logEntry.getNetworkTaskId());
+        assertEquals(-1, logEntry.getTimestamp());
+        assertFalse(logEntry.isSuccess());
+        assertNull(logEntry.getMessage());
+    }
+
+    @Test
+    public void testMapStringValues() {
+        Map<String, Object> map = new HashMap<>();
+        map.put("id", "1");
+        map.put("networktaskid", "2");
+        map.put("success", "true");
+        map.put("timestamp", "3");
+        map.put("message", "null");
+        LogEntry logEntry = new LogEntry(map);
+        assertEquals(1, logEntry.getId());
+        assertEquals(2, logEntry.getNetworkTaskId());
+        assertEquals(3, logEntry.getTimestamp());
+        assertTrue(logEntry.isSuccess());
+        assertEquals("null", logEntry.getMessage());
+    }
+
+    @Test
     public void testToBundleValues() {
         long timestamp = System.currentTimeMillis();
         LogEntry logEntry = new LogEntry();

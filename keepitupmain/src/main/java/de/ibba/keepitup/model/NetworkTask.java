@@ -13,6 +13,7 @@ import java.util.Objects;
 
 import de.ibba.keepitup.R;
 import de.ibba.keepitup.resources.PreferenceManager;
+import de.ibba.keepitup.util.NumberUtil;
 
 public class NetworkTask {
 
@@ -81,41 +82,41 @@ public class NetworkTask {
 
     public NetworkTask(Map<String, ?> map) {
         this();
-        if (map.get("id") != null) {
-            this.id = (Long) map.get("id");
+        if (NumberUtil.isValidLongValue(map.get("id"))) {
+            this.id = NumberUtil.getLongValue(map.get("id"), -1);
         }
-        if (map.get("index") != null) {
-            this.index = (Integer) map.get("index");
+        if (NumberUtil.isValidIntValue(map.get("index"))) {
+            this.index = NumberUtil.getIntValue(map.get("index"), -1);
         }
-        if (map.get("schedulerid") != null) {
-            this.schedulerid = (Integer) map.get("schedulerid");
+        if (NumberUtil.isValidIntValue(map.get("schedulerid"))) {
+            this.schedulerid = NumberUtil.getIntValue(map.get("schedulerid"), -1);
         }
-        if (map.get("instances") != null) {
-            this.instances = (Integer) map.get("instances");
+        if (NumberUtil.isValidIntValue(map.get("instances"))) {
+            this.instances = NumberUtil.getIntValue(map.get("instances"), 0);
         }
         if (map.get("address") != null) {
-            this.address = (String) map.get("address");
+            this.address = map.get("address").toString();
         }
-        if (map.get("port") != null) {
-            this.port = (Integer) map.get("port");
+        if (NumberUtil.isValidIntValue(map.get("port"))) {
+            this.port = NumberUtil.getIntValue(map.get("port"), 0);
         }
-        if (map.get("accessType") != null) {
-            accessType = AccessType.forCode((Integer) map.get("accessType"));
+        if (NumberUtil.isValidIntValue(map.get("accessType"))) {
+            accessType = AccessType.forCode(NumberUtil.getIntValue(map.get("accessType"), -1));
         }
-        if (map.get("interval") != null) {
-            this.interval = (Integer) map.get("interval");
+        if (NumberUtil.isValidIntValue(map.get("interval"))) {
+            this.interval = NumberUtil.getIntValue(map.get("interval"), 0);
         }
         if (map.get("onlyWifi") != null) {
-            this.onlyWifi = (Boolean) map.get("onlyWifi");
+            this.onlyWifi = Boolean.parseBoolean(map.get("onlyWifi").toString());
         }
         if (map.get("notification") != null) {
-            this.notification = (Boolean) map.get("notification");
+            this.notification = Boolean.parseBoolean(map.get("notification").toString());
         }
         if (map.get("running") != null) {
-            this.running = (Boolean) map.get("running");
+            this.running = Boolean.parseBoolean(map.get("running").toString());
         }
-        if (map.get("lastScheduled") != null) {
-            this.lastScheduled = (Long) map.get("lastScheduled");
+        if (NumberUtil.isValidLongValue(map.get("lastScheduled"))) {
+            this.lastScheduled = NumberUtil.getLongValue(map.get("lastScheduled"), -1);
         }
     }
 
