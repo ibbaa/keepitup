@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="database">database</string>
-    <string name="networktask">networktask</string>
-    <string name="logentry">logentry</string>
-    <string name="preferences">preferences</string>
-    <string name="preferences_global">global</string>
-    <string name="preferences_defaults">defaults</string>
-    <string name="preferences_system">system</string>
+    <string name="database_json_key">database</string>
+    <string name="networktask_json_key">networktask</string>
+    <string name="logentry_json_key">logentry</string>
+    <string name="preferences_json_key">preferences</string>
+    <string name="preferences_global_json_key">global</string>
+    <string name="preferences_defaults_json_key">defaults</string>
+    <string name="preferences_system_json_key">system</string>
 </resources>
