@@ -1,19 +1,25 @@
 package de.ibba.keepitup.resources;
 
 import android.content.Context;
+import android.content.res.Resources;
 
 import java.util.HashMap;
 import java.util.Map;
 
+import de.ibba.keepitup.R;
 import de.ibba.keepitup.logging.Log;
 import de.ibba.keepitup.model.AccessType;
+import de.ibba.keepitup.util.NumberUtil;
+import de.ibba.keepitup.util.URLUtil;
 
 public class PreferenceSetup {
 
+    private final Context context;
     private final PreferenceManager preferenceManager;
 
     public PreferenceSetup(Context context) {
-        preferenceManager = new PreferenceManager(context);
+        this.context = context;
+        this.preferenceManager = new PreferenceManager(context);
     }
 
     public Map<String, ?> exportGlobalSettings() {
@@ -52,117 +58,165 @@ public class PreferenceSetup {
     }
 
     public void importGlobalSettings(Map<String, ?> globalSettings) {
-        Log.d(PreferenceSetup.class.getName(), "importGlobalSetting");
+        Log.d(PreferenceSetup.class.getName(), "importGlobalSetting, globalSettings = " + globalSettings);
         Object pingCount = globalSettings.get("preferencePingCount");
-        if (pingCount instanceof Integer) {
-            preferenceManager.setPreferencePingCount((Integer) pingCount);
+        int pingCountMin = getResources().getInteger(R.integer.ping_count_minimum);
+        int pingCountMax = getResources().getInteger(R.integer.ping_count_maximum);
+        int pingCountDefault = getResources().getInteger(R.integer.ping_count_default);
+        if (isValidInteger(pingCount, pingCountMin, pingCountMax)) {
+            preferenceManager.setPreferencePingCount(NumberUtil.getIntValue(pingCount, pingCountDefault));
         } else {
             preferenceManager.removePreferencePingCount();
         }
         Object connectCount = globalSettings.get("preferenceConnectCount");
-        if (connectCount instanceof Integer) {
-            preferenceManager.setPreferenceConnectCount((Integer) connectCount);
+        int connectCountMin = getResources().getInteger(R.integer.connect_count_minimum);
+        int connectCountMax = getResources().getInteger(R.integer.connect_count_maximum);
+        int connectCountDefault = getResources().getInteger(R.integer.connect_count_default);
+        if (isValidInteger(connectCount, connectCountMin, connectCountMax)) {
+            preferenceManager.setPreferenceConnectCount(NumberUtil.getIntValue(connectCount, connectCountDefault));
         } else {
             preferenceManager.removePreferenceConnectCount();
         }
         Object notificationInactiveNetwork = globalSettings.get("preferenceNotificationInactiveNetwork");
-        if (notificationInactiveNetwork instanceof Boolean) {
-            preferenceManager.setPreferenceNotificationInactiveNetwork((Boolean) notificationInactiveNetwork);
+        if (isValidBoolean(notificationInactiveNetwork)) {
+            preferenceManager.setPreferenceNotificationInactiveNetwork(Boolean.parseBoolean(notificationInactiveNetwork.toString()));
         } else {
             preferenceManager.removePreferenceNotificationInactiveNetwork();
         }
         Object downloadExternalStorage = globalSettings.get("preferenceDownloadExternalStorage");
-        if (downloadExternalStorage instanceof Boolean) {
-            preferenceManager.setPreferenceDownloadExternalStorage((Boolean) downloadExternalStorage);
+        if (isValidBoolean(downloadExternalStorage)) {
+            preferenceManager.setPreferenceDownloadExternalStorage(Boolean.parseBoolean(downloadExternalStorage.toString()));
         } else {
             preferenceManager.removePreferenceDownloadExternalStorage();
         }
         Object externalStorageType = globalSettings.get("preferenceExternalStorageType");
-        if (externalStorageType instanceof Integer) {
-            preferenceManager.setPreferenceExternalStorageType((Integer) externalStorageType);
+        if (isValidInteger(externalStorageType, 0, 1)) {
+            preferenceManager.setPreferenceExternalStorageType(NumberUtil.getIntValue(externalStorageType, 0));
         } else {
             preferenceManager.removePreferenceExternalStorageType();
         }
         Object downloadFolder = globalSettings.get("preferenceDownloadFolder");
-        if (downloadFolder instanceof String) {
-            preferenceManager.setPreferenceDownloadFolder((String) downloadFolder);
+        if (isValidString(downloadFolder)) {
+            preferenceManager.setPreferenceDownloadFolder(downloadFolder.toString());
         } else {
             preferenceManager.removePreferenceDownloadFolder();
         }
         Object downloadKeep = globalSettings.get("preferenceDownloadKeep");
-        if (downloadKeep instanceof Boolean) {
-            preferenceManager.setPreferenceDownloadKeep((Boolean) downloadKeep);
+        if (isValidBoolean(downloadKeep)) {
+            preferenceManager.setPreferenceDownloadKeep(Boolean.parseBoolean(downloadExternalStorage.toString()));
         } else {
             preferenceManager.removePreferenceDownloadKeep();
         }
     }
 
     public void importDefaults(Map<String, ?> defaults) {
-        Log.d(PreferenceSetup.class.getName(), "importDefaults");
+        Log.d(PreferenceSetup.class.getName(), "importDefaults, defaults = " + defaults);
         Object accessType = defaults.get("preferenceAccessType");
-        if (accessType instanceof Integer) {
-            preferenceManager.setPreferenceAccessType(AccessType.forCode((Integer) accessType));
+        if (isValidAccessType(accessType)) {
+            preferenceManager.setPreferenceAccessType(AccessType.forCode(NumberUtil.getIntValue(accessType, -1)));
         } else {
             preferenceManager.removePreferenceAccessType();
         }
         Object address = defaults.get("preferenceAddress");
-        if (address instanceof String) {
-            preferenceManager.setPreferenceAddress((String) address);
+        if (isValidAddress(address)) {
+            preferenceManager.setPreferenceAddress(address.toString());
         } else {
             preferenceManager.removePreferenceAddress();
         }
         Object port = defaults.get("preferencePort");
-        if (port instanceof Integer) {
-            preferenceManager.setPreferencePort((Integer) port);
+        int portMin = getResources().getInteger(R.integer.task_port_minimum);
+        int portMax = getResources().getInteger(R.integer.task_port_maximum);
+        int portDefault = getResources().getInteger(R.integer.task_port_default);
+        if (isValidInteger(port, portMin, portMax)) {
+            preferenceManager.setPreferencePort(NumberUtil.getIntValue(port, portDefault));
         } else {
             preferenceManager.removePreferencePort();
         }
         Object interval = defaults.get("preferenceInterval");
-        if (interval instanceof Integer) {
-            preferenceManager.setPreferenceInterval((Integer) interval);
+        int intervalMin = getResources().getInteger(R.integer.task_interval_minimum);
+        int intervalMax = getResources().getInteger(R.integer.task_interval_maximum);
+        int intervalDefault = getResources().getInteger(R.integer.task_interval_default);
+        if (isValidInteger(interval, intervalMin, intervalMax)) {
+            preferenceManager.setPreferenceInterval(NumberUtil.getIntValue(interval, intervalDefault));
         } else {
             preferenceManager.removePreferenceInterval();
         }
         Object onlyWifi = defaults.get("preferenceOnlyWifi");
-        if (onlyWifi instanceof Boolean) {
-            preferenceManager.setPreferenceOnlyWifi((Boolean) onlyWifi);
+        if (isValidBoolean(onlyWifi)) {
+            preferenceManager.setPreferenceOnlyWifi(Boolean.parseBoolean(onlyWifi.toString()));
         } else {
             preferenceManager.removePreferenceOnlyWifi();
         }
         Object notification = defaults.get("preferenceNotification");
-        if (notification instanceof Boolean) {
-            preferenceManager.setPreferenceNotification((Boolean) notification);
+        if (isValidBoolean(notification)) {
+            preferenceManager.setPreferenceNotification(Boolean.parseBoolean(notification.toString()));
         } else {
             preferenceManager.removePreferenceNotification();
         }
     }
 
     public void importSystemSettings(Map<String, ?> systemSettings) {
-        Log.d(PreferenceSetup.class.getName(), "importSystemSettings");
+        Log.d(PreferenceSetup.class.getName(), "importSystemSettings, systemSettings = " + systemSettings);
         Object importFolder = systemSettings.get("preferenceImportFolder");
-        if (importFolder instanceof String) {
-            preferenceManager.setPreferenceImportFolder((String) importFolder);
+        if (isValidString(importFolder)) {
+            preferenceManager.setPreferenceImportFolder(importFolder.toString());
         } else {
             preferenceManager.removePreferenceImportFolder();
         }
         Object exportFolder = systemSettings.get("preferenceExportFolder");
-        if (exportFolder instanceof String) {
-            preferenceManager.setPreferenceExportFolder((String) exportFolder);
+        if (isValidString(exportFolder)) {
+            preferenceManager.setPreferenceExportFolder(exportFolder.toString());
         } else {
             preferenceManager.removePreferenceExportFolder();
         }
         Object fileLoggerEnabled = systemSettings.get("preferenceFileLoggerEnabled");
-        if (fileLoggerEnabled instanceof Boolean) {
-            preferenceManager.setPreferenceFileLoggerEnabled((Boolean) fileLoggerEnabled);
+        if (isValidBoolean(fileLoggerEnabled)) {
+            preferenceManager.setPreferenceFileLoggerEnabled(Boolean.parseBoolean(fileLoggerEnabled.toString()));
         } else {
             preferenceManager.removePreferenceFileLoggerEnabled();
         }
         Object fileDumpEnabled = systemSettings.get("preferenceFileDumpEnabled");
-        if (fileDumpEnabled instanceof Boolean) {
-            preferenceManager.setPreferenceFileDumpEnabled((Boolean) fileDumpEnabled);
+        if (isValidBoolean(fileDumpEnabled)) {
+            preferenceManager.setPreferenceFileDumpEnabled(Boolean.parseBoolean(fileDumpEnabled.toString()));
         } else {
             preferenceManager.removePreferenceFileDumpEnabled();
         }
+    }
+
+    private boolean isValidInteger(Object value, int min, int max) {
+        if (!NumberUtil.isValidIntValue(value)) {
+            return false;
+        }
+        int intValue = NumberUtil.getIntValue(value, -1);
+        return intValue >= min && intValue <= max;
+    }
+
+    private boolean isValidBoolean(Object value) {
+        if (value == null) {
+            return false;
+        }
+        return true;
+    }
+
+    private boolean isValidString(Object value) {
+        if (value == null) {
+            return false;
+        }
+        return true;
+    }
+
+    private boolean isValidAddress(Object value) {
+        if (value == null || value.toString().isEmpty()) {
+            return false;
+        }
+        return URLUtil.isValidIPAddress(value.toString()) || URLUtil.isValidHostName(value.toString()) || URLUtil.isValidURL(value.toString());
+    }
+
+    private boolean isValidAccessType(Object value) {
+        if (!NumberUtil.isValidIntValue(value)) {
+            return false;
+        }
+        return AccessType.forCode(NumberUtil.getIntValue(value, -1)) != null;
     }
 
     public void removeGlobalSettings() {
@@ -197,5 +251,13 @@ public class PreferenceSetup {
     public void removeAllSettings() {
         Log.d(PreferenceSetup.class.getName(), "removeAllSettings");
         preferenceManager.removeAllPreferences();
+    }
+
+    private Context getContext() {
+        return context;
+    }
+
+    private Resources getResources() {
+        return getContext().getResources();
     }
 }

@@ -119,6 +119,66 @@ public class NetworkTaskTest {
     }
 
     @Test
+    public void testInvalidMap() {
+        Map<String, Object> map = new HashMap<>();
+        map.put("id", "xyz");
+        map.put("index", "index");
+        map.put("schedulerid", "abc");
+        map.put("instances", "abc");
+        map.put("address", null);
+        map.put("port", "port");
+        map.put("accessType", -1);
+        map.put("interval", "interval");
+        map.put("onlyWifi", "fal");
+        map.put("notification", "tru");
+        map.put("running", "tru");
+        map.put("lastScheduled", "xyz");
+        NetworkTask task = new NetworkTask(map);
+        assertEquals(-1, task.getId());
+        assertEquals(-1, task.getIndex());
+        assertEquals(-1, task.getSchedulerId());
+        assertEquals(0, task.getInstances());
+        assertNull(task.getAddress());
+        assertEquals(0, task.getPort());
+        assertNull(task.getAccessType());
+        assertEquals(0, task.getInterval());
+        assertFalse(task.isOnlyWifi());
+        assertFalse(task.isNotification());
+        assertFalse(task.isRunning());
+        assertEquals(-1, task.getLastScheduled());
+    }
+
+    @Test
+    public void testMapStringValues() {
+        Map<String, Object> map = new HashMap<>();
+        map.put("id", "1");
+        map.put("index", "2");
+        map.put("schedulerid", "3");
+        map.put("instances", "4");
+        map.put("address", "address");
+        map.put("port", "5");
+        map.put("accessType", "1");
+        map.put("interval", "6");
+        map.put("onlyWifi", "true");
+        map.put("notification", "true");
+        map.put("running", "true");
+        map.put("lastScheduled", "7");
+        NetworkTask task = new NetworkTask(map);
+        assertEquals(1, task.getId());
+        assertEquals(2, task.getIndex());
+        assertEquals(3, task.getSchedulerId());
+        assertEquals(4, task.getInstances());
+        assertEquals("address", task.getAddress());
+        assertEquals(5, task.getPort());
+        assertEquals(AccessType.PING, task.getAccessType());
+        assertEquals(6, task.getInterval());
+        assertTrue(task.isOnlyWifi());
+        assertTrue(task.isNotification());
+        assertTrue(task.isRunning());
+        assertEquals(7, task.getLastScheduled());
+    }
+
+    @Test
     public void testPreferenceValues() {
         PreferenceManager preferenceManager = new PreferenceManager(TestRegistry.getContext());
         preferenceManager.setPreferenceAccessType(AccessType.CONNECT);

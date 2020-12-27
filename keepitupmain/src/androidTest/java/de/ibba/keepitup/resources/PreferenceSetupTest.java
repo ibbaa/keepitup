@@ -64,7 +64,7 @@ public class PreferenceSetupTest {
         globalSettings.put("preferenceConnectCount", 10);
         globalSettings.put("preferenceNotificationInactiveNetwork", true);
         globalSettings.put("preferenceDownloadExternalStorage", true);
-        globalSettings.put("preferenceExternalStorageType", 30);
+        globalSettings.put("preferenceExternalStorageType", 1);
         globalSettings.put("preferenceDownloadFolder", "folder");
         globalSettings.put("preferenceDownloadKeep", true);
         setup.importGlobalSettings(globalSettings);
@@ -72,9 +72,49 @@ public class PreferenceSetupTest {
         assertEquals(10, preferenceManager.getPreferenceConnectCount());
         assertTrue(preferenceManager.getPreferenceNotificationInactiveNetwork());
         assertTrue(preferenceManager.getPreferenceDownloadExternalStorage());
-        assertEquals(30, preferenceManager.getPreferenceExternalStorageType());
+        assertEquals(1, preferenceManager.getPreferenceExternalStorageType());
         assertEquals("folder", preferenceManager.getPreferenceDownloadFolder());
         assertTrue(preferenceManager.getPreferenceDownloadKeep());
+    }
+
+    @Test
+    public void testImportGlobalSettingsSetValuesAsString() {
+        Map<String, Object> globalSettings = new HashMap<>();
+        globalSettings.put("preferencePingCount", "5");
+        globalSettings.put("preferenceConnectCount", "10");
+        globalSettings.put("preferenceNotificationInactiveNetwork", "true");
+        globalSettings.put("preferenceDownloadExternalStorage", "true");
+        globalSettings.put("preferenceExternalStorageType", "1");
+        globalSettings.put("preferenceDownloadFolder", "folder");
+        globalSettings.put("preferenceDownloadKeep", "true");
+        setup.importGlobalSettings(globalSettings);
+        assertEquals(5, preferenceManager.getPreferencePingCount());
+        assertEquals(10, preferenceManager.getPreferenceConnectCount());
+        assertTrue(preferenceManager.getPreferenceNotificationInactiveNetwork());
+        assertTrue(preferenceManager.getPreferenceDownloadExternalStorage());
+        assertEquals(1, preferenceManager.getPreferenceExternalStorageType());
+        assertEquals("folder", preferenceManager.getPreferenceDownloadFolder());
+        assertTrue(preferenceManager.getPreferenceDownloadKeep());
+    }
+
+    @Test
+    public void testImportGlobalSettingsInvalid() {
+        Map<String, Object> globalSettings = new HashMap<>();
+        globalSettings.put("preferencePingCount", 11);
+        globalSettings.put("preferenceConnectCount", 55);
+        globalSettings.put("preferenceNotificationInactiveNetwork", "xyz");
+        globalSettings.put("preferenceDownloadExternalStorage", "tru");
+        globalSettings.put("preferenceExternalStorageType", "abc");
+        globalSettings.put("preferenceDownloadFolder", null);
+        globalSettings.put("preferenceDownloadKeep", 3);
+        setup.importGlobalSettings(globalSettings);
+        assertEquals(3, preferenceManager.getPreferencePingCount());
+        assertEquals(1, preferenceManager.getPreferenceConnectCount());
+        assertFalse(preferenceManager.getPreferenceNotificationInactiveNetwork());
+        assertFalse(preferenceManager.getPreferenceDownloadExternalStorage());
+        assertEquals(0, preferenceManager.getPreferenceExternalStorageType());
+        assertEquals("download", preferenceManager.getPreferenceDownloadFolder());
+        assertFalse(preferenceManager.getPreferenceDownloadKeep());
     }
 
     @Test
@@ -114,6 +154,42 @@ public class PreferenceSetupTest {
     }
 
     @Test
+    public void testImportDefaultsSetValuesAsString() {
+        Map<String, Object> defaults = new HashMap<>();
+        defaults.put("preferenceAccessType", String.valueOf(AccessType.CONNECT.getCode()));
+        defaults.put("preferenceAddress", "address");
+        defaults.put("preferencePort", "123");
+        defaults.put("preferenceInterval", "456");
+        defaults.put("preferenceOnlyWifi", "true");
+        defaults.put("preferenceNotification", "true");
+        setup.importDefaults(defaults);
+        assertEquals(AccessType.CONNECT, preferenceManager.getPreferenceAccessType());
+        assertEquals("address", preferenceManager.getPreferenceAddress());
+        assertEquals(123, preferenceManager.getPreferencePort());
+        assertEquals(456, preferenceManager.getPreferenceInterval());
+        assertTrue(preferenceManager.getPreferenceOnlyWifi());
+        assertTrue(preferenceManager.getPreferenceNotification());
+    }
+
+    @Test
+    public void testImportDefaultsInvalid() {
+        Map<String, Object> defaults = new HashMap<>();
+        defaults.put("preferenceAccessType", 25);
+        defaults.put("preferenceAddress", "1.1.1.1.1.1");
+        defaults.put("preferencePort", 12345678);
+        defaults.put("preferenceInterval", "");
+        defaults.put("preferenceOnlyWifi", 1);
+        defaults.put("preferenceNotification", 1);
+        setup.importDefaults(defaults);
+        assertEquals(AccessType.PING, preferenceManager.getPreferenceAccessType());
+        assertEquals("192.168.178.1", preferenceManager.getPreferenceAddress());
+        assertEquals(22, preferenceManager.getPreferencePort());
+        assertEquals(15, preferenceManager.getPreferenceInterval());
+        assertFalse(preferenceManager.getPreferenceOnlyWifi());
+        assertFalse(preferenceManager.getPreferenceNotification());
+    }
+
+    @Test
     public void testImportSystemSettingsEmpty() {
         preferenceManager.setPreferenceImportFolder("folderImport");
         preferenceManager.setPreferenceExportFolder("folderExport");
@@ -139,6 +215,34 @@ public class PreferenceSetupTest {
         assertEquals("folderExport", preferenceManager.getPreferenceExportFolder());
         assertTrue(preferenceManager.getPreferenceFileLoggerEnabled());
         assertTrue(preferenceManager.getPreferenceFileDumpEnabled());
+    }
+
+    @Test
+    public void testImportSystemSetValuesAsString() {
+        Map<String, Object> systemSettings = new HashMap<>();
+        systemSettings.put("preferenceImportFolder", "folderImport");
+        systemSettings.put("preferenceExportFolder", "folderExport");
+        systemSettings.put("preferenceFileLoggerEnabled", "true");
+        systemSettings.put("preferenceFileDumpEnabled", "true");
+        setup.importSystemSettings(systemSettings);
+        assertEquals("folderImport", preferenceManager.getPreferenceImportFolder());
+        assertEquals("folderExport", preferenceManager.getPreferenceExportFolder());
+        assertTrue(preferenceManager.getPreferenceFileLoggerEnabled());
+        assertTrue(preferenceManager.getPreferenceFileDumpEnabled());
+    }
+
+    @Test
+    public void testImportSystemSetInvalid() {
+        Map<String, Object> systemSettings = new HashMap<>();
+        systemSettings.put("preferenceImportFolder", null);
+        systemSettings.put("preferenceExportFolder", null);
+        systemSettings.put("preferenceFileLoggerEnabled", null);
+        systemSettings.put("preferenceFileDumpEnabled", null);
+        setup.importSystemSettings(systemSettings);
+        assertEquals("config", preferenceManager.getPreferenceImportFolder());
+        assertEquals("config", preferenceManager.getPreferenceExportFolder());
+        assertFalse(preferenceManager.getPreferenceFileLoggerEnabled());
+        assertFalse(preferenceManager.getPreferenceFileDumpEnabled());
     }
 
     @Test
@@ -245,7 +349,7 @@ public class PreferenceSetupTest {
         preferenceManager.setPreferenceConnectCount(10);
         preferenceManager.setPreferenceNotificationInactiveNetwork(true);
         preferenceManager.setPreferenceDownloadExternalStorage(true);
-        preferenceManager.setPreferenceExternalStorageType(30);
+        preferenceManager.setPreferenceExternalStorageType(1);
         preferenceManager.setPreferenceDownloadFolder("folder");
         preferenceManager.setPreferenceDownloadKeep(true);
         Map<String, ?> globalSettings = setup.exportGlobalSettings();
@@ -254,7 +358,7 @@ public class PreferenceSetupTest {
         assertEquals(10, preferenceManager.getPreferenceConnectCount());
         assertTrue(preferenceManager.getPreferenceNotificationInactiveNetwork());
         assertTrue(preferenceManager.getPreferenceDownloadExternalStorage());
-        assertEquals(30, preferenceManager.getPreferenceExternalStorageType());
+        assertEquals(1, preferenceManager.getPreferenceExternalStorageType());
         assertEquals("folder", preferenceManager.getPreferenceDownloadFolder());
         assertTrue(preferenceManager.getPreferenceDownloadKeep());
         assertEquals(globalSettings.get("preferencePingCount"), preferenceManager.getPreferencePingCount());

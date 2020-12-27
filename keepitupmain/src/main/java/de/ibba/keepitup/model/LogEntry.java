@@ -9,6 +9,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
+import de.ibba.keepitup.util.NumberUtil;
+
 public class LogEntry {
 
     private long id;
@@ -40,20 +42,20 @@ public class LogEntry {
 
     public LogEntry(Map<String, ?> map) {
         this();
-        if (map.get("id") != null) {
-            this.id = (Long) map.get("id");
+        if (NumberUtil.isValidLongValue(map.get("id"))) {
+            this.id = NumberUtil.getLongValue(map.get("id"), -1);
         }
-        if (map.get("networktaskid") != null) {
-            this.networktaskid = (Long) map.get("networktaskid");
+        if (NumberUtil.isValidLongValue(map.get("networktaskid"))) {
+            this.networktaskid = NumberUtil.getLongValue(map.get("networktaskid"), -1);
         }
         if (map.get("success") != null) {
-            this.success = (Boolean) map.get("success");
+            this.success = Boolean.parseBoolean(map.get("success").toString());
         }
-        if (map.get("timestamp") != null) {
-            this.timestamp = (Long) map.get("timestamp");
+        if (NumberUtil.isValidLongValue(map.get("timestamp"))) {
+            this.timestamp = NumberUtil.getLongValue(map.get("timestamp"), -1);
         }
         if (map.get("message") != null) {
-            this.message = (String) map.get("message");
+            this.message = map.get("message").toString();
         }
     }
 
