@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string name="system_setup_json_implementation">de.ibba.keepitup.resources.JSONSystemSetup</string>
     <string name="database_json_key">database</string>
     <string name="networktask_json_key">networktask</string>
     <string name="logentry_json_key">logentry</string>

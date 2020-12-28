@@ -25,6 +25,7 @@
 }
 -keep public class de.ibba.keepitup.resources.SystemServiceFactory
 -keep public class de.ibba.keepitup.resources.SystemWorkerFactory
+-keep public class de.ibba.keepitup.resources.JSONSystemSetup
 -keep public class de.ibba.keepitup.service.PingNetworkTaskWorker {
     public <methods>;
 }
