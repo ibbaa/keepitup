@@ -206,6 +206,36 @@ public class DBSetupTest {
         assertTrue(task.isRunning());
     }
 
+    @Test
+    public void testImportNetworkTaskInvalid() {
+        NetworkTask task = getNetworkTask1();
+        task.setAddress("http:// xyz abc");
+        Map<String, ?> taskMap = task.toMap();
+        Map<String, ?> entryMap1 = getLogEntry1(0).toMap();
+        Map<String, ?> entryMap2 = getLogEntry2(0).toMap();
+        Map<String, ?> entryMap3 = getLogEntry3(0).toMap();
+        assertTrue(networkTaskDAO.readAllNetworkTasks().isEmpty());
+        assertTrue(logDAO.readAllLogs().isEmpty());
+        setup.importNetworkTaskWithLogs(TestRegistry.getContext(), taskMap, Arrays.asList(entryMap1, entryMap2, entryMap3));
+        assertTrue(networkTaskDAO.readAllNetworkTasks().isEmpty());
+        assertTrue(logDAO.readAllLogs().isEmpty());
+        task = getNetworkTask1();
+        task.setPort(80000);
+        setup.importNetworkTaskWithLogs(TestRegistry.getContext(), taskMap, Arrays.asList(entryMap1, entryMap2, entryMap3));
+        assertTrue(networkTaskDAO.readAllNetworkTasks().isEmpty());
+        assertTrue(logDAO.readAllLogs().isEmpty());
+        task = getNetworkTask1();
+        task.setAccessType(null);
+        setup.importNetworkTaskWithLogs(TestRegistry.getContext(), taskMap, Arrays.asList(entryMap1, entryMap2, entryMap3));
+        assertTrue(networkTaskDAO.readAllNetworkTasks().isEmpty());
+        assertTrue(logDAO.readAllLogs().isEmpty());
+        task = getNetworkTask1();
+        task.setInterval(-1);
+        setup.importNetworkTaskWithLogs(TestRegistry.getContext(), taskMap, Arrays.asList(entryMap1, entryMap2, entryMap3));
+        assertTrue(networkTaskDAO.readAllNetworkTasks().isEmpty());
+        assertTrue(logDAO.readAllLogs().isEmpty());
+    }
+
     private void logEntryEquals(LogEntry entry1, LogEntry entry2) {
         assertEquals(entry1.getNetworkTaskId(), entry2.getNetworkTaskId());
         assertEquals(entry1.isSuccess(), entry2.isSuccess());

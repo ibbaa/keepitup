@@ -88,12 +88,12 @@ public class PreferenceManager {
 
     public AccessType getPreferenceAccessType() {
         Log.d(PreferenceManager.class.getName(), "getPreferenceAccessType");
-        return AccessType.valueOf(getPreferenceString(getResources().getString(R.string.task_accesstype_key), getResources().getString(R.string.task_accesstype_default)));
+        return AccessType.forCode(getPreferenceInt(getResources().getString(R.string.task_accesstype_key), getResources().getInteger(R.integer.task_accesstype_default)));
     }
 
     public void setPreferenceAccessType(AccessType accessType) {
         Log.d(PreferenceManager.class.getName(), "setPreferenceAccessType, type is " + accessType);
-        setPreferenceString(getResources().getString(R.string.task_accesstype_key), accessType.name());
+        setPreferenceInt(getResources().getString(R.string.task_accesstype_key), accessType.getCode());
     }
 
     public void removePreferenceAccessType() {

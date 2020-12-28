@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="task_accesstype_default">PING</string>
+    <integer name="task_accesstype_default">1</integer>
     <string name="task_accesstype_key">task_accesstype_key</string>
     <string name="task_address_default">192.168.178.1</string>
     <string name="task_address_key">task_address_key</string>

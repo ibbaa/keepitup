@@ -192,17 +192,11 @@ public class PreferenceSetup {
     }
 
     private boolean isValidBoolean(Object value) {
-        if (value == null) {
-            return false;
-        }
-        return true;
+        return value != null;
     }
 
     private boolean isValidString(Object value) {
-        if (value == null) {
-            return false;
-        }
-        return true;
+        return value != null;
     }
 
     private boolean isValidAddress(Object value) {

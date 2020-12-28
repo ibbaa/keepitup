@@ -22,7 +22,7 @@ public class JSONUtilTest {
 
     @Test
     public void testToJSONObject() throws Exception {
-        JSONObject jsonObj = JSONUtil.toJSONObject(getTestMap());
+        JSONObject jsonObj = new JSONObject(getTestMap());
         assertEquals("value", jsonObj.get("stringKey"));
         assertEquals(5, jsonObj.get("intKey"));
         assertEquals(8L, jsonObj.get("longKey"));
@@ -44,7 +44,7 @@ public class JSONUtilTest {
 
     @Test
     public void testToJSONArray() throws Exception {
-        JSONArray jsonArray = JSONUtil.toJSONArray(getTestList());
+        JSONArray jsonArray = new JSONArray(getTestList());
         assertEquals("value", jsonArray.get(0));
         assertEquals(5, jsonArray.get(1));
         assertEquals(8L, jsonArray.get(2));
@@ -54,7 +54,7 @@ public class JSONUtilTest {
 
     @Test
     public void testToJSONArrayWithMaps() throws Exception {
-        JSONArray jsonArray = JSONUtil.toJSONArray(getTestListWithMaps());
+        JSONArray jsonArray = new JSONArray(getTestListWithMaps());
         JSONObject jsonObj = (JSONObject) jsonArray.get(0);
         assertEquals("value", jsonObj.get("stringKey"));
         assertEquals(5, jsonObj.get("intKey"));
@@ -77,7 +77,7 @@ public class JSONUtilTest {
 
     @Test
     public void testToMap() {
-        JSONObject jsonObj = JSONUtil.toJSONObject(getTestMap());
+        JSONObject jsonObj = new JSONObject(getTestMap());
         Map<String, ?> map = JSONUtil.toMap(jsonObj);
         assertEquals("value", map.get("stringKey"));
         assertEquals(5, map.get("intKey"));
@@ -100,7 +100,7 @@ public class JSONUtilTest {
 
     @Test
     public void testToList() {
-        JSONArray jsonArray = JSONUtil.toJSONArray(getTestList());
+        JSONArray jsonArray = new JSONArray(getTestList());
         List<?> list = JSONUtil.toList(jsonArray);
         assertEquals("value", list.get(0));
         assertEquals(5, list.get(1));
@@ -111,7 +111,7 @@ public class JSONUtilTest {
 
     @Test
     public void testToListWithMaps() {
-        JSONArray jsonArray = JSONUtil.toJSONArray(getTestListWithMaps());
+        JSONArray jsonArray = new JSONArray(getTestListWithMaps());
         List<?> list = JSONUtil.toList(jsonArray);
         Map<String, ?> map = (Map<String, ?>) list.get(0);
         assertEquals("value", map.get("stringKey"));

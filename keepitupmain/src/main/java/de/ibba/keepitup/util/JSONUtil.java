@@ -11,10 +11,6 @@ import java.util.Map;
 
 public class JSONUtil {
 
-    public static JSONObject toJSONObject(Map<String, ?> map) {
-        return new JSONObject(map);
-    }
-
     public static Map<String, ?> toMap(JSONObject jsonObject) {
         Map<String, Object> map = new HashMap<>();
         Iterator<String> keys = jsonObject.keys();
@@ -29,10 +25,6 @@ public class JSONUtil {
             map.put(key, value);
         }
         return map;
-    }
-
-    public static JSONArray toJSONArray(List<?> list) {
-        return new JSONArray(list);
     }
 
     public static List<?> toList(JSONArray jsonArray) {
