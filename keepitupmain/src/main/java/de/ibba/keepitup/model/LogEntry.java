@@ -49,13 +49,13 @@ public class LogEntry {
             this.networktaskid = NumberUtil.getLongValue(map.get("networktaskid"), -1);
         }
         if (map.get("success") != null) {
-            this.success = Boolean.parseBoolean(map.get("success").toString());
+            this.success = Boolean.parseBoolean(Objects.requireNonNull(map.get("success")).toString());
         }
         if (NumberUtil.isValidLongValue(map.get("timestamp"))) {
             this.timestamp = NumberUtil.getLongValue(map.get("timestamp"), -1);
         }
         if (map.get("message") != null) {
-            this.message = map.get("message").toString();
+            this.message = Objects.requireNonNull(map.get("message")).toString();
         }
     }
 

@@ -59,7 +59,7 @@ public class SystemServiceFactory implements ServiceFactory {
             }
             Class<?> setupClass = Objects.requireNonNull(classloader).loadClass(implementation);
             Log.d(SystemServiceFactory.class.getName(), "Loaded setup class is " + setupClass.getName());
-            Constructor constructor = setupClass.getDeclaredConstructor(Context.class);
+            Constructor<?> constructor = setupClass.getDeclaredConstructor(Context.class);
             return (ISystemSetup) constructor.newInstance(context);
         } catch (Exception exc) {
             Log.e(ServiceFactoryContributor.class.getName(), "Error creating system setup", exc);

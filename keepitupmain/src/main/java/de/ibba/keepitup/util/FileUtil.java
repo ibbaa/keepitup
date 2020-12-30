@@ -1,5 +1,11 @@
 package de.ibba.keepitup.util;
 
+import java.io.File;
+
+import de.ibba.keepitup.logging.Log;
+import de.ibba.keepitup.resources.PreferenceManager;
+import de.ibba.keepitup.service.IFileManager;
+
 public class FileUtil {
 
     public static String getFileNameExtension(String fileName) {
@@ -30,5 +36,27 @@ public class FileUtil {
             return getFileNameWithoutExtension(fileName) + "_" + suffix + "." + extension;
         }
         return getFileNameWithoutExtension(fileName) + "_" + suffix;
+    }
+
+    public static File getExternalDirectory(IFileManager fileManager, PreferenceManager preferenceManager, String directoryName) {
+        Log.d(FileUtil.class.getName(), "getExternalDirectory");
+        if (fileManager.isSDCardSupported()) {
+            Log.d(FileUtil.class.getName(), "SD card is supported");
+            return fileManager.getExternalDirectory(directoryName, preferenceManager.getPreferenceExternalStorageType());
+        } else {
+            Log.d(FileUtil.class.getName(), "SD card is not supported");
+            return fileManager.getExternalDirectory(directoryName, 0);
+        }
+    }
+
+    public static File getExternalRootDirectory(IFileManager fileManager, PreferenceManager preferenceManager) {
+        Log.d(FileUtil.class.getName(), "getExternalRootDirectory");
+        if (fileManager.isSDCardSupported()) {
+            Log.d(FileUtil.class.getName(), "SD card is supported");
+            return fileManager.getExternalRootDirectory(preferenceManager.getPreferenceExternalStorageType());
+        } else {
+            Log.d(FileUtil.class.getName(), "SD card is not supported");
+            return fileManager.getExternalRootDirectory(0);
+        }
     }
 }

@@ -8,6 +8,14 @@
     <dimen name="cardview_activity_system_config_reset_corner_radius">4dp</dimen>
     <dimen name="cardview_activity_system_config_reset_card_elevation">4dp</dimen>
     <dimen name="textview_activity_system_config_reset_margin">4dp</dimen>
+    <dimen name="cardview_activity_system_config_export_margin">4dp</dimen>
+    <dimen name="cardview_activity_system_config_export_corner_radius">4dp</dimen>
+    <dimen name="cardview_activity_system_config_export_card_elevation">4dp</dimen>
+    <dimen name="linearlayout_activity_system_config_export_margin">4dp</dimen>
+    <dimen name="cardview_activity_system_config_import_margin">4dp</dimen>
+    <dimen name="cardview_activity_system_config_import_corner_radius">4dp</dimen>
+    <dimen name="cardview_activity_system_config_import_card_elevation">4dp</dimen>
+    <dimen name="linearlayout_activity_system_config_import_margin">4dp</dimen>
     <dimen name="cardview_activity_system_debug_margin">4dp</dimen>
     <dimen name="cardview_activity_system_debug_corner_radius">4dp</dimen>
     <dimen name="cardview_activity_system_debug_card_elevation">4dp</dimen>

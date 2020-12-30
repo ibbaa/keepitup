@@ -80,13 +80,13 @@ public abstract class SettingsInputActivity extends AppCompatActivity implements
 
     @Override
     public void onFileChooseDialogOkClicked(FileChooseDialog chooseDialog, FileChooseDialog.Type type) {
-        Log.d(SettingsInputActivity.class.getName(), "onFolderChooseDialogOkClicked");
+        Log.d(SettingsInputActivity.class.getName(), "onFileChooseDialogOkClicked");
         chooseDialog.dismiss();
     }
 
     @Override
     public void onFileChooseDialogCancelClicked(FileChooseDialog chooseDialog) {
-        Log.d(SettingsInputActivity.class.getName(), "onFolderChooseDialogOkClicked");
+        Log.d(SettingsInputActivity.class.getName(), "onFileChooseDialogCancelClicked");
         chooseDialog.dismiss();
     }
 

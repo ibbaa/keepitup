@@ -7,6 +7,7 @@ import androidx.annotation.NonNull;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 import de.ibba.keepitup.util.NumberUtil;
 
@@ -42,7 +43,7 @@ public class SchedulerId {
             this.id = NumberUtil.getLongValue(map.get("id"), -1);
         }
         if (map.get("valid") != null) {
-            this.valid = Boolean.parseBoolean(map.get("valid").toString());
+            this.valid = Boolean.parseBoolean(Objects.requireNonNull(map.get("valid")).toString());
         }
         if (NumberUtil.isValidIntValue(map.get("schedulerid"))) {
             this.schedulerid = NumberUtil.getIntValue(map.get("schedulerid"), 0);

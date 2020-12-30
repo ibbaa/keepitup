@@ -18,6 +18,7 @@ import de.ibba.keepitup.model.NetworkTask;
 import de.ibba.keepitup.resources.PreferenceManager;
 import de.ibba.keepitup.service.network.DownloadCommand;
 import de.ibba.keepitup.service.network.DownloadCommandResult;
+import de.ibba.keepitup.util.FileUtil;
 import de.ibba.keepitup.util.HTTPUtil;
 import de.ibba.keepitup.util.StringUtil;
 import de.ibba.keepitup.util.URLUtil;
@@ -240,13 +241,7 @@ public class DownloadNetworkTaskWorker extends NetworkTaskWorker {
             Log.d(DownloadNetworkTaskWorker.class.getName(), "Determining external download folder");
             String preferenceDownloadFolder = preferenceManager.getPreferenceDownloadFolder();
             Log.d(DownloadNetworkTaskWorker.class.getName(), "Specified folder is " + preferenceDownloadFolder);
-            if (fileManager.isSDCardSupported()) {
-                Log.d(DownloadNetworkTaskWorker.class.getName(), "SD card is supported");
-                return fileManager.getExternalDirectory(preferenceDownloadFolder, preferenceManager.getPreferenceExternalStorageType());
-            } else {
-                Log.d(DownloadNetworkTaskWorker.class.getName(), "SD card is not supported");
-                return fileManager.getExternalDirectory(preferenceDownloadFolder, 0);
-            }
+            return FileUtil.getExternalDirectory(fileManager, preferenceManager, preferenceDownloadFolder);
         }
         Log.d(DownloadNetworkTaskWorker.class.getName(), "Determining internal download folder");
         return fileManager.getInternalDownloadDirectory();

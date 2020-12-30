@@ -30,6 +30,7 @@ import de.ibba.keepitup.ui.dialog.SettingsInputDialog;
 import de.ibba.keepitup.ui.validation.ConnectCountFieldValidator;
 import de.ibba.keepitup.ui.validation.PingCountFieldValidator;
 import de.ibba.keepitup.util.BundleUtil;
+import de.ibba.keepitup.util.FileUtil;
 import de.ibba.keepitup.util.NumberUtil;
 import de.ibba.keepitup.util.StringUtil;
 
@@ -324,7 +325,7 @@ public class GlobalSettingsActivity extends SettingsInputActivity {
     }
 
     private void showDownloadFolderChooseDialog(View view) {
-        Log.d(DefaultsActivity.class.getName(), "showDownloadFolderChooseDialog");
+        Log.d(GlobalSettingsActivity.class.getName(), "showDownloadFolderChooseDialog");
         FileChooseDialog fileChooseDialog = new FileChooseDialog();
         String root = getExternalRootFolder();
         Log.d(GlobalSettingsActivity.class.getName(), "External root folder is " + root);
@@ -364,14 +365,7 @@ public class GlobalSettingsActivity extends SettingsInputActivity {
         Log.d(GlobalSettingsActivity.class.getName(), "getExternalRootFolder");
         PreferenceManager preferenceManager = new PreferenceManager(this);
         IFileManager fileManager = getFileManager();
-        File root;
-        if (fileManager.isSDCardSupported()) {
-            Log.d(GlobalSettingsActivity.class.getName(), "SD card is supported");
-            root = fileManager.getExternalRootDirectory(preferenceManager.getPreferenceExternalStorageType());
-        } else {
-            Log.d(GlobalSettingsActivity.class.getName(), "SD card is not supported");
-            root = fileManager.getExternalRootDirectory(0);
-        }
+        File root = FileUtil.getExternalRootDirectory(fileManager, preferenceManager);
         Log.d(GlobalSettingsActivity.class.getName(), "External root folder is " + root);
         if (root == null) {
             return null;
@@ -394,14 +388,7 @@ public class GlobalSettingsActivity extends SettingsInputActivity {
         PreferenceManager preferenceManager = new PreferenceManager(this);
         String folder = preferenceManager.getPreferenceDownloadFolder();
         IFileManager fileManager = getFileManager();
-        File downloadFolder;
-        if (fileManager.isSDCardSupported()) {
-            Log.d(GlobalSettingsActivity.class.getName(), "SD card is supported");
-            downloadFolder = fileManager.getExternalDirectory(folder, preferenceManager.getPreferenceExternalStorageType());
-        } else {
-            Log.d(GlobalSettingsActivity.class.getName(), "SD card is not supported");
-            downloadFolder = fileManager.getExternalDirectory(folder, 0);
-        }
+        File downloadFolder = FileUtil.getExternalDirectory(fileManager, preferenceManager, folder);
         Log.d(GlobalSettingsActivity.class.getName(), "External download folder is " + downloadFolder);
         if (downloadFolder == null) {
             return null;
@@ -427,17 +414,12 @@ public class GlobalSettingsActivity extends SettingsInputActivity {
 
     @Override
     public void onFileChooseDialogOkClicked(FileChooseDialog folderChooseDialog, FileChooseDialog.Type type) {
-        Log.d(GlobalSettingsActivity.class.getName(), "onFolderChooseEditDialogOkClicked, type is " + type);
+        Log.d(GlobalSettingsActivity.class.getName(), "onFileChooseDialogOkClicked, type is " + type);
         IFileManager fileManager = getFileManager();
         PreferenceManager preferenceManager = new PreferenceManager(this);
         if (FileChooseDialog.Type.DOWNLOADFOLDER.equals(type)) {
             String folder = folderChooseDialog.getFolder();
-            File downloadFolder;
-            if (fileManager.isSDCardSupported()) {
-                downloadFolder = fileManager.getExternalDirectory(folder, preferenceManager.getPreferenceExternalStorageType());
-            } else {
-                downloadFolder = fileManager.getExternalDirectory(folder, 0);
-            }
+            File downloadFolder = FileUtil.getExternalDirectory(fileManager, preferenceManager, folder);
             Log.d(GlobalSettingsActivity.class.getName(), "External download folder is " + downloadFolder);
             if (downloadFolder == null) {
                 Log.e(GlobalSettingsActivity.class.getName(), "Error accessing download folder.");
