@@ -5,6 +5,7 @@ import android.content.res.Resources;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 import de.ibba.keepitup.R;
 import de.ibba.keepitup.logging.Log;
@@ -103,7 +104,7 @@ public class PreferenceSetup {
         }
         Object downloadKeep = globalSettings.get("preferenceDownloadKeep");
         if (isValidBoolean(downloadKeep)) {
-            preferenceManager.setPreferenceDownloadKeep(Boolean.parseBoolean(downloadExternalStorage.toString()));
+            preferenceManager.setPreferenceDownloadKeep(Boolean.parseBoolean(Objects.requireNonNull(downloadExternalStorage).toString()));
         } else {
             preferenceManager.removePreferenceDownloadKeep();
         }
@@ -113,7 +114,7 @@ public class PreferenceSetup {
         Log.d(PreferenceSetup.class.getName(), "importDefaults, defaults = " + defaults);
         Object accessType = defaults.get("preferenceAccessType");
         if (isValidAccessType(accessType)) {
-            preferenceManager.setPreferenceAccessType(AccessType.forCode(NumberUtil.getIntValue(accessType, -1)));
+            preferenceManager.setPreferenceAccessType(Objects.requireNonNull(AccessType.forCode(NumberUtil.getIntValue(accessType, -1))));
         } else {
             preferenceManager.removePreferenceAccessType();
         }

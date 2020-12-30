@@ -41,6 +41,8 @@ public class FileChooseDialog extends DialogFragment implements ContextOptionsSu
 
     public enum Type {
         DOWNLOADFOLDER,
+        EXPORTFOLDER,
+        IMPORTFOLDER,
     }
 
     public enum Mode {

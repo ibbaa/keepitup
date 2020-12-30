@@ -95,7 +95,7 @@ public class NetworkTask {
             this.instances = NumberUtil.getIntValue(map.get("instances"), 0);
         }
         if (map.get("address") != null) {
-            this.address = map.get("address").toString();
+            this.address = Objects.requireNonNull(map.get("address")).toString();
         }
         if (NumberUtil.isValidIntValue(map.get("port"))) {
             this.port = NumberUtil.getIntValue(map.get("port"), 0);
@@ -107,13 +107,13 @@ public class NetworkTask {
             this.interval = NumberUtil.getIntValue(map.get("interval"), 0);
         }
         if (map.get("onlyWifi") != null) {
-            this.onlyWifi = Boolean.parseBoolean(map.get("onlyWifi").toString());
+            this.onlyWifi = Boolean.parseBoolean(Objects.requireNonNull(map.get("onlyWifi")).toString());
         }
         if (map.get("notification") != null) {
-            this.notification = Boolean.parseBoolean(map.get("notification").toString());
+            this.notification = Boolean.parseBoolean(Objects.requireNonNull(map.get("notification")).toString());
         }
         if (map.get("running") != null) {
-            this.running = Boolean.parseBoolean(map.get("running").toString());
+            this.running = Boolean.parseBoolean(Objects.requireNonNull(map.get("running")).toString());
         }
         if (NumberUtil.isValidLongValue(map.get("lastScheduled"))) {
             this.lastScheduled = NumberUtil.getLongValue(map.get("lastScheduled"), -1);

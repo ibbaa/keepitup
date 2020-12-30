@@ -24,13 +24,18 @@ import de.ibba.keepitup.resources.PreferenceSetup;
 import de.ibba.keepitup.service.IFileManager;
 import de.ibba.keepitup.service.NetworkTaskProcessServiceScheduler;
 import de.ibba.keepitup.ui.dialog.ConfirmDialog;
+import de.ibba.keepitup.ui.dialog.FileChooseDialog;
 import de.ibba.keepitup.ui.sync.DBPurgeTask;
+import de.ibba.keepitup.util.BundleUtil;
 import de.ibba.keepitup.util.DebugUtil;
+import de.ibba.keepitup.util.FileUtil;
 import de.ibba.keepitup.util.StringUtil;
 import de.ibba.keepitup.util.ThreadUtil;
 
 public class SystemActivity extends SettingsInputActivity implements DBPurgeSupport {
 
+    private TextView exportFolderText;
+    private TextView importFolderText;
     private SwitchMaterial fileLoggerEnabledSwitch;
     private TextView fileLoggerEnabledOnOffText;
     private SwitchMaterial fileDumpEnabledSwitch;
@@ -56,6 +61,8 @@ public class SystemActivity extends SettingsInputActivity implements DBPurgeSupp
         }
         setContentView(R.layout.activity_system);
         prepareConfigurationResetField();
+        prepareConfigurationExportField();
+        prepareConfigurationImportField();
         prepareDebugSettingsLabel();
         prepareFileLoggerEnabledSwitch();
         prepareFileDumpEnabledSwitch();
@@ -85,6 +92,26 @@ public class SystemActivity extends SettingsInputActivity implements DBPurgeSupp
         Log.d(SystemActivity.class.getName(), "prepareConfigurationResetField");
         CardView configurationResetView = findViewById(R.id.cardview_activity_system_config_reset);
         configurationResetView.setOnClickListener(this::showConfirmDialog);
+    }
+
+    private void prepareConfigurationExportField() {
+        Log.d(SystemActivity.class.getName(), "prepareConfigurationExportField");
+        CardView configurationResetView = findViewById(R.id.cardview_activity_system_config_export);
+        exportFolderText = findViewById(R.id.textview_activity_system_config_export_folder);
+        PreferenceManager preferenceManager = new PreferenceManager(this);
+        String exportFolder = getExternalImportExportFolder(preferenceManager.getPreferenceExportFolder());
+        setExportFolder(exportFolder);
+        configurationResetView.setOnClickListener(this::showExportFolderChooseDialog);
+    }
+
+    private void prepareConfigurationImportField() {
+        Log.d(SystemActivity.class.getName(), "prepareConfigurationImportField");
+        CardView configurationResetView = findViewById(R.id.cardview_activity_system_config_import);
+        importFolderText = findViewById(R.id.textview_activity_system_config_import_folder);
+        PreferenceManager preferenceManager = new PreferenceManager(this);
+        String importFolder = getExternalImportExportFolder(preferenceManager.getPreferenceImportFolder());
+        setImportFolder(importFolder);
+        configurationResetView.setOnClickListener(this::showImportFolderChooseDialog);
     }
 
     private void prepareDebugSettingsLabel() {
@@ -198,11 +225,106 @@ public class SystemActivity extends SettingsInputActivity implements DBPurgeSupp
         logFolderText.setText(StringUtil.notNull(logFolder));
     }
 
+    private void setExportFolder(String exportFolder) {
+        exportFolderText.setText(StringUtil.notNull(exportFolder));
+    }
+
+    private void setImportFolder(String importFolder) {
+        importFolderText.setText(StringUtil.notNull(importFolder));
+    }
+
     private void showConfirmDialog(View view) {
         Log.d(SystemActivity.class.getName(), "showConfirmDialog");
         String message = getResources().getString(R.string.text_dialog_confirm_config_reset);
         String description = getResources().getString(R.string.text_dialog_confirm_config_reset_description);
         showConfirmDialog(message, description, ConfirmDialog.Type.RESETCONFIG);
+    }
+
+    private void showExportFolderChooseDialog(View view) {
+        Log.d(SystemActivity.class.getName(), "showExportFolderChooseDialog");
+        String root = getExternalRootFolder();
+        Log.d(SystemActivity.class.getName(), "External root folder is " + root);
+        String exportFolder = getPreferenceExportFolder();
+        String file = "";
+        if (exportFolder != null) {
+            IFileManager fileManager = getFileManager();
+            PreferenceManager preferenceManager = new PreferenceManager(this);
+            File folder = FileUtil.getExternalDirectory(fileManager, preferenceManager, exportFolder);
+            if (folder != null) {
+                String fileName = getResources().getString(R.string.export_file_prefix) + getResources().getString(R.string.file_extension_json);
+                file = StringUtil.notNull(fileManager.getValidFileName(folder, fileName));
+            }
+        }
+        Log.d(SystemActivity.class.getName(), "Preference export folder is " + exportFolder);
+        showImportExportFolderChooseDialog(root, exportFolder, file, FileChooseDialog.Type.EXPORTFOLDER);
+    }
+
+    private void showImportFolderChooseDialog(View view) {
+        Log.d(SystemActivity.class.getName(), "showImportFolderChooseDialog");
+        String root = getExternalRootFolder();
+        Log.d(SystemActivity.class.getName(), "External root folder is " + root);
+        String importFolder = getPreferenceImportFolder();
+        Log.d(SystemActivity.class.getName(), "Preference import folder is " + importFolder);
+        showImportExportFolderChooseDialog(root, importFolder, "", FileChooseDialog.Type.IMPORTFOLDER);
+    }
+
+    private void showImportExportFolderChooseDialog(String root, String folder, String file, FileChooseDialog.Type type) {
+        Log.d(SystemActivity.class.getName(), "showImportExportFolderChooseDialog, root is " + root + ", folder is " + folder);
+        FileChooseDialog fileChooseDialog = new FileChooseDialog();
+        if (root == null || folder == null) {
+            Log.e(SystemActivity.class.getName(), "Error accessing folder.");
+            Log.d(SystemActivity.class.getName(), "Showing error dialog.");
+            showErrorDialog(getResources().getString(R.string.text_dialog_general_error_external_root_access));
+            return;
+        }
+        Bundle bundle = BundleUtil.stringsToBundle(new String[]{fileChooseDialog.getFolderRootKey(), fileChooseDialog.getFolderKey(), fileChooseDialog.getFileKey(), fileChooseDialog.getFileModeKey(), fileChooseDialog.getTypeKey()}, new String[]{root, folder, file, FileChooseDialog.Mode.FILE.name(), type.name()});
+        fileChooseDialog.setArguments(bundle);
+        fileChooseDialog.show(getSupportFragmentManager(), GlobalSettingsActivity.class.getName());
+    }
+
+    @Override
+    public void onFileChooseDialogOkClicked(FileChooseDialog fileChooseDialog, FileChooseDialog.Type type) {
+        Log.d(SystemActivity.class.getName(), "onFileChooseDialogOkClicked, type is " + type);
+        IFileManager fileManager = getFileManager();
+        PreferenceManager preferenceManager = new PreferenceManager(this);
+        if (FileChooseDialog.Type.IMPORTFOLDER.equals(type) || FileChooseDialog.Type.EXPORTFOLDER.equals(type)) {
+            String folder = fileChooseDialog.getFolder();
+            File importExportFolder = FileUtil.getExternalDirectory(fileManager, preferenceManager, folder);
+            Log.d(SystemActivity.class.getName(), "External folder is " + importExportFolder);
+            if (importExportFolder == null) {
+                Log.e(SystemActivity.class.getName(), "Error accessing folder.");
+                fileChooseDialog.dismiss();
+                Log.d(SystemActivity.class.getName(), "Showing error dialog.");
+                showErrorDialog(getResources().getString(R.string.text_dialog_general_error_external_import_export_create));
+                return;
+            }
+            String file = fileChooseDialog.getFile();
+            fileChooseDialog.dismiss();
+            if (FileChooseDialog.Type.IMPORTFOLDER.equals(type)) {
+                preferenceManager.setPreferenceImportFolder(folder);
+                setImportFolder(importExportFolder.getAbsolutePath());
+                doConfigurationImport(importExportFolder, file);
+            } else {
+                preferenceManager.setPreferenceExportFolder(folder);
+                setExportFolder(importExportFolder.getAbsolutePath());
+                doConfigurationExport(importExportFolder, file);
+            }
+        } else {
+            Log.e(GlobalSettingsActivity.class.getName(), "Unknown type " + type);
+            fileChooseDialog.dismiss();
+        }
+    }
+
+    private void doConfigurationExport(File exportFolder, String file) {
+        Log.d(SystemActivity.class.getName(), "doConfigurationExport");
+        Log.d(SystemActivity.class.getName(), "Export folder is " + exportFolder);
+        Log.d(SystemActivity.class.getName(), "File name is " + file);
+    }
+
+    private void doConfigurationImport(File importFolder, String file) {
+        Log.d(SystemActivity.class.getName(), "doConfigurationImport");
+        Log.d(SystemActivity.class.getName(), "Import folder is " + importFolder);
+        Log.d(SystemActivity.class.getName(), "File name is " + file);
     }
 
     @Override
@@ -271,6 +393,52 @@ public class SystemActivity extends SettingsInputActivity implements DBPurgeSupp
             return null;
         }
         return logFolder.getAbsolutePath();
+    }
+
+    private String getExternalRootFolder() {
+        Log.d(SystemActivity.class.getName(), "getExternalRootFolder");
+        PreferenceManager preferenceManager = new PreferenceManager(this);
+        IFileManager fileManager = getFileManager();
+        File root = FileUtil.getExternalRootDirectory(fileManager, preferenceManager);
+        Log.d(SystemActivity.class.getName(), "External root folder is " + root);
+        if (root == null) {
+            return null;
+        }
+        return root.getAbsolutePath();
+    }
+
+    private String getPreferenceExportFolder() {
+        Log.d(SystemActivity.class.getName(), "getPreferenceExportFolder");
+        PreferenceManager preferenceManager = new PreferenceManager(this);
+        String exportFolder = preferenceManager.getPreferenceExportFolder();
+        String exportFolderAbsolute = getExternalImportExportFolder(exportFolder);
+        if (exportFolderAbsolute == null) {
+            return null;
+        }
+        return exportFolder;
+    }
+
+    private String getPreferenceImportFolder() {
+        Log.d(SystemActivity.class.getName(), "getPreferenceImportFolder");
+        PreferenceManager preferenceManager = new PreferenceManager(this);
+        String importFolder = preferenceManager.getPreferenceImportFolder();
+        String importFolderAbsolute = getExternalImportExportFolder(importFolder);
+        if (importFolderAbsolute == null) {
+            return null;
+        }
+        return importFolder;
+    }
+
+    private String getExternalImportExportFolder(String preferenceFolder) {
+        Log.d(SystemActivity.class.getName(), "getExternalImportExportFolder, preferenceFolder is " + preferenceFolder);
+        PreferenceManager preferenceManager = new PreferenceManager(this);
+        IFileManager fileManager = getFileManager();
+        File importExportFolder = FileUtil.getExternalDirectory(fileManager, preferenceManager, preferenceFolder);
+        Log.d(SystemActivity.class.getName(), "External import/export folder is " + importExportFolder);
+        if (importExportFolder == null) {
+            return null;
+        }
+        return importExportFolder.getAbsolutePath();
     }
 
     private DBPurgeTask getPurgeTask() {

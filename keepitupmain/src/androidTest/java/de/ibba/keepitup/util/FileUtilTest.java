@@ -3,14 +3,45 @@ package de.ibba.keepitup.util;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.SmallTest;
 
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
+import java.io.File;
+
+import de.ibba.keepitup.logging.Dump;
+import de.ibba.keepitup.resources.PreferenceManager;
+import de.ibba.keepitup.test.mock.MockFileManager;
+import de.ibba.keepitup.test.mock.TestRegistry;
 
 import static org.junit.Assert.assertEquals;
 
 @SmallTest
 @RunWith(AndroidJUnit4.class)
 public class FileUtilTest {
+
+    private MockFileManager fileManager;
+    private PreferenceManager preferenceManager;
+
+    @Before
+    public void beforeEachTestMethod() {
+        Dump.initialize(null);
+        fileManager = new MockFileManager();
+        fileManager.setExternalDirectory(new File("test0"), 0);
+        fileManager.setExternalDirectory(new File("test1"), 1);
+        fileManager.setExternalRootDirectory(new File("test0"), 0);
+        fileManager.setExternalRootDirectory(new File("test1"), 1);
+        fileManager.setSDCardSupported(false);
+        preferenceManager = new PreferenceManager(TestRegistry.getContext());
+        preferenceManager.removeAllPreferences();
+    }
+
+    @After
+    public void afterEachTestMethod() {
+        fileManager.reset();
+        preferenceManager.removeAllPreferences();
+    }
 
     @Test
     public void testGetFileNameExtension() {
@@ -47,5 +78,31 @@ public class FileUtilTest {
         assertEquals("test.wav_123.mp3", FileUtil.suffixFileName("test.wav.mp3", "123"));
         assertEquals("test.._test.jpg", FileUtil.suffixFileName("test...jpg", "test"));
         assertEquals("test_abc", FileUtil.suffixFileName("test", "abc"));
+    }
+
+    @Test
+    public void getExternalDirectory() {
+        fileManager.setSDCardSupported(false);
+        preferenceManager.setPreferenceExternalStorageType(1);
+        assertEquals("test0", FileUtil.getExternalDirectory(fileManager, preferenceManager, "test").getName());
+        fileManager.setSDCardSupported(true);
+        preferenceManager.setPreferenceExternalStorageType(1);
+        assertEquals("test1", FileUtil.getExternalDirectory(fileManager, preferenceManager, "test").getName());
+        fileManager.setSDCardSupported(true);
+        preferenceManager.setPreferenceExternalStorageType(0);
+        assertEquals("test0", FileUtil.getExternalDirectory(fileManager, preferenceManager, "test").getName());
+    }
+
+    @Test
+    public void getExternalRootDirectory() {
+        fileManager.setSDCardSupported(false);
+        preferenceManager.setPreferenceExternalStorageType(1);
+        assertEquals("test0", FileUtil.getExternalRootDirectory(fileManager, preferenceManager).getName());
+        fileManager.setSDCardSupported(true);
+        preferenceManager.setPreferenceExternalStorageType(1);
+        assertEquals("test1", FileUtil.getExternalRootDirectory(fileManager, preferenceManager).getName());
+        fileManager.setSDCardSupported(true);
+        preferenceManager.setPreferenceExternalStorageType(0);
+        assertEquals("test0", FileUtil.getExternalRootDirectory(fileManager, preferenceManager).getName());
     }
 }
