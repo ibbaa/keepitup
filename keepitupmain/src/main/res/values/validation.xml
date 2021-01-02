@@ -9,6 +9,7 @@
     <string name="invalid_number_format">Invalid format</string>
     <string name="invalid_host_format">No valid host or IP address</string>
     <string name="invalid_url_format">No valid URL</string>
+    <string name="invalid_file_name">No valid filename</string>
     <string name="invalid_range_minimim">Minimum: %d</string>
     <string name="invalid_range_maximum">Maximum: %d</string>
     <string name="validation_successful">Validation successful</string>

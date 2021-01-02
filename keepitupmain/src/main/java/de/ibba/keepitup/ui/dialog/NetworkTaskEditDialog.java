@@ -423,7 +423,6 @@ public class NetworkTaskEditDialog extends DialogFragment implements ContextOpti
         errorDialog.show(getParentFragmentManager(), ValidatorErrorDialog.class.getName());
     }
 
-
     private void showContextOptionsDialog(EditText editText) {
         Log.d(NetworkTaskEditDialog.class.getName(), "showContextOptionsDialog");
         new ContextOptionsSupportManager(getParentFragmentManager(), getClipboardManager()).showContextOptionsDialog(editText);
