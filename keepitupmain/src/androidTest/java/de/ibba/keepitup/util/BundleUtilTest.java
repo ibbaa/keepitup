@@ -193,6 +193,20 @@ public class BundleUtilTest {
     }
 
     @Test
+    public void testBundleToBundleProvidedBundle() {
+        Bundle bundle = BundleUtil.bundleToBundle("key", null, new Bundle());
+        assertNotNull(bundle);
+        assertTrue(bundle.isEmpty());
+        Bundle nestedBundle = new Bundle();
+        nestedBundle.putInt("nestedKey", 1);
+        bundle = BundleUtil.bundleToBundle("key", nestedBundle, new Bundle());
+        assertNotNull(bundle);
+        assertFalse(bundle.isEmpty());
+        nestedBundle = bundle.getBundle("key");
+        assertEquals(1, nestedBundle.getInt("nestedKey"));
+    }
+
+    @Test
     public void testBundleFromBundle() {
         assertNull(BundleUtil.bundleFromBundle(null, null));
         Bundle bundle = new Bundle();

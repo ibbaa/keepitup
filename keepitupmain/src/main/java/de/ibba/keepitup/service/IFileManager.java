@@ -34,6 +34,8 @@ public interface IFileManager {
 
     String getDownloadFileName(URL url, String specifiedFileName, String mimeType);
 
+    boolean doesFileExist(File folder, String file);
+
     String getValidFileName(File folder, String file);
 
     boolean isSDCardSupported();

@@ -117,7 +117,10 @@ public class BundleUtil {
     }
 
     public static Bundle bundleToBundle(String key, Bundle bundle) {
-        Bundle resultBundle = new Bundle();
+        return bundleToBundle(key, bundle, new Bundle());
+    }
+
+    public static Bundle bundleToBundle(String key, Bundle bundle, Bundle resultBundle) {
         if (key == null || bundle == null) {
             return resultBundle;
         }

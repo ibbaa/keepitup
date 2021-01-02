@@ -137,6 +137,15 @@ public abstract class SettingsInputActivity extends AppCompatActivity implements
         showDialog(confirmDialog, ConfirmDialog.class.getName());
     }
 
+    protected void showConfirmDialog(String confirmMessage, String description, ConfirmDialog.Type type, Bundle extraData) {
+        Log.d(SettingsInputActivity.class.getName(), "showConfirmDialog with message " + confirmMessage + " an description " + description + " for type " + type);
+        ConfirmDialog confirmDialog = new ConfirmDialog();
+        Bundle bundle = BundleUtil.stringsToBundle(new String[]{confirmDialog.getMessageKey(), confirmDialog.getDescriptionKey(), confirmDialog.getTypeKey()}, new String[]{confirmMessage, description, type.name()});
+        BundleUtil.bundleToBundle(confirmDialog.getExtraDataKey(), extraData, bundle);
+        confirmDialog.setArguments(bundle);
+        showDialog(confirmDialog, ConfirmDialog.class.getName());
+    }
+
     protected ProgressDialog showProgressDialog() {
         Log.d(SettingsInputActivity.class.getName(), "showProgressDialog");
         ProgressDialog progressDialog = new ProgressDialog();

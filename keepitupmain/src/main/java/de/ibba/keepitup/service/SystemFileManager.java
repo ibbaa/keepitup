@@ -364,6 +364,19 @@ public class SystemFileManager implements IFileManager {
         return !fileName.replaceAll("/", "").replaceAll("\\.", "").isEmpty();
     }
 
+
+    @Override
+    public boolean doesFileExist(File folder, String file) {
+        Log.d(SystemFileManager.class.getName(), "doesFileExist, folder is " + folder + ", file is " + file);
+        try {
+            File resultingFile = new File(folder, file);
+            return resultingFile.exists();
+        } catch (Exception exc) {
+            Log.e(SystemFileManager.class.getName(), "Error checking file", exc);
+        }
+        return false;
+    }
+
     @Override
     public String getValidFileName(File folder, String file) {
         Log.d(SystemFileManager.class.getName(), "getValidFileName, folder is " + folder + ", file is " + file);

@@ -91,7 +91,7 @@ public class SystemActivity extends SettingsInputActivity implements DBPurgeSupp
     private void prepareConfigurationResetField() {
         Log.d(SystemActivity.class.getName(), "prepareConfigurationResetField");
         CardView configurationResetView = findViewById(R.id.cardview_activity_system_config_reset);
-        configurationResetView.setOnClickListener(this::showConfirmDialog);
+        configurationResetView.setOnClickListener(this::showResetConfirmDialog);
     }
 
     private void prepareConfigurationExportField() {
@@ -233,11 +233,43 @@ public class SystemActivity extends SettingsInputActivity implements DBPurgeSupp
         importFolderText.setText(StringUtil.notNull(importFolder));
     }
 
-    private void showConfirmDialog(View view) {
-        Log.d(SystemActivity.class.getName(), "showConfirmDialog");
+    private void showResetConfirmDialog(View view) {
+        Log.d(SystemActivity.class.getName(), "showResetConfirmDialog");
         String message = getResources().getString(R.string.text_dialog_confirm_config_reset);
         String description = getResources().getString(R.string.text_dialog_confirm_config_reset_description);
         showConfirmDialog(message, description, ConfirmDialog.Type.RESETCONFIG);
+    }
+
+    private void showImportConfirmDialog(String file) {
+        Log.d(SystemActivity.class.getName(), "showImportConfirmDialog");
+        String message = getResources().getString(R.string.text_dialog_confirm_config_import);
+        String description = getResources().getString(R.string.text_dialog_confirm_config_import_description);
+        Bundle extraData = getFileExtraDataBundle(file);
+        showConfirmDialog(message, description, ConfirmDialog.Type.IMPORTCONFIG, extraData);
+    }
+
+    private void showExportConfirmDialog(String file) {
+        Log.d(SystemActivity.class.getName(), "showExportConfirmDialog");
+        String message = getResources().getString(R.string.text_dialog_confirm_config_export_existing_file);
+        String description = getResources().getString(R.string.text_dialog_confirm_config_export_existing_file_description);
+        Bundle extraData = getFileExtraDataBundle(file);
+        showConfirmDialog(message, description, ConfirmDialog.Type.EXPORTCONFIGEXISTINGFILE, extraData);
+    }
+
+    private Bundle getFileExtraDataBundle(String file) {
+        return BundleUtil.stringToBundle(getFileExtraDataKey(), file);
+    }
+
+    private String getFileExtraDataKey() {
+        return SystemActivity.class.getSimpleName() + "ImportExportFile";
+    }
+
+    private String getFileExtraData(ConfirmDialog confirmDialog) {
+        Bundle bundle = confirmDialog.getExtraData();
+        if (bundle == null) {
+            return null;
+        }
+        return BundleUtil.stringFromBundle(getFileExtraDataKey(), bundle);
     }
 
     private void showExportFolderChooseDialog(View view) {
@@ -303,11 +335,15 @@ public class SystemActivity extends SettingsInputActivity implements DBPurgeSupp
             if (FileChooseDialog.Type.IMPORTFOLDER.equals(type)) {
                 preferenceManager.setPreferenceImportFolder(folder);
                 setImportFolder(importExportFolder.getAbsolutePath());
-                doConfigurationImport(importExportFolder, file);
+                showImportConfirmDialog(file);
             } else {
                 preferenceManager.setPreferenceExportFolder(folder);
                 setExportFolder(importExportFolder.getAbsolutePath());
-                doConfigurationExport(importExportFolder, file);
+                if (fileManager.doesFileExist(importExportFolder, file)) {
+                    showExportConfirmDialog(file);
+                } else {
+                    doConfigurationExport(importExportFolder, file);
+                }
             }
         } else {
             Log.e(GlobalSettingsActivity.class.getName(), "Unknown type " + type);
@@ -319,12 +355,22 @@ public class SystemActivity extends SettingsInputActivity implements DBPurgeSupp
         Log.d(SystemActivity.class.getName(), "doConfigurationExport");
         Log.d(SystemActivity.class.getName(), "Export folder is " + exportFolder);
         Log.d(SystemActivity.class.getName(), "File name is " + file);
+        if (exportFolder == null || StringUtil.isEmpty(file)) {
+            Log.e(SystemActivity.class.getName(), "Folder or file is empty.");
+            showErrorDialog(getResources().getString(R.string.text_dialog_general_error_config_export));
+            return;
+        }
     }
 
     private void doConfigurationImport(File importFolder, String file) {
         Log.d(SystemActivity.class.getName(), "doConfigurationImport");
         Log.d(SystemActivity.class.getName(), "Import folder is " + importFolder);
         Log.d(SystemActivity.class.getName(), "File name is " + file);
+        if (importFolder == null || StringUtil.isEmpty(file)) {
+            Log.e(SystemActivity.class.getName(), "Folder or file is empty.");
+            showErrorDialog(getResources().getString(R.string.text_dialog_general_error_config_import));
+            return;
+        }
     }
 
     @Override
@@ -335,6 +381,20 @@ public class SystemActivity extends SettingsInputActivity implements DBPurgeSupp
             confirmDialog.dismiss();
             showProgressDialog();
             purgeDatabase();
+        } else if (ConfirmDialog.Type.EXPORTCONFIGEXISTINGFILE.equals(type)) {
+            IFileManager fileManager = getFileManager();
+            PreferenceManager preferenceManager = new PreferenceManager(this);
+            File exportFolder = FileUtil.getExternalDirectory(fileManager, preferenceManager, preferenceManager.getPreferenceExportFolder());
+            String file = getFileExtraData(confirmDialog);
+            confirmDialog.dismiss();
+            doConfigurationExport(exportFolder, file);
+        } else if (ConfirmDialog.Type.IMPORTCONFIG.equals(type)) {
+            IFileManager fileManager = getFileManager();
+            PreferenceManager preferenceManager = new PreferenceManager(this);
+            File importFolder = FileUtil.getExternalDirectory(fileManager, preferenceManager, preferenceManager.getPreferenceImportFolder());
+            String file = getFileExtraData(confirmDialog);
+            confirmDialog.dismiss();
+            doConfigurationImport(importFolder, file);
         } else {
             Log.e(SystemActivity.class.getName(), "Unknown type " + type);
         }

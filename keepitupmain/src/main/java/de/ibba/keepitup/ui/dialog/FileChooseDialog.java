@@ -47,6 +47,7 @@ public class FileChooseDialog extends DialogFragment implements ContextOptionsSu
 
     public enum Mode {
         FILE,
+        FILE_ALLOW_EMPTY,
         FOLDER
     }
 
@@ -187,7 +188,7 @@ public class FileChooseDialog extends DialogFragment implements ContextOptionsSu
     }
 
     public boolean isFileMode() {
-        return Mode.FILE.equals(mode);
+        return Mode.FILE.equals(mode) || Mode.FILE_ALLOW_EMPTY.equals(mode);
     }
 
     public String getFolder() {
@@ -317,6 +318,10 @@ public class FileChooseDialog extends DialogFragment implements ContextOptionsSu
 
     private void onOkClicked(View view) {
         Log.d(FileChooseDialog.class.getName(), "onOkClicked");
+        if (Mode.FILE.equals(mode) && StringUtil.isEmpty(getFile())) {
+            showErrorDialog(getResources().getString(R.string.text_dialog_general_error_file_empty));
+            return;
+        }
         FileChooseSupport folderChooseSupport = getFolderChooseSupport();
         if (folderChooseSupport != null) {
             folderChooseSupport.onFileChooseDialogOkClicked(this, type);

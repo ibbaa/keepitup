@@ -26,6 +26,7 @@ public class MockFileManager implements IFileManager {
     private List<FileEntry> fileEntries;
     private boolean delete;
     private String downloadFileName;
+    private boolean fileExists;
     private String validFileName;
     private boolean sdCardSupported;
 
@@ -44,6 +45,7 @@ public class MockFileManager implements IFileManager {
         fileEntries = Collections.emptyList();
         delete = true;
         downloadFileName = null;
+        fileExists = false;
         validFileName = null;
         sdCardSupported = false;
     }
@@ -67,6 +69,7 @@ public class MockFileManager implements IFileManager {
         fileEntries = Collections.emptyList();
         delete = true;
         downloadFileName = null;
+        fileExists = false;
         validFileName = null;
         sdCardSupported = false;
     }
@@ -129,6 +132,10 @@ public class MockFileManager implements IFileManager {
 
     public void setDownloadFileName(String downloadFileName) {
         this.downloadFileName = downloadFileName;
+    }
+
+    public void setDoesFileExist(boolean fileExists) {
+        this.fileExists = fileExists;
     }
 
     public void setValidFileName(String validFileName) {
@@ -207,6 +214,11 @@ public class MockFileManager implements IFileManager {
     @Override
     public String getDownloadFileName(URL url, String specifiedFileName, String mimeType) {
         return downloadFileName;
+    }
+
+    @Override
+    public boolean doesFileExist(File folder, String file) {
+        return fileExists;
     }
 
     @Override

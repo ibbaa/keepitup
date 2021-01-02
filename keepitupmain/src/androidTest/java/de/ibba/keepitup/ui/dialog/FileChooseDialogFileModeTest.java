@@ -3974,10 +3974,66 @@ public class FileChooseDialogFileModeTest extends BaseUITest {
         assertEquals("file1", getDialog().getFile());
     }
 
+    @Test
+    public void testEmptyFilename() {
+        FileChooseDialog dialog = openFileChooseDialog("", "file1");
+        onView(withId(R.id.textview_dialog_file_choose_absolute)).check(matches(withText(root + "/file1")));
+        onView(withId(R.id.edittext_dialog_file_choose_folder)).check(matches(withText("")));
+        onView(withId(R.id.edittext_dialog_file_choose_file)).check(matches(withText("file1")));
+        assertEquals("", getDialog().getFolder());
+        assertEquals("file1", getDialog().getFile());
+        onView(withId(R.id.edittext_dialog_file_choose_file)).perform(replaceText(""));
+        onView(withId(R.id.imageview_dialog_file_choose_ok)).perform(click());
+        onView(withId(R.id.textview_dialog_general_error_message)).check(matches(withText("No file specified.")));
+        onView(withId(R.id.imageview_dialog_general_error_ok)).perform(click());
+        onView(withId(R.id.edittext_dialog_file_choose_file)).perform(replaceText("file1"));
+        onView(withId(R.id.imageview_dialog_file_choose_ok)).perform(click());
+        assertTrue(getActivity(activityScenario).getSupportFragmentManager().getFragments().isEmpty());
+    }
+
+    @Test
+    public void testEmptyFilenameScreenRotation() {
+        FileChooseDialog dialog = openFileChooseDialog("", "file1");
+        onView(withId(R.id.textview_dialog_file_choose_absolute)).check(matches(withText(root + "/file1")));
+        onView(withId(R.id.edittext_dialog_file_choose_folder)).check(matches(withText("")));
+        onView(withId(R.id.edittext_dialog_file_choose_file)).check(matches(withText("file1")));
+        assertEquals("", getDialog().getFolder());
+        assertEquals("file1", getDialog().getFile());
+        onView(withId(R.id.edittext_dialog_file_choose_file)).perform(replaceText(""));
+        onView(withId(R.id.imageview_dialog_file_choose_ok)).perform(click());
+        rotateScreen(activityScenario);
+        deleteLogFolder();
+        onView(withId(R.id.textview_dialog_general_error_message)).check(matches(withText("No file specified.")));
+        onView(withId(R.id.imageview_dialog_general_error_ok)).perform(click());
+        rotateScreen(activityScenario);
+        deleteLogFolder();
+        onView(withId(R.id.edittext_dialog_file_choose_file)).perform(replaceText("file1"));
+        onView(withId(R.id.imageview_dialog_file_choose_ok)).perform(click());
+        assertTrue(getActivity(activityScenario).getSupportFragmentManager().getFragments().isEmpty());
+    }
+
+    @Test
+    public void testEmptyFilenameAllowed() {
+        FileChooseDialog dialog = openFileChooseDialog("", "file1", FileChooseDialog.Mode.FILE_ALLOW_EMPTY);
+        onView(withId(R.id.textview_dialog_file_choose_absolute)).check(matches(withText(root + "/file1")));
+        onView(withId(R.id.edittext_dialog_file_choose_folder)).check(matches(withText("")));
+        onView(withId(R.id.edittext_dialog_file_choose_file)).check(matches(withText("file1")));
+        assertEquals("", dialog.getFolder());
+        assertEquals("file1", dialog.getFile());
+        onView(withId(R.id.edittext_dialog_file_choose_file)).perform(replaceText(""));
+        onView(withId(R.id.imageview_dialog_file_choose_ok)).perform(click());
+        assertTrue(getActivity(activityScenario).getSupportFragmentManager().getFragments().isEmpty());
+        assertEquals("", dialog.getFile());
+    }
+
     private FileChooseDialog openFileChooseDialog(String folder, String file) {
+        return openFileChooseDialog(folder, file, FileChooseDialog.Mode.FILE);
+    }
+
+    private FileChooseDialog openFileChooseDialog(String folder, String file, FileChooseDialog.Mode mode) {
         FileChooseDialog fileChooseDialog = new FileChooseDialog();
         Bundle bundle = BundleUtil.stringsToBundle(new String[]{fileChooseDialog.getFolderRootKey(), fileChooseDialog.getFolderKey()}, new String[]{root, folder});
-        bundle = BundleUtil.stringToBundle(fileChooseDialog.getFileModeKey(), FileChooseDialog.Mode.FILE.name(), bundle);
+        bundle = BundleUtil.stringToBundle(fileChooseDialog.getFileModeKey(), mode.name(), bundle);
         bundle = BundleUtil.stringToBundle(fileChooseDialog.getFileKey(), file, bundle);
         fileChooseDialog.setArguments(bundle);
         fileChooseDialog.show(getActivity(activityScenario).getSupportFragmentManager(), GlobalSettingsActivity.class.getName());
