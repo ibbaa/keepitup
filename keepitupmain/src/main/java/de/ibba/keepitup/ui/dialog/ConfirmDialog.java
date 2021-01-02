@@ -22,7 +22,9 @@ public class ConfirmDialog extends DialogFragment {
     public enum Type {
         DELETETASK,
         DELETELOGS,
-        RESETCONFIG
+        RESETCONFIG,
+        IMPORTCONFIG,
+        EXPORTCONFIGEXISTINGFILE,
     }
 
     @Override
@@ -48,6 +50,10 @@ public class ConfirmDialog extends DialogFragment {
         return ConfirmDialog.class.getSimpleName() + "Position";
     }
 
+    public String getExtraDataKey() {
+        return ConfirmDialog.class.getSimpleName() + "ExtraData";
+    }
+
     public String getMessageKey() {
         return ConfirmDialog.class.getSimpleName() + "Message";
     }
@@ -62,6 +68,10 @@ public class ConfirmDialog extends DialogFragment {
 
     public int getPosition() {
         return BundleUtil.integerFromBundle(getPositionKey(), requireArguments());
+    }
+
+    public Bundle getExtraData() {
+        return BundleUtil.bundleFromBundle(getExtraDataKey(), requireArguments());
     }
 
     private void prepareConfirmMessage(View view, String message) {

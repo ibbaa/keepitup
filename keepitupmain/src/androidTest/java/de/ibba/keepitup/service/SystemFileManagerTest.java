@@ -304,6 +304,15 @@ public class SystemFileManagerTest {
     }
 
     @Test
+    public void testDoesFileExist() throws Exception {
+        File externalDir = fileManager.getExternalDirectory("test/config", 0);
+        File file = new File(externalDir, "test");
+        assertFalse(fileManager.doesFileExist(externalDir, file.getName()));
+        assertTrue(file.createNewFile());
+        assertTrue(fileManager.doesFileExist(externalDir, file.getName()));
+    }
+
+    @Test
     public void testGetValidFileName() throws Exception {
         String fileName = fileManager.getValidFileName(fileManager.getInternalDownloadDirectory(), "test.file");
         assertEquals("test.file", fileName);
