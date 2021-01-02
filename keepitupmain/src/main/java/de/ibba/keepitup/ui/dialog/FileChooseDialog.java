@@ -14,11 +14,13 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.DialogFragment;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -34,6 +36,10 @@ import de.ibba.keepitup.ui.GlobalSettingsActivity;
 import de.ibba.keepitup.ui.adapter.FileEntryAdapter;
 import de.ibba.keepitup.ui.clipboard.IClipboardManager;
 import de.ibba.keepitup.ui.clipboard.SystemClipboardManager;
+import de.ibba.keepitup.ui.validation.FieldValidator;
+import de.ibba.keepitup.ui.validation.FilenameFieldValidator;
+import de.ibba.keepitup.ui.validation.TextColorValidatingWatcher;
+import de.ibba.keepitup.ui.validation.ValidationResult;
 import de.ibba.keepitup.util.BundleUtil;
 import de.ibba.keepitup.util.StringUtil;
 
@@ -57,6 +63,7 @@ public class FileChooseDialog extends DialogFragment implements ContextOptionsSu
     private EditText fileEditText;
     private FolderChooseWatcher folderChooseTextWatcher;
     private FileChooseWatcher fileChooseTextWatcher;
+    private TextColorValidatingWatcher filenameTextWatcher;
     private CheckBox showFilesCheckBox;
     private RecyclerView fileEntriesRecyclerView;
     private Mode mode;
@@ -191,6 +198,10 @@ public class FileChooseDialog extends DialogFragment implements ContextOptionsSu
         return Mode.FILE.equals(mode) || Mode.FILE_ALLOW_EMPTY.equals(mode);
     }
 
+    public boolean isEmptyFilenameAllowed() {
+        return Mode.FILE_ALLOW_EMPTY.equals(mode) || Mode.FOLDER.equals(mode);
+    }
+
     public String getFolder() {
         return StringUtil.notNull(folderEditText.getText());
     }
@@ -261,6 +272,7 @@ public class FileChooseDialog extends DialogFragment implements ContextOptionsSu
             fileLayout.setVisibility(View.GONE);
         }
         prepareFileChooseTextWatcher();
+        prepareFilenameTextWatcher();
     }
 
     private void prepareFileChooseTextWatcher() {
@@ -271,6 +283,16 @@ public class FileChooseDialog extends DialogFragment implements ContextOptionsSu
         }
         fileChooseTextWatcher = new FileChooseWatcher(this);
         fileEditText.addTextChangedListener(fileChooseTextWatcher);
+    }
+
+    private void prepareFilenameTextWatcher() {
+        Log.d(FileChooseDialog.class.getName(), "prepareFilenameTextWatcher");
+        if (filenameTextWatcher != null) {
+            fileEditText.removeTextChangedListener(filenameTextWatcher);
+            filenameTextWatcher = null;
+        }
+        filenameTextWatcher = new TextColorValidatingWatcher(fileEditText, this::validateFilename, getColor(R.color.textColor), getColor(R.color.textErrorColor));
+        fileEditText.addTextChangedListener(filenameTextWatcher);
     }
 
     private void prepareShowFilesCheckBox() {
@@ -318,9 +340,13 @@ public class FileChooseDialog extends DialogFragment implements ContextOptionsSu
 
     private void onOkClicked(View view) {
         Log.d(FileChooseDialog.class.getName(), "onOkClicked");
-        if (Mode.FILE.equals(mode) && StringUtil.isEmpty(getFile())) {
-            showErrorDialog(getResources().getString(R.string.text_dialog_general_error_file_empty));
-            return;
+        if (isFileMode()) {
+            FieldValidator validator = getFilenameValidator();
+            ValidationResult result = validator.validate(getFile());
+            if (!result.isValidationSuccessful()) {
+                showValidatorErrorDialog(Arrays.asList(result));
+                return;
+            }
         }
         FileChooseSupport folderChooseSupport = getFolderChooseSupport();
         if (folderChooseSupport != null) {
@@ -652,20 +678,32 @@ public class FileChooseDialog extends DialogFragment implements ContextOptionsSu
 
     @Override
     public void onContextOptionsDialogClicked(ContextOptionsDialog contextOptionsDialog, int sourceResourceId, ContextOption option) {
-        Log.d(SettingsInputDialog.class.getName(), "onContextOptionsDialogEntryClicked, sourceResourceId is " + sourceResourceId + ", option is " + option);
+        Log.d(FileChooseDialog.class.getName(), "onContextOptionsDialogEntryClicked, sourceResourceId is " + sourceResourceId + ", option is " + option);
         ContextOptionsSupportManager contextOptionsSupportManager = new ContextOptionsSupportManager(getParentFragmentManager(), getClipboardManager());
         if (folderEditText.getId() == sourceResourceId) {
-            Log.d(SettingsInputDialog.class.getName(), "Source field is the folder input field.");
+            Log.d(FileChooseDialog.class.getName(), "Source field is the folder input field.");
             contextOptionsSupportManager.handleContextOption(folderEditText, option);
             folderEditText.setSelection(folderEditText.getText().length());
         } else if (fileEditText.getId() == sourceResourceId) {
-            Log.d(SettingsInputDialog.class.getName(), "Source field is the file input field.");
+            Log.d(FileChooseDialog.class.getName(), "Source field is the file input field.");
             contextOptionsSupportManager.handleContextOption(fileEditText, option);
             fileEditText.setSelection(fileEditText.getText().length());
         } else {
-            Log.e(SettingsInputDialog.class.getName(), "Source field is undefined.");
+            Log.e(FileChooseDialog.class.getName(), "Source field is undefined.");
         }
         contextOptionsDialog.dismiss();
+    }
+
+    private boolean validateFilename(EditText editText) {
+        Log.d(FileChooseDialog.class.getName(), "validateFilename");
+        FieldValidator validator = getFilenameValidator();
+        ValidationResult result = validator.validate(getFile());
+        Log.d(FileChooseDialog.class.getName(), "Filename validation result: " + result);
+        return result.isValidationSuccessful();
+    }
+
+    private FieldValidator getFilenameValidator() {
+        return new FilenameFieldValidator(getResources().getString(R.string.label_dialog_file_choose_file), isEmptyFilenameAllowed(), getContext());
     }
 
     private void showErrorDialog(String errorMessage) {
@@ -681,6 +719,13 @@ public class FileChooseDialog extends DialogFragment implements ContextOptionsSu
         errorDialog.show(getParentFragmentManager(), GeneralErrorDialog.class.getName());
     }
 
+    private void showValidatorErrorDialog(List<ValidationResult> validationResult) {
+        Log.d(FileChooseDialog.class.getName(), "showValidatorErrorDialog");
+        ValidatorErrorDialog errorDialog = new ValidatorErrorDialog();
+        errorDialog.setArguments(BundleUtil.validationResultListToBundle(errorDialog.getValidationResultBaseKey(), validationResult));
+        errorDialog.show(getParentFragmentManager(), ValidatorErrorDialog.class.getName());
+    }
+
     private FileChooseSupport getFolderChooseSupport() {
         Log.d(FileChooseDialog.class.getName(), "getFolderChooseSupport");
         Activity activity = getActivity();
@@ -693,5 +738,9 @@ public class FileChooseDialog extends DialogFragment implements ContextOptionsSu
             return null;
         }
         return (FileChooseSupport) activity;
+    }
+
+    private int getColor(int colorid) {
+        return ContextCompat.getColor(requireContext(), colorid);
     }
 }
