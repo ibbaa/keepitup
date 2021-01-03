@@ -35,7 +35,6 @@ public class PreferenceSetupTest {
     @After
     public void afterEachTestMethod() {
         preferenceManager.removeAllPreferences();
-
     }
 
     @Test
