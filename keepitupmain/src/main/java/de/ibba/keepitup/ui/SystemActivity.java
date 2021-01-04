@@ -393,6 +393,7 @@ public class SystemActivity extends SettingsInputActivity implements DBPurgeSupp
             PreferenceManager preferenceManager = new PreferenceManager(this);
             File importFolder = FileUtil.getExternalDirectory(fileManager, preferenceManager, preferenceManager.getPreferenceImportFolder());
             String file = getFileExtraData(confirmDialog);
+            terminateAllNetworkTasks();
             confirmDialog.dismiss();
             doConfigurationImport(importFolder, file);
         } else {

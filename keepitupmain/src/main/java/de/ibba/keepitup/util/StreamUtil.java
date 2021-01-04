@@ -2,6 +2,8 @@ package de.ibba.keepitup.util;
 
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.StringReader;
 import java.nio.charset.Charset;
 
 import de.ibba.keepitup.logging.Log;
@@ -22,6 +24,18 @@ public class StreamUtil {
             stringBuilder.append(data);
         }
         return stringBuilder.toString();
+    }
+
+    public static void stringToOutputStream(String data, OutputStream stream, Charset charset) throws Exception {
+        Log.d(StreamUtil.class.getName(), "stringToFile, data is " + data);
+        char[] buffer = new char[BUFFER_SIZE_1024];
+        StringReader reader = new StringReader(data);
+        OutputStreamWriter writer = new OutputStreamWriter(stream, charset);
+        int read;
+        while ((read = reader.read(buffer, 0, BUFFER_SIZE_1024)) >= 0) {
+            writer.write(buffer, 0, read);
+        }
+        writer.flush();
     }
 
     public static boolean inputStreamToOutputStream(InputStream inputStream, OutputStream outputStream, Interrupt interrupt) throws Exception {

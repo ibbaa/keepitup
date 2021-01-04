@@ -20,7 +20,6 @@ import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -344,7 +343,7 @@ public class FileChooseDialog extends DialogFragment implements ContextOptionsSu
             FieldValidator validator = getFilenameValidator();
             ValidationResult result = validator.validate(getFile());
             if (!result.isValidationSuccessful()) {
-                showValidatorErrorDialog(Arrays.asList(result));
+                showValidatorErrorDialog(Collections.singletonList(result));
                 return;
             }
         }

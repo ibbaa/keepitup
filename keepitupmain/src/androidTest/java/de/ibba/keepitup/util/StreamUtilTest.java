@@ -26,6 +26,13 @@ public class StreamUtilTest {
     }
 
     @Test
+    public void testStringToOutputStream() throws Exception {
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        StreamUtil.stringToOutputStream("Test", stream, Charsets.US_ASCII);
+        assertEquals("Test", stream.toString(Charsets.US_ASCII.name()));
+    }
+
+    @Test
     public void testInputStreamToOutputStream() throws Exception {
         ByteArrayInputStream inputStream = new ByteArrayInputStream("Test".getBytes(Charsets.US_ASCII));
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
