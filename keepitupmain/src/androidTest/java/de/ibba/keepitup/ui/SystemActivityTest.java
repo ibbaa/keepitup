@@ -13,6 +13,7 @@ import org.junit.runner.RunWith;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.util.List;
 
 import de.ibba.keepitup.R;
@@ -36,6 +37,7 @@ import de.ibba.keepitup.util.StreamUtil;
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.Espresso.openActionBarOverflowOrOptionsMenu;
 import static androidx.test.espresso.action.ViewActions.click;
+import static androidx.test.espresso.action.ViewActions.replaceText;
 import static androidx.test.espresso.action.ViewActions.scrollTo;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.matcher.ViewMatchers.isChecked;
@@ -44,6 +46,7 @@ import static androidx.test.espresso.matcher.ViewMatchers.isEnabled;
 import static androidx.test.espresso.matcher.ViewMatchers.isNotChecked;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
+import static org.hamcrest.Matchers.allOf;
 import static org.hamcrest.Matchers.endsWith;
 import static org.hamcrest.core.IsNot.not;
 import static org.junit.Assert.assertEquals;
@@ -1360,6 +1363,144 @@ public class SystemActivityTest extends BaseUITest {
         assertNotEquals("keepitup_config.json", fileText);
         assertTrue(fileText.startsWith("keepitup_config"));
         onView(withId(R.id.imageview_dialog_file_choose_cancel)).perform(click());
+    }
+
+    @Test
+    public void testExportConfigurationFileEmpty() {
+        onView(withId(R.id.cardview_activity_system_config_export)).perform(click());
+        onView(withId(R.id.edittext_dialog_file_choose_folder)).check(matches(withText("config")));
+        onView(withId(R.id.edittext_dialog_file_choose_file)).perform(replaceText(""));
+        onView(withId(R.id.imageview_dialog_file_choose_ok)).perform(click());
+        onView(allOf(withText("Filename"), withGridLayoutPosition(1, 0))).check(matches(isDisplayed()));
+        onView(allOf(withText("No value specified"), withGridLayoutPosition(1, 1))).check(matches(isDisplayed()));
+        onView(withId(R.id.imageview_dialog_validator_error_ok)).perform(click());
+        onView(withId(R.id.imageview_dialog_file_choose_cancel)).perform(click());
+    }
+
+    @Test
+    public void testImportConfigurationCancel() throws Exception {
+        insertAndScheduleNetworkTask();
+        getLogDAO().insertAndDeleteLog(new LogEntry());
+        getLogDAO().insertAndDeleteLog(new LogEntry());
+        assertFalse(getNetworkTaskDAO().readAllNetworkTasks().isEmpty());
+        assertFalse(getSchedulerIdHistoryDAO().readAllSchedulerIds().isEmpty());
+        assertFalse(getLogDAO().readAllLogs().isEmpty());
+        getPreferenceManager().setPreferencePingCount(5);
+        getPreferenceManager().setPreferenceConnectCount(10);
+        getPreferenceManager().setPreferenceNotificationInactiveNetwork(true);
+        getPreferenceManager().setPreferenceDownloadExternalStorage(true);
+        getPreferenceManager().setPreferenceExternalStorageType(30);
+        getPreferenceManager().setPreferenceDownloadFolder("folder");
+        getPreferenceManager().setPreferenceDownloadKeep(true);
+        getPreferenceManager().setPreferenceAccessType(AccessType.CONNECT);
+        getPreferenceManager().setPreferenceAddress("address");
+        getPreferenceManager().setPreferencePort(123);
+        getPreferenceManager().setPreferenceInterval(456);
+        getPreferenceManager().setPreferenceOnlyWifi(true);
+        getPreferenceManager().setPreferenceNotification(true);
+        getPreferenceManager().setPreferenceImportFolder("folderImport");
+        getPreferenceManager().setPreferenceExportFolder("folderExport");
+        getPreferenceManager().setPreferenceFileLoggerEnabled(true);
+        getPreferenceManager().setPreferenceFileDumpEnabled(true);
+        onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(scrollTo());
+        onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(click());
+        onView(withId(R.id.switch_activity_system_file_dump_enabled)).perform(scrollTo());
+        onView(withId(R.id.switch_activity_system_file_dump_enabled)).perform(click());
+        JSONSystemSetup setup = new JSONSystemSetup(TestRegistry.getContext());
+        SystemSetupResult result = setup.exportData();
+        assertTrue(result.isSuccess());
+        getNetworkTaskDAO().deleteAllNetworkTasks();
+        getLogDAO().deleteAllLogs();
+        getPreferenceManager().removeAllPreferences();
+        File folder = getFileManager().getExternalDirectory("folderImport", 0);
+        StreamUtil.stringToOutputStream(result.getData(), new FileOutputStream(new File(folder, "test.json")), Charsets.UTF_8);
+        onView(withId(R.id.cardview_activity_system_config_import)).perform(click());
+        onView(withId(R.id.edittext_dialog_file_choose_file)).perform(replaceText("test.json"));
+        onView(withId(R.id.imageview_dialog_file_choose_cancel)).perform(click());
+        assertFalse(alarmManager.wasCancelAlarmCalled());
+        assertTrue(getNetworkTaskDAO().readAllNetworkTasks().isEmpty());
+        assertTrue(getLogDAO().readAllLogs().isEmpty());
+        assertEquals(3, getPreferenceManager().getPreferencePingCount());
+        assertEquals(1, getPreferenceManager().getPreferenceConnectCount());
+        assertFalse(getPreferenceManager().getPreferenceNotificationInactiveNetwork());
+        assertFalse(getPreferenceManager().getPreferenceDownloadExternalStorage());
+        assertEquals(0, getPreferenceManager().getPreferenceExternalStorageType());
+        assertEquals("download", getPreferenceManager().getPreferenceDownloadFolder());
+        assertFalse(getPreferenceManager().getPreferenceDownloadKeep());
+        assertEquals(AccessType.PING, getPreferenceManager().getPreferenceAccessType());
+        assertEquals("192.168.178.1", getPreferenceManager().getPreferenceAddress());
+        assertEquals(22, getPreferenceManager().getPreferencePort());
+        assertEquals(15, getPreferenceManager().getPreferenceInterval());
+        assertFalse(getPreferenceManager().getPreferenceOnlyWifi());
+        assertFalse(getPreferenceManager().getPreferenceNotification());
+        assertEquals("config", getPreferenceManager().getPreferenceImportFolder());
+        assertEquals("config", getPreferenceManager().getPreferenceExportFolder());
+        assertFalse(getPreferenceManager().getPreferenceFileLoggerEnabled());
+        assertFalse(getPreferenceManager().getPreferenceFileDumpEnabled());
+    }
+
+    @Test
+    public void testImportConfigurationCancelScreenRotation() throws Exception {
+        insertAndScheduleNetworkTask();
+        getLogDAO().insertAndDeleteLog(new LogEntry());
+        getLogDAO().insertAndDeleteLog(new LogEntry());
+        assertFalse(getNetworkTaskDAO().readAllNetworkTasks().isEmpty());
+        assertFalse(getSchedulerIdHistoryDAO().readAllSchedulerIds().isEmpty());
+        assertFalse(getLogDAO().readAllLogs().isEmpty());
+        getPreferenceManager().setPreferencePingCount(5);
+        getPreferenceManager().setPreferenceConnectCount(10);
+        getPreferenceManager().setPreferenceNotificationInactiveNetwork(true);
+        getPreferenceManager().setPreferenceDownloadExternalStorage(true);
+        getPreferenceManager().setPreferenceExternalStorageType(30);
+        getPreferenceManager().setPreferenceDownloadFolder("folder");
+        getPreferenceManager().setPreferenceDownloadKeep(true);
+        getPreferenceManager().setPreferenceAccessType(AccessType.CONNECT);
+        getPreferenceManager().setPreferenceAddress("address");
+        getPreferenceManager().setPreferencePort(123);
+        getPreferenceManager().setPreferenceInterval(456);
+        getPreferenceManager().setPreferenceOnlyWifi(true);
+        getPreferenceManager().setPreferenceNotification(true);
+        getPreferenceManager().setPreferenceImportFolder("folderImport");
+        getPreferenceManager().setPreferenceExportFolder("folderExport");
+        getPreferenceManager().setPreferenceFileLoggerEnabled(true);
+        getPreferenceManager().setPreferenceFileDumpEnabled(true);
+        onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(scrollTo());
+        onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(click());
+        onView(withId(R.id.switch_activity_system_file_dump_enabled)).perform(scrollTo());
+        onView(withId(R.id.switch_activity_system_file_dump_enabled)).perform(click());
+        JSONSystemSetup setup = new JSONSystemSetup(TestRegistry.getContext());
+        SystemSetupResult result = setup.exportData();
+        assertTrue(result.isSuccess());
+        getNetworkTaskDAO().deleteAllNetworkTasks();
+        getLogDAO().deleteAllLogs();
+        getPreferenceManager().removeAllPreferences();
+        File folder = getFileManager().getExternalDirectory("folderImport", 0);
+        StreamUtil.stringToOutputStream(result.getData(), new FileOutputStream(new File(folder, "test.json")), Charsets.UTF_8);
+        onView(withId(R.id.cardview_activity_system_config_import)).perform(click());
+        onView(withId(R.id.edittext_dialog_file_choose_file)).perform(replaceText("test.json"));
+        rotateScreen(activityScenario);
+        rotateScreen(activityScenario);
+        onView(withId(R.id.imageview_dialog_file_choose_cancel)).perform(click());
+        assertFalse(alarmManager.wasCancelAlarmCalled());
+        assertTrue(getNetworkTaskDAO().readAllNetworkTasks().isEmpty());
+        assertTrue(getLogDAO().readAllLogs().isEmpty());
+        assertEquals(3, getPreferenceManager().getPreferencePingCount());
+        assertEquals(1, getPreferenceManager().getPreferenceConnectCount());
+        assertFalse(getPreferenceManager().getPreferenceNotificationInactiveNetwork());
+        assertFalse(getPreferenceManager().getPreferenceDownloadExternalStorage());
+        assertEquals(0, getPreferenceManager().getPreferenceExternalStorageType());
+        assertEquals("download", getPreferenceManager().getPreferenceDownloadFolder());
+        assertFalse(getPreferenceManager().getPreferenceDownloadKeep());
+        assertEquals(AccessType.PING, getPreferenceManager().getPreferenceAccessType());
+        assertEquals("192.168.178.1", getPreferenceManager().getPreferenceAddress());
+        assertEquals(22, getPreferenceManager().getPreferencePort());
+        assertEquals(15, getPreferenceManager().getPreferenceInterval());
+        assertFalse(getPreferenceManager().getPreferenceOnlyWifi());
+        assertFalse(getPreferenceManager().getPreferenceNotification());
+        assertEquals("config", getPreferenceManager().getPreferenceImportFolder());
+        assertEquals("config", getPreferenceManager().getPreferenceExportFolder());
+        assertFalse(getPreferenceManager().getPreferenceFileLoggerEnabled());
+        assertFalse(getPreferenceManager().getPreferenceFileDumpEnabled());
     }
 
     @Test
