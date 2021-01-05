@@ -39,8 +39,12 @@ public class FileUtil {
     }
 
     public static File getExternalDirectory(IFileManager fileManager, PreferenceManager preferenceManager, String directoryName) {
+        return getExternalDirectory(fileManager, preferenceManager, directoryName, false);
+    }
+
+    public static File getExternalDirectory(IFileManager fileManager, PreferenceManager preferenceManager, String directoryName, boolean alwaysPrimary) {
         Log.d(FileUtil.class.getName(), "getExternalDirectory");
-        if (fileManager.isSDCardSupported()) {
+        if (fileManager.isSDCardSupported() && !alwaysPrimary) {
             Log.d(FileUtil.class.getName(), "SD card is supported");
             return fileManager.getExternalDirectory(directoryName, preferenceManager.getPreferenceExternalStorageType());
         } else {
@@ -50,8 +54,12 @@ public class FileUtil {
     }
 
     public static File getExternalRootDirectory(IFileManager fileManager, PreferenceManager preferenceManager) {
+        return getExternalRootDirectory(fileManager, preferenceManager, false);
+    }
+
+    public static File getExternalRootDirectory(IFileManager fileManager, PreferenceManager preferenceManager, boolean alwaysPrimary) {
         Log.d(FileUtil.class.getName(), "getExternalRootDirectory");
-        if (fileManager.isSDCardSupported()) {
+        if (fileManager.isSDCardSupported() && !alwaysPrimary) {
             Log.d(FileUtil.class.getName(), "SD card is supported");
             return fileManager.getExternalRootDirectory(preferenceManager.getPreferenceExternalStorageType());
         } else {
