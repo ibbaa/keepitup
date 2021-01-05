@@ -15,6 +15,6 @@
     <string name="text_dialog_general_error_list_folder_files">Fatal error reading file list from folder.</string>
     <string name="text_dialog_general_error_file_access">Fatal file error.</string>
     <string name="text_dialog_general_error_db_purge">An error occurred resetting the configuration. Please try to delete the app data from the Android settings.</string>
-    <string name="text_dialog_general_error_config_import">Fatal error importing configuration.</string>
-    <string name="text_dialog_general_error_config_export">Fatal error exporting configuration.</string>
+    <string name="text_dialog_general_error_config_import">An error occurred importing the configuration. Some settings may have been imported.</string>
+    <string name="text_dialog_general_error_config_export">An error occurred exporting the configuration.</string>
 </resources>

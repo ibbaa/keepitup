@@ -5,4 +5,6 @@
     <integer name="delete_table_retry_count">5</integer>
     <integer name="drop_table_timeout">500</integer>
     <integer name="delete_table_timeout">500</integer>
+    <integer name="export_timeout">2000</integer>
+    <integer name="import_timeout">2000</integer>
 </resources>

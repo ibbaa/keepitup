@@ -26,13 +26,15 @@ import de.ibba.keepitup.service.NetworkTaskProcessServiceScheduler;
 import de.ibba.keepitup.ui.dialog.ConfirmDialog;
 import de.ibba.keepitup.ui.dialog.FileChooseDialog;
 import de.ibba.keepitup.ui.sync.DBPurgeTask;
+import de.ibba.keepitup.ui.sync.ExportTask;
+import de.ibba.keepitup.ui.sync.ImportTask;
 import de.ibba.keepitup.util.BundleUtil;
 import de.ibba.keepitup.util.DebugUtil;
 import de.ibba.keepitup.util.FileUtil;
 import de.ibba.keepitup.util.StringUtil;
 import de.ibba.keepitup.util.ThreadUtil;
 
-public class SystemActivity extends SettingsInputActivity implements DBPurgeSupport {
+public class SystemActivity extends SettingsInputActivity implements ExportSupport, ImportSupport, DBPurgeSupport {
 
     private TextView exportFolderText;
     private TextView importFolderText;
@@ -43,7 +45,17 @@ public class SystemActivity extends SettingsInputActivity implements DBPurgeSupp
     private TextView logFolderText;
 
     private DBPurgeTask purgeTask;
+    private ExportTask exportTask;
+    private ImportTask importTask;
     private NetworkTaskProcessServiceScheduler scheduler;
+
+    public void injectExportTask(ExportTask exportTask) {
+        this.exportTask = exportTask;
+    }
+
+    public void injectImportTask(ImportTask importTask) {
+        this.importTask = importTask;
+    }
 
     public void injectPurgeTask(DBPurgeTask purgeTask) {
         this.purgeTask = purgeTask;
@@ -342,6 +354,7 @@ public class SystemActivity extends SettingsInputActivity implements DBPurgeSupp
                 if (fileManager.doesFileExist(importExportFolder, file)) {
                     showExportConfirmDialog(file);
                 } else {
+                    showProgressDialog();
                     doConfigurationExport(importExportFolder, file);
                 }
             }
@@ -360,6 +373,18 @@ public class SystemActivity extends SettingsInputActivity implements DBPurgeSupp
             showErrorDialog(getResources().getString(R.string.text_dialog_general_error_config_export));
             return;
         }
+        ExportTask exportTask = getExportTask(exportFolder, file);
+        Future<Boolean> exportFuture = ThreadUtil.exexute(exportTask);
+        boolean synchronousExecution = getResources().getBoolean(R.bool.uisync_synchronous_execution);
+        if (synchronousExecution) {
+            try {
+                int timeout = getResources().getInteger(R.integer.export_timeout);
+                exportFuture.get(timeout, TimeUnit.MILLISECONDS);
+            } catch (Exception exc) {
+                Log.e(SystemActivity.class.getName(), "Error waiting for export execution", exc);
+                closeProgressDialog();
+            }
+        }
     }
 
     private void doConfigurationImport(File importFolder, String file) {
@@ -370,6 +395,23 @@ public class SystemActivity extends SettingsInputActivity implements DBPurgeSupp
             Log.e(SystemActivity.class.getName(), "Folder or file is empty.");
             showErrorDialog(getResources().getString(R.string.text_dialog_general_error_config_import));
             return;
+        }
+        ImportTask importTask = getImportTask(importFolder, file);
+        Future<Boolean> importFuture = ThreadUtil.exexute(importTask);
+        boolean synchronousExecution = getResources().getBoolean(R.bool.uisync_synchronous_execution);
+        if (synchronousExecution) {
+            try {
+                int dropTableRetry = getResources().getInteger(R.integer.drop_table_retry_count);
+                int dropTableTimeout = getResources().getInteger(R.integer.drop_table_timeout);
+                int deleteTableRetry = getResources().getInteger(R.integer.delete_table_retry_count);
+                int deleteTableTimeout = getResources().getInteger(R.integer.delete_table_timeout);
+                int importTimeout = getResources().getInteger(R.integer.import_timeout);
+                int timeout = importTimeout + (dropTableRetry * dropTableTimeout + deleteTableRetry * deleteTableTimeout) * 2;
+                importFuture.get(timeout, TimeUnit.MILLISECONDS);
+            } catch (Exception exc) {
+                Log.e(SystemActivity.class.getName(), "Error waiting for import execution", exc);
+                closeProgressDialog();
+            }
         }
     }
 
@@ -387,6 +429,7 @@ public class SystemActivity extends SettingsInputActivity implements DBPurgeSupp
             File exportFolder = FileUtil.getExternalDirectory(fileManager, preferenceManager, preferenceManager.getPreferenceExportFolder());
             String file = getFileExtraData(confirmDialog);
             confirmDialog.dismiss();
+            showProgressDialog();
             doConfigurationExport(exportFolder, file);
         } else if (ConfirmDialog.Type.IMPORTCONFIG.equals(type)) {
             IFileManager fileManager = getFileManager();
@@ -395,9 +438,28 @@ public class SystemActivity extends SettingsInputActivity implements DBPurgeSupp
             String file = getFileExtraData(confirmDialog);
             terminateAllNetworkTasks();
             confirmDialog.dismiss();
+            showProgressDialog();
             doConfigurationImport(importFolder, file);
         } else {
             Log.e(SystemActivity.class.getName(), "Unknown type " + type);
+        }
+    }
+
+    @Override
+    public void onExportDone(boolean success) {
+        Log.d(SystemActivity.class.getName(), "onExportDone, success is " + success);
+        closeProgressDialog();
+        if (!success) {
+            showErrorDialog(getResources().getString(R.string.text_dialog_general_error_config_export));
+        }
+    }
+
+    @Override
+    public void onImportDone(boolean success) {
+        Log.d(SystemActivity.class.getName(), "onImportDone, success is " + success);
+        closeProgressDialog();
+        if (!success) {
+            showErrorDialog(getResources().getString(R.string.text_dialog_general_error_config_import));
         }
     }
 
@@ -439,7 +501,8 @@ public class SystemActivity extends SettingsInputActivity implements DBPurgeSupp
                 int timeout = (dropTableRetry * dropTableTimeout + deleteTableRetry * deleteTableTimeout) * 2;
                 purgeFuture.get(timeout, TimeUnit.MILLISECONDS);
             } catch (Exception exc) {
-                Log.d(SystemActivity.class.getName(), "Error waiting for purge execution", exc);
+                Log.e(SystemActivity.class.getName(), "Error waiting for purge execution", exc);
+                closeProgressDialog();
             }
         }
     }
@@ -500,6 +563,20 @@ public class SystemActivity extends SettingsInputActivity implements DBPurgeSupp
             return null;
         }
         return importExportFolder.getAbsolutePath();
+    }
+
+    private ExportTask getExportTask(File folder, String file) {
+        if (exportTask != null) {
+            return exportTask;
+        }
+        return new ExportTask(this, folder, file);
+    }
+
+    private ImportTask getImportTask(File folder, String file) {
+        if (importTask != null) {
+            return importTask;
+        }
+        return new ImportTask(this, folder, file);
     }
 
     private DBPurgeTask getPurgeTask() {
