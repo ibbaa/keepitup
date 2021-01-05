@@ -87,6 +87,8 @@ public class FileUtilTest {
         assertEquals("test0", FileUtil.getExternalDirectory(fileManager, preferenceManager, "test").getName());
         fileManager.setSDCardSupported(true);
         preferenceManager.setPreferenceExternalStorageType(1);
+        assertEquals("test0", FileUtil.getExternalDirectory(fileManager, preferenceManager, "test", true).getName());
+        assertEquals("test1", FileUtil.getExternalDirectory(fileManager, preferenceManager, "test", false).getName());
         assertEquals("test1", FileUtil.getExternalDirectory(fileManager, preferenceManager, "test").getName());
         fileManager.setSDCardSupported(true);
         preferenceManager.setPreferenceExternalStorageType(0);
@@ -100,6 +102,8 @@ public class FileUtilTest {
         assertEquals("test0", FileUtil.getExternalRootDirectory(fileManager, preferenceManager).getName());
         fileManager.setSDCardSupported(true);
         preferenceManager.setPreferenceExternalStorageType(1);
+        assertEquals("test0", FileUtil.getExternalRootDirectory(fileManager, preferenceManager, true).getName());
+        assertEquals("test1", FileUtil.getExternalRootDirectory(fileManager, preferenceManager, false).getName());
         assertEquals("test1", FileUtil.getExternalRootDirectory(fileManager, preferenceManager).getName());
         fileManager.setSDCardSupported(true);
         preferenceManager.setPreferenceExternalStorageType(0);

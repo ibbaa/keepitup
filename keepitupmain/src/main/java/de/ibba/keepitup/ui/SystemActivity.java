@@ -293,7 +293,7 @@ public class SystemActivity extends SettingsInputActivity implements ExportSuppo
         if (exportFolder != null) {
             IFileManager fileManager = getFileManager();
             PreferenceManager preferenceManager = new PreferenceManager(this);
-            File folder = FileUtil.getExternalDirectory(fileManager, preferenceManager, exportFolder);
+            File folder = FileUtil.getExternalDirectory(fileManager, preferenceManager, exportFolder, true);
             if (folder != null) {
                 String fileName = getResources().getString(R.string.export_file_prefix) + getResources().getString(R.string.file_extension_json);
                 file = StringUtil.notNull(fileManager.getValidFileName(folder, fileName));
@@ -333,7 +333,7 @@ public class SystemActivity extends SettingsInputActivity implements ExportSuppo
         PreferenceManager preferenceManager = new PreferenceManager(this);
         if (FileChooseDialog.Type.IMPORTFOLDER.equals(type) || FileChooseDialog.Type.EXPORTFOLDER.equals(type)) {
             String folder = fileChooseDialog.getFolder();
-            File importExportFolder = FileUtil.getExternalDirectory(fileManager, preferenceManager, folder);
+            File importExportFolder = FileUtil.getExternalDirectory(fileManager, preferenceManager, folder, true);
             Log.d(SystemActivity.class.getName(), "External folder is " + importExportFolder);
             if (importExportFolder == null) {
                 Log.e(SystemActivity.class.getName(), "Error accessing folder.");
@@ -426,7 +426,7 @@ public class SystemActivity extends SettingsInputActivity implements ExportSuppo
         } else if (ConfirmDialog.Type.EXPORTCONFIGEXISTINGFILE.equals(type)) {
             IFileManager fileManager = getFileManager();
             PreferenceManager preferenceManager = new PreferenceManager(this);
-            File exportFolder = FileUtil.getExternalDirectory(fileManager, preferenceManager, preferenceManager.getPreferenceExportFolder());
+            File exportFolder = FileUtil.getExternalDirectory(fileManager, preferenceManager, preferenceManager.getPreferenceExportFolder(), true);
             String file = getFileExtraData(confirmDialog);
             confirmDialog.dismiss();
             showProgressDialog();
@@ -434,7 +434,7 @@ public class SystemActivity extends SettingsInputActivity implements ExportSuppo
         } else if (ConfirmDialog.Type.IMPORTCONFIG.equals(type)) {
             IFileManager fileManager = getFileManager();
             PreferenceManager preferenceManager = new PreferenceManager(this);
-            File importFolder = FileUtil.getExternalDirectory(fileManager, preferenceManager, preferenceManager.getPreferenceImportFolder());
+            File importFolder = FileUtil.getExternalDirectory(fileManager, preferenceManager, preferenceManager.getPreferenceImportFolder(), true);
             String file = getFileExtraData(confirmDialog);
             terminateAllNetworkTasks();
             confirmDialog.dismiss();
@@ -523,7 +523,7 @@ public class SystemActivity extends SettingsInputActivity implements ExportSuppo
         Log.d(SystemActivity.class.getName(), "getExternalRootFolder");
         PreferenceManager preferenceManager = new PreferenceManager(this);
         IFileManager fileManager = getFileManager();
-        File root = FileUtil.getExternalRootDirectory(fileManager, preferenceManager);
+        File root = FileUtil.getExternalRootDirectory(fileManager, preferenceManager, true);
         Log.d(SystemActivity.class.getName(), "External root folder is " + root);
         if (root == null) {
             return null;
@@ -557,7 +557,7 @@ public class SystemActivity extends SettingsInputActivity implements ExportSuppo
         Log.d(SystemActivity.class.getName(), "getExternalImportExportFolder, preferenceFolder is " + preferenceFolder);
         PreferenceManager preferenceManager = new PreferenceManager(this);
         IFileManager fileManager = getFileManager();
-        File importExportFolder = FileUtil.getExternalDirectory(fileManager, preferenceManager, preferenceFolder);
+        File importExportFolder = FileUtil.getExternalDirectory(fileManager, preferenceManager, preferenceFolder, true);
         Log.d(SystemActivity.class.getName(), "External import/export folder is " + importExportFolder);
         if (importExportFolder == null) {
             return null;
