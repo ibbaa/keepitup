@@ -1320,13 +1320,10 @@ public class SystemActivityTest extends BaseUITest {
         onView(withId(R.id.cardview_activity_system_config_export)).perform(click());
         onView(withId(R.id.edittext_dialog_file_choose_folder)).check(matches(withText("folderExport")));
         onView(withId(R.id.edittext_dialog_file_choose_file)).check(matches(withText("keepitup_config.json")));
-        rotateScreen(activityScenario);
-        onView(withId(R.id.edittext_dialog_file_choose_folder)).check(matches(withText("folderExport")));
-        onView(withId(R.id.edittext_dialog_file_choose_file)).check(matches(withText("keepitup_config.json")));
-        rotateScreen(activityScenario);
-        onView(withId(R.id.edittext_dialog_file_choose_folder)).check(matches(withText("folderExport")));
-        onView(withId(R.id.edittext_dialog_file_choose_file)).check(matches(withText("keepitup_config.json")));
         onView(withId(R.id.imageview_dialog_file_choose_ok)).perform(click());
+        onView(withId(R.id.textview_dialog_general_error_message)).check(matches(isDisplayed()));
+        rotateScreen(activityScenario);
+        rotateScreen(activityScenario);
         onView(withId(R.id.textview_dialog_general_error_message)).check(matches(isDisplayed()));
         onView(withId(R.id.imageview_dialog_general_error_ok)).perform(click());
         assertEquals(0, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
