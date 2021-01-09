@@ -30,7 +30,6 @@ public class PreferenceSetup {
         globalSettings.put("preferenceConnectCount", preferenceManager.getPreferenceConnectCount());
         globalSettings.put("preferenceNotificationInactiveNetwork", preferenceManager.getPreferenceNotificationInactiveNetwork());
         globalSettings.put("preferenceDownloadExternalStorage", preferenceManager.getPreferenceDownloadExternalStorage());
-        globalSettings.put("preferenceExternalStorageType", preferenceManager.getPreferenceExternalStorageType());
         globalSettings.put("preferenceDownloadFolder", preferenceManager.getPreferenceDownloadFolder());
         globalSettings.put("preferenceDownloadKeep", preferenceManager.getPreferenceDownloadKeep());
         return globalSettings;
@@ -51,6 +50,7 @@ public class PreferenceSetup {
     public Map<String, ?> exportSystemSettings() {
         Log.d(PreferenceSetup.class.getName(), "exportSystemSettings");
         Map<String, Object> systemSettings = new HashMap<>();
+        systemSettings.put("preferenceExternalStorageType", preferenceManager.getPreferenceExternalStorageType());
         systemSettings.put("preferenceImportFolder", preferenceManager.getPreferenceImportFolder());
         systemSettings.put("preferenceExportFolder", preferenceManager.getPreferenceExportFolder());
         systemSettings.put("preferenceFileLoggerEnabled", preferenceManager.getPreferenceFileLoggerEnabled());
@@ -89,12 +89,6 @@ public class PreferenceSetup {
             preferenceManager.setPreferenceDownloadExternalStorage(Boolean.parseBoolean(downloadExternalStorage.toString()));
         } else {
             preferenceManager.removePreferenceDownloadExternalStorage();
-        }
-        Object externalStorageType = globalSettings.get("preferenceExternalStorageType");
-        if (isValidInteger(externalStorageType, 0, 1)) {
-            preferenceManager.setPreferenceExternalStorageType(NumberUtil.getIntValue(externalStorageType, 0));
-        } else {
-            preferenceManager.removePreferenceExternalStorageType();
         }
         Object downloadFolder = globalSettings.get("preferenceDownloadFolder");
         if (isValidString(downloadFolder)) {
@@ -158,6 +152,12 @@ public class PreferenceSetup {
 
     public void importSystemSettings(Map<String, ?> systemSettings) {
         Log.d(PreferenceSetup.class.getName(), "importSystemSettings, systemSettings = " + systemSettings);
+        Object externalStorageType = systemSettings.get("preferenceExternalStorageType");
+        if (isValidInteger(externalStorageType, 0, 1)) {
+            preferenceManager.setPreferenceExternalStorageType(NumberUtil.getIntValue(externalStorageType, 0));
+        } else {
+            preferenceManager.removePreferenceExternalStorageType();
+        }
         Object importFolder = systemSettings.get("preferenceImportFolder");
         if (isValidString(importFolder)) {
             preferenceManager.setPreferenceImportFolder(importFolder.toString());
@@ -220,7 +220,6 @@ public class PreferenceSetup {
         preferenceManager.removePreferenceConnectCount();
         preferenceManager.removePreferenceNotificationInactiveNetwork();
         preferenceManager.removePreferenceDownloadExternalStorage();
-        preferenceManager.removePreferenceExternalStorageType();
         preferenceManager.removePreferenceDownloadFolder();
         preferenceManager.removePreferenceDownloadKeep();
     }
@@ -237,6 +236,7 @@ public class PreferenceSetup {
 
     public void removeSystemSettings() {
         Log.d(PreferenceSetup.class.getName(), "removeSystemSettings");
+        preferenceManager.removePreferenceExternalStorageType();
         preferenceManager.removePreferenceImportFolder();
         preferenceManager.removePreferenceExportFolder();
         preferenceManager.removePreferenceFileLoggerEnabled();

@@ -5,6 +5,8 @@
     <string name="export_folder_key">export_folder_key</string>
     <string name="export_folder_default">config</string>
     <string name="export_file_prefix">keepitup_config</string>
+    <string name="external_storage_type_key">external_storage_type_key</string>
+    <integer name="external_storage_type_default">0</integer>
     <string name="file_dump_enabled_key">file_dump_enabled_key</string>
     <bool name="file_dump_enabled_default">false</bool>
     <string name="file_logger_enabled_key">file_logger_enabled_key</string>

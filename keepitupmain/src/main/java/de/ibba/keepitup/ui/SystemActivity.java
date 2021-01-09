@@ -5,6 +5,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.CompoundButton;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 
 import androidx.cardview.widget.CardView;
@@ -38,6 +40,7 @@ public class SystemActivity extends SettingsInputActivity implements ExportSuppo
 
     private TextView exportFolderText;
     private TextView importFolderText;
+    private RadioGroup externalStorageType;
     private SwitchMaterial fileLoggerEnabledSwitch;
     private TextView fileLoggerEnabledOnOffText;
     private SwitchMaterial fileDumpEnabledSwitch;
@@ -75,6 +78,7 @@ public class SystemActivity extends SettingsInputActivity implements ExportSuppo
         prepareConfigurationResetField();
         prepareConfigurationExportField();
         prepareConfigurationImportField();
+        prepareExternalStorageTypeRadioGroup();
         prepareDebugSettingsLabel();
         prepareFileLoggerEnabledSwitch();
         prepareFileDumpEnabledSwitch();
@@ -124,6 +128,58 @@ public class SystemActivity extends SettingsInputActivity implements ExportSuppo
         String importFolder = getExternalImportExportFolder(preferenceManager.getPreferenceImportFolder());
         setImportFolder(importFolder);
         configurationResetView.setOnClickListener(this::showImportFolderChooseDialog);
+    }
+
+    private void prepareExternalStorageTypeRadioGroup() {
+        Log.d(SystemActivity.class.getName(), "prepareExternalStorageTypeRadioGroup");
+        externalStorageType = findViewById(R.id.radiogroup_activity_system_external_storage_type);
+        IFileManager fileManager = getFileManager();
+        boolean sdCardSupported = fileManager.isSDCardSupported();
+        Log.d(SystemActivity.class.getName(), "SD card supported: " + sdCardSupported);
+        if (sdCardSupported) {
+            RadioButton primaryStorageTypeButton = findViewById(R.id.radiobutton_activity_system_external_storage_type_primary);
+            RadioButton sdCardStorageTypeButton = findViewById(R.id.radiobutton_activity_system_external_storage_type_sdcard);
+            sdCardStorageTypeButton.setVisibility(View.VISIBLE);
+            PreferenceManager preferenceManager = new PreferenceManager(this);
+            int externalStorage = preferenceManager.getPreferenceExternalStorageType();
+            Log.d(SystemActivity.class.getName(), "externalStorage is " + externalStorage);
+            externalStorageType.setEnabled(true);
+            primaryStorageTypeButton.setEnabled(true);
+            sdCardStorageTypeButton.setEnabled(true);
+            if (externalStorage <= 0) {
+                primaryStorageTypeButton.setChecked(true);
+                sdCardStorageTypeButton.setChecked(false);
+            } else {
+                primaryStorageTypeButton.setChecked(false);
+                sdCardStorageTypeButton.setChecked(true);
+            }
+            externalStorageType.setOnCheckedChangeListener(this::onExternalStorageTypeChanged);
+        } else {
+            externalStorageType.setOnCheckedChangeListener(null);
+            RadioButton primaryStorageTypeButton = findViewById(R.id.radiobutton_activity_system_external_storage_type_primary);
+            RadioButton sdCardStorageTypeButton = findViewById(R.id.radiobutton_activity_system_external_storage_type_sdcard);
+            primaryStorageTypeButton.setChecked(true);
+            sdCardStorageTypeButton.setChecked(false);
+            externalStorageType.setEnabled(false);
+            primaryStorageTypeButton.setEnabled(false);
+            sdCardStorageTypeButton.setEnabled(false);
+            sdCardStorageTypeButton.setVisibility(View.GONE);
+        }
+    }
+
+    private void onExternalStorageTypeChanged(RadioGroup group, int checkedId) {
+        Log.d(SystemActivity.class.getName(), "onExternalStorageTypeChanged");
+        PreferenceManager preferenceManager = new PreferenceManager(this);
+        int checkedExternalStorage = group.getCheckedRadioButtonId();
+        if (R.id.radiobutton_activity_system_external_storage_type_sdcard == checkedExternalStorage) {
+            Log.d(SystemActivity.class.getName(), "SD card selected as external storage type");
+            preferenceManager.setPreferenceExternalStorageType(1);
+        } else {
+            Log.d(SystemActivity.class.getName(), "Primary selected as external storage type");
+            preferenceManager.setPreferenceExternalStorageType(0);
+        }
+        prepareConfigurationExportField();
+        prepareConfigurationImportField();
     }
 
     private void prepareDebugSettingsLabel() {
@@ -293,7 +349,7 @@ public class SystemActivity extends SettingsInputActivity implements ExportSuppo
         if (exportFolder != null) {
             IFileManager fileManager = getFileManager();
             PreferenceManager preferenceManager = new PreferenceManager(this);
-            File folder = FileUtil.getExternalDirectory(fileManager, preferenceManager, exportFolder, true);
+            File folder = FileUtil.getExternalDirectory(fileManager, preferenceManager, exportFolder);
             if (folder != null) {
                 String fileName = getResources().getString(R.string.export_file_prefix) + getResources().getString(R.string.file_extension_json);
                 file = StringUtil.notNull(fileManager.getValidFileName(folder, fileName));
@@ -333,7 +389,7 @@ public class SystemActivity extends SettingsInputActivity implements ExportSuppo
         PreferenceManager preferenceManager = new PreferenceManager(this);
         if (FileChooseDialog.Type.IMPORTFOLDER.equals(type) || FileChooseDialog.Type.EXPORTFOLDER.equals(type)) {
             String folder = fileChooseDialog.getFolder();
-            File importExportFolder = FileUtil.getExternalDirectory(fileManager, preferenceManager, folder, true);
+            File importExportFolder = FileUtil.getExternalDirectory(fileManager, preferenceManager, folder);
             Log.d(SystemActivity.class.getName(), "External folder is " + importExportFolder);
             if (importExportFolder == null) {
                 Log.e(SystemActivity.class.getName(), "Error accessing folder.");
@@ -426,7 +482,7 @@ public class SystemActivity extends SettingsInputActivity implements ExportSuppo
         } else if (ConfirmDialog.Type.EXPORTCONFIGEXISTINGFILE.equals(type)) {
             IFileManager fileManager = getFileManager();
             PreferenceManager preferenceManager = new PreferenceManager(this);
-            File exportFolder = FileUtil.getExternalDirectory(fileManager, preferenceManager, preferenceManager.getPreferenceExportFolder(), true);
+            File exportFolder = FileUtil.getExternalDirectory(fileManager, preferenceManager, preferenceManager.getPreferenceExportFolder());
             String file = getFileExtraData(confirmDialog);
             confirmDialog.dismiss();
             showProgressDialog();
@@ -434,7 +490,7 @@ public class SystemActivity extends SettingsInputActivity implements ExportSuppo
         } else if (ConfirmDialog.Type.IMPORTCONFIG.equals(type)) {
             IFileManager fileManager = getFileManager();
             PreferenceManager preferenceManager = new PreferenceManager(this);
-            File importFolder = FileUtil.getExternalDirectory(fileManager, preferenceManager, preferenceManager.getPreferenceImportFolder(), true);
+            File importFolder = FileUtil.getExternalDirectory(fileManager, preferenceManager, preferenceManager.getPreferenceImportFolder());
             String file = getFileExtraData(confirmDialog);
             terminateAllNetworkTasks();
             confirmDialog.dismiss();
@@ -523,7 +579,7 @@ public class SystemActivity extends SettingsInputActivity implements ExportSuppo
         Log.d(SystemActivity.class.getName(), "getExternalRootFolder");
         PreferenceManager preferenceManager = new PreferenceManager(this);
         IFileManager fileManager = getFileManager();
-        File root = FileUtil.getExternalRootDirectory(fileManager, preferenceManager, true);
+        File root = FileUtil.getExternalRootDirectory(fileManager, preferenceManager);
         Log.d(SystemActivity.class.getName(), "External root folder is " + root);
         if (root == null) {
             return null;
@@ -557,7 +613,7 @@ public class SystemActivity extends SettingsInputActivity implements ExportSuppo
         Log.d(SystemActivity.class.getName(), "getExternalImportExportFolder, preferenceFolder is " + preferenceFolder);
         PreferenceManager preferenceManager = new PreferenceManager(this);
         IFileManager fileManager = getFileManager();
-        File importExportFolder = FileUtil.getExternalDirectory(fileManager, preferenceManager, preferenceFolder, true);
+        File importExportFolder = FileUtil.getExternalDirectory(fileManager, preferenceManager, preferenceFolder);
         Log.d(SystemActivity.class.getName(), "External import/export folder is " + importExportFolder);
         if (importExportFolder == null) {
             return null;

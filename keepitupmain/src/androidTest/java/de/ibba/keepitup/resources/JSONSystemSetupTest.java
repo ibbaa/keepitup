@@ -150,7 +150,6 @@ public class JSONSystemSetupTest {
         assertEquals(10, globalSettingsData.getInt("preferenceConnectCount"));
         assertTrue(globalSettingsData.getBoolean("preferenceNotificationInactiveNetwork"));
         assertTrue(globalSettingsData.getBoolean("preferenceDownloadExternalStorage"));
-        assertEquals(30, globalSettingsData.getInt("preferenceExternalStorageType"));
         assertEquals("folder", globalSettingsData.getString("preferenceDownloadFolder"));
         assertTrue(globalSettingsData.getBoolean("preferenceDownloadKeep"));
         assertEquals(AccessType.CONNECT, AccessType.forCode(defaultsData.getInt("preferenceAccessType")));
@@ -161,6 +160,7 @@ public class JSONSystemSetupTest {
         assertTrue(defaultsData.getBoolean("preferenceNotification"));
         assertEquals("folderImport", systemSettingsData.getString("preferenceImportFolder"));
         assertEquals("folderExport", systemSettingsData.getString("preferenceExportFolder"));
+        assertEquals(30, systemSettingsData.getInt("preferenceExternalStorageType"));
         assertTrue(systemSettingsData.getBoolean("preferenceFileLoggerEnabled"));
         assertTrue(systemSettingsData.getBoolean("preferenceFileDumpEnabled"));
     }
@@ -177,9 +177,10 @@ public class JSONSystemSetupTest {
         JSONObject settingsData = (JSONObject) jsonData.get("preferences");
         JSONObject globalSettingsData = (JSONObject) settingsData.get("global");
         JSONObject defaultsData = (JSONObject) settingsData.get("defaults");
+        JSONObject systemSettingsData = (JSONObject) settingsData.get("system");
         assertEquals(25, globalSettingsData.getInt("preferencePingCount"));
         assertEquals(25, globalSettingsData.getInt("preferenceConnectCount"));
-        assertEquals(30, globalSettingsData.getInt("preferenceExternalStorageType"));
+        assertEquals(30, systemSettingsData.getInt("preferenceExternalStorageType"));
         assertEquals(100000, defaultsData.getInt("preferencePort"));
         assertEquals(-5, defaultsData.getInt("preferenceInterval"));
     }
