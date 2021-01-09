@@ -29,7 +29,6 @@ import static androidx.test.espresso.action.ViewActions.replaceText;
 import static androidx.test.espresso.action.ViewActions.scrollTo;
 import static androidx.test.espresso.action.ViewActions.swipeUp;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
-import static androidx.test.espresso.matcher.ViewMatchers.hasChildCount;
 import static androidx.test.espresso.matcher.ViewMatchers.isChecked;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.isEnabled;
@@ -42,7 +41,6 @@ import static org.hamcrest.Matchers.startsWith;
 import static org.hamcrest.core.IsNot.not;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertTrue;
 
 @MediumTest
@@ -78,14 +76,6 @@ public class GlobalSettingsActivityTest extends BaseUITest {
         onView(withId(R.id.switch_activity_global_settings_notification_inactive_network)).check(matches(isNotChecked()));
         onView(withId(R.id.textview_activity_global_settings_download_external_storage_label)).check(matches(withText("Download to an external storage folder")));
         onView(withId(R.id.switch_activity_global_settings_download_external_storage)).check(matches(isNotChecked()));
-        onView(withId(R.id.textview_activity_global_settings_external_storage_type_label)).check(matches(withText("External storage type")));
-        onView(withId(R.id.radiogroup_activity_global_settings_external_storage_type)).check(matches(hasChildCount(2)));
-        onView(withId(R.id.radiobutton_activity_global_settings_external_storage_type_primary)).check(matches(withText("Primary")));
-        onView(withId(R.id.radiobutton_activity_global_settings_external_storage_type_sdcard)).check(matches(withText("SD card")));
-        onView(withId(R.id.radiobutton_activity_global_settings_external_storage_type_primary)).check(matches(isChecked()));
-        onView(withId(R.id.radiobutton_activity_global_settings_external_storage_type_sdcard)).check(matches(not(isChecked())));
-        onView(withId(R.id.radiobutton_activity_global_settings_external_storage_type_primary)).check(matches(not(isEnabled())));
-        onView(withId(R.id.radiobutton_activity_global_settings_external_storage_type_sdcard)).check(matches(not(isEnabled())));
         onView(withId(R.id.textview_activity_global_settings_download_folder_label)).check(matches(withText("Download folder")));
         onView(withId(R.id.textview_activity_global_settings_download_folder)).check(matches(withText("Internal storage folder")));
         onView(withId(R.id.cardview_activity_global_settings_download_folder)).check(matches(not(isEnabled())));
@@ -105,7 +95,6 @@ public class GlobalSettingsActivityTest extends BaseUITest {
         onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
         onView(withId(R.id.switch_activity_global_settings_notification_inactive_network)).perform(click());
         onView(withId(R.id.switch_activity_global_settings_download_external_storage)).perform(click());
-        onView(withId(R.id.radiobutton_activity_global_settings_external_storage_type_sdcard)).perform(click());
         onView(withId(R.id.switch_activity_global_settings_download_keep)).perform(scrollTo());
         onView(withId(R.id.switch_activity_global_settings_download_keep)).perform(click());
         onView(withId(R.id.textview_activity_global_settings_ping_count_label)).check(matches(withText("Ping count")));
@@ -117,13 +106,6 @@ public class GlobalSettingsActivityTest extends BaseUITest {
         onView(withId(R.id.textview_activity_global_settings_notification_inactive_network_on_off)).check(matches(withText("yes")));
         onView(withId(R.id.textview_activity_global_settings_download_external_storage_label)).check(matches(withText("Download to an external storage folder")));
         onView(withId(R.id.switch_activity_global_settings_download_external_storage)).check(matches(isChecked()));
-        onView(withId(R.id.radiogroup_activity_global_settings_external_storage_type)).check(matches(hasChildCount(2)));
-        onView(withId(R.id.radiobutton_activity_global_settings_external_storage_type_primary)).check(matches(withText("Primary")));
-        onView(withId(R.id.radiobutton_activity_global_settings_external_storage_type_sdcard)).check(matches(withText("SD card")));
-        onView(withId(R.id.radiobutton_activity_global_settings_external_storage_type_primary)).check(matches(not(isChecked())));
-        onView(withId(R.id.radiobutton_activity_global_settings_external_storage_type_sdcard)).check(matches(isChecked()));
-        onView(withId(R.id.radiobutton_activity_global_settings_external_storage_type_primary)).check(matches(isEnabled()));
-        onView(withId(R.id.radiobutton_activity_global_settings_external_storage_type_sdcard)).check(matches(isEnabled()));
         onView(withId(R.id.textview_activity_global_settings_download_folder_label)).check(matches(withText("Download folder")));
         onView(withId(R.id.textview_activity_global_settings_download_folder)).check(matches(withText(endsWith("download"))));
         onView(withId(R.id.textview_activity_global_settings_download_folder)).check(matches(isEnabled()));
@@ -172,7 +154,6 @@ public class GlobalSettingsActivityTest extends BaseUITest {
         onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
         onView(withId(R.id.switch_activity_global_settings_notification_inactive_network)).perform(click());
         onView(withId(R.id.switch_activity_global_settings_download_external_storage)).perform(click());
-        onView(withId(R.id.radiobutton_activity_global_settings_external_storage_type_sdcard)).perform(click());
         onView(withId(R.id.switch_activity_global_settings_download_keep)).perform(scrollTo());
         onView(withId(R.id.switch_activity_global_settings_download_keep)).perform(click());
         PreferenceManager preferenceManager = getPreferenceManager();
@@ -180,7 +161,6 @@ public class GlobalSettingsActivityTest extends BaseUITest {
         assertEquals(5, preferenceManager.getPreferenceConnectCount());
         assertTrue(preferenceManager.getPreferenceNotificationInactiveNetwork());
         assertTrue(preferenceManager.getPreferenceDownloadExternalStorage());
-        assertEquals(1, preferenceManager.getPreferenceExternalStorageType());
         assertEquals("download", preferenceManager.getPreferenceDownloadFolder());
         assertTrue(preferenceManager.getPreferenceDownloadKeep());
     }
@@ -380,31 +360,14 @@ public class GlobalSettingsActivityTest extends BaseUITest {
         onView(withId(R.id.textview_activity_global_settings_download_external_storage_label)).check(matches(withText("Download to an external storage folder")));
         onView(withId(R.id.switch_activity_global_settings_download_external_storage)).check(matches(isNotChecked()));
         onView(withId(R.id.switch_activity_global_settings_download_external_storage)).check(matches(isEnabled()));
-        onView(withId(R.id.textview_activity_global_settings_external_storage_type_label)).check(matches(withText("External storage type")));
-        onView(withId(R.id.radiogroup_activity_global_settings_external_storage_type)).check(matches(hasChildCount(2)));
-        onView(withId(R.id.radiobutton_activity_global_settings_external_storage_type_primary)).check(matches(withText("Primary")));
-        onView(withId(R.id.radiobutton_activity_global_settings_external_storage_type_sdcard)).check(matches(withText("SD card")));
-        onView(withId(R.id.radiobutton_activity_global_settings_external_storage_type_primary)).check(matches(isChecked()));
-        onView(withId(R.id.radiobutton_activity_global_settings_external_storage_type_sdcard)).check(matches(not(isChecked())));
-        onView(withId(R.id.radiobutton_activity_global_settings_external_storage_type_primary)).check(matches(not(isEnabled())));
-        onView(withId(R.id.radiobutton_activity_global_settings_external_storage_type_sdcard)).check(matches(not(isEnabled())));
         onView(withId(R.id.textview_activity_global_settings_download_folder_label)).check(matches(withText("Download folder")));
         onView(withId(R.id.textview_activity_global_settings_download_folder)).check(matches(withText("Internal storage folder")));
         onView(withId(R.id.textview_activity_global_settings_download_keep_label)).check(matches(withText("Keep downloaded files")));
         onView(withId(R.id.switch_activity_global_settings_download_keep)).check(matches(isNotChecked()));
         onView(withId(R.id.switch_activity_global_settings_download_keep)).check(matches(not(isEnabled())));
         onView(withId(R.id.switch_activity_global_settings_download_external_storage)).perform(click());
-        onView(withId(R.id.radiobutton_activity_global_settings_external_storage_type_sdcard)).perform(click());
         onView(withId(R.id.textview_activity_global_settings_download_external_storage_label)).check(matches(withText("Download to an external storage folder")));
         onView(withId(R.id.switch_activity_global_settings_download_external_storage)).check(matches(isChecked()));
-        onView(withId(R.id.textview_activity_global_settings_external_storage_type_label)).check(matches(withText("External storage type")));
-        onView(withId(R.id.radiogroup_activity_global_settings_external_storage_type)).check(matches(hasChildCount(2)));
-        onView(withId(R.id.radiobutton_activity_global_settings_external_storage_type_primary)).check(matches(withText("Primary")));
-        onView(withId(R.id.radiobutton_activity_global_settings_external_storage_type_sdcard)).check(matches(withText("SD card")));
-        onView(withId(R.id.radiobutton_activity_global_settings_external_storage_type_primary)).check(matches(not(isChecked())));
-        onView(withId(R.id.radiobutton_activity_global_settings_external_storage_type_sdcard)).check(matches(isChecked()));
-        onView(withId(R.id.radiobutton_activity_global_settings_external_storage_type_primary)).check(matches(isEnabled()));
-        onView(withId(R.id.radiobutton_activity_global_settings_external_storage_type_sdcard)).check(matches(isEnabled()));
         onView(withId(R.id.textview_activity_global_settings_download_folder_label)).check(matches(withText("Download folder")));
         onView(withId(R.id.textview_activity_global_settings_download_folder)).check(matches(withText(endsWith("download"))));
         onView(withId(R.id.textview_activity_global_settings_download_folder)).check(matches(isEnabled()));
@@ -412,7 +375,6 @@ public class GlobalSettingsActivityTest extends BaseUITest {
         onView(withId(R.id.switch_activity_global_settings_download_keep)).check(matches(not(isChecked())));
         onView(withId(R.id.switch_activity_global_settings_download_keep)).check(matches(isEnabled()));
         assertTrue(preferenceManager.getPreferenceDownloadExternalStorage());
-        assertEquals(1, preferenceManager.getPreferenceExternalStorageType());
         assertEquals("download", preferenceManager.getPreferenceDownloadFolder());
         assertFalse(preferenceManager.getPreferenceDownloadKeep());
         onView(withId(R.id.switch_activity_global_settings_download_keep)).perform(scrollTo());
@@ -425,13 +387,6 @@ public class GlobalSettingsActivityTest extends BaseUITest {
         onView(withId(R.id.switch_activity_global_settings_download_external_storage)).perform(click());
         onView(withId(R.id.textview_activity_global_settings_download_external_storage_label)).check(matches(withText("Download to an external storage folder")));
         onView(withId(R.id.switch_activity_global_settings_download_external_storage)).check(matches(isNotChecked()));
-        onView(withId(R.id.radiogroup_activity_global_settings_external_storage_type)).check(matches(hasChildCount(2)));
-        onView(withId(R.id.radiobutton_activity_global_settings_external_storage_type_primary)).check(matches(withText("Primary")));
-        onView(withId(R.id.radiobutton_activity_global_settings_external_storage_type_sdcard)).check(matches(withText("SD card")));
-        onView(withId(R.id.radiobutton_activity_global_settings_external_storage_type_primary)).check(matches(isChecked()));
-        onView(withId(R.id.radiobutton_activity_global_settings_external_storage_type_sdcard)).check(matches(not(isChecked())));
-        onView(withId(R.id.radiobutton_activity_global_settings_external_storage_type_primary)).check(matches(not(isEnabled())));
-        onView(withId(R.id.radiobutton_activity_global_settings_external_storage_type_sdcard)).check(matches(not(isEnabled())));
         onView(withId(R.id.textview_activity_global_settings_download_folder_label)).check(matches(withText("Download folder")));
         onView(withId(R.id.textview_activity_global_settings_download_folder)).check(matches(withText("Internal storage folder")));
         onView(withId(R.id.cardview_activity_global_settings_download_folder)).check(matches(not(isEnabled())));
@@ -439,19 +394,11 @@ public class GlobalSettingsActivityTest extends BaseUITest {
         onView(withId(R.id.switch_activity_global_settings_download_keep)).check(matches(isNotChecked()));
         onView(withId(R.id.switch_activity_global_settings_download_keep)).check(matches(not(isEnabled())));
         assertFalse(preferenceManager.getPreferenceDownloadExternalStorage());
-        assertEquals(1, preferenceManager.getPreferenceExternalStorageType());
         assertEquals("download", preferenceManager.getPreferenceDownloadFolder());
         assertTrue(preferenceManager.getPreferenceDownloadKeep());
         onView(withId(R.id.switch_activity_global_settings_download_external_storage)).perform(click());
         onView(withId(R.id.textview_activity_global_settings_download_external_storage_label)).check(matches(withText("Download to an external storage folder")));
         onView(withId(R.id.switch_activity_global_settings_download_external_storage)).check(matches(isChecked()));
-        onView(withId(R.id.radiogroup_activity_global_settings_external_storage_type)).check(matches(hasChildCount(2)));
-        onView(withId(R.id.radiobutton_activity_global_settings_external_storage_type_primary)).check(matches(withText("Primary")));
-        onView(withId(R.id.radiobutton_activity_global_settings_external_storage_type_sdcard)).check(matches(withText("SD card")));
-        onView(withId(R.id.radiobutton_activity_global_settings_external_storage_type_primary)).check(matches(not(isChecked())));
-        onView(withId(R.id.radiobutton_activity_global_settings_external_storage_type_sdcard)).check(matches(isChecked()));
-        onView(withId(R.id.radiobutton_activity_global_settings_external_storage_type_primary)).check(matches(isEnabled()));
-        onView(withId(R.id.radiobutton_activity_global_settings_external_storage_type_sdcard)).check(matches(isEnabled()));
         onView(withId(R.id.textview_activity_global_settings_download_folder_label)).check(matches(withText("Download folder")));
         onView(withId(R.id.textview_activity_global_settings_download_folder)).check(matches(withText(endsWith("download"))));
         onView(withId(R.id.textview_activity_global_settings_download_folder)).check(matches(isEnabled()));
@@ -459,7 +406,6 @@ public class GlobalSettingsActivityTest extends BaseUITest {
         onView(withId(R.id.switch_activity_global_settings_download_keep)).check(matches(isChecked()));
         onView(withId(R.id.switch_activity_global_settings_download_keep)).check(matches(isEnabled()));
         assertTrue(preferenceManager.getPreferenceDownloadExternalStorage());
-        assertEquals(1, preferenceManager.getPreferenceExternalStorageType());
         assertEquals("download", preferenceManager.getPreferenceDownloadFolder());
         assertTrue(preferenceManager.getPreferenceDownloadKeep());
     }
@@ -515,41 +461,6 @@ public class GlobalSettingsActivityTest extends BaseUITest {
         assertEquals(0, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
         onView(withId(R.id.textview_activity_global_settings_battery_optimization_label)).check(matches(withText("Battery Optimization")));
         onView(withId(R.id.textview_activity_global_settings_battery_optimization)).check(matches(withText("Active")));
-    }
-
-    @Test
-    public void testExternalStorageType() {
-        PreferenceManager preferenceManager = getPreferenceManager();
-        assertEquals(0, preferenceManager.getPreferenceExternalStorageType());
-        onView(withId(R.id.switch_activity_global_settings_download_external_storage)).perform(click());
-        onView(withId(R.id.radiogroup_activity_global_settings_external_storage_type)).check(matches(hasChildCount(2)));
-        onView(withId(R.id.radiobutton_activity_global_settings_external_storage_type_primary)).check(matches(withText("Primary")));
-        onView(withId(R.id.radiobutton_activity_global_settings_external_storage_type_sdcard)).check(matches(withText("SD card")));
-        onView(withId(R.id.radiobutton_activity_global_settings_external_storage_type_primary)).check(matches(isChecked()));
-        onView(withId(R.id.radiobutton_activity_global_settings_external_storage_type_sdcard)).check(matches(not(isChecked())));
-        onView(withId(R.id.radiobutton_activity_global_settings_external_storage_type_primary)).check(matches(isEnabled()));
-        onView(withId(R.id.radiobutton_activity_global_settings_external_storage_type_sdcard)).check(matches(isEnabled()));
-        assertEquals(0, preferenceManager.getPreferenceExternalStorageType());
-        String downloadPrimary = getText(withId(R.id.textview_activity_global_settings_download_folder));
-        onView(withId(R.id.cardview_activity_global_settings_download_folder)).perform(click());
-        String downloadPrimaryDialog = getText(withId(R.id.textview_dialog_file_choose_absolute));
-        assertEquals(downloadPrimary, downloadPrimaryDialog);
-        onView(withId(R.id.imageview_dialog_file_choose_cancel)).perform(click());
-        onView(withId(R.id.radiobutton_activity_global_settings_external_storage_type_sdcard)).perform(click());
-        assertEquals(1, preferenceManager.getPreferenceExternalStorageType());
-        String downloadSDCard = getText(withId(R.id.textview_activity_global_settings_download_folder));
-        assertNotEquals(downloadPrimary, downloadSDCard);
-        onView(withId(R.id.cardview_activity_global_settings_download_folder)).perform(click());
-        String downloadSDCardDialog = getText(withId(R.id.textview_dialog_file_choose_absolute));
-        assertEquals(downloadSDCard, downloadSDCardDialog);
-        onView(withId(R.id.imageview_dialog_file_choose_cancel)).perform(click());
-        onView(withId(R.id.radiobutton_activity_global_settings_external_storage_type_primary)).perform(click());
-        assertEquals(0, preferenceManager.getPreferenceExternalStorageType());
-        String downloadPrimary2 = getText(withId(R.id.textview_activity_global_settings_download_folder));
-        onView(withId(R.id.cardview_activity_global_settings_download_folder)).perform(click());
-        String downloadPrimaryDialog2 = getText(withId(R.id.textview_dialog_file_choose_absolute));
-        assertEquals(downloadPrimary2, downloadPrimaryDialog2);
-        onView(withId(R.id.imageview_dialog_file_choose_cancel)).perform(click());
     }
 
     @Test
@@ -670,7 +581,6 @@ public class GlobalSettingsActivityTest extends BaseUITest {
         onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
         onView(withId(R.id.switch_activity_global_settings_notification_inactive_network)).perform(click());
         onView(withId(R.id.switch_activity_global_settings_download_external_storage)).perform(click());
-        onView(withId(R.id.radiobutton_activity_global_settings_external_storage_type_sdcard)).perform(click());
         onView(withId(R.id.switch_activity_global_settings_download_keep)).perform(scrollTo());
         onView(withId(R.id.switch_activity_global_settings_download_keep)).perform(click());
         openActionBarOverflowOrOptionsMenu(TestRegistry.getContext());
@@ -683,13 +593,6 @@ public class GlobalSettingsActivityTest extends BaseUITest {
         onView(withId(R.id.switch_activity_global_settings_notification_inactive_network)).check(matches(isNotChecked()));
         onView(withId(R.id.textview_activity_global_settings_download_external_storage_label)).check(matches(withText("Download to an external storage folder")));
         onView(withId(R.id.switch_activity_global_settings_download_external_storage)).check(matches(isNotChecked()));
-        onView(withId(R.id.radiogroup_activity_global_settings_external_storage_type)).check(matches(hasChildCount(2)));
-        onView(withId(R.id.radiobutton_activity_global_settings_external_storage_type_primary)).check(matches(withText("Primary")));
-        onView(withId(R.id.radiobutton_activity_global_settings_external_storage_type_sdcard)).check(matches(withText("SD card")));
-        onView(withId(R.id.radiobutton_activity_global_settings_external_storage_type_primary)).check(matches(isChecked()));
-        onView(withId(R.id.radiobutton_activity_global_settings_external_storage_type_sdcard)).check(matches(not(isChecked())));
-        onView(withId(R.id.radiobutton_activity_global_settings_external_storage_type_primary)).check(matches(not(isEnabled())));
-        onView(withId(R.id.radiobutton_activity_global_settings_external_storage_type_sdcard)).check(matches(not(isEnabled())));
         onView(withId(R.id.textview_activity_global_settings_download_folder_label)).check(matches(withText("Download folder")));
         onView(withId(R.id.textview_activity_global_settings_download_folder)).check(matches(withText("Internal storage folder")));
         onView(withId(R.id.cardview_activity_global_settings_download_folder)).check(matches(not(isEnabled())));
@@ -701,7 +604,6 @@ public class GlobalSettingsActivityTest extends BaseUITest {
         assertEquals(1, preferenceManager.getPreferenceConnectCount());
         assertFalse(preferenceManager.getPreferenceNotificationInactiveNetwork());
         assertFalse(preferenceManager.getPreferenceDownloadExternalStorage());
-        assertEquals(0, preferenceManager.getPreferenceExternalStorageType());
         assertEquals("download", preferenceManager.getPreferenceDownloadFolder());
         assertFalse(preferenceManager.getPreferenceDownloadKeep());
     }
@@ -716,7 +618,6 @@ public class GlobalSettingsActivityTest extends BaseUITest {
         onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
         onView(withId(R.id.switch_activity_global_settings_notification_inactive_network)).perform(click());
         onView(withId(R.id.switch_activity_global_settings_download_external_storage)).perform(click());
-        onView(withId(R.id.radiobutton_activity_global_settings_external_storage_type_sdcard)).perform(click());
         onView(withId(R.id.switch_activity_global_settings_download_keep)).perform(scrollTo());
         onView(withId(R.id.switch_activity_global_settings_download_keep)).perform(click());
         rotateScreen(activityScenario);
@@ -726,10 +627,6 @@ public class GlobalSettingsActivityTest extends BaseUITest {
         onView(withId(R.id.textview_activity_global_settings_notification_inactive_network_on_off)).check(matches(withText("yes")));
         onView(withId(R.id.switch_activity_global_settings_download_external_storage)).check(matches(isChecked()));
         onView(withId(R.id.textview_activity_global_settings_download_external_storage_on_off)).check(matches(withText("yes")));
-        onView(withId(R.id.radiobutton_activity_global_settings_external_storage_type_primary)).check(matches(not(isChecked())));
-        onView(withId(R.id.radiobutton_activity_global_settings_external_storage_type_sdcard)).check(matches(isChecked()));
-        onView(withId(R.id.radiobutton_activity_global_settings_external_storage_type_primary)).check(matches(isEnabled()));
-        onView(withId(R.id.radiobutton_activity_global_settings_external_storage_type_sdcard)).check(matches(isEnabled()));
         onView(withId(R.id.switch_activity_global_settings_download_keep)).check(matches(isChecked()));
         onView(withId(R.id.textview_activity_global_settings_download_keep_on_off)).check(matches(withText("yes")));
         rotateScreen(activityScenario);
@@ -739,10 +636,6 @@ public class GlobalSettingsActivityTest extends BaseUITest {
         onView(withId(R.id.textview_activity_global_settings_notification_inactive_network_on_off)).check(matches(withText("yes")));
         onView(withId(R.id.switch_activity_global_settings_download_external_storage)).check(matches(isChecked()));
         onView(withId(R.id.textview_activity_global_settings_download_external_storage_on_off)).check(matches(withText("yes")));
-        onView(withId(R.id.radiobutton_activity_global_settings_external_storage_type_primary)).check(matches(not(isChecked())));
-        onView(withId(R.id.radiobutton_activity_global_settings_external_storage_type_sdcard)).check(matches(isChecked()));
-        onView(withId(R.id.radiobutton_activity_global_settings_external_storage_type_primary)).check(matches(isEnabled()));
-        onView(withId(R.id.radiobutton_activity_global_settings_external_storage_type_sdcard)).check(matches(isEnabled()));
         onView(withId(R.id.switch_activity_global_settings_download_keep)).check(matches(isChecked()));
         onView(withId(R.id.textview_activity_global_settings_download_keep_on_off)).check(matches(withText("yes")));
     }

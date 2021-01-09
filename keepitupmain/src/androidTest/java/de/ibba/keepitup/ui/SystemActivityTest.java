@@ -42,6 +42,7 @@ import static androidx.test.espresso.action.ViewActions.click;
 import static androidx.test.espresso.action.ViewActions.replaceText;
 import static androidx.test.espresso.action.ViewActions.scrollTo;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
+import static androidx.test.espresso.matcher.ViewMatchers.hasChildCount;
 import static androidx.test.espresso.matcher.ViewMatchers.isChecked;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.isEnabled;
@@ -146,7 +147,7 @@ public class SystemActivityTest extends BaseUITest {
         getPreferenceManager().setPreferenceConnectCount(10);
         getPreferenceManager().setPreferenceNotificationInactiveNetwork(true);
         getPreferenceManager().setPreferenceDownloadExternalStorage(true);
-        getPreferenceManager().setPreferenceExternalStorageType(30);
+        getPreferenceManager().setPreferenceExternalStorageType(1);
         getPreferenceManager().setPreferenceDownloadFolder("folder");
         getPreferenceManager().setPreferenceDownloadKeep(true);
         getPreferenceManager().setPreferenceAccessType(AccessType.CONNECT);
@@ -159,6 +160,7 @@ public class SystemActivityTest extends BaseUITest {
         getPreferenceManager().setPreferenceExportFolder("folderExport");
         getPreferenceManager().setPreferenceFileLoggerEnabled(true);
         getPreferenceManager().setPreferenceFileDumpEnabled(true);
+        onView(withId(R.id.radiobutton_activity_system_external_storage_type_sdcard)).perform(click());
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(scrollTo());
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(click());
         onView(withId(R.id.switch_activity_system_file_dump_enabled)).perform(scrollTo());
@@ -176,7 +178,7 @@ public class SystemActivityTest extends BaseUITest {
         assertEquals(10, getPreferenceManager().getPreferenceConnectCount());
         assertTrue(getPreferenceManager().getPreferenceNotificationInactiveNetwork());
         assertTrue(getPreferenceManager().getPreferenceDownloadExternalStorage());
-        assertEquals(30, getPreferenceManager().getPreferenceExternalStorageType());
+        assertEquals(1, getPreferenceManager().getPreferenceExternalStorageType());
         assertEquals("folder", getPreferenceManager().getPreferenceDownloadFolder());
         assertTrue(getPreferenceManager().getPreferenceDownloadKeep());
         assertEquals(AccessType.CONNECT, getPreferenceManager().getPreferenceAccessType());
@@ -363,7 +365,7 @@ public class SystemActivityTest extends BaseUITest {
         getPreferenceManager().setPreferenceConnectCount(10);
         getPreferenceManager().setPreferenceNotificationInactiveNetwork(true);
         getPreferenceManager().setPreferenceDownloadExternalStorage(true);
-        getPreferenceManager().setPreferenceExternalStorageType(30);
+        getPreferenceManager().setPreferenceExternalStorageType(1);
         getPreferenceManager().setPreferenceDownloadFolder("folder");
         getPreferenceManager().setPreferenceDownloadKeep(true);
         getPreferenceManager().setPreferenceAccessType(AccessType.CONNECT);
@@ -376,6 +378,7 @@ public class SystemActivityTest extends BaseUITest {
         getPreferenceManager().setPreferenceExportFolder("folderExport");
         getPreferenceManager().setPreferenceFileLoggerEnabled(true);
         getPreferenceManager().setPreferenceFileDumpEnabled(true);
+        onView(withId(R.id.radiobutton_activity_system_external_storage_type_sdcard)).perform(click());
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(scrollTo());
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(click());
         onView(withId(R.id.switch_activity_system_file_dump_enabled)).perform(scrollTo());
@@ -395,7 +398,7 @@ public class SystemActivityTest extends BaseUITest {
         assertEquals(10, getPreferenceManager().getPreferenceConnectCount());
         assertTrue(getPreferenceManager().getPreferenceNotificationInactiveNetwork());
         assertTrue(getPreferenceManager().getPreferenceDownloadExternalStorage());
-        assertEquals(30, getPreferenceManager().getPreferenceExternalStorageType());
+        assertEquals(1, getPreferenceManager().getPreferenceExternalStorageType());
         assertEquals("folder", getPreferenceManager().getPreferenceDownloadFolder());
         assertTrue(getPreferenceManager().getPreferenceDownloadKeep());
         assertEquals(AccessType.CONNECT, getPreferenceManager().getPreferenceAccessType());
@@ -1380,18 +1383,52 @@ public class SystemActivityTest extends BaseUITest {
     }
 
     @Test
-    public void testExportConfigurationAlwaysPrimaryStorage() throws Exception {
+    public void testExportConfigurationExternalStorageTypeFileAccess() throws Exception {
         File folder = getFileManager().getExternalDirectory("config", 1);
         assertTrue(new File(folder, "keepitup_config.json").createNewFile());
-        getPreferenceManager().setPreferenceExternalStorageType(1);
         onView(withId(R.id.cardview_activity_system_config_export)).perform(click());
         onView(withId(R.id.listview_dialog_file_choose_file_entries)).check(matches(withListSize(1)));
         onView(withId(R.id.imageview_dialog_file_choose_cancel)).perform(click());
-        folder = getFileManager().getExternalDirectory("config", 0);
-        assertTrue(new File(folder, "keepitup_config.json").createNewFile());
+        getPreferenceManager().setPreferenceExternalStorageType(1);
         onView(withId(R.id.cardview_activity_system_config_export)).perform(click());
         onView(withId(R.id.listview_dialog_file_choose_file_entries)).check(matches(withListSize(2)));
         onView(withId(R.id.imageview_dialog_file_choose_cancel)).perform(click());
+        getPreferenceManager().setPreferenceExternalStorageType(0);
+        onView(withId(R.id.cardview_activity_system_config_export)).perform(click());
+        onView(withId(R.id.listview_dialog_file_choose_file_entries)).check(matches(withListSize(1)));
+        onView(withId(R.id.imageview_dialog_file_choose_cancel)).perform(click());
+    }
+
+    @Test
+    public void testExportConfigurationExternalStorageType() {
+        String exportFolderPrimary = getText(withId(R.id.textview_activity_system_config_export_folder));
+        onView(withId(R.id.radiobutton_activity_system_external_storage_type_sdcard)).perform(click());
+        String exportFolderSdCard = getText(withId(R.id.textview_activity_system_config_export_folder));
+        assertNotEquals(exportFolderPrimary, exportFolderSdCard);
+        onView(withId(R.id.radiobutton_activity_system_external_storage_type_primary)).perform(click());
+        String text = getText(withId(R.id.textview_activity_system_config_export_folder));
+        assertEquals(exportFolderPrimary, text);
+    }
+
+    @Test
+    public void testExportConfigurationExternalStorageTypeScreenRotation() {
+        String exportFolderPrimary = getText(withId(R.id.textview_activity_system_config_export_folder));
+        onView(withId(R.id.radiobutton_activity_system_external_storage_type_sdcard)).perform(click());
+        rotateScreen(activityScenario);
+        String exportFolderSdCard = getText(withId(R.id.textview_activity_system_config_export_folder));
+        assertNotEquals(exportFolderPrimary, exportFolderSdCard);
+        onView(withId(R.id.radiobutton_activity_system_external_storage_type_primary)).check(matches(withText("Primary")));
+        onView(withId(R.id.radiobutton_activity_system_external_storage_type_sdcard)).check(matches(withText("SD card")));
+        onView(withId(R.id.radiobutton_activity_system_external_storage_type_primary)).check(matches(not(isChecked())));
+        onView(withId(R.id.radiobutton_activity_system_external_storage_type_sdcard)).check(matches(isChecked()));
+        onView(withId(R.id.radiobutton_activity_system_external_storage_type_primary)).check(matches(isEnabled()));
+        onView(withId(R.id.radiobutton_activity_system_external_storage_type_sdcard)).check(matches(isEnabled()));
+        rotateScreen(activityScenario);
+        exportFolderSdCard = getText(withId(R.id.textview_activity_system_config_export_folder));
+        assertNotEquals(exportFolderPrimary, exportFolderSdCard);
+        onView(withId(R.id.radiobutton_activity_system_external_storage_type_primary)).perform(click());
+        String text = getText(withId(R.id.textview_activity_system_config_export_folder));
+        assertEquals(exportFolderPrimary, text);
     }
 
     @Test
@@ -2040,25 +2077,74 @@ public class SystemActivityTest extends BaseUITest {
     }
 
     @Test
-    public void testImportConfigurationAlwaysPrimaryStorage() throws Exception {
+    public void testImportConfigurationExternalStorageTypeFileAccess() throws Exception {
         File folder = getFileManager().getExternalDirectory("config", 1);
         assertTrue(new File(folder, "keepitup_config.json").createNewFile());
-        getPreferenceManager().setPreferenceExternalStorageType(1);
         onView(withId(R.id.cardview_activity_system_config_import)).perform(click());
         onView(withId(R.id.listview_dialog_file_choose_file_entries)).check(matches(withListSize(1)));
         onView(withId(R.id.imageview_dialog_file_choose_cancel)).perform(click());
-        folder = getFileManager().getExternalDirectory("config", 0);
-        assertTrue(new File(folder, "keepitup_config.json").createNewFile());
+        getPreferenceManager().setPreferenceExternalStorageType(1);
         onView(withId(R.id.cardview_activity_system_config_import)).perform(click());
         onView(withId(R.id.listview_dialog_file_choose_file_entries)).check(matches(withListSize(2)));
         onView(withId(R.id.imageview_dialog_file_choose_cancel)).perform(click());
+        getPreferenceManager().setPreferenceExternalStorageType(0);
+        onView(withId(R.id.cardview_activity_system_config_import)).perform(click());
+        onView(withId(R.id.listview_dialog_file_choose_file_entries)).check(matches(withListSize(1)));
+        onView(withId(R.id.imageview_dialog_file_choose_cancel)).perform(click());
+    }
+
+    @Test
+    public void testImportConfigurationExternalStorageType() {
+        String importFolderPrimary = getText(withId(R.id.textview_activity_system_config_import_folder));
+        onView(withId(R.id.radiobutton_activity_system_external_storage_type_sdcard)).perform(click());
+        String importFolderSdCard = getText(withId(R.id.textview_activity_system_config_import_folder));
+        assertNotEquals(importFolderPrimary, importFolderSdCard);
+        onView(withId(R.id.radiobutton_activity_system_external_storage_type_primary)).perform(click());
+        String text = getText(withId(R.id.textview_activity_system_config_import_folder));
+        assertEquals(importFolderPrimary, text);
+    }
+
+    @Test
+    public void testImportConfigurationExternalStorageTypeScreenRotation() {
+        String exportFolderPrimary = getText(withId(R.id.textview_activity_system_config_import_folder));
+        onView(withId(R.id.radiobutton_activity_system_external_storage_type_sdcard)).perform(click());
+        rotateScreen(activityScenario);
+        String exportFolderSdCard = getText(withId(R.id.textview_activity_system_config_import_folder));
+        assertNotEquals(exportFolderPrimary, exportFolderSdCard);
+        onView(withId(R.id.radiobutton_activity_system_external_storage_type_primary)).check(matches(withText("Primary")));
+        onView(withId(R.id.radiobutton_activity_system_external_storage_type_sdcard)).check(matches(withText("SD card")));
+        onView(withId(R.id.radiobutton_activity_system_external_storage_type_primary)).check(matches(not(isChecked())));
+        onView(withId(R.id.radiobutton_activity_system_external_storage_type_sdcard)).check(matches(isChecked()));
+        onView(withId(R.id.radiobutton_activity_system_external_storage_type_primary)).check(matches(isEnabled()));
+        onView(withId(R.id.radiobutton_activity_system_external_storage_type_sdcard)).check(matches(isEnabled()));
+        rotateScreen(activityScenario);
+        exportFolderSdCard = getText(withId(R.id.textview_activity_system_config_import_folder));
+        assertNotEquals(exportFolderPrimary, exportFolderSdCard);
+        onView(withId(R.id.radiobutton_activity_system_external_storage_type_primary)).perform(click());
+        String text = getText(withId(R.id.textview_activity_system_config_import_folder));
+        assertEquals(exportFolderPrimary, text);
     }
 
     @Test
     public void testDisplayDefaultValues() {
         PreferenceManager preferenceManager = getPreferenceManager();
+        assertEquals("config", preferenceManager.getPreferenceImportFolder());
+        assertEquals("config", preferenceManager.getPreferenceExportFolder());
+        assertEquals(0, preferenceManager.getPreferenceExternalStorageType());
         assertFalse(preferenceManager.getPreferenceFileLoggerEnabled());
         assertFalse(preferenceManager.getPreferenceFileDumpEnabled());
+        onView(withId(R.id.textview_activity_system_external_storage_type_label)).check(matches(withText("External storage type")));
+        onView(withId(R.id.radiogroup_activity_system_external_storage_type)).check(matches(hasChildCount(2)));
+        onView(withId(R.id.radiobutton_activity_system_external_storage_type_primary)).check(matches(withText("Primary")));
+        onView(withId(R.id.radiobutton_activity_system_external_storage_type_sdcard)).check(matches(withText("SD card")));
+        onView(withId(R.id.radiobutton_activity_system_external_storage_type_primary)).check(matches(isChecked()));
+        onView(withId(R.id.radiobutton_activity_system_external_storage_type_sdcard)).check(matches(not(isChecked())));
+        onView(withId(R.id.radiobutton_activity_system_external_storage_type_primary)).check(matches(isEnabled()));
+        onView(withId(R.id.radiobutton_activity_system_external_storage_type_sdcard)).check(matches(isEnabled()));
+        onView(withId(R.id.textview_activity_system_config_export_label)).check(matches(withText("Export configuration")));
+        onView(withId(R.id.textview_activity_system_config_export_folder)).check(matches(withText(endsWith("config"))));
+        onView(withId(R.id.textview_activity_system_config_import_label)).check(matches(withText("Import configuration")));
+        onView(withId(R.id.textview_activity_system_config_import_folder)).check(matches(withText(endsWith("config"))));
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).check(matches(isNotChecked()));
         onView(withId(R.id.switch_activity_system_file_dump_enabled)).perform(scrollTo());
         onView(withId(R.id.switch_activity_system_file_dump_enabled)).check(matches(isNotChecked()));
@@ -2068,6 +2154,14 @@ public class SystemActivityTest extends BaseUITest {
 
     @Test
     public void testDisplayValues() {
+        onView(withId(R.id.radiobutton_activity_system_external_storage_type_sdcard)).perform(click());
+        onView(withId(R.id.radiogroup_activity_system_external_storage_type)).check(matches(hasChildCount(2)));
+        onView(withId(R.id.radiobutton_activity_system_external_storage_type_primary)).check(matches(withText("Primary")));
+        onView(withId(R.id.radiobutton_activity_system_external_storage_type_sdcard)).check(matches(withText("SD card")));
+        onView(withId(R.id.radiobutton_activity_system_external_storage_type_primary)).check(matches(not(isChecked())));
+        onView(withId(R.id.radiobutton_activity_system_external_storage_type_sdcard)).check(matches(isChecked()));
+        onView(withId(R.id.radiobutton_activity_system_external_storage_type_primary)).check(matches(isEnabled()));
+        onView(withId(R.id.radiobutton_activity_system_external_storage_type_sdcard)).check(matches(isEnabled()));
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(scrollTo());
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(click());
         onView(withId(R.id.switch_activity_system_file_dump_enabled)).perform(scrollTo());
@@ -2102,11 +2196,13 @@ public class SystemActivityTest extends BaseUITest {
 
     @Test
     public void testSetPreferencesOk() {
+        onView(withId(R.id.radiobutton_activity_system_external_storage_type_sdcard)).perform(click());
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(scrollTo());
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(click());
         onView(withId(R.id.switch_activity_system_file_dump_enabled)).perform(scrollTo());
         onView(withId(R.id.switch_activity_system_file_dump_enabled)).perform(click());
         PreferenceManager preferenceManager = getPreferenceManager();
+        assertEquals(1, preferenceManager.getPreferenceExternalStorageType());
         assertTrue(preferenceManager.getPreferenceFileLoggerEnabled());
         assertTrue(preferenceManager.getPreferenceFileDumpEnabled());
     }
@@ -2131,31 +2227,49 @@ public class SystemActivityTest extends BaseUITest {
 
     @Test
     public void testResetValues() {
+        onView(withId(R.id.radiobutton_activity_system_external_storage_type_sdcard)).perform(click());
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(scrollTo());
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(click());
         onView(withId(R.id.switch_activity_system_file_dump_enabled)).perform(scrollTo());
         onView(withId(R.id.switch_activity_system_file_dump_enabled)).perform(click());
         openActionBarOverflowOrOptionsMenu(TestRegistry.getContext());
         onView(withText("Reset")).perform(click());
+        onView(withId(R.id.radiogroup_activity_system_external_storage_type)).check(matches(hasChildCount(2)));
+        onView(withId(R.id.radiobutton_activity_system_external_storage_type_primary)).check(matches(withText("Primary")));
+        onView(withId(R.id.radiobutton_activity_system_external_storage_type_sdcard)).check(matches(withText("SD card")));
+        onView(withId(R.id.radiobutton_activity_system_external_storage_type_primary)).check(matches(isChecked()));
+        onView(withId(R.id.radiobutton_activity_system_external_storage_type_sdcard)).check(matches(not(isChecked())));
+        onView(withId(R.id.radiobutton_activity_system_external_storage_type_primary)).check(matches(isEnabled()));
+        onView(withId(R.id.radiobutton_activity_system_external_storage_type_sdcard)).check(matches(isEnabled()));
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).check(matches(isNotChecked()));
         onView(withId(R.id.switch_activity_system_file_dump_enabled)).check(matches(isNotChecked()));
         PreferenceManager preferenceManager = getPreferenceManager();
+        assertEquals(0, preferenceManager.getPreferenceExternalStorageType());
         assertFalse(preferenceManager.getPreferenceFileLoggerEnabled());
         assertFalse(preferenceManager.getPreferenceFileDumpEnabled());
     }
 
     @Test
     public void testPreserveValuesOnScreenRotation() {
+        onView(withId(R.id.radiobutton_activity_system_external_storage_type_sdcard)).perform(click());
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(scrollTo());
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(click());
         onView(withId(R.id.switch_activity_system_file_dump_enabled)).perform(scrollTo());
         onView(withId(R.id.switch_activity_system_file_dump_enabled)).perform(click());
         rotateScreen(activityScenario);
+        onView(withId(R.id.radiobutton_activity_system_external_storage_type_primary)).check(matches(not(isChecked())));
+        onView(withId(R.id.radiobutton_activity_system_external_storage_type_sdcard)).check(matches(isChecked()));
+        onView(withId(R.id.radiobutton_activity_system_external_storage_type_primary)).check(matches(isEnabled()));
+        onView(withId(R.id.radiobutton_activity_system_external_storage_type_sdcard)).check(matches(isEnabled()));
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).check(matches(isChecked()));
         onView(withId(R.id.textview_activity_system_file_logger_enabled_on_off)).check(matches(withText("yes")));
         onView(withId(R.id.switch_activity_system_file_dump_enabled)).check(matches(isChecked()));
         onView(withId(R.id.textview_activity_system_file_dump_enabled_on_off)).check(matches(withText("yes")));
         rotateScreen(activityScenario);
+        onView(withId(R.id.radiobutton_activity_system_external_storage_type_primary)).check(matches(not(isChecked())));
+        onView(withId(R.id.radiobutton_activity_system_external_storage_type_sdcard)).check(matches(isChecked()));
+        onView(withId(R.id.radiobutton_activity_system_external_storage_type_primary)).check(matches(isEnabled()));
+        onView(withId(R.id.radiobutton_activity_system_external_storage_type_sdcard)).check(matches(isEnabled()));
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).check(matches(isChecked()));
         onView(withId(R.id.textview_activity_system_file_logger_enabled_on_off)).check(matches(withText("yes")));
         onView(withId(R.id.switch_activity_system_file_dump_enabled)).check(matches(isChecked()));

@@ -20,10 +20,6 @@
     <dimen name="cardview_activity_global_settings_download_external_storage_corner_radius">4dp</dimen>
     <dimen name="cardview_activity_global_settings_download_external_storage_card_elevation">4dp</dimen>
     <dimen name="linearlayout_activity_global_settings_download_external_storage_margin">4dp</dimen>
-    <dimen name="cardview_activity_global_settings_external_storage_type_margin">4dp</dimen>
-    <dimen name="cardview_activity_global_settings_external_storage_type_corner_radius">4dp</dimen>
-    <dimen name="cardview_activity_global_settings_external_storage_type_card_elevation">4dp</dimen>
-    <dimen name="linearlayout_activity_global_settings_external_storage_type_margin">4dp</dimen>
     <dimen name="cardview_activity_global_settings_battery_optimization_margin">4dp</dimen>
     <dimen name="cardview_activity_global_settings_battery_optimization_corner_radius">4dp</dimen>
     <dimen name="cardview_activity_global_settings_battery_optimization_card_elevation">4dp</dimen>

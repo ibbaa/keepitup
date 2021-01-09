@@ -16,6 +16,10 @@
     <dimen name="cardview_activity_system_config_import_corner_radius">4dp</dimen>
     <dimen name="cardview_activity_system_config_import_card_elevation">4dp</dimen>
     <dimen name="linearlayout_activity_system_config_import_margin">4dp</dimen>
+    <dimen name="cardview_activity_system_external_storage_type_margin">4dp</dimen>
+    <dimen name="cardview_activity_system_external_storage_type_corner_radius">4dp</dimen>
+    <dimen name="cardview_activity_system_external_storage_type_card_elevation">4dp</dimen>
+    <dimen name="linearlayout_activity_system_external_storage_type_margin">4dp</dimen>
     <dimen name="cardview_activity_system_debug_margin">4dp</dimen>
     <dimen name="cardview_activity_system_debug_corner_radius">4dp</dimen>
     <dimen name="cardview_activity_system_debug_card_elevation">4dp</dimen>
