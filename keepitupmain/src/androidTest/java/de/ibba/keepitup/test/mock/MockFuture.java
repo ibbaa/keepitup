@@ -14,7 +14,7 @@ public class MockFuture<S> implements Future<S> {
         reset();
     }
 
-    public void re set() {
+    public void reset() {
         cancelled = false;
         done = false;
     }
