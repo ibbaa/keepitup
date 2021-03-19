@@ -86,8 +86,7 @@ public class FileLogger implements ILogger {
         try {
             LogFileEntry logEntry = new LogFileEntry(System.currentTimeMillis(), Thread.currentThread().getName(), level, tag, message, throwable);
             logQueue.offer(logEntry, LOG_QUEUE_PUT_TIMEOUT, TimeUnit.MILLISECONDS);
-            if (!logThreadActive.get()) {
-                logThreadActive.set(true);
+            if (logThreadActive.compareAndSet(false, true)) {
                 Thread logThread = new Thread(this::doLog);
                 logThread.start();
             }
