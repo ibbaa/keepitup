@@ -1,11 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <dimen name="dialog_network_task_edit_margin_top">10dp</dimen>
-    <dimen name="dialog_network_task_edit_margin_left">10dp</dimen>
-    <dimen name="dialog_network_task_edit_margin_right">10dp</dimen>
-    <dimen name="dialog_network_task_edit_margin_bottom">10dp</dimen>
-    <dimen name="dialog_network_task_edit_radius">8dp</dimen>
-    <dimen name="dialog_network_task_edit_access_type_margin_top">6dp</dimen>
+    <dimen name="textview_dialog_network_task_edit_accesstype_label_margin_top">6dp</dimen>
     <dimen name="linearlayout_dialog_network_task_edit_address_margin_top">0dp</dimen>
     <dimen name="linearlayout_dialog_network_task_edit_address_margin_left">10dp</dimen>
     <dimen name="edittext_dialog_network_task_edit_address_width">120dp</dimen>
