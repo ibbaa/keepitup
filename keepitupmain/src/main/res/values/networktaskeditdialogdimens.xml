@@ -1,22 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <dimen name="textview_dialog_network_task_edit_accesstype_label_margin_top">6dp</dimen>
-    <dimen name="linearlayout_dialog_network_task_edit_address_margin_top">0dp</dimen>
+    <dimen name="linearlayout_dialog_network_task_edit_margin">40dp</dimen>
+    <dimen name="linearlayout_dialog_network_task_edit_address_margin_top">20dp</dimen>
     <dimen name="linearlayout_dialog_network_task_edit_address_margin_left">10dp</dimen>
     <dimen name="edittext_dialog_network_task_edit_address_width">120dp</dimen>
-    <dimen name="linearlayout_dialog_network_task_edit_port_margin_top">0dp</dimen>
+    <dimen name="linearlayout_dialog_network_task_edit_port_margin_top">20dp</dimen>
     <dimen name="linearlayout_dialog_network_task_edit_port_margin_left">10dp</dimen>
     <dimen name="edittext_dialog_network_task_edit_port_width">120dp</dimen>
-    <dimen name="linearlayout_dialog_network_task_edit_interval_margin_top">0dp</dimen>
+    <dimen name="linearlayout_dialog_network_task_edit_interval_margin_top">20dp</dimen>
     <dimen name="linearlayout_dialog_network_task_edit_interval_margin_left">10dp</dimen>
     <dimen name="edittext_dialog_network_task_edit_interval_width">120dp</dimen>
-    <dimen name="textview_dialog_network_task_edit_onlywifi_label_margin_top">10dp</dimen>
-    <dimen name="linearlayout_dialog_network_task_edit_onlywifi_margin_top">0dp</dimen>
+    <dimen name="textview_dialog_network_task_edit_onlywifi_label_margin_top">20dp</dimen>
+    <dimen name="linearlayout_dialog_network_task_edit_onlywifi_margin_top">20dp</dimen>
     <dimen name="linearlayout_dialog_network_task_edit_onlywifi_margin_left">10dp</dimen>
-    <dimen name="textview_dialog_network_task_edit_notification_label_margin_top">10dp</dimen>
-    <dimen name="linearlayout_dialog_network_task_edit_notification_margin_top">0dp</dimen>
+    <dimen name="textview_dialog_network_task_edit_notification_label_margin_top">20dp</dimen>
+    <dimen name="linearlayout_dialog_network_task_edit_notification_margin_top">20dp</dimen>
     <dimen name="linearlayout_dialog_network_task_edit_notification_margin_left">10dp</dimen>
-    <dimen name="linearlayout_dialog_network_task_edit_ok_cancel_padding_top">0dp</dimen>
+    <dimen name="linearlayout_dialog_network_task_edit_ok_cancel_padding_top">10dp</dimen>
     <dimen name="edittext_network_task_edit_line_size">2dp</dimen>
     <dimen name="edittext_network_task_edit_line_height">4dp</dimen>
 </resources>
