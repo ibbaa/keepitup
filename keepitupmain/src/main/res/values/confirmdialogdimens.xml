@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <dimen name="linearlayout_dialog_confirm_ok_cancel_padding_top">0dp</dimen>
+    <dimen name="linearlayout_dialog_confirm_margin">40dp</dimen>
+    <dimen name="linearlayout_dialog_confirm_ok_cancel_padding_top">20dp</dimen>
 </resources>

@@ -3,9 +3,4 @@
     android:shape="rectangle">
     <solid android:color="@color/windowBackground" />
     <corners android:radius="@dimen/dialog_radius" />
-    <padding
-        android:top="@dimen/dialog_margin_top"
-        android:left="@dimen/dialog_margin_left"
-        android:right="@dimen/dialog_margin_right"
-        android:bottom="@dimen/dialog_margin_bottom" />
 </shape>
