@@ -9,6 +9,7 @@
         android:id="@+id/gridlayout_dialog_validator_error"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:padding="@dimen/gridlayout_dialog_validator_error_padding"
         android:columnCount="2">
 
         <TextView
@@ -25,6 +26,7 @@
 
         <ImageView
             android:id="@+id/imageview_dialog_validator_error_ok"
+            android:paddingTop="@dimen/imageview_dialog_validator_error_ok_padding_top"
             android:clickable="true"
             android:focusable="true"
             android:contentDescription="@string/label_dialog_network_task_validator_error_ok"

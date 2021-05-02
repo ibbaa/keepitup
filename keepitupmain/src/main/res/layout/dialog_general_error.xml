@@ -9,6 +9,7 @@
         android:id="@+id/linearlayout_dialog_general_error"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:padding="@dimen/linearlayout_dialog_general_error_padding"
         android:orientation="vertical">
 
         <TextView
@@ -23,6 +24,7 @@
             android:id="@+id/imageview_dialog_general_error_ok"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:paddingTop="@dimen/imageview_dialog_general_error_ok_padding_top"
             android:layout_gravity="center"
             android:clickable="true"
             android:focusable="true"

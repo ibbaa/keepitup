@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <dimen name="linearlayout_dialog_info_padding">40dp</dimen>
     <dimen name="imageview_dialog_info_title_icon_padding">2dp</dimen>
     <dimen name="textview_dialog_info_title_padding">2dp</dimen>
     <dimen name="textview_dialog_info_title_margin_top">2dp</dimen>
+    <dimen name="gridlayout_dialog_info_build_info_margin_top">20dp</dimen>
     <dimen name="textview_dialog_info_version_label_margin_top">0dp</dimen>
     <dimen name="textview_dialog_info_version_label_padding">4dp</dimen>
     <dimen name="textview_dialog_info_version_margin_top">0dp</dimen>
@@ -23,4 +25,5 @@
     <dimen name="textview_dialog_info_github_text_size">8sp</dimen>
     <dimen name="textview_dialog_info_thirdparty_padding">2dp</dimen>
     <dimen name="textview_dialog_info_thirdparty_text_size">8sp</dimen>
+    <dimen name="imageview_dialog_info_ok_padding_top">10dp</dimen>
 </resources>

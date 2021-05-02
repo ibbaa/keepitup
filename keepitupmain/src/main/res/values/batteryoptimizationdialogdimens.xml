@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <dimen name="linearlayout_dialog_battery_optimization_margin">30dp</dimen>
+    <dimen name="linearlayout_dialog_battery_optimization_padding">30dp</dimen>
     <dimen name="textview_dialog_battery_optimization_title_padding">2dp</dimen>
     <dimen name="textview_dialog_battery_optimization_title_margin_top">2dp</dimen>
     <dimen name="textview_dialog_battery_optimization_info_padding">2dp</dimen>
     <dimen name="textview_dialog_battery_optimization_info_text_size">10sp</dimen>
     <dimen name="textview_dialog_battery_optimization_link_padding">2dp</dimen>
     <dimen name="textview_dialog_battery_optimization_link_text_size">10sp</dimen>
+    <dimen name="imageview_dialog_battery_optimization_ok_padding_top">10dp</dimen>
 </resources>
