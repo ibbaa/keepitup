@@ -9,6 +9,7 @@
         android:id="@+id/linearlayout_dialog_info"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:padding="@dimen/linearlayout_dialog_info_padding"
         android:orientation="vertical">
 
         <LinearLayout
@@ -41,6 +42,7 @@
             android:id="@+id/gridlayout_dialog_info_build_info"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/gridlayout_dialog_info_build_info_margin_top"
             android:columnCount="2">
 
             <TextView
@@ -161,6 +163,7 @@
             android:id="@+id/imageview_dialog_info_ok"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:paddingTop="@dimen/imageview_dialog_info_ok_padding_top"
             android:layout_gravity="center"
             android:clickable="true"
             android:focusable="true"

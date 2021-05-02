@@ -9,7 +9,7 @@
         android:id="@+id/linearlayout_dialog_network_task_edit"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/linearlayout_dialog_network_task_edit_margin"
+        android:padding="@dimen/linearlayout_dialog_network_task_edit_padding"
         android:focusable="true"
         android:focusableInTouchMode="true"
         android:orientation="vertical">

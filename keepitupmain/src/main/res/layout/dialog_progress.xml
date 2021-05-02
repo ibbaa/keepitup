@@ -9,6 +9,7 @@
         style="@android:style/Widget.DeviceDefault.Light.ProgressBar.Small"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:padding="@dimen/progressbar_dialog_progress_padding"
         android:layout_gravity="center"
         android:indeterminate="true" />
 

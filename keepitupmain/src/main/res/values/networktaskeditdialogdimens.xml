@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <dimen name="textview_dialog_network_task_edit_accesstype_label_margin_top">6dp</dimen>
-    <dimen name="linearlayout_dialog_network_task_edit_margin">40dp</dimen>
+    <dimen name="linearlayout_dialog_network_task_edit_padding">40dp</dimen>
     <dimen name="linearlayout_dialog_network_task_edit_address_margin_top">20dp</dimen>
     <dimen name="linearlayout_dialog_network_task_edit_address_margin_left">10dp</dimen>
     <dimen name="edittext_dialog_network_task_edit_address_width">120dp</dimen>

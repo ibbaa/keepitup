@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="linearlayout_dialog_raw_text_padding">40dp</dimen>
+    <dimen name="imageview_dialog_raw_text_ok_padding_top">10dp</dimen>
+</resources>
