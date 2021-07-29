@@ -180,19 +180,31 @@ public class NetworkTaskProcessServiceScheduler {
     private boolean hasPendingIntent(NetworkTask networkTask) {
         Intent intent = new Intent(getContext(), NetworkTaskProcessBroadcastReceiver.class);
         intent.putExtras(networkTask.toBundle());
-        return PendingIntent.getBroadcast(getContext(), networkTask.getSchedulerId(), intent, PendingIntent.FLAG_NO_CREATE) != null;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            return PendingIntent.getBroadcast(getContext(), networkTask.getSchedulerId(), intent, PendingIntent.FLAG_IMMUTABLE | PendingIntent.FLAG_NO_CREATE) != null;
+        } else {
+            return PendingIntent.getBroadcast(getContext(), networkTask.getSchedulerId(), intent, PendingIntent.FLAG_NO_CREATE) != null;
+        }
     }
 
     private PendingIntent getPendingIntent(NetworkTask networkTask) {
         Intent intent = new Intent(getContext(), NetworkTaskProcessBroadcastReceiver.class);
         intent.putExtras(networkTask.toBundle());
-        return PendingIntent.getBroadcast(getContext(), networkTask.getSchedulerId(), intent, PendingIntent.FLAG_NO_CREATE);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            return PendingIntent.getBroadcast(getContext(), networkTask.getSchedulerId(), intent, PendingIntent.FLAG_IMMUTABLE | PendingIntent.FLAG_NO_CREATE);
+        } else {
+            return PendingIntent.getBroadcast(getContext(), networkTask.getSchedulerId(), intent, PendingIntent.FLAG_NO_CREATE);
+        }
     }
 
     private PendingIntent createPendingIntent(NetworkTask networkTask) {
         Intent intent = new Intent(getContext(), NetworkTaskProcessBroadcastReceiver.class);
         intent.putExtras(networkTask.toBundle());
-        return PendingIntent.getBroadcast(getContext(), networkTask.getSchedulerId(), intent, PendingIntent.FLAG_CANCEL_CURRENT);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            return PendingIntent.getBroadcast(getContext(), networkTask.getSchedulerId(), intent, PendingIntent.FLAG_IMMUTABLE | PendingIntent.FLAG_CANCEL_CURRENT);
+        } else {
+            return PendingIntent.getBroadcast(getContext(), networkTask.getSchedulerId(), intent, PendingIntent.FLAG_CANCEL_CURRENT);
+        }
     }
 
     private long getIntervalMilliseconds(NetworkTask networkTask) {
