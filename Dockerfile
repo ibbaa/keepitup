@@ -1,0 +1,12 @@
+FROM androidsdk/android-30
+
+ARG UID
+ARG GID
+ARG KEEPITUP_KEY_FILE
+ARG KEEPITUP_SIGNING_FILE
+ENV KEEPITUP_KEY_FILE=$KEEPITUP_KEY_FILE
+ENV KEEPITUP_SIGNING_FILE=$KEEPITUP_SIGNING_FILE
+
+RUN groupadd -r -g $GID buildusr || true
+RUN useradd -m -r -u $UID -g buildusr buildusr || true
+USER $UID:$GID
