@@ -1,13 +1,23 @@
 apply plugin: 'com.android.application'
 apply plugin: 'com.google.android.gms.oss-licenses-plugin'
+def keyFile = rootProject.file('signing/keepitup.jks')
+def signingFile = rootProject.file('signing/signing.properties')
+if (!keyFile.exists()) {
+    keyFile = rootProject.file(System.getenv("KEEPITUP_KEY_FILE"))
+}
+if (!signingFile.exists()) {
+    signingFile = rootProject.file(System.getenv("KEEPITUP_SIGNING_FILE"))
+}
+def signingProperties = new Properties()
+signingProperties.load(new FileInputStream(signingFile))
 
 android {
     signingConfigs {
         config {
-            keyAlias 'key0'
-            keyPassword 'alwinalwin'
-            storeFile file('/home/alwin/developer/android/.keystore/alwinskey.jks')
-            storePassword 'alwinalwin'
+            keyAlias signingProperties['key.alias']
+            keyPassword signingProperties['key.password']
+            storeFile keyFile
+            storePassword signingProperties['store.password']
         }
     }
     compileSdkVersion 30
@@ -21,7 +31,7 @@ android {
         signingConfig signingConfigs.config
         archivesBaseName = "keepitup"
         buildConfigField "long", "TIMESTAMP", System.currentTimeMillis() + "L"
-        buildConfigField "int", "RELEASE_YEAR", '2020'
+        buildConfigField "int", "RELEASE_YEAR", '2021'
     }
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
