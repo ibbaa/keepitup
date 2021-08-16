@@ -5,15 +5,15 @@
     <string name="AccessType_PING" tools:ignore="ExtraTranslation" tools:keep="@string/AccessType_PING">Ping</string>
     <string name="AccessType_PING_address" tools:ignore="ExtraTranslation" tools:keep="@string/AccessType_PING_address">Host:</string>
     <string name="AccessType_PING_port" tools:ignore="ExtraTranslation" tools:keep="@string/AccessType_PING_port">Port:</string>
-    <string name="AccessType_PING_validator" tools:ignore="ExtraTranslation" tools:keep="@string/AccessType_PING_validator">de.ibba.keepitup.ui.validation.StandardHostPortValidator</string>
+    <string name="AccessType_PING_validator" tools:ignore="ExtraTranslation" tools:keep="@string/AccessType_PING_validator">net.ibbaa.keepitup.ui.validation.StandardHostPortValidator</string>
     <string name="AccessType_CONNECT" tools:ignore="ExtraTranslation" tools:keep="@string/AccessType_CONNECT">Connect</string>
     <string name="AccessType_CONNECT_address" tools:ignore="ExtraTranslation" tools:keep="@string/AccessType_CONNECT_address">Host:</string>
     <string name="AccessType_CONNECT_port" tools:ignore="ExtraTranslation" tools:keep="@string/AccessType_CONNECT_port">Port:</string>
-    <string name="AccessType_CONNECT_validator" tools:ignore="ExtraTranslation" tools:keep="@string/AccessType_CONNECT_validator">de.ibba.keepitup.ui.validation.StandardHostPortValidator</string>
+    <string name="AccessType_CONNECT_validator" tools:ignore="ExtraTranslation" tools:keep="@string/AccessType_CONNECT_validator">net.ibbaa.keepitup.ui.validation.StandardHostPortValidator</string>
     <string name="AccessType_DOWNLOAD" tools:ignore="ExtraTranslation" tools:keep="@string/AccessType_DOWNLOAD">Download</string>
     <string name="AccessType_DOWNLOAD_address" tools:ignore="ExtraTranslation" tools:keep="@string/AccessType_DOWNLOAD_address">URL:</string>
     <string name="AccessType_DOWNLOAD_port" tools:ignore="ExtraTranslation" tools:keep="@string/AccessType_DOWNLOAD_port">Port:</string>
-    <string name="AccessType_DOWNLOAD_validator" tools:ignore="ExtraTranslation" tools:keep="@string/AccessType_DOWNLOAD_validator">de.ibba.keepitup.ui.validation.URLValidator</string>
+    <string name="AccessType_DOWNLOAD_validator" tools:ignore="ExtraTranslation" tools:keep="@string/AccessType_DOWNLOAD_validator">net.ibbaa.keepitup.ui.validation.URLValidator</string>
     <string name="ContextOption_COPY_name" tools:ignore="ExtraTranslation" tools:keep="@string/ContextOption_COPY_name">Copy</string>
     <string name="ContextOption_PASTE_name" tools:ignore="ExtraTranslation" tools:keep="@string/ContextOption_PASTE_name">Paste</string>
 </resources>

@@ -22,7 +22,7 @@ android {
     }
     compileSdkVersion 30
     defaultConfig {
-        applicationId "de.ibba.keepitup"
+        applicationId "net.ibbaa.keepitup"
         minSdkVersion 21
         targetSdkVersion 30
         versionCode 1

@@ -5,7 +5,7 @@
     android:id="@+id/layout_activity_log"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="de.ibba.keepitup.ui.NetworkTaskLogActivity">
+    tools:context="net.ibbaa.keepitup.ui.NetworkTaskLogActivity">
 
     <LinearLayout
         android:id="@+id/layout_log_content"
