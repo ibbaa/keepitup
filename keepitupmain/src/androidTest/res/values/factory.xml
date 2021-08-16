@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="service_factory_implementation">de.ibba.keepitup.test.mock.TestServiceFactory</string>
-    <string name="worker_factory_implementation">de.ibba.keepitup.test.mock.TestWorkerFactory</string>
+    <string name="service_factory_implementation">net.ibbaa.keepitup.test.mock.TestServiceFactory</string>
+    <string name="worker_factory_implementation">net.ibbaa.keepitup.test.mock.TestWorkerFactory</string>
 </resources>

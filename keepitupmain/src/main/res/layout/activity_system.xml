@@ -5,7 +5,7 @@
     android:id="@+id/layout_activity_system"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="de.ibba.keepitup.ui.SystemActivity">
+    tools:context="net.ibbaa.keepitup.ui.SystemActivity">
 
     <ScrollView
         android:id="@+id/scrollview_activity_system"

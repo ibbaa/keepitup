@@ -1,6 +1,6 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context="de.ibba.keepitup.ui.NetworkTaskLogActivity">
+    tools:context="net.ibbaa.keepitup.ui.NetworkTaskLogActivity">
     <item
         android:id="@+id/menu_action_activity_log_delete"
         android:title="@string/menu_action_activity_log_delete" />

@@ -20,26 +20,26 @@
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
 -dontobfuscate
--keep public class de.ibba.keepitup.ui.validation.* {
+-keep public class net.ibbaa.keepitup.ui.validation.* {
     public <methods>;
 }
--keep public class de.ibba.keepitup.resources.SystemServiceFactory
--keep public class de.ibba.keepitup.resources.SystemWorkerFactory
--keep public class de.ibba.keepitup.resources.JSONSystemSetup
--keep public class de.ibba.keepitup.service.PingNetworkTaskWorker {
+-keep public class net.ibbaa.keepitup.resources.SystemServiceFactory
+-keep public class net.ibbaa.keepitup.resources.SystemWorkerFactory
+-keep public class net.ibbaa.keepitup.resources.JSONSystemSetup
+-keep public class net.ibbaa.keepitup.service.PingNetworkTaskWorker {
     public <methods>;
 }
--keep public class de.ibba.keepitup.service.ConnectNetworkTaskWorker {
+-keep public class net.ibbaa.keepitup.service.ConnectNetworkTaskWorker {
     public <methods>;
 }
--keep public class de.ibba.keepitup.service.DownloadNetworkTaskWorker {
+-keep public class net.ibbaa.keepitup.service.DownloadNetworkTaskWorker {
     public <methods>;
 }
 -dontwarn com.google.**
 -dontwarn java.lang.ClassValue
--assumenosideeffects class de.ibba.keepitup.logging.Log {
+-assumenosideeffects class net.ibbaa.keepitup.logging.Log {
      public static *** d(...);
  }
--assumenosideeffects class de.ibba.keepitup.logging.Dump {
+-assumenosideeffects class net.ibbaa.keepitup.logging.Dump {
     public static *** dump(...);
 }
