@@ -3,6 +3,9 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="keepitupmain/src/main/res/drawable-v24/ic_launcher_foreground.xml" value="0.328125" />
+        <entry key="keepitupmain/src/main/res/drawable/ic_launcher_background.xml" value="0.328125" />
+        <entry key="keepitupmain/src/main/res/drawable/icon_cancel_selector.xml" value="0.328125" />
         <entry key="keepitupmain/src/main/res/drawable/icon_folder_open_selector.xml" value="0.34375" />
       </map>
     </option>

@@ -1,3 +1,19 @@
+/*
+ * Copyright (c) 2021. Alwin Ibba
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package net.ibbaa.keepitup.db;
 
 import android.content.ContentValues;
@@ -5,14 +21,14 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import net.ibbaa.keepitup.BuildConfig;
 import net.ibbaa.keepitup.R;
 import net.ibbaa.keepitup.logging.Dump;
 import net.ibbaa.keepitup.logging.Log;
 import net.ibbaa.keepitup.model.LogEntry;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class LogDAO extends BaseDAO {
 
