@@ -62,7 +62,6 @@ public class RawTextDialogTest extends BaseUITest {
         openRawTextDialog();
         onView(isRoot()).perform(waitFor(500));
         onView(withId(R.id.textview_dialog_raw_text_content)).check(matches(withText(containsString("Apache License"))));
-        onView(withId(R.id.textview_dialog_raw_text_content)).check(matches(withText(containsString("TESTTESTTEST"))));
         onView(withId(R.id.textview_dialog_raw_text_content)).check(matches(withText(containsString("Licensed under the Apache License"))));
     }
 
@@ -71,23 +70,19 @@ public class RawTextDialogTest extends BaseUITest {
         openRawTextDialog();
         onView(isRoot()).perform(waitFor(500));
         onView(withId(R.id.textview_dialog_raw_text_content)).check(matches(withText(containsString("Apache License"))));
-        onView(withId(R.id.textview_dialog_raw_text_content)).check(matches(withText(containsString("TESTTESTTEST"))));
         onView(withId(R.id.textview_dialog_raw_text_content)).check(matches(withText(containsString("Licensed under the Apache License"))));
         rotateScreen(activityScenario);
         onView(withId(R.id.textview_dialog_raw_text_content)).check(matches(withText(containsString("Apache License"))));
-        onView(withId(R.id.textview_dialog_raw_text_content)).check(matches(withText(containsString("TESTTESTTEST"))));
         onView(withId(R.id.textview_dialog_raw_text_content)).check(matches(withText(containsString("Licensed under the Apache License"))));
         rotateScreen(activityScenario);
         onView(withId(R.id.textview_dialog_raw_text_content)).check(matches(withText(containsString("Apache License"))));
-        onView(withId(R.id.textview_dialog_raw_text_content)).check(matches(withText(containsString("TESTTESTTEST"))));
         onView(withId(R.id.textview_dialog_raw_text_content)).check(matches(withText(containsString("Licensed under the Apache License"))));
     }
 
 
     private void openRawTextDialog() {
         RawTextDialog rawTextDialog = new RawTextDialog();
-        Bundle bundle = BundleUtil.stringToBundle("COPYRIGHT", "TESTTESTTEST");
-        bundle.putInt(rawTextDialog.getResourceIdKey(), R.raw.license);
+        Bundle bundle = BundleUtil.integerToBundle(rawTextDialog.getResourceIdKey(), R.raw.license);
         rawTextDialog.setArguments(bundle);
         rawTextDialog.show(getActivity(activityScenario).getSupportFragmentManager(), RawTextDialog.class.getName());
         onView(isRoot()).perform(waitFor(500));

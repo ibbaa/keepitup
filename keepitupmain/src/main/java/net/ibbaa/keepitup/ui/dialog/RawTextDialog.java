@@ -28,12 +28,12 @@ import androidx.fragment.app.DialogFragment;
 
 import com.google.common.base.Charsets;
 
-import java.io.IOException;
-import java.io.InputStream;
-
 import net.ibbaa.keepitup.R;
 import net.ibbaa.keepitup.logging.Log;
 import net.ibbaa.keepitup.util.StreamUtil;
+
+import java.io.IOException;
+import java.io.InputStream;
 
 public class RawTextDialog extends DialogFragment {
 

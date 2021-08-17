@@ -88,9 +88,6 @@ public class InfoDialogTest extends BaseUITest {
         assertEquals(2, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
         onView(withId(R.id.textview_dialog_raw_text_content)).check(matches(withText(containsString("Apache License"))));
         onView(withId(R.id.textview_dialog_raw_text_content)).check(matches(withText(containsString("Copyright"))));
-        onView(withId(R.id.textview_dialog_raw_text_content)).check(matches(withText(containsString("Alwin Ibba"))));
-        onView(withId(R.id.textview_dialog_raw_text_content)).check(matches(withText(containsString(String.valueOf(BuildConfig.RELEASE_YEAR)))));
-        onView(withId(R.id.textview_dialog_raw_text_content)).check(matches(withText(containsString(getBuildYear()))));
         onView(withId(R.id.textview_dialog_raw_text_content)).check(matches(withText(containsString("Licensed under the Apache License"))));
     }
 
