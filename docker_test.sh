@@ -16,7 +16,7 @@
 #
 
 docker build --no-cache --file Dockerfile.test -t ibbaa/keepitup:test .
-docker run $DOCKER_OPTS --privileged --name build --rm -v $PWD:/var/keepitup -w /var/keepitup ibbaa/keepitup:test /bin/bash -c "sudo ./start_emulator.sh && ./gradlew connectedAndroidTest"
+docker run $DOCKER_OPTS --privileged --name test --rm -v $PWD:/var/keepitup -w /var/keepitup ibbaa/keepitup:test /bin/bash -c "sudo ./start_emulator.sh && ./gradlew connectedAndroidTest"
 RET=$?
 docker image prune -f
 exit $RET
