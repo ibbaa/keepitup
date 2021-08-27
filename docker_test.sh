@@ -15,7 +15,9 @@
 # limitations under the License.
 #
 
-docker build --no-cache --file Dockerfile.test -t ibbaa/keepitup:test .
+UID=$(id -u)
+GID=$(id -g)
+docker build --no-cache --file Dockerfile.test --build-arg UID=$UID --build-arg GID=$GID -t ibbaa/keepitup:test .
 docker run $DOCKER_OPTS --privileged --name test --rm -v $PWD:/var/keepitup -w /var/keepitup ibbaa/keepitup:test /bin/bash -c "sudo ./start_emulator.sh && ./gradlew connectedAndroidTest"
 RET=$?
 docker image prune -f
