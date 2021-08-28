@@ -8,5 +8,5 @@ The downloaded files can be automatically deleted after a successful download or
 
 A network task can be restricted to WiFi connections, i.e. it does not perform any action on mobile networks with potentially limited download data.
 
-The app works best if you disable  battery optimization for the app. If battery optimization is active, networks tasks execution may be unreliable especially with short intervals, i.e. they may trigger less often and the trigger time may not be exact. There is a link in the app leading to the Android battery setting for the app. Of course, with disabled battery optimization power consumption may be higher.
+The app works best if you disable  battery optimization. If battery optimization is active, networks tasks execution may be unreliable especially for short intervals, i.e. they may trigger less often and the trigger time may not be exact. There is a link in the app leading to the Android battery settings for the app. Of course, with disabled battery optimization power consumption may be higher.
 
