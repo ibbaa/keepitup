@@ -1,16 +1,30 @@
 # Keep it up
 
-Keep it up is an app for Android that cecks network services periodically by sending a ping, connecting to a specific port or downloading a site. It can also be used to ensure a connection with a timeout will be kept alive.
+Keep it up checks network services periodically by sending a ping, connecting to a specific port or downloading a site. It can also be used to ensure a connection with a timeout will be kept alive.
 
-You can create multiple separate network tasks. One task monitors one network service at a specified interval. The network tasks can be enabled and disabled separately.
+<b>Features</b>
 
-The network task sends a specified number of pings, performs a specified number of connections attempts or downloads a file or a site. The app keeps a log of successful and unsuccessful attempts and can send notifications on failure.
+- Create multiple separate network tasks
+- One task monitors one network service at a specified interval and can be enabled or disabled
+- A task sends a specified number of pings, performs a specified number of connections attempts or downloads a file or a site
+- Successful and unsuccessful attempts are logged
+- Downloaded files can automatically be deleted after a successful download or be kept
+- Notifications can be sent on failure or unsuccessful attempt
+- A network task can be restricted to WiFi connection, i.e. it does not perform any action on mobile networks with potentially limited download data
+- The configuration can be exported and imported as JSON data file
 
-The downloaded files can be automatically deleted after a successful download or be kept.
+<b>Permissions</b>
 
-A network task can be restricted to WiFi connections, i.e. it does not perform any action on mobile networks with potentially limited download data.
+- <i>RECEIVE_BOOT_COMPLETED</i> for restarting running networks tasks on device boot
+- <i>ACCESS_NETWORK_STATE</i> for checking network accessibility
+- <i>INTERNET</i> for accessing the internet
+- <i>WAKE_LOCK</i> to keep the device awake while executing a task
+- <i>FOREGROUND_SERVICE</i> to start the foreground service for running tasks
+
+<b>Note</b>
 
 The app works best if you disable battery optimization. If battery optimization is active, networks tasks execution may be unreliable especially for short intervals, i.e. they may trigger less often and the trigger time may not be exact. There is a link in the app leading to the Android battery settings for the app. Of course, with disabled battery optimization power consumption may be higher.
+
 
 ## Signature
 
