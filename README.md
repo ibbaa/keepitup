@@ -17,9 +17,10 @@ The app works best if you disable  battery optimization for the app. If battery 
 The apk files released here on Github are self signed. To verfiy the signature you can use the `apksigner` tool that comes with Android SDK:
 
 `apksigner verify --verbose --print-certs ./keepitup-debug.apk`
+
 `apksigner verify --verbose --print-certs ./keepitup-release.apk`
 
-The output should be
+The output should include
 
 ```
 Number of signers: 1
