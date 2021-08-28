@@ -1,0 +1,11 @@
+Keep it up überprüft den Status von Netzwerkdiensten oder Webseiten indem regelmäßig pings gesendet werden, Verbindungsversuche unternommen werden oder Seiten heruntergeladen werden. Auf diese Weise können auch Verbindugen aufrechterhalten werden, die ansonsten nach einer bestimmten Zeit der Inaktivität geschlossen werden.
+
+Es können mehrere <i>Network Tasks</i> angelegt werden, die unabhängig voneinander in bestimmten Intervallen jeweils einen Dienst prüfen. Die <i>Network Tasks</i> können einzeln ein- und ausgeschaltet werden.
+
+Ein <i>Network Task</i> sendet entweder eine bestimmte Anzahl an Pings, unternimmt eine bestimmte Anzahl von Verbindungsversuchen oder lädt eine Datei oder eine Seite regelmäßig runter. Erfolgreiche und nicht erfolgreiche Versuche werden geloggt und bei nicht erfolgreichen Versuchen erfolgt auf Wunsch eine Benachrichtigung.
+
+Die heruntergeladenen Dateien werden automatisch gelöscht, können aber auch behalten werden.
+
+Ein <i>Network Task</i> kann konfiguriert werden das er ausschließlich im WLAN arbeitet und in Mobilnetzwerken mit ev. begrenztem Datenvolumen keine Daten herunterlädt.
+
+Die App funktioniert am Besten bei abgeschalteter Akkuoptimierung. Wenn die Akkuoptimierung eingeschaltet ist kann die Ausführung der einzelnen Tasks speziell bei kurzen Intervallen unzuverlässig sein, d.h. sie werden nicht exakt zu den definierten Zeitpunkten ausgeführt. In der App befindet sich ein Link zu den Android-Systemeinstellungen. Dort kann die Akkuoptimierung abgeschaltet werden. Natürlich ist bei abgeschalteter Akkuoptimierung der Verbrauch ev. höher.
