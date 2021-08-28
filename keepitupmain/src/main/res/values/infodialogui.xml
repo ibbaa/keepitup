@@ -22,7 +22,7 @@
     <string name="label_dialog_info_build_timestamp">Build time</string>
     <string name="text_dialog_info_copyright">Copyright %s Alwin Ibba</string>
     <string name="text_dialog_info_license">This software is open source and released under the terms of the Apache 2.0 License. Please click here to display the license text.</string>
-    <string name="text_dialog_info_github">Github page: https://github.com/ibbaa</string>
+    <string name="text_dialog_info_github">Github page: https://github.com/ibbaa/keepitup</string>
     <string name="text_dialog_info_thirdparty">Thirdparty licences</string>
     <string name="text_dialog_info_thirdparty_title">Thirdparty licences</string>
 </resources>
