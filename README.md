@@ -63,12 +63,8 @@ The two output apk files are located under
 
 ### Debug
 
-For the docker build you do need any Android tools. Simply call
+For the docker build you don't need any Android tools. Simply call `./docker_build.sh`. The output directories are the same as for the local build. 
 
-`./docker_build.sh`
-
-The output directories are the same as for the local build. 
-
-The script works for Linux. Docker must be installed of course. There is not script for Windows at the moment but it should not be difficult to create one.
+The `docker_build.sh` script works for Linux. Docker must be installed of course. There is not script for Windows at the moment but it should not be difficult to create one.
 
 
