@@ -1,0 +1,12 @@
+Keep it up checks network services periodically by sending a ping, connecting to a specific port or downloading a site. It can also be used to ensure a connection with a timeout will be kept alive.
+
+You can create multiple separate network tasks. One task monitors one network service at a specified interval. The network tasks can be enabled and disabled separately.
+
+The network task sends a specified number of pings, performs a specified number of connections attempts or downloads a file or a site. The app keeps a log of successful and unsuccessful attempts and can send notifications on failure.
+
+The downloaded files can be automatically deleted after a successful download or be kept.
+
+A network task can be restricted to WiFi connections, i.e. it does not perform any action on mobile networks with potentially limited download data.
+
+The app works best if you disable  battery optimization for the app. If battery optimization is active, networks tasks execution may be unreliable especially with short intervals, i.e. they may trigger less often and the trigger time may not be exact. There is a link in the app leading to the Android battery setting for the app. Of course, with disabled battery optimization power consumption may be higher.
+
