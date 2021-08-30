@@ -82,5 +82,5 @@ You have to provide your own signing keys if you build *Keep it up* by yourself.
 
 You can create a keystore for *Keep it up* with the following command:
 
-`keytool -genkey -v -keystore keepitup.jks -alias keepitupkey -keyalg RSA -keysize 2048 -validity 20000`
+`keytool -genkey -v -keystore keepitup.jks -alias keepitupkey -keyalg RSA -keysize 2048 -storepass keepitup -keypass keepitup -validity 20000`
 
