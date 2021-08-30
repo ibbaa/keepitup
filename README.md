@@ -1,6 +1,6 @@
 # Keep it up
 
-Keep it up checks network services periodically by sending a ping, connecting to a specific port or downloading a site. It can also be used to ensure a connection with a timeout will be kept alive.
+<i>Keep it up</i> checks network services periodically by sending a ping, connecting to a specific port or downloading a site. It can also be used to ensure a connection with a timeout will be kept alive.
 
 <b>Features</b>
 
@@ -25,6 +25,15 @@ Keep it up checks network services periodically by sending a ping, connecting to
 
 The app works best if you disable battery optimization. If battery optimization is active, networks tasks execution may be unreliable especially for short intervals, i.e. they may trigger less often and the trigger time may not be exact. There is a link in the app leading to the Android battery settings for the app. Of course, with disabled battery optimization power consumption may be higher.
 
+## Installation
+
+The app requires Android 5.0 (API level 21) and should run with all subsequent versions, however it's not tested with all versions and devices. Please download one of the provided apk files. You have to allow the installation from unknown sources. With older Android versions (7.x and lower) you have to allow this globally in the security settings. With recent versions of Android this can be configured per app and you have to allow it for the file manager or browser that is used for installation.
+
+Two apk files are provided:
+
+`keepitup-debug.apk` and `keepitup-release.apk`
+
+The debug version contains debug information and provides some logging features in the system settings. The release version is optimized and runs faster. It is recommended to use this version aside from development purposes.
 
 ## Signature
 
@@ -67,4 +76,11 @@ For the docker build you don't need any Android tools. Simply call `./docker_bui
 
 The `docker_build.sh` script works for Linux. Docker must be installed of course. There is not script for Windows at the moment but it should not be difficult to create one.
 
+### Signing
+
+You have to provide your own signing keys if you build *Keep it up* by yourself.
+
+You can create a keystore for *Keep it up* with the following command:
+
+`keytool -genkey -v -keystore keepitup.jks -alias keepitupkey -keyalg RSA -keysize 2048 -validity 20000`
 
