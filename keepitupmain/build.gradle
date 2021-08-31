@@ -19,10 +19,10 @@ apply plugin: 'com.google.android.gms.oss-licenses-plugin'
 def keyFile = rootProject.file('signing/keepitup.jks')
 def signingFile = rootProject.file('signing/signing.properties')
 if (!keyFile.exists()) {
-    keyFile = rootProject.file(System.getenv("KEEPITUP_KEY_FILE"))
+    keyFile = rootProject.file(System.getenv("KEEPITUP_KEYSTORE"))
 }
 if (!signingFile.exists()) {
-    signingFile = rootProject.file(System.getenv("KEEPITUP_SIGNING_FILE"))
+    signingFile = rootProject.file(System.getenv("KEEPITUP_SIGNING_PROPERTIES"))
 }
 def signingProperties = new Properties()
 signingProperties.load(new FileInputStream(signingFile))
