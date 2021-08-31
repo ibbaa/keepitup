@@ -5,7 +5,7 @@
 <b>Features</b>
 
 - Create multiple separate network tasks
-- One task monitors one network service at a specified interval and can be enabled or disabled
+- One task monitors one network service at a specified interval
 - A task sends a specified number of pings, performs a specified number of connections attempts or downloads a file or a site
 - Successful and unsuccessful attempts are logged
 - Downloaded files can automatically be deleted after a successful download or be kept
