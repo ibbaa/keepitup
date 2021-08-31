@@ -9,7 +9,7 @@
 - A task sends a specified number of pings, performs a specified number of connections attempts or downloads a file or a site
 - Successful and unsuccessful attempts are logged
 - Downloaded files can automatically be deleted after a successful download or be kept
-- Notifications can be sent on failure or unsuccessful attempt
+- Notifications can be sent on failure or an unsuccessful attempt
 - A network task can be restricted to WiFi connection, i.e. it does not perform any action on mobile networks with potentially limited download data
 - The configuration can be exported and imported as JSON data file
 
