@@ -10,8 +10,8 @@
 - Successful and unsuccessful attempts are logged
 - Downloaded files can automatically be deleted after a successful download or be kept
 - Notifications can be sent on failure or an unsuccessful attempt
-- A network task can be restricted to WiFi connection, i.e. it does not perform any action on mobile networks with potentially limited download data
-- The configuration can be exported and imported as JSON data file
+- A network task can be restricted to WiFi connections, i.e. it does not perform any action on mobile networks with potentially limited download data
+- The configuration can be exported and imported as a JSON data file
 
 <b>Permissions</b>
 
