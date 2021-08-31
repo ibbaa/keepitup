@@ -33,7 +33,7 @@ Two apk files are provided:
 
 `keepitup-debug.apk` and `keepitup-release.apk`
 
-The debug version contains debug information and provides some logging features in the system settings. The release version is optimized and runs faster. It is recommended to use this version aside from development purposes.
+The debug variant contains debug information and provides some logging features in the system settings. The release variant is optimized and runs faster. It is recommended to use this version aside from development purposes.
 
 ## Signature
 
@@ -78,9 +78,20 @@ The `docker_build.sh` script works for Linux. Docker must be installed of course
 
 ### Signing
 
-You have to provide your own signing keys if you build *Keep it up* by yourself.
+You have to provide your own signing keys if you build *Keep it up* by yourself. The build process signs both build variants with the same key and will fail if no key is provided. You need a keystore with proper keys and a properties file with the respective credentials described later on.
 
-You can create a keystore for *Keep it up* with the following command:
+You can create a keystore for with the following command:
 
 `keytool -genkey -v -keystore keepitup.jks -alias keepitupkey -keyalg RSA -keysize 2048 -storepass keepitup -keypass keepitup -validity 20000`
+
+The keystore file is named `keepitup.jks` with a key pair `keepitupkey` and the store and key password `keepitup`.
+
+This information has to be provided in a file named `signing.properties`:
+
+```
+store.password=keepitup
+key.password=keepitup
+key.alias=keepitupkey
+```
+If you put the two files in a directory named `signing` (the directory must reside in the project root) and follow the naming convention, i.e. the keystore is named `keepitup.jks` and the properties file `signing.properties`, then the build process will find the signing information. Alternatively you can provide two environment variables `KEEPITUP_KEYSTORE` for the keystore and `KEEPITUP_SIGNING_PROPERTIES` pointing to the two files relative to the project root.
 
