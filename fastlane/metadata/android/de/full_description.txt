@@ -3,7 +3,7 @@ Keep it up überprüft den Status von Netzwerkdiensten oder Webseiten indem rege
 <b>Features</b>
 
 - Erstellung mehrerer unabhängiger Network Tasks
-- Ein Network Task überwacht einen Netzwerkdienst in bestimmten Intervallen und kann separat aktiviert oder deaktiviert werden
+- Ein Network Task überwacht einen Netzwerkdienst in einem bestimmten Intervall
 - Ein Task sendet eine bestimmte Anzahl an Pings, unternimmt eine bestimmte Anzahl von Verbindungsversuchen oder lädt eine Datei oder eine Seite herunter
 - Erfolgreiche und nicht erfolgreiche Versuche werden geloggt
 - Heruntergeladene Dateien können automatisch gelöscht oder vorgehalten werden
