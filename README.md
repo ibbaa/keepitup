@@ -93,5 +93,5 @@ store.password=keepitup
 key.password=keepitup
 key.alias=keepitupkey
 ```
-If you put the two files in a directory named `signing` (the directory must reside in the project root) and follow the naming convention, i.e. the keystore is named `keepitup.jks` and the properties file `signing.properties`, then the build process will find the signing information. Alternatively you can provide two environment variables `KEEPITUP_KEYSTORE` for the keystore and `KEEPITUP_SIGNING_PROPERTIES` pointing to the two files relative to the project root.
+If you put the two files in a directory named `signing` (the directory must reside in the project root) and follow the naming convention, i.e. the keystore is named `keepitup.jks` and the properties file `signing.properties`, then the build process will find the signing information. Alternatively you can provide two environment variables `KEEPITUP_KEYSTORE` and `KEEPITUP_SIGNING_PROPERTIES` pointing to the two files relative to the project root.
 
