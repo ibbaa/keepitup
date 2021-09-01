@@ -25,7 +25,7 @@ It checks network services periodically by sending a ping, connecting to a speci
 
 <b>Note</b>
 
-The app works best if you disable battery optimization. If battery optimization is active, networks tasks execution may be unreliable especially for short intervals, i.e. they may trigger less often and the trigger time may not be exact. There is a link in the app leading to the Android battery settings for the app. Of course, with disabled battery optimization power consumption may be higher.
+The app works best if you disable battery optimization. If battery optimization is active, network tasks execution may be unreliable especially for short intervals, i.e. they may trigger less often and the trigger time may not be exact. There is a link in the app leading to the Android battery settings for the app. Of course, with disabled battery optimization power consumption may be higher.
 
 ## Installation
 
