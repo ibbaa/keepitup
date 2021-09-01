@@ -1,6 +1,8 @@
 # Keep it up
 
-<i>Keep it up</i> checks network services periodically by sending a ping, connecting to a specific port or downloading a site. It can also be used to ensure a connection with a timeout will be kept alive.
+<i>Keep it up</i> is a simple network monitoring app for Android.
+
+It checks network services periodically by sending a ping, connecting to a specific port or downloading a site. It can also be used to ensure a connection with a timeout will be kept alive.
 
 <b>Features</b>
 
