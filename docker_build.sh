@@ -17,8 +17,8 @@
 
 UID=$(id -u)
 GID=$(id -g)
-docker build --no-cache --build-arg UID=$UID --build-arg GID=$GID --build-arg KEEPITUP_KEYSTORE=$KEEPITUP_KEYSTORE --build-arg KEEPITUP_SIGNING_PROPERTIES=$KEEPITUP_SIGNING_PROPERTIES -t ibbaa/keepitup:build .
-docker run $DOCKER_OPTS --rm -v $PWD:/var/keepitup -w /var/keepitup ibbaa/keepitup:build /bin/bash -c "./gradlew assemble"
+docker build --no-cache --build-arg UID=$UID --build-arg GID=$GID -t ibbaa/keepitup:build .
+docker run $DOCKER_OPTS --rm -v $PWD:/var/keepitup -w /var/keepitup ibbaa/keepitup:build /bin/bash -c "./gradlew assemble && ./signing.sh"
 RET=$?
 docker image prune -f
 exit $RET

@@ -16,26 +16,8 @@
 
 apply plugin: 'com.android.application'
 apply plugin: 'com.google.android.gms.oss-licenses-plugin'
-def keyFile = rootProject.file('signing/keepitup.jks')
-def signingFile = rootProject.file('signing/signing.properties')
-if (!keyFile.exists()) {
-    keyFile = rootProject.file(System.getenv("KEEPITUP_KEYSTORE"))
-}
-if (!signingFile.exists()) {
-    signingFile = rootProject.file(System.getenv("KEEPITUP_SIGNING_PROPERTIES"))
-}
-def signingProperties = new Properties()
-signingProperties.load(new FileInputStream(signingFile))
 
 android {
-    signingConfigs {
-        config {
-            keyAlias signingProperties['key.alias']
-            keyPassword signingProperties['key.password']
-            storeFile keyFile
-            storePassword signingProperties['store.password']
-        }
-    }
     compileSdkVersion 30
     defaultConfig {
         applicationId "net.ibbaa.keepitup"
@@ -44,7 +26,6 @@ android {
         versionCode 1
         versionName "1.0.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
-        signingConfig signingConfigs.config
         archivesBaseName = "keepitup"
         buildConfigField "long", "TIMESTAMP", System.currentTimeMillis() + "L"
         buildConfigField "int", "RELEASE_YEAR", '2021'
@@ -60,11 +41,11 @@ android {
         release {
             minifyEnabled true
             shrinkResources true
+            zipAlignEnabled true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-            signingConfig signingConfigs.config
         }
         debug {
-            signingConfig signingConfigs.config
+            zipAlignEnabled true
         }
     }
 }
