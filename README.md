@@ -94,7 +94,7 @@ You have to provide your own signing keys if you build *Keep it up* by yourself.
 
 The docker build does use the `apksigner` tool that is provided with the container, so for the docker build it's not necessary to set `BUILD_TOOLS_PATH`.
 
-Furthermoew you need a keystore with proper keys for signing. You can create a keystore with the following command:
+Furthermore you need a keystore with proper keys for signing. You can create a keystore with the following command:
 
 `keytool -genkey -v -keystore keepitup.jks -alias keepitupkey -keyalg RSA -keysize 2048 -storepass keepitup -keypass keepitup -validity 20000`
 
