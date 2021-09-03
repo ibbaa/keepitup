@@ -92,7 +92,7 @@ The `docker_build.sh` script works for Linux. Docker must be installed of course
 
 You have to provide your own signing keys if you build *Keep it up* by yourself. The script `./signing.sh` can be used for signing. The docker build calls this script after the build. The script calls the tool `apksigner` that ships with the Android SDK. Unfortunately the location of this tool is not fixed and does vary from version to version. So you have to provide the location on your machine in the environment variable `BUILD_TOOLS_PATH`. Usually `apksigner` is located under `android-sdk/build-tools/version`.
 
-The docker build does use the `apksigner` that is provided with the container, so for the docker build it's not necessary to set `BUILD_TOOLS_PATH`.
+The docker build does use the `apksigner` tool that is provided with the container, so for the docker build it's not necessary to set `BUILD_TOOLS_PATH`.
 
 Furthermoew you need a keystore with proper keys for signing. You can create a keystore with the following command:
 
