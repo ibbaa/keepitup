@@ -72,28 +72,41 @@ The two output apk files are located under
 
 `./keepitupmain/build/outputs/apk/debug` for the debug build variant and `./keepitupmain/build/outputs/apk/release` for the release build variant.
 
-### Debug
+The resulting release apk is named `keepitup-release-unsigned.apk` and is unsigned.
 
-For the docker build you don't need any Android tools. Simply call `./docker_build.sh`. The output directories are the same as for the local build. 
+The resulting debug apk is named `keepitup-debug.apk` and is signed with the debug default key.
+
+You can use the script `./signing.sh` for signing the files, but some preparations are necessary (see below).
+
+### Docker
+
+For the docker build you don't need any Android tools. Simply call `./docker_build.sh`. The output directories are the same as for the local build. The docker build signs the files. You must provide a keystore (see below) or the build will fail.
+
+The resulting release apk is named `keepitup-release.apk` and is signed with the provided key.
+
+The resulting debug apk is named `keepitup-debug.apk` and is signed with the provided key.
 
 The `docker_build.sh` script works for Linux. Docker must be installed of course. There is not script for Windows at the moment but it should not be difficult to create one.
 
 ### Signing
 
-You have to provide your own signing keys if you build *Keep it up* by yourself. The build process signs both build variants with the same key and will fail if no key is provided. You need a keystore with proper keys and a properties file with the respective credentials described later on.
+You have to provide your own signing keys if you build *Keep it up* by yourself. The script `./signing.sh` can be used for signing. The docker build calls this script after the build. The script calls the tool `apksigner` that ships with the Android SDK. Unfortunately the location of this tool is not fixed and does vary from version to version. So you have to provide the location on your machine in the environment variable `BUILD_TOOLS_PATH`. Usually `apksigner` is located under `android-sdk/build-tools/version`.
 
-You can create a keystore for with the following command:
+The docker build does use the `apksigner` that is provided with the container, so for the docker build it's not necessary to set `BUILD_TOOLS_PATH`.
+
+Furthermoew you need a keystore with proper keys for signing. You can create a keystore with the following command:
 
 `keytool -genkey -v -keystore keepitup.jks -alias keepitupkey -keyalg RSA -keysize 2048 -storepass keepitup -keypass keepitup -validity 20000`
 
+`keytool` ships with the Java JDK, not with the Android SDK.
+
 The keystore file is named `keepitup.jks` with a key pair `keepitupkey` and the store and key password `keepitup`.
 
-This information has to be provided in a file named `signing.properties`:
+If you follow this naming convention and put the `keepitup.jks` in a directory named `signing` (the directory must reside in the project root), then the script `./signing.sh` will find the signing information. Alternatively you can provide the information with the four environment variables
 
 ```
-store.password=keepitup
-key.password=keepitup
-key.alias=keepitupkey
+KEEPITUP_KEYSTORE_FILE for the path to the keystore file (default ./signing/keepitup.jks)
+KEEPITUP_KEY_ALIAS for the key alias (default keepitupkey)
+KEEPITUP_KEYSTORE_PASS for the keystore password (default keepitup)
+KEEPITUP_KEY_PASS for the key password (default keepitup)
 ```
-If you put the two files in a directory named `signing` (the directory must reside in the project root) and follow the naming convention, i.e. the keystore is named `keepitup.jks` and the properties file `signing.properties`, then the build process will find the signing information. Alternatively you can provide two environment variables `KEEPITUP_KEYSTORE` and `KEEPITUP_SIGNING_PROPERTIES` pointing to the two files relative to the project root.
-
