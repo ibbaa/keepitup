@@ -1,3 +1,0 @@
-- Download löscht bei Abbruch Datei nicht
-- Samsung im Dialog seltsame Überblendung
-- Feature Konfiguration Import Export
