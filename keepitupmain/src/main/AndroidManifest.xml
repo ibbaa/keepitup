@@ -16,9 +16,7 @@
   -->
 
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="net.ibbaa.keepitup"
-    android:versionCode="1"
-    android:versionName="0.1.0">
+    package="net.ibbaa.keepitup">
 
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
