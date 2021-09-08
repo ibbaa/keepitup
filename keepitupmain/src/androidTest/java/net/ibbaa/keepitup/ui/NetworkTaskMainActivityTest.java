@@ -16,26 +16,6 @@
 
 package net.ibbaa.keepitup.ui;
 
-import androidx.test.core.app.ActivityScenario;
-import androidx.test.espresso.action.ViewActions;
-import androidx.test.ext.junit.runners.AndroidJUnit4;
-import androidx.test.filters.MediumTest;
-import androidx.test.platform.app.InstrumentationRegistry;
-
-import org.junit.Test;
-import org.junit.runner.RunWith;
-
-import java.util.Calendar;
-import java.util.GregorianCalendar;
-
-import net.ibbaa.keepitup.R;
-import net.ibbaa.keepitup.model.AccessType;
-import net.ibbaa.keepitup.model.LogEntry;
-import net.ibbaa.keepitup.model.NetworkTask;
-import net.ibbaa.keepitup.test.mock.TestRegistry;
-import net.ibbaa.keepitup.ui.adapter.NetworkTaskAdapter;
-import net.ibbaa.keepitup.ui.adapter.NetworkTaskUIWrapper;
-
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.Espresso.openActionBarOverflowOrOptionsMenu;
 import static androidx.test.espresso.action.ViewActions.click;
@@ -54,6 +34,26 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertTrue;
+
+import androidx.test.core.app.ActivityScenario;
+import androidx.test.espresso.action.ViewActions;
+import androidx.test.ext.junit.runners.AndroidJUnit4;
+import androidx.test.filters.MediumTest;
+import androidx.test.platform.app.InstrumentationRegistry;
+
+import net.ibbaa.keepitup.R;
+import net.ibbaa.keepitup.model.AccessType;
+import net.ibbaa.keepitup.model.LogEntry;
+import net.ibbaa.keepitup.model.NetworkTask;
+import net.ibbaa.keepitup.test.mock.TestRegistry;
+import net.ibbaa.keepitup.ui.adapter.NetworkTaskAdapter;
+import net.ibbaa.keepitup.ui.adapter.NetworkTaskUIWrapper;
+
+import org.junit.Test;
+import org.junit.runner.RunWith;
+
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 
 @MediumTest
 @RunWith(AndroidJUnit4.class)
@@ -313,7 +313,7 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
         onView(withText("Defaults")).perform(click());
         onView(withId(R.id.textview_activity_defaults_defaults_label)).check(matches(withText("Defaults")));
         onView(isRoot()).perform(ViewActions.pressBack());
-        onView(withId(R.id.textview_dialog_info_thirdparty)).check(doesNotExist());
+        onView(withId(R.id.textview_activity_defaults_defaults_label)).check(doesNotExist());
         openActionBarOverflowOrOptionsMenu(TestRegistry.getContext());
         onView(withText("Settings")).perform(click());
         onView(withId(R.id.textview_activity_global_settings_global_label)).check(matches(withText("Global settings")));

@@ -39,7 +39,5 @@
     <dimen name="textview_dialog_info_license_text_size">8sp</dimen>
     <dimen name="textview_dialog_info_github_padding">2dp</dimen>
     <dimen name="textview_dialog_info_github_text_size">8sp</dimen>
-    <dimen name="textview_dialog_info_thirdparty_padding">2dp</dimen>
-    <dimen name="textview_dialog_info_thirdparty_text_size">8sp</dimen>
     <dimen name="imageview_dialog_info_ok_padding_top">10dp</dimen>
 </resources>

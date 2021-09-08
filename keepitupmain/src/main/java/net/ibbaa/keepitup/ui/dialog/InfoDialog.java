@@ -16,11 +16,7 @@
 
 package net.ibbaa.keepitup.ui.dialog;
 
-import android.content.Intent;
 import android.os.Bundle;
-import android.text.SpannableString;
-import android.text.Spanned;
-import android.text.style.URLSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -30,17 +26,15 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.DialogFragment;
 
-import com.google.android.gms.oss.licenses.OssLicensesMenuActivity;
+import net.ibbaa.keepitup.BuildConfig;
+import net.ibbaa.keepitup.R;
+import net.ibbaa.keepitup.logging.Log;
+import net.ibbaa.keepitup.util.BundleUtil;
 
 import java.text.DateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
-
-import net.ibbaa.keepitup.BuildConfig;
-import net.ibbaa.keepitup.R;
-import net.ibbaa.keepitup.logging.Log;
-import net.ibbaa.keepitup.util.BundleUtil;
 
 public class InfoDialog extends DialogFragment {
 
@@ -58,7 +52,6 @@ public class InfoDialog extends DialogFragment {
         prepareBuildInfo(view);
         prepareCopyright(view);
         prepareLicense(view);
-        prepareThirdparty(view);
         prepareOkImageButton(view);
         return view;
     }
@@ -86,16 +79,6 @@ public class InfoDialog extends DialogFragment {
         licenseText.setOnClickListener(this::onLicenseClicked);
     }
 
-    private void prepareThirdparty(View view) {
-        Log.d(InfoDialog.class.getName(), "prepareThirdparty");
-        String thirdparty = getResources().getString(R.string.text_dialog_info_thirdparty);
-        TextView thirdpartyText = view.findViewById(R.id.textview_dialog_info_thirdparty);
-        SpannableString spannableThirdparty = new SpannableString(thirdparty);
-        spannableThirdparty.setSpan(new URLSpan(""), 0, spannableThirdparty.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-        thirdpartyText.setText(spannableThirdparty, TextView.BufferType.SPANNABLE);
-        thirdpartyText.setOnClickListener(this::onThirdpartyClicked);
-    }
-
     private void prepareOkImageButton(View view) {
         Log.d(InfoDialog.class.getName(), "prepareOkImageButton");
         ImageView okImage = view.findViewById(R.id.imageview_dialog_info_ok);
@@ -110,12 +93,6 @@ public class InfoDialog extends DialogFragment {
         licenseDialog.setArguments(bundle);
         Log.d(InfoDialog.class.getName(), "Opening license dialog.");
         licenseDialog.show(getParentFragmentManager(), RawTextDialog.class.getName());
-    }
-
-    private void onThirdpartyClicked(View view) {
-        Log.d(InfoDialog.class.getName(), "onThirdpartyClicked");
-        OssLicensesMenuActivity.setActivityTitle(getString(R.string.text_dialog_info_thirdparty_title));
-        startActivity(new Intent(getActivity(), OssLicensesMenuActivity.class));
     }
 
     private void onOkClicked(View view) {

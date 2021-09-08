@@ -18,7 +18,6 @@ package net.ibbaa.keepitup.ui.dialog;
 
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
-import static androidx.test.espresso.assertion.ViewAssertions.doesNotExist;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.matcher.ViewMatchers.isRoot;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
@@ -27,7 +26,6 @@ import static org.hamcrest.CoreMatchers.containsString;
 import static org.junit.Assert.assertEquals;
 
 import androidx.test.core.app.ActivityScenario;
-import androidx.test.espresso.action.ViewActions;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.MediumTest;
 
@@ -92,29 +90,16 @@ public class InfoDialogTest extends BaseUITest {
     }
 
     @Test
-    public void testThirdparty() {
-        openInfoDialog();
-        onView(withId(R.id.textview_dialog_info_thirdparty)).check(matches(withText("Thirdparty licences")));
-        onView(withId(R.id.textview_dialog_info_thirdparty)).perform(click());
-        onView(withId(R.id.textview_dialog_info_thirdparty)).check(doesNotExist());
-        onView(isRoot()).perform(ViewActions.pressBack());
-        onView(withId(R.id.textview_dialog_info_thirdparty)).check(matches(withText("Thirdparty licences")));
-    }
-
-    @Test
     public void testScreenRotation() {
         openInfoDialog();
         onView(withId(R.id.textview_dialog_info_version)).check(matches(withText(BuildConfig.VERSION_NAME)));
         onView(withId(R.id.textview_dialog_info_copyright)).check(matches(withText(containsString("Copyright"))));
-        onView(withId(R.id.textview_dialog_info_thirdparty)).check(matches(withText("Thirdparty licences")));
         rotateScreen(activityScenario);
         onView(withId(R.id.textview_dialog_info_version)).check(matches(withText(BuildConfig.VERSION_NAME)));
         onView(withId(R.id.textview_dialog_info_copyright)).check(matches(withText(containsString("Copyright"))));
-        onView(withId(R.id.textview_dialog_info_thirdparty)).check(matches(withText("Thirdparty licences")));
         rotateScreen(activityScenario);
         onView(withId(R.id.textview_dialog_info_version)).check(matches(withText(BuildConfig.VERSION_NAME)));
         onView(withId(R.id.textview_dialog_info_copyright)).check(matches(withText(containsString("Copyright"))));
-        onView(withId(R.id.textview_dialog_info_thirdparty)).check(matches(withText("Thirdparty licences")));
         onView(withId(R.id.imageview_dialog_info_ok)).perform(click());
     }
 
