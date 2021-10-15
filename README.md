@@ -86,7 +86,7 @@ The resulting release apk is named `keepitup-release.apk` and is signed with the
 
 The resulting debug apk is named `keepitup-debug.apk` and is signed with the provided key.
 
-The `docker_build.sh` script works for Linux. Docker must be installed of course. There is not script for Windows at the moment but it should not be difficult to create one.
+The `docker_build.sh` script works for Linux. Docker must be installed of course. There is no script for Windows at the moment but it should not be difficult to create one.
 
 ### Signing
 
