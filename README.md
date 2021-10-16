@@ -29,13 +29,25 @@ The app works best if you disable battery optimization. If battery optimization 
 
 ## Installation
 
-The app requires Android 5.0 (API level 21) and should run with all subsequent versions, however it's not tested with all versions and devices. Please download one of the provided apk files. You have to allow the installation from unknown sources. With older Android versions (7.x and lower) you have to allow this globally in the security settings. With recent versions of Android this can be configured per app and you have to allow it for the file manager or browser that is used for installation.
+The app requires Android 5.0 (API level 21) and should run with all subsequent versions, however it's not tested with all versions and devices. 
+
+The preferred way is the installation from F-Droid:
+
+[<img src="https://fdroid.gitlab.io/artwork/badge/get-it-on.png"
+    alt="Get it on F-Droid"
+    height="80">](https://f-droid.org/packages/net.ibbaa.keepitup)
+    
+From F-Droid the app will be updated automatically.
+
+You can also download the files from here on Github. The releases are tagged. Please download one of the provided apk files. You have to allow the installation from unknown sources. With older Android versions (7.x and lower) you have to allow this globally in the security settings. With recent versions of Android this can be configured per app and you have to allow it for the file manager or browser that is used for installation.
 
 Two apk files are provided:
 
 `keepitup-debug.apk` and `keepitup-release.apk`
 
 The debug variant contains debug information and provides some logging features in the system settings. The release variant is optimized and runs faster. It is recommended to use this version aside from development purposes.
+
+Please keep in mind that the version here on Github is signed with a different key than the version on F-Droid. You will get an error if you try to install the Github version and the F-Droid version is already installed (and vice versa). You have to deinstall the app first to do that.
 
 ## Signature
 
