@@ -34,10 +34,6 @@ import androidx.fragment.app.DialogFragment;
 
 import com.google.android.material.switchmaterial.SwitchMaterial;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-
 import net.ibbaa.keepitup.R;
 import net.ibbaa.keepitup.logging.Log;
 import net.ibbaa.keepitup.model.AccessType;
@@ -54,6 +50,11 @@ import net.ibbaa.keepitup.ui.validation.Validator;
 import net.ibbaa.keepitup.util.BundleUtil;
 import net.ibbaa.keepitup.util.NumberUtil;
 import net.ibbaa.keepitup.util.StringUtil;
+import net.ibbaa.keepitup.util.UIUtil;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 
 public class NetworkTaskEditDialog extends DialogFragment implements ContextOptionsSupport {
 
@@ -164,6 +165,7 @@ public class NetworkTaskEditDialog extends DialogFragment implements ContextOpti
             AccessType accessType = accessTypes[ii];
             RadioButton newRadioButton = new RadioButton(requireContext());
             newRadioButton.setText(mapping.getAccessTypeText(accessType));
+            newRadioButton.setTextColor(UIUtil.getStyledColor(getActivity(), android.R.attr.textColor));
             newRadioButton.setId(View.generateViewId());
             if (savedSelectedAccessType != null) {
                 newRadioButton.setChecked(accessType.equals(savedSelectedAccessType));

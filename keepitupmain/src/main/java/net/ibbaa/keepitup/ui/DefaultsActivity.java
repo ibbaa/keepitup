@@ -30,10 +30,6 @@ import androidx.cardview.widget.CardView;
 
 import com.google.android.material.switchmaterial.SwitchMaterial;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-
 import net.ibbaa.keepitup.R;
 import net.ibbaa.keepitup.logging.Log;
 import net.ibbaa.keepitup.model.AccessType;
@@ -49,6 +45,11 @@ import net.ibbaa.keepitup.ui.validation.PortFieldValidator;
 import net.ibbaa.keepitup.ui.validation.URLFieldValidator;
 import net.ibbaa.keepitup.util.NumberUtil;
 import net.ibbaa.keepitup.util.StringUtil;
+import net.ibbaa.keepitup.util.UIUtil;
+
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 public class DefaultsActivity extends SettingsInputActivity {
 
@@ -108,6 +109,7 @@ public class DefaultsActivity extends SettingsInputActivity {
             AccessType accessType = accessTypes[ii];
             RadioButton newRadioButton = new RadioButton(this);
             newRadioButton.setText(mapping.getAccessTypeText(accessType));
+            newRadioButton.setTextColor(UIUtil.getStyledColor(this, android.R.attr.textColor));
             newRadioButton.setId(View.generateViewId());
             if (type == null && ii == 0) {
                 newRadioButton.setChecked(true);

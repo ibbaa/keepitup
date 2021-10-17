@@ -21,14 +21,14 @@ import android.content.Context;
 
 import com.google.common.base.Charsets;
 
-import java.io.File;
-import java.io.FileOutputStream;
-
 import net.ibbaa.keepitup.logging.Log;
 import net.ibbaa.keepitup.resources.JSONSystemSetup;
 import net.ibbaa.keepitup.resources.SystemSetupResult;
 import net.ibbaa.keepitup.ui.ExportSupport;
 import net.ibbaa.keepitup.util.StreamUtil;
+
+import java.io.File;
+import java.io.FileOutputStream;
 
 public class ExportTask extends UIBackgroundTask<Boolean> {
 

@@ -22,9 +22,6 @@ import android.widget.EditText;
 
 import androidx.fragment.app.FragmentManager;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import net.ibbaa.keepitup.logging.Log;
 import net.ibbaa.keepitup.ui.clipboard.IClipboardManager;
 import net.ibbaa.keepitup.ui.dialog.ContextOption;
@@ -32,6 +29,9 @@ import net.ibbaa.keepitup.ui.dialog.ContextOptionsDialog;
 import net.ibbaa.keepitup.util.BundleUtil;
 import net.ibbaa.keepitup.util.StringUtil;
 import net.ibbaa.keepitup.util.UIUtil;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class ContextOptionsSupportManager {
 
@@ -116,7 +116,7 @@ public class ContextOptionsSupportManager {
 
     private boolean doesClipboardContainSuitableData(EditText editText) {
         Log.d(ContextOptionsSupportManager.class.getName(), "doesClipboardContainSuitableData");
-        boolean isNumericField = UIUtil.isInpuTypeNumber(editText.getInputType());
+        boolean isNumericField = UIUtil.isInputTypeNumber(editText.getInputType());
         if (!isNumericField) {
             Log.d(ContextOptionsSupportManager.class.getName(), "Field is not numeric");
             return clipboardManager.hasData();
