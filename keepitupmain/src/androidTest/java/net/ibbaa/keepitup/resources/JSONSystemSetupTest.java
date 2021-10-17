@@ -156,6 +156,7 @@ public class JSONSystemSetupTest {
         preferenceManager.setPreferenceExportFolder("folderExport");
         preferenceManager.setPreferenceFileLoggerEnabled(true);
         preferenceManager.setPreferenceFileDumpEnabled(true);
+        preferenceManager.setPreferenceTheme(5);
         SystemSetupResult result = setup.exportData();
         JSONObject jsonData = new JSONObject(result.getData());
         JSONObject settingsData = (JSONObject) jsonData.get("preferences");
@@ -179,6 +180,7 @@ public class JSONSystemSetupTest {
         assertEquals(30, systemSettingsData.getInt("preferenceExternalStorageType"));
         assertTrue(systemSettingsData.getBoolean("preferenceFileLoggerEnabled"));
         assertTrue(systemSettingsData.getBoolean("preferenceFileDumpEnabled"));
+        assertEquals(5, systemSettingsData.getInt("preferenceTheme"));
     }
 
     @Test
@@ -188,6 +190,7 @@ public class JSONSystemSetupTest {
         preferenceManager.setPreferenceExternalStorageType(30);
         preferenceManager.setPreferencePort(100000);
         preferenceManager.setPreferenceInterval(-5);
+        preferenceManager.setPreferenceTheme(5);
         SystemSetupResult result = setup.exportData();
         JSONObject jsonData = new JSONObject(result.getData());
         JSONObject settingsData = (JSONObject) jsonData.get("preferences");
@@ -197,6 +200,7 @@ public class JSONSystemSetupTest {
         assertEquals(25, globalSettingsData.getInt("preferencePingCount"));
         assertEquals(25, globalSettingsData.getInt("preferenceConnectCount"));
         assertEquals(30, systemSettingsData.getInt("preferenceExternalStorageType"));
+        assertEquals(5, systemSettingsData.getInt("preferenceTheme"));
         assertEquals(100000, defaultsData.getInt("preferencePort"));
         assertEquals(-5, defaultsData.getInt("preferenceInterval"));
     }
@@ -326,6 +330,7 @@ public class JSONSystemSetupTest {
         preferenceManager.setPreferenceExportFolder("folderExport");
         preferenceManager.setPreferenceFileLoggerEnabled(true);
         preferenceManager.setPreferenceFileDumpEnabled(true);
+        preferenceManager.setPreferenceTheme(1);
         SystemSetupResult exportResult = setup.exportData();
         preferenceManager.removeAllPreferences();
         SystemSetupResult importResult = setup.importData(exportResult.getData());
@@ -348,6 +353,7 @@ public class JSONSystemSetupTest {
         assertEquals("folderExport", preferenceManager.getPreferenceExportFolder());
         assertTrue(preferenceManager.getPreferenceFileLoggerEnabled());
         assertTrue(preferenceManager.getPreferenceFileDumpEnabled());
+        assertEquals(1, preferenceManager.getPreferenceTheme());
     }
 
     @Test
@@ -357,6 +363,7 @@ public class JSONSystemSetupTest {
         preferenceManager.setPreferenceExternalStorageType(2);
         preferenceManager.setPreferencePort(100000);
         preferenceManager.setPreferenceInterval(-5);
+        preferenceManager.setPreferenceTheme(5);
         SystemSetupResult exportResult = setup.exportData();
         preferenceManager.removeAllPreferences();
         SystemSetupResult importResult = setup.importData(exportResult.getData());
@@ -367,6 +374,7 @@ public class JSONSystemSetupTest {
         assertEquals(0, preferenceManager.getPreferenceExternalStorageType());
         assertEquals(22, preferenceManager.getPreferencePort());
         assertEquals(15, preferenceManager.getPreferenceInterval());
+        assertEquals(-1, preferenceManager.getPreferenceTheme());
     }
 
     @Test

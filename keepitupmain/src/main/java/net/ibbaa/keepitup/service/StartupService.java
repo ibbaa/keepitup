@@ -69,6 +69,7 @@ public class StartupService extends BroadcastReceiver {
         cleanupLogs(context);
         Log.d(StartupService.class.getName(), "Initialize scheduler.");
         initializeScheduler(context);
+        initializeTheme(context);
     }
 
     private void initializeDatabase(Context context) {
@@ -118,6 +119,19 @@ public class StartupService extends BroadcastReceiver {
             scheduler.startup();
         } catch (Exception exc) {
             Log.e(StartupService.class.getName(), "Error on starting pending network tasks.", exc);
+        }
+    }
+
+    private void initializeTheme(Context context) {
+        Log.d(StartupService.class.getName(), "initializeTheme");
+        try {
+            PreferenceManager preferenceManager = new PreferenceManager(context);
+            IThemeManager themeManager = new SystemThemeManager();
+            int themeCode = preferenceManager.getPreferenceTheme();
+            Log.d(StartupService.class.getName(), "theme is " + themeManager.getThemeName(themeCode));
+            themeManager.setThemeByCode(themeCode);
+        } catch (Exception exc) {
+            Log.e(StartupService.class.getName(), "Error initializing theme.", exc);
         }
     }
 

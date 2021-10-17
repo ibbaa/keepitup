@@ -19,15 +19,15 @@ package net.ibbaa.keepitup.resources;
 import android.content.Context;
 import android.content.res.Resources;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
-
 import net.ibbaa.keepitup.R;
 import net.ibbaa.keepitup.logging.Log;
 import net.ibbaa.keepitup.model.AccessType;
 import net.ibbaa.keepitup.util.NumberUtil;
 import net.ibbaa.keepitup.util.URLUtil;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
 
 public class PreferenceSetup {
 
@@ -71,6 +71,7 @@ public class PreferenceSetup {
         systemSettings.put("preferenceExportFolder", preferenceManager.getPreferenceExportFolder());
         systemSettings.put("preferenceFileLoggerEnabled", preferenceManager.getPreferenceFileLoggerEnabled());
         systemSettings.put("preferenceFileDumpEnabled", preferenceManager.getPreferenceFileDumpEnabled());
+        systemSettings.put("preferenceTheme", preferenceManager.getPreferenceTheme());
         return systemSettings;
     }
 
@@ -198,6 +199,12 @@ public class PreferenceSetup {
         } else {
             preferenceManager.removePreferenceFileDumpEnabled();
         }
+        Object theme = systemSettings.get("preferenceTheme");
+        if (isValidInteger(theme, -1, 2)) {
+            preferenceManager.setPreferenceTheme(NumberUtil.getIntValue(theme, -1));
+        } else {
+            preferenceManager.removePreferenceTheme();
+        }
     }
 
     private boolean isValidInteger(Object value, int min, int max) {
@@ -257,6 +264,7 @@ public class PreferenceSetup {
         preferenceManager.removePreferenceExportFolder();
         preferenceManager.removePreferenceFileLoggerEnabled();
         preferenceManager.removePreferenceFileDumpEnabled();
+        preferenceManager.removePreferenceTheme();
     }
 
     public void removeAllSettings() {

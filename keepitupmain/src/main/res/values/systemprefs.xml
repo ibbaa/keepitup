@@ -23,6 +23,8 @@
     <string name="export_file_prefix">keepitup_config</string>
     <string name="external_storage_type_key">external_storage_type_key</string>
     <integer name="external_storage_type_default">0</integer>
+    <string name="theme_key">theme_key</string>
+    <integer name="theme_default">-1</integer>
     <string name="file_dump_enabled_key">file_dump_enabled_key</string>
     <bool name="file_dump_enabled_default">false</bool>
     <string name="file_logger_enabled_key">file_logger_enabled_key</string>

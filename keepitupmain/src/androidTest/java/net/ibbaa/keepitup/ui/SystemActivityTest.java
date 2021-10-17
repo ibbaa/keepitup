@@ -16,42 +16,6 @@
 
 package net.ibbaa.keepitup.ui;
 
-import androidx.test.core.app.ActivityScenario;
-import androidx.test.ext.junit.runners.AndroidJUnit4;
-import androidx.test.filters.MediumTest;
-
-import com.google.common.base.Charsets;
-
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.util.List;
-
-import net.ibbaa.keepitup.R;
-import net.ibbaa.keepitup.logging.Dump;
-import net.ibbaa.keepitup.logging.Log;
-import net.ibbaa.keepitup.model.AccessType;
-import net.ibbaa.keepitup.model.LogEntry;
-import net.ibbaa.keepitup.model.NetworkTask;
-import net.ibbaa.keepitup.resources.JSONSystemSetup;
-import net.ibbaa.keepitup.resources.PreferenceManager;
-import net.ibbaa.keepitup.resources.SystemSetupResult;
-import net.ibbaa.keepitup.service.NetworkTaskProcessServiceScheduler;
-import net.ibbaa.keepitup.test.mock.MockAlarmManager;
-import net.ibbaa.keepitup.test.mock.MockDBPurgeTask;
-import net.ibbaa.keepitup.test.mock.MockExportTask;
-import net.ibbaa.keepitup.test.mock.MockImportTask;
-import net.ibbaa.keepitup.test.mock.TestRegistry;
-import net.ibbaa.keepitup.ui.sync.DBPurgeTask;
-import net.ibbaa.keepitup.ui.sync.ExportTask;
-import net.ibbaa.keepitup.ui.sync.ImportTask;
-import net.ibbaa.keepitup.util.StreamUtil;
-
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.Espresso.openActionBarOverflowOrOptionsMenu;
 import static androidx.test.espresso.action.ViewActions.click;
@@ -75,12 +39,51 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
+import androidx.appcompat.app.AppCompatDelegate;
+import androidx.test.core.app.ActivityScenario;
+import androidx.test.ext.junit.runners.AndroidJUnit4;
+import androidx.test.filters.MediumTest;
+
+import com.google.common.base.Charsets;
+
+import net.ibbaa.keepitup.R;
+import net.ibbaa.keepitup.logging.Dump;
+import net.ibbaa.keepitup.logging.Log;
+import net.ibbaa.keepitup.model.AccessType;
+import net.ibbaa.keepitup.model.LogEntry;
+import net.ibbaa.keepitup.model.NetworkTask;
+import net.ibbaa.keepitup.resources.JSONSystemSetup;
+import net.ibbaa.keepitup.resources.PreferenceManager;
+import net.ibbaa.keepitup.resources.SystemSetupResult;
+import net.ibbaa.keepitup.service.NetworkTaskProcessServiceScheduler;
+import net.ibbaa.keepitup.test.mock.MockAlarmManager;
+import net.ibbaa.keepitup.test.mock.MockDBPurgeTask;
+import net.ibbaa.keepitup.test.mock.MockExportTask;
+import net.ibbaa.keepitup.test.mock.MockImportTask;
+import net.ibbaa.keepitup.test.mock.MockThemeManager;
+import net.ibbaa.keepitup.test.mock.TestRegistry;
+import net.ibbaa.keepitup.ui.sync.DBPurgeTask;
+import net.ibbaa.keepitup.ui.sync.ExportTask;
+import net.ibbaa.keepitup.ui.sync.ImportTask;
+import net.ibbaa.keepitup.util.StreamUtil;
+
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.util.List;
+
 @MediumTest
 @RunWith(AndroidJUnit4.class)
 public class SystemActivityTest extends BaseUITest {
 
     private ActivityScenario<?> activityScenario;
     private MockAlarmManager alarmManager;
+    private MockThemeManager themeManager;
 
     @Before
     public void beforeEachTestMethod() {
@@ -89,6 +92,9 @@ public class SystemActivityTest extends BaseUITest {
         ((SystemActivity) getActivity(activityScenario)).injectScheduler(getScheduler());
         alarmManager = (MockAlarmManager) getScheduler().getAlarmManager();
         alarmManager.reset();
+        themeManager = new MockThemeManager();
+        themeManager.reset();
+        ((SystemActivity) getActivity(activityScenario)).injectThemeManager(themeManager);
     }
 
     @After
@@ -110,6 +116,7 @@ public class SystemActivityTest extends BaseUITest {
         getPreferenceManager().setPreferenceNotificationInactiveNetwork(true);
         getPreferenceManager().setPreferenceDownloadExternalStorage(true);
         getPreferenceManager().setPreferenceExternalStorageType(30);
+        getPreferenceManager().setPreferenceTheme(5);
         getPreferenceManager().setPreferenceDownloadFolder("folder");
         getPreferenceManager().setPreferenceDownloadKeep(true);
         getPreferenceManager().setPreferenceAccessType(AccessType.CONNECT);
@@ -137,6 +144,7 @@ public class SystemActivityTest extends BaseUITest {
         assertTrue(getPreferenceManager().getPreferenceNotificationInactiveNetwork());
         assertTrue(getPreferenceManager().getPreferenceDownloadExternalStorage());
         assertEquals(30, getPreferenceManager().getPreferenceExternalStorageType());
+        assertEquals(5, getPreferenceManager().getPreferenceTheme());
         assertEquals("folder", getPreferenceManager().getPreferenceDownloadFolder());
         assertTrue(getPreferenceManager().getPreferenceDownloadKeep());
         assertEquals(AccessType.CONNECT, getPreferenceManager().getPreferenceAccessType());
@@ -164,6 +172,7 @@ public class SystemActivityTest extends BaseUITest {
         getPreferenceManager().setPreferenceNotificationInactiveNetwork(true);
         getPreferenceManager().setPreferenceDownloadExternalStorage(true);
         getPreferenceManager().setPreferenceExternalStorageType(1);
+        getPreferenceManager().setPreferenceTheme(1);
         getPreferenceManager().setPreferenceDownloadFolder("folder");
         getPreferenceManager().setPreferenceDownloadKeep(true);
         getPreferenceManager().setPreferenceAccessType(AccessType.CONNECT);
@@ -177,6 +186,7 @@ public class SystemActivityTest extends BaseUITest {
         getPreferenceManager().setPreferenceFileLoggerEnabled(true);
         getPreferenceManager().setPreferenceFileDumpEnabled(true);
         onView(withId(R.id.radiobutton_activity_system_external_storage_type_sdcard)).perform(click());
+        onView(withId(R.id.radiobutton_activity_system_theme_light)).perform(click());
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(scrollTo());
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(click());
         onView(withId(R.id.switch_activity_system_file_dump_enabled)).perform(scrollTo());
@@ -195,6 +205,7 @@ public class SystemActivityTest extends BaseUITest {
         assertTrue(getPreferenceManager().getPreferenceNotificationInactiveNetwork());
         assertTrue(getPreferenceManager().getPreferenceDownloadExternalStorage());
         assertEquals(1, getPreferenceManager().getPreferenceExternalStorageType());
+        assertEquals(1, getPreferenceManager().getPreferenceTheme());
         assertEquals("folder", getPreferenceManager().getPreferenceDownloadFolder());
         assertTrue(getPreferenceManager().getPreferenceDownloadKeep());
         assertEquals(AccessType.CONNECT, getPreferenceManager().getPreferenceAccessType());
@@ -222,6 +233,7 @@ public class SystemActivityTest extends BaseUITest {
         getPreferenceManager().setPreferenceNotificationInactiveNetwork(true);
         getPreferenceManager().setPreferenceDownloadExternalStorage(true);
         getPreferenceManager().setPreferenceExternalStorageType(30);
+        getPreferenceManager().setPreferenceTheme(5);
         getPreferenceManager().setPreferenceDownloadFolder("folder");
         getPreferenceManager().setPreferenceDownloadKeep(true);
         getPreferenceManager().setPreferenceAccessType(AccessType.CONNECT);
@@ -246,6 +258,7 @@ public class SystemActivityTest extends BaseUITest {
         assertFalse(getPreferenceManager().getPreferenceNotificationInactiveNetwork());
         assertFalse(getPreferenceManager().getPreferenceDownloadExternalStorage());
         assertEquals(0, getPreferenceManager().getPreferenceExternalStorageType());
+        assertEquals(-1, getPreferenceManager().getPreferenceTheme());
         assertEquals("download", getPreferenceManager().getPreferenceDownloadFolder());
         assertFalse(getPreferenceManager().getPreferenceDownloadKeep());
         assertEquals(AccessType.PING, getPreferenceManager().getPreferenceAccessType());
@@ -256,6 +269,7 @@ public class SystemActivityTest extends BaseUITest {
         assertFalse(getPreferenceManager().getPreferenceNotification());
         assertFalse(getPreferenceManager().getPreferenceFileLoggerEnabled());
         assertFalse(getPreferenceManager().getPreferenceFileDumpEnabled());
+        assertEquals(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM, themeManager.getCode());
     }
 
     @Test
@@ -271,6 +285,7 @@ public class SystemActivityTest extends BaseUITest {
         getPreferenceManager().setPreferenceNotificationInactiveNetwork(true);
         getPreferenceManager().setPreferenceDownloadExternalStorage(true);
         getPreferenceManager().setPreferenceExternalStorageType(30);
+        getPreferenceManager().setPreferenceTheme(5);
         getPreferenceManager().setPreferenceDownloadFolder("folder");
         getPreferenceManager().setPreferenceDownloadKeep(true);
         getPreferenceManager().setPreferenceAccessType(AccessType.CONNECT);
@@ -298,6 +313,7 @@ public class SystemActivityTest extends BaseUITest {
         assertFalse(getPreferenceManager().getPreferenceNotificationInactiveNetwork());
         assertFalse(getPreferenceManager().getPreferenceDownloadExternalStorage());
         assertEquals(0, getPreferenceManager().getPreferenceExternalStorageType());
+        assertEquals(-1, getPreferenceManager().getPreferenceTheme());
         assertEquals("download", getPreferenceManager().getPreferenceDownloadFolder());
         assertFalse(getPreferenceManager().getPreferenceDownloadKeep());
         assertEquals(AccessType.PING, getPreferenceManager().getPreferenceAccessType());
@@ -308,6 +324,7 @@ public class SystemActivityTest extends BaseUITest {
         assertFalse(getPreferenceManager().getPreferenceNotification());
         assertFalse(getPreferenceManager().getPreferenceFileLoggerEnabled());
         assertFalse(getPreferenceManager().getPreferenceFileDumpEnabled());
+        assertEquals(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM, themeManager.getCode());
     }
 
     @Test
@@ -324,6 +341,7 @@ public class SystemActivityTest extends BaseUITest {
         getPreferenceManager().setPreferenceNotificationInactiveNetwork(true);
         getPreferenceManager().setPreferenceDownloadExternalStorage(true);
         getPreferenceManager().setPreferenceExternalStorageType(30);
+        getPreferenceManager().setPreferenceTheme(1);
         getPreferenceManager().setPreferenceDownloadFolder("folder");
         getPreferenceManager().setPreferenceDownloadKeep(true);
         getPreferenceManager().setPreferenceAccessType(AccessType.CONNECT);
@@ -354,6 +372,7 @@ public class SystemActivityTest extends BaseUITest {
         assertTrue(getPreferenceManager().getPreferenceNotificationInactiveNetwork());
         assertTrue(getPreferenceManager().getPreferenceDownloadExternalStorage());
         assertEquals(30, getPreferenceManager().getPreferenceExternalStorageType());
+        assertEquals(1, getPreferenceManager().getPreferenceTheme());
         assertEquals("folder", getPreferenceManager().getPreferenceDownloadFolder());
         assertTrue(getPreferenceManager().getPreferenceDownloadKeep());
         assertEquals(AccessType.CONNECT, getPreferenceManager().getPreferenceAccessType());
@@ -382,6 +401,7 @@ public class SystemActivityTest extends BaseUITest {
         getPreferenceManager().setPreferenceNotificationInactiveNetwork(true);
         getPreferenceManager().setPreferenceDownloadExternalStorage(true);
         getPreferenceManager().setPreferenceExternalStorageType(1);
+        getPreferenceManager().setPreferenceTheme(1);
         getPreferenceManager().setPreferenceDownloadFolder("folder");
         getPreferenceManager().setPreferenceDownloadKeep(true);
         getPreferenceManager().setPreferenceAccessType(AccessType.CONNECT);
@@ -395,6 +415,7 @@ public class SystemActivityTest extends BaseUITest {
         getPreferenceManager().setPreferenceFileLoggerEnabled(true);
         getPreferenceManager().setPreferenceFileDumpEnabled(true);
         onView(withId(R.id.radiobutton_activity_system_external_storage_type_sdcard)).perform(click());
+        onView(withId(R.id.radiobutton_activity_system_theme_light)).perform(click());
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(scrollTo());
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(click());
         onView(withId(R.id.switch_activity_system_file_dump_enabled)).perform(scrollTo());
@@ -415,6 +436,7 @@ public class SystemActivityTest extends BaseUITest {
         assertTrue(getPreferenceManager().getPreferenceNotificationInactiveNetwork());
         assertTrue(getPreferenceManager().getPreferenceDownloadExternalStorage());
         assertEquals(1, getPreferenceManager().getPreferenceExternalStorageType());
+        assertEquals(1, getPreferenceManager().getPreferenceTheme());
         assertEquals("folder", getPreferenceManager().getPreferenceDownloadFolder());
         assertTrue(getPreferenceManager().getPreferenceDownloadKeep());
         assertEquals(AccessType.CONNECT, getPreferenceManager().getPreferenceAccessType());
@@ -442,6 +464,7 @@ public class SystemActivityTest extends BaseUITest {
         getPreferenceManager().setPreferenceNotificationInactiveNetwork(true);
         getPreferenceManager().setPreferenceDownloadExternalStorage(true);
         getPreferenceManager().setPreferenceExternalStorageType(0);
+        getPreferenceManager().setPreferenceTheme(-1);
         getPreferenceManager().setPreferenceDownloadFolder("folder");
         getPreferenceManager().setPreferenceDownloadKeep(true);
         getPreferenceManager().setPreferenceAccessType(AccessType.CONNECT);
@@ -473,6 +496,7 @@ public class SystemActivityTest extends BaseUITest {
         assertTrue(getPreferenceManager().getPreferenceNotificationInactiveNetwork());
         assertTrue(getPreferenceManager().getPreferenceDownloadExternalStorage());
         assertEquals(0, getPreferenceManager().getPreferenceExternalStorageType());
+        assertEquals(-1, getPreferenceManager().getPreferenceTheme());
         assertEquals("folder", getPreferenceManager().getPreferenceDownloadFolder());
         assertTrue(getPreferenceManager().getPreferenceDownloadKeep());
         assertEquals(AccessType.CONNECT, getPreferenceManager().getPreferenceAccessType());
@@ -500,6 +524,7 @@ public class SystemActivityTest extends BaseUITest {
         getPreferenceManager().setPreferenceNotificationInactiveNetwork(true);
         getPreferenceManager().setPreferenceDownloadExternalStorage(true);
         getPreferenceManager().setPreferenceExternalStorageType(0);
+        getPreferenceManager().setPreferenceTheme(-1);
         getPreferenceManager().setPreferenceDownloadFolder("folder");
         getPreferenceManager().setPreferenceDownloadKeep(true);
         getPreferenceManager().setPreferenceAccessType(AccessType.CONNECT);
@@ -537,6 +562,7 @@ public class SystemActivityTest extends BaseUITest {
         assertTrue(getPreferenceManager().getPreferenceNotificationInactiveNetwork());
         assertTrue(getPreferenceManager().getPreferenceDownloadExternalStorage());
         assertEquals(0, getPreferenceManager().getPreferenceExternalStorageType());
+        assertEquals(-1, getPreferenceManager().getPreferenceTheme());
         assertEquals("folder", getPreferenceManager().getPreferenceDownloadFolder());
         assertTrue(getPreferenceManager().getPreferenceDownloadKeep());
         assertEquals(AccessType.CONNECT, getPreferenceManager().getPreferenceAccessType());
@@ -573,6 +599,7 @@ public class SystemActivityTest extends BaseUITest {
         getPreferenceManager().setPreferenceNotificationInactiveNetwork(true);
         getPreferenceManager().setPreferenceDownloadExternalStorage(true);
         getPreferenceManager().setPreferenceExternalStorageType(0);
+        getPreferenceManager().setPreferenceTheme(-1);
         getPreferenceManager().setPreferenceDownloadFolder("folder");
         getPreferenceManager().setPreferenceDownloadKeep(true);
         getPreferenceManager().setPreferenceAccessType(AccessType.CONNECT);
@@ -603,6 +630,7 @@ public class SystemActivityTest extends BaseUITest {
         assertTrue(getPreferenceManager().getPreferenceNotificationInactiveNetwork());
         assertTrue(getPreferenceManager().getPreferenceDownloadExternalStorage());
         assertEquals(0, getPreferenceManager().getPreferenceExternalStorageType());
+        assertEquals(-1, getPreferenceManager().getPreferenceTheme());
         assertEquals("folder", getPreferenceManager().getPreferenceDownloadFolder());
         assertTrue(getPreferenceManager().getPreferenceDownloadKeep());
         assertEquals(AccessType.CONNECT, getPreferenceManager().getPreferenceAccessType());
@@ -670,6 +698,7 @@ public class SystemActivityTest extends BaseUITest {
         assertTrue(getPreferenceManager().getPreferenceNotificationInactiveNetwork());
         assertTrue(getPreferenceManager().getPreferenceDownloadExternalStorage());
         assertEquals(0, getPreferenceManager().getPreferenceExternalStorageType());
+        assertEquals(-1, getPreferenceManager().getPreferenceTheme());
         assertEquals("folder", getPreferenceManager().getPreferenceDownloadFolder());
         assertTrue(getPreferenceManager().getPreferenceDownloadKeep());
         assertEquals(AccessType.CONNECT, getPreferenceManager().getPreferenceAccessType());
@@ -706,6 +735,7 @@ public class SystemActivityTest extends BaseUITest {
         getPreferenceManager().setPreferenceNotificationInactiveNetwork(true);
         getPreferenceManager().setPreferenceDownloadExternalStorage(true);
         getPreferenceManager().setPreferenceExternalStorageType(0);
+        getPreferenceManager().setPreferenceTheme(-1);
         getPreferenceManager().setPreferenceDownloadFolder("folder");
         getPreferenceManager().setPreferenceDownloadKeep(true);
         getPreferenceManager().setPreferenceAccessType(AccessType.CONNECT);
@@ -742,6 +772,7 @@ public class SystemActivityTest extends BaseUITest {
         assertTrue(getPreferenceManager().getPreferenceNotificationInactiveNetwork());
         assertTrue(getPreferenceManager().getPreferenceDownloadExternalStorage());
         assertEquals(0, getPreferenceManager().getPreferenceExternalStorageType());
+        assertEquals(-1, getPreferenceManager().getPreferenceTheme());
         assertEquals("folder", getPreferenceManager().getPreferenceDownloadFolder());
         assertTrue(getPreferenceManager().getPreferenceDownloadKeep());
         assertEquals(AccessType.CONNECT, getPreferenceManager().getPreferenceAccessType());
@@ -809,6 +840,7 @@ public class SystemActivityTest extends BaseUITest {
         assertTrue(getPreferenceManager().getPreferenceNotificationInactiveNetwork());
         assertTrue(getPreferenceManager().getPreferenceDownloadExternalStorage());
         assertEquals(0, getPreferenceManager().getPreferenceExternalStorageType());
+        assertEquals(-1, getPreferenceManager().getPreferenceTheme());
         assertEquals("folder", getPreferenceManager().getPreferenceDownloadFolder());
         assertTrue(getPreferenceManager().getPreferenceDownloadKeep());
         assertEquals(AccessType.CONNECT, getPreferenceManager().getPreferenceAccessType());
@@ -845,6 +877,7 @@ public class SystemActivityTest extends BaseUITest {
         getPreferenceManager().setPreferenceNotificationInactiveNetwork(true);
         getPreferenceManager().setPreferenceDownloadExternalStorage(true);
         getPreferenceManager().setPreferenceExternalStorageType(0);
+        getPreferenceManager().setPreferenceTheme(-1);
         getPreferenceManager().setPreferenceDownloadFolder("folder");
         getPreferenceManager().setPreferenceDownloadKeep(true);
         getPreferenceManager().setPreferenceAccessType(AccessType.CONNECT);
@@ -880,6 +913,7 @@ public class SystemActivityTest extends BaseUITest {
         assertTrue(getPreferenceManager().getPreferenceNotificationInactiveNetwork());
         assertTrue(getPreferenceManager().getPreferenceDownloadExternalStorage());
         assertEquals(0, getPreferenceManager().getPreferenceExternalStorageType());
+        assertEquals(-1, getPreferenceManager().getPreferenceTheme());
         assertEquals("folder", getPreferenceManager().getPreferenceDownloadFolder());
         assertTrue(getPreferenceManager().getPreferenceDownloadKeep());
         assertEquals(AccessType.CONNECT, getPreferenceManager().getPreferenceAccessType());
@@ -916,6 +950,7 @@ public class SystemActivityTest extends BaseUITest {
         getPreferenceManager().setPreferenceNotificationInactiveNetwork(true);
         getPreferenceManager().setPreferenceDownloadExternalStorage(true);
         getPreferenceManager().setPreferenceExternalStorageType(0);
+        getPreferenceManager().setPreferenceTheme(-1);
         getPreferenceManager().setPreferenceDownloadFolder("folder");
         getPreferenceManager().setPreferenceDownloadKeep(true);
         getPreferenceManager().setPreferenceAccessType(AccessType.CONNECT);
@@ -957,6 +992,7 @@ public class SystemActivityTest extends BaseUITest {
         assertTrue(getPreferenceManager().getPreferenceNotificationInactiveNetwork());
         assertTrue(getPreferenceManager().getPreferenceDownloadExternalStorage());
         assertEquals(0, getPreferenceManager().getPreferenceExternalStorageType());
+        assertEquals(-1, getPreferenceManager().getPreferenceTheme());
         assertEquals("folder", getPreferenceManager().getPreferenceDownloadFolder());
         assertTrue(getPreferenceManager().getPreferenceDownloadKeep());
         assertEquals(AccessType.CONNECT, getPreferenceManager().getPreferenceAccessType());
@@ -993,6 +1029,7 @@ public class SystemActivityTest extends BaseUITest {
         getPreferenceManager().setPreferenceNotificationInactiveNetwork(true);
         getPreferenceManager().setPreferenceDownloadExternalStorage(true);
         getPreferenceManager().setPreferenceExternalStorageType(0);
+        getPreferenceManager().setPreferenceTheme(-1);
         getPreferenceManager().setPreferenceDownloadFolder("folder");
         getPreferenceManager().setPreferenceDownloadKeep(true);
         getPreferenceManager().setPreferenceAccessType(AccessType.CONNECT);
@@ -1027,6 +1064,7 @@ public class SystemActivityTest extends BaseUITest {
         assertTrue(getPreferenceManager().getPreferenceNotificationInactiveNetwork());
         assertTrue(getPreferenceManager().getPreferenceDownloadExternalStorage());
         assertEquals(0, getPreferenceManager().getPreferenceExternalStorageType());
+        assertEquals(-1, getPreferenceManager().getPreferenceTheme());
         assertEquals("folder", getPreferenceManager().getPreferenceDownloadFolder());
         assertTrue(getPreferenceManager().getPreferenceDownloadKeep());
         assertEquals(AccessType.CONNECT, getPreferenceManager().getPreferenceAccessType());
@@ -1094,6 +1132,7 @@ public class SystemActivityTest extends BaseUITest {
         assertTrue(getPreferenceManager().getPreferenceNotificationInactiveNetwork());
         assertTrue(getPreferenceManager().getPreferenceDownloadExternalStorage());
         assertEquals(0, getPreferenceManager().getPreferenceExternalStorageType());
+        assertEquals(-1, getPreferenceManager().getPreferenceTheme());
         assertEquals("folder", getPreferenceManager().getPreferenceDownloadFolder());
         assertTrue(getPreferenceManager().getPreferenceDownloadKeep());
         assertEquals(AccessType.CONNECT, getPreferenceManager().getPreferenceAccessType());
@@ -1130,6 +1169,7 @@ public class SystemActivityTest extends BaseUITest {
         getPreferenceManager().setPreferenceNotificationInactiveNetwork(true);
         getPreferenceManager().setPreferenceDownloadExternalStorage(true);
         getPreferenceManager().setPreferenceExternalStorageType(0);
+        getPreferenceManager().setPreferenceTheme(-1);
         getPreferenceManager().setPreferenceDownloadFolder("folder");
         getPreferenceManager().setPreferenceDownloadKeep(true);
         getPreferenceManager().setPreferenceAccessType(AccessType.CONNECT);
@@ -1170,6 +1210,7 @@ public class SystemActivityTest extends BaseUITest {
         assertTrue(getPreferenceManager().getPreferenceNotificationInactiveNetwork());
         assertTrue(getPreferenceManager().getPreferenceDownloadExternalStorage());
         assertEquals(0, getPreferenceManager().getPreferenceExternalStorageType());
+        assertEquals(-1, getPreferenceManager().getPreferenceTheme());
         assertEquals("folder", getPreferenceManager().getPreferenceDownloadFolder());
         assertTrue(getPreferenceManager().getPreferenceDownloadKeep());
         assertEquals(AccessType.CONNECT, getPreferenceManager().getPreferenceAccessType());
@@ -1237,6 +1278,7 @@ public class SystemActivityTest extends BaseUITest {
         assertTrue(getPreferenceManager().getPreferenceNotificationInactiveNetwork());
         assertTrue(getPreferenceManager().getPreferenceDownloadExternalStorage());
         assertEquals(0, getPreferenceManager().getPreferenceExternalStorageType());
+        assertEquals(-1, getPreferenceManager().getPreferenceTheme());
         assertEquals("folder", getPreferenceManager().getPreferenceDownloadFolder());
         assertTrue(getPreferenceManager().getPreferenceDownloadKeep());
         assertEquals(AccessType.CONNECT, getPreferenceManager().getPreferenceAccessType());
@@ -1265,6 +1307,7 @@ public class SystemActivityTest extends BaseUITest {
         getPreferenceManager().setPreferenceNotificationInactiveNetwork(true);
         getPreferenceManager().setPreferenceDownloadExternalStorage(true);
         getPreferenceManager().setPreferenceExternalStorageType(0);
+        getPreferenceManager().setPreferenceTheme(-1);
         getPreferenceManager().setPreferenceDownloadFolder("folder");
         getPreferenceManager().setPreferenceDownloadKeep(true);
         getPreferenceManager().setPreferenceAccessType(AccessType.CONNECT);
@@ -1297,6 +1340,7 @@ public class SystemActivityTest extends BaseUITest {
         assertTrue(getPreferenceManager().getPreferenceNotificationInactiveNetwork());
         assertTrue(getPreferenceManager().getPreferenceDownloadExternalStorage());
         assertEquals(0, getPreferenceManager().getPreferenceExternalStorageType());
+        assertEquals(-1, getPreferenceManager().getPreferenceTheme());
         assertEquals("folder", getPreferenceManager().getPreferenceDownloadFolder());
         assertTrue(getPreferenceManager().getPreferenceDownloadKeep());
         assertEquals(AccessType.CONNECT, getPreferenceManager().getPreferenceAccessType());
@@ -1325,6 +1369,7 @@ public class SystemActivityTest extends BaseUITest {
         getPreferenceManager().setPreferenceNotificationInactiveNetwork(true);
         getPreferenceManager().setPreferenceDownloadExternalStorage(true);
         getPreferenceManager().setPreferenceExternalStorageType(0);
+        getPreferenceManager().setPreferenceTheme(-1);
         getPreferenceManager().setPreferenceDownloadFolder("folder");
         getPreferenceManager().setPreferenceDownloadKeep(true);
         getPreferenceManager().setPreferenceAccessType(AccessType.CONNECT);
@@ -1360,6 +1405,7 @@ public class SystemActivityTest extends BaseUITest {
         assertTrue(getPreferenceManager().getPreferenceNotificationInactiveNetwork());
         assertTrue(getPreferenceManager().getPreferenceDownloadExternalStorage());
         assertEquals(0, getPreferenceManager().getPreferenceExternalStorageType());
+        assertEquals(-1, getPreferenceManager().getPreferenceTheme());
         assertEquals("folder", getPreferenceManager().getPreferenceDownloadFolder());
         assertTrue(getPreferenceManager().getPreferenceDownloadKeep());
         assertEquals(AccessType.CONNECT, getPreferenceManager().getPreferenceAccessType());
@@ -1460,6 +1506,7 @@ public class SystemActivityTest extends BaseUITest {
         getPreferenceManager().setPreferenceNotificationInactiveNetwork(true);
         getPreferenceManager().setPreferenceDownloadExternalStorage(true);
         getPreferenceManager().setPreferenceExternalStorageType(30);
+        getPreferenceManager().setPreferenceTheme(5);
         getPreferenceManager().setPreferenceDownloadFolder("folder");
         getPreferenceManager().setPreferenceDownloadKeep(true);
         getPreferenceManager().setPreferenceAccessType(AccessType.CONNECT);
@@ -1496,6 +1543,7 @@ public class SystemActivityTest extends BaseUITest {
         assertFalse(getPreferenceManager().getPreferenceNotificationInactiveNetwork());
         assertFalse(getPreferenceManager().getPreferenceDownloadExternalStorage());
         assertEquals(0, getPreferenceManager().getPreferenceExternalStorageType());
+        assertEquals(-1, getPreferenceManager().getPreferenceTheme());
         assertEquals("download", getPreferenceManager().getPreferenceDownloadFolder());
         assertFalse(getPreferenceManager().getPreferenceDownloadKeep());
         assertEquals(AccessType.PING, getPreferenceManager().getPreferenceAccessType());
@@ -1523,6 +1571,7 @@ public class SystemActivityTest extends BaseUITest {
         getPreferenceManager().setPreferenceNotificationInactiveNetwork(true);
         getPreferenceManager().setPreferenceDownloadExternalStorage(true);
         getPreferenceManager().setPreferenceExternalStorageType(0);
+        getPreferenceManager().setPreferenceTheme(-1);
         getPreferenceManager().setPreferenceDownloadFolder("folder");
         getPreferenceManager().setPreferenceDownloadKeep(true);
         getPreferenceManager().setPreferenceAccessType(AccessType.CONNECT);
@@ -1561,6 +1610,7 @@ public class SystemActivityTest extends BaseUITest {
         assertFalse(getPreferenceManager().getPreferenceNotificationInactiveNetwork());
         assertFalse(getPreferenceManager().getPreferenceDownloadExternalStorage());
         assertEquals(0, getPreferenceManager().getPreferenceExternalStorageType());
+        assertEquals(-1, getPreferenceManager().getPreferenceTheme());
         assertEquals("download", getPreferenceManager().getPreferenceDownloadFolder());
         assertFalse(getPreferenceManager().getPreferenceDownloadKeep());
         assertEquals(AccessType.PING, getPreferenceManager().getPreferenceAccessType());
@@ -1588,6 +1638,7 @@ public class SystemActivityTest extends BaseUITest {
         getPreferenceManager().setPreferenceNotificationInactiveNetwork(true);
         getPreferenceManager().setPreferenceDownloadExternalStorage(true);
         getPreferenceManager().setPreferenceExternalStorageType(0);
+        getPreferenceManager().setPreferenceTheme(-1);
         getPreferenceManager().setPreferenceDownloadFolder("folder");
         getPreferenceManager().setPreferenceDownloadKeep(true);
         getPreferenceManager().setPreferenceAccessType(AccessType.CONNECT);
@@ -1626,6 +1677,7 @@ public class SystemActivityTest extends BaseUITest {
         assertFalse(getPreferenceManager().getPreferenceNotificationInactiveNetwork());
         assertFalse(getPreferenceManager().getPreferenceDownloadExternalStorage());
         assertEquals(0, getPreferenceManager().getPreferenceExternalStorageType());
+        assertEquals(-1, getPreferenceManager().getPreferenceTheme());
         assertEquals("download", getPreferenceManager().getPreferenceDownloadFolder());
         assertFalse(getPreferenceManager().getPreferenceDownloadKeep());
         assertEquals(AccessType.PING, getPreferenceManager().getPreferenceAccessType());
@@ -1653,6 +1705,7 @@ public class SystemActivityTest extends BaseUITest {
         getPreferenceManager().setPreferenceNotificationInactiveNetwork(true);
         getPreferenceManager().setPreferenceDownloadExternalStorage(true);
         getPreferenceManager().setPreferenceExternalStorageType(0);
+        getPreferenceManager().setPreferenceTheme(-1);
         getPreferenceManager().setPreferenceDownloadFolder("folder");
         getPreferenceManager().setPreferenceDownloadKeep(true);
         getPreferenceManager().setPreferenceAccessType(AccessType.CONNECT);
@@ -1693,6 +1746,7 @@ public class SystemActivityTest extends BaseUITest {
         assertFalse(getPreferenceManager().getPreferenceNotificationInactiveNetwork());
         assertFalse(getPreferenceManager().getPreferenceDownloadExternalStorage());
         assertEquals(0, getPreferenceManager().getPreferenceExternalStorageType());
+        assertEquals(-1, getPreferenceManager().getPreferenceTheme());
         assertEquals("download", getPreferenceManager().getPreferenceDownloadFolder());
         assertFalse(getPreferenceManager().getPreferenceDownloadKeep());
         assertEquals(AccessType.PING, getPreferenceManager().getPreferenceAccessType());
@@ -1729,6 +1783,7 @@ public class SystemActivityTest extends BaseUITest {
         getPreferenceManager().setPreferenceNotificationInactiveNetwork(true);
         getPreferenceManager().setPreferenceDownloadExternalStorage(true);
         getPreferenceManager().setPreferenceExternalStorageType(0);
+        getPreferenceManager().setPreferenceTheme(-1);
         getPreferenceManager().setPreferenceDownloadFolder("folder");
         getPreferenceManager().setPreferenceDownloadKeep(true);
         getPreferenceManager().setPreferenceAccessType(AccessType.CONNECT);
@@ -1806,6 +1861,7 @@ public class SystemActivityTest extends BaseUITest {
         assertTrue(getPreferenceManager().getPreferenceNotificationInactiveNetwork());
         assertTrue(getPreferenceManager().getPreferenceDownloadExternalStorage());
         assertEquals(0, getPreferenceManager().getPreferenceExternalStorageType());
+        assertEquals(-1, getPreferenceManager().getPreferenceTheme());
         assertEquals("folder", getPreferenceManager().getPreferenceDownloadFolder());
         assertTrue(getPreferenceManager().getPreferenceDownloadKeep());
         assertEquals(AccessType.CONNECT, getPreferenceManager().getPreferenceAccessType());
@@ -1818,6 +1874,7 @@ public class SystemActivityTest extends BaseUITest {
         assertEquals("folderExport", getPreferenceManager().getPreferenceExportFolder());
         assertTrue(getPreferenceManager().getPreferenceFileLoggerEnabled());
         assertTrue(getPreferenceManager().getPreferenceFileDumpEnabled());
+        assertEquals(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM, themeManager.getCode());
     }
 
     @Test
@@ -1842,6 +1899,7 @@ public class SystemActivityTest extends BaseUITest {
         getPreferenceManager().setPreferenceNotificationInactiveNetwork(true);
         getPreferenceManager().setPreferenceDownloadExternalStorage(true);
         getPreferenceManager().setPreferenceExternalStorageType(0);
+        getPreferenceManager().setPreferenceTheme(-1);
         getPreferenceManager().setPreferenceDownloadFolder("folder");
         getPreferenceManager().setPreferenceDownloadKeep(true);
         getPreferenceManager().setPreferenceAccessType(AccessType.CONNECT);
@@ -1922,6 +1980,7 @@ public class SystemActivityTest extends BaseUITest {
         assertTrue(getPreferenceManager().getPreferenceNotificationInactiveNetwork());
         assertTrue(getPreferenceManager().getPreferenceDownloadExternalStorage());
         assertEquals(0, getPreferenceManager().getPreferenceExternalStorageType());
+        assertEquals(-1, getPreferenceManager().getPreferenceTheme());
         assertEquals("folder", getPreferenceManager().getPreferenceDownloadFolder());
         assertTrue(getPreferenceManager().getPreferenceDownloadKeep());
         assertEquals(AccessType.CONNECT, getPreferenceManager().getPreferenceAccessType());
@@ -1934,6 +1993,7 @@ public class SystemActivityTest extends BaseUITest {
         assertEquals("folderExport", getPreferenceManager().getPreferenceExportFolder());
         assertTrue(getPreferenceManager().getPreferenceFileLoggerEnabled());
         assertTrue(getPreferenceManager().getPreferenceFileDumpEnabled());
+        assertEquals(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM, themeManager.getCode());
     }
 
     @Test
@@ -1950,6 +2010,7 @@ public class SystemActivityTest extends BaseUITest {
         getPreferenceManager().setPreferenceNotificationInactiveNetwork(true);
         getPreferenceManager().setPreferenceDownloadExternalStorage(true);
         getPreferenceManager().setPreferenceExternalStorageType(0);
+        getPreferenceManager().setPreferenceTheme(-1);
         getPreferenceManager().setPreferenceDownloadFolder("folder");
         getPreferenceManager().setPreferenceDownloadKeep(true);
         getPreferenceManager().setPreferenceAccessType(AccessType.CONNECT);
@@ -1983,6 +2044,7 @@ public class SystemActivityTest extends BaseUITest {
         assertTrue(getPreferenceManager().getPreferenceNotificationInactiveNetwork());
         assertTrue(getPreferenceManager().getPreferenceDownloadExternalStorage());
         assertEquals(0, getPreferenceManager().getPreferenceExternalStorageType());
+        assertEquals(-1, getPreferenceManager().getPreferenceTheme());
         assertEquals("folder", getPreferenceManager().getPreferenceDownloadFolder());
         assertTrue(getPreferenceManager().getPreferenceDownloadKeep());
         assertEquals(AccessType.CONNECT, getPreferenceManager().getPreferenceAccessType());
@@ -2011,6 +2073,7 @@ public class SystemActivityTest extends BaseUITest {
         getPreferenceManager().setPreferenceNotificationInactiveNetwork(true);
         getPreferenceManager().setPreferenceDownloadExternalStorage(true);
         getPreferenceManager().setPreferenceExternalStorageType(0);
+        getPreferenceManager().setPreferenceTheme(-1);
         getPreferenceManager().setPreferenceDownloadFolder("folder");
         getPreferenceManager().setPreferenceDownloadKeep(true);
         getPreferenceManager().setPreferenceAccessType(AccessType.CONNECT);
@@ -2046,6 +2109,7 @@ public class SystemActivityTest extends BaseUITest {
         assertTrue(getPreferenceManager().getPreferenceNotificationInactiveNetwork());
         assertTrue(getPreferenceManager().getPreferenceDownloadExternalStorage());
         assertEquals(0, getPreferenceManager().getPreferenceExternalStorageType());
+        assertEquals(-1, getPreferenceManager().getPreferenceTheme());
         assertEquals("folder", getPreferenceManager().getPreferenceDownloadFolder());
         assertTrue(getPreferenceManager().getPreferenceDownloadKeep());
         assertEquals(AccessType.CONNECT, getPreferenceManager().getPreferenceAccessType());
@@ -2142,6 +2206,32 @@ public class SystemActivityTest extends BaseUITest {
     }
 
     @Test
+    public void testSwitchTheme() {
+        onView(withId(R.id.radiobutton_activity_system_theme_light)).perform(click());
+        assertEquals(AppCompatDelegate.MODE_NIGHT_NO, getPreferenceManager().getPreferenceTheme());
+        assertEquals(AppCompatDelegate.MODE_NIGHT_NO, themeManager.getCode());
+        onView(withId(R.id.radiobutton_activity_system_theme_dark)).perform(click());
+        assertEquals(AppCompatDelegate.MODE_NIGHT_YES, getPreferenceManager().getPreferenceTheme());
+        assertEquals(AppCompatDelegate.MODE_NIGHT_YES, themeManager.getCode());
+        onView(withId(R.id.radiobutton_activity_system_theme_system)).perform(click());
+        assertEquals(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM, getPreferenceManager().getPreferenceTheme());
+        assertEquals(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM, themeManager.getCode());
+    }
+
+    @Test
+    public void testSwitchThemeScreenRotation() {
+        onView(withId(R.id.radiobutton_activity_system_theme_light)).perform(click());
+        rotateScreen(activityScenario);
+        assertEquals(AppCompatDelegate.MODE_NIGHT_NO, getPreferenceManager().getPreferenceTheme());
+        onView(withId(R.id.radiobutton_activity_system_theme_dark)).perform(click());
+        rotateScreen(activityScenario);
+        assertEquals(AppCompatDelegate.MODE_NIGHT_YES, getPreferenceManager().getPreferenceTheme());
+        onView(withId(R.id.radiobutton_activity_system_theme_system)).perform(click());
+        rotateScreen(activityScenario);
+        assertEquals(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM, getPreferenceManager().getPreferenceTheme());
+    }
+
+    @Test
     public void testDisplayDefaultValues() {
         PreferenceManager preferenceManager = getPreferenceManager();
         assertEquals("config", preferenceManager.getPreferenceImportFolder());
@@ -2157,6 +2247,14 @@ public class SystemActivityTest extends BaseUITest {
         onView(withId(R.id.radiobutton_activity_system_external_storage_type_sdcard)).check(matches(not(isChecked())));
         onView(withId(R.id.radiobutton_activity_system_external_storage_type_primary)).check(matches(isEnabled()));
         onView(withId(R.id.radiobutton_activity_system_external_storage_type_sdcard)).check(matches(isEnabled()));
+        onView(withId(R.id.textview_activity_system_theme_label)).check(matches(withText("Theme")));
+        onView(withId(R.id.radiogroup_activity_system_theme)).check(matches(hasChildCount(3)));
+        onView(withId(R.id.radiobutton_activity_system_theme_system)).check(matches(withText("System")));
+        onView(withId(R.id.radiobutton_activity_system_theme_light)).check(matches(withText("Light")));
+        onView(withId(R.id.radiobutton_activity_system_theme_dark)).check(matches(withText("Dark")));
+        onView(withId(R.id.radiobutton_activity_system_theme_system)).check(matches(isChecked()));
+        onView(withId(R.id.radiobutton_activity_system_theme_light)).check(matches(not(isChecked())));
+        onView(withId(R.id.radiobutton_activity_system_theme_dark)).check(matches(not(isChecked())));
         onView(withId(R.id.textview_activity_system_config_export_label)).check(matches(withText("Export configuration")));
         onView(withId(R.id.textview_activity_system_config_export_folder)).check(matches(withText(endsWith("config"))));
         onView(withId(R.id.textview_activity_system_config_import_label)).check(matches(withText("Import configuration")));
@@ -2178,6 +2276,14 @@ public class SystemActivityTest extends BaseUITest {
         onView(withId(R.id.radiobutton_activity_system_external_storage_type_sdcard)).check(matches(isChecked()));
         onView(withId(R.id.radiobutton_activity_system_external_storage_type_primary)).check(matches(isEnabled()));
         onView(withId(R.id.radiobutton_activity_system_external_storage_type_sdcard)).check(matches(isEnabled()));
+        onView(withId(R.id.radiobutton_activity_system_theme_dark)).perform(click());
+        onView(withId(R.id.radiogroup_activity_system_theme)).check(matches(hasChildCount(3)));
+        onView(withId(R.id.radiobutton_activity_system_theme_system)).check(matches(withText("System")));
+        onView(withId(R.id.radiobutton_activity_system_theme_light)).check(matches(withText("Light")));
+        onView(withId(R.id.radiobutton_activity_system_theme_dark)).check(matches(withText("Dark")));
+        onView(withId(R.id.radiobutton_activity_system_theme_system)).check(matches(not(isChecked())));
+        onView(withId(R.id.radiobutton_activity_system_theme_light)).check(matches(not(isChecked())));
+        onView(withId(R.id.radiobutton_activity_system_theme_dark)).check(matches(isChecked()));
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(scrollTo());
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(click());
         onView(withId(R.id.switch_activity_system_file_dump_enabled)).perform(scrollTo());
@@ -2244,6 +2350,7 @@ public class SystemActivityTest extends BaseUITest {
     @Test
     public void testResetValues() {
         onView(withId(R.id.radiobutton_activity_system_external_storage_type_sdcard)).perform(click());
+        onView(withId(R.id.radiobutton_activity_system_theme_dark)).perform(click());
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(scrollTo());
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(click());
         onView(withId(R.id.switch_activity_system_file_dump_enabled)).perform(scrollTo());
@@ -2257,12 +2364,20 @@ public class SystemActivityTest extends BaseUITest {
         onView(withId(R.id.radiobutton_activity_system_external_storage_type_sdcard)).check(matches(not(isChecked())));
         onView(withId(R.id.radiobutton_activity_system_external_storage_type_primary)).check(matches(isEnabled()));
         onView(withId(R.id.radiobutton_activity_system_external_storage_type_sdcard)).check(matches(isEnabled()));
+        onView(withId(R.id.radiogroup_activity_system_theme)).check(matches(hasChildCount(3)));
+        onView(withId(R.id.radiobutton_activity_system_theme_system)).check(matches(withText("System")));
+        onView(withId(R.id.radiobutton_activity_system_theme_light)).check(matches(withText("Light")));
+        onView(withId(R.id.radiobutton_activity_system_theme_dark)).check(matches(withText("Dark")));
+        onView(withId(R.id.radiobutton_activity_system_theme_system)).check(matches(isChecked()));
+        onView(withId(R.id.radiobutton_activity_system_theme_light)).check(matches(not(isChecked())));
+        onView(withId(R.id.radiobutton_activity_system_theme_dark)).check(matches(not(isChecked())));
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).check(matches(isNotChecked()));
         onView(withId(R.id.switch_activity_system_file_dump_enabled)).check(matches(isNotChecked()));
         PreferenceManager preferenceManager = getPreferenceManager();
         assertEquals(0, preferenceManager.getPreferenceExternalStorageType());
         assertFalse(preferenceManager.getPreferenceFileLoggerEnabled());
         assertFalse(preferenceManager.getPreferenceFileDumpEnabled());
+        assertEquals(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM, themeManager.getCode());
     }
 
     @Test
@@ -2277,6 +2392,13 @@ public class SystemActivityTest extends BaseUITest {
         onView(withId(R.id.radiobutton_activity_system_external_storage_type_sdcard)).check(matches(isChecked()));
         onView(withId(R.id.radiobutton_activity_system_external_storage_type_primary)).check(matches(isEnabled()));
         onView(withId(R.id.radiobutton_activity_system_external_storage_type_sdcard)).check(matches(isEnabled()));
+        onView(withId(R.id.radiogroup_activity_system_theme)).check(matches(hasChildCount(3)));
+        onView(withId(R.id.radiobutton_activity_system_theme_system)).check(matches(withText("System")));
+        onView(withId(R.id.radiobutton_activity_system_theme_light)).check(matches(withText("Light")));
+        onView(withId(R.id.radiobutton_activity_system_theme_dark)).check(matches(withText("Dark")));
+        onView(withId(R.id.radiobutton_activity_system_theme_system)).check(matches(isChecked()));
+        onView(withId(R.id.radiobutton_activity_system_theme_light)).check(matches(not(isChecked())));
+        onView(withId(R.id.radiobutton_activity_system_theme_dark)).check(matches(not(isChecked())));
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).check(matches(isChecked()));
         onView(withId(R.id.textview_activity_system_file_logger_enabled_on_off)).check(matches(withText("yes")));
         onView(withId(R.id.switch_activity_system_file_dump_enabled)).check(matches(isChecked()));
@@ -2286,6 +2408,13 @@ public class SystemActivityTest extends BaseUITest {
         onView(withId(R.id.radiobutton_activity_system_external_storage_type_sdcard)).check(matches(isChecked()));
         onView(withId(R.id.radiobutton_activity_system_external_storage_type_primary)).check(matches(isEnabled()));
         onView(withId(R.id.radiobutton_activity_system_external_storage_type_sdcard)).check(matches(isEnabled()));
+        onView(withId(R.id.radiogroup_activity_system_theme)).check(matches(hasChildCount(3)));
+        onView(withId(R.id.radiobutton_activity_system_theme_system)).check(matches(withText("System")));
+        onView(withId(R.id.radiobutton_activity_system_theme_light)).check(matches(withText("Light")));
+        onView(withId(R.id.radiobutton_activity_system_theme_dark)).check(matches(withText("Dark")));
+        onView(withId(R.id.radiobutton_activity_system_theme_system)).check(matches(isChecked()));
+        onView(withId(R.id.radiobutton_activity_system_theme_light)).check(matches(not(isChecked())));
+        onView(withId(R.id.radiobutton_activity_system_theme_dark)).check(matches(not(isChecked())));
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).check(matches(isChecked()));
         onView(withId(R.id.textview_activity_system_file_logger_enabled_on_off)).check(matches(withText("yes")));
         onView(withId(R.id.switch_activity_system_file_dump_enabled)).check(matches(isChecked()));

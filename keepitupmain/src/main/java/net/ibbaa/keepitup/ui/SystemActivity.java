@@ -25,13 +25,10 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.cardview.widget.CardView;
 
 import com.google.android.material.switchmaterial.SwitchMaterial;
-
-import java.io.File;
-import java.util.concurrent.Future;
-import java.util.concurrent.TimeUnit;
 
 import net.ibbaa.keepitup.BuildConfig;
 import net.ibbaa.keepitup.R;
@@ -40,7 +37,10 @@ import net.ibbaa.keepitup.logging.Log;
 import net.ibbaa.keepitup.resources.PreferenceManager;
 import net.ibbaa.keepitup.resources.PreferenceSetup;
 import net.ibbaa.keepitup.service.IFileManager;
+import net.ibbaa.keepitup.service.IThemeManager;
 import net.ibbaa.keepitup.service.NetworkTaskProcessServiceScheduler;
+import net.ibbaa.keepitup.service.StartupService;
+import net.ibbaa.keepitup.service.SystemThemeManager;
 import net.ibbaa.keepitup.ui.dialog.ConfirmDialog;
 import net.ibbaa.keepitup.ui.dialog.FileChooseDialog;
 import net.ibbaa.keepitup.ui.sync.DBPurgeTask;
@@ -52,6 +52,10 @@ import net.ibbaa.keepitup.util.FileUtil;
 import net.ibbaa.keepitup.util.StringUtil;
 import net.ibbaa.keepitup.util.ThreadUtil;
 
+import java.io.File;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
+
 public class SystemActivity extends SettingsInputActivity implements ExportSupport, ImportSupport, DBPurgeSupport {
 
     private TextView exportFolderText;
@@ -62,11 +66,13 @@ public class SystemActivity extends SettingsInputActivity implements ExportSuppo
     private SwitchMaterial fileDumpEnabledSwitch;
     private TextView fileDumpEnabledOnOffText;
     private TextView logFolderText;
+    private RadioGroup theme;
 
     private DBPurgeTask purgeTask;
     private ExportTask exportTask;
     private ImportTask importTask;
     private NetworkTaskProcessServiceScheduler scheduler;
+    private IThemeManager themeManager;
 
     public void injectExportTask(ExportTask exportTask) {
         this.exportTask = exportTask;
@@ -84,6 +90,10 @@ public class SystemActivity extends SettingsInputActivity implements ExportSuppo
         this.scheduler = scheduler;
     }
 
+    public void injectThemeManager(IThemeManager themeManager) {
+        this.themeManager = themeManager;
+    }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -95,6 +105,7 @@ public class SystemActivity extends SettingsInputActivity implements ExportSuppo
         prepareConfigurationExportField();
         prepareConfigurationImportField();
         prepareExternalStorageTypeRadioGroup();
+        prepareThemeRadioGroup();
         prepareDebugSettingsLabel();
         prepareFileLoggerEnabledSwitch();
         prepareFileDumpEnabledSwitch();
@@ -114,6 +125,7 @@ public class SystemActivity extends SettingsInputActivity implements ExportSuppo
             Log.d(SystemActivity.class.getName(), "menu_action_activity_system_reset triggered");
             PreferenceSetup preferenceSetup = new PreferenceSetup(this);
             preferenceSetup.removeSystemSettings();
+            resetTheme();
             recreateActivity();
             return true;
         }
@@ -196,6 +208,53 @@ public class SystemActivity extends SettingsInputActivity implements ExportSuppo
         }
         prepareConfigurationExportField();
         prepareConfigurationImportField();
+    }
+
+    private void prepareThemeRadioGroup() {
+        Log.d(SystemActivity.class.getName(), "prepareThemeRadioGroup");
+        theme = findViewById(R.id.radiogroup_activity_system_theme);
+        PreferenceManager preferenceManager = new PreferenceManager(this);
+        int themeCode = preferenceManager.getPreferenceTheme();
+        IThemeManager themeManager = getThemeManager();
+        Log.d(SystemActivity.class.getName(), "theme is " + themeManager.getThemeName(themeCode));
+        RadioButton systemThemeButton = findViewById(R.id.radiobutton_activity_system_theme_system);
+        RadioButton lightThemeButton = findViewById(R.id.radiobutton_activity_system_theme_light);
+        RadioButton darkThemeButton = findViewById(R.id.radiobutton_activity_system_theme_dark);
+        theme.setOnCheckedChangeListener(null);
+        if (themeCode == AppCompatDelegate.MODE_NIGHT_NO) {
+            lightThemeButton.setChecked(true);
+            systemThemeButton.setChecked(false);
+            darkThemeButton.setChecked(false);
+        } else if (themeCode == AppCompatDelegate.MODE_NIGHT_YES) {
+            darkThemeButton.setChecked(true);
+            systemThemeButton.setChecked(false);
+            lightThemeButton.setChecked(false);
+        } else {
+            systemThemeButton.setChecked(true);
+            lightThemeButton.setChecked(false);
+            darkThemeButton.setChecked(false);
+        }
+        theme.setOnCheckedChangeListener(this::onThemeChanged);
+    }
+
+    private void onThemeChanged(RadioGroup group, int checkedId) {
+        Log.d(SystemActivity.class.getName(), "onThemeChanged");
+        PreferenceManager preferenceManager = new PreferenceManager(this);
+        int checkedTheme = group.getCheckedRadioButtonId();
+        IThemeManager themeManager = getThemeManager();
+        if (R.id.radiobutton_activity_system_theme_light == checkedTheme) {
+            Log.d(SystemActivity.class.getName(), "Light theme selected");
+            preferenceManager.setPreferenceTheme(AppCompatDelegate.MODE_NIGHT_NO);
+            themeManager.setThemeByCode(AppCompatDelegate.MODE_NIGHT_NO);
+        } else if (R.id.radiobutton_activity_system_theme_dark == checkedTheme) {
+            Log.d(SystemActivity.class.getName(), "Dark theme selected");
+            preferenceManager.setPreferenceTheme(AppCompatDelegate.MODE_NIGHT_YES);
+            themeManager.setThemeByCode(AppCompatDelegate.MODE_NIGHT_YES);
+        } else {
+            Log.d(SystemActivity.class.getName(), "System theme selected");
+            preferenceManager.setPreferenceTheme(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM);
+            themeManager.setThemeByCode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM);
+        }
     }
 
     private void prepareDebugSettingsLabel() {
@@ -530,7 +589,10 @@ public class SystemActivity extends SettingsInputActivity implements ExportSuppo
     public void onImportDone(boolean success) {
         Log.d(SystemActivity.class.getName(), "onImportDone, success is " + success);
         closeProgressDialog();
-        if (!success) {
+        if (success) {
+            resetTheme();
+            recreateActivity();
+        } else {
             showErrorDialog(getResources().getString(R.string.text_dialog_general_error_config_import));
         }
     }
@@ -550,7 +612,17 @@ public class SystemActivity extends SettingsInputActivity implements ExportSuppo
         Log.d(SystemActivity.class.getName(), "resetPreferences");
         PreferenceSetup preferenceSetup = new PreferenceSetup(this);
         preferenceSetup.removeAllSettings();
+        resetTheme();
         recreateActivity();
+    }
+
+    private void resetTheme() {
+        Log.d(SystemActivity.class.getName(), "resetTheme");
+        IThemeManager themeManager = getThemeManager();
+        PreferenceManager preferenceManager = new PreferenceManager(this);
+        int themeCode = preferenceManager.getPreferenceTheme();
+        Log.d(StartupService.class.getName(), "theme is " + themeManager.getThemeName(themeCode));
+        themeManager.setThemeByCode(themeCode);
     }
 
     private void terminateAllNetworkTasks() {
@@ -663,5 +735,12 @@ public class SystemActivity extends SettingsInputActivity implements ExportSuppo
             return scheduler;
         }
         return new NetworkTaskProcessServiceScheduler(this);
+    }
+
+    private IThemeManager getThemeManager() {
+        if (themeManager != null) {
+            return themeManager;
+        }
+        return new SystemThemeManager();
     }
 }

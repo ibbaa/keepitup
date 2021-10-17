@@ -327,6 +327,21 @@ public class PreferenceManager {
         removePreferenceValue(getResources().getString(R.string.export_folder_key));
     }
 
+    public int getPreferenceTheme() {
+        Log.d(PreferenceManager.class.getName(), "getPreferenceTheme");
+        return getPreferenceInt(getResources().getString(R.string.theme_key), getResources().getInteger(R.integer.theme_default));
+    }
+
+    public void setPreferenceTheme(int theme) {
+        Log.d(PreferenceManager.class.getName(), "setTheme, theme is " + theme);
+        setPreferenceInt(getResources().getString(R.string.theme_key), theme);
+    }
+
+    public void removePreferenceTheme() {
+        Log.d(PreferenceManager.class.getName(), "removeTheme");
+        removePreferenceValue(getResources().getString(R.string.theme_key));
+    }
+
     public boolean getPreferenceFileLoggerEnabled() {
         Log.d(PreferenceManager.class.getName(), "getPreferenceFileLoggerEnabled");
         return getPreferenceBoolean(getResources().getString(R.string.file_logger_enabled_key), getResources().getBoolean(R.bool.file_logger_enabled_default));

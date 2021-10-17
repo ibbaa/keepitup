@@ -16,8 +16,15 @@
 
 package net.ibbaa.keepitup.resources;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.SmallTest;
+
+import net.ibbaa.keepitup.model.AccessType;
+import net.ibbaa.keepitup.test.mock.TestRegistry;
 
 import org.junit.After;
 import org.junit.Before;
@@ -26,13 +33,6 @@ import org.junit.runner.RunWith;
 
 import java.util.HashMap;
 import java.util.Map;
-
-import net.ibbaa.keepitup.model.AccessType;
-import net.ibbaa.keepitup.test.mock.TestRegistry;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
 
 @SmallTest
 @RunWith(AndroidJUnit4.class)
@@ -204,6 +204,7 @@ public class PreferenceSetupTest {
         preferenceManager.setPreferenceExternalStorageType(30);
         preferenceManager.setPreferenceFileLoggerEnabled(true);
         preferenceManager.setPreferenceFileDumpEnabled(true);
+        preferenceManager.setPreferenceTheme(5);
         Map<String, ?> systemSettings = new HashMap<>();
         setup.importSystemSettings(systemSettings);
         assertEquals("config", preferenceManager.getPreferenceImportFolder());
@@ -211,6 +212,7 @@ public class PreferenceSetupTest {
         assertEquals(0, preferenceManager.getPreferenceExternalStorageType());
         assertFalse(preferenceManager.getPreferenceFileLoggerEnabled());
         assertFalse(preferenceManager.getPreferenceFileDumpEnabled());
+        assertEquals(-1, preferenceManager.getPreferenceTheme());
     }
 
     @Test
@@ -221,12 +223,14 @@ public class PreferenceSetupTest {
         systemSettings.put("preferenceExternalStorageType", 1);
         systemSettings.put("preferenceFileLoggerEnabled", true);
         systemSettings.put("preferenceFileDumpEnabled", true);
+        systemSettings.put("preferenceTheme", 1);
         setup.importSystemSettings(systemSettings);
         assertEquals("folderImport", preferenceManager.getPreferenceImportFolder());
         assertEquals("folderExport", preferenceManager.getPreferenceExportFolder());
         assertEquals(1, preferenceManager.getPreferenceExternalStorageType());
         assertTrue(preferenceManager.getPreferenceFileLoggerEnabled());
         assertTrue(preferenceManager.getPreferenceFileDumpEnabled());
+        assertEquals(1, preferenceManager.getPreferenceTheme());
     }
 
     @Test
@@ -237,12 +241,14 @@ public class PreferenceSetupTest {
         systemSettings.put("preferenceExternalStorageType", "1");
         systemSettings.put("preferenceFileLoggerEnabled", "true");
         systemSettings.put("preferenceFileDumpEnabled", "true");
+        systemSettings.put("preferenceTheme", "1");
         setup.importSystemSettings(systemSettings);
         assertEquals("folderImport", preferenceManager.getPreferenceImportFolder());
         assertEquals("folderExport", preferenceManager.getPreferenceExportFolder());
         assertEquals(1, preferenceManager.getPreferenceExternalStorageType());
         assertTrue(preferenceManager.getPreferenceFileLoggerEnabled());
         assertTrue(preferenceManager.getPreferenceFileDumpEnabled());
+        assertEquals(1, preferenceManager.getPreferenceTheme());
     }
 
     @Test
@@ -253,12 +259,14 @@ public class PreferenceSetupTest {
         systemSettings.put("preferenceExternalStorageType", "abc");
         systemSettings.put("preferenceFileLoggerEnabled", null);
         systemSettings.put("preferenceFileDumpEnabled", null);
+        systemSettings.put("preferenceTheme", "abc");
         setup.importSystemSettings(systemSettings);
         assertEquals("config", preferenceManager.getPreferenceImportFolder());
         assertEquals("config", preferenceManager.getPreferenceExportFolder());
         assertEquals(0, preferenceManager.getPreferenceExternalStorageType());
         assertFalse(preferenceManager.getPreferenceFileLoggerEnabled());
         assertFalse(preferenceManager.getPreferenceFileDumpEnabled());
+        assertEquals(-1, preferenceManager.getPreferenceTheme());
     }
 
     @Test
@@ -337,6 +345,7 @@ public class PreferenceSetupTest {
         assertEquals(systemSettings.get("preferenceExternalStorageType"), preferenceManager.getPreferenceExternalStorageType());
         assertEquals(systemSettings.get("preferenceFileLoggerEnabled"), preferenceManager.getPreferenceFileLoggerEnabled());
         assertEquals(systemSettings.get("preferenceFileDumpEnabled"), preferenceManager.getPreferenceFileDumpEnabled());
+        assertEquals(systemSettings.get("preferenceTheme"), preferenceManager.getPreferenceTheme());
     }
 
     @Test
@@ -346,17 +355,20 @@ public class PreferenceSetupTest {
         preferenceManager.setPreferenceExportFolder("folderExport");
         preferenceManager.setPreferenceFileLoggerEnabled(true);
         preferenceManager.setPreferenceFileDumpEnabled(true);
+        preferenceManager.setPreferenceTheme(5);
         Map<String, ?> systemSettings = setup.exportSystemSettings();
         assertEquals("folderImport", preferenceManager.getPreferenceImportFolder());
         assertEquals("folderExport", preferenceManager.getPreferenceExportFolder());
         assertEquals(30, preferenceManager.getPreferenceExternalStorageType());
         assertTrue(preferenceManager.getPreferenceFileLoggerEnabled());
         assertTrue(preferenceManager.getPreferenceFileDumpEnabled());
+        assertEquals(5, preferenceManager.getPreferenceTheme());
         assertEquals(systemSettings.get("preferenceImportFolder"), preferenceManager.getPreferenceImportFolder());
         assertEquals(systemSettings.get("preferenceExportFolder"), preferenceManager.getPreferenceExportFolder());
         assertEquals(systemSettings.get("preferenceExternalStorageType"), preferenceManager.getPreferenceExternalStorageType());
         assertEquals(systemSettings.get("preferenceFileLoggerEnabled"), preferenceManager.getPreferenceFileLoggerEnabled());
         assertEquals(systemSettings.get("preferenceFileDumpEnabled"), preferenceManager.getPreferenceFileDumpEnabled());
+        assertEquals(systemSettings.get("preferenceTheme"), preferenceManager.getPreferenceTheme());
     }
 
     @Test
@@ -414,6 +426,7 @@ public class PreferenceSetupTest {
         preferenceManager.setPreferenceExportFolder("folderExport");
         preferenceManager.setPreferenceFileLoggerEnabled(true);
         preferenceManager.setPreferenceFileDumpEnabled(true);
+        preferenceManager.setPreferenceTheme(1);
         Map<String, ?> systemSettings = setup.exportSystemSettings();
         setup.importSystemSettings(systemSettings);
         assertEquals("folderImport", preferenceManager.getPreferenceImportFolder());
@@ -421,11 +434,13 @@ public class PreferenceSetupTest {
         assertEquals(1, preferenceManager.getPreferenceExternalStorageType());
         assertTrue(preferenceManager.getPreferenceFileLoggerEnabled());
         assertTrue(preferenceManager.getPreferenceFileDumpEnabled());
+        assertEquals(1, preferenceManager.getPreferenceTheme());
         assertEquals(systemSettings.get("preferenceImportFolder"), preferenceManager.getPreferenceImportFolder());
         assertEquals(systemSettings.get("preferenceExportFolder"), preferenceManager.getPreferenceExportFolder());
         assertEquals(systemSettings.get("preferenceExternalStorageType"), preferenceManager.getPreferenceExternalStorageType());
         assertEquals(systemSettings.get("preferenceFileLoggerEnabled"), preferenceManager.getPreferenceFileLoggerEnabled());
         assertEquals(systemSettings.get("preferenceFileDumpEnabled"), preferenceManager.getPreferenceFileDumpEnabled());
+        assertEquals(systemSettings.get("preferenceTheme"), preferenceManager.getPreferenceTheme());
     }
 
     @Test
@@ -469,12 +484,14 @@ public class PreferenceSetupTest {
         preferenceManager.setPreferenceExportFolder("folderExport");
         preferenceManager.setPreferenceFileLoggerEnabled(true);
         preferenceManager.setPreferenceFileDumpEnabled(true);
+        preferenceManager.setPreferenceTheme(5);
         setup.removeSystemSettings();
         assertEquals("config", preferenceManager.getPreferenceImportFolder());
         assertEquals("config", preferenceManager.getPreferenceExportFolder());
         assertEquals(0, preferenceManager.getPreferenceExternalStorageType());
         assertFalse(preferenceManager.getPreferenceFileLoggerEnabled());
         assertFalse(preferenceManager.getPreferenceFileDumpEnabled());
+        assertEquals(-1, preferenceManager.getPreferenceTheme());
     }
 
     @Test
@@ -496,6 +513,7 @@ public class PreferenceSetupTest {
         preferenceManager.setPreferenceExportFolder("folderExport");
         preferenceManager.setPreferenceFileLoggerEnabled(true);
         preferenceManager.setPreferenceFileDumpEnabled(true);
+        preferenceManager.setPreferenceTheme(5);
         setup.removeAllSettings();
         assertEquals(3, preferenceManager.getPreferencePingCount());
         assertEquals(1, preferenceManager.getPreferenceConnectCount());
@@ -512,5 +530,6 @@ public class PreferenceSetupTest {
         assertFalse(preferenceManager.getPreferenceNotification());
         assertFalse(preferenceManager.getPreferenceFileLoggerEnabled());
         assertFalse(preferenceManager.getPreferenceFileDumpEnabled());
+        assertEquals(-1, preferenceManager.getPreferenceTheme());
     }
 }

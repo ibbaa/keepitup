@@ -16,6 +16,16 @@
 
 package net.ibbaa.keepitup.ui;
 
+import static androidx.test.espresso.Espresso.onView;
+import static androidx.test.espresso.matcher.ViewMatchers.isAssignableFrom;
+import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
+import static androidx.test.espresso.matcher.ViewMatchers.isRoot;
+import static androidx.test.espresso.matcher.ViewMatchers.withClassName;
+import static androidx.test.espresso.matcher.ViewMatchers.withContentDescription;
+import static org.hamcrest.Matchers.allOf;
+import static org.hamcrest.Matchers.anyOf;
+import static org.hamcrest.Matchers.endsWith;
+
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
@@ -23,6 +33,7 @@ import android.view.View;
 import android.widget.GridLayout;
 import android.widget.TextView;
 
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
@@ -30,14 +41,6 @@ import androidx.test.core.app.ActivityScenario;
 import androidx.test.espresso.UiController;
 import androidx.test.espresso.ViewAction;
 import androidx.test.platform.app.InstrumentationRegistry;
-
-import org.hamcrest.Matcher;
-import org.junit.After;
-import org.junit.Before;
-
-import java.util.List;
-import java.util.Locale;
-import java.util.concurrent.atomic.AtomicReference;
 
 import net.ibbaa.keepitup.db.LogDAO;
 import net.ibbaa.keepitup.db.NetworkTaskDAO;
@@ -48,6 +51,7 @@ import net.ibbaa.keepitup.resources.PreferenceManager;
 import net.ibbaa.keepitup.service.IFileManager;
 import net.ibbaa.keepitup.service.NetworkTaskProcessServiceScheduler;
 import net.ibbaa.keepitup.service.SystemFileManager;
+import net.ibbaa.keepitup.service.SystemThemeManager;
 import net.ibbaa.keepitup.test.matcher.ChildDescendantAtPositionMatcher;
 import net.ibbaa.keepitup.test.matcher.DrawableMatcher;
 import net.ibbaa.keepitup.test.matcher.GridLayoutPositionMatcher;
@@ -56,15 +60,13 @@ import net.ibbaa.keepitup.test.matcher.TextColorMatcher;
 import net.ibbaa.keepitup.test.mock.TestRegistry;
 import net.ibbaa.keepitup.test.viewaction.WaitForViewAction;
 
-import static androidx.test.espresso.Espresso.onView;
-import static androidx.test.espresso.matcher.ViewMatchers.isAssignableFrom;
-import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
-import static androidx.test.espresso.matcher.ViewMatchers.isRoot;
-import static androidx.test.espresso.matcher.ViewMatchers.withClassName;
-import static androidx.test.espresso.matcher.ViewMatchers.withContentDescription;
-import static org.hamcrest.Matchers.allOf;
-import static org.hamcrest.Matchers.anyOf;
-import static org.hamcrest.Matchers.endsWith;
+import org.hamcrest.Matcher;
+import org.junit.After;
+import org.junit.Before;
+
+import java.util.List;
+import java.util.Locale;
+import java.util.concurrent.atomic.AtomicReference;
 
 public abstract class BaseUITest {
 
@@ -95,6 +97,8 @@ public abstract class BaseUITest {
         fileManager.delete(fileManager.getInternalDownloadDirectory());
         fileManager.delete(fileManager.getExternalRootDirectory(0));
         fileManager.delete(fileManager.getExternalRootDirectory(1));
+        SystemThemeManager themeManager = new SystemThemeManager();
+        themeManager.setThemeByCode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM);
     }
 
     @After
