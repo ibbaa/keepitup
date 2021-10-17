@@ -56,4 +56,8 @@
     <dimen name="cardview_activity_system_theme_corner_radius">4dp</dimen>
     <dimen name="cardview_activity_system_theme_card_elevation">4dp</dimen>
     <dimen name="linearlayout_activity_system_theme_margin">4dp</dimen>
+    <dimen name="cardview_activity_system_battery_optimization_margin">4dp</dimen>
+    <dimen name="cardview_activity_system_battery_optimization_corner_radius">4dp</dimen>
+    <dimen name="cardview_activity_system_battery_optimization_card_elevation">4dp</dimen>
+    <dimen name="linearlayout_activity_system_battery_optimization_margin">4dp</dimen>
 </resources>

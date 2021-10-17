@@ -16,27 +16,6 @@
 
 package net.ibbaa.keepitup.ui;
 
-import androidx.test.core.app.ActivityScenario;
-import androidx.test.ext.junit.runners.AndroidJUnit4;
-import androidx.test.filters.MediumTest;
-
-import org.hamcrest.Matchers;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-
-import java.io.File;
-import java.io.IOException;
-
-import net.ibbaa.keepitup.R;
-import net.ibbaa.keepitup.resources.PreferenceManager;
-import net.ibbaa.keepitup.test.mock.MockClipboardManager;
-import net.ibbaa.keepitup.test.mock.MockFileManager;
-import net.ibbaa.keepitup.test.mock.MockPowerManager;
-import net.ibbaa.keepitup.test.mock.TestRegistry;
-import net.ibbaa.keepitup.ui.dialog.SettingsInputDialog;
-
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.Espresso.openActionBarOverflowOrOptionsMenu;
 import static androidx.test.espresso.action.ViewActions.click;
@@ -53,11 +32,30 @@ import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
 import static org.hamcrest.Matchers.allOf;
 import static org.hamcrest.Matchers.endsWith;
-import static org.hamcrest.Matchers.startsWith;
 import static org.hamcrest.core.IsNot.not;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+
+import androidx.test.core.app.ActivityScenario;
+import androidx.test.ext.junit.runners.AndroidJUnit4;
+import androidx.test.filters.MediumTest;
+
+import net.ibbaa.keepitup.R;
+import net.ibbaa.keepitup.resources.PreferenceManager;
+import net.ibbaa.keepitup.test.mock.MockClipboardManager;
+import net.ibbaa.keepitup.test.mock.MockFileManager;
+import net.ibbaa.keepitup.test.mock.TestRegistry;
+import net.ibbaa.keepitup.ui.dialog.SettingsInputDialog;
+
+import org.hamcrest.Matchers;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+
+import java.io.File;
+import java.io.IOException;
 
 @MediumTest
 @RunWith(AndroidJUnit4.class)
@@ -424,59 +422,6 @@ public class GlobalSettingsActivityTest extends BaseUITest {
         assertTrue(preferenceManager.getPreferenceDownloadExternalStorage());
         assertEquals("download", preferenceManager.getPreferenceDownloadFolder());
         assertTrue(preferenceManager.getPreferenceDownloadKeep());
-    }
-
-    @Test
-    public void testBatteryOptimizationDialog() {
-        MockPowerManager powerManager = new MockPowerManager();
-        activityScenario.onActivity(activity -> ((GlobalSettingsActivity) activity).injectPowerManager(powerManager));
-        onView(withId(R.id.textview_activity_global_settings_battery_optimization_label)).check(matches(withText("Battery Optimization")));
-        onView(withId(R.id.textview_activity_global_settings_battery_optimization)).check(matches(withText("Active")));
-        onView(withId(R.id.cardview_activity_global_settings_battery_optimization)).perform(click());
-        assertEquals(1, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
-        onView(withId(R.id.textview_dialog_battery_optimization_info)).check(matches(withText(startsWith("Battery optimization is active for this app."))));
-        powerManager.setBatteryOptimized(false);
-        onView(withId(R.id.imageview_dialog_battery_optimization_ok)).perform(click());
-        assertEquals(0, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
-        onView(withId(R.id.textview_activity_global_settings_battery_optimization_label)).check(matches(withText("Battery Optimization")));
-        onView(withId(R.id.textview_activity_global_settings_battery_optimization)).check(matches(withText("Inactive")));
-        onView(withId(R.id.cardview_activity_global_settings_battery_optimization)).perform(click());
-        assertEquals(1, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
-        onView(withId(R.id.textview_dialog_battery_optimization_info)).check(matches(withText(startsWith("Battery optimization is not active for this app."))));
-        powerManager.setBatteryOptimized(true);
-        onView(withId(R.id.imageview_dialog_battery_optimization_ok)).perform(click());
-        assertEquals(0, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
-        onView(withId(R.id.textview_activity_global_settings_battery_optimization_label)).check(matches(withText("Battery Optimization")));
-        onView(withId(R.id.textview_activity_global_settings_battery_optimization)).check(matches(withText("Active")));
-    }
-
-    @Test
-    public void testBatteryOptimizationDialogScreenRotation() {
-        final MockPowerManager powerManager1 = new MockPowerManager();
-        activityScenario.onActivity(activity -> ((GlobalSettingsActivity) activity).injectPowerManager(powerManager1));
-        onView(withId(R.id.textview_activity_global_settings_battery_optimization_label)).check(matches(withText("Battery Optimization")));
-        onView(withId(R.id.textview_activity_global_settings_battery_optimization)).check(matches(withText("Active")));
-        onView(withId(R.id.cardview_activity_global_settings_battery_optimization)).perform(click());
-        rotateScreen(activityScenario);
-        assertEquals(1, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
-        final MockPowerManager powerManager2 = new MockPowerManager();
-        activityScenario.onActivity(activity -> ((GlobalSettingsActivity) activity).injectPowerManager(powerManager2));
-        onView(withId(R.id.textview_dialog_battery_optimization_info)).check(matches(withText(startsWith("Battery optimization is active for this app."))));
-        powerManager2.setBatteryOptimized(false);
-        onView(withId(R.id.imageview_dialog_battery_optimization_ok)).perform(click());
-        assertEquals(0, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
-        onView(withId(R.id.textview_activity_global_settings_battery_optimization_label)).check(matches(withText("Battery Optimization")));
-        onView(withId(R.id.textview_activity_global_settings_battery_optimization)).check(matches(withText("Inactive")));
-        onView(withId(R.id.cardview_activity_global_settings_battery_optimization)).perform(scrollTo());
-        onView(withId(R.id.cardview_activity_global_settings_battery_optimization)).perform(click());
-        rotateScreen(activityScenario);
-        final MockPowerManager powerManager3 = new MockPowerManager();
-        activityScenario.onActivity(activity -> ((GlobalSettingsActivity) activity).injectPowerManager(powerManager3));
-        powerManager3.setBatteryOptimized(true);
-        onView(withId(R.id.imageview_dialog_battery_optimization_ok)).perform(click());
-        assertEquals(0, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
-        onView(withId(R.id.textview_activity_global_settings_battery_optimization_label)).check(matches(withText("Battery Optimization")));
-        onView(withId(R.id.textview_activity_global_settings_battery_optimization)).check(matches(withText("Active")));
     }
 
     @Test

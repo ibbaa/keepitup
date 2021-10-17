@@ -37,10 +37,12 @@ import net.ibbaa.keepitup.logging.Log;
 import net.ibbaa.keepitup.resources.PreferenceManager;
 import net.ibbaa.keepitup.resources.PreferenceSetup;
 import net.ibbaa.keepitup.service.IFileManager;
+import net.ibbaa.keepitup.service.IPowerManager;
 import net.ibbaa.keepitup.service.IThemeManager;
 import net.ibbaa.keepitup.service.NetworkTaskProcessServiceScheduler;
 import net.ibbaa.keepitup.service.StartupService;
 import net.ibbaa.keepitup.service.SystemThemeManager;
+import net.ibbaa.keepitup.ui.dialog.BatteryOptimizationDialog;
 import net.ibbaa.keepitup.ui.dialog.ConfirmDialog;
 import net.ibbaa.keepitup.ui.dialog.FileChooseDialog;
 import net.ibbaa.keepitup.ui.sync.DBPurgeTask;
@@ -66,6 +68,7 @@ public class SystemActivity extends SettingsInputActivity implements ExportSuppo
     private SwitchMaterial fileDumpEnabledSwitch;
     private TextView fileDumpEnabledOnOffText;
     private TextView logFolderText;
+    private TextView batteryOptimizationText;
     private RadioGroup theme;
 
     private DBPurgeTask purgeTask;
@@ -105,6 +108,7 @@ public class SystemActivity extends SettingsInputActivity implements ExportSuppo
         prepareConfigurationExportField();
         prepareConfigurationImportField();
         prepareExternalStorageTypeRadioGroup();
+        prepareBatteryOptimizationField();
         prepareThemeRadioGroup();
         prepareDebugSettingsLabel();
         prepareFileLoggerEnabledSwitch();
@@ -208,6 +212,43 @@ public class SystemActivity extends SettingsInputActivity implements ExportSuppo
         }
         prepareConfigurationExportField();
         prepareConfigurationImportField();
+    }
+
+    private void prepareBatteryOptimizationField() {
+        Log.d(SystemActivity.class.getName(), "prepareBatteryOptimizationField");
+        CardView batteryOptimizationCardView = findViewById(R.id.cardview_activity_system_battery_optimization);
+        batteryOptimizationText = findViewById(R.id.textview_activity_system_battery_optimization);
+        IPowerManager powerManager = getPowerManager();
+        if (powerManager.isBatteryOptimized()) {
+            Log.d(SystemActivity.class.getName(), "Battery optimization is active");
+            batteryOptimizationText.setText(R.string.string_active);
+        } else {
+            Log.d(SystemActivity.class.getName(), "Battery optimization is inactive");
+            batteryOptimizationText.setText(R.string.string_inactive);
+        }
+        if (powerManager.supportsBatteryOptimization()) {
+            Log.d(SystemActivity.class.getName(), "Battery optimization is supported");
+            batteryOptimizationCardView.setOnClickListener(this::showBatteryOptimizationDialog);
+            batteryOptimizationCardView.setEnabled(true);
+        } else {
+            Log.d(SystemActivity.class.getName(), "Battery optimization is not supported");
+            batteryOptimizationCardView.setOnClickListener(null);
+            batteryOptimizationCardView.setEnabled(false);
+        }
+    }
+
+
+    private void showBatteryOptimizationDialog(View view) {
+        Log.d(SystemActivity.class.getName(), "showBatteryOptimizationDialog");
+        BatteryOptimizationDialog batteryOptimizationDialog = new BatteryOptimizationDialog();
+        batteryOptimizationDialog.show(getSupportFragmentManager(), BatteryOptimizationDialog.class.getName());
+    }
+
+    @Override
+    public void onBatteryOptimizationDialogOkClicked(BatteryOptimizationDialog batteryOptimizationDialog) {
+        Log.d(SystemActivity.class.getName(), "onBatteryOptimizationDialogOkClicked");
+        prepareBatteryOptimizationField();
+        batteryOptimizationDialog.dismiss();
     }
 
     private void prepareThemeRadioGroup() {
@@ -454,7 +495,7 @@ public class SystemActivity extends SettingsInputActivity implements ExportSuppo
         }
         Bundle bundle = BundleUtil.stringsToBundle(new String[]{fileChooseDialog.getFolderRootKey(), fileChooseDialog.getFolderKey(), fileChooseDialog.getFileKey(), fileChooseDialog.getFileModeKey(), fileChooseDialog.getTypeKey()}, new String[]{root, folder, file, FileChooseDialog.Mode.FILE.name(), type.name()});
         fileChooseDialog.setArguments(bundle);
-        fileChooseDialog.show(getSupportFragmentManager(), GlobalSettingsActivity.class.getName());
+        fileChooseDialog.show(getSupportFragmentManager(), SystemActivity.class.getName());
     }
 
     @Override
@@ -490,7 +531,7 @@ public class SystemActivity extends SettingsInputActivity implements ExportSuppo
                 }
             }
         } else {
-            Log.e(GlobalSettingsActivity.class.getName(), "Unknown type " + type);
+            Log.e(SystemActivity.class.getName(), "Unknown type " + type);
             fileChooseDialog.dismiss();
         }
     }

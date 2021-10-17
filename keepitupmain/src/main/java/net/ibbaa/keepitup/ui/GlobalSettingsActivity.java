@@ -27,17 +27,11 @@ import androidx.cardview.widget.CardView;
 
 import com.google.android.material.switchmaterial.SwitchMaterial;
 
-import java.io.File;
-import java.util.Collections;
-import java.util.List;
-
 import net.ibbaa.keepitup.R;
 import net.ibbaa.keepitup.logging.Log;
 import net.ibbaa.keepitup.resources.PreferenceManager;
 import net.ibbaa.keepitup.resources.PreferenceSetup;
 import net.ibbaa.keepitup.service.IFileManager;
-import net.ibbaa.keepitup.service.IPowerManager;
-import net.ibbaa.keepitup.ui.dialog.BatteryOptimizationDialog;
 import net.ibbaa.keepitup.ui.dialog.FileChooseDialog;
 import net.ibbaa.keepitup.ui.dialog.SettingsInput;
 import net.ibbaa.keepitup.ui.dialog.SettingsInputDialog;
@@ -47,6 +41,10 @@ import net.ibbaa.keepitup.util.BundleUtil;
 import net.ibbaa.keepitup.util.FileUtil;
 import net.ibbaa.keepitup.util.NumberUtil;
 import net.ibbaa.keepitup.util.StringUtil;
+
+import java.io.File;
+import java.util.Collections;
+import java.util.List;
 
 public class GlobalSettingsActivity extends SettingsInputActivity {
 
@@ -58,7 +56,6 @@ public class GlobalSettingsActivity extends SettingsInputActivity {
     private TextView downloadExternalStorageOnOffText;
     private TextView downloadFolderText;
     private SwitchMaterial downloadKeepSwitch;
-    private TextView batteryOptimizationText;
     private TextView downloadKeepOnOffText;
 
     @Override
@@ -74,7 +71,6 @@ public class GlobalSettingsActivity extends SettingsInputActivity {
         prepareDownloadExternalStorageSwitch();
         prepareDownloadFolderField();
         prepareDownloadKeepSwitch();
-        prepareBatteryOptimizationField();
     }
 
     @Override
@@ -221,29 +217,6 @@ public class GlobalSettingsActivity extends SettingsInputActivity {
         prepareDownloadKeepOnOffText();
     }
 
-    private void prepareBatteryOptimizationField() {
-        Log.d(GlobalSettingsActivity.class.getName(), "prepareBatteryOptimizationField");
-        CardView batteryOptimizationCardView = findViewById(R.id.cardview_activity_global_settings_battery_optimization);
-        batteryOptimizationText = findViewById(R.id.textview_activity_global_settings_battery_optimization);
-        IPowerManager powerManager = getPowerManager();
-        if (powerManager.isBatteryOptimized()) {
-            Log.d(GlobalSettingsActivity.class.getName(), "Battery optimization is active");
-            batteryOptimizationText.setText(R.string.string_active);
-        } else {
-            Log.d(GlobalSettingsActivity.class.getName(), "Battery optimization is inactive");
-            batteryOptimizationText.setText(R.string.string_inactive);
-        }
-        if (powerManager.supportsBatteryOptimization()) {
-            Log.d(GlobalSettingsActivity.class.getName(), "Battery optimization is supported");
-            batteryOptimizationCardView.setOnClickListener(this::showBatteryOptimizationDialog);
-            batteryOptimizationCardView.setEnabled(true);
-        } else {
-            Log.d(GlobalSettingsActivity.class.getName(), "Battery optimization is not supported");
-            batteryOptimizationCardView.setOnClickListener(null);
-            batteryOptimizationCardView.setEnabled(false);
-        }
-    }
-
     private String getPingCount() {
         return StringUtil.notNull(pingCountText.getText());
     }
@@ -311,12 +284,6 @@ public class GlobalSettingsActivity extends SettingsInputActivity {
         SettingsInputDialog inputDialog = new SettingsInputDialog();
         inputDialog.setArguments(bundle);
         inputDialog.show(getSupportFragmentManager(), GlobalSettingsActivity.class.getName());
-    }
-
-    private void showBatteryOptimizationDialog(View view) {
-        Log.d(GlobalSettingsActivity.class.getName(), "showBatteryOptimizationDialog");
-        BatteryOptimizationDialog batteryOptimizationDialog = new BatteryOptimizationDialog();
-        batteryOptimizationDialog.show(getSupportFragmentManager(), BatteryOptimizationDialog.class.getName());
     }
 
     private String getExternalRootFolder() {
@@ -392,12 +359,5 @@ public class GlobalSettingsActivity extends SettingsInputActivity {
             Log.e(GlobalSettingsActivity.class.getName(), "Unknown type " + type);
         }
         folderChooseDialog.dismiss();
-    }
-
-    @Override
-    public void onBatteryOptimizationDialogOkClicked(BatteryOptimizationDialog batteryOptimizationDialog) {
-        Log.d(SettingsInputActivity.class.getName(), "onBatteryOptimizationDialogOkClicked");
-        prepareBatteryOptimizationField();
-        batteryOptimizationDialog.dismiss();
     }
 }

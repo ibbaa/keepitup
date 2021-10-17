@@ -31,6 +31,7 @@ import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
 import static org.hamcrest.Matchers.allOf;
 import static org.hamcrest.Matchers.endsWith;
+import static org.hamcrest.Matchers.startsWith;
 import static org.hamcrest.core.IsNot.not;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -60,6 +61,7 @@ import net.ibbaa.keepitup.test.mock.MockAlarmManager;
 import net.ibbaa.keepitup.test.mock.MockDBPurgeTask;
 import net.ibbaa.keepitup.test.mock.MockExportTask;
 import net.ibbaa.keepitup.test.mock.MockImportTask;
+import net.ibbaa.keepitup.test.mock.MockPowerManager;
 import net.ibbaa.keepitup.test.mock.MockThemeManager;
 import net.ibbaa.keepitup.test.mock.TestRegistry;
 import net.ibbaa.keepitup.ui.sync.DBPurgeTask;
@@ -2205,8 +2207,64 @@ public class SystemActivityTest extends BaseUITest {
         assertEquals(exportFolderPrimary, text);
     }
 
+
+    @Test
+    public void testBatteryOptimizationDialog() {
+        MockPowerManager powerManager = new MockPowerManager();
+        activityScenario.onActivity(activity -> ((SystemActivity) activity).injectPowerManager(powerManager));
+        onView(withId(R.id.textview_activity_system_battery_optimization_label)).check(matches(withText("Battery Optimization")));
+        onView(withId(R.id.textview_activity_system_battery_optimization)).check(matches(withText("Active")));
+        onView(withId(R.id.cardview_activity_system_battery_optimization)).perform(click());
+        assertEquals(1, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
+        onView(withId(R.id.textview_dialog_battery_optimization_info)).check(matches(withText(startsWith("Battery optimization is active for this app."))));
+        powerManager.setBatteryOptimized(false);
+        onView(withId(R.id.imageview_dialog_battery_optimization_ok)).perform(click());
+        assertEquals(0, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
+        onView(withId(R.id.textview_activity_system_battery_optimization_label)).check(matches(withText("Battery Optimization")));
+        onView(withId(R.id.textview_activity_system_battery_optimization)).check(matches(withText("Inactive")));
+        onView(withId(R.id.cardview_activity_system_battery_optimization)).perform(click());
+        assertEquals(1, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
+        onView(withId(R.id.textview_dialog_battery_optimization_info)).check(matches(withText(startsWith("Battery optimization is not active for this app."))));
+        powerManager.setBatteryOptimized(true);
+        onView(withId(R.id.imageview_dialog_battery_optimization_ok)).perform(click());
+        assertEquals(0, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
+        onView(withId(R.id.textview_activity_system_battery_optimization_label)).check(matches(withText("Battery Optimization")));
+        onView(withId(R.id.textview_activity_system_battery_optimization)).check(matches(withText("Active")));
+    }
+
+    @Test
+    public void testBatteryOptimizationDialogScreenRotation() {
+        final MockPowerManager powerManager1 = new MockPowerManager();
+        activityScenario.onActivity(activity -> ((SystemActivity) activity).injectPowerManager(powerManager1));
+        onView(withId(R.id.textview_activity_system_battery_optimization_label)).check(matches(withText("Battery Optimization")));
+        onView(withId(R.id.textview_activity_system_battery_optimization)).check(matches(withText("Active")));
+        onView(withId(R.id.cardview_activity_system_battery_optimization)).perform(click());
+        rotateScreen(activityScenario);
+        assertEquals(1, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
+        final MockPowerManager powerManager2 = new MockPowerManager();
+        activityScenario.onActivity(activity -> ((SystemActivity) activity).injectPowerManager(powerManager2));
+        onView(withId(R.id.textview_dialog_battery_optimization_info)).check(matches(withText(startsWith("Battery optimization is active for this app."))));
+        powerManager2.setBatteryOptimized(false);
+        onView(withId(R.id.imageview_dialog_battery_optimization_ok)).perform(click());
+        assertEquals(0, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
+        onView(withId(R.id.textview_activity_system_battery_optimization_label)).check(matches(withText("Battery Optimization")));
+        onView(withId(R.id.textview_activity_system_battery_optimization)).check(matches(withText("Inactive")));
+        onView(withId(R.id.cardview_activity_system_battery_optimization)).perform(scrollTo());
+        onView(withId(R.id.cardview_activity_system_battery_optimization)).perform(click());
+        rotateScreen(activityScenario);
+        final MockPowerManager powerManager3 = new MockPowerManager();
+        activityScenario.onActivity(activity -> ((SystemActivity) activity).injectPowerManager(powerManager3));
+        powerManager3.setBatteryOptimized(true);
+        onView(withId(R.id.imageview_dialog_battery_optimization_ok)).perform(click());
+        assertEquals(0, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
+        onView(withId(R.id.textview_activity_system_battery_optimization_label)).check(matches(withText("Battery Optimization")));
+        onView(withId(R.id.textview_activity_system_battery_optimization)).check(matches(withText("Active")));
+    }
+
+
     @Test
     public void testSwitchTheme() {
+        onView(withId(R.id.textview_activity_system_theme_label)).perform(scrollTo());
         onView(withId(R.id.radiobutton_activity_system_theme_light)).perform(click());
         assertEquals(AppCompatDelegate.MODE_NIGHT_NO, getPreferenceManager().getPreferenceTheme());
         assertEquals(AppCompatDelegate.MODE_NIGHT_NO, themeManager.getCode());
@@ -2220,12 +2278,17 @@ public class SystemActivityTest extends BaseUITest {
 
     @Test
     public void testSwitchThemeScreenRotation() {
+        onView(withId(R.id.textview_activity_system_theme_label)).perform(scrollTo());
         onView(withId(R.id.radiobutton_activity_system_theme_light)).perform(click());
         rotateScreen(activityScenario);
         assertEquals(AppCompatDelegate.MODE_NIGHT_NO, getPreferenceManager().getPreferenceTheme());
+        rotateScreen(activityScenario);
+        onView(withId(R.id.textview_activity_system_theme_label)).perform(scrollTo());
         onView(withId(R.id.radiobutton_activity_system_theme_dark)).perform(click());
         rotateScreen(activityScenario);
         assertEquals(AppCompatDelegate.MODE_NIGHT_YES, getPreferenceManager().getPreferenceTheme());
+        rotateScreen(activityScenario);
+        onView(withId(R.id.textview_activity_system_theme_label)).perform(scrollTo());
         onView(withId(R.id.radiobutton_activity_system_theme_system)).perform(click());
         rotateScreen(activityScenario);
         assertEquals(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM, getPreferenceManager().getPreferenceTheme());
@@ -2247,6 +2310,7 @@ public class SystemActivityTest extends BaseUITest {
         onView(withId(R.id.radiobutton_activity_system_external_storage_type_sdcard)).check(matches(not(isChecked())));
         onView(withId(R.id.radiobutton_activity_system_external_storage_type_primary)).check(matches(isEnabled()));
         onView(withId(R.id.radiobutton_activity_system_external_storage_type_sdcard)).check(matches(isEnabled()));
+        onView(withId(R.id.textview_activity_system_theme_label)).perform(scrollTo());
         onView(withId(R.id.textview_activity_system_theme_label)).check(matches(withText("Theme")));
         onView(withId(R.id.radiogroup_activity_system_theme)).check(matches(hasChildCount(3)));
         onView(withId(R.id.radiobutton_activity_system_theme_system)).check(matches(withText("System")));
@@ -2276,6 +2340,7 @@ public class SystemActivityTest extends BaseUITest {
         onView(withId(R.id.radiobutton_activity_system_external_storage_type_sdcard)).check(matches(isChecked()));
         onView(withId(R.id.radiobutton_activity_system_external_storage_type_primary)).check(matches(isEnabled()));
         onView(withId(R.id.radiobutton_activity_system_external_storage_type_sdcard)).check(matches(isEnabled()));
+        onView(withId(R.id.textview_activity_system_theme_label)).perform(scrollTo());
         onView(withId(R.id.radiobutton_activity_system_theme_dark)).perform(click());
         onView(withId(R.id.radiogroup_activity_system_theme)).check(matches(hasChildCount(3)));
         onView(withId(R.id.radiobutton_activity_system_theme_system)).check(matches(withText("System")));

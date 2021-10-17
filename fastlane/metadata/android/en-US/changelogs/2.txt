@@ -1,3 +1,4 @@
 * Dark mode support
 * Various bug fixes
+* Moved battery optimization settings to system
 
