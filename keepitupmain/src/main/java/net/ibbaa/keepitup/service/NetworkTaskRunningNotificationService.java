@@ -67,16 +67,20 @@ public class NetworkTaskRunningNotificationService extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         Log.d(NetworkTaskRunningNotificationService.class.getName(), "onStartCommand");
+        if (intent == null) {
+            Log.e(NetworkTaskRunningNotificationService.class.getName(), "intent is null");
+            return START_NOT_STICKY;
+        }
         Bundle extras = intent.getExtras();
         if (extras == null) {
-            Log.d(NetworkTaskRunningNotificationService.class.getName(), "extras bundle is null");
+            Log.e(NetworkTaskRunningNotificationService.class.getName(), "extras bundle is null");
             return START_NOT_STICKY;
         }
         NetworkTask task = new NetworkTask(extras);
         Log.d(NetworkTaskRunningNotificationService.class.getName(), "Network task is " + task);
         NetworkTaskProcessServiceScheduler.Delay delay = getDelay(extras);
         if (delay == null) {
-            Log.d(NetworkTaskRunningNotificationService.class.getName(), "Delay is invalid");
+            Log.e(NetworkTaskRunningNotificationService.class.getName(), "Delay is invalid");
             return START_NOT_STICKY;
         }
         Log.d(NetworkTaskRunningNotificationService.class.getName(), "Delay is " + delay);
