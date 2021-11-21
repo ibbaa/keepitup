@@ -22,6 +22,13 @@ import android.net.Uri;
 import android.os.Environment;
 import android.webkit.MimeTypeMap;
 
+import net.ibbaa.keepitup.R;
+import net.ibbaa.keepitup.logging.Log;
+import net.ibbaa.keepitup.model.FileEntry;
+import net.ibbaa.keepitup.resources.ServiceFactoryContributor;
+import net.ibbaa.keepitup.util.FileUtil;
+import net.ibbaa.keepitup.util.StringUtil;
+
 import java.io.File;
 import java.net.URL;
 import java.text.SimpleDateFormat;
@@ -30,13 +37,6 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
-
-import net.ibbaa.keepitup.R;
-import net.ibbaa.keepitup.logging.Log;
-import net.ibbaa.keepitup.model.FileEntry;
-import net.ibbaa.keepitup.resources.ServiceFactoryContributor;
-import net.ibbaa.keepitup.util.FileUtil;
-import net.ibbaa.keepitup.util.StringUtil;
 
 public class SystemFileManager implements IFileManager {
 
