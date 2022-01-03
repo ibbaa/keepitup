@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021. Alwin Ibba
+ * Copyright (c) 2022. Alwin Ibba
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,7 +27,7 @@ android {
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         archivesBaseName = "keepitup"
         buildConfigField "long", "TIMESTAMP", System.currentTimeMillis() + "L"
-        buildConfigField "int", "RELEASE_YEAR", '2021'
+        buildConfigField "int", "RELEASE_YEAR", '2022'
     }
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_11
