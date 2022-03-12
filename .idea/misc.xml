@@ -4,11 +4,13 @@
     <option name="filePathToZoomLevelMap">
       <map>
         <entry key="keepitupmain/src/main/res/drawable-v24/ic_launcher_foreground.xml" value="0.328125" />
+        <entry key="keepitupmain/src/main/res/drawable/dialog_edittext_background.xml" value="0.312" />
         <entry key="keepitupmain/src/main/res/drawable/ic_launcher_background.xml" value="0.328125" />
         <entry key="keepitupmain/src/main/res/drawable/icon_cancel_selector.xml" value="0.328125" />
         <entry key="keepitupmain/src/main/res/drawable/icon_folder_open_selector.xml" value="0.34375" />
         <entry key="keepitupmain/src/main/res/layout/activity_global_settings.xml" value="0.2921875" />
         <entry key="keepitupmain/src/main/res/layout/activity_main_network_task.xml" value="0.2921875" />
+        <entry key="keepitupmain/src/main/res/layout/activity_system.xml" value="0.30885416666666665" />
         <entry key="keepitupmain/src/main/res/mipmap-anydpi-v26/ic_launcher.xml" value="0.3265625" />
         <entry key="keepitupmain/src/main/res/mipmap-anydpi-v26/ic_launcher_round.xml" value="0.29791666666666666" />
       </map>
