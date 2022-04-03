@@ -16,10 +16,18 @@
 
 package net.ibbaa.keepitup.logging;
 
+import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.SmallTest;
 
 import com.google.common.base.Charsets;
+
+import net.ibbaa.keepitup.test.mock.TestRegistry;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -33,14 +41,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
-
-import net.ibbaa.keepitup.test.mock.TestRegistry;
-
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
 
 @SmallTest
 @RunWith(AndroidJUnit4.class)
@@ -59,7 +59,7 @@ public class HousekeeperTest {
         File logDir = getTestLogFileFolder();
         File[] files = logDir.listFiles();
         assertEquals(0, files.length);
-        Housekeeper housekeeper = new Housekeeper(logDir.getAbsolutePath(), "test.log", 5, null);
+        Housekeeper housekeeper = new Housekeeper(logDir.getAbsolutePath(), "test.log", 5, -1,null);
         housekeeper.doHousekeepingNow();
         files = logDir.listFiles();
         assertEquals(0, files.length);
@@ -81,7 +81,7 @@ public class HousekeeperTest {
         createTestFile(logDir, "test6.log", "Test4Text");
         files = logDir.listFiles();
         assertEquals(6, files.length);
-        housekeeper = new Housekeeper(logDir.getAbsolutePath(), "test.log", 5, (File dir, String name) -> name.endsWith("txt"));
+        housekeeper = new Housekeeper(logDir.getAbsolutePath(), "test.log", 5, -1, (File dir, String name) -> name.endsWith("txt"));
         housekeeper.doHousekeepingNow();
         files = logDir.listFiles();
         assertEquals(6, files.length);
@@ -90,7 +90,7 @@ public class HousekeeperTest {
     @Test
     public void testZipCreated() throws Exception {
         File logDir = getTestLogFileFolder();
-        Housekeeper housekeeper = new Housekeeper(logDir.getAbsolutePath(), "test.log", 5, (File dir, String name) -> name.endsWith("txt"));
+        Housekeeper housekeeper = new Housekeeper(logDir.getAbsolutePath(), "test.log", 5, -1, (File dir, String name) -> name.endsWith("txt"));
         createTestFile(logDir, "test1.txt", "Test1Text");
         createTestFile(logDir, "test2.txt", "Test2Text");
         createTestFile(logDir, "test3.txt", "Test3Text");

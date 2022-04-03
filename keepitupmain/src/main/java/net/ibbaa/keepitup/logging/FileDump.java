@@ -24,10 +24,12 @@ import java.util.concurrent.locks.ReentrantLock;
 public class FileDump implements IDump {
 
     private final static int DEFAULT_ARCHIVE_FILE_COUNT = 50;
+    private final static int DEFAULT_DELETE_FILE_COUNT = -1;
     private final static String DEFAULT_DUMP_FILE_EXTENSION = "txt";
     private final static String DEFAULT_EMPTY_MESSAGE = "No entries.";
 
     private final int archiveFileCount;
+    private final int deleteFileCount;
     private final String dumpFileExtension;
     private final String emptyMessage;
     private final String dumpDirectory;
@@ -35,15 +37,16 @@ public class FileDump implements IDump {
     private final static ReentrantLock dumpLock = new ReentrantLock();
 
     public FileDump(String dumpDirectory) {
-        this(dumpDirectory, DEFAULT_ARCHIVE_FILE_COUNT, DEFAULT_DUMP_FILE_EXTENSION, DEFAULT_EMPTY_MESSAGE);
+        this(dumpDirectory, DEFAULT_ARCHIVE_FILE_COUNT, DEFAULT_DELETE_FILE_COUNT, DEFAULT_DUMP_FILE_EXTENSION, DEFAULT_EMPTY_MESSAGE);
     }
 
     public FileDump(String dumpDirectory, String dumpFileExtension) {
-        this(dumpDirectory, DEFAULT_ARCHIVE_FILE_COUNT, dumpFileExtension, DEFAULT_EMPTY_MESSAGE);
+        this(dumpDirectory, DEFAULT_ARCHIVE_FILE_COUNT, DEFAULT_DELETE_FILE_COUNT, dumpFileExtension, DEFAULT_EMPTY_MESSAGE);
     }
 
-    public FileDump(String dumpDirectory, int archiveFileCount, String dumpFileExtension, String emptyMessage) {
+    public FileDump(String dumpDirectory, int archiveFileCount, int deleteFileCount, String dumpFileExtension, String emptyMessage) {
         this.archiveFileCount = archiveFileCount;
+        this.deleteFileCount = deleteFileCount;
         this.dumpFileExtension = dumpFileExtension;
         this.emptyMessage = emptyMessage;
         this.dumpDirectory = dumpDirectory;
@@ -98,8 +101,10 @@ public class FileDump implements IDump {
                 String dumpFileName = fileManager.suffixFileName(baseDumpFileName, fileManager.getTimestampSuffix(timestamp));
                 dumpFileName = fileManager.getValidFileName(dumpFolder, dumpFileName, null);
                 fileManager.writeListToFile(header, emptyMessage, objectsToDump, new File(dumpFolder, dumpFileName));
-                Housekeeper housekeeper = new Housekeeper(dumpDirectory, baseDumpFileName, archiveFileCount, new DumpFilenameFilter(baseDumpFileName));
-                housekeeper.doHousekeepingNow();
+                if(archiveFileCount > 0) {
+                    Housekeeper housekeeper = new Housekeeper(dumpDirectory, baseDumpFileName, archiveFileCount, deleteFileCount, new DumpFilenameFilter(baseDumpFileName));
+                    housekeeper.doHousekeepingNow();
+                }
             } catch (Exception exc) {
                 //Do nothing
             } finally {

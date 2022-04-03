@@ -19,9 +19,11 @@
     <string name="file_logger_log_level_default">DEBUG</string>
     <integer name="file_logger_max_file_size_default">10485760</integer>
     <integer name="file_logger_archive_file_count_default">50</integer>
+    <integer name="file_logger_delete_file_count_default">-1</integer>
     <string name="file_logger_log_file_base_name_default">keepitup.log</string>
     <string name="file_logger_log_directory_default">log</string>
     <integer name="file_dump_archive_file_count_default">50</integer>
+    <integer name="file_dump_delete_file_count_default">-1</integer>
     <string name="file_dump_dump_file_extension_default">txt</string>
     <string name="file_dump_empty_message_default">No entries.</string>
     <string name="file_dump_dump_directory_default">log</string>

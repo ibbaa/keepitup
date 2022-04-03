@@ -33,6 +33,7 @@ public class FileLogger implements ILogger {
     private final static LogLevel DEFAULT_LOG_LEVEL = LogLevel.DEBUG;
     private final static int DEFAULT_MAX_FILE_SIZE = 1024 * 1024 * 10;
     private final static int DEFAULT_ARCHIVE_FILE_COUNT = 50;
+    private final static int DEFAULT_DELETE_FILE_COUNT = -1;
     private final static String DEFAULT_LOG_FILE_BASE_NAME = "keepitup.log";
 
     private final static int LOG_QUEUE_PUT_TIMEOUT = 500;
@@ -43,6 +44,7 @@ public class FileLogger implements ILogger {
     private final LogLevel maxLevel;
     private final int maxFileSize;
     private final int archiveFileCount;
+    private final int deleteFileCount;
     private final String logDirectory;
     private final String logFileName;
     private final ILogFormatter logFormatter;
@@ -51,41 +53,42 @@ public class FileLogger implements ILogger {
     private final AtomicBoolean logThreadActive;
 
     public FileLogger(String logDirectory) {
-        this(DEFAULT_LOG_LEVEL, DEFAULT_MAX_FILE_SIZE, DEFAULT_ARCHIVE_FILE_COUNT, logDirectory, DEFAULT_LOG_FILE_BASE_NAME, new DefaultLogFormatter());
+        this(DEFAULT_LOG_LEVEL, DEFAULT_MAX_FILE_SIZE, DEFAULT_ARCHIVE_FILE_COUNT, DEFAULT_DELETE_FILE_COUNT, logDirectory, DEFAULT_LOG_FILE_BASE_NAME, new DefaultLogFormatter());
     }
 
     public FileLogger(int maxFileSize, String logDirectory) {
-        this(DEFAULT_LOG_LEVEL, maxFileSize, DEFAULT_ARCHIVE_FILE_COUNT, logDirectory, DEFAULT_LOG_FILE_BASE_NAME, new DefaultLogFormatter());
+        this(DEFAULT_LOG_LEVEL, maxFileSize, DEFAULT_ARCHIVE_FILE_COUNT, DEFAULT_DELETE_FILE_COUNT, logDirectory, DEFAULT_LOG_FILE_BASE_NAME, new DefaultLogFormatter());
     }
 
     public FileLogger(String logDirectory, String logFileName) {
-        this(DEFAULT_LOG_LEVEL, DEFAULT_MAX_FILE_SIZE, DEFAULT_ARCHIVE_FILE_COUNT, logDirectory, logFileName, new DefaultLogFormatter());
+        this(DEFAULT_LOG_LEVEL, DEFAULT_MAX_FILE_SIZE, DEFAULT_ARCHIVE_FILE_COUNT, DEFAULT_DELETE_FILE_COUNT, logDirectory, logFileName, new DefaultLogFormatter());
     }
 
-    public FileLogger(int maxFileSize, int archiveFileCount, String logDirectory) {
-        this(DEFAULT_LOG_LEVEL, maxFileSize, archiveFileCount, logDirectory, DEFAULT_LOG_FILE_BASE_NAME, new DefaultLogFormatter());
+    public FileLogger(int maxFileSize, int archiveFileCount, int deleteFileCount, String logDirectory) {
+        this(DEFAULT_LOG_LEVEL, maxFileSize, archiveFileCount, deleteFileCount, logDirectory, DEFAULT_LOG_FILE_BASE_NAME, new DefaultLogFormatter());
     }
 
     public FileLogger(LogLevel maxLevel, String logDirectory) {
-        this(maxLevel, DEFAULT_MAX_FILE_SIZE, DEFAULT_ARCHIVE_FILE_COUNT, logDirectory, DEFAULT_LOG_FILE_BASE_NAME, new DefaultLogFormatter());
+        this(maxLevel, DEFAULT_MAX_FILE_SIZE, DEFAULT_ARCHIVE_FILE_COUNT, DEFAULT_DELETE_FILE_COUNT, logDirectory, DEFAULT_LOG_FILE_BASE_NAME, new DefaultLogFormatter());
     }
 
     public FileLogger(LogLevel maxLevel, int maxFileSize, String logDirectory) {
-        this(maxLevel, maxFileSize, DEFAULT_ARCHIVE_FILE_COUNT, logDirectory, DEFAULT_LOG_FILE_BASE_NAME, new DefaultLogFormatter());
+        this(maxLevel, maxFileSize, DEFAULT_ARCHIVE_FILE_COUNT, DEFAULT_DELETE_FILE_COUNT, logDirectory, DEFAULT_LOG_FILE_BASE_NAME, new DefaultLogFormatter());
     }
 
     public FileLogger(LogLevel maxLevel, String logDirectory, String logFileName) {
-        this(maxLevel, DEFAULT_MAX_FILE_SIZE, DEFAULT_ARCHIVE_FILE_COUNT, logDirectory, logFileName, new DefaultLogFormatter());
+        this(maxLevel, DEFAULT_MAX_FILE_SIZE, DEFAULT_ARCHIVE_FILE_COUNT, DEFAULT_DELETE_FILE_COUNT, logDirectory, logFileName, new DefaultLogFormatter());
     }
 
-    public FileLogger(LogLevel maxLevel, int maxFileSize, int archiveFileCount, String logDirectory) {
-        this(maxLevel, maxFileSize, archiveFileCount, logDirectory, DEFAULT_LOG_FILE_BASE_NAME, new DefaultLogFormatter());
+    public FileLogger(LogLevel maxLevel, int maxFileSize, int archiveFileCount, int deleteFileCount, String logDirectory) {
+        this(maxLevel, maxFileSize, archiveFileCount, deleteFileCount, logDirectory, DEFAULT_LOG_FILE_BASE_NAME, new DefaultLogFormatter());
     }
 
-    public FileLogger(LogLevel maxLevel, int maxFileSize, int archiveFileCount, String logDirectory, String logFileName, ILogFormatter logFormatter) {
+    public FileLogger(LogLevel maxLevel, int maxFileSize, int archiveFileCount, int deleteFileCount, String logDirectory, String logFileName, ILogFormatter logFormatter) {
         this.maxLevel = maxLevel;
         this.maxFileSize = maxFileSize;
         this.archiveFileCount = archiveFileCount;
+        this.deleteFileCount = deleteFileCount;
         this.logDirectory = logDirectory;
         this.logFileName = logFileName;
         this.logFormatter = logFormatter;
@@ -141,9 +144,11 @@ public class FileLogger implements ILogger {
                             logFile = new File(logDirectory, logFileName);
                             fileSize = 0;
                             logStream = initializeLogStream(logFile);
-                            Housekeeper housekeeper = new Housekeeper(logDirectory, logFileName, archiveFileCount, this::shouldBeArchived);
-                            Thread housekeeperThread = new Thread(housekeeper);
-                            housekeeperThread.start();
+                            if(archiveFileCount > 0) {
+                                Housekeeper housekeeper = new Housekeeper(logDirectory, logFileName, archiveFileCount, deleteFileCount, this::shouldBeArchived);
+                                Thread housekeeperThread = new Thread(housekeeper);
+                                housekeeperThread.start();
+                            }
                         } else {
                             return;
                         }

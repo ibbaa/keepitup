@@ -30,12 +30,14 @@ public class Housekeeper implements Runnable {
     private final String directory;
     private final String baseFileName;
     private final int archiveFileCount;
+    private final int deleteFileCount;
     private final FilenameFilter filter;
 
-    public Housekeeper(String directory, String baseFileName, int archiveFileCount, FilenameFilter filter) {
+    public Housekeeper(String directory, String baseFileName, int archiveFileCount, int deleteFileCount, FilenameFilter filter) {
         this.directory = directory;
         this.baseFileName = baseFileName;
         this.archiveFileCount = archiveFileCount;
+        this.deleteFileCount = deleteFileCount;
         this.filter = filter;
     }
 

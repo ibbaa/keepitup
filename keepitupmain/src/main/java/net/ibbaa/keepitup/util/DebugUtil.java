@@ -44,6 +44,7 @@ public class DebugUtil {
         }
         int maxLogFileSize = context.getResources().getInteger(R.integer.file_logger_max_file_size_default);
         int archiveFileCount = context.getResources().getInteger(R.integer.file_logger_archive_file_count_default);
+        int deleteFileCount = context.getResources().getInteger(R.integer.file_logger_delete_file_count_default);
         String relativeLogDirectory = context.getResources().getString(R.string.file_logger_log_directory_default);
         File logDirectoryFile = fileManager.getExternalDirectory(relativeLogDirectory, 0);
         if (logDirectoryFile == null) {
@@ -55,9 +56,10 @@ public class DebugUtil {
         Log.d(DebugUtil.class.getName(), "maxLogLevel is " + maxLogLevel.name());
         Log.d(DebugUtil.class.getName(), "maxLogFileSize is " + maxLogFileSize);
         Log.d(DebugUtil.class.getName(), "archiveFileCount is " + archiveFileCount);
+        Log.d(DebugUtil.class.getName(), "deleteFileCount is " + deleteFileCount);
         Log.d(DebugUtil.class.getName(), "logDirectory is " + logDirectory);
         Log.d(DebugUtil.class.getName(), "logFileName is " + logFileName);
-        return new FileLogger(maxLogLevel, maxLogFileSize, archiveFileCount, logDirectory, logFileName, new DefaultLogFormatter());
+        return new FileLogger(maxLogLevel, maxLogFileSize, archiveFileCount, deleteFileCount, logDirectory, logFileName, new DefaultLogFormatter());
     }
 
     public static IDump getFileDump(Context context, IFileManager fileManager) {
@@ -70,11 +72,13 @@ public class DebugUtil {
         }
         String dumpDirectory = dumpDirectoryFile.getAbsolutePath();
         int archiveFileCount = context.getResources().getInteger(R.integer.file_dump_archive_file_count_default);
+        int deleteFileCount = context.getResources().getInteger(R.integer.file_dump_delete_file_count_default);
         String dumpFileExtension = context.getResources().getString(R.string.file_dump_dump_file_extension_default);
         String emptyMessage = context.getResources().getString(R.string.file_dump_empty_message_default);
         Log.d(DebugUtil.class.getName(), "dumpDirectory is " + dumpDirectory);
         Log.d(DebugUtil.class.getName(), "archiveFileCount is " + archiveFileCount);
+        Log.d(DebugUtil.class.getName(), "deleteFileCount is " + deleteFileCount);
         Log.d(DebugUtil.class.getName(), "dumpFileExtension is " + dumpFileExtension);
-        return new FileDump(dumpDirectory, archiveFileCount, dumpFileExtension, emptyMessage);
+        return new FileDump(dumpDirectory, archiveFileCount, deleteFileCount, dumpFileExtension, emptyMessage);
     }
 }
