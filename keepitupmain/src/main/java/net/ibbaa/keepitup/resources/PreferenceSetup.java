@@ -48,6 +48,8 @@ public class PreferenceSetup {
         globalSettings.put("preferenceDownloadExternalStorage", preferenceManager.getPreferenceDownloadExternalStorage());
         globalSettings.put("preferenceDownloadFolder", preferenceManager.getPreferenceDownloadFolder());
         globalSettings.put("preferenceDownloadKeep", preferenceManager.getPreferenceDownloadKeep());
+        globalSettings.put("preferenceLogFile", preferenceManager.getPreferenceLogFile());
+        globalSettings.put("preferenceLogFolder", preferenceManager.getPreferenceLogFolder());
         return globalSettings;
     }
 
@@ -118,6 +120,18 @@ public class PreferenceSetup {
             preferenceManager.setPreferenceDownloadKeep(Boolean.parseBoolean(Objects.requireNonNull(downloadExternalStorage).toString()));
         } else {
             preferenceManager.removePreferenceDownloadKeep();
+        }
+        Object logFile = globalSettings.get("preferenceLogFile");
+        if (isValidBoolean(logFile)) {
+            preferenceManager.setPreferenceLogFile(Boolean.parseBoolean(logFile.toString()));
+        } else {
+            preferenceManager.removePreferenceLogFile();
+        }
+        Object logFolder = globalSettings.get("preferenceLogFolder");
+        if (isValidString(logFolder)) {
+            preferenceManager.setPreferenceLogFolder(logFolder.toString());
+        } else {
+            preferenceManager.removePreferenceLogFolder();
         }
     }
 
@@ -245,6 +259,8 @@ public class PreferenceSetup {
         preferenceManager.removePreferenceDownloadExternalStorage();
         preferenceManager.removePreferenceDownloadFolder();
         preferenceManager.removePreferenceDownloadKeep();
+        preferenceManager.removePreferenceLogFile();
+        preferenceManager.removePreferenceLogFolder();
     }
 
     public void removeDefaults() {

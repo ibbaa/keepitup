@@ -44,4 +44,12 @@
     <dimen name="cardview_activity_global_settings_download_keep_corner_radius">4dp</dimen>
     <dimen name="cardview_activity_global_settings_download_keep_card_elevation">4dp</dimen>
     <dimen name="linearlayout_activity_global_settings_download_keep_margin">4dp</dimen>
+    <dimen name="cardview_activity_global_settings_log_file_margin">4dp</dimen>
+    <dimen name="cardview_activity_global_settings_log_file_corner_radius">4dp</dimen>
+    <dimen name="cardview_activity_global_settings_log_file_card_elevation">4dp</dimen>
+    <dimen name="linearlayout_activity_global_settings_log_file_margin">4dp</dimen>
+    <dimen name="cardview_activity_global_settings_log_folder_margin">4dp</dimen>
+    <dimen name="cardview_activity_global_settings_log_folder_corner_radius">4dp</dimen>
+    <dimen name="cardview_activity_global_settings_log_folder_card_elevation">4dp</dimen>
+    <dimen name="linearlayout_activity_global_settings_log_folder_margin">4dp</dimen>
 </resources>

@@ -84,7 +84,7 @@ public class FileDump implements IDump {
                     dumpFolder.mkdirs();
                 }
                 LogFileManager fileManager = new LogFileManager();
-                LogFormatter formatter = new LogFormatter();
+                DefaultLogFormatter formatter = new DefaultLogFormatter();
                 String baseDumpFileName = baseFileName;
                 if (baseDumpFileName == null) {
                     if (objectsToDump == null || objectsToDump.isEmpty()) {

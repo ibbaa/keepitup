@@ -97,6 +97,12 @@ public class GlobalSettingsActivityTest extends BaseUITest {
         onView(withId(R.id.textview_activity_global_settings_download_keep_label)).check(matches(withText("Keep downloaded files")));
         onView(withId(R.id.switch_activity_global_settings_download_keep)).check(matches(isNotChecked()));
         onView(withId(R.id.switch_activity_global_settings_download_keep)).check(matches(not(isEnabled())));
+        onView(withId(R.id.switch_activity_global_settings_log_file)).perform(scrollTo());
+        onView(withId(R.id.textview_activity_global_settings_log_file_label)).check(matches(withText("Log to file")));
+        onView(withId(R.id.switch_activity_global_settings_log_file)).check(matches(isNotChecked()));
+        onView(withId(R.id.textview_activity_global_settings_log_folder_label)).check(matches(withText("Log folder")));
+        onView(withId(R.id.textview_activity_global_settings_log_folder)).check(matches(withText("None")));
+        onView(withId(R.id.cardview_activity_global_settings_log_folder)).check(matches(not(isEnabled())));
     }
 
     @Test
@@ -111,6 +117,8 @@ public class GlobalSettingsActivityTest extends BaseUITest {
         onView(withId(R.id.switch_activity_global_settings_download_external_storage)).perform(click());
         onView(withId(R.id.switch_activity_global_settings_download_keep)).perform(scrollTo());
         onView(withId(R.id.switch_activity_global_settings_download_keep)).perform(click());
+        onView(withId(R.id.switch_activity_global_settings_log_file)).perform(scrollTo());
+        onView(withId(R.id.switch_activity_global_settings_log_file)).perform(click());
         onView(withId(R.id.textview_activity_global_settings_ping_count_label)).check(matches(withText("Ping count")));
         onView(withId(R.id.textview_activity_global_settings_ping_count)).check(matches(withText("10")));
         onView(withId(R.id.textview_activity_global_settings_connect_count_label)).check(matches(withText("Connect count")));
@@ -126,6 +134,11 @@ public class GlobalSettingsActivityTest extends BaseUITest {
         onView(withId(R.id.textview_activity_global_settings_download_keep_label)).check(matches(withText("Keep downloaded files")));
         onView(withId(R.id.switch_activity_global_settings_download_keep)).check(matches(isChecked()));
         onView(withId(R.id.switch_activity_global_settings_download_keep)).check(matches(isEnabled()));
+        onView(withId(R.id.textview_activity_global_settings_log_file_label)).check(matches(withText("Log to file")));
+        onView(withId(R.id.switch_activity_global_settings_log_file)).check(matches(isChecked()));
+        onView(withId(R.id.textview_activity_global_settings_log_folder_label)).check(matches(withText("Log folder")));
+        onView(withId(R.id.textview_activity_global_settings_log_folder)).check(matches(withText(endsWith("log"))));
+        onView(withId(R.id.textview_activity_global_settings_log_folder)).check(matches(isEnabled()));
     }
 
     @Test
@@ -156,6 +169,16 @@ public class GlobalSettingsActivityTest extends BaseUITest {
         onView(withId(R.id.switch_activity_global_settings_download_keep)).perform(click());
         onView(withId(R.id.switch_activity_global_settings_download_keep)).check(matches(isNotChecked()));
         onView(withId(R.id.textview_activity_global_settings_download_keep_on_off)).check(matches(withText("no")));
+        onView(withId(R.id.switch_activity_global_settings_log_file)).perform(scrollTo());
+        onView(withId(R.id.switch_activity_global_settings_log_file)).check(matches(isNotChecked()));
+        onView(withId(R.id.textview_activity_global_settings_log_file_on_off)).check(matches(withText("no")));
+        onView(withId(R.id.switch_activity_global_settings_log_file)).perform(click());
+        onView(withId(R.id.switch_activity_global_settings_log_file)).check(matches(isChecked()));
+        onView(withId(R.id.textview_activity_global_settings_log_file_on_off)).check(matches(withText("yes")));
+        onView(withId(R.id.switch_activity_global_settings_log_file)).perform(click());
+        onView(withId(R.id.switch_activity_global_settings_log_file)).check(matches(isNotChecked()));
+        onView(withId(R.id.textview_activity_global_settings_log_file_on_off)).check(matches(withText("no")));
+        onView(withId(R.id.switch_activity_global_settings_log_file)).perform(click());
     }
 
     @Test
@@ -170,6 +193,8 @@ public class GlobalSettingsActivityTest extends BaseUITest {
         onView(withId(R.id.switch_activity_global_settings_download_external_storage)).perform(click());
         onView(withId(R.id.switch_activity_global_settings_download_keep)).perform(scrollTo());
         onView(withId(R.id.switch_activity_global_settings_download_keep)).perform(click());
+        onView(withId(R.id.switch_activity_global_settings_log_file)).perform(scrollTo());
+        onView(withId(R.id.switch_activity_global_settings_log_file)).perform(click());
         PreferenceManager preferenceManager = getPreferenceManager();
         assertEquals(2, preferenceManager.getPreferencePingCount());
         assertEquals(5, preferenceManager.getPreferenceConnectCount());
@@ -177,6 +202,7 @@ public class GlobalSettingsActivityTest extends BaseUITest {
         assertTrue(preferenceManager.getPreferenceDownloadExternalStorage());
         assertEquals("download", preferenceManager.getPreferenceDownloadFolder());
         assertTrue(preferenceManager.getPreferenceDownloadKeep());
+        assertTrue(preferenceManager.getPreferenceLogFile());
     }
 
     @Test
@@ -425,6 +451,34 @@ public class GlobalSettingsActivityTest extends BaseUITest {
     }
 
     @Test
+    public void testLogControls() {
+        PreferenceManager preferenceManager = getPreferenceManager();
+        assertFalse(preferenceManager.getPreferenceLogFile());
+        assertEquals("log", preferenceManager.getPreferenceLogFolder());
+        onView(withId(R.id.switch_activity_global_settings_log_file)).perform(scrollTo());
+        onView(withId(R.id.textview_activity_global_settings_log_file_label)).check(matches(withText("Log to file")));
+        onView(withId(R.id.switch_activity_global_settings_log_file)).check(matches(isNotChecked()));
+        onView(withId(R.id.textview_activity_global_settings_log_folder_label)).check(matches(withText("Log folder")));
+        onView(withId(R.id.textview_activity_global_settings_log_folder)).check(matches(withText("None")));
+        onView(withId(R.id.switch_activity_global_settings_log_file)).perform(click());
+        onView(withId(R.id.textview_activity_global_settings_log_file_label)).check(matches(withText("Log to file")));
+        onView(withId(R.id.switch_activity_global_settings_log_file)).check(matches(isChecked()));
+        onView(withId(R.id.textview_activity_global_settings_log_folder_label)).check(matches(withText("Log folder")));
+        onView(withId(R.id.textview_activity_global_settings_log_folder)).check(matches(withText(endsWith("log"))));
+        onView(withId(R.id.textview_activity_global_settings_log_folder)).check(matches(isEnabled()));
+        assertTrue(preferenceManager.getPreferenceLogFile());
+        assertEquals("log", preferenceManager.getPreferenceLogFolder());
+        onView(withId(R.id.switch_activity_global_settings_log_file)).perform(click());
+        onView(withId(R.id.textview_activity_global_settings_log_file_label)).check(matches(withText("Log to file")));
+        onView(withId(R.id.switch_activity_global_settings_log_file)).check(matches(isNotChecked()));
+        onView(withId(R.id.textview_activity_global_settings_log_folder_label)).check(matches(withText("Log folder")));
+        onView(withId(R.id.textview_activity_global_settings_log_folder)).check(matches(withText("None")));
+        onView(withId(R.id.cardview_activity_global_settings_log_folder)).check(matches(not(isEnabled())));
+        assertFalse(preferenceManager.getPreferenceLogFile());
+        assertEquals("log", preferenceManager.getPreferenceLogFolder());
+    }
+
+    @Test
     public void testDownloadFolderDialogOpen() {
         onView(withId(R.id.switch_activity_global_settings_download_external_storage)).perform(click());
         onView(withId(R.id.cardview_activity_global_settings_download_folder)).perform(click());
@@ -433,6 +487,19 @@ public class GlobalSettingsActivityTest extends BaseUITest {
         assertEquals(0, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
         onView(withId(R.id.switch_activity_global_settings_download_external_storage)).perform(click());
         onView(withId(R.id.cardview_activity_global_settings_download_folder)).perform(click());
+        assertEquals(0, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
+    }
+
+    @Test
+    public void testLogFolderDialogOpen() {
+        onView(withId(R.id.switch_activity_global_settings_log_file)).perform(scrollTo());
+        onView(withId(R.id.switch_activity_global_settings_log_file)).perform(click());
+        onView(withId(R.id.cardview_activity_global_settings_log_folder)).perform(click());
+        assertEquals(1, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
+        onView(withId(R.id.imageview_dialog_file_choose_cancel)).perform(click());
+        assertEquals(0, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
+        onView(withId(R.id.switch_activity_global_settings_log_file)).perform(click());
+        onView(withId(R.id.cardview_activity_global_settings_log_folder)).perform(click());
         assertEquals(0, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
     }
 
@@ -459,6 +526,29 @@ public class GlobalSettingsActivityTest extends BaseUITest {
     }
 
     @Test
+    public void testLogFolderDialogOkCancel() {
+        PreferenceManager preferenceManager = getPreferenceManager();
+        assertEquals("download", preferenceManager.getPreferenceDownloadFolder());
+        onView(withId(R.id.switch_activity_global_settings_log_file)).perform(scrollTo());
+        onView(withId(R.id.switch_activity_global_settings_log_file)).perform(click());
+        onView(withId(R.id.cardview_activity_global_settings_log_folder)).perform(click());
+        onView(withId(R.id.edittext_dialog_file_choose_folder)).check(matches(withText("log")));
+        onView(withId(R.id.edittext_dialog_file_choose_folder)).perform(replaceText("test"));
+        onView(withId(R.id.imageview_dialog_file_choose_cancel)).perform(click());
+        onView(withId(R.id.textview_activity_global_settings_log_folder)).check(matches(withText(endsWith("log"))));
+        assertEquals("log", preferenceManager.getPreferenceLogFolder());
+        File testFile = new File(getFileManager().getExternalRootDirectory(0), "test");
+        assertFalse(testFile.exists());
+        onView(withId(R.id.cardview_activity_global_settings_log_folder)).perform(click());
+        onView(withId(R.id.edittext_dialog_file_choose_folder)).check(matches(withText("log")));
+        onView(withId(R.id.edittext_dialog_file_choose_folder)).perform(replaceText("test"));
+        onView(withId(R.id.imageview_dialog_file_choose_ok)).perform(click());
+        onView(withId(R.id.textview_activity_global_settings_log_folder)).check(matches(withText(endsWith("test"))));
+        assertEquals("test", preferenceManager.getPreferenceLogFolder());
+        assertTrue(testFile.exists());
+    }
+
+    @Test
     public void testDownloadFolderDialogErrorFileExists() throws IOException {
         PreferenceManager preferenceManager = getPreferenceManager();
         File root = getFileManager().getExternalRootDirectory(0);
@@ -474,6 +564,25 @@ public class GlobalSettingsActivityTest extends BaseUITest {
         onView(withId(R.id.imageview_dialog_general_error_ok)).perform(click());
         onView(withId(R.id.textview_activity_global_settings_download_folder)).check(matches(withText(endsWith("download"))));
         assertEquals("download", preferenceManager.getPreferenceDownloadFolder());
+    }
+
+    @Test
+    public void testLogFolderDialogErrorFileExists() throws IOException {
+        PreferenceManager preferenceManager = getPreferenceManager();
+        File root = getFileManager().getExternalRootDirectory(0);
+        File test = new File(root, "test");
+        assertTrue(test.createNewFile());
+        onView(withId(R.id.switch_activity_global_settings_log_file)).perform(scrollTo());
+        onView(withId(R.id.switch_activity_global_settings_log_file)).perform(click());
+        onView(withId(R.id.cardview_activity_global_settings_log_folder)).perform(click());
+        onView(withId(R.id.edittext_dialog_file_choose_folder)).check(matches(withText("log")));
+        onView(withId(R.id.edittext_dialog_file_choose_folder)).perform(replaceText("test"));
+        onView(withId(R.id.imageview_dialog_file_choose_ok)).perform(click());
+        assertEquals(1, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
+        onView(withId(R.id.textview_dialog_general_error_message)).check(matches(withText("Error creating log directory.")));
+        onView(withId(R.id.imageview_dialog_general_error_ok)).perform(click());
+        onView(withId(R.id.textview_activity_global_settings_log_folder)).check(matches(withText(endsWith("log"))));
+        assertEquals("log", preferenceManager.getPreferenceLogFolder());
     }
 
     @Test
@@ -498,6 +607,26 @@ public class GlobalSettingsActivityTest extends BaseUITest {
     }
 
     @Test
+    public void testLogControlsFileError() {
+        PreferenceManager preferenceManager = getPreferenceManager();
+        MockFileManager mockFileManager = new MockFileManager();
+        mockFileManager.setExternalDirectory(null, 0);
+        mockFileManager.setExternalRootDirectory(null, 0);
+        activityScenario.onActivity(activity -> ((GlobalSettingsActivity) activity).injectFileManager(mockFileManager));
+        onView(withId(R.id.switch_activity_global_settings_log_file)).perform(scrollTo());
+        onView(withId(R.id.switch_activity_global_settings_log_file)).perform(click());
+        assertEquals(1, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
+        onView(withId(R.id.textview_dialog_general_error_message)).check(matches(withText("Error accessing external files directory.")));
+        onView(withId(R.id.imageview_dialog_general_error_ok)).perform(click());
+        onView(withId(R.id.textview_activity_global_settings_log_file_label)).check(matches(withText("Log to file")));
+        onView(withId(R.id.switch_activity_global_settings_log_file)).check(matches(isNotChecked()));
+        onView(withId(R.id.textview_activity_global_settings_log_folder_label)).check(matches(withText("Log folder")));
+        onView(withId(R.id.textview_activity_global_settings_log_folder)).check(matches(withText("None")));
+        onView(withId(R.id.cardview_activity_global_settings_log_folder)).check(matches(Matchers.not(isEnabled())));
+        assertFalse(preferenceManager.getPreferenceLogFile());
+    }
+
+    @Test
     public void testDownloadFolderDialogFileError() {
         onView(withId(R.id.switch_activity_global_settings_download_external_storage)).perform(click());
         MockFileManager mockFileManager = new MockFileManager();
@@ -512,6 +641,24 @@ public class GlobalSettingsActivityTest extends BaseUITest {
         onView(withId(R.id.switch_activity_global_settings_download_external_storage)).check(matches(isChecked()));
         onView(withId(R.id.textview_activity_global_settings_download_folder_label)).check(matches(withText("Download folder")));
         onView(withId(R.id.textview_activity_global_settings_download_folder)).check(matches(withText(endsWith("download"))));
+    }
+
+    @Test
+    public void testLogFolderDialogFileError() {
+        onView(withId(R.id.switch_activity_global_settings_log_file)).perform(scrollTo());
+        onView(withId(R.id.switch_activity_global_settings_log_file)).perform(click());
+        MockFileManager mockFileManager = new MockFileManager();
+        mockFileManager.setExternalDirectory(null, 0);
+        mockFileManager.setExternalRootDirectory(null, 0);
+        activityScenario.onActivity(activity -> ((GlobalSettingsActivity) activity).injectFileManager(mockFileManager));
+        onView(withId(R.id.cardview_activity_global_settings_log_folder)).perform(click());
+        assertEquals(1, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
+        onView(withId(R.id.textview_dialog_general_error_message)).check(matches(withText("Error accessing external files directory.")));
+        onView(withId(R.id.imageview_dialog_general_error_ok)).perform(click());
+        onView(withId(R.id.textview_activity_global_settings_log_file_label)).check(matches(withText("Log to file")));
+        onView(withId(R.id.switch_activity_global_settings_log_file)).check(matches(isChecked()));
+        onView(withId(R.id.textview_activity_global_settings_log_folder_label)).check(matches(withText("Log folder")));
+        onView(withId(R.id.textview_activity_global_settings_log_folder)).check(matches(withText(endsWith("log"))));
     }
 
     @Test
@@ -533,6 +680,25 @@ public class GlobalSettingsActivityTest extends BaseUITest {
     }
 
     @Test
+    public void testLogFolderDialogOkFileError() {
+        PreferenceManager preferenceManager = getPreferenceManager();
+        onView(withId(R.id.switch_activity_global_settings_log_file)).perform(scrollTo());
+        onView(withId(R.id.switch_activity_global_settings_log_file)).perform(click());
+        onView(withId(R.id.cardview_activity_global_settings_log_folder)).perform(click());
+        MockFileManager mockFileManager = new MockFileManager();
+        mockFileManager.setExternalDirectory(null, 0);
+        mockFileManager.setExternalRootDirectory(null, 0);
+        activityScenario.onActivity(activity -> ((GlobalSettingsActivity) activity).injectFileManager(mockFileManager));
+        onView(withId(R.id.edittext_dialog_file_choose_folder)).perform(replaceText("test"));
+        onView(withId(R.id.imageview_dialog_file_choose_ok)).perform(click());
+        assertEquals(1, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
+        onView(withId(R.id.textview_dialog_general_error_message)).check(matches(withText("Error creating log directory.")));
+        onView(withId(R.id.imageview_dialog_general_error_ok)).perform(click());
+        onView(withId(R.id.textview_activity_global_settings_log_folder)).check(matches(withText(endsWith("log"))));
+        assertEquals("log", preferenceManager.getPreferenceLogFolder());
+    }
+
+    @Test
     public void testResetValues() {
         onView(withId(R.id.textview_activity_global_settings_ping_count)).perform(click());
         onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("2"));
@@ -544,6 +710,8 @@ public class GlobalSettingsActivityTest extends BaseUITest {
         onView(withId(R.id.switch_activity_global_settings_download_external_storage)).perform(click());
         onView(withId(R.id.switch_activity_global_settings_download_keep)).perform(scrollTo());
         onView(withId(R.id.switch_activity_global_settings_download_keep)).perform(click());
+        onView(withId(R.id.switch_activity_global_settings_log_file)).perform(scrollTo());
+        onView(withId(R.id.switch_activity_global_settings_log_file)).perform(click());
         openActionBarOverflowOrOptionsMenu(TestRegistry.getContext());
         onView(withText("Reset")).perform(click());
         onView(withId(R.id.textview_activity_global_settings_ping_count_label)).check(matches(withText("Ping count")));
@@ -560,6 +728,7 @@ public class GlobalSettingsActivityTest extends BaseUITest {
         onView(withId(R.id.textview_activity_global_settings_download_keep_label)).check(matches(withText("Keep downloaded files")));
         onView(withId(R.id.switch_activity_global_settings_download_keep)).check(matches(isNotChecked()));
         onView(withId(R.id.switch_activity_global_settings_download_keep)).check(matches(not(isEnabled())));
+        onView(withId(R.id.switch_activity_global_settings_log_file)).check(matches(isNotChecked()));
         PreferenceManager preferenceManager = getPreferenceManager();
         assertEquals(3, preferenceManager.getPreferencePingCount());
         assertEquals(1, preferenceManager.getPreferenceConnectCount());
@@ -567,6 +736,8 @@ public class GlobalSettingsActivityTest extends BaseUITest {
         assertFalse(preferenceManager.getPreferenceDownloadExternalStorage());
         assertEquals("download", preferenceManager.getPreferenceDownloadFolder());
         assertFalse(preferenceManager.getPreferenceDownloadKeep());
+        assertFalse(preferenceManager.getPreferenceLogFile());
+        assertEquals("log", preferenceManager.getPreferenceLogFolder());
     }
 
     @Test
@@ -581,6 +752,8 @@ public class GlobalSettingsActivityTest extends BaseUITest {
         onView(withId(R.id.switch_activity_global_settings_download_external_storage)).perform(click());
         onView(withId(R.id.switch_activity_global_settings_download_keep)).perform(scrollTo());
         onView(withId(R.id.switch_activity_global_settings_download_keep)).perform(click());
+        onView(withId(R.id.switch_activity_global_settings_log_file)).perform(scrollTo());
+        onView(withId(R.id.switch_activity_global_settings_log_file)).perform(click());
         rotateScreen(activityScenario);
         onView(withId(R.id.textview_activity_global_settings_ping_count)).check(matches(withText("2")));
         onView(withId(R.id.textview_activity_global_settings_connect_count)).check(matches(withText("2")));
@@ -590,6 +763,8 @@ public class GlobalSettingsActivityTest extends BaseUITest {
         onView(withId(R.id.textview_activity_global_settings_download_external_storage_on_off)).check(matches(withText("yes")));
         onView(withId(R.id.switch_activity_global_settings_download_keep)).check(matches(isChecked()));
         onView(withId(R.id.textview_activity_global_settings_download_keep_on_off)).check(matches(withText("yes")));
+        onView(withId(R.id.switch_activity_global_settings_log_file)).check(matches(isChecked()));
+        onView(withId(R.id.textview_activity_global_settings_log_file_on_off)).check(matches(withText("yes")));
         rotateScreen(activityScenario);
         onView(withId(R.id.textview_activity_global_settings_ping_count)).check(matches(withText("2")));
         onView(withId(R.id.textview_activity_global_settings_connect_count)).check(matches(withText("2")));
@@ -599,6 +774,8 @@ public class GlobalSettingsActivityTest extends BaseUITest {
         onView(withId(R.id.textview_activity_global_settings_download_external_storage_on_off)).check(matches(withText("yes")));
         onView(withId(R.id.switch_activity_global_settings_download_keep)).check(matches(isChecked()));
         onView(withId(R.id.textview_activity_global_settings_download_keep_on_off)).check(matches(withText("yes")));
+        onView(withId(R.id.switch_activity_global_settings_log_file)).check(matches(isChecked()));
+        onView(withId(R.id.textview_activity_global_settings_log_file_on_off)).check(matches(withText("yes")));
     }
 
     @Test
@@ -659,6 +836,26 @@ public class GlobalSettingsActivityTest extends BaseUITest {
         onView(withId(R.id.imageview_dialog_file_choose_ok)).perform(click());
         onView(withId(R.id.textview_activity_global_settings_download_folder)).check(matches(withText(endsWith("test"))));
         assertEquals("test", preferenceManager.getPreferenceDownloadFolder());
+        assertTrue(testFile.exists());
+        rotateScreen(activityScenario);
+    }
+
+    @Test
+    public void testLogFolderDialogScreenRotation() {
+        PreferenceManager preferenceManager = getPreferenceManager();
+        assertEquals("log", preferenceManager.getPreferenceLogFolder());
+        onView(withId(R.id.switch_activity_global_settings_log_file)).perform(scrollTo());
+        onView(withId(R.id.switch_activity_global_settings_log_file)).perform(click());
+        onView(withId(R.id.cardview_activity_global_settings_log_folder)).perform(click());
+        onView(withId(R.id.edittext_dialog_file_choose_folder)).check(matches(withText("log")));
+        rotateScreen(activityScenario);
+        File testFile = new File(getFileManager().getExternalRootDirectory(0), "test");
+        assertFalse(testFile.exists());
+        onView(withId(R.id.edittext_dialog_file_choose_folder)).perform(replaceText("test"));
+        onView(withId(R.id.scrollview_dialog_file_choose)).perform(swipeUp());
+        onView(withId(R.id.imageview_dialog_file_choose_ok)).perform(click());
+        onView(withId(R.id.textview_activity_global_settings_log_folder)).check(matches(withText(endsWith("test"))));
+        assertEquals("test", preferenceManager.getPreferenceLogFolder());
         assertTrue(testFile.exists());
         rotateScreen(activityScenario);
     }

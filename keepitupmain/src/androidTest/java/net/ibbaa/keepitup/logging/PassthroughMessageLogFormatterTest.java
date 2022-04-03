@@ -16,6 +16,9 @@
 
 package net.ibbaa.keepitup.logging;
 
+import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertEquals;
+
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.SmallTest;
 
@@ -28,46 +31,27 @@ import org.junit.runner.RunWith;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-
 @SmallTest
 @RunWith(AndroidJUnit4.class)
-public class LogFormatterTest {
+public class PassthroughMessageLogFormatterTest {
 
-    private LogFormatter logFormatter;
+    private PassthroughMessageLogFormatter logFormatter;
 
     @Before
     public void beforeEachTestMethod() {
-        logFormatter = new LogFormatter();
-    }
-
-    @Test
-    public void testExceptionToString() {
-        String exc = logFormatter.exceptionToString(new IllegalArgumentException(new NullPointerException()));
-        assertTrue(exc.contains(IllegalArgumentException.class.getName()));
-        assertTrue(exc.contains(NullPointerException.class.getName()));
-        assertTrue(exc.contains("at net.ibbaa.keepitup.logging.LogFormatterTest.testExceptionToString"));
-        assertTrue(exc.contains("Caused by: " + NullPointerException.class.getName()));
+        logFormatter = new PassthroughMessageLogFormatter();
     }
 
     @Test
     public void testFormatLogFileEntry() {
         LogFileEntry entry = getTestEntry(getTestTimestamp(), "thread", LogLevel.DEBUG, "tag", "message", null);
         String message = logFormatter.formatLogFileEntry(entry);
-        assertEquals("1985-12-24 01:01:01.999 [thread] DEBUG tag: message" + System.lineSeparator(), message);
+        assertEquals("message" + System.lineSeparator(), message);
         assertArrayEquals(message.getBytes(Charsets.UTF_8), logFormatter.formatLogFileEntry(entry, Charsets.UTF_8));
-        try {
-            throw new NullPointerException();
-        } catch (Exception exc) {
-            entry = getTestEntry(getTestTimestamp(), "thread", LogLevel.DEBUG, "tag", "message", exc);
-            message = logFormatter.formatLogFileEntry(entry);
-            assertTrue(message.startsWith("1985-12-24 01:01:01.999 [thread] DEBUG tag: message"));
-            assertTrue(message.contains(NullPointerException.class.getName()));
-            assertTrue(message.contains("at net.ibbaa.keepitup.logging.LogFormatterTest.testFormatLogFileEntry"));
-            assertArrayEquals(message.getBytes(Charsets.UTF_8), logFormatter.formatLogFileEntry(entry, Charsets.UTF_8));
-        }
+        entry = getTestEntry(1, null, LogLevel.DEBUG, null, "message", null);
+        message = logFormatter.formatLogFileEntry(entry);
+        assertEquals("message" + System.lineSeparator(), message);
+        assertArrayEquals(message.getBytes(Charsets.UTF_8), logFormatter.formatLogFileEntry(entry, Charsets.UTF_8));
     }
 
     private long getTestTimestamp() {

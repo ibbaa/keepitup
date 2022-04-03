@@ -57,6 +57,9 @@ public class GlobalSettingsActivity extends SettingsInputActivity {
     private TextView downloadFolderText;
     private SwitchMaterial downloadKeepSwitch;
     private TextView downloadKeepOnOffText;
+    private SwitchMaterial logFileSwitch;
+    private TextView logFileOnOffText;
+    private TextView logFolderText;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -71,6 +74,8 @@ public class GlobalSettingsActivity extends SettingsInputActivity {
         prepareDownloadExternalStorageSwitch();
         prepareDownloadFolderField();
         prepareDownloadKeepSwitch();
+        prepareLogFileSwitch();
+        prepareLogFolderField();
     }
 
     @Override
@@ -217,6 +222,60 @@ public class GlobalSettingsActivity extends SettingsInputActivity {
         prepareDownloadKeepOnOffText();
     }
 
+    private void prepareLogFileSwitch() {
+        Log.d(GlobalSettingsActivity.class.getName(), "prepareLogFileSwitch");
+        PreferenceManager preferenceManager = new PreferenceManager(this);
+        logFileSwitch = findViewById(R.id.switch_activity_global_settings_log_file);
+        logFileOnOffText = findViewById(R.id.textview_activity_global_settings_log_file_on_off);
+        logFileSwitch.setOnCheckedChangeListener(null);
+        logFileSwitch.setChecked(preferenceManager.getPreferenceDownloadExternalStorage());
+        logFileSwitch.setOnCheckedChangeListener(this::onLogFileCheckedChanged);
+        prepareLogFileOnOffText();
+    }
+
+    private void prepareLogFileOnOffText() {
+        logFileOnOffText.setText(logFileSwitch.isChecked() ? getResources().getString(R.string.string_yes) : getResources().getString(R.string.string_no));
+    }
+
+    private void onLogFileCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+        Log.d(GlobalSettingsActivity.class.getName(), "onLogFileCheckedChanged, new value is " + isChecked);
+        PreferenceManager preferenceManager = new PreferenceManager(this);
+        preferenceManager.setPreferenceLogFile(isChecked);
+        prepareLogFileOnOffText();
+        prepareLogFolderField();
+    }
+
+    private void prepareLogFolderField() {
+        Log.d(GlobalSettingsActivity.class.getName(), "prepareLogFolderField");
+        PreferenceManager preferenceManager = new PreferenceManager(this);
+        CardView logFolderCardView = findViewById(R.id.cardview_activity_global_settings_log_folder);
+        logFolderText = findViewById(R.id.textview_activity_global_settings_log_folder);
+        if (logFileSwitch.isChecked()) {
+            String logFolder = getExternalLogFolder();
+            Log.d(GlobalSettingsActivity.class.getName(), "Log folder is " + logFolder);
+            if (logFolder != null) {
+                setLogFolder(logFolder);
+                logFolderCardView.setEnabled(true);
+                logFolderCardView.setOnClickListener(this::showLogFolderChooseDialog);
+            } else {
+                Log.e(GlobalSettingsActivity.class.getName(), "Error accessing log folder.");
+                Log.d(GlobalSettingsActivity.class.getName(), "Reset to none.");
+                setLogFolder(getResources().getString(R.string.text_activity_global_settings_log_folder_none));
+                logFolderCardView.setEnabled(false);
+                logFolderCardView.setOnClickListener(null);
+                preferenceManager.setPreferenceLogFile(false);
+                logFileSwitch.setChecked(false);
+                prepareLogFileOnOffText();
+                Log.d(GlobalSettingsActivity.class.getName(), "Showing error dialog.");
+                showErrorDialog(getResources().getString(R.string.text_dialog_general_error_external_root_access));
+            }
+        } else {
+            setLogFolder(getResources().getString(R.string.text_activity_global_settings_log_folder_none));
+            logFolderCardView.setEnabled(false);
+            logFolderCardView.setOnClickListener(null);
+        }
+    }
+
     private String getPingCount() {
         return StringUtil.notNull(pingCountText.getText());
     }
@@ -239,6 +298,14 @@ public class GlobalSettingsActivity extends SettingsInputActivity {
 
     private void setDownloadFolder(String downloadFolder) {
         downloadFolderText.setText(StringUtil.notNull(downloadFolder));
+    }
+
+    private String getLogFolder() {
+        return StringUtil.notNull(logFolderText.getText());
+    }
+
+    private void setLogFolder(String logFolder) {
+        logFolderText.setText(StringUtil.notNull(logFolder));
     }
 
     private void showPingCountInputDialog(View view) {
@@ -279,6 +346,30 @@ public class GlobalSettingsActivity extends SettingsInputActivity {
         fileChooseDialog.show(getSupportFragmentManager(), GlobalSettingsActivity.class.getName());
     }
 
+    private void showLogFolderChooseDialog(View view) {
+        Log.d(GlobalSettingsActivity.class.getName(), "showLogFolderChooseDialog");
+        FileChooseDialog fileChooseDialog = new FileChooseDialog();
+        String root = getExternalRootFolder();
+        Log.d(GlobalSettingsActivity.class.getName(), "External root folder is " + root);
+        if (root == null) {
+            Log.e(GlobalSettingsActivity.class.getName(), "Error accessing root folder.");
+            Log.d(GlobalSettingsActivity.class.getName(), "Showing error dialog.");
+            showErrorDialog(getResources().getString(R.string.text_dialog_general_error_external_root_access));
+            return;
+        }
+        String folder = getPreferenceLogFolder();
+        Log.d(GlobalSettingsActivity.class.getName(), "Preference log folder is " + folder);
+        if (folder == null) {
+            Log.e(GlobalSettingsActivity.class.getName(), "Error accessing log folder.");
+            Log.d(GlobalSettingsActivity.class.getName(), "Showing error dialog.");
+            showErrorDialog(getResources().getString(R.string.text_dialog_general_error_external_root_access));
+            return;
+        }
+        Bundle bundle = BundleUtil.stringsToBundle(new String[]{fileChooseDialog.getFolderRootKey(), fileChooseDialog.getFolderKey(), fileChooseDialog.getFileModeKey(), fileChooseDialog.getTypeKey()}, new String[]{root, folder, FileChooseDialog.Mode.FOLDER.name(), FileChooseDialog.Type.LOGFOLDER.name()});
+        fileChooseDialog.setArguments(bundle);
+        fileChooseDialog.show(getSupportFragmentManager(), GlobalSettingsActivity.class.getName());
+    }
+
     private void showInputDialog(Bundle bundle) {
         Log.d(GlobalSettingsActivity.class.getName(), "showInputDialog, opening SettingsInputDialog");
         SettingsInputDialog inputDialog = new SettingsInputDialog();
@@ -308,6 +399,16 @@ public class GlobalSettingsActivity extends SettingsInputActivity {
         return preferenceManager.getPreferenceDownloadFolder();
     }
 
+    private String getPreferenceLogFolder() {
+        Log.d(GlobalSettingsActivity.class.getName(), "getPreferenceLogFolder");
+        String logFolder = getExternalLogFolder();
+        if (logFolder == null) {
+            return null;
+        }
+        PreferenceManager preferenceManager = new PreferenceManager(this);
+        return preferenceManager.getPreferenceLogFolder();
+    }
+
     private String getExternalDownloadFolder() {
         Log.d(GlobalSettingsActivity.class.getName(), "getExternalDownloadFolder");
         PreferenceManager preferenceManager = new PreferenceManager(this);
@@ -319,6 +420,19 @@ public class GlobalSettingsActivity extends SettingsInputActivity {
             return null;
         }
         return downloadFolder.getAbsolutePath();
+    }
+
+    private String getExternalLogFolder() {
+        Log.d(GlobalSettingsActivity.class.getName(), "getExternalLogFolder");
+        PreferenceManager preferenceManager = new PreferenceManager(this);
+        String folder = preferenceManager.getPreferenceLogFolder();
+        IFileManager fileManager = getFileManager();
+        File logFolder = FileUtil.getExternalDirectory(fileManager, preferenceManager, folder);
+        Log.d(GlobalSettingsActivity.class.getName(), "Log folder is " + logFolder);
+        if (logFolder == null) {
+            return null;
+        }
+        return logFolder.getAbsolutePath();
     }
 
     @Override
@@ -355,6 +469,19 @@ public class GlobalSettingsActivity extends SettingsInputActivity {
             }
             preferenceManager.setPreferenceDownloadFolder(folder);
             setDownloadFolder(downloadFolder.getAbsolutePath());
+        } if (FileChooseDialog.Type.LOGFOLDER.equals(type)) {
+            String folder = folderChooseDialog.getFolder();
+            File logFolder = FileUtil.getExternalDirectory(fileManager, preferenceManager, folder);
+            Log.d(GlobalSettingsActivity.class.getName(), "Log folder is " + logFolder);
+            if (logFolder == null) {
+                Log.e(GlobalSettingsActivity.class.getName(), "Error accessing log folder.");
+                folderChooseDialog.dismiss();
+                Log.d(GlobalSettingsActivity.class.getName(), "Showing error dialog.");
+                showErrorDialog(getResources().getString(R.string.text_dialog_general_error_external_log_create));
+                return;
+            }
+            preferenceManager.setPreferenceLogFolder(folder);
+            setLogFolder(logFolder.getAbsolutePath());
         } else {
             Log.e(GlobalSettingsActivity.class.getName(), "Unknown type " + type);
         }

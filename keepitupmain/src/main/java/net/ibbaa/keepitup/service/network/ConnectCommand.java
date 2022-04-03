@@ -19,6 +19,12 @@ package net.ibbaa.keepitup.service.network;
 import android.content.Context;
 import android.content.res.Resources;
 
+import net.ibbaa.keepitup.R;
+import net.ibbaa.keepitup.logging.Log;
+import net.ibbaa.keepitup.resources.ServiceFactoryContributor;
+import net.ibbaa.keepitup.service.ITimeService;
+import net.ibbaa.keepitup.util.NumberUtil;
+
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
@@ -26,12 +32,6 @@ import java.net.Socket;
 import java.net.SocketAddress;
 import java.net.SocketTimeoutException;
 import java.util.concurrent.Callable;
-
-import net.ibbaa.keepitup.R;
-import net.ibbaa.keepitup.logging.Log;
-import net.ibbaa.keepitup.resources.ServiceFactoryContributor;
-import net.ibbaa.keepitup.service.ITimeService;
-import net.ibbaa.keepitup.util.NumberUtil;
 
 public class ConnectCommand implements Callable<ConnectCommandResult> {
 
@@ -94,7 +94,7 @@ public class ConnectCommand implements Callable<ConnectCommandResult> {
         try {
             SocketAddress sockaddr = new InetSocketAddress(address, port);
             int timeout = getResources().getInteger(R.integer.connect_timeout);
-            Log.d(ConnectCommand.class.getName(), "Connecting to " + sockaddr.toString());
+            Log.d(ConnectCommand.class.getName(), "Connecting to " + sockaddr);
             socket.connect(sockaddr, timeout * 1000);
             long end = timeService.getCurrentTimestamp();
             return new ConnectionResult(true, NumberUtil.ensurePositive(end - start));

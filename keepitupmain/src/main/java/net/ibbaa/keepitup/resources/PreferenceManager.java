@@ -282,6 +282,36 @@ public class PreferenceManager {
         removePreferenceValue(getResources().getString(R.string.download_folder_key));
     }
 
+    public boolean getPreferenceLogFile() {
+        Log.d(PreferenceManager.class.getName(), "getPreferenceLogFile");
+        return getPreferenceBoolean(getResources().getString(R.string.log_file_key), getResources().getBoolean(R.bool.log_file_default));
+    }
+
+    public void setPreferenceLogFile(boolean logFile) {
+        Log.d(PreferenceManager.class.getName(), "setPreferenceLogFile, logFile is " + logFile);
+        setPreferenceBoolean(getResources().getString(R.string.log_file_key), logFile);
+    }
+
+    public void removePreferenceLogFile() {
+        Log.d(PreferenceManager.class.getName(), "removePreferenceLogFile");
+        removePreferenceValue(getResources().getString(R.string.log_file_key));
+    }
+
+    public String getPreferenceLogFolder() {
+        Log.d(PreferenceManager.class.getName(), "getPreferenceLogFolder");
+        return getPreferenceString(getResources().getString(R.string.log_folder_key), getResources().getString(R.string.log_folder_default));
+    }
+
+    public void setPreferenceLogFolder(String logFolder) {
+        Log.d(PreferenceManager.class.getName(), "setPreferenceLogFolder, logFolder is " + logFolder);
+        setPreferenceString(getResources().getString(R.string.log_folder_key), logFolder);
+    }
+
+    public void removePreferenceLogFolder() {
+        Log.d(PreferenceManager.class.getName(), "removePreferenceLogFolder");
+        removePreferenceValue(getResources().getString(R.string.log_folder_key));
+    }
+
     public boolean getPreferenceDownloadKeep() {
         Log.d(PreferenceManager.class.getName(), "getPreferenceDownloadKeep");
         return getPreferenceBoolean(getResources().getString(R.string.download_keep_key), getResources().getBoolean(R.bool.download_keep_default));

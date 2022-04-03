@@ -36,9 +36,6 @@ import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import java.util.Collections;
-import java.util.List;
-
 import net.ibbaa.keepitup.R;
 import net.ibbaa.keepitup.logging.Log;
 import net.ibbaa.keepitup.model.FileEntry;
@@ -58,12 +55,16 @@ import net.ibbaa.keepitup.ui.validation.ValidationResult;
 import net.ibbaa.keepitup.util.BundleUtil;
 import net.ibbaa.keepitup.util.StringUtil;
 
+import java.util.Collections;
+import java.util.List;
+
 public class FileChooseDialog extends DialogFragment implements ContextOptionsSupport {
 
     public enum Type {
         DOWNLOADFOLDER,
+        LOGFOLDER,
         EXPORTFOLDER,
-        IMPORTFOLDER,
+        IMPORTFOLDER
     }
 
     public enum Mode {

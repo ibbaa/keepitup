@@ -45,48 +45,50 @@ public class FileLogger implements ILogger {
     private final int archiveFileCount;
     private final String logDirectory;
     private final String logFileName;
+    private final ILogFormatter logFormatter;
 
     private final LinkedBlockingQueue<LogFileEntry> logQueue;
     private final AtomicBoolean logThreadActive;
 
     public FileLogger(String logDirectory) {
-        this(DEFAULT_LOG_LEVEL, DEFAULT_MAX_FILE_SIZE, DEFAULT_ARCHIVE_FILE_COUNT, logDirectory, DEFAULT_LOG_FILE_BASE_NAME);
+        this(DEFAULT_LOG_LEVEL, DEFAULT_MAX_FILE_SIZE, DEFAULT_ARCHIVE_FILE_COUNT, logDirectory, DEFAULT_LOG_FILE_BASE_NAME, new DefaultLogFormatter());
     }
 
     public FileLogger(int maxFileSize, String logDirectory) {
-        this(DEFAULT_LOG_LEVEL, maxFileSize, DEFAULT_ARCHIVE_FILE_COUNT, logDirectory, DEFAULT_LOG_FILE_BASE_NAME);
+        this(DEFAULT_LOG_LEVEL, maxFileSize, DEFAULT_ARCHIVE_FILE_COUNT, logDirectory, DEFAULT_LOG_FILE_BASE_NAME, new DefaultLogFormatter());
     }
 
     public FileLogger(String logDirectory, String logFileName) {
-        this(DEFAULT_LOG_LEVEL, DEFAULT_MAX_FILE_SIZE, DEFAULT_ARCHIVE_FILE_COUNT, logDirectory, logFileName);
+        this(DEFAULT_LOG_LEVEL, DEFAULT_MAX_FILE_SIZE, DEFAULT_ARCHIVE_FILE_COUNT, logDirectory, logFileName, new DefaultLogFormatter());
     }
 
     public FileLogger(int maxFileSize, int archiveFileCount, String logDirectory) {
-        this(DEFAULT_LOG_LEVEL, maxFileSize, archiveFileCount, logDirectory, DEFAULT_LOG_FILE_BASE_NAME);
+        this(DEFAULT_LOG_LEVEL, maxFileSize, archiveFileCount, logDirectory, DEFAULT_LOG_FILE_BASE_NAME, new DefaultLogFormatter());
     }
 
     public FileLogger(LogLevel maxLevel, String logDirectory) {
-        this(maxLevel, DEFAULT_MAX_FILE_SIZE, DEFAULT_ARCHIVE_FILE_COUNT, logDirectory, DEFAULT_LOG_FILE_BASE_NAME);
+        this(maxLevel, DEFAULT_MAX_FILE_SIZE, DEFAULT_ARCHIVE_FILE_COUNT, logDirectory, DEFAULT_LOG_FILE_BASE_NAME, new DefaultLogFormatter());
     }
 
     public FileLogger(LogLevel maxLevel, int maxFileSize, String logDirectory) {
-        this(maxLevel, maxFileSize, DEFAULT_ARCHIVE_FILE_COUNT, logDirectory, DEFAULT_LOG_FILE_BASE_NAME);
+        this(maxLevel, maxFileSize, DEFAULT_ARCHIVE_FILE_COUNT, logDirectory, DEFAULT_LOG_FILE_BASE_NAME, new DefaultLogFormatter());
     }
 
     public FileLogger(LogLevel maxLevel, String logDirectory, String logFileName) {
-        this(maxLevel, DEFAULT_MAX_FILE_SIZE, DEFAULT_ARCHIVE_FILE_COUNT, logDirectory, logFileName);
+        this(maxLevel, DEFAULT_MAX_FILE_SIZE, DEFAULT_ARCHIVE_FILE_COUNT, logDirectory, logFileName, new DefaultLogFormatter());
     }
 
     public FileLogger(LogLevel maxLevel, int maxFileSize, int archiveFileCount, String logDirectory) {
-        this(maxLevel, maxFileSize, archiveFileCount, logDirectory, DEFAULT_LOG_FILE_BASE_NAME);
+        this(maxLevel, maxFileSize, archiveFileCount, logDirectory, DEFAULT_LOG_FILE_BASE_NAME, new DefaultLogFormatter());
     }
 
-    public FileLogger(LogLevel maxLevel, int maxFileSize, int archiveFileCount, String logDirectory, String logFileName) {
+    public FileLogger(LogLevel maxLevel, int maxFileSize, int archiveFileCount, String logDirectory, String logFileName, ILogFormatter logFormatter) {
         this.maxLevel = maxLevel;
         this.maxFileSize = maxFileSize;
         this.archiveFileCount = archiveFileCount;
         this.logDirectory = logDirectory;
         this.logFileName = logFileName;
+        this.logFormatter = logFormatter;
         this.logQueue = new LinkedBlockingQueue<>();
         this.logThreadActive = new AtomicBoolean(false);
     }
@@ -96,7 +98,7 @@ public class FileLogger implements ILogger {
         if (level == null || level.getLevel() < maxLevel.getLevel()) {
             return;
         }
-        if (tag == null || message == null) {
+        if (message == null) {
             return;
         }
         try {
@@ -126,10 +128,9 @@ public class FileLogger implements ILogger {
             }
             logStream = initializeLogStream(logFile);
             LogFileManager fileManager = new LogFileManager();
-            LogFormatter formatter = new LogFormatter();
             LogFileEntry entry;
             while ((entry = logQueue.poll(LOG_QUEUE_TAKE_TIMEOUT, TimeUnit.MILLISECONDS)) != null) {
-                byte[] message = formatter.formatLogFileEntry(entry, Charsets.UTF_8);
+                byte[] message = logFormatter.formatLogFileEntry(entry, Charsets.UTF_8);
                 logStream.write(message);
                 fileSize += message.length;
                 if (fileSize >= maxFileSize) {

@@ -200,7 +200,7 @@ public class LogFileManager {
             } else {
                 for (Object object : objects) {
                     if (object != null) {
-                        String data = object.toString() + System.lineSeparator();
+                        String data = object + System.lineSeparator();
                         outputStream.write(data.getBytes(Charsets.UTF_8));
                     }
                 }

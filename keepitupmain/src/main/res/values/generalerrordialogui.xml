@@ -27,6 +27,7 @@
     <string name="text_dialog_general_error_read_log_entries">Fatal error reading log data.</string>
     <string name="text_dialog_general_error_external_root_access">Error accessing external files directory.</string>
     <string name="text_dialog_general_error_external_download_create">Error creating download directory.</string>
+    <string name="text_dialog_general_error_external_log_create">Error creating log directory.</string>
     <string name="text_dialog_general_error_external_import_export_create">Error creating directory for import or export.</string>
     <string name="text_dialog_general_error_list_folder_files">Fatal error reading file list from folder.</string>
     <string name="text_dialog_general_error_file_access">Fatal file error.</string>

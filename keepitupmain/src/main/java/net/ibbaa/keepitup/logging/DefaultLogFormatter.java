@@ -23,7 +23,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
-public class LogFormatter {
+public class DefaultLogFormatter implements ILogFormatter {
 
     private final static String LOG_TIMESTAMP_PATTERN = "yyyy-MM-dd HH:mm:ss.SSS";
 
@@ -39,8 +39,11 @@ public class LogFormatter {
         }
         messageBuilder.append(" ");
         messageBuilder.append(entry.getLevel().name());
-        messageBuilder.append(" ");
-        messageBuilder.append(entry.getTag());
+        String tag = entry.getTag();
+        if (tag != null && !tag.isEmpty()) {
+            messageBuilder.append(" ");
+            messageBuilder.append(tag);
+        }
         messageBuilder.append(": ");
         messageBuilder.append(entry.getMessage());
         Throwable exception = entry.getThrowable();

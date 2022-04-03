@@ -241,6 +241,30 @@ public class PreferenceManagerTest {
     }
 
     @Test
+    public void testGetSetRemovePreferenceLogFile() {
+        assertFalse(preferenceManager.getPreferenceLogFile());
+        preferenceManager.setPreferenceLogFile(true);
+        assertTrue(preferenceManager.getPreferenceLogFile());
+        preferenceManager.removeAllPreferences();
+        assertFalse(preferenceManager.getPreferenceLogFile());
+        preferenceManager.setPreferenceLogFile(true);
+        preferenceManager.removePreferenceLogFile();
+        assertFalse(preferenceManager.getPreferenceLogFile());
+    }
+
+    @Test
+    public void testGetSetRemovePreferenceLogFolder() {
+        assertEquals("log", preferenceManager.getPreferenceLogFolder());
+        preferenceManager.setPreferenceLogFolder("Folder");
+        assertEquals("Folder", preferenceManager.getPreferenceLogFolder());
+        preferenceManager.removeAllPreferences();
+        assertEquals("log", preferenceManager.getPreferenceLogFolder());
+        preferenceManager.setPreferenceLogFolder("Folder");
+        preferenceManager.removePreferenceLogFolder();
+        assertEquals("log", preferenceManager.getPreferenceLogFolder());
+    }
+
+    @Test
     public void testGetSetRemovePreferenceDownloadKeep() {
         assertFalse(preferenceManager.getPreferenceDownloadKeep());
         preferenceManager.setPreferenceDownloadKeep(true);
