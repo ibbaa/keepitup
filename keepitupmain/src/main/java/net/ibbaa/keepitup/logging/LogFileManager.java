@@ -82,6 +82,25 @@ public class LogFileManager {
         }
     }
 
+    public void deleteOldest(File[] files) {
+        if(files == null) {
+            return;
+        }
+        try {
+            File min = null;
+            for (File file : files) {
+                if (min == null || file.lastModified() < min.lastModified()) {
+                    min = file;
+                }
+            }
+            if (min != null) {
+                min.delete();
+            }
+        } catch (Exception exc) {
+            // do nothing
+        }
+    }
+
     public String getValidFileName(File folder, String file, Long timestamp) {
         try {
             if (!folder.exists()) {

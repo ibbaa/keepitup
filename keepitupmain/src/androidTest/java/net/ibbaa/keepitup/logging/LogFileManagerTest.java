@@ -16,10 +16,18 @@
 
 package net.ibbaa.keepitup.logging;
 
+import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.SmallTest;
 
 import com.google.common.base.Charsets;
+
+import net.ibbaa.keepitup.test.mock.TestRegistry;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -38,14 +46,6 @@ import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
-
-import net.ibbaa.keepitup.test.mock.TestRegistry;
-
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
 
 @SmallTest
 @RunWith(AndroidJUnit4.class)
@@ -107,6 +107,23 @@ public class LogFileManagerTest {
         assertEquals(2, logDir.listFiles().length);
         logFileManager.delete(logDir);
         assertFalse(logDir.exists());
+    }
+
+    @Test
+    public void testDeleteOldest() throws Exception {
+        File logDir = getTestLogFileFolder();
+        File testFile1 = new File(logDir, "testfile1");
+        File testFile2 = new File(logDir, "testfile2");
+        File testFile3 = new File(logDir, "testfile3");
+        assertTrue(testFile1.createNewFile());
+        Thread.sleep(10);
+        assertTrue(testFile2.createNewFile());
+        Thread.sleep(10);
+        assertTrue(testFile3.createNewFile());
+        logFileManager.deleteOldest(new File[] {testFile1, testFile2, testFile3});
+        assertFalse(testFile1.exists());
+        assertTrue(testFile2.exists());
+        assertTrue(testFile3.exists());
     }
 
     @Test
