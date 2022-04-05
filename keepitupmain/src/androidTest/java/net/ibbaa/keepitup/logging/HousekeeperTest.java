@@ -18,6 +18,7 @@ package net.ibbaa.keepitup.logging;
 
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
@@ -55,7 +56,7 @@ public class HousekeeperTest {
     }
 
     @Test
-    public void testLimitNotExceeded() throws Exception {
+    public void testArchiveLimitNotExceeded() throws Exception {
         File logDir = getTestLogFileFolder();
         File[] files = logDir.listFiles();
         assertEquals(0, files.length);
@@ -130,6 +131,36 @@ public class HousekeeperTest {
         assertArrayEquals("Test4Text".getBytes(Charsets.UTF_8), contentMap.get("test4.txt"));
         assertArrayEquals("Test5Text".getBytes(Charsets.UTF_8), contentMap.get("test5.txt"));
         zipInputStream.close();
+    }
+
+    @Test
+    public void testDeleteArchive() throws Exception {
+        File logDir = getTestLogFileFolder();
+        Housekeeper housekeeper = new Housekeeper(logDir.getAbsolutePath(), "test.txt", 3, 3, (File dir, String name) -> name.endsWith("txt"));
+        createTestFile(logDir, "test1.txt", "Test1Text");
+        createTestFile(logDir, "test2.txt", "Test2Text");
+        createTestFile(logDir, "test3.txt", "Test3Text");
+        Thread.sleep(10);
+        housekeeper.doHousekeepingNow();
+        File[] files = logDir.listFiles();
+        assertEquals(1, files.length);
+        assertTrue(containsFile(files, "test", "zip"));
+        File oldest = files[0];
+        createTestFile(logDir, "test1.txt", "Test1Text");
+        createTestFile(logDir, "test2.txt", "Test2Text");
+        createTestFile(logDir, "test3.txt", "Test3Text");
+        Thread.sleep(10);
+        housekeeper.doHousekeepingNow();
+        files = logDir.listFiles();
+        assertEquals(2, files.length);
+        createTestFile(logDir, "test1.txt", "Test1Text");
+        createTestFile(logDir, "test2.txt", "Test2Text");
+        createTestFile(logDir, "test3.txt", "Test3Text");
+        Thread.sleep(10);
+        housekeeper.doHousekeepingNow();
+        files = logDir.listFiles();
+        assertEquals(2, files.length);
+        assertFalse(oldest.exists());
     }
 
     private File getTestLogFileFolder() {

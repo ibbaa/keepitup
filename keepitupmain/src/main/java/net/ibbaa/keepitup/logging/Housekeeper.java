@@ -61,11 +61,26 @@ public class Housekeeper implements Runnable {
                 zipFileName = fileManager.suffixFileName(zipFileName, fileManager.getTimestampSuffix(System.currentTimeMillis()));
                 zipFileName = fileManager.getValidFileName(new File(directory), zipFileName, null);
                 fileManager.zipFiles(Arrays.asList(filesToArchive), new File(directory, zipFileName));
+                if(deleteFileCount > 0) {
+                    File[] deleteableFiles = new File(directory).listFiles(this::isDeletableArchive);
+                    if(deleteableFiles != null && deleteableFiles.length >= deleteFileCount) {
+                        fileManager.deleteOldest(deleteableFiles);
+                    }
+                }
             }
         } catch (Exception exc) {
             //Do nothing
         } finally {
             housekeepingLock.unlock();
         }
+    }
+
+    private boolean isDeletableArchive(File dir, String name) {
+        LogFileManager fileManager = new LogFileManager();
+        String zipFileName = fileManager.getFileNameWithoutExtension(baseFileName);
+        if ((zipFileName + "." + ZIP_FILE_EXTENSION).equals(name)) {
+            return false;
+        }
+        return name.startsWith(zipFileName) && name.endsWith(ZIP_FILE_EXTENSION);
     }
 }
