@@ -16,22 +16,6 @@
 
 package net.ibbaa.keepitup.ui;
 
-import androidx.test.core.app.ActivityScenario;
-import androidx.test.ext.junit.runners.AndroidJUnit4;
-import androidx.test.filters.MediumTest;
-
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-
-import net.ibbaa.keepitup.R;
-import net.ibbaa.keepitup.model.AccessType;
-import net.ibbaa.keepitup.resources.PreferenceManager;
-import net.ibbaa.keepitup.test.mock.MockClipboardManager;
-import net.ibbaa.keepitup.test.mock.TestRegistry;
-import net.ibbaa.keepitup.ui.dialog.SettingsInputDialog;
-
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.Espresso.openActionBarOverflowOrOptionsMenu;
 import static androidx.test.espresso.action.ViewActions.click;
@@ -49,6 +33,22 @@ import static org.hamcrest.Matchers.allOf;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+
+import androidx.test.core.app.ActivityScenario;
+import androidx.test.ext.junit.runners.AndroidJUnit4;
+import androidx.test.filters.MediumTest;
+
+import net.ibbaa.keepitup.R;
+import net.ibbaa.keepitup.model.AccessType;
+import net.ibbaa.keepitup.resources.PreferenceManager;
+import net.ibbaa.keepitup.test.mock.MockClipboardManager;
+import net.ibbaa.keepitup.test.mock.TestRegistry;
+import net.ibbaa.keepitup.ui.dialog.SettingsInputDialog;
+
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 
 @MediumTest
 @RunWith(AndroidJUnit4.class)

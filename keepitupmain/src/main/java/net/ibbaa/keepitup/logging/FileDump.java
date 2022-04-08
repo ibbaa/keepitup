@@ -101,7 +101,7 @@ public class FileDump implements IDump {
                 String dumpFileName = fileManager.suffixFileName(baseDumpFileName, fileManager.getTimestampSuffix(timestamp));
                 dumpFileName = fileManager.getValidFileName(dumpFolder, dumpFileName, null);
                 fileManager.writeListToFile(header, emptyMessage, objectsToDump, new File(dumpFolder, dumpFileName));
-                if(archiveFileCount > 0) {
+                if (archiveFileCount > 0) {
                     Housekeeper housekeeper = new Housekeeper(dumpDirectory, baseDumpFileName, archiveFileCount, deleteFileCount, new DumpFilenameFilter(baseDumpFileName));
                     housekeeper.doHousekeepingNow();
                 }

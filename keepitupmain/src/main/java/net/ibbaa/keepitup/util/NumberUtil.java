@@ -16,11 +16,11 @@
 
 package net.ibbaa.keepitup.util;
 
+import net.ibbaa.keepitup.logging.Log;
+
 import java.text.NumberFormat;
 import java.util.Locale;
 import java.util.Objects;
-
-import net.ibbaa.keepitup.logging.Log;
 
 public class NumberUtil {
 

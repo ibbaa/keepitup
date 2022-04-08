@@ -18,13 +18,13 @@ package net.ibbaa.keepitup.test.mock;
 
 import android.content.Context;
 
-import java.io.File;
-import java.net.URL;
-import java.util.concurrent.CountDownLatch;
-
 import net.ibbaa.keepitup.model.NetworkTask;
 import net.ibbaa.keepitup.service.network.DownloadCommand;
 import net.ibbaa.keepitup.service.network.DownloadCommandResult;
+
+import java.io.File;
+import java.net.URL;
+import java.util.concurrent.CountDownLatch;
 
 public class MockDownloadCommand extends DownloadCommand {
 

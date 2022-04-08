@@ -16,22 +16,22 @@
 
 package net.ibbaa.keepitup.ui.clipboard;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
 import androidx.test.core.app.ActivityScenario;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.MediumTest;
-
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
 
 import net.ibbaa.keepitup.test.mock.TestRegistry;
 import net.ibbaa.keepitup.ui.BaseUITest;
 import net.ibbaa.keepitup.ui.NetworkTaskMainActivity;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 
 @MediumTest
 @RunWith(AndroidJUnit4.class)

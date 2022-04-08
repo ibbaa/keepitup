@@ -16,23 +16,6 @@
 
 package net.ibbaa.keepitup.ui.dialog;
 
-import android.os.Bundle;
-import android.widget.GridLayout;
-
-import androidx.test.core.app.ActivityScenario;
-
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-
-import java.util.Arrays;
-
-import net.ibbaa.keepitup.R;
-import net.ibbaa.keepitup.ui.BaseUITest;
-import net.ibbaa.keepitup.ui.GlobalSettingsActivity;
-import net.ibbaa.keepitup.ui.validation.ValidationResult;
-import net.ibbaa.keepitup.util.BundleUtil;
-
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
@@ -40,6 +23,23 @@ import static androidx.test.espresso.matcher.ViewMatchers.isRoot;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
 import static org.hamcrest.Matchers.allOf;
+
+import android.os.Bundle;
+import android.widget.GridLayout;
+
+import androidx.test.core.app.ActivityScenario;
+
+import net.ibbaa.keepitup.R;
+import net.ibbaa.keepitup.ui.BaseUITest;
+import net.ibbaa.keepitup.ui.GlobalSettingsActivity;
+import net.ibbaa.keepitup.ui.validation.ValidationResult;
+import net.ibbaa.keepitup.util.BundleUtil;
+
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+
+import java.util.Arrays;
 
 public class ValidatorErrorDialogTest extends BaseUITest {
 

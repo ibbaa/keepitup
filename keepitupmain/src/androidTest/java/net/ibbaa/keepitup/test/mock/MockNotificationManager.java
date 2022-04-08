@@ -18,11 +18,11 @@ package net.ibbaa.keepitup.test.mock;
 
 import android.app.Notification;
 
+import net.ibbaa.keepitup.notification.INotificationManager;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-
-import net.ibbaa.keepitup.notification.INotificationManager;
 
 public class MockNotificationManager implements INotificationManager {
 

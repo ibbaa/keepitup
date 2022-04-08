@@ -16,25 +16,6 @@
 
 package net.ibbaa.keepitup.ui;
 
-import android.text.InputType;
-import android.widget.EditText;
-
-import androidx.test.core.app.ActivityScenario;
-import androidx.test.ext.junit.runners.AndroidJUnit4;
-import androidx.test.filters.MediumTest;
-
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-
-import net.ibbaa.keepitup.R;
-import net.ibbaa.keepitup.test.mock.MockClipboardManager;
-import net.ibbaa.keepitup.test.mock.TestContextOptionsSupport;
-import net.ibbaa.keepitup.test.mock.TestContextOptionsSupportManager;
-import net.ibbaa.keepitup.test.mock.TestRegistry;
-import net.ibbaa.keepitup.ui.dialog.ContextOption;
-
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
 import static androidx.test.espresso.assertion.ViewAssertions.doesNotExist;
@@ -46,6 +27,25 @@ import static org.hamcrest.Matchers.allOf;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+
+import android.text.InputType;
+import android.widget.EditText;
+
+import androidx.test.core.app.ActivityScenario;
+import androidx.test.ext.junit.runners.AndroidJUnit4;
+import androidx.test.filters.MediumTest;
+
+import net.ibbaa.keepitup.R;
+import net.ibbaa.keepitup.test.mock.MockClipboardManager;
+import net.ibbaa.keepitup.test.mock.TestContextOptionsSupport;
+import net.ibbaa.keepitup.test.mock.TestContextOptionsSupportManager;
+import net.ibbaa.keepitup.test.mock.TestRegistry;
+import net.ibbaa.keepitup.ui.dialog.ContextOption;
+
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 
 @MediumTest
 @RunWith(AndroidJUnit4.class)

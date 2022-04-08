@@ -16,12 +16,12 @@
 
 package net.ibbaa.keepitup.test.mock;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import net.ibbaa.keepitup.logging.ILogger;
 import net.ibbaa.keepitup.logging.LogFileEntry;
 import net.ibbaa.keepitup.logging.LogLevel;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class MockLogger implements ILogger {
 

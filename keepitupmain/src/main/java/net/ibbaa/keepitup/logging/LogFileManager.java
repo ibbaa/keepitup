@@ -83,7 +83,7 @@ public class LogFileManager {
     }
 
     public void deleteOldest(File[] files) {
-        if(files == null) {
+        if (files == null) {
             return;
         }
         try {

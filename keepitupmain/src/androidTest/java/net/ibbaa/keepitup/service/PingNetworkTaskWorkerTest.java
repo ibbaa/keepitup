@@ -16,20 +16,13 @@
 
 package net.ibbaa.keepitup.service;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.MediumTest;
 import androidx.test.platform.app.InstrumentationRegistry;
-
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-
-import java.net.InetAddress;
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.Collections;
-import java.util.GregorianCalendar;
-import java.util.Locale;
 
 import net.ibbaa.keepitup.model.AccessType;
 import net.ibbaa.keepitup.model.LogEntry;
@@ -42,9 +35,16 @@ import net.ibbaa.keepitup.test.mock.MockTimeService;
 import net.ibbaa.keepitup.test.mock.TestPingNetworkTaskWorker;
 import net.ibbaa.keepitup.test.mock.TestRegistry;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+
+import java.net.InetAddress;
+import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Collections;
+import java.util.GregorianCalendar;
+import java.util.Locale;
 
 @MediumTest
 @RunWith(AndroidJUnit4.class)

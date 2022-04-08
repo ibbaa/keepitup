@@ -20,14 +20,14 @@ import android.content.Context;
 import android.os.PowerManager;
 import android.util.Log;
 
-import java.util.concurrent.Callable;
-
 import net.ibbaa.keepitup.R;
 import net.ibbaa.keepitup.db.NetworkTaskDAO;
 import net.ibbaa.keepitup.model.LogEntry;
 import net.ibbaa.keepitup.model.NetworkTask;
 import net.ibbaa.keepitup.service.NetworkTaskWorker;
 import net.ibbaa.keepitup.service.network.DNSLookupResult;
+
+import java.util.concurrent.Callable;
 
 public class TestNetworkTaskWorker extends NetworkTaskWorker {
 

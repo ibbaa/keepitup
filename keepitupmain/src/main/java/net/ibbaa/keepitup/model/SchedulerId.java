@@ -21,11 +21,11 @@ import android.os.PersistableBundle;
 
 import androidx.annotation.NonNull;
 
+import net.ibbaa.keepitup.util.NumberUtil;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
-
-import net.ibbaa.keepitup.util.NumberUtil;
 
 public class SchedulerId {
 

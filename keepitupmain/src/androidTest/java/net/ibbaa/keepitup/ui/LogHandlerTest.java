@@ -16,13 +16,11 @@
 
 package net.ibbaa.keepitup.ui;
 
+import static org.junit.Assert.assertEquals;
+
 import android.content.Intent;
 
 import androidx.test.core.app.ActivityScenario;
-
-import org.junit.Test;
-
-import java.util.List;
 
 import net.ibbaa.keepitup.model.AccessType;
 import net.ibbaa.keepitup.model.LogEntry;
@@ -30,7 +28,9 @@ import net.ibbaa.keepitup.model.NetworkTask;
 import net.ibbaa.keepitup.test.mock.TestRegistry;
 import net.ibbaa.keepitup.ui.adapter.LogEntryAdapter;
 
-import static org.junit.Assert.assertEquals;
+import org.junit.Test;
+
+import java.util.List;
 
 public class LogHandlerTest extends BaseUITest {
 

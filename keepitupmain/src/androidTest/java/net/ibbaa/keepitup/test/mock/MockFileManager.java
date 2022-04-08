@@ -16,14 +16,14 @@
 
 package net.ibbaa.keepitup.test.mock;
 
+import net.ibbaa.keepitup.model.FileEntry;
+import net.ibbaa.keepitup.service.IFileManager;
+
 import java.io.File;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-
-import net.ibbaa.keepitup.model.FileEntry;
-import net.ibbaa.keepitup.service.IFileManager;
 
 public class MockFileManager implements IFileManager {
 
@@ -42,6 +42,7 @@ public class MockFileManager implements IFileManager {
     private List<FileEntry> fileEntries;
     private boolean delete;
     private String downloadFileName;
+    private String logFileName;
     private boolean fileExists;
     private String validFileName;
     private boolean sdCardSupported;
@@ -61,6 +62,7 @@ public class MockFileManager implements IFileManager {
         fileEntries = Collections.emptyList();
         delete = true;
         downloadFileName = null;
+        logFileName = null;
         fileExists = false;
         validFileName = null;
         sdCardSupported = false;
@@ -85,6 +87,7 @@ public class MockFileManager implements IFileManager {
         fileEntries = Collections.emptyList();
         delete = true;
         downloadFileName = null;
+        logFileName = null;
         fileExists = false;
         validFileName = null;
         sdCardSupported = false;
@@ -148,6 +151,10 @@ public class MockFileManager implements IFileManager {
 
     public void setDownloadFileName(String downloadFileName) {
         this.downloadFileName = downloadFileName;
+    }
+
+    public void setLogFileName(String logFileName) {
+        this.logFileName = logFileName;
     }
 
     public void setDoesFileExist(boolean fileExists) {
@@ -230,6 +237,11 @@ public class MockFileManager implements IFileManager {
     @Override
     public String getDownloadFileName(URL url, String specifiedFileName, String mimeType) {
         return downloadFileName;
+    }
+
+    @Override
+    public String getLogFileName(String baseFileName, String extension, int index, String address) {
+        return logFileName;
     }
 
     @Override

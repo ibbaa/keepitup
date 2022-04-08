@@ -32,7 +32,7 @@ public class UIUtil {
         TypedValue typedValue = new TypedValue();
         Resources.Theme theme = context.getTheme();
         theme.resolveAttribute(colorid, typedValue, true);
-        TypedArray typedArray = context.obtainStyledAttributes(typedValue.data, new int[]{ colorid });
+        TypedArray typedArray = context.obtainStyledAttributes(typedValue.data, new int[]{colorid});
         int color = typedArray.getColor(0, -1);
         typedArray.recycle();
         return color;

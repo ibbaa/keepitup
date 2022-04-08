@@ -16,11 +16,11 @@
 
 package net.ibbaa.keepitup.test.mock;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import net.ibbaa.keepitup.logging.IDump;
 import net.ibbaa.keepitup.logging.IDumpSource;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class MockDump implements IDump {
 

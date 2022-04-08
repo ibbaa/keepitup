@@ -16,28 +16,6 @@
 
 package net.ibbaa.keepitup.ui.dialog;
 
-import android.os.Bundle;
-
-import androidx.test.core.app.ActivityScenario;
-import androidx.test.ext.junit.runners.AndroidJUnit4;
-import androidx.test.filters.MediumTest;
-
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-
-import java.util.Arrays;
-import java.util.List;
-
-import net.ibbaa.keepitup.R;
-import net.ibbaa.keepitup.model.FileEntry;
-import net.ibbaa.keepitup.test.mock.MockFileManager;
-import net.ibbaa.keepitup.ui.BaseUITest;
-import net.ibbaa.keepitup.ui.GlobalSettingsActivity;
-import net.ibbaa.keepitup.ui.adapter.FileEntryAdapter;
-import net.ibbaa.keepitup.util.BundleUtil;
-
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
@@ -48,6 +26,28 @@ import static junit.framework.TestCase.assertTrue;
 import static org.hamcrest.Matchers.allOf;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+
+import android.os.Bundle;
+
+import androidx.test.core.app.ActivityScenario;
+import androidx.test.ext.junit.runners.AndroidJUnit4;
+import androidx.test.filters.MediumTest;
+
+import net.ibbaa.keepitup.R;
+import net.ibbaa.keepitup.model.FileEntry;
+import net.ibbaa.keepitup.test.mock.MockFileManager;
+import net.ibbaa.keepitup.ui.BaseUITest;
+import net.ibbaa.keepitup.ui.GlobalSettingsActivity;
+import net.ibbaa.keepitup.ui.adapter.FileEntryAdapter;
+import net.ibbaa.keepitup.util.BundleUtil;
+
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+
+import java.util.Arrays;
+import java.util.List;
 
 @MediumTest
 @RunWith(AndroidJUnit4.class)

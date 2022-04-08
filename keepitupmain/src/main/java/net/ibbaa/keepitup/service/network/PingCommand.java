@@ -21,12 +21,12 @@ import android.content.res.Resources;
 
 import com.google.common.base.Charsets;
 
-import java.util.concurrent.Callable;
-
 import net.ibbaa.keepitup.R;
 import net.ibbaa.keepitup.logging.Log;
 import net.ibbaa.keepitup.util.StreamUtil;
 import net.ibbaa.keepitup.util.StringUtil;
+
+import java.util.concurrent.Callable;
 
 public class PingCommand implements Callable<PingCommandResult> {
 

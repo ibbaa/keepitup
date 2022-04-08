@@ -18,10 +18,10 @@ package net.ibbaa.keepitup.test.mock;
 
 import android.content.Context;
 
-import java.net.InetAddress;
-
 import net.ibbaa.keepitup.service.network.ConnectCommand;
 import net.ibbaa.keepitup.service.network.ConnectCommandResult;
+
+import java.net.InetAddress;
 
 public class MockConnectCommand extends ConnectCommand {
 

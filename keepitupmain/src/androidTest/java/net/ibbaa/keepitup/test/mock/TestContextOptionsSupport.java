@@ -16,13 +16,13 @@
 
 package net.ibbaa.keepitup.test.mock;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
 import net.ibbaa.keepitup.ui.ContextOptionsSupport;
 import net.ibbaa.keepitup.ui.dialog.ContextOption;
 import net.ibbaa.keepitup.ui.dialog.ContextOptionsDialog;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 public class TestContextOptionsSupport implements ContextOptionsSupport {
 

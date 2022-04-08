@@ -16,9 +16,9 @@
 
 package net.ibbaa.keepitup.logging;
 
-import java.util.concurrent.locks.ReentrantReadWriteLock;
-
 import net.ibbaa.keepitup.BuildConfig;
+
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 public class Log {
 

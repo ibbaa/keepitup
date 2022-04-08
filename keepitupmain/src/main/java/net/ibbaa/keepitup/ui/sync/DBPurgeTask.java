@@ -19,12 +19,12 @@ package net.ibbaa.keepitup.ui.sync;
 import android.app.Activity;
 import android.content.Context;
 
-import java.util.concurrent.TimeUnit;
-
 import net.ibbaa.keepitup.R;
 import net.ibbaa.keepitup.db.DBSetup;
 import net.ibbaa.keepitup.logging.Log;
 import net.ibbaa.keepitup.ui.DBPurgeSupport;
+
+import java.util.concurrent.TimeUnit;
 
 public class DBPurgeTask extends UIBackgroundTask<Boolean> {
 

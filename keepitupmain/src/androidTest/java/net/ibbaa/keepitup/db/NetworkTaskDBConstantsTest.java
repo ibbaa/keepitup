@@ -16,16 +16,16 @@
 
 package net.ibbaa.keepitup.db;
 
+import static org.junit.Assert.assertEquals;
+
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.SmallTest;
-
-import org.junit.Test;
-import org.junit.runner.RunWith;
 
 import net.ibbaa.keepitup.R;
 import net.ibbaa.keepitup.test.mock.TestRegistry;
 
-import static org.junit.Assert.assertEquals;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 
 @SmallTest
 @RunWith(AndroidJUnit4.class)

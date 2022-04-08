@@ -16,20 +16,15 @@
 
 package net.ibbaa.keepitup.ui.sync;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
 import android.content.Intent;
 
 import androidx.test.core.app.ActivityScenario;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.MediumTest;
 import androidx.test.platform.app.InstrumentationRegistry;
-
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-
-import java.util.Calendar;
-import java.util.GregorianCalendar;
 
 import net.ibbaa.keepitup.db.LogDAO;
 import net.ibbaa.keepitup.db.NetworkTaskDAO;
@@ -41,8 +36,13 @@ import net.ibbaa.keepitup.ui.BaseUITest;
 import net.ibbaa.keepitup.ui.NetworkTaskLogActivity;
 import net.ibbaa.keepitup.ui.adapter.LogEntryAdapter;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 
 @MediumTest
 @RunWith(AndroidJUnit4.class)

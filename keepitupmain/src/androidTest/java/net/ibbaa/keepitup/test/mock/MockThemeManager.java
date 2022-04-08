@@ -46,7 +46,7 @@ public class MockThemeManager implements IThemeManager {
     @Override
     public String getThemeName(int code) {
         Log.d(MockThemeManager.class.getName(), "getThemeName, code is " + code);
-        switch(code) {
+        switch (code) {
             case AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM:
                 return "SYSTEM";
             case AppCompatDelegate.MODE_NIGHT_NO:

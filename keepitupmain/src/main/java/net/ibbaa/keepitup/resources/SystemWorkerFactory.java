@@ -19,13 +19,13 @@ package net.ibbaa.keepitup.resources;
 import android.content.Context;
 import android.os.PowerManager;
 
-import java.lang.reflect.Constructor;
-
 import net.ibbaa.keepitup.logging.Log;
 import net.ibbaa.keepitup.model.AccessType;
 import net.ibbaa.keepitup.model.NetworkTask;
 import net.ibbaa.keepitup.service.NetworkTaskWorker;
 import net.ibbaa.keepitup.service.NullNetworkTaskWorker;
+
+import java.lang.reflect.Constructor;
 
 public class SystemWorkerFactory implements WorkerFactory {
 

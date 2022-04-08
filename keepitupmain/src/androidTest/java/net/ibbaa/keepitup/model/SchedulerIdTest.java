@@ -16,6 +16,11 @@
 
 package net.ibbaa.keepitup.model;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
 import android.os.Bundle;
 import android.os.PersistableBundle;
 
@@ -27,11 +32,6 @@ import org.junit.runner.RunWith;
 
 import java.util.HashMap;
 import java.util.Map;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
 
 @SmallTest
 @RunWith(AndroidJUnit4.class)

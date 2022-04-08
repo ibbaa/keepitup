@@ -19,14 +19,14 @@ package net.ibbaa.keepitup.ui.mapping;
 import android.content.Context;
 import android.content.res.Resources;
 
-import java.lang.reflect.Constructor;
-
 import net.ibbaa.keepitup.R;
 import net.ibbaa.keepitup.logging.Log;
 import net.ibbaa.keepitup.model.AccessType;
 import net.ibbaa.keepitup.ui.dialog.ContextOption;
 import net.ibbaa.keepitup.ui.validation.NullValidator;
 import net.ibbaa.keepitup.ui.validation.Validator;
+
+import java.lang.reflect.Constructor;
 
 public class EnumMapping {
 

@@ -16,8 +16,16 @@
 
 package net.ibbaa.keepitup.service.network;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.MediumTest;
+
+import net.ibbaa.keepitup.test.mock.TestConnectCommand;
+import net.ibbaa.keepitup.test.mock.TestRegistry;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -25,14 +33,6 @@ import org.junit.runner.RunWith;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-
-import net.ibbaa.keepitup.test.mock.TestConnectCommand;
-import net.ibbaa.keepitup.test.mock.TestRegistry;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
 
 @MediumTest
 @RunWith(AndroidJUnit4.class)

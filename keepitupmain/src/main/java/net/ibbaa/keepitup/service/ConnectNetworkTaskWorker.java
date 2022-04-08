@@ -19,14 +19,6 @@ package net.ibbaa.keepitup.service;
 import android.content.Context;
 import android.os.PowerManager;
 
-import java.net.Inet6Address;
-import java.net.InetAddress;
-import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
-import java.util.concurrent.TimeUnit;
-
 import net.ibbaa.keepitup.R;
 import net.ibbaa.keepitup.logging.Log;
 import net.ibbaa.keepitup.model.LogEntry;
@@ -35,6 +27,14 @@ import net.ibbaa.keepitup.resources.PreferenceManager;
 import net.ibbaa.keepitup.service.network.ConnectCommand;
 import net.ibbaa.keepitup.service.network.ConnectCommandResult;
 import net.ibbaa.keepitup.util.StringUtil;
+
+import java.net.Inet6Address;
+import java.net.InetAddress;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
 
 public class ConnectNetworkTaskWorker extends NetworkTaskWorker {
 

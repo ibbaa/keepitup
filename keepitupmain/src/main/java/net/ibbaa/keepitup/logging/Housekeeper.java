@@ -61,9 +61,9 @@ public class Housekeeper implements Runnable {
                 zipFileName = fileManager.suffixFileName(zipFileName, fileManager.getTimestampSuffix(System.currentTimeMillis()));
                 zipFileName = fileManager.getValidFileName(new File(directory), zipFileName, null);
                 fileManager.zipFiles(Arrays.asList(filesToArchive), new File(directory, zipFileName));
-                if(deleteFileCount > 0) {
+                if (deleteFileCount > 0) {
                     File[] deleteableFiles = new File(directory).listFiles(this::isDeletableArchive);
-                    if(deleteableFiles != null && deleteableFiles.length >= deleteFileCount) {
+                    if (deleteableFiles != null && deleteableFiles.length >= deleteFileCount) {
                         fileManager.deleteOldest(deleteableFiles);
                     }
                 }

@@ -22,13 +22,13 @@ import android.content.res.Resources;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
-import java.security.SecureRandom;
-
 import net.ibbaa.keepitup.R;
 import net.ibbaa.keepitup.logging.Log;
 import net.ibbaa.keepitup.model.SchedulerId;
 import net.ibbaa.keepitup.resources.ServiceFactoryContributor;
 import net.ibbaa.keepitup.service.ITimeService;
+
+import java.security.SecureRandom;
 
 public class SchedulerIdGenerator {
 

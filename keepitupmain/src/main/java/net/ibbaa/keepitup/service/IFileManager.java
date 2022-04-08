@@ -16,11 +16,11 @@
 
 package net.ibbaa.keepitup.service;
 
+import net.ibbaa.keepitup.model.FileEntry;
+
 import java.io.File;
 import java.net.URL;
 import java.util.List;
-
-import net.ibbaa.keepitup.model.FileEntry;
 
 public interface IFileManager {
 
@@ -49,6 +49,8 @@ public interface IFileManager {
     boolean delete(File file);
 
     String getDownloadFileName(URL url, String specifiedFileName, String mimeType);
+
+    String getLogFileName(String baseFileName, String extension, int index, String address);
 
     boolean doesFileExist(File folder, String file);
 

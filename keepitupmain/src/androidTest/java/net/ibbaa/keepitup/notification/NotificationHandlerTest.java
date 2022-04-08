@@ -16,20 +16,15 @@
 
 package net.ibbaa.keepitup.notification;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
 import android.app.Notification;
 
 import androidx.core.app.NotificationCompat;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.MediumTest;
 import androidx.test.platform.app.InstrumentationRegistry;
-
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-
-import java.util.Calendar;
-import java.util.GregorianCalendar;
-import java.util.Locale;
 
 import net.ibbaa.keepitup.R;
 import net.ibbaa.keepitup.model.AccessType;
@@ -39,8 +34,13 @@ import net.ibbaa.keepitup.test.mock.MockNotificationBuilder;
 import net.ibbaa.keepitup.test.mock.MockNotificationManager;
 import net.ibbaa.keepitup.test.mock.TestRegistry;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+
+import java.util.Calendar;
+import java.util.GregorianCalendar;
+import java.util.Locale;
 
 @MediumTest
 @RunWith(AndroidJUnit4.class)

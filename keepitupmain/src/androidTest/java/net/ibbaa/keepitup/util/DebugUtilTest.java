@@ -16,20 +16,20 @@
 
 package net.ibbaa.keepitup.util;
 
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.SmallTest;
+
+import net.ibbaa.keepitup.test.mock.MockFileManager;
+import net.ibbaa.keepitup.test.mock.TestRegistry;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.io.File;
-
-import net.ibbaa.keepitup.test.mock.MockFileManager;
-import net.ibbaa.keepitup.test.mock.TestRegistry;
-
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
 
 @SmallTest
 @RunWith(AndroidJUnit4.class)

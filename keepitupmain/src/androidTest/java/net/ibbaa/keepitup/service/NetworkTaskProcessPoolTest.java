@@ -16,17 +16,17 @@
 
 package net.ibbaa.keepitup.service;
 
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.SmallTest;
+
+import net.ibbaa.keepitup.test.mock.MockFuture;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-
-import net.ibbaa.keepitup.test.mock.MockFuture;
-
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
 
 @SmallTest
 @RunWith(AndroidJUnit4.class)

@@ -18,9 +18,9 @@ package net.ibbaa.keepitup.util;
 
 import android.content.Context;
 
-import java.text.NumberFormat;
-
 import net.ibbaa.keepitup.R;
+
+import java.text.NumberFormat;
 
 public class StringUtil {
 

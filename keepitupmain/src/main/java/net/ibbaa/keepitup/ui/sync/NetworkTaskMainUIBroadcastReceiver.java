@@ -21,12 +21,12 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 
-import java.util.Objects;
-
 import net.ibbaa.keepitup.logging.Log;
 import net.ibbaa.keepitup.model.NetworkTask;
 import net.ibbaa.keepitup.ui.adapter.NetworkTaskAdapter;
 import net.ibbaa.keepitup.util.ThreadUtil;
+
+import java.util.Objects;
 
 public class NetworkTaskMainUIBroadcastReceiver extends BroadcastReceiver {
 

@@ -19,15 +19,15 @@ package net.ibbaa.keepitup.test.mock;
 import android.content.Context;
 import android.os.PowerManager;
 
-import java.io.File;
-import java.net.URL;
-import java.util.concurrent.Callable;
-
 import net.ibbaa.keepitup.model.NetworkTask;
 import net.ibbaa.keepitup.service.DownloadNetworkTaskWorker;
 import net.ibbaa.keepitup.service.IFileManager;
 import net.ibbaa.keepitup.service.network.DNSLookupResult;
 import net.ibbaa.keepitup.service.network.DownloadCommandResult;
+
+import java.io.File;
+import java.net.URL;
+import java.util.concurrent.Callable;
 
 public class TestDownloadNetworkTaskWorker extends DownloadNetworkTaskWorker {
 

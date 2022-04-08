@@ -19,14 +19,14 @@ package net.ibbaa.keepitup.ui.sync;
 import android.app.Activity;
 import android.content.Context;
 
-import java.lang.ref.WeakReference;
-import java.util.List;
-
 import net.ibbaa.keepitup.db.LogDAO;
 import net.ibbaa.keepitup.logging.Log;
 import net.ibbaa.keepitup.model.LogEntry;
 import net.ibbaa.keepitup.model.NetworkTask;
 import net.ibbaa.keepitup.ui.adapter.LogEntryAdapter;
+
+import java.lang.ref.WeakReference;
+import java.util.List;
 
 public class LogEntryUIInitTask extends UIBackgroundTask<List<LogEntry>> {
 

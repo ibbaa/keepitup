@@ -19,6 +19,12 @@ package net.ibbaa.keepitup.resources;
 import android.content.Context;
 import android.content.res.Resources;
 
+import net.ibbaa.keepitup.R;
+import net.ibbaa.keepitup.db.DBSetup;
+import net.ibbaa.keepitup.logging.Log;
+import net.ibbaa.keepitup.util.JSONUtil;
+import net.ibbaa.keepitup.util.NumberUtil;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -27,12 +33,6 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-
-import net.ibbaa.keepitup.R;
-import net.ibbaa.keepitup.db.DBSetup;
-import net.ibbaa.keepitup.logging.Log;
-import net.ibbaa.keepitup.util.JSONUtil;
-import net.ibbaa.keepitup.util.NumberUtil;
 
 public class JSONSystemSetup implements ISystemSetup {
 

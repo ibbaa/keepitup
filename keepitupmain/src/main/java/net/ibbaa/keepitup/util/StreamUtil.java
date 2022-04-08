@@ -16,13 +16,13 @@
 
 package net.ibbaa.keepitup.util;
 
+import net.ibbaa.keepitup.logging.Log;
+
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.StringReader;
 import java.nio.charset.Charset;
-
-import net.ibbaa.keepitup.logging.Log;
 
 public class StreamUtil {
 

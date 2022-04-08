@@ -20,11 +20,11 @@ import android.app.Notification;
 
 import androidx.annotation.NonNull;
 
+import net.ibbaa.keepitup.service.NetworkTaskRunningNotificationService;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-
-import net.ibbaa.keepitup.service.NetworkTaskRunningNotificationService;
 
 public class TestNetworkTaskRunningNotificationService extends NetworkTaskRunningNotificationService {
 

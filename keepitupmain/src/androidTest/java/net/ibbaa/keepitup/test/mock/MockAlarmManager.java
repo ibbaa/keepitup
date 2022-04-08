@@ -18,11 +18,11 @@ package net.ibbaa.keepitup.test.mock;
 
 import android.app.PendingIntent;
 
+import net.ibbaa.keepitup.service.IAlarmManager;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-
-import net.ibbaa.keepitup.service.IAlarmManager;
 
 public class MockAlarmManager implements IAlarmManager {
 

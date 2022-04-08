@@ -28,6 +28,7 @@ import net.ibbaa.keepitup.model.FileEntry;
 import net.ibbaa.keepitup.resources.ServiceFactoryContributor;
 import net.ibbaa.keepitup.util.FileUtil;
 import net.ibbaa.keepitup.util.StringUtil;
+import net.ibbaa.keepitup.util.URLUtil;
 
 import java.io.File;
 import java.net.URL;
@@ -349,7 +350,30 @@ public class SystemFileManager implements IFileManager {
         return fileNameWithoutExtension;
     }
 
-    private static String extractFileNameFromURL(URL url) {
+    @Override
+    public String getLogFileName(String baseFileName, String extension, int index, String address) {
+        String logFileName = baseFileName + "_" + index;
+        String host = address;
+        if (!StringUtil.isEmpty(address)) {
+            String urlAddress = URLUtil.encodeURL(address);
+            if (URLUtil.isValidURL(urlAddress)) {
+                URL url = URLUtil.getURL(urlAddress);
+                host = url.getHost();
+            } else {
+                urlAddress = URLUtil.prefixHTTPProtocol(urlAddress);
+                if (URLUtil.isValidURL(urlAddress)) {
+                    URL url = URLUtil.getURL(urlAddress);
+                    host = url.getHost();
+                }
+            }
+        }
+        if (!StringUtil.isEmpty(host)) {
+            logFileName = logFileName + "_" + host;
+        }
+        return logFileName.replaceAll("\\.", "_").replaceAll("/", "_") + extension;
+    }
+
+    private String extractFileNameFromURL(URL url) {
         Log.d(SystemFileManager.class.getName(), "extractFileNameFromURL, url is " + url);
         try {
             String fileName = new File(url.toURI().getPath()).getName();
@@ -360,7 +384,7 @@ public class SystemFileManager implements IFileManager {
         return null;
     }
 
-    private static String createFileNameFromHost(URL url) {
+    private String createFileNameFromHost(URL url) {
         Log.d(SystemFileManager.class.getName(), "createFileNameFromHost, url is " + url);
         try {
             String host = url.toURI().getHost();
@@ -373,7 +397,7 @@ public class SystemFileManager implements IFileManager {
         return null;
     }
 
-    private static boolean isValidFileName(String fileName) {
+    private boolean isValidFileName(String fileName) {
         if (StringUtil.isEmpty(fileName)) {
             return false;
         }

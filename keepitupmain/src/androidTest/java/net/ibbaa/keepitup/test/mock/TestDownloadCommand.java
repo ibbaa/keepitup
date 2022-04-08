@@ -18,13 +18,13 @@ package net.ibbaa.keepitup.test.mock;
 
 import android.content.Context;
 
-import java.io.File;
-import java.net.URL;
-import java.net.URLConnection;
-
 import net.ibbaa.keepitup.model.NetworkTask;
 import net.ibbaa.keepitup.service.IFileManager;
 import net.ibbaa.keepitup.service.network.DownloadCommand;
+
+import java.io.File;
+import java.net.URL;
+import java.net.URLConnection;
 
 public class TestDownloadCommand extends DownloadCommand {
 

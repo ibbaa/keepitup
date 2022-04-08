@@ -30,10 +30,6 @@ import android.os.Build;
 
 import androidx.core.app.NotificationCompat;
 
-import java.text.DateFormat;
-import java.util.Date;
-import java.util.Objects;
-
 import net.ibbaa.keepitup.R;
 import net.ibbaa.keepitup.logging.Log;
 import net.ibbaa.keepitup.model.LogEntry;
@@ -41,6 +37,10 @@ import net.ibbaa.keepitup.model.NetworkTask;
 import net.ibbaa.keepitup.resources.ServiceFactoryContributor;
 import net.ibbaa.keepitup.ui.NetworkTaskMainActivity;
 import net.ibbaa.keepitup.ui.mapping.EnumMapping;
+
+import java.text.DateFormat;
+import java.util.Date;
+import java.util.Objects;
 
 public class NotificationHandler {
 

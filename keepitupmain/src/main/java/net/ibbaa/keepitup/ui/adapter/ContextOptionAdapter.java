@@ -26,15 +26,15 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import net.ibbaa.keepitup.R;
 import net.ibbaa.keepitup.logging.Log;
 import net.ibbaa.keepitup.ui.dialog.ContextOption;
 import net.ibbaa.keepitup.ui.dialog.ContextOptionsDialog;
 import net.ibbaa.keepitup.ui.mapping.EnumMapping;
 import net.ibbaa.keepitup.util.BundleUtil;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class ContextOptionAdapter extends RecyclerView.Adapter<ContextOptionViewHolder> {
 

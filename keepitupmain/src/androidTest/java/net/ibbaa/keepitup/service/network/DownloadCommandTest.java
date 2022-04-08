@@ -16,10 +16,29 @@
 
 package net.ibbaa.keepitup.service.network;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.MediumTest;
 
 import com.google.common.base.Charsets;
+
+import net.ibbaa.keepitup.db.NetworkTaskDAO;
+import net.ibbaa.keepitup.logging.Dump;
+import net.ibbaa.keepitup.model.AccessType;
+import net.ibbaa.keepitup.model.NetworkTask;
+import net.ibbaa.keepitup.resources.PreferenceManager;
+import net.ibbaa.keepitup.service.SystemFileManager;
+import net.ibbaa.keepitup.test.mock.BlockingTestInputStream;
+import net.ibbaa.keepitup.test.mock.MockFileManager;
+import net.ibbaa.keepitup.test.mock.MockHttpURLConnection;
+import net.ibbaa.keepitup.test.mock.MockTimeService;
+import net.ibbaa.keepitup.test.mock.MockURLConnection;
+import net.ibbaa.keepitup.test.mock.TestDownloadCommand;
+import net.ibbaa.keepitup.test.mock.TestRegistry;
 
 import org.junit.After;
 import org.junit.Before;
@@ -37,25 +56,6 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
-
-import net.ibbaa.keepitup.db.NetworkTaskDAO;
-import net.ibbaa.keepitup.logging.Dump;
-import net.ibbaa.keepitup.model.AccessType;
-import net.ibbaa.keepitup.model.NetworkTask;
-import net.ibbaa.keepitup.resources.PreferenceManager;
-import net.ibbaa.keepitup.service.SystemFileManager;
-import net.ibbaa.keepitup.test.mock.BlockingTestInputStream;
-import net.ibbaa.keepitup.test.mock.MockFileManager;
-import net.ibbaa.keepitup.test.mock.MockHttpURLConnection;
-import net.ibbaa.keepitup.test.mock.MockTimeService;
-import net.ibbaa.keepitup.test.mock.MockURLConnection;
-import net.ibbaa.keepitup.test.mock.TestDownloadCommand;
-import net.ibbaa.keepitup.test.mock.TestRegistry;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
 
 @MediumTest
 @RunWith(AndroidJUnit4.class)

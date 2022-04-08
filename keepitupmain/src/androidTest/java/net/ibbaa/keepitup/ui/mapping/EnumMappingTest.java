@@ -16,12 +16,11 @@
 
 package net.ibbaa.keepitup.ui.mapping;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.SmallTest;
-
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
 
 import net.ibbaa.keepitup.model.AccessType;
 import net.ibbaa.keepitup.test.mock.TestRegistry;
@@ -29,8 +28,9 @@ import net.ibbaa.keepitup.ui.dialog.ContextOption;
 import net.ibbaa.keepitup.ui.validation.NullValidator;
 import net.ibbaa.keepitup.ui.validation.StandardHostPortValidator;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 
 @SmallTest
 @RunWith(AndroidJUnit4.class)

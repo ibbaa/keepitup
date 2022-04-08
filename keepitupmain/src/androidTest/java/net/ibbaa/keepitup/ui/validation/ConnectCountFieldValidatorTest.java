@@ -16,13 +16,13 @@
 
 package net.ibbaa.keepitup.ui.validation;
 
-import org.junit.Test;
-
-import net.ibbaa.keepitup.test.mock.TestRegistry;
-
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+
+import net.ibbaa.keepitup.test.mock.TestRegistry;
+
+import org.junit.Test;
 
 public class ConnectCountFieldValidatorTest {
 

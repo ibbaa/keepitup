@@ -18,9 +18,9 @@ package net.ibbaa.keepitup.test.mock;
 
 import android.app.Activity;
 
-import java.io.File;
-
 import net.ibbaa.keepitup.ui.sync.ImportTask;
+
+import java.io.File;
 
 public class MockImportTask extends ImportTask {
 

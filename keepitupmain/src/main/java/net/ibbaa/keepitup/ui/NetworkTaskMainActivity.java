@@ -25,11 +25,6 @@ import android.view.View;
 
 import androidx.recyclerview.widget.RecyclerView;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.Future;
-import java.util.concurrent.TimeUnit;
-
 import net.ibbaa.keepitup.R;
 import net.ibbaa.keepitup.logging.Log;
 import net.ibbaa.keepitup.model.NetworkTask;
@@ -41,6 +36,11 @@ import net.ibbaa.keepitup.ui.dialog.NetworkTaskEditDialog;
 import net.ibbaa.keepitup.ui.sync.NetworkTaskMainUIBroadcastReceiver;
 import net.ibbaa.keepitup.ui.sync.NetworkTaskMainUIInitTask;
 import net.ibbaa.keepitup.util.ThreadUtil;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
 
 public class NetworkTaskMainActivity extends RecyclerViewBaseActivity {
 

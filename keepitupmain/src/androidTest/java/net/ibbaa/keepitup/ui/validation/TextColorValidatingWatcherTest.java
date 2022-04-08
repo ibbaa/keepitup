@@ -16,18 +16,18 @@
 
 package net.ibbaa.keepitup.ui.validation;
 
+import static org.junit.Assert.assertEquals;
+
 import android.graphics.Color;
 import android.widget.EditText;
 
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.SmallTest;
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
-
 import net.ibbaa.keepitup.test.mock.TestRegistry;
 
-import static org.junit.Assert.assertEquals;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 
 @SmallTest
 @RunWith(AndroidJUnit4.class)

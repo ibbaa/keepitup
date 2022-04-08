@@ -16,11 +16,11 @@
 
 package net.ibbaa.keepitup.util;
 
-import java.io.File;
-
 import net.ibbaa.keepitup.logging.Log;
 import net.ibbaa.keepitup.resources.PreferenceManager;
 import net.ibbaa.keepitup.service.IFileManager;
+
+import java.io.File;
 
 public class FileUtil {
 

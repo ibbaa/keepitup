@@ -19,15 +19,15 @@ package net.ibbaa.keepitup.db;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-
 import net.ibbaa.keepitup.R;
 import net.ibbaa.keepitup.logging.Log;
 import net.ibbaa.keepitup.model.LogEntry;
 import net.ibbaa.keepitup.model.NetworkTask;
 import net.ibbaa.keepitup.util.URLUtil;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 public class DBSetup {
 

@@ -21,17 +21,17 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.PowerManager;
 
-import java.util.Objects;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
-
 import net.ibbaa.keepitup.R;
 import net.ibbaa.keepitup.db.NetworkTaskDAO;
 import net.ibbaa.keepitup.logging.Log;
 import net.ibbaa.keepitup.model.NetworkTask;
 import net.ibbaa.keepitup.resources.WorkerFactory;
 import net.ibbaa.keepitup.resources.WorkerFactoryContributor;
+
+import java.util.Objects;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 public class NetworkTaskProcessBroadcastReceiver extends BroadcastReceiver {
 

@@ -16,13 +16,12 @@
 
 package net.ibbaa.keepitup.ui;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+
 import androidx.test.core.app.ActivityScenario;
-
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-
-import java.util.List;
 
 import net.ibbaa.keepitup.model.AccessType;
 import net.ibbaa.keepitup.model.LogEntry;
@@ -30,10 +29,11 @@ import net.ibbaa.keepitup.model.NetworkTask;
 import net.ibbaa.keepitup.ui.adapter.NetworkTaskAdapter;
 import net.ibbaa.keepitup.ui.adapter.NetworkTaskUIWrapper;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+
+import java.util.List;
 
 public class NetworkTaskHandlerTest extends BaseUITest {
 

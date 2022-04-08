@@ -16,17 +16,14 @@
 
 package net.ibbaa.keepitup.ui.sync;
 
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
 import android.content.Intent;
 
 import androidx.test.core.app.ActivityScenario;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.MediumTest;
-
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-
-import java.util.Collections;
 
 import net.ibbaa.keepitup.model.NetworkTask;
 import net.ibbaa.keepitup.test.mock.TestLogEntryUIBroadcastReceiver;
@@ -35,8 +32,11 @@ import net.ibbaa.keepitup.ui.BaseUITest;
 import net.ibbaa.keepitup.ui.NetworkTaskMainActivity;
 import net.ibbaa.keepitup.ui.adapter.LogEntryAdapter;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+
+import java.util.Collections;
 
 @MediumTest
 @RunWith(AndroidJUnit4.class)

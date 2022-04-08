@@ -60,7 +60,7 @@ public class HousekeeperTest {
         File logDir = getTestLogFileFolder();
         File[] files = logDir.listFiles();
         assertEquals(0, files.length);
-        Housekeeper housekeeper = new Housekeeper(logDir.getAbsolutePath(), "test.log", 5, -1,null);
+        Housekeeper housekeeper = new Housekeeper(logDir.getAbsolutePath(), "test.log", 5, -1, null);
         housekeeper.doHousekeepingNow();
         files = logDir.listFiles();
         assertEquals(0, files.length);

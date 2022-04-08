@@ -18,10 +18,10 @@ package net.ibbaa.keepitup.resources;
 
 import android.content.Context;
 
-import java.util.Objects;
-
 import net.ibbaa.keepitup.R;
 import net.ibbaa.keepitup.logging.Log;
+
+import java.util.Objects;
 
 public class WorkerFactoryContributor {
 

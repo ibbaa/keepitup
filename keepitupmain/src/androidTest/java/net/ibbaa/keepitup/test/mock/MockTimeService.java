@@ -16,10 +16,10 @@
 
 package net.ibbaa.keepitup.test.mock;
 
+import net.ibbaa.keepitup.service.ITimeService;
+
 import java.util.Calendar;
 import java.util.GregorianCalendar;
-
-import net.ibbaa.keepitup.service.ITimeService;
 
 public class MockTimeService implements ITimeService {
 

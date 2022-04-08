@@ -30,16 +30,16 @@ import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
 import net.ibbaa.keepitup.R;
 import net.ibbaa.keepitup.logging.Log;
 import net.ibbaa.keepitup.ui.BatteryOptimizationSupport;
 import net.ibbaa.keepitup.ui.ContextOptionsSupport;
 import net.ibbaa.keepitup.ui.adapter.ContextOptionAdapter;
 import net.ibbaa.keepitup.util.BundleUtil;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 public class ContextOptionsDialog extends DialogFragment {
 

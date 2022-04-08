@@ -16,6 +16,12 @@
 
 package net.ibbaa.keepitup.ui.dialog;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+
 import android.os.Bundle;
 import android.text.InputType;
 
@@ -27,12 +33,6 @@ import org.junit.runner.RunWith;
 
 import java.util.Arrays;
 import java.util.Collections;
-
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
 
 @SmallTest
 @RunWith(AndroidJUnit4.class)

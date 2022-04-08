@@ -23,12 +23,6 @@ import android.view.MenuItem;
 
 import androidx.recyclerview.widget.RecyclerView;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.concurrent.Future;
-import java.util.concurrent.TimeUnit;
-
 import net.ibbaa.keepitup.R;
 import net.ibbaa.keepitup.logging.Log;
 import net.ibbaa.keepitup.model.LogEntry;
@@ -38,6 +32,12 @@ import net.ibbaa.keepitup.ui.dialog.ConfirmDialog;
 import net.ibbaa.keepitup.ui.sync.LogEntryUIBroadcastReceiver;
 import net.ibbaa.keepitup.ui.sync.LogEntryUIInitTask;
 import net.ibbaa.keepitup.util.ThreadUtil;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
 
 public class NetworkTaskLogActivity extends RecyclerViewBaseActivity {
 

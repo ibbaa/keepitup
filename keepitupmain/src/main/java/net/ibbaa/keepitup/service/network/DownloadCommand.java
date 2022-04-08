@@ -19,6 +19,19 @@ package net.ibbaa.keepitup.service.network;
 import android.content.Context;
 import android.content.res.Resources;
 
+import net.ibbaa.keepitup.R;
+import net.ibbaa.keepitup.db.NetworkTaskDAO;
+import net.ibbaa.keepitup.logging.Log;
+import net.ibbaa.keepitup.model.NetworkTask;
+import net.ibbaa.keepitup.resources.ServiceFactoryContributor;
+import net.ibbaa.keepitup.service.IFileManager;
+import net.ibbaa.keepitup.service.ITimeService;
+import net.ibbaa.keepitup.service.SystemFileManager;
+import net.ibbaa.keepitup.util.HTTPUtil;
+import net.ibbaa.keepitup.util.NumberUtil;
+import net.ibbaa.keepitup.util.StreamUtil;
+import net.ibbaa.keepitup.util.StringUtil;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -32,19 +45,6 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
-
-import net.ibbaa.keepitup.R;
-import net.ibbaa.keepitup.db.NetworkTaskDAO;
-import net.ibbaa.keepitup.logging.Log;
-import net.ibbaa.keepitup.model.NetworkTask;
-import net.ibbaa.keepitup.resources.ServiceFactoryContributor;
-import net.ibbaa.keepitup.service.IFileManager;
-import net.ibbaa.keepitup.service.ITimeService;
-import net.ibbaa.keepitup.service.SystemFileManager;
-import net.ibbaa.keepitup.util.HTTPUtil;
-import net.ibbaa.keepitup.util.NumberUtil;
-import net.ibbaa.keepitup.util.StreamUtil;
-import net.ibbaa.keepitup.util.StringUtil;
 
 public class DownloadCommand implements Callable<DownloadCommandResult> {
 

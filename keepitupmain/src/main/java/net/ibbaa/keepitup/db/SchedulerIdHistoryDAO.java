@@ -20,12 +20,12 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import net.ibbaa.keepitup.logging.Log;
 import net.ibbaa.keepitup.model.NetworkTask;
 import net.ibbaa.keepitup.model.SchedulerId;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class SchedulerIdHistoryDAO extends BaseDAO {
 

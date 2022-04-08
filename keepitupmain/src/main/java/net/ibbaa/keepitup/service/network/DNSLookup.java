@@ -16,12 +16,12 @@
 
 package net.ibbaa.keepitup.service.network;
 
+import net.ibbaa.keepitup.logging.Log;
+
 import java.net.InetAddress;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.concurrent.Callable;
-
-import net.ibbaa.keepitup.logging.Log;
 
 public class DNSLookup implements Callable<DNSLookupResult> {
 

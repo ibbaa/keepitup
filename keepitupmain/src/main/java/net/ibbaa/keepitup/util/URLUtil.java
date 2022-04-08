@@ -19,11 +19,11 @@ package net.ibbaa.keepitup.util;
 import com.google.common.net.InetAddresses;
 import com.google.common.net.InternetDomainName;
 
+import net.ibbaa.keepitup.logging.Log;
+
 import java.net.IDN;
 import java.net.URI;
 import java.net.URL;
-
-import net.ibbaa.keepitup.logging.Log;
 
 public class URLUtil {
 

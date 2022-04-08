@@ -16,10 +16,20 @@
 
 package net.ibbaa.keepitup.service;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
 import android.content.Intent;
 
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.MediumTest;
+
+import net.ibbaa.keepitup.db.LogDAO;
+import net.ibbaa.keepitup.db.NetworkTaskDAO;
+import net.ibbaa.keepitup.model.AccessType;
+import net.ibbaa.keepitup.model.LogEntry;
+import net.ibbaa.keepitup.model.NetworkTask;
+import net.ibbaa.keepitup.test.mock.TestRegistry;
 
 import org.junit.After;
 import org.junit.Before;
@@ -29,16 +39,6 @@ import org.junit.runner.RunWith;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.List;
-
-import net.ibbaa.keepitup.db.LogDAO;
-import net.ibbaa.keepitup.db.NetworkTaskDAO;
-import net.ibbaa.keepitup.model.AccessType;
-import net.ibbaa.keepitup.model.LogEntry;
-import net.ibbaa.keepitup.model.NetworkTask;
-import net.ibbaa.keepitup.test.mock.TestRegistry;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 @MediumTest
 @RunWith(AndroidJUnit4.class)

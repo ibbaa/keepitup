@@ -22,14 +22,14 @@ import android.content.Intent;
 import android.content.res.Resources;
 import android.os.Build;
 
-import java.util.List;
-
 import net.ibbaa.keepitup.R;
 import net.ibbaa.keepitup.db.NetworkTaskDAO;
 import net.ibbaa.keepitup.logging.Log;
 import net.ibbaa.keepitup.model.NetworkTask;
 import net.ibbaa.keepitup.resources.ServiceFactoryContributor;
 import net.ibbaa.keepitup.util.NumberUtil;
+
+import java.util.List;
 
 public class NetworkTaskProcessServiceScheduler {
 

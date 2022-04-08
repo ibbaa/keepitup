@@ -16,20 +16,15 @@
 
 package net.ibbaa.keepitup.ui.sync;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
 import androidx.test.core.app.ActivityScenario;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.MediumTest;
 
 import com.google.common.base.Charsets;
-
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-
-import java.io.File;
-import java.io.FileInputStream;
-import java.util.List;
 
 import net.ibbaa.keepitup.model.AccessType;
 import net.ibbaa.keepitup.model.LogEntry;
@@ -41,9 +36,14 @@ import net.ibbaa.keepitup.ui.BaseUITest;
 import net.ibbaa.keepitup.ui.NetworkTaskMainActivity;
 import net.ibbaa.keepitup.util.StreamUtil;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.util.List;
 
 @MediumTest
 @RunWith(AndroidJUnit4.class)

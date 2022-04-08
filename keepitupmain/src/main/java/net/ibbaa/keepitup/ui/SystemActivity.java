@@ -694,7 +694,7 @@ public class SystemActivity extends SettingsInputActivity implements ExportSuppo
 
     private String getExternalLogFolder() {
         Log.d(SystemActivity.class.getName(), "getExternalLogFolder");
-        String folder = getResources().getString(R.string.file_logger_log_directory_default);
+        String folder = getResources().getString(R.string.debug_file_logger_log_directory_default);
         IFileManager fileManager = getFileManager();
         File logFolder = fileManager.getExternalDirectory(folder, 0);
         Log.d(SystemActivity.class.getName(), "External log folder is " + logFolder);

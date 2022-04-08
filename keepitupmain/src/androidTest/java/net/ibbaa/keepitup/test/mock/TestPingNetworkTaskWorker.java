@@ -19,12 +19,12 @@ package net.ibbaa.keepitup.test.mock;
 import android.content.Context;
 import android.os.PowerManager;
 
-import java.util.concurrent.Callable;
-
 import net.ibbaa.keepitup.model.NetworkTask;
 import net.ibbaa.keepitup.service.PingNetworkTaskWorker;
 import net.ibbaa.keepitup.service.network.DNSLookupResult;
 import net.ibbaa.keepitup.service.network.PingCommandResult;
+
+import java.util.concurrent.Callable;
 
 public class TestPingNetworkTaskWorker extends PingNetworkTaskWorker {
 

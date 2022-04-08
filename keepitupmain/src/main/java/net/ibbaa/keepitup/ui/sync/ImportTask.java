@@ -21,10 +21,6 @@ import android.content.Context;
 
 import com.google.common.base.Charsets;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.util.concurrent.TimeUnit;
-
 import net.ibbaa.keepitup.R;
 import net.ibbaa.keepitup.db.DBSetup;
 import net.ibbaa.keepitup.logging.Log;
@@ -33,6 +29,10 @@ import net.ibbaa.keepitup.resources.PreferenceSetup;
 import net.ibbaa.keepitup.resources.SystemSetupResult;
 import net.ibbaa.keepitup.ui.ImportSupport;
 import net.ibbaa.keepitup.util.StreamUtil;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.util.concurrent.TimeUnit;
 
 public class ImportTask extends UIBackgroundTask<Boolean> {
 

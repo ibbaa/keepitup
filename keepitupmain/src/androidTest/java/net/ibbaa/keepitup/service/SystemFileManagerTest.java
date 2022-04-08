@@ -16,8 +16,19 @@
 
 package net.ibbaa.keepitup.service;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.SmallTest;
+
+import net.ibbaa.keepitup.model.FileEntry;
+import net.ibbaa.keepitup.test.mock.MockTimeService;
+import net.ibbaa.keepitup.test.mock.TestRegistry;
+import net.ibbaa.keepitup.util.URLUtil;
 
 import org.junit.After;
 import org.junit.Before;
@@ -30,17 +41,6 @@ import java.net.URL;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.List;
-
-import net.ibbaa.keepitup.model.FileEntry;
-import net.ibbaa.keepitup.test.mock.MockTimeService;
-import net.ibbaa.keepitup.test.mock.TestRegistry;
-import net.ibbaa.keepitup.util.URLUtil;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
 
 @SmallTest
 @RunWith(AndroidJUnit4.class)
@@ -317,6 +317,18 @@ public class SystemFileManagerTest {
         assertEquals("127_0_0_1.css", fileManager.getDownloadFileName(new URL(URLUtil.encodeURL("http://127.0.0.1///......")), "...////...///", "text/css"));
         assertEquals("[3ffe:1900:4545:3:200:f8ff:fe21:67cf].zip", fileManager.getDownloadFileName(new URL(URLUtil.encodeURL("ftp://[3ffe:1900:4545:3:200:f8ff:fe21:67cf]")), "", "application/zip"));
         assertEquals("downloadfile.rtf", fileManager.getDownloadFileName(new URL(URLUtil.encodeURL("http://www.h ost.com")), "", "text/rtf"));
+    }
+
+    @Test
+    public void testGetLogFileName() throws Exception {
+        assertEquals("test_2.log", fileManager.getLogFileName("test", ".log", 2, null));
+        assertEquals("test_2.log", fileManager.getLogFileName("test", ".log", 2, ""));
+        assertEquals("test_1_www_host_com.log", fileManager.getLogFileName("test", ".log", 1, "www.host.com"));
+        assertEquals("tes_t_1_www_host_com.log", fileManager.getLogFileName("tes/t", ".log", 1, "www.host.com"));
+        assertEquals("test_1_www_host_comlog", fileManager.getLogFileName("test", "log", 1, "www.host.com/download.html"));
+        assertEquals("xyz_-3_127_0_0_1.log", fileManager.getLogFileName("xyz", ".log", -3, "127.0.0.1"));
+        assertEquals("xyz_50_127_0_0_1.log", fileManager.getLogFileName("xyz", ".log", 50, "ftp://127.0.0.1"));
+        assertEquals("xyz_123_192_168_178_1.txt", fileManager.getLogFileName("xyz", ".txt", 123, "http://192.168.178.1/abc"));
     }
 
     @Test

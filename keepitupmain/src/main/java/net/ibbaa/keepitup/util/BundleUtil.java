@@ -18,13 +18,13 @@ package net.ibbaa.keepitup.util;
 
 import android.os.Bundle;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
 import net.ibbaa.keepitup.model.FileEntry;
 import net.ibbaa.keepitup.ui.dialog.ContextOption;
 import net.ibbaa.keepitup.ui.validation.ValidationResult;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 public class BundleUtil {
 

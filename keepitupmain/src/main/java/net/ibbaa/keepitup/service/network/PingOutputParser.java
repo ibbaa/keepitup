@@ -16,12 +16,12 @@
 
 package net.ibbaa.keepitup.service.network;
 
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 import net.ibbaa.keepitup.logging.Log;
 import net.ibbaa.keepitup.util.NumberUtil;
 import net.ibbaa.keepitup.util.StringUtil;
+
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class PingOutputParser {
 

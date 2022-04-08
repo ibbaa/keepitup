@@ -120,7 +120,7 @@ public class LogFileManagerTest {
         assertTrue(testFile2.createNewFile());
         Thread.sleep(10);
         assertTrue(testFile3.createNewFile());
-        logFileManager.deleteOldest(new File[] {testFile1, testFile2, testFile3});
+        logFileManager.deleteOldest(new File[]{testFile1, testFile2, testFile3});
         assertFalse(testFile1.exists());
         assertTrue(testFile2.exists());
         assertTrue(testFile3.exists());

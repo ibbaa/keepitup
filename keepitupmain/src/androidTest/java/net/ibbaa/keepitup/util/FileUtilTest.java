@@ -16,8 +16,15 @@
 
 package net.ibbaa.keepitup.util;
 
+import static org.junit.Assert.assertEquals;
+
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.SmallTest;
+
+import net.ibbaa.keepitup.logging.Dump;
+import net.ibbaa.keepitup.resources.PreferenceManager;
+import net.ibbaa.keepitup.test.mock.MockFileManager;
+import net.ibbaa.keepitup.test.mock.TestRegistry;
 
 import org.junit.After;
 import org.junit.Before;
@@ -25,13 +32,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.io.File;
-
-import net.ibbaa.keepitup.logging.Dump;
-import net.ibbaa.keepitup.resources.PreferenceManager;
-import net.ibbaa.keepitup.test.mock.MockFileManager;
-import net.ibbaa.keepitup.test.mock.TestRegistry;
-
-import static org.junit.Assert.assertEquals;
 
 @SmallTest
 @RunWith(AndroidJUnit4.class)

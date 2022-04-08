@@ -469,7 +469,8 @@ public class GlobalSettingsActivity extends SettingsInputActivity {
             }
             preferenceManager.setPreferenceDownloadFolder(folder);
             setDownloadFolder(downloadFolder.getAbsolutePath());
-        } if (FileChooseDialog.Type.LOGFOLDER.equals(type)) {
+        }
+        if (FileChooseDialog.Type.LOGFOLDER.equals(type)) {
             String folder = folderChooseDialog.getFolder();
             File logFolder = FileUtil.getExternalDirectory(fileManager, preferenceManager, folder);
             Log.d(GlobalSettingsActivity.class.getName(), "Log folder is " + logFolder);

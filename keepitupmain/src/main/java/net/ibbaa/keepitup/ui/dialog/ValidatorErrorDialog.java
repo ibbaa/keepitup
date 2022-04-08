@@ -29,12 +29,12 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.DialogFragment;
 
-import java.util.List;
-
 import net.ibbaa.keepitup.R;
 import net.ibbaa.keepitup.logging.Log;
 import net.ibbaa.keepitup.ui.validation.ValidationResult;
 import net.ibbaa.keepitup.util.BundleUtil;
+
+import java.util.List;
 
 public class ValidatorErrorDialog extends DialogFragment {
 
