@@ -24,10 +24,14 @@ import net.ibbaa.keepitup.logging.ILogger;
 import net.ibbaa.keepitup.logging.Log;
 import net.ibbaa.keepitup.logging.LogLevel;
 import net.ibbaa.keepitup.logging.PassthroughMessageLogFormatter;
+import net.ibbaa.keepitup.model.LogEntry;
 import net.ibbaa.keepitup.model.NetworkTask;
+import net.ibbaa.keepitup.resources.PreferenceManager;
 import net.ibbaa.keepitup.service.IFileManager;
 
 import java.io.File;
+import java.text.DateFormat;
+import java.util.Date;
 
 public class LogUtil {
 
@@ -48,7 +52,8 @@ public class LogUtil {
         int maxLogFileSize = context.getResources().getInteger(R.integer.networktask_file_logger_max_file_size_default);
         int archiveFileCount = context.getResources().getInteger(R.integer.networktask_file_logger_archive_file_count_default);
         int deleteFileCount = context.getResources().getInteger(R.integer.networktask_file_logger_delete_file_count_default);
-        String relativeLogDirectory = context.getResources().getString(R.string.networktask_file_logger_log_directory_default);
+        PreferenceManager preferenceManager = new PreferenceManager(context);
+        String relativeLogDirectory = preferenceManager.getPreferenceLogFolder();
         File logDirectoryFile = fileManager.getExternalDirectory(relativeLogDirectory, 0);
         if (logDirectoryFile == null) {
             Log.e(LogUtil.class.getName(), "Error accessing log folder.");
@@ -65,5 +70,14 @@ public class LogUtil {
         Log.d(LogUtil.class.getName(), "logDirectory is " + logDirectory);
         Log.d(LogUtil.class.getName(), "logFileName is " + logFileName);
         return new FileLogger(maxLogLevel, maxLogFileSize, archiveFileCount, deleteFileCount, logDirectory, logFileName, new PassthroughMessageLogFormatter());
+    }
+
+    public static String formatLogEntryLog(Context context, int index, LogEntry entry) {
+        String formattedTitleText = context.getResources().getString(R.string.text_activity_log_list_item_log_entry_title, index + 1);
+        String successText = entry.isSuccess() ? context.getResources().getString(R.string.string_successful) : context.getResources().getString(R.string.string_not_successful);
+        String formattedSuccessText = context.getResources().getString(R.string.text_activity_log_list_item_log_entry_success, successText);
+        String timestampText = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.MEDIUM).format(new Date(entry.getTimestamp()));
+        String formattedMessageText = context.getResources().getString(R.string.text_activity_log_list_item_log_entry_message, entry.getMessage());
+        return formattedTitleText + " " + formattedSuccessText + " " + timestampText + " " + formattedMessageText;
     }
 }

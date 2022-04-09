@@ -21,5 +21,4 @@
     <integer name="networktask_file_logger_delete_file_count_default">10</integer>
     <string name="networktask_file_logger_log_file_base_name_default">networktask</string>
     <string name="networktask_file_logger_log_file_base_extension_default">.log</string>
-    <string name="networktask_file_logger_log_directory_default">log</string>
 </resources>

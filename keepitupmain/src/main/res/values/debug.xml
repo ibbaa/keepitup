@@ -20,7 +20,7 @@
     <integer name="debug_file_logger_archive_file_count_default">50</integer>
     <integer name="debug_file_logger_delete_file_count_default">-1</integer>
     <string name="debug_file_logger_log_file_base_name_default">keepitup.log</string>
-    <string name="debug_file_logger_log_directory_default">log</string>
+    <string name="debug_file_logger_log_directory_default">syslog</string>
     <integer name="debug_file_dump_archive_file_count_default">50</integer>
     <integer name="debug_file_dump_delete_file_count_default">-1</integer>
     <string name="debug_file_dump_dump_file_extension_default">txt</string>

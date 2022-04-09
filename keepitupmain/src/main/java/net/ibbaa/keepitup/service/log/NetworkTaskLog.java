@@ -19,6 +19,8 @@ package net.ibbaa.keepitup.service.log;
 import android.content.Context;
 
 import net.ibbaa.keepitup.logging.ILogger;
+import net.ibbaa.keepitup.logging.LogLevel;
+import net.ibbaa.keepitup.model.LogEntry;
 import net.ibbaa.keepitup.model.NetworkTask;
 import net.ibbaa.keepitup.service.SystemFileManager;
 import net.ibbaa.keepitup.util.LogUtil;
@@ -27,7 +29,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class NetworkTaskLog {
 
-    private final static ConcurrentHashMap<Integer, ILogger> loggers = new ConcurrentHashMap<Integer, ILogger>();
+    private final static ConcurrentHashMap<Integer, ILogger> loggers = new ConcurrentHashMap<>();
 
     public static void initialize(Context context, NetworkTask task) {
         if (task.getIndex() < 0) {
@@ -39,6 +41,10 @@ public class NetworkTaskLog {
         }
     }
 
+    public static void remove(NetworkTask task) {
+        loggers.remove(task.getIndex());
+    }
+
     public static ILogger getLogger(Context context, NetworkTask task) {
         ILogger logger = loggers.get(task.getIndex());
         if (logger == null) {
@@ -46,5 +52,14 @@ public class NetworkTaskLog {
             logger = loggers.get(task.getIndex());
         }
         return logger;
+    }
+
+    public static void log(Context context, NetworkTask task, LogEntry entry) {
+        ILogger logger = getLogger(context, task);
+        if (logger == null) {
+            return;
+        }
+        String text = LogUtil.formatLogEntryLog(context, task.getIndex(), entry);
+        logger.log("", text, null, LogLevel.DEBUG);
     }
 }

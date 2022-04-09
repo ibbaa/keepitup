@@ -25,6 +25,7 @@ import net.ibbaa.keepitup.db.SchedulerIdGenerator;
 import net.ibbaa.keepitup.logging.Log;
 import net.ibbaa.keepitup.model.NetworkTask;
 import net.ibbaa.keepitup.service.NetworkTaskProcessServiceScheduler;
+import net.ibbaa.keepitup.service.log.NetworkTaskLog;
 import net.ibbaa.keepitup.ui.adapter.NetworkTaskAdapter;
 import net.ibbaa.keepitup.ui.adapter.NetworkTaskUIWrapper;
 
@@ -75,6 +76,7 @@ class NetworkTaskHandler {
                 logDAO.deleteAllLogsForNetworkTask(task.getId());
                 getAdapter().addItem(new NetworkTaskUIWrapper(task, null));
             }
+            NetworkTaskLog.initialize(mainActivity, task);
         } catch (Exception exc) {
             Log.e(NetworkTaskHandler.class.getName(), "Error inserting task into database. Showing error dialog.", exc);
             showErrorDialog(getResources().getString(R.string.text_dialog_general_error_insert_network_task));
@@ -101,6 +103,7 @@ class NetworkTaskHandler {
                 task = scheduler.schedule(task);
             }
             getAdapter().replaceNetworkTask(task);
+            NetworkTaskLog.initialize(mainActivity, task);
         } catch (Exception exc) {
             Log.e(NetworkTaskHandler.class.getName(), "Error updating task. Showing error dialog.", exc);
             showErrorDialog(getResources().getString(R.string.text_dialog_general_error_update_network_task));
@@ -119,6 +122,7 @@ class NetworkTaskHandler {
             logDAO.deleteAllLogsForNetworkTask(task.getId());
             networkTaskDAO.deleteNetworkTask(task);
             getAdapter().removeItem(new NetworkTaskUIWrapper(task, null));
+            NetworkTaskLog.remove(task);
         } catch (Exception exc) {
             Log.e(NetworkTaskHandler.class.getName(), "Error deleting network task.", exc);
             showErrorDialog(getResources().getString(R.string.text_dialog_general_error_delete_network_task));
