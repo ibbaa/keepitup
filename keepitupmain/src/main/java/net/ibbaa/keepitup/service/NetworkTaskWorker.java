@@ -32,6 +32,7 @@ import net.ibbaa.keepitup.model.NetworkTask;
 import net.ibbaa.keepitup.notification.NotificationHandler;
 import net.ibbaa.keepitup.resources.PreferenceManager;
 import net.ibbaa.keepitup.resources.ServiceFactoryContributor;
+import net.ibbaa.keepitup.service.log.NetworkTaskLog;
 import net.ibbaa.keepitup.service.network.DNSLookup;
 import net.ibbaa.keepitup.service.network.DNSLookupResult;
 import net.ibbaa.keepitup.ui.sync.LogEntryUIBroadcastReceiver;
@@ -135,6 +136,11 @@ public abstract class NetworkTaskWorker implements Runnable {
         Log.d(NetworkTaskWorker.class.getName(), "Writing log entry " + logEntry + " to database, sendErrorNotification is " + sendErrorNotification);
         LogDAO logDAO = new LogDAO(getContext());
         logDAO.insertAndDeleteLog(logEntry);
+        PreferenceManager preferenceManager = new PreferenceManager(getContext());
+        if(preferenceManager.getPreferenceLogFile()) {
+            Log.d(NetworkTaskWorker.class.getName(), "Writing log entry " + logEntry + " to file, sendErrorNotification is " + sendErrorNotification);
+            NetworkTaskLog.log(getContext(), networkTask, logEntry);
+        }
         Log.d(NetworkTaskWorker.class.getName(), "Notify UI");
         sendNetworkTaskUINotificationBroadcast();
         sendLogEntryUINotificationBroadcast();
