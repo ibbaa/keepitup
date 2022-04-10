@@ -62,7 +62,7 @@ public class LogUtilTest {
     @Test
     public void formatLogEntryLog() {
         LogEntry entry = getLogEntry();
-        assertEquals("Log entry for network task 2 Execution successful Jan 1, 1970 1:00:00 AM Message: TestMessage1", LogUtil.formatLogEntryLog(TestRegistry.getContext(), 1, entry));
+        assertEquals("Log entry for network task 2, Execution successful, Timestamp: Jan 1, 1970 1:00:00 AM, Message: TestMessage1", LogUtil.formatLogEntryLog(TestRegistry.getContext(), 1, entry));
     }
 
     private LogEntry getLogEntry() {

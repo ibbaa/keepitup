@@ -77,7 +77,8 @@ public class LogUtil {
         String successText = entry.isSuccess() ? context.getResources().getString(R.string.string_successful) : context.getResources().getString(R.string.string_not_successful);
         String formattedSuccessText = context.getResources().getString(R.string.text_activity_log_list_item_log_entry_success, successText);
         String timestampText = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.MEDIUM).format(new Date(entry.getTimestamp()));
+        String formattedTimestampText = context.getResources().getString(R.string.text_activity_log_list_item_log_entry_timestamp, timestampText);
         String formattedMessageText = context.getResources().getString(R.string.text_activity_log_list_item_log_entry_message, entry.getMessage());
-        return formattedTitleText + " " + formattedSuccessText + " " + timestampText + " " + formattedMessageText;
+        return formattedTitleText + ", " + formattedSuccessText + ", " + formattedTimestampText + ", " + formattedMessageText;
     }
 }
