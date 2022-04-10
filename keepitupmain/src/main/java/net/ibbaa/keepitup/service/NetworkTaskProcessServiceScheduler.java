@@ -96,7 +96,7 @@ public class NetworkTaskProcessServiceScheduler {
             return networkTask;
         }
         long delayMillis;
-        PendingIntent pendingIntent = createPendingIntent(networkTask);
+        PendingIntent pendingIntent = createPendingIntent(databaseTask);
         if (Delay.IMMEDIATE.equals(delay)) {
             Log.d(NetworkTaskProcessServiceScheduler.class.getName(), "Delay is IMMEDIATE. Scheduling alarm immediately.");
             delayMillis = 0;

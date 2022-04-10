@@ -41,8 +41,8 @@ public class NetworkTaskLog {
         }
     }
 
-    public static void remove(NetworkTask task) {
-        loggers.remove(task.getIndex());
+    public static void clear() {
+        loggers.clear();
     }
 
     public static ILogger getLogger(Context context, NetworkTask task) {

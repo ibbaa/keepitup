@@ -321,14 +321,14 @@ public class SystemFileManagerTest {
 
     @Test
     public void testGetLogFileName() throws Exception {
-        assertEquals("test_3.log", fileManager.getLogFileName("test", ".log", 2, null));
-        assertEquals("test_3.log", fileManager.getLogFileName("test", ".log", 2, ""));
-        assertEquals("test_2_www_host_com.log", fileManager.getLogFileName("test", ".log", 1, "www.host.com"));
-        assertEquals("tes_t_2_www_host_com.log", fileManager.getLogFileName("tes/t", ".log", 1, "www.host.com"));
-        assertEquals("test_2_www_host_comlog", fileManager.getLogFileName("test", "log", 1, "www.host.com/download.html"));
-        assertEquals("xyz_-2_127_0_0_1.log", fileManager.getLogFileName("xyz", ".log", -3, "127.0.0.1"));
-        assertEquals("xyz_51_127_0_0_1.log", fileManager.getLogFileName("xyz", ".log", 50, "ftp://127.0.0.1"));
-        assertEquals("xyz_124_192_168_178_1.txt", fileManager.getLogFileName("xyz", ".txt", 123, "http://192.168.178.1/abc"));
+        assertEquals("test_3_id_00000001.log", fileManager.getLogFileName("test", ".log", 1, 2, null));
+        assertEquals("test_3_id_0000000F.log", fileManager.getLogFileName("test", ".log", 15, 2, ""));
+        assertEquals("test_2_www_host_com_id_0000000A.log", fileManager.getLogFileName("test", ".log", 10, 1, "www.host.com"));
+        assertEquals("tes_t_2_www_host_com_id_000000FF.log", fileManager.getLogFileName("tes/t", ".log", 255, 1, "www.host.com"));
+        assertEquals("test_2_www_host_com_id_00000001log", fileManager.getLogFileName("test", "log", 1, 1, "www.host.com/download.html"));
+        assertEquals("xyz_-2_127_0_0_1_id_00000002.log", fileManager.getLogFileName("xyz", ".log", 2, -3, "127.0.0.1"));
+        assertEquals("xyz_51_127_0_0_1_id_00000003.log", fileManager.getLogFileName("xyz", ".log", 3, 50, "ftp://127.0.0.1"));
+        assertEquals("xyz_124_192_168_178_1_id_00000001.txt", fileManager.getLogFileName("xyz", ".txt", 1, 123, "http://192.168.178.1/abc"));
     }
 
     @Test

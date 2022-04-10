@@ -62,7 +62,7 @@ public class LogUtil {
         String logDirectory = logDirectoryFile.getAbsolutePath();
         String baseFileName = context.getResources().getString(R.string.networktask_file_logger_log_file_base_name_default);
         String extension = context.getResources().getString(R.string.networktask_file_logger_log_file_base_extension_default);
-        String logFileName = fileManager.getLogFileName(baseFileName, extension, networkTask.getIndex(), networkTask.getAddress());
+        String logFileName = fileManager.getLogFileName(baseFileName, extension, networkTask.getSchedulerId(), networkTask.getIndex(), networkTask.getAddress());
         Log.d(LogUtil.class.getName(), "maxLogLevel is " + maxLogLevel.name());
         Log.d(LogUtil.class.getName(), "maxLogFileSize is " + maxLogFileSize);
         Log.d(LogUtil.class.getName(), "archiveFileCount is " + archiveFileCount);

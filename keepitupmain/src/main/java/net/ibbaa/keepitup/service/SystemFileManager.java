@@ -351,7 +351,7 @@ public class SystemFileManager implements IFileManager {
     }
 
     @Override
-    public String getLogFileName(String baseFileName, String extension, int index, String address) {
+    public String getLogFileName(String baseFileName, String extension, int id, int index, String address) {
         String logFileName = baseFileName + "_" + (index + 1);
         String host = address;
         if (!StringUtil.isEmpty(address)) {
@@ -370,6 +370,7 @@ public class SystemFileManager implements IFileManager {
         if (!StringUtil.isEmpty(host)) {
             logFileName = logFileName + "_" + host;
         }
+        logFileName = logFileName + "_id_" + String.format("%08X", id);
         return logFileName.replaceAll("\\.", "_").replaceAll("/", "_") + extension;
     }
 
