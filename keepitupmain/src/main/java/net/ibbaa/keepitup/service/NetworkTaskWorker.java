@@ -137,7 +137,7 @@ public abstract class NetworkTaskWorker implements Runnable {
         LogDAO logDAO = new LogDAO(getContext());
         logDAO.insertAndDeleteLog(logEntry);
         PreferenceManager preferenceManager = new PreferenceManager(getContext());
-        if(preferenceManager.getPreferenceLogFile()) {
+        if (preferenceManager.getPreferenceLogFile()) {
             Log.d(NetworkTaskWorker.class.getName(), "Writing log entry " + logEntry + " to file, sendErrorNotification is " + sendErrorNotification);
             NetworkTaskLog.log(getContext(), networkTask, logEntry);
         }

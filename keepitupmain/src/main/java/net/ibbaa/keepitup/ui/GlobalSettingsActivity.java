@@ -228,7 +228,7 @@ public class GlobalSettingsActivity extends SettingsInputActivity {
         logFileSwitch = findViewById(R.id.switch_activity_global_settings_log_file);
         logFileOnOffText = findViewById(R.id.textview_activity_global_settings_log_file_on_off);
         logFileSwitch.setOnCheckedChangeListener(null);
-        logFileSwitch.setChecked(preferenceManager.getPreferenceDownloadExternalStorage());
+        logFileSwitch.setChecked(preferenceManager.getPreferenceLogFile());
         logFileSwitch.setOnCheckedChangeListener(this::onLogFileCheckedChanged);
         prepareLogFileOnOffText();
     }
