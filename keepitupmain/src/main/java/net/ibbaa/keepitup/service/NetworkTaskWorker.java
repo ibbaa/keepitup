@@ -89,9 +89,10 @@ public abstract class NetworkTaskWorker implements Runnable {
             SimpleDateFormat logTimestampDateFormat = new SimpleDateFormat(LOG_TIMESTAMP_PATTERN, Locale.US);
             Log.d(NetworkTaskWorker.class.getName(), "Updated last scheduled timestamp to " + timestamp + " (" + logTimestampDateFormat.format(timestamp) + ")");
             LogEntry logEntry = checkInstances();
+            NetworkTask databaseTask = networkTaskDAO.readNetworkTask(networkTask.getId());
             if (logEntry != null) {
                 Log.d(NetworkTaskWorker.class.getName(), "Skipping execution. Too many active instances.");
-                writeLogEntry(logEntry, false);
+                writeLogEntry(databaseTask, logEntry, false);
                 return;
             }
             Log.d(NetworkTaskWorker.class.getName(), "Increasing instances count.");
@@ -105,15 +106,15 @@ public abstract class NetworkTaskWorker implements Runnable {
                 logEntry = checkNetwork(isConnectedWithWifi, isConnected);
                 if (logEntry != null) {
                     Log.d(NetworkTaskWorker.class.getName(), "Skipping execution because of the network state.");
-                    writeLogEntry(logEntry, shouldSendErrorNotification(isConnectedWithWifi, isConnected));
+                    writeLogEntry(databaseTask, logEntry, shouldSendErrorNotification(isConnectedWithWifi, isConnected));
                     return;
                 }
                 Log.d(NetworkTaskWorker.class.getName(), "Executing task...");
                 ExecutionResult executionResult = execute(networkTask);
                 Log.d(NetworkTaskWorker.class.getName(), "The executed task returned " + executionResult);
-                if (isNetworkTaskValid()) {
+                if (isNetworkTaskValid(databaseTask)) {
                     logEntry = executionResult.getLogEntry();
-                    writeLogEntry(logEntry, shouldSendErrorNotification(executionResult));
+                    writeLogEntry(databaseTask, logEntry, shouldSendErrorNotification(executionResult));
                 } else {
                     Log.d(NetworkTaskWorker.class.getName(), "Network task does no longer exist. Not writing log.");
                 }
@@ -132,14 +133,14 @@ public abstract class NetworkTaskWorker implements Runnable {
         }
     }
 
-    private void writeLogEntry(LogEntry logEntry, boolean sendErrorNotification) {
+    private void writeLogEntry(NetworkTask databaseTask, LogEntry logEntry, boolean sendErrorNotification) {
         Log.d(NetworkTaskWorker.class.getName(), "Writing log entry " + logEntry + " to database, sendErrorNotification is " + sendErrorNotification);
         LogDAO logDAO = new LogDAO(getContext());
         logDAO.insertAndDeleteLog(logEntry);
         PreferenceManager preferenceManager = new PreferenceManager(getContext());
         if (preferenceManager.getPreferenceLogFile()) {
             Log.d(NetworkTaskWorker.class.getName(), "Writing log entry " + logEntry + " to file, sendErrorNotification is " + sendErrorNotification);
-            NetworkTaskLog.log(getContext(), networkTask, logEntry);
+            NetworkTaskLog.log(getContext(), databaseTask, logEntry);
         }
         Log.d(NetworkTaskWorker.class.getName(), "Notify UI");
         sendNetworkTaskUINotificationBroadcast();
@@ -345,9 +346,7 @@ public abstract class NetworkTaskWorker implements Runnable {
         return factoryContributor.createServiceFactory().createTimeService();
     }
 
-    private boolean isNetworkTaskValid() {
-        NetworkTaskDAO networkTaskDAO = new NetworkTaskDAO(getContext());
-        NetworkTask databaseTask = networkTaskDAO.readNetworkTask(networkTask.getId());
+    private boolean isNetworkTaskValid(NetworkTask databaseTask) {
         return databaseTask != null && networkTask.getSchedulerId() == databaseTask.getSchedulerId();
     }
 
