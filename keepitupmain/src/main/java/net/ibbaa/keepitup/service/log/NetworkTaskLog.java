@@ -29,7 +29,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class NetworkTaskLog {
 
-    private final static ConcurrentHashMap<Integer, ILogger> loggers = new ConcurrentHashMap<>();
+    private final static ConcurrentHashMap<String, ILogger> loggers = new ConcurrentHashMap<>();
 
     public static void initialize(Context context, NetworkTask task) {
         if (task.getIndex() < 0) {
@@ -37,7 +37,7 @@ public class NetworkTaskLog {
         }
         ILogger logger = LogUtil.getFileLogger(context, new SystemFileManager(context), task);
         if (logger != null) {
-            loggers.put(task.getIndex(), logger);
+            loggers.put(LogUtil.getLogFileKey(context, task), logger);
         }
     }
 
@@ -46,10 +46,11 @@ public class NetworkTaskLog {
     }
 
     public static ILogger getLogger(Context context, NetworkTask task) {
-        ILogger logger = loggers.get(task.getIndex());
+        String key = LogUtil.getLogFileKey(context, task);
+        ILogger logger = loggers.get(key);
         if (logger == null) {
             initialize(context, task);
-            logger = loggers.get(task.getIndex());
+            logger = loggers.get(key);
         }
         return logger;
     }

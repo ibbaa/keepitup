@@ -60,9 +60,7 @@ public class LogUtil {
             return null;
         }
         String logDirectory = logDirectoryFile.getAbsolutePath();
-        String baseFileName = context.getResources().getString(R.string.networktask_file_logger_log_file_base_name_default);
-        String extension = context.getResources().getString(R.string.networktask_file_logger_log_file_base_extension_default);
-        String logFileName = fileManager.getLogFileName(baseFileName, extension, networkTask.getSchedulerId(), networkTask.getIndex(), networkTask.getAddress());
+        String logFileName = getLogFileName(context, fileManager, networkTask);
         Log.d(LogUtil.class.getName(), "maxLogLevel is " + maxLogLevel.name());
         Log.d(LogUtil.class.getName(), "maxLogFileSize is " + maxLogFileSize);
         Log.d(LogUtil.class.getName(), "archiveFileCount is " + archiveFileCount);
@@ -70,6 +68,17 @@ public class LogUtil {
         Log.d(LogUtil.class.getName(), "logDirectory is " + logDirectory);
         Log.d(LogUtil.class.getName(), "logFileName is " + logFileName);
         return new FileLogger(maxLogLevel, maxLogFileSize, archiveFileCount, deleteFileCount, logDirectory, logFileName, new PassthroughMessageLogFormatter());
+    }
+
+    public static String getLogFileName(Context context, IFileManager fileManager, NetworkTask networkTask) {
+        String baseFileName = context.getResources().getString(R.string.networktask_file_logger_log_file_base_name_default);
+        String extension = context.getResources().getString(R.string.networktask_file_logger_log_file_base_extension_default);
+        return fileManager.getLogFileName(baseFileName, extension, networkTask.getSchedulerId(), networkTask.getIndex(), networkTask.getAddress());
+    }
+
+    public static String getLogFileKey(Context context, NetworkTask networkTask) {
+        String baseFileName = context.getResources().getString(R.string.networktask_file_logger_log_file_base_name_default);
+        return baseFileName + "_" + networkTask.getIndex() + "_" + networkTask.getSchedulerId() + "_" + networkTask.getAddress();
     }
 
     public static String formatLogEntryLog(Context context, int index, LogEntry entry) {

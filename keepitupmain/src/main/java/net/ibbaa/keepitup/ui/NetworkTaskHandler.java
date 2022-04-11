@@ -102,10 +102,11 @@ class NetworkTaskHandler {
                 task = scheduler.schedule(task);
             }
             getAdapter().replaceNetworkTask(task);
-            NetworkTaskLog.clear();
         } catch (Exception exc) {
             Log.e(NetworkTaskHandler.class.getName(), "Error updating task. Showing error dialog.", exc);
             showErrorDialog(getResources().getString(R.string.text_dialog_general_error_update_network_task));
+        } finally {
+            NetworkTaskLog.clear();
         }
     }
 
@@ -121,10 +122,11 @@ class NetworkTaskHandler {
             logDAO.deleteAllLogsForNetworkTask(task.getId());
             networkTaskDAO.deleteNetworkTask(task);
             getAdapter().removeItem(new NetworkTaskUIWrapper(task, null));
-            NetworkTaskLog.clear();
         } catch (Exception exc) {
             Log.e(NetworkTaskHandler.class.getName(), "Error deleting network task.", exc);
             showErrorDialog(getResources().getString(R.string.text_dialog_general_error_delete_network_task));
+        } finally {
+            NetworkTaskLog.clear();
         }
     }
 

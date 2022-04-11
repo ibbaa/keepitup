@@ -18,14 +18,18 @@ package net.ibbaa.keepitup.ui;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import androidx.test.core.app.ActivityScenario;
 
+import net.ibbaa.keepitup.logging.ILogger;
 import net.ibbaa.keepitup.model.AccessType;
 import net.ibbaa.keepitup.model.LogEntry;
 import net.ibbaa.keepitup.model.NetworkTask;
+import net.ibbaa.keepitup.service.log.NetworkTaskLog;
+import net.ibbaa.keepitup.test.mock.TestRegistry;
 import net.ibbaa.keepitup.ui.adapter.NetworkTaskAdapter;
 import net.ibbaa.keepitup.ui.adapter.NetworkTaskUIWrapper;
 
@@ -119,6 +123,17 @@ public class NetworkTaskHandlerTest extends BaseUITest {
     }
 
     @Test
+    public void testUpdateNetworkTaskClearNetworkTaskLog() {
+        NetworkTask task1 = getNetworkTask1();
+        handler.insertNetworkTask(task1);
+        task1.setAddress("192.168.178.1");
+        ILogger logger = NetworkTaskLog.getLogger(TestRegistry.getContext(), task1);
+        handler.updateNetworkTask(task1);
+        ILogger logger2 = NetworkTaskLog.getLogger(TestRegistry.getContext(), task1);
+        assertNotSame(logger, logger2);
+    }
+
+    @Test
     public void testDeleteNetworkTask() {
         NetworkTask task1 = getNetworkTask1();
         handler.insertNetworkTask(task1);
@@ -150,6 +165,16 @@ public class NetworkTaskHandlerTest extends BaseUITest {
         assertEquals(1, task3.getIndex());
         assertEquals(2, task4.getIndex());
         assertEquals(4, getAdapter().getItemCount());
+    }
+
+    @Test
+    public void testDeleteNetworkTaskClearNetworkTaskLog() {
+        NetworkTask task1 = getNetworkTask1();
+        handler.insertNetworkTask(task1);
+        ILogger logger = NetworkTaskLog.getLogger(TestRegistry.getContext(), task1);
+        handler.deleteNetworkTask(task1);
+        ILogger logger2 = NetworkTaskLog.getLogger(TestRegistry.getContext(), task1);
+        assertNotSame(logger, logger2);
     }
 
     private NetworkTask getNetworkTask1() {

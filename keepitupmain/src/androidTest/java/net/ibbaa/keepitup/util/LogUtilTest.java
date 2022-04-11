@@ -25,6 +25,7 @@ import androidx.test.filters.SmallTest;
 
 import net.ibbaa.keepitup.model.LogEntry;
 import net.ibbaa.keepitup.model.NetworkTask;
+import net.ibbaa.keepitup.service.SystemFileManager;
 import net.ibbaa.keepitup.test.mock.MockFileManager;
 import net.ibbaa.keepitup.test.mock.TestRegistry;
 
@@ -57,6 +58,24 @@ public class LogUtilTest {
         networkTask.setIndex(1);
         fileManager.setExternalDirectory(new File("Test"), 0);
         assertNotNull(LogUtil.getFileLogger(TestRegistry.getContext(), fileManager, networkTask));
+    }
+
+    @Test
+    public void testGetLogFileName() {
+        NetworkTask networkTask = new NetworkTask();
+        networkTask.setIndex(1);
+        networkTask.setAddress("127.0.0.1");
+        networkTask.setSchedulerId(123);
+        assertEquals("networktask_2_127_0_0_1_id_0000007B.log", LogUtil.getLogFileName(TestRegistry.getContext(), new SystemFileManager(TestRegistry.getContext()), networkTask));
+    }
+
+    @Test
+    public void testGetLogFileKey() {
+        NetworkTask networkTask = new NetworkTask();
+        networkTask.setIndex(1);
+        networkTask.setAddress("127.0.0.1");
+        networkTask.setSchedulerId(123);
+        assertEquals("networktask_1_123_127.0.0.1", LogUtil.getLogFileKey(TestRegistry.getContext(), networkTask));
     }
 
     @Test
