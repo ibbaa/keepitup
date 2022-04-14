@@ -16,7 +16,7 @@
 
 <resources>
     <string name="networktask_file_logger_log_level_default">DEBUG</string>
-    <integer name="networktask_file_logger_max_file_size_default">1485760</integer>
+    <integer name="networktask_file_logger_max_file_size_default">1048576</integer>
     <integer name="networktask_file_logger_archive_file_count_default">20</integer>
     <integer name="networktask_file_logger_delete_file_count_default">10</integer>
     <string name="networktask_file_logger_log_file_base_name_default">networktask</string>
