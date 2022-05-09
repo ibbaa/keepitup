@@ -14,6 +14,7 @@
         <entry key="keepitupmain/src/main/res/layout/activity_global_settings.xml" value="0.2921875" />
         <entry key="keepitupmain/src/main/res/layout/activity_main_network_task.xml" value="0.2921875" />
         <entry key="keepitupmain/src/main/res/layout/activity_system.xml" value="0.30885416666666665" />
+        <entry key="keepitupmain/src/main/res/layout/dialog_battery_optimization.xml" value="0.30885416666666665" />
         <entry key="keepitupmain/src/main/res/mipmap-anydpi-v26/ic_launcher.xml" value="0.3265625" />
         <entry key="keepitupmain/src/main/res/mipmap-anydpi-v26/ic_launcher_round.xml" value="0.29791666666666666" />
       </map>
