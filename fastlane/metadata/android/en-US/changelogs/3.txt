@@ -1,0 +1,3 @@
+* Network task logs can optionally written as a file
+* Various bug fixes
+
