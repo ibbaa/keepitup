@@ -122,3 +122,19 @@ KEEPITUP_KEY_ALIAS for the key alias (default keepitupkey)
 KEEPITUP_KEYSTORE_PASS for the keystore password (default keepitup)
 KEEPITUP_KEY_PASS for the key password (default keepitup)
 ```
+## Logging
+
+### Debug
+
+The debug variant provides a feature to write debug log files that can be enabled in the system settings. The files are written to the app specific storage under `Android/data/net.ibbaa.keepitup/files/syslog`. The amount of log data is extensive. The files are rotated every 10 MByte and archived as a zip file in the same directory every 50 log files. However, nothing will ever be deleted automatically, so this feature can fill up disk space.
+
+It is possible to write a complete dump of the internal database to the app specific storage whenever the database content changes before and after the change. This feature can be enabled in the system settings. Every table is written to a separate text file. The dump files are archived every 50 files but will not be deleted. This feature should be used with care because the performance penalty is massive.
+
+The release variant does not provide these features but writes error messages to Android system log. The log amount of the release variant is marginal.
+
+### Network tasks
+
+Successful and unsuccessful executions of every task are logged to the internal database with additional data and an execution message. Every 100 log entries the oldest one will be deleted. The log entries can manually be deleted and are automatically deleted when the corresponding network task is deleted. The export configuration feature writes a JSON file which also contains all log messages of all network tasks.
+
+Additionally it is possible to write the network task logs to app specific storage as a file. The default directory is `Android/data/net.ibbaa.keepitup/files/log` and can be changed in the settings. The feature is disabled by default and can be enabled in the settings. Every task writes its own set of log files which are rotated every 1 MByte and will be archived every 20 files. The oldes zip archive will automatically be deleted every 10 archive files. However, on network task deletion, the corresponding logs will not be deleted.
+
