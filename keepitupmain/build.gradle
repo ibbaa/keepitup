@@ -21,6 +21,7 @@ android {
     defaultConfig {
         applicationId "net.ibbaa.keepitup"
         minSdkVersion 21
+        //noinspection ExpiringTargetSdkVersion
         targetSdkVersion 30
         versionCode 4
         versionName "1.1.1"

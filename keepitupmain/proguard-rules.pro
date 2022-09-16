@@ -36,7 +36,6 @@
     public <methods>;
 }
 -dontwarn com.google.**
--dontwarn java.lang.ClassValue
 -assumenosideeffects class net.ibbaa.keepitup.logging.Log {
      public static *** d(...);
  }
