@@ -143,6 +143,9 @@ public class NotificationHandler {
             foregroundNotificationBuilder.setVibrate(null);
             foregroundNotificationBuilder.setSound(null);
         }
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.S) {
+            foregroundNotificationBuilder.setForegroundServiceBehavior(Notification.FOREGROUND_SERVICE_IMMEDIATE);
+        }
         return foregroundNotificationBuilder.build();
     }
 
@@ -154,7 +157,7 @@ public class NotificationHandler {
         Intent mainActivityIntent = new Intent(getContext(), NetworkTaskMainActivity.class);
         TaskStackBuilder stackBuilder = TaskStackBuilder.create(getContext());
         stackBuilder.addNextIntentWithParentStack(mainActivityIntent);
-        PendingIntent resultPendingIntent = stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
+        PendingIntent resultPendingIntent = stackBuilder.getPendingIntent(0, PendingIntent.FLAG_IMMUTABLE | PendingIntent.FLAG_UPDATE_CURRENT);
         builder.setContentIntent(resultPendingIntent);
         builder.setAutoCancel(true);
     }
