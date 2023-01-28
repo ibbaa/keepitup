@@ -18,6 +18,7 @@ package net.ibbaa.keepitup.test.mock;
 
 import androidx.annotation.NonNull;
 
+import net.ibbaa.keepitup.ui.dialog.PermissionExplainDialog;
 import net.ibbaa.keepitup.ui.permission.IPermissionManager;
 
 public class MockPermissionManager implements IPermissionManager {
@@ -27,6 +28,7 @@ public class MockPermissionManager implements IPermissionManager {
     private boolean hasPermission;
     private int requestPostNotificationsPermissionCalls;
     private int requestPermissionCalls;
+    private PermissionExplainDialog.Permission lastPermission;
 
     public MockPermissionManager() {
         reset();
@@ -38,6 +40,7 @@ public class MockPermissionManager implements IPermissionManager {
         this.hasPermission = true;
         this.requestPostNotificationsPermissionCalls = 0;
         this.requestPermissionCalls = 0;
+        lastPermission = null;
     }
 
     public void setShouldAskForRuntimePermission(boolean shouldAskForRuntimePermission) {
@@ -58,6 +61,10 @@ public class MockPermissionManager implements IPermissionManager {
 
     public int getRequestPermissionCalls() {
         return requestPermissionCalls;
+    }
+
+    public PermissionExplainDialog.Permission getLastPermission() {
+        return lastPermission;
     }
 
     @Override
@@ -88,5 +95,10 @@ public class MockPermissionManager implements IPermissionManager {
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
 
+    }
+
+    @Override
+    public void onPermissionExplainDialogOkClicked(PermissionExplainDialog explainDialog, PermissionExplainDialog.Permission permission) {
+        lastPermission = permission;
     }
 }

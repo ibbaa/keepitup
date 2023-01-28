@@ -15,6 +15,6 @@
   -->
 
 <resources>
-    <string name="label_dialog_permission_explain_ok">@android:string/ok</string>
-    <string name="text_dialog_permission_explain_post_notifications">Explain post notifications</string>
+    <dimen name="linearlayout_dialog_permission_explain_padding">30dp</dimen>
+    <dimen name="imageview_dialog_permission_explain_ok_padding_top">15dp</dimen>
 </resources>

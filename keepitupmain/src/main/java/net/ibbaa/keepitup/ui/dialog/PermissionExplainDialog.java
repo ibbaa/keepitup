@@ -26,9 +26,9 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.DialogFragment;
-import androidx.fragment.app.FragmentActivity;
 
 import net.ibbaa.keepitup.R;
+import net.ibbaa.keepitup.ui.permission.IPermissionManager;
 import net.ibbaa.keepitup.ui.permission.PermissionManager;
 import net.ibbaa.keepitup.util.BundleUtil;
 import net.ibbaa.keepitup.util.StringUtil;
@@ -37,6 +37,19 @@ public class PermissionExplainDialog extends DialogFragment {
 
     public enum Permission {
         POST_NOTIFICATIONS
+    }
+
+    private IPermissionManager permissionManager;
+
+    public void injectPermissionManager(IPermissionManager permissionManager) {
+        this.permissionManager = permissionManager;
+    }
+
+    public IPermissionManager getPermissionManager() {
+        if (permissionManager != null) {
+            return permissionManager;
+        }
+        return new PermissionManager(requireActivity());
     }
 
     @Override
@@ -74,12 +87,10 @@ public class PermissionExplainDialog extends DialogFragment {
 
     private void onOkClicked(@SuppressWarnings("unused") View view) {
         Log.d(PermissionExplainDialog.class.getName(), "onOkClicked");
-        FragmentActivity activity = requireActivity();
-        PermissionManager permissionManager = new PermissionManager(activity);
         String permissionString = BundleUtil.stringFromBundle(PermissionExplainDialog.Permission.class.getSimpleName(), requireArguments());
         if (StringUtil.isEmpty(permissionString)) {
             Log.e(PermissionExplainDialog.class.getName(), PermissionExplainDialog.Permission.class.getSimpleName() + " not specified.");
-            permissionManager.onPermissionExplainDialogOkClicked(this, null);
+            getPermissionManager().onPermissionExplainDialogOkClicked(this, null);
             return;
         }
         Permission permission = null;
@@ -88,6 +99,6 @@ public class PermissionExplainDialog extends DialogFragment {
         } catch (IllegalArgumentException exc) {
             Log.e(PermissionExplainDialog.class.getName(), PermissionExplainDialog.Permission.class.getSimpleName() + "." + permissionString + " does not exist");
         }
-        permissionManager.onPermissionExplainDialogOkClicked(this, permission);
+        getPermissionManager().onPermissionExplainDialogOkClicked(this, permission);
     }
 }

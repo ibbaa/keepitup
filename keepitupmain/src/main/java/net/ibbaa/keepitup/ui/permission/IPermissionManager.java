@@ -18,6 +18,8 @@ package net.ibbaa.keepitup.ui.permission;
 
 import androidx.annotation.NonNull;
 
+import net.ibbaa.keepitup.ui.dialog.PermissionExplainDialog;
+
 public interface IPermissionManager {
 
     boolean shouldAskForRuntimePermission();
@@ -31,4 +33,6 @@ public interface IPermissionManager {
     boolean hasPermission(String permission);
 
     void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults);
+
+    void onPermissionExplainDialogOkClicked(PermissionExplainDialog explainDialog, PermissionExplainDialog.Permission permission);
 }

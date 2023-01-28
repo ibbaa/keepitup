@@ -63,7 +63,7 @@ public class PermissionManager implements IPermissionManager {
 
     public void requestPermission(String permission, int code) {
         Log.d(PermissionManager.class.getName(), "requestPermission " + permission + " with code " + code);
-        ActivityCompat.requestPermissions(activity, new String[] {permission}, code);
+        ActivityCompat.requestPermissions(activity, new String[]{permission}, code);
     }
 
     public boolean hasPermission(String permission) {
