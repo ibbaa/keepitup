@@ -17,6 +17,7 @@
 package net.ibbaa.keepitup.notification;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import android.app.Notification;
@@ -78,6 +79,15 @@ public class NotificationHandlerTest {
         assertEquals("Execution of network task 2 failed. Host: 127.0.0.1. Timestamp: Mar 17, 1980 12:00:00 AM. Message: Test", notificationBuilder.getContentText());
         assertTrue(notificationBuilder.getStyle() instanceof NotificationCompat.BigTextStyle);
         assertEquals(NotificationCompat.PRIORITY_DEFAULT, notificationBuilder.getPriority());
+    }
+
+    @Test
+    public void testSendErrorWithoutPermission() {
+        permissionManager.setHasPostNotificationsPermission(false);
+        NetworkTask networkTask = getNetworkTask1();
+        LogEntry logEntry = getLogEntry(new GregorianCalendar(1980, Calendar.MARCH, 17).getTime().getTime(), "Test");
+        notificationHandler.sendErrorNotification(networkTask, logEntry);
+        assertFalse(notificationManager.wasNotifyCalled());
     }
 
     @Test

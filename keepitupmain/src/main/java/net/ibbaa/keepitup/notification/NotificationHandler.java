@@ -54,8 +54,12 @@ public class NotificationHandler {
     public NotificationHandler(Context context, IPermissionManager permissionManager) {
         this.context = context;
         this.permissionManager = permissionManager;
-        initErrorChannel();
-        initForegroundChannel();
+        if(permissionManager.hasPostNotificationsPermission(context)) {
+            initErrorChannel();
+            initForegroundChannel();
+        } else {
+            Log.e(NotificationHandler.class.getName(), "Skipping initialization of notification channels. Missing permission.");
+        }
         this.notificationManager = createNotificationManager();
     }
 
@@ -113,6 +117,10 @@ public class NotificationHandler {
 
     public void sendErrorNotification(NetworkTask task, LogEntry logEntry) {
         Log.d(NotificationHandler.class.getName(), "Sending error notification for network task " + task + ", log entry " + logEntry);
+        if(!permissionManager.hasPostNotificationsPermission(getContext())) {
+            Log.e(NotificationHandler.class.getName(), "Cannot send error notification because of missing permission.");
+            return;
+        }
         Notification notification = buildErrorNotification(task, logEntry);
         notificationManager.notify(task.getSchedulerId(), notification);
     }
