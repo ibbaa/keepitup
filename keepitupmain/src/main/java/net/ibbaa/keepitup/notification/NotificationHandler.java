@@ -37,6 +37,7 @@ import net.ibbaa.keepitup.model.NetworkTask;
 import net.ibbaa.keepitup.resources.ServiceFactoryContributor;
 import net.ibbaa.keepitup.ui.NetworkTaskMainActivity;
 import net.ibbaa.keepitup.ui.mapping.EnumMapping;
+import net.ibbaa.keepitup.ui.permission.IPermissionManager;
 
 import java.text.DateFormat;
 import java.util.Date;
@@ -46,11 +47,13 @@ public class NotificationHandler {
 
     private final Context context;
     private final INotificationManager notificationManager;
+    private IPermissionManager permissionManager;
     private NotificationCompat.Builder errorNotificationBuilder;
     private NotificationCompat.Builder foregroundNotificationBuilder;
 
-    public NotificationHandler(Context context) {
+    public NotificationHandler(Context context, IPermissionManager permissionManager) {
         this.context = context;
+        this.permissionManager = permissionManager;
         initErrorChannel();
         initForegroundChannel();
         this.notificationManager = createNotificationManager();

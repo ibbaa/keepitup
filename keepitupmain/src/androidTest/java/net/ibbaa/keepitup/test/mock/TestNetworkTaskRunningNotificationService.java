@@ -21,6 +21,7 @@ import android.app.Notification;
 import androidx.annotation.NonNull;
 
 import net.ibbaa.keepitup.service.NetworkTaskRunningNotificationService;
+import net.ibbaa.keepitup.ui.permission.IPermissionManager;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -66,6 +67,11 @@ public class TestNetworkTaskRunningNotificationService extends NetworkTaskRunnin
     @Override
     protected void stopNetworkTaskRunningNotificationForeground(boolean removeNotification) {
         stopNetworkTaskRunningNotificationForegroundCalls.add(new StopNetworkTaskRunningNotificationForegroundCall(removeNotification));
+    }
+
+    @Override
+    public IPermissionManager getPermissionManager() {
+        return new MockPermissionManager();
     }
 
     public static class StartNetworkTaskRunningNotificationForegroundCall {

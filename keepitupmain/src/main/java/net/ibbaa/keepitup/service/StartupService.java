@@ -32,6 +32,7 @@ import net.ibbaa.keepitup.model.NetworkTask;
 import net.ibbaa.keepitup.model.SchedulerId;
 import net.ibbaa.keepitup.notification.NotificationHandler;
 import net.ibbaa.keepitup.resources.PreferenceManager;
+import net.ibbaa.keepitup.ui.permission.PermissionManager;
 import net.ibbaa.keepitup.util.DebugUtil;
 
 public class StartupService extends BroadcastReceiver {
@@ -113,7 +114,7 @@ public class StartupService extends BroadcastReceiver {
         Log.d(StartupService.class.getName(), "initializeScheduler");
         try {
             Log.d(StartupService.class.getName(), "Init notification channels.");
-            new NotificationHandler(context);
+            new NotificationHandler(context, new PermissionManager());
             Log.d(StartupService.class.getName(), "Starting pending network tasks.");
             NetworkTaskProcessServiceScheduler scheduler = new NetworkTaskProcessServiceScheduler(context);
             scheduler.startup();

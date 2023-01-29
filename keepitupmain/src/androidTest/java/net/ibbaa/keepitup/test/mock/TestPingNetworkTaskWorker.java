@@ -23,6 +23,7 @@ import net.ibbaa.keepitup.model.NetworkTask;
 import net.ibbaa.keepitup.service.PingNetworkTaskWorker;
 import net.ibbaa.keepitup.service.network.DNSLookupResult;
 import net.ibbaa.keepitup.service.network.PingCommandResult;
+import net.ibbaa.keepitup.ui.permission.IPermissionManager;
 
 import java.util.concurrent.Callable;
 
@@ -51,5 +52,10 @@ public class TestPingNetworkTaskWorker extends PingNetworkTaskWorker {
     @Override
     protected Callable<PingCommandResult> getPingCommand(String address, int pingCount, boolean ip6) {
         return mockPingCommand;
+    }
+
+    @Override
+    public IPermissionManager getPermissionManager() {
+        return new MockPermissionManager();
     }
 }

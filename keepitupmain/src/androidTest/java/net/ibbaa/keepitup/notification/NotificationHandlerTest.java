@@ -32,6 +32,7 @@ import net.ibbaa.keepitup.model.LogEntry;
 import net.ibbaa.keepitup.model.NetworkTask;
 import net.ibbaa.keepitup.test.mock.MockNotificationBuilder;
 import net.ibbaa.keepitup.test.mock.MockNotificationManager;
+import net.ibbaa.keepitup.test.mock.MockPermissionManager;
 import net.ibbaa.keepitup.test.mock.TestRegistry;
 
 import org.junit.Before;
@@ -48,11 +49,13 @@ public class NotificationHandlerTest {
 
     private NotificationHandler notificationHandler;
     private MockNotificationManager notificationManager;
+    private MockPermissionManager permissionManager;
 
     @Before
     public void beforeEachTestMethod() {
         setLocale(Locale.US);
-        notificationHandler = new NotificationHandler(TestRegistry.getContext());
+        permissionManager = new MockPermissionManager();
+        notificationHandler = new NotificationHandler(TestRegistry.getContext(), permissionManager);
         notificationManager = (MockNotificationManager) notificationHandler.getNotificationManager();
     }
 

@@ -24,6 +24,7 @@ import net.ibbaa.keepitup.service.DownloadNetworkTaskWorker;
 import net.ibbaa.keepitup.service.IFileManager;
 import net.ibbaa.keepitup.service.network.DNSLookupResult;
 import net.ibbaa.keepitup.service.network.DownloadCommandResult;
+import net.ibbaa.keepitup.ui.permission.IPermissionManager;
 
 import java.io.File;
 import java.net.URL;
@@ -66,5 +67,10 @@ public class TestDownloadNetworkTaskWorker extends DownloadNetworkTaskWorker {
     @Override
     protected IFileManager getFileManager() {
         return mockFileManager;
+    }
+
+    @Override
+    public IPermissionManager getPermissionManager() {
+        return new MockPermissionManager();
     }
 }

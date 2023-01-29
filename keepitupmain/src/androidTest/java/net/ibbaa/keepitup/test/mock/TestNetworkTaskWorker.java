@@ -26,6 +26,7 @@ import net.ibbaa.keepitup.model.LogEntry;
 import net.ibbaa.keepitup.model.NetworkTask;
 import net.ibbaa.keepitup.service.NetworkTaskWorker;
 import net.ibbaa.keepitup.service.network.DNSLookupResult;
+import net.ibbaa.keepitup.ui.permission.IPermissionManager;
 
 import java.util.concurrent.Callable;
 
@@ -89,5 +90,10 @@ public class TestNetworkTaskWorker extends NetworkTaskWorker {
     @Override
     protected Callable<DNSLookupResult> getDNSLookup(String host) {
         return mockDNSLookup;
+    }
+
+    @Override
+    public IPermissionManager getPermissionManager() {
+        return new MockPermissionManager();
     }
 }

@@ -35,6 +35,8 @@ import net.ibbaa.keepitup.resources.ServiceFactoryContributor;
 import net.ibbaa.keepitup.service.log.NetworkTaskLog;
 import net.ibbaa.keepitup.service.network.DNSLookup;
 import net.ibbaa.keepitup.service.network.DNSLookupResult;
+import net.ibbaa.keepitup.ui.permission.IPermissionManager;
+import net.ibbaa.keepitup.ui.permission.PermissionManager;
 import net.ibbaa.keepitup.ui.sync.LogEntryUIBroadcastReceiver;
 import net.ibbaa.keepitup.ui.sync.NetworkTaskMainUIBroadcastReceiver;
 import net.ibbaa.keepitup.util.ExceptionUtil;
@@ -338,7 +340,7 @@ public abstract class NetworkTaskWorker implements Runnable {
     }
 
     private NotificationHandler createNotificationHandler() {
-        return new NotificationHandler(getContext());
+        return new NotificationHandler(getContext(), getPermissionManager());
     }
 
     private ITimeService createTimeService() {
@@ -372,6 +374,10 @@ public abstract class NetworkTaskWorker implements Runnable {
 
     public Resources getResources() {
         return getContext().getResources();
+    }
+
+    public IPermissionManager getPermissionManager() {
+        return new PermissionManager();
     }
 
     public static class DNSExecutionResult extends ExecutionResult {

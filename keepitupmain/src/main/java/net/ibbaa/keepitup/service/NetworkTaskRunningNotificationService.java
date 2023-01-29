@@ -30,6 +30,8 @@ import androidx.annotation.Nullable;
 import net.ibbaa.keepitup.logging.Log;
 import net.ibbaa.keepitup.model.NetworkTask;
 import net.ibbaa.keepitup.notification.NotificationHandler;
+import net.ibbaa.keepitup.ui.permission.IPermissionManager;
+import net.ibbaa.keepitup.ui.permission.PermissionManager;
 import net.ibbaa.keepitup.util.BundleUtil;
 import net.ibbaa.keepitup.util.StringUtil;
 
@@ -43,7 +45,7 @@ public class NetworkTaskRunningNotificationService extends Service {
     public void onCreate() {
         Log.d(NetworkTaskRunningNotificationService.class.getName(), "onCreate");
         scheduler = new NetworkTaskProcessServiceScheduler(this);
-        NotificationHandler notificationHandler = new NotificationHandler(this);
+        NotificationHandler notificationHandler = new NotificationHandler(this, getPermissionManager());
         Notification notification = notificationHandler.buildForegroundNotification();
         int foregroundServiceType = 0;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
@@ -123,5 +125,9 @@ public class NetworkTaskRunningNotificationService extends Service {
 
     public NetworkTaskProcessServiceScheduler getScheduler() {
         return scheduler;
+    }
+
+    public IPermissionManager getPermissionManager() {
+        return new PermissionManager();
     }
 }

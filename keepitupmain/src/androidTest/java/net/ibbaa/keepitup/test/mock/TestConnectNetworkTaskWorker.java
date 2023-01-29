@@ -23,6 +23,7 @@ import net.ibbaa.keepitup.model.NetworkTask;
 import net.ibbaa.keepitup.service.ConnectNetworkTaskWorker;
 import net.ibbaa.keepitup.service.network.ConnectCommandResult;
 import net.ibbaa.keepitup.service.network.DNSLookupResult;
+import net.ibbaa.keepitup.ui.permission.IPermissionManager;
 
 import java.net.InetAddress;
 import java.util.concurrent.Callable;
@@ -52,5 +53,10 @@ public class TestConnectNetworkTaskWorker extends ConnectNetworkTaskWorker {
     @Override
     protected Callable<ConnectCommandResult> getConnectCommand(InetAddress address, int port, int connectCount) {
         return mockConnectCommand;
+    }
+
+    @Override
+    public IPermissionManager getPermissionManager() {
+        return new MockPermissionManager();
     }
 }
