@@ -49,7 +49,7 @@ public class PermissionExplainDialog extends DialogFragment {
         if (permissionManager != null) {
             return permissionManager;
         }
-        return new PermissionManager(requireActivity());
+        return new PermissionManager();
     }
 
     @Override

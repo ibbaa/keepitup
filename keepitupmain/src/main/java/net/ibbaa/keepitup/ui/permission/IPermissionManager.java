@@ -16,7 +16,10 @@
 
 package net.ibbaa.keepitup.ui.permission;
 
+import android.content.Context;
+
 import androidx.annotation.NonNull;
+import androidx.fragment.app.FragmentActivity;
 
 import net.ibbaa.keepitup.ui.dialog.PermissionExplainDialog;
 
@@ -24,15 +27,15 @@ public interface IPermissionManager {
 
     boolean shouldAskForRuntimePermission();
 
-    boolean hasPostNotificationsPermission();
+    boolean hasPostNotificationsPermission(Context context);
 
-    void requestPostNotificationsPermission();
+    void requestPostNotificationsPermission(FragmentActivity activity);
 
-    void requestPermission(String permissions, int code);
+    void requestPermission(FragmentActivity activity, String permissions, int code);
 
-    boolean hasPermission(String permission);
+    boolean hasPermission(Context context, String permission);
 
-    void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults);
+    void onRequestPermissionsResult(FragmentActivity activity, int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults);
 
     void onPermissionExplainDialogOkClicked(PermissionExplainDialog explainDialog, PermissionExplainDialog.Permission permission);
 }

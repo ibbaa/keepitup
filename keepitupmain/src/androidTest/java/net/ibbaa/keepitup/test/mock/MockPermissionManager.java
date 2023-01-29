@@ -16,7 +16,10 @@
 
 package net.ibbaa.keepitup.test.mock;
 
+import android.content.Context;
+
 import androidx.annotation.NonNull;
+import androidx.fragment.app.FragmentActivity;
 
 import net.ibbaa.keepitup.ui.dialog.PermissionExplainDialog;
 import net.ibbaa.keepitup.ui.permission.IPermissionManager;
@@ -73,27 +76,27 @@ public class MockPermissionManager implements IPermissionManager {
     }
 
     @Override
-    public boolean hasPostNotificationsPermission() {
+    public boolean hasPostNotificationsPermission(Context context) {
         return hasPostNotificationsPermission;
     }
 
     @Override
-    public void requestPostNotificationsPermission() {
+    public void requestPostNotificationsPermission(FragmentActivity activity) {
         requestPostNotificationsPermissionCalls++;
     }
 
     @Override
-    public void requestPermission(String permission, int code) {
+    public void requestPermission(FragmentActivity activity, String permission, int code) {
         requestPermissionCalls++;
     }
 
     @Override
-    public boolean hasPermission(String permission) {
+    public boolean hasPermission(Context context, String permission) {
         return hasPermission;
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+    public void onRequestPermissionsResult(FragmentActivity activity, int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
 
     }
 
