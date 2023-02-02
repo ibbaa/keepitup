@@ -44,6 +44,8 @@ import net.ibbaa.keepitup.ui.NetworkTaskMainActivity;
 import net.ibbaa.keepitup.ui.clipboard.IClipboardManager;
 import net.ibbaa.keepitup.ui.clipboard.SystemClipboardManager;
 import net.ibbaa.keepitup.ui.mapping.EnumMapping;
+import net.ibbaa.keepitup.ui.permission.IPermissionManager;
+import net.ibbaa.keepitup.ui.permission.PermissionManager;
 import net.ibbaa.keepitup.ui.validation.TextColorValidatingWatcher;
 import net.ibbaa.keepitup.ui.validation.ValidationResult;
 import net.ibbaa.keepitup.ui.validation.Validator;
@@ -73,6 +75,7 @@ public class NetworkTaskEditDialog extends DialogFragment implements ContextOpti
     private TextView notificationOnOffText;
 
     private IClipboardManager clipboardManager;
+    private IPermissionManager permissionManager;
 
     public void injectClipboardManager(IClipboardManager clipboardManager) {
         this.clipboardManager = clipboardManager;
@@ -83,6 +86,17 @@ public class NetworkTaskEditDialog extends DialogFragment implements ContextOpti
             return clipboardManager;
         }
         return new SystemClipboardManager(requireContext());
+    }
+
+    public void injectPermissionManager(IPermissionManager permissionManager) {
+        this.permissionManager = permissionManager;
+    }
+
+    public IPermissionManager getPermissionManager() {
+        if (permissionManager != null) {
+            return permissionManager;
+        }
+        return new PermissionManager();
     }
 
     @Override
@@ -278,8 +292,17 @@ public class NetworkTaskEditDialog extends DialogFragment implements ContextOpti
         Log.d(NetworkTaskEditDialog.class.getName(), "prepareNotificationSwitch with notification setting of " + task.isNotification());
         notificationSwitch = dialogView.findViewById(R.id.switch_dialog_network_task_edit_notification);
         notificationOnOffText = dialogView.findViewById(R.id.textview_dialog_network_task_edit_notification_on_off);
-        notificationSwitch.setChecked(task.isNotification());
-        notificationSwitch.setOnCheckedChangeListener(this::onNotificationCheckedChanged);
+        boolean hasPostNotificationsPermission = getPermissionManager().hasPostNotificationsPermission(requireContext());
+        Log.d(NetworkTaskEditDialog.class.getName(), "hasPostNotificationsPermission is " + hasPostNotificationsPermission);
+        if (hasPostNotificationsPermission) {
+            notificationSwitch.setEnabled(true);
+            notificationSwitch.setChecked(task.isNotification());
+            notificationSwitch.setOnCheckedChangeListener(this::onNotificationCheckedChanged);
+        } else {;
+            notificationSwitch.setEnabled(false);
+            notificationSwitch.setChecked(false);
+            notificationSwitch.setOnCheckedChangeListener(null);
+        }
         prepareNotificationOnOffText();
     }
 

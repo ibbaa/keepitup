@@ -63,14 +63,12 @@ import org.junit.runner.RunWith;
 public class NetworkTaskEditDialogTest extends BaseUITest {
 
     private ActivityScenario<?> activityScenario;
-    MockClipboardManager clipboardManager;
     private MockPermissionManager permissionManager;
 
     @Before
     public void beforeEachTestMethod() {
         super.beforeEachTestMethod();
         activityScenario = launchRecyclerViewBaseActivity(NetworkTaskMainActivity.class);
-        clipboardManager = new MockClipboardManager();
         permissionManager = new MockPermissionManager();
     }
 
@@ -83,7 +81,6 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
     @Test
     public void testGetNetworkTaskDefaultValues() {
         onView(allOf(withId(R.id.imageview_list_item_network_task_add), isDisplayed())).perform(click());
-        injectMockManager();
         onView(withId(R.id.radiogroup_dialog_network_task_edit_accesstype)).check(matches(hasChildCount(3)));
         onView(withText("Ping")).check(matches(isChecked()));
         onView(withId(R.id.edittext_dialog_network_task_edit_address)).check(matches(withText("192.168.178.1")));
@@ -93,7 +90,6 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         onView(withId(R.id.switch_dialog_network_task_edit_notification)).check(matches(isNotChecked()));
         onView(withId(R.id.textview_dialog_network_task_edit_notification_on_off)).check(matches(withText("no")));
         NetworkTaskEditDialog dialog = (NetworkTaskEditDialog) getActivity(activityScenario).getSupportFragmentManager().getFragments().get(0);
-        injectMockManager(dialog);
         NetworkTask task = dialog.getNetworkTask();
         assertNotNull(task);
         assertEquals(AccessType.PING, task.getAccessType());
@@ -105,8 +101,7 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
 
     @Test
     public void testSwitchYesNoText() {
-        onView(allOf(withId(R.id.imageview_list_item_network_task_add), isDisplayed())).perform(click());
-        injectMockManager();
+        openNetworkTaskEditDialog(getNetworkTask());
         onView(withId(R.id.switch_dialog_network_task_edit_onlywifi)).check(matches(isNotChecked()));
         onView(withId(R.id.textview_dialog_network_task_edit_onlywifi_on_off)).check(matches(withText("no")));
         onView(withId(R.id.switch_dialog_network_task_edit_notification)).check(matches(isNotChecked()));
@@ -135,16 +130,13 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
 
     @Test
     public void testGetNetworkTaskEnteredText() {
-        onView(allOf(withId(R.id.imageview_list_item_network_task_add), isDisplayed())).perform(click());
-        injectMockManager();
+        NetworkTaskEditDialog dialog = openNetworkTaskEditDialog(getNetworkTask());
         onView(withText("Connect")).perform(click());
         onView(withId(R.id.edittext_dialog_network_task_edit_address)).perform(replaceText("localhost"));
         onView(withId(R.id.edittext_dialog_network_task_edit_port)).perform(replaceText("80"));
         onView(withId(R.id.edittext_dialog_network_task_edit_interval)).perform(replaceText("60"));
         onView(withId(R.id.switch_dialog_network_task_edit_onlywifi)).perform(click());
         onView(withId(R.id.switch_dialog_network_task_edit_notification)).perform(click());
-        NetworkTaskEditDialog dialog = (NetworkTaskEditDialog) getActivity(activityScenario).getSupportFragmentManager().getFragments().get(0);
-        injectMockManager(dialog);
         NetworkTask task = dialog.getNetworkTask();
         assertNotNull(task);
         assertEquals(AccessType.CONNECT, task.getAccessType());
@@ -173,9 +165,7 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
 
     @Test
     public void testGetInitialNetworkTask() {
-        onView(allOf(withId(R.id.imageview_list_item_network_task_add), isDisplayed())).perform(click());
-        NetworkTaskEditDialog dialog = (NetworkTaskEditDialog) getActivity(activityScenario).getSupportFragmentManager().getFragments().get(0);
-        injectMockManager(dialog);
+        NetworkTaskEditDialog dialog = openNetworkTaskEditDialog(getNetworkTask());
         assertTrue(dialog.getInitialNetworkTask().isEqual(dialog.getNetworkTask()));
         onView(withText("Connect")).perform(click());
         onView(withId(R.id.edittext_dialog_network_task_edit_address)).perform(replaceText("localhost"));
@@ -192,12 +182,11 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         assertEquals(initialTask.isOnlyWifi(), task.isOnlyWifi());
         assertEquals(initialTask.isNotification(), task.isNotification());
         assertEquals(initialTask.isRunning(), task.isRunning());
-        onView(withId(R.id.edittext_dialog_network_task_edit_port)).perform(replaceText("80"));
+        onView(withId(R.id.edittext_dialog_network_task_edit_port)).perform(replaceText("70"));
         onView(withId(R.id.edittext_dialog_network_task_edit_interval)).perform(replaceText("60"));
         onView(withId(R.id.switch_dialog_network_task_edit_onlywifi)).perform(click());
         onView(withId(R.id.switch_dialog_network_task_edit_notification)).perform(click());
         initialTask = dialog.getInitialNetworkTask();
-        injectMockManager(dialog);
         task = dialog.getNetworkTask();
         assertEquals(initialTask.getId(), task.getId());
         assertEquals(initialTask.getIndex(), task.getIndex());
@@ -215,7 +204,6 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
     @Test
     public void testEnteredTextPreservedOnAccessTypeChange() {
         onView(allOf(withId(R.id.imageview_list_item_network_task_add), isDisplayed())).perform(click());
-        injectMockManager();
         onView(withText("Connect")).perform(click());
         onView(withId(R.id.edittext_dialog_network_task_edit_address)).perform(replaceText("localhost"));
         onView(withId(R.id.edittext_dialog_network_task_edit_port)).perform(replaceText("80"));
@@ -235,7 +223,6 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
     @Test
     public void testAccessTypePortField() {
         onView(allOf(withId(R.id.imageview_list_item_network_task_add), isDisplayed())).perform(click());
-        injectMockManager();
         onView(withText("Connect")).perform(click());
         onView(withId(R.id.edittext_dialog_network_task_edit_address)).check(matches(isDisplayed()));
         onView(withId(R.id.edittext_dialog_network_task_edit_port)).check(matches(isDisplayed()));
@@ -259,7 +246,6 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
     @Test
     public void testOnOkCancelClickedDialogDismissed() {
         onView(allOf(withId(R.id.imageview_list_item_network_task_add), isDisplayed())).perform(click());
-        injectMockManager();
         assertEquals(1, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
         onView(withId(R.id.imageview_dialog_network_task_edit_cancel)).perform(click());
         assertEquals(0, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
@@ -272,7 +258,6 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
     @Test
     public void testOnOkCancelClickedErrorDialogConnect() {
         onView(allOf(withId(R.id.imageview_list_item_network_task_add), isDisplayed())).perform(click());
-        injectMockManager();
         onView(withText("Connect")).perform(click());
         onView(withId(R.id.edittext_dialog_network_task_edit_address)).perform(replaceText("123.456"));
         onView(withId(R.id.edittext_dialog_network_task_edit_port)).perform(replaceText("99999"));
@@ -305,7 +290,6 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
     @Test
     public void testOnOkCancelClickedErrorDialogDownload() {
         onView(allOf(withId(R.id.imageview_list_item_network_task_add), isDisplayed())).perform(click());
-        injectMockManager();
         onView(withText("Download")).perform(click());
         onView(withId(R.id.edittext_dialog_network_task_edit_address)).perform(replaceText("http:/test"));
         onView(withId(R.id.edittext_dialog_network_task_edit_interval)).perform(replaceText("0"));
@@ -326,7 +310,6 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
     @Test
     public void testOnOkCancelClickedErrorDialogNoValue() {
         onView(allOf(withId(R.id.imageview_list_item_network_task_add), isDisplayed())).perform(click());
-        injectMockManager();
         onView(withText("Connect")).perform(click());
         onView(withId(R.id.edittext_dialog_network_task_edit_address)).perform(replaceText(""));
         onView(withId(R.id.edittext_dialog_network_task_edit_port)).perform(replaceText(""));
@@ -348,7 +331,6 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
     @Test
     public void testInputErrorColor() {
         onView(allOf(withId(R.id.imageview_list_item_network_task_add), isDisplayed())).perform(click());
-        injectMockManager();
         onView(withText("Connect")).perform(click());
         onView(withId(R.id.edittext_dialog_network_task_edit_address)).check(matches(withTextColor(R.color.textColor)));
         onView(withId(R.id.edittext_dialog_network_task_edit_port)).check(matches(withTextColor(R.color.textColor)));
@@ -398,8 +380,7 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
 
     @Test
     public void testNewDefaultValuesForNetworkTask() {
-        onView(allOf(withId(R.id.imageview_list_item_network_task_add), isDisplayed())).perform(click());
-        injectMockManager();
+        openNetworkTaskEditDialog(new NetworkTask(TestRegistry.getContext()));
         onView(withText("Ping")).check(matches(isChecked()));
         onView(withId(R.id.edittext_dialog_network_task_edit_address)).check(matches(withText("192.168.178.1")));
         onView(withId(R.id.edittext_dialog_network_task_edit_interval)).check(matches(withText("15")));
@@ -423,7 +404,7 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         onView(withId(R.id.switch_activity_defaults_onlywifi)).perform(click());
         onView(withId(R.id.switch_activity_defaults_notification)).perform(click());
         onView(isRoot()).perform(ViewActions.pressBack());
-        onView(allOf(withId(R.id.imageview_list_item_network_task_add), isDisplayed())).perform(click());
+        openNetworkTaskEditDialog(new NetworkTask(TestRegistry.getContext()));
         onView(withText("Connect")).check(matches(isChecked()));
         onView(withId(R.id.edittext_dialog_network_task_edit_address)).check(matches(withText("host.com")));
         onView(withId(R.id.edittext_dialog_network_task_edit_port)).check(matches(withText("80")));
@@ -437,39 +418,34 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
     @Test
     public void testStateSavedOnScreenRotation() {
         onView(allOf(withId(R.id.imageview_list_item_network_task_add), isDisplayed())).perform(click());
-        injectMockManager();
         onView(withText("Connect")).perform(click());
         onView(withId(R.id.edittext_dialog_network_task_edit_address)).perform(replaceText("localhost"));
         onView(withId(R.id.edittext_dialog_network_task_edit_port)).perform(replaceText("80"));
         onView(withId(R.id.edittext_dialog_network_task_edit_interval)).perform(replaceText("60"));
         onView(withId(R.id.switch_dialog_network_task_edit_onlywifi)).perform(click());
-        onView(withId(R.id.switch_dialog_network_task_edit_notification)).perform(click());
         rotateScreen(activityScenario);
-        injectMockManager();
         onView(withText("Connect")).check(matches(isChecked()));
         onView(withId(R.id.edittext_dialog_network_task_edit_address)).check(matches(withText("localhost")));
         onView(withId(R.id.edittext_dialog_network_task_edit_port)).check(matches(withText("80")));
         onView(withId(R.id.edittext_dialog_network_task_edit_interval)).check(matches(withText("60")));
         onView(withId(R.id.switch_dialog_network_task_edit_onlywifi)).check(matches(isChecked()));
         onView(withId(R.id.textview_dialog_network_task_edit_onlywifi_on_off)).check(matches(withText("yes")));
-        onView(withId(R.id.switch_dialog_network_task_edit_notification)).check(matches(isChecked()));
-        onView(withId(R.id.textview_dialog_network_task_edit_notification_on_off)).check(matches(withText("yes")));
+        onView(withId(R.id.switch_dialog_network_task_edit_notification)).check(matches(isNotChecked()));
+        onView(withId(R.id.textview_dialog_network_task_edit_notification_on_off)).check(matches(withText("no")));
         onView(withText("Download")).perform(click());
         rotateScreen(activityScenario);
-        injectMockManager();
         onView(withText("Download")).check(matches(isChecked()));
         onView(withId(R.id.edittext_dialog_network_task_edit_address)).check(matches(withText("localhost")));
         onView(withId(R.id.edittext_dialog_network_task_edit_interval)).check(matches(withText("60")));
         onView(withId(R.id.switch_dialog_network_task_edit_onlywifi)).check(matches(isChecked()));
         onView(withId(R.id.textview_dialog_network_task_edit_onlywifi_on_off)).check(matches(withText("yes")));
-        onView(withId(R.id.switch_dialog_network_task_edit_notification)).check(matches(isChecked()));
-        onView(withId(R.id.textview_dialog_network_task_edit_notification_on_off)).check(matches(withText("yes")));
+        onView(withId(R.id.switch_dialog_network_task_edit_notification)).check(matches(isNotChecked()));
+        onView(withId(R.id.textview_dialog_network_task_edit_notification_on_off)).check(matches(withText("no")));
     }
 
     @Test
     public void testSavedStateResetOnCreate() {
         onView(allOf(withId(R.id.imageview_list_item_network_task_add), isDisplayed())).perform(click());
-        injectMockManager();
         onView(withText("Ping")).check(matches(isChecked()));
         onView(withText("Download")).perform(click());
         rotateScreen(activityScenario);
@@ -482,7 +458,7 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
     @Test
     public void testAddressCopyPasteNoOption() {
         onView(allOf(withId(R.id.imageview_list_item_network_task_add), isDisplayed())).perform(click());
-        injectMockManager();
+        prepareMockClipboardManager();
         onView(withId(R.id.edittext_dialog_network_task_edit_address)).perform(replaceText(""));
         onView(withId(R.id.edittext_dialog_network_task_edit_address)).perform(longClick());
         assertEquals(1, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
@@ -491,7 +467,7 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
     @Test
     public void testAddressCopyPasteCancel() {
         onView(allOf(withId(R.id.imageview_list_item_network_task_add), isDisplayed())).perform(click());
-        injectMockManager();
+        MockClipboardManager clipboardManager = prepareMockClipboardManager();
         clipboardManager.putData("abc");
         onView(withId(R.id.edittext_dialog_network_task_edit_address)).perform(replaceText("test"));
         onView(withId(R.id.edittext_dialog_network_task_edit_address)).perform(longClick());
@@ -511,7 +487,7 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
     @Test
     public void testAddressCopyPasteCancelScreenRotation() {
         onView(allOf(withId(R.id.imageview_list_item_network_task_add), isDisplayed())).perform(click());
-        injectMockManager();
+        MockClipboardManager clipboardManager = prepareMockClipboardManager();
         clipboardManager.putData("abc");
         onView(withId(R.id.edittext_dialog_network_task_edit_address)).perform(replaceText("test"));
         onView(withId(R.id.edittext_dialog_network_task_edit_address)).perform(longClick());
@@ -531,7 +507,7 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
     @Test
     public void testAddressCopyOption() {
         onView(allOf(withId(R.id.imageview_list_item_network_task_add), isDisplayed())).perform(click());
-        injectMockManager();
+        MockClipboardManager clipboardManager = prepareMockClipboardManager();
         onView(withId(R.id.edittext_dialog_network_task_edit_address)).perform(replaceText("test"));
         onView(withId(R.id.edittext_dialog_network_task_edit_address)).perform(longClick());
         assertEquals(2, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
@@ -549,11 +525,11 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
     @Test
     public void testAddressCopyOptionScreenRotation() {
         onView(allOf(withId(R.id.imageview_list_item_network_task_add), isDisplayed())).perform(click());
-        injectMockManager();
+        MockClipboardManager clipboardManager = prepareMockClipboardManager();
         onView(withId(R.id.edittext_dialog_network_task_edit_address)).perform(replaceText("test"));
         onView(withId(R.id.edittext_dialog_network_task_edit_address)).perform(longClick());
         rotateScreen(activityScenario);
-        injectMockManager();
+        clipboardManager = prepareMockClipboardManager();
         onView(withId(R.id.listview_dialog_context_options)).check(matches(withListSize(1)));
         onView(withId(R.id.textview_dialog_context_options_title)).check(matches(withText("Text options")));
         onView(allOf(withId(R.id.textview_list_item_context_option_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options), 0))).check(matches(withText("Copy")));
@@ -569,7 +545,7 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
     @Test
     public void testAddressPasteOption() {
         onView(allOf(withId(R.id.imageview_list_item_network_task_add), isDisplayed())).perform(click());
-        injectMockManager();
+        MockClipboardManager clipboardManager = prepareMockClipboardManager();
         clipboardManager.putData("abc");
         onView(withId(R.id.edittext_dialog_network_task_edit_address)).perform(replaceText(""));
         onView(withId(R.id.edittext_dialog_network_task_edit_address)).perform(longClick());
@@ -589,7 +565,7 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
     public void testAddressPasteOptionScreenRotation() {
         onView(allOf(withId(R.id.imageview_list_item_network_task_add), isDisplayed())).perform(click());
         rotateScreen(activityScenario);
-        injectMockManager();
+        MockClipboardManager clipboardManager = prepareMockClipboardManager();
         clipboardManager.putData("abc");
         onView(withId(R.id.edittext_dialog_network_task_edit_address)).perform(replaceText(""));
         onView(withId(R.id.edittext_dialog_network_task_edit_address)).perform(longClick());
@@ -599,7 +575,7 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         onView(allOf(withId(R.id.textview_list_item_context_option_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options), 0))).check(matches(withText("Paste")));
         onView(withId(R.id.imageview_dialog_context_options_cancel)).check(matches(isDisplayed()));
         rotateScreen(activityScenario);
-        injectMockManager();
+        clipboardManager = prepareMockClipboardManager();
         clipboardManager.putData("abc");
         onView(allOf(withId(R.id.textview_list_item_context_option_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options), 0))).perform(click());
         assertEquals(1, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
@@ -611,7 +587,7 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
     @Test
     public void testPortCopyPasteNoOption() {
         onView(allOf(withId(R.id.imageview_list_item_network_task_add), isDisplayed())).perform(click());
-        injectMockManager();
+        MockClipboardManager clipboardManager = prepareMockClipboardManager();
         onView(withText("Connect")).perform(click());
         onView(withId(R.id.edittext_dialog_network_task_edit_port)).perform(replaceText(""));
         onView(withId(R.id.edittext_dialog_network_task_edit_port)).perform(longClick());
@@ -624,7 +600,7 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
     @Test
     public void testPortCopyPasteCancel() {
         onView(allOf(withId(R.id.imageview_list_item_network_task_add), isDisplayed())).perform(click());
-        injectMockManager();
+        MockClipboardManager clipboardManager = prepareMockClipboardManager();
         clipboardManager.putData("11");
         onView(withText("Connect")).perform(click());
         onView(withId(R.id.edittext_dialog_network_task_edit_port)).perform(replaceText("25"));
@@ -645,7 +621,7 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
     @Test
     public void testPortCopyPasteCancelScreenRotation() {
         onView(allOf(withId(R.id.imageview_list_item_network_task_add), isDisplayed())).perform(click());
-        injectMockManager();
+        MockClipboardManager clipboardManager = prepareMockClipboardManager();
         clipboardManager.putData("11");
         onView(withText("Connect")).perform(click());
         onView(withId(R.id.edittext_dialog_network_task_edit_port)).perform(replaceText("25"));
@@ -666,7 +642,7 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
     @Test
     public void testPortCopyOption() {
         onView(allOf(withId(R.id.imageview_list_item_network_task_add), isDisplayed())).perform(click());
-        injectMockManager();
+        MockClipboardManager clipboardManager = prepareMockClipboardManager();
         onView(withText("Connect")).perform(click());
         onView(withId(R.id.edittext_dialog_network_task_edit_port)).perform(replaceText("33"));
         onView(withId(R.id.edittext_dialog_network_task_edit_port)).perform(longClick());
@@ -685,7 +661,7 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
     @Test
     public void testPortCopyOptionScreenRotation() {
         onView(allOf(withId(R.id.imageview_list_item_network_task_add), isDisplayed())).perform(click());
-        injectMockManager();
+        MockClipboardManager clipboardManager = prepareMockClipboardManager();
         onView(withText("Connect")).perform(click());
         onView(withId(R.id.edittext_dialog_network_task_edit_port)).perform(replaceText("33"));
         onView(withId(R.id.edittext_dialog_network_task_edit_port)).perform(longClick());
@@ -696,7 +672,7 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         onView(allOf(withId(R.id.textview_list_item_context_option_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options), 0))).check(matches(withText("Copy")));
         onView(withId(R.id.imageview_dialog_context_options_cancel)).check(matches(isDisplayed()));
         rotateScreen(activityScenario);
-        injectMockManager();
+        clipboardManager = prepareMockClipboardManager();
         onView(allOf(withId(R.id.textview_list_item_context_option_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options), 0))).perform(click());
         assertEquals(1, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
         onView(withId(R.id.edittext_dialog_network_task_edit_port)).check(matches(withText("33")));
@@ -707,7 +683,7 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
     @Test
     public void testPortPasteOption() {
         onView(allOf(withId(R.id.imageview_list_item_network_task_add), isDisplayed())).perform(click());
-        injectMockManager();
+        MockClipboardManager clipboardManager = prepareMockClipboardManager();
         clipboardManager.putData("67");
         onView(withText("Connect")).perform(click());
         onView(withId(R.id.edittext_dialog_network_task_edit_port)).perform(replaceText(""));
@@ -730,7 +706,7 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         onView(withText("Connect")).perform(click());
         onView(withId(R.id.edittext_dialog_network_task_edit_port)).perform(replaceText(""));
         rotateScreen(activityScenario);
-        injectMockManager();
+        MockClipboardManager clipboardManager = prepareMockClipboardManager();
         clipboardManager.putData("67");
         onView(withId(R.id.edittext_dialog_network_task_edit_port)).perform(longClick());
         assertEquals(2, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
@@ -739,7 +715,7 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         onView(allOf(withId(R.id.textview_list_item_context_option_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options), 0))).check(matches(withText("Paste")));
         onView(withId(R.id.imageview_dialog_context_options_cancel)).check(matches(isDisplayed()));
         rotateScreen(activityScenario);
-        injectMockManager();
+        clipboardManager = prepareMockClipboardManager();
         clipboardManager.putData("67");
         onView(allOf(withId(R.id.textview_list_item_context_option_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options), 0))).perform(click());
         assertEquals(1, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
@@ -751,7 +727,7 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
     @Test
     public void testIntervalCopyPasteNoOption() {
         onView(allOf(withId(R.id.imageview_list_item_network_task_add), isDisplayed())).perform(click());
-        injectMockManager();
+        MockClipboardManager clipboardManager = prepareMockClipboardManager();
         onView(withId(R.id.edittext_dialog_network_task_edit_interval)).perform(replaceText(""));
         onView(withId(R.id.edittext_dialog_network_task_edit_interval)).perform(longClick());
         assertEquals(1, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
@@ -763,7 +739,7 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
     @Test
     public void testIntervalCopyPasteCancel() {
         onView(allOf(withId(R.id.imageview_list_item_network_task_add), isDisplayed())).perform(click());
-        injectMockManager();
+        MockClipboardManager clipboardManager = prepareMockClipboardManager();
         clipboardManager.putData("11");
         onView(withId(R.id.edittext_dialog_network_task_edit_interval)).perform(replaceText("25"));
         onView(withId(R.id.edittext_dialog_network_task_edit_interval)).perform(longClick());
@@ -783,7 +759,7 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
     @Test
     public void testIntervalCopyPasteCancelScreenRotation() {
         onView(allOf(withId(R.id.imageview_list_item_network_task_add), isDisplayed())).perform(click());
-        injectMockManager();
+        MockClipboardManager clipboardManager = prepareMockClipboardManager();
         clipboardManager.putData("11");
         onView(withId(R.id.edittext_dialog_network_task_edit_interval)).perform(replaceText("25"));
         onView(withId(R.id.edittext_dialog_network_task_edit_interval)).perform(longClick());
@@ -803,7 +779,7 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
     @Test
     public void testIntervalCopyOption() {
         onView(allOf(withId(R.id.imageview_list_item_network_task_add), isDisplayed())).perform(click());
-        injectMockManager();
+        MockClipboardManager clipboardManager = prepareMockClipboardManager();
         onView(withText("Connect")).perform(click());
         onView(withId(R.id.edittext_dialog_network_task_edit_interval)).perform(replaceText("33"));
         onView(withId(R.id.edittext_dialog_network_task_edit_interval)).perform(longClick());
@@ -822,12 +798,12 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
     @Test
     public void testIntervalCopyOptionScreenRotation() {
         onView(allOf(withId(R.id.imageview_list_item_network_task_add), isDisplayed())).perform(click());
-        injectMockManager();
+        MockClipboardManager clipboardManager = prepareMockClipboardManager();
         onView(withText("Connect")).perform(click());
         onView(withId(R.id.edittext_dialog_network_task_edit_interval)).perform(replaceText("33"));
         onView(withId(R.id.edittext_dialog_network_task_edit_interval)).perform(longClick());
         rotateScreen(activityScenario);
-        injectMockManager();
+        clipboardManager = prepareMockClipboardManager();
         assertEquals(2, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
         onView(withId(R.id.listview_dialog_context_options)).check(matches(withListSize(1)));
         onView(withId(R.id.textview_dialog_context_options_title)).check(matches(withText("Text options")));
@@ -844,7 +820,7 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
     @Test
     public void testIntervalPasteOption() {
         onView(allOf(withId(R.id.imageview_list_item_network_task_add), isDisplayed())).perform(click());
-        injectMockManager();
+        MockClipboardManager clipboardManager = prepareMockClipboardManager();
         clipboardManager.putData("67");
         onView(withText("Connect")).perform(click());
         onView(withId(R.id.edittext_dialog_network_task_edit_interval)).perform(replaceText(""));
@@ -867,11 +843,11 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         onView(withText("Connect")).perform(click());
         onView(withId(R.id.edittext_dialog_network_task_edit_interval)).perform(replaceText(""));
         rotateScreen(activityScenario);
-        injectMockManager();
+        MockClipboardManager clipboardManager = prepareMockClipboardManager();
         clipboardManager.putData("67");
         onView(withId(R.id.edittext_dialog_network_task_edit_interval)).perform(longClick());
         rotateScreen(activityScenario);
-        injectMockManager();
+        clipboardManager = prepareMockClipboardManager();
         clipboardManager.putData("67");
         assertEquals(2, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
         onView(withId(R.id.listview_dialog_context_options)).check(matches(withListSize(1)));
@@ -885,15 +861,41 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         assertEquals("67", clipboardManager.getData());
     }
 
-    private void injectMockManager() {
+    private MockClipboardManager prepareMockClipboardManager() {
         onView(isRoot()).perform(waitFor(500));
         NetworkTaskEditDialog dialog = (NetworkTaskEditDialog) getActivity(activityScenario).getSupportFragmentManager().getFragments().get(0);
-        injectMockManager(dialog);
-    }
-
-    private void injectMockManager(NetworkTaskEditDialog dialog) {
+        MockClipboardManager clipboardManager = new MockClipboardManager();
         clipboardManager.clearData();
         dialog.injectClipboardManager(clipboardManager);
-        dialog.injectPermissionManager(permissionManager);
+        return clipboardManager;
+    }
+
+    private NetworkTaskEditDialog openNetworkTaskEditDialog(NetworkTask task) {
+        NetworkTaskEditDialog networkTaskEditDialog = new NetworkTaskEditDialog();
+        networkTaskEditDialog.injectPermissionManager(permissionManager);
+        MockClipboardManager clipboardManager = new MockClipboardManager();
+        clipboardManager.clearData();
+        networkTaskEditDialog.injectClipboardManager(clipboardManager);
+        networkTaskEditDialog.setArguments(task.toBundle());
+        networkTaskEditDialog.show(getActivity(activityScenario).getSupportFragmentManager(), NetworkTaskEditDialog.class.getName());
+        onView(isRoot()).perform(waitFor(500));
+        return networkTaskEditDialog;
+    }
+
+    private NetworkTask getNetworkTask() {
+        NetworkTask task = new NetworkTask();
+        task.setId(0);
+        task.setIndex(1);
+        task.setSchedulerId(0);
+        task.setInstances(1);
+        task.setAddress("127.0.0.1");
+        task.setPort(80);
+        task.setAccessType(AccessType.PING);
+        task.setInterval(15);
+        task.setOnlyWifi(false);
+        task.setNotification(false);
+        task.setRunning(true);
+        task.setLastScheduled(0);
+        return task;
     }
 }

@@ -27,6 +27,8 @@ import net.ibbaa.keepitup.db.NetworkTaskDAO;
 import net.ibbaa.keepitup.logging.Log;
 import net.ibbaa.keepitup.model.NetworkTask;
 import net.ibbaa.keepitup.resources.ServiceFactoryContributor;
+import net.ibbaa.keepitup.ui.permission.IPermissionManager;
+import net.ibbaa.keepitup.ui.permission.PermissionManager;
 import net.ibbaa.keepitup.util.NumberUtil;
 
 import java.util.List;
@@ -64,14 +66,13 @@ public class NetworkTaskProcessServiceScheduler {
 
     public NetworkTask schedule(NetworkTask networkTask) {
         Log.d(NetworkTaskProcessServiceScheduler.class.getName(), "Schedule network task " + networkTask);
-        boolean useForegroundService = getContext().getResources().getBoolean(R.bool.worker_use_foreground_service);
-        Log.d(NetworkTaskProcessServiceScheduler.class.getName(), "useForegroundService is " + useForegroundService);
         networkTask.setRunning(true);
         networkTaskDAO.updateNetworkTaskRunning(networkTask.getId(), true);
-        if (useForegroundService) {
-            Log.d(NetworkTaskProcessServiceScheduler.class.getName(), "Starting service...");
+        if (shouldStartForegroundService()) {
+            Log.d(NetworkTaskProcessServiceScheduler.class.getName(), "Starting foreground service...");
             startService(networkTask, Delay.IMMEDIATE);
         } else {
+            Log.d(NetworkTaskProcessServiceScheduler.class.getName(), "Foreground service will not be started.");
             reschedule(networkTask, Delay.IMMEDIATE);
         }
         return networkTask;
@@ -120,9 +121,7 @@ public class NetworkTaskProcessServiceScheduler {
         networkTaskDAO.updateNetworkTaskRunning(networkTask.getId(), false);
         networkTask.setLastScheduled(-1);
         terminate(networkTask);
-        boolean useForegroundService = getContext().getResources().getBoolean(R.bool.worker_use_foreground_service);
-        Log.d(NetworkTaskProcessServiceScheduler.class.getName(), "useForegroundService is " + useForegroundService);
-        if (useForegroundService) {
+        if (shouldStartForegroundService()) {
             int running = networkTaskDAO.readNetworkTasksRunning();
             Log.d(NetworkTaskProcessServiceScheduler.class.getName(), "Running tasks: " + running);
             if (running <= 0) {
@@ -149,16 +148,14 @@ public class NetworkTaskProcessServiceScheduler {
     public void startup() {
         Log.d(NetworkTaskProcessServiceScheduler.class.getName(), "Starting all network tasks marked as running.");
         List<NetworkTask> networkTasks = networkTaskDAO.readAllNetworkTasks();
-        Log.d(NetworkTaskProcessServiceScheduler.class.getName(), "Database returned the following network tasks: " + (networkTasks.isEmpty() ? "no network tasks" : ""));
+        Log.d(NetworkTaskProcessServiceScheduler.class.getName(), "Database returned the following network tasks: " + (networkTasks.isEmpty() ? "no network tasks" : networkTasks));
         for (NetworkTask currentTask : networkTasks) {
             if (currentTask.isRunning()) {
-                Log.d(NetworkTaskProcessServiceScheduler.class.getName(), "Network task " + currentTask + " is marked as running. Rescheduling...");
-                boolean useForegroundService = getContext().getResources().getBoolean(R.bool.worker_use_foreground_service);
-                Log.d(NetworkTaskProcessServiceScheduler.class.getName(), "useForegroundService is " + useForegroundService);
-                if (useForegroundService) {
-                    Log.d(NetworkTaskProcessServiceScheduler.class.getName(), "Starting service...");
+                if (shouldStartForegroundService()) {
+                    Log.d(NetworkTaskProcessServiceScheduler.class.getName(), "Starting foreground service...");
                     startService(currentTask, Delay.LASTSCHEDULED);
                 } else {
+                    Log.d(NetworkTaskProcessServiceScheduler.class.getName(), "Foreground service will not be started.");
                     reschedule(currentTask, Delay.LASTSCHEDULED);
                 }
             } else {
@@ -256,6 +253,17 @@ public class NetworkTaskProcessServiceScheduler {
         }
     }
 
+    private boolean shouldStartForegroundService() {
+        Log.d(NetworkTaskProcessServiceScheduler.class.getName(), "shouldStartForegroundService");
+        boolean useForegroundService = getContext().getResources().getBoolean(R.bool.worker_use_foreground_service);
+        Log.d(NetworkTaskProcessServiceScheduler.class.getName(), "useForegroundService is " + useForegroundService);
+        boolean hasPostNotificationsPermission = getPermissionManager().hasPostNotificationsPermission(context);
+        Log.d(NetworkTaskProcessServiceScheduler.class.getName(), "hasPostNotificationsPermission is " + hasPostNotificationsPermission);
+        boolean shouldStartForegroundService = useForegroundService && hasPostNotificationsPermission;
+        Log.d(NetworkTaskProcessServiceScheduler.class.getName(), "shouldStartForegroundService is " + shouldStartForegroundService);
+        return shouldStartForegroundService;
+    }
+
     private IAlarmManager createAlarmManager() {
         ServiceFactoryContributor factoryContributor = new ServiceFactoryContributor(getContext());
         return factoryContributor.createServiceFactory().createAlarmManager(getContext());
@@ -268,6 +276,10 @@ public class NetworkTaskProcessServiceScheduler {
 
     public ITimeService getTimeService() {
         return timeService;
+    }
+
+    public IPermissionManager getPermissionManager() {
+        return new PermissionManager();
     }
 
     private Context getContext() {
