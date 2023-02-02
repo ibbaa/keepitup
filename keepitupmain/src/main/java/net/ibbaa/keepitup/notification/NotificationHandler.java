@@ -146,6 +146,10 @@ public class NotificationHandler {
 
     public Notification buildForegroundNotification() {
         Log.d(NotificationHandler.class.getName(), "Building foreground notification");
+        if(!permissionManager.hasPostNotificationsPermission(getContext())) {
+            Log.e(NotificationHandler.class.getName(), "Cannot build foreground notification because of missing permission. Returning null.");
+            return null;
+        }
         String title = getResources().getString(R.string.notification_title);
         String text = getResources().getString(R.string.notification_foreground_text);
         foregroundNotificationBuilder = createForegroundNotificationBuilder();

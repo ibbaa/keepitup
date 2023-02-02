@@ -18,6 +18,7 @@ package net.ibbaa.keepitup.notification;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import android.app.Notification;
@@ -119,7 +120,13 @@ public class NotificationHandlerTest {
         assertEquals(R.drawable.icon_notification_foreground, notificationBuilder.getSmallIcon());
         assertTrue(notificationBuilder.getStyle() instanceof NotificationCompat.BigTextStyle);
         assertEquals(NotificationCompat.PRIORITY_LOW, notificationBuilder.getPriority());
+    }
 
+    @Test
+    public void testBuildForegroundNotificationWithoutPermission() {
+        permissionManager.setHasPostNotificationsPermission(false);
+        Notification notification = notificationHandler.buildForegroundNotification();
+        assertNull(notification);
     }
 
     private NetworkTask getNetworkTask1() {
