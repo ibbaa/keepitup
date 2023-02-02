@@ -16,6 +16,7 @@
 
 package net.ibbaa.keepitup.service;
 
+import android.annotation.SuppressLint;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Context;
@@ -32,6 +33,7 @@ public class SystemAlarmManager implements IAlarmManager {
         this.alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
     }
 
+    @SuppressLint("MissingPermission")
     @Override
     public void setAlarm(long delay, PendingIntent pendingIntent) {
         Log.d(SystemAlarmManager.class.getName(), "Setting alarm with a delay of " + delay);
