@@ -33,6 +33,7 @@ import net.ibbaa.keepitup.ui.adapter.NetworkTaskUIWrapper;
 import net.ibbaa.keepitup.ui.dialog.ConfirmDialog;
 import net.ibbaa.keepitup.ui.dialog.InfoDialog;
 import net.ibbaa.keepitup.ui.dialog.NetworkTaskEditDialog;
+import net.ibbaa.keepitup.ui.permission.IPermissionManager;
 import net.ibbaa.keepitup.ui.sync.NetworkTaskMainUIBroadcastReceiver;
 import net.ibbaa.keepitup.ui.sync.NetworkTaskMainUIInitTask;
 import net.ibbaa.keepitup.util.ThreadUtil;
@@ -45,6 +46,11 @@ import java.util.concurrent.TimeUnit;
 public class NetworkTaskMainActivity extends RecyclerViewBaseActivity {
 
     private NetworkTaskMainUIBroadcastReceiver broadcastReceiver;
+    private IPermissionManager permissionManager;
+
+    public void injectPermissionManager(IPermissionManager permissionManager) {
+        this.permissionManager = permissionManager;
+    }
 
     @Override
     protected int getRecyclerViewId() {
@@ -156,6 +162,9 @@ public class NetworkTaskMainActivity extends RecyclerViewBaseActivity {
     public void onMainAddClicked(View view) {
         Log.d(NetworkTaskMainActivity.class.getName(), "onMainAddClicked");
         NetworkTaskEditDialog editDialog = new NetworkTaskEditDialog();
+        if (permissionManager != null) {
+            editDialog.injectPermissionManager(permissionManager);
+        }
         NetworkTask task = new NetworkTask(this);
         editDialog.setArguments(task.toBundle());
         Log.d(NetworkTaskMainActivity.class.getName(), "Opening " + NetworkTaskEditDialog.class.getSimpleName());
@@ -185,6 +194,9 @@ public class NetworkTaskMainActivity extends RecyclerViewBaseActivity {
         NetworkTask task = ((NetworkTaskAdapter) getAdapter()).getItem(position).getNetworkTask();
         Log.d(NetworkTaskMainActivity.class.getName(), "onMainEditClicked for network task " + task);
         NetworkTaskEditDialog editDialog = new NetworkTaskEditDialog();
+        if (permissionManager != null) {
+            editDialog.injectPermissionManager(permissionManager);
+        }
         editDialog.setArguments(task.toBundle());
         Log.d(NetworkTaskMainActivity.class.getName(), "Opening " + NetworkTaskEditDialog.class.getSimpleName());
         editDialog.show(getSupportFragmentManager(), NetworkTaskEditDialog.class.getName());

@@ -298,7 +298,7 @@ public class NetworkTaskEditDialog extends DialogFragment implements ContextOpti
             notificationSwitch.setEnabled(true);
             notificationSwitch.setChecked(task.isNotification());
             notificationSwitch.setOnCheckedChangeListener(this::onNotificationCheckedChanged);
-        } else {;
+        } else {
             notificationSwitch.setEnabled(false);
             notificationSwitch.setChecked(false);
             notificationSwitch.setOnCheckedChangeListener(null);

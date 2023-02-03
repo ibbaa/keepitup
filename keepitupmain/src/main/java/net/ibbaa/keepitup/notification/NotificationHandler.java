@@ -54,7 +54,7 @@ public class NotificationHandler {
     public NotificationHandler(Context context, IPermissionManager permissionManager) {
         this.context = context;
         this.permissionManager = permissionManager;
-        if(permissionManager.hasPostNotificationsPermission(context)) {
+        if (permissionManager.hasPostNotificationsPermission(context)) {
             initErrorChannel();
             initForegroundChannel();
         } else {
@@ -117,7 +117,7 @@ public class NotificationHandler {
 
     public void sendErrorNotification(NetworkTask task, LogEntry logEntry) {
         Log.d(NotificationHandler.class.getName(), "Sending error notification for network task " + task + ", log entry " + logEntry);
-        if(!permissionManager.hasPostNotificationsPermission(getContext())) {
+        if (!permissionManager.hasPostNotificationsPermission(getContext())) {
             Log.e(NotificationHandler.class.getName(), "Cannot send error notification because of missing permission.");
             return;
         }
@@ -146,7 +146,7 @@ public class NotificationHandler {
 
     public Notification buildForegroundNotification() {
         Log.d(NotificationHandler.class.getName(), "Building foreground notification");
-        if(!permissionManager.hasPostNotificationsPermission(getContext())) {
+        if (!permissionManager.hasPostNotificationsPermission(getContext())) {
             Log.e(NotificationHandler.class.getName(), "Cannot build foreground notification because of missing permission. Returning null.");
             return null;
         }

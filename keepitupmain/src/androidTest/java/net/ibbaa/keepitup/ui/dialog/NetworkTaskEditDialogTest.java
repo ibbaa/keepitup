@@ -27,7 +27,9 @@ import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.matcher.ViewMatchers.hasChildCount;
 import static androidx.test.espresso.matcher.ViewMatchers.isChecked;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
+import static androidx.test.espresso.matcher.ViewMatchers.isEnabled;
 import static androidx.test.espresso.matcher.ViewMatchers.isNotChecked;
+import static androidx.test.espresso.matcher.ViewMatchers.isNotEnabled;
 import static androidx.test.espresso.matcher.ViewMatchers.isRoot;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
@@ -70,6 +72,7 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         super.beforeEachTestMethod();
         activityScenario = launchRecyclerViewBaseActivity(NetworkTaskMainActivity.class);
         permissionManager = new MockPermissionManager();
+        injectPermissionManager();
     }
 
     @After
@@ -101,7 +104,7 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
 
     @Test
     public void testSwitchYesNoText() {
-        openNetworkTaskEditDialog(getNetworkTask());
+        onView(allOf(withId(R.id.imageview_list_item_network_task_add), isDisplayed())).perform(click());
         onView(withId(R.id.switch_dialog_network_task_edit_onlywifi)).check(matches(isNotChecked()));
         onView(withId(R.id.textview_dialog_network_task_edit_onlywifi_on_off)).check(matches(withText("no")));
         onView(withId(R.id.switch_dialog_network_task_edit_notification)).check(matches(isNotChecked()));
@@ -130,13 +133,14 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
 
     @Test
     public void testGetNetworkTaskEnteredText() {
-        NetworkTaskEditDialog dialog = openNetworkTaskEditDialog(getNetworkTask());
+        onView(allOf(withId(R.id.imageview_list_item_network_task_add), isDisplayed())).perform(click());
         onView(withText("Connect")).perform(click());
         onView(withId(R.id.edittext_dialog_network_task_edit_address)).perform(replaceText("localhost"));
         onView(withId(R.id.edittext_dialog_network_task_edit_port)).perform(replaceText("80"));
         onView(withId(R.id.edittext_dialog_network_task_edit_interval)).perform(replaceText("60"));
         onView(withId(R.id.switch_dialog_network_task_edit_onlywifi)).perform(click());
         onView(withId(R.id.switch_dialog_network_task_edit_notification)).perform(click());
+        NetworkTaskEditDialog dialog = (NetworkTaskEditDialog) getActivity(activityScenario).getSupportFragmentManager().getFragments().get(0);
         NetworkTask task = dialog.getNetworkTask();
         assertNotNull(task);
         assertEquals(AccessType.CONNECT, task.getAccessType());
@@ -165,7 +169,8 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
 
     @Test
     public void testGetInitialNetworkTask() {
-        NetworkTaskEditDialog dialog = openNetworkTaskEditDialog(getNetworkTask());
+        onView(allOf(withId(R.id.imageview_list_item_network_task_add), isDisplayed())).perform(click());
+        NetworkTaskEditDialog dialog = (NetworkTaskEditDialog) getActivity(activityScenario).getSupportFragmentManager().getFragments().get(0);
         assertTrue(dialog.getInitialNetworkTask().isEqual(dialog.getNetworkTask()));
         onView(withText("Connect")).perform(click());
         onView(withId(R.id.edittext_dialog_network_task_edit_address)).perform(replaceText("localhost"));
@@ -182,7 +187,7 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         assertEquals(initialTask.isOnlyWifi(), task.isOnlyWifi());
         assertEquals(initialTask.isNotification(), task.isNotification());
         assertEquals(initialTask.isRunning(), task.isRunning());
-        onView(withId(R.id.edittext_dialog_network_task_edit_port)).perform(replaceText("70"));
+        onView(withId(R.id.edittext_dialog_network_task_edit_port)).perform(replaceText("80"));
         onView(withId(R.id.edittext_dialog_network_task_edit_interval)).perform(replaceText("60"));
         onView(withId(R.id.switch_dialog_network_task_edit_onlywifi)).perform(click());
         onView(withId(R.id.switch_dialog_network_task_edit_notification)).perform(click());
@@ -380,7 +385,7 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
 
     @Test
     public void testNewDefaultValuesForNetworkTask() {
-        openNetworkTaskEditDialog(new NetworkTask(TestRegistry.getContext()));
+        onView(allOf(withId(R.id.imageview_list_item_network_task_add), isDisplayed())).perform(click());
         onView(withText("Ping")).check(matches(isChecked()));
         onView(withId(R.id.edittext_dialog_network_task_edit_address)).check(matches(withText("192.168.178.1")));
         onView(withId(R.id.edittext_dialog_network_task_edit_interval)).check(matches(withText("15")));
@@ -404,7 +409,7 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         onView(withId(R.id.switch_activity_defaults_onlywifi)).perform(click());
         onView(withId(R.id.switch_activity_defaults_notification)).perform(click());
         onView(isRoot()).perform(ViewActions.pressBack());
-        openNetworkTaskEditDialog(new NetworkTask(TestRegistry.getContext()));
+        onView(allOf(withId(R.id.imageview_list_item_network_task_add), isDisplayed())).perform(click());
         onView(withText("Connect")).check(matches(isChecked()));
         onView(withId(R.id.edittext_dialog_network_task_edit_address)).check(matches(withText("host.com")));
         onView(withId(R.id.edittext_dialog_network_task_edit_port)).check(matches(withText("80")));
@@ -861,6 +866,27 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         assertEquals("67", clipboardManager.getData());
     }
 
+    @Test
+    public void testNotificationWithPermission() {
+        onView(allOf(withId(R.id.imageview_list_item_network_task_add), isDisplayed())).perform(click());
+        onView(withId(R.id.switch_dialog_network_task_edit_notification)).check(matches(isEnabled()));
+        onView(withId(R.id.switch_dialog_network_task_edit_notification)).check(matches(isNotChecked()));
+        onView(withId(R.id.textview_dialog_network_task_edit_notification_on_off)).check(matches(withText("no")));
+        onView(withId(R.id.switch_dialog_network_task_edit_notification)).perform(click());
+        onView(withId(R.id.switch_dialog_network_task_edit_notification)).check(matches(isEnabled()));
+        onView(withId(R.id.switch_dialog_network_task_edit_notification)).check(matches(isChecked()));
+        onView(withId(R.id.textview_dialog_network_task_edit_notification_on_off)).check(matches(withText("yes")));
+    }
+
+    @Test
+    public void testNotificationWithoutPermission() {
+        permissionManager.setHasPostNotificationsPermission(false);
+        onView(allOf(withId(R.id.imageview_list_item_network_task_add), isDisplayed())).perform(click());
+        onView(withId(R.id.switch_dialog_network_task_edit_notification)).check(matches(isNotEnabled()));
+        onView(withId(R.id.switch_dialog_network_task_edit_notification)).check(matches(isNotChecked()));
+        onView(withId(R.id.textview_dialog_network_task_edit_notification_on_off)).check(matches(withText("no")));
+    }
+
     private MockClipboardManager prepareMockClipboardManager() {
         onView(isRoot()).perform(waitFor(500));
         NetworkTaskEditDialog dialog = (NetworkTaskEditDialog) getActivity(activityScenario).getSupportFragmentManager().getFragments().get(0);
@@ -870,32 +896,7 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         return clipboardManager;
     }
 
-    private NetworkTaskEditDialog openNetworkTaskEditDialog(NetworkTask task) {
-        NetworkTaskEditDialog networkTaskEditDialog = new NetworkTaskEditDialog();
-        networkTaskEditDialog.injectPermissionManager(permissionManager);
-        MockClipboardManager clipboardManager = new MockClipboardManager();
-        clipboardManager.clearData();
-        networkTaskEditDialog.injectClipboardManager(clipboardManager);
-        networkTaskEditDialog.setArguments(task.toBundle());
-        networkTaskEditDialog.show(getActivity(activityScenario).getSupportFragmentManager(), NetworkTaskEditDialog.class.getName());
-        onView(isRoot()).perform(waitFor(500));
-        return networkTaskEditDialog;
-    }
-
-    private NetworkTask getNetworkTask() {
-        NetworkTask task = new NetworkTask();
-        task.setId(0);
-        task.setIndex(1);
-        task.setSchedulerId(0);
-        task.setInstances(1);
-        task.setAddress("127.0.0.1");
-        task.setPort(80);
-        task.setAccessType(AccessType.PING);
-        task.setInterval(15);
-        task.setOnlyWifi(false);
-        task.setNotification(false);
-        task.setRunning(true);
-        task.setLastScheduled(0);
-        return task;
+    private void injectPermissionManager() {
+        ((NetworkTaskMainActivity)getActivity(activityScenario)).injectPermissionManager(permissionManager);
     }
 }
