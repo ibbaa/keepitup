@@ -40,6 +40,9 @@ public class PermissionManager implements IPermissionManager {
 
     public boolean hasPostNotificationsPermission(Context context) {
         Log.d(PermissionManager.class.getName(), "hasPostNotificationsPermission");
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
+            return true;
+        }
         String postNotificationsPermission = getPostNotificationsPermission(context);
         if (!hasPermission(context, postNotificationsPermission)) {
             Log.d(PermissionManager.class.getName(), "Permission " + postNotificationsPermission + " is not granted");
@@ -75,7 +78,7 @@ public class PermissionManager implements IPermissionManager {
         if (requestCode == getPostNotificationsPermissionCode(activity)) {
             Log.d(PermissionManager.class.getName(), "Post notifications permission was requested");
             if (shouldShowPostNotificationsRationale(activity)) {
-                Log.d(PermissionManager.class.getName(), "Showing permission explain dialog for external storage");
+                Log.d(PermissionManager.class.getName(), "Showing permission explain dialog for post notifications");
                 PermissionExplainDialog permissionExplainDialog = new PermissionExplainDialog();
                 String message = activity.getResources().getString(R.string.text_dialog_permission_explain_post_notifications);
                 PermissionExplainDialog.Permission permission = PermissionExplainDialog.Permission.POST_NOTIFICATIONS;
@@ -83,8 +86,8 @@ public class PermissionManager implements IPermissionManager {
                 permissionExplainDialog.setArguments(bundle);
                 permissionExplainDialog.show(activity.getSupportFragmentManager(), PermissionExplainDialog.class.getName());
             } else {
-                Log.d(PermissionManager.class.getName(), "shouldShowExternalStorageRational returned false, not showing explain dialog again");
-                Log.d(PermissionManager.class.getName(), "External storage permission was denied permanently");
+                Log.d(PermissionManager.class.getName(), "shouldShowPostNotificationsRationale returned false, not showing explain dialog again");
+                Log.d(PermissionManager.class.getName(), "Post notifications permission was denied permanently");
             }
         }
     }

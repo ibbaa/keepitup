@@ -158,7 +158,7 @@ public class NotificationHandler {
             foregroundNotificationBuilder.setVibrate(null);
             foregroundNotificationBuilder.setSound(null);
         }
-        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.S) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
             foregroundNotificationBuilder.setForegroundServiceBehavior(Notification.FOREGROUND_SERVICE_IMMEDIATE);
         }
         return foregroundNotificationBuilder.build();

@@ -18,11 +18,14 @@ package net.ibbaa.keepitup.ui;
 
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.recyclerview.widget.RecyclerView;
 
 import net.ibbaa.keepitup.R;
@@ -34,6 +37,7 @@ import net.ibbaa.keepitup.ui.dialog.ConfirmDialog;
 import net.ibbaa.keepitup.ui.dialog.InfoDialog;
 import net.ibbaa.keepitup.ui.dialog.NetworkTaskEditDialog;
 import net.ibbaa.keepitup.ui.permission.IPermissionManager;
+import net.ibbaa.keepitup.ui.permission.PermissionManager;
 import net.ibbaa.keepitup.ui.sync.NetworkTaskMainUIBroadcastReceiver;
 import net.ibbaa.keepitup.ui.sync.NetworkTaskMainUIInitTask;
 import net.ibbaa.keepitup.util.ThreadUtil;
@@ -52,6 +56,13 @@ public class NetworkTaskMainActivity extends RecyclerViewBaseActivity {
         this.permissionManager = permissionManager;
     }
 
+    public IPermissionManager getPermissionManager() {
+        if (permissionManager != null) {
+            return permissionManager;
+        }
+        return new PermissionManager();
+    }
+
     @Override
     protected int getRecyclerViewId() {
         return R.id.listview_activity_main_network_tasks;
@@ -68,6 +79,10 @@ public class NetworkTaskMainActivity extends RecyclerViewBaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_network_task);
         initRecyclerView();
+        IPermissionManager permissionManager = getPermissionManager();
+        if (!permissionManager.hasPostNotificationsPermission(this)) {
+            permissionManager.requestPostNotificationsPermission(this);
+        }
     }
 
     @Override
@@ -255,6 +270,15 @@ public class NetworkTaskMainActivity extends RecyclerViewBaseActivity {
             Log.e(NetworkTaskMainActivity.class.getName(), "Unknown type " + type);
         }
         confirmDialog.dismiss();
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.M)
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        Log.d(NetworkTaskMainActivity.class.getName(), "onRequestPermissionsResult for code " + requestCode);
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        IPermissionManager permissionManager = getPermissionManager();
+        permissionManager.onRequestPermissionsResult(this, requestCode, permissions, grantResults);
     }
 
     public void onConfirmDialogCancelClicked(ConfirmDialog confirmDialog) {
