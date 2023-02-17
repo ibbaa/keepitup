@@ -14,15 +14,11 @@
  * limitations under the License.
  */
 
-package net.ibbaa.keepitup.service;
+package net.ibbaa.keepitup.ui;
 
-import android.app.PendingIntent;
+import net.ibbaa.keepitup.ui.dialog.AlarmPermissionDialog;
 
-public interface IAlarmManager {
+public interface AlarmPermissionSupport {
 
-    boolean canScheduleAlarms();
-
-    void setAlarm(long delay, PendingIntent pendingIntent);
-
-    void cancelAlarm(PendingIntent pendingIntent);
+    void onAlarmPermissionDialogOkClicked(AlarmPermissionDialog alarmPermissionDialog);
 }

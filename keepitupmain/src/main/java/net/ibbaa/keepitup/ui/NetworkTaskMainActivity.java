@@ -20,6 +20,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Build;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -31,8 +32,11 @@ import androidx.recyclerview.widget.RecyclerView;
 import net.ibbaa.keepitup.R;
 import net.ibbaa.keepitup.logging.Log;
 import net.ibbaa.keepitup.model.NetworkTask;
+import net.ibbaa.keepitup.service.IAlarmManager;
+import net.ibbaa.keepitup.service.SystemAlarmManager;
 import net.ibbaa.keepitup.ui.adapter.NetworkTaskAdapter;
 import net.ibbaa.keepitup.ui.adapter.NetworkTaskUIWrapper;
+import net.ibbaa.keepitup.ui.dialog.AlarmPermissionDialog;
 import net.ibbaa.keepitup.ui.dialog.ConfirmDialog;
 import net.ibbaa.keepitup.ui.dialog.InfoDialog;
 import net.ibbaa.keepitup.ui.dialog.NetworkTaskEditDialog;
@@ -47,7 +51,7 @@ import java.util.List;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
-public class NetworkTaskMainActivity extends RecyclerViewBaseActivity {
+public class NetworkTaskMainActivity extends RecyclerViewBaseActivity implements AlarmPermissionSupport {
 
     private NetworkTaskMainUIBroadcastReceiver broadcastReceiver;
     private IPermissionManager permissionManager;
@@ -83,6 +87,15 @@ public class NetworkTaskMainActivity extends RecyclerViewBaseActivity {
         if (!permissionManager.hasPostNotificationsPermission(this)) {
             permissionManager.requestPostNotificationsPermission(this);
         }
+        if (!createAlarmManager().canScheduleAlarms()) {
+            showAlarmPermissionDialog();
+        }
+    }
+
+    private void showAlarmPermissionDialog() {
+        Log.d(NetworkTaskMainActivity.class.getName(), "showAlarmPermissionDialog");
+        AlarmPermissionDialog alarmPermissionDialog = new AlarmPermissionDialog();
+        alarmPermissionDialog.show(getSupportFragmentManager(), AlarmPermissionDialog.class.getName());
     }
 
     @Override
@@ -286,7 +299,24 @@ public class NetworkTaskMainActivity extends RecyclerViewBaseActivity {
         confirmDialog.dismiss();
     }
 
+    @Override
+    public void onAlarmPermissionDialogOkClicked(AlarmPermissionDialog alarmPermissionDialog) {
+        Log.d(NetworkTaskMainActivity.class.getName(), "onAlarmPermissionDialogOkClicked");
+        if (createAlarmManager().canScheduleAlarms()) {
+            alarmPermissionDialog.dismiss();
+            return;
+        }
+        Log.d(NetworkTaskMainActivity.class.getName(), "Redirecting to alarm settings");
+        Intent intent = new Intent();
+        intent.setAction(Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM);
+        startActivity(intent);
+    }
+
     private NetworkTaskMainUIInitTask getUIInitTask(NetworkTaskAdapter adapter) {
         return new NetworkTaskMainUIInitTask(this, adapter);
+    }
+
+    private IAlarmManager createAlarmManager() {
+        return new SystemAlarmManager(this);
     }
 }

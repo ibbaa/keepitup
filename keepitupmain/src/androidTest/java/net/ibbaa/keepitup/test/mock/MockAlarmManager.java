@@ -56,6 +56,11 @@ public class MockAlarmManager implements IAlarmManager {
     }
 
     @Override
+    public boolean canScheduleAlarms() {
+        return true;
+    }
+
+    @Override
     public void setAlarm(long delay, PendingIntent pendingIntent) {
         setAlarmCalls.add(new SetAlarmCall(delay, pendingIntent));
     }

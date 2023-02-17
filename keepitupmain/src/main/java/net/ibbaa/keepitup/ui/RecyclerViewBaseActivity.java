@@ -71,7 +71,7 @@ public abstract class RecyclerViewBaseActivity extends AppCompatActivity impleme
     protected void showErrorDialog(String errorMessage, int typeface) {
         Log.d(RecyclerViewBaseActivity.class.getName(), "showErrorDialog with message " + errorMessage);
         GeneralErrorDialog errorDialog = new GeneralErrorDialog();
-        Bundle bundle = BundleUtil.stringToBundle(GeneralErrorDialog.class.getSimpleName(), errorMessage);
+        Bundle bundle = BundleUtil.stringToBundle(errorDialog.getMessageKey(), errorMessage);
         bundle.putInt(errorDialog.getTypefaceStyleKey(), typeface);
         errorDialog.setArguments(bundle);
         showDialog(errorDialog, GeneralErrorDialog.class.getName());

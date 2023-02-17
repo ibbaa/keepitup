@@ -16,34 +16,47 @@
 
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/scrollview_dialog_permission_explain"
+    android:id="@+id/scrollview_dialog_akku"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent">
 
     <LinearLayout
-        android:id="@+id/gridlayout_dialog_permission_explain"
+        android:id="@+id/linearlayout_dialog_alarm_permission"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="@dimen/linearlayout_dialog_permission_explain_padding"
+        android:padding="@dimen/linearlayout_dialog_alarm_permission_padding"
         android:orientation="vertical">
 
         <TextView
-            android:id="@+id/textview_dialog_general_permission_explain_message"
+            android:id="@+id/textview_dialog_alarm_permission_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="@dimen/textview_dialog_alarm_permission_title_margin_top"
+            android:padding="@dimen/textview_dialog_alarm_permission_title_padding"
+            android:textStyle="bold"
+            android:text="@string/label_dialog_alarm_permission_title" />
+
+        <TextView
+            android:id="@+id/textview_dialog_alarm_permission_message"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:gravity="center"
+            android:padding="@dimen/textview_dialog_alarm_permission_info_padding"
             android:textStyle="normal"
-            android:text="" />
+            android:textSize="@dimen/textview_dialog_alarm_permission_info_text_size"
+            android:text="@string/text_dialog_alarm_permission_message" />
 
         <ImageView
-            android:id="@+id/imageview_dialog_permission_explain_ok"
+            android:id="@+id/imageview_dialog_alarm_permission_ok"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:paddingTop="@dimen/imageview_dialog_permission_explain_ok_padding_top"
+            android:paddingTop="@dimen/imageview_dialog_alarm_permission_ok_padding_top"
             android:layout_gravity="center"
             android:clickable="true"
             android:focusable="true"
-            android:contentDescription="@string/label_dialog_permission_explain_ok"
+            android:contentDescription="@string/label_dialog_alarm_permission_ok"
             app:srcCompat="@drawable/icon_ok_selector" />
     </LinearLayout>
 </ScrollView>

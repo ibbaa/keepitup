@@ -15,6 +15,12 @@
   -->
 
 <resources>
-    <string name="label_dialog_permission_explain_ok">@android:string/ok</string>
-    <string name="text_dialog_permission_explain_post_notifications">Without the permission to send notifications the app cannot send notifications for failing network tasks and cannot display the symbol for running tasks in the status bar. This also means network task execution may be unreliable. You can use the app without this permission but it is not recommended.</string>
+    <dimen name="linearlayout_dialog_alarm_permission_padding">30dp</dimen>
+    <dimen name="textview_dialog_alarm_permission_title_padding">2dp</dimen>
+    <dimen name="textview_dialog_alarm_permission_title_margin_top">2dp</dimen>
+    <dimen name="textview_dialog_alarm_permission_info_padding">2dp</dimen>
+    <dimen name="textview_dialog_alarm_permission_info_text_size">10sp</dimen>
+    <dimen name="textview_dialog_alarm_permission_link_padding">2dp</dimen>
+    <dimen name="textview_dialog_alarm_permission_link_text_size">10sp</dimen>
+    <dimen name="imageview_dialog_alarm_permission_ok_padding_top">10dp</dimen>
 </resources>

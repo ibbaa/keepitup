@@ -15,6 +15,8 @@
   -->
 
 <resources>
-    <string name="label_dialog_permission_explain_ok">@android:string/ok</string>
-    <string name="text_dialog_permission_explain_post_notifications">Without the permission to send notifications the app cannot send notifications for failing network tasks and cannot display the symbol for running tasks in the status bar. This also means network task execution may be unreliable. You can use the app without this permission but it is not recommended.</string>
+    <string name="label_dialog_alarm_permission_ok">@android:string/ok</string>
+    <string name="label_dialog_alarm_permission_title">Alarms disabled</string>
+    <string name="text_dialog_alarm_permission_message">The app does not have the permission to set alarms and reminders. This is necessary for scheduling network tasks. Please grant the alarm permission in the Android settings. The app will not work without it.</string>
+
 </resources>
