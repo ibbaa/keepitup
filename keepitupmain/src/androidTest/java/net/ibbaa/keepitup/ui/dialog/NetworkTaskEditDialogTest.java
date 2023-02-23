@@ -897,6 +897,6 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
     }
 
     private void injectPermissionManager() {
-        ((NetworkTaskMainActivity)getActivity(activityScenario)).injectPermissionManager(permissionManager);
+        ((NetworkTaskMainActivity) getActivity(activityScenario)).injectPermissionManager(permissionManager);
     }
 }

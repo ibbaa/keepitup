@@ -22,6 +22,7 @@ import android.content.res.Resources;
 import net.ibbaa.keepitup.R;
 import net.ibbaa.keepitup.logging.Log;
 import net.ibbaa.keepitup.model.AccessType;
+import net.ibbaa.keepitup.model.NotificationType;
 import net.ibbaa.keepitup.util.NumberUtil;
 import net.ibbaa.keepitup.util.URLUtil;
 
@@ -45,6 +46,7 @@ public class PreferenceSetup {
         globalSettings.put("preferencePingCount", preferenceManager.getPreferencePingCount());
         globalSettings.put("preferenceConnectCount", preferenceManager.getPreferenceConnectCount());
         globalSettings.put("preferenceNotificationInactiveNetwork", preferenceManager.getPreferenceNotificationInactiveNetwork());
+        globalSettings.put("preferenceNotificationType", preferenceManager.getPreferenceNotificationType() != null ? preferenceManager.getPreferenceNotificationType().getCode() : 1);
         globalSettings.put("preferenceDownloadExternalStorage", preferenceManager.getPreferenceDownloadExternalStorage());
         globalSettings.put("preferenceDownloadFolder", preferenceManager.getPreferenceDownloadFolder());
         globalSettings.put("preferenceDownloadKeep", preferenceManager.getPreferenceDownloadKeep());
@@ -102,6 +104,12 @@ public class PreferenceSetup {
             preferenceManager.setPreferenceNotificationInactiveNetwork(Boolean.parseBoolean(notificationInactiveNetwork.toString()));
         } else {
             preferenceManager.removePreferenceNotificationInactiveNetwork();
+        }
+        Object notificationType = globalSettings.get("preferenceNotificationType");
+        if (isValidNotificationType(notificationType)) {
+            preferenceManager.setPreferenceNotificationType(Objects.requireNonNull(NotificationType.forCode(NumberUtil.getIntValue(notificationType, 1))));
+        } else {
+            preferenceManager.removePreferenceNotificationType();
         }
         Object downloadExternalStorage = globalSettings.get("preferenceDownloadExternalStorage");
         if (isValidBoolean(downloadExternalStorage)) {
@@ -251,11 +259,19 @@ public class PreferenceSetup {
         return AccessType.forCode(NumberUtil.getIntValue(value, -1)) != null;
     }
 
+    private boolean isValidNotificationType(Object value) {
+        if (!NumberUtil.isValidIntValue(value)) {
+            return false;
+        }
+        return NotificationType.forCode(NumberUtil.getIntValue(value, 1)) != null;
+    }
+
     public void removeGlobalSettings() {
         Log.d(PreferenceSetup.class.getName(), "removeGlobalSettings");
         preferenceManager.removePreferencePingCount();
         preferenceManager.removePreferenceConnectCount();
         preferenceManager.removePreferenceNotificationInactiveNetwork();
+        preferenceManager.removePreferenceNotificationType();
         preferenceManager.removePreferenceDownloadExternalStorage();
         preferenceManager.removePreferenceDownloadFolder();
         preferenceManager.removePreferenceDownloadKeep();

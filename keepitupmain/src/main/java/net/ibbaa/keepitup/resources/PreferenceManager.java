@@ -23,6 +23,7 @@ import android.content.res.Resources;
 import net.ibbaa.keepitup.R;
 import net.ibbaa.keepitup.logging.Log;
 import net.ibbaa.keepitup.model.AccessType;
+import net.ibbaa.keepitup.model.NotificationType;
 
 public class PreferenceManager {
 
@@ -190,6 +191,21 @@ public class PreferenceManager {
     public void removePreferenceNotification() {
         Log.d(PreferenceManager.class.getName(), "removePreferenceNotification");
         removePreferenceValue(getResources().getString(R.string.task_notification_key));
+    }
+
+    public NotificationType getPreferenceNotificationType() {
+        Log.d(PreferenceManager.class.getName(), "getPreferenceNotificationType");
+        return NotificationType.forCode(getPreferenceInt(getResources().getString(R.string.notification_type_key), getResources().getInteger(R.integer.notification_type_default)));
+    }
+
+    public void setPreferenceNotificationType(NotificationType notificationType) {
+        Log.d(PreferenceManager.class.getName(), "setPreferenceNotificationType, type is " + notificationType);
+        setPreferenceInt(getResources().getString(R.string.notification_type_key), notificationType.getCode());
+    }
+
+    public void removePreferenceNotificationType() {
+        Log.d(PreferenceManager.class.getName(), "removePreferenceNotificationType");
+        removePreferenceValue(getResources().getString(R.string.notification_type_key));
     }
 
     public int getPreferencePingCount() {

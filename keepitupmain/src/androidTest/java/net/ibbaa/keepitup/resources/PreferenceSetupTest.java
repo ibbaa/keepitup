@@ -24,6 +24,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.SmallTest;
 
 import net.ibbaa.keepitup.model.AccessType;
+import net.ibbaa.keepitup.model.NotificationType;
 import net.ibbaa.keepitup.test.mock.TestRegistry;
 
 import org.junit.After;
@@ -58,6 +59,7 @@ public class PreferenceSetupTest {
         preferenceManager.setPreferencePingCount(5);
         preferenceManager.setPreferenceConnectCount(10);
         preferenceManager.setPreferenceNotificationInactiveNetwork(true);
+        preferenceManager.setPreferenceNotificationType(NotificationType.CHANGE);
         preferenceManager.setPreferenceDownloadExternalStorage(true);
         preferenceManager.setPreferenceDownloadFolder("folder");
         preferenceManager.setPreferenceDownloadKeep(true);
@@ -68,6 +70,7 @@ public class PreferenceSetupTest {
         assertEquals(3, preferenceManager.getPreferencePingCount());
         assertEquals(1, preferenceManager.getPreferenceConnectCount());
         assertFalse(preferenceManager.getPreferenceNotificationInactiveNetwork());
+        assertEquals(NotificationType.FAILURE, preferenceManager.getPreferenceNotificationType());
         assertFalse(preferenceManager.getPreferenceDownloadExternalStorage());
         assertEquals("download", preferenceManager.getPreferenceDownloadFolder());
         assertFalse(preferenceManager.getPreferenceDownloadKeep());
@@ -81,6 +84,7 @@ public class PreferenceSetupTest {
         globalSettings.put("preferencePingCount", 5);
         globalSettings.put("preferenceConnectCount", 10);
         globalSettings.put("preferenceNotificationInactiveNetwork", true);
+        globalSettings.put("preferenceNotificationType", 2);
         globalSettings.put("preferenceDownloadExternalStorage", true);
         globalSettings.put("preferenceDownloadFolder", "folder");
         globalSettings.put("preferenceDownloadKeep", true);
@@ -90,6 +94,7 @@ public class PreferenceSetupTest {
         assertEquals(5, preferenceManager.getPreferencePingCount());
         assertEquals(10, preferenceManager.getPreferenceConnectCount());
         assertTrue(preferenceManager.getPreferenceNotificationInactiveNetwork());
+        assertEquals(NotificationType.CHANGE, preferenceManager.getPreferenceNotificationType());
         assertTrue(preferenceManager.getPreferenceDownloadExternalStorage());
         assertEquals("folder", preferenceManager.getPreferenceDownloadFolder());
         assertTrue(preferenceManager.getPreferenceDownloadKeep());
@@ -103,6 +108,7 @@ public class PreferenceSetupTest {
         globalSettings.put("preferencePingCount", "5");
         globalSettings.put("preferenceConnectCount", "10");
         globalSettings.put("preferenceNotificationInactiveNetwork", "true");
+        globalSettings.put("preferenceNotificationType", "2");
         globalSettings.put("preferenceDownloadExternalStorage", "true");
         globalSettings.put("preferenceDownloadFolder", "folder");
         globalSettings.put("preferenceDownloadKeep", "true");
@@ -112,6 +118,7 @@ public class PreferenceSetupTest {
         assertEquals(5, preferenceManager.getPreferencePingCount());
         assertEquals(10, preferenceManager.getPreferenceConnectCount());
         assertTrue(preferenceManager.getPreferenceNotificationInactiveNetwork());
+        assertEquals(NotificationType.CHANGE, preferenceManager.getPreferenceNotificationType());
         assertTrue(preferenceManager.getPreferenceDownloadExternalStorage());
         assertEquals("folder", preferenceManager.getPreferenceDownloadFolder());
         assertTrue(preferenceManager.getPreferenceDownloadKeep());
@@ -125,6 +132,7 @@ public class PreferenceSetupTest {
         globalSettings.put("preferencePingCount", 11);
         globalSettings.put("preferenceConnectCount", 55);
         globalSettings.put("preferenceNotificationInactiveNetwork", "xyz");
+        globalSettings.put("preferenceNotificationType", 25);
         globalSettings.put("preferenceDownloadExternalStorage", "tru");
         globalSettings.put("preferenceDownloadFolder", null);
         globalSettings.put("preferenceDownloadKeep", 3);
@@ -134,6 +142,7 @@ public class PreferenceSetupTest {
         assertEquals(3, preferenceManager.getPreferencePingCount());
         assertEquals(1, preferenceManager.getPreferenceConnectCount());
         assertFalse(preferenceManager.getPreferenceNotificationInactiveNetwork());
+        assertEquals(NotificationType.FAILURE, preferenceManager.getPreferenceNotificationType());
         assertFalse(preferenceManager.getPreferenceDownloadExternalStorage());
         assertEquals("download", preferenceManager.getPreferenceDownloadFolder());
         assertFalse(preferenceManager.getPreferenceDownloadKeep());
@@ -291,6 +300,7 @@ public class PreferenceSetupTest {
         assertEquals(globalSettings.get("preferencePingCount"), preferenceManager.getPreferencePingCount());
         assertEquals(globalSettings.get("preferenceConnectCount"), preferenceManager.getPreferenceConnectCount());
         assertEquals(globalSettings.get("preferenceNotificationInactiveNetwork"), preferenceManager.getPreferenceNotificationInactiveNetwork());
+        assertEquals(globalSettings.get("preferenceNotificationType"), preferenceManager.getPreferenceNotificationType().getCode());
         assertEquals(globalSettings.get("preferenceDownloadExternalStorage"), preferenceManager.getPreferenceDownloadExternalStorage());
         assertEquals(globalSettings.get("preferenceDownloadFolder"), preferenceManager.getPreferenceDownloadFolder());
         assertEquals(globalSettings.get("preferenceDownloadKeep"), preferenceManager.getPreferenceDownloadKeep());
@@ -303,6 +313,7 @@ public class PreferenceSetupTest {
         preferenceManager.setPreferencePingCount(5);
         preferenceManager.setPreferenceConnectCount(10);
         preferenceManager.setPreferenceNotificationInactiveNetwork(true);
+        preferenceManager.setPreferenceNotificationType(NotificationType.CHANGE);
         preferenceManager.setPreferenceDownloadExternalStorage(true);
         preferenceManager.setPreferenceDownloadFolder("folder");
         preferenceManager.setPreferenceDownloadKeep(true);
@@ -312,6 +323,7 @@ public class PreferenceSetupTest {
         assertEquals(5, preferenceManager.getPreferencePingCount());
         assertEquals(10, preferenceManager.getPreferenceConnectCount());
         assertTrue(preferenceManager.getPreferenceNotificationInactiveNetwork());
+        assertEquals(NotificationType.CHANGE, preferenceManager.getPreferenceNotificationType());
         assertTrue(preferenceManager.getPreferenceDownloadExternalStorage());
         assertEquals("folder", preferenceManager.getPreferenceDownloadFolder());
         assertTrue(preferenceManager.getPreferenceDownloadKeep());
@@ -320,6 +332,7 @@ public class PreferenceSetupTest {
         assertEquals(globalSettings.get("preferencePingCount"), preferenceManager.getPreferencePingCount());
         assertEquals(globalSettings.get("preferenceConnectCount"), preferenceManager.getPreferenceConnectCount());
         assertEquals(globalSettings.get("preferenceNotificationInactiveNetwork"), preferenceManager.getPreferenceNotificationInactiveNetwork());
+        assertEquals(globalSettings.get("preferenceNotificationType"), preferenceManager.getPreferenceNotificationType().getCode());
         assertEquals(globalSettings.get("preferenceDownloadExternalStorage"), preferenceManager.getPreferenceDownloadExternalStorage());
         assertEquals(globalSettings.get("preferenceDownloadFolder"), preferenceManager.getPreferenceDownloadFolder());
         assertEquals(globalSettings.get("preferenceDownloadKeep"), preferenceManager.getPreferenceDownloadKeep());
@@ -400,6 +413,7 @@ public class PreferenceSetupTest {
         preferenceManager.setPreferencePingCount(5);
         preferenceManager.setPreferenceConnectCount(10);
         preferenceManager.setPreferenceNotificationInactiveNetwork(true);
+        preferenceManager.setPreferenceNotificationType(NotificationType.CHANGE);
         preferenceManager.setPreferenceDownloadExternalStorage(true);
         preferenceManager.setPreferenceDownloadFolder("folder");
         preferenceManager.setPreferenceDownloadKeep(true);
@@ -410,6 +424,7 @@ public class PreferenceSetupTest {
         assertEquals(5, preferenceManager.getPreferencePingCount());
         assertEquals(10, preferenceManager.getPreferenceConnectCount());
         assertTrue(preferenceManager.getPreferenceNotificationInactiveNetwork());
+        assertEquals(NotificationType.CHANGE, preferenceManager.getPreferenceNotificationType());
         assertTrue(preferenceManager.getPreferenceDownloadExternalStorage());
         assertEquals("folder", preferenceManager.getPreferenceDownloadFolder());
         assertTrue(preferenceManager.getPreferenceLogFile());
@@ -418,6 +433,7 @@ public class PreferenceSetupTest {
         assertEquals(globalSettings.get("preferencePingCount"), preferenceManager.getPreferencePingCount());
         assertEquals(globalSettings.get("preferenceConnectCount"), preferenceManager.getPreferenceConnectCount());
         assertEquals(globalSettings.get("preferenceNotificationInactiveNetwork"), preferenceManager.getPreferenceNotificationInactiveNetwork());
+        assertEquals(globalSettings.get("preferenceNotificationType"), preferenceManager.getPreferenceNotificationType().getCode());
         assertEquals(globalSettings.get("preferenceDownloadExternalStorage"), preferenceManager.getPreferenceDownloadExternalStorage());
         assertEquals(globalSettings.get("preferenceDownloadFolder"), preferenceManager.getPreferenceDownloadFolder());
         assertEquals(globalSettings.get("preferenceDownloadKeep"), preferenceManager.getPreferenceDownloadKeep());
@@ -478,6 +494,7 @@ public class PreferenceSetupTest {
         preferenceManager.setPreferencePingCount(5);
         preferenceManager.setPreferenceConnectCount(10);
         preferenceManager.setPreferenceNotificationInactiveNetwork(true);
+        preferenceManager.setPreferenceNotificationType(NotificationType.CHANGE);
         preferenceManager.setPreferenceDownloadExternalStorage(true);
         preferenceManager.setPreferenceDownloadFolder("folder");
         preferenceManager.setPreferenceDownloadKeep(true);
@@ -487,6 +504,7 @@ public class PreferenceSetupTest {
         assertEquals(3, preferenceManager.getPreferencePingCount());
         assertEquals(1, preferenceManager.getPreferenceConnectCount());
         assertFalse(preferenceManager.getPreferenceNotificationInactiveNetwork());
+        assertEquals(NotificationType.FAILURE, preferenceManager.getPreferenceNotificationType());
         assertFalse(preferenceManager.getPreferenceDownloadExternalStorage());
         assertEquals("download", preferenceManager.getPreferenceDownloadFolder());
         assertFalse(preferenceManager.getPreferenceDownloadKeep());
@@ -533,6 +551,7 @@ public class PreferenceSetupTest {
         preferenceManager.setPreferencePingCount(5);
         preferenceManager.setPreferenceConnectCount(10);
         preferenceManager.setPreferenceNotificationInactiveNetwork(true);
+        preferenceManager.setPreferenceNotificationType(NotificationType.CHANGE);
         preferenceManager.setPreferenceDownloadExternalStorage(true);
         preferenceManager.setPreferenceExternalStorageType(30);
         preferenceManager.setPreferenceDownloadFolder("folder");
@@ -554,6 +573,7 @@ public class PreferenceSetupTest {
         assertEquals(3, preferenceManager.getPreferencePingCount());
         assertEquals(1, preferenceManager.getPreferenceConnectCount());
         assertFalse(preferenceManager.getPreferenceNotificationInactiveNetwork());
+        assertEquals(NotificationType.FAILURE, preferenceManager.getPreferenceNotificationType());
         assertFalse(preferenceManager.getPreferenceDownloadExternalStorage());
         assertEquals(0, preferenceManager.getPreferenceExternalStorageType());
         assertEquals("download", preferenceManager.getPreferenceDownloadFolder());

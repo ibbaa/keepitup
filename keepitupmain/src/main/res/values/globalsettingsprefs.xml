@@ -25,6 +25,8 @@
     <integer name="connect_count_maximum">10</integer>
     <string name="notification_inactive_network_key">notification_inactive_network_key</string>
     <bool name="notification_inactive_network_default">false</bool>
+    <string name="notification_type_key">notification_type_key</string>
+    <integer name="notification_type_default">1</integer>
     <string name="download_external_storage_key">download_external_storage_key</string>
     <bool name="download_external_storage_default">false</bool>
     <string name="download_folder_key">download_folder_key</string>

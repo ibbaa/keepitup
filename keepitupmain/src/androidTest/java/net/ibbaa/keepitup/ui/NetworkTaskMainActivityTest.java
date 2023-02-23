@@ -529,7 +529,7 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
     }
 
     private void injectPermissionManager(ActivityScenario<?> activityScenario) {
-        ((NetworkTaskMainActivity)getActivity(activityScenario)).injectPermissionManager(permissionManager);
+        ((NetworkTaskMainActivity) getActivity(activityScenario)).injectPermissionManager(permissionManager);
     }
 }
 

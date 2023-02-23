@@ -29,6 +29,7 @@ import net.ibbaa.keepitup.logging.Dump;
 import net.ibbaa.keepitup.model.AccessType;
 import net.ibbaa.keepitup.model.LogEntry;
 import net.ibbaa.keepitup.model.NetworkTask;
+import net.ibbaa.keepitup.model.NotificationType;
 import net.ibbaa.keepitup.test.mock.TestRegistry;
 import net.ibbaa.keepitup.util.JSONUtil;
 
@@ -142,6 +143,7 @@ public class JSONSystemSetupTest {
         preferenceManager.setPreferencePingCount(5);
         preferenceManager.setPreferenceConnectCount(10);
         preferenceManager.setPreferenceNotificationInactiveNetwork(true);
+        preferenceManager.setPreferenceNotificationType(NotificationType.CHANGE);
         preferenceManager.setPreferenceDownloadExternalStorage(true);
         preferenceManager.setPreferenceExternalStorageType(30);
         preferenceManager.setPreferenceDownloadFolder("folder");
@@ -166,6 +168,7 @@ public class JSONSystemSetupTest {
         assertEquals(5, globalSettingsData.getInt("preferencePingCount"));
         assertEquals(10, globalSettingsData.getInt("preferenceConnectCount"));
         assertTrue(globalSettingsData.getBoolean("preferenceNotificationInactiveNetwork"));
+        assertEquals(NotificationType.CHANGE, NotificationType.forCode(globalSettingsData.getInt("preferenceNotificationType")));
         assertTrue(globalSettingsData.getBoolean("preferenceDownloadExternalStorage"));
         assertEquals("folder", globalSettingsData.getString("preferenceDownloadFolder"));
         assertTrue(globalSettingsData.getBoolean("preferenceDownloadKeep"));
@@ -316,6 +319,7 @@ public class JSONSystemSetupTest {
         preferenceManager.setPreferencePingCount(5);
         preferenceManager.setPreferenceConnectCount(10);
         preferenceManager.setPreferenceNotificationInactiveNetwork(true);
+        preferenceManager.setPreferenceNotificationType(NotificationType.CHANGE);
         preferenceManager.setPreferenceDownloadExternalStorage(true);
         preferenceManager.setPreferenceExternalStorageType(1);
         preferenceManager.setPreferenceDownloadFolder("folder");
@@ -339,6 +343,7 @@ public class JSONSystemSetupTest {
         assertEquals(5, preferenceManager.getPreferencePingCount());
         assertEquals(10, preferenceManager.getPreferenceConnectCount());
         assertTrue(preferenceManager.getPreferenceNotificationInactiveNetwork());
+        assertEquals(NotificationType.CHANGE, preferenceManager.getPreferenceNotificationType());
         assertTrue(preferenceManager.getPreferenceDownloadExternalStorage());
         assertEquals(1, preferenceManager.getPreferenceExternalStorageType());
         assertEquals("folder", preferenceManager.getPreferenceDownloadFolder());

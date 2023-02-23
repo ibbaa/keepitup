@@ -24,6 +24,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.SmallTest;
 
 import net.ibbaa.keepitup.model.AccessType;
+import net.ibbaa.keepitup.model.NotificationType;
 import net.ibbaa.keepitup.test.mock.TestRegistry;
 
 import org.junit.After;
@@ -202,6 +203,18 @@ public class PreferenceManagerTest {
         preferenceManager.setPreferenceNotificationInactiveNetwork(true);
         preferenceManager.removePreferenceNotificationInactiveNetwork();
         assertFalse(preferenceManager.getPreferenceNotificationInactiveNetwork());
+    }
+
+    @Test
+    public void testGetSetRemovePreferenceNotificationType() {
+        assertEquals(NotificationType.FAILURE, preferenceManager.getPreferenceNotificationType());
+        preferenceManager.setPreferenceNotificationType(NotificationType.CHANGE);
+        assertEquals(NotificationType.CHANGE, preferenceManager.getPreferenceNotificationType());
+        preferenceManager.removeAllPreferences();
+        assertEquals(NotificationType.FAILURE, preferenceManager.getPreferenceNotificationType());
+        preferenceManager.setPreferenceNotificationType(NotificationType.CHANGE);
+        preferenceManager.removePreferenceNotificationType();
+        assertEquals(NotificationType.FAILURE, preferenceManager.getPreferenceNotificationType());
     }
 
     @Test
