@@ -29,6 +29,7 @@ import net.ibbaa.keepitup.db.NetworkTaskDAO;
 import net.ibbaa.keepitup.logging.Log;
 import net.ibbaa.keepitup.model.LogEntry;
 import net.ibbaa.keepitup.model.NetworkTask;
+import net.ibbaa.keepitup.model.NotificationType;
 import net.ibbaa.keepitup.notification.NotificationHandler;
 import net.ibbaa.keepitup.resources.PreferenceManager;
 import net.ibbaa.keepitup.resources.ServiceFactoryContributor;
@@ -85,13 +86,18 @@ public abstract class NetworkTaskWorker implements Runnable {
         Log.d(NetworkTaskWorker.class.getName(), "Executing worker thread for " + networkTask);
         try {
             NetworkTaskDAO networkTaskDAO = new NetworkTaskDAO(getContext());
+            LogDAO logDAO = new LogDAO(getContext());
+            NetworkTask databaseTask = networkTaskDAO.readNetworkTask(networkTask.getId());
+            if (databaseTask == null) {
+                Log.d(NetworkTaskWorker.class.getName(), "NetworkTask not found in database.");
+                return;
+            }
             Log.d(NetworkTaskWorker.class.getName(), "Updating last scheduled time.");
             long timestamp = timeService.getCurrentTimestamp();
             networkTaskDAO.updateNetworkTaskLastScheduled(networkTask.getId(), timestamp);
             SimpleDateFormat logTimestampDateFormat = new SimpleDateFormat(LOG_TIMESTAMP_PATTERN, Locale.US);
             Log.d(NetworkTaskWorker.class.getName(), "Updated last scheduled timestamp to " + timestamp + " (" + logTimestampDateFormat.format(timestamp) + ")");
             LogEntry logEntry = checkInstances();
-            NetworkTask databaseTask = networkTaskDAO.readNetworkTask(networkTask.getId());
             if (logEntry != null) {
                 Log.d(NetworkTaskWorker.class.getName(), "Skipping execution. Too many active instances.");
                 writeLogEntry(databaseTask, logEntry, false);
@@ -100,6 +106,8 @@ public abstract class NetworkTaskWorker implements Runnable {
             Log.d(NetworkTaskWorker.class.getName(), "Increasing instances count.");
             networkTaskDAO.increaseNetworkTaskInstances(networkTask.getId());
             sendNetworkTaskUINotificationBroadcast();
+            LogEntry lastLogEntry = logDAO.readMostRecentLogForNetworkTask(networkTask.getId());
+            boolean lastSuccessful = lastLogEntry != null ? lastLogEntry.isSuccess() : true;
             try {
                 boolean isConnectedWithWifi = networkManager.isConnectedWithWiFi();
                 boolean isConnected = networkManager.isConnected();
@@ -108,7 +116,7 @@ public abstract class NetworkTaskWorker implements Runnable {
                 logEntry = checkNetwork(isConnectedWithWifi, isConnected);
                 if (logEntry != null) {
                     Log.d(NetworkTaskWorker.class.getName(), "Skipping execution because of the network state.");
-                    writeLogEntry(databaseTask, logEntry, shouldSendErrorNotification(isConnectedWithWifi, isConnected));
+                    writeLogEntry(databaseTask, logEntry, shouldSendErrorNotification(isConnectedWithWifi, isConnected, lastSuccessful));
                     return;
                 }
                 Log.d(NetworkTaskWorker.class.getName(), "Executing task...");
@@ -116,7 +124,7 @@ public abstract class NetworkTaskWorker implements Runnable {
                 Log.d(NetworkTaskWorker.class.getName(), "The executed task returned " + executionResult);
                 if (isNetworkTaskValid(databaseTask)) {
                     logEntry = executionResult.getLogEntry();
-                    writeLogEntry(databaseTask, logEntry, shouldSendErrorNotification(executionResult));
+                    writeLogEntry(databaseTask, logEntry, shouldSendNotification(executionResult, lastSuccessful));
                 } else {
                     Log.d(NetworkTaskWorker.class.getName(), "Network task does no longer exist. Not writing log.");
                 }
@@ -135,20 +143,20 @@ public abstract class NetworkTaskWorker implements Runnable {
         }
     }
 
-    private void writeLogEntry(NetworkTask databaseTask, LogEntry logEntry, boolean sendErrorNotification) {
-        Log.d(NetworkTaskWorker.class.getName(), "Writing log entry " + logEntry + " to database, sendErrorNotification is " + sendErrorNotification);
+    private void writeLogEntry(NetworkTask databaseTask, LogEntry logEntry, boolean sendNotification) {
+        Log.d(NetworkTaskWorker.class.getName(), "Writing log entry " + logEntry + " to database, sendNotification is " + sendNotification);
         LogDAO logDAO = new LogDAO(getContext());
         logDAO.insertAndDeleteLog(logEntry);
         PreferenceManager preferenceManager = new PreferenceManager(getContext());
         if (preferenceManager.getPreferenceLogFile()) {
-            Log.d(NetworkTaskWorker.class.getName(), "Writing log entry " + logEntry + " to file, sendErrorNotification is " + sendErrorNotification);
+            Log.d(NetworkTaskWorker.class.getName(), "Writing log entry " + logEntry + " to file, sendNotification is " + sendNotification);
             NetworkTaskLog.log(getContext(), databaseTask, logEntry);
         }
         Log.d(NetworkTaskWorker.class.getName(), "Notify UI");
         sendNetworkTaskUINotificationBroadcast();
         sendLogEntryUINotificationBroadcast();
-        if (sendErrorNotification) {
-            sendErrorNotification(logEntry);
+        if (sendNotification) {
+            sendNotification(logEntry);
         }
     }
 
@@ -168,26 +176,29 @@ public abstract class NetworkTaskWorker implements Runnable {
         getContext().sendBroadcast(logUIintent);
     }
 
-    private boolean shouldSendErrorNotification(ExecutionResult executionResult) {
+    private boolean shouldSendNotification(ExecutionResult executionResult, boolean lastSuccessful) {
         Log.d(NetworkTaskWorker.class.getName(), "shouldSendErrorNotification");
-        if (executionResult.isInterrupted()) {
-            Log.d(NetworkTaskWorker.class.getName(), "Execution was interrupted. Returning false.");
-            return false;
-        }
-        LogEntry logEntry = executionResult.getLogEntry();
-        if (logEntry.isSuccess()) {
-            Log.d(NetworkTaskWorker.class.getName(), "Execution was successful. Returning false.");
-            return false;
-        }
         if (!networkTask.isNotification()) {
             Log.d(NetworkTaskWorker.class.getName(), "Notifications for this network task are disabled. Not sending notifications. Returning false.");
             return false;
         }
-        Log.d(NetworkTaskWorker.class.getName(), "Returning true.");
-        return true;
+        if (executionResult.isInterrupted()) {
+            Log.d(NetworkTaskWorker.class.getName(), "Execution was interrupted. Returning false.");
+            return false;
+        }
+        boolean successful = executionResult.getLogEntry().isSuccess();
+        Log.d(NetworkTaskWorker.class.getName(), "lastSuccessful is " + lastSuccessful);
+        Log.d(NetworkTaskWorker.class.getName(), "successful is " + successful);
+        PreferenceManager preferenceManager = new PreferenceManager(getContext());
+        if (NotificationType.CHANGE.equals(preferenceManager.getPreferenceNotificationType())) {
+            Log.d(NetworkTaskWorker.class.getName(), "NotificationType is CHANGE. Returning " + (lastSuccessful != successful) + ".");
+            return lastSuccessful != successful;
+        }
+        Log.d(NetworkTaskWorker.class.getName(), "NotificationType is FAILURE. Returning " + !successful + ".");
+        return !successful;
     }
 
-    private boolean shouldSendErrorNotification(boolean isConnectedWithWifi, boolean isConnected) {
+    private boolean shouldSendErrorNotification(boolean isConnectedWithWifi, boolean isConnected, boolean lastSuccessful) {
         Log.d(NetworkTaskWorker.class.getName(), "shouldSendErrorNotification");
         if (!networkTask.isNotification()) {
             Log.d(NetworkTaskWorker.class.getName(), "Notifications for this network task are disabled. Returning false.");
@@ -202,11 +213,15 @@ public abstract class NetworkTaskWorker implements Runnable {
             Log.d(NetworkTaskWorker.class.getName(), "No active network connection and notifications for inactive networks are disabled. Returning false.");
             return false;
         }
-        Log.d(NetworkTaskWorker.class.getName(), "Returning true.");
+        if (NotificationType.CHANGE.equals(preferenceManager.getPreferenceNotificationType())) {
+            Log.d(NetworkTaskWorker.class.getName(), "NotificationType is CHANGE. Returning " + lastSuccessful + ".");
+            return lastSuccessful;
+        }
+        Log.d(NetworkTaskWorker.class.getName(), "NotificationType is FAILURE. Returning true.");
         return true;
     }
 
-    private void sendErrorNotification(LogEntry logEntry) {
+    private void sendNotification(LogEntry logEntry) {
         Log.d(NetworkTaskWorker.class.getName(), "sendErrorNotification for log entry " + logEntry);
         notificationHandler.sendErrorNotification(networkTask, logEntry);
     }
