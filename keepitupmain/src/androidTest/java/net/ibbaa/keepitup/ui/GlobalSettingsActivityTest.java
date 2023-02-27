@@ -494,6 +494,7 @@ public class GlobalSettingsActivityTest extends BaseUITest {
     public void testLogFolderDialogOpen() {
         onView(withId(R.id.switch_activity_global_settings_log_file)).perform(scrollTo());
         onView(withId(R.id.switch_activity_global_settings_log_file)).perform(click());
+        onView(withId(R.id.cardview_activity_global_settings_log_folder)).perform(scrollTo());
         onView(withId(R.id.cardview_activity_global_settings_log_folder)).perform(click());
         assertEquals(1, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
         onView(withId(R.id.imageview_dialog_file_choose_cancel)).perform(click());
@@ -531,6 +532,7 @@ public class GlobalSettingsActivityTest extends BaseUITest {
         assertEquals("download", preferenceManager.getPreferenceDownloadFolder());
         onView(withId(R.id.switch_activity_global_settings_log_file)).perform(scrollTo());
         onView(withId(R.id.switch_activity_global_settings_log_file)).perform(click());
+        onView(withId(R.id.cardview_activity_global_settings_log_folder)).perform(scrollTo());
         onView(withId(R.id.cardview_activity_global_settings_log_folder)).perform(click());
         onView(withId(R.id.edittext_dialog_file_choose_folder)).check(matches(withText("log")));
         onView(withId(R.id.edittext_dialog_file_choose_folder)).perform(replaceText("test"));
@@ -574,6 +576,7 @@ public class GlobalSettingsActivityTest extends BaseUITest {
         assertTrue(test.createNewFile());
         onView(withId(R.id.switch_activity_global_settings_log_file)).perform(scrollTo());
         onView(withId(R.id.switch_activity_global_settings_log_file)).perform(click());
+        onView(withId(R.id.cardview_activity_global_settings_log_folder)).perform(scrollTo());
         onView(withId(R.id.cardview_activity_global_settings_log_folder)).perform(click());
         onView(withId(R.id.edittext_dialog_file_choose_folder)).check(matches(withText("log")));
         onView(withId(R.id.edittext_dialog_file_choose_folder)).perform(replaceText("test"));
@@ -581,6 +584,7 @@ public class GlobalSettingsActivityTest extends BaseUITest {
         assertEquals(1, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
         onView(withId(R.id.textview_dialog_general_error_message)).check(matches(withText("Error creating log directory.")));
         onView(withId(R.id.imageview_dialog_general_error_ok)).perform(click());
+        onView(withId(R.id.cardview_activity_global_settings_log_folder)).perform(scrollTo());
         onView(withId(R.id.textview_activity_global_settings_log_folder)).check(matches(withText(endsWith("log"))));
         assertEquals("log", preferenceManager.getPreferenceLogFolder());
     }
@@ -651,6 +655,7 @@ public class GlobalSettingsActivityTest extends BaseUITest {
         mockFileManager.setExternalDirectory(null, 0);
         mockFileManager.setExternalRootDirectory(null, 0);
         activityScenario.onActivity(activity -> ((GlobalSettingsActivity) activity).injectFileManager(mockFileManager));
+        onView(withId(R.id.cardview_activity_global_settings_log_folder)).perform(scrollTo());
         onView(withId(R.id.cardview_activity_global_settings_log_folder)).perform(click());
         assertEquals(1, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
         onView(withId(R.id.textview_dialog_general_error_message)).check(matches(withText("Error accessing external files directory.")));
@@ -684,6 +689,7 @@ public class GlobalSettingsActivityTest extends BaseUITest {
         PreferenceManager preferenceManager = getPreferenceManager();
         onView(withId(R.id.switch_activity_global_settings_log_file)).perform(scrollTo());
         onView(withId(R.id.switch_activity_global_settings_log_file)).perform(click());
+        onView(withId(R.id.cardview_activity_global_settings_log_folder)).perform(scrollTo());
         onView(withId(R.id.cardview_activity_global_settings_log_folder)).perform(click());
         MockFileManager mockFileManager = new MockFileManager();
         mockFileManager.setExternalDirectory(null, 0);
@@ -694,6 +700,7 @@ public class GlobalSettingsActivityTest extends BaseUITest {
         assertEquals(1, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
         onView(withId(R.id.textview_dialog_general_error_message)).check(matches(withText("Error creating log directory.")));
         onView(withId(R.id.imageview_dialog_general_error_ok)).perform(click());
+        onView(withId(R.id.cardview_activity_global_settings_log_folder)).perform(scrollTo());
         onView(withId(R.id.textview_activity_global_settings_log_folder)).check(matches(withText(endsWith("log"))));
         assertEquals("log", preferenceManager.getPreferenceLogFolder());
     }
@@ -846,6 +853,7 @@ public class GlobalSettingsActivityTest extends BaseUITest {
         assertEquals("log", preferenceManager.getPreferenceLogFolder());
         onView(withId(R.id.switch_activity_global_settings_log_file)).perform(scrollTo());
         onView(withId(R.id.switch_activity_global_settings_log_file)).perform(click());
+        onView(withId(R.id.cardview_activity_global_settings_log_folder)).perform(scrollTo());
         onView(withId(R.id.cardview_activity_global_settings_log_folder)).perform(click());
         onView(withId(R.id.edittext_dialog_file_choose_folder)).check(matches(withText("log")));
         rotateScreen(activityScenario);
@@ -854,6 +862,7 @@ public class GlobalSettingsActivityTest extends BaseUITest {
         onView(withId(R.id.edittext_dialog_file_choose_folder)).perform(replaceText("test"));
         onView(withId(R.id.scrollview_dialog_file_choose)).perform(swipeUp());
         onView(withId(R.id.imageview_dialog_file_choose_ok)).perform(click());
+        onView(withId(R.id.cardview_activity_global_settings_log_folder)).perform(scrollTo());
         onView(withId(R.id.textview_activity_global_settings_log_folder)).check(matches(withText(endsWith("test"))));
         assertEquals("test", preferenceManager.getPreferenceLogFolder());
         assertTrue(testFile.exists());

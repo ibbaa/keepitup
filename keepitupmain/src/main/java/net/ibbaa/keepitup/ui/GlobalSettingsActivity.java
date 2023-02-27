@@ -21,6 +21,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.CompoundButton;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 
 import androidx.cardview.widget.CardView;
@@ -29,6 +31,7 @@ import com.google.android.material.switchmaterial.SwitchMaterial;
 
 import net.ibbaa.keepitup.R;
 import net.ibbaa.keepitup.logging.Log;
+import net.ibbaa.keepitup.model.NotificationType;
 import net.ibbaa.keepitup.resources.PreferenceManager;
 import net.ibbaa.keepitup.resources.PreferenceSetup;
 import net.ibbaa.keepitup.service.IFileManager;
@@ -52,6 +55,7 @@ public class GlobalSettingsActivity extends SettingsInputActivity {
     private TextView connectCountText;
     private SwitchMaterial notificationInactiveNetworkSwitch;
     private TextView notificationInactiveNetworkOnOffText;
+    private RadioGroup notificationType;
     private SwitchMaterial downloadExternalStorageSwitch;
     private TextView downloadExternalStorageOnOffText;
     private TextView downloadFolderText;
@@ -71,6 +75,7 @@ public class GlobalSettingsActivity extends SettingsInputActivity {
         preparePingCountField();
         prepareConnectCountField();
         prepareNotificationInactiveNetworkSwitch();
+        prepareNotificationTypeRadioGroup();
         prepareDownloadExternalStorageSwitch();
         prepareDownloadFolderField();
         prepareDownloadKeepSwitch();
@@ -135,6 +140,44 @@ public class GlobalSettingsActivity extends SettingsInputActivity {
         PreferenceManager preferenceManager = new PreferenceManager(this);
         preferenceManager.setPreferenceNotificationInactiveNetwork(isChecked);
         prepareNotificationInactiveNetworkOnOffText();
+    }
+
+    private void prepareNotificationTypeRadioGroup() {
+        Log.d(GlobalSettingsActivity.class.getName(), "prepareNotificationTypeRadioGroup");
+        notificationType = findViewById(R.id.radiogroup_activity_global_settings_notification_type);
+        PreferenceManager preferenceManager = new PreferenceManager(this);
+        NotificationType type = preferenceManager.getPreferenceNotificationType();
+        Log.d(GlobalSettingsActivity.class.getName(), "notification type is " + type);
+        RadioButton typeFailureButton = findViewById(R.id.radiobutton_activity_global_settings_notification_type_failure);
+        RadioButton typeChangeButton = findViewById(R.id.radiobutton_activity_global_settings_notification_type_change);
+        notificationType.setOnCheckedChangeListener(null);
+        if (type == NotificationType.FAILURE) {
+            typeFailureButton.setChecked(true);
+            typeChangeButton.setChecked(false);
+        } else if (type == NotificationType.CHANGE) {
+            typeFailureButton.setChecked(false);
+            typeChangeButton.setChecked(true);
+        } else {
+            typeFailureButton.setChecked(true);
+            typeChangeButton.setChecked(false);
+        }
+        notificationType.setOnCheckedChangeListener(this::onNotificationTypeChanged);
+    }
+
+    private void onNotificationTypeChanged(RadioGroup group, int checkedId) {
+        Log.d(GlobalSettingsActivity.class.getName(), "onNotificationTypeChanged");
+        PreferenceManager preferenceManager = new PreferenceManager(this);
+        int checkedType = group.getCheckedRadioButtonId();
+        if (R.id.radiobutton_activity_global_settings_notification_type_failure == checkedType) {
+            Log.d(GlobalSettingsActivity.class.getName(), "Notification type FAILURE selected");
+            preferenceManager.setPreferenceNotificationType(NotificationType.FAILURE);
+        } else if (R.id.radiobutton_activity_global_settings_notification_type_change == checkedType) {
+            Log.d(GlobalSettingsActivity.class.getName(), "Notification type CHANGE selected");
+            preferenceManager.setPreferenceNotificationType(NotificationType.CHANGE);
+        } else {
+            Log.d(GlobalSettingsActivity.class.getName(), "Unknown notification type selected");
+            preferenceManager.setPreferenceNotificationType(NotificationType.FAILURE);
+        }
     }
 
     private void prepareDownloadExternalStorageSwitch() {

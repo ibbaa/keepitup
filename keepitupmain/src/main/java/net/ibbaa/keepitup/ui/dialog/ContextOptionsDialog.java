@@ -32,7 +32,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import net.ibbaa.keepitup.R;
 import net.ibbaa.keepitup.logging.Log;
-import net.ibbaa.keepitup.ui.BatteryOptimizationSupport;
 import net.ibbaa.keepitup.ui.ContextOptionsSupport;
 import net.ibbaa.keepitup.ui.adapter.ContextOptionAdapter;
 import net.ibbaa.keepitup.util.BundleUtil;
@@ -172,7 +171,7 @@ public class ContextOptionsDialog extends DialogFragment {
             Log.e(ContextOptionsDialog.class.getName(), "getContextOptionsSupport, activity is null");
             return null;
         }
-        if (!(activity instanceof BatteryOptimizationSupport)) {
+        if (!(activity instanceof ContextOptionsSupport)) {
             Log.e(ContextOptionsDialog.class.getName(), "getContextOptionsSupport, activity is not an instance of " + ContextOptionsSupport.class.getSimpleName());
             return null;
         }
