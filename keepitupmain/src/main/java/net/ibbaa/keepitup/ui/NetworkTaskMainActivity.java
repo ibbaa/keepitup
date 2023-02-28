@@ -306,10 +306,12 @@ public class NetworkTaskMainActivity extends RecyclerViewBaseActivity implements
             alarmPermissionDialog.dismiss();
             return;
         }
-        Log.d(NetworkTaskMainActivity.class.getName(), "Redirecting to alarm settings");
-        Intent intent = new Intent();
-        intent.setAction(Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM);
-        startActivity(intent);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            Log.d(NetworkTaskMainActivity.class.getName(), "Redirecting to alarm settings");
+            Intent intent = new Intent();
+            intent.setAction(Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM);
+            startActivity(intent);
+        }
     }
 
     private NetworkTaskMainUIInitTask getUIInitTask(NetworkTaskAdapter adapter) {
