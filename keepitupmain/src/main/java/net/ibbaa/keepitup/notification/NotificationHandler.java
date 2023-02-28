@@ -107,7 +107,7 @@ public class NotificationHandler {
         return notificationManager;
     }
 
-    public NotificationCompat.Builder getErrorNotificationBuilder() {
+    public NotificationCompat.Builder getMessageNotificationBuilder() {
         return errorNotificationBuilder;
     }
 
@@ -115,25 +115,25 @@ public class NotificationHandler {
         return foregroundNotificationBuilder;
     }
 
-    public void sendErrorNotification(NetworkTask task, LogEntry logEntry) {
-        Log.d(NotificationHandler.class.getName(), "Sending error notification for network task " + task + ", log entry " + logEntry);
+    public void sendMessageNotification(NetworkTask task, LogEntry logEntry) {
+        Log.d(NotificationHandler.class.getName(), "Sending notification for network task " + task + ", log entry " + logEntry);
         if (!permissionManager.hasPostNotificationsPermission(getContext())) {
-            Log.e(NotificationHandler.class.getName(), "Cannot send error notification because of missing permission.");
+            Log.e(NotificationHandler.class.getName(), "Cannot send notification because of missing permission.");
             return;
         }
-        Notification notification = buildErrorNotification(task, logEntry);
+        Notification notification = buildMessageNotification(task, logEntry);
         notificationManager.notify(task.getSchedulerId(), notification);
     }
 
-    private Notification buildErrorNotification(NetworkTask task, LogEntry logEntry) {
-        Log.d(NotificationHandler.class.getName(), "Building error notification for network task " + task + ", log entry " + logEntry);
+    private Notification buildMessageNotification(NetworkTask task, LogEntry logEntry) {
+        Log.d(NotificationHandler.class.getName(), "Building notification for network task " + task + ", log entry " + logEntry);
         String title = getResources().getString(R.string.notification_title);
         String timestampText = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.MEDIUM).format(new Date(logEntry.getTimestamp()));
         String addressText = String.format(getResources().getString(R.string.notification_address), new EnumMapping(getContext()).getAccessTypeAddressText(task.getAccessType()));
         String formattedAddressText = String.format(addressText, task.getAddress(), task.getPort());
-        String text = String.format(getResources().getString(R.string.notification_error_text), task.getIndex() + 1, formattedAddressText, timestampText, logEntry.getMessage() == null ? getResources().getString(R.string.string_none) : logEntry.getMessage());
-        errorNotificationBuilder = createErrorNotificationBuilder();
-        errorNotificationBuilder.setSmallIcon(R.drawable.icon_notification).setContentTitle(title).setContentText(text).setStyle(new NotificationCompat.BigTextStyle().bigText(text)).setPriority(NotificationCompat.PRIORITY_DEFAULT);
+        String text = String.format(getResources().getString(logEntry.isSuccess() ? R.string.notification_success_text : R.string.notification_error_text), task.getIndex() + 1, formattedAddressText, timestampText, logEntry.getMessage() == null ? getResources().getString(R.string.string_none) : logEntry.getMessage());
+        errorNotificationBuilder = createMessageNotificationBuilder();
+        errorNotificationBuilder.setSmallIcon(logEntry.isSuccess() ? R.drawable.icon_notification_ok : R.drawable.icon_notification_failure).setContentTitle(title).setContentText(text).setStyle(new NotificationCompat.BigTextStyle().bigText(text)).setPriority(NotificationCompat.PRIORITY_DEFAULT);
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
             errorNotificationBuilder.setVibrate(getVibrationPattern());
             Uri soundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
@@ -187,7 +187,7 @@ public class NotificationHandler {
         return factoryContributor.createServiceFactory().createNotificationManager(getContext());
     }
 
-    private NotificationCompat.Builder createErrorNotificationBuilder() {
+    private NotificationCompat.Builder createMessageNotificationBuilder() {
         ServiceFactoryContributor factoryContributor = new ServiceFactoryContributor(getContext());
         return factoryContributor.createServiceFactory().createNotificationBuilder(getContext(), getErrorChannelId());
     }

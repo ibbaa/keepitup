@@ -24,5 +24,6 @@
     <string name="notification_title">Keep it up</string>
     <string name="notification_address">%s</string>
     <string name="notification_error_text">Execution of network task %d failed. %s. Timestamp: %s. Message: %s</string>
+    <string name="notification_success_text">Execution of network task %d successful. %s. Timestamp: %s. Message: %s</string>
     <string name="notification_foreground_text">Network task running...</string>
 </resources>

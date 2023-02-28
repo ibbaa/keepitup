@@ -94,7 +94,8 @@ public class GlobalSettingsActivityTest extends BaseUITest {
         onView(withId(R.id.radiobutton_activity_global_settings_notification_type_failure)).check(matches(withText("Failure")));
         onView(withId(R.id.radiobutton_activity_global_settings_notification_type_change)).check(matches(withText("Change")));
         onView(withId(R.id.radiobutton_activity_global_settings_notification_type_failure)).check(matches(isChecked()));
-        onView(withId(R.id.radiobutton_activity_global_settings_notification_type_change)).check(matches(not(isChecked())));;
+        onView(withId(R.id.radiobutton_activity_global_settings_notification_type_change)).check(matches(not(isChecked())));
+        ;
         onView(withId(R.id.textview_activity_global_settings_download_external_storage_label)).check(matches(withText("Download to an external storage folder")));
         onView(withId(R.id.switch_activity_global_settings_download_external_storage)).check(matches(isNotChecked()));
         onView(withId(R.id.textview_activity_global_settings_download_folder_label)).check(matches(withText("Download folder")));
