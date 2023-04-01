@@ -15,6 +15,6 @@
   -->
 
 <resources>
-    <string name="service_factory_implementation">net.ibbaa.keepitup.test.mock.TestServiceFactory</string>
+    <string name="sersvice_factory_implementation">net.ibbaa.keepitup.test.mock.TestServiceFactory</string>
     <string name="worker_factory_implementation">net.ibbaa.keepitup.test.mock.TestWorkerFactory</string>
 </resources>
