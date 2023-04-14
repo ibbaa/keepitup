@@ -50,6 +50,7 @@ android {
             disable 'ExpiredTargetSdkVersion'
         }
     }
+    namespace 'net.ibbaa.keepitup'
 }
 
 dependencies {
