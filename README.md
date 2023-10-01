@@ -11,7 +11,7 @@ It checks network services periodically by sending a ping, connecting to a speci
 - A task sends a specified number of pings, performs a specified number of connections attempts or downloads a file or a site
 - Successful and unsuccessful attempts are logged
 - Downloaded files can automatically be deleted after a successful download or be kept
-- Notifications can be sent on failure or an unsuccessful attempt
+- Notifications can be sent on failure or when a network service goes down or up
 - A network task can be restricted to WiFi connections, i.e. it does not perform any action on mobile networks with potentially limited download data
 - The configuration can be exported and imported as a JSON data file
 
@@ -22,6 +22,9 @@ It checks network services periodically by sending a ping, connecting to a speci
 - <i>INTERNET</i> for accessing the internet
 - <i>WAKE_LOCK</i> to keep the device awake while executing a task
 - <i>FOREGROUND_SERVICE</i> to start the foreground service for running tasks
+- <i>USE_EXACT_ALARM</i> to start networks tasks after expiry of intervals (Android 13+)
+- <i>SCHEDULE_EXACT_ALARM</i> to start networks tasks after expiry of intervals (Android 11 and 12)
+- <i>POST_NOTIFICATIONS</i> for sending notifications
 
 <b>Note</b>
 
