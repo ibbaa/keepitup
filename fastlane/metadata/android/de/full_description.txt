@@ -7,7 +7,7 @@ Keep it up überprüft den Status von Netzwerkdiensten oder Webseiten indem rege
 - Ein Task sendet eine bestimmte Anzahl an Pings, unternimmt eine bestimmte Anzahl von Verbindungsversuchen oder lädt eine Datei oder eine Seite herunter
 - Erfolgreiche und nicht erfolgreiche Versuche werden geloggt
 - Heruntergeladene Dateien können automatisch gelöscht oder vorgehalten werden
-- Bei nicht erfolgreichen Versuchen oder Fehlern kann eine Benachrichtigung gesendet werden
+- Bei nicht erfolgreichen Versuchen oder wenn ein Dienst offline oder online geht kann eine Benachrichtigung versendet werden
 - Ein Network Task kann auf WLAN Netzwerke beschränkt werden um in Mobilnetzwerken mit ev. begrenztem Datenvolumen keinen Netzwerkverkehr zu verursachen
 - Die Konfiguration kann als JSON Datei exportiert oder importiert werden
 
@@ -17,6 +17,9 @@ Keep it up überprüft den Status von Netzwerkdiensten oder Webseiten indem rege
 - <i>INTERNET</i> für den Internet-Zugriff
 - <i>WAKE_LOCK</i> um das Gerät während der Ausführung eines Tasks aktiv zu halten
 - <i>FOREGROUND_SERVICE</i> um den Dienst zur Ausführung von Tasks zu starten
+- <i>USE_EXACT_ALARM</i> um die Tasks nach Ablauf des Intervalls zu starten (ab Android 13)
+- <i>SCHEDULE_EXACT_ALARM</i> um die Tasks nach Ablauf des Intervalls zu starten (Android 11 und 12)
+- <i>POST_NOTIFICATIONS</i> um Benachrichtigungen zu senden
 
 <b>Hinweis</b>
 Die App funktioniert am Besten bei abgeschalteter Akkuoptimierung. Wenn die Akkuoptimierung eingeschaltet ist kann die Ausführung der einzelnen Tasks speziell bei kurzen Intervallen unzuverlässig sein, d.h. die Intervalle können sich verlängern und sie werden nicht exakt zu den definierten Zeitpunkten ausgeführt. In der App befindet sich ein Link zu den Android-Systemeinstellungen. Dort kann die Akkuoptimierung abgeschaltet werden. Natürlich ist bei abgeschalteter Akkuoptimierung der Verbrauch ev. höher.

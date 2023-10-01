@@ -1,2 +1,6 @@
-
+* New target API level is 33 (Android 13), applied all required changes
+* Minimum API level stays 21 (Android 5)
+* Notifications can now be sent on status change (service goes down or up)
+* Default stays notification on failure
+* Various bug fixes
 
