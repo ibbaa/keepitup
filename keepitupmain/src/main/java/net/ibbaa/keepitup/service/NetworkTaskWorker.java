@@ -177,7 +177,7 @@ public abstract class NetworkTaskWorker implements Runnable {
     }
 
     private boolean shouldSendNotification(ExecutionResult executionResult, boolean lastSuccessful) {
-        Log.d(NetworkTaskWorker.class.getName(), "shouldSendErrorNotification");
+        Log.d(NetworkTaskWorker.class.getName(), "shouldSendNotification");
         if (!networkTask.isNotification()) {
             Log.d(NetworkTaskWorker.class.getName(), "Notifications for this network task are disabled. Not sending notifications. Returning false.");
             return false;
