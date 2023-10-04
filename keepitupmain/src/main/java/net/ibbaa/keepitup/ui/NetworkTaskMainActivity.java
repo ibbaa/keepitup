@@ -160,16 +160,19 @@ public class NetworkTaskMainActivity extends RecyclerViewBaseActivity implements
         if (id == R.id.menu_action_activity_main_defaults) {
             Log.d(NetworkTaskMainActivity.class.getName(), "menu_action_activity_main_defaults triggered");
             Intent intent = new Intent(this, DefaultsActivity.class);
+            intent.setPackage(getPackageName());
             startActivity(intent);
             return true;
         } else if (id == R.id.menu_action_activity_main_global_settings) {
             Log.d(NetworkTaskMainActivity.class.getName(), "menu_action_activity_main_global_settings triggered");
             Intent intent = new Intent(this, GlobalSettingsActivity.class);
+            intent.setPackage(getPackageName());
             startActivity(intent);
             return true;
         } else if (id == R.id.menu_action_activity_main_system) {
             Log.d(NetworkTaskMainActivity.class.getName(), "menu_action_activity_main_system triggered");
             Intent intent = new Intent(this, SystemActivity.class);
+            intent.setPackage(getPackageName());
             startActivity(intent);
             return true;
         } else if (id == R.id.menu_action_activity_main_info) {
@@ -235,6 +238,7 @@ public class NetworkTaskMainActivity extends RecyclerViewBaseActivity implements
         Log.d(NetworkTaskMainActivity.class.getName(), "onMainLogClicked for network task " + networkTask);
         Intent intent = new Intent(this, NetworkTaskLogActivity.class);
         intent.putExtras(networkTask.toBundle());
+        intent.setPackage(getPackageName());
         startActivity(intent);
     }
 

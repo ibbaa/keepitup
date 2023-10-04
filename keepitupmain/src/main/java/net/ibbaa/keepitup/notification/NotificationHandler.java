@@ -170,6 +170,7 @@ public class NotificationHandler {
 
     private void setMainActivityIntent(NotificationCompat.Builder builder) {
         Intent mainActivityIntent = new Intent(getContext(), NetworkTaskMainActivity.class);
+        mainActivityIntent.setPackage(getContext().getPackageName());
         TaskStackBuilder stackBuilder = TaskStackBuilder.create(getContext());
         stackBuilder.addNextIntentWithParentStack(mainActivityIntent);
         PendingIntent resultPendingIntent;

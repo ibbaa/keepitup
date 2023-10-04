@@ -128,6 +128,7 @@ public class NetworkTaskProcessServiceScheduler {
             if (running <= 0) {
                 Log.d(NetworkTaskProcessServiceScheduler.class.getName(), "No running tasks. Stopping service.");
                 Intent intent = new Intent(getContext(), NetworkTaskRunningNotificationService.class);
+                intent.setPackage(getContext().getPackageName());
                 intent.putExtras(networkTask.toBundle());
                 getContext().stopService(intent);
             }
@@ -194,6 +195,7 @@ public class NetworkTaskProcessServiceScheduler {
     @SuppressLint("UnspecifiedImmutableFlag")
     private boolean hasPendingIntent(NetworkTask networkTask) {
         Intent intent = new Intent(getContext(), NetworkTaskProcessBroadcastReceiver.class);
+        intent.setPackage(getContext().getPackageName());
         intent.putExtras(networkTask.toBundle());
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             return PendingIntent.getBroadcast(getContext(), networkTask.getSchedulerId(), intent, PendingIntent.FLAG_IMMUTABLE | PendingIntent.FLAG_NO_CREATE) != null;
@@ -205,6 +207,7 @@ public class NetworkTaskProcessServiceScheduler {
     @SuppressLint("UnspecifiedImmutableFlag")
     private PendingIntent getPendingIntent(NetworkTask networkTask) {
         Intent intent = new Intent(getContext(), NetworkTaskProcessBroadcastReceiver.class);
+        intent.setPackage(getContext().getPackageName());
         intent.putExtras(networkTask.toBundle());
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             return PendingIntent.getBroadcast(getContext(), networkTask.getSchedulerId(), intent, PendingIntent.FLAG_IMMUTABLE | PendingIntent.FLAG_NO_CREATE);
@@ -216,6 +219,7 @@ public class NetworkTaskProcessServiceScheduler {
     @SuppressLint("UnspecifiedImmutableFlag")
     private PendingIntent createPendingIntent(NetworkTask networkTask) {
         Intent intent = new Intent(getContext(), NetworkTaskProcessBroadcastReceiver.class);
+        intent.setPackage(getContext().getPackageName());
         intent.putExtras(networkTask.toBundle());
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             return PendingIntent.getBroadcast(getContext(), networkTask.getSchedulerId(), intent, PendingIntent.FLAG_IMMUTABLE | PendingIntent.FLAG_CANCEL_CURRENT);
@@ -243,6 +247,7 @@ public class NetworkTaskProcessServiceScheduler {
         Log.d(NetworkTaskProcessServiceScheduler.class.getName(), "startService for network task " + task + " with delay " + delay);
         try {
             Intent intent = new Intent(getContext(), NetworkTaskRunningNotificationService.class);
+            intent.setPackage(getContext().getPackageName());
             intent.putExtras(task.toBundle());
             intent.putExtra(NetworkTaskRunningNotificationService.getRescheduleDelayKey(), delay.name());
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
