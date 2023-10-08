@@ -17,7 +17,7 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdk 33
+    compileSdk 34
     defaultConfig {
         applicationId "net.ibbaa.keepitup"
         minSdkVersion 21
@@ -64,14 +64,14 @@ dependencies {
     implementation(platform('org.jetbrains.kotlin:kotlin-bom:1.9.10'))
     implementation 'androidx.appcompat:appcompat:1.6.1'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
-    implementation 'com.google.android.material:material:1.9.0'
+    implementation 'com.google.android.material:material:1.10.0'
     implementation 'androidx.annotation:annotation:1.7.0'
     implementation 'androidx.preference:preference:1.2.1'
     implementation('com.google.guava:guava:32.1.2-android') {
         exclude group: 'com.google.guava', module: 'failureaccess'
     }
     testImplementation 'junit:junit:4.13.2'
-    testImplementation 'org.mockito:mockito-core:5.5.0'
+    testImplementation 'org.mockito:mockito-core:5.6.0'
     testImplementation 'org.powermock:powermock-api-mockito2:2.0.9'
     testImplementation 'org.powermock:powermock-module-junit4:2.0.9'
     testImplementation 'org.powermock:powermock-core:2.0.9'
