@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package net.ibbaa.keepitup.service.log;
+package net.ibbaa.keepitup.logging;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNotSame;
@@ -24,9 +24,9 @@ import static org.junit.Assert.assertSame;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.SmallTest;
 
-import net.ibbaa.keepitup.logging.ILogger;
 import net.ibbaa.keepitup.model.NetworkTask;
 import net.ibbaa.keepitup.test.mock.TestRegistry;
+import net.ibbaa.phonelog.ILogger;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;

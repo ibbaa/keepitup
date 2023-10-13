@@ -16,9 +16,10 @@
 
 package net.ibbaa.keepitup.test.mock;
 
-import net.ibbaa.keepitup.logging.ILogger;
-import net.ibbaa.keepitup.logging.LogFileEntry;
-import net.ibbaa.keepitup.logging.LogLevel;
+
+import net.ibbaa.phonelog.ILogger;
+import net.ibbaa.phonelog.LogFileEntry;
+import net.ibbaa.phonelog.LogLevel;
 
 import java.util.ArrayList;
 import java.util.List;

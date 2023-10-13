@@ -14,16 +14,16 @@
  * limitations under the License.
  */
 
-package net.ibbaa.keepitup.service.log;
+package net.ibbaa.keepitup.logging;
 
 import android.content.Context;
 
-import net.ibbaa.keepitup.logging.ILogger;
-import net.ibbaa.keepitup.logging.LogLevel;
 import net.ibbaa.keepitup.model.LogEntry;
 import net.ibbaa.keepitup.model.NetworkTask;
 import net.ibbaa.keepitup.service.SystemFileManager;
 import net.ibbaa.keepitup.util.LogUtil;
+import net.ibbaa.phonelog.ILogger;
+import net.ibbaa.phonelog.LogLevel;
 
 import java.util.concurrent.ConcurrentHashMap;
 

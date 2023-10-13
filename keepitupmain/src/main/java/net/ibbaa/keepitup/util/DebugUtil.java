@@ -19,14 +19,14 @@ package net.ibbaa.keepitup.util;
 import android.content.Context;
 
 import net.ibbaa.keepitup.R;
-import net.ibbaa.keepitup.logging.DefaultLogFormatter;
-import net.ibbaa.keepitup.logging.FileDump;
-import net.ibbaa.keepitup.logging.FileLogger;
-import net.ibbaa.keepitup.logging.IDump;
-import net.ibbaa.keepitup.logging.ILogger;
 import net.ibbaa.keepitup.logging.Log;
-import net.ibbaa.keepitup.logging.LogLevel;
 import net.ibbaa.keepitup.service.IFileManager;
+import net.ibbaa.phonelog.DefaultLogFormatter;
+import net.ibbaa.phonelog.FileDump;
+import net.ibbaa.phonelog.FileLogger;
+import net.ibbaa.phonelog.IDump;
+import net.ibbaa.phonelog.ILogger;
+import net.ibbaa.phonelog.LogLevel;
 
 import java.io.File;
 
@@ -59,7 +59,7 @@ public class DebugUtil {
         Log.d(DebugUtil.class.getName(), "deleteFileCount is " + deleteFileCount);
         Log.d(DebugUtil.class.getName(), "logDirectory is " + logDirectory);
         Log.d(DebugUtil.class.getName(), "logFileName is " + logFileName);
-        return new FileLogger(maxLogLevel, maxLogFileSize, archiveFileCount, deleteFileCount, logDirectory, logFileName, new DefaultLogFormatter());
+        return new FileLogger(maxLogLevel, maxLogFileSize, archiveFileCount, deleteFileCount, logDirectory, logFileName, new DefaultLogFormatter(), null);
     }
 
     public static IDump getFileDump(Context context, IFileManager fileManager) {

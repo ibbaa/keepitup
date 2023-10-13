@@ -17,6 +17,8 @@
 package net.ibbaa.keepitup.logging;
 
 import net.ibbaa.keepitup.BuildConfig;
+import net.ibbaa.phonelog.ILogger;
+import net.ibbaa.phonelog.LogLevel;
 
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 

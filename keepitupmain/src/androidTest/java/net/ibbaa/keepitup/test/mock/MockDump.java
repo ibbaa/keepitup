@@ -16,8 +16,8 @@
 
 package net.ibbaa.keepitup.test.mock;
 
-import net.ibbaa.keepitup.logging.IDump;
-import net.ibbaa.keepitup.logging.IDumpSource;
+import net.ibbaa.phonelog.IDump;
+import net.ibbaa.phonelog.IDumpSource;
 
 import java.util.ArrayList;
 import java.util.List;

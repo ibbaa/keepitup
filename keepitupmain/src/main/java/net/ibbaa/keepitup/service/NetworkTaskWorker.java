@@ -33,7 +33,7 @@ import net.ibbaa.keepitup.model.NotificationType;
 import net.ibbaa.keepitup.notification.NotificationHandler;
 import net.ibbaa.keepitup.resources.PreferenceManager;
 import net.ibbaa.keepitup.resources.ServiceFactoryContributor;
-import net.ibbaa.keepitup.service.log.NetworkTaskLog;
+import net.ibbaa.keepitup.logging.NetworkTaskLog;
 import net.ibbaa.keepitup.service.network.DNSLookup;
 import net.ibbaa.keepitup.service.network.DNSLookupResult;
 import net.ibbaa.keepitup.ui.permission.IPermissionManager;

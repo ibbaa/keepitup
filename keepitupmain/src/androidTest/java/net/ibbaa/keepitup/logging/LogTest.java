@@ -22,6 +22,8 @@ import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.SmallTest;
 
 import net.ibbaa.keepitup.test.mock.MockLogger;
+import net.ibbaa.phonelog.LogFileEntry;
+import net.ibbaa.phonelog.LogLevel;
 
 import org.junit.After;
 import org.junit.Before;

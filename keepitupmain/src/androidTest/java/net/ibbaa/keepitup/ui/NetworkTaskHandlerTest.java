@@ -24,14 +24,14 @@ import static org.junit.Assert.assertTrue;
 
 import androidx.test.core.app.ActivityScenario;
 
-import net.ibbaa.keepitup.logging.ILogger;
+import net.ibbaa.keepitup.logging.NetworkTaskLog;
 import net.ibbaa.keepitup.model.AccessType;
 import net.ibbaa.keepitup.model.LogEntry;
 import net.ibbaa.keepitup.model.NetworkTask;
-import net.ibbaa.keepitup.service.log.NetworkTaskLog;
 import net.ibbaa.keepitup.test.mock.TestRegistry;
 import net.ibbaa.keepitup.ui.adapter.NetworkTaskAdapter;
 import net.ibbaa.keepitup.ui.adapter.NetworkTaskUIWrapper;
+import net.ibbaa.phonelog.ILogger;
 
 import org.junit.After;
 import org.junit.Before;

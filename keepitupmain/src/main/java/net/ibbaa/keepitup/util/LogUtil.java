@@ -19,15 +19,15 @@ package net.ibbaa.keepitup.util;
 import android.content.Context;
 
 import net.ibbaa.keepitup.R;
-import net.ibbaa.keepitup.logging.FileLogger;
-import net.ibbaa.keepitup.logging.ILogger;
 import net.ibbaa.keepitup.logging.Log;
-import net.ibbaa.keepitup.logging.LogLevel;
-import net.ibbaa.keepitup.logging.PassthroughMessageLogFormatter;
 import net.ibbaa.keepitup.model.LogEntry;
 import net.ibbaa.keepitup.model.NetworkTask;
 import net.ibbaa.keepitup.resources.PreferenceManager;
 import net.ibbaa.keepitup.service.IFileManager;
+import net.ibbaa.phonelog.FileLogger;
+import net.ibbaa.phonelog.ILogger;
+import net.ibbaa.phonelog.LogLevel;
+import net.ibbaa.phonelog.PassthroughMessageLogFormatter;
 
 import java.io.File;
 import java.text.DateFormat;
@@ -67,7 +67,7 @@ public class LogUtil {
         Log.d(LogUtil.class.getName(), "deleteFileCount is " + deleteFileCount);
         Log.d(LogUtil.class.getName(), "logDirectory is " + logDirectory);
         Log.d(LogUtil.class.getName(), "logFileName is " + logFileName);
-        return new FileLogger(maxLogLevel, maxLogFileSize, archiveFileCount, deleteFileCount, logDirectory, logFileName, new PassthroughMessageLogFormatter());
+        return new FileLogger(maxLogLevel, maxLogFileSize, archiveFileCount, deleteFileCount, logDirectory, logFileName, new PassthroughMessageLogFormatter(), null);
     }
 
     public static String getLogFileName(Context context, IFileManager fileManager, NetworkTask networkTask) {

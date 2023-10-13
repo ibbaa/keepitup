@@ -24,6 +24,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.SmallTest;
 
 import net.ibbaa.keepitup.test.mock.MockDump;
+import net.ibbaa.phonelog.IDumpSource;
 
 import org.junit.After;
 import org.junit.Before;
