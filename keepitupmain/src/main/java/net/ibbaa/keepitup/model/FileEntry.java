@@ -42,6 +42,7 @@ public class FileEntry {
     }
 
     public FileEntry(Bundle bundle) {
+        this();
         this.name = bundle.getString("name");
         this.directory = bundle.getInt("directory") >= 1;
         this.parent = bundle.getInt("parent") >= 1;
