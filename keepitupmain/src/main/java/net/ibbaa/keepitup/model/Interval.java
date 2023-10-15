@@ -19,6 +19,8 @@ package net.ibbaa.keepitup.model;
 import android.os.Bundle;
 import android.os.PersistableBundle;
 
+import androidx.annotation.NonNull;
+
 import net.ibbaa.keepitup.util.NumberUtil;
 
 import java.util.HashMap;
@@ -122,6 +124,42 @@ public class Interval {
         return start.isValid() && end.isValid() && end.isAfter(start);
     }
 
+    public boolean startsBefore(Interval other) {
+        if(!isValid() || !other.isValid()) {
+            return false;
+        }
+        return start.isBefore(other.start);
+    }
+
+    public boolean endsAfter(Interval other) {
+        if(!isValid() || !other.isValid()) {
+            return false;
+        }
+        return end.isAfter(other.end);
+    }
+
+    public boolean isBefore(Interval other) {
+        if(!isValid() || !other.isValid()) {
+            return false;
+        }
+        return end.isBefore(other.start);
+    }
+
+    public boolean isAfter(Interval other) {
+        if(!isValid() || !other.isValid()) {
+            return false;
+        }
+        return start.isAfter(other.end);
+    }
+
+    public boolean doesOverlap(Interval other) {
+        if(!isValid() || !other.isValid()) {
+            return false;
+        }
+        return !isBefore(other) && !isAfter(other);
+    }
+
+    @NonNull
     @Override
     public String toString() {
         return "Interval{" +
