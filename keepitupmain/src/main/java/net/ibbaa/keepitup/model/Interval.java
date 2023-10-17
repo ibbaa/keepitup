@@ -28,10 +28,12 @@ import java.util.Map;
 
 public class Interval {
 
+    private long id;
     private Time start;
     private Time end;
 
     public Interval() {
+        this.id = -1;
         this.start = new Time();
         this.end = new Time();
     }
@@ -42,6 +44,7 @@ public class Interval {
 
     public Interval(Bundle bundle) {
         this();
+        this.id = bundle.getLong("id");
         start.setHour(bundle.getInt("hourstart"));
         start.setMinute(bundle.getInt("minutestart"));
         end.setHour(bundle.getInt("hourend"));
@@ -50,6 +53,9 @@ public class Interval {
 
     public Interval(Map<String, ?> map) {
         this();
+        if (NumberUtil.isValidLongValue(map.get("id"))) {
+            this.id = NumberUtil.getLongValue(map.get("id"), -1);
+        }
         if (NumberUtil.isValidIntValue(map.get("hourstart"))) {
             start.setHour(NumberUtil.getIntValue(map.get("hourstart"), 0));
         }
@@ -62,6 +68,14 @@ public class Interval {
         if (NumberUtil.isValidIntValue(map.get("minuteend"))) {
             end.setMinute(NumberUtil.getIntValue(map.get("minuteend"), 0));
         }
+    }
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
     }
 
     public Time getStart() {
@@ -90,6 +104,7 @@ public class Interval {
 
     public PersistableBundle toPersistableBundle() {
         PersistableBundle bundle = new PersistableBundle();
+        bundle.putLong("id", id);
         bundle.putInt("hourstart", start.getHour());
         bundle.putInt("minutestart", start.getMinute());
         bundle.putInt("hourend", end.getHour());
@@ -103,6 +118,7 @@ public class Interval {
 
     public Map<String, ?> toMap() {
         Map<String, Object> map = new HashMap<>();
+        map.put("id", id);
         map.put("hourstart", start.getHour());
         map.put("minutestart", start.getMinute());
         map.put("hourend", end.getHour());

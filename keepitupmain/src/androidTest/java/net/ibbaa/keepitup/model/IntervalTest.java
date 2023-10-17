@@ -16,6 +16,7 @@
 
 package net.ibbaa.keepitup.model;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
@@ -39,21 +40,25 @@ public class IntervalTest {
     @Test
     public void testToBundleDefaultValues() {
         Interval interval = new Interval();
+        assertEquals(-1, interval.getId());
         assertTrue(new Time().isEqual(interval.getStart()));
         assertTrue(new Time().isEqual(interval.getEnd()));
         PersistableBundle persistableBundle = interval.toPersistableBundle();
         assertNotNull(persistableBundle);
         interval = new Interval(persistableBundle);
+        assertEquals(-1, interval.getId());
         assertTrue(new Time().isEqual(interval.getStart()));
         assertTrue(new Time().isEqual(interval.getEnd()));
         Bundle bundle = interval.toBundle();
         assertNotNull(bundle);
         interval = new Interval(bundle);
+        assertEquals(-1, interval.getId());
         assertTrue(new Time().isEqual(interval.getStart()));
         assertTrue(new Time().isEqual(interval.getEnd()));
         Map<String, ?> map = interval.toMap();
         assertNotNull(map);
         interval = new Interval(map);
+        assertEquals(-1, interval.getId());
         assertTrue(new Time().isEqual(interval.getStart()));
         assertTrue(new Time().isEqual(interval.getEnd()));
     }
@@ -62,6 +67,7 @@ public class IntervalTest {
     public void testEmptyMap() {
         Map<String, ?> map = new HashMap<>();
         Interval interval = new Interval(map);
+        assertEquals(-1, interval.getId());
         assertTrue(new Time().isEqual(interval.getStart()));
         assertTrue(new Time().isEqual(interval.getEnd()));
     }
@@ -69,11 +75,13 @@ public class IntervalTest {
     @Test
     public void testInvalidMap() {
         Map<String, Object> map = new HashMap<>();
+        map.put("id", "id");
         map.put("hourstart", "hour");
         map.put("minutestart", "minute");
         map.put("hourend", "hour");
         map.put("minuteend", "minute");
         Interval interval = new Interval(map);
+        assertEquals(-1, interval.getId());
         assertTrue(new Time().isEqual(interval.getStart()));
         assertTrue(new Time().isEqual(interval.getEnd()));
     }
@@ -81,20 +89,24 @@ public class IntervalTest {
     @Test
     public void testMapStringValues() {
         Map<String, Object> map = new HashMap<>();
+        map.put("id", "1");
         map.put("hourstart", "1");
         map.put("minutestart", "2");
         Interval interval = new Interval(map);
         Time start = new Time();
         start.setHour(1);
         start.setMinute(2);
+        assertEquals(1, interval.getId());
         assertTrue(start.isEqual(interval.getStart()));
         assertTrue(new Time().isEqual(interval.getEnd()));
+        map.put("id", "2");
         map.put("hourend", "3");
         map.put("minuteend", "4");
         interval = new Interval(map);
         Time end = new Time();
         end.setHour(3);
         end.setMinute(4);
+        assertEquals(2, interval.getId());
         assertTrue(start.isEqual(interval.getStart()));
         assertTrue(end.isEqual(interval.getEnd()));
     }
@@ -108,23 +120,28 @@ public class IntervalTest {
         end.setHour(3);
         end.setMinute(4);
         Interval interval = new Interval();
+        interval.setId(5);
         interval.setStart(start);
         PersistableBundle persistableBundle = interval.toPersistableBundle();
         assertNotNull(persistableBundle);
         interval = new Interval(persistableBundle);
+        assertEquals(5, interval.getId());
         assertTrue(start.isEqual(interval.getStart()));
         assertTrue(new Time().isEqual(interval.getEnd()));
         interval = new Interval();
+        interval.setId(5);
         interval.setStart(start);
         interval.setEnd(end);
         persistableBundle = interval.toPersistableBundle();
         assertNotNull(persistableBundle);
         interval = new Interval(persistableBundle);
+        assertEquals(5, interval.getId());
         assertTrue(start.isEqual(interval.getStart()));
         assertTrue(end.isEqual(interval.getEnd()));
         Bundle bundle = interval.toBundle();
         assertNotNull(bundle);
         interval = new Interval(bundle);
+        assertEquals(5, interval.getId());
         assertTrue(start.isEqual(interval.getStart()));
         assertTrue(end.isEqual(interval.getEnd()));
     }
@@ -195,6 +212,7 @@ public class IntervalTest {
         interval1.setEnd(end);
         assertFalse(interval1.isEqual(interval2));
         interval2.setEnd(end);
+        interval2.setId(3);
         assertTrue(interval1.isEqual(interval2));
     }
 
