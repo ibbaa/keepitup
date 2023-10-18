@@ -17,18 +17,23 @@
 package net.ibbaa.keepitup.util;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.SmallTest;
 
+import net.ibbaa.keepitup.model.Interval;
 import net.ibbaa.keepitup.model.Time;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.List;
 
 @SmallTest
 @RunWith(AndroidJUnit4.class)
@@ -70,6 +75,172 @@ public class TimeUtilTest {
         assertEquals(1, date.get(Calendar.DAY_OF_MONTH));
         assertEquals(17, date.get(Calendar.HOUR_OF_DAY));
         assertEquals(58, date.get(Calendar.MINUTE));
+    }
+
+    @Test
+    public void testMergeEmpty() {
+        List<Interval> list = Collections.emptyList();
+        assertTrue(TimeUtil.merge(list).isEmpty());
+    }
+
+    @Test
+    public void testMergeInvalid() {
+        List<Interval> list = new ArrayList<>();
+        Interval interval = new Interval();
+        list.add(interval);
+        assertTrue(TimeUtil.merge(list).isEmpty());
+        interval = new Interval();
+        interval.setStart(new Time());
+        interval.setEnd(new Time());
+        list.add(interval);
+        assertTrue(TimeUtil.merge(list).isEmpty());
+        Time time = new Time();
+        time.setHour(1);
+        time.setMinute(2);
+        interval = new Interval();
+        interval.setStart(time);
+        interval.setEnd(new Time());
+        list.add(interval);
+        assertTrue(TimeUtil.merge(list).isEmpty());
+    }
+
+    @Test
+    public void testMergeOneEntry() {
+        List<Interval> list = new ArrayList<>();
+        Interval interval = new Interval();
+        Time start = new Time();
+        start.setHour(1);
+        start.setMinute(2);
+        Time end = new Time();
+        end.setHour(3);
+        end.setMinute(4);
+        interval.setStart(start);
+        interval.setEnd(end);
+        list.add(interval);
+        List<Interval> result = TimeUtil.merge(list);
+        assertEquals(1, result.size());
+        Interval intervalResult = result.get(0);
+        assertTrue(intervalResult.isEqual(interval));
+    }
+
+    @Test
+    public void testMergeNotOverlapTwoEntries() {
+        List<Interval> list = new ArrayList<>();
+        Interval interval1 = new Interval();
+        Time start1 = new Time();
+        start1.setHour(5);
+        start1.setMinute(6);
+        Time end1 = new Time();
+        end1.setHour(5);
+        end1.setMinute(7);
+        interval1.setStart(start1);
+        interval1.setEnd(end1);
+        Interval interval2 = new Interval();
+        Time start2 = new Time();
+        start2.setHour(1);
+        start2.setMinute(2);
+        Time end2 = new Time();
+        end2.setHour(3);
+        end2.setMinute(4);
+        interval2.setStart(start2);
+        interval2.setEnd(end2);
+        list.add(interval1);
+        list.add(interval2);
+        List<Interval> result = TimeUtil.merge(list);
+        assertEquals(2, result.size());
+        Interval intervalResult1 = result.get(0);
+        Interval intervalResult2 = result.get(1);
+        assertTrue(intervalResult1.isEqual(interval2));
+        assertTrue(intervalResult2.isEqual(interval1));
+    }
+
+    @Test
+    public void testMergeNotOverlapThreeEntries() {
+        List<Interval> list = new ArrayList<>();
+        Interval interval1 = new Interval();
+        Time start1 = new Time();
+        start1.setHour(1);
+        start1.setMinute(2);
+        Time end1 = new Time();
+        end1.setHour(3);
+        end1.setMinute(4);
+        interval1.setStart(start1);
+        interval1.setEnd(end1);
+        Interval interval2 = new Interval();
+        Time start2 = new Time();
+        start2.setHour(5);
+        start2.setMinute(5);
+        Time end2 = new Time();
+        end2.setHour(5);
+        end2.setMinute(10);
+        interval2.setStart(start2);
+        interval2.setEnd(end2);
+        Interval interval3 = new Interval();
+        Time start3 = new Time();
+        start3.setHour(0);
+        start3.setMinute(1);
+        Time end3 = new Time();
+        end3.setHour(0);
+        end3.setMinute(2);
+        interval3.setStart(start3);
+        interval3.setEnd(end3);
+        list.add(interval1);
+        list.add(interval2);
+        list.add(interval3);
+        List<Interval> result = TimeUtil.merge(list);
+        assertEquals(3, result.size());
+        Interval intervalResult1 = result.get(0);
+        Interval intervalResult2 = result.get(1);
+        Interval intervalResult3 = result.get(2);
+        assertTrue(intervalResult1.isEqual(interval3));
+        assertTrue(intervalResult2.isEqual(interval1));
+        assertTrue(intervalResult3.isEqual(interval2));
+    }
+
+    @Test
+    public void testMergeNotOverlapThreeEntriesWithInvalid() {
+        List<Interval> list = new ArrayList<>();
+        Interval interval1 = new Interval();
+        Time start1 = new Time();
+        start1.setHour(1);
+        start1.setMinute(2);
+        Time end1 = new Time();
+        end1.setHour(3);
+        end1.setMinute(4);
+        interval1.setStart(start1);
+        interval1.setEnd(end1);
+        Interval interval2 = new Interval();
+        Time start2 = new Time();
+        start2.setHour(5);
+        start2.setMinute(5);
+        Time end2 = new Time();
+        end2.setHour(5);
+        end2.setMinute(10);
+        interval2.setStart(start2);
+        interval2.setEnd(end2);
+        Interval interval3 = new Interval();
+        Time start3 = new Time();
+        start3.setHour(0);
+        start3.setMinute(1);
+        Time end3 = new Time();
+        end3.setHour(0);
+        end3.setMinute(2);
+        interval3.setStart(start3);
+        interval3.setEnd(end3);
+        list.add(new Interval());
+        list.add(new Interval());
+        list.add(interval1);
+        list.add(interval2);
+        list.add(new Interval());
+        list.add(interval3);
+        List<Interval> result = TimeUtil.merge(list);
+        assertEquals(3, result.size());
+        Interval intervalResult1 = result.get(0);
+        Interval intervalResult2 = result.get(1);
+        Interval intervalResult3 = result.get(2);
+        assertTrue(intervalResult1.isEqual(interval3));
+        assertTrue(intervalResult2.isEqual(interval1));
+        assertTrue(intervalResult3.isEqual(interval2));
     }
 
     private long testNow() {

@@ -19,6 +19,7 @@ package net.ibbaa.keepitup.model;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import android.os.Bundle;
@@ -452,5 +453,136 @@ public class IntervalTest {
         interval2.setEnd(end2);
         assertTrue(interval1.doesOverlap(interval2));
         assertTrue(interval2.doesOverlap(interval1));
+    }
+
+    @Test
+    public void testMergeInvalid() {
+        Interval interval1 = new Interval();
+        Interval interval2 = new Interval();
+        assertNull(interval1.merge(interval2));
+        Time start = new Time();
+        start.setHour(1);
+        start.setMinute(61);
+        Time end = new Time();
+        end.setHour(-1);
+        end.setMinute(4);
+        interval1.setStart(start);
+        interval1.setEnd(end);
+        interval2.setStart(start);
+        interval2.setEnd(end);
+        assertNull(interval1.merge(interval2));
+    }
+
+    @Test
+    public void testMergeSame() {
+        Interval interval1 = new Interval();
+        Interval interval2 = new Interval();
+        Time start = new Time();
+        Time end = new Time();
+        end.setMinute(1);
+        interval1.setStart(start);
+        interval1.setEnd(end);
+        interval2.setStart(start);
+        interval2.setEnd(end);
+        Interval merged = interval1.merge(interval2);
+        assertTrue(merged.getStart().isEqual(start));
+        assertTrue(merged.getEnd().isEqual(end));
+        start = new Time();
+        start.setHour(1);
+        start.setMinute(1);
+        end = new Time();
+        end.setHour(2);
+        end.setMinute(2);
+        interval1.setStart(start);
+        interval1.setEnd(end);
+        interval2.setStart(start);
+        interval2.setEnd(end);
+        merged = interval1.merge(interval2);
+        assertTrue(merged.getStart().isEqual(start));
+        assertTrue(merged.getEnd().isEqual(end));
+    }
+
+    @Test
+    public void testMergeNotOverlap() {
+        Interval interval1 = new Interval();
+        Interval interval2 = new Interval();
+        Time start1 = new Time();
+        start1.setHour(1);
+        start1.setMinute(1);
+        Time end1 = new Time();
+        end1.setHour(2);
+        end1.setMinute(2);
+        Time start2 = new Time();
+        start2.setHour(3);
+        start2.setMinute(3);
+        Time end2 = new Time();
+        end2.setHour(4);
+        end2.setMinute(4);
+        interval1.setStart(start1);
+        interval1.setEnd(end1);
+        interval2.setStart(start2);
+        interval2.setEnd(end2);
+        Interval merged = interval1.merge(interval2);
+        assertTrue(merged.getStart().isEqual(start1));
+        assertTrue(merged.getEnd().isEqual(end2));
+        merged = interval2.merge(interval1);
+        assertTrue(merged.getStart().isEqual(start1));
+        assertTrue(merged.getEnd().isEqual(end2));
+    }
+
+    @Test
+    public void testMergeOverlap() {
+        Interval interval1 = new Interval();
+        Interval interval2 = new Interval();
+        Time start1 = new Time();
+        start1.setHour(1);
+        start1.setMinute(1);
+        Time end1 = new Time();
+        end1.setHour(5);
+        end1.setMinute(5);
+        Time start2 = new Time();
+        start2.setHour(3);
+        start2.setMinute(3);
+        Time end2 = new Time();
+        end2.setHour(8);
+        end2.setMinute(8);
+        interval1.setStart(start1);
+        interval1.setEnd(end1);
+        interval2.setStart(start2);
+        interval2.setEnd(end2);
+        Interval merged = interval1.merge(interval2);
+        assertTrue(merged.getStart().isEqual(start1));
+        assertTrue(merged.getEnd().isEqual(end2));
+        merged = interval2.merge(interval1);
+        assertTrue(merged.getStart().isEqual(start1));
+        assertTrue(merged.getEnd().isEqual(end2));
+    }
+
+    @Test
+    public void testMergeContains() {
+        Interval interval1 = new Interval();
+        Interval interval2 = new Interval();
+        Time start1 = new Time();
+        start1.setHour(1);
+        start1.setMinute(1);
+        Time end1 = new Time();
+        end1.setHour(5);
+        end1.setMinute(5);
+        Time start2 = new Time();
+        start2.setHour(3);
+        start2.setMinute(3);
+        Time end2 = new Time();
+        end2.setHour(4);
+        end2.setMinute(4);
+        interval1.setStart(start1);
+        interval1.setEnd(end1);
+        interval2.setStart(start2);
+        interval2.setEnd(end2);
+        Interval merged = interval1.merge(interval2);
+        assertTrue(merged.getStart().isEqual(start1));
+        assertTrue(merged.getEnd().isEqual(end1));
+        merged = interval2.merge(interval1);
+        assertTrue(merged.getStart().isEqual(start1));
+        assertTrue(merged.getEnd().isEqual(end1));
     }
 }

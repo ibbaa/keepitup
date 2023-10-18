@@ -175,6 +175,16 @@ public class Interval {
         return !isBefore(other) && !isAfter(other);
     }
 
+    public Interval merge(Interval other) {
+        if(!isValid() || !other.isValid()) {
+            return null;
+        }
+        Interval merged = new Interval();
+        merged.setStart(start.isBefore(other.start) ? start : other.start);
+        merged.setEnd(end.isAfter(other.end) ? end : other.end);
+        return merged;
+    }
+
     @NonNull
     @Override
     public String toString() {
