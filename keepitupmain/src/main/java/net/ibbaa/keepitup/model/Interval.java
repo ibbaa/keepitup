@@ -25,15 +25,18 @@ import net.ibbaa.keepitup.util.NumberUtil;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 public class Interval {
 
     private long id;
+    private boolean active;
     private Time start;
     private Time end;
 
     public Interval() {
         this.id = -1;
+        this.active = true;
         this.start = new Time();
         this.end = new Time();
     }
@@ -44,7 +47,8 @@ public class Interval {
 
     public Interval(Bundle bundle) {
         this();
-        this.id = bundle.getLong("id");
+        id = bundle.getLong("id");
+        active = bundle.getInt("active") >= 1;
         start.setHour(bundle.getInt("hourstart"));
         start.setMinute(bundle.getInt("minutestart"));
         end.setHour(bundle.getInt("hourend"));
@@ -54,7 +58,10 @@ public class Interval {
     public Interval(Map<String, ?> map) {
         this();
         if (NumberUtil.isValidLongValue(map.get("id"))) {
-            this.id = NumberUtil.getLongValue(map.get("id"), -1);
+            id = NumberUtil.getLongValue(map.get("id"), -1);
+        }
+        if (map.get("active") != null) {
+            active = Boolean.parseBoolean(Objects.requireNonNull(map.get("active")).toString());
         }
         if (NumberUtil.isValidIntValue(map.get("hourstart"))) {
             start.setHour(NumberUtil.getIntValue(map.get("hourstart"), 0));
@@ -76,6 +83,14 @@ public class Interval {
 
     public void setId(long id) {
         this.id = id;
+    }
+
+    public boolean isActive() {
+        return active;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
     }
 
     public Time getStart() {
@@ -105,6 +120,7 @@ public class Interval {
     public PersistableBundle toPersistableBundle() {
         PersistableBundle bundle = new PersistableBundle();
         bundle.putLong("id", id);
+        bundle.putInt("active", active ? 1 : 0);
         bundle.putInt("hourstart", start.getHour());
         bundle.putInt("minutestart", start.getMinute());
         bundle.putInt("hourend", end.getHour());
@@ -119,6 +135,7 @@ public class Interval {
     public Map<String, ?> toMap() {
         Map<String, Object> map = new HashMap<>();
         map.put("id", id);
+        map.put("active", active);
         map.put("hourstart", start.getHour());
         map.put("minutestart", start.getMinute());
         map.put("hourend", end.getHour());
@@ -189,7 +206,9 @@ public class Interval {
     @Override
     public String toString() {
         return "Interval{" +
-                "start=" + start +
+                "id=" + id +
+                ", active=" + active +
+                ", start=" + start +
                 ", end=" + end +
                 '}';
     }

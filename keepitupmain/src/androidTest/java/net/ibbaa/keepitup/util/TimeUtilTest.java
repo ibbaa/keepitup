@@ -78,22 +78,22 @@ public class TimeUtilTest {
     }
 
     @Test
-    public void testMergeEmpty() {
+    public void testCleanAndSortEmpty() {
         List<Interval> list = Collections.emptyList();
-        assertTrue(TimeUtil.merge(list).isEmpty());
+        assertTrue(TimeUtil.cleanAndSort(list).isEmpty());
     }
 
     @Test
-    public void testMergeInvalid() {
+    public void testCleanAndSortInvalid() {
         List<Interval> list = new ArrayList<>();
         Interval interval = new Interval();
         list.add(interval);
-        assertTrue(TimeUtil.merge(list).isEmpty());
+        assertTrue(TimeUtil.cleanAndSort(list).isEmpty());
         interval = new Interval();
         interval.setStart(new Time());
         interval.setEnd(new Time());
         list.add(interval);
-        assertTrue(TimeUtil.merge(list).isEmpty());
+        assertTrue(TimeUtil.cleanAndSort(list).isEmpty());
         Time time = new Time();
         time.setHour(1);
         time.setMinute(2);
@@ -101,11 +101,11 @@ public class TimeUtilTest {
         interval.setStart(time);
         interval.setEnd(new Time());
         list.add(interval);
-        assertTrue(TimeUtil.merge(list).isEmpty());
+        assertTrue(TimeUtil.cleanAndSort(list).isEmpty());
     }
 
     @Test
-    public void testMergeOneEntry() {
+    public void testCleanAndSortOneEntry() {
         List<Interval> list = new ArrayList<>();
         Interval interval = new Interval();
         Time start = new Time();
@@ -117,14 +117,14 @@ public class TimeUtilTest {
         interval.setStart(start);
         interval.setEnd(end);
         list.add(interval);
-        List<Interval> result = TimeUtil.merge(list);
+        List<Interval> result = TimeUtil.cleanAndSort(list);
         assertEquals(1, result.size());
         Interval intervalResult = result.get(0);
         assertTrue(intervalResult.isEqual(interval));
     }
 
     @Test
-    public void testMergeNotOverlapTwoEntries() {
+    public void testCleanAndSortTwoEntries() {
         List<Interval> list = new ArrayList<>();
         Interval interval1 = new Interval();
         Time start1 = new Time();
@@ -146,7 +146,7 @@ public class TimeUtilTest {
         interval2.setEnd(end2);
         list.add(interval1);
         list.add(interval2);
-        List<Interval> result = TimeUtil.merge(list);
+        List<Interval> result = TimeUtil.cleanAndSort(list);
         assertEquals(2, result.size());
         Interval intervalResult1 = result.get(0);
         Interval intervalResult2 = result.get(1);
@@ -155,7 +155,7 @@ public class TimeUtilTest {
     }
 
     @Test
-    public void testMergeNotOverlapThreeEntries() {
+    public void testCleanAndSortThreeEntries() {
         List<Interval> list = new ArrayList<>();
         Interval interval1 = new Interval();
         Time start1 = new Time();
@@ -187,7 +187,7 @@ public class TimeUtilTest {
         list.add(interval1);
         list.add(interval2);
         list.add(interval3);
-        List<Interval> result = TimeUtil.merge(list);
+        List<Interval> result = TimeUtil.cleanAndSort(list);
         assertEquals(3, result.size());
         Interval intervalResult1 = result.get(0);
         Interval intervalResult2 = result.get(1);
@@ -198,7 +198,7 @@ public class TimeUtilTest {
     }
 
     @Test
-    public void testMergeNotOverlapThreeEntriesWithInvalid() {
+    public void testCleanAndSortThreeEntriesWithInvalid() {
         List<Interval> list = new ArrayList<>();
         Interval interval1 = new Interval();
         Time start1 = new Time();
@@ -233,7 +233,7 @@ public class TimeUtilTest {
         list.add(interval2);
         list.add(new Interval());
         list.add(interval3);
-        List<Interval> result = TimeUtil.merge(list);
+        List<Interval> result = TimeUtil.cleanAndSort(list);
         assertEquals(3, result.size());
         Interval intervalResult1 = result.get(0);
         Interval intervalResult2 = result.get(1);

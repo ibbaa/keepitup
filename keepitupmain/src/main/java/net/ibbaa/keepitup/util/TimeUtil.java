@@ -25,7 +25,6 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.GregorianCalendar;
-import java.util.Iterator;
 import java.util.List;
 
 public class TimeUtil {
@@ -48,29 +47,14 @@ public class TimeUtil {
         return date;
     }
 
-    public static List<Interval> merge(List<Interval> intervals) {
+    public static List<Interval> cleanAndSort(List<Interval> intervals) {
         List<Interval> mergedList = new ArrayList<>();
-        List<Interval> originalList = new ArrayList<>();
         for(Interval currentInterval : intervals) {
             if(currentInterval.isValid()) {
-                originalList.add(currentInterval);
+                mergedList.add(currentInterval);
             }
         }
-        Collections.sort(originalList, TimeUtil::compareIntervals);
-        Iterator<Interval> intervalIterator = originalList.iterator();
-        if(intervalIterator.hasNext()) {
-            Interval interval1 = intervalIterator.next();
-            while(intervalIterator.hasNext()) {
-                Interval interval2 = intervalIterator.next();
-                if(interval1.doesOverlap(interval2)) {
-                    interval1 = interval1.merge(interval2);
-                } else {
-                    mergedList.add(interval1);
-                    interval1 = interval2;
-                }
-            }
-            mergedList.add(interval1);
-        }
+        Collections.sort(mergedList, TimeUtil::compareIntervals);
         return mergedList;
     }
 
