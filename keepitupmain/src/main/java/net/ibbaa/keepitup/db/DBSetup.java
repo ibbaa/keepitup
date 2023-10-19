@@ -21,6 +21,7 @@ import android.database.sqlite.SQLiteDatabase;
 
 import net.ibbaa.keepitup.R;
 import net.ibbaa.keepitup.logging.Log;
+import net.ibbaa.keepitup.model.Interval;
 import net.ibbaa.keepitup.model.LogEntry;
 import net.ibbaa.keepitup.model.NetworkTask;
 import net.ibbaa.keepitup.util.URLUtil;
@@ -34,11 +35,13 @@ public class DBSetup {
     private final NetworkTaskDBConstants networkTaskDBConstants;
     private final LogDBConstants logDBConstants;
     private final SchedulerIdHistoryDBConstants schedulerIdDBConstants;
+    private final IntervalDBConstants intervalDBConstants;
 
     public DBSetup(Context context) {
         networkTaskDBConstants = new NetworkTaskDBConstants(context);
         logDBConstants = new LogDBConstants(context);
         schedulerIdDBConstants = new SchedulerIdHistoryDBConstants(context);
+        intervalDBConstants = new IntervalDBConstants(context);
     }
 
     public void createTables(SQLiteDatabase db) {
@@ -46,6 +49,7 @@ public class DBSetup {
         createNetworkTaskTable(db);
         createLogTable(db);
         createSchedulerIdHistoryTable(db);
+        createIntervalTable(db);
     }
 
     public void createNetworkTaskTable(SQLiteDatabase db) {
@@ -63,11 +67,17 @@ public class DBSetup {
         db.execSQL(schedulerIdDBConstants.getCreateTableStatement());
     }
 
+    public void createIntervalTable(SQLiteDatabase db) {
+        Log.d(DBOpenHelper.class.getName(), "Creating database table " + intervalDBConstants.getTableName());
+        db.execSQL(intervalDBConstants.getCreateTableStatement());
+    }
+
     public void dropTables(SQLiteDatabase db) {
         Log.d(DBSetup.class.getName(), "dropTables");
         dropSchedulerIdHistoryTable(db);
         dropLogTable(db);
         dropNetworkTaskTable(db);
+        dropIntervalTable(db);
     }
 
     public void dropNetworkTaskTable(SQLiteDatabase db) {
@@ -83,6 +93,11 @@ public class DBSetup {
     public void dropSchedulerIdHistoryTable(SQLiteDatabase db) {
         Log.d(DBOpenHelper.class.getName(), "Dropping database table " + schedulerIdDBConstants.getTableName());
         db.execSQL(schedulerIdDBConstants.getDropTableStatement());
+    }
+
+    public void dropIntervalTable(SQLiteDatabase db) {
+        Log.d(DBOpenHelper.class.getName(), "Dropping database table " + intervalDBConstants.getTableName());
+        db.execSQL(intervalDBConstants.getDropTableStatement());
     }
 
     public void recreateNetworkTaskTable(SQLiteDatabase db) {
@@ -101,6 +116,12 @@ public class DBSetup {
         Log.d(DBSetup.class.getName(), "recreateSchedulerIdHistoryTable");
         dropSchedulerIdHistoryTable(db);
         createSchedulerIdHistoryTable(db);
+    }
+
+    public void recreateIntervalTable(SQLiteDatabase db) {
+        Log.d(DBSetup.class.getName(), "recreateIntervalTable");
+        dropIntervalTable(db);
+        createIntervalTable(db);
     }
 
     public void recreateTables(SQLiteDatabase db) {
@@ -125,6 +146,10 @@ public class DBSetup {
         createSchedulerIdHistoryTable(DBOpenHelper.getInstance(context).getWritableDatabase());
     }
 
+    public void createIntervalTable(Context context) {
+        createIntervalTable(DBOpenHelper.getInstance(context).getWritableDatabase());
+    }
+
     public void dropTables(Context context) {
         dropTables(DBOpenHelper.getInstance(context).getWritableDatabase());
     }
@@ -141,6 +166,10 @@ public class DBSetup {
         dropSchedulerIdHistoryTable(DBOpenHelper.getInstance(context).getWritableDatabase());
     }
 
+    public void dropIntervalTable(Context context) {
+        dropIntervalTable(DBOpenHelper.getInstance(context).getWritableDatabase());
+    }
+
     public void recreateNetworkTaskTable(Context context) {
         recreateNetworkTaskTable(DBOpenHelper.getInstance(context).getWritableDatabase());
     }
@@ -151,6 +180,10 @@ public class DBSetup {
 
     public void recreateSchedulerIdHistoryTable(Context context) {
         recreateSchedulerIdHistoryTable(DBOpenHelper.getInstance(context).getWritableDatabase());
+    }
+
+    public void recreateIntervalTable(Context context) {
+        recreateIntervalTable(DBOpenHelper.getInstance(context).getWritableDatabase());
     }
 
     public void recreateTables(Context context) {
@@ -175,6 +208,11 @@ public class DBSetup {
         dao.deleteAllSchedulerIds();
     }
 
+    public void deleteAllIntervals(Context context) {
+        Log.d(DBSetup.class.getName(), "deleteAllIntervals");
+        //TODO: implement
+    }
+
     public List<Map<String, ?>> exportNetworkTasks(Context context) {
         Log.d(DBSetup.class.getName(), "exportNetworkTasks");
         NetworkTaskDAO dao = new NetworkTaskDAO(context);
@@ -195,6 +233,12 @@ public class DBSetup {
             exportedList.add(entry.toMap());
         }
         return exportedList;
+    }
+
+    public List<Map<String, ?>> exportIntervals(Context context) {
+        Log.d(DBSetup.class.getName(), "exportIntervals");
+        return null;
+        //TODO: implement
     }
 
     public void importNetworkTaskWithLogs(Context context, Map<String, ?> taskMap, List<Map<String, ?>> logList) {
@@ -224,6 +268,16 @@ public class DBSetup {
                 Log.d(DBSetup.class.getName(), "Importing log entry.");
                 logDAO.insertAndDeleteLog(entry);
             }
+        }
+    }
+
+    public void importIntervals(Context context, List<Map<String, ?>> intervalList) {
+        Log.d(DBSetup.class.getName(), "importIntervals");
+        //TODO: implement
+        for (Map<String, ?> intervalMap : intervalList) {
+            Interval interval = new Interval(intervalMap);
+            Log.d(DBSetup.class.getName(), "Interval is " + interval);
+            Log.d(DBSetup.class.getName(), "Importing interval.");
         }
     }
 
