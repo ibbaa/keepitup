@@ -26,12 +26,14 @@ import net.ibbaa.keepitup.logging.Log;
 public class DBOpenHelper extends SQLiteOpenHelper {
 
     private final DBSetup setup;
+    private final DBMigrate migrate;
 
     private static DBOpenHelper dbOpenHelper;
 
     private DBOpenHelper(Context context) {
         super(context, context.getResources().getString(R.string.db_name), null, context.getResources().getInteger(R.integer.db_version));
         setup = new DBSetup(context);
+        migrate = new DBMigrate(setup);
     }
 
     public static synchronized DBOpenHelper getInstance(Context context) {
@@ -48,11 +50,11 @@ public class DBOpenHelper extends SQLiteOpenHelper {
 
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         Log.d(DBOpenHelper.class.getName(), "onUpgrade");
-        setup.recreateTables(db);
+        migrate.doUpgrade(db, oldVersion, newVersion);
     }
 
     public void onDowngrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         Log.d(DBOpenHelper.class.getName(), "onDowngrade");
-        onUpgrade(db, oldVersion, newVersion);
+        migrate.doDowngrade(db, oldVersion, newVersion);
     }
 }

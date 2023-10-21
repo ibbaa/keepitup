@@ -49,8 +49,8 @@ public class TimeUtil {
 
     public static List<Interval> cleanAndSort(List<Interval> intervals) {
         List<Interval> mergedList = new ArrayList<>();
-        for(Interval currentInterval : intervals) {
-            if(currentInterval.isValid()) {
+        for (Interval currentInterval : intervals) {
+            if (currentInterval.isValid()) {
                 mergedList.add(currentInterval);
             }
         }
@@ -59,7 +59,7 @@ public class TimeUtil {
     }
 
     private static int compareIntervals(Interval interval1, Interval interval2) {
-        if(interval1.isBefore(interval2)) {
+        if (interval1.isBefore(interval2)) {
             return -1;
         } else if (interval1.isAfter(interval2)) {
             return 1;

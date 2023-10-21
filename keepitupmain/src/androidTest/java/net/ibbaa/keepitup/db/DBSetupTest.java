@@ -25,9 +25,12 @@ import androidx.test.filters.MediumTest;
 
 import net.ibbaa.keepitup.logging.Dump;
 import net.ibbaa.keepitup.model.AccessType;
+import net.ibbaa.keepitup.model.Interval;
 import net.ibbaa.keepitup.model.LogEntry;
 import net.ibbaa.keepitup.model.NetworkTask;
+import net.ibbaa.keepitup.model.Time;
 import net.ibbaa.keepitup.test.mock.TestRegistry;
+import net.ibbaa.keepitup.util.TimeUtil;
 
 import org.junit.After;
 import org.junit.Before;
@@ -45,6 +48,7 @@ public class DBSetupTest {
     private NetworkTaskDAO networkTaskDAO;
     private SchedulerIdHistoryDAO schedulerIdHistoryDAO;
     private LogDAO logDAO;
+    private IntervalDAO intervalDAO;
     private DBSetup setup;
 
     @Before
@@ -55,9 +59,11 @@ public class DBSetupTest {
         networkTaskDAO = new NetworkTaskDAO(TestRegistry.getContext());
         schedulerIdHistoryDAO = new SchedulerIdHistoryDAO(TestRegistry.getContext());
         logDAO = new LogDAO(TestRegistry.getContext());
+        intervalDAO = new IntervalDAO(TestRegistry.getContext());
         networkTaskDAO.deleteAllNetworkTasks();
         schedulerIdHistoryDAO.deleteAllSchedulerIds();
         logDAO.deleteAllLogs();
+        intervalDAO.deleteAllIntervals();
     }
 
     @After
@@ -66,29 +72,36 @@ public class DBSetupTest {
         networkTaskDAO.deleteAllNetworkTasks();
         schedulerIdHistoryDAO.deleteAllSchedulerIds();
         logDAO.deleteAllLogs();
+        intervalDAO.deleteAllIntervals();
     }
 
     @Test
     public void testDropCreateTables() {
         networkTaskDAO.insertNetworkTask(new NetworkTask());
         logDAO.insertAndDeleteLog(new LogEntry());
+        intervalDAO.insertInterval(new Interval());
         assertFalse(networkTaskDAO.readAllNetworkTasks().isEmpty());
         assertFalse(schedulerIdHistoryDAO.readAllSchedulerIds().isEmpty());
         assertFalse(logDAO.readAllLogs().isEmpty());
+        assertFalse(intervalDAO.readAllIntervals().isEmpty());
         setup.dropTables(TestRegistry.getContext());
         setup.createTables(TestRegistry.getContext());
         assertTrue(networkTaskDAO.readAllNetworkTasks().isEmpty());
         assertTrue(schedulerIdHistoryDAO.readAllSchedulerIds().isEmpty());
         assertTrue(logDAO.readAllLogs().isEmpty());
+        assertTrue(intervalDAO.readAllIntervals().isEmpty());
         networkTaskDAO.insertNetworkTask(new NetworkTask());
         logDAO.insertAndDeleteLog(new LogEntry());
+        intervalDAO.insertInterval(new Interval());
         assertFalse(networkTaskDAO.readAllNetworkTasks().isEmpty());
         assertFalse(schedulerIdHistoryDAO.readAllSchedulerIds().isEmpty());
         assertFalse(logDAO.readAllLogs().isEmpty());
+        assertFalse(intervalDAO.readAllIntervals().isEmpty());
         setup.recreateTables(TestRegistry.getContext());
         assertTrue(networkTaskDAO.readAllNetworkTasks().isEmpty());
         assertTrue(schedulerIdHistoryDAO.readAllSchedulerIds().isEmpty());
         assertTrue(logDAO.readAllLogs().isEmpty());
+        assertTrue(intervalDAO.readAllIntervals().isEmpty());
     }
 
     @Test
@@ -131,24 +144,47 @@ public class DBSetupTest {
     }
 
     @Test
+    public void testDropCreateIntervalTable() {
+        intervalDAO.insertInterval(new Interval());
+        assertFalse(intervalDAO.readAllIntervals().isEmpty());
+        setup.dropIntervalTable(TestRegistry.getContext());
+        setup.createIntervalTable(TestRegistry.getContext());
+        assertTrue(intervalDAO.readAllIntervals().isEmpty());
+        intervalDAO.insertInterval(new Interval());
+        assertFalse(intervalDAO.readAllIntervals().isEmpty());
+        setup.recreateIntervalTable(TestRegistry.getContext());
+        assertTrue(intervalDAO.readAllIntervals().isEmpty());
+    }
+
+    @Test
     public void testDeleteTables() {
         networkTaskDAO.insertNetworkTask(new NetworkTask());
         logDAO.insertAndDeleteLog(new LogEntry());
+        intervalDAO.insertInterval(new Interval());
         assertFalse(networkTaskDAO.readAllNetworkTasks().isEmpty());
         assertFalse(schedulerIdHistoryDAO.readAllSchedulerIds().isEmpty());
         assertFalse(logDAO.readAllLogs().isEmpty());
+        assertFalse(intervalDAO.readAllIntervals().isEmpty());
         setup.deleteAllNetworkTasks(TestRegistry.getContext());
         assertTrue(networkTaskDAO.readAllNetworkTasks().isEmpty());
         assertFalse(schedulerIdHistoryDAO.readAllSchedulerIds().isEmpty());
         assertFalse(logDAO.readAllLogs().isEmpty());
+        assertFalse(intervalDAO.readAllIntervals().isEmpty());
         setup.deleteAllSchedulerIds(TestRegistry.getContext());
         assertTrue(networkTaskDAO.readAllNetworkTasks().isEmpty());
         assertTrue(schedulerIdHistoryDAO.readAllSchedulerIds().isEmpty());
         assertFalse(logDAO.readAllLogs().isEmpty());
+        assertFalse(intervalDAO.readAllIntervals().isEmpty());
         setup.deleteAllLogs(TestRegistry.getContext());
         assertTrue(networkTaskDAO.readAllNetworkTasks().isEmpty());
         assertTrue(schedulerIdHistoryDAO.readAllSchedulerIds().isEmpty());
         assertTrue(logDAO.readAllLogs().isEmpty());
+        assertFalse(intervalDAO.readAllIntervals().isEmpty());
+        setup.deleteAllIntervals(TestRegistry.getContext());
+        assertTrue(networkTaskDAO.readAllNetworkTasks().isEmpty());
+        assertTrue(schedulerIdHistoryDAO.readAllSchedulerIds().isEmpty());
+        assertTrue(logDAO.readAllLogs().isEmpty());
+        assertTrue(intervalDAO.readAllIntervals().isEmpty());
     }
 
     @Test
@@ -187,6 +223,24 @@ public class DBSetupTest {
         logEntryEquals(entry1, getLogEntry1(task.getId()));
         logEntryEquals(entry2, getLogEntry2(task.getId()));
         logEntryEquals(entry3, getLogEntry3(task.getId()));
+    }
+
+    @Test
+    public void testExportIntervals() {
+        Interval interval1 = intervalDAO.insertInterval(getInterval1());
+        Interval interval2 = intervalDAO.insertInterval(getInterval2());
+        Interval interval3 = intervalDAO.insertInterval(getInterval3());
+        List<Map<String, ?>> intervalList = setup.exportIntervals(TestRegistry.getContext());
+        Interval exportedInterval1 = new Interval(intervalList.get(0));
+        Interval exportedInterval2 = new Interval(intervalList.get(1));
+        Interval exportedInterval3 = new Interval(intervalList.get(2));
+        List<Interval> intervals = Arrays.asList(exportedInterval1, exportedInterval2, exportedInterval3);
+        List<Interval> originalIntervals = Arrays.asList(interval1, interval2, interval3);
+        originalIntervals = TimeUtil.cleanAndSort(originalIntervals);
+        intervals = TimeUtil.cleanAndSort(intervals);
+        intervalEquals(originalIntervals.get(0), intervals.get(0));
+        intervalEquals(originalIntervals.get(1), intervals.get(1));
+        intervalEquals(originalIntervals.get(2), intervals.get(2));
     }
 
     @Test
@@ -252,11 +306,86 @@ public class DBSetupTest {
         assertTrue(logDAO.readAllLogs().isEmpty());
     }
 
+    @Test
+    public void testImportIntervals() {
+        Map<String, ?> intervalMap1 = getInterval1().toMap();
+        Map<String, ?> intervalMap2 = getInterval2().toMap();
+        Map<String, ?> intervalMap3 = getInterval3().toMap();
+        assertTrue(intervalDAO.readAllIntervals().isEmpty());
+        setup.importIntervals(TestRegistry.getContext(), Arrays.asList(intervalMap1, intervalMap2, intervalMap3));
+        List<Interval> intervalList = intervalDAO.readAllIntervals();
+        assertEquals(3, intervalList.size());
+        List<Interval> originalList = Arrays.asList(getInterval1(), getInterval2(), getInterval3());
+        originalList = TimeUtil.cleanAndSort(originalList);
+        intervalList = TimeUtil.cleanAndSort(intervalList);
+        intervalEquals(originalList.get(0), intervalList.get(0));
+        intervalEquals(originalList.get(1), intervalList.get(1));
+        intervalEquals(originalList.get(2), intervalList.get(2));
+    }
+
+    @Test
+    public void testImportIntervalsInvalid() {
+        Interval interval1 = getInterval1();
+        Time start = new Time();
+        start.setHour(10);
+        start.setMinute(11);
+        interval1.setStart(start);
+        Time end = new Time();
+        end.setHour(9);
+        end.setMinute(9);
+        interval1.setEnd(end);
+        Map<String, ?> intervalMap1 = interval1.toMap();
+        Map<String, ?> intervalMap2 = getInterval2().toMap();
+        Map<String, ?> intervalMap3 = getInterval3().toMap();
+        assertTrue(intervalDAO.readAllIntervals().isEmpty());
+        setup.importIntervals(TestRegistry.getContext(), Arrays.asList(intervalMap1, intervalMap2, intervalMap3));
+        List<Interval> intervalList = intervalDAO.readAllIntervals();
+        assertEquals(2, intervalList.size());
+        List<Interval> originalList = Arrays.asList(getInterval2(), getInterval3());
+        originalList = TimeUtil.cleanAndSort(originalList);
+        intervalList = TimeUtil.cleanAndSort(intervalList);
+        intervalEquals(originalList.get(0), intervalList.get(0));
+        intervalEquals(originalList.get(1), intervalList.get(1));
+    }
+
+    @Test
+    public void testImportIntervalsOverlap() {
+        Interval interval3 = getInterval1();
+        Time start = new Time();
+        start.setHour(10);
+        start.setMinute(16);
+        interval3.setStart(start);
+        Time end = new Time();
+        end.setHour(10);
+        end.setMinute(25);
+        interval3.setEnd(end);
+        Map<String, ?> intervalMap1 = getInterval1().toMap();
+        Map<String, ?> intervalMap2 = getInterval2().toMap();
+        Map<String, ?> intervalMap3 = interval3.toMap();
+        assertTrue(intervalDAO.readAllIntervals().isEmpty());
+        setup.importIntervals(TestRegistry.getContext(), Arrays.asList(intervalMap1, intervalMap2, intervalMap3));
+        List<Interval> intervalList = intervalDAO.readAllIntervals();
+        assertEquals(2, intervalList.size());
+        List<Interval> originalList = Arrays.asList(getInterval1(), getInterval2());
+        originalList = TimeUtil.cleanAndSort(originalList);
+        intervalList = TimeUtil.cleanAndSort(intervalList);
+        intervalEquals(originalList.get(0), intervalList.get(0));
+        intervalEquals(originalList.get(1), intervalList.get(1));
+    }
+
     private void logEntryEquals(LogEntry entry1, LogEntry entry2) {
         assertEquals(entry1.getNetworkTaskId(), entry2.getNetworkTaskId());
         assertEquals(entry1.isSuccess(), entry2.isSuccess());
         assertEquals(entry1.getTimestamp(), entry2.getTimestamp());
         assertEquals(entry1.getMessage(), entry2.getMessage());
+    }
+
+    private void intervalEquals(Interval interval1, Interval interval2) {
+        assertEquals(interval1.isActive(), interval2.isActive());
+        assertEquals(interval1.getStart().getHour(), interval2.getStart().getHour());
+        assertEquals(interval1.getStart().getMinute(), interval2.getStart().getMinute());
+        assertEquals(interval1.getEnd().getHour(), interval2.getEnd().getHour());
+        assertEquals(interval1.getEnd().getMinute(), interval2.getEnd().getMinute());
     }
 
     private NetworkTask getNetworkTask1() {
@@ -338,5 +467,50 @@ public class DBSetupTest {
         insertedLogEntry3.setTimestamp(123);
         insertedLogEntry3.setMessage("TestMessage3");
         return insertedLogEntry3;
+    }
+
+    private Interval getInterval1() {
+        Interval interval = new Interval();
+        interval.setId(0);
+        interval.setActive(false);
+        Time start = new Time();
+        start.setHour(10);
+        start.setMinute(11);
+        interval.setStart(start);
+        Time end = new Time();
+        end.setHour(11);
+        end.setMinute(12);
+        interval.setEnd(end);
+        return interval;
+    }
+
+    private Interval getInterval2() {
+        Interval interval = new Interval();
+        interval.setId(0);
+        interval.setActive(true);
+        Time start = new Time();
+        start.setHour(1);
+        start.setMinute(1);
+        interval.setStart(start);
+        Time end = new Time();
+        end.setHour(2);
+        end.setMinute(2);
+        interval.setEnd(end);
+        return interval;
+    }
+
+    private Interval getInterval3() {
+        Interval interval = new Interval();
+        interval.setId(0);
+        interval.setActive(true);
+        Time start = new Time();
+        start.setHour(3);
+        start.setMinute(3);
+        interval.setStart(start);
+        Time end = new Time();
+        end.setHour(4);
+        end.setMinute(4);
+        interval.setEnd(end);
+        return interval;
     }
 }

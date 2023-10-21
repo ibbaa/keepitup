@@ -98,7 +98,7 @@ public class Interval {
     }
 
     public void setStart(Time start) {
-        if(start != null) {
+        if (start != null) {
             this.start = start;
         } else {
             this.start = new Time();
@@ -110,7 +110,7 @@ public class Interval {
     }
 
     public void setEnd(Time end) {
-        if(end != null) {
+        if (end != null) {
             this.end = end;
         } else {
             this.end = new Time();
@@ -158,42 +158,42 @@ public class Interval {
     }
 
     public boolean startsBefore(Interval other) {
-        if(!isValid() || !other.isValid()) {
+        if (!isValid() || !other.isValid()) {
             return false;
         }
         return start.isBefore(other.start);
     }
 
     public boolean endsAfter(Interval other) {
-        if(!isValid() || !other.isValid()) {
+        if (!isValid() || !other.isValid()) {
             return false;
         }
         return end.isAfter(other.end);
     }
 
     public boolean isBefore(Interval other) {
-        if(!isValid() || !other.isValid()) {
+        if (!isValid() || !other.isValid()) {
             return false;
         }
         return end.isBefore(other.start);
     }
 
     public boolean isAfter(Interval other) {
-        if(!isValid() || !other.isValid()) {
+        if (!isValid() || !other.isValid()) {
             return false;
         }
         return start.isAfter(other.end);
     }
 
     public boolean doesOverlap(Interval other) {
-        if(!isValid() || !other.isValid()) {
+        if (!isValid() || !other.isValid()) {
             return false;
         }
         return !isBefore(other) && !isAfter(other);
     }
 
     public Interval merge(Interval other) {
-        if(!isValid() || !other.isValid()) {
+        if (!isValid() || !other.isValid()) {
             return null;
         }
         Interval merged = new Interval();

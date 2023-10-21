@@ -210,7 +210,8 @@ public class DBSetup {
 
     public void deleteAllIntervals(Context context) {
         Log.d(DBSetup.class.getName(), "deleteAllIntervals");
-        //TODO: implement
+        IntervalDAO dao = new IntervalDAO(context);
+        dao.deleteAllIntervals();
     }
 
     public List<Map<String, ?>> exportNetworkTasks(Context context) {
@@ -237,8 +238,13 @@ public class DBSetup {
 
     public List<Map<String, ?>> exportIntervals(Context context) {
         Log.d(DBSetup.class.getName(), "exportIntervals");
-        return null;
-        //TODO: implement
+        IntervalDAO dao = new IntervalDAO(context);
+        List<Interval> intervalList = dao.readAllIntervals();
+        List<Map<String, ?>> exportedList = new ArrayList<>();
+        for (Interval interval : intervalList) {
+            exportedList.add(interval.toMap());
+        }
+        return exportedList;
     }
 
     public void importNetworkTaskWithLogs(Context context, Map<String, ?> taskMap, List<Map<String, ?>> logList) {
@@ -273,12 +279,28 @@ public class DBSetup {
 
     public void importIntervals(Context context, List<Map<String, ?>> intervalList) {
         Log.d(DBSetup.class.getName(), "importIntervals");
-        //TODO: implement
+        IntervalDAO dao = new IntervalDAO(context);
+        List<Interval> insertedList = new ArrayList<>();
         for (Map<String, ?> intervalMap : intervalList) {
             Interval interval = new Interval(intervalMap);
             Log.d(DBSetup.class.getName(), "Interval is " + interval);
-            Log.d(DBSetup.class.getName(), "Importing interval.");
+            if (isIntervalValid(interval, insertedList)) {
+                Log.d(DBSetup.class.getName(), "Importing interval.");
+                dao.insertInterval(interval);
+                insertedList.add(interval);
+            } else {
+                Log.e(DBSetup.class.getName(), "Interval is invalid and will not be imported: " + interval);
+            }
         }
+    }
+
+    private boolean isIntervalValid(Interval interval, List<Interval> insertedIntervals) {
+        for (Interval insertedInterval : insertedIntervals) {
+            if (interval.doesOverlap(insertedInterval)) {
+                return false;
+            }
+        }
+        return interval.isValid();
     }
 
     private boolean isNetworkTaskValid(Context context, NetworkTask task) {
