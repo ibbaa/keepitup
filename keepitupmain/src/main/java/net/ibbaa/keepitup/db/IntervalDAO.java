@@ -98,7 +98,7 @@ public class IntervalDAO extends BaseDAO {
         values.put(dbConstants.getMinuteendColumnName(), interval.getEnd().getMinute());
         long rowid = db.insert(dbConstants.getTableName(), null, values);
         if (rowid < 0) {
-            Log.e(IntervalDAO.class.getName(), "Error inserting interval database. Insert returned -1.");
+            Log.e(IntervalDAO.class.getName(), "Error inserting interval into database. Insert returned -1.");
         }
         interval.setId(rowid);
         return interval;

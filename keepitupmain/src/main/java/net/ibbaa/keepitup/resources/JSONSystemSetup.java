@@ -19,6 +19,7 @@ package net.ibbaa.keepitup.resources;
 import android.content.Context;
 import android.content.res.Resources;
 
+import net.ibbaa.keepitup.BuildConfig;
 import net.ibbaa.keepitup.R;
 import net.ibbaa.keepitup.db.DBSetup;
 import net.ibbaa.keepitup.logging.Log;
@@ -49,9 +50,13 @@ public class JSONSystemSetup implements ISystemSetup {
     public SystemSetupResult exportData() {
         Log.d(JSONSystemSetup.class.getName(), "exportData");
         JSONObject root = new JSONObject();
+        String versionKey = getResources().getString(R.string.version_json_key);
+        String dbVersionKey = getResources().getString(R.string.dbversion_json_key);
         String dbKey = getResources().getString(R.string.database_json_key);
         String settingsKey = getResources().getString(R.string.preferences_json_key);
         try {
+            root.put(versionKey, BuildConfig.VERSION_CODE);
+            root.put(dbVersionKey, getResources().getInteger(R.integer.db_version));
             JSONObject dbData = exportDatabase();
             root.put(dbKey, dbData);
             Log.d(JSONSystemSetup.class.getName(), "Successfully exported database: " + dbData);
@@ -100,15 +105,32 @@ public class JSONSystemSetup implements ISystemSetup {
 
     private void importDatabase(JSONObject dbData) throws JSONException {
         Log.d(JSONSystemSetup.class.getName(), "importDatabase for data " + dbData);
+
+        String intervalKey = getResources().getString(R.string.interval_json_key);
+        Iterator<String> keys = dbData.keys();
+        while (keys.hasNext()) {
+            String key = keys.next();
+            if (intervalKey.equals(key)) {
+                importIntervals(dbData, key);
+            } else {
+                importNetworkTask(dbData, key);
+            }
+        }
+    }
+
+    private void importNetworkTask(JSONObject dbData, String key) throws JSONException {
         String taskKey = getResources().getString(R.string.networktask_json_key);
         String logKey = getResources().getString(R.string.logentry_json_key);
-        Iterator<String> ids = dbData.keys();
-        while (ids.hasNext()) {
-            JSONObject taskData = (JSONObject) dbData.get(ids.next());
-            Map<String, ?> taskMap = JSONUtil.toMap((JSONObject) taskData.get(taskKey));
-            List<?> logList = JSONUtil.toList((JSONArray) taskData.get(logKey));
-            dbSetup.importNetworkTaskWithLogs(getContext(), taskMap, filterLogList(logList));
-        }
+        JSONObject taskData = (JSONObject) dbData.get(key);
+        Map<String, ?> taskMap = JSONUtil.toMap((JSONObject) taskData.get(taskKey));
+        List<?> logList = JSONUtil.toList((JSONArray) taskData.get(logKey));
+        dbSetup.importNetworkTaskWithLogs(getContext(), taskMap, filterList(logList));
+    }
+
+    private void importIntervals(JSONObject dbData, String key) throws JSONException {
+        JSONArray intervalData = (JSONArray) dbData.get(key);
+        List<?> intervalList = JSONUtil.toList(intervalData);
+        dbSetup.importIntervals(getContext(), filterList(intervalList));
     }
 
     private void importSettings(JSONObject settings) throws JSONException {
@@ -124,10 +146,10 @@ public class JSONSystemSetup implements ISystemSetup {
         preferenceSetup.importSystemSettings(JSONUtil.toMap(systemSettings));
     }
 
-    private List<Map<String, ?>> filterLogList(List<?> logList) {
+    private List<Map<String, ?>> filterList(List<?> list) {
         Log.d(JSONSystemSetup.class.getName(), "filterLogList");
         List<Map<String, ?>> filteredList = new ArrayList<>();
-        for (Object log : logList) {
+        for (Object log : list) {
             if (log instanceof Map) {
                 filteredList.add((Map<String, ?>) log);
             }
@@ -147,6 +169,9 @@ public class JSONSystemSetup implements ISystemSetup {
                 dbData.put(String.valueOf(id), task);
             }
         }
+        List<Map<String, ?>> intervals = dbSetup.exportIntervals(getContext());
+        String intervalKey = getResources().getString(R.string.interval_json_key);
+        dbData.put(intervalKey, new JSONArray(intervals));
         return dbData;
     }
 

@@ -42,7 +42,7 @@ public class DBPurgeTask extends UIBackgroundTask<Boolean> {
                 int dropTableRetry = context.getResources().getInteger(R.integer.drop_table_retry_count);
                 int dropTableTimeout = context.getResources().getInteger(R.integer.drop_table_timeout);
                 while (dropTableRetry > 0) {
-                    boolean dropSuccess = purgeTables(context, setup::recreateLogTable, setup::recreateNetworkTaskTable, setup::recreateSchedulerIdHistoryTable);
+                    boolean dropSuccess = purgeTables(context, setup::recreateLogTable, setup::recreateNetworkTaskTable, setup::recreateSchedulerIdHistoryTable, setup::recreateIntervalTable);
                     if (!dropSuccess) {
                         TimeUnit.MILLISECONDS.sleep(dropTableTimeout);
                     } else {
@@ -54,7 +54,7 @@ public class DBPurgeTask extends UIBackgroundTask<Boolean> {
                 int deleteTableRetry = context.getResources().getInteger(R.integer.delete_table_retry_count);
                 int deleteTableTimeout = context.getResources().getInteger(R.integer.delete_table_timeout);
                 while (deleteTableRetry > 0) {
-                    boolean deleteSuccess = purgeTables(context, setup::deleteAllLogs, setup::deleteAllNetworkTasks, setup::deleteAllSchedulerIds);
+                    boolean deleteSuccess = purgeTables(context, setup::deleteAllLogs, setup::deleteAllNetworkTasks, setup::deleteAllSchedulerIds, setup::deleteAllIntervals);
                     if (!deleteSuccess) {
                         TimeUnit.MILLISECONDS.sleep(deleteTableTimeout);
                     } else {
@@ -70,11 +70,12 @@ public class DBPurgeTask extends UIBackgroundTask<Boolean> {
         return false;
     }
 
-    private boolean purgeTables(Context context, PurgeOperation logOperation, PurgeOperation networkOperation, PurgeOperation schedulerIdOperation) {
+    private boolean purgeTables(Context context, PurgeOperation logOperation, PurgeOperation networkOperation, PurgeOperation schedulerIdOperation, PurgeOperation intervalOperation) {
         Log.d(DBPurgeTask.class.getName(), "purgeTables");
         boolean logTableSuccess = false;
         boolean networkTaskTableSuccess = false;
         boolean schedulerIdTableSuccess = false;
+        boolean intervalTableSuccess = false;
         try {
             logOperation.doPurge(context);
             logTableSuccess = true;
@@ -93,10 +94,17 @@ public class DBPurgeTask extends UIBackgroundTask<Boolean> {
         } catch (Exception exc) {
             Log.e(DBPurgeTask.class.getName(), "Error purging scheduler id table", exc);
         }
+        try {
+            intervalOperation.doPurge(context);
+            intervalTableSuccess = true;
+        } catch (Exception exc) {
+            Log.e(DBPurgeTask.class.getName(), "Error purging interval table", exc);
+        }
         Log.d(DBPurgeTask.class.getName(), "logTableSuccess: " + logTableSuccess);
         Log.d(DBPurgeTask.class.getName(), "networkTaskTableSuccess: " + networkTaskTableSuccess);
         Log.d(DBPurgeTask.class.getName(), "schedulerIdTableSuccess: " + schedulerIdTableSuccess);
-        return logTableSuccess && networkTaskTableSuccess && schedulerIdTableSuccess;
+        Log.d(DBPurgeTask.class.getName(), "intervalTableSuccess: " + schedulerIdTableSuccess);
+        return logTableSuccess && networkTaskTableSuccess && schedulerIdTableSuccess && intervalTableSuccess;
     }
 
     @Override

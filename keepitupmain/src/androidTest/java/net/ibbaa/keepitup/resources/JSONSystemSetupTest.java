@@ -23,6 +23,9 @@ import static org.junit.Assert.assertTrue;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.MediumTest;
 
+import net.ibbaa.keepitup.BuildConfig;
+import net.ibbaa.keepitup.R;
+import net.ibbaa.keepitup.db.IntervalDAO;
 import net.ibbaa.keepitup.db.LogDAO;
 import net.ibbaa.keepitup.db.NetworkTaskDAO;
 import net.ibbaa.keepitup.logging.Dump;
@@ -48,6 +51,7 @@ public class JSONSystemSetupTest {
 
     private NetworkTaskDAO networkTaskDAO;
     private LogDAO logDAO;
+    private IntervalDAO intervalDAO;
     private PreferenceManager preferenceManager;
     private JSONSystemSetup setup;
 
@@ -56,8 +60,10 @@ public class JSONSystemSetupTest {
         Dump.initialize(null);
         networkTaskDAO = new NetworkTaskDAO(TestRegistry.getContext());
         logDAO = new LogDAO(TestRegistry.getContext());
+        intervalDAO = new IntervalDAO(TestRegistry.getContext());
         networkTaskDAO.deleteAllNetworkTasks();
         logDAO.deleteAllLogs();
+        intervalDAO.deleteAllIntervals();
         preferenceManager = new PreferenceManager(TestRegistry.getContext());
         preferenceManager.removeAllPreferences();
         setup = new JSONSystemSetup(TestRegistry.getContext());
@@ -67,7 +73,17 @@ public class JSONSystemSetupTest {
     public void afterEachTestMethod() {
         networkTaskDAO.deleteAllNetworkTasks();
         logDAO.deleteAllLogs();
+        intervalDAO.deleteAllIntervals();
         preferenceManager.removeAllPreferences();
+    }
+
+    @Test
+    public void testVersion() throws Exception {
+        SystemSetupResult result = setup.exportData();
+        assertTrue(result.isSuccess());
+        JSONObject jsonData = new JSONObject(result.getData());
+        assertEquals(BuildConfig.VERSION_CODE, jsonData.getInt("version"));
+        assertEquals(TestRegistry.getContext().getResources().getInteger(R.integer.db_version), jsonData.getInt("dbversion"));
     }
 
     @Test

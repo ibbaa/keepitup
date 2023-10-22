@@ -17,9 +17,12 @@
 <resources>
     <string name="system_setup_json_implementation">net.ibbaa.keepitup.resources.JSONSystemSetup</string>
     <string name="file_extension_json">.json</string>
+    <string name="version_json_key">version</string>
+    <string name="dbversion_json_key">dbversion</string>
     <string name="database_json_key">database</string>
     <string name="networktask_json_key">networktask</string>
     <string name="logentry_json_key">logentry</string>
+    <string name="interval_json_key">interval</string>
     <string name="preferences_json_key">preferences</string>
     <string name="preferences_global_json_key">global</string>
     <string name="preferences_defaults_json_key">defaults</string>
