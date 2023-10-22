@@ -105,7 +105,6 @@ public class JSONSystemSetup implements ISystemSetup {
 
     private void importDatabase(JSONObject dbData) throws JSONException {
         Log.d(JSONSystemSetup.class.getName(), "importDatabase for data " + dbData);
-
         String intervalKey = getResources().getString(R.string.interval_json_key);
         Iterator<String> keys = dbData.keys();
         while (keys.hasNext()) {

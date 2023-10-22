@@ -30,7 +30,6 @@ import net.ibbaa.keepitup.model.LogEntry;
 import net.ibbaa.keepitup.model.NetworkTask;
 import net.ibbaa.keepitup.model.Time;
 import net.ibbaa.keepitup.test.mock.TestRegistry;
-import net.ibbaa.keepitup.util.TimeUtil;
 
 import org.junit.After;
 import org.junit.Before;
@@ -227,20 +226,16 @@ public class DBSetupTest {
 
     @Test
     public void testExportIntervals() {
-        Interval interval1 = intervalDAO.insertInterval(getInterval1());
-        Interval interval2 = intervalDAO.insertInterval(getInterval2());
-        Interval interval3 = intervalDAO.insertInterval(getInterval3());
+        intervalDAO.insertInterval(getInterval1());
+        intervalDAO.insertInterval(getInterval2());
+        intervalDAO.insertInterval(getInterval3());
         List<Map<String, ?>> intervalList = setup.exportIntervals(TestRegistry.getContext());
         Interval exportedInterval1 = new Interval(intervalList.get(0));
         Interval exportedInterval2 = new Interval(intervalList.get(1));
         Interval exportedInterval3 = new Interval(intervalList.get(2));
-        List<Interval> intervals = Arrays.asList(exportedInterval1, exportedInterval2, exportedInterval3);
-        List<Interval> originalIntervals = Arrays.asList(interval1, interval2, interval3);
-        originalIntervals = TimeUtil.cleanAndSort(originalIntervals);
-        intervals = TimeUtil.cleanAndSort(intervals);
-        intervalEquals(originalIntervals.get(0), intervals.get(0));
-        intervalEquals(originalIntervals.get(1), intervals.get(1));
-        intervalEquals(originalIntervals.get(2), intervals.get(2));
+        intervalEquals(getInterval2(), exportedInterval1);
+        intervalEquals(getInterval3(), exportedInterval2);
+        intervalEquals(getInterval1(), exportedInterval3);
     }
 
     @Test
@@ -315,12 +310,9 @@ public class DBSetupTest {
         setup.importIntervals(TestRegistry.getContext(), Arrays.asList(intervalMap1, intervalMap2, intervalMap3));
         List<Interval> intervalList = intervalDAO.readAllIntervals();
         assertEquals(3, intervalList.size());
-        List<Interval> originalList = Arrays.asList(getInterval1(), getInterval2(), getInterval3());
-        originalList = TimeUtil.cleanAndSort(originalList);
-        intervalList = TimeUtil.cleanAndSort(intervalList);
-        intervalEquals(originalList.get(0), intervalList.get(0));
-        intervalEquals(originalList.get(1), intervalList.get(1));
-        intervalEquals(originalList.get(2), intervalList.get(2));
+        intervalEquals(getInterval2(), intervalList.get(0));
+        intervalEquals(getInterval3(), intervalList.get(1));
+        intervalEquals(getInterval1(), intervalList.get(2));
     }
 
     @Test
@@ -341,11 +333,8 @@ public class DBSetupTest {
         setup.importIntervals(TestRegistry.getContext(), Arrays.asList(intervalMap1, intervalMap2, intervalMap3));
         List<Interval> intervalList = intervalDAO.readAllIntervals();
         assertEquals(2, intervalList.size());
-        List<Interval> originalList = Arrays.asList(getInterval2(), getInterval3());
-        originalList = TimeUtil.cleanAndSort(originalList);
-        intervalList = TimeUtil.cleanAndSort(intervalList);
-        intervalEquals(originalList.get(0), intervalList.get(0));
-        intervalEquals(originalList.get(1), intervalList.get(1));
+        intervalEquals(getInterval2(), intervalList.get(0));
+        intervalEquals(getInterval3(), intervalList.get(1));
     }
 
     @Test
@@ -366,11 +355,8 @@ public class DBSetupTest {
         setup.importIntervals(TestRegistry.getContext(), Arrays.asList(intervalMap1, intervalMap2, intervalMap3));
         List<Interval> intervalList = intervalDAO.readAllIntervals();
         assertEquals(2, intervalList.size());
-        List<Interval> originalList = Arrays.asList(getInterval1(), getInterval2());
-        originalList = TimeUtil.cleanAndSort(originalList);
-        intervalList = TimeUtil.cleanAndSort(intervalList);
-        intervalEquals(originalList.get(0), intervalList.get(0));
-        intervalEquals(originalList.get(1), intervalList.get(1));
+        intervalEquals(getInterval2(), intervalList.get(0));
+        intervalEquals(getInterval1(), intervalList.get(1));
     }
 
     private void logEntryEquals(LogEntry entry1, LogEntry entry2) {

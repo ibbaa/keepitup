@@ -16,16 +16,12 @@
 
 package net.ibbaa.keepitup.util;
 
-import net.ibbaa.keepitup.model.Interval;
 import net.ibbaa.keepitup.model.Time;
 import net.ibbaa.keepitup.service.ITimeService;
 
-import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Collections;
 import java.util.Date;
 import java.util.GregorianCalendar;
-import java.util.List;
 
 public class TimeUtil {
 
@@ -45,25 +41,5 @@ public class TimeUtil {
         date.set(Calendar.HOUR_OF_DAY, time.getHour());
         date.set(Calendar.MINUTE, time.getMinute());
         return date;
-    }
-
-    public static List<Interval> cleanAndSort(List<Interval> intervals) {
-        List<Interval> mergedList = new ArrayList<>();
-        for (Interval currentInterval : intervals) {
-            if (currentInterval.isValid()) {
-                mergedList.add(currentInterval);
-            }
-        }
-        Collections.sort(mergedList, TimeUtil::compareIntervals);
-        return mergedList;
-    }
-
-    private static int compareIntervals(Interval interval1, Interval interval2) {
-        if (interval1.isBefore(interval2)) {
-            return -1;
-        } else if (interval1.isAfter(interval2)) {
-            return 1;
-        }
-        return 0;
     }
 }

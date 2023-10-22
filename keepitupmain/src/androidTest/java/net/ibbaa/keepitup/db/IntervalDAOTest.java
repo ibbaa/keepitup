@@ -67,25 +67,39 @@ public class IntervalDAOTest {
         assertTrue(insertedInterval1.isEqual(readInterval));
         Interval insertedInterval2 = getInterval2();
         Interval insertedInterval3 = getInterval3();
+        Interval insertedInterval4 = getInterval4();
+        Interval insertedInterval5 = getInterval5();
         intervalDAO.insertInterval(insertedInterval2);
         intervalDAO.insertInterval(insertedInterval3);
+        intervalDAO.insertInterval(insertedInterval4);
+        intervalDAO.insertInterval(insertedInterval5);
         readIntervals = intervalDAO.readAllIntervals();
-        assertEquals(3, readIntervals.size());
+        assertEquals(5, readIntervals.size());
         Interval readInterval1 = readIntervals.get(0);
         Interval readInterval2 = readIntervals.get(1);
         Interval readInterval3 = readIntervals.get(2);
+        Interval readInterval4 = readIntervals.get(3);
+        Interval readInterval5 = readIntervals.get(4);
         assertTrue(readInterval1.getId() > 0);
         assertTrue(readInterval2.getId() > 0);
         assertTrue(readInterval3.getId() > 0);
-        assertTrue(insertedInterval1.isEqual(readInterval1));
-        assertTrue(insertedInterval2.isEqual(readInterval2));
-        assertTrue(insertedInterval3.isEqual(readInterval3));
+        assertTrue(readInterval4.getId() > 0);
+        assertTrue(readInterval5.getId() > 0);
+        assertTrue(insertedInterval1.isEqual(readInterval3));
+        assertTrue(insertedInterval2.isEqual(readInterval1));
+        assertTrue(insertedInterval3.isEqual(readInterval5));
+        assertTrue(insertedInterval4.isEqual(readInterval2));
+        assertTrue(insertedInterval5.isEqual(readInterval4));
         readInterval1 = intervalDAO.readInterval(readInterval1.getId());
         readInterval2 = intervalDAO.readInterval(readInterval2.getId());
         readInterval3 = intervalDAO.readInterval(readInterval3.getId());
-        assertTrue(insertedInterval1.isEqual(readInterval1));
-        assertTrue(insertedInterval2.isEqual(readInterval2));
-        assertTrue(insertedInterval3.isEqual(readInterval3));
+        readInterval4 = intervalDAO.readInterval(readInterval4.getId());
+        readInterval5 = intervalDAO.readInterval(readInterval5.getId());
+        assertTrue(insertedInterval1.isEqual(readInterval3));
+        assertTrue(insertedInterval2.isEqual(readInterval1));
+        assertTrue(insertedInterval3.isEqual(readInterval5));
+        assertTrue(insertedInterval4.isEqual(readInterval2));
+        assertTrue(insertedInterval5.isEqual(readInterval4));
         intervalDAO.deleteInterval(readInterval2);
         readInterval2 = intervalDAO.readInterval(readInterval2.getId());
         assertNull(readInterval2);
@@ -96,6 +110,7 @@ public class IntervalDAOTest {
         Interval interval1 = getInterval1();
         interval1 = intervalDAO.insertInterval(interval1);
         assertTrue(interval1.getId() > 0);
+        interval1 = intervalDAO.readInterval(interval1.getId());
         assertFalse(interval1.isActive());
         assertEquals(10, interval1.getStart().getHour());
         assertEquals(11, interval1.getStart().getMinute());
@@ -104,11 +119,12 @@ public class IntervalDAOTest {
         Interval interval2 = getInterval2();
         interval2 = intervalDAO.insertInterval(interval2);
         assertTrue(interval2.getId() > 0);
+        interval2 = intervalDAO.readInterval(interval2.getId());
         assertTrue(interval2.isActive());
         assertEquals(1, interval2.getStart().getHour());
         assertEquals(1, interval2.getStart().getMinute());
-        assertEquals(1, interval2.getEnd().getHour());
-        assertEquals(1, interval2.getEnd().getMinute());
+        assertEquals(2, interval2.getEnd().getHour());
+        assertEquals(2, interval2.getEnd().getMinute());
     }
 
     @Test
@@ -153,8 +169,8 @@ public class IntervalDAOTest {
         start.setMinute(1);
         interval.setStart(start);
         Time end = new Time();
-        end.setHour(1);
-        end.setMinute(1);
+        end.setHour(2);
+        end.setMinute(2);
         interval.setEnd(end);
         return interval;
     }
@@ -164,12 +180,42 @@ public class IntervalDAOTest {
         interval.setId(0);
         interval.setActive(true);
         Time start = new Time();
-        start.setHour(0);
-        start.setMinute(1);
+        start.setHour(22);
+        start.setMinute(15);
         interval.setStart(start);
         Time end = new Time();
         end.setHour(23);
         end.setMinute(59);
+        interval.setEnd(end);
+        return interval;
+    }
+
+    private Interval getInterval4() {
+        Interval interval = new Interval();
+        interval.setId(0);
+        interval.setActive(true);
+        Time start = new Time();
+        start.setHour(2);
+        start.setMinute(4);
+        interval.setStart(start);
+        Time end = new Time();
+        end.setHour(2);
+        end.setMinute(5);
+        interval.setEnd(end);
+        return interval;
+    }
+
+    private Interval getInterval5() {
+        Interval interval = new Interval();
+        interval.setId(0);
+        interval.setActive(true);
+        Time start = new Time();
+        start.setHour(15);
+        start.setMinute(1);
+        interval.setStart(start);
+        Time end = new Time();
+        end.setHour(16);
+        end.setMinute(16);
         interval.setEnd(end);
         return interval;
     }
