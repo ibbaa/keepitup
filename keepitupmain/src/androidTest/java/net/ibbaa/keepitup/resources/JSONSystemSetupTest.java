@@ -30,9 +30,11 @@ import net.ibbaa.keepitup.db.LogDAO;
 import net.ibbaa.keepitup.db.NetworkTaskDAO;
 import net.ibbaa.keepitup.logging.Dump;
 import net.ibbaa.keepitup.model.AccessType;
+import net.ibbaa.keepitup.model.Interval;
 import net.ibbaa.keepitup.model.LogEntry;
 import net.ibbaa.keepitup.model.NetworkTask;
 import net.ibbaa.keepitup.model.NotificationType;
+import net.ibbaa.keepitup.model.Time;
 import net.ibbaa.keepitup.test.mock.TestRegistry;
 import net.ibbaa.keepitup.util.JSONUtil;
 
@@ -140,6 +142,33 @@ public class JSONSystemSetupTest {
     }
 
     @Test
+    public void testExportDatabaseWithIntervals() throws Exception {
+        NetworkTask task1 = networkTaskDAO.insertNetworkTask(getNetworkTask1());
+        LogEntry task1Entry1 = logDAO.insertAndDeleteLog(getLogEntry1(task1.getId()));
+        Interval interval1 = intervalDAO.insertInterval(getInterval1());
+        Interval interval2 = intervalDAO.insertInterval(getInterval2());
+        Interval interval3 = intervalDAO.insertInterval(getInterval3());
+        SystemSetupResult result = setup.exportData();
+        assertTrue(result.isSuccess());
+        JSONObject jsonData = new JSONObject(result.getData());
+        JSONObject databaseData = (JSONObject) jsonData.get("database");
+        JSONObject task1Data = (JSONObject) databaseData.get(String.valueOf(task1.getId()));
+        JSONObject task1NetworkTaskData = (JSONObject) task1Data.get("networktask");
+        NetworkTask task1NetworkTask = new NetworkTask(JSONUtil.toMap(task1NetworkTaskData));
+        assertTrue(task1.isEqual(task1NetworkTask));
+        JSONArray task1LogData = (JSONArray) task1Data.get("logentry");
+        LogEntry task1LogEntry1 = new LogEntry(JSONUtil.toMap((JSONObject) task1LogData.get(0)));
+        assertTrue(task1Entry1.isEqual(task1LogEntry1));
+        JSONArray intervalData = (JSONArray) databaseData.get("interval");
+        Interval readInterval1 = new Interval(JSONUtil.toMap((JSONObject) intervalData.get(0)));
+        Interval readInterval2 = new Interval(JSONUtil.toMap((JSONObject) intervalData.get(1)));
+        Interval readinterval3 = new Interval(JSONUtil.toMap((JSONObject) intervalData.get(2)));
+        intervalEquals(interval1, readInterval2);
+        intervalEquals(interval2, readInterval1);
+        intervalEquals(interval3, readinterval3);
+    }
+
+    @Test
     public void testExportDatabaseInvalidTask() throws Exception {
         NetworkTask task1 = getNetworkTask1();
         task1.setAddress("127.12..1.1.1.1");
@@ -152,6 +181,18 @@ public class JSONSystemSetupTest {
         JSONObject task1NetworkTaskData = (JSONObject) task1Data.get("networktask");
         NetworkTask task1NetworkTask = new NetworkTask(JSONUtil.toMap(task1NetworkTaskData));
         assertTrue(task1.isEqual(task1NetworkTask));
+    }
+
+    @Test
+    public void testExportDatabaseInvalidInterval() throws Exception {
+        Interval interval = intervalDAO.insertInterval(new Interval());
+        SystemSetupResult result = setup.exportData();
+        assertTrue(result.isSuccess());
+        JSONObject jsonData = new JSONObject(result.getData());
+        JSONObject databaseData = (JSONObject) jsonData.get("database");
+        JSONArray intervalData = (JSONArray) databaseData.get("interval");
+        Interval intervalRead = new Interval(JSONUtil.toMap((JSONObject) intervalData.get(0)));
+        assertTrue(interval.isEqual(intervalRead));
     }
 
     @Test
@@ -291,6 +332,42 @@ public class JSONSystemSetupTest {
     }
 
     @Test
+    public void testImportDatabaseWithIntevrals() {
+        NetworkTask task1 = networkTaskDAO.insertNetworkTask(getNetworkTask1());
+        LogEntry task1Entry1 = logDAO.insertAndDeleteLog(getLogEntry1(task1.getId()));
+        Interval interval1 = intervalDAO.insertInterval(getInterval1());
+        Interval interval2 = intervalDAO.insertInterval(getInterval2());
+        Interval interval3 = intervalDAO.insertInterval(getInterval3());
+        SystemSetupResult exportResult = setup.exportData();
+        networkTaskDAO.deleteAllNetworkTasks();
+        logDAO.deleteAllLogs();
+        intervalDAO.deleteAllIntervals();
+        ;
+        assertTrue(networkTaskDAO.readAllNetworkTasks().isEmpty());
+        assertTrue(logDAO.readAllLogs().isEmpty());
+        assertTrue(intervalDAO.readAllIntervals().isEmpty());
+        SystemSetupResult importResult = setup.importData(exportResult.getData());
+        assertFalse(networkTaskDAO.readAllNetworkTasks().isEmpty());
+        assertFalse(logDAO.readAllLogs().isEmpty());
+        assertFalse(intervalDAO.readAllIntervals().isEmpty());
+        assertTrue(importResult.isSuccess());
+        assertEquals(exportResult.getData(), importResult.getData());
+        List<NetworkTask> tasks = networkTaskDAO.readAllNetworkTasks();
+        NetworkTask readTask1 = tasks.get(0);
+        assertTrue(task1.isTechnicallyEqual(readTask1));
+        List<LogEntry> entries = logDAO.readAllLogsForNetworkTask(readTask1.getId());
+        LogEntry readEntry1 = entries.get(0);
+        logEntryEquals(task1Entry1, readEntry1);
+        List<Interval> intervals = intervalDAO.readAllIntervals();
+        Interval readInterval1 = intervals.get(0);
+        Interval readInterval2 = intervals.get(1);
+        Interval readInterval3 = intervals.get(2);
+        intervalEquals(interval1, readInterval2);
+        intervalEquals(interval2, readInterval1);
+        intervalEquals(interval3, readInterval3);
+    }
+
+    @Test
     public void testImportDatabaseInvalidTask() {
         NetworkTask task1 = getNetworkTask1();
         task1.setAddress("127.12..1.1.1.1");
@@ -328,6 +405,38 @@ public class JSONSystemSetupTest {
         assertTrue(importResult.isSuccess());
         assertEquals(exportResult.getData(), importResult.getData());
         assertTrue(networkTaskDAO.readAllNetworkTasks().isEmpty());
+    }
+
+    @Test
+    public void testImportDatabaseInvalidInterval() {
+        intervalDAO.insertInterval(new Interval());
+        SystemSetupResult exportResult = setup.exportData();
+        intervalDAO.deleteAllIntervals();
+        SystemSetupResult importResult = setup.importData(exportResult.getData());
+        assertTrue(importResult.isSuccess());
+        assertEquals(exportResult.getData(), importResult.getData());
+        assertTrue(intervalDAO.readAllIntervals().isEmpty());
+        Interval interval1 = getInterval1();
+        Interval interval2 = getInterval2();
+        Time start = new Time();
+        start.setHour(11);
+        start.setMinute(1);
+        interval2.setStart(start);
+        Time end = new Time();
+        end.setHour(11);
+        end.setMinute(2);
+        interval2.setEnd(end);
+        intervalDAO.insertInterval(interval1);
+        intervalDAO.insertInterval(interval2);
+        exportResult = setup.exportData();
+        intervalDAO.deleteAllIntervals();
+        importResult = setup.importData(exportResult.getData());
+        assertTrue(importResult.isSuccess());
+        assertEquals(exportResult.getData(), importResult.getData());
+        List<Interval> intervals = intervalDAO.readAllIntervals();
+        assertEquals(1, intervals.size());
+        Interval interval = intervals.get(0);
+        intervalEquals(interval2, interval);
     }
 
     @Test
@@ -440,6 +549,14 @@ public class JSONSystemSetupTest {
         assertEquals(entry1.getMessage(), entry2.getMessage());
     }
 
+    private void intervalEquals(Interval interval1, Interval interval2) {
+        assertEquals(interval1.isActive(), interval2.isActive());
+        assertEquals(interval1.getStart().getHour(), interval2.getStart().getHour());
+        assertEquals(interval1.getStart().getMinute(), interval2.getStart().getMinute());
+        assertEquals(interval1.getEnd().getHour(), interval2.getEnd().getHour());
+        assertEquals(interval1.getEnd().getMinute(), interval2.getEnd().getMinute());
+    }
+
     private NetworkTask getNetworkTask1() {
         NetworkTask task = new NetworkTask();
         task.setId(0);
@@ -519,5 +636,50 @@ public class JSONSystemSetupTest {
         insertedLogEntry3.setTimestamp(123);
         insertedLogEntry3.setMessage("TestMessage3");
         return insertedLogEntry3;
+    }
+
+    private Interval getInterval1() {
+        Interval interval = new Interval();
+        interval.setId(1);
+        interval.setActive(false);
+        Time start = new Time();
+        start.setHour(10);
+        start.setMinute(11);
+        interval.setStart(start);
+        Time end = new Time();
+        end.setHour(11);
+        end.setMinute(12);
+        interval.setEnd(end);
+        return interval;
+    }
+
+    private Interval getInterval2() {
+        Interval interval = new Interval();
+        interval.setId(2);
+        interval.setActive(true);
+        Time start = new Time();
+        start.setHour(1);
+        start.setMinute(1);
+        interval.setStart(start);
+        Time end = new Time();
+        end.setHour(2);
+        end.setMinute(2);
+        interval.setEnd(end);
+        return interval;
+    }
+
+    private Interval getInterval3() {
+        Interval interval = new Interval();
+        interval.setId(3);
+        interval.setActive(true);
+        Time start = new Time();
+        start.setHour(22);
+        start.setMinute(15);
+        interval.setStart(start);
+        Time end = new Time();
+        end.setHour(23);
+        end.setMinute(59);
+        interval.setEnd(end);
+        return interval;
     }
 }
