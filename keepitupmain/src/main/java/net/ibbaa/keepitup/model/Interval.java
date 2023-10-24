@@ -154,32 +154,22 @@ public class Interval {
     }
 
     public boolean isValid() {
-        return start.isValid() && end.isValid() && end.isAfter(start);
+        return start.isValid() && end.isValid() && !start.isEqual(end);
     }
 
-    public boolean startsBefore(Interval other) {
-        if (!isValid() || !other.isValid()) {
-            return false;
-        }
-        return start.isBefore(other.start);
-    }
-
-    public boolean endsAfter(Interval other) {
-        if (!isValid() || !other.isValid()) {
-            return false;
-        }
-        return end.isAfter(other.end);
+    public boolean doesOverlapDays() {
+        return end.isBefore(start);
     }
 
     public boolean isBefore(Interval other) {
-        if (!isValid() || !other.isValid()) {
+        if (!isValid() || !other.isValid() || doesOverlapDays()) {
             return false;
         }
         return end.isBefore(other.start);
     }
 
     public boolean isAfter(Interval other) {
-        if (!isValid() || !other.isValid()) {
+        if (!isValid() || !other.isValid() || other.doesOverlapDays()) {
             return false;
         }
         return start.isAfter(other.end);
@@ -190,16 +180,6 @@ public class Interval {
             return false;
         }
         return !isBefore(other) && !isAfter(other);
-    }
-
-    public Interval merge(Interval other) {
-        if (!isValid() || !other.isValid()) {
-            return null;
-        }
-        Interval merged = new Interval();
-        merged.setStart(start.isBefore(other.start) ? start : other.start);
-        merged.setEnd(end.isAfter(other.end) ? end : other.end);
-        return merged;
     }
 
     @NonNull

@@ -59,6 +59,20 @@ public class SystemAlarmManager implements IAlarmManager {
     }
 
     @Override
+    public void setRTCAlarm(long timestamp, PendingIntent pendingIntent) {
+        Log.d(SystemAlarmManager.class.getName(), "Setting alarm with a timestamp of " + timestamp);
+        if (!canScheduleAlarms()) {
+            Log.e(SystemAlarmManager.class.getName(), "Cannot set alarm because of missing permission.");
+            return;
+        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, timestamp, pendingIntent);
+        } else {
+            alarmManager.setExact(AlarmManager.RTC_WAKEUP, timestamp, pendingIntent);
+        }
+    }
+
+    @Override
     public void cancelAlarm(PendingIntent pendingIntent) {
         Log.d(SystemAlarmManager.class.getName(), "Canceling alarm");
         alarmManager.cancel(pendingIntent);

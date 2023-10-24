@@ -27,15 +27,21 @@ import java.util.List;
 public class MockAlarmManager implements IAlarmManager {
 
     private final List<SetAlarmCall> setAlarmCalls;
+    private final List<SetAlarmCall> setAlarmRTCCalls;
     private final List<CancelAlarmCall> cancelAlarmCalls;
 
     public MockAlarmManager() {
         setAlarmCalls = new ArrayList<>();
+        setAlarmRTCCalls = new ArrayList<>();
         cancelAlarmCalls = new ArrayList<>();
     }
 
     public List<SetAlarmCall> getSetAlarmCalls() {
         return Collections.unmodifiableList(setAlarmCalls);
+    }
+
+    public List<SetAlarmCall> getSetAlarmRTCCalls() {
+        return Collections.unmodifiableList(setAlarmRTCCalls);
     }
 
     public List<CancelAlarmCall> getCancelAlarmCalls() {
@@ -45,10 +51,15 @@ public class MockAlarmManager implements IAlarmManager {
     public void reset() {
         setAlarmCalls.clear();
         cancelAlarmCalls.clear();
+        setAlarmRTCCalls.clear();;
     }
 
     public boolean wasSetAlarmCalled() {
         return !setAlarmCalls.isEmpty();
+    }
+
+    public boolean wasSetAlarmRTCCalled() {
+        return !setAlarmRTCCalls.isEmpty();
     }
 
     public boolean wasCancelAlarmCalled() {
@@ -63,6 +74,11 @@ public class MockAlarmManager implements IAlarmManager {
     @Override
     public void setAlarm(long delay, PendingIntent pendingIntent) {
         setAlarmCalls.add(new SetAlarmCall(delay, pendingIntent));
+    }
+
+    @Override
+    public void setRTCAlarm(long timestamp, PendingIntent pendingIntent) {
+        setAlarmRTCCalls.add(new SetAlarmCall(timestamp, pendingIntent));
     }
 
     @Override

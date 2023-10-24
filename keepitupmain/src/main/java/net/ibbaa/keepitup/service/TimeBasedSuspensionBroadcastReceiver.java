@@ -16,15 +16,14 @@
 
 package net.ibbaa.keepitup.service;
 
-import android.app.PendingIntent;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
 
-public interface IAlarmManager {
+public class TimeBasedSuspensionBroadcastReceiver extends BroadcastReceiver {
 
-    boolean canScheduleAlarms();
+    @Override
+    public void onReceive(Context context, Intent intent) {
 
-    void setAlarm(long delay, PendingIntent pendingIntent);
-
-    void setRTCAlarm(long timestamp, PendingIntent pendingIntent);
-
-    void cancelAlarm(PendingIntent pendingIntent);
+    }
 }

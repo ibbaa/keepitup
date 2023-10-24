@@ -26,18 +26,26 @@ import java.util.GregorianCalendar;
 public class TimeUtil {
 
     public static long getTimestampToday(Time time, ITimeService timeService) {
-        return getCalendarFromTime(time, timeService).getTimeInMillis();
+        return getTimestampToday(time, timeService.getCurrentTimestamp());
     }
 
     public static long getTimestampTomorrow(Time time, ITimeService timeService) {
-        Calendar date = getCalendarFromTime(time, timeService);
+        return getTimestampTomorrow(time, timeService.getCurrentTimestamp());
+    }
+
+    public static long getTimestampToday(Time time, long currentTime) {
+        return getCalendarFromTime(time, currentTime).getTimeInMillis();
+    }
+
+    public static long getTimestampTomorrow(Time time, long currentTime) {
+        Calendar date = getCalendarFromTime(time, currentTime);
         date.add(Calendar.DATE, 1);
         return date.getTimeInMillis();
     }
 
-    private static Calendar getCalendarFromTime(Time time, ITimeService timeService) {
+    private static Calendar getCalendarFromTime(Time time, long currentTime) {
         Calendar date = new GregorianCalendar();
-        date.setTime(new Date(timeService.getCurrentTimestamp()));
+        date.setTime(new Date(currentTime));
         date.set(Calendar.HOUR_OF_DAY, time.getHour());
         date.set(Calendar.MINUTE, time.getMinute());
         return date;

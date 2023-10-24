@@ -47,6 +47,13 @@ public class TimeUtilTest {
         assertEquals(27, date.get(Calendar.DAY_OF_MONTH));
         assertEquals(17, date.get(Calendar.HOUR_OF_DAY));
         assertEquals(58, date.get(Calendar.MINUTE));
+        timestamp = TimeUtil.getTimestampToday(time, timestamp);
+        date.setTime(new Date(timestamp));
+        assertEquals(1991, date.get(Calendar.YEAR));
+        assertEquals(Calendar.JULY, date.get(Calendar.MONTH));
+        assertEquals(27, date.get(Calendar.DAY_OF_MONTH));
+        assertEquals(17, date.get(Calendar.HOUR_OF_DAY));
+        assertEquals(58, date.get(Calendar.MINUTE));
     }
 
     @Test
@@ -62,7 +69,7 @@ public class TimeUtilTest {
         assertEquals(28, date.get(Calendar.DAY_OF_MONTH));
         assertEquals(17, date.get(Calendar.HOUR_OF_DAY));
         assertEquals(58, date.get(Calendar.MINUTE));
-        timestamp = TimeUtil.getTimestampTomorrow(time, this::testNow2);
+        timestamp = TimeUtil.getTimestampTomorrow(time, testNow2());
         date = new GregorianCalendar();
         date.setTime(new Date(timestamp));
         assertEquals(1991, date.get(Calendar.YEAR));
