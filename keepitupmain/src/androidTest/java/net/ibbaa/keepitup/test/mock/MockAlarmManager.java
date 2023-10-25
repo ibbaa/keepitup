@@ -51,7 +51,7 @@ public class MockAlarmManager implements IAlarmManager {
     public void reset() {
         setAlarmCalls.clear();
         cancelAlarmCalls.clear();
-        setAlarmRTCCalls.clear();;
+        setAlarmRTCCalls.clear();
     }
 
     public boolean wasSetAlarmCalled() {

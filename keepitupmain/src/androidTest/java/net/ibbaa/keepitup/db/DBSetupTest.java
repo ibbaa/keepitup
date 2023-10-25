@@ -320,7 +320,7 @@ public class DBSetupTest {
         Interval interval1 = getInterval1();
         Time start = new Time();
         start.setHour(10);
-        start.setMinute(11);
+        start.setMinute(60);
         interval1.setStart(start);
         Time end = new Time();
         end.setHour(9);
@@ -357,6 +357,27 @@ public class DBSetupTest {
         assertEquals(2, intervalList.size());
         intervalEquals(getInterval2(), intervalList.get(0));
         intervalEquals(getInterval1(), intervalList.get(1));
+    }
+
+    @Test
+    public void testImportIntervalsOverlapDaysOverlap() {
+        Interval interval1 = getInterval1();
+        Time start = new Time();
+        start.setHour(0);
+        start.setMinute(1);
+        interval1.setStart(start);
+        Time end = new Time();
+        end.setHour(0);
+        end.setMinute(0);
+        interval1.setEnd(end);
+        Map<String, ?> intervalMap1 = interval1.toMap();
+        Map<String, ?> intervalMap2 = getInterval2().toMap();
+        Map<String, ?> intervalMap3 = getInterval3().toMap();
+        assertTrue(intervalDAO.readAllIntervals().isEmpty());
+        setup.importIntervals(TestRegistry.getContext(), Arrays.asList(intervalMap1, intervalMap2, intervalMap3));
+        List<Interval> intervalList = intervalDAO.readAllIntervals();
+        assertEquals(1, intervalList.size());
+        intervalEquals(interval1, intervalList.get(0));
     }
 
     private void logEntryEquals(LogEntry entry1, LogEntry entry2) {

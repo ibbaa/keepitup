@@ -57,11 +57,11 @@ public class TimeBasedSuspensionScheduler {
     }
 
     public boolean isSuspended() {
-        if(getIntervals().isEmpty()) {
+        if (getIntervals().isEmpty()) {
             return false;
         }
         long now = timeService.getCurrentTimestamp();
-        for(Interval interval : intervals) {
+        for (Interval interval : intervals) {
             long start = TimeUtil.getTimestampToday(interval.getStart(), now);
             if (now <= start) {
                 return false;

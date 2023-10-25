@@ -161,25 +161,17 @@ public class Interval {
         return end.isBefore(start);
     }
 
-    public boolean isBefore(Interval other) {
-        if (!isValid() || !other.isValid() || doesOverlapDays()) {
-            return false;
-        }
-        return end.isBefore(other.start);
-    }
-
-    public boolean isAfter(Interval other) {
-        if (!isValid() || !other.isValid() || other.doesOverlapDays()) {
-            return false;
-        }
-        return start.isAfter(other.end);
-    }
-
     public boolean doesOverlap(Interval other) {
         if (!isValid() || !other.isValid()) {
             return false;
         }
-        return !isBefore(other) && !isAfter(other);
+        if (doesOverlapDays() && other.doesOverlapDays()) {
+            return true;
+        }
+        if (doesOverlapDays() || other.doesOverlapDays()) {
+            return !start.isAfter(other.end) || !end.isBefore(other.start);
+        }
+        return !end.isBefore(other.start) && !start.isAfter(other.end);
     }
 
     @NonNull

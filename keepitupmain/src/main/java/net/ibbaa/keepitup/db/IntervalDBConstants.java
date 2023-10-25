@@ -103,6 +103,6 @@ class IntervalDBConstants {
                 getHourendColumnName() + ", " +
                 getMinuteendColumnName() +
                 " FROM " + getTableName() +
-                " ORDER BY " + getHourendColumnName() + ", " + getMinuteendColumnName() + " ASC";
+                " ORDER BY " + getHourstartColumnName() + ", " + getMinutestartColumnName() + " ASC";
     }
 }

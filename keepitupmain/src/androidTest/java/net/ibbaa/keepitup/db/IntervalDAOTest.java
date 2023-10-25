@@ -106,6 +106,63 @@ public class IntervalDAOTest {
     }
 
     @Test
+    public void testReadAllSortOverlap() {
+        Interval insertedInterval1 = getInterval1();
+        Interval insertedInterval2 = getInterval2();
+        Interval insertedInterval3 = getInterval3();
+        Interval insertedInterval4 = getInterval4();
+        Interval insertedInterval5 = getInterval5();
+        Time time = new Time();
+        time.setHour(2);
+        time.setMinute(5);
+        insertedInterval3.setEnd(time);
+        intervalDAO.insertInterval(insertedInterval1);
+        intervalDAO.insertInterval(insertedInterval2);
+        intervalDAO.insertInterval(insertedInterval3);
+        intervalDAO.insertInterval(insertedInterval4);
+        intervalDAO.insertInterval(insertedInterval5);
+        List<Interval> readIntervals = intervalDAO.readAllIntervals();
+        assertEquals(5, readIntervals.size());
+        Interval readInterval1 = readIntervals.get(0);
+        Interval readInterval2 = readIntervals.get(1);
+        Interval readInterval3 = readIntervals.get(2);
+        Interval readInterval4 = readIntervals.get(3);
+        Interval readInterval5 = readIntervals.get(4);
+        assertTrue(insertedInterval1.isEqual(readInterval3));
+        assertTrue(insertedInterval2.isEqual(readInterval1));
+        assertTrue(insertedInterval3.isEqual(readInterval5));
+        assertTrue(insertedInterval4.isEqual(readInterval2));
+        assertTrue(insertedInterval5.isEqual(readInterval4));
+        intervalDAO.deleteAllIntervals();
+        insertedInterval1 = getInterval1();
+        insertedInterval2 = getInterval2();
+        Time start1 = new Time();
+        start1.setHour(0);
+        start1.setMinute(5);
+        Time end1 = new Time();
+        end1.setHour(0);
+        end1.setMinute(1);
+        Time start2 = new Time();
+        start2.setHour(0);
+        start2.setMinute(2);
+        Time end2 = new Time();
+        end2.setHour(0);
+        end2.setMinute(3);
+        insertedInterval1.setStart(start1);
+        insertedInterval1.setEnd(end1);
+        insertedInterval2.setStart(start2);
+        insertedInterval2.setEnd(end2);
+        intervalDAO.insertInterval(insertedInterval1);
+        intervalDAO.insertInterval(insertedInterval2);
+        readIntervals = intervalDAO.readAllIntervals();
+        assertEquals(2, readIntervals.size());
+        readInterval1 = readIntervals.get(0);
+        readInterval2 = readIntervals.get(1);
+        assertTrue(insertedInterval1.isEqual(readInterval2));
+        assertTrue(insertedInterval2.isEqual(readInterval1));
+    }
+
+    @Test
     public void testReadValues() {
         Interval interval1 = getInterval1();
         interval1 = intervalDAO.insertInterval(interval1);

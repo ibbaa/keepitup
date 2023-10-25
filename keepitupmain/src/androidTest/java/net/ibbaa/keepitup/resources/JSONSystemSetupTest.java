@@ -342,7 +342,6 @@ public class JSONSystemSetupTest {
         networkTaskDAO.deleteAllNetworkTasks();
         logDAO.deleteAllLogs();
         intervalDAO.deleteAllIntervals();
-        ;
         assertTrue(networkTaskDAO.readAllNetworkTasks().isEmpty());
         assertTrue(logDAO.readAllLogs().isEmpty());
         assertTrue(intervalDAO.readAllIntervals().isEmpty());
@@ -365,6 +364,33 @@ public class JSONSystemSetupTest {
         intervalEquals(interval1, readInterval2);
         intervalEquals(interval2, readInterval1);
         intervalEquals(interval3, readInterval3);
+    }
+
+    @Test
+    public void testImportDatabaseWithIntervalsOverlap() {
+        Interval interval1 = getInterval1();
+        Interval interval2 = getInterval2();
+        Time start = new Time();
+        start.setHour(23);
+        start.setMinute(59);
+        interval2.setStart(start);
+        Time end = new Time();
+        end.setHour(0);
+        end.setMinute(1);
+        interval2.setEnd(end);
+        intervalDAO.insertInterval(interval1);
+        intervalDAO.insertInterval(interval2);
+        SystemSetupResult exportResult = setup.exportData();
+        intervalDAO.deleteAllIntervals();
+        SystemSetupResult importResult = setup.importData(exportResult.getData());
+        assertTrue(importResult.isSuccess());
+        assertEquals(exportResult.getData(), importResult.getData());
+        List<Interval> intervals = intervalDAO.readAllIntervals();
+        assertEquals(2, intervals.size());
+        Interval readInterval1 = intervals.get(0);
+        Interval readInterval2 = intervals.get(1);
+        intervalEquals(interval1, readInterval1);
+        intervalEquals(interval2, readInterval2);
     }
 
     @Test
@@ -436,7 +462,7 @@ public class JSONSystemSetupTest {
         List<Interval> intervals = intervalDAO.readAllIntervals();
         assertEquals(1, intervals.size());
         Interval interval = intervals.get(0);
-        intervalEquals(interval2, interval);
+        intervalEquals(interval1, interval);
     }
 
     @Test
