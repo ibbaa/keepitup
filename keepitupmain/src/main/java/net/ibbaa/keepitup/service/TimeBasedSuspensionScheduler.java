@@ -34,6 +34,7 @@ public class TimeBasedSuspensionScheduler {
     private final Context context;
     private final IntervalDAO intervalDAO;
     private final ITimeService timeService;
+    private final IAlarmManager alarmManager;
 
     private static List<Interval> intervals;
 
@@ -41,6 +42,7 @@ public class TimeBasedSuspensionScheduler {
         this.context = context;
         this.intervalDAO = new IntervalDAO(context);
         this.timeService = createTimeService();
+        this.alarmManager = createAlarmManager();
     }
 
     public List<Interval> getIntervals() {
@@ -63,12 +65,15 @@ public class TimeBasedSuspensionScheduler {
         long now = timeService.getCurrentTimestamp();
         for (Interval interval : intervals) {
             long start = TimeUtil.getTimestampToday(interval.getStart(), now);
-            if (now <= start) {
-                return false;
-            }
             long end = TimeUtil.getTimestampToday(interval.getEnd(), now);
-            if (now <= start) {
-                return false;
+            if (!interval.doesOverlapDays()) {
+                if (now >= start && now < end) {
+                    return true;
+                }
+            } else {
+                if (now >= start || now < end) {
+                    return true;
+                }
             }
         }
         return false;
@@ -87,6 +92,19 @@ public class TimeBasedSuspensionScheduler {
 
     private Context getContext() {
         return context;
+    }
+
+    public IAlarmManager getAlarmManager() {
+        return alarmManager;
+    }
+
+    public ITimeService getTimeService() {
+        return timeService;
+    }
+
+    private IAlarmManager createAlarmManager() {
+        ServiceFactoryContributor factoryContributor = new ServiceFactoryContributor(getContext());
+        return factoryContributor.createServiceFactory().createAlarmManager(getContext());
     }
 
     private ITimeService createTimeService() {
