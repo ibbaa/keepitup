@@ -33,6 +33,7 @@ import java.security.SecureRandom;
 public class SchedulerIdGenerator {
 
     public final static int ERROR_SCHEDULER_ID = -1;
+    public final static int TIME_BASED_SCHEDULER_ID = -10;
 
     private final static SecureRandom randomGenerator = new SecureRandom();
 
@@ -53,7 +54,7 @@ public class SchedulerIdGenerator {
         int schedulerId = createSchedulerId();
         Log.d(SchedulerIdGenerator.class.getName(), "Created random scheduler id is " + schedulerId);
         int retryCount = getResources().getInteger(R.integer.scheduler_id_retry_count);
-        while (readSchedulerIdCountFromNetworkTaskTable(schedulerId, db) > 0 || readSchedulerIdCountFromSchedulerIdHistory(schedulerId, db) > 0 || schedulerId == ERROR_SCHEDULER_ID) {
+        while (readSchedulerIdCountFromNetworkTaskTable(schedulerId, db) > 0 || readSchedulerIdCountFromSchedulerIdHistory(schedulerId, db) > 0 || isInvalidId(schedulerId)) {
             Log.d(SchedulerIdGenerator.class.getName(), "Created random scheduler id exists. Creating new one.");
             schedulerId = createSchedulerId();
             retryCount--;
@@ -73,6 +74,10 @@ public class SchedulerIdGenerator {
             return createSchedulerIdResult(ERROR_SCHEDULER_ID, false);
         }
         return createSchedulerIdResult(schedulerId, true);
+    }
+
+    private boolean isInvalidId(int schedulerId) {
+        return schedulerId == ERROR_SCHEDULER_ID || schedulerId == TIME_BASED_SCHEDULER_ID;
     }
 
     private long readSchedulerIdCountFromNetworkTaskTable(int schedulerId, SQLiteDatabase db) {

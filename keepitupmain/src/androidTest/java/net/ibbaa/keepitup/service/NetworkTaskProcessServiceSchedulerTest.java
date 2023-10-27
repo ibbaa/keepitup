@@ -359,6 +359,30 @@ public class NetworkTaskProcessServiceSchedulerTest {
         assertEquals(0, networkTaskDAO.readNetworkTaskInstances(task2.getId()));
     }
 
+    @Test
+    public void testSuspendAll() {
+        NetworkTask task1 = getNetworkTask1();
+        NetworkTask task2 = getNetworkTask2();
+        task1 = networkTaskDAO.insertNetworkTask(task1);
+        task2 = networkTaskDAO.insertNetworkTask(task2);
+        task1 = scheduler.schedule(task1);
+        task2 = scheduler.schedule(task2);
+        task1.setLastScheduled(125);
+        task2.setLastScheduled(125);
+        networkTaskDAO.updateNetworkTaskLastScheduled(task1.getId(), 125);
+        networkTaskDAO.updateNetworkTaskLastScheduled(task2.getId(), 125);
+        assertTrue(task1.isRunning());
+        assertTrue(task2.isRunning());
+        assertTrue(isTaskMarkedAsRunningInDatabase(task1));
+        assertTrue(isTaskMarkedAsRunningInDatabase(task2));
+        scheduler.suspendAll();
+        assertTrue(isTaskMarkedAsRunningInDatabase(task1));
+        assertTrue(isTaskMarkedAsRunningInDatabase(task2));
+        assertLastScheduledInDatabase(task1, -1);
+        assertLastScheduledInDatabase(task1, -1);
+        assertTrue(alarmManager.wasCancelAlarmCalled());
+    }
+
     private boolean isTaskMarkedAsRunningInDatabase(NetworkTask task) {
         task = networkTaskDAO.readNetworkTask(task.getId());
         return task.isRunning();

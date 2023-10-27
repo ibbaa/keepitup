@@ -54,29 +54,55 @@ public class TimeBasedSuspensionScheduler {
         }
     }
 
-    public static synchronized void reconfigure() {
-        intervals = null;
+    public void reset() {
+        synchronized (TimeBasedSuspensionScheduler.class) {
+            intervals = null;
+        }
+    }
+
+    public void reconfigure() {
+        synchronized (TimeBasedSuspensionScheduler.class) {
+            long now = timeService.getCurrentTimestamp();
+            boolean suspendedBefore = false;
+            if (intervals != null) {
+                suspendedBefore = isSuspended(now);
+            }
+            reset();
+            Interval currentSuspendInterval = findCurrentSuspendInterval(now);
+            if (!suspendedBefore && currentSuspendInterval != null) {
+                //TODO suspend all
+            } else if (suspendedBefore && currentSuspendInterval == null) {
+                //TODO start all
+            }
+        }
     }
 
     public boolean isSuspended() {
+        return isSuspended(timeService.getCurrentTimestamp());
+    }
+
+    public boolean isSuspended(long now) {
+        return findCurrentSuspendInterval(now) != null;
+    }
+
+    private Interval findCurrentSuspendInterval(long now) {
         if (getIntervals().isEmpty()) {
-            return false;
+            return null;
         }
-        long now = timeService.getCurrentTimestamp();
         for (Interval interval : intervals) {
             long start = TimeUtil.getTimestampToday(interval.getStart(), now);
             long end = TimeUtil.getTimestampToday(interval.getEnd(), now);
             if (!interval.doesOverlapDays()) {
                 if (now >= start && now < end) {
-                    return true;
+                    return interval;
                 }
             } else {
                 if (now >= start || now < end) {
-                    return true;
+                    return interval;
                 }
             }
         }
-        return false;
+        return null;
     }
 
     @SuppressLint("UnspecifiedImmutableFlag")

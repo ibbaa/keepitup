@@ -171,11 +171,24 @@ public class NetworkTaskProcessServiceScheduler {
     public void cancelAll() {
         Log.d(NetworkTaskProcessServiceScheduler.class.getName(), "Cancelling all network tasks.");
         List<NetworkTask> networkTasks = networkTaskDAO.readAllNetworkTasks();
-        Log.d(NetworkTaskProcessServiceScheduler.class.getName(), "Database returned the following network tasks: " + (networkTasks.isEmpty() ? "no network tasks" : ""));
         for (NetworkTask currentTask : networkTasks) {
             Log.d(NetworkTaskProcessServiceScheduler.class.getName(), "Cancelling network task " + currentTask);
             cancel(currentTask);
         }
+    }
+
+    public void suspendAll() {
+        Log.d(NetworkTaskProcessServiceScheduler.class.getName(), "Suspending all network tasks.");
+        List<NetworkTask> networkTasks = networkTaskDAO.readAllNetworkTasks();
+        for (NetworkTask currentTask : networkTasks) {
+            currentTask.setLastScheduled(-1);
+            networkTaskDAO.updateNetworkTaskLastScheduled(currentTask.getId(), -1);
+            terminate(currentTask);
+        }
+        Log.d(NetworkTaskProcessServiceScheduler.class.getName(), "Stopping foreground service...");
+        Intent intent = new Intent(getContext(), NetworkTaskRunningNotificationService.class);
+        intent.setPackage(getContext().getPackageName());
+        getContext().stopService(intent);
     }
 
     public void terminateAll() {

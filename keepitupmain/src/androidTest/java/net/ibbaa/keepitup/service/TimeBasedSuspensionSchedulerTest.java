@@ -49,7 +49,7 @@ public class TimeBasedSuspensionSchedulerTest {
     @Before
     public void beforeEachTestMethod() {
         scheduler = new TimeBasedSuspensionScheduler(TestRegistry.getContext());
-        TimeBasedSuspensionScheduler.reconfigure();
+        scheduler.reset();
         intervalDAO = new IntervalDAO(TestRegistry.getContext());
         intervalDAO.deleteAllIntervals();
         alarmManager = (MockAlarmManager) scheduler.getAlarmManager();
@@ -60,7 +60,7 @@ public class TimeBasedSuspensionSchedulerTest {
     @After
     public void afterEachTestMethod() {
         intervalDAO.deleteAllIntervals();
-        TimeBasedSuspensionScheduler.reconfigure();
+        scheduler.reset();
     }
 
     @Test
