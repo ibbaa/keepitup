@@ -86,6 +86,8 @@
 
         <receiver android:name=".service.NetworkTaskProcessBroadcastReceiver" />
 
+        <receiver android:name=".service.TimeBasedSuspensionBroadcastReceiver" />
+
         <receiver
             android:name=".service.StartupService"
             android:enabled="true"
