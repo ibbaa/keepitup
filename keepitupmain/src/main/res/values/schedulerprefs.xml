@@ -18,5 +18,5 @@
     <integer name="schedulerid_history_count_maximum">100</integer>
     <integer name="scheduler_id_retry_count">10000000</integer>
     <integer name="scheduler_time_threshold">180</integer>
-    <string name="scheduler_action_key">180</string>
+    <string name="scheduler_action_key">scheduler_action_key</string>
 </resources>
