@@ -47,6 +47,7 @@ public class PreferenceSetup {
         globalSettings.put("preferenceConnectCount", preferenceManager.getPreferenceConnectCount());
         globalSettings.put("preferenceNotificationInactiveNetwork", preferenceManager.getPreferenceNotificationInactiveNetwork());
         globalSettings.put("preferenceNotificationType", preferenceManager.getPreferenceNotificationType() != null ? preferenceManager.getPreferenceNotificationType().getCode() : 1);
+        globalSettings.put("preferenceSuspensionEnabled", preferenceManager.getPreferenceSuspensionEnabled());
         globalSettings.put("preferenceDownloadExternalStorage", preferenceManager.getPreferenceDownloadExternalStorage());
         globalSettings.put("preferenceDownloadFolder", preferenceManager.getPreferenceDownloadFolder());
         globalSettings.put("preferenceDownloadKeep", preferenceManager.getPreferenceDownloadKeep());
@@ -110,6 +111,12 @@ public class PreferenceSetup {
             preferenceManager.setPreferenceNotificationType(Objects.requireNonNull(NotificationType.forCode(NumberUtil.getIntValue(notificationType, 1))));
         } else {
             preferenceManager.removePreferenceNotificationType();
+        }
+        Object suspensionEnabled = globalSettings.get("preferenceSuspensionEnabled");
+        if (isValidBoolean(suspensionEnabled)) {
+            preferenceManager.setPreferenceSuspensionEnabled(Boolean.parseBoolean(suspensionEnabled.toString()));
+        } else {
+            preferenceManager.removePreferenceSuspensionEnabled();
         }
         Object downloadExternalStorage = globalSettings.get("preferenceDownloadExternalStorage");
         if (isValidBoolean(downloadExternalStorage)) {
@@ -272,6 +279,7 @@ public class PreferenceSetup {
         preferenceManager.removePreferenceConnectCount();
         preferenceManager.removePreferenceNotificationInactiveNetwork();
         preferenceManager.removePreferenceNotificationType();
+        preferenceManager.removePreferenceSuspensionEnabled();
         preferenceManager.removePreferenceDownloadExternalStorage();
         preferenceManager.removePreferenceDownloadFolder();
         preferenceManager.removePreferenceDownloadKeep();

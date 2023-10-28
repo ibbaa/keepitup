@@ -24,7 +24,6 @@ class IntervalDBConstants {
 
     private final String tableName;
     private final String idColumnName;
-    private final String activeColumnName;
     private final String hourstartColumnName;
     private final String minutestartColumnName;
     private final String hourendColumnName;
@@ -33,7 +32,6 @@ class IntervalDBConstants {
     public IntervalDBConstants(Context context) {
         tableName = context.getResources().getString(R.string.interval_table_name);
         idColumnName = context.getResources().getString(R.string.interval_id_column_name);
-        activeColumnName = context.getResources().getString(R.string.interval_active_column_name);
         hourstartColumnName = context.getResources().getString(R.string.interval_hourstart_column_name);
         minutestartColumnName = context.getResources().getString(R.string.interval_minutestart_column_name);
         hourendColumnName = context.getResources().getString(R.string.interval_hourend_column_name);
@@ -46,10 +44,6 @@ class IntervalDBConstants {
 
     public String getIdColumnName() {
         return idColumnName;
-    }
-
-    public String getActiveColumnName() {
-        return activeColumnName;
     }
 
     public String getHourstartColumnName() {
@@ -71,7 +65,6 @@ class IntervalDBConstants {
     public String getCreateTableStatement() {
         return ("CREATE TABLE IF NOT EXISTS  " + getTableName() + "(") +
                 getIdColumnName() + " INTEGER PRIMARY KEY ASC, " +
-                getActiveColumnName() + " INTEGER, " +
                 getHourstartColumnName() + " INTEGER, " +
                 getMinutestartColumnName() + " INTEGER, " +
                 getHourendColumnName() + " INTEGER, " +
@@ -85,7 +78,6 @@ class IntervalDBConstants {
     public String getReadIntervalStatement() {
         return "SELECT " +
                 getIdColumnName() + ", " +
-                getActiveColumnName() + ", " +
                 getHourstartColumnName() + ", " +
                 getMinutestartColumnName() + ", " +
                 getHourendColumnName() + ", " +
@@ -97,7 +89,6 @@ class IntervalDBConstants {
     public String getReadAllIntervalsStatement() {
         return "SELECT " +
                 getIdColumnName() + ", " +
-                getActiveColumnName() + ", " +
                 getHourstartColumnName() + ", " +
                 getMinutestartColumnName() + ", " +
                 getHourendColumnName() + ", " +

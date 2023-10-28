@@ -218,6 +218,18 @@ public class PreferenceManagerTest {
     }
 
     @Test
+    public void testGetSetRemovePreferenceSuspensionEnabled() {
+        assertTrue(preferenceManager.getPreferenceSuspensionEnabled());
+        preferenceManager.setPreferenceSuspensionEnabled(false);
+        assertFalse(preferenceManager.getPreferenceSuspensionEnabled());
+        preferenceManager.removeAllPreferences();
+        assertTrue(preferenceManager.getPreferenceSuspensionEnabled());
+        preferenceManager.setPreferenceSuspensionEnabled(false);
+        preferenceManager.removePreferenceSuspensionEnabled();
+        assertTrue(preferenceManager.getPreferenceSuspensionEnabled());
+    }
+
+    @Test
     public void testGetSetRemovePreferenceDownloadExternalStorage() {
         assertFalse(preferenceManager.getPreferenceDownloadExternalStorage());
         preferenceManager.setPreferenceDownloadExternalStorage(true);

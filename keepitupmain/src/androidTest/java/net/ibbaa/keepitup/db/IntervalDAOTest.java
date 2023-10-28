@@ -17,7 +17,6 @@
 package net.ibbaa.keepitup.db;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
@@ -168,7 +167,6 @@ public class IntervalDAOTest {
         interval1 = intervalDAO.insertInterval(interval1);
         assertTrue(interval1.getId() > 0);
         interval1 = intervalDAO.readInterval(interval1.getId());
-        assertFalse(interval1.isActive());
         assertEquals(10, interval1.getStart().getHour());
         assertEquals(11, interval1.getStart().getMinute());
         assertEquals(11, interval1.getEnd().getHour());
@@ -177,7 +175,6 @@ public class IntervalDAOTest {
         interval2 = intervalDAO.insertInterval(interval2);
         assertTrue(interval2.getId() > 0);
         interval2 = intervalDAO.readInterval(interval2.getId());
-        assertTrue(interval2.isActive());
         assertEquals(1, interval2.getStart().getHour());
         assertEquals(1, interval2.getStart().getMinute());
         assertEquals(2, interval2.getEnd().getHour());
@@ -195,17 +192,12 @@ public class IntervalDAOTest {
         intervalDAO.updateInterval(interval2);
         assertTrue(insertedInterval1.isEqual(readInterval1));
         readInterval1 = intervalDAO.readInterval(readInterval1.getId());
-        assertEquals(interval2.isActive(), readInterval1.isActive());
-        assertEquals(interval2.getStart().getHour(), readInterval1.getStart().getHour());
-        assertEquals(interval2.getStart().getMinute(), readInterval1.getStart().getMinute());
-        assertEquals(interval2.getEnd().getHour(), readInterval1.getEnd().getHour());
-        assertEquals(interval2.getEnd().getMinute(), readInterval1.getEnd().getMinute());
+        assertTrue(interval2.isEqual(readInterval1));
     }
 
     private Interval getInterval1() {
         Interval interval = new Interval();
         interval.setId(0);
-        interval.setActive(false);
         Time start = new Time();
         start.setHour(10);
         start.setMinute(11);
@@ -220,7 +212,6 @@ public class IntervalDAOTest {
     private Interval getInterval2() {
         Interval interval = new Interval();
         interval.setId(0);
-        interval.setActive(true);
         Time start = new Time();
         start.setHour(1);
         start.setMinute(1);
@@ -235,7 +226,6 @@ public class IntervalDAOTest {
     private Interval getInterval3() {
         Interval interval = new Interval();
         interval.setId(0);
-        interval.setActive(true);
         Time start = new Time();
         start.setHour(22);
         start.setMinute(15);
@@ -250,7 +240,6 @@ public class IntervalDAOTest {
     private Interval getInterval4() {
         Interval interval = new Interval();
         interval.setId(0);
-        interval.setActive(true);
         Time start = new Time();
         start.setHour(2);
         start.setMinute(4);
@@ -265,7 +254,6 @@ public class IntervalDAOTest {
     private Interval getInterval5() {
         Interval interval = new Interval();
         interval.setId(0);
-        interval.setActive(true);
         Time start = new Time();
         start.setHour(15);
         start.setMinute(1);

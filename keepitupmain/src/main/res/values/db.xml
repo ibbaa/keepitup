@@ -42,7 +42,6 @@
     <string name="log_message_column_name">MESSAGE</string>
     <string name="interval_table_name">INTERVAL</string>
     <string name="interval_id_column_name">_id</string>
-    <string name="interval_active_column_name">ACTIVE</string>
     <string name="interval_hourstart_column_name">HOURSTART</string>
     <string name="interval_minutestart_column_name">MINUTESTART</string>
     <string name="interval_hourend_column_name">HOUREND</string>

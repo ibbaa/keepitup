@@ -163,9 +163,9 @@ public class JSONSystemSetupTest {
         Interval readInterval1 = new Interval(JSONUtil.toMap((JSONObject) intervalData.get(0)));
         Interval readInterval2 = new Interval(JSONUtil.toMap((JSONObject) intervalData.get(1)));
         Interval readinterval3 = new Interval(JSONUtil.toMap((JSONObject) intervalData.get(2)));
-        intervalEquals(interval1, readInterval2);
-        intervalEquals(interval2, readInterval1);
-        intervalEquals(interval3, readinterval3);
+        assertTrue(interval1.isEqual(readInterval2));
+        assertTrue(interval2.isEqual(readInterval1));
+        assertTrue(interval3.isEqual(readinterval3));
     }
 
     @Test
@@ -201,6 +201,7 @@ public class JSONSystemSetupTest {
         preferenceManager.setPreferenceConnectCount(10);
         preferenceManager.setPreferenceNotificationInactiveNetwork(true);
         preferenceManager.setPreferenceNotificationType(NotificationType.CHANGE);
+        preferenceManager.setPreferenceSuspensionEnabled(false);
         preferenceManager.setPreferenceDownloadExternalStorage(true);
         preferenceManager.setPreferenceExternalStorageType(30);
         preferenceManager.setPreferenceDownloadFolder("folder");
@@ -226,6 +227,7 @@ public class JSONSystemSetupTest {
         assertEquals(10, globalSettingsData.getInt("preferenceConnectCount"));
         assertTrue(globalSettingsData.getBoolean("preferenceNotificationInactiveNetwork"));
         assertEquals(NotificationType.CHANGE, NotificationType.forCode(globalSettingsData.getInt("preferenceNotificationType")));
+        assertFalse(globalSettingsData.getBoolean("preferenceSuspensionEnabled"));
         assertTrue(globalSettingsData.getBoolean("preferenceDownloadExternalStorage"));
         assertEquals("folder", globalSettingsData.getString("preferenceDownloadFolder"));
         assertTrue(globalSettingsData.getBoolean("preferenceDownloadKeep"));
@@ -361,9 +363,9 @@ public class JSONSystemSetupTest {
         Interval readInterval1 = intervals.get(0);
         Interval readInterval2 = intervals.get(1);
         Interval readInterval3 = intervals.get(2);
-        intervalEquals(interval1, readInterval2);
-        intervalEquals(interval2, readInterval1);
-        intervalEquals(interval3, readInterval3);
+        assertTrue(interval1.isEqual(readInterval2));
+        assertTrue(interval2.isEqual(readInterval1));
+        assertTrue(interval3.isEqual(readInterval3));
     }
 
     @Test
@@ -389,8 +391,8 @@ public class JSONSystemSetupTest {
         assertEquals(2, intervals.size());
         Interval readInterval1 = intervals.get(0);
         Interval readInterval2 = intervals.get(1);
-        intervalEquals(interval1, readInterval1);
-        intervalEquals(interval2, readInterval2);
+        assertTrue(interval1.isEqual(readInterval1));
+        assertTrue(interval2.isEqual(readInterval2));
     }
 
     @Test
@@ -462,7 +464,7 @@ public class JSONSystemSetupTest {
         List<Interval> intervals = intervalDAO.readAllIntervals();
         assertEquals(1, intervals.size());
         Interval interval = intervals.get(0);
-        intervalEquals(interval1, interval);
+        assertTrue(interval1.isEqual(interval));
     }
 
     @Test
@@ -471,6 +473,7 @@ public class JSONSystemSetupTest {
         preferenceManager.setPreferenceConnectCount(10);
         preferenceManager.setPreferenceNotificationInactiveNetwork(true);
         preferenceManager.setPreferenceNotificationType(NotificationType.CHANGE);
+        preferenceManager.setPreferenceSuspensionEnabled(false);
         preferenceManager.setPreferenceDownloadExternalStorage(true);
         preferenceManager.setPreferenceExternalStorageType(1);
         preferenceManager.setPreferenceDownloadFolder("folder");
@@ -495,6 +498,7 @@ public class JSONSystemSetupTest {
         assertEquals(10, preferenceManager.getPreferenceConnectCount());
         assertTrue(preferenceManager.getPreferenceNotificationInactiveNetwork());
         assertEquals(NotificationType.CHANGE, preferenceManager.getPreferenceNotificationType());
+        assertFalse(preferenceManager.getPreferenceSuspensionEnabled());
         assertTrue(preferenceManager.getPreferenceDownloadExternalStorage());
         assertEquals(1, preferenceManager.getPreferenceExternalStorageType());
         assertEquals("folder", preferenceManager.getPreferenceDownloadFolder());
@@ -573,14 +577,6 @@ public class JSONSystemSetupTest {
         assertEquals(entry1.isSuccess(), entry2.isSuccess());
         assertEquals(entry1.getTimestamp(), entry2.getTimestamp());
         assertEquals(entry1.getMessage(), entry2.getMessage());
-    }
-
-    private void intervalEquals(Interval interval1, Interval interval2) {
-        assertEquals(interval1.isActive(), interval2.isActive());
-        assertEquals(interval1.getStart().getHour(), interval2.getStart().getHour());
-        assertEquals(interval1.getStart().getMinute(), interval2.getStart().getMinute());
-        assertEquals(interval1.getEnd().getHour(), interval2.getEnd().getHour());
-        assertEquals(interval1.getEnd().getMinute(), interval2.getEnd().getMinute());
     }
 
     private NetworkTask getNetworkTask1() {
@@ -667,7 +663,6 @@ public class JSONSystemSetupTest {
     private Interval getInterval1() {
         Interval interval = new Interval();
         interval.setId(1);
-        interval.setActive(false);
         Time start = new Time();
         start.setHour(10);
         start.setMinute(11);
@@ -682,7 +677,6 @@ public class JSONSystemSetupTest {
     private Interval getInterval2() {
         Interval interval = new Interval();
         interval.setId(2);
-        interval.setActive(true);
         Time start = new Time();
         start.setHour(1);
         start.setMinute(1);
@@ -697,7 +691,6 @@ public class JSONSystemSetupTest {
     private Interval getInterval3() {
         Interval interval = new Interval();
         interval.setId(3);
-        interval.setActive(true);
         Time start = new Time();
         start.setHour(22);
         start.setMinute(15);

@@ -233,9 +233,9 @@ public class DBSetupTest {
         Interval exportedInterval1 = new Interval(intervalList.get(0));
         Interval exportedInterval2 = new Interval(intervalList.get(1));
         Interval exportedInterval3 = new Interval(intervalList.get(2));
-        intervalEquals(getInterval2(), exportedInterval1);
-        intervalEquals(getInterval3(), exportedInterval2);
-        intervalEquals(getInterval1(), exportedInterval3);
+        assertTrue(getInterval2().isEqual(exportedInterval1));
+        assertTrue(getInterval3().isEqual(exportedInterval2));
+        assertTrue(getInterval1().isEqual(exportedInterval3));
     }
 
     @Test
@@ -310,9 +310,9 @@ public class DBSetupTest {
         setup.importIntervals(TestRegistry.getContext(), Arrays.asList(intervalMap1, intervalMap2, intervalMap3));
         List<Interval> intervalList = intervalDAO.readAllIntervals();
         assertEquals(3, intervalList.size());
-        intervalEquals(getInterval2(), intervalList.get(0));
-        intervalEquals(getInterval3(), intervalList.get(1));
-        intervalEquals(getInterval1(), intervalList.get(2));
+        assertTrue(getInterval2().isEqual(intervalList.get(0)));
+        assertTrue(getInterval3().isEqual(intervalList.get(1)));
+        assertTrue(getInterval1().isEqual(intervalList.get(2)));
     }
 
     @Test
@@ -333,8 +333,8 @@ public class DBSetupTest {
         setup.importIntervals(TestRegistry.getContext(), Arrays.asList(intervalMap1, intervalMap2, intervalMap3));
         List<Interval> intervalList = intervalDAO.readAllIntervals();
         assertEquals(2, intervalList.size());
-        intervalEquals(getInterval2(), intervalList.get(0));
-        intervalEquals(getInterval3(), intervalList.get(1));
+        assertTrue(getInterval2().isEqual(intervalList.get(0)));
+        assertTrue(getInterval3().isEqual(intervalList.get(1)));
     }
 
     @Test
@@ -355,8 +355,8 @@ public class DBSetupTest {
         setup.importIntervals(TestRegistry.getContext(), Arrays.asList(intervalMap1, intervalMap2, intervalMap3));
         List<Interval> intervalList = intervalDAO.readAllIntervals();
         assertEquals(2, intervalList.size());
-        intervalEquals(getInterval2(), intervalList.get(0));
-        intervalEquals(getInterval1(), intervalList.get(1));
+        assertTrue(getInterval2().isEqual(intervalList.get(0)));
+        assertTrue(getInterval1().isEqual(intervalList.get(1)));
     }
 
     @Test
@@ -377,7 +377,7 @@ public class DBSetupTest {
         setup.importIntervals(TestRegistry.getContext(), Arrays.asList(intervalMap1, intervalMap2, intervalMap3));
         List<Interval> intervalList = intervalDAO.readAllIntervals();
         assertEquals(1, intervalList.size());
-        intervalEquals(interval1, intervalList.get(0));
+        assertTrue(interval1.isEqual(intervalList.get(0)));
     }
 
     private void logEntryEquals(LogEntry entry1, LogEntry entry2) {
@@ -385,14 +385,6 @@ public class DBSetupTest {
         assertEquals(entry1.isSuccess(), entry2.isSuccess());
         assertEquals(entry1.getTimestamp(), entry2.getTimestamp());
         assertEquals(entry1.getMessage(), entry2.getMessage());
-    }
-
-    private void intervalEquals(Interval interval1, Interval interval2) {
-        assertEquals(interval1.isActive(), interval2.isActive());
-        assertEquals(interval1.getStart().getHour(), interval2.getStart().getHour());
-        assertEquals(interval1.getStart().getMinute(), interval2.getStart().getMinute());
-        assertEquals(interval1.getEnd().getHour(), interval2.getEnd().getHour());
-        assertEquals(interval1.getEnd().getMinute(), interval2.getEnd().getMinute());
     }
 
     private NetworkTask getNetworkTask1() {
@@ -479,7 +471,6 @@ public class DBSetupTest {
     private Interval getInterval1() {
         Interval interval = new Interval();
         interval.setId(0);
-        interval.setActive(false);
         Time start = new Time();
         start.setHour(10);
         start.setMinute(11);
@@ -494,7 +485,6 @@ public class DBSetupTest {
     private Interval getInterval2() {
         Interval interval = new Interval();
         interval.setId(0);
-        interval.setActive(true);
         Time start = new Time();
         start.setHour(1);
         start.setMinute(1);
@@ -509,7 +499,6 @@ public class DBSetupTest {
     private Interval getInterval3() {
         Interval interval = new Interval();
         interval.setId(0);
-        interval.setActive(true);
         Time start = new Time();
         start.setHour(3);
         start.setMinute(3);

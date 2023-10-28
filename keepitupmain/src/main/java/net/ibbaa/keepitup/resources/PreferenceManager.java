@@ -208,6 +208,21 @@ public class PreferenceManager {
         removePreferenceValue(getResources().getString(R.string.notification_type_key));
     }
 
+    public boolean getPreferenceSuspensionEnabled() {
+        Log.d(PreferenceManager.class.getName(), "getPreferenceSuspensionEnabled");
+        return getPreferenceBoolean(getResources().getString(R.string.suspension_enabled_key), getResources().getBoolean(R.bool.suspension_enabled_default));
+    }
+
+    public void setPreferenceSuspensionEnabled(boolean suspensionEnabled) {
+        Log.d(PreferenceManager.class.getName(), "setPreferenceSuspensionEnabled, suspensionEnabled is " + suspensionEnabled);
+        setPreferenceBoolean(getResources().getString(R.string.suspension_enabled_key), suspensionEnabled);
+    }
+
+    public void removePreferenceSuspensionEnabled() {
+        Log.d(PreferenceManager.class.getName(), "removePreferenceSuspensionEnabled");
+        removePreferenceValue(getResources().getString(R.string.suspension_enabled_key));
+    }
+
     public int getPreferencePingCount() {
         Log.d(PreferenceManager.class.getName(), "getPreferencePingCount");
         return getPreferenceInt(getResources().getString(R.string.ping_count_key), getResources().getInteger(R.integer.ping_count_default));

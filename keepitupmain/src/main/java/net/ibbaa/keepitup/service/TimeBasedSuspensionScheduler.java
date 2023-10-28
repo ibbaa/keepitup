@@ -22,14 +22,23 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 
+import net.ibbaa.keepitup.R;
 import net.ibbaa.keepitup.db.IntervalDAO;
+import net.ibbaa.keepitup.db.SchedulerIdGenerator;
+import net.ibbaa.keepitup.logging.Log;
 import net.ibbaa.keepitup.model.Interval;
+import net.ibbaa.keepitup.resources.PreferenceManager;
 import net.ibbaa.keepitup.resources.ServiceFactoryContributor;
 import net.ibbaa.keepitup.util.TimeUtil;
 
 import java.util.List;
 
 public class TimeBasedSuspensionScheduler {
+
+    public enum Action {
+        UP,
+        DOWN
+    }
 
     private final Context context;
     private final IntervalDAO intervalDAO;
@@ -55,43 +64,82 @@ public class TimeBasedSuspensionScheduler {
     }
 
     public void reset() {
+        Log.d(TimeBasedSuspensionScheduler.class.getName(), "reset");
         synchronized (TimeBasedSuspensionScheduler.class) {
             intervals = null;
         }
     }
 
     public void reconfigure() {
+        Log.d(TimeBasedSuspensionScheduler.class.getName(), "reconfigure");
         synchronized (TimeBasedSuspensionScheduler.class) {
+            cancelCurrent();
             long now = timeService.getCurrentTimestamp();
-            boolean suspendedBefore = false;
-            if (intervals != null) {
-                suspendedBefore = isSuspended(now);
-            }
+            long thresholdNow = addThreshold(now);
+            Log.d(TimeBasedSuspensionScheduler.class.getName(), "Current timestamp is " + now);
+            Log.d(TimeBasedSuspensionScheduler.class.getName(), "Current timestamp inckding configured threshold is " + thresholdNow);
             reset();
-            Interval currentSuspendInterval = findCurrentSuspendInterval(now);
-            if (!suspendedBefore && currentSuspendInterval != null) {
-                //TODO suspend all
-            } else if (suspendedBefore && currentSuspendInterval == null) {
-                //TODO start all
+            getIntervals();
+            Interval currentSuspendInterval = findCurrentSuspendInterval(thresholdNow);
+            Log.d(TimeBasedSuspensionScheduler.class.getName(), "Found suspend interval is " + currentSuspendInterval);
+            if (currentSuspendInterval != null) {
+                long end = TimeUtil.getTimestampToday(currentSuspendInterval.getEnd(), thresholdNow);
+                if (end <= thresholdNow) {
+                    end = TimeUtil.getTimestampTomorrow(currentSuspendInterval.getEnd(), thresholdNow);
+                }
+                suspend(end);
+            } else {
+                if (!isSuspensionActiveAndEnabled()) {
+                    startup(-1);
+                } else {
+                    startup(findStartupTime(thresholdNow));
+                }
             }
         }
     }
 
+    private long findStartupTime(long timestamp) {
+        Log.d(TimeBasedSuspensionScheduler.class.getName(), "findStartupTime with timestamp " + timestamp);
+        List<Interval> intervalList = getIntervals();
+        for (Interval interval : intervalList) {
+            long start = TimeUtil.getTimestampToday(interval.getStart(), timestamp);
+            if (timestamp < start) {
+                Log.d(TimeBasedSuspensionScheduler.class.getName(), "returning start time " + start + " of interval " + interval);
+                return start;
+            }
+        }
+        if (!intervalList.isEmpty()) {
+            long start = TimeUtil.getTimestampTomorrow(intervalList.get(0).getStart(), timestamp);
+            Log.d(TimeBasedSuspensionScheduler.class.getName(), "returning start time " + start + " of interval " + intervalList.get(0));
+            return start;
+        }
+        Log.e(TimeBasedSuspensionScheduler.class.getName(), "Interval list is empty. Returning -1");
+        return -1;
+    }
+
     public boolean isSuspended() {
+        Log.d(TimeBasedSuspensionScheduler.class.getName(), "isSuspended");
         return isSuspended(timeService.getCurrentTimestamp());
     }
 
     public boolean isSuspended(long now) {
+        Log.d(TimeBasedSuspensionScheduler.class.getName(), "isSuspended  for " + now);
         return findCurrentSuspendInterval(now) != null;
     }
 
     private Interval findCurrentSuspendInterval(long now) {
-        if (getIntervals().isEmpty()) {
+        Log.d(TimeBasedSuspensionScheduler.class.getName(), "findCurrentSuspendInterval for " + now);
+        if (!isSuspensionActiveAndEnabled()) {
+            Log.d(TimeBasedSuspensionScheduler.class.getName(), "Suspension feature is not active. Returning null.");
             return null;
         }
-        for (Interval interval : intervals) {
+        List<Interval> intervalList = getIntervals();
+        for (Interval interval : intervalList) {
+            Log.d(TimeBasedSuspensionScheduler.class.getName(), "Current interval is " + interval);
             long start = TimeUtil.getTimestampToday(interval.getStart(), now);
             long end = TimeUtil.getTimestampToday(interval.getEnd(), now);
+            Log.d(TimeBasedSuspensionScheduler.class.getName(), "Start timestamp is " + start);
+            Log.d(TimeBasedSuspensionScheduler.class.getName(), "End timestamp is " + end);
             if (!interval.doesOverlapDays()) {
                 if (now >= start && now < end) {
                     return interval;
@@ -102,18 +150,66 @@ public class TimeBasedSuspensionScheduler {
                 }
             }
         }
+        Log.d(TimeBasedSuspensionScheduler.class.getName(), "No suspend interval found.");
         return null;
     }
 
+    private boolean isSuspensionActiveAndEnabled() {
+        Log.d(TimeBasedSuspensionScheduler.class.getName(), "isSuspensionActiveAndEnabled");
+        PreferenceManager preferenceManager = new PreferenceManager(getContext());
+        if (!preferenceManager.getPreferenceSuspensionEnabled()) {
+            Log.d(TimeBasedSuspensionScheduler.class.getName(), "Suspension feature is disabled in the settings. Returning false.");
+            return false;
+        }
+        if (getIntervals().isEmpty()) {
+            Log.d(TimeBasedSuspensionScheduler.class.getName(), "Interval list is empty. Returning false.");
+            return false;
+        }
+        Log.d(TimeBasedSuspensionScheduler.class.getName(), "Suspension is enabled with intervals present. Returning true.");
+        return true;
+    }
+
+    private void suspend(long upTimestamp) {
+        Log.d(TimeBasedSuspensionScheduler.class.getName(), "suspend with up time of " + upTimestamp);
+    }
+
+    private void startup(long downTimestamp) {
+        Log.d(TimeBasedSuspensionScheduler.class.getName(), "startup with down time of " + downTimestamp);
+    }
+
+    private void cancelCurrent() {
+        Log.d(TimeBasedSuspensionScheduler.class.getName(), "cancelCurrent");
+        PendingIntent intent = getPendingIntent();
+        if (intent != null) {
+            intent.cancel();
+        }
+    }
+
     @SuppressLint("UnspecifiedImmutableFlag")
-    private PendingIntent createPendingIntent(long timestamp, int uniqueCode) {
+    private PendingIntent getPendingIntent() {
         Intent intent = new Intent(getContext(), TimeBasedSuspensionBroadcastReceiver.class);
         intent.setPackage(getContext().getPackageName());
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            return PendingIntent.getBroadcast(getContext(), uniqueCode, intent, PendingIntent.FLAG_IMMUTABLE | PendingIntent.FLAG_CANCEL_CURRENT);
+            return PendingIntent.getBroadcast(getContext(), SchedulerIdGenerator.TIME_BASED_SCHEDULER_ID, intent, PendingIntent.FLAG_IMMUTABLE | PendingIntent.FLAG_NO_CREATE);
         } else {
-            return PendingIntent.getBroadcast(getContext(), uniqueCode, intent, PendingIntent.FLAG_CANCEL_CURRENT);
+            return PendingIntent.getBroadcast(getContext(), SchedulerIdGenerator.TIME_BASED_SCHEDULER_ID, intent, PendingIntent.FLAG_NO_CREATE);
         }
+    }
+
+    @SuppressLint("UnspecifiedImmutableFlag")
+    private PendingIntent createPendingIntent(Action action) {
+        Intent intent = new Intent(getContext(), TimeBasedSuspensionBroadcastReceiver.class);
+        intent.setPackage(getContext().getPackageName());
+        intent.putExtra(getContext().getResources().getString(R.string.scheduler_action_key), action.name());
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            return PendingIntent.getBroadcast(getContext(), SchedulerIdGenerator.TIME_BASED_SCHEDULER_ID, intent, PendingIntent.FLAG_IMMUTABLE | PendingIntent.FLAG_CANCEL_CURRENT);
+        } else {
+            return PendingIntent.getBroadcast(getContext(), SchedulerIdGenerator.TIME_BASED_SCHEDULER_ID, intent, PendingIntent.FLAG_CANCEL_CURRENT);
+        }
+    }
+
+    private long addThreshold(long timestamp) {
+        return timestamp + getContext().getResources().getInteger(R.integer.scheduler_time_threshold) * 1000;
     }
 
     private Context getContext() {

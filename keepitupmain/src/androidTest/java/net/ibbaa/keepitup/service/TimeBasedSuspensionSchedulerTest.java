@@ -25,6 +25,7 @@ import androidx.test.filters.MediumTest;
 import net.ibbaa.keepitup.db.IntervalDAO;
 import net.ibbaa.keepitup.model.Interval;
 import net.ibbaa.keepitup.model.Time;
+import net.ibbaa.keepitup.resources.PreferenceManager;
 import net.ibbaa.keepitup.test.mock.MockAlarmManager;
 import net.ibbaa.keepitup.test.mock.MockTimeService;
 import net.ibbaa.keepitup.test.mock.TestRegistry;
@@ -42,6 +43,7 @@ import java.util.GregorianCalendar;
 public class TimeBasedSuspensionSchedulerTest {
 
     private TimeBasedSuspensionScheduler scheduler;
+    private PreferenceManager preferenceManager;
     private IntervalDAO intervalDAO;
     private MockAlarmManager alarmManager;
     private MockTimeService timeService;
@@ -50,6 +52,8 @@ public class TimeBasedSuspensionSchedulerTest {
     public void beforeEachTestMethod() {
         scheduler = new TimeBasedSuspensionScheduler(TestRegistry.getContext());
         scheduler.reset();
+        preferenceManager = new PreferenceManager(TestRegistry.getContext());
+        preferenceManager.removeAllPreferences();
         intervalDAO = new IntervalDAO(TestRegistry.getContext());
         intervalDAO.deleteAllIntervals();
         alarmManager = (MockAlarmManager) scheduler.getAlarmManager();
@@ -59,12 +63,16 @@ public class TimeBasedSuspensionSchedulerTest {
 
     @After
     public void afterEachTestMethod() {
+        preferenceManager.removeAllPreferences();
         intervalDAO.deleteAllIntervals();
         scheduler.reset();
     }
 
     @Test
-    public void testIsSuspendedEmpty() {
+    public void testIsSuspendedEmptyOrDisabled() {
+        assertFalse(scheduler.isSuspended());
+        intervalDAO.insertInterval(getInterval1());
+        preferenceManager.setPreferenceSuspensionEnabled(false);
         assertFalse(scheduler.isSuspended());
     }
 
@@ -176,7 +184,6 @@ public class TimeBasedSuspensionSchedulerTest {
     private Interval getInterval1() {
         Interval interval = new Interval();
         interval.setId(0);
-        interval.setActive(false);
         Time start = new Time();
         start.setHour(10);
         start.setMinute(11);
@@ -191,7 +198,6 @@ public class TimeBasedSuspensionSchedulerTest {
     private Interval getInterval2() {
         Interval interval = new Interval();
         interval.setId(0);
-        interval.setActive(true);
         Time start = new Time();
         start.setHour(1);
         start.setMinute(1);
@@ -206,7 +212,6 @@ public class TimeBasedSuspensionSchedulerTest {
     private Interval getInterval3() {
         Interval interval = new Interval();
         interval.setId(0);
-        interval.setActive(true);
         Time start = new Time();
         start.setHour(22);
         start.setMinute(15);
@@ -221,7 +226,6 @@ public class TimeBasedSuspensionSchedulerTest {
     private Interval getInterval4() {
         Interval interval = new Interval();
         interval.setId(0);
-        interval.setActive(true);
         Time start = new Time();
         start.setHour(21);
         start.setMinute(01);
@@ -236,7 +240,6 @@ public class TimeBasedSuspensionSchedulerTest {
     private Interval getInterval5() {
         Interval interval = new Interval();
         interval.setId(0);
-        interval.setActive(true);
         Time start = new Time();
         start.setHour(0);
         start.setMinute(1);

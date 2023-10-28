@@ -91,7 +91,6 @@ public class IntervalDAO extends BaseDAO {
         Log.d(IntervalDAO.class.getName(), "insertInterval, interval is " + interval);
         ContentValues values = new ContentValues();
         IntervalDBConstants dbConstants = new IntervalDBConstants(getContext());
-        values.put(dbConstants.getActiveColumnName(), interval.isActive() ? 1 : 0);
         values.put(dbConstants.getHourstartColumnName(), interval.getStart().getHour());
         values.put(dbConstants.getMinutestartColumnName(), interval.getStart().getMinute());
         values.put(dbConstants.getHourendColumnName(), interval.getEnd().getHour());
@@ -124,7 +123,6 @@ public class IntervalDAO extends BaseDAO {
         String selection = dbConstants.getIdColumnName() + " = ?";
         String[] selectionArgs = {String.valueOf(interval.getId())};
         ContentValues values = new ContentValues();
-        values.put(dbConstants.getActiveColumnName(), interval.isActive() ? 1 : 0);
         values.put(dbConstants.getHourstartColumnName(), interval.getStart().getHour());
         values.put(dbConstants.getMinutestartColumnName(), interval.getStart().getMinute());
         values.put(dbConstants.getHourendColumnName(), interval.getEnd().getHour());
@@ -192,13 +190,11 @@ public class IntervalDAO extends BaseDAO {
         Interval interval = new Interval();
         IntervalDBConstants dbConstants = new IntervalDBConstants(getContext());
         int indexIdColumn = cursor.getColumnIndex(dbConstants.getIdColumnName());
-        int indexActiveColumn = cursor.getColumnIndex(dbConstants.getActiveColumnName());
         int indexHourstart = cursor.getColumnIndex(dbConstants.getHourstartColumnName());
         int indexMinutestart = cursor.getColumnIndex(dbConstants.getMinutestartColumnName());
         int indexHourend = cursor.getColumnIndex(dbConstants.getHourendColumnName());
         int indexMinuteend = cursor.getColumnIndex(dbConstants.getMinuteendColumnName());
         interval.setId(cursor.getInt(indexIdColumn));
-        interval.setActive(cursor.getInt(indexActiveColumn) >= 1);
         Time start = new Time();
         start.setHour(cursor.getInt(indexHourstart));
         start.setMinute(cursor.getInt(indexMinutestart));

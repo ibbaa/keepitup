@@ -36,7 +36,6 @@ public class IntervalDBConstantsTest {
         IntervalDBConstants dbConstants = new IntervalDBConstants(TestRegistry.getContext());
         assertEquals(getResourceString(R.string.interval_table_name), dbConstants.getTableName());
         assertEquals(getResourceString(R.string.interval_id_column_name), dbConstants.getIdColumnName());
-        assertEquals(getResourceString(R.string.interval_active_column_name), dbConstants.getActiveColumnName());
         assertEquals(getResourceString(R.string.interval_hourstart_column_name), dbConstants.getHourstartColumnName());
         assertEquals(getResourceString(R.string.interval_minutestart_column_name), dbConstants.getMinutestartColumnName());
         assertEquals(getResourceString(R.string.interval_hourend_column_name), dbConstants.getHourendColumnName());

@@ -27,6 +27,8 @@
     <bool name="notification_inactive_network_default">false</bool>
     <string name="notification_type_key">notification_type_key</string>
     <integer name="notification_type_default">1</integer>
+    <string name="suspension_enabled_key">suspension_enabled_key</string>
+    <bool name="suspension_enabled_default">true</bool>
     <string name="download_external_storage_key">download_external_storage_key</string>
     <bool name="download_external_storage_default">false</bool>
     <string name="download_folder_key">download_folder_key</string>
