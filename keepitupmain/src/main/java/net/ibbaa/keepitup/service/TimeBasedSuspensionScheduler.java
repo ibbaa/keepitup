@@ -78,7 +78,7 @@ public class TimeBasedSuspensionScheduler {
             getIntervals();
             if (!isSuspensionActiveAndEnabled()) {
                 Log.d(TimeBasedSuspensionScheduler.class.getName(), "Suspension feature is not active.");
-                startup(-1);
+                startup(null, -1);
                 return;
             }
             long now = timeService.getCurrentTimestamp();
@@ -86,30 +86,46 @@ public class TimeBasedSuspensionScheduler {
             Log.d(TimeBasedSuspensionScheduler.class.getName(), "Current timestamp is " + now);
             Log.d(TimeBasedSuspensionScheduler.class.getName(), "Current timestamp configured threshold is " + thresholdNow);
             Interval currentSuspendInterval = findCurrentSuspendInterval(thresholdNow);
-            Log.d(TimeBasedSuspensionScheduler.class.getName(), "Found suspend interval is " + currentSuspendInterval);
+            Log.d(TimeBasedSuspensionScheduler.class.getName(), "Found current suspend interval is " + currentSuspendInterval);
             if (currentSuspendInterval != null) {
-                long end = TimeUtil.getTimestampToday(currentSuspendInterval.getEnd(), thresholdNow);
-                if (end <= thresholdNow) {
-                    end = TimeUtil.getTimestampTomorrow(currentSuspendInterval.getEnd(), thresholdNow);
-                }
-                suspend(end);
+                suspend(currentSuspendInterval, thresholdNow);
             } else {
                 Interval nextSuspendInterval = findNextSuspendInterval(thresholdNow);
-                long start = TimeUtil.getTimestampToday(nextSuspendInterval.getStart(), thresholdNow);
-                if (start <= thresholdNow) {
-                    start = TimeUtil.getTimestampTomorrow(nextSuspendInterval.getStart(), thresholdNow);
-                }
-                startup(start);
+                Log.d(TimeBasedSuspensionScheduler.class.getName(), "Found next suspend interval is " + nextSuspendInterval);
+                startup(nextSuspendInterval, thresholdNow);
             }
         }
     }
 
-    private Interval findNextSuspendInterval(long timestamp) {
-        Log.d(TimeBasedSuspensionScheduler.class.getName(), "findStartupTime with timestamp " + timestamp);
+    public Interval findCurrentSuspendInterval(long now) {
+        Log.d(TimeBasedSuspensionScheduler.class.getName(), "findCurrentSuspendInterval for " + now);
         List<Interval> intervalList = getIntervals();
         for (Interval interval : intervalList) {
-            long start = TimeUtil.getTimestampToday(interval.getStart(), timestamp);
-            if (timestamp < start) {
+            Log.d(TimeBasedSuspensionScheduler.class.getName(), "Current interval is " + interval);
+            long start = TimeUtil.getTimestampToday(interval.getStart(), now);
+            long end = TimeUtil.getTimestampToday(interval.getEnd(), now);
+            Log.d(TimeBasedSuspensionScheduler.class.getName(), "Start timestamp is " + start);
+            Log.d(TimeBasedSuspensionScheduler.class.getName(), "End timestamp is " + end);
+            if (!interval.doesOverlapDays()) {
+                if (now >= start && now < end) {
+                    return interval;
+                }
+            } else {
+                if (now >= start || now < end) {
+                    return interval;
+                }
+            }
+        }
+        Log.d(TimeBasedSuspensionScheduler.class.getName(), "No suspend interval found. Returning null.");
+        return null;
+    }
+
+    public Interval findNextSuspendInterval(long now) {
+        Log.d(TimeBasedSuspensionScheduler.class.getName(), "findStartupTime with timestamp " + now);
+        List<Interval> intervalList = getIntervals();
+        for (Interval interval : intervalList) {
+            long start = TimeUtil.getTimestampToday(interval.getStart(), now);
+            if (now < start) {
                 Log.d(TimeBasedSuspensionScheduler.class.getName(), "Returning interval " + interval);
                 return interval;
             }
@@ -136,27 +152,20 @@ public class TimeBasedSuspensionScheduler {
         return findCurrentSuspendInterval(now) != null;
     }
 
-    private Interval findCurrentSuspendInterval(long now) {
-        Log.d(TimeBasedSuspensionScheduler.class.getName(), "findCurrentSuspendInterval for " + now);
-        List<Interval> intervalList = getIntervals();
-        for (Interval interval : intervalList) {
-            Log.d(TimeBasedSuspensionScheduler.class.getName(), "Current interval is " + interval);
-            long start = TimeUtil.getTimestampToday(interval.getStart(), now);
-            long end = TimeUtil.getTimestampToday(interval.getEnd(), now);
-            Log.d(TimeBasedSuspensionScheduler.class.getName(), "Start timestamp is " + start);
-            Log.d(TimeBasedSuspensionScheduler.class.getName(), "End timestamp is " + end);
-            if (!interval.doesOverlapDays()) {
-                if (now >= start && now < end) {
-                    return interval;
-                }
-            } else {
-                if (now >= start || now < end) {
-                    return interval;
-                }
-            }
+    private void suspend(Interval currentSuspendInterval, long now) {
+        Log.d(TimeBasedSuspensionScheduler.class.getName(), "suspend with current suspend interval " + currentSuspendInterval + " and timestamp of " + now);
+        long end = TimeUtil.getTimestampToday(currentSuspendInterval.getEnd(), now);
+        if (end <= now) {
+            end = TimeUtil.getTimestampTomorrow(currentSuspendInterval.getEnd(), now);
         }
-        Log.d(TimeBasedSuspensionScheduler.class.getName(), "No suspend interval found. Returning null.");
-        return null;
+    }
+
+    private void startup(Interval nextSuspendInterval, long now) {
+        Log.d(TimeBasedSuspensionScheduler.class.getName(), "startup with next suspend interval " + nextSuspendInterval + " and timestamp of " + now);
+        long start = TimeUtil.getTimestampToday(nextSuspendInterval.getStart(), now);
+        if (start <= now) {
+            start = TimeUtil.getTimestampTomorrow(nextSuspendInterval.getStart(), now);
+        }
     }
 
     private boolean isSuspensionActiveAndEnabled() {
@@ -172,14 +181,6 @@ public class TimeBasedSuspensionScheduler {
         }
         Log.d(TimeBasedSuspensionScheduler.class.getName(), "Suspension is enabled with intervals present. Returning true.");
         return true;
-    }
-
-    private void suspend(long upTimestamp) {
-        Log.d(TimeBasedSuspensionScheduler.class.getName(), "suspend with up time of " + upTimestamp);
-    }
-
-    private void startup(long downTimestamp) {
-        Log.d(TimeBasedSuspensionScheduler.class.getName(), "startup with down time of " + downTimestamp);
     }
 
     private void cancelCurrent() {
