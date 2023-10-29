@@ -24,6 +24,7 @@ import net.ibbaa.keepitup.logging.Log;
 import net.ibbaa.keepitup.model.Interval;
 import net.ibbaa.keepitup.model.LogEntry;
 import net.ibbaa.keepitup.model.NetworkTask;
+import net.ibbaa.keepitup.util.TimeUtil;
 import net.ibbaa.keepitup.util.URLUtil;
 
 import java.util.ArrayList;
@@ -281,10 +282,11 @@ public class DBSetup {
         Log.d(DBSetup.class.getName(), "importIntervals");
         IntervalDAO dao = new IntervalDAO(context);
         List<Interval> insertedList = new ArrayList<>();
+        int intervalDistance = context.getResources().getInteger(R.integer.suspension_interval_distance);
         for (Map<String, ?> intervalMap : intervalList) {
             Interval interval = new Interval(intervalMap);
             Log.d(DBSetup.class.getName(), "Interval is " + interval);
-            if (isIntervalValid(interval, insertedList)) {
+            if (isIntervalValid(interval, insertedList, intervalDistance)) {
                 Log.d(DBSetup.class.getName(), "Importing interval.");
                 dao.insertInterval(interval);
                 insertedList.add(interval);
@@ -294,9 +296,9 @@ public class DBSetup {
         }
     }
 
-    private boolean isIntervalValid(Interval interval, List<Interval> insertedIntervals) {
+    private boolean isIntervalValid(Interval interval, List<Interval> insertedIntervals, int intervalDistance) {
         for (Interval insertedInterval : insertedIntervals) {
-            if (interval.doesOverlap(insertedInterval)) {
+            if (interval.doesOverlap(insertedInterval) || interval.doesOverlap(TimeUtil.extendInterval(insertedInterval, intervalDistance))) {
                 return false;
             }
         }

@@ -16,6 +16,7 @@
 
 package net.ibbaa.keepitup.util;
 
+import net.ibbaa.keepitup.model.Interval;
 import net.ibbaa.keepitup.model.Time;
 import net.ibbaa.keepitup.service.ITimeService;
 
@@ -41,6 +42,25 @@ public class TimeUtil {
         Calendar date = getCalendarFromTime(time, currentTime);
         date.add(Calendar.DATE, 1);
         return date.getTimeInMillis();
+    }
+
+    public static Interval extendInterval(Interval interval, int minutes) {
+        Time start = new Time();
+        Time end = new Time();
+        Date now = new Date();
+        Calendar endDate = new GregorianCalendar();
+        endDate.setTime(now);
+        endDate.set(Calendar.HOUR_OF_DAY, interval.getEnd().getHour());
+        endDate.set(Calendar.MINUTE, interval.getEnd().getMinute());
+        endDate.add(Calendar.MINUTE, minutes);
+        start.setHour(interval.getStart().getHour());
+        start.setMinute(interval.getStart().getMinute());
+        end.setHour(endDate.get(Calendar.HOUR_OF_DAY));
+        end.setMinute(endDate.get(Calendar.MINUTE));
+        Interval extendedInterval = new Interval();
+        extendedInterval.setStart(start);
+        extendedInterval.setEnd(end);
+        return extendedInterval;
     }
 
     private static Calendar getCalendarFromTime(Time time, long currentTime) {

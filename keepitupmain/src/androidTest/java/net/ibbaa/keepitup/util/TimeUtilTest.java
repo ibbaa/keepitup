@@ -21,6 +21,7 @@ import static org.junit.Assert.assertEquals;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.SmallTest;
 
+import net.ibbaa.keepitup.model.Interval;
 import net.ibbaa.keepitup.model.Time;
 
 import org.junit.Test;
@@ -77,6 +78,38 @@ public class TimeUtilTest {
         assertEquals(1, date.get(Calendar.DAY_OF_MONTH));
         assertEquals(17, date.get(Calendar.HOUR_OF_DAY));
         assertEquals(58, date.get(Calendar.MINUTE));
+    }
+
+    @Test
+    public void testExtendInterval() {
+        Time start = new Time();
+        start.setHour(17);
+        start.setMinute(58);
+        Time end = new Time();
+        end.setHour(23);
+        end.setMinute(0);
+        Interval interval = new Interval();
+        interval.setStart(start);
+        interval.setEnd(end);
+        interval = TimeUtil.extendInterval(interval, 10);
+        assertEquals(17, interval.getStart().getHour());
+        assertEquals(58, interval.getStart().getMinute());
+        assertEquals(23, interval.getEnd().getHour());
+        assertEquals(10, interval.getEnd().getMinute());
+        start = new Time();
+        start.setHour(0);
+        start.setMinute(1);
+        end = new Time();
+        end.setHour(23);
+        end.setMinute(58);
+        interval = new Interval();
+        interval.setStart(start);
+        interval.setEnd(end);
+        interval = TimeUtil.extendInterval(interval, 10);
+        assertEquals(0, interval.getStart().getHour());
+        assertEquals(1, interval.getStart().getMinute());
+        assertEquals(0, interval.getEnd().getHour());
+        assertEquals(8, interval.getEnd().getMinute());
     }
 
     private long testNow() {

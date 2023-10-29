@@ -360,6 +360,28 @@ public class DBSetupTest {
     }
 
     @Test
+    public void testImportIntervalsOverlapWithDistance() {
+        Interval interval3 = getInterval1();
+        Time start = new Time();
+        start.setHour(11);
+        start.setMinute(20);
+        interval3.setStart(start);
+        Time end = new Time();
+        end.setHour(11);
+        end.setMinute(59);
+        interval3.setEnd(end);
+        Map<String, ?> intervalMap1 = getInterval1().toMap();
+        Map<String, ?> intervalMap2 = getInterval2().toMap();
+        Map<String, ?> intervalMap3 = interval3.toMap();
+        assertTrue(intervalDAO.readAllIntervals().isEmpty());
+        setup.importIntervals(TestRegistry.getContext(), Arrays.asList(intervalMap1, intervalMap2, intervalMap3));
+        List<Interval> intervalList = intervalDAO.readAllIntervals();
+        assertEquals(2, intervalList.size());
+        assertTrue(getInterval2().isEqual(intervalList.get(0)));
+        assertTrue(getInterval1().isEqual(intervalList.get(1)));
+    }
+
+    @Test
     public void testImportIntervalsOverlapDaysOverlap() {
         Interval interval1 = getInterval1();
         Time start = new Time();

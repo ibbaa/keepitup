@@ -29,6 +29,7 @@
     <integer name="notification_type_default">1</integer>
     <string name="suspension_enabled_key">suspension_enabled_key</string>
     <bool name="suspension_enabled_default">true</bool>
+    <integer name="suspension_interval_distance">10</integer>
     <string name="download_external_storage_key">download_external_storage_key</string>
     <bool name="download_external_storage_default">false</bool>
     <string name="download_folder_key">download_folder_key</string>

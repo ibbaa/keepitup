@@ -334,7 +334,7 @@ public class JSONSystemSetupTest {
     }
 
     @Test
-    public void testImportDatabaseWithIntevrals() {
+    public void testImportDatabaseWithIntervals() {
         NetworkTask task1 = networkTaskDAO.insertNetworkTask(getNetworkTask1());
         LogEntry task1Entry1 = logDAO.insertAndDeleteLog(getLogEntry1(task1.getId()));
         Interval interval1 = intervalDAO.insertInterval(getInterval1());
@@ -369,7 +369,7 @@ public class JSONSystemSetupTest {
     }
 
     @Test
-    public void testImportDatabaseWithIntervalsOverlap() {
+    public void testImportDatabaseWithIntervalsOverlapDays() {
         Interval interval1 = getInterval1();
         Interval interval2 = getInterval2();
         Time start = new Time();
@@ -465,6 +465,31 @@ public class JSONSystemSetupTest {
         assertEquals(1, intervals.size());
         Interval interval = intervals.get(0);
         assertTrue(interval1.isEqual(interval));
+    }
+
+    @Test
+    public void testImportDatabaseInvalidIntervalOverlapDistance() {
+        Interval interval1 = getInterval1();
+        Interval interval2 = getInterval2();
+        Time start = new Time();
+        start.setHour(1);
+        start.setMinute(1);
+        interval2.setStart(start);
+        Time end = new Time();
+        end.setHour(10);
+        end.setMinute(5);
+        interval2.setEnd(end);
+        intervalDAO.insertInterval(interval1);
+        intervalDAO.insertInterval(interval2);
+        SystemSetupResult exportResult = setup.exportData();
+        intervalDAO.deleteAllIntervals();
+        SystemSetupResult importResult = setup.importData(exportResult.getData());
+        assertTrue(importResult.isSuccess());
+        assertEquals(exportResult.getData(), importResult.getData());
+        List<Interval> intervals = intervalDAO.readAllIntervals();
+        assertEquals(1, intervals.size());
+        Interval readInterval1 = intervals.get(0);
+        assertTrue(interval2.isEqual(readInterval1));
     }
 
     @Test

@@ -51,8 +51,10 @@ import net.ibbaa.keepitup.R;
 import net.ibbaa.keepitup.logging.Dump;
 import net.ibbaa.keepitup.logging.Log;
 import net.ibbaa.keepitup.model.AccessType;
+import net.ibbaa.keepitup.model.Interval;
 import net.ibbaa.keepitup.model.LogEntry;
 import net.ibbaa.keepitup.model.NetworkTask;
+import net.ibbaa.keepitup.model.Time;
 import net.ibbaa.keepitup.resources.JSONSystemSetup;
 import net.ibbaa.keepitup.resources.PreferenceManager;
 import net.ibbaa.keepitup.resources.SystemSetupResult;
@@ -458,9 +460,11 @@ public class SystemActivityTest extends BaseUITest {
         insertAndScheduleNetworkTask();
         getLogDAO().insertAndDeleteLog(new LogEntry());
         getLogDAO().insertAndDeleteLog(new LogEntry());
+        getIntervalDAO().insertInterval(getInterval1());
         assertFalse(getNetworkTaskDAO().readAllNetworkTasks().isEmpty());
         assertFalse(getSchedulerIdHistoryDAO().readAllSchedulerIds().isEmpty());
         assertFalse(getLogDAO().readAllLogs().isEmpty());
+        assertFalse(getIntervalDAO().readAllIntervals().isEmpty());
         getPreferenceManager().setPreferencePingCount(5);
         getPreferenceManager().setPreferenceConnectCount(10);
         getPreferenceManager().setPreferenceNotificationInactiveNetwork(true);
@@ -493,6 +497,7 @@ public class SystemActivityTest extends BaseUITest {
         assertFalse(getNetworkTaskDAO().readAllNetworkTasks().isEmpty());
         assertFalse(getSchedulerIdHistoryDAO().readAllSchedulerIds().isEmpty());
         assertFalse(getLogDAO().readAllLogs().isEmpty());
+        assertFalse(getIntervalDAO().readAllIntervals().isEmpty());
         assertEquals(5, getPreferenceManager().getPreferencePingCount());
         assertEquals(10, getPreferenceManager().getPreferenceConnectCount());
         assertTrue(getPreferenceManager().getPreferenceNotificationInactiveNetwork());
@@ -518,9 +523,11 @@ public class SystemActivityTest extends BaseUITest {
         insertAndScheduleNetworkTask();
         getLogDAO().insertAndDeleteLog(new LogEntry());
         getLogDAO().insertAndDeleteLog(new LogEntry());
+        getIntervalDAO().insertInterval(getInterval1());
         assertFalse(getNetworkTaskDAO().readAllNetworkTasks().isEmpty());
         assertFalse(getSchedulerIdHistoryDAO().readAllSchedulerIds().isEmpty());
         assertFalse(getLogDAO().readAllLogs().isEmpty());
+        assertFalse(getIntervalDAO().readAllIntervals().isEmpty());
         getPreferenceManager().setPreferencePingCount(5);
         getPreferenceManager().setPreferenceConnectCount(10);
         getPreferenceManager().setPreferenceNotificationInactiveNetwork(true);
@@ -559,6 +566,7 @@ public class SystemActivityTest extends BaseUITest {
         assertFalse(getNetworkTaskDAO().readAllNetworkTasks().isEmpty());
         assertFalse(getSchedulerIdHistoryDAO().readAllSchedulerIds().isEmpty());
         assertFalse(getLogDAO().readAllLogs().isEmpty());
+        assertFalse(getIntervalDAO().readAllIntervals().isEmpty());
         assertEquals(5, getPreferenceManager().getPreferencePingCount());
         assertEquals(10, getPreferenceManager().getPreferenceConnectCount());
         assertTrue(getPreferenceManager().getPreferenceNotificationInactiveNetwork());
@@ -593,9 +601,11 @@ public class SystemActivityTest extends BaseUITest {
         LogEntry task3Entry1 = getLogDAO().insertAndDeleteLog(getLogEntry1(task3.getId()));
         LogEntry task3Entry2 = getLogDAO().insertAndDeleteLog(getLogEntry2(task3.getId()));
         LogEntry task3Entry3 = getLogDAO().insertAndDeleteLog(getLogEntry3(task3.getId()));
+        getIntervalDAO().insertInterval(getInterval1());
         assertFalse(getNetworkTaskDAO().readAllNetworkTasks().isEmpty());
         assertFalse(getSchedulerIdHistoryDAO().readAllSchedulerIds().isEmpty());
         assertFalse(getLogDAO().readAllLogs().isEmpty());
+        assertFalse(getIntervalDAO().readAllIntervals().isEmpty());
         getPreferenceManager().setPreferencePingCount(5);
         getPreferenceManager().setPreferenceConnectCount(10);
         getPreferenceManager().setPreferenceNotificationInactiveNetwork(true);
@@ -627,6 +637,7 @@ public class SystemActivityTest extends BaseUITest {
         assertFalse(alarmManager.wasCancelAlarmCalled());
         assertFalse(getNetworkTaskDAO().readAllNetworkTasks().isEmpty());
         assertFalse(getLogDAO().readAllLogs().isEmpty());
+        assertFalse(getIntervalDAO().readAllIntervals().isEmpty());
         assertEquals(5, getPreferenceManager().getPreferencePingCount());
         assertEquals(10, getPreferenceManager().getPreferenceConnectCount());
         assertTrue(getPreferenceManager().getPreferenceNotificationInactiveNetwork());
@@ -647,6 +658,7 @@ public class SystemActivityTest extends BaseUITest {
         assertTrue(getPreferenceManager().getPreferenceFileDumpEnabled());
         getNetworkTaskDAO().deleteAllNetworkTasks();
         getLogDAO().deleteAllLogs();
+        getIntervalDAO().deleteAllIntervals();
         getPreferenceManager().removeAllPreferences();
         String jsonData = StreamUtil.inputStreamToString(new FileInputStream(new File(folder, "keepitup_config.json")), Charsets.UTF_8);
         JSONSystemSetup setup = new JSONSystemSetup(TestRegistry.getContext());
@@ -655,6 +667,7 @@ public class SystemActivityTest extends BaseUITest {
         assertTrue(getFileManager().doesFileExist(folder, "keepitup_config.json"));
         assertFalse(getNetworkTaskDAO().readAllNetworkTasks().isEmpty());
         assertFalse(getLogDAO().readAllLogs().isEmpty());
+        assertFalse(getIntervalDAO().readAllIntervals().isEmpty());
         List<NetworkTask> tasks = getNetworkTaskDAO().readAllNetworkTasks();
         NetworkTask readTask1 = tasks.get(0);
         NetworkTask readTask2 = tasks.get(1);
@@ -695,6 +708,9 @@ public class SystemActivityTest extends BaseUITest {
         assertEquals(readTask3.getId(), readEntry1.getNetworkTaskId());
         assertEquals(readTask3.getId(), readEntry2.getNetworkTaskId());
         assertEquals(readTask3.getId(), readEntry3.getNetworkTaskId());
+        List<Interval> intervals = getIntervalDAO().readAllIntervals();
+        assertEquals(1, intervals.size());
+        assertTrue(getInterval1().isEqual(intervals.get(0)));
         assertEquals(5, getPreferenceManager().getPreferencePingCount());
         assertEquals(10, getPreferenceManager().getPreferenceConnectCount());
         assertTrue(getPreferenceManager().getPreferenceNotificationInactiveNetwork());
@@ -729,9 +745,11 @@ public class SystemActivityTest extends BaseUITest {
         LogEntry task3Entry1 = getLogDAO().insertAndDeleteLog(getLogEntry1(task3.getId()));
         LogEntry task3Entry2 = getLogDAO().insertAndDeleteLog(getLogEntry2(task3.getId()));
         LogEntry task3Entry3 = getLogDAO().insertAndDeleteLog(getLogEntry3(task3.getId()));
+        getIntervalDAO().insertInterval(getInterval1());
         assertFalse(getNetworkTaskDAO().readAllNetworkTasks().isEmpty());
         assertFalse(getSchedulerIdHistoryDAO().readAllSchedulerIds().isEmpty());
         assertFalse(getLogDAO().readAllLogs().isEmpty());
+        assertFalse(getIntervalDAO().readAllIntervals().isEmpty());
         getPreferenceManager().setPreferencePingCount(5);
         getPreferenceManager().setPreferenceConnectCount(10);
         getPreferenceManager().setPreferenceNotificationInactiveNetwork(true);
@@ -769,6 +787,7 @@ public class SystemActivityTest extends BaseUITest {
         assertFalse(alarmManager.wasCancelAlarmCalled());
         assertFalse(getNetworkTaskDAO().readAllNetworkTasks().isEmpty());
         assertFalse(getLogDAO().readAllLogs().isEmpty());
+        assertFalse(getIntervalDAO().readAllIntervals().isEmpty());
         assertEquals(5, getPreferenceManager().getPreferencePingCount());
         assertEquals(10, getPreferenceManager().getPreferenceConnectCount());
         assertTrue(getPreferenceManager().getPreferenceNotificationInactiveNetwork());
@@ -789,6 +808,7 @@ public class SystemActivityTest extends BaseUITest {
         assertTrue(getPreferenceManager().getPreferenceFileDumpEnabled());
         getNetworkTaskDAO().deleteAllNetworkTasks();
         getLogDAO().deleteAllLogs();
+        getIntervalDAO().deleteAllIntervals();
         getPreferenceManager().removeAllPreferences();
         String jsonData = StreamUtil.inputStreamToString(new FileInputStream(new File(folder, "keepitup_config.json")), Charsets.UTF_8);
         JSONSystemSetup setup = new JSONSystemSetup(TestRegistry.getContext());
@@ -837,6 +857,9 @@ public class SystemActivityTest extends BaseUITest {
         assertEquals(readTask3.getId(), readEntry1.getNetworkTaskId());
         assertEquals(readTask3.getId(), readEntry2.getNetworkTaskId());
         assertEquals(readTask3.getId(), readEntry3.getNetworkTaskId());
+        List<Interval> intervals = getIntervalDAO().readAllIntervals();
+        assertEquals(1, intervals.size());
+        assertTrue(getInterval1().isEqual(intervals.get(0)));
         assertEquals(5, getPreferenceManager().getPreferencePingCount());
         assertEquals(10, getPreferenceManager().getPreferenceConnectCount());
         assertTrue(getPreferenceManager().getPreferenceNotificationInactiveNetwork());
@@ -871,9 +894,11 @@ public class SystemActivityTest extends BaseUITest {
         getLogDAO().insertAndDeleteLog(getLogEntry1(task3.getId()));
         getLogDAO().insertAndDeleteLog(getLogEntry2(task3.getId()));
         getLogDAO().insertAndDeleteLog(getLogEntry3(task3.getId()));
+        getIntervalDAO().insertInterval(getInterval1());
         assertFalse(getNetworkTaskDAO().readAllNetworkTasks().isEmpty());
         assertFalse(getSchedulerIdHistoryDAO().readAllSchedulerIds().isEmpty());
         assertFalse(getLogDAO().readAllLogs().isEmpty());
+        assertFalse(getIntervalDAO().readAllIntervals().isEmpty());
         getPreferenceManager().setPreferencePingCount(5);
         getPreferenceManager().setPreferenceConnectCount(10);
         getPreferenceManager().setPreferenceNotificationInactiveNetwork(true);
@@ -910,6 +935,7 @@ public class SystemActivityTest extends BaseUITest {
         assertFalse(getNetworkTaskDAO().readAllNetworkTasks().isEmpty());
         assertFalse(getSchedulerIdHistoryDAO().readAllSchedulerIds().isEmpty());
         assertFalse(getLogDAO().readAllLogs().isEmpty());
+        assertFalse(getIntervalDAO().readAllIntervals().isEmpty());
         assertEquals(5, getPreferenceManager().getPreferencePingCount());
         assertEquals(10, getPreferenceManager().getPreferenceConnectCount());
         assertTrue(getPreferenceManager().getPreferenceNotificationInactiveNetwork());
@@ -944,9 +970,11 @@ public class SystemActivityTest extends BaseUITest {
         getLogDAO().insertAndDeleteLog(getLogEntry1(task3.getId()));
         getLogDAO().insertAndDeleteLog(getLogEntry2(task3.getId()));
         getLogDAO().insertAndDeleteLog(getLogEntry3(task3.getId()));
+        getIntervalDAO().insertInterval(getInterval1());
         assertFalse(getNetworkTaskDAO().readAllNetworkTasks().isEmpty());
         assertFalse(getSchedulerIdHistoryDAO().readAllSchedulerIds().isEmpty());
         assertFalse(getLogDAO().readAllLogs().isEmpty());
+        assertFalse(getIntervalDAO().readAllIntervals().isEmpty());
         getPreferenceManager().setPreferencePingCount(5);
         getPreferenceManager().setPreferenceConnectCount(10);
         getPreferenceManager().setPreferenceNotificationInactiveNetwork(true);
@@ -989,6 +1017,7 @@ public class SystemActivityTest extends BaseUITest {
         assertFalse(getNetworkTaskDAO().readAllNetworkTasks().isEmpty());
         assertFalse(getSchedulerIdHistoryDAO().readAllSchedulerIds().isEmpty());
         assertFalse(getLogDAO().readAllLogs().isEmpty());
+        assertFalse(getIntervalDAO().readAllIntervals().isEmpty());
         assertEquals(5, getPreferenceManager().getPreferencePingCount());
         assertEquals(10, getPreferenceManager().getPreferenceConnectCount());
         assertTrue(getPreferenceManager().getPreferenceNotificationInactiveNetwork());
@@ -1023,9 +1052,11 @@ public class SystemActivityTest extends BaseUITest {
         LogEntry task3Entry1 = getLogDAO().insertAndDeleteLog(getLogEntry1(task3.getId()));
         LogEntry task3Entry2 = getLogDAO().insertAndDeleteLog(getLogEntry2(task3.getId()));
         LogEntry task3Entry3 = getLogDAO().insertAndDeleteLog(getLogEntry3(task3.getId()));
+        getIntervalDAO().insertInterval(getInterval1());
         assertFalse(getNetworkTaskDAO().readAllNetworkTasks().isEmpty());
         assertFalse(getSchedulerIdHistoryDAO().readAllSchedulerIds().isEmpty());
         assertFalse(getLogDAO().readAllLogs().isEmpty());
+        assertFalse(getIntervalDAO().readAllIntervals().isEmpty());
         getPreferenceManager().setPreferencePingCount(5);
         getPreferenceManager().setPreferenceConnectCount(10);
         getPreferenceManager().setPreferenceNotificationInactiveNetwork(true);
@@ -1061,6 +1092,7 @@ public class SystemActivityTest extends BaseUITest {
         assertFalse(alarmManager.wasCancelAlarmCalled());
         assertFalse(getNetworkTaskDAO().readAllNetworkTasks().isEmpty());
         assertFalse(getLogDAO().readAllLogs().isEmpty());
+        assertFalse(getIntervalDAO().readAllIntervals().isEmpty());
         assertEquals(5, getPreferenceManager().getPreferencePingCount());
         assertEquals(10, getPreferenceManager().getPreferenceConnectCount());
         assertTrue(getPreferenceManager().getPreferenceNotificationInactiveNetwork());
@@ -1081,6 +1113,7 @@ public class SystemActivityTest extends BaseUITest {
         assertTrue(getPreferenceManager().getPreferenceFileDumpEnabled());
         getNetworkTaskDAO().deleteAllNetworkTasks();
         getLogDAO().deleteAllLogs();
+        getIntervalDAO().deleteAllIntervals();
         getPreferenceManager().removeAllPreferences();
         String jsonData = StreamUtil.inputStreamToString(new FileInputStream(new File(folder, "keepitup_config.json")), Charsets.UTF_8);
         JSONSystemSetup setup = new JSONSystemSetup(TestRegistry.getContext());
@@ -1129,6 +1162,9 @@ public class SystemActivityTest extends BaseUITest {
         assertEquals(readTask3.getId(), readEntry1.getNetworkTaskId());
         assertEquals(readTask3.getId(), readEntry2.getNetworkTaskId());
         assertEquals(readTask3.getId(), readEntry3.getNetworkTaskId());
+        List<Interval> intervals = getIntervalDAO().readAllIntervals();
+        assertEquals(1, intervals.size());
+        assertTrue(getInterval1().isEqual(intervals.get(0)));
         assertEquals(5, getPreferenceManager().getPreferencePingCount());
         assertEquals(10, getPreferenceManager().getPreferenceConnectCount());
         assertTrue(getPreferenceManager().getPreferenceNotificationInactiveNetwork());
@@ -1163,9 +1199,11 @@ public class SystemActivityTest extends BaseUITest {
         LogEntry task3Entry1 = getLogDAO().insertAndDeleteLog(getLogEntry1(task3.getId()));
         LogEntry task3Entry2 = getLogDAO().insertAndDeleteLog(getLogEntry2(task3.getId()));
         LogEntry task3Entry3 = getLogDAO().insertAndDeleteLog(getLogEntry3(task3.getId()));
+        getIntervalDAO().insertInterval(getInterval1());
         assertFalse(getNetworkTaskDAO().readAllNetworkTasks().isEmpty());
         assertFalse(getSchedulerIdHistoryDAO().readAllSchedulerIds().isEmpty());
         assertFalse(getLogDAO().readAllLogs().isEmpty());
+        assertFalse(getIntervalDAO().readAllIntervals().isEmpty());
         getPreferenceManager().setPreferencePingCount(5);
         getPreferenceManager().setPreferenceConnectCount(10);
         getPreferenceManager().setPreferenceNotificationInactiveNetwork(true);
@@ -1207,6 +1245,7 @@ public class SystemActivityTest extends BaseUITest {
         assertFalse(alarmManager.wasCancelAlarmCalled());
         assertFalse(getNetworkTaskDAO().readAllNetworkTasks().isEmpty());
         assertFalse(getLogDAO().readAllLogs().isEmpty());
+        assertFalse(getIntervalDAO().readAllIntervals().isEmpty());
         assertEquals(5, getPreferenceManager().getPreferencePingCount());
         assertEquals(10, getPreferenceManager().getPreferenceConnectCount());
         assertTrue(getPreferenceManager().getPreferenceNotificationInactiveNetwork());
@@ -1227,6 +1266,7 @@ public class SystemActivityTest extends BaseUITest {
         assertTrue(getPreferenceManager().getPreferenceFileDumpEnabled());
         getNetworkTaskDAO().deleteAllNetworkTasks();
         getLogDAO().deleteAllLogs();
+        getIntervalDAO().deleteAllIntervals();
         getPreferenceManager().removeAllPreferences();
         String jsonData = StreamUtil.inputStreamToString(new FileInputStream(new File(folder, "keepitup_config.json")), Charsets.UTF_8);
         JSONSystemSetup setup = new JSONSystemSetup(TestRegistry.getContext());
@@ -1275,6 +1315,9 @@ public class SystemActivityTest extends BaseUITest {
         assertEquals(readTask3.getId(), readEntry1.getNetworkTaskId());
         assertEquals(readTask3.getId(), readEntry2.getNetworkTaskId());
         assertEquals(readTask3.getId(), readEntry3.getNetworkTaskId());
+        List<Interval> intervals = getIntervalDAO().readAllIntervals();
+        assertEquals(1, intervals.size());
+        assertTrue(getInterval1().isEqual(intervals.get(0)));
         assertEquals(5, getPreferenceManager().getPreferencePingCount());
         assertEquals(10, getPreferenceManager().getPreferenceConnectCount());
         assertTrue(getPreferenceManager().getPreferenceNotificationInactiveNetwork());
@@ -1301,9 +1344,11 @@ public class SystemActivityTest extends BaseUITest {
         insertAndScheduleNetworkTask();
         getLogDAO().insertAndDeleteLog(new LogEntry());
         getLogDAO().insertAndDeleteLog(new LogEntry());
+        getIntervalDAO().insertInterval(getInterval1());
         assertFalse(getNetworkTaskDAO().readAllNetworkTasks().isEmpty());
         assertFalse(getSchedulerIdHistoryDAO().readAllSchedulerIds().isEmpty());
         assertFalse(getLogDAO().readAllLogs().isEmpty());
+        assertFalse(getIntervalDAO().readAllIntervals().isEmpty());
         getPreferenceManager().setPreferencePingCount(5);
         getPreferenceManager().setPreferenceConnectCount(10);
         getPreferenceManager().setPreferenceNotificationInactiveNetwork(true);
@@ -1337,6 +1382,7 @@ public class SystemActivityTest extends BaseUITest {
         assertFalse(getNetworkTaskDAO().readAllNetworkTasks().isEmpty());
         assertFalse(getSchedulerIdHistoryDAO().readAllSchedulerIds().isEmpty());
         assertFalse(getLogDAO().readAllLogs().isEmpty());
+        assertFalse(getIntervalDAO().readAllIntervals().isEmpty());
         assertEquals(5, getPreferenceManager().getPreferencePingCount());
         assertEquals(10, getPreferenceManager().getPreferenceConnectCount());
         assertTrue(getPreferenceManager().getPreferenceNotificationInactiveNetwork());
@@ -1363,9 +1409,11 @@ public class SystemActivityTest extends BaseUITest {
         insertAndScheduleNetworkTask();
         getLogDAO().insertAndDeleteLog(new LogEntry());
         getLogDAO().insertAndDeleteLog(new LogEntry());
+        getIntervalDAO().insertInterval(getInterval1());
         assertFalse(getNetworkTaskDAO().readAllNetworkTasks().isEmpty());
         assertFalse(getSchedulerIdHistoryDAO().readAllSchedulerIds().isEmpty());
         assertFalse(getLogDAO().readAllLogs().isEmpty());
+        assertFalse(getIntervalDAO().readAllIntervals().isEmpty());
         getPreferenceManager().setPreferencePingCount(5);
         getPreferenceManager().setPreferenceConnectCount(10);
         getPreferenceManager().setPreferenceNotificationInactiveNetwork(true);
@@ -1402,6 +1450,7 @@ public class SystemActivityTest extends BaseUITest {
         assertFalse(getNetworkTaskDAO().readAllNetworkTasks().isEmpty());
         assertFalse(getSchedulerIdHistoryDAO().readAllSchedulerIds().isEmpty());
         assertFalse(getLogDAO().readAllLogs().isEmpty());
+        assertFalse(getIntervalDAO().readAllIntervals().isEmpty());
         assertEquals(5, getPreferenceManager().getPreferencePingCount());
         assertEquals(10, getPreferenceManager().getPreferenceConnectCount());
         assertTrue(getPreferenceManager().getPreferenceNotificationInactiveNetwork());
@@ -1500,9 +1549,11 @@ public class SystemActivityTest extends BaseUITest {
         insertAndScheduleNetworkTask();
         getLogDAO().insertAndDeleteLog(new LogEntry());
         getLogDAO().insertAndDeleteLog(new LogEntry());
+        getIntervalDAO().insertInterval(getInterval1());
         assertFalse(getNetworkTaskDAO().readAllNetworkTasks().isEmpty());
         assertFalse(getSchedulerIdHistoryDAO().readAllSchedulerIds().isEmpty());
         assertFalse(getLogDAO().readAllLogs().isEmpty());
+        assertFalse(getIntervalDAO().readAllIntervals().isEmpty());
         getPreferenceManager().setPreferencePingCount(5);
         getPreferenceManager().setPreferenceConnectCount(10);
         getPreferenceManager().setPreferenceNotificationInactiveNetwork(true);
@@ -1530,6 +1581,7 @@ public class SystemActivityTest extends BaseUITest {
         assertTrue(result.isSuccess());
         getNetworkTaskDAO().deleteAllNetworkTasks();
         getLogDAO().deleteAllLogs();
+        getIntervalDAO().deleteAllIntervals();
         getPreferenceManager().removeAllPreferences();
         File folder = getFileManager().getExternalDirectory("config", 0);
         StreamUtil.stringToOutputStream(result.getData(), new FileOutputStream(new File(folder, "test.json")), Charsets.UTF_8);
@@ -1540,6 +1592,7 @@ public class SystemActivityTest extends BaseUITest {
         assertFalse(alarmManager.wasCancelAlarmCalled());
         assertTrue(getNetworkTaskDAO().readAllNetworkTasks().isEmpty());
         assertTrue(getLogDAO().readAllLogs().isEmpty());
+        assertTrue(getIntervalDAO().readAllIntervals().isEmpty());
         assertEquals(3, getPreferenceManager().getPreferencePingCount());
         assertEquals(1, getPreferenceManager().getPreferenceConnectCount());
         assertFalse(getPreferenceManager().getPreferenceNotificationInactiveNetwork());
@@ -1565,9 +1618,11 @@ public class SystemActivityTest extends BaseUITest {
         insertAndScheduleNetworkTask();
         getLogDAO().insertAndDeleteLog(new LogEntry());
         getLogDAO().insertAndDeleteLog(new LogEntry());
+        getIntervalDAO().insertInterval(getInterval1());
         assertFalse(getNetworkTaskDAO().readAllNetworkTasks().isEmpty());
         assertFalse(getSchedulerIdHistoryDAO().readAllSchedulerIds().isEmpty());
         assertFalse(getLogDAO().readAllLogs().isEmpty());
+        assertFalse(getIntervalDAO().readAllIntervals().isEmpty());
         getPreferenceManager().setPreferencePingCount(5);
         getPreferenceManager().setPreferenceConnectCount(10);
         getPreferenceManager().setPreferenceNotificationInactiveNetwork(true);
@@ -1602,11 +1657,13 @@ public class SystemActivityTest extends BaseUITest {
         rotateScreen(activityScenario);
         getNetworkTaskDAO().deleteAllNetworkTasks();
         getLogDAO().deleteAllLogs();
+        getIntervalDAO().deleteAllIntervals();
         getPreferenceManager().removeAllPreferences();
         onView(withId(R.id.imageview_dialog_file_choose_cancel)).perform(click());
         assertFalse(alarmManager.wasCancelAlarmCalled());
         assertTrue(getNetworkTaskDAO().readAllNetworkTasks().isEmpty());
         assertTrue(getLogDAO().readAllLogs().isEmpty());
+        assertTrue(getIntervalDAO().readAllIntervals().isEmpty());
         assertEquals(3, getPreferenceManager().getPreferencePingCount());
         assertEquals(1, getPreferenceManager().getPreferenceConnectCount());
         assertFalse(getPreferenceManager().getPreferenceNotificationInactiveNetwork());
@@ -1632,9 +1689,11 @@ public class SystemActivityTest extends BaseUITest {
         insertAndScheduleNetworkTask();
         getLogDAO().insertAndDeleteLog(new LogEntry());
         getLogDAO().insertAndDeleteLog(new LogEntry());
+        getIntervalDAO().insertInterval(getInterval1());
         assertFalse(getNetworkTaskDAO().readAllNetworkTasks().isEmpty());
         assertFalse(getSchedulerIdHistoryDAO().readAllSchedulerIds().isEmpty());
         assertFalse(getLogDAO().readAllLogs().isEmpty());
+        assertFalse(getIntervalDAO().readAllIntervals().isEmpty());
         getPreferenceManager().setPreferencePingCount(5);
         getPreferenceManager().setPreferenceConnectCount(10);
         getPreferenceManager().setPreferenceNotificationInactiveNetwork(true);
@@ -1662,6 +1721,7 @@ public class SystemActivityTest extends BaseUITest {
         assertTrue(result.isSuccess());
         getNetworkTaskDAO().deleteAllNetworkTasks();
         getLogDAO().deleteAllLogs();
+        getIntervalDAO().deleteAllIntervals();
         getPreferenceManager().removeAllPreferences();
         File folder = getFileManager().getExternalDirectory("config", 0);
         StreamUtil.stringToOutputStream(result.getData(), new FileOutputStream(new File(folder, "test.json")), Charsets.UTF_8);
@@ -1674,6 +1734,7 @@ public class SystemActivityTest extends BaseUITest {
         assertFalse(alarmManager.wasCancelAlarmCalled());
         assertTrue(getNetworkTaskDAO().readAllNetworkTasks().isEmpty());
         assertTrue(getLogDAO().readAllLogs().isEmpty());
+        assertTrue(getIntervalDAO().readAllIntervals().isEmpty());
         assertEquals(3, getPreferenceManager().getPreferencePingCount());
         assertEquals(1, getPreferenceManager().getPreferenceConnectCount());
         assertFalse(getPreferenceManager().getPreferenceNotificationInactiveNetwork());
@@ -1699,9 +1760,11 @@ public class SystemActivityTest extends BaseUITest {
         insertAndScheduleNetworkTask();
         getLogDAO().insertAndDeleteLog(new LogEntry());
         getLogDAO().insertAndDeleteLog(new LogEntry());
+        getIntervalDAO().insertInterval(getInterval1());
         assertFalse(getNetworkTaskDAO().readAllNetworkTasks().isEmpty());
         assertFalse(getSchedulerIdHistoryDAO().readAllSchedulerIds().isEmpty());
         assertFalse(getLogDAO().readAllLogs().isEmpty());
+        assertFalse(getIntervalDAO().readAllIntervals().isEmpty());
         getPreferenceManager().setPreferencePingCount(5);
         getPreferenceManager().setPreferenceConnectCount(10);
         getPreferenceManager().setPreferenceNotificationInactiveNetwork(true);
@@ -1738,11 +1801,13 @@ public class SystemActivityTest extends BaseUITest {
         rotateScreen(activityScenario);
         getNetworkTaskDAO().deleteAllNetworkTasks();
         getLogDAO().deleteAllLogs();
+        getIntervalDAO().deleteAllIntervals();
         getPreferenceManager().removeAllPreferences();
         onView(withId(R.id.imageview_dialog_confirm_cancel)).perform(click());
         assertFalse(alarmManager.wasCancelAlarmCalled());
         assertTrue(getNetworkTaskDAO().readAllNetworkTasks().isEmpty());
         assertTrue(getLogDAO().readAllLogs().isEmpty());
+        assertTrue(getIntervalDAO().readAllIntervals().isEmpty());
         assertEquals(3, getPreferenceManager().getPreferencePingCount());
         assertEquals(1, getPreferenceManager().getPreferenceConnectCount());
         assertFalse(getPreferenceManager().getPreferenceNotificationInactiveNetwork());
@@ -1777,9 +1842,11 @@ public class SystemActivityTest extends BaseUITest {
         LogEntry task3Entry1 = getLogDAO().insertAndDeleteLog(getLogEntry1(task3.getId()));
         LogEntry task3Entry2 = getLogDAO().insertAndDeleteLog(getLogEntry2(task3.getId()));
         LogEntry task3Entry3 = getLogDAO().insertAndDeleteLog(getLogEntry3(task3.getId()));
+        getIntervalDAO().insertInterval(getInterval1());
         assertFalse(getNetworkTaskDAO().readAllNetworkTasks().isEmpty());
         assertFalse(getSchedulerIdHistoryDAO().readAllSchedulerIds().isEmpty());
         assertFalse(getLogDAO().readAllLogs().isEmpty());
+        assertFalse(getIntervalDAO().readAllIntervals().isEmpty());
         getPreferenceManager().setPreferencePingCount(5);
         getPreferenceManager().setPreferenceConnectCount(10);
         getPreferenceManager().setPreferenceNotificationInactiveNetwork(true);
@@ -1807,6 +1874,7 @@ public class SystemActivityTest extends BaseUITest {
         assertTrue(result.isSuccess());
         getNetworkTaskDAO().deleteAllNetworkTasks();
         getLogDAO().deleteAllLogs();
+        getIntervalDAO().deleteAllIntervals();
         getPreferenceManager().removeAllPreferences();
         File folder = getFileManager().getExternalDirectory("config", 0);
         StreamUtil.stringToOutputStream(result.getData(), new FileOutputStream(new File(folder, "test.json")), Charsets.UTF_8);
@@ -1818,6 +1886,7 @@ public class SystemActivityTest extends BaseUITest {
         onView(withId(R.id.imageview_dialog_confirm_ok)).perform(click());
         assertFalse(getNetworkTaskDAO().readAllNetworkTasks().isEmpty());
         assertFalse(getLogDAO().readAllLogs().isEmpty());
+        assertFalse(getIntervalDAO().readAllIntervals().isEmpty());
         List<NetworkTask> tasks = getNetworkTaskDAO().readAllNetworkTasks();
         NetworkTask readTask1 = tasks.get(0);
         NetworkTask readTask2 = tasks.get(1);
@@ -1858,6 +1927,9 @@ public class SystemActivityTest extends BaseUITest {
         assertEquals(readTask3.getId(), readEntry1.getNetworkTaskId());
         assertEquals(readTask3.getId(), readEntry2.getNetworkTaskId());
         assertEquals(readTask3.getId(), readEntry3.getNetworkTaskId());
+        List<Interval> intervals = getIntervalDAO().readAllIntervals();
+        assertEquals(1, intervals.size());
+        assertTrue(getInterval1().isEqual(intervals.get(0)));
         assertEquals(5, getPreferenceManager().getPreferencePingCount());
         assertEquals(10, getPreferenceManager().getPreferenceConnectCount());
         assertTrue(getPreferenceManager().getPreferenceNotificationInactiveNetwork());
@@ -1893,9 +1965,11 @@ public class SystemActivityTest extends BaseUITest {
         LogEntry task3Entry1 = getLogDAO().insertAndDeleteLog(getLogEntry1(task3.getId()));
         LogEntry task3Entry2 = getLogDAO().insertAndDeleteLog(getLogEntry2(task3.getId()));
         LogEntry task3Entry3 = getLogDAO().insertAndDeleteLog(getLogEntry3(task3.getId()));
+        getIntervalDAO().insertInterval(getInterval1());
         assertFalse(getNetworkTaskDAO().readAllNetworkTasks().isEmpty());
         assertFalse(getSchedulerIdHistoryDAO().readAllSchedulerIds().isEmpty());
         assertFalse(getLogDAO().readAllLogs().isEmpty());
+        assertFalse(getIntervalDAO().readAllIntervals().isEmpty());
         getPreferenceManager().setPreferencePingCount(5);
         getPreferenceManager().setPreferenceConnectCount(10);
         getPreferenceManager().setPreferenceNotificationInactiveNetwork(true);
@@ -1923,6 +1997,7 @@ public class SystemActivityTest extends BaseUITest {
         assertTrue(result.isSuccess());
         getNetworkTaskDAO().deleteAllNetworkTasks();
         getLogDAO().deleteAllLogs();
+        getIntervalDAO().deleteAllIntervals();
         getPreferenceManager().removeAllPreferences();
         File folder = getFileManager().getExternalDirectory("config", 0);
         StreamUtil.stringToOutputStream(result.getData(), new FileOutputStream(new File(folder, "test.json")), Charsets.UTF_8);
@@ -1937,6 +2012,7 @@ public class SystemActivityTest extends BaseUITest {
         onView(withId(R.id.imageview_dialog_confirm_ok)).perform(click());
         assertFalse(getNetworkTaskDAO().readAllNetworkTasks().isEmpty());
         assertFalse(getLogDAO().readAllLogs().isEmpty());
+        assertFalse(getIntervalDAO().readAllIntervals().isEmpty());
         List<NetworkTask> tasks = getNetworkTaskDAO().readAllNetworkTasks();
         NetworkTask readTask1 = tasks.get(0);
         NetworkTask readTask2 = tasks.get(1);
@@ -1977,6 +2053,9 @@ public class SystemActivityTest extends BaseUITest {
         assertEquals(readTask3.getId(), readEntry1.getNetworkTaskId());
         assertEquals(readTask3.getId(), readEntry2.getNetworkTaskId());
         assertEquals(readTask3.getId(), readEntry3.getNetworkTaskId());
+        List<Interval> intervals = getIntervalDAO().readAllIntervals();
+        assertEquals(1, intervals.size());
+        assertTrue(getInterval1().isEqual(intervals.get(0)));
         assertEquals(5, getPreferenceManager().getPreferencePingCount());
         assertEquals(10, getPreferenceManager().getPreferenceConnectCount());
         assertTrue(getPreferenceManager().getPreferenceNotificationInactiveNetwork());
@@ -2004,9 +2083,11 @@ public class SystemActivityTest extends BaseUITest {
         insertAndScheduleNetworkTask();
         getLogDAO().insertAndDeleteLog(new LogEntry());
         getLogDAO().insertAndDeleteLog(new LogEntry());
+        getIntervalDAO().insertInterval(getInterval1());
         assertFalse(getNetworkTaskDAO().readAllNetworkTasks().isEmpty());
         assertFalse(getSchedulerIdHistoryDAO().readAllSchedulerIds().isEmpty());
         assertFalse(getLogDAO().readAllLogs().isEmpty());
+        assertFalse(getIntervalDAO().readAllIntervals().isEmpty());
         getPreferenceManager().setPreferencePingCount(5);
         getPreferenceManager().setPreferenceConnectCount(10);
         getPreferenceManager().setPreferenceNotificationInactiveNetwork(true);
@@ -2041,6 +2122,7 @@ public class SystemActivityTest extends BaseUITest {
         assertFalse(getNetworkTaskDAO().readAllNetworkTasks().isEmpty());
         assertFalse(getSchedulerIdHistoryDAO().readAllSchedulerIds().isEmpty());
         assertFalse(getLogDAO().readAllLogs().isEmpty());
+        assertFalse(getIntervalDAO().readAllIntervals().isEmpty());
         assertEquals(5, getPreferenceManager().getPreferencePingCount());
         assertEquals(10, getPreferenceManager().getPreferenceConnectCount());
         assertTrue(getPreferenceManager().getPreferenceNotificationInactiveNetwork());
@@ -2067,9 +2149,11 @@ public class SystemActivityTest extends BaseUITest {
         insertAndScheduleNetworkTask();
         getLogDAO().insertAndDeleteLog(new LogEntry());
         getLogDAO().insertAndDeleteLog(new LogEntry());
+        getIntervalDAO().insertInterval(getInterval1());
         assertFalse(getNetworkTaskDAO().readAllNetworkTasks().isEmpty());
         assertFalse(getSchedulerIdHistoryDAO().readAllSchedulerIds().isEmpty());
         assertFalse(getLogDAO().readAllLogs().isEmpty());
+        assertFalse(getIntervalDAO().readAllIntervals().isEmpty());
         getPreferenceManager().setPreferencePingCount(5);
         getPreferenceManager().setPreferenceConnectCount(10);
         getPreferenceManager().setPreferenceNotificationInactiveNetwork(true);
@@ -2106,6 +2190,7 @@ public class SystemActivityTest extends BaseUITest {
         assertFalse(getNetworkTaskDAO().readAllNetworkTasks().isEmpty());
         assertFalse(getSchedulerIdHistoryDAO().readAllSchedulerIds().isEmpty());
         assertFalse(getLogDAO().readAllLogs().isEmpty());
+        assertFalse(getIntervalDAO().readAllIntervals().isEmpty());
         assertEquals(5, getPreferenceManager().getPreferencePingCount());
         assertEquals(10, getPreferenceManager().getPreferenceConnectCount());
         assertTrue(getPreferenceManager().getPreferenceNotificationInactiveNetwork());
@@ -2132,9 +2217,11 @@ public class SystemActivityTest extends BaseUITest {
         insertAndScheduleNetworkTask();
         getLogDAO().insertAndDeleteLog(new LogEntry());
         getLogDAO().insertAndDeleteLog(new LogEntry());
+        getIntervalDAO().insertInterval(getInterval1());
         assertFalse(getNetworkTaskDAO().readAllNetworkTasks().isEmpty());
         assertFalse(getSchedulerIdHistoryDAO().readAllSchedulerIds().isEmpty());
         assertFalse(getLogDAO().readAllLogs().isEmpty());
+        assertFalse(getIntervalDAO().readAllIntervals().isEmpty());
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(scrollTo());
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(click());
         onView(withId(R.id.switch_activity_system_file_dump_enabled)).perform(scrollTo());
@@ -2580,6 +2667,20 @@ public class SystemActivityTest extends BaseUITest {
         insertedLogEntry3.setTimestamp(123);
         insertedLogEntry3.setMessage("TestMessage3");
         return insertedLogEntry3;
+    }
+
+    private Interval getInterval1() {
+        Interval interval = new Interval();
+        interval.setId(1);
+        Time start = new Time();
+        start.setHour(10);
+        start.setMinute(11);
+        interval.setStart(start);
+        Time end = new Time();
+        end.setHour(11);
+        end.setMinute(12);
+        interval.setEnd(end);
+        return interval;
     }
 
     private MockExportTask getMockExportTask(boolean success) {
