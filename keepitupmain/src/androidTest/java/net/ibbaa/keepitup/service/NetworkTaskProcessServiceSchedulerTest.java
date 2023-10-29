@@ -68,13 +68,13 @@ public class NetworkTaskProcessServiceSchedulerTest {
     }
 
     @Test
-    public void testScheduleCancel() {
+    public void testStartCancel() {
         NetworkTask task1 = getNetworkTask1();
         NetworkTask task2 = getNetworkTask2();
         task1 = networkTaskDAO.insertNetworkTask(task1);
         task2 = networkTaskDAO.insertNetworkTask(task2);
         setTestTime(125);
-        task1 = scheduler.schedule(task1);
+        task1 = scheduler.start(task1);
         assertTrue(task1.isRunning());
         assertFalse(task2.isRunning());
         assertTrue(isTaskMarkedAsRunningInDatabase(task1));
@@ -85,7 +85,7 @@ public class NetworkTaskProcessServiceSchedulerTest {
         assertEquals(1, setAlarmCalls.size());
         MockAlarmManager.SetAlarmCall setAlarmCall1 = setAlarmCalls.get(0);
         assertEquals(0, setAlarmCall1.getDelay());
-        task2 = scheduler.schedule(task2);
+        task2 = scheduler.start(task2);
         assertTrue(task1.isRunning());
         assertTrue(task2.isRunning());
         assertTrue(isTaskMarkedAsRunningInDatabase(task1));
@@ -117,6 +117,26 @@ public class NetworkTaskProcessServiceSchedulerTest {
         assertEquals(2, cancelAlarmCalls.size());
         MockAlarmManager.CancelAlarmCall cancelAlarmCall2 = cancelAlarmCalls.get(1);
         assertEquals(setAlarmCall2.getPendingIntent(), cancelAlarmCall2.getPendingIntent());
+    }
+
+    @Test
+    public void testSchedule() {
+        assertFalse(alarmManager.wasSetAlarmCalled());
+        NetworkTask task1 = getNetworkTask1();
+        task1 = networkTaskDAO.insertNetworkTask(task1);
+        setTestTime(125);
+        task1 = scheduler.schedule(task1);
+        assertFalse(task1.isRunning());
+        assertFalse(isTaskMarkedAsRunningInDatabase(task1));
+        assertFalse(alarmManager.wasSetAlarmCalled());
+        assertFalse(alarmManager.wasCancelAlarmCalled());
+        task1.setRunning(true);
+        networkTaskDAO.updateNetworkTaskRunning(task1.getId(), true);
+        task1 = scheduler.schedule(task1);
+        assertTrue(task1.isRunning());
+        assertTrue(isTaskMarkedAsRunningInDatabase(task1));
+        assertTrue(alarmManager.wasSetAlarmCalled());
+        assertFalse(alarmManager.wasCancelAlarmCalled());
     }
 
     @Test
@@ -257,7 +277,7 @@ public class NetworkTaskProcessServiceSchedulerTest {
         assertFalse(alarmManager.wasSetAlarmCalled());
         assertFalse(alarmManager.wasCancelAlarmCalled());
         assertEquals(0, networkTaskDAO.readNetworkTaskInstances(task2.getId()));
-        scheduler.schedule(task1);
+        scheduler.start(task1);
         scheduler.terminate(task1);
         assertTrue(isTaskMarkedAsRunningInDatabase(task1));
         assertFalse(isTaskMarkedAsRunningInDatabase(task2));
@@ -279,7 +299,7 @@ public class NetworkTaskProcessServiceSchedulerTest {
         networkTaskDAO.increaseNetworkTaskInstances(task2.getId());
         assertEquals(1, networkTaskDAO.readNetworkTaskInstances(task1.getId()));
         assertEquals(1, networkTaskDAO.readNetworkTaskInstances(task2.getId()));
-        scheduler.schedule(task2);
+        scheduler.start(task2);
         alarmManager.reset();
         setTestTime(Long.MAX_VALUE);
         task1.setLastScheduled(125);
@@ -308,8 +328,8 @@ public class NetworkTaskProcessServiceSchedulerTest {
         NetworkTask task2 = getNetworkTask2();
         task1 = networkTaskDAO.insertNetworkTask(task1);
         task2 = networkTaskDAO.insertNetworkTask(task2);
-        task1 = scheduler.schedule(task1);
-        task2 = scheduler.schedule(task2);
+        task1 = scheduler.start(task1);
+        task2 = scheduler.start(task2);
         task1.setLastScheduled(125);
         task2.setLastScheduled(125);
         networkTaskDAO.updateNetworkTaskLastScheduled(task1.getId(), 125);
@@ -337,8 +357,8 @@ public class NetworkTaskProcessServiceSchedulerTest {
         networkTaskDAO.increaseNetworkTaskInstances(task2.getId());
         assertEquals(1, networkTaskDAO.readNetworkTaskInstances(task1.getId()));
         assertEquals(2, networkTaskDAO.readNetworkTaskInstances(task2.getId()));
-        task1 = scheduler.schedule(task1);
-        task2 = scheduler.schedule(task2);
+        task1 = scheduler.start(task1);
+        task2 = scheduler.start(task2);
         task1.setLastScheduled(125);
         task2.setLastScheduled(125);
         networkTaskDAO.updateNetworkTaskLastScheduled(task1.getId(), 125);
@@ -365,8 +385,8 @@ public class NetworkTaskProcessServiceSchedulerTest {
         NetworkTask task2 = getNetworkTask2();
         task1 = networkTaskDAO.insertNetworkTask(task1);
         task2 = networkTaskDAO.insertNetworkTask(task2);
-        task1 = scheduler.schedule(task1);
-        task2 = scheduler.schedule(task2);
+        task1 = scheduler.start(task1);
+        task2 = scheduler.start(task2);
         task1.setLastScheduled(125);
         task2.setLastScheduled(125);
         networkTaskDAO.updateNetworkTaskLastScheduled(task1.getId(), 125);

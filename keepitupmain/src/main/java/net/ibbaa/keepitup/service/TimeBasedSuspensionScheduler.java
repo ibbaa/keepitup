@@ -27,6 +27,7 @@ import net.ibbaa.keepitup.db.IntervalDAO;
 import net.ibbaa.keepitup.db.SchedulerIdGenerator;
 import net.ibbaa.keepitup.logging.Log;
 import net.ibbaa.keepitup.model.Interval;
+import net.ibbaa.keepitup.model.NetworkTask;
 import net.ibbaa.keepitup.resources.PreferenceManager;
 import net.ibbaa.keepitup.resources.ServiceFactoryContributor;
 import net.ibbaa.keepitup.util.TimeUtil;
@@ -97,15 +98,15 @@ public class TimeBasedSuspensionScheduler {
                 startup();
                 return;
             }
-            start(true);
+            start();
         }
     }
 
     public void start() {
-        start(false);
+        start(null);
     }
 
-    public void start(boolean doStartSuspend) {
+    public void start(NetworkTask task) {
         Log.d(TimeBasedSuspensionScheduler.class.getName(), "start");
         synchronized (TimeBasedSuspensionScheduler.class) {
             long now = timeService.getCurrentTimestamp();
@@ -116,15 +117,15 @@ public class TimeBasedSuspensionScheduler {
             Log.d(TimeBasedSuspensionScheduler.class.getName(), "Found current suspend interval is " + currentSuspendInterval);
             if (currentSuspendInterval != null) {
                 scheduleSuspend(currentSuspendInterval, thresholdNow, true);
-                if (doStartSuspend) {
-                    suspend();
-                }
+                suspend();
             } else {
                 Interval nextSuspendInterval = findNextSuspendInterval(thresholdNow);
                 Log.d(TimeBasedSuspensionScheduler.class.getName(), "Found next suspend interval is " + nextSuspendInterval);
                 scheduleStart(nextSuspendInterval, thresholdNow, true);
-                if (doStartSuspend) {
+                if (task == null) {
                     startup();
+                } else {
+                    startSingle(task);
                 }
             }
         }
@@ -218,6 +219,10 @@ public class TimeBasedSuspensionScheduler {
     }
 
     public void startup() {
+
+    }
+
+    public void startSingle(NetworkTask task) {
 
     }
 

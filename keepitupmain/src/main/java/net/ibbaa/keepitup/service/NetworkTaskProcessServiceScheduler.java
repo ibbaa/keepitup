@@ -65,10 +65,15 @@ public class NetworkTaskProcessServiceScheduler {
         return processPool;
     }
 
-    public NetworkTask schedule(NetworkTask networkTask) {
-        Log.d(NetworkTaskProcessServiceScheduler.class.getName(), "Schedule network task " + networkTask);
+    public NetworkTask start(NetworkTask networkTask) {
+        Log.d(NetworkTaskProcessServiceScheduler.class.getName(), "Start network task " + networkTask);
         networkTask.setRunning(true);
         networkTaskDAO.updateNetworkTaskRunning(networkTask.getId(), true);
+        return schedule(networkTask);
+    }
+
+    public NetworkTask schedule(NetworkTask networkTask) {
+        Log.d(NetworkTaskProcessServiceScheduler.class.getName(), "Schedule network task " + networkTask);
         if (shouldStartForegroundService()) {
             Log.d(NetworkTaskProcessServiceScheduler.class.getName(), "Starting foreground service...");
             startService(networkTask, Delay.IMMEDIATE);

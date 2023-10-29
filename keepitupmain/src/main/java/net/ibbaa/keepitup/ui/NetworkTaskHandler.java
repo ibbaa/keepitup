@@ -42,7 +42,7 @@ class NetworkTaskHandler {
     public void startNetworkTask(NetworkTask task) {
         Log.d(NetworkTaskHandler.class.getName(), "startNetworkTask for task " + task);
         try {
-            scheduler.schedule(task);
+            scheduler.start(task);
             getAdapter().replaceNetworkTask(task);
         } catch (Exception exc) {
             Log.e(NetworkTaskHandler.class.getName(), "Error starting network task. Showing error dialog.", exc);
@@ -99,7 +99,7 @@ class NetworkTaskHandler {
             }
             if (running) {
                 Log.d(NetworkTaskHandler.class.getName(), "Network task is running. Restarting.");
-                task = scheduler.schedule(task);
+                task = scheduler.start(task);
             }
             getAdapter().replaceNetworkTask(task);
         } catch (Exception exc) {
