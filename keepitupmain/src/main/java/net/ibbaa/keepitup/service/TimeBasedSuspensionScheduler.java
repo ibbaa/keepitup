@@ -46,6 +46,7 @@ public class TimeBasedSuspensionScheduler {
     private final IAlarmManager alarmManager;
 
     private static List<Interval> intervals;
+    private static boolean wasRestarted = false;
 
     public TimeBasedSuspensionScheduler(Context context) {
         this.context = context;
@@ -70,17 +71,43 @@ public class TimeBasedSuspensionScheduler {
         }
     }
 
-    public void reconfigure() {
+    public boolean getWasRestartedFlag() {
+        synchronized (TimeBasedSuspensionScheduler.class) {
+            Log.d(TimeBasedSuspensionScheduler.class.getName(), "getWasRestartedFlag, wasRestarted is " + wasRestarted);
+            return wasRestarted;
+        }
+    }
+
+    public void resetWasRestartedFlag() {
+        synchronized (TimeBasedSuspensionScheduler.class) {
+            Log.d(TimeBasedSuspensionScheduler.class.getName(), "resetWasRestartedFlag, wasRestarted is " + wasRestarted);
+            wasRestarted = false;
+        }
+    }
+
+    public void restart() {
         Log.d(TimeBasedSuspensionScheduler.class.getName(), "reconfigure");
         synchronized (TimeBasedSuspensionScheduler.class) {
             cancelCurrent();
             reset();
+            resetWasRestartedFlag();
             getIntervals();
             if (!isSuspensionActiveAndEnabled()) {
                 Log.d(TimeBasedSuspensionScheduler.class.getName(), "Suspension feature is not active.");
-                startup(null, -1);
+                startup();
                 return;
             }
+            start(true);
+        }
+    }
+
+    public void start() {
+        start(false);
+    }
+
+    public void start(boolean doStartSuspend) {
+        Log.d(TimeBasedSuspensionScheduler.class.getName(), "start");
+        synchronized (TimeBasedSuspensionScheduler.class) {
             long now = timeService.getCurrentTimestamp();
             long thresholdNow = addThreshold(now);
             Log.d(TimeBasedSuspensionScheduler.class.getName(), "Current timestamp is " + now);
@@ -88,13 +115,29 @@ public class TimeBasedSuspensionScheduler {
             Interval currentSuspendInterval = findCurrentSuspendInterval(thresholdNow);
             Log.d(TimeBasedSuspensionScheduler.class.getName(), "Found current suspend interval is " + currentSuspendInterval);
             if (currentSuspendInterval != null) {
-                suspend(currentSuspendInterval, thresholdNow);
+                scheduleSuspend(currentSuspendInterval, thresholdNow, true);
+                if (doStartSuspend) {
+                    suspend();
+                }
             } else {
                 Interval nextSuspendInterval = findNextSuspendInterval(thresholdNow);
                 Log.d(TimeBasedSuspensionScheduler.class.getName(), "Found next suspend interval is " + nextSuspendInterval);
-                startup(nextSuspendInterval, thresholdNow);
+                scheduleStart(nextSuspendInterval, thresholdNow, true);
+                if (doStartSuspend) {
+                    startup();
+                }
             }
         }
+    }
+
+    public void stop() {
+        Log.d(TimeBasedSuspensionScheduler.class.getName(), "stop");
+        cancelCurrent();
+        resetWasRestartedFlag();
+    }
+
+    public boolean isRunning() {
+        return getPendingIntent() != null;
     }
 
     public Interval findCurrentSuspendInterval(long now) {
@@ -143,7 +186,7 @@ public class TimeBasedSuspensionScheduler {
         return isSuspended(timeService.getCurrentTimestamp());
     }
 
-    public boolean isSuspended(long now) {
+    private boolean isSuspended(long now) {
         Log.d(TimeBasedSuspensionScheduler.class.getName(), "isSuspended  for " + now);
         if (!isSuspensionActiveAndEnabled()) {
             Log.d(TimeBasedSuspensionScheduler.class.getName(), "Suspension feature is not active. Returning false.");
@@ -152,20 +195,30 @@ public class TimeBasedSuspensionScheduler {
         return findCurrentSuspendInterval(now) != null;
     }
 
-    private void suspend(Interval currentSuspendInterval, long now) {
+    public void scheduleSuspend(Interval currentSuspendInterval, long now, boolean restart) {
         Log.d(TimeBasedSuspensionScheduler.class.getName(), "suspend with current suspend interval " + currentSuspendInterval + " and timestamp of " + now);
         long end = TimeUtil.getTimestampToday(currentSuspendInterval.getEnd(), now);
         if (end <= now) {
             end = TimeUtil.getTimestampTomorrow(currentSuspendInterval.getEnd(), now);
         }
+        wasRestarted = restart;
     }
 
-    private void startup(Interval nextSuspendInterval, long now) {
+    public void scheduleStart(Interval nextSuspendInterval, long now, boolean restart) {
         Log.d(TimeBasedSuspensionScheduler.class.getName(), "startup with next suspend interval " + nextSuspendInterval + " and timestamp of " + now);
         long start = TimeUtil.getTimestampToday(nextSuspendInterval.getStart(), now);
         if (start <= now) {
             start = TimeUtil.getTimestampTomorrow(nextSuspendInterval.getStart(), now);
         }
+        wasRestarted = restart;
+    }
+
+    public void suspend() {
+
+    }
+
+    public void startup() {
+
     }
 
     private boolean isSuspensionActiveAndEnabled() {
@@ -204,10 +257,13 @@ public class TimeBasedSuspensionScheduler {
     }
 
     @SuppressLint("UnspecifiedImmutableFlag")
-    private PendingIntent createPendingIntent(Action action) {
+    private PendingIntent createPendingIntent(Action action, boolean restart) {
         Intent intent = new Intent(getContext(), TimeBasedSuspensionBroadcastReceiver.class);
         intent.setPackage(getContext().getPackageName());
         intent.putExtra(getContext().getResources().getString(R.string.scheduler_action_key), action.name());
+        if (restart) {
+            intent.putExtra(getContext().getResources().getString(R.string.scheduler_restart_key), true);
+        }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             return PendingIntent.getBroadcast(getContext(), SchedulerIdGenerator.TIME_BASED_SCHEDULER_ID, intent, PendingIntent.FLAG_IMMUTABLE | PendingIntent.FLAG_CANCEL_CURRENT);
         } else {

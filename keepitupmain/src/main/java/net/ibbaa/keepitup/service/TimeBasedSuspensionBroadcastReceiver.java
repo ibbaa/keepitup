@@ -20,10 +20,15 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 
+import net.ibbaa.keepitup.logging.Log;
+
 public class TimeBasedSuspensionBroadcastReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
+        Log.d(TimeBasedSuspensionScheduler.class.getName(), "onReceive");
+        synchronized (TimeBasedSuspensionScheduler.class) {
 
+        }
     }
 }
