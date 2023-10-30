@@ -37,12 +37,14 @@ public class DBSetup {
     private final LogDBConstants logDBConstants;
     private final SchedulerIdHistoryDBConstants schedulerIdDBConstants;
     private final IntervalDBConstants intervalDBConstants;
+    private final SchedulerStateDBConstants schedulerStateDBConstants;
 
     public DBSetup(Context context) {
         networkTaskDBConstants = new NetworkTaskDBConstants(context);
         logDBConstants = new LogDBConstants(context);
         schedulerIdDBConstants = new SchedulerIdHistoryDBConstants(context);
         intervalDBConstants = new IntervalDBConstants(context);
+        schedulerStateDBConstants = new SchedulerStateDBConstants(context);
     }
 
     public void createTables(SQLiteDatabase db) {

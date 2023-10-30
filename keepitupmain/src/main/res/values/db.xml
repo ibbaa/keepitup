@@ -46,4 +46,8 @@
     <string name="interval_minutestart_column_name">MINUTESTART</string>
     <string name="interval_hourend_column_name">HOUREND</string>
     <string name="interval_minuteend_column_name">MINUTEEND</string>
+    <string name="scheduler_state_table_name">SCHEDULERSTATE</string>
+    <string name="scheduler_state_id_column_name">_id</string>
+    <string name="scheduler_state_suspended_column_name">SUSPENDED</string>
+    <string name="scheduler_state_timestamp_column_name">TIMESTAMP</string>
 </resources>
