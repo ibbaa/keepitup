@@ -69,11 +69,13 @@ public class DBMigrate {
     private void version2UpgradeFrom1(SQLiteDatabase db) {
         Log.d(DBMigrate.class.getName(), "version2UpgradeFrom1");
         setup.recreateIntervalTable(db);
+        setup.recreateSchedulerStateTable(db);
     }
 
     private void version2DowngradeTo1(SQLiteDatabase db) {
         Log.d(DBMigrate.class.getName(), "version2DowngradeTo1");
         setup.dropIntervalTable(db);
+        setup.dropSchedulerStateTable(db);
     }
 
     @FunctionalInterface

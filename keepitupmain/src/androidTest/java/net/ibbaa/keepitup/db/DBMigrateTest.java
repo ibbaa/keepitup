@@ -17,6 +17,7 @@
 package net.ibbaa.keepitup.db;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 import android.database.sqlite.SQLiteException;
 
@@ -41,6 +42,7 @@ public class DBMigrateTest {
     private DBSetup setup;
     private DBMigrate migrate;
     private IntervalDAO intervalDAO;
+    private SchedulerStateDAO schedulerStateDAO;
 
     @Before
     public void beforeEachTestMethod() {
@@ -48,6 +50,7 @@ public class DBMigrateTest {
         setup = new DBSetup(TestRegistry.getContext());
         migrate = new DBMigrate(setup);
         intervalDAO = new IntervalDAO(TestRegistry.getContext());
+        schedulerStateDAO = new SchedulerStateDAO(TestRegistry.getContext());
         setup.dropTables(TestRegistry.getContext());
     }
 
@@ -64,6 +67,7 @@ public class DBMigrateTest {
         intervalDAO.insertInterval(new Interval());
         List<Interval> intervals = intervalDAO.readAllIntervals();
         assertEquals(1, intervals.size());
+        assertNotNull(schedulerStateDAO.readSchedulerState());
     }
 
     @Test(expected = SQLiteException.class)
@@ -71,5 +75,12 @@ public class DBMigrateTest {
         setup.createTables(TestRegistry.getContext());
         migrate.doDowngrade(TestRegistry.getContext(), 2, 1);
         intervalDAO.readAllIntervals();
+    }
+
+    @Test(expected = SQLiteException.class)
+    public void testDowngradeFrom2To1SchedulerState() {
+        setup.createTables(TestRegistry.getContext());
+        migrate.doDowngrade(TestRegistry.getContext(), 2, 1);
+        schedulerStateDAO.readSchedulerState();
     }
 }

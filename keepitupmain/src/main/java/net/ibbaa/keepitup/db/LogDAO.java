@@ -91,8 +91,7 @@ public class LogDAO extends BaseDAO {
 
     private void dumpDatabase(String message) {
         if (BuildConfig.DEBUG) {
-            LogDAO logDAO = new LogDAO(getContext());
-            Dump.dump(LogDAO.class.getName(), message, LogEntry.class.getSimpleName().toLowerCase(), logDAO::readAllLogs);
+            Dump.dump(LogDAO.class.getName(), message, LogEntry.class.getSimpleName().toLowerCase(), this::readAllLogs);
         }
     }
 

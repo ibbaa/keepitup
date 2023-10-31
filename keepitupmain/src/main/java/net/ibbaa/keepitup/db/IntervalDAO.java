@@ -82,8 +82,7 @@ public class IntervalDAO extends BaseDAO {
 
     private void dumpDatabase(String message) {
         if (BuildConfig.DEBUG) {
-            IntervalDAO intervalDAO = new IntervalDAO(getContext());
-            Dump.dump(IntervalDAO.class.getName(), message, Interval.class.getSimpleName().toLowerCase(), intervalDAO::readAllIntervals);
+            Dump.dump(IntervalDAO.class.getName(), message, Interval.class.getSimpleName().toLowerCase(), this::readAllIntervals);
         }
     }
 

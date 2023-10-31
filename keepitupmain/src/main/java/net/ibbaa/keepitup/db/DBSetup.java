@@ -53,6 +53,7 @@ public class DBSetup {
         createLogTable(db);
         createSchedulerIdHistoryTable(db);
         createIntervalTable(db);
+        createSchedulerStateTable(db);
     }
 
     public void createNetworkTaskTable(SQLiteDatabase db) {
@@ -75,12 +76,23 @@ public class DBSetup {
         db.execSQL(intervalDBConstants.getCreateTableStatement());
     }
 
+    public void createSchedulerStateTable(SQLiteDatabase db) {
+        Log.d(DBOpenHelper.class.getName(), "Creating database table " + schedulerStateDBConstants.getTableName());
+        db.execSQL(schedulerStateDBConstants.getCreateTableStatement());
+        initializeSchedulerStateTable(db);
+    }
+
+    public void initializeSchedulerStateTable(SQLiteDatabase db) {
+        db.execSQL(schedulerStateDBConstants.getInitializeSchedulerStateStatement());
+    }
+
     public void dropTables(SQLiteDatabase db) {
         Log.d(DBSetup.class.getName(), "dropTables");
         dropSchedulerIdHistoryTable(db);
         dropLogTable(db);
         dropNetworkTaskTable(db);
         dropIntervalTable(db);
+        dropSchedulerStateTable(db);
     }
 
     public void dropNetworkTaskTable(SQLiteDatabase db) {
@@ -101,6 +113,11 @@ public class DBSetup {
     public void dropIntervalTable(SQLiteDatabase db) {
         Log.d(DBOpenHelper.class.getName(), "Dropping database table " + intervalDBConstants.getTableName());
         db.execSQL(intervalDBConstants.getDropTableStatement());
+    }
+
+    public void dropSchedulerStateTable(SQLiteDatabase db) {
+        Log.d(DBOpenHelper.class.getName(), "Dropping database table " + schedulerStateDBConstants.getTableName());
+        db.execSQL(schedulerStateDBConstants.getDropTableStatement());
     }
 
     public void recreateNetworkTaskTable(SQLiteDatabase db) {
@@ -125,6 +142,12 @@ public class DBSetup {
         Log.d(DBSetup.class.getName(), "recreateIntervalTable");
         dropIntervalTable(db);
         createIntervalTable(db);
+    }
+
+    public void recreateSchedulerStateTable(SQLiteDatabase db) {
+        Log.d(DBSetup.class.getName(), "recreateSchedulerStateTable");
+        dropSchedulerStateTable(db);
+        createSchedulerStateTable(db);
     }
 
     public void recreateTables(SQLiteDatabase db) {
@@ -153,6 +176,10 @@ public class DBSetup {
         createIntervalTable(DBOpenHelper.getInstance(context).getWritableDatabase());
     }
 
+    public void createSchedulerStateTable(Context context) {
+        createSchedulerStateTable(DBOpenHelper.getInstance(context).getWritableDatabase());
+    }
+
     public void dropTables(Context context) {
         dropTables(DBOpenHelper.getInstance(context).getWritableDatabase());
     }
@@ -173,6 +200,10 @@ public class DBSetup {
         dropIntervalTable(DBOpenHelper.getInstance(context).getWritableDatabase());
     }
 
+    public void dropSchedulerStateTable(Context context) {
+        dropSchedulerStateTable(DBOpenHelper.getInstance(context).getWritableDatabase());
+    }
+
     public void recreateNetworkTaskTable(Context context) {
         recreateNetworkTaskTable(DBOpenHelper.getInstance(context).getWritableDatabase());
     }
@@ -187,6 +218,10 @@ public class DBSetup {
 
     public void recreateIntervalTable(Context context) {
         recreateIntervalTable(DBOpenHelper.getInstance(context).getWritableDatabase());
+    }
+
+    public void recreateSchedulerStateTable(Context context) {
+        recreateSchedulerStateTable(DBOpenHelper.getInstance(context).getWritableDatabase());
     }
 
     public void recreateTables(Context context) {
@@ -215,6 +250,12 @@ public class DBSetup {
         Log.d(DBSetup.class.getName(), "deleteAllIntervals");
         IntervalDAO dao = new IntervalDAO(context);
         dao.deleteAllIntervals();
+    }
+
+    public void deleteSchedulerState(Context context) {
+        Log.d(DBSetup.class.getName(), "deleteSchedulerState");
+        SchedulerStateDAO dao = new SchedulerStateDAO(context);
+        dao.deleteSchedulerState();
     }
 
     public List<Map<String, ?>> exportNetworkTasks(Context context) {

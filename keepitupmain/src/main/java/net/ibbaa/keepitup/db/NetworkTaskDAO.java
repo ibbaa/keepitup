@@ -156,8 +156,7 @@ public class NetworkTaskDAO extends BaseDAO {
 
     private void dumpDatabase(String message) {
         if (BuildConfig.DEBUG) {
-            NetworkTaskDAO networkTaskDAO = new NetworkTaskDAO(getContext());
-            Dump.dump(NetworkTaskDAO.class.getName(), message, NetworkTask.class.getSimpleName().toLowerCase(), networkTaskDAO::readAllNetworkTasks);
+            Dump.dump(NetworkTaskDAO.class.getName(), message, NetworkTask.class.getSimpleName().toLowerCase(), this::readAllNetworkTasks);
             SchedulerIdHistoryDAO historyDAO = new SchedulerIdHistoryDAO(getContext());
             Dump.dump(NetworkTaskDAO.class.getName(), message, SchedulerId.class.getSimpleName().toLowerCase(), historyDAO::readAllSchedulerIds);
         }

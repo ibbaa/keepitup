@@ -69,4 +69,13 @@ public class SchedulerStateDBConstants {
                 getTimestampColumnName() +
                 " FROM " + getTableName();
     }
+
+    public String getInitializeSchedulerStateStatement() {
+        return "INSERT INTO " + getTableName() + "(" +
+                getSuspendedColumnName() + ", " +
+                getTimestampColumnName() +
+                ") VALUES(0, 0);";
+
+
+    }
 }

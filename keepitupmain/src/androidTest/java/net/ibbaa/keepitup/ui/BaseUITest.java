@@ -46,8 +46,10 @@ import net.ibbaa.keepitup.db.IntervalDAO;
 import net.ibbaa.keepitup.db.LogDAO;
 import net.ibbaa.keepitup.db.NetworkTaskDAO;
 import net.ibbaa.keepitup.db.SchedulerIdHistoryDAO;
+import net.ibbaa.keepitup.db.SchedulerStateDAO;
 import net.ibbaa.keepitup.logging.Dump;
 import net.ibbaa.keepitup.logging.Log;
+import net.ibbaa.keepitup.model.SchedulerState;
 import net.ibbaa.keepitup.resources.PreferenceManager;
 import net.ibbaa.keepitup.service.IFileManager;
 import net.ibbaa.keepitup.service.NetworkTaskProcessServiceScheduler;
@@ -75,6 +77,7 @@ public abstract class BaseUITest {
     private LogDAO logDAO;
     private SchedulerIdHistoryDAO schedulerIdHistoryDAO;
     private IntervalDAO intervalDAO;
+    private SchedulerStateDAO schedulerStateDAO;
     private NetworkTaskProcessServiceScheduler scheduler;
     private PreferenceManager preferenceManager;
     private IFileManager fileManager;
@@ -94,6 +97,8 @@ public abstract class BaseUITest {
         schedulerIdHistoryDAO.deleteAllSchedulerIds();
         intervalDAO = new IntervalDAO(TestRegistry.getContext());
         intervalDAO.deleteAllIntervals();
+        schedulerStateDAO = new SchedulerStateDAO(TestRegistry.getContext());
+        schedulerStateDAO.insertSchedulerState(new SchedulerState(0, false, 0));
         setLocale(Locale.US);
         preferenceManager = new PreferenceManager(TestRegistry.getContext());
         preferenceManager.removeAllPreferences();
@@ -115,6 +120,7 @@ public abstract class BaseUITest {
         networkTaskDAO.deleteAllNetworkTasks();
         schedulerIdHistoryDAO.deleteAllSchedulerIds();
         intervalDAO.deleteAllIntervals();
+        schedulerStateDAO.insertSchedulerState(new SchedulerState(0, false, 0));
         preferenceManager.removeAllPreferences();
         fileManager = new SystemFileManager(TestRegistry.getContext());
         fileManager.delete(fileManager.getInternalDownloadDirectory());
@@ -188,6 +194,10 @@ public abstract class BaseUITest {
 
     public IntervalDAO getIntervalDAO() {
         return intervalDAO;
+    }
+
+    public SchedulerStateDAO getSchedulerStateDAO() {
+        return schedulerStateDAO;
     }
 
     public NetworkTaskProcessServiceScheduler getScheduler() {

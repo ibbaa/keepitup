@@ -17,6 +17,7 @@
 package net.ibbaa.keepitup.ui.sync;
 
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import androidx.test.core.app.ActivityScenario;
@@ -61,11 +62,13 @@ public class DBPurgeTaskTest extends BaseUITest {
         assertFalse(getSchedulerIdHistoryDAO().readAllSchedulerIds().isEmpty());
         assertFalse(getLogDAO().readAllLogs().isEmpty());
         assertFalse(getIntervalDAO().readAllIntervals().isEmpty());
+        assertNotNull(getSchedulerStateDAO().readSchedulerState());
         DBPurgeTask task = new DBPurgeTask(getActivity(activityScenario));
         assertTrue(task.runInBackground());
         assertTrue(getNetworkTaskDAO().readAllNetworkTasks().isEmpty());
         assertTrue(getSchedulerIdHistoryDAO().readAllSchedulerIds().isEmpty());
         assertTrue(getLogDAO().readAllLogs().isEmpty());
         assertTrue(getIntervalDAO().readAllIntervals().isEmpty());
+        assertNotNull(getSchedulerStateDAO().readSchedulerState());
     }
 }

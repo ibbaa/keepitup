@@ -18,6 +18,8 @@ package net.ibbaa.keepitup.db;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import androidx.test.ext.junit.runners.AndroidJUnit4;
@@ -28,6 +30,7 @@ import net.ibbaa.keepitup.model.AccessType;
 import net.ibbaa.keepitup.model.Interval;
 import net.ibbaa.keepitup.model.LogEntry;
 import net.ibbaa.keepitup.model.NetworkTask;
+import net.ibbaa.keepitup.model.SchedulerState;
 import net.ibbaa.keepitup.model.Time;
 import net.ibbaa.keepitup.test.mock.TestRegistry;
 
@@ -48,6 +51,7 @@ public class DBSetupTest {
     private SchedulerIdHistoryDAO schedulerIdHistoryDAO;
     private LogDAO logDAO;
     private IntervalDAO intervalDAO;
+    private SchedulerStateDAO schedulerStateDAO;
     private DBSetup setup;
 
     @Before
@@ -59,10 +63,12 @@ public class DBSetupTest {
         schedulerIdHistoryDAO = new SchedulerIdHistoryDAO(TestRegistry.getContext());
         logDAO = new LogDAO(TestRegistry.getContext());
         intervalDAO = new IntervalDAO(TestRegistry.getContext());
+        schedulerStateDAO = new SchedulerStateDAO(TestRegistry.getContext());
         networkTaskDAO.deleteAllNetworkTasks();
         schedulerIdHistoryDAO.deleteAllSchedulerIds();
         logDAO.deleteAllLogs();
         intervalDAO.deleteAllIntervals();
+        schedulerStateDAO.deleteSchedulerState();
     }
 
     @After
@@ -72,6 +78,7 @@ public class DBSetupTest {
         schedulerIdHistoryDAO.deleteAllSchedulerIds();
         logDAO.deleteAllLogs();
         intervalDAO.deleteAllIntervals();
+        schedulerStateDAO.deleteSchedulerState();
     }
 
     @Test
@@ -79,28 +86,34 @@ public class DBSetupTest {
         networkTaskDAO.insertNetworkTask(new NetworkTask());
         logDAO.insertAndDeleteLog(new LogEntry());
         intervalDAO.insertInterval(new Interval());
+        schedulerStateDAO.insertSchedulerState(new SchedulerState(0, false, 1));
         assertFalse(networkTaskDAO.readAllNetworkTasks().isEmpty());
         assertFalse(schedulerIdHistoryDAO.readAllSchedulerIds().isEmpty());
         assertFalse(logDAO.readAllLogs().isEmpty());
         assertFalse(intervalDAO.readAllIntervals().isEmpty());
+        assertNotNull(schedulerStateDAO.readSchedulerState());
         setup.dropTables(TestRegistry.getContext());
         setup.createTables(TestRegistry.getContext());
         assertTrue(networkTaskDAO.readAllNetworkTasks().isEmpty());
         assertTrue(schedulerIdHistoryDAO.readAllSchedulerIds().isEmpty());
         assertTrue(logDAO.readAllLogs().isEmpty());
         assertTrue(intervalDAO.readAllIntervals().isEmpty());
+        assertNotNull(schedulerStateDAO.readSchedulerState());
         networkTaskDAO.insertNetworkTask(new NetworkTask());
         logDAO.insertAndDeleteLog(new LogEntry());
         intervalDAO.insertInterval(new Interval());
+        schedulerStateDAO.insertSchedulerState(new SchedulerState(0, false, 1));
         assertFalse(networkTaskDAO.readAllNetworkTasks().isEmpty());
         assertFalse(schedulerIdHistoryDAO.readAllSchedulerIds().isEmpty());
         assertFalse(logDAO.readAllLogs().isEmpty());
         assertFalse(intervalDAO.readAllIntervals().isEmpty());
+        assertNotNull(schedulerStateDAO.readSchedulerState());
         setup.recreateTables(TestRegistry.getContext());
         assertTrue(networkTaskDAO.readAllNetworkTasks().isEmpty());
         assertTrue(schedulerIdHistoryDAO.readAllSchedulerIds().isEmpty());
         assertTrue(logDAO.readAllLogs().isEmpty());
         assertTrue(intervalDAO.readAllIntervals().isEmpty());
+        assertNotNull(schedulerStateDAO.readSchedulerState());
     }
 
     @Test
@@ -156,34 +169,59 @@ public class DBSetupTest {
     }
 
     @Test
+    public void testDropCreateSchedulerStateTable() {
+        schedulerStateDAO.insertSchedulerState(new SchedulerState(0, false, 1));
+        assertNotNull(schedulerStateDAO.readSchedulerState());
+        setup.dropSchedulerStateTable(TestRegistry.getContext());
+        setup.createSchedulerStateTable(TestRegistry.getContext());
+        assertNotNull(schedulerStateDAO.readSchedulerState());
+        schedulerStateDAO.insertSchedulerState(new SchedulerState(0, false, 1));
+        assertNotNull(schedulerStateDAO.readSchedulerState());
+        setup.recreateSchedulerStateTable(TestRegistry.getContext());
+        assertNotNull(schedulerStateDAO.readSchedulerState());
+    }
+
+    @Test
     public void testDeleteTables() {
         networkTaskDAO.insertNetworkTask(new NetworkTask());
         logDAO.insertAndDeleteLog(new LogEntry());
         intervalDAO.insertInterval(new Interval());
+        schedulerStateDAO.insertSchedulerState(new SchedulerState(0, false, 1));
         assertFalse(networkTaskDAO.readAllNetworkTasks().isEmpty());
         assertFalse(schedulerIdHistoryDAO.readAllSchedulerIds().isEmpty());
         assertFalse(logDAO.readAllLogs().isEmpty());
         assertFalse(intervalDAO.readAllIntervals().isEmpty());
+        assertNotNull(schedulerStateDAO.readSchedulerState());
         setup.deleteAllNetworkTasks(TestRegistry.getContext());
         assertTrue(networkTaskDAO.readAllNetworkTasks().isEmpty());
         assertFalse(schedulerIdHistoryDAO.readAllSchedulerIds().isEmpty());
         assertFalse(logDAO.readAllLogs().isEmpty());
         assertFalse(intervalDAO.readAllIntervals().isEmpty());
+        assertNotNull(schedulerStateDAO.readSchedulerState());
         setup.deleteAllSchedulerIds(TestRegistry.getContext());
         assertTrue(networkTaskDAO.readAllNetworkTasks().isEmpty());
         assertTrue(schedulerIdHistoryDAO.readAllSchedulerIds().isEmpty());
         assertFalse(logDAO.readAllLogs().isEmpty());
         assertFalse(intervalDAO.readAllIntervals().isEmpty());
+        assertNotNull(schedulerStateDAO.readSchedulerState());
         setup.deleteAllLogs(TestRegistry.getContext());
         assertTrue(networkTaskDAO.readAllNetworkTasks().isEmpty());
         assertTrue(schedulerIdHistoryDAO.readAllSchedulerIds().isEmpty());
         assertTrue(logDAO.readAllLogs().isEmpty());
         assertFalse(intervalDAO.readAllIntervals().isEmpty());
+        assertNotNull(schedulerStateDAO.readSchedulerState());
         setup.deleteAllIntervals(TestRegistry.getContext());
         assertTrue(networkTaskDAO.readAllNetworkTasks().isEmpty());
         assertTrue(schedulerIdHistoryDAO.readAllSchedulerIds().isEmpty());
         assertTrue(logDAO.readAllLogs().isEmpty());
         assertTrue(intervalDAO.readAllIntervals().isEmpty());
+        assertNotNull(schedulerStateDAO.readSchedulerState());
+        setup.deleteSchedulerState(TestRegistry.getContext());
+        assertTrue(networkTaskDAO.readAllNetworkTasks().isEmpty());
+        assertTrue(schedulerIdHistoryDAO.readAllSchedulerIds().isEmpty());
+        assertTrue(logDAO.readAllLogs().isEmpty());
+        assertTrue(intervalDAO.readAllIntervals().isEmpty());
+        assertNull(schedulerStateDAO.readSchedulerState());
     }
 
     @Test
