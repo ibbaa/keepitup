@@ -27,8 +27,8 @@ import java.util.TreeMap;
 public class DBMigrate {
 
     private final DBSetup setup;
-    private SortedMap<Integer, Migration> versionUpgrades;
-    private SortedMap<Integer, Migration> versionDowngrades;
+    private final SortedMap<Integer, Migration> versionUpgrades;
+    private final SortedMap<Integer, Migration> versionDowngrades;
 
     public DBMigrate(DBSetup setup) {
         this.setup = setup;

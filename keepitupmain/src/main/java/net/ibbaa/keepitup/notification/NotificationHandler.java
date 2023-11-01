@@ -47,7 +47,7 @@ public class NotificationHandler {
 
     private final Context context;
     private final INotificationManager notificationManager;
-    private IPermissionManager permissionManager;
+    private final IPermissionManager permissionManager;
     private NotificationCompat.Builder errorNotificationBuilder;
     private NotificationCompat.Builder foregroundNotificationBuilder;
 

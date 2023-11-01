@@ -186,8 +186,6 @@ public class NetworkTaskProcessServiceScheduler {
         Log.d(NetworkTaskProcessServiceScheduler.class.getName(), "Suspending all network tasks.");
         List<NetworkTask> networkTasks = networkTaskDAO.readAllNetworkTasks();
         for (NetworkTask currentTask : networkTasks) {
-            currentTask.setLastScheduled(-1);
-            networkTaskDAO.updateNetworkTaskLastScheduled(currentTask.getId(), -1);
             terminate(currentTask);
         }
         Log.d(NetworkTaskProcessServiceScheduler.class.getName(), "Stopping foreground service...");

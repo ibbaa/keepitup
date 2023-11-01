@@ -25,9 +25,11 @@ import android.os.Build;
 import net.ibbaa.keepitup.R;
 import net.ibbaa.keepitup.db.IntervalDAO;
 import net.ibbaa.keepitup.db.SchedulerIdGenerator;
+import net.ibbaa.keepitup.db.SchedulerStateDAO;
 import net.ibbaa.keepitup.logging.Log;
 import net.ibbaa.keepitup.model.Interval;
 import net.ibbaa.keepitup.model.NetworkTask;
+import net.ibbaa.keepitup.model.SchedulerState;
 import net.ibbaa.keepitup.resources.PreferenceManager;
 import net.ibbaa.keepitup.resources.ServiceFactoryContributor;
 import net.ibbaa.keepitup.util.TimeUtil;
@@ -42,7 +44,9 @@ public class TimeBasedSuspensionScheduler {
     }
 
     private final Context context;
+    private final NetworkTaskProcessServiceScheduler networkTaskScheduler;
     private final IntervalDAO intervalDAO;
+    private final SchedulerStateDAO schedulerStateDAO;
     private final ITimeService timeService;
     private final IAlarmManager alarmManager;
 
@@ -51,7 +55,9 @@ public class TimeBasedSuspensionScheduler {
 
     public TimeBasedSuspensionScheduler(Context context) {
         this.context = context;
+        this.networkTaskScheduler = new NetworkTaskProcessServiceScheduler(context);
         this.intervalDAO = new IntervalDAO(context);
+        this.schedulerStateDAO = new SchedulerStateDAO(context);
         this.timeService = createTimeService();
         this.alarmManager = createAlarmManager();
     }
@@ -92,10 +98,11 @@ public class TimeBasedSuspensionScheduler {
             cancelCurrent();
             reset();
             resetWasRestartedFlag();
+            schedulerStateDAO.updateSchedulerState(new SchedulerState(0, false, getTimeService().getCurrentTimestamp()));
             getIntervals();
             if (!isSuspensionActiveAndEnabled()) {
                 Log.d(TimeBasedSuspensionScheduler.class.getName(), "Suspension feature is not active.");
-                startup();
+                startup(timeService.getCurrentTimestamp());
                 return;
             }
             start();
@@ -117,15 +124,15 @@ public class TimeBasedSuspensionScheduler {
             Log.d(TimeBasedSuspensionScheduler.class.getName(), "Found current suspend interval is " + currentSuspendInterval);
             if (currentSuspendInterval != null) {
                 scheduleSuspend(currentSuspendInterval, thresholdNow, true);
-                suspend();
+                suspend(now);
             } else {
                 Interval nextSuspendInterval = findNextSuspendInterval(thresholdNow);
                 Log.d(TimeBasedSuspensionScheduler.class.getName(), "Found next suspend interval is " + nextSuspendInterval);
                 scheduleStart(nextSuspendInterval, thresholdNow, true);
                 if (task == null) {
-                    startup();
+                    startup(now);
                 } else {
-                    startSingle(task);
+                    startSingle(task, now);
                 }
             }
         }
@@ -182,48 +189,44 @@ public class TimeBasedSuspensionScheduler {
         return null;
     }
 
-    public boolean isSuspended() {
-        Log.d(TimeBasedSuspensionScheduler.class.getName(), "isSuspended");
-        return isSuspended(timeService.getCurrentTimestamp());
-    }
-
-    private boolean isSuspended(long now) {
-        Log.d(TimeBasedSuspensionScheduler.class.getName(), "isSuspended  for " + now);
-        if (!isSuspensionActiveAndEnabled()) {
-            Log.d(TimeBasedSuspensionScheduler.class.getName(), "Suspension feature is not active. Returning false.");
-            return false;
-        }
-        return findCurrentSuspendInterval(now) != null;
-    }
-
     public void scheduleSuspend(Interval currentSuspendInterval, long now, boolean restart) {
-        Log.d(TimeBasedSuspensionScheduler.class.getName(), "suspend with current suspend interval " + currentSuspendInterval + " and timestamp of " + now);
+        Log.d(TimeBasedSuspensionScheduler.class.getName(), "scheduleSuspend with current suspend interval " + currentSuspendInterval + " and timestamp of " + now + ", restart is " + restart);
         long end = TimeUtil.getTimestampToday(currentSuspendInterval.getEnd(), now);
         if (end <= now) {
             end = TimeUtil.getTimestampTomorrow(currentSuspendInterval.getEnd(), now);
         }
+        PendingIntent pendingIntent = createPendingIntent(Action.UP, restart);
+        getAlarmManager().setRTCAlarm(end, pendingIntent);
         wasRestarted = restart;
     }
 
     public void scheduleStart(Interval nextSuspendInterval, long now, boolean restart) {
-        Log.d(TimeBasedSuspensionScheduler.class.getName(), "startup with next suspend interval " + nextSuspendInterval + " and timestamp of " + now);
+        Log.d(TimeBasedSuspensionScheduler.class.getName(), "startup with next suspend interval " + nextSuspendInterval + " and timestamp of " + now + ", restart is " + restart);
         long start = TimeUtil.getTimestampToday(nextSuspendInterval.getStart(), now);
         if (start <= now) {
             start = TimeUtil.getTimestampTomorrow(nextSuspendInterval.getStart(), now);
         }
+        PendingIntent pendingIntent = createPendingIntent(Action.DOWN, restart);
+        getAlarmManager().setRTCAlarm(start, pendingIntent);
         wasRestarted = restart;
     }
 
-    public void suspend() {
-
+    public void suspend(long now) {
+        Log.d(TimeBasedSuspensionScheduler.class.getName(), "suspend with timestamp " + now);
+        getNetworkTaskScheduler().suspendAll();
+        schedulerStateDAO.updateSchedulerState(new SchedulerState(0, true, now));
     }
 
-    public void startup() {
-
+    public void startup(long now) {
+        Log.d(TimeBasedSuspensionScheduler.class.getName(), "startup with timestamp " + now);
+        getNetworkTaskScheduler().startup();
+        schedulerStateDAO.updateSchedulerState(new SchedulerState(0, false, now));
     }
 
-    public void startSingle(NetworkTask task) {
-
+    public void startSingle(NetworkTask task, long now) {
+        Log.d(TimeBasedSuspensionScheduler.class.getName(), "startSingle with task + " + task + " and timestamp " + now);
+        getNetworkTaskScheduler().schedule(task);
+        schedulerStateDAO.updateSchedulerState(new SchedulerState(0, false, now));
     }
 
     private boolean isSuspensionActiveAndEnabled() {
@@ -290,6 +293,10 @@ public class TimeBasedSuspensionScheduler {
 
     public ITimeService getTimeService() {
         return timeService;
+    }
+
+    public NetworkTaskProcessServiceScheduler getNetworkTaskScheduler() {
+        return networkTaskScheduler;
     }
 
     private IAlarmManager createAlarmManager() {

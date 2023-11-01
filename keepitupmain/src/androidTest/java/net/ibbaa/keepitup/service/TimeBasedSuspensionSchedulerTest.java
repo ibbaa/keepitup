@@ -16,14 +16,21 @@
 
 package net.ibbaa.keepitup.service;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.MediumTest;
 
 import net.ibbaa.keepitup.db.IntervalDAO;
+import net.ibbaa.keepitup.db.NetworkTaskDAO;
+import net.ibbaa.keepitup.db.SchedulerStateDAO;
+import net.ibbaa.keepitup.model.AccessType;
 import net.ibbaa.keepitup.model.Interval;
+import net.ibbaa.keepitup.model.NetworkTask;
+import net.ibbaa.keepitup.model.SchedulerState;
 import net.ibbaa.keepitup.model.Time;
 import net.ibbaa.keepitup.resources.PreferenceManager;
 import net.ibbaa.keepitup.test.mock.MockAlarmManager;
@@ -37,6 +44,7 @@ import org.junit.runner.RunWith;
 
 import java.util.Calendar;
 import java.util.GregorianCalendar;
+import java.util.List;
 
 @MediumTest
 @RunWith(AndroidJUnit4.class)
@@ -44,7 +52,9 @@ public class TimeBasedSuspensionSchedulerTest {
 
     private TimeBasedSuspensionScheduler scheduler;
     private PreferenceManager preferenceManager;
+    private NetworkTaskDAO networkTaskDAO;
     private IntervalDAO intervalDAO;
+    private SchedulerStateDAO schedulerStateDAO;
     private MockAlarmManager alarmManager;
     private MockTimeService timeService;
 
@@ -54,8 +64,12 @@ public class TimeBasedSuspensionSchedulerTest {
         scheduler.reset();
         preferenceManager = new PreferenceManager(TestRegistry.getContext());
         preferenceManager.removeAllPreferences();
+        networkTaskDAO = new NetworkTaskDAO(TestRegistry.getContext());
+        networkTaskDAO.deleteAllNetworkTasks();
         intervalDAO = new IntervalDAO(TestRegistry.getContext());
         intervalDAO.deleteAllIntervals();
+        schedulerStateDAO = new SchedulerStateDAO(TestRegistry.getContext());
+        schedulerStateDAO.insertSchedulerState(new SchedulerState(0, false, 0));
         alarmManager = (MockAlarmManager) scheduler.getAlarmManager();
         alarmManager.reset();
         timeService = (MockTimeService) scheduler.getTimeService();
@@ -64,111 +78,183 @@ public class TimeBasedSuspensionSchedulerTest {
     @After
     public void afterEachTestMethod() {
         preferenceManager.removeAllPreferences();
+        networkTaskDAO.deleteAllNetworkTasks();
         intervalDAO.deleteAllIntervals();
+        schedulerStateDAO.insertSchedulerState(new SchedulerState(0, false, 0));
         scheduler.reset();
     }
 
     @Test
-    public void testIsSuspendedEmptyOrDisabled() {
-        assertFalse(scheduler.isSuspended());
+    public void testReset() {
         intervalDAO.insertInterval(getInterval1());
-        preferenceManager.setPreferenceSuspensionEnabled(false);
-        assertFalse(scheduler.isSuspended());
+        assertEquals(1, scheduler.getIntervals().size());
+        intervalDAO.deleteAllIntervals();
+        assertEquals(1, scheduler.getIntervals().size());
+        scheduler.reset();
+        assertEquals(0, scheduler.getIntervals().size());
     }
 
     @Test
-    public void testIsSuspendedNoOverlapOneInterval() {
+    public void testFindCurrentSuspendIntervalNoOverlapOneInterval() {
         intervalDAO.insertInterval(getInterval1());
-        setTestTime(getTestTimestamp(24, 1, 5));
-        assertFalse(scheduler.isSuspended());
-        setTestTime(getTestTimestamp(24, 10, 11));
-        assertTrue(scheduler.isSuspended());
-        setTestTime(getTestTimestamp(24, 11, 0));
-        assertTrue(scheduler.isSuspended());
-        setTestTime(getTestTimestamp(24, 11, 12));
-        assertFalse(scheduler.isSuspended());
-        setTestTime(getTestTimestamp(25, 1, 5));
-        assertFalse(scheduler.isSuspended());
-        setTestTime(getTestTimestamp(25, 10, 11));
-        assertTrue(scheduler.isSuspended());
-        setTestTime(getTestTimestamp(25, 11, 0));
-        assertTrue(scheduler.isSuspended());
-        setTestTime(getTestTimestamp(25, 11, 12));
-        assertFalse(scheduler.isSuspended());
+        assertNull(scheduler.findCurrentSuspendInterval(getTestTimestamp(24, 1, 5)));
+        assertTrue(getInterval1().isEqual(scheduler.findCurrentSuspendInterval(getTestTimestamp(24, 10, 11))));
+        assertTrue(getInterval1().isEqual(scheduler.findCurrentSuspendInterval(getTestTimestamp(24, 11, 0))));
+        assertNull(scheduler.findCurrentSuspendInterval(getTestTimestamp(24, 11, 12)));
+        assertNull(scheduler.findCurrentSuspendInterval(getTestTimestamp(25, 1, 5)));
+        assertTrue(getInterval1().isEqual(scheduler.findCurrentSuspendInterval(getTestTimestamp(25, 10, 11))));
+        assertTrue(getInterval1().isEqual(scheduler.findCurrentSuspendInterval(getTestTimestamp(25, 11, 0))));
+        assertNull(scheduler.findCurrentSuspendInterval(getTestTimestamp(25, 11, 12)));
     }
 
     @Test
-    public void testIsSuspendedNoOverlapThreeIntervals() {
+    public void testFindCurrentSuspendIntervalNoOverlapThreeIntervals() {
         intervalDAO.insertInterval(getInterval1());
         intervalDAO.insertInterval(getInterval2());
         intervalDAO.insertInterval(getInterval3());
-        setTestTime(getTestTimestamp(24, 0, 0));
-        assertFalse(scheduler.isSuspended());
-        setTestTime(getTestTimestamp(24, 0, 30));
-        assertFalse(scheduler.isSuspended());
-        setTestTime(getTestTimestamp(24, 1, 30));
-        assertTrue(scheduler.isSuspended());
-        setTestTime(getTestTimestamp(24, 2, 3));
-        assertFalse(scheduler.isSuspended());
-        setTestTime(getTestTimestamp(24, 10, 12));
-        assertTrue(scheduler.isSuspended());
-        setTestTime(getTestTimestamp(24, 11, 12));
-        assertFalse(scheduler.isSuspended());
-        setTestTime(getTestTimestamp(24, 15, 53));
-        assertFalse(scheduler.isSuspended());
-        setTestTime(getTestTimestamp(24, 22, 30));
-        assertTrue(scheduler.isSuspended());
-        setTestTime(getTestTimestamp(24, 23, 58));
-        assertTrue(scheduler.isSuspended());
-        setTestTime(getTestTimestamp(25, 0, 0));
-        assertFalse(scheduler.isSuspended());
+        assertNull(scheduler.findCurrentSuspendInterval(getTestTimestamp(24, 0, 0)));
+        assertNull(scheduler.findCurrentSuspendInterval(getTestTimestamp(24, 0, 30)));
+        assertTrue(getInterval2().isEqual(scheduler.findCurrentSuspendInterval(getTestTimestamp(24, 1, 30))));
+        assertNull(scheduler.findCurrentSuspendInterval(getTestTimestamp(24, 2, 3)));
+        assertTrue(getInterval1().isEqual(scheduler.findCurrentSuspendInterval(getTestTimestamp(24, 10, 12))));
+        assertNull(scheduler.findCurrentSuspendInterval(getTestTimestamp(24, 11, 12)));
+        assertNull(scheduler.findCurrentSuspendInterval(getTestTimestamp(24, 15, 53)));
+        assertTrue(getInterval3().isEqual(scheduler.findCurrentSuspendInterval(getTestTimestamp(24, 22, 30))));
+        assertTrue(getInterval3().isEqual(scheduler.findCurrentSuspendInterval(getTestTimestamp(24, 23, 58))));
+        assertNull(scheduler.findCurrentSuspendInterval(getTestTimestamp(25, 0, 0)));
     }
 
     @Test
-    public void testIsSuspendedOverlapTwoIntervals() {
+    public void testFindCurrentSuspendIntervalOverlapTwoIntervals() {
         intervalDAO.insertInterval(getInterval1());
         intervalDAO.insertInterval(getInterval4());
-        setTestTime(getTestTimestamp(24, 2, 3));
-        assertFalse(scheduler.isSuspended());
-        setTestTime(getTestTimestamp(24, 10, 12));
-        assertTrue(scheduler.isSuspended());
-        setTestTime(getTestTimestamp(24, 21, 00));
-        assertFalse(scheduler.isSuspended());
-        setTestTime(getTestTimestamp(24, 21, 12));
-        assertTrue(scheduler.isSuspended());
-        setTestTime(getTestTimestamp(24, 0, 0));
-        assertTrue(scheduler.isSuspended());
-        setTestTime(getTestTimestamp(24, 1, 29));
-        assertTrue(scheduler.isSuspended());
-        setTestTime(getTestTimestamp(24, 1, 31));
-        assertFalse(scheduler.isSuspended());
-        setTestTime(getTestTimestamp(25, 2, 3));
-        assertFalse(scheduler.isSuspended());
-        setTestTime(getTestTimestamp(25, 10, 12));
-        assertTrue(scheduler.isSuspended());
-        setTestTime(getTestTimestamp(25, 21, 00));
-        assertFalse(scheduler.isSuspended());
-        setTestTime(getTestTimestamp(25, 21, 12));
-        assertTrue(scheduler.isSuspended());
-        setTestTime(getTestTimestamp(25, 0, 0));
-        assertTrue(scheduler.isSuspended());
-        setTestTime(getTestTimestamp(25, 1, 29));
-        assertTrue(scheduler.isSuspended());
-        setTestTime(getTestTimestamp(25, 1, 31));
-        assertFalse(scheduler.isSuspended());
+        assertNull(scheduler.findCurrentSuspendInterval(getTestTimestamp(24, 2, 3)));
+        assertTrue(getInterval1().isEqual(scheduler.findCurrentSuspendInterval(getTestTimestamp(24, 10, 12))));
+        assertNull(scheduler.findCurrentSuspendInterval(getTestTimestamp(24, 21, 0)));
+        assertTrue(getInterval4().isEqual(scheduler.findCurrentSuspendInterval(getTestTimestamp(24, 21, 12))));
+        assertTrue(getInterval4().isEqual(scheduler.findCurrentSuspendInterval(getTestTimestamp(24, 0, 0))));
+        assertTrue(getInterval4().isEqual(scheduler.findCurrentSuspendInterval(getTestTimestamp(24, 1, 29))));
+        assertNull(scheduler.findCurrentSuspendInterval(getTestTimestamp(24, 1, 31)));
+        assertNull(scheduler.findCurrentSuspendInterval(getTestTimestamp(25, 2, 3)));
+        assertTrue(getInterval1().isEqual(scheduler.findCurrentSuspendInterval(getTestTimestamp(25, 10, 12))));
+        assertNull(scheduler.findCurrentSuspendInterval(getTestTimestamp(25, 21, 0)));
+        assertTrue(getInterval4().isEqual(scheduler.findCurrentSuspendInterval(getTestTimestamp(25, 21, 12))));
+        assertTrue(getInterval4().isEqual(scheduler.findCurrentSuspendInterval(getTestTimestamp(25, 0, 0))));
+        assertTrue(getInterval4().isEqual(scheduler.findCurrentSuspendInterval(getTestTimestamp(25, 1, 29))));
+        assertNull(scheduler.findCurrentSuspendInterval(getTestTimestamp(25, 1, 31)));
     }
 
     @Test
-    public void testIsSuspendedOverlapWholeDay() {
+    public void testFindCurrentSuspendIntervalOverlapWholeDay() {
         intervalDAO.insertInterval(getInterval5());
-        setTestTime(getTestTimestamp(24, 0, 0));
-        assertFalse(scheduler.isSuspended());
-        setTestTime(getTestTimestamp(24, 0, 1));
-        assertTrue(scheduler.isSuspended());
-        setTestTime(getTestTimestamp(24, 15, 15));
-        assertTrue(scheduler.isSuspended());
-        setTestTime(getTestTimestamp(24, 1, 1));
-        assertTrue(scheduler.isSuspended());
+        assertNull(scheduler.findCurrentSuspendInterval(getTestTimestamp(24, 0, 0)));
+        assertTrue(getInterval5().isEqual(scheduler.findCurrentSuspendInterval(getTestTimestamp(24, 0, 1))));
+        assertTrue(getInterval5().isEqual(scheduler.findCurrentSuspendInterval(getTestTimestamp(24, 15, 15))));
+        assertTrue(getInterval5().isEqual(scheduler.findCurrentSuspendInterval(getTestTimestamp(24, 1, 1))));
+    }
+
+    @Test
+    public void testFindNextSuspendInterval() {
+        assertNull(scheduler.findNextSuspendInterval(getTestTimestamp(24, 0, 0)));
+        assertNull(scheduler.findNextSuspendInterval(getTestTimestamp(24, 10, 11)));
+        assertNull(scheduler.findNextSuspendInterval(getTestTimestamp(24, 11, 0)));
+        scheduler.reset();
+        intervalDAO.deleteAllIntervals();
+        intervalDAO.insertInterval(getInterval1());
+        assertTrue(getInterval1().isEqual(scheduler.findNextSuspendInterval(getTestTimestamp(24, 10, 1))));
+        assertTrue(getInterval1().isEqual(scheduler.findNextSuspendInterval(getTestTimestamp(24, 10, 15))));
+        assertTrue(getInterval1().isEqual(scheduler.findNextSuspendInterval(getTestTimestamp(24, 23, 0))));
+        scheduler.reset();
+        intervalDAO.deleteAllIntervals();
+        intervalDAO.insertInterval(getInterval1());
+        intervalDAO.insertInterval(getInterval4());
+        assertTrue(getInterval1().isEqual(scheduler.findNextSuspendInterval(getTestTimestamp(24, 10, 1))));
+        assertTrue(getInterval4().isEqual(scheduler.findNextSuspendInterval(getTestTimestamp(24, 10, 15))));
+        assertTrue(getInterval1().isEqual(scheduler.findNextSuspendInterval(getTestTimestamp(24, 23, 59))));
+        scheduler.reset();
+        intervalDAO.deleteAllIntervals();
+        intervalDAO.insertInterval(getInterval1());
+        intervalDAO.insertInterval(getInterval2());
+        intervalDAO.insertInterval(getInterval3());
+        assertTrue(getInterval2().isEqual(scheduler.findNextSuspendInterval(getTestTimestamp(24, 0, 30))));
+        assertTrue(getInterval1().isEqual(scheduler.findNextSuspendInterval(getTestTimestamp(24, 3, 30))));
+        assertTrue(getInterval3().isEqual(scheduler.findNextSuspendInterval(getTestTimestamp(24, 22, 0))));
+    }
+
+    @Test
+    public void testStartSingle() {
+        MockAlarmManager networkTaskSchedulerAlarmManager = (MockAlarmManager) scheduler.getNetworkTaskScheduler().getAlarmManager();
+        assertFalse(networkTaskSchedulerAlarmManager.wasSetAlarmCalled());
+        schedulerStateDAO.insertSchedulerState(new SchedulerState(0, true, 0));
+        NetworkTask task = getNetworkTask1();
+        task = networkTaskDAO.insertNetworkTask(task);
+        scheduler.startSingle(task, getTestTimestamp(24, 3, 30));
+        assertTrue(networkTaskSchedulerAlarmManager.wasSetAlarmCalled());
+        assertFalse(networkTaskSchedulerAlarmManager.wasCancelAlarmCalled());
+        assertFalse(schedulerStateDAO.readSchedulerState().isSuspended());
+    }
+
+    @Test
+    public void testStartup() {
+        MockAlarmManager networkTaskSchedulerAlarmManager = (MockAlarmManager) scheduler.getNetworkTaskScheduler().getAlarmManager();
+        assertFalse(networkTaskSchedulerAlarmManager.wasSetAlarmCalled());
+        schedulerStateDAO.insertSchedulerState(new SchedulerState(0, true, 0));
+        NetworkTask task1 = getNetworkTask1();
+        NetworkTask task2 = getNetworkTask2();
+        networkTaskDAO.insertNetworkTask(task1);
+        networkTaskDAO.insertNetworkTask(task2);
+        assertTrue(task1.isRunning());
+        assertFalse(task2.isRunning());
+        assertTrue(isTaskMarkedAsRunningInDatabase(task1));
+        assertFalse(isTaskMarkedAsRunningInDatabase(task2));
+        scheduler.startup(12345);
+        assertTrue(task1.isRunning());
+        assertFalse(task2.isRunning());
+        assertTrue(isTaskMarkedAsRunningInDatabase(task1));
+        assertFalse(isTaskMarkedAsRunningInDatabase(task2));
+        assertTrue(networkTaskSchedulerAlarmManager.wasSetAlarmCalled());
+        assertFalse(networkTaskSchedulerAlarmManager.wasCancelAlarmCalled());
+        List<MockAlarmManager.SetAlarmCall> setAlarmCalls = networkTaskSchedulerAlarmManager.getSetAlarmCalls();
+        assertEquals(1, setAlarmCalls.size());
+        assertFalse(schedulerStateDAO.readSchedulerState().isSuspended());
+        assertEquals(12345, schedulerStateDAO.readSchedulerState().getTimestamp());
+    }
+
+    @Test
+    public void testSuspend() {
+        MockAlarmManager networkTaskSchedulerAlarmManager = (MockAlarmManager) scheduler.getNetworkTaskScheduler().getAlarmManager();
+        schedulerStateDAO.insertSchedulerState(new SchedulerState(0, false, 0));
+        NetworkTask task1 = getNetworkTask1();
+        NetworkTask task2 = getNetworkTask2();
+        task1 = networkTaskDAO.insertNetworkTask(task1);
+        task2 = networkTaskDAO.insertNetworkTask(task2);
+        task1 = scheduler.getNetworkTaskScheduler().start(task1);
+        networkTaskDAO.updateNetworkTaskLastScheduled(task1.getId(), 125);
+        networkTaskDAO.updateNetworkTaskLastScheduled(task2.getId(), 125);
+        assertTrue(task1.isRunning());
+        assertFalse(task2.isRunning());
+        assertTrue(isTaskMarkedAsRunningInDatabase(task1));
+        assertFalse(isTaskMarkedAsRunningInDatabase(task2));
+        scheduler.suspend(12345);
+        assertTrue(isTaskMarkedAsRunningInDatabase(task1));
+        assertFalse(isTaskMarkedAsRunningInDatabase(task2));
+        assertLastScheduledInDatabase(task1, 125);
+        assertLastScheduledInDatabase(task1, 125);
+        assertTrue(networkTaskSchedulerAlarmManager.wasCancelAlarmCalled());
+        List<MockAlarmManager.CancelAlarmCall> cancelAlarmCalls = networkTaskSchedulerAlarmManager.getCancelAlarmCalls();
+        assertEquals(1, cancelAlarmCalls.size());
+        assertTrue(schedulerStateDAO.readSchedulerState().isSuspended());
+        assertEquals(12345, schedulerStateDAO.readSchedulerState().getTimestamp());
+    }
+
+    private boolean isTaskMarkedAsRunningInDatabase(NetworkTask task) {
+        task = networkTaskDAO.readNetworkTask(task.getId());
+        return task.isRunning();
+    }
+
+    private void assertLastScheduledInDatabase(NetworkTask task, long value) {
+        task = networkTaskDAO.readNetworkTask(task.getId());
+        assertEquals(value, task.getLastScheduled());
     }
 
     private void setTestTime(long time) {
@@ -228,7 +314,7 @@ public class TimeBasedSuspensionSchedulerTest {
         interval.setId(0);
         Time start = new Time();
         start.setHour(21);
-        start.setMinute(01);
+        start.setMinute(1);
         interval.setStart(start);
         Time end = new Time();
         end.setHour(1);
@@ -249,5 +335,37 @@ public class TimeBasedSuspensionSchedulerTest {
         end.setMinute(0);
         interval.setEnd(end);
         return interval;
+    }
+
+    private NetworkTask getNetworkTask1() {
+        NetworkTask task = new NetworkTask();
+        task.setId(1);
+        task.setIndex(1);
+        task.setSchedulerId(1);
+        task.setInstances(0);
+        task.setAddress("127.0.0.1");
+        task.setPort(80);
+        task.setAccessType(AccessType.PING);
+        task.setInterval(20);
+        task.setNotification(true);
+        task.setRunning(true);
+        task.setLastScheduled(1);
+        return task;
+    }
+
+    private NetworkTask getNetworkTask2() {
+        NetworkTask task = new NetworkTask();
+        task.setId(2);
+        task.setIndex(10);
+        task.setSchedulerId(2);
+        task.setInstances(0);
+        task.setAddress("host.com");
+        task.setPort(21);
+        task.setAccessType(null);
+        task.setInterval(1);
+        task.setNotification(false);
+        task.setRunning(false);
+        task.setLastScheduled(1);
+        return task;
     }
 }

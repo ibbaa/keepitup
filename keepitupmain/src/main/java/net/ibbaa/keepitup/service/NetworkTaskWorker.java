@@ -107,7 +107,7 @@ public abstract class NetworkTaskWorker implements Runnable {
             networkTaskDAO.increaseNetworkTaskInstances(networkTask.getId());
             sendNetworkTaskUINotificationBroadcast();
             LogEntry lastLogEntry = logDAO.readMostRecentLogForNetworkTask(networkTask.getId());
-            boolean lastSuccessful = lastLogEntry != null ? lastLogEntry.isSuccess() : true;
+            boolean lastSuccessful = lastLogEntry == null || lastLogEntry.isSuccess();
             try {
                 boolean isConnectedWithWifi = networkManager.isConnectedWithWiFi();
                 boolean isConnected = networkManager.isConnected();

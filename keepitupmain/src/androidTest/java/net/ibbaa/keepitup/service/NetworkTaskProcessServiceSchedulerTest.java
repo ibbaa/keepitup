@@ -398,9 +398,11 @@ public class NetworkTaskProcessServiceSchedulerTest {
         scheduler.suspendAll();
         assertTrue(isTaskMarkedAsRunningInDatabase(task1));
         assertTrue(isTaskMarkedAsRunningInDatabase(task2));
-        assertLastScheduledInDatabase(task1, -1);
-        assertLastScheduledInDatabase(task1, -1);
+        assertLastScheduledInDatabase(task1, 125);
+        assertLastScheduledInDatabase(task1, 125);
         assertTrue(alarmManager.wasCancelAlarmCalled());
+        List<MockAlarmManager.CancelAlarmCall> cancelAlarmCalls = alarmManager.getCancelAlarmCalls();
+        assertEquals(2, cancelAlarmCalls.size());
     }
 
     private boolean isTaskMarkedAsRunningInDatabase(NetworkTask task) {
