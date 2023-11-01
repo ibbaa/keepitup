@@ -36,6 +36,7 @@ import net.ibbaa.keepitup.resources.PreferenceManager;
 import net.ibbaa.keepitup.test.mock.MockAlarmManager;
 import net.ibbaa.keepitup.test.mock.MockTimeService;
 import net.ibbaa.keepitup.test.mock.TestRegistry;
+import net.ibbaa.keepitup.util.TimeUtil;
 
 import org.junit.After;
 import org.junit.Before;
@@ -179,6 +180,73 @@ public class TimeBasedSuspensionSchedulerTest {
         assertTrue(getInterval2().isEqual(scheduler.findNextSuspendInterval(getTestTimestamp(24, 0, 30))));
         assertTrue(getInterval1().isEqual(scheduler.findNextSuspendInterval(getTestTimestamp(24, 3, 30))));
         assertTrue(getInterval3().isEqual(scheduler.findNextSuspendInterval(getTestTimestamp(24, 22, 0))));
+    }
+
+    @Test
+    public void testScheduleStart() {
+        scheduler.scheduleStart(getInterval1(), getTestTimestamp(24, 10, 1), true);
+        assertTrue(alarmManager.wasSetAlarmRTCCalled());
+        List<MockAlarmManager.SetAlarmCall> setAlarmCalls = alarmManager.getSetAlarmRTCCalls();
+        assertEquals(1, setAlarmCalls.size());
+        MockAlarmManager.SetAlarmCall setAlarm = setAlarmCalls.get(0);
+        assertEquals(TimeUtil.getTimestampToday(getInterval1().getStart(), getTestTimestamp(24, 10, 1)), setAlarm.getDelay());
+        assertTrue(scheduler.getWasRestartedFlag());
+        alarmManager.reset();
+        scheduler.scheduleStart(getInterval1(), getTestTimestamp(24, 10, 15), false);
+        assertTrue(alarmManager.wasSetAlarmRTCCalled());
+        setAlarmCalls = alarmManager.getSetAlarmRTCCalls();
+        assertEquals(1, setAlarmCalls.size());
+        setAlarm = setAlarmCalls.get(0);
+        assertEquals(TimeUtil.getTimestampTomorrow(getInterval1().getStart(), getTestTimestamp(24, 10, 15)), setAlarm.getDelay());
+        assertFalse(scheduler.getWasRestartedFlag());
+    }
+
+    @Test
+    public void testIsRunning() {
+        assertFalse(scheduler.isRunning());
+        scheduler.scheduleStart(getInterval5(), getTestTimestamp(24, 0, 0), true);
+        assertTrue(scheduler.isRunning());
+    }
+
+    @Test
+    public void testScheduleStartOverlapDays() {
+        scheduler.scheduleStart(getInterval5(), getTestTimestamp(24, 0, 0), true);
+        assertTrue(alarmManager.wasSetAlarmRTCCalled());
+        List<MockAlarmManager.SetAlarmCall> setAlarmCalls = alarmManager.getSetAlarmRTCCalls();
+        assertEquals(1, setAlarmCalls.size());
+        MockAlarmManager.SetAlarmCall setAlarm = setAlarmCalls.get(0);
+        assertEquals(TimeUtil.getTimestampToday(getInterval5().getStart(), getTestTimestamp(24, 0, 0)), setAlarm.getDelay());
+        assertTrue(scheduler.getWasRestartedFlag());
+    }
+
+    @Test
+    public void testScheduleSuspend() {
+        scheduler.scheduleSuspend(getInterval1(), getTestTimestamp(24, 10, 15), true);
+        assertTrue(alarmManager.wasSetAlarmRTCCalled());
+        List<MockAlarmManager.SetAlarmCall> setAlarmCalls = alarmManager.getSetAlarmRTCCalls();
+        assertEquals(1, setAlarmCalls.size());
+        MockAlarmManager.SetAlarmCall setAlarm = setAlarmCalls.get(0);
+        assertEquals(TimeUtil.getTimestampToday(getInterval1().getEnd(), getTestTimestamp(24, 10, 15)), setAlarm.getDelay());
+        assertTrue(scheduler.getWasRestartedFlag());
+        alarmManager.reset();
+        scheduler.scheduleSuspend(getInterval1(), getTestTimestamp(24, 11, 15), false);
+        assertTrue(alarmManager.wasSetAlarmRTCCalled());
+        setAlarmCalls = alarmManager.getSetAlarmRTCCalls();
+        assertEquals(1, setAlarmCalls.size());
+        setAlarm = setAlarmCalls.get(0);
+        assertEquals(TimeUtil.getTimestampTomorrow(getInterval1().getEnd(), getTestTimestamp(24, 11, 15)), setAlarm.getDelay());
+        assertFalse(scheduler.getWasRestartedFlag());
+    }
+
+    @Test
+    public void testScheduleSuspendOverlapDays() {
+        scheduler.scheduleSuspend(getInterval5(), getTestTimestamp(24, 10, 15), false);
+        assertTrue(alarmManager.wasSetAlarmRTCCalled());
+        List<MockAlarmManager.SetAlarmCall> setAlarmCalls = alarmManager.getSetAlarmRTCCalls();
+        assertEquals(1, setAlarmCalls.size());
+        MockAlarmManager.SetAlarmCall setAlarm = setAlarmCalls.get(0);
+        assertEquals(TimeUtil.getTimestampTomorrow(getInterval5().getEnd(), getTestTimestamp(24, 0, 0)), setAlarm.getDelay());
+        assertFalse(scheduler.getWasRestartedFlag());
     }
 
     @Test

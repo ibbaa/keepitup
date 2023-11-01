@@ -116,6 +116,10 @@ public class TimeBasedSuspensionScheduler {
     public void start(NetworkTask task) {
         Log.d(TimeBasedSuspensionScheduler.class.getName(), "start");
         synchronized (TimeBasedSuspensionScheduler.class) {
+            if (!isSuspensionActiveAndEnabled()) {
+                Log.d(TimeBasedSuspensionScheduler.class.getName(), "Suspension feature is not active.");
+                return;
+            }
             long now = timeService.getCurrentTimestamp();
             long thresholdNow = addThreshold(now);
             Log.d(TimeBasedSuspensionScheduler.class.getName(), "Current timestamp is " + now);
