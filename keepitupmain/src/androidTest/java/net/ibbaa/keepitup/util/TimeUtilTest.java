@@ -17,6 +17,8 @@
 package net.ibbaa.keepitup.util;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.SmallTest;
@@ -110,6 +112,56 @@ public class TimeUtilTest {
         assertEquals(1, interval.getStart().getMinute());
         assertEquals(0, interval.getEnd().getHour());
         assertEquals(8, interval.getEnd().getMinute());
+    }
+
+    @Test
+    public void testIsDurationMin() {
+        Time start = new Time();
+        start.setHour(17);
+        start.setMinute(58);
+        Time end = new Time();
+        end.setHour(17);
+        end.setMinute(59);
+        Interval interval = new Interval();
+        interval.setStart(start);
+        interval.setEnd(end);
+        assertTrue(TimeUtil.isDurationMin(interval, 1));
+        assertFalse(TimeUtil.isDurationMin(interval, 2));
+        start = new Time();
+        start.setHour(1);
+        start.setMinute(0);
+        end = new Time();
+        end.setHour(1);
+        end.setMinute(15);
+        interval = new Interval();
+        interval.setStart(start);
+        interval.setEnd(end);
+        assertTrue(TimeUtil.isDurationMin(interval, 14));
+        assertTrue(TimeUtil.isDurationMin(interval, 15));
+        assertFalse(TimeUtil.isDurationMin(interval, 16));
+        assertFalse(TimeUtil.isDurationMin(interval, 20));
+        start = new Time();
+        start.setHour(0);
+        start.setMinute(0);
+        end = new Time();
+        end.setHour(23);
+        end.setMinute(59);
+        interval = new Interval();
+        interval.setStart(start);
+        interval.setEnd(end);
+        assertTrue(TimeUtil.isDurationMin(interval, 1000));
+        assertTrue(TimeUtil.isDurationMin(interval, 15));
+        start = new Time();
+        start.setHour(23);
+        start.setMinute(0);
+        end = new Time();
+        end.setHour(1);
+        end.setMinute(0);
+        interval = new Interval();
+        interval.setStart(start);
+        interval.setEnd(end);
+        assertTrue(TimeUtil.isDurationMin(interval, 120));
+        assertFalse(TimeUtil.isDurationMin(interval, 121));
     }
 
     private long testNow() {

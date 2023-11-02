@@ -95,9 +95,8 @@ public class TimeBasedSuspensionScheduler {
     public void restart() {
         Log.d(TimeBasedSuspensionScheduler.class.getName(), "reconfigure");
         synchronized (TimeBasedSuspensionScheduler.class) {
-            cancelCurrent();
+            stop();
             reset();
-            resetWasRestartedFlag();
             schedulerStateDAO.updateSchedulerState(new SchedulerState(0, false, getTimeService().getCurrentTimestamp()));
             getIntervals();
             if (!isSuspensionActiveAndEnabled()) {
@@ -116,12 +115,19 @@ public class TimeBasedSuspensionScheduler {
     public void start(NetworkTask task) {
         Log.d(TimeBasedSuspensionScheduler.class.getName(), "start");
         synchronized (TimeBasedSuspensionScheduler.class) {
-            if (!isSuspensionActiveAndEnabled()) {
-                Log.d(TimeBasedSuspensionScheduler.class.getName(), "Suspension feature is not active.");
-                return;
-            }
             long now = timeService.getCurrentTimestamp();
             long thresholdNow = addThreshold(now);
+            if (!isSuspensionActiveAndEnabled()) {
+                Log.d(TimeBasedSuspensionScheduler.class.getName(), "Suspension feature is not active.");
+                schedulerStateDAO.updateSchedulerState(new SchedulerState(0, false, now));
+                stop();
+                if (task == null) {
+                    startup(now);
+                } else {
+                    startSingle(task, now);
+                }
+                return;
+            }
             Log.d(TimeBasedSuspensionScheduler.class.getName(), "Current timestamp is " + now);
             Log.d(TimeBasedSuspensionScheduler.class.getName(), "Current timestamp configured threshold is " + thresholdNow);
             Interval currentSuspendInterval = findCurrentSuspendInterval(thresholdNow);

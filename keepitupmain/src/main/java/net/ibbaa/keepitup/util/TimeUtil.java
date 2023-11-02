@@ -23,6 +23,7 @@ import net.ibbaa.keepitup.service.ITimeService;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.concurrent.TimeUnit;
 
 public class TimeUtil {
 
@@ -42,6 +43,16 @@ public class TimeUtil {
         Calendar date = getCalendarFromTime(time, currentTime);
         date.add(Calendar.DATE, 1);
         return date.getTimeInMillis();
+    }
+
+    public static boolean isDurationMin(Interval interval, int minutes) {
+        if (!interval.isValid()) {
+            return false;
+        }
+        long start = getTimestampToday(interval.getStart(), 0);
+        long end = interval.doesOverlapDays() ? getTimestampTomorrow(interval.getEnd(), 0) : getTimestampToday(interval.getEnd(), 0);
+        long duration = TimeUnit.MINUTES.convert(end - start, TimeUnit.MILLISECONDS);
+        return duration >= minutes;
     }
 
     public static Interval extendInterval(Interval interval, int minutes) {

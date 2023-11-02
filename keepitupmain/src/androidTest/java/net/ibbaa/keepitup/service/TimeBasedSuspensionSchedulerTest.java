@@ -63,6 +63,7 @@ public class TimeBasedSuspensionSchedulerTest {
     public void beforeEachTestMethod() {
         scheduler = new TimeBasedSuspensionScheduler(TestRegistry.getContext());
         scheduler.reset();
+        scheduler.stop();
         preferenceManager = new PreferenceManager(TestRegistry.getContext());
         preferenceManager.removeAllPreferences();
         networkTaskDAO = new NetworkTaskDAO(TestRegistry.getContext());
@@ -83,6 +84,7 @@ public class TimeBasedSuspensionSchedulerTest {
         intervalDAO.deleteAllIntervals();
         schedulerStateDAO.insertSchedulerState(new SchedulerState(0, false, 0));
         scheduler.reset();
+        scheduler.stop();
     }
 
     @Test
@@ -313,6 +315,429 @@ public class TimeBasedSuspensionSchedulerTest {
         assertEquals(1, cancelAlarmCalls.size());
         assertTrue(schedulerStateDAO.readSchedulerState().isSuspended());
         assertEquals(12345, schedulerStateDAO.readSchedulerState().getTimestamp());
+    }
+
+    @Test
+    public void testStartSuspensionNotActive() {
+        MockAlarmManager networkTaskSchedulerAlarmManager = (MockAlarmManager) scheduler.getNetworkTaskScheduler().getAlarmManager();
+        NetworkTask task1 = getNetworkTask1();
+        NetworkTask task2 = getNetworkTask2();
+        task1 = networkTaskDAO.insertNetworkTask(task1);
+        task2 = networkTaskDAO.insertNetworkTask(task2);
+        task1 = scheduler.getNetworkTaskScheduler().start(task1);
+        task2 = scheduler.getNetworkTaskScheduler().start(task2);
+        scheduler.getNetworkTaskScheduler().suspendAll();
+        networkTaskSchedulerAlarmManager.reset();
+        scheduler.start();
+        assertFalse(schedulerStateDAO.readSchedulerState().isSuspended());
+        assertFalse(scheduler.isRunning());
+        assertFalse(scheduler.getWasRestartedFlag());
+        assertTrue(task1.isRunning());
+        assertTrue(task2.isRunning());
+        assertTrue(isTaskMarkedAsRunningInDatabase(task1));
+        assertTrue(isTaskMarkedAsRunningInDatabase(task2));
+        assertFalse(networkTaskSchedulerAlarmManager.wasCancelAlarmCalled());
+        assertTrue(networkTaskSchedulerAlarmManager.wasSetAlarmCalled());
+        List<MockAlarmManager.SetAlarmCall> setAlarmCalls = networkTaskSchedulerAlarmManager.getSetAlarmCalls();
+        assertEquals(2, setAlarmCalls.size());
+        assertFalse(alarmManager.wasSetAlarmRTCCalled());
+        intervalDAO.insertInterval(getInterval1());
+        preferenceManager.setPreferenceSuspensionEnabled(false);
+        networkTaskSchedulerAlarmManager.reset();
+        scheduler.start();
+        assertFalse(schedulerStateDAO.readSchedulerState().isSuspended());
+        assertFalse(scheduler.isRunning());
+        assertFalse(scheduler.getWasRestartedFlag());
+        assertTrue(task1.isRunning());
+        assertTrue(task2.isRunning());
+        assertTrue(isTaskMarkedAsRunningInDatabase(task1));
+        assertTrue(isTaskMarkedAsRunningInDatabase(task2));
+        assertFalse(networkTaskSchedulerAlarmManager.wasCancelAlarmCalled());
+        assertTrue(networkTaskSchedulerAlarmManager.wasSetAlarmCalled());
+        setAlarmCalls = networkTaskSchedulerAlarmManager.getSetAlarmCalls();
+        assertEquals(2, setAlarmCalls.size());
+        assertFalse(alarmManager.wasSetAlarmRTCCalled());
+        assertFalse(scheduler.isRunning());
+    }
+
+    @Test
+    public void testStartStartupSuspensionDisabledAfterRunning() {
+        MockAlarmManager networkTaskSchedulerAlarmManager = (MockAlarmManager) scheduler.getNetworkTaskScheduler().getAlarmManager();
+        NetworkTask task1 = getNetworkTask1();
+        NetworkTask task2 = getNetworkTask1();
+        task1 = networkTaskDAO.insertNetworkTask(task1);
+        task2 = networkTaskDAO.insertNetworkTask(task2);
+        scheduler.getNetworkTaskScheduler().start(task1);
+        scheduler.getNetworkTaskScheduler().start(task2);
+        scheduler.getNetworkTaskScheduler().suspendAll();
+        intervalDAO.insertInterval(getInterval1());
+        setTestTime(getTestTimestamp(24, 10, 30));
+        networkTaskSchedulerAlarmManager.reset();
+        scheduler.start();
+        assertTrue(task1.isRunning());
+        assertTrue(task2.isRunning());
+        assertTrue(isTaskMarkedAsRunningInDatabase(task1));
+        assertTrue(isTaskMarkedAsRunningInDatabase(task2));
+        assertTrue(scheduler.isRunning());
+        assertTrue(scheduler.getWasRestartedFlag());
+        assertTrue(schedulerStateDAO.readSchedulerState().isSuspended());
+        preferenceManager.setPreferenceSuspensionEnabled(false);
+        networkTaskSchedulerAlarmManager.reset();
+        scheduler.start();
+        assertTrue(task1.isRunning());
+        assertTrue(task2.isRunning());
+        assertTrue(isTaskMarkedAsRunningInDatabase(task1));
+        assertTrue(isTaskMarkedAsRunningInDatabase(task2));
+        assertFalse(scheduler.isRunning());
+        assertFalse(scheduler.getWasRestartedFlag());
+        assertFalse(schedulerStateDAO.readSchedulerState().isSuspended());
+        assertTrue(networkTaskSchedulerAlarmManager.wasSetAlarmCalled());
+        List<MockAlarmManager.SetAlarmCall> setAlarmCalls = networkTaskSchedulerAlarmManager.getSetAlarmCalls();
+        assertEquals(2, setAlarmCalls.size());
+    }
+
+    @Test
+    public void testStartStartNetworkTaskSuspensionDisabledAfterRunning() {
+        MockAlarmManager networkTaskSchedulerAlarmManager = (MockAlarmManager) scheduler.getNetworkTaskScheduler().getAlarmManager();
+        NetworkTask task1 = getNetworkTask1();
+        NetworkTask task2 = getNetworkTask1();
+        task1 = networkTaskDAO.insertNetworkTask(task1);
+        task2 = networkTaskDAO.insertNetworkTask(task2);
+        scheduler.getNetworkTaskScheduler().start(task1);
+        scheduler.getNetworkTaskScheduler().start(task2);
+        scheduler.getNetworkTaskScheduler().suspendAll();
+        intervalDAO.insertInterval(getInterval1());
+        setTestTime(getTestTimestamp(24, 10, 30));
+        networkTaskSchedulerAlarmManager.reset();
+        scheduler.start();
+        assertTrue(task1.isRunning());
+        assertTrue(task2.isRunning());
+        assertTrue(isTaskMarkedAsRunningInDatabase(task1));
+        assertTrue(isTaskMarkedAsRunningInDatabase(task2));
+        assertTrue(scheduler.isRunning());
+        assertTrue(scheduler.getWasRestartedFlag());
+        assertTrue(schedulerStateDAO.readSchedulerState().isSuspended());
+        preferenceManager.setPreferenceSuspensionEnabled(false);
+        networkTaskSchedulerAlarmManager.reset();
+        scheduler.start(task1);
+        assertTrue(task1.isRunning());
+        assertTrue(task2.isRunning());
+        assertTrue(isTaskMarkedAsRunningInDatabase(task1));
+        assertTrue(isTaskMarkedAsRunningInDatabase(task2));
+        assertFalse(scheduler.isRunning());
+        assertFalse(scheduler.getWasRestartedFlag());
+        assertFalse(schedulerStateDAO.readSchedulerState().isSuspended());
+        assertTrue(networkTaskSchedulerAlarmManager.wasSetAlarmCalled());
+        List<MockAlarmManager.SetAlarmCall> setAlarmCalls = networkTaskSchedulerAlarmManager.getSetAlarmCalls();
+        assertEquals(1, setAlarmCalls.size());
+    }
+
+    @Test
+    public void testStartSuspend() {
+        MockAlarmManager networkTaskSchedulerAlarmManager = (MockAlarmManager) scheduler.getNetworkTaskScheduler().getAlarmManager();
+        NetworkTask task1 = getNetworkTask1();
+        NetworkTask task2 = getNetworkTask2();
+        task1 = networkTaskDAO.insertNetworkTask(task1);
+        task2 = networkTaskDAO.insertNetworkTask(task2);
+        scheduler.getNetworkTaskScheduler().start(task1);
+        scheduler.getNetworkTaskScheduler().start(task2);
+        intervalDAO.insertInterval(getInterval1());
+        setTestTime(getTestTimestamp(24, 10, 15));
+        networkTaskSchedulerAlarmManager.reset();
+        scheduler.start();
+        assertTrue(alarmManager.wasSetAlarmRTCCalled());
+        List<MockAlarmManager.SetAlarmCall> setAlarmCalls = alarmManager.getSetAlarmRTCCalls();
+        assertEquals(1, setAlarmCalls.size());
+        MockAlarmManager.SetAlarmCall setAlarm = setAlarmCalls.get(0);
+        assertEquals(TimeUtil.getTimestampToday(getInterval1().getEnd(), getTestTimestamp(24, 10, 15)), setAlarm.getDelay());
+        assertTrue(scheduler.getWasRestartedFlag());
+        assertFalse(networkTaskSchedulerAlarmManager.wasSetAlarmCalled());
+        assertTrue(networkTaskSchedulerAlarmManager.wasCancelAlarmCalled());
+        List<MockAlarmManager.CancelAlarmCall> cancelAlarmCalls = networkTaskSchedulerAlarmManager.getCancelAlarmCalls();
+        assertEquals(2, cancelAlarmCalls.size());
+        assertTrue(schedulerStateDAO.readSchedulerState().isSuspended());
+        assertTrue(scheduler.isRunning());
+    }
+
+    @Test
+    public void testStartSuspendOverlapDaysSameDay() {
+        MockAlarmManager networkTaskSchedulerAlarmManager = (MockAlarmManager) scheduler.getNetworkTaskScheduler().getAlarmManager();
+        NetworkTask task1 = getNetworkTask1();
+        NetworkTask task2 = getNetworkTask2();
+        task1 = networkTaskDAO.insertNetworkTask(task1);
+        task2 = networkTaskDAO.insertNetworkTask(task2);
+        scheduler.getNetworkTaskScheduler().start(task1);
+        scheduler.getNetworkTaskScheduler().start(task2);
+        intervalDAO.insertInterval(getInterval4());
+        setTestTime(getTestTimestamp(24, 23, 59));
+        networkTaskSchedulerAlarmManager.reset();
+        scheduler.start();
+        assertTrue(alarmManager.wasSetAlarmRTCCalled());
+        List<MockAlarmManager.SetAlarmCall> setAlarmCalls = alarmManager.getSetAlarmRTCCalls();
+        assertEquals(1, setAlarmCalls.size());
+        MockAlarmManager.SetAlarmCall setAlarm = setAlarmCalls.get(0);
+        assertEquals(TimeUtil.getTimestampTomorrow(getInterval4().getEnd(), getTestTimestamp(24, 23, 59)), setAlarm.getDelay());
+        assertTrue(scheduler.getWasRestartedFlag());
+        assertFalse(networkTaskSchedulerAlarmManager.wasSetAlarmCalled());
+        assertTrue(networkTaskSchedulerAlarmManager.wasCancelAlarmCalled());
+        List<MockAlarmManager.CancelAlarmCall> cancelAlarmCalls = networkTaskSchedulerAlarmManager.getCancelAlarmCalls();
+        assertEquals(2, cancelAlarmCalls.size());
+        assertTrue(schedulerStateDAO.readSchedulerState().isSuspended());
+        assertTrue(scheduler.isRunning());
+    }
+
+    @Test
+    public void testStartSuspendOverlapDaysOtherDay() {
+        MockAlarmManager networkTaskSchedulerAlarmManager = (MockAlarmManager) scheduler.getNetworkTaskScheduler().getAlarmManager();
+        NetworkTask task1 = getNetworkTask1();
+        NetworkTask task2 = getNetworkTask2();
+        task1 = networkTaskDAO.insertNetworkTask(task1);
+        task2 = networkTaskDAO.insertNetworkTask(task2);
+        scheduler.getNetworkTaskScheduler().start(task1);
+        scheduler.getNetworkTaskScheduler().start(task2);
+        intervalDAO.insertInterval(getInterval4());
+        setTestTime(getTestTimestamp(24, 0, 1));
+        networkTaskSchedulerAlarmManager.reset();
+        scheduler.start();
+        assertTrue(alarmManager.wasSetAlarmRTCCalled());
+        List<MockAlarmManager.SetAlarmCall> setAlarmCalls = alarmManager.getSetAlarmRTCCalls();
+        assertEquals(1, setAlarmCalls.size());
+        MockAlarmManager.SetAlarmCall setAlarm = setAlarmCalls.get(0);
+        assertEquals(TimeUtil.getTimestampToday(getInterval4().getEnd(), getTestTimestamp(24, 0, 1)), setAlarm.getDelay());
+        assertTrue(scheduler.getWasRestartedFlag());
+        assertFalse(networkTaskSchedulerAlarmManager.wasSetAlarmCalled());
+        assertTrue(networkTaskSchedulerAlarmManager.wasCancelAlarmCalled());
+        List<MockAlarmManager.CancelAlarmCall> cancelAlarmCalls = networkTaskSchedulerAlarmManager.getCancelAlarmCalls();
+        assertEquals(2, cancelAlarmCalls.size());
+        assertTrue(schedulerStateDAO.readSchedulerState().isSuspended());
+        assertTrue(scheduler.isRunning());
+    }
+
+    @Test
+    public void testStartSuspendThreshold() {
+        MockAlarmManager networkTaskSchedulerAlarmManager = (MockAlarmManager) scheduler.getNetworkTaskScheduler().getAlarmManager();
+        NetworkTask task1 = getNetworkTask1();
+        NetworkTask task2 = getNetworkTask2();
+        task1 = networkTaskDAO.insertNetworkTask(task1);
+        task2 = networkTaskDAO.insertNetworkTask(task2);
+        scheduler.getNetworkTaskScheduler().start(task1);
+        scheduler.getNetworkTaskScheduler().start(task2);
+        intervalDAO.insertInterval(getInterval1());
+        setTestTime(getTestTimestamp(24, 10, 10));
+        networkTaskSchedulerAlarmManager.reset();
+        scheduler.start();
+        assertTrue(alarmManager.wasSetAlarmRTCCalled());
+        List<MockAlarmManager.SetAlarmCall> setAlarmCalls = alarmManager.getSetAlarmRTCCalls();
+        assertEquals(1, setAlarmCalls.size());
+        MockAlarmManager.SetAlarmCall setAlarm = setAlarmCalls.get(0);
+        assertEquals(TimeUtil.getTimestampToday(getInterval1().getEnd(), getTestTimestamp(24, 10, 15)), setAlarm.getDelay());
+        assertTrue(scheduler.getWasRestartedFlag());
+        assertFalse(networkTaskSchedulerAlarmManager.wasSetAlarmCalled());
+        assertTrue(networkTaskSchedulerAlarmManager.wasCancelAlarmCalled());
+        List<MockAlarmManager.CancelAlarmCall> cancelAlarmCalls = networkTaskSchedulerAlarmManager.getCancelAlarmCalls();
+        assertEquals(2, cancelAlarmCalls.size());
+        assertTrue(schedulerStateDAO.readSchedulerState().isSuspended());
+        assertTrue(scheduler.isRunning());
+    }
+
+    @Test
+    public void testStartStartup() {
+        MockAlarmManager networkTaskSchedulerAlarmManager = (MockAlarmManager) scheduler.getNetworkTaskScheduler().getAlarmManager();
+        NetworkTask task1 = getNetworkTask1();
+        NetworkTask task2 = getNetworkTask2();
+        task1 = networkTaskDAO.insertNetworkTask(task1);
+        task2 = networkTaskDAO.insertNetworkTask(task2);
+        scheduler.getNetworkTaskScheduler().start(task1);
+        scheduler.getNetworkTaskScheduler().start(task2);
+        scheduler.getNetworkTaskScheduler().suspendAll();
+        intervalDAO.insertInterval(getInterval1());
+        setTestTime(getTestTimestamp(24, 9, 1));
+        networkTaskSchedulerAlarmManager.reset();
+        scheduler.start();
+        assertTrue(alarmManager.wasSetAlarmRTCCalled());
+        List<MockAlarmManager.SetAlarmCall> setAlarmRTCCalls = alarmManager.getSetAlarmRTCCalls();
+        assertEquals(1, setAlarmRTCCalls.size());
+        MockAlarmManager.SetAlarmCall setAlarm = setAlarmRTCCalls.get(0);
+        assertEquals(TimeUtil.getTimestampToday(getInterval1().getStart(), getTestTimestamp(24, 9, 1)), setAlarm.getDelay());
+        assertTrue(scheduler.getWasRestartedFlag());
+        assertTrue(networkTaskSchedulerAlarmManager.wasSetAlarmCalled());
+        List<MockAlarmManager.SetAlarmCall> setAlarmCalls = networkTaskSchedulerAlarmManager.getSetAlarmCalls();
+        assertEquals(2, setAlarmCalls.size());
+        assertFalse(schedulerStateDAO.readSchedulerState().isSuspended());
+        assertTrue(scheduler.isRunning());
+    }
+
+    @Test
+    public void testStartStartupOverlapDays() {
+        MockAlarmManager networkTaskSchedulerAlarmManager = (MockAlarmManager) scheduler.getNetworkTaskScheduler().getAlarmManager();
+        NetworkTask task1 = getNetworkTask1();
+        NetworkTask task2 = getNetworkTask2();
+        task1 = networkTaskDAO.insertNetworkTask(task1);
+        task2 = networkTaskDAO.insertNetworkTask(task2);
+        scheduler.getNetworkTaskScheduler().start(task1);
+        scheduler.getNetworkTaskScheduler().start(task2);
+        scheduler.getNetworkTaskScheduler().suspendAll();
+        intervalDAO.insertInterval(getInterval4());
+        setTestTime(getTestTimestamp(24, 20, 0));
+        networkTaskSchedulerAlarmManager.reset();
+        scheduler.start();
+        assertTrue(alarmManager.wasSetAlarmRTCCalled());
+        List<MockAlarmManager.SetAlarmCall> setAlarmRTCCalls = alarmManager.getSetAlarmRTCCalls();
+        assertEquals(1, setAlarmRTCCalls.size());
+        MockAlarmManager.SetAlarmCall setAlarm = setAlarmRTCCalls.get(0);
+        assertEquals(TimeUtil.getTimestampToday(getInterval4().getStart(), getTestTimestamp(24, 20, 0)), setAlarm.getDelay());
+        assertTrue(scheduler.getWasRestartedFlag());
+        assertTrue(networkTaskSchedulerAlarmManager.wasSetAlarmCalled());
+        List<MockAlarmManager.SetAlarmCall> setAlarmCalls = networkTaskSchedulerAlarmManager.getSetAlarmCalls();
+        assertEquals(2, setAlarmCalls.size());
+        assertFalse(schedulerStateDAO.readSchedulerState().isSuspended());
+        assertTrue(scheduler.isRunning());
+    }
+
+    @Test
+    public void testStartStartupThreshold() {
+        MockAlarmManager networkTaskSchedulerAlarmManager = (MockAlarmManager) scheduler.getNetworkTaskScheduler().getAlarmManager();
+        NetworkTask task1 = getNetworkTask1();
+        NetworkTask task2 = getNetworkTask2();
+        task1 = networkTaskDAO.insertNetworkTask(task1);
+        task2 = networkTaskDAO.insertNetworkTask(task2);
+        scheduler.getNetworkTaskScheduler().start(task1);
+        scheduler.getNetworkTaskScheduler().start(task2);
+        scheduler.getNetworkTaskScheduler().suspendAll();
+        intervalDAO.insertInterval(getInterval1());
+        setTestTime(getTestTimestamp(24, 11, 11));
+        networkTaskSchedulerAlarmManager.reset();
+        scheduler.start();
+        assertTrue(alarmManager.wasSetAlarmRTCCalled());
+        List<MockAlarmManager.SetAlarmCall> setAlarmRTCCalls = alarmManager.getSetAlarmRTCCalls();
+        assertEquals(1, setAlarmRTCCalls.size());
+        MockAlarmManager.SetAlarmCall setAlarm = setAlarmRTCCalls.get(0);
+        assertEquals(TimeUtil.getTimestampTomorrow(getInterval1().getStart(), getTestTimestamp(24, 11, 11)), setAlarm.getDelay());
+        assertTrue(scheduler.getWasRestartedFlag());
+        assertTrue(networkTaskSchedulerAlarmManager.wasSetAlarmCalled());
+        List<MockAlarmManager.SetAlarmCall> setAlarmCalls = networkTaskSchedulerAlarmManager.getSetAlarmCalls();
+        assertEquals(2, setAlarmCalls.size());
+        assertFalse(schedulerStateDAO.readSchedulerState().isSuspended());
+        assertTrue(scheduler.isRunning());
+    }
+
+    @Test
+    public void testStartStartNetworkTask() {
+        MockAlarmManager networkTaskSchedulerAlarmManager = (MockAlarmManager) scheduler.getNetworkTaskScheduler().getAlarmManager();
+        NetworkTask task1 = getNetworkTask1();
+        NetworkTask task2 = getNetworkTask2();
+        task1 = networkTaskDAO.insertNetworkTask(task1);
+        task2 = networkTaskDAO.insertNetworkTask(task2);
+        scheduler.getNetworkTaskScheduler().start(task1);
+        scheduler.getNetworkTaskScheduler().start(task2);
+        scheduler.getNetworkTaskScheduler().suspendAll();
+        intervalDAO.insertInterval(getInterval1());
+        intervalDAO.insertInterval(getInterval4());
+        setTestTime(getTestTimestamp(24, 1, 31));
+        networkTaskSchedulerAlarmManager.reset();
+        scheduler.start(task1);
+        assertTrue(alarmManager.wasSetAlarmRTCCalled());
+        List<MockAlarmManager.SetAlarmCall> setAlarmRTCCalls = alarmManager.getSetAlarmRTCCalls();
+        assertEquals(1, setAlarmRTCCalls.size());
+        MockAlarmManager.SetAlarmCall setAlarm = setAlarmRTCCalls.get(0);
+        assertEquals(TimeUtil.getTimestampToday(getInterval1().getStart(), getTestTimestamp(24, 1, 31)), setAlarm.getDelay());
+        assertTrue(scheduler.getWasRestartedFlag());
+        assertTrue(networkTaskSchedulerAlarmManager.wasSetAlarmCalled());
+        List<MockAlarmManager.SetAlarmCall> setAlarmCalls = networkTaskSchedulerAlarmManager.getSetAlarmCalls();
+        assertEquals(1, setAlarmCalls.size());
+        assertFalse(schedulerStateDAO.readSchedulerState().isSuspended());
+        assertTrue(scheduler.isRunning());
+    }
+
+    @Test
+    public void testStop() {
+        MockAlarmManager networkTaskSchedulerAlarmManager = (MockAlarmManager) scheduler.getNetworkTaskScheduler().getAlarmManager();
+        NetworkTask task1 = getNetworkTask1();
+        task1 = networkTaskDAO.insertNetworkTask(task1);
+        scheduler.getNetworkTaskScheduler().start(task1);
+        intervalDAO.insertInterval(getInterval1());
+        setTestTime(getTestTimestamp(24, 10, 15));
+        networkTaskSchedulerAlarmManager.reset();
+        scheduler.start();
+        assertTrue(scheduler.isRunning());
+        scheduler.stop();
+        assertFalse(scheduler.isRunning());
+    }
+
+    @Test
+    public void testRestartNoIntervals() {
+        MockAlarmManager networkTaskSchedulerAlarmManager = (MockAlarmManager) scheduler.getNetworkTaskScheduler().getAlarmManager();
+        NetworkTask task1 = getNetworkTask1();
+        task1 = networkTaskDAO.insertNetworkTask(task1);
+        scheduler.getNetworkTaskScheduler().start(task1);
+        scheduler.getNetworkTaskScheduler().suspendAll();
+        intervalDAO.insertInterval(getInterval1());
+        intervalDAO.insertInterval(getInterval4());
+        setTestTime(getTestTimestamp(24, 1, 31));
+        networkTaskSchedulerAlarmManager.reset();
+        scheduler.start(task1);
+        intervalDAO.deleteAllIntervals();
+        scheduler.restart();
+        assertFalse(scheduler.isRunning());
+        assertFalse(scheduler.getWasRestartedFlag());
+        assertTrue(scheduler.getIntervals().isEmpty());
+    }
+
+    @Test
+    public void testRestartSuspensionDisabled() {
+        MockAlarmManager networkTaskSchedulerAlarmManager = (MockAlarmManager) scheduler.getNetworkTaskScheduler().getAlarmManager();
+        NetworkTask task1 = getNetworkTask1();
+        task1 = networkTaskDAO.insertNetworkTask(task1);
+        scheduler.getNetworkTaskScheduler().start(task1);
+        scheduler.getNetworkTaskScheduler().suspendAll();
+        intervalDAO.insertInterval(getInterval1());
+        intervalDAO.insertInterval(getInterval4());
+        setTestTime(getTestTimestamp(24, 1, 31));
+        scheduler.start();
+        networkTaskSchedulerAlarmManager.reset();
+        preferenceManager.setPreferenceSuspensionEnabled(false);
+        scheduler.restart();
+        assertFalse(scheduler.isRunning());
+        assertFalse(scheduler.getWasRestartedFlag());
+        assertFalse(scheduler.getIntervals().isEmpty());
+        assertTrue(networkTaskSchedulerAlarmManager.wasSetAlarmCalled());
+        List<MockAlarmManager.SetAlarmCall> setAlarmCalls = networkTaskSchedulerAlarmManager.getSetAlarmCalls();
+        assertEquals(1, setAlarmCalls.size());
+    }
+
+    @Test
+    public void testRestart() {
+        MockAlarmManager networkTaskSchedulerAlarmManager = (MockAlarmManager) scheduler.getNetworkTaskScheduler().getAlarmManager();
+        NetworkTask task1 = getNetworkTask1();
+        NetworkTask task2 = getNetworkTask2();
+        task1 = networkTaskDAO.insertNetworkTask(task1);
+        task2 = networkTaskDAO.insertNetworkTask(task2);
+        scheduler.getNetworkTaskScheduler().start(task1);
+        scheduler.getNetworkTaskScheduler().start(task2);
+        setTestTime(getTestTimestamp(24, 1, 30));
+        networkTaskSchedulerAlarmManager.reset();
+        scheduler.start();
+        assertFalse(scheduler.isRunning());
+        assertFalse(scheduler.getWasRestartedFlag());
+        assertFalse(schedulerStateDAO.readSchedulerState().isSuspended());
+        intervalDAO.insertInterval(getInterval1());
+        intervalDAO.insertInterval(getInterval2());
+        intervalDAO.insertInterval(getInterval3());
+        networkTaskSchedulerAlarmManager.reset();
+        scheduler.restart();
+        assertTrue(scheduler.isRunning());
+        assertTrue(scheduler.getWasRestartedFlag());
+        assertTrue(schedulerStateDAO.readSchedulerState().isSuspended());
+        assertTrue(alarmManager.wasSetAlarmRTCCalled());
+        List<MockAlarmManager.SetAlarmCall> setAlarmCalls = alarmManager.getSetAlarmRTCCalls();
+        assertEquals(1, setAlarmCalls.size());
+        MockAlarmManager.SetAlarmCall setAlarm = setAlarmCalls.get(0);
+        assertEquals(TimeUtil.getTimestampToday(getInterval2().getEnd(), getTestTimestamp(24, 1, 30)), setAlarm.getDelay());
+        assertTrue(scheduler.getWasRestartedFlag());
+        assertFalse(networkTaskSchedulerAlarmManager.wasSetAlarmCalled());
+        assertTrue(networkTaskSchedulerAlarmManager.wasCancelAlarmCalled());
+        List<MockAlarmManager.CancelAlarmCall> cancelAlarmCalls = networkTaskSchedulerAlarmManager.getCancelAlarmCalls();
+        assertEquals(2, cancelAlarmCalls.size());
     }
 
     private boolean isTaskMarkedAsRunningInDatabase(NetworkTask task) {
