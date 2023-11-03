@@ -121,10 +121,12 @@ public class TimeBasedSuspensionScheduler {
                 Log.d(TimeBasedSuspensionScheduler.class.getName(), "Suspension feature is not active.");
                 schedulerStateDAO.updateSchedulerState(new SchedulerState(0, false, now));
                 stop();
-                if (task == null) {
-                    startup(now);
-                } else {
-                    startSingle(task, now);
+                doStart(task, now);
+                return;
+            }
+            if (isRunning()) {
+                if (!schedulerStateDAO.readSchedulerState().isSuspended()) {
+                    doStart(task, now);
                 }
                 return;
             }
@@ -139,12 +141,16 @@ public class TimeBasedSuspensionScheduler {
                 Interval nextSuspendInterval = findNextSuspendInterval(thresholdNow);
                 Log.d(TimeBasedSuspensionScheduler.class.getName(), "Found next suspend interval is " + nextSuspendInterval);
                 scheduleStart(nextSuspendInterval, thresholdNow, true);
-                if (task == null) {
-                    startup(now);
-                } else {
-                    startSingle(task, now);
-                }
+                doStart(task, now);
             }
+        }
+    }
+
+    private void doStart(NetworkTask task, long now) {
+        if (task == null) {
+            startup(now);
+        } else {
+            startSingle(task, now);
         }
     }
 
