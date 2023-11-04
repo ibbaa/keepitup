@@ -79,6 +79,8 @@ public class TimeUtil {
         date.setTime(new Date(currentTime));
         date.set(Calendar.HOUR_OF_DAY, time.getHour());
         date.set(Calendar.MINUTE, time.getMinute());
+        date.set(Calendar.SECOND, 0);
+        date.set(Calendar.MILLISECOND, 0);
         return date;
     }
 }

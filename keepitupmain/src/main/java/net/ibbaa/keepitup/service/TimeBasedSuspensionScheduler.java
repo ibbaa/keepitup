@@ -52,6 +52,7 @@ public class TimeBasedSuspensionScheduler {
 
     private static List<Interval> intervals;
     private static boolean wasRestarted = false;
+    private static Boolean isSuspended;
 
     public TimeBasedSuspensionScheduler(Context context) {
         this.context = context;
@@ -68,6 +69,15 @@ public class TimeBasedSuspensionScheduler {
                 intervals = intervalDAO.readAllIntervals();
             }
             return intervals;
+        }
+    }
+
+    public boolean isSuspended() {
+        synchronized (TimeBasedSuspensionScheduler.class) {
+            if (isSuspended == null) {
+                isSuspended = schedulerStateDAO.readSchedulerState().isSuspended();
+            }
+            return isSuspended;
         }
     }
 
@@ -93,11 +103,11 @@ public class TimeBasedSuspensionScheduler {
     }
 
     public void restart() {
-        Log.d(TimeBasedSuspensionScheduler.class.getName(), "reconfigure");
+        Log.d(TimeBasedSuspensionScheduler.class.getName(), "restart");
         synchronized (TimeBasedSuspensionScheduler.class) {
             stop();
             reset();
-            schedulerStateDAO.updateSchedulerState(new SchedulerState(0, false, getTimeService().getCurrentTimestamp()));
+            setSchedulerState(false, getTimeService().getCurrentTimestamp());
             getIntervals();
             if (!isSuspensionActiveAndEnabled()) {
                 Log.d(TimeBasedSuspensionScheduler.class.getName(), "Suspension feature is not active.");
@@ -119,19 +129,19 @@ public class TimeBasedSuspensionScheduler {
             long thresholdNow = addThreshold(now);
             if (!isSuspensionActiveAndEnabled()) {
                 Log.d(TimeBasedSuspensionScheduler.class.getName(), "Suspension feature is not active.");
-                schedulerStateDAO.updateSchedulerState(new SchedulerState(0, false, now));
+                setSchedulerState(false, now);
                 stop();
                 doStart(task, now);
                 return;
             }
             if (isRunning()) {
-                if (!schedulerStateDAO.readSchedulerState().isSuspended()) {
+                if (!isSuspended()) {
                     doStart(task, now);
                 }
                 return;
             }
             Log.d(TimeBasedSuspensionScheduler.class.getName(), "Current timestamp is " + now);
-            Log.d(TimeBasedSuspensionScheduler.class.getName(), "Current timestamp configured threshold is " + thresholdNow);
+            Log.d(TimeBasedSuspensionScheduler.class.getName(), "Current timestamp with configured threshold is " + thresholdNow);
             Interval currentSuspendInterval = findCurrentSuspendInterval(thresholdNow);
             Log.d(TimeBasedSuspensionScheduler.class.getName(), "Found current suspend interval is " + currentSuspendInterval);
             if (currentSuspendInterval != null) {
@@ -217,7 +227,7 @@ public class TimeBasedSuspensionScheduler {
     }
 
     public void scheduleStart(Interval nextSuspendInterval, long now, boolean restart) {
-        Log.d(TimeBasedSuspensionScheduler.class.getName(), "startup with next suspend interval " + nextSuspendInterval + " and timestamp of " + now + ", restart is " + restart);
+        Log.d(TimeBasedSuspensionScheduler.class.getName(), "scheduleStart with next suspend interval " + nextSuspendInterval + " and timestamp of " + now + ", restart is " + restart);
         long start = TimeUtil.getTimestampToday(nextSuspendInterval.getStart(), now);
         if (start <= now) {
             start = TimeUtil.getTimestampTomorrow(nextSuspendInterval.getStart(), now);
@@ -230,19 +240,19 @@ public class TimeBasedSuspensionScheduler {
     public void suspend(long now) {
         Log.d(TimeBasedSuspensionScheduler.class.getName(), "suspend with timestamp " + now);
         getNetworkTaskScheduler().suspendAll();
-        schedulerStateDAO.updateSchedulerState(new SchedulerState(0, true, now));
+        setSchedulerState(true, now);
     }
 
     public void startup(long now) {
         Log.d(TimeBasedSuspensionScheduler.class.getName(), "startup with timestamp " + now);
         getNetworkTaskScheduler().startup();
-        schedulerStateDAO.updateSchedulerState(new SchedulerState(0, false, now));
+        setSchedulerState(false, now);
     }
 
     public void startSingle(NetworkTask task, long now) {
         Log.d(TimeBasedSuspensionScheduler.class.getName(), "startSingle with task + " + task + " and timestamp " + now);
         getNetworkTaskScheduler().schedule(task);
-        schedulerStateDAO.updateSchedulerState(new SchedulerState(0, false, now));
+        setSchedulerState(false, now);
     }
 
     private boolean isSuspensionActiveAndEnabled() {
@@ -295,8 +305,15 @@ public class TimeBasedSuspensionScheduler {
         }
     }
 
+    private void setSchedulerState(boolean state, long timestamp) {
+        synchronized (TimeBasedSuspensionScheduler.class) {
+            schedulerStateDAO.updateSchedulerState(new SchedulerState(0, state, timestamp));
+            isSuspended = state;
+        }
+    }
+
     private long addThreshold(long timestamp) {
-        return timestamp + getContext().getResources().getInteger(R.integer.scheduler_time_threshold) * 1000;
+        return timestamp + getContext().getResources().getInteger(R.integer.scheduler_restart_time_threshold) * 1000;
     }
 
     private Context getContext() {

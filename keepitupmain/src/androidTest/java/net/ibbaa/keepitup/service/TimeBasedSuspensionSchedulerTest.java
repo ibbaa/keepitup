@@ -85,6 +85,7 @@ public class TimeBasedSuspensionSchedulerTest {
         schedulerStateDAO.insertSchedulerState(new SchedulerState(0, false, 0));
         scheduler.reset();
         scheduler.stop();
+        alarmManager.reset();
     }
 
     @Test
@@ -516,6 +517,7 @@ public class TimeBasedSuspensionSchedulerTest {
         List<MockAlarmManager.CancelAlarmCall> cancelAlarmCalls = networkTaskSchedulerAlarmManager.getCancelAlarmCalls();
         assertEquals(2, cancelAlarmCalls.size());
         assertTrue(schedulerStateDAO.readSchedulerState().isSuspended());
+        assertTrue(scheduler.isSuspended());
         assertTrue(scheduler.isRunning());
     }
 
@@ -543,6 +545,7 @@ public class TimeBasedSuspensionSchedulerTest {
         List<MockAlarmManager.CancelAlarmCall> cancelAlarmCalls = networkTaskSchedulerAlarmManager.getCancelAlarmCalls();
         assertEquals(2, cancelAlarmCalls.size());
         assertTrue(schedulerStateDAO.readSchedulerState().isSuspended());
+        assertTrue(scheduler.isSuspended());
         assertTrue(scheduler.isRunning());
     }
 
@@ -570,6 +573,7 @@ public class TimeBasedSuspensionSchedulerTest {
         List<MockAlarmManager.CancelAlarmCall> cancelAlarmCalls = networkTaskSchedulerAlarmManager.getCancelAlarmCalls();
         assertEquals(2, cancelAlarmCalls.size());
         assertTrue(schedulerStateDAO.readSchedulerState().isSuspended());
+        assertTrue(scheduler.isSuspended());
         assertTrue(scheduler.isRunning());
     }
 
@@ -597,6 +601,7 @@ public class TimeBasedSuspensionSchedulerTest {
         List<MockAlarmManager.CancelAlarmCall> cancelAlarmCalls = networkTaskSchedulerAlarmManager.getCancelAlarmCalls();
         assertEquals(2, cancelAlarmCalls.size());
         assertTrue(schedulerStateDAO.readSchedulerState().isSuspended());
+        assertTrue(scheduler.isSuspended());
         assertTrue(scheduler.isRunning());
     }
 
@@ -624,6 +629,7 @@ public class TimeBasedSuspensionSchedulerTest {
         List<MockAlarmManager.SetAlarmCall> setAlarmCalls = networkTaskSchedulerAlarmManager.getSetAlarmCalls();
         assertEquals(2, setAlarmCalls.size());
         assertFalse(schedulerStateDAO.readSchedulerState().isSuspended());
+        assertFalse(scheduler.isSuspended());
         assertTrue(scheduler.isRunning());
     }
 
@@ -651,6 +657,7 @@ public class TimeBasedSuspensionSchedulerTest {
         List<MockAlarmManager.SetAlarmCall> setAlarmCalls = networkTaskSchedulerAlarmManager.getSetAlarmCalls();
         assertEquals(2, setAlarmCalls.size());
         assertFalse(schedulerStateDAO.readSchedulerState().isSuspended());
+        assertFalse(scheduler.isSuspended());
         assertTrue(scheduler.isRunning());
     }
 
@@ -678,6 +685,7 @@ public class TimeBasedSuspensionSchedulerTest {
         List<MockAlarmManager.SetAlarmCall> setAlarmCalls = networkTaskSchedulerAlarmManager.getSetAlarmCalls();
         assertEquals(2, setAlarmCalls.size());
         assertFalse(schedulerStateDAO.readSchedulerState().isSuspended());
+        assertFalse(scheduler.isSuspended());
         assertTrue(scheduler.isRunning());
     }
 
@@ -706,6 +714,7 @@ public class TimeBasedSuspensionSchedulerTest {
         List<MockAlarmManager.SetAlarmCall> setAlarmCalls = networkTaskSchedulerAlarmManager.getSetAlarmCalls();
         assertEquals(1, setAlarmCalls.size());
         assertFalse(schedulerStateDAO.readSchedulerState().isSuspended());
+        assertFalse(scheduler.isSuspended());
         assertTrue(scheduler.isRunning());
     }
 
@@ -780,6 +789,7 @@ public class TimeBasedSuspensionSchedulerTest {
         assertFalse(scheduler.isRunning());
         assertFalse(scheduler.getWasRestartedFlag());
         assertFalse(schedulerStateDAO.readSchedulerState().isSuspended());
+        assertFalse(scheduler.isSuspended());
         intervalDAO.insertInterval(getInterval1());
         intervalDAO.insertInterval(getInterval2());
         intervalDAO.insertInterval(getInterval3());
@@ -788,6 +798,7 @@ public class TimeBasedSuspensionSchedulerTest {
         assertTrue(scheduler.isRunning());
         assertTrue(scheduler.getWasRestartedFlag());
         assertTrue(schedulerStateDAO.readSchedulerState().isSuspended());
+        assertTrue(scheduler.isSuspended());
         assertTrue(alarmManager.wasSetAlarmRTCCalled());
         List<MockAlarmManager.SetAlarmCall> setAlarmCalls = alarmManager.getSetAlarmRTCCalls();
         assertEquals(1, setAlarmCalls.size());
