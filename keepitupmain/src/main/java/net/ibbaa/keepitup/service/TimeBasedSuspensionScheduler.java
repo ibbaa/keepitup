@@ -72,6 +72,13 @@ public class TimeBasedSuspensionScheduler {
         }
     }
 
+    public void reset() {
+        Log.d(TimeBasedSuspensionScheduler.class.getName(), "reset");
+        synchronized (TimeBasedSuspensionScheduler.class) {
+            intervals = null;
+        }
+    }
+
     public boolean isSuspended() {
         synchronized (TimeBasedSuspensionScheduler.class) {
             if (isSuspended == null) {
@@ -81,10 +88,9 @@ public class TimeBasedSuspensionScheduler {
         }
     }
 
-    public void reset() {
-        Log.d(TimeBasedSuspensionScheduler.class.getName(), "reset");
+    public void resetIsSuspended() {
         synchronized (TimeBasedSuspensionScheduler.class) {
-            intervals = null;
+            isSuspended = null;
         }
     }
 

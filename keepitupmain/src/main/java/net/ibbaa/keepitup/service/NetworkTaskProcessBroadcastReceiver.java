@@ -49,7 +49,7 @@ public class NetworkTaskProcessBroadcastReceiver extends BroadcastReceiver {
         ExecutorService executorService = Executors.newSingleThreadExecutor();
         try {
             Log.d(NetworkTaskProcessBroadcastReceiver.class.getName(), "Acquiring partial wake lock with a timeout of " + wakeLockTimeout + " msec");
-            wakeLock = Objects.requireNonNull(powerManager).newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "KeepItUp:DataReadBroadcastReceiver");
+            wakeLock = Objects.requireNonNull(powerManager).newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "KeepItUp:NetworkTaskProcessBroadcastReceiver");
             wakeLock.acquire(wakeLockTimeout);
             Log.d(NetworkTaskProcessBroadcastReceiver.class.getName(), "Rescheduling " + task);
             NetworkTaskProcessServiceScheduler scheduler = new NetworkTaskProcessServiceScheduler(context);

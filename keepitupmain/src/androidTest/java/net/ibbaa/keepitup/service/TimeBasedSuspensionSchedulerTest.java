@@ -63,6 +63,7 @@ public class TimeBasedSuspensionSchedulerTest {
     public void beforeEachTestMethod() {
         scheduler = new TimeBasedSuspensionScheduler(TestRegistry.getContext());
         scheduler.reset();
+        scheduler.resetIsSuspended();
         scheduler.stop();
         preferenceManager = new PreferenceManager(TestRegistry.getContext());
         preferenceManager.removeAllPreferences();
@@ -84,6 +85,7 @@ public class TimeBasedSuspensionSchedulerTest {
         intervalDAO.deleteAllIntervals();
         schedulerStateDAO.insertSchedulerState(new SchedulerState(0, false, 0));
         scheduler.reset();
+        scheduler.resetIsSuspended();
         scheduler.stop();
         alarmManager.reset();
     }
@@ -96,6 +98,16 @@ public class TimeBasedSuspensionSchedulerTest {
         assertEquals(1, scheduler.getIntervals().size());
         scheduler.reset();
         assertEquals(0, scheduler.getIntervals().size());
+    }
+
+    @Test
+    public void testResetIsSuspended() {
+        schedulerStateDAO.updateSchedulerState(new SchedulerState(0, true, 0));
+        assertTrue(scheduler.isSuspended());
+        schedulerStateDAO.updateSchedulerState(new SchedulerState(0, false, 0));
+        assertTrue(scheduler.isSuspended());
+        scheduler.resetIsSuspended();
+        assertFalse(scheduler.isSuspended());
     }
 
     @Test
