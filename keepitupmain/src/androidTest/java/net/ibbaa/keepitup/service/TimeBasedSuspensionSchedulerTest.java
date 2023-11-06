@@ -787,6 +787,26 @@ public class TimeBasedSuspensionSchedulerTest {
     }
 
     @Test
+    public void testRestartNoNetworkTaskRunning() {
+        MockAlarmManager networkTaskSchedulerAlarmManager = (MockAlarmManager) scheduler.getNetworkTaskScheduler().getAlarmManager();
+        NetworkTask task1 = getNetworkTask1();
+        task1.setRunning(false);
+        NetworkTask task2 = getNetworkTask2();
+        networkTaskDAO.insertNetworkTask(task1);
+        networkTaskDAO.insertNetworkTask(task2);
+        setTestTime(getTestTimestamp(24, 1, 30));
+        scheduler.restart();
+        scheduler.start();
+        assertFalse(scheduler.isRunning());
+        assertFalse(scheduler.getWasRestartedFlag());
+        assertFalse(schedulerStateDAO.readSchedulerState().isSuspended());
+        assertFalse(scheduler.isSuspended());
+        assertFalse(alarmManager.wasSetAlarmRTCCalled());
+        assertFalse(networkTaskSchedulerAlarmManager.wasSetAlarmCalled());
+        assertFalse(networkTaskSchedulerAlarmManager.wasCancelAlarmCalled());
+    }
+
+    @Test
     public void testRestart() {
         MockAlarmManager networkTaskSchedulerAlarmManager = (MockAlarmManager) scheduler.getNetworkTaskScheduler().getAlarmManager();
         NetworkTask task1 = getNetworkTask1();

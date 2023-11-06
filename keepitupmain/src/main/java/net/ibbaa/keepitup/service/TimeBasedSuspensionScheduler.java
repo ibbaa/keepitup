@@ -115,9 +115,8 @@ public class TimeBasedSuspensionScheduler {
             reset();
             setSchedulerState(false, getTimeService().getCurrentTimestamp());
             getIntervals();
-            if (!isSuspensionActiveAndEnabled()) {
-                Log.d(TimeBasedSuspensionScheduler.class.getName(), "Suspension feature is not active.");
-                startup(timeService.getCurrentTimestamp());
+            if (!getNetworkTaskScheduler().areNetworkTasksRunning()) {
+                Log.d(TimeBasedSuspensionScheduler.class.getName(), "No network tasks are running. Not starting time based scheduler.");
                 return;
             }
             start();
@@ -134,7 +133,7 @@ public class TimeBasedSuspensionScheduler {
             long now = timeService.getCurrentTimestamp();
             long thresholdNow = addThreshold(now);
             if (!isSuspensionActiveAndEnabled()) {
-                Log.d(TimeBasedSuspensionScheduler.class.getName(), "Suspension feature is not active.");
+                Log.d(TimeBasedSuspensionScheduler.class.getName(), "Suspension feature is not active. Not starting time based scheduler.");
                 setSchedulerState(false, now);
                 stop();
                 doStart(task, now);

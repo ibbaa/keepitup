@@ -347,6 +347,20 @@ public class NetworkTaskProcessServiceSchedulerTest {
     }
 
     @Test
+    public void testAreNetworkTasksRunning() {
+        NetworkTask task1 = getNetworkTask1();
+        NetworkTask task2 = getNetworkTask2();
+        task1 = networkTaskDAO.insertNetworkTask(task1);
+        task2 = networkTaskDAO.insertNetworkTask(task2);
+        assertFalse(scheduler.areNetworkTasksRunning());
+        scheduler.start(task1);
+        scheduler.start(task2);
+        assertTrue(scheduler.areNetworkTasksRunning());
+        scheduler.cancelAll();
+        assertFalse(scheduler.areNetworkTasksRunning());
+    }
+
+    @Test
     public void testTerminateAll() {
         NetworkTask task1 = getNetworkTask1();
         NetworkTask task2 = getNetworkTask2();

@@ -20,7 +20,6 @@ import android.annotation.SuppressLint;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
-import android.content.res.Resources;
 import android.os.Build;
 
 import net.ibbaa.keepitup.R;
@@ -128,9 +127,7 @@ public class NetworkTaskProcessServiceScheduler {
         networkTask.setLastScheduled(-1);
         terminate(networkTask);
         if (shouldStartForegroundService()) {
-            int running = networkTaskDAO.readNetworkTasksRunning();
-            Log.d(NetworkTaskProcessServiceScheduler.class.getName(), "Running tasks: " + running);
-            if (running <= 0) {
+            if (!areNetworkTasksRunning()) {
                 Log.d(NetworkTaskProcessServiceScheduler.class.getName(), "No running tasks. Stopping service.");
                 Intent intent = new Intent(getContext(), NetworkTaskRunningNotificationService.class);
                 intent.setPackage(getContext().getPackageName());
@@ -139,6 +136,13 @@ public class NetworkTaskProcessServiceScheduler {
             }
         }
         return networkTask;
+    }
+
+    public boolean areNetworkTasksRunning() {
+        Log.d(NetworkTaskProcessServiceScheduler.class.getName(), "areNetworkTasksRunning");
+        int running = networkTaskDAO.readNetworkTasksRunning();
+        Log.d(NetworkTaskProcessServiceScheduler.class.getName(), "Running tasks: " + running);
+        return running > 0;
     }
 
     public NetworkTask terminate(NetworkTask networkTask) {
@@ -309,9 +313,5 @@ public class NetworkTaskProcessServiceScheduler {
 
     private Context getContext() {
         return context;
-    }
-
-    private Resources getResources() {
-        return getContext().getResources();
     }
 }
