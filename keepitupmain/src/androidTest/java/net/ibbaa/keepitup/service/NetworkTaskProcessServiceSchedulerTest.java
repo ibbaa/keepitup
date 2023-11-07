@@ -30,7 +30,9 @@ import net.ibbaa.keepitup.model.AccessType;
 import net.ibbaa.keepitup.model.NetworkTask;
 import net.ibbaa.keepitup.test.mock.MockAlarmManager;
 import net.ibbaa.keepitup.test.mock.MockTimeService;
+import net.ibbaa.keepitup.test.mock.TestNetworkTaskProcessServiceScheduler;
 import net.ibbaa.keepitup.test.mock.TestRegistry;
+import net.ibbaa.keepitup.test.mock.TestTimeBasedSuspensionScheduler;
 
 import org.junit.After;
 import org.junit.Before;
@@ -43,15 +45,19 @@ import java.util.List;
 @RunWith(AndroidJUnit4.class)
 public class NetworkTaskProcessServiceSchedulerTest {
 
-    private NetworkTaskProcessServiceScheduler scheduler;
+    private TestNetworkTaskProcessServiceScheduler scheduler;
+    private TestTimeBasedSuspensionScheduler timeBasedScheduler;
     private NetworkTaskDAO networkTaskDAO;
     private MockAlarmManager alarmManager;
     private MockTimeService timeService;
 
     @Before
     public void beforeEachTestMethod() {
-        scheduler = new NetworkTaskProcessServiceScheduler(TestRegistry.getContext());
+        scheduler = new TestNetworkTaskProcessServiceScheduler(TestRegistry.getContext());
         scheduler.cancelAll();
+        timeBasedScheduler = new TestTimeBasedSuspensionScheduler(TestRegistry.getContext());
+        scheduler.setTimeBasedSuspensionScheduler(timeBasedScheduler);
+        timeBasedScheduler.setNetworkTaskScheduler(scheduler);
         NetworkTaskProcessServiceScheduler.getNetworkTaskProcessPool().reset();
         networkTaskDAO = new NetworkTaskDAO(TestRegistry.getContext());
         networkTaskDAO.deleteAllNetworkTasks();

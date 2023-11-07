@@ -68,7 +68,8 @@ public class NetworkTaskProcessServiceScheduler {
         Log.d(NetworkTaskProcessServiceScheduler.class.getName(), "Start network task " + networkTask);
         networkTask.setRunning(true);
         networkTaskDAO.updateNetworkTaskRunning(networkTask.getId(), true);
-        return schedule(networkTask);
+        getTimeBasedSuspensionScheduler().start(networkTask);
+        return networkTask;
     }
 
     public NetworkTask schedule(NetworkTask networkTask) {
@@ -126,8 +127,10 @@ public class NetworkTaskProcessServiceScheduler {
         networkTaskDAO.updateNetworkTaskRunning(networkTask.getId(), false);
         networkTask.setLastScheduled(-1);
         terminate(networkTask);
-        if (shouldStartForegroundService()) {
-            if (!areNetworkTasksRunning()) {
+        if (!areNetworkTasksRunning()) {
+            Log.d(NetworkTaskProcessServiceScheduler.class.getName(), "No running tasks. Stopping time bases scheduler.");
+            getTimeBasedSuspensionScheduler().stop();
+            if (shouldStartForegroundService()) {
                 Log.d(NetworkTaskProcessServiceScheduler.class.getName(), "No running tasks. Stopping service.");
                 Intent intent = new Intent(getContext(), NetworkTaskRunningNotificationService.class);
                 intent.setPackage(getContext().getPackageName());
@@ -309,6 +312,10 @@ public class NetworkTaskProcessServiceScheduler {
 
     public IPermissionManager getPermissionManager() {
         return new PermissionManager();
+    }
+
+    public TimeBasedSuspensionScheduler getTimeBasedSuspensionScheduler() {
+        return new TimeBasedSuspensionScheduler(getContext());
     }
 
     private Context getContext() {

@@ -35,7 +35,9 @@ import net.ibbaa.keepitup.model.Time;
 import net.ibbaa.keepitup.resources.PreferenceManager;
 import net.ibbaa.keepitup.test.mock.MockAlarmManager;
 import net.ibbaa.keepitup.test.mock.MockTimeService;
+import net.ibbaa.keepitup.test.mock.TestNetworkTaskProcessServiceScheduler;
 import net.ibbaa.keepitup.test.mock.TestRegistry;
+import net.ibbaa.keepitup.test.mock.TestTimeBasedSuspensionScheduler;
 import net.ibbaa.keepitup.util.TimeUtil;
 
 import org.junit.After;
@@ -51,17 +53,22 @@ import java.util.List;
 @RunWith(AndroidJUnit4.class)
 public class TimeBasedSuspensionSchedulerTest {
 
-    private TimeBasedSuspensionScheduler scheduler;
+    private TestTimeBasedSuspensionScheduler scheduler;
+    private TestNetworkTaskProcessServiceScheduler networkTaskScheduler;
     private PreferenceManager preferenceManager;
     private NetworkTaskDAO networkTaskDAO;
     private IntervalDAO intervalDAO;
     private SchedulerStateDAO schedulerStateDAO;
     private MockAlarmManager alarmManager;
+    private MockAlarmManager networkTaskSchedulerAlarmManager;
     private MockTimeService timeService;
 
     @Before
     public void beforeEachTestMethod() {
-        scheduler = new TimeBasedSuspensionScheduler(TestRegistry.getContext());
+        scheduler = new TestTimeBasedSuspensionScheduler(TestRegistry.getContext());
+        networkTaskScheduler = new TestNetworkTaskProcessServiceScheduler(TestRegistry.getContext());
+        scheduler.setNetworkTaskScheduler(networkTaskScheduler);
+        networkTaskScheduler.setTimeBasedSuspensionScheduler(scheduler);
         scheduler.reset();
         scheduler.resetIsSuspended();
         scheduler.stop();
@@ -75,6 +82,8 @@ public class TimeBasedSuspensionSchedulerTest {
         schedulerStateDAO.insertSchedulerState(new SchedulerState(0, false, 0));
         alarmManager = (MockAlarmManager) scheduler.getAlarmManager();
         alarmManager.reset();
+        networkTaskSchedulerAlarmManager = (MockAlarmManager) networkTaskScheduler.getAlarmManager();
+        networkTaskSchedulerAlarmManager.reset();
         timeService = (MockTimeService) scheduler.getTimeService();
     }
 
@@ -88,6 +97,7 @@ public class TimeBasedSuspensionSchedulerTest {
         scheduler.resetIsSuspended();
         scheduler.stop();
         alarmManager.reset();
+        networkTaskSchedulerAlarmManager.reset();
     }
 
     @Test
@@ -266,7 +276,6 @@ public class TimeBasedSuspensionSchedulerTest {
 
     @Test
     public void testStartSingle() {
-        MockAlarmManager networkTaskSchedulerAlarmManager = (MockAlarmManager) scheduler.getNetworkTaskScheduler().getAlarmManager();
         assertFalse(networkTaskSchedulerAlarmManager.wasSetAlarmCalled());
         schedulerStateDAO.insertSchedulerState(new SchedulerState(0, true, 0));
         NetworkTask task = getNetworkTask1();
@@ -279,7 +288,6 @@ public class TimeBasedSuspensionSchedulerTest {
 
     @Test
     public void testStartup() {
-        MockAlarmManager networkTaskSchedulerAlarmManager = (MockAlarmManager) scheduler.getNetworkTaskScheduler().getAlarmManager();
         assertFalse(networkTaskSchedulerAlarmManager.wasSetAlarmCalled());
         schedulerStateDAO.insertSchedulerState(new SchedulerState(0, true, 0));
         NetworkTask task1 = getNetworkTask1();
@@ -305,13 +313,14 @@ public class TimeBasedSuspensionSchedulerTest {
 
     @Test
     public void testSuspend() {
-        MockAlarmManager networkTaskSchedulerAlarmManager = (MockAlarmManager) scheduler.getNetworkTaskScheduler().getAlarmManager();
         schedulerStateDAO.insertSchedulerState(new SchedulerState(0, false, 0));
         NetworkTask task1 = getNetworkTask1();
         NetworkTask task2 = getNetworkTask2();
         task1 = networkTaskDAO.insertNetworkTask(task1);
         task2 = networkTaskDAO.insertNetworkTask(task2);
-        task1 = scheduler.getNetworkTaskScheduler().start(task1);
+        task1.setRunning(true);
+        networkTaskDAO.updateNetworkTaskRunning(task1.getId(), true);
+        networkTaskScheduler.schedule(task1);
         networkTaskDAO.updateNetworkTaskLastScheduled(task1.getId(), 125);
         networkTaskDAO.updateNetworkTaskLastScheduled(task2.getId(), 125);
         assertTrue(task1.isRunning());
@@ -332,14 +341,16 @@ public class TimeBasedSuspensionSchedulerTest {
 
     @Test
     public void testStartSuspensionNotActive() {
-        MockAlarmManager networkTaskSchedulerAlarmManager = (MockAlarmManager) scheduler.getNetworkTaskScheduler().getAlarmManager();
         NetworkTask task1 = getNetworkTask1();
         NetworkTask task2 = getNetworkTask2();
         task1 = networkTaskDAO.insertNetworkTask(task1);
         task2 = networkTaskDAO.insertNetworkTask(task2);
-        task1 = scheduler.getNetworkTaskScheduler().start(task1);
-        task2 = scheduler.getNetworkTaskScheduler().start(task2);
-        scheduler.getNetworkTaskScheduler().suspendAll();
+        task1.setRunning(true);
+        task2.setRunning(true);
+        networkTaskDAO.updateNetworkTaskRunning(task1.getId(), true);
+        networkTaskDAO.updateNetworkTaskRunning(task2.getId(), true);
+        networkTaskScheduler.schedule(task1);
+        networkTaskScheduler.schedule(task2);
         networkTaskSchedulerAlarmManager.reset();
         scheduler.start();
         assertFalse(schedulerStateDAO.readSchedulerState().isSuspended());
@@ -375,14 +386,16 @@ public class TimeBasedSuspensionSchedulerTest {
 
     @Test
     public void testStartStartupSuspensionDisabledAfterRunning() {
-        MockAlarmManager networkTaskSchedulerAlarmManager = (MockAlarmManager) scheduler.getNetworkTaskScheduler().getAlarmManager();
         NetworkTask task1 = getNetworkTask1();
         NetworkTask task2 = getNetworkTask1();
         task1 = networkTaskDAO.insertNetworkTask(task1);
         task2 = networkTaskDAO.insertNetworkTask(task2);
-        scheduler.getNetworkTaskScheduler().start(task1);
-        scheduler.getNetworkTaskScheduler().start(task2);
-        scheduler.getNetworkTaskScheduler().suspendAll();
+        task1.setRunning(true);
+        task2.setRunning(true);
+        networkTaskDAO.updateNetworkTaskRunning(task1.getId(), true);
+        networkTaskDAO.updateNetworkTaskRunning(task2.getId(), true);
+        networkTaskScheduler.schedule(task1);
+        networkTaskScheduler.schedule(task2);
         intervalDAO.insertInterval(getInterval1());
         setTestTime(getTestTimestamp(24, 10, 30));
         networkTaskSchedulerAlarmManager.reset();
@@ -411,14 +424,14 @@ public class TimeBasedSuspensionSchedulerTest {
 
     @Test
     public void testStartStartNetworkTaskSuspensionDisabledAfterRunning() {
-        MockAlarmManager networkTaskSchedulerAlarmManager = (MockAlarmManager) scheduler.getNetworkTaskScheduler().getAlarmManager();
         NetworkTask task1 = getNetworkTask1();
         NetworkTask task2 = getNetworkTask1();
         task1 = networkTaskDAO.insertNetworkTask(task1);
         task2 = networkTaskDAO.insertNetworkTask(task2);
-        scheduler.getNetworkTaskScheduler().start(task1);
-        scheduler.getNetworkTaskScheduler().start(task2);
-        scheduler.getNetworkTaskScheduler().suspendAll();
+        task1.setRunning(true);
+        task2.setRunning(true);
+        networkTaskDAO.updateNetworkTaskRunning(task1.getId(), true);
+        networkTaskDAO.updateNetworkTaskRunning(task2.getId(), true);
         intervalDAO.insertInterval(getInterval1());
         setTestTime(getTestTimestamp(24, 10, 30));
         networkTaskSchedulerAlarmManager.reset();
@@ -447,10 +460,11 @@ public class TimeBasedSuspensionSchedulerTest {
 
     @Test
     public void testStartIsRunningAndSuspended() {
-        MockAlarmManager networkTaskSchedulerAlarmManager = (MockAlarmManager) scheduler.getNetworkTaskScheduler().getAlarmManager();
         NetworkTask task1 = getNetworkTask1();
         task1 = networkTaskDAO.insertNetworkTask(task1);
-        scheduler.getNetworkTaskScheduler().start(task1);
+        task1.setRunning(true);
+        networkTaskDAO.updateNetworkTaskRunning(task1.getId(), true);
+        networkTaskScheduler.schedule(task1);
         intervalDAO.insertInterval(getInterval1());
         setTestTime(getTestTimestamp(24, 10, 15));
         networkTaskSchedulerAlarmManager.reset();
@@ -467,10 +481,11 @@ public class TimeBasedSuspensionSchedulerTest {
 
     @Test
     public void testStartStartupIsRunning() {
-        MockAlarmManager networkTaskSchedulerAlarmManager = (MockAlarmManager) scheduler.getNetworkTaskScheduler().getAlarmManager();
         NetworkTask task1 = getNetworkTask1();
         task1 = networkTaskDAO.insertNetworkTask(task1);
-        scheduler.getNetworkTaskScheduler().start(task1);
+        task1.setRunning(true);
+        networkTaskDAO.updateNetworkTaskRunning(task1.getId(), true);
+        networkTaskScheduler.schedule(task1);
         intervalDAO.insertInterval(getInterval1());
         setTestTime(getTestTimestamp(24, 9, 1));
         networkTaskSchedulerAlarmManager.reset();
@@ -487,10 +502,11 @@ public class TimeBasedSuspensionSchedulerTest {
 
     @Test
     public void testStartStartIsRunning() {
-        MockAlarmManager networkTaskSchedulerAlarmManager = (MockAlarmManager) scheduler.getNetworkTaskScheduler().getAlarmManager();
         NetworkTask task1 = getNetworkTask1();
         task1 = networkTaskDAO.insertNetworkTask(task1);
-        scheduler.getNetworkTaskScheduler().start(task1);
+        task1.setRunning(true);
+        networkTaskDAO.updateNetworkTaskRunning(task1.getId(), true);
+        networkTaskScheduler.schedule(task1);
         intervalDAO.insertInterval(getInterval1());
         setTestTime(getTestTimestamp(24, 9, 1));
         networkTaskSchedulerAlarmManager.reset();
@@ -507,13 +523,16 @@ public class TimeBasedSuspensionSchedulerTest {
 
     @Test
     public void testStartSuspend() {
-        MockAlarmManager networkTaskSchedulerAlarmManager = (MockAlarmManager) scheduler.getNetworkTaskScheduler().getAlarmManager();
         NetworkTask task1 = getNetworkTask1();
         NetworkTask task2 = getNetworkTask2();
         task1 = networkTaskDAO.insertNetworkTask(task1);
         task2 = networkTaskDAO.insertNetworkTask(task2);
-        scheduler.getNetworkTaskScheduler().start(task1);
-        scheduler.getNetworkTaskScheduler().start(task2);
+        task1.setRunning(true);
+        task2.setRunning(true);
+        networkTaskDAO.updateNetworkTaskRunning(task1.getId(), true);
+        networkTaskDAO.updateNetworkTaskRunning(task2.getId(), true);
+        networkTaskScheduler.schedule(task1);
+        networkTaskScheduler.schedule(task2);
         intervalDAO.insertInterval(getInterval1());
         setTestTime(getTestTimestamp(24, 10, 15));
         networkTaskSchedulerAlarmManager.reset();
@@ -535,13 +554,16 @@ public class TimeBasedSuspensionSchedulerTest {
 
     @Test
     public void testStartSuspendOverlapDaysSameDay() {
-        MockAlarmManager networkTaskSchedulerAlarmManager = (MockAlarmManager) scheduler.getNetworkTaskScheduler().getAlarmManager();
         NetworkTask task1 = getNetworkTask1();
         NetworkTask task2 = getNetworkTask2();
         task1 = networkTaskDAO.insertNetworkTask(task1);
         task2 = networkTaskDAO.insertNetworkTask(task2);
-        scheduler.getNetworkTaskScheduler().start(task1);
-        scheduler.getNetworkTaskScheduler().start(task2);
+        task1.setRunning(true);
+        task2.setRunning(true);
+        networkTaskDAO.updateNetworkTaskRunning(task1.getId(), true);
+        networkTaskDAO.updateNetworkTaskRunning(task2.getId(), true);
+        networkTaskScheduler.schedule(task1);
+        networkTaskScheduler.schedule(task2);
         intervalDAO.insertInterval(getInterval4());
         setTestTime(getTestTimestamp(24, 23, 59));
         networkTaskSchedulerAlarmManager.reset();
@@ -563,13 +585,16 @@ public class TimeBasedSuspensionSchedulerTest {
 
     @Test
     public void testStartSuspendOverlapDaysOtherDay() {
-        MockAlarmManager networkTaskSchedulerAlarmManager = (MockAlarmManager) scheduler.getNetworkTaskScheduler().getAlarmManager();
         NetworkTask task1 = getNetworkTask1();
         NetworkTask task2 = getNetworkTask2();
         task1 = networkTaskDAO.insertNetworkTask(task1);
         task2 = networkTaskDAO.insertNetworkTask(task2);
-        scheduler.getNetworkTaskScheduler().start(task1);
-        scheduler.getNetworkTaskScheduler().start(task2);
+        task1.setRunning(true);
+        task2.setRunning(true);
+        networkTaskDAO.updateNetworkTaskRunning(task1.getId(), true);
+        networkTaskDAO.updateNetworkTaskRunning(task2.getId(), true);
+        networkTaskScheduler.schedule(task1);
+        networkTaskScheduler.schedule(task2);
         intervalDAO.insertInterval(getInterval4());
         setTestTime(getTestTimestamp(24, 0, 1));
         networkTaskSchedulerAlarmManager.reset();
@@ -591,13 +616,16 @@ public class TimeBasedSuspensionSchedulerTest {
 
     @Test
     public void testStartSuspendThreshold() {
-        MockAlarmManager networkTaskSchedulerAlarmManager = (MockAlarmManager) scheduler.getNetworkTaskScheduler().getAlarmManager();
         NetworkTask task1 = getNetworkTask1();
         NetworkTask task2 = getNetworkTask2();
         task1 = networkTaskDAO.insertNetworkTask(task1);
         task2 = networkTaskDAO.insertNetworkTask(task2);
-        scheduler.getNetworkTaskScheduler().start(task1);
-        scheduler.getNetworkTaskScheduler().start(task2);
+        task1.setRunning(true);
+        task2.setRunning(true);
+        networkTaskDAO.updateNetworkTaskRunning(task1.getId(), true);
+        networkTaskDAO.updateNetworkTaskRunning(task2.getId(), true);
+        networkTaskScheduler.schedule(task1);
+        networkTaskScheduler.schedule(task2);
         intervalDAO.insertInterval(getInterval1());
         setTestTime(getTestTimestamp(24, 10, 10));
         networkTaskSchedulerAlarmManager.reset();
@@ -619,14 +647,14 @@ public class TimeBasedSuspensionSchedulerTest {
 
     @Test
     public void testStartStartup() {
-        MockAlarmManager networkTaskSchedulerAlarmManager = (MockAlarmManager) scheduler.getNetworkTaskScheduler().getAlarmManager();
         NetworkTask task1 = getNetworkTask1();
         NetworkTask task2 = getNetworkTask2();
         task1 = networkTaskDAO.insertNetworkTask(task1);
         task2 = networkTaskDAO.insertNetworkTask(task2);
-        scheduler.getNetworkTaskScheduler().start(task1);
-        scheduler.getNetworkTaskScheduler().start(task2);
-        scheduler.getNetworkTaskScheduler().suspendAll();
+        task1.setRunning(true);
+        task2.setRunning(true);
+        networkTaskDAO.updateNetworkTaskRunning(task1.getId(), true);
+        networkTaskDAO.updateNetworkTaskRunning(task2.getId(), true);
         intervalDAO.insertInterval(getInterval1());
         setTestTime(getTestTimestamp(24, 9, 1));
         networkTaskSchedulerAlarmManager.reset();
@@ -647,14 +675,14 @@ public class TimeBasedSuspensionSchedulerTest {
 
     @Test
     public void testStartStartupOverlapDays() {
-        MockAlarmManager networkTaskSchedulerAlarmManager = (MockAlarmManager) scheduler.getNetworkTaskScheduler().getAlarmManager();
         NetworkTask task1 = getNetworkTask1();
         NetworkTask task2 = getNetworkTask2();
         task1 = networkTaskDAO.insertNetworkTask(task1);
         task2 = networkTaskDAO.insertNetworkTask(task2);
-        scheduler.getNetworkTaskScheduler().start(task1);
-        scheduler.getNetworkTaskScheduler().start(task2);
-        scheduler.getNetworkTaskScheduler().suspendAll();
+        task1.setRunning(true);
+        task2.setRunning(true);
+        networkTaskDAO.updateNetworkTaskRunning(task1.getId(), true);
+        networkTaskDAO.updateNetworkTaskRunning(task2.getId(), true);
         intervalDAO.insertInterval(getInterval4());
         setTestTime(getTestTimestamp(24, 20, 0));
         networkTaskSchedulerAlarmManager.reset();
@@ -675,14 +703,14 @@ public class TimeBasedSuspensionSchedulerTest {
 
     @Test
     public void testStartStartupThreshold() {
-        MockAlarmManager networkTaskSchedulerAlarmManager = (MockAlarmManager) scheduler.getNetworkTaskScheduler().getAlarmManager();
         NetworkTask task1 = getNetworkTask1();
         NetworkTask task2 = getNetworkTask2();
         task1 = networkTaskDAO.insertNetworkTask(task1);
         task2 = networkTaskDAO.insertNetworkTask(task2);
-        scheduler.getNetworkTaskScheduler().start(task1);
-        scheduler.getNetworkTaskScheduler().start(task2);
-        scheduler.getNetworkTaskScheduler().suspendAll();
+        task1.setRunning(true);
+        task2.setRunning(true);
+        networkTaskDAO.updateNetworkTaskRunning(task1.getId(), true);
+        networkTaskDAO.updateNetworkTaskRunning(task2.getId(), true);
         intervalDAO.insertInterval(getInterval1());
         setTestTime(getTestTimestamp(24, 11, 11));
         networkTaskSchedulerAlarmManager.reset();
@@ -703,14 +731,14 @@ public class TimeBasedSuspensionSchedulerTest {
 
     @Test
     public void testStartStartNetworkTask() {
-        MockAlarmManager networkTaskSchedulerAlarmManager = (MockAlarmManager) scheduler.getNetworkTaskScheduler().getAlarmManager();
         NetworkTask task1 = getNetworkTask1();
         NetworkTask task2 = getNetworkTask2();
         task1 = networkTaskDAO.insertNetworkTask(task1);
         task2 = networkTaskDAO.insertNetworkTask(task2);
-        scheduler.getNetworkTaskScheduler().start(task1);
-        scheduler.getNetworkTaskScheduler().start(task2);
-        scheduler.getNetworkTaskScheduler().suspendAll();
+        task1.setRunning(true);
+        task2.setRunning(true);
+        networkTaskDAO.updateNetworkTaskRunning(task1.getId(), true);
+        networkTaskDAO.updateNetworkTaskRunning(task2.getId(), true);
         intervalDAO.insertInterval(getInterval1());
         intervalDAO.insertInterval(getInterval4());
         setTestTime(getTestTimestamp(24, 1, 31));
@@ -732,10 +760,11 @@ public class TimeBasedSuspensionSchedulerTest {
 
     @Test
     public void testStop() {
-        MockAlarmManager networkTaskSchedulerAlarmManager = (MockAlarmManager) scheduler.getNetworkTaskScheduler().getAlarmManager();
         NetworkTask task1 = getNetworkTask1();
         task1 = networkTaskDAO.insertNetworkTask(task1);
-        scheduler.getNetworkTaskScheduler().start(task1);
+        task1.setRunning(true);
+        networkTaskDAO.updateNetworkTaskRunning(task1.getId(), true);
+        networkTaskScheduler.schedule(task1);
         intervalDAO.insertInterval(getInterval1());
         setTestTime(getTestTimestamp(24, 10, 15));
         networkTaskSchedulerAlarmManager.reset();
@@ -747,11 +776,10 @@ public class TimeBasedSuspensionSchedulerTest {
 
     @Test
     public void testRestartNoIntervals() {
-        MockAlarmManager networkTaskSchedulerAlarmManager = (MockAlarmManager) scheduler.getNetworkTaskScheduler().getAlarmManager();
         NetworkTask task1 = getNetworkTask1();
         task1 = networkTaskDAO.insertNetworkTask(task1);
-        scheduler.getNetworkTaskScheduler().start(task1);
-        scheduler.getNetworkTaskScheduler().suspendAll();
+        task1.setRunning(true);
+        networkTaskDAO.updateNetworkTaskRunning(task1.getId(), true);
         intervalDAO.insertInterval(getInterval1());
         intervalDAO.insertInterval(getInterval4());
         setTestTime(getTestTimestamp(24, 1, 31));
@@ -766,11 +794,10 @@ public class TimeBasedSuspensionSchedulerTest {
 
     @Test
     public void testRestartSuspensionDisabled() {
-        MockAlarmManager networkTaskSchedulerAlarmManager = (MockAlarmManager) scheduler.getNetworkTaskScheduler().getAlarmManager();
         NetworkTask task1 = getNetworkTask1();
         task1 = networkTaskDAO.insertNetworkTask(task1);
-        scheduler.getNetworkTaskScheduler().start(task1);
-        scheduler.getNetworkTaskScheduler().suspendAll();
+        task1.setRunning(true);
+        networkTaskDAO.updateNetworkTaskRunning(task1.getId(), true);
         intervalDAO.insertInterval(getInterval1());
         intervalDAO.insertInterval(getInterval4());
         setTestTime(getTestTimestamp(24, 1, 31));
@@ -788,7 +815,6 @@ public class TimeBasedSuspensionSchedulerTest {
 
     @Test
     public void testRestartNoNetworkTaskRunning() {
-        MockAlarmManager networkTaskSchedulerAlarmManager = (MockAlarmManager) scheduler.getNetworkTaskScheduler().getAlarmManager();
         NetworkTask task1 = getNetworkTask1();
         task1.setRunning(false);
         NetworkTask task2 = getNetworkTask2();
@@ -808,13 +834,16 @@ public class TimeBasedSuspensionSchedulerTest {
 
     @Test
     public void testRestart() {
-        MockAlarmManager networkTaskSchedulerAlarmManager = (MockAlarmManager) scheduler.getNetworkTaskScheduler().getAlarmManager();
         NetworkTask task1 = getNetworkTask1();
         NetworkTask task2 = getNetworkTask2();
         task1 = networkTaskDAO.insertNetworkTask(task1);
         task2 = networkTaskDAO.insertNetworkTask(task2);
-        scheduler.getNetworkTaskScheduler().start(task1);
-        scheduler.getNetworkTaskScheduler().start(task2);
+        task1.setRunning(true);
+        task2.setRunning(true);
+        networkTaskDAO.updateNetworkTaskRunning(task1.getId(), true);
+        networkTaskDAO.updateNetworkTaskRunning(task2.getId(), true);
+        networkTaskScheduler.schedule(task1);
+        networkTaskScheduler.schedule(task2);
         setTestTime(getTestTimestamp(24, 1, 30));
         networkTaskSchedulerAlarmManager.reset();
         scheduler.start();

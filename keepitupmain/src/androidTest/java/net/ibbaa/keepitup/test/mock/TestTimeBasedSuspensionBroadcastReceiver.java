@@ -25,18 +25,18 @@ import net.ibbaa.keepitup.service.TimeBasedSuspensionScheduler;
 public class TestTimeBasedSuspensionBroadcastReceiver extends TimeBasedSuspensionBroadcastReceiver {
 
     private final MockTimeService mockTimeService;
-    private final TimeBasedSuspensionScheduler scheduler;
+    private final TestTimeBasedSuspensionScheduler scheduler;
 
     public TestTimeBasedSuspensionBroadcastReceiver() {
         this.mockTimeService = new MockTimeService();
-        this.scheduler = new TimeBasedSuspensionScheduler(TestRegistry.getContext());
+        this.scheduler = new TestTimeBasedSuspensionScheduler(TestRegistry.getContext());
     }
 
     public MockTimeService getMockTimeService() {
         return mockTimeService;
     }
 
-    public TimeBasedSuspensionScheduler getScheduler() {
+    public TestTimeBasedSuspensionScheduler getScheduler() {
         return scheduler;
     }
 

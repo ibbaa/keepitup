@@ -44,7 +44,6 @@ public class TimeBasedSuspensionScheduler {
     }
 
     private final Context context;
-    private final NetworkTaskProcessServiceScheduler networkTaskScheduler;
     private final IntervalDAO intervalDAO;
     private final SchedulerStateDAO schedulerStateDAO;
     private final ITimeService timeService;
@@ -56,7 +55,6 @@ public class TimeBasedSuspensionScheduler {
 
     public TimeBasedSuspensionScheduler(Context context) {
         this.context = context;
-        this.networkTaskScheduler = new NetworkTaskProcessServiceScheduler(context);
         this.intervalDAO = new IntervalDAO(context);
         this.schedulerStateDAO = new SchedulerStateDAO(context);
         this.timeService = createTimeService();
@@ -334,7 +332,7 @@ public class TimeBasedSuspensionScheduler {
     }
 
     public NetworkTaskProcessServiceScheduler getNetworkTaskScheduler() {
-        return networkTaskScheduler;
+        return new NetworkTaskProcessServiceScheduler(getContext());
     }
 
     private IAlarmManager createAlarmManager() {
