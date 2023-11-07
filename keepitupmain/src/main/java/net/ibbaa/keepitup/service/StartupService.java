@@ -115,11 +115,11 @@ public class StartupService extends BroadcastReceiver {
         try {
             Log.d(StartupService.class.getName(), "Init notification channels.");
             new NotificationHandler(context, new PermissionManager());
-            Log.d(StartupService.class.getName(), "Starting pending network tasks.");
-            NetworkTaskProcessServiceScheduler scheduler = new NetworkTaskProcessServiceScheduler(context);
-            scheduler.startup();
+            Log.d(StartupService.class.getName(), "Starting scheduler.");
+            TimeBasedSuspensionScheduler scheduler = new TimeBasedSuspensionScheduler(context);
+            scheduler.restart();
         } catch (Exception exc) {
-            Log.e(StartupService.class.getName(), "Error on starting pending network tasks.", exc);
+            Log.e(StartupService.class.getName(), "Error on starting scheduler.", exc);
         }
     }
 
