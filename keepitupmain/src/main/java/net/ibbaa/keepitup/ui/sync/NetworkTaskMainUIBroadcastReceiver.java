@@ -21,6 +21,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 
+import net.ibbaa.keepitup.R;
 import net.ibbaa.keepitup.logging.Log;
 import net.ibbaa.keepitup.model.NetworkTask;
 import net.ibbaa.keepitup.ui.adapter.NetworkTaskAdapter;
@@ -40,6 +41,13 @@ public class NetworkTaskMainUIBroadcastReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
+        String action = intent.getStringExtra(context.getResources().getString(R.string.sync_action_key));
+        String notifyAction = context.getResources().getString(R.string.sync_action_notify);
+        if (notifyAction.equals(action)) {
+            Log.d(NetworkTaskMainUIBroadcastReceiver.class.getName(), "Received request with notify action. Refreshing UI.");
+            adapter.notifyDataSetChanged();
+            return;
+        }
         NetworkTask task = new NetworkTask(Objects.requireNonNull(intent.getExtras()));
         Log.d(NetworkTaskMainUIBroadcastReceiver.class.getName(), "Received request for " + task);
         NetworkTaskMainUISyncTask syncTask = new NetworkTaskMainUISyncTask(activity, task, adapter);

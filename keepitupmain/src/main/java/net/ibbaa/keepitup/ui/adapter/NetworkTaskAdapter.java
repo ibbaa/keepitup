@@ -29,6 +29,7 @@ import net.ibbaa.keepitup.R;
 import net.ibbaa.keepitup.logging.Log;
 import net.ibbaa.keepitup.model.LogEntry;
 import net.ibbaa.keepitup.model.NetworkTask;
+import net.ibbaa.keepitup.service.TimeBasedSuspensionScheduler;
 import net.ibbaa.keepitup.ui.NetworkTaskMainActivity;
 import net.ibbaa.keepitup.ui.mapping.EnumMapping;
 
@@ -87,12 +88,29 @@ public class NetworkTaskAdapter extends RecyclerView.Adapter<NetworkTaskViewHold
 
     private void bindStatus(@NonNull NetworkTaskViewHolder networkTaskViewHolder, NetworkTask networkTask) {
         Log.d(NetworkTaskAdapter.class.getName(), "bindStatus, networkTask is " + networkTask);
+        boolean isRunningAndSuspended = isRunningAndSuspended(networkTask);
         String statusRunning = networkTask.isRunning() ? getResources().getString(R.string.string_started) : getResources().getString(R.string.string_stopped);
+        if (isRunningAndSuspended) {
+            statusRunning = getResources().getString(R.string.string_suspended);
+        }
         String formattedStatusText = getResources().getString(R.string.text_activity_main_list_item_network_task_status, statusRunning);
         int startStopImage = networkTask.isRunning() ? R.drawable.icon_stop_selector : R.drawable.icon_start_selector;
+        if (isRunningAndSuspended) {
+            startStopImage = R.drawable.icon_suspended_selector;
+        }
         String descriptionStartStopImage = networkTask.isRunning() ? getResources().getString(R.string.label_activity_main_stop_network_task) : getResources().getString(R.string.label_activity_main_start_network_task);
         Log.d(NetworkTaskAdapter.class.getName(), "binding status text " + formattedStatusText);
         networkTaskViewHolder.setStatus(formattedStatusText, descriptionStartStopImage, startStopImage);
+    }
+
+    private boolean isRunningAndSuspended(NetworkTask networkTask) {
+        Log.d(NetworkTaskAdapter.class.getName(), "isRunningAndSuspended, networkTask is " + networkTask);
+        TimeBasedSuspensionScheduler scheduler = new TimeBasedSuspensionScheduler(getContext());
+        boolean isSuspended = scheduler.isSuspended();
+        boolean isRunning = networkTask.isRunning();
+        Log.d(NetworkTaskAdapter.class.getName(), "isSuspended is " + isSuspended);
+        Log.d(NetworkTaskAdapter.class.getName(), "isRunning is " + isRunning);
+        return isSuspended && isRunning;
     }
 
     private void bindInstances(@NonNull NetworkTaskViewHolder networkTaskViewHolder, NetworkTask networkTask) {

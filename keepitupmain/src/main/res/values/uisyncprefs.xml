@@ -22,4 +22,6 @@
     <integer name="delete_table_timeout">500</integer>
     <integer name="export_timeout">2000</integer>
     <integer name="import_timeout">2000</integer>
+    <string name="sync_action_key">sync_action_key</string>
+    <string name="sync_action_notify">notify</string>
 </resources>

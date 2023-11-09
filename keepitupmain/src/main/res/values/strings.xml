@@ -17,6 +17,7 @@
 <resources>
     <string name="string_started">Started</string>
     <string name="string_stopped">Stopped</string>
+    <string name="string_suspended">Suspended</string>
     <string name="string_minute">minute</string>
     <string name="string_minutes">minutes</string>
     <string name="string_second">second</string>

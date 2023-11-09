@@ -32,6 +32,7 @@ import net.ibbaa.keepitup.model.NetworkTask;
 import net.ibbaa.keepitup.model.SchedulerState;
 import net.ibbaa.keepitup.resources.PreferenceManager;
 import net.ibbaa.keepitup.resources.ServiceFactoryContributor;
+import net.ibbaa.keepitup.ui.sync.NetworkTaskMainUIBroadcastReceiver;
 import net.ibbaa.keepitup.util.TimeUtil;
 
 import java.util.List;
@@ -244,18 +245,22 @@ public class TimeBasedSuspensionScheduler {
         Log.d(TimeBasedSuspensionScheduler.class.getName(), "suspend with timestamp " + now);
         getNetworkTaskScheduler().suspendAll();
         setSchedulerState(true, now);
+        sendNetworkTaskUINotificationBroadcast();
     }
+
 
     public void startup(long now) {
         Log.d(TimeBasedSuspensionScheduler.class.getName(), "startup with timestamp " + now);
         getNetworkTaskScheduler().startup();
         setSchedulerState(false, now);
+        sendNetworkTaskUINotificationBroadcast();
     }
 
     public void startSingle(NetworkTask task, long now) {
         Log.d(TimeBasedSuspensionScheduler.class.getName(), "startSingle with task + " + task + " and timestamp " + now);
         getNetworkTaskScheduler().schedule(task);
         setSchedulerState(false, now);
+        sendNetworkTaskUINotificationBroadcast();
     }
 
     private boolean isSuspensionActiveAndEnabled() {
@@ -313,6 +318,15 @@ public class TimeBasedSuspensionScheduler {
             schedulerStateDAO.updateSchedulerState(new SchedulerState(0, state, timestamp));
             isSuspended = state;
         }
+    }
+
+    private void sendNetworkTaskUINotificationBroadcast() {
+        String actionKey = getContext().getResources().getString(R.string.sync_action_key);
+        String notifyAction = context.getResources().getString(R.string.sync_action_notify);
+        Intent mainUIintent = new Intent(NetworkTaskMainUIBroadcastReceiver.class.getName());
+        mainUIintent.setPackage(getContext().getPackageName());
+        mainUIintent.putExtra(actionKey, notifyAction);
+        getContext().sendBroadcast(mainUIintent);
     }
 
     private long addThreshold(long timestamp) {
