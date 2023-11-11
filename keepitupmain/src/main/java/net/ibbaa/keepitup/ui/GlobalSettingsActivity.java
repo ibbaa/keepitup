@@ -31,6 +31,7 @@ import com.google.android.material.switchmaterial.SwitchMaterial;
 
 import net.ibbaa.keepitup.R;
 import net.ibbaa.keepitup.logging.Log;
+import net.ibbaa.keepitup.model.Interval;
 import net.ibbaa.keepitup.model.NotificationType;
 import net.ibbaa.keepitup.resources.PreferenceManager;
 import net.ibbaa.keepitup.resources.PreferenceSetup;
@@ -44,9 +45,12 @@ import net.ibbaa.keepitup.util.BundleUtil;
 import net.ibbaa.keepitup.util.FileUtil;
 import net.ibbaa.keepitup.util.NumberUtil;
 import net.ibbaa.keepitup.util.StringUtil;
+import net.ibbaa.keepitup.util.TimeUtil;
 
 import java.io.File;
+import java.text.SimpleDateFormat;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 
 public class GlobalSettingsActivity extends SettingsInputActivity {
@@ -56,6 +60,9 @@ public class GlobalSettingsActivity extends SettingsInputActivity {
     private SwitchMaterial notificationInactiveNetworkSwitch;
     private TextView notificationInactiveNetworkOnOffText;
     private RadioGroup notificationType;
+    private SwitchMaterial suspensionEnabledSwitch;
+    private TextView suspensionEnabledOnOffText;
+    private TextView suspensionIntervalsText;
     private SwitchMaterial downloadExternalStorageSwitch;
     private TextView downloadExternalStorageOnOffText;
     private TextView downloadFolderText;
@@ -76,6 +83,8 @@ public class GlobalSettingsActivity extends SettingsInputActivity {
         prepareConnectCountField();
         prepareNotificationInactiveNetworkSwitch();
         prepareNotificationTypeRadioGroup();
+        prepareSuspensionEnabledSwitch();
+        prepareSuspensionIntervalsField();
         prepareDownloadExternalStorageSwitch();
         prepareDownloadFolderField();
         prepareDownloadKeepSwitch();
@@ -180,6 +189,45 @@ public class GlobalSettingsActivity extends SettingsInputActivity {
         }
     }
 
+    private void prepareSuspensionEnabledSwitch() {
+        Log.d(GlobalSettingsActivity.class.getName(), "prepareSuspensionEnabledSwitch");
+        PreferenceManager preferenceManager = new PreferenceManager(this);
+        suspensionEnabledSwitch = findViewById(R.id.switch_activity_global_settings_suspension_enabled);
+        suspensionEnabledOnOffText = findViewById(R.id.textview_activity_global_settings_suspension_enabled_on_off);
+        suspensionEnabledSwitch.setOnCheckedChangeListener(null);
+        suspensionEnabledSwitch.setChecked(preferenceManager.getPreferenceSuspensionEnabled());
+        suspensionEnabledSwitch.setOnCheckedChangeListener(this::onSuspensionEnabledCheckedChanged);
+        prepareSuspensionEnabledOnOffText();
+    }
+
+    private void prepareSuspensionEnabledOnOffText() {
+        suspensionEnabledOnOffText.setText(suspensionEnabledSwitch.isChecked() ? getResources().getString(R.string.string_yes) : getResources().getString(R.string.string_no));
+    }
+
+    private void onSuspensionEnabledCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+        Log.d(GlobalSettingsActivity.class.getName(), "onSuspensionEnabledCheckedChanged, new value is " + isChecked);
+        PreferenceManager preferenceManager = new PreferenceManager(this);
+        preferenceManager.setPreferenceSuspensionEnabled(isChecked);
+        prepareSuspensionEnabledOnOffText();
+        prepareSuspensionIntervalsField();
+    }
+
+    private void prepareSuspensionIntervalsField() {
+        Log.d(GlobalSettingsActivity.class.getName(), "prepareSuspensionIntervalsField");
+        PreferenceManager preferenceManager = new PreferenceManager(this);
+        CardView suspensionIntervalsCardView = findViewById(R.id.cardview_activity_global_settings_suspension_intervals);
+        suspensionIntervalsText = findViewById(R.id.textview_activity_global_settings_suspension_intervals);
+        if (suspensionEnabledSwitch.isChecked()) {
+            suspensionIntervalsCardView.setEnabled(true);
+            //suspensionIntervalsCardView.setOnClickListener(this::showSuspensionIntervalsDialog);
+            setSuspensionIntervals(formatSuspensionIntervalsText());
+        } else {
+            setSuspensionIntervals(getResources().getString(R.string.text_activity_global_settings_suspension_intervals_disabled));
+            suspensionIntervalsCardView.setEnabled(false);
+            suspensionIntervalsCardView.setOnClickListener(null);
+        }
+    }
+
     private void prepareDownloadExternalStorageSwitch() {
         Log.d(GlobalSettingsActivity.class.getName(), "prepareDownloadExternalStorageSwitch");
         PreferenceManager preferenceManager = new PreferenceManager(this);
@@ -189,6 +237,25 @@ public class GlobalSettingsActivity extends SettingsInputActivity {
         downloadExternalStorageSwitch.setChecked(preferenceManager.getPreferenceDownloadExternalStorage());
         downloadExternalStorageSwitch.setOnCheckedChangeListener(this::onDownloadExternalStorageCheckedChanged);
         prepareDownloadExternalStorageOnOffText();
+    }
+
+    private String formatSuspensionIntervalsText() {
+        List<Interval> intervals = getTimeBasedSuspensionScheduler().getIntervals();
+        if (intervals == null || intervals.isEmpty()) {
+            return getResources().getString(R.string.text_activity_global_settings_suspension_intervals_none);
+        }
+        StringBuilder stringBuilder = new StringBuilder();
+        SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm");
+        for (Interval interval : intervals) {
+            Date start = new Date(TimeUtil.getRelativeTimestamp(interval.getStart()));
+            Date end = new Date(TimeUtil.getRelativeTimestamp(interval.getEnd()));
+            stringBuilder.append(getResources().getString(R.string.string_start) + ": ");
+            stringBuilder.append(dateFormat.format(start) + " ");
+            stringBuilder.append(getResources().getString(R.string.string_end) + ": ");
+            stringBuilder.append(dateFormat.format(end));
+            stringBuilder.append(System.lineSeparator());
+        }
+        return stringBuilder.toString();
     }
 
     private void prepareDownloadExternalStorageOnOffText() {
@@ -333,6 +400,14 @@ public class GlobalSettingsActivity extends SettingsInputActivity {
 
     private void setConnectCount(String connectCount) {
         connectCountText.setText(StringUtil.notNull(connectCount));
+    }
+
+    private String getSuspensionIntervals() {
+        return StringUtil.notNull(suspensionIntervalsText.getText());
+    }
+
+    private void setSuspensionIntervals(String suspensionIntervals) {
+        suspensionIntervalsText.setText(StringUtil.notNull(suspensionIntervals));
     }
 
     private String getDownloadFolder() {

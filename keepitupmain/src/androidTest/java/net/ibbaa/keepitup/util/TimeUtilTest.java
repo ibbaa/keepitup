@@ -29,6 +29,7 @@ import net.ibbaa.keepitup.model.Time;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -166,6 +167,16 @@ public class TimeUtilTest {
         interval.setEnd(end);
         assertTrue(TimeUtil.isDurationMin(interval, 120));
         assertFalse(TimeUtil.isDurationMin(interval, 121));
+    }
+
+    @Test
+    public void testGetRelativeTimestamp() {
+        Time time = new Time();
+        time.setHour(17);
+        time.setMinute(59);
+        long timestamp = TimeUtil.getRelativeTimestamp(time);
+        SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm");
+        assertEquals("17:59", dateFormat.format(timestamp));
     }
 
     private long testNow() {

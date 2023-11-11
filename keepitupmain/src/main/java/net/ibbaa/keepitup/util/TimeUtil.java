@@ -45,6 +45,11 @@ public class TimeUtil {
         return date.getTimeInMillis();
     }
 
+    public static long getRelativeTimestamp(Time time) {
+        Calendar date = getCalendarFromTime(time, 0);
+        return date.getTimeInMillis();
+    }
+
     public static boolean isDurationMin(Interval interval, int minutes) {
         if (!interval.isValid()) {
             return false;

@@ -1556,7 +1556,7 @@ public class SystemActivityTest extends BaseUITest {
         assertNotEquals(exportFolderPrimary, exportFolderSdCard);
         onView(withId(R.id.radiobutton_activity_system_external_storage_type_primary)).check(matches(withText("Primary")));
         onView(withId(R.id.radiobutton_activity_system_external_storage_type_sdcard)).check(matches(withText("SD card")));
-        onView(withId(R.id.radiobutton_activity_system_external_storage_type_primary)).check(matches(not(isChecked())));
+        onView(withId(R.id.radiobutton_activity_system_external_storage_type_primary)).check(matches(isNotChecked()));
         onView(withId(R.id.radiobutton_activity_system_external_storage_type_sdcard)).check(matches(isChecked()));
         onView(withId(R.id.radiobutton_activity_system_external_storage_type_primary)).check(matches(isEnabled()));
         onView(withId(R.id.radiobutton_activity_system_external_storage_type_sdcard)).check(matches(isEnabled()));
@@ -2306,7 +2306,7 @@ public class SystemActivityTest extends BaseUITest {
         assertNotEquals(exportFolderPrimary, exportFolderSdCard);
         onView(withId(R.id.radiobutton_activity_system_external_storage_type_primary)).check(matches(withText("Primary")));
         onView(withId(R.id.radiobutton_activity_system_external_storage_type_sdcard)).check(matches(withText("SD card")));
-        onView(withId(R.id.radiobutton_activity_system_external_storage_type_primary)).check(matches(not(isChecked())));
+        onView(withId(R.id.radiobutton_activity_system_external_storage_type_primary)).check(matches(isNotChecked()));
         onView(withId(R.id.radiobutton_activity_system_external_storage_type_sdcard)).check(matches(isChecked()));
         onView(withId(R.id.radiobutton_activity_system_external_storage_type_primary)).check(matches(isEnabled()));
         onView(withId(R.id.radiobutton_activity_system_external_storage_type_sdcard)).check(matches(isEnabled()));
@@ -2418,7 +2418,7 @@ public class SystemActivityTest extends BaseUITest {
         onView(withId(R.id.radiobutton_activity_system_external_storage_type_primary)).check(matches(withText("Primary")));
         onView(withId(R.id.radiobutton_activity_system_external_storage_type_sdcard)).check(matches(withText("SD card")));
         onView(withId(R.id.radiobutton_activity_system_external_storage_type_primary)).check(matches(isChecked()));
-        onView(withId(R.id.radiobutton_activity_system_external_storage_type_sdcard)).check(matches(not(isChecked())));
+        onView(withId(R.id.radiobutton_activity_system_external_storage_type_sdcard)).check(matches(isNotChecked()));
         onView(withId(R.id.radiobutton_activity_system_external_storage_type_primary)).check(matches(isEnabled()));
         onView(withId(R.id.radiobutton_activity_system_external_storage_type_sdcard)).check(matches(isEnabled()));
         onView(withId(R.id.textview_activity_system_theme_label)).perform(scrollTo());
@@ -2428,8 +2428,8 @@ public class SystemActivityTest extends BaseUITest {
         onView(withId(R.id.radiobutton_activity_system_theme_light)).check(matches(withText("Light")));
         onView(withId(R.id.radiobutton_activity_system_theme_dark)).check(matches(withText("Dark")));
         onView(withId(R.id.radiobutton_activity_system_theme_system)).check(matches(isChecked()));
-        onView(withId(R.id.radiobutton_activity_system_theme_light)).check(matches(not(isChecked())));
-        onView(withId(R.id.radiobutton_activity_system_theme_dark)).check(matches(not(isChecked())));
+        onView(withId(R.id.radiobutton_activity_system_theme_light)).check(matches(isNotChecked()));
+        onView(withId(R.id.radiobutton_activity_system_theme_dark)).check(matches(isNotChecked()));
         onView(withId(R.id.textview_activity_system_config_export_label)).check(matches(withText("Export configuration")));
         onView(withId(R.id.textview_activity_system_config_export_folder)).check(matches(withText(endsWith("config"))));
         onView(withId(R.id.textview_activity_system_config_import_label)).check(matches(withText("Import configuration")));
@@ -2447,7 +2447,7 @@ public class SystemActivityTest extends BaseUITest {
         onView(withId(R.id.radiogroup_activity_system_external_storage_type)).check(matches(hasChildCount(2)));
         onView(withId(R.id.radiobutton_activity_system_external_storage_type_primary)).check(matches(withText("Primary")));
         onView(withId(R.id.radiobutton_activity_system_external_storage_type_sdcard)).check(matches(withText("SD card")));
-        onView(withId(R.id.radiobutton_activity_system_external_storage_type_primary)).check(matches(not(isChecked())));
+        onView(withId(R.id.radiobutton_activity_system_external_storage_type_primary)).check(matches(isNotChecked()));
         onView(withId(R.id.radiobutton_activity_system_external_storage_type_sdcard)).check(matches(isChecked()));
         onView(withId(R.id.radiobutton_activity_system_external_storage_type_primary)).check(matches(isEnabled()));
         onView(withId(R.id.radiobutton_activity_system_external_storage_type_sdcard)).check(matches(isEnabled()));
@@ -2457,8 +2457,8 @@ public class SystemActivityTest extends BaseUITest {
         onView(withId(R.id.radiobutton_activity_system_theme_system)).check(matches(withText("System")));
         onView(withId(R.id.radiobutton_activity_system_theme_light)).check(matches(withText("Light")));
         onView(withId(R.id.radiobutton_activity_system_theme_dark)).check(matches(withText("Dark")));
-        onView(withId(R.id.radiobutton_activity_system_theme_system)).check(matches(not(isChecked())));
-        onView(withId(R.id.radiobutton_activity_system_theme_light)).check(matches(not(isChecked())));
+        onView(withId(R.id.radiobutton_activity_system_theme_system)).check(matches(isNotChecked()));
+        onView(withId(R.id.radiobutton_activity_system_theme_light)).check(matches(isNotChecked()));
         onView(withId(R.id.radiobutton_activity_system_theme_dark)).check(matches(isChecked()));
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(scrollTo());
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(click());
@@ -2537,7 +2537,7 @@ public class SystemActivityTest extends BaseUITest {
         onView(withId(R.id.radiobutton_activity_system_external_storage_type_primary)).check(matches(withText("Primary")));
         onView(withId(R.id.radiobutton_activity_system_external_storage_type_sdcard)).check(matches(withText("SD card")));
         onView(withId(R.id.radiobutton_activity_system_external_storage_type_primary)).check(matches(isChecked()));
-        onView(withId(R.id.radiobutton_activity_system_external_storage_type_sdcard)).check(matches(not(isChecked())));
+        onView(withId(R.id.radiobutton_activity_system_external_storage_type_sdcard)).check(matches(isNotChecked()));
         onView(withId(R.id.radiobutton_activity_system_external_storage_type_primary)).check(matches(isEnabled()));
         onView(withId(R.id.radiobutton_activity_system_external_storage_type_sdcard)).check(matches(isEnabled()));
         onView(withId(R.id.radiogroup_activity_system_theme)).check(matches(hasChildCount(3)));
@@ -2545,8 +2545,8 @@ public class SystemActivityTest extends BaseUITest {
         onView(withId(R.id.radiobutton_activity_system_theme_light)).check(matches(withText("Light")));
         onView(withId(R.id.radiobutton_activity_system_theme_dark)).check(matches(withText("Dark")));
         onView(withId(R.id.radiobutton_activity_system_theme_system)).check(matches(isChecked()));
-        onView(withId(R.id.radiobutton_activity_system_theme_light)).check(matches(not(isChecked())));
-        onView(withId(R.id.radiobutton_activity_system_theme_dark)).check(matches(not(isChecked())));
+        onView(withId(R.id.radiobutton_activity_system_theme_light)).check(matches(isNotChecked()));
+        onView(withId(R.id.radiobutton_activity_system_theme_dark)).check(matches(isNotChecked()));
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).check(matches(isNotChecked()));
         onView(withId(R.id.switch_activity_system_file_dump_enabled)).check(matches(isNotChecked()));
         PreferenceManager preferenceManager = getPreferenceManager();
@@ -2564,7 +2564,7 @@ public class SystemActivityTest extends BaseUITest {
         onView(withId(R.id.switch_activity_system_file_dump_enabled)).perform(scrollTo());
         onView(withId(R.id.switch_activity_system_file_dump_enabled)).perform(click());
         rotateScreen(activityScenario);
-        onView(withId(R.id.radiobutton_activity_system_external_storage_type_primary)).check(matches(not(isChecked())));
+        onView(withId(R.id.radiobutton_activity_system_external_storage_type_primary)).check(matches(isNotChecked()));
         onView(withId(R.id.radiobutton_activity_system_external_storage_type_sdcard)).check(matches(isChecked()));
         onView(withId(R.id.radiobutton_activity_system_external_storage_type_primary)).check(matches(isEnabled()));
         onView(withId(R.id.radiobutton_activity_system_external_storage_type_sdcard)).check(matches(isEnabled()));
@@ -2573,14 +2573,14 @@ public class SystemActivityTest extends BaseUITest {
         onView(withId(R.id.radiobutton_activity_system_theme_light)).check(matches(withText("Light")));
         onView(withId(R.id.radiobutton_activity_system_theme_dark)).check(matches(withText("Dark")));
         onView(withId(R.id.radiobutton_activity_system_theme_system)).check(matches(isChecked()));
-        onView(withId(R.id.radiobutton_activity_system_theme_light)).check(matches(not(isChecked())));
-        onView(withId(R.id.radiobutton_activity_system_theme_dark)).check(matches(not(isChecked())));
+        onView(withId(R.id.radiobutton_activity_system_theme_light)).check(matches(isNotChecked()));
+        onView(withId(R.id.radiobutton_activity_system_theme_dark)).check(matches(isNotChecked()));
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).check(matches(isChecked()));
         onView(withId(R.id.textview_activity_system_file_logger_enabled_on_off)).check(matches(withText("yes")));
         onView(withId(R.id.switch_activity_system_file_dump_enabled)).check(matches(isChecked()));
         onView(withId(R.id.textview_activity_system_file_dump_enabled_on_off)).check(matches(withText("yes")));
         rotateScreen(activityScenario);
-        onView(withId(R.id.radiobutton_activity_system_external_storage_type_primary)).check(matches(not(isChecked())));
+        onView(withId(R.id.radiobutton_activity_system_external_storage_type_primary)).check(matches(isNotChecked()));
         onView(withId(R.id.radiobutton_activity_system_external_storage_type_sdcard)).check(matches(isChecked()));
         onView(withId(R.id.radiobutton_activity_system_external_storage_type_primary)).check(matches(isEnabled()));
         onView(withId(R.id.radiobutton_activity_system_external_storage_type_sdcard)).check(matches(isEnabled()));
@@ -2589,8 +2589,8 @@ public class SystemActivityTest extends BaseUITest {
         onView(withId(R.id.radiobutton_activity_system_theme_light)).check(matches(withText("Light")));
         onView(withId(R.id.radiobutton_activity_system_theme_dark)).check(matches(withText("Dark")));
         onView(withId(R.id.radiobutton_activity_system_theme_system)).check(matches(isChecked()));
-        onView(withId(R.id.radiobutton_activity_system_theme_light)).check(matches(not(isChecked())));
-        onView(withId(R.id.radiobutton_activity_system_theme_dark)).check(matches(not(isChecked())));
+        onView(withId(R.id.radiobutton_activity_system_theme_light)).check(matches(isNotChecked()));
+        onView(withId(R.id.radiobutton_activity_system_theme_dark)).check(matches(isNotChecked()));
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).check(matches(isChecked()));
         onView(withId(R.id.textview_activity_system_file_logger_enabled_on_off)).check(matches(withText("yes")));
         onView(withId(R.id.switch_activity_system_file_dump_enabled)).check(matches(isChecked()));

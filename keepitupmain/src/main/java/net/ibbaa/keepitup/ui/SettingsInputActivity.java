@@ -29,6 +29,7 @@ import net.ibbaa.keepitup.service.IFileManager;
 import net.ibbaa.keepitup.service.IPowerManager;
 import net.ibbaa.keepitup.service.SystemFileManager;
 import net.ibbaa.keepitup.service.SystemPowerManager;
+import net.ibbaa.keepitup.service.TimeBasedSuspensionScheduler;
 import net.ibbaa.keepitup.ui.dialog.BatteryOptimizationDialog;
 import net.ibbaa.keepitup.ui.dialog.ConfirmDialog;
 import net.ibbaa.keepitup.ui.dialog.FileChooseDialog;
@@ -45,6 +46,7 @@ public abstract class SettingsInputActivity extends AppCompatActivity implements
     private Resources resources;
     private IFileManager fileManager;
     private IPowerManager powerManager;
+    private TimeBasedSuspensionScheduler timeBasedScheduler;
 
     public void injectResources(Resources resources) {
         this.resources = resources;
@@ -56,6 +58,10 @@ public abstract class SettingsInputActivity extends AppCompatActivity implements
 
     public void injectPowerManager(IPowerManager powerManager) {
         this.powerManager = powerManager;
+    }
+
+    public void injectTimeBasedSuspensionScheduler(TimeBasedSuspensionScheduler timeBasedScheduler) {
+        this.timeBasedScheduler = timeBasedScheduler;
     }
 
     @Override
@@ -80,6 +86,13 @@ public abstract class SettingsInputActivity extends AppCompatActivity implements
             return powerManager;
         }
         return new SystemPowerManager(this);
+    }
+
+    public TimeBasedSuspensionScheduler getTimeBasedSuspensionScheduler() {
+        if (timeBasedScheduler != null) {
+            return timeBasedScheduler;
+        }
+        return new TimeBasedSuspensionScheduler(this);
     }
 
     @Override

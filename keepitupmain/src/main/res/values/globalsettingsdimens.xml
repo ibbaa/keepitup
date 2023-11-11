@@ -35,6 +35,14 @@
     <dimen name="cardview_activity_global_settings_notification_type_corner_radius">4dp</dimen>
     <dimen name="cardview_activity_global_settings_notification_type_card_elevation">4dp</dimen>
     <dimen name="linearlayout_activity_global_settings_notification_type_margin">4dp</dimen>
+    <dimen name="cardview_activity_global_settings_suspension_enabled_margin">4dp</dimen>
+    <dimen name="cardview_activity_global_settings_suspension_enabled_corner_radius">4dp</dimen>
+    <dimen name="cardview_activity_global_settings_suspension_enabled_card_elevation">4dp</dimen>
+    <dimen name="linearlayout_activity_global_settings_suspension_enabled_margin">4dp</dimen>
+    <dimen name="cardview_activity_global_settings_suspension_intervals_margin">4dp</dimen>
+    <dimen name="cardview_activity_global_settings_suspension_intervals_corner_radius">4dp</dimen>
+    <dimen name="cardview_activity_global_settings_suspension_intervals_card_elevation">4dp</dimen>
+    <dimen name="linearlayout_activity_global_settings_suspension_intervals_margin">4dp</dimen>
     <dimen name="cardview_activity_global_settings_download_external_storage_margin">4dp</dimen>
     <dimen name="cardview_activity_global_settings_download_external_storage_corner_radius">4dp</dimen>
     <dimen name="cardview_activity_global_settings_download_external_storage_card_elevation">4dp</dimen>
