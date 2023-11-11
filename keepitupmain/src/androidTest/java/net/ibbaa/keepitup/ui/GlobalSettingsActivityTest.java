@@ -168,6 +168,14 @@ public class GlobalSettingsActivityTest extends BaseUITest {
         onView(withId(R.id.switch_activity_global_settings_notification_inactive_network)).perform(click());
         onView(withId(R.id.switch_activity_global_settings_notification_inactive_network)).check(matches(isNotChecked()));
         onView(withId(R.id.textview_activity_global_settings_notification_inactive_network_on_off)).check(matches(withText("no")));
+        onView(withId(R.id.switch_activity_global_settings_suspension_enabled)).check(matches(isChecked()));
+        onView(withId(R.id.textview_activity_global_settings_suspension_enabled_on_off)).check(matches(withText("yes")));
+        onView(withId(R.id.switch_activity_global_settings_suspension_enabled)).perform(click());
+        onView(withId(R.id.switch_activity_global_settings_notification_inactive_network)).check(matches(isNotChecked()));
+        onView(withId(R.id.textview_activity_global_settings_suspension_enabled_on_off)).check(matches(withText("no")));
+        onView(withId(R.id.switch_activity_global_settings_suspension_enabled)).perform(click());
+        onView(withId(R.id.switch_activity_global_settings_suspension_enabled)).check(matches(isChecked()));
+        onView(withId(R.id.textview_activity_global_settings_suspension_enabled_on_off)).check(matches(withText("yes")));
         onView(withId(R.id.switch_activity_global_settings_download_external_storage)).check(matches(isNotChecked()));
         onView(withId(R.id.textview_activity_global_settings_download_external_storage_on_off)).check(matches(withText("no")));
         onView(withId(R.id.switch_activity_global_settings_download_external_storage)).perform(click());
@@ -208,6 +216,7 @@ public class GlobalSettingsActivityTest extends BaseUITest {
         onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
         onView(withId(R.id.switch_activity_global_settings_notification_inactive_network)).perform(click());
         onView(withId(R.id.radiobutton_activity_global_settings_notification_type_change)).perform(click());
+        onView(withId(R.id.switch_activity_global_settings_suspension_enabled)).perform(click());
         onView(withId(R.id.switch_activity_global_settings_download_external_storage)).perform(click());
         onView(withId(R.id.switch_activity_global_settings_download_keep)).perform(scrollTo());
         onView(withId(R.id.switch_activity_global_settings_download_keep)).perform(click());
@@ -218,6 +227,7 @@ public class GlobalSettingsActivityTest extends BaseUITest {
         assertEquals(5, preferenceManager.getPreferenceConnectCount());
         assertTrue(preferenceManager.getPreferenceNotificationInactiveNetwork());
         assertEquals(NotificationType.CHANGE, preferenceManager.getPreferenceNotificationType());
+        assertFalse(preferenceManager.getPreferenceSuspensionEnabled());
         assertTrue(preferenceManager.getPreferenceDownloadExternalStorage());
         assertEquals("download", preferenceManager.getPreferenceDownloadFolder());
         assertTrue(preferenceManager.getPreferenceDownloadKeep());
@@ -225,7 +235,7 @@ public class GlobalSettingsActivityTest extends BaseUITest {
     }
 
     @Test
-    public void testSetPreferencesNotifiactionType() {
+    public void testSetPreferencesNotificationType() {
         onView(withId(R.id.radiobutton_activity_global_settings_notification_type_change)).perform(click());
         onView(withId(R.id.radiobutton_activity_global_settings_notification_type_failure)).check(matches(isNotChecked()));
         onView(withId(R.id.radiobutton_activity_global_settings_notification_type_change)).check(matches(isChecked()));
@@ -420,6 +430,23 @@ public class GlobalSettingsActivityTest extends BaseUITest {
         assertEquals("10", clipboardManager.getData());
         onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
         onView(withId(R.id.textview_activity_global_settings_connect_count)).check(matches(withText("10")));
+    }
+
+    public void testSuspensionEnabledNoneDisabled() {
+        onView(withId(R.id.textview_activity_global_settings_suspension_enabled_label)).check(matches(withText("Suspension intervals enabled")));
+        onView(withId(R.id.switch_activity_global_settings_suspension_enabled)).check(matches(isChecked()));
+        onView(withId(R.id.textview_activity_global_settings_suspension_intervals_label)).check(matches(withText("Defined suspension intervals")));
+        onView(withId(R.id.textview_activity_global_settings_suspension_intervals)).check(matches(withText("None")));
+        onView(withId(R.id.switch_activity_global_settings_suspension_enabled)).perform(click());
+        onView(withId(R.id.textview_activity_global_settings_suspension_enabled_label)).check(matches(withText("Suspension intervals enabled")));
+        onView(withId(R.id.switch_activity_global_settings_suspension_enabled)).check(matches(isNotChecked()));
+        onView(withId(R.id.textview_activity_global_settings_suspension_intervals_label)).check(matches(withText("Defined suspension intervals")));
+        onView(withId(R.id.textview_activity_global_settings_suspension_intervals)).check(matches(withText("Disabled")));
+        onView(withId(R.id.switch_activity_global_settings_suspension_enabled)).perform(click());
+        onView(withId(R.id.textview_activity_global_settings_suspension_enabled_label)).check(matches(withText("Suspension intervals enabled")));
+        onView(withId(R.id.switch_activity_global_settings_suspension_enabled)).check(matches(isChecked()));
+        onView(withId(R.id.textview_activity_global_settings_suspension_intervals_label)).check(matches(withText("Defined suspension intervals")));
+        onView(withId(R.id.textview_activity_global_settings_suspension_intervals)).check(matches(withText("None")));
     }
 
     @Test
@@ -747,6 +774,7 @@ public class GlobalSettingsActivityTest extends BaseUITest {
         onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
         onView(withId(R.id.switch_activity_global_settings_notification_inactive_network)).perform(click());
         onView(withId(R.id.radiobutton_activity_global_settings_notification_type_change)).perform(click());
+        onView(withId(R.id.switch_activity_global_settings_suspension_enabled)).perform(click());
         onView(withId(R.id.switch_activity_global_settings_download_external_storage)).perform(click());
         onView(withId(R.id.switch_activity_global_settings_download_keep)).perform(scrollTo());
         onView(withId(R.id.switch_activity_global_settings_download_keep)).perform(click());
@@ -762,6 +790,8 @@ public class GlobalSettingsActivityTest extends BaseUITest {
         onView(withId(R.id.switch_activity_global_settings_notification_inactive_network)).check(matches(isNotChecked()));
         onView(withId(R.id.radiobutton_activity_global_settings_notification_type_failure)).check(matches(isChecked()));
         onView(withId(R.id.radiobutton_activity_global_settings_notification_type_change)).check(matches(isNotChecked()));
+        onView(withId(R.id.textview_activity_global_settings_suspension_enabled_label)).check(matches(withText("Suspension intervals enabled")));
+        onView(withId(R.id.switch_activity_global_settings_suspension_enabled)).check(matches(isChecked()));
         onView(withId(R.id.textview_activity_global_settings_download_external_storage_label)).check(matches(withText("Download to an external storage folder")));
         onView(withId(R.id.switch_activity_global_settings_download_external_storage)).check(matches(isNotChecked()));
         onView(withId(R.id.textview_activity_global_settings_download_folder_label)).check(matches(withText("Download folder")));
@@ -776,6 +806,7 @@ public class GlobalSettingsActivityTest extends BaseUITest {
         assertEquals(1, preferenceManager.getPreferenceConnectCount());
         assertFalse(preferenceManager.getPreferenceNotificationInactiveNetwork());
         assertEquals(NotificationType.FAILURE, preferenceManager.getPreferenceNotificationType());
+        assertTrue(preferenceManager.getPreferenceSuspensionEnabled());
         assertFalse(preferenceManager.getPreferenceDownloadExternalStorage());
         assertEquals("download", preferenceManager.getPreferenceDownloadFolder());
         assertFalse(preferenceManager.getPreferenceDownloadKeep());
@@ -793,6 +824,7 @@ public class GlobalSettingsActivityTest extends BaseUITest {
         onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
         onView(withId(R.id.switch_activity_global_settings_notification_inactive_network)).perform(click());
         onView(withId(R.id.radiobutton_activity_global_settings_notification_type_change)).perform(click());
+        onView(withId(R.id.switch_activity_global_settings_suspension_enabled)).perform(click());
         onView(withId(R.id.switch_activity_global_settings_download_external_storage)).perform(click());
         onView(withId(R.id.switch_activity_global_settings_download_keep)).perform(scrollTo());
         onView(withId(R.id.switch_activity_global_settings_download_keep)).perform(click());
@@ -804,6 +836,8 @@ public class GlobalSettingsActivityTest extends BaseUITest {
         onView(withId(R.id.switch_activity_global_settings_notification_inactive_network)).check(matches(isChecked()));
         onView(withId(R.id.textview_activity_global_settings_notification_inactive_network_on_off)).check(matches(withText("yes")));
         onView(withId(R.id.radiobutton_activity_global_settings_notification_type_change)).check(matches(isChecked()));
+        onView(withId(R.id.switch_activity_global_settings_suspension_enabled)).check(matches(isNotChecked()));
+        onView(withId(R.id.textview_activity_global_settings_suspension_enabled_on_off)).check(matches(withText("no")));
         onView(withId(R.id.switch_activity_global_settings_download_external_storage)).check(matches(isChecked()));
         onView(withId(R.id.textview_activity_global_settings_download_external_storage_on_off)).check(matches(withText("yes")));
         onView(withId(R.id.switch_activity_global_settings_download_keep)).check(matches(isChecked()));
@@ -815,6 +849,8 @@ public class GlobalSettingsActivityTest extends BaseUITest {
         onView(withId(R.id.textview_activity_global_settings_connect_count)).check(matches(withText("2")));
         onView(withId(R.id.switch_activity_global_settings_notification_inactive_network)).check(matches(isChecked()));
         onView(withId(R.id.textview_activity_global_settings_notification_inactive_network_on_off)).check(matches(withText("yes")));
+        onView(withId(R.id.switch_activity_global_settings_suspension_enabled)).check(matches(isNotChecked()));
+        onView(withId(R.id.textview_activity_global_settings_suspension_enabled_on_off)).check(matches(withText("no")));
         onView(withId(R.id.radiobutton_activity_global_settings_notification_type_change)).check(matches(isChecked()));
         onView(withId(R.id.switch_activity_global_settings_download_external_storage)).check(matches(isChecked()));
         onView(withId(R.id.textview_activity_global_settings_download_external_storage_on_off)).check(matches(withText("yes")));
