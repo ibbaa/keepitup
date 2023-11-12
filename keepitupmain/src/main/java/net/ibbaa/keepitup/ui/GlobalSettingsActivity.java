@@ -17,6 +17,7 @@
 package net.ibbaa.keepitup.ui;
 
 import android.os.Bundle;
+import android.util.TypedValue;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -214,29 +215,19 @@ public class GlobalSettingsActivity extends SettingsInputActivity {
 
     private void prepareSuspensionIntervalsField() {
         Log.d(GlobalSettingsActivity.class.getName(), "prepareSuspensionIntervalsField");
-        PreferenceManager preferenceManager = new PreferenceManager(this);
         CardView suspensionIntervalsCardView = findViewById(R.id.cardview_activity_global_settings_suspension_intervals);
         suspensionIntervalsText = findViewById(R.id.textview_activity_global_settings_suspension_intervals);
         if (suspensionEnabledSwitch.isChecked()) {
             suspensionIntervalsCardView.setEnabled(true);
             //suspensionIntervalsCardView.setOnClickListener(this::showSuspensionIntervalsDialog);
             setSuspensionIntervals(formatSuspensionIntervalsText());
+            setSuspensionIntervalsTextSize();
         } else {
             setSuspensionIntervals(getResources().getString(R.string.text_activity_global_settings_suspension_intervals_disabled));
             suspensionIntervalsCardView.setEnabled(false);
             suspensionIntervalsCardView.setOnClickListener(null);
+            setSuspensionIntervalsTextSize();
         }
-    }
-
-    private void prepareDownloadExternalStorageSwitch() {
-        Log.d(GlobalSettingsActivity.class.getName(), "prepareDownloadExternalStorageSwitch");
-        PreferenceManager preferenceManager = new PreferenceManager(this);
-        downloadExternalStorageSwitch = findViewById(R.id.switch_activity_global_settings_download_external_storage);
-        downloadExternalStorageOnOffText = findViewById(R.id.textview_activity_global_settings_download_external_storage_on_off);
-        downloadExternalStorageSwitch.setOnCheckedChangeListener(null);
-        downloadExternalStorageSwitch.setChecked(preferenceManager.getPreferenceDownloadExternalStorage());
-        downloadExternalStorageSwitch.setOnCheckedChangeListener(this::onDownloadExternalStorageCheckedChanged);
-        prepareDownloadExternalStorageOnOffText();
     }
 
     private String formatSuspensionIntervalsText() {
@@ -249,17 +240,43 @@ public class GlobalSettingsActivity extends SettingsInputActivity {
         for (Interval interval : intervals) {
             Date start = new Date(TimeUtil.getRelativeTimestamp(interval.getStart()));
             Date end = new Date(TimeUtil.getRelativeTimestamp(interval.getEnd()));
-            stringBuilder.append(getResources().getString(R.string.string_start) + ": ");
-            stringBuilder.append(dateFormat.format(start) + " ");
-            stringBuilder.append(getResources().getString(R.string.string_end) + ": ");
+            stringBuilder.append(getResources().getString(R.string.string_start));
+            stringBuilder.append(": ");
+            stringBuilder.append(dateFormat.format(start));
+            stringBuilder.append(" ");
+            stringBuilder.append(getResources().getString(R.string.string_end));
+            stringBuilder.append(": ");
             stringBuilder.append(dateFormat.format(end));
             stringBuilder.append(System.lineSeparator());
         }
         return stringBuilder.toString();
     }
 
+    private void setSuspensionIntervalsTextSize() {
+        List<Interval> intervals = getTimeBasedSuspensionScheduler().getIntervals();
+        PreferenceManager preferenceManager = new PreferenceManager(this);
+        if (intervals == null || intervals.isEmpty() || intervals.size() == 1 || !preferenceManager.getPreferenceSuspensionEnabled()) {
+            suspensionIntervalsText.setTextSize(TypedValue.COMPLEX_UNIT_SP, getResources().getInteger(R.integer.suspension_intervals_text_size_normal));
+        } else if (intervals.size() == 2) {
+            suspensionIntervalsText.setTextSize(TypedValue.COMPLEX_UNIT_SP, getResources().getInteger(R.integer.suspension_intervals_text_size_smaller));
+        } else {
+            suspensionIntervalsText.setTextSize(TypedValue.COMPLEX_UNIT_SP, getResources().getInteger(R.integer.suspension_intervals_text_size_small));
+        }
+    }
+
     private void prepareDownloadExternalStorageOnOffText() {
         downloadExternalStorageOnOffText.setText(downloadExternalStorageSwitch.isChecked() ? getResources().getString(R.string.string_yes) : getResources().getString(R.string.string_no));
+    }
+
+    private void prepareDownloadExternalStorageSwitch() {
+        Log.d(GlobalSettingsActivity.class.getName(), "prepareDownloadExternalStorageSwitch");
+        PreferenceManager preferenceManager = new PreferenceManager(this);
+        downloadExternalStorageSwitch = findViewById(R.id.switch_activity_global_settings_download_external_storage);
+        downloadExternalStorageOnOffText = findViewById(R.id.textview_activity_global_settings_download_external_storage_on_off);
+        downloadExternalStorageSwitch.setOnCheckedChangeListener(null);
+        downloadExternalStorageSwitch.setChecked(preferenceManager.getPreferenceDownloadExternalStorage());
+        downloadExternalStorageSwitch.setOnCheckedChangeListener(this::onDownloadExternalStorageCheckedChanged);
+        prepareDownloadExternalStorageOnOffText();
     }
 
     private void onDownloadExternalStorageCheckedChanged(CompoundButton buttonView, boolean isChecked) {

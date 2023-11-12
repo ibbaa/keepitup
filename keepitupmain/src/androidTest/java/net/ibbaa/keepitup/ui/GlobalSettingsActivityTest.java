@@ -38,6 +38,8 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+import android.view.View;
+
 import androidx.test.core.app.ActivityScenario;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.MediumTest;
@@ -45,11 +47,13 @@ import androidx.test.filters.MediumTest;
 import net.ibbaa.keepitup.R;
 import net.ibbaa.keepitup.model.NotificationType;
 import net.ibbaa.keepitup.resources.PreferenceManager;
+import net.ibbaa.keepitup.test.matcher.FontSizeMatcher;
 import net.ibbaa.keepitup.test.mock.MockClipboardManager;
 import net.ibbaa.keepitup.test.mock.MockFileManager;
 import net.ibbaa.keepitup.test.mock.TestRegistry;
 import net.ibbaa.keepitup.ui.dialog.SettingsInputDialog;
 
+import org.hamcrest.Matcher;
 import org.hamcrest.Matchers;
 import org.junit.After;
 import org.junit.Before;
@@ -437,16 +441,19 @@ public class GlobalSettingsActivityTest extends BaseUITest {
         onView(withId(R.id.switch_activity_global_settings_suspension_enabled)).check(matches(isChecked()));
         onView(withId(R.id.textview_activity_global_settings_suspension_intervals_label)).check(matches(withText("Defined suspension intervals")));
         onView(withId(R.id.textview_activity_global_settings_suspension_intervals)).check(matches(withText("None")));
+        onView(withId(R.id.textview_activity_global_settings_suspension_intervals)).check(matches(withFontSize(14)));
         onView(withId(R.id.switch_activity_global_settings_suspension_enabled)).perform(click());
         onView(withId(R.id.textview_activity_global_settings_suspension_enabled_label)).check(matches(withText("Suspension intervals enabled")));
         onView(withId(R.id.switch_activity_global_settings_suspension_enabled)).check(matches(isNotChecked()));
         onView(withId(R.id.textview_activity_global_settings_suspension_intervals_label)).check(matches(withText("Defined suspension intervals")));
         onView(withId(R.id.textview_activity_global_settings_suspension_intervals)).check(matches(withText("Disabled")));
+        onView(withId(R.id.textview_activity_global_settings_suspension_intervals)).check(matches(withFontSize(14)));
         onView(withId(R.id.switch_activity_global_settings_suspension_enabled)).perform(click());
         onView(withId(R.id.textview_activity_global_settings_suspension_enabled_label)).check(matches(withText("Suspension intervals enabled")));
         onView(withId(R.id.switch_activity_global_settings_suspension_enabled)).check(matches(isChecked()));
         onView(withId(R.id.textview_activity_global_settings_suspension_intervals_label)).check(matches(withText("Defined suspension intervals")));
         onView(withId(R.id.textview_activity_global_settings_suspension_intervals)).check(matches(withText("None")));
+        onView(withId(R.id.textview_activity_global_settings_suspension_intervals)).check(matches(withFontSize(14)));
     }
 
     @Test
@@ -942,6 +949,10 @@ public class GlobalSettingsActivityTest extends BaseUITest {
         assertEquals("test", preferenceManager.getPreferenceLogFolder());
         assertTrue(testFile.exists());
         rotateScreen(activityScenario);
+    }
+
+    public static Matcher<View> withFontSize(float expectedSize) {
+        return new FontSizeMatcher(expectedSize);
     }
 
     private SettingsInputDialog getDialog() {
