@@ -364,9 +364,9 @@ public class FileChooseDialog extends DialogFragment implements ContextOptionsSu
                 return;
             }
         }
-        FileChooseSupport folderChooseSupport = getFolderChooseSupport();
-        if (folderChooseSupport != null) {
-            folderChooseSupport.onFileChooseDialogOkClicked(this, type);
+        FileChooseSupport fileChooseSupport = getFileChooseSupport();
+        if (fileChooseSupport != null) {
+            fileChooseSupport.onFileChooseDialogOkClicked(this, type);
         } else {
             Log.e(FileChooseDialog.class.getName(), "folderChooseSupport is null");
             dismiss();
@@ -375,7 +375,7 @@ public class FileChooseDialog extends DialogFragment implements ContextOptionsSu
 
     private void onCancelClicked(View view) {
         Log.d(FileChooseDialog.class.getName(), "onCancelClicked");
-        FileChooseSupport folderChooseSupport = getFolderChooseSupport();
+        FileChooseSupport folderChooseSupport = getFileChooseSupport();
         if (folderChooseSupport != null) {
             folderChooseSupport.onFileChooseDialogCancelClicked(this);
         } else {
@@ -582,7 +582,7 @@ public class FileChooseDialog extends DialogFragment implements ContextOptionsSu
 
     private IFileManager getFileManager() {
         Log.d(FileChooseDialog.class.getName(), "getFileManager");
-        FileChooseSupport folderChooseSupport = getFolderChooseSupport();
+        FileChooseSupport folderChooseSupport = getFileChooseSupport();
         if (folderChooseSupport != null) {
             return folderChooseSupport.getFileManager();
         }
@@ -742,7 +742,7 @@ public class FileChooseDialog extends DialogFragment implements ContextOptionsSu
         errorDialog.show(getParentFragmentManager(), ValidatorErrorDialog.class.getName());
     }
 
-    private FileChooseSupport getFolderChooseSupport() {
+    private FileChooseSupport getFileChooseSupport() {
         Log.d(FileChooseDialog.class.getName(), "getFolderChooseSupport");
         Activity activity = getActivity();
         if (activity == null) {
