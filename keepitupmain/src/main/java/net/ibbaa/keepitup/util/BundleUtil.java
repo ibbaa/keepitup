@@ -19,6 +19,7 @@ package net.ibbaa.keepitup.util;
 import android.os.Bundle;
 
 import net.ibbaa.keepitup.model.FileEntry;
+import net.ibbaa.keepitup.model.Interval;
 import net.ibbaa.keepitup.ui.dialog.ContextOption;
 import net.ibbaa.keepitup.ui.validation.ValidationResult;
 
@@ -243,5 +244,27 @@ public class BundleUtil {
             }
         }
         return contextOptionList;
+    }
+
+    public static Bundle suspensionIntervalListToBundle(String baseKey, List<Interval> intervalList) {
+        if (baseKey == null || intervalList == null) {
+            return new Bundle();
+        }
+        List<Bundle> bundleList = new ArrayList<>();
+        for (Interval interval : intervalList) {
+            bundleList.add(interval.toBundle());
+        }
+        return bundleListToBundle(baseKey, bundleList);
+    }
+
+    public static List<Interval> suspensionIntervalListFromBundle(String baseKey, Bundle bundle) {
+        List<Bundle> bundleList = bundleListFromBundle(baseKey, bundle);
+        List<Interval> intervalList = new ArrayList<>();
+        for (Bundle currentBundle : bundleList) {
+            if (currentBundle != null) {
+                intervalList.add(new Interval(currentBundle));
+            }
+        }
+        return intervalList;
     }
 }

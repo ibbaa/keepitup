@@ -16,10 +16,14 @@
 
 package net.ibbaa.keepitup.util;
 
+import android.content.Context;
+
+import net.ibbaa.keepitup.R;
 import net.ibbaa.keepitup.model.Interval;
 import net.ibbaa.keepitup.model.Time;
 import net.ibbaa.keepitup.service.ITimeService;
 
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -58,6 +62,21 @@ public class TimeUtil {
         long end = interval.doesOverlapDays() ? getTimestampTomorrow(interval.getEnd(), 0) : getTimestampToday(interval.getEnd(), 0);
         long duration = TimeUnit.MINUTES.convert(end - start, TimeUnit.MILLISECONDS);
         return duration >= minutes;
+    }
+
+    public static String formatSuspensionIntervalText(Interval interval, Context context) {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm");
+        Date start = new Date(getRelativeTimestamp(interval.getStart()));
+        Date end = new Date(getRelativeTimestamp(interval.getEnd()));
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append(context.getResources().getString(R.string.string_start));
+        stringBuilder.append(": ");
+        stringBuilder.append(dateFormat.format(start));
+        stringBuilder.append(" ");
+        stringBuilder.append(context.getResources().getString(R.string.string_end));
+        stringBuilder.append(": ");
+        stringBuilder.append(dateFormat.format(end));
+        return stringBuilder.toString();
     }
 
     public static Interval extendInterval(Interval interval, int minutes) {

@@ -15,6 +15,7 @@
   -->
 
 <resources>
+    <dimen name="textview_list_item_log_entry_margin">4dp</dimen>
     <dimen name="cardview_list_item_log_entry_margin">4dp</dimen>
     <dimen name="cardview_list_item_log_entry_corner_radius">4dp</dimen>
     <dimen name="cardview_list_item_log_entry_card_elevation">4dp</dimen>

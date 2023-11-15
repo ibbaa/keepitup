@@ -40,6 +40,7 @@ import net.ibbaa.keepitup.service.IFileManager;
 import net.ibbaa.keepitup.ui.dialog.FileChooseDialog;
 import net.ibbaa.keepitup.ui.dialog.SettingsInput;
 import net.ibbaa.keepitup.ui.dialog.SettingsInputDialog;
+import net.ibbaa.keepitup.ui.dialog.SuspensionIntervalsDialog;
 import net.ibbaa.keepitup.ui.validation.ConnectCountFieldValidator;
 import net.ibbaa.keepitup.ui.validation.PingCountFieldValidator;
 import net.ibbaa.keepitup.util.BundleUtil;
@@ -49,12 +50,10 @@ import net.ibbaa.keepitup.util.StringUtil;
 import net.ibbaa.keepitup.util.TimeUtil;
 
 import java.io.File;
-import java.text.SimpleDateFormat;
 import java.util.Collections;
-import java.util.Date;
 import java.util.List;
 
-public class GlobalSettingsActivity extends SettingsInputActivity {
+public class GlobalSettingsActivity extends SettingsInputActivity implements SuspensionIntervalsSupport {
 
     private TextView pingCountText;
     private TextView connectCountText;
@@ -219,7 +218,7 @@ public class GlobalSettingsActivity extends SettingsInputActivity {
         suspensionIntervalsText = findViewById(R.id.textview_activity_global_settings_suspension_intervals);
         if (suspensionEnabledSwitch.isChecked()) {
             suspensionIntervalsCardView.setEnabled(true);
-            //suspensionIntervalsCardView.setOnClickListener(this::showSuspensionIntervalsDialog);
+            suspensionIntervalsCardView.setOnClickListener(this::showSuspensionIntervalsDialog);
             setSuspensionIntervals(formatSuspensionIntervalsText());
             setSuspensionIntervalsTextSize();
         } else {
@@ -236,17 +235,8 @@ public class GlobalSettingsActivity extends SettingsInputActivity {
             return getResources().getString(R.string.text_activity_global_settings_suspension_intervals_none);
         }
         StringBuilder stringBuilder = new StringBuilder();
-        SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm");
         for (Interval interval : intervals) {
-            Date start = new Date(TimeUtil.getRelativeTimestamp(interval.getStart()));
-            Date end = new Date(TimeUtil.getRelativeTimestamp(interval.getEnd()));
-            stringBuilder.append(getResources().getString(R.string.string_start));
-            stringBuilder.append(": ");
-            stringBuilder.append(dateFormat.format(start));
-            stringBuilder.append(" ");
-            stringBuilder.append(getResources().getString(R.string.string_end));
-            stringBuilder.append(": ");
-            stringBuilder.append(dateFormat.format(end));
+            stringBuilder.append(TimeUtil.formatSuspensionIntervalText(interval, this));
             stringBuilder.append(System.lineSeparator());
         }
         return stringBuilder.toString();
@@ -262,6 +252,12 @@ public class GlobalSettingsActivity extends SettingsInputActivity {
         } else {
             suspensionIntervalsText.setTextSize(TypedValue.COMPLEX_UNIT_SP, getResources().getInteger(R.integer.suspension_intervals_text_size_small));
         }
+    }
+
+    private void showSuspensionIntervalsDialog(View view) {
+        Log.d(GlobalSettingsActivity.class.getName(), "showSuspensionIntervalsDialog");
+        SuspensionIntervalsDialog intervalsDialog = new SuspensionIntervalsDialog();
+        intervalsDialog.show(getSupportFragmentManager(), GlobalSettingsActivity.class.getName());
     }
 
     private void prepareDownloadExternalStorageOnOffText() {
@@ -622,5 +618,17 @@ public class GlobalSettingsActivity extends SettingsInputActivity {
             Log.e(GlobalSettingsActivity.class.getName(), "Unknown type " + type);
         }
         folderChooseDialog.dismiss();
+    }
+
+    @Override
+    public void onSuspensionIntervalsDialogOkClicked(SuspensionIntervalsDialog intervalsDialog) {
+        Log.d(GlobalSettingsActivity.class.getName(), "onSuspensionIntervalsDialogOkClicked");
+        intervalsDialog.dismiss();
+    }
+
+    @Override
+    public void onSuspensionIntervalsDialogCancelClicked(SuspensionIntervalsDialog intervalsDialog) {
+        Log.d(GlobalSettingsActivity.class.getName(), "onSuspensionIntervalsDialogCancelClicked");
+        intervalsDialog.dismiss();
     }
 }

@@ -19,14 +19,19 @@ package net.ibbaa.keepitup.ui.adapter;
 import android.content.Context;
 import android.content.res.Resources;
 import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import net.ibbaa.keepitup.R;
 import net.ibbaa.keepitup.logging.Log;
 import net.ibbaa.keepitup.model.Interval;
 import net.ibbaa.keepitup.ui.dialog.SuspensionIntervalsDialog;
+import net.ibbaa.keepitup.util.BundleUtil;
+import net.ibbaa.keepitup.util.TimeUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -45,21 +50,40 @@ public class SuspensionIntervalAdapter extends RecyclerView.Adapter<SuspensionIn
     @Override
     public SuspensionIntervalViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int viewType) {
         Log.d(SuspensionIntervalAdapter.class.getName(), "onCreateViewHolder");
-        return null;
+        View itemView = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.list_item_suspension_interval, viewGroup, false);
+        return new SuspensionIntervalViewHolder(itemView, intervalsDialog);
     }
 
     @Override
     public void onBindViewHolder(@NonNull SuspensionIntervalViewHolder suspensionIntervalViewHolder, int position) {
         Log.d(SuspensionIntervalAdapter.class.getName(), "onBindViewHolder");
+        Interval interval = intervals.get(position);
+        bindIntervalText(suspensionIntervalViewHolder, interval);
     }
+
+    private void bindIntervalText(@NonNull SuspensionIntervalViewHolder suspensionIntervalViewHolder, Interval interval) {
+        Log.d(LogEntryAdapter.class.getName(), "bindIntervalText");
+        suspensionIntervalViewHolder.setIntervalText(TimeUtil.formatSuspensionIntervalText(interval, getContext()));
+    }
+
+    public void replaceItems(List<Interval> intervals) {
+        this.intervals.clear();
+        this.intervals.addAll(intervals);
+    }
+
 
     public Bundle saveStateToBundle() {
         Log.d(SuspensionIntervalAdapter.class.getName(), "saveStateToBundle");
-        return null;
+        return BundleUtil.suspensionIntervalListToBundle(getSuspensionIntervalsKey(), intervals);
     }
 
     public void restoreStateFromBundle(Bundle bundle) {
         Log.d(SuspensionIntervalAdapter.class.getName(), "restoreStateFromBundle");
+        replaceItems(BundleUtil.suspensionIntervalListFromBundle(getSuspensionIntervalsKey(), bundle));
+    }
+
+    private String getSuspensionIntervalsKey() {
+        return SuspensionIntervalAdapter.class.getSimpleName() + "SuspensionIntervals";
     }
 
     @Override

@@ -25,6 +25,7 @@ import androidx.test.filters.SmallTest;
 
 import net.ibbaa.keepitup.model.Interval;
 import net.ibbaa.keepitup.model.Time;
+import net.ibbaa.keepitup.test.mock.TestRegistry;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -177,6 +178,30 @@ public class TimeUtilTest {
         long timestamp = TimeUtil.getRelativeTimestamp(time);
         SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm");
         assertEquals("17:59", dateFormat.format(timestamp));
+    }
+
+    @Test
+    public void testFormatSuspensionIntervalText() {
+        Time start = new Time();
+        start.setHour(17);
+        start.setMinute(58);
+        Time end = new Time();
+        end.setHour(17);
+        end.setMinute(59);
+        Interval interval = new Interval();
+        interval.setStart(start);
+        interval.setEnd(end);
+        assertEquals("Start: 17:58 End: 17:59", TimeUtil.formatSuspensionIntervalText(interval, TestRegistry.getContext()));
+        start = new Time();
+        start.setHour(1);
+        start.setMinute(2);
+        end = new Time();
+        end.setHour(3);
+        end.setMinute(4);
+        interval = new Interval();
+        interval.setStart(start);
+        interval.setEnd(end);
+        assertEquals("Start: 01:02 End: 03:04", TimeUtil.formatSuspensionIntervalText(interval, TestRegistry.getContext()));
     }
 
     private long testNow() {

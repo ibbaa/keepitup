@@ -16,29 +16,27 @@
 
 package net.ibbaa.keepitup.ui.adapter;
 
-import android.content.Context;
-import android.content.res.Resources;
 import android.view.View;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import net.ibbaa.keepitup.R;
 import net.ibbaa.keepitup.ui.dialog.SuspensionIntervalsDialog;
 
 public class SuspensionIntervalViewHolder extends RecyclerView.ViewHolder {
 
     private final SuspensionIntervalsDialog intervalsDialog;
+    private final TextView intervalText;
 
     public SuspensionIntervalViewHolder(@NonNull View itemView, SuspensionIntervalsDialog intervalsDialog) {
         super(itemView);
         this.intervalsDialog = intervalsDialog;
+        intervalText = itemView.findViewById(R.id.textview_list_item_suspension_interval);
     }
 
-    private Context getContext() {
-        return intervalsDialog.getActivity();
-    }
-
-    private Resources getResources() {
-        return getContext().getResources();
+    public void setIntervalText(String text) {
+        intervalText.setText(text);
     }
 }

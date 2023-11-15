@@ -28,6 +28,8 @@ import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.SmallTest;
 
 import net.ibbaa.keepitup.model.FileEntry;
+import net.ibbaa.keepitup.model.Interval;
+import net.ibbaa.keepitup.model.Time;
 import net.ibbaa.keepitup.ui.dialog.ContextOption;
 import net.ibbaa.keepitup.ui.validation.ValidationResult;
 
@@ -461,6 +463,60 @@ public class BundleUtilTest {
         assertEquals(ContextOption.PASTE, contextOptionList.get(1));
     }
 
+    @Test
+    public void testEmptySuspensionIntervalListToBundle() {
+        Bundle bundle = BundleUtil.suspensionIntervalListToBundle("key", null);
+        assertNotNull(bundle);
+        assertTrue(bundle.isEmpty());
+        bundle = BundleUtil.suspensionIntervalListToBundle("key", Collections.emptyList());
+        assertNotNull(bundle);
+        assertTrue(bundle.isEmpty());
+    }
+
+    @Test
+    public void testSuspensionIntervalListFromEmptyBundle() {
+        List<Interval> intervalList = BundleUtil.suspensionIntervalListFromBundle("key", null);
+        assertNotNull(intervalList);
+        assertTrue(intervalList.isEmpty());
+        Bundle bundle = new Bundle();
+        intervalList = BundleUtil.suspensionIntervalListFromBundle("key", bundle);
+        assertNotNull(intervalList);
+        assertTrue(intervalList.isEmpty());
+    }
+
+    @Test
+    public void testSuspensionIntervalListToBundle() {
+        Interval interval1 = getInterval(1, 2, 3, 4);
+        Interval interval2 = getInterval(23, 59, 1, 15);
+        Bundle bundle = BundleUtil.suspensionIntervalListToBundle("key", Arrays.asList(interval1, interval2));
+        Interval otherInterval1 = new Interval(bundle.getBundle("key0"));
+        Interval otherInterval2 = new Interval(bundle.getBundle("key1"));
+        assertTrue(interval1.isEqual(otherInterval1));
+        assertTrue(interval2.isEqual(otherInterval2));
+    }
+
+    @Test
+    public void testSuspensionIntervalListFromBundle() {
+        Bundle bundle = new Bundle();
+        Interval interval1 = getInterval(1, 2, 3, 4);
+        Interval interval2 = getInterval(23, 59, 1, 15);
+        bundle.putBundle("key0", interval1.toBundle());
+        bundle.putBundle("key1", interval2.toBundle());
+        List<Interval> intervalList = BundleUtil.suspensionIntervalListFromBundle("key", bundle);
+        assertTrue(interval1.isEqual(intervalList.get(0)));
+        assertTrue(interval2.isEqual(intervalList.get(1)));
+    }
+
+    @Test
+    public void testSuspensionIntervalListToAndFromBundle() {
+        Interval interval1 = getInterval(1, 2, 3, 4);
+        Interval interval2 = getInterval(23, 59, 1, 15);
+        Bundle bundle = BundleUtil.suspensionIntervalListToBundle("key", Arrays.asList(interval1, interval2));
+        List<Interval> intervalList = BundleUtil.suspensionIntervalListFromBundle("key", bundle);
+        assertTrue(interval1.isEqual(intervalList.get(0)));
+        assertTrue(interval2.isEqual(intervalList.get(1)));
+    }
+
     private FileEntry getFileEntry(String name, boolean directory, boolean parent, boolean canVisit) {
         FileEntry fileEntry = new FileEntry();
         fileEntry.setName(name);
@@ -468,5 +524,18 @@ public class BundleUtilTest {
         fileEntry.setParent(parent);
         fileEntry.setCanVisit(canVisit);
         return fileEntry;
+    }
+
+    private Interval getInterval(int startHour, int startMinute, int endHour, int endMinute) {
+        Time start = new Time();
+        start.setHour(startHour);
+        start.setMinute(startMinute);
+        Time end = new Time();
+        end.setHour(endHour);
+        end.setMinute(endMinute);
+        Interval interval = new Interval();
+        interval.setStart(start);
+        interval.setEnd(end);
+        return interval;
     }
 }
