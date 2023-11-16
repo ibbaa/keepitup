@@ -25,12 +25,18 @@ import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.DialogFragment;
+import androidx.recyclerview.widget.DefaultItemAnimator;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import net.ibbaa.keepitup.R;
 import net.ibbaa.keepitup.logging.Log;
+import net.ibbaa.keepitup.service.TimeBasedSuspensionScheduler;
+import net.ibbaa.keepitup.ui.SettingsInputActivity;
 import net.ibbaa.keepitup.ui.SuspensionIntervalsSupport;
 import net.ibbaa.keepitup.ui.adapter.SuspensionIntervalAdapter;
+
+import java.util.Collections;
 
 public class SuspensionIntervalsDialog extends DialogFragment {
 
@@ -51,6 +57,7 @@ public class SuspensionIntervalsDialog extends DialogFragment {
         boolean containsSavedState = containsSavedState(savedInstanceState);
         Log.d(SuspensionIntervalsDialog.class.getName(), "containsSavedState is " + containsSavedState);
         Bundle adapterState = containsSavedState ? savedInstanceState.getBundle(getSuspensionIntervalsAdapterKey()) : null;
+        prepareIntervalsRecyclerView(adapterState);
         prepareOkCancelImageButtons();
         return dialogView;
     }
@@ -76,12 +83,28 @@ public class SuspensionIntervalsDialog extends DialogFragment {
         return SuspensionIntervalsDialog.class.getSimpleName() + "SuspensionIntervalsAdapter";
     }
 
+    private void prepareIntervalsRecyclerView(Bundle adapterState) {
+        Log.d(FileChooseDialog.class.getName(), "prepareIntervalsRecyclerView");
+        suspensionIntervalsRecyclerView = dialogView.findViewById(R.id.listview_dialog_file_suspension_intervals_intervals);
+        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getActivity());
+        suspensionIntervalsRecyclerView.setLayoutManager(layoutManager);
+        suspensionIntervalsRecyclerView.setItemAnimator(new DefaultItemAnimator());
+        RecyclerView.Adapter<?> adapter = adapterState == null ? createAdapter() : restoreAdapter(adapterState);
+        suspensionIntervalsRecyclerView.setAdapter(adapter);
+    }
+
     private void prepareOkCancelImageButtons() {
         Log.d(SuspensionIntervalsDialog.class.getName(), "prepareOkCancelImageButtons");
         ImageView okImage = dialogView.findViewById(R.id.imageview_dialog_suspension_intervals_ok);
         ImageView cancelImage = dialogView.findViewById(R.id.imageview_dialog_suspension_intervals_cancel);
         okImage.setOnClickListener(this::onOkClicked);
         cancelImage.setOnClickListener(this::onCancelClicked);
+    }
+
+    public void onIntervalDeleteClicked(View view, int index) {
+        Log.d(SuspensionIntervalsDialog.class.getName(), "onIntervalDeleteClicked for index " + index);
+        getAdapter().removeItem(index);
+        getAdapter().notifyItemRemoved(index);
     }
 
     private void onOkClicked(View view) {
@@ -110,8 +133,39 @@ public class SuspensionIntervalsDialog extends DialogFragment {
         return suspensionIntervalsRecyclerView;
     }
 
+    private RecyclerView.Adapter<?> restoreAdapter(Bundle adapterState) {
+        Log.d(SuspensionIntervalsDialog.class.getName(), "restoreAdapter");
+        SuspensionIntervalAdapter adapter = new SuspensionIntervalAdapter(Collections.emptyList(), this);
+        adapter.restoreStateFromBundle(adapterState);
+        return adapter;
+    }
+
+    private RecyclerView.Adapter<?> createAdapter() {
+        Log.d(SuspensionIntervalsDialog.class.getName(), "createAdapter");
+        TimeBasedSuspensionScheduler scheduler = getTimeBasedSuspensionScheduler();
+        if (scheduler == null) {
+            Log.e(SuspensionIntervalsDialog.class.getName(), "createAdapter, scheduler is null, cannot get intervals");
+            return new SuspensionIntervalAdapter(Collections.emptyList(), this);
+        }
+        return new SuspensionIntervalAdapter(scheduler.getIntervals(), this);
+    }
+
     public SuspensionIntervalAdapter getAdapter() {
         return (SuspensionIntervalAdapter) getSuspensionIntervalsRecyclerView().getAdapter();
+    }
+
+    public TimeBasedSuspensionScheduler getTimeBasedSuspensionScheduler() {
+        Log.d(SuspensionIntervalsDialog.class.getName(), "getTimeBasedSuspensionScheduler");
+        Activity activity = getActivity();
+        if (activity == null) {
+            Log.e(SuspensionIntervalsDialog.class.getName(), "getTimeBasedSuspensionScheduler, activity is null");
+            return null;
+        }
+        if (!(activity instanceof SettingsInputActivity)) {
+            Log.e(SuspensionIntervalsDialog.class.getName(), "getTimeBasedSuspensionScheduler, activity is not an instance of " + SettingsInputActivity.class.getSimpleName());
+            return null;
+        }
+        return ((SettingsInputActivity) activity).getTimeBasedSuspensionScheduler();
     }
 
     private SuspensionIntervalsSupport getSuspensionIntervalsSupport() {

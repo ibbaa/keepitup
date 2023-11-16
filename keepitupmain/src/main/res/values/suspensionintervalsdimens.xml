@@ -16,6 +16,7 @@
 
 <resources>
     <dimen name="linearlayout_dialog_suspension_intervals_padding">30dp</dimen>
+    <dimen name="textview_dialog_file_choose_label_margin">8dp</dimen>
     <dimen name="listview_dialog_suspension_intervals_intervals_margin">0dp</dimen>
     <dimen name="listview_dialog_suspension_intervals_intervals_padding">0dp</dimen>
     <dimen name="linearlayout_dialog_suspension_intervals_ok_cancel_padding_top">10dp</dimen>
@@ -23,4 +24,5 @@
     <dimen name="cardview_list_item_suspension_interval_corner_radius">4dp</dimen>
     <dimen name="cardview_list_item_suspension_interval_card_elevation">4dp</dimen>
     <dimen name="linearlayout_list_item_suspension_interval_margin">4dp</dimen>
+    <dimen name="textview_list_item_suspension_interval_margin">4dp</dimen>
 </resources>

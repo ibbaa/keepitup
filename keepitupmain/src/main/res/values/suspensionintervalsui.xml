@@ -16,6 +16,7 @@
 
 <resources>
     <string name="label_dialog_suspension_intervals_intervals">Suspension intervals</string>
+    <string name="text_dialog_suspension_intervals_no_intervals">No intervals defined</string>
     <string name="label_dialog_suspension_intervals_delete_interval">Delete interval</string>
     <string name="label_dialog_suspension_intervals_ok">@android:string/ok</string>
     <string name="label_dialog_suspension_intervals_cancel">@android:string/cancel</string>

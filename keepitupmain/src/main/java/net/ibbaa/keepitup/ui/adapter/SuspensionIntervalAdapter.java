@@ -34,6 +34,7 @@ import net.ibbaa.keepitup.util.BundleUtil;
 import net.ibbaa.keepitup.util.TimeUtil;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class SuspensionIntervalAdapter extends RecyclerView.Adapter<SuspensionIntervalViewHolder> {
@@ -44,6 +45,7 @@ public class SuspensionIntervalAdapter extends RecyclerView.Adapter<SuspensionIn
     public SuspensionIntervalAdapter(List<Interval> intervals, SuspensionIntervalsDialog intervalsDialog) {
         this.intervals = new ArrayList<>();
         this.intervalsDialog = intervalsDialog;
+        replaceItems(intervals);
     }
 
     @NonNull
@@ -57,20 +59,27 @@ public class SuspensionIntervalAdapter extends RecyclerView.Adapter<SuspensionIn
     @Override
     public void onBindViewHolder(@NonNull SuspensionIntervalViewHolder suspensionIntervalViewHolder, int position) {
         Log.d(SuspensionIntervalAdapter.class.getName(), "onBindViewHolder");
-        Interval interval = intervals.get(position);
-        bindIntervalText(suspensionIntervalViewHolder, interval);
+        if (!intervals.isEmpty()) {
+            if (position < intervals.size()) {
+                Interval interval = intervals.get(position);
+                bindIntervalText(suspensionIntervalViewHolder, interval);
+                suspensionIntervalViewHolder.showIntervalsCardView();
+                suspensionIntervalViewHolder.hideNoIntervalsTextView();
+            } else {
+                suspensionIntervalViewHolder.hideIntervalsCardView();
+                suspensionIntervalViewHolder.hideNoIntervalsTextView();
+            }
+            suspensionIntervalViewHolder.hideNoIntervalsTextView();
+        } else {
+            suspensionIntervalViewHolder.hideIntervalsCardView();
+            suspensionIntervalViewHolder.showNoIntervalsTextView();
+        }
     }
 
     private void bindIntervalText(@NonNull SuspensionIntervalViewHolder suspensionIntervalViewHolder, Interval interval) {
         Log.d(LogEntryAdapter.class.getName(), "bindIntervalText");
         suspensionIntervalViewHolder.setIntervalText(TimeUtil.formatSuspensionIntervalText(interval, getContext()));
     }
-
-    public void replaceItems(List<Interval> intervals) {
-        this.intervals.clear();
-        this.intervals.addAll(intervals);
-    }
-
 
     public Bundle saveStateToBundle() {
         Log.d(SuspensionIntervalAdapter.class.getName(), "saveStateToBundle");
@@ -86,9 +95,36 @@ public class SuspensionIntervalAdapter extends RecyclerView.Adapter<SuspensionIn
         return SuspensionIntervalAdapter.class.getSimpleName() + "SuspensionIntervals";
     }
 
+    public void addItem(Interval interval) {
+        Log.d(SuspensionIntervalAdapter.class.getName(), "addItem " + interval);
+        intervals.add(interval);
+    }
+
+    public void removeItem(int index) {
+        Log.d(SuspensionIntervalAdapter.class.getName(), "removeItem on position " + index);
+        if (index < 0 || index >= intervals.size()) {
+            Log.e(SuspensionIntervalAdapter.class.getName(), "invalid index " + index);
+            return;
+        }
+        intervals.remove(index);
+    }
+
+    public void removeItems() {
+        this.intervals.clear();
+    }
+
+    public void replaceItems(List<Interval> intervals) {
+        this.intervals.clear();
+        this.intervals.addAll(intervals);
+    }
+
     @Override
     public int getItemCount() {
-        return 0;
+        return intervals.size() <= 0 ? 1 : intervals.size();
+    }
+
+    public List<Interval> getAllItems() {
+        return Collections.unmodifiableList(intervals);
     }
 
     private Context getContext() {

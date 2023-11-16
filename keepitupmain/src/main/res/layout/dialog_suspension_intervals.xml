@@ -33,18 +33,19 @@
             android:id="@+id/textview_dialog_file_choose_label"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/textview_dialog_file_choose_label_margin"
             android:textStyle="bold"
             android:labelFor="@id/edittext_dialog_file_choose_folder"
             android:text="@string/label_dialog_suspension_intervals_intervals" />
 
-        <!-- <androidx.recyclerview.widget.RecyclerView
+        <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/listview_dialog_file_suspension_intervals_intervals"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/listview_dialog_suspension_intervals_intervals_margin"
             android:padding="@dimen/listview_dialog_suspension_intervals_intervals_padding"
             android:layout_gravity="fill_horizontal"
-            android:scrollbars="none" /> -->
+            android:scrollbars="none" />
 
         <LinearLayout
             android:id="@+id/linearlayout_dialog_suspension_intervals_ok_cancel"
