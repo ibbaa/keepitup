@@ -19,6 +19,7 @@
     <string name="label_dialog_confirm_cancel">@android:string/cancel</string>
     <string name="text_dialog_confirm_delete_network_task">Really delete?</string>
     <string name="text_dialog_confirm_delete_logs">Really delete?</string>
+    <string name="text_dialog_confirm_delete_interval">Really delete?</string>
     <string name="text_dialog_confirm_config_reset">Reset configuration</string>
     <string name="text_dialog_confirm_config_import">Import configuration</string>
     <string name="text_dialog_confirm_config_export_existing_file">Export configuration</string>

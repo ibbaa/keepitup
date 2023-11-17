@@ -165,7 +165,7 @@ public class ContextOptionsDialog extends DialogFragment {
                 }
             }
         }
-        Log.e(ContextOptionsDialog.class.getName(), "getContextOptionsSupport, no parent fragment implementing " + ContextOptionsSupport.class.getSimpleName());
+        Log.d(ContextOptionsDialog.class.getName(), "getContextOptionsSupport, no parent fragment implementing " + ContextOptionsSupport.class.getSimpleName());
         Activity activity = getActivity();
         if (activity == null) {
             Log.e(ContextOptionsDialog.class.getName(), "getContextOptionsSupport, activity is null");

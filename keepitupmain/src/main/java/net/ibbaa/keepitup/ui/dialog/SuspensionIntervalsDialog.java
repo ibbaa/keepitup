@@ -32,13 +32,15 @@ import androidx.recyclerview.widget.RecyclerView;
 import net.ibbaa.keepitup.R;
 import net.ibbaa.keepitup.logging.Log;
 import net.ibbaa.keepitup.service.TimeBasedSuspensionScheduler;
+import net.ibbaa.keepitup.ui.ConfirmSupport;
 import net.ibbaa.keepitup.ui.SettingsInputActivity;
 import net.ibbaa.keepitup.ui.SuspensionIntervalsSupport;
 import net.ibbaa.keepitup.ui.adapter.SuspensionIntervalAdapter;
+import net.ibbaa.keepitup.util.BundleUtil;
 
 import java.util.Collections;
 
-public class SuspensionIntervalsDialog extends DialogFragment {
+public class SuspensionIntervalsDialog extends DialogFragment implements ConfirmSupport {
 
     private View dialogView;
     private RecyclerView suspensionIntervalsRecyclerView;
@@ -103,8 +105,36 @@ public class SuspensionIntervalsDialog extends DialogFragment {
 
     public void onIntervalDeleteClicked(View view, int index) {
         Log.d(SuspensionIntervalsDialog.class.getName(), "onIntervalDeleteClicked for index " + index);
-        getAdapter().removeItem(index);
-        getAdapter().notifyItemRemoved(index);
+        ConfirmDialog confirmDialog = new ConfirmDialog();
+        String confirmMessage = getResources().getString(R.string.text_dialog_confirm_delete_interval);
+        Bundle bundle = BundleUtil.stringsToBundle(new String[]{confirmDialog.getMessageKey(), confirmDialog.getTypeKey()}, new String[]{confirmMessage, ConfirmDialog.Type.DELETEINTERVAL.name()});
+        bundle.putInt(confirmDialog.getPositionKey(), index);
+        confirmDialog.setArguments(bundle);
+        showDialog(confirmDialog, ConfirmDialog.class.getName());
+    }
+
+    @Override
+    public void onConfirmDialogOkClicked(ConfirmDialog confirmDialog, ConfirmDialog.Type type) {
+        Log.d(SuspensionIntervalsDialog.class.getName(), "onConfirmDialogOkClicked for type " + type);
+        if (ConfirmDialog.Type.DELETEINTERVAL.equals(type)) {
+            int position = confirmDialog.getPosition();
+            if (position >= 0) {
+                Log.d(SuspensionIntervalsDialog.class.getName(), "deleting interval at position " + position);
+                getAdapter().removeItem(position);
+                getAdapter().notifyItemRemoved(position);
+            } else {
+                Log.e(SuspensionIntervalsDialog.class.getName(), ConfirmDialog.class.getSimpleName() + " arguments do not contain position key " + confirmDialog.getPositionKey());
+            }
+        } else {
+            Log.e(SuspensionIntervalsDialog.class.getName(), "Unknown type " + type);
+        }
+        confirmDialog.dismiss();
+    }
+
+    @Override
+    public void onConfirmDialogCancelClicked(ConfirmDialog confirmDialog) {
+        Log.d(SuspensionIntervalsDialog.class.getName(), "onConfirmDialogCancelClicked");
+        confirmDialog.dismiss();
     }
 
     private void onOkClicked(View view) {
@@ -180,5 +210,13 @@ public class SuspensionIntervalsDialog extends DialogFragment {
             return null;
         }
         return (SuspensionIntervalsSupport) activity;
+    }
+
+    private void showDialog(DialogFragment dialog, String name) {
+        try {
+            dialog.show(getParentFragmentManager(), name);
+        } catch (Exception exc) {
+            Log.e(SettingsInputActivity.class.getName(), "Error opening dialog", exc);
+        }
     }
 }

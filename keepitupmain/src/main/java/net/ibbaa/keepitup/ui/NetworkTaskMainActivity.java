@@ -30,10 +30,14 @@ import androidx.annotation.RequiresApi;
 import androidx.recyclerview.widget.RecyclerView;
 
 import net.ibbaa.keepitup.R;
+import net.ibbaa.keepitup.db.IntervalDAO;
 import net.ibbaa.keepitup.logging.Log;
+import net.ibbaa.keepitup.model.Interval;
 import net.ibbaa.keepitup.model.NetworkTask;
+import net.ibbaa.keepitup.model.Time;
 import net.ibbaa.keepitup.service.IAlarmManager;
 import net.ibbaa.keepitup.service.SystemAlarmManager;
+import net.ibbaa.keepitup.service.TimeBasedSuspensionScheduler;
 import net.ibbaa.keepitup.ui.adapter.NetworkTaskAdapter;
 import net.ibbaa.keepitup.ui.adapter.NetworkTaskUIWrapper;
 import net.ibbaa.keepitup.ui.dialog.AlarmPermissionDialog;
@@ -90,8 +94,8 @@ public class NetworkTaskMainActivity extends RecyclerViewBaseActivity implements
         if (!createAlarmManager().canScheduleAlarms()) {
             showAlarmPermissionDialog();
         }
-        //new IntervalDAO(this).deleteAllIntervals();
-        /*Interval interval1 = new Interval();
+        new IntervalDAO(this).deleteAllIntervals();
+        Interval interval1 = new Interval();
         Interval interval2 = new Interval();
         Interval interval3 = new Interval();
         Time timeStart1 = new Time();
@@ -121,7 +125,7 @@ public class NetworkTaskMainActivity extends RecyclerViewBaseActivity implements
         new IntervalDAO(this).insertInterval(interval1);
         new IntervalDAO(this).insertInterval(interval2);
         new IntervalDAO(this).insertInterval(interval3);
-        new TimeBasedSuspensionScheduler(this).restart();*/
+        new TimeBasedSuspensionScheduler(this).restart();
     }
 
     private void showAlarmPermissionDialog() {

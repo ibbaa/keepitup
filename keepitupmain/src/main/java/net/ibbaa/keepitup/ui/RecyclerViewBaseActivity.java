@@ -98,7 +98,7 @@ public abstract class RecyclerViewBaseActivity extends AppCompatActivity impleme
         try {
             dialog.show(getSupportFragmentManager(), name);
         } catch (Exception exc) {
-            Log.d(SettingsInputActivity.class.getName(), "Error opening dialog", exc);
+            Log.e(SettingsInputActivity.class.getName(), "Error opening dialog", exc);
         }
     }
 }

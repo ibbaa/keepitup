@@ -26,6 +26,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.DialogFragment;
+import androidx.fragment.app.Fragment;
 
 import net.ibbaa.keepitup.R;
 import net.ibbaa.keepitup.logging.Log;
@@ -33,11 +34,14 @@ import net.ibbaa.keepitup.ui.ConfirmSupport;
 import net.ibbaa.keepitup.util.BundleUtil;
 import net.ibbaa.keepitup.util.StringUtil;
 
+import java.util.List;
+
 public class ConfirmDialog extends DialogFragment {
 
     public enum Type {
         DELETETASK,
         DELETELOGS,
+        DELETEINTERVAL,
         RESETCONFIG,
         IMPORTCONFIG,
         EXPORTCONFIGEXISTINGFILE,
@@ -152,6 +156,15 @@ public class ConfirmDialog extends DialogFragment {
 
     private ConfirmSupport getConfirmSupport() {
         Log.d(ConfirmDialog.class.getName(), "getConfirmSupport");
+        List<Fragment> fragments = getParentFragmentManager().getFragments();
+        if (fragments != null) {
+            for (Fragment fragment : fragments) {
+                if (fragment instanceof ConfirmSupport) {
+                    return (ConfirmSupport) fragment;
+                }
+            }
+        }
+        Log.d(ContextOptionsDialog.class.getName(), "getConfirmSupport, no parent fragment implementing " + ConfirmSupport.class.getSimpleName());
         Activity activity = getActivity();
         if (activity == null) {
             Log.e(ConfirmDialog.class.getName(), "getConfirmSupport, activity is null");
