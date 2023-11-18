@@ -39,7 +39,7 @@
             android:text="@string/label_dialog_suspension_intervals_intervals" />
 
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/listview_dialog_file_suspension_intervals_intervals"
+            android:id="@+id/listview_dialog_suspension_intervals_intervals"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/listview_dialog_suspension_intervals_intervals_margin"

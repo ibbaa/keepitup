@@ -87,7 +87,7 @@ public class SuspensionIntervalsDialog extends DialogFragment implements Confirm
 
     private void prepareIntervalsRecyclerView(Bundle adapterState) {
         Log.d(FileChooseDialog.class.getName(), "prepareIntervalsRecyclerView");
-        suspensionIntervalsRecyclerView = dialogView.findViewById(R.id.listview_dialog_file_suspension_intervals_intervals);
+        suspensionIntervalsRecyclerView = dialogView.findViewById(R.id.listview_dialog_suspension_intervals_intervals);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getActivity());
         suspensionIntervalsRecyclerView.setLayoutManager(layoutManager);
         suspensionIntervalsRecyclerView.setItemAnimator(new DefaultItemAnimator());
