@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?><!--
+  ~ Copyright (c) 2023. Alwin Ibba
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~ http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/scrollview_dialog_suspension_interval_add"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent">
+
+    <LinearLayout
+        android:id="@+id/linearlayout_dialog_suspension_interval_add"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/linearlayout_dialog_suspension_interval_add_padding"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/textview_dialog_suspension_interval_add_label"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/textview_dialog_suspension_interval_add_label_margin"
+            android:gravity="center_horizontal"
+            android:textStyle="bold"
+            android:text="@string/label_dialog_suspension_interval_add" />
+
+        <LinearLayout
+            android:id="@+id/linearlayout_dialog_suspension_interval_add_time"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/linearlayout_dialog_suspension_interval_add_time_padding"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/textview_dialog_suspension_interval_add_time_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="@dimen/textview_dialog_suspension_interval_add_time_label_margin"
+                android:layout_gravity="center_vertical"
+                android:textStyle="bold"
+                android:text="" />
+
+            <NumberPicker
+                android:id="@+id/picker_dialog_suspension_interval_add_time_hour"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/picker_dialog_suspension_interval_add_time_hour_margin" />
+
+            <NumberPicker
+                android:id="@+id/picker_dialog_suspension_interval_add_time_minute"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/picker_dialog_suspension_interval_add_time_minute_margin" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/linearlayout_dialog_suspension_interval_add_ok_cancel"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingTop="@dimen/linearlayout_dialog_suspension_interval_add_ok_cancel_padding_top"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:id="@+id/imageview_dialog_suspension_interval_add_ok"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:clickable="true"
+                android:focusable="true"
+                android:contentDescription="@string/label_dialog_suspension_interval_add_ok"
+                app:srcCompat="@drawable/icon_ok_selector" />
+
+            <ImageView
+                android:id="@+id/imageview_dialog_suspension_interval_add_cancel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:clickable="true"
+                android:focusable="true"
+                android:contentDescription="@string/label_dialog_suspension_interval_add_cancel"
+                app:srcCompat="@drawable/icon_cancel_selector" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</ScrollView>

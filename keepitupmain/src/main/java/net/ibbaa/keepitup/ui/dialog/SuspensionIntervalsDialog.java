@@ -34,13 +34,14 @@ import net.ibbaa.keepitup.logging.Log;
 import net.ibbaa.keepitup.service.TimeBasedSuspensionScheduler;
 import net.ibbaa.keepitup.ui.ConfirmSupport;
 import net.ibbaa.keepitup.ui.SettingsInputActivity;
+import net.ibbaa.keepitup.ui.SuspensionIntervalAddSupport;
 import net.ibbaa.keepitup.ui.SuspensionIntervalsSupport;
 import net.ibbaa.keepitup.ui.adapter.SuspensionIntervalAdapter;
 import net.ibbaa.keepitup.util.BundleUtil;
 
 import java.util.Collections;
 
-public class SuspensionIntervalsDialog extends DialogFragment implements ConfirmSupport {
+public class SuspensionIntervalsDialog extends DialogFragment implements ConfirmSupport, SuspensionIntervalAddSupport {
 
     private View dialogView;
     private RecyclerView suspensionIntervalsRecyclerView;
@@ -60,6 +61,7 @@ public class SuspensionIntervalsDialog extends DialogFragment implements Confirm
         Log.d(SuspensionIntervalsDialog.class.getName(), "containsSavedState is " + containsSavedState);
         Bundle adapterState = containsSavedState ? savedInstanceState.getBundle(getSuspensionIntervalsAdapterKey()) : null;
         prepareIntervalsRecyclerView(adapterState);
+        prepareAddImageButton();
         prepareOkCancelImageButtons();
         return dialogView;
     }
@@ -86,13 +88,19 @@ public class SuspensionIntervalsDialog extends DialogFragment implements Confirm
     }
 
     private void prepareIntervalsRecyclerView(Bundle adapterState) {
-        Log.d(FileChooseDialog.class.getName(), "prepareIntervalsRecyclerView");
+        Log.d(SuspensionIntervalsDialog.class.getName(), "prepareIntervalsRecyclerView");
         suspensionIntervalsRecyclerView = dialogView.findViewById(R.id.listview_dialog_suspension_intervals_intervals);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getActivity());
         suspensionIntervalsRecyclerView.setLayoutManager(layoutManager);
         suspensionIntervalsRecyclerView.setItemAnimator(new DefaultItemAnimator());
         RecyclerView.Adapter<?> adapter = adapterState == null ? createAdapter() : restoreAdapter(adapterState);
         suspensionIntervalsRecyclerView.setAdapter(adapter);
+    }
+
+    private void prepareAddImageButton() {
+        Log.d(SuspensionIntervalsDialog.class.getName(), "prepareAddImageButton");
+        ImageView addImage = dialogView.findViewById(R.id.imageview_dialog_suspension_intervals_interval_add);
+        addImage.setOnClickListener(this::onIntervalAddClicked);
     }
 
     private void prepareOkCancelImageButtons() {
@@ -135,6 +143,26 @@ public class SuspensionIntervalsDialog extends DialogFragment implements Confirm
     public void onConfirmDialogCancelClicked(ConfirmDialog confirmDialog) {
         Log.d(SuspensionIntervalsDialog.class.getName(), "onConfirmDialogCancelClicked");
         confirmDialog.dismiss();
+    }
+
+    @Override
+    public void onSuspensionIntervalAddDialogOkClicked(SuspensionIntervalAddDialog intervalAddDialog, SuspensionIntervalAddDialog.Mode mode) {
+        Log.d(SuspensionIntervalsDialog.class.getName(), "onSuspensionIntervalAddDialogOkClicked with mode " + mode);
+        intervalAddDialog.dismiss();
+    }
+
+    @Override
+    public void onSuspensionIntervalAddDialogCancelClicked(SuspensionIntervalAddDialog intervalAddDialog) {
+        Log.d(SuspensionIntervalsDialog.class.getName(), "onSuspensionIntervalAddDialogCancelClicked");
+        intervalAddDialog.dismiss();
+    }
+
+    private void onIntervalAddClicked(View view) {
+        Log.d(SuspensionIntervalsDialog.class.getName(), "onIntervalAddClicked");
+        SuspensionIntervalAddDialog intervalAddDialog = new SuspensionIntervalAddDialog();
+        Bundle bundle = BundleUtil.stringToBundle(intervalAddDialog.getModeKey(), SuspensionIntervalAddDialog.Mode.START.name());
+        intervalAddDialog.setArguments(bundle);
+        showDialog(intervalAddDialog, SuspensionIntervalAddDialog.class.getName());
     }
 
     private void onOkClicked(View view) {

@@ -15,10 +15,11 @@
   -->
 
 <resources>
-    <string name="label_dialog_suspension_intervals_intervals">Suspension intervals</string>
-    <string name="text_dialog_suspension_intervals_no_intervals">No intervals defined</string>
-    <string name="label_dialog_suspension_intervals_delete_interval">Delete interval</string>
-    <string name="label_dialog_suspension_intervals_ok">@android:string/ok</string>
-    <string name="label_dialog_suspension_intervals_cancel">@android:string/cancel</string>
-    <string name="label_dialog_suspension_intervals_add_interval">Add suspension interval</string>
+    <dimen name="linearlayout_dialog_suspension_interval_add_padding">30dp</dimen>
+    <dimen name="textview_dialog_suspension_interval_add_label_margin">2dp</dimen>
+    <dimen name="linearlayout_dialog_suspension_interval_add_time_padding">4dp</dimen>
+    <dimen name="textview_dialog_suspension_interval_add_time_label_margin">8dp</dimen>
+    <dimen name="picker_dialog_suspension_interval_add_time_hour_margin">8dp</dimen>
+    <dimen name="picker_dialog_suspension_interval_add_time_minute_margin">8dp</dimen>
+    <dimen name="linearlayout_dialog_suspension_interval_add_ok_cancel_padding_top">10dp</dimen>
 </resources>

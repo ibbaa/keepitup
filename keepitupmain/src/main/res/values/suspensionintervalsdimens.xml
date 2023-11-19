@@ -16,7 +16,7 @@
 
 <resources>
     <dimen name="linearlayout_dialog_suspension_intervals_padding">30dp</dimen>
-    <dimen name="textview_dialog_file_choose_label_margin">8dp</dimen>
+    <dimen name="textview_dialog_suspension_intervals_label_margin">8dp</dimen>
     <dimen name="listview_dialog_suspension_intervals_intervals_margin">0dp</dimen>
     <dimen name="listview_dialog_suspension_intervals_intervals_padding">0dp</dimen>
     <dimen name="linearlayout_dialog_suspension_intervals_ok_cancel_padding_top">10dp</dimen>

@@ -30,12 +30,12 @@
         android:orientation="vertical">
 
         <TextView
-            android:id="@+id/textview_dialog_file_choose_label"
+            android:id="@+id/textview_dialog_suspension_intervals_label"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/textview_dialog_file_choose_label_margin"
+            android:layout_marginBottom="@dimen/textview_dialog_suspension_intervals_label_margin"
+            android:gravity="center_horizontal"
             android:textStyle="bold"
-            android:labelFor="@id/edittext_dialog_file_choose_folder"
             android:text="@string/label_dialog_suspension_intervals_intervals" />
 
         <androidx.recyclerview.widget.RecyclerView
@@ -46,6 +46,15 @@
             android:padding="@dimen/listview_dialog_suspension_intervals_intervals_padding"
             android:layout_gravity="fill_horizontal"
             android:scrollbars="none" />
+
+        <ImageView
+            android:id="@+id/imageview_dialog_suspension_intervals_interval_add"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:clickable="true"
+            android:focusable="true"
+            android:contentDescription="@string/label_dialog_suspension_intervals_add_interval"
+            app:srcCompat="@drawable/icon_add_selector" />
 
         <LinearLayout
             android:id="@+id/linearlayout_dialog_suspension_intervals_ok_cancel"
