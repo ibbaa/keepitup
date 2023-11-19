@@ -201,13 +201,4 @@
 
     </androidx.cardview.widget.CardView>
 
-    <ImageView
-        android:id="@+id/imageview_list_item_network_task_add"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:clickable="true"
-        android:focusable="true"
-        android:contentDescription="@string/label_activity_main_add_network_task"
-        app:srcCompat="@drawable/icon_add_selector" />
-
 </LinearLayout>

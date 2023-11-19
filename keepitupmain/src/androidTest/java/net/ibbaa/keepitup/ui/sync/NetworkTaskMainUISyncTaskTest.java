@@ -141,7 +141,7 @@ public class NetworkTaskMainUISyncTaskTest extends BaseUITest {
         syncTask.runOnUIThread(newWrapper);
         InstrumentationRegistry.getInstrumentation().waitForIdleSync();
         adapter = getAdapter(activityScenario);
-        assertEquals(2, adapter.getItemCount());
+        assertEquals(1, adapter.getItemCount());
         wrapper = adapter.getItem(0);
         assertTrue(updatedTask.isEqual(wrapper.getNetworkTask()));
         assertNull(wrapper.getLogEntry());

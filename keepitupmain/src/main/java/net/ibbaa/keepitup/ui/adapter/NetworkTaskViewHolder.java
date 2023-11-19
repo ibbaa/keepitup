@@ -42,7 +42,6 @@ public class NetworkTaskViewHolder extends RecyclerView.ViewHolder {
     private final TextView onlyWifiText;
     private final TextView lastExecTimestampText;
     private final TextView lastExecMessageText;
-    private final ImageView addImage;
 
     public NetworkTaskViewHolder(@NonNull View itemView, NetworkTaskMainActivity mainActivity) {
         super(itemView);
@@ -67,8 +66,6 @@ public class NetworkTaskViewHolder extends RecyclerView.ViewHolder {
         onlyWifiText = itemView.findViewById(R.id.textview_list_item_network_task_onlywifi);
         lastExecTimestampText = itemView.findViewById(R.id.textview_list_item_network_task_last_exec_timestamp);
         lastExecMessageText = itemView.findViewById(R.id.textview_list_item_network_task_last_exec_message);
-        addImage = itemView.findViewById(R.id.imageview_list_item_network_task_add);
-        addImage.setOnClickListener(mainActivity::onMainAddClicked);
     }
 
     public void setTitle(String title) {
@@ -119,16 +116,6 @@ public class NetworkTaskViewHolder extends RecyclerView.ViewHolder {
 
     public void hideLastExecMessageTextView() {
         lastExecMessageText.setVisibility(View.GONE);
-    }
-
-    public void showMainNetworkTaskCard() {
-        cardView.setVisibility(View.VISIBLE);
-        addImage.setVisibility(View.GONE);
-    }
-
-    public void showAddNetworkTaskImage() {
-        cardView.setVisibility(View.GONE);
-        addImage.setVisibility(View.VISIBLE);
     }
 
     private void onStartStopClicked(View view) {

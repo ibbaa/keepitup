@@ -24,6 +24,7 @@ import android.provider.Settings;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
@@ -83,6 +84,7 @@ public class NetworkTaskMainActivity extends RecyclerViewBaseActivity implements
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_network_task);
         initRecyclerView();
+        prepareAddImageButton();
         IPermissionManager permissionManager = getPermissionManager();
         if (!permissionManager.hasPostNotificationsPermission(this)) {
             permissionManager.requestPostNotificationsPermission(this);
@@ -90,38 +92,11 @@ public class NetworkTaskMainActivity extends RecyclerViewBaseActivity implements
         if (!createAlarmManager().canScheduleAlarms()) {
             showAlarmPermissionDialog();
         }
-        //new IntervalDAO(this).deleteAllIntervals();
-        /*Interval interval1 = new Interval();
-        Interval interval2 = new Interval();
-        Interval interval3 = new Interval();
-        Time timeStart1 = new Time();
-        timeStart1.setHour(10);
-        timeStart1.setMinute(11);
-        Time timeEnd1 = new Time();
-        timeEnd1.setHour(13);
-        timeEnd1.setMinute(14);
-        Time timeStart2 = new Time();
-        timeStart2.setHour(15);
-        timeStart2.setMinute(16);
-        Time timeEnd2 = new Time();
-        timeEnd2.setHour(17);
-        timeEnd2.setMinute(18);
-        Time timeStart3 = new Time();
-        timeStart3.setHour(15);
-        timeStart3.setMinute(16);
-        Time timeEnd3 = new Time();
-        timeEnd3.setHour(17);
-        timeEnd3.setMinute(18);
-        interval1.setStart(timeStart1);
-        interval1.setEnd(timeEnd1);
-        interval2.setStart(timeStart2);
-        interval2.setEnd(timeEnd2);
-        interval3.setStart(timeStart3);
-        interval3.setEnd(timeEnd3);
-        new IntervalDAO(this).insertInterval(interval1);
-        new IntervalDAO(this).insertInterval(interval2);
-        new IntervalDAO(this).insertInterval(interval3);
-        new TimeBasedSuspensionScheduler(this).restart();*/
+    }
+
+    private void prepareAddImageButton() {
+        ImageView addImage = findViewById(R.id.imageview_activity_main_network_task_add);
+        addImage.setOnClickListener(this::onMainAddClicked);
     }
 
     private void showAlarmPermissionDialog() {

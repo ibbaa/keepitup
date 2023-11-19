@@ -61,23 +61,18 @@ public class NetworkTaskAdapter extends RecyclerView.Adapter<NetworkTaskViewHold
     @Override
     public void onBindViewHolder(@NonNull NetworkTaskViewHolder networkTaskViewHolder, int position) {
         Log.d(NetworkTaskAdapter.class.getName(), "onBindViewHolder");
-        if (position < networkTaskWrapperList.size()) {
-            NetworkTask networkTask = networkTaskWrapperList.get(position).getNetworkTask();
-            LogEntry logEntry = networkTaskWrapperList.get(position).getLogEntry();
-            bindTitle(networkTaskViewHolder, networkTask);
-            bindStatus(networkTaskViewHolder, networkTask);
-            bindInstances(networkTaskViewHolder, networkTask);
-            bindAccessType(networkTaskViewHolder, networkTask);
-            bindAddress(networkTaskViewHolder, networkTask);
-            bindInterval(networkTaskViewHolder, networkTask);
-            bindLastExecTimestamp(networkTaskViewHolder, logEntry);
-            bindLastExecMessage(networkTaskViewHolder, logEntry);
-            bindOnlyWifi(networkTaskViewHolder, networkTask);
-            bindNotification(networkTaskViewHolder, networkTask);
-            networkTaskViewHolder.showMainNetworkTaskCard();
-        } else {
-            networkTaskViewHolder.showAddNetworkTaskImage();
-        }
+        NetworkTask networkTask = networkTaskWrapperList.get(position).getNetworkTask();
+        LogEntry logEntry = networkTaskWrapperList.get(position).getLogEntry();
+        bindTitle(networkTaskViewHolder, networkTask);
+        bindStatus(networkTaskViewHolder, networkTask);
+        bindInstances(networkTaskViewHolder, networkTask);
+        bindAccessType(networkTaskViewHolder, networkTask);
+        bindAddress(networkTaskViewHolder, networkTask);
+        bindInterval(networkTaskViewHolder, networkTask);
+        bindLastExecTimestamp(networkTaskViewHolder, logEntry);
+        bindLastExecMessage(networkTaskViewHolder, logEntry);
+        bindOnlyWifi(networkTaskViewHolder, networkTask);
+        bindNotification(networkTaskViewHolder, networkTask);
     }
 
     private void bindTitle(@NonNull NetworkTaskViewHolder networkTaskViewHolder, NetworkTask networkTask) {
@@ -263,7 +258,7 @@ public class NetworkTaskAdapter extends RecyclerView.Adapter<NetworkTaskViewHold
 
     @Override
     public int getItemCount() {
-        return networkTaskWrapperList.size() + 1;
+        return networkTaskWrapperList.size();
     }
 
     public List<NetworkTaskUIWrapper> getAllItems() {

@@ -78,7 +78,7 @@ public class NetworkTaskHandlerTest extends BaseUITest {
         List<NetworkTask> tasks = getNetworkTaskDAO().readAllNetworkTasks();
         assertEquals(1, tasks.size());
         assertEquals(1, getAdapter().getNextIndex());
-        assertEquals(2, getAdapter().getItemCount());
+        assertEquals(1, getAdapter().getItemCount());
         task1 = tasks.get(0);
         assertEquals(0, task1.getIndex());
         assertTrue(task1.getId() >= 0);
@@ -90,7 +90,7 @@ public class NetworkTaskHandlerTest extends BaseUITest {
         tasks = getNetworkTaskDAO().readAllNetworkTasks();
         assertEquals(2, tasks.size());
         assertEquals(2, getAdapter().getNextIndex());
-        assertEquals(3, getAdapter().getItemCount());
+        assertEquals(2, getAdapter().getItemCount());
         task2 = tasks.get(1);
         NetworkTaskUIWrapper adapterWrapper2 = getAdapter().getItem(1);
         assertNull(adapterWrapper2.getLogEntry());
@@ -150,7 +150,7 @@ public class NetworkTaskHandlerTest extends BaseUITest {
         getLogDAO().insertAndDeleteLog(logEntry);
         getLogDAO().insertAndDeleteLog(logEntry);
         getLogDAO().insertAndDeleteLog(logEntry);
-        assertEquals(5, getAdapter().getItemCount());
+        assertEquals(4, getAdapter().getItemCount());
         handler.startNetworkTask(task2);
         handler.deleteNetworkTask(task2);
         assertFalse(task2.isRunning());
@@ -164,7 +164,7 @@ public class NetworkTaskHandlerTest extends BaseUITest {
         assertEquals(0, task1.getIndex());
         assertEquals(1, task3.getIndex());
         assertEquals(2, task4.getIndex());
-        assertEquals(4, getAdapter().getItemCount());
+        assertEquals(3, getAdapter().getItemCount());
     }
 
     @Test
