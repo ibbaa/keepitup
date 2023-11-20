@@ -354,6 +354,48 @@ public class DBSetupTest {
     }
 
     @Test
+    public void testImportIntervalsEdgeCaseBefore() {
+        Interval interval2 = getInterval2();
+        Time start = new Time();
+        start.setHour(9);
+        start.setMinute(5);
+        interval2.setStart(start);
+        Time end = new Time();
+        end.setHour(9);
+        end.setMinute(55);
+        interval2.setEnd(end);
+        Map<String, ?> intervalMap1 = getInterval1().toMap();
+        Map<String, ?> intervalMap2 = interval2.toMap();
+        assertTrue(intervalDAO.readAllIntervals().isEmpty());
+        setup.importIntervals(TestRegistry.getContext(), Arrays.asList(intervalMap1, intervalMap2));
+        List<Interval> intervalList = intervalDAO.readAllIntervals();
+        assertEquals(2, intervalList.size());
+        assertTrue(interval2.isEqual(intervalList.get(0)));
+        assertTrue(getInterval1().isEqual(intervalList.get(1)));
+    }
+
+    @Test
+    public void testImportIntervalsEdgeCaseAfter() {
+        Interval interval2 = getInterval2();
+        Time start = new Time();
+        start.setHour(11);
+        start.setMinute(28);
+        interval2.setStart(start);
+        Time end = new Time();
+        end.setHour(11);
+        end.setMinute(44);
+        interval2.setEnd(end);
+        Map<String, ?> intervalMap1 = getInterval1().toMap();
+        Map<String, ?> intervalMap2 = interval2.toMap();
+        assertTrue(intervalDAO.readAllIntervals().isEmpty());
+        setup.importIntervals(TestRegistry.getContext(), Arrays.asList(intervalMap1, intervalMap2));
+        List<Interval> intervalList = intervalDAO.readAllIntervals();
+        assertEquals(2, intervalList.size());
+        assertTrue(getInterval1().isEqual(intervalList.get(0)));
+        assertTrue(interval2.isEqual(intervalList.get(1)));
+    }
+
+    @Test
     public void testImportIntervalsInvalid() {
         Interval interval1 = getInterval1();
         Time start = new Time();
@@ -373,6 +415,24 @@ public class DBSetupTest {
         assertEquals(2, intervalList.size());
         assertTrue(getInterval2().isEqual(intervalList.get(0)));
         assertTrue(getInterval3().isEqual(intervalList.get(1)));
+    }
+
+    @Test
+    public void testImportIntervalsInvalidMinDuration() {
+        Interval interval1 = getInterval1();
+        Time start = new Time();
+        start.setHour(10);
+        start.setMinute(15);
+        interval1.setStart(start);
+        Time end = new Time();
+        end.setHour(10);
+        end.setMinute(29);
+        interval1.setEnd(end);
+        Map<String, ?> intervalMap1 = interval1.toMap();
+        assertTrue(intervalDAO.readAllIntervals().isEmpty());
+        setup.importIntervals(TestRegistry.getContext(), List.of(intervalMap1));
+        List<Interval> intervalList = intervalDAO.readAllIntervals();
+        assertTrue(intervalList.isEmpty());
     }
 
     @Test
@@ -417,6 +477,25 @@ public class DBSetupTest {
         assertEquals(2, intervalList.size());
         assertTrue(getInterval2().isEqual(intervalList.get(0)));
         assertTrue(getInterval1().isEqual(intervalList.get(1)));
+    }
+
+    @Test
+    public void testImportIntervalsOverlapWithDistanceBefore() {
+        Interval interval2 = getInterval2();
+        Time start = new Time();
+        start.setHour(9);
+        start.setMinute(5);
+        interval2.setStart(start);
+        Time end = new Time();
+        end.setHour(10);
+        end.setMinute(5);
+        interval2.setEnd(end);
+        Map<String, ?> intervalMap1 = getInterval1().toMap();
+        Map<String, ?> intervalMap2 = interval2.toMap();
+        setup.importIntervals(TestRegistry.getContext(), Arrays.asList(intervalMap1, intervalMap2));
+        List<Interval> intervalList = intervalDAO.readAllIntervals();
+        assertEquals(1, intervalList.size());
+        assertTrue(getInterval1().isEqual(intervalList.get(0)));
     }
 
     @Test

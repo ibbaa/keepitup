@@ -19,13 +19,12 @@ package net.ibbaa.keepitup.db;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 
-import net.ibbaa.keepitup.R;
 import net.ibbaa.keepitup.logging.Log;
 import net.ibbaa.keepitup.model.Interval;
 import net.ibbaa.keepitup.model.LogEntry;
 import net.ibbaa.keepitup.model.NetworkTask;
-import net.ibbaa.keepitup.util.TimeUtil;
-import net.ibbaa.keepitup.util.URLUtil;
+import net.ibbaa.keepitup.model.validation.IntervalValidator;
+import net.ibbaa.keepitup.model.validation.NetworkTaskValidator;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -299,9 +298,10 @@ public class DBSetup {
         Log.d(DBSetup.class.getName(), "importNetworkTaskWithLogs, resetRunnning is " + resetRunnning);
         NetworkTaskDAO networkTaskDAO = new NetworkTaskDAO(context);
         LogDAO logDAO = new LogDAO(context);
+        NetworkTaskValidator validator = new NetworkTaskValidator(context);
         NetworkTask task = new NetworkTask(taskMap);
         Log.d(DBSetup.class.getName(), "NetworkTask is " + task);
-        if (!isNetworkTaskValid(context, task)) {
+        if (!validator.validate(task)) {
             Log.e(DBSetup.class.getName(), "NetworkTask is invalid and will not be imported: " + task);
             return;
         }
@@ -325,11 +325,11 @@ public class DBSetup {
         Log.d(DBSetup.class.getName(), "importIntervals");
         IntervalDAO dao = new IntervalDAO(context);
         List<Interval> insertedList = new ArrayList<>();
-        int intervalDistance = context.getResources().getInteger(R.integer.suspension_interval_distance);
+        IntervalValidator validator = new IntervalValidator(context);
         for (Map<String, ?> intervalMap : intervalList) {
             Interval interval = new Interval(intervalMap);
             Log.d(DBSetup.class.getName(), "Interval is " + interval);
-            if (isIntervalValid(interval, insertedList, intervalDistance)) {
+            if (validator.validate(interval, insertedList)) {
                 Log.d(DBSetup.class.getName(), "Importing interval.");
                 dao.insertInterval(interval);
                 insertedList.add(interval);
@@ -337,36 +337,5 @@ public class DBSetup {
                 Log.e(DBSetup.class.getName(), "Interval is invalid and will not be imported: " + interval);
             }
         }
-    }
-
-    private boolean isIntervalValid(Interval interval, List<Interval> insertedIntervals, int intervalDistance) {
-        for (Interval insertedInterval : insertedIntervals) {
-            if (interval.doesOverlap(insertedInterval) || interval.doesOverlap(TimeUtil.extendInterval(insertedInterval, intervalDistance))) {
-                return false;
-            }
-        }
-        return interval.isValid();
-    }
-
-    private boolean isNetworkTaskValid(Context context, NetworkTask task) {
-        Log.d(DBSetup.class.getName(), "isNetworkTaskValid");
-        if (task.getAccessType() == null) {
-            return false;
-        }
-        int portMin = context.getResources().getInteger(R.integer.task_port_minimum);
-        int portMax = context.getResources().getInteger(R.integer.task_port_maximum);
-        if (task.getPort() < portMin || task.getPort() > portMax) {
-            return false;
-        }
-        int intervalMin = context.getResources().getInteger(R.integer.task_interval_minimum);
-        int intervalMax = context.getResources().getInteger(R.integer.task_interval_maximum);
-        if (task.getInterval() < intervalMin || task.getInterval() > intervalMax) {
-            return false;
-        }
-        String address = task.getAddress();
-        if (address == null) {
-            return false;
-        }
-        return URLUtil.isValidIPAddress(address) || URLUtil.isValidHostName(address) || URLUtil.isValidURL(address);
     }
 }

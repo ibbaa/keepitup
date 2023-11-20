@@ -378,7 +378,7 @@ public class JSONSystemSetupTest {
         interval2.setStart(start);
         Time end = new Time();
         end.setHour(0);
-        end.setMinute(1);
+        end.setMinute(25);
         interval2.setEnd(end);
         intervalDAO.insertInterval(interval1);
         intervalDAO.insertInterval(interval2);
@@ -452,7 +452,39 @@ public class JSONSystemSetupTest {
         interval2.setStart(start);
         Time end = new Time();
         end.setHour(11);
-        end.setMinute(2);
+        end.setMinute(20);
+        interval2.setEnd(end);
+        intervalDAO.insertInterval(interval1);
+        intervalDAO.insertInterval(interval2);
+        exportResult = setup.exportData();
+        intervalDAO.deleteAllIntervals();
+        importResult = setup.importData(exportResult.getData());
+        assertTrue(importResult.isSuccess());
+        assertEquals(exportResult.getData(), importResult.getData());
+        List<Interval> intervals = intervalDAO.readAllIntervals();
+        assertEquals(1, intervals.size());
+        Interval interval = intervals.get(0);
+        assertTrue(interval1.isEqual(interval));
+    }
+
+    @Test
+    public void testImportDatabaseInvalidIntervalMinDuration() {
+        intervalDAO.insertInterval(new Interval());
+        SystemSetupResult exportResult = setup.exportData();
+        intervalDAO.deleteAllIntervals();
+        SystemSetupResult importResult = setup.importData(exportResult.getData());
+        assertTrue(importResult.isSuccess());
+        assertEquals(exportResult.getData(), importResult.getData());
+        assertTrue(intervalDAO.readAllIntervals().isEmpty());
+        Interval interval1 = getInterval1();
+        Interval interval2 = getInterval2();
+        Time start = new Time();
+        start.setHour(12);
+        start.setMinute(130);
+        interval2.setStart(start);
+        Time end = new Time();
+        end.setHour(12);
+        end.setMinute(31);
         interval2.setEnd(end);
         intervalDAO.insertInterval(interval1);
         intervalDAO.insertInterval(interval2);
@@ -490,6 +522,31 @@ public class JSONSystemSetupTest {
         assertEquals(1, intervals.size());
         Interval readInterval1 = intervals.get(0);
         assertTrue(interval2.isEqual(readInterval1));
+    }
+
+    @Test
+    public void testImportDatabaseInvalidIntervalOverlapDistanceAfter() {
+        Interval interval1 = getInterval1();
+        Interval interval2 = getInterval2();
+        Time start = new Time();
+        start.setHour(11);
+        start.setMinute(20);
+        interval2.setStart(start);
+        Time end = new Time();
+        end.setHour(11);
+        end.setMinute(25);
+        interval2.setEnd(end);
+        intervalDAO.insertInterval(interval1);
+        intervalDAO.insertInterval(interval2);
+        SystemSetupResult exportResult = setup.exportData();
+        intervalDAO.deleteAllIntervals();
+        SystemSetupResult importResult = setup.importData(exportResult.getData());
+        assertTrue(importResult.isSuccess());
+        assertEquals(exportResult.getData(), importResult.getData());
+        List<Interval> intervals = intervalDAO.readAllIntervals();
+        assertEquals(1, intervals.size());
+        Interval readInterval1 = intervals.get(0);
+        assertTrue(interval1.isEqual(readInterval1));
     }
 
     @Test

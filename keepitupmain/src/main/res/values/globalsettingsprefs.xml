@@ -29,7 +29,6 @@
     <integer name="notification_type_default">1</integer>
     <string name="suspension_enabled_key">suspension_enabled_key</string>
     <bool name="suspension_enabled_default">true</bool>
-    <integer name="suspension_interval_distance">10</integer>
     <integer name="suspension_intervals_text_size_normal">14</integer>
     <integer name="suspension_intervals_text_size_smaller">12</integer>
     <integer name="suspension_intervals_text_size_small">10</integer>
