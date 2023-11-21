@@ -31,6 +31,7 @@ import androidx.fragment.app.Fragment;
 
 import net.ibbaa.keepitup.R;
 import net.ibbaa.keepitup.logging.Log;
+import net.ibbaa.keepitup.model.Time;
 import net.ibbaa.keepitup.ui.SuspensionIntervalAddSupport;
 import net.ibbaa.keepitup.util.BundleUtil;
 import net.ibbaa.keepitup.util.StringUtil;
@@ -82,6 +83,22 @@ public class SuspensionIntervalAddDialog extends DialogFragment {
         return Mode.START;
     }
 
+    private Time getDefaultTime() {
+        Log.d(SuspensionIntervalAddDialog.class.getName(), "getDefaultInterval");
+        Bundle bundle = BundleUtil.bundleFromBundle(getDefaultTimeKey(), requireArguments());
+        if (bundle == null) {
+            Log.d(SuspensionIntervalAddDialog.class.getName(), "no default time settings provided");
+            Time time = new Time();
+            time.setHour(getResources().getInteger(R.integer.suspension_interval_default_start_hour));
+            time.setMinute(getResources().getInteger(R.integer.suspension_interval_default_start_minute));
+            Log.d(SuspensionIntervalAddDialog.class.getName(), "Returning " + time);
+            return time;
+        }
+        Time time = new Time(bundle);
+        Log.d(SuspensionIntervalAddDialog.class.getName(), "Deafult time settings provided: " + time);
+        return time;
+    }
+
     private void prepareModeLabel() {
         Log.d(SuspensionIntervalAddDialog.class.getName(), "prepareModeLabel with mode");
         timeLabelTextView = dialogView.findViewById(R.id.textview_dialog_suspension_interval_add_time_label);
@@ -96,10 +113,15 @@ public class SuspensionIntervalAddDialog extends DialogFragment {
         Log.d(SuspensionIntervalAddDialog.class.getName(), "prepareTimePicker");
         timeHourPicker = dialogView.findViewById(R.id.picker_dialog_suspension_interval_add_time_hour);
         timeMinutePicker = dialogView.findViewById(R.id.picker_dialog_suspension_interval_add_time_minute);
+        timeHourPicker.setFormatter(new TimeNumberPickerFormatter());
+        timeMinutePicker.setFormatter(new TimeNumberPickerFormatter());
         timeHourPicker.setMinValue(0);
         timeHourPicker.setMaxValue(23);
         timeMinutePicker.setMinValue(0);
         timeMinutePicker.setMaxValue(59);
+        Time time = getDefaultTime();
+        timeHourPicker.setValue(time.getHour());
+        timeMinutePicker.setValue(time.getMinute());
     }
 
     private void prepareOkCancelImageButtons() {
@@ -111,7 +133,18 @@ public class SuspensionIntervalAddDialog extends DialogFragment {
     }
 
     public String getModeKey() {
-        return SuspensionIntervalAddDialog.Mode.class.getSimpleName();
+        return SuspensionIntervalAddDialog.Mode.class.getSimpleName() + "Mode";
+    }
+
+    public String getDefaultTimeKey() {
+        return SuspensionIntervalAddDialog.Mode.class.getSimpleName() + "DefaultTime";
+    }
+
+    public Time getSelectedTime() {
+        Time time = new Time();
+        time.setHour(timeHourPicker.getValue());
+        time.setMinute(timeMinutePicker.getValue());
+        return time;
     }
 
     private void onOkClicked(View view) {

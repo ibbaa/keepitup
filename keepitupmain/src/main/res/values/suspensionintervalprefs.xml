@@ -17,4 +17,8 @@
 <resources>
     <integer name="suspension_interval_distance">15</integer>
     <integer name="suspension_interval_min_duration">15</integer>
+    <integer name="suspension_interval_default_start_hour">22</integer>
+    <integer name="suspension_interval_default_start_minute">0</integer>
+    <integer name="suspension_interval_default_length_first">360</integer>
+    <integer name="suspension_interval_default_length_following">120</integer>
 </resources>
