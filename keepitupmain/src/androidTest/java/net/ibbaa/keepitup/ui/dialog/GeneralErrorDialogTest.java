@@ -23,6 +23,10 @@ import static androidx.test.espresso.matcher.ViewMatchers.isRoot;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
 
+import static org.junit.Assert.assertEquals;
+
+import android.os.Bundle;
+
 import androidx.test.core.app.ActivityScenario;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.MediumTest;
@@ -57,8 +61,9 @@ public class GeneralErrorDialogTest extends BaseUITest {
 
     @Test
     public void testErrorMessage() {
-        openGeneralErrorDialog();
+        GeneralErrorDialog errorDialog = openGeneralErrorDialog();
         onView(isRoot()).perform(waitFor(500));
+        assertEquals("ExtraData", errorDialog.getExtraData());
         onView(withId(R.id.textview_dialog_general_error_message)).check(matches(withText("Message")));
         onView(withId(R.id.imageview_dialog_general_error_ok)).perform(click());
     }
@@ -74,10 +79,13 @@ public class GeneralErrorDialogTest extends BaseUITest {
         onView(withId(R.id.imageview_dialog_general_error_ok)).perform(click());
     }
 
-    private void openGeneralErrorDialog() {
+    private GeneralErrorDialog openGeneralErrorDialog() {
         GeneralErrorDialog errorDialog = new GeneralErrorDialog();
-        errorDialog.setArguments(BundleUtil.stringToBundle(errorDialog.getMessageKey(), "Message"));
+        Bundle bundle = BundleUtil.stringToBundle(errorDialog.getMessageKey(), "Message");
+        BundleUtil.stringToBundle(errorDialog.getExtraDataKey(), "ExtraData", bundle);
+        errorDialog.setArguments(bundle);
         errorDialog.show(getActivity(activityScenario).getSupportFragmentManager(), GeneralErrorDialog.class.getName());
         onView(isRoot()).perform(waitFor(500));
+        return errorDialog;
     }
 }

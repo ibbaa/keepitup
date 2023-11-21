@@ -2141,7 +2141,6 @@ public class SystemActivityTest extends BaseUITest {
         onView(withId(R.id.imageview_dialog_confirm_ok)).perform(click());
         onView(withId(R.id.textview_dialog_general_error_message)).check(matches(isDisplayed()));
         onView(withId(R.id.imageview_dialog_general_error_ok)).perform(click());
-        assertEquals(0, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
         assertTrue(alarmManager.wasCancelAlarmCalled());
         assertFalse(getNetworkTaskDAO().readAllNetworkTasks().isEmpty());
         assertFalse(getSchedulerIdHistoryDAO().readAllSchedulerIds().isEmpty());
@@ -2209,7 +2208,6 @@ public class SystemActivityTest extends BaseUITest {
         rotateScreen(activityScenario);
         rotateScreen(activityScenario);
         onView(withId(R.id.imageview_dialog_general_error_ok)).perform(click());
-        assertEquals(0, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
         assertTrue(alarmManager.wasCancelAlarmCalled());
         assertFalse(getNetworkTaskDAO().readAllNetworkTasks().isEmpty());
         assertFalse(getSchedulerIdHistoryDAO().readAllSchedulerIds().isEmpty());

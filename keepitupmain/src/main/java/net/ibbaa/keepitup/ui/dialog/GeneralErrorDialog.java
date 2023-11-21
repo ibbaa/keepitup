@@ -16,6 +16,7 @@
 
 package net.ibbaa.keepitup.ui.dialog;
 
+import android.app.Activity;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -29,6 +30,7 @@ import androidx.fragment.app.DialogFragment;
 
 import net.ibbaa.keepitup.R;
 import net.ibbaa.keepitup.logging.Log;
+import net.ibbaa.keepitup.ui.ErrorSupport;
 import net.ibbaa.keepitup.util.BundleUtil;
 
 public class GeneralErrorDialog extends DialogFragment {
@@ -54,6 +56,14 @@ public class GeneralErrorDialog extends DialogFragment {
         return GeneralErrorDialog.class.getSimpleName() + "Message";
     }
 
+    public String getExtraDataKey() {
+        return GeneralErrorDialog.class.getSimpleName() + "ExtraData";
+    }
+
+    public String getExtraData() {
+        return BundleUtil.stringFromBundle(getExtraDataKey(), requireArguments());
+    }
+
     public String getTypefaceStyleKey() {
         return GeneralErrorDialog.class.getSimpleName() + "TypefaceStyle";
     }
@@ -74,6 +84,25 @@ public class GeneralErrorDialog extends DialogFragment {
 
     private void onOkClicked(View view) {
         Log.d(GeneralErrorDialog.class.getName(), "onOkClicked");
-        dismiss();
+        ErrorSupport errorSupport = getErrorSupport();
+        if (errorSupport == null) {
+            dismiss();
+        } else {
+            errorSupport.onErrorDialogOkClicked(this);
+        }
+    }
+
+    private ErrorSupport getErrorSupport() {
+        Log.d(GeneralErrorDialog.class.getName(), "getErrorSupport");
+        Activity activity = getActivity();
+        if (activity == null) {
+            Log.d(GeneralErrorDialog.class.getName(), "getErrorSupport, activity is null");
+            return null;
+        }
+        if (!(activity instanceof ErrorSupport)) {
+            Log.d(GeneralErrorDialog.class.getName(), "getErrorSupport, activity is not an instance of " + ErrorSupport.class.getSimpleName());
+            return null;
+        }
+        return (ErrorSupport) activity;
     }
 }

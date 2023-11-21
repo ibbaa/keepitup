@@ -16,6 +16,7 @@
 
 package net.ibbaa.keepitup.ui;
 
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -45,6 +46,7 @@ import net.ibbaa.keepitup.service.SystemThemeManager;
 import net.ibbaa.keepitup.ui.dialog.BatteryOptimizationDialog;
 import net.ibbaa.keepitup.ui.dialog.ConfirmDialog;
 import net.ibbaa.keepitup.ui.dialog.FileChooseDialog;
+import net.ibbaa.keepitup.ui.dialog.GeneralErrorDialog;
 import net.ibbaa.keepitup.ui.sync.DBPurgeTask;
 import net.ibbaa.keepitup.ui.sync.ExportTask;
 import net.ibbaa.keepitup.ui.sync.ImportTask;
@@ -58,7 +60,11 @@ import java.io.File;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
-public class SystemActivity extends SettingsInputActivity implements ExportSupport, ImportSupport, DBPurgeSupport {
+public class SystemActivity extends SettingsInputActivity implements ExportSupport, ImportSupport, DBPurgeSupport, ErrorSupport {
+
+    private enum Error {
+        IMPORTERROR
+    }
 
     private TextView exportFolderText;
     private TextView importFolderText;
@@ -618,6 +624,18 @@ public class SystemActivity extends SettingsInputActivity implements ExportSuppo
     }
 
     @Override
+    public void onErrorDialogOkClicked(GeneralErrorDialog errorDialog) {
+        Log.d(SystemActivity.class.getName(), "onErrorDialogOkClicked");
+        String extraData = errorDialog.getExtraData();
+        Log.d(SystemActivity.class.getName(), "onErrorDialogOkClicked, extraData is " + extraData);
+        errorDialog.dismiss();
+        if (Error.IMPORTERROR.name().equals(extraData)) {
+            resetTheme();
+            recreateActivity();
+        }
+    }
+
+    @Override
     public void onExportDone(boolean success) {
         Log.d(SystemActivity.class.getName(), "onExportDone, success is " + success);
         closeProgressDialog();
@@ -634,7 +652,7 @@ public class SystemActivity extends SettingsInputActivity implements ExportSuppo
             resetTheme();
             recreateActivity();
         } else {
-            showErrorDialog(getResources().getString(R.string.text_dialog_general_error_config_import));
+            showErrorDialog(getResources().getString(R.string.text_dialog_general_error_config_import), Typeface.BOLD, Error.IMPORTERROR.name());
         }
     }
 
