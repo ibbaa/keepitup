@@ -22,6 +22,7 @@ import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.matcher.ViewMatchers.isRoot;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
+import static org.junit.Assert.assertEquals;
 
 import android.os.Bundle;
 
@@ -84,6 +85,125 @@ public class SuspensionIntervalAddDialogTest extends BaseUITest {
         rotateScreen(activityScenario);
         onView(withId(R.id.textview_dialog_suspension_interval_add_label)).check(matches(withText("Add suspension interval")));
         onView(withId(R.id.textview_dialog_suspension_interval_add_time_label)).check(matches(withText("End")));
+        onView(withId(R.id.imageview_dialog_suspension_interval_add_cancel)).perform(click());
+    }
+
+    @Test
+    public void testDefaultTimeNotProvided() {
+        SuspensionIntervalAddDialog intervalAddDialog = openSuspensionIntervalDialog(SuspensionIntervalAddDialog.Mode.END, null);
+        onView(isRoot()).perform(waitFor(500));
+        onView(withId(R.id.picker_dialog_suspension_interval_add_time_hour)).check(matches(withValue(22)));
+        onView(withId(R.id.picker_dialog_suspension_interval_add_time_minute)).check(matches(withValue(0)));
+        Time time = intervalAddDialog.getSelectedTime();
+        assertEquals(22, time.getHour());
+        assertEquals(0, time.getMinute());
+    }
+
+    @Test
+    public void testDefaultTimeNotProvidedScreenRotation() {
+        SuspensionIntervalAddDialog intervalAddDialog = openSuspensionIntervalDialog(SuspensionIntervalAddDialog.Mode.START, null);
+        onView(isRoot()).perform(waitFor(500));
+        onView(withId(R.id.picker_dialog_suspension_interval_add_time_hour)).check(matches(withValue(22)));
+        onView(withId(R.id.picker_dialog_suspension_interval_add_time_minute)).check(matches(withValue(0)));
+        Time time = intervalAddDialog.getSelectedTime();
+        assertEquals(22, time.getHour());
+        assertEquals(0, time.getMinute());
+        rotateScreen(activityScenario);
+        intervalAddDialog = (SuspensionIntervalAddDialog) getActivity(activityScenario).getSupportFragmentManager().getFragments().get(0);
+        onView(withId(R.id.picker_dialog_suspension_interval_add_time_hour)).check(matches(withValue(22)));
+        onView(withId(R.id.picker_dialog_suspension_interval_add_time_minute)).check(matches(withValue(0)));
+        time = intervalAddDialog.getSelectedTime();
+        assertEquals(22, time.getHour());
+        assertEquals(0, time.getMinute());
+        rotateScreen(activityScenario);
+        intervalAddDialog = (SuspensionIntervalAddDialog) getActivity(activityScenario).getSupportFragmentManager().getFragments().get(0);
+        onView(withId(R.id.picker_dialog_suspension_interval_add_time_hour)).check(matches(withValue(22)));
+        onView(withId(R.id.picker_dialog_suspension_interval_add_time_minute)).check(matches(withValue(0)));
+        time = intervalAddDialog.getSelectedTime();
+        assertEquals(22, time.getHour());
+        assertEquals(0, time.getMinute());
+        onView(withId(R.id.imageview_dialog_suspension_interval_add_cancel)).perform(click());
+    }
+
+    @Test
+    public void testDefaultTimeProvided() {
+        Time defaultTime = new Time();
+        defaultTime.setHour(12);
+        defaultTime.setMinute(34);
+        SuspensionIntervalAddDialog intervalAddDialog = openSuspensionIntervalDialog(SuspensionIntervalAddDialog.Mode.START, defaultTime);
+        onView(isRoot()).perform(waitFor(500));
+        onView(withId(R.id.picker_dialog_suspension_interval_add_time_hour)).check(matches(withValue(12)));
+        onView(withId(R.id.picker_dialog_suspension_interval_add_time_minute)).check(matches(withValue(34)));
+        Time time = intervalAddDialog.getSelectedTime();
+        assertEquals(12, time.getHour());
+        assertEquals(34, time.getMinute());
+        rotateScreen(activityScenario);
+        intervalAddDialog = (SuspensionIntervalAddDialog) getActivity(activityScenario).getSupportFragmentManager().getFragments().get(0);
+        onView(withId(R.id.picker_dialog_suspension_interval_add_time_hour)).check(matches(withValue(12)));
+        onView(withId(R.id.picker_dialog_suspension_interval_add_time_minute)).check(matches(withValue(34)));
+        time = intervalAddDialog.getSelectedTime();
+        assertEquals(12, time.getHour());
+        assertEquals(34, time.getMinute());
+        rotateScreen(activityScenario);
+        intervalAddDialog = (SuspensionIntervalAddDialog) getActivity(activityScenario).getSupportFragmentManager().getFragments().get(0);
+        onView(withId(R.id.picker_dialog_suspension_interval_add_time_hour)).check(matches(withValue(12)));
+        onView(withId(R.id.picker_dialog_suspension_interval_add_time_minute)).check(matches(withValue(34)));
+        time = intervalAddDialog.getSelectedTime();
+        assertEquals(12, time.getHour());
+        assertEquals(34, time.getMinute());
+        onView(withId(R.id.imageview_dialog_suspension_interval_add_cancel)).perform(click());
+    }
+
+    @Test
+    public void testDefaultTimeProvidedScreenRotation() {
+        Time defaultTime = new Time();
+        defaultTime.setHour(23);
+        defaultTime.setMinute(45);
+        SuspensionIntervalAddDialog intervalAddDialog = openSuspensionIntervalDialog(SuspensionIntervalAddDialog.Mode.START, defaultTime);
+        onView(isRoot()).perform(waitFor(500));
+        onView(withId(R.id.picker_dialog_suspension_interval_add_time_hour)).check(matches(withValue(23)));
+        onView(withId(R.id.picker_dialog_suspension_interval_add_time_minute)).check(matches(withValue(45)));
+    }
+
+    @Test
+    public void testTimeSelected() {
+        SuspensionIntervalAddDialog intervalAddDialog = openSuspensionIntervalDialog(SuspensionIntervalAddDialog.Mode.START, null);
+        onView(isRoot()).perform(waitFor(500));
+        onView(withId(R.id.picker_dialog_suspension_interval_add_time_hour)).perform(setNumber(0));
+        onView(withId(R.id.picker_dialog_suspension_interval_add_time_minute)).perform(setNumber(0));
+        onView(withId(R.id.picker_dialog_suspension_interval_add_time_hour)).check(matches(withValue(0)));
+        onView(withId(R.id.picker_dialog_suspension_interval_add_time_minute)).check(matches(withValue(0)));
+        Time time = intervalAddDialog.getSelectedTime();
+        assertEquals(0, time.getHour());
+        assertEquals(0, time.getMinute());
+        onView(withId(R.id.imageview_dialog_suspension_interval_add_cancel)).perform(click());
+    }
+
+    @Test
+    public void testTimeSelectedScreenRotation() {
+        SuspensionIntervalAddDialog intervalAddDialog = openSuspensionIntervalDialog(SuspensionIntervalAddDialog.Mode.START, null);
+        onView(isRoot()).perform(waitFor(500));
+        onView(withId(R.id.picker_dialog_suspension_interval_add_time_hour)).perform(setNumber(23));
+        onView(withId(R.id.picker_dialog_suspension_interval_add_time_minute)).perform(setNumber(59));
+        onView(withId(R.id.picker_dialog_suspension_interval_add_time_hour)).check(matches(withValue(23)));
+        onView(withId(R.id.picker_dialog_suspension_interval_add_time_minute)).check(matches(withValue(59)));
+        Time time = intervalAddDialog.getSelectedTime();
+        assertEquals(23, time.getHour());
+        assertEquals(59, time.getMinute());
+        rotateScreen(activityScenario);
+        intervalAddDialog = (SuspensionIntervalAddDialog) getActivity(activityScenario).getSupportFragmentManager().getFragments().get(0);
+        onView(withId(R.id.picker_dialog_suspension_interval_add_time_hour)).check(matches(withValue(23)));
+        onView(withId(R.id.picker_dialog_suspension_interval_add_time_minute)).check(matches(withValue(59)));
+        time = intervalAddDialog.getSelectedTime();
+        assertEquals(23, time.getHour());
+        assertEquals(59, time.getMinute());
+        rotateScreen(activityScenario);
+        intervalAddDialog = (SuspensionIntervalAddDialog) getActivity(activityScenario).getSupportFragmentManager().getFragments().get(0);
+        onView(withId(R.id.picker_dialog_suspension_interval_add_time_hour)).check(matches(withValue(23)));
+        onView(withId(R.id.picker_dialog_suspension_interval_add_time_minute)).check(matches(withValue(59)));
+        time = intervalAddDialog.getSelectedTime();
+        assertEquals(23, time.getHour());
+        assertEquals(59, time.getMinute());
         onView(withId(R.id.imageview_dialog_suspension_interval_add_cancel)).perform(click());
     }
 

@@ -31,6 +31,7 @@ import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.view.View;
 import android.widget.GridLayout;
+import android.widget.NumberPicker;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatDelegate;
@@ -40,6 +41,7 @@ import androidx.fragment.app.FragmentActivity;
 import androidx.test.core.app.ActivityScenario;
 import androidx.test.espresso.UiController;
 import androidx.test.espresso.ViewAction;
+import androidx.test.espresso.matcher.ViewMatchers;
 import androidx.test.platform.app.InstrumentationRegistry;
 
 import net.ibbaa.keepitup.db.IntervalDAO;
@@ -59,6 +61,7 @@ import net.ibbaa.keepitup.test.matcher.ChildDescendantAtPositionMatcher;
 import net.ibbaa.keepitup.test.matcher.DrawableMatcher;
 import net.ibbaa.keepitup.test.matcher.GridLayoutPositionMatcher;
 import net.ibbaa.keepitup.test.matcher.ListSizeMatcher;
+import net.ibbaa.keepitup.test.matcher.NumberPickerValueMatcher;
 import net.ibbaa.keepitup.test.matcher.TextColorMatcher;
 import net.ibbaa.keepitup.test.mock.TestRegistry;
 import net.ibbaa.keepitup.test.viewaction.WaitForViewAction;
@@ -244,6 +247,10 @@ public abstract class BaseUITest {
         return new WaitForViewAction(time);
     }
 
+    public static Matcher<View> withValue(int value) {
+        return new NumberPickerValueMatcher(value);
+    }
+
     public static String getText(final Matcher<View> matcher) {
         final String[] stringHolder = {null};
         onView(matcher).perform(new ViewAction() {
@@ -264,5 +271,26 @@ public abstract class BaseUITest {
             }
         });
         return stringHolder[0];
+    }
+
+
+    public static ViewAction setNumber(int number) {
+        return new ViewAction() {
+            @Override
+            public void perform(UiController uiController, View view) {
+                NumberPicker numberPicker = (NumberPicker) view;
+                numberPicker.setValue(number);
+            }
+
+            @Override
+            public String getDescription() {
+                return "Set the passed number into the NumberPicker";
+            }
+
+            @Override
+            public Matcher<View> getConstraints() {
+                return ViewMatchers.isAssignableFrom(NumberPicker.class);
+            }
+        };
     }
 }
