@@ -183,7 +183,7 @@ public class SuspensionIntervalAddDialog extends DialogFragment {
         Log.d(SuspensionIntervalAddDialog.class.getName(), "onCancelClicked");
         SuspensionIntervalAddSupport intervalAddSupport = getSuspensionIntervalAddSupport();
         if (intervalAddSupport != null) {
-            intervalAddSupport.onSuspensionIntervalAddDialogCancelClicked(this);
+            intervalAddSupport.onSuspensionIntervalAddDialogCancelClicked(this, getMode());
         } else {
             Log.e(SuspensionIntervalAddDialog.class.getName(), "intervalAddSupport is null");
             dismiss();

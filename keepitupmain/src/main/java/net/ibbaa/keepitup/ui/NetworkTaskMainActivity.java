@@ -113,11 +113,11 @@ public class NetworkTaskMainActivity extends RecyclerViewBaseActivity implements
         timeEnd2.setHour(17);
         timeEnd2.setMinute(18);
         Time timeStart3 = new Time();
-        timeStart3.setHour(15);
-        timeStart3.setMinute(16);
+        timeStart3.setHour(18);
+        timeStart3.setMinute(15);
         Time timeEnd3 = new Time();
-        timeEnd3.setHour(17);
-        timeEnd3.setMinute(18);
+        timeEnd3.setHour(20);
+        timeEnd3.setMinute(15);
         interval1.setStart(timeStart1);
         interval1.setEnd(timeEnd1);
         interval2.setStart(timeStart2);

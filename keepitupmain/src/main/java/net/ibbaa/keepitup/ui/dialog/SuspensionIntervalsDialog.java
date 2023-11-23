@@ -31,6 +31,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import net.ibbaa.keepitup.R;
 import net.ibbaa.keepitup.logging.Log;
+import net.ibbaa.keepitup.model.Interval;
+import net.ibbaa.keepitup.model.Time;
 import net.ibbaa.keepitup.service.TimeBasedSuspensionScheduler;
 import net.ibbaa.keepitup.ui.ConfirmSupport;
 import net.ibbaa.keepitup.ui.SettingsInputActivity;
@@ -38,13 +40,17 @@ import net.ibbaa.keepitup.ui.SuspensionIntervalAddSupport;
 import net.ibbaa.keepitup.ui.SuspensionIntervalsSupport;
 import net.ibbaa.keepitup.ui.adapter.SuspensionIntervalAdapter;
 import net.ibbaa.keepitup.util.BundleUtil;
+import net.ibbaa.keepitup.util.TimeUtil;
 
 import java.util.Collections;
+import java.util.List;
+import java.util.Objects;
 
 public class SuspensionIntervalsDialog extends DialogFragment implements ConfirmSupport, SuspensionIntervalAddSupport {
 
     private View dialogView;
     private RecyclerView suspensionIntervalsRecyclerView;
+    private Interval currentInterval;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -60,7 +66,9 @@ public class SuspensionIntervalsDialog extends DialogFragment implements Confirm
         boolean containsSavedState = containsSavedState(savedInstanceState);
         Log.d(SuspensionIntervalsDialog.class.getName(), "containsSavedState is " + containsSavedState);
         Bundle adapterState = containsSavedState ? savedInstanceState.getBundle(getSuspensionIntervalsAdapterKey()) : null;
+        Bundle currentIntervalState = containsSavedState ? savedInstanceState.getBundle(getCurrentSuspensionIntervalKey()) : null;
         prepareIntervalsRecyclerView(adapterState);
+        prepareCurrentInterval(currentIntervalState);
         prepareAddImageButton();
         prepareOkCancelImageButtons();
         return dialogView;
@@ -72,6 +80,10 @@ public class SuspensionIntervalsDialog extends DialogFragment implements Confirm
         super.onSaveInstanceState(outState);
         Bundle adapterBundle = getAdapter().saveStateToBundle();
         outState.putBundle(getSuspensionIntervalsAdapterKey(), adapterBundle);
+        if (currentInterval != null) {
+            Bundle currentIntervalState = currentInterval.toBundle();
+            outState.putBundle(getCurrentSuspensionIntervalKey(), currentIntervalState);
+        }
     }
 
     private boolean containsSavedState(Bundle savedInstanceState) {
@@ -87,6 +99,10 @@ public class SuspensionIntervalsDialog extends DialogFragment implements Confirm
         return SuspensionIntervalsDialog.class.getSimpleName() + "SuspensionIntervalsAdapter";
     }
 
+    private String getCurrentSuspensionIntervalKey() {
+        return SuspensionIntervalsDialog.class.getSimpleName() + "CurrentSuspensionInterval";
+    }
+
     private void prepareIntervalsRecyclerView(Bundle adapterState) {
         Log.d(SuspensionIntervalsDialog.class.getName(), "prepareIntervalsRecyclerView");
         suspensionIntervalsRecyclerView = dialogView.findViewById(R.id.listview_dialog_suspension_intervals_intervals);
@@ -95,6 +111,46 @@ public class SuspensionIntervalsDialog extends DialogFragment implements Confirm
         suspensionIntervalsRecyclerView.setItemAnimator(new DefaultItemAnimator());
         RecyclerView.Adapter<?> adapter = adapterState == null ? createAdapter() : restoreAdapter(adapterState);
         suspensionIntervalsRecyclerView.setAdapter(adapter);
+    }
+
+    private void prepareCurrentInterval(Bundle currentIntervalState) {
+        Log.d(SuspensionIntervalsDialog.class.getName(), "prepareIntervalsRecyclerView");
+        if (currentIntervalState != null) {
+            currentInterval = new Interval(currentIntervalState);
+            Log.d(SuspensionIntervalsDialog.class.getName(), "Current saved interval is " + currentInterval);
+            return;
+        }
+        currentInterval = new Interval();
+        currentInterval.setStart(getDefaultStart());
+        currentInterval.setEnd(getDefaultEnd(currentInterval.getStart()));
+    }
+
+    private Time getDefaultStart() {
+        Log.d(SuspensionIntervalsDialog.class.getName(), "getDefaultStart");
+        List<Interval> list = ((SuspensionIntervalAdapter) Objects.requireNonNull(suspensionIntervalsRecyclerView.getAdapter())).getAllItems();
+        Time start = new Time();
+        if (list.isEmpty()) {
+            start.setHour(getResources().getInteger(R.integer.suspension_interval_default_start_hour));
+            start.setMinute(getResources().getInteger(R.integer.suspension_interval_default_start_minute));
+        } else {
+            Interval latest = list.get(list.size() - 1);
+            start = TimeUtil.addMinutes(latest.getEnd(), getResources().getInteger(R.integer.suspension_interval_default_distance));
+        }
+        Log.d(SuspensionIntervalsDialog.class.getName(), "default start is " + start);
+        return start;
+    }
+
+    private Time getDefaultEnd(Time start) {
+        Log.d(SuspensionIntervalsDialog.class.getName(), "getDefaultEnd for start time " + start);
+        boolean hasIntervals = !((SuspensionIntervalAdapter) Objects.requireNonNull(suspensionIntervalsRecyclerView.getAdapter())).getAllItems().isEmpty();
+        Time end;
+        if (hasIntervals) {
+            end = TimeUtil.addMinutes(start, getResources().getInteger(R.integer.suspension_interval_default_length_following));
+        } else {
+            end = TimeUtil.addMinutes(start, getResources().getInteger(R.integer.suspension_interval_default_length_first));
+        }
+        Log.d(SuspensionIntervalsDialog.class.getName(), "default end is " + end);
+        return end;
     }
 
     private void prepareAddImageButton() {
@@ -148,21 +204,36 @@ public class SuspensionIntervalsDialog extends DialogFragment implements Confirm
     @Override
     public void onSuspensionIntervalAddDialogOkClicked(SuspensionIntervalAddDialog intervalAddDialog, SuspensionIntervalAddDialog.Mode mode) {
         Log.d(SuspensionIntervalsDialog.class.getName(), "onSuspensionIntervalAddDialogOkClicked with mode " + mode);
-        intervalAddDialog.dismiss();
+        if (SuspensionIntervalAddDialog.Mode.START.equals(mode)) {
+            Time start = intervalAddDialog.getSelectedTime();
+            Time end = getDefaultEnd(start);
+            currentInterval.setStart(start);
+            currentInterval.setEnd(end);
+            intervalAddDialog.dismiss();
+            showSuspensionIntervallAddDialog(SuspensionIntervalAddDialog.Mode.END, end);
+        } else {
+            currentInterval.setEnd(intervalAddDialog.getSelectedTime());
+            intervalAddDialog.dismiss();
+        }
     }
 
     @Override
-    public void onSuspensionIntervalAddDialogCancelClicked(SuspensionIntervalAddDialog intervalAddDialog) {
-        Log.d(SuspensionIntervalsDialog.class.getName(), "onSuspensionIntervalAddDialogCancelClicked");
+    public void onSuspensionIntervalAddDialogCancelClicked(SuspensionIntervalAddDialog intervalAddDialog, SuspensionIntervalAddDialog.Mode mode) {
+        Log.d(SuspensionIntervalsDialog.class.getName(), "onSuspensionIntervalAddDialogCancelClicked with mode " + mode);
+        if (SuspensionIntervalAddDialog.Mode.START.equals(mode)) {
+            Time start = intervalAddDialog.getSelectedTime();
+            Time end = getDefaultEnd(start);
+            currentInterval.setStart(start);
+            currentInterval.setEnd(end);
+        } else {
+            currentInterval.setEnd(intervalAddDialog.getSelectedTime());
+        }
         intervalAddDialog.dismiss();
     }
 
     private void onIntervalAddClicked(View view) {
         Log.d(SuspensionIntervalsDialog.class.getName(), "onIntervalAddClicked");
-        SuspensionIntervalAddDialog intervalAddDialog = new SuspensionIntervalAddDialog();
-        Bundle bundle = BundleUtil.stringToBundle(intervalAddDialog.getModeKey(), SuspensionIntervalAddDialog.Mode.START.name());
-        intervalAddDialog.setArguments(bundle);
-        showDialog(intervalAddDialog, SuspensionIntervalAddDialog.class.getName());
+        showSuspensionIntervallAddDialog(SuspensionIntervalAddDialog.Mode.START, currentInterval.getStart());
     }
 
     private void onOkClicked(View view) {
@@ -238,6 +309,16 @@ public class SuspensionIntervalsDialog extends DialogFragment implements Confirm
             return null;
         }
         return (SuspensionIntervalsSupport) activity;
+    }
+
+
+    private void showSuspensionIntervallAddDialog(SuspensionIntervalAddDialog.Mode mode, Time defaultTime) {
+        Log.d(SuspensionIntervalsDialog.class.getName(), "showSuspensionIntervallAddDialog with mode " + mode + " and defaultTime " + defaultTime);
+        SuspensionIntervalAddDialog intervalAddDialog = new SuspensionIntervalAddDialog();
+        Bundle bundle = BundleUtil.stringToBundle(intervalAddDialog.getModeKey(), mode.name());
+        bundle = BundleUtil.bundleToBundle(intervalAddDialog.getDefaultTimeKey(), defaultTime.toBundle(), bundle);
+        intervalAddDialog.setArguments(bundle);
+        showDialog(intervalAddDialog, SuspensionIntervalAddDialog.class.getName());
     }
 
     private void showDialog(DialogFragment dialog, String name) {

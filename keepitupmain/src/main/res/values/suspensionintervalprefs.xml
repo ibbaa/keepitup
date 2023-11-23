@@ -21,4 +21,5 @@
     <integer name="suspension_interval_default_start_minute">0</integer>
     <integer name="suspension_interval_default_length_first">360</integer>
     <integer name="suspension_interval_default_length_following">120</integer>
+    <integer name="suspension_interval_default_distance">60</integer>
 </resources>

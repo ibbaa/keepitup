@@ -31,9 +31,11 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.List;
 
 @SmallTest
 @RunWith(AndroidJUnit4.class)
@@ -121,6 +123,28 @@ public class TimeUtilTest {
     }
 
     @Test
+    public void testAddMinutes() {
+        Time time = new Time();
+        time.setHour(17);
+        time.setMinute(58);
+        time = TimeUtil.addMinutes(time, 10);
+        assertEquals(18, time.getHour());
+        assertEquals(8, time.getMinute());
+        time = new Time();
+        time.setHour(22);
+        time.setMinute(0);
+        time = TimeUtil.addMinutes(time, 360);
+        assertEquals(4, time.getHour());
+        assertEquals(0, time.getMinute());
+        time = new Time();
+        time.setHour(0);
+        time.setMinute(0);
+        time = TimeUtil.addMinutes(time, 1440);
+        assertEquals(0, time.getHour());
+        assertEquals(0, time.getMinute());
+    }
+
+    @Test
     public void testIsDurationMin() {
         Time start = new Time();
         start.setHour(17);
@@ -202,6 +226,41 @@ public class TimeUtilTest {
         interval.setStart(start);
         interval.setEnd(end);
         assertEquals("Start: 01:02 End: 03:04", TimeUtil.formatSuspensionIntervalText(interval, TestRegistry.getContext()));
+    }
+
+    @Test
+    public void testSortIntervalList() {
+        Time start = new Time();
+        start.setHour(17);
+        start.setMinute(58);
+        Time end = new Time();
+        end.setHour(17);
+        end.setMinute(59);
+        Interval interval1 = new Interval();
+        interval1.setStart(start);
+        interval1.setEnd(end);
+        start = new Time();
+        start.setHour(23);
+        start.setMinute(1);
+        end = new Time();
+        end.setHour(1);
+        end.setMinute(0);
+        Interval interval2 = new Interval();
+        interval2.setStart(start);
+        interval2.setEnd(end);
+        start = new Time();
+        start.setHour(2);
+        start.setMinute(1);
+        end = new Time();
+        end.setHour(3);
+        end.setMinute(4);
+        Interval interval3 = new Interval();
+        interval3.setStart(start);
+        interval3.setEnd(end);
+        List<Interval> sortedList = TimeUtil.sortIntervalList(Arrays.asList(interval1, interval2, interval3));
+        assertTrue(interval3.isEqual(sortedList.get(0)));
+        assertTrue(interval1.isEqual(sortedList.get(1)));
+        assertTrue(interval2.isEqual(sortedList.get(2)));
     }
 
     private long testNow() {

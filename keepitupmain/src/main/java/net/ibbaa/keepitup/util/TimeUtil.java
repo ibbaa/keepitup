@@ -24,9 +24,13 @@ import net.ibbaa.keepitup.model.Time;
 import net.ibbaa.keepitup.service.ITimeService;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 public class TimeUtil {
@@ -80,22 +84,29 @@ public class TimeUtil {
     }
 
     public static Interval extendInterval(Interval interval, int minutes) {
-        Time start = new Time();
-        Time end = new Time();
-        Date now = new Date();
-        Calendar endDate = new GregorianCalendar();
-        endDate.setTime(now);
-        endDate.set(Calendar.HOUR_OF_DAY, interval.getEnd().getHour());
-        endDate.set(Calendar.MINUTE, interval.getEnd().getMinute());
-        endDate.add(Calendar.MINUTE, minutes);
-        start.setHour(interval.getStart().getHour());
-        start.setMinute(interval.getStart().getMinute());
-        end.setHour(endDate.get(Calendar.HOUR_OF_DAY));
-        end.setMinute(endDate.get(Calendar.MINUTE));
         Interval extendedInterval = new Interval();
-        extendedInterval.setStart(start);
-        extendedInterval.setEnd(end);
+        extendedInterval.setStart(interval.getStart());
+        extendedInterval.setEnd(addMinutes(interval.getEnd(), minutes));
         return extendedInterval;
+    }
+
+    public static Time addMinutes(Time time, int minutes) {
+        Time changedTime = new Time();
+        Date now = new Date();
+        Calendar changedDate = new GregorianCalendar();
+        changedDate.setTime(now);
+        changedDate.set(Calendar.HOUR_OF_DAY, time.getHour());
+        changedDate.set(Calendar.MINUTE, time.getMinute());
+        changedDate.add(Calendar.MINUTE, minutes);
+        changedTime.setHour(changedDate.get(Calendar.HOUR_OF_DAY));
+        changedTime.setMinute(changedDate.get(Calendar.MINUTE));
+        return changedTime;
+    }
+
+    public static List<Interval> sortIntervalList(List<Interval> intervalList) {
+        List<Interval> sortedList = new ArrayList<>(intervalList);
+        Collections.sort(sortedList, new IntervalComparator());
+        return sortedList;
     }
 
     private static Calendar getCalendarFromTime(Time time, long currentTime) {
@@ -106,5 +117,15 @@ public class TimeUtil {
         date.set(Calendar.SECOND, 0);
         date.set(Calendar.MILLISECOND, 0);
         return date;
+    }
+
+    private static class IntervalComparator implements Comparator<Interval> {
+        @Override
+        public int compare(Interval interval1, Interval interval2) {
+            if (interval1.isEqual(interval2)) {
+                return 0;
+            }
+            return interval1.getStart().isBefore(interval2.getStart()) ? -1 : 1;
+        }
     }
 }

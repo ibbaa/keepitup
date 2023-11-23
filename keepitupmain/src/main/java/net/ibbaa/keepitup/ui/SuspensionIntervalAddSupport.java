@@ -22,5 +22,5 @@ public interface SuspensionIntervalAddSupport {
 
     void onSuspensionIntervalAddDialogOkClicked(SuspensionIntervalAddDialog intervalAddDialog, SuspensionIntervalAddDialog.Mode mode);
 
-    void onSuspensionIntervalAddDialogCancelClicked(SuspensionIntervalAddDialog intervalAddDialog);
+    void onSuspensionIntervalAddDialogCancelClicked(SuspensionIntervalAddDialog intervalAddDialog, SuspensionIntervalAddDialog.Mode mode);
 }
