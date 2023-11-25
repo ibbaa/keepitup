@@ -100,6 +100,10 @@ public class NetworkTaskMainActivity extends RecyclerViewBaseActivity implements
         Interval interval1 = new Interval();
         Interval interval2 = new Interval();
         Interval interval3 = new Interval();
+        Interval interval4 = new Interval();
+        Interval interval5 = new Interval();
+        Interval interval6 = new Interval();
+        Interval interval7 = new Interval();
         Time timeStart1 = new Time();
         timeStart1.setHour(10);
         timeStart1.setMinute(11);
@@ -124,6 +128,14 @@ public class NetworkTaskMainActivity extends RecyclerViewBaseActivity implements
         interval2.setEnd(timeEnd2);
         interval3.setStart(timeStart3);
         interval3.setEnd(timeEnd3);
+        interval4.setStart(timeStart1);
+        interval4.setEnd(timeEnd1);
+        interval5.setStart(timeStart2);
+        interval5.setEnd(timeEnd2);
+        interval6.setStart(timeStart3);
+        interval6.setEnd(timeEnd3);
+        interval7.setStart(timeStart3);
+        interval7.setEnd(timeEnd3);
         new IntervalDAO(this).insertInterval(interval1);
         new IntervalDAO(this).insertInterval(interval2);
         new IntervalDAO(this).insertInterval(interval3);

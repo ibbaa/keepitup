@@ -18,10 +18,12 @@ package net.ibbaa.keepitup.ui;
 
 import android.os.Bundle;
 import android.util.TypedValue;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.CompoundButton;
+import android.widget.GridLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
@@ -62,7 +64,6 @@ public class GlobalSettingsActivity extends SettingsInputActivity implements Sus
     private RadioGroup notificationType;
     private SwitchMaterial suspensionEnabledSwitch;
     private TextView suspensionEnabledOnOffText;
-    private TextView suspensionIntervalsText;
     private SwitchMaterial downloadExternalStorageSwitch;
     private TextView downloadExternalStorageOnOffText;
     private TextView downloadFolderText;
@@ -215,42 +216,94 @@ public class GlobalSettingsActivity extends SettingsInputActivity implements Sus
     private void prepareSuspensionIntervalsField() {
         Log.d(GlobalSettingsActivity.class.getName(), "prepareSuspensionIntervalsField");
         CardView suspensionIntervalsCardView = findViewById(R.id.cardview_activity_global_settings_suspension_intervals);
-        suspensionIntervalsText = findViewById(R.id.textview_activity_global_settings_suspension_intervals);
+        GridLayout gridLayout = findViewById(R.id.gridlayout_activity_global_settings_suspension_intervals_value);
         if (suspensionEnabledSwitch.isChecked()) {
             suspensionIntervalsCardView.setEnabled(true);
             suspensionIntervalsCardView.setOnClickListener(this::showSuspensionIntervalsDialog);
-            setSuspensionIntervals(formatSuspensionIntervalsText());
-            setSuspensionIntervalsTextSize();
+            prepareSuspensionIntervalsTextLayoutFields(false);
         } else {
-            setSuspensionIntervals(getResources().getString(R.string.text_activity_global_settings_suspension_intervals_disabled));
+            prepareSuspensionIntervalsTextLayoutFields(true);
             suspensionIntervalsCardView.setEnabled(false);
             suspensionIntervalsCardView.setOnClickListener(null);
-            setSuspensionIntervalsTextSize();
         }
     }
 
-    private String formatSuspensionIntervalsText() {
+    private void prepareSuspensionIntervalsTextLayoutFields(boolean disabled) {
+        Log.d(GlobalSettingsActivity.class.getName(), "prepareSuspensionIntervalsTextFields, disabled is " + disabled);
+        GridLayout gridLayout = findViewById(R.id.gridlayout_activity_global_settings_suspension_intervals_value);
+        gridLayout.removeAllViews();
         List<Interval> intervals = getTimeBasedSuspensionScheduler().getIntervals();
-        if (intervals == null || intervals.isEmpty()) {
-            return getResources().getString(R.string.text_activity_global_settings_suspension_intervals_none);
+        if (disabled) {
+            Log.d(GlobalSettingsActivity.class.getName(), "Suspension intervals are disabled");
+            prepareSuspensionIntervalsTextFieldsSingleLayoutColumn(getResources().getString(R.string.text_activity_global_settings_suspension_intervals_disabled));
+            return;
         }
-        StringBuilder stringBuilder = new StringBuilder();
-        for (Interval interval : intervals) {
-            stringBuilder.append(TimeUtil.formatSuspensionIntervalText(interval, this));
-            stringBuilder.append(System.lineSeparator());
+        if (intervals.isEmpty()) {
+            Log.d(GlobalSettingsActivity.class.getName(), "Suspension intervals are enabled but none are present");
+            prepareSuspensionIntervalsTextFieldsSingleLayoutColumn(getResources().getString(R.string.text_activity_global_settings_suspension_intervals_none));
+            return;
         }
-        return stringBuilder.toString();
-    }
-
-    private void setSuspensionIntervalsTextSize() {
-        List<Interval> intervals = getTimeBasedSuspensionScheduler().getIntervals();
-        PreferenceManager preferenceManager = new PreferenceManager(this);
-        if (intervals == null || intervals.isEmpty() || intervals.size() == 1 || !preferenceManager.getPreferenceSuspensionEnabled()) {
-            suspensionIntervalsText.setTextSize(TypedValue.COMPLEX_UNIT_SP, getResources().getInteger(R.integer.suspension_intervals_text_size_normal));
-        } else if (intervals.size() == 2) {
-            suspensionIntervalsText.setTextSize(TypedValue.COMPLEX_UNIT_SP, getResources().getInteger(R.integer.suspension_intervals_text_size_smaller));
+        if (intervals.size() > 3) {
+            Log.d(GlobalSettingsActivity.class.getName(), "More than 3 suspension intervals are present");
+            gridLayout.setColumnCount(2);
+            int index = (intervals.size() + 1) / 2;
+            prepareSuspensionIntervalsTextFieldsLayoutColumn(0, intervals.size(), intervals.subList(0, index));
+            prepareSuspensionIntervalsTextFieldsLayoutColumn(1, intervals.size(), intervals.subList(index, intervals.size()));
         } else {
-            suspensionIntervalsText.setTextSize(TypedValue.COMPLEX_UNIT_SP, getResources().getInteger(R.integer.suspension_intervals_text_size_small));
+            Log.d(GlobalSettingsActivity.class.getName(), "Less than 3 suspension intervals are present");
+            gridLayout.setColumnCount(1);
+            prepareSuspensionIntervalsTextFieldsLayoutColumn(0, intervals.size(), intervals);
+        }
+
+    }
+
+    private void prepareSuspensionIntervalsTextFieldsSingleLayoutColumn(String text) {
+        Log.d(GlobalSettingsActivity.class.getName(), "prepareSuspensionIntervalsTextFieldsSingleLayoutColumn with text " + text);
+        GridLayout gridLayout = findViewById(R.id.gridlayout_activity_global_settings_suspension_intervals_value);
+        gridLayout.setColumnCount(1);
+        TextView intervalText = getSuspensionIntervalTextView(text, getSuspensionIntervalsTextSize(1));
+        GridLayout.LayoutParams intervalTextParams = getSuspensionIntervalTextViewLayoutParams(0, 0);
+        gridLayout.addView(intervalText, intervalTextParams);
+    }
+
+    private void prepareSuspensionIntervalsTextFieldsLayoutColumn(int column, int overallSize, List<Interval> intervals) {
+        Log.d(GlobalSettingsActivity.class.getName(), "prepareSuspensionIntervalsTextFieldsLayoutColumn for column " + column);
+        GridLayout gridLayout = findViewById(R.id.gridlayout_activity_global_settings_suspension_intervals_value);
+        for (int ii = 0; ii < intervals.size(); ii++) {
+            Interval interval = intervals.get(ii);
+            TextView intervalText = getSuspensionIntervalTextView(TimeUtil.formatSuspensionIntervalText(interval, this), getSuspensionIntervalsTextSize(overallSize));
+            GridLayout.LayoutParams intervalTextParams = getSuspensionIntervalTextViewLayoutParams(ii, column);
+            gridLayout.addView(intervalText, intervalTextParams);
+        }
+    }
+
+    private TextView getSuspensionIntervalTextView(String text, int textSize) {
+        TextView intervalText = new TextView(this);
+        intervalText.setId(View.generateViewId());
+        intervalText.setText(text);
+        intervalText.setTextSize(TypedValue.COMPLEX_UNIT_SP, textSize);
+        return intervalText;
+    }
+
+    private GridLayout.LayoutParams getSuspensionIntervalTextViewLayoutParams(int row, int column) {
+        GridLayout.LayoutParams intervalTextParams = new GridLayout.LayoutParams();
+        intervalTextParams.height = GridLayout.LayoutParams.WRAP_CONTENT;
+        intervalTextParams.width = GridLayout.LayoutParams.WRAP_CONTENT;
+        intervalTextParams.setGravity(Gravity.CENTER);
+        intervalTextParams.rightMargin = getResources().getDimensionPixelSize(R.dimen.textview_activity_global_settings_intervals_value_margin_right);
+        intervalTextParams.topMargin = getResources().getDimensionPixelSize(R.dimen.textview_activity_global_settings_intervals_value_margin_top);
+        intervalTextParams.columnSpec = GridLayout.spec(column, 1, GridLayout.LEFT);
+        intervalTextParams.rowSpec = GridLayout.spec(row + 1, 1, GridLayout.LEFT);
+        return intervalTextParams;
+    }
+
+    private int getSuspensionIntervalsTextSize(int intervalCount) {
+        if (intervalCount <= 1) {
+            return getResources().getInteger(R.integer.suspension_intervals_text_size_normal);
+        } else if (intervalCount == 2) {
+            return getResources().getInteger(R.integer.suspension_intervals_text_size_smaller);
+        } else {
+            return getResources().getInteger(R.integer.suspension_intervals_text_size_small);
         }
     }
 
@@ -413,14 +466,6 @@ public class GlobalSettingsActivity extends SettingsInputActivity implements Sus
 
     private void setConnectCount(String connectCount) {
         connectCountText.setText(StringUtil.notNull(connectCount));
-    }
-
-    private String getSuspensionIntervals() {
-        return StringUtil.notNull(suspensionIntervalsText.getText());
-    }
-
-    private void setSuspensionIntervals(String suspensionIntervals) {
-        suspensionIntervalsText.setText(StringUtil.notNull(suspensionIntervals));
     }
 
     private String getDownloadFolder() {

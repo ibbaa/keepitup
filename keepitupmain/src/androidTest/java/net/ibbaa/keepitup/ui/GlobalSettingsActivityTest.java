@@ -120,7 +120,7 @@ public class GlobalSettingsActivityTest extends BaseUITest {
         onView(withId(R.id.textview_activity_global_settings_suspension_enabled_label)).check(matches(withText("Suspension intervals enabled")));
         onView(withId(R.id.switch_activity_global_settings_suspension_enabled)).check(matches(isChecked()));
         onView(withId(R.id.textview_activity_global_settings_suspension_intervals_label)).check(matches(withText("Defined suspension intervals")));
-        onView(withId(R.id.textview_activity_global_settings_suspension_intervals)).check(matches(withText("None")));
+        onView(allOf(withText("None"), withGridLayoutPosition(1, 0))).check(matches(isDisplayed()));
         onView(withId(R.id.textview_activity_global_settings_download_external_storage_label)).check(matches(withText("Download to an external storage folder")));
         onView(withId(R.id.switch_activity_global_settings_download_external_storage)).check(matches(isNotChecked()));
         onView(withId(R.id.textview_activity_global_settings_download_folder_label)).check(matches(withText("Download folder")));
@@ -167,7 +167,7 @@ public class GlobalSettingsActivityTest extends BaseUITest {
         onView(withId(R.id.radiobutton_activity_global_settings_notification_type_failure)).check(matches(isNotChecked()));
         onView(withId(R.id.radiobutton_activity_global_settings_notification_type_change)).check(matches(isChecked()));
         onView(withId(R.id.switch_activity_global_settings_suspension_enabled)).check(matches(isNotChecked()));
-        onView(withId(R.id.textview_activity_global_settings_suspension_intervals)).check(matches(withText("Disabled")));
+        onView(allOf(withText("Disabled"), withGridLayoutPosition(1, 0))).check(matches(isDisplayed()));
         onView(withId(R.id.textview_activity_global_settings_download_external_storage_label)).check(matches(withText("Download to an external storage folder")));
         onView(withId(R.id.switch_activity_global_settings_download_external_storage)).check(matches(isChecked()));
         onView(withId(R.id.textview_activity_global_settings_download_folder_label)).check(matches(withText("Download folder")));
@@ -498,20 +498,17 @@ public class GlobalSettingsActivityTest extends BaseUITest {
         onView(withId(R.id.textview_activity_global_settings_suspension_enabled_label)).check(matches(withText("Suspension intervals enabled")));
         onView(withId(R.id.switch_activity_global_settings_suspension_enabled)).check(matches(isChecked()));
         onView(withId(R.id.textview_activity_global_settings_suspension_intervals_label)).check(matches(withText("Defined suspension intervals")));
-        onView(withId(R.id.textview_activity_global_settings_suspension_intervals)).check(matches(withText("None")));
-        onView(withId(R.id.textview_activity_global_settings_suspension_intervals)).check(matches(withFontSize(14)));
+        onView(allOf(withText("None"), withFontSize(14), withGridLayoutPosition(1, 0))).check(matches(isDisplayed()));
         onView(withId(R.id.switch_activity_global_settings_suspension_enabled)).perform(click());
         onView(withId(R.id.textview_activity_global_settings_suspension_enabled_label)).check(matches(withText("Suspension intervals enabled")));
         onView(withId(R.id.switch_activity_global_settings_suspension_enabled)).check(matches(isNotChecked()));
         onView(withId(R.id.textview_activity_global_settings_suspension_intervals_label)).check(matches(withText("Defined suspension intervals")));
-        onView(withId(R.id.textview_activity_global_settings_suspension_intervals)).check(matches(withText("Disabled")));
-        onView(withId(R.id.textview_activity_global_settings_suspension_intervals)).check(matches(withFontSize(14)));
+        onView(allOf(withText("Disabled"), withFontSize(14), withGridLayoutPosition(1, 0))).check(matches(isDisplayed()));
         onView(withId(R.id.switch_activity_global_settings_suspension_enabled)).perform(click());
         onView(withId(R.id.textview_activity_global_settings_suspension_enabled_label)).check(matches(withText("Suspension intervals enabled")));
         onView(withId(R.id.switch_activity_global_settings_suspension_enabled)).check(matches(isChecked()));
         onView(withId(R.id.textview_activity_global_settings_suspension_intervals_label)).check(matches(withText("Defined suspension intervals")));
-        onView(withId(R.id.textview_activity_global_settings_suspension_intervals)).check(matches(withText("None")));
-        onView(withId(R.id.textview_activity_global_settings_suspension_intervals)).check(matches(withFontSize(14)));
+        onView(allOf(withText("None"), withFontSize(14), withGridLayoutPosition(1, 0))).check(matches(isDisplayed()));
         activityScenario.close();
     }
 
@@ -524,20 +521,17 @@ public class GlobalSettingsActivityTest extends BaseUITest {
         onView(withId(R.id.textview_activity_global_settings_suspension_enabled_label)).check(matches(withText("Suspension intervals enabled")));
         onView(withId(R.id.switch_activity_global_settings_suspension_enabled)).check(matches(isChecked()));
         onView(withId(R.id.textview_activity_global_settings_suspension_intervals_label)).check(matches(withText("Defined suspension intervals")));
-        onView(withId(R.id.textview_activity_global_settings_suspension_intervals)).check(matches(withText("Start: 10:11 End: 11:12" + System.lineSeparator())));
-        onView(withId(R.id.textview_activity_global_settings_suspension_intervals)).check(matches(withFontSize(14)));
+        onView(allOf(withText("Start: 10:11 End: 11:12"), withFontSize(14), withGridLayoutPosition(1, 0))).check(matches(isDisplayed()));
         onView(withId(R.id.switch_activity_global_settings_suspension_enabled)).perform(click());
         onView(withId(R.id.textview_activity_global_settings_suspension_enabled_label)).check(matches(withText("Suspension intervals enabled")));
         onView(withId(R.id.switch_activity_global_settings_suspension_enabled)).check(matches(isNotChecked()));
         onView(withId(R.id.textview_activity_global_settings_suspension_intervals_label)).check(matches(withText("Defined suspension intervals")));
-        onView(withId(R.id.textview_activity_global_settings_suspension_intervals)).check(matches(withText("Disabled")));
-        onView(withId(R.id.textview_activity_global_settings_suspension_intervals)).check(matches(withFontSize(14)));
+        onView(allOf(withText("Disabled"), withFontSize(14), withGridLayoutPosition(1, 0))).check(matches(isDisplayed()));
         onView(withId(R.id.switch_activity_global_settings_suspension_enabled)).perform(click());
         onView(withId(R.id.textview_activity_global_settings_suspension_enabled_label)).check(matches(withText("Suspension intervals enabled")));
         onView(withId(R.id.switch_activity_global_settings_suspension_enabled)).check(matches(isChecked()));
         onView(withId(R.id.textview_activity_global_settings_suspension_intervals_label)).check(matches(withText("Defined suspension intervals")));
-        onView(withId(R.id.textview_activity_global_settings_suspension_intervals)).check(matches(withText("Start: 10:11 End: 11:12" + System.lineSeparator())));
-        onView(withId(R.id.textview_activity_global_settings_suspension_intervals)).check(matches(withFontSize(14)));
+        onView(allOf(withText("Start: 10:11 End: 11:12"), withFontSize(14), withGridLayoutPosition(1, 0))).check(matches(isDisplayed()));
         activityScenario.close();
     }
 
@@ -551,21 +545,19 @@ public class GlobalSettingsActivityTest extends BaseUITest {
         onView(withId(R.id.textview_activity_global_settings_suspension_enabled_label)).check(matches(withText("Suspension intervals enabled")));
         onView(withId(R.id.switch_activity_global_settings_suspension_enabled)).check(matches(isChecked()));
         onView(withId(R.id.textview_activity_global_settings_suspension_intervals_label)).check(matches(withText("Defined suspension intervals")));
-        String intervalText = "Start: 01:01 End: 02:02" + System.lineSeparator() + "Start: 10:11 End: 11:12" + System.lineSeparator();
-        onView(withId(R.id.textview_activity_global_settings_suspension_intervals)).check(matches(withText(intervalText)));
-        onView(withId(R.id.textview_activity_global_settings_suspension_intervals)).check(matches(withFontSize(12)));
+        onView(allOf(withText("Start: 01:01 End: 02:02"), withFontSize(12), withGridLayoutPosition(1, 0))).check(matches(isDisplayed()));
+        onView(allOf(withText("Start: 10:11 End: 11:12"), withFontSize(12), withGridLayoutPosition(2, 0))).check(matches(isDisplayed()));
         onView(withId(R.id.switch_activity_global_settings_suspension_enabled)).perform(click());
         onView(withId(R.id.textview_activity_global_settings_suspension_enabled_label)).check(matches(withText("Suspension intervals enabled")));
         onView(withId(R.id.switch_activity_global_settings_suspension_enabled)).check(matches(isNotChecked()));
         onView(withId(R.id.textview_activity_global_settings_suspension_intervals_label)).check(matches(withText("Defined suspension intervals")));
-        onView(withId(R.id.textview_activity_global_settings_suspension_intervals)).check(matches(withText("Disabled")));
-        onView(withId(R.id.textview_activity_global_settings_suspension_intervals)).check(matches(withFontSize(14)));
+        onView(allOf(withText("Disabled"), withFontSize(14), withGridLayoutPosition(1, 0))).check(matches(isDisplayed()));
         onView(withId(R.id.switch_activity_global_settings_suspension_enabled)).perform(click());
         onView(withId(R.id.textview_activity_global_settings_suspension_enabled_label)).check(matches(withText("Suspension intervals enabled")));
         onView(withId(R.id.switch_activity_global_settings_suspension_enabled)).check(matches(isChecked()));
         onView(withId(R.id.textview_activity_global_settings_suspension_intervals_label)).check(matches(withText("Defined suspension intervals")));
-        onView(withId(R.id.textview_activity_global_settings_suspension_intervals)).check(matches(withText(intervalText)));
-        onView(withId(R.id.textview_activity_global_settings_suspension_intervals)).check(matches(withFontSize(12)));
+        onView(allOf(withText("Start: 01:01 End: 02:02"), withFontSize(12), withGridLayoutPosition(1, 0))).check(matches(isDisplayed()));
+        onView(allOf(withText("Start: 10:11 End: 11:12"), withFontSize(12), withGridLayoutPosition(2, 0))).check(matches(isDisplayed()));
         activityScenario.close();
     }
 
@@ -580,21 +572,81 @@ public class GlobalSettingsActivityTest extends BaseUITest {
         onView(withId(R.id.textview_activity_global_settings_suspension_enabled_label)).check(matches(withText("Suspension intervals enabled")));
         onView(withId(R.id.switch_activity_global_settings_suspension_enabled)).check(matches(isChecked()));
         onView(withId(R.id.textview_activity_global_settings_suspension_intervals_label)).check(matches(withText("Defined suspension intervals")));
-        String intervalText = "Start: 01:01 End: 02:02" + System.lineSeparator() + "Start: 10:11 End: 11:12" + System.lineSeparator() + "Start: 22:15 End: 23:59" + System.lineSeparator();
-        onView(withId(R.id.textview_activity_global_settings_suspension_intervals)).check(matches(withText(intervalText)));
-        onView(withId(R.id.textview_activity_global_settings_suspension_intervals)).check(matches(withFontSize(10)));
+        onView(allOf(withText("Start: 01:01 End: 02:02"), withFontSize(10), withGridLayoutPosition(1, 0))).check(matches(isDisplayed()));
+        onView(allOf(withText("Start: 10:11 End: 11:12"), withFontSize(10), withGridLayoutPosition(2, 0))).check(matches(isDisplayed()));
+        onView(allOf(withText("Start: 22:15 End: 23:59"), withFontSize(10), withGridLayoutPosition(3, 0))).check(matches(isDisplayed()));
         onView(withId(R.id.switch_activity_global_settings_suspension_enabled)).perform(click());
         onView(withId(R.id.textview_activity_global_settings_suspension_enabled_label)).check(matches(withText("Suspension intervals enabled")));
         onView(withId(R.id.switch_activity_global_settings_suspension_enabled)).check(matches(isNotChecked()));
         onView(withId(R.id.textview_activity_global_settings_suspension_intervals_label)).check(matches(withText("Defined suspension intervals")));
-        onView(withId(R.id.textview_activity_global_settings_suspension_intervals)).check(matches(withText("Disabled")));
-        onView(withId(R.id.textview_activity_global_settings_suspension_intervals)).check(matches(withFontSize(14)));
+        onView(allOf(withText("Disabled"), withFontSize(14), withGridLayoutPosition(1, 0))).check(matches(isDisplayed()));
         onView(withId(R.id.switch_activity_global_settings_suspension_enabled)).perform(click());
         onView(withId(R.id.textview_activity_global_settings_suspension_enabled_label)).check(matches(withText("Suspension intervals enabled")));
         onView(withId(R.id.switch_activity_global_settings_suspension_enabled)).check(matches(isChecked()));
         onView(withId(R.id.textview_activity_global_settings_suspension_intervals_label)).check(matches(withText("Defined suspension intervals")));
-        onView(withId(R.id.textview_activity_global_settings_suspension_intervals)).check(matches(withText(intervalText)));
-        onView(withId(R.id.textview_activity_global_settings_suspension_intervals)).check(matches(withFontSize(10)));
+        onView(allOf(withText("Start: 01:01 End: 02:02"), withFontSize(10), withGridLayoutPosition(1, 0))).check(matches(isDisplayed()));
+        onView(allOf(withText("Start: 10:11 End: 11:12"), withFontSize(10), withGridLayoutPosition(2, 0))).check(matches(isDisplayed()));
+        onView(allOf(withText("Start: 22:15 End: 23:59"), withFontSize(10), withGridLayoutPosition(3, 0))).check(matches(isDisplayed()));
+        activityScenario.close();
+    }
+
+    @Test
+    public void testSuspensionDisabledFiveIntervals() {
+        intervalDAO.insertInterval(getInterval1());
+        intervalDAO.insertInterval(getInterval2());
+        intervalDAO.insertInterval(getInterval3());
+        intervalDAO.insertInterval(getInterval4());
+        intervalDAO.insertInterval(getInterval5());
+        scheduler.restart();
+        ActivityScenario<?> activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class);
+        ((GlobalSettingsActivity) getActivity(activityScenario)).injectTimeBasedSuspensionScheduler(scheduler);
+        onView(withId(R.id.textview_activity_global_settings_suspension_enabled_label)).check(matches(withText("Suspension intervals enabled")));
+        onView(withId(R.id.switch_activity_global_settings_suspension_enabled)).check(matches(isChecked()));
+        onView(withId(R.id.textview_activity_global_settings_suspension_intervals_label)).check(matches(withText("Defined suspension intervals")));
+        onView(allOf(withText("Start: 01:01 End: 02:02"), withFontSize(10), withGridLayoutPosition(1, 0))).check(matches(isDisplayed()));
+        onView(allOf(withText("Start: 03:03 End: 04:04"), withFontSize(10), withGridLayoutPosition(2, 0))).check(matches(isDisplayed()));
+        onView(allOf(withText("Start: 05:05 End: 06:06"), withFontSize(10), withGridLayoutPosition(3, 0))).check(matches(isDisplayed()));
+        onView(allOf(withText("Start: 10:11 End: 11:12"), withFontSize(10), withGridLayoutPosition(1, 1))).check(matches(isDisplayed()));
+        onView(allOf(withText("Start: 22:15 End: 23:59"), withFontSize(10), withGridLayoutPosition(2, 1))).check(matches(isDisplayed()));
+        onView(withId(R.id.switch_activity_global_settings_suspension_enabled)).perform(click());
+        onView(withId(R.id.textview_activity_global_settings_suspension_enabled_label)).check(matches(withText("Suspension intervals enabled")));
+        onView(withId(R.id.switch_activity_global_settings_suspension_enabled)).check(matches(isNotChecked()));
+        onView(withId(R.id.textview_activity_global_settings_suspension_intervals_label)).check(matches(withText("Defined suspension intervals")));
+        onView(allOf(withText("Disabled"), withFontSize(14), withGridLayoutPosition(1, 0))).check(matches(isDisplayed()));
+        onView(withId(R.id.switch_activity_global_settings_suspension_enabled)).perform(click());
+        onView(withId(R.id.textview_activity_global_settings_suspension_enabled_label)).check(matches(withText("Suspension intervals enabled")));
+        onView(withId(R.id.switch_activity_global_settings_suspension_enabled)).check(matches(isChecked()));
+        onView(withId(R.id.textview_activity_global_settings_suspension_intervals_label)).check(matches(withText("Defined suspension intervals")));
+        onView(allOf(withText("Start: 01:01 End: 02:02"), withFontSize(10), withGridLayoutPosition(1, 0))).check(matches(isDisplayed()));
+        onView(allOf(withText("Start: 03:03 End: 04:04"), withFontSize(10), withGridLayoutPosition(2, 0))).check(matches(isDisplayed()));
+        onView(allOf(withText("Start: 05:05 End: 06:06"), withFontSize(10), withGridLayoutPosition(3, 0))).check(matches(isDisplayed()));
+        onView(allOf(withText("Start: 10:11 End: 11:12"), withFontSize(10), withGridLayoutPosition(1, 1))).check(matches(isDisplayed()));
+        onView(allOf(withText("Start: 22:15 End: 23:59"), withFontSize(10), withGridLayoutPosition(2, 1))).check(matches(isDisplayed()));
+        activityScenario.close();
+    }
+
+    @Test
+    public void testSuspensionSevenIntervals() {
+        intervalDAO.insertInterval(getInterval1());
+        intervalDAO.insertInterval(getInterval2());
+        intervalDAO.insertInterval(getInterval3());
+        intervalDAO.insertInterval(getInterval4());
+        intervalDAO.insertInterval(getInterval5());
+        intervalDAO.insertInterval(getInterval6());
+        intervalDAO.insertInterval(getInterval7());
+        scheduler.restart();
+        ActivityScenario<?> activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class);
+        ((GlobalSettingsActivity) getActivity(activityScenario)).injectTimeBasedSuspensionScheduler(scheduler);
+        onView(withId(R.id.textview_activity_global_settings_suspension_enabled_label)).check(matches(withText("Suspension intervals enabled")));
+        onView(withId(R.id.switch_activity_global_settings_suspension_enabled)).check(matches(isChecked()));
+        onView(withId(R.id.textview_activity_global_settings_suspension_intervals_label)).check(matches(withText("Defined suspension intervals")));
+        onView(allOf(withText("Start: 01:01 End: 02:02"), withFontSize(10), withGridLayoutPosition(1, 0))).check(matches(isDisplayed()));
+        onView(allOf(withText("Start: 03:03 End: 04:04"), withFontSize(10), withGridLayoutPosition(2, 0))).check(matches(isDisplayed()));
+        onView(allOf(withText("Start: 05:05 End: 06:06"), withFontSize(10), withGridLayoutPosition(3, 0))).check(matches(isDisplayed()));
+        onView(allOf(withText("Start: 07:07 End: 08:08"), withFontSize(10), withGridLayoutPosition(4, 0))).check(matches(isDisplayed()));
+        onView(allOf(withText("Start: 09:09 End: 09:25"), withFontSize(10), withGridLayoutPosition(1, 1))).check(matches(isDisplayed()));
+        onView(allOf(withText("Start: 10:11 End: 11:12"), withFontSize(10), withGridLayoutPosition(2, 1))).check(matches(isDisplayed()));
+        onView(allOf(withText("Start: 22:15 End: 23:59"), withFontSize(10), withGridLayoutPosition(3, 1))).check(matches(isDisplayed()));
         activityScenario.close();
     }
 
@@ -1209,6 +1261,62 @@ public class GlobalSettingsActivityTest extends BaseUITest {
         Time end = new Time();
         end.setHour(23);
         end.setMinute(59);
+        interval.setEnd(end);
+        return interval;
+    }
+
+    private Interval getInterval4() {
+        Interval interval = new Interval();
+        interval.setId(0);
+        Time start = new Time();
+        start.setHour(3);
+        start.setMinute(3);
+        interval.setStart(start);
+        Time end = new Time();
+        end.setHour(4);
+        end.setMinute(4);
+        interval.setEnd(end);
+        return interval;
+    }
+
+    private Interval getInterval5() {
+        Interval interval = new Interval();
+        interval.setId(0);
+        Time start = new Time();
+        start.setHour(5);
+        start.setMinute(5);
+        interval.setStart(start);
+        Time end = new Time();
+        end.setHour(6);
+        end.setMinute(6);
+        interval.setEnd(end);
+        return interval;
+    }
+
+    private Interval getInterval6() {
+        Interval interval = new Interval();
+        interval.setId(0);
+        Time start = new Time();
+        start.setHour(7);
+        start.setMinute(7);
+        interval.setStart(start);
+        Time end = new Time();
+        end.setHour(8);
+        end.setMinute(8);
+        interval.setEnd(end);
+        return interval;
+    }
+
+    private Interval getInterval7() {
+        Interval interval = new Interval();
+        interval.setId(0);
+        Time start = new Time();
+        start.setHour(9);
+        start.setMinute(9);
+        interval.setStart(start);
+        Time end = new Time();
+        end.setHour(9);
+        end.setMinute(25);
         interval.setEnd(end);
         return interval;
     }

@@ -336,24 +336,13 @@
                         android:textStyle="bold"
                         android:text="@string/label_activity_global_settings_suspension_intervals" />
 
-                    <LinearLayout
-                        android:id="@+id/linearlayout_activity_global_settings_suspension_intervals_value"
+                    <GridLayout
+                        android:id="@+id/gridlayout_activity_global_settings_suspension_intervals_value"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_margin="@dimen/linearlayout_activity_global_settings_suspension_intervals_margin"
-                        android:focusable="true"
-                        android:focusableInTouchMode="true"
-                        android:orientation="horizontal">
+                        android:layout_margin="@dimen/gridlayout_activity_global_settings_suspension_intervals_margin">
 
-                        <TextView
-                            android:id="@+id/textview_activity_global_settings_suspension_intervals"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:textStyle="normal"
-                            android:textColor="@drawable/edittext_selector"
-                            android:text="" />
-
-                    </LinearLayout>
+                    </GridLayout>
 
                 </LinearLayout>
 

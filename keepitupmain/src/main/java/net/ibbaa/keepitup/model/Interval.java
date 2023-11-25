@@ -157,6 +157,16 @@ public class Interval {
         return !end.isBefore(other.start) && !start.isAfter(other.end);
     }
 
+    public boolean isInInterval(Time time) {
+        if (!isValid() || !time.isValid()) {
+            return false;
+        }
+        if (doesOverlapDays()) {
+            return !time.isBefore(start) || !time.isAfter(end);
+        }
+        return !time.isBefore(start) && !time.isAfter(end);
+    }
+
     @NonNull
     @Override
     public String toString() {

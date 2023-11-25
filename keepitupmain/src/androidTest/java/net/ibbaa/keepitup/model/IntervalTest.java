@@ -665,4 +665,108 @@ public class IntervalTest {
         assertTrue(interval1.doesOverlap(interval2));
         assertTrue(interval2.doesOverlap(interval1));
     }
+
+    @Test
+    public void testIsNotInInterval() {
+        Time start = new Time();
+        start.setHour(11);
+        start.setMinute(25);
+        Time end = new Time();
+        end.setHour(12);
+        end.setMinute(30);
+        Interval interval = new Interval();
+        interval.setStart(start);
+        interval.setEnd(end);
+        Time time = new Time();
+        time.setHour(11);
+        time.setMinute(24);
+        assertFalse(interval.isInInterval(time));
+        time = new Time();
+        time.setHour(2);
+        time.setMinute(2);
+        assertFalse(interval.isInInterval(time));
+    }
+
+    @Test
+    public void testIsInInterval() {
+        Time start = new Time();
+        start.setHour(11);
+        start.setMinute(25);
+        Time end = new Time();
+        end.setHour(12);
+        end.setMinute(30);
+        Interval interval = new Interval();
+        interval.setStart(start);
+        interval.setEnd(end);
+        Time time = new Time();
+        time.setHour(11);
+        time.setMinute(25);
+        assertTrue(interval.isInInterval(time));
+        time = new Time();
+        time.setHour(12);
+        time.setMinute(30);
+        assertTrue(interval.isInInterval(time));
+        time = new Time();
+        time.setHour(12);
+        time.setMinute(0);
+        assertTrue(interval.isInInterval(time));
+    }
+
+    @Test
+    public void testIsNotInIntervalOverlapDays() {
+        Time start = new Time();
+        start.setHour(22);
+        start.setMinute(1);
+        Time end = new Time();
+        end.setHour(1);
+        end.setMinute(30);
+        Interval interval = new Interval();
+        interval.setStart(start);
+        interval.setEnd(end);
+        Time time = new Time();
+        time.setHour(1);
+        time.setMinute(31);
+        assertFalse(interval.isInInterval(time));
+        time = new Time();
+        time.setHour(22);
+        time.setMinute(0);
+        assertFalse(interval.isInInterval(time));
+        time = new Time();
+        time.setHour(12);
+        time.setMinute(30);
+        assertFalse(interval.isInInterval(time));
+    }
+
+    @Test
+    public void testIsInIntervalOverlapDays() {
+        Time start = new Time();
+        start.setHour(22);
+        start.setMinute(1);
+        Time end = new Time();
+        end.setHour(1);
+        end.setMinute(30);
+        Interval interval = new Interval();
+        interval.setStart(start);
+        interval.setEnd(end);
+        Time time = new Time();
+        time.setHour(1);
+        time.setMinute(30);
+        assertTrue(interval.isInInterval(time));
+        time = new Time();
+        time.setHour(22);
+        time.setMinute(1);
+        assertTrue(interval.isInInterval(time));
+        time = new Time();
+        time.setHour(0);
+        time.setMinute(0);
+        assertTrue(interval.isInInterval(time));
+        time = new Time();
+        time.setHour(23);
+        time.setMinute(59);
+        assertTrue(interval.isInInterval(time));
+        time = new Time();
+        time.setHour(0);
+        time.setMinute(1);
+        assertTrue(interval.isInInterval(time));
+    }
 }

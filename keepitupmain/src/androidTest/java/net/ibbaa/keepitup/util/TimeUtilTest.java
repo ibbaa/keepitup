@@ -145,6 +145,28 @@ public class TimeUtilTest {
     }
 
     @Test
+    public void testSubstractMinutes() {
+        Time time = new Time();
+        time.setHour(17);
+        time.setMinute(58);
+        time = TimeUtil.substractMinutes(time, 10);
+        assertEquals(17, time.getHour());
+        assertEquals(48, time.getMinute());
+        time = new Time();
+        time.setHour(2);
+        time.setMinute(0);
+        time = TimeUtil.substractMinutes(time, 360);
+        assertEquals(20, time.getHour());
+        assertEquals(0, time.getMinute());
+        time = new Time();
+        time.setHour(0);
+        time.setMinute(0);
+        time = TimeUtil.substractMinutes(time, 1440);
+        assertEquals(0, time.getHour());
+        assertEquals(0, time.getMinute());
+    }
+
+    @Test
     public void testIsDurationMin() {
         Time start = new Time();
         start.setHour(17);

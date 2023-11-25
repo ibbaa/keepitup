@@ -83,12 +83,12 @@ public class SuspensionIntervalsDialogTest extends BaseUITest {
         injectTimeBasedSuspensionScheduler();
         onView(withId(R.id.textview_activity_global_settings_suspension_enabled_label)).check(matches(withText("Suspension intervals enabled")));
         onView(withId(R.id.switch_activity_global_settings_suspension_enabled)).check(matches(isChecked()));
-        onView(withId(R.id.textview_activity_global_settings_suspension_intervals)).perform(click());
+        onView(withId(R.id.cardview_activity_global_settings_suspension_intervals)).perform(click());
         assertEquals(1, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
         onView(withId(R.id.imageview_dialog_suspension_intervals_cancel)).perform(click());
         assertEquals(0, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
         onView(withId(R.id.switch_activity_global_settings_suspension_enabled)).perform(click());
-        onView(withId(R.id.textview_activity_global_settings_suspension_intervals)).perform(click());
+        onView(withId(R.id.cardview_activity_global_settings_suspension_intervals)).perform(click());
         assertEquals(0, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
         activityScenario.close();
     }
@@ -99,7 +99,7 @@ public class SuspensionIntervalsDialogTest extends BaseUITest {
         injectTimeBasedSuspensionScheduler();
         onView(withId(R.id.textview_activity_global_settings_suspension_enabled_label)).check(matches(withText("Suspension intervals enabled")));
         onView(withId(R.id.switch_activity_global_settings_suspension_enabled)).check(matches(isChecked()));
-        onView(withId(R.id.textview_activity_global_settings_suspension_intervals)).perform(click());
+        onView(withId(R.id.cardview_activity_global_settings_suspension_intervals)).perform(click());
         onView(withId(R.id.listview_dialog_suspension_intervals_intervals)).check(matches(withListSize(1)));
         onView(allOf(withId(R.id.textview_list_item_suspension_interval_no_interval), withChildDescendantAtPosition(withId(R.id.listview_dialog_suspension_intervals_intervals), 0))).check(matches(isDisplayed()));
         onView(allOf(withId(R.id.textview_list_item_suspension_interval_no_interval), withChildDescendantAtPosition(withId(R.id.listview_dialog_suspension_intervals_intervals), 0))).check(matches(withText("No intervals defined")));
@@ -114,7 +114,7 @@ public class SuspensionIntervalsDialogTest extends BaseUITest {
         injectTimeBasedSuspensionScheduler();
         onView(withId(R.id.textview_activity_global_settings_suspension_enabled_label)).check(matches(withText("Suspension intervals enabled")));
         onView(withId(R.id.switch_activity_global_settings_suspension_enabled)).check(matches(isChecked()));
-        onView(withId(R.id.textview_activity_global_settings_suspension_intervals)).perform(click());
+        onView(withId(R.id.cardview_activity_global_settings_suspension_intervals)).perform(click());
         onView(withId(R.id.listview_dialog_suspension_intervals_intervals)).check(matches(withListSize(1)));
         onView(allOf(withId(R.id.textview_list_item_suspension_interval_no_interval), withChildDescendantAtPosition(withId(R.id.listview_dialog_suspension_intervals_intervals), 0))).check(matches(isDisplayed()));
         onView(allOf(withId(R.id.textview_list_item_suspension_interval_no_interval), withChildDescendantAtPosition(withId(R.id.listview_dialog_suspension_intervals_intervals), 0))).check(matches(withText("No intervals defined")));
@@ -141,7 +141,7 @@ public class SuspensionIntervalsDialogTest extends BaseUITest {
         injectTimeBasedSuspensionScheduler();
         onView(withId(R.id.textview_activity_global_settings_suspension_enabled_label)).check(matches(withText("Suspension intervals enabled")));
         onView(withId(R.id.switch_activity_global_settings_suspension_enabled)).check(matches(isChecked()));
-        onView(withId(R.id.textview_activity_global_settings_suspension_intervals)).perform(click());
+        onView(withId(R.id.cardview_activity_global_settings_suspension_intervals)).perform(click());
         onView(withId(R.id.listview_dialog_suspension_intervals_intervals)).check(matches(withListSize(1)));
         onView(allOf(withId(R.id.textview_list_item_suspension_interval_no_interval), withChildDescendantAtPosition(withId(R.id.listview_dialog_suspension_intervals_intervals), 0))).check(matches(not(isDisplayed())));
         onView(allOf(withId(R.id.cardview_list_item_suspension_interval), withChildDescendantAtPosition(withId(R.id.listview_dialog_suspension_intervals_intervals), 0))).check(matches(isDisplayed()));
@@ -160,7 +160,7 @@ public class SuspensionIntervalsDialogTest extends BaseUITest {
         injectTimeBasedSuspensionScheduler();
         onView(withId(R.id.textview_activity_global_settings_suspension_enabled_label)).check(matches(withText("Suspension intervals enabled")));
         onView(withId(R.id.switch_activity_global_settings_suspension_enabled)).check(matches(isChecked()));
-        onView(withId(R.id.textview_activity_global_settings_suspension_intervals)).perform(click());
+        onView(withId(R.id.cardview_activity_global_settings_suspension_intervals)).perform(click());
         onView(withId(R.id.listview_dialog_suspension_intervals_intervals)).check(matches(withListSize(1)));
         onView(allOf(withId(R.id.textview_list_item_suspension_interval_no_interval), withChildDescendantAtPosition(withId(R.id.listview_dialog_suspension_intervals_intervals), 0))).check(matches(not(isDisplayed())));
         onView(allOf(withId(R.id.cardview_list_item_suspension_interval), withChildDescendantAtPosition(withId(R.id.listview_dialog_suspension_intervals_intervals), 0))).check(matches(isDisplayed()));
@@ -195,7 +195,7 @@ public class SuspensionIntervalsDialogTest extends BaseUITest {
         injectTimeBasedSuspensionScheduler();
         onView(withId(R.id.textview_activity_global_settings_suspension_enabled_label)).check(matches(withText("Suspension intervals enabled")));
         onView(withId(R.id.switch_activity_global_settings_suspension_enabled)).check(matches(isChecked()));
-        onView(withId(R.id.textview_activity_global_settings_suspension_intervals)).perform(click());
+        onView(withId(R.id.cardview_activity_global_settings_suspension_intervals)).perform(click());
         onView(withId(R.id.listview_dialog_suspension_intervals_intervals)).check(matches(withListSize(3)));
         onView(allOf(withId(R.id.textview_list_item_suspension_interval_no_interval), withChildDescendantAtPosition(withId(R.id.listview_dialog_suspension_intervals_intervals), 0))).check(matches(not(isDisplayed())));
         onView(allOf(withId(R.id.cardview_list_item_suspension_interval), withChildDescendantAtPosition(withId(R.id.listview_dialog_suspension_intervals_intervals), 0))).check(matches(isDisplayed()));
@@ -222,7 +222,7 @@ public class SuspensionIntervalsDialogTest extends BaseUITest {
         injectTimeBasedSuspensionScheduler();
         onView(withId(R.id.textview_activity_global_settings_suspension_enabled_label)).check(matches(withText("Suspension intervals enabled")));
         onView(withId(R.id.switch_activity_global_settings_suspension_enabled)).check(matches(isChecked()));
-        onView(withId(R.id.textview_activity_global_settings_suspension_intervals)).perform(click());
+        onView(withId(R.id.cardview_activity_global_settings_suspension_intervals)).perform(click());
         onView(withId(R.id.listview_dialog_suspension_intervals_intervals)).check(matches(withListSize(3)));
         onView(allOf(withId(R.id.textview_list_item_suspension_interval_no_interval), withChildDescendantAtPosition(withId(R.id.listview_dialog_suspension_intervals_intervals), 0))).check(matches(not(isDisplayed())));
         onView(allOf(withId(R.id.cardview_list_item_suspension_interval), withChildDescendantAtPosition(withId(R.id.listview_dialog_suspension_intervals_intervals), 0))).check(matches(isDisplayed()));
@@ -273,7 +273,7 @@ public class SuspensionIntervalsDialogTest extends BaseUITest {
         injectTimeBasedSuspensionScheduler();
         onView(withId(R.id.textview_activity_global_settings_suspension_enabled_label)).check(matches(withText("Suspension intervals enabled")));
         onView(withId(R.id.switch_activity_global_settings_suspension_enabled)).check(matches(isChecked()));
-        onView(withId(R.id.textview_activity_global_settings_suspension_intervals)).perform(click());
+        onView(withId(R.id.cardview_activity_global_settings_suspension_intervals)).perform(click());
         onView(withId(R.id.listview_dialog_suspension_intervals_intervals)).check(matches(withListSize(1)));
         onView(allOf(withId(R.id.textview_list_item_suspension_interval_no_interval), withChildDescendantAtPosition(withId(R.id.listview_dialog_suspension_intervals_intervals), 0))).check(matches(not(isDisplayed())));
         onView(allOf(withId(R.id.cardview_list_item_suspension_interval), withChildDescendantAtPosition(withId(R.id.listview_dialog_suspension_intervals_intervals), 0))).check(matches(isDisplayed()));
@@ -300,7 +300,7 @@ public class SuspensionIntervalsDialogTest extends BaseUITest {
         injectTimeBasedSuspensionScheduler();
         onView(withId(R.id.textview_activity_global_settings_suspension_enabled_label)).check(matches(withText("Suspension intervals enabled")));
         onView(withId(R.id.switch_activity_global_settings_suspension_enabled)).check(matches(isChecked()));
-        onView(withId(R.id.textview_activity_global_settings_suspension_intervals)).perform(click());
+        onView(withId(R.id.cardview_activity_global_settings_suspension_intervals)).perform(click());
         onView(withId(R.id.listview_dialog_suspension_intervals_intervals)).check(matches(withListSize(1)));
         onView(allOf(withId(R.id.textview_list_item_suspension_interval_no_interval), withChildDescendantAtPosition(withId(R.id.listview_dialog_suspension_intervals_intervals), 0))).check(matches(not(isDisplayed())));
         onView(allOf(withId(R.id.cardview_list_item_suspension_interval), withChildDescendantAtPosition(withId(R.id.listview_dialog_suspension_intervals_intervals), 0))).check(matches(isDisplayed()));
@@ -329,7 +329,7 @@ public class SuspensionIntervalsDialogTest extends BaseUITest {
         injectTimeBasedSuspensionScheduler();
         onView(withId(R.id.textview_activity_global_settings_suspension_enabled_label)).check(matches(withText("Suspension intervals enabled")));
         onView(withId(R.id.switch_activity_global_settings_suspension_enabled)).check(matches(isChecked()));
-        onView(withId(R.id.textview_activity_global_settings_suspension_intervals)).perform(click());
+        onView(withId(R.id.cardview_activity_global_settings_suspension_intervals)).perform(click());
         onView(withId(R.id.listview_dialog_suspension_intervals_intervals)).check(matches(withListSize(1)));
         onView(allOf(withId(R.id.textview_list_item_suspension_interval_no_interval), withChildDescendantAtPosition(withId(R.id.listview_dialog_suspension_intervals_intervals), 0))).check(matches(not(isDisplayed())));
         onView(allOf(withId(R.id.cardview_list_item_suspension_interval), withChildDescendantAtPosition(withId(R.id.listview_dialog_suspension_intervals_intervals), 0))).check(matches(isDisplayed()));
@@ -354,7 +354,7 @@ public class SuspensionIntervalsDialogTest extends BaseUITest {
         injectTimeBasedSuspensionScheduler();
         onView(withId(R.id.textview_activity_global_settings_suspension_enabled_label)).check(matches(withText("Suspension intervals enabled")));
         onView(withId(R.id.switch_activity_global_settings_suspension_enabled)).check(matches(isChecked()));
-        onView(withId(R.id.textview_activity_global_settings_suspension_intervals)).perform(click());
+        onView(withId(R.id.cardview_activity_global_settings_suspension_intervals)).perform(click());
         onView(withId(R.id.listview_dialog_suspension_intervals_intervals)).check(matches(withListSize(1)));
         onView(allOf(withId(R.id.textview_list_item_suspension_interval_no_interval), withChildDescendantAtPosition(withId(R.id.listview_dialog_suspension_intervals_intervals), 0))).check(matches(not(isDisplayed())));
         onView(allOf(withId(R.id.cardview_list_item_suspension_interval), withChildDescendantAtPosition(withId(R.id.listview_dialog_suspension_intervals_intervals), 0))).check(matches(isDisplayed()));
@@ -386,7 +386,7 @@ public class SuspensionIntervalsDialogTest extends BaseUITest {
         injectTimeBasedSuspensionScheduler();
         onView(withId(R.id.textview_activity_global_settings_suspension_enabled_label)).check(matches(withText("Suspension intervals enabled")));
         onView(withId(R.id.switch_activity_global_settings_suspension_enabled)).check(matches(isChecked()));
-        onView(withId(R.id.textview_activity_global_settings_suspension_intervals)).perform(click());
+        onView(withId(R.id.cardview_activity_global_settings_suspension_intervals)).perform(click());
         onView(withId(R.id.listview_dialog_suspension_intervals_intervals)).check(matches(withListSize(3)));
         onView(allOf(withId(R.id.textview_list_item_suspension_interval_no_interval), withChildDescendantAtPosition(withId(R.id.listview_dialog_suspension_intervals_intervals), 0))).check(matches(not(isDisplayed())));
         onView(allOf(withId(R.id.cardview_list_item_suspension_interval), withChildDescendantAtPosition(withId(R.id.listview_dialog_suspension_intervals_intervals), 0))).check(matches(isDisplayed()));
@@ -432,7 +432,7 @@ public class SuspensionIntervalsDialogTest extends BaseUITest {
         injectTimeBasedSuspensionScheduler();
         onView(withId(R.id.textview_activity_global_settings_suspension_enabled_label)).check(matches(withText("Suspension intervals enabled")));
         onView(withId(R.id.switch_activity_global_settings_suspension_enabled)).check(matches(isChecked()));
-        onView(withId(R.id.textview_activity_global_settings_suspension_intervals)).perform(click());
+        onView(withId(R.id.cardview_activity_global_settings_suspension_intervals)).perform(click());
         onView(withId(R.id.listview_dialog_suspension_intervals_intervals)).check(matches(withListSize(3)));
         onView(allOf(withId(R.id.textview_list_item_suspension_interval_no_interval), withChildDescendantAtPosition(withId(R.id.listview_dialog_suspension_intervals_intervals), 0))).check(matches(not(isDisplayed())));
         onView(allOf(withId(R.id.cardview_list_item_suspension_interval), withChildDescendantAtPosition(withId(R.id.listview_dialog_suspension_intervals_intervals), 0))).check(matches(isDisplayed()));

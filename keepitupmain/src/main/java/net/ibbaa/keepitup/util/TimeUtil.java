@@ -103,6 +103,10 @@ public class TimeUtil {
         return changedTime;
     }
 
+    public static Time substractMinutes(Time time, int minutes) {
+        return addMinutes(time, -minutes);
+    }
+
     public static List<Interval> sortIntervalList(List<Interval> intervalList) {
         List<Interval> sortedList = new ArrayList<>(intervalList);
         Collections.sort(sortedList, new IntervalComparator());

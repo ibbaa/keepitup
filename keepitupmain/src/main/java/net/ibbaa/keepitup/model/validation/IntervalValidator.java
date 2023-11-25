@@ -21,6 +21,7 @@ import android.content.Context;
 import net.ibbaa.keepitup.R;
 import net.ibbaa.keepitup.logging.Log;
 import net.ibbaa.keepitup.model.Interval;
+import net.ibbaa.keepitup.model.Time;
 import net.ibbaa.keepitup.util.TimeUtil;
 
 import java.util.List;
@@ -66,6 +67,24 @@ public class IntervalValidator {
             }
         }
         Log.d(NetworkTaskValidator.class.getName(), "Intervals do not overlap. Returning true.");
+        return true;
+    }
+
+    public boolean validateInInterval(Time time, List<Interval> existingIntervals) {
+        Log.d(IntervalValidator.class.getName(), "validateIsInInterval for time " + time);
+        int intervalDistance = context.getResources().getInteger(R.integer.suspension_interval_distance);
+        Time timeAfter = TimeUtil.addMinutes(time, intervalDistance);
+        Time timeBefore = TimeUtil.substractMinutes(time, intervalDistance);
+        Log.d(IntervalValidator.class.getName(), "time is " + time);
+        Log.d(IntervalValidator.class.getName(), "timeAfter is " + timeAfter);
+        Log.d(IntervalValidator.class.getName(), "timeBefore is " + timeBefore);
+        for (Interval existingInterval : existingIntervals) {
+            if (existingInterval.isInInterval(time) || existingInterval.isInInterval(timeAfter) || existingInterval.isInInterval(timeBefore)) {
+                Log.d(IntervalValidator.class.getName(), "time, timeAfter or timeBefore is in interval " + existingInterval + ". Returning false.");
+                return false;
+            }
+        }
+        Log.d(NetworkTaskValidator.class.getName(), "Time is in none of the intervals. Returning true.");
         return true;
     }
 }
