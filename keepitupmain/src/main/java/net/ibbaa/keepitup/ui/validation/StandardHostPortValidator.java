@@ -21,7 +21,7 @@ import android.content.Context;
 import net.ibbaa.keepitup.R;
 import net.ibbaa.keepitup.logging.Log;
 
-public class StandardHostPortValidator extends BaseValidator implements NetworkTaskValidator {
+public class StandardHostPortValidator extends BaseNetworkTaskValidator {
 
     public StandardHostPortValidator(Context context) {
         super(context);
