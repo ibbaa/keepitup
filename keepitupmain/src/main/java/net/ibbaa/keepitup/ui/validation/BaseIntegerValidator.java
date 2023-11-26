@@ -49,12 +49,12 @@ public abstract class BaseIntegerValidator {
         Log.d(BaseIntegerValidator.class.getName(), "validateIntNumber, parsed numeric value is " + numberValue);
         if (numberValue < minimum) {
             Log.d(BaseIntegerValidator.class.getName(), "Out of range. Value less than minimum of " + minimum);
-            String formattedMessage = String.format(getResources().getString(R.string.invalid_range_minimim), minimum);
+            String formattedMessage = getResources().getString(R.string.invalid_range_minimim, minimum);
             return new ValidationResult(false, field, formattedMessage);
         }
         if (numberValue > maximum) {
             Log.d(BaseIntegerValidator.class.getName(), "Out of range. Value greater than maximum of " + maximum);
-            String formattedMessage = String.format(getResources().getString(R.string.invalid_range_maximum), maximum);
+            String formattedMessage = getResources().getString(R.string.invalid_range_maximum, maximum);
             return new ValidationResult(false, field, formattedMessage);
         }
         Log.d(BaseIntegerValidator.class.getName(), "Validation successful");

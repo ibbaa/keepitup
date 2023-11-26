@@ -27,5 +27,7 @@
     <string name="invalid_file_name">No valid filename</string>
     <string name="invalid_range_minimim">Minimum: %d</string>
     <string name="invalid_range_maximum">Maximum: %d</string>
+    <string name="suspension_interval_overlap">Intervals must not overlap and must have a distance of at least %d minutes from each other</string>
+    <string name="suspension_interval_duration">Intervals must last at least %d minutes</string>
     <string name="validation_successful">Validation successful</string>
 </resources>
