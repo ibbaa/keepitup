@@ -21,7 +21,7 @@ import android.content.Context;
 import net.ibbaa.keepitup.R;
 import net.ibbaa.keepitup.logging.Log;
 
-public class URLValidator extends BaseValidator implements Validator {
+public class URLValidator extends BaseValidator implements NetworkTaskValidator {
 
     public URLValidator(Context context) {
         super(context);

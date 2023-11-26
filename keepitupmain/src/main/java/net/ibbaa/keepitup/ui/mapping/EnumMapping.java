@@ -23,8 +23,8 @@ import net.ibbaa.keepitup.R;
 import net.ibbaa.keepitup.logging.Log;
 import net.ibbaa.keepitup.model.AccessType;
 import net.ibbaa.keepitup.ui.dialog.ContextOption;
+import net.ibbaa.keepitup.ui.validation.NetworkTaskValidator;
 import net.ibbaa.keepitup.ui.validation.NullValidator;
-import net.ibbaa.keepitup.ui.validation.Validator;
 
 import java.lang.reflect.Constructor;
 
@@ -66,7 +66,7 @@ public class EnumMapping {
         return getResources().getString(getResources().getIdentifier(accessType.getClass().getSimpleName() + "_" + accessType.name() + "_port", "string", context.getPackageName()));
     }
 
-    public Validator getValidator(AccessType accessType) {
+    public NetworkTaskValidator getValidator(AccessType accessType) {
         Log.d(EnumMapping.class.getName(), "getValidator for access type " + accessType);
         if (accessType == null) {
             Log.d(EnumMapping.class.getName(), "returning NullValidator");
@@ -77,7 +77,7 @@ public class EnumMapping {
         try {
             Class<?> validatorClass = getContext().getClassLoader().loadClass(validatorClassName);
             Constructor<?> validatorClassConstructor = validatorClass.getConstructor(Context.class);
-            return (Validator) validatorClassConstructor.newInstance(getContext());
+            return (NetworkTaskValidator) validatorClassConstructor.newInstance(getContext());
         } catch (Throwable exc) {
             Log.e(EnumMapping.class.getName(), "Error instantiating validator class", exc);
         }

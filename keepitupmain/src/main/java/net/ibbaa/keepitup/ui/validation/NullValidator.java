@@ -22,7 +22,7 @@ import android.content.res.Resources;
 import net.ibbaa.keepitup.R;
 import net.ibbaa.keepitup.logging.Log;
 
-public class NullValidator implements Validator {
+public class NullValidator implements NetworkTaskValidator {
 
     private final Context context;
 

@@ -16,7 +16,7 @@
 
 package net.ibbaa.keepitup.ui.validation;
 
-public interface Validator {
+public interface NetworkTaskValidator {
 
     ValidationResult validateAddress(String address);
 
