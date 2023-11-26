@@ -42,7 +42,7 @@ public class FilenameFieldValidator implements FieldValidator {
         String failedMessage = getResources().getString(R.string.invalid_file_name);
         String successMessage = getResources().getString(R.string.validation_successful);
         if (StringUtil.isEmpty(value)) {
-            Log.d(HostFieldValidator.class.getName(), "No value specified.");
+            Log.d(FilenameFieldValidator.class.getName(), "No value specified.");
             if (allowEmpty) {
                 return new ValidationResult(true, field, successMessage);
             } else {
