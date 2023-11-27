@@ -47,21 +47,21 @@ public class StandardIntervalValidator implements IntervalValidator {
             int minDuration = context.getResources().getInteger(R.integer.suspension_interval_min_duration);
             message = context.getResources().getString(R.string.suspension_interval_duration, minDuration);
         }
-        return new ValidationResult(result, "", message);
+        return new ValidationResult(result, context.getResources().getString(R.string.suspension_interval_field_name), message);
     }
 
     @Override
     public ValidationResult validateOverlap(Interval interval) {
         boolean result = validator.validateOverlap(interval, existingIntervals);
         String message = getOverlapMessage(result);
-        return new ValidationResult(result, "", message);
+        return new ValidationResult(result, context.getResources().getString(R.string.suspension_interval_field_name), message);
     }
 
     @Override
     public ValidationResult validateInInterval(Time time) {
         boolean result = validator.validateInInterval(time, existingIntervals);
         String message = getOverlapMessage(result);
-        return new ValidationResult(result, "", message);
+        return new ValidationResult(result, context.getResources().getString(R.string.suspension_interval_field_name), message);
     }
 
     private String getOverlapMessage(boolean result) {
