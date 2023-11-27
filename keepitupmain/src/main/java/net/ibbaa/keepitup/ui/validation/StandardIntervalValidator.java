@@ -22,16 +22,19 @@ import net.ibbaa.keepitup.R;
 import net.ibbaa.keepitup.model.Interval;
 import net.ibbaa.keepitup.model.Time;
 
+import java.util.Collections;
 import java.util.List;
 
 public class StandardIntervalValidator implements IntervalValidator {
 
     private final net.ibbaa.keepitup.model.validation.IntervalValidator validator;
     private final Context context;
+    private final List<Interval> existingIntervals;
 
-    public StandardIntervalValidator(Context context) {
+    public StandardIntervalValidator(Context context, List<Interval> existingIntervals) {
         this.context = context;
         this.validator = new net.ibbaa.keepitup.model.validation.IntervalValidator(context);
+        this.existingIntervals = Collections.unmodifiableList(existingIntervals);
     }
 
     @Override
@@ -48,14 +51,14 @@ public class StandardIntervalValidator implements IntervalValidator {
     }
 
     @Override
-    public ValidationResult validateOverlap(Interval interval, List<Interval> existingIntervals) {
+    public ValidationResult validateOverlap(Interval interval) {
         boolean result = validator.validateOverlap(interval, existingIntervals);
         String message = getOverlapMessage(result);
         return new ValidationResult(result, "", message);
     }
 
     @Override
-    public ValidationResult validateInInterval(Time time, List<Interval> existingIntervals) {
+    public ValidationResult validateInInterval(Time time) {
         boolean result = validator.validateInInterval(time, existingIntervals);
         String message = getOverlapMessage(result);
         return new ValidationResult(result, "", message);

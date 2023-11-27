@@ -27,25 +27,19 @@ import net.ibbaa.keepitup.model.Interval;
 import net.ibbaa.keepitup.model.Time;
 import net.ibbaa.keepitup.test.mock.TestRegistry;
 
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.util.Arrays;
+import java.util.Collections;
 
 @SmallTest
 @RunWith(AndroidJUnit4.class)
 public class StandardIntervalValidatorTest {
 
-    private StandardIntervalValidator validator;
-
-    @Before
-    public void beforeEachTestMethod() {
-        validator = new StandardIntervalValidator(TestRegistry.getContext());
-    }
-
     @Test
     public void testValidateDuration() {
+        StandardIntervalValidator validator = new StandardIntervalValidator(TestRegistry.getContext(), Collections.emptyList());
         Interval interval = getInterval1();
         ValidationResult result = validator.validateDuration(interval);
         assertTrue(result.isValidationSuccessful());
@@ -61,24 +55,28 @@ public class StandardIntervalValidatorTest {
 
     @Test
     public void testValidateOverlap() {
+        StandardIntervalValidator validator = new StandardIntervalValidator(TestRegistry.getContext(), Arrays.asList(getInterval2(), getInterval3()));
         Interval interval1 = getInterval1();
-        ValidationResult result = validator.validateOverlap(interval1, Arrays.asList(getInterval2(), getInterval3()));
+        ValidationResult result = validator.validateOverlap(interval1);
         assertTrue(result.isValidationSuccessful());
         assertEquals("Validation successful", result.getMessage());
-        result = validator.validateOverlap(interval1, Arrays.asList(getInterval1(), getInterval2(), getInterval3()));
+        validator = new StandardIntervalValidator(TestRegistry.getContext(), Arrays.asList(getInterval1(), getInterval2(), getInterval3()));
+        result = validator.validateOverlap(interval1);
         assertFalse(result.isValidationSuccessful());
         assertEquals("Intervals must not overlap and must have a distance of at least 15 minutes from each other", result.getMessage());
     }
 
     @Test
     public void testValidateIsInInterval() {
+        StandardIntervalValidator validator = new StandardIntervalValidator(TestRegistry.getContext(), Arrays.asList(getInterval1(), getInterval2()));
         Time time = new Time();
         time.setHour(3);
         time.setMinute(30);
-        ValidationResult result = validator.validateInInterval(time, Arrays.asList(getInterval1(), getInterval2()));
+        ValidationResult result = validator.validateInInterval(time);
         assertTrue(result.isValidationSuccessful());
         assertEquals("Validation successful", result.getMessage());
-        result = validator.validateInInterval(time, Arrays.asList(getInterval1(), getInterval2(), getInterval3()));
+        validator = new StandardIntervalValidator(TestRegistry.getContext(), Arrays.asList(getInterval1(), getInterval2(), getInterval3()));
+        result = validator.validateInInterval(time);
         assertFalse(result.isValidationSuccessful());
         assertEquals("Intervals must not overlap and must have a distance of at least 15 minutes from each other", result.getMessage());
     }

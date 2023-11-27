@@ -19,13 +19,11 @@ package net.ibbaa.keepitup.ui.validation;
 import net.ibbaa.keepitup.model.Interval;
 import net.ibbaa.keepitup.model.Time;
 
-import java.util.List;
-
 public interface IntervalValidator {
 
     ValidationResult validateDuration(Interval interval);
 
-    ValidationResult validateOverlap(Interval interval, List<Interval> existingIntervals);
+    ValidationResult validateOverlap(Interval interval);
 
-    ValidationResult validateInInterval(Time time, List<Interval> existingIntervals);
+    ValidationResult validateInInterval(Time time);
 }
