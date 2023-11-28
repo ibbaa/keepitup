@@ -310,7 +310,7 @@ public class GlobalSettingsActivity extends SettingsInputActivity implements Sus
     private void showSuspensionIntervalsDialog(View view) {
         Log.d(GlobalSettingsActivity.class.getName(), "showSuspensionIntervalsDialog");
         SuspensionIntervalsDialog intervalsDialog = new SuspensionIntervalsDialog();
-        intervalsDialog.show(getSupportFragmentManager(), GlobalSettingsActivity.class.getName());
+        intervalsDialog.show(getSupportFragmentManager(), SuspensionIntervalsDialog.class.getName());
     }
 
     private void prepareDownloadExternalStorageOnOffText() {
@@ -519,7 +519,7 @@ public class GlobalSettingsActivity extends SettingsInputActivity implements Sus
         }
         Bundle bundle = BundleUtil.stringsToBundle(new String[]{fileChooseDialog.getFolderRootKey(), fileChooseDialog.getFolderKey(), fileChooseDialog.getFileModeKey(), fileChooseDialog.getTypeKey()}, new String[]{root, folder, FileChooseDialog.Mode.FOLDER.name(), FileChooseDialog.Type.DOWNLOADFOLDER.name()});
         fileChooseDialog.setArguments(bundle);
-        fileChooseDialog.show(getSupportFragmentManager(), GlobalSettingsActivity.class.getName());
+        fileChooseDialog.show(getSupportFragmentManager(), FileChooseDialog.class.getName());
     }
 
     private void showLogFolderChooseDialog(View view) {

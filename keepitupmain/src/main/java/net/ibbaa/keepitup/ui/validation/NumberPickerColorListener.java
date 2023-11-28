@@ -21,15 +21,18 @@ import android.widget.NumberPicker;
 
 import net.ibbaa.keepitup.logging.Log;
 
+import java.util.Collections;
+import java.util.List;
+
 public class NumberPickerColorListener implements NumberPicker.OnValueChangeListener {
 
-    private final NumberPicker numberPicker;
+    private final List<NumberPicker> numberPickers;
     private final ValidatorPredicate<NumberPicker> validator;
     private final int color;
     private final int errorColor;
 
-    public NumberPickerColorListener(NumberPicker numberPicker, ValidatorPredicate<NumberPicker> validator, int color, int errorColor) {
-        this.numberPicker = numberPicker;
+    public NumberPickerColorListener(List<NumberPicker> numberPickers, ValidatorPredicate<NumberPicker> validator, int color, int errorColor) {
+        this.numberPickers = Collections.unmodifiableList(numberPickers);
         this.validator = validator;
         this.color = color;
         this.errorColor = errorColor;
@@ -38,11 +41,18 @@ public class NumberPickerColorListener implements NumberPicker.OnValueChangeList
     @Override
     public void onValueChange(NumberPicker picker, int oldValue, int newValue) {
         Log.d(NumberPickerColorListener.class.getName(), "onValueChange, oldValue = " + oldValue + ", newValue = " + newValue);
+        if (validator.validate(picker)) {
+            setColor(color);
+        } else {
+            setColor(errorColor);
+        }
+    }
+
+    private void setColor(int colorToSet) {
+        Log.d(NumberPickerColorListener.class.getName(), "setColor, colorToSet = " + colorToSet);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            if (validator.validate(picker)) {
-                numberPicker.setTextColor(color);
-            } else {
-                numberPicker.setTextColor(errorColor);
+            for (NumberPicker numberPicker : numberPickers) {
+                numberPicker.setTextColor(colorToSet);
             }
         }
     }

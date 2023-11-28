@@ -61,6 +61,7 @@ import net.ibbaa.keepitup.test.matcher.ChildDescendantAtPositionMatcher;
 import net.ibbaa.keepitup.test.matcher.DrawableMatcher;
 import net.ibbaa.keepitup.test.matcher.GridLayoutPositionMatcher;
 import net.ibbaa.keepitup.test.matcher.ListSizeMatcher;
+import net.ibbaa.keepitup.test.matcher.NumberPickerColorMatcher;
 import net.ibbaa.keepitup.test.matcher.NumberPickerValueMatcher;
 import net.ibbaa.keepitup.test.matcher.TextColorMatcher;
 import net.ibbaa.keepitup.test.mock.TestRegistry;
@@ -237,6 +238,10 @@ public abstract class BaseUITest {
 
     public static Matcher<View> withTextColor(int expectedId) {
         return new TextColorMatcher(expectedId);
+    }
+
+    public static Matcher<View> withNumberPickerColor(int expectedId) {
+        return new NumberPickerColorMatcher(expectedId);
     }
 
     public static Matcher<View> withOverflowButton() {

@@ -29,19 +29,24 @@ import net.ibbaa.keepitup.test.mock.TestRegistry;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import java.util.Arrays;
+
 @SmallTest
 @RunWith(AndroidJUnit4.class)
 public class NumberPickerColorListenerTest {
 
     @Test
     public void testChangeTextColor() {
-        NumberPicker numberPicker = new NumberPicker(TestRegistry.getContext());
-        NumberPickerColorListener listener = new NumberPickerColorListener(numberPicker, this::validateTrue, Color.BLACK, Color.RED);
-        listener.onValueChange(numberPicker, 1, 0);
-        assertEquals(Color.BLACK, numberPicker.getTextColor());
-        listener = new NumberPickerColorListener(numberPicker, this::validateFalse, Color.BLACK, Color.RED);
-        listener.onValueChange(numberPicker, 1, 0);
-        assertEquals(Color.RED, numberPicker.getTextColor());
+        NumberPicker numberPicker1 = new NumberPicker(TestRegistry.getContext());
+        NumberPicker numberPicker2 = new NumberPicker(TestRegistry.getContext());
+        NumberPickerColorListener listener = new NumberPickerColorListener(Arrays.asList(numberPicker1, numberPicker2), this::validateTrue, Color.BLACK, Color.RED);
+        listener.onValueChange(numberPicker1, 1, 0);
+        assertEquals(Color.BLACK, numberPicker1.getTextColor());
+        assertEquals(Color.BLACK, numberPicker2.getTextColor());
+        listener = new NumberPickerColorListener(Arrays.asList(numberPicker1, numberPicker2), this::validateFalse, Color.BLACK, Color.RED);
+        listener.onValueChange(numberPicker2, 1, 0);
+        assertEquals(Color.RED, numberPicker1.getTextColor());
+        assertEquals(Color.RED, numberPicker2.getTextColor());
     }
 
     @SuppressWarnings({"SameReturnValue"})

@@ -31,7 +31,10 @@ import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.MediumTest;
 
 import net.ibbaa.keepitup.R;
+import net.ibbaa.keepitup.db.IntervalDAO;
+import net.ibbaa.keepitup.model.Interval;
 import net.ibbaa.keepitup.model.Time;
+import net.ibbaa.keepitup.test.mock.TestRegistry;
 import net.ibbaa.keepitup.ui.BaseUITest;
 import net.ibbaa.keepitup.ui.GlobalSettingsActivity;
 import net.ibbaa.keepitup.util.BundleUtil;
@@ -46,36 +49,41 @@ import org.junit.runner.RunWith;
 public class SuspensionIntervalAddDialogTest extends BaseUITest {
 
     private ActivityScenario<?> activityScenario;
+    private IntervalDAO intervalDAO;
 
     @Before
     public void beforeEachTestMethod() {
         super.beforeEachTestMethod();
-        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class);
+        intervalDAO = new IntervalDAO(TestRegistry.getContext());
+        intervalDAO.deleteAllIntervals();
     }
 
     @After
     public void afterEachTestMethod() {
         super.afterEachTestMethod();
-        activityScenario.close();
+        intervalDAO.deleteAllIntervals();
     }
 
     @Test
     public void testMode() {
-        openSuspensionIntervalDialog(SuspensionIntervalAddDialog.Mode.START, null);
+        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class);
+        openSuspensionIntervalAddDialog(SuspensionIntervalAddDialog.Mode.START, null);
         onView(isRoot()).perform(waitFor(500));
         onView(withId(R.id.textview_dialog_suspension_interval_add_label)).check(matches(withText("Add suspension interval")));
         onView(withId(R.id.textview_dialog_suspension_interval_add_time_label)).check(matches(withText("Start")));
         onView(withId(R.id.imageview_dialog_suspension_interval_add_cancel)).perform(click());
-        openSuspensionIntervalDialog(SuspensionIntervalAddDialog.Mode.END, null);
+        openSuspensionIntervalAddDialog(SuspensionIntervalAddDialog.Mode.END, null);
         onView(isRoot()).perform(waitFor(500));
         onView(withId(R.id.textview_dialog_suspension_interval_add_label)).check(matches(withText("Add suspension interval")));
         onView(withId(R.id.textview_dialog_suspension_interval_add_time_label)).check(matches(withText("End")));
         onView(withId(R.id.imageview_dialog_suspension_interval_add_cancel)).perform(click());
+        activityScenario.close();
     }
 
     @Test
     public void testModeScreenRotation() {
-        openSuspensionIntervalDialog(SuspensionIntervalAddDialog.Mode.END, null);
+        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class);
+        openSuspensionIntervalAddDialog(SuspensionIntervalAddDialog.Mode.END, null);
         onView(isRoot()).perform(waitFor(500));
         onView(withId(R.id.textview_dialog_suspension_interval_add_label)).check(matches(withText("Add suspension interval")));
         onView(withId(R.id.textview_dialog_suspension_interval_add_time_label)).check(matches(withText("End")));
@@ -86,22 +94,26 @@ public class SuspensionIntervalAddDialogTest extends BaseUITest {
         onView(withId(R.id.textview_dialog_suspension_interval_add_label)).check(matches(withText("Add suspension interval")));
         onView(withId(R.id.textview_dialog_suspension_interval_add_time_label)).check(matches(withText("End")));
         onView(withId(R.id.imageview_dialog_suspension_interval_add_cancel)).perform(click());
+        activityScenario.close();
     }
 
     @Test
     public void testDefaultTimeNotProvided() {
-        SuspensionIntervalAddDialog intervalAddDialog = openSuspensionIntervalDialog(SuspensionIntervalAddDialog.Mode.END, null);
+        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class);
+        SuspensionIntervalAddDialog intervalAddDialog = openSuspensionIntervalAddDialog(SuspensionIntervalAddDialog.Mode.END, null);
         onView(isRoot()).perform(waitFor(500));
         onView(withId(R.id.picker_dialog_suspension_interval_add_time_hour)).check(matches(withValue(22)));
         onView(withId(R.id.picker_dialog_suspension_interval_add_time_minute)).check(matches(withValue(0)));
         Time time = intervalAddDialog.getSelectedTime();
         assertEquals(22, time.getHour());
         assertEquals(0, time.getMinute());
+        activityScenario.close();
     }
 
     @Test
     public void testDefaultTimeNotProvidedScreenRotation() {
-        SuspensionIntervalAddDialog intervalAddDialog = openSuspensionIntervalDialog(SuspensionIntervalAddDialog.Mode.START, null);
+        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class);
+        SuspensionIntervalAddDialog intervalAddDialog = openSuspensionIntervalAddDialog(SuspensionIntervalAddDialog.Mode.START, null);
         onView(isRoot()).perform(waitFor(500));
         onView(withId(R.id.picker_dialog_suspension_interval_add_time_hour)).check(matches(withValue(22)));
         onView(withId(R.id.picker_dialog_suspension_interval_add_time_minute)).check(matches(withValue(0)));
@@ -123,14 +135,16 @@ public class SuspensionIntervalAddDialogTest extends BaseUITest {
         assertEquals(22, time.getHour());
         assertEquals(0, time.getMinute());
         onView(withId(R.id.imageview_dialog_suspension_interval_add_cancel)).perform(click());
+        activityScenario.close();
     }
 
     @Test
     public void testDefaultTimeProvided() {
+        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class);
         Time defaultTime = new Time();
         defaultTime.setHour(12);
         defaultTime.setMinute(34);
-        SuspensionIntervalAddDialog intervalAddDialog = openSuspensionIntervalDialog(SuspensionIntervalAddDialog.Mode.START, defaultTime);
+        SuspensionIntervalAddDialog intervalAddDialog = openSuspensionIntervalAddDialog(SuspensionIntervalAddDialog.Mode.START, defaultTime);
         onView(isRoot()).perform(waitFor(500));
         onView(withId(R.id.picker_dialog_suspension_interval_add_time_hour)).check(matches(withValue(12)));
         onView(withId(R.id.picker_dialog_suspension_interval_add_time_minute)).check(matches(withValue(34)));
@@ -152,14 +166,16 @@ public class SuspensionIntervalAddDialogTest extends BaseUITest {
         assertEquals(12, time.getHour());
         assertEquals(34, time.getMinute());
         onView(withId(R.id.imageview_dialog_suspension_interval_add_cancel)).perform(click());
+        activityScenario.close();
     }
 
     @Test
     public void testDefaultTimeProvidedScreenRotation() {
+        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class);
         Time defaultTime = new Time();
         defaultTime.setHour(23);
         defaultTime.setMinute(45);
-        SuspensionIntervalAddDialog intervalAddDialog = openSuspensionIntervalDialog(SuspensionIntervalAddDialog.Mode.START, defaultTime);
+        openSuspensionIntervalAddDialog(SuspensionIntervalAddDialog.Mode.START, defaultTime);
         onView(isRoot()).perform(waitFor(500));
         onView(withId(R.id.picker_dialog_suspension_interval_add_time_hour)).check(matches(withValue(23)));
         onView(withId(R.id.picker_dialog_suspension_interval_add_time_minute)).check(matches(withValue(45)));
@@ -167,7 +183,8 @@ public class SuspensionIntervalAddDialogTest extends BaseUITest {
 
     @Test
     public void testTimeSelected() {
-        SuspensionIntervalAddDialog intervalAddDialog = openSuspensionIntervalDialog(SuspensionIntervalAddDialog.Mode.START, null);
+        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class);
+        SuspensionIntervalAddDialog intervalAddDialog = openSuspensionIntervalAddDialog(SuspensionIntervalAddDialog.Mode.START, null);
         onView(isRoot()).perform(waitFor(500));
         onView(withId(R.id.picker_dialog_suspension_interval_add_time_hour)).perform(setNumber(0));
         onView(withId(R.id.picker_dialog_suspension_interval_add_time_minute)).perform(setNumber(0));
@@ -177,11 +194,13 @@ public class SuspensionIntervalAddDialogTest extends BaseUITest {
         assertEquals(0, time.getHour());
         assertEquals(0, time.getMinute());
         onView(withId(R.id.imageview_dialog_suspension_interval_add_cancel)).perform(click());
+        activityScenario.close();
     }
 
     @Test
     public void testTimeSelectedScreenRotation() {
-        SuspensionIntervalAddDialog intervalAddDialog = openSuspensionIntervalDialog(SuspensionIntervalAddDialog.Mode.START, null);
+        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class);
+        SuspensionIntervalAddDialog intervalAddDialog = openSuspensionIntervalAddDialog(SuspensionIntervalAddDialog.Mode.START, null);
         onView(isRoot()).perform(waitFor(500));
         onView(withId(R.id.picker_dialog_suspension_interval_add_time_hour)).perform(setNumber(23));
         onView(withId(R.id.picker_dialog_suspension_interval_add_time_minute)).perform(setNumber(59));
@@ -205,9 +224,35 @@ public class SuspensionIntervalAddDialogTest extends BaseUITest {
         assertEquals(23, time.getHour());
         assertEquals(59, time.getMinute());
         onView(withId(R.id.imageview_dialog_suspension_interval_add_cancel)).perform(click());
+        activityScenario.close();
     }
 
-    private SuspensionIntervalAddDialog openSuspensionIntervalDialog(SuspensionIntervalAddDialog.Mode mode, Time time) {
+    @Test
+    public void testTimeSelectedNumberPickerColorStart() {
+        /*activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class);
+        intervalDAO.insertInterval(getInterval1());
+        intervalDAO.insertInterval(getInterval2());
+        SuspensionIntervalsDialog intervalsDialog = openSuspensionIntervalsDialog();
+        SuspensionIntervalAddDialog intervalAddDialog = openSuspensionIntervalAddDialog(SuspensionIntervalAddDialog.Mode.START, null);
+        onView(isRoot()).perform(waitFor(500));
+        onView(withId(R.id.picker_dialog_suspension_interval_add_time_hour)).check(matches(withNumberPickerColor(R.color.textColor)));
+        onView(withId(R.id.picker_dialog_suspension_interval_add_time_minute)).check(matches(withNumberPickerColor(R.color.textColor)));
+        onView(withId(R.id.picker_dialog_suspension_interval_add_time_hour)).perform(setNumber(11));
+        onView(withId(R.id.picker_dialog_suspension_interval_add_time_minute)).perform(setNumber(15));
+        onView(withId(R.id.picker_dialog_suspension_interval_add_time_hour)).check(matches(withNumberPickerColor(R.color.textErrorColor)));
+        onView(withId(R.id.picker_dialog_suspension_interval_add_time_minute)).check(matches(withNumberPickerColor(R.color.textErrorColor)));
+        onView(withId(R.id.imageview_dialog_suspension_interval_add_cancel)).perform(click());
+        intervalsDialog.dismiss();
+        activityScenario.close();*/
+    }
+
+    private SuspensionIntervalsDialog openSuspensionIntervalsDialog() {
+        SuspensionIntervalsDialog intervalsDialog = new SuspensionIntervalsDialog();
+        intervalsDialog.show(getActivity(activityScenario).getSupportFragmentManager(), SuspensionIntervalsDialog.class.getName());
+        return intervalsDialog;
+    }
+
+    private SuspensionIntervalAddDialog openSuspensionIntervalAddDialog(SuspensionIntervalAddDialog.Mode mode, Time time) {
         SuspensionIntervalAddDialog intervalAddDialog = new SuspensionIntervalAddDialog();
         Bundle bundle = BundleUtil.stringToBundle(intervalAddDialog.getModeKey(), mode.name());
         if (time != null) {
@@ -217,5 +262,33 @@ public class SuspensionIntervalAddDialogTest extends BaseUITest {
         intervalAddDialog.show(getActivity(activityScenario).getSupportFragmentManager(), SuspensionIntervalAddDialog.class.getName());
         onView(isRoot()).perform(waitFor(500));
         return intervalAddDialog;
+    }
+
+    private Interval getInterval1() {
+        Interval interval = new Interval();
+        interval.setId(0);
+        Time start = new Time();
+        start.setHour(10);
+        start.setMinute(11);
+        interval.setStart(start);
+        Time end = new Time();
+        end.setHour(11);
+        end.setMinute(12);
+        interval.setEnd(end);
+        return interval;
+    }
+
+    private Interval getInterval2() {
+        Interval interval = new Interval();
+        interval.setId(0);
+        Time start = new Time();
+        start.setHour(1);
+        start.setMinute(1);
+        interval.setStart(start);
+        Time end = new Time();
+        end.setHour(2);
+        end.setMinute(2);
+        interval.setEnd(end);
+        return interval;
     }
 }

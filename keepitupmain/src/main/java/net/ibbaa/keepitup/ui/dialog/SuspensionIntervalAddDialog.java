@@ -17,6 +17,7 @@
 package net.ibbaa.keepitup.ui.dialog;
 
 import android.app.Activity;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -26,6 +27,7 @@ import android.widget.NumberPicker;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 
@@ -33,9 +35,12 @@ import net.ibbaa.keepitup.R;
 import net.ibbaa.keepitup.logging.Log;
 import net.ibbaa.keepitup.model.Time;
 import net.ibbaa.keepitup.ui.SuspensionIntervalAddSupport;
+import net.ibbaa.keepitup.ui.validation.IntervalValidator;
+import net.ibbaa.keepitup.ui.validation.NumberPickerColorListener;
 import net.ibbaa.keepitup.util.BundleUtil;
 import net.ibbaa.keepitup.util.StringUtil;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
@@ -96,7 +101,7 @@ public class SuspensionIntervalAddDialog extends DialogFragment {
     }
 
     private Time getDefaultTime() {
-        Log.d(SuspensionIntervalAddDialog.class.getName(), "getDefaultInterval");
+        Log.d(SuspensionIntervalAddDialog.class.getName(), "getDefaultTime");
         Bundle bundle = BundleUtil.bundleFromBundle(getDefaultTimeKey(), requireArguments());
         if (bundle == null) {
             Log.d(SuspensionIntervalAddDialog.class.getName(), "no default time settings provided");
@@ -107,7 +112,19 @@ public class SuspensionIntervalAddDialog extends DialogFragment {
             return time;
         }
         Time time = new Time(bundle);
-        Log.d(SuspensionIntervalAddDialog.class.getName(), "Deafult time settings provided: " + time);
+        Log.d(SuspensionIntervalAddDialog.class.getName(), "Default time settings provided: " + time);
+        return time;
+    }
+
+    private Time getStartTime() {
+        Log.d(SuspensionIntervalAddDialog.class.getName(), "getStartTime");
+        Bundle bundle = BundleUtil.bundleFromBundle(getStartTimeKey(), requireArguments());
+        if (bundle == null) {
+            Log.d(SuspensionIntervalAddDialog.class.getName(), "Start time is null");
+            return null;
+        }
+        Time time = new Time(bundle);
+        Log.d(SuspensionIntervalAddDialog.class.getName(), "Start time: " + time);
         return time;
     }
 
@@ -139,6 +156,29 @@ public class SuspensionIntervalAddDialog extends DialogFragment {
             timeHourPicker.setValue(time.getHour());
             timeMinutePicker.setValue(time.getMinute());
         }
+        prepareNumberPickerColorListener();
+        setNumberPickerColor();
+    }
+
+    private void setNumberPickerColor() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            if (validateInInterval(timeHourPicker)) {
+                timeHourPicker.setTextColor(getColor(R.color.textColor));
+                timeMinutePicker.setTextColor(getColor(R.color.textColor));
+            } else {
+                timeHourPicker.setTextColor(getColor(R.color.textErrorColor));
+                timeMinutePicker.setTextColor(getColor(R.color.textErrorColor));
+            }
+        }
+    }
+
+    private void prepareNumberPickerColorListener() {
+        Log.d(SuspensionIntervalAddDialog.class.getName(), "prepareNumberPickerColorListener");
+        if (Mode.START.equals(getMode())) {
+            NumberPickerColorListener colorListener = new NumberPickerColorListener(Arrays.asList(timeHourPicker, timeMinutePicker), this::validateInInterval, getColor(R.color.textColor), getColor(R.color.textErrorColor));
+            timeHourPicker.setOnValueChangedListener(colorListener);
+            timeMinutePicker.setOnValueChangedListener(colorListener);
+        }
     }
 
     private void prepareOkCancelImageButtons() {
@@ -157,6 +197,10 @@ public class SuspensionIntervalAddDialog extends DialogFragment {
         return SuspensionIntervalAddDialog.Mode.class.getSimpleName() + "DefaultTime";
     }
 
+    public String getStartTimeKey() {
+        return SuspensionIntervalAddDialog.Mode.class.getSimpleName() + "StartTime";
+    }
+
     public String getSavedTimeKey() {
         return SuspensionIntervalAddDialog.Mode.class.getSimpleName() + "SavedTime";
     }
@@ -166,6 +210,16 @@ public class SuspensionIntervalAddDialog extends DialogFragment {
         time.setHour(timeHourPicker.getValue());
         time.setMinute(timeMinutePicker.getValue());
         return time;
+    }
+
+    private boolean validateInInterval(NumberPicker picker) {
+        Log.d(SuspensionIntervalAddDialog.class.getName(), "validateInInterval");
+        IntervalValidator validator = getIntervalValidator();
+        if (validator == null) {
+            Log.d(SuspensionIntervalAddDialog.class.getName(), "validateInInterval, validator is null");
+            return true;
+        }
+        return validator.validateInInterval(getSelectedTime()).isValidationSuccessful();
     }
 
     private void onOkClicked(View view) {
@@ -211,5 +265,32 @@ public class SuspensionIntervalAddDialog extends DialogFragment {
             return null;
         }
         return (SuspensionIntervalAddSupport) activity;
+    }
+
+    private IntervalValidator getIntervalValidator() {
+        Log.d(SuspensionIntervalsDialog.class.getName(), "getIntervalValidator");
+        List<Fragment> fragments = getParentFragmentManager().getFragments();
+        if (fragments != null) {
+            for (Fragment fragment : fragments) {
+                if (fragment instanceof IntervalValidator) {
+                    return (IntervalValidator) fragment;
+                }
+            }
+        }
+        Log.d(SuspensionIntervalsDialog.class.getName(), "getIntervalValidator, no parent fragment implementing " + IntervalValidator.class.getSimpleName());
+        Activity activity = getActivity();
+        if (activity == null) {
+            Log.e(SuspensionIntervalsDialog.class.getName(), "getIntervalValidator, activity is null");
+            return null;
+        }
+        if (!(activity instanceof IntervalValidator)) {
+            Log.e(ConfirmDialog.class.getName(), "getIntervalValidator, activity is not an instance of " + IntervalValidator.class.getSimpleName());
+            return null;
+        }
+        return (IntervalValidator) activity;
+    }
+
+    private int getColor(int colorid) {
+        return ContextCompat.getColor(requireContext(), colorid);
     }
 }

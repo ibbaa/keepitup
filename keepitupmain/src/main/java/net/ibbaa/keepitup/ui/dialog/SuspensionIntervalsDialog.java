@@ -39,6 +39,9 @@ import net.ibbaa.keepitup.ui.SettingsInputActivity;
 import net.ibbaa.keepitup.ui.SuspensionIntervalAddSupport;
 import net.ibbaa.keepitup.ui.SuspensionIntervalsSupport;
 import net.ibbaa.keepitup.ui.adapter.SuspensionIntervalAdapter;
+import net.ibbaa.keepitup.ui.validation.IntervalValidator;
+import net.ibbaa.keepitup.ui.validation.StandardIntervalValidator;
+import net.ibbaa.keepitup.ui.validation.ValidationResult;
 import net.ibbaa.keepitup.util.BundleUtil;
 import net.ibbaa.keepitup.util.TimeUtil;
 
@@ -46,7 +49,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
-public class SuspensionIntervalsDialog extends DialogFragment implements ConfirmSupport, SuspensionIntervalAddSupport {
+public class SuspensionIntervalsDialog extends DialogFragment implements ConfirmSupport, SuspensionIntervalAddSupport, IntervalValidator {
 
     private View dialogView;
     private RecyclerView suspensionIntervalsRecyclerView;
@@ -210,7 +213,7 @@ public class SuspensionIntervalsDialog extends DialogFragment implements Confirm
             currentInterval.setStart(start);
             currentInterval.setEnd(end);
             intervalAddDialog.dismiss();
-            showSuspensionIntervallAddDialog(SuspensionIntervalAddDialog.Mode.END, end);
+            showSuspensionIntervallAddDialog(SuspensionIntervalAddDialog.Mode.END, end, start);
         } else {
             currentInterval.setEnd(intervalAddDialog.getSelectedTime());
             intervalAddDialog.dismiss();
@@ -231,9 +234,30 @@ public class SuspensionIntervalsDialog extends DialogFragment implements Confirm
         intervalAddDialog.dismiss();
     }
 
+    @Override
+    public ValidationResult validateDuration(Interval interval) {
+        Log.d(SuspensionIntervalsDialog.class.getName(), "validateDuration for interval " + interval);
+        IntervalValidator validator = new StandardIntervalValidator(getContext(), getAdapter().getAllItems());
+        return validator.validateDuration(interval);
+    }
+
+    @Override
+    public ValidationResult validateOverlap(Interval interval) {
+        Log.d(SuspensionIntervalsDialog.class.getName(), "validateOverlap for interval " + interval);
+        IntervalValidator validator = new StandardIntervalValidator(getContext(), getAdapter().getAllItems());
+        return validator.validateOverlap(interval);
+    }
+
+    @Override
+    public ValidationResult validateInInterval(Time time) {
+        Log.d(SuspensionIntervalsDialog.class.getName(), "validateInInterval for time " + time);
+        IntervalValidator validator = new StandardIntervalValidator(getContext(), getAdapter().getAllItems());
+        return validator.validateInInterval(time);
+    }
+
     private void onIntervalAddClicked(View view) {
         Log.d(SuspensionIntervalsDialog.class.getName(), "onIntervalAddClicked");
-        showSuspensionIntervallAddDialog(SuspensionIntervalAddDialog.Mode.START, currentInterval.getStart());
+        showSuspensionIntervallAddDialog(SuspensionIntervalAddDialog.Mode.START, currentInterval.getStart(), null);
     }
 
     private void onOkClicked(View view) {
@@ -312,11 +336,14 @@ public class SuspensionIntervalsDialog extends DialogFragment implements Confirm
     }
 
 
-    private void showSuspensionIntervallAddDialog(SuspensionIntervalAddDialog.Mode mode, Time defaultTime) {
+    private void showSuspensionIntervallAddDialog(SuspensionIntervalAddDialog.Mode mode, Time defaultTime, Time startTime) {
         Log.d(SuspensionIntervalsDialog.class.getName(), "showSuspensionIntervallAddDialog with mode " + mode + " and defaultTime " + defaultTime);
         SuspensionIntervalAddDialog intervalAddDialog = new SuspensionIntervalAddDialog();
         Bundle bundle = BundleUtil.stringToBundle(intervalAddDialog.getModeKey(), mode.name());
         bundle = BundleUtil.bundleToBundle(intervalAddDialog.getDefaultTimeKey(), defaultTime.toBundle(), bundle);
+        if (startTime != null) {
+            bundle = BundleUtil.bundleToBundle(intervalAddDialog.getStartTimeKey(), startTime.toBundle(), bundle);
+        }
         intervalAddDialog.setArguments(bundle);
         showDialog(intervalAddDialog, SuspensionIntervalAddDialog.class.getName());
     }
