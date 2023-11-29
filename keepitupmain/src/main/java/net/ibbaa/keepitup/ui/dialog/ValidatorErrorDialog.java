@@ -59,6 +59,18 @@ public class ValidatorErrorDialog extends DialogFragment {
         return ValidatorErrorDialog.class.getSimpleName() + "ValidationResult";
     }
 
+    public String getMessageWidthKey() {
+        return ValidatorErrorDialog.class.getSimpleName() + "MessageWidth";
+    }
+
+    public int getMessageWidth() {
+        if (requireArguments().containsKey(getMessageWidthKey())) {
+            return BundleUtil.integerFromBundle(getMessageWidthKey(), requireArguments());
+        }
+        return GridLayout.LayoutParams.WRAP_CONTENT;
+    }
+
+
     private void prepareErrorMessages(View view, List<ValidationResult> resultList) {
         Log.d(ValidatorErrorDialog.class.getName(), "prepareErrorMessages");
         GridLayout gridLayout = view.findViewById(R.id.gridlayout_dialog_validator_error);
@@ -73,8 +85,8 @@ public class ValidatorErrorDialog extends DialogFragment {
             labelTextParams.height = GridLayout.LayoutParams.WRAP_CONTENT;
             labelTextParams.width = GridLayout.LayoutParams.WRAP_CONTENT;
             labelTextParams.setGravity(Gravity.CENTER);
-            labelTextParams.rightMargin = getResources().getDimensionPixelSize(R.dimen.textview_dialog_network_task_validator_error_label_margin_right);
-            labelTextParams.topMargin = getResources().getDimensionPixelSize(R.dimen.textview_dialog_network_task_validator_error_label_margin_top);
+            labelTextParams.rightMargin = getResources().getDimensionPixelSize(R.dimen.textview_dialog_validator_error_label_margin_right);
+            labelTextParams.topMargin = getResources().getDimensionPixelSize(R.dimen.textview_dialog_validator_error_label_margin_top);
             labelTextParams.columnSpec = GridLayout.spec(0, 1, GridLayout.LEFT);
             labelTextParams.rowSpec = GridLayout.spec(ii + 1, 1, GridLayout.LEFT);
             gridLayout.addView(labelText, labelTextParams);
@@ -84,10 +96,10 @@ public class ValidatorErrorDialog extends DialogFragment {
             messageText.setTypeface(null, Typeface.NORMAL);
             GridLayout.LayoutParams messageTextParams = new GridLayout.LayoutParams();
             messageTextParams.height = GridLayout.LayoutParams.WRAP_CONTENT;
-            messageTextParams.width = GridLayout.LayoutParams.WRAP_CONTENT;
+            messageTextParams.width = getMessageWidth();
             messageTextParams.setGravity(Gravity.CENTER);
-            messageTextParams.leftMargin = getResources().getDimensionPixelSize(R.dimen.textview_dialog_network_task_validator_error_message_margin_left);
-            messageTextParams.topMargin = getResources().getDimensionPixelSize(R.dimen.textview_dialog_network_task_validator_error_message_margin_top);
+            messageTextParams.leftMargin = getResources().getDimensionPixelSize(R.dimen.textview_dialog_validator_error_message_margin_left);
+            messageTextParams.topMargin = getResources().getDimensionPixelSize(R.dimen.textview_dialog_validator_error_message_margin_top);
             messageTextParams.columnSpec = GridLayout.spec(1, 1, GridLayout.LEFT);
             messageTextParams.rowSpec = GridLayout.spec(ii + 1, 1, GridLayout.LEFT);
             gridLayout.addView(messageText, messageTextParams);
@@ -103,7 +115,7 @@ public class ValidatorErrorDialog extends DialogFragment {
         okImageParams.columnSpec = GridLayout.spec(0, 2, GridLayout.CENTER);
         okImageParams.rowSpec = GridLayout.spec(row, 1, GridLayout.CENTER);
         okImageParams.setGravity(Gravity.CENTER);
-        okImageParams.topMargin = getResources().getDimensionPixelSize(R.dimen.imageview_dialog_network_task_validator_error_ok_margin_top);
+        okImageParams.topMargin = getResources().getDimensionPixelSize(R.dimen.imageview_dialog_validator_error_ok_margin_top);
         okImage.setLayoutParams(okImageParams);
         okImage.setOnClickListener(this::onOkClicked);
     }

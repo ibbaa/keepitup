@@ -16,11 +16,12 @@
 
 <resources>
     <dimen name="gridlayout_dialog_validator_error_padding">20dp</dimen>
-    <dimen name="textview_dialog_network_task_validator_error_title_margin_bottom">15dp</dimen>
-    <dimen name="imageview_dialog_network_task_validator_error_ok_margin_top">5dp</dimen>
-    <dimen name="textview_dialog_network_task_validator_error_label_margin_top">3dp</dimen>
-    <dimen name="textview_dialog_network_task_validator_error_label_margin_right">5dp</dimen>
-    <dimen name="textview_dialog_network_task_validator_error_message_margin_top">3dp</dimen>
-    <dimen name="textview_dialog_network_task_validator_error_message_margin_left">5dp</dimen>
+    <dimen name="textview_dialog_alidator_error_title_margin_bottom">15dp</dimen>
+    <dimen name="imageview_dialog_validator_error_ok_margin_top">5dp</dimen>
+    <dimen name="textview_dialog_validator_error_label_margin_top">3dp</dimen>
+    <dimen name="textview_dialog_validator_error_label_margin_right">5dp</dimen>
+    <dimen name="textview_dialog_validator_error_message_margin_top">3dp</dimen>
+    <dimen name="textview_dialog_validator_error_message_margin_left">5dp</dimen>
+    <dimen name="textview_dialog_validator_error_message_width">200dp</dimen>
     <dimen name="imageview_dialog_validator_error_ok_padding_top">10dp</dimen>
 </resources>

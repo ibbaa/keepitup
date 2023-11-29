@@ -32,7 +32,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:layout_marginBottom="@dimen/textview_dialog_network_task_validator_error_title_margin_bottom"
+            android:layout_marginBottom="@dimen/textview_dialog_alidator_error_title_margin_bottom"
             android:textStyle="bold"
             android:layout_row="0"
             android:layout_column="0"

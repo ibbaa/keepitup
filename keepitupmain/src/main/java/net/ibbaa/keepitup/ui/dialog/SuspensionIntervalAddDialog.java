@@ -33,13 +33,16 @@ import androidx.fragment.app.Fragment;
 
 import net.ibbaa.keepitup.R;
 import net.ibbaa.keepitup.logging.Log;
+import net.ibbaa.keepitup.model.Interval;
 import net.ibbaa.keepitup.model.Time;
 import net.ibbaa.keepitup.ui.SuspensionIntervalAddSupport;
 import net.ibbaa.keepitup.ui.validation.IntervalValidator;
 import net.ibbaa.keepitup.ui.validation.NumberPickerColorListener;
+import net.ibbaa.keepitup.ui.validation.ValidationResult;
 import net.ibbaa.keepitup.util.BundleUtil;
 import net.ibbaa.keepitup.util.StringUtil;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
@@ -55,6 +58,7 @@ public class SuspensionIntervalAddDialog extends DialogFragment {
     private TextView timeLabelTextView;
     private NumberPicker timeHourPicker;
     private NumberPicker timeMinutePicker;
+    private NumberPickerColorListener colorListener;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -161,8 +165,11 @@ public class SuspensionIntervalAddDialog extends DialogFragment {
     }
 
     private void setNumberPickerColor() {
+        Log.d(SuspensionIntervalAddDialog.class.getName(), "setNumberPickerColor");
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            if (validateInInterval(timeHourPicker)) {
+            boolean success = Mode.START.equals(getMode()) ? validateInInterval(timeHourPicker) : validateOverlapAndDuration(timeHourPicker);
+            Log.d(SuspensionIntervalAddDialog.class.getName(), "validation successful: " + success);
+            if (success) {
                 timeHourPicker.setTextColor(getColor(R.color.textColor));
                 timeMinutePicker.setTextColor(getColor(R.color.textColor));
             } else {
@@ -175,7 +182,11 @@ public class SuspensionIntervalAddDialog extends DialogFragment {
     private void prepareNumberPickerColorListener() {
         Log.d(SuspensionIntervalAddDialog.class.getName(), "prepareNumberPickerColorListener");
         if (Mode.START.equals(getMode())) {
-            NumberPickerColorListener colorListener = new NumberPickerColorListener(Arrays.asList(timeHourPicker, timeMinutePicker), this::validateInInterval, getColor(R.color.textColor), getColor(R.color.textErrorColor));
+            colorListener = new NumberPickerColorListener(Arrays.asList(timeHourPicker, timeMinutePicker), this::validateInInterval, getColor(R.color.textColor), getColor(R.color.textErrorColor));
+            timeHourPicker.setOnValueChangedListener(colorListener);
+            timeMinutePicker.setOnValueChangedListener(colorListener);
+        } else {
+            colorListener = new NumberPickerColorListener(Arrays.asList(timeHourPicker, timeMinutePicker), this::validateOverlapAndDuration, getColor(R.color.textColor), getColor(R.color.textErrorColor));
             timeHourPicker.setOnValueChangedListener(colorListener);
             timeMinutePicker.setOnValueChangedListener(colorListener);
         }
@@ -214,16 +225,90 @@ public class SuspensionIntervalAddDialog extends DialogFragment {
 
     private boolean validateInInterval(NumberPicker picker) {
         Log.d(SuspensionIntervalAddDialog.class.getName(), "validateInInterval");
+        ValidationResult validateInInterval = validateInInterval();
+        Log.d(SuspensionIntervalAddDialog.class.getName(), "validateInInterval, validateInInterval result = " + validateInInterval);
+        if (validateInInterval == null) {
+            return true;
+        }
+        return validateInInterval.isValidationSuccessful();
+    }
+
+    private boolean validateOverlapAndDuration(NumberPicker picker) {
+        Log.d(SuspensionIntervalAddDialog.class.getName(), "validateOverlapAndDuration");
+        ValidationResult validateOverlap = validateOverlap();
+        ValidationResult validateDuration = validateDuration();
+        Log.d(SuspensionIntervalAddDialog.class.getName(), "validateOverlapAndDuration, validateOverlap result = " + validateOverlap);
+        Log.d(SuspensionIntervalAddDialog.class.getName(), "validateOverlapAndDuration, validateDuration result = " + validateDuration);
+        if (validateOverlap == null || validateDuration == null) {
+            return true;
+        }
+        return validateOverlap.isValidationSuccessful() && validateDuration.isValidationSuccessful();
+    }
+
+    private Interval createIntervalFromSelectedTime() {
+        Log.d(SuspensionIntervalAddDialog.class.getName(), "createIntervalFromSelectedTime");
+        Interval interval = new Interval();
+        Time start = getStartTime();
+        if (start == null) {
+            Log.e(SuspensionIntervalAddDialog.class.getName(), "createIntervalFromSelectedTime, start time is null");
+            return null;
+        }
+        Time end = getSelectedTime();
+        interval.setStart(start);
+        interval.setEnd(end);
+        return interval;
+    }
+
+    private ValidationResult validateInInterval() {
+        Log.d(SuspensionIntervalAddDialog.class.getName(), "validateInInterval");
         IntervalValidator validator = getIntervalValidator();
         if (validator == null) {
             Log.d(SuspensionIntervalAddDialog.class.getName(), "validateInInterval, validator is null");
-            return true;
+            return null;
         }
-        return validator.validateInInterval(getSelectedTime()).isValidationSuccessful();
+        return validator.validateInInterval(getSelectedTime());
+    }
+
+    private ValidationResult validateDuration() {
+        return validate(IntervalValidator::validateDuration);
+    }
+
+    private ValidationResult validateOverlap() {
+        return validate(IntervalValidator::validateOverlap);
+    }
+
+    private ValidationResult validate(Validator validator) {
+        Log.d(SuspensionIntervalAddDialog.class.getName(), "validate");
+        IntervalValidator intervalvalidator = getIntervalValidator();
+        if (validator == null) {
+            Log.d(SuspensionIntervalAddDialog.class.getName(), "validate, validator is null");
+            return null;
+        }
+        Interval interval = createIntervalFromSelectedTime();
+        if (interval == null) {
+            Log.d(SuspensionIntervalAddDialog.class.getName(), "validate, interval is null");
+            return null;
+        }
+        return validator.validate(intervalvalidator, interval);
     }
 
     private void onOkClicked(View view) {
         Log.d(SuspensionIntervalAddDialog.class.getName(), "onOkClicked");
+        ValidationResult validateOverlap = validateOverlap();
+        ValidationResult validateDuration = validateDuration();
+        Log.d(SuspensionIntervalAddDialog.class.getName(), "validateOverlapAndDuration, validateOverlap result = " + validateOverlap);
+        Log.d(SuspensionIntervalAddDialog.class.getName(), "validateOverlapAndDuration, validateDuration result = " + validateDuration);
+        List<ValidationResult> resultList = new ArrayList<>();
+        if (validateOverlap != null && !validateOverlap.isValidationSuccessful()) {
+            resultList.add(validateOverlap);
+        }
+        if (validateDuration != null && !validateDuration.isValidationSuccessful()) {
+            resultList.add(validateDuration);
+        }
+        if (!resultList.isEmpty()) {
+            showValidatorErrorDialog(resultList);
+            return;
+        }
         SuspensionIntervalAddSupport intervalAddSupport = getSuspensionIntervalAddSupport();
         if (intervalAddSupport != null) {
             intervalAddSupport.onSuspensionIntervalAddDialogOkClicked(this, getMode());
@@ -242,6 +327,15 @@ public class SuspensionIntervalAddDialog extends DialogFragment {
             Log.e(SuspensionIntervalAddDialog.class.getName(), "intervalAddSupport is null");
             dismiss();
         }
+    }
+
+    private void showValidatorErrorDialog(List<ValidationResult> validationResult) {
+        Log.d(SuspensionIntervalAddDialog.class.getName(), "showValidatorErrorDialog");
+        ValidatorErrorDialog errorDialog = new ValidatorErrorDialog();
+        Bundle bundle = BundleUtil.validationResultListToBundle(errorDialog.getValidationResultBaseKey(), validationResult);
+        bundle = BundleUtil.integerToBundle(errorDialog.getMessageWidthKey(), getResources().getDimensionPixelSize(R.dimen.textview_dialog_validator_error_message_width), bundle);
+        errorDialog.setArguments(bundle);
+        errorDialog.show(getParentFragmentManager(), ValidatorErrorDialog.class.getName());
     }
 
     private SuspensionIntervalAddSupport getSuspensionIntervalAddSupport() {
@@ -292,5 +386,13 @@ public class SuspensionIntervalAddDialog extends DialogFragment {
 
     private int getColor(int colorid) {
         return ContextCompat.getColor(requireContext(), colorid);
+    }
+
+    protected NumberPickerColorListener getColorListener() {
+        return colorListener;
+    }
+
+    private interface Validator {
+        ValidationResult validate(IntervalValidator validator, Interval interval);
     }
 }
