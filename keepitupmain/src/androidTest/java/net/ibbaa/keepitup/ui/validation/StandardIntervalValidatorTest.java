@@ -52,7 +52,7 @@ public class StandardIntervalValidatorTest {
         result = validator.validateDuration(interval);
         assertFalse(result.isValidationSuccessful());
         assertEquals("Interval", result.getFieldName());
-        assertEquals("Intervals must last at least 15 minutes", result.getMessage());
+        assertEquals("Interval length minimum is 15 minutes", result.getMessage());
     }
 
     @Test

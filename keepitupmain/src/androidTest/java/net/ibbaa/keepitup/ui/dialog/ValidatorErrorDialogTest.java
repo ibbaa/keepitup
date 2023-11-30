@@ -17,6 +17,7 @@
 package net.ibbaa.keepitup.ui.dialog;
 
 import static androidx.test.espresso.Espresso.onView;
+import static androidx.test.espresso.action.ViewActions.click;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.isRoot;
@@ -60,16 +61,19 @@ public class ValidatorErrorDialogTest extends BaseUITest {
     @Test
     public void testErrorMessage() {
         openValidatorErrorDialog();
+        onView(withId(R.id.textview_dialog_validator_error_title)).check(matches(withText("Validation failed")));
         onView(allOf(withText("field1"), withGridLayoutPosition(1, 0))).check(matches(isDisplayed()));
         onView(allOf(withText("message1"), withGridLayoutPosition(1, 1))).check(matches(isDisplayed()));
         onView(allOf(withText("field2"), withGridLayoutPosition(2, 0))).check(matches(isDisplayed()));
         onView(allOf(withText("message2"), withGridLayoutPosition(2, 1))).check(matches(isDisplayed()));
         onView(withId(R.id.imageview_dialog_validator_error_ok)).check(matches(withGridLayoutPositionAndSpan(3, 1, GridLayout.CENTER, 0, 2, GridLayout.CENTER)));
+        onView(withId(R.id.imageview_dialog_validator_error_ok)).perform(click());
     }
 
     @Test
     public void testErrorMessageScreenRotation() {
         openValidatorErrorDialog();
+        onView(withId(R.id.textview_dialog_validator_error_title)).check(matches(withText("Validation failed")));
         onView(allOf(withText("field1"), withGridLayoutPosition(1, 0))).check(matches(isDisplayed()));
         onView(allOf(withText("message1"), withGridLayoutPosition(1, 1))).check(matches(isDisplayed()));
         onView(allOf(withText("field2"), withGridLayoutPosition(2, 0))).check(matches(isDisplayed()));
@@ -84,6 +88,7 @@ public class ValidatorErrorDialogTest extends BaseUITest {
         onView(allOf(withText("message1"), withGridLayoutPosition(1, 1))).check(matches(isDisplayed()));
         onView(allOf(withText("field2"), withGridLayoutPosition(2, 0))).check(matches(isDisplayed()));
         onView(allOf(withText("message2"), withGridLayoutPosition(2, 1))).check(matches(isDisplayed()));
+        onView(withId(R.id.imageview_dialog_validator_error_ok)).perform(click());
     }
 
     private void openValidatorErrorDialog() {

@@ -19,9 +19,11 @@ package net.ibbaa.keepitup.ui.dialog;
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
+import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.isRoot;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
+import static org.hamcrest.Matchers.allOf;
 import static org.junit.Assert.assertEquals;
 
 import android.os.Bundle;
@@ -455,6 +457,234 @@ public class SuspensionIntervalAddDialogTest extends BaseUITest {
         onView(withId(R.id.picker_dialog_suspension_interval_add_time_hour)).check(matches(withNumberPickerColor(R.color.textErrorColor)));
         onView(withId(R.id.picker_dialog_suspension_interval_add_time_minute)).check(matches(withNumberPickerColor(R.color.textErrorColor)));
         onView(withId(R.id.imageview_dialog_suspension_interval_add_cancel)).perform(click());
+        intervalsDialog.dismiss();
+        activityScenario.close();
+    }
+
+    @Test
+    public void testTimeSelectedOkStart() {
+        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class);
+        intervalDAO.insertInterval(getInterval1());
+        intervalDAO.insertInterval(getInterval2());
+        scheduler.restart();
+        SuspensionIntervalsDialog intervalsDialog = openSuspensionIntervalsDialog();
+        openSuspensionIntervalAddDialog(SuspensionIntervalAddDialog.Mode.START, null, null);
+        onView(isRoot()).perform(waitFor(500));
+        onView(withId(R.id.imageview_dialog_suspension_interval_add_ok)).perform(click());
+        onView(withId(R.id.textview_dialog_suspension_interval_add_time_label)).check(matches(withText("End")));
+        onView(withId(R.id.imageview_dialog_suspension_interval_add_cancel)).perform(click());
+        intervalsDialog.dismiss();
+        activityScenario.close();
+    }
+
+    @Test
+    public void testTimeSelectedFailureStart() {
+        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class);
+        intervalDAO.insertInterval(getInterval1());
+        intervalDAO.insertInterval(getInterval2());
+        scheduler.restart();
+        SuspensionIntervalsDialog intervalsDialog = openSuspensionIntervalsDialog();
+        SuspensionIntervalAddDialog intervalAddDialog = openSuspensionIntervalAddDialog(SuspensionIntervalAddDialog.Mode.START, null, null);
+        onView(isRoot()).perform(waitFor(500));
+        onView(withId(R.id.picker_dialog_suspension_interval_add_time_hour)).perform(setNumber(11));
+        onView(withId(R.id.picker_dialog_suspension_interval_add_time_minute)).perform(setNumber(15));
+        updateNumberPickerStatus(intervalAddDialog);
+        onView(withId(R.id.imageview_dialog_suspension_interval_add_ok)).perform(click());
+        onView(withId(R.id.textview_dialog_validator_error_title)).check(matches(withText("Validation failed")));
+        onView(allOf(withText("Start"), withGridLayoutPosition(1, 0))).check(matches(isDisplayed()));
+        onView(allOf(withText("Intervals must not overlap and must have a distance of at least 15 minutes from each other"), withGridLayoutPosition(1, 1))).check(matches(isDisplayed()));
+        onView(withId(R.id.imageview_dialog_validator_error_ok)).perform(click());
+        onView(withId(R.id.textview_dialog_suspension_interval_add_time_label)).check(matches(withText("Start")));
+        onView(withId(R.id.imageview_dialog_suspension_interval_add_cancel)).perform(click());
+        intervalsDialog.dismiss();
+        activityScenario.close();
+    }
+
+    @Test
+    public void testTimeSelectedFailureStartScreenRotation() {
+        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class);
+        intervalDAO.insertInterval(getInterval1());
+        intervalDAO.insertInterval(getInterval2());
+        scheduler.restart();
+        openSuspensionIntervalsDialog();
+        SuspensionIntervalAddDialog intervalAddDialog = openSuspensionIntervalAddDialog(SuspensionIntervalAddDialog.Mode.START, null, null);
+        onView(isRoot()).perform(waitFor(500));
+        onView(withId(R.id.picker_dialog_suspension_interval_add_time_hour)).perform(setNumber(10));
+        onView(withId(R.id.picker_dialog_suspension_interval_add_time_minute)).perform(setNumber(11));
+        updateNumberPickerStatus(intervalAddDialog);
+        onView(withId(R.id.imageview_dialog_suspension_interval_add_ok)).perform(click());
+        onView(withId(R.id.textview_dialog_validator_error_title)).check(matches(withText("Validation failed")));
+        onView(allOf(withText("Start"), withGridLayoutPosition(1, 0))).check(matches(isDisplayed()));
+        onView(allOf(withText("Intervals must not overlap and must have a distance of at least 15 minutes from each other"), withGridLayoutPosition(1, 1))).check(matches(isDisplayed()));
+        rotateScreen(activityScenario);
+        intervalAddDialog = (SuspensionIntervalAddDialog) getActivity(activityScenario).getSupportFragmentManager().getFragments().get(1);
+        onView(withId(R.id.textview_dialog_validator_error_title)).check(matches(withText("Validation failed")));
+        onView(allOf(withText("Start"), withGridLayoutPosition(1, 0))).check(matches(isDisplayed()));
+        onView(allOf(withText("Intervals must not overlap and must have a distance of at least 15 minutes from each other"), withGridLayoutPosition(1, 1))).check(matches(isDisplayed()));
+        onView(withId(R.id.imageview_dialog_validator_error_ok)).perform(click());
+        onView(withId(R.id.textview_dialog_suspension_interval_add_time_label)).check(matches(withText("Start")));
+        onView(withId(R.id.picker_dialog_suspension_interval_add_time_hour)).check(matches(withValue(10)));
+        onView(withId(R.id.picker_dialog_suspension_interval_add_time_minute)).check(matches(withValue(11)));
+        onView(withId(R.id.picker_dialog_suspension_interval_add_time_hour)).perform(setNumber(3));
+        onView(withId(R.id.picker_dialog_suspension_interval_add_time_minute)).perform(setNumber(3));
+        updateNumberPickerStatus(intervalAddDialog);
+        rotateScreen(activityScenario);
+        SuspensionIntervalsDialog intervalsDialog = (SuspensionIntervalsDialog) getActivity(activityScenario).getSupportFragmentManager().getFragments().get(0);
+        onView(withId(R.id.textview_dialog_suspension_interval_add_time_label)).check(matches(withText("Start")));
+        onView(withId(R.id.picker_dialog_suspension_interval_add_time_hour)).check(matches(withValue(3)));
+        onView(withId(R.id.picker_dialog_suspension_interval_add_time_minute)).check(matches(withValue(3)));
+        onView(withId(R.id.imageview_dialog_suspension_interval_add_ok)).perform(click());
+        onView(withId(R.id.textview_dialog_suspension_interval_add_time_label)).check(matches(withText("End")));
+        onView(withId(R.id.imageview_dialog_suspension_interval_add_cancel)).perform(click());
+        intervalsDialog.dismiss();
+        activityScenario.close();
+    }
+
+    @Test
+    public void testTimeSelectedOkEnd() {
+        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class);
+        intervalDAO.insertInterval(getInterval1());
+        intervalDAO.insertInterval(getInterval2());
+        scheduler.restart();
+        Time start = new Time();
+        start.setHour(9);
+        start.setMinute(30);
+        Time end = new Time();
+        end.setHour(9);
+        end.setMinute(50);
+        SuspensionIntervalsDialog intervalsDialog = openSuspensionIntervalsDialog();
+        openSuspensionIntervalAddDialog(SuspensionIntervalAddDialog.Mode.END, end, start);
+        onView(isRoot()).perform(waitFor(500));
+        onView(withId(R.id.imageview_dialog_suspension_interval_add_ok)).perform(click());
+        assertEquals(1, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
+        intervalsDialog.dismiss();
+        activityScenario.close();
+    }
+
+    @Test
+    public void testTimeSelectedFailureEndDuration() {
+        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class);
+        intervalDAO.insertInterval(getInterval1());
+        intervalDAO.insertInterval(getInterval2());
+        scheduler.restart();
+        Time start = new Time();
+        start.setHour(9);
+        start.setMinute(0);
+        Time end = new Time();
+        end.setHour(9);
+        end.setMinute(30);
+        SuspensionIntervalsDialog intervalsDialog = openSuspensionIntervalsDialog();
+        SuspensionIntervalAddDialog intervalAddDialog = openSuspensionIntervalAddDialog(SuspensionIntervalAddDialog.Mode.END, end, start);
+        onView(isRoot()).perform(waitFor(500));
+        onView(withId(R.id.picker_dialog_suspension_interval_add_time_hour)).perform(setNumber(9));
+        onView(withId(R.id.picker_dialog_suspension_interval_add_time_minute)).perform(setNumber(10));
+        updateNumberPickerStatus(intervalAddDialog);
+        onView(withId(R.id.imageview_dialog_suspension_interval_add_ok)).perform(click());
+        onView(withId(R.id.textview_dialog_validator_error_title)).check(matches(withText("Validation failed")));
+        onView(allOf(withText("End"), withGridLayoutPosition(1, 0))).check(matches(isDisplayed()));
+        onView(allOf(withText("Interval length minimum is 15 minutes"), withGridLayoutPosition(1, 1))).check(matches(isDisplayed()));
+        onView(withId(R.id.imageview_dialog_validator_error_ok)).perform(click());
+        onView(withId(R.id.textview_dialog_suspension_interval_add_time_label)).check(matches(withText("End")));
+        onView(withId(R.id.imageview_dialog_suspension_interval_add_cancel)).perform(click());
+        intervalsDialog.dismiss();
+        activityScenario.close();
+    }
+
+    @Test
+    public void testTimeSelectedFailureEndOverlap() {
+        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class);
+        intervalDAO.insertInterval(getInterval1());
+        intervalDAO.insertInterval(getInterval2());
+        scheduler.restart();
+        Time start = new Time();
+        start.setHour(9);
+        start.setMinute(30);
+        Time end = new Time();
+        end.setHour(9);
+        end.setMinute(59);
+        SuspensionIntervalsDialog intervalsDialog = openSuspensionIntervalsDialog();
+        openSuspensionIntervalAddDialog(SuspensionIntervalAddDialog.Mode.END, end, start);
+        onView(isRoot()).perform(waitFor(500));
+        onView(withId(R.id.imageview_dialog_suspension_interval_add_ok)).perform(click());
+        onView(withId(R.id.textview_dialog_validator_error_title)).check(matches(withText("Validation failed")));
+        onView(allOf(withText("End"), withGridLayoutPosition(1, 0))).check(matches(isDisplayed()));
+        onView(allOf(withText("Intervals must not overlap and must have a distance of at least 15 minutes from each other"), withGridLayoutPosition(1, 1))).check(matches(isDisplayed()));
+        onView(withId(R.id.imageview_dialog_validator_error_ok)).perform(click());
+        onView(withId(R.id.textview_dialog_suspension_interval_add_time_label)).check(matches(withText("End")));
+        onView(withId(R.id.imageview_dialog_suspension_interval_add_cancel)).perform(click());
+        intervalsDialog.dismiss();
+        activityScenario.close();
+    }
+
+    @Test
+    public void testTimeSelectedFailureEndDurationAndOverlap() {
+        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class);
+        intervalDAO.insertInterval(getInterval1());
+        intervalDAO.insertInterval(getInterval2());
+        scheduler.restart();
+        Time start = new Time();
+        start.setHour(10);
+        start.setMinute(0);
+        Time end = new Time();
+        end.setHour(10);
+        end.setMinute(11);
+        SuspensionIntervalsDialog intervalsDialog = openSuspensionIntervalsDialog();
+        openSuspensionIntervalAddDialog(SuspensionIntervalAddDialog.Mode.END, end, start);
+        onView(isRoot()).perform(waitFor(500));
+        onView(withId(R.id.imageview_dialog_suspension_interval_add_ok)).perform(click());
+        onView(withId(R.id.textview_dialog_validator_error_title)).check(matches(withText("Validation failed")));
+        onView(allOf(withText("End"), withGridLayoutPosition(1, 0))).check(matches(isDisplayed()));
+        onView(allOf(withText("Intervals must not overlap and must have a distance of at least 15 minutes from each other"), withGridLayoutPosition(1, 1))).check(matches(isDisplayed()));
+        onView(allOf(withText("End"), withGridLayoutPosition(2, 0))).check(matches(isDisplayed()));
+        onView(allOf(withText("Interval length minimum is 15 minutes"), withGridLayoutPosition(2, 1))).check(matches(isDisplayed()));
+        onView(withId(R.id.imageview_dialog_validator_error_ok)).perform(click());
+        onView(withId(R.id.textview_dialog_suspension_interval_add_time_label)).check(matches(withText("End")));
+        onView(withId(R.id.imageview_dialog_suspension_interval_add_cancel)).perform(click());
+        intervalsDialog.dismiss();
+        activityScenario.close();
+    }
+
+    @Test
+    public void testTimeSelectedFailureEndScreenRotation() {
+        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class);
+        intervalDAO.insertInterval(getInterval1());
+        intervalDAO.insertInterval(getInterval2());
+        scheduler.restart();
+        Time start = new Time();
+        start.setHour(9);
+        start.setMinute(0);
+        Time end = new Time();
+        end.setHour(9);
+        end.setMinute(16);
+        openSuspensionIntervalsDialog();
+        SuspensionIntervalAddDialog intervalAddDialog = openSuspensionIntervalAddDialog(SuspensionIntervalAddDialog.Mode.END, end, start);
+        onView(isRoot()).perform(waitFor(500));
+        onView(withId(R.id.picker_dialog_suspension_interval_add_time_hour)).perform(setNumber(9));
+        onView(withId(R.id.picker_dialog_suspension_interval_add_time_minute)).perform(setNumber(3));
+        updateNumberPickerStatus(intervalAddDialog);
+        onView(withId(R.id.imageview_dialog_suspension_interval_add_ok)).perform(click());
+        onView(withId(R.id.textview_dialog_validator_error_title)).check(matches(withText("Validation failed")));
+        onView(allOf(withText("End"), withGridLayoutPosition(1, 0))).check(matches(isDisplayed()));
+        onView(allOf(withText("Interval length minimum is 15 minutes"), withGridLayoutPosition(1, 1))).check(matches(isDisplayed()));
+        rotateScreen(activityScenario);
+        intervalAddDialog = (SuspensionIntervalAddDialog) getActivity(activityScenario).getSupportFragmentManager().getFragments().get(1);
+        onView(withId(R.id.textview_dialog_validator_error_title)).check(matches(withText("Validation failed")));
+        onView(allOf(withText("End"), withGridLayoutPosition(1, 0))).check(matches(isDisplayed()));
+        onView(allOf(withText("Interval length minimum is 15 minutes"), withGridLayoutPosition(1, 1))).check(matches(isDisplayed()));
+        onView(withId(R.id.imageview_dialog_validator_error_ok)).perform(click());
+        onView(withId(R.id.textview_dialog_suspension_interval_add_time_label)).check(matches(withText("End")));
+        onView(withId(R.id.picker_dialog_suspension_interval_add_time_hour)).check(matches(withValue(9)));
+        onView(withId(R.id.picker_dialog_suspension_interval_add_time_minute)).check(matches(withValue(3)));
+        onView(withId(R.id.picker_dialog_suspension_interval_add_time_hour)).perform(setNumber(9));
+        onView(withId(R.id.picker_dialog_suspension_interval_add_time_minute)).perform(setNumber(16));
+        updateNumberPickerStatus(intervalAddDialog);
+        rotateScreen(activityScenario);
+        SuspensionIntervalsDialog intervalsDialog = (SuspensionIntervalsDialog) getActivity(activityScenario).getSupportFragmentManager().getFragments().get(0);
+        onView(withId(R.id.textview_dialog_suspension_interval_add_time_label)).check(matches(withText("End")));
+        onView(withId(R.id.picker_dialog_suspension_interval_add_time_hour)).check(matches(withValue(9)));
+        onView(withId(R.id.picker_dialog_suspension_interval_add_time_minute)).check(matches(withValue(16)));
+        onView(withId(R.id.imageview_dialog_suspension_interval_add_ok)).perform(click());
+        assertEquals(1, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
         intervalsDialog.dismiss();
         activityScenario.close();
     }
