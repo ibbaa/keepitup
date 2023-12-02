@@ -123,9 +123,7 @@ public class SuspensionIntervalsDialog extends DialogFragment implements Confirm
             Log.d(SuspensionIntervalsDialog.class.getName(), "Current saved interval is " + currentInterval);
             return;
         }
-        currentInterval = new Interval();
-        currentInterval.setStart(getDefaultStart());
-        currentInterval.setEnd(getDefaultEnd(currentInterval.getStart()));
+        reinitializeCurrentInterval();
     }
 
     private Time getDefaultStart() {
@@ -189,6 +187,7 @@ public class SuspensionIntervalsDialog extends DialogFragment implements Confirm
                 Log.d(SuspensionIntervalsDialog.class.getName(), "deleting interval at position " + position);
                 getAdapter().removeItem(position);
                 getAdapter().notifyItemRemoved(position);
+                reinitializeCurrentInterval();
             } else {
                 Log.e(SuspensionIntervalsDialog.class.getName(), ConfirmDialog.class.getSimpleName() + " arguments do not contain position key " + confirmDialog.getPositionKey());
             }
@@ -216,6 +215,11 @@ public class SuspensionIntervalsDialog extends DialogFragment implements Confirm
             showSuspensionIntervallAddDialog(SuspensionIntervalAddDialog.Mode.END, end, start);
         } else {
             currentInterval.setEnd(intervalAddDialog.getSelectedTime());
+            getAdapter().addItem(currentInterval);
+            List<Interval> intervals = TimeUtil.sortIntervalList(getAdapter().getAllItems());
+            getAdapter().replaceItems(intervals);
+            getAdapter().notifyDataSetChanged();
+            reinitializeCurrentInterval();
             intervalAddDialog.dismiss();
         }
     }
@@ -280,6 +284,12 @@ public class SuspensionIntervalsDialog extends DialogFragment implements Confirm
             Log.e(SuspensionIntervalsDialog.class.getName(), "intervalsSupport is null");
             dismiss();
         }
+    }
+
+    private void reinitializeCurrentInterval() {
+        currentInterval = new Interval();
+        currentInterval.setStart(getDefaultStart());
+        currentInterval.setEnd(getDefaultEnd(currentInterval.getStart()));
     }
 
     public RecyclerView getSuspensionIntervalsRecyclerView() {
