@@ -18,6 +18,22 @@
           <timeTargetWasSelectedWithDropDown value="2023-12-01T06:31:59.300151673Z" />
         </State>
       </entry>
+      <entry key="SuspensionIntervalSelectDialogTest">
+        <State>
+          <targetSelectedWithDropDown>
+            <Target>
+              <type value="QUICK_BOOT_TARGET" />
+              <deviceKey>
+                <Key>
+                  <type value="VIRTUAL_DEVICE_PATH" />
+                  <value value="$USER_HOME$/.android/avd/Nexus_5X_API_29.avd" />
+                </Key>
+              </deviceKey>
+            </Target>
+          </targetSelectedWithDropDown>
+          <timeTargetWasSelectedWithDropDown value="2023-12-03T09:46:08.883691411Z" />
+        </State>
+      </entry>
       <entry key="SystemActivityTest">
         <State />
       </entry>
@@ -37,16 +53,13 @@
           <timeTargetWasSelectedWithDropDown value="2023-12-01T05:54:44.380365631Z" />
         </State>
       </entry>
+      <entry key="testExportConfigurationScreenRotation()">
+        <State />
+      </entry>
       <entry key="testNewDefaultValuesForNetworkTask()">
         <State />
       </entry>
-      <entry key="testThreeIntervalsAddAndDelete()">
-        <State />
-      </entry>
       <entry key="testThreeIntervalsAddErrorScreenRotation()">
-        <State />
-      </entry>
-      <entry key="testThreeIntervalsAddOverlap()">
         <State />
       </entry>
     </value>

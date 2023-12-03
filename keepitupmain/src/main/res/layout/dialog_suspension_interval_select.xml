@@ -16,85 +16,85 @@
 
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/scrollview_dialog_suspension_interval_add"
+    android:id="@+id/scrollview_dialog_suspension_interval_select"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent">
 
     <LinearLayout
-        android:id="@+id/linearlayout_dialog_suspension_interval_add"
+        android:id="@+id/linearlayout_dialog_suspension_interval_select"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="@dimen/linearlayout_dialog_suspension_interval_add_padding"
+        android:padding="@dimen/linearlayout_dialog_suspension_interval_select_padding"
         android:focusable="true"
         android:focusableInTouchMode="true"
         android:orientation="vertical">
 
         <TextView
-            android:id="@+id/textview_dialog_suspension_interval_add_label"
+            android:id="@+id/textview_dialog_suspension_interval_select_label"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/textview_dialog_suspension_interval_add_label_margin"
+            android:layout_marginBottom="@dimen/textview_dialog_suspension_interval_select_label_margin"
             android:gravity="center_horizontal"
             android:textStyle="bold"
-            android:text="@string/label_dialog_suspension_interval_add" />
+            android:text="@string/label_dialog_suspension_interval_select" />
 
         <LinearLayout
-            android:id="@+id/linearlayout_dialog_suspension_interval_add_time"
+            android:id="@+id/linearlayout_dialog_suspension_interval_select_time"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="@dimen/linearlayout_dialog_suspension_interval_add_time_padding"
+            android:padding="@dimen/linearlayout_dialog_suspension_interval_select_time_padding"
             android:focusable="true"
             android:focusableInTouchMode="true"
             android:orientation="horizontal">
 
             <TextView
-                android:id="@+id/textview_dialog_suspension_interval_add_time_label"
+                android:id="@+id/textview_dialog_suspension_interval_select_time_label"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginRight="@dimen/textview_dialog_suspension_interval_add_time_label_margin"
+                android:layout_marginRight="@dimen/textview_dialog_suspension_interval_select_time_label_margin"
                 android:layout_gravity="center_vertical"
                 android:textStyle="bold"
                 android:text="" />
 
             <NumberPicker
-                android:id="@+id/picker_dialog_suspension_interval_add_time_hour"
+                android:id="@+id/picker_dialog_suspension_interval_select_time_hour"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/picker_dialog_suspension_interval_add_time_hour_margin" />
+                android:layout_marginLeft="@dimen/picker_dialog_suspension_interval_select_time_hour_margin" />
 
             <NumberPicker
-                android:id="@+id/picker_dialog_suspension_interval_add_time_minute"
+                android:id="@+id/picker_dialog_suspension_interval_select_time_minute"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/picker_dialog_suspension_interval_add_time_minute_margin" />
+                android:layout_marginLeft="@dimen/picker_dialog_suspension_interval_select_time_minute_margin" />
 
         </LinearLayout>
 
         <LinearLayout
-            android:id="@+id/linearlayout_dialog_suspension_interval_add_ok_cancel"
+            android:id="@+id/linearlayout_dialog_suspension_interval_select_ok_cancel"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingTop="@dimen/linearlayout_dialog_suspension_interval_add_ok_cancel_padding_top"
+            android:paddingTop="@dimen/linearlayout_dialog_suspension_interval_select_ok_cancel_padding_top"
             android:orientation="horizontal">
 
             <ImageView
-                android:id="@+id/imageview_dialog_suspension_interval_add_ok"
+                android:id="@+id/imageview_dialog_suspension_interval_select_ok"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:clickable="true"
                 android:focusable="true"
-                android:contentDescription="@string/label_dialog_suspension_interval_add_ok"
+                android:contentDescription="@string/label_dialog_suspension_interval_select_ok"
                 app:srcCompat="@drawable/icon_ok_selector" />
 
             <ImageView
-                android:id="@+id/imageview_dialog_suspension_interval_add_cancel"
+                android:id="@+id/imageview_dialog_suspension_interval_select_cancel"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:clickable="true"
                 android:focusable="true"
-                android:contentDescription="@string/label_dialog_suspension_interval_add_cancel"
+                android:contentDescription="@string/label_dialog_suspension_interval_select_cancel"
                 app:srcCompat="@drawable/icon_cancel_selector" />
 
         </LinearLayout>

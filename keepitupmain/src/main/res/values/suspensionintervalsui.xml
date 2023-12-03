@@ -20,5 +20,5 @@
     <string name="label_dialog_suspension_intervals_delete_interval">Delete interval</string>
     <string name="label_dialog_suspension_intervals_ok">@android:string/ok</string>
     <string name="label_dialog_suspension_intervals_cancel">@android:string/cancel</string>
-    <string name="label_dialog_suspension_intervals_add_interval">Add suspension interval</string>
+    <string name="label_dialog_suspension_intervals_select_interval">Add suspension interval</string>
 </resources>

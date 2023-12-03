@@ -16,11 +16,11 @@
 
 package net.ibbaa.keepitup.ui;
 
-import net.ibbaa.keepitup.ui.dialog.SuspensionIntervalAddDialog;
+import net.ibbaa.keepitup.ui.dialog.SuspensionIntervalSelectDialog;
 
-public interface SuspensionIntervalAddSupport {
+public interface SuspensionIntervalSelectSupport {
 
-    void onSuspensionIntervalAddDialogOkClicked(SuspensionIntervalAddDialog intervalAddDialog, SuspensionIntervalAddDialog.Mode mode);
+    void onSuspensionIntervalSelectDialogOkClicked(SuspensionIntervalSelectDialog intervalAddDialog, SuspensionIntervalSelectDialog.Mode mode);
 
-    void onSuspensionIntervalAddDialogCancelClicked(SuspensionIntervalAddDialog intervalAddDialog, SuspensionIntervalAddDialog.Mode mode);
+    void onSuspensionIntervalSelectDialogCancelClicked(SuspensionIntervalSelectDialog intervalAddDialog, SuspensionIntervalSelectDialog.Mode mode);
 }
