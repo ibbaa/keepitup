@@ -616,6 +616,14 @@ public class IntervalTest {
         interval2.setEnd(end2);
         assertTrue(interval1.doesOverlap(interval2));
         assertTrue(interval2.doesOverlap(interval1));
+        start2 = new Time();
+        start2.setHour(0);
+        start2.setMinute(30);
+        end2 = new Time();
+        end2.setHour(1);
+        end2.setMinute(2);
+        assertTrue(interval1.doesOverlap(interval2));
+        assertTrue(interval2.doesOverlap(interval1));
     }
 
     @Test

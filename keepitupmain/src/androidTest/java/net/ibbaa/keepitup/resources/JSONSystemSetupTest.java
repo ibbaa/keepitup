@@ -447,6 +447,38 @@ public class JSONSystemSetupTest {
         Interval interval1 = getInterval1();
         Interval interval2 = getInterval2();
         Time start = new Time();
+        start.setHour(12);
+        start.setMinute(0);
+        interval2.setStart(start);
+        Time end = new Time();
+        end.setHour(12);
+        end.setMinute(61);
+        interval2.setEnd(end);
+        intervalDAO.insertInterval(interval1);
+        intervalDAO.insertInterval(interval2);
+        exportResult = setup.exportData();
+        intervalDAO.deleteAllIntervals();
+        importResult = setup.importData(exportResult.getData());
+        assertTrue(importResult.isSuccess());
+        assertEquals(exportResult.getData(), importResult.getData());
+        List<Interval> intervals = intervalDAO.readAllIntervals();
+        assertEquals(1, intervals.size());
+        Interval interval = intervals.get(0);
+        assertTrue(interval1.isEqual(interval));
+    }
+
+    @Test
+    public void testImportDatabaseInvalidIntervalOverlap() {
+        intervalDAO.insertInterval(new Interval());
+        SystemSetupResult exportResult = setup.exportData();
+        intervalDAO.deleteAllIntervals();
+        SystemSetupResult importResult = setup.importData(exportResult.getData());
+        assertTrue(importResult.isSuccess());
+        assertEquals(exportResult.getData(), importResult.getData());
+        assertTrue(intervalDAO.readAllIntervals().isEmpty());
+        Interval interval1 = getInterval1();
+        Interval interval2 = getInterval2();
+        Time start = new Time();
         start.setHour(11);
         start.setMinute(1);
         interval2.setStart(start);
@@ -480,11 +512,11 @@ public class JSONSystemSetupTest {
         Interval interval2 = getInterval2();
         Time start = new Time();
         start.setHour(12);
-        start.setMinute(130);
+        start.setMinute(13);
         interval2.setStart(start);
         Time end = new Time();
         end.setHour(12);
-        end.setMinute(31);
+        end.setMinute(27);
         interval2.setEnd(end);
         intervalDAO.insertInterval(interval1);
         intervalDAO.insertInterval(interval2);

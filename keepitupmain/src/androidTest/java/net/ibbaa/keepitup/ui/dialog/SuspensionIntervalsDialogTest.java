@@ -765,7 +765,7 @@ public class SuspensionIntervalsDialogTest extends BaseUITest {
     }
 
     @Test
-    public void testThreeIntervalsAddOverlap() {
+    public void testThreeIntervalsAddOverlapDays() {
         intervalDAO.insertInterval(getInterval1());
         Interval interval3 = getInterval3();
         Time end = new Time();

@@ -52,7 +52,7 @@ public class IntervalValidator {
 
     public boolean validateOverlap(Interval interval, List<Interval> existingIntervals) {
         Log.d(IntervalValidator.class.getName(), "validateDuration of interval " + interval);
-        int intervalDistance = context.getResources().getInteger(R.integer.suspension_interval_distance);
+        int intervalDistance = context.getResources().getInteger(R.integer.suspension_interval_distance) - 1;
         Interval extendedInterval = TimeUtil.extendInterval(interval, intervalDistance);
         Log.d(IntervalValidator.class.getName(), "extendedInterval is " + extendedInterval);
         for (Interval existingInterval : existingIntervals) {
@@ -72,7 +72,7 @@ public class IntervalValidator {
 
     public boolean validateInInterval(Time time, List<Interval> existingIntervals) {
         Log.d(IntervalValidator.class.getName(), "validateIsInInterval for time " + time);
-        int intervalDistance = context.getResources().getInteger(R.integer.suspension_interval_distance);
+        int intervalDistance = context.getResources().getInteger(R.integer.suspension_interval_distance) - 1;
         Time timeAfter = TimeUtil.addMinutes(time, intervalDistance);
         Time timeBefore = TimeUtil.substractMinutes(time, intervalDistance);
         Log.d(IntervalValidator.class.getName(), "time is " + time);
