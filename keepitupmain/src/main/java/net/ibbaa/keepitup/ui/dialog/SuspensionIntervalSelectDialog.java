@@ -89,9 +89,9 @@ public class SuspensionIntervalSelectDialog extends DialogFragment {
     }
 
     private Mode getMode() {
-        Log.d(SuspensionIntervalSelectDialog.class.getName(), "getModeString");
+        Log.d(SuspensionIntervalSelectDialog.class.getName(), "getMode");
         String modeString = BundleUtil.stringFromBundle(getModeKey(), requireArguments());
-        Log.d(SuspensionIntervalSelectDialog.class.getName(), "mode string is " + modeString);
+        Log.d(SuspensionIntervalSelectDialog.class.getName(), "mode is " + modeString);
         if (StringUtil.isEmpty(modeString)) {
             Log.e(SuspensionIntervalSelectDialog.class.getName(), SuspensionIntervalSelectDialog.Mode.class.getSimpleName() + " not specified. Returning " + Mode.START);
             return Mode.START;

@@ -100,8 +100,17 @@ public class SuspensionIntervalAdapter extends RecyclerView.Adapter<SuspensionIn
         intervals.add(interval);
     }
 
+    public Interval getItem(int index) {
+        Log.d(SuspensionIntervalAdapter.class.getName(), "getItem for index " + index);
+        if (index < 0 || index >= intervals.size()) {
+            Log.e(SuspensionIntervalAdapter.class.getName(), "invalid index " + index);
+            return null;
+        }
+        return intervals.get(index);
+    }
+
     public void removeItem(int index) {
-        Log.d(SuspensionIntervalAdapter.class.getName(), "removeItem on position " + index);
+        Log.d(SuspensionIntervalAdapter.class.getName(), "removeItem for index " + index);
         if (index < 0 || index >= intervals.size()) {
             Log.e(SuspensionIntervalAdapter.class.getName(), "invalid index " + index);
             return;
