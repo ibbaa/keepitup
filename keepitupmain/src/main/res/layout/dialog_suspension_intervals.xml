@@ -48,7 +48,7 @@
             android:scrollbars="none" />
 
         <ImageView
-            android:id="@+id/imageview_dialog_suspension_intervals_interval_select"
+            android:id="@+id/imageview_dialog_suspension_intervals_interval_add"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:clickable="true"

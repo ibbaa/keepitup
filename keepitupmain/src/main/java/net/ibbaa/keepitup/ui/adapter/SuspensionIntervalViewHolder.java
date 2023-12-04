@@ -40,6 +40,7 @@ public class SuspensionIntervalViewHolder extends RecyclerView.ViewHolder {
         this.intervalsDialog = intervalsDialog;
         noIntervalsText = itemView.findViewById(R.id.textview_list_item_suspension_interval_no_interval);
         cardView = itemView.findViewById(R.id.cardview_list_item_suspension_interval);
+        cardView.setOnClickListener(this::onIntervalOpenClicked);
         intervalText = itemView.findViewById(R.id.textview_list_item_suspension_interval);
         intervalDeleteImage = itemView.findViewById(R.id.imageview_list_item_suspension_interval_delete);
         intervalDeleteImage.setOnClickListener(this::onIntervalDeleteClicked);
@@ -47,6 +48,10 @@ public class SuspensionIntervalViewHolder extends RecyclerView.ViewHolder {
 
     public void setIntervalText(String text) {
         intervalText.setText(text);
+    }
+
+    public void onIntervalOpenClicked(View view) {
+        intervalsDialog.onIntervalOpenClicked(view, getAdapterPosition());
     }
 
     public void onIntervalDeleteClicked(View view) {

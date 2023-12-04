@@ -18,13 +18,7 @@
           <timeTargetWasSelectedWithDropDown value="2023-12-01T06:31:59.300151673Z" />
         </State>
       </entry>
-      <entry key="StandardIntervalValidatorTest">
-        <State />
-      </entry>
       <entry key="SuspensionIntervalSelectDialogTest">
-        <State />
-      </entry>
-      <entry key="SuspensionIntervalsDialogTest">
         <State />
       </entry>
       <entry key="keepitupmain">
@@ -43,10 +37,16 @@
           <timeTargetWasSelectedWithDropDown value="2023-12-01T05:54:44.380365631Z" />
         </State>
       </entry>
-      <entry key="testImportDatabaseInvalidInterval()">
+      <entry key="testExportConfigurationScreenRotation()">
         <State />
       </entry>
-      <entry key="testImportDatabaseInvalidIntervalMinDuration()">
+      <entry key="testThreeIntervalsOpen()">
+        <State />
+      </entry>
+      <entry key="testThreeIntervalsOpenSameInterval()">
+        <State />
+      </entry>
+      <entry key="testThreeIntervalsOpenSameIntervalScreenRotation()">
         <State />
       </entry>
     </value>

@@ -173,7 +173,7 @@ public class SuspensionIntervalsDialog extends DialogFragment implements Confirm
 
     private void prepareAddImageButton() {
         Log.d(SuspensionIntervalsDialog.class.getName(), "prepareAddImageButton");
-        ImageView addImage = dialogView.findViewById(R.id.imageview_dialog_suspension_intervals_interval_select);
+        ImageView addImage = dialogView.findViewById(R.id.imageview_dialog_suspension_intervals_interval_add);
         addImage.setOnClickListener(this::onIntervalAddClicked);
     }
 
@@ -183,6 +183,20 @@ public class SuspensionIntervalsDialog extends DialogFragment implements Confirm
         ImageView cancelImage = dialogView.findViewById(R.id.imageview_dialog_suspension_intervals_cancel);
         okImage.setOnClickListener(this::onOkClicked);
         cancelImage.setOnClickListener(this::onCancelClicked);
+    }
+
+    public void onIntervalOpenClicked(View view, int index) {
+        Log.d(SuspensionIntervalsDialog.class.getName(), "onIntervalOpenClicked for index " + index);
+        Interval interval = getAdapter().getItem(index);
+        if (interval == null) {
+            Log.e(SuspensionIntervalsDialog.class.getName(), "onIntervalOpenClicked, interval is null");
+            return;
+        }
+        position = index;
+        currentInterval = new Interval();
+        currentInterval.setStart(interval.getStart());
+        currentInterval.setEnd(interval.getEnd());
+        showSuspensionIntervalSelectDialog(SuspensionIntervalSelectDialog.Mode.START, currentInterval.getStart(), null);
     }
 
     public void onIntervalDeleteClicked(View view, int index) {

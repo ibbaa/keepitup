@@ -216,7 +216,6 @@ public class GlobalSettingsActivity extends SettingsInputActivity implements Sus
     private void prepareSuspensionIntervalsField() {
         Log.d(GlobalSettingsActivity.class.getName(), "prepareSuspensionIntervalsField");
         CardView suspensionIntervalsCardView = findViewById(R.id.cardview_activity_global_settings_suspension_intervals);
-        GridLayout gridLayout = findViewById(R.id.gridlayout_activity_global_settings_suspension_intervals_value);
         if (suspensionEnabledSwitch.isChecked()) {
             suspensionIntervalsCardView.setEnabled(true);
             suspensionIntervalsCardView.setOnClickListener(this::showSuspensionIntervalsDialog);
