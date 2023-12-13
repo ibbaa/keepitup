@@ -295,6 +295,20 @@ public class SuspensionIntervalsDialog extends DialogFragment implements Confirm
     }
 
     @Override
+    public ValidationResult validateDuration() {
+        Log.d(SuspensionIntervalsDialog.class.getName(), "validateDuration");
+        IntervalValidator validator = new StandardIntervalValidator(getContext(), getAdapter().getAllItems());
+        return validator.validateDuration();
+    }
+
+    @Override
+    public ValidationResult validateOverlapSorted() {
+        Log.d(SuspensionIntervalsDialog.class.getName(), "validateOverlapSorted");
+        IntervalValidator validator = new StandardIntervalValidator(getContext(), getAdapter().getAllItems());
+        return validator.validateOverlapSorted();
+    }
+
+    @Override
     public ValidationResult validateDuration(Interval interval) {
         Log.d(SuspensionIntervalsDialog.class.getName(), "validateDuration for interval " + interval);
         IntervalValidator validator = new StandardIntervalValidator(getContext(), getValidationItems());
@@ -336,6 +350,12 @@ public class SuspensionIntervalsDialog extends DialogFragment implements Confirm
 
     private void onOkClicked(View view) {
         Log.d(SuspensionIntervalsDialog.class.getName(), "onOkClicked");
+        List<ValidationResult> resultList = validateFinalIntervals();
+        if (!resultList.isEmpty()) {
+            Log.d(SuspensionIntervalsDialog.class.getName(), "Validation failed. Opening error dialog.");
+            showValidatorErrorDialog(resultList);
+            return;
+        }
         SuspensionIntervalsSupport intervalsSupport = getSuspensionIntervalsSupport();
         if (intervalsSupport != null) {
             intervalsSupport.onSuspensionIntervalsDialogOkClicked(this);
@@ -343,6 +363,22 @@ public class SuspensionIntervalsDialog extends DialogFragment implements Confirm
             Log.e(SuspensionIntervalsDialog.class.getName(), "intervalsSupport is null");
             dismiss();
         }
+    }
+
+    private List<ValidationResult> validateFinalIntervals() {
+        Log.d(SuspensionIntervalsDialog.class.getName(), "validateFinalIntervals");
+        ValidationResult validateOverlapSorted = validateOverlapSorted();
+        ValidationResult validateDuration = validateDuration();
+        Log.d(SuspensionIntervalsDialog.class.getName(), "validateFinalIntervals, validateOverlapSorted result = " + validateOverlapSorted);
+        Log.d(SuspensionIntervalsDialog.class.getName(), "validateFinalIntervals, validateDuration result = " + validateDuration);
+        List<ValidationResult> resultList = new ArrayList<>();
+        if (!validateOverlapSorted.isValidationSuccessful()) {
+            resultList.add(new ValidationResult(validateOverlapSorted.isValidationSuccessful(), validateOverlapSorted.getFieldName(), validateOverlapSorted.getMessage()));
+        }
+        if (!validateDuration.isValidationSuccessful()) {
+            resultList.add(new ValidationResult(validateDuration.isValidationSuccessful(), validateDuration.getFieldName(), validateDuration.getMessage()));
+        }
+        return resultList;
     }
 
     private void onCancelClicked(View view) {
@@ -426,6 +462,15 @@ public class SuspensionIntervalsDialog extends DialogFragment implements Confirm
         }
         intervalSelectDialog.setArguments(bundle);
         showDialog(intervalSelectDialog, SuspensionIntervalSelectDialog.class.getName());
+    }
+
+    private void showValidatorErrorDialog(List<ValidationResult> validationResult) {
+        Log.d(SuspensionIntervalsDialog.class.getName(), "showValidatorErrorDialog");
+        ValidatorErrorDialog errorDialog = new ValidatorErrorDialog();
+        Bundle bundle = BundleUtil.validationResultListToBundle(errorDialog.getValidationResultBaseKey(), validationResult);
+        bundle = BundleUtil.integerToBundle(errorDialog.getMessageWidthKey(), getResources().getDimensionPixelSize(R.dimen.textview_dialog_validator_error_message_width), bundle);
+        errorDialog.setArguments(bundle);
+        errorDialog.show(getParentFragmentManager(), ValidatorErrorDialog.class.getName());
     }
 
     private void showDialog(DialogFragment dialog, String name) {

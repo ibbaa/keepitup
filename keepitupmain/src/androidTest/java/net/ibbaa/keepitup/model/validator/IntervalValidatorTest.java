@@ -66,6 +66,27 @@ public class IntervalValidatorTest {
     }
 
     @Test
+    public void testValidateDurationList() {
+        assertTrue(validator.validateDuration(Arrays.asList(getInterval1(), getInterval2(), getInterval3())));
+        Interval interval3 = getInterval3();
+        Time start = new Time();
+        start.setHour(10);
+        start.setMinute(16);
+        interval3.setStart(start);
+        Time end = new Time();
+        end.setHour(10);
+        end.setMinute(25);
+        interval3.setEnd(end);
+        assertFalse(validator.validateDuration(Arrays.asList(getInterval1(), getInterval2(), interval3)));
+        Interval interval1 = getInterval1();
+        end = new Time();
+        end.setHour(10);
+        end.setMinute(12);
+        interval1.setEnd(end);
+        assertFalse(validator.validateDuration(Arrays.asList(interval1, getInterval2(), getInterval3())));
+    }
+
+    @Test
     public void testValidateOverlap() {
         Interval interval1 = getInterval1();
         assertTrue(validator.validateOverlap(interval1, Arrays.asList(getInterval2(), getInterval3())));
@@ -168,6 +189,23 @@ public class IntervalValidatorTest {
         interval1.setEnd(end);
         assertTrue(validator.validateOverlap(interval1, List.of(getInterval3())));
         assertTrue(validator.validate(interval1, List.of(getInterval3())));
+    }
+
+    @Test
+    public void testValidateOverlapSorted() {
+        assertTrue(validator.validateOverlapSorted(Arrays.asList(getInterval2(), getInterval3(), getInterval1())));
+        Interval interval2 = getInterval2();
+        Time end = new Time();
+        end.setHour(4);
+        end.setMinute(4);
+        interval2.setEnd(end);
+        assertFalse(validator.validateOverlapSorted(Arrays.asList(interval2, getInterval3(), getInterval1())));
+        Interval interval1 = getInterval1();
+        end = new Time();
+        end.setHour(1);
+        end.setMinute(15);
+        interval1.setEnd(end);
+        assertFalse(validator.validateOverlapSorted(Arrays.asList(getInterval2(), getInterval3(), interval1)));
     }
 
     @Test

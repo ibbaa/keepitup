@@ -21,7 +21,11 @@ import net.ibbaa.keepitup.model.Time;
 
 public interface IntervalValidator {
 
+    ValidationResult validateDuration();
+
     ValidationResult validateDuration(Interval interval);
+
+    ValidationResult validateOverlapSorted();
 
     ValidationResult validateOverlap(Interval interval);
 

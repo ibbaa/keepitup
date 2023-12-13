@@ -15,8 +15,11 @@
               </deviceKey>
             </Target>
           </targetSelectedWithDropDown>
-          <timeTargetWasSelectedWithDropDown value="2023-12-01T06:31:59.300151673Z" />
+          <timeTargetWasSelectedWithDropDown value="2023-12-12T21:55:03.061716856Z" />
         </State>
+      </entry>
+      <entry key="SuspensionIntervalsDialogTest">
+        <State />
       </entry>
       <entry key="keepitupmain">
         <State>
@@ -34,19 +37,16 @@
           <timeTargetWasSelectedWithDropDown value="2023-12-01T05:54:44.380365631Z" />
         </State>
       </entry>
-      <entry key="testDeleteNetworkTask()">
+      <entry key="testOneInterval()">
         <State />
       </entry>
-      <entry key="testThreeIntervalsOpenError()">
+      <entry key="testThreeIntervalsAddErrorScreenRotation()">
         <State />
       </entry>
-      <entry key="testThreeIntervalsOpenErrorScreenRotation()">
+      <entry key="testThreeIntervalsFinalErrorOverlap()">
         <State />
       </entry>
-      <entry key="testThreeIntervalsOpenStartAfterEnd()">
-        <State />
-      </entry>
-      <entry key="testThreeIntervalsOpenStartAfterEndScreenRotation()">
+      <entry key="testThreeIntervalsFinalErrorOverlapScreenRotation()">
         <State />
       </entry>
     </value>

@@ -136,9 +136,9 @@ public class SuspensionIntervalSelectDialog extends DialogFragment {
         Log.d(SuspensionIntervalSelectDialog.class.getName(), "prepareModeLabel with mode");
         timeLabelTextView = dialogView.findViewById(R.id.textview_dialog_suspension_interval_select_time_label);
         if (Mode.END.equals(getMode())) {
-            timeLabelTextView.setText(getResources().getString(R.string.text_dialog_suspension_interval_select_end));
+            timeLabelTextView.setText(getResources().getString(R.string.string_end));
         } else {
-            timeLabelTextView.setText(getResources().getString(R.string.text_dialog_suspension_interval_select_start));
+            timeLabelTextView.setText(getResources().getString(R.string.string_start));
         }
     }
 
@@ -320,7 +320,7 @@ public class SuspensionIntervalSelectDialog extends DialogFragment {
         Log.d(SuspensionIntervalSelectDialog.class.getName(), "validateStartMode, validateInInterval result = " + validateInInterval);
         List<ValidationResult> resultList = new ArrayList<>();
         if (validateInInterval != null && !validateInInterval.isValidationSuccessful()) {
-            String start = getResources().getString(R.string.text_dialog_suspension_interval_select_start);
+            String start = getResources().getString(R.string.string_start);
             resultList.add(new ValidationResult(validateInInterval.isValidationSuccessful(), start, validateInInterval.getMessage()));
         }
         return resultList;
@@ -333,7 +333,7 @@ public class SuspensionIntervalSelectDialog extends DialogFragment {
         Log.d(SuspensionIntervalSelectDialog.class.getName(), "validateEndMode, validateOverlap result = " + validateOverlap);
         Log.d(SuspensionIntervalSelectDialog.class.getName(), "validateEndMode, validateDuration result = " + validateDuration);
         List<ValidationResult> resultList = new ArrayList<>();
-        String end = getResources().getString(R.string.text_dialog_suspension_interval_select_end);
+        String end = getResources().getString(R.string.string_end);
         if (validateOverlap != null && !validateOverlap.isValidationSuccessful()) {
             resultList.add(new ValidationResult(validateOverlap.isValidationSuccessful(), end, validateOverlap.getMessage()));
         }
