@@ -33,4 +33,5 @@
     <string name="text_dialog_general_error_db_purge">An error occurred resetting the configuration. Please try to delete the app data from the Android settings.</string>
     <string name="text_dialog_general_error_config_import">An error occurred importing the configuration. Some settings may have been imported.</string>
     <string name="text_dialog_general_error_config_export">An error occurred exporting the configuration.</string>
+    <string name="text_dialog_general_error_synchronize_intervals">Fatal error synchronizing suspension intervals with database.</string>
 </resources>

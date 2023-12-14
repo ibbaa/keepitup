@@ -19,7 +19,20 @@
         </State>
       </entry>
       <entry key="SuspensionIntervalsDialogTest">
-        <State />
+        <State>
+          <targetSelectedWithDropDown>
+            <Target>
+              <type value="QUICK_BOOT_TARGET" />
+              <deviceKey>
+                <Key>
+                  <type value="VIRTUAL_DEVICE_PATH" />
+                  <value value="$USER_HOME$/.android/avd/Nexus_5X_API_29.avd" />
+                </Key>
+              </deviceKey>
+            </Target>
+          </targetSelectedWithDropDown>
+          <timeTargetWasSelectedWithDropDown value="2023-12-13T16:10:35.625581897Z" />
+        </State>
       </entry>
       <entry key="keepitupmain">
         <State>
