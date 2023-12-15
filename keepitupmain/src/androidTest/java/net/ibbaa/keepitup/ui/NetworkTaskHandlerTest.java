@@ -23,6 +23,8 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import androidx.test.core.app.ActivityScenario;
+import androidx.test.ext.junit.runners.AndroidJUnit4;
+import androidx.test.filters.MediumTest;
 
 import net.ibbaa.keepitup.logging.NetworkTaskLog;
 import net.ibbaa.keepitup.model.AccessType;
@@ -36,9 +38,12 @@ import net.ibbaa.phonelog.ILogger;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
 import java.util.List;
 
+@MediumTest
+@RunWith(AndroidJUnit4.class)
 public class NetworkTaskHandlerTest extends BaseUITest {
 
     private ActivityScenario<?> activityScenario;

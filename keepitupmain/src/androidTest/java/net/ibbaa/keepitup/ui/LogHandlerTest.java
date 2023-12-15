@@ -21,6 +21,8 @@ import static org.junit.Assert.assertEquals;
 import android.content.Intent;
 
 import androidx.test.core.app.ActivityScenario;
+import androidx.test.ext.junit.runners.AndroidJUnit4;
+import androidx.test.filters.MediumTest;
 
 import net.ibbaa.keepitup.model.AccessType;
 import net.ibbaa.keepitup.model.LogEntry;
@@ -29,9 +31,12 @@ import net.ibbaa.keepitup.test.mock.TestRegistry;
 import net.ibbaa.keepitup.ui.adapter.LogEntryAdapter;
 
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
 import java.util.List;
 
+@MediumTest
+@RunWith(AndroidJUnit4.class)
 public class LogHandlerTest extends BaseUITest {
 
     @Test
