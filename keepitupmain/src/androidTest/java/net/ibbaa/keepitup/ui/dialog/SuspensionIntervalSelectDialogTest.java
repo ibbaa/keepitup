@@ -33,7 +33,6 @@ import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.MediumTest;
 
 import net.ibbaa.keepitup.R;
-import net.ibbaa.keepitup.db.IntervalDAO;
 import net.ibbaa.keepitup.model.Interval;
 import net.ibbaa.keepitup.model.Time;
 import net.ibbaa.keepitup.test.mock.TestNetworkTaskProcessServiceScheduler;
@@ -55,7 +54,6 @@ public class SuspensionIntervalSelectDialogTest extends BaseUITest {
     private ActivityScenario<?> activityScenario;
     private TestTimeBasedSuspensionScheduler scheduler;
     private TestNetworkTaskProcessServiceScheduler networkTaskScheduler;
-    private IntervalDAO intervalDAO;
 
     @Before
     public void beforeEachTestMethod() {
@@ -64,8 +62,6 @@ public class SuspensionIntervalSelectDialogTest extends BaseUITest {
         networkTaskScheduler = new TestNetworkTaskProcessServiceScheduler(TestRegistry.getContext());
         scheduler.setNetworkTaskScheduler(networkTaskScheduler);
         networkTaskScheduler.setTimeBasedSuspensionScheduler(scheduler);
-        intervalDAO = new IntervalDAO(TestRegistry.getContext());
-        intervalDAO.deleteAllIntervals();
         scheduler.reset();
         scheduler.stop();
     }
@@ -73,7 +69,6 @@ public class SuspensionIntervalSelectDialogTest extends BaseUITest {
     @After
     public void afterEachTestMethod() {
         super.afterEachTestMethod();
-        intervalDAO.deleteAllIntervals();
         scheduler.reset();
         scheduler.stop();
     }
@@ -244,8 +239,8 @@ public class SuspensionIntervalSelectDialogTest extends BaseUITest {
     @Test
     public void testTimeInitialNumberPickerColorStart() {
         activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class);
-        intervalDAO.insertInterval(getInterval1());
-        intervalDAO.insertInterval(getInterval2());
+        getIntervalDAO().insertInterval(getInterval1());
+        getIntervalDAO().insertInterval(getInterval2());
         scheduler.restart();
         Time time = new Time();
         time.setHour(1);
@@ -263,8 +258,8 @@ public class SuspensionIntervalSelectDialogTest extends BaseUITest {
     @Test
     public void testTimeSelectedNumberPickerColorStart() {
         activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class);
-        intervalDAO.insertInterval(getInterval1());
-        intervalDAO.insertInterval(getInterval2());
+        getIntervalDAO().insertInterval(getInterval1());
+        getIntervalDAO().insertInterval(getInterval2());
         scheduler.restart();
         SuspensionIntervalsDialog intervalsDialog = openSuspensionIntervalsDialog();
         SuspensionIntervalSelectDialog intervalSelectDialog = openSuspensionIntervalSelectDialog(SuspensionIntervalSelectDialog.Mode.START, null, null);
@@ -289,8 +284,8 @@ public class SuspensionIntervalSelectDialogTest extends BaseUITest {
     @Test
     public void testTimeSelectedNumberPickerColorStartScreenRotation() {
         activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class);
-        intervalDAO.insertInterval(getInterval1());
-        intervalDAO.insertInterval(getInterval2());
+        getIntervalDAO().insertInterval(getInterval1());
+        getIntervalDAO().insertInterval(getInterval2());
         scheduler.restart();
         Time time = new Time();
         time.setHour(2);
@@ -321,8 +316,8 @@ public class SuspensionIntervalSelectDialogTest extends BaseUITest {
     @Test
     public void testTimeInitialNumberPickerColorEndDuration() {
         activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class);
-        intervalDAO.insertInterval(getInterval1());
-        intervalDAO.insertInterval(getInterval2());
+        getIntervalDAO().insertInterval(getInterval1());
+        getIntervalDAO().insertInterval(getInterval2());
         scheduler.restart();
         Time start = new Time();
         start.setHour(2);
@@ -343,8 +338,8 @@ public class SuspensionIntervalSelectDialogTest extends BaseUITest {
     @Test
     public void testTimeInitialNumberPickerColorEndOverlap() {
         activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class);
-        intervalDAO.insertInterval(getInterval1());
-        intervalDAO.insertInterval(getInterval2());
+        getIntervalDAO().insertInterval(getInterval1());
+        getIntervalDAO().insertInterval(getInterval2());
         scheduler.restart();
         Time start = new Time();
         start.setHour(10);
@@ -365,8 +360,8 @@ public class SuspensionIntervalSelectDialogTest extends BaseUITest {
     @Test
     public void testTimeSelectedNumberPickerColorEndDuration() {
         activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class);
-        intervalDAO.insertInterval(getInterval1());
-        intervalDAO.insertInterval(getInterval2());
+        getIntervalDAO().insertInterval(getInterval1());
+        getIntervalDAO().insertInterval(getInterval2());
         scheduler.restart();
         Time start = new Time();
         start.setHour(3);
@@ -397,8 +392,8 @@ public class SuspensionIntervalSelectDialogTest extends BaseUITest {
     @Test
     public void testTimeSelectedNumberPickerColorEndOverlap() {
         activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class);
-        intervalDAO.insertInterval(getInterval1());
-        intervalDAO.insertInterval(getInterval2());
+        getIntervalDAO().insertInterval(getInterval1());
+        getIntervalDAO().insertInterval(getInterval2());
         scheduler.restart();
         Time start = new Time();
         start.setHour(9);
@@ -429,8 +424,8 @@ public class SuspensionIntervalSelectDialogTest extends BaseUITest {
     @Test
     public void testTimeSelectedNumberPickerColorEndScreenRotation() {
         activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class);
-        intervalDAO.insertInterval(getInterval1());
-        intervalDAO.insertInterval(getInterval2());
+        getIntervalDAO().insertInterval(getInterval1());
+        getIntervalDAO().insertInterval(getInterval2());
         scheduler.restart();
         Time start = new Time();
         start.setHour(9);
@@ -464,8 +459,8 @@ public class SuspensionIntervalSelectDialogTest extends BaseUITest {
     @Test
     public void testTimeSelectedOkStart() {
         activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class);
-        intervalDAO.insertInterval(getInterval1());
-        intervalDAO.insertInterval(getInterval2());
+        getIntervalDAO().insertInterval(getInterval1());
+        getIntervalDAO().insertInterval(getInterval2());
         scheduler.restart();
         SuspensionIntervalsDialog intervalsDialog = openSuspensionIntervalsDialog();
         openSuspensionIntervalSelectDialog(SuspensionIntervalSelectDialog.Mode.START, null, null);
@@ -480,8 +475,8 @@ public class SuspensionIntervalSelectDialogTest extends BaseUITest {
     @Test
     public void testTimeSelectedFailureStart() {
         activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class);
-        intervalDAO.insertInterval(getInterval1());
-        intervalDAO.insertInterval(getInterval2());
+        getIntervalDAO().insertInterval(getInterval1());
+        getIntervalDAO().insertInterval(getInterval2());
         scheduler.restart();
         SuspensionIntervalsDialog intervalsDialog = openSuspensionIntervalsDialog();
         SuspensionIntervalSelectDialog intervalSelectDialog = openSuspensionIntervalSelectDialog(SuspensionIntervalSelectDialog.Mode.START, null, null);
@@ -503,8 +498,8 @@ public class SuspensionIntervalSelectDialogTest extends BaseUITest {
     @Test
     public void testTimeSelectedFailureStartScreenRotation() {
         activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class);
-        intervalDAO.insertInterval(getInterval1());
-        intervalDAO.insertInterval(getInterval2());
+        getIntervalDAO().insertInterval(getInterval1());
+        getIntervalDAO().insertInterval(getInterval2());
         scheduler.restart();
         openSuspensionIntervalsDialog();
         SuspensionIntervalSelectDialog intervalSelectDialog = openSuspensionIntervalSelectDialog(SuspensionIntervalSelectDialog.Mode.START, null, null);
@@ -543,8 +538,8 @@ public class SuspensionIntervalSelectDialogTest extends BaseUITest {
     @Test
     public void testTimeSelectedOkEnd() {
         activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class);
-        intervalDAO.insertInterval(getInterval1());
-        intervalDAO.insertInterval(getInterval2());
+        getIntervalDAO().insertInterval(getInterval1());
+        getIntervalDAO().insertInterval(getInterval2());
         scheduler.restart();
         Time start = new Time();
         start.setHour(9);
@@ -564,8 +559,8 @@ public class SuspensionIntervalSelectDialogTest extends BaseUITest {
     @Test
     public void testTimeSelectedFailureEndDuration() {
         activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class);
-        intervalDAO.insertInterval(getInterval1());
-        intervalDAO.insertInterval(getInterval2());
+        getIntervalDAO().insertInterval(getInterval1());
+        getIntervalDAO().insertInterval(getInterval2());
         scheduler.restart();
         Time start = new Time();
         start.setHour(9);
@@ -593,8 +588,8 @@ public class SuspensionIntervalSelectDialogTest extends BaseUITest {
     @Test
     public void testTimeSelectedFailureEndOverlap() {
         activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class);
-        intervalDAO.insertInterval(getInterval1());
-        intervalDAO.insertInterval(getInterval2());
+        getIntervalDAO().insertInterval(getInterval1());
+        getIntervalDAO().insertInterval(getInterval2());
         scheduler.restart();
         Time start = new Time();
         start.setHour(9);
@@ -619,8 +614,8 @@ public class SuspensionIntervalSelectDialogTest extends BaseUITest {
     @Test
     public void testTimeSelectedFailureEndDurationAndOverlap() {
         activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class);
-        intervalDAO.insertInterval(getInterval1());
-        intervalDAO.insertInterval(getInterval2());
+        getIntervalDAO().insertInterval(getInterval1());
+        getIntervalDAO().insertInterval(getInterval2());
         scheduler.restart();
         Time start = new Time();
         start.setHour(10);
@@ -647,8 +642,8 @@ public class SuspensionIntervalSelectDialogTest extends BaseUITest {
     @Test
     public void testTimeSelectedFailureEndScreenRotation() {
         activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class);
-        intervalDAO.insertInterval(getInterval1());
-        intervalDAO.insertInterval(getInterval2());
+        getIntervalDAO().insertInterval(getInterval1());
+        getIntervalDAO().insertInterval(getInterval2());
         scheduler.restart();
         Time start = new Time();
         start.setHour(9);

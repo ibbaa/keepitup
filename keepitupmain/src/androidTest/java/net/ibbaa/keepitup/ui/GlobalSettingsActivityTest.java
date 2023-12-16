@@ -45,7 +45,6 @@ import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.MediumTest;
 
 import net.ibbaa.keepitup.R;
-import net.ibbaa.keepitup.db.IntervalDAO;
 import net.ibbaa.keepitup.model.Interval;
 import net.ibbaa.keepitup.model.NotificationType;
 import net.ibbaa.keepitup.model.Time;
@@ -74,7 +73,6 @@ public class GlobalSettingsActivityTest extends BaseUITest {
 
     private TestTimeBasedSuspensionScheduler scheduler;
     private TestNetworkTaskProcessServiceScheduler networkTaskScheduler;
-    private IntervalDAO intervalDAO;
 
     @Before
     public void beforeEachTestMethod() {
@@ -83,8 +81,6 @@ public class GlobalSettingsActivityTest extends BaseUITest {
         networkTaskScheduler = new TestNetworkTaskProcessServiceScheduler(TestRegistry.getContext());
         scheduler.setNetworkTaskScheduler(networkTaskScheduler);
         networkTaskScheduler.setTimeBasedSuspensionScheduler(scheduler);
-        intervalDAO = new IntervalDAO(TestRegistry.getContext());
-        intervalDAO.deleteAllIntervals();
         scheduler.reset();
         scheduler.stop();
     }
@@ -92,7 +88,6 @@ public class GlobalSettingsActivityTest extends BaseUITest {
     @After
     public void afterEachTestMethod() {
         super.afterEachTestMethod();
-        intervalDAO.deleteAllIntervals();
         scheduler.reset();
         scheduler.stop();
     }
@@ -514,7 +509,7 @@ public class GlobalSettingsActivityTest extends BaseUITest {
 
     @Test
     public void testSuspensionDisabledOneInterval() {
-        intervalDAO.insertInterval(getInterval1());
+        getIntervalDAO().insertInterval(getInterval1());
         scheduler.restart();
         ActivityScenario<?> activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class);
         ((GlobalSettingsActivity) getActivity(activityScenario)).injectTimeBasedSuspensionScheduler(scheduler);
@@ -537,8 +532,8 @@ public class GlobalSettingsActivityTest extends BaseUITest {
 
     @Test
     public void testSuspensionDisabledTwoIntervals() {
-        intervalDAO.insertInterval(getInterval1());
-        intervalDAO.insertInterval(getInterval2());
+        getIntervalDAO().insertInterval(getInterval1());
+        getIntervalDAO().insertInterval(getInterval2());
         scheduler.restart();
         ActivityScenario<?> activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class);
         ((GlobalSettingsActivity) getActivity(activityScenario)).injectTimeBasedSuspensionScheduler(scheduler);
@@ -563,9 +558,9 @@ public class GlobalSettingsActivityTest extends BaseUITest {
 
     @Test
     public void testSuspensionDisabledThreeIntervals() {
-        intervalDAO.insertInterval(getInterval1());
-        intervalDAO.insertInterval(getInterval2());
-        intervalDAO.insertInterval(getInterval3());
+        getIntervalDAO().insertInterval(getInterval1());
+        getIntervalDAO().insertInterval(getInterval2());
+        getIntervalDAO().insertInterval(getInterval3());
         scheduler.restart();
         ActivityScenario<?> activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class);
         ((GlobalSettingsActivity) getActivity(activityScenario)).injectTimeBasedSuspensionScheduler(scheduler);
@@ -592,11 +587,11 @@ public class GlobalSettingsActivityTest extends BaseUITest {
 
     @Test
     public void testSuspensionDisabledFiveIntervals() {
-        intervalDAO.insertInterval(getInterval1());
-        intervalDAO.insertInterval(getInterval2());
-        intervalDAO.insertInterval(getInterval3());
-        intervalDAO.insertInterval(getInterval4());
-        intervalDAO.insertInterval(getInterval5());
+        getIntervalDAO().insertInterval(getInterval1());
+        getIntervalDAO().insertInterval(getInterval2());
+        getIntervalDAO().insertInterval(getInterval3());
+        getIntervalDAO().insertInterval(getInterval4());
+        getIntervalDAO().insertInterval(getInterval5());
         scheduler.restart();
         ActivityScenario<?> activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class);
         ((GlobalSettingsActivity) getActivity(activityScenario)).injectTimeBasedSuspensionScheduler(scheduler);
@@ -627,13 +622,13 @@ public class GlobalSettingsActivityTest extends BaseUITest {
 
     @Test
     public void testSuspensionSevenIntervals() {
-        intervalDAO.insertInterval(getInterval1());
-        intervalDAO.insertInterval(getInterval2());
-        intervalDAO.insertInterval(getInterval3());
-        intervalDAO.insertInterval(getInterval4());
-        intervalDAO.insertInterval(getInterval5());
-        intervalDAO.insertInterval(getInterval6());
-        intervalDAO.insertInterval(getInterval7());
+        getIntervalDAO().insertInterval(getInterval1());
+        getIntervalDAO().insertInterval(getInterval2());
+        getIntervalDAO().insertInterval(getInterval3());
+        getIntervalDAO().insertInterval(getInterval4());
+        getIntervalDAO().insertInterval(getInterval5());
+        getIntervalDAO().insertInterval(getInterval6());
+        getIntervalDAO().insertInterval(getInterval7());
         scheduler.restart();
         ActivityScenario<?> activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class);
         ((GlobalSettingsActivity) getActivity(activityScenario)).injectTimeBasedSuspensionScheduler(scheduler);

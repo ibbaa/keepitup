@@ -19,13 +19,13 @@ package net.ibbaa.keepitup.ui;
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.matcher.ViewMatchers.isRoot;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import androidx.test.core.app.ActivityScenario;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.MediumTest;
 
-import net.ibbaa.keepitup.db.IntervalDAO;
 import net.ibbaa.keepitup.model.Interval;
 import net.ibbaa.keepitup.model.Time;
 import net.ibbaa.keepitup.test.mock.TestNetworkTaskProcessServiceScheduler;
@@ -47,7 +47,6 @@ public class IntervalHandlerTest extends BaseUITest {
     private ActivityScenario<?> activityScenario;
     private TestTimeBasedSuspensionScheduler scheduler;
     private TestNetworkTaskProcessServiceScheduler networkTaskScheduler;
-    private IntervalDAO intervalDAO;
 
     @Before
     public void beforeEachTestMethod() {
@@ -56,8 +55,7 @@ public class IntervalHandlerTest extends BaseUITest {
         networkTaskScheduler = new TestNetworkTaskProcessServiceScheduler(TestRegistry.getContext());
         scheduler.setNetworkTaskScheduler(networkTaskScheduler);
         networkTaskScheduler.setTimeBasedSuspensionScheduler(scheduler);
-        intervalDAO = new IntervalDAO(TestRegistry.getContext());
-        intervalDAO.deleteAllIntervals();
+        getIntervalDAO().deleteAllIntervals();
         scheduler.reset();
         scheduler.stop();
     }
@@ -65,7 +63,7 @@ public class IntervalHandlerTest extends BaseUITest {
     @After
     public void afterEachTestMethod() {
         super.afterEachTestMethod();
-        intervalDAO.deleteAllIntervals();
+        getIntervalDAO().deleteAllIntervals();
         scheduler.reset();
         scheduler.stop();
     }
@@ -78,14 +76,14 @@ public class IntervalHandlerTest extends BaseUITest {
         onView(isRoot()).perform(waitFor(500));
         IntervalHandler handler = new IntervalHandler(getGlobalSettingsActivity(), intervalsDialog);
         handler.synchronizeIntervals();
-        assertTrue(intervalDAO.readAllIntervals().isEmpty());
+        assertTrue( getIntervalDAO().readAllIntervals().isEmpty());
         assertTrue(intervalsDialog.getAdapter().getAllItems().isEmpty());
     }
 
     @Test
     public void testSynchronizeDelete() {
-        intervalDAO.insertInterval(getInterval1());
-        intervalDAO.insertInterval(getInterval2());
+        getIntervalDAO().insertInterval(getInterval1());
+        getIntervalDAO().insertInterval(getInterval2());
         activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class);
         injectTimeBasedSuspensionScheduler();
         SuspensionIntervalsDialog intervalsDialog = openSuspensionIntervalsDialog();
@@ -93,11 +91,11 @@ public class IntervalHandlerTest extends BaseUITest {
         IntervalHandler handler = new IntervalHandler(getGlobalSettingsActivity(), intervalsDialog);
         intervalsDialog.getAdapter().removeItems();
         handler.synchronizeIntervals();
-        assertTrue(intervalDAO.readAllIntervals().isEmpty());
+        assertTrue(getIntervalDAO().readAllIntervals().isEmpty());
     }
 
     @Test
-    public void testSynchronizeIntervalsAdded() {
+    public void testSynchronizeIntervalsAdd() {
         activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class);
         injectTimeBasedSuspensionScheduler();
         SuspensionIntervalsDialog intervalsDialog = openSuspensionIntervalsDialog();
@@ -107,10 +105,89 @@ public class IntervalHandlerTest extends BaseUITest {
         intervalsDialog.getAdapter().addItem(getInterval2());
         intervalsDialog.getAdapter().addItem(getInterval3());
         handler.synchronizeIntervals();
-        List<Interval> intervals = intervalDAO.readAllIntervals();
+        List<Interval> intervals =  getIntervalDAO().readAllIntervals();
         assertEquals(2, intervals.size());
         assertTrue(intervals.get(0).isEqual(getInterval1()));
         assertTrue(intervals.get(1).isEqual(getInterval2()));
+    }
+
+    @Test
+    public void testSynchronizeIntervalsNotUpdated() {
+        Interval interval1 =  getIntervalDAO().insertInterval(getInterval1());
+        Interval interval2 =  getIntervalDAO().insertInterval(getInterval2());
+        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class);
+        injectTimeBasedSuspensionScheduler();
+        SuspensionIntervalsDialog intervalsDialog = openSuspensionIntervalsDialog();
+        onView(isRoot()).perform(waitFor(500));
+        IntervalHandler handler = new IntervalHandler(getGlobalSettingsActivity(), intervalsDialog);
+        intervalsDialog.getAdapter().removeItems();
+        intervalsDialog.getAdapter().addItem(interval1);
+        intervalsDialog.getAdapter().addItem(interval2);
+        handler.synchronizeIntervals();
+        List<Interval> intervals =  getIntervalDAO().readAllIntervals();
+        assertEquals(2, intervals.size());
+        assertTrue(intervals.get(0).isEqual(getInterval1()));
+        assertTrue(intervals.get(1).isEqual(getInterval2()));
+    }
+
+    @Test
+    public void testSynchronizeIntervalsUpdated() {
+        Interval interval1 =  getIntervalDAO().insertInterval(getInterval1());
+        Interval interval2 =  getIntervalDAO().insertInterval(getInterval2());
+        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class);
+        injectTimeBasedSuspensionScheduler();
+        SuspensionIntervalsDialog intervalsDialog = openSuspensionIntervalsDialog();
+        onView(isRoot()).perform(waitFor(500));
+        IntervalHandler handler = new IntervalHandler(getGlobalSettingsActivity(), intervalsDialog);
+        intervalsDialog.getAdapter().removeItems();
+        Time start1 = new Time();
+        start1.setHour(5);
+        start1.setMinute(5);
+        Time end1 = new Time();
+        end1.setHour(6);
+        end1.setMinute(6);
+        interval1.setStart(start1);
+        interval1.setEnd(end1);
+        Time start2 = new Time();
+        start2.setHour(9);
+        start2.setMinute(9);
+        Time end2 = new Time();
+        end2.setHour(10);
+        end2.setMinute(10);
+        interval2.setStart(start1);
+        interval2.setEnd(end1);
+        intervalsDialog.getAdapter().addItem(interval1);
+        intervalsDialog.getAdapter().addItem(interval2);
+        handler.synchronizeIntervals();
+        List<Interval> intervals =  getIntervalDAO().readAllIntervals();
+        assertEquals(2, intervals.size());
+        assertFalse(intervals.get(0).isEqual(getInterval1()));
+        assertFalse(intervals.get(1).isEqual(getInterval2()));
+        assertTrue(intervals.get(0).isEqual(interval1));
+        assertTrue(intervals.get(1).isEqual(interval2));
+    }
+
+    @Test
+    public void testSynchronizeIntervalsAddedUpdatedDeleted() {
+        getIntervalDAO().insertInterval(getInterval2());
+        Interval interval3 =  getIntervalDAO().insertInterval(getInterval3());
+        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class);
+        injectTimeBasedSuspensionScheduler();
+        SuspensionIntervalsDialog intervalsDialog = openSuspensionIntervalsDialog();
+        onView(isRoot()).perform(waitFor(500));
+        IntervalHandler handler = new IntervalHandler(getGlobalSettingsActivity(), intervalsDialog);
+        intervalsDialog.getAdapter().removeItems();
+        Time end = new Time();
+        end.setHour(0);
+        end.setMinute(15);
+        interval3.setEnd(end);
+        intervalsDialog.getAdapter().addItem(getInterval1());
+        intervalsDialog.getAdapter().addItem(interval3);
+        handler.synchronizeIntervals();
+        List<Interval> intervals =  getIntervalDAO().readAllIntervals();
+        assertEquals(2, intervals.size());
+        assertTrue(intervals.get(0).isEqual(getInterval1()));
+        assertTrue(intervals.get(1).isEqual(interval3));
     }
 
     private void injectTimeBasedSuspensionScheduler() {

@@ -21,21 +21,11 @@
       <entry key="IntervalHandlerTest">
         <State />
       </entry>
-      <entry key="Tests in 'net.ibbaa.keepitup.ui'">
-        <State>
-          <targetSelectedWithDropDown>
-            <Target>
-              <type value="QUICK_BOOT_TARGET" />
-              <deviceKey>
-                <Key>
-                  <type value="VIRTUAL_DEVICE_PATH" />
-                  <value value="$USER_HOME$/.android/avd/Nexus_5X_API_29.avd" />
-                </Key>
-              </deviceKey>
-            </Target>
-          </targetSelectedWithDropDown>
-          <timeTargetWasSelectedWithDropDown value="2023-12-15T17:07:38.956548797Z" />
-        </State>
+      <entry key="NetworkTaskHandlerTest">
+        <State />
+      </entry>
+      <entry key="SuspensionIntervalsDialogTest">
+        <State />
       </entry>
       <entry key="keepitupmain">
         <State>
@@ -50,17 +40,27 @@
               </deviceKey>
             </Target>
           </targetSelectedWithDropDown>
-          <timeTargetWasSelectedWithDropDown value="2023-12-01T05:54:44.380365631Z" />
+          <timeTargetWasSelectedWithDropDown value="2023-12-16T17:37:31.276794384Z" />
         </State>
       </entry>
-      <entry key="testSynchronizeAdapterEmpty()">
+      <entry key="testDeleteNetworkTask()">
         <State />
       </entry>
-      <entry key="testSynchronizeIntervalsDatabaseEmpty()">
-        <State />
-      </entry>
-      <entry key="testSynchronizeIntervalsEmpty()">
-        <State />
+      <entry key="testSynchronizeIntervalsAddedUpdatedDeleted()">
+        <State>
+          <targetSelectedWithDropDown>
+            <Target>
+              <type value="QUICK_BOOT_TARGET" />
+              <deviceKey>
+                <Key>
+                  <type value="VIRTUAL_DEVICE_PATH" />
+                  <value value="$USER_HOME$/.android/avd/Nexus_5X_API_29.avd" />
+                </Key>
+              </deviceKey>
+            </Target>
+          </targetSelectedWithDropDown>
+          <timeTargetWasSelectedWithDropDown value="2023-12-16T17:37:04.364962752Z" />
+        </State>
       </entry>
     </value>
   </component>
