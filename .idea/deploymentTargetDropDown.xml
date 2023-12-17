@@ -18,13 +18,10 @@
           <timeTargetWasSelectedWithDropDown value="2023-12-12T21:55:03.061716856Z" />
         </State>
       </entry>
-      <entry key="IntervalHandlerTest">
+      <entry key="GlobalSettingsActivityTest">
         <State />
       </entry>
-      <entry key="NetworkTaskHandlerTest">
-        <State />
-      </entry>
-      <entry key="SuspensionIntervalsDialogTest">
+      <entry key="NetworkTaskEditDialogTest">
         <State />
       </entry>
       <entry key="keepitupmain">
@@ -40,27 +37,17 @@
               </deviceKey>
             </Target>
           </targetSelectedWithDropDown>
-          <timeTargetWasSelectedWithDropDown value="2023-12-16T17:37:31.276794384Z" />
+          <timeTargetWasSelectedWithDropDown value="2023-12-17T09:21:16.015491864Z" />
         </State>
       </entry>
-      <entry key="testDeleteNetworkTask()">
+      <entry key="testExportConfigurationScreenRotation()">
         <State />
       </entry>
-      <entry key="testSynchronizeIntervalsAddedUpdatedDeleted()">
-        <State>
-          <targetSelectedWithDropDown>
-            <Target>
-              <type value="QUICK_BOOT_TARGET" />
-              <deviceKey>
-                <Key>
-                  <type value="VIRTUAL_DEVICE_PATH" />
-                  <value value="$USER_HOME$/.android/avd/Nexus_5X_API_29.avd" />
-                </Key>
-              </deviceKey>
-            </Target>
-          </targetSelectedWithDropDown>
-          <timeTargetWasSelectedWithDropDown value="2023-12-16T17:37:04.364962752Z" />
-        </State>
+      <entry key="testSuspensionIntervalAddChangeDelete()">
+        <State />
+      </entry>
+      <entry key="testSuspensionIntervalChangeOneOkScreenRotation()">
+        <State />
       </entry>
     </value>
   </component>

@@ -75,8 +75,8 @@ public class IntervalHandlerTest extends BaseUITest {
         SuspensionIntervalsDialog intervalsDialog = openSuspensionIntervalsDialog();
         onView(isRoot()).perform(waitFor(500));
         IntervalHandler handler = new IntervalHandler(getGlobalSettingsActivity(), intervalsDialog);
-        handler.synchronizeIntervals();
-        assertTrue( getIntervalDAO().readAllIntervals().isEmpty());
+        assertFalse(handler.synchronizeIntervals());
+        assertTrue(getIntervalDAO().readAllIntervals().isEmpty());
         assertTrue(intervalsDialog.getAdapter().getAllItems().isEmpty());
     }
 
@@ -90,7 +90,7 @@ public class IntervalHandlerTest extends BaseUITest {
         onView(isRoot()).perform(waitFor(500));
         IntervalHandler handler = new IntervalHandler(getGlobalSettingsActivity(), intervalsDialog);
         intervalsDialog.getAdapter().removeItems();
-        handler.synchronizeIntervals();
+        assertTrue(handler.synchronizeIntervals());
         assertTrue(getIntervalDAO().readAllIntervals().isEmpty());
     }
 
@@ -104,8 +104,8 @@ public class IntervalHandlerTest extends BaseUITest {
         intervalsDialog.getAdapter().addItem(getInterval1());
         intervalsDialog.getAdapter().addItem(getInterval2());
         intervalsDialog.getAdapter().addItem(getInterval3());
-        handler.synchronizeIntervals();
-        List<Interval> intervals =  getIntervalDAO().readAllIntervals();
+        assertTrue(handler.synchronizeIntervals());
+        List<Interval> intervals = getIntervalDAO().readAllIntervals();
         assertEquals(2, intervals.size());
         assertTrue(intervals.get(0).isEqual(getInterval1()));
         assertTrue(intervals.get(1).isEqual(getInterval2()));
@@ -113,8 +113,8 @@ public class IntervalHandlerTest extends BaseUITest {
 
     @Test
     public void testSynchronizeIntervalsNotUpdated() {
-        Interval interval1 =  getIntervalDAO().insertInterval(getInterval1());
-        Interval interval2 =  getIntervalDAO().insertInterval(getInterval2());
+        Interval interval1 = getIntervalDAO().insertInterval(getInterval1());
+        Interval interval2 = getIntervalDAO().insertInterval(getInterval2());
         activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class);
         injectTimeBasedSuspensionScheduler();
         SuspensionIntervalsDialog intervalsDialog = openSuspensionIntervalsDialog();
@@ -123,8 +123,8 @@ public class IntervalHandlerTest extends BaseUITest {
         intervalsDialog.getAdapter().removeItems();
         intervalsDialog.getAdapter().addItem(interval1);
         intervalsDialog.getAdapter().addItem(interval2);
-        handler.synchronizeIntervals();
-        List<Interval> intervals =  getIntervalDAO().readAllIntervals();
+        assertFalse(handler.synchronizeIntervals());
+        List<Interval> intervals = getIntervalDAO().readAllIntervals();
         assertEquals(2, intervals.size());
         assertTrue(intervals.get(0).isEqual(getInterval1()));
         assertTrue(intervals.get(1).isEqual(getInterval2()));
@@ -132,8 +132,8 @@ public class IntervalHandlerTest extends BaseUITest {
 
     @Test
     public void testSynchronizeIntervalsUpdated() {
-        Interval interval1 =  getIntervalDAO().insertInterval(getInterval1());
-        Interval interval2 =  getIntervalDAO().insertInterval(getInterval2());
+        Interval interval1 = getIntervalDAO().insertInterval(getInterval1());
+        Interval interval2 = getIntervalDAO().insertInterval(getInterval2());
         activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class);
         injectTimeBasedSuspensionScheduler();
         SuspensionIntervalsDialog intervalsDialog = openSuspensionIntervalsDialog();
@@ -158,8 +158,8 @@ public class IntervalHandlerTest extends BaseUITest {
         interval2.setEnd(end1);
         intervalsDialog.getAdapter().addItem(interval1);
         intervalsDialog.getAdapter().addItem(interval2);
-        handler.synchronizeIntervals();
-        List<Interval> intervals =  getIntervalDAO().readAllIntervals();
+        assertTrue(handler.synchronizeIntervals());
+        List<Interval> intervals = getIntervalDAO().readAllIntervals();
         assertEquals(2, intervals.size());
         assertFalse(intervals.get(0).isEqual(getInterval1()));
         assertFalse(intervals.get(1).isEqual(getInterval2()));
@@ -170,7 +170,7 @@ public class IntervalHandlerTest extends BaseUITest {
     @Test
     public void testSynchronizeIntervalsAddedUpdatedDeleted() {
         getIntervalDAO().insertInterval(getInterval2());
-        Interval interval3 =  getIntervalDAO().insertInterval(getInterval3());
+        Interval interval3 = getIntervalDAO().insertInterval(getInterval3());
         activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class);
         injectTimeBasedSuspensionScheduler();
         SuspensionIntervalsDialog intervalsDialog = openSuspensionIntervalsDialog();
@@ -183,8 +183,8 @@ public class IntervalHandlerTest extends BaseUITest {
         interval3.setEnd(end);
         intervalsDialog.getAdapter().addItem(getInterval1());
         intervalsDialog.getAdapter().addItem(interval3);
-        handler.synchronizeIntervals();
-        List<Interval> intervals =  getIntervalDAO().readAllIntervals();
+        assertTrue(handler.synchronizeIntervals());
+        List<Interval> intervals = getIntervalDAO().readAllIntervals();
         assertEquals(2, intervals.size());
         assertTrue(intervals.get(0).isEqual(getInterval1()));
         assertTrue(intervals.get(1).isEqual(interval3));

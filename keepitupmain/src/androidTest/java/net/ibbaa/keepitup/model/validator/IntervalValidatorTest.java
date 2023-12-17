@@ -193,6 +193,10 @@ public class IntervalValidatorTest {
 
     @Test
     public void testValidateOverlapSorted() {
+        assertTrue(validator.validateOverlapSorted(Collections.emptyList()));
+        assertTrue(validator.validateOverlapSorted(Arrays.asList(getInterval1())));
+        assertTrue(validator.validateOverlapSorted(Arrays.asList(getInterval2())));
+        assertTrue(validator.validateOverlapSorted(Arrays.asList(getInterval3())));
         assertTrue(validator.validateOverlapSorted(Arrays.asList(getInterval2(), getInterval3(), getInterval1())));
         Interval interval2 = getInterval2();
         Time end = new Time();

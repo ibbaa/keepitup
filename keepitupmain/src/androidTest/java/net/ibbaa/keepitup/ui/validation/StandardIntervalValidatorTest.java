@@ -91,8 +91,18 @@ public class StandardIntervalValidatorTest {
 
     @Test
     public void testValidateOverlapSorted() {
-        StandardIntervalValidator validator = new StandardIntervalValidator(TestRegistry.getContext(), Arrays.asList(getInterval2(), getInterval3(), getInterval1()));
+        StandardIntervalValidator validator = new StandardIntervalValidator(TestRegistry.getContext(), Collections.emptyList());
         ValidationResult result = validator.validateOverlapSorted();
+        assertTrue(result.isValidationSuccessful());
+        assertEquals("Interval", result.getFieldName());
+        assertEquals("Validation successful", result.getMessage());
+        validator = new StandardIntervalValidator(TestRegistry.getContext(), Arrays.asList(getInterval2()));
+        result = validator.validateOverlapSorted();
+        assertTrue(result.isValidationSuccessful());
+        assertEquals("Interval", result.getFieldName());
+        assertEquals("Validation successful", result.getMessage());
+        validator = new StandardIntervalValidator(TestRegistry.getContext(), Arrays.asList(getInterval2(), getInterval3(), getInterval1()));
+        result = validator.validateOverlapSorted();
         assertTrue(result.isValidationSuccessful());
         assertEquals("Interval", result.getFieldName());
         assertEquals("Validation successful", result.getMessage());

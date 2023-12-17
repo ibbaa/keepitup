@@ -61,14 +61,20 @@ public class IntervalValidator {
     }
 
     public boolean validateOverlapSorted(List<Interval> existingIntervals) {
-        Log.d(IntervalValidator.class.getName(), "validateOverlap");
+        Log.d(IntervalValidator.class.getName(), "validateOverlapSorted");
+        if (existingIntervals.size() <= 1) {
+            Log.d(IntervalValidator.class.getName(), "existingIntervals size is " + existingIntervals.size() + ". Returning true.");
+            return true;
+        }
         for (int ii = 0; ii < existingIntervals.size(); ii++) {
             Interval interval = existingIntervals.get(ii);
             Interval nextInterval = ii == existingIntervals.size() - 1 ? existingIntervals.get(0) : existingIntervals.get(ii + 1);
             if (interval.doesOverlap(nextInterval)) {
+                Log.d(IntervalValidator.class.getName(), "Interval " + interval + " does overlap " + nextInterval + ". Returning false.");
                 return false;
             }
         }
+        Log.d(NetworkTaskValidator.class.getName(), "Intervals do not overlap. Returning true.");
         return true;
     }
 

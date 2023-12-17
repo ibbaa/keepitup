@@ -31,14 +31,10 @@ import androidx.annotation.RequiresApi;
 import androidx.recyclerview.widget.RecyclerView;
 
 import net.ibbaa.keepitup.R;
-import net.ibbaa.keepitup.db.IntervalDAO;
 import net.ibbaa.keepitup.logging.Log;
-import net.ibbaa.keepitup.model.Interval;
 import net.ibbaa.keepitup.model.NetworkTask;
-import net.ibbaa.keepitup.model.Time;
 import net.ibbaa.keepitup.service.IAlarmManager;
 import net.ibbaa.keepitup.service.SystemAlarmManager;
-import net.ibbaa.keepitup.service.TimeBasedSuspensionScheduler;
 import net.ibbaa.keepitup.ui.adapter.NetworkTaskAdapter;
 import net.ibbaa.keepitup.ui.adapter.NetworkTaskUIWrapper;
 import net.ibbaa.keepitup.ui.dialog.AlarmPermissionDialog;
@@ -96,50 +92,6 @@ public class NetworkTaskMainActivity extends RecyclerViewBaseActivity implements
         if (!createAlarmManager().canScheduleAlarms()) {
             showAlarmPermissionDialog();
         }
-        new IntervalDAO(this).deleteAllIntervals();
-        Interval interval1 = new Interval();
-        Interval interval2 = new Interval();
-        Interval interval3 = new Interval();
-        Interval interval4 = new Interval();
-        Interval interval5 = new Interval();
-        Interval interval6 = new Interval();
-        Interval interval7 = new Interval();
-        Time timeStart1 = new Time();
-        timeStart1.setHour(10);
-        timeStart1.setMinute(11);
-        Time timeEnd1 = new Time();
-        timeEnd1.setHour(13);
-        timeEnd1.setMinute(14);
-        Time timeStart2 = new Time();
-        timeStart2.setHour(15);
-        timeStart2.setMinute(16);
-        Time timeEnd2 = new Time();
-        timeEnd2.setHour(17);
-        timeEnd2.setMinute(18);
-        Time timeStart3 = new Time();
-        timeStart3.setHour(18);
-        timeStart3.setMinute(15);
-        Time timeEnd3 = new Time();
-        timeEnd3.setHour(20);
-        timeEnd3.setMinute(15);
-        interval1.setStart(timeStart1);
-        interval1.setEnd(timeEnd1);
-        interval2.setStart(timeStart2);
-        interval2.setEnd(timeEnd2);
-        interval3.setStart(timeStart3);
-        interval3.setEnd(timeEnd3);
-        interval4.setStart(timeStart1);
-        interval4.setEnd(timeEnd1);
-        interval5.setStart(timeStart2);
-        interval5.setEnd(timeEnd2);
-        interval6.setStart(timeStart3);
-        interval6.setEnd(timeEnd3);
-        interval7.setStart(timeStart3);
-        interval7.setEnd(timeEnd3);
-        new IntervalDAO(this).insertInterval(interval1);
-        new IntervalDAO(this).insertInterval(interval2);
-        new IntervalDAO(this).insertInterval(interval3);
-        new TimeBasedSuspensionScheduler(this).restart();
     }
 
     private void prepareAddImageButton() {

@@ -37,8 +37,9 @@ public class IntervalHandler {
         this.intervalDialog = intervalDialog;
     }
 
-    public void synchronizeIntervals() {
+    public boolean synchronizeIntervals() {
         Log.d(IntervalHandler.class.getName(), "synchronizeIntervals");
+        boolean didChanges = false;
         try {
             List<Interval> newIntervals = intervalDialog.getAdapter().getAllItems();
             List<Interval> dbIntervals = new ArrayList<>(globalSettingsActivity.getTimeBasedSuspensionScheduler().getIntervals());
@@ -46,12 +47,14 @@ public class IntervalHandler {
                 Log.d(IntervalHandler.class.getName(), "Processing interval " + interval);
                 if (interval.getId() < 0) {
                     insertInterval(interval);
+                    didChanges = true;
                 } else {
                     Interval dbInterval = findById(interval.getId(), dbIntervals);
                     Log.d(IntervalHandler.class.getName(), "Found dbInterval = " + dbInterval);
                     if (dbInterval != null) {
                         if (!interval.isEqual(dbInterval)) {
                             updateInterval(interval);
+                            didChanges = true;
                         }
                         dbIntervals.remove(dbInterval);
                     } else {
@@ -61,11 +64,13 @@ public class IntervalHandler {
             }
             for (Interval interval : dbIntervals) {
                 deleteInterval(interval);
+                didChanges = true;
             }
         } catch (Exception exc) {
             Log.e(IntervalHandler.class.getName(), "Error synchronizing intervals.", exc);
             showErrorDialog(getResources().getString(R.string.text_dialog_general_error_delete_logs));
         }
+        return didChanges;
     }
 
     private void insertInterval(Interval interval) {

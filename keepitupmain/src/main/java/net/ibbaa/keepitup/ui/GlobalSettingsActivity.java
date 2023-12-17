@@ -667,6 +667,11 @@ public class GlobalSettingsActivity extends SettingsInputActivity implements Sus
     @Override
     public void onSuspensionIntervalsDialogOkClicked(SuspensionIntervalsDialog intervalsDialog) {
         Log.d(GlobalSettingsActivity.class.getName(), "onSuspensionIntervalsDialogOkClicked");
+        IntervalHandler handler = new IntervalHandler(this, intervalsDialog);
+        if (handler.synchronizeIntervals()) {
+            getTimeBasedSuspensionScheduler().restart();
+            prepareSuspensionIntervalsField();
+        }
         intervalsDialog.dismiss();
     }
 
