@@ -116,6 +116,16 @@ public class StandardIntervalValidatorTest {
         assertFalse(result.isValidationSuccessful());
         assertEquals("Interval", result.getFieldName());
         assertEquals("Intervals must not overlap and must have a distance of at least 15 minutes from each other", result.getMessage());
+        interval1 = getInterval1();
+        end = new Time();
+        end.setHour(0);
+        end.setMinute(49);
+        interval1.setEnd(end);
+        validator = new StandardIntervalValidator(TestRegistry.getContext(), Arrays.asList(getInterval2(), getInterval3(), interval1));
+        result = validator.validateOverlapSorted();
+        assertFalse(result.isValidationSuccessful());
+        assertEquals("Interval", result.getFieldName());
+        assertEquals("Intervals must not overlap and must have a distance of at least 15 minutes from each other", result.getMessage());
     }
 
     @Test

@@ -66,10 +66,12 @@ public class IntervalValidator {
             Log.d(IntervalValidator.class.getName(), "existingIntervals size is " + existingIntervals.size() + ". Returning true.");
             return true;
         }
+        int intervalDistance = context.getResources().getInteger(R.integer.suspension_interval_distance) - 1;
         for (int ii = 0; ii < existingIntervals.size(); ii++) {
             Interval interval = existingIntervals.get(ii);
+            Interval extendedInterval = TimeUtil.extendInterval(interval, intervalDistance);
             Interval nextInterval = ii == existingIntervals.size() - 1 ? existingIntervals.get(0) : existingIntervals.get(ii + 1);
-            if (interval.doesOverlap(nextInterval)) {
+            if (extendedInterval.doesOverlap(nextInterval)) {
                 Log.d(IntervalValidator.class.getName(), "Interval " + interval + " does overlap " + nextInterval + ". Returning false.");
                 return false;
             }

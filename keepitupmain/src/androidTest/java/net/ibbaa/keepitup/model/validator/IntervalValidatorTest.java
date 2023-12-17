@@ -210,6 +210,24 @@ public class IntervalValidatorTest {
         end.setMinute(15);
         interval1.setEnd(end);
         assertFalse(validator.validateOverlapSorted(Arrays.asList(getInterval2(), getInterval3(), interval1)));
+        interval1 = getInterval1();
+        end = new Time();
+        end.setHour(0);
+        end.setMinute(50);
+        interval1.setEnd(end);
+        assertFalse(validator.validateOverlapSorted(Arrays.asList(getInterval2(), getInterval3(), interval1)));
+        interval2 = getInterval2();
+        end = new Time();
+        end.setHour(2);
+        end.setMinute(50);
+        interval2.setEnd(end);
+        assertFalse(validator.validateOverlapSorted(Arrays.asList(interval2, getInterval3(), getInterval1())));
+        interval2 = getInterval2();
+        end = new Time();
+        end.setHour(2);
+        end.setMinute(48);
+        interval2.setEnd(end);
+        assertTrue(validator.validateOverlapSorted(Arrays.asList(interval2, getInterval3(), getInterval1())));
     }
 
     @Test
