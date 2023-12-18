@@ -58,14 +58,51 @@ public class TimeUtil {
         return date.getTimeInMillis();
     }
 
-    public static boolean isDurationMin(Interval interval, int minutes) {
+    public static long getDuration(Interval interval) {
         if (!interval.isValid()) {
-            return false;
+            return 0;
         }
         long start = getTimestampToday(interval.getStart(), 0);
         long end = interval.doesOverlapDays() ? getTimestampTomorrow(interval.getEnd(), 0) : getTimestampToday(interval.getEnd(), 0);
-        long duration = TimeUnit.MINUTES.convert(end - start, TimeUnit.MILLISECONDS);
+        return TimeUnit.MINUTES.convert(end - start, TimeUnit.MILLISECONDS);
+    }
+
+    public static boolean isDurationMin(Interval interval, int minutes) {
+        long duration = getDuration(interval);
         return duration >= minutes;
+    }
+
+    public static Interval getMaxGap(List<Interval> intervals) {
+        if (intervals == null || intervals.size() == 0) {
+            Time start = new Time();
+            start.setHour(0);
+            start.setMinute(0);
+            Time end = new Time();
+            end.setHour(23);
+            end.setMinute(59);
+            Interval interval = new Interval();
+            interval.setStart(start);
+            interval.setEnd(end);
+            return interval;
+        }
+        if (intervals.size() == 1) {
+            Interval interval = new Interval();
+            interval.setStart(intervals.get(0).getEnd());
+            interval.setEnd(intervals.get(0).getStart());
+            return interval;
+        }
+        Interval maxGap = new Interval();
+        for (int ii = 0; ii < intervals.size(); ii++) {
+            Interval interval = intervals.get(ii);
+            Interval nextInterval = ii == intervals.size() - 1 ? intervals.get(0) : intervals.get(ii + 1);
+            Interval currentGap = new Interval();
+            currentGap.setStart(interval.getEnd());
+            currentGap.setEnd(nextInterval.getStart());
+            if (getDuration(currentGap) >= getDuration(maxGap)) {
+                maxGap = currentGap;
+            }
+        }
+        return maxGap;
     }
 
     public static String formatSuspensionIntervalText(Interval interval, Context context) {

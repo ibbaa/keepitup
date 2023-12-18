@@ -18,37 +18,8 @@
           <timeTargetWasSelectedWithDropDown value="2023-12-12T21:55:03.061716856Z" />
         </State>
       </entry>
-      <entry key="IntervalValidatorTest">
-        <State>
-          <targetSelectedWithDropDown>
-            <Target>
-              <type value="QUICK_BOOT_TARGET" />
-              <deviceKey>
-                <Key>
-                  <type value="VIRTUAL_DEVICE_PATH" />
-                  <value value="$USER_HOME$/.android/avd/Nexus_5X_API_29.avd" />
-                </Key>
-              </deviceKey>
-            </Target>
-          </targetSelectedWithDropDown>
-          <timeTargetWasSelectedWithDropDown value="2023-12-17T18:07:54.339372416Z" />
-        </State>
-      </entry>
-      <entry key="NetworkTaskEditDialogTest">
-        <State>
-          <targetSelectedWithDropDown>
-            <Target>
-              <type value="QUICK_BOOT_TARGET" />
-              <deviceKey>
-                <Key>
-                  <type value="VIRTUAL_DEVICE_PATH" />
-                  <value value="$USER_HOME$/.android/avd/Nexus_5X_API_29.avd" />
-                </Key>
-              </deviceKey>
-            </Target>
-          </targetSelectedWithDropDown>
-          <timeTargetWasSelectedWithDropDown value="2023-12-17T14:11:06.045348791Z" />
-        </State>
+      <entry key="TimeUtilTest">
+        <State />
       </entry>
       <entry key="keepitupmain">
         <State>
@@ -66,26 +37,16 @@
           <timeTargetWasSelectedWithDropDown value="2023-12-17T09:21:16.015491864Z" />
         </State>
       </entry>
-      <entry key="testExportConfigurationScreenRotation()">
+      <entry key="testGetDuration()">
         <State />
       </entry>
-      <entry key="testValidateOverlapSorted()">
-        <State>
-          <targetSelectedWithDropDown>
-            <Target>
-              <type value="QUICK_BOOT_TARGET" />
-              <deviceKey>
-                <Key>
-                  <type value="VIRTUAL_DEVICE_PATH" />
-                  <value value="$USER_HOME$/.android/avd/Nexus_5X_API_29.avd" />
-                </Key>
-              </deviceKey>
-            </Target>
-          </targetSelectedWithDropDown>
-          <timeTargetWasSelectedWithDropDown value="2023-12-17T18:10:54.704303377Z" />
-        </State>
+      <entry key="testGetMaxGapFour()">
+        <State />
       </entry>
-      <entry key="testValidateOverlapSorted() (1)">
+      <entry key="testGetMaxGapThree()">
+        <State />
+      </entry>
+      <entry key="testGetMaxGapZeroGap()">
         <State />
       </entry>
     </value>
