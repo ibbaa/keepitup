@@ -18,7 +18,10 @@
           <timeTargetWasSelectedWithDropDown value="2023-12-12T21:55:03.061716856Z" />
         </State>
       </entry>
-      <entry key="TimeUtilTest">
+      <entry key="GlobalSettingsActivityTest">
+        <State />
+      </entry>
+      <entry key="SuspensionIntervalsDialogTest">
         <State />
       </entry>
       <entry key="keepitupmain">
@@ -34,19 +37,16 @@
               </deviceKey>
             </Target>
           </targetSelectedWithDropDown>
-          <timeTargetWasSelectedWithDropDown value="2023-12-17T09:21:16.015491864Z" />
+          <timeTargetWasSelectedWithDropDown value="2023-12-20T10:42:17.187872519Z" />
         </State>
       </entry>
-      <entry key="testGetDuration()">
+      <entry key="testNewDefaultValuesForNetworkTask()">
         <State />
       </entry>
-      <entry key="testGetMaxGapFour()">
+      <entry key="testThreeIntervalsAddAndDelete()">
         <State />
       </entry>
-      <entry key="testGetMaxGapThree()">
-        <State />
-      </entry>
-      <entry key="testGetMaxGapZeroGap()">
+      <entry key="testThreeIntervalsAddOverlapDays()">
         <State />
       </entry>
     </value>

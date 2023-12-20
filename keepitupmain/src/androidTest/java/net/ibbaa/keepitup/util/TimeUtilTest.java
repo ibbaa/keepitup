@@ -168,6 +168,30 @@ public class TimeUtilTest {
     }
 
     @Test
+    public void testGetDistance() {
+        Time start = new Time();
+        start.setHour(0);
+        start.setMinute(0);
+        Time end = new Time();
+        end.setHour(23);
+        end.setMinute(59);
+        assertEquals(1439, TimeUtil.getDistance(start, end));
+        start = new Time();
+        start.setHour(22);
+        start.setMinute(0);
+        end = new Time();
+        end.setHour(4);
+        end.setMinute(0);
+        assertEquals(360, TimeUtil.getDistance(start, end));
+        start.setHour(5);
+        start.setMinute(0);
+        end = new Time();
+        end.setHour(6);
+        end.setMinute(0);
+        assertEquals(60, TimeUtil.getDistance(start, end));
+    }
+
+    @Test
     public void testGetDuration() {
         assertEquals(0, TimeUtil.getDuration(new Interval()));
         Time start = new Time();
@@ -253,7 +277,7 @@ public class TimeUtilTest {
     }
 
     @Test
-    public void testGetMaxGapEmptyOrOne() {
+    public void testGetCurrentGapEmptyOrOne() {
         Time start = new Time();
         start.setHour(0);
         start.setMinute(0);
@@ -263,9 +287,8 @@ public class TimeUtilTest {
         Interval interval = new Interval();
         interval.setStart(start);
         interval.setEnd(end);
-        Interval maxGap = TimeUtil.getMaxGap(Collections.emptyList());
-        assertTrue(maxGap.isEqual(interval));
-        assertEquals(1439, TimeUtil.getDuration(maxGap));
+        Interval currentGap = TimeUtil.getCurrentGap(Collections.emptyList(), new Time());
+        assertTrue(currentGap.isEqual(interval));
         start = new Time();
         start.setHour(22);
         start.setMinute(0);
@@ -275,12 +298,11 @@ public class TimeUtilTest {
         interval = new Interval();
         interval.setStart(start);
         interval.setEnd(end);
-        maxGap = TimeUtil.getMaxGap(Collections.singletonList(interval));
+        currentGap = TimeUtil.getCurrentGap(Collections.singletonList(interval), new Time());
         interval = new Interval();
         interval.setStart(end);
         interval.setEnd(start);
-        assertTrue(maxGap.isEqual(interval));
-        assertEquals(1080, TimeUtil.getDuration(maxGap));
+        assertTrue(currentGap.isEqual(interval));
         start = new Time();
         start.setHour(1);
         start.setMinute(0);
@@ -290,12 +312,11 @@ public class TimeUtilTest {
         interval = new Interval();
         interval.setStart(start);
         interval.setEnd(end);
-        maxGap = TimeUtil.getMaxGap(Collections.singletonList(interval));
+        currentGap = TimeUtil.getCurrentGap(Collections.singletonList(interval), new Time());
         interval = new Interval();
         interval.setStart(end);
         interval.setEnd(start);
-        assertTrue(maxGap.isEqual(interval));
-        assertEquals(1380, TimeUtil.getDuration(maxGap));
+        assertTrue(currentGap.isEqual(interval));
         start = new Time();
         start.setHour(2);
         start.setMinute(0);
@@ -304,59 +325,15 @@ public class TimeUtilTest {
         end.setMinute(0);
         interval.setStart(start);
         interval.setEnd(end);
-        maxGap = TimeUtil.getMaxGap(Collections.singletonList(interval));
+        currentGap = TimeUtil.getCurrentGap(Collections.singletonList(interval), new Time());
         interval = new Interval();
         interval.setStart(end);
         interval.setEnd(start);
-        assertTrue(maxGap.isEqual(interval));
-        assertEquals(60, TimeUtil.getDuration(maxGap));
+        assertTrue(currentGap.isEqual(interval));
     }
 
     @Test
-    public void testGetMaxGapThree() {
-        Time start1 = new Time();
-        start1.setHour(5);
-        start1.setMinute(0);
-        Time end1 = new Time();
-        end1.setHour(8);
-        end1.setMinute(0);
-        Interval interval1 = new Interval();
-        interval1.setStart(start1);
-        interval1.setEnd(end1);
-        Time start2 = new Time();
-        start2.setHour(11);
-        start2.setMinute(15);
-        Time end2 = new Time();
-        end2.setHour(12);
-        end2.setMinute(30);
-        Interval interval2 = new Interval();
-        interval2.setStart(start2);
-        interval2.setEnd(end2);
-        Time start3 = new Time();
-        start3.setHour(22);
-        start3.setMinute(0);
-        Time end3 = new Time();
-        end3.setHour(4);
-        end3.setMinute(0);
-        Interval interval3 = new Interval();
-        interval3.setStart(start3);
-        interval3.setEnd(end3);
-        Interval maxGap = TimeUtil.getMaxGap(Arrays.asList(interval1, interval2, interval3));
-        Time start = new Time();
-        start.setHour(12);
-        start.setMinute(30);
-        Time end = new Time();
-        end.setHour(22);
-        end.setMinute(0);
-        Interval interval = new Interval();
-        interval.setStart(start);
-        interval.setEnd(end);
-        assertTrue(maxGap.isEqual(interval));
-        assertEquals(570, TimeUtil.getDuration(maxGap));
-    }
-
-    @Test
-    public void testGetMaxGapFour() {
+    public void testGetCurrentGap() {
         Time start1 = new Time();
         start1.setHour(5);
         start1.setMinute(0);
@@ -393,7 +370,10 @@ public class TimeUtilTest {
         Interval interval4 = new Interval();
         interval4.setStart(start4);
         interval4.setEnd(end4);
-        Interval maxGap = TimeUtil.getMaxGap(Arrays.asList(interval1, interval2, interval3, interval4));
+        Time time = new Time();
+        time.setHour(11);
+        time.setMinute(0);
+        Interval currentGap = TimeUtil.getCurrentGap(Arrays.asList(interval1, interval2, interval3, interval4), time);
         Time start = new Time();
         start.setHour(8);
         start.setMinute(0);
@@ -403,12 +383,25 @@ public class TimeUtilTest {
         Interval interval = new Interval();
         interval.setStart(start);
         interval.setEnd(end);
-        assertTrue(maxGap.isEqual(interval));
-        assertEquals(195, TimeUtil.getDuration(maxGap));
+        assertTrue(currentGap.isEqual(interval));
+        time = new Time();
+        time.setHour(4);
+        time.setMinute(15);
+        currentGap = TimeUtil.getCurrentGap(Arrays.asList(interval1, interval2, interval3, interval4), time);
+        start = new Time();
+        start.setHour(4);
+        start.setMinute(0);
+        end = new Time();
+        end.setHour(5);
+        end.setMinute(0);
+        interval = new Interval();
+        interval.setStart(start);
+        interval.setEnd(end);
+        assertTrue(currentGap.isEqual(interval));
     }
 
     @Test
-    public void testGetMaxGapZeroGap() {
+    public void testGetCurrentGapNotFound() {
         Time start1 = new Time();
         start1.setHour(4);
         start1.setMinute(0);
@@ -445,7 +438,213 @@ public class TimeUtilTest {
         Interval interval4 = new Interval();
         interval4.setStart(start4);
         interval4.setEnd(end4);
-        Interval maxGap = TimeUtil.getMaxGap(Arrays.asList(interval1, interval2, interval3, interval4));
+        Interval currentGap = TimeUtil.getCurrentGap(Arrays.asList(interval1, interval2, interval3, interval4), new Time());
+        Time start = new Time();
+        start.setHour(0);
+        start.setMinute(0);
+        Time end = new Time();
+        end.setHour(23);
+        end.setMinute(59);
+        Interval interval = new Interval();
+        interval.setStart(start);
+        interval.setEnd(end);
+        assertTrue(currentGap.isEqual(interval));
+    }
+
+    @Test
+    public void testGetLargestGapEmptyOrOne() {
+        Time start = new Time();
+        start.setHour(0);
+        start.setMinute(0);
+        Time end = new Time();
+        end.setHour(23);
+        end.setMinute(59);
+        Interval interval = new Interval();
+        interval.setStart(start);
+        interval.setEnd(end);
+        Interval largestGap = TimeUtil.getLargestGap(Collections.emptyList());
+        assertTrue(largestGap.isEqual(interval));
+        assertEquals(1439, TimeUtil.getDuration(largestGap));
+        start = new Time();
+        start.setHour(22);
+        start.setMinute(0);
+        end = new Time();
+        end.setHour(4);
+        end.setMinute(0);
+        interval = new Interval();
+        interval.setStart(start);
+        interval.setEnd(end);
+        largestGap = TimeUtil.getLargestGap(Collections.singletonList(interval));
+        interval = new Interval();
+        interval.setStart(end);
+        interval.setEnd(start);
+        assertTrue(largestGap.isEqual(interval));
+        assertEquals(1080, TimeUtil.getDuration(largestGap));
+        start = new Time();
+        start.setHour(1);
+        start.setMinute(0);
+        end = new Time();
+        end.setHour(2);
+        end.setMinute(0);
+        interval = new Interval();
+        interval.setStart(start);
+        interval.setEnd(end);
+        largestGap = TimeUtil.getLargestGap(Collections.singletonList(interval));
+        interval = new Interval();
+        interval.setStart(end);
+        interval.setEnd(start);
+        assertTrue(largestGap.isEqual(interval));
+        assertEquals(1380, TimeUtil.getDuration(largestGap));
+        start = new Time();
+        start.setHour(2);
+        start.setMinute(0);
+        end = new Time();
+        end.setHour(1);
+        end.setMinute(0);
+        interval.setStart(start);
+        interval.setEnd(end);
+        largestGap = TimeUtil.getLargestGap(Collections.singletonList(interval));
+        interval = new Interval();
+        interval.setStart(end);
+        interval.setEnd(start);
+        assertTrue(largestGap.isEqual(interval));
+        assertEquals(60, TimeUtil.getDuration(largestGap));
+    }
+
+    @Test
+    public void testGetLargestGapThree() {
+        Time start1 = new Time();
+        start1.setHour(5);
+        start1.setMinute(0);
+        Time end1 = new Time();
+        end1.setHour(8);
+        end1.setMinute(0);
+        Interval interval1 = new Interval();
+        interval1.setStart(start1);
+        interval1.setEnd(end1);
+        Time start2 = new Time();
+        start2.setHour(11);
+        start2.setMinute(15);
+        Time end2 = new Time();
+        end2.setHour(12);
+        end2.setMinute(30);
+        Interval interval2 = new Interval();
+        interval2.setStart(start2);
+        interval2.setEnd(end2);
+        Time start3 = new Time();
+        start3.setHour(22);
+        start3.setMinute(0);
+        Time end3 = new Time();
+        end3.setHour(4);
+        end3.setMinute(0);
+        Interval interval3 = new Interval();
+        interval3.setStart(start3);
+        interval3.setEnd(end3);
+        Interval largestGap = TimeUtil.getLargestGap(Arrays.asList(interval1, interval2, interval3));
+        Time start = new Time();
+        start.setHour(12);
+        start.setMinute(30);
+        Time end = new Time();
+        end.setHour(22);
+        end.setMinute(0);
+        Interval interval = new Interval();
+        interval.setStart(start);
+        interval.setEnd(end);
+        assertTrue(largestGap.isEqual(interval));
+        assertEquals(570, TimeUtil.getDuration(largestGap));
+    }
+
+    @Test
+    public void testGetLargestGapFour() {
+        Time start1 = new Time();
+        start1.setHour(5);
+        start1.setMinute(0);
+        Time end1 = new Time();
+        end1.setHour(8);
+        end1.setMinute(0);
+        Interval interval1 = new Interval();
+        interval1.setStart(start1);
+        interval1.setEnd(end1);
+        Time start2 = new Time();
+        start2.setHour(11);
+        start2.setMinute(15);
+        Time end2 = new Time();
+        end2.setHour(12);
+        end2.setMinute(30);
+        Interval interval2 = new Interval();
+        interval2.setStart(start2);
+        interval2.setEnd(end2);
+        Time start3 = new Time();
+        start3.setHour(13);
+        start3.setMinute(20);
+        Time end3 = new Time();
+        end3.setHour(20);
+        end3.setMinute(30);
+        Interval interval3 = new Interval();
+        interval3.setStart(start3);
+        interval3.setEnd(end3);
+        Time start4 = new Time();
+        start4.setHour(22);
+        start4.setMinute(0);
+        Time end4 = new Time();
+        end4.setHour(4);
+        end4.setMinute(0);
+        Interval interval4 = new Interval();
+        interval4.setStart(start4);
+        interval4.setEnd(end4);
+        Interval largestGap = TimeUtil.getLargestGap(Arrays.asList(interval1, interval2, interval3, interval4));
+        Time start = new Time();
+        start.setHour(8);
+        start.setMinute(0);
+        Time end = new Time();
+        end.setHour(11);
+        end.setMinute(15);
+        Interval interval = new Interval();
+        interval.setStart(start);
+        interval.setEnd(end);
+        assertTrue(largestGap.isEqual(interval));
+        assertEquals(195, TimeUtil.getDuration(largestGap));
+    }
+
+    @Test
+    public void testGetLargestGapZeroGap() {
+        Time start1 = new Time();
+        start1.setHour(4);
+        start1.setMinute(0);
+        Time end1 = new Time();
+        end1.setHour(8);
+        end1.setMinute(0);
+        Interval interval1 = new Interval();
+        interval1.setStart(start1);
+        interval1.setEnd(end1);
+        Time start2 = new Time();
+        start2.setHour(8);
+        start2.setMinute(0);
+        Time end2 = new Time();
+        end2.setHour(12);
+        end2.setMinute(30);
+        Interval interval2 = new Interval();
+        interval2.setStart(start2);
+        interval2.setEnd(end2);
+        Time start3 = new Time();
+        start3.setHour(12);
+        start3.setMinute(30);
+        Time end3 = new Time();
+        end3.setHour(22);
+        end3.setMinute(0);
+        Interval interval3 = new Interval();
+        interval3.setStart(start3);
+        interval3.setEnd(end3);
+        Time start4 = new Time();
+        start4.setHour(22);
+        start4.setMinute(0);
+        Time end4 = new Time();
+        end4.setHour(4);
+        end4.setMinute(0);
+        Interval interval4 = new Interval();
+        interval4.setStart(start4);
+        interval4.setEnd(end4);
+        Interval largestGap = TimeUtil.getLargestGap(Arrays.asList(interval1, interval2, interval3, interval4));
         Time start = new Time();
         start.setHour(4);
         start.setMinute(0);
@@ -455,8 +654,8 @@ public class TimeUtilTest {
         Interval interval = new Interval();
         interval.setStart(start);
         interval.setEnd(end);
-        assertTrue(maxGap.isEqual(interval));
-        assertEquals(0, TimeUtil.getDuration(maxGap));
+        assertTrue(largestGap.isEqual(interval));
+        assertEquals(0, TimeUtil.getDuration(largestGap));
     }
 
     @Test

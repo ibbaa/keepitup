@@ -66,7 +66,7 @@ public class IntervalValidator {
             Log.d(IntervalValidator.class.getName(), "existingIntervals size is " + existingIntervals.size() + ". Returning true.");
             return true;
         }
-        int intervalDistance = context.getResources().getInteger(R.integer.suspension_interval_distance) - 1;
+        int intervalDistance = context.getResources().getInteger(R.integer.suspension_interval_min_distance) - 1;
         for (int ii = 0; ii < existingIntervals.size(); ii++) {
             Interval interval = existingIntervals.get(ii);
             Interval extendedInterval = TimeUtil.extendInterval(interval, intervalDistance);
@@ -82,7 +82,7 @@ public class IntervalValidator {
 
     public boolean validateOverlap(Interval interval, List<Interval> existingIntervals) {
         Log.d(IntervalValidator.class.getName(), "validateOverlap of interval " + interval);
-        int intervalDistance = context.getResources().getInteger(R.integer.suspension_interval_distance) - 1;
+        int intervalDistance = context.getResources().getInteger(R.integer.suspension_interval_min_distance) - 1;
         Interval extendedInterval = TimeUtil.extendInterval(interval, intervalDistance);
         Log.d(IntervalValidator.class.getName(), "extendedInterval is " + extendedInterval);
         for (Interval existingInterval : existingIntervals) {
@@ -102,7 +102,7 @@ public class IntervalValidator {
 
     public boolean validateInInterval(Time time, List<Interval> existingIntervals) {
         Log.d(IntervalValidator.class.getName(), "validateIsInInterval for time " + time);
-        int intervalDistance = context.getResources().getInteger(R.integer.suspension_interval_distance) - 1;
+        int intervalDistance = context.getResources().getInteger(R.integer.suspension_interval_min_distance) - 1;
         Time timeAfter = TimeUtil.addMinutes(time, intervalDistance);
         Time timeBefore = TimeUtil.substractMinutes(time, intervalDistance);
         Log.d(IntervalValidator.class.getName(), "time is " + time);

@@ -131,7 +131,7 @@ public class SuspensionIntervalsDialog extends DialogFragment implements Confirm
             Log.d(SuspensionIntervalsDialog.class.getName(), "Current saved interval is " + currentInterval);
             return;
         }
-        reinitializeCurrentInterval();
+        initializeCurrentInterval();
     }
 
     private void preparePosition(Bundle savedInstanceState) {
@@ -143,32 +143,8 @@ public class SuspensionIntervalsDialog extends DialogFragment implements Confirm
         }
     }
 
-    private Time getDefaultStart() {
-        Log.d(SuspensionIntervalsDialog.class.getName(), "getDefaultStart");
-        List<Interval> list = ((SuspensionIntervalAdapter) Objects.requireNonNull(suspensionIntervalsRecyclerView.getAdapter())).getAllItems();
-        Time start = new Time();
-        if (list.isEmpty()) {
-            start.setHour(getResources().getInteger(R.integer.suspension_interval_default_start_hour));
-            start.setMinute(getResources().getInteger(R.integer.suspension_interval_default_start_minute));
-        } else {
-            Interval latest = list.get(list.size() - 1);
-            start = TimeUtil.addMinutes(latest.getEnd(), getResources().getInteger(R.integer.suspension_interval_default_distance));
-        }
-        Log.d(SuspensionIntervalsDialog.class.getName(), "default start is " + start);
-        return start;
-    }
-
-    private Time getDefaultEnd(Time start) {
-        Log.d(SuspensionIntervalsDialog.class.getName(), "getDefaultEnd for start time " + start);
-        boolean hasIntervals = !((SuspensionIntervalAdapter) Objects.requireNonNull(suspensionIntervalsRecyclerView.getAdapter())).getAllItems().isEmpty();
-        Time end;
-        if (hasIntervals) {
-            end = TimeUtil.addMinutes(start, getResources().getInteger(R.integer.suspension_interval_default_length_following));
-        } else {
-            end = TimeUtil.addMinutes(start, getResources().getInteger(R.integer.suspension_interval_default_length_first));
-        }
-        Log.d(SuspensionIntervalsDialog.class.getName(), "default end is " + end);
-        return end;
+    private boolean hasIntervals() {
+        return !((SuspensionIntervalAdapter) Objects.requireNonNull(suspensionIntervalsRecyclerView.getAdapter())).getAllItems().isEmpty();
     }
 
     private void prepareAddImageButton() {
@@ -218,7 +194,7 @@ public class SuspensionIntervalsDialog extends DialogFragment implements Confirm
                 Log.d(SuspensionIntervalsDialog.class.getName(), "deleting interval at deletePosition " + deletePosition);
                 getAdapter().removeItem(deletePosition);
                 getAdapter().notifyItemRemoved(deletePosition);
-                reinitializeCurrentInterval();
+                initializeCurrentInterval();
             } else {
                 Log.e(SuspensionIntervalsDialog.class.getName(), ConfirmDialog.class.getSimpleName() + " arguments do not contain deletePosition key " + confirmDialog.getPositionKey());
             }
@@ -251,7 +227,7 @@ public class SuspensionIntervalsDialog extends DialogFragment implements Confirm
             List<Interval> intervals = TimeUtil.sortIntervalList(getAdapter().getAllItems());
             getAdapter().replaceItems(intervals);
             getAdapter().notifyDataSetChanged();
-            reinitializeCurrentInterval();
+            initializeCurrentInterval();
             intervalSelectDialog.dismiss();
         }
     }
@@ -261,7 +237,7 @@ public class SuspensionIntervalsDialog extends DialogFragment implements Confirm
         Log.d(SuspensionIntervalsDialog.class.getName(), "onSuspensionIntervalSelectDialogCancelClicked with mode " + mode);
         if (position >= 0) {
             position = -1;
-            reinitializeCurrentInterval();
+            initializeCurrentInterval();
         } else {
             if (SuspensionIntervalSelectDialog.Mode.START.equals(mode)) {
                 prepareCurrentInterval(intervalSelectDialog);
@@ -281,17 +257,39 @@ public class SuspensionIntervalsDialog extends DialogFragment implements Confirm
             Interval interval = getAdapter().getItem(position);
             if (interval == null) {
                 Log.e(SuspensionIntervalsDialog.class.getName(), "prepareCurrentInterval, interval at position " + position + " is null");
-                end = getDefaultEnd(start);
+                end = getEnd(start);
             } else {
-                end = interval.getEnd().isAfter(start) ? interval.getEnd() : getDefaultEnd(start);
+                end = interval.getEnd().isAfter(start) ? interval.getEnd() : getEnd(start);
             }
         } else {
-            end = getDefaultEnd(start);
+            end = getEnd(start);
         }
         Log.d(SuspensionIntervalsDialog.class.getName(), "start is " + start);
         Log.d(SuspensionIntervalsDialog.class.getName(), "end is " + end);
         currentInterval.setStart(start);
         currentInterval.setEnd(end);
+    }
+
+    private Time getEnd(Time start) {
+        Log.d(SuspensionIntervalsDialog.class.getName(), "getEnd for start " + start);
+        if (!hasIntervals()) {
+            Log.d(SuspensionIntervalsDialog.class.getName(), "No intervals defined.");
+            return getDefaultInterval().getEnd();
+        }
+        Interval currentGap = TimeUtil.getCurrentGap(getAdapter().getAllItems(), start);
+        Log.d(SuspensionIntervalsDialog.class.getName(), "Current gap is " + currentGap);
+        int distance = TimeUtil.getDistance(start, currentGap.getEnd());
+        int thresholdDistance = getResources().getInteger(R.integer.suspension_interval_current_gap_threshold_distance);
+        int minDistance = getResources().getInteger(R.integer.suspension_interval_current_gap_min_distance);
+        Log.d(SuspensionIntervalsDialog.class.getName(), "Distance is " + distance);
+        Log.d(SuspensionIntervalsDialog.class.getName(), "Min distance is " + minDistance);
+        Log.d(SuspensionIntervalsDialog.class.getName(), "Threshold distance is " + thresholdDistance);
+        if (distance >= thresholdDistance) {
+            return TimeUtil.addMinutes(start, getResources().getInteger(R.integer.suspension_interval_threshold_duration));
+        } else if (distance < minDistance) {
+            return TimeUtil.addMinutes(start, getResources().getInteger(R.integer.suspension_interval_min_duration));
+        }
+        return TimeUtil.substractMinutes(currentGap.getEnd(), getResources().getInteger(R.integer.suspension_interval_min_distance));
     }
 
     @Override
@@ -392,10 +390,60 @@ public class SuspensionIntervalsDialog extends DialogFragment implements Confirm
         }
     }
 
-    private void reinitializeCurrentInterval() {
-        currentInterval = new Interval();
-        currentInterval.setStart(getDefaultStart());
-        currentInterval.setEnd(getDefaultEnd(currentInterval.getStart()));
+    private void initializeCurrentInterval() {
+        Log.d(SuspensionIntervalsDialog.class.getName(), "initializeCurrentInterval");
+        if (!hasIntervals()) {
+            currentInterval = getDefaultInterval();
+            Log.d(SuspensionIntervalsDialog.class.getName(), "No intervals defined. Returning " + currentInterval);
+        } else {
+            Interval largestGap = TimeUtil.getLargestGap(getAdapter().getAllItems());
+            Log.d(SuspensionIntervalsDialog.class.getName(), "Largest gap: " + largestGap);
+            int largestGapDuration = TimeUtil.getDuration(largestGap);
+            int thresholdDuration = getResources().getInteger(R.integer.suspension_interval_largest_gap_threshold_duration);
+            int minDuration = getResources().getInteger(R.integer.suspension_interval_largest_gap_min_duration);
+            Log.d(SuspensionIntervalsDialog.class.getName(), "Largest gap duration: " + largestGapDuration);
+            Log.d(SuspensionIntervalsDialog.class.getName(), "Threshold duration: " + thresholdDuration);
+            Log.d(SuspensionIntervalsDialog.class.getName(), "Min duration: " + minDuration);
+            if (largestGapDuration >= thresholdDuration) {
+                currentInterval = getThresholdInterval(largestGap);
+            } else if (largestGapDuration < minDuration) {
+                currentInterval = getDefaultInterval();
+            } else {
+                currentInterval = getMinInterval(largestGap);
+            }
+            Log.d(SuspensionIntervalsDialog.class.getName(), "Returning " + currentInterval);
+        }
+    }
+
+    private Interval getDefaultInterval() {
+        Log.d(SuspensionIntervalsDialog.class.getName(), "getDefaultInterval");
+        Interval interval = new Interval();
+        Time start = new Time();
+        start.setHour(getResources().getInteger(R.integer.suspension_interval_default_start_hour));
+        start.setMinute(getResources().getInteger(R.integer.suspension_interval_default_start_minute));
+        Time end = TimeUtil.addMinutes(start, getResources().getInteger(R.integer.suspension_interval_default_length));
+        interval.setStart(start);
+        interval.setEnd(end);
+        Log.d(SuspensionIntervalsDialog.class.getName(), "Default interval is " + interval);
+        return interval;
+    }
+
+    private Interval getThresholdInterval(Interval largestGap) {
+        Log.d(SuspensionIntervalsDialog.class.getName(), "getThresholdInterval for gap " + largestGap);
+        Interval interval = new Interval();
+        interval.setStart(TimeUtil.addMinutes(largestGap.getStart(), getResources().getInteger(R.integer.suspension_interval_threshold_distance)));
+        interval.setEnd(TimeUtil.addMinutes(interval.getStart(), getResources().getInteger(R.integer.suspension_interval_threshold_duration)));
+        Log.d(SuspensionIntervalsDialog.class.getName(), "Threshold interval is " + interval);
+        return interval;
+    }
+
+    private Interval getMinInterval(Interval largestGap) {
+        Log.d(SuspensionIntervalsDialog.class.getName(), "getMinInterval for gap " + largestGap);
+        Interval interval = new Interval();
+        interval.setStart(TimeUtil.addMinutes(largestGap.getStart(), getResources().getInteger(R.integer.suspension_interval_min_distance)));
+        interval.setEnd(TimeUtil.substractMinutes(largestGap.getEnd(), getResources().getInteger(R.integer.suspension_interval_min_distance)));
+        Log.d(SuspensionIntervalsDialog.class.getName(), "Min interval is " + interval);
+        return interval;
     }
 
     public RecyclerView getSuspensionIntervalsRecyclerView() {

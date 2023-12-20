@@ -58,13 +58,17 @@ public class TimeUtil {
         return date.getTimeInMillis();
     }
 
-    public static long getDuration(Interval interval) {
+    public static int getDistance(Time startTime, Time endTime) {
+        long start = getTimestampToday(startTime, 0);
+        long end = endTime.isBefore(startTime) ? getTimestampTomorrow(endTime, 0) : getTimestampToday(endTime, 0);
+        return (int) TimeUnit.MINUTES.convert(end - start, TimeUnit.MILLISECONDS);
+    }
+
+    public static int getDuration(Interval interval) {
         if (!interval.isValid()) {
             return 0;
         }
-        long start = getTimestampToday(interval.getStart(), 0);
-        long end = interval.doesOverlapDays() ? getTimestampTomorrow(interval.getEnd(), 0) : getTimestampToday(interval.getEnd(), 0);
-        return TimeUnit.MINUTES.convert(end - start, TimeUnit.MILLISECONDS);
+        return getDistance(interval.getStart(), interval.getEnd());
     }
 
     public static boolean isDurationMin(Interval interval, int minutes) {
@@ -72,38 +76,68 @@ public class TimeUtil {
         return duration >= minutes;
     }
 
-    public static Interval getMaxGap(List<Interval> intervals) {
+    public static Interval getCurrentGap(List<Interval> intervals, Time time) {
         if (intervals == null || intervals.size() == 0) {
-            Time start = new Time();
-            start.setHour(0);
-            start.setMinute(0);
-            Time end = new Time();
-            end.setHour(23);
-            end.setMinute(59);
-            Interval interval = new Interval();
-            interval.setStart(start);
-            interval.setEnd(end);
-            return interval;
+            return getFullGap();
         }
         if (intervals.size() == 1) {
-            Interval interval = new Interval();
-            interval.setStart(intervals.get(0).getEnd());
-            interval.setEnd(intervals.get(0).getStart());
-            return interval;
+            return getSingleGap(intervals.get(0));
         }
-        Interval maxGap = new Interval();
         for (int ii = 0; ii < intervals.size(); ii++) {
-            Interval interval = intervals.get(ii);
-            Interval nextInterval = ii == intervals.size() - 1 ? intervals.get(0) : intervals.get(ii + 1);
-            Interval currentGap = new Interval();
-            currentGap.setStart(interval.getEnd());
-            currentGap.setEnd(nextInterval.getStart());
-            if (getDuration(currentGap) >= getDuration(maxGap)) {
-                maxGap = currentGap;
+            Interval currentGap = getGap(intervals, ii);
+            if (currentGap.isInInterval(time)) {
+                return currentGap;
             }
         }
-        return maxGap;
+        return getFullGap();
     }
+
+    public static Interval getLargestGap(List<Interval> intervals) {
+        if (intervals == null || intervals.size() == 0) {
+            return getFullGap();
+        }
+        if (intervals.size() == 1) {
+            return getSingleGap(intervals.get(0));
+        }
+        Interval largestGap = new Interval();
+        for (int ii = 0; ii < intervals.size(); ii++) {
+            Interval currentGap = getGap(intervals, ii);
+            if (getDuration(currentGap) >= getDuration(largestGap)) {
+                largestGap = currentGap;
+            }
+        }
+        return largestGap;
+    }
+
+    private static Interval getFullGap() {
+        Time start = new Time();
+        start.setHour(0);
+        start.setMinute(0);
+        Time end = new Time();
+        end.setHour(23);
+        end.setMinute(59);
+        Interval interval = new Interval();
+        interval.setStart(start);
+        interval.setEnd(end);
+        return interval;
+    }
+
+    private static Interval getSingleGap(Interval interval) {
+        Interval newInterval = new Interval();
+        newInterval.setStart(interval.getEnd());
+        newInterval.setEnd(interval.getStart());
+        return newInterval;
+    }
+
+    private static Interval getGap(List<Interval> intervals, int ii) {
+        Interval interval = intervals.get(ii);
+        Interval nextInterval = ii == intervals.size() - 1 ? intervals.get(0) : intervals.get(ii + 1);
+        Interval currentGap = new Interval();
+        currentGap.setStart(interval.getEnd());
+        currentGap.setEnd(nextInterval.getStart());
+        return currentGap;
+    }
+
 
     public static String formatSuspensionIntervalText(Interval interval, Context context) {
         SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm");

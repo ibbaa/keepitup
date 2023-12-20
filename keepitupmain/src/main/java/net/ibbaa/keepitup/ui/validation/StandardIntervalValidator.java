@@ -99,7 +99,7 @@ public class StandardIntervalValidator implements IntervalValidator {
         if (result) {
             return context.getResources().getString(R.string.validation_successful);
         }
-        int distance = context.getResources().getInteger(R.integer.suspension_interval_distance);
+        int distance = context.getResources().getInteger(R.integer.suspension_interval_min_distance);
         return context.getResources().getString(R.string.suspension_interval_overlap, distance);
     }
 }
