@@ -18,6 +18,9 @@
           <timeTargetWasSelectedWithDropDown value="2023-12-12T21:55:03.061716856Z" />
         </State>
       </entry>
+      <entry key="NetworkTaskProcessServiceSchedulerTest">
+        <State />
+      </entry>
       <entry key="keepitupmain">
         <State>
           <targetSelectedWithDropDown>
@@ -34,19 +37,29 @@
           <timeTargetWasSelectedWithDropDown value="2023-12-20T10:42:17.187872519Z" />
         </State>
       </entry>
-      <entry key="testIntervalsDefaultValuesOpenMinGapAdjustStart()">
-        <State />
-      </entry>
       <entry key="testIntervalsDefaultValuesOpenMinGapAdjustStartScreenRotation()">
         <State />
       </entry>
-      <entry key="testIntervalsDefaultValuesOpenThresholdGapAdjustStart()">
-        <State />
-      </entry>
-      <entry key="testIntervalsDefaultValuesOpenThresholdGapAdjustStartScreenRotation()">
+      <entry key="testMenuOptions()">
         <State />
       </entry>
       <entry key="testNewDefaultValuesForNetworkTask()">
+        <State>
+          <targetSelectedWithDropDown>
+            <Target>
+              <type value="QUICK_BOOT_TARGET" />
+              <deviceKey>
+                <Key>
+                  <type value="VIRTUAL_DEVICE_PATH" />
+                  <value value="$USER_HOME$/.android/avd/Nexus_5X_API_29.avd" />
+                </Key>
+              </deviceKey>
+            </Target>
+          </targetSelectedWithDropDown>
+          <timeTargetWasSelectedWithDropDown value="2023-12-23T08:02:51.708396992Z" />
+        </State>
+      </entry>
+      <entry key="testTimeBasedSchedulerStartedAndStoppedCancelAll()">
         <State />
       </entry>
     </value>
