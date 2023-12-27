@@ -107,7 +107,7 @@ public class TimeBasedSuspensionBroadcastReceiverTest {
         assertFalse(scheduler.getWasRestartedFlag());
         assertFalse(schedulerStateDAO.readSchedulerState().isSuspended());
         assertFalse(scheduler.isSuspended());
-        intervalDAO.insertInterval(getInterval1());
+        intervalDAO.insertInterval(getInterval());
         networkTaskSchedulerAlarmManager.reset();
         scheduler.reset();
         receiver.onReceive(TestRegistry.getContext(), null);
@@ -123,7 +123,7 @@ public class TimeBasedSuspensionBroadcastReceiverTest {
         task1 = networkTaskDAO.insertNetworkTask(task1);
         networkTaskDAO.updateNetworkTaskRunning(task1.getId(), true);
         networkTaskScheduler.schedule(task1);
-        intervalDAO.insertInterval(getInterval1());
+        intervalDAO.insertInterval(getInterval());
         setTestTime(getTestTimestamp(24, 10, 15));
         networkTaskSchedulerAlarmManager.reset();
         scheduler.restart();
@@ -150,7 +150,7 @@ public class TimeBasedSuspensionBroadcastReceiverTest {
         task1 = networkTaskDAO.insertNetworkTask(task1);
         networkTaskDAO.updateNetworkTaskRunning(task1.getId(), true);
         networkTaskScheduler.schedule(task1);
-        intervalDAO.insertInterval(getInterval1());
+        intervalDAO.insertInterval(getInterval());
         setTestTime(getTestTimestamp(24, 10, 15));
         networkTaskSchedulerAlarmManager.reset();
         scheduler.restart();
@@ -181,7 +181,7 @@ public class TimeBasedSuspensionBroadcastReceiverTest {
         networkTaskDAO.updateNetworkTaskRunning(task2.getId(), true);
         networkTaskScheduler.schedule(task1);
         networkTaskScheduler.schedule(task2);
-        intervalDAO.insertInterval(getInterval1());
+        intervalDAO.insertInterval(getInterval());
         setTestTime(getTestTimestamp(24, 9, 0));
         networkTaskSchedulerAlarmManager.reset();
         scheduler.start();
@@ -205,11 +205,40 @@ public class TimeBasedSuspensionBroadcastReceiverTest {
         List<MockAlarmManager.SetAlarmCall> setAlarmCalls = alarmManager.getSetAlarmRTCCalls();
         assertEquals(1, setAlarmCalls.size());
         MockAlarmManager.SetAlarmCall setAlarm = setAlarmCalls.get(0);
-        assertEquals(TimeUtil.getTimestampToday(getInterval1().getEnd(), getTestTimestamp(24, 10, 15)), setAlarm.getDelay());
+        assertEquals(TimeUtil.getTimestampToday(getInterval().getEnd(), getTestTimestamp(24, 10, 15)), setAlarm.getDelay());
         assertFalse(networkTaskSchedulerAlarmManager.wasSetAlarmCalled());
         assertTrue(networkTaskSchedulerAlarmManager.wasCancelAlarmCalled());
         List<MockAlarmManager.CancelAlarmCall> cancelAlarmCalls = networkTaskSchedulerAlarmManager.getCancelAlarmCalls();
         assertEquals(2, cancelAlarmCalls.size());
+    }
+
+    @Test
+    public void testSuspendThreshold() {
+        NetworkTask task1 = getNetworkTask1();
+        task1 = networkTaskDAO.insertNetworkTask(task1);
+        networkTaskDAO.updateNetworkTaskRunning(task1.getId(), true);
+        networkTaskScheduler.schedule(task1);
+        intervalDAO.insertInterval(getInterval());
+        setTestTime(getTestTimestamp(24, 10, 9, 0));
+        networkTaskSchedulerAlarmManager.reset();
+        scheduler.start();
+        assertTrue(scheduler.isRunning());
+        assertTrue(scheduler.getWasRestartedFlag());
+        assertFalse(schedulerStateDAO.readSchedulerState().isSuspended());
+        assertFalse(scheduler.isSuspended());
+        setTestTime(getTestTimestamp(24, 10, 10, 51));
+        networkTaskSchedulerAlarmManager.reset();
+        scheduler.resetWasRestartedFlag();
+        scheduler.reset();
+        alarmManager.reset();
+        Intent intent = new Intent();
+        intent.putExtra(TestRegistry.getContext().getResources().getString(R.string.scheduler_action_key), TimeBasedSuspensionScheduler.Action.DOWN.name());
+        receiver.onReceive(TestRegistry.getContext(), intent);
+        assertTrue(scheduler.isRunning());
+        assertFalse(scheduler.getWasRestartedFlag());
+        assertTrue(schedulerStateDAO.readSchedulerState().isSuspended());
+        assertTrue(scheduler.isSuspended());
+        assertTrue(alarmManager.wasSetAlarmRTCCalled());
     }
 
     @Test
@@ -222,7 +251,7 @@ public class TimeBasedSuspensionBroadcastReceiverTest {
         networkTaskDAO.updateNetworkTaskRunning(task2.getId(), true);
         networkTaskScheduler.schedule(task1);
         networkTaskScheduler.schedule(task2);
-        intervalDAO.insertInterval(getInterval1());
+        intervalDAO.insertInterval(getInterval());
         setTestTime(getTestTimestamp(24, 10, 15));
         networkTaskSchedulerAlarmManager.reset();
         scheduler.start();
@@ -246,11 +275,43 @@ public class TimeBasedSuspensionBroadcastReceiverTest {
         List<MockAlarmManager.SetAlarmCall> setAlarmRTCCalls = alarmManager.getSetAlarmRTCCalls();
         assertEquals(1, setAlarmRTCCalls.size());
         MockAlarmManager.SetAlarmCall setAlarm = setAlarmRTCCalls.get(0);
-        assertEquals(TimeUtil.getTimestampTomorrow(getInterval1().getStart(), getTestTimestamp(24, 13, 00)), setAlarm.getDelay());
+        assertEquals(TimeUtil.getTimestampTomorrow(getInterval().getStart(), getTestTimestamp(24, 13, 00)), setAlarm.getDelay());
         assertTrue(networkTaskSchedulerAlarmManager.wasSetAlarmCalled());
         assertFalse(networkTaskSchedulerAlarmManager.wasCancelAlarmCalled());
         List<MockAlarmManager.SetAlarmCall> setAlarmCalls = networkTaskSchedulerAlarmManager.getSetAlarmCalls();
         assertEquals(2, setAlarmCalls.size());
+    }
+
+    @Test
+    public void testStartThreshold() {
+        NetworkTask task1 = getNetworkTask1();
+        NetworkTask task2 = getNetworkTask2();
+        task1 = networkTaskDAO.insertNetworkTask(task1);
+        task2 = networkTaskDAO.insertNetworkTask(task2);
+        networkTaskDAO.updateNetworkTaskRunning(task1.getId(), true);
+        networkTaskDAO.updateNetworkTaskRunning(task2.getId(), true);
+        networkTaskScheduler.schedule(task1);
+        networkTaskScheduler.schedule(task2);
+        intervalDAO.insertInterval(getInterval());
+        setTestTime(getTestTimestamp(24, 10, 15));
+        networkTaskSchedulerAlarmManager.reset();
+        scheduler.start();
+        assertTrue(scheduler.isRunning());
+        assertTrue(scheduler.getWasRestartedFlag());
+        assertTrue(schedulerStateDAO.readSchedulerState().isSuspended());
+        assertTrue(scheduler.isSuspended());
+        setTestTime(getTestTimestamp(24, 11, 11, 41));
+        networkTaskSchedulerAlarmManager.reset();
+        scheduler.resetWasRestartedFlag();
+        scheduler.reset();
+        alarmManager.reset();
+        Intent intent = new Intent();
+        intent.putExtra(TestRegistry.getContext().getResources().getString(R.string.scheduler_action_key), TimeBasedSuspensionScheduler.Action.UP.name());
+        receiver.onReceive(TestRegistry.getContext(), intent);
+        assertTrue(scheduler.isRunning());
+        assertFalse(scheduler.getWasRestartedFlag());
+        assertFalse(schedulerStateDAO.readSchedulerState().isSuspended());
+        assertFalse(scheduler.isSuspended());
     }
 
     private void setTestTime(long time) {
@@ -261,11 +322,15 @@ public class TimeBasedSuspensionBroadcastReceiverTest {
     }
 
     private long getTestTimestamp(int day, int hour, int minute) {
-        Calendar calendar = new GregorianCalendar(1985, Calendar.DECEMBER, day, hour, minute, 1);
+        return getTestTimestamp(day, hour, minute, 1);
+    }
+
+    private long getTestTimestamp(int day, int hour, int minute, int second) {
+        Calendar calendar = new GregorianCalendar(1985, Calendar.DECEMBER, day, hour, minute, second);
         return calendar.getTimeInMillis();
     }
 
-    private Interval getInterval1() {
+    private Interval getInterval() {
         Interval interval = new Interval();
         interval.setId(0);
         Time start = new Time();
@@ -275,62 +340,6 @@ public class TimeBasedSuspensionBroadcastReceiverTest {
         Time end = new Time();
         end.setHour(11);
         end.setMinute(12);
-        interval.setEnd(end);
-        return interval;
-    }
-
-    private Interval getInterval2() {
-        Interval interval = new Interval();
-        interval.setId(0);
-        Time start = new Time();
-        start.setHour(1);
-        start.setMinute(1);
-        interval.setStart(start);
-        Time end = new Time();
-        end.setHour(2);
-        end.setMinute(2);
-        interval.setEnd(end);
-        return interval;
-    }
-
-    private Interval getInterval3() {
-        Interval interval = new Interval();
-        interval.setId(0);
-        Time start = new Time();
-        start.setHour(22);
-        start.setMinute(15);
-        interval.setStart(start);
-        Time end = new Time();
-        end.setHour(23);
-        end.setMinute(59);
-        interval.setEnd(end);
-        return interval;
-    }
-
-    private Interval getInterval4() {
-        Interval interval = new Interval();
-        interval.setId(0);
-        Time start = new Time();
-        start.setHour(21);
-        start.setMinute(1);
-        interval.setStart(start);
-        Time end = new Time();
-        end.setHour(1);
-        end.setMinute(30);
-        interval.setEnd(end);
-        return interval;
-    }
-
-    private Interval getInterval5() {
-        Interval interval = new Interval();
-        interval.setId(0);
-        Time start = new Time();
-        start.setHour(0);
-        start.setMinute(1);
-        interval.setStart(start);
-        Time end = new Time();
-        end.setHour(0);
-        end.setMinute(0);
         interval.setEnd(end);
         return interval;
     }

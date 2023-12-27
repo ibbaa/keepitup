@@ -629,7 +629,7 @@ public class TimeBasedSuspensionSchedulerTest {
         networkTaskScheduler.schedule(task1);
         networkTaskScheduler.schedule(task2);
         intervalDAO.insertInterval(getInterval1());
-        setTestTime(getTestTimestamp(24, 10, 10));
+        setTestTime(getTestTimestamp(24, 10, 10, 31));
         networkTaskSchedulerAlarmManager.reset();
         scheduler.start();
         assertTrue(alarmManager.wasSetAlarmRTCCalled());
@@ -714,7 +714,7 @@ public class TimeBasedSuspensionSchedulerTest {
         networkTaskDAO.updateNetworkTaskRunning(task1.getId(), true);
         networkTaskDAO.updateNetworkTaskRunning(task2.getId(), true);
         intervalDAO.insertInterval(getInterval1());
-        setTestTime(getTestTimestamp(24, 11, 11));
+        setTestTime(getTestTimestamp(24, 11, 11, 31));
         networkTaskSchedulerAlarmManager.reset();
         scheduler.start();
         assertTrue(alarmManager.wasSetAlarmRTCCalled());
@@ -890,7 +890,11 @@ public class TimeBasedSuspensionSchedulerTest {
     }
 
     private long getTestTimestamp(int day, int hour, int minute) {
-        Calendar calendar = new GregorianCalendar(1985, Calendar.DECEMBER, day, hour, minute, 1);
+        return getTestTimestamp(day, hour, minute, 1);
+    }
+
+    private long getTestTimestamp(int day, int hour, int minute, int second) {
+        Calendar calendar = new GregorianCalendar(1985, Calendar.DECEMBER, day, hour, minute, second);
         return calendar.getTimeInMillis();
     }
 
