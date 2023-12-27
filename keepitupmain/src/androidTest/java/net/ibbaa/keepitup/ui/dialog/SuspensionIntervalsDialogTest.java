@@ -61,6 +61,7 @@ public class SuspensionIntervalsDialogTest extends BaseUITest {
         networkTaskScheduler = new TestNetworkTaskProcessServiceScheduler(TestRegistry.getContext());
         scheduler.setNetworkTaskScheduler(networkTaskScheduler);
         networkTaskScheduler.setTimeBasedSuspensionScheduler(scheduler);
+        networkTaskScheduler.reset();
         scheduler.reset();
         scheduler.stop();
     }
@@ -68,6 +69,7 @@ public class SuspensionIntervalsDialogTest extends BaseUITest {
     @After
     public void afterEachTestMethod() {
         super.afterEachTestMethod();
+        networkTaskScheduler.reset();
         scheduler.reset();
         scheduler.stop();
     }

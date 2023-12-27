@@ -17,6 +17,7 @@
 package net.ibbaa.keepitup.service;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import android.content.Intent;
@@ -24,12 +25,20 @@ import android.content.Intent;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.MediumTest;
 
+import net.ibbaa.keepitup.db.IntervalDAO;
 import net.ibbaa.keepitup.db.LogDAO;
 import net.ibbaa.keepitup.db.NetworkTaskDAO;
+import net.ibbaa.keepitup.db.SchedulerStateDAO;
 import net.ibbaa.keepitup.model.AccessType;
+import net.ibbaa.keepitup.model.Interval;
 import net.ibbaa.keepitup.model.LogEntry;
 import net.ibbaa.keepitup.model.NetworkTask;
+import net.ibbaa.keepitup.model.SchedulerState;
+import net.ibbaa.keepitup.model.Time;
+import net.ibbaa.keepitup.test.mock.TestNetworkTaskProcessBroadcastReceiver;
+import net.ibbaa.keepitup.test.mock.TestNetworkTaskProcessServiceScheduler;
 import net.ibbaa.keepitup.test.mock.TestRegistry;
+import net.ibbaa.keepitup.test.mock.TestTimeBasedSuspensionScheduler;
 
 import org.junit.After;
 import org.junit.Before;
@@ -44,23 +53,46 @@ import java.util.List;
 @RunWith(AndroidJUnit4.class)
 public class NetworkTaskProcessBroadcastReceiverTest {
 
+    private TestTimeBasedSuspensionScheduler scheduler;
+    private TestNetworkTaskProcessServiceScheduler networkTaskScheduler;
     private NetworkTaskDAO networkTaskDAO;
     private LogDAO logDAO;
-    private NetworkTaskProcessBroadcastReceiver broadcastReceiver;
+    private IntervalDAO intervalDAO;
+    private SchedulerStateDAO schedulerStateDAO;
+    private TestNetworkTaskProcessBroadcastReceiver broadcastReceiver;
 
     @Before
     public void beforeEachTestMethod() {
+        broadcastReceiver = new TestNetworkTaskProcessBroadcastReceiver();
+        scheduler = broadcastReceiver.getScheduler();
+        networkTaskScheduler = new TestNetworkTaskProcessServiceScheduler(TestRegistry.getContext());
+        networkTaskScheduler.setTimeBasedSuspensionScheduler(scheduler);
+        scheduler.setNetworkTaskScheduler(networkTaskScheduler);
+        networkTaskScheduler.reset();
+        scheduler.reset();
+        scheduler.resetIsSuspended();
+        scheduler.stop();
         networkTaskDAO = new NetworkTaskDAO(TestRegistry.getContext());
         networkTaskDAO.deleteAllNetworkTasks();
         logDAO = new LogDAO(TestRegistry.getContext());
         logDAO.deleteAllLogs();
-        broadcastReceiver = new NetworkTaskProcessBroadcastReceiver();
+        intervalDAO = new IntervalDAO(TestRegistry.getContext());
+        intervalDAO.deleteAllIntervals();
+        schedulerStateDAO = new SchedulerStateDAO(TestRegistry.getContext());
+        schedulerStateDAO.insertSchedulerState(new SchedulerState(0, false, 0));
     }
 
     @After
     public void afterEachTestMethod() {
         networkTaskDAO.deleteAllNetworkTasks();
         logDAO.deleteAllLogs();
+        intervalDAO.deleteAllIntervals();
+        schedulerStateDAO.insertSchedulerState(new SchedulerState(0, false, 0));
+        networkTaskScheduler.reset();
+        scheduler.reset();
+        scheduler.resetIsSuspended();
+        scheduler.stop();
+
     }
 
     @Test
@@ -115,6 +147,49 @@ public class NetworkTaskProcessBroadcastReceiverTest {
         assertEquals(0, entries.size());
     }
 
+    @Test
+    public void testRescheduleNotRunning() {
+        NetworkTask task = getNetworkTask();
+        task = networkTaskDAO.insertNetworkTask(task);
+        networkTaskDAO.updateNetworkTaskRunning(task.getId(), true);
+        Intent intent = new Intent();
+        intent.putExtras(task.toBundle());
+        scheduler.resetIsSuspended();
+        broadcastReceiver.onReceive(TestRegistry.getContext(), intent);
+        assertFalse(networkTaskScheduler.wasRescheduleCalled());
+    }
+
+    @Test
+    public void testRescheduleSuspended() {
+        NetworkTask task = getNetworkTask();
+        task = networkTaskDAO.insertNetworkTask(task);
+        networkTaskDAO.updateNetworkTaskRunning(task.getId(), true);
+        Intent intent = new Intent();
+        intent.putExtras(task.toBundle());
+        scheduler.scheduleStart(getInterval(), getTestTimestamp(), true);
+        schedulerStateDAO.insertSchedulerState(new SchedulerState(0, true, 0));
+        scheduler.resetIsSuspended();
+        broadcastReceiver.onReceive(TestRegistry.getContext(), intent);
+        assertTrue(scheduler.isRunning());
+        assertFalse(networkTaskScheduler.wasRescheduleCalled());
+    }
+
+    @Test
+    public void testReschedule() {
+        NetworkTask task = getNetworkTask();
+        task = networkTaskDAO.insertNetworkTask(task);
+        networkTaskDAO.updateNetworkTaskRunning(task.getId(), true);
+        Intent intent = new Intent();
+        intent.putExtras(task.toBundle());
+        scheduler.scheduleStart(getInterval(), getTestTimestamp(), true);
+        scheduler.resetIsSuspended();
+        broadcastReceiver.onReceive(TestRegistry.getContext(), intent);
+        assertTrue(scheduler.isRunning());
+        assertTrue(networkTaskScheduler.wasRescheduleCalled());
+        NetworkTask scheduledTask = networkTaskScheduler.getLastRescheduledTask();
+        assertTrue(scheduledTask.isEqual(task));
+    }
+
     private long getTestTimestamp() {
         Calendar calendar = new GregorianCalendar(1970, Calendar.JANUARY, 1, 0, 0, 0);
         calendar.set(Calendar.MILLISECOND, 1);
@@ -136,5 +211,19 @@ public class NetworkTaskProcessBroadcastReceiverTest {
         networkTask.setRunning(false);
         networkTask.setLastScheduled(1);
         return networkTask;
+    }
+
+    private Interval getInterval() {
+        Interval interval = new Interval();
+        interval.setId(0);
+        Time start = new Time();
+        start.setHour(0);
+        start.setMinute(1);
+        interval.setStart(start);
+        Time end = new Time();
+        end.setHour(0);
+        end.setMinute(0);
+        interval.setEnd(end);
+        return interval;
     }
 }

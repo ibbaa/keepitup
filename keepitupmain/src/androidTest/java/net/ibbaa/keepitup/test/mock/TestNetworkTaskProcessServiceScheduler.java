@@ -18,23 +18,44 @@ package net.ibbaa.keepitup.test.mock;
 
 import android.content.Context;
 
+import net.ibbaa.keepitup.model.NetworkTask;
 import net.ibbaa.keepitup.service.NetworkTaskProcessServiceScheduler;
 import net.ibbaa.keepitup.service.TimeBasedSuspensionScheduler;
 
 public class TestNetworkTaskProcessServiceScheduler extends NetworkTaskProcessServiceScheduler {
 
     private TimeBasedSuspensionScheduler timeBasedScheduler;
+    private NetworkTask lastRescheduledTask;
 
     public TestNetworkTaskProcessServiceScheduler(Context context) {
         super(context);
+        lastRescheduledTask = null;
     }
 
     public void setTimeBasedSuspensionScheduler(TimeBasedSuspensionScheduler timeBasedScheduler) {
         this.timeBasedScheduler = timeBasedScheduler;
     }
 
+    public void reset() {
+        lastRescheduledTask = null;
+    }
+
+    public NetworkTask getLastRescheduledTask() {
+        return lastRescheduledTask;
+    }
+
+    public boolean wasRescheduleCalled() {
+        return lastRescheduledTask != null;
+    }
+
     @Override
     public TimeBasedSuspensionScheduler getTimeBasedSuspensionScheduler() {
         return timeBasedScheduler;
+    }
+
+    @Override
+    public NetworkTask reschedule(NetworkTask networkTask, Delay delay) {
+        lastRescheduledTask = networkTask;
+        return super.reschedule(networkTask, delay);
     }
 }

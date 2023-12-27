@@ -56,6 +56,7 @@ public class IntervalHandlerTest extends BaseUITest {
         scheduler.setNetworkTaskScheduler(networkTaskScheduler);
         networkTaskScheduler.setTimeBasedSuspensionScheduler(scheduler);
         getIntervalDAO().deleteAllIntervals();
+        networkTaskScheduler.reset();
         scheduler.reset();
         scheduler.stop();
     }
@@ -64,6 +65,7 @@ public class IntervalHandlerTest extends BaseUITest {
     public void afterEachTestMethod() {
         super.afterEachTestMethod();
         getIntervalDAO().deleteAllIntervals();
+        networkTaskScheduler.reset();
         scheduler.reset();
         scheduler.stop();
     }

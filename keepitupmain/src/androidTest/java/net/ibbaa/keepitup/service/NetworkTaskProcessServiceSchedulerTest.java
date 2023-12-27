@@ -65,6 +65,7 @@ public class NetworkTaskProcessServiceSchedulerTest {
     public void beforeEachTestMethod() {
         scheduler = new TestNetworkTaskProcessServiceScheduler(TestRegistry.getContext());
         scheduler.cancelAll();
+        scheduler.reset();
         timeBasedScheduler = new TestTimeBasedSuspensionScheduler(TestRegistry.getContext());
         scheduler.setTimeBasedSuspensionScheduler(timeBasedScheduler);
         timeBasedScheduler.setNetworkTaskScheduler(scheduler);
@@ -83,6 +84,7 @@ public class NetworkTaskProcessServiceSchedulerTest {
 
     @After
     public void afterEachTestMethod() {
+        scheduler.reset();
         scheduler.cancelAll();
         NetworkTaskProcessServiceScheduler.getNetworkTaskProcessPool().reset();
         networkTaskDAO.deleteAllNetworkTasks();

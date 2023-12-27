@@ -69,6 +69,7 @@ public class TimeBasedSuspensionSchedulerTest {
         networkTaskScheduler = new TestNetworkTaskProcessServiceScheduler(TestRegistry.getContext());
         scheduler.setNetworkTaskScheduler(networkTaskScheduler);
         networkTaskScheduler.setTimeBasedSuspensionScheduler(scheduler);
+        networkTaskScheduler.reset();
         scheduler.reset();
         scheduler.resetIsSuspended();
         scheduler.stop();
@@ -93,6 +94,7 @@ public class TimeBasedSuspensionSchedulerTest {
         networkTaskDAO.deleteAllNetworkTasks();
         intervalDAO.deleteAllIntervals();
         schedulerStateDAO.insertSchedulerState(new SchedulerState(0, false, 0));
+        networkTaskScheduler.reset();
         scheduler.reset();
         scheduler.resetIsSuspended();
         scheduler.stop();

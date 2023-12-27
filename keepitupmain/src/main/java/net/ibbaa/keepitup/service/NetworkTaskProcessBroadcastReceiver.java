@@ -52,12 +52,11 @@ public class NetworkTaskProcessBroadcastReceiver extends BroadcastReceiver {
             wakeLock = Objects.requireNonNull(powerManager).newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "KeepItUp:NetworkTaskProcessBroadcastReceiver");
             wakeLock.acquire(wakeLockTimeout);
             Log.d(NetworkTaskProcessBroadcastReceiver.class.getName(), "Rescheduling " + task);
-            NetworkTaskProcessServiceScheduler scheduler = new NetworkTaskProcessServiceScheduler(context);
             if (synchronous) {
                 doWork(context, task, wakeLock, true, false, executorService);
-                scheduler.reschedule(task, NetworkTaskProcessServiceScheduler.Delay.INTERVAL);
+                rescheduleTask(context, task);
             } else {
-                scheduler.reschedule(task, NetworkTaskProcessServiceScheduler.Delay.INTERVAL);
+                rescheduleTask(context, task);
                 doWork(context, task, wakeLock, false, addToPool, executorService);
             }
         } catch (Exception exc) {
@@ -99,9 +98,23 @@ public class NetworkTaskProcessBroadcastReceiver extends BroadcastReceiver {
         }
     }
 
+    private void rescheduleTask(Context context, NetworkTask task) {
+        Log.d(NetworkTaskProcessBroadcastReceiver.class.getName(), "rescheduleTask for " + task);
+        synchronized (TimeBasedSuspensionScheduler.LOCK) {
+            TimeBasedSuspensionScheduler timeBasedScheduler = createTimeBasedSuspensionScheduler(context);
+            if (timeBasedScheduler.isRunning() && !timeBasedScheduler.isSuspended()) {
+                timeBasedScheduler.getNetworkTaskScheduler().reschedule(task, NetworkTaskProcessServiceScheduler.Delay.INTERVAL);
+            }
+        }
+    }
+
     private boolean isNetworkTaskValid(Context context, NetworkTask task) {
         NetworkTaskDAO networkTaskDAO = new NetworkTaskDAO(context);
         NetworkTask databaseTask = networkTaskDAO.readNetworkTask(task.getId());
         return databaseTask != null && databaseTask.isRunning() && databaseTask.getSchedulerId() == task.getSchedulerId();
+    }
+
+    protected TimeBasedSuspensionScheduler createTimeBasedSuspensionScheduler(Context context) {
+        return new TimeBasedSuspensionScheduler(context);
     }
 }

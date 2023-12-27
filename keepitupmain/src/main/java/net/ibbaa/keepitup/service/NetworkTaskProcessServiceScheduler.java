@@ -123,22 +123,24 @@ public class NetworkTaskProcessServiceScheduler {
 
     public NetworkTask cancel(NetworkTask networkTask) {
         Log.d(NetworkTaskProcessServiceScheduler.class.getName(), "Cancelling network task " + networkTask);
-        networkTask.setRunning(false);
-        networkTaskDAO.updateNetworkTaskRunning(networkTask.getId(), false);
-        networkTask.setLastScheduled(-1);
-        terminate(networkTask);
-        if (!areNetworkTasksRunning()) {
-            Log.d(NetworkTaskProcessServiceScheduler.class.getName(), "No running tasks. Stopping time bases scheduler.");
-            getTimeBasedSuspensionScheduler().stop();
-            if (shouldStartForegroundService()) {
-                Log.d(NetworkTaskProcessServiceScheduler.class.getName(), "No running tasks. Stopping service.");
-                Intent intent = new Intent(getContext(), NetworkTaskRunningNotificationService.class);
-                intent.setPackage(getContext().getPackageName());
-                intent.putExtras(networkTask.toBundle());
-                getContext().stopService(intent);
+        synchronized (TimeBasedSuspensionScheduler.LOCK) {
+            networkTask.setRunning(false);
+            networkTaskDAO.updateNetworkTaskRunning(networkTask.getId(), false);
+            networkTask.setLastScheduled(-1);
+            terminate(networkTask);
+            if (!areNetworkTasksRunning()) {
+                Log.d(NetworkTaskProcessServiceScheduler.class.getName(), "No running tasks. Stopping time bases scheduler.");
+                getTimeBasedSuspensionScheduler().stop();
+                if (shouldStartForegroundService()) {
+                    Log.d(NetworkTaskProcessServiceScheduler.class.getName(), "No running tasks. Stopping service.");
+                    Intent intent = new Intent(getContext(), NetworkTaskRunningNotificationService.class);
+                    intent.setPackage(getContext().getPackageName());
+                    intent.putExtras(networkTask.toBundle());
+                    getContext().stopService(intent);
+                }
             }
+            return networkTask;
         }
-        return networkTask;
     }
 
     public boolean areNetworkTasksRunning() {
@@ -182,10 +184,12 @@ public class NetworkTaskProcessServiceScheduler {
 
     public void cancelAll() {
         Log.d(NetworkTaskProcessServiceScheduler.class.getName(), "Cancelling all network tasks.");
-        List<NetworkTask> networkTasks = networkTaskDAO.readAllNetworkTasks();
-        for (NetworkTask currentTask : networkTasks) {
-            Log.d(NetworkTaskProcessServiceScheduler.class.getName(), "Cancelling network task " + currentTask);
-            cancel(currentTask);
+        synchronized (TimeBasedSuspensionScheduler.LOCK) {
+            List<NetworkTask> networkTasks = networkTaskDAO.readAllNetworkTasks();
+            for (NetworkTask currentTask : networkTasks) {
+                Log.d(NetworkTaskProcessServiceScheduler.class.getName(), "Cancelling network task " + currentTask);
+                cancel(currentTask);
+            }
         }
     }
 

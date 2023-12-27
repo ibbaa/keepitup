@@ -597,7 +597,7 @@ public class SystemActivity extends SettingsInputActivity implements ExportSuppo
     public void onConfirmDialogOkClicked(ConfirmDialog confirmDialog, ConfirmDialog.Type type) {
         Log.d(SystemActivity.class.getName(), "onConfirmDialogOkClicked for type " + type);
         if (ConfirmDialog.Type.RESETCONFIG.equals(type)) {
-            terminateAllNetworkTasks();
+            cancelAllNetworkTasks();
             confirmDialog.dismiss();
             showProgressDialog();
             purgeDatabase();
@@ -614,7 +614,7 @@ public class SystemActivity extends SettingsInputActivity implements ExportSuppo
             PreferenceManager preferenceManager = new PreferenceManager(this);
             File importFolder = FileUtil.getExternalDirectory(fileManager, preferenceManager, preferenceManager.getPreferenceImportFolder());
             String file = getFileExtraData(confirmDialog);
-            terminateAllNetworkTasks();
+            cancelAllNetworkTasks();
             confirmDialog.dismiss();
             showProgressDialog();
             doConfigurationImport(importFolder, file);
@@ -684,10 +684,10 @@ public class SystemActivity extends SettingsInputActivity implements ExportSuppo
         themeManager.setThemeByCode(themeCode);
     }
 
-    private void terminateAllNetworkTasks() {
-        Log.d(SystemActivity.class.getName(), "terminateAllNetworkTasks");
+    private void cancelAllNetworkTasks() {
+        Log.d(SystemActivity.class.getName(), "cancelAllNetworkTasks");
         NetworkTaskProcessServiceScheduler scheduler = getScheduler();
-        scheduler.terminateAll();
+        scheduler.cancelAll();
     }
 
     protected void purgeDatabase() {

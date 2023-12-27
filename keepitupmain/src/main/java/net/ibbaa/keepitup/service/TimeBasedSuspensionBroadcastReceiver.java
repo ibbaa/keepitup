@@ -41,7 +41,7 @@ public class TimeBasedSuspensionBroadcastReceiver extends BroadcastReceiver {
         PowerManager.WakeLock wakeLock = null;
         int wakeLockTimeout = context.getResources().getInteger(R.integer.scheduler_receiver_wakelock_timeout) * 1000;
         try {
-            synchronized (TimeBasedSuspensionScheduler.class) {
+            synchronized (TimeBasedSuspensionScheduler.LOCK) {
                 Log.d(NetworkTaskProcessBroadcastReceiver.class.getName(), "Acquiring partial wake lock with a timeout of " + wakeLockTimeout + " msec");
                 wakeLock = Objects.requireNonNull(powerManager).newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "KeepItUp:TimeBasedSuspensionBroadcastReceiver");
                 wakeLock.acquire(wakeLockTimeout);

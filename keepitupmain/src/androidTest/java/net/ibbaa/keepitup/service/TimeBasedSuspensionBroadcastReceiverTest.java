@@ -66,6 +66,7 @@ public class TimeBasedSuspensionBroadcastReceiverTest {
         networkTaskScheduler = new TestNetworkTaskProcessServiceScheduler(TestRegistry.getContext());
         networkTaskScheduler.setTimeBasedSuspensionScheduler(scheduler);
         scheduler.setNetworkTaskScheduler(networkTaskScheduler);
+        networkTaskScheduler.reset();
         scheduler.reset();
         scheduler.stop();
         networkTaskDAO = new NetworkTaskDAO(TestRegistry.getContext());
@@ -86,6 +87,7 @@ public class TimeBasedSuspensionBroadcastReceiverTest {
         networkTaskDAO.deleteAllNetworkTasks();
         intervalDAO.deleteAllIntervals();
         schedulerStateDAO.insertSchedulerState(new SchedulerState(0, false, 0));
+        networkTaskScheduler.reset();
         scheduler.reset();
         scheduler.stop();
         alarmManager.reset();

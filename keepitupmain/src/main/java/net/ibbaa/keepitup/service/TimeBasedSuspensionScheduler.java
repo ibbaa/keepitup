@@ -54,6 +54,8 @@ public class TimeBasedSuspensionScheduler {
     private static boolean wasRestarted = false;
     private static Boolean isSuspended;
 
+    public final static Object LOCK = TimeBasedSuspensionScheduler.class;
+
     public TimeBasedSuspensionScheduler(Context context) {
         this.context = context;
         this.intervalDAO = new IntervalDAO(context);
@@ -63,7 +65,7 @@ public class TimeBasedSuspensionScheduler {
     }
 
     public List<Interval> getIntervals() {
-        synchronized (TimeBasedSuspensionScheduler.class) {
+        synchronized (LOCK) {
             if (intervals == null) {
                 intervals = intervalDAO.readAllIntervals();
             }
@@ -73,13 +75,13 @@ public class TimeBasedSuspensionScheduler {
 
     public void reset() {
         Log.d(TimeBasedSuspensionScheduler.class.getName(), "reset");
-        synchronized (TimeBasedSuspensionScheduler.class) {
+        synchronized (LOCK) {
             intervals = null;
         }
     }
 
     public boolean isSuspended() {
-        synchronized (TimeBasedSuspensionScheduler.class) {
+        synchronized (LOCK) {
             if (isSuspended == null) {
                 isSuspended = schedulerStateDAO.readSchedulerState().isSuspended();
             }
@@ -88,20 +90,20 @@ public class TimeBasedSuspensionScheduler {
     }
 
     public void resetIsSuspended() {
-        synchronized (TimeBasedSuspensionScheduler.class) {
+        synchronized (LOCK) {
             isSuspended = null;
         }
     }
 
     public boolean getWasRestartedFlag() {
-        synchronized (TimeBasedSuspensionScheduler.class) {
+        synchronized (LOCK) {
             Log.d(TimeBasedSuspensionScheduler.class.getName(), "getWasRestartedFlag, wasRestarted is " + wasRestarted);
             return wasRestarted;
         }
     }
 
     public void resetWasRestartedFlag() {
-        synchronized (TimeBasedSuspensionScheduler.class) {
+        synchronized (LOCK) {
             Log.d(TimeBasedSuspensionScheduler.class.getName(), "resetWasRestartedFlag, wasRestarted is " + wasRestarted);
             wasRestarted = false;
         }
@@ -109,7 +111,7 @@ public class TimeBasedSuspensionScheduler {
 
     public void restart() {
         Log.d(TimeBasedSuspensionScheduler.class.getName(), "restart");
-        synchronized (TimeBasedSuspensionScheduler.class) {
+        synchronized (LOCK) {
             stop();
             reset();
             setSchedulerState(false, getTimeService().getCurrentTimestamp());
@@ -128,7 +130,7 @@ public class TimeBasedSuspensionScheduler {
 
     public void start(NetworkTask task) {
         Log.d(TimeBasedSuspensionScheduler.class.getName(), "start");
-        synchronized (TimeBasedSuspensionScheduler.class) {
+        synchronized (LOCK) {
             long now = timeService.getCurrentTimestamp();
             long thresholdNow = addThreshold(now);
             if (!isSuspensionActiveAndEnabled()) {
