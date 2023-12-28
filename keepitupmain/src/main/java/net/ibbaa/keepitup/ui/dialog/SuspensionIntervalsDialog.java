@@ -259,11 +259,7 @@ public class SuspensionIntervalsDialog extends DialogFragment implements Confirm
                 Log.e(SuspensionIntervalsDialog.class.getName(), "prepareCurrentInterval, interval at position " + position + " is null");
                 end = getEnd(start);
             } else {
-                if (!interval.doesOverlapDays()) {
-                    end = interval.getEnd().isAfter(start) ? interval.getEnd() : getEnd(start);
-                } else {
-                    end = interval.getEnd().isBefore(start) ? interval.getEnd() : getEnd(start);
-                }
+                end = isIntervalEndStillValid(interval, start) ? interval.getEnd() : getEnd(start);
             }
         } else {
             end = getEnd(start);
@@ -272,6 +268,15 @@ public class SuspensionIntervalsDialog extends DialogFragment implements Confirm
         Log.d(SuspensionIntervalsDialog.class.getName(), "end is " + end);
         currentInterval.setStart(start);
         currentInterval.setEnd(end);
+    }
+
+    private boolean isIntervalEndStillValid(Interval interval, Time start) {
+        Interval newInterval = new Interval();
+        newInterval.setStart(start);
+        newInterval.setEnd(interval.getEnd());
+        ValidationResult resultOverlap = validateOverlap(newInterval);
+        ValidationResult resultDuration = validateDuration(newInterval);
+        return resultOverlap.isValidationSuccessful() && resultDuration.isValidationSuccessful();
     }
 
     private Time getEnd(Time start) {

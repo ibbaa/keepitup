@@ -34,19 +34,19 @@
           <timeTargetWasSelectedWithDropDown value="2023-12-28T13:39:33.243432317Z" />
         </State>
       </entry>
-      <entry key="testIntervalsDefaultValuesOpenEndAfterStartAdjustStartScreenRotation()">
+      <entry key="testExportConfigurationScreenRotation()">
         <State />
       </entry>
-      <entry key="testIntervalsDefaultValuesOpenStartAfterEndAdjustStart()">
+      <entry key="testIntervalsDefaultValuesOpenAdjustStartDurationInvalidScreenRotation()">
         <State />
       </entry>
-      <entry key="testIntervalsDefaultValuesOpenStartAfterEndAdjustStartScreenRotation()">
+      <entry key="testIntervalsDefaultValuesOpenAdjustStartInvalid()">
         <State />
       </entry>
-      <entry key="testThreeIntervalsAddError()">
+      <entry key="testIntervalsDefaultValuesOpenAdjustStartOverlapInvalid()">
         <State />
       </entry>
-      <entry key="testThreeIntervalsAddErrorScreenRotation()">
+      <entry key="testIntervalsDefaultValuesOpenAdjustStartOverlapInvalidScreenRotation()">
         <State />
       </entry>
     </value>
