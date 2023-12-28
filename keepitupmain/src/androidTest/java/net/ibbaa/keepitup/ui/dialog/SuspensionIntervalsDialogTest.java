@@ -965,6 +965,164 @@ public class SuspensionIntervalsDialogTest extends BaseUITest {
     }
 
     @Test
+    public void testIntervalsDefaultValuesOpenEndAfterStartAdjustStart() {
+        getIntervalDAO().insertInterval(getInterval1());
+        getIntervalDAO().insertInterval(getInterval2());
+        getIntervalDAO().insertInterval(getInterval3());
+        scheduler.restart();
+        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class);
+        injectTimeBasedSuspensionScheduler();
+        onView(withId(R.id.cardview_activity_global_settings_suspension_intervals)).perform(click());
+        onView(withId(R.id.listview_dialog_suspension_intervals_intervals)).check(matches(withListSize(3)));
+        onView(allOf(withId(R.id.textview_list_item_suspension_interval_no_interval), withChildDescendantAtPosition(withId(R.id.listview_dialog_suspension_intervals_intervals), 0))).check(matches(not(isDisplayed())));
+        onView(allOf(withId(R.id.cardview_list_item_suspension_interval), withChildDescendantAtPosition(withId(R.id.listview_dialog_suspension_intervals_intervals), 0))).check(matches(isDisplayed()));
+        onView(allOf(withId(R.id.textview_list_item_suspension_interval), withChildDescendantAtPosition(withId(R.id.listview_dialog_suspension_intervals_intervals), 0))).check(matches(withText("Start: 01:01 End: 02:02")));
+        onView(allOf(withId(R.id.cardview_list_item_suspension_interval), withChildDescendantAtPosition(withId(R.id.listview_dialog_suspension_intervals_intervals), 1))).check(matches(isDisplayed()));
+        onView(allOf(withId(R.id.textview_list_item_suspension_interval), withChildDescendantAtPosition(withId(R.id.listview_dialog_suspension_intervals_intervals), 1))).check(matches(withText("Start: 10:11 End: 11:12")));
+        onView(allOf(withId(R.id.cardview_list_item_suspension_interval), withChildDescendantAtPosition(withId(R.id.listview_dialog_suspension_intervals_intervals), 2))).check(matches(isDisplayed()));
+        onView(allOf(withId(R.id.textview_list_item_suspension_interval), withChildDescendantAtPosition(withId(R.id.listview_dialog_suspension_intervals_intervals), 2))).check(matches(withText("Start: 22:15 End: 23:59")));
+        onView(allOf(withId(R.id.cardview_list_item_suspension_interval), withChildDescendantAtPosition(withId(R.id.listview_dialog_suspension_intervals_intervals), 1))).perform(click());
+        onView(withId(R.id.textview_dialog_suspension_interval_select_time_label)).check(matches(withText("Start")));
+        onView(withId(R.id.picker_dialog_suspension_interval_select_time_hour)).check(matches(withValue(10)));
+        onView(withId(R.id.picker_dialog_suspension_interval_select_time_minute)).check(matches(withValue(11)));
+        onView(withId(R.id.picker_dialog_suspension_interval_select_time_hour)).perform(setNumber(10));
+        onView(withId(R.id.picker_dialog_suspension_interval_select_time_minute)).perform(setNumber(30));
+        onView(withId(R.id.imageview_dialog_suspension_interval_select_ok)).perform(click());
+        onView(withId(R.id.textview_dialog_suspension_interval_select_time_label)).check(matches(withText("End")));
+        onView(withId(R.id.picker_dialog_suspension_interval_select_time_hour)).check(matches(withValue(11)));
+        onView(withId(R.id.picker_dialog_suspension_interval_select_time_minute)).check(matches(withValue(12)));
+        onView(withId(R.id.imageview_dialog_suspension_interval_select_ok)).perform(click());
+        onView(allOf(withId(R.id.cardview_list_item_suspension_interval), withChildDescendantAtPosition(withId(R.id.listview_dialog_suspension_intervals_intervals), 0))).check(matches(isDisplayed()));
+        onView(allOf(withId(R.id.textview_list_item_suspension_interval), withChildDescendantAtPosition(withId(R.id.listview_dialog_suspension_intervals_intervals), 0))).check(matches(withText("Start: 01:01 End: 02:02")));
+        onView(allOf(withId(R.id.cardview_list_item_suspension_interval), withChildDescendantAtPosition(withId(R.id.listview_dialog_suspension_intervals_intervals), 1))).check(matches(isDisplayed()));
+        onView(allOf(withId(R.id.textview_list_item_suspension_interval), withChildDescendantAtPosition(withId(R.id.listview_dialog_suspension_intervals_intervals), 1))).check(matches(withText("Start: 10:30 End: 11:12")));
+        onView(allOf(withId(R.id.cardview_list_item_suspension_interval), withChildDescendantAtPosition(withId(R.id.listview_dialog_suspension_intervals_intervals), 2))).check(matches(isDisplayed()));
+        onView(allOf(withId(R.id.textview_list_item_suspension_interval), withChildDescendantAtPosition(withId(R.id.listview_dialog_suspension_intervals_intervals), 2))).check(matches(withText("Start: 22:15 End: 23:59")));
+        assertEquals(3, getDialog().getAdapter().getAllItems().size());
+        onView(withId(R.id.imageview_dialog_suspension_intervals_cancel)).perform(click());
+        activityScenario.close();
+    }
+
+    @Test
+    public void testIntervalsDefaultValuesOpenEndAfterStartAdjustStartScreenRotation() {
+        getIntervalDAO().insertInterval(getInterval1());
+        getIntervalDAO().insertInterval(getInterval2());
+        getIntervalDAO().insertInterval(getInterval3());
+        scheduler.restart();
+        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class);
+        injectTimeBasedSuspensionScheduler();
+        onView(withId(R.id.cardview_activity_global_settings_suspension_intervals)).perform(click());
+        onView(withId(R.id.listview_dialog_suspension_intervals_intervals)).check(matches(withListSize(3)));
+        onView(allOf(withId(R.id.textview_list_item_suspension_interval_no_interval), withChildDescendantAtPosition(withId(R.id.listview_dialog_suspension_intervals_intervals), 0))).check(matches(not(isDisplayed())));
+        onView(allOf(withId(R.id.cardview_list_item_suspension_interval), withChildDescendantAtPosition(withId(R.id.listview_dialog_suspension_intervals_intervals), 0))).check(matches(isDisplayed()));
+        onView(allOf(withId(R.id.textview_list_item_suspension_interval), withChildDescendantAtPosition(withId(R.id.listview_dialog_suspension_intervals_intervals), 0))).check(matches(withText("Start: 01:01 End: 02:02")));
+        onView(allOf(withId(R.id.cardview_list_item_suspension_interval), withChildDescendantAtPosition(withId(R.id.listview_dialog_suspension_intervals_intervals), 1))).check(matches(isDisplayed()));
+        onView(allOf(withId(R.id.textview_list_item_suspension_interval), withChildDescendantAtPosition(withId(R.id.listview_dialog_suspension_intervals_intervals), 1))).check(matches(withText("Start: 10:11 End: 11:12")));
+        onView(allOf(withId(R.id.cardview_list_item_suspension_interval), withChildDescendantAtPosition(withId(R.id.listview_dialog_suspension_intervals_intervals), 2))).check(matches(isDisplayed()));
+        onView(allOf(withId(R.id.textview_list_item_suspension_interval), withChildDescendantAtPosition(withId(R.id.listview_dialog_suspension_intervals_intervals), 2))).check(matches(withText("Start: 22:15 End: 23:59")));
+        onView(allOf(withId(R.id.cardview_list_item_suspension_interval), withChildDescendantAtPosition(withId(R.id.listview_dialog_suspension_intervals_intervals), 1))).perform(click());
+        rotateScreen(activityScenario);
+        onView(withId(R.id.textview_dialog_suspension_interval_select_time_label)).check(matches(withText("Start")));
+        onView(withId(R.id.picker_dialog_suspension_interval_select_time_hour)).check(matches(withValue(10)));
+        onView(withId(R.id.picker_dialog_suspension_interval_select_time_minute)).check(matches(withValue(11)));
+        onView(withId(R.id.picker_dialog_suspension_interval_select_time_hour)).perform(setNumber(10));
+        onView(withId(R.id.picker_dialog_suspension_interval_select_time_minute)).perform(setNumber(30));
+        onView(withId(R.id.imageview_dialog_suspension_interval_select_ok)).perform(click());
+        onView(withId(R.id.textview_dialog_suspension_interval_select_time_label)).check(matches(withText("End")));
+        onView(withId(R.id.picker_dialog_suspension_interval_select_time_hour)).check(matches(withValue(11)));
+        onView(withId(R.id.picker_dialog_suspension_interval_select_time_minute)).check(matches(withValue(12)));
+        onView(withId(R.id.imageview_dialog_suspension_interval_select_ok)).perform(click());
+        rotateScreen(activityScenario);
+        onView(allOf(withId(R.id.cardview_list_item_suspension_interval), withChildDescendantAtPosition(withId(R.id.listview_dialog_suspension_intervals_intervals), 0))).check(matches(isDisplayed()));
+        onView(allOf(withId(R.id.textview_list_item_suspension_interval), withChildDescendantAtPosition(withId(R.id.listview_dialog_suspension_intervals_intervals), 0))).check(matches(withText("Start: 01:01 End: 02:02")));
+        onView(allOf(withId(R.id.cardview_list_item_suspension_interval), withChildDescendantAtPosition(withId(R.id.listview_dialog_suspension_intervals_intervals), 1))).check(matches(isDisplayed()));
+        onView(allOf(withId(R.id.textview_list_item_suspension_interval), withChildDescendantAtPosition(withId(R.id.listview_dialog_suspension_intervals_intervals), 1))).check(matches(withText("Start: 10:30 End: 11:12")));
+        onView(allOf(withId(R.id.cardview_list_item_suspension_interval), withChildDescendantAtPosition(withId(R.id.listview_dialog_suspension_intervals_intervals), 2))).check(matches(isDisplayed()));
+        onView(allOf(withId(R.id.textview_list_item_suspension_interval), withChildDescendantAtPosition(withId(R.id.listview_dialog_suspension_intervals_intervals), 2))).check(matches(withText("Start: 22:15 End: 23:59")));
+        assertEquals(3, getDialog().getAdapter().getAllItems().size());
+        onView(withId(R.id.imageview_dialog_suspension_intervals_cancel)).perform(click());
+        activityScenario.close();
+    }
+
+    @Test
+    public void testIntervalsDefaultValuesOpenStartAfterEndAdjustStart() {
+        Interval interval1 = getInterval1();
+        Time start = new Time();
+        start.setHour(22);
+        start.setMinute(0);
+        Time end = new Time();
+        end.setHour(6);
+        end.setMinute(0);
+        interval1.setStart(start);
+        interval1.setEnd(end);
+        getIntervalDAO().insertInterval(interval1);
+        scheduler.restart();
+        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class);
+        injectTimeBasedSuspensionScheduler();
+        onView(withId(R.id.cardview_activity_global_settings_suspension_intervals)).perform(click());
+        onView(withId(R.id.listview_dialog_suspension_intervals_intervals)).check(matches(withListSize(1)));
+        onView(allOf(withId(R.id.textview_list_item_suspension_interval_no_interval), withChildDescendantAtPosition(withId(R.id.listview_dialog_suspension_intervals_intervals), 0))).check(matches(not(isDisplayed())));
+        onView(allOf(withId(R.id.cardview_list_item_suspension_interval), withChildDescendantAtPosition(withId(R.id.listview_dialog_suspension_intervals_intervals), 0))).check(matches(isDisplayed()));
+        onView(allOf(withId(R.id.textview_list_item_suspension_interval), withChildDescendantAtPosition(withId(R.id.listview_dialog_suspension_intervals_intervals), 0))).check(matches(withText("Start: 22:00 End: 06:00")));
+        onView(allOf(withId(R.id.cardview_list_item_suspension_interval), withChildDescendantAtPosition(withId(R.id.listview_dialog_suspension_intervals_intervals), 0))).perform(click());
+        onView(withId(R.id.textview_dialog_suspension_interval_select_time_label)).check(matches(withText("Start")));
+        onView(withId(R.id.picker_dialog_suspension_interval_select_time_hour)).check(matches(withValue(22)));
+        onView(withId(R.id.picker_dialog_suspension_interval_select_time_minute)).check(matches(withValue(0)));
+        onView(withId(R.id.picker_dialog_suspension_interval_select_time_hour)).perform(setNumber(12));
+        onView(withId(R.id.picker_dialog_suspension_interval_select_time_minute)).perform(setNumber(0));
+        onView(withId(R.id.imageview_dialog_suspension_interval_select_ok)).perform(click());
+        onView(withId(R.id.textview_dialog_suspension_interval_select_time_label)).check(matches(withText("End")));
+        onView(withId(R.id.picker_dialog_suspension_interval_select_time_hour)).check(matches(withValue(6)));
+        onView(withId(R.id.picker_dialog_suspension_interval_select_time_minute)).check(matches(withValue(0)));
+        onView(withId(R.id.imageview_dialog_suspension_interval_select_ok)).perform(click());
+        onView(allOf(withId(R.id.cardview_list_item_suspension_interval), withChildDescendantAtPosition(withId(R.id.listview_dialog_suspension_intervals_intervals), 0))).check(matches(isDisplayed()));
+        onView(allOf(withId(R.id.textview_list_item_suspension_interval), withChildDescendantAtPosition(withId(R.id.listview_dialog_suspension_intervals_intervals), 0))).check(matches(withText("Start: 12:00 End: 06:00")));
+        assertEquals(1, getDialog().getAdapter().getAllItems().size());
+        onView(withId(R.id.imageview_dialog_suspension_intervals_cancel)).perform(click());
+        activityScenario.close();
+    }
+
+    @Test
+    public void testIntervalsDefaultValuesOpenStartAfterEndAdjustStartScreenRotation() {
+        Interval interval1 = getInterval1();
+        Time start = new Time();
+        start.setHour(22);
+        start.setMinute(0);
+        Time end = new Time();
+        end.setHour(6);
+        end.setMinute(0);
+        interval1.setStart(start);
+        interval1.setEnd(end);
+        getIntervalDAO().insertInterval(interval1);
+        scheduler.restart();
+        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class);
+        injectTimeBasedSuspensionScheduler();
+        onView(withId(R.id.cardview_activity_global_settings_suspension_intervals)).perform(click());
+        onView(withId(R.id.listview_dialog_suspension_intervals_intervals)).check(matches(withListSize(1)));
+        onView(allOf(withId(R.id.textview_list_item_suspension_interval_no_interval), withChildDescendantAtPosition(withId(R.id.listview_dialog_suspension_intervals_intervals), 0))).check(matches(not(isDisplayed())));
+        onView(allOf(withId(R.id.cardview_list_item_suspension_interval), withChildDescendantAtPosition(withId(R.id.listview_dialog_suspension_intervals_intervals), 0))).check(matches(isDisplayed()));
+        onView(allOf(withId(R.id.textview_list_item_suspension_interval), withChildDescendantAtPosition(withId(R.id.listview_dialog_suspension_intervals_intervals), 0))).check(matches(withText("Start: 22:00 End: 06:00")));
+        rotateScreen(activityScenario);
+        onView(allOf(withId(R.id.cardview_list_item_suspension_interval), withChildDescendantAtPosition(withId(R.id.listview_dialog_suspension_intervals_intervals), 0))).perform(click());
+        onView(withId(R.id.textview_dialog_suspension_interval_select_time_label)).check(matches(withText("Start")));
+        onView(withId(R.id.picker_dialog_suspension_interval_select_time_hour)).check(matches(withValue(22)));
+        onView(withId(R.id.picker_dialog_suspension_interval_select_time_minute)).check(matches(withValue(0)));
+        onView(withId(R.id.picker_dialog_suspension_interval_select_time_hour)).perform(setNumber(12));
+        onView(withId(R.id.picker_dialog_suspension_interval_select_time_minute)).perform(setNumber(0));
+        onView(withId(R.id.imageview_dialog_suspension_interval_select_ok)).perform(click());
+        onView(withId(R.id.textview_dialog_suspension_interval_select_time_label)).check(matches(withText("End")));
+        onView(withId(R.id.picker_dialog_suspension_interval_select_time_hour)).check(matches(withValue(6)));
+        onView(withId(R.id.picker_dialog_suspension_interval_select_time_minute)).check(matches(withValue(0)));
+        rotateScreen(activityScenario);
+        onView(withId(R.id.imageview_dialog_suspension_interval_select_ok)).perform(click());
+        onView(allOf(withId(R.id.cardview_list_item_suspension_interval), withChildDescendantAtPosition(withId(R.id.listview_dialog_suspension_intervals_intervals), 0))).check(matches(isDisplayed()));
+        onView(allOf(withId(R.id.textview_list_item_suspension_interval), withChildDescendantAtPosition(withId(R.id.listview_dialog_suspension_intervals_intervals), 0))).check(matches(withText("Start: 12:00 End: 06:00")));
+        assertEquals(1, getDialog().getAdapter().getAllItems().size());
+        onView(withId(R.id.imageview_dialog_suspension_intervals_cancel)).perform(click());
+        activityScenario.close();
+    }
+
+    @Test
     public void testIntervalsDefaultValuesOpenLargeGapAdjustStart() {
         getIntervalDAO().insertInterval(getInterval1());
         getIntervalDAO().insertInterval(getInterval2());

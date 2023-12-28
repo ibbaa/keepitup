@@ -259,7 +259,11 @@ public class SuspensionIntervalsDialog extends DialogFragment implements Confirm
                 Log.e(SuspensionIntervalsDialog.class.getName(), "prepareCurrentInterval, interval at position " + position + " is null");
                 end = getEnd(start);
             } else {
-                end = interval.getEnd().isAfter(start) ? interval.getEnd() : getEnd(start);
+                if (!interval.doesOverlapDays()) {
+                    end = interval.getEnd().isAfter(start) ? interval.getEnd() : getEnd(start);
+                } else {
+                    end = interval.getEnd().isBefore(start) ? interval.getEnd() : getEnd(start);
+                }
             }
         } else {
             end = getEnd(start);
