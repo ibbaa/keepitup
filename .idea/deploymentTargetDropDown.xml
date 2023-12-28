@@ -18,22 +18,6 @@
           <timeTargetWasSelectedWithDropDown value="2023-12-12T21:55:03.061716856Z" />
         </State>
       </entry>
-      <entry key="TimeBasedSuspensionBroadcastReceiverTest">
-        <State>
-          <targetSelectedWithDropDown>
-            <Target>
-              <type value="QUICK_BOOT_TARGET" />
-              <deviceKey>
-                <Key>
-                  <type value="VIRTUAL_DEVICE_PATH" />
-                  <value value="$USER_HOME$/.android/avd/Nexus_5X_API_29.avd" />
-                </Key>
-              </deviceKey>
-            </Target>
-          </targetSelectedWithDropDown>
-          <timeTargetWasSelectedWithDropDown value="2023-12-27T18:38:46.781365306Z" />
-        </State>
-      </entry>
       <entry key="TimeBasedSuspensionSchedulerTest">
         <State>
           <targetSelectedWithDropDown>
@@ -66,13 +50,16 @@
           <timeTargetWasSelectedWithDropDown value="2023-12-20T10:42:17.187872519Z" />
         </State>
       </entry>
+      <entry key="testExportConfigurationScreenRotation()">
+        <State />
+      </entry>
       <entry key="testNotificationWithPermission()">
         <State />
       </entry>
-      <entry key="testStartThreshold()">
+      <entry key="testStartIsRunningAndSuspended()">
         <State />
       </entry>
-      <entry key="testSuspendThreshold()">
+      <entry key="testStartNetworkTaskIsRunningAndSuspended()">
         <State />
       </entry>
     </value>

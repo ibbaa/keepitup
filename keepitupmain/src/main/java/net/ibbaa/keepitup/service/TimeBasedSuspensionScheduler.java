@@ -24,6 +24,7 @@ import android.os.Build;
 
 import net.ibbaa.keepitup.R;
 import net.ibbaa.keepitup.db.IntervalDAO;
+import net.ibbaa.keepitup.db.NetworkTaskDAO;
 import net.ibbaa.keepitup.db.SchedulerIdGenerator;
 import net.ibbaa.keepitup.db.SchedulerStateDAO;
 import net.ibbaa.keepitup.logging.Log;
@@ -45,6 +46,7 @@ public class TimeBasedSuspensionScheduler {
     }
 
     private final Context context;
+    private final NetworkTaskDAO networkTaskDAO;
     private final IntervalDAO intervalDAO;
     private final SchedulerStateDAO schedulerStateDAO;
     private final ITimeService timeService;
@@ -58,6 +60,7 @@ public class TimeBasedSuspensionScheduler {
 
     public TimeBasedSuspensionScheduler(Context context) {
         this.context = context;
+        this.networkTaskDAO = new NetworkTaskDAO(context);
         this.intervalDAO = new IntervalDAO(context);
         this.schedulerStateDAO = new SchedulerStateDAO(context);
         this.timeService = createTimeService();
@@ -143,6 +146,8 @@ public class TimeBasedSuspensionScheduler {
             if (isRunning()) {
                 if (!isSuspended()) {
                     doStart(task, now);
+                } else {
+                    resetLastScheduled(task);
                 }
                 return;
             }
@@ -159,6 +164,14 @@ public class TimeBasedSuspensionScheduler {
                 scheduleStart(nextSuspendInterval, thresholdNow, true);
                 doStart(task, now);
             }
+        }
+    }
+
+    private void resetLastScheduled(NetworkTask task) {
+        Log.d(TimeBasedSuspensionScheduler.class.getName(), "resetLastScheduled");
+        if (task != null) {
+            networkTaskDAO.resetNetworkTaskInstances(task.getId());
+            networkTaskDAO.resetNetworkTaskLastScheduled(task.getId());
         }
     }
 
