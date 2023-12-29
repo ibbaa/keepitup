@@ -211,6 +211,9 @@ public class GlobalSettingsActivity extends SettingsInputActivity implements Sus
         preferenceManager.setPreferenceSuspensionEnabled(isChecked);
         prepareSuspensionEnabledOnOffText();
         prepareSuspensionIntervalsField();
+        if (!getTimeBasedSuspensionScheduler().getIntervals().isEmpty()) {
+            getTimeBasedSuspensionScheduler().restart();
+        }
     }
 
     private void prepareSuspensionIntervalsField() {

@@ -18,6 +18,9 @@
           <timeTargetWasSelectedWithDropDown value="2023-12-12T21:55:03.061716856Z" />
         </State>
       </entry>
+      <entry key="GlobalSettingsActivityTest">
+        <State />
+      </entry>
       <entry key="keepitupmain">
         <State>
           <targetSelectedWithDropDown>
@@ -34,19 +37,16 @@
           <timeTargetWasSelectedWithDropDown value="2023-12-28T13:39:33.243432317Z" />
         </State>
       </entry>
-      <entry key="testExportConfigurationScreenRotation()">
+      <entry key="testSuspensionChangeEnabledDisabled()">
         <State />
       </entry>
-      <entry key="testIntervalsDefaultValuesOpenAdjustStartDurationInvalidScreenRotation()">
+      <entry key="testSuspensionChangeEnabledDisabledSchedulerRestarted()">
         <State />
       </entry>
-      <entry key="testIntervalsDefaultValuesOpenAdjustStartInvalid()">
+      <entry key="testSuspensionIntervalAddChangeDeleteSchedulerRestarted()">
         <State />
       </entry>
-      <entry key="testIntervalsDefaultValuesOpenAdjustStartOverlapInvalid()">
-        <State />
-      </entry>
-      <entry key="testIntervalsDefaultValuesOpenAdjustStartOverlapInvalidScreenRotation()">
+      <entry key="testSuspensionIntervalAddSchedulerRestarted()">
         <State />
       </entry>
     </value>
