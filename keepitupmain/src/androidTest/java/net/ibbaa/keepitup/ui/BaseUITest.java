@@ -64,7 +64,10 @@ import net.ibbaa.keepitup.test.matcher.ListSizeMatcher;
 import net.ibbaa.keepitup.test.matcher.NumberPickerColorMatcher;
 import net.ibbaa.keepitup.test.matcher.NumberPickerValueMatcher;
 import net.ibbaa.keepitup.test.matcher.TextColorMatcher;
+import net.ibbaa.keepitup.test.mock.MockTimeService;
+import net.ibbaa.keepitup.test.mock.TestNetworkTaskProcessServiceScheduler;
 import net.ibbaa.keepitup.test.mock.TestRegistry;
+import net.ibbaa.keepitup.test.mock.TestTimeBasedSuspensionScheduler;
 import net.ibbaa.keepitup.test.viewaction.WaitForViewAction;
 
 import org.hamcrest.Matcher;
@@ -82,16 +85,26 @@ public abstract class BaseUITest {
     private SchedulerIdHistoryDAO schedulerIdHistoryDAO;
     private IntervalDAO intervalDAO;
     private SchedulerStateDAO schedulerStateDAO;
-    private NetworkTaskProcessServiceScheduler scheduler;
+    private TestNetworkTaskProcessServiceScheduler networkTaskProcessServiceScheduler;
+    private TestTimeBasedSuspensionScheduler timeBasedSuspensionScheduler;
     private PreferenceManager preferenceManager;
     private IFileManager fileManager;
+    private MockTimeService timeService;
 
     @Before
     public void beforeEachTestMethod() {
         Log.initialize(null);
         Dump.initialize(null);
-        scheduler = new NetworkTaskProcessServiceScheduler(TestRegistry.getContext());
-        scheduler.cancelAll();
+        networkTaskProcessServiceScheduler = new TestNetworkTaskProcessServiceScheduler(TestRegistry.getContext());
+        timeBasedSuspensionScheduler = new TestTimeBasedSuspensionScheduler(TestRegistry.getContext());
+        timeBasedSuspensionScheduler.setNetworkTaskScheduler(networkTaskProcessServiceScheduler);
+        networkTaskProcessServiceScheduler.setTimeBasedSuspensionScheduler(timeBasedSuspensionScheduler);
+        networkTaskProcessServiceScheduler.cancelAll();
+        networkTaskProcessServiceScheduler.reset();
+        timeBasedSuspensionScheduler.reset();
+        timeBasedSuspensionScheduler.resetIsSuspended();
+        timeBasedSuspensionScheduler.resetWasRestartedFlag();
+        timeBasedSuspensionScheduler.stop();
         NetworkTaskProcessServiceScheduler.getNetworkTaskProcessPool().reset();
         logDAO = new LogDAO(TestRegistry.getContext());
         logDAO.deleteAllLogs();
@@ -112,13 +125,19 @@ public abstract class BaseUITest {
         fileManager.delete(fileManager.getExternalRootDirectory(1));
         SystemThemeManager themeManager = new SystemThemeManager();
         themeManager.setThemeByCode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM);
+        timeService = (MockTimeService) timeBasedSuspensionScheduler.getTimeService();
     }
 
     @After
     public void afterEachTestMethod() {
         Log.initialize(null);
         Dump.initialize(null);
-        scheduler.cancelAll();
+        networkTaskProcessServiceScheduler.cancelAll();
+        networkTaskProcessServiceScheduler.reset();
+        timeBasedSuspensionScheduler.reset();
+        timeBasedSuspensionScheduler.resetIsSuspended();
+        timeBasedSuspensionScheduler.resetWasRestartedFlag();
+        timeBasedSuspensionScheduler.stop();
         NetworkTaskProcessServiceScheduler.getNetworkTaskProcessPool().reset();
         logDAO.deleteAllLogs();
         networkTaskDAO.deleteAllNetworkTasks();
@@ -204,8 +223,16 @@ public abstract class BaseUITest {
         return schedulerStateDAO;
     }
 
-    public NetworkTaskProcessServiceScheduler getScheduler() {
-        return scheduler;
+    public NetworkTaskProcessServiceScheduler getNetworkTaskProcessServiceScheduler() {
+        return networkTaskProcessServiceScheduler;
+    }
+
+    public TestTimeBasedSuspensionScheduler getTimeBasedSuspensionScheduler() {
+        return timeBasedSuspensionScheduler;
+    }
+
+    public MockTimeService getTimeService() {
+        return timeService;
     }
 
     public PreferenceManager getPreferenceManager() {

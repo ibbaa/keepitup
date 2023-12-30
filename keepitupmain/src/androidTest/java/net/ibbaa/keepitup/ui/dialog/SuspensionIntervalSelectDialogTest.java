@@ -35,15 +35,10 @@ import androidx.test.filters.MediumTest;
 import net.ibbaa.keepitup.R;
 import net.ibbaa.keepitup.model.Interval;
 import net.ibbaa.keepitup.model.Time;
-import net.ibbaa.keepitup.test.mock.TestNetworkTaskProcessServiceScheduler;
-import net.ibbaa.keepitup.test.mock.TestRegistry;
-import net.ibbaa.keepitup.test.mock.TestTimeBasedSuspensionScheduler;
 import net.ibbaa.keepitup.ui.BaseUITest;
 import net.ibbaa.keepitup.ui.GlobalSettingsActivity;
 import net.ibbaa.keepitup.util.BundleUtil;
 
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -52,28 +47,6 @@ import org.junit.runner.RunWith;
 public class SuspensionIntervalSelectDialogTest extends BaseUITest {
 
     private ActivityScenario<?> activityScenario;
-    private TestTimeBasedSuspensionScheduler scheduler;
-    private TestNetworkTaskProcessServiceScheduler networkTaskScheduler;
-
-    @Before
-    public void beforeEachTestMethod() {
-        super.beforeEachTestMethod();
-        scheduler = new TestTimeBasedSuspensionScheduler(TestRegistry.getContext());
-        networkTaskScheduler = new TestNetworkTaskProcessServiceScheduler(TestRegistry.getContext());
-        scheduler.setNetworkTaskScheduler(networkTaskScheduler);
-        networkTaskScheduler.setTimeBasedSuspensionScheduler(scheduler);
-        networkTaskScheduler.reset();
-        scheduler.reset();
-        scheduler.stop();
-    }
-
-    @After
-    public void afterEachTestMethod() {
-        super.afterEachTestMethod();
-        networkTaskScheduler.reset();
-        scheduler.reset();
-        scheduler.stop();
-    }
 
     @Test
     public void testMode() {
@@ -243,7 +216,7 @@ public class SuspensionIntervalSelectDialogTest extends BaseUITest {
         activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class);
         getIntervalDAO().insertInterval(getInterval1());
         getIntervalDAO().insertInterval(getInterval2());
-        scheduler.restart();
+        getTimeBasedSuspensionScheduler().restart();
         Time time = new Time();
         time.setHour(1);
         time.setMinute(15);
@@ -262,7 +235,7 @@ public class SuspensionIntervalSelectDialogTest extends BaseUITest {
         activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class);
         getIntervalDAO().insertInterval(getInterval1());
         getIntervalDAO().insertInterval(getInterval2());
-        scheduler.restart();
+        getTimeBasedSuspensionScheduler().restart();
         SuspensionIntervalsDialog intervalsDialog = openSuspensionIntervalsDialog();
         SuspensionIntervalSelectDialog intervalSelectDialog = openSuspensionIntervalSelectDialog(SuspensionIntervalSelectDialog.Mode.START, null, null);
         onView(isRoot()).perform(waitFor(500));
@@ -288,7 +261,7 @@ public class SuspensionIntervalSelectDialogTest extends BaseUITest {
         activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class);
         getIntervalDAO().insertInterval(getInterval1());
         getIntervalDAO().insertInterval(getInterval2());
-        scheduler.restart();
+        getTimeBasedSuspensionScheduler().restart();
         Time time = new Time();
         time.setHour(2);
         time.setMinute(1);
@@ -320,7 +293,7 @@ public class SuspensionIntervalSelectDialogTest extends BaseUITest {
         activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class);
         getIntervalDAO().insertInterval(getInterval1());
         getIntervalDAO().insertInterval(getInterval2());
-        scheduler.restart();
+        getTimeBasedSuspensionScheduler().restart();
         Time start = new Time();
         start.setHour(2);
         start.setMinute(30);
@@ -342,7 +315,7 @@ public class SuspensionIntervalSelectDialogTest extends BaseUITest {
         activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class);
         getIntervalDAO().insertInterval(getInterval1());
         getIntervalDAO().insertInterval(getInterval2());
-        scheduler.restart();
+        getTimeBasedSuspensionScheduler().restart();
         Time start = new Time();
         start.setHour(10);
         start.setMinute(0);
@@ -364,7 +337,7 @@ public class SuspensionIntervalSelectDialogTest extends BaseUITest {
         activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class);
         getIntervalDAO().insertInterval(getInterval1());
         getIntervalDAO().insertInterval(getInterval2());
-        scheduler.restart();
+        getTimeBasedSuspensionScheduler().restart();
         Time start = new Time();
         start.setHour(3);
         start.setMinute(0);
@@ -396,7 +369,7 @@ public class SuspensionIntervalSelectDialogTest extends BaseUITest {
         activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class);
         getIntervalDAO().insertInterval(getInterval1());
         getIntervalDAO().insertInterval(getInterval2());
-        scheduler.restart();
+        getTimeBasedSuspensionScheduler().restart();
         Time start = new Time();
         start.setHour(9);
         start.setMinute(0);
@@ -428,7 +401,7 @@ public class SuspensionIntervalSelectDialogTest extends BaseUITest {
         activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class);
         getIntervalDAO().insertInterval(getInterval1());
         getIntervalDAO().insertInterval(getInterval2());
-        scheduler.restart();
+        getTimeBasedSuspensionScheduler().restart();
         Time start = new Time();
         start.setHour(9);
         start.setMinute(30);
@@ -463,7 +436,7 @@ public class SuspensionIntervalSelectDialogTest extends BaseUITest {
         activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class);
         getIntervalDAO().insertInterval(getInterval1());
         getIntervalDAO().insertInterval(getInterval2());
-        scheduler.restart();
+        getTimeBasedSuspensionScheduler().restart();
         SuspensionIntervalsDialog intervalsDialog = openSuspensionIntervalsDialog();
         openSuspensionIntervalSelectDialog(SuspensionIntervalSelectDialog.Mode.START, null, null);
         onView(isRoot()).perform(waitFor(500));
@@ -479,7 +452,7 @@ public class SuspensionIntervalSelectDialogTest extends BaseUITest {
         activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class);
         getIntervalDAO().insertInterval(getInterval1());
         getIntervalDAO().insertInterval(getInterval2());
-        scheduler.restart();
+        getTimeBasedSuspensionScheduler().restart();
         SuspensionIntervalsDialog intervalsDialog = openSuspensionIntervalsDialog();
         SuspensionIntervalSelectDialog intervalSelectDialog = openSuspensionIntervalSelectDialog(SuspensionIntervalSelectDialog.Mode.START, null, null);
         onView(isRoot()).perform(waitFor(500));
@@ -502,7 +475,7 @@ public class SuspensionIntervalSelectDialogTest extends BaseUITest {
         activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class);
         getIntervalDAO().insertInterval(getInterval1());
         getIntervalDAO().insertInterval(getInterval2());
-        scheduler.restart();
+        getTimeBasedSuspensionScheduler().restart();
         openSuspensionIntervalsDialog();
         SuspensionIntervalSelectDialog intervalSelectDialog = openSuspensionIntervalSelectDialog(SuspensionIntervalSelectDialog.Mode.START, null, null);
         onView(isRoot()).perform(waitFor(500));
@@ -542,7 +515,7 @@ public class SuspensionIntervalSelectDialogTest extends BaseUITest {
         activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class);
         getIntervalDAO().insertInterval(getInterval1());
         getIntervalDAO().insertInterval(getInterval2());
-        scheduler.restart();
+        getTimeBasedSuspensionScheduler().restart();
         Time start = new Time();
         start.setHour(9);
         start.setMinute(30);
@@ -563,7 +536,7 @@ public class SuspensionIntervalSelectDialogTest extends BaseUITest {
         activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class);
         getIntervalDAO().insertInterval(getInterval1());
         getIntervalDAO().insertInterval(getInterval2());
-        scheduler.restart();
+        getTimeBasedSuspensionScheduler().restart();
         Time start = new Time();
         start.setHour(9);
         start.setMinute(0);
@@ -592,7 +565,7 @@ public class SuspensionIntervalSelectDialogTest extends BaseUITest {
         activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class);
         getIntervalDAO().insertInterval(getInterval1());
         getIntervalDAO().insertInterval(getInterval2());
-        scheduler.restart();
+        getTimeBasedSuspensionScheduler().restart();
         Time start = new Time();
         start.setHour(9);
         start.setMinute(30);
@@ -618,7 +591,7 @@ public class SuspensionIntervalSelectDialogTest extends BaseUITest {
         activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class);
         getIntervalDAO().insertInterval(getInterval1());
         getIntervalDAO().insertInterval(getInterval2());
-        scheduler.restart();
+        getTimeBasedSuspensionScheduler().restart();
         Time start = new Time();
         start.setHour(10);
         start.setMinute(0);
@@ -646,7 +619,7 @@ public class SuspensionIntervalSelectDialogTest extends BaseUITest {
         activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class);
         getIntervalDAO().insertInterval(getInterval1());
         getIntervalDAO().insertInterval(getInterval2());
-        scheduler.restart();
+        getTimeBasedSuspensionScheduler().restart();
         Time start = new Time();
         start.setHour(9);
         start.setMinute(0);

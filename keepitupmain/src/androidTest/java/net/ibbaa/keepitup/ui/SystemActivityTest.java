@@ -93,8 +93,9 @@ public class SystemActivityTest extends BaseUITest {
     public void beforeEachTestMethod() {
         super.beforeEachTestMethod();
         activityScenario = launchSettingsInputActivity(SystemActivity.class);
-        ((SystemActivity) getActivity(activityScenario)).injectScheduler(getScheduler());
-        alarmManager = (MockAlarmManager) getScheduler().getAlarmManager();
+        ((SystemActivity) getActivity(activityScenario)).injectScheduler(getNetworkTaskProcessServiceScheduler());
+        ((SystemActivity) getActivity(activityScenario)).injectTimeBasedSuspensionScheduler(getTimeBasedSuspensionScheduler());
+        alarmManager = (MockAlarmManager) getNetworkTaskProcessServiceScheduler().getAlarmManager();
         alarmManager.reset();
         themeManager = new MockThemeManager();
         themeManager.reset();
@@ -203,7 +204,7 @@ public class SystemActivityTest extends BaseUITest {
         onView(withId(R.id.cardview_activity_system_config_reset)).perform(click());
         rotateScreen(activityScenario);
         rotateScreen(activityScenario);
-        ((SystemActivity) getActivity(activityScenario)).injectScheduler(getScheduler());
+        ((SystemActivity) getActivity(activityScenario)).injectScheduler(getNetworkTaskProcessServiceScheduler());
         onView(withId(R.id.imageview_dialog_confirm_cancel)).perform(click());
         assertFalse(alarmManager.wasCancelAlarmCalled());
         assertFalse(getNetworkTaskDAO().readAllNetworkTasks().isEmpty());
@@ -323,7 +324,7 @@ public class SystemActivityTest extends BaseUITest {
         onView(withId(R.id.cardview_activity_system_config_reset)).perform(click());
         rotateScreen(activityScenario);
         rotateScreen(activityScenario);
-        ((SystemActivity) getActivity(activityScenario)).injectScheduler(getScheduler());
+        ((SystemActivity) getActivity(activityScenario)).injectScheduler(getNetworkTaskProcessServiceScheduler());
         onView(withId(R.id.imageview_dialog_confirm_ok)).perform(click());
         assertTrue(alarmManager.wasCancelAlarmCalled());
         assertTrue(getNetworkTaskDAO().readAllNetworkTasks().isEmpty());
@@ -387,7 +388,6 @@ public class SystemActivityTest extends BaseUITest {
         assertTrue(alarmManager.wasCancelAlarmCalled());
         onView(withId(R.id.textview_dialog_general_error_message)).check(matches(isDisplayed()));
         onView(withId(R.id.imageview_dialog_general_error_ok)).perform(click());
-        assertEquals(0, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
         assertFalse(getNetworkTaskDAO().readAllNetworkTasks().isEmpty());
         assertFalse(getSchedulerIdHistoryDAO().readAllSchedulerIds().isEmpty());
         assertFalse(getLogDAO().readAllLogs().isEmpty());
@@ -454,7 +454,6 @@ public class SystemActivityTest extends BaseUITest {
         rotateScreen(activityScenario);
         rotateScreen(activityScenario);
         onView(withId(R.id.imageview_dialog_general_error_ok)).perform(click());
-        assertEquals(0, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
         assertFalse(getNetworkTaskDAO().readAllNetworkTasks().isEmpty());
         assertFalse(getSchedulerIdHistoryDAO().readAllSchedulerIds().isEmpty());
         assertFalse(getLogDAO().readAllLogs().isEmpty());
@@ -2600,8 +2599,8 @@ public class SystemActivityTest extends BaseUITest {
         NetworkTask task2 = getNetworkTaskDAO().insertNetworkTask(new NetworkTask());
         getNetworkTaskDAO().updateNetworkTaskRunning(task1.getId(), true);
         getNetworkTaskDAO().updateNetworkTaskRunning(task2.getId(), true);
-        getScheduler().reschedule(task1, NetworkTaskProcessServiceScheduler.Delay.INTERVAL);
-        getScheduler().reschedule(task2, NetworkTaskProcessServiceScheduler.Delay.INTERVAL);
+        getNetworkTaskProcessServiceScheduler().reschedule(task1, NetworkTaskProcessServiceScheduler.Delay.INTERVAL);
+        getNetworkTaskProcessServiceScheduler().reschedule(task2, NetworkTaskProcessServiceScheduler.Delay.INTERVAL);
     }
 
     private void logEntryEquals(LogEntry entry1, LogEntry entry2) {

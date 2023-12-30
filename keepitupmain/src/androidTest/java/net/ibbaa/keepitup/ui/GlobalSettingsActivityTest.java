@@ -54,16 +54,11 @@ import net.ibbaa.keepitup.resources.PreferenceManager;
 import net.ibbaa.keepitup.test.matcher.FontSizeMatcher;
 import net.ibbaa.keepitup.test.mock.MockClipboardManager;
 import net.ibbaa.keepitup.test.mock.MockFileManager;
-import net.ibbaa.keepitup.test.mock.MockTimeService;
-import net.ibbaa.keepitup.test.mock.TestNetworkTaskProcessServiceScheduler;
 import net.ibbaa.keepitup.test.mock.TestRegistry;
-import net.ibbaa.keepitup.test.mock.TestTimeBasedSuspensionScheduler;
 import net.ibbaa.keepitup.ui.dialog.SettingsInputDialog;
 
 import org.hamcrest.Matcher;
 import org.hamcrest.Matchers;
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -77,35 +72,10 @@ import java.util.List;
 @RunWith(AndroidJUnit4.class)
 public class GlobalSettingsActivityTest extends BaseUITest {
 
-    private TestTimeBasedSuspensionScheduler scheduler;
-    private TestNetworkTaskProcessServiceScheduler networkTaskScheduler;
-    private MockTimeService timeService;
-
-    @Before
-    public void beforeEachTestMethod() {
-        super.beforeEachTestMethod();
-        scheduler = new TestTimeBasedSuspensionScheduler(TestRegistry.getContext());
-        networkTaskScheduler = new TestNetworkTaskProcessServiceScheduler(TestRegistry.getContext());
-        scheduler.setNetworkTaskScheduler(networkTaskScheduler);
-        networkTaskScheduler.setTimeBasedSuspensionScheduler(scheduler);
-        networkTaskScheduler.reset();
-        scheduler.reset();
-        scheduler.stop();
-        timeService = (MockTimeService) scheduler.getTimeService();
-    }
-
-    @After
-    public void afterEachTestMethod() {
-        super.afterEachTestMethod();
-        networkTaskScheduler.reset();
-        scheduler.reset();
-        scheduler.stop();
-    }
-
     @Test
     public void testDisplayDefaultValues() {
         ActivityScenario<?> activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class);
-        ((GlobalSettingsActivity) getActivity(activityScenario)).injectTimeBasedSuspensionScheduler(scheduler);
+        ((GlobalSettingsActivity) getActivity(activityScenario)).injectTimeBasedSuspensionScheduler(getTimeBasedSuspensionScheduler());
         PreferenceManager preferenceManager = getPreferenceManager();
         assertEquals(3, preferenceManager.getPreferencePingCount());
         assertFalse(preferenceManager.getPreferenceNotificationInactiveNetwork());
@@ -147,7 +117,7 @@ public class GlobalSettingsActivityTest extends BaseUITest {
     @Test
     public void testDisplayValues() {
         ActivityScenario<?> activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class);
-        ((GlobalSettingsActivity) getActivity(activityScenario)).injectTimeBasedSuspensionScheduler(scheduler);
+        ((GlobalSettingsActivity) getActivity(activityScenario)).injectTimeBasedSuspensionScheduler(getTimeBasedSuspensionScheduler());
         onView(withId(R.id.textview_activity_global_settings_ping_count)).perform(click());
         onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("10"));
         onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
@@ -192,7 +162,7 @@ public class GlobalSettingsActivityTest extends BaseUITest {
     @Test
     public void testSwitchYesNoText() {
         ActivityScenario<?> activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class);
-        ((GlobalSettingsActivity) getActivity(activityScenario)).injectTimeBasedSuspensionScheduler(scheduler);
+        ((GlobalSettingsActivity) getActivity(activityScenario)).injectTimeBasedSuspensionScheduler(getTimeBasedSuspensionScheduler());
         onView(withId(R.id.switch_activity_global_settings_notification_inactive_network)).check(matches(isNotChecked()));
         onView(withId(R.id.textview_activity_global_settings_notification_inactive_network_on_off)).check(matches(withText("no")));
         onView(withId(R.id.switch_activity_global_settings_notification_inactive_network)).perform(click());
@@ -243,7 +213,7 @@ public class GlobalSettingsActivityTest extends BaseUITest {
     @Test
     public void testSetPreferencesOk() {
         ActivityScenario<?> activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class);
-        ((GlobalSettingsActivity) getActivity(activityScenario)).injectTimeBasedSuspensionScheduler(scheduler);
+        ((GlobalSettingsActivity) getActivity(activityScenario)).injectTimeBasedSuspensionScheduler(getTimeBasedSuspensionScheduler());
         onView(withId(R.id.textview_activity_global_settings_ping_count)).perform(click());
         onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("2"));
         onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
@@ -274,7 +244,7 @@ public class GlobalSettingsActivityTest extends BaseUITest {
     @Test
     public void testSetPreferencesNotificationType() {
         ActivityScenario<?> activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class);
-        ((GlobalSettingsActivity) getActivity(activityScenario)).injectTimeBasedSuspensionScheduler(scheduler);
+        ((GlobalSettingsActivity) getActivity(activityScenario)).injectTimeBasedSuspensionScheduler(getTimeBasedSuspensionScheduler());
         onView(withId(R.id.radiobutton_activity_global_settings_notification_type_change)).perform(click());
         onView(withId(R.id.radiobutton_activity_global_settings_notification_type_failure)).check(matches(isNotChecked()));
         onView(withId(R.id.radiobutton_activity_global_settings_notification_type_change)).check(matches(isChecked()));
@@ -290,7 +260,7 @@ public class GlobalSettingsActivityTest extends BaseUITest {
     @Test
     public void testSetPingCountPreferencesCancel() {
         ActivityScenario<?> activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class);
-        ((GlobalSettingsActivity) getActivity(activityScenario)).injectTimeBasedSuspensionScheduler(scheduler);
+        ((GlobalSettingsActivity) getActivity(activityScenario)).injectTimeBasedSuspensionScheduler(getTimeBasedSuspensionScheduler());
         onView(withId(R.id.textview_activity_global_settings_ping_count)).perform(click());
         onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("2"));
         onView(withId(R.id.imageview_dialog_settings_input_cancel)).perform(click());
@@ -302,7 +272,7 @@ public class GlobalSettingsActivityTest extends BaseUITest {
     @Test
     public void testPingCountInput() {
         ActivityScenario<?> activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class);
-        ((GlobalSettingsActivity) getActivity(activityScenario)).injectTimeBasedSuspensionScheduler(scheduler);
+        ((GlobalSettingsActivity) getActivity(activityScenario)).injectTimeBasedSuspensionScheduler(getTimeBasedSuspensionScheduler());
         onView(withId(R.id.textview_activity_global_settings_ping_count)).perform(click());
         onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("1 0"));
         onView(withId(R.id.edittext_dialog_settings_input_value)).check(matches(withTextColor(R.color.textErrorColor)));
@@ -341,7 +311,7 @@ public class GlobalSettingsActivityTest extends BaseUITest {
     @Test
     public void testPingCountCopyPasteOption() {
         ActivityScenario<?> activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class);
-        ((GlobalSettingsActivity) getActivity(activityScenario)).injectTimeBasedSuspensionScheduler(scheduler);
+        ((GlobalSettingsActivity) getActivity(activityScenario)).injectTimeBasedSuspensionScheduler(getTimeBasedSuspensionScheduler());
         onView(withId(R.id.textview_activity_global_settings_ping_count)).perform(click());
         SettingsInputDialog inputDialog = (SettingsInputDialog) getActivity(activityScenario).getSupportFragmentManager().getFragments().get(0);
         MockClipboardManager clipboardManager = prepareMockClipboardManager(inputDialog);
@@ -366,7 +336,7 @@ public class GlobalSettingsActivityTest extends BaseUITest {
     @Test
     public void testPingCountCopyPasteOptionScreenRotation() {
         ActivityScenario<?> activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class);
-        ((GlobalSettingsActivity) getActivity(activityScenario)).injectTimeBasedSuspensionScheduler(scheduler);
+        ((GlobalSettingsActivity) getActivity(activityScenario)).injectTimeBasedSuspensionScheduler(getTimeBasedSuspensionScheduler());
         onView(withId(R.id.textview_activity_global_settings_ping_count)).perform(click());
         SettingsInputDialog inputDialog = (SettingsInputDialog) getActivity(activityScenario).getSupportFragmentManager().getFragments().get(0);
         MockClipboardManager clipboardManager = prepareMockClipboardManager(inputDialog);
@@ -395,7 +365,7 @@ public class GlobalSettingsActivityTest extends BaseUITest {
     @Test
     public void testSetConnectCountPreferencesCancel() {
         ActivityScenario<?> activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class);
-        ((GlobalSettingsActivity) getActivity(activityScenario)).injectTimeBasedSuspensionScheduler(scheduler);
+        ((GlobalSettingsActivity) getActivity(activityScenario)).injectTimeBasedSuspensionScheduler(getTimeBasedSuspensionScheduler());
         onView(withId(R.id.textview_activity_global_settings_connect_count)).perform(click());
         onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("3"));
         onView(withId(R.id.imageview_dialog_settings_input_cancel)).perform(click());
@@ -407,7 +377,7 @@ public class GlobalSettingsActivityTest extends BaseUITest {
     @Test
     public void testConnectCountInput() {
         ActivityScenario<?> activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class);
-        ((GlobalSettingsActivity) getActivity(activityScenario)).injectTimeBasedSuspensionScheduler(scheduler);
+        ((GlobalSettingsActivity) getActivity(activityScenario)).injectTimeBasedSuspensionScheduler(getTimeBasedSuspensionScheduler());
         onView(withId(R.id.textview_activity_global_settings_connect_count)).perform(click());
         onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("1 0"));
         onView(withId(R.id.edittext_dialog_settings_input_value)).check(matches(withTextColor(R.color.textErrorColor)));
@@ -446,7 +416,7 @@ public class GlobalSettingsActivityTest extends BaseUITest {
     @Test
     public void testConnectCountCopyPasteOption() {
         ActivityScenario<?> activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class);
-        ((GlobalSettingsActivity) getActivity(activityScenario)).injectTimeBasedSuspensionScheduler(scheduler);
+        ((GlobalSettingsActivity) getActivity(activityScenario)).injectTimeBasedSuspensionScheduler(getTimeBasedSuspensionScheduler());
         onView(withId(R.id.textview_activity_global_settings_connect_count)).perform(click());
         SettingsInputDialog inputDialog = (SettingsInputDialog) getActivity(activityScenario).getSupportFragmentManager().getFragments().get(0);
         MockClipboardManager clipboardManager = prepareMockClipboardManager(inputDialog);
@@ -471,7 +441,7 @@ public class GlobalSettingsActivityTest extends BaseUITest {
     @Test
     public void testConnectCountCopyPasteOptionScreenRotation() {
         ActivityScenario<?> activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class);
-        ((GlobalSettingsActivity) getActivity(activityScenario)).injectTimeBasedSuspensionScheduler(scheduler);
+        ((GlobalSettingsActivity) getActivity(activityScenario)).injectTimeBasedSuspensionScheduler(getTimeBasedSuspensionScheduler());
         onView(withId(R.id.textview_activity_global_settings_connect_count)).perform(click());
         onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("11"));
         rotateScreen(activityScenario);
@@ -499,7 +469,7 @@ public class GlobalSettingsActivityTest extends BaseUITest {
     @Test
     public void testSuspensionNoneDisabled() {
         ActivityScenario<?> activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class);
-        ((GlobalSettingsActivity) getActivity(activityScenario)).injectTimeBasedSuspensionScheduler(scheduler);
+        ((GlobalSettingsActivity) getActivity(activityScenario)).injectTimeBasedSuspensionScheduler(getTimeBasedSuspensionScheduler());
         onView(withId(R.id.textview_activity_global_settings_suspension_enabled_label)).check(matches(withText("Suspension intervals enabled")));
         onView(withId(R.id.switch_activity_global_settings_suspension_enabled)).check(matches(isChecked()));
         onView(withId(R.id.textview_activity_global_settings_suspension_intervals_label)).check(matches(withText("Defined suspension intervals")));
@@ -520,9 +490,9 @@ public class GlobalSettingsActivityTest extends BaseUITest {
     @Test
     public void testSuspensionDisabledOneInterval() {
         getIntervalDAO().insertInterval(getInterval1());
-        scheduler.restart();
+        getTimeBasedSuspensionScheduler().restart();
         ActivityScenario<?> activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class);
-        ((GlobalSettingsActivity) getActivity(activityScenario)).injectTimeBasedSuspensionScheduler(scheduler);
+        ((GlobalSettingsActivity) getActivity(activityScenario)).injectTimeBasedSuspensionScheduler(getTimeBasedSuspensionScheduler());
         onView(withId(R.id.textview_activity_global_settings_suspension_enabled_label)).check(matches(withText("Suspension intervals enabled")));
         onView(withId(R.id.switch_activity_global_settings_suspension_enabled)).check(matches(isChecked()));
         onView(withId(R.id.textview_activity_global_settings_suspension_intervals_label)).check(matches(withText("Defined suspension intervals")));
@@ -544,9 +514,9 @@ public class GlobalSettingsActivityTest extends BaseUITest {
     public void testSuspensionDisabledTwoIntervals() {
         getIntervalDAO().insertInterval(getInterval1());
         getIntervalDAO().insertInterval(getInterval2());
-        scheduler.restart();
+        getTimeBasedSuspensionScheduler().restart();
         ActivityScenario<?> activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class);
-        ((GlobalSettingsActivity) getActivity(activityScenario)).injectTimeBasedSuspensionScheduler(scheduler);
+        ((GlobalSettingsActivity) getActivity(activityScenario)).injectTimeBasedSuspensionScheduler(getTimeBasedSuspensionScheduler());
         onView(withId(R.id.textview_activity_global_settings_suspension_enabled_label)).check(matches(withText("Suspension intervals enabled")));
         onView(withId(R.id.switch_activity_global_settings_suspension_enabled)).check(matches(isChecked()));
         onView(withId(R.id.textview_activity_global_settings_suspension_intervals_label)).check(matches(withText("Defined suspension intervals")));
@@ -571,9 +541,9 @@ public class GlobalSettingsActivityTest extends BaseUITest {
         getIntervalDAO().insertInterval(getInterval1());
         getIntervalDAO().insertInterval(getInterval2());
         getIntervalDAO().insertInterval(getInterval3());
-        scheduler.restart();
+        getTimeBasedSuspensionScheduler().restart();
         ActivityScenario<?> activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class);
-        ((GlobalSettingsActivity) getActivity(activityScenario)).injectTimeBasedSuspensionScheduler(scheduler);
+        ((GlobalSettingsActivity) getActivity(activityScenario)).injectTimeBasedSuspensionScheduler(getTimeBasedSuspensionScheduler());
         onView(withId(R.id.textview_activity_global_settings_suspension_enabled_label)).check(matches(withText("Suspension intervals enabled")));
         onView(withId(R.id.switch_activity_global_settings_suspension_enabled)).check(matches(isChecked()));
         onView(withId(R.id.textview_activity_global_settings_suspension_intervals_label)).check(matches(withText("Defined suspension intervals")));
@@ -602,9 +572,9 @@ public class GlobalSettingsActivityTest extends BaseUITest {
         getIntervalDAO().insertInterval(getInterval3());
         getIntervalDAO().insertInterval(getInterval4());
         getIntervalDAO().insertInterval(getInterval5());
-        scheduler.restart();
+        getTimeBasedSuspensionScheduler().restart();
         ActivityScenario<?> activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class);
-        ((GlobalSettingsActivity) getActivity(activityScenario)).injectTimeBasedSuspensionScheduler(scheduler);
+        ((GlobalSettingsActivity) getActivity(activityScenario)).injectTimeBasedSuspensionScheduler(getTimeBasedSuspensionScheduler());
         onView(withId(R.id.textview_activity_global_settings_suspension_enabled_label)).check(matches(withText("Suspension intervals enabled")));
         onView(withId(R.id.switch_activity_global_settings_suspension_enabled)).check(matches(isChecked()));
         onView(withId(R.id.textview_activity_global_settings_suspension_intervals_label)).check(matches(withText("Defined suspension intervals")));
@@ -636,23 +606,23 @@ public class GlobalSettingsActivityTest extends BaseUITest {
         getNetworkTaskDAO().insertNetworkTask(task);
         getIntervalDAO().insertInterval(getInterval1());
         setTestTime(getTestTimestamp(24, 10, 15));
-        scheduler.restart();
+        getTimeBasedSuspensionScheduler().restart();
         ActivityScenario<?> activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class);
-        ((GlobalSettingsActivity) getActivity(activityScenario)).injectTimeBasedSuspensionScheduler(scheduler);
+        ((GlobalSettingsActivity) getActivity(activityScenario)).injectTimeBasedSuspensionScheduler(getTimeBasedSuspensionScheduler());
         onView(withId(R.id.textview_activity_global_settings_suspension_enabled_label)).check(matches(withText("Suspension intervals enabled")));
         onView(withId(R.id.switch_activity_global_settings_suspension_enabled)).check(matches(isChecked()));
-        assertTrue(scheduler.isSuspended());
-        assertTrue(scheduler.isRunning());
+        assertTrue(getTimeBasedSuspensionScheduler().isSuspended());
+        assertTrue(getTimeBasedSuspensionScheduler().isRunning());
         onView(withId(R.id.switch_activity_global_settings_suspension_enabled)).perform(click());
         onView(withId(R.id.textview_activity_global_settings_suspension_enabled_label)).check(matches(withText("Suspension intervals enabled")));
         onView(withId(R.id.switch_activity_global_settings_suspension_enabled)).check(matches(isNotChecked()));
-        assertFalse(scheduler.isSuspended());
-        assertFalse(scheduler.isRunning());
+        assertFalse(getTimeBasedSuspensionScheduler().isSuspended());
+        assertFalse(getTimeBasedSuspensionScheduler().isRunning());
         onView(withId(R.id.switch_activity_global_settings_suspension_enabled)).perform(click());
         onView(withId(R.id.textview_activity_global_settings_suspension_enabled_label)).check(matches(withText("Suspension intervals enabled")));
         onView(withId(R.id.switch_activity_global_settings_suspension_enabled)).check(matches(isChecked()));
-        assertTrue(scheduler.isSuspended());
-        assertTrue(scheduler.isRunning());
+        assertTrue(getTimeBasedSuspensionScheduler().isSuspended());
+        assertTrue(getTimeBasedSuspensionScheduler().isRunning());
     }
 
     @Test
@@ -664,9 +634,9 @@ public class GlobalSettingsActivityTest extends BaseUITest {
         getIntervalDAO().insertInterval(getInterval5());
         getIntervalDAO().insertInterval(getInterval6());
         getIntervalDAO().insertInterval(getInterval7());
-        scheduler.restart();
+        getTimeBasedSuspensionScheduler().restart();
         ActivityScenario<?> activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class);
-        ((GlobalSettingsActivity) getActivity(activityScenario)).injectTimeBasedSuspensionScheduler(scheduler);
+        ((GlobalSettingsActivity) getActivity(activityScenario)).injectTimeBasedSuspensionScheduler(getTimeBasedSuspensionScheduler());
         onView(withId(R.id.textview_activity_global_settings_suspension_enabled_label)).check(matches(withText("Suspension intervals enabled")));
         onView(withId(R.id.switch_activity_global_settings_suspension_enabled)).check(matches(isChecked()));
         onView(withId(R.id.textview_activity_global_settings_suspension_intervals_label)).check(matches(withText("Defined suspension intervals")));
@@ -683,7 +653,7 @@ public class GlobalSettingsActivityTest extends BaseUITest {
     @Test
     public void testSuspensionIntervalAddOneCancel() {
         ActivityScenario<?> activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class);
-        ((GlobalSettingsActivity) getActivity(activityScenario)).injectTimeBasedSuspensionScheduler(scheduler);
+        ((GlobalSettingsActivity) getActivity(activityScenario)).injectTimeBasedSuspensionScheduler(getTimeBasedSuspensionScheduler());
         onView(withId(R.id.textview_activity_global_settings_suspension_enabled_label)).check(matches(withText("Suspension intervals enabled")));
         onView(withId(R.id.switch_activity_global_settings_suspension_enabled)).check(matches(isChecked()));
         onView(withId(R.id.textview_activity_global_settings_suspension_intervals_label)).check(matches(withText("Defined suspension intervals")));
@@ -697,14 +667,14 @@ public class GlobalSettingsActivityTest extends BaseUITest {
         onView(withId(R.id.imageview_dialog_suspension_intervals_cancel)).perform(click());
         onView(withId(R.id.textview_activity_global_settings_suspension_intervals_label)).check(matches(withText("Defined suspension intervals")));
         onView(allOf(withText("None"), withFontSize(14), withGridLayoutPosition(1, 0))).check(matches(isDisplayed()));
-        assertTrue(scheduler.getIntervals().isEmpty());
+        assertTrue(getTimeBasedSuspensionScheduler().getIntervals().isEmpty());
         activityScenario.close();
     }
 
     @Test
     public void testSuspensionIntervalAddOneCancelScreenRotation() {
         ActivityScenario<?> activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class);
-        ((GlobalSettingsActivity) getActivity(activityScenario)).injectTimeBasedSuspensionScheduler(scheduler);
+        ((GlobalSettingsActivity) getActivity(activityScenario)).injectTimeBasedSuspensionScheduler(getTimeBasedSuspensionScheduler());
         onView(withId(R.id.textview_activity_global_settings_suspension_enabled_label)).check(matches(withText("Suspension intervals enabled")));
         onView(withId(R.id.switch_activity_global_settings_suspension_enabled)).check(matches(isChecked()));
         onView(withId(R.id.textview_activity_global_settings_suspension_intervals_label)).check(matches(withText("Defined suspension intervals")));
@@ -722,14 +692,14 @@ public class GlobalSettingsActivityTest extends BaseUITest {
         onView(withId(R.id.imageview_dialog_suspension_intervals_cancel)).perform(click());
         onView(withId(R.id.textview_activity_global_settings_suspension_intervals_label)).check(matches(withText("Defined suspension intervals")));
         onView(allOf(withText("None"), withFontSize(14), withGridLayoutPosition(1, 0))).check(matches(isDisplayed()));
-        assertTrue(scheduler.getIntervals().isEmpty());
+        assertTrue(getTimeBasedSuspensionScheduler().getIntervals().isEmpty());
         activityScenario.close();
     }
 
     @Test
     public void testSuspensionIntervalAddOneOk() {
         ActivityScenario<?> activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class);
-        ((GlobalSettingsActivity) getActivity(activityScenario)).injectTimeBasedSuspensionScheduler(scheduler);
+        ((GlobalSettingsActivity) getActivity(activityScenario)).injectTimeBasedSuspensionScheduler(getTimeBasedSuspensionScheduler());
         onView(withId(R.id.textview_activity_global_settings_suspension_enabled_label)).check(matches(withText("Suspension intervals enabled")));
         onView(withId(R.id.switch_activity_global_settings_suspension_enabled)).check(matches(isChecked()));
         onView(withId(R.id.textview_activity_global_settings_suspension_intervals_label)).check(matches(withText("Defined suspension intervals")));
@@ -743,8 +713,8 @@ public class GlobalSettingsActivityTest extends BaseUITest {
         onView(withId(R.id.imageview_dialog_suspension_intervals_ok)).perform(click());
         onView(withId(R.id.textview_activity_global_settings_suspension_intervals_label)).check(matches(withText("Defined suspension intervals")));
         onView(allOf(withText("Start: 22:00 End: 04:00"), withFontSize(14), withGridLayoutPosition(1, 0))).check(matches(isDisplayed()));
-        assertEquals(1, scheduler.getIntervals().size());
-        Interval interval = scheduler.getIntervals().get(0);
+        assertEquals(1, getTimeBasedSuspensionScheduler().getIntervals().size());
+        Interval interval = getTimeBasedSuspensionScheduler().getIntervals().get(0);
         Interval newInterval = new Interval();
         Time start = new Time();
         start.setHour(22);
@@ -761,7 +731,7 @@ public class GlobalSettingsActivityTest extends BaseUITest {
     @Test
     public void testSuspensionIntervalAddOneOkScreenRotation() {
         ActivityScenario<?> activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class);
-        ((GlobalSettingsActivity) getActivity(activityScenario)).injectTimeBasedSuspensionScheduler(scheduler);
+        ((GlobalSettingsActivity) getActivity(activityScenario)).injectTimeBasedSuspensionScheduler(getTimeBasedSuspensionScheduler());
         onView(withId(R.id.textview_activity_global_settings_suspension_enabled_label)).check(matches(withText("Suspension intervals enabled")));
         onView(withId(R.id.switch_activity_global_settings_suspension_enabled)).check(matches(isChecked()));
         onView(withId(R.id.textview_activity_global_settings_suspension_intervals_label)).check(matches(withText("Defined suspension intervals")));
@@ -780,8 +750,8 @@ public class GlobalSettingsActivityTest extends BaseUITest {
         onView(withId(R.id.imageview_dialog_suspension_intervals_ok)).perform(click());
         onView(withId(R.id.textview_activity_global_settings_suspension_intervals_label)).check(matches(withText("Defined suspension intervals")));
         onView(allOf(withText("Start: 22:00 End: 04:00"), withFontSize(14), withGridLayoutPosition(1, 0))).check(matches(isDisplayed()));
-        assertEquals(1, scheduler.getIntervals().size());
-        Interval interval = scheduler.getIntervals().get(0);
+        assertEquals(1, getTimeBasedSuspensionScheduler().getIntervals().size());
+        Interval interval = getTimeBasedSuspensionScheduler().getIntervals().get(0);
         Interval newInterval = new Interval();
         Time start = new Time();
         start.setHour(22);
@@ -798,7 +768,7 @@ public class GlobalSettingsActivityTest extends BaseUITest {
     @Test
     public void testSuspensionIntervalAddTwoCancel() {
         ActivityScenario<?> activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class);
-        ((GlobalSettingsActivity) getActivity(activityScenario)).injectTimeBasedSuspensionScheduler(scheduler);
+        ((GlobalSettingsActivity) getActivity(activityScenario)).injectTimeBasedSuspensionScheduler(getTimeBasedSuspensionScheduler());
         onView(withId(R.id.textview_activity_global_settings_suspension_enabled_label)).check(matches(withText("Suspension intervals enabled")));
         onView(withId(R.id.switch_activity_global_settings_suspension_enabled)).check(matches(isChecked()));
         onView(withId(R.id.textview_activity_global_settings_suspension_intervals_label)).check(matches(withText("Defined suspension intervals")));
@@ -817,14 +787,14 @@ public class GlobalSettingsActivityTest extends BaseUITest {
         onView(withId(R.id.imageview_dialog_suspension_intervals_cancel)).perform(click());
         onView(withId(R.id.textview_activity_global_settings_suspension_intervals_label)).check(matches(withText("Defined suspension intervals")));
         onView(allOf(withText("None"), withFontSize(14), withGridLayoutPosition(1, 0))).check(matches(isDisplayed()));
-        assertTrue(scheduler.getIntervals().isEmpty());
+        assertTrue(getTimeBasedSuspensionScheduler().getIntervals().isEmpty());
         activityScenario.close();
     }
 
     @Test
     public void testSuspensionIntervalAddTwoCancelScreenRotation() {
         ActivityScenario<?> activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class);
-        ((GlobalSettingsActivity) getActivity(activityScenario)).injectTimeBasedSuspensionScheduler(scheduler);
+        ((GlobalSettingsActivity) getActivity(activityScenario)).injectTimeBasedSuspensionScheduler(getTimeBasedSuspensionScheduler());
         onView(withId(R.id.textview_activity_global_settings_suspension_enabled_label)).check(matches(withText("Suspension intervals enabled")));
         onView(withId(R.id.switch_activity_global_settings_suspension_enabled)).check(matches(isChecked()));
         onView(withId(R.id.textview_activity_global_settings_suspension_intervals_label)).check(matches(withText("Defined suspension intervals")));
@@ -845,14 +815,14 @@ public class GlobalSettingsActivityTest extends BaseUITest {
         onView(withId(R.id.imageview_dialog_suspension_intervals_cancel)).perform(click());
         onView(withId(R.id.textview_activity_global_settings_suspension_intervals_label)).check(matches(withText("Defined suspension intervals")));
         onView(allOf(withText("None"), withFontSize(14), withGridLayoutPosition(1, 0))).check(matches(isDisplayed()));
-        assertTrue(scheduler.getIntervals().isEmpty());
+        assertTrue(getTimeBasedSuspensionScheduler().getIntervals().isEmpty());
         activityScenario.close();
     }
 
     @Test
     public void testSuspensionIntervalAddTwoOk() {
         ActivityScenario<?> activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class);
-        ((GlobalSettingsActivity) getActivity(activityScenario)).injectTimeBasedSuspensionScheduler(scheduler);
+        ((GlobalSettingsActivity) getActivity(activityScenario)).injectTimeBasedSuspensionScheduler(getTimeBasedSuspensionScheduler());
         onView(withId(R.id.textview_activity_global_settings_suspension_enabled_label)).check(matches(withText("Suspension intervals enabled")));
         onView(withId(R.id.switch_activity_global_settings_suspension_enabled)).check(matches(isChecked()));
         onView(withId(R.id.textview_activity_global_settings_suspension_intervals_label)).check(matches(withText("Defined suspension intervals")));
@@ -872,9 +842,9 @@ public class GlobalSettingsActivityTest extends BaseUITest {
         onView(withId(R.id.textview_activity_global_settings_suspension_intervals_label)).check(matches(withText("Defined suspension intervals")));
         onView(allOf(withText("Start: 05:00 End: 07:00"), withFontSize(12), withGridLayoutPosition(1, 0))).check(matches(isDisplayed()));
         onView(allOf(withText("Start: 22:00 End: 04:00"), withFontSize(12), withGridLayoutPosition(2, 0))).check(matches(isDisplayed()));
-        assertEquals(2, scheduler.getIntervals().size());
-        Interval interval1 = scheduler.getIntervals().get(0);
-        Interval interval2 = scheduler.getIntervals().get(1);
+        assertEquals(2, getTimeBasedSuspensionScheduler().getIntervals().size());
+        Interval interval1 = getTimeBasedSuspensionScheduler().getIntervals().get(0);
+        Interval interval2 = getTimeBasedSuspensionScheduler().getIntervals().get(1);
         Interval newInterval1 = new Interval();
         Time start1 = new Time();
         start1.setHour(5);
@@ -901,7 +871,7 @@ public class GlobalSettingsActivityTest extends BaseUITest {
     @Test
     public void testSuspensionIntervalAddTwoOkScreenRotation() {
         ActivityScenario<?> activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class);
-        ((GlobalSettingsActivity) getActivity(activityScenario)).injectTimeBasedSuspensionScheduler(scheduler);
+        ((GlobalSettingsActivity) getActivity(activityScenario)).injectTimeBasedSuspensionScheduler(getTimeBasedSuspensionScheduler());
         onView(withId(R.id.textview_activity_global_settings_suspension_enabled_label)).check(matches(withText("Suspension intervals enabled")));
         onView(withId(R.id.switch_activity_global_settings_suspension_enabled)).check(matches(isChecked()));
         onView(withId(R.id.textview_activity_global_settings_suspension_intervals_label)).check(matches(withText("Defined suspension intervals")));
@@ -923,9 +893,9 @@ public class GlobalSettingsActivityTest extends BaseUITest {
         onView(withId(R.id.textview_activity_global_settings_suspension_intervals_label)).check(matches(withText("Defined suspension intervals")));
         onView(allOf(withText("Start: 05:00 End: 07:00"), withFontSize(12), withGridLayoutPosition(1, 0))).check(matches(isDisplayed()));
         onView(allOf(withText("Start: 22:00 End: 04:00"), withFontSize(12), withGridLayoutPosition(2, 0))).check(matches(isDisplayed()));
-        assertEquals(2, scheduler.getIntervals().size());
-        Interval interval1 = scheduler.getIntervals().get(0);
-        Interval interval2 = scheduler.getIntervals().get(1);
+        assertEquals(2, getTimeBasedSuspensionScheduler().getIntervals().size());
+        Interval interval1 = getTimeBasedSuspensionScheduler().getIntervals().get(0);
+        Interval interval2 = getTimeBasedSuspensionScheduler().getIntervals().get(1);
         Interval newInterval1 = new Interval();
         Time start1 = new Time();
         start1.setHour(5);
@@ -952,7 +922,7 @@ public class GlobalSettingsActivityTest extends BaseUITest {
     @Test
     public void testSuspensionIntervalAddSevenOk() {
         ActivityScenario<?> activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class);
-        ((GlobalSettingsActivity) getActivity(activityScenario)).injectTimeBasedSuspensionScheduler(scheduler);
+        ((GlobalSettingsActivity) getActivity(activityScenario)).injectTimeBasedSuspensionScheduler(getTimeBasedSuspensionScheduler());
         onView(withId(R.id.textview_activity_global_settings_suspension_enabled_label)).check(matches(withText("Suspension intervals enabled")));
         onView(withId(R.id.switch_activity_global_settings_suspension_enabled)).check(matches(isChecked()));
         onView(withId(R.id.textview_activity_global_settings_suspension_intervals_label)).check(matches(withText("Defined suspension intervals")));
@@ -1016,8 +986,8 @@ public class GlobalSettingsActivityTest extends BaseUITest {
         onView(allOf(withText("Start: 09:09 End: 09:25"), withFontSize(10), withGridLayoutPosition(1, 1))).check(matches(isDisplayed()));
         onView(allOf(withText("Start: 10:11 End: 11:12"), withFontSize(10), withGridLayoutPosition(2, 1))).check(matches(isDisplayed()));
         onView(allOf(withText("Start: 22:15 End: 23:59"), withFontSize(10), withGridLayoutPosition(3, 1))).check(matches(isDisplayed()));
-        assertEquals(7, scheduler.getIntervals().size());
-        List<Interval> intervals = scheduler.getIntervals();
+        assertEquals(7, getTimeBasedSuspensionScheduler().getIntervals().size());
+        List<Interval> intervals = getTimeBasedSuspensionScheduler().getIntervals();
         assertTrue(getInterval2().isEqual(intervals.get(0)));
         assertTrue(getInterval4().isEqual(intervals.get(1)));
         assertTrue(getInterval5().isEqual(intervals.get(2)));
@@ -1031,7 +1001,7 @@ public class GlobalSettingsActivityTest extends BaseUITest {
     @Test
     public void testSuspensionIntervalDeleteOneOk() {
         ActivityScenario<?> activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class);
-        ((GlobalSettingsActivity) getActivity(activityScenario)).injectTimeBasedSuspensionScheduler(scheduler);
+        ((GlobalSettingsActivity) getActivity(activityScenario)).injectTimeBasedSuspensionScheduler(getTimeBasedSuspensionScheduler());
         onView(withId(R.id.textview_activity_global_settings_suspension_enabled_label)).check(matches(withText("Suspension intervals enabled")));
         onView(withId(R.id.switch_activity_global_settings_suspension_enabled)).check(matches(isChecked()));
         onView(withId(R.id.textview_activity_global_settings_suspension_intervals_label)).check(matches(withText("Defined suspension intervals")));
@@ -1047,14 +1017,14 @@ public class GlobalSettingsActivityTest extends BaseUITest {
         onView(withId(R.id.imageview_dialog_suspension_intervals_ok)).perform(click());
         onView(withId(R.id.textview_activity_global_settings_suspension_intervals_label)).check(matches(withText("Defined suspension intervals")));
         onView(allOf(withText("None"), withFontSize(14), withGridLayoutPosition(1, 0))).check(matches(isDisplayed()));
-        assertTrue(scheduler.getIntervals().isEmpty());
+        assertTrue(getTimeBasedSuspensionScheduler().getIntervals().isEmpty());
         activityScenario.close();
     }
 
     @Test
     public void testSuspensionIntervalDeleteOneOkScreenRotation() {
         ActivityScenario<?> activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class);
-        ((GlobalSettingsActivity) getActivity(activityScenario)).injectTimeBasedSuspensionScheduler(scheduler);
+        ((GlobalSettingsActivity) getActivity(activityScenario)).injectTimeBasedSuspensionScheduler(getTimeBasedSuspensionScheduler());
         onView(withId(R.id.textview_activity_global_settings_suspension_enabled_label)).check(matches(withText("Suspension intervals enabled")));
         onView(withId(R.id.switch_activity_global_settings_suspension_enabled)).check(matches(isChecked()));
         onView(withId(R.id.textview_activity_global_settings_suspension_intervals_label)).check(matches(withText("Defined suspension intervals")));
@@ -1072,14 +1042,14 @@ public class GlobalSettingsActivityTest extends BaseUITest {
         onView(withId(R.id.imageview_dialog_suspension_intervals_ok)).perform(click());
         onView(withId(R.id.textview_activity_global_settings_suspension_intervals_label)).check(matches(withText("Defined suspension intervals")));
         onView(allOf(withText("None"), withFontSize(14), withGridLayoutPosition(1, 0))).check(matches(isDisplayed()));
-        assertTrue(scheduler.getIntervals().isEmpty());
+        assertTrue(getTimeBasedSuspensionScheduler().getIntervals().isEmpty());
         activityScenario.close();
     }
 
     @Test
     public void testSuspensionIntervalDeleteFiveOk() {
         ActivityScenario<?> activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class);
-        ((GlobalSettingsActivity) getActivity(activityScenario)).injectTimeBasedSuspensionScheduler(scheduler);
+        ((GlobalSettingsActivity) getActivity(activityScenario)).injectTimeBasedSuspensionScheduler(getTimeBasedSuspensionScheduler());
         onView(withId(R.id.textview_activity_global_settings_suspension_enabled_label)).check(matches(withText("Suspension intervals enabled")));
         onView(withId(R.id.switch_activity_global_settings_suspension_enabled)).check(matches(isChecked()));
         onView(withId(R.id.textview_activity_global_settings_suspension_intervals_label)).check(matches(withText("Defined suspension intervals")));
@@ -1148,8 +1118,8 @@ public class GlobalSettingsActivityTest extends BaseUITest {
         onView(withId(R.id.textview_activity_global_settings_suspension_intervals_label)).check(matches(withText("Defined suspension intervals")));
         onView(allOf(withText("Start: 10:11 End: 11:12"), withFontSize(12), withGridLayoutPosition(1, 0))).check(matches(isDisplayed()));
         onView(allOf(withText("Start: 22:15 End: 23:59"), withFontSize(12), withGridLayoutPosition(2, 0))).check(matches(isDisplayed()));
-        assertEquals(2, scheduler.getIntervals().size());
-        List<Interval> intervals = scheduler.getIntervals();
+        assertEquals(2, getTimeBasedSuspensionScheduler().getIntervals().size());
+        List<Interval> intervals = getTimeBasedSuspensionScheduler().getIntervals();
         assertTrue(getInterval1().isEqual(intervals.get(0)));
         assertTrue(getInterval3().isEqual(intervals.get(1)));
         activityScenario.close();
@@ -1159,9 +1129,9 @@ public class GlobalSettingsActivityTest extends BaseUITest {
     public void testSuspensionIntervalChangeOneCancel() {
         getIntervalDAO().insertInterval(getInterval1());
         getIntervalDAO().insertInterval(getInterval2());
-        scheduler.restart();
+        getTimeBasedSuspensionScheduler().restart();
         ActivityScenario<?> activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class);
-        ((GlobalSettingsActivity) getActivity(activityScenario)).injectTimeBasedSuspensionScheduler(scheduler);
+        ((GlobalSettingsActivity) getActivity(activityScenario)).injectTimeBasedSuspensionScheduler(getTimeBasedSuspensionScheduler());
         onView(withId(R.id.textview_activity_global_settings_suspension_enabled_label)).check(matches(withText("Suspension intervals enabled")));
         onView(withId(R.id.switch_activity_global_settings_suspension_enabled)).check(matches(isChecked()));
         onView(withId(R.id.textview_activity_global_settings_suspension_intervals_label)).check(matches(withText("Defined suspension intervals")));
@@ -1183,8 +1153,8 @@ public class GlobalSettingsActivityTest extends BaseUITest {
         onView(withId(R.id.textview_activity_global_settings_suspension_intervals_label)).check(matches(withText("Defined suspension intervals")));
         onView(allOf(withText("Start: 01:01 End: 02:02"), withFontSize(12), withGridLayoutPosition(1, 0))).check(matches(isDisplayed()));
         onView(allOf(withText("Start: 10:11 End: 11:12"), withFontSize(12), withGridLayoutPosition(2, 0))).check(matches(isDisplayed()));
-        assertEquals(2, scheduler.getIntervals().size());
-        List<Interval> intervals = scheduler.getIntervals();
+        assertEquals(2, getTimeBasedSuspensionScheduler().getIntervals().size());
+        List<Interval> intervals = getTimeBasedSuspensionScheduler().getIntervals();
         assertTrue(getInterval2().isEqual(intervals.get(0)));
         assertTrue(getInterval1().isEqual(intervals.get(1)));
         activityScenario.close();
@@ -1194,9 +1164,9 @@ public class GlobalSettingsActivityTest extends BaseUITest {
     public void testSuspensionIntervalChangeOneOk() {
         getIntervalDAO().insertInterval(getInterval1());
         getIntervalDAO().insertInterval(getInterval2());
-        scheduler.restart();
+        getTimeBasedSuspensionScheduler().restart();
         ActivityScenario<?> activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class);
-        ((GlobalSettingsActivity) getActivity(activityScenario)).injectTimeBasedSuspensionScheduler(scheduler);
+        ((GlobalSettingsActivity) getActivity(activityScenario)).injectTimeBasedSuspensionScheduler(getTimeBasedSuspensionScheduler());
         onView(withId(R.id.textview_activity_global_settings_suspension_enabled_label)).check(matches(withText("Suspension intervals enabled")));
         onView(withId(R.id.switch_activity_global_settings_suspension_enabled)).check(matches(isChecked()));
         onView(withId(R.id.textview_activity_global_settings_suspension_intervals_label)).check(matches(withText("Defined suspension intervals")));
@@ -1218,8 +1188,8 @@ public class GlobalSettingsActivityTest extends BaseUITest {
         onView(withId(R.id.textview_activity_global_settings_suspension_intervals_label)).check(matches(withText("Defined suspension intervals")));
         onView(allOf(withText("Start: 03:03 End: 04:04"), withFontSize(12), withGridLayoutPosition(1, 0))).check(matches(isDisplayed()));
         onView(allOf(withText("Start: 10:11 End: 11:12"), withFontSize(12), withGridLayoutPosition(2, 0))).check(matches(isDisplayed()));
-        assertEquals(2, scheduler.getIntervals().size());
-        List<Interval> intervals = scheduler.getIntervals();
+        assertEquals(2, getTimeBasedSuspensionScheduler().getIntervals().size());
+        List<Interval> intervals = getTimeBasedSuspensionScheduler().getIntervals();
         assertTrue(getInterval4().isEqual(intervals.get(0)));
         assertTrue(getInterval1().isEqual(intervals.get(1)));
         activityScenario.close();
@@ -1229,9 +1199,9 @@ public class GlobalSettingsActivityTest extends BaseUITest {
     public void testSuspensionIntervalChangeOneOkScreenRotation() {
         getIntervalDAO().insertInterval(getInterval1());
         getIntervalDAO().insertInterval(getInterval2());
-        scheduler.restart();
+        getTimeBasedSuspensionScheduler().restart();
         ActivityScenario<?> activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class);
-        ((GlobalSettingsActivity) getActivity(activityScenario)).injectTimeBasedSuspensionScheduler(scheduler);
+        ((GlobalSettingsActivity) getActivity(activityScenario)).injectTimeBasedSuspensionScheduler(getTimeBasedSuspensionScheduler());
         onView(withId(R.id.textview_activity_global_settings_suspension_enabled_label)).check(matches(withText("Suspension intervals enabled")));
         onView(withId(R.id.switch_activity_global_settings_suspension_enabled)).check(matches(isChecked()));
         onView(withId(R.id.textview_activity_global_settings_suspension_intervals_label)).check(matches(withText("Defined suspension intervals")));
@@ -1255,8 +1225,8 @@ public class GlobalSettingsActivityTest extends BaseUITest {
         onView(withId(R.id.textview_activity_global_settings_suspension_intervals_label)).check(matches(withText("Defined suspension intervals")));
         onView(allOf(withText("Start: 03:03 End: 04:04"), withFontSize(12), withGridLayoutPosition(1, 0))).check(matches(isDisplayed()));
         onView(allOf(withText("Start: 10:11 End: 11:12"), withFontSize(12), withGridLayoutPosition(2, 0))).check(matches(isDisplayed()));
-        assertEquals(2, scheduler.getIntervals().size());
-        List<Interval> intervals = scheduler.getIntervals();
+        assertEquals(2, getTimeBasedSuspensionScheduler().getIntervals().size());
+        List<Interval> intervals = getTimeBasedSuspensionScheduler().getIntervals();
         assertTrue(getInterval4().isEqual(intervals.get(0)));
         assertTrue(getInterval1().isEqual(intervals.get(1)));
         activityScenario.close();
@@ -1266,9 +1236,9 @@ public class GlobalSettingsActivityTest extends BaseUITest {
     public void testSuspensionIntervalAddChangeDelete() {
         getIntervalDAO().insertInterval(getInterval1());
         getIntervalDAO().insertInterval(getInterval2());
-        scheduler.restart();
+        getTimeBasedSuspensionScheduler().restart();
         ActivityScenario<?> activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class);
-        ((GlobalSettingsActivity) getActivity(activityScenario)).injectTimeBasedSuspensionScheduler(scheduler);
+        ((GlobalSettingsActivity) getActivity(activityScenario)).injectTimeBasedSuspensionScheduler(getTimeBasedSuspensionScheduler());
         onView(withId(R.id.textview_activity_global_settings_suspension_enabled_label)).check(matches(withText("Suspension intervals enabled")));
         onView(withId(R.id.switch_activity_global_settings_suspension_enabled)).check(matches(isChecked()));
         onView(withId(R.id.textview_activity_global_settings_suspension_intervals_label)).check(matches(withText("Defined suspension intervals")));
@@ -1324,9 +1294,9 @@ public class GlobalSettingsActivityTest extends BaseUITest {
         onView(withId(R.id.textview_activity_global_settings_suspension_intervals_label)).check(matches(withText("Defined suspension intervals")));
         onView(allOf(withText("Start: 10:11 End: 11:15"), withFontSize(12), withGridLayoutPosition(1, 0))).check(matches(isDisplayed()));
         onView(allOf(withText("Start: 14:14 End: 15:15"), withFontSize(12), withGridLayoutPosition(2, 0))).check(matches(isDisplayed()));
-        assertEquals(2, scheduler.getIntervals().size());
-        Interval interval1 = scheduler.getIntervals().get(0);
-        Interval interval2 = scheduler.getIntervals().get(1);
+        assertEquals(2, getTimeBasedSuspensionScheduler().getIntervals().size());
+        Interval interval1 = getTimeBasedSuspensionScheduler().getIntervals().get(0);
+        Interval interval2 = getTimeBasedSuspensionScheduler().getIntervals().get(1);
         Interval newInterval1 = new Interval();
         Time start1 = new Time();
         start1.setHour(10);
@@ -1355,11 +1325,11 @@ public class GlobalSettingsActivityTest extends BaseUITest {
         NetworkTask task = getNetworkTask1();
         getNetworkTaskDAO().insertNetworkTask(task);
         setTestTime(getTestTimestamp(24, 10, 15));
-        scheduler.restart();
+        getTimeBasedSuspensionScheduler().restart();
         ActivityScenario<?> activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class);
-        ((GlobalSettingsActivity) getActivity(activityScenario)).injectTimeBasedSuspensionScheduler(scheduler);
-        assertFalse(scheduler.isSuspended());
-        assertFalse(scheduler.isRunning());
+        ((GlobalSettingsActivity) getActivity(activityScenario)).injectTimeBasedSuspensionScheduler(getTimeBasedSuspensionScheduler());
+        assertFalse(getTimeBasedSuspensionScheduler().isSuspended());
+        assertFalse(getTimeBasedSuspensionScheduler().isRunning());
         onView(withId(R.id.cardview_activity_global_settings_suspension_intervals)).perform(click());
         onView(withId(R.id.imageview_dialog_suspension_intervals_interval_add)).perform(click());
         onView(withId(R.id.picker_dialog_suspension_interval_select_time_hour)).perform(setNumber(10));
@@ -1369,14 +1339,14 @@ public class GlobalSettingsActivityTest extends BaseUITest {
         onView(withId(R.id.picker_dialog_suspension_interval_select_time_minute)).perform(setNumber(12));
         onView(withId(R.id.imageview_dialog_suspension_interval_select_ok)).perform(click());
         onView(withId(R.id.imageview_dialog_suspension_intervals_ok)).perform(click());
-        assertTrue(scheduler.isSuspended());
-        assertTrue(scheduler.isRunning());
+        assertTrue(getTimeBasedSuspensionScheduler().isSuspended());
+        assertTrue(getTimeBasedSuspensionScheduler().isRunning());
         onView(withId(R.id.cardview_activity_global_settings_suspension_intervals)).perform(click());
         onView(allOf(withId(R.id.imageview_list_item_suspension_interval_delete), withChildDescendantAtPosition(withId(R.id.listview_dialog_suspension_intervals_intervals), 0))).perform(click());
         onView(withId(R.id.imageview_dialog_confirm_ok)).perform(click());
         onView(withId(R.id.imageview_dialog_suspension_intervals_ok)).perform(click());
-        assertFalse(scheduler.isSuspended());
-        assertFalse(scheduler.isRunning());
+        assertFalse(getTimeBasedSuspensionScheduler().isSuspended());
+        assertFalse(getTimeBasedSuspensionScheduler().isRunning());
         onView(withId(R.id.cardview_activity_global_settings_suspension_intervals)).perform(click());
         onView(withId(R.id.imageview_dialog_suspension_intervals_interval_add)).perform(click());
         onView(withId(R.id.picker_dialog_suspension_interval_select_time_hour)).perform(setNumber(10));
@@ -1386,8 +1356,8 @@ public class GlobalSettingsActivityTest extends BaseUITest {
         onView(withId(R.id.picker_dialog_suspension_interval_select_time_minute)).perform(setNumber(12));
         onView(withId(R.id.imageview_dialog_suspension_interval_select_ok)).perform(click());
         onView(withId(R.id.imageview_dialog_suspension_intervals_ok)).perform(click());
-        assertTrue(scheduler.isSuspended());
-        assertTrue(scheduler.isRunning());
+        assertTrue(getTimeBasedSuspensionScheduler().isSuspended());
+        assertTrue(getTimeBasedSuspensionScheduler().isRunning());
         onView(withId(R.id.cardview_activity_global_settings_suspension_intervals)).perform(click());
         onView(allOf(withId(R.id.cardview_list_item_suspension_interval), withChildDescendantAtPosition(withId(R.id.listview_dialog_suspension_intervals_intervals), 0))).perform(click());
         onView(withId(R.id.picker_dialog_suspension_interval_select_time_hour)).perform(setNumber(11));
@@ -1397,14 +1367,14 @@ public class GlobalSettingsActivityTest extends BaseUITest {
         onView(withId(R.id.picker_dialog_suspension_interval_select_time_minute)).perform(setNumber(0));
         onView(withId(R.id.imageview_dialog_suspension_interval_select_ok)).perform(click());
         onView(withId(R.id.imageview_dialog_suspension_intervals_ok)).perform(click());
-        assertFalse(scheduler.isSuspended());
-        assertTrue(scheduler.isRunning());
+        assertFalse(getTimeBasedSuspensionScheduler().isSuspended());
+        assertTrue(getTimeBasedSuspensionScheduler().isRunning());
     }
 
     @Test
     public void testDownloadControls() {
         ActivityScenario<?> activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class);
-        ((GlobalSettingsActivity) getActivity(activityScenario)).injectTimeBasedSuspensionScheduler(scheduler);
+        ((GlobalSettingsActivity) getActivity(activityScenario)).injectTimeBasedSuspensionScheduler(getTimeBasedSuspensionScheduler());
         PreferenceManager preferenceManager = getPreferenceManager();
         assertFalse(preferenceManager.getPreferenceDownloadExternalStorage());
         assertEquals(0, preferenceManager.getPreferenceExternalStorageType());
@@ -1467,7 +1437,7 @@ public class GlobalSettingsActivityTest extends BaseUITest {
     @Test
     public void testLogControls() {
         ActivityScenario<?> activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class);
-        ((GlobalSettingsActivity) getActivity(activityScenario)).injectTimeBasedSuspensionScheduler(scheduler);
+        ((GlobalSettingsActivity) getActivity(activityScenario)).injectTimeBasedSuspensionScheduler(getTimeBasedSuspensionScheduler());
         PreferenceManager preferenceManager = getPreferenceManager();
         assertFalse(preferenceManager.getPreferenceLogFile());
         assertEquals("log", preferenceManager.getPreferenceLogFolder());
@@ -1498,7 +1468,7 @@ public class GlobalSettingsActivityTest extends BaseUITest {
     @Test
     public void testDownloadFolderDialogOpen() {
         ActivityScenario<?> activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class);
-        ((GlobalSettingsActivity) getActivity(activityScenario)).injectTimeBasedSuspensionScheduler(scheduler);
+        ((GlobalSettingsActivity) getActivity(activityScenario)).injectTimeBasedSuspensionScheduler(getTimeBasedSuspensionScheduler());
         onView(withId(R.id.switch_activity_global_settings_download_external_storage)).perform(click());
         onView(withId(R.id.cardview_activity_global_settings_download_folder)).perform(click());
         assertEquals(1, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
@@ -1513,7 +1483,7 @@ public class GlobalSettingsActivityTest extends BaseUITest {
     @Test
     public void testLogFolderDialogOpen() {
         ActivityScenario<?> activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class);
-        ((GlobalSettingsActivity) getActivity(activityScenario)).injectTimeBasedSuspensionScheduler(scheduler);
+        ((GlobalSettingsActivity) getActivity(activityScenario)).injectTimeBasedSuspensionScheduler(getTimeBasedSuspensionScheduler());
         onView(withId(R.id.switch_activity_global_settings_log_file)).perform(scrollTo());
         onView(withId(R.id.switch_activity_global_settings_log_file)).perform(click());
         onView(withId(R.id.cardview_activity_global_settings_log_folder)).perform(scrollTo());
@@ -1530,7 +1500,7 @@ public class GlobalSettingsActivityTest extends BaseUITest {
     @Test
     public void testDownloadFolderDialogOkCancel() {
         ActivityScenario<?> activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class);
-        ((GlobalSettingsActivity) getActivity(activityScenario)).injectTimeBasedSuspensionScheduler(scheduler);
+        ((GlobalSettingsActivity) getActivity(activityScenario)).injectTimeBasedSuspensionScheduler(getTimeBasedSuspensionScheduler());
         PreferenceManager preferenceManager = getPreferenceManager();
         assertEquals("download", preferenceManager.getPreferenceDownloadFolder());
         onView(withId(R.id.switch_activity_global_settings_download_external_storage)).perform(click());
@@ -1555,7 +1525,7 @@ public class GlobalSettingsActivityTest extends BaseUITest {
     @Test
     public void testLogFolderDialogOkCancel() {
         ActivityScenario<?> activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class);
-        ((GlobalSettingsActivity) getActivity(activityScenario)).injectTimeBasedSuspensionScheduler(scheduler);
+        ((GlobalSettingsActivity) getActivity(activityScenario)).injectTimeBasedSuspensionScheduler(getTimeBasedSuspensionScheduler());
         PreferenceManager preferenceManager = getPreferenceManager();
         assertEquals("download", preferenceManager.getPreferenceDownloadFolder());
         onView(withId(R.id.switch_activity_global_settings_log_file)).perform(scrollTo());
@@ -1582,7 +1552,7 @@ public class GlobalSettingsActivityTest extends BaseUITest {
     @Test
     public void testDownloadFolderDialogErrorFileExists() throws IOException {
         ActivityScenario<?> activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class);
-        ((GlobalSettingsActivity) getActivity(activityScenario)).injectTimeBasedSuspensionScheduler(scheduler);
+        ((GlobalSettingsActivity) getActivity(activityScenario)).injectTimeBasedSuspensionScheduler(getTimeBasedSuspensionScheduler());
         PreferenceManager preferenceManager = getPreferenceManager();
         File root = getFileManager().getExternalRootDirectory(0);
         File test = new File(root, "test");
@@ -1603,7 +1573,7 @@ public class GlobalSettingsActivityTest extends BaseUITest {
     @Test
     public void testLogFolderDialogErrorFileExists() throws IOException {
         ActivityScenario<?> activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class);
-        ((GlobalSettingsActivity) getActivity(activityScenario)).injectTimeBasedSuspensionScheduler(scheduler);
+        ((GlobalSettingsActivity) getActivity(activityScenario)).injectTimeBasedSuspensionScheduler(getTimeBasedSuspensionScheduler());
         PreferenceManager preferenceManager = getPreferenceManager();
         File root = getFileManager().getExternalRootDirectory(0);
         File test = new File(root, "test");
@@ -1627,7 +1597,7 @@ public class GlobalSettingsActivityTest extends BaseUITest {
     @Test
     public void testDownloadControlsFileError() {
         ActivityScenario<?> activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class);
-        ((GlobalSettingsActivity) getActivity(activityScenario)).injectTimeBasedSuspensionScheduler(scheduler);
+        ((GlobalSettingsActivity) getActivity(activityScenario)).injectTimeBasedSuspensionScheduler(getTimeBasedSuspensionScheduler());
         PreferenceManager preferenceManager = getPreferenceManager();
         MockFileManager mockFileManager = new MockFileManager();
         mockFileManager.setExternalDirectory(null, 0);
@@ -1651,7 +1621,7 @@ public class GlobalSettingsActivityTest extends BaseUITest {
     @Test
     public void testLogControlsFileError() {
         ActivityScenario<?> activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class);
-        ((GlobalSettingsActivity) getActivity(activityScenario)).injectTimeBasedSuspensionScheduler(scheduler);
+        ((GlobalSettingsActivity) getActivity(activityScenario)).injectTimeBasedSuspensionScheduler(getTimeBasedSuspensionScheduler());
         PreferenceManager preferenceManager = getPreferenceManager();
         MockFileManager mockFileManager = new MockFileManager();
         mockFileManager.setExternalDirectory(null, 0);
@@ -1674,7 +1644,7 @@ public class GlobalSettingsActivityTest extends BaseUITest {
     @Test
     public void testDownloadFolderDialogFileError() {
         ActivityScenario<?> activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class);
-        ((GlobalSettingsActivity) getActivity(activityScenario)).injectTimeBasedSuspensionScheduler(scheduler);
+        ((GlobalSettingsActivity) getActivity(activityScenario)).injectTimeBasedSuspensionScheduler(getTimeBasedSuspensionScheduler());
         onView(withId(R.id.switch_activity_global_settings_download_external_storage)).perform(click());
         MockFileManager mockFileManager = new MockFileManager();
         mockFileManager.setExternalDirectory(null, 0);
@@ -1694,7 +1664,7 @@ public class GlobalSettingsActivityTest extends BaseUITest {
     @Test
     public void testLogFolderDialogFileError() {
         ActivityScenario<?> activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class);
-        ((GlobalSettingsActivity) getActivity(activityScenario)).injectTimeBasedSuspensionScheduler(scheduler);
+        ((GlobalSettingsActivity) getActivity(activityScenario)).injectTimeBasedSuspensionScheduler(getTimeBasedSuspensionScheduler());
         onView(withId(R.id.switch_activity_global_settings_log_file)).perform(scrollTo());
         onView(withId(R.id.switch_activity_global_settings_log_file)).perform(click());
         MockFileManager mockFileManager = new MockFileManager();
@@ -1716,7 +1686,7 @@ public class GlobalSettingsActivityTest extends BaseUITest {
     @Test
     public void testDownloadFolderDialogOkFileError() {
         ActivityScenario<?> activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class);
-        ((GlobalSettingsActivity) getActivity(activityScenario)).injectTimeBasedSuspensionScheduler(scheduler);
+        ((GlobalSettingsActivity) getActivity(activityScenario)).injectTimeBasedSuspensionScheduler(getTimeBasedSuspensionScheduler());
         PreferenceManager preferenceManager = getPreferenceManager();
         onView(withId(R.id.switch_activity_global_settings_download_external_storage)).perform(click());
         onView(withId(R.id.cardview_activity_global_settings_download_folder)).perform(click());
@@ -1737,7 +1707,7 @@ public class GlobalSettingsActivityTest extends BaseUITest {
     @Test
     public void testLogFolderDialogOkFileError() {
         ActivityScenario<?> activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class);
-        ((GlobalSettingsActivity) getActivity(activityScenario)).injectTimeBasedSuspensionScheduler(scheduler);
+        ((GlobalSettingsActivity) getActivity(activityScenario)).injectTimeBasedSuspensionScheduler(getTimeBasedSuspensionScheduler());
         PreferenceManager preferenceManager = getPreferenceManager();
         onView(withId(R.id.switch_activity_global_settings_log_file)).perform(scrollTo());
         onView(withId(R.id.switch_activity_global_settings_log_file)).perform(click());
@@ -1761,7 +1731,7 @@ public class GlobalSettingsActivityTest extends BaseUITest {
     @Test
     public void testResetValues() {
         ActivityScenario<?> activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class);
-        ((GlobalSettingsActivity) getActivity(activityScenario)).injectTimeBasedSuspensionScheduler(scheduler);
+        ((GlobalSettingsActivity) getActivity(activityScenario)).injectTimeBasedSuspensionScheduler(getTimeBasedSuspensionScheduler());
         onView(withId(R.id.textview_activity_global_settings_ping_count)).perform(click());
         onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("2"));
         onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
@@ -1814,7 +1784,7 @@ public class GlobalSettingsActivityTest extends BaseUITest {
     @Test
     public void testPreserveValuesOnScreenRotation() {
         ActivityScenario<?> activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class);
-        ((GlobalSettingsActivity) getActivity(activityScenario)).injectTimeBasedSuspensionScheduler(scheduler);
+        ((GlobalSettingsActivity) getActivity(activityScenario)).injectTimeBasedSuspensionScheduler(getTimeBasedSuspensionScheduler());
         onView(withId(R.id.textview_activity_global_settings_ping_count)).perform(click());
         onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("2"));
         onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
@@ -1863,7 +1833,7 @@ public class GlobalSettingsActivityTest extends BaseUITest {
     @Test
     public void testConfirmDialogScreenRotation() {
         ActivityScenario<?> activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class);
-        ((GlobalSettingsActivity) getActivity(activityScenario)).injectTimeBasedSuspensionScheduler(scheduler);
+        ((GlobalSettingsActivity) getActivity(activityScenario)).injectTimeBasedSuspensionScheduler(getTimeBasedSuspensionScheduler());
         onView(withId(R.id.textview_activity_global_settings_connect_count)).perform(click());
         onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("6"));
         rotateScreen(activityScenario);
@@ -1877,7 +1847,7 @@ public class GlobalSettingsActivityTest extends BaseUITest {
     @Test
     public void testValidationErrorScreenRotation() {
         ActivityScenario<?> activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class);
-        ((GlobalSettingsActivity) getActivity(activityScenario)).injectTimeBasedSuspensionScheduler(scheduler);
+        ((GlobalSettingsActivity) getActivity(activityScenario)).injectTimeBasedSuspensionScheduler(getTimeBasedSuspensionScheduler());
         onView(withId(R.id.textview_activity_global_settings_ping_count)).perform(click());
         onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("a"));
         onView(withId(R.id.edittext_dialog_settings_input_value)).check(matches(withTextColor(R.color.textErrorColor)));
@@ -1898,7 +1868,7 @@ public class GlobalSettingsActivityTest extends BaseUITest {
     @Test
     public void testValidationErrorColorScreenRotation() {
         ActivityScenario<?> activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class);
-        ((GlobalSettingsActivity) getActivity(activityScenario)).injectTimeBasedSuspensionScheduler(scheduler);
+        ((GlobalSettingsActivity) getActivity(activityScenario)).injectTimeBasedSuspensionScheduler(getTimeBasedSuspensionScheduler());
         onView(withId(R.id.textview_activity_global_settings_ping_count)).perform(click());
         onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("a"));
         onView(withId(R.id.edittext_dialog_settings_input_value)).check(matches(withTextColor(R.color.textErrorColor)));
@@ -1915,7 +1885,7 @@ public class GlobalSettingsActivityTest extends BaseUITest {
     @Test
     public void testDownloadFolderDialogScreenRotation() {
         ActivityScenario<?> activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class);
-        ((GlobalSettingsActivity) getActivity(activityScenario)).injectTimeBasedSuspensionScheduler(scheduler);
+        ((GlobalSettingsActivity) getActivity(activityScenario)).injectTimeBasedSuspensionScheduler(getTimeBasedSuspensionScheduler());
         PreferenceManager preferenceManager = getPreferenceManager();
         assertEquals("download", preferenceManager.getPreferenceDownloadFolder());
         onView(withId(R.id.switch_activity_global_settings_download_external_storage)).perform(click());
@@ -1937,7 +1907,7 @@ public class GlobalSettingsActivityTest extends BaseUITest {
     @Test
     public void testLogFolderDialogScreenRotation() {
         ActivityScenario<?> activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class);
-        ((GlobalSettingsActivity) getActivity(activityScenario)).injectTimeBasedSuspensionScheduler(scheduler);
+        ((GlobalSettingsActivity) getActivity(activityScenario)).injectTimeBasedSuspensionScheduler(getTimeBasedSuspensionScheduler());
         PreferenceManager preferenceManager = getPreferenceManager();
         assertEquals("log", preferenceManager.getPreferenceLogFolder());
         onView(withId(R.id.switch_activity_global_settings_log_file)).perform(scrollTo());
@@ -1960,8 +1930,8 @@ public class GlobalSettingsActivityTest extends BaseUITest {
     }
 
     private void setTestTime(long time) {
-        timeService.setTimestamp(time);
-        timeService.setTimestamp2(time);
+        getTimeService().setTimestamp(time);
+        getTimeService().setTimestamp2(time);
     }
 
     private long getTestTimestamp(int day, int hour, int minute) {

@@ -26,8 +26,6 @@ import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.MediumTest;
 import androidx.test.platform.app.InstrumentationRegistry;
 
-import net.ibbaa.keepitup.db.LogDAO;
-import net.ibbaa.keepitup.db.NetworkTaskDAO;
 import net.ibbaa.keepitup.model.AccessType;
 import net.ibbaa.keepitup.model.LogEntry;
 import net.ibbaa.keepitup.model.NetworkTask;
@@ -52,33 +50,25 @@ import java.util.List;
 public class LogEntryUIInitTaskTest extends BaseUITest {
 
     private ActivityScenario<?> activityScenario;
-    private NetworkTaskDAO networkTaskDAO;
-    private LogDAO logDAO;
 
     @Before
     public void beforeEachTestMethod() {
         super.beforeEachTestMethod();
         activityScenario = launchRecyclerViewBaseActivity(getNetworkTaskLogIntent(getNetworkTask()));
-        networkTaskDAO = new NetworkTaskDAO(TestRegistry.getContext());
-        networkTaskDAO.deleteAllNetworkTasks();
-        logDAO = new LogDAO(TestRegistry.getContext());
-        logDAO.deleteAllLogs();
     }
 
     @After
     public void afterEachTestMethod() {
         super.afterEachTestMethod();
-        logDAO.deleteAllLogs();
-        networkTaskDAO.deleteAllNetworkTasks();
         activityScenario.close();
     }
 
     @Test
     public void testAllLogEntriesReturned() {
-        NetworkTask task = networkTaskDAO.insertNetworkTask(getNetworkTask());
-        LogEntry logEntry1 = logDAO.insertAndDeleteLog(getLogEntryWithNetworkTaskId(task.getId(), new GregorianCalendar(1980, Calendar.MARCH, 17).getTime().getTime()));
-        LogEntry logEntry2 = logDAO.insertAndDeleteLog(getLogEntryWithNetworkTaskId(task.getId(), new GregorianCalendar(1981, Calendar.MARCH, 17).getTime().getTime()));
-        LogEntry logEntry3 = logDAO.insertAndDeleteLog(getLogEntryWithNetworkTaskId(task.getId(), new GregorianCalendar(1982, Calendar.MARCH, 17).getTime().getTime()));
+        NetworkTask task = getNetworkTaskDAO().insertNetworkTask(getNetworkTask());
+        LogEntry logEntry1 = getLogDAO().insertAndDeleteLog(getLogEntryWithNetworkTaskId(task.getId(), new GregorianCalendar(1980, Calendar.MARCH, 17).getTime().getTime()));
+        LogEntry logEntry2 = getLogDAO().insertAndDeleteLog(getLogEntryWithNetworkTaskId(task.getId(), new GregorianCalendar(1981, Calendar.MARCH, 17).getTime().getTime()));
+        LogEntry logEntry3 = getLogDAO().insertAndDeleteLog(getLogEntryWithNetworkTaskId(task.getId(), new GregorianCalendar(1982, Calendar.MARCH, 17).getTime().getTime()));
         LogEntryUIInitTask initTask = new LogEntryUIInitTask(getActivity(activityScenario), task, getAdapter(activityScenario));
         List<LogEntry> syncLogEntries = initTask.runInBackground();
         assertEquals(3, syncLogEntries.size());
@@ -89,13 +79,13 @@ public class LogEntryUIInitTaskTest extends BaseUITest {
 
     @Test
     public void testAdapterUpdate() {
-        NetworkTask task = networkTaskDAO.insertNetworkTask(getNetworkTask());
-        LogEntry logEntry = logDAO.insertAndDeleteLog(getLogEntryWithNetworkTaskId(task.getId(), new GregorianCalendar(1980, Calendar.MARCH, 17).getTime().getTime()));
+        NetworkTask task = getNetworkTaskDAO().insertNetworkTask(getNetworkTask());
+        LogEntry logEntry = getLogDAO().insertAndDeleteLog(getLogEntryWithNetworkTaskId(task.getId(), new GregorianCalendar(1980, Calendar.MARCH, 17).getTime().getTime()));
         LogEntryAdapter adapter = getAdapter(activityScenario);
         adapter.addItem(logEntry);
-        LogEntry logEntry1 = logDAO.insertAndDeleteLog(getLogEntryWithNetworkTaskId(task.getId(), new GregorianCalendar(1981, Calendar.MARCH, 17).getTime().getTime()));
-        LogEntry logEntry2 = logDAO.insertAndDeleteLog(getLogEntryWithNetworkTaskId(task.getId(), new GregorianCalendar(1982, Calendar.MARCH, 17).getTime().getTime()));
-        LogEntry logEntry3 = logDAO.insertAndDeleteLog(getLogEntryWithNetworkTaskId(task.getId(), new GregorianCalendar(1983, Calendar.MARCH, 17).getTime().getTime()));
+        LogEntry logEntry1 = getLogDAO().insertAndDeleteLog(getLogEntryWithNetworkTaskId(task.getId(), new GregorianCalendar(1981, Calendar.MARCH, 17).getTime().getTime()));
+        LogEntry logEntry2 = getLogDAO().insertAndDeleteLog(getLogEntryWithNetworkTaskId(task.getId(), new GregorianCalendar(1982, Calendar.MARCH, 17).getTime().getTime()));
+        LogEntry logEntry3 = getLogDAO().insertAndDeleteLog(getLogEntryWithNetworkTaskId(task.getId(), new GregorianCalendar(1983, Calendar.MARCH, 17).getTime().getTime()));
         LogEntryUIInitTask initTask = new LogEntryUIInitTask(getActivity(activityScenario), task, getAdapter(activityScenario));
         initTask.runOnUIThread(Arrays.asList(logEntry1, logEntry2, logEntry3));
         InstrumentationRegistry.getInstrumentation().waitForIdleSync();
@@ -107,13 +97,13 @@ public class LogEntryUIInitTaskTest extends BaseUITest {
 
     @Test
     public void testNullAdapterUpdate() {
-        NetworkTask task = networkTaskDAO.insertNetworkTask(getNetworkTask());
-        LogEntry logEntry = logDAO.insertAndDeleteLog(getLogEntryWithNetworkTaskId(task.getId(), new GregorianCalendar(1980, Calendar.MARCH, 17).getTime().getTime()));
+        NetworkTask task = getNetworkTaskDAO().insertNetworkTask(getNetworkTask());
+        LogEntry logEntry = getLogDAO().insertAndDeleteLog(getLogEntryWithNetworkTaskId(task.getId(), new GregorianCalendar(1980, Calendar.MARCH, 17).getTime().getTime()));
         LogEntryAdapter adapter = getAdapter(activityScenario);
         adapter.addItem(logEntry);
-        LogEntry logEntry1 = logDAO.insertAndDeleteLog(getLogEntryWithNetworkTaskId(task.getId(), new GregorianCalendar(1981, Calendar.MARCH, 17).getTime().getTime()));
-        LogEntry logEntry2 = logDAO.insertAndDeleteLog(getLogEntryWithNetworkTaskId(task.getId(), new GregorianCalendar(1982, Calendar.MARCH, 17).getTime().getTime()));
-        LogEntry logEntry3 = logDAO.insertAndDeleteLog(getLogEntryWithNetworkTaskId(task.getId(), new GregorianCalendar(1983, Calendar.MARCH, 17).getTime().getTime()));
+        LogEntry logEntry1 = getLogDAO().insertAndDeleteLog(getLogEntryWithNetworkTaskId(task.getId(), new GregorianCalendar(1981, Calendar.MARCH, 17).getTime().getTime()));
+        LogEntry logEntry2 = getLogDAO().insertAndDeleteLog(getLogEntryWithNetworkTaskId(task.getId(), new GregorianCalendar(1982, Calendar.MARCH, 17).getTime().getTime()));
+        LogEntry logEntry3 = getLogDAO().insertAndDeleteLog(getLogEntryWithNetworkTaskId(task.getId(), new GregorianCalendar(1983, Calendar.MARCH, 17).getTime().getTime()));
         LogEntryUIInitTask nullInitTask = new LogEntryUIInitTask(getActivity(activityScenario), task, null);
         nullInitTask.runOnUIThread(Arrays.asList(logEntry1, logEntry2, logEntry3));
         InstrumentationRegistry.getInstrumentation().waitForIdleSync();
@@ -122,10 +112,10 @@ public class LogEntryUIInitTaskTest extends BaseUITest {
 
     @Test
     public void testAdapterUpdateLimitExceeded() {
-        NetworkTask task = networkTaskDAO.insertNetworkTask(getNetworkTask());
+        NetworkTask task = getNetworkTaskDAO().insertNetworkTask(getNetworkTask());
         List<LogEntry> logEntries = new ArrayList<>();
         for (int ii = 0; ii < 120; ii++) {
-            LogEntry logEntry = logDAO.insertAndDeleteLog(getLogEntryWithNetworkTaskId(task.getId(), new GregorianCalendar(1980, Calendar.MARCH, 17).getTime().getTime()));
+            LogEntry logEntry = getLogDAO().insertAndDeleteLog(getLogEntryWithNetworkTaskId(task.getId(), new GregorianCalendar(1980, Calendar.MARCH, 17).getTime().getTime()));
             logEntries.add(logEntry);
         }
         LogEntryUIInitTask initTask = new LogEntryUIInitTask(getActivity(activityScenario), task, getAdapter(activityScenario));

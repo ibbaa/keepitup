@@ -42,12 +42,10 @@ import androidx.test.filters.MediumTest;
 import androidx.test.platform.app.InstrumentationRegistry;
 
 import net.ibbaa.keepitup.R;
-import net.ibbaa.keepitup.db.SchedulerStateDAO;
 import net.ibbaa.keepitup.model.AccessType;
 import net.ibbaa.keepitup.model.LogEntry;
 import net.ibbaa.keepitup.model.NetworkTask;
 import net.ibbaa.keepitup.model.SchedulerState;
-import net.ibbaa.keepitup.service.TimeBasedSuspensionScheduler;
 import net.ibbaa.keepitup.test.mock.MockPermissionManager;
 import net.ibbaa.keepitup.test.mock.TestRegistry;
 import net.ibbaa.keepitup.ui.adapter.NetworkTaskAdapter;
@@ -66,24 +64,16 @@ import java.util.GregorianCalendar;
 public class NetworkTaskMainActivityTest extends BaseUITest {
 
     private MockPermissionManager permissionManager;
-    private TimeBasedSuspensionScheduler scheduler;
-    private SchedulerStateDAO schedulerStateDAO;
 
     @Before
     public void beforeEachTestMethod() {
         super.beforeEachTestMethod();
         permissionManager = new MockPermissionManager();
-        scheduler = new TimeBasedSuspensionScheduler(TestRegistry.getContext());
-        scheduler.resetIsSuspended();
-        schedulerStateDAO = new SchedulerStateDAO(TestRegistry.getContext());
-        schedulerStateDAO.insertSchedulerState(new SchedulerState(0, false, 0));
     }
 
     @After
     public void afterEachTestMethod() {
         super.afterEachTestMethod();
-        scheduler.resetIsSuspended();
-        schedulerStateDAO.insertSchedulerState(new SchedulerState(0, false, 0));
     }
 
     @Test
@@ -342,7 +332,7 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
 
     @Test
     public void testStartStopNetworkTaskSuspended() {
-        schedulerStateDAO.insertSchedulerState(new SchedulerState(0, true, 0));
+        getSchedulerStateDAO().insertSchedulerState(new SchedulerState(0, true, 0));
         ActivityScenario<?> activityScenario = launchRecyclerViewBaseActivity(NetworkTaskMainActivity.class);
         injectPermissionManager(activityScenario);
         onView(allOf(withId(R.id.imageview_activity_main_network_task_add), isDisplayed())).perform(click());
@@ -351,8 +341,8 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
         assertFalse(getAdapter(activityScenario).getItem(0).getNetworkTask().isRunning());
         onView(allOf(withId(R.id.imageview_list_item_network_task_start_stop), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 0))).perform(click());
         onView(isRoot()).perform(waitFor(1000));
-        scheduler.resetIsSuspended();
-        schedulerStateDAO.insertSchedulerState(new SchedulerState(0, true, 0));
+        getTimeBasedSuspensionScheduler().resetIsSuspended();
+        getSchedulerStateDAO().insertSchedulerState(new SchedulerState(0, true, 0));
         getActivity(activityScenario).runOnUiThread(() -> getNetworkTaskMainActivity(activityScenario).getAdapter().notifyDataSetChanged());
         onView(allOf(withId(R.id.imageview_list_item_network_task_start_stop), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 0))).check(matches(withDrawable(R.drawable.icon_suspended_shadow)));
         assertTrue(getAdapter(activityScenario).getItem(0).getNetworkTask().isRunning());

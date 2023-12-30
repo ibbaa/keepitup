@@ -25,12 +25,9 @@ import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.MediumTest;
 import androidx.test.platform.app.InstrumentationRegistry;
 
-import net.ibbaa.keepitup.db.LogDAO;
-import net.ibbaa.keepitup.db.NetworkTaskDAO;
 import net.ibbaa.keepitup.model.AccessType;
 import net.ibbaa.keepitup.model.LogEntry;
 import net.ibbaa.keepitup.model.NetworkTask;
-import net.ibbaa.keepitup.test.mock.TestRegistry;
 import net.ibbaa.keepitup.ui.BaseUITest;
 import net.ibbaa.keepitup.ui.NetworkTaskMainActivity;
 import net.ibbaa.keepitup.ui.adapter.NetworkTaskAdapter;
@@ -53,35 +50,27 @@ public class NetworkTaskMainUIInitTaskTest extends BaseUITest {
 
     private ActivityScenario<?> activityScenario;
     private NetworkTaskMainUIInitTask initTask;
-    private NetworkTaskDAO networkTaskDAO;
-    private LogDAO logDAO;
 
     @Before
     public void beforeEachTestMethod() {
         super.beforeEachTestMethod();
         activityScenario = launchRecyclerViewBaseActivity(NetworkTaskMainActivity.class);
         initTask = new NetworkTaskMainUIInitTask(getActivity(activityScenario), getAdapter(activityScenario));
-        networkTaskDAO = new NetworkTaskDAO(TestRegistry.getContext());
-        networkTaskDAO.deleteAllNetworkTasks();
-        logDAO = new LogDAO(TestRegistry.getContext());
-        logDAO.deleteAllLogs();
     }
 
     @After
     public void afterEachTestMethod() {
         super.afterEachTestMethod();
-        logDAO.deleteAllLogs();
-        networkTaskDAO.deleteAllNetworkTasks();
         activityScenario.close();
     }
 
     @Test
     public void testAllNetworkTasksReturned() {
-        NetworkTask task1 = networkTaskDAO.insertNetworkTask(getNetworkTask1());
-        NetworkTask task2 = networkTaskDAO.insertNetworkTask(getNetworkTask2());
-        NetworkTask task3 = networkTaskDAO.insertNetworkTask(getNetworkTask3());
-        LogEntry logEntry1 = logDAO.insertAndDeleteLog(getLogEntryWithNetworkTaskId(task1.getId(), new GregorianCalendar(1980, Calendar.MARCH, 17).getTime().getTime()));
-        LogEntry logEntry2 = logDAO.insertAndDeleteLog(getLogEntryWithNetworkTaskId(task2.getId(), new GregorianCalendar(1981, Calendar.MARCH, 17).getTime().getTime()));
+        NetworkTask task1 = getNetworkTaskDAO().insertNetworkTask(getNetworkTask1());
+        NetworkTask task2 = getNetworkTaskDAO().insertNetworkTask(getNetworkTask2());
+        NetworkTask task3 = getNetworkTaskDAO().insertNetworkTask(getNetworkTask3());
+        LogEntry logEntry1 = getLogDAO().insertAndDeleteLog(getLogEntryWithNetworkTaskId(task1.getId(), new GregorianCalendar(1980, Calendar.MARCH, 17).getTime().getTime()));
+        LogEntry logEntry2 = getLogDAO().insertAndDeleteLog(getLogEntryWithNetworkTaskId(task2.getId(), new GregorianCalendar(1981, Calendar.MARCH, 17).getTime().getTime()));
         List<NetworkTaskUIWrapper> wrapperList = initTask.runInBackground();
         assertEquals(3, wrapperList.size());
         NetworkTaskUIWrapper wrapper1 = wrapperList.get(0);
@@ -97,11 +86,11 @@ public class NetworkTaskMainUIInitTaskTest extends BaseUITest {
 
     @Test
     public void testAdapterUpdate() {
-        NetworkTask task1 = networkTaskDAO.insertNetworkTask(getNetworkTask1());
-        NetworkTask task2 = networkTaskDAO.insertNetworkTask(getNetworkTask2());
-        NetworkTask task3 = networkTaskDAO.insertNetworkTask(getNetworkTask3());
-        LogEntry logEntry1 = logDAO.insertAndDeleteLog(getLogEntryWithNetworkTaskId(task1.getId(), new GregorianCalendar(1980, Calendar.MARCH, 17).getTime().getTime()));
-        LogEntry logEntry2 = logDAO.insertAndDeleteLog(getLogEntryWithNetworkTaskId(task2.getId(), new GregorianCalendar(1981, Calendar.MARCH, 17).getTime().getTime()));
+        NetworkTask task1 = getNetworkTaskDAO().insertNetworkTask(getNetworkTask1());
+        NetworkTask task2 = getNetworkTaskDAO().insertNetworkTask(getNetworkTask2());
+        NetworkTask task3 = getNetworkTaskDAO().insertNetworkTask(getNetworkTask3());
+        LogEntry logEntry1 = getLogDAO().insertAndDeleteLog(getLogEntryWithNetworkTaskId(task1.getId(), new GregorianCalendar(1980, Calendar.MARCH, 17).getTime().getTime()));
+        LogEntry logEntry2 = getLogDAO().insertAndDeleteLog(getLogEntryWithNetworkTaskId(task2.getId(), new GregorianCalendar(1981, Calendar.MARCH, 17).getTime().getTime()));
         final NetworkTaskUIWrapper wrapper1 = new NetworkTaskUIWrapper(task1, logEntry1);
         final NetworkTaskUIWrapper wrapper2 = new NetworkTaskUIWrapper(task2, logEntry2);
         final NetworkTaskUIWrapper wrapper3 = new NetworkTaskUIWrapper(task3, null);
@@ -122,11 +111,11 @@ public class NetworkTaskMainUIInitTaskTest extends BaseUITest {
 
     @Test
     public void testNullAdapterUpdate() {
-        NetworkTask task1 = networkTaskDAO.insertNetworkTask(getNetworkTask1());
-        NetworkTask task2 = networkTaskDAO.insertNetworkTask(getNetworkTask2());
-        NetworkTask task3 = networkTaskDAO.insertNetworkTask(getNetworkTask3());
-        LogEntry logEntry1 = logDAO.insertAndDeleteLog(getLogEntryWithNetworkTaskId(task1.getId(), new GregorianCalendar(1980, Calendar.MARCH, 17).getTime().getTime()));
-        LogEntry logEntry2 = logDAO.insertAndDeleteLog(getLogEntryWithNetworkTaskId(task2.getId(), new GregorianCalendar(1981, Calendar.MARCH, 17).getTime().getTime()));
+        NetworkTask task1 = getNetworkTaskDAO().insertNetworkTask(getNetworkTask1());
+        NetworkTask task2 = getNetworkTaskDAO().insertNetworkTask(getNetworkTask2());
+        NetworkTask task3 = getNetworkTaskDAO().insertNetworkTask(getNetworkTask3());
+        LogEntry logEntry1 = getLogDAO().insertAndDeleteLog(getLogEntryWithNetworkTaskId(task1.getId(), new GregorianCalendar(1980, Calendar.MARCH, 17).getTime().getTime()));
+        LogEntry logEntry2 = getLogDAO().insertAndDeleteLog(getLogEntryWithNetworkTaskId(task2.getId(), new GregorianCalendar(1981, Calendar.MARCH, 17).getTime().getTime()));
         final NetworkTaskUIWrapper wrapper1 = new NetworkTaskUIWrapper(task1, logEntry1);
         final NetworkTaskUIWrapper wrapper2 = new NetworkTaskUIWrapper(task2, logEntry2);
         final NetworkTaskUIWrapper wrapper3 = new NetworkTaskUIWrapper(task3, null);
@@ -140,11 +129,11 @@ public class NetworkTaskMainUIInitTaskTest extends BaseUITest {
 
     @Test
     public void testAdapterUpdateWithEmptyList() {
-        NetworkTask task1 = networkTaskDAO.insertNetworkTask(getNetworkTask1());
-        NetworkTask task2 = networkTaskDAO.insertNetworkTask(getNetworkTask2());
-        NetworkTask task3 = networkTaskDAO.insertNetworkTask(getNetworkTask3());
-        LogEntry logEntry1 = logDAO.insertAndDeleteLog(getLogEntryWithNetworkTaskId(task1.getId(), new GregorianCalendar(1980, Calendar.MARCH, 17).getTime().getTime()));
-        LogEntry logEntry2 = logDAO.insertAndDeleteLog(getLogEntryWithNetworkTaskId(task2.getId(), new GregorianCalendar(1981, Calendar.MARCH, 17).getTime().getTime()));
+        NetworkTask task1 = getNetworkTaskDAO().insertNetworkTask(getNetworkTask1());
+        NetworkTask task2 = getNetworkTaskDAO().insertNetworkTask(getNetworkTask2());
+        NetworkTask task3 = getNetworkTaskDAO().insertNetworkTask(getNetworkTask3());
+        LogEntry logEntry1 = getLogDAO().insertAndDeleteLog(getLogEntryWithNetworkTaskId(task1.getId(), new GregorianCalendar(1980, Calendar.MARCH, 17).getTime().getTime()));
+        LogEntry logEntry2 = getLogDAO().insertAndDeleteLog(getLogEntryWithNetworkTaskId(task2.getId(), new GregorianCalendar(1981, Calendar.MARCH, 17).getTime().getTime()));
         NetworkTaskUIWrapper wrapper1 = new NetworkTaskUIWrapper(task1, logEntry1);
         NetworkTaskUIWrapper wrapper2 = new NetworkTaskUIWrapper(task2, logEntry2);
         NetworkTaskUIWrapper wrapper3 = new NetworkTaskUIWrapper(task3, null);

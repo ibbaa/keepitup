@@ -28,9 +28,6 @@ import androidx.test.filters.MediumTest;
 
 import net.ibbaa.keepitup.model.Interval;
 import net.ibbaa.keepitup.model.Time;
-import net.ibbaa.keepitup.test.mock.TestNetworkTaskProcessServiceScheduler;
-import net.ibbaa.keepitup.test.mock.TestRegistry;
-import net.ibbaa.keepitup.test.mock.TestTimeBasedSuspensionScheduler;
 import net.ibbaa.keepitup.ui.dialog.SuspensionIntervalsDialog;
 
 import org.junit.After;
@@ -45,29 +42,17 @@ import java.util.List;
 public class IntervalHandlerTest extends BaseUITest {
 
     private ActivityScenario<?> activityScenario;
-    private TestTimeBasedSuspensionScheduler scheduler;
-    private TestNetworkTaskProcessServiceScheduler networkTaskScheduler;
 
     @Before
     public void beforeEachTestMethod() {
         super.beforeEachTestMethod();
-        scheduler = new TestTimeBasedSuspensionScheduler(TestRegistry.getContext());
-        networkTaskScheduler = new TestNetworkTaskProcessServiceScheduler(TestRegistry.getContext());
-        scheduler.setNetworkTaskScheduler(networkTaskScheduler);
-        networkTaskScheduler.setTimeBasedSuspensionScheduler(scheduler);
         getIntervalDAO().deleteAllIntervals();
-        networkTaskScheduler.reset();
-        scheduler.reset();
-        scheduler.stop();
     }
 
     @After
     public void afterEachTestMethod() {
         super.afterEachTestMethod();
         getIntervalDAO().deleteAllIntervals();
-        networkTaskScheduler.reset();
-        scheduler.reset();
-        scheduler.stop();
     }
 
     @Test
@@ -193,7 +178,7 @@ public class IntervalHandlerTest extends BaseUITest {
     }
 
     private void injectTimeBasedSuspensionScheduler() {
-        (getGlobalSettingsActivity()).injectTimeBasedSuspensionScheduler(scheduler);
+        (getGlobalSettingsActivity()).injectTimeBasedSuspensionScheduler(getTimeBasedSuspensionScheduler());
     }
 
     private GlobalSettingsActivity getGlobalSettingsActivity() {
