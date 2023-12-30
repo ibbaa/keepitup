@@ -37,16 +37,16 @@
           <timeTargetWasSelectedWithDropDown value="2023-12-28T13:39:33.243432317Z" />
         </State>
       </entry>
+      <entry key="testExportConfiguration()">
+        <State />
+      </entry>
       <entry key="testExportConfigurationScreenRotation()">
         <State />
       </entry>
-      <entry key="testResetConfigurationError()">
+      <entry key="testImportConfigurationSchedulerRestarted()">
         <State />
       </entry>
-      <entry key="testResetConfigurationErrorScreenRotation()">
-        <State />
-      </entry>
-      <entry key="testResetConfigurationScreenRotation()">
+      <entry key="testResetConfiguration()">
         <State />
       </entry>
     </value>

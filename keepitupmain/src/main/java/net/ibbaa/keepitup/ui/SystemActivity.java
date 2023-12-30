@@ -63,7 +63,8 @@ import java.util.concurrent.TimeUnit;
 public class SystemActivity extends SettingsInputActivity implements ExportSupport, ImportSupport, DBPurgeSupport, ErrorSupport {
 
     private enum Error {
-        IMPORTERROR
+        IMPORTERROR,
+        PURGERROR
     }
 
     private TextView exportFolderText;
@@ -80,7 +81,7 @@ public class SystemActivity extends SettingsInputActivity implements ExportSuppo
     private DBPurgeTask purgeTask;
     private ExportTask exportTask;
     private ImportTask importTask;
-    private NetworkTaskProcessServiceScheduler scheduler;
+    private NetworkTaskProcessServiceScheduler networkTaskProcessServiceScheduler;
     private IThemeManager themeManager;
 
     public void injectExportTask(ExportTask exportTask) {
@@ -95,8 +96,8 @@ public class SystemActivity extends SettingsInputActivity implements ExportSuppo
         this.purgeTask = purgeTask;
     }
 
-    public void injectScheduler(NetworkTaskProcessServiceScheduler scheduler) {
-        this.scheduler = scheduler;
+    public void injectNetworkTaskProcessServiceScheduler(NetworkTaskProcessServiceScheduler scheduler) {
+        this.networkTaskProcessServiceScheduler = scheduler;
     }
 
     public void injectThemeManager(IThemeManager themeManager) {
@@ -597,7 +598,7 @@ public class SystemActivity extends SettingsInputActivity implements ExportSuppo
     public void onConfirmDialogOkClicked(ConfirmDialog confirmDialog, ConfirmDialog.Type type) {
         Log.d(SystemActivity.class.getName(), "onConfirmDialogOkClicked for type " + type);
         if (ConfirmDialog.Type.RESETCONFIG.equals(type)) {
-            cancelAllNetworkTasks();
+            stopSchedulers();
             confirmDialog.dismiss();
             showProgressDialog();
             purgeDatabase();
@@ -614,7 +615,7 @@ public class SystemActivity extends SettingsInputActivity implements ExportSuppo
             PreferenceManager preferenceManager = new PreferenceManager(this);
             File importFolder = FileUtil.getExternalDirectory(fileManager, preferenceManager, preferenceManager.getPreferenceImportFolder());
             String file = getFileExtraData(confirmDialog);
-            cancelAllNetworkTasks();
+            stopSchedulers();
             confirmDialog.dismiss();
             showProgressDialog();
             doConfigurationImport(importFolder, file);
@@ -623,15 +624,21 @@ public class SystemActivity extends SettingsInputActivity implements ExportSuppo
         }
     }
 
+    private void stopSchedulers() {
+        Log.d(SystemActivity.class.getName(), "stopSchedulers");
+        getNetworkTaskProcessServiceScheduler().cancelAll();
+        getTimeBasedSuspensionScheduler().stop();
+        getTimeBasedSuspensionScheduler().reset();
+    }
+
     @Override
     public void onErrorDialogOkClicked(GeneralErrorDialog errorDialog) {
         Log.d(SystemActivity.class.getName(), "onErrorDialogOkClicked");
         String extraData = errorDialog.getExtraData();
         Log.d(SystemActivity.class.getName(), "onErrorDialogOkClicked, extraData is " + extraData);
         errorDialog.dismiss();
-        if (Error.IMPORTERROR.name().equals(extraData)) {
-            resetTheme();
-            recreateActivity();
+        if (Error.IMPORTERROR.name().equals(extraData) || Error.PURGERROR.name().equals(extraData)) {
+            resetActivity();
         }
     }
 
@@ -648,9 +655,9 @@ public class SystemActivity extends SettingsInputActivity implements ExportSuppo
     public void onImportDone(boolean success) {
         Log.d(SystemActivity.class.getName(), "onImportDone, success is " + success);
         closeProgressDialog();
+        getTimeBasedSuspensionScheduler().restart();
         if (success) {
-            resetTheme();
-            recreateActivity();
+            resetActivity();
         } else {
             showErrorDialog(getResources().getString(R.string.text_dialog_general_error_config_import), Typeface.BOLD, Error.IMPORTERROR.name());
         }
@@ -660,10 +667,12 @@ public class SystemActivity extends SettingsInputActivity implements ExportSuppo
     public void onPurgeDone(boolean success) {
         Log.d(SystemActivity.class.getName(), "onPurgeDone, success is " + success);
         closeProgressDialog();
+        getTimeBasedSuspensionScheduler().restart();
         if (success) {
             resetPreferences();
+            resetActivity();
         } else {
-            showErrorDialog(getResources().getString(R.string.text_dialog_general_error_db_purge));
+            showErrorDialog(getResources().getString(R.string.text_dialog_general_error_db_purge), Typeface.BOLD, Error.PURGERROR.name());
         }
     }
 
@@ -671,6 +680,10 @@ public class SystemActivity extends SettingsInputActivity implements ExportSuppo
         Log.d(SystemActivity.class.getName(), "resetPreferences");
         PreferenceSetup preferenceSetup = new PreferenceSetup(this);
         preferenceSetup.removeAllSettings();
+    }
+
+    private void resetActivity() {
+        Log.d(SystemActivity.class.getName(), "resetActivity");
         resetTheme();
         recreateActivity();
     }
@@ -682,12 +695,6 @@ public class SystemActivity extends SettingsInputActivity implements ExportSuppo
         int themeCode = preferenceManager.getPreferenceTheme();
         Log.d(StartupService.class.getName(), "theme is " + themeManager.getThemeName(themeCode));
         themeManager.setThemeByCode(themeCode);
-    }
-
-    private void cancelAllNetworkTasks() {
-        Log.d(SystemActivity.class.getName(), "cancelAllNetworkTasks");
-        NetworkTaskProcessServiceScheduler scheduler = getScheduler();
-        scheduler.cancelAll();
     }
 
     protected void purgeDatabase() {
@@ -789,9 +796,9 @@ public class SystemActivity extends SettingsInputActivity implements ExportSuppo
         return new DBPurgeTask(this);
     }
 
-    private NetworkTaskProcessServiceScheduler getScheduler() {
-        if (scheduler != null) {
-            return scheduler;
+    private NetworkTaskProcessServiceScheduler getNetworkTaskProcessServiceScheduler() {
+        if (networkTaskProcessServiceScheduler != null) {
+            return networkTaskProcessServiceScheduler;
         }
         return new NetworkTaskProcessServiceScheduler(this);
     }

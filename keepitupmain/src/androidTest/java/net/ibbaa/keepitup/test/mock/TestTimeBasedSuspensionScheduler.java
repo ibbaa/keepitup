@@ -29,7 +29,6 @@ public class TestTimeBasedSuspensionScheduler extends TimeBasedSuspensionSchedul
         super(context);
     }
 
-
     public void setNetworkTaskScheduler(NetworkTaskProcessServiceScheduler scheduler) {
         this.scheduler = scheduler;
     }
