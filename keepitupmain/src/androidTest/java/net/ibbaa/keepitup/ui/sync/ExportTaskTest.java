@@ -27,8 +27,11 @@ import androidx.test.filters.MediumTest;
 import com.google.common.base.Charsets;
 
 import net.ibbaa.keepitup.model.AccessType;
+import net.ibbaa.keepitup.model.Interval;
 import net.ibbaa.keepitup.model.LogEntry;
 import net.ibbaa.keepitup.model.NetworkTask;
+import net.ibbaa.keepitup.model.NotificationType;
+import net.ibbaa.keepitup.model.Time;
 import net.ibbaa.keepitup.resources.JSONSystemSetup;
 import net.ibbaa.keepitup.resources.SystemSetupResult;
 import net.ibbaa.keepitup.test.mock.TestRegistry;
@@ -77,9 +80,12 @@ public class ExportTaskTest extends BaseUITest {
         LogEntry task3Entry1 = getLogDAO().insertAndDeleteLog(getLogEntry1(task3.getId()));
         LogEntry task3Entry2 = getLogDAO().insertAndDeleteLog(getLogEntry2(task3.getId()));
         LogEntry task3Entry3 = getLogDAO().insertAndDeleteLog(getLogEntry3(task3.getId()));
+        getIntervalDAO().insertInterval(getInterval());
         getPreferenceManager().setPreferencePingCount(5);
         getPreferenceManager().setPreferenceConnectCount(10);
         getPreferenceManager().setPreferenceNotificationInactiveNetwork(true);
+        getPreferenceManager().setPreferenceNotificationType(NotificationType.CHANGE);
+        getPreferenceManager().setPreferenceSuspensionEnabled(false);
         getPreferenceManager().setPreferenceDownloadExternalStorage(true);
         getPreferenceManager().setPreferenceExternalStorageType(1);
         getPreferenceManager().setPreferenceDownloadFolder("folder");
@@ -101,6 +107,7 @@ public class ExportTaskTest extends BaseUITest {
         assertTrue(writtenFile.exists());
         getNetworkTaskDAO().deleteAllNetworkTasks();
         getLogDAO().deleteAllLogs();
+        getIntervalDAO().deleteAllIntervals();
         getPreferenceManager().removeAllPreferences();
         String jsonData = StreamUtil.inputStreamToString(new FileInputStream(writtenFile), Charsets.UTF_8);
         JSONSystemSetup setup = new JSONSystemSetup(TestRegistry.getContext());
@@ -108,6 +115,7 @@ public class ExportTaskTest extends BaseUITest {
         assertTrue(result.isSuccess());
         assertFalse(getNetworkTaskDAO().readAllNetworkTasks().isEmpty());
         assertFalse(getLogDAO().readAllLogs().isEmpty());
+        assertFalse(getIntervalDAO().readAllIntervals().isEmpty());
         List<NetworkTask> tasks = getNetworkTaskDAO().readAllNetworkTasks();
         NetworkTask readTask1 = tasks.get(0);
         NetworkTask readTask2 = tasks.get(1);
@@ -148,9 +156,12 @@ public class ExportTaskTest extends BaseUITest {
         assertEquals(readTask3.getId(), readEntry1.getNetworkTaskId());
         assertEquals(readTask3.getId(), readEntry2.getNetworkTaskId());
         assertEquals(readTask3.getId(), readEntry3.getNetworkTaskId());
+        assertTrue(getInterval().isEqual(getIntervalDAO().readAllIntervals().get(0)));
         assertEquals(5, getPreferenceManager().getPreferencePingCount());
         assertEquals(10, getPreferenceManager().getPreferenceConnectCount());
         assertTrue(getPreferenceManager().getPreferenceNotificationInactiveNetwork());
+        assertEquals(NotificationType.CHANGE, getPreferenceManager().getPreferenceNotificationType());
+        assertFalse(getPreferenceManager().getPreferenceSuspensionEnabled());
         assertTrue(getPreferenceManager().getPreferenceDownloadExternalStorage());
         assertEquals(1, getPreferenceManager().getPreferenceExternalStorageType());
         assertEquals("folder", getPreferenceManager().getPreferenceDownloadFolder());
@@ -171,6 +182,20 @@ public class ExportTaskTest extends BaseUITest {
         assertEquals(entry1.isSuccess(), entry2.isSuccess());
         assertEquals(entry1.getTimestamp(), entry2.getTimestamp());
         assertEquals(entry1.getMessage(), entry2.getMessage());
+    }
+
+    private Interval getInterval() {
+        Interval interval = new Interval();
+        interval.setId(0);
+        Time start = new Time();
+        start.setHour(10);
+        start.setMinute(11);
+        interval.setStart(start);
+        Time end = new Time();
+        end.setHour(11);
+        end.setMinute(12);
+        interval.setEnd(end);
+        return interval;
     }
 
     private NetworkTask getNetworkTask1() {

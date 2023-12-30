@@ -85,6 +85,9 @@ public class ImportTask extends UIBackgroundTask<Boolean> {
         DBSetup setup = new DBSetup(context);
         boolean logTableSuccess = false;
         boolean networkTaskTableSuccess = false;
+        boolean schedulerIdTableSuccess = false;
+        boolean intervalTableSuccess = false;
+        boolean schedulerStateTableSuccess = false;
         try {
             setup.deleteAllLogs(context);
             logTableSuccess = true;
@@ -97,9 +100,30 @@ public class ImportTask extends UIBackgroundTask<Boolean> {
         } catch (Exception exc) {
             Log.e(ImportTask.class.getName(), "Error purging network task table", exc);
         }
+        try {
+            setup.deleteAllSchedulerIds(context);
+            schedulerIdTableSuccess = true;
+        } catch (Exception exc) {
+            Log.e(ImportTask.class.getName(), "Error purging scheduler id table", exc);
+        }
+        try {
+            setup.deleteAllIntervals(context);
+            intervalTableSuccess = true;
+        } catch (Exception exc) {
+            Log.e(ImportTask.class.getName(), "Error purging interval table", exc);
+        }
+        try {
+            setup.recreateSchedulerStateTable(context);
+            schedulerStateTableSuccess = true;
+        } catch (Exception exc) {
+            Log.e(ImportTask.class.getName(), "Error purging scheduler state table", exc);
+        }
         Log.d(ImportTask.class.getName(), "logTableSuccess: " + logTableSuccess);
         Log.d(ImportTask.class.getName(), "networkTaskTableSuccess: " + networkTaskTableSuccess);
-        return logTableSuccess && networkTaskTableSuccess;
+        Log.d(DBPurgeTask.class.getName(), "schedulerIdTableSuccess: " + schedulerIdTableSuccess);
+        Log.d(DBPurgeTask.class.getName(), "intervalTableSuccess: " + intervalTableSuccess);
+        Log.d(DBPurgeTask.class.getName(), "schedulerStateTableSuccess: " + schedulerStateTableSuccess);
+        return logTableSuccess && networkTaskTableSuccess && schedulerIdTableSuccess && intervalTableSuccess && schedulerStateTableSuccess;
     }
 
     private boolean doImport(Context context) throws Exception {

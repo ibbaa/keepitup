@@ -18,6 +18,22 @@
           <timeTargetWasSelectedWithDropDown value="2023-12-12T21:55:03.061716856Z" />
         </State>
       </entry>
+      <entry key="ExportTaskTest">
+        <State>
+          <targetSelectedWithDropDown>
+            <Target>
+              <type value="QUICK_BOOT_TARGET" />
+              <deviceKey>
+                <Key>
+                  <type value="VIRTUAL_DEVICE_PATH" />
+                  <value value="$USER_HOME$/.android/avd/Nexus_5X_API_29.avd" />
+                </Key>
+              </deviceKey>
+            </Target>
+          </targetSelectedWithDropDown>
+          <timeTargetWasSelectedWithDropDown value="2023-12-30T13:55:57.968607898Z" />
+        </State>
+      </entry>
       <entry key="SystemActivityTest">
         <State />
       </entry>
@@ -34,19 +50,16 @@
               </deviceKey>
             </Target>
           </targetSelectedWithDropDown>
-          <timeTargetWasSelectedWithDropDown value="2023-12-28T13:39:33.243432317Z" />
+          <timeTargetWasSelectedWithDropDown value="2023-12-30T13:56:11.215599020Z" />
         </State>
-      </entry>
-      <entry key="testExportConfiguration()">
-        <State />
       </entry>
       <entry key="testExportConfigurationScreenRotation()">
         <State />
       </entry>
-      <entry key="testImportConfigurationSchedulerRestarted()">
+      <entry key="testImport()">
         <State />
       </entry>
-      <entry key="testResetConfiguration()">
+      <entry key="testImportFailureDataPurged()">
         <State />
       </entry>
     </value>
