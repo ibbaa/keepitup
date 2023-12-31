@@ -21,6 +21,25 @@
       <entry key="GlobalSettingsActivityTest">
         <State />
       </entry>
+      <entry key="NetworkTaskEditDialogTest">
+        <State />
+      </entry>
+      <entry key="SuspensionIntervalSelectDialogTest">
+        <State>
+          <targetSelectedWithDropDown>
+            <Target>
+              <type value="QUICK_BOOT_TARGET" />
+              <deviceKey>
+                <Key>
+                  <type value="VIRTUAL_DEVICE_PATH" />
+                  <value value="$USER_HOME$/.android/avd/Nexus_5X_API_29.avd" />
+                </Key>
+              </deviceKey>
+            </Target>
+          </targetSelectedWithDropDown>
+          <timeTargetWasSelectedWithDropDown value="2023-12-31T13:37:48.034580700Z" />
+        </State>
+      </entry>
       <entry key="SuspensionIntervalsDialogTest">
         <State />
       </entry>
@@ -40,13 +59,7 @@
           <timeTargetWasSelectedWithDropDown value="2023-12-30T13:56:11.215599020Z" />
         </State>
       </entry>
-      <entry key="testIntervalAddCancelModifiedIntervalPresentStartInvalid()">
-        <State />
-      </entry>
-      <entry key="testIntervalAddCancelModifiedIntervalPresentStartInvalidScreenRotation()">
-        <State />
-      </entry>
-      <entry key="testIntervalAddCancelModifiedScreenRotation()">
+      <entry key="testExportConfigurationScreenRotation()">
         <State />
       </entry>
     </value>

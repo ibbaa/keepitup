@@ -23,7 +23,7 @@
     <integer name="suspension_interval_largest_gap_min_duration">90</integer>
     <integer name="suspension_interval_largest_gap_threshold_duration">240</integer>
     <integer name="suspension_interval_current_gap_min_distance">60</integer>
-    <integer name="suspension_interval_current_gap_threshold_distance">240</integer>
+    <integer name="suspension_interval_current_gap_threshold_distance">180</integer>
     <integer name="suspension_interval_threshold_distance">60</integer>
     <integer name="suspension_interval_threshold_duration">120</integer>
 </resources>
