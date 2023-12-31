@@ -644,7 +644,7 @@ public class GlobalSettingsActivityTest extends BaseUITest {
         onView(allOf(withText("Start: 03:03 End: 04:04"), withFontSize(10), withGridLayoutPosition(2, 0))).check(matches(isDisplayed()));
         onView(allOf(withText("Start: 05:05 End: 06:06"), withFontSize(10), withGridLayoutPosition(3, 0))).check(matches(isDisplayed()));
         onView(allOf(withText("Start: 07:07 End: 08:08"), withFontSize(10), withGridLayoutPosition(4, 0))).check(matches(isDisplayed()));
-        onView(allOf(withText("Start: 09:09 End: 09:25"), withFontSize(10), withGridLayoutPosition(1, 1))).check(matches(isDisplayed()));
+        onView(allOf(withText("Start: 09:09 End: 09:39"), withFontSize(10), withGridLayoutPosition(1, 1))).check(matches(isDisplayed()));
         onView(allOf(withText("Start: 10:11 End: 11:12"), withFontSize(10), withGridLayoutPosition(2, 1))).check(matches(isDisplayed()));
         onView(allOf(withText("Start: 22:15 End: 23:59"), withFontSize(10), withGridLayoutPosition(3, 1))).check(matches(isDisplayed()));
         activityScenario.close();
@@ -961,7 +961,7 @@ public class GlobalSettingsActivityTest extends BaseUITest {
         onView(withId(R.id.picker_dialog_suspension_interval_select_time_minute)).perform(setNumber(9));
         onView(withId(R.id.imageview_dialog_suspension_interval_select_ok)).perform(click());
         onView(withId(R.id.picker_dialog_suspension_interval_select_time_hour)).perform(setNumber(9));
-        onView(withId(R.id.picker_dialog_suspension_interval_select_time_minute)).perform(setNumber(25));
+        onView(withId(R.id.picker_dialog_suspension_interval_select_time_minute)).perform(setNumber(39));
         onView(withId(R.id.imageview_dialog_suspension_interval_select_ok)).perform(click());
         onView(withId(R.id.imageview_dialog_suspension_intervals_interval_add)).perform(click());
         onView(withId(R.id.picker_dialog_suspension_interval_select_time_hour)).perform(setNumber(10));
@@ -983,7 +983,7 @@ public class GlobalSettingsActivityTest extends BaseUITest {
         onView(allOf(withText("Start: 03:03 End: 04:04"), withFontSize(10), withGridLayoutPosition(2, 0))).check(matches(isDisplayed()));
         onView(allOf(withText("Start: 05:05 End: 06:06"), withFontSize(10), withGridLayoutPosition(3, 0))).check(matches(isDisplayed()));
         onView(allOf(withText("Start: 07:07 End: 08:08"), withFontSize(10), withGridLayoutPosition(4, 0))).check(matches(isDisplayed()));
-        onView(allOf(withText("Start: 09:09 End: 09:25"), withFontSize(10), withGridLayoutPosition(1, 1))).check(matches(isDisplayed()));
+        onView(allOf(withText("Start: 09:09 End: 09:39"), withFontSize(10), withGridLayoutPosition(1, 1))).check(matches(isDisplayed()));
         onView(allOf(withText("Start: 10:11 End: 11:12"), withFontSize(10), withGridLayoutPosition(2, 1))).check(matches(isDisplayed()));
         onView(allOf(withText("Start: 22:15 End: 23:59"), withFontSize(10), withGridLayoutPosition(3, 1))).check(matches(isDisplayed()));
         assertEquals(7, getTimeBasedSuspensionScheduler().getIntervals().size());
@@ -1088,7 +1088,7 @@ public class GlobalSettingsActivityTest extends BaseUITest {
         onView(withId(R.id.picker_dialog_suspension_interval_select_time_minute)).perform(setNumber(9));
         onView(withId(R.id.imageview_dialog_suspension_interval_select_ok)).perform(click());
         onView(withId(R.id.picker_dialog_suspension_interval_select_time_hour)).perform(setNumber(9));
-        onView(withId(R.id.picker_dialog_suspension_interval_select_time_minute)).perform(setNumber(25));
+        onView(withId(R.id.picker_dialog_suspension_interval_select_time_minute)).perform(setNumber(39));
         onView(withId(R.id.imageview_dialog_suspension_interval_select_ok)).perform(click());
         onView(withId(R.id.imageview_dialog_suspension_intervals_interval_add)).perform(click());
         onView(withId(R.id.picker_dialog_suspension_interval_select_time_hour)).perform(setNumber(10));
@@ -2063,7 +2063,7 @@ public class GlobalSettingsActivityTest extends BaseUITest {
         interval.setStart(start);
         Time end = new Time();
         end.setHour(9);
-        end.setMinute(25);
+        end.setMinute(39);
         interval.setEnd(end);
         return interval;
     }

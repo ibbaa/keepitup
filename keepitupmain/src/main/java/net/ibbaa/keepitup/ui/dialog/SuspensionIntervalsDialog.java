@@ -55,6 +55,7 @@ public class SuspensionIntervalsDialog extends DialogFragment implements Confirm
     private View dialogView;
     private RecyclerView suspensionIntervalsRecyclerView;
     private Interval currentInterval;
+    private boolean keepEnd;
     private int position;
 
     @Override
@@ -72,8 +73,9 @@ public class SuspensionIntervalsDialog extends DialogFragment implements Confirm
         Log.d(SuspensionIntervalsDialog.class.getName(), "containsSavedState is " + containsSavedState);
         Bundle adapterState = containsSavedState ? savedInstanceState.getBundle(getSuspensionIntervalsAdapterKey()) : null;
         Bundle currentIntervalState = containsSavedState ? savedInstanceState.getBundle(getCurrentSuspensionIntervalKey()) : null;
+        boolean keepEndState = containsSavedState ? savedInstanceState.getBoolean(getKeepEndKey()) : false;
         prepareIntervalsRecyclerView(adapterState);
-        prepareCurrentInterval(currentIntervalState);
+        prepareCurrentInterval(currentIntervalState, keepEndState);
         preparePosition(savedInstanceState);
         prepareAddImageButton();
         prepareOkCancelImageButtons();
@@ -91,6 +93,7 @@ public class SuspensionIntervalsDialog extends DialogFragment implements Confirm
             outState.putBundle(getCurrentSuspensionIntervalKey(), currentIntervalState);
         }
         outState.putInt(getPositionKey(), position);
+        outState.putBoolean(getKeepEndKey(), keepEnd);
     }
 
     private boolean containsSavedState(Bundle savedInstanceState) {
@@ -114,6 +117,10 @@ public class SuspensionIntervalsDialog extends DialogFragment implements Confirm
         return SuspensionIntervalsDialog.class.getSimpleName() + "Position";
     }
 
+    private String getKeepEndKey() {
+        return SuspensionIntervalsDialog.class.getSimpleName() + "KeepEnd";
+    }
+
     private void prepareIntervalsRecyclerView(Bundle adapterState) {
         Log.d(SuspensionIntervalsDialog.class.getName(), "prepareIntervalsRecyclerView");
         suspensionIntervalsRecyclerView = dialogView.findViewById(R.id.listview_dialog_suspension_intervals_intervals);
@@ -124,11 +131,13 @@ public class SuspensionIntervalsDialog extends DialogFragment implements Confirm
         suspensionIntervalsRecyclerView.setAdapter(adapter);
     }
 
-    private void prepareCurrentInterval(Bundle currentIntervalState) {
+    private void prepareCurrentInterval(Bundle currentIntervalState, boolean keepEndState) {
         Log.d(SuspensionIntervalsDialog.class.getName(), "prepareCurrentInterval");
         if (currentIntervalState != null) {
             currentInterval = new Interval(currentIntervalState);
+            keepEnd = keepEndState;
             Log.d(SuspensionIntervalsDialog.class.getName(), "Current saved interval is " + currentInterval);
+            Log.d(SuspensionIntervalsDialog.class.getName(), "Current saved keep end is " + keepEnd);
             return;
         }
         initializeCurrentInterval();
@@ -243,6 +252,7 @@ public class SuspensionIntervalsDialog extends DialogFragment implements Confirm
                 prepareCurrentInterval(intervalSelectDialog);
             } else {
                 currentInterval.setEnd(intervalSelectDialog.getSelectedTime());
+                keepEnd = true;
             }
         }
         intervalSelectDialog.dismiss();
@@ -262,7 +272,8 @@ public class SuspensionIntervalsDialog extends DialogFragment implements Confirm
                 end = isIntervalEndStillValid(interval, start) ? interval.getEnd() : getEnd(start);
             }
         } else {
-            end = getEnd(start);
+            end = keepEnd && isIntervalEndStillValid(currentInterval, start) ? currentInterval.getEnd() : getEnd(start);
+            getEnd(start);
         }
         Log.d(SuspensionIntervalsDialog.class.getName(), "start is " + start);
         Log.d(SuspensionIntervalsDialog.class.getName(), "end is " + end);
@@ -401,6 +412,7 @@ public class SuspensionIntervalsDialog extends DialogFragment implements Confirm
 
     private void initializeCurrentInterval() {
         Log.d(SuspensionIntervalsDialog.class.getName(), "initializeCurrentInterval");
+        keepEnd = false;
         if (!hasIntervals()) {
             currentInterval = getDefaultInterval();
             Log.d(SuspensionIntervalsDialog.class.getName(), "No intervals defined. Returning " + currentInterval);

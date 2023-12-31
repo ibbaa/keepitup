@@ -378,7 +378,7 @@ public class JSONSystemSetupTest {
         interval2.setStart(start);
         Time end = new Time();
         end.setHour(0);
-        end.setMinute(25);
+        end.setMinute(29);
         interval2.setEnd(end);
         intervalDAO.insertInterval(interval1);
         intervalDAO.insertInterval(interval2);

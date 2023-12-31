@@ -362,7 +362,7 @@ public class DBSetupTest {
         interval2.setStart(start);
         Time end = new Time();
         end.setHour(9);
-        end.setMinute(55);
+        end.setMinute(40);
         interval2.setEnd(end);
         Map<String, ?> intervalMap1 = getInterval1().toMap();
         Map<String, ?> intervalMap2 = interval2.toMap();
@@ -379,11 +379,11 @@ public class DBSetupTest {
         Interval interval2 = getInterval2();
         Time start = new Time();
         start.setHour(11);
-        start.setMinute(28);
+        start.setMinute(43);
         interval2.setStart(start);
         Time end = new Time();
-        end.setHour(11);
-        end.setMinute(44);
+        end.setHour(12);
+        end.setMinute(14);
         interval2.setEnd(end);
         Map<String, ?> intervalMap1 = getInterval1().toMap();
         Map<String, ?> intervalMap2 = interval2.toMap();
