@@ -22,7 +22,20 @@
         <State />
       </entry>
       <entry key="NetworkTaskEditDialogTest">
-        <State />
+        <State>
+          <targetSelectedWithDropDown>
+            <Target>
+              <type value="QUICK_BOOT_TARGET" />
+              <deviceKey>
+                <Key>
+                  <type value="VIRTUAL_DEVICE_PATH" />
+                  <value value="$USER_HOME$/.android/avd/Nexus_5X_API_29.avd" />
+                </Key>
+              </deviceKey>
+            </Target>
+          </targetSelectedWithDropDown>
+          <timeTargetWasSelectedWithDropDown value="2024-01-01T16:22:40.844077932Z" />
+        </State>
       </entry>
       <entry key="SuspensionIntervalSelectDialogTest">
         <State>
