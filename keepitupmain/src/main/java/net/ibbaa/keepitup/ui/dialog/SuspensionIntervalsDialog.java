@@ -294,7 +294,7 @@ public class SuspensionIntervalsDialog extends DialogFragment implements Confirm
         Log.d(SuspensionIntervalsDialog.class.getName(), "getEnd for start " + start);
         if (!hasIntervals()) {
             Log.d(SuspensionIntervalsDialog.class.getName(), "No intervals defined.");
-            return getDefaultInterval().getEnd();
+            return TimeUtil.addMinutes(start, getResources().getInteger(R.integer.suspension_interval_default_duration));
         }
         Interval currentGap = TimeUtil.getCurrentGap(getAdapter().getAllItems(), start);
         Log.d(SuspensionIntervalsDialog.class.getName(), "Current gap is " + currentGap);
@@ -442,7 +442,7 @@ public class SuspensionIntervalsDialog extends DialogFragment implements Confirm
         Time start = new Time();
         start.setHour(getResources().getInteger(R.integer.suspension_interval_default_start_hour));
         start.setMinute(getResources().getInteger(R.integer.suspension_interval_default_start_minute));
-        Time end = TimeUtil.addMinutes(start, getResources().getInteger(R.integer.suspension_interval_default_length));
+        Time end = TimeUtil.addMinutes(start, getResources().getInteger(R.integer.suspension_interval_default_duration));
         interval.setStart(start);
         interval.setEnd(end);
         Log.d(SuspensionIntervalsDialog.class.getName(), "Default interval is " + interval);

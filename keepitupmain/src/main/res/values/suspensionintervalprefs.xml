@@ -19,7 +19,7 @@
     <integer name="suspension_interval_min_duration">30</integer>
     <integer name="suspension_interval_default_start_hour">22</integer>
     <integer name="suspension_interval_default_start_minute">0</integer>
-    <integer name="suspension_interval_default_length">360</integer>
+    <integer name="suspension_interval_default_duration">360</integer>
     <integer name="suspension_interval_largest_gap_min_duration">90</integer>
     <integer name="suspension_interval_largest_gap_threshold_duration">240</integer>
     <integer name="suspension_interval_current_gap_min_distance">60</integer>
