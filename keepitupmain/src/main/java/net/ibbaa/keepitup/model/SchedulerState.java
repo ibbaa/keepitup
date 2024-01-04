@@ -16,6 +16,8 @@
 
 package net.ibbaa.keepitup.model;
 
+import androidx.annotation.NonNull;
+
 public class SchedulerState {
 
     private final long id;
@@ -40,6 +42,7 @@ public class SchedulerState {
         return timestamp;
     }
 
+    @NonNull
     @Override
     public String toString() {
         return "SchedulerState{" +
