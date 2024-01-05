@@ -337,7 +337,6 @@ public abstract class NetworkTaskWorker implements Runnable {
             return prefixMessage + " " + getResources().getString(R.string.text_timeout, timeout) + " " + unit + ".";
         }
         if (isInterrupted(exc)) {
-            String unit = timeout == 1 ? getResources().getString(R.string.string_second) : getResources().getString(R.string.string_seconds);
             return prefixMessage + " " + getResources().getString(R.string.text_interrupted);
         }
         return prefixMessage + " " + ExceptionUtil.getLogableMessage(ExceptionUtil.getRootCause(exc));
