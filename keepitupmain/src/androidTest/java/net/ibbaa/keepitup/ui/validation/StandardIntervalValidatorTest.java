@@ -52,7 +52,7 @@ public class StandardIntervalValidatorTest {
         result = validator.validateDuration(interval);
         assertFalse(result.isValidationSuccessful());
         assertEquals("Interval", result.getFieldName());
-        assertEquals("Interval length minimum is 30 minutes", result.getMessage());
+        assertEquals("Interval length minimum is 30 minutes.", result.getMessage());
     }
 
     @Test
@@ -71,7 +71,7 @@ public class StandardIntervalValidatorTest {
         result = validator.validateDuration();
         assertFalse(result.isValidationSuccessful());
         assertEquals("Interval", result.getFieldName());
-        assertEquals("Interval length minimum is 30 minutes", result.getMessage());
+        assertEquals("Interval length minimum is 30 minutes.", result.getMessage());
     }
 
     @Test
@@ -86,7 +86,7 @@ public class StandardIntervalValidatorTest {
         result = validator.validateOverlap(interval1);
         assertFalse(result.isValidationSuccessful());
         assertEquals("Interval", result.getFieldName());
-        assertEquals("Intervals must not overlap and must have a distance of at least 30 minutes from each other. Interval length minimum is 30 minutes.", result.getMessage());
+        assertEquals("Intervals must not overlap and must have a distance of at least 30 minutes from each other.", result.getMessage());
     }
 
     @Test
@@ -115,7 +115,7 @@ public class StandardIntervalValidatorTest {
         result = validator.validateOverlapSorted();
         assertFalse(result.isValidationSuccessful());
         assertEquals("Interval", result.getFieldName());
-        assertEquals("Intervals must not overlap and must have a distance of at least 30 minutes from each other. Interval length minimum is 30 minutes.", result.getMessage());
+        assertEquals("Intervals must not overlap and must have a distance of at least 30 minutes from each other.", result.getMessage());
         interval1 = getInterval1();
         end = new Time();
         end.setHour(0);
@@ -125,7 +125,7 @@ public class StandardIntervalValidatorTest {
         result = validator.validateOverlapSorted();
         assertFalse(result.isValidationSuccessful());
         assertEquals("Interval", result.getFieldName());
-        assertEquals("Intervals must not overlap and must have a distance of at least 30 minutes from each other. Interval length minimum is 30 minutes.", result.getMessage());
+        assertEquals("Intervals must not overlap and must have a distance of at least 30 minutes from each other.", result.getMessage());
     }
 
     private Interval getInterval1() {

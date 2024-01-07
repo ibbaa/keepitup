@@ -273,9 +273,9 @@ public class SuspensionIntervalSelectDialog extends DialogFragment {
         Log.d(SuspensionIntervalSelectDialog.class.getName(), "onOkClicked");
         List<ValidationResult> resultList;
         if (Mode.START.equals(getMode())) {
-            resultList = validate(getResources().getString(R.string.string_start));
+            resultList = validateStart();
         } else {
-            resultList = validate(getResources().getString(R.string.string_end));
+            resultList = validateEnd();
         }
         if (!resultList.isEmpty()) {
             Log.d(SuspensionIntervalSelectDialog.class.getName(), "Validation failed. Opening error dialog.");
@@ -291,18 +291,34 @@ public class SuspensionIntervalSelectDialog extends DialogFragment {
         }
     }
 
-    private List<ValidationResult> validate(String field) {
-        Log.d(SuspensionIntervalSelectDialog.class.getName(), "validateEndMode");
+    private List<ValidationResult> validateStart() {
+        Log.d(SuspensionIntervalSelectDialog.class.getName(), "validateStart");
+        ValidationResult validateOverlap = validateOverlap();
+        Log.d(SuspensionIntervalSelectDialog.class.getName(), "validateEndMode, validateOverlap result = " + validateOverlap);
+        List<ValidationResult> resultList = new ArrayList<>();
+        String start = getResources().getString(R.string.string_start);
+        if (validateOverlap != null && !validateOverlap.isValidationSuccessful()) {
+            int minDuration = getResources().getInteger(R.integer.suspension_interval_min_duration);
+            String durationMessage = getResources().getString(R.string.suspension_interval_duration, minDuration);
+            resultList.add(new ValidationResult(validateOverlap.isValidationSuccessful(), start, validateOverlap.getMessage() + " " + durationMessage));
+        }
+
+        return resultList;
+    }
+
+    private List<ValidationResult> validateEnd() {
+        Log.d(SuspensionIntervalSelectDialog.class.getName(), "validateEnd");
         ValidationResult validateOverlap = validateOverlap();
         ValidationResult validateDuration = validateDuration();
-        Log.d(SuspensionIntervalSelectDialog.class.getName(), "validateEndMode, validateOverlap result = " + validateOverlap);
-        Log.d(SuspensionIntervalSelectDialog.class.getName(), "validateEndMode, validateDuration result = " + validateDuration);
+        Log.d(SuspensionIntervalSelectDialog.class.getName(), "validateEnd, validateOverlap result = " + validateOverlap);
+        Log.d(SuspensionIntervalSelectDialog.class.getName(), "validateEnd, validateDuration result = " + validateDuration);
         List<ValidationResult> resultList = new ArrayList<>();
+        String end = getResources().getString(R.string.string_end);
         if (validateOverlap != null && !validateOverlap.isValidationSuccessful()) {
-            resultList.add(new ValidationResult(validateOverlap.isValidationSuccessful(), field, validateOverlap.getMessage()));
+            resultList.add(new ValidationResult(validateOverlap.isValidationSuccessful(), end, validateOverlap.getMessage()));
         }
         if (validateDuration != null && !validateDuration.isValidationSuccessful()) {
-            resultList.add(new ValidationResult(validateDuration.isValidationSuccessful(), field, validateDuration.getMessage()));
+            resultList.add(new ValidationResult(validateDuration.isValidationSuccessful(), end, validateDuration.getMessage()));
         }
         return resultList;
     }

@@ -2116,7 +2116,7 @@ public class SuspensionIntervalsDialogTest extends BaseUITest {
         onView(withId(R.id.imageview_dialog_suspension_interval_select_ok)).perform(click());
         onView(withId(R.id.textview_dialog_validator_error_title)).check(matches(withText("Validation failed")));
         onView(allOf(withText("End"), withGridLayoutPosition(1, 0))).check(matches(isDisplayed()));
-        onView(allOf(withText("Interval length minimum is 30 minutes"), withGridLayoutPosition(1, 1))).check(matches(isDisplayed()));
+        onView(allOf(withText("Interval length minimum is 30 minutes."), withGridLayoutPosition(1, 1))).check(matches(isDisplayed()));
         onView(withId(R.id.imageview_dialog_validator_error_ok)).perform(click());
         onView(withId(R.id.imageview_dialog_suspension_interval_select_cancel)).perform(click());
         activityScenario.close();
@@ -2162,11 +2162,11 @@ public class SuspensionIntervalsDialogTest extends BaseUITest {
         onView(withId(R.id.imageview_dialog_suspension_interval_select_ok)).perform(click());
         onView(withId(R.id.textview_dialog_validator_error_title)).check(matches(withText("Validation failed")));
         onView(allOf(withText("End"), withGridLayoutPosition(1, 0))).check(matches(isDisplayed()));
-        onView(allOf(withText("Interval length minimum is 30 minutes"), withGridLayoutPosition(1, 1))).check(matches(isDisplayed()));
+        onView(allOf(withText("Interval length minimum is 30 minutes."), withGridLayoutPosition(1, 1))).check(matches(isDisplayed()));
         rotateScreen(activityScenario);
         onView(withId(R.id.textview_dialog_validator_error_title)).check(matches(withText("Validation failed")));
         onView(allOf(withText("End"), withGridLayoutPosition(1, 0))).check(matches(isDisplayed()));
-        onView(allOf(withText("Interval length minimum is 30 minutes"), withGridLayoutPosition(1, 1))).check(matches(isDisplayed()));
+        onView(allOf(withText("Interval length minimum is 30 minutes."), withGridLayoutPosition(1, 1))).check(matches(isDisplayed()));
         onView(withId(R.id.imageview_dialog_validator_error_ok)).perform(click());
         onView(withId(R.id.imageview_dialog_suspension_interval_select_cancel)).perform(click());
         activityScenario.close();
@@ -2619,7 +2619,7 @@ public class SuspensionIntervalsDialogTest extends BaseUITest {
         onView(withId(R.id.picker_dialog_suspension_interval_select_time_minute)).perform(setNumber(16));
         onView(withId(R.id.imageview_dialog_suspension_interval_select_ok)).perform(click());
         onView(allOf(withText("End"), withGridLayoutPosition(1, 0))).check(matches(isDisplayed()));
-        onView(allOf(withText("Interval length minimum is 30 minutes"), withGridLayoutPosition(1, 1))).check(matches(isDisplayed()));
+        onView(allOf(withText("Interval length minimum is 30 minutes."), withGridLayoutPosition(1, 1))).check(matches(isDisplayed()));
         onView(withId(R.id.imageview_dialog_validator_error_ok)).perform(click());
         onView(withId(R.id.picker_dialog_suspension_interval_select_time_hour)).perform(setNumber(0));
         onView(withId(R.id.picker_dialog_suspension_interval_select_time_minute)).perform(setNumber(1));
@@ -2688,10 +2688,10 @@ public class SuspensionIntervalsDialogTest extends BaseUITest {
         onView(withId(R.id.picker_dialog_suspension_interval_select_time_minute)).perform(setNumber(16));
         onView(withId(R.id.imageview_dialog_suspension_interval_select_ok)).perform(click());
         onView(allOf(withText("End"), withGridLayoutPosition(1, 0))).check(matches(isDisplayed()));
-        onView(allOf(withText("Interval length minimum is 30 minutes"), withGridLayoutPosition(1, 1))).check(matches(isDisplayed()));
+        onView(allOf(withText("Interval length minimum is 30 minutes."), withGridLayoutPosition(1, 1))).check(matches(isDisplayed()));
         rotateScreen(activityScenario);
         onView(allOf(withText("End"), withGridLayoutPosition(1, 0))).check(matches(isDisplayed()));
-        onView(allOf(withText("Interval length minimum is 30 minutes"), withGridLayoutPosition(1, 1))).check(matches(isDisplayed()));
+        onView(allOf(withText("Interval length minimum is 30 minutes."), withGridLayoutPosition(1, 1))).check(matches(isDisplayed()));
         onView(withId(R.id.imageview_dialog_validator_error_ok)).perform(click());
         onView(withId(R.id.picker_dialog_suspension_interval_select_time_hour)).perform(setNumber(0));
         onView(withId(R.id.picker_dialog_suspension_interval_select_time_minute)).perform(setNumber(1));
@@ -2744,7 +2744,7 @@ public class SuspensionIntervalsDialogTest extends BaseUITest {
         onView(allOf(withId(R.id.textview_list_item_suspension_interval), withChildDescendantAtPosition(withId(R.id.listview_dialog_suspension_intervals_intervals), 2))).check(matches(withText("Start: 22:15 End: 23:59")));
         onView(withId(R.id.imageview_dialog_suspension_intervals_ok)).perform(click());
         onView(allOf(withText("Interval"), withGridLayoutPosition(1, 0))).check(matches(isDisplayed()));
-        onView(allOf(withText("Interval length minimum is 30 minutes"), withGridLayoutPosition(1, 1))).check(matches(isDisplayed()));
+        onView(allOf(withText("Interval length minimum is 30 minutes."), withGridLayoutPosition(1, 1))).check(matches(isDisplayed()));
         onView(withId(R.id.imageview_dialog_validator_error_ok)).perform(click());
         onView(withId(R.id.listview_dialog_suspension_intervals_intervals)).check(matches(withListSize(3)));
         onView(allOf(withId(R.id.textview_list_item_suspension_interval_no_interval), withChildDescendantAtPosition(withId(R.id.listview_dialog_suspension_intervals_intervals), 0))).check(matches(not(isDisplayed())));
@@ -2783,10 +2783,10 @@ public class SuspensionIntervalsDialogTest extends BaseUITest {
         rotateScreen(activityScenario);
         onView(withId(R.id.imageview_dialog_suspension_intervals_ok)).perform(click());
         onView(allOf(withText("Interval"), withGridLayoutPosition(1, 0))).check(matches(isDisplayed()));
-        onView(allOf(withText("Interval length minimum is 30 minutes"), withGridLayoutPosition(1, 1))).check(matches(isDisplayed()));
+        onView(allOf(withText("Interval length minimum is 30 minutes."), withGridLayoutPosition(1, 1))).check(matches(isDisplayed()));
         rotateScreen(activityScenario);
         onView(allOf(withText("Interval"), withGridLayoutPosition(1, 0))).check(matches(isDisplayed()));
-        onView(allOf(withText("Interval length minimum is 30 minutes"), withGridLayoutPosition(1, 1))).check(matches(isDisplayed()));
+        onView(allOf(withText("Interval length minimum is 30 minutes."), withGridLayoutPosition(1, 1))).check(matches(isDisplayed()));
         onView(withId(R.id.imageview_dialog_validator_error_ok)).perform(click());
         onView(allOf(withId(R.id.textview_list_item_suspension_interval_no_interval), withChildDescendantAtPosition(withId(R.id.listview_dialog_suspension_intervals_intervals), 0))).check(matches(not(isDisplayed())));
         onView(allOf(withId(R.id.cardview_list_item_suspension_interval), withChildDescendantAtPosition(withId(R.id.listview_dialog_suspension_intervals_intervals), 0))).check(matches(isDisplayed()));
@@ -2823,7 +2823,7 @@ public class SuspensionIntervalsDialogTest extends BaseUITest {
         onView(allOf(withId(R.id.textview_list_item_suspension_interval), withChildDescendantAtPosition(withId(R.id.listview_dialog_suspension_intervals_intervals), 2))).check(matches(withText("Start: 22:15 End: 01:15")));
         onView(withId(R.id.imageview_dialog_suspension_intervals_ok)).perform(click());
         onView(allOf(withText("Interval"), withGridLayoutPosition(1, 0))).check(matches(isDisplayed()));
-        onView(allOf(withText("Intervals must not overlap and must have a distance of at least 30 minutes from each other. Interval length minimum is 30 minutes."), withGridLayoutPosition(1, 1))).check(matches(isDisplayed()));
+        onView(allOf(withText("Intervals must not overlap and must have a distance of at least 30 minutes from each other."), withGridLayoutPosition(1, 1))).check(matches(isDisplayed()));
         onView(withId(R.id.imageview_dialog_validator_error_ok)).perform(click());
         onView(withId(R.id.listview_dialog_suspension_intervals_intervals)).check(matches(withListSize(3)));
         onView(allOf(withId(R.id.textview_list_item_suspension_interval_no_interval), withChildDescendantAtPosition(withId(R.id.listview_dialog_suspension_intervals_intervals), 0))).check(matches(not(isDisplayed())));
@@ -2862,10 +2862,10 @@ public class SuspensionIntervalsDialogTest extends BaseUITest {
         rotateScreen(activityScenario);
         onView(withId(R.id.imageview_dialog_suspension_intervals_ok)).perform(click());
         onView(allOf(withText("Interval"), withGridLayoutPosition(1, 0))).check(matches(isDisplayed()));
-        onView(allOf(withText("Intervals must not overlap and must have a distance of at least 30 minutes from each other. Interval length minimum is 30 minutes."), withGridLayoutPosition(1, 1))).check(matches(isDisplayed()));
+        onView(allOf(withText("Intervals must not overlap and must have a distance of at least 30 minutes from each other."), withGridLayoutPosition(1, 1))).check(matches(isDisplayed()));
         rotateScreen(activityScenario);
         onView(allOf(withText("Interval"), withGridLayoutPosition(1, 0))).check(matches(isDisplayed()));
-        onView(allOf(withText("Intervals must not overlap and must have a distance of at least 30 minutes from each other. Interval length minimum is 30 minutes."), withGridLayoutPosition(1, 1))).check(matches(isDisplayed()));
+        onView(allOf(withText("Intervals must not overlap and must have a distance of at least 30 minutes from each other."), withGridLayoutPosition(1, 1))).check(matches(isDisplayed()));
         onView(withId(R.id.imageview_dialog_validator_error_ok)).perform(click());
         onView(withId(R.id.listview_dialog_suspension_intervals_intervals)).check(matches(withListSize(3)));
         onView(allOf(withId(R.id.textview_list_item_suspension_interval_no_interval), withChildDescendantAtPosition(withId(R.id.listview_dialog_suspension_intervals_intervals), 0))).check(matches(not(isDisplayed())));
