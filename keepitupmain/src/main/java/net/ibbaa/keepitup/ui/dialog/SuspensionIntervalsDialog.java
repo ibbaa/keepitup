@@ -340,13 +340,6 @@ public class SuspensionIntervalsDialog extends DialogFragment implements Confirm
         return validator.validateOverlap(interval);
     }
 
-    @Override
-    public ValidationResult validateInInterval(Time time) {
-        Log.d(SuspensionIntervalsDialog.class.getName(), "validateInInterval for time " + time);
-        IntervalValidator validator = new StandardIntervalValidator(getContext(), getValidationItems());
-        return validator.validateInInterval(time);
-    }
-
     private List<Interval> getValidationItems() {
         Log.d(SuspensionIntervalsDialog.class.getName(), "getValidationItems");
         Log.d(SuspensionIntervalsDialog.class.getName(), "position is " + position);

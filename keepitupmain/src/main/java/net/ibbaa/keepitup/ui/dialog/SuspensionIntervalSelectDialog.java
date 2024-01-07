@@ -41,6 +41,7 @@ import net.ibbaa.keepitup.ui.validation.NumberPickerColorListener;
 import net.ibbaa.keepitup.ui.validation.ValidationResult;
 import net.ibbaa.keepitup.util.BundleUtil;
 import net.ibbaa.keepitup.util.StringUtil;
+import net.ibbaa.keepitup.util.TimeUtil;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -167,7 +168,7 @@ public class SuspensionIntervalSelectDialog extends DialogFragment {
     private void setNumberPickerColor() {
         Log.d(SuspensionIntervalSelectDialog.class.getName(), "setNumberPickerColor");
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            boolean success = Mode.START.equals(getMode()) ? validateInInterval(timeHourPicker) : validateOverlapAndDuration(timeHourPicker);
+            boolean success = validateOverlapAndDuration(timeHourPicker);
             Log.d(SuspensionIntervalSelectDialog.class.getName(), "validation successful: " + success);
             if (success) {
                 timeHourPicker.setTextColor(getColor(R.color.textColor));
@@ -181,15 +182,9 @@ public class SuspensionIntervalSelectDialog extends DialogFragment {
 
     private void prepareNumberPickerColorListener() {
         Log.d(SuspensionIntervalSelectDialog.class.getName(), "prepareNumberPickerColorListener");
-        if (Mode.START.equals(getMode())) {
-            colorListener = new NumberPickerColorListener(Arrays.asList(timeHourPicker, timeMinutePicker), this::validateInInterval, getColor(R.color.textColor), getColor(R.color.textErrorColor));
-            timeHourPicker.setOnValueChangedListener(colorListener);
-            timeMinutePicker.setOnValueChangedListener(colorListener);
-        } else {
-            colorListener = new NumberPickerColorListener(Arrays.asList(timeHourPicker, timeMinutePicker), this::validateOverlapAndDuration, getColor(R.color.textColor), getColor(R.color.textErrorColor));
-            timeHourPicker.setOnValueChangedListener(colorListener);
-            timeMinutePicker.setOnValueChangedListener(colorListener);
-        }
+        colorListener = new NumberPickerColorListener(Arrays.asList(timeHourPicker, timeMinutePicker), this::validateOverlapAndDuration, getColor(R.color.textColor), getColor(R.color.textErrorColor));
+        timeHourPicker.setOnValueChangedListener(colorListener);
+        timeMinutePicker.setOnValueChangedListener(colorListener);
     }
 
     private void prepareOkCancelImageButtons() {
@@ -223,16 +218,6 @@ public class SuspensionIntervalSelectDialog extends DialogFragment {
         return time;
     }
 
-    private boolean validateInInterval(NumberPicker picker) {
-        Log.d(SuspensionIntervalSelectDialog.class.getName(), "validateInInterval");
-        ValidationResult validateInInterval = validateInInterval();
-        Log.d(SuspensionIntervalSelectDialog.class.getName(), "validateInInterval, validateInInterval result = " + validateInInterval);
-        if (validateInInterval == null) {
-            return true;
-        }
-        return validateInInterval.isValidationSuccessful();
-    }
-
     private boolean validateOverlapAndDuration(NumberPicker picker) {
         Log.d(SuspensionIntervalSelectDialog.class.getName(), "validateOverlapAndDuration");
         ValidationResult validateOverlap = validateOverlap();
@@ -249,24 +234,16 @@ public class SuspensionIntervalSelectDialog extends DialogFragment {
         Log.d(SuspensionIntervalSelectDialog.class.getName(), "createIntervalFromSelectedTime");
         Interval interval = new Interval();
         Time start = getStartTime();
+        Time end;
         if (start == null) {
-            Log.e(SuspensionIntervalSelectDialog.class.getName(), "createIntervalFromSelectedTime, start time is null");
-            return null;
+            start = getSelectedTime();
+            end = TimeUtil.addMinutes(start, getResources().getInteger(R.integer.suspension_interval_min_duration));
+        } else {
+            end = getSelectedTime();
         }
-        Time end = getSelectedTime();
         interval.setStart(start);
         interval.setEnd(end);
         return interval;
-    }
-
-    private ValidationResult validateInInterval() {
-        Log.d(SuspensionIntervalSelectDialog.class.getName(), "validateInInterval");
-        IntervalValidator validator = getIntervalValidator();
-        if (validator == null) {
-            Log.d(SuspensionIntervalSelectDialog.class.getName(), "validateInInterval, validator is null");
-            return null;
-        }
-        return validator.validateInInterval(getSelectedTime());
     }
 
     private ValidationResult validateDuration() {
@@ -279,8 +256,8 @@ public class SuspensionIntervalSelectDialog extends DialogFragment {
 
     private ValidationResult validate(Validator validator) {
         Log.d(SuspensionIntervalSelectDialog.class.getName(), "validate");
-        IntervalValidator intervalvalidator = getIntervalValidator();
-        if (validator == null) {
+        IntervalValidator intervalValidator = getIntervalValidator();
+        if (intervalValidator == null) {
             Log.d(SuspensionIntervalSelectDialog.class.getName(), "validate, validator is null");
             return null;
         }
@@ -289,16 +266,16 @@ public class SuspensionIntervalSelectDialog extends DialogFragment {
             Log.d(SuspensionIntervalSelectDialog.class.getName(), "validate, interval is null");
             return null;
         }
-        return validator.validate(intervalvalidator, interval);
+        return validator.validate(intervalValidator, interval);
     }
 
     private void onOkClicked(View view) {
         Log.d(SuspensionIntervalSelectDialog.class.getName(), "onOkClicked");
         List<ValidationResult> resultList;
         if (Mode.START.equals(getMode())) {
-            resultList = validateStartMode();
+            resultList = validate(getResources().getString(R.string.string_start));
         } else {
-            resultList = validateEndMode();
+            resultList = validate(getResources().getString(R.string.string_end));
         }
         if (!resultList.isEmpty()) {
             Log.d(SuspensionIntervalSelectDialog.class.getName(), "Validation failed. Opening error dialog.");
@@ -314,31 +291,18 @@ public class SuspensionIntervalSelectDialog extends DialogFragment {
         }
     }
 
-    private List<ValidationResult> validateStartMode() {
-        Log.d(SuspensionIntervalSelectDialog.class.getName(), "validateStartMode");
-        ValidationResult validateInInterval = validateInInterval();
-        Log.d(SuspensionIntervalSelectDialog.class.getName(), "validateStartMode, validateInInterval result = " + validateInInterval);
-        List<ValidationResult> resultList = new ArrayList<>();
-        if (validateInInterval != null && !validateInInterval.isValidationSuccessful()) {
-            String start = getResources().getString(R.string.string_start);
-            resultList.add(new ValidationResult(validateInInterval.isValidationSuccessful(), start, validateInInterval.getMessage()));
-        }
-        return resultList;
-    }
-
-    private List<ValidationResult> validateEndMode() {
+    private List<ValidationResult> validate(String field) {
         Log.d(SuspensionIntervalSelectDialog.class.getName(), "validateEndMode");
         ValidationResult validateOverlap = validateOverlap();
         ValidationResult validateDuration = validateDuration();
         Log.d(SuspensionIntervalSelectDialog.class.getName(), "validateEndMode, validateOverlap result = " + validateOverlap);
         Log.d(SuspensionIntervalSelectDialog.class.getName(), "validateEndMode, validateDuration result = " + validateDuration);
         List<ValidationResult> resultList = new ArrayList<>();
-        String end = getResources().getString(R.string.string_end);
         if (validateOverlap != null && !validateOverlap.isValidationSuccessful()) {
-            resultList.add(new ValidationResult(validateOverlap.isValidationSuccessful(), end, validateOverlap.getMessage()));
+            resultList.add(new ValidationResult(validateOverlap.isValidationSuccessful(), field, validateOverlap.getMessage()));
         }
         if (validateDuration != null && !validateDuration.isValidationSuccessful()) {
-            resultList.add(new ValidationResult(validateDuration.isValidationSuccessful(), end, validateDuration.getMessage()));
+            resultList.add(new ValidationResult(validateDuration.isValidationSuccessful(), field, validateDuration.getMessage()));
         }
         return resultList;
     }

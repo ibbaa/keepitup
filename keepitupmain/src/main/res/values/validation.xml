@@ -29,7 +29,7 @@
     <string name="invalid_range_maximum">Maximum: %d</string>
     <string name="suspension_interval_field_name">Interval</string>
     <string name="suspension_interval_invalid">Interval is not valid</string>
-    <string name="suspension_interval_overlap">Intervals must not overlap and must have a distance of at least %d minutes from each other</string>
+    <string name="suspension_interval_overlap">Intervals must not overlap and must have a distance of at least %d minutes from each other. Interval length minimum is %d minutes.</string>
     <string name="suspension_interval_duration">Interval length minimum is %d minutes</string>
     <string name="validation_successful">Validation successful</string>
 </resources>

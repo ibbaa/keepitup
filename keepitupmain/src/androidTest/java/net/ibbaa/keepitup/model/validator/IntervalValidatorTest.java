@@ -230,46 +230,6 @@ public class IntervalValidatorTest {
         assertTrue(validator.validateOverlapSorted(Arrays.asList(interval2, getInterval3(), getInterval1())));
     }
 
-    @Test
-    public void testValidateIsInInterval() {
-        Time time = new Time();
-        time.setHour(3);
-        time.setMinute(30);
-        assertTrue(validator.validateInInterval(time, List.of(getInterval1())));
-        assertTrue(validator.validateInInterval(time, Arrays.asList(getInterval1(), getInterval2())));
-        assertFalse(validator.validateInInterval(time, Arrays.asList(getInterval1(), getInterval2(), getInterval3())));
-        time = new Time();
-        time.setHour(9);
-        time.setMinute(41);
-        assertTrue(validator.validateInInterval(time, List.of(getInterval1())));
-        time = new Time();
-        time.setHour(9);
-        time.setMinute(42);
-        assertFalse(validator.validateInInterval(time, List.of(getInterval1())));
-        time = new Time();
-        time.setHour(11);
-        time.setMinute(42);
-        assertTrue(validator.validateInInterval(time, List.of(getInterval1())));
-        time = new Time();
-        time.setHour(11);
-        time.setMinute(41);
-        assertFalse(validator.validateInInterval(time, List.of(getInterval1())));
-        time = new Time();
-        time.setHour(0);
-        time.setMinute(0);
-        assertTrue(validator.validateInInterval(time, Arrays.asList(getInterval1(), getInterval2(), getInterval3())));
-        Interval interval2 = getInterval2();
-        Time start = new Time();
-        start.setHour(23);
-        start.setMinute(45);
-        Time end = new Time();
-        end.setHour(0);
-        end.setMinute(15);
-        interval2.setStart(start);
-        interval2.setEnd(end);
-        assertFalse(validator.validateInInterval(time, Arrays.asList(getInterval1(), interval2, getInterval3())));
-    }
-
     private Interval getInterval1() {
         Interval interval = new Interval();
         interval.setId(0);

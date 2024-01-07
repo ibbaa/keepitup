@@ -21,7 +21,6 @@ import android.content.Context;
 import net.ibbaa.keepitup.R;
 import net.ibbaa.keepitup.logging.Log;
 import net.ibbaa.keepitup.model.Interval;
-import net.ibbaa.keepitup.model.Time;
 
 import java.util.Collections;
 import java.util.List;
@@ -86,20 +85,12 @@ public class StandardIntervalValidator implements IntervalValidator {
         return new ValidationResult(result, context.getResources().getString(R.string.suspension_interval_field_name), message);
     }
 
-    @Override
-    public ValidationResult validateInInterval(Time time) {
-        Log.d(StandardHostPortValidator.class.getName(), "validateInInterval, time is " + time);
-        boolean result = validator.validateInInterval(time, existingIntervals);
-        Log.d(StandardHostPortValidator.class.getName(), "Validation result is " + result);
-        String message = getOverlapMessage(result);
-        return new ValidationResult(result, context.getResources().getString(R.string.suspension_interval_field_name), message);
-    }
-
     private String getOverlapMessage(boolean result) {
         if (result) {
             return context.getResources().getString(R.string.validation_successful);
         }
         int distance = context.getResources().getInteger(R.integer.suspension_interval_min_distance);
-        return context.getResources().getString(R.string.suspension_interval_overlap, distance);
+        int minDuration = context.getResources().getInteger(R.integer.suspension_interval_min_duration);
+        return context.getResources().getString(R.string.suspension_interval_overlap, distance, minDuration);
     }
 }
