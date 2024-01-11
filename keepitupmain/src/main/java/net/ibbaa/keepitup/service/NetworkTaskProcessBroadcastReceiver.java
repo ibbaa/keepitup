@@ -100,12 +100,30 @@ public class NetworkTaskProcessBroadcastReceiver extends BroadcastReceiver {
 
     private void rescheduleTask(Context context, NetworkTask task) {
         Log.d(NetworkTaskProcessBroadcastReceiver.class.getName(), "rescheduleTask for " + task);
+        if (!isNetworkTaskValid(context, task)) {
+            Log.d(NetworkTaskProcessBroadcastReceiver.class.getName(), "Network task has been marked as not running. Skipping reschedule");
+            return;
+        }
+        TimeBasedSuspensionScheduler timeBasedScheduler = createTimeBasedSuspensionScheduler(context);
         synchronized (TimeBasedSuspensionScheduler.LOCK) {
-            TimeBasedSuspensionScheduler timeBasedScheduler = createTimeBasedSuspensionScheduler(context);
-            if (timeBasedScheduler.isRunning() && !timeBasedScheduler.isSuspended()) {
-                timeBasedScheduler.getNetworkTaskScheduler().reschedule(task, NetworkTaskProcessServiceScheduler.Delay.INTERVAL);
+            if (timeBasedScheduler.isRunning()) {
+                Log.d(NetworkTaskProcessBroadcastReceiver.class.getName(), "Time based scheduler is running");
+                if (!timeBasedScheduler.isSuspended()) {
+                    Log.d(NetworkTaskProcessBroadcastReceiver.class.getName(), "Time based scheduler is not suspended");
+                    timeBasedScheduler.getNetworkTaskScheduler().reschedule(task, NetworkTaskProcessServiceScheduler.Delay.INTERVAL);
+                }
+                return;
+            } else {
+                Log.d(NetworkTaskProcessBroadcastReceiver.class.getName(), "Time based scheduler is not running");
+                if (!timeBasedScheduler.isSuspensionActiveAndEnabled()) {
+                    Log.d(NetworkTaskProcessBroadcastReceiver.class.getName(), "Time based scheduler is not active");
+                    timeBasedScheduler.getNetworkTaskScheduler().reschedule(task, NetworkTaskProcessServiceScheduler.Delay.INTERVAL);
+                    return;
+                }
             }
         }
+        Log.e(NetworkTaskProcessBroadcastReceiver.class.getName(), "Time based scheduler is not running but is active");
+        timeBasedScheduler.start(task);
     }
 
     private boolean isNetworkTaskValid(Context context, NetworkTask task) {

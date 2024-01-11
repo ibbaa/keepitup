@@ -278,7 +278,7 @@ public class TimeBasedSuspensionScheduler {
         sendNetworkTaskUINotificationBroadcast();
     }
 
-    private boolean isSuspensionActiveAndEnabled() {
+    public boolean isSuspensionActiveAndEnabled() {
         Log.d(TimeBasedSuspensionScheduler.class.getName(), "isSuspensionActiveAndEnabled");
         PreferenceManager preferenceManager = new PreferenceManager(getContext());
         if (!preferenceManager.getPreferenceSuspensionEnabled()) {

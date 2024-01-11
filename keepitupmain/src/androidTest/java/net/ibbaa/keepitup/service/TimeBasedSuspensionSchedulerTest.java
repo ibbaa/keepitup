@@ -900,6 +900,19 @@ public class TimeBasedSuspensionSchedulerTest {
         assertEquals(2, cancelAlarmCalls.size());
     }
 
+    @Test
+    public void testIsSuspensionActiveAndEnabled() {
+        preferenceManager.setPreferenceSuspensionEnabled(false);
+        assertFalse(scheduler.isSuspensionActiveAndEnabled());
+        preferenceManager.setPreferenceSuspensionEnabled(true);
+        assertFalse(scheduler.isSuspensionActiveAndEnabled());
+        intervalDAO.insertInterval(getInterval1());
+        scheduler.reset();
+        assertTrue(scheduler.isSuspensionActiveAndEnabled());
+        preferenceManager.setPreferenceSuspensionEnabled(false);
+        assertFalse(scheduler.isSuspensionActiveAndEnabled());
+    }
+
     private boolean isTaskMarkedAsRunningInDatabase(NetworkTask task) {
         task = networkTaskDAO.readNetworkTask(task.getId());
         return task.isRunning();
