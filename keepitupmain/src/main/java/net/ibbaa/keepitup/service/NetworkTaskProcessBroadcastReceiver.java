@@ -121,9 +121,9 @@ public class NetworkTaskProcessBroadcastReceiver extends BroadcastReceiver {
                     return;
                 }
             }
+            Log.e(NetworkTaskProcessBroadcastReceiver.class.getName(), "Time based scheduler is not running but is active");
+            timeBasedScheduler.start(task);
         }
-        Log.e(NetworkTaskProcessBroadcastReceiver.class.getName(), "Time based scheduler is not running but is active");
-        timeBasedScheduler.start(task);
     }
 
     private boolean isNetworkTaskValid(Context context, NetworkTask task) {
