@@ -40,11 +40,24 @@
           <timeTargetWasSelectedWithDropDown value="2024-01-10T15:42:12.083002124Z" />
         </State>
       </entry>
-      <entry key="testNewDefaultValuesForNetworkTask()">
+      <entry key="testExportConfigurationScreenRotation()">
         <State />
       </entry>
-      <entry key="testRescheduleNotRunningEnabledRestarted()">
-        <State />
+      <entry key="testNewDefaultValuesForNetworkTask()">
+        <State>
+          <targetSelectedWithDropDown>
+            <Target>
+              <type value="QUICK_BOOT_TARGET" />
+              <deviceKey>
+                <Key>
+                  <type value="VIRTUAL_DEVICE_PATH" />
+                  <value value="$USER_HOME$/.android/avd/Nexus_5X_API_29.avd" />
+                </Key>
+              </deviceKey>
+            </Target>
+          </targetSelectedWithDropDown>
+          <timeTargetWasSelectedWithDropDown value="2024-01-16T16:21:14.665297597Z" />
+        </State>
       </entry>
       <entry key="testRescheduleNotRunningEnabledRestartedSuspended()">
         <State />
