@@ -15,13 +15,10 @@
               </deviceKey>
             </Target>
           </targetSelectedWithDropDown>
-          <timeTargetWasSelectedWithDropDown value="2023-12-31T08:23:25.556931922Z" />
+          <timeTargetWasSelectedWithDropDown value="2024-01-16T18:10:33.971636685Z" />
         </State>
       </entry>
       <entry key="NetworkTaskProcessBroadcastReceiverTest">
-        <State />
-      </entry>
-      <entry key="Tests in 'net.ibbaa.keepitup.service'">
         <State />
       </entry>
       <entry key="keepitupmain">
@@ -37,29 +34,19 @@
               </deviceKey>
             </Target>
           </targetSelectedWithDropDown>
-          <timeTargetWasSelectedWithDropDown value="2024-01-10T15:42:12.083002124Z" />
+          <timeTargetWasSelectedWithDropDown value="2024-01-16T18:10:45.489768222Z" />
         </State>
       </entry>
       <entry key="testExportConfigurationScreenRotation()">
         <State />
       </entry>
-      <entry key="testNewDefaultValuesForNetworkTask()">
-        <State>
-          <targetSelectedWithDropDown>
-            <Target>
-              <type value="QUICK_BOOT_TARGET" />
-              <deviceKey>
-                <Key>
-                  <type value="VIRTUAL_DEVICE_PATH" />
-                  <value value="$USER_HOME$/.android/avd/Nexus_5X_API_29.avd" />
-                </Key>
-              </deviceKey>
-            </Target>
-          </targetSelectedWithDropDown>
-          <timeTargetWasSelectedWithDropDown value="2024-01-16T16:21:14.665297597Z" />
-        </State>
+      <entry key="testRescheduleNotRunningEnabledRestarted()">
+        <State />
       </entry>
-      <entry key="testRescheduleNotRunningEnabledRestartedSuspended()">
+      <entry key="testRescheduleRunningNotSuspended()">
+        <State />
+      </entry>
+      <entry key="testRescheduleRunningNotSuspendedTaskInvalid()">
         <State />
       </entry>
     </value>

@@ -166,6 +166,8 @@ public class NetworkTaskProcessBroadcastReceiverTest {
         assertTrue(networkTaskScheduler.wasRescheduleCalled());
         NetworkTask scheduledTask = networkTaskScheduler.getLastRescheduledTask();
         assertTrue(scheduledTask.isEqual(task));
+        List<LogEntry> entries = logDAO.readAllLogsForNetworkTask(task.getId());
+        assertEquals(1, entries.size());
     }
 
     @Test
@@ -182,6 +184,8 @@ public class NetworkTaskProcessBroadcastReceiverTest {
         broadcastReceiver.onReceive(TestRegistry.getContext(), intent);
         assertTrue(scheduler.isRunning());
         assertFalse(networkTaskScheduler.wasRescheduleCalled());
+        List<LogEntry> entries = logDAO.readAllLogsForNetworkTask(task.getId());
+        assertEquals(0, entries.size());
     }
 
     @Test
@@ -199,6 +203,8 @@ public class NetworkTaskProcessBroadcastReceiverTest {
         broadcastReceiver.onReceive(TestRegistry.getContext(), intent);
         assertTrue(scheduler.isRunning());
         assertFalse(networkTaskScheduler.wasRescheduleCalled());
+        List<LogEntry> entries = logDAO.readAllLogsForNetworkTask(task.getId());
+        assertEquals(0, entries.size());
     }
 
     @Test
@@ -215,6 +221,8 @@ public class NetworkTaskProcessBroadcastReceiverTest {
         assertTrue(networkTaskScheduler.wasRescheduleCalled());
         NetworkTask scheduledTask = networkTaskScheduler.getLastRescheduledTask();
         assertTrue(scheduledTask.isEqual(task));
+        List<LogEntry> entries = logDAO.readAllLogsForNetworkTask(task.getId());
+        assertEquals(1, entries.size());
     }
 
     @Test
@@ -233,6 +241,8 @@ public class NetworkTaskProcessBroadcastReceiverTest {
         assertTrue(networkTaskScheduler.wasRescheduleCalled());
         NetworkTask scheduledTask = networkTaskScheduler.getLastRescheduledTask();
         assertTrue(scheduledTask.isEqual(task));
+        List<LogEntry> entries = logDAO.readAllLogsForNetworkTask(task.getId());
+        assertEquals(0, entries.size());
     }
 
     @Test
@@ -249,6 +259,8 @@ public class NetworkTaskProcessBroadcastReceiverTest {
         broadcastReceiver.onReceive(TestRegistry.getContext(), intent);
         assertTrue(scheduler.isRunning());
         assertFalse(networkTaskScheduler.wasRescheduleCalled());
+        List<LogEntry> entries = logDAO.readAllLogsForNetworkTask(task.getId());
+        assertEquals(0, entries.size());
     }
 
     private void setTestTime(long time) {

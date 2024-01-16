@@ -51,13 +51,26 @@ public class NetworkTaskProcessBroadcastReceiver extends BroadcastReceiver {
             Log.d(NetworkTaskProcessBroadcastReceiver.class.getName(), "Acquiring partial wake lock with a timeout of " + wakeLockTimeout + " msec");
             wakeLock = Objects.requireNonNull(powerManager).newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "KeepItUp:NetworkTaskProcessBroadcastReceiver");
             wakeLock.acquire(wakeLockTimeout);
-            Log.d(NetworkTaskProcessBroadcastReceiver.class.getName(), "Rescheduling " + task);
-            if (synchronous) {
-                doWork(context, task, wakeLock, true, false, executorService);
-                rescheduleTask(context, task);
-            } else {
-                rescheduleTask(context, task);
-                doWork(context, task, wakeLock, false, addToPool, executorService);
+            TimeBasedSuspensionScheduler timeBasedScheduler = createTimeBasedSuspensionScheduler(context);
+            synchronized (TimeBasedSuspensionScheduler.LOCK) {
+                if (timeBasedScheduler.isRunning()) {
+                    Log.d(NetworkTaskProcessBroadcastReceiver.class.getName(), "Time based scheduler is running.");
+                    if (!timeBasedScheduler.isSuspended()) {
+                        Log.d(NetworkTaskProcessBroadcastReceiver.class.getName(), "Time based scheduler is not suspended.");
+                        executeAndReschedule(context, task, wakeLock, synchronous, addToPool, executorService);
+                    } else {
+                        Log.d(NetworkTaskProcessBroadcastReceiver.class.getName(), "Time based scheduler is suspended. Skipping execution and rescheduling.");
+                    }
+                } else {
+                    Log.d(NetworkTaskProcessBroadcastReceiver.class.getName(), "Time based scheduler is not running.");
+                    if (!timeBasedScheduler.isSuspensionActiveAndEnabled()) {
+                        Log.d(NetworkTaskProcessBroadcastReceiver.class.getName(), "Time based scheduler is not active.");
+                        executeAndReschedule(context, task, wakeLock, synchronous, addToPool, executorService);
+                    } else {
+                        Log.e(NetworkTaskProcessBroadcastReceiver.class.getName(), "Time based scheduler is not running but is active. Restarting...");
+                        timeBasedScheduler.start(task);
+                    }
+                }
             }
         } catch (Exception exc) {
             Log.e(NetworkTaskProcessBroadcastReceiver.class.getName(), "Error executing worker", exc);
@@ -68,6 +81,17 @@ public class NetworkTaskProcessBroadcastReceiver extends BroadcastReceiver {
             }
             Log.d(NetworkTaskProcessBroadcastReceiver.class.getName(), "Shutting down ExecutorService");
             executorService.shutdown();
+        }
+    }
+
+    private void executeAndReschedule(Context context, NetworkTask task, PowerManager.WakeLock wakeLock, boolean synchronous, boolean addToPool, ExecutorService executorService) {
+        Log.d(NetworkTaskProcessBroadcastReceiver.class.getName(), "executeAndReschedule for " + task);
+        if (synchronous) {
+            doWork(context, task, wakeLock, true, false, executorService);
+            rescheduleTask(context, task);
+        } else {
+            rescheduleTask(context, task);
+            doWork(context, task, wakeLock, false, addToPool, executorService);
         }
     }
 
@@ -105,25 +129,7 @@ public class NetworkTaskProcessBroadcastReceiver extends BroadcastReceiver {
             return;
         }
         TimeBasedSuspensionScheduler timeBasedScheduler = createTimeBasedSuspensionScheduler(context);
-        synchronized (TimeBasedSuspensionScheduler.LOCK) {
-            if (timeBasedScheduler.isRunning()) {
-                Log.d(NetworkTaskProcessBroadcastReceiver.class.getName(), "Time based scheduler is running");
-                if (!timeBasedScheduler.isSuspended()) {
-                    Log.d(NetworkTaskProcessBroadcastReceiver.class.getName(), "Time based scheduler is not suspended");
-                    timeBasedScheduler.getNetworkTaskScheduler().reschedule(task, NetworkTaskProcessServiceScheduler.Delay.INTERVAL);
-                }
-                return;
-            } else {
-                Log.d(NetworkTaskProcessBroadcastReceiver.class.getName(), "Time based scheduler is not running");
-                if (!timeBasedScheduler.isSuspensionActiveAndEnabled()) {
-                    Log.d(NetworkTaskProcessBroadcastReceiver.class.getName(), "Time based scheduler is not active");
-                    timeBasedScheduler.getNetworkTaskScheduler().reschedule(task, NetworkTaskProcessServiceScheduler.Delay.INTERVAL);
-                    return;
-                }
-            }
-            Log.e(NetworkTaskProcessBroadcastReceiver.class.getName(), "Time based scheduler is not running but is active");
-            timeBasedScheduler.start(task);
-        }
+        timeBasedScheduler.getNetworkTaskScheduler().reschedule(task, NetworkTaskProcessServiceScheduler.Delay.INTERVAL);
     }
 
     private boolean isNetworkTaskValid(Context context, NetworkTask task) {
