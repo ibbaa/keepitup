@@ -508,6 +508,25 @@ public class TimeBasedSuspensionSchedulerTest {
     }
 
     @Test
+    public void testStartNetworkTaskIsNotRunningAndSuspended() {
+        NetworkTask task1 = getNetworkTask1();
+        task1 = networkTaskDAO.insertNetworkTask(task1);
+        task1.setRunning(true);
+        networkTaskDAO.updateNetworkTaskRunning(task1.getId(), true);
+        networkTaskDAO.updateNetworkTaskLastScheduled(task1.getId(), getTestTimestamp(24, 10, 15));
+        networkTaskDAO.increaseNetworkTaskInstances(task1.getId());
+        intervalDAO.insertInterval(getInterval1());
+        setTestTime(getTestTimestamp(24, 10, 15));
+        networkTaskSchedulerAlarmManager.reset();
+        alarmManager.reset();
+        scheduler.start(task1);
+        task1 = networkTaskDAO.readNetworkTask(task1.getId());
+        assertTrue(alarmManager.wasSetAlarmRTCCalled());
+        assertTrue(task1.getLastScheduled() < 0);
+        assertEquals(0, task1.getInstances());
+    }
+
+    @Test
     public void testStartStartupIsRunning() {
         NetworkTask task1 = getNetworkTask1();
         task1 = networkTaskDAO.insertNetworkTask(task1);

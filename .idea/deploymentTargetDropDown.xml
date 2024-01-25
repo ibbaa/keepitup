@@ -43,11 +43,24 @@
       <entry key="testRescheduleNotRunningEnabledRestarted()">
         <State />
       </entry>
-      <entry key="testRescheduleRunningNotSuspended()">
-        <State />
-      </entry>
       <entry key="testRescheduleRunningNotSuspendedTaskInvalid()">
         <State />
+      </entry>
+      <entry key="testStartNetworkTaskIsNotRunningAndSuspended()">
+        <State>
+          <targetSelectedWithDropDown>
+            <Target>
+              <type value="QUICK_BOOT_TARGET" />
+              <deviceKey>
+                <Key>
+                  <type value="VIRTUAL_DEVICE_PATH" />
+                  <value value="$USER_HOME$/.android/avd/Nexus_5X_API_29.avd" />
+                </Key>
+              </deviceKey>
+            </Target>
+          </targetSelectedWithDropDown>
+          <timeTargetWasSelectedWithDropDown value="2024-01-25T16:52:12.069708572Z" />
+        </State>
       </entry>
     </value>
   </component>

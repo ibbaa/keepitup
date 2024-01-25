@@ -158,6 +158,7 @@ public class TimeBasedSuspensionScheduler {
             if (currentSuspendInterval != null) {
                 scheduleSuspend(currentSuspendInterval, thresholdNow, true);
                 suspend(now);
+                resetLastScheduled(task);
             } else {
                 Interval nextSuspendInterval = findNextSuspendInterval(thresholdNow);
                 Log.d(TimeBasedSuspensionScheduler.class.getName(), "Found next suspend interval is " + nextSuspendInterval);
