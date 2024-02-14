@@ -36,6 +36,7 @@ import static org.hamcrest.Matchers.endsWith;
 import static org.hamcrest.core.IsNot.not;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertTrue;
 
 import android.view.View;
@@ -45,6 +46,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.MediumTest;
 
 import net.ibbaa.keepitup.R;
+import net.ibbaa.keepitup.logging.NetworkTaskLog;
 import net.ibbaa.keepitup.model.AccessType;
 import net.ibbaa.keepitup.model.Interval;
 import net.ibbaa.keepitup.model.NetworkTask;
@@ -56,6 +58,8 @@ import net.ibbaa.keepitup.test.mock.MockClipboardManager;
 import net.ibbaa.keepitup.test.mock.MockFileManager;
 import net.ibbaa.keepitup.test.mock.TestRegistry;
 import net.ibbaa.keepitup.ui.dialog.SettingsInputDialog;
+import net.ibbaa.phonelog.FileLogger;
+import net.ibbaa.phonelog.ILogger;
 
 import org.hamcrest.Matcher;
 import org.hamcrest.Matchers;
@@ -1539,6 +1543,7 @@ public class GlobalSettingsActivityTest extends BaseUITest {
         assertEquals("log", preferenceManager.getPreferenceLogFolder());
         File testFile = new File(getFileManager().getExternalRootDirectory(0), "test");
         assertFalse(testFile.exists());
+        ILogger loggerCancel = (FileLogger) NetworkTaskLog.getLogger(TestRegistry.getContext(), getNetworkTask1());
         onView(withId(R.id.cardview_activity_global_settings_log_folder)).perform(click());
         onView(withId(R.id.edittext_dialog_file_choose_folder)).check(matches(withText("log")));
         onView(withId(R.id.edittext_dialog_file_choose_folder)).perform(replaceText("test"));
@@ -1546,6 +1551,8 @@ public class GlobalSettingsActivityTest extends BaseUITest {
         onView(withId(R.id.textview_activity_global_settings_log_folder)).check(matches(withText(endsWith("test"))));
         assertEquals("test", preferenceManager.getPreferenceLogFolder());
         assertTrue(testFile.exists());
+        ILogger loggerOk = (FileLogger) NetworkTaskLog.getLogger(TestRegistry.getContext(), getNetworkTask1());
+        assertNotSame(loggerCancel, loggerOk);
         activityScenario.close();
     }
 

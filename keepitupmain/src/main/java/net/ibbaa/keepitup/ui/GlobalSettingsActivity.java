@@ -34,6 +34,7 @@ import com.google.android.material.switchmaterial.SwitchMaterial;
 
 import net.ibbaa.keepitup.R;
 import net.ibbaa.keepitup.logging.Log;
+import net.ibbaa.keepitup.logging.NetworkTaskLog;
 import net.ibbaa.keepitup.model.Interval;
 import net.ibbaa.keepitup.model.NotificationType;
 import net.ibbaa.keepitup.resources.PreferenceManager;
@@ -661,6 +662,7 @@ public class GlobalSettingsActivity extends SettingsInputActivity implements Sus
             }
             preferenceManager.setPreferenceLogFolder(folder);
             setLogFolder(logFolder.getAbsolutePath());
+            NetworkTaskLog.clear();
         } else {
             Log.e(GlobalSettingsActivity.class.getName(), "Unknown type " + type);
         }
