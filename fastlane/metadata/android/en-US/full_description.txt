@@ -10,6 +10,7 @@ Keep it up checks network services periodically by sending a ping, connecting to
 - Notifications can be sent on failure or when a network service goes down or up
 - A network task can be restricted to WiFi connections, i.e. it does not perform any action on mobile networks with potentially limited download data
 - The configuration can be exported and imported as a JSON data file
+- Intervals can be defined during which all background work is suspended for battery saving
 
 <b>Permissions</b>
 - <i>RECEIVE_BOOT_COMPLETED</i> for restarting running networks tasks on device boot

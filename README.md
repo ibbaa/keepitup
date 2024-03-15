@@ -14,6 +14,7 @@ It checks network services periodically by sending a ping, connecting to a speci
 - Notifications can be sent on failure or when a network service goes down or up
 - A network task can be restricted to WiFi connections, i.e. it does not perform any action on mobile networks with potentially limited download data
 - The configuration can be exported and imported as a JSON data file
+- Intervals can be defined during which all background work is suspended for battery saving
 
 <b>Permissions</b>
 
@@ -25,10 +26,6 @@ It checks network services periodically by sending a ping, connecting to a speci
 - <i>USE_EXACT_ALARM</i> to start networks tasks after expiry of intervals (Android 13+)
 - <i>SCHEDULE_EXACT_ALARM</i> to start networks tasks after expiry of intervals (Android 11 and 12)
 - <i>POST_NOTIFICATIONS</i> for sending notifications
-
-<b>Note</b>
-
-The app works best if you disable battery optimization. If battery optimization is active, network tasks execution may be unreliable especially for short intervals, i.e. they may trigger less often and the trigger time may not be exact. There is a link in the app leading to the Android battery settings for the app. Of course, with disabled battery optimization power consumption may be higher.
 
 ## Installation
 
@@ -51,6 +48,14 @@ Two apk files are provided:
 The debug variant contains debug information and provides some logging features in the system settings. The release variant is optimized and runs faster. It is recommended to use this version aside from development purposes.
 
 Please keep in mind that the version here on Github is signed with a different key than the version on F-Droid. You will get an error if you try to install the Github version and the F-Droid version is already installed (and vice versa). You have to deinstall the app first to do that.
+
+## Power consumption
+
+The app uses exact alarms to trigger network task execution. Power consumption during waiting is as high as for a calendar app waiting for reminders to trigger. During execution the power consumption is higher, of course, and short execution intervals cause more overall battery drain.
+
+The app works best if you disable battery optimization. If battery optimization is active, network tasks execution may be unreliable especially for short intervals, i.e. they may trigger less often and the trigger time may not be exact. There is a link in the app leading to the Android battery settings for the app. Of course, with disabled battery optimization power consumption may be higher.
+
+It is possible to define suspension intervals in the settings during which all background work is suspended. There is still one active alarm to wake up the app and resume task execution. Except for that alarm the app is idle during suspension. It is possible to define multiple suspension intervals but each interval must be at least 30 min. However, many short intervals do not make much sense for battery saving.
 
 ## Signature
 

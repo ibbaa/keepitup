@@ -1,0 +1,5 @@
+* It is now possible to define suspension intervals during which all background work is suspended to save battery power
+* Fixed bug that changed log folder was not used
+* Fixed bug that after import potentially outdated values were displayed in the settings
+* Various minor bug fixes
+

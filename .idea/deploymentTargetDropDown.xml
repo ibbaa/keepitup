@@ -10,15 +10,18 @@
               <deviceKey>
                 <Key>
                   <type value="VIRTUAL_DEVICE_PATH" />
-                  <value value="$USER_HOME$/.android/avd/Nexus_5X_API_29.avd" />
+                  <value value="$USER_HOME$/.android/avd/Pixel_8_Pro_API_29.avd" />
                 </Key>
               </deviceKey>
             </Target>
           </targetSelectedWithDropDown>
-          <timeTargetWasSelectedWithDropDown value="2024-02-14T19:21:02.618760732Z" />
+          <timeTargetWasSelectedWithDropDown value="2024-03-11T16:54:20.062500507Z" />
         </State>
       </entry>
       <entry key="DefaultsActivityTest">
+        <State />
+      </entry>
+      <entry key="NetworkTaskEditDialogTest">
         <State />
       </entry>
       <entry key="SystemActivityTest">
@@ -32,12 +35,12 @@
               <deviceKey>
                 <Key>
                   <type value="VIRTUAL_DEVICE_PATH" />
-                  <value value="$USER_HOME$/.android/avd/Nexus_5X_API_29.avd" />
+                  <value value="$USER_HOME$/.android/avd/Pixel_8_Pro_API_29.avd" />
                 </Key>
               </deviceKey>
             </Target>
           </targetSelectedWithDropDown>
-          <timeTargetWasSelectedWithDropDown value="2024-01-16T18:10:45.489768222Z" />
+          <timeTargetWasSelectedWithDropDown value="2024-03-11T16:54:48.010959781Z" />
         </State>
       </entry>
       <entry key="testExportConfigurationScreenRotation()">
@@ -56,10 +59,7 @@
           <timeTargetWasSelectedWithDropDown value="2024-01-27T07:40:40.972571266Z" />
         </State>
       </entry>
-      <entry key="testLogFolderDialogOkCancel()">
-        <State />
-      </entry>
-      <entry key="testStartNetworkTaskIsNotRunningAndSuspended()">
+      <entry key="testNewDefaultValuesForNetworkTask()">
         <State>
           <targetSelectedWithDropDown>
             <Target>
@@ -67,12 +67,12 @@
               <deviceKey>
                 <Key>
                   <type value="VIRTUAL_DEVICE_PATH" />
-                  <value value="$USER_HOME$/.android/avd/Nexus_5X_API_29.avd" />
+                  <value value="$USER_HOME$/.android/avd/Pixel_8_Pro_API_34.avd" />
                 </Key>
               </deviceKey>
             </Target>
           </targetSelectedWithDropDown>
-          <timeTargetWasSelectedWithDropDown value="2024-01-25T16:52:12.069708572Z" />
+          <timeTargetWasSelectedWithDropDown value="2024-03-11T16:49:29.944575825Z" />
         </State>
       </entry>
     </value>
