@@ -15,7 +15,7 @@
               </deviceKey>
             </Target>
           </targetSelectedWithDropDown>
-          <timeTargetWasSelectedWithDropDown value="2024-03-11T16:54:20.062500507Z" />
+          <timeTargetWasSelectedWithDropDown value="2024-03-22T07:53:03.347599101Z" />
         </State>
       </entry>
       <entry key="DefaultsActivityTest">
@@ -40,7 +40,7 @@
               </deviceKey>
             </Target>
           </targetSelectedWithDropDown>
-          <timeTargetWasSelectedWithDropDown value="2024-03-11T16:54:48.010959781Z" />
+          <timeTargetWasSelectedWithDropDown value="2024-03-22T07:53:20.674285265Z" />
         </State>
       </entry>
       <entry key="testExportConfigurationScreenRotation()">
@@ -51,12 +51,12 @@
               <deviceKey>
                 <Key>
                   <type value="VIRTUAL_DEVICE_PATH" />
-                  <value value="$USER_HOME$/.android/avd/Nexus_5X_API_29.avd" />
+                  <value value="$USER_HOME$/.android/avd/Pixel_8_Pro_API_VanillaIceCream.avd" />
                 </Key>
               </deviceKey>
             </Target>
           </targetSelectedWithDropDown>
-          <timeTargetWasSelectedWithDropDown value="2024-01-27T07:40:40.972571266Z" />
+          <timeTargetWasSelectedWithDropDown value="2024-03-22T07:48:34.569753816Z" />
         </State>
       </entry>
       <entry key="testNewDefaultValuesForNetworkTask()">
