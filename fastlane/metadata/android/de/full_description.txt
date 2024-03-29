@@ -10,6 +10,7 @@ Keep it up überprüft den Status von Netzwerkdiensten oder Webseiten indem rege
 - Bei nicht erfolgreichen Versuchen oder wenn ein Dienst offline oder online geht kann eine Benachrichtigung versendet werden
 - Ein Network Task kann auf WLAN Netzwerke beschränkt werden um in Mobilnetzwerken mit ev. begrenztem Datenvolumen keinen Netzwerkverkehr zu verursachen
 - Die Konfiguration kann als JSON Datei exportiert oder importiert werden
+- Es können Intervalle definiert werden in denen die Ausführung von Network Tasks eingestellt wird um den Batterieverbrauch zu reduzieren
 
 <b>Berechtigungen</b>
 - <i>RECEIVE_BOOT_COMPLETED</i> um laufende Tasks bei Reboots neu zu starten
