@@ -50,6 +50,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
+@SuppressWarnings({"unused"})
 public class SuspensionIntervalsDialog extends DialogFragment implements ConfirmSupport, SuspensionIntervalSelectSupport, IntervalValidator {
 
     private View dialogView;
@@ -152,8 +153,8 @@ public class SuspensionIntervalsDialog extends DialogFragment implements Confirm
         }
     }
 
-    private boolean hasIntervals() {
-        return !((SuspensionIntervalAdapter) Objects.requireNonNull(suspensionIntervalsRecyclerView.getAdapter())).getAllItems().isEmpty();
+    private boolean noIntervalsDefined() {
+        return ((SuspensionIntervalAdapter) Objects.requireNonNull(suspensionIntervalsRecyclerView.getAdapter())).getAllItems().isEmpty();
     }
 
     private void prepareAddImageButton() {
@@ -292,7 +293,7 @@ public class SuspensionIntervalsDialog extends DialogFragment implements Confirm
 
     private Time getEnd(Time start) {
         Log.d(SuspensionIntervalsDialog.class.getName(), "getEnd for start " + start);
-        if (!hasIntervals()) {
+        if (noIntervalsDefined()) {
             Log.d(SuspensionIntervalsDialog.class.getName(), "No intervals defined.");
             return TimeUtil.addMinutes(start, getResources().getInteger(R.integer.suspension_interval_default_duration));
         }
@@ -406,7 +407,7 @@ public class SuspensionIntervalsDialog extends DialogFragment implements Confirm
     private void initializeCurrentInterval() {
         Log.d(SuspensionIntervalsDialog.class.getName(), "initializeCurrentInterval");
         keepEnd = false;
-        if (!hasIntervals()) {
+        if (noIntervalsDefined()) {
             currentInterval = getDefaultInterval();
             Log.d(SuspensionIntervalsDialog.class.getName(), "No intervals defined. Returning " + currentInterval);
         } else {

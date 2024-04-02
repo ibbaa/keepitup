@@ -17,7 +17,6 @@
 package net.ibbaa.keepitup.ui.adapter;
 
 import android.content.Context;
-import android.content.res.Resources;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -65,11 +64,11 @@ public class ContextOptionAdapter extends RecyclerView.Adapter<ContextOptionView
         if (position < getContextOptions().size()) {
             ContextOption contextOptionEntry = getContextOptions().get(position);
             EnumMapping mapping = new EnumMapping(getContext());
-            bindContextOptionName(contextOptionEntryViewHolder, mapping.getContextOptionName(contextOptionEntry), position);
+            bindContextOptionName(contextOptionEntryViewHolder, mapping.getContextOptionName(contextOptionEntry));
         }
     }
 
-    private void bindContextOptionName(@NonNull ContextOptionViewHolder contextOptionEntryViewHolder, String name, int position) {
+    private void bindContextOptionName(@NonNull ContextOptionViewHolder contextOptionEntryViewHolder, String name) {
         Log.d(ContextOptionAdapter.class.getName(), "bindContextOptionName for name " + name);
         contextOptionEntryViewHolder.setContextOptionText(name);
     }
@@ -161,9 +160,5 @@ public class ContextOptionAdapter extends RecyclerView.Adapter<ContextOptionView
 
     private Context getContext() {
         return contextOptionsDialog.getActivity();
-    }
-
-    private Resources getResources() {
-        return getContext().getResources();
     }
 }

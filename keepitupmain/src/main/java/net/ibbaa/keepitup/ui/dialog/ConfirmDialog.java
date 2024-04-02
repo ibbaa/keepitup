@@ -36,6 +36,7 @@ import net.ibbaa.keepitup.util.StringUtil;
 
 import java.util.List;
 
+@SuppressWarnings({"unused"})
 public class ConfirmDialog extends DialogFragment {
 
     public enum Type {
@@ -157,11 +158,9 @@ public class ConfirmDialog extends DialogFragment {
     private ConfirmSupport getConfirmSupport() {
         Log.d(ConfirmDialog.class.getName(), "getConfirmSupport");
         List<Fragment> fragments = getParentFragmentManager().getFragments();
-        if (fragments != null) {
-            for (Fragment fragment : fragments) {
-                if (fragment instanceof ConfirmSupport) {
-                    return (ConfirmSupport) fragment;
-                }
+        for (Fragment fragment : fragments) {
+            if (fragment instanceof ConfirmSupport) {
+                return (ConfirmSupport) fragment;
             }
         }
         Log.d(ContextOptionsDialog.class.getName(), "getConfirmSupport, no parent fragment implementing " + ConfirmSupport.class.getSimpleName());

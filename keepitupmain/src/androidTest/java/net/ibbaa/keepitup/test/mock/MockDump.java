@@ -51,7 +51,7 @@ public class MockDump implements IDump {
         return dumpCalls.get(index);
     }
 
-    public class DumpCall {
+    public static class DumpCall {
 
         private final String tag;
         private final String message;

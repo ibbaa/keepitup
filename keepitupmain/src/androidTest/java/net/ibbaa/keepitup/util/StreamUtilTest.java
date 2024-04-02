@@ -90,7 +90,7 @@ public class StreamUtilTest {
         return bytes;
     }
 
-    private class TestInterrupt implements StreamUtil.Interrupt {
+    private static class TestInterrupt implements StreamUtil.Interrupt {
 
         private int countdown;
 

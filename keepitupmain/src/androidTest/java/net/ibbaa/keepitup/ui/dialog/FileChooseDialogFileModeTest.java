@@ -3964,7 +3964,7 @@ public class FileChooseDialogFileModeTest extends BaseUITest {
 
     @Test
     public void testSelectSwipeScreenRotation() {
-        FileChooseDialog dialog = openFileChooseDialog("", "file1");
+        openFileChooseDialog("", "file1");
         onView(withId(R.id.textview_dialog_file_choose_absolute)).check(matches(withText(root + "/file1")));
         onView(withId(R.id.edittext_dialog_file_choose_folder)).check(matches(withText("")));
         onView(withId(R.id.edittext_dialog_file_choose_file)).check(matches(withText("file1")));
@@ -3992,7 +3992,7 @@ public class FileChooseDialogFileModeTest extends BaseUITest {
 
     @Test
     public void testEmptyFilename() {
-        FileChooseDialog dialog = openFileChooseDialog("", "file1");
+        openFileChooseDialog("", "file1");
         onView(withId(R.id.textview_dialog_file_choose_absolute)).check(matches(withText(root + "/file1")));
         onView(withId(R.id.edittext_dialog_file_choose_folder)).check(matches(withText("")));
         onView(withId(R.id.edittext_dialog_file_choose_file)).check(matches(withText("file1")));
@@ -4010,7 +4010,7 @@ public class FileChooseDialogFileModeTest extends BaseUITest {
 
     @Test
     public void testEmptyFilenameScreenRotation() {
-        FileChooseDialog dialog = openFileChooseDialog("", "file1");
+        openFileChooseDialog("", "file1");
         onView(withId(R.id.textview_dialog_file_choose_absolute)).check(matches(withText(root + "/file1")));
         onView(withId(R.id.edittext_dialog_file_choose_folder)).check(matches(withText("")));
         onView(withId(R.id.edittext_dialog_file_choose_file)).check(matches(withText("file1")));
@@ -4046,7 +4046,7 @@ public class FileChooseDialogFileModeTest extends BaseUITest {
 
     @Test
     public void testInvalidFilename() {
-        FileChooseDialog dialog = openFileChooseDialog("", "file1");
+        openFileChooseDialog("", "file1");
         onView(withId(R.id.textview_dialog_file_choose_absolute)).check(matches(withText(root + "/file1")));
         onView(withId(R.id.edittext_dialog_file_choose_folder)).check(matches(withText("")));
         onView(withId(R.id.edittext_dialog_file_choose_file)).check(matches(withText("file1")));
@@ -4066,7 +4066,7 @@ public class FileChooseDialogFileModeTest extends BaseUITest {
 
     @Test
     public void testInvalidFilenameScreenRotation() {
-        FileChooseDialog dialog = openFileChooseDialog("", "file1");
+        openFileChooseDialog("", "file1");
         onView(withId(R.id.textview_dialog_file_choose_absolute)).check(matches(withText(root + "/file1")));
         onView(withId(R.id.edittext_dialog_file_choose_folder)).check(matches(withText("")));
         onView(withId(R.id.edittext_dialog_file_choose_file)).check(matches(withText("file1")));

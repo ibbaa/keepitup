@@ -60,13 +60,13 @@ public class TestNetworkTaskRunningNotificationService extends NetworkTaskRunnin
     }
 
     @Override
-    protected void startNetworkTaskRunningNotificationForeground(int id, @NonNull Notification notification, int foregroundServiceType) {
-        startNetworkTaskRunningNotificationForegroundCalls.add(new StartNetworkTaskRunningNotificationForegroundCall(id, notification, foregroundServiceType));
+    protected void startNetworkTaskRunningNotificationForeground(@NonNull Notification notification, int foregroundServiceType) {
+        startNetworkTaskRunningNotificationForegroundCalls.add(new StartNetworkTaskRunningNotificationForegroundCall(notification, foregroundServiceType));
     }
 
     @Override
-    protected void stopNetworkTaskRunningNotificationForeground(boolean removeNotification) {
-        stopNetworkTaskRunningNotificationForegroundCalls.add(new StopNetworkTaskRunningNotificationForegroundCall(removeNotification));
+    protected void stopNetworkTaskRunningNotificationForeground() {
+        stopNetworkTaskRunningNotificationForegroundCalls.add(new StopNetworkTaskRunningNotificationForegroundCall());
     }
 
     @Override
@@ -76,18 +76,12 @@ public class TestNetworkTaskRunningNotificationService extends NetworkTaskRunnin
 
     public static class StartNetworkTaskRunningNotificationForegroundCall {
 
-        private final int id;
         private final Notification notification;
         private final int foregroundServiceType;
 
-        public StartNetworkTaskRunningNotificationForegroundCall(int id, Notification notification, int foregroundServiceType) {
-            this.id = id;
+        public StartNetworkTaskRunningNotificationForegroundCall(Notification notification, int foregroundServiceType) {
             this.notification = notification;
             this.foregroundServiceType = foregroundServiceType;
-        }
-
-        public int getId() {
-            return id;
         }
 
         public Notification getNotification() {
@@ -101,14 +95,5 @@ public class TestNetworkTaskRunningNotificationService extends NetworkTaskRunnin
 
     public static class StopNetworkTaskRunningNotificationForegroundCall {
 
-        private final boolean removeNotification;
-
-        public StopNetworkTaskRunningNotificationForegroundCall(boolean removeNotification) {
-            this.removeNotification = removeNotification;
-        }
-
-        public boolean isRemoveNotification() {
-            return removeNotification;
-        }
     }
 }

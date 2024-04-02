@@ -30,7 +30,6 @@ public class IntervalFieldValidator extends BaseIntegerValidator implements Fiel
     @Override
     public ValidationResult validate(String value) {
         Log.d(IntervalFieldValidator.class.getName(), "validate, value is " + value);
-        String fieldName = getResources().getString(R.string.task_interval_field_name);
         int minimum = getResources().getInteger(R.integer.task_interval_minimum);
         int maximum = getResources().getInteger(R.integer.task_interval_maximum);
         int defaultValue = getResources().getInteger(R.integer.task_interval_default);

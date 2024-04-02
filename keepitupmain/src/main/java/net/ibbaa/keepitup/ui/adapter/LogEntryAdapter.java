@@ -123,18 +123,18 @@ public class LogEntryAdapter extends RecyclerView.Adapter<LogEntryViewHolder> {
 
     @Override
     public int getItemCount() {
-        return logEntries.size() <= 0 ? 1 : logEntries.size();
+        return logEntries.size() == 0 ? 1 : logEntries.size();
     }
 
     public boolean hasValidEntries() {
-        return logEntries.size() > 0;
+        return !logEntries.isEmpty();
     }
 
     public void addItem(LogEntry logEntry) {
         Log.d(LogEntryAdapter.class.getName(), "addItem " + logEntry);
         this.logEntries.add(0, logEntry);
         int limit = getContext().getResources().getInteger(R.integer.log_count_maximum);
-        if (logEntries.size() > limit && logEntries.size() > 0) {
+        if (logEntries.size() > limit && !logEntries.isEmpty()) {
             logEntries.remove(logEntries.size() - 1);
         }
     }

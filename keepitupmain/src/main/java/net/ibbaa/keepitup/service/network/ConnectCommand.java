@@ -125,7 +125,7 @@ public class ConnectCommand implements Callable<ConnectCommandResult> {
         return getContext().getResources();
     }
 
-    protected class ConnectionResult {
+    protected static class ConnectionResult {
         private final boolean success;
         private final long duration;
 

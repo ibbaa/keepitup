@@ -48,6 +48,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
+@SuppressWarnings({"unused"})
 public class SuspensionIntervalSelectDialog extends DialogFragment {
 
     public enum Mode {
@@ -261,12 +262,7 @@ public class SuspensionIntervalSelectDialog extends DialogFragment {
             Log.d(SuspensionIntervalSelectDialog.class.getName(), "validate, validator is null");
             return null;
         }
-        Interval interval = createIntervalFromSelectedTime();
-        if (interval == null) {
-            Log.d(SuspensionIntervalSelectDialog.class.getName(), "validate, interval is null");
-            return null;
-        }
-        return validator.validate(intervalValidator, interval);
+        return validator.validate(intervalValidator, createIntervalFromSelectedTime());
     }
 
     private void onOkClicked(View view) {
@@ -346,11 +342,9 @@ public class SuspensionIntervalSelectDialog extends DialogFragment {
     private SuspensionIntervalSelectSupport getSuspensionIntervalSelectSupport() {
         Log.d(SuspensionIntervalsDialog.class.getName(), "getSuspensionIntervalSelectSupport");
         List<Fragment> fragments = getParentFragmentManager().getFragments();
-        if (fragments != null) {
-            for (Fragment fragment : fragments) {
-                if (fragment instanceof SuspensionIntervalSelectSupport) {
-                    return (SuspensionIntervalSelectSupport) fragment;
-                }
+        for (Fragment fragment : fragments) {
+            if (fragment instanceof SuspensionIntervalSelectSupport) {
+                return (SuspensionIntervalSelectSupport) fragment;
             }
         }
         Log.d(SuspensionIntervalsDialog.class.getName(), "getSuspensionIntervalSelectSupport, no parent fragment implementing " + SuspensionIntervalsDialog.class.getSimpleName());
@@ -369,11 +363,9 @@ public class SuspensionIntervalSelectDialog extends DialogFragment {
     private IntervalValidator getIntervalValidator() {
         Log.d(SuspensionIntervalsDialog.class.getName(), "getIntervalValidator");
         List<Fragment> fragments = getParentFragmentManager().getFragments();
-        if (fragments != null) {
-            for (Fragment fragment : fragments) {
-                if (fragment instanceof IntervalValidator) {
-                    return (IntervalValidator) fragment;
-                }
+        for (Fragment fragment : fragments) {
+            if (fragment instanceof IntervalValidator) {
+                return (IntervalValidator) fragment;
             }
         }
         Log.d(SuspensionIntervalsDialog.class.getName(), "getIntervalValidator, no parent fragment implementing " + IntervalValidator.class.getSimpleName());

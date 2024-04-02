@@ -129,7 +129,7 @@ public class SuspensionIntervalAdapter extends RecyclerView.Adapter<SuspensionIn
 
     @Override
     public int getItemCount() {
-        return intervals.size() <= 0 ? 1 : intervals.size();
+        return intervals.size() == 0 ? 1 : intervals.size();
     }
 
     public List<Interval> getAllItems() {

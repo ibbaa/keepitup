@@ -27,6 +27,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import net.ibbaa.keepitup.R;
 import net.ibbaa.keepitup.ui.NetworkTaskMainActivity;
 
+@SuppressWarnings({"unused"})
 public class NetworkTaskViewHolder extends RecyclerView.ViewHolder {
 
     private final NetworkTaskMainActivity mainActivity;

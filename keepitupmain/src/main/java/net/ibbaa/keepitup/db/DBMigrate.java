@@ -21,6 +21,7 @@ import android.database.sqlite.SQLiteDatabase;
 
 import net.ibbaa.keepitup.logging.Log;
 
+import java.util.Objects;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
@@ -51,7 +52,7 @@ public class DBMigrate {
         int version = oldVersion + 1;
         while (versionUpgrades.containsKey(version) && version <= newVersion) {
             Migration upgrade = versionUpgrades.get(version);
-            upgrade.migrate(db);
+            Objects.requireNonNull(upgrade).migrate(db);
             version++;
         }
     }
@@ -61,7 +62,7 @@ public class DBMigrate {
         int version = oldVersion;
         while (versionUpgrades.containsKey(version) && version > newVersion) {
             Migration downgrade = versionDowngrades.get(version);
-            downgrade.migrate(db);
+            Objects.requireNonNull(downgrade).migrate(db);
             version--;
         }
     }

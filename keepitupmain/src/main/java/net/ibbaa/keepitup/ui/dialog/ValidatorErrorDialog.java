@@ -36,6 +36,7 @@ import net.ibbaa.keepitup.util.BundleUtil;
 
 import java.util.List;
 
+@SuppressWarnings({"unused"})
 public class ValidatorErrorDialog extends DialogFragment {
 
     @Override

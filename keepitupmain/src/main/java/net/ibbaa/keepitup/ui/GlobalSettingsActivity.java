@@ -56,6 +56,7 @@ import java.io.File;
 import java.util.Collections;
 import java.util.List;
 
+@SuppressWarnings({"unused"})
 public class GlobalSettingsActivity extends SettingsInputActivity implements SuspensionIntervalsSupport {
 
     private TextView pingCountText;
@@ -471,16 +472,8 @@ public class GlobalSettingsActivity extends SettingsInputActivity implements Sus
         connectCountText.setText(StringUtil.notNull(connectCount));
     }
 
-    private String getDownloadFolder() {
-        return StringUtil.notNull(downloadFolderText.getText());
-    }
-
     private void setDownloadFolder(String downloadFolder) {
         downloadFolderText.setText(StringUtil.notNull(downloadFolder));
-    }
-
-    private String getLogFolder() {
-        return StringUtil.notNull(logFolderText.getText());
     }
 
     private void setLogFolder(String logFolder) {

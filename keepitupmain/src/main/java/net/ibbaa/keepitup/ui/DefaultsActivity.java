@@ -51,6 +51,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+@SuppressWarnings({"unused"})
 public class DefaultsActivity extends SettingsInputActivity {
 
     private RadioGroup accessTypeGroup;

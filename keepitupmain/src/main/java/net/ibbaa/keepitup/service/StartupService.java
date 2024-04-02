@@ -101,7 +101,7 @@ public class StartupService extends BroadcastReceiver {
             }
             if (isFileDumpEnabled) {
                 Dump.initialize(DebugUtil.getFileDump(context, fileManager));
-                dumpDatabase("Dump on application startup", context);
+                dumpDatabase(context);
             } else {
                 Dump.initialize(null);
             }
@@ -168,8 +168,9 @@ public class StartupService extends BroadcastReceiver {
         }
     }
 
-    private void dumpDatabase(String message, Context context) {
+    private void dumpDatabase(Context context) {
         if (BuildConfig.DEBUG) {
+            String message = "Dump on application startup";
             NetworkTaskDAO networkTaskDAO = new NetworkTaskDAO(context);
             Dump.dump(StartupService.class.getName(), message, NetworkTask.class.getSimpleName().toLowerCase(), networkTaskDAO::readAllNetworkTasks);
             SchedulerIdHistoryDAO historyDAO = new SchedulerIdHistoryDAO(context);

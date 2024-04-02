@@ -60,6 +60,7 @@ import java.io.File;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
+@SuppressWarnings({"unused"})
 public class SystemActivity extends SettingsInputActivity implements ExportSupport, ImportSupport, DBPurgeSupport, ErrorSupport {
 
     private enum Error {

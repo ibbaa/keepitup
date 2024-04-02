@@ -35,6 +35,7 @@ import net.ibbaa.keepitup.util.StreamUtil;
 import java.io.IOException;
 import java.io.InputStream;
 
+@SuppressWarnings({"unused"})
 public class RawTextDialog extends DialogFragment {
 
     @Override

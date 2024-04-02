@@ -32,6 +32,7 @@ import org.junit.runner.RunWith;
 
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 
 @SmallTest
 @RunWith(AndroidJUnit4.class)
@@ -96,7 +97,7 @@ public class StandardIntervalValidatorTest {
         assertTrue(result.isValidationSuccessful());
         assertEquals("Interval", result.getFieldName());
         assertEquals("Validation successful", result.getMessage());
-        validator = new StandardIntervalValidator(TestRegistry.getContext(), Arrays.asList(getInterval2()));
+        validator = new StandardIntervalValidator(TestRegistry.getContext(), List.of(getInterval2()));
         result = validator.validateOverlapSorted();
         assertTrue(result.isValidationSuccessful());
         assertEquals("Interval", result.getFieldName());

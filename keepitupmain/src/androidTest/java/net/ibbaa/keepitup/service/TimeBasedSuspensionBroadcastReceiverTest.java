@@ -131,7 +131,7 @@ public class TimeBasedSuspensionBroadcastReceiverTest {
         assertTrue(scheduler.getWasRestartedFlag());
         assertTrue(schedulerStateDAO.readSchedulerState().isSuspended());
         assertTrue(scheduler.isSuspended());
-        setTestTime(getTestTimestamp(24, 13, 00));
+        setTestTime(getTestTimestamp(24, 13, 0));
         networkTaskSchedulerAlarmManager.reset();
         scheduler.reset();
         Intent intent = new Intent();
@@ -158,7 +158,7 @@ public class TimeBasedSuspensionBroadcastReceiverTest {
         assertTrue(scheduler.getWasRestartedFlag());
         assertTrue(schedulerStateDAO.readSchedulerState().isSuspended());
         assertTrue(scheduler.isSuspended());
-        setTestTime(getTestTimestamp(24, 13, 00));
+        setTestTime(getTestTimestamp(24, 13, 0));
         networkTaskSchedulerAlarmManager.reset();
         scheduler.reset();
         Intent intent = new Intent();
@@ -259,7 +259,7 @@ public class TimeBasedSuspensionBroadcastReceiverTest {
         assertTrue(scheduler.getWasRestartedFlag());
         assertTrue(schedulerStateDAO.readSchedulerState().isSuspended());
         assertTrue(scheduler.isSuspended());
-        setTestTime(getTestTimestamp(24, 13, 00));
+        setTestTime(getTestTimestamp(24, 13, 0));
         networkTaskSchedulerAlarmManager.reset();
         scheduler.resetWasRestartedFlag();
         scheduler.reset();
@@ -275,7 +275,7 @@ public class TimeBasedSuspensionBroadcastReceiverTest {
         List<MockAlarmManager.SetAlarmCall> setAlarmRTCCalls = alarmManager.getSetAlarmRTCCalls();
         assertEquals(1, setAlarmRTCCalls.size());
         MockAlarmManager.SetAlarmCall setAlarm = setAlarmRTCCalls.get(0);
-        assertEquals(TimeUtil.getTimestampTomorrow(getInterval().getStart(), getTestTimestamp(24, 13, 00)), setAlarm.getDelay());
+        assertEquals(TimeUtil.getTimestampTomorrow(getInterval().getStart(), getTestTimestamp(24, 13, 0)), setAlarm.getDelay());
         assertTrue(networkTaskSchedulerAlarmManager.wasSetAlarmCalled());
         assertFalse(networkTaskSchedulerAlarmManager.wasCancelAlarmCalled());
         List<MockAlarmManager.SetAlarmCall> setAlarmCalls = networkTaskSchedulerAlarmManager.getSetAlarmCalls();

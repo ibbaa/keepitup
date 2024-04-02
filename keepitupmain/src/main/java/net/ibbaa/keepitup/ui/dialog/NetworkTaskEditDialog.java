@@ -58,6 +58,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+@SuppressWarnings({"unused"})
 public class NetworkTaskEditDialog extends DialogFragment implements ContextOptionsSupport {
 
     private View dialogView;
@@ -179,7 +180,7 @@ public class NetworkTaskEditDialog extends DialogFragment implements ContextOpti
             AccessType accessType = accessTypes[ii];
             RadioButton newRadioButton = new RadioButton(requireContext());
             newRadioButton.setText(mapping.getAccessTypeText(accessType));
-            newRadioButton.setTextColor(UIUtil.getStyledColor(getActivity(), android.R.attr.textColor));
+            newRadioButton.setTextColor(UIUtil.getStyledColor(requireActivity(), android.R.attr.textColor));
             newRadioButton.setId(View.generateViewId());
             if (savedSelectedAccessType != null) {
                 newRadioButton.setChecked(accessType.equals(savedSelectedAccessType));

@@ -22,8 +22,6 @@ import android.util.Log;
 import androidx.core.app.NotificationCompat;
 
 import net.ibbaa.keepitup.notification.INotificationManager;
-import net.ibbaa.keepitup.resources.ISystemSetup;
-import net.ibbaa.keepitup.resources.JSONSystemSetup;
 import net.ibbaa.keepitup.resources.ServiceFactory;
 import net.ibbaa.keepitup.service.IAlarmManager;
 import net.ibbaa.keepitup.service.INetworkManager;
@@ -59,10 +57,5 @@ public class TestServiceFactory implements ServiceFactory {
     public ITimeService createTimeService() {
         Log.d(TestServiceFactory.class.getName(), "createTimeService");
         return new MockTimeService();
-    }
-
-    @Override
-    public ISystemSetup createSystemSetup(Context context, String implementation) {
-        return new JSONSystemSetup(context);
     }
 }

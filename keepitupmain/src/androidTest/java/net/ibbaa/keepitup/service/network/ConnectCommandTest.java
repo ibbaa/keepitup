@@ -41,7 +41,7 @@ public class ConnectCommandTest {
     private void prepareSuccessfulConnectionResultList(TestConnectCommand connectCommand, int number) {
         List<TestConnectCommand.MockConnectionResult> connectionResultList = new ArrayList<>(number);
         for (int ii = 0; ii < number; ii++) {
-            connectionResultList.add(connectCommand.new MockConnectionResult(true, 3, null));
+            connectionResultList.add(new TestConnectCommand.MockConnectionResult(true, 3, null));
         }
         connectCommand.setConnectionResults(connectionResultList);
     }
@@ -49,7 +49,7 @@ public class ConnectCommandTest {
     private void prepareTimeoutConnectionResultList(TestConnectCommand connectCommand, int number) {
         List<TestConnectCommand.MockConnectionResult> connectionResultList = new ArrayList<>(number);
         for (int ii = 0; ii < number; ii++) {
-            connectionResultList.add(connectCommand.new MockConnectionResult(false, 3, null));
+            connectionResultList.add(new TestConnectCommand.MockConnectionResult(false, 3, null));
         }
         connectCommand.setConnectionResults(connectionResultList);
     }
@@ -57,7 +57,7 @@ public class ConnectCommandTest {
     private void prepareExcpetionConnectionResultList(TestConnectCommand connectCommand, int number) {
         List<TestConnectCommand.MockConnectionResult> connectionResultList = new ArrayList<>(number);
         for (int ii = 0; ii < number; ii++) {
-            connectionResultList.add(connectCommand.new MockConnectionResult(false, 3, new IOException("Error " + (ii + 1))));
+            connectionResultList.add(new TestConnectCommand.MockConnectionResult(false, 3, new IOException("Error " + (ii + 1))));
         }
         connectCommand.setConnectionResults(connectionResultList);
     }
@@ -105,9 +105,9 @@ public class ConnectCommandTest {
     public void testSuccessOneTimeout() {
         TestConnectCommand connectCommand = new TestConnectCommand(TestRegistry.getContext(), null, 80, 3);
         List<TestConnectCommand.MockConnectionResult> connectionResultList = new ArrayList<>(3);
-        connectionResultList.add(connectCommand.new MockConnectionResult(true, 3, null));
-        connectionResultList.add(connectCommand.new MockConnectionResult(false, 3, null));
-        connectionResultList.add(connectCommand.new MockConnectionResult(true, 3, null));
+        connectionResultList.add(new TestConnectCommand.MockConnectionResult(true, 3, null));
+        connectionResultList.add(new TestConnectCommand.MockConnectionResult(false, 3, null));
+        connectionResultList.add(new TestConnectCommand.MockConnectionResult(true, 3, null));
         connectCommand.setConnectionResults(connectionResultList);
         ConnectCommandResult result = connectCommand.call();
         assertTrue(result.isSuccess());
@@ -122,9 +122,9 @@ public class ConnectCommandTest {
     public void testSuccessOneException() {
         TestConnectCommand connectCommand = new TestConnectCommand(TestRegistry.getContext(), null, 80, 3);
         List<TestConnectCommand.MockConnectionResult> connectionResultList = new ArrayList<>(3);
-        connectionResultList.add(connectCommand.new MockConnectionResult(true, 3, null));
-        connectionResultList.add(connectCommand.new MockConnectionResult(false, 3, new IOException("Error")));
-        connectionResultList.add(connectCommand.new MockConnectionResult(true, 3, null));
+        connectionResultList.add(new TestConnectCommand.MockConnectionResult(true, 3, null));
+        connectionResultList.add(new TestConnectCommand.MockConnectionResult(false, 3, new IOException("Error")));
+        connectionResultList.add(new TestConnectCommand.MockConnectionResult(true, 3, null));
         connectCommand.setConnectionResults(connectionResultList);
         ConnectCommandResult result = connectCommand.call();
         assertTrue(result.isSuccess());
@@ -139,12 +139,12 @@ public class ConnectCommandTest {
     public void testSuccessMixedResult() {
         TestConnectCommand connectCommand = new TestConnectCommand(TestRegistry.getContext(), null, 80, 6);
         List<TestConnectCommand.MockConnectionResult> connectionResultList = new ArrayList<>(3);
-        connectionResultList.add(connectCommand.new MockConnectionResult(false, 3, new IOException("Error 1")));
-        connectionResultList.add(connectCommand.new MockConnectionResult(false, 3, new IOException("Error 2")));
-        connectionResultList.add(connectCommand.new MockConnectionResult(true, 3, null));
-        connectionResultList.add(connectCommand.new MockConnectionResult(false, 3, null));
-        connectionResultList.add(connectCommand.new MockConnectionResult(false, 3, new IOException("Error 3")));
-        connectionResultList.add(connectCommand.new MockConnectionResult(true, 3, null));
+        connectionResultList.add(new TestConnectCommand.MockConnectionResult(false, 3, new IOException("Error 1")));
+        connectionResultList.add(new TestConnectCommand.MockConnectionResult(false, 3, new IOException("Error 2")));
+        connectionResultList.add(new TestConnectCommand.MockConnectionResult(true, 3, null));
+        connectionResultList.add(new TestConnectCommand.MockConnectionResult(false, 3, null));
+        connectionResultList.add(new TestConnectCommand.MockConnectionResult(false, 3, new IOException("Error 3")));
+        connectionResultList.add(new TestConnectCommand.MockConnectionResult(true, 3, null));
         connectCommand.setConnectionResults(connectionResultList);
         ConnectCommandResult result = connectCommand.call();
         assertTrue(result.isSuccess());
@@ -159,12 +159,12 @@ public class ConnectCommandTest {
     public void testFailureMixedResult() {
         TestConnectCommand connectCommand = new TestConnectCommand(TestRegistry.getContext(), null, 80, 6);
         List<TestConnectCommand.MockConnectionResult> connectionResultList = new ArrayList<>(3);
-        connectionResultList.add(connectCommand.new MockConnectionResult(false, 3, new IOException("Error 1")));
-        connectionResultList.add(connectCommand.new MockConnectionResult(false, 3, new IOException("Error 2")));
-        connectionResultList.add(connectCommand.new MockConnectionResult(false, 3, null));
-        connectionResultList.add(connectCommand.new MockConnectionResult(false, 3, null));
-        connectionResultList.add(connectCommand.new MockConnectionResult(false, 3, new IOException("Error 3")));
-        connectionResultList.add(connectCommand.new MockConnectionResult(false, 3, null));
+        connectionResultList.add(new TestConnectCommand.MockConnectionResult(false, 3, new IOException("Error 1")));
+        connectionResultList.add(new TestConnectCommand.MockConnectionResult(false, 3, new IOException("Error 2")));
+        connectionResultList.add(new TestConnectCommand.MockConnectionResult(false, 3, null));
+        connectionResultList.add(new TestConnectCommand.MockConnectionResult(false, 3, null));
+        connectionResultList.add(new TestConnectCommand.MockConnectionResult(false, 3, new IOException("Error 3")));
+        connectionResultList.add(new TestConnectCommand.MockConnectionResult(false, 3, null));
         connectCommand.setConnectionResults(connectionResultList);
         ConnectCommandResult result = connectCommand.call();
         assertFalse(result.isSuccess());
@@ -179,12 +179,12 @@ public class ConnectCommandTest {
     public void testAverageTime() {
         TestConnectCommand connectCommand = new TestConnectCommand(TestRegistry.getContext(), null, 80, 6);
         List<TestConnectCommand.MockConnectionResult> connectionResultList = new ArrayList<>(3);
-        connectionResultList.add(connectCommand.new MockConnectionResult(true, 1, null));
-        connectionResultList.add(connectCommand.new MockConnectionResult(true, 2, null));
-        connectionResultList.add(connectCommand.new MockConnectionResult(true, 3, null));
-        connectionResultList.add(connectCommand.new MockConnectionResult(true, 4, null));
-        connectionResultList.add(connectCommand.new MockConnectionResult(true, 5, null));
-        connectionResultList.add(connectCommand.new MockConnectionResult(true, 6, null));
+        connectionResultList.add(new TestConnectCommand.MockConnectionResult(true, 1, null));
+        connectionResultList.add(new TestConnectCommand.MockConnectionResult(true, 2, null));
+        connectionResultList.add(new TestConnectCommand.MockConnectionResult(true, 3, null));
+        connectionResultList.add(new TestConnectCommand.MockConnectionResult(true, 4, null));
+        connectionResultList.add(new TestConnectCommand.MockConnectionResult(true, 5, null));
+        connectionResultList.add(new TestConnectCommand.MockConnectionResult(true, 6, null));
         connectCommand.setConnectionResults(connectionResultList);
         ConnectCommandResult result = connectCommand.call();
         assertTrue(result.isSuccess());

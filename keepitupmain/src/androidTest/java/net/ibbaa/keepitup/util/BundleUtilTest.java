@@ -39,6 +39,7 @@ import org.junit.runner.RunWith;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 @SmallTest
 @RunWith(AndroidJUnit4.class)
@@ -205,7 +206,7 @@ public class BundleUtilTest {
         assertNotNull(bundle);
         assertTrue(bundle.isEmpty());
         bundle = BundleUtil.bundleToBundle("key", nestedBundle);
-        assertEquals("message", bundle.getBundle("key").getString("key"));
+        assertEquals("message", Objects.requireNonNull(bundle.getBundle("key")).getString("key"));
         assertTrue(BundleUtil.bundleToBundle(null, nestedBundle).isEmpty());
         assertTrue(BundleUtil.bundleToBundle("", null).isEmpty());
     }
@@ -220,8 +221,7 @@ public class BundleUtilTest {
         bundle = BundleUtil.bundleToBundle("key", nestedBundle, new Bundle());
         assertNotNull(bundle);
         assertFalse(bundle.isEmpty());
-        nestedBundle = bundle.getBundle("key");
-        assertEquals(1, nestedBundle.getInt("nestedKey"));
+        assertEquals(1, Objects.requireNonNull(bundle.getBundle("key")).getInt("nestedKey"));
     }
 
     @Test
@@ -257,8 +257,8 @@ public class BundleUtilTest {
         Bundle nestedBundle2 = new Bundle();
         nestedBundle2.putString("key2", "message2");
         Bundle bundle = BundleUtil.bundleListToBundle("key", Arrays.asList(nestedBundle1, nestedBundle2));
-        assertEquals("message1", bundle.getBundle("key0").getString("key1"));
-        assertEquals("message2", bundle.getBundle("key1").getString("key2"));
+        assertEquals("message1", Objects.requireNonNull(bundle.getBundle("key0")).getString("key1"));
+        assertEquals("message2", Objects.requireNonNull(bundle.getBundle("key1")).getString("key2"));
         assertTrue(BundleUtil.bundleListToBundle(null, Arrays.asList(nestedBundle1, nestedBundle2)).isEmpty());
         assertTrue(BundleUtil.bundleListToBundle("key", null).isEmpty());
     }
@@ -333,8 +333,8 @@ public class BundleUtilTest {
         ValidationResult result1 = new ValidationResult(true, "field1", "message1");
         ValidationResult result2 = new ValidationResult(false, "field2", "message2");
         Bundle bundle = BundleUtil.validationResultListToBundle("key", Arrays.asList(result1, result2));
-        ValidationResult otherResult1 = new ValidationResult(bundle.getBundle("key0"));
-        ValidationResult otherResult2 = new ValidationResult(bundle.getBundle("key1"));
+        ValidationResult otherResult1 = new ValidationResult(Objects.requireNonNull(bundle.getBundle("key0")));
+        ValidationResult otherResult2 = new ValidationResult(Objects.requireNonNull(bundle.getBundle("key1")));
         assertTrue(result1.isEqual(otherResult1));
         assertTrue(result2.isEqual(otherResult2));
     }
@@ -387,8 +387,8 @@ public class BundleUtilTest {
         FileEntry entry1 = getFileEntry("test1", true, false, false);
         FileEntry entry2 = getFileEntry("test2", false, true, true);
         Bundle bundle = BundleUtil.fileEntryListToBundle("key", Arrays.asList(entry1, entry2));
-        FileEntry otherEntry1 = new FileEntry(bundle.getBundle("key0"));
-        FileEntry otherEntry2 = new FileEntry(bundle.getBundle("key1"));
+        FileEntry otherEntry1 = new FileEntry(Objects.requireNonNull(bundle.getBundle("key0")));
+        FileEntry otherEntry2 = new FileEntry(Objects.requireNonNull(bundle.getBundle("key1")));
         assertTrue(entry1.isEqual(otherEntry1));
         assertTrue(entry2.isEqual(otherEntry2));
     }
@@ -489,8 +489,8 @@ public class BundleUtilTest {
         Interval interval1 = getInterval(1, 2, 3, 4);
         Interval interval2 = getInterval(23, 59, 1, 15);
         Bundle bundle = BundleUtil.suspensionIntervalListToBundle("key", Arrays.asList(interval1, interval2));
-        Interval otherInterval1 = new Interval(bundle.getBundle("key0"));
-        Interval otherInterval2 = new Interval(bundle.getBundle("key1"));
+        Interval otherInterval1 = new Interval(Objects.requireNonNull(bundle.getBundle("key0")));
+        Interval otherInterval2 = new Interval(Objects.requireNonNull(bundle.getBundle("key1")));
         assertTrue(interval1.isEqual(otherInterval1));
         assertTrue(interval2.isEqual(otherInterval2));
     }

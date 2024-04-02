@@ -23,11 +23,9 @@ import net.ibbaa.keepitup.service.TimeBasedSuspensionScheduler;
 
 public class TestNetworkTaskProcessBroadcastReceiver extends NetworkTaskProcessBroadcastReceiver {
 
-    private final MockTimeService mockTimeService;
     private final TestTimeBasedSuspensionScheduler scheduler;
 
     public TestNetworkTaskProcessBroadcastReceiver() {
-        this.mockTimeService = new MockTimeService();
         this.scheduler = new TestTimeBasedSuspensionScheduler(TestRegistry.getContext());
     }
 

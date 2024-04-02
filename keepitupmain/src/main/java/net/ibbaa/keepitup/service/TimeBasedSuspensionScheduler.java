@@ -346,7 +346,7 @@ public class TimeBasedSuspensionScheduler {
     }
 
     private long addThreshold(long timestamp) {
-        return timestamp + getContext().getResources().getInteger(R.integer.scheduler_restart_time_threshold) * 1000;
+        return timestamp + getContext().getResources().getInteger(R.integer.scheduler_restart_time_threshold) * 1000L;
     }
 
     private Context getContext() {

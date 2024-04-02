@@ -43,8 +43,7 @@ public class GridLayoutPositionMatcher extends TypeSafeMatcher<View> {
 
     @Override
     public boolean matchesSafely(View view) {
-        if (view.getLayoutParams() != null && view.getLayoutParams() instanceof GridLayout.LayoutParams) {
-            GridLayout.LayoutParams layoutParams = (GridLayout.LayoutParams) view.getLayoutParams();
+        if (view.getLayoutParams() != null && view.getLayoutParams() instanceof GridLayout.LayoutParams layoutParams) {
             GridLayout.Spec rowSpec = GridLayout.spec(row, rowSpan, rowAlignment);
             GridLayout.Spec columnSpec = GridLayout.spec(column, columnSpan, columnAlignment);
             return rowSpec.equals(layoutParams.rowSpec) && columnSpec.equals(layoutParams.columnSpec);

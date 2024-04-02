@@ -51,7 +51,6 @@ import net.ibbaa.keepitup.test.mock.TestRegistry;
 import net.ibbaa.keepitup.ui.adapter.NetworkTaskAdapter;
 import net.ibbaa.keepitup.ui.adapter.NetworkTaskUIWrapper;
 
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -69,11 +68,6 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
     public void beforeEachTestMethod() {
         super.beforeEachTestMethod();
         permissionManager = new MockPermissionManager();
-    }
-
-    @After
-    public void afterEachTestMethod() {
-        super.afterEachTestMethod();
     }
 
     @Test

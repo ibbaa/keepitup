@@ -36,6 +36,4 @@ public interface ServiceFactory {
     INetworkManager createNetworkManager(Context context);
 
     ITimeService createTimeService();
-
-    ISystemSetup createSystemSetup(Context context, String implementation);
 }

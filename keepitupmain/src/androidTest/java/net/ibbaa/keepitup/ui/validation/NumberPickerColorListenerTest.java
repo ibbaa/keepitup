@@ -49,12 +49,12 @@ public class NumberPickerColorListenerTest {
         assertEquals(Color.RED, numberPicker2.getTextColor());
     }
 
-    @SuppressWarnings({"SameReturnValue"})
+    @SuppressWarnings({"SameReturnValue", "unused"})
     private boolean validateTrue(NumberPicker numberPicker) {
         return true;
     }
 
-    @SuppressWarnings({"SameReturnValue"})
+    @SuppressWarnings({"SameReturnValue", "unused"})
     private boolean validateFalse(NumberPicker numberPicker) {
         return false;
     }

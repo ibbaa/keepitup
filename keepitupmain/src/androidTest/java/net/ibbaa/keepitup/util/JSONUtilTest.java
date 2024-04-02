@@ -31,6 +31,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 @SmallTest
 @RunWith(AndroidJUnit4.class)
@@ -101,13 +102,13 @@ public class JSONUtilTest {
         assertEquals(10d, map.get("doubleKey"));
         assertTrue((Boolean) map.get("booleanKey"));
         Map<String, ?> nestedMap = (Map<String, ?>) map.get("objectKey");
-        assertEquals("value", nestedMap.get("stringKey"));
+        assertEquals("value", Objects.requireNonNull(nestedMap).get("stringKey"));
         assertEquals(5, nestedMap.get("intKey"));
         assertEquals(8L, nestedMap.get("longKey"));
         assertEquals(10d, nestedMap.get("doubleKey"));
         assertTrue((Boolean) nestedMap.get("booleanKey"));
         List<?> nestedList = (List<?>) map.get("listKey");
-        assertEquals("value", nestedList.get(0));
+        assertEquals("value", Objects.requireNonNull(nestedList).get(0));
         assertEquals(5, nestedList.get(1));
         assertEquals(8L, nestedList.get(2));
         assertEquals(10d, nestedList.get(3));

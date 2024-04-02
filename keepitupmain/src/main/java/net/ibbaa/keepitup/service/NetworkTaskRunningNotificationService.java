@@ -51,10 +51,10 @@ public class NetworkTaskRunningNotificationService extends Service {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             foregroundServiceType = ServiceInfo.FOREGROUND_SERVICE_TYPE_DATA_SYNC;
         }
-        startNetworkTaskRunningNotificationForeground(NOTIFICATION_SERVICE_ID, notification, foregroundServiceType);
+        startNetworkTaskRunningNotificationForeground(notification, foregroundServiceType);
     }
 
-    protected void startNetworkTaskRunningNotificationForeground(int id, @NonNull Notification notification, int foregroundServiceType) {
+    protected void startNetworkTaskRunningNotificationForeground(@NonNull Notification notification, int foregroundServiceType) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             startForeground(NOTIFICATION_SERVICE_ID, notification, ServiceInfo.FOREGROUND_SERVICE_TYPE_DATA_SYNC);
         } else {
@@ -109,11 +109,11 @@ public class NetworkTaskRunningNotificationService extends Service {
     public void onDestroy() {
         Log.d(NetworkTaskRunningNotificationService.class.getName(), "onDestroy");
         NetworkTaskProcessServiceScheduler.getNetworkTaskProcessPool().cancelAll();
-        stopNetworkTaskRunningNotificationForeground(true);
+        stopNetworkTaskRunningNotificationForeground();
     }
 
-    protected void stopNetworkTaskRunningNotificationForeground(boolean removeNotification) {
-        stopForeground(removeNotification);
+    protected void stopNetworkTaskRunningNotificationForeground() {
+        stopForeground(true);
     }
 
     @Nullable

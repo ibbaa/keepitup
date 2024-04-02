@@ -113,7 +113,7 @@ public class TimeBasedSuspensionBroadcastReceiver extends BroadcastReceiver {
     }
 
     private long addThreshold(Context context, long timestamp) {
-        return timestamp + context.getResources().getInteger(R.integer.scheduler_receiver_time_threshold) * 1000;
+        return timestamp + context.getResources().getInteger(R.integer.scheduler_receiver_time_threshold) * 1000L;
     }
 
     protected ITimeService createTimeService(Context context) {

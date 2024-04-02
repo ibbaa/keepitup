@@ -33,6 +33,7 @@ import net.ibbaa.keepitup.logging.Log;
 import net.ibbaa.keepitup.ui.ErrorSupport;
 import net.ibbaa.keepitup.util.BundleUtil;
 
+@SuppressWarnings({"unused"})
 public class GeneralErrorDialog extends DialogFragment {
 
     @Override

@@ -40,6 +40,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+@SuppressWarnings({"unused"})
 public class ContextOptionsDialog extends DialogFragment {
 
     private View dialogView;
@@ -158,11 +159,9 @@ public class ContextOptionsDialog extends DialogFragment {
     protected ContextOptionsSupport getContextOptionsSupport() {
         Log.d(ContextOptionsDialog.class.getName(), "getContextOptionsSupport");
         List<Fragment> fragments = getParentFragmentManager().getFragments();
-        if (fragments != null) {
-            for (Fragment fragment : fragments) {
-                if (fragment instanceof ContextOptionsSupport) {
-                    return (ContextOptionsSupport) fragment;
-                }
+        for (Fragment fragment : fragments) {
+            if (fragment instanceof ContextOptionsSupport) {
+                return (ContextOptionsSupport) fragment;
             }
         }
         Log.d(ContextOptionsDialog.class.getName(), "getContextOptionsSupport, no parent fragment implementing " + ContextOptionsSupport.class.getSimpleName());

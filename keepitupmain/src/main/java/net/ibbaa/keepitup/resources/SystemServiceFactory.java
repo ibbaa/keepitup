@@ -30,9 +30,6 @@ import net.ibbaa.keepitup.service.SystemAlarmManager;
 import net.ibbaa.keepitup.service.SystemNetworkManager;
 import net.ibbaa.keepitup.service.SystemTimeService;
 
-import java.lang.reflect.Constructor;
-import java.util.Objects;
-
 public class SystemServiceFactory implements ServiceFactory {
 
     @Override
@@ -63,23 +60,5 @@ public class SystemServiceFactory implements ServiceFactory {
     public ITimeService createTimeService() {
         Log.d(SystemServiceFactory.class.getName(), "createTimeService");
         return new SystemTimeService();
-    }
-
-    @Override
-    public ISystemSetup createSystemSetup(Context context, String implementation) {
-        Log.d(SystemServiceFactory.class.getName(), "createSystemSetup, implementation is " + implementation);
-        try {
-            ClassLoader classloader = Thread.currentThread().getContextClassLoader();
-            if (classloader == null) {
-                classloader = this.getClass().getClassLoader();
-            }
-            Class<?> setupClass = Objects.requireNonNull(classloader).loadClass(implementation);
-            Log.d(SystemServiceFactory.class.getName(), "Loaded setup class is " + setupClass.getName());
-            Constructor<?> constructor = setupClass.getDeclaredConstructor(Context.class);
-            return (ISystemSetup) constructor.newInstance(context);
-        } catch (Exception exc) {
-            Log.e(ServiceFactoryContributor.class.getName(), "Error creating system setup", exc);
-            throw new RuntimeException(exc);
-        }
     }
 }

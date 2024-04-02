@@ -256,7 +256,7 @@ public class NetworkTaskProcessServiceScheduler {
     }
 
     private long getIntervalMilliseconds(NetworkTask networkTask) {
-        return 60 * 1000 * networkTask.getInterval();
+        return 60L * 1000 * networkTask.getInterval();
     }
 
     private long getLastScheduledMilliseconds(NetworkTask networkTask) {

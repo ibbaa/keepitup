@@ -77,7 +77,7 @@ public class TimeUtil {
     }
 
     public static Interval getCurrentGap(List<Interval> intervals, Time time) {
-        if (intervals == null || intervals.size() == 0) {
+        if (intervals == null || intervals.isEmpty()) {
             return getFullGap();
         }
         if (intervals.size() == 1) {
@@ -93,7 +93,7 @@ public class TimeUtil {
     }
 
     public static Interval getLargestGap(List<Interval> intervals) {
-        if (intervals == null || intervals.size() == 0) {
+        if (intervals == null || intervals.isEmpty()) {
             return getFullGap();
         }
         if (intervals.size() == 1) {

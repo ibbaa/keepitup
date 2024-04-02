@@ -30,6 +30,7 @@ import net.ibbaa.keepitup.R;
 import net.ibbaa.keepitup.logging.Log;
 import net.ibbaa.keepitup.ui.AlarmPermissionSupport;
 
+@SuppressWarnings({"unused"})
 public class AlarmPermissionDialog extends DialogFragment {
 
     @Override

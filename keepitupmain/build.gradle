@@ -56,7 +56,7 @@ android {
     namespace 'net.ibbaa.keepitup'
 }
 
-configurations.all {
+configurations.configureEach {
     resolutionStrategy.capabilitiesResolution.withCapability("com.google.guava:listenablefuture") {
         select("com.google.guava:guava:0")
     }

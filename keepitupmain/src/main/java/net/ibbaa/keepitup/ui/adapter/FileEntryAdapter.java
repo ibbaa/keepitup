@@ -17,7 +17,6 @@
 package net.ibbaa.keepitup.ui.adapter;
 
 import android.content.Context;
-import android.content.res.Resources;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -264,9 +263,5 @@ public class FileEntryAdapter extends RecyclerView.Adapter<FileEntryViewHolder> 
 
     private Context getContext() {
         return folderChooseDialog.getActivity();
-    }
-
-    private Resources getResources() {
-        return getContext().getResources();
     }
 }

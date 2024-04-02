@@ -141,8 +141,8 @@ public class IntervalHandlerTest extends BaseUITest {
         Time end2 = new Time();
         end2.setHour(10);
         end2.setMinute(10);
-        interval2.setStart(start1);
-        interval2.setEnd(end1);
+        interval2.setStart(start2);
+        interval2.setEnd(end2);
         intervalsDialog.getAdapter().addItem(interval1);
         intervalsDialog.getAdapter().addItem(interval2);
         assertTrue(handler.synchronizeIntervals());

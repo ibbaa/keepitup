@@ -18,6 +18,7 @@ package net.ibbaa.keepitup.service;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import android.app.Notification;
@@ -76,7 +77,6 @@ public class NetworkTaskRunningNotificationServiceTest {
         service.onCreate();
         assertTrue(service.wasStartNetworkTaskRunningNotificationForegroundCalled());
         TestNetworkTaskRunningNotificationService.StartNetworkTaskRunningNotificationForegroundCall startNetworkTaskRunningNotificationForegroundCall = service.getStartNetworkTaskRunningNotificationForegroundCalls().get(0);
-        assertEquals(NetworkTaskRunningNotificationService.NOTIFICATION_SERVICE_ID, startNetworkTaskRunningNotificationForegroundCall.getId());
         assertEquals(ServiceInfo.FOREGROUND_SERVICE_TYPE_DATA_SYNC, startNetworkTaskRunningNotificationForegroundCall.getForegroundServiceType());
         Notification notification = startNetworkTaskRunningNotificationForegroundCall.getNotification();
         assertEquals("KEEPITUP_FOREGROUND_NOTIFICATION_CHANNEL", notification.getChannelId());
@@ -113,7 +113,7 @@ public class NetworkTaskRunningNotificationServiceTest {
         assertTrue(future2.isCancelled());
         assertTrue(service.wasStopNetworkTaskRunningNotificationForegroundCalled());
         TestNetworkTaskRunningNotificationService.StopNetworkTaskRunningNotificationForegroundCall stopNetworkTaskRunningNotificationForegroundCall = service.getStopNetworkTaskRunningNotificationForegroundCalls().get(0);
-        assertTrue(stopNetworkTaskRunningNotificationForegroundCall.isRemoveNotification());
+        assertNotNull(stopNetworkTaskRunningNotificationForegroundCall);
     }
 
     private NetworkTask getNetworkTask() {

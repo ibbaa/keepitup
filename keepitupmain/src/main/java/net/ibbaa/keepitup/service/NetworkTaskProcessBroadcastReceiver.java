@@ -98,7 +98,7 @@ public class NetworkTaskProcessBroadcastReceiver extends BroadcastReceiver {
     private void doWork(Context context, NetworkTask task, PowerManager.WakeLock wakeLock, boolean synchronous, boolean addToPool, ExecutorService executorService) {
         Log.d(NetworkTaskProcessBroadcastReceiver.class.getName(), "Doing work for " + task);
         Log.d(NetworkTaskProcessBroadcastReceiver.class.getName(), "Synchronous is " + synchronous);
-        if (!isNetworkTaskValid(context, task)) {
+        if (isNetworkTaskInvalid(context, task)) {
             Log.d(NetworkTaskProcessBroadcastReceiver.class.getName(), "Network task has been marked as not running. Skipping execution");
             return;
         }
@@ -124,7 +124,7 @@ public class NetworkTaskProcessBroadcastReceiver extends BroadcastReceiver {
 
     private void rescheduleTask(Context context, NetworkTask task) {
         Log.d(NetworkTaskProcessBroadcastReceiver.class.getName(), "rescheduleTask for " + task);
-        if (!isNetworkTaskValid(context, task)) {
+        if (isNetworkTaskInvalid(context, task)) {
             Log.d(NetworkTaskProcessBroadcastReceiver.class.getName(), "Network task has been marked as not running. Skipping reschedule");
             return;
         }
@@ -132,10 +132,10 @@ public class NetworkTaskProcessBroadcastReceiver extends BroadcastReceiver {
         timeBasedScheduler.getNetworkTaskScheduler().reschedule(task, NetworkTaskProcessServiceScheduler.Delay.INTERVAL);
     }
 
-    private boolean isNetworkTaskValid(Context context, NetworkTask task) {
+    private boolean isNetworkTaskInvalid(Context context, NetworkTask task) {
         NetworkTaskDAO networkTaskDAO = new NetworkTaskDAO(context);
         NetworkTask databaseTask = networkTaskDAO.readNetworkTask(task.getId());
-        return databaseTask != null && databaseTask.isRunning() && databaseTask.getSchedulerId() == task.getSchedulerId();
+        return databaseTask == null || !databaseTask.isRunning() || databaseTask.getSchedulerId() != task.getSchedulerId();
     }
 
     protected TimeBasedSuspensionScheduler createTimeBasedSuspensionScheduler(Context context) {

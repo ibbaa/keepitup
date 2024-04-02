@@ -33,30 +33,35 @@ public class MockNotificationBuilder extends NotificationCompat.Builder {
         super(context, channelId);
     }
 
+    @NonNull
     @Override
     public NotificationCompat.Builder setContentTitle(CharSequence title) {
         this.contentTitle = title;
         return super.setContentTitle(title);
     }
 
+    @NonNull
     @Override
     public NotificationCompat.Builder setContentText(CharSequence text) {
         this.contentText = text;
         return super.setContentText(text);
     }
 
+    @NonNull
     @Override
     public NotificationCompat.Builder setStyle(NotificationCompat.Style style) {
         this.style = style;
         return super.setStyle(style);
     }
 
+    @NonNull
     @Override
     public NotificationCompat.Builder setPriority(int priority) {
         this.priority = priority;
         return super.setPriority(priority);
     }
 
+    @NonNull
     @Override
     public NotificationCompat.Builder setSmallIcon(int icon) {
         this.smallIcon = icon;

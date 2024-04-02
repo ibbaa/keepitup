@@ -47,6 +47,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+@SuppressWarnings({"unused"})
 public class SettingsInputDialog extends DialogFragment implements ContextOptionsSupport {
 
     private View dialogView;

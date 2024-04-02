@@ -312,15 +312,15 @@ public class SystemFileManager implements IFileManager {
             fileName = specifiedFileName;
             Log.d(SystemFileManager.class.getName(), "Specified file name is " + fileName);
         }
-        if (!isValidFileName(fileName)) {
+        if (isFileNameNotValid(fileName)) {
             fileName = extractFileNameFromURL(url);
             Log.d(SystemFileManager.class.getName(), "File name extracted from URL is " + fileName);
         }
-        if (!isValidFileName(fileName)) {
+        if (isFileNameNotValid(fileName)) {
             fileName = createFileNameFromHost(url);
             Log.d(SystemFileManager.class.getName(), "File name extracted from host is " + fileName);
         }
-        if (!isValidFileName(fileName)) {
+        if (isFileNameNotValid(fileName)) {
             Log.d(SystemFileManager.class.getName(), "File name is invalid.");
             fileName = "";
         }
@@ -328,7 +328,7 @@ public class SystemFileManager implements IFileManager {
         String extension = FileUtil.getFileNameExtension(fileName);
         Log.d(SystemFileManager.class.getName(), "File name without extension is " + fileNameWithoutExtension);
         Log.d(SystemFileManager.class.getName(), "File name extension is " + extension);
-        if (!isValidFileName(fileNameWithoutExtension)) {
+        if (isFileNameNotValid(fileNameWithoutExtension)) {
             fileNameWithoutExtension = "downloadfile";
             Log.d(SystemFileManager.class.getName(), "File name without extension is invalid. Setting to " + fileNameWithoutExtension);
         }
@@ -398,11 +398,11 @@ public class SystemFileManager implements IFileManager {
         return null;
     }
 
-    private boolean isValidFileName(String fileName) {
+    private boolean isFileNameNotValid(String fileName) {
         if (StringUtil.isEmpty(fileName)) {
-            return false;
+            return true;
         }
-        return !fileName.replaceAll("/", "").replaceAll("\\.", "").isEmpty();
+        return fileName.replaceAll("/", "").replaceAll("\\.", "").isEmpty();
     }
 
 

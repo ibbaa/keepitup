@@ -44,10 +44,9 @@ public class DrawableMatcher extends TypeSafeMatcher<View> {
 
     @Override
     public boolean matchesSafely(View target) {
-        if (!(target instanceof ImageView)) {
+        if (!(target instanceof ImageView imageView)) {
             return false;
         }
-        ImageView imageView = (ImageView) target;
         if (expectedId < 0) {
             return imageView.getDrawable() == null;
         }

@@ -58,7 +58,6 @@ import net.ibbaa.keepitup.test.mock.MockClipboardManager;
 import net.ibbaa.keepitup.test.mock.MockFileManager;
 import net.ibbaa.keepitup.test.mock.TestRegistry;
 import net.ibbaa.keepitup.ui.dialog.SettingsInputDialog;
-import net.ibbaa.phonelog.FileLogger;
 import net.ibbaa.phonelog.ILogger;
 
 import org.hamcrest.Matcher;
@@ -1543,7 +1542,7 @@ public class GlobalSettingsActivityTest extends BaseUITest {
         assertEquals("log", preferenceManager.getPreferenceLogFolder());
         File testFile = new File(getFileManager().getExternalRootDirectory(0), "test");
         assertFalse(testFile.exists());
-        ILogger loggerCancel = (FileLogger) NetworkTaskLog.getLogger(TestRegistry.getContext(), getNetworkTask1());
+        ILogger loggerCancel = NetworkTaskLog.getLogger(TestRegistry.getContext(), getNetworkTask1());
         onView(withId(R.id.cardview_activity_global_settings_log_folder)).perform(click());
         onView(withId(R.id.edittext_dialog_file_choose_folder)).check(matches(withText("log")));
         onView(withId(R.id.edittext_dialog_file_choose_folder)).perform(replaceText("test"));
@@ -1551,7 +1550,7 @@ public class GlobalSettingsActivityTest extends BaseUITest {
         onView(withId(R.id.textview_activity_global_settings_log_folder)).check(matches(withText(endsWith("test"))));
         assertEquals("test", preferenceManager.getPreferenceLogFolder());
         assertTrue(testFile.exists());
-        ILogger loggerOk = (FileLogger) NetworkTaskLog.getLogger(TestRegistry.getContext(), getNetworkTask1());
+        ILogger loggerOk = NetworkTaskLog.getLogger(TestRegistry.getContext(), getNetworkTask1());
         assertNotSame(loggerCancel, loggerOk);
         activityScenario.close();
     }

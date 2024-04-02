@@ -76,7 +76,7 @@ public class PingOutputParser {
         }
         try {
             String[] lines = pingOutput.split("\\r?\\n|\\r");
-            if (lines.length <= 0) {
+            if (lines.length == 0) {
                 Log.d(PingOutputParser.class.getName(), "Ping output cannot be split to multiple lines.");
                 setInvalid();
                 return;

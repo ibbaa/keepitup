@@ -249,7 +249,7 @@ public class SettingsInputDialogTest extends BaseUITest {
     @Test
     public void testPasteOptionScreenRotation() {
         SettingsInput input = new SettingsInput(SettingsInput.Type.ADDRESS, "success", "field", Arrays.asList(TestValidator1.class.getName(), TestValidator1.class.getName()));
-        SettingsInputDialog inputDialog = openSettingsInputDialog(input);
+        openSettingsInputDialog(input);
         onView(isRoot()).perform(waitFor(500));
         onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText(""));
         rotateScreen(activityScenario);

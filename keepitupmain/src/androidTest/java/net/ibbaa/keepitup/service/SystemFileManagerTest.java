@@ -41,6 +41,7 @@ import java.net.URL;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.List;
+import java.util.Objects;
 
 @SmallTest
 @RunWith(AndroidJUnit4.class)
@@ -244,7 +245,6 @@ public class SystemFileManagerTest {
         assertTrue(file2.createNewFile());
         List<FileEntry> entries = fileManager.getFiles(externalRootDir.getAbsolutePath(), externalDir.getAbsolutePath());
         assertEquals(5, entries.size());
-        FileEntry entry0 = entries.get(0);
         assertTrue(areEntriesEqual(entries.get(0), getFileEntry("..", true, true, true)));
         assertTrue(areEntriesEqual(entries.get(1), getFileEntry("dir1", true, false, true)));
         assertTrue(areEntriesEqual(entries.get(2), getFileEntry("dir2", true, false, true)));
@@ -255,12 +255,12 @@ public class SystemFileManagerTest {
     @Test
     public void testDeleteDirectory() throws Exception {
         File internalDownloadDir = fileManager.getInternalDownloadDirectory();
-        assertEquals(0, internalDownloadDir.listFiles().length);
+        assertEquals(0, Objects.requireNonNull(internalDownloadDir.listFiles()).length);
         File testFile = new File(internalDownloadDir, "testfile");
         assertTrue(testFile.createNewFile());
         File testDirectory = new File(internalDownloadDir, "testdirectory");
         assertTrue(testDirectory.mkdir());
-        assertEquals(2, internalDownloadDir.listFiles().length);
+        assertEquals(2, Objects.requireNonNull(internalDownloadDir.listFiles()).length);
         fileManager.delete(fileManager.getInternalDownloadDirectory());
         assertFalse(internalDownloadDir.exists());
         File externalDir = fileManager.getExternalDirectory("test/download", 0);
@@ -272,7 +272,7 @@ public class SystemFileManagerTest {
     @Test
     public void testDeleteFile() throws Exception {
         File internalDownloadDir = fileManager.getInternalDownloadDirectory();
-        assertEquals(0, internalDownloadDir.listFiles().length);
+        assertEquals(0, Objects.requireNonNull(internalDownloadDir.listFiles()).length);
         File testFile = new File(internalDownloadDir, "testfile");
         assertTrue(testFile.createNewFile());
         fileManager.delete(testFile);

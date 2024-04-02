@@ -39,6 +39,7 @@ import net.ibbaa.keepitup.service.IPowerManager;
 import net.ibbaa.keepitup.service.SystemPowerManager;
 import net.ibbaa.keepitup.ui.BatteryOptimizationSupport;
 
+@SuppressWarnings({"unused"})
 public class BatteryOptimizationDialog extends DialogFragment {
 
     @Override
@@ -109,7 +110,7 @@ public class BatteryOptimizationDialog extends DialogFragment {
             return batteryOptimizationSupport.getPowerManager();
         }
         Log.e(BatteryOptimizationDialog.class.getName(), "batteryOptimizationSupport is null");
-        return new SystemPowerManager(getContext());
+        return new SystemPowerManager(requireContext());
     }
 
     private BatteryOptimizationSupport getBatteryOptimizationSupport() {

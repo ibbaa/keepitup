@@ -56,7 +56,7 @@ public class TestConnectCommand extends ConnectCommand {
         return null;
     }
 
-    public class MockConnectionResult extends ConnectionResult {
+    public static class MockConnectionResult extends ConnectionResult {
         private final IOException exception;
 
         public MockConnectionResult(boolean success, long duration, IOException exception) {
