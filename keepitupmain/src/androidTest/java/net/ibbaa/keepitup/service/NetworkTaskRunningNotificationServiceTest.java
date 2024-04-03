@@ -77,8 +77,8 @@ public class NetworkTaskRunningNotificationServiceTest {
         service.onCreate();
         assertTrue(service.wasStartNetworkTaskRunningNotificationForegroundCalled());
         TestNetworkTaskRunningNotificationService.StartNetworkTaskRunningNotificationForegroundCall startNetworkTaskRunningNotificationForegroundCall = service.getStartNetworkTaskRunningNotificationForegroundCalls().get(0);
-        assertEquals(ServiceInfo.FOREGROUND_SERVICE_TYPE_DATA_SYNC, startNetworkTaskRunningNotificationForegroundCall.getForegroundServiceType());
-        Notification notification = startNetworkTaskRunningNotificationForegroundCall.getNotification();
+        assertEquals(ServiceInfo.FOREGROUND_SERVICE_TYPE_DATA_SYNC, startNetworkTaskRunningNotificationForegroundCall.foregroundServiceType());
+        Notification notification = startNetworkTaskRunningNotificationForegroundCall.notification();
         assertEquals("KEEPITUP_FOREGROUND_NOTIFICATION_CHANNEL", notification.getChannelId());
     }
 
@@ -99,7 +99,7 @@ public class NetworkTaskRunningNotificationServiceTest {
         assertEquals(Service.START_NOT_STICKY, startFlag);
         assertTrue(alarmManager.wasSetAlarmCalled());
         MockAlarmManager.SetAlarmCall setAlarmCall = alarmManager.getSetAlarmCalls().get(0);
-        assertEquals(20 * 60 * 1000, setAlarmCall.getDelay());
+        assertEquals(20 * 60 * 1000, setAlarmCall.delay());
     }
 
     @Test

@@ -39,7 +39,7 @@ public class URLUtil {
         Log.d(URLUtil.class.getName(), "isValidURL, inputUrl is " + inputUrl);
         try {
             URL url = new URL(inputUrl);
-            URI uri = new URI(url.getProtocol(), url.getUserInfo(), IDN.toASCII(url.getHost()), url.getPort(), url.getPath(), url.getQuery(), url.getRef());
+            new URI(url.getProtocol(), url.getUserInfo(), IDN.toASCII(url.getHost()), url.getPort(), url.getPath(), url.getQuery(), url.getRef());
             return !StringUtil.isEmpty(IDN.toASCII(url.getHost()));
         } catch (Exception exc) {
             Log.d(URLUtil.class.getName(), "Exception parsing url " + inputUrl, exc);

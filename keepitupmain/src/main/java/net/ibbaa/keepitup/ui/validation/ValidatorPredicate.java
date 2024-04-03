@@ -18,5 +18,6 @@ package net.ibbaa.keepitup.ui.validation;
 
 @FunctionalInterface
 public interface ValidatorPredicate<T> {
+    @SuppressWarnings({"unused"})
     boolean validate(T t);
 }

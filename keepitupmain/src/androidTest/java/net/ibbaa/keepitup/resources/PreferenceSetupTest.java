@@ -36,6 +36,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @SmallTest
+@SuppressWarnings({"ExtractMethodRecommender"})
 @RunWith(AndroidJUnit4.class)
 public class PreferenceSetupTest {
 

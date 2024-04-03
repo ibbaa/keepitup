@@ -348,7 +348,7 @@ public class SettingsInputDialogTest extends BaseUITest {
     @Test
     public void testStateSavedOnScreenRotation() {
         SettingsInput input = new SettingsInput(SettingsInput.Type.ADDRESS, "abc", "field", Collections.emptyList());
-        SettingsInputDialog inputDialog = openSettingsInputDialog(input);
+        openSettingsInputDialog(input);
         onView(isRoot()).perform(waitFor(500));
         onView(withId(R.id.edittext_dialog_settings_input_value)).check(matches(withText("abc")));
         rotateScreen(activityScenario);
@@ -356,7 +356,7 @@ public class SettingsInputDialogTest extends BaseUITest {
         onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("test"));
         rotateScreen(activityScenario);
         onView(withId(R.id.edittext_dialog_settings_input_value)).check(matches(withText("test")));
-        inputDialog = (SettingsInputDialog) getActivity(activityScenario).getSupportFragmentManager().getFragments().get(0);
+        SettingsInputDialog inputDialog = (SettingsInputDialog) getActivity(activityScenario).getSupportFragmentManager().getFragments().get(0);
         onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
         assertEquals("test", inputDialog.getValue());
     }

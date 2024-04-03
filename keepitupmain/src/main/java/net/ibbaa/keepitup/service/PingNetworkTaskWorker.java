@@ -102,18 +102,18 @@ public class PingNetworkTaskWorker extends NetworkTaskWorker {
             pingResultFuture = executorService.submit(pingCommand);
             PingCommandResult pingResult = pingResultFuture.get(timeout, TimeUnit.SECONDS);
             Log.d(PingNetworkTaskWorker.class.getName(), pingCommand.getClass().getSimpleName() + " returned " + pingResult);
-            if (pingResult.getException() == null && pingResult.getProcessReturnCode() == 0) {
+            if (pingResult.exception() == null && pingResult.processReturnCode() == 0) {
                 Log.d(PingNetworkTaskWorker.class.getName(), "Ping was successful");
                 logEntry.setSuccess(true);
-                logEntry.setMessage(getPingSuccessMessage(address, getPingOutputMessage(pingResult.getOutput())));
-            } else if (pingResult.getException() != null) {
-                Log.d(PingNetworkTaskWorker.class.getName(), "Ping was not successful because of an exception", pingResult.getException());
+                logEntry.setMessage(getPingSuccessMessage(address, getPingOutputMessage(pingResult.output())));
+            } else if (pingResult.exception() != null) {
+                Log.d(PingNetworkTaskWorker.class.getName(), "Ping was not successful because of an exception", pingResult.exception());
                 logEntry.setSuccess(false);
-                logEntry.setMessage(getMessageFromException(getResources().getString(R.string.text_ping_error, address), pingResult.getException(), timeout));
+                logEntry.setMessage(getMessageFromException(getResources().getString(R.string.text_ping_error, address), pingResult.exception(), timeout));
             } else {
-                Log.d(PingNetworkTaskWorker.class.getName(), "Ping was not successful because the ping command returned " + pingResult.getProcessReturnCode());
+                Log.d(PingNetworkTaskWorker.class.getName(), "Ping was not successful because the ping command returned " + pingResult.processReturnCode());
                 logEntry.setSuccess(false);
-                logEntry.setMessage(getPingFailureMessage(pingResult.getProcessReturnCode(), address, getPingOutputMessage(pingResult.getOutput())));
+                logEntry.setMessage(getPingFailureMessage(pingResult.processReturnCode(), address, getPingOutputMessage(pingResult.output())));
             }
         } catch (Throwable exc) {
             Log.d(PingNetworkTaskWorker.class.getName(), "Error executing " + pingCommand.getClass().getName(), exc);

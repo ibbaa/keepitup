@@ -123,7 +123,7 @@ public class LogEntryAdapter extends RecyclerView.Adapter<LogEntryViewHolder> {
 
     @Override
     public int getItemCount() {
-        return logEntries.size() == 0 ? 1 : logEntries.size();
+        return logEntries.isEmpty() ? 1 : logEntries.size();
     }
 
     public boolean hasValidEntries() {

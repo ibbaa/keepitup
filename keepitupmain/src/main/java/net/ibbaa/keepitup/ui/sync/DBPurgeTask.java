@@ -131,6 +131,7 @@ public class DBPurgeTask extends UIBackgroundTask<Boolean> {
 
     @FunctionalInterface
     private interface PurgeOperation {
+        @SuppressWarnings({"unused"})
         void doPurge(Context context);
     }
 }

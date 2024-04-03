@@ -22,6 +22,9 @@ import static org.junit.Assert.assertTrue;
 
 import android.content.Intent;
 
+import androidx.test.ext.junit.runners.AndroidJUnit4;
+import androidx.test.filters.MediumTest;
+
 import net.ibbaa.keepitup.R;
 import net.ibbaa.keepitup.db.IntervalDAO;
 import net.ibbaa.keepitup.db.NetworkTaskDAO;
@@ -42,11 +45,15 @@ import net.ibbaa.keepitup.util.TimeUtil;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.List;
 
+@MediumTest
+@SuppressWarnings({"SameParameterValue"})
+@RunWith(AndroidJUnit4.class)
 public class TimeBasedSuspensionBroadcastReceiverTest {
 
     private TestTimeBasedSuspensionBroadcastReceiver receiver;
@@ -205,7 +212,7 @@ public class TimeBasedSuspensionBroadcastReceiverTest {
         List<MockAlarmManager.SetAlarmCall> setAlarmCalls = alarmManager.getSetAlarmRTCCalls();
         assertEquals(1, setAlarmCalls.size());
         MockAlarmManager.SetAlarmCall setAlarm = setAlarmCalls.get(0);
-        assertEquals(TimeUtil.getTimestampToday(getInterval().getEnd(), getTestTimestamp(24, 10, 15)), setAlarm.getDelay());
+        assertEquals(TimeUtil.getTimestampToday(getInterval().getEnd(), getTestTimestamp(24, 10, 15)), setAlarm.delay());
         assertFalse(networkTaskSchedulerAlarmManager.wasSetAlarmCalled());
         assertTrue(networkTaskSchedulerAlarmManager.wasCancelAlarmCalled());
         List<MockAlarmManager.CancelAlarmCall> cancelAlarmCalls = networkTaskSchedulerAlarmManager.getCancelAlarmCalls();
@@ -275,7 +282,7 @@ public class TimeBasedSuspensionBroadcastReceiverTest {
         List<MockAlarmManager.SetAlarmCall> setAlarmRTCCalls = alarmManager.getSetAlarmRTCCalls();
         assertEquals(1, setAlarmRTCCalls.size());
         MockAlarmManager.SetAlarmCall setAlarm = setAlarmRTCCalls.get(0);
-        assertEquals(TimeUtil.getTimestampTomorrow(getInterval().getStart(), getTestTimestamp(24, 13, 0)), setAlarm.getDelay());
+        assertEquals(TimeUtil.getTimestampTomorrow(getInterval().getStart(), getTestTimestamp(24, 13, 0)), setAlarm.delay());
         assertTrue(networkTaskSchedulerAlarmManager.wasSetAlarmCalled());
         assertFalse(networkTaskSchedulerAlarmManager.wasCancelAlarmCalled());
         List<MockAlarmManager.SetAlarmCall> setAlarmCalls = networkTaskSchedulerAlarmManager.getSetAlarmCalls();

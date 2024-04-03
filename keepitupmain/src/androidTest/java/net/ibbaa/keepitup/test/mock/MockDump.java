@@ -22,6 +22,7 @@ import net.ibbaa.phonelog.IDumpSource;
 import java.util.ArrayList;
 import java.util.List;
 
+@SuppressWarnings({"unused"})
 public class MockDump implements IDump {
 
     private final List<DumpCall> dumpCalls;
@@ -51,34 +52,7 @@ public class MockDump implements IDump {
         return dumpCalls.get(index);
     }
 
-    public static class DumpCall {
+    public record DumpCall(String tag, String message, String baseFileName, IDumpSource dumpSource) {
 
-        private final String tag;
-        private final String message;
-        private final String baseFileName;
-        private final IDumpSource dumpSource;
-
-        public DumpCall(String tag, String message, String baseFileName, IDumpSource dumpSource) {
-            this.tag = tag;
-            this.message = message;
-            this.baseFileName = baseFileName;
-            this.dumpSource = dumpSource;
-        }
-
-        public String getTag() {
-            return tag;
-        }
-
-        public String getMessage() {
-            return message;
-        }
-
-        public String getBaseFileName() {
-            return baseFileName;
-        }
-
-        public IDumpSource getDumpSource() {
-            return dumpSource;
-        }
     }
 }

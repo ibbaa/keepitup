@@ -50,6 +50,7 @@ import java.util.Arrays;
 import java.util.List;
 
 @MediumTest
+@SuppressWarnings({"SameParameterValue"})
 @RunWith(AndroidJUnit4.class)
 public class FileChooseDialogMockTest extends BaseUITest {
 
@@ -354,7 +355,6 @@ public class FileChooseDialogMockTest extends BaseUITest {
         FileEntryAdapter adapter = dialog.getAdapter();
         assertEquals(0, adapter.getItemCount());
     }
-
 
     private FileChooseDialog openFileChooseDialog(String folder) {
         FileChooseDialog fileChooseDialog = new FileChooseDialog();

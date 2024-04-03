@@ -145,6 +145,7 @@ public class JSONSystemSetup {
         preferenceSetup.importSystemSettings(JSONUtil.toMap(systemSettings));
     }
 
+    @SuppressWarnings({"unchecked"})
     private List<Map<String, ?>> filterList(List<?> list) {
         Log.d(JSONSystemSetup.class.getName(), "filterLogList");
         List<Map<String, ?>> filteredList = new ArrayList<>();

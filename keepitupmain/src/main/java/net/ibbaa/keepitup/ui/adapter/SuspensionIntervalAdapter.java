@@ -17,7 +17,6 @@
 package net.ibbaa.keepitup.ui.adapter;
 
 import android.content.Context;
-import android.content.res.Resources;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -129,7 +128,7 @@ public class SuspensionIntervalAdapter extends RecyclerView.Adapter<SuspensionIn
 
     @Override
     public int getItemCount() {
-        return intervals.size() == 0 ? 1 : intervals.size();
+        return intervals.isEmpty() ? 1 : intervals.size();
     }
 
     public List<Interval> getAllItems() {
@@ -138,9 +137,5 @@ public class SuspensionIntervalAdapter extends RecyclerView.Adapter<SuspensionIn
 
     private Context getContext() {
         return intervalsDialog.getActivity();
-    }
-
-    private Resources getResources() {
-        return getContext().getResources();
     }
 }

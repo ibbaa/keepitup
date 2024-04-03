@@ -24,6 +24,7 @@ import androidx.fragment.app.FragmentActivity;
 import net.ibbaa.keepitup.ui.dialog.PermissionExplainDialog;
 import net.ibbaa.keepitup.ui.permission.IPermissionManager;
 
+@SuppressWarnings({"unused"})
 public class MockPermissionManager implements IPermissionManager {
 
     private boolean shouldAskForRuntimePermission;

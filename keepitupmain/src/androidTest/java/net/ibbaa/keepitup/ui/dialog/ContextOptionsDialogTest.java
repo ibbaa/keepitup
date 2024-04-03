@@ -137,8 +137,8 @@ public class ContextOptionsDialogTest extends BaseUITest {
         TestContextOptionsSupport testContextOptionsSupport = (TestContextOptionsSupport) contextOptionsDialog.getContextOptionsSupport();
         assertTrue(testContextOptionsSupport.wasOnContextOptionsDialogEntryClickedCalled());
         TestContextOptionsSupport.OnContextOptionsDialogEntryClickedCall call = testContextOptionsSupport.getOnContextOptionsDialogEntryClickedCalls().get(0);
-        assertEquals(1, call.getSourceResourceId());
-        assertEquals(ContextOption.COPY, call.getOption());
+        assertEquals(1, call.sourceResourceId());
+        assertEquals(ContextOption.COPY, call.option());
         onView(withId(R.id.imageview_dialog_context_options_cancel)).perform(click());
         testContextOptionsSupport.reset();
         contextOptionsDialog = openTestContextOptionDialog(Arrays.asList(ContextOption.COPY.name(), ContextOption.PASTE.name()));
@@ -147,41 +147,42 @@ public class ContextOptionsDialogTest extends BaseUITest {
         onView(allOf(withId(R.id.textview_list_item_context_option_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options), 1))).perform(click());
         assertTrue(testContextOptionsSupport.wasOnContextOptionsDialogEntryClickedCalled());
         call = testContextOptionsSupport.getOnContextOptionsDialogEntryClickedCalls().get(0);
-        assertEquals(1, call.getSourceResourceId());
-        assertEquals(ContextOption.PASTE, call.getOption());
+        assertEquals(1, call.sourceResourceId());
+        assertEquals(ContextOption.PASTE, call.option());
         onView(withId(R.id.imageview_dialog_context_options_cancel)).perform(click());
     }
 
     @Test
     public void testOptionClickedTwoOptionsScreenRotation() {
-        TestContextOptionsDialog contextOptionsDialog = openTestContextOptionDialog(Arrays.asList(ContextOption.COPY.name(), ContextOption.PASTE.name()));
+        openTestContextOptionDialog(Arrays.asList(ContextOption.COPY.name(), ContextOption.PASTE.name()));
         rotateScreen(activityScenario);
         onView(allOf(withId(R.id.textview_list_item_context_option_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options), 0))).perform(click());
-        contextOptionsDialog = getDialog();
+        TestContextOptionsDialog contextOptionsDialog = getDialog();
         TestContextOptionsSupport testContextOptionsSupport = (TestContextOptionsSupport) contextOptionsDialog.getContextOptionsSupport();
         assertTrue(testContextOptionsSupport.wasOnContextOptionsDialogEntryClickedCalled());
         TestContextOptionsSupport.OnContextOptionsDialogEntryClickedCall call = testContextOptionsSupport.getOnContextOptionsDialogEntryClickedCalls().get(0);
-        assertEquals(1, call.getSourceResourceId());
-        assertEquals(ContextOption.COPY, call.getOption());
+        assertEquals(1, call.sourceResourceId());
+        assertEquals(ContextOption.COPY, call.option());
         rotateScreen(activityScenario);
         onView(withId(R.id.imageview_dialog_context_options_cancel)).perform(click());
     }
 
     @Test
     public void testOptionClickedOneOptionScreenRotation() {
-        TestContextOptionsDialog contextOptionsDialog = openTestContextOptionDialog(Collections.singletonList(ContextOption.PASTE.name()));
+        openTestContextOptionDialog(Collections.singletonList(ContextOption.PASTE.name()));
         rotateScreen(activityScenario);
         rotateScreen(activityScenario);
         onView(allOf(withId(R.id.textview_list_item_context_option_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options), 0))).perform(click());
-        contextOptionsDialog = getDialog();
+        TestContextOptionsDialog contextOptionsDialog = getDialog();
         TestContextOptionsSupport testContextOptionsSupport = (TestContextOptionsSupport) contextOptionsDialog.getContextOptionsSupport();
         assertTrue(testContextOptionsSupport.wasOnContextOptionsDialogEntryClickedCalled());
         TestContextOptionsSupport.OnContextOptionsDialogEntryClickedCall call = testContextOptionsSupport.getOnContextOptionsDialogEntryClickedCalls().get(0);
-        assertEquals(1, call.getSourceResourceId());
-        assertEquals(ContextOption.PASTE, call.getOption());
+        assertEquals(1, call.sourceResourceId());
+        assertEquals(ContextOption.PASTE, call.option());
         onView(withId(R.id.imageview_dialog_context_options_cancel)).perform(click());
     }
 
+    @SuppressWarnings({"UnusedReturnValue"})
     private ContextOptionsDialog openContextOptionDialog(List<String> contextOptions) {
         ContextOptionsDialog contextOptionsDialog = new ContextOptionsDialog();
         Bundle bundle = BundleUtil.stringListToBundle(ContextOption.class.getSimpleName(), contextOptions);

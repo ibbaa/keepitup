@@ -60,7 +60,7 @@ import java.io.File;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
-@SuppressWarnings({"unused"})
+@SuppressWarnings({"unused", "FieldCanBeLocal"})
 public class SystemActivity extends SettingsInputActivity implements ExportSupport, ImportSupport, DBPurgeSupport, ErrorSupport {
 
     private enum Error {
@@ -797,6 +797,7 @@ public class SystemActivity extends SettingsInputActivity implements ExportSuppo
         return new DBPurgeTask(this);
     }
 
+    @SuppressWarnings({"ReplaceNullCheck"})
     private NetworkTaskProcessServiceScheduler getNetworkTaskProcessServiceScheduler() {
         if (networkTaskProcessServiceScheduler != null) {
             return networkTaskProcessServiceScheduler;

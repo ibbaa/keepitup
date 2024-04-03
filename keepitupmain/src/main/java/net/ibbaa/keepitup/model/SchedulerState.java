@@ -18,6 +18,7 @@ package net.ibbaa.keepitup.model;
 
 import androidx.annotation.NonNull;
 
+@SuppressWarnings({"unused", "ClassCanBeRecord"})
 public class SchedulerState {
 
     private final long id;

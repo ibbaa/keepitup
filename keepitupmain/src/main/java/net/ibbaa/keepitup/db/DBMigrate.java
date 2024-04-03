@@ -81,6 +81,7 @@ public class DBMigrate {
 
     @FunctionalInterface
     private interface Migration {
+        @SuppressWarnings({"unused"})
         void migrate(SQLiteDatabase db);
     }
 }

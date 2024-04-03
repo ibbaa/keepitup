@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+@SuppressWarnings({"unused"})
 public class TestContextOptionsSupport implements ContextOptionsSupport {
 
     private final List<OnContextOptionsDialogEntryClickedCall> onContextOptionsDialogEntryClickedCalls;
@@ -49,28 +50,7 @@ public class TestContextOptionsSupport implements ContextOptionsSupport {
         onContextOptionsDialogEntryClickedCalls.add(new OnContextOptionsDialogEntryClickedCall(contextOptionsDialog, sourceResourceId, option));
     }
 
-    public static class OnContextOptionsDialogEntryClickedCall {
+    public record OnContextOptionsDialogEntryClickedCall(ContextOptionsDialog contextOptionsDialog, int sourceResourceId, ContextOption option) {
 
-        private final ContextOptionsDialog contextOptionsDialog;
-        private final int sourceResourceId;
-        private final ContextOption option;
-
-        public OnContextOptionsDialogEntryClickedCall(ContextOptionsDialog contextOptionsDialog, int sourceResourceId, ContextOption option) {
-            this.contextOptionsDialog = contextOptionsDialog;
-            this.sourceResourceId = sourceResourceId;
-            this.option = option;
-        }
-
-        public ContextOptionsDialog getContextOptionsDialog() {
-            return contextOptionsDialog;
-        }
-
-        public int getSourceResourceId() {
-            return sourceResourceId;
-        }
-
-        public ContextOption getOption() {
-            return option;
-        }
     }
 }

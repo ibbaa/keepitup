@@ -72,6 +72,7 @@ import java.util.GregorianCalendar;
 import java.util.List;
 
 @MediumTest
+@SuppressWarnings({"SameParameterValue"})
 @RunWith(AndroidJUnit4.class)
 public class GlobalSettingsActivityTest extends BaseUITest {
 

@@ -100,7 +100,7 @@ public class ConnectNetworkTaskWorker extends NetworkTaskWorker {
             connectResultFuture = executorService.submit(connectCommand);
             ConnectCommandResult connectResult = connectResultFuture.get(connectTimeout, TimeUnit.SECONDS);
             Log.d(ConnectNetworkTaskWorker.class.getName(), connectCommand.getClass().getSimpleName() + " returned " + connectResult);
-            if (connectResult.isSuccess()) {
+            if (connectResult.success()) {
                 Log.d(ConnectNetworkTaskWorker.class.getName(), "Connect was successful.");
                 logEntry.setSuccess(true);
                 logEntry.setMessage(getConnectSuccessMessage(connectResult, address.getHostAddress(), port, ip6, connectTimeout));
@@ -128,7 +128,7 @@ public class ConnectNetworkTaskWorker extends NetworkTaskWorker {
     private String getConnectSuccessMessage(ConnectCommandResult connectResult, String address, int port, boolean ip6, int connectTimeout) {
         String successMessage = getResources().getString(R.string.text_connect_success, getAddressWithPort(address, port, ip6));
         successMessage = successMessage + " " + getConnectStatsMessage(connectResult);
-        Throwable exc = connectResult.getException();
+        Throwable exc = connectResult.exception();
         if (exc != null) {
             successMessage = successMessage + " " + getResources().getString(R.string.text_connect_last_error);
             return getMessageFromException(successMessage, exc, connectTimeout);
@@ -139,7 +139,7 @@ public class ConnectNetworkTaskWorker extends NetworkTaskWorker {
     private String getConnectFailedMessage(ConnectCommandResult connectResult, String address, int port, boolean ip6, int connectTimeout) {
         String failedMessage = getResources().getString(R.string.text_connect_failure, getAddressWithPort(address, port, ip6));
         failedMessage = failedMessage + " " + getConnectStatsMessage(connectResult);
-        Throwable exc = connectResult.getException();
+        Throwable exc = connectResult.exception();
         if (exc != null) {
             failedMessage = failedMessage + " " + getResources().getString(R.string.text_connect_last_error);
             return getMessageFromException(failedMessage, exc, connectTimeout);
@@ -148,17 +148,17 @@ public class ConnectNetworkTaskWorker extends NetworkTaskWorker {
     }
 
     private String getConnectStatsMessage(ConnectCommandResult connectResult) {
-        int attempts = connectResult.getAttempts();
-        int successfulAttempts = connectResult.getSuccessfulAttempts();
-        int timeouts = connectResult.getTimeoutAttempts();
-        int errors = connectResult.getErrorAttempts();
+        int attempts = connectResult.attempts();
+        int successfulAttempts = connectResult.successfulAttempts();
+        int timeouts = connectResult.timeoutAttempts();
+        int errors = connectResult.errorAttempts();
         String attemptsMessage = attempts == 1 ? getResources().getString(R.string.text_connect_attempt, attempts) : getResources().getString(R.string.text_connect_attempts, attempts);
         String successfulAttemptsMessage = successfulAttempts == 1 ? getResources().getString(R.string.text_connect_attempt_successful, successfulAttempts) : getResources().getString(R.string.text_connect_attempts_successful, successfulAttempts);
         String timeoutsMessage = timeouts == 1 ? getResources().getString(R.string.text_connect_timeout, timeouts) : getResources().getString(R.string.text_connect_timeouts, timeouts);
         String errorMessage = errors == 1 ? getResources().getString(R.string.text_connect_error, errors) : getResources().getString(R.string.text_connect_errors, errors);
         String message = attemptsMessage + " " + successfulAttemptsMessage + " " + timeoutsMessage + " " + errorMessage;
         if (successfulAttempts > 0) {
-            String averageTime = StringUtil.formatTimeRange(connectResult.getAverageTime(), getContext());
+            String averageTime = StringUtil.formatTimeRange(connectResult.averageTime(), getContext());
             String averageTimeMessage = getResources().getString(R.string.text_connect_time, averageTime);
             message += " " + averageTimeMessage;
         }

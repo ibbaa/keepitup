@@ -26,6 +26,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Future;
 
+@SuppressWarnings({"WhileLoopReplaceableByForEach"})
 public class NetworkTaskProcessPool {
 
     private final Map<Integer, List<Future<?>>> futurePool;

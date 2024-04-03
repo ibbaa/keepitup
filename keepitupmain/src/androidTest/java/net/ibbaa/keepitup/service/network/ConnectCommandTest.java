@@ -35,6 +35,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @MediumTest
+@SuppressWarnings({"SameParameterValue"})
 @RunWith(AndroidJUnit4.class)
 public class ConnectCommandTest {
 
@@ -67,12 +68,12 @@ public class ConnectCommandTest {
         TestConnectCommand connectCommand = new TestConnectCommand(TestRegistry.getContext(), null, 80, 3);
         prepareSuccessfulConnectionResultList(connectCommand, 3);
         ConnectCommandResult result = connectCommand.call();
-        assertTrue(result.isSuccess());
-        assertEquals(3, result.getAttempts());
-        assertEquals(3, result.getSuccessfulAttempts());
-        assertEquals(0, result.getTimeoutAttempts());
-        assertEquals(3.0, result.getAverageTime(), 0.01);
-        assertNull(result.getException());
+        assertTrue(result.success());
+        assertEquals(3, result.attempts());
+        assertEquals(3, result.successfulAttempts());
+        assertEquals(0, result.timeoutAttempts());
+        assertEquals(3.0, result.averageTime(), 0.01);
+        assertNull(result.exception());
     }
 
     @Test
@@ -80,12 +81,12 @@ public class ConnectCommandTest {
         TestConnectCommand connectCommand = new TestConnectCommand(TestRegistry.getContext(), null, 80, 3);
         prepareTimeoutConnectionResultList(connectCommand, 3);
         ConnectCommandResult result = connectCommand.call();
-        assertFalse(result.isSuccess());
-        assertEquals(3, result.getAttempts());
-        assertEquals(0, result.getSuccessfulAttempts());
-        assertEquals(3, result.getTimeoutAttempts());
-        assertEquals(0, result.getAverageTime(), 0.01);
-        assertNull(result.getException());
+        assertFalse(result.success());
+        assertEquals(3, result.attempts());
+        assertEquals(0, result.successfulAttempts());
+        assertEquals(3, result.timeoutAttempts());
+        assertEquals(0, result.averageTime(), 0.01);
+        assertNull(result.exception());
     }
 
     @Test
@@ -93,12 +94,12 @@ public class ConnectCommandTest {
         TestConnectCommand connectCommand = new TestConnectCommand(TestRegistry.getContext(), null, 80, 3);
         prepareExcpetionConnectionResultList(connectCommand, 3);
         ConnectCommandResult result = connectCommand.call();
-        assertFalse(result.isSuccess());
-        assertEquals(3, result.getAttempts());
-        assertEquals(0, result.getSuccessfulAttempts());
-        assertEquals(0, result.getTimeoutAttempts());
-        assertEquals(0, result.getAverageTime(), 0.01);
-        assertEquals("Error 3", result.getException().getMessage());
+        assertFalse(result.success());
+        assertEquals(3, result.attempts());
+        assertEquals(0, result.successfulAttempts());
+        assertEquals(0, result.timeoutAttempts());
+        assertEquals(0, result.averageTime(), 0.01);
+        assertEquals("Error 3", result.exception().getMessage());
     }
 
     @Test
@@ -110,12 +111,12 @@ public class ConnectCommandTest {
         connectionResultList.add(new TestConnectCommand.MockConnectionResult(true, 3, null));
         connectCommand.setConnectionResults(connectionResultList);
         ConnectCommandResult result = connectCommand.call();
-        assertTrue(result.isSuccess());
-        assertEquals(3, result.getAttempts());
-        assertEquals(2, result.getSuccessfulAttempts());
-        assertEquals(1, result.getTimeoutAttempts());
-        assertEquals(3.0, result.getAverageTime(), 0.01);
-        assertNull(result.getException());
+        assertTrue(result.success());
+        assertEquals(3, result.attempts());
+        assertEquals(2, result.successfulAttempts());
+        assertEquals(1, result.timeoutAttempts());
+        assertEquals(3.0, result.averageTime(), 0.01);
+        assertNull(result.exception());
     }
 
     @Test
@@ -127,12 +128,12 @@ public class ConnectCommandTest {
         connectionResultList.add(new TestConnectCommand.MockConnectionResult(true, 3, null));
         connectCommand.setConnectionResults(connectionResultList);
         ConnectCommandResult result = connectCommand.call();
-        assertTrue(result.isSuccess());
-        assertEquals(3, result.getAttempts());
-        assertEquals(2, result.getSuccessfulAttempts());
-        assertEquals(0, result.getTimeoutAttempts());
-        assertEquals(3.0, result.getAverageTime(), 0.01);
-        assertEquals("Error", result.getException().getMessage());
+        assertTrue(result.success());
+        assertEquals(3, result.attempts());
+        assertEquals(2, result.successfulAttempts());
+        assertEquals(0, result.timeoutAttempts());
+        assertEquals(3.0, result.averageTime(), 0.01);
+        assertEquals("Error", result.exception().getMessage());
     }
 
     @Test
@@ -147,12 +148,12 @@ public class ConnectCommandTest {
         connectionResultList.add(new TestConnectCommand.MockConnectionResult(true, 3, null));
         connectCommand.setConnectionResults(connectionResultList);
         ConnectCommandResult result = connectCommand.call();
-        assertTrue(result.isSuccess());
-        assertEquals(6, result.getAttempts());
-        assertEquals(2, result.getSuccessfulAttempts());
-        assertEquals(1, result.getTimeoutAttempts());
-        assertEquals(3.0, result.getAverageTime(), 0.01);
-        assertEquals("Error 3", result.getException().getMessage());
+        assertTrue(result.success());
+        assertEquals(6, result.attempts());
+        assertEquals(2, result.successfulAttempts());
+        assertEquals(1, result.timeoutAttempts());
+        assertEquals(3.0, result.averageTime(), 0.01);
+        assertEquals("Error 3", result.exception().getMessage());
     }
 
     @Test
@@ -167,12 +168,12 @@ public class ConnectCommandTest {
         connectionResultList.add(new TestConnectCommand.MockConnectionResult(false, 3, null));
         connectCommand.setConnectionResults(connectionResultList);
         ConnectCommandResult result = connectCommand.call();
-        assertFalse(result.isSuccess());
-        assertEquals(6, result.getAttempts());
-        assertEquals(0, result.getSuccessfulAttempts());
-        assertEquals(3, result.getTimeoutAttempts());
-        assertEquals(0, result.getAverageTime(), 0.01);
-        assertEquals("Error 3", result.getException().getMessage());
+        assertFalse(result.success());
+        assertEquals(6, result.attempts());
+        assertEquals(0, result.successfulAttempts());
+        assertEquals(3, result.timeoutAttempts());
+        assertEquals(0, result.averageTime(), 0.01);
+        assertEquals("Error 3", result.exception().getMessage());
     }
 
     @Test
@@ -187,11 +188,11 @@ public class ConnectCommandTest {
         connectionResultList.add(new TestConnectCommand.MockConnectionResult(true, 6, null));
         connectCommand.setConnectionResults(connectionResultList);
         ConnectCommandResult result = connectCommand.call();
-        assertTrue(result.isSuccess());
-        assertEquals(6, result.getAttempts());
-        assertEquals(6, result.getSuccessfulAttempts());
-        assertEquals(0, result.getTimeoutAttempts());
-        assertEquals(3.5, result.getAverageTime(), 0.01);
-        assertNull(result.getException());
+        assertTrue(result.success());
+        assertEquals(6, result.attempts());
+        assertEquals(6, result.successfulAttempts());
+        assertEquals(0, result.timeoutAttempts());
+        assertEquals(3.5, result.averageTime(), 0.01);
+        assertNull(result.exception());
     }
 }

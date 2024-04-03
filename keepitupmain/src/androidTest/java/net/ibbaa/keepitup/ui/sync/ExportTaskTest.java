@@ -112,7 +112,7 @@ public class ExportTaskTest extends BaseUITest {
         String jsonData = StreamUtil.inputStreamToString(new FileInputStream(writtenFile), Charsets.UTF_8);
         JSONSystemSetup setup = new JSONSystemSetup(TestRegistry.getContext());
         SystemSetupResult result = setup.importData(jsonData);
-        assertTrue(result.isSuccess());
+        assertTrue(result.success());
         assertFalse(getNetworkTaskDAO().readAllNetworkTasks().isEmpty());
         assertFalse(getLogDAO().readAllLogs().isEmpty());
         assertFalse(getIntervalDAO().readAllIntervals().isEmpty());

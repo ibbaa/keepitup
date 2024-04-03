@@ -72,8 +72,8 @@ public class NotificationHandlerTest {
         notificationHandler.sendMessageNotification(networkTask, logEntry);
         assertTrue(notificationManager.wasNotifyCalled());
         MockNotificationManager.NotifyCall notifyCall = notificationManager.getNotifyCalls().get(0);
-        assertEquals(networkTask.getSchedulerId(), notifyCall.getId());
-        assertEquals("KEEPITUP_ERROR_NOTIFICATION_CHANNEL", notifyCall.getNotification().getChannelId());
+        assertEquals(networkTask.getSchedulerId(), notifyCall.id());
+        assertEquals("KEEPITUP_ERROR_NOTIFICATION_CHANNEL", notifyCall.notification().getChannelId());
         MockNotificationBuilder notificationBuilder = (MockNotificationBuilder) notificationHandler.getMessageNotificationBuilder();
         assertEquals(R.drawable.icon_notification_ok, notificationBuilder.getSmallIcon());
         assertEquals("Keep it up", notificationBuilder.getContentTitle());
@@ -89,8 +89,8 @@ public class NotificationHandlerTest {
         notificationHandler.sendMessageNotification(networkTask, logEntry);
         assertTrue(notificationManager.wasNotifyCalled());
         MockNotificationManager.NotifyCall notifyCall = notificationManager.getNotifyCalls().get(0);
-        assertEquals(networkTask.getSchedulerId(), notifyCall.getId());
-        assertEquals("KEEPITUP_ERROR_NOTIFICATION_CHANNEL", notifyCall.getNotification().getChannelId());
+        assertEquals(networkTask.getSchedulerId(), notifyCall.id());
+        assertEquals("KEEPITUP_ERROR_NOTIFICATION_CHANNEL", notifyCall.notification().getChannelId());
         MockNotificationBuilder notificationBuilder = (MockNotificationBuilder) notificationHandler.getMessageNotificationBuilder();
         assertEquals(R.drawable.icon_notification_failure, notificationBuilder.getSmallIcon());
         assertEquals("Keep it up", notificationBuilder.getContentTitle());

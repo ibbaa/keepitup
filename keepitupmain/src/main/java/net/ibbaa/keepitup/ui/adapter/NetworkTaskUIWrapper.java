@@ -21,6 +21,7 @@ import androidx.annotation.NonNull;
 import net.ibbaa.keepitup.model.LogEntry;
 import net.ibbaa.keepitup.model.NetworkTask;
 
+@SuppressWarnings({"ClassCanBeRecord"})
 public class NetworkTaskUIWrapper {
 
     private final NetworkTask networkTask;

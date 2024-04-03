@@ -58,7 +58,7 @@ import net.ibbaa.keepitup.util.StringUtil;
 import java.util.Collections;
 import java.util.List;
 
-@SuppressWarnings({"unused"})
+@SuppressWarnings({"unused", "SameReturnValue"})
 public class FileChooseDialog extends DialogFragment implements ContextOptionsSupport {
 
     public enum Type {

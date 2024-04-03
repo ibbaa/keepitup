@@ -86,35 +86,11 @@ public class MockAlarmManager implements IAlarmManager {
         cancelAlarmCalls.add(new CancelAlarmCall(pendingIntent));
     }
 
-    public static class SetAlarmCall {
+    public record SetAlarmCall(long delay, PendingIntent pendingIntent) {
 
-        private final long delay;
-        private final PendingIntent pendingIntent;
-
-        public SetAlarmCall(long delay, PendingIntent pendingIntent) {
-            this.delay = delay;
-            this.pendingIntent = pendingIntent;
-        }
-
-        public long getDelay() {
-            return delay;
-        }
-
-        public PendingIntent getPendingIntent() {
-            return pendingIntent;
-        }
     }
 
-    public static class CancelAlarmCall {
+    public record CancelAlarmCall(PendingIntent pendingIntent) {
 
-        private final PendingIntent pendingIntent;
-
-        public CancelAlarmCall(PendingIntent pendingIntent) {
-            this.pendingIntent = pendingIntent;
-        }
-
-        public PendingIntent getPendingIntent() {
-            return pendingIntent;
-        }
     }
 }

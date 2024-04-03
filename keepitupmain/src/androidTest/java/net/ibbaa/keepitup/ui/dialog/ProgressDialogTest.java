@@ -69,6 +69,7 @@ public class ProgressDialogTest extends BaseUITest {
         onView(withId(R.id.progressbar_dialog_progress)).check(matches(isDisplayed()));
     }
 
+    @SuppressWarnings({"UnusedReturnValue"})
     private ProgressDialog openProgressDialog() {
         ProgressDialog progressDialog = new ProgressDialog();
         progressDialog.show(getActivity(activityScenario).getSupportFragmentManager(), ConfirmDialog.class.getName());

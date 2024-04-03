@@ -32,6 +32,7 @@ import java.io.ByteArrayOutputStream;
 import java.util.Arrays;
 
 @SmallTest
+@SuppressWarnings({"CharsetObjectCanBeUsed", "StringOperationCanBeSimplified"})
 @RunWith(AndroidJUnit4.class)
 public class StreamUtilTest {
 

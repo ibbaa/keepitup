@@ -328,6 +328,7 @@ public class NetworkTaskDAO extends BaseDAO {
         return db.update(dbConstants.getTableName(), values, selection, selectionArgs);
     }
 
+    @SuppressWarnings({"ExtractMethodRecommender"})
     private NetworkTask updateNetworkTask(NetworkTask networkTask, SQLiteDatabase db) {
         Log.d(NetworkTaskDAO.class.getName(), "updateNetworkTask, task is " + networkTask);
         NetworkTaskDBConstants dbConstants = new NetworkTaskDBConstants(getContext());

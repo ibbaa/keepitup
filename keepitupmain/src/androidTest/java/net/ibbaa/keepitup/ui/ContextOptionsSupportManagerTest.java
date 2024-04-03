@@ -92,8 +92,8 @@ public class ContextOptionsSupportManagerTest extends BaseUITest {
         TestContextOptionsSupport contextOptionsSupport = (TestContextOptionsSupport) contextOptionsSupportManager.getTestContextOptionsDialog().getContextOptionsSupport();
         assertTrue(contextOptionsSupport.wasOnContextOptionsDialogEntryClickedCalled());
         TestContextOptionsSupport.OnContextOptionsDialogEntryClickedCall call = contextOptionsSupport.getOnContextOptionsDialogEntryClickedCalls().get(0);
-        assertEquals(editText.getId(), call.getSourceResourceId());
-        assertEquals(ContextOption.COPY, call.getOption());
+        assertEquals(editText.getId(), call.sourceResourceId());
+        assertEquals(ContextOption.COPY, call.option());
         onView(withId(R.id.imageview_dialog_context_options_cancel)).perform(click());
         contextOptionsSupport.reset();
         contextOptionsSupportManager.showContextOptionsDialog(editText);
@@ -116,8 +116,8 @@ public class ContextOptionsSupportManagerTest extends BaseUITest {
         TestContextOptionsSupport contextOptionsSupport = (TestContextOptionsSupport) contextOptionsSupportManager.getTestContextOptionsDialog().getContextOptionsSupport();
         assertTrue(contextOptionsSupport.wasOnContextOptionsDialogEntryClickedCalled());
         TestContextOptionsSupport.OnContextOptionsDialogEntryClickedCall call = contextOptionsSupport.getOnContextOptionsDialogEntryClickedCalls().get(0);
-        assertEquals(editText.getId(), call.getSourceResourceId());
-        assertEquals(ContextOption.PASTE, call.getOption());
+        assertEquals(editText.getId(), call.sourceResourceId());
+        assertEquals(ContextOption.PASTE, call.option());
         onView(withId(R.id.imageview_dialog_context_options_cancel)).perform(click());
         contextOptionsSupport.reset();
         contextOptionsSupportManager.showContextOptionsDialog(editText);
@@ -141,8 +141,8 @@ public class ContextOptionsSupportManagerTest extends BaseUITest {
         TestContextOptionsSupport contextOptionsSupport = (TestContextOptionsSupport) contextOptionsSupportManager.getTestContextOptionsDialog().getContextOptionsSupport();
         assertTrue(contextOptionsSupport.wasOnContextOptionsDialogEntryClickedCalled());
         TestContextOptionsSupport.OnContextOptionsDialogEntryClickedCall call = contextOptionsSupport.getOnContextOptionsDialogEntryClickedCalls().get(0);
-        assertEquals(editText.getId(), call.getSourceResourceId());
-        assertEquals(ContextOption.COPY, call.getOption());
+        assertEquals(editText.getId(), call.sourceResourceId());
+        assertEquals(ContextOption.COPY, call.option());
         onView(withId(R.id.imageview_dialog_context_options_cancel)).perform(click());
         contextOptionsSupport.reset();
         contextOptionsSupportManager.showContextOptionsDialog(editText);
@@ -150,8 +150,8 @@ public class ContextOptionsSupportManagerTest extends BaseUITest {
         onView(allOf(withId(R.id.textview_list_item_context_option_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options), 1))).perform(click());
         assertTrue(contextOptionsSupport.wasOnContextOptionsDialogEntryClickedCalled());
         call = contextOptionsSupport.getOnContextOptionsDialogEntryClickedCalls().get(0);
-        assertEquals(editText.getId(), call.getSourceResourceId());
-        assertEquals(ContextOption.PASTE, call.getOption());
+        assertEquals(editText.getId(), call.sourceResourceId());
+        assertEquals(ContextOption.PASTE, call.option());
         onView(withId(R.id.imageview_dialog_context_options_cancel)).perform(click());
         contextOptionsSupport.reset();
         contextOptionsSupportManager.showContextOptionsDialog(editText);

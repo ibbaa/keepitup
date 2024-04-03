@@ -823,6 +823,7 @@ public class DownloadNetworkTaskWorkerTest {
     }
 
     @Test
+    @SuppressWarnings({"BusyWait"})
     public void testDownloadThreadInterrupted() throws Exception {
         NetworkTask task = networkTaskDAO.insertNetworkTask(getNetworkTask());
         DNSLookupResult dnsLookupResult = new DNSLookupResult(Arrays.asList(InetAddress.getByName("127.0.0.1"), InetAddress.getByName("::1")), null);

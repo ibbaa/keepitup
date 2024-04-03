@@ -22,6 +22,7 @@ import java.io.File;
 import java.net.URL;
 import java.util.List;
 
+@SuppressWarnings({"unused"})
 public interface IFileManager {
 
     File getInternalDownloadDirectory();

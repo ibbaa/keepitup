@@ -103,17 +103,17 @@ public class DownloadNetworkTaskWorker extends NetworkTaskWorker {
             downloadResultFuture = executorService.submit(downloadCommand);
             DownloadCommandResult downloadResult = downloadResultFuture.get(timeout, TimeUnit.SECONDS);
             Log.d(DownloadNetworkTaskWorker.class.getName(), downloadCommand.getClass().getSimpleName() + " returned " + downloadResult);
-            if (!downloadResult.isConnectSuccess()) {
+            if (!downloadResult.connectSuccess()) {
                 Log.d(DownloadNetworkTaskWorker.class.getName(), "Connection failed. Preparing error message.");
                 prepareConnectError(downloadResult, url, timeout, folder, delete, logEntry);
                 return new ExecutionResult(false, logEntry);
             }
-            if (downloadResult.getHttpResponseCode() >= 0 && !HTTPUtil.isHTTPReturnCodeOk(downloadResult.getHttpResponseCode())) {
+            if (downloadResult.httpResponseCode() >= 0 && !HTTPUtil.isHTTPReturnCodeOk(downloadResult.httpResponseCode())) {
                 Log.d(DownloadNetworkTaskWorker.class.getName(), "HTTP download and HTTP return code is not HTTP_OK. Preparing error message.");
                 prepareHTTPReturnCodeError(downloadResult, url, timeout, folder, delete, logEntry);
                 return new ExecutionResult(false, logEntry);
             }
-            if (downloadResult.isDownloadSuccess()) {
+            if (downloadResult.downloadSuccess()) {
                 if (!downloadResult.fileExists()) {
                     Log.d(DownloadNetworkTaskWorker.class.getName(), "The download was successful but the downloaded file does not exist. Preparing error message.");
                     prepareUnknownError(downloadResult, url, timeout, folder, delete, logEntry);
@@ -123,12 +123,12 @@ public class DownloadNetworkTaskWorker extends NetworkTaskWorker {
                 prepareSuccess(downloadResult, url, timeout, folder, delete, logEntry);
                 return new ExecutionResult(false, logEntry);
             }
-            if (downloadResult.isStopped()) {
+            if (downloadResult.stopped()) {
                 Log.d(DownloadNetworkTaskWorker.class.getName(), "The download was stopped. Preparing error message.");
                 prepareStoppedError(downloadResult, timeout, folder, delete, logEntry);
                 return new ExecutionResult(false, logEntry);
             }
-            if (!downloadResult.isValid()) {
+            if (!downloadResult.valid()) {
                 Log.d(DownloadNetworkTaskWorker.class.getName(), "The network task is invalid. Preparing error message.");
                 prepareInvalidError(downloadResult, timeout, folder, delete, logEntry);
                 return new ExecutionResult(false, logEntry);
@@ -160,7 +160,7 @@ public class DownloadNetworkTaskWorker extends NetworkTaskWorker {
     private void prepareHTTPReturnCodeError(DownloadCommandResult downloadResult, URL url, int timeout, File folder, boolean delete, LogEntry logEntry) {
         Log.d(DownloadNetworkTaskWorker.class.getName(), "prepareHTTPReturnCodeErrorMessage");
         String downloadError = getResources().getString(R.string.text_download_error, url.toExternalForm());
-        String httpMessage = getResources().getString(R.string.text_download_http_error, downloadResult.getHttpResponseCode(), downloadResult.getHttpResponseMessage());
+        String httpMessage = getResources().getString(R.string.text_download_http_error, downloadResult.httpResponseCode(), downloadResult.httpResponseMessage());
         String message = downloadError + " " + httpMessage;
         prepareError(downloadResult, timeout, folder, delete, logEntry, message);
     }
@@ -180,7 +180,7 @@ public class DownloadNetworkTaskWorker extends NetworkTaskWorker {
     private void prepareUnknownError(DownloadCommandResult downloadResult, URL url, int timeout, File folder, boolean delete, LogEntry logEntry) {
         Log.d(DownloadNetworkTaskWorker.class.getName(), "prepareUnknownErrorMessage");
         logEntry.setSuccess(false);
-        Throwable exc = downloadResult.getException();
+        Throwable exc = downloadResult.exception();
         String message;
         if (exc == null) {
             message = getResources().getString(R.string.text_download_unknown_error, url.toExternalForm());
@@ -197,9 +197,9 @@ public class DownloadNetworkTaskWorker extends NetworkTaskWorker {
             Log.d(DownloadNetworkTaskWorker.class.getName(), "The file was partially downloaded.");
             message += " " + getResources().getString(R.string.text_download_partial);
             if (!delete) {
-                message += " " + getResources().getString(R.string.text_download_file, new File(folder, downloadResult.getFileName()).getAbsolutePath());
+                message += " " + getResources().getString(R.string.text_download_file, new File(folder, downloadResult.fileName()).getAbsolutePath());
             } else {
-                if (downloadResult.isDeleteSuccess()) {
+                if (downloadResult.deleteSuccess()) {
                     Log.d(DownloadNetworkTaskWorker.class.getName(), "The partially downloaded file was deleted.");
                     message += " " + getResources().getString(R.string.text_download_partial_delete);
                 } else {
@@ -207,10 +207,10 @@ public class DownloadNetworkTaskWorker extends NetworkTaskWorker {
                     message += " " + getResources().getString(R.string.text_download_partial_delete_error);
                 }
             }
-            String durationMessage = getResources().getString(R.string.text_download_time, StringUtil.formatTimeRange(downloadResult.getDuration(), getContext()));
+            String durationMessage = getResources().getString(R.string.text_download_time, StringUtil.formatTimeRange(downloadResult.duration(), getContext()));
             message += " " + durationMessage;
         }
-        Throwable exc = downloadResult.getException();
+        Throwable exc = downloadResult.exception();
         if (exc == null) {
             logEntry.setMessage(message);
         } else {
@@ -222,20 +222,20 @@ public class DownloadNetworkTaskWorker extends NetworkTaskWorker {
         Log.d(DownloadNetworkTaskWorker.class.getName(), "prepareSuccess");
         logEntry.setSuccess(true);
         String successMessage = getResources().getString(R.string.text_download_success, url.toExternalForm());
-        String durationMessage = getResources().getString(R.string.text_download_time, StringUtil.formatTimeRange(downloadResult.getDuration(), getContext()));
+        String durationMessage = getResources().getString(R.string.text_download_time, StringUtil.formatTimeRange(downloadResult.duration(), getContext()));
         if (!delete) {
-            String fileMessage = getResources().getString(R.string.text_download_file, new File(folder, downloadResult.getFileName()).getAbsolutePath());
+            String fileMessage = getResources().getString(R.string.text_download_file, new File(folder, downloadResult.fileName()).getAbsolutePath());
             logEntry.setMessage(successMessage + " " + fileMessage + " " + durationMessage);
             return;
         }
-        if (downloadResult.isDeleteSuccess()) {
+        if (downloadResult.deleteSuccess()) {
             String deleteMessage = getResources().getString(R.string.text_download_delete);
             logEntry.setMessage(successMessage + " " + deleteMessage + " " + durationMessage);
         } else {
             Log.d(DownloadNetworkTaskWorker.class.getName(), "The download was successful but the file could not be deleted.");
             String deleteErrorMessage = getResources().getString(R.string.text_download_delete_error);
             String message = successMessage + " " + deleteErrorMessage + " " + durationMessage;
-            Throwable exc = downloadResult.getException();
+            Throwable exc = downloadResult.exception();
             if (exc == null) {
                 logEntry.setMessage(message);
             } else {

@@ -82,6 +82,7 @@ public class Interval {
         return start;
     }
 
+    @SuppressWarnings({"ReplaceNullCheck"})
     public void setStart(Time start) {
         if (start != null) {
             this.start = start;
@@ -94,6 +95,7 @@ public class Interval {
         return end;
     }
 
+    @SuppressWarnings({"ReplaceNullCheck"})
     public void setEnd(Time end) {
         if (end != null) {
             this.end = end;

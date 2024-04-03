@@ -82,6 +82,7 @@ import java.io.FileOutputStream;
 import java.util.List;
 
 @MediumTest
+@SuppressWarnings({"SameParameterValue"})
 @RunWith(AndroidJUnit4.class)
 public class SystemActivityTest extends BaseUITest {
 
@@ -723,7 +724,7 @@ public class SystemActivityTest extends BaseUITest {
         String jsonData = StreamUtil.inputStreamToString(new FileInputStream(new File(folder, "keepitup_config.json")), Charsets.UTF_8);
         JSONSystemSetup setup = new JSONSystemSetup(TestRegistry.getContext());
         SystemSetupResult result = setup.importData(jsonData);
-        assertTrue(result.isSuccess());
+        assertTrue(result.success());
         assertTrue(getFileManager().doesFileExist(folder, "keepitup_config.json"));
         assertFalse(getNetworkTaskDAO().readAllNetworkTasks().isEmpty());
         assertFalse(getLogDAO().readAllLogs().isEmpty());
@@ -877,7 +878,7 @@ public class SystemActivityTest extends BaseUITest {
         String jsonData = StreamUtil.inputStreamToString(new FileInputStream(new File(folder, "keepitup_config.json")), Charsets.UTF_8);
         JSONSystemSetup setup = new JSONSystemSetup(TestRegistry.getContext());
         SystemSetupResult result = setup.importData(jsonData);
-        assertTrue(result.isSuccess());
+        assertTrue(result.success());
         assertTrue(getFileManager().doesFileExist(folder, "keepitup_config.json"));
         assertFalse(getNetworkTaskDAO().readAllNetworkTasks().isEmpty());
         assertFalse(getLogDAO().readAllLogs().isEmpty());
@@ -1196,7 +1197,7 @@ public class SystemActivityTest extends BaseUITest {
         String jsonData = StreamUtil.inputStreamToString(new FileInputStream(new File(folder, "keepitup_config.json")), Charsets.UTF_8);
         JSONSystemSetup setup = new JSONSystemSetup(TestRegistry.getContext());
         SystemSetupResult result = setup.importData(jsonData);
-        assertTrue(result.isSuccess());
+        assertTrue(result.success());
         assertTrue(getFileManager().doesFileExist(folder, "keepitup_config.json"));
         assertFalse(getNetworkTaskDAO().readAllNetworkTasks().isEmpty());
         assertFalse(getLogDAO().readAllLogs().isEmpty());
@@ -1355,7 +1356,7 @@ public class SystemActivityTest extends BaseUITest {
         String jsonData = StreamUtil.inputStreamToString(new FileInputStream(new File(folder, "keepitup_config.json")), Charsets.UTF_8);
         JSONSystemSetup setup = new JSONSystemSetup(TestRegistry.getContext());
         SystemSetupResult result = setup.importData(jsonData);
-        assertTrue(result.isSuccess());
+        assertTrue(result.success());
         assertTrue(getFileManager().doesFileExist(folder, "keepitup_config.json"));
         assertFalse(getNetworkTaskDAO().readAllNetworkTasks().isEmpty());
         assertFalse(getLogDAO().readAllLogs().isEmpty());
@@ -1673,7 +1674,7 @@ public class SystemActivityTest extends BaseUITest {
         onView(withId(R.id.switch_activity_system_file_dump_enabled)).perform(click());
         JSONSystemSetup setup = new JSONSystemSetup(TestRegistry.getContext());
         SystemSetupResult result = setup.exportData();
-        assertTrue(result.isSuccess());
+        assertTrue(result.success());
         getNetworkTaskDAO().deleteAllNetworkTasks();
         getLogDAO().deleteAllLogs();
         getIntervalDAO().deleteAllIntervals();
@@ -1681,7 +1682,7 @@ public class SystemActivityTest extends BaseUITest {
         getTimeBasedSuspensionScheduler().getIntervals();
         getPreferenceManager().removeAllPreferences();
         File folder = getFileManager().getExternalDirectory("config", 0);
-        StreamUtil.stringToOutputStream(result.getData(), new FileOutputStream(new File(folder, "test.json")), Charsets.UTF_8);
+        StreamUtil.stringToOutputStream(result.data(), new FileOutputStream(new File(folder, "test.json")), Charsets.UTF_8);
         onView(withId(R.id.cardview_activity_system_config_import)).perform(click());
         onView(withId(R.id.edittext_dialog_file_choose_folder)).check(matches(withText("config")));
         onView(withId(R.id.edittext_dialog_file_choose_file)).perform(replaceText("test.json"));
@@ -1748,9 +1749,9 @@ public class SystemActivityTest extends BaseUITest {
         onView(withId(R.id.switch_activity_system_file_dump_enabled)).perform(click());
         JSONSystemSetup setup = new JSONSystemSetup(TestRegistry.getContext());
         SystemSetupResult result = setup.exportData();
-        assertTrue(result.isSuccess());
+        assertTrue(result.success());
         File folder = getFileManager().getExternalDirectory("folderImport", 0);
-        StreamUtil.stringToOutputStream(result.getData(), new FileOutputStream(new File(folder, "test.json")), Charsets.UTF_8);
+        StreamUtil.stringToOutputStream(result.data(), new FileOutputStream(new File(folder, "test.json")), Charsets.UTF_8);
         onView(withId(R.id.cardview_activity_system_config_import)).perform(click());
         onView(withId(R.id.edittext_dialog_file_choose_folder)).check(matches(withText("folderImport")));
         onView(withId(R.id.edittext_dialog_file_choose_file)).perform(replaceText("test.json"));
@@ -1825,7 +1826,7 @@ public class SystemActivityTest extends BaseUITest {
         onView(withId(R.id.switch_activity_system_file_dump_enabled)).perform(click());
         JSONSystemSetup setup = new JSONSystemSetup(TestRegistry.getContext());
         SystemSetupResult result = setup.exportData();
-        assertTrue(result.isSuccess());
+        assertTrue(result.success());
         getNetworkTaskDAO().deleteAllNetworkTasks();
         getLogDAO().deleteAllLogs();
         getIntervalDAO().deleteAllIntervals();
@@ -1833,7 +1834,7 @@ public class SystemActivityTest extends BaseUITest {
         getTimeBasedSuspensionScheduler().getIntervals();
         getPreferenceManager().removeAllPreferences();
         File folder = getFileManager().getExternalDirectory("config", 0);
-        StreamUtil.stringToOutputStream(result.getData(), new FileOutputStream(new File(folder, "test.json")), Charsets.UTF_8);
+        StreamUtil.stringToOutputStream(result.data(), new FileOutputStream(new File(folder, "test.json")), Charsets.UTF_8);
         onView(withId(R.id.cardview_activity_system_config_import)).perform(click());
         onView(withId(R.id.edittext_dialog_file_choose_folder)).check(matches(withText("config")));
         onView(withId(R.id.edittext_dialog_file_choose_file)).perform(replaceText("test.json"));
@@ -1902,9 +1903,9 @@ public class SystemActivityTest extends BaseUITest {
         onView(withId(R.id.switch_activity_system_file_dump_enabled)).perform(click());
         JSONSystemSetup setup = new JSONSystemSetup(TestRegistry.getContext());
         SystemSetupResult result = setup.exportData();
-        assertTrue(result.isSuccess());
+        assertTrue(result.success());
         File folder = getFileManager().getExternalDirectory("config", 0);
-        StreamUtil.stringToOutputStream(result.getData(), new FileOutputStream(new File(folder, "test.json")), Charsets.UTF_8);
+        StreamUtil.stringToOutputStream(result.data(), new FileOutputStream(new File(folder, "test.json")), Charsets.UTF_8);
         onView(withId(R.id.cardview_activity_system_config_import)).perform(click());
         onView(withId(R.id.edittext_dialog_file_choose_folder)).check(matches(withText("folderImport")));
         onView(withId(R.id.edittext_dialog_file_choose_file)).perform(replaceText("test.json"));
@@ -1990,7 +1991,7 @@ public class SystemActivityTest extends BaseUITest {
         onView(withId(R.id.switch_activity_system_file_dump_enabled)).perform(click());
         JSONSystemSetup setup = new JSONSystemSetup(TestRegistry.getContext());
         SystemSetupResult result = setup.exportData();
-        assertTrue(result.isSuccess());
+        assertTrue(result.success());
         getNetworkTaskDAO().deleteAllNetworkTasks();
         getLogDAO().deleteAllLogs();
         getIntervalDAO().deleteAllIntervals();
@@ -1998,7 +1999,7 @@ public class SystemActivityTest extends BaseUITest {
         getTimeBasedSuspensionScheduler().getIntervals();
         getPreferenceManager().removeAllPreferences();
         File folder = getFileManager().getExternalDirectory("config", 0);
-        StreamUtil.stringToOutputStream(result.getData(), new FileOutputStream(new File(folder, "test.json")), Charsets.UTF_8);
+        StreamUtil.stringToOutputStream(result.data(), new FileOutputStream(new File(folder, "test.json")), Charsets.UTF_8);
         onView(withId(R.id.cardview_activity_system_config_import)).perform(click());
         onView(withId(R.id.edittext_dialog_file_choose_folder)).check(matches(withText("config")));
         onView(withId(R.id.edittext_dialog_file_choose_file)).perform(replaceText("test.json"));
@@ -2118,7 +2119,7 @@ public class SystemActivityTest extends BaseUITest {
         onView(withId(R.id.switch_activity_system_file_dump_enabled)).perform(click());
         JSONSystemSetup setup = new JSONSystemSetup(TestRegistry.getContext());
         SystemSetupResult result = setup.exportData();
-        assertTrue(result.isSuccess());
+        assertTrue(result.success());
         getNetworkTaskDAO().deleteAllNetworkTasks();
         getLogDAO().deleteAllLogs();
         getIntervalDAO().deleteAllIntervals();
@@ -2126,7 +2127,7 @@ public class SystemActivityTest extends BaseUITest {
         getTimeBasedSuspensionScheduler().getIntervals();
         getPreferenceManager().removeAllPreferences();
         File folder = getFileManager().getExternalDirectory("config", 0);
-        StreamUtil.stringToOutputStream(result.getData(), new FileOutputStream(new File(folder, "test.json")), Charsets.UTF_8);
+        StreamUtil.stringToOutputStream(result.data(), new FileOutputStream(new File(folder, "test.json")), Charsets.UTF_8);
         onView(withId(R.id.cardview_activity_system_config_import)).perform(click());
         onView(withId(R.id.edittext_dialog_file_choose_folder)).check(matches(withText("config")));
         onView(withId(R.id.edittext_dialog_file_choose_file)).perform(replaceText("test.json"));
@@ -2210,12 +2211,12 @@ public class SystemActivityTest extends BaseUITest {
         getTimeBasedSuspensionScheduler().restart();
         JSONSystemSetup setup = new JSONSystemSetup(TestRegistry.getContext());
         SystemSetupResult result = setup.exportData();
-        assertTrue(result.isSuccess());
+        assertTrue(result.success());
         getIntervalDAO().deleteAllIntervals();
         getTimeBasedSuspensionScheduler().reset();
         getTimeBasedSuspensionScheduler().getIntervals();
         File folder = getFileManager().getExternalDirectory("config", 0);
-        StreamUtil.stringToOutputStream(result.getData(), new FileOutputStream(new File(folder, "test.json")), Charsets.UTF_8);
+        StreamUtil.stringToOutputStream(result.data(), new FileOutputStream(new File(folder, "test.json")), Charsets.UTF_8);
         assertTrue(getTimeBasedSuspensionScheduler().isRunning());
         onView(withId(R.id.cardview_activity_system_config_import)).perform(click());
         onView(withId(R.id.edittext_dialog_file_choose_folder)).check(matches(withText("config")));

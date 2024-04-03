@@ -49,6 +49,7 @@ import java.util.GregorianCalendar;
 import java.util.List;
 
 @MediumTest
+@SuppressWarnings({"SameParameterValue"})
 @RunWith(AndroidJUnit4.class)
 public class NetworkTaskProcessServiceSchedulerTest {
 
@@ -109,7 +110,7 @@ public class NetworkTaskProcessServiceSchedulerTest {
         List<MockAlarmManager.SetAlarmCall> setAlarmCalls = alarmManager.getSetAlarmCalls();
         assertEquals(1, setAlarmCalls.size());
         MockAlarmManager.SetAlarmCall setAlarmCall1 = setAlarmCalls.get(0);
-        assertEquals(0, setAlarmCall1.getDelay());
+        assertEquals(0, setAlarmCall1.delay());
         task2 = scheduler.start(task2);
         assertTrue(task1.isRunning());
         assertTrue(task2.isRunning());
@@ -120,8 +121,8 @@ public class NetworkTaskProcessServiceSchedulerTest {
         setAlarmCalls = alarmManager.getSetAlarmCalls();
         assertEquals(2, setAlarmCalls.size());
         MockAlarmManager.SetAlarmCall setAlarmCall2 = setAlarmCalls.get(1);
-        assertEquals(0, setAlarmCall2.getDelay());
-        assertNotEquals(setAlarmCall1.getPendingIntent(), setAlarmCall2.getPendingIntent());
+        assertEquals(0, setAlarmCall2.delay());
+        assertNotEquals(setAlarmCall1.pendingIntent(), setAlarmCall2.pendingIntent());
         task1 = scheduler.cancel(task1);
         assertFalse(task1.isRunning());
         assertTrue(task2.isRunning());
@@ -131,7 +132,7 @@ public class NetworkTaskProcessServiceSchedulerTest {
         List<MockAlarmManager.CancelAlarmCall> cancelAlarmCalls = alarmManager.getCancelAlarmCalls();
         assertEquals(1, cancelAlarmCalls.size());
         MockAlarmManager.CancelAlarmCall cancelAlarmCall1 = cancelAlarmCalls.get(0);
-        assertEquals(setAlarmCall1.getPendingIntent(), cancelAlarmCall1.getPendingIntent());
+        assertEquals(setAlarmCall1.pendingIntent(), cancelAlarmCall1.pendingIntent());
         task2 = scheduler.cancel(task2);
         assertFalse(task1.isRunning());
         assertFalse(task2.isRunning());
@@ -141,7 +142,7 @@ public class NetworkTaskProcessServiceSchedulerTest {
         cancelAlarmCalls = alarmManager.getCancelAlarmCalls();
         assertEquals(2, cancelAlarmCalls.size());
         MockAlarmManager.CancelAlarmCall cancelAlarmCall2 = cancelAlarmCalls.get(1);
-        assertEquals(setAlarmCall2.getPendingIntent(), cancelAlarmCall2.getPendingIntent());
+        assertEquals(setAlarmCall2.pendingIntent(), cancelAlarmCall2.pendingIntent());
     }
 
     @Test
@@ -226,7 +227,7 @@ public class NetworkTaskProcessServiceSchedulerTest {
         List<MockAlarmManager.SetAlarmCall> setAlarmCalls = alarmManager.getSetAlarmCalls();
         assertEquals(1, setAlarmCalls.size());
         MockAlarmManager.SetAlarmCall setAlarmCall1 = setAlarmCalls.get(0);
-        assertEquals(60 * 1000, setAlarmCall1.getDelay());
+        assertEquals(60 * 1000, setAlarmCall1.delay());
         task2 = scheduler.terminate(task2);
         assertFalse(task1.isRunning());
         assertTrue(task2.isRunning());
@@ -236,7 +237,7 @@ public class NetworkTaskProcessServiceSchedulerTest {
         List<MockAlarmManager.CancelAlarmCall> cancelAlarmCalls = alarmManager.getCancelAlarmCalls();
         assertEquals(1, cancelAlarmCalls.size());
         MockAlarmManager.CancelAlarmCall cancelAlarmCall1 = cancelAlarmCalls.get(0);
-        assertEquals(setAlarmCall1.getPendingIntent(), cancelAlarmCall1.getPendingIntent());
+        assertEquals(setAlarmCall1.pendingIntent(), cancelAlarmCall1.pendingIntent());
     }
 
     @Test
@@ -250,7 +251,7 @@ public class NetworkTaskProcessServiceSchedulerTest {
         List<MockAlarmManager.SetAlarmCall> setAlarmCalls = alarmManager.getSetAlarmCalls();
         assertEquals(1, setAlarmCalls.size());
         MockAlarmManager.SetAlarmCall setAlarmCall1 = setAlarmCalls.get(0);
-        assertEquals(0, setAlarmCall1.getDelay());
+        assertEquals(0, setAlarmCall1.delay());
     }
 
     @Test
@@ -265,7 +266,7 @@ public class NetworkTaskProcessServiceSchedulerTest {
         List<MockAlarmManager.SetAlarmCall> setAlarmCalls = alarmManager.getSetAlarmCalls();
         assertEquals(1, setAlarmCalls.size());
         MockAlarmManager.SetAlarmCall setAlarmCall1 = setAlarmCalls.get(0);
-        assertEquals(0, setAlarmCall1.getDelay());
+        assertEquals(0, setAlarmCall1.delay());
         alarmManager.reset();
         setTestTime(Long.MAX_VALUE);
         task1.setLastScheduled(1);
@@ -273,7 +274,7 @@ public class NetworkTaskProcessServiceSchedulerTest {
         setAlarmCalls = alarmManager.getSetAlarmCalls();
         assertEquals(1, setAlarmCalls.size());
         setAlarmCall1 = setAlarmCalls.get(0);
-        assertEquals(0, setAlarmCall1.getDelay());
+        assertEquals(0, setAlarmCall1.delay());
         alarmManager.reset();
         setTestTime(20 * 60 * 1000 + 1);
         task1.setLastScheduled(1);
@@ -281,7 +282,7 @@ public class NetworkTaskProcessServiceSchedulerTest {
         setAlarmCalls = alarmManager.getSetAlarmCalls();
         assertEquals(1, setAlarmCalls.size());
         setAlarmCall1 = setAlarmCalls.get(0);
-        assertEquals(0, setAlarmCall1.getDelay());
+        assertEquals(0, setAlarmCall1.delay());
     }
 
     @Test
@@ -296,7 +297,7 @@ public class NetworkTaskProcessServiceSchedulerTest {
         List<MockAlarmManager.SetAlarmCall> setAlarmCalls = alarmManager.getSetAlarmCalls();
         assertEquals(1, setAlarmCalls.size());
         MockAlarmManager.SetAlarmCall setAlarmCall1 = setAlarmCalls.get(0);
-        assertEquals(20 * 60 * 1000, setAlarmCall1.getDelay());
+        assertEquals(20 * 60 * 1000, setAlarmCall1.delay());
         alarmManager.reset();
         setTestTime(125);
         task1.setLastScheduled(124);
@@ -304,7 +305,7 @@ public class NetworkTaskProcessServiceSchedulerTest {
         setAlarmCalls = alarmManager.getSetAlarmCalls();
         assertEquals(1, setAlarmCalls.size());
         setAlarmCall1 = setAlarmCalls.get(0);
-        assertEquals(20 * 60 * 1000 - 1, setAlarmCall1.getDelay());
+        assertEquals(20 * 60 * 1000 - 1, setAlarmCall1.delay());
         alarmManager.reset();
         setTestTime(20 * 60 * 1000);
         task1.setLastScheduled(1);
@@ -312,7 +313,7 @@ public class NetworkTaskProcessServiceSchedulerTest {
         setAlarmCalls = alarmManager.getSetAlarmCalls();
         assertEquals(1, setAlarmCalls.size());
         setAlarmCall1 = setAlarmCalls.get(0);
-        assertEquals(1, setAlarmCall1.getDelay());
+        assertEquals(1, setAlarmCall1.delay());
     }
 
     @Test
@@ -348,7 +349,7 @@ public class NetworkTaskProcessServiceSchedulerTest {
         List<MockAlarmManager.SetAlarmCall> setAlarmCalls = alarmManager.getSetAlarmCalls();
         assertEquals(1, setAlarmCalls.size());
         MockAlarmManager.SetAlarmCall setAlarmCall1 = setAlarmCalls.get(0);
-        assertEquals(1200000 - 1, setAlarmCall1.getDelay());
+        assertEquals(1200000 - 1, setAlarmCall1.delay());
         networkTaskDAO.increaseNetworkTaskInstances(task2.getId());
         assertEquals(1, networkTaskDAO.readNetworkTaskInstances(task1.getId()));
         assertEquals(1, networkTaskDAO.readNetworkTaskInstances(task2.getId()));
@@ -365,9 +366,9 @@ public class NetworkTaskProcessServiceSchedulerTest {
         assertTrue(alarmManager.wasSetAlarmCalled());
         assertEquals(2, setAlarmCalls.size());
         setAlarmCall1 = setAlarmCalls.get(0);
-        assertEquals(0, setAlarmCall1.getDelay());
+        assertEquals(0, setAlarmCall1.delay());
         MockAlarmManager.SetAlarmCall setAlarmCall2 = setAlarmCalls.get(1);
-        assertEquals(0, setAlarmCall2.getDelay());
+        assertEquals(0, setAlarmCall2.delay());
         scheduler.terminate(task2);
         scheduler.startup();
         assertTrue(isTaskMarkedAsRunningInDatabase(task1));

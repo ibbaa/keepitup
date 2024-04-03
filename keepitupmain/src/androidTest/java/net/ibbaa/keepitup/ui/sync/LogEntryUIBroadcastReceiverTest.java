@@ -39,6 +39,7 @@ import org.junit.runner.RunWith;
 import java.util.Collections;
 
 @MediumTest
+@SuppressWarnings({"SameParameterValue"})
 @RunWith(AndroidJUnit4.class)
 public class LogEntryUIBroadcastReceiverTest extends BaseUITest {
 

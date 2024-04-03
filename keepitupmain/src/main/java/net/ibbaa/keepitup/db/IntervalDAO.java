@@ -56,6 +56,7 @@ public class IntervalDAO extends BaseDAO {
         dumpDatabase("Dump after deleteAllIntervals call");
     }
 
+    @SuppressWarnings({"UnusedReturnValue"})
     public Interval updateInterval(Interval interval) {
         Log.d(IntervalDAO.class.getName(), "Updating interval with id " + interval.getId());
         Interval returnedInterval = executeDBOperationInTransaction(interval, this::updateInterval);

@@ -52,7 +52,7 @@ public class MockDownloadCommand extends DownloadCommand {
     public MockDownloadCommand(Context context, NetworkTask networkTask, URL url, File folder, boolean delete, DownloadCommandResult downloadCommandResult, boolean block) {
         super(context, networkTask, url, folder, delete);
         this.exception = null;
-        this.downloadCommandResult = null;
+        this.downloadCommandResult = downloadCommandResult;
         this.block = block;
         this.latch = new CountDownLatch(1);
     }
@@ -66,6 +66,7 @@ public class MockDownloadCommand extends DownloadCommand {
     }
 
     @Override
+    @SuppressWarnings({"LoopConditionNotUpdatedInsideLoop"})
     public DownloadCommandResult call() {
         while (block) {
             try {

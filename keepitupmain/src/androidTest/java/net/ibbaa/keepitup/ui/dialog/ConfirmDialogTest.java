@@ -101,6 +101,7 @@ public class ConfirmDialogTest extends BaseUITest {
         onView(withId(R.id.imageview_dialog_confirm_cancel)).perform(click());
     }
 
+    @SuppressWarnings({"UnusedReturnValue"})
     private ConfirmDialog openConfirmDialog() {
         ConfirmDialog confirmDialog = new ConfirmDialog();
         confirmDialog.setArguments(BundleUtil.stringToBundle(confirmDialog.getMessageKey(), "Message"));
@@ -109,6 +110,7 @@ public class ConfirmDialogTest extends BaseUITest {
         return confirmDialog;
     }
 
+    @SuppressWarnings({"UnusedReturnValue"})
     private ConfirmDialog openConfirmDialogWithDescription() {
         ConfirmDialog confirmDialog = new ConfirmDialog();
         confirmDialog.setArguments(BundleUtil.stringsToBundle(new String[]{confirmDialog.getMessageKey(), confirmDialog.getDescriptionKey()}, new String[]{"Message", "Description"}));

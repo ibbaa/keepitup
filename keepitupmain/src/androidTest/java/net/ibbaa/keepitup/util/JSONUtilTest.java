@@ -34,6 +34,7 @@ import java.util.Map;
 import java.util.Objects;
 
 @SmallTest
+@SuppressWarnings({"unchecked", "DataFlowIssue"})
 @RunWith(AndroidJUnit4.class)
 public class JSONUtilTest {
 

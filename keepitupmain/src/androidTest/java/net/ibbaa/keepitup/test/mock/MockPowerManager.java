@@ -18,6 +18,7 @@ package net.ibbaa.keepitup.test.mock;
 
 import net.ibbaa.keepitup.service.IPowerManager;
 
+@SuppressWarnings({"unused"})
 public class MockPowerManager implements IPowerManager {
 
     private boolean supportsBatteryOptimization;

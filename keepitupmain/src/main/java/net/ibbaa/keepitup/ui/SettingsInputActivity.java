@@ -41,6 +41,7 @@ import net.ibbaa.keepitup.util.BundleUtil;
 
 import java.util.List;
 
+@SuppressWarnings({"SameParameterValue"})
 public abstract class SettingsInputActivity extends AppCompatActivity implements SettingsInputSupport, FileChooseSupport, BatteryOptimizationSupport, ConfirmSupport {
 
     private Resources resources;
@@ -185,6 +186,7 @@ public abstract class SettingsInputActivity extends AppCompatActivity implements
         showDialog(confirmDialog, ConfirmDialog.class.getName());
     }
 
+    @SuppressWarnings({"UnusedReturnValue"})
     protected ProgressDialog showProgressDialog() {
         Log.d(SettingsInputActivity.class.getName(), "showProgressDialog");
         ProgressDialog progressDialog = new ProgressDialog();

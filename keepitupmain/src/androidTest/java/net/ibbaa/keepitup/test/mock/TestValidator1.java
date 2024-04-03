@@ -21,6 +21,7 @@ import android.content.Context;
 import net.ibbaa.keepitup.ui.validation.FieldValidator;
 import net.ibbaa.keepitup.ui.validation.ValidationResult;
 
+@SuppressWarnings({"unused"})
 public class TestValidator1 implements FieldValidator {
 
     private final String field;

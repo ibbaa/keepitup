@@ -59,6 +59,7 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 
 @MediumTest
+@SuppressWarnings({"SameParameterValue"})
 @RunWith(AndroidJUnit4.class)
 public class NetworkTaskMainActivityTest extends BaseUITest {
 

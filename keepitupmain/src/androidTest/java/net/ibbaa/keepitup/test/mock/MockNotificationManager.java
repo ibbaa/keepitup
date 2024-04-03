@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+@SuppressWarnings({"unused"})
 public class MockNotificationManager implements INotificationManager {
 
     private final List<NotifyCall> notifyCalls;
@@ -49,22 +50,7 @@ public class MockNotificationManager implements INotificationManager {
         notifyCalls.add(new NotifyCall(id, notification));
     }
 
-    public static class NotifyCall {
+    public record NotifyCall(int id, Notification notification) {
 
-        private final int id;
-        private final Notification notification;
-
-        public NotifyCall(int id, Notification notification) {
-            this.id = id;
-            this.notification = notification;
-        }
-
-        public int getId() {
-            return id;
-        }
-
-        public Notification getNotification() {
-            return notification;
-        }
     }
 }

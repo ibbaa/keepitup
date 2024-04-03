@@ -23,6 +23,7 @@ import androidx.fragment.app.FragmentActivity;
 
 import net.ibbaa.keepitup.ui.dialog.PermissionExplainDialog;
 
+@SuppressWarnings({"unused"})
 public interface IPermissionManager {
 
     boolean shouldAskForRuntimePermission();

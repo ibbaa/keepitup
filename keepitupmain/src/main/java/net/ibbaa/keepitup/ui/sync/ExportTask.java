@@ -51,14 +51,14 @@ public class ExportTask extends UIBackgroundTask<Boolean> {
                 JSONSystemSetup setup = new JSONSystemSetup(context);
                 SystemSetupResult result = setup.exportData();
                 Log.d(ExportTask.class.getName(), "Export returned " + result);
-                if (result.isSuccess()) {
-                    Log.d(ExportTask.class.getName(), "Export was successful: " + result.getMessage());
+                if (result.success()) {
+                    Log.d(ExportTask.class.getName(), "Export was successful: " + result.message());
                     File exportFile = new File(exportFolder, file);
                     stream = new FileOutputStream(exportFile);
-                    StreamUtil.stringToOutputStream(result.getData(), stream, Charsets.UTF_8);
+                    StreamUtil.stringToOutputStream(result.data(), stream, Charsets.UTF_8);
                     return true;
                 } else {
-                    Log.d(ExportTask.class.getName(), "Export was not successful: " + result.getMessage());
+                    Log.d(ExportTask.class.getName(), "Export was not successful: " + result.message());
                 }
             }
         } catch (Exception exc) {

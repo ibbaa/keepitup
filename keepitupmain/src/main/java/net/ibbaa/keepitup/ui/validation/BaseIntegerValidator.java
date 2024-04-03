@@ -61,6 +61,7 @@ public abstract class BaseIntegerValidator {
         return new ValidationResult(true, field, getResources().getString(R.string.validation_successful));
     }
 
+    @SuppressWarnings({"unused"})
     protected String getField() {
         return field;
     }

@@ -32,6 +32,7 @@ import net.ibbaa.keepitup.R;
 import net.ibbaa.keepitup.ui.dialog.PermissionExplainDialog;
 import net.ibbaa.keepitup.util.BundleUtil;
 
+@SuppressWarnings({"unused"})
 public class PermissionManager implements IPermissionManager {
 
     public boolean shouldAskForRuntimePermission() {

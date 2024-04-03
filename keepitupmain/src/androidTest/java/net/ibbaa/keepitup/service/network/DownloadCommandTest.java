@@ -98,17 +98,17 @@ public class DownloadCommandTest {
         TestDownloadCommand downloadCommand = new TestDownloadCommand(TestRegistry.getContext(), null, null, null, true);
         setCurrentTime(downloadCommand);
         DownloadCommandResult result = downloadCommand.call();
-        assertFalse(result.isConnectSuccess());
-        assertFalse(result.isDownloadSuccess());
+        assertFalse(result.connectSuccess());
+        assertFalse(result.downloadSuccess());
         assertFalse(result.fileExists());
-        assertFalse(result.isDeleteSuccess());
-        assertTrue(result.isValid());
-        assertFalse(result.isStopped());
-        assertEquals(-1, result.getHttpResponseCode());
-        assertNull(result.getHttpResponseMessage());
-        assertNull(result.getFileName());
-        assertEquals(99, result.getDuration());
-        assertNull(result.getException());
+        assertFalse(result.deleteSuccess());
+        assertTrue(result.valid());
+        assertFalse(result.stopped());
+        assertEquals(-1, result.httpResponseCode());
+        assertNull(result.httpResponseMessage());
+        assertNull(result.fileName());
+        assertEquals(99, result.duration());
+        assertNull(result.exception());
     }
 
     @Test
@@ -116,7 +116,7 @@ public class DownloadCommandTest {
         TestDownloadCommand downloadCommand = new TestDownloadCommand(TestRegistry.getContext(), null, null, null, true);
         setNegativeTime(downloadCommand);
         DownloadCommandResult result = downloadCommand.call();
-        assertEquals(0, result.getDuration());
+        assertEquals(0, result.duration());
     }
 
     @Test
@@ -126,17 +126,17 @@ public class DownloadCommandTest {
         MockHttpURLConnection urlConnection = prepareHttpURLConnection(HttpURLConnection.HTTP_NOT_FOUND, "not found", null);
         downloadCommand.setURLConnection(urlConnection);
         DownloadCommandResult result = downloadCommand.call();
-        assertTrue(result.isConnectSuccess());
-        assertFalse(result.isDownloadSuccess());
+        assertTrue(result.connectSuccess());
+        assertFalse(result.downloadSuccess());
         assertFalse(result.fileExists());
-        assertFalse(result.isDeleteSuccess());
-        assertTrue(result.isValid());
-        assertFalse(result.isStopped());
-        assertEquals(HttpURLConnection.HTTP_NOT_FOUND, result.getHttpResponseCode());
-        assertEquals("not found", result.getHttpResponseMessage());
-        assertNull(result.getFileName());
-        assertEquals(99, result.getDuration());
-        assertNull(result.getException());
+        assertFalse(result.deleteSuccess());
+        assertTrue(result.valid());
+        assertFalse(result.stopped());
+        assertEquals(HttpURLConnection.HTTP_NOT_FOUND, result.httpResponseCode());
+        assertEquals("not found", result.httpResponseMessage());
+        assertNull(result.fileName());
+        assertEquals(99, result.duration());
+        assertNull(result.exception());
         assertTrue(urlConnection.isDisconnected());
     }
 
@@ -147,7 +147,7 @@ public class DownloadCommandTest {
         MockHttpURLConnection urlConnection = prepareHttpURLConnection(HttpURLConnection.HTTP_NOT_FOUND, "not found", null);
         downloadCommand.setURLConnection(urlConnection);
         DownloadCommandResult result = downloadCommand.call();
-        assertEquals(0, result.getDuration());
+        assertEquals(0, result.duration());
     }
 
     @Test
@@ -158,17 +158,17 @@ public class DownloadCommandTest {
         urlConnection.addHeader("Location", "new location");
         downloadCommand.setURLConnection(urlConnection);
         DownloadCommandResult result = downloadCommand.call();
-        assertTrue(result.isConnectSuccess());
-        assertFalse(result.isDownloadSuccess());
+        assertTrue(result.connectSuccess());
+        assertFalse(result.downloadSuccess());
         assertFalse(result.fileExists());
-        assertFalse(result.isDeleteSuccess());
-        assertTrue(result.isValid());
-        assertFalse(result.isStopped());
-        assertEquals(HttpURLConnection.HTTP_MOVED_PERM, result.getHttpResponseCode());
-        assertEquals("moved Location: new location", result.getHttpResponseMessage());
-        assertNull(result.getFileName());
-        assertEquals(99, result.getDuration());
-        assertNull(result.getException());
+        assertFalse(result.deleteSuccess());
+        assertTrue(result.valid());
+        assertFalse(result.stopped());
+        assertEquals(HttpURLConnection.HTTP_MOVED_PERM, result.httpResponseCode());
+        assertEquals("moved Location: new location", result.httpResponseMessage());
+        assertNull(result.fileName());
+        assertEquals(99, result.duration());
+        assertNull(result.exception());
         assertTrue(urlConnection.isDisconnected());
     }
 
@@ -181,17 +181,17 @@ public class DownloadCommandTest {
         downloadCommand.setURLConnection(urlConnection);
         downloadCommand.setFileManager(fileManager);
         DownloadCommandResult result = downloadCommand.call();
-        assertTrue(result.isConnectSuccess());
-        assertFalse(result.isDownloadSuccess());
+        assertTrue(result.connectSuccess());
+        assertFalse(result.downloadSuccess());
         assertFalse(result.fileExists());
-        assertFalse(result.isDeleteSuccess());
-        assertTrue(result.isValid());
-        assertFalse(result.isStopped());
-        assertEquals(HttpURLConnection.HTTP_OK, result.getHttpResponseCode());
-        assertEquals("Everything ok", result.getHttpResponseMessage());
-        assertNull(result.getFileName());
-        assertEquals(99, result.getDuration());
-        assertNull(result.getException());
+        assertFalse(result.deleteSuccess());
+        assertTrue(result.valid());
+        assertFalse(result.stopped());
+        assertEquals(HttpURLConnection.HTTP_OK, result.httpResponseCode());
+        assertEquals("Everything ok", result.httpResponseMessage());
+        assertNull(result.fileName());
+        assertEquals(99, result.duration());
+        assertNull(result.exception());
         assertTrue(urlConnection.isDisconnected());
     }
 
@@ -205,18 +205,18 @@ public class DownloadCommandTest {
         urlConnection.setExceptionOnInputStream(new IOException("Test"));
         urlConnection.addHeader("Content-Disposition", "attachment; filename=\"test.jpg\"");
         DownloadCommandResult result = downloadCommand.call();
-        assertTrue(result.isConnectSuccess());
-        assertFalse(result.isDownloadSuccess());
+        assertTrue(result.connectSuccess());
+        assertFalse(result.downloadSuccess());
         assertFalse(result.fileExists());
-        assertFalse(result.isDeleteSuccess());
-        assertTrue(result.isValid());
-        assertFalse(result.isStopped());
-        assertEquals(HttpURLConnection.HTTP_OK, result.getHttpResponseCode());
-        assertEquals("Everything ok", result.getHttpResponseMessage());
-        assertEquals("test.jpg", result.getFileName());
-        assertEquals(99, result.getDuration());
-        assertTrue(result.getException() instanceof IOException);
-        assertEquals("Test", result.getException().getMessage());
+        assertFalse(result.deleteSuccess());
+        assertTrue(result.valid());
+        assertFalse(result.stopped());
+        assertEquals(HttpURLConnection.HTTP_OK, result.httpResponseCode());
+        assertEquals("Everything ok", result.httpResponseMessage());
+        assertEquals("test.jpg", result.fileName());
+        assertEquals(99, result.duration());
+        assertTrue(result.exception() instanceof IOException);
+        assertEquals("Test", result.exception().getMessage());
         assertTrue(urlConnection.isDisconnected());
     }
 
@@ -230,7 +230,7 @@ public class DownloadCommandTest {
         urlConnection.setExceptionOnInputStream(new IOException("Test"));
         urlConnection.addHeader("Content-Disposition", "attachment; filename=\"test.jpg\"");
         DownloadCommandResult result = downloadCommand.call();
-        assertEquals(0, result.getDuration());
+        assertEquals(0, result.duration());
     }
 
     @Test
@@ -242,18 +242,18 @@ public class DownloadCommandTest {
         downloadCommand.setURLConnection(urlConnection);
         urlConnection.setExceptionOnInputStream(new IOException("Test"));
         DownloadCommandResult result = downloadCommand.call();
-        assertTrue(result.isConnectSuccess());
-        assertFalse(result.isDownloadSuccess());
+        assertTrue(result.connectSuccess());
+        assertFalse(result.downloadSuccess());
         assertFalse(result.fileExists());
-        assertFalse(result.isDeleteSuccess());
-        assertTrue(result.isValid());
-        assertFalse(result.isStopped());
-        assertEquals(HttpURLConnection.HTTP_OK, result.getHttpResponseCode());
-        assertEquals("Everything ok", result.getHttpResponseMessage());
-        assertEquals("test.jpg", result.getFileName());
-        assertEquals(99, result.getDuration());
-        assertTrue(result.getException() instanceof IOException);
-        assertEquals("Test", result.getException().getMessage());
+        assertFalse(result.deleteSuccess());
+        assertTrue(result.valid());
+        assertFalse(result.stopped());
+        assertEquals(HttpURLConnection.HTTP_OK, result.httpResponseCode());
+        assertEquals("Everything ok", result.httpResponseMessage());
+        assertEquals("test.jpg", result.fileName());
+        assertEquals(99, result.duration());
+        assertTrue(result.exception() instanceof IOException);
+        assertEquals("Test", result.exception().getMessage());
         assertTrue(urlConnection.isDisconnected());
     }
 
@@ -267,18 +267,18 @@ public class DownloadCommandTest {
         urlConnection.setExceptionOnInputStream(new IOException("Test"));
         urlConnection.setContentType("image/jpeg");
         DownloadCommandResult result = downloadCommand.call();
-        assertTrue(result.isConnectSuccess());
-        assertFalse(result.isDownloadSuccess());
+        assertTrue(result.connectSuccess());
+        assertFalse(result.downloadSuccess());
         assertFalse(result.fileExists());
-        assertFalse(result.isDeleteSuccess());
-        assertTrue(result.isValid());
-        assertFalse(result.isStopped());
-        assertEquals(HttpURLConnection.HTTP_OK, result.getHttpResponseCode());
-        assertEquals("Everything ok", result.getHttpResponseMessage());
-        assertEquals("www_host_com.jpg", result.getFileName());
-        assertEquals(99, result.getDuration());
-        assertTrue(result.getException() instanceof IOException);
-        assertEquals("Test", result.getException().getMessage());
+        assertFalse(result.deleteSuccess());
+        assertTrue(result.valid());
+        assertFalse(result.stopped());
+        assertEquals(HttpURLConnection.HTTP_OK, result.httpResponseCode());
+        assertEquals("Everything ok", result.httpResponseMessage());
+        assertEquals("www_host_com.jpg", result.fileName());
+        assertEquals(99, result.duration());
+        assertTrue(result.exception() instanceof IOException);
+        assertEquals("Test", result.exception().getMessage());
         assertTrue(urlConnection.isDisconnected());
     }
 
@@ -292,7 +292,7 @@ public class DownloadCommandTest {
         urlConnection.setExceptionOnInputStream(new IOException("Test"));
         urlConnection.setContentType("image/jpeg");
         DownloadCommandResult result = downloadCommand.call();
-        assertEquals(0, result.getDuration());
+        assertEquals(0, result.duration());
     }
 
     @Test
@@ -307,17 +307,17 @@ public class DownloadCommandTest {
         downloadCommand.setURLConnection(urlConnection);
         urlConnection.addHeader("Content-Disposition", "attachment; filename=\"test.jpg\"");
         DownloadCommandResult result = downloadCommand.call();
-        assertTrue(result.isConnectSuccess());
-        assertFalse(result.isDownloadSuccess());
+        assertTrue(result.connectSuccess());
+        assertFalse(result.downloadSuccess());
         assertTrue(result.fileExists());
-        assertTrue(result.isDeleteSuccess());
-        assertFalse(result.isValid());
-        assertFalse(result.isStopped());
-        assertEquals(HttpURLConnection.HTTP_OK, result.getHttpResponseCode());
-        assertEquals("Everything ok", result.getHttpResponseMessage());
-        assertEquals("test.jpg", result.getFileName());
-        assertEquals(99, result.getDuration());
-        assertNull(result.getException());
+        assertTrue(result.deleteSuccess());
+        assertFalse(result.valid());
+        assertFalse(result.stopped());
+        assertEquals(HttpURLConnection.HTTP_OK, result.httpResponseCode());
+        assertEquals("Everything ok", result.httpResponseMessage());
+        assertEquals("test.jpg", result.fileName());
+        assertEquals(99, result.duration());
+        assertNull(result.exception());
         assertTrue(urlConnection.isDisconnected());
     }
 
@@ -333,17 +333,17 @@ public class DownloadCommandTest {
         downloadCommand.setURLConnection(urlConnection);
         urlConnection.addHeader("Content-Disposition", "attachment; filename=\"test.jpg\"");
         DownloadCommandResult result = downloadCommand.call();
-        assertTrue(result.isConnectSuccess());
-        assertFalse(result.isDownloadSuccess());
+        assertTrue(result.connectSuccess());
+        assertFalse(result.downloadSuccess());
         assertTrue(result.fileExists());
-        assertTrue(result.isDeleteSuccess());
-        assertFalse(result.isValid());
-        assertTrue(result.isStopped());
-        assertEquals(HttpURLConnection.HTTP_OK, result.getHttpResponseCode());
-        assertEquals("Everything ok", result.getHttpResponseMessage());
-        assertEquals("test.jpg", result.getFileName());
-        assertEquals(99, result.getDuration());
-        assertNull(result.getException());
+        assertTrue(result.deleteSuccess());
+        assertFalse(result.valid());
+        assertTrue(result.stopped());
+        assertEquals(HttpURLConnection.HTTP_OK, result.httpResponseCode());
+        assertEquals("Everything ok", result.httpResponseMessage());
+        assertEquals("test.jpg", result.fileName());
+        assertEquals(99, result.duration());
+        assertNull(result.exception());
         assertTrue(urlConnection.isDisconnected());
     }
 
@@ -358,17 +358,17 @@ public class DownloadCommandTest {
         downloadCommand.setURLConnection(urlConnection);
         urlConnection.addHeader("Content-Disposition", "attachment; filename=\"test.txt\"");
         DownloadCommandResult result = downloadCommand.call();
-        assertTrue(result.isConnectSuccess());
-        assertTrue(result.isDownloadSuccess());
+        assertTrue(result.connectSuccess());
+        assertTrue(result.downloadSuccess());
         assertTrue(result.fileExists());
-        assertFalse(result.isDeleteSuccess());
-        assertTrue(result.isValid());
-        assertFalse(result.isStopped());
-        assertEquals(HttpURLConnection.HTTP_OK, result.getHttpResponseCode());
-        assertEquals("Everything ok", result.getHttpResponseMessage());
-        assertEquals("test.txt", result.getFileName());
-        assertEquals(99, result.getDuration());
-        assertNull(result.getException());
+        assertFalse(result.deleteSuccess());
+        assertTrue(result.valid());
+        assertFalse(result.stopped());
+        assertEquals(HttpURLConnection.HTTP_OK, result.httpResponseCode());
+        assertEquals("Everything ok", result.httpResponseMessage());
+        assertEquals("test.txt", result.fileName());
+        assertEquals(99, result.duration());
+        assertNull(result.exception());
         assertTrue(urlConnection.isDisconnected());
         File downloadedFile = new File(externalDir, "test.txt");
         assertTrue(downloadedFile.exists());
@@ -387,17 +387,17 @@ public class DownloadCommandTest {
         downloadCommand.setURLConnection(urlConnection);
         urlConnection.setContentType("text/plain");
         DownloadCommandResult result = downloadCommand.call();
-        assertTrue(result.isConnectSuccess());
-        assertTrue(result.isDownloadSuccess());
+        assertTrue(result.connectSuccess());
+        assertTrue(result.downloadSuccess());
         assertTrue(result.fileExists());
-        assertFalse(result.isDeleteSuccess());
-        assertTrue(result.isValid());
-        assertFalse(result.isStopped());
-        assertEquals(-1, result.getHttpResponseCode());
-        assertNull(result.getHttpResponseMessage());
-        assertEquals("www_host_com.txt", result.getFileName());
-        assertEquals(99, result.getDuration());
-        assertNull(result.getException());
+        assertFalse(result.deleteSuccess());
+        assertTrue(result.valid());
+        assertFalse(result.stopped());
+        assertEquals(-1, result.httpResponseCode());
+        assertNull(result.httpResponseMessage());
+        assertEquals("www_host_com.txt", result.fileName());
+        assertEquals(99, result.duration());
+        assertNull(result.exception());
         File downloadedFile = new File(externalDir, "www_host_com.txt");
         assertTrue(downloadedFile.exists());
         assertEquals("TestData", getFileContent(downloadedFile));
@@ -413,17 +413,17 @@ public class DownloadCommandTest {
         MockHttpURLConnection urlConnection = prepareHttpURLConnection(inputStream);
         downloadCommand.setURLConnection(urlConnection);
         DownloadCommandResult result = downloadCommand.call();
-        assertTrue(result.isConnectSuccess());
-        assertTrue(result.isDownloadSuccess());
+        assertTrue(result.connectSuccess());
+        assertTrue(result.downloadSuccess());
         assertTrue(result.fileExists());
-        assertTrue(result.isDeleteSuccess());
-        assertTrue(result.isValid());
-        assertFalse(result.isStopped());
-        assertEquals(HttpURLConnection.HTTP_OK, result.getHttpResponseCode());
-        assertEquals("Everything ok", result.getHttpResponseMessage());
-        assertEquals("test.jpg", result.getFileName());
-        assertEquals(99, result.getDuration());
-        assertNull(result.getException());
+        assertTrue(result.deleteSuccess());
+        assertTrue(result.valid());
+        assertFalse(result.stopped());
+        assertEquals(HttpURLConnection.HTTP_OK, result.httpResponseCode());
+        assertEquals("Everything ok", result.httpResponseMessage());
+        assertEquals("test.jpg", result.fileName());
+        assertEquals(99, result.duration());
+        assertNull(result.exception());
         assertTrue(urlConnection.isDisconnected());
         File downloadedFile = new File(externalDir, "test.jpg");
         assertFalse(downloadedFile.exists());
@@ -444,17 +444,17 @@ public class DownloadCommandTest {
         fileManager.setDelete(false);
         downloadCommand.setFileManager(fileManager);
         DownloadCommandResult result = downloadCommand.call();
-        assertTrue(result.isConnectSuccess());
-        assertTrue(result.isDownloadSuccess());
+        assertTrue(result.connectSuccess());
+        assertTrue(result.downloadSuccess());
         assertTrue(result.fileExists());
-        assertFalse(result.isDeleteSuccess());
-        assertTrue(result.isValid());
-        assertFalse(result.isStopped());
-        assertEquals(HttpURLConnection.HTTP_OK, result.getHttpResponseCode());
-        assertEquals("Everything ok", result.getHttpResponseMessage());
-        assertEquals("test.txt", result.getFileName());
-        assertEquals(99, result.getDuration());
-        assertNull(result.getException());
+        assertFalse(result.deleteSuccess());
+        assertTrue(result.valid());
+        assertFalse(result.stopped());
+        assertEquals(HttpURLConnection.HTTP_OK, result.httpResponseCode());
+        assertEquals("Everything ok", result.httpResponseMessage());
+        assertEquals("test.txt", result.fileName());
+        assertEquals(99, result.duration());
+        assertNull(result.exception());
         assertTrue(urlConnection.isDisconnected());
         File downloadedFile = new File(externalDir, "test.txt");
         assertTrue(downloadedFile.exists());
@@ -476,7 +476,7 @@ public class DownloadCommandTest {
         fileManager.setDelete(false);
         downloadCommand.setFileManager(fileManager);
         DownloadCommandResult result = downloadCommand.call();
-        assertEquals(0, result.getDuration());
+        assertEquals(0, result.duration());
     }
 
     private void setNegativeTime(TestDownloadCommand downloadCommand) {
@@ -526,6 +526,7 @@ public class DownloadCommandTest {
         return task;
     }
 
+    @SuppressWarnings({"StringOperationCanBeSimplified"})
     private String getFileContent(File file) throws Exception {
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         InputStream inputStream = new BufferedInputStream(new FileInputStream(file));

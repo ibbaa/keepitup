@@ -20,5 +20,6 @@ import android.database.sqlite.SQLiteDatabase;
 
 @FunctionalInterface
 public interface DBOperation<S, T> {
+    @SuppressWarnings({"unused"})
     T execute(S modelObject, SQLiteDatabase db);
 }

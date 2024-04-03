@@ -56,23 +56,23 @@ public class DumpTest {
         Dump.dump(dumpSource);
         assertEquals(1, mockDump.numberDumpCalls());
         MockDump.DumpCall dumpCall = mockDump.getDumpCall(0);
-        assertNull(dumpCall.getTag());
-        assertNull(dumpCall.getMessage());
-        assertNull(dumpCall.getBaseFileName());
-        assertSame(dumpSource, dumpCall.getDumpSource());
+        assertNull(dumpCall.tag());
+        assertNull(dumpCall.message());
+        assertNull(dumpCall.baseFileName());
+        assertSame(dumpSource, dumpCall.dumpSource());
         Dump.dump("tag", "message", dumpSource);
         assertEquals(2, mockDump.numberDumpCalls());
         dumpCall = mockDump.getDumpCall(1);
-        assertEquals("tag", dumpCall.getTag());
-        assertEquals("message", dumpCall.getMessage());
-        assertNull(dumpCall.getBaseFileName());
-        assertSame(dumpSource, dumpCall.getDumpSource());
+        assertEquals("tag", dumpCall.tag());
+        assertEquals("message", dumpCall.message());
+        assertNull(dumpCall.baseFileName());
+        assertSame(dumpSource, dumpCall.dumpSource());
         Dump.dump("tag", "message", "file", dumpSource);
         assertEquals(3, mockDump.numberDumpCalls());
         dumpCall = mockDump.getDumpCall(2);
-        assertEquals("tag", dumpCall.getTag());
-        assertEquals("message", dumpCall.getMessage());
-        assertEquals("file", dumpCall.getBaseFileName());
-        assertSame(dumpSource, dumpCall.getDumpSource());
+        assertEquals("tag", dumpCall.tag());
+        assertEquals("message", dumpCall.message());
+        assertEquals("file", dumpCall.baseFileName());
+        assertSame(dumpSource, dumpCall.dumpSource());
     }
 }

@@ -74,26 +74,11 @@ public class TestNetworkTaskRunningNotificationService extends NetworkTaskRunnin
         return new MockPermissionManager();
     }
 
-    public static class StartNetworkTaskRunningNotificationForegroundCall {
+    public record StartNetworkTaskRunningNotificationForegroundCall(Notification notification, int foregroundServiceType) {
 
-        private final Notification notification;
-        private final int foregroundServiceType;
-
-        public StartNetworkTaskRunningNotificationForegroundCall(Notification notification, int foregroundServiceType) {
-            this.notification = notification;
-            this.foregroundServiceType = foregroundServiceType;
-        }
-
-        public Notification getNotification() {
-            return notification;
-        }
-
-        public int getForegroundServiceType() {
-            return foregroundServiceType;
-        }
     }
 
-    public static class StopNetworkTaskRunningNotificationForegroundCall {
+    public record StopNetworkTaskRunningNotificationForegroundCall() {
 
     }
 }

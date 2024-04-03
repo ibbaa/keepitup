@@ -34,6 +34,7 @@ public class SchedulerStateDAO extends BaseDAO {
         super(context);
     }
 
+    @SuppressWarnings({"UnusedReturnValue"})
     public SchedulerState insertSchedulerState(SchedulerState schedulerState) {
         Log.d(SchedulerStateDAO.class.getName(), "Inserting schedulerState " + schedulerState);
         SchedulerState returnedSchedulerState = executeDBOperationInTransaction(schedulerState, this::insertSchedulerState);
@@ -55,6 +56,7 @@ public class SchedulerStateDAO extends BaseDAO {
         return schedulerState;
     }
 
+    @SuppressWarnings({"UnusedReturnValue"})
     public SchedulerState updateSchedulerState(SchedulerState schedulerState) {
         Log.d(SchedulerStateDAO.class.getName(), "Updating the existing schedulerState");
         SchedulerState returnedSchedulerState = executeDBOperationInTransaction(schedulerState, this::updateSchedulerState);

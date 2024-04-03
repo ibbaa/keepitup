@@ -237,6 +237,7 @@ public class SystemFileManager implements IFileManager {
         return path1 + path2;
     }
 
+    @SuppressWarnings({"ComparatorCombinators"})
     public List<FileEntry> getFiles(String root, String absoluteFolder) {
         Log.d(SystemFileManager.class.getName(), "getFiles, root is " + root + ", absoluteFolder is " + absoluteFolder);
         try {
@@ -459,6 +460,7 @@ public class SystemFileManager implements IFileManager {
     }
 
     @Override
+    @SuppressWarnings({"unused"})
     public boolean isSDCardSupported() {
         Log.d(SystemFileManager.class.getName(), "isSDCardSupported");
         try {

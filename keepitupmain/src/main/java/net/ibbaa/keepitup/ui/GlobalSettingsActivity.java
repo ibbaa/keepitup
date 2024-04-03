@@ -56,7 +56,7 @@ import java.io.File;
 import java.util.Collections;
 import java.util.List;
 
-@SuppressWarnings({"unused"})
+@SuppressWarnings({"unused", "FieldCanBeLocal"})
 public class GlobalSettingsActivity extends SettingsInputActivity implements SuspensionIntervalsSupport {
 
     private TextView pingCountText;

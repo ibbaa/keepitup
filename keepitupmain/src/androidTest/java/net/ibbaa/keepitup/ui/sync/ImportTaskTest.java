@@ -103,12 +103,12 @@ public class ImportTaskTest extends BaseUITest {
         getPreferenceManager().setPreferenceFileDumpEnabled(true);
         JSONSystemSetup setup = new JSONSystemSetup(TestRegistry.getContext());
         SystemSetupResult result = setup.exportData();
-        assertTrue(result.isSuccess());
+        assertTrue(result.success());
         getNetworkTaskDAO().deleteAllNetworkTasks();
         getLogDAO().deleteAllLogs();
         getPreferenceManager().removeAllPreferences();
         File folder = getFileManager().getExternalRootDirectory(0);
-        StreamUtil.stringToOutputStream(result.getData(), new FileOutputStream(new File(folder, "test.json")), Charsets.UTF_8);
+        StreamUtil.stringToOutputStream(result.data(), new FileOutputStream(new File(folder, "test.json")), Charsets.UTF_8);
         ImportTask task = new ImportTask(getActivity(activityScenario), folder, "test.json");
         task.runInBackground();
         assertFalse(getNetworkTaskDAO().readAllNetworkTasks().isEmpty());

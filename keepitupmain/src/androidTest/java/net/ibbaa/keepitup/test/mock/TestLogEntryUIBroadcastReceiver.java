@@ -23,6 +23,7 @@ import net.ibbaa.keepitup.model.NetworkTask;
 import net.ibbaa.keepitup.ui.adapter.LogEntryAdapter;
 import net.ibbaa.keepitup.ui.sync.LogEntryUIBroadcastReceiver;
 
+@SuppressWarnings({"unused"})
 public class TestLogEntryUIBroadcastReceiver extends LogEntryUIBroadcastReceiver {
 
     private boolean doSyncCalled;

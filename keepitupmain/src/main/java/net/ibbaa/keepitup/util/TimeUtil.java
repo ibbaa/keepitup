@@ -143,6 +143,7 @@ public class TimeUtil {
         SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm");
         Date start = new Date(getRelativeTimestamp(interval.getStart()));
         Date end = new Date(getRelativeTimestamp(interval.getEnd()));
+        @SuppressWarnings({"StringBufferReplaceableByString"})
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append(context.getResources().getString(R.string.string_start));
         stringBuilder.append(": ");

@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+@SuppressWarnings({"unused"})
 public class MockFileManager implements IFileManager {
 
     private final List<DeleteCall> deieteCalls;
@@ -259,16 +260,7 @@ public class MockFileManager implements IFileManager {
         return sdCardSupported;
     }
 
-    public static class DeleteCall {
+    public record DeleteCall(File file) {
 
-        private final File file;
-
-        public DeleteCall(File file) {
-            this.file = file;
-        }
-
-        public File getFile() {
-            return file;
-        }
     }
 }

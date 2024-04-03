@@ -530,11 +530,11 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
     @Test
     public void testAddressCopyOptionScreenRotation() {
         onView(allOf(withId(R.id.imageview_activity_main_network_task_add), isDisplayed())).perform(click());
-        MockClipboardManager clipboardManager = prepareMockClipboardManager();
+        prepareMockClipboardManager();
         onView(withId(R.id.edittext_dialog_network_task_edit_address)).perform(replaceText("test"));
         onView(withId(R.id.edittext_dialog_network_task_edit_address)).perform(longClick());
         rotateScreen(activityScenario);
-        clipboardManager = prepareMockClipboardManager();
+        MockClipboardManager clipboardManager = prepareMockClipboardManager();
         onView(withId(R.id.listview_dialog_context_options)).check(matches(withListSize(1)));
         onView(withId(R.id.textview_dialog_context_options_title)).check(matches(withText("Text options")));
         onView(allOf(withId(R.id.textview_list_item_context_option_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options), 0))).check(matches(withText("Copy")));
@@ -666,7 +666,7 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
     @Test
     public void testPortCopyOptionScreenRotation() {
         onView(allOf(withId(R.id.imageview_activity_main_network_task_add), isDisplayed())).perform(click());
-        MockClipboardManager clipboardManager = prepareMockClipboardManager();
+        prepareMockClipboardManager();
         onView(withText("Connect")).perform(click());
         onView(withId(R.id.edittext_dialog_network_task_edit_port)).perform(replaceText("33"));
         onView(withId(R.id.edittext_dialog_network_task_edit_port)).perform(longClick());
@@ -677,7 +677,7 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         onView(allOf(withId(R.id.textview_list_item_context_option_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options), 0))).check(matches(withText("Copy")));
         onView(withId(R.id.imageview_dialog_context_options_cancel)).check(matches(isDisplayed()));
         rotateScreen(activityScenario);
-        clipboardManager = prepareMockClipboardManager();
+        MockClipboardManager clipboardManager = prepareMockClipboardManager();
         onView(allOf(withId(R.id.textview_list_item_context_option_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options), 0))).perform(click());
         assertEquals(1, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
         onView(withId(R.id.edittext_dialog_network_task_edit_port)).check(matches(withText("33")));
@@ -803,12 +803,12 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
     @Test
     public void testIntervalCopyOptionScreenRotation() {
         onView(allOf(withId(R.id.imageview_activity_main_network_task_add), isDisplayed())).perform(click());
-        MockClipboardManager clipboardManager = prepareMockClipboardManager();
+        prepareMockClipboardManager();
         onView(withText("Connect")).perform(click());
         onView(withId(R.id.edittext_dialog_network_task_edit_interval)).perform(replaceText("33"));
         onView(withId(R.id.edittext_dialog_network_task_edit_interval)).perform(longClick());
         rotateScreen(activityScenario);
-        clipboardManager = prepareMockClipboardManager();
+        MockClipboardManager clipboardManager = prepareMockClipboardManager();
         assertEquals(2, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
         onView(withId(R.id.listview_dialog_context_options)).check(matches(withListSize(1)));
         onView(withId(R.id.textview_dialog_context_options_title)).check(matches(withText("Text options")));

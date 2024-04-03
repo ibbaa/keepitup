@@ -48,7 +48,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
-@SuppressWarnings({"unused"})
+@SuppressWarnings({"unused", "FieldCanBeLocal"})
 public class SuspensionIntervalSelectDialog extends DialogFragment {
 
     public enum Mode {

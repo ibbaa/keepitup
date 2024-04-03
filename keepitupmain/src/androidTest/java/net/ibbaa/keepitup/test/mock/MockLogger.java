@@ -24,6 +24,7 @@ import net.ibbaa.phonelog.LogLevel;
 import java.util.ArrayList;
 import java.util.List;
 
+@SuppressWarnings({"unused"})
 public class MockLogger implements ILogger {
 
     private final List<LogFileEntry> logEntries;

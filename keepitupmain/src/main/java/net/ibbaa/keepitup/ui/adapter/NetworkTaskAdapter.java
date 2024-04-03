@@ -228,6 +228,7 @@ public class NetworkTaskAdapter extends RecyclerView.Adapter<NetworkTaskViewHold
         }
     }
 
+    @SuppressWarnings({"unused"})
     public void replaceLogEntry(NetworkTask task, LogEntry logEntry) {
         Log.d(NetworkTaskAdapter.class.getName(), "replaceLogEntry " + logEntry);
         for (int ii = 0; ii < networkTaskWrapperList.size(); ii++) {

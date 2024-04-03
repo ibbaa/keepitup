@@ -67,6 +67,7 @@ public class SuspensionIntervalsDialog extends DialogFragment implements Confirm
     }
 
     @Override
+    @SuppressWarnings({"SimplifiableConditionalExpression"})
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         Log.d(SuspensionIntervalsDialog.class.getName(), "onCreateView");
         dialogView = inflater.inflate(R.layout.dialog_suspension_intervals, container);

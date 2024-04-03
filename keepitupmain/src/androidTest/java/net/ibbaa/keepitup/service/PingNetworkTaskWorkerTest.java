@@ -47,6 +47,7 @@ import java.util.GregorianCalendar;
 import java.util.Locale;
 
 @MediumTest
+@SuppressWarnings({"TextBlockMigration"})
 @RunWith(AndroidJUnit4.class)
 public class PingNetworkTaskWorkerTest {
 

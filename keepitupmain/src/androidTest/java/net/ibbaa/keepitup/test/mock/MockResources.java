@@ -54,6 +54,7 @@ public class MockResources extends Resources {
     private final Map<String, Integer> testBooleanResources;
     private final Map<Integer, String> targetBooleanResources;
 
+    @SuppressWarnings({"Convert2MethodRef"})
     public MockResources(AssetManager assetManager, Resources testResources, Resources targetResources) {
         super(assetManager, null, null);
         this.testResources = testResources;

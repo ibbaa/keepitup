@@ -50,6 +50,7 @@ import java.util.GregorianCalendar;
 import java.util.List;
 
 @MediumTest
+@SuppressWarnings({"SameParameterValue"})
 @RunWith(AndroidJUnit4.class)
 public class TimeBasedSuspensionSchedulerTest {
 
@@ -216,7 +217,7 @@ public class TimeBasedSuspensionSchedulerTest {
         List<MockAlarmManager.SetAlarmCall> setAlarmCalls = alarmManager.getSetAlarmRTCCalls();
         assertEquals(1, setAlarmCalls.size());
         MockAlarmManager.SetAlarmCall setAlarm = setAlarmCalls.get(0);
-        assertEquals(TimeUtil.getTimestampToday(getInterval1().getStart(), getTestTimestamp(24, 10, 1)), setAlarm.getDelay());
+        assertEquals(TimeUtil.getTimestampToday(getInterval1().getStart(), getTestTimestamp(24, 10, 1)), setAlarm.delay());
         assertTrue(scheduler.getWasRestartedFlag());
         alarmManager.reset();
         scheduler.scheduleStart(getInterval1(), getTestTimestamp(24, 10, 15), false);
@@ -224,7 +225,7 @@ public class TimeBasedSuspensionSchedulerTest {
         setAlarmCalls = alarmManager.getSetAlarmRTCCalls();
         assertEquals(1, setAlarmCalls.size());
         setAlarm = setAlarmCalls.get(0);
-        assertEquals(TimeUtil.getTimestampTomorrow(getInterval1().getStart(), getTestTimestamp(24, 10, 15)), setAlarm.getDelay());
+        assertEquals(TimeUtil.getTimestampTomorrow(getInterval1().getStart(), getTestTimestamp(24, 10, 15)), setAlarm.delay());
         assertFalse(scheduler.getWasRestartedFlag());
     }
 
@@ -242,7 +243,7 @@ public class TimeBasedSuspensionSchedulerTest {
         List<MockAlarmManager.SetAlarmCall> setAlarmCalls = alarmManager.getSetAlarmRTCCalls();
         assertEquals(1, setAlarmCalls.size());
         MockAlarmManager.SetAlarmCall setAlarm = setAlarmCalls.get(0);
-        assertEquals(TimeUtil.getTimestampToday(getInterval5().getStart(), getTestTimestamp(24, 0, 0)), setAlarm.getDelay());
+        assertEquals(TimeUtil.getTimestampToday(getInterval5().getStart(), getTestTimestamp(24, 0, 0)), setAlarm.delay());
         assertTrue(scheduler.getWasRestartedFlag());
     }
 
@@ -253,7 +254,7 @@ public class TimeBasedSuspensionSchedulerTest {
         List<MockAlarmManager.SetAlarmCall> setAlarmCalls = alarmManager.getSetAlarmRTCCalls();
         assertEquals(1, setAlarmCalls.size());
         MockAlarmManager.SetAlarmCall setAlarm = setAlarmCalls.get(0);
-        assertEquals(TimeUtil.getTimestampToday(getInterval1().getEnd(), getTestTimestamp(24, 10, 15)), setAlarm.getDelay());
+        assertEquals(TimeUtil.getTimestampToday(getInterval1().getEnd(), getTestTimestamp(24, 10, 15)), setAlarm.delay());
         assertTrue(scheduler.getWasRestartedFlag());
         alarmManager.reset();
         scheduler.scheduleSuspend(getInterval1(), getTestTimestamp(24, 11, 15), false);
@@ -261,7 +262,7 @@ public class TimeBasedSuspensionSchedulerTest {
         setAlarmCalls = alarmManager.getSetAlarmRTCCalls();
         assertEquals(1, setAlarmCalls.size());
         setAlarm = setAlarmCalls.get(0);
-        assertEquals(TimeUtil.getTimestampTomorrow(getInterval1().getEnd(), getTestTimestamp(24, 11, 15)), setAlarm.getDelay());
+        assertEquals(TimeUtil.getTimestampTomorrow(getInterval1().getEnd(), getTestTimestamp(24, 11, 15)), setAlarm.delay());
         assertFalse(scheduler.getWasRestartedFlag());
     }
 
@@ -272,7 +273,7 @@ public class TimeBasedSuspensionSchedulerTest {
         List<MockAlarmManager.SetAlarmCall> setAlarmCalls = alarmManager.getSetAlarmRTCCalls();
         assertEquals(1, setAlarmCalls.size());
         MockAlarmManager.SetAlarmCall setAlarm = setAlarmCalls.get(0);
-        assertEquals(TimeUtil.getTimestampTomorrow(getInterval5().getEnd(), getTestTimestamp(24, 0, 0)), setAlarm.getDelay());
+        assertEquals(TimeUtil.getTimestampTomorrow(getInterval5().getEnd(), getTestTimestamp(24, 0, 0)), setAlarm.delay());
         assertFalse(scheduler.getWasRestartedFlag());
     }
 
@@ -588,7 +589,7 @@ public class TimeBasedSuspensionSchedulerTest {
         List<MockAlarmManager.SetAlarmCall> setAlarmCalls = alarmManager.getSetAlarmRTCCalls();
         assertEquals(1, setAlarmCalls.size());
         MockAlarmManager.SetAlarmCall setAlarm = setAlarmCalls.get(0);
-        assertEquals(TimeUtil.getTimestampToday(getInterval1().getEnd(), getTestTimestamp(24, 10, 15)), setAlarm.getDelay());
+        assertEquals(TimeUtil.getTimestampToday(getInterval1().getEnd(), getTestTimestamp(24, 10, 15)), setAlarm.delay());
         assertTrue(scheduler.getWasRestartedFlag());
         assertFalse(networkTaskSchedulerAlarmManager.wasSetAlarmCalled());
         assertTrue(networkTaskSchedulerAlarmManager.wasCancelAlarmCalled());
@@ -619,7 +620,7 @@ public class TimeBasedSuspensionSchedulerTest {
         List<MockAlarmManager.SetAlarmCall> setAlarmCalls = alarmManager.getSetAlarmRTCCalls();
         assertEquals(1, setAlarmCalls.size());
         MockAlarmManager.SetAlarmCall setAlarm = setAlarmCalls.get(0);
-        assertEquals(TimeUtil.getTimestampTomorrow(getInterval4().getEnd(), getTestTimestamp(24, 23, 59)), setAlarm.getDelay());
+        assertEquals(TimeUtil.getTimestampTomorrow(getInterval4().getEnd(), getTestTimestamp(24, 23, 59)), setAlarm.delay());
         assertTrue(scheduler.getWasRestartedFlag());
         assertFalse(networkTaskSchedulerAlarmManager.wasSetAlarmCalled());
         assertTrue(networkTaskSchedulerAlarmManager.wasCancelAlarmCalled());
@@ -650,7 +651,7 @@ public class TimeBasedSuspensionSchedulerTest {
         List<MockAlarmManager.SetAlarmCall> setAlarmCalls = alarmManager.getSetAlarmRTCCalls();
         assertEquals(1, setAlarmCalls.size());
         MockAlarmManager.SetAlarmCall setAlarm = setAlarmCalls.get(0);
-        assertEquals(TimeUtil.getTimestampToday(getInterval4().getEnd(), getTestTimestamp(24, 0, 1)), setAlarm.getDelay());
+        assertEquals(TimeUtil.getTimestampToday(getInterval4().getEnd(), getTestTimestamp(24, 0, 1)), setAlarm.delay());
         assertTrue(scheduler.getWasRestartedFlag());
         assertFalse(networkTaskSchedulerAlarmManager.wasSetAlarmCalled());
         assertTrue(networkTaskSchedulerAlarmManager.wasCancelAlarmCalled());
@@ -681,7 +682,7 @@ public class TimeBasedSuspensionSchedulerTest {
         List<MockAlarmManager.SetAlarmCall> setAlarmCalls = alarmManager.getSetAlarmRTCCalls();
         assertEquals(1, setAlarmCalls.size());
         MockAlarmManager.SetAlarmCall setAlarm = setAlarmCalls.get(0);
-        assertEquals(TimeUtil.getTimestampToday(getInterval1().getEnd(), getTestTimestamp(24, 10, 15)), setAlarm.getDelay());
+        assertEquals(TimeUtil.getTimestampToday(getInterval1().getEnd(), getTestTimestamp(24, 10, 15)), setAlarm.delay());
         assertTrue(scheduler.getWasRestartedFlag());
         assertFalse(networkTaskSchedulerAlarmManager.wasSetAlarmCalled());
         assertTrue(networkTaskSchedulerAlarmManager.wasCancelAlarmCalled());
@@ -710,7 +711,7 @@ public class TimeBasedSuspensionSchedulerTest {
         List<MockAlarmManager.SetAlarmCall> setAlarmRTCCalls = alarmManager.getSetAlarmRTCCalls();
         assertEquals(1, setAlarmRTCCalls.size());
         MockAlarmManager.SetAlarmCall setAlarm = setAlarmRTCCalls.get(0);
-        assertEquals(TimeUtil.getTimestampToday(getInterval1().getStart(), getTestTimestamp(24, 9, 1)), setAlarm.getDelay());
+        assertEquals(TimeUtil.getTimestampToday(getInterval1().getStart(), getTestTimestamp(24, 9, 1)), setAlarm.delay());
         assertTrue(scheduler.getWasRestartedFlag());
         assertTrue(networkTaskSchedulerAlarmManager.wasSetAlarmCalled());
         List<MockAlarmManager.SetAlarmCall> setAlarmCalls = networkTaskSchedulerAlarmManager.getSetAlarmCalls();
@@ -738,7 +739,7 @@ public class TimeBasedSuspensionSchedulerTest {
         List<MockAlarmManager.SetAlarmCall> setAlarmRTCCalls = alarmManager.getSetAlarmRTCCalls();
         assertEquals(1, setAlarmRTCCalls.size());
         MockAlarmManager.SetAlarmCall setAlarm = setAlarmRTCCalls.get(0);
-        assertEquals(TimeUtil.getTimestampToday(getInterval4().getStart(), getTestTimestamp(24, 20, 0)), setAlarm.getDelay());
+        assertEquals(TimeUtil.getTimestampToday(getInterval4().getStart(), getTestTimestamp(24, 20, 0)), setAlarm.delay());
         assertTrue(scheduler.getWasRestartedFlag());
         assertTrue(networkTaskSchedulerAlarmManager.wasSetAlarmCalled());
         List<MockAlarmManager.SetAlarmCall> setAlarmCalls = networkTaskSchedulerAlarmManager.getSetAlarmCalls();
@@ -766,7 +767,7 @@ public class TimeBasedSuspensionSchedulerTest {
         List<MockAlarmManager.SetAlarmCall> setAlarmRTCCalls = alarmManager.getSetAlarmRTCCalls();
         assertEquals(1, setAlarmRTCCalls.size());
         MockAlarmManager.SetAlarmCall setAlarm = setAlarmRTCCalls.get(0);
-        assertEquals(TimeUtil.getTimestampTomorrow(getInterval1().getStart(), getTestTimestamp(24, 11, 11)), setAlarm.getDelay());
+        assertEquals(TimeUtil.getTimestampTomorrow(getInterval1().getStart(), getTestTimestamp(24, 11, 11)), setAlarm.delay());
         assertTrue(scheduler.getWasRestartedFlag());
         assertTrue(networkTaskSchedulerAlarmManager.wasSetAlarmCalled());
         List<MockAlarmManager.SetAlarmCall> setAlarmCalls = networkTaskSchedulerAlarmManager.getSetAlarmCalls();
@@ -795,7 +796,7 @@ public class TimeBasedSuspensionSchedulerTest {
         List<MockAlarmManager.SetAlarmCall> setAlarmRTCCalls = alarmManager.getSetAlarmRTCCalls();
         assertEquals(1, setAlarmRTCCalls.size());
         MockAlarmManager.SetAlarmCall setAlarm = setAlarmRTCCalls.get(0);
-        assertEquals(TimeUtil.getTimestampToday(getInterval1().getStart(), getTestTimestamp(24, 1, 31)), setAlarm.getDelay());
+        assertEquals(TimeUtil.getTimestampToday(getInterval1().getStart(), getTestTimestamp(24, 1, 31)), setAlarm.delay());
         assertTrue(scheduler.getWasRestartedFlag());
         assertTrue(networkTaskSchedulerAlarmManager.wasSetAlarmCalled());
         List<MockAlarmManager.SetAlarmCall> setAlarmCalls = networkTaskSchedulerAlarmManager.getSetAlarmCalls();
@@ -911,7 +912,7 @@ public class TimeBasedSuspensionSchedulerTest {
         List<MockAlarmManager.SetAlarmCall> setAlarmCalls = alarmManager.getSetAlarmRTCCalls();
         assertEquals(1, setAlarmCalls.size());
         MockAlarmManager.SetAlarmCall setAlarm = setAlarmCalls.get(0);
-        assertEquals(TimeUtil.getTimestampToday(getInterval2().getEnd(), getTestTimestamp(24, 1, 30)), setAlarm.getDelay());
+        assertEquals(TimeUtil.getTimestampToday(getInterval2().getEnd(), getTestTimestamp(24, 1, 30)), setAlarm.delay());
         assertTrue(scheduler.getWasRestartedFlag());
         assertFalse(networkTaskSchedulerAlarmManager.wasSetAlarmCalled());
         assertTrue(networkTaskSchedulerAlarmManager.wasCancelAlarmCalled());

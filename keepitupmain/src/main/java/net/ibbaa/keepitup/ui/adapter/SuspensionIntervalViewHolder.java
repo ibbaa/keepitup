@@ -27,6 +27,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import net.ibbaa.keepitup.R;
 import net.ibbaa.keepitup.ui.dialog.SuspensionIntervalsDialog;
 
+@SuppressWarnings({"FieldCanBeLocal"})
 public class SuspensionIntervalViewHolder extends RecyclerView.ViewHolder {
 
     private final SuspensionIntervalsDialog intervalsDialog;

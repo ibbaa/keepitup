@@ -31,6 +31,7 @@ import net.ibbaa.keepitup.ui.dialog.ConfirmDialog;
 import net.ibbaa.keepitup.ui.dialog.GeneralErrorDialog;
 import net.ibbaa.keepitup.util.BundleUtil;
 
+@SuppressWarnings({"SameParameterValue"})
 public abstract class RecyclerViewBaseActivity extends AppCompatActivity implements ConfirmSupport {
 
     private Resources resources;

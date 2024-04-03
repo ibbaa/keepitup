@@ -23,6 +23,7 @@ import java.net.URL;
 import java.util.List;
 import java.util.Map;
 
+@SuppressWarnings({"unused"})
 public class MockHttpURLConnection extends HttpURLConnection {
 
     private MockURLConnection mockURLConnection;

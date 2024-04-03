@@ -136,11 +136,11 @@ public class ImportTask extends UIBackgroundTask<Boolean> {
             String data = StreamUtil.inputStreamToString(stream, Charsets.UTF_8);
             SystemSetupResult result = setup.importData(data);
             Log.d(ImportTask.class.getName(), "Import returned " + result);
-            if (result.isSuccess()) {
-                Log.d(ImportTask.class.getName(), "Import was successful: " + result.getMessage());
+            if (result.success()) {
+                Log.d(ImportTask.class.getName(), "Import was successful: " + result.message());
                 return true;
             } else {
-                Log.d(ImportTask.class.getName(), "Import was not successful: " + result.getMessage());
+                Log.d(ImportTask.class.getName(), "Import was not successful: " + result.message());
             }
         } finally {
             if (stream != null) {
