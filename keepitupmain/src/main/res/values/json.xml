@@ -15,7 +15,6 @@
   -->
 
 <resources>
-    <string name="system_setup_json_implementation">net.ibbaa.keepitup.resources.JSONSystemSetup</string>
     <string name="file_extension_json">.json</string>
     <string name="version_json_key">version</string>
     <string name="dbversion_json_key">dbversion</string>

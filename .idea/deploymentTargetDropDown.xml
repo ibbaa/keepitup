@@ -18,6 +18,12 @@
           <timeTargetWasSelectedWithDropDown value="2024-03-22T07:53:03.347599101Z" />
         </State>
       </entry>
+      <entry key="NetworkTaskMainActivityTest">
+        <State />
+      </entry>
+      <entry key="SystemActivityTest">
+        <State />
+      </entry>
       <entry key="keepitupmain">
         <State>
           <targetSelectedWithDropDown>
@@ -34,11 +40,21 @@
           <timeTargetWasSelectedWithDropDown value="2024-04-03T10:14:54.592556638Z" />
         </State>
       </entry>
-      <entry key="testAddressCopyOptionScreenRotation()">
-        <State />
-      </entry>
       <entry key="testDeleteNetworkTask()">
-        <State />
+        <State>
+          <targetSelectedWithDropDown>
+            <Target>
+              <type value="QUICK_BOOT_TARGET" />
+              <deviceKey>
+                <Key>
+                  <type value="VIRTUAL_DEVICE_PATH" />
+                  <value value="$USER_HOME$/.android/avd/Pixel_8_Pro_API_29.avd" />
+                </Key>
+              </deviceKey>
+            </Target>
+          </targetSelectedWithDropDown>
+          <timeTargetWasSelectedWithDropDown value="2024-04-03T11:07:52.206244449Z" />
+        </State>
       </entry>
       <entry key="testDownloadThreadInterrupted()">
         <State>
@@ -56,10 +72,7 @@
           <timeTargetWasSelectedWithDropDown value="2024-04-03T10:14:24.808810233Z" />
         </State>
       </entry>
-      <entry key="testOptionClickedTwoOptionsScreenRotation()">
-        <State />
-      </entry>
-      <entry key="testStateSavedOnScreenRotation()">
+      <entry key="testMenuOptions()">
         <State />
       </entry>
     </value>

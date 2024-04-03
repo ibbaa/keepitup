@@ -68,7 +68,7 @@ public class IntervalHandler {
             }
         } catch (Exception exc) {
             Log.e(IntervalHandler.class.getName(), "Error synchronizing intervals.", exc);
-            showErrorDialog(getResources().getString(R.string.text_dialog_general_error_delete_logs));
+            showErrorDialog(getResources().getString(R.string.text_dialog_general_error_synchronize_intervals));
         }
         return didChanges;
     }

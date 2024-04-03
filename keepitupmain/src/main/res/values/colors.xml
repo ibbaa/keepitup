@@ -23,6 +23,5 @@
     <color name="colorAccent">#e0dde3</color>
     <color name="statusBarColor">#666666</color>
     <color name="windowBackground">#FFFFFF</color>
-    <color name="colorProgressBar">#666666</color>
     <color name="textErrorColor">#DD0000</color>
 </resources>

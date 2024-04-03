@@ -20,7 +20,5 @@
     <dimen name="textview_dialog_alarm_permission_title_margin_top">2dp</dimen>
     <dimen name="textview_dialog_alarm_permission_info_padding">2dp</dimen>
     <dimen name="textview_dialog_alarm_permission_info_text_size">10sp</dimen>
-    <dimen name="textview_dialog_alarm_permission_link_padding">2dp</dimen>
-    <dimen name="textview_dialog_alarm_permission_link_text_size">10sp</dimen>
     <dimen name="imageview_dialog_alarm_permission_ok_padding_top">10dp</dimen>
 </resources>
