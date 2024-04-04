@@ -70,8 +70,10 @@ public class NetworkTaskMainUISyncTask extends UIBackgroundTask<NetworkTaskUIWra
         if (adapter != null) {
             try {
                 Log.d(NetworkTaskMainUISyncTask.class.getName(), "Updating adapter with network task ui wrapper " + networkTaskWrapper);
-                adapter.replaceItem(networkTaskWrapper);
-                adapter.notifyDataSetChanged();
+                int replacePosition = adapter.replaceItem(networkTaskWrapper);
+                if (replacePosition >= 0) {
+                    adapter.notifyItemChanged(replacePosition);
+                }
             } catch (Exception exc) {
                 Log.e(NetworkTaskMainUISyncTask.class.getName(), "Error updating adapter with network task ui wrapper " + networkTaskWrapper, exc);
             }

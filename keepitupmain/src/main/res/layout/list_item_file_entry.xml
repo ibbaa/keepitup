@@ -33,52 +33,41 @@
         app:cardElevation="@dimen/cardview_list_item_file_entry_card_elevation">
 
         <LinearLayout
-            android:id="@+id/linearlayout_list_item_file_entry"
+            android:id="@+id/linearlayout_list_item_file_entry_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="@dimen/linearlayout_list_item_file_entry_margin"
-            android:padding="@dimen/linearlayout_list_item_file_entry_padding"
-            android:orientation="vertical"
-            app:layout_constraintTop_toTopOf="parent">
+            android:layout_margin="@dimen/linearlayout_list_item_file_entry_name_margin"
+            android:padding="@dimen/linearlayout_list_item_file_entry_name_padding"
+            android:orientation="horizontal">
 
-            <LinearLayout
-                android:id="@+id/linearlayout_list_item_file_entry_name"
-                android:layout_width="match_parent"
+            <ImageView
+                android:id="@+id/imageview_list_item_file_entry_symbol"
+                android:layout_width="@dimen/imageview_list_item_file_entry_symbol_width"
                 android:layout_height="wrap_content"
-                android:layout_margin="@dimen/linearlayout_list_item_file_entry_name_margin"
-                android:padding="@dimen/linearlayout_list_item_file_entry_name_padding"
-                android:orientation="horizontal">
+                android:layout_margin="@dimen/imageview_list_item_file_entry_symbol_margin"
+                android:padding="@dimen/imageview_list_item_file_entry_symbol_padding"
+                android:layout_weight="1" />
 
-                <ImageView
-                    android:id="@+id/imageview_list_item_file_entry_symbol"
-                    android:layout_width="@dimen/imageview_list_item_file_entry_symbol_width"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="@dimen/imageview_list_item_file_entry_symbol_margin"
-                    android:padding="@dimen/imageview_list_item_file_entry_symbol_padding"
-                    android:layout_weight="1" />
+            <TextView
+                android:id="@+id/textview_list_item_file_entry_name"
+                android:layout_width="@dimen/textview_list_item_file_entry_name_width"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/textview_list_item_file_entry_name_margin"
+                android:padding="@dimen/textview_list_item_file_entry_name_padding"
+                android:layout_weight="4"
+                android:textStyle="normal"
+                android:text="" />
 
-                <TextView
-                    android:id="@+id/textview_list_item_file_entry_name"
-                    android:layout_width="@dimen/textview_list_item_file_entry_name_width"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="@dimen/textview_list_item_file_entry_name_margin"
-                    android:padding="@dimen/textview_list_item_file_entry_name_padding"
-                    android:layout_weight="4"
-                    android:textStyle="normal"
-                    android:text="" />
-
-                <ImageView
-                    android:id="@+id/imageview_list_item_file_entry_open"
-                    android:layout_width="@dimen/imageview_list_item_file_entry_open_width"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="@dimen/imageview_list_item_file_entry_open_margin"
-                    android:padding="@dimen/imageview_list_item_file_entry_open_padding"
-                    android:layout_weight="1"
-                    android:text="@string/string_open"
-                    android:contentDescription="@string/string_open"
-                    app:srcCompat="@drawable/icon_folder_open_selector" />
-
-            </LinearLayout>
+            <ImageView
+                android:id="@+id/imageview_list_item_file_entry_open"
+                android:layout_width="@dimen/imageview_list_item_file_entry_open_width"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/imageview_list_item_file_entry_open_margin"
+                android:padding="@dimen/imageview_list_item_file_entry_open_padding"
+                android:layout_weight="1"
+                android:text="@string/string_open"
+                android:contentDescription="@string/string_open"
+                app:srcCompat="@drawable/icon_folder_open_selector" />
 
         </LinearLayout>
 

@@ -52,7 +52,7 @@ public class DownloadNetworkTaskWorker extends NetworkTaskWorker {
 
     @Override
     public String getMaxInstancesErrorMessage(int activeInstances) {
-        return getResources().getString(R.string.text_download_worker_max_instances_error, activeInstances);
+        return getResources().getQuantityString(R.plurals.text_download_worker_max_instances_error, activeInstances, activeInstances);
     }
 
     @Override

@@ -225,36 +225,25 @@
                         android:textStyle="bold"
                         android:text="@string/label_activity_global_settings_notification_type" />
 
-                    <LinearLayout
-                        android:id="@+id/linearlayout_activity_global_settings_notification_type_value"
-                        android:layout_width="match_parent"
+                    <RadioGroup
+                        android:id="@+id/radiogroup_activity_global_settings_notification_type"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_margin="@dimen/linearlayout_activity_global_settings_notification_type_margin"
-                        android:focusable="true"
-                        android:focusableInTouchMode="true"
                         android:orientation="horizontal">
 
-                        <RadioGroup
-                            android:id="@+id/radiogroup_activity_global_settings_notification_type"
+                        <RadioButton
+                            android:id="@+id/radiobutton_activity_global_settings_notification_type_failure"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:orientation="horizontal">
+                            android:text="@string/text_activity_global_settings_notification_type_failure" />
 
-                            <RadioButton
-                                android:id="@+id/radiobutton_activity_global_settings_notification_type_failure"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="@string/text_activity_global_settings_notification_type_failure" />
+                        <RadioButton
+                            android:id="@+id/radiobutton_activity_global_settings_notification_type_change"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/text_activity_global_settings_notification_type_change" />
 
-                            <RadioButton
-                                android:id="@+id/radiobutton_activity_global_settings_notification_type_change"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="@string/text_activity_global_settings_notification_type_change" />
-
-                        </RadioGroup>
-
-                    </LinearLayout>
+                    </RadioGroup>
 
                 </LinearLayout>
 

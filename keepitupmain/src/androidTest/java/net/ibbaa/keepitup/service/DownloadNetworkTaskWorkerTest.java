@@ -849,6 +849,13 @@ public class DownloadNetworkTaskWorkerTest {
         assertFalse(notificationManager.wasNotifyCalled());
     }
 
+    @Test
+    public void testGetMaxInstancesErrorMessage() {
+        DownloadNetworkTaskWorker downloadNetworkTaskWorker = new DownloadNetworkTaskWorker(TestRegistry.getContext(), getNetworkTask(), null);
+        assertEquals("Currently is 1 download active, which is the maximum. Skipped execution.", downloadNetworkTaskWorker.getMaxInstancesErrorMessage(1));
+        assertEquals("Currently are 2 downloads active, which is the maximum. Skipped execution.", downloadNetworkTaskWorker.getMaxInstancesErrorMessage(2));
+    }
+
     private long getTestTimestamp() {
         Calendar calendar = new GregorianCalendar(1985, Calendar.DECEMBER, 24, 1, 1, 1);
         calendar.set(Calendar.MILLISECOND, 999);

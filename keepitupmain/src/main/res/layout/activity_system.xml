@@ -193,36 +193,25 @@
                         android:textStyle="bold"
                         android:text="@string/label_activity_system_external_storage_type" />
 
-                    <LinearLayout
-                        android:id="@+id/linearlayout_activity_system_external_storage_type_value"
-                        android:layout_width="match_parent"
+                    <RadioGroup
+                        android:id="@+id/radiogroup_activity_system_external_storage_type"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_margin="@dimen/linearlayout_activity_system_external_storage_type_margin"
-                        android:focusable="true"
-                        android:focusableInTouchMode="true"
                         android:orientation="horizontal">
 
-                        <RadioGroup
-                            android:id="@+id/radiogroup_activity_system_external_storage_type"
+                        <RadioButton
+                            android:id="@+id/radiobutton_activity_system_external_storage_type_primary"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:orientation="horizontal">
+                            android:text="@string/text_activity_system_external_storage_type_primary" />
 
-                            <RadioButton
-                                android:id="@+id/radiobutton_activity_system_external_storage_type_primary"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="@string/text_activity_system_external_storage_type_primary" />
+                        <RadioButton
+                            android:id="@+id/radiobutton_activity_system_external_storage_type_sdcard"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/text_activity_system_external_storage_type_sdcard" />
 
-                            <RadioButton
-                                android:id="@+id/radiobutton_activity_system_external_storage_type_sdcard"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="@string/text_activity_system_external_storage_type_sdcard" />
-
-                        </RadioGroup>
-
-                    </LinearLayout>
+                    </RadioGroup>
 
                 </LinearLayout>
 
@@ -298,42 +287,31 @@
                         android:textStyle="bold"
                         android:text="@string/label_activity_system_theme" />
 
-                    <LinearLayout
-                        android:id="@+id/linearlayout_activity_system_theme_value"
-                        android:layout_width="match_parent"
+                    <RadioGroup
+                        android:id="@+id/radiogroup_activity_system_theme"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_margin="@dimen/linearlayout_activity_system_theme_margin"
-                        android:focusable="true"
-                        android:focusableInTouchMode="true"
                         android:orientation="horizontal">
 
-                        <RadioGroup
-                            android:id="@+id/radiogroup_activity_system_theme"
+                        <RadioButton
+                            android:id="@+id/radiobutton_activity_system_theme_system"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:orientation="horizontal">
+                            android:text="@string/text_activity_system_theme_system" />
 
-                            <RadioButton
-                                android:id="@+id/radiobutton_activity_system_theme_system"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="@string/text_activity_system_theme_system" />
+                        <RadioButton
+                            android:id="@+id/radiobutton_activity_system_theme_light"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/text_activity_system_theme_light" />
 
-                            <RadioButton
-                                android:id="@+id/radiobutton_activity_system_theme_light"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="@string/text_activity_system_theme_light" />
+                        <RadioButton
+                            android:id="@+id/radiobutton_activity_system_theme_dark"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/text_activity_system_theme_dark" />
 
-                            <RadioButton
-                                android:id="@+id/radiobutton_activity_system_theme_dark"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="@string/text_activity_system_theme_dark" />
-
-                        </RadioGroup>
-
-                    </LinearLayout>
+                    </RadioGroup>
 
                 </LinearLayout>
 

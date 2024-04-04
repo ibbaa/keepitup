@@ -222,6 +222,7 @@ public class SuspensionIntervalsDialog extends DialogFragment implements Confirm
     }
 
     @Override
+    @SuppressWarnings("NotifyDataSetChanged")
     public void onSuspensionIntervalSelectDialogOkClicked(SuspensionIntervalSelectDialog intervalSelectDialog, SuspensionIntervalSelectDialog.Mode mode) {
         Log.d(SuspensionIntervalsDialog.class.getName(), "onSuspensionIntervalSelectDialogOkClicked with mode ");
         if (SuspensionIntervalSelectDialog.Mode.START.equals(mode)) {

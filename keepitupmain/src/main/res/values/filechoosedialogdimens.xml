@@ -33,8 +33,6 @@
     <dimen name="layout_list_item_file_entry_margin">2dp</dimen>
     <dimen name="layout_list_item_file_entry_padding">0dp</dimen>
     <dimen name="cardview_list_item_file_entry_margin">4dp</dimen>
-    <dimen name="linearlayout_list_item_file_entry_margin">4dp</dimen>
-    <dimen name="linearlayout_list_item_file_entry_padding">0dp</dimen>
     <dimen name="linearlayout_list_item_file_entry_name_margin">0dp</dimen>
     <dimen name="linearlayout_list_item_file_entry_name_padding">0dp</dimen>
     <dimen name="imageview_list_item_file_entry_symbol_width">0dp</dimen>

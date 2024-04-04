@@ -14,7 +14,7 @@
   ~ limitations under the License.
   -->
 
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <string name="label_activity_main_add_network_task">Add network task</string>
     <string name="label_activity_main_start_network_task">Start</string>
     <string name="label_activity_main_stop_network_task">Stop</string>
@@ -27,7 +27,7 @@
     <string name="menu_action_activity_main_info">Info</string>
     <string name="text_activity_main_list_item_network_task_title">Network task %d</string>
     <string name="text_activity_main_list_item_network_task_status">Status: %s</string>
-    <string name="text_activity_main_list_item_network_task_instances">Instances: %d active</string>
+    <string name="text_activity_main_list_item_network_task_instances" tools:ignore="PluralsCandidate">Instances: %d active</string>
     <string name="text_activity_main_list_item_network_task_access_type">Type: %s</string>
     <string name="text_activity_main_list_item_network_task_address">%s</string>
     <string name="text_activity_main_list_item_network_task_interval">Interval: %d %s</string>

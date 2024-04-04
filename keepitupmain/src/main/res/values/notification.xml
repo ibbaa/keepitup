@@ -23,7 +23,7 @@
     <string name="notification_foreground_channel_description">Keep it up foreground notifications</string>
     <string name="notification_title">Keep it up</string>
     <string name="notification_address">%s</string>
-    <string name="notification_error_text">Execution of network task %d failed. %s. Timestamp: %s. Message: %s</string>
-    <string name="notification_success_text">Execution of network task %d successful. %s. Timestamp: %s. Message: %s</string>
+    <string name="notification_error_text" tools:ignore="PluralsCandidate">Execution of network task %d failed. %s. Timestamp: %s. Message: %s</string>
+    <string name="notification_success_text" tools:ignore="PluralsCandidate">Execution of network task %d successful. %s. Timestamp: %s. Message: %s</string>
     <string name="notification_foreground_text" tools:ignore="TypographyEllipsis">Network task running...</string>
 </resources>

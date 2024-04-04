@@ -18,10 +18,12 @@ package net.ibbaa.keepitup.ui.dialog;
 
 import android.widget.NumberPicker;
 
+import java.util.Locale;
+
 public class TimeNumberPickerFormatter implements NumberPicker.Formatter {
 
     @Override
     public String format(int value) {
-        return String.format("%02d", value);
+        return String.format(Locale.getDefault(), "%02d", value);
     }
 }

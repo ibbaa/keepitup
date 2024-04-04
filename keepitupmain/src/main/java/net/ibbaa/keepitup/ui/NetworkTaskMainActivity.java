@@ -45,6 +45,7 @@ import net.ibbaa.keepitup.ui.permission.IPermissionManager;
 import net.ibbaa.keepitup.ui.permission.PermissionManager;
 import net.ibbaa.keepitup.ui.sync.NetworkTaskMainUIBroadcastReceiver;
 import net.ibbaa.keepitup.ui.sync.NetworkTaskMainUIInitTask;
+import net.ibbaa.keepitup.util.BundleUtil;
 import net.ibbaa.keepitup.util.ThreadUtil;
 
 import java.util.ArrayList;
@@ -205,7 +206,9 @@ public class NetworkTaskMainActivity extends RecyclerViewBaseActivity implements
             editDialog.injectPermissionManager(permissionManager);
         }
         NetworkTask task = new NetworkTask(this);
-        editDialog.setArguments(task.toBundle());
+        Bundle bundle = BundleUtil.integerToBundle(editDialog.getPositionKey(), -1);
+        bundle = BundleUtil.bundleToBundle(editDialog.getTaskKey(), task.toBundle(), bundle);
+        editDialog.setArguments(bundle);
         Log.d(NetworkTaskMainActivity.class.getName(), "Opening " + NetworkTaskEditDialog.class.getSimpleName());
         editDialog.show(getSupportFragmentManager(), NetworkTaskEditDialog.class.getName());
     }
@@ -236,7 +239,9 @@ public class NetworkTaskMainActivity extends RecyclerViewBaseActivity implements
         if (permissionManager != null) {
             editDialog.injectPermissionManager(permissionManager);
         }
-        editDialog.setArguments(task.toBundle());
+        Bundle bundle = BundleUtil.integerToBundle(editDialog.getPositionKey(), position);
+        bundle = BundleUtil.bundleToBundle(editDialog.getTaskKey(), task.toBundle(), bundle);
+        editDialog.setArguments(bundle);
         Log.d(NetworkTaskMainActivity.class.getName(), "Opening " + NetworkTaskEditDialog.class.getSimpleName());
         editDialog.show(getSupportFragmentManager(), NetworkTaskEditDialog.class.getName());
     }
@@ -257,7 +262,7 @@ public class NetworkTaskMainActivity extends RecyclerViewBaseActivity implements
         if (task.getId() < 0) {
             Log.d(NetworkTaskMainActivity.class.getName(), "Network task is new, inserting " + task);
             handler.insertNetworkTask(task);
-            getAdapter().notifyDataSetChanged();
+            getAdapter().notifyItemInserted(getAdapter().getItemCount() + 1);
         } else {
             NetworkTask initialTask = editDialog.getInitialNetworkTask();
             Log.d(NetworkTaskMainActivity.class.getName(), "Initial network task is " + initialTask);
@@ -267,7 +272,7 @@ public class NetworkTaskMainActivity extends RecyclerViewBaseActivity implements
             } else {
                 Log.d(NetworkTaskMainActivity.class.getName(), "Updating " + task);
                 handler.updateNetworkTask(task);
-                getAdapter().notifyDataSetChanged();
+                getAdapter().notifyItemChanged(editDialog.getPosition());
             }
         }
         editDialog.dismiss();
@@ -278,6 +283,7 @@ public class NetworkTaskMainActivity extends RecyclerViewBaseActivity implements
         editDialog.dismiss();
     }
 
+    @SuppressWarnings("NotifyDataSetChanged")
     public void onConfirmDialogOkClicked(ConfirmDialog confirmDialog, ConfirmDialog.Type type) {
         Log.d(NetworkTaskMainActivity.class.getName(), "onConfirmDialogOkClicked for type " + type);
         if (ConfirmDialog.Type.DELETETASK.equals(type)) {

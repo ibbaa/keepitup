@@ -68,8 +68,13 @@ public class LogEntryUISyncTask extends UIBackgroundTask<LogEntry> {
         if (adapter != null) {
             try {
                 Log.d(LogEntryUISyncTask.class.getName(), "Updating adapter with logEntry" + logEntry);
-                adapter.addItem(logEntry);
-                adapter.notifyDataSetChanged();
+                if (adapter.hasValidEntries()) {
+                    adapter.addItem(logEntry);
+                    adapter.notifyItemInserted(0);
+                } else {
+                    adapter.addItem(logEntry);
+                    adapter.notifyItemChanged(0);
+                }
             } catch (Exception exc) {
                 Log.e(LogEntryUISyncTask.class.getName(), "Error updating adapter with logEntry " + logEntry, exc);
             }

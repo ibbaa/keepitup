@@ -843,7 +843,7 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
     }
 
     @Test
-    public void testIntervalPasteOptionScreeRotation() {
+    public void testIntervalPasteOptionScreenRotation() {
         onView(allOf(withId(R.id.imageview_activity_main_network_task_add), isDisplayed())).perform(click());
         onView(withText("Connect")).perform(click());
         onView(withId(R.id.edittext_dialog_network_task_edit_interval)).perform(replaceText(""));

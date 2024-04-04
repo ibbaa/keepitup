@@ -40,6 +40,7 @@ public class NetworkTaskMainUIBroadcastReceiver extends BroadcastReceiver {
     }
 
     @Override
+    @SuppressWarnings("NotifyDataSetChanged")
     public void onReceive(Context context, Intent intent) {
         String action = intent.getStringExtra(context.getResources().getString(R.string.sync_action_key));
         String notifyAction = context.getResources().getString(R.string.sync_action_notify);

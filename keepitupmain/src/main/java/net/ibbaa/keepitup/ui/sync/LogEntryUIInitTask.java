@@ -65,6 +65,7 @@ public class LogEntryUIInitTask extends UIBackgroundTask<List<LogEntry>> {
     }
 
     @Override
+    @SuppressWarnings("NotifyDataSetChanged")
     protected void runOnUIThread(List<LogEntry> logEntries) {
         Log.d(LogEntryUIInitTask.class.getName(), "runOnUIThread");
         if (logEntries == null || adapterRef == null) {

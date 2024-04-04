@@ -160,6 +160,7 @@ public class NetworkTaskLogActivity extends RecyclerViewBaseActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    @SuppressWarnings("NotifyDataSetChanged")
     public void onConfirmDialogOkClicked(ConfirmDialog confirmDialog, ConfirmDialog.Type type) {
         Log.d(NetworkTaskLogActivity.class.getName(), "onConfirmDialogOkClicked for type " + type);
         if (ConfirmDialog.Type.DELETELOGS.equals(type)) {

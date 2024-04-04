@@ -49,7 +49,7 @@ public class ConnectNetworkTaskWorker extends NetworkTaskWorker {
 
     @Override
     public String getMaxInstancesErrorMessage(int activeInstances) {
-        return getResources().getString(R.string.text_connect_worker_max_instances_error, activeInstances);
+        return getResources().getQuantityString(R.plurals.text_connect_worker_max_instances_error, activeInstances, activeInstances);
     }
 
     @Override
@@ -152,10 +152,10 @@ public class ConnectNetworkTaskWorker extends NetworkTaskWorker {
         int successfulAttempts = connectResult.successfulAttempts();
         int timeouts = connectResult.timeoutAttempts();
         int errors = connectResult.errorAttempts();
-        String attemptsMessage = attempts == 1 ? getResources().getString(R.string.text_connect_attempt, attempts) : getResources().getString(R.string.text_connect_attempts, attempts);
-        String successfulAttemptsMessage = successfulAttempts == 1 ? getResources().getString(R.string.text_connect_attempt_successful, successfulAttempts) : getResources().getString(R.string.text_connect_attempts_successful, successfulAttempts);
-        String timeoutsMessage = timeouts == 1 ? getResources().getString(R.string.text_connect_timeout, timeouts) : getResources().getString(R.string.text_connect_timeouts, timeouts);
-        String errorMessage = errors == 1 ? getResources().getString(R.string.text_connect_error, errors) : getResources().getString(R.string.text_connect_errors, errors);
+        String attemptsMessage = getResources().getQuantityString(R.plurals.text_connect_attempt, attempts, attempts);
+        String successfulAttemptsMessage = getResources().getQuantityString(R.plurals.text_connect_attempt_successful, successfulAttempts, successfulAttempts);
+        String timeoutsMessage = getResources().getQuantityString(R.plurals.text_connect_timeout, timeouts, timeouts);
+        String errorMessage = getResources().getQuantityString(R.plurals.text_connect_error, errors, errors);
         String message = attemptsMessage + " " + successfulAttemptsMessage + " " + timeoutsMessage + " " + errorMessage;
         if (successfulAttempts > 0) {
             String averageTime = StringUtil.formatTimeRange(connectResult.averageTime(), getContext());

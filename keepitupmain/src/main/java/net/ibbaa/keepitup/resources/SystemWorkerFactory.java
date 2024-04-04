@@ -27,6 +27,7 @@ import net.ibbaa.keepitup.service.NullNetworkTaskWorker;
 
 import java.lang.reflect.Constructor;
 
+@SuppressWarnings("DiscouragedApi")
 public class SystemWorkerFactory implements WorkerFactory {
 
     @Override

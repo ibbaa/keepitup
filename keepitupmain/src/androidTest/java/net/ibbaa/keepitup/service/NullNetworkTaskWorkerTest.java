@@ -50,6 +50,13 @@ public class NullNetworkTaskWorkerTest {
         assertEquals("Type not specified.", logEntry.getMessage());
     }
 
+    @Test
+    public void testGetMaxInstancesErrorMessage() {
+        NullNetworkTaskWorker nullNetworkTaskWorker = new NullNetworkTaskWorker(TestRegistry.getContext(), getNetworkTask(), null);
+        assertEquals("Currently is 1 attempt active, which is the maximum. Skipped execution.", nullNetworkTaskWorker.getMaxInstancesErrorMessage(1));
+        assertEquals("Currently are 2 attempts active, which is the maximum. Skipped execution.", nullNetworkTaskWorker.getMaxInstancesErrorMessage(2));
+    }
+
     private void setCurrentTime(NullNetworkTaskWorker nullNetworkTaskWorker) {
         MockTimeService timeService = (MockTimeService) nullNetworkTaskWorker.getTimeService();
         timeService.setTimestamp(getTestTimestamp());

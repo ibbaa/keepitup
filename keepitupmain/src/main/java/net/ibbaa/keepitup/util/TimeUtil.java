@@ -31,6 +31,7 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
+import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
 public class TimeUtil {
@@ -140,7 +141,7 @@ public class TimeUtil {
 
 
     public static String formatSuspensionIntervalText(Interval interval, Context context) {
-        SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm");
+        SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm", Locale.getDefault());
         Date start = new Date(getRelativeTimestamp(interval.getStart()));
         Date end = new Date(getRelativeTimestamp(interval.getEnd()));
         @SuppressWarnings({"StringBufferReplaceableByString"})

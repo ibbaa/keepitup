@@ -18,7 +18,7 @@
           <timeTargetWasSelectedWithDropDown value="2024-03-22T07:53:03.347599101Z" />
         </State>
       </entry>
-      <entry key="NetworkTaskMainActivityTest">
+      <entry key="NetworkTaskEditDialogTest">
         <State />
       </entry>
       <entry key="SystemActivityTest">
@@ -40,39 +40,13 @@
           <timeTargetWasSelectedWithDropDown value="2024-04-03T10:14:54.592556638Z" />
         </State>
       </entry>
-      <entry key="testDeleteNetworkTask()">
-        <State>
-          <targetSelectedWithDropDown>
-            <Target>
-              <type value="QUICK_BOOT_TARGET" />
-              <deviceKey>
-                <Key>
-                  <type value="VIRTUAL_DEVICE_PATH" />
-                  <value value="$USER_HOME$/.android/avd/Pixel_8_Pro_API_29.avd" />
-                </Key>
-              </deviceKey>
-            </Target>
-          </targetSelectedWithDropDown>
-          <timeTargetWasSelectedWithDropDown value="2024-04-03T11:07:52.206244449Z" />
-        </State>
+      <entry key="testErrorColorOnOpenDialog()">
+        <State />
       </entry>
-      <entry key="testDownloadThreadInterrupted()">
-        <State>
-          <targetSelectedWithDropDown>
-            <Target>
-              <type value="QUICK_BOOT_TARGET" />
-              <deviceKey>
-                <Key>
-                  <type value="VIRTUAL_DEVICE_PATH" />
-                  <value value="$USER_HOME$/.android/avd/Pixel_8_Pro_API_29.avd" />
-                </Key>
-              </deviceKey>
-            </Target>
-          </targetSelectedWithDropDown>
-          <timeTargetWasSelectedWithDropDown value="2024-04-03T10:14:24.808810233Z" />
-        </State>
+      <entry key="testExportConfigurationScreenRotation()">
+        <State />
       </entry>
-      <entry key="testMenuOptions()">
+      <entry key="testGetMaxInstancesErrorMessage() (3)">
         <State />
       </entry>
     </value>

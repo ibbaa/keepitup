@@ -51,7 +51,7 @@ public class PingNetworkTaskWorker extends NetworkTaskWorker {
 
     @Override
     public String getMaxInstancesErrorMessage(int activeInstances) {
-        return getResources().getString(R.string.text_ping_worker_max_instances_error, activeInstances);
+        return getResources().getQuantityString(R.plurals.text_ping_worker_max_instances_error, activeInstances, activeInstances);
     }
 
     @Override
@@ -158,8 +158,8 @@ public class PingNetworkTaskWorker extends NetworkTaskWorker {
         int packetsTransmitted = parser.getPacketsTransmitted();
         int packetsReceived = parser.getPacketsReceived();
         String packetLoss = numberFormat.format(parser.getPacketLoss()) + "%";
-        String packetsTransmittedMessage = packetsTransmitted == 1 ? getResources().getString(R.string.text_ping_packet_transmitted, packetsTransmitted) : getResources().getString(R.string.text_ping_packets_transmitted, packetsTransmitted);
-        String packetsReceivedMessage = packetsReceived == 1 ? getResources().getString(R.string.text_ping_packet_received, packetsReceived) : getResources().getString(R.string.text_ping_packets_received, packetsReceived);
+        String packetsTransmittedMessage = getResources().getQuantityString(R.plurals.text_ping_packet_transmitted, packetsTransmitted, packetsTransmitted);
+        String packetsReceivedMessage = getResources().getQuantityString(R.plurals.text_ping_packet_received, packetsReceived, packetsReceived);
         String packetLossMessage = getResources().getString(R.string.text_ping_packet_loss, packetLoss);
         String message = packetsTransmittedMessage + " " + packetsReceivedMessage + " " + packetLossMessage;
         if (parser.getValidTimes() > 0) {

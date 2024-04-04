@@ -28,6 +28,7 @@ import net.ibbaa.keepitup.ui.validation.NullValidator;
 
 import java.lang.reflect.Constructor;
 
+@SuppressWarnings("DiscouragedApi")
 public class EnumMapping {
 
     private final Context context;

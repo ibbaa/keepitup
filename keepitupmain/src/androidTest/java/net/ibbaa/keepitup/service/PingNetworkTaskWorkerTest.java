@@ -213,6 +213,13 @@ public class PingNetworkTaskWorkerTest {
         assertEquals("Ping to 127.0.0.1 failed. Return code: 1", logEntry.getMessage());
     }
 
+    @Test
+    public void testGetMaxInstancesErrorMessage() {
+        PingNetworkTaskWorker pingNetworkTaskWorker = new PingNetworkTaskWorker(TestRegistry.getContext(), getNetworkTask(), null);
+        assertEquals("Currently is 1 ping attempt active, which is the maximum. Skipped execution.", pingNetworkTaskWorker.getMaxInstancesErrorMessage(1));
+        assertEquals("Currently are 2 ping attempts active, which is the maximum. Skipped execution.", pingNetworkTaskWorker.getMaxInstancesErrorMessage(2));
+    }
+
     private long getTestTimestamp() {
         Calendar calendar = new GregorianCalendar(1985, Calendar.DECEMBER, 24, 1, 1, 1);
         calendar.set(Calendar.MILLISECOND, 999);

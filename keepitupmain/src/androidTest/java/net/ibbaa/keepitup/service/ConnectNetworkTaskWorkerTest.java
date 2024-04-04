@@ -213,6 +213,13 @@ public class ConnectNetworkTaskWorkerTest {
         assertEquals("Connection to 127.0.0.1:22 failed. 5 connection attempts. 0 successful connection attempts. 3 timeouts. 2 other errors. Last error: IllegalArgumentException: TestException", logEntry.getMessage());
     }
 
+    @Test
+    public void testGetMaxInstancesErrorMessage() {
+        ConnectNetworkTaskWorker connectNetworkTaskWorker = new ConnectNetworkTaskWorker(TestRegistry.getContext(), getNetworkTask(), null);
+        assertEquals("Currently is 1 connection attempt active, which is the maximum. Skipped execution.", connectNetworkTaskWorker.getMaxInstancesErrorMessage(1));
+        assertEquals("Currently are 2 connection attempts active, which is the maximum. Skipped execution.", connectNetworkTaskWorker.getMaxInstancesErrorMessage(2));
+    }
+
     private long getTestTimestamp() {
         Calendar calendar = new GregorianCalendar(1985, Calendar.DECEMBER, 24, 1, 1, 1);
         calendar.set(Calendar.MILLISECOND, 999);

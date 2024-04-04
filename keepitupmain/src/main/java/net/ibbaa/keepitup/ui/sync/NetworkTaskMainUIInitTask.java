@@ -76,6 +76,7 @@ public class NetworkTaskMainUIInitTask extends UIBackgroundTask<List<NetworkTask
     }
 
     @Override
+    @SuppressWarnings("NotifyDataSetChanged")
     protected void runOnUIThread(List<NetworkTaskUIWrapper> networkTaskUIWrappers) {
         Log.d(NetworkTaskMainUIInitTask.class.getName(), "runOnUIThread");
         if (networkTaskUIWrappers == null || adapterRef == null) {

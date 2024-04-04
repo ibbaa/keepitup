@@ -111,7 +111,8 @@ public class NetworkTaskEditDialog extends DialogFragment implements ContextOpti
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         Log.d(NetworkTaskEditDialog.class.getName(), "onCreateView");
         dialogView = inflater.inflate(R.layout.dialog_network_task_edit, container);
-        task = new NetworkTask(requireArguments());
+        Bundle taskBundle = BundleUtil.bundleFromBundle(getTaskKey(), requireArguments());
+        task = new NetworkTask(taskBundle);
         prepareAccessTypeRadioButtons(savedInstanceState);
         prepareAddressTextFields();
         prepareAddressTextFieldsVisibility();
@@ -131,6 +132,19 @@ public class NetworkTaskEditDialog extends DialogFragment implements ContextOpti
             AccessType accessType = (AccessType) selectedAccessTypeRadioButton.getTag();
             outState.putInt(getAccessTypeBundleKey(), accessType.getCode());
         }
+    }
+
+    public int getPosition() {
+        Log.d(NetworkTaskEditDialog.class.getName(), "getPosition");
+        return BundleUtil.integerFromBundle(getPositionKey(), requireArguments());
+    }
+
+    public String getPositionKey() {
+        return NetworkTaskEditDialog.class.getName() + ".Position";
+    }
+
+    public String getTaskKey() {
+        return NetworkTaskEditDialog.class.getName() + ".Task";
     }
 
     private String getAccessTypeBundleKey() {
@@ -328,7 +342,7 @@ public class NetworkTaskEditDialog extends DialogFragment implements ContextOpti
     }
 
     public NetworkTask getNetworkTask() {
-        NetworkTask task = new NetworkTask(requireArguments());
+        NetworkTask task = new NetworkTask(BundleUtil.bundleFromBundle(getTaskKey(), requireArguments()));
         AccessType accessType = getAccessType();
         if (accessType != null) {
             task.setAccessType(accessType);
