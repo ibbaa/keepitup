@@ -204,7 +204,7 @@
                             android:id="@+id/textview_activity_defaults_interval_minutes"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginLeft="@dimen/textview_activity_defaults_interval_minutes_margin"
+                            android:layout_marginStart="@dimen/textview_activity_defaults_interval_minutes_margin"
                             android:textStyle="normal"
                             android:text="" />
 

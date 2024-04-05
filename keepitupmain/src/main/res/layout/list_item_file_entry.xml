@@ -16,6 +16,7 @@
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/layout_list_item_file_entry"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -46,7 +47,8 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/imageview_list_item_file_entry_symbol_margin"
                 android:padding="@dimen/imageview_list_item_file_entry_symbol_padding"
-                android:layout_weight="1" />
+                android:layout_weight="1"
+                tools:ignore="ContentDescription" />
 
             <TextView
                 android:id="@+id/textview_list_item_file_entry_name"

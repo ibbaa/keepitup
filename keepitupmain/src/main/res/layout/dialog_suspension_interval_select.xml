@@ -51,7 +51,7 @@
                 android:id="@+id/textview_dialog_suspension_interval_select_time_label"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginRight="@dimen/textview_dialog_suspension_interval_select_time_label_margin"
+                android:layout_marginEnd="@dimen/textview_dialog_suspension_interval_select_time_label_margin"
                 android:layout_gravity="center_vertical"
                 android:textStyle="bold"
                 android:text="" />
@@ -60,13 +60,13 @@
                 android:id="@+id/picker_dialog_suspension_interval_select_time_hour"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/picker_dialog_suspension_interval_select_time_hour_margin" />
+                android:layout_marginStart="@dimen/picker_dialog_suspension_interval_select_time_hour_margin" />
 
             <NumberPicker
                 android:id="@+id/picker_dialog_suspension_interval_select_time_minute"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/picker_dialog_suspension_interval_select_time_minute_margin" />
+                android:layout_marginStart="@dimen/picker_dialog_suspension_interval_select_time_minute_margin" />
 
         </LinearLayout>
 

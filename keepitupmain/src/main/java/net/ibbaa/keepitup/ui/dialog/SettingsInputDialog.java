@@ -92,6 +92,7 @@ public class SettingsInputDialog extends DialogFragment implements ContextOption
         valueEditText.setOnLongClickListener(this::onValueEditTextLongClicked);
         valueEditText.setText(StringUtil.notNull(input.getValue()));
         valueEditText.setInputType(input.getType().getInputType());
+        valueEditText.setHint(input.getField());
         prepareValueEditTextListener();
     }
 

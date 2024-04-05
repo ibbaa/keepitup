@@ -41,8 +41,8 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/listview_dialog_context_options_margin_top"
             android:layout_marginBottom="@dimen/listview_dialog_context_options_margin_bottom"
-            android:layout_marginLeft="@dimen/listview_dialog_context_options_margin_left"
-            android:layout_marginRight="@dimen/listview_dialog_context_options_margin_right"
+            android:layout_marginStart="@dimen/listview_dialog_context_options_margin_left"
+            android:layout_marginEnd="@dimen/listview_dialog_context_options_margin_right"
             android:padding="@dimen/listview_dialog_context_options_padding"
             android:layout_gravity="fill_horizontal"
             android:scrollbars="none" />

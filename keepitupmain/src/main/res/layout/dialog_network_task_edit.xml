@@ -16,6 +16,7 @@
 
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/scrollview_dialog_network_task_edit"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent">
@@ -61,13 +62,14 @@
                 android:layout_row="1"
                 android:layout_column="0"
                 android:labelFor="@id/edittext_dialog_network_task_edit_address"
-                android:text="" />
+                android:text=""
+                tools:ignore="LabelFor" />
 
             <LinearLayout
                 android:id="@+id/linearlayout_dialog_network_task_edit_address"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/linearlayout_dialog_network_task_edit_address_margin_left"
+                android:layout_marginStart="@dimen/linearlayout_dialog_network_task_edit_address_margin_left"
                 android:layout_marginTop="@dimen/linearlayout_dialog_network_task_edit_address_margin_top"
                 android:layout_row="1"
                 android:layout_column="1">
@@ -93,13 +95,14 @@
                 android:layout_row="2"
                 android:layout_column="0"
                 android:labelFor="@id/edittext_dialog_network_task_edit_port"
-                android:text="" />
+                android:text=""
+                tools:ignore="LabelFor" />
 
             <LinearLayout
                 android:id="@+id/linearlayout_dialog_network_task_edit_port"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/linearlayout_dialog_network_task_edit_port_margin_left"
+                android:layout_marginStart="@dimen/linearlayout_dialog_network_task_edit_port_margin_left"
                 android:layout_marginTop="@dimen/linearlayout_dialog_network_task_edit_port_margin_top"
                 android:layout_row="2"
                 android:layout_column="1">
@@ -131,7 +134,7 @@
                 android:id="@+id/linearlayout_dialog_network_task_edit_interval"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/linearlayout_dialog_network_task_edit_interval_margin_left"
+                android:layout_marginStart="@dimen/linearlayout_dialog_network_task_edit_interval_margin_left"
                 android:layout_marginTop="@dimen/linearlayout_dialog_network_task_edit_interval_margin_top"
                 android:layout_row="3"
                 android:layout_column="1">
@@ -161,7 +164,7 @@
                 android:id="@+id/linearlayout_dialog_edit_network_onlywifi"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/linearlayout_dialog_network_task_edit_onlywifi_margin_left"
+                android:layout_marginStart="@dimen/linearlayout_dialog_network_task_edit_onlywifi_margin_left"
                 android:layout_marginTop="@dimen/linearlayout_dialog_network_task_edit_onlywifi_margin_top"
                 android:layout_row="4"
                 android:layout_column="1">
@@ -195,7 +198,7 @@
                 android:id="@+id/linearlayout_dialog_network_task_edit_notification"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/linearlayout_dialog_network_task_edit_notification_margin_left"
+                android:layout_marginStart="@dimen/linearlayout_dialog_network_task_edit_notification_margin_left"
                 android:layout_marginTop="@dimen/linearlayout_dialog_network_task_edit_notification_margin_top"
                 android:layout_row="5"
                 android:layout_column="1">

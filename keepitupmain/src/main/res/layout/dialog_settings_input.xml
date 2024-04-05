@@ -16,6 +16,7 @@
 
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/scrollview_dialog_settings_input"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent">
@@ -33,7 +34,7 @@
             android:id="@+id/linearlayout_dialog_settingsinput_value"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/linearlayout_dialog_settings_input_value_margin_left"
+            android:layout_marginStart="@dimen/linearlayout_dialog_settings_input_value_margin_left"
             android:layout_marginTop="@dimen/linearlayout_dialog_settings_input_value_margin_top">
 
             <EditText
@@ -44,7 +45,8 @@
                 android:importantForAutofill="no"
                 android:inputType="textUri|textMultiLine|textNoSuggestions"
                 android:maxLines="@integer/edittext_dialog_settings_input_value_max_lines"
-                android:text="" />
+                android:text=""
+                tools:ignore="LabelFor" />
 
         </LinearLayout>
 
