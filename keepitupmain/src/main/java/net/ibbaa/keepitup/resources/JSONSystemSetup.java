@@ -62,7 +62,7 @@ public class JSONSystemSetup {
             Log.d(JSONSystemSetup.class.getName(), "Successfully exported database: " + dbData);
         } catch (Exception exc) {
             Log.e(JSONSystemSetup.class.getName(), "Error exporting database", exc);
-            return new SystemSetupResult(false, exc.getMessage(), root.toString());
+            return new SystemSetupResult(false, false, exc.getMessage(), root.toString());
         }
         try {
             JSONObject settings = exportSettings();
@@ -70,9 +70,9 @@ public class JSONSystemSetup {
             Log.d(JSONSystemSetup.class.getName(), "Successfully exported settings: " + settings);
         } catch (Exception exc) {
             Log.e(JSONSystemSetup.class.getName(), "Error exporting settings", exc);
-            return new SystemSetupResult(false, exc.getMessage(), root.toString());
+            return new SystemSetupResult(false, false, exc.getMessage(), root.toString());
         }
-        return new SystemSetupResult(true, "Successful export", root.toString());
+        return new SystemSetupResult(true, false, "Successful export", root.toString());
     }
 
     public SystemSetupResult importData(String data) {
@@ -82,7 +82,11 @@ public class JSONSystemSetup {
             root = new JSONObject(data);
         } catch (Exception exc) {
             Log.e(JSONSystemSetup.class.getName(), "Error importing data", exc);
-            return new SystemSetupResult(false, exc.getMessage(), data);
+            return new SystemSetupResult(false, false, exc.getMessage(), data);
+        }
+        if (isFileVersionHigherThanCurrentVersion(root)) {
+            Log.e(JSONSystemSetup.class.getName(), "Version mismatch on import");
+            return new SystemSetupResult(false, true, "Version mismatch on import", data);
         }
         String dbKey = getResources().getString(R.string.database_json_key);
         String settingsKey = getResources().getString(R.string.preferences_json_key);
@@ -91,16 +95,48 @@ public class JSONSystemSetup {
             Log.d(JSONSystemSetup.class.getName(), "Successfully imported database.");
         } catch (Exception exc) {
             Log.e(JSONSystemSetup.class.getName(), "Error importing database", exc);
-            return new SystemSetupResult(false, exc.getMessage(), data);
+            return new SystemSetupResult(false, false, exc.getMessage(), data);
         }
         try {
             importSettings((JSONObject) root.get(settingsKey));
             Log.d(JSONSystemSetup.class.getName(), "Successfully imported settings.");
         } catch (Exception exc) {
             Log.e(JSONSystemSetup.class.getName(), "Error importing settings", exc);
-            return new SystemSetupResult(false, exc.getMessage(), data);
+            return new SystemSetupResult(false, false, exc.getMessage(), data);
         }
-        return new SystemSetupResult(true, "Successful import", data);
+        return new SystemSetupResult(true, false, "Successful import", data);
+    }
+
+    public SystemSetupResult checkImportPossible(String data) {
+        Log.d(JSONSystemSetup.class.getName(), "checkImportPossible for data " + data);
+        JSONObject root;
+        try {
+            root = new JSONObject(data);
+        } catch (Exception exc) {
+            Log.e(JSONSystemSetup.class.getName(), "Error on checking import data", exc);
+            return new SystemSetupResult(false, false, exc.getMessage(), data);
+        }
+        if (isFileVersionHigherThanCurrentVersion(root)) {
+            Log.e(JSONSystemSetup.class.getName(), "Version mismatch on import");
+            return new SystemSetupResult(false, true, "Version mismatch on import", data);
+        }
+        return new SystemSetupResult(true, false, "Import possible", data);
+    }
+
+    private boolean isFileVersionHigherThanCurrentVersion(JSONObject root) {
+        Log.d(JSONSystemSetup.class.getName(), "isVersionValid");
+        String dbVersionKey = getResources().getString(R.string.dbversion_json_key);
+        try {
+            if (root.has(dbVersionKey)) {
+                int versionInFile = root.getInt(dbVersionKey);
+                int dbVersion = getResources().getInteger(R.integer.db_version);
+                return versionInFile > dbVersion;
+            }
+        } catch (Exception exc) {
+            Log.e(JSONSystemSetup.class.getName(), "Error checking version on import", exc);
+            return true;
+        }
+        return false;
     }
 
     private void importDatabase(JSONObject dbData) throws JSONException {

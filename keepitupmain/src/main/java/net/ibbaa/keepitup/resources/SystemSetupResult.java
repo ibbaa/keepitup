@@ -16,6 +16,6 @@
 
 package net.ibbaa.keepitup.resources;
 
-public record SystemSetupResult(boolean success, String message, String data) {
+public record SystemSetupResult(boolean success, boolean versionMismatch, String message, String data) {
 
 }

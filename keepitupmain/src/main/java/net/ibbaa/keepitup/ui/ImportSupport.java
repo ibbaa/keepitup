@@ -18,5 +18,5 @@ package net.ibbaa.keepitup.ui;
 
 public interface ImportSupport {
 
-    void onImportDone(boolean success);
+    void onImportDone(boolean success, String message);
 }

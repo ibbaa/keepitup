@@ -2273,6 +2273,77 @@ public class SystemActivityTest extends BaseUITest {
         onView(withId(R.id.imageview_dialog_file_choose_ok)).perform(click());
         onView(withId(R.id.imageview_dialog_confirm_ok)).perform(click());
         onView(withId(R.id.textview_dialog_general_error_message)).check(matches(isDisplayed()));
+        onView(withId(R.id.textview_dialog_general_error_message)).check(matches(withText("An error occurred importing the configuration. Some settings may have been imported.")));
+        onView(withId(R.id.imageview_dialog_general_error_ok)).perform(click());
+        assertTrue(alarmManager.wasCancelAlarmCalled());
+        assertFalse(getNetworkTaskDAO().readAllNetworkTasks().isEmpty());
+        assertFalse(getSchedulerIdHistoryDAO().readAllSchedulerIds().isEmpty());
+        assertFalse(getLogDAO().readAllLogs().isEmpty());
+        assertFalse(getIntervalDAO().readAllIntervals().isEmpty());
+        assertFalse(getTimeBasedSuspensionScheduler().getIntervals().isEmpty());
+        assertEquals(5, getPreferenceManager().getPreferencePingCount());
+        assertEquals(10, getPreferenceManager().getPreferenceConnectCount());
+        assertTrue(getPreferenceManager().getPreferenceNotificationInactiveNetwork());
+        assertTrue(getPreferenceManager().getPreferenceDownloadExternalStorage());
+        assertEquals(0, getPreferenceManager().getPreferenceExternalStorageType());
+        assertEquals(-1, getPreferenceManager().getPreferenceTheme());
+        assertEquals("folder", getPreferenceManager().getPreferenceDownloadFolder());
+        assertTrue(getPreferenceManager().getPreferenceDownloadKeep());
+        assertEquals(AccessType.CONNECT, getPreferenceManager().getPreferenceAccessType());
+        assertEquals("address", getPreferenceManager().getPreferenceAddress());
+        assertEquals(123, getPreferenceManager().getPreferencePort());
+        assertEquals(456, getPreferenceManager().getPreferenceInterval());
+        assertTrue(getPreferenceManager().getPreferenceOnlyWifi());
+        assertTrue(getPreferenceManager().getPreferenceNotification());
+        assertEquals("folderImport", getPreferenceManager().getPreferenceImportFolder());
+        assertEquals("folderExport", getPreferenceManager().getPreferenceExportFolder());
+        assertTrue(getPreferenceManager().getPreferenceFileLoggerEnabled());
+        assertTrue(getPreferenceManager().getPreferenceFileDumpEnabled());
+    }
+
+    @Test
+    public void testImportConfigurationMismatchError() {
+        injectImportTask(getMockImportTask(false, true));
+        insertAndScheduleNetworkTask();
+        getLogDAO().insertAndDeleteLog(new LogEntry());
+        getLogDAO().insertAndDeleteLog(new LogEntry());
+        getIntervalDAO().insertInterval(getInterval1());
+        getTimeBasedSuspensionScheduler().reset();
+        getTimeBasedSuspensionScheduler().getIntervals();
+        assertFalse(getNetworkTaskDAO().readAllNetworkTasks().isEmpty());
+        assertFalse(getSchedulerIdHistoryDAO().readAllSchedulerIds().isEmpty());
+        assertFalse(getLogDAO().readAllLogs().isEmpty());
+        assertFalse(getIntervalDAO().readAllIntervals().isEmpty());
+        assertFalse(getTimeBasedSuspensionScheduler().getIntervals().isEmpty());
+        getPreferenceManager().setPreferencePingCount(5);
+        getPreferenceManager().setPreferenceConnectCount(10);
+        getPreferenceManager().setPreferenceNotificationInactiveNetwork(true);
+        getPreferenceManager().setPreferenceDownloadExternalStorage(true);
+        getPreferenceManager().setPreferenceExternalStorageType(0);
+        getPreferenceManager().setPreferenceTheme(-1);
+        getPreferenceManager().setPreferenceDownloadFolder("folder");
+        getPreferenceManager().setPreferenceDownloadKeep(true);
+        getPreferenceManager().setPreferenceAccessType(AccessType.CONNECT);
+        getPreferenceManager().setPreferenceAddress("address");
+        getPreferenceManager().setPreferencePort(123);
+        getPreferenceManager().setPreferenceInterval(456);
+        getPreferenceManager().setPreferenceOnlyWifi(true);
+        getPreferenceManager().setPreferenceNotification(true);
+        getPreferenceManager().setPreferenceImportFolder("folderImport");
+        getPreferenceManager().setPreferenceExportFolder("folderExport");
+        getPreferenceManager().setPreferenceFileLoggerEnabled(true);
+        getPreferenceManager().setPreferenceFileDumpEnabled(true);
+        onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(scrollTo());
+        onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(click());
+        onView(withId(R.id.switch_activity_system_file_dump_enabled)).perform(scrollTo());
+        onView(withId(R.id.switch_activity_system_file_dump_enabled)).perform(click());
+        onView(withId(R.id.cardview_activity_system_config_import)).perform(click());
+        onView(withId(R.id.edittext_dialog_file_choose_folder)).check(matches(withText("folderImport")));
+        onView(withId(R.id.edittext_dialog_file_choose_file)).perform(replaceText("test.json"));
+        onView(withId(R.id.imageview_dialog_file_choose_ok)).perform(click());
+        onView(withId(R.id.imageview_dialog_confirm_ok)).perform(click());
+        onView(withId(R.id.textview_dialog_general_error_message)).check(matches(isDisplayed()));
+        onView(withId(R.id.textview_dialog_general_error_message)).check(matches(withText("Version mismatch. The imported file has been created with a newer version. Import not possible.")));
         onView(withId(R.id.imageview_dialog_general_error_ok)).perform(click());
         assertTrue(alarmManager.wasCancelAlarmCalled());
         assertFalse(getNetworkTaskDAO().readAllNetworkTasks().isEmpty());
@@ -2851,7 +2922,11 @@ public class SystemActivityTest extends BaseUITest {
     }
 
     private MockImportTask getMockImportTask(boolean success) {
-        return new MockImportTask(getActivity(activityScenario), success);
+        return getMockImportTask(success, false);
+    }
+
+    private MockImportTask getMockImportTask(boolean success, boolean mismatch) {
+        return new MockImportTask(getActivity(activityScenario), new SystemSetupResult(success, mismatch, "", ""));
     }
 
     private MockDBPurgeTask getMockDBPurgeTask(boolean success) {

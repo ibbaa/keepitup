@@ -177,19 +177,9 @@ public class ImportTaskTest extends BaseUITest {
     }
 
     @Test
-    public void testImportFailureDataPurged() throws Exception {
+    public void testImportFailureDataNotPurged() throws Exception {
         NetworkTask task1 = getNetworkTaskDAO().insertNetworkTask(getNetworkTask1());
-        NetworkTask task2 = getNetworkTaskDAO().insertNetworkTask(getNetworkTask2());
-        NetworkTask task3 = getNetworkTaskDAO().insertNetworkTask(getNetworkTask3());
         getLogDAO().insertAndDeleteLog(getLogEntry1(task1.getId()));
-        getLogDAO().insertAndDeleteLog(getLogEntry2(task1.getId()));
-        getLogDAO().insertAndDeleteLog(getLogEntry3(task1.getId()));
-        getLogDAO().insertAndDeleteLog(getLogEntry1(task2.getId()));
-        getLogDAO().insertAndDeleteLog(getLogEntry2(task2.getId()));
-        getLogDAO().insertAndDeleteLog(getLogEntry3(task2.getId()));
-        getLogDAO().insertAndDeleteLog(getLogEntry1(task3.getId()));
-        getLogDAO().insertAndDeleteLog(getLogEntry2(task3.getId()));
-        getLogDAO().insertAndDeleteLog(getLogEntry3(task3.getId()));
         getIntervalDAO().insertInterval(getInterval());
         getPreferenceManager().setPreferencePingCount(5);
         getPreferenceManager().setPreferenceConnectCount(10);
@@ -214,30 +204,29 @@ public class ImportTaskTest extends BaseUITest {
         StreamUtil.stringToOutputStream("Failure", new FileOutputStream(new File(folder, "test.json")), Charsets.UTF_8);
         ImportTask task = new ImportTask(getActivity(activityScenario), folder, "test.json");
         task.runInBackground();
-        assertTrue(getNetworkTaskDAO().readAllNetworkTasks().isEmpty());
-        assertTrue(getLogDAO().readAllLogs().isEmpty());
-        assertTrue(getIntervalDAO().readAllIntervals().isEmpty());
-        assertTrue(getSchedulerIdHistoryDAO().readAllSchedulerIds().isEmpty());
+        assertFalse(getNetworkTaskDAO().readAllNetworkTasks().isEmpty());
+        assertFalse(getLogDAO().readAllLogs().isEmpty());
+        assertFalse(getIntervalDAO().readAllIntervals().isEmpty());
         assertNotNull(getSchedulerStateDAO().readSchedulerState());
-        assertEquals(3, getPreferenceManager().getPreferencePingCount());
-        assertEquals(1, getPreferenceManager().getPreferenceConnectCount());
-        assertFalse(getPreferenceManager().getPreferenceNotificationInactiveNetwork());
-        assertEquals(NotificationType.FAILURE, getPreferenceManager().getPreferenceNotificationType());
-        assertTrue(getPreferenceManager().getPreferenceSuspensionEnabled());
-        assertFalse(getPreferenceManager().getPreferenceDownloadExternalStorage());
-        assertEquals(0, getPreferenceManager().getPreferenceExternalStorageType());
-        assertEquals("download", getPreferenceManager().getPreferenceDownloadFolder());
-        assertFalse(getPreferenceManager().getPreferenceDownloadKeep());
-        assertEquals(AccessType.PING, getPreferenceManager().getPreferenceAccessType());
-        assertEquals("192.168.178.1", getPreferenceManager().getPreferenceAddress());
-        assertEquals(22, getPreferenceManager().getPreferencePort());
-        assertEquals(15, getPreferenceManager().getPreferenceInterval());
-        assertFalse(getPreferenceManager().getPreferenceOnlyWifi());
-        assertFalse(getPreferenceManager().getPreferenceNotification());
-        assertEquals("config", getPreferenceManager().getPreferenceImportFolder());
-        assertEquals("config", getPreferenceManager().getPreferenceExportFolder());
-        assertFalse(getPreferenceManager().getPreferenceFileLoggerEnabled());
-        assertFalse(getPreferenceManager().getPreferenceFileDumpEnabled());
+        assertEquals(5, getPreferenceManager().getPreferencePingCount());
+        assertEquals(10, getPreferenceManager().getPreferenceConnectCount());
+        assertTrue(getPreferenceManager().getPreferenceNotificationInactiveNetwork());
+        assertEquals(NotificationType.CHANGE, getPreferenceManager().getPreferenceNotificationType());
+        assertFalse(getPreferenceManager().getPreferenceSuspensionEnabled());
+        assertTrue(getPreferenceManager().getPreferenceDownloadExternalStorage());
+        assertEquals(1, getPreferenceManager().getPreferenceExternalStorageType());
+        assertEquals("folder", getPreferenceManager().getPreferenceDownloadFolder());
+        assertTrue(getPreferenceManager().getPreferenceDownloadKeep());
+        assertEquals(AccessType.CONNECT, getPreferenceManager().getPreferenceAccessType());
+        assertEquals("address", getPreferenceManager().getPreferenceAddress());
+        assertEquals(123, getPreferenceManager().getPreferencePort());
+        assertEquals(456, getPreferenceManager().getPreferenceInterval());
+        assertTrue(getPreferenceManager().getPreferenceOnlyWifi());
+        assertTrue(getPreferenceManager().getPreferenceNotification());
+        assertEquals("folderImport", getPreferenceManager().getPreferenceImportFolder());
+        assertEquals("folderExport", getPreferenceManager().getPreferenceExportFolder());
+        assertTrue(getPreferenceManager().getPreferenceFileLoggerEnabled());
+        assertTrue(getPreferenceManager().getPreferenceFileDumpEnabled());
     }
 
     private void logEntryEquals(LogEntry entry1, LogEntry entry2) {

@@ -34,7 +34,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.util.concurrent.TimeUnit;
 
-public class ImportTask extends UIBackgroundTask<Boolean> {
+public class ImportTask extends UIBackgroundTask<SystemSetupResult> {
 
     private final File importFolder;
     private final String file;
@@ -46,20 +46,24 @@ public class ImportTask extends UIBackgroundTask<Boolean> {
     }
 
     @Override
-    protected Boolean runInBackground() {
+    protected SystemSetupResult runInBackground() {
         Log.d(ImportTask.class.getName(), "runInBackground");
         try {
             Context context = getActivity();
             if (context != null) {
-                if (!doPurge(context)) {
-                    return false;
+                SystemSetupResult checkResult = doImportCheck(context);
+                if (!checkResult.success()) {
+                    return checkResult;
                 }
-                return doImport(context);
+                if (!doPurge(context)) {
+                    return new SystemSetupResult(false, false, "", "");
+                }
+                return doImport(context, checkResult.data());
             }
         } catch (Exception exc) {
             Log.e(ImportTask.class.getName(), "Error exporting database", exc);
         }
-        return false;
+        return new SystemSetupResult(false, false, "", "");
     }
 
     private boolean doPurge(Context context) throws Exception {
@@ -78,6 +82,27 @@ public class ImportTask extends UIBackgroundTask<Boolean> {
             deleteTableRetry--;
         }
         return false;
+    }
+
+    private SystemSetupResult doImportCheck(Context context) throws Exception {
+        Log.d(ImportTask.class.getName(), "doImportCheck");
+        FileInputStream stream = null;
+        try {
+            JSONSystemSetup setup = new JSONSystemSetup(context);
+            File importFile = new File(importFolder, file);
+            stream = new FileInputStream(importFile);
+            String data = StreamUtil.inputStreamToString(stream, Charsets.UTF_8);
+            SystemSetupResult result = setup.checkImportPossible(data);
+            return new SystemSetupResult(result.success(), result.versionMismatch(), result.message(), data);
+        } finally {
+            if (stream != null) {
+                try {
+                    stream.close();
+                } catch (Exception exc) {
+                    Log.e(ImportTask.class.getName(), "Error closing file", exc);
+                }
+            }
+        }
     }
 
     private boolean purgeTables(Context context) {
@@ -126,44 +151,30 @@ public class ImportTask extends UIBackgroundTask<Boolean> {
         return logTableSuccess && networkTaskTableSuccess && schedulerIdTableSuccess && intervalTableSuccess && schedulerStateTableSuccess;
     }
 
-    private boolean doImport(Context context) throws Exception {
-        Log.d(ImportTask.class.getName(), "doImport");
-        FileInputStream stream = null;
-        try {
-            JSONSystemSetup setup = new JSONSystemSetup(context);
-            File importFile = new File(importFolder, file);
-            stream = new FileInputStream(importFile);
-            String data = StreamUtil.inputStreamToString(stream, Charsets.UTF_8);
-            SystemSetupResult result = setup.importData(data);
-            Log.d(ImportTask.class.getName(), "Import returned " + result);
-            if (result.success()) {
-                Log.d(ImportTask.class.getName(), "Import was successful: " + result.message());
-                return true;
-            } else {
-                Log.d(ImportTask.class.getName(), "Import was not successful: " + result.message());
-            }
-        } finally {
-            if (stream != null) {
-                try {
-                    stream.close();
-                } catch (Exception exc) {
-                    Log.e(ImportTask.class.getName(), "Error closing file", exc);
-                }
-            }
+    private SystemSetupResult doImport(Context context, String data) throws Exception {
+        Log.d(ImportTask.class.getName(), "doImport for data " + data);
+        JSONSystemSetup setup = new JSONSystemSetup(context);
+        SystemSetupResult result = setup.importData(data);
+        Log.d(ImportTask.class.getName(), "Import returned " + result);
+        if (result.success()) {
+            Log.d(ImportTask.class.getName(), "Import was successful: " + result.message());
+        } else {
+            Log.d(ImportTask.class.getName(), "Import was not successful: " + result.message());
         }
-        return false;
+        return result;
     }
 
     @Override
-    protected void runOnUIThread(Boolean success) {
-        Log.d(ImportTask.class.getName(), "runOnUIThread, success is " + success);
-        if (success == null) {
-            success = false;
+    protected void runOnUIThread(SystemSetupResult result) {
+        Log.d(ImportTask.class.getName(), "runOnUIThread, result is " + result);
+        if (result == null) {
+            result = new SystemSetupResult(false, false, "", "");
         }
         Activity activity = getActivity();
         if (activity != null && !activity.isDestroyed()) {
             if (activity instanceof ImportSupport) {
-                ((ImportSupport) activity).onImportDone(success);
+                String message = result.versionMismatch() ? getActivity().getResources().getString(R.string.text_dialog_general_error_config_import_version_mismatch) : null;
+                ((ImportSupport) activity).onImportDone(result.success(), message);
             }
         }
     }

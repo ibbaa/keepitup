@@ -37,6 +37,7 @@ import net.ibbaa.keepitup.logging.Dump;
 import net.ibbaa.keepitup.logging.Log;
 import net.ibbaa.keepitup.resources.PreferenceManager;
 import net.ibbaa.keepitup.resources.PreferenceSetup;
+import net.ibbaa.keepitup.resources.SystemSetupResult;
 import net.ibbaa.keepitup.service.IFileManager;
 import net.ibbaa.keepitup.service.IPowerManager;
 import net.ibbaa.keepitup.service.IThemeManager;
@@ -577,7 +578,7 @@ public class SystemActivity extends SettingsInputActivity implements ExportSuppo
             return;
         }
         ImportTask importTask = getImportTask(importFolder, file);
-        Future<Boolean> importFuture = ThreadUtil.exexute(importTask);
+        Future<SystemSetupResult> importFuture = ThreadUtil.exexute(importTask);
         boolean synchronousExecution = getResources().getBoolean(R.bool.uisync_synchronous_execution);
         if (synchronousExecution) {
             try {
@@ -653,14 +654,14 @@ public class SystemActivity extends SettingsInputActivity implements ExportSuppo
     }
 
     @Override
-    public void onImportDone(boolean success) {
+    public void onImportDone(boolean success, String message) {
         Log.d(SystemActivity.class.getName(), "onImportDone, success is " + success);
         closeProgressDialog();
         getTimeBasedSuspensionScheduler().restart();
         if (success) {
             resetActivity();
         } else {
-            showErrorDialog(getResources().getString(R.string.text_dialog_general_error_config_import), Typeface.BOLD, Error.IMPORTERROR.name());
+            showErrorDialog(message != null ? message : getResources().getString(R.string.text_dialog_general_error_config_import), Typeface.BOLD, Error.IMPORTERROR.name());
         }
     }
 

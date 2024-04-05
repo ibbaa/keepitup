@@ -268,6 +268,33 @@ public class JSONSystemSetupTest {
     }
 
     @Test
+    public void testImportVersionMismatch() throws Exception {
+        networkTaskDAO.insertNetworkTask(getNetworkTask1());
+        SystemSetupResult exportResult = setup.exportData();
+        JSONObject jsonData = new JSONObject(exportResult.data());
+        int version = jsonData.getInt("dbversion");
+        jsonData.put("dbversion", version + 1);
+        SystemSetupResult importResult = setup.importData(jsonData.toString());
+        assertFalse(importResult.success());
+        assertTrue(importResult.versionMismatch());
+    }
+
+    @Test
+    public void testCheckImportPossible() throws Exception {
+        networkTaskDAO.insertNetworkTask(getNetworkTask1());
+        SystemSetupResult exportResult = setup.exportData();
+        JSONObject jsonData = new JSONObject(exportResult.data());
+        int version = jsonData.getInt("dbversion");
+        jsonData.put("dbversion", version + 1);
+        SystemSetupResult importResult = setup.checkImportPossible(jsonData.toString());
+        assertFalse(importResult.success());
+        assertTrue(importResult.versionMismatch());
+        importResult = setup.checkImportPossible("wrong");
+        assertFalse(importResult.success());
+        assertFalse(importResult.versionMismatch());
+    }
+
+    @Test
     public void testImportDatabase() {
         NetworkTask task1 = networkTaskDAO.insertNetworkTask(getNetworkTask1());
         NetworkTask task2 = networkTaskDAO.insertNetworkTask(getNetworkTask2());

@@ -18,21 +18,22 @@ package net.ibbaa.keepitup.test.mock;
 
 import android.app.Activity;
 
+import net.ibbaa.keepitup.resources.SystemSetupResult;
 import net.ibbaa.keepitup.ui.sync.ImportTask;
 
 import java.io.File;
 
 public class MockImportTask extends ImportTask {
 
-    private final boolean result;
+    private final SystemSetupResult result;
 
-    public MockImportTask(Activity activity, boolean result) {
+    public MockImportTask(Activity activity, SystemSetupResult result) {
         super(activity, new File(""), "");
         this.result = result;
     }
 
     @Override
-    protected Boolean runInBackground() {
+    protected SystemSetupResult runInBackground() {
         return result;
     }
 }
