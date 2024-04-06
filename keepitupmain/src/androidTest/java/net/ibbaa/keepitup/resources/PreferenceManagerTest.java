@@ -194,6 +194,18 @@ public class PreferenceManagerTest {
     }
 
     @Test
+    public void testGetSetRemovePingPackageSize() {
+        assertEquals(56, preferenceManager.getPreferencePingPackageSize());
+        preferenceManager.setPreferencePingPackageSize(1234);
+        assertEquals(1234, preferenceManager.getPreferencePingPackageSize());
+        preferenceManager.removeAllPreferences();
+        assertEquals(56, preferenceManager.getPreferencePingPackageSize());
+        preferenceManager.setPreferencePingPackageSize(2);
+        preferenceManager.removePreferencePingPackageSize();
+        assertEquals(56, preferenceManager.getPreferencePingPackageSize());
+    }
+
+    @Test
     public void testGetSetRemovePreferenceNotificationInactiveNetwork() {
         assertFalse(preferenceManager.getPreferenceNotificationInactiveNetwork());
         preferenceManager.setPreferenceNotificationInactiveNetwork(true);
@@ -227,6 +239,18 @@ public class PreferenceManagerTest {
         preferenceManager.setPreferenceSuspensionEnabled(false);
         preferenceManager.removePreferenceSuspensionEnabled();
         assertTrue(preferenceManager.getPreferenceSuspensionEnabled());
+    }
+
+    @Test
+    public void testGetSetRemovePreferenceEnforceDefaultPingPackageSize() {
+        assertFalse(preferenceManager.getPreferenceEnforceDefaultPingPackageSize());
+        preferenceManager.setPreferenceEnforceDefaultPingPackageSize(true);
+        assertTrue(preferenceManager.getPreferenceEnforceDefaultPingPackageSize());
+        preferenceManager.removeAllPreferences();
+        assertFalse(preferenceManager.getPreferenceEnforceDefaultPingPackageSize());
+        preferenceManager.setPreferenceEnforceDefaultPingPackageSize(true);
+        preferenceManager.removePreferenceEnforceDefaultPingPackageSize();
+        assertFalse(preferenceManager.getPreferenceEnforceDefaultPingPackageSize());
     }
 
     @Test

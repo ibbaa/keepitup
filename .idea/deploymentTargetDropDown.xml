@@ -19,9 +19,22 @@
         </State>
       </entry>
       <entry key="JSONSystemSetupTest">
-        <State />
+        <State>
+          <targetSelectedWithDropDown>
+            <Target>
+              <type value="QUICK_BOOT_TARGET" />
+              <deviceKey>
+                <Key>
+                  <type value="VIRTUAL_DEVICE_PATH" />
+                  <value value="$USER_HOME$/.android/avd/Pixel_8_Pro_API_29.avd" />
+                </Key>
+              </deviceKey>
+            </Target>
+          </targetSelectedWithDropDown>
+          <timeTargetWasSelectedWithDropDown value="2024-04-06T10:09:12.954189496Z" />
+        </State>
       </entry>
-      <entry key="SystemActivityTest">
+      <entry key="PreferenceSetupTest">
         <State />
       </entry>
       <entry key="keepitupmain">
@@ -40,13 +53,13 @@
           <timeTargetWasSelectedWithDropDown value="2024-04-05T09:19:26.388720275Z" />
         </State>
       </entry>
-      <entry key="testCheckImportPossible()">
-        <State />
-      </entry>
       <entry key="testExportConfigurationScreenRotation()">
         <State />
       </entry>
-      <entry key="testImportFailureDataNotPurged()">
+      <entry key="testExportSettings()">
+        <State />
+      </entry>
+      <entry key="testImportGlobalSettingsSetValuesAsString()">
         <State />
       </entry>
     </value>

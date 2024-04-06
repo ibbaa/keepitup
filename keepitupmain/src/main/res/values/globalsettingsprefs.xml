@@ -15,14 +15,6 @@
   -->
 
 <resources>
-    <string name="ping_count_key">ping_count_key</string>
-    <integer name="ping_count_default">3</integer>
-    <integer name="ping_count_minimum">1</integer>
-    <integer name="ping_count_maximum">10</integer>
-    <string name="connect_count_key">connect_count_key</string>
-    <integer name="connect_count_default">1</integer>
-    <integer name="connect_count_minimum">1</integer>
-    <integer name="connect_count_maximum">10</integer>
     <string name="notification_inactive_network_key">notification_inactive_network_key</string>
     <bool name="notification_inactive_network_default">false</bool>
     <string name="notification_type_key">notification_type_key</string>
@@ -32,6 +24,8 @@
     <integer name="suspension_intervals_text_size_normal">14</integer>
     <integer name="suspension_intervals_text_size_smaller">12</integer>
     <integer name="suspension_intervals_text_size_small">10</integer>
+    <string name="enforce_default_ping_package_size_key">enforce_default_ping_package_size_key</string>
+    <bool name="enforce_default_ping_package_size_default">false</bool>
     <string name="download_external_storage_key">download_external_storage_key</string>
     <bool name="download_external_storage_default">false</bool>
     <string name="download_folder_key">download_folder_key</string>

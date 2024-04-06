@@ -202,6 +202,7 @@ public class JSONSystemSetupTest {
         preferenceManager.setPreferenceNotificationInactiveNetwork(true);
         preferenceManager.setPreferenceNotificationType(NotificationType.CHANGE);
         preferenceManager.setPreferenceSuspensionEnabled(false);
+        preferenceManager.setPreferenceEnforceDefaultPingPackageSize(true);
         preferenceManager.setPreferenceDownloadExternalStorage(true);
         preferenceManager.setPreferenceExternalStorageType(30);
         preferenceManager.setPreferenceDownloadFolder("folder");
@@ -212,6 +213,7 @@ public class JSONSystemSetupTest {
         preferenceManager.setPreferenceInterval(456);
         preferenceManager.setPreferenceOnlyWifi(true);
         preferenceManager.setPreferenceNotification(true);
+        preferenceManager.setPreferencePingPackageSize(15);
         preferenceManager.setPreferenceImportFolder("folderImport");
         preferenceManager.setPreferenceExportFolder("folderExport");
         preferenceManager.setPreferenceFileLoggerEnabled(true);
@@ -228,6 +230,7 @@ public class JSONSystemSetupTest {
         assertTrue(globalSettingsData.getBoolean("preferenceNotificationInactiveNetwork"));
         assertEquals(NotificationType.CHANGE, NotificationType.forCode(globalSettingsData.getInt("preferenceNotificationType")));
         assertFalse(globalSettingsData.getBoolean("preferenceSuspensionEnabled"));
+        assertTrue(globalSettingsData.getBoolean("preferenceEnforceDefaultPingPackageSize"));
         assertTrue(globalSettingsData.getBoolean("preferenceDownloadExternalStorage"));
         assertEquals("folder", globalSettingsData.getString("preferenceDownloadFolder"));
         assertTrue(globalSettingsData.getBoolean("preferenceDownloadKeep"));
@@ -237,6 +240,7 @@ public class JSONSystemSetupTest {
         assertEquals(456, defaultsData.getInt("preferenceInterval"));
         assertTrue(defaultsData.getBoolean("preferenceOnlyWifi"));
         assertTrue(defaultsData.getBoolean("preferenceNotification"));
+        assertEquals(15, defaultsData.getInt("preferencePingPackageSize"));
         assertEquals("folderImport", systemSettingsData.getString("preferenceImportFolder"));
         assertEquals("folderExport", systemSettingsData.getString("preferenceExportFolder"));
         assertEquals(30, systemSettingsData.getInt("preferenceExternalStorageType"));
@@ -249,6 +253,7 @@ public class JSONSystemSetupTest {
     public void testExportSettingsInvalid() throws Exception {
         preferenceManager.setPreferencePingCount(25);
         preferenceManager.setPreferenceConnectCount(25);
+        preferenceManager.setPreferencePingPackageSize(12345678);
         preferenceManager.setPreferenceExternalStorageType(30);
         preferenceManager.setPreferencePort(100000);
         preferenceManager.setPreferenceInterval(-5);
@@ -261,6 +266,7 @@ public class JSONSystemSetupTest {
         JSONObject systemSettingsData = (JSONObject) settingsData.get("system");
         assertEquals(25, globalSettingsData.getInt("preferencePingCount"));
         assertEquals(25, globalSettingsData.getInt("preferenceConnectCount"));
+        assertEquals(12345678, defaultsData.getInt("preferencePingPackageSize"));
         assertEquals(30, systemSettingsData.getInt("preferenceExternalStorageType"));
         assertEquals(5, systemSettingsData.getInt("preferenceTheme"));
         assertEquals(100000, defaultsData.getInt("preferencePort"));
@@ -615,6 +621,7 @@ public class JSONSystemSetupTest {
         preferenceManager.setPreferenceNotificationInactiveNetwork(true);
         preferenceManager.setPreferenceNotificationType(NotificationType.CHANGE);
         preferenceManager.setPreferenceSuspensionEnabled(false);
+        preferenceManager.setPreferenceEnforceDefaultPingPackageSize(true);
         preferenceManager.setPreferenceDownloadExternalStorage(true);
         preferenceManager.setPreferenceExternalStorageType(1);
         preferenceManager.setPreferenceDownloadFolder("folder");
@@ -625,6 +632,7 @@ public class JSONSystemSetupTest {
         preferenceManager.setPreferenceInterval(456);
         preferenceManager.setPreferenceOnlyWifi(true);
         preferenceManager.setPreferenceNotification(true);
+        preferenceManager.setPreferencePingPackageSize(1234);
         preferenceManager.setPreferenceImportFolder("folderImport");
         preferenceManager.setPreferenceExportFolder("folderExport");
         preferenceManager.setPreferenceFileLoggerEnabled(true);
@@ -640,6 +648,7 @@ public class JSONSystemSetupTest {
         assertTrue(preferenceManager.getPreferenceNotificationInactiveNetwork());
         assertEquals(NotificationType.CHANGE, preferenceManager.getPreferenceNotificationType());
         assertFalse(preferenceManager.getPreferenceSuspensionEnabled());
+        assertTrue(preferenceManager.getPreferenceEnforceDefaultPingPackageSize());
         assertTrue(preferenceManager.getPreferenceDownloadExternalStorage());
         assertEquals(1, preferenceManager.getPreferenceExternalStorageType());
         assertEquals("folder", preferenceManager.getPreferenceDownloadFolder());
@@ -650,6 +659,7 @@ public class JSONSystemSetupTest {
         assertEquals(456, preferenceManager.getPreferenceInterval());
         assertTrue(preferenceManager.getPreferenceOnlyWifi());
         assertTrue(preferenceManager.getPreferenceNotification());
+        assertEquals(1234, preferenceManager.getPreferencePingPackageSize());
         assertEquals("folderImport", preferenceManager.getPreferenceImportFolder());
         assertEquals("folderExport", preferenceManager.getPreferenceExportFolder());
         assertTrue(preferenceManager.getPreferenceFileLoggerEnabled());
@@ -661,6 +671,7 @@ public class JSONSystemSetupTest {
     public void testImportSettingsInvalid() {
         preferenceManager.setPreferencePingCount(20);
         preferenceManager.setPreferenceConnectCount(20);
+        preferenceManager.setPreferencePingPackageSize(12345678);
         preferenceManager.setPreferenceExternalStorageType(2);
         preferenceManager.setPreferencePort(100000);
         preferenceManager.setPreferenceInterval(-5);
@@ -672,6 +683,7 @@ public class JSONSystemSetupTest {
         assertEquals(exportResult.data(), importResult.data());
         assertEquals(3, preferenceManager.getPreferencePingCount());
         assertEquals(1, preferenceManager.getPreferenceConnectCount());
+        assertEquals(56, preferenceManager.getPreferencePingPackageSize());
         assertEquals(0, preferenceManager.getPreferenceExternalStorageType());
         assertEquals(22, preferenceManager.getPreferencePort());
         assertEquals(15, preferenceManager.getPreferenceInterval());

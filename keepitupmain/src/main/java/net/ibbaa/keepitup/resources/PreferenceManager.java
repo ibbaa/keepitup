@@ -193,36 +193,6 @@ public class PreferenceManager {
         removePreferenceValue(getResources().getString(R.string.task_notification_key));
     }
 
-    public NotificationType getPreferenceNotificationType() {
-        Log.d(PreferenceManager.class.getName(), "getPreferenceNotificationType");
-        return NotificationType.forCode(getPreferenceInt(getResources().getString(R.string.notification_type_key), getResources().getInteger(R.integer.notification_type_default)));
-    }
-
-    public void setPreferenceNotificationType(NotificationType notificationType) {
-        Log.d(PreferenceManager.class.getName(), "setPreferenceNotificationType, type is " + notificationType);
-        setPreferenceInt(getResources().getString(R.string.notification_type_key), notificationType.getCode());
-    }
-
-    public void removePreferenceNotificationType() {
-        Log.d(PreferenceManager.class.getName(), "removePreferenceNotificationType");
-        removePreferenceValue(getResources().getString(R.string.notification_type_key));
-    }
-
-    public boolean getPreferenceSuspensionEnabled() {
-        Log.d(PreferenceManager.class.getName(), "getPreferenceSuspensionEnabled");
-        return getPreferenceBoolean(getResources().getString(R.string.suspension_enabled_key), getResources().getBoolean(R.bool.suspension_enabled_default));
-    }
-
-    public void setPreferenceSuspensionEnabled(boolean suspensionEnabled) {
-        Log.d(PreferenceManager.class.getName(), "setPreferenceSuspensionEnabled, suspensionEnabled is " + suspensionEnabled);
-        setPreferenceBoolean(getResources().getString(R.string.suspension_enabled_key), suspensionEnabled);
-    }
-
-    public void removePreferenceSuspensionEnabled() {
-        Log.d(PreferenceManager.class.getName(), "removePreferenceSuspensionEnabled");
-        removePreferenceValue(getResources().getString(R.string.suspension_enabled_key));
-    }
-
     public int getPreferencePingCount() {
         Log.d(PreferenceManager.class.getName(), "getPreferencePingCount");
         return getPreferenceInt(getResources().getString(R.string.ping_count_key), getResources().getInteger(R.integer.ping_count_default));
@@ -253,6 +223,51 @@ public class PreferenceManager {
         removePreferenceValue(getResources().getString(R.string.connect_count_key));
     }
 
+    public int getPreferencePingPackageSize() {
+        Log.d(PreferenceManager.class.getName(), "getPreferencePingPackageSize");
+        return getPreferenceInt(getResources().getString(R.string.ping_package_size_key), getResources().getInteger(R.integer.ping_package_size_default));
+    }
+
+    public void setPreferencePingPackageSize(int pingPackageSize) {
+        Log.d(PreferenceManager.class.getName(), "setPreferencePingPackageSize, pingPackageSize is " + pingPackageSize);
+        setPreferenceInt(getResources().getString(R.string.ping_package_size_key), pingPackageSize);
+    }
+
+    public void removePreferencePingPackageSize() {
+        Log.d(PreferenceManager.class.getName(), "removePreferencePingPackageSize");
+        removePreferenceValue(getResources().getString(R.string.ping_package_size_key));
+    }
+
+    public NotificationType getPreferenceNotificationType() {
+        Log.d(PreferenceManager.class.getName(), "getPreferenceNotificationType");
+        return NotificationType.forCode(getPreferenceInt(getResources().getString(R.string.notification_type_key), getResources().getInteger(R.integer.notification_type_default)));
+    }
+
+    public void setPreferenceNotificationType(NotificationType notificationType) {
+        Log.d(PreferenceManager.class.getName(), "setPreferenceNotificationType, type is " + notificationType);
+        setPreferenceInt(getResources().getString(R.string.notification_type_key), notificationType.getCode());
+    }
+
+    public void removePreferenceNotificationType() {
+        Log.d(PreferenceManager.class.getName(), "removePreferenceNotificationType");
+        removePreferenceValue(getResources().getString(R.string.notification_type_key));
+    }
+
+    public boolean getPreferenceSuspensionEnabled() {
+        Log.d(PreferenceManager.class.getName(), "getPreferenceSuspensionEnabled");
+        return getPreferenceBoolean(getResources().getString(R.string.suspension_enabled_key), getResources().getBoolean(R.bool.suspension_enabled_default));
+    }
+
+    public void setPreferenceSuspensionEnabled(boolean suspensionEnabled) {
+        Log.d(PreferenceManager.class.getName(), "setPreferenceSuspensionEnabled, suspensionEnabled is " + suspensionEnabled);
+        setPreferenceBoolean(getResources().getString(R.string.suspension_enabled_key), suspensionEnabled);
+    }
+
+    public void removePreferenceSuspensionEnabled() {
+        Log.d(PreferenceManager.class.getName(), "removePreferenceSuspensionEnabled");
+        removePreferenceValue(getResources().getString(R.string.suspension_enabled_key));
+    }
+
     public boolean getPreferenceNotificationInactiveNetwork() {
         Log.d(PreferenceManager.class.getName(), "getPreferenceNotificationInactiveNetwork");
         return getPreferenceBoolean(getResources().getString(R.string.notification_inactive_network_key), getResources().getBoolean(R.bool.notification_inactive_network_default));
@@ -266,6 +281,21 @@ public class PreferenceManager {
     public void removePreferenceNotificationInactiveNetwork() {
         Log.d(PreferenceManager.class.getName(), "removePreferenceNotificationInactiveNetwork");
         removePreferenceValue(getResources().getString(R.string.notification_inactive_network_key));
+    }
+
+    public boolean getPreferenceEnforceDefaultPingPackageSize() {
+        Log.d(PreferenceManager.class.getName(), "getPreferenceEnforceDefaultPingPackageSize");
+        return getPreferenceBoolean(getResources().getString(R.string.enforce_default_ping_package_size_key), getResources().getBoolean(R.bool.enforce_default_ping_package_size_default));
+    }
+
+    public void setPreferenceEnforceDefaultPingPackageSize(boolean enforceDefaultPingPackageSize) {
+        Log.d(PreferenceManager.class.getName(), "setPreferenceEnforceDefaultPingPackageSize, enforceDefaultPingPackageSize is " + enforceDefaultPingPackageSize);
+        setPreferenceBoolean(getResources().getString(R.string.enforce_default_ping_package_size_key), enforceDefaultPingPackageSize);
+    }
+
+    public void removePreferenceEnforceDefaultPingPackageSize() {
+        Log.d(PreferenceManager.class.getName(), "removePreferenceEnforceDefaultPingPackageSize");
+        removePreferenceValue(getResources().getString(R.string.enforce_default_ping_package_size_key));
     }
 
     public boolean getPreferenceDownloadExternalStorage() {

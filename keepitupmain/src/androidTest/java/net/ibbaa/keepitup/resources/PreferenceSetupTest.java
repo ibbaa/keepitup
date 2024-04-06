@@ -62,6 +62,7 @@ public class PreferenceSetupTest {
         preferenceManager.setPreferenceNotificationInactiveNetwork(true);
         preferenceManager.setPreferenceNotificationType(NotificationType.CHANGE);
         preferenceManager.setPreferenceSuspensionEnabled(false);
+        preferenceManager.setPreferenceEnforceDefaultPingPackageSize(true);
         preferenceManager.setPreferenceDownloadExternalStorage(true);
         preferenceManager.setPreferenceDownloadFolder("folder");
         preferenceManager.setPreferenceDownloadKeep(true);
@@ -74,6 +75,7 @@ public class PreferenceSetupTest {
         assertFalse(preferenceManager.getPreferenceNotificationInactiveNetwork());
         assertEquals(NotificationType.FAILURE, preferenceManager.getPreferenceNotificationType());
         assertTrue(preferenceManager.getPreferenceSuspensionEnabled());
+        assertFalse(preferenceManager.getPreferenceEnforceDefaultPingPackageSize());
         assertFalse(preferenceManager.getPreferenceDownloadExternalStorage());
         assertEquals("download", preferenceManager.getPreferenceDownloadFolder());
         assertFalse(preferenceManager.getPreferenceDownloadKeep());
@@ -89,6 +91,7 @@ public class PreferenceSetupTest {
         globalSettings.put("preferenceNotificationInactiveNetwork", true);
         globalSettings.put("preferenceNotificationType", 2);
         globalSettings.put("preferenceSuspensionEnabled", false);
+        globalSettings.put("preferenceEnforceDefaultPingPackageSize", true);
         globalSettings.put("preferenceDownloadExternalStorage", true);
         globalSettings.put("preferenceDownloadFolder", "folder");
         globalSettings.put("preferenceDownloadKeep", true);
@@ -100,6 +103,7 @@ public class PreferenceSetupTest {
         assertTrue(preferenceManager.getPreferenceNotificationInactiveNetwork());
         assertEquals(NotificationType.CHANGE, preferenceManager.getPreferenceNotificationType());
         assertFalse(preferenceManager.getPreferenceSuspensionEnabled());
+        assertTrue(preferenceManager.getPreferenceEnforceDefaultPingPackageSize());
         assertTrue(preferenceManager.getPreferenceDownloadExternalStorage());
         assertEquals("folder", preferenceManager.getPreferenceDownloadFolder());
         assertTrue(preferenceManager.getPreferenceDownloadKeep());
@@ -115,6 +119,7 @@ public class PreferenceSetupTest {
         globalSettings.put("preferenceNotificationInactiveNetwork", "true");
         globalSettings.put("preferenceNotificationType", "2");
         globalSettings.put("preferenceSuspensionEnabled", "false");
+        globalSettings.put("preferenceEnforceDefaultPingPackageSize", "true");
         globalSettings.put("preferenceDownloadExternalStorage", "true");
         globalSettings.put("preferenceDownloadFolder", "folder");
         globalSettings.put("preferenceDownloadKeep", "true");
@@ -126,6 +131,7 @@ public class PreferenceSetupTest {
         assertTrue(preferenceManager.getPreferenceNotificationInactiveNetwork());
         assertEquals(NotificationType.CHANGE, preferenceManager.getPreferenceNotificationType());
         assertFalse(preferenceManager.getPreferenceSuspensionEnabled());
+        assertTrue(preferenceManager.getPreferenceEnforceDefaultPingPackageSize());
         assertTrue(preferenceManager.getPreferenceDownloadExternalStorage());
         assertEquals("folder", preferenceManager.getPreferenceDownloadFolder());
         assertTrue(preferenceManager.getPreferenceDownloadKeep());
@@ -167,6 +173,7 @@ public class PreferenceSetupTest {
         preferenceManager.setPreferenceInterval(456);
         preferenceManager.setPreferenceOnlyWifi(true);
         preferenceManager.setPreferenceNotification(true);
+        preferenceManager.setPreferencePingPackageSize(1234);
         Map<String, ?> defaults = new HashMap<>();
         setup.importDefaults(defaults);
         assertEquals(AccessType.PING, preferenceManager.getPreferenceAccessType());
@@ -175,6 +182,7 @@ public class PreferenceSetupTest {
         assertEquals(15, preferenceManager.getPreferenceInterval());
         assertFalse(preferenceManager.getPreferenceOnlyWifi());
         assertFalse(preferenceManager.getPreferenceNotification());
+        assertEquals(56, preferenceManager.getPreferencePingPackageSize());
     }
 
     @Test
@@ -186,6 +194,7 @@ public class PreferenceSetupTest {
         defaults.put("preferenceInterval", 456);
         defaults.put("preferenceOnlyWifi", true);
         defaults.put("preferenceNotification", true);
+        defaults.put("preferencePingPackageSize", 1234);
         setup.importDefaults(defaults);
         assertEquals(AccessType.CONNECT, preferenceManager.getPreferenceAccessType());
         assertEquals("address", preferenceManager.getPreferenceAddress());
@@ -193,6 +202,7 @@ public class PreferenceSetupTest {
         assertEquals(456, preferenceManager.getPreferenceInterval());
         assertTrue(preferenceManager.getPreferenceOnlyWifi());
         assertTrue(preferenceManager.getPreferenceNotification());
+        assertEquals(1234, preferenceManager.getPreferencePingPackageSize());
     }
 
     @Test
@@ -204,6 +214,7 @@ public class PreferenceSetupTest {
         defaults.put("preferenceInterval", "456");
         defaults.put("preferenceOnlyWifi", "true");
         defaults.put("preferenceNotification", "true");
+        defaults.put("preferencePingPackageSize", 1234);
         setup.importDefaults(defaults);
         assertEquals(AccessType.CONNECT, preferenceManager.getPreferenceAccessType());
         assertEquals("address", preferenceManager.getPreferenceAddress());
@@ -211,6 +222,7 @@ public class PreferenceSetupTest {
         assertEquals(456, preferenceManager.getPreferenceInterval());
         assertTrue(preferenceManager.getPreferenceOnlyWifi());
         assertTrue(preferenceManager.getPreferenceNotification());
+        assertEquals(1234, preferenceManager.getPreferencePingPackageSize());
     }
 
     @Test
@@ -222,6 +234,7 @@ public class PreferenceSetupTest {
         defaults.put("preferenceInterval", "");
         defaults.put("preferenceOnlyWifi", 1);
         defaults.put("preferenceNotification", 1);
+        defaults.put("pingPackageSize", 12345678);
         setup.importDefaults(defaults);
         assertEquals(AccessType.PING, preferenceManager.getPreferenceAccessType());
         assertEquals("192.168.178.1", preferenceManager.getPreferenceAddress());
@@ -229,6 +242,7 @@ public class PreferenceSetupTest {
         assertEquals(15, preferenceManager.getPreferenceInterval());
         assertFalse(preferenceManager.getPreferenceOnlyWifi());
         assertFalse(preferenceManager.getPreferenceNotification());
+        assertEquals(56, preferenceManager.getPreferencePingPackageSize());
     }
 
     @Test
@@ -311,6 +325,7 @@ public class PreferenceSetupTest {
         assertEquals(globalSettings.get("preferenceNotificationInactiveNetwork"), preferenceManager.getPreferenceNotificationInactiveNetwork());
         assertEquals(globalSettings.get("preferenceNotificationType"), preferenceManager.getPreferenceNotificationType().getCode());
         assertEquals(globalSettings.get("preferenceSuspensionEnabled"), preferenceManager.getPreferenceSuspensionEnabled());
+        assertEquals(globalSettings.get("preferenceEnforceDefaultPingPackageSize"), preferenceManager.getPreferenceEnforceDefaultPingPackageSize());
         assertEquals(globalSettings.get("preferenceDownloadExternalStorage"), preferenceManager.getPreferenceDownloadExternalStorage());
         assertEquals(globalSettings.get("preferenceDownloadFolder"), preferenceManager.getPreferenceDownloadFolder());
         assertEquals(globalSettings.get("preferenceDownloadKeep"), preferenceManager.getPreferenceDownloadKeep());
@@ -325,6 +340,7 @@ public class PreferenceSetupTest {
         preferenceManager.setPreferenceNotificationInactiveNetwork(true);
         preferenceManager.setPreferenceNotificationType(NotificationType.CHANGE);
         preferenceManager.setPreferenceSuspensionEnabled(false);
+        preferenceManager.setPreferenceEnforceDefaultPingPackageSize(true);
         preferenceManager.setPreferenceDownloadExternalStorage(true);
         preferenceManager.setPreferenceDownloadFolder("folder");
         preferenceManager.setPreferenceDownloadKeep(true);
@@ -336,6 +352,7 @@ public class PreferenceSetupTest {
         assertTrue(preferenceManager.getPreferenceNotificationInactiveNetwork());
         assertEquals(NotificationType.CHANGE, preferenceManager.getPreferenceNotificationType());
         assertFalse(preferenceManager.getPreferenceSuspensionEnabled());
+        assertTrue(preferenceManager.getPreferenceEnforceDefaultPingPackageSize());
         assertTrue(preferenceManager.getPreferenceDownloadExternalStorage());
         assertEquals("folder", preferenceManager.getPreferenceDownloadFolder());
         assertTrue(preferenceManager.getPreferenceDownloadKeep());
@@ -346,6 +363,7 @@ public class PreferenceSetupTest {
         assertEquals(globalSettings.get("preferenceNotificationInactiveNetwork"), preferenceManager.getPreferenceNotificationInactiveNetwork());
         assertEquals(globalSettings.get("preferenceNotificationType"), preferenceManager.getPreferenceNotificationType().getCode());
         assertEquals(globalSettings.get("preferenceSuspensionEnabled"), preferenceManager.getPreferenceSuspensionEnabled());
+        assertEquals(globalSettings.get("preferenceEnforceDefaultPingPackageSize"), preferenceManager.getPreferenceEnforceDefaultPingPackageSize());
         assertEquals(globalSettings.get("preferenceDownloadExternalStorage"), preferenceManager.getPreferenceDownloadExternalStorage());
         assertEquals(globalSettings.get("preferenceDownloadFolder"), preferenceManager.getPreferenceDownloadFolder());
         assertEquals(globalSettings.get("preferenceDownloadKeep"), preferenceManager.getPreferenceDownloadKeep());
@@ -362,6 +380,7 @@ public class PreferenceSetupTest {
         assertEquals(defaults.get("preferenceInterval"), preferenceManager.getPreferenceInterval());
         assertEquals(defaults.get("preferenceOnlyWifi"), preferenceManager.getPreferenceOnlyWifi());
         assertEquals(defaults.get("preferenceNotification"), preferenceManager.getPreferenceNotification());
+        assertEquals(defaults.get("preferencePingPackageSize"), preferenceManager.getPreferencePingPackageSize());
     }
 
     @Test
@@ -372,6 +391,7 @@ public class PreferenceSetupTest {
         preferenceManager.setPreferenceInterval(456);
         preferenceManager.setPreferenceOnlyWifi(true);
         preferenceManager.setPreferenceNotification(true);
+        preferenceManager.setPreferencePingPackageSize(1234);
         Map<String, ?> defaults = setup.exportDefaults();
         assertEquals(AccessType.CONNECT, preferenceManager.getPreferenceAccessType());
         assertEquals("address", preferenceManager.getPreferenceAddress());
@@ -379,12 +399,14 @@ public class PreferenceSetupTest {
         assertEquals(456, preferenceManager.getPreferenceInterval());
         assertTrue(preferenceManager.getPreferenceOnlyWifi());
         assertTrue(preferenceManager.getPreferenceNotification());
+        assertEquals(1234, preferenceManager.getPreferencePingPackageSize());
         assertEquals(defaults.get("preferenceAccessType"), preferenceManager.getPreferenceAccessType().getCode());
         assertEquals(defaults.get("preferenceAddress"), preferenceManager.getPreferenceAddress());
         assertEquals(defaults.get("preferencePort"), preferenceManager.getPreferencePort());
         assertEquals(defaults.get("preferenceInterval"), preferenceManager.getPreferenceInterval());
         assertEquals(defaults.get("preferenceOnlyWifi"), preferenceManager.getPreferenceOnlyWifi());
         assertEquals(defaults.get("preferenceNotification"), preferenceManager.getPreferenceNotification());
+        assertEquals(defaults.get("preferencePingPackageSize"), preferenceManager.getPreferencePingPackageSize());
     }
 
     @Test

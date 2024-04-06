@@ -48,6 +48,7 @@ public class PreferenceSetup {
         globalSettings.put("preferenceNotificationInactiveNetwork", preferenceManager.getPreferenceNotificationInactiveNetwork());
         globalSettings.put("preferenceNotificationType", preferenceManager.getPreferenceNotificationType() != null ? preferenceManager.getPreferenceNotificationType().getCode() : 1);
         globalSettings.put("preferenceSuspensionEnabled", preferenceManager.getPreferenceSuspensionEnabled());
+        globalSettings.put("preferenceEnforceDefaultPingPackageSize", preferenceManager.getPreferenceEnforceDefaultPingPackageSize());
         globalSettings.put("preferenceDownloadExternalStorage", preferenceManager.getPreferenceDownloadExternalStorage());
         globalSettings.put("preferenceDownloadFolder", preferenceManager.getPreferenceDownloadFolder());
         globalSettings.put("preferenceDownloadKeep", preferenceManager.getPreferenceDownloadKeep());
@@ -65,6 +66,7 @@ public class PreferenceSetup {
         defaults.put("preferenceInterval", preferenceManager.getPreferenceInterval());
         defaults.put("preferenceOnlyWifi", preferenceManager.getPreferenceOnlyWifi());
         defaults.put("preferenceNotification", preferenceManager.getPreferenceNotification());
+        defaults.put("preferencePingPackageSize", preferenceManager.getPreferencePingPackageSize());
         return defaults;
     }
 
@@ -118,11 +120,17 @@ public class PreferenceSetup {
         } else {
             preferenceManager.removePreferenceSuspensionEnabled();
         }
+        Object enforceDefaultPingPackageSize = globalSettings.get("preferenceEnforceDefaultPingPackageSize");
+        if (isValidBoolean(enforceDefaultPingPackageSize)) {
+            preferenceManager.setPreferenceEnforceDefaultPingPackageSize(Boolean.parseBoolean(enforceDefaultPingPackageSize.toString()));
+        } else {
+            preferenceManager.removePreferenceDownloadExternalStorage();
+        }
         Object downloadExternalStorage = globalSettings.get("preferenceDownloadExternalStorage");
         if (isValidBoolean(downloadExternalStorage)) {
             preferenceManager.setPreferenceDownloadExternalStorage(Boolean.parseBoolean(downloadExternalStorage.toString()));
         } else {
-            preferenceManager.removePreferenceDownloadExternalStorage();
+            preferenceManager.removePreferenceEnforceDefaultPingPackageSize();
         }
         Object downloadFolder = globalSettings.get("preferenceDownloadFolder");
         if (isValidString(downloadFolder)) {
@@ -193,6 +201,15 @@ public class PreferenceSetup {
             preferenceManager.setPreferenceNotification(Boolean.parseBoolean(notification.toString()));
         } else {
             preferenceManager.removePreferenceNotification();
+        }
+        Object pingPackageSize = defaults.get("preferencePingPackageSize");
+        int pingPackageSizeMin = getResources().getInteger(R.integer.ping_package_size_minimum);
+        int pingPackageSizeMax = getResources().getInteger(R.integer.ping_package_size_maximum);
+        int pingPackageSizeDefault = getResources().getInteger(R.integer.ping_package_size_default);
+        if (isValidInteger(pingPackageSize, pingPackageSizeMin, pingPackageSizeMax)) {
+            preferenceManager.setPreferencePingPackageSize(NumberUtil.getIntValue(pingPackageSize, pingPackageSizeDefault));
+        } else {
+            preferenceManager.removePreferencePingPackageSize();
         }
     }
 
