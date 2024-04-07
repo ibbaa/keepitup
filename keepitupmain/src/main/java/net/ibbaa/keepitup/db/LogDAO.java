@@ -287,12 +287,12 @@ public class LogDAO extends BaseDAO {
         LogEntry logEntry = new LogEntry();
         LogDBConstants dbConstants = new LogDBConstants(getContext());
         int indexIdColumn = cursor.getColumnIndex(dbConstants.getIdColumnName());
-        int indexNetworkTaskIndexColumn = cursor.getColumnIndex(dbConstants.getNetworkTaskIdColumnName());
+        int indexNetworkTaskIdColumn = cursor.getColumnIndex(dbConstants.getNetworkTaskIdColumnName());
         int indexTimestampColumn = cursor.getColumnIndex(dbConstants.getTimestampColumnName());
         int indexSuccessColumn = cursor.getColumnIndex(dbConstants.getSuccessColumnName());
         int indexMessageColumn = cursor.getColumnIndex(dbConstants.getMessageColumnName());
         logEntry.setId(cursor.getInt(indexIdColumn));
-        logEntry.setNetworkTaskId(cursor.getLong(indexNetworkTaskIndexColumn));
+        logEntry.setNetworkTaskId(cursor.getLong(indexNetworkTaskIdColumn));
         logEntry.setTimestamp(cursor.getLong(indexTimestampColumn));
         logEntry.setSuccess(cursor.getInt(indexSuccessColumn) >= 1);
         logEntry.setMessage(cursor.getString(indexMessageColumn));

@@ -50,4 +50,10 @@
     <string name="scheduler_state_id_column_name">_id</string>
     <string name="scheduler_state_suspended_column_name">SUSPENDED</string>
     <string name="scheduler_state_timestamp_column_name">TIMESTAMP</string>
+    <string name="accesstypedata_table_name">ACCESSTYPEDATA</string>
+    <string name="accesstypedata_id_column_name">_id</string>
+    <string name="accesstypedata_taskid_column_name">NETWORKTASKID</string>
+    <string name="accesstypedata_pingcount_column_name">PINGCOUNT</string>
+    <string name="accesstypedata_pingpackagesize_column_name">PINGPACKAGESIZE</string>
+    <string name="accesstypedata_connectcount_column_name">CONNECTCOUNT</string>
 </resources>
