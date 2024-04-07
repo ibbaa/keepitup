@@ -43,6 +43,14 @@ public class AccessTypeDataDAO extends BaseDAO {
         return returnedAccessTypeData;
     }
 
+    public AccessTypeData updateAccessTypeData(AccessTypeData accessTypeData) {
+        Log.d(AccessTypeDataDAO.class.getName(), "Updating accessTypeData with id " + accessTypeData.getId());
+        AccessTypeData returnedAccessTypeData = executeDBOperationInTransaction(accessTypeData, this::updateAccessTypeData);
+        Log.d(AccessTypeDataDAO.class.getName(), "Updated interval is " + returnedAccessTypeData);
+        dumpDatabase("Dump after updateInterval call");
+        return returnedAccessTypeData;
+    }
+
     public AccessTypeData readAccessTypeDataForNetworkTask(long networkTaskId) {
         Log.d(AccessTypeDataDAO.class.getName(), "Reading accessTypeData for network task with id " + networkTaskId);
         AccessTypeData accessTypeData = new AccessTypeData();
@@ -57,6 +65,26 @@ public class AccessTypeDataDAO extends BaseDAO {
         List<AccessTypeData> accessTypeDataList = executeDBOperationInTransaction((AccessTypeData) null, this::readAllAccessTypeData);
         Log.d(AccessTypeDataDAO.class.getName(), "Number of accessTypeData read: " + accessTypeDataList.size());
         return accessTypeDataList;
+    }
+
+    public void deleteAccessTypeDataForNetworkTask(long networkTaskId) {
+        Log.d(AccessTypeDataDAO.class.getName(), "Deleting all accessTypeData for network task with id " + networkTaskId);
+        AccessTypeData sccessTypeData = new AccessTypeData();
+        sccessTypeData.setNetworkTaskId(networkTaskId);
+        executeDBOperationInTransaction(sccessTypeData, this::deleteAccessTypeDataForNetworkTask);
+        dumpDatabase("Dump after deleteAccessTypeDataForNetworkTask call");
+    }
+
+    public void deleteAllOrphandeleteAllAccessTypeData() {
+        Log.d(AccessTypeDataDAO.class.getName(), "Deleting all orphan accessTypeData");
+        executeDBOperationInTransaction((AccessTypeData) null, this::deleteAllOrphanAccessTypeData);
+        dumpDatabase("Dump after deleteAllOrphanLogs call");
+    }
+
+    public void deleteAllAccessTypeData() {
+        Log.d(AccessTypeDataDAO.class.getName(), "Deleting all accessTypeData");
+        executeDBOperationInTransaction((AccessTypeData) null, this::deleteAllAccessTypeData);
+        dumpDatabase("Dump after deleteAllAccessTypeData call");
     }
 
     private void dumpDatabase(String message) {
@@ -78,6 +106,20 @@ public class AccessTypeDataDAO extends BaseDAO {
             Log.e(AccessTypeDataDAO.class.getName(), "Error inserting accessTypeData into database. Insert returned -1.");
         }
         accessTypeData.setId(rowid);
+        return accessTypeData;
+    }
+
+    private AccessTypeData updateAccessTypeData(AccessTypeData accessTypeData, SQLiteDatabase db) {
+        Log.d(IntervalDAO.class.getName(), "updateAccessTypeData, accessTypeData is " + accessTypeData);
+        AccessTypeDataDBConstants dbConstants = new AccessTypeDataDBConstants(getContext());
+        String selection = dbConstants.getIdColumnName() + " = ?";
+        String[] selectionArgs = {String.valueOf(accessTypeData.getId())};
+        ContentValues values = new ContentValues();
+        values.put(dbConstants.getNetworkTaskIdColumnName(), accessTypeData.getNetworkTaskId());
+        values.put(dbConstants.getPingCountColumnName(), accessTypeData.getPingCount());
+        values.put(dbConstants.getPingPackageSizeColumnName(), accessTypeData.getPingPackageSize());
+        values.put(dbConstants.getConnectCountColumnName(), accessTypeData.getConnectCount());
+        db.update(dbConstants.getTableName(), values, selection, selectionArgs);
         return accessTypeData;
     }
 
@@ -133,6 +175,28 @@ public class AccessTypeDataDAO extends BaseDAO {
         }
         Log.d(AccessTypeDataDAO.class.getName(), "readAllAccessTypeData, returning " + result);
         return result;
+    }
+
+    private int deleteAccessTypeDataForNetworkTask(AccessTypeData accessTypeData, SQLiteDatabase db) {
+        Log.d(AccessTypeDataDAO.class.getName(), "deleteAccessTypeDataForNetworkTask, accessTypeData is " + accessTypeData);
+        AccessTypeDataDBConstants dbConstants = new AccessTypeDataDBConstants(getContext());
+        String selection = dbConstants.getNetworkTaskIdColumnName() + " = ?";
+        String[] selectionArgs = {String.valueOf(accessTypeData.getNetworkTaskId())};
+        return db.delete(dbConstants.getTableName(), selection, selectionArgs);
+    }
+
+    private int deleteAllAccessTypeData(AccessTypeData accessTypeData, SQLiteDatabase db) {
+        Log.d(AccessTypeDataDAO.class.getName(), "deleteAllAccessTypeData, accessTypeData is " + accessTypeData);
+        AccessTypeDataDBConstants dbConstants = new AccessTypeDataDBConstants(getContext());
+        return db.delete(dbConstants.getTableName(), null, null);
+    }
+
+    private int deleteAllOrphanAccessTypeData(AccessTypeData accessTypeData, SQLiteDatabase db) {
+        Log.d(AccessTypeDataDAO.class.getName(), "deleteAllOrphanAccessTypeData, accessTypeData is " + accessTypeData);
+        AccessTypeDataDBConstants dbConstants = new AccessTypeDataDBConstants(getContext());
+        Log.d(AccessTypeDataDAO.class.getName(), "Executing SQL " + dbConstants.getDeleteOrphanAccessTypeDataStatement());
+        db.execSQL(dbConstants.getDeleteOrphanAccessTypeDataStatement());
+        return -1;
     }
 
     private AccessTypeData mapCursorToAccessTypeData(Cursor cursor) {
