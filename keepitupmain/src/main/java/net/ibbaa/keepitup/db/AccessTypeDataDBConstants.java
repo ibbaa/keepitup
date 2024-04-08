@@ -101,4 +101,11 @@ public class AccessTypeDataDBConstants {
     public String getDeleteOrphanAccessTypeDataStatement() {
         return "DELETE FROM " + getTableName() + " WHERE " + getNetworkTaskIdColumnName() + " NOT IN (SELECT " + networkTaskDBConstants.getIdColumnName() + " FROM " + networkTaskDBConstants.getTableName() + ");";
     }
+
+    public String getMigrateNetworkTasksAccessTypeDataStatement() {
+        return "INSERT INTO " + getTableName() + "(" +
+                getNetworkTaskIdColumnName() + ") SELECT " +
+                networkTaskDBConstants.getIdColumnName() +
+                " FROM " + networkTaskDBConstants.getTableName();
+    }
 }

@@ -75,7 +75,5 @@ public class SchedulerStateDBConstants {
                 getSuspendedColumnName() + ", " +
                 getTimestampColumnName() +
                 ") VALUES(0, 0);";
-
-
     }
 }

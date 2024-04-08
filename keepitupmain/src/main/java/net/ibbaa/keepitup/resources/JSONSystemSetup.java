@@ -159,7 +159,7 @@ public class JSONSystemSetup {
         JSONObject taskData = (JSONObject) dbData.get(key);
         Map<String, ?> taskMap = JSONUtil.toMap((JSONObject) taskData.get(taskKey));
         List<?> logList = JSONUtil.toList((JSONArray) taskData.get(logKey));
-        dbSetup.importNetworkTaskWithLogs(getContext(), taskMap, filterList(logList));
+        dbSetup.importNetworkTaskWithLogsAndAccessTypeData(getContext(), taskMap, filterList(logList), null);
     }
 
     private void importIntervals(JSONObject dbData, String key) throws JSONException {
