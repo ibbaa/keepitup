@@ -66,7 +66,7 @@ public class NetworkTaskValidator {
             Log.d(NetworkTaskValidator.class.getName(), "port is invalid. Returning false.");
             return false;
         }
-        Log.d(NetworkTaskValidator.class.getName(), "port is invalid. Returning false.");
+        Log.d(NetworkTaskValidator.class.getName(), "port is valid. Returning true.");
         return true;
     }
 

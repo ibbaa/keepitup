@@ -15,30 +15,8 @@
               </deviceKey>
             </Target>
           </targetSelectedWithDropDown>
-          <timeTargetWasSelectedWithDropDown value="2024-04-08T18:34:58.866723028Z" />
+          <timeTargetWasSelectedWithDropDown value="2024-04-09T18:08:52.119838793Z" />
         </State>
-      </entry>
-      <entry key="DBSetupTest">
-        <State />
-      </entry>
-      <entry key="JSONSystemSetupTest">
-        <State>
-          <targetSelectedWithDropDown>
-            <Target>
-              <type value="QUICK_BOOT_TARGET" />
-              <deviceKey>
-                <Key>
-                  <type value="VIRTUAL_DEVICE_PATH" />
-                  <value value="$USER_HOME$/.android/avd/Pixel_8_Pro_API_29.avd" />
-                </Key>
-              </deviceKey>
-            </Target>
-          </targetSelectedWithDropDown>
-          <timeTargetWasSelectedWithDropDown value="2024-04-06T10:09:12.954189496Z" />
-        </State>
-      </entry>
-      <entry key="NetworkTaskEditDialogTest">
-        <State />
       </entry>
       <entry key="keepitupmain">
         <State>
@@ -56,10 +34,19 @@
           <timeTargetWasSelectedWithDropDown value="2024-04-07T09:49:30.507344874Z" />
         </State>
       </entry>
-      <entry key="testExportConfigurationScreenRotation()">
+      <entry key="testImportNetworkTaskInvalid()">
         <State />
       </entry>
-      <entry key="testGetColumnNames()">
+      <entry key="testImportNetworkTaskWithLogsAndAccessTypeData()">
+        <State />
+      </entry>
+      <entry key="testValidateConnectCount()">
+        <State />
+      </entry>
+      <entry key="testValidatePingCount()">
+        <State />
+      </entry>
+      <entry key="testValidatePingPackageSize()">
         <State>
           <targetSelectedWithDropDown>
             <Target>
@@ -72,7 +59,7 @@
               </deviceKey>
             </Target>
           </targetSelectedWithDropDown>
-          <timeTargetWasSelectedWithDropDown value="2024-04-07T09:49:16.417851608Z" />
+          <timeTargetWasSelectedWithDropDown value="2024-04-09T18:08:29.621033382Z" />
         </State>
       </entry>
     </value>

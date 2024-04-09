@@ -368,6 +368,7 @@ public class DBSetup {
         }
         if (task.getId() > 0 && accessTypeDataMap != null) {
             AccessTypeData accessTypeData = new AccessTypeData(accessTypeDataMap);
+            accessTypeData.setNetworkTaskId(task.getId());
             Log.d(DBSetup.class.getName(), "AccessTypeData is " + accessTypeData);
             Log.d(DBSetup.class.getName(), "Importing accessTypeData.");
             accessTypeDataDAO.insertAccessTypeData(accessTypeData);
