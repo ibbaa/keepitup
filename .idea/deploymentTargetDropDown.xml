@@ -2,6 +2,22 @@
 <project version="4">
   <component name="deploymentTargetDropDown">
     <value>
+      <entry key="AccessTypeDataDAOTest">
+        <State>
+          <targetSelectedWithDropDown>
+            <Target>
+              <type value="QUICK_BOOT_TARGET" />
+              <deviceKey>
+                <Key>
+                  <type value="VIRTUAL_DEVICE_PATH" />
+                  <value value="$USER_HOME$/.android/avd/Pixel_8_Pro_API_29.avd" />
+                </Key>
+              </deviceKey>
+            </Target>
+          </targetSelectedWithDropDown>
+          <timeTargetWasSelectedWithDropDown value="2024-04-10T17:48:08.638378401Z" />
+        </State>
+      </entry>
       <entry key="All instrumented tests">
         <State>
           <targetSelectedWithDropDown>
@@ -31,36 +47,20 @@
               </deviceKey>
             </Target>
           </targetSelectedWithDropDown>
-          <timeTargetWasSelectedWithDropDown value="2024-04-07T09:49:30.507344874Z" />
+          <timeTargetWasSelectedWithDropDown value="2024-04-10T17:48:20.306918797Z" />
         </State>
       </entry>
-      <entry key="testImportNetworkTaskInvalid()">
+      <entry key="testDeleteOrphan()">
         <State />
       </entry>
-      <entry key="testImportNetworkTaskWithLogsAndAccessTypeData()">
+      <entry key="testExportConfigurationScreenRotation()">
         <State />
       </entry>
-      <entry key="testValidateConnectCount()">
+      <entry key="testUpdate()">
         <State />
       </entry>
-      <entry key="testValidatePingCount()">
+      <entry key="testUpdateAll()">
         <State />
-      </entry>
-      <entry key="testValidatePingPackageSize()">
-        <State>
-          <targetSelectedWithDropDown>
-            <Target>
-              <type value="QUICK_BOOT_TARGET" />
-              <deviceKey>
-                <Key>
-                  <type value="VIRTUAL_DEVICE_PATH" />
-                  <value value="$USER_HOME$/.android/avd/Pixel_8_Pro_API_29.avd" />
-                </Key>
-              </deviceKey>
-            </Target>
-          </targetSelectedWithDropDown>
-          <timeTargetWasSelectedWithDropDown value="2024-04-09T18:08:29.621033382Z" />
-        </State>
       </entry>
     </value>
   </component>

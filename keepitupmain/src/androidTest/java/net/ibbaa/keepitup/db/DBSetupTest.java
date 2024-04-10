@@ -41,6 +41,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -92,7 +93,7 @@ public class DBSetupTest {
         logDAO.insertAndDeleteLog(new LogEntry());
         intervalDAO.insertInterval(new Interval());
         schedulerStateDAO.insertSchedulerState(new SchedulerState(0, false, 1));
-        accessTypeDataDAO.insertAccessTypeData(getAccessTypeData1(0));
+        accessTypeDataDAO.insertAccessTypeData(getAccessTypeData(0));
         assertFalse(networkTaskDAO.readAllNetworkTasks().isEmpty());
         assertFalse(schedulerIdHistoryDAO.readAllSchedulerIds().isEmpty());
         assertFalse(logDAO.readAllLogs().isEmpty());
@@ -111,7 +112,7 @@ public class DBSetupTest {
         logDAO.insertAndDeleteLog(new LogEntry());
         intervalDAO.insertInterval(new Interval());
         schedulerStateDAO.insertSchedulerState(new SchedulerState(0, false, 1));
-        accessTypeDataDAO.insertAccessTypeData(getAccessTypeData1(0));
+        accessTypeDataDAO.insertAccessTypeData(getAccessTypeData(0));
         assertFalse(networkTaskDAO.readAllNetworkTasks().isEmpty());
         assertFalse(schedulerIdHistoryDAO.readAllSchedulerIds().isEmpty());
         assertFalse(logDAO.readAllLogs().isEmpty());
@@ -194,12 +195,12 @@ public class DBSetupTest {
 
     @Test
     public void testDropAccessTypeDataTable() {
-        accessTypeDataDAO.insertAccessTypeData(getAccessTypeData1(0));
+        accessTypeDataDAO.insertAccessTypeData(getAccessTypeData(0));
         assertFalse(accessTypeDataDAO.readAllAccessTypeData().isEmpty());
         setup.dropAccessTypeDataTable(TestRegistry.getContext());
         setup.createAccessTypeDataTable(TestRegistry.getContext());
         assertTrue(accessTypeDataDAO.readAllAccessTypeData().isEmpty());
-        accessTypeDataDAO.insertAccessTypeData(getAccessTypeData1(0));
+        accessTypeDataDAO.insertAccessTypeData(getAccessTypeData(0));
         assertFalse(accessTypeDataDAO.readAllAccessTypeData().isEmpty());
         setup.recreateAccessTypeDataTable(TestRegistry.getContext());
         assertTrue(accessTypeDataDAO.readAllAccessTypeData().isEmpty());
@@ -211,7 +212,7 @@ public class DBSetupTest {
         logDAO.insertAndDeleteLog(new LogEntry());
         intervalDAO.insertInterval(new Interval());
         schedulerStateDAO.insertSchedulerState(new SchedulerState(0, false, 1));
-        accessTypeDataDAO.insertAccessTypeData(getAccessTypeData1(0));
+        accessTypeDataDAO.insertAccessTypeData(getAccessTypeData(0));
         assertFalse(networkTaskDAO.readAllNetworkTasks().isEmpty());
         assertFalse(schedulerIdHistoryDAO.readAllSchedulerIds().isEmpty());
         assertFalse(logDAO.readAllLogs().isEmpty());
@@ -303,10 +304,10 @@ public class DBSetupTest {
     @Test
     public void testExportAccessTypeDataForNetworkTask() {
         NetworkTask task = networkTaskDAO.insertNetworkTask(getNetworkTask1());
-        AccessTypeData data1 = getAccessTypeData1(task.getId());
-        accessTypeDataDAO.insertAccessTypeData(data1);
+        AccessTypeData data = getAccessTypeData(task.getId());
+        accessTypeDataDAO.insertAccessTypeData(data);
         Map<String, ?> dataMap = setup.exportAccessTypeDataForNetworkTask(TestRegistry.getContext(), task.getId());
-        accessTypeDataEquals(new AccessTypeData(dataMap), getAccessTypeData1(task.getId()));
+        accessTypeDataEquals(new AccessTypeData(dataMap), getAccessTypeData(task.getId()));
     }
 
     @Test
@@ -329,11 +330,11 @@ public class DBSetupTest {
         Map<String, ?> entryMap1 = getLogEntry1(0).toMap();
         Map<String, ?> entryMap2 = getLogEntry2(0).toMap();
         Map<String, ?> entryMap3 = getLogEntry3(0).toMap();
-        Map<String, ?> dataMap1 = getAccessTypeData1(0).toMap();
+        Map<String, ?> dataMap = getAccessTypeData(0).toMap();
         assertTrue(networkTaskDAO.readAllNetworkTasks().isEmpty());
         assertTrue(logDAO.readAllLogs().isEmpty());
         assertTrue(accessTypeDataDAO.readAllAccessTypeData().isEmpty());
-        setup.importNetworkTaskWithLogsAndAccessTypeData(TestRegistry.getContext(), taskMap, Arrays.asList(entryMap1, entryMap2, entryMap3), dataMap1);
+        setup.importNetworkTaskWithLogsAndAccessTypeData(TestRegistry.getContext(), taskMap, Arrays.asList(entryMap1, entryMap2, entryMap3), dataMap);
         List<NetworkTask> taskList = networkTaskDAO.readAllNetworkTasks();
         assertEquals(1, taskList.size());
         NetworkTask task = taskList.get(0);
@@ -345,7 +346,7 @@ public class DBSetupTest {
         logEntryEquals(entryList.get(1), getLogEntry2(task.getId()));
         logEntryEquals(entryList.get(2), getLogEntry3(task.getId()));
         AccessTypeData data = accessTypeDataDAO.readAccessTypeDataForNetworkTask(task.getId());
-        accessTypeDataEquals(data, getAccessTypeData1(task.getId()));
+        accessTypeDataEquals(data, getAccessTypeData(task.getId()));
     }
 
     @Test
@@ -368,32 +369,62 @@ public class DBSetupTest {
         Map<String, ?> entryMap1 = getLogEntry1(0).toMap();
         Map<String, ?> entryMap2 = getLogEntry2(0).toMap();
         Map<String, ?> entryMap3 = getLogEntry3(0).toMap();
-        Map<String, ?> dataMap1 = getAccessTypeData1(0).toMap();
+        Map<String, ?> dataMap = getAccessTypeData(0).toMap();
         assertTrue(networkTaskDAO.readAllNetworkTasks().isEmpty());
         assertTrue(logDAO.readAllLogs().isEmpty());
         assertTrue(accessTypeDataDAO.readAllAccessTypeData().isEmpty());
-        setup.importNetworkTaskWithLogsAndAccessTypeData(TestRegistry.getContext(), taskMap, Arrays.asList(entryMap1, entryMap2, entryMap3), dataMap1);
+        setup.importNetworkTaskWithLogsAndAccessTypeData(TestRegistry.getContext(), taskMap, Arrays.asList(entryMap1, entryMap2, entryMap3), dataMap);
         assertTrue(networkTaskDAO.readAllNetworkTasks().isEmpty());
         assertTrue(logDAO.readAllLogs().isEmpty());
         assertTrue(accessTypeDataDAO.readAllAccessTypeData().isEmpty());
         task = getNetworkTask1();
         task.setPort(80000);
-        setup.importNetworkTaskWithLogsAndAccessTypeData(TestRegistry.getContext(), taskMap, Arrays.asList(entryMap1, entryMap2, entryMap3), dataMap1);
+        setup.importNetworkTaskWithLogsAndAccessTypeData(TestRegistry.getContext(), taskMap, Arrays.asList(entryMap1, entryMap2, entryMap3), dataMap);
         assertTrue(networkTaskDAO.readAllNetworkTasks().isEmpty());
         assertTrue(logDAO.readAllLogs().isEmpty());
         assertTrue(accessTypeDataDAO.readAllAccessTypeData().isEmpty());
         task = getNetworkTask1();
         task.setAccessType(null);
-        setup.importNetworkTaskWithLogsAndAccessTypeData(TestRegistry.getContext(), taskMap, Arrays.asList(entryMap1, entryMap2, entryMap3), dataMap1);
+        setup.importNetworkTaskWithLogsAndAccessTypeData(TestRegistry.getContext(), taskMap, Arrays.asList(entryMap1, entryMap2, entryMap3), dataMap);
         assertTrue(networkTaskDAO.readAllNetworkTasks().isEmpty());
         assertTrue(logDAO.readAllLogs().isEmpty());
         assertTrue(accessTypeDataDAO.readAllAccessTypeData().isEmpty());
         task = getNetworkTask1();
         task.setInterval(-1);
-        setup.importNetworkTaskWithLogsAndAccessTypeData(TestRegistry.getContext(), taskMap, Arrays.asList(entryMap1, entryMap2, entryMap3), dataMap1);
+        setup.importNetworkTaskWithLogsAndAccessTypeData(TestRegistry.getContext(), taskMap, Arrays.asList(entryMap1, entryMap2, entryMap3), dataMap);
         assertTrue(networkTaskDAO.readAllNetworkTasks().isEmpty());
         assertTrue(logDAO.readAllLogs().isEmpty());
         assertTrue(accessTypeDataDAO.readAllAccessTypeData().isEmpty());
+    }
+
+    @Test
+    public void testImportAccessTypeDataInvalid() {
+        NetworkTask task = getNetworkTask1();
+        Map<String, ?> taskMap = task.toMap();
+        AccessTypeData data = getAccessTypeData(0);
+        data.setPingCount(11);
+        data.setPingPackageSize(12345678);
+        data.setConnectCount(11);
+        assertTrue(networkTaskDAO.readAllNetworkTasks().isEmpty());
+        assertTrue(accessTypeDataDAO.readAllAccessTypeData().isEmpty());
+        setup.importNetworkTaskWithLogsAndAccessTypeData(TestRegistry.getContext(), taskMap, Collections.emptyList(), data.toMap());
+        assertFalse(networkTaskDAO.readAllNetworkTasks().isEmpty());
+        assertTrue(accessTypeDataDAO.readAllAccessTypeData().isEmpty());
+        networkTaskDAO.deleteAllNetworkTasks();
+        data.setPingCount(10);
+        setup.importNetworkTaskWithLogsAndAccessTypeData(TestRegistry.getContext(), taskMap, Collections.emptyList(), data.toMap());
+        assertFalse(networkTaskDAO.readAllNetworkTasks().isEmpty());
+        assertTrue(accessTypeDataDAO.readAllAccessTypeData().isEmpty());
+        networkTaskDAO.deleteAllNetworkTasks();
+        data.setPingPackageSize(65527);
+        setup.importNetworkTaskWithLogsAndAccessTypeData(TestRegistry.getContext(), taskMap, Collections.emptyList(), data.toMap());
+        assertFalse(networkTaskDAO.readAllNetworkTasks().isEmpty());
+        assertTrue(accessTypeDataDAO.readAllAccessTypeData().isEmpty());
+        networkTaskDAO.deleteAllNetworkTasks();
+        data.setConnectCount(10);
+        setup.importNetworkTaskWithLogsAndAccessTypeData(TestRegistry.getContext(), taskMap, Collections.emptyList(), data.toMap());
+        assertFalse(networkTaskDAO.readAllNetworkTasks().isEmpty());
+        assertFalse(accessTypeDataDAO.readAllAccessTypeData().isEmpty());
     }
 
     @Test
@@ -713,23 +744,13 @@ public class DBSetupTest {
         return interval;
     }
 
-    private AccessTypeData getAccessTypeData1(long networkTaskId) {
+    private AccessTypeData getAccessTypeData(long networkTaskId) {
         AccessTypeData data = new AccessTypeData();
         data.setId(0);
         data.setNetworkTaskId(networkTaskId);
-        data.setPingCount(25);
+        data.setPingCount(10);
         data.setPingPackageSize(1234);
         data.setConnectCount(3);
-        return data;
-    }
-
-    private AccessTypeData getAccessTypeData2(long networkTaskId) {
-        AccessTypeData data = new AccessTypeData();
-        data.setId(0);
-        data.setNetworkTaskId(networkTaskId);
-        data.setPingCount(5);
-        data.setPingPackageSize(4321);
-        data.setConnectCount(30);
         return data;
     }
 }

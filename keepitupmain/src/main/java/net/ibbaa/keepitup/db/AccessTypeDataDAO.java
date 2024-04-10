@@ -53,7 +53,7 @@ public class AccessTypeDataDAO extends BaseDAO {
 
     public AccessTypeData updateAllAccessTypeData(AccessTypeData accessTypeData) {
         Log.d(AccessTypeDataDAO.class.getName(), "Updating updateAllAccessTypeData with id " + accessTypeData.getId());
-        AccessTypeData returnedAccessTypeData = executeDBOperationInTransaction(accessTypeData, this::updateAccessTypeData);
+        AccessTypeData returnedAccessTypeData = executeDBOperationInTransaction(accessTypeData, this::updateAllAccessTypeData);
         Log.d(AccessTypeDataDAO.class.getName(), "Updated interval is " + returnedAccessTypeData);
         dumpDatabase("Dump after updateInterval call");
         return returnedAccessTypeData;

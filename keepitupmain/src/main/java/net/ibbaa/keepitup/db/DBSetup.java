@@ -24,6 +24,7 @@ import net.ibbaa.keepitup.model.AccessTypeData;
 import net.ibbaa.keepitup.model.Interval;
 import net.ibbaa.keepitup.model.LogEntry;
 import net.ibbaa.keepitup.model.NetworkTask;
+import net.ibbaa.keepitup.model.validation.AccessTypeDataValidator;
 import net.ibbaa.keepitup.model.validation.IntervalValidator;
 import net.ibbaa.keepitup.model.validation.NetworkTaskValidator;
 
@@ -345,10 +346,10 @@ public class DBSetup {
         NetworkTaskDAO networkTaskDAO = new NetworkTaskDAO(context);
         LogDAO logDAO = new LogDAO(context);
         AccessTypeDataDAO accessTypeDataDAO = new AccessTypeDataDAO(context);
-        NetworkTaskValidator validator = new NetworkTaskValidator(context);
+        NetworkTaskValidator networkTaskValidator = new NetworkTaskValidator(context);
         NetworkTask task = new NetworkTask(taskMap);
         Log.d(DBSetup.class.getName(), "NetworkTask is " + task);
-        if (!validator.validate(task)) {
+        if (!networkTaskValidator.validate(task)) {
             Log.e(DBSetup.class.getName(), "NetworkTask is invalid and will not be imported: " + task);
             return;
         }
@@ -366,12 +367,17 @@ public class DBSetup {
                 logDAO.insertAndDeleteLog(entry);
             }
         }
+        AccessTypeDataValidator accessTypeDataValidator = new AccessTypeDataValidator(context);
         if (task.getId() > 0 && accessTypeDataMap != null) {
             AccessTypeData accessTypeData = new AccessTypeData(accessTypeDataMap);
             accessTypeData.setNetworkTaskId(task.getId());
             Log.d(DBSetup.class.getName(), "AccessTypeData is " + accessTypeData);
-            Log.d(DBSetup.class.getName(), "Importing accessTypeData.");
-            accessTypeDataDAO.insertAccessTypeData(accessTypeData);
+            if (accessTypeDataValidator.validate(accessTypeData)) {
+                Log.d(DBSetup.class.getName(), "Importing accessTypeData.");
+                accessTypeDataDAO.insertAccessTypeData(accessTypeData);
+            } else {
+                Log.e(DBSetup.class.getName(), "AccessTypeData is invalid and will not be imported: " + accessTypeData);
+            }
         }
     }
 
