@@ -37,6 +37,8 @@ public class DBMigrate {
         this.versionDowngrades = new TreeMap<>();
         versionUpgrades.put(2, this::version2UpgradeFrom1);
         versionDowngrades.put(2, this::version2DowngradeTo1);
+        versionUpgrades.put(3, this::version3UpgradeFrom2);
+        versionDowngrades.put(3, this::version3DowngradeTo2);
     }
 
     public void doUpgrade(Context context, int oldVersion, int newVersion) {
@@ -77,6 +79,17 @@ public class DBMigrate {
         Log.d(DBMigrate.class.getName(), "version2DowngradeTo1");
         setup.dropIntervalTable(db);
         setup.dropSchedulerStateTable(db);
+    }
+
+    private void version3UpgradeFrom2(SQLiteDatabase db) {
+        Log.d(DBMigrate.class.getName(), "version3UpgradeFrom2");
+        setup.recreateAccessTypeDataTable(db);
+        setup.initializeAccessTypeDataTable(db);
+    }
+
+    private void version3DowngradeTo2(SQLiteDatabase db) {
+        Log.d(DBMigrate.class.getName(), "version3DowngradeTo2");
+        setup.dropAccessTypeDataTable(db);
     }
 
     @FunctionalInterface

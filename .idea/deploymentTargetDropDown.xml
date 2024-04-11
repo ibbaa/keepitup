@@ -2,22 +2,6 @@
 <project version="4">
   <component name="deploymentTargetDropDown">
     <value>
-      <entry key="AccessTypeDataDAOTest">
-        <State>
-          <targetSelectedWithDropDown>
-            <Target>
-              <type value="QUICK_BOOT_TARGET" />
-              <deviceKey>
-                <Key>
-                  <type value="VIRTUAL_DEVICE_PATH" />
-                  <value value="$USER_HOME$/.android/avd/Pixel_8_Pro_API_29.avd" />
-                </Key>
-              </deviceKey>
-            </Target>
-          </targetSelectedWithDropDown>
-          <timeTargetWasSelectedWithDropDown value="2024-04-10T17:48:08.638378401Z" />
-        </State>
-      </entry>
       <entry key="All instrumented tests">
         <State>
           <targetSelectedWithDropDown>
@@ -33,6 +17,15 @@
           </targetSelectedWithDropDown>
           <timeTargetWasSelectedWithDropDown value="2024-04-09T18:08:52.119838793Z" />
         </State>
+      </entry>
+      <entry key="JSONSystemSetupTest">
+        <State />
+      </entry>
+      <entry key="SystemActivityTest">
+        <State />
+      </entry>
+      <entry key="Tests in 'net.ibbaa.keepitup.db'">
+        <State />
       </entry>
       <entry key="keepitupmain">
         <State>
@@ -50,16 +43,10 @@
           <timeTargetWasSelectedWithDropDown value="2024-04-10T17:48:20.306918797Z" />
         </State>
       </entry>
-      <entry key="testDeleteOrphan()">
-        <State />
-      </entry>
       <entry key="testExportConfigurationScreenRotation()">
         <State />
       </entry>
-      <entry key="testUpdate()">
-        <State />
-      </entry>
-      <entry key="testUpdateAll()">
+      <entry key="testImportNetworkTaskWithLogsAndAccessTypeDataMissing()">
         <State />
       </entry>
     </value>

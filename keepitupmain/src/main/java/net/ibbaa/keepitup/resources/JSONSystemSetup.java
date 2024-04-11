@@ -31,6 +31,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -156,16 +157,19 @@ public class JSONSystemSetup {
     private void importNetworkTask(JSONObject dbData, String key) throws JSONException {
         String taskKey = getResources().getString(R.string.networktask_json_key);
         String logKey = getResources().getString(R.string.logentry_json_key);
+        String accessTypeDataKey = getResources().getString(R.string.accesstypedata_json_key);
         JSONObject taskData = (JSONObject) dbData.get(key);
-        Map<String, ?> taskMap = JSONUtil.toMap((JSONObject) taskData.get(taskKey));
-        List<?> logList = JSONUtil.toList((JSONArray) taskData.get(logKey));
-        dbSetup.importNetworkTaskWithLogsAndAccessTypeData(getContext(), taskMap, filterList(logList), null);
+        if (taskData.has(taskKey)) {
+            Map<String, ?> taskMap = JSONUtil.toMap((JSONObject) taskData.get(taskKey));
+            List<?> logList = taskData.has(logKey) ? JSONUtil.toList((JSONArray) taskData.get(logKey)) : Collections.emptyList();
+            Map<String, ?> dataMap = taskData.has(accessTypeDataKey) ? JSONUtil.toMap((JSONObject) taskData.get(accessTypeDataKey)) : null;
+            dbSetup.importNetworkTaskWithLogsAndAccessTypeData(taskMap, filterList(logList), dataMap);
+        }
     }
 
     private void importIntervals(JSONObject dbData, String key) throws JSONException {
-        JSONArray intervalData = (JSONArray) dbData.get(key);
-        List<?> intervalList = JSONUtil.toList(intervalData);
-        dbSetup.importIntervals(getContext(), filterList(intervalList));
+        List<?> intervalList = dbData.has(key) ? JSONUtil.toList((JSONArray) dbData.get(key)) : Collections.emptyList();
+        dbSetup.importIntervals(filterList(intervalList));
     }
 
     private void importSettings(JSONObject settings) throws JSONException {
@@ -173,12 +177,9 @@ public class JSONSystemSetup {
         String globalSettingsKey = getResources().getString(R.string.preferences_global_json_key);
         String defaultsKey = getResources().getString(R.string.preferences_defaults_json_key);
         String systemSettingsKey = getResources().getString(R.string.preferences_system_json_key);
-        JSONObject globalSettings = (JSONObject) settings.get(globalSettingsKey);
-        JSONObject defaults = (JSONObject) settings.get(defaultsKey);
-        JSONObject systemSettings = (JSONObject) settings.get(systemSettingsKey);
-        preferenceSetup.importGlobalSettings(JSONUtil.toMap(globalSettings));
-        preferenceSetup.importDefaults(JSONUtil.toMap(defaults));
-        preferenceSetup.importSystemSettings(JSONUtil.toMap(systemSettings));
+        preferenceSetup.importGlobalSettings(settings.has(globalSettingsKey) ? JSONUtil.toMap((JSONObject) settings.get(globalSettingsKey)) : Collections.emptyMap());
+        preferenceSetup.importDefaults(settings.has(defaultsKey) ? JSONUtil.toMap((JSONObject) settings.get(defaultsKey)) : Collections.emptyMap());
+        preferenceSetup.importSystemSettings(settings.has(systemSettingsKey) ? JSONUtil.toMap((JSONObject) settings.get(systemSettingsKey)) : Collections.emptyMap());
     }
 
     @SuppressWarnings({"unchecked"})
@@ -196,16 +197,17 @@ public class JSONSystemSetup {
     private JSONObject exportDatabase() throws JSONException {
         Log.d(JSONSystemSetup.class.getName(), "exportDatabase");
         JSONObject dbData = new JSONObject();
-        List<Map<String, ?>> networkTasks = dbSetup.exportNetworkTasks(getContext());
+        List<Map<String, ?>> networkTasks = dbSetup.exportNetworkTasks();
         for (Map<String, ?> taskMap : networkTasks) {
             long id = getId(taskMap);
             if (id >= 0) {
-                List<Map<String, ?>> logs = dbSetup.exportLogsForNetworkTask(getContext(), id);
-                JSONObject task = getJSONObjectForNetworkTask(taskMap, logs);
+                List<Map<String, ?>> logs = dbSetup.exportLogsForNetworkTask(id);
+                Map<String, ?> acccessTypeDataMap = dbSetup.exportAccessTypeDataForNetworkTask(id);
+                JSONObject task = getJSONObjectForNetworkTask(taskMap, logs, acccessTypeDataMap);
                 dbData.put(String.valueOf(id), task);
             }
         }
-        List<Map<String, ?>> intervals = dbSetup.exportIntervals(getContext());
+        List<Map<String, ?>> intervals = dbSetup.exportIntervals();
         String intervalKey = getResources().getString(R.string.interval_json_key);
         dbData.put(intervalKey, new JSONArray(intervals));
         return dbData;
@@ -233,13 +235,17 @@ public class JSONSystemSetup {
         return -1;
     }
 
-    private JSONObject getJSONObjectForNetworkTask(Map<String, ?> taskMap, List<Map<String, ?>> logs) throws JSONException {
+    private JSONObject getJSONObjectForNetworkTask(Map<String, ?> taskMap, List<Map<String, ?>> logs, Map<String, ?> accessTypeDataMap) throws JSONException {
         Log.d(JSONSystemSetup.class.getName(), "getJSONObjectForNetworkTask");
         JSONObject task = new JSONObject();
         String taskKey = getResources().getString(R.string.networktask_json_key);
         String logKey = getResources().getString(R.string.logentry_json_key);
+        String accessTYpeDataKey = getResources().getString(R.string.accesstypedata_json_key);
         task.put(taskKey, new JSONObject(taskMap));
         task.put(logKey, new JSONArray(logs));
+        if (accessTypeDataMap != null) {
+            task.put(accessTYpeDataKey, new JSONObject(accessTypeDataMap));
+        }
         return task;
     }
 

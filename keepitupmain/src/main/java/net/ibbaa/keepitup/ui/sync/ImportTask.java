@@ -114,31 +114,31 @@ public class ImportTask extends UIBackgroundTask<SystemSetupResult> {
         boolean intervalTableSuccess = false;
         boolean schedulerStateTableSuccess = false;
         try {
-            setup.deleteAllLogs(context);
+            setup.deleteAllLogs();
             logTableSuccess = true;
         } catch (Exception exc) {
             Log.e(ImportTask.class.getName(), "Error purging log table", exc);
         }
         try {
-            setup.deleteAllNetworkTasks(context);
+            setup.deleteAllNetworkTasks();
             networkTaskTableSuccess = true;
         } catch (Exception exc) {
             Log.e(ImportTask.class.getName(), "Error purging network task table", exc);
         }
         try {
-            setup.deleteAllSchedulerIds(context);
+            setup.deleteAllSchedulerIds();
             schedulerIdTableSuccess = true;
         } catch (Exception exc) {
             Log.e(ImportTask.class.getName(), "Error purging scheduler id table", exc);
         }
         try {
-            setup.deleteAllIntervals(context);
+            setup.deleteAllIntervals();
             intervalTableSuccess = true;
         } catch (Exception exc) {
             Log.e(ImportTask.class.getName(), "Error purging interval table", exc);
         }
         try {
-            setup.recreateSchedulerStateTable(context);
+            setup.recreateSchedulerStateTable();
             schedulerStateTableSuccess = true;
         } catch (Exception exc) {
             Log.e(ImportTask.class.getName(), "Error purging scheduler state table", exc);

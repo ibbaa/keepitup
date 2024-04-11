@@ -34,6 +34,7 @@ import java.util.Map;
 
 public class DBSetup {
 
+    private final Context context;
     private final NetworkTaskDBConstants networkTaskDBConstants;
     private final LogDBConstants logDBConstants;
     private final SchedulerIdHistoryDBConstants schedulerIdDBConstants;
@@ -42,12 +43,13 @@ public class DBSetup {
     private final AccessTypeDataDBConstants accessTypeDataDBConstants;
 
     public DBSetup(Context context) {
-        networkTaskDBConstants = new NetworkTaskDBConstants(context);
-        logDBConstants = new LogDBConstants(context);
-        schedulerIdDBConstants = new SchedulerIdHistoryDBConstants(context);
-        intervalDBConstants = new IntervalDBConstants(context);
-        schedulerStateDBConstants = new SchedulerStateDBConstants(context);
-        accessTypeDataDBConstants = new AccessTypeDataDBConstants(context);
+        this.context = context;
+        this.networkTaskDBConstants = new NetworkTaskDBConstants(context);
+        this.logDBConstants = new LogDBConstants(context);
+        this.schedulerIdDBConstants = new SchedulerIdHistoryDBConstants(context);
+        this.intervalDBConstants = new IntervalDBConstants(context);
+        this.schedulerStateDBConstants = new SchedulerStateDBConstants(context);
+        this.accessTypeDataDBConstants = new AccessTypeDataDBConstants(context);
     }
 
     public void createTables(SQLiteDatabase db) {
@@ -61,22 +63,22 @@ public class DBSetup {
     }
 
     public void createNetworkTaskTable(SQLiteDatabase db) {
-        Log.d(DBOpenHelper.class.getName(), "Creating database table " + networkTaskDBConstants.getTableName());
+        Log.d(DBSetup.class.getName(), "Creating database table " + networkTaskDBConstants.getTableName());
         db.execSQL(networkTaskDBConstants.getCreateTableStatement());
     }
 
     public void createLogTable(SQLiteDatabase db) {
-        Log.d(DBOpenHelper.class.getName(), "Creating database table " + logDBConstants.getTableName());
+        Log.d(DBSetup.class.getName(), "Creating database table " + logDBConstants.getTableName());
         db.execSQL(logDBConstants.getCreateTableStatement());
     }
 
     public void createSchedulerIdHistoryTable(SQLiteDatabase db) {
-        Log.d(DBOpenHelper.class.getName(), "Creating database table " + schedulerIdDBConstants.getTableName());
+        Log.d(DBSetup.class.getName(), "Creating database table " + schedulerIdDBConstants.getTableName());
         db.execSQL(schedulerIdDBConstants.getCreateTableStatement());
     }
 
     public void createIntervalTable(SQLiteDatabase db) {
-        Log.d(DBOpenHelper.class.getName(), "Creating database table " + intervalDBConstants.getTableName());
+        Log.d(DBSetup.class.getName(), "Creating database table " + intervalDBConstants.getTableName());
         db.execSQL(intervalDBConstants.getCreateTableStatement());
     }
 
@@ -85,14 +87,22 @@ public class DBSetup {
     }
 
     public void createSchedulerStateTable(SQLiteDatabase db) {
-        Log.d(DBOpenHelper.class.getName(), "Creating database table " + schedulerStateDBConstants.getTableName());
+        Log.d(DBSetup.class.getName(), "Creating database table " + schedulerStateDBConstants.getTableName());
         db.execSQL(schedulerStateDBConstants.getCreateTableStatement());
         initializeSchedulerStateTable(db);
     }
 
     public void createAccessTypeDataTable(SQLiteDatabase db) {
-        Log.d(DBOpenHelper.class.getName(), "Creating database table " + accessTypeDataDBConstants.getTableName());
+        Log.d(DBSetup.class.getName(), "Creating database table " + accessTypeDataDBConstants.getTableName());
         db.execSQL(accessTypeDataDBConstants.getCreateTableStatement());
+    }
+
+    public void initializeAccessTypeDataTable(SQLiteDatabase db) {
+        Log.d(DBSetup.class.getName(), "initializeAccessTypeDataTable");
+        db.execSQL(accessTypeDataDBConstants.getMigrateNetworkTasksAccessTypeDataStatement());
+        AccessTypeData accessTypeData = new AccessTypeData(getContext());
+        AccessTypeDataDAO dao = new AccessTypeDataDAO(getContext());
+        dao.updateAllAccessTypeData(accessTypeData);
     }
 
     public void dropTables(SQLiteDatabase db) {
@@ -106,32 +116,32 @@ public class DBSetup {
     }
 
     public void dropNetworkTaskTable(SQLiteDatabase db) {
-        Log.d(DBOpenHelper.class.getName(), "Dropping database table " + networkTaskDBConstants.getTableName());
+        Log.d(DBSetup.class.getName(), "Dropping database table " + networkTaskDBConstants.getTableName());
         db.execSQL(networkTaskDBConstants.getDropTableStatement());
     }
 
     public void dropLogTable(SQLiteDatabase db) {
-        Log.d(DBOpenHelper.class.getName(), "Dropping database table " + logDBConstants.getTableName());
+        Log.d(DBSetup.class.getName(), "Dropping database table " + logDBConstants.getTableName());
         db.execSQL(logDBConstants.getDropTableStatement());
     }
 
     public void dropSchedulerIdHistoryTable(SQLiteDatabase db) {
-        Log.d(DBOpenHelper.class.getName(), "Dropping database table " + schedulerIdDBConstants.getTableName());
+        Log.d(DBSetup.class.getName(), "Dropping database table " + schedulerIdDBConstants.getTableName());
         db.execSQL(schedulerIdDBConstants.getDropTableStatement());
     }
 
     public void dropIntervalTable(SQLiteDatabase db) {
-        Log.d(DBOpenHelper.class.getName(), "Dropping database table " + intervalDBConstants.getTableName());
+        Log.d(DBSetup.class.getName(), "Dropping database table " + intervalDBConstants.getTableName());
         db.execSQL(intervalDBConstants.getDropTableStatement());
     }
 
     public void dropSchedulerStateTable(SQLiteDatabase db) {
-        Log.d(DBOpenHelper.class.getName(), "Dropping database table " + schedulerStateDBConstants.getTableName());
+        Log.d(DBSetup.class.getName(), "Dropping database table " + schedulerStateDBConstants.getTableName());
         db.execSQL(schedulerStateDBConstants.getDropTableStatement());
     }
 
     public void dropAccessTypeDataTable(SQLiteDatabase db) {
-        Log.d(DBOpenHelper.class.getName(), "Dropping database table " + accessTypeDataDBConstants.getTableName());
+        Log.d(DBSetup.class.getName(), "Dropping database table " + accessTypeDataDBConstants.getTableName());
         db.execSQL(accessTypeDataDBConstants.getDropTableStatement());
     }
 
@@ -177,129 +187,133 @@ public class DBSetup {
         createTables(db);
     }
 
-    public void createTables(Context context) {
-        createTables(DBOpenHelper.getInstance(context).getWritableDatabase());
+    public void createTables() {
+        createTables(DBOpenHelper.getInstance(getContext()).getWritableDatabase());
     }
 
-    public void createNetworkTaskTable(Context context) {
-        createNetworkTaskTable(DBOpenHelper.getInstance(context).getWritableDatabase());
+    public void createNetworkTaskTable() {
+        createNetworkTaskTable(DBOpenHelper.getInstance(getContext()).getWritableDatabase());
     }
 
-    public void createLogTable(Context context) {
-        createLogTable(DBOpenHelper.getInstance(context).getWritableDatabase());
+    public void createLogTable() {
+        createLogTable(DBOpenHelper.getInstance(getContext()).getWritableDatabase());
     }
 
-    public void createSchedulerIdHistoryTable(Context context) {
-        createSchedulerIdHistoryTable(DBOpenHelper.getInstance(context).getWritableDatabase());
+    public void createSchedulerIdHistoryTable() {
+        createSchedulerIdHistoryTable(DBOpenHelper.getInstance(getContext()).getWritableDatabase());
     }
 
-    public void createIntervalTable(Context context) {
-        createIntervalTable(DBOpenHelper.getInstance(context).getWritableDatabase());
+    public void createIntervalTable() {
+        createIntervalTable(DBOpenHelper.getInstance(getContext()).getWritableDatabase());
     }
 
-    public void createSchedulerStateTable(Context context) {
-        createSchedulerStateTable(DBOpenHelper.getInstance(context).getWritableDatabase());
+    public void createSchedulerStateTable() {
+        createSchedulerStateTable(DBOpenHelper.getInstance(getContext()).getWritableDatabase());
     }
 
-    public void createAccessTypeDataTable(Context context) {
-        createAccessTypeDataTable(DBOpenHelper.getInstance(context).getWritableDatabase());
+    public void createAccessTypeDataTable() {
+        createAccessTypeDataTable(DBOpenHelper.getInstance(getContext()).getWritableDatabase());
     }
 
-    public void dropTables(Context context) {
-        dropTables(DBOpenHelper.getInstance(context).getWritableDatabase());
+    public void initializeAccessTypeDataTable() {
+        initializeAccessTypeDataTable(DBOpenHelper.getInstance(getContext()).getWritableDatabase());
     }
 
-    public void dropNetworkTaskTable(Context context) {
-        dropNetworkTaskTable(DBOpenHelper.getInstance(context).getWritableDatabase());
+    public void dropTables() {
+        dropTables(DBOpenHelper.getInstance(getContext()).getWritableDatabase());
     }
 
-    public void dropLogTable(Context context) {
-        dropLogTable(DBOpenHelper.getInstance(context).getWritableDatabase());
+    public void dropNetworkTaskTable() {
+        dropNetworkTaskTable(DBOpenHelper.getInstance(getContext()).getWritableDatabase());
     }
 
-    public void dropSchedulerIdHistoryTable(Context context) {
-        dropSchedulerIdHistoryTable(DBOpenHelper.getInstance(context).getWritableDatabase());
+    public void dropLogTable() {
+        dropLogTable(DBOpenHelper.getInstance(getContext()).getWritableDatabase());
     }
 
-    public void dropIntervalTable(Context context) {
-        dropIntervalTable(DBOpenHelper.getInstance(context).getWritableDatabase());
+    public void dropSchedulerIdHistoryTable() {
+        dropSchedulerIdHistoryTable(DBOpenHelper.getInstance(getContext()).getWritableDatabase());
     }
 
-    public void dropSchedulerStateTable(Context context) {
-        dropSchedulerStateTable(DBOpenHelper.getInstance(context).getWritableDatabase());
+    public void dropIntervalTable() {
+        dropIntervalTable(DBOpenHelper.getInstance(getContext()).getWritableDatabase());
     }
 
-    public void dropAccessTypeDataTable(Context context) {
-        dropAccessTypeDataTable(DBOpenHelper.getInstance(context).getWritableDatabase());
+    public void dropSchedulerStateTable() {
+        dropSchedulerStateTable(DBOpenHelper.getInstance(getContext()).getWritableDatabase());
     }
 
-    public void recreateNetworkTaskTable(Context context) {
-        recreateNetworkTaskTable(DBOpenHelper.getInstance(context).getWritableDatabase());
+    public void dropAccessTypeDataTable() {
+        dropAccessTypeDataTable(DBOpenHelper.getInstance(getContext()).getWritableDatabase());
     }
 
-    public void recreateLogTable(Context context) {
-        recreateLogTable(DBOpenHelper.getInstance(context).getWritableDatabase());
+    public void recreateNetworkTaskTable() {
+        recreateNetworkTaskTable(DBOpenHelper.getInstance(getContext()).getWritableDatabase());
     }
 
-    public void recreateSchedulerIdHistoryTable(Context context) {
-        recreateSchedulerIdHistoryTable(DBOpenHelper.getInstance(context).getWritableDatabase());
+    public void recreateLogTable() {
+        recreateLogTable(DBOpenHelper.getInstance(getContext()).getWritableDatabase());
     }
 
-    public void recreateIntervalTable(Context context) {
-        recreateIntervalTable(DBOpenHelper.getInstance(context).getWritableDatabase());
+    public void recreateSchedulerIdHistoryTable() {
+        recreateSchedulerIdHistoryTable(DBOpenHelper.getInstance(getContext()).getWritableDatabase());
     }
 
-    public void recreateSchedulerStateTable(Context context) {
-        recreateSchedulerStateTable(DBOpenHelper.getInstance(context).getWritableDatabase());
+    public void recreateIntervalTable() {
+        recreateIntervalTable(DBOpenHelper.getInstance(getContext()).getWritableDatabase());
     }
 
-    public void recreateAccessTypeDataTable(Context context) {
-        recreateAccessTypeDataTable(DBOpenHelper.getInstance(context).getWritableDatabase());
+    public void recreateSchedulerStateTable() {
+        recreateSchedulerStateTable(DBOpenHelper.getInstance(getContext()).getWritableDatabase());
     }
 
-    public void recreateTables(Context context) {
-        recreateTables(DBOpenHelper.getInstance(context).getWritableDatabase());
+    public void recreateAccessTypeDataTable() {
+        recreateAccessTypeDataTable(DBOpenHelper.getInstance(getContext()).getWritableDatabase());
     }
 
-    public void deleteAllNetworkTasks(Context context) {
+    public void recreateTables() {
+        recreateTables(DBOpenHelper.getInstance(getContext()).getWritableDatabase());
+    }
+
+    public void deleteAllNetworkTasks() {
         Log.d(DBSetup.class.getName(), "deleteAllNetworkTasks");
-        NetworkTaskDAO dao = new NetworkTaskDAO(context);
+        NetworkTaskDAO dao = new NetworkTaskDAO(getContext());
         dao.deleteAllNetworkTasks();
     }
 
-    public void deleteAllLogs(Context context) {
+    public void deleteAllLogs() {
         Log.d(DBSetup.class.getName(), "deleteAllLogs");
-        LogDAO dao = new LogDAO(context);
+        LogDAO dao = new LogDAO(getContext());
         dao.deleteAllLogs();
     }
 
-    public void deleteAllSchedulerIds(Context context) {
+    public void deleteAllSchedulerIds() {
         Log.d(DBSetup.class.getName(), "deleteAllSchedulerIds");
-        SchedulerIdHistoryDAO dao = new SchedulerIdHistoryDAO(context);
+        SchedulerIdHistoryDAO dao = new SchedulerIdHistoryDAO(getContext());
         dao.deleteAllSchedulerIds();
     }
 
-    public void deleteAllIntervals(Context context) {
+    public void deleteAllIntervals() {
         Log.d(DBSetup.class.getName(), "deleteAllIntervals");
-        IntervalDAO dao = new IntervalDAO(context);
+        IntervalDAO dao = new IntervalDAO(getContext());
         dao.deleteAllIntervals();
     }
 
-    public void deleteSchedulerState(Context context) {
+    public void deleteSchedulerState() {
         Log.d(DBSetup.class.getName(), "deleteSchedulerState");
-        SchedulerStateDAO dao = new SchedulerStateDAO(context);
+        SchedulerStateDAO dao = new SchedulerStateDAO(getContext());
         dao.deleteSchedulerState();
     }
 
-    public void deleteAllAccessTypeData(Context context) {
+    public void deleteAllAccessTypeData() {
         Log.d(DBSetup.class.getName(), "deleteAllAccessTypeData");
-        AccessTypeDataDAO dao = new AccessTypeDataDAO(context);
+        AccessTypeDataDAO dao = new AccessTypeDataDAO(getContext());
         dao.deleteAllAccessTypeData();
     }
 
-    public List<Map<String, ?>> exportNetworkTasks(Context context) {
+    public List<Map<String, ?>> exportNetworkTasks() {
         Log.d(DBSetup.class.getName(), "exportNetworkTasks");
-        NetworkTaskDAO dao = new NetworkTaskDAO(context);
+        NetworkTaskDAO dao = new NetworkTaskDAO(getContext());
         List<NetworkTask> taskList = dao.readAllNetworkTasks();
         List<Map<String, ?>> exportedList = new ArrayList<>();
         for (NetworkTask task : taskList) {
@@ -308,9 +322,9 @@ public class DBSetup {
         return exportedList;
     }
 
-    public List<Map<String, ?>> exportLogsForNetworkTask(Context context, long networkTaskId) {
+    public List<Map<String, ?>> exportLogsForNetworkTask(long networkTaskId) {
         Log.d(DBSetup.class.getName(), "exportLogsForNetworkTask, networkTaskId is " + networkTaskId);
-        LogDAO dao = new LogDAO(context);
+        LogDAO dao = new LogDAO(getContext());
         List<LogEntry> logList = dao.readAllLogsForNetworkTask(networkTaskId);
         List<Map<String, ?>> exportedList = new ArrayList<>();
         for (LogEntry entry : logList) {
@@ -319,16 +333,16 @@ public class DBSetup {
         return exportedList;
     }
 
-    public Map<String, ?> exportAccessTypeDataForNetworkTask(Context context, long networkTaskId) {
+    public Map<String, ?> exportAccessTypeDataForNetworkTask(long networkTaskId) {
         Log.d(DBSetup.class.getName(), "exportAccessTypeDataForNetworkTask, networkTaskId is " + networkTaskId);
-        AccessTypeDataDAO dao = new AccessTypeDataDAO(context);
+        AccessTypeDataDAO dao = new AccessTypeDataDAO(getContext());
         AccessTypeData accessTypeData = dao.readAccessTypeDataForNetworkTask(networkTaskId);
         return accessTypeData != null ? accessTypeData.toMap() : null;
     }
 
-    public List<Map<String, ?>> exportIntervals(Context context) {
+    public List<Map<String, ?>> exportIntervals() {
         Log.d(DBSetup.class.getName(), "exportIntervals");
-        IntervalDAO dao = new IntervalDAO(context);
+        IntervalDAO dao = new IntervalDAO(getContext());
         List<Interval> intervalList = dao.readAllIntervals();
         List<Map<String, ?>> exportedList = new ArrayList<>();
         for (Interval interval : intervalList) {
@@ -337,16 +351,16 @@ public class DBSetup {
         return exportedList;
     }
 
-    public void importNetworkTaskWithLogsAndAccessTypeData(Context context, Map<String, ?> taskMap, List<Map<String, ?>> logList, Map<String, ?> accessTypeDataMap) {
-        importNetworkTaskWithLogsAndAccessTypeData(context, taskMap, logList, accessTypeDataMap, true);
+    public void importNetworkTaskWithLogsAndAccessTypeData(Map<String, ?> taskMap, List<Map<String, ?>> logList, Map<String, ?> accessTypeDataMap) {
+        importNetworkTaskWithLogsAndAccessTypeData(taskMap, logList, accessTypeDataMap, true);
     }
 
-    public void importNetworkTaskWithLogsAndAccessTypeData(Context context, Map<String, ?> taskMap, List<Map<String, ?>> logList, Map<String, ?> accessTypeDataMap, boolean resetRunnning) {
+    public void importNetworkTaskWithLogsAndAccessTypeData(Map<String, ?> taskMap, List<Map<String, ?>> logList, Map<String, ?> accessTypeDataMap, boolean resetRunnning) {
         Log.d(DBSetup.class.getName(), "importNetworkTaskWithLogsAndAccessTypeData, resetRunnning is " + resetRunnning);
-        NetworkTaskDAO networkTaskDAO = new NetworkTaskDAO(context);
-        LogDAO logDAO = new LogDAO(context);
-        AccessTypeDataDAO accessTypeDataDAO = new AccessTypeDataDAO(context);
-        NetworkTaskValidator networkTaskValidator = new NetworkTaskValidator(context);
+        NetworkTaskDAO networkTaskDAO = new NetworkTaskDAO(getContext());
+        LogDAO logDAO = new LogDAO(getContext());
+        AccessTypeDataDAO accessTypeDataDAO = new AccessTypeDataDAO(getContext());
+        NetworkTaskValidator networkTaskValidator = new NetworkTaskValidator(getContext());
         NetworkTask task = new NetworkTask(taskMap);
         Log.d(DBSetup.class.getName(), "NetworkTask is " + task);
         if (!networkTaskValidator.validate(task)) {
@@ -367,9 +381,9 @@ public class DBSetup {
                 logDAO.insertAndDeleteLog(entry);
             }
         }
-        AccessTypeDataValidator accessTypeDataValidator = new AccessTypeDataValidator(context);
-        if (task.getId() > 0 && accessTypeDataMap != null) {
-            AccessTypeData accessTypeData = new AccessTypeData(accessTypeDataMap);
+        AccessTypeDataValidator accessTypeDataValidator = new AccessTypeDataValidator(getContext());
+        if (task.getId() > 0) {
+            AccessTypeData accessTypeData = accessTypeDataMap == null ? new AccessTypeData(getContext()) : new AccessTypeData(accessTypeDataMap);
             accessTypeData.setNetworkTaskId(task.getId());
             Log.d(DBSetup.class.getName(), "AccessTypeData is " + accessTypeData);
             if (accessTypeDataValidator.validate(accessTypeData)) {
@@ -381,11 +395,11 @@ public class DBSetup {
         }
     }
 
-    public void importIntervals(Context context, List<Map<String, ?>> intervalList) {
+    public void importIntervals(List<Map<String, ?>> intervalList) {
         Log.d(DBSetup.class.getName(), "importIntervals");
-        IntervalDAO dao = new IntervalDAO(context);
+        IntervalDAO dao = new IntervalDAO(getContext());
         List<Interval> insertedList = new ArrayList<>();
-        IntervalValidator validator = new IntervalValidator(context);
+        IntervalValidator validator = new IntervalValidator(getContext());
         for (Map<String, ?> intervalMap : intervalList) {
             Interval interval = new Interval(intervalMap);
             Log.d(DBSetup.class.getName(), "Interval is " + interval);
@@ -397,5 +411,9 @@ public class DBSetup {
                 Log.e(DBSetup.class.getName(), "Interval is invalid and will not be imported: " + interval);
             }
         }
+    }
+
+    private Context getContext() {
+        return context;
     }
 }
