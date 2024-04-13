@@ -743,9 +743,9 @@ public class SystemActivityTest extends BaseUITest {
         LogEntry readEntry1 = entries.get(0);
         LogEntry readEntry2 = entries.get(1);
         LogEntry readEntry3 = entries.get(2);
-        logEntryEquals(task1Entry1, readEntry1);
-        logEntryEquals(task1Entry2, readEntry2);
-        logEntryEquals(task1Entry3, readEntry3);
+        assertTrue(task1Entry1.isTechnicallyEqual(readEntry1));
+        assertTrue(task1Entry2.isTechnicallyEqual(readEntry2));
+        assertTrue(task1Entry3.isTechnicallyEqual(readEntry3));
         assertEquals(readTask1.getId(), readEntry1.getNetworkTaskId());
         assertEquals(readTask1.getId(), readEntry2.getNetworkTaskId());
         assertEquals(readTask1.getId(), readEntry3.getNetworkTaskId());
@@ -753,9 +753,9 @@ public class SystemActivityTest extends BaseUITest {
         readEntry1 = entries.get(0);
         readEntry2 = entries.get(1);
         readEntry3 = entries.get(2);
-        logEntryEquals(task2Entry1, readEntry1);
-        logEntryEquals(task2Entry2, readEntry2);
-        logEntryEquals(task2Entry3, readEntry3);
+        assertTrue(task2Entry1.isTechnicallyEqual(readEntry1));
+        assertTrue(task2Entry2.isTechnicallyEqual(readEntry2));
+        assertTrue(task2Entry3.isTechnicallyEqual(readEntry3));
         assertEquals(readTask2.getId(), readEntry1.getNetworkTaskId());
         assertEquals(readTask2.getId(), readEntry2.getNetworkTaskId());
         assertEquals(readTask2.getId(), readEntry3.getNetworkTaskId());
@@ -763,9 +763,9 @@ public class SystemActivityTest extends BaseUITest {
         readEntry1 = entries.get(0);
         readEntry2 = entries.get(1);
         readEntry3 = entries.get(2);
-        logEntryEquals(task3Entry1, readEntry1);
-        logEntryEquals(task3Entry2, readEntry2);
-        logEntryEquals(task3Entry3, readEntry3);
+        assertTrue(task3Entry1.isTechnicallyEqual(readEntry1));
+        assertTrue(task3Entry2.isTechnicallyEqual(readEntry2));
+        assertTrue(task3Entry3.isTechnicallyEqual(readEntry3));
         assertEquals(readTask3.getId(), readEntry1.getNetworkTaskId());
         assertEquals(readTask3.getId(), readEntry2.getNetworkTaskId());
         assertEquals(readTask3.getId(), readEntry3.getNetworkTaskId());
@@ -896,9 +896,9 @@ public class SystemActivityTest extends BaseUITest {
         LogEntry readEntry1 = entries.get(0);
         LogEntry readEntry2 = entries.get(1);
         LogEntry readEntry3 = entries.get(2);
-        logEntryEquals(task1Entry1, readEntry1);
-        logEntryEquals(task1Entry2, readEntry2);
-        logEntryEquals(task1Entry3, readEntry3);
+        assertTrue(task1Entry1.isTechnicallyEqual(readEntry1));
+        assertTrue(task1Entry2.isTechnicallyEqual(readEntry2));
+        assertTrue(task1Entry3.isTechnicallyEqual(readEntry3));
         assertEquals(readTask1.getId(), readEntry1.getNetworkTaskId());
         assertEquals(readTask1.getId(), readEntry2.getNetworkTaskId());
         assertEquals(readTask1.getId(), readEntry3.getNetworkTaskId());
@@ -906,9 +906,9 @@ public class SystemActivityTest extends BaseUITest {
         readEntry1 = entries.get(0);
         readEntry2 = entries.get(1);
         readEntry3 = entries.get(2);
-        logEntryEquals(task2Entry1, readEntry1);
-        logEntryEquals(task2Entry2, readEntry2);
-        logEntryEquals(task2Entry3, readEntry3);
+        assertTrue(task2Entry1.isTechnicallyEqual(readEntry1));
+        assertTrue(task2Entry2.isTechnicallyEqual(readEntry2));
+        assertTrue(task2Entry3.isTechnicallyEqual(readEntry3));
         assertEquals(readTask2.getId(), readEntry1.getNetworkTaskId());
         assertEquals(readTask2.getId(), readEntry2.getNetworkTaskId());
         assertEquals(readTask2.getId(), readEntry3.getNetworkTaskId());
@@ -916,9 +916,9 @@ public class SystemActivityTest extends BaseUITest {
         readEntry1 = entries.get(0);
         readEntry2 = entries.get(1);
         readEntry3 = entries.get(2);
-        logEntryEquals(task3Entry1, readEntry1);
-        logEntryEquals(task3Entry2, readEntry2);
-        logEntryEquals(task3Entry3, readEntry3);
+        assertTrue(task3Entry1.isTechnicallyEqual(readEntry1));
+        assertTrue(task3Entry2.isTechnicallyEqual(readEntry2));
+        assertTrue(task3Entry3.isTechnicallyEqual(readEntry3));
         assertEquals(readTask3.getId(), readEntry1.getNetworkTaskId());
         assertEquals(readTask3.getId(), readEntry2.getNetworkTaskId());
         assertEquals(readTask3.getId(), readEntry3.getNetworkTaskId());
@@ -1215,9 +1215,9 @@ public class SystemActivityTest extends BaseUITest {
         LogEntry readEntry1 = entries.get(0);
         LogEntry readEntry2 = entries.get(1);
         LogEntry readEntry3 = entries.get(2);
-        logEntryEquals(task1Entry1, readEntry1);
-        logEntryEquals(task1Entry2, readEntry2);
-        logEntryEquals(task1Entry3, readEntry3);
+        assertTrue(task1Entry1.isTechnicallyEqual(readEntry1));
+        assertTrue(task1Entry2.isTechnicallyEqual(readEntry2));
+        assertTrue(task1Entry3.isTechnicallyEqual(readEntry3));
         assertEquals(readTask1.getId(), readEntry1.getNetworkTaskId());
         assertEquals(readTask1.getId(), readEntry2.getNetworkTaskId());
         assertEquals(readTask1.getId(), readEntry3.getNetworkTaskId());
@@ -1225,9 +1225,9 @@ public class SystemActivityTest extends BaseUITest {
         readEntry1 = entries.get(0);
         readEntry2 = entries.get(1);
         readEntry3 = entries.get(2);
-        logEntryEquals(task2Entry1, readEntry1);
-        logEntryEquals(task2Entry2, readEntry2);
-        logEntryEquals(task2Entry3, readEntry3);
+        assertTrue(task2Entry1.isTechnicallyEqual(readEntry1));
+        assertTrue(task2Entry2.isTechnicallyEqual(readEntry2));
+        assertTrue(task2Entry3.isTechnicallyEqual(readEntry3));
         assertEquals(readTask2.getId(), readEntry1.getNetworkTaskId());
         assertEquals(readTask2.getId(), readEntry2.getNetworkTaskId());
         assertEquals(readTask2.getId(), readEntry3.getNetworkTaskId());
@@ -1235,9 +1235,9 @@ public class SystemActivityTest extends BaseUITest {
         readEntry1 = entries.get(0);
         readEntry2 = entries.get(1);
         readEntry3 = entries.get(2);
-        logEntryEquals(task3Entry1, readEntry1);
-        logEntryEquals(task3Entry2, readEntry2);
-        logEntryEquals(task3Entry3, readEntry3);
+        assertTrue(task3Entry1.isTechnicallyEqual(readEntry1));
+        assertTrue(task3Entry2.isTechnicallyEqual(readEntry2));
+        assertTrue(task3Entry3.isTechnicallyEqual(readEntry3));
         assertEquals(readTask3.getId(), readEntry1.getNetworkTaskId());
         assertEquals(readTask3.getId(), readEntry2.getNetworkTaskId());
         assertEquals(readTask3.getId(), readEntry3.getNetworkTaskId());
@@ -1374,9 +1374,9 @@ public class SystemActivityTest extends BaseUITest {
         LogEntry readEntry1 = entries.get(0);
         LogEntry readEntry2 = entries.get(1);
         LogEntry readEntry3 = entries.get(2);
-        logEntryEquals(task1Entry1, readEntry1);
-        logEntryEquals(task1Entry2, readEntry2);
-        logEntryEquals(task1Entry3, readEntry3);
+        assertTrue(task1Entry1.isTechnicallyEqual(readEntry1));
+        assertTrue(task1Entry2.isTechnicallyEqual(readEntry2));
+        assertTrue(task1Entry3.isTechnicallyEqual(readEntry3));
         assertEquals(readTask1.getId(), readEntry1.getNetworkTaskId());
         assertEquals(readTask1.getId(), readEntry2.getNetworkTaskId());
         assertEquals(readTask1.getId(), readEntry3.getNetworkTaskId());
@@ -1384,9 +1384,9 @@ public class SystemActivityTest extends BaseUITest {
         readEntry1 = entries.get(0);
         readEntry2 = entries.get(1);
         readEntry3 = entries.get(2);
-        logEntryEquals(task2Entry1, readEntry1);
-        logEntryEquals(task2Entry2, readEntry2);
-        logEntryEquals(task2Entry3, readEntry3);
+        assertTrue(task2Entry1.isTechnicallyEqual(readEntry1));
+        assertTrue(task2Entry2.isTechnicallyEqual(readEntry2));
+        assertTrue(task2Entry3.isTechnicallyEqual(readEntry3));
         assertEquals(readTask2.getId(), readEntry1.getNetworkTaskId());
         assertEquals(readTask2.getId(), readEntry2.getNetworkTaskId());
         assertEquals(readTask2.getId(), readEntry3.getNetworkTaskId());
@@ -1394,9 +1394,9 @@ public class SystemActivityTest extends BaseUITest {
         readEntry1 = entries.get(0);
         readEntry2 = entries.get(1);
         readEntry3 = entries.get(2);
-        logEntryEquals(task3Entry1, readEntry1);
-        logEntryEquals(task3Entry2, readEntry2);
-        logEntryEquals(task3Entry3, readEntry3);
+        assertTrue(task3Entry1.isTechnicallyEqual(readEntry1));
+        assertTrue(task3Entry2.isTechnicallyEqual(readEntry2));
+        assertTrue(task3Entry3.isTechnicallyEqual(readEntry3));
         assertEquals(readTask3.getId(), readEntry1.getNetworkTaskId());
         assertEquals(readTask3.getId(), readEntry2.getNetworkTaskId());
         assertEquals(readTask3.getId(), readEntry3.getNetworkTaskId());
@@ -2024,9 +2024,9 @@ public class SystemActivityTest extends BaseUITest {
         LogEntry readEntry1 = entries.get(0);
         LogEntry readEntry2 = entries.get(1);
         LogEntry readEntry3 = entries.get(2);
-        logEntryEquals(task1Entry1, readEntry1);
-        logEntryEquals(task1Entry2, readEntry2);
-        logEntryEquals(task1Entry3, readEntry3);
+        assertTrue(task1Entry1.isTechnicallyEqual(readEntry1));
+        assertTrue(task1Entry2.isTechnicallyEqual(readEntry2));
+        assertTrue(task1Entry3.isTechnicallyEqual(readEntry3));
         assertEquals(readTask1.getId(), readEntry1.getNetworkTaskId());
         assertEquals(readTask1.getId(), readEntry2.getNetworkTaskId());
         assertEquals(readTask1.getId(), readEntry3.getNetworkTaskId());
@@ -2034,9 +2034,9 @@ public class SystemActivityTest extends BaseUITest {
         readEntry1 = entries.get(0);
         readEntry2 = entries.get(1);
         readEntry3 = entries.get(2);
-        logEntryEquals(task2Entry1, readEntry1);
-        logEntryEquals(task2Entry2, readEntry2);
-        logEntryEquals(task2Entry3, readEntry3);
+        assertTrue(task2Entry1.isTechnicallyEqual(readEntry1));
+        assertTrue(task2Entry2.isTechnicallyEqual(readEntry2));
+        assertTrue(task2Entry3.isTechnicallyEqual(readEntry3));
         assertEquals(readTask2.getId(), readEntry1.getNetworkTaskId());
         assertEquals(readTask2.getId(), readEntry2.getNetworkTaskId());
         assertEquals(readTask2.getId(), readEntry3.getNetworkTaskId());
@@ -2044,9 +2044,9 @@ public class SystemActivityTest extends BaseUITest {
         readEntry1 = entries.get(0);
         readEntry2 = entries.get(1);
         readEntry3 = entries.get(2);
-        logEntryEquals(task3Entry1, readEntry1);
-        logEntryEquals(task3Entry2, readEntry2);
-        logEntryEquals(task3Entry3, readEntry3);
+        assertTrue(task3Entry1.isTechnicallyEqual(readEntry1));
+        assertTrue(task3Entry2.isTechnicallyEqual(readEntry2));
+        assertTrue(task3Entry3.isTechnicallyEqual(readEntry3));
         assertEquals(readTask3.getId(), readEntry1.getNetworkTaskId());
         assertEquals(readTask3.getId(), readEntry2.getNetworkTaskId());
         assertEquals(readTask3.getId(), readEntry3.getNetworkTaskId());
@@ -2155,9 +2155,9 @@ public class SystemActivityTest extends BaseUITest {
         LogEntry readEntry1 = entries.get(0);
         LogEntry readEntry2 = entries.get(1);
         LogEntry readEntry3 = entries.get(2);
-        logEntryEquals(task1Entry1, readEntry1);
-        logEntryEquals(task1Entry2, readEntry2);
-        logEntryEquals(task1Entry3, readEntry3);
+        assertTrue(task1Entry1.isTechnicallyEqual(readEntry1));
+        assertTrue(task1Entry2.isTechnicallyEqual(readEntry2));
+        assertTrue(task1Entry3.isTechnicallyEqual(readEntry3));
         assertEquals(readTask1.getId(), readEntry1.getNetworkTaskId());
         assertEquals(readTask1.getId(), readEntry2.getNetworkTaskId());
         assertEquals(readTask1.getId(), readEntry3.getNetworkTaskId());
@@ -2165,9 +2165,9 @@ public class SystemActivityTest extends BaseUITest {
         readEntry1 = entries.get(0);
         readEntry2 = entries.get(1);
         readEntry3 = entries.get(2);
-        logEntryEquals(task2Entry1, readEntry1);
-        logEntryEquals(task2Entry2, readEntry2);
-        logEntryEquals(task2Entry3, readEntry3);
+        assertTrue(task2Entry1.isTechnicallyEqual(readEntry1));
+        assertTrue(task2Entry2.isTechnicallyEqual(readEntry2));
+        assertTrue(task2Entry3.isTechnicallyEqual(readEntry3));
         assertEquals(readTask2.getId(), readEntry1.getNetworkTaskId());
         assertEquals(readTask2.getId(), readEntry2.getNetworkTaskId());
         assertEquals(readTask2.getId(), readEntry3.getNetworkTaskId());
@@ -2175,9 +2175,9 @@ public class SystemActivityTest extends BaseUITest {
         readEntry1 = entries.get(0);
         readEntry2 = entries.get(1);
         readEntry3 = entries.get(2);
-        logEntryEquals(task3Entry1, readEntry1);
-        logEntryEquals(task3Entry2, readEntry2);
-        logEntryEquals(task3Entry3, readEntry3);
+        assertTrue(task3Entry1.isTechnicallyEqual(readEntry1));
+        assertTrue(task3Entry2.isTechnicallyEqual(readEntry2));
+        assertTrue(task3Entry3.isTechnicallyEqual(readEntry3));
         assertEquals(readTask3.getId(), readEntry1.getNetworkTaskId());
         assertEquals(readTask3.getId(), readEntry2.getNetworkTaskId());
         assertEquals(readTask3.getId(), readEntry3.getNetworkTaskId());
@@ -2814,12 +2814,6 @@ public class SystemActivityTest extends BaseUITest {
         getNetworkTaskDAO().updateNetworkTaskRunning(task2.getId(), true);
         getNetworkTaskProcessServiceScheduler().reschedule(task1, NetworkTaskProcessServiceScheduler.Delay.INTERVAL);
         getNetworkTaskProcessServiceScheduler().reschedule(task2, NetworkTaskProcessServiceScheduler.Delay.INTERVAL);
-    }
-
-    private void logEntryEquals(LogEntry entry1, LogEntry entry2) {
-        assertEquals(entry1.isSuccess(), entry2.isSuccess());
-        assertEquals(entry1.getTimestamp(), entry2.getTimestamp());
-        assertEquals(entry1.getMessage(), entry2.getMessage());
     }
 
     private NetworkTask getNetworkTask1() {

@@ -276,11 +276,11 @@ public class DBSetupTest {
         AccessTypeData data3 = accessTypeDataDAO.readAccessTypeDataForNetworkTask(task3.getId());
         AccessTypeData data = new AccessTypeData(TestRegistry.getContext());
         data.setNetworkTaskId(task1.getId());
-        accessTypeDataEquals(data, data1);
+        assertTrue(data.isTechnicallyEqual(data1));
         data.setNetworkTaskId(task2.getId());
-        accessTypeDataEquals(data, data2);
+        assertTrue(data.isTechnicallyEqual(data2));
         data.setNetworkTaskId(task3.getId());
-        accessTypeDataEquals(data, data3);
+        assertTrue(data.isTechnicallyEqual(data3));
     }
 
     @Test
@@ -316,9 +316,9 @@ public class DBSetupTest {
         entry1 = new LogEntry(entryList.get(0));
         entry2 = new LogEntry(entryList.get(1));
         entry3 = new LogEntry(entryList.get(2));
-        logEntryEquals(entry1, getLogEntry1(task.getId()));
-        logEntryEquals(entry2, getLogEntry2(task.getId()));
-        logEntryEquals(entry3, getLogEntry3(task.getId()));
+        assertTrue(entry1.isTechnicallyEqual(getLogEntry1(task.getId())));
+        assertTrue(entry2.isTechnicallyEqual(getLogEntry2(task.getId())));
+        assertTrue(entry3.isTechnicallyEqual(getLogEntry3(task.getId())));
     }
 
     @Test
@@ -327,7 +327,7 @@ public class DBSetupTest {
         AccessTypeData data = getAccessTypeData(task.getId());
         accessTypeDataDAO.insertAccessTypeData(data);
         Map<String, ?> dataMap = setup.exportAccessTypeDataForNetworkTask(task.getId());
-        accessTypeDataEquals(new AccessTypeData(dataMap), getAccessTypeData(task.getId()));
+        assertTrue(new AccessTypeData(dataMap).isTechnicallyEqual(getAccessTypeData(task.getId())));
     }
 
     @Test
@@ -362,11 +362,11 @@ public class DBSetupTest {
         assertEquals(3, entryList.size());
         assertTrue(task.isTechnicallyEqual(getNetworkTask1()));
         assertFalse(task.isRunning());
-        logEntryEquals(entryList.get(0), getLogEntry1(task.getId()));
-        logEntryEquals(entryList.get(1), getLogEntry2(task.getId()));
-        logEntryEquals(entryList.get(2), getLogEntry3(task.getId()));
+        assertTrue(entryList.get(0).isTechnicallyEqual(getLogEntry1(task.getId())));
+        assertTrue(entryList.get(1).isTechnicallyEqual(getLogEntry2(task.getId())));
+        assertTrue(entryList.get(2).isTechnicallyEqual(getLogEntry3(task.getId())));
         AccessTypeData data = accessTypeDataDAO.readAccessTypeDataForNetworkTask(task.getId());
-        accessTypeDataEquals(data, getAccessTypeData(task.getId()));
+        assertTrue(data.isTechnicallyEqual(getAccessTypeData(task.getId())));
     }
 
     @Test
@@ -386,13 +386,13 @@ public class DBSetupTest {
         assertEquals(3, entryList.size());
         assertTrue(task.isTechnicallyEqual(getNetworkTask1()));
         assertFalse(task.isRunning());
-        logEntryEquals(entryList.get(0), getLogEntry1(task.getId()));
-        logEntryEquals(entryList.get(1), getLogEntry2(task.getId()));
-        logEntryEquals(entryList.get(2), getLogEntry3(task.getId()));
+        assertTrue(entryList.get(0).isTechnicallyEqual(getLogEntry1(task.getId())));
+        assertTrue(entryList.get(1).isTechnicallyEqual(getLogEntry2(task.getId())));
+        assertTrue(entryList.get(2).isTechnicallyEqual(getLogEntry3(task.getId())));
         AccessTypeData data = accessTypeDataDAO.readAccessTypeDataForNetworkTask(task.getId());
         AccessTypeData defaultData = new AccessTypeData(TestRegistry.getContext());
         defaultData.setNetworkTaskId(task.getId());
-        accessTypeDataEquals(defaultData, data);
+        assertTrue(defaultData.isTechnicallyEqual(data));
     }
 
     @Test
@@ -651,20 +651,6 @@ public class DBSetupTest {
         List<Interval> intervalList = intervalDAO.readAllIntervals();
         assertEquals(1, intervalList.size());
         assertTrue(interval1.isEqual(intervalList.get(0)));
-    }
-
-    private void logEntryEquals(LogEntry entry1, LogEntry entry2) {
-        assertEquals(entry1.getNetworkTaskId(), entry2.getNetworkTaskId());
-        assertEquals(entry1.isSuccess(), entry2.isSuccess());
-        assertEquals(entry1.getTimestamp(), entry2.getTimestamp());
-        assertEquals(entry1.getMessage(), entry2.getMessage());
-    }
-
-    private void accessTypeDataEquals(AccessTypeData data1, AccessTypeData data2) {
-        assertEquals(data1.getNetworkTaskId(), data2.getNetworkTaskId());
-        assertEquals(data1.getPingCount(), data2.getPingCount());
-        assertEquals(data1.getPingPackageSize(), data2.getPingPackageSize());
-        assertEquals(data1.getConnectCount(), data2.getConnectCount());
     }
 
     private NetworkTask getNetworkTask1() {

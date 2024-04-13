@@ -66,9 +66,9 @@ public class AccessTypeDataDAOTest {
         assertEquals(1, readDataList.size());
         AccessTypeData readData = readDataList.get(0);
         assertTrue(readData.getId() > 0);
-        accessTypeDataEquals(data1, readData);
+        assertTrue(data1.isEqual(readData));
         readData = accessTypeDataDAO.readAccessTypeDataForNetworkTask(0);
-        accessTypeDataEquals(data1, readData);
+        assertTrue(data1.isEqual(readData));
         AccessTypeData data2 = getAccessTypeData2();
         AccessTypeData data3 = getAccessTypeData3();
         accessTypeDataDAO.insertAccessTypeData(data2);
@@ -108,7 +108,7 @@ public class AccessTypeDataDAOTest {
         readData2 = accessTypeDataDAO.readAccessTypeDataForNetworkTask(1);
         assertEquals(9, readData2.getPingCount());
         readData2.setPingCount(data2.getPingCount());
-        accessTypeDataEquals(data2, readData2);
+        assertTrue(data2.isEqual(readData2));
         readData1.setPingPackageSize(12);
         readData1.setConnectCount(1);
         accessTypeDataDAO.updateAccessTypeData(readData1);
@@ -117,7 +117,7 @@ public class AccessTypeDataDAOTest {
         assertEquals(1, readData1.getConnectCount());
         readData1.setPingPackageSize(data1.getPingPackageSize());
         readData1.setConnectCount(data1.getConnectCount());
-        accessTypeDataEquals(data1, readData1);
+        assertTrue(data1.isTechnicallyEqual(readData1));
     }
 
     @Test
@@ -137,11 +137,11 @@ public class AccessTypeDataDAOTest {
         AccessTypeData readData2 = accessTypeDataDAO.readAccessTypeDataForNetworkTask(1);
         AccessTypeData readData3 = accessTypeDataDAO.readAccessTypeDataForNetworkTask(2);
         updateData.setNetworkTaskId(readData1.getNetworkTaskId());
-        accessTypeDataEquals(updateData, readData1);
+        assertTrue(updateData.isTechnicallyEqual(readData1));
         updateData.setNetworkTaskId(readData2.getNetworkTaskId());
-        accessTypeDataEquals(updateData, readData2);
+        assertTrue(updateData.isTechnicallyEqual(readData2));
         updateData.setNetworkTaskId(readData3.getNetworkTaskId());
-        accessTypeDataEquals(updateData, readData3);
+        assertTrue(updateData.isTechnicallyEqual(readData3));
     }
 
     @Test
@@ -161,24 +161,16 @@ public class AccessTypeDataDAOTest {
         accessTypeDataDAO.deleteAllOrphanAccessTypeData();
         readDataList = accessTypeDataDAO.readAllAccessTypeData();
         assertEquals(1, readDataList.size());
-        accessTypeDataEquals(data1, readDataList.get(0));
+        assertTrue(data1.isTechnicallyEqual(readDataList.get(0)));
     }
 
     private boolean doesAccessTypeDataListContain(List<AccessTypeData> dataList, AccessTypeData data) {
         for (AccessTypeData currentData : dataList) {
-            data.setId(currentData.getId());
-            if (currentData.isEqual(data)) {
+            if (currentData.isTechnicallyEqual(data)) {
                 return true;
             }
         }
         return false;
-    }
-
-    private void accessTypeDataEquals(AccessTypeData data1, AccessTypeData data2) {
-        assertEquals(data1.getNetworkTaskId(), data2.getNetworkTaskId());
-        assertEquals(data1.getPingCount(), data2.getPingCount());
-        assertEquals(data1.getPingPackageSize(), data2.getPingPackageSize());
-        assertEquals(data1.getConnectCount(), data2.getConnectCount());
     }
 
     private NetworkTask getNetworkTask() {

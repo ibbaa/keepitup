@@ -168,6 +168,22 @@ public class AccessTypeData {
         return Objects.equals(connectCount, other.connectCount);
     }
 
+    public boolean isTechnicallyEqual(AccessTypeData other) {
+        if (other == null || getClass() != other.getClass()) {
+            return false;
+        }
+        if (networktaskid != other.networktaskid) {
+            return false;
+        }
+        if (pingCount != other.pingCount) {
+            return false;
+        }
+        if (pingPackageSize != other.pingPackageSize) {
+            return false;
+        }
+        return Objects.equals(connectCount, other.connectCount);
+    }
+
     @NonNull
     @Override
     public String toString() {

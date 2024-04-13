@@ -27,6 +27,7 @@ import androidx.test.filters.MediumTest;
 import com.google.common.base.Charsets;
 
 import net.ibbaa.keepitup.model.AccessType;
+import net.ibbaa.keepitup.model.AccessTypeData;
 import net.ibbaa.keepitup.model.Interval;
 import net.ibbaa.keepitup.model.LogEntry;
 import net.ibbaa.keepitup.model.NetworkTask;
@@ -81,6 +82,8 @@ public class ExportTaskTest extends BaseUITest {
         LogEntry task3Entry2 = getLogDAO().insertAndDeleteLog(getLogEntry2(task3.getId()));
         LogEntry task3Entry3 = getLogDAO().insertAndDeleteLog(getLogEntry3(task3.getId()));
         getIntervalDAO().insertInterval(getInterval());
+        AccessTypeData accessData1 = getAccessTypeDataDAO().insertAccessTypeData(getAccessTypeData1(task1.getId()));
+        AccessTypeData accessData2 = getAccessTypeDataDAO().insertAccessTypeData(getAccessTypeData2(task2.getId()));
         getPreferenceManager().setPreferencePingCount(5);
         getPreferenceManager().setPreferenceConnectCount(10);
         getPreferenceManager().setPreferenceNotificationInactiveNetwork(true);
@@ -108,6 +111,7 @@ public class ExportTaskTest extends BaseUITest {
         getNetworkTaskDAO().deleteAllNetworkTasks();
         getLogDAO().deleteAllLogs();
         getIntervalDAO().deleteAllIntervals();
+        getAccessTypeDataDAO().deleteAllAccessTypeData();
         getPreferenceManager().removeAllPreferences();
         String jsonData = StreamUtil.inputStreamToString(new FileInputStream(writtenFile), Charsets.UTF_8);
         JSONSystemSetup setup = new JSONSystemSetup(TestRegistry.getContext());
@@ -116,6 +120,7 @@ public class ExportTaskTest extends BaseUITest {
         assertFalse(getNetworkTaskDAO().readAllNetworkTasks().isEmpty());
         assertFalse(getLogDAO().readAllLogs().isEmpty());
         assertFalse(getIntervalDAO().readAllIntervals().isEmpty());
+        assertFalse(getAccessTypeDataDAO().readAllAccessTypeData().isEmpty());
         List<NetworkTask> tasks = getNetworkTaskDAO().readAllNetworkTasks();
         NetworkTask readTask1 = tasks.get(0);
         NetworkTask readTask2 = tasks.get(1);
@@ -130,9 +135,9 @@ public class ExportTaskTest extends BaseUITest {
         LogEntry readEntry1 = entries.get(0);
         LogEntry readEntry2 = entries.get(1);
         LogEntry readEntry3 = entries.get(2);
-        logEntryEquals(task1Entry1, readEntry1);
-        logEntryEquals(task1Entry2, readEntry2);
-        logEntryEquals(task1Entry3, readEntry3);
+        assertTrue(task1Entry1.isTechnicallyEqual(readEntry1));
+        assertTrue(task1Entry2.isTechnicallyEqual(readEntry2));
+        assertTrue(task1Entry3.isTechnicallyEqual(readEntry3));
         assertEquals(readTask1.getId(), readEntry1.getNetworkTaskId());
         assertEquals(readTask1.getId(), readEntry2.getNetworkTaskId());
         assertEquals(readTask1.getId(), readEntry3.getNetworkTaskId());
@@ -140,9 +145,9 @@ public class ExportTaskTest extends BaseUITest {
         readEntry1 = entries.get(0);
         readEntry2 = entries.get(1);
         readEntry3 = entries.get(2);
-        logEntryEquals(task2Entry1, readEntry1);
-        logEntryEquals(task2Entry2, readEntry2);
-        logEntryEquals(task2Entry3, readEntry3);
+        assertTrue(task2Entry1.isTechnicallyEqual(readEntry1));
+        assertTrue(task2Entry2.isTechnicallyEqual(readEntry2));
+        assertTrue(task2Entry3.isTechnicallyEqual(readEntry3));
         assertEquals(readTask2.getId(), readEntry1.getNetworkTaskId());
         assertEquals(readTask2.getId(), readEntry2.getNetworkTaskId());
         assertEquals(readTask2.getId(), readEntry3.getNetworkTaskId());
@@ -150,13 +155,17 @@ public class ExportTaskTest extends BaseUITest {
         readEntry1 = entries.get(0);
         readEntry2 = entries.get(1);
         readEntry3 = entries.get(2);
-        logEntryEquals(task3Entry1, readEntry1);
-        logEntryEquals(task3Entry2, readEntry2);
-        logEntryEquals(task3Entry3, readEntry3);
+        assertTrue(task3Entry1.isTechnicallyEqual(readEntry1));
+        assertTrue(task3Entry2.isTechnicallyEqual(readEntry2));
+        assertTrue(task3Entry3.isTechnicallyEqual(readEntry3));
         assertEquals(readTask3.getId(), readEntry1.getNetworkTaskId());
         assertEquals(readTask3.getId(), readEntry2.getNetworkTaskId());
         assertEquals(readTask3.getId(), readEntry3.getNetworkTaskId());
         assertTrue(getInterval().isEqual(getIntervalDAO().readAllIntervals().get(0)));
+        AccessTypeData readAccessData1 = getAccessTypeDataDAO().readAccessTypeDataForNetworkTask(readTask1.getId());
+        AccessTypeData readAccessData2 = getAccessTypeDataDAO().readAccessTypeDataForNetworkTask(readTask2.getId());
+        assertTrue(accessData1.isTechnicallyEqual(readAccessData1));
+        assertTrue(accessData2.isTechnicallyEqual(readAccessData2));
         assertEquals(5, getPreferenceManager().getPreferencePingCount());
         assertEquals(10, getPreferenceManager().getPreferenceConnectCount());
         assertTrue(getPreferenceManager().getPreferenceNotificationInactiveNetwork());
@@ -176,12 +185,6 @@ public class ExportTaskTest extends BaseUITest {
         assertEquals("folderExport", getPreferenceManager().getPreferenceExportFolder());
         assertTrue(getPreferenceManager().getPreferenceFileLoggerEnabled());
         assertTrue(getPreferenceManager().getPreferenceFileDumpEnabled());
-    }
-
-    private void logEntryEquals(LogEntry entry1, LogEntry entry2) {
-        assertEquals(entry1.isSuccess(), entry2.isSuccess());
-        assertEquals(entry1.getTimestamp(), entry2.getTimestamp());
-        assertEquals(entry1.getMessage(), entry2.getMessage());
     }
 
     private Interval getInterval() {
@@ -277,5 +280,25 @@ public class ExportTaskTest extends BaseUITest {
         insertedLogEntry3.setTimestamp(123);
         insertedLogEntry3.setMessage("TestMessage3");
         return insertedLogEntry3;
+    }
+
+    private AccessTypeData getAccessTypeData1(long networkTaskId) {
+        AccessTypeData data = new AccessTypeData();
+        data.setId(0);
+        data.setNetworkTaskId(networkTaskId);
+        data.setPingCount(10);
+        data.setPingPackageSize(1234);
+        data.setConnectCount(3);
+        return data;
+    }
+
+    private AccessTypeData getAccessTypeData2(long networkTaskId) {
+        AccessTypeData data = new AccessTypeData();
+        data.setId(0);
+        data.setNetworkTaskId(networkTaskId);
+        data.setPingCount(1);
+        data.setPingPackageSize(55);
+        data.setConnectCount(5);
+        return data;
     }
 }

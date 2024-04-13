@@ -25,11 +25,13 @@ import androidx.test.filters.MediumTest;
 
 import net.ibbaa.keepitup.BuildConfig;
 import net.ibbaa.keepitup.R;
+import net.ibbaa.keepitup.db.AccessTypeDataDAO;
 import net.ibbaa.keepitup.db.IntervalDAO;
 import net.ibbaa.keepitup.db.LogDAO;
 import net.ibbaa.keepitup.db.NetworkTaskDAO;
 import net.ibbaa.keepitup.logging.Dump;
 import net.ibbaa.keepitup.model.AccessType;
+import net.ibbaa.keepitup.model.AccessTypeData;
 import net.ibbaa.keepitup.model.Interval;
 import net.ibbaa.keepitup.model.LogEntry;
 import net.ibbaa.keepitup.model.NetworkTask;
@@ -54,6 +56,7 @@ public class JSONSystemSetupTest {
     private NetworkTaskDAO networkTaskDAO;
     private LogDAO logDAO;
     private IntervalDAO intervalDAO;
+    private AccessTypeDataDAO accessTypeDataDAO;
     private PreferenceManager preferenceManager;
     private JSONSystemSetup setup;
 
@@ -63,9 +66,11 @@ public class JSONSystemSetupTest {
         networkTaskDAO = new NetworkTaskDAO(TestRegistry.getContext());
         logDAO = new LogDAO(TestRegistry.getContext());
         intervalDAO = new IntervalDAO(TestRegistry.getContext());
+        accessTypeDataDAO = new AccessTypeDataDAO(TestRegistry.getContext());
         networkTaskDAO.deleteAllNetworkTasks();
         logDAO.deleteAllLogs();
         intervalDAO.deleteAllIntervals();
+        accessTypeDataDAO.deleteAllAccessTypeData();
         preferenceManager = new PreferenceManager(TestRegistry.getContext());
         preferenceManager.removeAllPreferences();
         setup = new JSONSystemSetup(TestRegistry.getContext());
@@ -76,6 +81,7 @@ public class JSONSystemSetupTest {
         networkTaskDAO.deleteAllNetworkTasks();
         logDAO.deleteAllLogs();
         intervalDAO.deleteAllIntervals();
+        accessTypeDataDAO.deleteAllAccessTypeData();
         preferenceManager.removeAllPreferences();
     }
 
@@ -102,6 +108,8 @@ public class JSONSystemSetupTest {
         LogEntry task3Entry1 = logDAO.insertAndDeleteLog(getLogEntry1(task3.getId()));
         LogEntry task3Entry2 = logDAO.insertAndDeleteLog(getLogEntry2(task3.getId()));
         LogEntry task3Entry3 = logDAO.insertAndDeleteLog(getLogEntry3(task3.getId()));
+        AccessTypeData accessData1 = accessTypeDataDAO.insertAccessTypeData(getAccessTypeData1(task1.getId()));
+        AccessTypeData accessData2 = accessTypeDataDAO.insertAccessTypeData(getAccessTypeData2(task2.getId()));
         SystemSetupResult result = setup.exportData();
         assertTrue(result.success());
         JSONObject jsonData = new JSONObject(result.data());
@@ -139,6 +147,12 @@ public class JSONSystemSetupTest {
         assertTrue(task3Entry1.isEqual(task3LogEntry1));
         assertTrue(task3Entry2.isEqual(task3LogEntry2));
         assertTrue(task3Entry3.isEqual(task3LogEntry3));
+        JSONObject task1AccessDataJSON = (JSONObject) task1Data.get("accesstypedata");
+        JSONObject task2AccessDataJSON = (JSONObject) task2Data.get("accesstypedata");
+        AccessTypeData task1AccessData = new AccessTypeData(JSONUtil.toMap((task1AccessDataJSON)));
+        AccessTypeData task2AccessData = new AccessTypeData(JSONUtil.toMap((task2AccessDataJSON)));
+        assertTrue(task1AccessData.isEqual(accessData1));
+        assertTrue(task2AccessData.isEqual(accessData2));
     }
 
     @Test
@@ -173,6 +187,9 @@ public class JSONSystemSetupTest {
         NetworkTask task1 = getNetworkTask1();
         task1.setAddress("127.12..1.1.1.1");
         task1 = networkTaskDAO.insertNetworkTask(task1);
+        AccessTypeData data1 = getAccessTypeData1(task1.getId());
+        data1.setPingCount(25);
+        AccessTypeData accessData1 = accessTypeDataDAO.insertAccessTypeData(data1);
         SystemSetupResult result = setup.exportData();
         assertTrue(result.success());
         JSONObject jsonData = new JSONObject(result.data());
@@ -181,6 +198,9 @@ public class JSONSystemSetupTest {
         JSONObject task1NetworkTaskData = (JSONObject) task1Data.get("networktask");
         NetworkTask task1NetworkTask = new NetworkTask(JSONUtil.toMap(task1NetworkTaskData));
         assertTrue(task1.isEqual(task1NetworkTask));
+        JSONObject task1AccessDataJSON = (JSONObject) task1Data.get("accesstypedata");
+        AccessTypeData task1AccessData = new AccessTypeData(JSONUtil.toMap((task1AccessDataJSON)));
+        assertTrue(task1AccessData.isEqual(accessData1));
     }
 
     @Test
@@ -314,14 +334,19 @@ public class JSONSystemSetupTest {
         LogEntry task3Entry1 = logDAO.insertAndDeleteLog(getLogEntry1(task3.getId()));
         LogEntry task3Entry2 = logDAO.insertAndDeleteLog(getLogEntry2(task3.getId()));
         LogEntry task3Entry3 = logDAO.insertAndDeleteLog(getLogEntry3(task3.getId()));
+        AccessTypeData accessData1 = accessTypeDataDAO.insertAccessTypeData(getAccessTypeData1(task1.getId()));
+        AccessTypeData accessData2 = accessTypeDataDAO.insertAccessTypeData(getAccessTypeData2(task2.getId()));
         SystemSetupResult exportResult = setup.exportData();
         networkTaskDAO.deleteAllNetworkTasks();
         logDAO.deleteAllLogs();
+        accessTypeDataDAO.deleteAllAccessTypeData();
         assertTrue(networkTaskDAO.readAllNetworkTasks().isEmpty());
         assertTrue(logDAO.readAllLogs().isEmpty());
+        assertTrue(accessTypeDataDAO.readAllAccessTypeData().isEmpty());
         SystemSetupResult importResult = setup.importData(exportResult.data());
         assertFalse(networkTaskDAO.readAllNetworkTasks().isEmpty());
         assertFalse(logDAO.readAllLogs().isEmpty());
+        assertFalse(accessTypeDataDAO.readAllAccessTypeData().isEmpty());
         assertTrue(importResult.success());
         assertEquals(exportResult.data(), importResult.data());
         List<NetworkTask> tasks = networkTaskDAO.readAllNetworkTasks();
@@ -338,9 +363,9 @@ public class JSONSystemSetupTest {
         LogEntry readEntry1 = entries.get(0);
         LogEntry readEntry2 = entries.get(1);
         LogEntry readEntry3 = entries.get(2);
-        logEntryEquals(task1Entry1, readEntry1);
-        logEntryEquals(task1Entry2, readEntry2);
-        logEntryEquals(task1Entry3, readEntry3);
+        assertTrue(task1Entry1.isTechnicallyEqual(readEntry1));
+        assertTrue(task1Entry2.isTechnicallyEqual(readEntry2));
+        assertTrue(task1Entry3.isTechnicallyEqual(readEntry3));
         assertEquals(readTask1.getId(), readEntry1.getNetworkTaskId());
         assertEquals(readTask1.getId(), readEntry2.getNetworkTaskId());
         assertEquals(readTask1.getId(), readEntry3.getNetworkTaskId());
@@ -348,9 +373,9 @@ public class JSONSystemSetupTest {
         readEntry1 = entries.get(0);
         readEntry2 = entries.get(1);
         readEntry3 = entries.get(2);
-        logEntryEquals(task2Entry1, readEntry1);
-        logEntryEquals(task2Entry2, readEntry2);
-        logEntryEquals(task2Entry3, readEntry3);
+        assertTrue(task2Entry1.isTechnicallyEqual(readEntry1));
+        assertTrue(task2Entry2.isTechnicallyEqual(readEntry2));
+        assertTrue(task2Entry3.isTechnicallyEqual(readEntry3));
         assertEquals(readTask2.getId(), readEntry1.getNetworkTaskId());
         assertEquals(readTask2.getId(), readEntry2.getNetworkTaskId());
         assertEquals(readTask2.getId(), readEntry3.getNetworkTaskId());
@@ -358,12 +383,20 @@ public class JSONSystemSetupTest {
         readEntry1 = entries.get(0);
         readEntry2 = entries.get(1);
         readEntry3 = entries.get(2);
-        logEntryEquals(task3Entry1, readEntry1);
-        logEntryEquals(task3Entry2, readEntry2);
-        logEntryEquals(task3Entry3, readEntry3);
+        assertTrue(task3Entry1.isTechnicallyEqual(readEntry1));
+        assertTrue(task3Entry2.isTechnicallyEqual(readEntry2));
+        assertTrue(task3Entry3.isTechnicallyEqual(readEntry3));
         assertEquals(readTask3.getId(), readEntry1.getNetworkTaskId());
         assertEquals(readTask3.getId(), readEntry2.getNetworkTaskId());
         assertEquals(readTask3.getId(), readEntry3.getNetworkTaskId());
+        AccessTypeData readAccessData1 = accessTypeDataDAO.readAccessTypeDataForNetworkTask(readTask1.getId());
+        AccessTypeData readAccessData2 = accessTypeDataDAO.readAccessTypeDataForNetworkTask(readTask2.getId());
+        AccessTypeData readAccessData3 = accessTypeDataDAO.readAccessTypeDataForNetworkTask(readTask3.getId());
+        assertTrue(accessData1.isTechnicallyEqual(readAccessData1));
+        assertTrue(accessData2.isTechnicallyEqual(readAccessData2));
+        AccessTypeData accessData3 = new AccessTypeData(TestRegistry.getContext());
+        accessData3.setNetworkTaskId(readAccessData3.getId());
+        assertTrue(accessData3.isTechnicallyEqual(readAccessData3));
     }
 
     @Test
@@ -391,7 +424,7 @@ public class JSONSystemSetupTest {
         assertTrue(task1.isTechnicallyEqual(readTask1));
         List<LogEntry> entries = logDAO.readAllLogsForNetworkTask(readTask1.getId());
         LogEntry readEntry1 = entries.get(0);
-        logEntryEquals(task1Entry1, readEntry1);
+        assertTrue(task1Entry1.isTechnicallyEqual(readEntry1));
         List<Interval> intervals = intervalDAO.readAllIntervals();
         Interval readInterval1 = intervals.get(0);
         Interval readInterval2 = intervals.get(1);
@@ -432,40 +465,111 @@ public class JSONSystemSetupTest {
     public void testImportDatabaseInvalidTask() {
         NetworkTask task1 = getNetworkTask1();
         task1.setAddress("127.12..1.1.1.1");
-        networkTaskDAO.insertNetworkTask(task1);
+        task1 = networkTaskDAO.insertNetworkTask(task1);
+        logDAO.insertAndDeleteLog(getLogEntry1(task1.getId()));
+        accessTypeDataDAO.insertAccessTypeData(getAccessTypeData1(task1.getId()));
         SystemSetupResult exportResult = setup.exportData();
         networkTaskDAO.deleteAllNetworkTasks();
+        logDAO.deleteAllLogs();
+        accessTypeDataDAO.deleteAllAccessTypeData();
         SystemSetupResult importResult = setup.importData(exportResult.data());
         assertTrue(importResult.success());
         assertEquals(exportResult.data(), importResult.data());
         assertTrue(networkTaskDAO.readAllNetworkTasks().isEmpty());
+        assertTrue(logDAO.readAllLogs().isEmpty());
+        assertTrue(accessTypeDataDAO.readAllAccessTypeData().isEmpty());
         task1 = getNetworkTask1();
         task1.setAccessType(null);
-        networkTaskDAO.insertNetworkTask(task1);
+        task1 = networkTaskDAO.insertNetworkTask(task1);
+        logDAO.insertAndDeleteLog(getLogEntry1(task1.getId()));
+        accessTypeDataDAO.insertAccessTypeData(getAccessTypeData1(task1.getId()));
         exportResult = setup.exportData();
         networkTaskDAO.deleteAllNetworkTasks();
+        logDAO.deleteAllLogs();
+        accessTypeDataDAO.deleteAllAccessTypeData();
         importResult = setup.importData(exportResult.data());
         assertTrue(importResult.success());
         assertEquals(exportResult.data(), importResult.data());
         assertTrue(networkTaskDAO.readAllNetworkTasks().isEmpty());
+        assertTrue(logDAO.readAllLogs().isEmpty());
+        assertTrue(accessTypeDataDAO.readAllAccessTypeData().isEmpty());
         task1 = getNetworkTask1();
         task1.setPort(100000);
-        networkTaskDAO.insertNetworkTask(task1);
+        task1 = networkTaskDAO.insertNetworkTask(task1);
+        logDAO.insertAndDeleteLog(getLogEntry1(task1.getId()));
+        accessTypeDataDAO.insertAccessTypeData(getAccessTypeData1(task1.getId()));
         exportResult = setup.exportData();
         networkTaskDAO.deleteAllNetworkTasks();
+        logDAO.deleteAllLogs();
+        accessTypeDataDAO.deleteAllAccessTypeData();
         importResult = setup.importData(exportResult.data());
         assertTrue(importResult.success());
         assertEquals(exportResult.data(), importResult.data());
         assertTrue(networkTaskDAO.readAllNetworkTasks().isEmpty());
+        assertTrue(logDAO.readAllLogs().isEmpty());
+        assertTrue(accessTypeDataDAO.readAllAccessTypeData().isEmpty());
         task1 = getNetworkTask1();
         task1.setInterval(-5);
-        networkTaskDAO.insertNetworkTask(task1);
+        task1 = networkTaskDAO.insertNetworkTask(task1);
+        logDAO.insertAndDeleteLog(getLogEntry1(task1.getId()));
+        accessTypeDataDAO.insertAccessTypeData(getAccessTypeData1(task1.getId()));
         exportResult = setup.exportData();
         networkTaskDAO.deleteAllNetworkTasks();
+        logDAO.deleteAllLogs();
+        accessTypeDataDAO.deleteAllAccessTypeData();
         importResult = setup.importData(exportResult.data());
         assertTrue(importResult.success());
         assertEquals(exportResult.data(), importResult.data());
         assertTrue(networkTaskDAO.readAllNetworkTasks().isEmpty());
+        assertTrue(logDAO.readAllLogs().isEmpty());
+        assertTrue(accessTypeDataDAO.readAllAccessTypeData().isEmpty());
+    }
+
+    @Test
+    public void testImportDatabaseInvalidAccessTypeData() {
+        NetworkTask task1 = getNetworkTask1();
+        task1 = networkTaskDAO.insertNetworkTask(task1);
+        AccessTypeData data1 = getAccessTypeData1(task1.getId());
+        data1.setPingCount(11);
+        accessTypeDataDAO.insertAccessTypeData(data1);
+        SystemSetupResult exportResult = setup.exportData();
+        networkTaskDAO.deleteAllNetworkTasks();
+        accessTypeDataDAO.deleteAllAccessTypeData();
+        SystemSetupResult importResult = setup.importData(exportResult.data());
+        assertTrue(importResult.success());
+        assertEquals(exportResult.data(), importResult.data());
+        assertFalse(networkTaskDAO.readAllNetworkTasks().isEmpty());
+        assertTrue(accessTypeDataDAO.readAllAccessTypeData().isEmpty());
+        networkTaskDAO.deleteAllNetworkTasks();
+        accessTypeDataDAO.deleteAllAccessTypeData();
+        task1 = getNetworkTask1();
+        task1 = networkTaskDAO.insertNetworkTask(task1);
+        data1 = getAccessTypeData1(task1.getId());
+        data1.setPingPackageSize(12345678);
+        accessTypeDataDAO.insertAccessTypeData(data1);
+        exportResult = setup.exportData();
+        networkTaskDAO.deleteAllNetworkTasks();
+        accessTypeDataDAO.deleteAllAccessTypeData();
+        importResult = setup.importData(exportResult.data());
+        assertTrue(importResult.success());
+        assertEquals(exportResult.data(), importResult.data());
+        assertFalse(networkTaskDAO.readAllNetworkTasks().isEmpty());
+        assertTrue(accessTypeDataDAO.readAllAccessTypeData().isEmpty());
+        networkTaskDAO.deleteAllNetworkTasks();
+        accessTypeDataDAO.deleteAllAccessTypeData();
+        task1 = getNetworkTask1();
+        task1 = networkTaskDAO.insertNetworkTask(task1);
+        data1 = getAccessTypeData1(task1.getId());
+        data1.setConnectCount(0);
+        accessTypeDataDAO.insertAccessTypeData(data1);
+        exportResult = setup.exportData();
+        networkTaskDAO.deleteAllNetworkTasks();
+        accessTypeDataDAO.deleteAllAccessTypeData();
+        importResult = setup.importData(exportResult.data());
+        assertTrue(importResult.success());
+        assertEquals(exportResult.data(), importResult.data());
+        assertFalse(networkTaskDAO.readAllNetworkTasks().isEmpty());
+        assertTrue(accessTypeDataDAO.readAllAccessTypeData().isEmpty());
     }
 
     @Test
@@ -726,12 +830,6 @@ public class JSONSystemSetupTest {
         assertEquals(jsonResult.toString(), result.data());
     }
 
-    private void logEntryEquals(LogEntry entry1, LogEntry entry2) {
-        assertEquals(entry1.isSuccess(), entry2.isSuccess());
-        assertEquals(entry1.getTimestamp(), entry2.getTimestamp());
-        assertEquals(entry1.getMessage(), entry2.getMessage());
-    }
-
     private NetworkTask getNetworkTask1() {
         NetworkTask task = new NetworkTask();
         task.setId(0);
@@ -853,5 +951,25 @@ public class JSONSystemSetupTest {
         end.setMinute(59);
         interval.setEnd(end);
         return interval;
+    }
+
+    private AccessTypeData getAccessTypeData1(long networkTaskId) {
+        AccessTypeData data = new AccessTypeData();
+        data.setId(0);
+        data.setNetworkTaskId(networkTaskId);
+        data.setPingCount(10);
+        data.setPingPackageSize(1234);
+        data.setConnectCount(3);
+        return data;
+    }
+
+    private AccessTypeData getAccessTypeData2(long networkTaskId) {
+        AccessTypeData data = new AccessTypeData();
+        data.setId(0);
+        data.setNetworkTaskId(networkTaskId);
+        data.setPingCount(1);
+        data.setPingPackageSize(55);
+        data.setConnectCount(5);
+        return data;
     }
 }

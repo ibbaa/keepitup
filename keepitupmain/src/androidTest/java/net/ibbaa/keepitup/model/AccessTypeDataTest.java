@@ -226,4 +226,31 @@ public class AccessTypeDataTest {
         data2.setConnectCount(789);
         assertTrue(data1.isEqual(data2));
     }
+
+    @Test
+    public void testTechnicallyIsEqual() {
+        AccessTypeData data1 = new AccessTypeData();
+        AccessTypeData data2 = new AccessTypeData();
+        assertTrue(data1.isTechnicallyEqual(data2));
+        data1.setId(0);
+        assertTrue(data1.isTechnicallyEqual(data2));
+        data2.setId(0);
+        assertTrue(data1.isTechnicallyEqual(data2));
+        data1.setNetworkTaskId(22);
+        assertFalse(data1.isTechnicallyEqual(data2));
+        data2.setNetworkTaskId(22);
+        assertTrue(data1.isTechnicallyEqual(data2));
+        data1.setPingCount(123);
+        assertFalse(data1.isTechnicallyEqual(data2));
+        data2.setPingCount(123);
+        assertTrue(data1.isTechnicallyEqual(data2));
+        data1.setPingPackageSize(456);
+        assertFalse(data1.isTechnicallyEqual(data2));
+        data2.setPingPackageSize(456);
+        assertTrue(data1.isTechnicallyEqual(data2));
+        data1.setConnectCount(789);
+        assertFalse(data1.isTechnicallyEqual(data2));
+        data2.setConnectCount(789);
+        assertTrue(data1.isTechnicallyEqual(data2));
+    }
 }

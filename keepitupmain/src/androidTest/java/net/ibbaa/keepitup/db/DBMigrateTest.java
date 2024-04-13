@@ -18,6 +18,7 @@ package net.ibbaa.keepitup.db;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import android.database.sqlite.SQLiteException;
 
@@ -105,11 +106,11 @@ public class DBMigrateTest {
         AccessTypeData data3 = accessTypeDataDAO.readAccessTypeDataForNetworkTask(task3.getId());
         AccessTypeData data = new AccessTypeData(TestRegistry.getContext());
         data.setNetworkTaskId(task1.getId());
-        accessTypeDataEquals(data, data1);
+        assertTrue(data.isTechnicallyEqual(data1));
         data.setNetworkTaskId(task2.getId());
-        accessTypeDataEquals(data, data2);
+        assertTrue(data.isTechnicallyEqual(data2));
         data.setNetworkTaskId(task3.getId());
-        accessTypeDataEquals(data, data3);
+        assertTrue(data.isTechnicallyEqual(data3));
     }
 
     @Test(expected = SQLiteException.class)
@@ -117,13 +118,6 @@ public class DBMigrateTest {
         setup.createTables();
         migrate.doDowngrade(TestRegistry.getContext(), 3, 2);
         accessTypeDataDAO.readAllAccessTypeData();
-    }
-
-    private void accessTypeDataEquals(AccessTypeData data1, AccessTypeData data2) {
-        assertEquals(data1.getNetworkTaskId(), data2.getNetworkTaskId());
-        assertEquals(data1.getPingCount(), data2.getPingCount());
-        assertEquals(data1.getPingPackageSize(), data2.getPingPackageSize());
-        assertEquals(data1.getConnectCount(), data2.getConnectCount());
     }
 
     private NetworkTask getNetworkTask1() {

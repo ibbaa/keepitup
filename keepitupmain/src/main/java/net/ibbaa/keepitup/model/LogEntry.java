@@ -162,6 +162,22 @@ public class LogEntry {
         return Objects.equals(message, other.message);
     }
 
+    public boolean isTechnicallyEqual(LogEntry other) {
+        if (other == null || getClass() != other.getClass()) {
+            return false;
+        }
+        if (networktaskid != other.networktaskid) {
+            return false;
+        }
+        if (success != other.success) {
+            return false;
+        }
+        if (timestamp != other.timestamp) {
+            return false;
+        }
+        return Objects.equals(message, other.message);
+    }
+
     @NonNull
     @Override
     public String toString() {
