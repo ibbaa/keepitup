@@ -18,10 +18,10 @@
           <timeTargetWasSelectedWithDropDown value="2024-04-09T18:08:52.119838793Z" />
         </State>
       </entry>
-      <entry key="ImportTaskTest">
+      <entry key="DBMigrateTest">
         <State />
       </entry>
-      <entry key="JSONSystemSetupTest">
+      <entry key="ImportTaskTest">
         <State />
       </entry>
       <entry key="keepitupmain">
@@ -40,14 +40,27 @@
           <timeTargetWasSelectedWithDropDown value="2024-04-10T17:48:20.306918797Z" />
         </State>
       </entry>
-      <entry key="testExport()">
-        <State />
-      </entry>
       <entry key="testExportConfigurationScreenRotation()">
         <State />
       </entry>
       <entry key="testImport()">
         <State />
+      </entry>
+      <entry key="testUgradeFrom0To3()">
+        <State>
+          <targetSelectedWithDropDown>
+            <Target>
+              <type value="QUICK_BOOT_TARGET" />
+              <deviceKey>
+                <Key>
+                  <type value="VIRTUAL_DEVICE_PATH" />
+                  <value value="$USER_HOME$/.android/avd/Pixel_8_Pro_API_29.avd" />
+                </Key>
+              </deviceKey>
+            </Target>
+          </targetSelectedWithDropDown>
+          <timeTargetWasSelectedWithDropDown value="2024-04-14T09:50:27.037227811Z" />
+        </State>
       </entry>
     </value>
   </component>

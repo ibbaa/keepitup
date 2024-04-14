@@ -356,7 +356,7 @@ public class DBSetup {
     }
 
     public void importNetworkTaskWithLogsAndAccessTypeData(Map<String, ?> taskMap, List<Map<String, ?>> logList, Map<String, ?> accessTypeDataMap, boolean resetRunnning) {
-        Log.d(DBSetup.class.getName(), "importNetworkTaskWithLogsAndAccessTypeData, resetRunnning is " + resetRunnning);
+        Log.d(DBSetup.class.getName(), "importNetworkTaskWithLogsAndAccessTypeData, resetRunning is " + resetRunnning);
         NetworkTaskDAO networkTaskDAO = new NetworkTaskDAO(getContext());
         LogDAO logDAO = new LogDAO(getContext());
         AccessTypeDataDAO accessTypeDataDAO = new AccessTypeDataDAO(getContext());

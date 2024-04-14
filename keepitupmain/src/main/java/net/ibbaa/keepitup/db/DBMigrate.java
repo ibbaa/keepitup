@@ -52,9 +52,11 @@ public class DBMigrate {
     public void doUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         Log.d(DBMigrate.class.getName(), "doUpgrade from version " + oldVersion + " to " + newVersion);
         int version = oldVersion + 1;
-        while (versionUpgrades.containsKey(version) && version <= newVersion) {
-            Migration upgrade = versionUpgrades.get(version);
-            Objects.requireNonNull(upgrade).migrate(db);
+        while (version <= newVersion) {
+            if (versionUpgrades.containsKey(version)) {
+                Migration upgrade = versionUpgrades.get(version);
+                Objects.requireNonNull(upgrade).migrate(db);
+            }
             version++;
         }
     }
@@ -62,9 +64,11 @@ public class DBMigrate {
     public void doDowngrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         Log.d(DBMigrate.class.getName(), "doDowngrade from version " + oldVersion + " to " + newVersion);
         int version = oldVersion;
-        while (versionUpgrades.containsKey(version) && version > newVersion) {
-            Migration downgrade = versionDowngrades.get(version);
-            Objects.requireNonNull(downgrade).migrate(db);
+        while (version > newVersion) {
+            if (versionDowngrades.containsKey(version)) {
+                Migration downgrade = versionDowngrades.get(version);
+                Objects.requireNonNull(downgrade).migrate(db);
+            }
             version--;
         }
     }

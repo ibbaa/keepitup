@@ -159,7 +159,7 @@ public class ImportTask extends UIBackgroundTask<SystemSetupResult> {
         return logTableSuccess && networkTaskTableSuccess && schedulerIdTableSuccess && intervalTableSuccess && schedulerStateTableSuccess && accessTypeDataTableSuccess;
     }
 
-    private SystemSetupResult doImport(Context context, String data) throws Exception {
+    private SystemSetupResult doImport(Context context, String data) {
         Log.d(ImportTask.class.getName(), "doImport for data " + data);
         JSONSystemSetup setup = new JSONSystemSetup(context);
         SystemSetupResult result = setup.importData(data);
