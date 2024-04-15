@@ -84,11 +84,10 @@ public class ExportTaskTest extends BaseUITest {
         getIntervalDAO().insertInterval(getInterval());
         AccessTypeData accessData1 = getAccessTypeDataDAO().insertAccessTypeData(getAccessTypeData1(task1.getId()));
         AccessTypeData accessData2 = getAccessTypeDataDAO().insertAccessTypeData(getAccessTypeData2(task2.getId()));
-        getPreferenceManager().setPreferencePingCount(5);
-        getPreferenceManager().setPreferenceConnectCount(10);
         getPreferenceManager().setPreferenceNotificationInactiveNetwork(true);
         getPreferenceManager().setPreferenceNotificationType(NotificationType.CHANGE);
         getPreferenceManager().setPreferenceSuspensionEnabled(false);
+        getPreferenceManager().setPreferenceEnforceDefaultPingPackageSize(true);
         getPreferenceManager().setPreferenceDownloadExternalStorage(true);
         getPreferenceManager().setPreferenceExternalStorageType(1);
         getPreferenceManager().setPreferenceDownloadFolder("folder");
@@ -97,6 +96,9 @@ public class ExportTaskTest extends BaseUITest {
         getPreferenceManager().setPreferenceAddress("address");
         getPreferenceManager().setPreferencePort(123);
         getPreferenceManager().setPreferenceInterval(456);
+        getPreferenceManager().setPreferencePingCount(5);
+        getPreferenceManager().setPreferenceConnectCount(10);
+        getPreferenceManager().setPreferencePingPackageSize(12);
         getPreferenceManager().setPreferenceOnlyWifi(true);
         getPreferenceManager().setPreferenceNotification(true);
         getPreferenceManager().setPreferenceImportFolder("folderImport");
@@ -166,11 +168,10 @@ public class ExportTaskTest extends BaseUITest {
         AccessTypeData readAccessData2 = getAccessTypeDataDAO().readAccessTypeDataForNetworkTask(readTask2.getId());
         assertTrue(accessData1.isTechnicallyEqual(readAccessData1));
         assertTrue(accessData2.isTechnicallyEqual(readAccessData2));
-        assertEquals(5, getPreferenceManager().getPreferencePingCount());
-        assertEquals(10, getPreferenceManager().getPreferenceConnectCount());
         assertTrue(getPreferenceManager().getPreferenceNotificationInactiveNetwork());
         assertEquals(NotificationType.CHANGE, getPreferenceManager().getPreferenceNotificationType());
         assertFalse(getPreferenceManager().getPreferenceSuspensionEnabled());
+        assertTrue(getPreferenceManager().getPreferenceEnforceDefaultPingPackageSize());
         assertTrue(getPreferenceManager().getPreferenceDownloadExternalStorage());
         assertEquals(1, getPreferenceManager().getPreferenceExternalStorageType());
         assertEquals("folder", getPreferenceManager().getPreferenceDownloadFolder());
@@ -179,6 +180,9 @@ public class ExportTaskTest extends BaseUITest {
         assertEquals("address", getPreferenceManager().getPreferenceAddress());
         assertEquals(123, getPreferenceManager().getPreferencePort());
         assertEquals(456, getPreferenceManager().getPreferenceInterval());
+        assertEquals(5, getPreferenceManager().getPreferencePingCount());
+        assertEquals(10, getPreferenceManager().getPreferenceConnectCount());
+        assertEquals(12, getPreferenceManager().getPreferencePingPackageSize());
         assertTrue(getPreferenceManager().getPreferenceOnlyWifi());
         assertTrue(getPreferenceManager().getPreferenceNotification());
         assertEquals("folderImport", getPreferenceManager().getPreferenceImportFolder());

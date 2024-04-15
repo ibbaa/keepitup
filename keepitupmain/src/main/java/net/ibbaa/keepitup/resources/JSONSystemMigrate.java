@@ -17,9 +17,13 @@
 package net.ibbaa.keepitup.resources;
 
 import android.content.Context;
+import android.content.res.Resources;
 
+import net.ibbaa.keepitup.R;
 import net.ibbaa.keepitup.logging.Log;
+import net.ibbaa.keepitup.util.JSONUtil;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.Objects;
@@ -81,6 +85,33 @@ public class JSONSystemMigrate {
 
     private void version3AdaptAfterFrom0(JSONObject root) {
         Log.d(JSONSystemMigrate.class.getName(), "version3UpgradeFrom0");
+        String settingsKey = getResources().getString(R.string.preferences_json_key);
+        try {
+            if (root.has(settingsKey)) {
+                Log.e(JSONSystemMigrate.class.getName(), "version3UpgradeFrom0, no key " + settingsKey + ", migration not possible");
+                return;
+            }
+            JSONObject settings = (JSONObject) root.get(settingsKey);
+            String globalSettingsKey = getResources().getString(R.string.preferences_global_json_key);
+            if (!settings.has(globalSettingsKey)) {
+                Log.e(JSONSystemMigrate.class.getName(), "version3UpgradeFrom0, no key " + globalSettingsKey + ", migration not possible");
+                return;
+            }
+            JSONObject globalSettings = (JSONObject) settings.get(globalSettingsKey);
+            PreferenceSetup setup = new PreferenceSetup(getContext());
+            Log.d(JSONSystemMigrate.class.getName(), "version3UpgradeFrom0, importing ping and connect count from global settings");
+            setup.importPingAndConnectCount(JSONUtil.toMap(globalSettings));
+        } catch (JSONException exc) {
+            Log.e(JSONSystemMigrate.class.getName(), "Error on migrating version3UpgradeFrom0", exc);
+        }
+    }
+
+    private Context getContext() {
+        return context;
+    }
+
+    private Resources getResources() {
+        return getContext().getResources();
     }
 
     @FunctionalInterface

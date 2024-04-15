@@ -43,8 +43,6 @@ public class PreferenceSetup {
     public Map<String, ?> exportGlobalSettings() {
         Log.d(PreferenceSetup.class.getName(), "exportGlobalSetting");
         Map<String, Object> globalSettings = new HashMap<>();
-        globalSettings.put("preferencePingCount", preferenceManager.getPreferencePingCount());
-        globalSettings.put("preferenceConnectCount", preferenceManager.getPreferenceConnectCount());
         globalSettings.put("preferenceNotificationInactiveNetwork", preferenceManager.getPreferenceNotificationInactiveNetwork());
         globalSettings.put("preferenceNotificationType", preferenceManager.getPreferenceNotificationType() != null ? preferenceManager.getPreferenceNotificationType().getCode() : 1);
         globalSettings.put("preferenceSuspensionEnabled", preferenceManager.getPreferenceSuspensionEnabled());
@@ -64,6 +62,8 @@ public class PreferenceSetup {
         defaults.put("preferenceAddress", preferenceManager.getPreferenceAddress());
         defaults.put("preferencePort", preferenceManager.getPreferencePort());
         defaults.put("preferenceInterval", preferenceManager.getPreferenceInterval());
+        defaults.put("preferencePingCount", preferenceManager.getPreferencePingCount());
+        defaults.put("preferenceConnectCount", preferenceManager.getPreferenceConnectCount());
         defaults.put("preferenceOnlyWifi", preferenceManager.getPreferenceOnlyWifi());
         defaults.put("preferenceNotification", preferenceManager.getPreferenceNotification());
         defaults.put("preferencePingPackageSize", preferenceManager.getPreferencePingPackageSize());
@@ -84,24 +84,6 @@ public class PreferenceSetup {
 
     public void importGlobalSettings(Map<String, ?> globalSettings) {
         Log.d(PreferenceSetup.class.getName(), "importGlobalSetting, globalSettings = " + globalSettings);
-        Object pingCount = globalSettings.get("preferencePingCount");
-        int pingCountMin = getResources().getInteger(R.integer.ping_count_minimum);
-        int pingCountMax = getResources().getInteger(R.integer.ping_count_maximum);
-        int pingCountDefault = getResources().getInteger(R.integer.ping_count_default);
-        if (isValidInteger(pingCount, pingCountMin, pingCountMax)) {
-            preferenceManager.setPreferencePingCount(NumberUtil.getIntValue(pingCount, pingCountDefault));
-        } else {
-            preferenceManager.removePreferencePingCount();
-        }
-        Object connectCount = globalSettings.get("preferenceConnectCount");
-        int connectCountMin = getResources().getInteger(R.integer.connect_count_minimum);
-        int connectCountMax = getResources().getInteger(R.integer.connect_count_maximum);
-        int connectCountDefault = getResources().getInteger(R.integer.connect_count_default);
-        if (isValidInteger(connectCount, connectCountMin, connectCountMax)) {
-            preferenceManager.setPreferenceConnectCount(NumberUtil.getIntValue(connectCount, connectCountDefault));
-        } else {
-            preferenceManager.removePreferenceConnectCount();
-        }
         Object notificationInactiveNetwork = globalSettings.get("preferenceNotificationInactiveNetwork");
         if (isValidBoolean(notificationInactiveNetwork)) {
             preferenceManager.setPreferenceNotificationInactiveNetwork(Boolean.parseBoolean(notificationInactiveNetwork.toString()));
@@ -190,6 +172,7 @@ public class PreferenceSetup {
         } else {
             preferenceManager.removePreferenceInterval();
         }
+        importPingAndConnectCount(defaults);
         Object onlyWifi = defaults.get("preferenceOnlyWifi");
         if (isValidBoolean(onlyWifi)) {
             preferenceManager.setPreferenceOnlyWifi(Boolean.parseBoolean(onlyWifi.toString()));
@@ -210,6 +193,28 @@ public class PreferenceSetup {
             preferenceManager.setPreferencePingPackageSize(NumberUtil.getIntValue(pingPackageSize, pingPackageSizeDefault));
         } else {
             preferenceManager.removePreferencePingPackageSize();
+        }
+    }
+
+    public void importPingAndConnectCount(Map<String, ?> map) {
+        Log.d(PreferenceSetup.class.getName(), "importPingAndConnectCount, map = " + map);
+        Object pingCount = map.get("preferencePingCount");
+        int pingCountMin = getResources().getInteger(R.integer.ping_count_minimum);
+        int pingCountMax = getResources().getInteger(R.integer.ping_count_maximum);
+        int pingCountDefault = getResources().getInteger(R.integer.ping_count_default);
+        if (isValidInteger(pingCount, pingCountMin, pingCountMax)) {
+            preferenceManager.setPreferencePingCount(NumberUtil.getIntValue(pingCount, pingCountDefault));
+        } else {
+            preferenceManager.removePreferencePingCount();
+        }
+        Object connectCount = map.get("preferenceConnectCount");
+        int connectCountMin = getResources().getInteger(R.integer.connect_count_minimum);
+        int connectCountMax = getResources().getInteger(R.integer.connect_count_maximum);
+        int connectCountDefault = getResources().getInteger(R.integer.connect_count_default);
+        if (isValidInteger(connectCount, connectCountMin, connectCountMax)) {
+            preferenceManager.setPreferenceConnectCount(NumberUtil.getIntValue(connectCount, connectCountDefault));
+        } else {
+            preferenceManager.removePreferenceConnectCount();
         }
     }
 
@@ -292,11 +297,10 @@ public class PreferenceSetup {
 
     public void removeGlobalSettings() {
         Log.d(PreferenceSetup.class.getName(), "removeGlobalSettings");
-        preferenceManager.removePreferencePingCount();
-        preferenceManager.removePreferenceConnectCount();
         preferenceManager.removePreferenceNotificationInactiveNetwork();
         preferenceManager.removePreferenceNotificationType();
         preferenceManager.removePreferenceSuspensionEnabled();
+        preferenceManager.removePreferenceEnforceDefaultPingPackageSize();
         preferenceManager.removePreferenceDownloadExternalStorage();
         preferenceManager.removePreferenceDownloadFolder();
         preferenceManager.removePreferenceDownloadKeep();
@@ -310,6 +314,9 @@ public class PreferenceSetup {
         preferenceManager.removePreferenceAddress();
         preferenceManager.removePreferencePort();
         preferenceManager.removePreferenceInterval();
+        preferenceManager.removePreferencePingCount();
+        preferenceManager.removePreferenceConnectCount();
+        preferenceManager.removePreferencePingPackageSize();
         preferenceManager.removePreferenceOnlyWifi();
         preferenceManager.removePreferenceNotification();
     }

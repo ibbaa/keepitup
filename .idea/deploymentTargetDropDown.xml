@@ -18,10 +18,23 @@
           <timeTargetWasSelectedWithDropDown value="2024-04-09T18:08:52.119838793Z" />
         </State>
       </entry>
-      <entry key="DBMigrateTest">
-        <State />
-      </entry>
       <entry key="ImportTaskTest">
+        <State>
+          <targetSelectedWithDropDown>
+            <Target>
+              <type value="QUICK_BOOT_TARGET" />
+              <deviceKey>
+                <Key>
+                  <type value="VIRTUAL_DEVICE_PATH" />
+                  <value value="$USER_HOME$/.android/avd/Pixel_8_Pro_API_29.avd" />
+                </Key>
+              </deviceKey>
+            </Target>
+          </targetSelectedWithDropDown>
+          <timeTargetWasSelectedWithDropDown value="2024-04-15T18:28:16.666626942Z" />
+        </State>
+      </entry>
+      <entry key="PreferenceSetupTest">
         <State />
       </entry>
       <entry key="keepitupmain">
@@ -37,30 +50,17 @@
               </deviceKey>
             </Target>
           </targetSelectedWithDropDown>
-          <timeTargetWasSelectedWithDropDown value="2024-04-10T17:48:20.306918797Z" />
+          <timeTargetWasSelectedWithDropDown value="2024-04-15T18:28:30.488587211Z" />
         </State>
       </entry>
-      <entry key="testExportConfigurationScreenRotation()">
+      <entry key="testResetValues()">
         <State />
       </entry>
-      <entry key="testImport()">
+      <entry key="testResetValues() (1)">
         <State />
       </entry>
-      <entry key="testUgradeFrom0To3()">
-        <State>
-          <targetSelectedWithDropDown>
-            <Target>
-              <type value="QUICK_BOOT_TARGET" />
-              <deviceKey>
-                <Key>
-                  <type value="VIRTUAL_DEVICE_PATH" />
-                  <value value="$USER_HOME$/.android/avd/Pixel_8_Pro_API_29.avd" />
-                </Key>
-              </deviceKey>
-            </Target>
-          </targetSelectedWithDropDown>
-          <timeTargetWasSelectedWithDropDown value="2024-04-14T09:50:27.037227811Z" />
-        </State>
+      <entry key="testThreeIntervalsDelete()">
+        <State />
       </entry>
     </value>
   </component>
