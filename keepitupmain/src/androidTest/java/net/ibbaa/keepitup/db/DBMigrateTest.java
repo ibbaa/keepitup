@@ -68,7 +68,7 @@ public class DBMigrateTest {
     }
 
     @Test
-    public void testUgradeFrom1To2() {
+    public void testUpgradeFrom1To2() {
         setup.createTables();
         setup.dropIntervalTable();
         migrate.doUpgrade(TestRegistry.getContext(), 1, 2);
@@ -93,7 +93,7 @@ public class DBMigrateTest {
     }
 
     @Test
-    public void testUgradeFrom2To3() {
+    public void testUpgradeFrom2To3() {
         setup.createTables();
         setup.dropAccessTypeDataTable();
         NetworkTask task1 = networkTaskDAO.insertNetworkTask(getNetworkTask1());
@@ -121,7 +121,7 @@ public class DBMigrateTest {
     }
 
     @Test
-    public void testUgradeFrom0To3() {
+    public void testUpgradeFrom0To3() {
         setup.createTables();
         setup.dropIntervalTable();
         setup.dropAccessTypeDataTable();
