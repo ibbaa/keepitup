@@ -1,0 +1,4 @@
+* Fixed bug that the add network task button disappeared when scrolling down
+* Fixed bug that the progress spinner on export and import was not closed under some rare conditions
+
+
