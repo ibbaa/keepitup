@@ -535,7 +535,6 @@ public class SystemActivity extends SettingsInputActivity implements ExportSuppo
                 if (fileManager.doesFileExist(importExportFolder, file)) {
                     showExportConfirmDialog(file);
                 } else {
-                    showProgressDialog();
                     doConfigurationExport(importExportFolder, file);
                 }
             }
@@ -554,6 +553,7 @@ public class SystemActivity extends SettingsInputActivity implements ExportSuppo
             showErrorDialog(getResources().getString(R.string.text_dialog_general_error_config_export));
             return;
         }
+        showProgressDialog();
         ExportTask exportTask = getExportTask(exportFolder, file);
         Future<Boolean> exportFuture = ThreadUtil.exexute(exportTask);
         boolean synchronousExecution = getResources().getBoolean(R.bool.uisync_synchronous_execution);
@@ -577,6 +577,7 @@ public class SystemActivity extends SettingsInputActivity implements ExportSuppo
             showErrorDialog(getResources().getString(R.string.text_dialog_general_error_config_import));
             return;
         }
+        showProgressDialog();
         ImportTask importTask = getImportTask(importFolder, file);
         Future<SystemSetupResult> importFuture = ThreadUtil.exexute(importTask);
         boolean synchronousExecution = getResources().getBoolean(R.bool.uisync_synchronous_execution);
@@ -610,7 +611,6 @@ public class SystemActivity extends SettingsInputActivity implements ExportSuppo
             File exportFolder = FileUtil.getExternalDirectory(fileManager, preferenceManager, preferenceManager.getPreferenceExportFolder());
             String file = getFileExtraData(confirmDialog);
             confirmDialog.dismiss();
-            showProgressDialog();
             doConfigurationExport(exportFolder, file);
         } else if (ConfirmDialog.Type.IMPORTCONFIG.equals(type)) {
             IFileManager fileManager = getFileManager();
@@ -619,7 +619,6 @@ public class SystemActivity extends SettingsInputActivity implements ExportSuppo
             String file = getFileExtraData(confirmDialog);
             stopSchedulers();
             confirmDialog.dismiss();
-            showProgressDialog();
             doConfigurationImport(importFolder, file);
         } else {
             Log.e(SystemActivity.class.getName(), "Unknown type " + type);
