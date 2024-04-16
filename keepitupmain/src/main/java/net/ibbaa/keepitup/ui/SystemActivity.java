@@ -28,6 +28,7 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.cardview.widget.CardView;
+import androidx.fragment.app.Fragment;
 
 import com.google.android.material.switchmaterial.SwitchMaterial;
 
@@ -58,6 +59,7 @@ import net.ibbaa.keepitup.util.StringUtil;
 import net.ibbaa.keepitup.util.ThreadUtil;
 
 import java.io.File;
+import java.util.List;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
@@ -524,7 +526,6 @@ public class SystemActivity extends SettingsInputActivity implements ExportSuppo
                 return;
             }
             String file = fileChooseDialog.getFile();
-            fileChooseDialog.dismiss();
             if (FileChooseDialog.Type.IMPORTFOLDER.equals(type)) {
                 preferenceManager.setPreferenceImportFolder(folder);
                 setImportFolder(importExportFolder.getAbsolutePath());
@@ -535,6 +536,7 @@ public class SystemActivity extends SettingsInputActivity implements ExportSuppo
                 if (fileManager.doesFileExist(importExportFolder, file)) {
                     showExportConfirmDialog(file);
                 } else {
+                    fileChooseDialog.dismiss();
                     doConfigurationExport(importExportFolder, file);
                 }
             }
@@ -602,7 +604,7 @@ public class SystemActivity extends SettingsInputActivity implements ExportSuppo
         Log.d(SystemActivity.class.getName(), "onConfirmDialogOkClicked for type " + type);
         if (ConfirmDialog.Type.RESETCONFIG.equals(type)) {
             stopSchedulers();
-            confirmDialog.dismiss();
+            dismissConfirmDialog(confirmDialog);
             showProgressDialog();
             purgeDatabase();
         } else if (ConfirmDialog.Type.EXPORTCONFIGEXISTINGFILE.equals(type)) {
@@ -610,7 +612,7 @@ public class SystemActivity extends SettingsInputActivity implements ExportSuppo
             PreferenceManager preferenceManager = new PreferenceManager(this);
             File exportFolder = FileUtil.getExternalDirectory(fileManager, preferenceManager, preferenceManager.getPreferenceExportFolder());
             String file = getFileExtraData(confirmDialog);
-            confirmDialog.dismiss();
+            dismissConfirmDialog(confirmDialog);
             doConfigurationExport(exportFolder, file);
         } else if (ConfirmDialog.Type.IMPORTCONFIG.equals(type)) {
             IFileManager fileManager = getFileManager();
@@ -618,11 +620,26 @@ public class SystemActivity extends SettingsInputActivity implements ExportSuppo
             File importFolder = FileUtil.getExternalDirectory(fileManager, preferenceManager, preferenceManager.getPreferenceImportFolder());
             String file = getFileExtraData(confirmDialog);
             stopSchedulers();
-            confirmDialog.dismiss();
+            dismissConfirmDialog(confirmDialog);
             doConfigurationImport(importFolder, file);
         } else {
             Log.e(SystemActivity.class.getName(), "Unknown type " + type);
         }
+    }
+
+    private void dismissConfirmDialog(ConfirmDialog confirmDialog) {
+        Log.d(SystemActivity.class.getName(), "dismissConfirmDialog");
+        List<Fragment> fragments = getSupportFragmentManager().getFragments();
+        for (Fragment fragment : fragments) {
+            if (fragment instanceof FileChooseDialog) {
+                try {
+                    ((FileChooseDialog) fragment).dismiss();
+                } catch (Exception exc) {
+                    Log.d(SystemActivity.class.getName(), "Error closing FileChooseDialog", exc);
+                }
+            }
+        }
+        confirmDialog.dismiss();
     }
 
     private void stopSchedulers() {

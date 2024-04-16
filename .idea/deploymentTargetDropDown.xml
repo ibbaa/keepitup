@@ -18,10 +18,10 @@
           <timeTargetWasSelectedWithDropDown value="2024-04-09T18:08:52.119838793Z" />
         </State>
       </entry>
-      <entry key="JSONSystemSetupTest">
+      <entry key="NetworkTaskEditDialogTest">
         <State />
       </entry>
-      <entry key="PreferenceSetupTest">
+      <entry key="SystemActivityTest">
         <State />
       </entry>
       <entry key="keepitupmain">
@@ -40,13 +40,13 @@
           <timeTargetWasSelectedWithDropDown value="2024-04-15T18:28:30.488587211Z" />
         </State>
       </entry>
-      <entry key="testResetValues()">
+      <entry key="testErrorColorOnOpenDialog()">
         <State />
       </entry>
-      <entry key="testResetValues() (1)">
+      <entry key="testExportConfigurationFileExistsCancel()">
         <State />
       </entry>
-      <entry key="testThreeIntervalsDelete()">
+      <entry key="testExportConfigurationFileExistsOk()">
         <State />
       </entry>
     </value>

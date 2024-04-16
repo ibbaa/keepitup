@@ -997,6 +997,8 @@ public class SystemActivityTest extends BaseUITest {
         onView(withId(R.id.imageview_dialog_file_choose_ok)).perform(click());
         onView(withId(R.id.textview_dialog_confirm_description)).check(matches(withText("The specified file exists and will be overwritten.")));
         onView(withId(R.id.imageview_dialog_confirm_cancel)).perform(click());
+        assertEquals(1, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
+        onView(withId(R.id.imageview_dialog_file_choose_cancel)).perform(click());
         String fileContent = StreamUtil.inputStreamToString(new FileInputStream(new File(folder, "keepitup_config.json")), Charsets.UTF_8);
         assertTrue(fileContent.isEmpty());
         assertFalse(alarmManager.wasCancelAlarmCalled());
@@ -1083,6 +1085,8 @@ public class SystemActivityTest extends BaseUITest {
         onView(withId(R.id.imageview_dialog_file_choose_ok)).perform(click());
         onView(withId(R.id.textview_dialog_confirm_description)).check(matches(withText("The specified file exists and will be overwritten.")));
         onView(withId(R.id.imageview_dialog_confirm_cancel)).perform(click());
+        assertEquals(1, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
+        onView(withId(R.id.imageview_dialog_file_choose_cancel)).perform(click());
         String fileContent = StreamUtil.inputStreamToString(new FileInputStream(new File(folder, "keepitup_config.json")), Charsets.UTF_8);
         assertTrue(fileContent.isEmpty());
         assertFalse(alarmManager.wasCancelAlarmCalled());
@@ -1163,6 +1167,7 @@ public class SystemActivityTest extends BaseUITest {
         onView(withId(R.id.imageview_dialog_file_choose_ok)).perform(click());
         onView(withId(R.id.textview_dialog_confirm_description)).check(matches(withText("The specified file exists and will be overwritten.")));
         onView(withId(R.id.imageview_dialog_confirm_ok)).perform(click());
+        assertTrue(getActivity(activityScenario).getSupportFragmentManager().getFragments().isEmpty());
         String fileContent = StreamUtil.inputStreamToString(new FileInputStream(new File(folder, "keepitup_config.json")), Charsets.UTF_8);
         assertFalse(fileContent.isEmpty());
         assertFalse(alarmManager.wasCancelAlarmCalled());
@@ -1322,6 +1327,7 @@ public class SystemActivityTest extends BaseUITest {
         onView(withId(R.id.imageview_dialog_file_choose_ok)).perform(click());
         onView(withId(R.id.textview_dialog_confirm_description)).check(matches(withText("The specified file exists and will be overwritten.")));
         onView(withId(R.id.imageview_dialog_confirm_ok)).perform(click());
+        assertTrue(getActivity(activityScenario).getSupportFragmentManager().getFragments().isEmpty());
         String fileContent = StreamUtil.inputStreamToString(new FileInputStream(new File(folder, "keepitup_config.json")), Charsets.UTF_8);
         assertFalse(fileContent.isEmpty());
         assertFalse(alarmManager.wasCancelAlarmCalled());
