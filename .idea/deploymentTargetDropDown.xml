@@ -18,11 +18,21 @@
           <timeTargetWasSelectedWithDropDown value="2024-03-22T07:53:03.347599101Z" />
         </State>
       </entry>
-      <entry key="DefaultsActivityTest">
-        <State />
-      </entry>
-      <entry key="NetworkTaskEditDialogTest">
-        <State />
+      <entry key="JSONSystemSetupTest">
+        <State>
+          <targetSelectedWithDropDown>
+            <Target>
+              <type value="QUICK_BOOT_TARGET" />
+              <deviceKey>
+                <Key>
+                  <type value="VIRTUAL_DEVICE_PATH" />
+                  <value value="$USER_HOME$/.android/avd/Pixel_8_Pro_API_29.avd" />
+                </Key>
+              </deviceKey>
+            </Target>
+          </targetSelectedWithDropDown>
+          <timeTargetWasSelectedWithDropDown value="2024-04-16T16:28:21.255938982Z" />
+        </State>
       </entry>
       <entry key="SystemActivityTest">
         <State />
@@ -44,36 +54,10 @@
         </State>
       </entry>
       <entry key="testExportConfigurationScreenRotation()">
-        <State>
-          <targetSelectedWithDropDown>
-            <Target>
-              <type value="QUICK_BOOT_TARGET" />
-              <deviceKey>
-                <Key>
-                  <type value="VIRTUAL_DEVICE_PATH" />
-                  <value value="$USER_HOME$/.android/avd/Pixel_8_Pro_API_VanillaIceCream.avd" />
-                </Key>
-              </deviceKey>
-            </Target>
-          </targetSelectedWithDropDown>
-          <timeTargetWasSelectedWithDropDown value="2024-03-22T07:48:34.569753816Z" />
-        </State>
+        <State />
       </entry>
-      <entry key="testNewDefaultValuesForNetworkTask()">
-        <State>
-          <targetSelectedWithDropDown>
-            <Target>
-              <type value="QUICK_BOOT_TARGET" />
-              <deviceKey>
-                <Key>
-                  <type value="VIRTUAL_DEVICE_PATH" />
-                  <value value="$USER_HOME$/.android/avd/Pixel_8_Pro_API_34.avd" />
-                </Key>
-              </deviceKey>
-            </Target>
-          </targetSelectedWithDropDown>
-          <timeTargetWasSelectedWithDropDown value="2024-03-11T16:49:29.944575825Z" />
-        </State>
+      <entry key="testMenuOptions()">
+        <State />
       </entry>
     </value>
   </component>

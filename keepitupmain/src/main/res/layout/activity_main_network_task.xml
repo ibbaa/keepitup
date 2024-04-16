@@ -22,29 +22,38 @@
     android:layout_height="match_parent"
     tools:context="net.ibbaa.keepitup.ui.NetworkTaskMainActivity">
 
-    <LinearLayout
-        android:id="@+id/layout_main_content"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        app:layout_constraintTop_toTopOf="parent">
+    <ScrollView
+        android:id="@+id/scrollview_main_content"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent">
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/listview_activity_main_network_tasks"
+        <LinearLayout
+            android:id="@+id/layout_main_content"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:scrollbars="vertical" />
+            android:orientation="vertical"
+            app:layout_constraintTop_toTopOf="parent">
 
-        <ImageView
-            android:id="@+id/imageview_activity_main_network_task_add"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:clickable="true"
-            android:focusable="true"
-            android:contentDescription="@string/label_activity_main_add_network_task"
-            app:srcCompat="@drawable/icon_add_selector" />
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/listview_activity_main_network_tasks"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal" />
 
-    </LinearLayout>
+            <ImageView
+                android:id="@+id/imageview_activity_main_network_task_add"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:clickable="true"
+                android:focusable="true"
+                android:contentDescription="@string/label_activity_main_add_network_task"
+                app:srcCompat="@drawable/icon_add_selector" />
+
+        </LinearLayout>
+
+    </ScrollView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
