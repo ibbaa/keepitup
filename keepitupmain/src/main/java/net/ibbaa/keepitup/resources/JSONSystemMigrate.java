@@ -87,7 +87,7 @@ public class JSONSystemMigrate {
         Log.d(JSONSystemMigrate.class.getName(), "version3UpgradeFrom0");
         String settingsKey = getResources().getString(R.string.preferences_json_key);
         try {
-            if (root.has(settingsKey)) {
+            if (!root.has(settingsKey)) {
                 Log.e(JSONSystemMigrate.class.getName(), "version3UpgradeFrom0, no key " + settingsKey + ", migration not possible");
                 return;
             }

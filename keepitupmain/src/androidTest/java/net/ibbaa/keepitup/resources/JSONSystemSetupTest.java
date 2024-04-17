@@ -794,6 +794,42 @@ public class JSONSystemSetupTest {
     }
 
     @Test
+    public void testImportMigration0To3() throws Exception {
+        SystemSetupResult exportResult = setup.exportData();
+        JSONObject root = new JSONObject(exportResult.data());
+        JSONObject settings = root.getJSONObject("preferences");
+        JSONObject globalSettings = settings.getJSONObject("global");
+        JSONObject defaultSettings = settings.getJSONObject("defaults");
+        root.remove("dbversion");
+        defaultSettings.remove("preferencePingCount");
+        defaultSettings.remove("preferenceConnectCount");
+        globalSettings.put("preferencePingCount", 5);
+        globalSettings.put("preferenceConnectCount", 5);
+        SystemSetupResult importResult = setup.importData(root.toString());
+        assertTrue(importResult.success());
+        assertEquals(5, preferenceManager.getPreferencePingCount());
+        assertEquals(5, preferenceManager.getPreferenceConnectCount());
+    }
+
+    @Test
+    public void testImportMigration2To3() throws Exception {
+        SystemSetupResult exportResult = setup.exportData();
+        JSONObject root = new JSONObject(exportResult.data());
+        JSONObject settings = root.getJSONObject("preferences");
+        JSONObject globalSettings = settings.getJSONObject("global");
+        JSONObject defaultSettings = settings.getJSONObject("defaults");
+        root.put("dbversion", 2);
+        defaultSettings.remove("preferencePingCount");
+        defaultSettings.remove("preferenceConnectCount");
+        globalSettings.put("preferencePingCount", 5);
+        globalSettings.put("preferenceConnectCount", 5);
+        SystemSetupResult importResult = setup.importData(root.toString());
+        assertTrue(importResult.success());
+        assertEquals(5, preferenceManager.getPreferencePingCount());
+        assertEquals(5, preferenceManager.getPreferenceConnectCount());
+    }
+
+    @Test
     public void testImportFailure() throws Exception {
         SystemSetupResult result = setup.importData("failure");
         assertFalse(result.success());
