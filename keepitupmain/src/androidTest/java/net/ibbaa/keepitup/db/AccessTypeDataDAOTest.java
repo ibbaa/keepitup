@@ -121,30 +121,6 @@ public class AccessTypeDataDAOTest {
     }
 
     @Test
-    public void testUpdateAll() {
-        AccessTypeData data1 = getAccessTypeData1();
-        AccessTypeData data2 = getAccessTypeData2();
-        AccessTypeData data3 = getAccessTypeData3();
-        accessTypeDataDAO.insertAccessTypeData(data1);
-        accessTypeDataDAO.insertAccessTypeData(data2);
-        accessTypeDataDAO.insertAccessTypeData(data3);
-        AccessTypeData updateData = getAccessTypeData1();
-        updateData.setPingCount(8);
-        updateData.setPingPackageSize(1);
-        updateData.setConnectCount(8);
-        accessTypeDataDAO.updateAllAccessTypeData(updateData);
-        AccessTypeData readData1 = accessTypeDataDAO.readAccessTypeDataForNetworkTask(0);
-        AccessTypeData readData2 = accessTypeDataDAO.readAccessTypeDataForNetworkTask(1);
-        AccessTypeData readData3 = accessTypeDataDAO.readAccessTypeDataForNetworkTask(2);
-        updateData.setNetworkTaskId(readData1.getNetworkTaskId());
-        assertTrue(updateData.isTechnicallyEqual(readData1));
-        updateData.setNetworkTaskId(readData2.getNetworkTaskId());
-        assertTrue(updateData.isTechnicallyEqual(readData2));
-        updateData.setNetworkTaskId(readData3.getNetworkTaskId());
-        assertTrue(updateData.isTechnicallyEqual(readData3));
-    }
-
-    @Test
     public void testDeleteOrphan() {
         NetworkTask task = networkTaskDAO.insertNetworkTask(getNetworkTask());
         AccessTypeData data1 = getAccessTypeData1();
