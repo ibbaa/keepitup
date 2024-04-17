@@ -16,6 +16,7 @@
 
 package net.ibbaa.keepitup.db;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 
@@ -101,8 +102,12 @@ public class DBSetup {
         Log.d(DBSetup.class.getName(), "initializeAccessTypeDataTable");
         db.execSQL(accessTypeDataDBConstants.getMigrateNetworkTasksAccessTypeDataStatement());
         AccessTypeData accessTypeData = new AccessTypeData(getContext());
-        AccessTypeDataDAO dao = new AccessTypeDataDAO(getContext());
-        dao.updateAllAccessTypeData(accessTypeData);
+        AccessTypeDataDBConstants dbConstants = new AccessTypeDataDBConstants(getContext());
+        ContentValues values = new ContentValues();
+        values.put(dbConstants.getPingCountColumnName(), accessTypeData.getPingCount());
+        values.put(dbConstants.getPingPackageSizeColumnName(), accessTypeData.getPingPackageSize());
+        values.put(dbConstants.getConnectCountColumnName(), accessTypeData.getConnectCount());
+        db.update(dbConstants.getTableName(), values, null, null);
     }
 
     public void dropTables(SQLiteDatabase db) {

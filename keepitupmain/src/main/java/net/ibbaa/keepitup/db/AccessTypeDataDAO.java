@@ -51,14 +51,6 @@ public class AccessTypeDataDAO extends BaseDAO {
         return returnedAccessTypeData;
     }
 
-    public AccessTypeData updateAllAccessTypeData(AccessTypeData accessTypeData) {
-        Log.d(AccessTypeDataDAO.class.getName(), "Updating updateAllAccessTypeData with id " + accessTypeData.getId());
-        AccessTypeData returnedAccessTypeData = executeDBOperationInTransaction(accessTypeData, this::updateAllAccessTypeData);
-        Log.d(AccessTypeDataDAO.class.getName(), "Updated interval is " + returnedAccessTypeData);
-        dumpDatabase("Dump after updateInterval call");
-        return returnedAccessTypeData;
-    }
-
     public AccessTypeData readAccessTypeDataForNetworkTask(long networkTaskId) {
         Log.d(AccessTypeDataDAO.class.getName(), "Reading accessTypeData for network task with id " + networkTaskId);
         AccessTypeData accessTypeData = new AccessTypeData();
@@ -128,17 +120,6 @@ public class AccessTypeDataDAO extends BaseDAO {
         values.put(dbConstants.getPingPackageSizeColumnName(), accessTypeData.getPingPackageSize());
         values.put(dbConstants.getConnectCountColumnName(), accessTypeData.getConnectCount());
         db.update(dbConstants.getTableName(), values, selection, selectionArgs);
-        return accessTypeData;
-    }
-
-    private AccessTypeData updateAllAccessTypeData(AccessTypeData accessTypeData, SQLiteDatabase db) {
-        Log.d(IntervalDAO.class.getName(), "updateAllAccessTypeData, accessTypeData is " + accessTypeData);
-        AccessTypeDataDBConstants dbConstants = new AccessTypeDataDBConstants(getContext());
-        ContentValues values = new ContentValues();
-        values.put(dbConstants.getPingCountColumnName(), accessTypeData.getPingCount());
-        values.put(dbConstants.getPingPackageSizeColumnName(), accessTypeData.getPingPackageSize());
-        values.put(dbConstants.getConnectCountColumnName(), accessTypeData.getConnectCount());
-        db.update(dbConstants.getTableName(), values, null, null);
         return accessTypeData;
     }
 
