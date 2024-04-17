@@ -18,7 +18,7 @@
           <timeTargetWasSelectedWithDropDown value="2024-03-22T07:53:03.347599101Z" />
         </State>
       </entry>
-      <entry key="JSONSystemSetupTest">
+      <entry key="NetworkTaskEditDialogTest">
         <State>
           <targetSelectedWithDropDown>
             <Target>
@@ -31,7 +31,7 @@
               </deviceKey>
             </Target>
           </targetSelectedWithDropDown>
-          <timeTargetWasSelectedWithDropDown value="2024-04-16T16:28:21.255938982Z" />
+          <timeTargetWasSelectedWithDropDown value="2024-04-17T15:43:49.522336206Z" />
         </State>
       </entry>
       <entry key="SystemActivityTest">
@@ -52,12 +52,6 @@
           </targetSelectedWithDropDown>
           <timeTargetWasSelectedWithDropDown value="2024-03-22T07:53:20.674285265Z" />
         </State>
-      </entry>
-      <entry key="testExportConfigurationScreenRotation()">
-        <State />
-      </entry>
-      <entry key="testMenuOptions()">
-        <State />
       </entry>
     </value>
   </component>
