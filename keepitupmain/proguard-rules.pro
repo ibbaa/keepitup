@@ -35,6 +35,7 @@
 -keep public class net.ibbaa.keepitup.service.DownloadNetworkTaskWorker {
     public <methods>;
 }
+-keepclassmembers enum * { *; }
 -dontwarn com.google.**
 -assumenosideeffects class net.ibbaa.keepitup.logging.Log {
      public static *** d(...);
