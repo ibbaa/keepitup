@@ -41,26 +41,19 @@ import net.ibbaa.keepitup.resources.PreferenceManager;
 import net.ibbaa.keepitup.resources.PreferenceSetup;
 import net.ibbaa.keepitup.service.IFileManager;
 import net.ibbaa.keepitup.ui.dialog.FileChooseDialog;
-import net.ibbaa.keepitup.ui.dialog.SettingsInput;
 import net.ibbaa.keepitup.ui.dialog.SettingsInputDialog;
 import net.ibbaa.keepitup.ui.dialog.SuspensionIntervalsDialog;
-import net.ibbaa.keepitup.ui.validation.ConnectCountFieldValidator;
-import net.ibbaa.keepitup.ui.validation.PingCountFieldValidator;
 import net.ibbaa.keepitup.util.BundleUtil;
 import net.ibbaa.keepitup.util.FileUtil;
-import net.ibbaa.keepitup.util.NumberUtil;
 import net.ibbaa.keepitup.util.StringUtil;
 import net.ibbaa.keepitup.util.TimeUtil;
 
 import java.io.File;
-import java.util.Collections;
 import java.util.List;
 
 @SuppressWarnings({"unused", "FieldCanBeLocal"})
 public class GlobalSettingsActivity extends SettingsInputActivity implements SuspensionIntervalsSupport {
 
-    private TextView pingCountText;
-    private TextView connectCountText;
     private SwitchMaterial notificationInactiveNetworkSwitch;
     private TextView notificationInactiveNetworkOnOffText;
     private RadioGroup notificationType;
@@ -82,8 +75,6 @@ public class GlobalSettingsActivity extends SettingsInputActivity implements Sus
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
         setContentView(R.layout.activity_global_settings);
-        preparePingCountField();
-        prepareConnectCountField();
         prepareNotificationInactiveNetworkSwitch();
         prepareNotificationTypeRadioGroup();
         prepareSuspensionEnabledSwitch();
@@ -112,24 +103,6 @@ public class GlobalSettingsActivity extends SettingsInputActivity implements Sus
             return true;
         }
         return super.onOptionsItemSelected(item);
-    }
-
-    private void preparePingCountField() {
-        Log.d(GlobalSettingsActivity.class.getName(), "preparePingCountField");
-        PreferenceManager preferenceManager = new PreferenceManager(this);
-        pingCountText = findViewById(R.id.textview_activity_global_settings_ping_count);
-        setPingCount(String.valueOf(preferenceManager.getPreferencePingCount()));
-        CardView pingCountCardView = findViewById(R.id.cardview_activity_global_settings_ping_count);
-        pingCountCardView.setOnClickListener(this::showPingCountInputDialog);
-    }
-
-    private void prepareConnectCountField() {
-        Log.d(GlobalSettingsActivity.class.getName(), "prepareConnectCountField");
-        PreferenceManager preferenceManager = new PreferenceManager(this);
-        connectCountText = findViewById(R.id.textview_activity_global_settings_connect_count);
-        setConnectCount(String.valueOf(preferenceManager.getPreferenceConnectCount()));
-        CardView connectCountCardView = findViewById(R.id.cardview_activity_global_settings_connect_count);
-        connectCountCardView.setOnClickListener(this::showConnectCountInputDialog);
     }
 
     private void prepareNotificationInactiveNetworkSwitch() {
@@ -456,42 +429,12 @@ public class GlobalSettingsActivity extends SettingsInputActivity implements Sus
         }
     }
 
-    private String getPingCount() {
-        return StringUtil.notNull(pingCountText.getText());
-    }
-
-    private void setPingCount(String pingCount) {
-        pingCountText.setText(StringUtil.notNull(pingCount));
-    }
-
-    private String getConnectCount() {
-        return StringUtil.notNull(connectCountText.getText());
-    }
-
-    private void setConnectCount(String connectCount) {
-        connectCountText.setText(StringUtil.notNull(connectCount));
-    }
-
     private void setDownloadFolder(String downloadFolder) {
         downloadFolderText.setText(StringUtil.notNull(downloadFolder));
     }
 
     private void setLogFolder(String logFolder) {
         logFolderText.setText(StringUtil.notNull(logFolder));
-    }
-
-    private void showPingCountInputDialog(View view) {
-        Log.d(GlobalSettingsActivity.class.getName(), "showPingCountInputDialog");
-        List<String> validators = Collections.singletonList(PingCountFieldValidator.class.getName());
-        SettingsInput input = new SettingsInput(SettingsInput.Type.PINGCOUNT, getPingCount(), getResources().getString(R.string.label_activity_global_settings_ping_count), validators);
-        showInputDialog(input.toBundle());
-    }
-
-    private void showConnectCountInputDialog(View view) {
-        Log.d(GlobalSettingsActivity.class.getName(), "showConnectCountInputDialog");
-        List<String> validators = Collections.singletonList(ConnectCountFieldValidator.class.getName());
-        SettingsInput input = new SettingsInput(SettingsInput.Type.CONNECTCOUNT, getConnectCount(), getResources().getString(R.string.label_activity_global_settings_connect_count), validators);
-        showInputDialog(input.toBundle());
     }
 
     private void showDownloadFolderChooseDialog(View view) {
@@ -605,22 +548,6 @@ public class GlobalSettingsActivity extends SettingsInputActivity implements Sus
             return null;
         }
         return logFolder.getAbsolutePath();
-    }
-
-    @Override
-    public void onInputDialogOkClicked(SettingsInputDialog inputDialog, SettingsInput.Type type) {
-        Log.d(GlobalSettingsActivity.class.getName(), "onInputDialogOkClicked, type is " + type + ", value is " + inputDialog.getValue());
-        PreferenceManager preferenceManager = new PreferenceManager(this);
-        if (SettingsInput.Type.PINGCOUNT.equals(type)) {
-            setPingCount(inputDialog.getValue());
-            preferenceManager.setPreferencePingCount(NumberUtil.getIntValue(getPingCount(), getResources().getInteger(R.integer.ping_count_default)));
-        } else if (SettingsInput.Type.CONNECTCOUNT.equals(type)) {
-            setConnectCount(inputDialog.getValue());
-            preferenceManager.setPreferenceConnectCount(NumberUtil.getIntValue(getConnectCount(), getResources().getInteger(R.integer.connect_count_default)));
-        } else {
-            Log.e(GlobalSettingsActivity.class.getName(), "type " + type + " unknown");
-        }
-        inputDialog.dismiss();
     }
 
     @Override

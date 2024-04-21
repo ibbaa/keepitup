@@ -333,7 +333,7 @@ public abstract class NetworkTaskWorker implements Runnable {
 
     protected String getMessageFromException(String prefixMessage, Throwable exc, int timeout) {
         if (isTimeout(exc)) {
-            String unit = timeout == 1 ? getResources().getString(R.string.string_second) : getResources().getString(R.string.string_seconds);
+            String unit = getResources().getQuantityString(R.plurals.string_second, timeout);
             return prefixMessage + " " + getResources().getString(R.string.text_timeout, timeout) + " " + unit + ".";
         }
         if (isInterrupted(exc)) {

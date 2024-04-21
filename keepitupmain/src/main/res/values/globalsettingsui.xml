@@ -18,8 +18,6 @@
     <string name="activity_global_settings_title">Global settings</string>
     <string name="menu_action_activity_global_settings_reset">Reset</string>
     <string name="label_activity_global_settings_global">Global settings</string>
-    <string name="label_activity_global_settings_ping_count">Ping count</string>
-    <string name="label_activity_global_settings_connect_count">Connect count</string>
     <string name="label_activity_global_settings_notification_inactive_network">Notifications when network is not active</string>
     <string name="label_activity_global_settings_notification_type">Notification on</string>
     <string name="text_activity_global_settings_notification_type_failure">Failure</string>

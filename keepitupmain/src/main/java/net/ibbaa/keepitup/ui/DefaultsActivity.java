@@ -39,8 +39,10 @@ import net.ibbaa.keepitup.ui.dialog.NetworkTaskEditDialog;
 import net.ibbaa.keepitup.ui.dialog.SettingsInput;
 import net.ibbaa.keepitup.ui.dialog.SettingsInputDialog;
 import net.ibbaa.keepitup.ui.mapping.EnumMapping;
+import net.ibbaa.keepitup.ui.validation.ConnectCountFieldValidator;
 import net.ibbaa.keepitup.ui.validation.HostFieldValidator;
 import net.ibbaa.keepitup.ui.validation.IntervalFieldValidator;
+import net.ibbaa.keepitup.ui.validation.PingCountFieldValidator;
 import net.ibbaa.keepitup.ui.validation.PortFieldValidator;
 import net.ibbaa.keepitup.ui.validation.URLFieldValidator;
 import net.ibbaa.keepitup.util.NumberUtil;
@@ -59,6 +61,8 @@ public class DefaultsActivity extends SettingsInputActivity {
     private TextView portText;
     private TextView intervalText;
     private TextView intervalMinutesText;
+    private TextView pingCountText;
+    private TextView connectCountText;
     private SwitchMaterial onlyWifiSwitch;
     private TextView onlyWifiOnOffText;
     private SwitchMaterial notificationSwitch;
@@ -75,6 +79,8 @@ public class DefaultsActivity extends SettingsInputActivity {
         prepareAddressField();
         preparePortField();
         prepareIntervalField();
+        preparePingCountField();
+        prepareConnectCountField();
         prepareOnlyWifiSwitch();
         prepareNotificationSwitch();
     }
@@ -165,6 +171,24 @@ public class DefaultsActivity extends SettingsInputActivity {
         intervalCardView.setOnClickListener(this::showIntervalInputDialog);
     }
 
+    private void preparePingCountField() {
+        Log.d(DefaultsActivity.class.getName(), "preparePingCountField");
+        PreferenceManager preferenceManager = new PreferenceManager(this);
+        pingCountText = findViewById(R.id.textview_activity_defaults_ping_count);
+        setPingCount(String.valueOf(preferenceManager.getPreferencePingCount()));
+        CardView pingCountCardView = findViewById(R.id.cardview_activity_defaults_ping_count);
+        pingCountCardView.setOnClickListener(this::showPingCountInputDialog);
+    }
+
+    private void prepareConnectCountField() {
+        Log.d(DefaultsActivity.class.getName(), "prepareConnectCountField");
+        PreferenceManager preferenceManager = new PreferenceManager(this);
+        connectCountText = findViewById(R.id.textview_activity_defaults_connect_count);
+        setConnectCount(String.valueOf(preferenceManager.getPreferenceConnectCount()));
+        CardView connectCountCardView = findViewById(R.id.cardview_activity_defaults_connect_count);
+        connectCountCardView.setOnClickListener(this::showConnectCountInputDialog);
+    }
+
     private void prepareOnlyWifiSwitch() {
         Log.d(DefaultsActivity.class.getName(), "prepareOnlyWifiSwitch");
         PreferenceManager preferenceManager = new PreferenceManager(this);
@@ -233,8 +257,24 @@ public class DefaultsActivity extends SettingsInputActivity {
         intervalText.setText(StringUtil.notNull(interval));
         if (NumberUtil.isValidIntValue(interval)) {
             int value = NumberUtil.getIntValue(interval, getResources().getInteger(R.integer.task_interval_default));
-            intervalMinutesText.setText(value == 1 ? getResources().getString(R.string.string_minute) : getResources().getString(R.string.string_minutes));
+            intervalMinutesText.setText(getResources().getQuantityString(R.plurals.string_minute, value));
         }
+    }
+
+    private String getPingCount() {
+        return StringUtil.notNull(pingCountText.getText());
+    }
+
+    private void setPingCount(String pingCount) {
+        pingCountText.setText(StringUtil.notNull(pingCount));
+    }
+
+    private String getConnectCount() {
+        return StringUtil.notNull(connectCountText.getText());
+    }
+
+    private void setConnectCount(String connectCount) {
+        connectCountText.setText(StringUtil.notNull(connectCount));
     }
 
     private void showAddressInputDialog(View view) {
@@ -258,6 +298,20 @@ public class DefaultsActivity extends SettingsInputActivity {
         showInputDialog(input.toBundle());
     }
 
+    private void showPingCountInputDialog(View view) {
+        Log.d(DefaultsActivity.class.getName(), "showPingCountInputDialog");
+        List<String> validators = Collections.singletonList(PingCountFieldValidator.class.getName());
+        SettingsInput input = new SettingsInput(SettingsInput.Type.PINGCOUNT, getPingCount(), getResources().getString(R.string.label_activity_defaults_ping_count), validators);
+        showInputDialog(input.toBundle());
+    }
+
+    private void showConnectCountInputDialog(View view) {
+        Log.d(DefaultsActivity.class.getName(), "showConnectCountInputDialog");
+        List<String> validators = Collections.singletonList(ConnectCountFieldValidator.class.getName());
+        SettingsInput input = new SettingsInput(SettingsInput.Type.CONNECTCOUNT, getConnectCount(), getResources().getString(R.string.label_activity_defaults_connect_count), validators);
+        showInputDialog(input.toBundle());
+    }
+
     private void showInputDialog(Bundle bundle) {
         Log.d(DefaultsActivity.class.getName(), "showInputDialog, opening SettingsInputDialog");
         SettingsInputDialog inputDialog = new SettingsInputDialog();
@@ -278,6 +332,12 @@ public class DefaultsActivity extends SettingsInputActivity {
         } else if (SettingsInput.Type.INTERVAL.equals(type)) {
             setInterval(inputDialog.getValue());
             preferenceManager.setPreferenceInterval(NumberUtil.getIntValue(getInterval(), getResources().getInteger(R.integer.task_interval_default)));
+        } else if (SettingsInput.Type.PINGCOUNT.equals(type)) {
+            setPingCount(inputDialog.getValue());
+            preferenceManager.setPreferencePingCount(NumberUtil.getIntValue(getPingCount(), getResources().getInteger(R.integer.ping_count_default)));
+        } else if (SettingsInput.Type.CONNECTCOUNT.equals(type)) {
+            setConnectCount(inputDialog.getValue());
+            preferenceManager.setPreferenceConnectCount(NumberUtil.getIntValue(getConnectCount(), getResources().getInteger(R.integer.connect_count_default)));
         } else {
             Log.e(DefaultsActivity.class.getName(), "type " + type + " unknown");
         }

@@ -21,6 +21,8 @@
     <string name="label_activity_defaults_address">Host / URL</string>
     <string name="label_activity_defaults_port">Port</string>
     <string name="label_activity_defaults_interval">Interval</string>
+    <string name="label_activity_defaults_ping_count">Ping count</string>
+    <string name="label_activity_defaults_connect_count">Connect count</string>
     <string name="label_activity_defaults_onlywifi">Only on WiFi</string>
     <string name="label_activity_defaults_notification">Notifications</string>
     <string name="label_activity_defaults_accesstype">Type</string>

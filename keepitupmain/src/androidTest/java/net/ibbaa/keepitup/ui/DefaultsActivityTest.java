@@ -86,6 +86,10 @@ public class DefaultsActivityTest extends BaseUITest {
         onView(withId(R.id.textview_activity_defaults_port)).check(matches(withText("22")));
         onView(withId(R.id.textview_activity_defaults_interval_label)).check(matches(withText("Interval")));
         onView(withId(R.id.textview_activity_defaults_interval)).check(matches(withText("15")));
+        onView(withId(R.id.textview_activity_defaults_ping_count_label)).check(matches(withText("Ping count")));
+        onView(withId(R.id.textview_activity_defaults_ping_count)).check(matches(withText("3")));
+        onView(withId(R.id.textview_activity_defaults_connect_count_label)).check(matches(withText("Connect count")));
+        onView(withId(R.id.textview_activity_defaults_connect_count)).check(matches(withText("1")));
         onView(withId(R.id.textview_activity_defaults_interval_minutes)).check(matches(withText("minutes")));
         onView(withId(R.id.textview_activity_defaults_onlywifi_label)).check(matches(withText("Only on WiFi")));
         onView(withId(R.id.switch_activity_defaults_onlywifi)).check(matches(isNotChecked()));
@@ -107,6 +111,12 @@ public class DefaultsActivityTest extends BaseUITest {
         onView(withId(R.id.textview_activity_defaults_interval)).perform(click());
         onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("11"));
         onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
+        onView(withId(R.id.textview_activity_defaults_ping_count)).perform(click());
+        onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("10"));
+        onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
+        onView(withId(R.id.textview_activity_defaults_connect_count)).perform(click());
+        onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("10"));
+        onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
         onView(withId(R.id.switch_activity_defaults_onlywifi)).perform(click());
         onView(withId(R.id.switch_activity_defaults_notification)).perform(click());
         onView(withText("Download")).check(matches(isChecked()));
@@ -116,6 +126,10 @@ public class DefaultsActivityTest extends BaseUITest {
         onView(withId(R.id.textview_activity_defaults_port)).check(matches(withText("80")));
         onView(withId(R.id.textview_activity_defaults_interval_label)).check(matches(withText("Interval")));
         onView(withId(R.id.textview_activity_defaults_interval)).check(matches(withText("11")));
+        onView(withId(R.id.textview_activity_defaults_ping_count_label)).check(matches(withText("Ping count")));
+        onView(withId(R.id.textview_activity_defaults_ping_count)).check(matches(withText("10")));
+        onView(withId(R.id.textview_activity_defaults_connect_count_label)).check(matches(withText("Connect count")));
+        onView(withId(R.id.textview_activity_defaults_connect_count)).check(matches(withText("10")));
         onView(withId(R.id.textview_activity_defaults_interval_minutes)).check(matches(withText("minutes")));
         onView(withId(R.id.textview_activity_defaults_onlywifi_label)).check(matches(withText("Only on WiFi")));
         onView(withId(R.id.switch_activity_defaults_onlywifi)).check(matches(isChecked()));
@@ -126,7 +140,7 @@ public class DefaultsActivityTest extends BaseUITest {
     }
 
     @Test
-    public void testMinutesAndSeconds() {
+    public void testMinutes() {
         onView(withId(R.id.textview_activity_defaults_interval)).perform(click());
         onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("1"));
         onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
@@ -203,10 +217,18 @@ public class DefaultsActivityTest extends BaseUITest {
         onView(withId(R.id.textview_activity_defaults_interval)).perform(click());
         onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("50"));
         onView(withId(R.id.imageview_dialog_settings_input_cancel)).perform(click());
+        onView(withId(R.id.textview_activity_defaults_ping_count)).perform(click());
+        onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("2"));
+        onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
+        onView(withId(R.id.textview_activity_defaults_connect_count)).perform(click());
+        onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("5"));
+        onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
         PreferenceManager preferenceManager = getPreferenceManager();
         assertEquals("192.168.178.1", preferenceManager.getPreferenceAddress());
         assertEquals(22, preferenceManager.getPreferencePort());
         assertEquals(15, preferenceManager.getPreferenceInterval());
+        assertEquals(2, preferenceManager.getPreferencePingCount());
+        assertEquals(5, preferenceManager.getPreferenceConnectCount());
     }
 
     @Test
@@ -446,6 +468,199 @@ public class DefaultsActivityTest extends BaseUITest {
     }
 
     @Test
+    public void testSetPingCountPreferencesCancel() {
+        onView(withId(R.id.textview_activity_defaults_ping_count)).perform(click());
+        onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("2"));
+        onView(withId(R.id.imageview_dialog_settings_input_cancel)).perform(click());
+        PreferenceManager preferenceManager = getPreferenceManager();
+        assertEquals(3, preferenceManager.getPreferencePingCount());
+        activityScenario.close();
+    }
+
+    @Test
+    public void testPingCountInput() {
+        onView(withId(R.id.textview_activity_defaults_ping_count)).perform(click());
+        onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("1 0"));
+        onView(withId(R.id.edittext_dialog_settings_input_value)).check(matches(withTextColor(R.color.textErrorColor)));
+        onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
+        onView(allOf(withText("Ping count"), withGridLayoutPosition(1, 0))).check(matches(isDisplayed()));
+        onView(allOf(withText("Invalid format"), withGridLayoutPosition(1, 1))).check(matches(isDisplayed()));
+        onView(withId(R.id.imageview_dialog_validator_error_ok)).perform(click());
+        onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("0"));
+        onView(withId(R.id.edittext_dialog_settings_input_value)).check(matches(withTextColor(R.color.textErrorColor)));
+        onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
+        onView(allOf(withText("Ping count"), withGridLayoutPosition(1, 0))).check(matches(isDisplayed()));
+        onView(allOf(withText("Minimum: 1"), withGridLayoutPosition(1, 1))).check(matches(isDisplayed()));
+        onView(withId(R.id.imageview_dialog_validator_error_ok)).perform(click());
+        onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText(""));
+        onView(withId(R.id.edittext_dialog_settings_input_value)).check(matches(withTextColor(R.color.textErrorColor)));
+        onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
+        onView(allOf(withText("Ping count"), withGridLayoutPosition(1, 0))).check(matches(isDisplayed()));
+        onView(allOf(withText("No value specified"), withGridLayoutPosition(1, 1))).check(matches(isDisplayed()));
+        onView(withId(R.id.imageview_dialog_validator_error_ok)).perform(click());
+        onView(withId(R.id.imageview_dialog_settings_input_cancel)).perform(click());
+        onView(withId(R.id.textview_activity_defaults_ping_count)).check(matches(withText("3")));
+        onView(withId(R.id.textview_activity_defaults_ping_count)).perform(click());
+        onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("333"));
+        onView(withId(R.id.edittext_dialog_settings_input_value)).check(matches(withTextColor(R.color.textErrorColor)));
+        onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
+        onView(allOf(withText("Ping count"), withGridLayoutPosition(1, 0))).check(matches(isDisplayed()));
+        onView(allOf(withText("Maximum: 10"), withGridLayoutPosition(1, 1))).check(matches(isDisplayed()));
+        onView(withId(R.id.imageview_dialog_validator_error_ok)).perform(click());
+        onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("5"));
+        onView(withId(R.id.edittext_dialog_settings_input_value)).check(matches(withTextColor(R.color.textColor)));
+        onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
+        onView(withId(R.id.textview_activity_defaults_ping_count)).check(matches(withText("5")));
+        activityScenario.close();
+    }
+
+    @Test
+    public void testPingCountCopyPasteOption() {
+        onView(withId(R.id.textview_activity_defaults_ping_count)).perform(click());
+        SettingsInputDialog inputDialog = (SettingsInputDialog) getActivity(activityScenario).getSupportFragmentManager().getFragments().get(0);
+        MockClipboardManager clipboardManager = prepareMockClipboardManager(inputDialog);
+        clipboardManager.putData("5");
+        onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("6"));
+        onView(withId(R.id.edittext_dialog_settings_input_value)).perform(longClick());
+        assertEquals(2, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
+        onView(withId(R.id.listview_dialog_context_options)).check(matches(withListSize(2)));
+        onView(withId(R.id.textview_dialog_context_options_title)).check(matches(withText("Text options")));
+        onView(allOf(withId(R.id.textview_list_item_context_option_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options), 0))).check(matches(withText("Copy")));
+        onView(allOf(withId(R.id.textview_list_item_context_option_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options), 1))).check(matches(withText("Paste")));
+        onView(allOf(withId(R.id.textview_list_item_context_option_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options), 0))).perform(click());
+        assertEquals(1, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
+        onView(withId(R.id.edittext_dialog_settings_input_value)).check(matches(withText("6")));
+        assertTrue(clipboardManager.hasData());
+        assertEquals("6", clipboardManager.getData());
+        onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
+        onView(withId(R.id.textview_activity_defaults_ping_count)).check(matches(withText("6")));
+        activityScenario.close();
+    }
+
+    @Test
+    public void testPingCountCopyPasteOptionScreenRotation() {
+        onView(withId(R.id.textview_activity_defaults_ping_count)).perform(click());
+        SettingsInputDialog inputDialog = (SettingsInputDialog) getActivity(activityScenario).getSupportFragmentManager().getFragments().get(0);
+        MockClipboardManager clipboardManager = prepareMockClipboardManager(inputDialog);
+        clipboardManager.putData("5");
+        onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("6"));
+        onView(withId(R.id.edittext_dialog_settings_input_value)).perform(longClick());
+        rotateScreen(activityScenario);
+        assertEquals(2, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
+        onView(withId(R.id.listview_dialog_context_options)).check(matches(withListSize(2)));
+        onView(withId(R.id.textview_dialog_context_options_title)).check(matches(withText("Text options")));
+        onView(allOf(withId(R.id.textview_list_item_context_option_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options), 0))).check(matches(withText("Copy")));
+        onView(allOf(withId(R.id.textview_list_item_context_option_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options), 1))).check(matches(withText("Paste")));
+        rotateScreen(activityScenario);
+        clipboardManager = prepareMockClipboardManager(getDialog());
+        clipboardManager.putData("5");
+        onView(allOf(withId(R.id.textview_list_item_context_option_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options), 0))).perform(click());
+        assertEquals(1, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
+        onView(withId(R.id.edittext_dialog_settings_input_value)).check(matches(withText("6")));
+        assertTrue(clipboardManager.hasData());
+        assertEquals("6", clipboardManager.getData());
+        onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
+        onView(withId(R.id.textview_activity_defaults_ping_count)).check(matches(withText("6")));
+        activityScenario.close();
+    }
+
+    @Test
+    public void testSetConnectCountPreferencesCancel() {
+        onView(withId(R.id.textview_activity_defaults_connect_count)).perform(click());
+        onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("3"));
+        onView(withId(R.id.imageview_dialog_settings_input_cancel)).perform(click());
+        PreferenceManager preferenceManager = getPreferenceManager();
+        assertEquals(3, preferenceManager.getPreferencePingCount());
+        activityScenario.close();
+    }
+
+    @Test
+    public void testConnectCountInput() {
+        onView(withId(R.id.textview_activity_defaults_connect_count)).perform(click());
+        onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("1 0"));
+        onView(withId(R.id.edittext_dialog_settings_input_value)).check(matches(withTextColor(R.color.textErrorColor)));
+        onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
+        onView(allOf(withText("Connect count"), withGridLayoutPosition(1, 0))).check(matches(isDisplayed()));
+        onView(allOf(withText("Invalid format"), withGridLayoutPosition(1, 1))).check(matches(isDisplayed()));
+        onView(withId(R.id.imageview_dialog_validator_error_ok)).perform(click());
+        onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("0"));
+        onView(withId(R.id.edittext_dialog_settings_input_value)).check(matches(withTextColor(R.color.textErrorColor)));
+        onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
+        onView(allOf(withText("Connect count"), withGridLayoutPosition(1, 0))).check(matches(isDisplayed()));
+        onView(allOf(withText("Minimum: 1"), withGridLayoutPosition(1, 1))).check(matches(isDisplayed()));
+        onView(withId(R.id.imageview_dialog_validator_error_ok)).perform(click());
+        onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText(""));
+        onView(withId(R.id.edittext_dialog_settings_input_value)).check(matches(withTextColor(R.color.textErrorColor)));
+        onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
+        onView(allOf(withText("Connect count"), withGridLayoutPosition(1, 0))).check(matches(isDisplayed()));
+        onView(allOf(withText("No value specified"), withGridLayoutPosition(1, 1))).check(matches(isDisplayed()));
+        onView(withId(R.id.imageview_dialog_validator_error_ok)).perform(click());
+        onView(withId(R.id.imageview_dialog_settings_input_cancel)).perform(click());
+        onView(withId(R.id.textview_activity_defaults_connect_count)).check(matches(withText("1")));
+        onView(withId(R.id.textview_activity_defaults_connect_count)).perform(click());
+        onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("333"));
+        onView(withId(R.id.edittext_dialog_settings_input_value)).check(matches(withTextColor(R.color.textErrorColor)));
+        onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
+        onView(allOf(withText("Connect count"), withGridLayoutPosition(1, 0))).check(matches(isDisplayed()));
+        onView(allOf(withText("Maximum: 10"), withGridLayoutPosition(1, 1))).check(matches(isDisplayed()));
+        onView(withId(R.id.imageview_dialog_validator_error_ok)).perform(click());
+        onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("5"));
+        onView(withId(R.id.edittext_dialog_settings_input_value)).check(matches(withTextColor(R.color.textColor)));
+        onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
+        onView(withId(R.id.textview_activity_defaults_connect_count)).check(matches(withText("5")));
+        activityScenario.close();
+    }
+
+    @Test
+    public void testConnectCountCopyPasteOption() {
+        onView(withId(R.id.textview_activity_defaults_connect_count)).perform(click());
+        SettingsInputDialog inputDialog = (SettingsInputDialog) getActivity(activityScenario).getSupportFragmentManager().getFragments().get(0);
+        MockClipboardManager clipboardManager = prepareMockClipboardManager(inputDialog);
+        clipboardManager.putData("10");
+        onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("11"));
+        onView(withId(R.id.edittext_dialog_settings_input_value)).perform(longClick());
+        assertEquals(2, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
+        onView(withId(R.id.listview_dialog_context_options)).check(matches(withListSize(2)));
+        onView(withId(R.id.textview_dialog_context_options_title)).check(matches(withText("Text options")));
+        onView(allOf(withId(R.id.textview_list_item_context_option_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options), 0))).check(matches(withText("Copy")));
+        onView(allOf(withId(R.id.textview_list_item_context_option_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options), 1))).check(matches(withText("Paste")));
+        onView(allOf(withId(R.id.textview_list_item_context_option_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options), 1))).perform(click());
+        assertEquals(1, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
+        onView(withId(R.id.edittext_dialog_settings_input_value)).check(matches(withText("10")));
+        assertTrue(clipboardManager.hasData());
+        assertEquals("10", clipboardManager.getData());
+        onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
+        onView(withId(R.id.textview_activity_defaults_connect_count)).check(matches(withText("10")));
+        activityScenario.close();
+    }
+
+    @Test
+    public void testConnectCountCopyPasteOptionScreenRotation() {
+        onView(withId(R.id.textview_activity_defaults_connect_count)).perform(click());
+        onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("11"));
+        rotateScreen(activityScenario);
+        MockClipboardManager clipboardManager = prepareMockClipboardManager(getDialog());
+        clipboardManager.putData("10");
+        onView(withId(R.id.edittext_dialog_settings_input_value)).perform(longClick());
+        assertEquals(2, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
+        onView(withId(R.id.listview_dialog_context_options)).check(matches(withListSize(2)));
+        onView(withId(R.id.textview_dialog_context_options_title)).check(matches(withText("Text options")));
+        onView(allOf(withId(R.id.textview_list_item_context_option_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options), 0))).check(matches(withText("Copy")));
+        onView(allOf(withId(R.id.textview_list_item_context_option_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options), 1))).check(matches(withText("Paste")));
+        rotateScreen(activityScenario);
+        clipboardManager = prepareMockClipboardManager(getDialog());
+        clipboardManager.putData("10");
+        onView(allOf(withId(R.id.textview_list_item_context_option_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options), 1))).perform(click());
+        assertEquals(1, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
+        onView(withId(R.id.edittext_dialog_settings_input_value)).check(matches(withText("10")));
+        assertTrue(clipboardManager.hasData());
+        assertEquals("10", clipboardManager.getData());
+        onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
+        onView(withId(R.id.textview_activity_defaults_connect_count)).check(matches(withText("10")));
+        activityScenario.close();
+    }
+
+    @Test
     public void testResetValues() {
         onView(withText("Download")).perform(click());
         onView(withId(R.id.textview_activity_defaults_address)).perform(click());
@@ -456,6 +671,12 @@ public class DefaultsActivityTest extends BaseUITest {
         onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
         onView(withId(R.id.textview_activity_defaults_interval)).perform(click());
         onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("11"));
+        onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
+        onView(withId(R.id.textview_activity_defaults_ping_count)).perform(click());
+        onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("2"));
+        onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
+        onView(withId(R.id.textview_activity_defaults_connect_count)).perform(click());
+        onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("4"));
         onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
         onView(withId(R.id.switch_activity_defaults_onlywifi)).perform(click());
         onView(withId(R.id.switch_activity_defaults_notification)).perform(click());
@@ -469,6 +690,10 @@ public class DefaultsActivityTest extends BaseUITest {
         onView(withId(R.id.textview_activity_defaults_interval_label)).check(matches(withText("Interval")));
         onView(withId(R.id.textview_activity_defaults_interval)).check(matches(withText("15")));
         onView(withId(R.id.textview_activity_defaults_interval_minutes)).check(matches(withText("minutes")));
+        onView(withId(R.id.textview_activity_defaults_ping_count_label)).check(matches(withText("Ping count")));
+        onView(withId(R.id.textview_activity_defaults_ping_count)).check(matches(withText("3")));
+        onView(withId(R.id.textview_activity_defaults_connect_count_label)).check(matches(withText("Connect count")));
+        onView(withId(R.id.textview_activity_defaults_connect_count)).check(matches(withText("1")));
         onView(withId(R.id.textview_activity_defaults_onlywifi_label)).check(matches(withText("Only on WiFi")));
         onView(withId(R.id.switch_activity_defaults_onlywifi)).check(matches(isNotChecked()));
         onView(withId(R.id.textview_activity_defaults_onlywifi_on_off)).check(matches(withText("no")));
@@ -480,6 +705,8 @@ public class DefaultsActivityTest extends BaseUITest {
         assertEquals("192.168.178.1", preferenceManager.getPreferenceAddress());
         assertEquals(22, preferenceManager.getPreferencePort());
         assertEquals(15, preferenceManager.getPreferenceInterval());
+        assertEquals(3, preferenceManager.getPreferencePingCount());
+        assertEquals(1, preferenceManager.getPreferenceConnectCount());
         assertFalse(preferenceManager.getPreferenceOnlyWifi());
         assertFalse(preferenceManager.getPreferenceNotification());
     }
@@ -496,6 +723,12 @@ public class DefaultsActivityTest extends BaseUITest {
         onView(withId(R.id.textview_activity_defaults_interval)).perform(click());
         onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("11"));
         onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
+        onView(withId(R.id.textview_activity_defaults_ping_count)).perform(click());
+        onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("2"));
+        onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
+        onView(withId(R.id.textview_activity_defaults_connect_count)).perform(click());
+        onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("2"));
+        onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
         onView(withId(R.id.switch_activity_defaults_onlywifi)).perform(click());
         onView(withId(R.id.switch_activity_defaults_notification)).perform(click());
         rotateScreen(activityScenario);
@@ -504,6 +737,8 @@ public class DefaultsActivityTest extends BaseUITest {
         onView(withId(R.id.textview_activity_defaults_port)).check(matches(withText("80")));
         onView(withId(R.id.textview_activity_defaults_interval)).check(matches(withText("11")));
         onView(withId(R.id.textview_activity_defaults_interval_minutes)).check(matches(withText("minutes")));
+        onView(withId(R.id.textview_activity_defaults_ping_count)).check(matches(withText("2")));
+        onView(withId(R.id.textview_activity_defaults_connect_count)).check(matches(withText("2")));
         onView(withId(R.id.switch_activity_defaults_onlywifi)).check(matches(isChecked()));
         onView(withId(R.id.textview_activity_defaults_onlywifi_on_off)).check(matches(withText("yes")));
         onView(withId(R.id.switch_activity_defaults_notification)).check(matches(isChecked()));
@@ -514,6 +749,8 @@ public class DefaultsActivityTest extends BaseUITest {
         onView(withId(R.id.textview_activity_defaults_port)).check(matches(withText("80")));
         onView(withId(R.id.textview_activity_defaults_interval)).check(matches(withText("11")));
         onView(withId(R.id.textview_activity_defaults_interval_minutes)).check(matches(withText("minutes")));
+        onView(withId(R.id.textview_activity_defaults_ping_count)).check(matches(withText("2")));
+        onView(withId(R.id.textview_activity_defaults_connect_count)).check(matches(withText("2")));
         onView(withId(R.id.switch_activity_defaults_onlywifi)).check(matches(isChecked()));
         onView(withId(R.id.textview_activity_defaults_onlywifi_on_off)).check(matches(withText("yes")));
         onView(withId(R.id.switch_activity_defaults_notification)).check(matches(isChecked()));
@@ -521,7 +758,7 @@ public class DefaultsActivityTest extends BaseUITest {
     }
 
     @Test
-    public void testConfirmDialogOnScreenRotation() {
+    public void testConfirmDialogOnScreenRotationAddress() {
         onView(withId(R.id.textview_activity_defaults_address)).perform(click());
         onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("localhost"));
         rotateScreen(activityScenario);
@@ -535,7 +772,19 @@ public class DefaultsActivityTest extends BaseUITest {
     }
 
     @Test
-    public void testValidationErrorScreenRotation() {
+    public void testConfirmDialogOnScreenRotationConnectCount() {
+        onView(withId(R.id.textview_activity_defaults_connect_count)).perform(click());
+        onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("6"));
+        rotateScreen(activityScenario);
+        onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("2"));
+        rotateScreen(activityScenario);
+        onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
+        onView(withId(R.id.textview_activity_defaults_connect_count)).check(matches(withText("2")));
+        activityScenario.close();
+    }
+
+    @Test
+    public void testValidationErrorScreenRotationPort() {
         onView(withId(R.id.textview_activity_defaults_port)).perform(click());
         onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("1a"));
         onView(withId(R.id.edittext_dialog_settings_input_value)).check(matches(withTextColor(R.color.textErrorColor)));
@@ -550,6 +799,40 @@ public class DefaultsActivityTest extends BaseUITest {
         onView(allOf(withText("Invalid format"), withGridLayoutPosition(1, 1))).check(matches(isDisplayed()));
         onView(withId(R.id.imageview_dialog_validator_error_ok)).perform(click());
         onView(withId(R.id.imageview_dialog_settings_input_cancel)).perform(click());
+    }
+
+    @Test
+    public void testValidationErrorScreenRotationPingCount() {
+        onView(withId(R.id.textview_activity_defaults_ping_count)).perform(click());
+        onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("a"));
+        onView(withId(R.id.edittext_dialog_settings_input_value)).check(matches(withTextColor(R.color.textErrorColor)));
+        onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
+        onView(allOf(withText("Ping count"), withGridLayoutPosition(1, 0))).check(matches(isDisplayed()));
+        onView(allOf(withText("Invalid format"), withGridLayoutPosition(1, 1))).check(matches(isDisplayed()));
+        rotateScreen(activityScenario);
+        onView(allOf(withText("Ping count"), withGridLayoutPosition(1, 0))).check(matches(isDisplayed()));
+        onView(allOf(withText("Invalid format"), withGridLayoutPosition(1, 1))).check(matches(isDisplayed()));
+        rotateScreen(activityScenario);
+        onView(allOf(withText("Ping count"), withGridLayoutPosition(1, 0))).check(matches(isDisplayed()));
+        onView(allOf(withText("Invalid format"), withGridLayoutPosition(1, 1))).check(matches(isDisplayed()));
+        onView(withId(R.id.imageview_dialog_validator_error_ok)).perform(click());
+        onView(withId(R.id.imageview_dialog_settings_input_cancel)).perform(click());
+        activityScenario.close();
+    }
+
+    @Test
+    public void testValidationErrorColorScreenRotationPingCount() {
+        onView(withId(R.id.textview_activity_defaults_ping_count)).perform(click());
+        onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("a"));
+        onView(withId(R.id.edittext_dialog_settings_input_value)).check(matches(withTextColor(R.color.textErrorColor)));
+        rotateScreen(activityScenario);
+        onView(withId(R.id.edittext_dialog_settings_input_value)).check(matches(withText("a")));
+        onView(withId(R.id.edittext_dialog_settings_input_value)).check(matches(withTextColor(R.color.textErrorColor)));
+        rotateScreen(activityScenario);
+        onView(withId(R.id.edittext_dialog_settings_input_value)).check(matches(withText("a")));
+        onView(withId(R.id.edittext_dialog_settings_input_value)).check(matches(withTextColor(R.color.textErrorColor)));
+        onView(withId(R.id.imageview_dialog_settings_input_cancel)).perform(click());
+        activityScenario.close();
     }
 
     private SettingsInputDialog getDialog() {

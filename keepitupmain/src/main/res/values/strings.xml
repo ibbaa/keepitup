@@ -20,10 +20,14 @@
     <string name="string_start">Start</string>
     <string name="string_end">End</string>
     <string name="string_suspended">Suspended</string>
-    <string name="string_minute">minute</string>
-    <string name="string_minutes">minutes</string>
-    <string name="string_second">second</string>
-    <string name="string_seconds">seconds</string>
+    <plurals name="string_minute">
+        <item quantity="one">minute</item>
+        <item quantity="other">minutes</item>
+    </plurals>
+    <plurals name="string_second">
+        <item quantity="one">second</item>
+        <item quantity="other">seconds</item>
+    </plurals>
     <string name="string_successful">successful</string>
     <string name="string_not_successful">failed</string>
     <string name="string_not_executed">not executed</string>

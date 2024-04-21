@@ -19,7 +19,6 @@ package net.ibbaa.keepitup.ui;
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.Espresso.openActionBarOverflowOrOptionsMenu;
 import static androidx.test.espresso.action.ViewActions.click;
-import static androidx.test.espresso.action.ViewActions.longClick;
 import static androidx.test.espresso.action.ViewActions.replaceText;
 import static androidx.test.espresso.action.ViewActions.scrollTo;
 import static androidx.test.espresso.action.ViewActions.swipeUp;
@@ -54,10 +53,8 @@ import net.ibbaa.keepitup.model.NotificationType;
 import net.ibbaa.keepitup.model.Time;
 import net.ibbaa.keepitup.resources.PreferenceManager;
 import net.ibbaa.keepitup.test.matcher.FontSizeMatcher;
-import net.ibbaa.keepitup.test.mock.MockClipboardManager;
 import net.ibbaa.keepitup.test.mock.MockFileManager;
 import net.ibbaa.keepitup.test.mock.TestRegistry;
-import net.ibbaa.keepitup.ui.dialog.SettingsInputDialog;
 import net.ibbaa.phonelog.ILogger;
 
 import org.hamcrest.Matcher;
@@ -81,14 +78,9 @@ public class GlobalSettingsActivityTest extends BaseUITest {
         ActivityScenario<?> activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class);
         ((GlobalSettingsActivity) getActivity(activityScenario)).injectTimeBasedSuspensionScheduler(getTimeBasedSuspensionScheduler());
         PreferenceManager preferenceManager = getPreferenceManager();
-        assertEquals(3, preferenceManager.getPreferencePingCount());
         assertFalse(preferenceManager.getPreferenceNotificationInactiveNetwork());
         assertFalse(preferenceManager.getPreferenceDownloadExternalStorage());
         assertFalse(preferenceManager.getPreferenceDownloadKeep());
-        onView(withId(R.id.textview_activity_global_settings_ping_count_label)).check(matches(withText("Ping count")));
-        onView(withId(R.id.textview_activity_global_settings_ping_count)).check(matches(withText("3")));
-        onView(withId(R.id.textview_activity_global_settings_connect_count_label)).check(matches(withText("Connect count")));
-        onView(withId(R.id.textview_activity_global_settings_connect_count)).check(matches(withText("1")));
         onView(withId(R.id.textview_activity_global_settings_notification_inactive_network_label)).check(matches(withText("Notifications when network is not active")));
         onView(withId(R.id.switch_activity_global_settings_notification_inactive_network)).check(matches(isNotChecked()));
         onView(withId(R.id.radiogroup_activity_global_settings_notification_type)).check(matches(hasChildCount(2)));
@@ -122,12 +114,6 @@ public class GlobalSettingsActivityTest extends BaseUITest {
     public void testDisplayValues() {
         ActivityScenario<?> activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class);
         ((GlobalSettingsActivity) getActivity(activityScenario)).injectTimeBasedSuspensionScheduler(getTimeBasedSuspensionScheduler());
-        onView(withId(R.id.textview_activity_global_settings_ping_count)).perform(click());
-        onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("10"));
-        onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
-        onView(withId(R.id.textview_activity_global_settings_connect_count)).perform(click());
-        onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("10"));
-        onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
         onView(withId(R.id.switch_activity_global_settings_notification_inactive_network)).perform(click());
         onView(withId(R.id.radiobutton_activity_global_settings_notification_type_change)).perform(click());
         onView(withId(R.id.switch_activity_global_settings_suspension_enabled)).perform(click());
@@ -136,10 +122,6 @@ public class GlobalSettingsActivityTest extends BaseUITest {
         onView(withId(R.id.switch_activity_global_settings_download_keep)).perform(click());
         onView(withId(R.id.switch_activity_global_settings_log_file)).perform(scrollTo());
         onView(withId(R.id.switch_activity_global_settings_log_file)).perform(click());
-        onView(withId(R.id.textview_activity_global_settings_ping_count_label)).check(matches(withText("Ping count")));
-        onView(withId(R.id.textview_activity_global_settings_ping_count)).check(matches(withText("10")));
-        onView(withId(R.id.textview_activity_global_settings_connect_count_label)).check(matches(withText("Connect count")));
-        onView(withId(R.id.textview_activity_global_settings_connect_count)).check(matches(withText("10")));
         onView(withId(R.id.textview_activity_global_settings_notification_inactive_network_label)).check(matches(withText("Notifications when network is not active")));
         onView(withId(R.id.switch_activity_global_settings_notification_inactive_network)).check(matches(isChecked()));
         onView(withId(R.id.textview_activity_global_settings_notification_inactive_network_on_off)).check(matches(withText("yes")));
@@ -218,12 +200,6 @@ public class GlobalSettingsActivityTest extends BaseUITest {
     public void testSetPreferencesOk() {
         ActivityScenario<?> activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class);
         ((GlobalSettingsActivity) getActivity(activityScenario)).injectTimeBasedSuspensionScheduler(getTimeBasedSuspensionScheduler());
-        onView(withId(R.id.textview_activity_global_settings_ping_count)).perform(click());
-        onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("2"));
-        onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
-        onView(withId(R.id.textview_activity_global_settings_connect_count)).perform(click());
-        onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("5"));
-        onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
         onView(withId(R.id.switch_activity_global_settings_notification_inactive_network)).perform(click());
         onView(withId(R.id.radiobutton_activity_global_settings_notification_type_change)).perform(click());
         onView(withId(R.id.switch_activity_global_settings_suspension_enabled)).perform(click());
@@ -233,8 +209,6 @@ public class GlobalSettingsActivityTest extends BaseUITest {
         onView(withId(R.id.switch_activity_global_settings_log_file)).perform(scrollTo());
         onView(withId(R.id.switch_activity_global_settings_log_file)).perform(click());
         PreferenceManager preferenceManager = getPreferenceManager();
-        assertEquals(2, preferenceManager.getPreferencePingCount());
-        assertEquals(5, preferenceManager.getPreferenceConnectCount());
         assertTrue(preferenceManager.getPreferenceNotificationInactiveNetwork());
         assertEquals(NotificationType.CHANGE, preferenceManager.getPreferenceNotificationType());
         assertFalse(preferenceManager.getPreferenceSuspensionEnabled());
@@ -258,215 +232,6 @@ public class GlobalSettingsActivityTest extends BaseUITest {
         assertEquals(NotificationType.FAILURE, preferenceManager.getPreferenceNotificationType());
         onView(withId(R.id.radiobutton_activity_global_settings_notification_type_failure)).check(matches(isChecked()));
         onView(withId(R.id.radiobutton_activity_global_settings_notification_type_change)).check(matches(isNotChecked()));
-        activityScenario.close();
-    }
-
-    @Test
-    public void testSetPingCountPreferencesCancel() {
-        ActivityScenario<?> activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class);
-        ((GlobalSettingsActivity) getActivity(activityScenario)).injectTimeBasedSuspensionScheduler(getTimeBasedSuspensionScheduler());
-        onView(withId(R.id.textview_activity_global_settings_ping_count)).perform(click());
-        onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("2"));
-        onView(withId(R.id.imageview_dialog_settings_input_cancel)).perform(click());
-        PreferenceManager preferenceManager = getPreferenceManager();
-        assertEquals(3, preferenceManager.getPreferencePingCount());
-        activityScenario.close();
-    }
-
-    @Test
-    public void testPingCountInput() {
-        ActivityScenario<?> activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class);
-        ((GlobalSettingsActivity) getActivity(activityScenario)).injectTimeBasedSuspensionScheduler(getTimeBasedSuspensionScheduler());
-        onView(withId(R.id.textview_activity_global_settings_ping_count)).perform(click());
-        onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("1 0"));
-        onView(withId(R.id.edittext_dialog_settings_input_value)).check(matches(withTextColor(R.color.textErrorColor)));
-        onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
-        onView(allOf(withText("Ping count"), withGridLayoutPosition(1, 0))).check(matches(isDisplayed()));
-        onView(allOf(withText("Invalid format"), withGridLayoutPosition(1, 1))).check(matches(isDisplayed()));
-        onView(withId(R.id.imageview_dialog_validator_error_ok)).perform(click());
-        onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("0"));
-        onView(withId(R.id.edittext_dialog_settings_input_value)).check(matches(withTextColor(R.color.textErrorColor)));
-        onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
-        onView(allOf(withText("Ping count"), withGridLayoutPosition(1, 0))).check(matches(isDisplayed()));
-        onView(allOf(withText("Minimum: 1"), withGridLayoutPosition(1, 1))).check(matches(isDisplayed()));
-        onView(withId(R.id.imageview_dialog_validator_error_ok)).perform(click());
-        onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText(""));
-        onView(withId(R.id.edittext_dialog_settings_input_value)).check(matches(withTextColor(R.color.textErrorColor)));
-        onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
-        onView(allOf(withText("Ping count"), withGridLayoutPosition(1, 0))).check(matches(isDisplayed()));
-        onView(allOf(withText("No value specified"), withGridLayoutPosition(1, 1))).check(matches(isDisplayed()));
-        onView(withId(R.id.imageview_dialog_validator_error_ok)).perform(click());
-        onView(withId(R.id.imageview_dialog_settings_input_cancel)).perform(click());
-        onView(withId(R.id.textview_activity_global_settings_ping_count)).check(matches(withText("3")));
-        onView(withId(R.id.textview_activity_global_settings_ping_count)).perform(click());
-        onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("333"));
-        onView(withId(R.id.edittext_dialog_settings_input_value)).check(matches(withTextColor(R.color.textErrorColor)));
-        onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
-        onView(allOf(withText("Ping count"), withGridLayoutPosition(1, 0))).check(matches(isDisplayed()));
-        onView(allOf(withText("Maximum: 10"), withGridLayoutPosition(1, 1))).check(matches(isDisplayed()));
-        onView(withId(R.id.imageview_dialog_validator_error_ok)).perform(click());
-        onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("5"));
-        onView(withId(R.id.edittext_dialog_settings_input_value)).check(matches(withTextColor(R.color.textColor)));
-        onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
-        onView(withId(R.id.textview_activity_global_settings_ping_count)).check(matches(withText("5")));
-        activityScenario.close();
-    }
-
-    @Test
-    public void testPingCountCopyPasteOption() {
-        ActivityScenario<?> activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class);
-        ((GlobalSettingsActivity) getActivity(activityScenario)).injectTimeBasedSuspensionScheduler(getTimeBasedSuspensionScheduler());
-        onView(withId(R.id.textview_activity_global_settings_ping_count)).perform(click());
-        SettingsInputDialog inputDialog = (SettingsInputDialog) getActivity(activityScenario).getSupportFragmentManager().getFragments().get(0);
-        MockClipboardManager clipboardManager = prepareMockClipboardManager(inputDialog);
-        clipboardManager.putData("5");
-        onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("6"));
-        onView(withId(R.id.edittext_dialog_settings_input_value)).perform(longClick());
-        assertEquals(2, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
-        onView(withId(R.id.listview_dialog_context_options)).check(matches(withListSize(2)));
-        onView(withId(R.id.textview_dialog_context_options_title)).check(matches(withText("Text options")));
-        onView(allOf(withId(R.id.textview_list_item_context_option_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options), 0))).check(matches(withText("Copy")));
-        onView(allOf(withId(R.id.textview_list_item_context_option_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options), 1))).check(matches(withText("Paste")));
-        onView(allOf(withId(R.id.textview_list_item_context_option_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options), 0))).perform(click());
-        assertEquals(1, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
-        onView(withId(R.id.edittext_dialog_settings_input_value)).check(matches(withText("6")));
-        assertTrue(clipboardManager.hasData());
-        assertEquals("6", clipboardManager.getData());
-        onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
-        onView(withId(R.id.textview_activity_global_settings_ping_count)).check(matches(withText("6")));
-        activityScenario.close();
-    }
-
-    @Test
-    public void testPingCountCopyPasteOptionScreenRotation() {
-        ActivityScenario<?> activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class);
-        ((GlobalSettingsActivity) getActivity(activityScenario)).injectTimeBasedSuspensionScheduler(getTimeBasedSuspensionScheduler());
-        onView(withId(R.id.textview_activity_global_settings_ping_count)).perform(click());
-        SettingsInputDialog inputDialog = (SettingsInputDialog) getActivity(activityScenario).getSupportFragmentManager().getFragments().get(0);
-        MockClipboardManager clipboardManager = prepareMockClipboardManager(inputDialog);
-        clipboardManager.putData("5");
-        onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("6"));
-        onView(withId(R.id.edittext_dialog_settings_input_value)).perform(longClick());
-        rotateScreen(activityScenario);
-        assertEquals(2, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
-        onView(withId(R.id.listview_dialog_context_options)).check(matches(withListSize(2)));
-        onView(withId(R.id.textview_dialog_context_options_title)).check(matches(withText("Text options")));
-        onView(allOf(withId(R.id.textview_list_item_context_option_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options), 0))).check(matches(withText("Copy")));
-        onView(allOf(withId(R.id.textview_list_item_context_option_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options), 1))).check(matches(withText("Paste")));
-        rotateScreen(activityScenario);
-        clipboardManager = prepareMockClipboardManager(getDialog(activityScenario));
-        clipboardManager.putData("5");
-        onView(allOf(withId(R.id.textview_list_item_context_option_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options), 0))).perform(click());
-        assertEquals(1, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
-        onView(withId(R.id.edittext_dialog_settings_input_value)).check(matches(withText("6")));
-        assertTrue(clipboardManager.hasData());
-        assertEquals("6", clipboardManager.getData());
-        onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
-        onView(withId(R.id.textview_activity_global_settings_ping_count)).check(matches(withText("6")));
-        activityScenario.close();
-    }
-
-    @Test
-    public void testSetConnectCountPreferencesCancel() {
-        ActivityScenario<?> activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class);
-        ((GlobalSettingsActivity) getActivity(activityScenario)).injectTimeBasedSuspensionScheduler(getTimeBasedSuspensionScheduler());
-        onView(withId(R.id.textview_activity_global_settings_connect_count)).perform(click());
-        onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("3"));
-        onView(withId(R.id.imageview_dialog_settings_input_cancel)).perform(click());
-        PreferenceManager preferenceManager = getPreferenceManager();
-        assertEquals(3, preferenceManager.getPreferencePingCount());
-        activityScenario.close();
-    }
-
-    @Test
-    public void testConnectCountInput() {
-        ActivityScenario<?> activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class);
-        ((GlobalSettingsActivity) getActivity(activityScenario)).injectTimeBasedSuspensionScheduler(getTimeBasedSuspensionScheduler());
-        onView(withId(R.id.textview_activity_global_settings_connect_count)).perform(click());
-        onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("1 0"));
-        onView(withId(R.id.edittext_dialog_settings_input_value)).check(matches(withTextColor(R.color.textErrorColor)));
-        onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
-        onView(allOf(withText("Connect count"), withGridLayoutPosition(1, 0))).check(matches(isDisplayed()));
-        onView(allOf(withText("Invalid format"), withGridLayoutPosition(1, 1))).check(matches(isDisplayed()));
-        onView(withId(R.id.imageview_dialog_validator_error_ok)).perform(click());
-        onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("0"));
-        onView(withId(R.id.edittext_dialog_settings_input_value)).check(matches(withTextColor(R.color.textErrorColor)));
-        onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
-        onView(allOf(withText("Connect count"), withGridLayoutPosition(1, 0))).check(matches(isDisplayed()));
-        onView(allOf(withText("Minimum: 1"), withGridLayoutPosition(1, 1))).check(matches(isDisplayed()));
-        onView(withId(R.id.imageview_dialog_validator_error_ok)).perform(click());
-        onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText(""));
-        onView(withId(R.id.edittext_dialog_settings_input_value)).check(matches(withTextColor(R.color.textErrorColor)));
-        onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
-        onView(allOf(withText("Connect count"), withGridLayoutPosition(1, 0))).check(matches(isDisplayed()));
-        onView(allOf(withText("No value specified"), withGridLayoutPosition(1, 1))).check(matches(isDisplayed()));
-        onView(withId(R.id.imageview_dialog_validator_error_ok)).perform(click());
-        onView(withId(R.id.imageview_dialog_settings_input_cancel)).perform(click());
-        onView(withId(R.id.textview_activity_global_settings_connect_count)).check(matches(withText("1")));
-        onView(withId(R.id.textview_activity_global_settings_connect_count)).perform(click());
-        onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("333"));
-        onView(withId(R.id.edittext_dialog_settings_input_value)).check(matches(withTextColor(R.color.textErrorColor)));
-        onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
-        onView(allOf(withText("Connect count"), withGridLayoutPosition(1, 0))).check(matches(isDisplayed()));
-        onView(allOf(withText("Maximum: 10"), withGridLayoutPosition(1, 1))).check(matches(isDisplayed()));
-        onView(withId(R.id.imageview_dialog_validator_error_ok)).perform(click());
-        onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("5"));
-        onView(withId(R.id.edittext_dialog_settings_input_value)).check(matches(withTextColor(R.color.textColor)));
-        onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
-        onView(withId(R.id.textview_activity_global_settings_connect_count)).check(matches(withText("5")));
-        activityScenario.close();
-    }
-
-    @Test
-    public void testConnectCountCopyPasteOption() {
-        ActivityScenario<?> activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class);
-        ((GlobalSettingsActivity) getActivity(activityScenario)).injectTimeBasedSuspensionScheduler(getTimeBasedSuspensionScheduler());
-        onView(withId(R.id.textview_activity_global_settings_connect_count)).perform(click());
-        SettingsInputDialog inputDialog = (SettingsInputDialog) getActivity(activityScenario).getSupportFragmentManager().getFragments().get(0);
-        MockClipboardManager clipboardManager = prepareMockClipboardManager(inputDialog);
-        clipboardManager.putData("10");
-        onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("11"));
-        onView(withId(R.id.edittext_dialog_settings_input_value)).perform(longClick());
-        assertEquals(2, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
-        onView(withId(R.id.listview_dialog_context_options)).check(matches(withListSize(2)));
-        onView(withId(R.id.textview_dialog_context_options_title)).check(matches(withText("Text options")));
-        onView(allOf(withId(R.id.textview_list_item_context_option_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options), 0))).check(matches(withText("Copy")));
-        onView(allOf(withId(R.id.textview_list_item_context_option_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options), 1))).check(matches(withText("Paste")));
-        onView(allOf(withId(R.id.textview_list_item_context_option_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options), 1))).perform(click());
-        assertEquals(1, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
-        onView(withId(R.id.edittext_dialog_settings_input_value)).check(matches(withText("10")));
-        assertTrue(clipboardManager.hasData());
-        assertEquals("10", clipboardManager.getData());
-        onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
-        onView(withId(R.id.textview_activity_global_settings_connect_count)).check(matches(withText("10")));
-        activityScenario.close();
-    }
-
-    @Test
-    public void testConnectCountCopyPasteOptionScreenRotation() {
-        ActivityScenario<?> activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class);
-        ((GlobalSettingsActivity) getActivity(activityScenario)).injectTimeBasedSuspensionScheduler(getTimeBasedSuspensionScheduler());
-        onView(withId(R.id.textview_activity_global_settings_connect_count)).perform(click());
-        onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("11"));
-        rotateScreen(activityScenario);
-        MockClipboardManager clipboardManager = prepareMockClipboardManager(getDialog(activityScenario));
-        clipboardManager.putData("10");
-        onView(withId(R.id.edittext_dialog_settings_input_value)).perform(longClick());
-        assertEquals(2, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
-        onView(withId(R.id.listview_dialog_context_options)).check(matches(withListSize(2)));
-        onView(withId(R.id.textview_dialog_context_options_title)).check(matches(withText("Text options")));
-        onView(allOf(withId(R.id.textview_list_item_context_option_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options), 0))).check(matches(withText("Copy")));
-        onView(allOf(withId(R.id.textview_list_item_context_option_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options), 1))).check(matches(withText("Paste")));
-        rotateScreen(activityScenario);
-        clipboardManager = prepareMockClipboardManager(getDialog(activityScenario));
-        clipboardManager.putData("10");
-        onView(allOf(withId(R.id.textview_list_item_context_option_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options), 1))).perform(click());
-        assertEquals(1, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
-        onView(withId(R.id.edittext_dialog_settings_input_value)).check(matches(withText("10")));
-        assertTrue(clipboardManager.hasData());
-        assertEquals("10", clipboardManager.getData());
-        onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
-        onView(withId(R.id.textview_activity_global_settings_connect_count)).check(matches(withText("10")));
         activityScenario.close();
     }
 
@@ -1739,12 +1504,6 @@ public class GlobalSettingsActivityTest extends BaseUITest {
     public void testResetValues() {
         ActivityScenario<?> activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class);
         ((GlobalSettingsActivity) getActivity(activityScenario)).injectTimeBasedSuspensionScheduler(getTimeBasedSuspensionScheduler());
-        onView(withId(R.id.textview_activity_global_settings_ping_count)).perform(click());
-        onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("2"));
-        onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
-        onView(withId(R.id.textview_activity_global_settings_connect_count)).perform(click());
-        onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("4"));
-        onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
         onView(withId(R.id.switch_activity_global_settings_notification_inactive_network)).perform(click());
         onView(withId(R.id.radiobutton_activity_global_settings_notification_type_change)).perform(click());
         onView(withId(R.id.switch_activity_global_settings_suspension_enabled)).perform(click());
@@ -1755,10 +1514,6 @@ public class GlobalSettingsActivityTest extends BaseUITest {
         onView(withId(R.id.switch_activity_global_settings_log_file)).perform(click());
         openActionBarOverflowOrOptionsMenu(TestRegistry.getContext());
         onView(withText("Reset")).perform(click());
-        onView(withId(R.id.textview_activity_global_settings_ping_count_label)).check(matches(withText("Ping count")));
-        onView(withId(R.id.textview_activity_global_settings_ping_count)).check(matches(withText("3")));
-        onView(withId(R.id.textview_activity_global_settings_connect_count_label)).check(matches(withText("Connect count")));
-        onView(withId(R.id.textview_activity_global_settings_connect_count)).check(matches(withText("1")));
         onView(withId(R.id.textview_activity_global_settings_notification_inactive_network_label)).check(matches(withText("Notifications when network is not active")));
         onView(withId(R.id.switch_activity_global_settings_notification_inactive_network)).check(matches(isNotChecked()));
         onView(withId(R.id.radiobutton_activity_global_settings_notification_type_failure)).check(matches(isChecked()));
@@ -1775,8 +1530,6 @@ public class GlobalSettingsActivityTest extends BaseUITest {
         onView(withId(R.id.switch_activity_global_settings_download_keep)).check(matches(not(isEnabled())));
         onView(withId(R.id.switch_activity_global_settings_log_file)).check(matches(isNotChecked()));
         PreferenceManager preferenceManager = getPreferenceManager();
-        assertEquals(3, preferenceManager.getPreferencePingCount());
-        assertEquals(1, preferenceManager.getPreferenceConnectCount());
         assertFalse(preferenceManager.getPreferenceNotificationInactiveNetwork());
         assertEquals(NotificationType.FAILURE, preferenceManager.getPreferenceNotificationType());
         assertTrue(preferenceManager.getPreferenceSuspensionEnabled());
@@ -1792,12 +1545,6 @@ public class GlobalSettingsActivityTest extends BaseUITest {
     public void testPreserveValuesOnScreenRotation() {
         ActivityScenario<?> activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class);
         ((GlobalSettingsActivity) getActivity(activityScenario)).injectTimeBasedSuspensionScheduler(getTimeBasedSuspensionScheduler());
-        onView(withId(R.id.textview_activity_global_settings_ping_count)).perform(click());
-        onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("2"));
-        onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
-        onView(withId(R.id.textview_activity_global_settings_connect_count)).perform(click());
-        onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("2"));
-        onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
         onView(withId(R.id.switch_activity_global_settings_notification_inactive_network)).perform(click());
         onView(withId(R.id.radiobutton_activity_global_settings_notification_type_change)).perform(click());
         onView(withId(R.id.switch_activity_global_settings_suspension_enabled)).perform(click());
@@ -1807,8 +1554,6 @@ public class GlobalSettingsActivityTest extends BaseUITest {
         onView(withId(R.id.switch_activity_global_settings_log_file)).perform(scrollTo());
         onView(withId(R.id.switch_activity_global_settings_log_file)).perform(click());
         rotateScreen(activityScenario);
-        onView(withId(R.id.textview_activity_global_settings_ping_count)).check(matches(withText("2")));
-        onView(withId(R.id.textview_activity_global_settings_connect_count)).check(matches(withText("2")));
         onView(withId(R.id.switch_activity_global_settings_notification_inactive_network)).check(matches(isChecked()));
         onView(withId(R.id.textview_activity_global_settings_notification_inactive_network_on_off)).check(matches(withText("yes")));
         onView(withId(R.id.radiobutton_activity_global_settings_notification_type_change)).check(matches(isChecked()));
@@ -1821,8 +1566,6 @@ public class GlobalSettingsActivityTest extends BaseUITest {
         onView(withId(R.id.switch_activity_global_settings_log_file)).check(matches(isChecked()));
         onView(withId(R.id.textview_activity_global_settings_log_file_on_off)).check(matches(withText("yes")));
         rotateScreen(activityScenario);
-        onView(withId(R.id.textview_activity_global_settings_ping_count)).check(matches(withText("2")));
-        onView(withId(R.id.textview_activity_global_settings_connect_count)).check(matches(withText("2")));
         onView(withId(R.id.switch_activity_global_settings_notification_inactive_network)).check(matches(isChecked()));
         onView(withId(R.id.textview_activity_global_settings_notification_inactive_network_on_off)).check(matches(withText("yes")));
         onView(withId(R.id.switch_activity_global_settings_suspension_enabled)).check(matches(isNotChecked()));
@@ -1834,58 +1577,6 @@ public class GlobalSettingsActivityTest extends BaseUITest {
         onView(withId(R.id.textview_activity_global_settings_download_keep_on_off)).check(matches(withText("yes")));
         onView(withId(R.id.switch_activity_global_settings_log_file)).check(matches(isChecked()));
         onView(withId(R.id.textview_activity_global_settings_log_file_on_off)).check(matches(withText("yes")));
-        activityScenario.close();
-    }
-
-    @Test
-    public void testConfirmDialogScreenRotation() {
-        ActivityScenario<?> activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class);
-        ((GlobalSettingsActivity) getActivity(activityScenario)).injectTimeBasedSuspensionScheduler(getTimeBasedSuspensionScheduler());
-        onView(withId(R.id.textview_activity_global_settings_connect_count)).perform(click());
-        onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("6"));
-        rotateScreen(activityScenario);
-        onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("2"));
-        rotateScreen(activityScenario);
-        onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
-        onView(withId(R.id.textview_activity_global_settings_connect_count)).check(matches(withText("2")));
-        activityScenario.close();
-    }
-
-    @Test
-    public void testValidationErrorScreenRotation() {
-        ActivityScenario<?> activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class);
-        ((GlobalSettingsActivity) getActivity(activityScenario)).injectTimeBasedSuspensionScheduler(getTimeBasedSuspensionScheduler());
-        onView(withId(R.id.textview_activity_global_settings_ping_count)).perform(click());
-        onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("a"));
-        onView(withId(R.id.edittext_dialog_settings_input_value)).check(matches(withTextColor(R.color.textErrorColor)));
-        onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
-        onView(allOf(withText("Ping count"), withGridLayoutPosition(1, 0))).check(matches(isDisplayed()));
-        onView(allOf(withText("Invalid format"), withGridLayoutPosition(1, 1))).check(matches(isDisplayed()));
-        rotateScreen(activityScenario);
-        onView(allOf(withText("Ping count"), withGridLayoutPosition(1, 0))).check(matches(isDisplayed()));
-        onView(allOf(withText("Invalid format"), withGridLayoutPosition(1, 1))).check(matches(isDisplayed()));
-        rotateScreen(activityScenario);
-        onView(allOf(withText("Ping count"), withGridLayoutPosition(1, 0))).check(matches(isDisplayed()));
-        onView(allOf(withText("Invalid format"), withGridLayoutPosition(1, 1))).check(matches(isDisplayed()));
-        onView(withId(R.id.imageview_dialog_validator_error_ok)).perform(click());
-        onView(withId(R.id.imageview_dialog_settings_input_cancel)).perform(click());
-        activityScenario.close();
-    }
-
-    @Test
-    public void testValidationErrorColorScreenRotation() {
-        ActivityScenario<?> activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class);
-        ((GlobalSettingsActivity) getActivity(activityScenario)).injectTimeBasedSuspensionScheduler(getTimeBasedSuspensionScheduler());
-        onView(withId(R.id.textview_activity_global_settings_ping_count)).perform(click());
-        onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("a"));
-        onView(withId(R.id.edittext_dialog_settings_input_value)).check(matches(withTextColor(R.color.textErrorColor)));
-        rotateScreen(activityScenario);
-        onView(withId(R.id.edittext_dialog_settings_input_value)).check(matches(withText("a")));
-        onView(withId(R.id.edittext_dialog_settings_input_value)).check(matches(withTextColor(R.color.textErrorColor)));
-        rotateScreen(activityScenario);
-        onView(withId(R.id.edittext_dialog_settings_input_value)).check(matches(withText("a")));
-        onView(withId(R.id.edittext_dialog_settings_input_value)).check(matches(withTextColor(R.color.textErrorColor)));
-        onView(withId(R.id.imageview_dialog_settings_input_cancel)).perform(click());
         activityScenario.close();
     }
 
@@ -1948,17 +1639,6 @@ public class GlobalSettingsActivityTest extends BaseUITest {
 
     public static Matcher<View> withFontSize(float expectedSize) {
         return new FontSizeMatcher(expectedSize);
-    }
-
-    private SettingsInputDialog getDialog(ActivityScenario<?> activityScenario) {
-        return (SettingsInputDialog) getActivity(activityScenario).getSupportFragmentManager().getFragments().get(0);
-    }
-
-    private MockClipboardManager prepareMockClipboardManager(SettingsInputDialog inputDialog) {
-        MockClipboardManager clipboardManager = new MockClipboardManager();
-        clipboardManager.clearData();
-        inputDialog.injectClipboardManager(clipboardManager);
-        return clipboardManager;
     }
 
     private NetworkTask getNetworkTask1() {
