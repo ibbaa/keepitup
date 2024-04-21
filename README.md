@@ -49,14 +49,6 @@ The debug variant contains debug information and provides some logging features 
 
 Please keep in mind that the version here on Github is signed with a different key than the version on F-Droid. You will get an error if you try to install the Github version and the F-Droid version is already installed (and vice versa). You have to deinstall the app first to do that.
 
-## Power consumption
-
-The app uses exact alarms to trigger network task execution. Power consumption during waiting is as high as for a calendar app waiting for reminders to trigger. During execution the power consumption is higher, of course, and short execution intervals cause more overall battery drain.
-
-The app works best if you disable battery optimization. If battery optimization is active, network tasks execution may be unreliable especially for short intervals, i.e. they may trigger less often and the trigger time may not be exact. There is a link in the app leading to the Android battery settings for the app. Of course, with disabled battery optimization power consumption may be higher.
-
-It is possible to define suspension intervals in the settings during which all background work is suspended. There is still one active alarm to wake up the app and resume task execution. Except for that alarm the app is idle during suspension. It is possible to define multiple suspension intervals but each interval must be at least 30 min. However, many short intervals do not make much sense for battery saving.
-
 ## Signature
 
 The apk files released here on Github are self signed. To verfiy the signature you can use the `apksigner` tool that comes with Android SDK:
@@ -79,6 +71,14 @@ Signer #1 public key SHA-256 digest: 2acba358e06962a9cdb106a1b788f131a5cb8ab0618
 Signer #1 public key SHA-1 digest: d8eeb46370f1ff2f0548d075319e07e90763117e
 Signer #1 public key MD5 digest: 0020b7336f5edb8b3a82d62d7c239842
 ```
+
+## Power consumption
+
+The app uses exact alarms to trigger network task execution. Power consumption during waiting is as high as for a calendar app waiting for reminders to trigger. During execution the power consumption is higher, of course, and short execution intervals cause more overall battery drain.
+
+The app works best if you disable battery optimization. If battery optimization is active, network tasks execution may be unreliable especially for short intervals, i.e. they may trigger less often and the trigger time may not be exact. There is a link in the app leading to the Android battery settings for the app. Of course, with disabled battery optimization power consumption may be higher.
+
+It is possible to define suspension intervals in the settings during which all background work is suspended. There is still one active alarm to wake up the app and resume task execution. Except for that alarm the app is idle during suspension. It is possible to define multiple suspension intervals but each interval must be at least 30 min. However, many short intervals do not make much sense for battery saving.
 
 ## Build
 
