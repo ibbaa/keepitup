@@ -59,6 +59,8 @@ public class GlobalSettingsActivity extends SettingsInputActivity implements Sus
     private RadioGroup notificationType;
     private SwitchMaterial suspensionEnabledSwitch;
     private TextView suspensionEnabledOnOffText;
+    private SwitchMaterial enforcePingPackageSizeEnabledSwitch;
+    private TextView enforcePingPackageSizeEnabledOnOffText;
     private SwitchMaterial downloadExternalStorageSwitch;
     private TextView downloadExternalStorageOnOffText;
     private TextView downloadFolderText;
@@ -79,6 +81,7 @@ public class GlobalSettingsActivity extends SettingsInputActivity implements Sus
         prepareNotificationTypeRadioGroup();
         prepareSuspensionEnabledSwitch();
         prepareSuspensionIntervalsField();
+        prepareEnforcePingPackageSizeEnabledSwitch();
         prepareDownloadExternalStorageSwitch();
         prepareDownloadFolderField();
         prepareDownloadKeepSwitch();
@@ -288,6 +291,28 @@ public class GlobalSettingsActivity extends SettingsInputActivity implements Sus
         Log.d(GlobalSettingsActivity.class.getName(), "showSuspensionIntervalsDialog");
         SuspensionIntervalsDialog intervalsDialog = new SuspensionIntervalsDialog();
         intervalsDialog.show(getSupportFragmentManager(), SuspensionIntervalsDialog.class.getName());
+    }
+
+    private void prepareEnforcePingPackageSizeEnabledSwitch() {
+        Log.d(GlobalSettingsActivity.class.getName(), "prepareEnforcePingPackageSizeEnabledSwitch");
+        PreferenceManager preferenceManager = new PreferenceManager(this);
+        enforcePingPackageSizeEnabledSwitch = findViewById(R.id.switch_activity_global_settings_enforce_ping_package_size_enabled);
+        enforcePingPackageSizeEnabledOnOffText = findViewById(R.id.textview_activity_global_settings_enforce_ping_package_size_enabled_on_off);
+        enforcePingPackageSizeEnabledSwitch.setOnCheckedChangeListener(null);
+        enforcePingPackageSizeEnabledSwitch.setChecked(preferenceManager.getPreferenceEnforceDefaultPingPackageSize());
+        enforcePingPackageSizeEnabledSwitch.setOnCheckedChangeListener(this::onEnforcePingPackageSizeEnabledCheckedChanged);
+        prepareEnforcePingPackageSizeEnabledOnOffText();
+    }
+
+    private void prepareEnforcePingPackageSizeEnabledOnOffText() {
+        enforcePingPackageSizeEnabledOnOffText.setText(enforcePingPackageSizeEnabledSwitch.isChecked() ? getResources().getString(R.string.string_yes) : getResources().getString(R.string.string_no));
+    }
+
+    private void onEnforcePingPackageSizeEnabledCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+        Log.d(GlobalSettingsActivity.class.getName(), "onEnforcePingPackageSizeEnabledCheckedChanged, new value is " + isChecked);
+        PreferenceManager preferenceManager = new PreferenceManager(this);
+        preferenceManager.setPreferenceEnforceDefaultPingPackageSize(isChecked);
+        prepareEnforcePingPackageSizeEnabledOnOffText();
     }
 
     private void prepareDownloadExternalStorageOnOffText() {

@@ -24,6 +24,7 @@
     <string name="text_activity_global_settings_notification_type_change">Change</string>
     <string name="label_activity_global_settings_suspension_enabled">Suspension intervals enabled</string>
     <string name="label_activity_global_settings_suspension_intervals">Defined suspension intervals</string>
+    <string name="label_activity_global_settings_enforce_ping_package_size_enabled">Enforce default ping package size</string>
     <string name="text_activity_global_settings_suspension_intervals_disabled">Disabled</string>
     <string name="text_activity_global_settings_suspension_intervals_none">None</string>
     <string name="label_activity_global_settings_download_external_storage">Download to an external storage folder</string>

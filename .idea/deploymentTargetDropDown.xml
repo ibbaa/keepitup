@@ -24,21 +24,8 @@
       <entry key="GlobalSettingsActivityTest">
         <State />
       </entry>
-      <entry key="Tests in 'net.ibbaa.keepitup.db'">
-        <State>
-          <targetSelectedWithDropDown>
-            <Target>
-              <type value="QUICK_BOOT_TARGET" />
-              <deviceKey>
-                <Key>
-                  <type value="VIRTUAL_DEVICE_PATH" />
-                  <value value="$USER_HOME$/.android/avd/Pixel_8_Pro_API_29.avd" />
-                </Key>
-              </deviceKey>
-            </Target>
-          </targetSelectedWithDropDown>
-          <timeTargetWasSelectedWithDropDown value="2024-04-21T09:17:45.033277175Z" />
-        </State>
+      <entry key="NetworkTaskEditDialogTest">
+        <State />
       </entry>
       <entry key="keepitupmain">
         <State>
@@ -56,24 +43,11 @@
           <timeTargetWasSelectedWithDropDown value="2024-04-17T17:46:46.328425995Z" />
         </State>
       </entry>
-      <entry key="testExportConfigurationScreenRotation()">
+      <entry key="testErrorColorOnOpenDialog()">
         <State />
       </entry>
-      <entry key="testResetValues()">
-        <State>
-          <targetSelectedWithDropDown>
-            <Target>
-              <type value="QUICK_BOOT_TARGET" />
-              <deviceKey>
-                <Key>
-                  <type value="VIRTUAL_DEVICE_PATH" />
-                  <value value="$USER_HOME$/.android/avd/Pixel_8_Pro_API_29.avd" />
-                </Key>
-              </deviceKey>
-            </Target>
-          </targetSelectedWithDropDown>
-          <timeTargetWasSelectedWithDropDown value="2024-04-21T10:04:36.555843903Z" />
-        </State>
+      <entry key="testExportConfigurationScreenRotation()">
+        <State />
       </entry>
     </value>
   </component>
