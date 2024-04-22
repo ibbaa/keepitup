@@ -151,12 +151,76 @@
             </LinearLayout>
 
             <TextView
+                android:id="@+id/textview_dialog_network_task_edit_ping_connect_count_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/linearlayout_dialog_network_task_edit_ping_connect_count_margin_top"
+                android:textStyle="bold"
+                android:layout_row="4"
+                android:layout_column="0"
+                android:labelFor="@id/edittext_dialog_network_task_edit_ping_connect_count"
+                android:text="@string/label_dialog_network_task_edit_connect_count" />
+
+            <LinearLayout
+                android:id="@+id/linearlayout_dialog_network_task_edit_ping_connect_count"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/linearlayout_dialog_network_task_edit_ping_connect_count_margin_left"
+                android:layout_marginTop="@dimen/linearlayout_dialog_network_task_edit_ping_connect_count_margin_top"
+                android:layout_row="4"
+                android:layout_column="1">
+
+                <EditText
+                    android:id="@+id/edittext_dialog_network_task_edit_ping_connect_count"
+                    style="@style/DialogEditTextTheme"
+                    android:layout_width="@dimen/edittext_dialog_network_task_edit_ping_connect_count_width"
+                    android:layout_height="wrap_content"
+                    android:maxLength="@integer/edittext_dialog_network_task_edit_ping_connect_count_max_length"
+                    android:importantForAutofill="no"
+                    android:inputType="number"
+                    android:text="" />
+
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/textview_dialog_network_task_edit_ping_package_size_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/linearlayout_dialog_network_task_edit_ping_package_size_margin_top"
+                android:textStyle="bold"
+                android:layout_row="5"
+                android:layout_column="0"
+                android:labelFor="@id/edittext_dialog_network_task_edit_ping_package_size"
+                android:text="@string/label_dialog_network_task_edit_ping_package_size" />
+
+            <LinearLayout
+                android:id="@+id/linearlayout_dialog_network_task_edit_ping_package_size"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/linearlayout_dialog_network_task_edit_ping_package_size_margin_left"
+                android:layout_marginTop="@dimen/linearlayout_dialog_network_task_edit_ping_package_size_margin_top"
+                android:layout_row="5"
+                android:layout_column="1">
+
+                <EditText
+                    android:id="@+id/edittext_dialog_network_task_edit_ping_package_size"
+                    style="@style/DialogEditTextTheme"
+                    android:layout_width="@dimen/edittext_dialog_network_task_edit_ping_package_size_width"
+                    android:layout_height="wrap_content"
+                    android:maxLength="@integer/edittext_dialog_network_task_edit_ping_package_size_max_length"
+                    android:importantForAutofill="no"
+                    android:inputType="number"
+                    android:text="" />
+
+            </LinearLayout>
+
+            <TextView
                 android:id="@+id/textview_dialog_network_task_edit_onlywifi_label"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/textview_dialog_network_task_edit_onlywifi_label_margin_top"
                 android:textStyle="bold"
-                android:layout_row="4"
+                android:layout_row="6"
                 android:layout_column="0"
                 android:text="@string/label_dialog_network_task_edit_onlywifi" />
 
@@ -166,7 +230,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/linearlayout_dialog_network_task_edit_onlywifi_margin_left"
                 android:layout_marginTop="@dimen/linearlayout_dialog_network_task_edit_onlywifi_margin_top"
-                android:layout_row="4"
+                android:layout_row="6"
                 android:layout_column="1">
 
                 <com.google.android.material.switchmaterial.SwitchMaterial
@@ -190,7 +254,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/textview_dialog_network_task_edit_notification_label_margin_top"
                 android:textStyle="bold"
-                android:layout_row="5"
+                android:layout_row="7"
                 android:layout_column="0"
                 android:text="@string/label_dialog_network_task_edit_notification" />
 
@@ -200,7 +264,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/linearlayout_dialog_network_task_edit_notification_margin_left"
                 android:layout_marginTop="@dimen/linearlayout_dialog_network_task_edit_notification_margin_top"
-                android:layout_row="5"
+                android:layout_row="7"
                 android:layout_column="1">
 
                 <com.google.android.material.switchmaterial.SwitchMaterial

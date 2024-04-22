@@ -79,8 +79,12 @@ public class GlobalSettingsActivityTest extends BaseUITest {
         ((GlobalSettingsActivity) getActivity(activityScenario)).injectTimeBasedSuspensionScheduler(getTimeBasedSuspensionScheduler());
         PreferenceManager preferenceManager = getPreferenceManager();
         assertFalse(preferenceManager.getPreferenceNotificationInactiveNetwork());
+        assertEquals(NotificationType.FAILURE, preferenceManager.getPreferenceNotificationType());
+        assertTrue(preferenceManager.getPreferenceSuspensionEnabled());
+        assertFalse(preferenceManager.getPreferenceEnforceDefaultPingPackageSize());
         assertFalse(preferenceManager.getPreferenceDownloadExternalStorage());
         assertFalse(preferenceManager.getPreferenceDownloadKeep());
+        assertFalse(preferenceManager.getPreferenceLogFile());
         onView(withId(R.id.textview_activity_global_settings_notification_inactive_network_label)).check(matches(withText("Notifications when network is not active")));
         onView(withId(R.id.switch_activity_global_settings_notification_inactive_network)).check(matches(isNotChecked()));
         onView(withId(R.id.radiogroup_activity_global_settings_notification_type)).check(matches(hasChildCount(2)));
@@ -92,6 +96,8 @@ public class GlobalSettingsActivityTest extends BaseUITest {
         onView(withId(R.id.switch_activity_global_settings_suspension_enabled)).check(matches(isChecked()));
         onView(withId(R.id.textview_activity_global_settings_suspension_intervals_label)).check(matches(withText("Defined suspension intervals")));
         onView(allOf(withText("None"), withGridLayoutPosition(1, 0))).check(matches(isDisplayed()));
+        onView(withId(R.id.textview_activity_global_settings_enforce_ping_package_size_enabled_label)).check(matches(withText("Enforce default ping package size")));
+        onView(withId(R.id.switch_activity_global_settings_enforce_ping_package_size_enabled)).check(matches(isNotChecked()));
         onView(withId(R.id.textview_activity_global_settings_download_external_storage_label)).check(matches(withText("Download to an external storage folder")));
         onView(withId(R.id.switch_activity_global_settings_download_external_storage)).check(matches(isNotChecked()));
         onView(withId(R.id.textview_activity_global_settings_download_folder_label)).check(matches(withText("Download folder")));
@@ -117,6 +123,7 @@ public class GlobalSettingsActivityTest extends BaseUITest {
         onView(withId(R.id.switch_activity_global_settings_notification_inactive_network)).perform(click());
         onView(withId(R.id.radiobutton_activity_global_settings_notification_type_change)).perform(click());
         onView(withId(R.id.switch_activity_global_settings_suspension_enabled)).perform(click());
+        onView(withId(R.id.switch_activity_global_settings_enforce_ping_package_size_enabled)).perform(click());
         onView(withId(R.id.switch_activity_global_settings_download_external_storage)).perform(click());
         onView(withId(R.id.switch_activity_global_settings_download_keep)).perform(scrollTo());
         onView(withId(R.id.switch_activity_global_settings_download_keep)).perform(click());
@@ -131,6 +138,8 @@ public class GlobalSettingsActivityTest extends BaseUITest {
         onView(allOf(withText("Disabled"), withGridLayoutPosition(1, 0))).check(matches(isDisplayed()));
         onView(withId(R.id.textview_activity_global_settings_download_external_storage_label)).check(matches(withText("Download to an external storage folder")));
         onView(withId(R.id.switch_activity_global_settings_download_external_storage)).check(matches(isChecked()));
+        onView(withId(R.id.textview_activity_global_settings_enforce_ping_package_size_enabled_label)).check(matches(withText("Enforce default ping package size")));
+        onView(withId(R.id.switch_activity_global_settings_enforce_ping_package_size_enabled)).check(matches(isChecked()));
         onView(withId(R.id.textview_activity_global_settings_download_folder_label)).check(matches(withText("Download folder")));
         onView(withId(R.id.textview_activity_global_settings_download_folder)).check(matches(withText(endsWith("download"))));
         onView(withId(R.id.textview_activity_global_settings_download_folder)).check(matches(isEnabled()));
@@ -165,6 +174,14 @@ public class GlobalSettingsActivityTest extends BaseUITest {
         onView(withId(R.id.switch_activity_global_settings_suspension_enabled)).perform(click());
         onView(withId(R.id.switch_activity_global_settings_suspension_enabled)).check(matches(isChecked()));
         onView(withId(R.id.textview_activity_global_settings_suspension_enabled_on_off)).check(matches(withText("yes")));
+        onView(withId(R.id.switch_activity_global_settings_enforce_ping_package_size_enabled)).check(matches(isNotChecked()));
+        onView(withId(R.id.textview_activity_global_settings_enforce_ping_package_size_enabled_on_off)).check(matches(withText("no")));
+        onView(withId(R.id.switch_activity_global_settings_enforce_ping_package_size_enabled)).perform(click());
+        onView(withId(R.id.switch_activity_global_settings_enforce_ping_package_size_enabled)).check(matches(isChecked()));
+        onView(withId(R.id.textview_activity_global_settings_enforce_ping_package_size_enabled_on_off)).check(matches(withText("yes")));
+        onView(withId(R.id.switch_activity_global_settings_enforce_ping_package_size_enabled)).perform(click());
+        onView(withId(R.id.switch_activity_global_settings_enforce_ping_package_size_enabled)).check(matches(isNotChecked()));
+        onView(withId(R.id.textview_activity_global_settings_enforce_ping_package_size_enabled_on_off)).check(matches(withText("no")));
         onView(withId(R.id.switch_activity_global_settings_download_external_storage)).check(matches(isNotChecked()));
         onView(withId(R.id.textview_activity_global_settings_download_external_storage_on_off)).check(matches(withText("no")));
         onView(withId(R.id.switch_activity_global_settings_download_external_storage)).perform(click());
@@ -203,6 +220,7 @@ public class GlobalSettingsActivityTest extends BaseUITest {
         onView(withId(R.id.switch_activity_global_settings_notification_inactive_network)).perform(click());
         onView(withId(R.id.radiobutton_activity_global_settings_notification_type_change)).perform(click());
         onView(withId(R.id.switch_activity_global_settings_suspension_enabled)).perform(click());
+        onView(withId(R.id.switch_activity_global_settings_enforce_ping_package_size_enabled)).perform(click());
         onView(withId(R.id.switch_activity_global_settings_download_external_storage)).perform(click());
         onView(withId(R.id.switch_activity_global_settings_download_keep)).perform(scrollTo());
         onView(withId(R.id.switch_activity_global_settings_download_keep)).perform(click());
@@ -212,6 +230,7 @@ public class GlobalSettingsActivityTest extends BaseUITest {
         assertTrue(preferenceManager.getPreferenceNotificationInactiveNetwork());
         assertEquals(NotificationType.CHANGE, preferenceManager.getPreferenceNotificationType());
         assertFalse(preferenceManager.getPreferenceSuspensionEnabled());
+        assertTrue(preferenceManager.getPreferenceEnforceDefaultPingPackageSize());
         assertTrue(preferenceManager.getPreferenceDownloadExternalStorage());
         assertEquals("download", preferenceManager.getPreferenceDownloadFolder());
         assertTrue(preferenceManager.getPreferenceDownloadKeep());
@@ -1507,6 +1526,7 @@ public class GlobalSettingsActivityTest extends BaseUITest {
         onView(withId(R.id.switch_activity_global_settings_notification_inactive_network)).perform(click());
         onView(withId(R.id.radiobutton_activity_global_settings_notification_type_change)).perform(click());
         onView(withId(R.id.switch_activity_global_settings_suspension_enabled)).perform(click());
+        onView(withId(R.id.switch_activity_global_settings_enforce_ping_package_size_enabled)).perform(click());
         onView(withId(R.id.switch_activity_global_settings_download_external_storage)).perform(click());
         onView(withId(R.id.switch_activity_global_settings_download_keep)).perform(scrollTo());
         onView(withId(R.id.switch_activity_global_settings_download_keep)).perform(click());
@@ -1520,6 +1540,8 @@ public class GlobalSettingsActivityTest extends BaseUITest {
         onView(withId(R.id.radiobutton_activity_global_settings_notification_type_change)).check(matches(isNotChecked()));
         onView(withId(R.id.textview_activity_global_settings_suspension_enabled_label)).check(matches(withText("Suspension intervals enabled")));
         onView(withId(R.id.switch_activity_global_settings_suspension_enabled)).check(matches(isChecked()));
+        onView(withId(R.id.textview_activity_global_settings_enforce_ping_package_size_enabled_label)).check(matches(withText("Enforce default ping package size")));
+        onView(withId(R.id.switch_activity_global_settings_enforce_ping_package_size_enabled)).check(matches(isNotChecked()));
         onView(withId(R.id.textview_activity_global_settings_download_external_storage_label)).check(matches(withText("Download to an external storage folder")));
         onView(withId(R.id.switch_activity_global_settings_download_external_storage)).check(matches(isNotChecked()));
         onView(withId(R.id.textview_activity_global_settings_download_folder_label)).check(matches(withText("Download folder")));
@@ -1548,6 +1570,7 @@ public class GlobalSettingsActivityTest extends BaseUITest {
         onView(withId(R.id.switch_activity_global_settings_notification_inactive_network)).perform(click());
         onView(withId(R.id.radiobutton_activity_global_settings_notification_type_change)).perform(click());
         onView(withId(R.id.switch_activity_global_settings_suspension_enabled)).perform(click());
+        onView(withId(R.id.switch_activity_global_settings_enforce_ping_package_size_enabled)).perform(click());
         onView(withId(R.id.switch_activity_global_settings_download_external_storage)).perform(click());
         onView(withId(R.id.switch_activity_global_settings_download_keep)).perform(scrollTo());
         onView(withId(R.id.switch_activity_global_settings_download_keep)).perform(click());
@@ -1559,6 +1582,8 @@ public class GlobalSettingsActivityTest extends BaseUITest {
         onView(withId(R.id.radiobutton_activity_global_settings_notification_type_change)).check(matches(isChecked()));
         onView(withId(R.id.switch_activity_global_settings_suspension_enabled)).check(matches(isNotChecked()));
         onView(withId(R.id.textview_activity_global_settings_suspension_enabled_on_off)).check(matches(withText("no")));
+        onView(withId(R.id.switch_activity_global_settings_enforce_ping_package_size_enabled)).check(matches(isChecked()));
+        onView(withId(R.id.textview_activity_global_settings_enforce_ping_package_size_enabled_on_off)).check(matches(withText("yes")));
         onView(withId(R.id.switch_activity_global_settings_download_external_storage)).check(matches(isChecked()));
         onView(withId(R.id.textview_activity_global_settings_download_external_storage_on_off)).check(matches(withText("yes")));
         onView(withId(R.id.switch_activity_global_settings_download_keep)).check(matches(isChecked()));
@@ -1568,9 +1593,11 @@ public class GlobalSettingsActivityTest extends BaseUITest {
         rotateScreen(activityScenario);
         onView(withId(R.id.switch_activity_global_settings_notification_inactive_network)).check(matches(isChecked()));
         onView(withId(R.id.textview_activity_global_settings_notification_inactive_network_on_off)).check(matches(withText("yes")));
+        onView(withId(R.id.radiobutton_activity_global_settings_notification_type_change)).check(matches(isChecked()));
         onView(withId(R.id.switch_activity_global_settings_suspension_enabled)).check(matches(isNotChecked()));
         onView(withId(R.id.textview_activity_global_settings_suspension_enabled_on_off)).check(matches(withText("no")));
-        onView(withId(R.id.radiobutton_activity_global_settings_notification_type_change)).check(matches(isChecked()));
+        onView(withId(R.id.switch_activity_global_settings_enforce_ping_package_size_enabled)).check(matches(isChecked()));
+        onView(withId(R.id.textview_activity_global_settings_enforce_ping_package_size_enabled_on_off)).check(matches(withText("yes")));
         onView(withId(R.id.switch_activity_global_settings_download_external_storage)).check(matches(isChecked()));
         onView(withId(R.id.textview_activity_global_settings_download_external_storage_on_off)).check(matches(withText("yes")));
         onView(withId(R.id.switch_activity_global_settings_download_keep)).check(matches(isChecked()));
