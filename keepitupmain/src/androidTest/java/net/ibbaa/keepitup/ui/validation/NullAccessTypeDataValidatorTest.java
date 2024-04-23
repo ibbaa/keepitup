@@ -30,28 +30,28 @@ import org.junit.runner.RunWith;
 
 @SmallTest
 @RunWith(AndroidJUnit4.class)
-public class NullValidatorTest {
+public class NullAccessTypeDataValidatorTest {
 
-    private NullValidator validator;
+    private NullAccessTypeDataValidator validator;
 
     @Before
     public void beforeEachTestMethod() {
-        validator = new NullValidator(TestRegistry.getContext());
+        validator = new NullAccessTypeDataValidator(TestRegistry.getContext());
     }
 
     @Test
     public void testValidate() {
-        ValidationResult result = validator.validateAddress("www.host.com");
+        ValidationResult result = validator.validatePingCount("3");
         assertFalse(result.isValidationSuccessful());
-        assertEquals("Address", result.getFieldName());
+        assertEquals("Ping count", result.getFieldName());
         assertEquals("No value specified", result.getMessage());
-        result = validator.validatePort("23");
+        result = validator.validatePingPackageSize("64");
         assertFalse(result.isValidationSuccessful());
-        assertEquals("Port", result.getFieldName());
+        assertEquals("Package size", result.getFieldName());
         assertEquals("No value specified", result.getMessage());
-        result = validator.validateInterval("1");
+        result = validator.validateConnectCount("3");
         assertFalse(result.isValidationSuccessful());
-        assertEquals("Interval", result.getFieldName());
+        assertEquals("Connect count", result.getFieldName());
         assertEquals("No value specified", result.getMessage());
     }
 }

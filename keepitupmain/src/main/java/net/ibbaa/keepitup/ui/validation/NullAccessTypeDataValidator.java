@@ -22,34 +22,34 @@ import android.content.res.Resources;
 import net.ibbaa.keepitup.R;
 import net.ibbaa.keepitup.logging.Log;
 
-public class NullValidator implements NetworkTaskValidator {
+public class NullAccessTypeDataValidator implements AccessTypeDataValidator {
 
     private final Context context;
 
-    public NullValidator(Context context) {
+    public NullAccessTypeDataValidator(Context context) {
         this.context = context;
     }
 
     @Override
-    public ValidationResult validateAddress(String address) {
-        Log.d(NullValidator.class.getName(), "validateAddress, address is " + address);
-        String fieldName = getResources().getString(R.string.task_address_field_name);
+    public ValidationResult validatePingCount(String pingCount) {
+        Log.d(NullAccessTypeDataValidator.class.getName(), "validatePingCount, pingCount is " + pingCount);
+        String fieldName = getResources().getString(R.string.accesstypedata_ping_count_field_name);
         String failedMessage = getResources().getString(R.string.invalid_no_value);
         return new ValidationResult(false, fieldName, failedMessage);
     }
 
     @Override
-    public ValidationResult validatePort(String port) {
-        Log.d(NullValidator.class.getName(), "validatePort, port is " + port);
-        String fieldName = getResources().getString(R.string.task_port_field_name);
+    public ValidationResult validatePingPackageSize(String pingPackageSize) {
+        Log.d(NullAccessTypeDataValidator.class.getName(), "validatePingPackageSize, pingPackageSize is " + pingPackageSize);
+        String fieldName = getResources().getString(R.string.accesstypedata_ping_package_size_field_name);
         String failedMessage = getResources().getString(R.string.invalid_no_value);
         return new ValidationResult(false, fieldName, failedMessage);
     }
 
     @Override
-    public ValidationResult validateInterval(String interval) {
-        Log.d(NullValidator.class.getName(), "validateInterval, interval is " + interval);
-        String fieldName = getResources().getString(R.string.task_interval_field_name);
+    public ValidationResult validateConnectCount(String connectCount) {
+        Log.d(NullAccessTypeDataValidator.class.getName(), "validateConnectCount, connectCount is " + connectCount);
+        String fieldName = getResources().getString(R.string.accesstypedata_connect_count_field_name);
         String failedMessage = getResources().getString(R.string.invalid_no_value);
         return new ValidationResult(false, fieldName, failedMessage);
     }

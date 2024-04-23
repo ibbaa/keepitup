@@ -20,6 +20,9 @@
     <string name="task_url_field_name">URL</string>
     <string name="task_address_field_name">Address</string>
     <string name="task_port_field_name">Port</string>
+    <string name="accesstypedata_ping_count_field_name">Ping count</string>
+    <string name="accesstypedata_ping_package_size_field_name">Package size</string>
+    <string name="accesstypedata_connect_count_field_name">Connect count</string>
     <string name="invalid_no_value">No value specified</string>
     <string name="invalid_number_format">Invalid format</string>
     <string name="invalid_host_format">No valid host or IP address</string>

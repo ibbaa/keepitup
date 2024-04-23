@@ -25,8 +25,11 @@ import androidx.test.filters.SmallTest;
 import net.ibbaa.keepitup.model.AccessType;
 import net.ibbaa.keepitup.test.mock.TestRegistry;
 import net.ibbaa.keepitup.ui.dialog.ContextOption;
-import net.ibbaa.keepitup.ui.validation.NullValidator;
+import net.ibbaa.keepitup.ui.validation.NullAccessTypeDataValidator;
+import net.ibbaa.keepitup.ui.validation.NullNetworkTaskValidator;
+import net.ibbaa.keepitup.ui.validation.StandardAccessTypeDataValidator;
 import net.ibbaa.keepitup.ui.validation.StandardHostPortValidator;
+import net.ibbaa.keepitup.ui.validation.URLValidator;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -58,9 +61,19 @@ public class EnumMappingTest {
     }
 
     @Test
-    public void testGetValidator() {
-        assertTrue(enumMapping.getValidator(null) instanceof NullValidator);
-        assertTrue(enumMapping.getValidator(AccessType.PING) instanceof StandardHostPortValidator);
+    public void testGetNetworkTaskValidator() {
+        assertTrue(enumMapping.getNetworkTaskValidator(null) instanceof NullNetworkTaskValidator);
+        assertTrue(enumMapping.getNetworkTaskValidator(AccessType.PING) instanceof StandardHostPortValidator);
+        assertTrue(enumMapping.getNetworkTaskValidator(AccessType.CONNECT) instanceof StandardHostPortValidator);
+        assertTrue(enumMapping.getNetworkTaskValidator(AccessType.DOWNLOAD) instanceof URLValidator);
+    }
+
+    @Test
+    public void testGetAccessTypeDataValidator() {
+        assertTrue(enumMapping.getAccessTypeDataValidator(null) instanceof NullAccessTypeDataValidator);
+        assertTrue(enumMapping.getAccessTypeDataValidator(AccessType.PING) instanceof StandardAccessTypeDataValidator);
+        assertTrue(enumMapping.getAccessTypeDataValidator(AccessType.CONNECT) instanceof StandardAccessTypeDataValidator);
+        assertTrue(enumMapping.getAccessTypeDataValidator(AccessType.DOWNLOAD) instanceof StandardAccessTypeDataValidator);
     }
 
     @Test

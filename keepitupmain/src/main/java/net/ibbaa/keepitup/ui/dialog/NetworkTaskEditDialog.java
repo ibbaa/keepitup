@@ -397,7 +397,7 @@ public class NetworkTaskEditDialog extends DialogFragment implements ContextOpti
 
     private void validateInput() {
         Log.d(NetworkTaskEditDialog.class.getName(), "validateInput");
-        NetworkTaskValidator validator = getValidator();
+        NetworkTaskValidator validator = getNetworkTaskValidator();
         setValidationResultColor(addressEditText, validator.validateAddress(getAddress()).isValidationSuccessful());
         if (isPortVisible()) {
             setValidationResultColor(portEditText, validator.validatePort(getPort()).isValidationSuccessful());
@@ -416,7 +416,7 @@ public class NetworkTaskEditDialog extends DialogFragment implements ContextOpti
     private List<ValidationResult> validateFinalInput() {
         Log.d(NetworkTaskEditDialog.class.getName(), "validateFinalInput");
         List<ValidationResult> validationResultList = new ArrayList<>();
-        NetworkTaskValidator validator = getValidator();
+        NetworkTaskValidator validator = getNetworkTaskValidator();
         ValidationResult result = validator.validateAddress(getAddress());
         Log.d(NetworkTaskEditDialog.class.getName(), "address validation result: " + result);
         if (!result.isValidationSuccessful()) {
@@ -441,7 +441,7 @@ public class NetworkTaskEditDialog extends DialogFragment implements ContextOpti
 
     private boolean validateAddress(EditText editText) {
         Log.d(NetworkTaskEditDialog.class.getName(), "validateAddress");
-        NetworkTaskValidator validator = getValidator();
+        NetworkTaskValidator validator = getNetworkTaskValidator();
         ValidationResult result = validator.validateAddress(getAddress());
         Log.d(NetworkTaskEditDialog.class.getName(), "address validation result: " + result);
         return result.isValidationSuccessful();
@@ -449,7 +449,7 @@ public class NetworkTaskEditDialog extends DialogFragment implements ContextOpti
 
     private boolean validatePort(EditText editText) {
         Log.d(NetworkTaskEditDialog.class.getName(), "validatePort");
-        NetworkTaskValidator validator = getValidator();
+        NetworkTaskValidator validator = getNetworkTaskValidator();
         ValidationResult result = validator.validatePort(getPort());
         Log.d(NetworkTaskEditDialog.class.getName(), "port validation result: " + result);
         return result.isValidationSuccessful();
@@ -457,17 +457,17 @@ public class NetworkTaskEditDialog extends DialogFragment implements ContextOpti
 
     private boolean validateInterval(EditText editText) {
         Log.d(NetworkTaskEditDialog.class.getName(), "validateInterval");
-        NetworkTaskValidator validator = getValidator();
+        NetworkTaskValidator validator = getNetworkTaskValidator();
         ValidationResult result = validator.validateInterval(getInterval());
         Log.d(NetworkTaskEditDialog.class.getName(), "interval validation result: " + result);
         return result.isValidationSuccessful();
     }
 
     @NonNull
-    private NetworkTaskValidator getValidator() {
+    private NetworkTaskValidator getNetworkTaskValidator() {
         EnumMapping mapping = new EnumMapping(requireContext());
         AccessType accessType = getAccessType();
-        NetworkTaskValidator validator = mapping.getValidator(accessType);
+        NetworkTaskValidator validator = mapping.getNetworkTaskValidator(accessType);
         Log.d(NetworkTaskEditDialog.class.getName(), "Validator is " + validator.getClass().getSimpleName() + " for access type " + accessType);
         return validator;
     }

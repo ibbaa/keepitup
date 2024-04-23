@@ -23,8 +23,10 @@ import net.ibbaa.keepitup.R;
 import net.ibbaa.keepitup.logging.Log;
 import net.ibbaa.keepitup.model.AccessType;
 import net.ibbaa.keepitup.ui.dialog.ContextOption;
+import net.ibbaa.keepitup.ui.validation.AccessTypeDataValidator;
 import net.ibbaa.keepitup.ui.validation.NetworkTaskValidator;
-import net.ibbaa.keepitup.ui.validation.NullValidator;
+import net.ibbaa.keepitup.ui.validation.NullAccessTypeDataValidator;
+import net.ibbaa.keepitup.ui.validation.NullNetworkTaskValidator;
 
 import java.lang.reflect.Constructor;
 
@@ -67,13 +69,13 @@ public class EnumMapping {
         return getResources().getString(getResources().getIdentifier(accessType.getClass().getSimpleName() + "_" + accessType.name() + "_port", "string", context.getPackageName()));
     }
 
-    public NetworkTaskValidator getValidator(AccessType accessType) {
-        Log.d(EnumMapping.class.getName(), "getValidator for access type " + accessType);
+    public NetworkTaskValidator getNetworkTaskValidator(AccessType accessType) {
+        Log.d(EnumMapping.class.getName(), "getNetworkTaskValidator for access type " + accessType);
         if (accessType == null) {
-            Log.d(EnumMapping.class.getName(), "returning NullValidator");
-            return new NullValidator(getContext());
+            Log.d(EnumMapping.class.getName(), "returning " + NullNetworkTaskValidator.class.getSimpleName());
+            return new NullNetworkTaskValidator(getContext());
         }
-        String validatorClassName = getResources().getString(getResources().getIdentifier(accessType.getClass().getSimpleName() + "_" + accessType.name() + "_validator", "string", context.getPackageName()));
+        String validatorClassName = getResources().getString(getResources().getIdentifier(accessType.getClass().getSimpleName() + "_" + accessType.name() + "_task_validator", "string", context.getPackageName()));
         Log.d(EnumMapping.class.getName(), "specified validator class is " + validatorClassName);
         try {
             Class<?> validatorClass = getContext().getClassLoader().loadClass(validatorClassName);
@@ -82,8 +84,27 @@ public class EnumMapping {
         } catch (Throwable exc) {
             Log.e(EnumMapping.class.getName(), "Error instantiating validator class", exc);
         }
-        Log.d(EnumMapping.class.getName(), "returning NullValidator");
-        return new NullValidator(getContext());
+        Log.d(EnumMapping.class.getName(), "returning " + NullNetworkTaskValidator.class.getSimpleName());
+        return new NullNetworkTaskValidator(getContext());
+    }
+
+    public AccessTypeDataValidator getAccessTypeDataValidator(AccessType accessType) {
+        Log.d(EnumMapping.class.getName(), "getAccessTypeDataValidator for access type " + accessType);
+        if (accessType == null) {
+            Log.d(EnumMapping.class.getName(), "returning " + NullAccessTypeDataValidator.class.getSimpleName());
+            return new NullAccessTypeDataValidator(getContext());
+        }
+        String validatorClassName = getResources().getString(getResources().getIdentifier(accessType.getClass().getSimpleName() + "_" + accessType.name() + "_data_validator", "string", context.getPackageName()));
+        Log.d(EnumMapping.class.getName(), "specified validator class is " + validatorClassName);
+        try {
+            Class<?> validatorClass = getContext().getClassLoader().loadClass(validatorClassName);
+            Constructor<?> validatorClassConstructor = validatorClass.getConstructor(Context.class);
+            return (AccessTypeDataValidator) validatorClassConstructor.newInstance(getContext());
+        } catch (Throwable exc) {
+            Log.e(EnumMapping.class.getName(), "Error instantiating validator class", exc);
+        }
+        Log.d(EnumMapping.class.getName(), "returning " + NullAccessTypeDataValidator.class.getSimpleName());
+        return new NullAccessTypeDataValidator(getContext());
     }
 
     public String getContextOptionName(ContextOption contextOption) {
