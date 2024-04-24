@@ -36,6 +36,10 @@
     <dimen name="cardview_activity_defaults_ping_count_corner_radius">4dp</dimen>
     <dimen name="cardview_activity_defaults_ping_count_card_elevation">4dp</dimen>
     <dimen name="linearlayout_activity_defaults_ping_count_margin">4dp</dimen>
+    <dimen name="cardview_activity_defaults_ping_package_size_margin">4dp</dimen>
+    <dimen name="cardview_activity_defaults_ping_package_size_corner_radius">4dp</dimen>
+    <dimen name="cardview_activity_defaults_ping_package_size_card_elevation">4dp</dimen>
+    <dimen name="linearlayout_activity_defaults_ping_package_size_margin">4dp</dimen>
     <dimen name="cardview_activity_defaults_connect_count_margin">4dp</dimen>
     <dimen name="cardview_activity_defaults_connect_count_corner_radius">4dp</dimen>
     <dimen name="cardview_activity_defaults_connect_count_card_elevation">4dp</dimen>

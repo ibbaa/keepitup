@@ -31,6 +31,7 @@ public class SettingsInput {
         PORT(InputType.TYPE_CLASS_NUMBER),
         INTERVAL(InputType.TYPE_CLASS_NUMBER),
         PINGCOUNT(InputType.TYPE_CLASS_NUMBER),
+        PINGPACKAGESIZE(InputType.TYPE_CLASS_NUMBER),
         CONNECTCOUNT(InputType.TYPE_CLASS_NUMBER);
 
         private final int inputType;

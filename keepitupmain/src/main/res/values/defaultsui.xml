@@ -22,6 +22,7 @@
     <string name="label_activity_defaults_port">Port</string>
     <string name="label_activity_defaults_interval">Interval</string>
     <string name="label_activity_defaults_ping_count">Ping count</string>
+    <string name="label_activity_defaults_ping_package_size">Ping package size</string>
     <string name="label_activity_defaults_connect_count">Connect count</string>
     <string name="label_activity_defaults_onlywifi">Only on WiFi</string>
     <string name="label_activity_defaults_notification">Notifications</string>

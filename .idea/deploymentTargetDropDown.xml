@@ -18,7 +18,7 @@
           <timeTargetWasSelectedWithDropDown value="2024-04-23T15:17:27.708668548Z" />
         </State>
       </entry>
-      <entry key="StandardAccessTypeDataValidatorTest">
+      <entry key="NetworkTaskEditDialogTest">
         <State />
       </entry>
       <entry key="keepitupmain">
@@ -37,29 +37,16 @@
           <timeTargetWasSelectedWithDropDown value="2024-04-22T15:39:10.052809751Z" />
         </State>
       </entry>
+      <entry key="testConfirmDialogOnScreenRotationConnectCount()">
+        <State />
+      </entry>
+      <entry key="testConfirmDialogOnScreenRotationPingPackageSize()">
+        <State />
+      </entry>
+      <entry key="testErrorColorOnOpenDialog()">
+        <State />
+      </entry>
       <entry key="testExportConfigurationScreenRotation()">
-        <State />
-      </entry>
-      <entry key="testGetAccessTypeDataValidator()">
-        <State>
-          <targetSelectedWithDropDown>
-            <Target>
-              <type value="QUICK_BOOT_TARGET" />
-              <deviceKey>
-                <Key>
-                  <type value="VIRTUAL_DEVICE_PATH" />
-                  <value value="$USER_HOME$/.android/avd/Pixel_8_Pro_API_29.avd" />
-                </Key>
-              </deviceKey>
-            </Target>
-          </targetSelectedWithDropDown>
-          <timeTargetWasSelectedWithDropDown value="2024-04-23T15:17:14.597282736Z" />
-        </State>
-      </entry>
-      <entry key="testGetNetworkTaskValidator()">
-        <State />
-      </entry>
-      <entry key="testValidate() (1)">
         <State />
       </entry>
     </value>

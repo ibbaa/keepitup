@@ -43,6 +43,7 @@ import net.ibbaa.keepitup.ui.validation.ConnectCountFieldValidator;
 import net.ibbaa.keepitup.ui.validation.HostFieldValidator;
 import net.ibbaa.keepitup.ui.validation.IntervalFieldValidator;
 import net.ibbaa.keepitup.ui.validation.PingCountFieldValidator;
+import net.ibbaa.keepitup.ui.validation.PingPackageSizeFieldValidator;
 import net.ibbaa.keepitup.ui.validation.PortFieldValidator;
 import net.ibbaa.keepitup.ui.validation.URLFieldValidator;
 import net.ibbaa.keepitup.util.NumberUtil;
@@ -62,6 +63,7 @@ public class DefaultsActivity extends SettingsInputActivity {
     private TextView intervalText;
     private TextView intervalMinutesText;
     private TextView pingCountText;
+    private TextView pingPackageSizeText;
     private TextView connectCountText;
     private SwitchMaterial onlyWifiSwitch;
     private TextView onlyWifiOnOffText;
@@ -80,6 +82,7 @@ public class DefaultsActivity extends SettingsInputActivity {
         preparePortField();
         prepareIntervalField();
         preparePingCountField();
+        preparePingPackageSizeField();
         prepareConnectCountField();
         prepareOnlyWifiSwitch();
         prepareNotificationSwitch();
@@ -180,6 +183,15 @@ public class DefaultsActivity extends SettingsInputActivity {
         pingCountCardView.setOnClickListener(this::showPingCountInputDialog);
     }
 
+    private void preparePingPackageSizeField() {
+        Log.d(DefaultsActivity.class.getName(), "preparePingPackageSizeField");
+        PreferenceManager preferenceManager = new PreferenceManager(this);
+        pingPackageSizeText = findViewById(R.id.textview_activity_defaults_ping_package_size);
+        setPingPackageSize(String.valueOf(preferenceManager.getPreferencePingPackageSize()));
+        CardView pingPackageSizeCardView = findViewById(R.id.cardview_activity_defaults_ping_package_size);
+        pingPackageSizeCardView.setOnClickListener(this::showPingPackageSizeInputDialog);
+    }
+
     private void prepareConnectCountField() {
         Log.d(DefaultsActivity.class.getName(), "prepareConnectCountField");
         PreferenceManager preferenceManager = new PreferenceManager(this);
@@ -269,6 +281,14 @@ public class DefaultsActivity extends SettingsInputActivity {
         pingCountText.setText(StringUtil.notNull(pingCount));
     }
 
+    private String getPingPackageSize() {
+        return StringUtil.notNull(pingPackageSizeText.getText());
+    }
+
+    private void setPingPackageSize(String pingPackageSize) {
+        pingPackageSizeText.setText(StringUtil.notNull(pingPackageSize));
+    }
+
     private String getConnectCount() {
         return StringUtil.notNull(connectCountText.getText());
     }
@@ -305,6 +325,13 @@ public class DefaultsActivity extends SettingsInputActivity {
         showInputDialog(input.toBundle());
     }
 
+    private void showPingPackageSizeInputDialog(View view) {
+        Log.d(DefaultsActivity.class.getName(), "showPingPackageSizeInputDialog");
+        List<String> validators = Collections.singletonList(PingPackageSizeFieldValidator.class.getName());
+        SettingsInput input = new SettingsInput(SettingsInput.Type.PINGPACKAGESIZE, getPingPackageSize(), getResources().getString(R.string.label_activity_defaults_ping_package_size), validators);
+        showInputDialog(input.toBundle());
+    }
+
     private void showConnectCountInputDialog(View view) {
         Log.d(DefaultsActivity.class.getName(), "showConnectCountInputDialog");
         List<String> validators = Collections.singletonList(ConnectCountFieldValidator.class.getName());
@@ -335,6 +362,9 @@ public class DefaultsActivity extends SettingsInputActivity {
         } else if (SettingsInput.Type.PINGCOUNT.equals(type)) {
             setPingCount(inputDialog.getValue());
             preferenceManager.setPreferencePingCount(NumberUtil.getIntValue(getPingCount(), getResources().getInteger(R.integer.ping_count_default)));
+        } else if (SettingsInput.Type.PINGPACKAGESIZE.equals(type)) {
+            setPingPackageSize(inputDialog.getValue());
+            preferenceManager.setPreferencePingPackageSize(NumberUtil.getIntValue(getPingPackageSize(), getResources().getInteger(R.integer.ping_package_size_default)));
         } else if (SettingsInput.Type.CONNECTCOUNT.equals(type)) {
             setConnectCount(inputDialog.getValue());
             preferenceManager.setPreferenceConnectCount(NumberUtil.getIntValue(getConnectCount(), getResources().getInteger(R.integer.connect_count_default)));
