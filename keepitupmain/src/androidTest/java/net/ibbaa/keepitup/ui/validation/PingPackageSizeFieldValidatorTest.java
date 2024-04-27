@@ -29,7 +29,7 @@ public class PingPackageSizeFieldValidatorTest {
     @Test
     public void testValidate() {
         PingPackageSizeFieldValidator validator = new PingPackageSizeFieldValidator("testpingpackagesize", TestRegistry.getContext());
-        ValidationResult result = validator.validate("65507");
+        ValidationResult result = validator.validate("65527");
         assertTrue(result.isValidationSuccessful());
         assertEquals("testpingpackagesize", result.getFieldName());
         assertEquals("Validation successful", result.getMessage());
@@ -44,7 +44,7 @@ public class PingPackageSizeFieldValidatorTest {
         result = validator.validate(String.valueOf(Long.MAX_VALUE));
         assertFalse(result.isValidationSuccessful());
         assertEquals("testpingpackagesize", result.getFieldName());
-        assertEquals("Maximum: 65507", result.getMessage());
+        assertEquals("Maximum: 65527", result.getMessage());
         result = validator.validate("");
         assertFalse(result.isValidationSuccessful());
         assertEquals("testpingpackagesize", result.getFieldName());

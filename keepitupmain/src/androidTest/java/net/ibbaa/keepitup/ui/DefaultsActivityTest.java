@@ -605,11 +605,11 @@ public class DefaultsActivityTest extends BaseUITest {
         onView(withId(R.id.imageview_dialog_settings_input_cancel)).perform(click());
         onView(withId(R.id.textview_activity_defaults_ping_package_size)).check(matches(withText("56")));
         onView(withId(R.id.textview_activity_defaults_ping_package_size)).perform(click());
-        onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("65508"));
+        onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("65528"));
         onView(withId(R.id.edittext_dialog_settings_input_value)).check(matches(withTextColor(R.color.textErrorColor)));
         onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
         onView(allOf(withText("Ping package size"), withGridLayoutPosition(1, 0))).check(matches(isDisplayed()));
-        onView(allOf(withText("Maximum: 65507"), withGridLayoutPosition(1, 1))).check(matches(isDisplayed()));
+        onView(allOf(withText("Maximum: 65527"), withGridLayoutPosition(1, 1))).check(matches(isDisplayed()));
         onView(withId(R.id.imageview_dialog_validator_error_ok)).perform(click());
         onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("5"));
         onView(withId(R.id.edittext_dialog_settings_input_value)).check(matches(withTextColor(R.color.textColor)));
