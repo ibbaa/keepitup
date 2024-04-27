@@ -28,6 +28,7 @@ import androidx.test.filters.MediumTest;
 
 import net.ibbaa.keepitup.logging.NetworkTaskLog;
 import net.ibbaa.keepitup.model.AccessType;
+import net.ibbaa.keepitup.model.AccessTypeData;
 import net.ibbaa.keepitup.model.LogEntry;
 import net.ibbaa.keepitup.model.NetworkTask;
 import net.ibbaa.keepitup.test.mock.TestRegistry;
@@ -65,12 +66,15 @@ public class NetworkTaskHandlerTest extends BaseUITest {
     @Test
     public void testStartStopNetworkTask() {
         NetworkTask task = getNetworkTask1();
-        getNetworkTaskDAO().insertNetworkTask(task);
-        handler.startNetworkTask(task);
+        task = getNetworkTaskDAO().insertNetworkTask(task);
+        AccessTypeData data = getAccessTypeData1();
+        data.setNetworkTaskId(task.getId());
+        getAccessTypeDataDAO().insertAccessTypeData(data);
+        handler.startNetworkTask(task, data);
         List<NetworkTask> tasks = getNetworkTaskDAO().readAllNetworkTasks();
         task = tasks.get(0);
         assertTrue(task.isRunning());
-        handler.stopNetworkTask(task);
+        handler.stopNetworkTask(task, data);
         tasks = getNetworkTaskDAO().readAllNetworkTasks();
         task = tasks.get(0);
         assertFalse(task.isRunning());
@@ -79,7 +83,8 @@ public class NetworkTaskHandlerTest extends BaseUITest {
     @Test
     public void testInsertNetworkTask() {
         NetworkTask task1 = getNetworkTask1();
-        handler.insertNetworkTask(task1);
+        AccessTypeData data1 = getAccessTypeData1();
+        handler.insertNetworkTask(task1, data1);
         List<NetworkTask> tasks = getNetworkTaskDAO().readAllNetworkTasks();
         assertEquals(1, tasks.size());
         assertEquals(1, getAdapter().getNextIndex());
@@ -87,53 +92,70 @@ public class NetworkTaskHandlerTest extends BaseUITest {
         task1 = tasks.get(0);
         assertEquals(0, task1.getIndex());
         assertTrue(task1.getId() >= 0);
+        AccessTypeData readData1 = getAccessTypeDataDAO().readAccessTypeDataForNetworkTask(task1.getId());
+        data1.setNetworkTaskId(task1.getId());
+        assertTrue(data1.isTechnicallyEqual(readData1));
         NetworkTaskUIWrapper adapterWrapper1 = getAdapter().getItem(0);
         assertNull(adapterWrapper1.getLogEntry());
         assertTrue(task1.isEqual(adapterWrapper1.getNetworkTask()));
+        assertTrue(data1.isEqual(adapterWrapper1.getAccessTypeData()));
         NetworkTask task2 = getNetworkTask2();
-        handler.insertNetworkTask(task2);
+        AccessTypeData data2 = getAccessTypeData1();
+        handler.insertNetworkTask(task2, data2);
         tasks = getNetworkTaskDAO().readAllNetworkTasks();
         assertEquals(2, tasks.size());
         assertEquals(2, getAdapter().getNextIndex());
         assertEquals(2, getAdapter().getItemCount());
         task2 = tasks.get(1);
+        AccessTypeData readData2 = getAccessTypeDataDAO().readAccessTypeDataForNetworkTask(task2.getId());
+        assertTrue(data2.isTechnicallyEqual(readData2));
         NetworkTaskUIWrapper adapterWrapper2 = getAdapter().getItem(1);
         assertNull(adapterWrapper2.getLogEntry());
         assertTrue(task2.isEqual(adapterWrapper2.getNetworkTask()));
+        assertTrue(data2.isEqual(adapterWrapper2.getAccessTypeData()));
     }
 
     @Test
     public void testUpdateNetworkTask() {
         NetworkTask task1 = getNetworkTask1();
-        handler.insertNetworkTask(task1);
+        AccessTypeData data1 = getAccessTypeData1();
+        handler.insertNetworkTask(task1, data1);
         NetworkTask task2 = getNetworkTask2();
-        handler.insertNetworkTask(task2);
+        AccessTypeData data2 = getAccessTypeData2();
+        handler.insertNetworkTask(task2, data2);
         task1.setAddress("192.168.178.1");
+        data1.setPingCount(9);
         LogEntry logEntry = getLogEntryWithNetworkTaskId(task1.getId());
         logEntry = getLogDAO().insertAndDeleteLog(logEntry);
-        getAdapter().replaceItem(new NetworkTaskUIWrapper(task1, logEntry));
-        handler.updateNetworkTask(task1);
+        getAdapter().replaceItem(new NetworkTaskUIWrapper(task1, data1, logEntry));
+        handler.updateNetworkTask(task1, data1);
         List<NetworkTask> tasks = getNetworkTaskDAO().readAllNetworkTasks();
         task1 = tasks.get(0);
         assertEquals("192.168.178.1", task1.getAddress());
+        AccessTypeData readData1 = getAccessTypeDataDAO().readAccessTypeDataForNetworkTask(task1.getId());
+        assertEquals(9, readData1.getPingCount());
+        assertTrue(data1.isTechnicallyEqual(readData1));
         NetworkTaskUIWrapper adapterWrapper1 = getAdapter().getItem(0);
         assertTrue(logEntry.isEqual(adapterWrapper1.getLogEntry()));
         assertEquals("192.168.178.1", adapterWrapper1.getNetworkTask().getAddress());
+        assertEquals(9, adapterWrapper1.getAccessTypeData().getPingCount());
         assertTrue(task1.isEqual(adapterWrapper1.getNetworkTask()));
+        assertTrue(data1.isEqual(adapterWrapper1.getAccessTypeData()));
         assertFalse(task1.isRunning());
         task2 = tasks.get(1);
-        handler.startNetworkTask(task2);
-        handler.updateNetworkTask(task2);
+        handler.startNetworkTask(task2, data2);
+        handler.updateNetworkTask(task2, data2);
         assertTrue(task2.isRunning());
     }
 
     @Test
     public void testUpdateNetworkTaskClearNetworkTaskLog() {
         NetworkTask task1 = getNetworkTask1();
-        handler.insertNetworkTask(task1);
+        AccessTypeData data1 = getAccessTypeData1();
+        handler.insertNetworkTask(task1, data1);
         task1.setAddress("192.168.178.1");
         ILogger logger = NetworkTaskLog.getLogger(TestRegistry.getContext(), task1);
-        handler.updateNetworkTask(task1);
+        handler.updateNetworkTask(task1, data1);
         ILogger logger2 = NetworkTaskLog.getLogger(TestRegistry.getContext(), task1);
         assertNotSame(logger, logger2);
     }
@@ -141,13 +163,17 @@ public class NetworkTaskHandlerTest extends BaseUITest {
     @Test
     public void testDeleteNetworkTask() {
         NetworkTask task1 = getNetworkTask1();
-        handler.insertNetworkTask(task1);
+        AccessTypeData data1 = getAccessTypeData1();
+        handler.insertNetworkTask(task1, data1);
         NetworkTask task2 = getNetworkTask2();
-        handler.insertNetworkTask(task2);
+        AccessTypeData data2 = getAccessTypeData2();
+        handler.insertNetworkTask(task2, data2);
         NetworkTask task3 = getNetworkTask3();
-        handler.insertNetworkTask(task3);
+        AccessTypeData data3 = getAccessTypeData3();
+        handler.insertNetworkTask(task3, data3);
         NetworkTask task4 = getNetworkTask4();
-        handler.insertNetworkTask(task4);
+        AccessTypeData data4 = getAccessTypeData4();
+        handler.insertNetworkTask(task4, data4);
         List<NetworkTask> tasks = getNetworkTaskDAO().readAllNetworkTasks();
         task2 = tasks.get(1);
         LogEntry logEntry = getLogEntryWithNetworkTaskId(task2.getId());
@@ -156,9 +182,10 @@ public class NetworkTaskHandlerTest extends BaseUITest {
         getLogDAO().insertAndDeleteLog(logEntry);
         getLogDAO().insertAndDeleteLog(logEntry);
         assertEquals(4, getAdapter().getItemCount());
-        handler.startNetworkTask(task2);
+        handler.startNetworkTask(task2, data2);
         handler.deleteNetworkTask(task2);
         assertFalse(task2.isRunning());
+        assertNull(getAccessTypeDataDAO().readAccessTypeDataForNetworkTask(task2.getId()));
         List<LogEntry> allEntries = getLogDAO().readAllLogsForNetworkTask(task2.getId());
         assertTrue(allEntries.isEmpty());
         tasks = getNetworkTaskDAO().readAllNetworkTasks();
@@ -175,7 +202,8 @@ public class NetworkTaskHandlerTest extends BaseUITest {
     @Test
     public void testDeleteNetworkTaskClearNetworkTaskLog() {
         NetworkTask task1 = getNetworkTask1();
-        handler.insertNetworkTask(task1);
+        AccessTypeData data1 = getAccessTypeData1();
+        handler.insertNetworkTask(task1, data1);
         ILogger logger = NetworkTaskLog.getLogger(TestRegistry.getContext(), task1);
         handler.deleteNetworkTask(task1);
         ILogger logger2 = NetworkTaskLog.getLogger(TestRegistry.getContext(), task1);
@@ -244,6 +272,46 @@ public class NetworkTaskHandlerTest extends BaseUITest {
         networkTask.setNotification(false);
         networkTask.setRunning(false);
         return networkTask;
+    }
+
+    private AccessTypeData getAccessTypeData1() {
+        AccessTypeData data = new AccessTypeData();
+        data.setId(0);
+        data.setNetworkTaskId(0);
+        data.setPingCount(10);
+        data.setPingPackageSize(1234);
+        data.setConnectCount(3);
+        return data;
+    }
+
+    private AccessTypeData getAccessTypeData2() {
+        AccessTypeData data = new AccessTypeData();
+        data.setId(0);
+        data.setNetworkTaskId(1);
+        data.setPingCount(1);
+        data.setPingPackageSize(123);
+        data.setConnectCount(2);
+        return data;
+    }
+
+    private AccessTypeData getAccessTypeData3() {
+        AccessTypeData data = new AccessTypeData();
+        data.setId(0);
+        data.setNetworkTaskId(2);
+        data.setPingCount(2);
+        data.setPingPackageSize(4321);
+        data.setConnectCount(5);
+        return data;
+    }
+
+    private AccessTypeData getAccessTypeData4() {
+        AccessTypeData data = new AccessTypeData();
+        data.setId(0);
+        data.setNetworkTaskId(2);
+        data.setPingCount(5);
+        data.setPingPackageSize(12);
+        data.setConnectCount(5);
+        return data;
     }
 
     private LogEntry getLogEntryWithNetworkTaskId(long networkTaskId) {

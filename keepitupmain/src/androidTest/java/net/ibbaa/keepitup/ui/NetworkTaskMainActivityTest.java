@@ -486,7 +486,7 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
         logEntry.setSuccess(success);
         logEntry.setTimestamp(calendar.getTime().getTime());
         logEntry.setMessage(message);
-        getAdapter(activityScenario).replaceItem(new NetworkTaskUIWrapper(task, logEntry));
+        getAdapter(activityScenario).replaceItem(new NetworkTaskUIWrapper(task, null, logEntry));
         getActivity(activityScenario).runOnUiThread(() -> getNetworkTaskMainActivity(activityScenario).getAdapter().notifyDataSetChanged());
         InstrumentationRegistry.getInstrumentation().waitForIdleSync();
     }
@@ -496,7 +496,7 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
         NetworkTask task = wrapper.getNetworkTask();
         LogEntry logEntry = wrapper.getLogEntry();
         task.setInstances(instances);
-        getAdapter(activityScenario).replaceItem(new NetworkTaskUIWrapper(task, logEntry));
+        getAdapter(activityScenario).replaceItem(new NetworkTaskUIWrapper(task, null, logEntry));
         getActivity(activityScenario).runOnUiThread(() -> getNetworkTaskMainActivity(activityScenario).getAdapter().notifyDataSetChanged());
         InstrumentationRegistry.getInstrumentation().waitForIdleSync();
     }

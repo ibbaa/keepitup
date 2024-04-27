@@ -26,6 +26,7 @@
     <string name="label_dialog_network_task_edit_notification">Notifications:</string>
     <integer name="edittext_dialog_network_task_edit_address_max_lines">5</integer>
     <integer name="edittext_dialog_network_task_edit_port_max_length">5</integer>
-    <integer name="edittext_dialog_network_task_edit_ping_connect_count_max_length">2</integer>
+    <integer name="edittext_dialog_network_task_edit_ping_count_max_length">2</integer>
+    <integer name="edittext_dialog_network_task_edit_connect_count_max_length">2</integer>
     <integer name="edittext_dialog_network_task_edit_ping_package_size_max_length">5</integer>
 </resources>

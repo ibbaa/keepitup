@@ -27,6 +27,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import net.ibbaa.keepitup.R;
 import net.ibbaa.keepitup.logging.Log;
+import net.ibbaa.keepitup.model.AccessTypeData;
 import net.ibbaa.keepitup.model.LogEntry;
 import net.ibbaa.keepitup.model.NetworkTask;
 import net.ibbaa.keepitup.service.TimeBasedSuspensionScheduler;
@@ -218,12 +219,12 @@ public class NetworkTaskAdapter extends RecyclerView.Adapter<NetworkTaskViewHold
         return -1;
     }
 
-    public void replaceNetworkTask(NetworkTask task) {
+    public void replaceNetworkTask(NetworkTask task, AccessTypeData data) {
         Log.d(NetworkTaskAdapter.class.getName(), "replaceNetworkTask " + task);
         for (int ii = 0; ii < networkTaskWrapperList.size(); ii++) {
             NetworkTaskUIWrapper currentTask = networkTaskWrapperList.get(ii);
             if (task.getId() == currentTask.getId()) {
-                networkTaskWrapperList.set(ii, new NetworkTaskUIWrapper(task, currentTask.getLogEntry()));
+                networkTaskWrapperList.set(ii, new NetworkTaskUIWrapper(task, data, currentTask.getLogEntry()));
                 return;
             }
         }
@@ -235,7 +236,7 @@ public class NetworkTaskAdapter extends RecyclerView.Adapter<NetworkTaskViewHold
         for (int ii = 0; ii < networkTaskWrapperList.size(); ii++) {
             NetworkTaskUIWrapper currentTask = networkTaskWrapperList.get(ii);
             if (task.getId() == currentTask.getId()) {
-                networkTaskWrapperList.set(ii, new NetworkTaskUIWrapper(currentTask.getNetworkTask(), logEntry));
+                networkTaskWrapperList.set(ii, new NetworkTaskUIWrapper(currentTask.getNetworkTask(), currentTask.getAccessTypeData(), logEntry));
                 return;
             }
         }

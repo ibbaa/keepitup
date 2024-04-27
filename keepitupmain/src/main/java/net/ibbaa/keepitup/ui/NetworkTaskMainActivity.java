@@ -32,6 +32,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import net.ibbaa.keepitup.R;
 import net.ibbaa.keepitup.logging.Log;
+import net.ibbaa.keepitup.model.AccessTypeData;
 import net.ibbaa.keepitup.model.NetworkTask;
 import net.ibbaa.keepitup.service.IAlarmManager;
 import net.ibbaa.keepitup.service.SystemAlarmManager;
@@ -206,8 +207,10 @@ public class NetworkTaskMainActivity extends RecyclerViewBaseActivity implements
             editDialog.injectPermissionManager(permissionManager);
         }
         NetworkTask task = new NetworkTask(this);
+        AccessTypeData data = new AccessTypeData(this);
         Bundle bundle = BundleUtil.integerToBundle(editDialog.getPositionKey(), -1);
         bundle = BundleUtil.bundleToBundle(editDialog.getTaskKey(), task.toBundle(), bundle);
+        bundle = BundleUtil.bundleToBundle(editDialog.getAccessTypeDataKey(), data.toBundle(), bundle);
         editDialog.setArguments(bundle);
         Log.d(NetworkTaskMainActivity.class.getName(), "Opening " + NetworkTaskEditDialog.class.getSimpleName());
         editDialog.show(getSupportFragmentManager(), NetworkTaskEditDialog.class.getName());
@@ -215,14 +218,15 @@ public class NetworkTaskMainActivity extends RecyclerViewBaseActivity implements
 
     public void onMainStartStopClicked(int position) {
         NetworkTask networkTask = ((NetworkTaskAdapter) getAdapter()).getItem(position).getNetworkTask();
-        Log.d(NetworkTaskMainActivity.class.getName(), "onMainStartStopClicked for network task " + networkTask);
+        AccessTypeData accessTypeData = ((NetworkTaskAdapter) getAdapter()).getItem(position).getAccessTypeData();
+        Log.d(NetworkTaskMainActivity.class.getName(), "onMainStartStopClicked for network task " + networkTask + " and access type data " + accessTypeData);
         NetworkTaskHandler handler = new NetworkTaskHandler(this);
         if (networkTask.isRunning()) {
             Log.d(NetworkTaskMainActivity.class.getName(), "Network task is running, stopping " + networkTask);
-            handler.stopNetworkTask(networkTask);
+            handler.stopNetworkTask(networkTask, accessTypeData);
         } else {
             Log.d(NetworkTaskMainActivity.class.getName(), "Network task is not running, starting " + networkTask);
-            handler.startNetworkTask(networkTask);
+            handler.startNetworkTask(networkTask, accessTypeData);
         }
         getAdapter().notifyItemChanged(position);
     }
@@ -234,13 +238,15 @@ public class NetworkTaskMainActivity extends RecyclerViewBaseActivity implements
 
     public void onMainEditClicked(int position) {
         NetworkTask task = ((NetworkTaskAdapter) getAdapter()).getItem(position).getNetworkTask();
-        Log.d(NetworkTaskMainActivity.class.getName(), "onMainEditClicked for network task " + task);
+        AccessTypeData accessTypeData = ((NetworkTaskAdapter) getAdapter()).getItem(position).getAccessTypeData();
+        Log.d(NetworkTaskMainActivity.class.getName(), "onMainEditClicked for network task " + task + " and access type data " + accessTypeData);
         NetworkTaskEditDialog editDialog = new NetworkTaskEditDialog();
         if (permissionManager != null) {
             editDialog.injectPermissionManager(permissionManager);
         }
         Bundle bundle = BundleUtil.integerToBundle(editDialog.getPositionKey(), position);
         bundle = BundleUtil.bundleToBundle(editDialog.getTaskKey(), task.toBundle(), bundle);
+        bundle = BundleUtil.bundleToBundle(editDialog.getAccessTypeDataKey(), accessTypeData.toBundle(), bundle);
         editDialog.setArguments(bundle);
         Log.d(NetworkTaskMainActivity.class.getName(), "Opening " + NetworkTaskEditDialog.class.getSimpleName());
         editDialog.show(getSupportFragmentManager(), NetworkTaskEditDialog.class.getName());
@@ -257,21 +263,26 @@ public class NetworkTaskMainActivity extends RecyclerViewBaseActivity implements
 
     public void onEditDialogOkClicked(NetworkTaskEditDialog editDialog) {
         NetworkTask task = editDialog.getNetworkTask();
-        Log.d(NetworkTaskMainActivity.class.getName(), "onEditDialogOkClicked, network task is " + task);
+        AccessTypeData accessTypeData = editDialog.getAccessTypeData();
+        Log.d(NetworkTaskMainActivity.class.getName(), "onEditDialogOkClicked, network task is " + task + ", access type data is " + accessTypeData);
         NetworkTaskHandler handler = new NetworkTaskHandler(this);
         if (task.getId() < 0) {
             Log.d(NetworkTaskMainActivity.class.getName(), "Network task is new, inserting " + task);
-            handler.insertNetworkTask(task);
+            handler.insertNetworkTask(task, accessTypeData);
             getAdapter().notifyItemInserted(getAdapter().getItemCount() + 1);
         } else {
             NetworkTask initialTask = editDialog.getInitialNetworkTask();
+            AccessTypeData initialAccessTypeData = editDialog.getInitialAccessTypeData();
+            initialAccessTypeData.setNetworkTaskId(initialTask.getId());
             Log.d(NetworkTaskMainActivity.class.getName(), "Initial network task is " + initialTask);
-            if (initialTask.isTechnicallyEqual(task)) {
+            Log.d(NetworkTaskMainActivity.class.getName(), "Initial access type data is " + initialAccessTypeData);
+            if (initialTask.isTechnicallyEqual(task) && initialAccessTypeData.isTechnicallyEqual(accessTypeData)) {
                 Log.d(NetworkTaskMainActivity.class.getName(), "Initial network task and network task are technically equal.");
+                Log.d(NetworkTaskMainActivity.class.getName(), "Initial access type data and access type data are technically equal.");
                 Log.d(NetworkTaskMainActivity.class.getName(), "No changes were made. Skipping update.");
             } else {
                 Log.d(NetworkTaskMainActivity.class.getName(), "Updating " + task);
-                handler.updateNetworkTask(task);
+                handler.updateNetworkTask(task, accessTypeData);
                 getAdapter().notifyItemChanged(editDialog.getPosition());
             }
         }

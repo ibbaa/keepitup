@@ -18,7 +18,7 @@
           <timeTargetWasSelectedWithDropDown value="2024-04-23T15:17:27.708668548Z" />
         </State>
       </entry>
-      <entry key="NetworkTaskEditDialogTest">
+      <entry key="NetworkTaskHandlerTest">
         <State />
       </entry>
       <entry key="keepitupmain">
@@ -34,19 +34,19 @@
               </deviceKey>
             </Target>
           </targetSelectedWithDropDown>
-          <timeTargetWasSelectedWithDropDown value="2024-04-22T15:39:10.052809751Z" />
+          <timeTargetWasSelectedWithDropDown value="2024-04-27T09:47:27.282411784Z" />
         </State>
       </entry>
-      <entry key="testConfirmDialogOnScreenRotationConnectCount()">
+      <entry key="testDeleteNetworkTask()">
         <State />
       </entry>
-      <entry key="testConfirmDialogOnScreenRotationPingPackageSize()">
+      <entry key="testInsertNetworkTask()">
         <State />
       </entry>
-      <entry key="testErrorColorOnOpenDialog()">
+      <entry key="testUpdateNetworkTask()">
         <State />
       </entry>
-      <entry key="testExportConfigurationScreenRotation()">
+      <entry key="testValidate()">
         <State />
       </entry>
     </value>

@@ -38,6 +38,18 @@ public enum AccessType {
         return needsPort;
     }
 
+    public boolean isPing() {
+        return PING.equals(this);
+    }
+
+    public boolean isConnect() {
+        return CONNECT.equals(this);
+    }
+
+    public boolean isDownload() {
+        return DOWNLOAD.equals(this);
+    }
+
     public static AccessType forCode(int code) {
         AccessType[] values = AccessType.values();
         for (AccessType value : values) {

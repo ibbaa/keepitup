@@ -19,9 +19,11 @@ package net.ibbaa.keepitup.ui.sync;
 import android.app.Activity;
 import android.content.Context;
 
+import net.ibbaa.keepitup.db.AccessTypeDataDAO;
 import net.ibbaa.keepitup.db.LogDAO;
 import net.ibbaa.keepitup.db.NetworkTaskDAO;
 import net.ibbaa.keepitup.logging.Log;
+import net.ibbaa.keepitup.model.AccessTypeData;
 import net.ibbaa.keepitup.model.LogEntry;
 import net.ibbaa.keepitup.model.NetworkTask;
 import net.ibbaa.keepitup.ui.NetworkTaskMainActivity;
@@ -61,10 +63,19 @@ public class NetworkTaskMainUIInitTask extends UIBackgroundTask<List<NetworkTask
                 }
                 for (NetworkTask currentTask : tasks) {
                     Log.d(NetworkTaskMainActivity.class.getName(), "Reading most recent log for " + currentTask);
+                    AccessTypeDataDAO accessTypeDataDAO = new AccessTypeDataDAO(context);
+                    AccessTypeData data = accessTypeDataDAO.readAccessTypeDataForNetworkTask(currentTask.getId());
+                    Log.d(NetworkTaskMainActivity.class.getName(), "Database returned the following access type data: " + (data == null ? "null" : data.toString()));
+                    if (data == null) {
+                        Log.d(NetworkTaskMainActivity.class.getName(), "Database returned null for access type data. Creating new one.");
+                        data = new AccessTypeData(context);
+                        data.setNetworkTaskId(currentTask.getId());
+                        accessTypeDataDAO.insertAccessTypeData(data);
+                    }
                     LogDAO logDAO = new LogDAO(context);
                     LogEntry logEntry = logDAO.readMostRecentLogForNetworkTask(currentTask.getId());
                     Log.d(NetworkTaskMainActivity.class.getName(), "Database returned the following log entry: " + (logEntry == null ? "no log entry" : logEntry.toString()));
-                    NetworkTaskUIWrapper currentWrapper = new NetworkTaskUIWrapper(currentTask, logEntry);
+                    NetworkTaskUIWrapper currentWrapper = new NetworkTaskUIWrapper(currentTask, data, logEntry);
                     wrapperList.add(currentWrapper);
                 }
                 return wrapperList;

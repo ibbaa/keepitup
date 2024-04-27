@@ -18,6 +18,7 @@ package net.ibbaa.keepitup.ui.adapter;
 
 import androidx.annotation.NonNull;
 
+import net.ibbaa.keepitup.model.AccessTypeData;
 import net.ibbaa.keepitup.model.LogEntry;
 import net.ibbaa.keepitup.model.NetworkTask;
 
@@ -25,10 +26,12 @@ import net.ibbaa.keepitup.model.NetworkTask;
 public class NetworkTaskUIWrapper {
 
     private final NetworkTask networkTask;
+    private final AccessTypeData accessTypeData;
     private final LogEntry logEntry;
 
-    public NetworkTaskUIWrapper(NetworkTask networkTask, LogEntry logEntry) {
+    public NetworkTaskUIWrapper(NetworkTask networkTask, AccessTypeData accessTypeData, LogEntry logEntry) {
         this.networkTask = networkTask;
+        this.accessTypeData = accessTypeData;
         this.logEntry = logEntry;
     }
 
@@ -40,6 +43,10 @@ public class NetworkTaskUIWrapper {
         return networkTask;
     }
 
+    public AccessTypeData getAccessTypeData() {
+        return accessTypeData;
+    }
+
     public LogEntry getLogEntry() {
         return logEntry;
     }
@@ -49,6 +56,7 @@ public class NetworkTaskUIWrapper {
     public String toString() {
         return "NetworkTaskUIWrapper{" +
                 "networkTask=" + networkTask +
+                ", accessTypeData=" + accessTypeData +
                 ", logEntry=" + logEntry +
                 '}';
     }

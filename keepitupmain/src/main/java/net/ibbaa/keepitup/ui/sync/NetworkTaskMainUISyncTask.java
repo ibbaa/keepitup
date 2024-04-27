@@ -19,10 +19,13 @@ package net.ibbaa.keepitup.ui.sync;
 import android.app.Activity;
 import android.content.Context;
 
+import net.ibbaa.keepitup.db.AccessTypeDataDAO;
 import net.ibbaa.keepitup.db.LogDAO;
 import net.ibbaa.keepitup.logging.Log;
+import net.ibbaa.keepitup.model.AccessTypeData;
 import net.ibbaa.keepitup.model.LogEntry;
 import net.ibbaa.keepitup.model.NetworkTask;
+import net.ibbaa.keepitup.ui.NetworkTaskMainActivity;
 import net.ibbaa.keepitup.ui.adapter.NetworkTaskAdapter;
 import net.ibbaa.keepitup.ui.adapter.NetworkTaskUIWrapper;
 
@@ -52,7 +55,15 @@ public class NetworkTaskMainUISyncTask extends UIBackgroundTask<NetworkTaskUIWra
             if (context != null) {
                 LogDAO logDAO = new LogDAO(context);
                 LogEntry logEntry = logDAO.readMostRecentLogForNetworkTask(networkTask.getId());
-                return new NetworkTaskUIWrapper(networkTask, logEntry);
+                AccessTypeDataDAO accessTypeDataDAO = new AccessTypeDataDAO(context);
+                AccessTypeData data = accessTypeDataDAO.readAccessTypeDataForNetworkTask(networkTask.getId());
+                if (data == null) {
+                    Log.d(NetworkTaskMainActivity.class.getName(), "Database returned null for access type data. Creating new one.");
+                    data = new AccessTypeData(context);
+                    data.setNetworkTaskId(networkTask.getId());
+                    accessTypeDataDAO.insertAccessTypeData(data);
+                }
+                return new NetworkTaskUIWrapper(networkTask, data, logEntry);
             }
         } catch (Exception exc) {
             Log.e(NetworkTaskMainUISyncTask.class.getName(), "Error reading log entry for network task " + networkTask, exc);

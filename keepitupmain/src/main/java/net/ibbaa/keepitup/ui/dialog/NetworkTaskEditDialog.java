@@ -37,6 +37,7 @@ import com.google.android.material.switchmaterial.SwitchMaterial;
 import net.ibbaa.keepitup.R;
 import net.ibbaa.keepitup.logging.Log;
 import net.ibbaa.keepitup.model.AccessType;
+import net.ibbaa.keepitup.model.AccessTypeData;
 import net.ibbaa.keepitup.model.NetworkTask;
 import net.ibbaa.keepitup.ui.ContextOptionsSupport;
 import net.ibbaa.keepitup.ui.ContextOptionsSupportManager;
@@ -46,6 +47,7 @@ import net.ibbaa.keepitup.ui.clipboard.SystemClipboardManager;
 import net.ibbaa.keepitup.ui.mapping.EnumMapping;
 import net.ibbaa.keepitup.ui.permission.IPermissionManager;
 import net.ibbaa.keepitup.ui.permission.PermissionManager;
+import net.ibbaa.keepitup.ui.validation.AccessTypeDataValidator;
 import net.ibbaa.keepitup.ui.validation.NetworkTaskValidator;
 import net.ibbaa.keepitup.ui.validation.TextColorValidatingWatcher;
 import net.ibbaa.keepitup.ui.validation.ValidationResult;
@@ -63,6 +65,7 @@ public class NetworkTaskEditDialog extends DialogFragment implements ContextOpti
 
     private View dialogView;
     private NetworkTask task;
+    private AccessTypeData accessTypeData;
     private RadioGroup accessTypeGroup;
     private EditText addressEditText;
     private TextColorValidatingWatcher addressEditTextWatcher;
@@ -70,6 +73,12 @@ public class NetworkTaskEditDialog extends DialogFragment implements ContextOpti
     private TextColorValidatingWatcher portEditTextWatcher;
     private EditText intervalEditText;
     private TextColorValidatingWatcher intervalEditTextWatcher;
+    private EditText pingCountEditText;
+    private TextColorValidatingWatcher pingCountEditTextWatcher;
+    private EditText connectCountEditText;
+    private TextColorValidatingWatcher connectCountEditTextWatcher;
+    private EditText pingPackageSizeEditText;
+    private TextColorValidatingWatcher pingPackageSizeEditTextWatcher;
     private SwitchMaterial onlyWifiSwitch;
     private SwitchMaterial notificationSwitch;
     private TextView onlyWifiOnOffText;
@@ -112,11 +121,15 @@ public class NetworkTaskEditDialog extends DialogFragment implements ContextOpti
         Log.d(NetworkTaskEditDialog.class.getName(), "onCreateView");
         dialogView = inflater.inflate(R.layout.dialog_network_task_edit, container);
         Bundle taskBundle = BundleUtil.bundleFromBundle(getTaskKey(), requireArguments());
-        task = new NetworkTask(taskBundle);
+        task = taskBundle != null ? new NetworkTask(taskBundle) : new NetworkTask();
+        Bundle accessTypeDataBundle = BundleUtil.bundleFromBundle(getAccessTypeDataKey(), requireArguments());
+        accessTypeData = accessTypeDataBundle != null ? new AccessTypeData(accessTypeDataBundle) : new AccessTypeData();
         prepareAccessTypeRadioButtons(savedInstanceState);
         prepareAddressTextFields();
         prepareAddressTextFieldsVisibility();
         prepareIntervalTextField();
+        prepareAccessTypeDataFields();
+        prepareAccessTypeDataFieldsVisibility();
         prepareOnlyWifiSwitch();
         prepareNotificationSwitch();
         prepareOkCancelImageButtons();
@@ -147,6 +160,10 @@ public class NetworkTaskEditDialog extends DialogFragment implements ContextOpti
         return NetworkTaskEditDialog.class.getName() + ".Task";
     }
 
+    public String getAccessTypeDataKey() {
+        return NetworkTaskEditDialog.class.getName() + ".AccessTypeData";
+    }
+
     private String getAccessTypeBundleKey() {
         return NetworkTaskEditDialog.class.getName() + ".AccessType";
     }
@@ -173,8 +190,32 @@ public class NetworkTaskEditDialog extends DialogFragment implements ContextOpti
         return StringUtil.notNull(intervalEditText.getText());
     }
 
+    private String getPingCount() {
+        return StringUtil.notNull(pingCountEditText.getText());
+    }
+
+    private String getConnectCount() {
+        return StringUtil.notNull(connectCountEditText.getText());
+    }
+
+    private String getPingPackageSize() {
+        return StringUtil.notNull(pingPackageSizeEditText.getText());
+    }
+
     private boolean isPortVisible() {
         return portEditText.getVisibility() == View.VISIBLE;
+    }
+
+    private boolean isPingCountVisible() {
+        return pingCountEditText.getVisibility() == View.VISIBLE;
+    }
+
+    private boolean isConnectCountVisible() {
+        return connectCountEditText.getVisibility() == View.VISIBLE;
+    }
+
+    private boolean isPingPackageSizeVisible() {
+        return pingPackageSizeEditText.getVisibility() == View.VISIBLE;
     }
 
     private void prepareAccessTypeRadioButtons(Bundle savedInstanceState) {
@@ -214,6 +255,7 @@ public class NetworkTaskEditDialog extends DialogFragment implements ContextOpti
 
     private void onAccessTypeChanged(RadioGroup group, int checkedId) {
         prepareAddressTextFieldsVisibility();
+        prepareAccessTypeDataFieldsVisibility();
         validateInput();
     }
 
@@ -294,6 +336,95 @@ public class NetworkTaskEditDialog extends DialogFragment implements ContextOpti
         intervalEditText.addTextChangedListener(intervalEditTextWatcher);
     }
 
+    private void prepareAccessTypeDataFields() {
+        Log.d(NetworkTaskEditDialog.class.getName(), "prepareAccessTypeDataFields with acccess type data of " + accessTypeData);
+        pingCountEditText = dialogView.findViewById(R.id.edittext_dialog_network_task_edit_ping_count);
+        preparePingCountEditTextListener();
+        pingCountEditText.setOnLongClickListener(this::onEditTextLongClicked);
+        pingCountEditText.setText(String.valueOf(accessTypeData.getPingCount()));
+        connectCountEditText = dialogView.findViewById(R.id.edittext_dialog_network_task_edit_connect_count);
+        prepareConnectCountEditTextListener();
+        connectCountEditText.setOnLongClickListener(this::onEditTextLongClicked);
+        connectCountEditText.setText(String.valueOf(accessTypeData.getConnectCount()));
+        pingPackageSizeEditText = dialogView.findViewById(R.id.edittext_dialog_network_task_edit_ping_package_size);
+        preparePingPackageSizeEditTextListener();
+        pingPackageSizeEditText.setOnLongClickListener(this::onEditTextLongClicked);
+        pingPackageSizeEditText.setText(String.valueOf(accessTypeData.getPingPackageSize()));
+    }
+
+    private void prepareAccessTypeDataFieldsVisibility() {
+        Log.d(NetworkTaskEditDialog.class.getName(), "prepareAccessTypeDataFieldsVisibility with acccess type data of " + accessTypeData);
+        EnumMapping mapping = new EnumMapping(requireContext());
+        RadioGroup accessTypeGroup = dialogView.findViewById(R.id.radiogroup_dialog_network_task_edit_accesstype);
+        int selectedId = accessTypeGroup.getCheckedRadioButtonId();
+        RadioButton selectedAccessTypeRadioButton = dialogView.findViewById(selectedId);
+        if (selectedAccessTypeRadioButton == null) {
+            Log.d(NetworkTaskEditDialog.class.getName(), "prepareAccessTypeDataFieldsVisibility, selectedAccessTypeRadioButton is null, no access type selected");
+            return;
+        }
+        AccessType accessType = (AccessType) selectedAccessTypeRadioButton.getTag();
+        LinearLayout pingCountLinearLayout = dialogView.findViewById(R.id.linearlayout_dialog_network_task_edit_ping_count);
+        LinearLayout connectCountLinearLayout = dialogView.findViewById(R.id.linearlayout_dialog_network_task_edit_connect_count);
+        LinearLayout pingPackageSizeLinearLayout = dialogView.findViewById(R.id.linearlayout_dialog_network_task_edit_ping_package_size);
+        TextView pingCountTextView = dialogView.findViewById(R.id.textview_dialog_network_task_edit_ping_count_label);
+        TextView connectCountTextView = dialogView.findViewById(R.id.textview_dialog_network_task_edit_connect_count_label);
+        TextView pingPackageSizeTextView = dialogView.findViewById(R.id.textview_dialog_network_task_edit_ping_package_size_label);
+        if (accessType.isPing()) {
+            pingCountTextView.setVisibility(View.VISIBLE);
+            pingCountEditText.setVisibility(View.VISIBLE);
+            pingCountLinearLayout.setVisibility(View.VISIBLE);
+            pingPackageSizeTextView.setVisibility(View.VISIBLE);
+            pingPackageSizeEditText.setVisibility(View.VISIBLE);
+            pingPackageSizeLinearLayout.setVisibility(View.VISIBLE);
+        } else {
+            pingCountTextView.setVisibility(View.GONE);
+            pingCountEditText.setVisibility(View.GONE);
+            pingCountLinearLayout.setVisibility(View.GONE);
+            pingPackageSizeTextView.setVisibility(View.GONE);
+            pingPackageSizeEditText.setVisibility(View.GONE);
+            pingPackageSizeLinearLayout.setVisibility(View.GONE);
+        }
+        if (accessType.isConnect()) {
+            connectCountTextView.setVisibility(View.VISIBLE);
+            connectCountEditText.setVisibility(View.VISIBLE);
+            connectCountLinearLayout.setVisibility(View.VISIBLE);
+        } else {
+            connectCountTextView.setVisibility(View.GONE);
+            connectCountEditText.setVisibility(View.GONE);
+            connectCountLinearLayout.setVisibility(View.GONE);
+        }
+    }
+
+    private void preparePingCountEditTextListener() {
+        Log.d(NetworkTaskEditDialog.class.getName(), "preparePingCountEditTextListener");
+        if (pingCountEditTextWatcher != null) {
+            pingCountEditText.removeTextChangedListener(pingCountEditTextWatcher);
+            pingCountEditTextWatcher = null;
+        }
+        pingCountEditTextWatcher = new TextColorValidatingWatcher(pingCountEditText, this::validatePingCount, getColor(R.color.textColor), getColor(R.color.textErrorColor));
+        pingCountEditText.addTextChangedListener(pingCountEditTextWatcher);
+    }
+
+    private void prepareConnectCountEditTextListener() {
+        Log.d(NetworkTaskEditDialog.class.getName(), "prepareConnectCountEditTextListener");
+        if (connectCountEditTextWatcher != null) {
+            connectCountEditText.removeTextChangedListener(connectCountEditTextWatcher);
+            connectCountEditTextWatcher = null;
+        }
+        connectCountEditTextWatcher = new TextColorValidatingWatcher(connectCountEditText, this::validateConnectCount, getColor(R.color.textColor), getColor(R.color.textErrorColor));
+        connectCountEditText.addTextChangedListener(connectCountEditTextWatcher);
+    }
+
+    private void preparePingPackageSizeEditTextListener() {
+        Log.d(NetworkTaskEditDialog.class.getName(), "preparePingPackageSizeEditTextListener");
+        if (pingPackageSizeEditTextWatcher != null) {
+            pingPackageSizeEditText.removeTextChangedListener(pingPackageSizeEditTextWatcher);
+            pingPackageSizeEditTextWatcher = null;
+        }
+        pingPackageSizeEditTextWatcher = new TextColorValidatingWatcher(connectCountEditText, this::validatePingPackageSize, getColor(R.color.textColor), getColor(R.color.textErrorColor));
+        pingPackageSizeEditText.addTextChangedListener(pingPackageSizeEditTextWatcher);
+    }
+
     private void prepareOnlyWifiSwitch() {
         Log.d(NetworkTaskEditDialog.class.getName(), "prepareOnlyWifiSwitch with only wifi setting of " + task.isOnlyWifi());
         onlyWifiSwitch = dialogView.findViewById(R.id.switch_dialog_network_task_edit_onlywifi);
@@ -341,8 +472,13 @@ public class NetworkTaskEditDialog extends DialogFragment implements ContextOpti
         return task;
     }
 
+    public AccessTypeData getInitialAccessTypeData() {
+        return accessTypeData;
+    }
+
     public NetworkTask getNetworkTask() {
-        NetworkTask task = new NetworkTask(BundleUtil.bundleFromBundle(getTaskKey(), requireArguments()));
+        Bundle taskBundle = BundleUtil.bundleFromBundle(getTaskKey(), requireArguments());
+        NetworkTask task = taskBundle != null ? new NetworkTask(taskBundle) : new NetworkTask();
         AccessType accessType = getAccessType();
         if (accessType != null) {
             task.setAccessType(accessType);
@@ -360,6 +496,28 @@ public class NetworkTaskEditDialog extends DialogFragment implements ContextOpti
         task.setNotification(notificationSwitch.isChecked());
         Log.d(NetworkTaskEditDialog.class.getName(), "getNetworkTask, network task is " + task);
         return task;
+    }
+
+    public AccessTypeData getAccessTypeData() {
+        Bundle accessTypeDataBundle = BundleUtil.bundleFromBundle(getAccessTypeDataKey(), requireArguments());
+        AccessTypeData accessTypeData = accessTypeDataBundle != null ? new AccessTypeData(accessTypeDataBundle) : new AccessTypeData();
+        if (isPingCountVisible()) {
+            if (NumberUtil.isValidIntValue(getPingCount())) {
+                accessTypeData.setPingCount(NumberUtil.getIntValue(getPingCount(), accessTypeData.getPingCount()));
+            }
+        }
+        if (isConnectCountVisible()) {
+            if (NumberUtil.isValidIntValue(getConnectCount())) {
+                accessTypeData.setConnectCount(NumberUtil.getIntValue(getConnectCount(), accessTypeData.getConnectCount()));
+            }
+        }
+        if (isPingPackageSizeVisible()) {
+            if (NumberUtil.isValidIntValue(getPingPackageSize())) {
+                accessTypeData.setPingPackageSize(NumberUtil.getIntValue(getPingPackageSize(), accessTypeData.getPingPackageSize()));
+            }
+        }
+        Log.d(NetworkTaskEditDialog.class.getName(), "getAccessTypeData, access type data task is " + accessTypeData);
+        return accessTypeData;
     }
 
     private void onOkClicked(View view) {
@@ -397,12 +555,22 @@ public class NetworkTaskEditDialog extends DialogFragment implements ContextOpti
 
     private void validateInput() {
         Log.d(NetworkTaskEditDialog.class.getName(), "validateInput");
-        NetworkTaskValidator validator = getNetworkTaskValidator();
-        setValidationResultColor(addressEditText, validator.validateAddress(getAddress()).isValidationSuccessful());
+        NetworkTaskValidator networkTaskValidator = getNetworkTaskValidator();
+        AccessTypeDataValidator accessTypeDataValidator = getAccessTypeDataValidator();
+        setValidationResultColor(addressEditText, networkTaskValidator.validateAddress(getAddress()).isValidationSuccessful());
         if (isPortVisible()) {
-            setValidationResultColor(portEditText, validator.validatePort(getPort()).isValidationSuccessful());
+            setValidationResultColor(portEditText, networkTaskValidator.validatePort(getPort()).isValidationSuccessful());
         }
-        setValidationResultColor(intervalEditText, validator.validateInterval(getInterval()).isValidationSuccessful());
+        setValidationResultColor(intervalEditText, networkTaskValidator.validateInterval(getInterval()).isValidationSuccessful());
+        if (isPingCountVisible()) {
+            setValidationResultColor(pingCountEditText, accessTypeDataValidator.validatePingCount(getPingCount()).isValidationSuccessful());
+        }
+        if (isConnectCountVisible()) {
+            setValidationResultColor(connectCountEditText, accessTypeDataValidator.validateConnectCount(getConnectCount()).isValidationSuccessful());
+        }
+        if (isPingPackageSizeVisible()) {
+            setValidationResultColor(pingPackageSizeEditText, accessTypeDataValidator.validatePingPackageSize(getPingPackageSize()).isValidationSuccessful());
+        }
     }
 
     private void setValidationResultColor(EditText editText, boolean success) {
@@ -416,14 +584,21 @@ public class NetworkTaskEditDialog extends DialogFragment implements ContextOpti
     private List<ValidationResult> validateFinalInput() {
         Log.d(NetworkTaskEditDialog.class.getName(), "validateFinalInput");
         List<ValidationResult> validationResultList = new ArrayList<>();
-        NetworkTaskValidator validator = getNetworkTaskValidator();
-        ValidationResult result = validator.validateAddress(getAddress());
+        validateFinalNetworkTask(validationResultList);
+        validateFinalAccessTypeData(validationResultList);
+        return validationResultList;
+    }
+
+    private void validateFinalNetworkTask(List<ValidationResult> validationResultList) {
+        Log.d(NetworkTaskEditDialog.class.getName(), "validateFinalNetworkTask");
+        NetworkTaskValidator networkTaskValidator = getNetworkTaskValidator();
+        ValidationResult result = networkTaskValidator.validateAddress(getAddress());
         Log.d(NetworkTaskEditDialog.class.getName(), "address validation result: " + result);
         if (!result.isValidationSuccessful()) {
             validationResultList.add(result);
         }
         if (isPortVisible()) {
-            result = validator.validatePort(getPort());
+            result = networkTaskValidator.validatePort(getPort());
             Log.d(NetworkTaskEditDialog.class.getName(), "port validation result: " + result);
             if (!result.isValidationSuccessful()) {
                 validationResultList.add(result);
@@ -431,12 +606,43 @@ public class NetworkTaskEditDialog extends DialogFragment implements ContextOpti
         } else {
             Log.d(NetworkTaskEditDialog.class.getName(), "port validation skipped");
         }
-        result = validator.validateInterval(getInterval());
+        result = networkTaskValidator.validateInterval(getInterval());
         Log.d(NetworkTaskEditDialog.class.getName(), "interval validation result: " + result);
         if (!result.isValidationSuccessful()) {
             validationResultList.add(result);
         }
-        return validationResultList;
+    }
+
+    private void validateFinalAccessTypeData(List<ValidationResult> validationResultList) {
+        Log.d(NetworkTaskEditDialog.class.getName(), "validateFinalAccessTypeData");
+        AccessTypeDataValidator accessTypeDataValidator = getAccessTypeDataValidator();
+        if (isPingCountVisible()) {
+            ValidationResult result = accessTypeDataValidator.validatePingCount(getPingCount());
+            Log.d(NetworkTaskEditDialog.class.getName(), "ping count validation result: " + result);
+            if (!result.isValidationSuccessful()) {
+                validationResultList.add(result);
+            }
+        } else {
+            Log.d(NetworkTaskEditDialog.class.getName(), "ping count validation skipped");
+        }
+        if (isConnectCountVisible()) {
+            ValidationResult result = accessTypeDataValidator.validateConnectCount(getConnectCount());
+            Log.d(NetworkTaskEditDialog.class.getName(), "connect count validation result: " + result);
+            if (!result.isValidationSuccessful()) {
+                validationResultList.add(result);
+            }
+        } else {
+            Log.d(NetworkTaskEditDialog.class.getName(), "connect count validation skipped");
+        }
+        if (isPingPackageSizeVisible()) {
+            ValidationResult result = accessTypeDataValidator.validatePingPackageSize(getPingPackageSize());
+            Log.d(NetworkTaskEditDialog.class.getName(), "ping package size validation result: " + result);
+            if (!result.isValidationSuccessful()) {
+                validationResultList.add(result);
+            }
+        } else {
+            Log.d(NetworkTaskEditDialog.class.getName(), "ping package size count validation skipped");
+        }
     }
 
     private boolean validateAddress(EditText editText) {
@@ -463,11 +669,44 @@ public class NetworkTaskEditDialog extends DialogFragment implements ContextOpti
         return result.isValidationSuccessful();
     }
 
+    private boolean validatePingCount(EditText editText) {
+        Log.d(NetworkTaskEditDialog.class.getName(), "validatePingCount");
+        AccessTypeDataValidator validator = getAccessTypeDataValidator();
+        ValidationResult result = validator.validatePingCount(getPingCount());
+        Log.d(NetworkTaskEditDialog.class.getName(), "ping count validation result: " + result);
+        return result.isValidationSuccessful();
+    }
+
+    private boolean validateConnectCount(EditText editText) {
+        Log.d(NetworkTaskEditDialog.class.getName(), "validateConnectCount");
+        AccessTypeDataValidator validator = getAccessTypeDataValidator();
+        ValidationResult result = validator.validateConnectCount(getConnectCount());
+        Log.d(NetworkTaskEditDialog.class.getName(), "connect count validation result: " + result);
+        return result.isValidationSuccessful();
+    }
+
+    private boolean validatePingPackageSize(EditText editText) {
+        Log.d(NetworkTaskEditDialog.class.getName(), "validatePingPackageSize");
+        AccessTypeDataValidator validator = getAccessTypeDataValidator();
+        ValidationResult result = validator.validatePingPackageSize(getPingPackageSize());
+        Log.d(NetworkTaskEditDialog.class.getName(), "ping package size validation result: " + result);
+        return result.isValidationSuccessful();
+    }
+
     @NonNull
     private NetworkTaskValidator getNetworkTaskValidator() {
         EnumMapping mapping = new EnumMapping(requireContext());
         AccessType accessType = getAccessType();
         NetworkTaskValidator validator = mapping.getNetworkTaskValidator(accessType);
+        Log.d(NetworkTaskEditDialog.class.getName(), "Validator is " + validator.getClass().getSimpleName() + " for access type " + accessType);
+        return validator;
+    }
+
+    @NonNull
+    private AccessTypeDataValidator getAccessTypeDataValidator() {
+        EnumMapping mapping = new EnumMapping(requireContext());
+        AccessType accessType = getAccessType();
+        AccessTypeDataValidator validator = mapping.getAccessTypeDataValidator(accessType);
         Log.d(NetworkTaskEditDialog.class.getName(), "Validator is " + validator.getClass().getSimpleName() + " for access type " + accessType);
         return validator;
     }
