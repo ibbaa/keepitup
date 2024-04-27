@@ -421,7 +421,7 @@ public class NetworkTaskEditDialog extends DialogFragment implements ContextOpti
             pingPackageSizeEditText.removeTextChangedListener(pingPackageSizeEditTextWatcher);
             pingPackageSizeEditTextWatcher = null;
         }
-        pingPackageSizeEditTextWatcher = new TextColorValidatingWatcher(connectCountEditText, this::validatePingPackageSize, getColor(R.color.textColor), getColor(R.color.textErrorColor));
+        pingPackageSizeEditTextWatcher = new TextColorValidatingWatcher(pingPackageSizeEditText, this::validatePingPackageSize, getColor(R.color.textColor), getColor(R.color.textErrorColor));
         pingPackageSizeEditText.addTextChangedListener(pingPackageSizeEditTextWatcher);
     }
 
