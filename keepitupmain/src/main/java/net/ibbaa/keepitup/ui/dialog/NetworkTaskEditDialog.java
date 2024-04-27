@@ -39,6 +39,7 @@ import net.ibbaa.keepitup.logging.Log;
 import net.ibbaa.keepitup.model.AccessType;
 import net.ibbaa.keepitup.model.AccessTypeData;
 import net.ibbaa.keepitup.model.NetworkTask;
+import net.ibbaa.keepitup.resources.PreferenceManager;
 import net.ibbaa.keepitup.ui.ContextOptionsSupport;
 import net.ibbaa.keepitup.ui.ContextOptionsSupportManager;
 import net.ibbaa.keepitup.ui.NetworkTaskMainActivity;
@@ -370,12 +371,19 @@ public class NetworkTaskEditDialog extends DialogFragment implements ContextOpti
         TextView connectCountTextView = dialogView.findViewById(R.id.textview_dialog_network_task_edit_connect_count_label);
         TextView pingPackageSizeTextView = dialogView.findViewById(R.id.textview_dialog_network_task_edit_ping_package_size_label);
         if (accessType.isPing()) {
+            PreferenceManager preferenceManager = new PreferenceManager(requireContext());
             pingCountTextView.setVisibility(View.VISIBLE);
             pingCountEditText.setVisibility(View.VISIBLE);
             pingCountLinearLayout.setVisibility(View.VISIBLE);
-            pingPackageSizeTextView.setVisibility(View.VISIBLE);
-            pingPackageSizeEditText.setVisibility(View.VISIBLE);
-            pingPackageSizeLinearLayout.setVisibility(View.VISIBLE);
+            if (preferenceManager.getPreferenceEnforceDefaultPingPackageSize()) {
+                pingPackageSizeTextView.setVisibility(View.GONE);
+                pingPackageSizeEditText.setVisibility(View.GONE);
+                pingPackageSizeLinearLayout.setVisibility(View.GONE);
+            } else {
+                pingPackageSizeTextView.setVisibility(View.VISIBLE);
+                pingPackageSizeEditText.setVisibility(View.VISIBLE);
+                pingPackageSizeLinearLayout.setVisibility(View.VISIBLE);
+            }
         } else {
             pingCountTextView.setVisibility(View.GONE);
             pingCountEditText.setVisibility(View.GONE);
