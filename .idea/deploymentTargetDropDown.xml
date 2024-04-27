@@ -18,7 +18,7 @@
           <timeTargetWasSelectedWithDropDown value="2024-04-23T15:17:27.708668548Z" />
         </State>
       </entry>
-      <entry key="NetworkTaskHandlerTest">
+      <entry key="PingPackageSizeFieldValidatorTest">
         <State />
       </entry>
       <entry key="keepitupmain">
@@ -37,13 +37,7 @@
           <timeTargetWasSelectedWithDropDown value="2024-04-27T09:47:27.282411784Z" />
         </State>
       </entry>
-      <entry key="testDeleteNetworkTask()">
-        <State />
-      </entry>
-      <entry key="testInsertNetworkTask()">
-        <State />
-      </entry>
-      <entry key="testUpdateNetworkTask()">
+      <entry key="testPingPackageSizeInput()">
         <State>
           <targetSelectedWithDropDown>
             <Target>
@@ -56,10 +50,16 @@
               </deviceKey>
             </Target>
           </targetSelectedWithDropDown>
-          <timeTargetWasSelectedWithDropDown value="2024-04-27T11:53:48.761249667Z" />
+          <timeTargetWasSelectedWithDropDown value="2024-04-27T13:51:42.188777982Z" />
         </State>
       </entry>
       <entry key="testValidate()">
+        <State />
+      </entry>
+      <entry key="testValidatePingPackageSize()">
+        <State />
+      </entry>
+      <entry key="testValidatePingPackageSize() (1)">
         <State />
       </entry>
     </value>

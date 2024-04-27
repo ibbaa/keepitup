@@ -56,13 +56,16 @@ public class AccessTypeDataValidatorTest {
         AccessTypeData data = getAccessTypeData();
         assertTrue(validator.validatePingPackageSize(data));
         assertTrue(validator.validate(data));
-        data.setPingPackageSize(65528);
+        data.setPingPackageSize(65508);
         assertFalse(validator.validatePingPackageSize(data));
         assertFalse(validator.validate(data));
+        data.setPingPackageSize(-1);
+        assertFalse(validator.validatePingPackageSize(data));
+        assertFalse(validator.validate(data));
+        data.setPingPackageSize(65507);
+        assertTrue(validator.validatePingPackageSize(data));
+        assertTrue(validator.validate(data));
         data.setPingPackageSize(0);
-        assertFalse(validator.validatePingPackageSize(data));
-        assertFalse(validator.validate(data));
-        data.setPingPackageSize(65527);
         assertTrue(validator.validatePingPackageSize(data));
         assertTrue(validator.validate(data));
     }

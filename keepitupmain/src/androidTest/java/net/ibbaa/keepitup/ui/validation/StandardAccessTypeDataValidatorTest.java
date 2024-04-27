@@ -70,7 +70,7 @@ public class StandardAccessTypeDataValidatorTest {
 
     @Test
     public void testValidatePingPackageSize() {
-        ValidationResult result = validator.validatePingPackageSize("65527");
+        ValidationResult result = validator.validatePingPackageSize("65507");
         assertTrue(result.isValidationSuccessful());
         assertEquals("Package size", result.getFieldName());
         assertEquals("Validation successful", result.getMessage());
@@ -78,14 +78,14 @@ public class StandardAccessTypeDataValidatorTest {
         assertFalse(result.isValidationSuccessful());
         assertEquals("Package size", result.getFieldName());
         assertEquals("Invalid format", result.getMessage());
-        result = validator.validatePingPackageSize("0");
+        result = validator.validatePingPackageSize("-1");
         assertFalse(result.isValidationSuccessful());
         assertEquals("Package size", result.getFieldName());
-        assertEquals("Minimum: 1", result.getMessage());
-        result = validator.validatePingPackageSize("65528");
+        assertEquals("Minimum: 0", result.getMessage());
+        result = validator.validatePingPackageSize("65508");
         assertFalse(result.isValidationSuccessful());
         assertEquals("Package size", result.getFieldName());
-        assertEquals("Maximum: 65527", result.getMessage());
+        assertEquals("Maximum: 65507", result.getMessage());
         result = validator.validatePingPackageSize("");
         assertFalse(result.isValidationSuccessful());
         assertEquals("Package size", result.getFieldName());

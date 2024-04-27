@@ -21,8 +21,8 @@
     <integer name="ping_count_maximum">10</integer>
     <string name="ping_package_size_key">ping_package_size_key</string>
     <integer name="ping_package_size_default">56</integer>
-    <integer name="ping_package_size_minimum">1</integer>
-    <integer name="ping_package_size_maximum">65527</integer>
+    <integer name="ping_package_size_minimum">0</integer>
+    <integer name="ping_package_size_maximum">65507</integer>
     <string name="connect_count_key">connect_count_key</string>
     <integer name="connect_count_default">1</integer>
     <integer name="connect_count_minimum">1</integer>
