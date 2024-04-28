@@ -18,6 +18,22 @@
           <timeTargetWasSelectedWithDropDown value="2024-04-23T15:17:27.708668548Z" />
         </State>
       </entry>
+      <entry key="NetworkTaskEditDialogTest">
+        <State>
+          <targetSelectedWithDropDown>
+            <Target>
+              <type value="QUICK_BOOT_TARGET" />
+              <deviceKey>
+                <Key>
+                  <type value="VIRTUAL_DEVICE_PATH" />
+                  <value value="$USER_HOME$/.android/avd/Pixel_8_Pro_API_29.avd" />
+                </Key>
+              </deviceKey>
+            </Target>
+          </targetSelectedWithDropDown>
+          <timeTargetWasSelectedWithDropDown value="2024-04-28T14:57:26.083812952Z" />
+        </State>
+      </entry>
       <entry key="keepitupmain">
         <State>
           <targetSelectedWithDropDown>
@@ -34,46 +50,17 @@
           <timeTargetWasSelectedWithDropDown value="2024-04-27T16:23:56.081258708Z" />
         </State>
       </entry>
-      <entry key="testImportAccessTypeDataInvalid()">
+      <entry key="testAccessTypeCreated()">
         <State />
       </entry>
-      <entry key="testPingPackageSizeInput()">
-        <State>
-          <targetSelectedWithDropDown>
-            <Target>
-              <type value="QUICK_BOOT_TARGET" />
-              <deviceKey>
-                <Key>
-                  <type value="VIRTUAL_DEVICE_PATH" />
-                  <value value="$USER_HOME$/.android/avd/Pixel_8_Pro_API_29.avd" />
-                </Key>
-              </deviceKey>
-            </Target>
-          </targetSelectedWithDropDown>
-          <timeTargetWasSelectedWithDropDown value="2024-04-27T16:23:36.001430291Z" />
-        </State>
-      </entry>
-      <entry key="testValidate()">
+      <entry key="testAdapterAccessTypeCreated()">
         <State />
       </entry>
-      <entry key="testValidatePingPackageSize()">
+      <entry key="testAdapterUpdateWithEmptyList()">
         <State />
       </entry>
-      <entry key="testValidatePingPackageSize() (1)">
-        <State>
-          <targetSelectedWithDropDown>
-            <Target>
-              <type value="QUICK_BOOT_TARGET" />
-              <deviceKey>
-                <Key>
-                  <type value="VIRTUAL_DEVICE_PATH" />
-                  <value value="$USER_HOME$/.android/avd/Pixel_8_Pro_API_29.avd" />
-                </Key>
-              </deviceKey>
-            </Target>
-          </targetSelectedWithDropDown>
-          <timeTargetWasSelectedWithDropDown value="2024-04-27T14:03:22.481672052Z" />
-        </State>
+      <entry key="testExportConfigurationScreenRotation()">
+        <State />
       </entry>
     </value>
   </component>
