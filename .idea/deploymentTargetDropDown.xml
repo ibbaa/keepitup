@@ -19,20 +19,7 @@
         </State>
       </entry>
       <entry key="NetworkTaskEditDialogTest">
-        <State>
-          <targetSelectedWithDropDown>
-            <Target>
-              <type value="QUICK_BOOT_TARGET" />
-              <deviceKey>
-                <Key>
-                  <type value="VIRTUAL_DEVICE_PATH" />
-                  <value value="$USER_HOME$/.android/avd/Pixel_8_Pro_API_29.avd" />
-                </Key>
-              </deviceKey>
-            </Target>
-          </targetSelectedWithDropDown>
-          <timeTargetWasSelectedWithDropDown value="2024-04-28T14:57:26.083812952Z" />
-        </State>
+        <State />
       </entry>
       <entry key="keepitupmain">
         <State>
@@ -50,16 +37,16 @@
           <timeTargetWasSelectedWithDropDown value="2024-04-27T16:23:56.081258708Z" />
         </State>
       </entry>
-      <entry key="testAccessTypeCreated()">
-        <State />
-      </entry>
-      <entry key="testAdapterAccessTypeCreated()">
-        <State />
-      </entry>
-      <entry key="testAdapterUpdateWithEmptyList()">
-        <State />
-      </entry>
       <entry key="testExportConfigurationScreenRotation()">
+        <State />
+      </entry>
+      <entry key="testPingPackageSizeCopyOption()">
+        <State />
+      </entry>
+      <entry key="testPingPackageSizeCopyPasteCancel()">
+        <State />
+      </entry>
+      <entry key="testPingPackageSizeCopyPasteCancelScreenRotation()">
         <State />
       </entry>
     </value>

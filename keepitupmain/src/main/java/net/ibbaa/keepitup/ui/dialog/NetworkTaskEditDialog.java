@@ -755,6 +755,15 @@ public class NetworkTaskEditDialog extends DialogFragment implements ContextOpti
         } else if (intervalEditText.getId() == sourceResourceId) {
             Log.d(NetworkTaskEditDialog.class.getName(), "Source field is the interval field");
             editText = intervalEditText;
+        } else if (pingCountEditText.getId() == sourceResourceId) {
+            Log.d(NetworkTaskEditDialog.class.getName(), "Source field is the ping count field");
+            editText = pingCountEditText;
+        } else if (pingPackageSizeEditText.getId() == sourceResourceId) {
+            Log.d(NetworkTaskEditDialog.class.getName(), "Source field is the ping package size field");
+            editText = pingPackageSizeEditText;
+        } else if (connectCountEditText.getId() == sourceResourceId) {
+            Log.d(NetworkTaskEditDialog.class.getName(), "Source field is the connect count field");
+            editText = connectCountEditText;
         }
         if (editText != null) {
             contextOptionsSupportManager.handleContextOption(editText, option);
