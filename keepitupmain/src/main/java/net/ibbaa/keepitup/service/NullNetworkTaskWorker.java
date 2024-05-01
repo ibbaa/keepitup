@@ -21,6 +21,7 @@ import android.os.PowerManager;
 
 import net.ibbaa.keepitup.R;
 import net.ibbaa.keepitup.logging.Log;
+import net.ibbaa.keepitup.model.AccessTypeData;
 import net.ibbaa.keepitup.model.LogEntry;
 import net.ibbaa.keepitup.model.NetworkTask;
 
@@ -41,8 +42,8 @@ public class NullNetworkTaskWorker extends NetworkTaskWorker {
     }
 
     @Override
-    public ExecutionResult execute(NetworkTask networkTask) {
-        Log.d(NullNetworkTaskWorker.class.getName(), "Executing NullNetworkTaskWorker for " + networkTask);
+    public ExecutionResult execute(NetworkTask networkTask, AccessTypeData data) {
+        Log.d(NullNetworkTaskWorker.class.getName(), "Executing NullNetworkTaskWorker for network task " + networkTask + " and access type data" + data);
         LogEntry logEntry = new LogEntry();
         logEntry.setNetworkTaskId(networkTask.getId());
         logEntry.setSuccess(false);

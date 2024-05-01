@@ -25,13 +25,14 @@ import java.util.regex.Pattern;
 
 public class PingOutputParser {
 
-    private final static Pattern PING = Pattern.compile("(.*(time)([=<]))([0-9]+(\\.[0-9]+)?)( ?)(\\S+).*");
+    private final static Pattern PING = Pattern.compile("([0-9]+)(\\s+)(bytes)(.*(time)([=<]))([0-9]+(\\.[0-9]+)?)( ?)(\\S+).*");
     private final static Pattern SUMMARY = Pattern.compile("(([0-9]+)\\s[\\w|\\s]+),\\s(([0-9]+)\\s[\\w|\\s]+),\\s(([0-9]+(\\.[0-9]+)?)%\\s[\\w|\\s]+),.*(time)\\s(.*)");
 
     private boolean validInput;
     private int packetsTransmitted;
     private int packetsReceived;
     private double packetLoss;
+    private int bytesReceived;
     private int validTimes;
     private double averageTime;
 
@@ -57,6 +58,10 @@ public class PingOutputParser {
 
     public double getPacketLoss() {
         return packetLoss;
+    }
+
+    public int getBytesReceived() {
+        return bytesReceived;
     }
 
     public int getValidTimes() {
@@ -103,18 +108,36 @@ public class PingOutputParser {
         Log.d(PingOutputParser.class.getName(), "parseTimeValues");
         int timesParsed = 0;
         double timeSum = 0.0;
+        bytesReceived = 0;
         for (String line : lines) {
             line = line.trim();
             Matcher matcher = PING.matcher(line);
             if (matcher.matches()) {
                 Log.d(PingOutputParser.class.getName(), "Matching time value line: " + line);
-                if (matcher.groupCount() < 4) {
+                if (matcher.groupCount() < 7) {
                     Log.d(PingOutputParser.class.getName(), "Parsing error. Group count is invalid for a time value line.");
                     setInvalid();
                     return false;
                 }
-                String equalSign = matcher.group(3);
-                String time = matcher.group(4);
+                if (bytesReceived <= 0) {
+                    String bytesReceivedValue = matcher.group(1);
+                    String bytesString = matcher.group(3);
+                    Log.d(PingOutputParser.class.getName(), "Parsed bytes received value: " + bytesReceivedValue);
+                    Log.d(PingOutputParser.class.getName(), "Parsed bytes string: " + bytesString);
+                    if (!"bytes".equals(bytesString)) {
+                        Log.d(PingOutputParser.class.getName(), "Parsing error. Parsed bytes string is not \"bytes\"");
+                        setInvalid();
+                        return false;
+                    }
+                    if (!NumberUtil.isValidIntValue(bytesReceivedValue)) {
+                        Log.d(PingOutputParser.class.getName(), "Bytes received value " + bytesReceivedValue + " is not a valid int.");
+                        setInvalid();
+                        return false;
+                    }
+                    bytesReceived = NumberUtil.getIntValue(bytesReceivedValue, 0);
+                }
+                String equalSign = matcher.group(6);
+                String time = matcher.group(7);
                 Log.d(PingOutputParser.class.getName(), "Parsed equal sign: " + equalSign);
                 Log.d(PingOutputParser.class.getName(), "Parsed time value: " + time);
                 if ("<".equals(equalSign)) {

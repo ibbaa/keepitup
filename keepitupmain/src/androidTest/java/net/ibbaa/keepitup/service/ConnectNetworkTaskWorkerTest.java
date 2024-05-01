@@ -24,6 +24,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.MediumTest;
 
 import net.ibbaa.keepitup.model.AccessType;
+import net.ibbaa.keepitup.model.AccessTypeData;
 import net.ibbaa.keepitup.model.LogEntry;
 import net.ibbaa.keepitup.model.NetworkTask;
 import net.ibbaa.keepitup.service.network.ConnectCommandResult;
@@ -70,10 +71,11 @@ public class ConnectNetworkTaskWorkerTest {
         DNSLookupResult dnsLookupResult = new DNSLookupResult(Arrays.asList(InetAddress.getByName("127.0.0.1"), InetAddress.getByName("::1")), null);
         ConnectCommandResult connectCommandResult = new ConnectCommandResult(true, 1, 1, 0, 0, 1, null);
         prepareTestConnectNetworkTaskWorker(dnsLookupResult, connectCommandResult);
-        NetworkTaskWorker.ExecutionResult executionResult = connectNetworkTaskWorker.execute(getNetworkTask());
+        NetworkTaskWorker.ExecutionResult executionResult = connectNetworkTaskWorker.execute(getNetworkTask(), getAccessTypeData());
         LogEntry logEntry = executionResult.getLogEntry();
         assertEquals(45, logEntry.getNetworkTaskId());
         assertEquals(getTestTimestamp(), logEntry.getTimestamp());
+        assertEquals(3, connectNetworkTaskWorker.getConnectCount());
         assertTrue(logEntry.isSuccess());
         assertEquals("Connected to 127.0.0.1:22 successfully. 1 connection attempt. 1 successful connection attempt. 0 timeouts. 0 other errors. 1 msec average time.", logEntry.getMessage());
     }
@@ -83,10 +85,11 @@ public class ConnectNetworkTaskWorkerTest {
         DNSLookupResult dnsLookupResult = new DNSLookupResult(Arrays.asList(InetAddress.getByName("127.0.0.1"), InetAddress.getByName("::1")), null);
         ConnectCommandResult connectCommandResult = new ConnectCommandResult(true, 3, 3, 0, 0, 1000, null);
         prepareTestConnectNetworkTaskWorker(dnsLookupResult, connectCommandResult);
-        NetworkTaskWorker.ExecutionResult executionResult = connectNetworkTaskWorker.execute(getNetworkTask());
+        NetworkTaskWorker.ExecutionResult executionResult = connectNetworkTaskWorker.execute(getNetworkTask(), getAccessTypeData());
         LogEntry logEntry = executionResult.getLogEntry();
         assertEquals(45, logEntry.getNetworkTaskId());
         assertEquals(getTestTimestamp(), logEntry.getTimestamp());
+        assertEquals(3, connectNetworkTaskWorker.getConnectCount());
         assertTrue(logEntry.isSuccess());
         assertEquals("Connected to 127.0.0.1:22 successfully. 3 connection attempts. 3 successful connection attempts. 0 timeouts. 0 other errors. 1 sec average time.", logEntry.getMessage());
     }
@@ -97,10 +100,11 @@ public class ConnectNetworkTaskWorkerTest {
         IllegalArgumentException exception = new IllegalArgumentException("TestException");
         ConnectCommandResult connectCommandResult = new ConnectCommandResult(true, 1, 1, 0, 0, 5000, exception);
         prepareTestConnectNetworkTaskWorker(dnsLookupResult, connectCommandResult);
-        NetworkTaskWorker.ExecutionResult executionResult = connectNetworkTaskWorker.execute(getNetworkTask());
+        NetworkTaskWorker.ExecutionResult executionResult = connectNetworkTaskWorker.execute(getNetworkTask(), getAccessTypeData());
         LogEntry logEntry = executionResult.getLogEntry();
         assertEquals(45, logEntry.getNetworkTaskId());
         assertEquals(getTestTimestamp(), logEntry.getTimestamp());
+        assertEquals(3, connectNetworkTaskWorker.getConnectCount());
         assertTrue(logEntry.isSuccess());
         assertEquals("Connected to 127.0.0.1:22 successfully. 1 connection attempt. 1 successful connection attempt. 0 timeouts. 0 other errors. 5 sec average time. Last error: IllegalArgumentException: TestException", logEntry.getMessage());
     }
@@ -111,10 +115,11 @@ public class ConnectNetworkTaskWorkerTest {
         IllegalArgumentException exception = new IllegalArgumentException("TestException");
         ConnectCommandResult connectCommandResult = new ConnectCommandResult(true, 10, 7, 1, 2, 3, exception);
         prepareTestConnectNetworkTaskWorker(dnsLookupResult, connectCommandResult);
-        NetworkTaskWorker.ExecutionResult executionResult = connectNetworkTaskWorker.execute(getNetworkTask());
+        NetworkTaskWorker.ExecutionResult executionResult = connectNetworkTaskWorker.execute(getNetworkTask(), getAccessTypeData());
         LogEntry logEntry = executionResult.getLogEntry();
         assertEquals(45, logEntry.getNetworkTaskId());
         assertEquals(getTestTimestamp(), logEntry.getTimestamp());
+        assertEquals(3, connectNetworkTaskWorker.getConnectCount());
         assertTrue(logEntry.isSuccess());
         assertEquals("Connected to 127.0.0.1:22 successfully. 10 connection attempts. 7 successful connection attempts. 1 timeout. 2 other errors. 3 msec average time. Last error: IllegalArgumentException: TestException", logEntry.getMessage());
     }
@@ -124,7 +129,7 @@ public class ConnectNetworkTaskWorkerTest {
         IllegalArgumentException exception = new IllegalArgumentException("TestException");
         DNSLookupResult dnsLookupResult = new DNSLookupResult(Collections.emptyList(), exception);
         prepareTestConnectNetworkTaskWorker(dnsLookupResult, null);
-        NetworkTaskWorker.ExecutionResult executionResult = connectNetworkTaskWorker.execute(getNetworkTask());
+        NetworkTaskWorker.ExecutionResult executionResult = connectNetworkTaskWorker.execute(getNetworkTask(), getAccessTypeData());
         LogEntry logEntry = executionResult.getLogEntry();
         assertEquals(45, logEntry.getNetworkTaskId());
         assertEquals(getTestTimestamp(), logEntry.getTimestamp());
@@ -137,10 +142,11 @@ public class ConnectNetworkTaskWorkerTest {
         DNSLookupResult dnsLookupResult = new DNSLookupResult(InetAddress.getByName("127.0.0.1"), null);
         ConnectCommandResult connectCommandResult = new ConnectCommandResult(false, 1, 0, 1, 0, 500, null);
         prepareTestConnectNetworkTaskWorker(dnsLookupResult, connectCommandResult);
-        NetworkTaskWorker.ExecutionResult executionResult = connectNetworkTaskWorker.execute(getNetworkTask());
+        NetworkTaskWorker.ExecutionResult executionResult = connectNetworkTaskWorker.execute(getNetworkTask(), getAccessTypeData());
         LogEntry logEntry = executionResult.getLogEntry();
         assertEquals(45, logEntry.getNetworkTaskId());
         assertEquals(getTestTimestamp(), logEntry.getTimestamp());
+        assertEquals(3, connectNetworkTaskWorker.getConnectCount());
         assertFalse(logEntry.isSuccess());
         assertEquals("Connection to 127.0.0.1:22 failed. 1 connection attempt. 0 successful connection attempts. 1 timeout. 0 other errors.", logEntry.getMessage());
     }
@@ -150,10 +156,11 @@ public class ConnectNetworkTaskWorkerTest {
         DNSLookupResult dnsLookupResult = new DNSLookupResult(InetAddress.getByName("127.0.0.1"), null);
         ConnectCommandResult connectCommandResult = new ConnectCommandResult(false, 10, 0, 10, 0, 500, null);
         prepareTestConnectNetworkTaskWorker(dnsLookupResult, connectCommandResult);
-        NetworkTaskWorker.ExecutionResult executionResult = connectNetworkTaskWorker.execute(getNetworkTask());
+        NetworkTaskWorker.ExecutionResult executionResult = connectNetworkTaskWorker.execute(getNetworkTask(), getAccessTypeData());
         LogEntry logEntry = executionResult.getLogEntry();
         assertEquals(45, logEntry.getNetworkTaskId());
         assertEquals(getTestTimestamp(), logEntry.getTimestamp());
+        assertEquals(3, connectNetworkTaskWorker.getConnectCount());
         assertFalse(logEntry.isSuccess());
         assertEquals("Connection to 127.0.0.1:22 failed. 10 connection attempts. 0 successful connection attempts. 10 timeouts. 0 other errors.", logEntry.getMessage());
     }
@@ -164,10 +171,11 @@ public class ConnectNetworkTaskWorkerTest {
         IllegalArgumentException exception = new IllegalArgumentException("TestException");
         ConnectCommandResult connectCommandResult = new ConnectCommandResult(false, 1, 0, 0, 1, 500, exception);
         prepareTestConnectNetworkTaskWorker(dnsLookupResult, connectCommandResult);
-        NetworkTaskWorker.ExecutionResult executionResult = connectNetworkTaskWorker.execute(getNetworkTask());
+        NetworkTaskWorker.ExecutionResult executionResult = connectNetworkTaskWorker.execute(getNetworkTask(), getAccessTypeData());
         LogEntry logEntry = executionResult.getLogEntry();
         assertEquals(45, logEntry.getNetworkTaskId());
         assertEquals(getTestTimestamp(), logEntry.getTimestamp());
+        assertEquals(3, connectNetworkTaskWorker.getConnectCount());
         assertFalse(logEntry.isSuccess());
         assertEquals("Connection to 127.0.0.1:22 failed. 1 connection attempt. 0 successful connection attempts. 0 timeouts. 1 other error. Last error: IllegalArgumentException: TestException", logEntry.getMessage());
     }
@@ -178,10 +186,11 @@ public class ConnectNetworkTaskWorkerTest {
         IllegalArgumentException exception = new IllegalArgumentException("TestException");
         ConnectCommandResult connectCommandResult = new ConnectCommandResult(false, 5, 0, 0, 5, 500, exception);
         prepareTestConnectNetworkTaskWorker(dnsLookupResult, connectCommandResult);
-        NetworkTaskWorker.ExecutionResult executionResult = connectNetworkTaskWorker.execute(getNetworkTask());
+        NetworkTaskWorker.ExecutionResult executionResult = connectNetworkTaskWorker.execute(getNetworkTask(), getAccessTypeData());
         LogEntry logEntry = executionResult.getLogEntry();
         assertEquals(45, logEntry.getNetworkTaskId());
         assertEquals(getTestTimestamp(), logEntry.getTimestamp());
+        assertEquals(3, connectNetworkTaskWorker.getConnectCount());
         assertFalse(logEntry.isSuccess());
         assertEquals("Connection to 127.0.0.1:22 failed. 5 connection attempts. 0 successful connection attempts. 0 timeouts. 5 other errors. Last error: IllegalArgumentException: TestException", logEntry.getMessage());
     }
@@ -191,10 +200,11 @@ public class ConnectNetworkTaskWorkerTest {
         DNSLookupResult dnsLookupResult = new DNSLookupResult(InetAddress.getByName("127.0.0.1"), null);
         ConnectCommandResult connectCommandResult = new ConnectCommandResult(false, 1, 0, 0, 1, 1, null);
         prepareTestConnectNetworkTaskWorker(dnsLookupResult, connectCommandResult);
-        NetworkTaskWorker.ExecutionResult executionResult = connectNetworkTaskWorker.execute(getNetworkTask());
+        NetworkTaskWorker.ExecutionResult executionResult = connectNetworkTaskWorker.execute(getNetworkTask(), getAccessTypeData());
         LogEntry logEntry = executionResult.getLogEntry();
         assertEquals(45, logEntry.getNetworkTaskId());
         assertEquals(getTestTimestamp(), logEntry.getTimestamp());
+        assertEquals(3, connectNetworkTaskWorker.getConnectCount());
         assertFalse(logEntry.isSuccess());
         assertEquals("Connection to 127.0.0.1:22 failed. 1 connection attempt. 0 successful connection attempts. 0 timeouts. 1 other error.", logEntry.getMessage());
     }
@@ -205,10 +215,11 @@ public class ConnectNetworkTaskWorkerTest {
         IllegalArgumentException exception = new IllegalArgumentException("TestException");
         ConnectCommandResult connectCommandResult = new ConnectCommandResult(false, 5, 0, 3, 2, 500, exception);
         prepareTestConnectNetworkTaskWorker(dnsLookupResult, connectCommandResult);
-        NetworkTaskWorker.ExecutionResult executionResult = connectNetworkTaskWorker.execute(getNetworkTask());
+        NetworkTaskWorker.ExecutionResult executionResult = connectNetworkTaskWorker.execute(getNetworkTask(), getAccessTypeData());
         LogEntry logEntry = executionResult.getLogEntry();
         assertEquals(45, logEntry.getNetworkTaskId());
         assertEquals(getTestTimestamp(), logEntry.getTimestamp());
+        assertEquals(3, connectNetworkTaskWorker.getConnectCount());
         assertFalse(logEntry.isSuccess());
         assertEquals("Connection to 127.0.0.1:22 failed. 5 connection attempts. 0 successful connection attempts. 3 timeouts. 2 other errors. Last error: IllegalArgumentException: TestException", logEntry.getMessage());
     }
@@ -241,5 +252,15 @@ public class ConnectNetworkTaskWorkerTest {
         task.setRunning(true);
         task.setLastScheduled(1);
         return task;
+    }
+
+    private AccessTypeData getAccessTypeData() {
+        AccessTypeData data = new AccessTypeData();
+        data.setId(0);
+        data.setNetworkTaskId(0);
+        data.setPingCount(10);
+        data.setPingPackageSize(1234);
+        data.setConnectCount(3);
+        return data;
     }
 }

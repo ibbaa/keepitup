@@ -63,6 +63,7 @@ public class PingOutputParserTest {
         assertEquals(3, parser.getPacketsTransmitted());
         assertEquals(3, parser.getPacketsReceived());
         assertEquals(0, parser.getPacketLoss(), 0.01);
+        assertEquals(64, parser.getBytesReceived());
         assertEquals(3, parser.getValidTimes());
         assertEquals(0.0833, parser.getAverageTime(), 0.01);
     }
@@ -74,6 +75,7 @@ public class PingOutputParserTest {
         assertEquals(7, parser.getPacketsTransmitted());
         assertEquals(5, parser.getPacketsReceived());
         assertEquals(3.1, parser.getPacketLoss(), 0.01);
+        assertEquals(8, parser.getBytesReceived());
         assertEquals(5, parser.getValidTimes());
         assertEquals(0.42, parser.getAverageTime(), 0.01);
     }
@@ -85,6 +87,7 @@ public class PingOutputParserTest {
         assertEquals(3, parser.getPacketsTransmitted());
         assertEquals(0, parser.getPacketsReceived());
         assertEquals(100, parser.getPacketLoss(), 0.01);
+        assertEquals(0, parser.getBytesReceived());
         assertEquals(0, parser.getValidTimes());
         assertEquals(0, parser.getAverageTime(), 0.01);
     }
@@ -107,6 +110,7 @@ public class PingOutputParserTest {
         assertEquals(3, parser.getPacketsTransmitted());
         assertEquals(3, parser.getPacketsReceived());
         assertEquals(0, parser.getPacketLoss(), 0.01);
+        assertEquals(65535, parser.getBytesReceived());
         assertEquals(3, parser.getValidTimes());
         assertEquals(20.1, parser.getAverageTime(), 0.01);
     }
@@ -123,11 +127,11 @@ public class PingOutputParserTest {
 
     private String getTestIP4Ping2() {
         return "PING 127.0.0.1 (127.0.0.1) 56(84) bytes of data.\n" +
-                "64 bytes from 127.0.0.1: icmp_seq=1 ttl=64 time<1 ms\n" +
-                " 64 bytes from 127.0.0.1: icmp_seq=2 ttl=64 time<1 ms\n" +
-                " 64 bytes from 127.0.0.1: icmp_seq=2 ttl=64 time<1 ms\n" +
-                " 64 bytes from 127.0.0.1: icmp_seq=2 ttl=64 time<1 ms\n" +
-                "64 bytes from 127.0.0.1: icmp_seq=3 ttl=64 time=2.1 ms\n\n" +
+                "8 bytes from 127.0.0.1: icmp_seq=1 ttl=64 time<1 ms\n" +
+                " 8 bytes from 127.0.0.1: icmp_seq=2 ttl=64 time<1 ms\n" +
+                " 8 bytes from 127.0.0.1: icmp_seq=2 ttl=64 time<1 ms\n" +
+                " 8 bytes from 127.0.0.1: icmp_seq=2 ttl=64 time<1 ms\n" +
+                "8 bytes from 127.0.0.1: icmp_seq=3 ttl=64 time=2.1 ms\n\n" +
                 "--- 127.0.0.1 ping statistics ---\n" +
                 "7 packets transmitted, 5 received, 3.1% packet loss, time 1998ms\n" +
                 "rtt min/avg/max/mdev = 0.083/0.083/0.084/0.007 ms";
@@ -151,9 +155,9 @@ public class PingOutputParserTest {
 
     private String getTestIP6Ping1() {
         return "PING 2a00:1450:4016:801::200e(2a00:1450:4016:801::200e) 56 data bytes\n" +
-                "64 bytes from 2a00:1450:4016:801::200e: icmp_seq=1 ttl=57 time=10.5 ms\n" +
-                "64 bytes from 2a00:1450:4016:801::200e: icmp_seq=2 ttl=57 time=23.7 ms\n" +
-                "64 bytes from 2a00:1450:4016:801::200e: icmp_seq=3 ttl=57 time=26.1 ms\n\n" +
+                "65535 bytes from 2a00:1450:4016:801::200e: icmp_seq=1 ttl=57 time=10.5 ms\n" +
+                "65535 bytes from 2a00:1450:4016:801::200e: icmp_seq=2 ttl=57 time=23.7 ms\n" +
+                "65535 bytes from 2a00:1450:4016:801::200e: icmp_seq=3 ttl=57 time=26.1 ms\n\n" +
                 "--- 2a00:1450:4016:801::200e ping statistics ---\n" +
                 " 3 packets transmitted, 3 received, 0% packet loss, time 2003ms\n" +
                 "rtt min/avg/max/mdev = 10.511/20.134/26.160/6.877 ms";

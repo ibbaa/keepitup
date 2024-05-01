@@ -21,9 +21,9 @@ import android.os.PowerManager;
 
 import net.ibbaa.keepitup.R;
 import net.ibbaa.keepitup.logging.Log;
+import net.ibbaa.keepitup.model.AccessTypeData;
 import net.ibbaa.keepitup.model.LogEntry;
 import net.ibbaa.keepitup.model.NetworkTask;
-import net.ibbaa.keepitup.resources.PreferenceManager;
 import net.ibbaa.keepitup.service.network.PingCommand;
 import net.ibbaa.keepitup.service.network.PingCommandResult;
 import net.ibbaa.keepitup.service.network.PingOutputParser;
@@ -55,8 +55,8 @@ public class PingNetworkTaskWorker extends NetworkTaskWorker {
     }
 
     @Override
-    public ExecutionResult execute(NetworkTask networkTask) {
-        Log.d(PingNetworkTaskWorker.class.getName(), "Executing PingNetworkTaskWorker for " + networkTask);
+    public ExecutionResult execute(NetworkTask networkTask, AccessTypeData data) {
+        Log.d(PingNetworkTaskWorker.class.getName(), "Executing PingNetworkTaskWorker for network task " + networkTask + " and access type data" + data);
         DNSExecutionResult dnsExecutionResult = executeDNSLookup(networkTask.getAddress(), getResources().getBoolean(R.bool.network_prefer_ipv4));
         if (dnsExecutionResult.getAddress() != null) {
             InetAddress address = dnsExecutionResult.getAddress();
@@ -67,7 +67,7 @@ public class PingNetworkTaskWorker extends NetworkTaskWorker {
             } else {
                 Log.d(PingNetworkTaskWorker.class.getName(), address + " is an IPv4 address");
             }
-            ExecutionResult pingExecutionResult = executePingCommand(address.getHostAddress(), ip6);
+            ExecutionResult pingExecutionResult = executePingCommand(address.getHostAddress(), data.getPingCount(), ip6);
             LogEntry logEntry = pingExecutionResult.getLogEntry();
             completeLogEntry(networkTask, logEntry);
             Log.d(PingNetworkTaskWorker.class.getName(), "Returning " + pingExecutionResult);
@@ -86,12 +86,10 @@ public class PingNetworkTaskWorker extends NetworkTaskWorker {
         logEntry.setTimestamp(getTimeService().getCurrentTimestamp());
     }
 
-    private ExecutionResult executePingCommand(String address, boolean ip6) {
-        Log.d(PingNetworkTaskWorker.class.getName(), "executePingCommand, address is " + address + ", ip6 is " + ip6);
-        PreferenceManager preferenceManager = new PreferenceManager(getContext());
-        int count = preferenceManager.getPreferencePingCount();
-        Callable<PingCommandResult> pingCommand = getPingCommand(address, count, ip6);
-        int timeout = getResources().getInteger(R.integer.ping_timeout) * count * 2;
+    private ExecutionResult executePingCommand(String address, int pingCount, boolean ip6) {
+        Log.d(PingNetworkTaskWorker.class.getName(), "executePingCommand, address is " + address + ", pingCount is " + pingCount + ", ip6 is " + ip6);
+        Callable<PingCommandResult> pingCommand = getPingCommand(address, pingCount, ip6);
+        int timeout = getResources().getInteger(R.integer.ping_timeout) * pingCount * 2;
         Log.d(PingNetworkTaskWorker.class.getName(), "Creating ExecutorService");
         ExecutorService executorService = Executors.newSingleThreadExecutor();
         Future<PingCommandResult> pingResultFuture = null;
@@ -155,6 +153,7 @@ public class PingNetworkTaskWorker extends NetworkTaskWorker {
             return output;
         }
         NumberFormat numberFormat = NumberFormat.getNumberInstance();
+        int bytesReceived = parser.getBytesReceived();
         int packetsTransmitted = parser.getPacketsTransmitted();
         int packetsReceived = parser.getPacketsReceived();
         String packetLoss = numberFormat.format(parser.getPacketLoss()) + "%";
@@ -165,6 +164,10 @@ public class PingNetworkTaskWorker extends NetworkTaskWorker {
         if (parser.getValidTimes() > 0) {
             String averageTime = StringUtil.formatTimeRange(parser.getAverageTime(), getContext());
             message += " " + getResources().getString(R.string.text_ping_time, averageTime);
+        }
+        if (bytesReceived > 0 && packetsReceived > 0) {
+            String bytesReceivedMessage = getResources().getQuantityString(R.plurals.text_ping_bytes_received, bytesReceived, bytesReceived);
+            message = bytesReceivedMessage + " " + message;
         }
         return message;
     }

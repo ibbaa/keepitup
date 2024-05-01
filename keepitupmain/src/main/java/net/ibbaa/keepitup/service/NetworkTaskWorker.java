@@ -24,10 +24,12 @@ import android.os.PowerManager;
 import androidx.annotation.NonNull;
 
 import net.ibbaa.keepitup.R;
+import net.ibbaa.keepitup.db.AccessTypeDataDAO;
 import net.ibbaa.keepitup.db.LogDAO;
 import net.ibbaa.keepitup.db.NetworkTaskDAO;
 import net.ibbaa.keepitup.logging.Log;
 import net.ibbaa.keepitup.logging.NetworkTaskLog;
+import net.ibbaa.keepitup.model.AccessTypeData;
 import net.ibbaa.keepitup.model.LogEntry;
 import net.ibbaa.keepitup.model.NetworkTask;
 import net.ibbaa.keepitup.model.NotificationType;
@@ -79,18 +81,24 @@ public abstract class NetworkTaskWorker implements Runnable {
 
     public abstract String getMaxInstancesErrorMessage(int activeInstances);
 
-    public abstract ExecutionResult execute(NetworkTask networkTask);
+    public abstract ExecutionResult execute(NetworkTask networkTask, AccessTypeData data);
 
     @Override
     public void run() {
         Log.d(NetworkTaskWorker.class.getName(), "Executing worker thread for " + networkTask);
         try {
             NetworkTaskDAO networkTaskDAO = new NetworkTaskDAO(getContext());
+            AccessTypeDataDAO accessTypeDataDAO = new AccessTypeDataDAO(getContext());
             LogDAO logDAO = new LogDAO(getContext());
             NetworkTask databaseTask = networkTaskDAO.readNetworkTask(networkTask.getId());
             if (databaseTask == null) {
                 Log.d(NetworkTaskWorker.class.getName(), "NetworkTask not found in database.");
                 return;
+            }
+            AccessTypeData databaseAccessTypeData = accessTypeDataDAO.readAccessTypeDataForNetworkTask(networkTask.getId());
+            if (databaseAccessTypeData == null) {
+                Log.d(NetworkTaskWorker.class.getName(), "AccessTypeData for network task " + databaseTask + " not found in database.");
+                databaseAccessTypeData = new AccessTypeData(getContext());
             }
             Log.d(NetworkTaskWorker.class.getName(), "Updating last scheduled time.");
             long timestamp = timeService.getCurrentTimestamp();
@@ -120,7 +128,7 @@ public abstract class NetworkTaskWorker implements Runnable {
                     return;
                 }
                 Log.d(NetworkTaskWorker.class.getName(), "Executing task...");
-                ExecutionResult executionResult = execute(networkTask);
+                ExecutionResult executionResult = execute(networkTask, databaseAccessTypeData);
                 Log.d(NetworkTaskWorker.class.getName(), "The executed task returned " + executionResult);
                 if (isNetworkTaskValid(databaseTask)) {
                     logEntry = executionResult.getLogEntry();

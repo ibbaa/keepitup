@@ -29,6 +29,7 @@
     <string name="text_activity_main_list_item_network_task_status">Status: %s</string>
     <string name="text_activity_main_list_item_network_task_instances" tools:ignore="PluralsCandidate">Instances: %d active</string>
     <string name="text_activity_main_list_item_network_task_access_type">Type: %s</string>
+    <string name="text_activity_main_list_item_network_task_package_size">package size: %s</string>
     <string name="text_activity_main_list_item_network_task_address">%s</string>
     <string name="text_activity_main_list_item_network_task_interval">Interval: %d %s</string>
     <string name="text_activity_main_list_item_network_task_notification">Notifications: %s</string>

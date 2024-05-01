@@ -26,6 +26,10 @@
     <string name="text_ping_success">Pinged %s successfully.</string>
     <string name="text_ping_error">Ping to %s failed.</string>
     <string name="text_ping_return_code_error">Return code: %d</string>
+    <plurals name="text_ping_bytes_received">
+        <item quantity="one">%d byte received per packet.</item>
+        <item quantity="other">%d bytes received per packet.</item>
+    </plurals>
     <plurals name="text_ping_packet_transmitted">
         <item quantity="one">%d packet transmitted.</item>
         <item quantity="other">%d packets transmitted.</item>

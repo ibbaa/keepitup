@@ -27,12 +27,15 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import net.ibbaa.keepitup.R;
 import net.ibbaa.keepitup.logging.Log;
+import net.ibbaa.keepitup.model.AccessType;
 import net.ibbaa.keepitup.model.AccessTypeData;
 import net.ibbaa.keepitup.model.LogEntry;
 import net.ibbaa.keepitup.model.NetworkTask;
+import net.ibbaa.keepitup.resources.PreferenceManager;
 import net.ibbaa.keepitup.service.TimeBasedSuspensionScheduler;
 import net.ibbaa.keepitup.ui.NetworkTaskMainActivity;
 import net.ibbaa.keepitup.ui.mapping.EnumMapping;
+import net.ibbaa.keepitup.util.StringUtil;
 
 import java.text.DateFormat;
 import java.util.ArrayList;
@@ -63,11 +66,12 @@ public class NetworkTaskAdapter extends RecyclerView.Adapter<NetworkTaskViewHold
     public void onBindViewHolder(@NonNull NetworkTaskViewHolder networkTaskViewHolder, int position) {
         Log.d(NetworkTaskAdapter.class.getName(), "onBindViewHolder");
         NetworkTask networkTask = networkTaskWrapperList.get(position).getNetworkTask();
+        AccessTypeData accessTypeData = networkTaskWrapperList.get(position).getAccessTypeData();
         LogEntry logEntry = networkTaskWrapperList.get(position).getLogEntry();
         bindTitle(networkTaskViewHolder, networkTask);
         bindStatus(networkTaskViewHolder, networkTask);
         bindInstances(networkTaskViewHolder, networkTask);
-        bindAccessType(networkTaskViewHolder, networkTask);
+        bindAccessType(networkTaskViewHolder, networkTask, accessTypeData);
         bindAddress(networkTaskViewHolder, networkTask);
         bindInterval(networkTaskViewHolder, networkTask);
         bindLastExecTimestamp(networkTaskViewHolder, logEntry);
@@ -117,12 +121,29 @@ public class NetworkTaskAdapter extends RecyclerView.Adapter<NetworkTaskViewHold
         networkTaskViewHolder.setInstances(formattedInstancesText);
     }
 
-    private void bindAccessType(@NonNull NetworkTaskViewHolder networkTaskViewHolder, NetworkTask networkTask) {
-        Log.d(NetworkTaskAdapter.class.getName(), "bindAccessType, networkTask is " + networkTask);
+    private void bindAccessType(@NonNull NetworkTaskViewHolder networkTaskViewHolder, NetworkTask networkTask, AccessTypeData accessTypeData) {
+        Log.d(NetworkTaskAdapter.class.getName(), "bindAccessType, networkTask is " + networkTask + ", accessTypeData is " + accessTypeData);
         String accessTypeText = new EnumMapping(getContext()).getAccessTypeText(networkTask.getAccessType());
         String formattedAccessTypeText = getResources().getString(R.string.text_activity_main_list_item_network_task_access_type, accessTypeText);
+        String formattedPackageSizeText = getPackageSizeText(networkTask, accessTypeData);
+        if (!StringUtil.isEmpty(formattedPackageSizeText)) {
+            formattedAccessTypeText += formattedPackageSizeText;
+        }
         Log.d(NetworkTaskAdapter.class.getName(), "binding access type text " + formattedAccessTypeText);
         networkTaskViewHolder.setAccessType(formattedAccessTypeText);
+    }
+
+    private String getPackageSizeText(NetworkTask networkTask, AccessTypeData accessTypeData) {
+        Log.d(NetworkTaskAdapter.class.getName(), "getPackageSizeText, networkTask is " + networkTask + ", accessTypeData is " + accessTypeData);
+        if (AccessType.PING.equals(networkTask.getAccessType())) {
+            String packageSizeText = getResources().getString(R.string.string_default);
+            PreferenceManager preferenceManager = new PreferenceManager(getContext());
+            if (!preferenceManager.getPreferenceEnforceDefaultPingPackageSize() && accessTypeData != null) {
+                packageSizeText = String.valueOf(accessTypeData.getPingPackageSize());
+            }
+            return ", " + getResources().getString(R.string.text_activity_main_list_item_network_task_package_size, packageSizeText);
+        }
+        return null;
     }
 
     private void bindAddress(@NonNull NetworkTaskViewHolder networkTaskViewHolder, NetworkTask networkTask) {

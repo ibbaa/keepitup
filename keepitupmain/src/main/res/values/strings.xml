@@ -39,4 +39,5 @@
     <string name="string_msec">msec</string>
     <string name="string_active">Active</string>
     <string name="string_inactive">Inactive</string>
+    <string name="string_default">default</string>
 </resources>

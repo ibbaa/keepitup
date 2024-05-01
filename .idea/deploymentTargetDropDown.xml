@@ -18,7 +18,13 @@
           <timeTargetWasSelectedWithDropDown value="2024-04-23T15:17:27.708668548Z" />
         </State>
       </entry>
-      <entry key="NetworkTaskEditDialogTest">
+      <entry key="ConnectNetworkTaskWorkerTest">
+        <State />
+      </entry>
+      <entry key="NetworkTaskWorkerTest">
+        <State />
+      </entry>
+      <entry key="PingNetworkTaskWorkerTest">
         <State />
       </entry>
       <entry key="keepitupmain">
@@ -37,16 +43,10 @@
           <timeTargetWasSelectedWithDropDown value="2024-04-27T16:23:56.081258708Z" />
         </State>
       </entry>
-      <entry key="testExportConfigurationScreenRotation()">
+      <entry key="testSuccessfulExecution()">
         <State />
       </entry>
-      <entry key="testPingPackageSizeCopyOption()">
-        <State />
-      </entry>
-      <entry key="testPingPackageSizeCopyPasteCancel()">
-        <State />
-      </entry>
-      <entry key="testPingPackageSizeCopyPasteCancelScreenRotation()">
+      <entry key="testSuccessfulExecutionAccessTypeDataNotFound()">
         <State />
       </entry>
     </value>

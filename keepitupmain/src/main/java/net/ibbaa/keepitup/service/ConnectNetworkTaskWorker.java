@@ -21,9 +21,9 @@ import android.os.PowerManager;
 
 import net.ibbaa.keepitup.R;
 import net.ibbaa.keepitup.logging.Log;
+import net.ibbaa.keepitup.model.AccessTypeData;
 import net.ibbaa.keepitup.model.LogEntry;
 import net.ibbaa.keepitup.model.NetworkTask;
-import net.ibbaa.keepitup.resources.PreferenceManager;
 import net.ibbaa.keepitup.service.network.ConnectCommand;
 import net.ibbaa.keepitup.service.network.ConnectCommandResult;
 import net.ibbaa.keepitup.util.StringUtil;
@@ -53,8 +53,8 @@ public class ConnectNetworkTaskWorker extends NetworkTaskWorker {
     }
 
     @Override
-    public ExecutionResult execute(NetworkTask networkTask) {
-        Log.d(ConnectNetworkTaskWorker.class.getName(), "Executing ConnectNetworkTaskWorker for " + networkTask);
+    public ExecutionResult execute(NetworkTask networkTask, AccessTypeData data) {
+        Log.d(ConnectNetworkTaskWorker.class.getName(), "Executing ConnectNetworkTaskWorker for network task " + networkTask + " and access type data" + data);
         DNSExecutionResult dnsExecutionResult = executeDNSLookup(networkTask.getAddress(), getResources().getBoolean(R.bool.network_prefer_ipv4));
         if (dnsExecutionResult.getAddress() != null) {
             InetAddress address = dnsExecutionResult.getAddress();
@@ -65,7 +65,7 @@ public class ConnectNetworkTaskWorker extends NetworkTaskWorker {
             } else {
                 Log.d(ConnectNetworkTaskWorker.class.getName(), address + " is an IPv4 address");
             }
-            ExecutionResult connectExecutionResult = executeConnectCommand(address, networkTask.getPort(), ip6);
+            ExecutionResult connectExecutionResult = executeConnectCommand(address, networkTask.getPort(), data.getConnectCount(), ip6);
             LogEntry logEntry = connectExecutionResult.getLogEntry();
             completeLogEntry(networkTask, logEntry);
             Log.d(ConnectNetworkTaskWorker.class.getName(), "Returning " + connectExecutionResult);
@@ -84,12 +84,10 @@ public class ConnectNetworkTaskWorker extends NetworkTaskWorker {
         logEntry.setTimestamp(getTimeService().getCurrentTimestamp());
     }
 
-    private ExecutionResult executeConnectCommand(InetAddress address, int port, boolean ip6) {
-        Log.d(ConnectNetworkTaskWorker.class.getName(), "executeConnectCommand, address is " + address + ", port is " + port);
-        PreferenceManager preferenceManager = new PreferenceManager(getContext());
-        int count = preferenceManager.getPreferenceConnectCount();
-        Callable<ConnectCommandResult> connectCommand = getConnectCommand(address, port, count);
-        int connectTimeout = getResources().getInteger(R.integer.connect_timeout) * count * 2;
+    private ExecutionResult executeConnectCommand(InetAddress address, int port, int connectCount, boolean ip6) {
+        Log.d(ConnectNetworkTaskWorker.class.getName(), "executeConnectCommand, address is " + address + ", port is " + port + ", connectCount is " + connectCount + ", ip6 is " + ip6);
+        Callable<ConnectCommandResult> connectCommand = getConnectCommand(address, port, connectCount);
+        int connectTimeout = getResources().getInteger(R.integer.connect_timeout) * connectCount * 2;
         Log.d(ConnectNetworkTaskWorker.class.getName(), "Creating ExecutorService");
         ExecutorService executorService = Executors.newSingleThreadExecutor();
         Future<ConnectCommandResult> connectResultFuture = null;

@@ -22,6 +22,7 @@ import android.util.Log;
 
 import net.ibbaa.keepitup.R;
 import net.ibbaa.keepitup.db.NetworkTaskDAO;
+import net.ibbaa.keepitup.model.AccessTypeData;
 import net.ibbaa.keepitup.model.LogEntry;
 import net.ibbaa.keepitup.model.NetworkTask;
 import net.ibbaa.keepitup.service.NetworkTaskWorker;
@@ -37,6 +38,8 @@ public class TestNetworkTaskWorker extends NetworkTaskWorker {
     private final int maxInstances;
     private int instancesOnExecute;
     private final boolean interrupted;
+    private NetworkTask task;
+    private AccessTypeData data;
 
     public TestNetworkTaskWorker(Context context, NetworkTask networkTask, PowerManager.WakeLock wakeLock, boolean success) {
         this(context, networkTask, wakeLock, success, 10);
@@ -71,8 +74,10 @@ public class TestNetworkTaskWorker extends NetworkTaskWorker {
     }
 
     @Override
-    public ExecutionResult execute(NetworkTask networkTask) {
-        Log.d(TestNetworkTaskWorker.class.getName(), "Executing TestNetworkTaskWorker for " + networkTask);
+    public ExecutionResult execute(NetworkTask networkTask, AccessTypeData data) {
+        Log.d(TestNetworkTaskWorker.class.getName(), "Executing TestNetworkTaskWorker for network task " + networkTask + " and access type data" + data);
+        this.task = networkTask;
+        this.data = data;
         NetworkTaskDAO networkTaskDAO = new NetworkTaskDAO(getContext());
         instancesOnExecute = networkTaskDAO.readNetworkTaskInstances(networkTask.getId());
         LogEntry logEntry = new LogEntry();
@@ -90,6 +95,14 @@ public class TestNetworkTaskWorker extends NetworkTaskWorker {
     @Override
     protected Callable<DNSLookupResult> getDNSLookup(String host) {
         return mockDNSLookup;
+    }
+
+    public NetworkTask getExecuteTask() {
+        return task;
+    }
+
+    public AccessTypeData getExecuteData() {
+        return data;
     }
 
     @Override

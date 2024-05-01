@@ -32,6 +32,7 @@ public class TestConnectNetworkTaskWorker extends ConnectNetworkTaskWorker {
 
     private MockDNSLookup mockDNSLookup;
     private MockConnectCommand mockConnectCommand;
+    private int connectCount;
 
     public TestConnectNetworkTaskWorker(Context context, NetworkTask networkTask, PowerManager.WakeLock wakeLock) {
         super(context, networkTask, wakeLock);
@@ -52,7 +53,12 @@ public class TestConnectNetworkTaskWorker extends ConnectNetworkTaskWorker {
 
     @Override
     protected Callable<ConnectCommandResult> getConnectCommand(InetAddress address, int port, int connectCount) {
+        this.connectCount = connectCount;
         return mockConnectCommand;
+    }
+
+    public int getConnectCount() {
+        return connectCount;
     }
 
     @Override

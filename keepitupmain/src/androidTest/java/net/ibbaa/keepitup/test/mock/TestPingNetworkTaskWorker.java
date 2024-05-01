@@ -31,6 +31,7 @@ public class TestPingNetworkTaskWorker extends PingNetworkTaskWorker {
 
     private MockDNSLookup mockDNSLookup;
     private MockPingCommand mockPingCommand;
+    private int pingCount;
 
     public TestPingNetworkTaskWorker(Context context, NetworkTask networkTask, PowerManager.WakeLock wakeLock) {
         super(context, networkTask, wakeLock);
@@ -51,7 +52,12 @@ public class TestPingNetworkTaskWorker extends PingNetworkTaskWorker {
 
     @Override
     protected Callable<PingCommandResult> getPingCommand(String address, int pingCount, boolean ip6) {
+        this.pingCount = pingCount;
         return mockPingCommand;
+    }
+
+    public int getPingCount() {
+        return pingCount;
     }
 
     @Override

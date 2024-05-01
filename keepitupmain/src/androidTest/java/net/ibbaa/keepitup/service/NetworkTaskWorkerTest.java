@@ -24,9 +24,11 @@ import static org.junit.Assert.assertTrue;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.MediumTest;
 
+import net.ibbaa.keepitup.db.AccessTypeDataDAO;
 import net.ibbaa.keepitup.db.LogDAO;
 import net.ibbaa.keepitup.db.NetworkTaskDAO;
 import net.ibbaa.keepitup.model.AccessType;
+import net.ibbaa.keepitup.model.AccessTypeData;
 import net.ibbaa.keepitup.model.LogEntry;
 import net.ibbaa.keepitup.model.NetworkTask;
 import net.ibbaa.keepitup.model.NotificationType;
@@ -57,6 +59,7 @@ import java.util.List;
 public class NetworkTaskWorkerTest {
 
     private NetworkTaskDAO networkTaskDAO;
+    private AccessTypeDataDAO accessTypeDataDAO;
     private LogDAO logDAO;
     private PreferenceManager preferenceManager;
 
@@ -64,6 +67,8 @@ public class NetworkTaskWorkerTest {
     public void beforeEachTestMethod() {
         networkTaskDAO = new NetworkTaskDAO(TestRegistry.getContext());
         networkTaskDAO.deleteAllNetworkTasks();
+        accessTypeDataDAO = new AccessTypeDataDAO(TestRegistry.getContext());
+        accessTypeDataDAO.deleteAllAccessTypeData();
         logDAO = new LogDAO(TestRegistry.getContext());
         logDAO.deleteAllLogs();
         preferenceManager = new PreferenceManager(TestRegistry.getContext());
@@ -73,6 +78,7 @@ public class NetworkTaskWorkerTest {
     @After
     public void afterEachTestMethod() {
         networkTaskDAO.deleteAllNetworkTasks();
+        accessTypeDataDAO.deleteAllAccessTypeData();
         logDAO.deleteAllLogs();
         preferenceManager.removeAllPreferences();
     }
@@ -81,6 +87,8 @@ public class NetworkTaskWorkerTest {
     public void testSuccessfulExecution() {
         NetworkTask task = getNetworkTask();
         task = networkTaskDAO.insertNetworkTask(task);
+        AccessTypeData data = getAccessTypeDataWithNetworkTaskId(task.getId());
+        data = accessTypeDataDAO.insertAccessTypeData(data);
         TestNetworkTaskWorker testNetworkTaskWorker = new TestNetworkTaskWorker(TestRegistry.getContext(), task, null, true);
         setCurrentTime(testNetworkTaskWorker);
         MockNetworkManager networkManager = (MockNetworkManager) testNetworkTaskWorker.getNetworkManager();
@@ -95,9 +103,25 @@ public class NetworkTaskWorkerTest {
         assertLastScheduledInDatabase(task, getTestTimestamp());
         assertTrue(entry.isSuccess());
         assertEquals("successful", entry.getMessage());
+        assertTrue(task.isTechnicallyEqual(testNetworkTaskWorker.getExecuteTask()));
+        assertTrue(data.isTechnicallyEqual(testNetworkTaskWorker.getExecuteData()));
         NotificationHandler notificationHandler = testNetworkTaskWorker.getNotificationHandler();
         MockNotificationManager notificationManager = (MockNotificationManager) notificationHandler.getNotificationManager();
         assertFalse(notificationManager.wasNotifyCalled());
+    }
+
+    @Test
+    public void testSuccessfulExecutionAccessTypeDataNotFound() {
+        NetworkTask task = getNetworkTask();
+        task = networkTaskDAO.insertNetworkTask(task);
+        TestNetworkTaskWorker testNetworkTaskWorker = new TestNetworkTaskWorker(TestRegistry.getContext(), task, null, true);
+        setCurrentTime(testNetworkTaskWorker);
+        MockNetworkManager networkManager = (MockNetworkManager) testNetworkTaskWorker.getNetworkManager();
+        networkManager.setConnected(true);
+        networkManager.setConnectedWithWiFi(true);
+        testNetworkTaskWorker.run();
+        assertTrue(task.isTechnicallyEqual(testNetworkTaskWorker.getExecuteTask()));
+        assertTrue(new AccessTypeData(TestRegistry.getContext()).isTechnicallyEqual(testNetworkTaskWorker.getExecuteData()));
     }
 
     @Test
@@ -105,6 +129,7 @@ public class NetworkTaskWorkerTest {
         preferenceManager.setPreferenceNotificationType(NotificationType.FAILURE);
         NetworkTask task = getNetworkTask();
         task = networkTaskDAO.insertNetworkTask(task);
+        accessTypeDataDAO.insertAccessTypeData(getAccessTypeDataWithNetworkTaskId(task.getId()));
         logDAO.insertAndDeleteLog(getLogEntry(task.getId(), true));
         TestNetworkTaskWorker testNetworkTaskWorker = new TestNetworkTaskWorker(TestRegistry.getContext(), task, null, true);
         setCurrentTime(testNetworkTaskWorker);
@@ -122,6 +147,7 @@ public class NetworkTaskWorkerTest {
         preferenceManager.setPreferenceNotificationType(NotificationType.CHANGE);
         NetworkTask task = getNetworkTask();
         task = networkTaskDAO.insertNetworkTask(task);
+        accessTypeDataDAO.insertAccessTypeData(getAccessTypeDataWithNetworkTaskId(task.getId()));
         logDAO.insertAndDeleteLog(getLogEntry(task.getId(), true));
         TestNetworkTaskWorker testNetworkTaskWorker = new TestNetworkTaskWorker(TestRegistry.getContext(), task, null, true);
         setCurrentTime(testNetworkTaskWorker);
@@ -139,6 +165,7 @@ public class NetworkTaskWorkerTest {
         preferenceManager.setPreferenceNotificationType(NotificationType.CHANGE);
         NetworkTask task = getNetworkTask();
         task = networkTaskDAO.insertNetworkTask(task);
+        accessTypeDataDAO.insertAccessTypeData(getAccessTypeDataWithNetworkTaskId(task.getId()));
         logDAO.insertAndDeleteLog(getLogEntry(task.getId(), false));
         TestNetworkTaskWorker testNetworkTaskWorker = new TestNetworkTaskWorker(TestRegistry.getContext(), task, null, true);
         setCurrentTime(testNetworkTaskWorker);
@@ -155,6 +182,7 @@ public class NetworkTaskWorkerTest {
     public void testSuccessfulExecutionNumberInstances() {
         NetworkTask task = getNetworkTask();
         task = networkTaskDAO.insertNetworkTask(task);
+        accessTypeDataDAO.insertAccessTypeData(getAccessTypeDataWithNetworkTaskId(task.getId()));
         TestNetworkTaskWorker testNetworkTaskWorker = new TestNetworkTaskWorker(TestRegistry.getContext(), task, null, true);
         setCurrentTime(testNetworkTaskWorker);
         MockNetworkManager networkManager = (MockNetworkManager) testNetworkTaskWorker.getNetworkManager();
@@ -173,6 +201,7 @@ public class NetworkTaskWorkerTest {
     public void testTooManyInstances() {
         NetworkTask task = getNetworkTask();
         task = networkTaskDAO.insertNetworkTask(task);
+        accessTypeDataDAO.insertAccessTypeData(getAccessTypeDataWithNetworkTaskId(task.getId()));
         networkTaskDAO.increaseNetworkTaskInstances(task.getId());
         TestNetworkTaskWorker testNetworkTaskWorker = new TestNetworkTaskWorker(TestRegistry.getContext(), task, null, true, 1);
         setCurrentTime(testNetworkTaskWorker);
@@ -197,6 +226,7 @@ public class NetworkTaskWorkerTest {
     public void testInterrupted() {
         NetworkTask task = getNetworkTask();
         task = networkTaskDAO.insertNetworkTask(task);
+        accessTypeDataDAO.insertAccessTypeData(getAccessTypeDataWithNetworkTaskId(task.getId()));
         TestNetworkTaskWorker testNetworkTaskWorker = new TestNetworkTaskWorker(TestRegistry.getContext(), task, null, false, 10, true);
         setCurrentTime(testNetworkTaskWorker);
         MockNetworkManager networkManager = (MockNetworkManager) testNetworkTaskWorker.getNetworkManager();
@@ -221,6 +251,7 @@ public class NetworkTaskWorkerTest {
         preferenceManager.setPreferenceNotificationType(NotificationType.CHANGE);
         NetworkTask task = getNetworkTask();
         task = networkTaskDAO.insertNetworkTask(task);
+        accessTypeDataDAO.insertAccessTypeData(getAccessTypeDataWithNetworkTaskId(task.getId()));
         logDAO.insertAndDeleteLog(getLogEntry(task.getId(), false));
         TestNetworkTaskWorker testNetworkTaskWorker = new TestNetworkTaskWorker(TestRegistry.getContext(), task, null, false, 10, true);
         setCurrentTime(testNetworkTaskWorker);
@@ -237,6 +268,7 @@ public class NetworkTaskWorkerTest {
     public void testFailureWithNotification() {
         NetworkTask task = getNetworkTask();
         networkTaskDAO.insertNetworkTask(task);
+        accessTypeDataDAO.insertAccessTypeData(getAccessTypeDataWithNetworkTaskId(task.getId()));
         TestNetworkTaskWorker testNetworkTaskWorker = new TestNetworkTaskWorker(TestRegistry.getContext(), task, null, false);
         setCurrentTime(testNetworkTaskWorker);
         MockNetworkManager networkManager = (MockNetworkManager) testNetworkTaskWorker.getNetworkManager();
@@ -261,6 +293,7 @@ public class NetworkTaskWorkerTest {
         preferenceManager.setPreferenceNotificationType(NotificationType.FAILURE);
         NetworkTask task = getNetworkTask();
         task = networkTaskDAO.insertNetworkTask(task);
+        accessTypeDataDAO.insertAccessTypeData(getAccessTypeDataWithNetworkTaskId(task.getId()));
         logDAO.insertAndDeleteLog(getLogEntry(task.getId(), true));
         TestNetworkTaskWorker testNetworkTaskWorker = new TestNetworkTaskWorker(TestRegistry.getContext(), task, null, false);
         setCurrentTime(testNetworkTaskWorker);
@@ -278,6 +311,7 @@ public class NetworkTaskWorkerTest {
         preferenceManager.setPreferenceNotificationType(NotificationType.CHANGE);
         NetworkTask task = getNetworkTask();
         task = networkTaskDAO.insertNetworkTask(task);
+        accessTypeDataDAO.insertAccessTypeData(getAccessTypeDataWithNetworkTaskId(task.getId()));
         logDAO.insertAndDeleteLog(getLogEntry(task.getId(), true));
         TestNetworkTaskWorker testNetworkTaskWorker = new TestNetworkTaskWorker(TestRegistry.getContext(), task, null, false);
         setCurrentTime(testNetworkTaskWorker);
@@ -295,6 +329,7 @@ public class NetworkTaskWorkerTest {
         preferenceManager.setPreferenceNotificationType(NotificationType.CHANGE);
         NetworkTask task = getNetworkTask();
         task = networkTaskDAO.insertNetworkTask(task);
+        accessTypeDataDAO.insertAccessTypeData(getAccessTypeDataWithNetworkTaskId(task.getId()));
         logDAO.insertAndDeleteLog(getLogEntry(task.getId(), false));
         TestNetworkTaskWorker testNetworkTaskWorker = new TestNetworkTaskWorker(TestRegistry.getContext(), task, null, false);
         setCurrentTime(testNetworkTaskWorker);
@@ -312,6 +347,7 @@ public class NetworkTaskWorkerTest {
         NetworkTask task = getNetworkTask();
         task.setNotification(false);
         networkTaskDAO.insertNetworkTask(task);
+        accessTypeDataDAO.insertAccessTypeData(getAccessTypeDataWithNetworkTaskId(task.getId()));
         TestNetworkTaskWorker testNetworkTaskWorker = new TestNetworkTaskWorker(TestRegistry.getContext(), task, null, false);
         setCurrentTime(testNetworkTaskWorker);
         MockNetworkManager networkManager = (MockNetworkManager) testNetworkTaskWorker.getNetworkManager();
@@ -337,6 +373,7 @@ public class NetworkTaskWorkerTest {
         NetworkTask task = getNetworkTask();
         task.setNotification(false);
         task = networkTaskDAO.insertNetworkTask(task);
+        accessTypeDataDAO.insertAccessTypeData(getAccessTypeDataWithNetworkTaskId(task.getId()));
         logDAO.insertAndDeleteLog(getLogEntry(task.getId(), true));
         TestNetworkTaskWorker testNetworkTaskWorker = new TestNetworkTaskWorker(TestRegistry.getContext(), task, null, false);
         setCurrentTime(testNetworkTaskWorker);
@@ -355,6 +392,7 @@ public class NetworkTaskWorkerTest {
         NetworkTask task = getNetworkTask();
         task.setNotification(false);
         task = networkTaskDAO.insertNetworkTask(task);
+        accessTypeDataDAO.insertAccessTypeData(getAccessTypeDataWithNetworkTaskId(task.getId()));
         logDAO.insertAndDeleteLog(getLogEntry(task.getId(), true));
         TestNetworkTaskWorker testNetworkTaskWorker = new TestNetworkTaskWorker(TestRegistry.getContext(), task, null, false);
         setCurrentTime(testNetworkTaskWorker);
@@ -371,6 +409,7 @@ public class NetworkTaskWorkerTest {
     public void testFailureNumberInstances() {
         NetworkTask task = getNetworkTask();
         task = networkTaskDAO.insertNetworkTask(task);
+        accessTypeDataDAO.insertAccessTypeData(getAccessTypeDataWithNetworkTaskId(task.getId()));
         TestNetworkTaskWorker testNetworkTaskWorker = new TestNetworkTaskWorker(TestRegistry.getContext(), task, null, false);
         setCurrentTime(testNetworkTaskWorker);
         MockNetworkManager networkManager = (MockNetworkManager) testNetworkTaskWorker.getNetworkManager();
@@ -405,6 +444,7 @@ public class NetworkTaskWorkerTest {
     public void testNetworkTaskIsNotValid() {
         NetworkTask task = getNetworkTask();
         task = networkTaskDAO.insertNetworkTask(task);
+        accessTypeDataDAO.insertAccessTypeData(getAccessTypeDataWithNetworkTaskId(task.getId()));
         task.setSchedulerId(task.getSchedulerId() + 1);
         TestNetworkTaskWorker testNetworkTaskWorker = new TestNetworkTaskWorker(TestRegistry.getContext(), task, null, false);
         setCurrentTime(testNetworkTaskWorker);
@@ -424,6 +464,7 @@ public class NetworkTaskWorkerTest {
     public void testNoNetworkConnectionWithoutNotification() {
         NetworkTask task = getNetworkTask();
         networkTaskDAO.insertNetworkTask(task);
+        accessTypeDataDAO.insertAccessTypeData(getAccessTypeDataWithNetworkTaskId(task.getId()));
         TestNetworkTaskWorker testNetworkTaskWorker = new TestNetworkTaskWorker(TestRegistry.getContext(), task, null, true);
         setCurrentTime(testNetworkTaskWorker);
         MockNetworkManager networkManager = (MockNetworkManager) testNetworkTaskWorker.getNetworkManager();
@@ -448,6 +489,7 @@ public class NetworkTaskWorkerTest {
     public void testNoNetworkConnectionWithNotification() {
         NetworkTask task = getNetworkTask();
         networkTaskDAO.insertNetworkTask(task);
+        accessTypeDataDAO.insertAccessTypeData(getAccessTypeDataWithNetworkTaskId(task.getId()));
         TestNetworkTaskWorker testNetworkTaskWorker = new TestNetworkTaskWorker(TestRegistry.getContext(), task, null, true);
         setCurrentTime(testNetworkTaskWorker);
         MockNetworkManager networkManager = (MockNetworkManager) testNetworkTaskWorker.getNetworkManager();
@@ -473,6 +515,7 @@ public class NetworkTaskWorkerTest {
         preferenceManager.setPreferenceNotificationType(NotificationType.CHANGE);
         NetworkTask task = getNetworkTask();
         task = networkTaskDAO.insertNetworkTask(task);
+        accessTypeDataDAO.insertAccessTypeData(getAccessTypeDataWithNetworkTaskId(task.getId()));
         logDAO.insertAndDeleteLog(getLogEntry(task.getId(), true));
         TestNetworkTaskWorker testNetworkTaskWorker = new TestNetworkTaskWorker(TestRegistry.getContext(), task, null, true);
         setCurrentTime(testNetworkTaskWorker);
@@ -491,6 +534,7 @@ public class NetworkTaskWorkerTest {
         preferenceManager.setPreferenceNotificationType(NotificationType.CHANGE);
         NetworkTask task = getNetworkTask();
         task = networkTaskDAO.insertNetworkTask(task);
+        accessTypeDataDAO.insertAccessTypeData(getAccessTypeDataWithNetworkTaskId(task.getId()));
         logDAO.insertAndDeleteLog(getLogEntry(task.getId(), false));
         TestNetworkTaskWorker testNetworkTaskWorker = new TestNetworkTaskWorker(TestRegistry.getContext(), task, null, true);
         setCurrentTime(testNetworkTaskWorker);
@@ -525,6 +569,7 @@ public class NetworkTaskWorkerTest {
     public void testNoWifiConnectionWithoutNotification() {
         NetworkTask task = getNetworkTask();
         networkTaskDAO.insertNetworkTask(task);
+        accessTypeDataDAO.insertAccessTypeData(getAccessTypeDataWithNetworkTaskId(task.getId()));
         task.setOnlyWifi(true);
         TestNetworkTaskWorker testNetworkTaskWorker = new TestNetworkTaskWorker(TestRegistry.getContext(), task, null, true);
         setCurrentTime(testNetworkTaskWorker);
@@ -549,6 +594,7 @@ public class NetworkTaskWorkerTest {
     public void testNoWifiConnectionButAllowsNoWifi() {
         NetworkTask task = getNetworkTask();
         networkTaskDAO.insertNetworkTask(task);
+        accessTypeDataDAO.insertAccessTypeData(getAccessTypeDataWithNetworkTaskId(task.getId()));
         task.setOnlyWifi(false);
         TestNetworkTaskWorker testNetworkTaskWorker = new TestNetworkTaskWorker(TestRegistry.getContext(), task, null, true);
         setCurrentTime(testNetworkTaskWorker);
@@ -575,6 +621,7 @@ public class NetworkTaskWorkerTest {
         NetworkTask task = getNetworkTask();
         task.setOnlyWifi(true);
         task = networkTaskDAO.insertNetworkTask(task);
+        accessTypeDataDAO.insertAccessTypeData(getAccessTypeDataWithNetworkTaskId(task.getId()));
         logDAO.insertAndDeleteLog(getLogEntry(task.getId(), true));
         TestNetworkTaskWorker testNetworkTaskWorker = new TestNetworkTaskWorker(TestRegistry.getContext(), task, null, true);
         setCurrentTime(testNetworkTaskWorker);
@@ -593,6 +640,7 @@ public class NetworkTaskWorkerTest {
         NetworkTask task = getNetworkTask();
         task.setOnlyWifi(true);
         task = networkTaskDAO.insertNetworkTask(task);
+        accessTypeDataDAO.insertAccessTypeData(getAccessTypeDataWithNetworkTaskId(task.getId()));
         logDAO.insertAndDeleteLog(getLogEntry(task.getId(), false));
         TestNetworkTaskWorker testNetworkTaskWorker = new TestNetworkTaskWorker(TestRegistry.getContext(), task, null, true);
         setCurrentTime(testNetworkTaskWorker);
@@ -609,6 +657,7 @@ public class NetworkTaskWorkerTest {
     public void testNoWifiConnectionNumberInstancesAfterExecution() {
         NetworkTask task = getNetworkTask();
         task = networkTaskDAO.insertNetworkTask(task);
+        accessTypeDataDAO.insertAccessTypeData(getAccessTypeDataWithNetworkTaskId(task.getId()));
         task.setOnlyWifi(true);
         TestNetworkTaskWorker testNetworkTaskWorker = new TestNetworkTaskWorker(TestRegistry.getContext(), task, null, true);
         setCurrentTime(testNetworkTaskWorker);
@@ -721,6 +770,16 @@ public class NetworkTaskWorkerTest {
         task.setRunning(true);
         task.setLastScheduled(1);
         return task;
+    }
+
+    private AccessTypeData getAccessTypeDataWithNetworkTaskId(long networkTaskId) {
+        AccessTypeData data = new AccessTypeData();
+        data.setId(0);
+        data.setNetworkTaskId(networkTaskId);
+        data.setPingCount(10);
+        data.setPingPackageSize(1234);
+        data.setConnectCount(3);
+        return data;
     }
 
     private LogEntry getLogEntry(long networkTaskId, boolean success) {

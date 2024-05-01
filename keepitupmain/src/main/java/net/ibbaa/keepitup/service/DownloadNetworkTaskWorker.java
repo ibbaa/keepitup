@@ -21,6 +21,7 @@ import android.os.PowerManager;
 
 import net.ibbaa.keepitup.R;
 import net.ibbaa.keepitup.logging.Log;
+import net.ibbaa.keepitup.model.AccessTypeData;
 import net.ibbaa.keepitup.model.LogEntry;
 import net.ibbaa.keepitup.model.NetworkTask;
 import net.ibbaa.keepitup.resources.PreferenceManager;
@@ -56,8 +57,8 @@ public class DownloadNetworkTaskWorker extends NetworkTaskWorker {
     }
 
     @Override
-    public ExecutionResult execute(NetworkTask networkTask) {
-        Log.d(DownloadNetworkTaskWorker.class.getName(), "Executing DownloadNetworkTaskWorker for " + networkTask);
+    public ExecutionResult execute(NetworkTask networkTask, AccessTypeData data) {
+        Log.d(DownloadNetworkTaskWorker.class.getName(), "Executing DownloadNetworkTaskWorker for network task " + networkTask + " and access type data" + data);
         ExecutionResult downloadExecutionResult = executeDownloadCommand(networkTask);
         LogEntry logEntry = downloadExecutionResult.getLogEntry();
         logEntry.setNetworkTaskId(networkTask.getId());
