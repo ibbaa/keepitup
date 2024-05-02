@@ -18,9 +18,6 @@
           <timeTargetWasSelectedWithDropDown value="2024-04-23T15:17:27.708668548Z" />
         </State>
       </entry>
-      <entry key="ConnectNetworkTaskWorkerTest">
-        <State />
-      </entry>
       <entry key="NetworkTaskWorkerTest">
         <State />
       </entry>
@@ -41,6 +38,22 @@
             </Target>
           </targetSelectedWithDropDown>
           <timeTargetWasSelectedWithDropDown value="2024-04-27T16:23:56.081258708Z" />
+        </State>
+      </entry>
+      <entry key="testExportConfigurationScreenRotation()">
+        <State>
+          <targetSelectedWithDropDown>
+            <Target>
+              <type value="QUICK_BOOT_TARGET" />
+              <deviceKey>
+                <Key>
+                  <type value="VIRTUAL_DEVICE_PATH" />
+                  <value value="$USER_HOME$/.android/avd/Pixel_8_Pro_API_29.avd" />
+                </Key>
+              </deviceKey>
+            </Target>
+          </targetSelectedWithDropDown>
+          <timeTargetWasSelectedWithDropDown value="2024-05-02T19:20:44.540813370Z" />
         </State>
       </entry>
       <entry key="testSuccessfulExecution()">
