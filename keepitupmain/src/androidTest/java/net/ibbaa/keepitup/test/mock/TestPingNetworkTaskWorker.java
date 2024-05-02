@@ -51,7 +51,7 @@ public class TestPingNetworkTaskWorker extends PingNetworkTaskWorker {
     }
 
     @Override
-    protected Callable<PingCommandResult> getPingCommand(String address, int pingCount, boolean ip6) {
+    protected Callable<PingCommandResult> getPingCommand(String address, int pingCount, boolean defaultPackageSize, int packageSize, boolean ip6) {
         this.pingCount = pingCount;
         return mockPingCommand;
     }

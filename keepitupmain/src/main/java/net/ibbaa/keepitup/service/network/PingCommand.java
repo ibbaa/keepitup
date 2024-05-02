@@ -33,12 +33,16 @@ public class PingCommand implements Callable<PingCommandResult> {
     private final Context context;
     private final String address;
     private final int pingCount;
+    private final boolean defaultPackageSize;
+    private final int packageSize;
     private final boolean ip6;
 
-    public PingCommand(Context context, String address, int pingCount, boolean ip6) {
+    public PingCommand(Context context, String address, int pingCount, boolean defaultPackageSize, int packageSize, boolean ip6) {
         this.context = context;
         this.address = address;
         this.pingCount = pingCount;
+        this.defaultPackageSize = defaultPackageSize;
+        this.packageSize = packageSize;
         this.ip6 = ip6;
     }
 
@@ -50,11 +54,9 @@ public class PingCommand implements Callable<PingCommandResult> {
         Process process = null;
         try {
             Runtime runtime = Runtime.getRuntime();
-            String command = ip6 ? getResources().getString(R.string.ping6_command_line) : getResources().getString(R.string.ping_command_line);
-            int timeout = getResources().getInteger(R.integer.ping_timeout);
-            String formattedCommand = String.format(command, pingCount, timeout, address);
-            Log.d(PingCommand.class.getName(), "Executing ping command: " + formattedCommand);
-            process = runtime.exec(formattedCommand);
+            String command = getPingCommand();
+            Log.d(PingCommand.class.getName(), "Executing ping command: " + command);
+            process = runtime.exec(command);
             output = StreamUtil.inputStreamToString(process.getInputStream(), Charsets.US_ASCII);
             output = StringUtil.trim(output);
             if (StringUtil.isEmpty(output)) {
@@ -73,6 +75,19 @@ public class PingCommand implements Callable<PingCommandResult> {
                 process.destroy();
             }
         }
+    }
+
+    private String getPingCommand() {
+        String command = ip6 ? getResources().getString(R.string.ping6_command) : getResources().getString(R.string.ping_command);
+        String countOption = getResources().getString(R.string.ping_command_count_option);
+        String timeoutOption = getResources().getString(R.string.ping_command_timeout_option);
+        String packageSizeOption = getResources().getString(R.string.ping_command_package_size_option);
+        int timeout = getResources().getInteger(R.integer.ping_timeout);
+        String commandLine = command + " " + countOption + " " + pingCount + " " + timeoutOption + " " + timeout;
+        if (!defaultPackageSize) {
+            commandLine += " " + packageSizeOption + " " + packageSize;
+        }
+        return commandLine + " " + address;
     }
 
     private Context getContext() {

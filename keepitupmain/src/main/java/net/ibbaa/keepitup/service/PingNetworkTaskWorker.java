@@ -24,6 +24,7 @@ import net.ibbaa.keepitup.logging.Log;
 import net.ibbaa.keepitup.model.AccessTypeData;
 import net.ibbaa.keepitup.model.LogEntry;
 import net.ibbaa.keepitup.model.NetworkTask;
+import net.ibbaa.keepitup.resources.PreferenceManager;
 import net.ibbaa.keepitup.service.network.PingCommand;
 import net.ibbaa.keepitup.service.network.PingCommandResult;
 import net.ibbaa.keepitup.service.network.PingOutputParser;
@@ -67,7 +68,10 @@ public class PingNetworkTaskWorker extends NetworkTaskWorker {
             } else {
                 Log.d(PingNetworkTaskWorker.class.getName(), address + " is an IPv4 address");
             }
-            ExecutionResult pingExecutionResult = executePingCommand(address.getHostAddress(), data.getPingCount(), ip6);
+            PreferenceManager preferenceManager = new PreferenceManager(getContext());
+            boolean enforceDefaultPackageSize = preferenceManager.getPreferenceEnforceDefaultPingPackageSize();
+            Log.d(PingNetworkTaskWorker.class.getName(), "enforceDefaultPackageSize is " + enforceDefaultPackageSize);
+            ExecutionResult pingExecutionResult = executePingCommand(address.getHostAddress(), data.getPingCount(), enforceDefaultPackageSize, data.getPingPackageSize(), ip6);
             LogEntry logEntry = pingExecutionResult.getLogEntry();
             completeLogEntry(networkTask, logEntry);
             Log.d(PingNetworkTaskWorker.class.getName(), "Returning " + pingExecutionResult);
@@ -86,9 +90,9 @@ public class PingNetworkTaskWorker extends NetworkTaskWorker {
         logEntry.setTimestamp(getTimeService().getCurrentTimestamp());
     }
 
-    private ExecutionResult executePingCommand(String address, int pingCount, boolean ip6) {
-        Log.d(PingNetworkTaskWorker.class.getName(), "executePingCommand, address is " + address + ", pingCount is " + pingCount + ", ip6 is " + ip6);
-        Callable<PingCommandResult> pingCommand = getPingCommand(address, pingCount, ip6);
+    private ExecutionResult executePingCommand(String address, int pingCount, boolean defaultPackageSize, int packageSize, boolean ip6) {
+        Log.d(PingNetworkTaskWorker.class.getName(), "executePingCommand, address is " + address + ", pingCount is " + pingCount + ", defaultPackageSize is " + defaultPackageSize + ", packageSize is " + packageSize + ", ip6 is " + ip6);
+        Callable<PingCommandResult> pingCommand = getPingCommand(address, pingCount, defaultPackageSize, packageSize, ip6);
         int timeout = getResources().getInteger(R.integer.ping_timeout) * pingCount * 2;
         Log.d(PingNetworkTaskWorker.class.getName(), "Creating ExecutorService");
         ExecutorService executorService = Executors.newSingleThreadExecutor();
@@ -172,7 +176,7 @@ public class PingNetworkTaskWorker extends NetworkTaskWorker {
         return message;
     }
 
-    protected Callable<PingCommandResult> getPingCommand(String address, int pingCount, boolean ip6) {
-        return new PingCommand(getContext(), address, pingCount, ip6);
+    protected Callable<PingCommandResult> getPingCommand(String address, int pingCount, boolean defaultPackageSize, int packageSize, boolean ip6) {
+        return new PingCommand(getContext(), address, pingCount, defaultPackageSize, packageSize, ip6);
     }
 }

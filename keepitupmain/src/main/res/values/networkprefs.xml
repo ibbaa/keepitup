@@ -17,8 +17,11 @@
 <resources>
     <integer name="database_access_timeout">300</integer>
     <bool name="network_prefer_ipv4">true</bool>
-    <string name="ping_command_line">/system/bin/ping -c %d -W %d %s</string>
-    <string name="ping6_command_line">/system/bin/ping6 -c %d -W %d %s</string>
+    <string name="ping_command">/system/bin/ping</string>
+    <string name="ping6_command">/system/bin/ping6</string>
+    <string name="ping_command_count_option">-c</string>
+    <string name="ping_command_timeout_option">-W</string>
+    <string name="ping_command_package_size_option">-s</string>
     <integer name="ping_timeout">20</integer>
     <integer name="connect_timeout">20</integer>
     <integer name="download_timeout">10800</integer>

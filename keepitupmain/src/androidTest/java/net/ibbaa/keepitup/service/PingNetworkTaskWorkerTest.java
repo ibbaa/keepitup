@@ -62,7 +62,7 @@ public class PingNetworkTaskWorkerTest {
 
     private void prepareTestPingNetworkTaskWorker(DNSLookupResult dnsLookupResult, PingCommandResult pingCommandResult) {
         MockDNSLookup mockDNSLookup = new MockDNSLookup("127.0.0.1", dnsLookupResult);
-        MockPingCommand mockPingCommand = new MockPingCommand(TestRegistry.getContext(), "127.0.0.1", 3, false, pingCommandResult);
+        MockPingCommand mockPingCommand = new MockPingCommand(TestRegistry.getContext(), "127.0.0.1", 3, false, 56, false, pingCommandResult);
         pingNetworkTaskWorker.setMockDNSLookup(mockDNSLookup);
         pingNetworkTaskWorker.setMockPingCommand(mockPingCommand);
         MockTimeService timeService = (MockTimeService) pingNetworkTaskWorker.getTimeService();
