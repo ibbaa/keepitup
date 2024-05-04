@@ -288,6 +288,7 @@ public class NetworkTaskProcessBroadcastReceiverTest {
         networkTask.setNotification(true);
         networkTask.setRunning(false);
         networkTask.setLastScheduled(1);
+        networkTask.setFailureCount(1);
         return networkTask;
     }
 

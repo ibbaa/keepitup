@@ -364,6 +364,7 @@ public class TimeBasedSuspensionBroadcastReceiverTest {
         task.setNotification(true);
         task.setRunning(true);
         task.setLastScheduled(1);
+        task.setFailureCount(1);
         return task;
     }
 
@@ -380,6 +381,7 @@ public class TimeBasedSuspensionBroadcastReceiverTest {
         task.setNotification(false);
         task.setRunning(false);
         task.setLastScheduled(1);
+        task.setFailureCount(2);
         return task;
     }
 }

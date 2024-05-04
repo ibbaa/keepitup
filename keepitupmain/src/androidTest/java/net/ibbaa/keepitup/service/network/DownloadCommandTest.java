@@ -516,6 +516,8 @@ public class DownloadCommandTest {
         task.setOnlyWifi(false);
         task.setNotification(true);
         task.setRunning(true);
+        task.setLastScheduled(1);
+        task.setFailureCount(1);
         return task;
     }
 

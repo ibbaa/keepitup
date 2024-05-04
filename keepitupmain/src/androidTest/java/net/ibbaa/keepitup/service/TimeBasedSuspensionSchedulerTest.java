@@ -1040,6 +1040,7 @@ public class TimeBasedSuspensionSchedulerTest {
         task.setNotification(true);
         task.setRunning(true);
         task.setLastScheduled(1);
+        task.setFailureCount(1);
         return task;
     }
 
@@ -1056,6 +1057,7 @@ public class TimeBasedSuspensionSchedulerTest {
         task.setNotification(false);
         task.setRunning(false);
         task.setLastScheduled(1);
+        task.setFailureCount(2);
         return task;
     }
 }

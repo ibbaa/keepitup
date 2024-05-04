@@ -219,6 +219,7 @@ public class ExportTaskTest extends BaseUITest {
         task.setNotification(true);
         task.setRunning(true);
         task.setLastScheduled(0);
+        task.setFailureCount(1);
         return task;
     }
 
@@ -236,6 +237,7 @@ public class ExportTaskTest extends BaseUITest {
         task.setNotification(false);
         task.setRunning(false);
         task.setLastScheduled(0);
+        task.setFailureCount(2);
         return task;
     }
 
@@ -253,6 +255,7 @@ public class ExportTaskTest extends BaseUITest {
         task.setNotification(false);
         task.setRunning(false);
         task.setLastScheduled(0);
+        task.setFailureCount(3);
         return task;
     }
 

@@ -45,6 +45,7 @@ public class NetworkTask {
     private boolean notification;
     private boolean running;
     private long lastScheduled;
+    private int failureCount;
 
     public NetworkTask() {
         this.id = -1;
@@ -59,6 +60,7 @@ public class NetworkTask {
         this.notification = false;
         this.running = false;
         this.lastScheduled = -1;
+        this.failureCount = 0;
     }
 
     public NetworkTask(Context context) {
@@ -94,6 +96,7 @@ public class NetworkTask {
         this.notification = bundle.getInt("notification") >= 1;
         this.running = bundle.getInt("running") >= 1;
         this.lastScheduled = bundle.getLong("lastScheduled");
+        this.failureCount = bundle.getInt("failureCount");
     }
 
     public NetworkTask(Map<String, ?> map) {
@@ -133,6 +136,9 @@ public class NetworkTask {
         }
         if (NumberUtil.isValidLongValue(map.get("lastScheduled"))) {
             this.lastScheduled = NumberUtil.getLongValue(map.get("lastScheduled"), -1);
+        }
+        if (NumberUtil.isValidIntValue(map.get("failureCount"))) {
+            this.failureCount = NumberUtil.getIntValue(map.get("failureCount"), 0);
         }
     }
 
@@ -232,6 +238,14 @@ public class NetworkTask {
         this.lastScheduled = lastScheduled;
     }
 
+    public int getFailureCount() {
+        return failureCount;
+    }
+
+    public void setFailureCount(int failureCount) {
+        this.failureCount = failureCount;
+    }
+
     public PersistableBundle toPersistableBundle() {
         PersistableBundle bundle = new PersistableBundle();
         bundle.putLong("id", id);
@@ -250,6 +264,7 @@ public class NetworkTask {
         bundle.putInt("notification", notification ? 1 : 0);
         bundle.putInt("running", running ? 1 : 0);
         bundle.putLong("lastScheduled", lastScheduled);
+        bundle.putInt("failureCount", failureCount);
         return bundle;
     }
 
@@ -275,6 +290,7 @@ public class NetworkTask {
         map.put("notification", notification);
         map.put("running", running);
         map.put("lastScheduled", lastScheduled);
+        map.put("failureCount", failureCount);
         return map;
     }
 
@@ -295,6 +311,9 @@ public class NetworkTask {
             return false;
         }
         if (lastScheduled != other.lastScheduled) {
+            return false;
+        }
+        if (failureCount != other.failureCount) {
             return false;
         }
         if (port != other.port) {
@@ -356,6 +375,7 @@ public class NetworkTask {
                 ", notification=" + notification +
                 ", running=" + running +
                 ", lastScheduled=" + lastScheduled +
+                ", failureCount=" + failureCount +
                 '}';
     }
 }

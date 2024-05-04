@@ -565,6 +565,8 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
         networkTask.setOnlyWifi(false);
         networkTask.setNotification(true);
         networkTask.setRunning(false);
+        networkTask.setLastScheduled(1);
+        networkTask.setFailureCount(1);
         return networkTask;
     }
 
@@ -581,6 +583,8 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
         networkTask.setOnlyWifi(true);
         networkTask.setNotification(false);
         networkTask.setRunning(false);
+        networkTask.setLastScheduled(1);
+        networkTask.setFailureCount(1);
         return networkTask;
     }
 

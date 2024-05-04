@@ -251,6 +251,7 @@ public class ConnectNetworkTaskWorkerTest {
         task.setNotification(true);
         task.setRunning(true);
         task.setLastScheduled(1);
+        task.setFailureCount(1);
         return task;
     }
 

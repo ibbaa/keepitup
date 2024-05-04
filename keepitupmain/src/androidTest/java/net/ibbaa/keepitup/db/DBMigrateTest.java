@@ -30,6 +30,7 @@ import net.ibbaa.keepitup.model.AccessType;
 import net.ibbaa.keepitup.model.AccessTypeData;
 import net.ibbaa.keepitup.model.Interval;
 import net.ibbaa.keepitup.model.NetworkTask;
+import net.ibbaa.keepitup.resources.PreferenceManager;
 import net.ibbaa.keepitup.test.mock.TestRegistry;
 
 import org.junit.After;
@@ -49,6 +50,7 @@ public class DBMigrateTest {
     private IntervalDAO intervalDAO;
     private SchedulerStateDAO schedulerStateDAO;
     private AccessTypeDataDAO accessTypeDataDAO;
+    private PreferenceManager preferenceManager;
 
     @Before
     public void beforeEachTestMethod() {
@@ -59,11 +61,14 @@ public class DBMigrateTest {
         intervalDAO = new IntervalDAO(TestRegistry.getContext());
         schedulerStateDAO = new SchedulerStateDAO(TestRegistry.getContext());
         accessTypeDataDAO = new AccessTypeDataDAO(TestRegistry.getContext());
+        preferenceManager = new PreferenceManager(TestRegistry.getContext());
+        preferenceManager.removeAllPreferences();
         setup.dropTables();
     }
 
     @After
     public void afterEachTestMethod() {
+        preferenceManager.removeAllPreferences();
         setup.dropTables();
     }
 
@@ -99,6 +104,8 @@ public class DBMigrateTest {
         NetworkTask task1 = networkTaskDAO.insertNetworkTask(getNetworkTask1());
         NetworkTask task2 = networkTaskDAO.insertNetworkTask(getNetworkTask2());
         NetworkTask task3 = networkTaskDAO.insertNetworkTask(getNetworkTask3());
+        preferenceManager.setPreferencePingCount(1);
+        preferenceManager.setPreferenceConnectCount(3);
         migrate.doUpgrade(TestRegistry.getContext(), 2, 3);
         assertEquals(3, accessTypeDataDAO.readAllAccessTypeData().size());
         AccessTypeData data1 = accessTypeDataDAO.readAccessTypeDataForNetworkTask(task1.getId());
@@ -151,6 +158,7 @@ public class DBMigrateTest {
         task.setNotification(true);
         task.setRunning(true);
         task.setLastScheduled(0);
+        task.setFailureCount(2);
         return task;
     }
 
@@ -168,6 +176,7 @@ public class DBMigrateTest {
         task.setNotification(false);
         task.setRunning(false);
         task.setLastScheduled(0);
+        task.setFailureCount(1);
         return task;
     }
 
@@ -185,6 +194,7 @@ public class DBMigrateTest {
         task.setNotification(false);
         task.setRunning(false);
         task.setLastScheduled(0);
+        task.setFailureCount(0);
         return task;
     }
 }

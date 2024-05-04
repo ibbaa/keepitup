@@ -223,6 +223,8 @@ public class NetworkTaskHandlerTest extends BaseUITest {
         networkTask.setOnlyWifi(false);
         networkTask.setNotification(true);
         networkTask.setRunning(false);
+        networkTask.setLastScheduled(1);
+        networkTask.setFailureCount(1);
         return networkTask;
     }
 
@@ -239,6 +241,8 @@ public class NetworkTaskHandlerTest extends BaseUITest {
         networkTask.setOnlyWifi(true);
         networkTask.setNotification(false);
         networkTask.setRunning(false);
+        networkTask.setLastScheduled(1);
+        networkTask.setFailureCount(2);
         return networkTask;
     }
 
@@ -255,6 +259,8 @@ public class NetworkTaskHandlerTest extends BaseUITest {
         networkTask.setOnlyWifi(true);
         networkTask.setNotification(true);
         networkTask.setRunning(false);
+        networkTask.setLastScheduled(1);
+        networkTask.setFailureCount(3);
         return networkTask;
     }
 
@@ -271,6 +277,8 @@ public class NetworkTaskHandlerTest extends BaseUITest {
         networkTask.setOnlyWifi(false);
         networkTask.setNotification(false);
         networkTask.setRunning(false);
+        networkTask.setLastScheduled(1);
+        networkTask.setFailureCount(4);
         return networkTask;
     }
 

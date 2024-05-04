@@ -456,7 +456,7 @@ public class NetworkTaskDAO extends BaseDAO {
         int indexOnlyWifiColumn = cursor.getColumnIndex(dbConstants.getOnlyWifiColumnName());
         int indexNotificationColumn = cursor.getColumnIndex(dbConstants.getNotificationColumnName());
         int indexRunningColumn = cursor.getColumnIndex(dbConstants.getRunningColumnName());
-        int indexLAstScheduledColumn = cursor.getColumnIndex(dbConstants.getLastScheduledColumnName());
+        int indexLastScheduledColumn = cursor.getColumnIndex(dbConstants.getLastScheduledColumnName());
         networkTask.setId(cursor.getInt(indexIdColumn));
         networkTask.setIndex(cursor.getInt(indexIndexColumn));
         networkTask.setSchedulerId(cursor.getInt(indexSchedulerIdColumn));
@@ -472,7 +472,7 @@ public class NetworkTaskDAO extends BaseDAO {
         networkTask.setOnlyWifi(cursor.getInt(indexOnlyWifiColumn) >= 1);
         networkTask.setNotification(cursor.getInt(indexNotificationColumn) >= 1);
         networkTask.setRunning(cursor.getInt(indexRunningColumn) >= 1);
-        networkTask.setLastScheduled(cursor.getLong(indexLAstScheduledColumn));
+        networkTask.setLastScheduled(cursor.getLong(indexLastScheduledColumn));
         return networkTask;
     }
 }

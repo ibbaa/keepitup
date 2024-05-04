@@ -541,6 +541,7 @@ public class NetworkTaskProcessServiceSchedulerTest {
         task.setNotification(true);
         task.setRunning(false);
         task.setLastScheduled(1);
+        task.setFailureCount(1);
         return task;
     }
 
@@ -557,6 +558,7 @@ public class NetworkTaskProcessServiceSchedulerTest {
         task.setNotification(false);
         task.setRunning(false);
         task.setLastScheduled(1);
+        task.setFailureCount(2);
         return task;
     }
 

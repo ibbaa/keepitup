@@ -161,6 +161,8 @@ public class NetworkTaskLogActivityTest extends BaseUITest {
         networkTask.setOnlyWifi(false);
         networkTask.setNotification(true);
         networkTask.setRunning(false);
+        networkTask.setLastScheduled(1);
+        networkTask.setFailureCount(2);
         return networkTask;
     }
 

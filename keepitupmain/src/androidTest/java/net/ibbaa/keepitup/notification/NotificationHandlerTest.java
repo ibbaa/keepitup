@@ -159,6 +159,7 @@ public class NotificationHandlerTest {
         task.setNotification(true);
         task.setRunning(false);
         task.setLastScheduled(1);
+        task.setFailureCount(1);
         return task;
     }
 
@@ -175,6 +176,7 @@ public class NotificationHandlerTest {
         task.setNotification(true);
         task.setRunning(false);
         task.setLastScheduled(1);
+        task.setFailureCount(1);
         return task;
     }
 
@@ -191,6 +193,7 @@ public class NotificationHandlerTest {
         task.setNotification(true);
         task.setRunning(false);
         task.setLastScheduled(1);
+        task.setFailureCount(1);
         return task;
     }
 

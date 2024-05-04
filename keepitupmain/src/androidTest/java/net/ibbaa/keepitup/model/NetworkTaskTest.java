@@ -71,6 +71,7 @@ public class NetworkTaskTest {
         assertFalse(task.isNotification());
         assertFalse(task.isRunning());
         assertEquals(-1, task.getLastScheduled());
+        assertEquals(0, task.getFailureCount());
         PersistableBundle persistableBundle = task.toPersistableBundle();
         assertNotNull(persistableBundle);
         task = new NetworkTask(persistableBundle);
@@ -86,6 +87,7 @@ public class NetworkTaskTest {
         assertFalse(task.isNotification());
         assertFalse(task.isRunning());
         assertEquals(-1, task.getLastScheduled());
+        assertEquals(0, task.getFailureCount());
         Bundle bundle = task.toBundle();
         assertNotNull(bundle);
         task = new NetworkTask(bundle);
@@ -101,6 +103,7 @@ public class NetworkTaskTest {
         assertFalse(task.isNotification());
         assertFalse(task.isRunning());
         assertEquals(-1, task.getLastScheduled());
+        assertEquals(0, task.getFailureCount());
         Map<String, ?> map = task.toMap();
         assertNotNull(map);
         task = new NetworkTask(map);
@@ -116,6 +119,7 @@ public class NetworkTaskTest {
         assertFalse(task.isNotification());
         assertFalse(task.isRunning());
         assertEquals(-1, task.getLastScheduled());
+        assertEquals(0, task.getFailureCount());
     }
 
     @Test
@@ -133,6 +137,7 @@ public class NetworkTaskTest {
         assertFalse(task.isNotification());
         assertFalse(task.isRunning());
         assertEquals(-1, task.getLastScheduled());
+        assertEquals(0, task.getFailureCount());
     }
 
     @Test
@@ -150,6 +155,7 @@ public class NetworkTaskTest {
         map.put("notification", "tru");
         map.put("running", "tru");
         map.put("lastScheduled", "xyz");
+        map.put("failureCount", "zyx");
         NetworkTask task = new NetworkTask(map);
         assertEquals(-1, task.getId());
         assertEquals(-1, task.getIndex());
@@ -163,6 +169,7 @@ public class NetworkTaskTest {
         assertFalse(task.isNotification());
         assertFalse(task.isRunning());
         assertEquals(-1, task.getLastScheduled());
+        assertEquals(0, task.getFailureCount());
     }
 
     @Test
@@ -180,6 +187,7 @@ public class NetworkTaskTest {
         map.put("notification", "true");
         map.put("running", "true");
         map.put("lastScheduled", "7");
+        map.put("failureCount", "3");
         NetworkTask task = new NetworkTask(map);
         assertEquals(1, task.getId());
         assertEquals(2, task.getIndex());
@@ -193,6 +201,7 @@ public class NetworkTaskTest {
         assertTrue(task.isNotification());
         assertTrue(task.isRunning());
         assertEquals(7, task.getLastScheduled());
+        assertEquals(3, task.getFailureCount());
     }
 
     @Test
@@ -217,6 +226,7 @@ public class NetworkTaskTest {
         assertTrue(task.isNotification());
         assertFalse(task.isRunning());
         assertEquals(-1, task.getLastScheduled());
+        assertEquals(0, task.getFailureCount());
         preferenceManager.removeAllPreferences();
         task = new NetworkTask(TestRegistry.getContext());
         assertEquals(-1, task.getId());
@@ -231,6 +241,7 @@ public class NetworkTaskTest {
         assertFalse(task.isNotification());
         assertFalse(task.isRunning());
         assertEquals(-1, task.getLastScheduled());
+        assertEquals(0, task.getFailureCount());
     }
 
     @Test
@@ -249,6 +260,7 @@ public class NetworkTaskTest {
         task.setNotification(true);
         task.setRunning(true);
         task.setLastScheduled(timestamp);
+        task.setFailureCount(12);
         assertEquals(1, task.getId());
         assertEquals(2, task.getIndex());
         assertEquals(3, task.getSchedulerId());
@@ -261,6 +273,7 @@ public class NetworkTaskTest {
         assertTrue(task.isNotification());
         assertTrue(task.isRunning());
         assertEquals(timestamp, task.getLastScheduled());
+        assertEquals(12, task.getFailureCount());
         PersistableBundle persistableBundle = task.toPersistableBundle();
         assertNotNull(persistableBundle);
         task = new NetworkTask(persistableBundle);
@@ -276,6 +289,7 @@ public class NetworkTaskTest {
         assertTrue(task.isNotification());
         assertTrue(task.isRunning());
         assertEquals(timestamp, task.getLastScheduled());
+        assertEquals(12, task.getFailureCount());
         Bundle bundle = task.toBundle();
         assertNotNull(bundle);
         task = new NetworkTask(bundle);
@@ -291,6 +305,7 @@ public class NetworkTaskTest {
         assertTrue(task.isNotification());
         assertTrue(task.isRunning());
         assertEquals(timestamp, task.getLastScheduled());
+        assertEquals(12, task.getFailureCount());
     }
 
     @Test
@@ -309,6 +324,7 @@ public class NetworkTaskTest {
         task.setNotification(true);
         task.setRunning(true);
         task.setLastScheduled(timestamp);
+        task.setFailureCount(25);
         Map<String, ?> map = task.toMap();
         assertNotNull(map);
         task = new NetworkTask(map);
@@ -324,6 +340,7 @@ public class NetworkTaskTest {
         assertTrue(task.isNotification());
         assertTrue(task.isRunning());
         assertEquals(timestamp, task.getLastScheduled());
+        assertEquals(25, task.getFailureCount());
     }
 
     @Test
@@ -378,6 +395,10 @@ public class NetworkTaskTest {
         networkTask1.setLastScheduled(25);
         assertFalse(networkTask1.isEqual(networkTask2));
         networkTask2.setLastScheduled(25);
+        assertTrue(networkTask1.isEqual(networkTask2));
+        networkTask1.setFailureCount(3);
+        assertFalse(networkTask1.isEqual(networkTask2));
+        networkTask2.setFailureCount(3);
         assertTrue(networkTask1.isEqual(networkTask2));
     }
 
