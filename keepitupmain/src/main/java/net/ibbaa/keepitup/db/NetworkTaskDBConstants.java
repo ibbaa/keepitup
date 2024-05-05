@@ -35,6 +35,7 @@ class NetworkTaskDBConstants {
     private final String notificationColumnName;
     private final String runningColumnName;
     private final String lastScheduledColumnName;
+    private final String failureCountColumnName;
 
     public NetworkTaskDBConstants(Context context) {
         tableName = context.getResources().getString(R.string.task_table_name);
@@ -50,6 +51,7 @@ class NetworkTaskDBConstants {
         notificationColumnName = context.getResources().getString(R.string.task_notification_column_name);
         runningColumnName = context.getResources().getString(R.string.task_running_column_name);
         lastScheduledColumnName = context.getResources().getString(R.string.task_lastscheduled_column_name);
+        failureCountColumnName = context.getResources().getString(R.string.task_failurecount_column_name);
     }
 
     public String getTableName() {
@@ -104,7 +106,28 @@ class NetworkTaskDBConstants {
         return lastScheduledColumnName;
     }
 
+    public String getFailureCountColumnName() {
+        return failureCountColumnName;
+    }
+
     public String getCreateTableStatement() {
+        return ("CREATE TABLE IF NOT EXISTS " + getTableName() + "(") +
+                getIdColumnName() + " INTEGER PRIMARY KEY ASC, " +
+                getIndexColumnName() + " INTEGER NOT NULL, " +
+                getSchedulerIdColumnName() + " INTEGER, " +
+                getInstancesColumnName() + " INTEGER, " +
+                getAddressColumnName() + " TEXT, " +
+                getPortColumnName() + " INTEGER, " +
+                getAccessTypeColumnName() + " INTEGER, " +
+                getIntervalColumnName() + " INTEGER, " +
+                getOnlyWifiColumnName() + " TEXT, " +
+                getNotificationColumnName() + " INTEGER, " +
+                getRunningColumnName() + " INTEGER, " +
+                getLastScheduledColumnName() + " INTEGER, " +
+                getFailureCountColumnName() + " INTEGER);";
+    }
+
+    public String getCreateTableStatementWithoutFailureCount() {
         return ("CREATE TABLE IF NOT EXISTS " + getTableName() + "(") +
                 getIdColumnName() + " INTEGER PRIMARY KEY ASC, " +
                 getIndexColumnName() + " INTEGER NOT NULL, " +
@@ -124,6 +147,14 @@ class NetworkTaskDBConstants {
         return "DROP TABLE IF EXISTS " + getTableName();
     }
 
+    public String getAddFailureCountColumnStatement() {
+        return "ALTER TABLE " + getTableName() + " ADD COLUMN " + getFailureCountColumnName() + " INTEGER;";
+    }
+
+    public String getDropFailureCountColumnStatement() {
+        return "ALTER TABLE " + getTableName() + " DROP COLUMN " + getFailureCountColumnName() + ";";
+    }
+
     public String getReadNetworkTaskStatement() {
         return "SELECT " +
                 getIdColumnName() + ", " +
@@ -137,7 +168,8 @@ class NetworkTaskDBConstants {
                 getOnlyWifiColumnName() + ", " +
                 getNotificationColumnName() + ", " +
                 getRunningColumnName() + ", " +
-                getLastScheduledColumnName() +
+                getLastScheduledColumnName() + ", " +
+                getFailureCountColumnName() +
                 " FROM " + getTableName() +
                 "  WHERE " + getIdColumnName() + " = ?;";
     }
@@ -156,7 +188,8 @@ class NetworkTaskDBConstants {
                 getOnlyWifiColumnName() + ", " +
                 getNotificationColumnName() + ", " +
                 getRunningColumnName() + ", " +
-                getLastScheduledColumnName() +
+                getLastScheduledColumnName() + ", " +
+                getFailureCountColumnName() +
                 " FROM " + getTableName() +
                 " ORDER BY " + getIndexColumnName() + " ASC";
     }
@@ -170,7 +203,11 @@ class NetworkTaskDBConstants {
     }
 
     public String getReadInstancesStatement() {
-        return "SELECT INSTANCES FROM " + getTableName() + " WHERE " + getIdColumnName() + " = ?";
+        return "SELECT " + getInstancesColumnName() + " FROM " + getTableName() + " WHERE " + getIdColumnName() + " = ?";
+    }
+
+    public String getReadFailureCountStatement() {
+        return "SELECT " + getFailureCountColumnName() + " FROM " + getTableName() + " WHERE " + getIdColumnName() + " = ?";
     }
 
     public String getUpdateIndexNetworkTasksStatement() {

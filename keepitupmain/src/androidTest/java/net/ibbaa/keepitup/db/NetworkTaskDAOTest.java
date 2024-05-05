@@ -124,6 +124,14 @@ public class NetworkTaskDAOTest {
     }
 
     @Test
+    public void testInsertResetFailureCount() {
+        NetworkTask insertedTask1 = getNetworkTask1();
+        insertedTask1 = networkTaskDAO.insertNetworkTask(insertedTask1);
+        assertEquals(0, insertedTask1.getFailureCount());
+        assertEquals(0, networkTaskDAO.readNetworkTaskFailureCount(insertedTask1.getId()));
+    }
+
+    @Test
     public void testDeleteIndexCleanup() {
         NetworkTask insertedTask1 = new NetworkTask();
         NetworkTask insertedTask2 = new NetworkTask();
@@ -177,6 +185,7 @@ public class NetworkTaskDAOTest {
         assertEquals(insertedTask1.getInstances(), readTask1.getInstances());
         assertFalse(readTask1.isRunning());
         assertEquals(-1, readTask1.getLastScheduled());
+        assertEquals(0, readTask1.getFailureCount());
     }
 
     @Test
@@ -212,6 +221,7 @@ public class NetworkTaskDAOTest {
         assertEquals(insertedTask1.getIndex(), readTask1.getIndex());
         assertEquals(insertedTask1.isRunning(), readTask1.isRunning());
         assertEquals(-1, readTask1.getLastScheduled());
+        assertEquals(0, readTask1.getFailureCount());
     }
 
     @Test
@@ -238,6 +248,20 @@ public class NetworkTaskDAOTest {
         readTask1.setInstances(5);
         readTask1 = networkTaskDAO.updateNetworkTask(readTask1);
         assertEquals(0, readTask1.getInstances());
+        assertEquals(0, networkTaskDAO.readNetworkTaskInstances(readTask1.getId()));
+    }
+
+    @Test
+    public void testUpdateResetFailureCount() {
+        NetworkTask insertedTask1 = getNetworkTask1();
+        networkTaskDAO.insertNetworkTask(insertedTask1);
+        List<NetworkTask> readTasks = networkTaskDAO.readAllNetworkTasks();
+        NetworkTask readTask1 = readTasks.get(0);
+        readTask1.setAddress("abc.com");
+        readTask1.setFailureCount(5);
+        readTask1 = networkTaskDAO.updateNetworkTask(readTask1);
+        assertEquals(0, readTask1.getInstances());
+        assertEquals(0, readTask1.getFailureCount());
         assertEquals(0, networkTaskDAO.readNetworkTaskInstances(readTask1.getId()));
     }
 
@@ -297,6 +321,34 @@ public class NetworkTaskDAOTest {
         networkTaskDAO.decreaseNetworkTaskInstances(insertedTask1.getId());
         assertEquals(0, networkTaskDAO.readNetworkTaskInstances(insertedTask1.getId()));
         assertEquals(0, networkTaskDAO.readNetworkTaskInstances(insertedTask2.getId()));
+    }
+
+    @Test
+    public void testIncreaseResetFailureCount() {
+        NetworkTask insertedTask1 = getNetworkTask1();
+        NetworkTask insertedTask2 = getNetworkTask2();
+        insertedTask1 = networkTaskDAO.insertNetworkTask(insertedTask1);
+        insertedTask2 = networkTaskDAO.insertNetworkTask(insertedTask2);
+        assertEquals(0, networkTaskDAO.readNetworkTaskFailureCount(insertedTask1.getId()));
+        assertEquals(0, networkTaskDAO.readNetworkTaskFailureCount(insertedTask2.getId()));
+        networkTaskDAO.increaseNetworkTaskFailureCount(insertedTask1.getId());
+        assertEquals(1, networkTaskDAO.readNetworkTaskFailureCount(insertedTask1.getId()));
+        assertEquals(0, networkTaskDAO.readNetworkTaskFailureCount(insertedTask2.getId()));
+        networkTaskDAO.increaseNetworkTaskFailureCount(insertedTask1.getId());
+        assertEquals(2, networkTaskDAO.readNetworkTaskFailureCount(insertedTask1.getId()));
+        assertEquals(0, networkTaskDAO.readNetworkTaskFailureCount(insertedTask2.getId()));
+        networkTaskDAO.increaseNetworkTaskFailureCount(insertedTask2.getId());
+        assertEquals(2, networkTaskDAO.readNetworkTaskFailureCount(insertedTask1.getId()));
+        assertEquals(1, networkTaskDAO.readNetworkTaskFailureCount(insertedTask2.getId()));
+        networkTaskDAO.resetNetworkTaskFailureCount(insertedTask1.getId());
+        assertEquals(0, networkTaskDAO.readNetworkTaskFailureCount(insertedTask1.getId()));
+        assertEquals(1, networkTaskDAO.readNetworkTaskFailureCount(insertedTask2.getId()));
+        networkTaskDAO.increaseNetworkTaskFailureCount(insertedTask1.getId());
+        assertEquals(1, networkTaskDAO.readNetworkTaskFailureCount(insertedTask1.getId()));
+        assertEquals(1, networkTaskDAO.readNetworkTaskFailureCount(insertedTask2.getId()));
+        networkTaskDAO.resetAllNetworkTaskFailureCount();
+        assertEquals(0, networkTaskDAO.readNetworkTaskFailureCount(insertedTask1.getId()));
+        assertEquals(0, networkTaskDAO.readNetworkTaskFailureCount(insertedTask2.getId()));
     }
 
     @Test

@@ -142,6 +142,29 @@ public class DBSetupTest {
     }
 
     @Test
+    public void testAddFailureCountColumn() {
+        setup.dropNetworkTaskTable();
+        NetworkTaskDBConstants dbConstants = new NetworkTaskDBConstants(TestRegistry.getContext());
+        DBOpenHelper.getInstance(TestRegistry.getContext()).getWritableDatabase().execSQL(dbConstants.getCreateTableStatementWithoutFailureCount());
+        setup.addFailureCountColumnToNetworkTaskTable();
+        networkTaskDAO.insertNetworkTask(new NetworkTask());
+        assertEquals(1, networkTaskDAO.readAllNetworkTasks().size());
+    }
+
+    @Test
+    public void testInitializeFailureCountColumn() {
+        NetworkTask task1 = new NetworkTask();
+        NetworkTask task2 = new NetworkTask();
+        task1.setFailureCount(1);
+        task2.setFailureCount(2);
+        task1 = networkTaskDAO.insertNetworkTask(task1);
+        task2 = networkTaskDAO.insertNetworkTask(task2);
+        setup.initializeFailureCountColumn();
+        assertEquals(0, networkTaskDAO.readNetworkTaskFailureCount(task1.getId()));
+        assertEquals(0, networkTaskDAO.readNetworkTaskFailureCount(task2.getId()));
+    }
+
+    @Test
     public void testDropCreateLogTable() {
         logDAO.insertAndDeleteLog(new LogEntry());
         assertFalse(logDAO.readAllLogs().isEmpty());

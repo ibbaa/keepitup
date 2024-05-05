@@ -68,6 +68,19 @@ public class DBSetup {
         db.execSQL(networkTaskDBConstants.getCreateTableStatement());
     }
 
+    public void addFailureCountColumnToNetworkTaskTable(SQLiteDatabase db) {
+        Log.d(DBSetup.class.getName(), "Adding column " + networkTaskDBConstants.getFailureCountColumnName() + " to table " + networkTaskDBConstants.getTableName());
+        db.execSQL(networkTaskDBConstants.getAddFailureCountColumnStatement());
+    }
+
+    public void initializeFailureCountColumn(SQLiteDatabase db) {
+        Log.d(DBSetup.class.getName(), "Setting " + networkTaskDBConstants.getFailureCountColumnName() + " to 0 in " + networkTaskDBConstants.getTableName());
+        NetworkTaskDBConstants dbConstants = new NetworkTaskDBConstants(getContext());
+        ContentValues values = new ContentValues();
+        values.put(dbConstants.getFailureCountColumnName(), 0);
+        db.update(dbConstants.getTableName(), values, null, null);
+    }
+
     public void createLogTable(SQLiteDatabase db) {
         Log.d(DBSetup.class.getName(), "Creating database table " + logDBConstants.getTableName());
         db.execSQL(logDBConstants.getCreateTableStatement());
@@ -123,6 +136,11 @@ public class DBSetup {
     public void dropNetworkTaskTable(SQLiteDatabase db) {
         Log.d(DBSetup.class.getName(), "Dropping database table " + networkTaskDBConstants.getTableName());
         db.execSQL(networkTaskDBConstants.getDropTableStatement());
+    }
+
+    public void dropFailureCountColumnFromNetworkTaskTable(SQLiteDatabase db) {
+        Log.d(DBSetup.class.getName(), "Dropping column " + networkTaskDBConstants.getFailureCountColumnName() + " from table " + networkTaskDBConstants.getTableName());
+        db.execSQL(networkTaskDBConstants.getDropFailureCountColumnStatement());
     }
 
     public void dropLogTable(SQLiteDatabase db) {
@@ -200,6 +218,14 @@ public class DBSetup {
         createNetworkTaskTable(DBOpenHelper.getInstance(getContext()).getWritableDatabase());
     }
 
+    public void addFailureCountColumnToNetworkTaskTable() {
+        addFailureCountColumnToNetworkTaskTable(DBOpenHelper.getInstance(getContext()).getWritableDatabase());
+    }
+
+    public void initializeFailureCountColumn() {
+        initializeFailureCountColumn(DBOpenHelper.getInstance(getContext()).getWritableDatabase());
+    }
+
     public void createLogTable() {
         createLogTable(DBOpenHelper.getInstance(getContext()).getWritableDatabase());
     }
@@ -230,6 +256,11 @@ public class DBSetup {
 
     public void dropNetworkTaskTable() {
         dropNetworkTaskTable(DBOpenHelper.getInstance(getContext()).getWritableDatabase());
+    }
+
+    @SuppressWarnings({"unused"})
+    public void dropFailureCountColumnFromNetworkTaskTable() {
+        dropFailureCountColumnFromNetworkTaskTable(DBOpenHelper.getInstance(getContext()).getWritableDatabase());
     }
 
     public void dropLogTable() {

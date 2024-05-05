@@ -81,8 +81,12 @@ public class DBMigrate {
 
     private void version2DowngradeTo1(SQLiteDatabase db) {
         Log.d(DBMigrate.class.getName(), "version2DowngradeTo1");
-        setup.dropIntervalTable(db);
-        setup.dropSchedulerStateTable(db);
+        try {
+            setup.dropIntervalTable(db);
+            setup.dropSchedulerStateTable(db);
+        } catch (Exception exc) {
+            Log.e(DBMigrate.class.getName(), "version2DowngradeTo1 failed ", exc);
+        }
     }
 
     private void version3UpgradeFrom2(SQLiteDatabase db) {
@@ -93,6 +97,11 @@ public class DBMigrate {
 
     private void version3DowngradeTo2(SQLiteDatabase db) {
         Log.d(DBMigrate.class.getName(), "version3DowngradeTo2");
+        try {
+            setup.dropAccessTypeDataTable(db);
+        } catch (Exception exc) {
+            Log.e(DBMigrate.class.getName(), "version3DowngradeTo2 failed ", exc);
+        }
         setup.dropAccessTypeDataTable(db);
     }
 
