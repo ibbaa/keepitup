@@ -171,8 +171,7 @@ public class TimeBasedSuspensionScheduler {
     private void resetLastScheduled(NetworkTask task) {
         Log.d(TimeBasedSuspensionScheduler.class.getName(), "resetLastScheduled");
         if (task != null) {
-            networkTaskDAO.resetNetworkTaskInstances(task.getId());
-            networkTaskDAO.resetNetworkTaskLastScheduled(task.getId());
+            networkTaskDAO.resetNetworkTaskLastScheduledAndFailureCount(task.getId());
         }
     }
 

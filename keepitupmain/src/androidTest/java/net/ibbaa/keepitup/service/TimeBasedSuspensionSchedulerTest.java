@@ -489,6 +489,7 @@ public class TimeBasedSuspensionSchedulerTest {
         task1.setRunning(true);
         networkTaskDAO.updateNetworkTaskRunning(task1.getId(), true);
         networkTaskDAO.updateNetworkTaskLastScheduled(task1.getId(), getTestTimestamp(24, 10, 15));
+        networkTaskDAO.increaseNetworkTaskFailureCount(task1.getId());
         networkTaskDAO.increaseNetworkTaskInstances(task1.getId());
         networkTaskScheduler.schedule(task1);
         intervalDAO.insertInterval(getInterval1());
@@ -505,7 +506,8 @@ public class TimeBasedSuspensionSchedulerTest {
         assertFalse(networkTaskSchedulerAlarmManager.wasSetAlarmCalled());
         assertFalse(networkTaskSchedulerAlarmManager.wasCancelAlarmCalled());
         assertTrue(task1.getLastScheduled() < 0);
-        assertEquals(0, task1.getInstances());
+        assertEquals(0, task1.getFailureCount());
+        assertEquals(1, task1.getInstances());
     }
 
     @Test
@@ -515,6 +517,7 @@ public class TimeBasedSuspensionSchedulerTest {
         task1.setRunning(true);
         networkTaskDAO.updateNetworkTaskRunning(task1.getId(), true);
         networkTaskDAO.updateNetworkTaskLastScheduled(task1.getId(), getTestTimestamp(24, 10, 15));
+        networkTaskDAO.increaseNetworkTaskFailureCount(task1.getId());
         networkTaskDAO.increaseNetworkTaskInstances(task1.getId());
         intervalDAO.insertInterval(getInterval1());
         setTestTime(getTestTimestamp(24, 10, 15));
@@ -524,7 +527,8 @@ public class TimeBasedSuspensionSchedulerTest {
         task1 = networkTaskDAO.readNetworkTask(task1.getId());
         assertTrue(alarmManager.wasSetAlarmRTCCalled());
         assertTrue(task1.getLastScheduled() < 0);
-        assertEquals(0, task1.getInstances());
+        assertEquals(0, task1.getFailureCount());
+        assertEquals(1, task1.getInstances());
     }
 
     @Test

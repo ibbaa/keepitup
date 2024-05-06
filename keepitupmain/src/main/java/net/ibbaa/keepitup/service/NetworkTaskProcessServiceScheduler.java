@@ -177,7 +177,7 @@ public class NetworkTaskProcessServiceScheduler {
             } else {
                 Log.d(NetworkTaskProcessServiceScheduler.class.getName(), "Network task " + currentTask + " is not marked as running.");
                 networkTaskDAO.resetNetworkTaskInstances(currentTask.getId());
-                networkTaskDAO.resetNetworkTaskLastScheduled(currentTask.getId());
+                networkTaskDAO.resetNetworkTaskLastScheduledAndFailureCount(currentTask.getId());
             }
         }
     }

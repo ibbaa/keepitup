@@ -24,19 +24,19 @@
         </DropdownSelection>
         <DialogSelection />
       </SelectionState>
-      <SelectionState runConfigName="DBSetupTest">
+      <SelectionState runConfigName="testResetNetworkTaskLastScheduledAndFailureCount()">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
-      <SelectionState runConfigName="testAddFailureCountColumn()">
+      <SelectionState runConfigName="testStartup()">
+        <option name="selectionMode" value="DROPDOWN" />
+      </SelectionState>
+      <SelectionState runConfigName="TimeBasedSuspensionSchedulerTest">
+        <option name="selectionMode" value="DROPDOWN" />
+      </SelectionState>
+      <SelectionState runConfigName="testStartNetworkTaskIsNotRunningAndSuspended()">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
       <SelectionState runConfigName="testExportConfigurationScreenRotation()">
-        <option name="selectionMode" value="DROPDOWN" />
-      </SelectionState>
-      <SelectionState runConfigName="testUpgradeFrom2To3FailureCountColumn()">
-        <option name="selectionMode" value="DROPDOWN" />
-      </SelectionState>
-      <SelectionState runConfigName="Tests in 'net.ibbaa.keepitup.db'">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
     </selectionStates>

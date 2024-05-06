@@ -131,11 +131,12 @@ public class NetworkTaskDAO extends BaseDAO {
         dumpDatabase("Dump after updateNetworkTaskLastScheduled call");
     }
 
-    public void resetNetworkTaskLastScheduled(long taskId) {
-        Log.d(NetworkTaskDAO.class.getName(), "Resetting last scheduled timestamp of task with id " + taskId);
+    public void resetNetworkTaskLastScheduledAndFailureCount(long taskId) {
+        Log.d(NetworkTaskDAO.class.getName(), "Resetting last scheduled timestamp and failure count" +
+                " of task with id " + taskId);
         NetworkTask networkTask = new NetworkTask();
         networkTask.setId(taskId);
-        executeDBOperationInTransaction(networkTask, this::resetNetworkTaskLastScheduled);
+        executeDBOperationInTransaction(networkTask, this::resetNetworkTaskLastScheduledAndFailureCount);
         dumpDatabase("Dump after resetNetworkTaskLastScheduled call");
     }
 
@@ -154,14 +155,6 @@ public class NetworkTaskDAO extends BaseDAO {
         networkTask.setId(taskId);
         executeDBOperationInTransaction(networkTask, this::increaseNetworkTaskFailureCount);
         dumpDatabase("Dump after increaseNetworkTaskFailureCount call");
-    }
-
-    public void resetNetworkTaskFailureCount(long taskId) {
-        Log.d(NetworkTaskDAO.class.getName(), "Resetting failure count of task with id " + taskId);
-        NetworkTask networkTask = new NetworkTask();
-        networkTask.setId(taskId);
-        executeDBOperationInTransaction(networkTask, this::resetNetworkTaskFailureCount);
-        dumpDatabase("Dump after resetNetworkTaskFailureCount call");
     }
 
     public void resetAllNetworkTaskFailureCount() {
@@ -352,13 +345,14 @@ public class NetworkTaskDAO extends BaseDAO {
         return db.update(dbConstants.getTableName(), values, selection, selectionArgs);
     }
 
-    private int resetNetworkTaskLastScheduled(NetworkTask networkTask, SQLiteDatabase db) {
-        Log.d(NetworkTaskDAO.class.getName(), "resetNetworkTaskLastScheduled, task is " + networkTask);
+    private int resetNetworkTaskLastScheduledAndFailureCount(NetworkTask networkTask, SQLiteDatabase db) {
+        Log.d(NetworkTaskDAO.class.getName(), "resetNetworkTaskLastScheduledAndFailureCount, task is " + networkTask);
         NetworkTaskDBConstants dbConstants = new NetworkTaskDBConstants(getContext());
         String selection = dbConstants.getIdColumnName() + " = ?";
         String[] selectionArgs = {String.valueOf(networkTask.getId())};
         ContentValues values = new ContentValues();
         values.put(dbConstants.getLastScheduledColumnName(), -1);
+        values.put(dbConstants.getFailureCountColumnName(), 0);
         return db.update(dbConstants.getTableName(), values, selection, selectionArgs);
     }
 
@@ -377,16 +371,6 @@ public class NetworkTaskDAO extends BaseDAO {
         ContentValues values = new ContentValues();
         values.put(dbConstants.getFailureCountColumnName(), networkTask.getFailureCount());
         Log.d(NetworkTaskDAO.class.getName(), "Updating failure count to " + networkTask.getInstances());
-        return db.update(dbConstants.getTableName(), values, selection, selectionArgs);
-    }
-
-    private int resetNetworkTaskFailureCount(NetworkTask networkTask, SQLiteDatabase db) {
-        Log.d(NetworkTaskDAO.class.getName(), "resetNetworkTaskFailureCount, task is " + networkTask);
-        NetworkTaskDBConstants dbConstants = new NetworkTaskDBConstants(getContext());
-        String selection = dbConstants.getIdColumnName() + " = ?";
-        String[] selectionArgs = {String.valueOf(networkTask.getId())};
-        ContentValues values = new ContentValues();
-        values.put(dbConstants.getFailureCountColumnName(), 0);
         return db.update(dbConstants.getTableName(), values, selection, selectionArgs);
     }
 

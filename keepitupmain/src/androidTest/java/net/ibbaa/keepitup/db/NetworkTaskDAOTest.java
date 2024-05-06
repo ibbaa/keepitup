@@ -340,7 +340,7 @@ public class NetworkTaskDAOTest {
         networkTaskDAO.increaseNetworkTaskFailureCount(insertedTask2.getId());
         assertEquals(2, networkTaskDAO.readNetworkTaskFailureCount(insertedTask1.getId()));
         assertEquals(1, networkTaskDAO.readNetworkTaskFailureCount(insertedTask2.getId()));
-        networkTaskDAO.resetNetworkTaskFailureCount(insertedTask1.getId());
+        networkTaskDAO.resetNetworkTaskLastScheduledAndFailureCount(insertedTask1.getId());
         assertEquals(0, networkTaskDAO.readNetworkTaskFailureCount(insertedTask1.getId()));
         assertEquals(1, networkTaskDAO.readNetworkTaskFailureCount(insertedTask2.getId()));
         networkTaskDAO.increaseNetworkTaskFailureCount(insertedTask1.getId());
@@ -358,9 +358,21 @@ public class NetworkTaskDAOTest {
         networkTaskDAO.updateNetworkTaskLastScheduled(insertedTask1.getId(), 125);
         NetworkTask readTask1 = networkTaskDAO.readNetworkTask(insertedTask1.getId());
         assertEquals(125, readTask1.getLastScheduled());
-        networkTaskDAO.resetNetworkTaskLastScheduled(readTask1.getId());
+        networkTaskDAO.resetNetworkTaskLastScheduledAndFailureCount(readTask1.getId());
         readTask1 = networkTaskDAO.readNetworkTask(insertedTask1.getId());
         assertEquals(-1, readTask1.getLastScheduled());
+    }
+
+    @Test
+    public void testResetNetworkTaskLastScheduledAndFailureCount() {
+        NetworkTask insertedTask1 = getNetworkTask1();
+        insertedTask1 = networkTaskDAO.insertNetworkTask(insertedTask1);
+        networkTaskDAO.updateNetworkTaskLastScheduled(insertedTask1.getId(), 125);
+        networkTaskDAO.increaseNetworkTaskFailureCount(insertedTask1.getId());
+        networkTaskDAO.resetNetworkTaskLastScheduledAndFailureCount(insertedTask1.getId());
+        NetworkTask readTask1 = networkTaskDAO.readNetworkTask(insertedTask1.getId());
+        assertEquals(-1, readTask1.getLastScheduled());
+        assertEquals(0, networkTaskDAO.readNetworkTaskFailureCount(readTask1.getId()));
     }
 
     private NetworkTask getNetworkTask1() {

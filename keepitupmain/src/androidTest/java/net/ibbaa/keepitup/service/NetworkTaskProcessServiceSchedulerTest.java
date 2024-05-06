@@ -325,12 +325,20 @@ public class NetworkTaskProcessServiceSchedulerTest {
         setTestTime(125);
         networkTaskDAO.increaseNetworkTaskInstances(task2.getId());
         assertEquals(1, networkTaskDAO.readNetworkTaskInstances(task2.getId()));
+        networkTaskDAO.increaseNetworkTaskFailureCount(task2.getId());
+        networkTaskDAO.updateNetworkTaskLastScheduled(task2.getId(), 125);
         scheduler.startup();
         assertFalse(isTaskMarkedAsRunningInDatabase(task1));
         assertFalse(isTaskMarkedAsRunningInDatabase(task2));
         assertFalse(alarmManager.wasSetAlarmCalled());
         assertFalse(alarmManager.wasCancelAlarmCalled());
         assertEquals(0, networkTaskDAO.readNetworkTaskInstances(task2.getId()));
+        NetworkTask readTask1 = networkTaskDAO.readNetworkTask(task1.getId());
+        NetworkTask readTask2 = networkTaskDAO.readNetworkTask(task2.getId());
+        assertEquals(-1, readTask1.getLastScheduled());
+        assertEquals(0, readTask1.getFailureCount());
+        assertEquals(-1, readTask2.getLastScheduled());
+        assertEquals(0, readTask2.getFailureCount());
         scheduler.start(task1);
         scheduler.terminate(task1);
         assertTrue(isTaskMarkedAsRunningInDatabase(task1));
@@ -341,6 +349,9 @@ public class NetworkTaskProcessServiceSchedulerTest {
         setTestTime(126);
         task1.setLastScheduled(125);
         networkTaskDAO.updateNetworkTaskLastScheduled(task1.getId(), 125);
+        networkTaskDAO.increaseNetworkTaskFailureCount(task1.getId());
+        networkTaskDAO.updateNetworkTaskLastScheduled(task2.getId(), 125);
+        networkTaskDAO.increaseNetworkTaskFailureCount(task2.getId());
         scheduler.startup();
         assertTrue(isTaskMarkedAsRunningInDatabase(task1));
         assertFalse(isTaskMarkedAsRunningInDatabase(task2));
@@ -353,11 +364,20 @@ public class NetworkTaskProcessServiceSchedulerTest {
         networkTaskDAO.increaseNetworkTaskInstances(task2.getId());
         assertEquals(1, networkTaskDAO.readNetworkTaskInstances(task1.getId()));
         assertEquals(1, networkTaskDAO.readNetworkTaskInstances(task2.getId()));
+        readTask1 = networkTaskDAO.readNetworkTask(task1.getId());
+        readTask2 = networkTaskDAO.readNetworkTask(task2.getId());
+        assertEquals(125, readTask1.getLastScheduled());
+        assertEquals(1, readTask1.getFailureCount());
+        assertEquals(-1, readTask2.getLastScheduled());
+        assertEquals(0, readTask2.getFailureCount());
         scheduler.start(task2);
         alarmManager.reset();
         setTestTime(Long.MAX_VALUE);
         task1.setLastScheduled(125);
         networkTaskDAO.updateNetworkTaskLastScheduled(task1.getId(), 125);
+        networkTaskDAO.increaseNetworkTaskFailureCount(task1.getId());
+        networkTaskDAO.updateNetworkTaskLastScheduled(task2.getId(), 125);
+        networkTaskDAO.increaseNetworkTaskFailureCount(task2.getId());
         scheduler.startup();
         assertTrue(isTaskMarkedAsRunningInDatabase(task1));
         assertTrue(isTaskMarkedAsRunningInDatabase(task2));
@@ -374,6 +394,12 @@ public class NetworkTaskProcessServiceSchedulerTest {
         assertTrue(isTaskMarkedAsRunningInDatabase(task1));
         assertTrue(isTaskMarkedAsRunningInDatabase(task2));
         assertTrue(alarmManager.wasSetAlarmCalled());
+        readTask1 = networkTaskDAO.readNetworkTask(task1.getId());
+        readTask2 = networkTaskDAO.readNetworkTask(task2.getId());
+        assertEquals(125, readTask1.getLastScheduled());
+        assertEquals(2, readTask1.getFailureCount());
+        assertEquals(125, readTask2.getLastScheduled());
+        assertEquals(1, readTask2.getFailureCount());
     }
 
     @Test
