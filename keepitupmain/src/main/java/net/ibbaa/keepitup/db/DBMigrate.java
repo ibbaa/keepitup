@@ -93,16 +93,21 @@ public class DBMigrate {
         Log.d(DBMigrate.class.getName(), "version3UpgradeFrom2");
         setup.recreateAccessTypeDataTable(db);
         setup.initializeAccessTypeDataTable(db);
+        try {
+            setup.addFailureCountColumnToNetworkTaskTable(db);
+        } catch (Exception exc) {
+            Log.e(DBMigrate.class.getName(), "version3UpgradeFrom2 failed ", exc);
+        }
     }
 
     private void version3DowngradeTo2(SQLiteDatabase db) {
         Log.d(DBMigrate.class.getName(), "version3DowngradeTo2");
+        setup.dropAccessTypeDataTable(db);
         try {
-            setup.dropAccessTypeDataTable(db);
+            setup.dropFailureCountColumnFromNetworkTaskTable(db);
         } catch (Exception exc) {
             Log.e(DBMigrate.class.getName(), "version3DowngradeTo2 failed ", exc);
         }
-        setup.dropAccessTypeDataTable(db);
     }
 
     @FunctionalInterface

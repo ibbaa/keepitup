@@ -120,6 +120,17 @@ public class DBMigrateTest {
         assertTrue(data.isTechnicallyEqual(data3));
     }
 
+    @Test
+    public void testUpgradeFrom2To3FailureCountColumn() {
+        setup.createTables();
+        setup.dropNetworkTaskTable();
+        NetworkTaskDBConstants dbConstants = new NetworkTaskDBConstants(TestRegistry.getContext());
+        DBOpenHelper.getInstance(TestRegistry.getContext()).getWritableDatabase().execSQL(dbConstants.getCreateTableStatementWithoutFailureCount());
+        migrate.doUpgrade(TestRegistry.getContext(), 2, 3);
+        networkTaskDAO.insertNetworkTask(new NetworkTask());
+        assertEquals(1, networkTaskDAO.readAllNetworkTasks().size());
+    }
+
     @Test(expected = SQLiteException.class)
     public void testDowngradeFrom3To2() {
         setup.createTables();
