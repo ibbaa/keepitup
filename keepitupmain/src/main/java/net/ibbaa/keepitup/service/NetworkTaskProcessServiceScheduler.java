@@ -127,6 +127,7 @@ public class NetworkTaskProcessServiceScheduler {
             networkTask.setRunning(false);
             networkTaskDAO.updateNetworkTaskRunning(networkTask.getId(), false);
             networkTask.setLastScheduled(-1);
+            networkTask.setFailureCount(0);
             terminate(networkTask);
             if (!areNetworkTasksRunning()) {
                 Log.d(NetworkTaskProcessServiceScheduler.class.getName(), "No running tasks. Stopping time bases scheduler.");

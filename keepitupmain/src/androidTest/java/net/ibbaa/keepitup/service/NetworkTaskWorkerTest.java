@@ -105,6 +105,8 @@ public class NetworkTaskWorkerTest {
         assertEquals("successful", entry.getMessage());
         assertTrue(task.isTechnicallyEqual(testNetworkTaskWorker.getExecuteTask()));
         assertTrue(data.isTechnicallyEqual(testNetworkTaskWorker.getExecuteData()));
+        NetworkTask readTask = networkTaskDAO.readNetworkTask(task.getId());
+        assertEquals(0, readTask.getFailureCount());
         NotificationHandler notificationHandler = testNetworkTaskWorker.getNotificationHandler();
         MockNotificationManager notificationManager = (MockNotificationManager) notificationHandler.getNotificationManager();
         assertFalse(notificationManager.wasNotifyCalled());
@@ -125,7 +127,7 @@ public class NetworkTaskWorkerTest {
     }
 
     @Test
-    public void testSuccessfulExecutionLastSuccess() {
+    public void testSuccessfulExecutionLastSuccessOnFailure() {
         preferenceManager.setPreferenceNotificationType(NotificationType.FAILURE);
         NetworkTask task = getNetworkTask();
         task = networkTaskDAO.insertNetworkTask(task);
@@ -137,13 +139,15 @@ public class NetworkTaskWorkerTest {
         networkManager.setConnected(true);
         networkManager.setConnectedWithWiFi(true);
         testNetworkTaskWorker.run();
+        NetworkTask readTask = networkTaskDAO.readNetworkTask(task.getId());
+        assertEquals(0, readTask.getFailureCount());
         NotificationHandler notificationHandler = testNetworkTaskWorker.getNotificationHandler();
         MockNotificationManager notificationManager = (MockNotificationManager) notificationHandler.getNotificationManager();
         assertFalse(notificationManager.wasNotifyCalled());
     }
 
     @Test
-    public void testSuccessfulExecutionLastSuccessNotificationOnChange() {
+    public void testSuccessfulExecutionLastSuccessOnChange() {
         preferenceManager.setPreferenceNotificationType(NotificationType.CHANGE);
         NetworkTask task = getNetworkTask();
         task = networkTaskDAO.insertNetworkTask(task);
@@ -155,27 +159,53 @@ public class NetworkTaskWorkerTest {
         networkManager.setConnected(true);
         networkManager.setConnectedWithWiFi(true);
         testNetworkTaskWorker.run();
+        NetworkTask readTask = networkTaskDAO.readNetworkTask(task.getId());
+        assertEquals(0, readTask.getFailureCount());
         NotificationHandler notificationHandler = testNetworkTaskWorker.getNotificationHandler();
         MockNotificationManager notificationManager = (MockNotificationManager) notificationHandler.getNotificationManager();
         assertFalse(notificationManager.wasNotifyCalled());
     }
 
     @Test
-    public void testSuccessfulExecutionLastFailureNotificationOnChange() {
+    public void testSuccessfulExecutionLastFailureOnChange() {
         preferenceManager.setPreferenceNotificationType(NotificationType.CHANGE);
         NetworkTask task = getNetworkTask();
         task = networkTaskDAO.insertNetworkTask(task);
         accessTypeDataDAO.insertAccessTypeData(getAccessTypeDataWithNetworkTaskId(task.getId()));
         logDAO.insertAndDeleteLog(getLogEntry(task.getId(), false));
+        networkTaskDAO.increaseNetworkTaskFailureCount(task.getId());
         TestNetworkTaskWorker testNetworkTaskWorker = new TestNetworkTaskWorker(TestRegistry.getContext(), task, null, true);
         setCurrentTime(testNetworkTaskWorker);
         MockNetworkManager networkManager = (MockNetworkManager) testNetworkTaskWorker.getNetworkManager();
         networkManager.setConnected(true);
         networkManager.setConnectedWithWiFi(true);
         testNetworkTaskWorker.run();
+        NetworkTask readTask = networkTaskDAO.readNetworkTask(task.getId());
+        assertEquals(0, readTask.getFailureCount());
         NotificationHandler notificationHandler = testNetworkTaskWorker.getNotificationHandler();
         MockNotificationManager notificationManager = (MockNotificationManager) notificationHandler.getNotificationManager();
         assertTrue(notificationManager.wasNotifyCalled());
+    }
+
+    @Test
+    public void testSuccessfulExecutionLastFailureOnFailure() {
+        preferenceManager.setPreferenceNotificationType(NotificationType.FAILURE);
+        NetworkTask task = getNetworkTask();
+        task = networkTaskDAO.insertNetworkTask(task);
+        accessTypeDataDAO.insertAccessTypeData(getAccessTypeDataWithNetworkTaskId(task.getId()));
+        logDAO.insertAndDeleteLog(getLogEntry(task.getId(), false));
+        networkTaskDAO.increaseNetworkTaskFailureCount(task.getId());
+        TestNetworkTaskWorker testNetworkTaskWorker = new TestNetworkTaskWorker(TestRegistry.getContext(), task, null, true);
+        setCurrentTime(testNetworkTaskWorker);
+        MockNetworkManager networkManager = (MockNetworkManager) testNetworkTaskWorker.getNetworkManager();
+        networkManager.setConnected(true);
+        networkManager.setConnectedWithWiFi(true);
+        testNetworkTaskWorker.run();
+        NetworkTask readTask = networkTaskDAO.readNetworkTask(task.getId());
+        assertEquals(0, readTask.getFailureCount());
+        NotificationHandler notificationHandler = testNetworkTaskWorker.getNotificationHandler();
+        MockNotificationManager notificationManager = (MockNotificationManager) notificationHandler.getNotificationManager();
+        assertFalse(notificationManager.wasNotifyCalled());
     }
 
     @Test
@@ -241,24 +271,50 @@ public class NetworkTaskWorkerTest {
         assertLastScheduledInDatabase(task, getTestTimestamp());
         assertFalse(entry.isSuccess());
         assertEquals("failed", entry.getMessage());
+        NetworkTask readTask = networkTaskDAO.readNetworkTask(task.getId());
+        assertEquals(0, readTask.getFailureCount());
         NotificationHandler notificationHandler = testNetworkTaskWorker.getNotificationHandler();
         MockNotificationManager notificationManager = (MockNotificationManager) notificationHandler.getNotificationManager();
         assertFalse(notificationManager.wasNotifyCalled());
     }
 
     @Test
-    public void testInterruptedLastFailureNotificationOnChange() {
+    public void testInterruptedLastFailureOnChange() {
         preferenceManager.setPreferenceNotificationType(NotificationType.CHANGE);
         NetworkTask task = getNetworkTask();
         task = networkTaskDAO.insertNetworkTask(task);
         accessTypeDataDAO.insertAccessTypeData(getAccessTypeDataWithNetworkTaskId(task.getId()));
         logDAO.insertAndDeleteLog(getLogEntry(task.getId(), false));
+        networkTaskDAO.increaseNetworkTaskFailureCount(task.getId());
         TestNetworkTaskWorker testNetworkTaskWorker = new TestNetworkTaskWorker(TestRegistry.getContext(), task, null, false, 10, true);
         setCurrentTime(testNetworkTaskWorker);
         MockNetworkManager networkManager = (MockNetworkManager) testNetworkTaskWorker.getNetworkManager();
         networkManager.setConnected(true);
         networkManager.setConnectedWithWiFi(true);
         testNetworkTaskWorker.run();
+        NetworkTask readTask = networkTaskDAO.readNetworkTask(task.getId());
+        assertEquals(1, readTask.getFailureCount());
+        NotificationHandler notificationHandler = testNetworkTaskWorker.getNotificationHandler();
+        MockNotificationManager notificationManager = (MockNotificationManager) notificationHandler.getNotificationManager();
+        assertFalse(notificationManager.wasNotifyCalled());
+    }
+
+    @Test
+    public void testInterruptedLastFailureOnFailure() {
+        preferenceManager.setPreferenceNotificationType(NotificationType.FAILURE);
+        NetworkTask task = getNetworkTask();
+        task = networkTaskDAO.insertNetworkTask(task);
+        accessTypeDataDAO.insertAccessTypeData(getAccessTypeDataWithNetworkTaskId(task.getId()));
+        logDAO.insertAndDeleteLog(getLogEntry(task.getId(), false));
+        networkTaskDAO.increaseNetworkTaskFailureCount(task.getId());
+        TestNetworkTaskWorker testNetworkTaskWorker = new TestNetworkTaskWorker(TestRegistry.getContext(), task, null, false, 10, true);
+        setCurrentTime(testNetworkTaskWorker);
+        MockNetworkManager networkManager = (MockNetworkManager) testNetworkTaskWorker.getNetworkManager();
+        networkManager.setConnected(true);
+        networkManager.setConnectedWithWiFi(true);
+        testNetworkTaskWorker.run();
+        NetworkTask readTask = networkTaskDAO.readNetworkTask(task.getId());
+        assertEquals(1, readTask.getFailureCount());
         NotificationHandler notificationHandler = testNetworkTaskWorker.getNotificationHandler();
         MockNotificationManager notificationManager = (MockNotificationManager) notificationHandler.getNotificationManager();
         assertFalse(notificationManager.wasNotifyCalled());
@@ -283,13 +339,15 @@ public class NetworkTaskWorkerTest {
         assertLastScheduledInDatabase(task, getTestTimestamp());
         assertFalse(entry.isSuccess());
         assertEquals("failed", entry.getMessage());
+        NetworkTask readTask = networkTaskDAO.readNetworkTask(task.getId());
+        assertEquals(1, readTask.getFailureCount());
         NotificationHandler notificationHandler = testNetworkTaskWorker.getNotificationHandler();
         MockNotificationManager notificationManager = (MockNotificationManager) notificationHandler.getNotificationManager();
         assertTrue(notificationManager.wasNotifyCalled());
     }
 
     @Test
-    public void testFailureWithNotificationLastSuccess() {
+    public void testFailureWithNotificationLastSuccessOnFailure() {
         preferenceManager.setPreferenceNotificationType(NotificationType.FAILURE);
         NetworkTask task = getNetworkTask();
         task = networkTaskDAO.insertNetworkTask(task);
@@ -301,6 +359,8 @@ public class NetworkTaskWorkerTest {
         networkManager.setConnected(true);
         networkManager.setConnectedWithWiFi(true);
         testNetworkTaskWorker.run();
+        NetworkTask readTask = networkTaskDAO.readNetworkTask(task.getId());
+        assertEquals(1, readTask.getFailureCount());
         NotificationHandler notificationHandler = testNetworkTaskWorker.getNotificationHandler();
         MockNotificationManager notificationManager = (MockNotificationManager) notificationHandler.getNotificationManager();
         assertTrue(notificationManager.wasNotifyCalled());
@@ -319,27 +379,53 @@ public class NetworkTaskWorkerTest {
         networkManager.setConnected(true);
         networkManager.setConnectedWithWiFi(true);
         testNetworkTaskWorker.run();
+        NetworkTask readTask = networkTaskDAO.readNetworkTask(task.getId());
+        assertEquals(1, readTask.getFailureCount());
         NotificationHandler notificationHandler = testNetworkTaskWorker.getNotificationHandler();
         MockNotificationManager notificationManager = (MockNotificationManager) notificationHandler.getNotificationManager();
         assertTrue(notificationManager.wasNotifyCalled());
     }
 
     @Test
-    public void testFailureWithNotificationLastFailureNotificationOnChange() {
+    public void testFailureWithNotificationLastFailureOnChange() {
         preferenceManager.setPreferenceNotificationType(NotificationType.CHANGE);
         NetworkTask task = getNetworkTask();
         task = networkTaskDAO.insertNetworkTask(task);
         accessTypeDataDAO.insertAccessTypeData(getAccessTypeDataWithNetworkTaskId(task.getId()));
         logDAO.insertAndDeleteLog(getLogEntry(task.getId(), false));
+        networkTaskDAO.increaseNetworkTaskFailureCount(task.getId());
         TestNetworkTaskWorker testNetworkTaskWorker = new TestNetworkTaskWorker(TestRegistry.getContext(), task, null, false);
         setCurrentTime(testNetworkTaskWorker);
         MockNetworkManager networkManager = (MockNetworkManager) testNetworkTaskWorker.getNetworkManager();
         networkManager.setConnected(true);
         networkManager.setConnectedWithWiFi(true);
         testNetworkTaskWorker.run();
+        NetworkTask readTask = networkTaskDAO.readNetworkTask(task.getId());
+        assertEquals(2, readTask.getFailureCount());
         NotificationHandler notificationHandler = testNetworkTaskWorker.getNotificationHandler();
         MockNotificationManager notificationManager = (MockNotificationManager) notificationHandler.getNotificationManager();
         assertFalse(notificationManager.wasNotifyCalled());
+    }
+
+    @Test
+    public void testFailureWithNotificationLastFailureOnFailure() {
+        preferenceManager.setPreferenceNotificationType(NotificationType.FAILURE);
+        NetworkTask task = getNetworkTask();
+        task = networkTaskDAO.insertNetworkTask(task);
+        accessTypeDataDAO.insertAccessTypeData(getAccessTypeDataWithNetworkTaskId(task.getId()));
+        logDAO.insertAndDeleteLog(getLogEntry(task.getId(), false));
+        networkTaskDAO.increaseNetworkTaskFailureCount(task.getId());
+        TestNetworkTaskWorker testNetworkTaskWorker = new TestNetworkTaskWorker(TestRegistry.getContext(), task, null, false);
+        setCurrentTime(testNetworkTaskWorker);
+        MockNetworkManager networkManager = (MockNetworkManager) testNetworkTaskWorker.getNetworkManager();
+        networkManager.setConnected(true);
+        networkManager.setConnectedWithWiFi(true);
+        testNetworkTaskWorker.run();
+        NetworkTask readTask = networkTaskDAO.readNetworkTask(task.getId());
+        assertEquals(2, readTask.getFailureCount());
+        NotificationHandler notificationHandler = testNetworkTaskWorker.getNotificationHandler();
+        MockNotificationManager notificationManager = (MockNotificationManager) notificationHandler.getNotificationManager();
+        assertTrue(notificationManager.wasNotifyCalled());
     }
 
     @Test
@@ -362,32 +448,15 @@ public class NetworkTaskWorkerTest {
         assertLastScheduledInDatabase(task, getTestTimestamp());
         assertFalse(entry.isSuccess());
         assertEquals("failed", entry.getMessage());
+        NetworkTask readTask = networkTaskDAO.readNetworkTask(task.getId());
+        assertEquals(1, readTask.getFailureCount());
         NotificationHandler notificationHandler = testNetworkTaskWorker.getNotificationHandler();
         MockNotificationManager notificationManager = (MockNotificationManager) notificationHandler.getNotificationManager();
         assertFalse(notificationManager.wasNotifyCalled());
     }
 
     @Test
-    public void testFailureWithoutNotificationLastSuccess() {
-        preferenceManager.setPreferenceNotificationType(NotificationType.FAILURE);
-        NetworkTask task = getNetworkTask();
-        task.setNotification(false);
-        task = networkTaskDAO.insertNetworkTask(task);
-        accessTypeDataDAO.insertAccessTypeData(getAccessTypeDataWithNetworkTaskId(task.getId()));
-        logDAO.insertAndDeleteLog(getLogEntry(task.getId(), true));
-        TestNetworkTaskWorker testNetworkTaskWorker = new TestNetworkTaskWorker(TestRegistry.getContext(), task, null, false);
-        setCurrentTime(testNetworkTaskWorker);
-        MockNetworkManager networkManager = (MockNetworkManager) testNetworkTaskWorker.getNetworkManager();
-        networkManager.setConnected(true);
-        networkManager.setConnectedWithWiFi(true);
-        testNetworkTaskWorker.run();
-        NotificationHandler notificationHandler = testNetworkTaskWorker.getNotificationHandler();
-        MockNotificationManager notificationManager = (MockNotificationManager) notificationHandler.getNotificationManager();
-        assertFalse(notificationManager.wasNotifyCalled());
-    }
-
-    @Test
-    public void testFailureWithoutNotificationLastSuccessNotificationOnChange() {
+    public void testFailureWithoutNotificationLastSuccessOnChange() {
         preferenceManager.setPreferenceNotificationType(NotificationType.CHANGE);
         NetworkTask task = getNetworkTask();
         task.setNotification(false);
@@ -400,6 +469,8 @@ public class NetworkTaskWorkerTest {
         networkManager.setConnected(true);
         networkManager.setConnectedWithWiFi(true);
         testNetworkTaskWorker.run();
+        NetworkTask readTask = networkTaskDAO.readNetworkTask(task.getId());
+        assertEquals(1, readTask.getFailureCount());
         NotificationHandler notificationHandler = testNetworkTaskWorker.getNotificationHandler();
         MockNotificationManager notificationManager = (MockNotificationManager) notificationHandler.getNotificationManager();
         assertFalse(notificationManager.wasNotifyCalled());
@@ -457,7 +528,7 @@ public class NetworkTaskWorkerTest {
         NotificationHandler notificationHandler = testNetworkTaskWorker.getNotificationHandler();
         MockNotificationManager notificationManager = (MockNotificationManager) notificationHandler.getNotificationManager();
         assertFalse(notificationManager.wasNotifyCalled());
-        assertLastScheduledInDatabase(task, getTestTimestamp());
+        assertLastScheduledInDatabase(task, -1);
     }
 
     @Test
@@ -480,6 +551,8 @@ public class NetworkTaskWorkerTest {
         assertLastScheduledInDatabase(task, getTestTimestamp());
         assertFalse(entry.isSuccess());
         assertEquals("No active network connection.", entry.getMessage());
+        NetworkTask readTask = networkTaskDAO.readNetworkTask(task.getId());
+        assertEquals(0, readTask.getFailureCount());
         NotificationHandler notificationHandler = testNetworkTaskWorker.getNotificationHandler();
         MockNotificationManager notificationManager = (MockNotificationManager) notificationHandler.getNotificationManager();
         assertFalse(notificationManager.wasNotifyCalled());
@@ -505,13 +578,15 @@ public class NetworkTaskWorkerTest {
         assertLastScheduledInDatabase(task, getTestTimestamp());
         assertFalse(entry.isSuccess());
         assertEquals("No active network connection.", entry.getMessage());
+        NetworkTask readTask = networkTaskDAO.readNetworkTask(task.getId());
+        assertEquals(1, readTask.getFailureCount());
         NotificationHandler notificationHandler = testNetworkTaskWorker.getNotificationHandler();
         MockNotificationManager notificationManager = (MockNotificationManager) notificationHandler.getNotificationManager();
         assertTrue(notificationManager.wasNotifyCalled());
     }
 
     @Test
-    public void testNoNetworkConnectionWithNotificationLastSuccessNotificationOnChange() {
+    public void testNoNetworkConnectionWithNotificationLastSuccessOnChange() {
         preferenceManager.setPreferenceNotificationType(NotificationType.CHANGE);
         NetworkTask task = getNetworkTask();
         task = networkTaskDAO.insertNetworkTask(task);
@@ -524,18 +599,21 @@ public class NetworkTaskWorkerTest {
         networkManager.setConnectedWithWiFi(false);
         preferenceManager.setPreferenceNotificationInactiveNetwork(true);
         testNetworkTaskWorker.run();
+        NetworkTask readTask = networkTaskDAO.readNetworkTask(task.getId());
+        assertEquals(1, readTask.getFailureCount());
         NotificationHandler notificationHandler = testNetworkTaskWorker.getNotificationHandler();
         MockNotificationManager notificationManager = (MockNotificationManager) notificationHandler.getNotificationManager();
         assertTrue(notificationManager.wasNotifyCalled());
     }
 
     @Test
-    public void testNoNetworkConnectionWithNotificationLastFailureNotificationOnChange() {
+    public void testNoNetworkConnectionWithNotificationLastFailureOnChange() {
         preferenceManager.setPreferenceNotificationType(NotificationType.CHANGE);
         NetworkTask task = getNetworkTask();
         task = networkTaskDAO.insertNetworkTask(task);
         accessTypeDataDAO.insertAccessTypeData(getAccessTypeDataWithNetworkTaskId(task.getId()));
         logDAO.insertAndDeleteLog(getLogEntry(task.getId(), false));
+        networkTaskDAO.increaseNetworkTaskFailureCount(task.getId());
         TestNetworkTaskWorker testNetworkTaskWorker = new TestNetworkTaskWorker(TestRegistry.getContext(), task, null, true);
         setCurrentTime(testNetworkTaskWorker);
         MockNetworkManager networkManager = (MockNetworkManager) testNetworkTaskWorker.getNetworkManager();
@@ -543,6 +621,8 @@ public class NetworkTaskWorkerTest {
         networkManager.setConnectedWithWiFi(false);
         preferenceManager.setPreferenceNotificationInactiveNetwork(true);
         testNetworkTaskWorker.run();
+        NetworkTask readTask = networkTaskDAO.readNetworkTask(task.getId());
+        assertEquals(2, readTask.getFailureCount());
         NotificationHandler notificationHandler = testNetworkTaskWorker.getNotificationHandler();
         MockNotificationManager notificationManager = (MockNotificationManager) notificationHandler.getNotificationManager();
         assertFalse(notificationManager.wasNotifyCalled());
@@ -585,6 +665,8 @@ public class NetworkTaskWorkerTest {
         assertLastScheduledInDatabase(task, getTestTimestamp());
         assertFalse(entry.isSuccess());
         assertEquals("Skipped. No active wifi connection.", entry.getMessage());
+        NetworkTask readTask = networkTaskDAO.readNetworkTask(task.getId());
+        assertEquals(0, readTask.getFailureCount());
         NotificationHandler notificationHandler = testNetworkTaskWorker.getNotificationHandler();
         MockNotificationManager notificationManager = (MockNotificationManager) notificationHandler.getNotificationManager();
         assertFalse(notificationManager.wasNotifyCalled());
@@ -610,13 +692,15 @@ public class NetworkTaskWorkerTest {
         assertLastScheduledInDatabase(task, getTestTimestamp());
         assertTrue(entry.isSuccess());
         assertEquals("successful", entry.getMessage());
+        NetworkTask readTask = networkTaskDAO.readNetworkTask(task.getId());
+        assertEquals(0, readTask.getFailureCount());
         NotificationHandler notificationHandler = testNetworkTaskWorker.getNotificationHandler();
         MockNotificationManager notificationManager = (MockNotificationManager) notificationHandler.getNotificationManager();
         assertFalse(notificationManager.wasNotifyCalled());
     }
 
     @Test
-    public void testNoWifiConnectionWithoutNotificationLastSuccessNotificationOnChange() {
+    public void testNoWifiConnectionWithoutNotificationLastSuccessOnChange() {
         preferenceManager.setPreferenceNotificationType(NotificationType.CHANGE);
         NetworkTask task = getNetworkTask();
         task.setOnlyWifi(true);
@@ -629,18 +713,21 @@ public class NetworkTaskWorkerTest {
         networkManager.setConnected(true);
         networkManager.setConnectedWithWiFi(false);
         testNetworkTaskWorker.run();
+        NetworkTask readTask = networkTaskDAO.readNetworkTask(task.getId());
+        assertEquals(0, readTask.getFailureCount());
         NotificationHandler notificationHandler = testNetworkTaskWorker.getNotificationHandler();
         MockNotificationManager notificationManager = (MockNotificationManager) notificationHandler.getNotificationManager();
         assertFalse(notificationManager.wasNotifyCalled());
     }
 
     @Test
-    public void testNoWifiConnectionWithoutNotificationLastFailureNotificationOnChange() {
+    public void testNoWifiConnectionWithoutNotificationLastFailureOnChange() {
         preferenceManager.setPreferenceNotificationType(NotificationType.CHANGE);
         NetworkTask task = getNetworkTask();
         task.setOnlyWifi(true);
         task = networkTaskDAO.insertNetworkTask(task);
         accessTypeDataDAO.insertAccessTypeData(getAccessTypeDataWithNetworkTaskId(task.getId()));
+        networkTaskDAO.increaseNetworkTaskFailureCount(task.getId());
         logDAO.insertAndDeleteLog(getLogEntry(task.getId(), false));
         TestNetworkTaskWorker testNetworkTaskWorker = new TestNetworkTaskWorker(TestRegistry.getContext(), task, null, true);
         setCurrentTime(testNetworkTaskWorker);
@@ -648,6 +735,30 @@ public class NetworkTaskWorkerTest {
         networkManager.setConnected(true);
         networkManager.setConnectedWithWiFi(false);
         testNetworkTaskWorker.run();
+        NetworkTask readTask = networkTaskDAO.readNetworkTask(task.getId());
+        assertEquals(1, readTask.getFailureCount());
+        NotificationHandler notificationHandler = testNetworkTaskWorker.getNotificationHandler();
+        MockNotificationManager notificationManager = (MockNotificationManager) notificationHandler.getNotificationManager();
+        assertFalse(notificationManager.wasNotifyCalled());
+    }
+
+    @Test
+    public void testNoWifiConnectionWithoutNotificationLastFailureOnFailure() {
+        preferenceManager.setPreferenceNotificationType(NotificationType.FAILURE);
+        NetworkTask task = getNetworkTask();
+        task.setOnlyWifi(true);
+        task = networkTaskDAO.insertNetworkTask(task);
+        accessTypeDataDAO.insertAccessTypeData(getAccessTypeDataWithNetworkTaskId(task.getId()));
+        networkTaskDAO.increaseNetworkTaskFailureCount(task.getId());
+        logDAO.insertAndDeleteLog(getLogEntry(task.getId(), false));
+        TestNetworkTaskWorker testNetworkTaskWorker = new TestNetworkTaskWorker(TestRegistry.getContext(), task, null, true);
+        setCurrentTime(testNetworkTaskWorker);
+        MockNetworkManager networkManager = (MockNetworkManager) testNetworkTaskWorker.getNetworkManager();
+        networkManager.setConnected(true);
+        networkManager.setConnectedWithWiFi(false);
+        testNetworkTaskWorker.run();
+        NetworkTask readTask = networkTaskDAO.readNetworkTask(task.getId());
+        assertEquals(1, readTask.getFailureCount());
         NotificationHandler notificationHandler = testNetworkTaskWorker.getNotificationHandler();
         MockNotificationManager notificationManager = (MockNotificationManager) notificationHandler.getNotificationManager();
         assertFalse(notificationManager.wasNotifyCalled());
@@ -769,7 +880,7 @@ public class NetworkTaskWorkerTest {
         task.setNotification(true);
         task.setRunning(true);
         task.setLastScheduled(1);
-        task.setFailureCount(1);
+        task.setFailureCount(0);
         return task;
     }
 

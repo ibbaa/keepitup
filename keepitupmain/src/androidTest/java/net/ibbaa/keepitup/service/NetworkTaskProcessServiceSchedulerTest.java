@@ -123,7 +123,12 @@ public class NetworkTaskProcessServiceSchedulerTest {
         MockAlarmManager.SetAlarmCall setAlarmCall2 = setAlarmCalls.get(1);
         assertEquals(0, setAlarmCall2.delay());
         assertNotEquals(setAlarmCall1.pendingIntent(), setAlarmCall2.pendingIntent());
-        task1 = scheduler.cancel(task1);
+        networkTaskDAO.updateNetworkTaskLastScheduled(task1.getId(), 125);
+        networkTaskDAO.increaseNetworkTaskFailureCount(task1.getId());
+        networkTaskDAO.updateNetworkTaskLastScheduled(task2.getId(), 125);
+        networkTaskDAO.increaseNetworkTaskFailureCount(task2.getId());
+        NetworkTask readTask1 = networkTaskDAO.readNetworkTask(task1.getId());
+        task1 = scheduler.cancel(readTask1);
         assertFalse(task1.isRunning());
         assertTrue(task2.isRunning());
         assertFalse(isTaskMarkedAsRunningInDatabase(task1));
@@ -133,7 +138,15 @@ public class NetworkTaskProcessServiceSchedulerTest {
         assertEquals(1, cancelAlarmCalls.size());
         MockAlarmManager.CancelAlarmCall cancelAlarmCall1 = cancelAlarmCalls.get(0);
         assertEquals(setAlarmCall1.pendingIntent(), cancelAlarmCall1.pendingIntent());
-        task2 = scheduler.cancel(task2);
+        readTask1 = networkTaskDAO.readNetworkTask(task1.getId());
+        NetworkTask readTask2 = networkTaskDAO.readNetworkTask(task2.getId());
+        assertEquals(-1, readTask1.getLastScheduled());
+        assertEquals(0, readTask1.getFailureCount());
+        assertEquals(-1, task1.getLastScheduled());
+        assertEquals(0, task1.getFailureCount());
+        assertEquals(125, readTask2.getLastScheduled());
+        assertEquals(1, readTask2.getFailureCount());
+        task2 = scheduler.cancel(readTask2);
         assertFalse(task1.isRunning());
         assertFalse(task2.isRunning());
         assertFalse(isTaskMarkedAsRunningInDatabase(task1));
@@ -143,6 +156,14 @@ public class NetworkTaskProcessServiceSchedulerTest {
         assertEquals(2, cancelAlarmCalls.size());
         MockAlarmManager.CancelAlarmCall cancelAlarmCall2 = cancelAlarmCalls.get(1);
         assertEquals(setAlarmCall2.pendingIntent(), cancelAlarmCall2.pendingIntent());
+        readTask1 = networkTaskDAO.readNetworkTask(task1.getId());
+        readTask2 = networkTaskDAO.readNetworkTask(task2.getId());
+        assertEquals(-1, readTask1.getLastScheduled());
+        assertEquals(0, readTask1.getFailureCount());
+        assertEquals(-1, readTask2.getLastScheduled());
+        assertEquals(0, readTask2.getFailureCount());
+        assertEquals(-1, task2.getLastScheduled());
+        assertEquals(0, task2.getFailureCount());
     }
 
     @Test
