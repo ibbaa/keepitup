@@ -75,6 +75,7 @@ public class NetworkTaskAdapter extends RecyclerView.Adapter<NetworkTaskViewHold
         bindAddress(networkTaskViewHolder, networkTask);
         bindInterval(networkTaskViewHolder, networkTask);
         bindLastExecTimestamp(networkTaskViewHolder, logEntry);
+        bindFailureCount(networkTaskViewHolder, networkTask, logEntry);
         bindLastExecMessage(networkTaskViewHolder, logEntry);
         bindOnlyWifi(networkTaskViewHolder, networkTask);
         bindNotification(networkTaskViewHolder, networkTask);
@@ -191,6 +192,20 @@ public class NetworkTaskAdapter extends RecyclerView.Adapter<NetworkTaskViewHold
         String formattedLastExecTimestampText = getResources().getString(R.string.text_activity_main_list_item_network_task_last_exec_timestamp, timestampText);
         Log.d(NetworkTaskAdapter.class.getName(), "binding last exec timestamp text " + formattedLastExecTimestampText);
         networkTaskViewHolder.setLastExecTimestamp(formattedLastExecTimestampText);
+    }
+
+    private void bindFailureCount(@NonNull NetworkTaskViewHolder networkTaskViewHolder, NetworkTask networkTask, LogEntry logEntry) {
+        Log.d(NetworkTaskAdapter.class.getName(), "bindFailureCount, networkTask is " + networkTask);
+        if (wasExecuted(logEntry)) {
+            String formattedFailureCountText = getResources().getString(R.string.text_activity_main_list_item_network_task_failure_count, networkTask.getFailureCount());
+            Log.d(NetworkTaskAdapter.class.getName(), "binding failure count text " + formattedFailureCountText);
+            networkTaskViewHolder.setFailureCount(formattedFailureCountText);
+            networkTaskViewHolder.showFailureCountTextView();
+        } else {
+            Log.d(NetworkTaskAdapter.class.getName(), "Not executed. Hiding failure count text.");
+            networkTaskViewHolder.setFailureCount("");
+            networkTaskViewHolder.hideFailureCountTextView();
+        }
     }
 
     private void bindLastExecMessage(@NonNull NetworkTaskViewHolder networkTaskViewHolder, LogEntry logEntry) {

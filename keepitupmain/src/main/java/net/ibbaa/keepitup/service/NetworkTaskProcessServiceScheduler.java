@@ -68,6 +68,7 @@ public class NetworkTaskProcessServiceScheduler {
         Log.d(NetworkTaskProcessServiceScheduler.class.getName(), "Start network task " + networkTask);
         networkTask.setRunning(true);
         networkTaskDAO.updateNetworkTaskRunning(networkTask.getId(), true);
+        networkTask.setFailureCount(0);
         getTimeBasedSuspensionScheduler().start(networkTask);
         return networkTask;
     }
@@ -127,7 +128,6 @@ public class NetworkTaskProcessServiceScheduler {
             networkTask.setRunning(false);
             networkTaskDAO.updateNetworkTaskRunning(networkTask.getId(), false);
             networkTask.setLastScheduled(-1);
-            networkTask.setFailureCount(0);
             terminate(networkTask);
             if (!areNetworkTasksRunning()) {
                 Log.d(NetworkTaskProcessServiceScheduler.class.getName(), "No running tasks. Stopping time bases scheduler.");

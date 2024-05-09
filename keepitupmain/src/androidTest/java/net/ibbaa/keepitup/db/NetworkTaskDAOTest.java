@@ -167,11 +167,12 @@ public class NetworkTaskDAOTest {
     }
 
     @Test
-    public void testUpdateRunning() {
+    public void testUpdateRunningFalse() {
         NetworkTask insertedTask1 = getNetworkTask1();
         networkTaskDAO.insertNetworkTask(insertedTask1);
         List<NetworkTask> readTasks = networkTaskDAO.readAllNetworkTasks();
         NetworkTask readTask1 = readTasks.get(0);
+        networkTaskDAO.increaseNetworkTaskFailureCount(readTask1.getId());
         networkTaskDAO.updateNetworkTaskRunning(readTask1.getId(), false);
         readTask1 = networkTaskDAO.readNetworkTask(readTask1.getId());
         assertEquals(insertedTask1.getIndex(), readTask1.getIndex());
@@ -184,6 +185,29 @@ public class NetworkTaskDAOTest {
         assertEquals(insertedTask1.getSchedulerId(), readTask1.getSchedulerId());
         assertEquals(insertedTask1.getInstances(), readTask1.getInstances());
         assertFalse(readTask1.isRunning());
+        assertEquals(-1, readTask1.getLastScheduled());
+        assertEquals(1, readTask1.getFailureCount());
+    }
+
+    @Test
+    public void testUpdateRunningTrue() {
+        NetworkTask insertedTask1 = getNetworkTask1();
+        networkTaskDAO.insertNetworkTask(insertedTask1);
+        List<NetworkTask> readTasks = networkTaskDAO.readAllNetworkTasks();
+        NetworkTask readTask1 = readTasks.get(0);
+        networkTaskDAO.increaseNetworkTaskFailureCount(readTask1.getId());
+        networkTaskDAO.updateNetworkTaskRunning(readTask1.getId(), true);
+        readTask1 = networkTaskDAO.readNetworkTask(readTask1.getId());
+        assertEquals(insertedTask1.getIndex(), readTask1.getIndex());
+        assertEquals(insertedTask1.getAccessType(), readTask1.getAccessType());
+        assertEquals(insertedTask1.getAddress(), readTask1.getAddress());
+        assertEquals(insertedTask1.getPort(), readTask1.getPort());
+        assertEquals(insertedTask1.getInterval(), readTask1.getInterval());
+        assertEquals(insertedTask1.isOnlyWifi(), readTask1.isOnlyWifi());
+        assertEquals(insertedTask1.isNotification(), readTask1.isNotification());
+        assertEquals(insertedTask1.getSchedulerId(), readTask1.getSchedulerId());
+        assertEquals(insertedTask1.getInstances(), readTask1.getInstances());
+        assertTrue(readTask1.isRunning());
         assertEquals(-1, readTask1.getLastScheduled());
         assertEquals(0, readTask1.getFailureCount());
     }
@@ -252,17 +276,18 @@ public class NetworkTaskDAOTest {
     }
 
     @Test
-    public void testUpdateResetFailureCount() {
+    public void testUpdateFailureCountNotReset() {
         NetworkTask insertedTask1 = getNetworkTask1();
         networkTaskDAO.insertNetworkTask(insertedTask1);
         List<NetworkTask> readTasks = networkTaskDAO.readAllNetworkTasks();
         NetworkTask readTask1 = readTasks.get(0);
         readTask1.setAddress("abc.com");
-        readTask1.setFailureCount(5);
+        readTask1.setInstances(5);
+        networkTaskDAO.increaseNetworkTaskFailureCount(readTask1.getId());
+        readTask1.setFailureCount(1);
         readTask1 = networkTaskDAO.updateNetworkTask(readTask1);
-        assertEquals(0, readTask1.getInstances());
-        assertEquals(0, readTask1.getFailureCount());
-        assertEquals(0, networkTaskDAO.readNetworkTaskInstances(readTask1.getId()));
+        assertEquals(1, readTask1.getFailureCount());
+        assertEquals(1, networkTaskDAO.readNetworkTaskFailureCount(readTask1.getId()));
     }
 
     @Test

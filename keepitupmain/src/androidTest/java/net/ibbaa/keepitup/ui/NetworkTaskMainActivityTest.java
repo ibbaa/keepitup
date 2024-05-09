@@ -198,11 +198,14 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
         onView(allOf(withId(R.id.textview_list_item_network_task_last_exec_timestamp), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 1))).check(matches(withText("Last execution: not executed")));
         setTaskExecuted(activityScenario, 1, new GregorianCalendar(1980, Calendar.MARCH, 17), true, "Success");
         onView(allOf(withId(R.id.textview_list_item_network_task_last_exec_timestamp), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 1))).check(matches(withText("Last execution: successful, Mar 17, 1980 12:00:00 AM")));
+        onView(allOf(withId(R.id.textview_list_item_network_task_failure_count), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 1))).check(matches(withText("Failures since last success: 0")));
         onView(allOf(withId(R.id.textview_list_item_network_task_last_exec_message), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 1))).check(matches(withText("Last execution message: Success")));
         setTaskExecuted(activityScenario, 1, new GregorianCalendar(2020, Calendar.DECEMBER, 1), false, "connection failed");
         setTaskInstances(activityScenario, 1, 2);
+        setTaskFailureCount(activityScenario, 1, 1);
         onView(allOf(withId(R.id.textview_list_item_network_task_instances), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 1))).check(matches(withText("Instances: 2 active")));
         onView(allOf(withId(R.id.textview_list_item_network_task_last_exec_timestamp), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 1))).check(matches(withText("Last execution: failed, Dec 1, 2020 12:00:00 AM")));
+        onView(allOf(withId(R.id.textview_list_item_network_task_failure_count), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 1))).check(matches(withText("Failures since last success: 1")));
         onView(allOf(withId(R.id.textview_list_item_network_task_last_exec_message), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 1))).check(matches(withText("Last execution message: connection failed")));
         onView(allOf(withId(R.id.imageview_activity_main_network_task_add), isDisplayed())).perform(click());
         onView(withText("Download")).perform(click());
@@ -537,6 +540,16 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
         logEntry.setSuccess(success);
         logEntry.setTimestamp(calendar.getTime().getTime());
         logEntry.setMessage(message);
+        getAdapter(activityScenario).replaceItem(new NetworkTaskUIWrapper(task, null, logEntry));
+        getActivity(activityScenario).runOnUiThread(() -> getNetworkTaskMainActivity(activityScenario).getAdapter().notifyDataSetChanged());
+        InstrumentationRegistry.getInstrumentation().waitForIdleSync();
+    }
+
+    private void setTaskFailureCount(ActivityScenario<?> activityScenario, int position, int count) {
+        NetworkTaskUIWrapper wrapper = getAdapter(activityScenario).getItem(position);
+        NetworkTask task = wrapper.getNetworkTask();
+        LogEntry logEntry = wrapper.getLogEntry();
+        task.setFailureCount(count);
         getAdapter(activityScenario).replaceItem(new NetworkTaskUIWrapper(task, null, logEntry));
         getActivity(activityScenario).runOnUiThread(() -> getNetworkTaskMainActivity(activityScenario).getAdapter().notifyDataSetChanged());
         InstrumentationRegistry.getInstrumentation().waitForIdleSync();

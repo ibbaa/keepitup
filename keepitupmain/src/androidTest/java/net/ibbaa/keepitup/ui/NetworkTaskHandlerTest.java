@@ -81,6 +81,27 @@ public class NetworkTaskHandlerTest extends BaseUITest {
     }
 
     @Test
+    public void testStartStopNetworkTaskFailureCount() {
+        NetworkTask task = getNetworkTask1();
+        task = getNetworkTaskDAO().insertNetworkTask(task);
+        AccessTypeData data = getAccessTypeData1();
+        data.setNetworkTaskId(task.getId());
+        getAccessTypeDataDAO().insertAccessTypeData(data);
+        getNetworkTaskDAO().increaseNetworkTaskFailureCount(task.getId());
+        handler.startNetworkTask(task, data);
+        List<NetworkTask> tasks = getNetworkTaskDAO().readAllNetworkTasks();
+        task = tasks.get(0);
+        assertTrue(task.isRunning());
+        assertEquals(0, task.getFailureCount());
+        getNetworkTaskDAO().increaseNetworkTaskFailureCount(task.getId());
+        handler.stopNetworkTask(task, data);
+        tasks = getNetworkTaskDAO().readAllNetworkTasks();
+        task = tasks.get(0);
+        assertFalse(task.isRunning());
+        assertEquals(1, task.getFailureCount());
+    }
+
+    @Test
     public void testInsertNetworkTask() {
         NetworkTask task1 = getNetworkTask1();
         AccessTypeData data1 = getAccessTypeData1();

@@ -188,10 +188,20 @@
                 android:text="@string/text_activity_main_list_item_network_task_last_exec_timestamp" />
 
             <TextView
-                android:id="@+id/textview_list_item_network_task_last_exec_message"
+                android:id="@+id/textview_list_item_network_task_failure_count"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_row="9"
+                android:layout_column="0"
+                android:layout_columnSpan="3"
+                android:textStyle="normal"
+                android:text="@string/text_activity_main_list_item_network_task_failure_count" />
+
+            <TextView
+                android:id="@+id/textview_list_item_network_task_last_exec_message"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_row="10"
                 android:layout_column="0"
                 android:layout_columnSpan="3"
                 android:textStyle="normal"

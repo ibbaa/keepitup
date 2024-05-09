@@ -35,5 +35,6 @@
     <string name="text_activity_main_list_item_network_task_notification">Notifications: %s</string>
     <string name="text_activity_main_list_item_network_task_onlywifi">Only on WiFi: %s</string>
     <string name="text_activity_main_list_item_network_task_last_exec_timestamp">Last execution: %s</string>
+    <string name="text_activity_main_list_item_network_task_failure_count">Failures since last success: %d</string>
     <string name="text_activity_main_list_item_network_task_last_exec_message">Last execution message: %s</string>
 </resources>

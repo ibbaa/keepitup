@@ -99,6 +99,8 @@ public class NetworkTaskProcessServiceSchedulerTest {
         NetworkTask task2 = getNetworkTask2();
         task1 = networkTaskDAO.insertNetworkTask(task1);
         task2 = networkTaskDAO.insertNetworkTask(task2);
+        networkTaskDAO.increaseNetworkTaskFailureCount(task1.getId());
+        networkTaskDAO.increaseNetworkTaskFailureCount(task2.getId());
         setTestTime(125);
         task1 = scheduler.start(task1);
         assertTrue(task1.isRunning());
@@ -123,11 +125,20 @@ public class NetworkTaskProcessServiceSchedulerTest {
         MockAlarmManager.SetAlarmCall setAlarmCall2 = setAlarmCalls.get(1);
         assertEquals(0, setAlarmCall2.delay());
         assertNotEquals(setAlarmCall1.pendingIntent(), setAlarmCall2.pendingIntent());
+        NetworkTask readTask1 = networkTaskDAO.readNetworkTask(task1.getId());
+        NetworkTask readTask2 = networkTaskDAO.readNetworkTask(task2.getId());
+        assertEquals(-1, readTask1.getLastScheduled());
+        assertEquals(0, readTask1.getFailureCount());
+        assertEquals(-1, readTask2.getLastScheduled());
+        assertEquals(0, readTask2.getFailureCount());
+        assertEquals(-1, task1.getLastScheduled());
+        assertEquals(0, task1.getFailureCount());
+        assertEquals(-1, task2.getLastScheduled());
+        assertEquals(0, task2.getFailureCount());
         networkTaskDAO.updateNetworkTaskLastScheduled(task1.getId(), 125);
         networkTaskDAO.increaseNetworkTaskFailureCount(task1.getId());
         networkTaskDAO.updateNetworkTaskLastScheduled(task2.getId(), 125);
         networkTaskDAO.increaseNetworkTaskFailureCount(task2.getId());
-        NetworkTask readTask1 = networkTaskDAO.readNetworkTask(task1.getId());
         task1 = scheduler.cancel(readTask1);
         assertFalse(task1.isRunning());
         assertTrue(task2.isRunning());
@@ -139,11 +150,9 @@ public class NetworkTaskProcessServiceSchedulerTest {
         MockAlarmManager.CancelAlarmCall cancelAlarmCall1 = cancelAlarmCalls.get(0);
         assertEquals(setAlarmCall1.pendingIntent(), cancelAlarmCall1.pendingIntent());
         readTask1 = networkTaskDAO.readNetworkTask(task1.getId());
-        NetworkTask readTask2 = networkTaskDAO.readNetworkTask(task2.getId());
+        readTask2 = networkTaskDAO.readNetworkTask(task2.getId());
         assertEquals(-1, readTask1.getLastScheduled());
-        assertEquals(0, readTask1.getFailureCount());
-        assertEquals(-1, task1.getLastScheduled());
-        assertEquals(0, task1.getFailureCount());
+        assertEquals(1, readTask1.getFailureCount());
         assertEquals(125, readTask2.getLastScheduled());
         assertEquals(1, readTask2.getFailureCount());
         task2 = scheduler.cancel(readTask2);
@@ -159,11 +168,11 @@ public class NetworkTaskProcessServiceSchedulerTest {
         readTask1 = networkTaskDAO.readNetworkTask(task1.getId());
         readTask2 = networkTaskDAO.readNetworkTask(task2.getId());
         assertEquals(-1, readTask1.getLastScheduled());
-        assertEquals(0, readTask1.getFailureCount());
+        assertEquals(1, readTask1.getFailureCount());
         assertEquals(-1, readTask2.getLastScheduled());
-        assertEquals(0, readTask2.getFailureCount());
+        assertEquals(1, readTask2.getFailureCount());
+        assertEquals(-1, task1.getLastScheduled());
         assertEquals(-1, task2.getLastScheduled());
-        assertEquals(0, task2.getFailureCount());
     }
 
     @Test

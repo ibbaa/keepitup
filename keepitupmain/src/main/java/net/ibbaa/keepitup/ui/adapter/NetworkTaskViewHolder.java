@@ -42,6 +42,7 @@ public class NetworkTaskViewHolder extends RecyclerView.ViewHolder {
     private final TextView notificationText;
     private final TextView onlyWifiText;
     private final TextView lastExecTimestampText;
+    private final TextView failureCountText;
     private final TextView lastExecMessageText;
 
     public NetworkTaskViewHolder(@NonNull View itemView, NetworkTaskMainActivity mainActivity) {
@@ -66,6 +67,7 @@ public class NetworkTaskViewHolder extends RecyclerView.ViewHolder {
         notificationText = itemView.findViewById(R.id.textview_list_item_network_task_notification);
         onlyWifiText = itemView.findViewById(R.id.textview_list_item_network_task_onlywifi);
         lastExecTimestampText = itemView.findViewById(R.id.textview_list_item_network_task_last_exec_timestamp);
+        failureCountText = itemView.findViewById(R.id.textview_list_item_network_task_failure_count);
         lastExecMessageText = itemView.findViewById(R.id.textview_list_item_network_task_last_exec_message);
     }
 
@@ -105,6 +107,18 @@ public class NetworkTaskViewHolder extends RecyclerView.ViewHolder {
 
     public void setLastExecTimestamp(String lastExecTimestamp) {
         lastExecTimestampText.setText(lastExecTimestamp);
+    }
+
+    public void setFailureCount(String failureCount) {
+        failureCountText.setText(failureCount);
+    }
+
+    public void showFailureCountTextView() {
+        failureCountText.setVisibility(View.VISIBLE);
+    }
+
+    public void hideFailureCountTextView() {
+        failureCountText.setVisibility(View.GONE);
     }
 
     public void setLastExecMessage(String lastExecMessage) {

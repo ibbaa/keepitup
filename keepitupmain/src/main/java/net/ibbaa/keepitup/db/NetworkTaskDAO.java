@@ -71,7 +71,6 @@ public class NetworkTaskDAO extends BaseDAO {
         networkTask.setId(taskId);
         networkTask.setRunning(running);
         networkTask.setLastScheduled(-1);
-        networkTask.setFailureCount(0);
         executeDBOperationInTransaction(networkTask, this::updateNetworkTaskRunning);
         dumpDatabase("Dump after updateNetworkTaskRunning call");
     }
@@ -258,7 +257,9 @@ public class NetworkTaskDAO extends BaseDAO {
         ContentValues values = new ContentValues();
         values.put(dbConstants.getRunningColumnName(), networkTask.isRunning() ? 1 : 0);
         values.put(dbConstants.getLastScheduledColumnName(), networkTask.getLastScheduled());
-        values.put(dbConstants.getFailureCountColumnName(), networkTask.getFailureCount());
+        if (networkTask.isRunning()) {
+            values.put(dbConstants.getFailureCountColumnName(), 0);
+        }
         Log.d(NetworkTaskDAO.class.getName(), "Updating to " + networkTask.isRunning());
         return db.update(dbConstants.getTableName(), values, selection, selectionArgs);
     }
@@ -418,7 +419,6 @@ public class NetworkTaskDAO extends BaseDAO {
         }
         networkTask.setInstances(0);
         networkTask.setLastScheduled(-1);
-        networkTask.setFailureCount(0);
         ContentValues values = new ContentValues();
         values.put(dbConstants.getSchedulerIdColumnName(), networkTask.getSchedulerId());
         values.put(dbConstants.getInstancesColumnName(), networkTask.getInstances());
@@ -430,7 +430,6 @@ public class NetworkTaskDAO extends BaseDAO {
         values.put(dbConstants.getAccessTypeColumnName(), networkTask.getAccessType() == null ? null : networkTask.getAccessType().getCode());
         values.put(dbConstants.getIntervalColumnName(), networkTask.getInterval());
         values.put(dbConstants.getLastScheduledColumnName(), networkTask.getLastScheduled());
-        values.put(dbConstants.getFailureCountColumnName(), networkTask.getFailureCount());
         Log.d(NetworkTaskDAO.class.getName(), "Updating...");
         db.update(dbConstants.getTableName(), values, selection, selectionArgs);
         return networkTask;
