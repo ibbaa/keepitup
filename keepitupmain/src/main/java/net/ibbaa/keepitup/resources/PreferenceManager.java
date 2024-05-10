@@ -253,6 +253,21 @@ public class PreferenceManager {
         removePreferenceValue(getResources().getString(R.string.notification_type_key));
     }
 
+    public int getPreferenceNotificationAfterFailures() {
+        Log.d(PreferenceManager.class.getName(), "getPreferenceNotificationAfterFailures");
+        return getPreferenceInt(getResources().getString(R.string.notification_after_failures_key), getResources().getInteger(R.integer.notification_after_failures_default));
+    }
+
+    public void setPreferenceNotificationAfterFailures(int notificationAfterFailures) {
+        Log.d(PreferenceManager.class.getName(), "setPreferenceNNotificationAfterFailures, notificationAfterFailures is " + notificationAfterFailures);
+        setPreferenceInt(getResources().getString(R.string.notification_after_failures_key), notificationAfterFailures);
+    }
+
+    public void removePreferenceNotificationAfterFailures() {
+        Log.d(PreferenceManager.class.getName(), "removePreferenceNotificationAfterFailures");
+        removePreferenceValue(getResources().getString(R.string.notification_after_failures_key));
+    }
+
     public boolean getPreferenceSuspensionEnabled() {
         Log.d(PreferenceManager.class.getName(), "getPreferenceSuspensionEnabled");
         return getPreferenceBoolean(getResources().getString(R.string.suspension_enabled_key), getResources().getBoolean(R.bool.suspension_enabled_default));

@@ -45,6 +45,7 @@ public class PreferenceSetup {
         Map<String, Object> globalSettings = new HashMap<>();
         globalSettings.put("preferenceNotificationInactiveNetwork", preferenceManager.getPreferenceNotificationInactiveNetwork());
         globalSettings.put("preferenceNotificationType", preferenceManager.getPreferenceNotificationType() != null ? preferenceManager.getPreferenceNotificationType().getCode() : 1);
+        globalSettings.put("preferenceNotificationAfterFailures", preferenceManager.getPreferenceNotificationAfterFailures());
         globalSettings.put("preferenceSuspensionEnabled", preferenceManager.getPreferenceSuspensionEnabled());
         globalSettings.put("preferenceEnforceDefaultPingPackageSize", preferenceManager.getPreferenceEnforceDefaultPingPackageSize());
         globalSettings.put("preferenceDownloadExternalStorage", preferenceManager.getPreferenceDownloadExternalStorage());
@@ -95,6 +96,15 @@ public class PreferenceSetup {
             preferenceManager.setPreferenceNotificationType(Objects.requireNonNull(NotificationType.forCode(NumberUtil.getIntValue(notificationType, 1))));
         } else {
             preferenceManager.removePreferenceNotificationType();
+        }
+        Object notificationAfterFailures = globalSettings.get("preferenceNotificationAfterFailures");
+        int notificationAfterFailuresMin = getResources().getInteger(R.integer.notification_after_failures_minimum);
+        int notificationAfterFailuresMax = getResources().getInteger(R.integer.notification_after_failures_maximum);
+        int notificationAfterFailuresDefault = getResources().getInteger(R.integer.notification_after_failures_default);
+        if (isValidInteger(notificationAfterFailures, notificationAfterFailuresMin, notificationAfterFailuresMax)) {
+            preferenceManager.setPreferenceNotificationAfterFailures(NumberUtil.getIntValue(notificationAfterFailures, notificationAfterFailuresDefault));
+        } else {
+            preferenceManager.removePreferenceNotificationAfterFailures();
         }
         Object suspensionEnabled = globalSettings.get("preferenceSuspensionEnabled");
         if (isValidBoolean(suspensionEnabled)) {
@@ -299,6 +309,7 @@ public class PreferenceSetup {
         Log.d(PreferenceSetup.class.getName(), "removeGlobalSettings");
         preferenceManager.removePreferenceNotificationInactiveNetwork();
         preferenceManager.removePreferenceNotificationType();
+        preferenceManager.removePreferenceNotificationAfterFailures();
         preferenceManager.removePreferenceSuspensionEnabled();
         preferenceManager.removePreferenceEnforceDefaultPingPackageSize();
         preferenceManager.removePreferenceDownloadExternalStorage();

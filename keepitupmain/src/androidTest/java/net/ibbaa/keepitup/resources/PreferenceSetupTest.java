@@ -59,6 +59,7 @@ public class PreferenceSetupTest {
     public void testImportGlobalSettingsEmpty() {
         preferenceManager.setPreferenceNotificationInactiveNetwork(true);
         preferenceManager.setPreferenceNotificationType(NotificationType.CHANGE);
+        preferenceManager.setPreferenceNotificationAfterFailures(3);
         preferenceManager.setPreferenceSuspensionEnabled(false);
         preferenceManager.setPreferenceEnforceDefaultPingPackageSize(true);
         preferenceManager.setPreferenceDownloadExternalStorage(true);
@@ -70,6 +71,7 @@ public class PreferenceSetupTest {
         setup.importGlobalSettings(globalSettings);
         assertFalse(preferenceManager.getPreferenceNotificationInactiveNetwork());
         assertEquals(NotificationType.FAILURE, preferenceManager.getPreferenceNotificationType());
+        assertEquals(1, preferenceManager.getPreferenceNotificationAfterFailures());
         assertTrue(preferenceManager.getPreferenceSuspensionEnabled());
         assertFalse(preferenceManager.getPreferenceEnforceDefaultPingPackageSize());
         assertFalse(preferenceManager.getPreferenceDownloadExternalStorage());
@@ -84,6 +86,7 @@ public class PreferenceSetupTest {
         Map<String, Object> globalSettings = new HashMap<>();
         globalSettings.put("preferenceNotificationInactiveNetwork", true);
         globalSettings.put("preferenceNotificationType", 2);
+        globalSettings.put("preferenceNotificationAfterFailures", 2);
         globalSettings.put("preferenceSuspensionEnabled", false);
         globalSettings.put("preferenceEnforceDefaultPingPackageSize", true);
         globalSettings.put("preferenceDownloadExternalStorage", true);
@@ -94,6 +97,7 @@ public class PreferenceSetupTest {
         setup.importGlobalSettings(globalSettings);
         assertTrue(preferenceManager.getPreferenceNotificationInactiveNetwork());
         assertEquals(NotificationType.CHANGE, preferenceManager.getPreferenceNotificationType());
+        assertEquals(2, preferenceManager.getPreferenceNotificationAfterFailures());
         assertFalse(preferenceManager.getPreferenceSuspensionEnabled());
         assertTrue(preferenceManager.getPreferenceEnforceDefaultPingPackageSize());
         assertTrue(preferenceManager.getPreferenceDownloadExternalStorage());
@@ -108,6 +112,7 @@ public class PreferenceSetupTest {
         Map<String, Object> globalSettings = new HashMap<>();
         globalSettings.put("preferenceNotificationInactiveNetwork", "true");
         globalSettings.put("preferenceNotificationType", "2");
+        globalSettings.put("preferenceNotificationAfterFailures", "2");
         globalSettings.put("preferenceSuspensionEnabled", "false");
         globalSettings.put("preferenceEnforceDefaultPingPackageSize", "true");
         globalSettings.put("preferenceDownloadExternalStorage", "true");
@@ -118,6 +123,7 @@ public class PreferenceSetupTest {
         setup.importGlobalSettings(globalSettings);
         assertTrue(preferenceManager.getPreferenceNotificationInactiveNetwork());
         assertEquals(NotificationType.CHANGE, preferenceManager.getPreferenceNotificationType());
+        assertEquals(2, preferenceManager.getPreferenceNotificationAfterFailures());
         assertFalse(preferenceManager.getPreferenceSuspensionEnabled());
         assertTrue(preferenceManager.getPreferenceEnforceDefaultPingPackageSize());
         assertTrue(preferenceManager.getPreferenceDownloadExternalStorage());
@@ -132,6 +138,7 @@ public class PreferenceSetupTest {
         Map<String, Object> globalSettings = new HashMap<>();
         globalSettings.put("preferenceNotificationInactiveNetwork", "xyz");
         globalSettings.put("preferenceNotificationType", 25);
+        globalSettings.put("preferenceNotificationAfterFailures", 11);
         globalSettings.put("preferenceSuspensionEnabled", "123");
         globalSettings.put("preferenceDownloadExternalStorage", "tru");
         globalSettings.put("preferenceDownloadFolder", null);
@@ -141,6 +148,7 @@ public class PreferenceSetupTest {
         setup.importGlobalSettings(globalSettings);
         assertFalse(preferenceManager.getPreferenceNotificationInactiveNetwork());
         assertEquals(NotificationType.FAILURE, preferenceManager.getPreferenceNotificationType());
+        assertEquals(11, preferenceManager.getPreferenceNotificationAfterFailures());
         assertFalse(preferenceManager.getPreferenceSuspensionEnabled());
         assertFalse(preferenceManager.getPreferenceDownloadExternalStorage());
         assertEquals("download", preferenceManager.getPreferenceDownloadFolder());
@@ -322,6 +330,7 @@ public class PreferenceSetupTest {
         Map<String, ?> globalSettings = setup.exportGlobalSettings();
         assertEquals(globalSettings.get("preferenceNotificationInactiveNetwork"), preferenceManager.getPreferenceNotificationInactiveNetwork());
         assertEquals(globalSettings.get("preferenceNotificationType"), preferenceManager.getPreferenceNotificationType().getCode());
+        assertEquals(globalSettings.get("preferenceNotificationAfterFailures"), preferenceManager.getPreferenceNotificationAfterFailures());
         assertEquals(globalSettings.get("preferenceSuspensionEnabled"), preferenceManager.getPreferenceSuspensionEnabled());
         assertEquals(globalSettings.get("preferenceEnforceDefaultPingPackageSize"), preferenceManager.getPreferenceEnforceDefaultPingPackageSize());
         assertEquals(globalSettings.get("preferenceDownloadExternalStorage"), preferenceManager.getPreferenceDownloadExternalStorage());
@@ -335,6 +344,7 @@ public class PreferenceSetupTest {
     public void testExportGlobalSettingsSetValues() {
         preferenceManager.setPreferenceNotificationInactiveNetwork(true);
         preferenceManager.setPreferenceNotificationType(NotificationType.CHANGE);
+        preferenceManager.setPreferenceNotificationAfterFailures(5);
         preferenceManager.setPreferenceSuspensionEnabled(false);
         preferenceManager.setPreferenceEnforceDefaultPingPackageSize(true);
         preferenceManager.setPreferenceDownloadExternalStorage(true);
@@ -345,6 +355,7 @@ public class PreferenceSetupTest {
         Map<String, ?> globalSettings = setup.exportGlobalSettings();
         assertTrue(preferenceManager.getPreferenceNotificationInactiveNetwork());
         assertEquals(NotificationType.CHANGE, preferenceManager.getPreferenceNotificationType());
+        assertEquals(5, preferenceManager.getPreferenceNotificationAfterFailures());
         assertFalse(preferenceManager.getPreferenceSuspensionEnabled());
         assertTrue(preferenceManager.getPreferenceEnforceDefaultPingPackageSize());
         assertTrue(preferenceManager.getPreferenceDownloadExternalStorage());
@@ -354,6 +365,7 @@ public class PreferenceSetupTest {
         assertEquals("folder", preferenceManager.getPreferenceLogFolder());
         assertEquals(globalSettings.get("preferenceNotificationInactiveNetwork"), preferenceManager.getPreferenceNotificationInactiveNetwork());
         assertEquals(globalSettings.get("preferenceNotificationType"), preferenceManager.getPreferenceNotificationType().getCode());
+        assertEquals(globalSettings.get("preferenceNotificationAfterFailures"), preferenceManager.getPreferenceNotificationAfterFailures());
         assertEquals(globalSettings.get("preferenceSuspensionEnabled"), preferenceManager.getPreferenceSuspensionEnabled());
         assertEquals(globalSettings.get("preferenceEnforceDefaultPingPackageSize"), preferenceManager.getPreferenceEnforceDefaultPingPackageSize());
         assertEquals(globalSettings.get("preferenceDownloadExternalStorage"), preferenceManager.getPreferenceDownloadExternalStorage());
@@ -445,6 +457,7 @@ public class PreferenceSetupTest {
     public void testImportExportGlobalSettings() {
         preferenceManager.setPreferenceNotificationInactiveNetwork(true);
         preferenceManager.setPreferenceNotificationType(NotificationType.CHANGE);
+        preferenceManager.setPreferenceNotificationAfterFailures(5);
         preferenceManager.setPreferenceSuspensionEnabled(false);
         preferenceManager.setPreferenceEnforceDefaultPingPackageSize(true);
         preferenceManager.setPreferenceDownloadExternalStorage(true);
@@ -456,6 +469,7 @@ public class PreferenceSetupTest {
         setup.importGlobalSettings(globalSettings);
         assertTrue(preferenceManager.getPreferenceNotificationInactiveNetwork());
         assertEquals(NotificationType.CHANGE, preferenceManager.getPreferenceNotificationType());
+        assertEquals(5, preferenceManager.getPreferenceNotificationAfterFailures());
         assertFalse(preferenceManager.getPreferenceSuspensionEnabled());
         assertTrue(preferenceManager.getPreferenceEnforceDefaultPingPackageSize());
         assertEquals("folder", preferenceManager.getPreferenceDownloadFolder());
@@ -464,6 +478,7 @@ public class PreferenceSetupTest {
         assertTrue(preferenceManager.getPreferenceDownloadKeep());
         assertEquals(globalSettings.get("preferenceNotificationInactiveNetwork"), preferenceManager.getPreferenceNotificationInactiveNetwork());
         assertEquals(globalSettings.get("preferenceNotificationType"), preferenceManager.getPreferenceNotificationType().getCode());
+        assertEquals(globalSettings.get("preferenceNotificationAfterFailures"), preferenceManager.getPreferenceNotificationAfterFailures());
         assertEquals(globalSettings.get("preferenceDownloadExternalStorage"), preferenceManager.getPreferenceDownloadExternalStorage());
         assertEquals(globalSettings.get("preferenceSuspensionEnabled"), preferenceManager.getPreferenceSuspensionEnabled());
         assertEquals(globalSettings.get("preferenceEnforceDefaultPingPackageSize"), preferenceManager.getPreferenceEnforceDefaultPingPackageSize());
@@ -534,6 +549,7 @@ public class PreferenceSetupTest {
     public void testRemoveGlobalSettings() {
         preferenceManager.setPreferenceNotificationInactiveNetwork(true);
         preferenceManager.setPreferenceNotificationType(NotificationType.CHANGE);
+        preferenceManager.setPreferenceNotificationAfterFailures(3);
         preferenceManager.setPreferenceSuspensionEnabled(false);
         preferenceManager.setPreferenceEnforceDefaultPingPackageSize(true);
         preferenceManager.setPreferenceDownloadExternalStorage(true);
@@ -544,6 +560,7 @@ public class PreferenceSetupTest {
         setup.removeGlobalSettings();
         assertFalse(preferenceManager.getPreferenceNotificationInactiveNetwork());
         assertEquals(NotificationType.FAILURE, preferenceManager.getPreferenceNotificationType());
+        assertEquals(1, preferenceManager.getPreferenceNotificationAfterFailures());
         assertTrue(preferenceManager.getPreferenceSuspensionEnabled());
         assertFalse(preferenceManager.getPreferenceEnforceDefaultPingPackageSize());
         assertFalse(preferenceManager.getPreferenceDownloadExternalStorage());
@@ -597,6 +614,7 @@ public class PreferenceSetupTest {
     public void testRemoveAllSettings() {
         preferenceManager.setPreferenceNotificationInactiveNetwork(true);
         preferenceManager.setPreferenceNotificationType(NotificationType.CHANGE);
+        preferenceManager.setPreferenceNotificationAfterFailures(4);
         preferenceManager.setPreferenceSuspensionEnabled(false);
         preferenceManager.setPreferenceEnforceDefaultPingPackageSize(true);
         preferenceManager.setPreferenceDownloadExternalStorage(true);
@@ -622,6 +640,7 @@ public class PreferenceSetupTest {
         setup.removeAllSettings();
         assertFalse(preferenceManager.getPreferenceNotificationInactiveNetwork());
         assertEquals(NotificationType.FAILURE, preferenceManager.getPreferenceNotificationType());
+        assertEquals(1, preferenceManager.getPreferenceNotificationAfterFailures());
         assertTrue(preferenceManager.getPreferenceSuspensionEnabled());
         assertFalse(preferenceManager.getPreferenceEnforceDefaultPingPackageSize());
         assertFalse(preferenceManager.getPreferenceDownloadExternalStorage());

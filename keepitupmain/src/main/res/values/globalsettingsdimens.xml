@@ -27,6 +27,10 @@
     <dimen name="cardview_activity_global_settings_notification_type_corner_radius">4dp</dimen>
     <dimen name="cardview_activity_global_settings_notification_type_card_elevation">4dp</dimen>
     <dimen name="linearlayout_activity_global_settings_notification_type_margin">4dp</dimen>
+    <dimen name="cardview_activity_global_settings_notification_after_failures_margin">4dp</dimen>
+    <dimen name="cardview_activity_global_settings_notification_after_failures_corner_radius">4dp</dimen>
+    <dimen name="cardview_activity_global_settings_notification_after_failures_card_elevation">4dp</dimen>
+    <dimen name="linearlayout_activity_global_settings_notification_after_failures_margin">4dp</dimen>
     <dimen name="cardview_activity_global_settings_suspension_enabled_margin">4dp</dimen>
     <dimen name="cardview_activity_global_settings_suspension_enabled_corner_radius">4dp</dimen>
     <dimen name="cardview_activity_global_settings_suspension_enabled_card_elevation">4dp</dimen>

@@ -230,6 +230,18 @@ public class PreferenceManagerTest {
     }
 
     @Test
+    public void testGetSetRemovePreferenceNotificationAfterFailures() {
+        assertEquals(1, preferenceManager.getPreferenceNotificationAfterFailures());
+        preferenceManager.setPreferenceNotificationAfterFailures(3);
+        assertEquals(3, preferenceManager.getPreferenceNotificationAfterFailures());
+        preferenceManager.removeAllPreferences();
+        assertEquals(1, preferenceManager.getPreferenceNotificationAfterFailures());
+        preferenceManager.setPreferenceNotificationAfterFailures(3);
+        preferenceManager.removePreferenceNotificationAfterFailures();
+        assertEquals(1, preferenceManager.getPreferenceNotificationAfterFailures());
+    }
+
+    @Test
     public void testGetSetRemovePreferenceSuspensionEnabled() {
         assertTrue(preferenceManager.getPreferenceSuspensionEnabled());
         preferenceManager.setPreferenceSuspensionEnabled(false);

@@ -19,6 +19,10 @@
     <bool name="notification_inactive_network_default">false</bool>
     <string name="notification_type_key">notification_type_key</string>
     <integer name="notification_type_default">1</integer>
+    <string name="notification_after_failures_key">notification_after_failures_key</string>
+    <integer name="notification_after_failures_default">1</integer>
+    <integer name="notification_after_failures_minimum">1</integer>
+    <integer name="notification_after_failures_maximum">20</integer>
     <string name="suspension_enabled_key">suspension_enabled_key</string>
     <bool name="suspension_enabled_default">true</bool>
     <integer name="suspension_intervals_text_size_normal">14</integer>

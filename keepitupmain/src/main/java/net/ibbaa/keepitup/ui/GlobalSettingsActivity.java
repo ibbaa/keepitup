@@ -41,14 +41,18 @@ import net.ibbaa.keepitup.resources.PreferenceManager;
 import net.ibbaa.keepitup.resources.PreferenceSetup;
 import net.ibbaa.keepitup.service.IFileManager;
 import net.ibbaa.keepitup.ui.dialog.FileChooseDialog;
+import net.ibbaa.keepitup.ui.dialog.SettingsInput;
 import net.ibbaa.keepitup.ui.dialog.SettingsInputDialog;
 import net.ibbaa.keepitup.ui.dialog.SuspensionIntervalsDialog;
+import net.ibbaa.keepitup.ui.validation.NotificationAfterFailuresFieldValidator;
 import net.ibbaa.keepitup.util.BundleUtil;
 import net.ibbaa.keepitup.util.FileUtil;
+import net.ibbaa.keepitup.util.NumberUtil;
 import net.ibbaa.keepitup.util.StringUtil;
 import net.ibbaa.keepitup.util.TimeUtil;
 
 import java.io.File;
+import java.util.Collections;
 import java.util.List;
 
 @SuppressWarnings({"unused", "FieldCanBeLocal"})
@@ -57,6 +61,7 @@ public class GlobalSettingsActivity extends SettingsInputActivity implements Sus
     private SwitchMaterial notificationInactiveNetworkSwitch;
     private TextView notificationInactiveNetworkOnOffText;
     private RadioGroup notificationType;
+    private TextView notificationAfterFailuresText;
     private SwitchMaterial suspensionEnabledSwitch;
     private TextView suspensionEnabledOnOffText;
     private SwitchMaterial enforcePingPackageSizeEnabledSwitch;
@@ -79,6 +84,7 @@ public class GlobalSettingsActivity extends SettingsInputActivity implements Sus
         setContentView(R.layout.activity_global_settings);
         prepareNotificationInactiveNetworkSwitch();
         prepareNotificationTypeRadioGroup();
+        prepareNotificationAfterFailuresField();
         prepareSuspensionEnabledSwitch();
         prepareSuspensionIntervalsField();
         prepareEnforcePingPackageSizeEnabledSwitch();
@@ -166,6 +172,16 @@ public class GlobalSettingsActivity extends SettingsInputActivity implements Sus
             Log.d(GlobalSettingsActivity.class.getName(), "Unknown notification type selected");
             preferenceManager.setPreferenceNotificationType(NotificationType.FAILURE);
         }
+    }
+
+    private void prepareNotificationAfterFailuresField() {
+        Log.d(GlobalSettingsActivity.class.getName(), "prepareNotificationAfterFailuresField");
+        PreferenceManager preferenceManager = new PreferenceManager(this);
+        notificationAfterFailuresText = findViewById(R.id.textview_activity_global_settings_notification_after_failures);
+        int notificationAfterFailures = preferenceManager.getPreferenceNotificationAfterFailures();
+        setNotificationAfterFailures(String.valueOf(preferenceManager.getPreferenceNotificationAfterFailures()));
+        CardView notificationsAfterFailuresCardView = findViewById(R.id.cardview_activity_global_settings_notification_after_failures);
+        notificationsAfterFailuresCardView.setOnClickListener(this::showNotificationAfterFailuresInputDialog);
     }
 
     private void prepareSuspensionEnabledSwitch() {
@@ -454,12 +470,27 @@ public class GlobalSettingsActivity extends SettingsInputActivity implements Sus
         }
     }
 
+    private String getNotificationAfterFailures() {
+        return StringUtil.notNull(notificationAfterFailuresText.getText());
+    }
+
+    private void setNotificationAfterFailures(String notificationAfterFailures) {
+        notificationAfterFailuresText.setText(StringUtil.notNull(notificationAfterFailures));
+    }
+
     private void setDownloadFolder(String downloadFolder) {
         downloadFolderText.setText(StringUtil.notNull(downloadFolder));
     }
 
     private void setLogFolder(String logFolder) {
         logFolderText.setText(StringUtil.notNull(logFolder));
+    }
+
+    private void showNotificationAfterFailuresInputDialog(View view) {
+        Log.d(GlobalSettingsActivity.class.getName(), "showNotificationAfterFailuresInputDialog");
+        List<String> validators = Collections.singletonList(NotificationAfterFailuresFieldValidator.class.getName());
+        SettingsInput input = new SettingsInput(SettingsInput.Type.NOTIFICATIONAFTER, getNotificationAfterFailures(), getResources().getString(R.string.label_activity_global_settings_notification_after_failures), validators);
+        showInputDialog(input.toBundle());
     }
 
     private void showDownloadFolderChooseDialog(View view) {
@@ -573,6 +604,19 @@ public class GlobalSettingsActivity extends SettingsInputActivity implements Sus
             return null;
         }
         return logFolder.getAbsolutePath();
+    }
+
+    @Override
+    public void onInputDialogOkClicked(SettingsInputDialog inputDialog, SettingsInput.Type type) {
+        Log.d(GlobalSettingsActivity.class.getName(), "onInputDialogOkClicked, type is " + type + ", value is " + inputDialog.getValue());
+        PreferenceManager preferenceManager = new PreferenceManager(this);
+        if (SettingsInput.Type.NOTIFICATIONAFTER.equals(type)) {
+            setNotificationAfterFailures(inputDialog.getValue());
+            preferenceManager.setPreferenceNotificationAfterFailures(NumberUtil.getIntValue(getNotificationAfterFailures(), getResources().getInteger(R.integer.notification_after_failures_default)));
+        } else {
+            Log.e(GlobalSettingsActivity.class.getName(), "type " + type + " unknown");
+        }
+        inputDialog.dismiss();
     }
 
     @Override

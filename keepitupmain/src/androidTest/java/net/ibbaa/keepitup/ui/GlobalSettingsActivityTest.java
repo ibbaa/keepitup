@@ -19,6 +19,7 @@ package net.ibbaa.keepitup.ui;
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.Espresso.openActionBarOverflowOrOptionsMenu;
 import static androidx.test.espresso.action.ViewActions.click;
+import static androidx.test.espresso.action.ViewActions.longClick;
 import static androidx.test.espresso.action.ViewActions.replaceText;
 import static androidx.test.espresso.action.ViewActions.scrollTo;
 import static androidx.test.espresso.action.ViewActions.swipeUp;
@@ -53,8 +54,10 @@ import net.ibbaa.keepitup.model.NotificationType;
 import net.ibbaa.keepitup.model.Time;
 import net.ibbaa.keepitup.resources.PreferenceManager;
 import net.ibbaa.keepitup.test.matcher.FontSizeMatcher;
+import net.ibbaa.keepitup.test.mock.MockClipboardManager;
 import net.ibbaa.keepitup.test.mock.MockFileManager;
 import net.ibbaa.keepitup.test.mock.TestRegistry;
+import net.ibbaa.keepitup.ui.dialog.SettingsInputDialog;
 import net.ibbaa.phonelog.ILogger;
 
 import org.hamcrest.Matcher;
@@ -80,6 +83,7 @@ public class GlobalSettingsActivityTest extends BaseUITest {
         PreferenceManager preferenceManager = getPreferenceManager();
         assertFalse(preferenceManager.getPreferenceNotificationInactiveNetwork());
         assertEquals(NotificationType.FAILURE, preferenceManager.getPreferenceNotificationType());
+        assertEquals(1, preferenceManager.getPreferenceNotificationAfterFailures());
         assertTrue(preferenceManager.getPreferenceSuspensionEnabled());
         assertFalse(preferenceManager.getPreferenceEnforceDefaultPingPackageSize());
         assertFalse(preferenceManager.getPreferenceDownloadExternalStorage());
@@ -92,6 +96,8 @@ public class GlobalSettingsActivityTest extends BaseUITest {
         onView(withId(R.id.radiobutton_activity_global_settings_notification_type_change)).check(matches(withText("Change")));
         onView(withId(R.id.radiobutton_activity_global_settings_notification_type_failure)).check(matches(isChecked()));
         onView(withId(R.id.radiobutton_activity_global_settings_notification_type_change)).check(matches(isNotChecked()));
+        onView(withId(R.id.textview_activity_global_settings_notification_after_failures_label)).check(matches(withText("Notification after failures")));
+        onView(withId(R.id.textview_activity_global_settings_notification_after_failures)).check(matches(withText("1")));
         onView(withId(R.id.textview_activity_global_settings_suspension_enabled_label)).check(matches(withText("Suspension intervals enabled")));
         onView(withId(R.id.switch_activity_global_settings_suspension_enabled)).check(matches(isChecked()));
         onView(withId(R.id.textview_activity_global_settings_suspension_intervals_label)).check(matches(withText("Defined suspension intervals")));
@@ -122,6 +128,9 @@ public class GlobalSettingsActivityTest extends BaseUITest {
         ((GlobalSettingsActivity) getActivity(activityScenario)).injectTimeBasedSuspensionScheduler(getTimeBasedSuspensionScheduler());
         onView(withId(R.id.switch_activity_global_settings_notification_inactive_network)).perform(click());
         onView(withId(R.id.radiobutton_activity_global_settings_notification_type_change)).perform(click());
+        onView(withId(R.id.textview_activity_global_settings_notification_after_failures)).perform(click());
+        onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("2"));
+        onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
         onView(withId(R.id.switch_activity_global_settings_suspension_enabled)).perform(click());
         onView(withId(R.id.switch_activity_global_settings_enforce_ping_package_size_enabled)).perform(click());
         onView(withId(R.id.switch_activity_global_settings_download_external_storage)).perform(click());
@@ -134,6 +143,8 @@ public class GlobalSettingsActivityTest extends BaseUITest {
         onView(withId(R.id.textview_activity_global_settings_notification_inactive_network_on_off)).check(matches(withText("yes")));
         onView(withId(R.id.radiobutton_activity_global_settings_notification_type_failure)).check(matches(isNotChecked()));
         onView(withId(R.id.radiobutton_activity_global_settings_notification_type_change)).check(matches(isChecked()));
+        onView(withId(R.id.textview_activity_global_settings_notification_after_failures_label)).check(matches(withText("Notification after failures")));
+        onView(withId(R.id.textview_activity_global_settings_notification_after_failures)).check(matches(withText("2")));
         onView(withId(R.id.switch_activity_global_settings_suspension_enabled)).check(matches(isNotChecked()));
         onView(allOf(withText("Disabled"), withGridLayoutPosition(1, 0))).check(matches(isDisplayed()));
         onView(withId(R.id.textview_activity_global_settings_download_external_storage_label)).check(matches(withText("Download to an external storage folder")));
@@ -219,6 +230,9 @@ public class GlobalSettingsActivityTest extends BaseUITest {
         ((GlobalSettingsActivity) getActivity(activityScenario)).injectTimeBasedSuspensionScheduler(getTimeBasedSuspensionScheduler());
         onView(withId(R.id.switch_activity_global_settings_notification_inactive_network)).perform(click());
         onView(withId(R.id.radiobutton_activity_global_settings_notification_type_change)).perform(click());
+        onView(withId(R.id.textview_activity_global_settings_notification_after_failures)).perform(click());
+        onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("2"));
+        onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
         onView(withId(R.id.switch_activity_global_settings_suspension_enabled)).perform(click());
         onView(withId(R.id.switch_activity_global_settings_enforce_ping_package_size_enabled)).perform(click());
         onView(withId(R.id.switch_activity_global_settings_download_external_storage)).perform(click());
@@ -229,6 +243,7 @@ public class GlobalSettingsActivityTest extends BaseUITest {
         PreferenceManager preferenceManager = getPreferenceManager();
         assertTrue(preferenceManager.getPreferenceNotificationInactiveNetwork());
         assertEquals(NotificationType.CHANGE, preferenceManager.getPreferenceNotificationType());
+        assertEquals(2, preferenceManager.getPreferenceNotificationAfterFailures());
         assertFalse(preferenceManager.getPreferenceSuspensionEnabled());
         assertTrue(preferenceManager.getPreferenceEnforceDefaultPingPackageSize());
         assertTrue(preferenceManager.getPreferenceDownloadExternalStorage());
@@ -251,6 +266,96 @@ public class GlobalSettingsActivityTest extends BaseUITest {
         assertEquals(NotificationType.FAILURE, preferenceManager.getPreferenceNotificationType());
         onView(withId(R.id.radiobutton_activity_global_settings_notification_type_failure)).check(matches(isChecked()));
         onView(withId(R.id.radiobutton_activity_global_settings_notification_type_change)).check(matches(isNotChecked()));
+        activityScenario.close();
+    }
+
+    @Test
+    public void testNotificationAfterFailuresInput() {
+        ActivityScenario<?> activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class);
+        onView(withId(R.id.textview_activity_global_settings_notification_after_failures)).perform(click());
+        onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("1 0"));
+        onView(withId(R.id.edittext_dialog_settings_input_value)).check(matches(withTextColor(R.color.textErrorColor)));
+        onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
+        onView(allOf(withText("Notification after failures"), withGridLayoutPosition(1, 0))).check(matches(isDisplayed()));
+        onView(allOf(withText("Invalid format"), withGridLayoutPosition(1, 1))).check(matches(isDisplayed()));
+        onView(withId(R.id.imageview_dialog_validator_error_ok)).perform(click());
+        onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("0"));
+        onView(withId(R.id.edittext_dialog_settings_input_value)).check(matches(withTextColor(R.color.textErrorColor)));
+        onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
+        onView(allOf(withText("Notification after failures"), withGridLayoutPosition(1, 0))).check(matches(isDisplayed()));
+        onView(allOf(withText("Minimum: 1"), withGridLayoutPosition(1, 1))).check(matches(isDisplayed()));
+        onView(withId(R.id.imageview_dialog_validator_error_ok)).perform(click());
+        onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText(""));
+        onView(withId(R.id.edittext_dialog_settings_input_value)).check(matches(withTextColor(R.color.textErrorColor)));
+        onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
+        onView(allOf(withText("Notification after failures"), withGridLayoutPosition(1, 0))).check(matches(isDisplayed()));
+        onView(allOf(withText("No value specified"), withGridLayoutPosition(1, 1))).check(matches(isDisplayed()));
+        onView(withId(R.id.imageview_dialog_validator_error_ok)).perform(click());
+        onView(withId(R.id.imageview_dialog_settings_input_cancel)).perform(click());
+        onView(withId(R.id.textview_activity_global_settings_notification_after_failures)).check(matches(withText("1")));
+        onView(withId(R.id.textview_activity_global_settings_notification_after_failures)).perform(click());
+        onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("333"));
+        onView(withId(R.id.edittext_dialog_settings_input_value)).check(matches(withTextColor(R.color.textErrorColor)));
+        onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
+        onView(allOf(withText("Notification after failures"), withGridLayoutPosition(1, 0))).check(matches(isDisplayed()));
+        onView(allOf(withText("Maximum: 20"), withGridLayoutPosition(1, 1))).check(matches(isDisplayed()));
+        onView(withId(R.id.imageview_dialog_validator_error_ok)).perform(click());
+        onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("5"));
+        onView(withId(R.id.edittext_dialog_settings_input_value)).check(matches(withTextColor(R.color.textColor)));
+        onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
+        onView(withId(R.id.textview_activity_global_settings_notification_after_failures)).check(matches(withText("5")));
+        activityScenario.close();
+    }
+
+    @Test
+    public void testNotificationAfterFailuresCopyPasteOption() {
+        ActivityScenario<?> activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class);
+        onView(withId(R.id.textview_activity_global_settings_notification_after_failures)).perform(click());
+        SettingsInputDialog inputDialog = (SettingsInputDialog) getActivity(activityScenario).getSupportFragmentManager().getFragments().get(0);
+        MockClipboardManager clipboardManager = prepareMockClipboardManager(inputDialog);
+        clipboardManager.putData("5");
+        onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("6"));
+        onView(withId(R.id.edittext_dialog_settings_input_value)).perform(longClick());
+        assertEquals(2, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
+        onView(withId(R.id.listview_dialog_context_options)).check(matches(withListSize(2)));
+        onView(withId(R.id.textview_dialog_context_options_title)).check(matches(withText("Text options")));
+        onView(allOf(withId(R.id.textview_list_item_context_option_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options), 0))).check(matches(withText("Copy")));
+        onView(allOf(withId(R.id.textview_list_item_context_option_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options), 1))).check(matches(withText("Paste")));
+        onView(allOf(withId(R.id.textview_list_item_context_option_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options), 0))).perform(click());
+        assertEquals(1, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
+        onView(withId(R.id.edittext_dialog_settings_input_value)).check(matches(withText("6")));
+        assertTrue(clipboardManager.hasData());
+        assertEquals("6", clipboardManager.getData());
+        onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
+        onView(withId(R.id.textview_activity_global_settings_notification_after_failures)).check(matches(withText("6")));
+        activityScenario.close();
+    }
+
+    @Test
+    public void testNotificationAfterFailuresCopyPasteOptionScreenRotation() {
+        ActivityScenario<?> activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class);
+        onView(withId(R.id.textview_activity_global_settings_notification_after_failures)).perform(click());
+        SettingsInputDialog inputDialog = (SettingsInputDialog) getActivity(activityScenario).getSupportFragmentManager().getFragments().get(0);
+        MockClipboardManager clipboardManager = prepareMockClipboardManager(inputDialog);
+        clipboardManager.putData("5");
+        onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("6"));
+        onView(withId(R.id.edittext_dialog_settings_input_value)).perform(longClick());
+        rotateScreen(activityScenario);
+        assertEquals(2, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
+        onView(withId(R.id.listview_dialog_context_options)).check(matches(withListSize(2)));
+        onView(withId(R.id.textview_dialog_context_options_title)).check(matches(withText("Text options")));
+        onView(allOf(withId(R.id.textview_list_item_context_option_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options), 0))).check(matches(withText("Copy")));
+        onView(allOf(withId(R.id.textview_list_item_context_option_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options), 1))).check(matches(withText("Paste")));
+        rotateScreen(activityScenario);
+        clipboardManager = prepareMockClipboardManager(getDialog(activityScenario));
+        clipboardManager.putData("5");
+        onView(allOf(withId(R.id.textview_list_item_context_option_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options), 0))).perform(click());
+        assertEquals(1, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
+        onView(withId(R.id.edittext_dialog_settings_input_value)).check(matches(withText("6")));
+        assertTrue(clipboardManager.hasData());
+        assertEquals("6", clipboardManager.getData());
+        onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
+        onView(withId(R.id.textview_activity_global_settings_notification_after_failures)).check(matches(withText("6")));
         activityScenario.close();
     }
 
@@ -1525,6 +1630,9 @@ public class GlobalSettingsActivityTest extends BaseUITest {
         ((GlobalSettingsActivity) getActivity(activityScenario)).injectTimeBasedSuspensionScheduler(getTimeBasedSuspensionScheduler());
         onView(withId(R.id.switch_activity_global_settings_notification_inactive_network)).perform(click());
         onView(withId(R.id.radiobutton_activity_global_settings_notification_type_change)).perform(click());
+        onView(withId(R.id.textview_activity_global_settings_notification_after_failures_label)).perform(click());
+        onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("2"));
+        onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
         onView(withId(R.id.switch_activity_global_settings_suspension_enabled)).perform(click());
         onView(withId(R.id.switch_activity_global_settings_enforce_ping_package_size_enabled)).perform(click());
         onView(withId(R.id.switch_activity_global_settings_download_external_storage)).perform(click());
@@ -1538,6 +1646,8 @@ public class GlobalSettingsActivityTest extends BaseUITest {
         onView(withId(R.id.switch_activity_global_settings_notification_inactive_network)).check(matches(isNotChecked()));
         onView(withId(R.id.radiobutton_activity_global_settings_notification_type_failure)).check(matches(isChecked()));
         onView(withId(R.id.radiobutton_activity_global_settings_notification_type_change)).check(matches(isNotChecked()));
+        onView(withId(R.id.textview_activity_global_settings_notification_after_failures_label)).check(matches(withText("Notification after failures")));
+        onView(withId(R.id.textview_activity_global_settings_notification_after_failures)).check(matches(withText("1")));
         onView(withId(R.id.textview_activity_global_settings_suspension_enabled_label)).check(matches(withText("Suspension intervals enabled")));
         onView(withId(R.id.switch_activity_global_settings_suspension_enabled)).check(matches(isChecked()));
         onView(withId(R.id.textview_activity_global_settings_enforce_ping_package_size_enabled_label)).check(matches(withText("Enforce default ping package size")));
@@ -1554,6 +1664,7 @@ public class GlobalSettingsActivityTest extends BaseUITest {
         PreferenceManager preferenceManager = getPreferenceManager();
         assertFalse(preferenceManager.getPreferenceNotificationInactiveNetwork());
         assertEquals(NotificationType.FAILURE, preferenceManager.getPreferenceNotificationType());
+        assertEquals(1, preferenceManager.getPreferenceNotificationAfterFailures());
         assertTrue(preferenceManager.getPreferenceSuspensionEnabled());
         assertFalse(preferenceManager.getPreferenceDownloadExternalStorage());
         assertEquals("download", preferenceManager.getPreferenceDownloadFolder());
@@ -1569,6 +1680,9 @@ public class GlobalSettingsActivityTest extends BaseUITest {
         ((GlobalSettingsActivity) getActivity(activityScenario)).injectTimeBasedSuspensionScheduler(getTimeBasedSuspensionScheduler());
         onView(withId(R.id.switch_activity_global_settings_notification_inactive_network)).perform(click());
         onView(withId(R.id.radiobutton_activity_global_settings_notification_type_change)).perform(click());
+        onView(withId(R.id.textview_activity_global_settings_notification_after_failures_label)).perform(click());
+        onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("2"));
+        onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
         onView(withId(R.id.switch_activity_global_settings_suspension_enabled)).perform(click());
         onView(withId(R.id.switch_activity_global_settings_enforce_ping_package_size_enabled)).perform(click());
         onView(withId(R.id.switch_activity_global_settings_download_external_storage)).perform(click());
@@ -1580,6 +1694,8 @@ public class GlobalSettingsActivityTest extends BaseUITest {
         onView(withId(R.id.switch_activity_global_settings_notification_inactive_network)).check(matches(isChecked()));
         onView(withId(R.id.textview_activity_global_settings_notification_inactive_network_on_off)).check(matches(withText("yes")));
         onView(withId(R.id.radiobutton_activity_global_settings_notification_type_change)).check(matches(isChecked()));
+        onView(withId(R.id.textview_activity_global_settings_notification_after_failures_label)).check(matches(withText("Notification after failures")));
+        onView(withId(R.id.textview_activity_global_settings_notification_after_failures)).check(matches(withText("2")));
         onView(withId(R.id.switch_activity_global_settings_suspension_enabled)).check(matches(isNotChecked()));
         onView(withId(R.id.textview_activity_global_settings_suspension_enabled_on_off)).check(matches(withText("no")));
         onView(withId(R.id.switch_activity_global_settings_enforce_ping_package_size_enabled)).check(matches(isChecked()));
@@ -1594,6 +1710,8 @@ public class GlobalSettingsActivityTest extends BaseUITest {
         onView(withId(R.id.switch_activity_global_settings_notification_inactive_network)).check(matches(isChecked()));
         onView(withId(R.id.textview_activity_global_settings_notification_inactive_network_on_off)).check(matches(withText("yes")));
         onView(withId(R.id.radiobutton_activity_global_settings_notification_type_change)).check(matches(isChecked()));
+        onView(withId(R.id.textview_activity_global_settings_notification_after_failures_label)).check(matches(withText("Notification after failures")));
+        onView(withId(R.id.textview_activity_global_settings_notification_after_failures)).check(matches(withText("2")));
         onView(withId(R.id.switch_activity_global_settings_suspension_enabled)).check(matches(isNotChecked()));
         onView(withId(R.id.textview_activity_global_settings_suspension_enabled_on_off)).check(matches(withText("no")));
         onView(withId(R.id.switch_activity_global_settings_enforce_ping_package_size_enabled)).check(matches(isChecked()));
@@ -1666,6 +1784,17 @@ public class GlobalSettingsActivityTest extends BaseUITest {
 
     public static Matcher<View> withFontSize(float expectedSize) {
         return new FontSizeMatcher(expectedSize);
+    }
+
+    private SettingsInputDialog getDialog(ActivityScenario<?> activityScenario) {
+        return (SettingsInputDialog) getActivity(activityScenario).getSupportFragmentManager().getFragments().get(0);
+    }
+
+    private MockClipboardManager prepareMockClipboardManager(SettingsInputDialog inputDialog) {
+        MockClipboardManager clipboardManager = new MockClipboardManager();
+        clipboardManager.clearData();
+        inputDialog.injectClipboardManager(clipboardManager);
+        return clipboardManager;
     }
 
     private NetworkTask getNetworkTask1() {

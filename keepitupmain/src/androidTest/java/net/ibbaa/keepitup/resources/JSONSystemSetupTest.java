@@ -219,6 +219,7 @@ public class JSONSystemSetupTest {
     public void testExportSettings() throws Exception {
         preferenceManager.setPreferenceNotificationInactiveNetwork(true);
         preferenceManager.setPreferenceNotificationType(NotificationType.CHANGE);
+        preferenceManager.setPreferenceNotificationAfterFailures(2);
         preferenceManager.setPreferenceSuspensionEnabled(false);
         preferenceManager.setPreferenceEnforceDefaultPingPackageSize(true);
         preferenceManager.setPreferenceDownloadExternalStorage(true);
@@ -247,6 +248,7 @@ public class JSONSystemSetupTest {
         JSONObject systemSettingsData = (JSONObject) settingsData.get("system");
         assertTrue(globalSettingsData.getBoolean("preferenceNotificationInactiveNetwork"));
         assertEquals(NotificationType.CHANGE, NotificationType.forCode(globalSettingsData.getInt("preferenceNotificationType")));
+        assertEquals(2, globalSettingsData.getInt("preferenceNotificationType"));
         assertFalse(globalSettingsData.getBoolean("preferenceSuspensionEnabled"));
         assertTrue(globalSettingsData.getBoolean("preferenceEnforceDefaultPingPackageSize"));
         assertTrue(globalSettingsData.getBoolean("preferenceDownloadExternalStorage"));
@@ -271,6 +273,7 @@ public class JSONSystemSetupTest {
 
     @Test
     public void testExportSettingsInvalid() throws Exception {
+        preferenceManager.setPreferenceNotificationAfterFailures(21);
         preferenceManager.setPreferencePingPackageSize(12345678);
         preferenceManager.setPreferenceExternalStorageType(30);
         preferenceManager.setPreferencePort(100000);
@@ -281,8 +284,10 @@ public class JSONSystemSetupTest {
         SystemSetupResult result = setup.exportData();
         JSONObject jsonData = new JSONObject(result.data());
         JSONObject settingsData = (JSONObject) jsonData.get("preferences");
+        JSONObject globalSettingsData = (JSONObject) settingsData.get("global");
         JSONObject defaultsData = (JSONObject) settingsData.get("defaults");
         JSONObject systemSettingsData = (JSONObject) settingsData.get("system");
+        assertEquals(21, globalSettingsData.getInt("preferenceNotificationAfterFailures"));
         assertEquals(30, systemSettingsData.getInt("preferenceExternalStorageType"));
         assertEquals(5, systemSettingsData.getInt("preferenceTheme"));
         assertEquals(100000, defaultsData.getInt("preferencePort"));
@@ -721,6 +726,7 @@ public class JSONSystemSetupTest {
     public void testImportSettings() {
         preferenceManager.setPreferenceNotificationInactiveNetwork(true);
         preferenceManager.setPreferenceNotificationType(NotificationType.CHANGE);
+        preferenceManager.setPreferenceNotificationAfterFailures(8);
         preferenceManager.setPreferenceSuspensionEnabled(false);
         preferenceManager.setPreferenceEnforceDefaultPingPackageSize(true);
         preferenceManager.setPreferenceDownloadExternalStorage(true);
@@ -748,6 +754,7 @@ public class JSONSystemSetupTest {
         assertEquals(exportResult.data(), importResult.data());
         assertTrue(preferenceManager.getPreferenceNotificationInactiveNetwork());
         assertEquals(NotificationType.CHANGE, preferenceManager.getPreferenceNotificationType());
+        assertEquals(8, preferenceManager.getPreferenceNotificationAfterFailures());
         assertFalse(preferenceManager.getPreferenceSuspensionEnabled());
         assertTrue(preferenceManager.getPreferenceEnforceDefaultPingPackageSize());
         assertTrue(preferenceManager.getPreferenceDownloadExternalStorage());
@@ -772,6 +779,7 @@ public class JSONSystemSetupTest {
 
     @Test
     public void testImportSettingsInvalid() {
+        preferenceManager.setPreferenceNotificationAfterFailures(21);
         preferenceManager.setPreferencePingPackageSize(12345678);
         preferenceManager.setPreferenceExternalStorageType(2);
         preferenceManager.setPreferencePort(100000);
@@ -784,6 +792,7 @@ public class JSONSystemSetupTest {
         SystemSetupResult importResult = setup.importData(exportResult.data());
         assertTrue(importResult.success());
         assertEquals(exportResult.data(), importResult.data());
+        assertEquals(1, preferenceManager.getPreferenceNotificationAfterFailures());
         assertEquals(56, preferenceManager.getPreferencePingPackageSize());
         assertEquals(0, preferenceManager.getPreferenceExternalStorageType());
         assertEquals(22, preferenceManager.getPreferencePort());

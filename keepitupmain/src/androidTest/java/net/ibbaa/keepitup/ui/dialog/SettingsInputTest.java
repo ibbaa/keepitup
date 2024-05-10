@@ -79,5 +79,29 @@ public class SettingsInputTest {
         assertEquals("test", settingsInput.getValue());
         assertEquals("testfield", settingsInput.getField());
         assertThat(settingsInput.getValidators(), is(Arrays.asList("abc", "def")));
+        settingsInput = new SettingsInput(SettingsInput.Type.CONNECTCOUNT, "test", "testfield", Arrays.asList("abc", "def"));
+        bundle = settingsInput.toBundle();
+        settingsInput = new SettingsInput(bundle);
+        assertEquals(SettingsInput.Type.CONNECTCOUNT, settingsInput.getType());
+        assertEquals(InputType.TYPE_CLASS_NUMBER, settingsInput.getType().getInputType());
+        assertEquals("test", settingsInput.getValue());
+        assertEquals("testfield", settingsInput.getField());
+        assertThat(settingsInput.getValidators(), is(Arrays.asList("abc", "def")));
+        settingsInput = new SettingsInput(SettingsInput.Type.PINGPACKAGESIZE, "test", "testfield", Arrays.asList("1", "1"));
+        bundle = settingsInput.toBundle();
+        settingsInput = new SettingsInput(bundle);
+        assertEquals(SettingsInput.Type.PINGPACKAGESIZE, settingsInput.getType());
+        assertEquals(InputType.TYPE_CLASS_NUMBER, settingsInput.getType().getInputType());
+        assertEquals("test", settingsInput.getValue());
+        assertEquals("testfield", settingsInput.getField());
+        assertThat(settingsInput.getValidators(), is(Arrays.asList("1", "1")));
+        settingsInput = new SettingsInput(SettingsInput.Type.NOTIFICATIONAFTER, "test", "testfield", Arrays.asList("1", "1"));
+        bundle = settingsInput.toBundle();
+        settingsInput = new SettingsInput(bundle);
+        assertEquals(SettingsInput.Type.NOTIFICATIONAFTER, settingsInput.getType());
+        assertEquals(InputType.TYPE_CLASS_NUMBER, settingsInput.getType().getInputType());
+        assertEquals("test", settingsInput.getValue());
+        assertEquals("testfield", settingsInput.getField());
+        assertThat(settingsInput.getValidators(), is(Arrays.asList("1", "1")));
     }
 }
