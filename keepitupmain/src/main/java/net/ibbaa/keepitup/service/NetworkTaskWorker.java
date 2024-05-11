@@ -223,7 +223,8 @@ public abstract class NetworkTaskWorker implements Runnable {
             return oldFailureCount == 0;
         }
         Log.d(NetworkTaskWorker.class.getName(), "NotificationType is FAILURE.");
-        return newFailureCount > oldFailureCount;
+        int notificationAfterFailure = preferenceManager.getPreferenceNotificationAfterFailures();
+        return (newFailureCount > oldFailureCount) && (newFailureCount % notificationAfterFailure == 0);
     }
 
     private void sendNotification(LogEntry logEntry) {
