@@ -228,7 +228,7 @@ public abstract class NetworkTaskWorker implements Runnable {
     }
 
     private void sendNotification(LogEntry logEntry) {
-        Log.d(NetworkTaskWorker.class.getName(), "sendErrorNotification for log entry " + logEntry);
+        Log.d(NetworkTaskWorker.class.getName(), "sendNotification for log entry " + logEntry);
         notificationHandler.sendMessageNotification(networkTask, logEntry);
     }
 

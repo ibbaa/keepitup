@@ -131,7 +131,12 @@ public class NotificationHandler {
         String timestampText = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.MEDIUM).format(new Date(logEntry.getTimestamp()));
         String addressText = String.format(getResources().getString(R.string.notification_address), new EnumMapping(getContext()).getAccessTypeAddressText(task.getAccessType()));
         String formattedAddressText = String.format(addressText, task.getAddress(), task.getPort());
-        String text = String.format(getResources().getString(logEntry.isSuccess() ? R.string.notification_success_text : R.string.notification_error_text), task.getIndex() + 1, formattedAddressText, timestampText, logEntry.getMessage() == null ? getResources().getString(R.string.string_none) : logEntry.getMessage());
+        String text;
+        if (logEntry.isSuccess()) {
+            text = String.format(getResources().getString(R.string.notification_success_text), task.getIndex() + 1, formattedAddressText, timestampText, logEntry.getMessage() == null ? getResources().getString(R.string.string_none) : logEntry.getMessage());
+        } else {
+            text = String.format(getResources().getString(R.string.notification_error_text), task.getIndex() + 1, formattedAddressText, task.getFailureCount(), timestampText, logEntry.getMessage() == null ? getResources().getString(R.string.string_none) : logEntry.getMessage());
+        }
         errorNotificationBuilder = createMessageNotificationBuilder();
         errorNotificationBuilder.setSmallIcon(logEntry.isSuccess() ? R.drawable.icon_notification_ok : R.drawable.icon_notification_failure).setContentTitle(title).setContentText(text).setStyle(new NotificationCompat.BigTextStyle().bigText(text)).setPriority(NotificationCompat.PRIORITY_DEFAULT);
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
