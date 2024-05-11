@@ -368,7 +368,7 @@ public class NetworkTaskProcessServiceSchedulerTest {
         assertEquals(-1, readTask1.getLastScheduled());
         assertEquals(0, readTask1.getFailureCount());
         assertEquals(-1, readTask2.getLastScheduled());
-        assertEquals(0, readTask2.getFailureCount());
+        assertEquals(1, readTask2.getFailureCount());
         scheduler.start(task1);
         scheduler.terminate(task1);
         assertTrue(isTaskMarkedAsRunningInDatabase(task1));
@@ -399,7 +399,7 @@ public class NetworkTaskProcessServiceSchedulerTest {
         assertEquals(125, readTask1.getLastScheduled());
         assertEquals(1, readTask1.getFailureCount());
         assertEquals(-1, readTask2.getLastScheduled());
-        assertEquals(0, readTask2.getFailureCount());
+        assertEquals(2, readTask2.getFailureCount());
         scheduler.start(task2);
         alarmManager.reset();
         setTestTime(Long.MAX_VALUE);
