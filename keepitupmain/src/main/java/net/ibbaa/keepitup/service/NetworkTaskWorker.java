@@ -112,7 +112,7 @@ public abstract class NetworkTaskWorker implements Runnable {
             }
             Log.d(NetworkTaskWorker.class.getName(), "Increasing instances count.");
             networkTaskDAO.increaseNetworkTaskInstances(networkTask.getId());
-            sendNetworkTaskUINotificationBroadcast();
+            sendNetworkTaskUINotificationBroadcast(databaseTask);
             try {
                 boolean isConnectedWithWifi = networkManager.isConnectedWithWiFi();
                 boolean isConnected = networkManager.isConnected();
@@ -136,10 +136,10 @@ public abstract class NetworkTaskWorker implements Runnable {
             } finally {
                 Log.d(NetworkTaskWorker.class.getName(), "Decreasing instances count.");
                 networkTaskDAO.decreaseNetworkTaskInstances(networkTask.getId());
-                sendNetworkTaskUINotificationBroadcast();
+                sendNetworkTaskUINotificationBroadcast(databaseTask);
             }
         } catch (Exception exc) {
-            Log.e(NetworkTaskWorker.class.getName(), "Fatal errror while executing worker and writing log", exc);
+            Log.e(NetworkTaskWorker.class.getName(), "Fatal error while executing worker and writing log", exc);
         } finally {
             if (wakeLock != null && wakeLock.isHeld()) {
                 Log.d(NetworkTaskWorker.class.getName(), "Releasing partial wake lock");
@@ -148,38 +148,38 @@ public abstract class NetworkTaskWorker implements Runnable {
         }
     }
 
-    private void writeLogEntry(NetworkTask databaseTask, LogEntry logEntry, boolean sendNotification) {
+    private void writeLogEntry(NetworkTask task, LogEntry logEntry, boolean sendNotification) {
         Log.d(NetworkTaskWorker.class.getName(), "Writing log entry " + logEntry + " to database, sendNotification is " + sendNotification);
         LogDAO logDAO = new LogDAO(getContext());
         logDAO.insertAndDeleteLog(logEntry);
         PreferenceManager preferenceManager = new PreferenceManager(getContext());
         if (preferenceManager.getPreferenceLogFile()) {
             Log.d(NetworkTaskWorker.class.getName(), "Writing log entry " + logEntry + " to file, sendNotification is " + sendNotification);
-            NetworkTaskLog.log(getContext(), databaseTask, logEntry);
+            NetworkTaskLog.log(getContext(), task, logEntry);
         }
         Log.d(NetworkTaskWorker.class.getName(), "Notify UI");
-        sendNetworkTaskUINotificationBroadcast();
-        sendLogEntryUINotificationBroadcast();
+        NetworkTaskDAO networkTaskDAO = new NetworkTaskDAO(getContext());
+        NetworkTask databaseTask = networkTaskDAO.readNetworkTask(task.getId());
+        sendNetworkTaskUINotificationBroadcast(databaseTask);
+        sendLogEntryUINotificationBroadcast(databaseTask);
         if (sendNotification) {
-            sendNotification(logEntry);
+            sendNotification(databaseTask, logEntry);
         }
     }
 
-    private void sendNetworkTaskUINotificationBroadcast() {
-        Log.d(NetworkTaskWorker.class.getName(), "sendNetworkTaskUINotificationBroadcast");
+    private void sendNetworkTaskUINotificationBroadcast(NetworkTask task) {
+        Log.d(NetworkTaskWorker.class.getName(), "sendNetworkTaskUINotificationBroadcast for task " + task);
         Intent mainUIintent = new Intent(NetworkTaskMainUIBroadcastReceiver.class.getName());
         mainUIintent.setPackage(getContext().getPackageName());
-        NetworkTaskDAO networkTaskDAO = new NetworkTaskDAO(getContext());
-        NetworkTask readNetworkTask = networkTaskDAO.readNetworkTask(networkTask.getId());
-        mainUIintent.putExtras(readNetworkTask.toBundle());
+        mainUIintent.putExtras(task.toBundle());
         getContext().sendBroadcast(mainUIintent);
     }
 
-    private void sendLogEntryUINotificationBroadcast() {
-        Log.d(NetworkTaskWorker.class.getName(), "sendLogEntryUINotificationBroadcast");
+    private void sendLogEntryUINotificationBroadcast(NetworkTask task) {
+        Log.d(NetworkTaskWorker.class.getName(), "sendLogEntryUINotificationBroadcast for task " + task);
         Intent logUIintent = new Intent(LogEntryUIBroadcastReceiver.class.getName());
         logUIintent.setPackage(getContext().getPackageName());
-        logUIintent.putExtras(networkTask.toBundle());
+        logUIintent.putExtras(task.toBundle());
         getContext().sendBroadcast(logUIintent);
     }
 
@@ -227,9 +227,9 @@ public abstract class NetworkTaskWorker implements Runnable {
         return (newFailureCount > oldFailureCount) && (newFailureCount % notificationAfterFailure == 0);
     }
 
-    private void sendNotification(LogEntry logEntry) {
-        Log.d(NetworkTaskWorker.class.getName(), "sendNotification for log entry " + logEntry);
-        notificationHandler.sendMessageNotification(networkTask, logEntry);
+    private void sendNotification(NetworkTask task, LogEntry logEntry) {
+        Log.d(NetworkTaskWorker.class.getName(), "sendNotification for network task " + task + " and log entry " + logEntry);
+        notificationHandler.sendMessageNotification(task, logEntry);
     }
 
     private LogEntry checkInstances() {
