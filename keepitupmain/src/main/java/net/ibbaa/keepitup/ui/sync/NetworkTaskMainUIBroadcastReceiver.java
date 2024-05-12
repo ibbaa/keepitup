@@ -54,12 +54,20 @@ public class NetworkTaskMainUIBroadcastReceiver extends BroadcastReceiver {
         Log.d(NetworkTaskMainUIBroadcastReceiver.class.getName(), "Received request for " + task);
         NetworkTaskDAO dao = new NetworkTaskDAO(activity);
         NetworkTask databaseTask = dao.readNetworkTask(task.getId());
-        doSync(databaseTask);
+        if (isNetworkTaskValid(task, databaseTask)) {
+            doSync(databaseTask);
+        } else {
+            Log.d(NetworkTaskMainUIBroadcastReceiver.class.getName(), "Task " + task + " is invalid. Skipping sync.");
+        }
     }
 
     protected void doSync(NetworkTask task) {
         Log.d(NetworkTaskMainUIBroadcastReceiver.class.getName(), "doSync, task is " + task);
         NetworkTaskMainUISyncTask syncTask = new NetworkTaskMainUISyncTask(activity, task, adapter);
         ThreadUtil.exexute(syncTask);
+    }
+
+    private boolean isNetworkTaskValid(NetworkTask task, NetworkTask databaseTask) {
+        return databaseTask != null && task.getSchedulerId() == databaseTask.getSchedulerId();
     }
 }

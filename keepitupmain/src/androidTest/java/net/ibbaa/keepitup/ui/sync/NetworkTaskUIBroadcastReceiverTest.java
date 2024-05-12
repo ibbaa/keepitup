@@ -17,6 +17,7 @@
 package net.ibbaa.keepitup.ui.sync;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
 import android.content.Intent;
 
@@ -54,7 +55,7 @@ public class NetworkTaskUIBroadcastReceiverTest extends BaseUITest {
     public void testTaskLoadedFromDatabase() {
         NetworkTask task = getNetworkTaskDAO().insertNetworkTask(getNetworkTask());
         getNetworkTaskDAO().increaseNetworkTaskFailureCount(task.getId());
-        TestNetworkTaskMainUIBroadcastReceiver networkTaskMainUIBroadcastReceiver = createTestReceiver(task.getId());
+        TestNetworkTaskMainUIBroadcastReceiver networkTaskMainUIBroadcastReceiver = createTestReceiver();
         Intent intent = new Intent(TestNetworkTaskMainUIBroadcastReceiver.class.getName());
         intent.putExtras(task.toBundle());
         networkTaskMainUIBroadcastReceiver.onReceive(TestRegistry.getContext(), intent);
@@ -62,9 +63,20 @@ public class NetworkTaskUIBroadcastReceiverTest extends BaseUITest {
         assertEquals(1, doSyncTask.getFailureCount());
     }
 
-    private TestNetworkTaskMainUIBroadcastReceiver createTestReceiver(long adapterTaskId) {
-        NetworkTask adapterTask = new NetworkTask();
-        adapterTask.setId(adapterTaskId);
+    @Test
+    public void testSyncSkippedInvalidTask() {
+        NetworkTask task = getNetworkTaskDAO().insertNetworkTask(getNetworkTask());
+        getNetworkTaskDAO().increaseNetworkTaskFailureCount(task.getId());
+        TestNetworkTaskMainUIBroadcastReceiver networkTaskMainUIBroadcastReceiver = createTestReceiver();
+        Intent intent = new Intent(TestNetworkTaskMainUIBroadcastReceiver.class.getName());
+        task.setSchedulerId(task.getSchedulerId() + 1);
+        intent.putExtras(task.toBundle());
+        networkTaskMainUIBroadcastReceiver.onReceive(TestRegistry.getContext(), intent);
+        NetworkTask doSyncTask = networkTaskMainUIBroadcastReceiver.getDoSyncTask();
+        assertNull(doSyncTask);
+    }
+
+    private TestNetworkTaskMainUIBroadcastReceiver createTestReceiver() {
         NetworkTaskAdapter adapter = new NetworkTaskAdapter(Collections.emptyList(), (NetworkTaskMainActivity) getActivity(activityScenario));
         return new TestNetworkTaskMainUIBroadcastReceiver(getActivity(activityScenario), adapter);
     }

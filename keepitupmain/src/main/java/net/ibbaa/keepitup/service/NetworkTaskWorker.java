@@ -150,6 +150,12 @@ public abstract class NetworkTaskWorker implements Runnable {
 
     private void writeLogEntry(NetworkTask task, LogEntry logEntry, boolean sendNotification) {
         Log.d(NetworkTaskWorker.class.getName(), "Writing log entry " + logEntry + " to database, sendNotification is " + sendNotification);
+        NetworkTaskDAO networkTaskDAO = new NetworkTaskDAO(getContext());
+        NetworkTask databaseTask = networkTaskDAO.readNetworkTask(task.getId());
+        if (isNetworkTaskInvalid(databaseTask)) {
+            Log.d(NetworkTaskWorker.class.getName(), "NetworkTask is invalid. Not writing log entry.");
+            return;
+        }
         LogDAO logDAO = new LogDAO(getContext());
         logDAO.insertAndDeleteLog(logEntry);
         PreferenceManager preferenceManager = new PreferenceManager(getContext());
@@ -158,8 +164,6 @@ public abstract class NetworkTaskWorker implements Runnable {
             NetworkTaskLog.log(getContext(), task, logEntry);
         }
         Log.d(NetworkTaskWorker.class.getName(), "Notify UI");
-        NetworkTaskDAO networkTaskDAO = new NetworkTaskDAO(getContext());
-        NetworkTask databaseTask = networkTaskDAO.readNetworkTask(task.getId());
         sendNetworkTaskUINotificationBroadcast(databaseTask);
         sendLogEntryUINotificationBroadcast(databaseTask);
         if (sendNotification) {
