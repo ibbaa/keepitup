@@ -90,7 +90,11 @@ public class DownloadCommandTest {
     }
 
     private MockHttpURLConnection prepareHttpURLConnection(InputStream inputStream) throws Exception {
-        return prepareHttpURLConnection(HttpURLConnection.HTTP_OK, "Everything ok", inputStream);
+        return prepareHttpURLConnection(inputStream, HttpURLConnection.HTTP_OK);
+    }
+
+    private MockHttpURLConnection prepareHttpURLConnection(InputStream inputStream, int responseCode) throws Exception {
+        return prepareHttpURLConnection(responseCode, "Everything ok", inputStream);
     }
 
     @Test
@@ -345,6 +349,21 @@ public class DownloadCommandTest {
         assertEquals(99, result.duration());
         assertNull(result.exception());
         assertTrue(urlConnection.isDisconnected());
+    }
+
+    @Test
+    public void testSuccessNot200() throws Exception {
+        NetworkTask task = networkTaskDAO.insertNetworkTask(getNetworkTask());
+        File externalDir = fileManager.getExternalDirectory(fileManager.getDefaultDownloadDirectoryName(), 0);
+        TestDownloadCommand downloadCommand = new TestDownloadCommand(TestRegistry.getContext(), task, null, externalDir, false);
+        setCurrentTime(downloadCommand);
+        ByteArrayInputStream inputStream = new ByteArrayInputStream("TestData".getBytes(Charsets.UTF_8));
+        MockHttpURLConnection urlConnection = prepareHttpURLConnection(inputStream, 206);
+        downloadCommand.setURLConnection(urlConnection);
+        urlConnection.addHeader("Content-Disposition", "attachment; filename=\"test.txt\"");
+        DownloadCommandResult result = downloadCommand.call();
+        assertTrue(result.connectSuccess());
+        assertTrue(result.downloadSuccess());
     }
 
     @Test

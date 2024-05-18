@@ -36,7 +36,7 @@ public class HTTPUtil {
     }
 
     public static boolean isHTTPReturnCodeOk(int returnCode) {
-        return returnCode == HttpURLConnection.HTTP_OK;
+        return returnCode >= 200 && returnCode < 300;
     }
 
     public static String getContentDisposition(Context context, URLConnection connection) {

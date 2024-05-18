@@ -36,6 +36,7 @@ public class HTTPUtilTest {
     @Test
     public void testIsHTTPReturnCodeOk() {
         assertTrue(HTTPUtil.isHTTPReturnCodeOk(HttpURLConnection.HTTP_OK));
+        assertTrue(HTTPUtil.isHTTPReturnCodeOk(206));
         assertFalse(HTTPUtil.isHTTPReturnCodeOk(HttpURLConnection.HTTP_GONE));
     }
 
