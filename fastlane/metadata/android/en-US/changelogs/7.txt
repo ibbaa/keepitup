@@ -1,0 +1,6 @@
+* It's now possible to specify ping and connect count per network task
+* It's now possible to specify the ping package count
+* Failure count since last success is now tracked. It's possible to send alert after certain amount of failures
+* Variuos minor bug fixes
+
+
