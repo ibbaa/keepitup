@@ -271,6 +271,22 @@ public class NetworkTaskProcessServiceScheduler {
         return NumberUtil.ensurePositive(interval - timeDifference);
     }
 
+    public void startServiceDelayed() {
+        Log.d(NetworkTaskProcessServiceScheduler.class.getName(), "startServiceDelayed");
+        if (shouldStartForegroundService()) {
+            try {
+                Intent intent = new Intent(getContext(), NetworkTaskRunningNotificationService.class);
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    getContext().startForegroundService(intent);
+                } else {
+                    getContext().startService(intent);
+                }
+            } catch (Exception exc) {
+                Log.e(NetworkTaskProcessServiceScheduler.class.getName(), "startServiceDelayed: Error starting the foreground service.", exc);
+            }
+        }
+    }
+
     private void startService(NetworkTask task, Delay delay) {
         Log.d(NetworkTaskProcessServiceScheduler.class.getName(), "startService for network task " + task + " with delay " + delay);
         try {
@@ -284,7 +300,7 @@ public class NetworkTaskProcessServiceScheduler {
                 getContext().startService(intent);
             }
         } catch (Exception exc) {
-            Log.e(NetworkTaskProcessServiceScheduler.class.getName(), "Error starting the foreground service.", exc);
+            Log.e(NetworkTaskProcessServiceScheduler.class.getName(), "startService: Error starting the foreground service.", exc);
             Log.d(NetworkTaskProcessServiceScheduler.class.getName(), "Scheduling without service");
             reschedule(task, delay);
         }

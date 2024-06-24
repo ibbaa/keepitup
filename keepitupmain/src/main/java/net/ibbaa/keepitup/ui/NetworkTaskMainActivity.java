@@ -35,6 +35,7 @@ import net.ibbaa.keepitup.logging.Log;
 import net.ibbaa.keepitup.model.AccessTypeData;
 import net.ibbaa.keepitup.model.NetworkTask;
 import net.ibbaa.keepitup.service.IAlarmManager;
+import net.ibbaa.keepitup.service.NetworkTaskProcessServiceScheduler;
 import net.ibbaa.keepitup.service.SystemAlarmManager;
 import net.ibbaa.keepitup.ui.adapter.NetworkTaskAdapter;
 import net.ibbaa.keepitup.ui.adapter.NetworkTaskUIWrapper;
@@ -87,6 +88,7 @@ public class NetworkTaskMainActivity extends RecyclerViewBaseActivity implements
         setContentView(R.layout.activity_main_network_task);
         initRecyclerView();
         prepareAddImageButton();
+        startForegroundServiceDelayed();
         IPermissionManager permissionManager = getPermissionManager();
         if (!permissionManager.hasPostNotificationsPermission(this)) {
             permissionManager.requestPostNotificationsPermission(this);
@@ -106,6 +108,17 @@ public class NetworkTaskMainActivity extends RecyclerViewBaseActivity implements
         Log.d(NetworkTaskMainActivity.class.getName(), "showAlarmPermissionDialog");
         AlarmPermissionDialog alarmPermissionDialog = new AlarmPermissionDialog();
         alarmPermissionDialog.show(getSupportFragmentManager(), AlarmPermissionDialog.class.getName());
+    }
+
+    private void startForegroundServiceDelayed() {
+        Log.d(NetworkTaskMainActivity.class.getName(), "startForegroundServiceDelayed");
+        List<NetworkTaskUIWrapper> networkTasks = ((NetworkTaskAdapter) getAdapter()).getAllItems();
+        for(NetworkTaskUIWrapper wrapper : networkTasks) {
+            if (wrapper.getNetworkTask().isRunning()) {
+                getNetworkTaskProcessServiceScheduler().startServiceDelayed();
+                return;
+            }
+        }
     }
 
     @Override
@@ -341,6 +354,10 @@ public class NetworkTaskMainActivity extends RecyclerViewBaseActivity implements
             intent.setAction(Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM);
             startActivity(intent);
         }
+    }
+
+    private NetworkTaskProcessServiceScheduler getNetworkTaskProcessServiceScheduler() {
+        return new NetworkTaskProcessServiceScheduler(this);
     }
 
     private NetworkTaskMainUIInitTask getUIInitTask(NetworkTaskAdapter adapter) {

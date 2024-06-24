@@ -74,17 +74,17 @@ public class NetworkTaskRunningNotificationService extends Service {
             return START_NOT_STICKY;
         }
         Bundle extras = intent.getExtras();
-        if (extras == null) {
+        if (extras == null || extras.isEmpty()) {
             Log.e(NetworkTaskRunningNotificationService.class.getName(), "extras bundle is null");
             return START_NOT_STICKY;
         }
-        NetworkTask task = new NetworkTask(extras);
-        Log.d(NetworkTaskRunningNotificationService.class.getName(), "Network task is " + task);
         NetworkTaskProcessServiceScheduler.Delay delay = getDelay(extras);
         if (delay == null) {
             Log.e(NetworkTaskRunningNotificationService.class.getName(), "Delay is invalid");
             return START_NOT_STICKY;
         }
+        NetworkTask task = new NetworkTask(extras);
+        Log.d(NetworkTaskRunningNotificationService.class.getName(), "Network task is " + task);
         Log.d(NetworkTaskRunningNotificationService.class.getName(), "Delay is " + delay);
         getScheduler().reschedule(task, delay);
         return START_NOT_STICKY;
