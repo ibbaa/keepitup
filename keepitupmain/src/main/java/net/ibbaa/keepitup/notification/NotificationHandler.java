@@ -45,6 +45,8 @@ import java.util.Objects;
 
 public class NotificationHandler {
 
+    public final static int NOTIFICATION_FOREGROUND_START_ID = 1234;
+
     private final Context context;
     private final INotificationManager notificationManager;
     private final IPermissionManager permissionManager;
@@ -115,18 +117,28 @@ public class NotificationHandler {
         return foregroundNotificationBuilder;
     }
 
-    public void sendMessageNotification(NetworkTask task, LogEntry logEntry) {
-        Log.d(NotificationHandler.class.getName(), "Sending notification for network task " + task + ", log entry " + logEntry);
+    public void sendMessageNotificationForegroundStart() {
+        Log.d(NotificationHandler.class.getName(), "sendMessageNotificationForegroundStart");
         if (!permissionManager.hasPostNotificationsPermission(getContext())) {
             Log.e(NotificationHandler.class.getName(), "Cannot send notification because of missing permission.");
             return;
         }
-        Notification notification = buildMessageNotification(task, logEntry);
+        Notification notification = buildMessageNotificationForegroundStart();
+        notificationManager.notify(NOTIFICATION_FOREGROUND_START_ID, notification);
+    }
+
+    public void sendMessageNotificationForNetworkTask(NetworkTask task, LogEntry logEntry) {
+        Log.d(NotificationHandler.class.getName(), "sendMessageNotification, network task is " + task + ", log entry is " + logEntry);
+        if (!permissionManager.hasPostNotificationsPermission(getContext())) {
+            Log.e(NotificationHandler.class.getName(), "Cannot send notification because of missing permission.");
+            return;
+        }
+        Notification notification = buildMessageNotificationForNetworkTask(task, logEntry);
         notificationManager.notify(task.getSchedulerId(), notification);
     }
 
-    private Notification buildMessageNotification(NetworkTask task, LogEntry logEntry) {
-        Log.d(NotificationHandler.class.getName(), "Building notification for network task " + task + ", log entry " + logEntry);
+    private Notification buildMessageNotificationForNetworkTask(NetworkTask task, LogEntry logEntry) {
+        Log.d(NotificationHandler.class.getName(), "buildMessageNotificationForNetworkTask, network task is " + task + ", log entry is " + logEntry);
         String title = getResources().getString(R.string.notification_title);
         String timestampText = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.MEDIUM).format(new Date(logEntry.getTimestamp()));
         String addressText = String.format(getResources().getString(R.string.notification_address), new EnumMapping(getContext()).getAccessTypeAddressText(task.getAccessType()));
@@ -139,6 +151,19 @@ public class NotificationHandler {
         }
         errorNotificationBuilder = createMessageNotificationBuilder();
         errorNotificationBuilder.setSmallIcon(logEntry.isSuccess() ? R.drawable.icon_notification_ok : R.drawable.icon_notification_failure).setContentTitle(title).setContentText(text).setStyle(new NotificationCompat.BigTextStyle().bigText(text)).setPriority(NotificationCompat.PRIORITY_DEFAULT);
+        return buildMessageNotification();
+    }
+
+    private Notification buildMessageNotificationForegroundStart() {
+        Log.d(NotificationHandler.class.getName(), "buildMessageNotificationForegroundStart");
+        String title = getResources().getString(R.string.notification_title);
+        String text = getResources().getString(R.string.notification_foreground_start_text);
+        errorNotificationBuilder = createMessageNotificationBuilder();
+        errorNotificationBuilder.setSmallIcon(R.drawable.icon_notification_foreground_start).setContentTitle(title).setContentText(text).setStyle(new NotificationCompat.BigTextStyle().bigText(text)).setPriority(NotificationCompat.PRIORITY_DEFAULT);
+        return buildMessageNotification();
+    }
+
+    private Notification buildMessageNotification() {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
             errorNotificationBuilder.setVibrate(getVibrationPattern());
             Uri soundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
@@ -150,7 +175,7 @@ public class NotificationHandler {
     }
 
     public Notification buildForegroundNotification() {
-        Log.d(NotificationHandler.class.getName(), "Building foreground notification");
+        Log.d(NotificationHandler.class.getName(), "buildForegroundNotification");
         if (!permissionManager.hasPostNotificationsPermission(getContext())) {
             Log.e(NotificationHandler.class.getName(), "Cannot build foreground notification because of missing permission. Returning null.");
             return null;

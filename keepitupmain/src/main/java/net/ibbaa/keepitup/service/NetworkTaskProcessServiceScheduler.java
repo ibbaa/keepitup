@@ -26,6 +26,7 @@ import net.ibbaa.keepitup.R;
 import net.ibbaa.keepitup.db.NetworkTaskDAO;
 import net.ibbaa.keepitup.logging.Log;
 import net.ibbaa.keepitup.model.NetworkTask;
+import net.ibbaa.keepitup.notification.NotificationHandler;
 import net.ibbaa.keepitup.resources.ServiceFactoryContributor;
 import net.ibbaa.keepitup.ui.permission.IPermissionManager;
 import net.ibbaa.keepitup.ui.permission.PermissionManager;
@@ -303,7 +304,18 @@ public class NetworkTaskProcessServiceScheduler {
             Log.e(NetworkTaskProcessServiceScheduler.class.getName(), "startService: Error starting the foreground service.", exc);
             Log.d(NetworkTaskProcessServiceScheduler.class.getName(), "Scheduling without service");
             reschedule(task, delay);
+            if (isForegroundServiceStartNotAllowedException(exc)) {
+                Log.d(NetworkTaskProcessServiceScheduler.class.getName(), "Sending notification to open app");
+                createNotificationHandler().sendMessageNotificationForegroundStart();
+            }
         }
+    }
+
+    private boolean isForegroundServiceStartNotAllowedException(Exception exc) {
+        if (exc.getClass().getName().equals("android.app.ForegroundServiceStartNotAllowedException")) {
+            return true;
+        }
+        return false;
     }
 
     private boolean shouldStartForegroundService() {
@@ -325,6 +337,10 @@ public class NetworkTaskProcessServiceScheduler {
     private ITimeService createTimeService() {
         ServiceFactoryContributor factoryContributor = new ServiceFactoryContributor(getContext());
         return factoryContributor.createServiceFactory().createTimeService();
+    }
+
+    private NotificationHandler createNotificationHandler() {
+        return new NotificationHandler(getContext(), getPermissionManager());
     }
 
     public ITimeService getTimeService() {

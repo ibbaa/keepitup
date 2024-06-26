@@ -66,10 +66,10 @@ public class NotificationHandlerTest {
     }
 
     @Test
-    public void testSendMessageNotificationSuccess() {
+    public void testSendMessageNotificationForNetworkTaskSuccess() {
         NetworkTask networkTask = getNetworkTask1();
         LogEntry logEntry = getLogEntry(new GregorianCalendar(1980, Calendar.MARCH, 17).getTime().getTime(), "Test", true);
-        notificationHandler.sendMessageNotification(networkTask, logEntry);
+        notificationHandler.sendMessageNotificationForNetworkTask(networkTask, logEntry);
         assertTrue(notificationManager.wasNotifyCalled());
         MockNotificationManager.NotifyCall notifyCall = notificationManager.getNotifyCalls().get(0);
         assertEquals(networkTask.getSchedulerId(), notifyCall.id());
@@ -83,10 +83,10 @@ public class NotificationHandlerTest {
     }
 
     @Test
-    public void testSendMessageNotificationFailure() {
+    public void testSendMessageNotificationForNetworkTaskFailure() {
         NetworkTask networkTask = getNetworkTask1();
         LogEntry logEntry = getLogEntry(new GregorianCalendar(1980, Calendar.MARCH, 17).getTime().getTime(), "Test", false);
-        notificationHandler.sendMessageNotification(networkTask, logEntry);
+        notificationHandler.sendMessageNotificationForNetworkTask(networkTask, logEntry);
         assertTrue(notificationManager.wasNotifyCalled());
         MockNotificationManager.NotifyCall notifyCall = notificationManager.getNotifyCalls().get(0);
         assertEquals(networkTask.getSchedulerId(), notifyCall.id());
@@ -100,31 +100,53 @@ public class NotificationHandlerTest {
     }
 
     @Test
-    public void testSendMessageNotifiactionWithoutPermission() {
+    public void testSendMessageNotificationForNetworkTaskWithoutPermission() {
         permissionManager.setHasPostNotificationsPermission(false);
         NetworkTask networkTask = getNetworkTask1();
         LogEntry logEntry = getLogEntry(new GregorianCalendar(1980, Calendar.MARCH, 17).getTime().getTime(), "Test", false);
-        notificationHandler.sendMessageNotification(networkTask, logEntry);
+        notificationHandler.sendMessageNotificationForNetworkTask(networkTask, logEntry);
         assertFalse(notificationManager.wasNotifyCalled());
     }
 
     @Test
-    public void testMessageNotificationText() {
+    public void testSendMessageNotificationForNetworkTaskText() {
         NetworkTask networkTask = getNetworkTask1();
         LogEntry logEntry = getLogEntry(new GregorianCalendar(1995, Calendar.DECEMBER, 15, 13, 59, 51).getTime().getTime(), null, false);
-        notificationHandler.sendMessageNotification(networkTask, logEntry);
+        notificationHandler.sendMessageNotificationForNetworkTask(networkTask, logEntry);
         MockNotificationBuilder notificationBuilder = (MockNotificationBuilder) notificationHandler.getMessageNotificationBuilder();
         assertEquals("Execution of network task 2 failed. Host: 127.0.0.1. Failures since last success: 1. Timestamp: Dec 15, 1995 1:59:51 PM. Message: none", notificationBuilder.getContentText());
         networkTask = getNetworkTask2();
         logEntry = getLogEntry(new GregorianCalendar(2004, Calendar.FEBRUARY, 1, 5, 15, 51).getTime().getTime(), "message", false);
-        notificationHandler.sendMessageNotification(networkTask, logEntry);
+        notificationHandler.sendMessageNotificationForNetworkTask(networkTask, logEntry);
         notificationBuilder = (MockNotificationBuilder) notificationHandler.getMessageNotificationBuilder();
         assertEquals("Execution of network task 6 failed. Host: host.com Port: 23. Failures since last success: 2. Timestamp: Feb 1, 2004 5:15:51 AM. Message: message", notificationBuilder.getContentText());
         networkTask = getNetworkTask3();
         logEntry = getLogEntry(new GregorianCalendar(2016, Calendar.JULY, 25, 15, 1, 1).getTime().getTime(), "xyz", true);
-        notificationHandler.sendMessageNotification(networkTask, logEntry);
+        notificationHandler.sendMessageNotificationForNetworkTask(networkTask, logEntry);
         notificationBuilder = (MockNotificationBuilder) notificationHandler.getMessageNotificationBuilder();
         assertEquals("Execution of network task 11 successful. URL: http://www.test.com. Timestamp: Jul 25, 2016 3:01:01 PM. Message: xyz", notificationBuilder.getContentText());
+    }
+
+    @Test
+    public void testSendMessageNotificationForegroundStart() {
+        notificationHandler.sendMessageNotificationForegroundStart();
+        assertTrue(notificationManager.wasNotifyCalled());
+        MockNotificationManager.NotifyCall notifyCall = notificationManager.getNotifyCalls().get(0);
+        assertEquals(NotificationHandler.NOTIFICATION_FOREGROUND_START_ID, notifyCall.id());
+        assertEquals("KEEPITUP_ERROR_NOTIFICATION_CHANNEL", notifyCall.notification().getChannelId());
+        MockNotificationBuilder notificationBuilder = (MockNotificationBuilder) notificationHandler.getMessageNotificationBuilder();
+        assertEquals(R.drawable.icon_notification_foreground_start, notificationBuilder.getSmallIcon());
+        assertEquals("Keep it up", notificationBuilder.getContentTitle());
+        assertEquals("Please click here to open the app after device boot to start the foreground service for running network tasks", notificationBuilder.getContentText());
+        assertTrue(notificationBuilder.getStyle() instanceof NotificationCompat.BigTextStyle);
+        assertEquals(NotificationCompat.PRIORITY_DEFAULT, notificationBuilder.getPriority());
+    }
+
+    @Test
+    public void testSendMessageNotificationForegroundStartWithoutPermission() {
+        permissionManager.setHasPostNotificationsPermission(false);
+        notificationHandler.sendMessageNotificationForegroundStart();
+        assertFalse(notificationManager.wasNotifyCalled());
     }
 
     @Test
