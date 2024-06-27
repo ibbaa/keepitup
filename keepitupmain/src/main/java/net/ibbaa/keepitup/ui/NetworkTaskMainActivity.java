@@ -113,7 +113,7 @@ public class NetworkTaskMainActivity extends RecyclerViewBaseActivity implements
     private void startForegroundServiceDelayed() {
         Log.d(NetworkTaskMainActivity.class.getName(), "startForegroundServiceDelayed");
         List<NetworkTaskUIWrapper> networkTasks = ((NetworkTaskAdapter) getAdapter()).getAllItems();
-        for(NetworkTaskUIWrapper wrapper : networkTasks) {
+        for (NetworkTaskUIWrapper wrapper : networkTasks) {
             if (wrapper.getNetworkTask().isRunning()) {
                 getNetworkTaskProcessServiceScheduler().startServiceDelayed();
                 return;

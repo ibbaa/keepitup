@@ -27,4 +27,6 @@
     <integer name="connect_count_default">1</integer>
     <integer name="connect_count_minimum">1</integer>
     <integer name="connect_count_maximum">10</integer>
+    <string name="stop_after_success_key">stop_after_success_key</string>
+    <bool name="stop_after_success_default">false</bool>
 </resources>

@@ -238,6 +238,21 @@ public class PreferenceManager {
         removePreferenceValue(getResources().getString(R.string.ping_package_size_key));
     }
 
+    public boolean getPreferenceStopAfterSuccess() {
+        Log.d(PreferenceManager.class.getName(), "getPreferenceStopAfterSuccess");
+        return getPreferenceBoolean(getResources().getString(R.string.stop_after_success_key), getResources().getBoolean(R.bool.stop_after_success_default));
+    }
+
+    public void setPreferenceStopAfterSuccess(boolean stopAfterSuccess) {
+        Log.d(PreferenceManager.class.getName(), "stopAfterSuccess, stopAfterSuccess is " + stopAfterSuccess);
+        setPreferenceBoolean(getResources().getString(R.string.stop_after_success_key), stopAfterSuccess);
+    }
+
+    public void removePreferenceStopAfterSuccess() {
+        Log.d(PreferenceManager.class.getName(), "removePreferenceStopAfterSuccess");
+        removePreferenceValue(getResources().getString(R.string.stop_after_success_key));
+    }
+
     public NotificationType getPreferenceNotificationType() {
         Log.d(PreferenceManager.class.getName(), "getPreferenceNotificationType");
         return NotificationType.forCode(getPreferenceInt(getResources().getString(R.string.notification_type_key), getResources().getInteger(R.integer.notification_type_default)));

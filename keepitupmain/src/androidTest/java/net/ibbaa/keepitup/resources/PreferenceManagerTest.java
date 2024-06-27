@@ -206,6 +206,18 @@ public class PreferenceManagerTest {
     }
 
     @Test
+    public void testGetSetRemovePreferenceStopAfterSuccess() {
+        assertFalse(preferenceManager.getPreferenceStopAfterSuccess());
+        preferenceManager.setPreferenceStopAfterSuccess(true);
+        assertTrue(preferenceManager.getPreferenceStopAfterSuccess());
+        preferenceManager.removeAllPreferences();
+        assertFalse(preferenceManager.getPreferenceStopAfterSuccess());
+        preferenceManager.setPreferenceStopAfterSuccess(true);
+        preferenceManager.removePreferenceStopAfterSuccess();
+        assertFalse(preferenceManager.getPreferenceStopAfterSuccess());
+    }
+
+    @Test
     public void testGetSetRemovePreferenceNotificationInactiveNetwork() {
         assertFalse(preferenceManager.getPreferenceNotificationInactiveNetwork());
         preferenceManager.setPreferenceNotificationInactiveNetwork(true);

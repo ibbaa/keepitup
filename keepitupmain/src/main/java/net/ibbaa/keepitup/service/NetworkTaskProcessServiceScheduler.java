@@ -312,10 +312,7 @@ public class NetworkTaskProcessServiceScheduler {
     }
 
     private boolean isForegroundServiceStartNotAllowedException(Exception exc) {
-        if (exc.getClass().getName().equals("android.app.ForegroundServiceStartNotAllowedException")) {
-            return true;
-        }
-        return false;
+        return exc.getClass().getName().equals("android.app.ForegroundServiceStartNotAllowedException");
     }
 
     private boolean shouldStartForegroundService() {
