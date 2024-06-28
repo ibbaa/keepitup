@@ -124,7 +124,7 @@ public class DBSetup {
     }
 
     public void addStopAfterSuccessColumnToAccessTypeDataTable(SQLiteDatabase db) {
-        Log.d(DBSetup.class.getName(), "Adding column " + accessTypeDataDBConstants.getAddStopAfterSuccessColumnStatement() + " to table " + accessTypeDataDBConstants.getTableName());
+        Log.d(DBSetup.class.getName(), "Adding column " + accessTypeDataDBConstants.getStopAfterSuccessColumnName() + " to table " + accessTypeDataDBConstants.getTableName());
         db.execSQL(accessTypeDataDBConstants.getAddStopAfterSuccessColumnStatement());
     }
 
