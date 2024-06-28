@@ -80,6 +80,15 @@ public class AccessTypeDataDBConstants {
                 getStopAfterSuccessColumnName() + " INTEGER);";
     }
 
+    public String getCreateTableStatementWithoutStopAfterSuccess() {
+        return ("CREATE TABLE IF NOT EXISTS  " + getTableName() + "(") +
+                getIdColumnName() + " INTEGER PRIMARY KEY ASC, " +
+                getNetworkTaskIdColumnName() + " INTEGER NOT NULL, " +
+                getPingCountColumnName() + " INTEGER, " +
+                getPingPackageSizeColumnName() + " INTEGER, " +
+                getConnectCountColumnName() + " INTEGER);";
+    }
+
     public String getDropTableStatement() {
         return "DROP TABLE IF EXISTS " + getTableName();
     }
@@ -116,5 +125,13 @@ public class AccessTypeDataDBConstants {
                 getNetworkTaskIdColumnName() + ") SELECT " +
                 networkTaskDBConstants.getIdColumnName() +
                 " FROM " + networkTaskDBConstants.getTableName();
+    }
+
+    public String getAddStopAfterSuccessColumnStatement() {
+        return "ALTER TABLE " + getTableName() + " ADD COLUMN " + getStopAfterSuccessColumnName() + " INTEGER;";
+    }
+
+    public String getDropStopAfterSuccessColumnStatement() {
+        return "ALTER TABLE " + getTableName() + " DROP COLUMN " + getStopAfterSuccessColumnName() + ";";
     }
 }

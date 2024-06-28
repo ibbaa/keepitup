@@ -123,6 +123,11 @@ public class DBSetup {
         db.update(dbConstants.getTableName(), values, null, null);
     }
 
+    public void addStopAfterSuccessColumnToAccessTypeDataTable(SQLiteDatabase db) {
+        Log.d(DBSetup.class.getName(), "Adding column " + accessTypeDataDBConstants.getAddStopAfterSuccessColumnStatement() + " to table " + accessTypeDataDBConstants.getTableName());
+        db.execSQL(accessTypeDataDBConstants.getAddStopAfterSuccessColumnStatement());
+    }
+
     public void dropTables(SQLiteDatabase db) {
         Log.d(DBSetup.class.getName(), "dropTables");
         dropSchedulerIdHistoryTable(db);
@@ -166,6 +171,11 @@ public class DBSetup {
     public void dropAccessTypeDataTable(SQLiteDatabase db) {
         Log.d(DBSetup.class.getName(), "Dropping database table " + accessTypeDataDBConstants.getTableName());
         db.execSQL(accessTypeDataDBConstants.getDropTableStatement());
+    }
+
+    public void dropStopAfterSuccessColumnFromAccessTypeDataTable(SQLiteDatabase db) {
+        Log.d(DBSetup.class.getName(), "Dropping column " + accessTypeDataDBConstants.getStopAfterSuccessColumnName() + " from table " + accessTypeDataDBConstants.getTableName());
+        db.execSQL(accessTypeDataDBConstants.getDropStopAfterSuccessColumnStatement());
     }
 
     public void recreateNetworkTaskTable(SQLiteDatabase db) {

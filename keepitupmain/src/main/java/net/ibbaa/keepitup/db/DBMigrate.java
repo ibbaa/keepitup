@@ -39,6 +39,8 @@ public class DBMigrate {
         versionDowngrades.put(2, this::version2DowngradeTo1);
         versionUpgrades.put(3, this::version3UpgradeFrom2);
         versionDowngrades.put(3, this::version3DowngradeTo2);
+        versionUpgrades.put(4, this::version4UpgradeFrom3);
+        versionDowngrades.put(4, this::version4DowngradeTo3);
     }
 
     public void doUpgrade(Context context, int oldVersion, int newVersion) {
@@ -107,6 +109,24 @@ public class DBMigrate {
             setup.dropFailureCountColumnFromNetworkTaskTable(db);
         } catch (Exception exc) {
             Log.e(DBMigrate.class.getName(), "version3DowngradeTo2 failed ", exc);
+        }
+    }
+
+    private void version4UpgradeFrom3(SQLiteDatabase db) {
+        Log.d(DBMigrate.class.getName(), "version4UpgradeFrom3");
+        try {
+            setup.addStopAfterSuccessColumnToAccessTypeDataTable(db);
+        } catch (Exception exc) {
+            Log.e(DBMigrate.class.getName(), "version4UpgradeFrom3 failed ", exc);
+        }
+    }
+
+    private void version4DowngradeTo3(SQLiteDatabase db) {
+        Log.d(DBMigrate.class.getName(), "version4DowngradeTo3");
+        try {
+            setup.dropStopAfterSuccessColumnFromAccessTypeDataTable(db);
+        } catch (Exception exc) {
+            Log.e(DBMigrate.class.getName(), "version4DowngradeTo3 failed ", exc);
         }
     }
 

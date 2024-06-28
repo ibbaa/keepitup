@@ -155,6 +155,34 @@ public class DBMigrateTest {
         assertTrue(data.isTechnicallyEqual(data1));
     }
 
+    @Test
+    public void testUpgradeFrom3To4StopAfterSuccessColumn() {
+        setup.createTables();
+        setup.dropAccessTypeDataTable();
+        AccessTypeDataDBConstants dbConstants = new AccessTypeDataDBConstants(TestRegistry.getContext());
+        DBOpenHelper.getInstance(TestRegistry.getContext()).getWritableDatabase().execSQL(dbConstants.getCreateTableStatementWithoutStopAfterSuccess());
+        migrate.doUpgrade(TestRegistry.getContext(), 3, 4);
+        accessTypeDataDAO.insertAccessTypeData(new AccessTypeData());
+        assertEquals(1, accessTypeDataDAO.readAllAccessTypeData().size());
+    }
+
+    @Test
+    public void testUpgradeFrom0To4() {
+        setup.createTables();
+        setup.dropIntervalTable();
+        setup.dropAccessTypeDataTable();
+        NetworkTask task1 = networkTaskDAO.insertNetworkTask(getNetworkTask1());
+        migrate.doUpgrade(TestRegistry.getContext(), 0, 4);
+        intervalDAO.insertInterval(new Interval());
+        List<Interval> intervals = intervalDAO.readAllIntervals();
+        assertEquals(1, intervals.size());
+        assertNotNull(schedulerStateDAO.readSchedulerState());
+        AccessTypeData data1 = accessTypeDataDAO.readAccessTypeDataForNetworkTask(task1.getId());
+        AccessTypeData data = new AccessTypeData(TestRegistry.getContext());
+        data.setNetworkTaskId(task1.getId());
+        assertTrue(data.isTechnicallyEqual(data1));
+    }
+
     private NetworkTask getNetworkTask1() {
         NetworkTask task = new NetworkTask();
         task.setId(0);
