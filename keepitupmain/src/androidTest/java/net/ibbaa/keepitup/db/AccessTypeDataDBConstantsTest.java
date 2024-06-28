@@ -40,6 +40,7 @@ public class AccessTypeDataDBConstantsTest {
         assertEquals(getResourceString(R.string.accesstypedata_pingcount_column_name), dbConstants.getPingCountColumnName());
         assertEquals(getResourceString(R.string.accesstypedata_pingpackagesize_column_name), dbConstants.getPingPackageSizeColumnName());
         assertEquals(getResourceString(R.string.accesstypedata_connectcount_column_name), dbConstants.getConnectCountColumnName());
+        assertEquals(getResourceString(R.string.accesstypedata_stopaftersuccess_column_name), dbConstants.getStopAfterSuccessColumnName());
     }
 
     private String getResourceString(int id) {

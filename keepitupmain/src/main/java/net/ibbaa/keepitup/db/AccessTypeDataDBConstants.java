@@ -29,6 +29,7 @@ public class AccessTypeDataDBConstants {
     private final String pingCountColumnName;
     private final String pingPackageSizeColumnName;
     private final String connectCountColumnName;
+    private final String stopAfterSuccessColumnName;
 
     public AccessTypeDataDBConstants(Context context) {
         networkTaskDBConstants = new NetworkTaskDBConstants(context);
@@ -38,6 +39,7 @@ public class AccessTypeDataDBConstants {
         pingCountColumnName = context.getResources().getString(R.string.accesstypedata_pingcount_column_name);
         pingPackageSizeColumnName = context.getResources().getString(R.string.accesstypedata_pingpackagesize_column_name);
         connectCountColumnName = context.getResources().getString(R.string.accesstypedata_connectcount_column_name);
+        stopAfterSuccessColumnName = context.getResources().getString(R.string.accesstypedata_stopaftersuccess_column_name);
     }
 
     public String getTableName() {
@@ -64,13 +66,18 @@ public class AccessTypeDataDBConstants {
         return connectCountColumnName;
     }
 
+    public String getStopAfterSuccessColumnName() {
+        return stopAfterSuccessColumnName;
+    }
+
     public String getCreateTableStatement() {
         return ("CREATE TABLE IF NOT EXISTS  " + getTableName() + "(") +
                 getIdColumnName() + " INTEGER PRIMARY KEY ASC, " +
                 getNetworkTaskIdColumnName() + " INTEGER NOT NULL, " +
                 getPingCountColumnName() + " INTEGER, " +
                 getPingPackageSizeColumnName() + " INTEGER, " +
-                getConnectCountColumnName() + " INTEGER);";
+                getConnectCountColumnName() + " INTEGER, " +
+                getStopAfterSuccessColumnName() + " INTEGER);";
     }
 
     public String getDropTableStatement() {
@@ -83,7 +90,8 @@ public class AccessTypeDataDBConstants {
                 getNetworkTaskIdColumnName() + ", " +
                 getPingCountColumnName() + ", " +
                 getPingPackageSizeColumnName() + ", " +
-                getConnectCountColumnName() +
+                getConnectCountColumnName() + ", " +
+                getStopAfterSuccessColumnName() +
                 " FROM " + getTableName() +
                 " WHERE " + getNetworkTaskIdColumnName() + " = ?";
     }
@@ -94,7 +102,8 @@ public class AccessTypeDataDBConstants {
                 getNetworkTaskIdColumnName() + ", " +
                 getPingCountColumnName() + ", " +
                 getPingPackageSizeColumnName() + ", " +
-                getConnectCountColumnName() +
+                getConnectCountColumnName() + ", " +
+                getStopAfterSuccessColumnName() +
                 " FROM " + getTableName();
     }
 

@@ -16,7 +16,7 @@
 
 <resources>
     <string name="db_name">keepitup.db</string>
-    <integer name="db_version">3</integer>
+    <integer name="db_version">4</integer>
     <string name="task_table_name">NETWORKTASK</string>
     <string name="task_id_column_name">_id</string>
     <string name="task_index_column_name">UIINDEX</string>
@@ -57,4 +57,5 @@
     <string name="accesstypedata_pingcount_column_name">PINGCOUNT</string>
     <string name="accesstypedata_pingpackagesize_column_name">PINGPACKAGESIZE</string>
     <string name="accesstypedata_connectcount_column_name">CONNECTCOUNT</string>
+    <string name="accesstypedata_stopaftersuccess_column_name">STOPAFTERSUCCESS</string>
 </resources>

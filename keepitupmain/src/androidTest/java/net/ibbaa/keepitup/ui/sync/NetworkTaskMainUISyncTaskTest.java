@@ -253,6 +253,7 @@ public class NetworkTaskMainUISyncTaskTest extends BaseUITest {
         data.setPingCount(10);
         data.setPingPackageSize(1234);
         data.setConnectCount(5);
+        data.setStopAfterSuccess(true);
         return data;
     }
 
@@ -263,6 +264,7 @@ public class NetworkTaskMainUISyncTaskTest extends BaseUITest {
         data.setPingCount(4);
         data.setPingPackageSize(12);
         data.setConnectCount(6);
+        data.setStopAfterSuccess(true);
         return data;
     }
 
@@ -273,6 +275,7 @@ public class NetworkTaskMainUISyncTaskTest extends BaseUITest {
         data.setPingCount(1);
         data.setPingPackageSize(678);
         data.setConnectCount(1);
+        data.setStopAfterSuccess(false);
         return data;
     }
 

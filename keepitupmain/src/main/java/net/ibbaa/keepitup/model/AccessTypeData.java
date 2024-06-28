@@ -36,6 +36,7 @@ public class AccessTypeData {
     private int pingCount;
     private int pingPackageSize;
     private int connectCount;
+    private boolean stopAfterSuccess;
 
     public AccessTypeData() {
         this.id = -1;
@@ -43,6 +44,7 @@ public class AccessTypeData {
         this.pingCount = 3;
         this.pingPackageSize = 56;
         this.connectCount = 1;
+        this.stopAfterSuccess = false;
     }
 
     public AccessTypeData(Context context) {
@@ -51,6 +53,7 @@ public class AccessTypeData {
         this.pingCount = preferenceManager.getPreferencePingCount();
         this.pingPackageSize = preferenceManager.getPreferencePingPackageSize();
         this.connectCount = preferenceManager.getPreferenceConnectCount();
+        this.stopAfterSuccess = preferenceManager.getPreferenceStopAfterSuccess();
     }
 
     public AccessTypeData(PersistableBundle bundle) {
@@ -64,6 +67,7 @@ public class AccessTypeData {
         this.pingCount = bundle.getInt("pingCount");
         this.pingPackageSize = bundle.getInt("pingPackageSize");
         this.connectCount = bundle.getInt("connectCount");
+        this.stopAfterSuccess = bundle.getInt("stopAfterSuccess") >= 1;
     }
 
     public AccessTypeData(Map<String, ?> map) {
@@ -82,6 +86,9 @@ public class AccessTypeData {
         }
         if (NumberUtil.isValidIntValue(map.get("connectCount"))) {
             this.connectCount = NumberUtil.getIntValue(map.get("connectCount"), 1);
+        }
+        if (map.get("stopAfterSuccess") != null) {
+            this.stopAfterSuccess = Boolean.parseBoolean(Objects.requireNonNull(map.get("stopAfterSuccess")).toString());
         }
     }
 
@@ -125,6 +132,14 @@ public class AccessTypeData {
         this.connectCount = connectCount;
     }
 
+    public boolean isStopAfterSuccess() {
+        return stopAfterSuccess;
+    }
+
+    public void setStopAfterSuccess(boolean stopAfterSuccess) {
+        this.stopAfterSuccess = stopAfterSuccess;
+    }
+
     public PersistableBundle toPersistableBundle() {
         PersistableBundle bundle = new PersistableBundle();
         bundle.putLong("id", id);
@@ -132,6 +147,7 @@ public class AccessTypeData {
         bundle.putInt("pingCount", pingCount);
         bundle.putInt("pingPackageSize", pingPackageSize);
         bundle.putInt("connectCount", connectCount);
+        bundle.putInt("stopAfterSuccess", stopAfterSuccess ? 1 : 0);
         return bundle;
     }
 
@@ -146,6 +162,7 @@ public class AccessTypeData {
         map.put("pingCount", pingCount);
         map.put("pingPackageSize", pingPackageSize);
         map.put("connectCount", connectCount);
+        map.put("stopAfterSuccess", stopAfterSuccess);
         return map;
     }
 
@@ -165,7 +182,10 @@ public class AccessTypeData {
         if (pingPackageSize != other.pingPackageSize) {
             return false;
         }
-        return Objects.equals(connectCount, other.connectCount);
+        if (connectCount != other.connectCount) {
+            return false;
+        }
+        return Objects.equals(stopAfterSuccess, other.stopAfterSuccess);
     }
 
     public boolean isTechnicallyEqual(AccessTypeData other) {
@@ -181,7 +201,10 @@ public class AccessTypeData {
         if (pingPackageSize != other.pingPackageSize) {
             return false;
         }
-        return Objects.equals(connectCount, other.connectCount);
+        if (connectCount != other.connectCount) {
+            return false;
+        }
+        return Objects.equals(stopAfterSuccess, other.stopAfterSuccess);
     }
 
     @NonNull
@@ -193,6 +216,7 @@ public class AccessTypeData {
                 ", pingCount=" + pingCount +
                 ", pingPackageSize=" + pingPackageSize +
                 ", connectCount=" + connectCount +
+                ", stopAfterSuccess=" + stopAfterSuccess +
                 '}';
     }
 }

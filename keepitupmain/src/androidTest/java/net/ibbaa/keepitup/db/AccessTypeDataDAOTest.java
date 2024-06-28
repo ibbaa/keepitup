@@ -17,6 +17,7 @@
 package net.ibbaa.keepitup.db;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
@@ -104,10 +105,13 @@ public class AccessTypeDataDAOTest {
         AccessTypeData readData1 = accessTypeDataDAO.readAccessTypeDataForNetworkTask(0);
         AccessTypeData readData2 = accessTypeDataDAO.readAccessTypeDataForNetworkTask(1);
         readData2.setPingCount(9);
+        readData2.setStopAfterSuccess(false);
         accessTypeDataDAO.updateAccessTypeData(readData2);
         readData2 = accessTypeDataDAO.readAccessTypeDataForNetworkTask(1);
         assertEquals(9, readData2.getPingCount());
+        assertFalse(readData2.isStopAfterSuccess());
         readData2.setPingCount(data2.getPingCount());
+        readData2.setStopAfterSuccess(data2.isStopAfterSuccess());
         assertTrue(data2.isEqual(readData2));
         readData1.setPingPackageSize(12);
         readData1.setConnectCount(1);
@@ -174,6 +178,7 @@ public class AccessTypeDataDAOTest {
         data.setPingCount(10);
         data.setPingPackageSize(1234);
         data.setConnectCount(3);
+        data.setStopAfterSuccess(true);
         return data;
     }
 
@@ -184,6 +189,7 @@ public class AccessTypeDataDAOTest {
         data.setPingCount(1);
         data.setPingPackageSize(123);
         data.setConnectCount(2);
+        data.setStopAfterSuccess(true);
         return data;
     }
 
@@ -194,6 +200,7 @@ public class AccessTypeDataDAOTest {
         data.setPingCount(2);
         data.setPingPackageSize(4321);
         data.setConnectCount(5);
+        data.setStopAfterSuccess(false);
         return data;
     }
 }

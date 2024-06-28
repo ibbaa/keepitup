@@ -101,6 +101,7 @@ public class AccessTypeDataDAO extends BaseDAO {
         values.put(dbConstants.getPingCountColumnName(), accessTypeData.getPingCount());
         values.put(dbConstants.getPingPackageSizeColumnName(), accessTypeData.getPingPackageSize());
         values.put(dbConstants.getConnectCountColumnName(), accessTypeData.getConnectCount());
+        values.put(dbConstants.getStopAfterSuccessColumnName(), accessTypeData.isStopAfterSuccess() ? 1 : 0);
         long rowid = db.insert(dbConstants.getTableName(), null, values);
         if (rowid < 0) {
             Log.e(AccessTypeDataDAO.class.getName(), "Error inserting accessTypeData into database. Insert returned -1.");
@@ -109,6 +110,7 @@ public class AccessTypeDataDAO extends BaseDAO {
         return accessTypeData;
     }
 
+    @SuppressWarnings({"ExtractMethodRecommender"})
     private AccessTypeData updateAccessTypeData(AccessTypeData accessTypeData, SQLiteDatabase db) {
         Log.d(IntervalDAO.class.getName(), "updateAccessTypeData, accessTypeData is " + accessTypeData);
         AccessTypeDataDBConstants dbConstants = new AccessTypeDataDBConstants(getContext());
@@ -119,6 +121,7 @@ public class AccessTypeDataDAO extends BaseDAO {
         values.put(dbConstants.getPingCountColumnName(), accessTypeData.getPingCount());
         values.put(dbConstants.getPingPackageSizeColumnName(), accessTypeData.getPingPackageSize());
         values.put(dbConstants.getConnectCountColumnName(), accessTypeData.getConnectCount());
+        values.put(dbConstants.getStopAfterSuccessColumnName(), accessTypeData.isStopAfterSuccess() ? 1 : 0);
         db.update(dbConstants.getTableName(), values, selection, selectionArgs);
         return accessTypeData;
     }
@@ -207,11 +210,13 @@ public class AccessTypeDataDAO extends BaseDAO {
         int indexPingCountColumn = cursor.getColumnIndex(dbConstants.getPingCountColumnName());
         int indexPingPackageSizeColumn = cursor.getColumnIndex(dbConstants.getPingPackageSizeColumnName());
         int indexConnectCountColumn = cursor.getColumnIndex(dbConstants.getConnectCountColumnName());
+        int indexStopAfterSuccessColumn = cursor.getColumnIndex(dbConstants.getStopAfterSuccessColumnName());
         accessTypeData.setId(cursor.getInt(indexIdColumn));
         accessTypeData.setNetworkTaskId(cursor.getLong(indexNetworkTaskIdColumn));
         accessTypeData.setPingCount(cursor.getInt(indexPingCountColumn));
         accessTypeData.setPingPackageSize(cursor.getInt(indexPingPackageSizeColumn));
         accessTypeData.setConnectCount(cursor.getInt(indexConnectCountColumn));
+        accessTypeData.setStopAfterSuccess(cursor.getInt(indexStopAfterSuccessColumn) >= 1);
         return accessTypeData;
     }
 }

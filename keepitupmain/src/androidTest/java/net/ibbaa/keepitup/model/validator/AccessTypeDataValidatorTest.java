@@ -93,6 +93,7 @@ public class AccessTypeDataValidatorTest {
         data.setPingCount(3);
         data.setPingPackageSize(56);
         data.setConnectCount(1);
+        data.setStopAfterSuccess(true);
         return data;
     }
 }

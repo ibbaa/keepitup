@@ -888,6 +888,7 @@ public class DownloadNetworkTaskWorkerTest {
         data.setPingCount(10);
         data.setPingPackageSize(1234);
         data.setConnectCount(3);
+        data.setStopAfterSuccess(true);
         return data;
     }
 }
