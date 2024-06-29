@@ -99,7 +99,7 @@ public class ExportTaskTest extends BaseUITest {
         getPreferenceManager().setPreferencePingCount(5);
         getPreferenceManager().setPreferenceConnectCount(10);
         getPreferenceManager().setPreferencePingPackageSize(12);
-        getPreferenceManager().setPreferenceStopAfterSuccess(true);
+        getPreferenceManager().setPreferenceStopOnSuccess(true);
         getPreferenceManager().setPreferenceOnlyWifi(true);
         getPreferenceManager().setPreferenceNotification(true);
         getPreferenceManager().setPreferenceImportFolder("folderImport");
@@ -184,7 +184,7 @@ public class ExportTaskTest extends BaseUITest {
         assertEquals(5, getPreferenceManager().getPreferencePingCount());
         assertEquals(10, getPreferenceManager().getPreferenceConnectCount());
         assertEquals(12, getPreferenceManager().getPreferencePingPackageSize());
-        assertTrue(getPreferenceManager().getPreferenceStopAfterSuccess());
+        assertTrue(getPreferenceManager().getPreferenceStopOnSuccess());
         assertTrue(getPreferenceManager().getPreferenceOnlyWifi());
         assertTrue(getPreferenceManager().getPreferenceNotification());
         assertEquals("folderImport", getPreferenceManager().getPreferenceImportFolder());
@@ -298,7 +298,7 @@ public class ExportTaskTest extends BaseUITest {
         data.setPingCount(10);
         data.setPingPackageSize(1234);
         data.setConnectCount(3);
-        data.setStopAfterSuccess(true);
+        data.setStopOnSuccess(true);
         return data;
     }
 
@@ -309,7 +309,7 @@ public class ExportTaskTest extends BaseUITest {
         data.setPingCount(1);
         data.setPingPackageSize(55);
         data.setConnectCount(5);
-        data.setStopAfterSuccess(false);
+        data.setStopOnSuccess(false);
         return data;
     }
 }

@@ -206,15 +206,15 @@ public class PreferenceManagerTest {
     }
 
     @Test
-    public void testGetSetRemovePreferenceStopAfterSuccess() {
-        assertFalse(preferenceManager.getPreferenceStopAfterSuccess());
-        preferenceManager.setPreferenceStopAfterSuccess(true);
-        assertTrue(preferenceManager.getPreferenceStopAfterSuccess());
+    public void testGetSetRemovePreferenceStopOnSuccess() {
+        assertFalse(preferenceManager.getPreferenceStopOnSuccess());
+        preferenceManager.setPreferenceStopOnSuccess(true);
+        assertTrue(preferenceManager.getPreferenceStopOnSuccess());
         preferenceManager.removeAllPreferences();
-        assertFalse(preferenceManager.getPreferenceStopAfterSuccess());
-        preferenceManager.setPreferenceStopAfterSuccess(true);
-        preferenceManager.removePreferenceStopAfterSuccess();
-        assertFalse(preferenceManager.getPreferenceStopAfterSuccess());
+        assertFalse(preferenceManager.getPreferenceStopOnSuccess());
+        preferenceManager.setPreferenceStopOnSuccess(true);
+        preferenceManager.removePreferenceStopOnSuccess();
+        assertFalse(preferenceManager.getPreferenceStopOnSuccess());
     }
 
     @Test

@@ -156,11 +156,11 @@ public class DBMigrateTest {
     }
 
     @Test
-    public void testUpgradeFrom3To4StopAfterSuccessColumn() {
+    public void testUpgradeFrom3To4StopOnSuccessColumn() {
         setup.createTables();
         setup.dropAccessTypeDataTable();
         AccessTypeDataDBConstants dbConstants = new AccessTypeDataDBConstants(TestRegistry.getContext());
-        DBOpenHelper.getInstance(TestRegistry.getContext()).getWritableDatabase().execSQL(dbConstants.getCreateTableStatementWithoutStopAfterSuccess());
+        DBOpenHelper.getInstance(TestRegistry.getContext()).getWritableDatabase().execSQL(dbConstants.getCreateTableStatementWithoutStopOnSuccess());
         migrate.doUpgrade(TestRegistry.getContext(), 3, 4);
         accessTypeDataDAO.insertAccessTypeData(new AccessTypeData());
         assertEquals(1, accessTypeDataDAO.readAllAccessTypeData().size());

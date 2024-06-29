@@ -232,7 +232,7 @@ public class JSONSystemSetupTest {
         preferenceManager.setPreferenceInterval(456);
         preferenceManager.setPreferencePingCount(5);
         preferenceManager.setPreferenceConnectCount(10);
-        preferenceManager.setPreferenceStopAfterSuccess(true);
+        preferenceManager.setPreferenceStopOnSuccess(true);
         preferenceManager.setPreferenceOnlyWifi(true);
         preferenceManager.setPreferenceNotification(true);
         preferenceManager.setPreferencePingPackageSize(15);
@@ -261,7 +261,7 @@ public class JSONSystemSetupTest {
         assertEquals(456, defaultsData.getInt("preferenceInterval"));
         assertEquals(5, defaultsData.getInt("preferencePingCount"));
         assertEquals(10, defaultsData.getInt("preferenceConnectCount"));
-        assertTrue(defaultsData.getBoolean("preferenceStopAfterSuccess"));
+        assertTrue(defaultsData.getBoolean("preferenceStopOnSuccess"));
         assertTrue(defaultsData.getBoolean("preferenceOnlyWifi"));
         assertTrue(defaultsData.getBoolean("preferenceNotification"));
         assertEquals(15, defaultsData.getInt("preferencePingPackageSize"));
@@ -741,7 +741,7 @@ public class JSONSystemSetupTest {
         preferenceManager.setPreferenceInterval(456);
         preferenceManager.setPreferencePingCount(5);
         preferenceManager.setPreferenceConnectCount(10);
-        preferenceManager.setPreferenceStopAfterSuccess(true);
+        preferenceManager.setPreferenceStopOnSuccess(true);
         preferenceManager.setPreferenceOnlyWifi(true);
         preferenceManager.setPreferenceNotification(true);
         preferenceManager.setPreferencePingPackageSize(1234);
@@ -770,7 +770,7 @@ public class JSONSystemSetupTest {
         assertEquals(456, preferenceManager.getPreferenceInterval());
         assertEquals(5, preferenceManager.getPreferencePingCount());
         assertEquals(10, preferenceManager.getPreferenceConnectCount());
-        assertTrue(preferenceManager.getPreferenceStopAfterSuccess());
+        assertTrue(preferenceManager.getPreferenceStopOnSuccess());
         assertTrue(preferenceManager.getPreferenceOnlyWifi());
         assertTrue(preferenceManager.getPreferenceNotification());
         assertEquals(1234, preferenceManager.getPreferencePingPackageSize());
@@ -1011,7 +1011,7 @@ public class JSONSystemSetupTest {
         data.setPingCount(10);
         data.setPingPackageSize(1234);
         data.setConnectCount(3);
-        data.setStopAfterSuccess(true);
+        data.setStopOnSuccess(true);
         return data;
     }
 
@@ -1022,7 +1022,7 @@ public class JSONSystemSetupTest {
         data.setPingCount(1);
         data.setPingPackageSize(55);
         data.setConnectCount(5);
-        data.setStopAfterSuccess(true);
+        data.setStopOnSuccess(true);
         return data;
     }
 }

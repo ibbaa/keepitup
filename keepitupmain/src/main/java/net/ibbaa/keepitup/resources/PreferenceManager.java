@@ -238,19 +238,19 @@ public class PreferenceManager {
         removePreferenceValue(getResources().getString(R.string.ping_package_size_key));
     }
 
-    public boolean getPreferenceStopAfterSuccess() {
-        Log.d(PreferenceManager.class.getName(), "getPreferenceStopAfterSuccess");
-        return getPreferenceBoolean(getResources().getString(R.string.stop_after_success_key), getResources().getBoolean(R.bool.stop_after_success_default));
+    public boolean getPreferenceStopOnSuccess() {
+        Log.d(PreferenceManager.class.getName(), "getPreferenceStopOnSuccess");
+        return getPreferenceBoolean(getResources().getString(R.string.stop_on_success_key), getResources().getBoolean(R.bool.stop_on_success_default));
     }
 
-    public void setPreferenceStopAfterSuccess(boolean stopAfterSuccess) {
-        Log.d(PreferenceManager.class.getName(), "stopAfterSuccess, stopAfterSuccess is " + stopAfterSuccess);
-        setPreferenceBoolean(getResources().getString(R.string.stop_after_success_key), stopAfterSuccess);
+    public void setPreferenceStopOnSuccess(boolean stopOnSuccess) {
+        Log.d(PreferenceManager.class.getName(), "stopOnSuccess, stopOnSuccess is " + stopOnSuccess);
+        setPreferenceBoolean(getResources().getString(R.string.stop_on_success_key), stopOnSuccess);
     }
 
-    public void removePreferenceStopAfterSuccess() {
-        Log.d(PreferenceManager.class.getName(), "removePreferenceStopAfterSuccess");
-        removePreferenceValue(getResources().getString(R.string.stop_after_success_key));
+    public void removePreferenceStopOnSuccess() {
+        Log.d(PreferenceManager.class.getName(), "removePreferenceStopOnSuccess");
+        removePreferenceValue(getResources().getString(R.string.stop_on_success_key));
     }
 
     public NotificationType getPreferenceNotificationType() {

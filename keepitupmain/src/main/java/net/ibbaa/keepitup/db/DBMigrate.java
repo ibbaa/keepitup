@@ -115,7 +115,7 @@ public class DBMigrate {
     private void version4UpgradeFrom3(SQLiteDatabase db) {
         Log.d(DBMigrate.class.getName(), "version4UpgradeFrom3");
         try {
-            setup.addStopAfterSuccessColumnToAccessTypeDataTable(db);
+            setup.addStopOnSuccessColumnToAccessTypeDataTable(db);
         } catch (Exception exc) {
             Log.e(DBMigrate.class.getName(), "version4UpgradeFrom3 failed ", exc);
         }
@@ -124,7 +124,7 @@ public class DBMigrate {
     private void version4DowngradeTo3(SQLiteDatabase db) {
         Log.d(DBMigrate.class.getName(), "version4DowngradeTo3");
         try {
-            setup.dropStopAfterSuccessColumnFromAccessTypeDataTable(db);
+            setup.dropStopOnSuccessColumnFromAccessTypeDataTable(db);
         } catch (Exception exc) {
             Log.e(DBMigrate.class.getName(), "version4DowngradeTo3 failed ", exc);
         }

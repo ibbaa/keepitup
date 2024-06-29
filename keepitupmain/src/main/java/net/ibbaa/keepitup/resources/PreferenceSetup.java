@@ -65,7 +65,7 @@ public class PreferenceSetup {
         defaults.put("preferenceInterval", preferenceManager.getPreferenceInterval());
         defaults.put("preferencePingCount", preferenceManager.getPreferencePingCount());
         defaults.put("preferenceConnectCount", preferenceManager.getPreferenceConnectCount());
-        defaults.put("preferenceStopAfterSuccess", preferenceManager.getPreferenceStopAfterSuccess());
+        defaults.put("preferenceStopOnSuccess", preferenceManager.getPreferenceStopOnSuccess());
         defaults.put("preferenceOnlyWifi", preferenceManager.getPreferenceOnlyWifi());
         defaults.put("preferenceNotification", preferenceManager.getPreferenceNotification());
         defaults.put("preferencePingPackageSize", preferenceManager.getPreferencePingPackageSize());
@@ -184,11 +184,11 @@ public class PreferenceSetup {
             preferenceManager.removePreferenceInterval();
         }
         importPingAndConnectCount(defaults);
-        Object stopAfterSuccess = defaults.get("preferenceStopAfterSuccess");
-        if (isValidBoolean(stopAfterSuccess)) {
-            preferenceManager.setPreferenceStopAfterSuccess(Boolean.parseBoolean(stopAfterSuccess.toString()));
+        Object stopOnSuccess = defaults.get("preferenceStopOnSuccess");
+        if (isValidBoolean(stopOnSuccess)) {
+            preferenceManager.setPreferenceStopOnSuccess(Boolean.parseBoolean(stopOnSuccess.toString()));
         } else {
-            preferenceManager.removePreferenceStopAfterSuccess();
+            preferenceManager.removePreferenceStopOnSuccess();
         }
         Object onlyWifi = defaults.get("preferenceOnlyWifi");
         if (isValidBoolean(onlyWifi)) {
@@ -334,7 +334,7 @@ public class PreferenceSetup {
         preferenceManager.removePreferenceInterval();
         preferenceManager.removePreferencePingCount();
         preferenceManager.removePreferenceConnectCount();
-        preferenceManager.removePreferenceStopAfterSuccess();
+        preferenceManager.removePreferenceStopOnSuccess();
         preferenceManager.removePreferencePingPackageSize();
         preferenceManager.removePreferenceOnlyWifi();
         preferenceManager.removePreferenceNotification();

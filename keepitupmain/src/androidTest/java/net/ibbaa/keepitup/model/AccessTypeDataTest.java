@@ -62,7 +62,7 @@ public class AccessTypeDataTest {
         assertEquals(3, data.getPingCount());
         assertEquals(56, data.getPingPackageSize());
         assertEquals(1, data.getConnectCount());
-        assertFalse(data.isStopAfterSuccess());
+        assertFalse(data.isStopOnSuccess());
         PersistableBundle persistableBundle = data.toPersistableBundle();
         assertNotNull(persistableBundle);
         data = new AccessTypeData(persistableBundle);
@@ -71,7 +71,7 @@ public class AccessTypeDataTest {
         assertEquals(3, data.getPingCount());
         assertEquals(56, data.getPingPackageSize());
         assertEquals(1, data.getConnectCount());
-        assertFalse(data.isStopAfterSuccess());
+        assertFalse(data.isStopOnSuccess());
         Bundle bundle = data.toBundle();
         assertNotNull(bundle);
         data = new AccessTypeData(bundle);
@@ -80,7 +80,7 @@ public class AccessTypeDataTest {
         assertEquals(3, data.getPingCount());
         assertEquals(56, data.getPingPackageSize());
         assertEquals(1, data.getConnectCount());
-        assertFalse(data.isStopAfterSuccess());
+        assertFalse(data.isStopOnSuccess());
         Map<String, ?> map = data.toMap();
         assertNotNull(map);
         data = new AccessTypeData(map);
@@ -89,7 +89,7 @@ public class AccessTypeDataTest {
         assertEquals(3, data.getPingCount());
         assertEquals(56, data.getPingPackageSize());
         assertEquals(1, data.getConnectCount());
-        assertFalse(data.isStopAfterSuccess());
+        assertFalse(data.isStopOnSuccess());
     }
 
     @Test
@@ -100,7 +100,7 @@ public class AccessTypeDataTest {
         assertEquals(3, data.getPingCount());
         assertEquals(56, data.getPingPackageSize());
         assertEquals(1, data.getConnectCount());
-        assertFalse(data.isStopAfterSuccess());
+        assertFalse(data.isStopOnSuccess());
     }
 
     @Test
@@ -111,14 +111,14 @@ public class AccessTypeDataTest {
         map.put("pingCount", "pingCount");
         map.put("pingPackageSize", "pingPackageSize");
         map.put("connectCount", "connectCount");
-        map.put("stopAfterSuccess", "stopAfterSuccess");
+        map.put("stopOnSuccess", "stopOnSuccess");
         AccessTypeData data = new AccessTypeData(map);
         assertEquals(-1, data.getId());
         assertEquals(-1, data.getNetworkTaskId());
         assertEquals(3, data.getPingCount());
         assertEquals(56, data.getPingPackageSize());
         assertEquals(1, data.getConnectCount());
-        assertFalse(data.isStopAfterSuccess());
+        assertFalse(data.isStopOnSuccess());
     }
 
     @Test
@@ -129,14 +129,14 @@ public class AccessTypeDataTest {
         map.put("pingCount", "123");
         map.put("pingPackageSize", "456");
         map.put("connectCount", "789");
-        map.put("stopAfterSuccess", "true");
+        map.put("stopOnSuccess", "true");
         AccessTypeData data = new AccessTypeData(map);
         assertEquals(1, data.getId());
         assertEquals(2, data.getNetworkTaskId());
         assertEquals(123, data.getPingCount());
         assertEquals(456, data.getPingPackageSize());
         assertEquals(789, data.getConnectCount());
-        assertTrue(data.isStopAfterSuccess());
+        assertTrue(data.isStopOnSuccess());
     }
 
     @Test
@@ -145,14 +145,14 @@ public class AccessTypeDataTest {
         preferenceManager.setPreferencePingCount(123);
         preferenceManager.setPreferencePingPackageSize(456);
         preferenceManager.setPreferenceConnectCount(789);
-        preferenceManager.setPreferenceStopAfterSuccess(true);
+        preferenceManager.setPreferenceStopOnSuccess(true);
         AccessTypeData data = new AccessTypeData(TestRegistry.getContext());
         assertEquals(-1, data.getId());
         assertEquals(-1, data.getNetworkTaskId());
         assertEquals(123, data.getPingCount());
         assertEquals(456, data.getPingPackageSize());
         assertEquals(789, data.getConnectCount());
-        assertTrue(data.isStopAfterSuccess());
+        assertTrue(data.isStopOnSuccess());
         preferenceManager.removeAllPreferences();
         data = new AccessTypeData(TestRegistry.getContext());
         assertEquals(-1, data.getId());
@@ -160,7 +160,7 @@ public class AccessTypeDataTest {
         assertEquals(3, data.getPingCount());
         assertEquals(56, data.getPingPackageSize());
         assertEquals(1, data.getConnectCount());
-        assertFalse(data.isStopAfterSuccess());
+        assertFalse(data.isStopOnSuccess());
     }
 
     @Test
@@ -171,13 +171,13 @@ public class AccessTypeDataTest {
         data.setPingCount(123);
         data.setPingPackageSize(456);
         data.setConnectCount(789);
-        data.setStopAfterSuccess(true);
+        data.setStopOnSuccess(true);
         assertEquals(1, data.getId());
         assertEquals(2, data.getNetworkTaskId());
         assertEquals(123, data.getPingCount());
         assertEquals(456, data.getPingPackageSize());
         assertEquals(789, data.getConnectCount());
-        assertTrue(data.isStopAfterSuccess());
+        assertTrue(data.isStopOnSuccess());
         PersistableBundle persistableBundle = data.toPersistableBundle();
         assertNotNull(persistableBundle);
         data = new AccessTypeData(persistableBundle);
@@ -186,7 +186,7 @@ public class AccessTypeDataTest {
         assertEquals(123, data.getPingCount());
         assertEquals(456, data.getPingPackageSize());
         assertEquals(789, data.getConnectCount());
-        assertTrue(data.isStopAfterSuccess());
+        assertTrue(data.isStopOnSuccess());
         Bundle bundle = data.toBundle();
         assertNotNull(bundle);
         data = new AccessTypeData(bundle);
@@ -195,7 +195,7 @@ public class AccessTypeDataTest {
         assertEquals(123, data.getPingCount());
         assertEquals(456, data.getPingPackageSize());
         assertEquals(789, data.getConnectCount());
-        assertTrue(data.isStopAfterSuccess());
+        assertTrue(data.isStopOnSuccess());
     }
 
     @Test
@@ -206,7 +206,7 @@ public class AccessTypeDataTest {
         data.setPingCount(123);
         data.setPingPackageSize(456);
         data.setConnectCount(789);
-        data.setStopAfterSuccess(true);
+        data.setStopOnSuccess(true);
         Map<String, ?> map = data.toMap();
         assertNotNull(map);
         data = new AccessTypeData(map);
@@ -215,7 +215,7 @@ public class AccessTypeDataTest {
         assertEquals(123, data.getPingCount());
         assertEquals(456, data.getPingPackageSize());
         assertEquals(789, data.getConnectCount());
-        assertTrue(data.isStopAfterSuccess());
+        assertTrue(data.isStopOnSuccess());
     }
 
     @Test
@@ -243,9 +243,9 @@ public class AccessTypeDataTest {
         assertFalse(data1.isEqual(data2));
         data2.setConnectCount(789);
         assertTrue(data1.isEqual(data2));
-        data1.setStopAfterSuccess(true);
+        data1.setStopOnSuccess(true);
         assertFalse(data1.isEqual(data2));
-        data2.setStopAfterSuccess(true);
+        data2.setStopOnSuccess(true);
         assertTrue(data1.isEqual(data2));
     }
 
@@ -274,9 +274,9 @@ public class AccessTypeDataTest {
         assertFalse(data1.isTechnicallyEqual(data2));
         data2.setConnectCount(789);
         assertTrue(data1.isTechnicallyEqual(data2));
-        data1.setStopAfterSuccess(true);
+        data1.setStopOnSuccess(true);
         assertFalse(data1.isEqual(data2));
-        data2.setStopAfterSuccess(true);
+        data2.setStopOnSuccess(true);
         assertTrue(data1.isEqual(data2));
     }
 }

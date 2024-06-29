@@ -36,7 +36,7 @@ public class AccessTypeData {
     private int pingCount;
     private int pingPackageSize;
     private int connectCount;
-    private boolean stopAfterSuccess;
+    private boolean stopOnSuccess;
 
     public AccessTypeData() {
         this.id = -1;
@@ -44,7 +44,7 @@ public class AccessTypeData {
         this.pingCount = 3;
         this.pingPackageSize = 56;
         this.connectCount = 1;
-        this.stopAfterSuccess = false;
+        this.stopOnSuccess = false;
     }
 
     public AccessTypeData(Context context) {
@@ -53,7 +53,7 @@ public class AccessTypeData {
         this.pingCount = preferenceManager.getPreferencePingCount();
         this.pingPackageSize = preferenceManager.getPreferencePingPackageSize();
         this.connectCount = preferenceManager.getPreferenceConnectCount();
-        this.stopAfterSuccess = preferenceManager.getPreferenceStopAfterSuccess();
+        this.stopOnSuccess = preferenceManager.getPreferenceStopOnSuccess();
     }
 
     public AccessTypeData(PersistableBundle bundle) {
@@ -67,7 +67,7 @@ public class AccessTypeData {
         this.pingCount = bundle.getInt("pingCount");
         this.pingPackageSize = bundle.getInt("pingPackageSize");
         this.connectCount = bundle.getInt("connectCount");
-        this.stopAfterSuccess = bundle.getInt("stopAfterSuccess") >= 1;
+        this.stopOnSuccess = bundle.getInt("stopOnSuccess") >= 1;
     }
 
     public AccessTypeData(Map<String, ?> map) {
@@ -87,8 +87,8 @@ public class AccessTypeData {
         if (NumberUtil.isValidIntValue(map.get("connectCount"))) {
             this.connectCount = NumberUtil.getIntValue(map.get("connectCount"), 1);
         }
-        if (map.get("stopAfterSuccess") != null) {
-            this.stopAfterSuccess = Boolean.parseBoolean(Objects.requireNonNull(map.get("stopAfterSuccess")).toString());
+        if (map.get("stopOnSuccess") != null) {
+            this.stopOnSuccess = Boolean.parseBoolean(Objects.requireNonNull(map.get("stopOnSuccess")).toString());
         }
     }
 
@@ -132,12 +132,12 @@ public class AccessTypeData {
         this.connectCount = connectCount;
     }
 
-    public boolean isStopAfterSuccess() {
-        return stopAfterSuccess;
+    public boolean isStopOnSuccess() {
+        return stopOnSuccess;
     }
 
-    public void setStopAfterSuccess(boolean stopAfterSuccess) {
-        this.stopAfterSuccess = stopAfterSuccess;
+    public void setStopOnSuccess(boolean stopOnSuccess) {
+        this.stopOnSuccess = stopOnSuccess;
     }
 
     public PersistableBundle toPersistableBundle() {
@@ -147,7 +147,7 @@ public class AccessTypeData {
         bundle.putInt("pingCount", pingCount);
         bundle.putInt("pingPackageSize", pingPackageSize);
         bundle.putInt("connectCount", connectCount);
-        bundle.putInt("stopAfterSuccess", stopAfterSuccess ? 1 : 0);
+        bundle.putInt("stopOnSuccess", stopOnSuccess ? 1 : 0);
         return bundle;
     }
 
@@ -162,7 +162,7 @@ public class AccessTypeData {
         map.put("pingCount", pingCount);
         map.put("pingPackageSize", pingPackageSize);
         map.put("connectCount", connectCount);
-        map.put("stopAfterSuccess", stopAfterSuccess);
+        map.put("stopOnSuccess", stopOnSuccess);
         return map;
     }
 
@@ -185,7 +185,7 @@ public class AccessTypeData {
         if (connectCount != other.connectCount) {
             return false;
         }
-        return Objects.equals(stopAfterSuccess, other.stopAfterSuccess);
+        return Objects.equals(stopOnSuccess, other.stopOnSuccess);
     }
 
     public boolean isTechnicallyEqual(AccessTypeData other) {
@@ -204,7 +204,7 @@ public class AccessTypeData {
         if (connectCount != other.connectCount) {
             return false;
         }
-        return Objects.equals(stopAfterSuccess, other.stopAfterSuccess);
+        return Objects.equals(stopOnSuccess, other.stopOnSuccess);
     }
 
     @NonNull
@@ -216,7 +216,7 @@ public class AccessTypeData {
                 ", pingCount=" + pingCount +
                 ", pingPackageSize=" + pingPackageSize +
                 ", connectCount=" + connectCount +
-                ", stopAfterSuccess=" + stopAfterSuccess +
+                ", stopOnSuccess=" + stopOnSuccess +
                 '}';
     }
 }

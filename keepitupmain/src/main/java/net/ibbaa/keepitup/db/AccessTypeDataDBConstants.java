@@ -29,7 +29,7 @@ public class AccessTypeDataDBConstants {
     private final String pingCountColumnName;
     private final String pingPackageSizeColumnName;
     private final String connectCountColumnName;
-    private final String stopAfterSuccessColumnName;
+    private final String stopOnSuccessColumnName;
 
     public AccessTypeDataDBConstants(Context context) {
         networkTaskDBConstants = new NetworkTaskDBConstants(context);
@@ -39,7 +39,7 @@ public class AccessTypeDataDBConstants {
         pingCountColumnName = context.getResources().getString(R.string.accesstypedata_pingcount_column_name);
         pingPackageSizeColumnName = context.getResources().getString(R.string.accesstypedata_pingpackagesize_column_name);
         connectCountColumnName = context.getResources().getString(R.string.accesstypedata_connectcount_column_name);
-        stopAfterSuccessColumnName = context.getResources().getString(R.string.accesstypedata_stopaftersuccess_column_name);
+        stopOnSuccessColumnName = context.getResources().getString(R.string.accesstypedata_stoponsuccess_column_name);
     }
 
     public String getTableName() {
@@ -66,8 +66,8 @@ public class AccessTypeDataDBConstants {
         return connectCountColumnName;
     }
 
-    public String getStopAfterSuccessColumnName() {
-        return stopAfterSuccessColumnName;
+    public String getStopOnSuccessColumnName() {
+        return stopOnSuccessColumnName;
     }
 
     public String getCreateTableStatement() {
@@ -77,10 +77,10 @@ public class AccessTypeDataDBConstants {
                 getPingCountColumnName() + " INTEGER, " +
                 getPingPackageSizeColumnName() + " INTEGER, " +
                 getConnectCountColumnName() + " INTEGER, " +
-                getStopAfterSuccessColumnName() + " INTEGER);";
+                getStopOnSuccessColumnName() + " INTEGER);";
     }
 
-    public String getCreateTableStatementWithoutStopAfterSuccess() {
+    public String getCreateTableStatementWithoutStopOnSuccess() {
         return ("CREATE TABLE IF NOT EXISTS  " + getTableName() + "(") +
                 getIdColumnName() + " INTEGER PRIMARY KEY ASC, " +
                 getNetworkTaskIdColumnName() + " INTEGER NOT NULL, " +
@@ -100,7 +100,7 @@ public class AccessTypeDataDBConstants {
                 getPingCountColumnName() + ", " +
                 getPingPackageSizeColumnName() + ", " +
                 getConnectCountColumnName() + ", " +
-                getStopAfterSuccessColumnName() +
+                getStopOnSuccessColumnName() +
                 " FROM " + getTableName() +
                 " WHERE " + getNetworkTaskIdColumnName() + " = ?";
     }
@@ -112,7 +112,7 @@ public class AccessTypeDataDBConstants {
                 getPingCountColumnName() + ", " +
                 getPingPackageSizeColumnName() + ", " +
                 getConnectCountColumnName() + ", " +
-                getStopAfterSuccessColumnName() +
+                getStopOnSuccessColumnName() +
                 " FROM " + getTableName();
     }
 
@@ -127,11 +127,11 @@ public class AccessTypeDataDBConstants {
                 " FROM " + networkTaskDBConstants.getTableName();
     }
 
-    public String getAddStopAfterSuccessColumnStatement() {
-        return "ALTER TABLE " + getTableName() + " ADD COLUMN " + getStopAfterSuccessColumnName() + " INTEGER;";
+    public String getAddStopOnSuccessColumnStatement() {
+        return "ALTER TABLE " + getTableName() + " ADD COLUMN " + getStopOnSuccessColumnName() + " INTEGER;";
     }
 
-    public String getDropStopAfterSuccessColumnStatement() {
-        return "ALTER TABLE " + getTableName() + " DROP COLUMN " + getStopAfterSuccessColumnName() + ";";
+    public String getDropStopOnSuccessColumnStatement() {
+        return "ALTER TABLE " + getTableName() + " DROP COLUMN " + getStopOnSuccessColumnName() + ";";
     }
 }

@@ -123,9 +123,9 @@ public class DBSetup {
         db.update(dbConstants.getTableName(), values, null, null);
     }
 
-    public void addStopAfterSuccessColumnToAccessTypeDataTable(SQLiteDatabase db) {
-        Log.d(DBSetup.class.getName(), "Adding column " + accessTypeDataDBConstants.getStopAfterSuccessColumnName() + " to table " + accessTypeDataDBConstants.getTableName());
-        db.execSQL(accessTypeDataDBConstants.getAddStopAfterSuccessColumnStatement());
+    public void addStopOnSuccessColumnToAccessTypeDataTable(SQLiteDatabase db) {
+        Log.d(DBSetup.class.getName(), "Adding column " + accessTypeDataDBConstants.getStopOnSuccessColumnName() + " to table " + accessTypeDataDBConstants.getTableName());
+        db.execSQL(accessTypeDataDBConstants.getAddStopOnSuccessColumnStatement());
     }
 
     public void dropTables(SQLiteDatabase db) {
@@ -173,9 +173,9 @@ public class DBSetup {
         db.execSQL(accessTypeDataDBConstants.getDropTableStatement());
     }
 
-    public void dropStopAfterSuccessColumnFromAccessTypeDataTable(SQLiteDatabase db) {
-        Log.d(DBSetup.class.getName(), "Dropping column " + accessTypeDataDBConstants.getStopAfterSuccessColumnName() + " from table " + accessTypeDataDBConstants.getTableName());
-        db.execSQL(accessTypeDataDBConstants.getDropStopAfterSuccessColumnStatement());
+    public void dropStopOnSuccessColumnFromAccessTypeDataTable(SQLiteDatabase db) {
+        Log.d(DBSetup.class.getName(), "Dropping column " + accessTypeDataDBConstants.getStopOnSuccessColumnName() + " from table " + accessTypeDataDBConstants.getTableName());
+        db.execSQL(accessTypeDataDBConstants.getDropStopOnSuccessColumnStatement());
     }
 
     public void recreateNetworkTaskTable(SQLiteDatabase db) {
