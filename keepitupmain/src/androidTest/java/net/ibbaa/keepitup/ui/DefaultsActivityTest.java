@@ -97,6 +97,9 @@ public class DefaultsActivityTest extends BaseUITest {
         onView(withId(R.id.textview_activity_defaults_connect_count_label)).check(matches(withText("Connect count")));
         onView(withId(R.id.textview_activity_defaults_connect_count)).check(matches(withText("1")));
         onView(withId(R.id.textview_activity_defaults_interval_minutes)).check(matches(withText("minutes")));
+        onView(withId(R.id.textview_activity_defaults_stoponsuccess_label)).check(matches(withText("Stop on success")));
+        onView(withId(R.id.switch_activity_defaults_stoponsuccess)).check(matches(isNotChecked()));
+        onView(withId(R.id.textview_activity_defaults_stoponsuccess_on_off)).check(matches(withText("no")));
         onView(withId(R.id.textview_activity_defaults_onlywifi_label)).check(matches(withText("Only on WiFi")));
         onView(withId(R.id.switch_activity_defaults_onlywifi)).check(matches(isNotChecked()));
         onView(withId(R.id.textview_activity_defaults_onlywifi_on_off)).check(matches(withText("no")));
@@ -126,6 +129,7 @@ public class DefaultsActivityTest extends BaseUITest {
         onView(withId(R.id.textview_activity_defaults_connect_count)).perform(click());
         onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("10"));
         onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
+        onView(withId(R.id.switch_activity_defaults_stoponsuccess)).perform(click());
         onView(withId(R.id.switch_activity_defaults_onlywifi)).perform(click());
         onView(withId(R.id.switch_activity_defaults_notification)).perform(click());
         onView(withText("Download")).check(matches(isChecked()));
@@ -142,6 +146,9 @@ public class DefaultsActivityTest extends BaseUITest {
         onView(withId(R.id.textview_activity_defaults_connect_count_label)).check(matches(withText("Connect count")));
         onView(withId(R.id.textview_activity_defaults_connect_count)).check(matches(withText("10")));
         onView(withId(R.id.textview_activity_defaults_interval_minutes)).check(matches(withText("minutes")));
+        onView(withId(R.id.textview_activity_defaults_stoponsuccess_label)).check(matches(withText("Stop on success")));
+        onView(withId(R.id.switch_activity_defaults_stoponsuccess)).check(matches(isChecked()));
+        onView(withId(R.id.textview_activity_defaults_stoponsuccess_on_off)).check(matches(withText("yes")));
         onView(withId(R.id.textview_activity_defaults_onlywifi_label)).check(matches(withText("Only on WiFi")));
         onView(withId(R.id.switch_activity_defaults_onlywifi)).check(matches(isChecked()));
         onView(withId(R.id.textview_activity_defaults_onlywifi_on_off)).check(matches(withText("yes")));
@@ -168,30 +175,30 @@ public class DefaultsActivityTest extends BaseUITest {
 
     @Test
     public void testSwitchYesNoText() {
+        onView(withId(R.id.switch_activity_defaults_stoponsuccess)).check(matches(isNotChecked()));
+        onView(withId(R.id.textview_activity_defaults_stoponsuccess_on_off)).check(matches(withText("no")));
         onView(withId(R.id.switch_activity_defaults_onlywifi)).check(matches(isNotChecked()));
         onView(withId(R.id.textview_activity_defaults_onlywifi_on_off)).check(matches(withText("no")));
         onView(withId(R.id.switch_activity_defaults_notification)).check(matches(isNotChecked()));
         onView(withId(R.id.textview_activity_defaults_notification_on_off)).check(matches(withText("no")));
+        onView(withId(R.id.switch_activity_defaults_stoponsuccess)).perform(click());
+        onView(withId(R.id.switch_activity_defaults_stoponsuccess)).check(matches(isChecked()));
+        onView(withId(R.id.textview_activity_defaults_stoponsuccess_on_off)).check(matches(withText("yes")));
         onView(withId(R.id.switch_activity_defaults_onlywifi)).perform(click());
         onView(withId(R.id.switch_activity_defaults_onlywifi)).check(matches(isChecked()));
         onView(withId(R.id.textview_activity_defaults_onlywifi_on_off)).check(matches(withText("yes")));
-        onView(withId(R.id.switch_activity_defaults_notification)).check(matches(isNotChecked()));
-        onView(withId(R.id.textview_activity_defaults_notification_on_off)).check(matches(withText("no")));
         onView(withId(R.id.switch_activity_defaults_notification)).perform(click());
-        onView(withId(R.id.switch_activity_defaults_onlywifi)).check(matches(isChecked()));
-        onView(withId(R.id.textview_activity_defaults_onlywifi_on_off)).check(matches(withText("yes")));
         onView(withId(R.id.switch_activity_defaults_notification)).check(matches(isChecked()));
         onView(withId(R.id.textview_activity_defaults_notification_on_off)).check(matches(withText("yes")));
+        onView(withId(R.id.switch_activity_defaults_stoponsuccess)).perform(click());
+        onView(withId(R.id.switch_activity_defaults_stoponsuccess)).check(matches(isNotChecked()));
+        onView(withId(R.id.textview_activity_defaults_stoponsuccess_on_off)).check(matches(withText("no")));
         onView(withId(R.id.switch_activity_defaults_onlywifi)).perform(click());
         onView(withId(R.id.switch_activity_defaults_onlywifi)).check(matches(isNotChecked()));
         onView(withId(R.id.textview_activity_defaults_onlywifi_on_off)).check(matches(withText("no")));
-        onView(withId(R.id.switch_activity_defaults_notification)).check(matches(isChecked()));
-        onView(withId(R.id.textview_activity_defaults_notification_on_off)).check(matches(withText("yes")));
         onView(withId(R.id.switch_activity_defaults_notification)).perform(click());
         onView(withId(R.id.switch_activity_defaults_onlywifi)).check(matches(isNotChecked()));
         onView(withId(R.id.textview_activity_defaults_onlywifi_on_off)).check(matches(withText("no")));
-        onView(withId(R.id.switch_activity_defaults_notification)).check(matches(isNotChecked()));
-        onView(withId(R.id.textview_activity_defaults_notification_on_off)).check(matches(withText("no")));
     }
 
     @Test
@@ -215,6 +222,7 @@ public class DefaultsActivityTest extends BaseUITest {
         onView(withId(R.id.textview_activity_defaults_connect_count)).perform(click());
         onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("9"));
         onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
+        onView(withId(R.id.switch_activity_defaults_stoponsuccess)).perform(click());
         onView(withId(R.id.switch_activity_defaults_onlywifi)).perform(click());
         onView(withId(R.id.switch_activity_defaults_notification)).perform(click());
         PreferenceManager preferenceManager = getPreferenceManager();
@@ -225,6 +233,7 @@ public class DefaultsActivityTest extends BaseUITest {
         assertEquals(5, preferenceManager.getPreferencePingCount());
         assertEquals(123, preferenceManager.getPreferencePingPackageSize());
         assertEquals(9, preferenceManager.getPreferenceConnectCount());
+        assertTrue(preferenceManager.getPreferenceStopOnSuccess());
         assertTrue(preferenceManager.getPreferenceOnlyWifi());
         assertTrue(preferenceManager.getPreferenceNotification());
     }
@@ -775,6 +784,7 @@ public class DefaultsActivityTest extends BaseUITest {
         onView(withId(R.id.textview_activity_defaults_connect_count)).perform(click());
         onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("4"));
         onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
+        onView(withId(R.id.switch_activity_defaults_stoponsuccess)).perform(click());
         onView(withId(R.id.switch_activity_defaults_onlywifi)).perform(click());
         onView(withId(R.id.switch_activity_defaults_notification)).perform(click());
         openActionBarOverflowOrOptionsMenu(TestRegistry.getContext());
@@ -793,6 +803,9 @@ public class DefaultsActivityTest extends BaseUITest {
         onView(withId(R.id.textview_activity_defaults_ping_package_size)).check(matches(withText("56")));
         onView(withId(R.id.textview_activity_defaults_connect_count_label)).check(matches(withText("Connect count")));
         onView(withId(R.id.textview_activity_defaults_connect_count)).check(matches(withText("1")));
+        onView(withId(R.id.textview_activity_defaults_stoponsuccess_label)).check(matches(withText("Stop on success")));
+        onView(withId(R.id.switch_activity_defaults_stoponsuccess)).check(matches(isNotChecked()));
+        onView(withId(R.id.textview_activity_defaults_stoponsuccess_on_off)).check(matches(withText("no")));
         onView(withId(R.id.textview_activity_defaults_onlywifi_label)).check(matches(withText("Only on WiFi")));
         onView(withId(R.id.switch_activity_defaults_onlywifi)).check(matches(isNotChecked()));
         onView(withId(R.id.textview_activity_defaults_onlywifi_on_off)).check(matches(withText("no")));
@@ -807,6 +820,7 @@ public class DefaultsActivityTest extends BaseUITest {
         assertEquals(3, preferenceManager.getPreferencePingCount());
         assertEquals(56, preferenceManager.getPreferencePingPackageSize());
         assertEquals(1, preferenceManager.getPreferenceConnectCount());
+        assertFalse(preferenceManager.getPreferenceStopOnSuccess());
         assertFalse(preferenceManager.getPreferenceOnlyWifi());
         assertFalse(preferenceManager.getPreferenceNotification());
     }
@@ -832,6 +846,7 @@ public class DefaultsActivityTest extends BaseUITest {
         onView(withId(R.id.textview_activity_defaults_connect_count)).perform(click());
         onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("2"));
         onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
+        onView(withId(R.id.switch_activity_defaults_stoponsuccess)).perform(click());
         onView(withId(R.id.switch_activity_defaults_onlywifi)).perform(click());
         onView(withId(R.id.switch_activity_defaults_notification)).perform(click());
         rotateScreen(activityScenario);
@@ -843,6 +858,8 @@ public class DefaultsActivityTest extends BaseUITest {
         onView(withId(R.id.textview_activity_defaults_ping_count)).check(matches(withText("2")));
         onView(withId(R.id.textview_activity_defaults_ping_package_size)).check(matches(withText("22")));
         onView(withId(R.id.textview_activity_defaults_connect_count)).check(matches(withText("2")));
+        onView(withId(R.id.switch_activity_defaults_stoponsuccess)).check(matches(isChecked()));
+        onView(withId(R.id.textview_activity_defaults_stoponsuccess_on_off)).check(matches(withText("yes")));
         onView(withId(R.id.switch_activity_defaults_onlywifi)).check(matches(isChecked()));
         onView(withId(R.id.textview_activity_defaults_onlywifi_on_off)).check(matches(withText("yes")));
         onView(withId(R.id.switch_activity_defaults_notification)).check(matches(isChecked()));
@@ -856,6 +873,8 @@ public class DefaultsActivityTest extends BaseUITest {
         onView(withId(R.id.textview_activity_defaults_ping_count)).check(matches(withText("2")));
         onView(withId(R.id.textview_activity_defaults_ping_package_size)).check(matches(withText("22")));
         onView(withId(R.id.textview_activity_defaults_connect_count)).check(matches(withText("2")));
+        onView(withId(R.id.switch_activity_defaults_stoponsuccess)).check(matches(isChecked()));
+        onView(withId(R.id.textview_activity_defaults_stoponsuccess_on_off)).check(matches(withText("yes")));
         onView(withId(R.id.switch_activity_defaults_onlywifi)).check(matches(isChecked()));
         onView(withId(R.id.textview_activity_defaults_onlywifi_on_off)).check(matches(withText("yes")));
         onView(withId(R.id.switch_activity_defaults_notification)).check(matches(isChecked()));

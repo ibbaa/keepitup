@@ -65,6 +65,8 @@ public class DefaultsActivity extends SettingsInputActivity {
     private TextView pingCountText;
     private TextView pingPackageSizeText;
     private TextView connectCountText;
+    private SwitchMaterial stopOnSuccessSwitch;
+    private TextView stopOnSuccessOnOffText;
     private SwitchMaterial onlyWifiSwitch;
     private TextView onlyWifiOnOffText;
     private SwitchMaterial notificationSwitch;
@@ -84,6 +86,7 @@ public class DefaultsActivity extends SettingsInputActivity {
         preparePingCountField();
         preparePingPackageSizeField();
         prepareConnectCountField();
+        prepareStopOnSuccessSwitch();
         prepareOnlyWifiSwitch();
         prepareNotificationSwitch();
     }
@@ -199,6 +202,28 @@ public class DefaultsActivity extends SettingsInputActivity {
         setConnectCount(String.valueOf(preferenceManager.getPreferenceConnectCount()));
         CardView connectCountCardView = findViewById(R.id.cardview_activity_defaults_connect_count);
         connectCountCardView.setOnClickListener(this::showConnectCountInputDialog);
+    }
+
+    private void prepareStopOnSuccessSwitch() {
+        Log.d(DefaultsActivity.class.getName(), "prepareStopOnSuccessSwitch");
+        PreferenceManager preferenceManager = new PreferenceManager(this);
+        stopOnSuccessSwitch = findViewById(R.id.switch_activity_defaults_stoponsuccess);
+        stopOnSuccessOnOffText = findViewById(R.id.textview_activity_defaults_stoponsuccess_on_off);
+        stopOnSuccessSwitch.setOnCheckedChangeListener(null);
+        stopOnSuccessSwitch.setChecked(preferenceManager.getPreferenceOnlyWifi());
+        stopOnSuccessSwitch.setOnCheckedChangeListener(this::onStopOnSuccessCheckedChanged);
+        prepareStopOnSuccessOnOffText();
+    }
+
+    private void prepareStopOnSuccessOnOffText() {
+        stopOnSuccessOnOffText.setText(stopOnSuccessSwitch.isChecked() ? getResources().getString(R.string.string_yes) : getResources().getString(R.string.string_no));
+    }
+
+    private void onStopOnSuccessCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+        Log.d(DefaultsActivity.class.getName(), "onStopOnSuccessCheckedChanged, new value is " + isChecked);
+        PreferenceManager preferenceManager = new PreferenceManager(this);
+        preferenceManager.setPreferenceStopOnSuccess(isChecked);
+        prepareStopOnSuccessOnOffText();
     }
 
     private void prepareOnlyWifiSwitch() {
