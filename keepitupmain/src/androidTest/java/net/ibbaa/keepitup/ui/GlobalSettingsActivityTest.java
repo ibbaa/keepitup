@@ -31,6 +31,7 @@ import static androidx.test.espresso.matcher.ViewMatchers.isEnabled;
 import static androidx.test.espresso.matcher.ViewMatchers.isNotChecked;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
+import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.Matchers.allOf;
 import static org.hamcrest.Matchers.endsWith;
 import static org.hamcrest.core.IsNot.not;
@@ -119,6 +120,52 @@ public class GlobalSettingsActivityTest extends BaseUITest {
         onView(withId(R.id.textview_activity_global_settings_log_folder_label)).check(matches(withText("Log folder")));
         onView(withId(R.id.textview_activity_global_settings_log_folder)).check(matches(withText("None")));
         onView(withId(R.id.cardview_activity_global_settings_log_folder)).check(matches(not(isEnabled())));
+        activityScenario.close();
+    }
+
+    @Test
+    public void testDisplayDefaultValuesChanged() {
+        PreferenceManager preferenceManager = getPreferenceManager();
+        preferenceManager.setPreferenceNotificationInactiveNetwork(true);
+        preferenceManager.setPreferenceNotificationType(NotificationType.CHANGE);
+        preferenceManager.setPreferenceNotificationAfterFailures(5);
+        preferenceManager.setPreferenceSuspensionEnabled(false);
+        preferenceManager.setPreferenceEnforceDefaultPingPackageSize(true);
+        preferenceManager.setPreferenceDownloadExternalStorage(true);
+        preferenceManager.setPreferenceDownloadKeep(true);
+        preferenceManager.setPreferenceLogFile(true);
+        ActivityScenario<?> activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class);
+        ((GlobalSettingsActivity) getActivity(activityScenario)).injectTimeBasedSuspensionScheduler(getTimeBasedSuspensionScheduler());
+        onView(withId(R.id.textview_activity_global_settings_notification_inactive_network_label)).check(matches(withText("Notifications when network is not active")));
+        onView(withId(R.id.switch_activity_global_settings_notification_inactive_network)).check(matches(isChecked()));
+        onView(withId(R.id.radiogroup_activity_global_settings_notification_type)).check(matches(hasChildCount(2)));
+        onView(withId(R.id.radiobutton_activity_global_settings_notification_type_failure)).check(matches(withText("Failure")));
+        onView(withId(R.id.radiobutton_activity_global_settings_notification_type_change)).check(matches(withText("Change")));
+        onView(withId(R.id.radiobutton_activity_global_settings_notification_type_failure)).check(matches(isNotChecked()));
+        onView(withId(R.id.radiobutton_activity_global_settings_notification_type_change)).check(matches(isChecked()));
+        onView(withId(R.id.textview_activity_global_settings_notification_after_failures_label)).check(matches(withText("Notification after failures")));
+        onView(withId(R.id.textview_activity_global_settings_notification_after_failures)).check(matches(withText("5")));
+        onView(withId(R.id.textview_activity_global_settings_suspension_enabled_label)).check(matches(withText("Suspension intervals enabled")));
+        onView(withId(R.id.switch_activity_global_settings_suspension_enabled)).check(matches(isNotChecked()));
+        onView(withId(R.id.textview_activity_global_settings_suspension_intervals_label)).check(matches(withText("Defined suspension intervals")));
+        onView(allOf(withText("Disabled"), withGridLayoutPosition(1, 0))).check(matches(isDisplayed()));
+        onView(withId(R.id.textview_activity_global_settings_enforce_ping_package_size_enabled_label)).check(matches(withText("Enforce default ping package size")));
+        onView(withId(R.id.switch_activity_global_settings_enforce_ping_package_size_enabled)).check(matches(isChecked()));
+        onView(withId(R.id.textview_activity_global_settings_download_external_storage_label)).check(matches(withText("Download to an external storage folder")));
+        onView(withId(R.id.switch_activity_global_settings_download_external_storage)).check(matches(isChecked()));
+        onView(withId(R.id.textview_activity_global_settings_download_folder_label)).check(matches(withText("Download folder")));
+        onView(withId(R.id.textview_activity_global_settings_download_folder)).check(matches(withText(containsString("/download"))));
+        onView(withId(R.id.cardview_activity_global_settings_download_folder)).check(matches(isEnabled()));
+        onView(withId(R.id.switch_activity_global_settings_download_keep)).perform(scrollTo());
+        onView(withId(R.id.textview_activity_global_settings_download_keep_label)).check(matches(withText("Keep downloaded files")));
+        onView(withId(R.id.switch_activity_global_settings_download_keep)).check(matches(isChecked()));
+        onView(withId(R.id.switch_activity_global_settings_download_keep)).check(matches(isEnabled()));
+        onView(withId(R.id.switch_activity_global_settings_log_file)).perform(scrollTo());
+        onView(withId(R.id.textview_activity_global_settings_log_file_label)).check(matches(withText("Log to file")));
+        onView(withId(R.id.switch_activity_global_settings_log_file)).check(matches(isChecked()));
+        onView(withId(R.id.textview_activity_global_settings_log_folder_label)).check(matches(withText("Log folder")));
+        onView(withId(R.id.textview_activity_global_settings_log_folder)).check(matches(withText(containsString("/log"))));
+        onView(withId(R.id.cardview_activity_global_settings_log_folder)).check(matches(isEnabled()));
         activityScenario.close();
     }
 

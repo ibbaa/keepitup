@@ -210,7 +210,7 @@ public class DefaultsActivity extends SettingsInputActivity {
         stopOnSuccessSwitch = findViewById(R.id.switch_activity_defaults_stoponsuccess);
         stopOnSuccessOnOffText = findViewById(R.id.textview_activity_defaults_stoponsuccess_on_off);
         stopOnSuccessSwitch.setOnCheckedChangeListener(null);
-        stopOnSuccessSwitch.setChecked(preferenceManager.getPreferenceOnlyWifi());
+        stopOnSuccessSwitch.setChecked(preferenceManager.getPreferenceStopOnSuccess());
         stopOnSuccessSwitch.setOnCheckedChangeListener(this::onStopOnSuccessCheckedChanged);
         prepareStopOnSuccessOnOffText();
     }

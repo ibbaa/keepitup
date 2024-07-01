@@ -35,6 +35,9 @@
     <dimen name="linearlayout_dialog_network_task_edit_ping_package_size_margin_top">20dp</dimen>
     <dimen name="linearlayout_dialog_network_task_edit_ping_package_size_margin_left">10dp</dimen>
     <dimen name="edittext_dialog_network_task_edit_ping_package_size_width">120dp</dimen>
+    <dimen name="textview_dialog_network_task_edit_stoponsuccess_label_margin_top">20dp</dimen>
+    <dimen name="linearlayout_dialog_network_task_edit_stoponsuccess_margin_top">20dp</dimen>
+    <dimen name="linearlayout_dialog_network_task_edit_stoponsuccess_margin_left">10dp</dimen>
     <dimen name="textview_dialog_network_task_edit_onlywifi_label_margin_top">20dp</dimen>
     <dimen name="linearlayout_dialog_network_task_edit_onlywifi_margin_top">20dp</dimen>
     <dimen name="linearlayout_dialog_network_task_edit_onlywifi_margin_left">10dp</dimen>

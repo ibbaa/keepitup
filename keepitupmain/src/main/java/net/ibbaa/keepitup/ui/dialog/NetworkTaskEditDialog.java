@@ -80,6 +80,8 @@ public class NetworkTaskEditDialog extends DialogFragment implements ContextOpti
     private TextColorValidatingWatcher connectCountEditTextWatcher;
     private EditText pingPackageSizeEditText;
     private TextColorValidatingWatcher pingPackageSizeEditTextWatcher;
+    private SwitchMaterial stopOnSuccessSwitch;
+    private TextView stopOnSuccessOnOffText;
     private SwitchMaterial onlyWifiSwitch;
     private SwitchMaterial notificationSwitch;
     private TextView onlyWifiOnOffText;
@@ -129,6 +131,7 @@ public class NetworkTaskEditDialog extends DialogFragment implements ContextOpti
         prepareAddressTextFields();
         prepareAddressTextFieldsVisibility();
         prepareIntervalTextField();
+        prepareStopOnSuccessSwitch();
         prepareAccessTypeDataFields();
         prepareAccessTypeDataFieldsVisibility();
         prepareOnlyWifiSwitch();
@@ -217,6 +220,10 @@ public class NetworkTaskEditDialog extends DialogFragment implements ContextOpti
 
     private boolean isPingPackageSizeVisible() {
         return pingPackageSizeEditText.getVisibility() == View.VISIBLE;
+    }
+
+    private boolean isStopOnSuccessVisible() {
+        return stopOnSuccessSwitch.getVisibility() == View.VISIBLE;
     }
 
     private void prepareAccessTypeRadioButtons(Bundle savedInstanceState) {
@@ -375,6 +382,8 @@ public class NetworkTaskEditDialog extends DialogFragment implements ContextOpti
             pingCountTextView.setVisibility(View.VISIBLE);
             pingCountEditText.setVisibility(View.VISIBLE);
             pingCountLinearLayout.setVisibility(View.VISIBLE);
+            stopOnSuccessSwitch.setVisibility(View.VISIBLE);
+            stopOnSuccessOnOffText.setVisibility(View.VISIBLE);
             if (preferenceManager.getPreferenceEnforceDefaultPingPackageSize()) {
                 pingPackageSizeTextView.setVisibility(View.GONE);
                 pingPackageSizeEditText.setVisibility(View.GONE);
@@ -396,10 +405,16 @@ public class NetworkTaskEditDialog extends DialogFragment implements ContextOpti
             connectCountTextView.setVisibility(View.VISIBLE);
             connectCountEditText.setVisibility(View.VISIBLE);
             connectCountLinearLayout.setVisibility(View.VISIBLE);
+            stopOnSuccessSwitch.setVisibility(View.VISIBLE);
+            stopOnSuccessOnOffText.setVisibility(View.VISIBLE);
         } else {
             connectCountTextView.setVisibility(View.GONE);
             connectCountEditText.setVisibility(View.GONE);
             connectCountLinearLayout.setVisibility(View.GONE);
+        }
+        if (accessType.isDownload()) {
+            stopOnSuccessSwitch.setVisibility(View.GONE);
+            stopOnSuccessOnOffText.setVisibility(View.GONE);
         }
     }
 
@@ -433,6 +448,15 @@ public class NetworkTaskEditDialog extends DialogFragment implements ContextOpti
         pingPackageSizeEditText.addTextChangedListener(pingPackageSizeEditTextWatcher);
     }
 
+    private void prepareStopOnSuccessSwitch() {
+        Log.d(NetworkTaskEditDialog.class.getName(), "prepareStopOnSuccessSwitch with stop on success setting of " + accessTypeData.isStopOnSuccess());
+        stopOnSuccessSwitch = dialogView.findViewById(R.id.switch_dialog_network_task_edit_stoponsuccess);
+        stopOnSuccessOnOffText = dialogView.findViewById(R.id.textview_dialog_network_task_edit_stoponsuccess_on_off);
+        stopOnSuccessSwitch.setChecked(accessTypeData.isStopOnSuccess());
+        stopOnSuccessSwitch.setOnCheckedChangeListener(this::onStopOnSuccessCheckedChanged);
+        prepareStopOnSuccessOnOffText();
+    }
+
     private void prepareOnlyWifiSwitch() {
         Log.d(NetworkTaskEditDialog.class.getName(), "prepareOnlyWifiSwitch with only wifi setting of " + task.isOnlyWifi());
         onlyWifiSwitch = dialogView.findViewById(R.id.switch_dialog_network_task_edit_onlywifi);
@@ -458,6 +482,10 @@ public class NetworkTaskEditDialog extends DialogFragment implements ContextOpti
             notificationSwitch.setOnCheckedChangeListener(null);
         }
         prepareNotificationOnOffText();
+    }
+
+    private void prepareStopOnSuccessOnOffText() {
+        stopOnSuccessOnOffText.setText(stopOnSuccessSwitch.isChecked() ? getResources().getString(R.string.string_yes) : getResources().getString(R.string.string_no));
     }
 
     private void prepareOnlyWifiOnOffText() {
@@ -524,6 +552,9 @@ public class NetworkTaskEditDialog extends DialogFragment implements ContextOpti
                 accessTypeData.setPingPackageSize(NumberUtil.getIntValue(getPingPackageSize(), accessTypeData.getPingPackageSize()));
             }
         }
+        if (isStopOnSuccessVisible()) {
+            accessTypeData.setStopOnSuccess(stopOnSuccessSwitch.isChecked());
+        }
         Log.d(NetworkTaskEditDialog.class.getName(), "getAccessTypeData, access type data task is " + accessTypeData);
         return accessTypeData;
     }
@@ -545,6 +576,11 @@ public class NetworkTaskEditDialog extends DialogFragment implements ContextOpti
         Log.d(NetworkTaskEditDialog.class.getName(), "onCancelClicked");
         NetworkTaskMainActivity activity = (NetworkTaskMainActivity) getActivity();
         Objects.requireNonNull(activity).onEditDialogCancelClicked(this);
+    }
+
+    private void onStopOnSuccessCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+        Log.d(NetworkTaskEditDialog.class.getName(), "onStopOnSuccessCheckedChanged, new value is " + isChecked);
+        prepareStopOnSuccessOnOffText();
     }
 
     private void onOnlyWifiCheckedChanged(CompoundButton buttonView, boolean isChecked) {

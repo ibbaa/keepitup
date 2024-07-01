@@ -46,8 +46,6 @@ import net.ibbaa.keepitup.test.mock.MockClipboardManager;
 import net.ibbaa.keepitup.test.mock.TestRegistry;
 import net.ibbaa.keepitup.ui.dialog.SettingsInputDialog;
 
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -55,22 +53,9 @@ import org.junit.runner.RunWith;
 @RunWith(AndroidJUnit4.class)
 public class DefaultsActivityTest extends BaseUITest {
 
-    private ActivityScenario<?> activityScenario;
-
-    @Before
-    public void beforeEachTestMethod() {
-        super.beforeEachTestMethod();
-        activityScenario = launchSettingsInputActivity(DefaultsActivity.class);
-    }
-
-    @After
-    public void afterEachTestMethod() {
-        super.afterEachTestMethod();
-        activityScenario.close();
-    }
-
     @Test
     public void testDisplayDefaultValues() {
+        ActivityScenario<?> activityScenario = launchSettingsInputActivity(DefaultsActivity.class);
         PreferenceManager preferenceManager = getPreferenceManager();
         assertEquals(AccessType.PING, preferenceManager.getPreferenceAccessType());
         assertEquals("192.168.178.1", preferenceManager.getPreferenceAddress());
@@ -79,6 +64,7 @@ public class DefaultsActivityTest extends BaseUITest {
         assertEquals(3, preferenceManager.getPreferencePingCount());
         assertEquals(56, preferenceManager.getPreferencePingPackageSize());
         assertEquals(1, preferenceManager.getPreferenceConnectCount());
+        assertFalse(preferenceManager.getPreferenceStopOnSuccess());
         assertFalse(preferenceManager.getPreferenceOnlyWifi());
         assertFalse(preferenceManager.getPreferenceNotification());
         onView(withId(R.id.textview_activity_defaults_accesstype_label)).check(matches(withText("Type")));
@@ -90,13 +76,13 @@ public class DefaultsActivityTest extends BaseUITest {
         onView(withId(R.id.textview_activity_defaults_port)).check(matches(withText("22")));
         onView(withId(R.id.textview_activity_defaults_interval_label)).check(matches(withText("Interval")));
         onView(withId(R.id.textview_activity_defaults_interval)).check(matches(withText("15")));
+        onView(withId(R.id.textview_activity_defaults_interval_minutes)).check(matches(withText("minutes")));
         onView(withId(R.id.textview_activity_defaults_ping_count_label)).check(matches(withText("Ping count")));
         onView(withId(R.id.textview_activity_defaults_ping_count)).check(matches(withText("3")));
         onView(withId(R.id.textview_activity_defaults_ping_package_size_label)).check(matches(withText("Ping package size")));
         onView(withId(R.id.textview_activity_defaults_ping_package_size)).check(matches(withText("56")));
         onView(withId(R.id.textview_activity_defaults_connect_count_label)).check(matches(withText("Connect count")));
         onView(withId(R.id.textview_activity_defaults_connect_count)).check(matches(withText("1")));
-        onView(withId(R.id.textview_activity_defaults_interval_minutes)).check(matches(withText("minutes")));
         onView(withId(R.id.textview_activity_defaults_stoponsuccess_label)).check(matches(withText("Stop on success")));
         onView(withId(R.id.switch_activity_defaults_stoponsuccess)).check(matches(isNotChecked()));
         onView(withId(R.id.textview_activity_defaults_stoponsuccess_on_off)).check(matches(withText("no")));
@@ -106,10 +92,54 @@ public class DefaultsActivityTest extends BaseUITest {
         onView(withId(R.id.textview_activity_defaults_notification_label)).check(matches(withText("Notifications")));
         onView(withId(R.id.switch_activity_defaults_notification)).check(matches(isNotChecked()));
         onView(withId(R.id.textview_activity_defaults_notification_on_off)).check(matches(withText("no")));
+        activityScenario.close();
+    }
+
+    @Test
+    public void testDisplayDefaultValuesChanged() {
+        PreferenceManager preferenceManager = getPreferenceManager();
+        preferenceManager.setPreferenceAccessType(AccessType.CONNECT);
+        preferenceManager.setPreferenceAddress("127.0.0.1");
+        preferenceManager.setPreferencePort(1024);
+        preferenceManager.setPreferenceInterval(1);
+        preferenceManager.setPreferencePingCount(8);
+        preferenceManager.setPreferencePingPackageSize(1234);
+        preferenceManager.setPreferenceConnectCount(9);
+        preferenceManager.setPreferenceStopOnSuccess(true);
+        preferenceManager.setPreferenceOnlyWifi(false);
+        preferenceManager.setPreferenceNotification(true);
+        ActivityScenario<?> activityScenario = launchSettingsInputActivity(DefaultsActivity.class);
+        onView(withId(R.id.textview_activity_defaults_accesstype_label)).check(matches(withText("Type")));
+        onView(withId(R.id.radiogroup_activity_defaults_accesstype)).check(matches(hasChildCount(3)));
+        onView(withText("Connect")).check(matches(isChecked()));
+        onView(withId(R.id.textview_activity_defaults_address_label)).check(matches(withText("Host / URL")));
+        onView(withId(R.id.textview_activity_defaults_address)).check(matches(withText("127.0.0.1")));
+        onView(withId(R.id.textview_activity_defaults_port_label)).check(matches(withText("Port")));
+        onView(withId(R.id.textview_activity_defaults_port)).check(matches(withText("1024")));
+        onView(withId(R.id.textview_activity_defaults_interval_label)).check(matches(withText("Interval")));
+        onView(withId(R.id.textview_activity_defaults_interval)).check(matches(withText("1")));
+        onView(withId(R.id.textview_activity_defaults_interval_minutes)).check(matches(withText("minute")));
+        onView(withId(R.id.textview_activity_defaults_ping_count_label)).check(matches(withText("Ping count")));
+        onView(withId(R.id.textview_activity_defaults_ping_count)).check(matches(withText("8")));
+        onView(withId(R.id.textview_activity_defaults_ping_package_size_label)).check(matches(withText("Ping package size")));
+        onView(withId(R.id.textview_activity_defaults_ping_package_size)).check(matches(withText("1234")));
+        onView(withId(R.id.textview_activity_defaults_connect_count_label)).check(matches(withText("Connect count")));
+        onView(withId(R.id.textview_activity_defaults_connect_count)).check(matches(withText("9")));
+        onView(withId(R.id.textview_activity_defaults_stoponsuccess_label)).check(matches(withText("Stop on success")));
+        onView(withId(R.id.switch_activity_defaults_stoponsuccess)).check(matches(isChecked()));
+        onView(withId(R.id.textview_activity_defaults_stoponsuccess_on_off)).check(matches(withText("yes")));
+        onView(withId(R.id.textview_activity_defaults_onlywifi_label)).check(matches(withText("Only on WiFi")));
+        onView(withId(R.id.switch_activity_defaults_onlywifi)).check(matches(isNotChecked()));
+        onView(withId(R.id.textview_activity_defaults_onlywifi_on_off)).check(matches(withText("no")));
+        onView(withId(R.id.textview_activity_defaults_notification_label)).check(matches(withText("Notifications")));
+        onView(withId(R.id.switch_activity_defaults_notification)).check(matches(isChecked()));
+        onView(withId(R.id.textview_activity_defaults_notification_on_off)).check(matches(withText("yes")));
+        activityScenario.close();
     }
 
     @Test
     public void testDisplayValues() {
+        ActivityScenario<?> activityScenario = launchSettingsInputActivity(DefaultsActivity.class);
         onView(withText("Download")).perform(click());
         onView(withId(R.id.textview_activity_defaults_address)).perform(click());
         onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("localhost"));
@@ -155,10 +185,12 @@ public class DefaultsActivityTest extends BaseUITest {
         onView(withId(R.id.textview_activity_defaults_notification_label)).check(matches(withText("Notifications")));
         onView(withId(R.id.switch_activity_defaults_notification)).check(matches(isChecked()));
         onView(withId(R.id.textview_activity_defaults_notification_on_off)).check(matches(withText("yes")));
+        activityScenario.close();
     }
 
     @Test
     public void testMinutes() {
+        ActivityScenario<?> activityScenario = launchSettingsInputActivity(DefaultsActivity.class);
         onView(withId(R.id.textview_activity_defaults_interval)).perform(click());
         onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("1"));
         onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
@@ -171,10 +203,12 @@ public class DefaultsActivityTest extends BaseUITest {
         onView(withId(R.id.textview_activity_defaults_interval_label)).check(matches(withText("Interval")));
         onView(withId(R.id.textview_activity_defaults_interval)).check(matches(withText("11")));
         onView(withId(R.id.textview_activity_defaults_interval_minutes)).check(matches(withText("minutes")));
+        activityScenario.close();
     }
 
     @Test
     public void testSwitchYesNoText() {
+        ActivityScenario<?> activityScenario = launchSettingsInputActivity(DefaultsActivity.class);
         onView(withId(R.id.switch_activity_defaults_stoponsuccess)).check(matches(isNotChecked()));
         onView(withId(R.id.textview_activity_defaults_stoponsuccess_on_off)).check(matches(withText("no")));
         onView(withId(R.id.switch_activity_defaults_onlywifi)).check(matches(isNotChecked()));
@@ -199,10 +233,12 @@ public class DefaultsActivityTest extends BaseUITest {
         onView(withId(R.id.switch_activity_defaults_notification)).perform(click());
         onView(withId(R.id.switch_activity_defaults_onlywifi)).check(matches(isNotChecked()));
         onView(withId(R.id.textview_activity_defaults_onlywifi_on_off)).check(matches(withText("no")));
+        activityScenario.close();
     }
 
     @Test
     public void testSetPreferencesOk() {
+        ActivityScenario<?> activityScenario = launchSettingsInputActivity(DefaultsActivity.class);
         onView(withText("Download")).perform(click());
         onView(withId(R.id.textview_activity_defaults_address)).perform(click());
         onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("localhost"));
@@ -236,10 +272,12 @@ public class DefaultsActivityTest extends BaseUITest {
         assertTrue(preferenceManager.getPreferenceStopOnSuccess());
         assertTrue(preferenceManager.getPreferenceOnlyWifi());
         assertTrue(preferenceManager.getPreferenceNotification());
+        activityScenario.close();
     }
 
     @Test
     public void testSetPreferencesCancel() {
+        ActivityScenario<?> activityScenario = launchSettingsInputActivity(DefaultsActivity.class);
         onView(withId(R.id.textview_activity_defaults_address)).perform(click());
         onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("localhost"));
         onView(withId(R.id.imageview_dialog_settings_input_cancel)).perform(click());
@@ -265,10 +303,12 @@ public class DefaultsActivityTest extends BaseUITest {
         assertEquals(3, preferenceManager.getPreferencePingCount());
         assertEquals(56, preferenceManager.getPreferencePingPackageSize());
         assertEquals(1, preferenceManager.getPreferenceConnectCount());
+        activityScenario.close();
     }
 
     @Test
     public void testAddressInput() {
+        ActivityScenario<?> activityScenario = launchSettingsInputActivity(DefaultsActivity.class);
         onView(withId(R.id.textview_activity_defaults_address)).perform(click());
         onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("1 2.33"));
         onView(withId(R.id.edittext_dialog_settings_input_value)).check(matches(withTextColor(R.color.textErrorColor)));
@@ -298,12 +338,14 @@ public class DefaultsActivityTest extends BaseUITest {
         onView(withId(R.id.edittext_dialog_settings_input_value)).check(matches(withTextColor(R.color.textColor)));
         onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
         onView(withId(R.id.textview_activity_defaults_address)).check(matches(withText("192.168.2.100")));
+        activityScenario.close();
     }
 
     @Test
     public void testAddressCopyPasteOption() {
+        ActivityScenario<?> activityScenario = launchSettingsInputActivity(DefaultsActivity.class);
         onView(withId(R.id.textview_activity_defaults_address)).perform(click());
-        SettingsInputDialog inputDialog = getDialog();
+        SettingsInputDialog inputDialog = getDialog(activityScenario);
         MockClipboardManager clipboardManager = prepareMockClipboardManager(inputDialog);
         clipboardManager.putData("data");
         onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("localhost"));
@@ -320,12 +362,14 @@ public class DefaultsActivityTest extends BaseUITest {
         assertEquals("data", clipboardManager.getData());
         onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
         onView(withId(R.id.textview_activity_defaults_address)).check(matches(withText("data")));
+        activityScenario.close();
     }
 
     @Test
     public void testAddressCopyPasteOptionScreenRotation() {
+        ActivityScenario<?> activityScenario = launchSettingsInputActivity(DefaultsActivity.class);
         onView(withId(R.id.textview_activity_defaults_address)).perform(click());
-        SettingsInputDialog inputDialog = getDialog();
+        SettingsInputDialog inputDialog = getDialog(activityScenario);
         MockClipboardManager clipboardManager = prepareMockClipboardManager(inputDialog);
         clipboardManager.putData("data");
         onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("localhost"));
@@ -337,7 +381,7 @@ public class DefaultsActivityTest extends BaseUITest {
         onView(allOf(withId(R.id.textview_list_item_context_option_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options), 0))).check(matches(withText("Copy")));
         onView(allOf(withId(R.id.textview_list_item_context_option_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options), 1))).check(matches(withText("Paste")));
         rotateScreen(activityScenario);
-        clipboardManager = prepareMockClipboardManager(getDialog());
+        clipboardManager = prepareMockClipboardManager(getDialog(activityScenario));
         clipboardManager.putData("data");
         onView(allOf(withId(R.id.textview_list_item_context_option_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options), 1))).perform(click());
         assertEquals(1, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
@@ -346,10 +390,12 @@ public class DefaultsActivityTest extends BaseUITest {
         assertEquals("data", clipboardManager.getData());
         onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
         onView(withId(R.id.textview_activity_defaults_address)).check(matches(withText("data")));
+        activityScenario.close();
     }
 
     @Test
     public void testPortInput() {
+        ActivityScenario<?> activityScenario = launchSettingsInputActivity(DefaultsActivity.class);
         onView(withId(R.id.textview_activity_defaults_port)).perform(click());
         onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("1a"));
         onView(withId(R.id.edittext_dialog_settings_input_value)).check(matches(withTextColor(R.color.textErrorColor)));
@@ -376,12 +422,14 @@ public class DefaultsActivityTest extends BaseUITest {
         onView(withId(R.id.edittext_dialog_settings_input_value)).check(matches(withTextColor(R.color.textColor)));
         onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
         onView(withId(R.id.textview_activity_defaults_port)).check(matches(withText("80")));
+        activityScenario.close();
     }
 
     @Test
     public void testPortCopyPasteOption() {
+        ActivityScenario<?> activityScenario = launchSettingsInputActivity(DefaultsActivity.class);
         onView(withId(R.id.textview_activity_defaults_port)).perform(click());
-        SettingsInputDialog inputDialog = getDialog();
+        SettingsInputDialog inputDialog = getDialog(activityScenario);
         MockClipboardManager clipboardManager = prepareMockClipboardManager(inputDialog);
         clipboardManager.putData("1234");
         onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("456"));
@@ -398,14 +446,16 @@ public class DefaultsActivityTest extends BaseUITest {
         assertEquals("456", clipboardManager.getData());
         onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
         onView(withId(R.id.textview_activity_defaults_port)).check(matches(withText("456")));
+        activityScenario.close();
     }
 
     @Test
     public void testPortCopyPasteOptionScreenRotation() {
+        ActivityScenario<?> activityScenario = launchSettingsInputActivity(DefaultsActivity.class);
         onView(withId(R.id.textview_activity_defaults_port)).perform(click());
         onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("456"));
         rotateScreen(activityScenario);
-        MockClipboardManager clipboardManager = prepareMockClipboardManager(getDialog());
+        MockClipboardManager clipboardManager = prepareMockClipboardManager(getDialog(activityScenario));
         clipboardManager.putData("1234");
         onView(withId(R.id.edittext_dialog_settings_input_value)).perform(longClick());
         assertEquals(2, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
@@ -414,7 +464,7 @@ public class DefaultsActivityTest extends BaseUITest {
         onView(allOf(withId(R.id.textview_list_item_context_option_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options), 0))).check(matches(withText("Copy")));
         onView(allOf(withId(R.id.textview_list_item_context_option_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options), 1))).check(matches(withText("Paste")));
         rotateScreen(activityScenario);
-        clipboardManager = prepareMockClipboardManager(getDialog());
+        clipboardManager = prepareMockClipboardManager(getDialog(activityScenario));
         clipboardManager.putData("1234");
         onView(allOf(withId(R.id.textview_list_item_context_option_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options), 0))).perform(click());
         assertEquals(1, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
@@ -423,10 +473,12 @@ public class DefaultsActivityTest extends BaseUITest {
         assertEquals("456", clipboardManager.getData());
         onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
         onView(withId(R.id.textview_activity_defaults_port)).check(matches(withText("456")));
+        activityScenario.close();
     }
 
     @Test
     public void testIntervalInput() {
+        ActivityScenario<?> activityScenario = launchSettingsInputActivity(DefaultsActivity.class);
         onView(withId(R.id.textview_activity_defaults_interval)).perform(click());
         onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("xyz"));
         onView(withId(R.id.edittext_dialog_settings_input_value)).check(matches(withTextColor(R.color.textErrorColor)));
@@ -453,12 +505,14 @@ public class DefaultsActivityTest extends BaseUITest {
         onView(withId(R.id.edittext_dialog_settings_input_value)).check(matches(withTextColor(R.color.textColor)));
         onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
         onView(withId(R.id.textview_activity_defaults_interval)).check(matches(withText("20")));
+        activityScenario.close();
     }
 
     @Test
     public void testIntervalCopyPasteOption() {
+        ActivityScenario<?> activityScenario = launchSettingsInputActivity(DefaultsActivity.class);
         onView(withId(R.id.textview_activity_defaults_interval)).perform(click());
-        SettingsInputDialog inputDialog = getDialog();
+        SettingsInputDialog inputDialog = getDialog(activityScenario);
         MockClipboardManager clipboardManager = prepareMockClipboardManager(inputDialog);
         clipboardManager.putData("111");
         onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("222"));
@@ -475,18 +529,20 @@ public class DefaultsActivityTest extends BaseUITest {
         assertEquals("111", clipboardManager.getData());
         onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
         onView(withId(R.id.textview_activity_defaults_interval)).check(matches(withText("111")));
+        activityScenario.close();
     }
 
     @Test
     public void testIntervalCopyPasteOptionScreenRotation() {
+        ActivityScenario<?> activityScenario = launchSettingsInputActivity(DefaultsActivity.class);
         onView(withId(R.id.textview_activity_defaults_interval)).perform(click());
-        SettingsInputDialog inputDialog = getDialog();
+        SettingsInputDialog inputDialog = getDialog(activityScenario);
         MockClipboardManager clipboardManager = prepareMockClipboardManager(inputDialog);
         clipboardManager.putData("111");
         onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("222"));
         onView(withId(R.id.edittext_dialog_settings_input_value)).perform(longClick());
         rotateScreen(activityScenario);
-        clipboardManager = prepareMockClipboardManager(getDialog());
+        clipboardManager = prepareMockClipboardManager(getDialog(activityScenario));
         clipboardManager.putData("111");
         assertEquals(2, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
         onView(withId(R.id.listview_dialog_context_options)).check(matches(withListSize(2)));
@@ -501,10 +557,12 @@ public class DefaultsActivityTest extends BaseUITest {
         rotateScreen(activityScenario);
         onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
         onView(withId(R.id.textview_activity_defaults_interval)).check(matches(withText("111")));
+        activityScenario.close();
     }
 
     @Test
     public void testPingCountInput() {
+        ActivityScenario<?> activityScenario = launchSettingsInputActivity(DefaultsActivity.class);
         onView(withId(R.id.textview_activity_defaults_ping_count)).perform(click());
         onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("1 0"));
         onView(withId(R.id.edittext_dialog_settings_input_value)).check(matches(withTextColor(R.color.textErrorColor)));
@@ -542,6 +600,7 @@ public class DefaultsActivityTest extends BaseUITest {
 
     @Test
     public void testPingCountCopyPasteOption() {
+        ActivityScenario<?> activityScenario = launchSettingsInputActivity(DefaultsActivity.class);
         onView(withId(R.id.textview_activity_defaults_ping_count)).perform(click());
         SettingsInputDialog inputDialog = (SettingsInputDialog) getActivity(activityScenario).getSupportFragmentManager().getFragments().get(0);
         MockClipboardManager clipboardManager = prepareMockClipboardManager(inputDialog);
@@ -565,6 +624,7 @@ public class DefaultsActivityTest extends BaseUITest {
 
     @Test
     public void testPingCountCopyPasteOptionScreenRotation() {
+        ActivityScenario<?> activityScenario = launchSettingsInputActivity(DefaultsActivity.class);
         onView(withId(R.id.textview_activity_defaults_ping_count)).perform(click());
         SettingsInputDialog inputDialog = (SettingsInputDialog) getActivity(activityScenario).getSupportFragmentManager().getFragments().get(0);
         MockClipboardManager clipboardManager = prepareMockClipboardManager(inputDialog);
@@ -578,7 +638,7 @@ public class DefaultsActivityTest extends BaseUITest {
         onView(allOf(withId(R.id.textview_list_item_context_option_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options), 0))).check(matches(withText("Copy")));
         onView(allOf(withId(R.id.textview_list_item_context_option_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options), 1))).check(matches(withText("Paste")));
         rotateScreen(activityScenario);
-        clipboardManager = prepareMockClipboardManager(getDialog());
+        clipboardManager = prepareMockClipboardManager(getDialog(activityScenario));
         clipboardManager.putData("5");
         onView(allOf(withId(R.id.textview_list_item_context_option_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options), 0))).perform(click());
         assertEquals(1, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
@@ -592,6 +652,7 @@ public class DefaultsActivityTest extends BaseUITest {
 
     @Test
     public void testPingPackageSizeInput() {
+        ActivityScenario<?> activityScenario = launchSettingsInputActivity(DefaultsActivity.class);
         onView(withId(R.id.textview_activity_defaults_ping_package_size)).perform(click());
         onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("1 0"));
         onView(withId(R.id.edittext_dialog_settings_input_value)).check(matches(withTextColor(R.color.textErrorColor)));
@@ -629,6 +690,7 @@ public class DefaultsActivityTest extends BaseUITest {
 
     @Test
     public void testPingPackageSizeCopyPasteOption() {
+        ActivityScenario<?> activityScenario = launchSettingsInputActivity(DefaultsActivity.class);
         onView(withId(R.id.textview_activity_defaults_ping_package_size)).perform(click());
         SettingsInputDialog inputDialog = (SettingsInputDialog) getActivity(activityScenario).getSupportFragmentManager().getFragments().get(0);
         MockClipboardManager clipboardManager = prepareMockClipboardManager(inputDialog);
@@ -652,6 +714,7 @@ public class DefaultsActivityTest extends BaseUITest {
 
     @Test
     public void testPingPackageSizeCopyPasteOptionScreenRotation() {
+        ActivityScenario<?> activityScenario = launchSettingsInputActivity(DefaultsActivity.class);
         onView(withId(R.id.textview_activity_defaults_ping_package_size)).perform(click());
         SettingsInputDialog inputDialog = (SettingsInputDialog) getActivity(activityScenario).getSupportFragmentManager().getFragments().get(0);
         MockClipboardManager clipboardManager = prepareMockClipboardManager(inputDialog);
@@ -665,7 +728,7 @@ public class DefaultsActivityTest extends BaseUITest {
         onView(allOf(withId(R.id.textview_list_item_context_option_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options), 0))).check(matches(withText("Copy")));
         onView(allOf(withId(R.id.textview_list_item_context_option_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options), 1))).check(matches(withText("Paste")));
         rotateScreen(activityScenario);
-        clipboardManager = prepareMockClipboardManager(getDialog());
+        clipboardManager = prepareMockClipboardManager(getDialog(activityScenario));
         clipboardManager.putData("55");
         onView(allOf(withId(R.id.textview_list_item_context_option_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options), 0))).perform(click());
         assertEquals(1, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
@@ -679,6 +742,7 @@ public class DefaultsActivityTest extends BaseUITest {
 
     @Test
     public void testConnectCountInput() {
+        ActivityScenario<?> activityScenario = launchSettingsInputActivity(DefaultsActivity.class);
         onView(withId(R.id.textview_activity_defaults_connect_count)).perform(click());
         onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("1 0"));
         onView(withId(R.id.edittext_dialog_settings_input_value)).check(matches(withTextColor(R.color.textErrorColor)));
@@ -716,6 +780,7 @@ public class DefaultsActivityTest extends BaseUITest {
 
     @Test
     public void testConnectCountCopyPasteOption() {
+        ActivityScenario<?> activityScenario = launchSettingsInputActivity(DefaultsActivity.class);
         onView(withId(R.id.textview_activity_defaults_connect_count)).perform(click());
         SettingsInputDialog inputDialog = (SettingsInputDialog) getActivity(activityScenario).getSupportFragmentManager().getFragments().get(0);
         MockClipboardManager clipboardManager = prepareMockClipboardManager(inputDialog);
@@ -739,10 +804,11 @@ public class DefaultsActivityTest extends BaseUITest {
 
     @Test
     public void testConnectCountCopyPasteOptionScreenRotation() {
+        ActivityScenario<?> activityScenario = launchSettingsInputActivity(DefaultsActivity.class);
         onView(withId(R.id.textview_activity_defaults_connect_count)).perform(click());
         onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("11"));
         rotateScreen(activityScenario);
-        MockClipboardManager clipboardManager = prepareMockClipboardManager(getDialog());
+        MockClipboardManager clipboardManager = prepareMockClipboardManager(getDialog(activityScenario));
         clipboardManager.putData("10");
         onView(withId(R.id.edittext_dialog_settings_input_value)).perform(longClick());
         assertEquals(2, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
@@ -751,7 +817,7 @@ public class DefaultsActivityTest extends BaseUITest {
         onView(allOf(withId(R.id.textview_list_item_context_option_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options), 0))).check(matches(withText("Copy")));
         onView(allOf(withId(R.id.textview_list_item_context_option_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options), 1))).check(matches(withText("Paste")));
         rotateScreen(activityScenario);
-        clipboardManager = prepareMockClipboardManager(getDialog());
+        clipboardManager = prepareMockClipboardManager(getDialog(activityScenario));
         clipboardManager.putData("10");
         onView(allOf(withId(R.id.textview_list_item_context_option_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options), 1))).perform(click());
         assertEquals(1, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
@@ -765,6 +831,7 @@ public class DefaultsActivityTest extends BaseUITest {
 
     @Test
     public void testResetValues() {
+        ActivityScenario<?> activityScenario = launchSettingsInputActivity(DefaultsActivity.class);
         onView(withText("Download")).perform(click());
         onView(withId(R.id.textview_activity_defaults_address)).perform(click());
         onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("localhost"));
@@ -823,10 +890,12 @@ public class DefaultsActivityTest extends BaseUITest {
         assertFalse(preferenceManager.getPreferenceStopOnSuccess());
         assertFalse(preferenceManager.getPreferenceOnlyWifi());
         assertFalse(preferenceManager.getPreferenceNotification());
+        activityScenario.close();
     }
 
     @Test
     public void testPreserveValuesOnScreenRotation() {
+        ActivityScenario<?> activityScenario = launchSettingsInputActivity(DefaultsActivity.class);
         onView(withText("Connect")).perform(click());
         onView(withId(R.id.textview_activity_defaults_address)).perform(click());
         onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("localhost"));
@@ -879,10 +948,12 @@ public class DefaultsActivityTest extends BaseUITest {
         onView(withId(R.id.textview_activity_defaults_onlywifi_on_off)).check(matches(withText("yes")));
         onView(withId(R.id.switch_activity_defaults_notification)).check(matches(isChecked()));
         onView(withId(R.id.textview_activity_defaults_notification_on_off)).check(matches(withText("yes")));
+        activityScenario.close();
     }
 
     @Test
     public void testConfirmDialogOnScreenRotationAddress() {
+        ActivityScenario<?> activityScenario = launchSettingsInputActivity(DefaultsActivity.class);
         onView(withId(R.id.textview_activity_defaults_address)).perform(click());
         onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("localhost"));
         rotateScreen(activityScenario);
@@ -893,10 +964,12 @@ public class DefaultsActivityTest extends BaseUITest {
         rotateScreen(activityScenario);
         onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
         onView(withId(R.id.textview_activity_defaults_address)).check(matches(withText("localhost")));
+        activityScenario.close();
     }
 
     @Test
     public void testConfirmDialogOnScreenRotationPort() {
+        ActivityScenario<?> activityScenario = launchSettingsInputActivity(DefaultsActivity.class);
         onView(withId(R.id.textview_activity_defaults_port)).perform(click());
         onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("55"));
         rotateScreen(activityScenario);
@@ -907,10 +980,12 @@ public class DefaultsActivityTest extends BaseUITest {
         rotateScreen(activityScenario);
         onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
         onView(withId(R.id.textview_activity_defaults_port)).check(matches(withText("55")));
+        activityScenario.close();
     }
 
     @Test
     public void testConfirmDialogOnScreenRotationPingCount() {
+        ActivityScenario<?> activityScenario = launchSettingsInputActivity(DefaultsActivity.class);
         onView(withId(R.id.textview_activity_defaults_ping_count)).perform(click());
         onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("5"));
         rotateScreen(activityScenario);
@@ -922,10 +997,12 @@ public class DefaultsActivityTest extends BaseUITest {
         rotateScreen(activityScenario);
         onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
         onView(withId(R.id.textview_activity_defaults_ping_count)).check(matches(withText("5")));
+        activityScenario.close();
     }
 
     @Test
     public void testConfirmDialogOnScreenRotationPingPackageSize() {
+        ActivityScenario<?> activityScenario = launchSettingsInputActivity(DefaultsActivity.class);
         onView(withId(R.id.textview_activity_defaults_ping_package_size)).perform(click());
         onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("33"));
         rotateScreen(activityScenario);
@@ -937,10 +1014,12 @@ public class DefaultsActivityTest extends BaseUITest {
         rotateScreen(activityScenario);
         onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
         onView(withId(R.id.textview_activity_defaults_ping_package_size)).check(matches(withText("33")));
+        activityScenario.close();
     }
 
     @Test
     public void testConfirmDialogOnScreenRotationConnectCount() {
+        ActivityScenario<?> activityScenario = launchSettingsInputActivity(DefaultsActivity.class);
         onView(withId(R.id.textview_activity_defaults_connect_count)).perform(click());
         onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("5"));
         rotateScreen(activityScenario);
@@ -952,10 +1031,12 @@ public class DefaultsActivityTest extends BaseUITest {
         rotateScreen(activityScenario);
         onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
         onView(withId(R.id.textview_activity_defaults_connect_count)).check(matches(withText("5")));
+        activityScenario.close();
     }
 
     @Test
     public void testValidationErrorScreenRotationPort() {
+        ActivityScenario<?> activityScenario = launchSettingsInputActivity(DefaultsActivity.class);
         onView(withId(R.id.textview_activity_defaults_port)).perform(click());
         onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("1a"));
         onView(withId(R.id.edittext_dialog_settings_input_value)).check(matches(withTextColor(R.color.textErrorColor)));
@@ -970,10 +1051,12 @@ public class DefaultsActivityTest extends BaseUITest {
         onView(allOf(withText("Invalid format"), withGridLayoutPosition(1, 1))).check(matches(isDisplayed()));
         onView(withId(R.id.imageview_dialog_validator_error_ok)).perform(click());
         onView(withId(R.id.imageview_dialog_settings_input_cancel)).perform(click());
+        activityScenario.close();
     }
 
     @Test
     public void testValidationErrorColorScreenRotationPort() {
+        ActivityScenario<?> activityScenario = launchSettingsInputActivity(DefaultsActivity.class);
         onView(withId(R.id.textview_activity_defaults_port)).perform(click());
         onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("a"));
         onView(withId(R.id.edittext_dialog_settings_input_value)).check(matches(withTextColor(R.color.textErrorColor)));
@@ -989,6 +1072,7 @@ public class DefaultsActivityTest extends BaseUITest {
 
     @Test
     public void testValidationErrorScreenRotationPingCount() {
+        ActivityScenario<?> activityScenario = launchSettingsInputActivity(DefaultsActivity.class);
         onView(withId(R.id.textview_activity_defaults_ping_count)).perform(click());
         onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("a"));
         onView(withId(R.id.edittext_dialog_settings_input_value)).check(matches(withTextColor(R.color.textErrorColor)));
@@ -1008,6 +1092,7 @@ public class DefaultsActivityTest extends BaseUITest {
 
     @Test
     public void testValidationErrorColorScreenRotationPingCount() {
+        ActivityScenario<?> activityScenario = launchSettingsInputActivity(DefaultsActivity.class);
         onView(withId(R.id.textview_activity_defaults_ping_count)).perform(click());
         onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("a"));
         onView(withId(R.id.edittext_dialog_settings_input_value)).check(matches(withTextColor(R.color.textErrorColor)));
@@ -1023,6 +1108,7 @@ public class DefaultsActivityTest extends BaseUITest {
 
     @Test
     public void testValidationErrorScreenRotationPingPackageSize() {
+        ActivityScenario<?> activityScenario = launchSettingsInputActivity(DefaultsActivity.class);
         onView(withId(R.id.textview_activity_defaults_ping_package_size)).perform(click());
         onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("a"));
         onView(withId(R.id.edittext_dialog_settings_input_value)).check(matches(withTextColor(R.color.textErrorColor)));
@@ -1042,6 +1128,7 @@ public class DefaultsActivityTest extends BaseUITest {
 
     @Test
     public void testValidationErrorColorScreenRotationPingPackageSize() {
+        ActivityScenario<?> activityScenario = launchSettingsInputActivity(DefaultsActivity.class);
         onView(withId(R.id.textview_activity_defaults_ping_package_size)).perform(click());
         onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("a"));
         onView(withId(R.id.edittext_dialog_settings_input_value)).check(matches(withTextColor(R.color.textErrorColor)));
@@ -1057,6 +1144,7 @@ public class DefaultsActivityTest extends BaseUITest {
 
     @Test
     public void testValidationErrorScreenRotationConnectCount() {
+        ActivityScenario<?> activityScenario = launchSettingsInputActivity(DefaultsActivity.class);
         onView(withId(R.id.textview_activity_defaults_connect_count)).perform(click());
         onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("a"));
         onView(withId(R.id.edittext_dialog_settings_input_value)).check(matches(withTextColor(R.color.textErrorColor)));
@@ -1076,6 +1164,7 @@ public class DefaultsActivityTest extends BaseUITest {
 
     @Test
     public void testValidationErrorColorScreenRotationConnectCount() {
+        ActivityScenario<?> activityScenario = launchSettingsInputActivity(DefaultsActivity.class);
         onView(withId(R.id.textview_activity_defaults_connect_count)).perform(click());
         onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("a"));
         onView(withId(R.id.edittext_dialog_settings_input_value)).check(matches(withTextColor(R.color.textErrorColor)));
@@ -1089,7 +1178,7 @@ public class DefaultsActivityTest extends BaseUITest {
         activityScenario.close();
     }
 
-    private SettingsInputDialog getDialog() {
+    private SettingsInputDialog getDialog(ActivityScenario<?> activityScenario) {
         return (SettingsInputDialog) getActivity(activityScenario).getSupportFragmentManager().getFragments().get(0);
     }
 

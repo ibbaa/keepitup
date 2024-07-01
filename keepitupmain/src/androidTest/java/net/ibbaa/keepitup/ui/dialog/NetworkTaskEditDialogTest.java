@@ -91,6 +91,8 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         onView(withId(R.id.edittext_dialog_network_task_edit_interval)).check(matches(withText("15")));
         onView(withId(R.id.edittext_dialog_network_task_edit_ping_count)).check(matches(withText("3")));
         onView(withId(R.id.edittext_dialog_network_task_edit_ping_package_size)).check(matches(withText("56")));
+        onView(withId(R.id.switch_dialog_network_task_edit_stoponsuccess)).check(matches(isNotChecked()));
+        onView(withId(R.id.textview_dialog_network_task_edit_stoponsuccess_on_off)).check(matches(withText("no")));
         onView(withId(R.id.switch_dialog_network_task_edit_onlywifi)).check(matches(isNotChecked()));
         onView(withId(R.id.textview_dialog_network_task_edit_onlywifi_on_off)).check(matches(withText("no")));
         onView(withId(R.id.switch_dialog_network_task_edit_notification)).check(matches(isNotChecked()));
@@ -104,35 +106,49 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         assertEquals("192.168.178.1", task.getAddress());
         assertEquals(22, task.getPort());
         assertEquals(15, task.getInterval());
+        assertFalse(task.isOnlyWifi());
         assertFalse(task.isNotification());
         assertEquals(3, data.getPingCount());
         assertEquals(56, data.getPingPackageSize());
         assertEquals(1, data.getConnectCount());
+        assertFalse(data.isStopOnSuccess());
     }
 
     @Test
     public void testSwitchYesNoText() {
         onView(allOf(withId(R.id.imageview_activity_main_network_task_add), isDisplayed())).perform(click());
+        onView(withId(R.id.switch_dialog_network_task_edit_stoponsuccess)).check(matches(isNotChecked()));
+        onView(withId(R.id.textview_dialog_network_task_edit_stoponsuccess_on_off)).check(matches(withText("no")));
         onView(withId(R.id.switch_dialog_network_task_edit_onlywifi)).check(matches(isNotChecked()));
         onView(withId(R.id.textview_dialog_network_task_edit_onlywifi_on_off)).check(matches(withText("no")));
         onView(withId(R.id.switch_dialog_network_task_edit_notification)).check(matches(isNotChecked()));
         onView(withId(R.id.textview_dialog_network_task_edit_notification_on_off)).check(matches(withText("no")));
+        onView(withId(R.id.switch_dialog_network_task_edit_stoponsuccess)).perform(click());
+        onView(withId(R.id.switch_dialog_network_task_edit_stoponsuccess)).check(matches(isChecked()));
+        onView(withId(R.id.textview_dialog_network_task_edit_stoponsuccess_on_off)).check(matches(withText("yes")));
         onView(withId(R.id.switch_dialog_network_task_edit_onlywifi)).perform(click());
         onView(withId(R.id.switch_dialog_network_task_edit_onlywifi)).check(matches(isChecked()));
         onView(withId(R.id.textview_dialog_network_task_edit_onlywifi_on_off)).check(matches(withText("yes")));
         onView(withId(R.id.switch_dialog_network_task_edit_notification)).check(matches(isNotChecked()));
         onView(withId(R.id.textview_dialog_network_task_edit_notification_on_off)).check(matches(withText("no")));
         onView(withId(R.id.switch_dialog_network_task_edit_notification)).perform(click());
+        onView(withId(R.id.switch_dialog_network_task_edit_stoponsuccess)).check(matches(isChecked()));
+        onView(withId(R.id.textview_dialog_network_task_edit_stoponsuccess_on_off)).check(matches(withText("yes")));
         onView(withId(R.id.switch_dialog_network_task_edit_onlywifi)).check(matches(isChecked()));
         onView(withId(R.id.textview_dialog_network_task_edit_onlywifi_on_off)).check(matches(withText("yes")));
         onView(withId(R.id.switch_dialog_network_task_edit_notification)).check(matches(isChecked()));
         onView(withId(R.id.textview_dialog_network_task_edit_notification_on_off)).check(matches(withText("yes")));
+        onView(withId(R.id.switch_dialog_network_task_edit_stoponsuccess)).perform(click());
+        onView(withId(R.id.switch_dialog_network_task_edit_stoponsuccess)).check(matches(isNotChecked()));
+        onView(withId(R.id.textview_dialog_network_task_edit_stoponsuccess_on_off)).check(matches(withText("no")));
         onView(withId(R.id.switch_dialog_network_task_edit_onlywifi)).perform(click());
         onView(withId(R.id.switch_dialog_network_task_edit_onlywifi)).check(matches(isNotChecked()));
         onView(withId(R.id.textview_dialog_network_task_edit_onlywifi_on_off)).check(matches(withText("no")));
         onView(withId(R.id.switch_dialog_network_task_edit_notification)).check(matches(isChecked()));
         onView(withId(R.id.textview_dialog_network_task_edit_notification_on_off)).check(matches(withText("yes")));
         onView(withId(R.id.switch_dialog_network_task_edit_notification)).perform(click());
+        onView(withId(R.id.switch_dialog_network_task_edit_stoponsuccess)).check(matches(isNotChecked()));
+        onView(withId(R.id.textview_dialog_network_task_edit_stoponsuccess_on_off)).check(matches(withText("no")));
         onView(withId(R.id.switch_dialog_network_task_edit_onlywifi)).check(matches(isNotChecked()));
         onView(withId(R.id.textview_dialog_network_task_edit_onlywifi_on_off)).check(matches(withText("no")));
         onView(withId(R.id.switch_dialog_network_task_edit_notification)).check(matches(isNotChecked()));
@@ -147,6 +163,7 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         onView(withId(R.id.edittext_dialog_network_task_edit_port)).perform(replaceText("80"));
         onView(withId(R.id.edittext_dialog_network_task_edit_interval)).perform(replaceText("60"));
         onView(withId(R.id.edittext_dialog_network_task_edit_connect_count)).perform(replaceText("9"));
+        onView(withId(R.id.switch_dialog_network_task_edit_stoponsuccess)).perform(click());
         onView(withId(R.id.switch_dialog_network_task_edit_onlywifi)).perform(click());
         onView(withId(R.id.switch_dialog_network_task_edit_notification)).perform(click());
         NetworkTaskEditDialog dialog = (NetworkTaskEditDialog) getActivity(activityScenario).getSupportFragmentManager().getFragments().get(0);
@@ -162,8 +179,10 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         assertEquals(3, data.getPingCount());
         assertEquals(56, data.getPingPackageSize());
         assertEquals(9, data.getConnectCount());
+        assertTrue(data.isStopOnSuccess());
         onView(withText("Ping")).perform(click());
         task = dialog.getNetworkTask();
+        data = dialog.getAccessTypeData();
         assertEquals(AccessType.PING, task.getAccessType());
         assertEquals("localhost", task.getAddress());
         assertEquals(60, task.getInterval());
@@ -171,10 +190,12 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         assertTrue(task.isNotification());
         assertEquals(3, data.getPingCount());
         assertEquals(56, data.getPingPackageSize());
-        assertEquals(9, data.getConnectCount());
+        assertEquals(1, data.getConnectCount());
+        assertTrue(data.isStopOnSuccess());
         onView(withText("Download")).perform(click());
         onView(withId(R.id.edittext_dialog_network_task_edit_address)).perform(replaceText("http://test.com"));
         task = dialog.getNetworkTask();
+        data = dialog.getAccessTypeData();
         assertNotNull(task);
         assertEquals(AccessType.DOWNLOAD, task.getAccessType());
         assertEquals("http://test.com", task.getAddress());
@@ -183,7 +204,8 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         assertTrue(task.isNotification());
         assertEquals(3, data.getPingCount());
         assertEquals(56, data.getPingPackageSize());
-        assertEquals(9, data.getConnectCount());
+        assertEquals(1, data.getConnectCount());
+        assertFalse(data.isStopOnSuccess());
     }
 
     @Test
@@ -194,6 +216,7 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         onView(withId(R.id.edittext_dialog_network_task_edit_interval)).perform(replaceText("60"));
         onView(withId(R.id.edittext_dialog_network_task_edit_ping_count)).perform(replaceText("9"));
         onView(withId(R.id.edittext_dialog_network_task_edit_ping_package_size)).perform(replaceText("65000"));
+        onView(withId(R.id.switch_dialog_network_task_edit_stoponsuccess)).perform(click());
         onView(withId(R.id.switch_dialog_network_task_edit_onlywifi)).perform(click());
         onView(withId(R.id.switch_dialog_network_task_edit_notification)).perform(click());
         NetworkTaskEditDialog dialog = (NetworkTaskEditDialog) getActivity(activityScenario).getSupportFragmentManager().getFragments().get(0);
@@ -208,6 +231,7 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         assertEquals(9, data.getPingCount());
         assertEquals(65000, data.getPingPackageSize());
         assertEquals(1, data.getConnectCount());
+        assertTrue(data.isStopOnSuccess());
     }
 
     @Test
@@ -237,6 +261,7 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         assertEquals(initialAccessTypeData.getPingCount(), data.getPingCount());
         assertEquals(initialAccessTypeData.getPingPackageSize(), data.getPingPackageSize());
         assertNotEquals(initialAccessTypeData.getConnectCount(), data.getConnectCount());
+        assertEquals(initialAccessTypeData.isStopOnSuccess(), data.isStopOnSuccess());
         onView(withId(R.id.edittext_dialog_network_task_edit_port)).perform(replaceText("80"));
         onView(withId(R.id.edittext_dialog_network_task_edit_interval)).perform(replaceText("60"));
         onView(withId(R.id.switch_dialog_network_task_edit_onlywifi)).perform(click());
@@ -257,6 +282,7 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         assertEquals(initialAccessTypeData.getPingCount(), data.getPingCount());
         assertEquals(initialAccessTypeData.getPingPackageSize(), data.getPingPackageSize());
         assertNotEquals(initialAccessTypeData.getConnectCount(), data.getConnectCount());
+        assertEquals(initialAccessTypeData.isStopOnSuccess(), data.isStopOnSuccess());
     }
 
     @Test
@@ -292,6 +318,7 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         onView(withId(R.id.edittext_dialog_network_task_edit_ping_count)).check(matches(not(isDisplayed())));
         onView(withId(R.id.edittext_dialog_network_task_edit_ping_package_size)).check(matches(not(isDisplayed())));
         onView(withId(R.id.edittext_dialog_network_task_edit_connect_count)).check(matches(isDisplayed()));
+        onView(withId(R.id.switch_dialog_network_task_edit_stoponsuccess)).check(matches(isDisplayed()));
         onView(withId(R.id.switch_dialog_network_task_edit_onlywifi)).check(matches(isDisplayed()));
         onView(withId(R.id.switch_dialog_network_task_edit_notification)).check(matches(isDisplayed()));
         onView(withText("Ping")).perform(click());
@@ -301,6 +328,7 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         onView(withId(R.id.edittext_dialog_network_task_edit_ping_count)).check(matches(isDisplayed()));
         onView(withId(R.id.edittext_dialog_network_task_edit_ping_package_size)).check(matches(isDisplayed()));
         onView(withId(R.id.edittext_dialog_network_task_edit_connect_count)).check(matches(not(isDisplayed())));
+        onView(withId(R.id.switch_dialog_network_task_edit_stoponsuccess)).check(matches(isDisplayed()));
         onView(withId(R.id.switch_dialog_network_task_edit_onlywifi)).check(matches(isDisplayed()));
         onView(withId(R.id.switch_dialog_network_task_edit_notification)).check(matches(isDisplayed()));
         onView(withText("Download")).perform(click());
@@ -310,6 +338,7 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         onView(withId(R.id.edittext_dialog_network_task_edit_ping_count)).check(matches(not(isDisplayed())));
         onView(withId(R.id.edittext_dialog_network_task_edit_ping_package_size)).check(matches(not(isDisplayed())));
         onView(withId(R.id.edittext_dialog_network_task_edit_connect_count)).check(matches(not(isDisplayed())));
+        onView(withId(R.id.switch_dialog_network_task_edit_stoponsuccess)).check(matches(not(isDisplayed())));
         onView(withId(R.id.switch_dialog_network_task_edit_onlywifi)).check(matches(isDisplayed()));
         onView(withId(R.id.switch_dialog_network_task_edit_notification)).check(matches(isDisplayed()));
     }
@@ -523,6 +552,8 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         onView(withId(R.id.edittext_dialog_network_task_edit_interval)).check(matches(withText("15")));
         onView(withId(R.id.edittext_dialog_network_task_edit_ping_count)).check(matches(withText("3")));
         onView(withId(R.id.edittext_dialog_network_task_edit_ping_package_size)).check(matches(withText("56")));
+        onView(withId(R.id.switch_dialog_network_task_edit_stoponsuccess)).check(matches(isNotChecked()));
+        onView(withId(R.id.textview_dialog_network_task_edit_stoponsuccess_on_off)).check(matches(withText("no")));
         onView(withId(R.id.switch_dialog_network_task_edit_onlywifi)).check(matches(isNotChecked()));
         onView(withId(R.id.textview_dialog_network_task_edit_onlywifi_on_off)).check(matches(withText("no")));
         onView(withId(R.id.switch_dialog_network_task_edit_notification)).check(matches(isNotChecked()));
@@ -548,6 +579,7 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         onView(withId(R.id.textview_activity_defaults_connect_count)).perform(click());
         onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("5"));
         onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
+        onView(withId(R.id.switch_activity_defaults_stoponsuccess)).perform(click());
         onView(withId(R.id.switch_activity_defaults_onlywifi)).perform(click());
         onView(withId(R.id.switch_activity_defaults_notification)).perform(click());
         onView(withText("Connect")).perform(click());
@@ -557,6 +589,8 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         onView(withId(R.id.edittext_dialog_network_task_edit_port)).check(matches(withText("80")));
         onView(withId(R.id.edittext_dialog_network_task_edit_interval)).check(matches(withText("50")));
         onView(withId(R.id.edittext_dialog_network_task_edit_connect_count)).check(matches(withText("5")));
+        onView(withId(R.id.switch_dialog_network_task_edit_stoponsuccess)).check(matches(isChecked()));
+        onView(withId(R.id.textview_dialog_network_task_edit_stoponsuccess_on_off)).check(matches(withText("yes")));
         onView(withId(R.id.switch_dialog_network_task_edit_onlywifi)).check(matches(isChecked()));
         onView(withId(R.id.textview_dialog_network_task_edit_onlywifi_on_off)).check(matches(withText("yes")));
         onView(withId(R.id.switch_dialog_network_task_edit_notification)).check(matches(isChecked()));
@@ -567,6 +601,8 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         onView(withId(R.id.edittext_dialog_network_task_edit_interval)).check(matches(withText("50")));
         onView(withId(R.id.edittext_dialog_network_task_edit_ping_count)).check(matches(withText("2")));
         onView(withId(R.id.edittext_dialog_network_task_edit_ping_package_size)).check(matches(withText("1234")));
+        onView(withId(R.id.switch_dialog_network_task_edit_stoponsuccess)).check(matches(isChecked()));
+        onView(withId(R.id.textview_dialog_network_task_edit_stoponsuccess_on_off)).check(matches(withText("yes")));
         onView(withId(R.id.switch_dialog_network_task_edit_onlywifi)).check(matches(isChecked()));
         onView(withId(R.id.textview_dialog_network_task_edit_onlywifi_on_off)).check(matches(withText("yes")));
         onView(withId(R.id.switch_dialog_network_task_edit_notification)).check(matches(isChecked()));
@@ -581,6 +617,7 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         onView(withId(R.id.edittext_dialog_network_task_edit_port)).perform(replaceText("80"));
         onView(withId(R.id.edittext_dialog_network_task_edit_interval)).perform(replaceText("60"));
         onView(withId(R.id.edittext_dialog_network_task_edit_connect_count)).perform(replaceText("2"));
+        onView(withId(R.id.switch_dialog_network_task_edit_stoponsuccess)).perform(click());
         onView(withId(R.id.switch_dialog_network_task_edit_onlywifi)).perform(click());
         rotateScreen(activityScenario);
         onView(withText("Connect")).check(matches(isChecked()));
@@ -588,6 +625,8 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         onView(withId(R.id.edittext_dialog_network_task_edit_port)).check(matches(withText("80")));
         onView(withId(R.id.edittext_dialog_network_task_edit_interval)).check(matches(withText("60")));
         onView(withId(R.id.edittext_dialog_network_task_edit_connect_count)).check(matches(withText("2")));
+        onView(withId(R.id.switch_dialog_network_task_edit_stoponsuccess)).check(matches(isChecked()));
+        onView(withId(R.id.textview_dialog_network_task_edit_stoponsuccess_on_off)).check(matches(withText("yes")));
         onView(withId(R.id.switch_dialog_network_task_edit_onlywifi)).check(matches(isChecked()));
         onView(withId(R.id.textview_dialog_network_task_edit_onlywifi_on_off)).check(matches(withText("yes")));
         onView(withId(R.id.switch_dialog_network_task_edit_notification)).check(matches(isNotChecked()));
@@ -606,6 +645,8 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         onView(withId(R.id.edittext_dialog_network_task_edit_interval)).check(matches(withText("60")));
         onView(withId(R.id.edittext_dialog_network_task_edit_ping_count)).check(matches(withText("3")));
         onView(withId(R.id.edittext_dialog_network_task_edit_ping_package_size)).check(matches(withText("56")));
+        onView(withId(R.id.switch_dialog_network_task_edit_stoponsuccess)).check(matches(isChecked()));
+        onView(withId(R.id.textview_dialog_network_task_edit_stoponsuccess_on_off)).check(matches(withText("yes")));
         onView(withId(R.id.switch_dialog_network_task_edit_onlywifi)).check(matches(isChecked()));
         onView(withId(R.id.textview_dialog_network_task_edit_onlywifi_on_off)).check(matches(withText("yes")));
         onView(withId(R.id.switch_dialog_network_task_edit_notification)).check(matches(isNotChecked()));
@@ -615,6 +656,8 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         onView(withId(R.id.edittext_dialog_network_task_edit_interval)).check(matches(withText("60")));
         onView(withId(R.id.edittext_dialog_network_task_edit_ping_count)).check(matches(withText("3")));
         onView(withId(R.id.edittext_dialog_network_task_edit_ping_package_size)).check(matches(withText("56")));
+        onView(withId(R.id.switch_dialog_network_task_edit_stoponsuccess)).check(matches(isChecked()));
+        onView(withId(R.id.textview_dialog_network_task_edit_stoponsuccess_on_off)).check(matches(withText("yes")));
         onView(withId(R.id.switch_dialog_network_task_edit_onlywifi)).check(matches(isChecked()));
         onView(withId(R.id.textview_dialog_network_task_edit_onlywifi_on_off)).check(matches(withText("yes")));
         onView(withId(R.id.switch_dialog_network_task_edit_notification)).check(matches(isNotChecked()));
@@ -626,6 +669,8 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         onView(withId(R.id.edittext_dialog_network_task_edit_interval)).check(matches(withText("60")));
         onView(withId(R.id.edittext_dialog_network_task_edit_ping_count)).check(matches(withText("1")));
         onView(withId(R.id.edittext_dialog_network_task_edit_ping_package_size)).check(matches(withText("1")));
+        onView(withId(R.id.switch_dialog_network_task_edit_stoponsuccess)).check(matches(isChecked()));
+        onView(withId(R.id.textview_dialog_network_task_edit_stoponsuccess_on_off)).check(matches(withText("yes")));
         onView(withId(R.id.switch_dialog_network_task_edit_onlywifi)).check(matches(isChecked()));
         onView(withId(R.id.textview_dialog_network_task_edit_onlywifi_on_off)).check(matches(withText("yes")));
         onView(withId(R.id.switch_dialog_network_task_edit_notification)).check(matches(isNotChecked()));
