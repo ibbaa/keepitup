@@ -40,6 +40,7 @@ public class NetworkTaskViewHolder extends RecyclerView.ViewHolder {
     private final TextView addressText;
     private final TextView intervalText;
     private final TextView notificationText;
+    private final TextView stopOnSuccessText;
     private final TextView onlyWifiText;
     private final TextView lastExecTimestampText;
     private final TextView failureCountText;
@@ -65,6 +66,7 @@ public class NetworkTaskViewHolder extends RecyclerView.ViewHolder {
         addressText = itemView.findViewById(R.id.textview_list_item_network_task_address);
         intervalText = itemView.findViewById(R.id.textview_list_item_network_task_interval);
         notificationText = itemView.findViewById(R.id.textview_list_item_network_task_notification);
+        stopOnSuccessText = itemView.findViewById(R.id.textview_list_item_network_task_stoponsuccess);
         onlyWifiText = itemView.findViewById(R.id.textview_list_item_network_task_onlywifi);
         lastExecTimestampText = itemView.findViewById(R.id.textview_list_item_network_task_last_exec_timestamp);
         failureCountText = itemView.findViewById(R.id.textview_list_item_network_task_failure_count);
@@ -95,6 +97,10 @@ public class NetworkTaskViewHolder extends RecyclerView.ViewHolder {
 
     public void setInterval(String interval) {
         intervalText.setText(interval);
+    }
+
+    public void setStopOnSuccess(String stopOnSuccess) {
+        stopOnSuccessText.setText(stopOnSuccess);
     }
 
     public void setOnlyWifi(String onlyWifi) {
@@ -131,6 +137,14 @@ public class NetworkTaskViewHolder extends RecyclerView.ViewHolder {
 
     public void hideLastExecMessageTextView() {
         lastExecMessageText.setVisibility(View.GONE);
+    }
+
+    public void showStopOnSuccessTextView() {
+        stopOnSuccessText.setVisibility(View.VISIBLE);
+    }
+
+    public void hideStopOnSuccessTextView() {
+        stopOnSuccessText.setVisibility(View.GONE);
     }
 
     private void onStartStopClicked(View view) {

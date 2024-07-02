@@ -77,6 +77,7 @@ public class NetworkTaskAdapter extends RecyclerView.Adapter<NetworkTaskViewHold
         bindLastExecTimestamp(networkTaskViewHolder, logEntry);
         bindFailureCount(networkTaskViewHolder, networkTask, logEntry);
         bindLastExecMessage(networkTaskViewHolder, logEntry);
+        bindStopOnSuccess(networkTaskViewHolder, networkTask, accessTypeData);
         bindOnlyWifi(networkTaskViewHolder, networkTask);
         bindNotification(networkTaskViewHolder, networkTask);
     }
@@ -162,6 +163,19 @@ public class NetworkTaskAdapter extends RecyclerView.Adapter<NetworkTaskViewHold
         String formattedIntervalText = getResources().getString(R.string.text_activity_main_list_item_network_task_interval, interval, intervalUnit);
         Log.d(NetworkTaskAdapter.class.getName(), "binding interval text " + formattedIntervalText);
         networkTaskViewHolder.setInterval(formattedIntervalText);
+    }
+
+    private void bindStopOnSuccess(@NonNull NetworkTaskViewHolder networkTaskViewHolder, NetworkTask networkTask, AccessTypeData accessTypeData) {
+        Log.d(NetworkTaskAdapter.class.getName(), "bindStopOnSuccess, networkTask is " + networkTask + ", accessTypeData is " + accessTypeData);
+        String stopOnSuccess = accessTypeData != null && accessTypeData.isStopOnSuccess() ? getResources().getString(R.string.string_yes) : getResources().getString(R.string.string_no);
+        String formattedStopOnSuccessText = getResources().getString(R.string.text_activity_main_list_item_network_task_stoponsuccess, stopOnSuccess);
+        Log.d(NetworkTaskAdapter.class.getName(), "binding stop on success " + formattedStopOnSuccessText);
+        networkTaskViewHolder.setStopOnSuccess(formattedStopOnSuccessText);
+        if (AccessType.DOWNLOAD.equals(networkTask.getAccessType())) {
+            networkTaskViewHolder.hideStopOnSuccessTextView();
+        } else {
+            networkTaskViewHolder.showStopOnSuccessTextView();
+        }
     }
 
     private void bindOnlyWifi(@NonNull NetworkTaskViewHolder networkTaskViewHolder, NetworkTask networkTask) {
