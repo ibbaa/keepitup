@@ -27,8 +27,8 @@ public class MockConnectCommand extends ConnectCommand {
 
     private final ConnectCommandResult connectCommandResult;
 
-    public MockConnectCommand(Context context, InetAddress address, int port, int connectCount, ConnectCommandResult connectCommandResult) {
-        super(context, address, port, connectCount);
+    public MockConnectCommand(Context context, InetAddress address, int port, int connectCount, boolean stopOnSuccess, ConnectCommandResult connectCommandResult) {
+        super(context, address, port, connectCount, stopOnSuccess);
         this.connectCommandResult = connectCommandResult;
     }
 

@@ -25,8 +25,8 @@ public class MockPingCommand extends PingCommand {
 
     private final PingCommandResult pingCommandResult;
 
-    public MockPingCommand(Context context, String address, int pingCount, boolean defaultPackageSize, int packageSize, boolean ip6, PingCommandResult pingCommandResult) {
-        super(context, address, pingCount, defaultPackageSize, packageSize, ip6);
+    public MockPingCommand(Context context, String address, int pingCount, boolean defaultPackageSize, int packageSize, boolean ip6, boolean stopOnSuccess, PingCommandResult pingCommandResult) {
+        super(context, address, pingCount, defaultPackageSize, packageSize, stopOnSuccess, ip6);
         this.pingCommandResult = pingCommandResult;
     }
 

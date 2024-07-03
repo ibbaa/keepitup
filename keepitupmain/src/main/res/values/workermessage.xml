@@ -39,7 +39,8 @@
         <item quantity="other">%d packets received.</item>
     </plurals>
     <string name="text_ping_packet_loss">%s packet loss.</string>
-    <string name="text_ping_time">%s average time.</string>
+    <string name="text_ping_average_time">%s average time.</string>
+    <string name="text_ping_time">%s ping time.</string>
     <string name="text_connect_success">Connected to %s successfully.</string>
     <string name="text_connect_failure">Connection to %s failed.</string>
     <plurals name="text_connect_attempt">
@@ -58,7 +59,8 @@
         <item quantity="one">%d other error.</item>
         <item quantity="other">%d other errors.</item>
     </plurals>
-    <string name="text_connect_time">%s average time.</string>
+    <string name="text_connect_average_time">%s average time.</string>
+    <string name="text_connect_time">%s connect time.</string>
     <string name="text_connect_last_error">Last error:</string>
     <string name="text_download_error">The download from %s failed.</string>
     <string name="text_download_connect_error">Connection to %s failed.</string>

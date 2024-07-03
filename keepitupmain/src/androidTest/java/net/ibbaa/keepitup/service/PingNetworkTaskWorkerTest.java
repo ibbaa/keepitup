@@ -62,7 +62,7 @@ public class PingNetworkTaskWorkerTest {
 
     private void prepareTestPingNetworkTaskWorker(DNSLookupResult dnsLookupResult, PingCommandResult pingCommandResult) {
         MockDNSLookup mockDNSLookup = new MockDNSLookup("127.0.0.1", dnsLookupResult);
-        MockPingCommand mockPingCommand = new MockPingCommand(TestRegistry.getContext(), "127.0.0.1", 3, false, 56, false, pingCommandResult);
+        MockPingCommand mockPingCommand = new MockPingCommand(TestRegistry.getContext(), "127.0.0.1", 3, false, 56, false, false, pingCommandResult);
         pingNetworkTaskWorker.setMockDNSLookup(mockDNSLookup);
         pingNetworkTaskWorker.setMockPingCommand(mockPingCommand);
         MockTimeService timeService = (MockTimeService) pingNetworkTaskWorker.getTimeService();
@@ -73,9 +73,23 @@ public class PingNetworkTaskWorkerTest {
     @Test
     public void testSuccessfulCallUnparseableResult() throws Exception {
         DNSLookupResult dnsLookupResult = new DNSLookupResult(Arrays.asList(InetAddress.getByName("127.0.0.1"), InetAddress.getByName("::1")), null);
-        PingCommandResult pingCommandResult = new PingCommandResult(0, "testoutput", null);
+        PingCommandResult pingCommandResult = new PingCommandResult(0, 1, "testoutput", null);
         prepareTestPingNetworkTaskWorker(dnsLookupResult, pingCommandResult);
-        NetworkTaskWorker.ExecutionResult executionResult = pingNetworkTaskWorker.execute(getNetworkTask(), getAccessTypeData());
+        NetworkTaskWorker.ExecutionResult executionResult = pingNetworkTaskWorker.execute(getNetworkTask(), getAccessTypeData(false));
+        LogEntry logEntry = executionResult.getLogEntry();
+        assertEquals(45, logEntry.getNetworkTaskId());
+        assertEquals(getTestTimestamp(), logEntry.getTimestamp());
+        assertEquals(10, pingNetworkTaskWorker.getPingCount());
+        assertTrue(logEntry.isSuccess());
+        assertEquals("Pinged 127.0.0.1 successfully. testoutput", logEntry.getMessage());
+    }
+
+    @Test
+    public void testSuccessfulCallUnparseableResultStopOnSuccess() throws Exception {
+        DNSLookupResult dnsLookupResult = new DNSLookupResult(Arrays.asList(InetAddress.getByName("127.0.0.1"), InetAddress.getByName("::1")), null);
+        PingCommandResult pingCommandResult = new PingCommandResult(0, 1, "testoutput", null);
+        prepareTestPingNetworkTaskWorker(dnsLookupResult, pingCommandResult);
+        NetworkTaskWorker.ExecutionResult executionResult = pingNetworkTaskWorker.execute(getNetworkTask(), getAccessTypeData(true));
         LogEntry logEntry = executionResult.getLogEntry();
         assertEquals(45, logEntry.getNetworkTaskId());
         assertEquals(getTestTimestamp(), logEntry.getTimestamp());
@@ -87,9 +101,9 @@ public class PingNetworkTaskWorkerTest {
     @Test
     public void testSuccessfulCallParseableResult() throws Exception {
         DNSLookupResult dnsLookupResult = new DNSLookupResult(InetAddress.getByName("::1"), null);
-        PingCommandResult pingCommandResult = new PingCommandResult(0, getTestIP4Ping(), null);
+        PingCommandResult pingCommandResult = new PingCommandResult(0, 1, getTestIP4Ping(), null);
         prepareTestPingNetworkTaskWorker(dnsLookupResult, pingCommandResult);
-        NetworkTaskWorker.ExecutionResult executionResult = pingNetworkTaskWorker.execute(getNetworkTask(), getAccessTypeData());
+        NetworkTaskWorker.ExecutionResult executionResult = pingNetworkTaskWorker.execute(getNetworkTask(), getAccessTypeData(false));
         LogEntry logEntry = executionResult.getLogEntry();
         assertEquals(45, logEntry.getNetworkTaskId());
         assertEquals(getTestTimestamp(), logEntry.getTimestamp());
@@ -99,11 +113,39 @@ public class PingNetworkTaskWorkerTest {
     }
 
     @Test
+    public void testSuccessfulCallParseableResultStopOnSuccess() throws Exception {
+        DNSLookupResult dnsLookupResult = new DNSLookupResult(InetAddress.getByName("::1"), null);
+        PingCommandResult pingCommandResult = new PingCommandResult(0, 1, getTestIP4PingOnePacket(), null);
+        prepareTestPingNetworkTaskWorker(dnsLookupResult, pingCommandResult);
+        NetworkTaskWorker.ExecutionResult executionResult = pingNetworkTaskWorker.execute(getNetworkTask(), getAccessTypeData(true));
+        LogEntry logEntry = executionResult.getLogEntry();
+        assertEquals(45, logEntry.getNetworkTaskId());
+        assertEquals(getTestTimestamp(), logEntry.getTimestamp());
+        assertEquals(10, pingNetworkTaskWorker.getPingCount());
+        assertTrue(logEntry.isSuccess());
+        assertEquals("Pinged ::1 successfully. 64 bytes received per packet. 1 packet transmitted. 1 packet received. 0% packet loss. 1 sec ping time.", logEntry.getMessage());
+    }
+
+    @Test
+    public void testSuccessfulCallParseableResultStopOnSuccess2PingCalls() throws Exception {
+        DNSLookupResult dnsLookupResult = new DNSLookupResult(InetAddress.getByName("::1"), null);
+        PingCommandResult pingCommandResult = new PingCommandResult(0, 2, getTestIP4PingOnePacket(), null);
+        prepareTestPingNetworkTaskWorker(dnsLookupResult, pingCommandResult);
+        NetworkTaskWorker.ExecutionResult executionResult = pingNetworkTaskWorker.execute(getNetworkTask(), getAccessTypeData(true));
+        LogEntry logEntry = executionResult.getLogEntry();
+        assertEquals(45, logEntry.getNetworkTaskId());
+        assertEquals(getTestTimestamp(), logEntry.getTimestamp());
+        assertEquals(10, pingNetworkTaskWorker.getPingCount());
+        assertTrue(logEntry.isSuccess());
+        assertEquals("Pinged ::1 successfully. 64 bytes received per packet. 2 packets transmitted. 1 packet received. 50% packet loss. 1 sec ping time.", logEntry.getMessage());
+    }
+
+    @Test
     public void testSuccessfulCallParseableResultIP6MaxBytes() throws Exception {
         DNSLookupResult dnsLookupResult = new DNSLookupResult(InetAddress.getByName("::1"), null);
-        PingCommandResult pingCommandResult = new PingCommandResult(0, getTestIP6PingMaxBytes(), null);
+        PingCommandResult pingCommandResult = new PingCommandResult(0, 1, getTestIP6PingMaxBytes(), null);
         prepareTestPingNetworkTaskWorker(dnsLookupResult, pingCommandResult);
-        NetworkTaskWorker.ExecutionResult executionResult = pingNetworkTaskWorker.execute(getNetworkTask(), getAccessTypeData());
+        NetworkTaskWorker.ExecutionResult executionResult = pingNetworkTaskWorker.execute(getNetworkTask(), getAccessTypeData(false));
         LogEntry logEntry = executionResult.getLogEntry();
         assertEquals(45, logEntry.getNetworkTaskId());
         assertEquals(getTestTimestamp(), logEntry.getTimestamp());
@@ -115,37 +157,37 @@ public class PingNetworkTaskWorkerTest {
     @Test
     public void testSuccessfulCallParseableResultOnePacket() throws Exception {
         DNSLookupResult dnsLookupResult = new DNSLookupResult(InetAddress.getByName("::1"), null);
-        PingCommandResult pingCommandResult = new PingCommandResult(0, getTestIP4PingOnePacket(), null);
+        PingCommandResult pingCommandResult = new PingCommandResult(0, 1, getTestIP4PingOnePacket(), null);
         prepareTestPingNetworkTaskWorker(dnsLookupResult, pingCommandResult);
-        NetworkTaskWorker.ExecutionResult executionResult = pingNetworkTaskWorker.execute(getNetworkTask(), getAccessTypeData());
+        NetworkTaskWorker.ExecutionResult executionResult = pingNetworkTaskWorker.execute(getNetworkTask(), getAccessTypeData(false));
         LogEntry logEntry = executionResult.getLogEntry();
         assertEquals(45, logEntry.getNetworkTaskId());
         assertEquals(getTestTimestamp(), logEntry.getTimestamp());
         assertEquals(10, pingNetworkTaskWorker.getPingCount());
         assertTrue(logEntry.isSuccess());
-        assertEquals("Pinged ::1 successfully. 64 bytes received per packet. 1 packet transmitted. 1 packet received. 0% packet loss. 1 sec average time.", logEntry.getMessage());
+        assertEquals("Pinged ::1 successfully. 64 bytes received per packet. 1 packet transmitted. 1 packet received. 0% packet loss. 1 sec ping time.", logEntry.getMessage());
     }
 
     @Test
     public void testSuccessfulCallParseableResultOnePacket8Bytes() throws Exception {
         DNSLookupResult dnsLookupResult = new DNSLookupResult(InetAddress.getByName("::1"), null);
-        PingCommandResult pingCommandResult = new PingCommandResult(0, getTestIP4PingOnePacket8Bytes(), null);
+        PingCommandResult pingCommandResult = new PingCommandResult(0, 1, getTestIP4PingOnePacket8Bytes(), null);
         prepareTestPingNetworkTaskWorker(dnsLookupResult, pingCommandResult);
-        NetworkTaskWorker.ExecutionResult executionResult = pingNetworkTaskWorker.execute(getNetworkTask(), getAccessTypeData());
+        NetworkTaskWorker.ExecutionResult executionResult = pingNetworkTaskWorker.execute(getNetworkTask(), getAccessTypeData(false));
         LogEntry logEntry = executionResult.getLogEntry();
         assertEquals(45, logEntry.getNetworkTaskId());
         assertEquals(getTestTimestamp(), logEntry.getTimestamp());
         assertEquals(10, pingNetworkTaskWorker.getPingCount());
         assertTrue(logEntry.isSuccess());
-        assertEquals("Pinged ::1 successfully. 8 bytes received per packet. 1 packet transmitted. 1 packet received. 0% packet loss. 1 sec average time.", logEntry.getMessage());
+        assertEquals("Pinged ::1 successfully. 8 bytes received per packet. 1 packet transmitted. 1 packet received. 0% packet loss. 1 sec ping time.", logEntry.getMessage());
     }
 
     @Test
     public void testSuccessfulCallParseableResultAverageTime() throws Exception {
         DNSLookupResult dnsLookupResult = new DNSLookupResult(InetAddress.getByName("127.0.0.1"), null);
-        PingCommandResult pingCommandResult = new PingCommandResult(0, getTestIP4PingAverageTime(), null);
+        PingCommandResult pingCommandResult = new PingCommandResult(0, 1, getTestIP4PingAverageTime(), null);
         prepareTestPingNetworkTaskWorker(dnsLookupResult, pingCommandResult);
-        NetworkTaskWorker.ExecutionResult executionResult = pingNetworkTaskWorker.execute(getNetworkTask(), getAccessTypeData());
+        NetworkTaskWorker.ExecutionResult executionResult = pingNetworkTaskWorker.execute(getNetworkTask(), getAccessTypeData(false));
         LogEntry logEntry = executionResult.getLogEntry();
         assertEquals(45, logEntry.getNetworkTaskId());
         assertEquals(getTestTimestamp(), logEntry.getTimestamp());
@@ -159,7 +201,7 @@ public class PingNetworkTaskWorkerTest {
         IllegalArgumentException exception = new IllegalArgumentException("TestException");
         DNSLookupResult dnsLookupResult = new DNSLookupResult(Collections.emptyList(), exception);
         prepareTestPingNetworkTaskWorker(dnsLookupResult, null);
-        NetworkTaskWorker.ExecutionResult executionResult = pingNetworkTaskWorker.execute(getNetworkTask(), getAccessTypeData());
+        NetworkTaskWorker.ExecutionResult executionResult = pingNetworkTaskWorker.execute(getNetworkTask(), getAccessTypeData(false));
         LogEntry logEntry = executionResult.getLogEntry();
         assertEquals(45, logEntry.getNetworkTaskId());
         assertEquals(getTestTimestamp(), logEntry.getTimestamp());
@@ -171,9 +213,24 @@ public class PingNetworkTaskWorkerTest {
     public void testPingCommandExceptionThrown() throws Exception {
         DNSLookupResult dnsLookupResult = new DNSLookupResult(InetAddress.getByName("127.0.0.1"), null);
         IllegalArgumentException exception = new IllegalArgumentException("TestException");
-        PingCommandResult pingCommandResult = new PingCommandResult(0, "testoutput", exception);
+        PingCommandResult pingCommandResult = new PingCommandResult(0, 1, "testoutput", exception);
         prepareTestPingNetworkTaskWorker(dnsLookupResult, pingCommandResult);
-        NetworkTaskWorker.ExecutionResult executionResult = pingNetworkTaskWorker.execute(getNetworkTask(), getAccessTypeData());
+        NetworkTaskWorker.ExecutionResult executionResult = pingNetworkTaskWorker.execute(getNetworkTask(), getAccessTypeData(false));
+        LogEntry logEntry = executionResult.getLogEntry();
+        assertEquals(45, logEntry.getNetworkTaskId());
+        assertEquals(getTestTimestamp(), logEntry.getTimestamp());
+        assertEquals(10, pingNetworkTaskWorker.getPingCount());
+        assertFalse(logEntry.isSuccess());
+        assertEquals("Ping to 127.0.0.1 failed. IllegalArgumentException: TestException", logEntry.getMessage());
+    }
+
+    @Test
+    public void testPingCommandExceptionThrownStopOnSuccess() throws Exception {
+        DNSLookupResult dnsLookupResult = new DNSLookupResult(InetAddress.getByName("127.0.0.1"), null);
+        IllegalArgumentException exception = new IllegalArgumentException("TestException");
+        PingCommandResult pingCommandResult = new PingCommandResult(0, 5, "testoutput", exception);
+        prepareTestPingNetworkTaskWorker(dnsLookupResult, pingCommandResult);
+        NetworkTaskWorker.ExecutionResult executionResult = pingNetworkTaskWorker.execute(getNetworkTask(), getAccessTypeData(true));
         LogEntry logEntry = executionResult.getLogEntry();
         assertEquals(45, logEntry.getNetworkTaskId());
         assertEquals(getTestTimestamp(), logEntry.getTimestamp());
@@ -185,9 +242,23 @@ public class PingNetworkTaskWorkerTest {
     @Test
     public void testFailureCodeReturnedWithMessageUnparseable() throws Exception {
         DNSLookupResult dnsLookupResult = new DNSLookupResult(InetAddress.getByName("127.0.0.1"), null);
-        PingCommandResult pingCommandResult = new PingCommandResult(1, "testoutput", null);
+        PingCommandResult pingCommandResult = new PingCommandResult(1, 1, "testoutput", null);
         prepareTestPingNetworkTaskWorker(dnsLookupResult, pingCommandResult);
-        NetworkTaskWorker.ExecutionResult executionResult = pingNetworkTaskWorker.execute(getNetworkTask(), getAccessTypeData());
+        NetworkTaskWorker.ExecutionResult executionResult = pingNetworkTaskWorker.execute(getNetworkTask(), getAccessTypeData(false));
+        LogEntry logEntry = executionResult.getLogEntry();
+        assertEquals(45, logEntry.getNetworkTaskId());
+        assertEquals(getTestTimestamp(), logEntry.getTimestamp());
+        assertEquals(10, pingNetworkTaskWorker.getPingCount());
+        assertFalse(logEntry.isSuccess());
+        assertEquals("Ping to 127.0.0.1 failed. testoutput", logEntry.getMessage());
+    }
+
+    @Test
+    public void testFailureCodeReturnedWithMessageUnparseableStopOnSuccess() throws Exception {
+        DNSLookupResult dnsLookupResult = new DNSLookupResult(InetAddress.getByName("127.0.0.1"), null);
+        PingCommandResult pingCommandResult = new PingCommandResult(1, 1, "testoutput", null);
+        prepareTestPingNetworkTaskWorker(dnsLookupResult, pingCommandResult);
+        NetworkTaskWorker.ExecutionResult executionResult = pingNetworkTaskWorker.execute(getNetworkTask(), getAccessTypeData(true));
         LogEntry logEntry = executionResult.getLogEntry();
         assertEquals(45, logEntry.getNetworkTaskId());
         assertEquals(getTestTimestamp(), logEntry.getTimestamp());
@@ -199,9 +270,9 @@ public class PingNetworkTaskWorkerTest {
     @Test
     public void testFailureCodeReturnedWithMessageParseable() throws Exception {
         DNSLookupResult dnsLookupResult = new DNSLookupResult(InetAddress.getByName("127.0.0.1"), null);
-        PingCommandResult pingCommandResult = new PingCommandResult(1, getTestIP4Ping(), null);
+        PingCommandResult pingCommandResult = new PingCommandResult(1, 1, getTestIP4Ping(), null);
         prepareTestPingNetworkTaskWorker(dnsLookupResult, pingCommandResult);
-        NetworkTaskWorker.ExecutionResult executionResult = pingNetworkTaskWorker.execute(getNetworkTask(), getAccessTypeData());
+        NetworkTaskWorker.ExecutionResult executionResult = pingNetworkTaskWorker.execute(getNetworkTask(), getAccessTypeData(false));
         LogEntry logEntry = executionResult.getLogEntry();
         assertEquals(45, logEntry.getNetworkTaskId());
         assertEquals(getTestTimestamp(), logEntry.getTimestamp());
@@ -211,25 +282,53 @@ public class PingNetworkTaskWorkerTest {
     }
 
     @Test
-    public void testFailureCodeReturnedWithMessageParseableOnePacket() throws Exception {
+    public void testFailureCodeReturnedWithMessageParseableStopOnSuccess() throws Exception {
         DNSLookupResult dnsLookupResult = new DNSLookupResult(InetAddress.getByName("127.0.0.1"), null);
-        PingCommandResult pingCommandResult = new PingCommandResult(1, getTestIP4PingOnePacket(), null);
+        PingCommandResult pingCommandResult = new PingCommandResult(1, 2, getTestIP4PingOnePacket(), null);
         prepareTestPingNetworkTaskWorker(dnsLookupResult, pingCommandResult);
-        NetworkTaskWorker.ExecutionResult executionResult = pingNetworkTaskWorker.execute(getNetworkTask(), getAccessTypeData());
+        NetworkTaskWorker.ExecutionResult executionResult = pingNetworkTaskWorker.execute(getNetworkTask(), getAccessTypeData(true));
         LogEntry logEntry = executionResult.getLogEntry();
         assertEquals(45, logEntry.getNetworkTaskId());
         assertEquals(getTestTimestamp(), logEntry.getTimestamp());
         assertEquals(10, pingNetworkTaskWorker.getPingCount());
         assertFalse(logEntry.isSuccess());
-        assertEquals("Ping to 127.0.0.1 failed. 64 bytes received per packet. 1 packet transmitted. 1 packet received. 0% packet loss. 1 sec average time.", logEntry.getMessage());
+        assertEquals("Ping to 127.0.0.1 failed. 64 bytes received per packet. 2 packets transmitted. 1 packet received. 50% packet loss. 1 sec ping time.", logEntry.getMessage());
+    }
+
+    @Test
+    public void testFailureCodeReturnedWithMessageParseableOnePacket() throws Exception {
+        DNSLookupResult dnsLookupResult = new DNSLookupResult(InetAddress.getByName("127.0.0.1"), null);
+        PingCommandResult pingCommandResult = new PingCommandResult(1, 1, getTestIP4PingOnePacket(), null);
+        prepareTestPingNetworkTaskWorker(dnsLookupResult, pingCommandResult);
+        NetworkTaskWorker.ExecutionResult executionResult = pingNetworkTaskWorker.execute(getNetworkTask(), getAccessTypeData(false));
+        LogEntry logEntry = executionResult.getLogEntry();
+        assertEquals(45, logEntry.getNetworkTaskId());
+        assertEquals(getTestTimestamp(), logEntry.getTimestamp());
+        assertEquals(10, pingNetworkTaskWorker.getPingCount());
+        assertFalse(logEntry.isSuccess());
+        assertEquals("Ping to 127.0.0.1 failed. 64 bytes received per packet. 1 packet transmitted. 1 packet received. 0% packet loss. 1 sec ping time.", logEntry.getMessage());
     }
 
     @Test
     public void testFailureCodeReturnedWithMessageParseable100Loss() throws Exception {
         DNSLookupResult dnsLookupResult = new DNSLookupResult(InetAddress.getByName("192.168.178.12"), null);
-        PingCommandResult pingCommandResult = new PingCommandResult(1, getTestIP4PingFailure(), null);
+        PingCommandResult pingCommandResult = new PingCommandResult(1, 1, getTestIP4PingFailure(), null);
         prepareTestPingNetworkTaskWorker(dnsLookupResult, pingCommandResult);
-        NetworkTaskWorker.ExecutionResult executionResult = pingNetworkTaskWorker.execute(getNetworkTask(), getAccessTypeData());
+        NetworkTaskWorker.ExecutionResult executionResult = pingNetworkTaskWorker.execute(getNetworkTask(), getAccessTypeData(false));
+        LogEntry logEntry = executionResult.getLogEntry();
+        assertEquals(45, logEntry.getNetworkTaskId());
+        assertEquals(getTestTimestamp(), logEntry.getTimestamp());
+        assertEquals(10, pingNetworkTaskWorker.getPingCount());
+        assertFalse(logEntry.isSuccess());
+        assertEquals("Ping to 192.168.178.12 failed. 3 packets transmitted. 0 packets received. 100% packet loss.", logEntry.getMessage());
+    }
+
+    @Test
+    public void testFailureCodeReturnedWithMessageParseable100LossStopOnSuccess() throws Exception {
+        DNSLookupResult dnsLookupResult = new DNSLookupResult(InetAddress.getByName("192.168.178.12"), null);
+        PingCommandResult pingCommandResult = new PingCommandResult(1, 3, getTestIP4PingFailure(), null);
+        prepareTestPingNetworkTaskWorker(dnsLookupResult, pingCommandResult);
+        NetworkTaskWorker.ExecutionResult executionResult = pingNetworkTaskWorker.execute(getNetworkTask(), getAccessTypeData(true));
         LogEntry logEntry = executionResult.getLogEntry();
         assertEquals(45, logEntry.getNetworkTaskId());
         assertEquals(getTestTimestamp(), logEntry.getTimestamp());
@@ -241,9 +340,23 @@ public class PingNetworkTaskWorkerTest {
     @Test
     public void testFailureCodeReturnedWithoutMessage() throws Exception {
         DNSLookupResult dnsLookupResult = new DNSLookupResult(InetAddress.getByName("127.0.0.1"), null);
-        PingCommandResult pingCommandResult = new PingCommandResult(1, "", null);
+        PingCommandResult pingCommandResult = new PingCommandResult(1, 1, "", null);
         prepareTestPingNetworkTaskWorker(dnsLookupResult, pingCommandResult);
-        NetworkTaskWorker.ExecutionResult executionResult = pingNetworkTaskWorker.execute(getNetworkTask(), getAccessTypeData());
+        NetworkTaskWorker.ExecutionResult executionResult = pingNetworkTaskWorker.execute(getNetworkTask(), getAccessTypeData(false));
+        LogEntry logEntry = executionResult.getLogEntry();
+        assertEquals(45, logEntry.getNetworkTaskId());
+        assertEquals(getTestTimestamp(), logEntry.getTimestamp());
+        assertEquals(10, pingNetworkTaskWorker.getPingCount());
+        assertFalse(logEntry.isSuccess());
+        assertEquals("Ping to 127.0.0.1 failed. Return code: 1", logEntry.getMessage());
+    }
+
+    @Test
+    public void testFailureCodeReturnedWithoutMessageStopOnSuccess() throws Exception {
+        DNSLookupResult dnsLookupResult = new DNSLookupResult(InetAddress.getByName("127.0.0.1"), null);
+        PingCommandResult pingCommandResult = new PingCommandResult(1, 2, "", null);
+        prepareTestPingNetworkTaskWorker(dnsLookupResult, pingCommandResult);
+        NetworkTaskWorker.ExecutionResult executionResult = pingNetworkTaskWorker.execute(getNetworkTask(), getAccessTypeData(true));
         LogEntry logEntry = executionResult.getLogEntry();
         assertEquals(45, logEntry.getNetworkTaskId());
         assertEquals(getTestTimestamp(), logEntry.getTimestamp());
@@ -283,14 +396,14 @@ public class PingNetworkTaskWorkerTest {
         return task;
     }
 
-    private AccessTypeData getAccessTypeData() {
+    private AccessTypeData getAccessTypeData(boolean stopOnSuccess) {
         AccessTypeData data = new AccessTypeData();
         data.setId(0);
         data.setNetworkTaskId(0);
         data.setPingCount(10);
         data.setPingPackageSize(1234);
         data.setConnectCount(3);
-        data.setStopOnSuccess(true);
+        data.setStopOnSuccess(stopOnSuccess);
         return data;
     }
 

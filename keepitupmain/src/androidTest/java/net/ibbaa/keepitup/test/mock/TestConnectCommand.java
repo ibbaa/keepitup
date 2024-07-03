@@ -29,8 +29,8 @@ public class TestConnectCommand extends ConnectCommand {
     private List<MockConnectionResult> connectionResults;
     private int call;
 
-    public TestConnectCommand(Context context, InetAddress address, int port, int connectCount) {
-        super(context, address, port, connectCount);
+    public TestConnectCommand(Context context, InetAddress address, int port, int connectCount, boolean stopOnSuccess) {
+        super(context, address, port, connectCount, stopOnSuccess);
         reset();
     }
 

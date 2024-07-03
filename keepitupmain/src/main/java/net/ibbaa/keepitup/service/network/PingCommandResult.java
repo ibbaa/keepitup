@@ -16,6 +16,6 @@
 
 package net.ibbaa.keepitup.service.network;
 
-public record PingCommandResult(int processReturnCode, String output, Throwable exception) {
+public record PingCommandResult(int processReturnCode, int pingCalls, String output, Throwable exception) {
 
 }

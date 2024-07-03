@@ -58,7 +58,7 @@ public class ConnectNetworkTaskWorkerTest {
 
     private void prepareTestConnectNetworkTaskWorker(DNSLookupResult dnsLookupResult, ConnectCommandResult connectCommandResult) throws Exception {
         MockDNSLookup mockDNSLookup = new MockDNSLookup("127.0.0.1", dnsLookupResult);
-        MockConnectCommand mockConnectCommand = new MockConnectCommand(TestRegistry.getContext(), InetAddress.getByName("127.0.0.1"), 80, 1, connectCommandResult);
+        MockConnectCommand mockConnectCommand = new MockConnectCommand(TestRegistry.getContext(), InetAddress.getByName("127.0.0.1"), 80, 1, false, connectCommandResult);
         connectNetworkTaskWorker.setMockDNSLookup(mockDNSLookup);
         connectNetworkTaskWorker.setMockConnectCommand(mockConnectCommand);
         MockTimeService timeService = (MockTimeService) connectNetworkTaskWorker.getTimeService();
@@ -77,7 +77,7 @@ public class ConnectNetworkTaskWorkerTest {
         assertEquals(getTestTimestamp(), logEntry.getTimestamp());
         assertEquals(3, connectNetworkTaskWorker.getConnectCount());
         assertTrue(logEntry.isSuccess());
-        assertEquals("Connected to 127.0.0.1:22 successfully. 1 connection attempt. 1 successful connection attempt. 0 timeouts. 0 other errors. 1 msec average time.", logEntry.getMessage());
+        assertEquals("Connected to 127.0.0.1:22 successfully. 1 connection attempt. 1 successful connection attempt. 0 timeouts. 0 other errors. 1 msec connect time.", logEntry.getMessage());
     }
 
     @Test
@@ -106,7 +106,7 @@ public class ConnectNetworkTaskWorkerTest {
         assertEquals(getTestTimestamp(), logEntry.getTimestamp());
         assertEquals(3, connectNetworkTaskWorker.getConnectCount());
         assertTrue(logEntry.isSuccess());
-        assertEquals("Connected to 127.0.0.1:22 successfully. 1 connection attempt. 1 successful connection attempt. 0 timeouts. 0 other errors. 5 sec average time. Last error: IllegalArgumentException: TestException", logEntry.getMessage());
+        assertEquals("Connected to 127.0.0.1:22 successfully. 1 connection attempt. 1 successful connection attempt. 0 timeouts. 0 other errors. 5 sec connect time. Last error: IllegalArgumentException: TestException", logEntry.getMessage());
     }
 
     @Test

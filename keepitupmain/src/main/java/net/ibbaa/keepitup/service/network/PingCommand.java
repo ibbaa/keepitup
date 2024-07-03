@@ -35,41 +35,58 @@ public class PingCommand implements Callable<PingCommandResult> {
     private final int pingCount;
     private final boolean defaultPackageSize;
     private final int packageSize;
+    private final boolean stopOnSuccess;
     private final boolean ip6;
 
-    public PingCommand(Context context, String address, int pingCount, boolean defaultPackageSize, int packageSize, boolean ip6) {
+    public PingCommand(Context context, String address, int pingCount, boolean defaultPackageSize, int packageSize, boolean stopOnSuccess, boolean ip6) {
         this.context = context;
         this.address = address;
         this.pingCount = pingCount;
         this.defaultPackageSize = defaultPackageSize;
         this.packageSize = packageSize;
+        this.stopOnSuccess = stopOnSuccess;
         this.ip6 = ip6;
     }
 
     @Override
     public PingCommandResult call() {
         Log.d(PingCommand.class.getName(), "call");
-        String output = null;
-        int returnCode = -1;
+        PingCommandResult result = new PingCommandResult(-1, 1, null, null);
+        if (stopOnSuccess) {
+            for (int ii = 1; ii <= pingCount; ii++) {
+                result = executePing();
+                if (result.exception() != null) {
+                    return result;
+                }
+                if (result.processReturnCode() == 0) {
+                    return new PingCommandResult(0, ii, result.output(), null);
+                }
+            }
+            return new PingCommandResult(result.processReturnCode(), pingCount, result.output(), null);
+        }
+        return executePing();
+    }
+
+    private PingCommandResult executePing() {
         Process process = null;
         try {
             Runtime runtime = Runtime.getRuntime();
             String command = getPingCommand();
             Log.d(PingCommand.class.getName(), "Executing ping command: " + command);
             process = runtime.exec(command);
-            output = StreamUtil.inputStreamToString(process.getInputStream(), Charsets.US_ASCII);
+            String output = StreamUtil.inputStreamToString(process.getInputStream(), Charsets.US_ASCII);
             output = StringUtil.trim(output);
             if (StringUtil.isEmpty(output)) {
                 output = StreamUtil.inputStreamToString(process.getErrorStream(), Charsets.US_ASCII);
                 output = StringUtil.trim(output);
             }
             Log.d(PingCommand.class.getName(), "Ping output: " + output);
-            returnCode = process.waitFor();
+            int returnCode = process.waitFor();
             Log.d(PingCommand.class.getName(), "Ping process return code: " + returnCode);
-            return new PingCommandResult(returnCode, output, null);
+            return new PingCommandResult(returnCode, 1, output, null);
         } catch (Exception exc) {
             Log.e(PingCommand.class.getName(), "Error executing ping command", exc);
-            return new PingCommandResult(returnCode, output, exc);
+            return new PingCommandResult(-1, 1, null, exc);
         } finally {
             if (process != null) {
                 process.destroy();
@@ -83,7 +100,8 @@ public class PingCommand implements Callable<PingCommandResult> {
         String timeoutOption = getResources().getString(R.string.ping_command_timeout_option);
         String packageSizeOption = getResources().getString(R.string.ping_command_package_size_option);
         int timeout = getResources().getInteger(R.integer.ping_timeout);
-        String commandLine = command + " " + countOption + " " + pingCount + " " + timeoutOption + " " + timeout;
+        int effectiveCount = stopOnSuccess ? 1 : pingCount;
+        String commandLine = command + " " + countOption + " " + effectiveCount + " " + timeoutOption + " " + timeout;
         if (!defaultPackageSize) {
             commandLine += " " + packageSizeOption + " " + packageSize;
         }

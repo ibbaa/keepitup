@@ -52,7 +52,7 @@ public class TestConnectNetworkTaskWorker extends ConnectNetworkTaskWorker {
     }
 
     @Override
-    protected Callable<ConnectCommandResult> getConnectCommand(InetAddress address, int port, int connectCount) {
+    protected Callable<ConnectCommandResult> getConnectCommand(InetAddress address, int port, int connectCount, boolean stopOnSuccess) {
         this.connectCount = connectCount;
         return mockConnectCommand;
     }

@@ -71,7 +71,7 @@ public class PingNetworkTaskWorker extends NetworkTaskWorker {
             PreferenceManager preferenceManager = new PreferenceManager(getContext());
             boolean enforceDefaultPackageSize = preferenceManager.getPreferenceEnforceDefaultPingPackageSize();
             Log.d(PingNetworkTaskWorker.class.getName(), "enforceDefaultPackageSize is " + enforceDefaultPackageSize);
-            ExecutionResult pingExecutionResult = executePingCommand(address.getHostAddress(), data.getPingCount(), enforceDefaultPackageSize, data.getPingPackageSize(), ip6);
+            ExecutionResult pingExecutionResult = executePingCommand(address.getHostAddress(), data.getPingCount(), enforceDefaultPackageSize, data.getPingPackageSize(), data.isStopOnSuccess(), ip6);
             LogEntry logEntry = pingExecutionResult.getLogEntry();
             completeLogEntry(networkTask, logEntry);
             Log.d(PingNetworkTaskWorker.class.getName(), "Returning " + pingExecutionResult);
@@ -90,9 +90,9 @@ public class PingNetworkTaskWorker extends NetworkTaskWorker {
         logEntry.setTimestamp(getTimeService().getCurrentTimestamp());
     }
 
-    private ExecutionResult executePingCommand(String address, int pingCount, boolean defaultPackageSize, int packageSize, boolean ip6) {
+    private ExecutionResult executePingCommand(String address, int pingCount, boolean defaultPackageSize, int packageSize, boolean stopOnSuccess, boolean ip6) {
         Log.d(PingNetworkTaskWorker.class.getName(), "executePingCommand, address is " + address + ", pingCount is " + pingCount + ", defaultPackageSize is " + defaultPackageSize + ", packageSize is " + packageSize + ", ip6 is " + ip6);
-        Callable<PingCommandResult> pingCommand = getPingCommand(address, pingCount, defaultPackageSize, packageSize, ip6);
+        Callable<PingCommandResult> pingCommand = getPingCommand(address, pingCount, defaultPackageSize, packageSize, stopOnSuccess, ip6);
         int timeout = getResources().getInteger(R.integer.ping_timeout) * pingCount * 2;
         Log.d(PingNetworkTaskWorker.class.getName(), "Creating ExecutorService");
         ExecutorService executorService = Executors.newSingleThreadExecutor();
@@ -107,7 +107,7 @@ public class PingNetworkTaskWorker extends NetworkTaskWorker {
             if (pingResult.exception() == null && pingResult.processReturnCode() == 0) {
                 Log.d(PingNetworkTaskWorker.class.getName(), "Ping was successful");
                 logEntry.setSuccess(true);
-                logEntry.setMessage(getPingSuccessMessage(address, getPingOutputMessage(pingResult.output())));
+                logEntry.setMessage(getPingSuccessMessage(address, getPingOutputMessage(pingResult, stopOnSuccess)));
             } else if (pingResult.exception() != null) {
                 Log.d(PingNetworkTaskWorker.class.getName(), "Ping was not successful because of an exception", pingResult.exception());
                 logEntry.setSuccess(false);
@@ -115,7 +115,7 @@ public class PingNetworkTaskWorker extends NetworkTaskWorker {
             } else {
                 Log.d(PingNetworkTaskWorker.class.getName(), "Ping was not successful because the ping command returned " + pingResult.processReturnCode());
                 logEntry.setSuccess(false);
-                logEntry.setMessage(getPingFailureMessage(pingResult.processReturnCode(), address, getPingOutputMessage(pingResult.output())));
+                logEntry.setMessage(getPingFailureMessage(pingResult.processReturnCode(), address, getPingOutputMessage(pingResult, stopOnSuccess)));
             }
         } catch (Throwable exc) {
             Log.d(PingNetworkTaskWorker.class.getName(), "Error executing " + pingCommand.getClass().getName(), exc);
@@ -144,30 +144,41 @@ public class PingNetworkTaskWorker extends NetworkTaskWorker {
         return getResources().getString(R.string.text_ping_error, address) + " " + output;
     }
 
-    private String getPingOutputMessage(String output) {
-        Log.d(PingNetworkTaskWorker.class.getName(), "getPingOutputMessage, output is " + output);
+    private String getPingOutputMessage(PingCommandResult result, boolean stopOnSuccess) {
+        Log.d(PingNetworkTaskWorker.class.getName(), "getPingOutputMessage, output is " + result.output());
         PingOutputParser parser = new PingOutputParser();
         try {
-            parser.parse(output);
+            parser.parse(result.output());
         } catch (Exception exc) {
-            Log.e(PingNetworkTaskWorker.class.getName(), "Error parsing ping output: " + output);
-            return output;
+            Log.e(PingNetworkTaskWorker.class.getName(), "Error parsing ping output: " + result.output());
+            return result.output();
         }
         if (!parser.isValidInput()) {
-            return output;
+            return result.output();
         }
         NumberFormat numberFormat = NumberFormat.getNumberInstance();
+        numberFormat.setMaximumFractionDigits(2);
         int bytesReceived = parser.getBytesReceived();
-        int packetsTransmitted = parser.getPacketsTransmitted();
+        int packetsTransmitted = stopOnSuccess ? result.pingCalls() : parser.getPacketsTransmitted();
         int packetsReceived = parser.getPacketsReceived();
-        String packetLoss = numberFormat.format(parser.getPacketLoss()) + "%";
+        String packetLoss;
+        if (stopOnSuccess) {
+            packetLoss = numberFormat.format(packetsTransmitted > packetsReceived ? ((double) (packetsTransmitted - packetsReceived) / packetsTransmitted) * 100 : 0.0f) + "%";
+        } else {
+            packetLoss = numberFormat.format(parser.getPacketLoss()) + "%";
+        }
         String packetsTransmittedMessage = getResources().getQuantityString(R.plurals.text_ping_packet_transmitted, packetsTransmitted, packetsTransmitted);
         String packetsReceivedMessage = getResources().getQuantityString(R.plurals.text_ping_packet_received, packetsReceived, packetsReceived);
         String packetLossMessage = getResources().getString(R.string.text_ping_packet_loss, packetLoss);
         String message = packetsTransmittedMessage + " " + packetsReceivedMessage + " " + packetLossMessage;
         if (parser.getValidTimes() > 0) {
             String averageTime = StringUtil.formatTimeRange(parser.getAverageTime(), getContext());
-            message += " " + getResources().getString(R.string.text_ping_time, averageTime);
+            if (packetsReceived == 1) {
+                message += " " + getResources().getString(R.string.text_ping_time, averageTime);
+            } else {
+                message += " " + getResources().getString(R.string.text_ping_average_time, averageTime);
+            }
+
         }
         if (bytesReceived > 0 && packetsReceived > 0) {
             String bytesReceivedMessage = getResources().getQuantityString(R.plurals.text_ping_bytes_received, bytesReceived, bytesReceived);
@@ -176,7 +187,7 @@ public class PingNetworkTaskWorker extends NetworkTaskWorker {
         return message;
     }
 
-    protected Callable<PingCommandResult> getPingCommand(String address, int pingCount, boolean defaultPackageSize, int packageSize, boolean ip6) {
-        return new PingCommand(getContext(), address, pingCount, defaultPackageSize, packageSize, ip6);
+    protected Callable<PingCommandResult> getPingCommand(String address, int pingCount, boolean defaultPackageSize, int packageSize, boolean stopOnSuccess, boolean ip6) {
+        return new PingCommand(getContext(), address, pingCount, defaultPackageSize, packageSize, stopOnSuccess, ip6);
     }
 }

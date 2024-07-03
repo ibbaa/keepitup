@@ -39,13 +39,15 @@ public class ConnectCommand implements Callable<ConnectCommandResult> {
     private final InetAddress address;
     private final int port;
     private final int connectCount;
+    private final boolean stopOnSuccess;
     private final ITimeService timeService;
 
-    public ConnectCommand(Context context, InetAddress address, int port, int connectCount) {
+    public ConnectCommand(Context context, InetAddress address, int port, int connectCount, boolean stopOnSuccess) {
         this.context = context;
         this.address = address;
         this.port = port;
         this.connectCount = connectCount;
+        this.stopOnSuccess = stopOnSuccess;
         this.timeService = createTimeService();
     }
 
@@ -67,6 +69,9 @@ public class ConnectCommand implements Callable<ConnectCommandResult> {
                     Log.d(ConnectCommand.class.getName(), "Connection was successful");
                     successfulAttempts++;
                     overallTime += result.getDuration();
+                    if (stopOnSuccess) {
+                        return prepareConnectCommandResult(attempts, successfulAttempts, timeouts, overallTime, exception, errors);
+                    }
                 } else {
                     Log.d(ConnectCommand.class.getName(), "Connection timeout");
                     timeouts++;
@@ -77,6 +82,11 @@ public class ConnectCommand implements Callable<ConnectCommandResult> {
                 exception = exc;
             }
         }
+        return prepareConnectCommandResult(attempts, successfulAttempts, timeouts, overallTime, exception, errors);
+    }
+
+    private static ConnectCommandResult prepareConnectCommandResult(int attempts, int successfulAttempts, int timeouts, long overallTime, Exception exception, int errors) {
+        Log.d(ConnectCommand.class.getName(), "prepareConnectCommandResult");
         Log.d(ConnectCommand.class.getName(), "Connection attempts: " + attempts);
         Log.d(ConnectCommand.class.getName(), "Successful connection attempts: " + successfulAttempts);
         Log.d(ConnectCommand.class.getName(), "Timeouts:  " + timeouts);
