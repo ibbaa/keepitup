@@ -315,7 +315,9 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         onView(withId(R.id.edittext_dialog_network_task_edit_address)).check(matches(isDisplayed()));
         onView(withId(R.id.edittext_dialog_network_task_edit_port)).check(matches(isDisplayed()));
         onView(withId(R.id.edittext_dialog_network_task_edit_interval)).check(matches(isDisplayed()));
+        onView(withId(R.id.linearlayout_dialog_network_task_edit_ping_count)).check(matches(not(isDisplayed())));
         onView(withId(R.id.edittext_dialog_network_task_edit_ping_count)).check(matches(not(isDisplayed())));
+        onView(withId(R.id.linearlayout_dialog_network_task_edit_ping_package_size)).check(matches(not(isDisplayed())));
         onView(withId(R.id.edittext_dialog_network_task_edit_ping_package_size)).check(matches(not(isDisplayed())));
         onView(withId(R.id.edittext_dialog_network_task_edit_connect_count)).check(matches(isDisplayed()));
         onView(withId(R.id.switch_dialog_network_task_edit_stoponsuccess)).check(matches(isDisplayed()));
@@ -327,6 +329,7 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         onView(withId(R.id.edittext_dialog_network_task_edit_interval)).check(matches(isDisplayed()));
         onView(withId(R.id.edittext_dialog_network_task_edit_ping_count)).check(matches(isDisplayed()));
         onView(withId(R.id.edittext_dialog_network_task_edit_ping_package_size)).check(matches(isDisplayed()));
+        onView(withId(R.id.linearlayout_dialog_network_task_edit_connect_count)).check(matches(not(isDisplayed())));
         onView(withId(R.id.edittext_dialog_network_task_edit_connect_count)).check(matches(not(isDisplayed())));
         onView(withId(R.id.switch_dialog_network_task_edit_stoponsuccess)).check(matches(isDisplayed()));
         onView(withId(R.id.switch_dialog_network_task_edit_onlywifi)).check(matches(isDisplayed()));
@@ -335,9 +338,13 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         onView(withId(R.id.edittext_dialog_network_task_edit_address)).check(matches(isDisplayed()));
         onView(withId(R.id.edittext_dialog_network_task_edit_port)).check(matches(not(isDisplayed())));
         onView(withId(R.id.edittext_dialog_network_task_edit_interval)).check(matches(isDisplayed()));
+        onView(withId(R.id.linearlayout_dialog_network_task_edit_ping_count)).check(matches(not(isDisplayed())));
         onView(withId(R.id.edittext_dialog_network_task_edit_ping_count)).check(matches(not(isDisplayed())));
+        onView(withId(R.id.linearlayout_dialog_network_task_edit_ping_package_size)).check(matches(not(isDisplayed())));
         onView(withId(R.id.edittext_dialog_network_task_edit_ping_package_size)).check(matches(not(isDisplayed())));
+        onView(withId(R.id.linearlayout_dialog_network_task_edit_connect_count)).check(matches(not(isDisplayed())));
         onView(withId(R.id.edittext_dialog_network_task_edit_connect_count)).check(matches(not(isDisplayed())));
+        onView(withId(R.id.linearlayout_dialog_network_task_edit_stoponsuccess)).check(matches(not(isDisplayed())));
         onView(withId(R.id.switch_dialog_network_task_edit_stoponsuccess)).check(matches(not(isDisplayed())));
         onView(withId(R.id.switch_dialog_network_task_edit_onlywifi)).check(matches(isDisplayed()));
         onView(withId(R.id.switch_dialog_network_task_edit_notification)).check(matches(isDisplayed()));

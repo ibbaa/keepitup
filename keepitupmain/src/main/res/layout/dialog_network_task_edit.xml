@@ -257,7 +257,7 @@
                 android:text="@string/label_dialog_network_task_edit_stoponsuccess" />
 
             <LinearLayout
-                android:id="@+id/linearlayout_dialog_edit_network_stoponsuccess"
+                android:id="@+id/linearlayout_dialog_network_task_edit_stoponsuccess"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/linearlayout_dialog_network_task_edit_stoponsuccess_margin_left"
@@ -291,7 +291,7 @@
                 android:text="@string/label_dialog_network_task_edit_onlywifi" />
 
             <LinearLayout
-                android:id="@+id/linearlayout_dialog_edit_network_onlywifi"
+                android:id="@+id/linearlayout_dialog_network_task_edit_onlywifi"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/linearlayout_dialog_network_task_edit_onlywifi_margin_left"

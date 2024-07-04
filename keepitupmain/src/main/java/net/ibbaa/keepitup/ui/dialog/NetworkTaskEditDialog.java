@@ -374,16 +374,19 @@ public class NetworkTaskEditDialog extends DialogFragment implements ContextOpti
         LinearLayout pingCountLinearLayout = dialogView.findViewById(R.id.linearlayout_dialog_network_task_edit_ping_count);
         LinearLayout connectCountLinearLayout = dialogView.findViewById(R.id.linearlayout_dialog_network_task_edit_connect_count);
         LinearLayout pingPackageSizeLinearLayout = dialogView.findViewById(R.id.linearlayout_dialog_network_task_edit_ping_package_size);
+        LinearLayout stopOnSuccessLinearLayout = dialogView.findViewById(R.id.linearlayout_dialog_network_task_edit_stoponsuccess);
         TextView pingCountTextView = dialogView.findViewById(R.id.textview_dialog_network_task_edit_ping_count_label);
         TextView connectCountTextView = dialogView.findViewById(R.id.textview_dialog_network_task_edit_connect_count_label);
         TextView pingPackageSizeTextView = dialogView.findViewById(R.id.textview_dialog_network_task_edit_ping_package_size_label);
+        TextView stopOnSuccessTextView = dialogView.findViewById(R.id.textview_dialog_network_task_edit_stoponsuccess_label);
         if (accessType.isPing()) {
             PreferenceManager preferenceManager = new PreferenceManager(requireContext());
             pingCountTextView.setVisibility(View.VISIBLE);
             pingCountEditText.setVisibility(View.VISIBLE);
             pingCountLinearLayout.setVisibility(View.VISIBLE);
+            stopOnSuccessTextView.setVisibility(View.VISIBLE);
             stopOnSuccessSwitch.setVisibility(View.VISIBLE);
-            stopOnSuccessOnOffText.setVisibility(View.VISIBLE);
+            stopOnSuccessLinearLayout.setVisibility(View.VISIBLE);
             if (preferenceManager.getPreferenceEnforceDefaultPingPackageSize()) {
                 pingPackageSizeTextView.setVisibility(View.GONE);
                 pingPackageSizeEditText.setVisibility(View.GONE);
@@ -405,16 +408,18 @@ public class NetworkTaskEditDialog extends DialogFragment implements ContextOpti
             connectCountTextView.setVisibility(View.VISIBLE);
             connectCountEditText.setVisibility(View.VISIBLE);
             connectCountLinearLayout.setVisibility(View.VISIBLE);
+            stopOnSuccessTextView.setVisibility(View.VISIBLE);
             stopOnSuccessSwitch.setVisibility(View.VISIBLE);
-            stopOnSuccessOnOffText.setVisibility(View.VISIBLE);
+            stopOnSuccessLinearLayout.setVisibility(View.VISIBLE);
         } else {
             connectCountTextView.setVisibility(View.GONE);
             connectCountEditText.setVisibility(View.GONE);
             connectCountLinearLayout.setVisibility(View.GONE);
         }
         if (accessType.isDownload()) {
+            stopOnSuccessTextView.setVisibility(View.GONE);
             stopOnSuccessSwitch.setVisibility(View.GONE);
-            stopOnSuccessOnOffText.setVisibility(View.GONE);
+            stopOnSuccessLinearLayout.setVisibility(View.GONE);
         }
     }
 
