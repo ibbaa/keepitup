@@ -55,7 +55,7 @@ public class ConnectCommandTest {
         connectCommand.setConnectionResults(connectionResultList);
     }
 
-    private void prepareExcpetionConnectionResultList(TestConnectCommand connectCommand, int number) {
+    private void prepareExceptionConnectionResultList(TestConnectCommand connectCommand, int number) {
         List<TestConnectCommand.MockConnectionResult> connectionResultList = new ArrayList<>(number);
         for (int ii = 0; ii < number; ii++) {
             connectionResultList.add(new TestConnectCommand.MockConnectionResult(false, 3, new IOException("Error " + (ii + 1))));
@@ -122,7 +122,7 @@ public class ConnectCommandTest {
     @Test
     public void testAllConnectionAttemptsException() {
         TestConnectCommand connectCommand = new TestConnectCommand(TestRegistry.getContext(), null, 80, 3, false);
-        prepareExcpetionConnectionResultList(connectCommand, 3);
+        prepareExceptionConnectionResultList(connectCommand, 3);
         ConnectCommandResult result = connectCommand.call();
         assertFalse(result.success());
         assertEquals(3, result.attempts());
@@ -136,7 +136,7 @@ public class ConnectCommandTest {
     @Test
     public void testAllConnectionAttemptsExceptionStopOnSuccess() {
         TestConnectCommand connectCommand = new TestConnectCommand(TestRegistry.getContext(), null, 80, 3, true);
-        prepareExcpetionConnectionResultList(connectCommand, 3);
+        prepareExceptionConnectionResultList(connectCommand, 3);
         ConnectCommandResult result = connectCommand.call();
         assertFalse(result.success());
         assertEquals(3, result.attempts());

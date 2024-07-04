@@ -56,7 +56,7 @@ public class PingCommand implements Callable<PingCommandResult> {
             for (int ii = 1; ii <= pingCount; ii++) {
                 result = executePing();
                 if (result.exception() != null) {
-                    return result;
+                    return new PingCommandResult(result.processReturnCode(), ii, result.output(), result.exception());
                 }
                 if (result.processReturnCode() == 0) {
                     return new PingCommandResult(0, ii, result.output(), null);
@@ -67,7 +67,7 @@ public class PingCommand implements Callable<PingCommandResult> {
         return executePing();
     }
 
-    private PingCommandResult executePing() {
+    protected PingCommandResult executePing() {
         Process process = null;
         try {
             Runtime runtime = Runtime.getRuntime();

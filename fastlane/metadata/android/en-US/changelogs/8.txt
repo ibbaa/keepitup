@@ -1,0 +1,5 @@
+* Necessary preparations for API level 35 (API level remains 33 for now)
+* It's now possible to stop task execution attempts at first success
+* Some minor bug fixes
+
+
