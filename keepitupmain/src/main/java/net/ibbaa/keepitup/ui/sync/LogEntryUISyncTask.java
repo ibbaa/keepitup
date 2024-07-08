@@ -59,6 +59,7 @@ public class LogEntryUISyncTask extends UIBackgroundTask<LogEntry> {
     }
 
     @Override
+    @SuppressWarnings("NotifyDataSetChanged")
     protected void runOnUIThread(LogEntry logEntry) {
         Log.d(LogEntryUISyncTask.class.getName(), "runOnUIThread, logEntry is " + logEntry);
         if (logEntry == null || adapterRef == null) {
@@ -68,13 +69,8 @@ public class LogEntryUISyncTask extends UIBackgroundTask<LogEntry> {
         if (adapter != null) {
             try {
                 Log.d(LogEntryUISyncTask.class.getName(), "Updating adapter with logEntry" + logEntry);
-                if (adapter.hasValidEntries()) {
-                    adapter.addItem(logEntry);
-                    adapter.notifyItemInserted(0);
-                } else {
-                    adapter.addItem(logEntry);
-                    adapter.notifyItemChanged(0);
-                }
+                adapter.addItem(logEntry);
+                adapter.notifyDataSetChanged();
             } catch (Exception exc) {
                 Log.e(LogEntryUISyncTask.class.getName(), "Error updating adapter with logEntry " + logEntry, exc);
             }
