@@ -60,7 +60,7 @@ configurations.configureEach {
 
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
-    implementation(platform('org.jetbrains.kotlin:kotlin-bom:2.0.0'))
+    implementation(platform('org.jetbrains.kotlin:kotlin-bom:2.0.10'))
     implementation 'androidx.appcompat:appcompat:1.7.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
     implementation 'androidx.tracing:tracing:1.2.0'
