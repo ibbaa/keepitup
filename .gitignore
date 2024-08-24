@@ -13,3 +13,4 @@
 .externalNativeBuild
 /.idea/jarRepositories.xml
 /.idea/androidTestResultsUserPreferences.xml
+/.idea/other.xml
