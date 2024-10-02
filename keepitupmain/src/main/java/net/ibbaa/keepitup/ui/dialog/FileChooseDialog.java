@@ -399,6 +399,7 @@ public class FileChooseDialog extends DialogFragment implements ContextOptionsSu
         openEntry(position);
     }
 
+    @SuppressWarnings({"UnusedReturnValue"})
     private boolean openEntry(int position) {
         Log.d(FileChooseDialog.class.getName(), "openEntry, position is " + position);
         FileEntry selectedEntry = getAdapter().getItem(position);
@@ -443,6 +444,7 @@ public class FileChooseDialog extends DialogFragment implements ContextOptionsSu
         return true;
     }
 
+    @SuppressWarnings({"UnusedReturnValue"})
     private boolean selectEntry(int position) {
         Log.d(FileChooseDialog.class.getName(), "selectEntry, position is " + position);
         FileEntry selectedEntry = getAdapter().getItem(position);
@@ -727,6 +729,7 @@ public class FileChooseDialog extends DialogFragment implements ContextOptionsSu
         showErrorDialog(errorMessage, Typeface.BOLD);
     }
 
+    @SuppressWarnings({"SameParameterValue"})
     private void showErrorDialog(String errorMessage, int typeface) {
         Log.d(FileChooseDialog.class.getName(), "showErrorDialog with message " + errorMessage);
         GeneralErrorDialog errorDialog = new GeneralErrorDialog();
