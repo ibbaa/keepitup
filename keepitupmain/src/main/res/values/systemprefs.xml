@@ -17,13 +17,19 @@
 <resources>
     <string name="import_folder_key">import_folder_key</string>
     <string name="import_folder_default">config</string>
+    <string name="arbitrary_import_folder_key">arbitrary_import_folder_key</string>
+    <string name="arbitrary_import_folder_default">/Documents</string>
     <string name="export_folder_key">export_folder_key</string>
     <string name="export_folder_default">config</string>
+    <string name="arbitrary_export_folder_key">arbitrary_export_folder_key</string>
+    <string name="arbitrary_export_folder_default">/Documents</string>
     <string name="export_file_prefix">keepitup_config</string>
     <string name="external_storage_type_key">external_storage_type_key</string>
     <integer name="external_storage_type_default">0</integer>
     <string name="theme_key">theme_key</string>
     <integer name="theme_default">-1</integer>
+    <string name="allow_arbitrary_file_location_key">allow_arbitrary_file_location_key</string>
+    <bool name="allow_arbitrary_file_location_default">false</bool>
     <string name="file_dump_enabled_key">file_dump_enabled_key</string>
     <bool name="file_dump_enabled_default">false</bool>
     <string name="file_logger_enabled_key">file_logger_enabled_key</string>

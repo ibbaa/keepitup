@@ -373,6 +373,21 @@ public class PreferenceManager {
         removePreferenceValue(getResources().getString(R.string.download_folder_key));
     }
 
+    public String getPreferenceArbitraryDownloadFolder() {
+        Log.d(PreferenceManager.class.getName(), "getPreferenceArbitraryDownloadFolder");
+        return getPreferenceString(getResources().getString(R.string.arbitrary_download_folder_key), getResources().getString(R.string.arbitrary_download_folder_default));
+    }
+
+    public void setPreferenceArbitraryDownloadFolder(String downloadFolder) {
+        Log.d(PreferenceManager.class.getName(), "setPreferenceArbitraryDownloadFolder, downloadFolder is " + downloadFolder);
+        setPreferenceString(getResources().getString(R.string.arbitrary_download_folder_key), downloadFolder);
+    }
+
+    public void removePreferenceArbitraryDownloadFolder() {
+        Log.d(PreferenceManager.class.getName(), "removePreferenceArbitraryDownloadFolder");
+        removePreferenceValue(getResources().getString(R.string.arbitrary_download_folder_key));
+    }
+
     public boolean getPreferenceLogFile() {
         Log.d(PreferenceManager.class.getName(), "getPreferenceLogFile");
         return getPreferenceBoolean(getResources().getString(R.string.log_file_key), getResources().getBoolean(R.bool.log_file_default));
@@ -401,6 +416,21 @@ public class PreferenceManager {
     public void removePreferenceLogFolder() {
         Log.d(PreferenceManager.class.getName(), "removePreferenceLogFolder");
         removePreferenceValue(getResources().getString(R.string.log_folder_key));
+    }
+
+    public String getPreferenceArbitraryLogFolder() {
+        Log.d(PreferenceManager.class.getName(), "getPreferenceArbitraryLogFolder");
+        return getPreferenceString(getResources().getString(R.string.arbitrary_log_folder_key), getResources().getString(R.string.arbitrary_log_folder_default));
+    }
+
+    public void setPreferenceArbitraryLogFolder(String logFolder) {
+        Log.d(PreferenceManager.class.getName(), "setPreferenceArbitraryLogFolder, logFolder is " + logFolder);
+        setPreferenceString(getResources().getString(R.string.arbitrary_log_folder_key), logFolder);
+    }
+
+    public void removePreferenceArbitraryLogFolder() {
+        Log.d(PreferenceManager.class.getName(), "removePreferenceArbitraryLogFolder");
+        removePreferenceValue(getResources().getString(R.string.arbitrary_log_folder_key));
     }
 
     public boolean getPreferenceDownloadKeep() {
@@ -433,6 +463,21 @@ public class PreferenceManager {
         removePreferenceValue(getResources().getString(R.string.import_folder_key));
     }
 
+    public String getPreferenceArbitraryImportFolder() {
+        Log.d(PreferenceManager.class.getName(), "getPreferenceArbitraryImportFolder");
+        return getPreferenceString(getResources().getString(R.string.arbitrary_import_folder_key), getResources().getString(R.string.arbitrary_import_folder_default));
+    }
+
+    public void setPreferenceArbitraryImportFolder(String importFolder) {
+        Log.d(PreferenceManager.class.getName(), "setPreferenceArbitraryImportFolder, importFolder is " + importFolder);
+        setPreferenceString(getResources().getString(R.string.arbitrary_import_folder_key), importFolder);
+    }
+
+    public void removePreferenceArbitraryImportFolder() {
+        Log.d(PreferenceManager.class.getName(), "removePreferenceArbitraryImportFolder");
+        removePreferenceValue(getResources().getString(R.string.arbitrary_import_folder_key));
+    }
+
     public String getPreferenceExportFolder() {
         Log.d(PreferenceManager.class.getName(), "getPreferenceExportFolder");
         return getPreferenceString(getResources().getString(R.string.export_folder_key), getResources().getString(R.string.export_folder_default));
@@ -448,6 +493,21 @@ public class PreferenceManager {
         removePreferenceValue(getResources().getString(R.string.export_folder_key));
     }
 
+    public String getPreferenceArbitraryExportFolder() {
+        Log.d(PreferenceManager.class.getName(), "getPreferenceArbitraryExportFolder");
+        return getPreferenceString(getResources().getString(R.string.arbitrary_export_folder_key), getResources().getString(R.string.arbitrary_export_folder_default));
+    }
+
+    public void setPreferenceArbitraryExportFolder(String exportFolder) {
+        Log.d(PreferenceManager.class.getName(), "setPreferenceArbitraryExportFolder, importFolder is " + exportFolder);
+        setPreferenceString(getResources().getString(R.string.arbitrary_export_folder_key), exportFolder);
+    }
+
+    public void removePreferenceArbitraryExportFolder() {
+        Log.d(PreferenceManager.class.getName(), "removePreferenceArbitraryExportFolder");
+        removePreferenceValue(getResources().getString(R.string.arbitrary_export_folder_key));
+    }
+
     public int getPreferenceTheme() {
         Log.d(PreferenceManager.class.getName(), "getPreferenceTheme");
         return getPreferenceInt(getResources().getString(R.string.theme_key), getResources().getInteger(R.integer.theme_default));
@@ -461,6 +521,21 @@ public class PreferenceManager {
     public void removePreferenceTheme() {
         Log.d(PreferenceManager.class.getName(), "removeTheme");
         removePreferenceValue(getResources().getString(R.string.theme_key));
+    }
+
+    public boolean getPreferenceAllowArbitraryFileLocation() {
+        Log.d(PreferenceManager.class.getName(), "getPreferenceAllowArbitraryFileLocation");
+        return getPreferenceBoolean(getResources().getString(R.string.allow_arbitrary_file_location_key), getResources().getBoolean(R.bool.allow_arbitrary_file_location_default));
+    }
+
+    public void setPreferenceAllowArbitraryFileLocation(boolean allowArbitraryFileLocation) {
+        Log.d(PreferenceManager.class.getName(), "setPreferenceAllowArbitraryFileLocation, allowArbitraryFileLocation is " + allowArbitraryFileLocation);
+        setPreferenceBoolean(getResources().getString(R.string.allow_arbitrary_file_location_key), allowArbitraryFileLocation);
+    }
+
+    public void removePreferenceAllowArbitraryFileLocation() {
+        Log.d(PreferenceManager.class.getName(), "removePreferenceAllowArbitraryFileLocation");
+        removePreferenceValue(getResources().getString(R.string.allow_arbitrary_file_location_key));
     }
 
     public boolean getPreferenceFileLoggerEnabled() {

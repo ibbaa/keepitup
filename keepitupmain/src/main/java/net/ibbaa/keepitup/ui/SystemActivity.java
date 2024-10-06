@@ -17,6 +17,7 @@
 package net.ibbaa.keepitup.ui;
 
 import android.graphics.Typeface;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -74,6 +75,8 @@ public class SystemActivity extends SettingsInputActivity implements ExportSuppo
     private TextView exportFolderText;
     private TextView importFolderText;
     private RadioGroup externalStorageType;
+    private SwitchMaterial arbitraryFileLocationSwitch;
+    private TextView arbitraryFileLocationOnOffText;
     private SwitchMaterial fileLoggerEnabledSwitch;
     private TextView fileLoggerEnabledOnOffText;
     private SwitchMaterial fileDumpEnabledSwitch;
@@ -121,6 +124,7 @@ public class SystemActivity extends SettingsInputActivity implements ExportSuppo
         prepareExternalStorageTypeRadioGroup();
         prepareBatteryOptimizationField();
         prepareThemeRadioGroup();
+        prepareAllowArbitraryFileLocationSwitch();
         prepareDebugSettingsLabel();
         prepareFileLoggerEnabledSwitch();
         prepareFileDumpEnabledSwitch();
@@ -307,6 +311,36 @@ public class SystemActivity extends SettingsInputActivity implements ExportSuppo
             preferenceManager.setPreferenceTheme(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM);
             themeManager.setThemeByCode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM);
         }
+    }
+
+    private void prepareAllowArbitraryFileLocationSwitch() {
+        Log.d(SystemActivity.class.getName(), "prepareAllowArbitraryFileLocationSwitch");
+        CardView arbitraryFileLocationCardView = findViewById(R.id.cardview_activity_system_allow_arbitrary_file_location);
+        arbitraryFileLocationSwitch = findViewById(R.id.switch_activity_system_allow_arbitrary_file_location);
+        arbitraryFileLocationOnOffText = findViewById(R.id.textview_activity_system_allow_arbitrary_file_location_on_off);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            Log.d(SystemActivity.class.getName(), "API version is " + Build.VERSION.SDK_INT + ". Enable SAF feature.");
+            arbitraryFileLocationCardView.setVisibility(View.VISIBLE);
+            PreferenceManager preferenceManager = new PreferenceManager(this);
+            arbitraryFileLocationSwitch.setOnCheckedChangeListener(null);
+            arbitraryFileLocationSwitch.setChecked(preferenceManager.getPreferenceAllowArbitraryFileLocation());
+            arbitraryFileLocationSwitch.setOnCheckedChangeListener(this::onAllowArbitraryFileLocationCheckedChanged);
+            prepareAllowArbitraryFileLocationOnOffText();
+        } else {
+            Log.d(SystemActivity.class.getName(), "API version is " + Build.VERSION.SDK_INT + ". Disable SAF feature.");
+            arbitraryFileLocationCardView.setVisibility(View.GONE);
+        }
+    }
+
+    private void prepareAllowArbitraryFileLocationOnOffText() {
+        arbitraryFileLocationOnOffText.setText(arbitraryFileLocationSwitch.isChecked() ? getResources().getString(R.string.string_yes) : getResources().getString(R.string.string_no));
+    }
+
+    private void onAllowArbitraryFileLocationCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+        Log.d(SystemActivity.class.getName(), "onAllowArbitraryFileLocationCheckedChanged, new value is " + isChecked);
+        PreferenceManager preferenceManager = new PreferenceManager(this);
+        preferenceManager.setPreferenceAllowArbitraryFileLocation(isChecked);
+        prepareAllowArbitraryFileLocationOnOffText();
     }
 
     private void prepareDebugSettingsLabel() {

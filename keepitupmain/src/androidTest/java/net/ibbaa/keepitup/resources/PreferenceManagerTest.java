@@ -314,6 +314,18 @@ public class PreferenceManagerTest {
     }
 
     @Test
+    public void testGetSetRemovePreferenceArbitraryDownloadFolder() {
+        assertEquals("/Documents", preferenceManager.getPreferenceArbitraryDownloadFolder());
+        preferenceManager.setPreferenceArbitraryDownloadFolder("/Downloads");
+        assertEquals("/Downloads", preferenceManager.getPreferenceArbitraryDownloadFolder());
+        preferenceManager.removeAllPreferences();
+        assertEquals("/Documents", preferenceManager.getPreferenceArbitraryDownloadFolder());
+        preferenceManager.setPreferenceArbitraryDownloadFolder("/Downloads");
+        preferenceManager.removePreferenceArbitraryDownloadFolder();
+        assertEquals("/Documents", preferenceManager.getPreferenceArbitraryDownloadFolder());
+    }
+
+    @Test
     public void testGetSetRemovePreferenceLogFile() {
         assertFalse(preferenceManager.getPreferenceLogFile());
         preferenceManager.setPreferenceLogFile(true);
@@ -335,6 +347,18 @@ public class PreferenceManagerTest {
         preferenceManager.setPreferenceLogFolder("Folder");
         preferenceManager.removePreferenceLogFolder();
         assertEquals("log", preferenceManager.getPreferenceLogFolder());
+    }
+
+    @Test
+    public void testGetSetRemovePreferenceArbitraryLogFolder() {
+        assertEquals("/Documents", preferenceManager.getPreferenceArbitraryLogFolder());
+        preferenceManager.setPreferenceArbitraryLogFolder("/Folder");
+        assertEquals("/Folder", preferenceManager.getPreferenceArbitraryLogFolder());
+        preferenceManager.removeAllPreferences();
+        assertEquals("/Documents", preferenceManager.getPreferenceArbitraryLogFolder());
+        preferenceManager.setPreferenceArbitraryLogFolder("/Folder");
+        preferenceManager.removePreferenceArbitraryLogFolder();
+        assertEquals("/Documents", preferenceManager.getPreferenceArbitraryLogFolder());
     }
 
     @Test
@@ -362,6 +386,18 @@ public class PreferenceManagerTest {
     }
 
     @Test
+    public void testGetSetRemovePreferenceArbitraryImportFolder() {
+        assertEquals("/Documents", preferenceManager.getPreferenceArbitraryImportFolder());
+        preferenceManager.setPreferenceArbitraryImportFolder("/Folder");
+        assertEquals("/Folder", preferenceManager.getPreferenceArbitraryImportFolder());
+        preferenceManager.removeAllPreferences();
+        assertEquals("/Documents", preferenceManager.getPreferenceArbitraryImportFolder());
+        preferenceManager.setPreferenceArbitraryImportFolder("/Folder");
+        preferenceManager.removePreferenceArbitraryImportFolder();
+        assertEquals("/Documents", preferenceManager.getPreferenceArbitraryImportFolder());
+    }
+
+    @Test
     public void testGetSetRemovePreferenceExportFolder() {
         assertEquals("config", preferenceManager.getPreferenceExportFolder());
         preferenceManager.setPreferenceExportFolder("Folder");
@@ -374,6 +410,18 @@ public class PreferenceManagerTest {
     }
 
     @Test
+    public void testGetSetRemovePreferenceArbitraryExportFolder() {
+        assertEquals("/Documents", preferenceManager.getPreferenceArbitraryExportFolder());
+        preferenceManager.setPreferenceArbitraryExportFolder("/Folder");
+        assertEquals("/Folder", preferenceManager.getPreferenceArbitraryExportFolder());
+        preferenceManager.removeAllPreferences();
+        assertEquals("/Documents", preferenceManager.getPreferenceArbitraryExportFolder());
+        preferenceManager.setPreferenceArbitraryExportFolder("/Folder");
+        preferenceManager.removePreferenceArbitraryExportFolder();
+        assertEquals("/Documents", preferenceManager.getPreferenceArbitraryExportFolder());
+    }
+
+    @Test
     public void testGetSetRemoveTheme() {
         assertEquals(-1, preferenceManager.getPreferenceTheme());
         preferenceManager.setPreferenceTheme(1);
@@ -383,6 +431,18 @@ public class PreferenceManagerTest {
         preferenceManager.setPreferenceTheme(1);
         preferenceManager.removePreferenceTheme();
         assertEquals(-1, preferenceManager.getPreferenceTheme());
+    }
+
+    @Test
+    public void testGetSetRemovePreferenceAllowArbitraryFileLocation() {
+        assertFalse(preferenceManager.getPreferenceAllowArbitraryFileLocation());
+        preferenceManager.setPreferenceAllowArbitraryFileLocation(true);
+        assertTrue(preferenceManager.getPreferenceAllowArbitraryFileLocation());
+        preferenceManager.removeAllPreferences();
+        assertFalse(preferenceManager.getPreferenceAllowArbitraryFileLocation());
+        preferenceManager.setPreferenceAllowArbitraryFileLocation(true);
+        preferenceManager.removePreferenceAllowArbitraryFileLocation();
+        assertFalse(preferenceManager.getPreferenceAllowArbitraryFileLocation());
     }
 
     @Test

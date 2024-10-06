@@ -129,7 +129,10 @@ public class SystemActivityTest extends BaseUITest {
         getPreferenceManager().setPreferenceExternalStorageType(30);
         getPreferenceManager().setPreferenceTheme(5);
         getPreferenceManager().setPreferenceDownloadFolder("folder");
+        getPreferenceManager().setPreferenceArbitraryDownloadFolder("/folder");
         getPreferenceManager().setPreferenceDownloadKeep(true);
+        getPreferenceManager().setPreferenceLogFolder("folder");
+        getPreferenceManager().setPreferenceArbitraryLogFolder("/folder");
         getPreferenceManager().setPreferenceAccessType(AccessType.CONNECT);
         getPreferenceManager().setPreferenceAddress("address");
         getPreferenceManager().setPreferencePort(123);
@@ -138,12 +141,17 @@ public class SystemActivityTest extends BaseUITest {
         getPreferenceManager().setPreferenceNotification(true);
         getPreferenceManager().setPreferenceImportFolder("folderImport");
         getPreferenceManager().setPreferenceExportFolder("folderExport");
+        getPreferenceManager().setPreferenceArbitraryImportFolder("arbitraryFolderImport");
+        getPreferenceManager().setPreferenceArbitraryExportFolder("arbitraryFolderExport");
         getPreferenceManager().setPreferenceFileLoggerEnabled(true);
         getPreferenceManager().setPreferenceFileDumpEnabled(true);
+        getPreferenceManager().setPreferenceAllowArbitraryFileLocation(true);
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(scrollTo());
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(click());
         onView(withId(R.id.switch_activity_system_file_dump_enabled)).perform(scrollTo());
         onView(withId(R.id.switch_activity_system_file_dump_enabled)).perform(click());
+        onView(withId(R.id.switch_activity_system_allow_arbitrary_file_location)).perform(scrollTo());
+        onView(withId(R.id.switch_activity_system_allow_arbitrary_file_location)).perform(click());
         onView(withId(R.id.cardview_activity_system_config_reset)).perform(click());
         onView(withId(R.id.imageview_dialog_confirm_cancel)).perform(click());
         assertFalse(alarmManager.wasCancelAlarmCalled());
@@ -159,7 +167,10 @@ public class SystemActivityTest extends BaseUITest {
         assertEquals(30, getPreferenceManager().getPreferenceExternalStorageType());
         assertEquals(5, getPreferenceManager().getPreferenceTheme());
         assertEquals("folder", getPreferenceManager().getPreferenceDownloadFolder());
+        assertEquals("/folder", getPreferenceManager().getPreferenceArbitraryDownloadFolder());
         assertTrue(getPreferenceManager().getPreferenceDownloadKeep());
+        assertEquals("folder", getPreferenceManager().getPreferenceLogFolder());
+        assertEquals("/folder", getPreferenceManager().getPreferenceArbitraryLogFolder());
         assertEquals(AccessType.CONNECT, getPreferenceManager().getPreferenceAccessType());
         assertEquals("address", getPreferenceManager().getPreferenceAddress());
         assertEquals(123, getPreferenceManager().getPreferencePort());
@@ -168,8 +179,11 @@ public class SystemActivityTest extends BaseUITest {
         assertTrue(getPreferenceManager().getPreferenceNotification());
         assertEquals("folderImport", getPreferenceManager().getPreferenceImportFolder());
         assertEquals("folderExport", getPreferenceManager().getPreferenceExportFolder());
+        assertEquals("arbitraryFolderImport", getPreferenceManager().getPreferenceArbitraryImportFolder());
+        assertEquals("arbitraryFolderExport", getPreferenceManager().getPreferenceArbitraryExportFolder());
         assertTrue(getPreferenceManager().getPreferenceFileLoggerEnabled());
         assertTrue(getPreferenceManager().getPreferenceFileDumpEnabled());
+        assertTrue(getPreferenceManager().getPreferenceAllowArbitraryFileLocation());
     }
 
     @Test
@@ -192,7 +206,10 @@ public class SystemActivityTest extends BaseUITest {
         getPreferenceManager().setPreferenceExternalStorageType(1);
         getPreferenceManager().setPreferenceTheme(1);
         getPreferenceManager().setPreferenceDownloadFolder("folder");
+        getPreferenceManager().setPreferenceArbitraryDownloadFolder("/folder");
         getPreferenceManager().setPreferenceDownloadKeep(true);
+        getPreferenceManager().setPreferenceLogFolder("folder");
+        getPreferenceManager().setPreferenceArbitraryLogFolder("/folder");
         getPreferenceManager().setPreferenceAccessType(AccessType.CONNECT);
         getPreferenceManager().setPreferenceAddress("address");
         getPreferenceManager().setPreferencePort(123);
@@ -201,14 +218,19 @@ public class SystemActivityTest extends BaseUITest {
         getPreferenceManager().setPreferenceNotification(true);
         getPreferenceManager().setPreferenceImportFolder("folderImport");
         getPreferenceManager().setPreferenceExportFolder("folderExport");
+        getPreferenceManager().setPreferenceArbitraryImportFolder("arbitraryFolderImport");
+        getPreferenceManager().setPreferenceArbitraryExportFolder("arbitraryFolderExport");
         getPreferenceManager().setPreferenceFileLoggerEnabled(true);
         getPreferenceManager().setPreferenceFileDumpEnabled(true);
+        getPreferenceManager().setPreferenceAllowArbitraryFileLocation(true);
         onView(withId(R.id.radiobutton_activity_system_external_storage_type_sdcard)).perform(click());
         onView(withId(R.id.radiobutton_activity_system_theme_light)).perform(click());
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(scrollTo());
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(click());
         onView(withId(R.id.switch_activity_system_file_dump_enabled)).perform(scrollTo());
         onView(withId(R.id.switch_activity_system_file_dump_enabled)).perform(click());
+        onView(withId(R.id.switch_activity_system_allow_arbitrary_file_location)).perform(scrollTo());
+        onView(withId(R.id.switch_activity_system_allow_arbitrary_file_location)).perform(click());
         onView(withId(R.id.cardview_activity_system_config_reset)).perform(click());
         rotateScreen(activityScenario);
         rotateScreen(activityScenario);
@@ -227,7 +249,10 @@ public class SystemActivityTest extends BaseUITest {
         assertEquals(1, getPreferenceManager().getPreferenceExternalStorageType());
         assertEquals(1, getPreferenceManager().getPreferenceTheme());
         assertEquals("folder", getPreferenceManager().getPreferenceDownloadFolder());
+        assertEquals("/folder", getPreferenceManager().getPreferenceArbitraryDownloadFolder());
         assertTrue(getPreferenceManager().getPreferenceDownloadKeep());
+        assertEquals("folder", getPreferenceManager().getPreferenceLogFolder());
+        assertEquals("/folder", getPreferenceManager().getPreferenceArbitraryLogFolder());
         assertEquals(AccessType.CONNECT, getPreferenceManager().getPreferenceAccessType());
         assertEquals("address", getPreferenceManager().getPreferenceAddress());
         assertEquals(123, getPreferenceManager().getPreferencePort());
@@ -236,8 +261,11 @@ public class SystemActivityTest extends BaseUITest {
         assertTrue(getPreferenceManager().getPreferenceNotification());
         assertEquals("folderImport", getPreferenceManager().getPreferenceImportFolder());
         assertEquals("folderExport", getPreferenceManager().getPreferenceExportFolder());
+        assertEquals("arbitraryFolderImport", getPreferenceManager().getPreferenceArbitraryImportFolder());
+        assertEquals("arbitraryFolderExport", getPreferenceManager().getPreferenceArbitraryExportFolder());
         assertTrue(getPreferenceManager().getPreferenceFileLoggerEnabled());
         assertTrue(getPreferenceManager().getPreferenceFileDumpEnabled());
+        assertTrue(getPreferenceManager().getPreferenceAllowArbitraryFileLocation());
     }
 
     @Test
@@ -260,7 +288,10 @@ public class SystemActivityTest extends BaseUITest {
         getPreferenceManager().setPreferenceExternalStorageType(30);
         getPreferenceManager().setPreferenceTheme(5);
         getPreferenceManager().setPreferenceDownloadFolder("folder");
+        getPreferenceManager().setPreferenceArbitraryDownloadFolder("/folder");
         getPreferenceManager().setPreferenceDownloadKeep(true);
+        getPreferenceManager().setPreferenceLogFolder("folder");
+        getPreferenceManager().setPreferenceArbitraryLogFolder("/folder");
         getPreferenceManager().setPreferenceAccessType(AccessType.CONNECT);
         getPreferenceManager().setPreferenceAddress("address");
         getPreferenceManager().setPreferencePort(123);
@@ -269,12 +300,17 @@ public class SystemActivityTest extends BaseUITest {
         getPreferenceManager().setPreferenceNotification(true);
         getPreferenceManager().setPreferenceImportFolder("folderImport");
         getPreferenceManager().setPreferenceExportFolder("folderExport");
+        getPreferenceManager().setPreferenceArbitraryImportFolder("arbitraryFolderImport");
+        getPreferenceManager().setPreferenceArbitraryExportFolder("arbitraryFolderExport");
         getPreferenceManager().setPreferenceFileLoggerEnabled(true);
         getPreferenceManager().setPreferenceFileDumpEnabled(true);
+        getPreferenceManager().setPreferenceAllowArbitraryFileLocation(true);
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(scrollTo());
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(click());
         onView(withId(R.id.switch_activity_system_file_dump_enabled)).perform(scrollTo());
         onView(withId(R.id.switch_activity_system_file_dump_enabled)).perform(click());
+        onView(withId(R.id.switch_activity_system_allow_arbitrary_file_location)).perform(scrollTo());
+        onView(withId(R.id.switch_activity_system_allow_arbitrary_file_location)).perform(click());
         onView(withId(R.id.cardview_activity_system_config_reset)).perform(click());
         onView(withId(R.id.imageview_dialog_confirm_ok)).perform(click());
         assertTrue(alarmManager.wasCancelAlarmCalled());
@@ -290,7 +326,10 @@ public class SystemActivityTest extends BaseUITest {
         assertEquals(0, getPreferenceManager().getPreferenceExternalStorageType());
         assertEquals(-1, getPreferenceManager().getPreferenceTheme());
         assertEquals("download", getPreferenceManager().getPreferenceDownloadFolder());
+        assertEquals("/Documents", getPreferenceManager().getPreferenceArbitraryDownloadFolder());
         assertFalse(getPreferenceManager().getPreferenceDownloadKeep());
+        assertEquals("log", getPreferenceManager().getPreferenceLogFolder());
+        assertEquals("/Documents", getPreferenceManager().getPreferenceArbitraryLogFolder());
         assertEquals(AccessType.PING, getPreferenceManager().getPreferenceAccessType());
         assertEquals("192.168.178.1", getPreferenceManager().getPreferenceAddress());
         assertEquals(22, getPreferenceManager().getPreferencePort());
@@ -299,7 +338,12 @@ public class SystemActivityTest extends BaseUITest {
         assertFalse(getPreferenceManager().getPreferenceNotification());
         assertFalse(getPreferenceManager().getPreferenceFileLoggerEnabled());
         assertFalse(getPreferenceManager().getPreferenceFileDumpEnabled());
+        assertFalse(getPreferenceManager().getPreferenceAllowArbitraryFileLocation());
         assertEquals(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM, themeManager.getCode());
+        assertEquals("config", getPreferenceManager().getPreferenceImportFolder());
+        assertEquals("config", getPreferenceManager().getPreferenceExportFolder());
+        assertEquals("/Documents", getPreferenceManager().getPreferenceArbitraryImportFolder());
+        assertEquals("/Documents", getPreferenceManager().getPreferenceArbitraryExportFolder());
     }
 
     @Test
@@ -322,7 +366,10 @@ public class SystemActivityTest extends BaseUITest {
         getPreferenceManager().setPreferenceExternalStorageType(30);
         getPreferenceManager().setPreferenceTheme(5);
         getPreferenceManager().setPreferenceDownloadFolder("folder");
+        getPreferenceManager().setPreferenceArbitraryDownloadFolder("/folder");
         getPreferenceManager().setPreferenceDownloadKeep(true);
+        getPreferenceManager().setPreferenceLogFolder("folder");
+        getPreferenceManager().setPreferenceArbitraryLogFolder("/folder");
         getPreferenceManager().setPreferenceAccessType(AccessType.CONNECT);
         getPreferenceManager().setPreferenceAddress("address");
         getPreferenceManager().setPreferencePort(123);
@@ -331,12 +378,17 @@ public class SystemActivityTest extends BaseUITest {
         getPreferenceManager().setPreferenceNotification(true);
         getPreferenceManager().setPreferenceImportFolder("folderImport");
         getPreferenceManager().setPreferenceExportFolder("folderExport");
+        getPreferenceManager().setPreferenceArbitraryImportFolder("arbitraryFolderImport");
+        getPreferenceManager().setPreferenceArbitraryExportFolder("arbitraryFolderExport");
         getPreferenceManager().setPreferenceFileLoggerEnabled(true);
         getPreferenceManager().setPreferenceFileDumpEnabled(true);
+        getPreferenceManager().setPreferenceAllowArbitraryFileLocation(true);
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(scrollTo());
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(click());
         onView(withId(R.id.switch_activity_system_file_dump_enabled)).perform(scrollTo());
         onView(withId(R.id.switch_activity_system_file_dump_enabled)).perform(click());
+        onView(withId(R.id.switch_activity_system_allow_arbitrary_file_location)).perform(scrollTo());
+        onView(withId(R.id.switch_activity_system_allow_arbitrary_file_location)).perform(click());
         onView(withId(R.id.cardview_activity_system_config_reset)).perform(click());
         rotateScreen(activityScenario);
         rotateScreen(activityScenario);
@@ -356,6 +408,10 @@ public class SystemActivityTest extends BaseUITest {
         assertEquals(0, getPreferenceManager().getPreferenceExternalStorageType());
         assertEquals(-1, getPreferenceManager().getPreferenceTheme());
         assertEquals("download", getPreferenceManager().getPreferenceDownloadFolder());
+        assertEquals("/Documents", getPreferenceManager().getPreferenceArbitraryDownloadFolder());
+        assertFalse(getPreferenceManager().getPreferenceDownloadKeep());
+        assertEquals("log", getPreferenceManager().getPreferenceLogFolder());
+        assertEquals("/Documents", getPreferenceManager().getPreferenceArbitraryLogFolder());
         assertFalse(getPreferenceManager().getPreferenceDownloadKeep());
         assertEquals(AccessType.PING, getPreferenceManager().getPreferenceAccessType());
         assertEquals("192.168.178.1", getPreferenceManager().getPreferenceAddress());
@@ -365,7 +421,12 @@ public class SystemActivityTest extends BaseUITest {
         assertFalse(getPreferenceManager().getPreferenceNotification());
         assertFalse(getPreferenceManager().getPreferenceFileLoggerEnabled());
         assertFalse(getPreferenceManager().getPreferenceFileDumpEnabled());
+        assertFalse(getPreferenceManager().getPreferenceAllowArbitraryFileLocation());
         assertEquals(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM, themeManager.getCode());
+        assertEquals("config", getPreferenceManager().getPreferenceImportFolder());
+        assertEquals("config", getPreferenceManager().getPreferenceExportFolder());
+        assertEquals("/Documents", getPreferenceManager().getPreferenceArbitraryImportFolder());
+        assertEquals("/Documents", getPreferenceManager().getPreferenceArbitraryExportFolder());
     }
 
     @Test
@@ -389,7 +450,10 @@ public class SystemActivityTest extends BaseUITest {
         getPreferenceManager().setPreferenceExternalStorageType(30);
         getPreferenceManager().setPreferenceTheme(1);
         getPreferenceManager().setPreferenceDownloadFolder("folder");
+        getPreferenceManager().setPreferenceArbitraryDownloadFolder("/folder");
         getPreferenceManager().setPreferenceDownloadKeep(true);
+        getPreferenceManager().setPreferenceLogFolder("folder");
+        getPreferenceManager().setPreferenceArbitraryLogFolder("/folder");
         getPreferenceManager().setPreferenceAccessType(AccessType.CONNECT);
         getPreferenceManager().setPreferenceAddress("address");
         getPreferenceManager().setPreferencePort(123);
@@ -398,12 +462,17 @@ public class SystemActivityTest extends BaseUITest {
         getPreferenceManager().setPreferenceNotification(true);
         getPreferenceManager().setPreferenceImportFolder("folderImport");
         getPreferenceManager().setPreferenceExportFolder("folderExport");
+        getPreferenceManager().setPreferenceArbitraryImportFolder("arbitraryFolderImport");
+        getPreferenceManager().setPreferenceArbitraryExportFolder("arbitraryFolderExport");
         getPreferenceManager().setPreferenceFileLoggerEnabled(true);
         getPreferenceManager().setPreferenceFileDumpEnabled(true);
+        getPreferenceManager().setPreferenceAllowArbitraryFileLocation(true);
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(scrollTo());
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(click());
         onView(withId(R.id.switch_activity_system_file_dump_enabled)).perform(scrollTo());
         onView(withId(R.id.switch_activity_system_file_dump_enabled)).perform(click());
+        onView(withId(R.id.switch_activity_system_allow_arbitrary_file_location)).perform(scrollTo());
+        onView(withId(R.id.switch_activity_system_allow_arbitrary_file_location)).perform(click());
         onView(withId(R.id.cardview_activity_system_config_reset)).perform(click());
         onView(withId(R.id.imageview_dialog_confirm_ok)).perform(click());
         assertTrue(alarmManager.wasCancelAlarmCalled());
@@ -421,6 +490,10 @@ public class SystemActivityTest extends BaseUITest {
         assertEquals(30, getPreferenceManager().getPreferenceExternalStorageType());
         assertEquals(1, getPreferenceManager().getPreferenceTheme());
         assertEquals("folder", getPreferenceManager().getPreferenceDownloadFolder());
+        assertEquals("/folder", getPreferenceManager().getPreferenceArbitraryDownloadFolder());
+        assertTrue(getPreferenceManager().getPreferenceDownloadKeep());
+        assertEquals("folder", getPreferenceManager().getPreferenceLogFolder());
+        assertEquals("/folder", getPreferenceManager().getPreferenceArbitraryLogFolder());
         assertTrue(getPreferenceManager().getPreferenceDownloadKeep());
         assertEquals(AccessType.CONNECT, getPreferenceManager().getPreferenceAccessType());
         assertEquals("address", getPreferenceManager().getPreferenceAddress());
@@ -430,8 +503,11 @@ public class SystemActivityTest extends BaseUITest {
         assertTrue(getPreferenceManager().getPreferenceNotification());
         assertEquals("folderImport", getPreferenceManager().getPreferenceImportFolder());
         assertEquals("folderExport", getPreferenceManager().getPreferenceExportFolder());
+        assertEquals("arbitraryFolderImport", getPreferenceManager().getPreferenceArbitraryImportFolder());
+        assertEquals("arbitraryFolderExport", getPreferenceManager().getPreferenceArbitraryExportFolder());
         assertTrue(getPreferenceManager().getPreferenceFileLoggerEnabled());
         assertTrue(getPreferenceManager().getPreferenceFileDumpEnabled());
+        assertTrue(getPreferenceManager().getPreferenceAllowArbitraryFileLocation());
     }
 
     @Test
@@ -455,7 +531,10 @@ public class SystemActivityTest extends BaseUITest {
         getPreferenceManager().setPreferenceExternalStorageType(1);
         getPreferenceManager().setPreferenceTheme(1);
         getPreferenceManager().setPreferenceDownloadFolder("folder");
+        getPreferenceManager().setPreferenceArbitraryDownloadFolder("/folder");
         getPreferenceManager().setPreferenceDownloadKeep(true);
+        getPreferenceManager().setPreferenceLogFolder("folder");
+        getPreferenceManager().setPreferenceArbitraryLogFolder("/folder");
         getPreferenceManager().setPreferenceAccessType(AccessType.CONNECT);
         getPreferenceManager().setPreferenceAddress("address");
         getPreferenceManager().setPreferencePort(123);
@@ -464,14 +543,19 @@ public class SystemActivityTest extends BaseUITest {
         getPreferenceManager().setPreferenceNotification(true);
         getPreferenceManager().setPreferenceImportFolder("folderImport");
         getPreferenceManager().setPreferenceExportFolder("folderExport");
+        getPreferenceManager().setPreferenceArbitraryImportFolder("arbitraryFolderImport");
+        getPreferenceManager().setPreferenceArbitraryExportFolder("arbitraryFolderExport");
         getPreferenceManager().setPreferenceFileLoggerEnabled(true);
         getPreferenceManager().setPreferenceFileDumpEnabled(true);
+        getPreferenceManager().setPreferenceAllowArbitraryFileLocation(true);
         onView(withId(R.id.radiobutton_activity_system_external_storage_type_sdcard)).perform(click());
         onView(withId(R.id.radiobutton_activity_system_theme_light)).perform(click());
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(scrollTo());
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(click());
         onView(withId(R.id.switch_activity_system_file_dump_enabled)).perform(scrollTo());
         onView(withId(R.id.switch_activity_system_file_dump_enabled)).perform(click());
+        onView(withId(R.id.switch_activity_system_allow_arbitrary_file_location)).perform(scrollTo());
+        onView(withId(R.id.switch_activity_system_allow_arbitrary_file_location)).perform(click());
         onView(withId(R.id.cardview_activity_system_config_reset)).perform(click());
         onView(withId(R.id.imageview_dialog_confirm_ok)).perform(click());
         assertTrue(alarmManager.wasCancelAlarmCalled());
@@ -491,7 +575,10 @@ public class SystemActivityTest extends BaseUITest {
         assertEquals(1, getPreferenceManager().getPreferenceExternalStorageType());
         assertEquals(1, getPreferenceManager().getPreferenceTheme());
         assertEquals("folder", getPreferenceManager().getPreferenceDownloadFolder());
+        assertEquals("/folder", getPreferenceManager().getPreferenceArbitraryDownloadFolder());
         assertTrue(getPreferenceManager().getPreferenceDownloadKeep());
+        assertEquals("folder", getPreferenceManager().getPreferenceLogFolder());
+        assertEquals("/folder", getPreferenceManager().getPreferenceArbitraryLogFolder());
         assertEquals(AccessType.CONNECT, getPreferenceManager().getPreferenceAccessType());
         assertEquals("address", getPreferenceManager().getPreferenceAddress());
         assertEquals(123, getPreferenceManager().getPreferencePort());
@@ -500,8 +587,11 @@ public class SystemActivityTest extends BaseUITest {
         assertTrue(getPreferenceManager().getPreferenceNotification());
         assertEquals("folderImport", getPreferenceManager().getPreferenceImportFolder());
         assertEquals("folderExport", getPreferenceManager().getPreferenceExportFolder());
+        assertEquals("arbitraryFolderImport", getPreferenceManager().getPreferenceArbitraryImportFolder());
+        assertEquals("arbitraryFolderExport", getPreferenceManager().getPreferenceArbitraryExportFolder());
         assertTrue(getPreferenceManager().getPreferenceFileLoggerEnabled());
         assertTrue(getPreferenceManager().getPreferenceFileDumpEnabled());
+        assertTrue(getPreferenceManager().getPreferenceAllowArbitraryFileLocation());
     }
 
     @Test
@@ -524,7 +614,10 @@ public class SystemActivityTest extends BaseUITest {
         getPreferenceManager().setPreferenceExternalStorageType(0);
         getPreferenceManager().setPreferenceTheme(-1);
         getPreferenceManager().setPreferenceDownloadFolder("folder");
+        getPreferenceManager().setPreferenceArbitraryDownloadFolder("/folder");
         getPreferenceManager().setPreferenceDownloadKeep(true);
+        getPreferenceManager().setPreferenceLogFolder("folder");
+        getPreferenceManager().setPreferenceArbitraryLogFolder("/folder");
         getPreferenceManager().setPreferenceAccessType(AccessType.CONNECT);
         getPreferenceManager().setPreferenceAddress("address");
         getPreferenceManager().setPreferencePort(123);
@@ -533,12 +626,17 @@ public class SystemActivityTest extends BaseUITest {
         getPreferenceManager().setPreferenceNotification(true);
         getPreferenceManager().setPreferenceImportFolder("folderImport");
         getPreferenceManager().setPreferenceExportFolder("folderExport");
+        getPreferenceManager().setPreferenceArbitraryImportFolder("arbitraryFolderImport");
+        getPreferenceManager().setPreferenceArbitraryExportFolder("arbitraryFolderExport");
         getPreferenceManager().setPreferenceFileLoggerEnabled(true);
         getPreferenceManager().setPreferenceFileDumpEnabled(true);
+        getPreferenceManager().setPreferenceAllowArbitraryFileLocation(true);
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(scrollTo());
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(click());
         onView(withId(R.id.switch_activity_system_file_dump_enabled)).perform(scrollTo());
         onView(withId(R.id.switch_activity_system_file_dump_enabled)).perform(click());
+        onView(withId(R.id.switch_activity_system_allow_arbitrary_file_location)).perform(scrollTo());
+        onView(withId(R.id.switch_activity_system_allow_arbitrary_file_location)).perform(click());
         onView(withId(R.id.cardview_activity_system_config_export)).perform(click());
         onView(withId(R.id.edittext_dialog_file_choose_folder)).check(matches(withText("folderExport")));
         onView(withId(R.id.edittext_dialog_file_choose_file)).check(matches(withText("keepitup_config.json")));
@@ -558,7 +656,10 @@ public class SystemActivityTest extends BaseUITest {
         assertEquals(0, getPreferenceManager().getPreferenceExternalStorageType());
         assertEquals(-1, getPreferenceManager().getPreferenceTheme());
         assertEquals("folder", getPreferenceManager().getPreferenceDownloadFolder());
+        assertEquals("/folder", getPreferenceManager().getPreferenceArbitraryDownloadFolder());
         assertTrue(getPreferenceManager().getPreferenceDownloadKeep());
+        assertEquals("folder", getPreferenceManager().getPreferenceLogFolder());
+        assertEquals("/folder", getPreferenceManager().getPreferenceArbitraryLogFolder());
         assertEquals(AccessType.CONNECT, getPreferenceManager().getPreferenceAccessType());
         assertEquals("address", getPreferenceManager().getPreferenceAddress());
         assertEquals(123, getPreferenceManager().getPreferencePort());
@@ -567,8 +668,11 @@ public class SystemActivityTest extends BaseUITest {
         assertTrue(getPreferenceManager().getPreferenceNotification());
         assertEquals("folderImport", getPreferenceManager().getPreferenceImportFolder());
         assertEquals("folderExport", getPreferenceManager().getPreferenceExportFolder());
+        assertEquals("arbitraryFolderImport", getPreferenceManager().getPreferenceArbitraryImportFolder());
+        assertEquals("arbitraryFolderExport", getPreferenceManager().getPreferenceArbitraryExportFolder());
         assertTrue(getPreferenceManager().getPreferenceFileLoggerEnabled());
         assertTrue(getPreferenceManager().getPreferenceFileDumpEnabled());
+        assertTrue(getPreferenceManager().getPreferenceAllowArbitraryFileLocation());
     }
 
     @Test
@@ -591,7 +695,10 @@ public class SystemActivityTest extends BaseUITest {
         getPreferenceManager().setPreferenceExternalStorageType(0);
         getPreferenceManager().setPreferenceTheme(-1);
         getPreferenceManager().setPreferenceDownloadFolder("folder");
+        getPreferenceManager().setPreferenceArbitraryDownloadFolder("/folder");
         getPreferenceManager().setPreferenceDownloadKeep(true);
+        getPreferenceManager().setPreferenceLogFolder("folder");
+        getPreferenceManager().setPreferenceArbitraryLogFolder("/folder");
         getPreferenceManager().setPreferenceAccessType(AccessType.CONNECT);
         getPreferenceManager().setPreferenceAddress("address");
         getPreferenceManager().setPreferencePort(123);
@@ -600,12 +707,17 @@ public class SystemActivityTest extends BaseUITest {
         getPreferenceManager().setPreferenceNotification(true);
         getPreferenceManager().setPreferenceImportFolder("folderImport");
         getPreferenceManager().setPreferenceExportFolder("folderExport");
+        getPreferenceManager().setPreferenceArbitraryImportFolder("arbitraryFolderImport");
+        getPreferenceManager().setPreferenceArbitraryExportFolder("arbitraryFolderExport");
         getPreferenceManager().setPreferenceFileLoggerEnabled(true);
         getPreferenceManager().setPreferenceFileDumpEnabled(true);
+        getPreferenceManager().setPreferenceAllowArbitraryFileLocation(true);
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(scrollTo());
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(click());
         onView(withId(R.id.switch_activity_system_file_dump_enabled)).perform(scrollTo());
         onView(withId(R.id.switch_activity_system_file_dump_enabled)).perform(click());
+        onView(withId(R.id.switch_activity_system_allow_arbitrary_file_location)).perform(scrollTo());
+        onView(withId(R.id.switch_activity_system_allow_arbitrary_file_location)).perform(click());
         onView(withId(R.id.cardview_activity_system_config_export)).perform(click());
         onView(withId(R.id.edittext_dialog_file_choose_folder)).check(matches(withText("folderExport")));
         onView(withId(R.id.edittext_dialog_file_choose_file)).check(matches(withText("keepitup_config.json")));
@@ -631,7 +743,10 @@ public class SystemActivityTest extends BaseUITest {
         assertEquals(0, getPreferenceManager().getPreferenceExternalStorageType());
         assertEquals(-1, getPreferenceManager().getPreferenceTheme());
         assertEquals("folder", getPreferenceManager().getPreferenceDownloadFolder());
+        assertEquals("/folder", getPreferenceManager().getPreferenceArbitraryDownloadFolder());
         assertTrue(getPreferenceManager().getPreferenceDownloadKeep());
+        assertEquals("folder", getPreferenceManager().getPreferenceLogFolder());
+        assertEquals("/folder", getPreferenceManager().getPreferenceArbitraryLogFolder());
         assertEquals(AccessType.CONNECT, getPreferenceManager().getPreferenceAccessType());
         assertEquals("address", getPreferenceManager().getPreferenceAddress());
         assertEquals(123, getPreferenceManager().getPreferencePort());
@@ -640,8 +755,11 @@ public class SystemActivityTest extends BaseUITest {
         assertTrue(getPreferenceManager().getPreferenceNotification());
         assertEquals("folderImport", getPreferenceManager().getPreferenceImportFolder());
         assertEquals("folderExport", getPreferenceManager().getPreferenceExportFolder());
+        assertEquals("arbitraryFolderImport", getPreferenceManager().getPreferenceArbitraryImportFolder());
+        assertEquals("arbitraryFolderExport", getPreferenceManager().getPreferenceArbitraryExportFolder());
         assertTrue(getPreferenceManager().getPreferenceFileLoggerEnabled());
         assertTrue(getPreferenceManager().getPreferenceFileDumpEnabled());
+        assertTrue(getPreferenceManager().getPreferenceAllowArbitraryFileLocation());
     }
 
     @Test
@@ -673,7 +791,10 @@ public class SystemActivityTest extends BaseUITest {
         getPreferenceManager().setPreferenceExternalStorageType(0);
         getPreferenceManager().setPreferenceTheme(-1);
         getPreferenceManager().setPreferenceDownloadFolder("folder");
+        getPreferenceManager().setPreferenceArbitraryDownloadFolder("/folder");
         getPreferenceManager().setPreferenceDownloadKeep(true);
+        getPreferenceManager().setPreferenceLogFolder("folder");
+        getPreferenceManager().setPreferenceArbitraryLogFolder("/folder");
         getPreferenceManager().setPreferenceAccessType(AccessType.CONNECT);
         getPreferenceManager().setPreferenceAddress("address");
         getPreferenceManager().setPreferencePort(123);
@@ -682,12 +803,17 @@ public class SystemActivityTest extends BaseUITest {
         getPreferenceManager().setPreferenceNotification(true);
         getPreferenceManager().setPreferenceImportFolder("folderImport");
         getPreferenceManager().setPreferenceExportFolder("folderExport");
+        getPreferenceManager().setPreferenceArbitraryImportFolder("arbitraryFolderImport");
+        getPreferenceManager().setPreferenceArbitraryExportFolder("arbitraryFolderExport");
         getPreferenceManager().setPreferenceFileLoggerEnabled(true);
         getPreferenceManager().setPreferenceFileDumpEnabled(true);
+        getPreferenceManager().setPreferenceAllowArbitraryFileLocation(true);
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(scrollTo());
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(click());
         onView(withId(R.id.switch_activity_system_file_dump_enabled)).perform(scrollTo());
         onView(withId(R.id.switch_activity_system_file_dump_enabled)).perform(click());
+        onView(withId(R.id.switch_activity_system_allow_arbitrary_file_location)).perform(scrollTo());
+        onView(withId(R.id.switch_activity_system_allow_arbitrary_file_location)).perform(click());
         onView(withId(R.id.cardview_activity_system_config_export)).perform(click());
         onView(withId(R.id.edittext_dialog_file_choose_folder)).check(matches(withText("folderExport")));
         onView(withId(R.id.edittext_dialog_file_choose_file)).check(matches(withText("keepitup_config.json")));
@@ -706,7 +832,10 @@ public class SystemActivityTest extends BaseUITest {
         assertEquals(0, getPreferenceManager().getPreferenceExternalStorageType());
         assertEquals(-1, getPreferenceManager().getPreferenceTheme());
         assertEquals("folder", getPreferenceManager().getPreferenceDownloadFolder());
+        assertEquals("/folder", getPreferenceManager().getPreferenceArbitraryDownloadFolder());
         assertTrue(getPreferenceManager().getPreferenceDownloadKeep());
+        assertEquals("folder", getPreferenceManager().getPreferenceLogFolder());
+        assertEquals("/folder", getPreferenceManager().getPreferenceArbitraryLogFolder());
         assertEquals(AccessType.CONNECT, getPreferenceManager().getPreferenceAccessType());
         assertEquals("address", getPreferenceManager().getPreferenceAddress());
         assertEquals(123, getPreferenceManager().getPreferencePort());
@@ -715,8 +844,11 @@ public class SystemActivityTest extends BaseUITest {
         assertTrue(getPreferenceManager().getPreferenceNotification());
         assertEquals("folderImport", getPreferenceManager().getPreferenceImportFolder());
         assertEquals("folderExport", getPreferenceManager().getPreferenceExportFolder());
+        assertEquals("arbitraryFolderImport", getPreferenceManager().getPreferenceArbitraryImportFolder());
+        assertEquals("arbitraryFolderExport", getPreferenceManager().getPreferenceArbitraryExportFolder());
         assertTrue(getPreferenceManager().getPreferenceFileLoggerEnabled());
         assertTrue(getPreferenceManager().getPreferenceFileDumpEnabled());
+        assertTrue(getPreferenceManager().getPreferenceAllowArbitraryFileLocation());
         getNetworkTaskDAO().deleteAllNetworkTasks();
         getLogDAO().deleteAllLogs();
         getIntervalDAO().deleteAllIntervals();
@@ -779,7 +911,10 @@ public class SystemActivityTest extends BaseUITest {
         assertEquals(0, getPreferenceManager().getPreferenceExternalStorageType());
         assertEquals(-1, getPreferenceManager().getPreferenceTheme());
         assertEquals("folder", getPreferenceManager().getPreferenceDownloadFolder());
+        assertEquals("/folder", getPreferenceManager().getPreferenceArbitraryDownloadFolder());
         assertTrue(getPreferenceManager().getPreferenceDownloadKeep());
+        assertEquals("folder", getPreferenceManager().getPreferenceLogFolder());
+        assertEquals("/folder", getPreferenceManager().getPreferenceArbitraryLogFolder());
         assertEquals(AccessType.CONNECT, getPreferenceManager().getPreferenceAccessType());
         assertEquals("address", getPreferenceManager().getPreferenceAddress());
         assertEquals(123, getPreferenceManager().getPreferencePort());
@@ -788,8 +923,11 @@ public class SystemActivityTest extends BaseUITest {
         assertTrue(getPreferenceManager().getPreferenceNotification());
         assertEquals("folderImport", getPreferenceManager().getPreferenceImportFolder());
         assertEquals("folderExport", getPreferenceManager().getPreferenceExportFolder());
+        assertEquals("arbitraryFolderImport", getPreferenceManager().getPreferenceArbitraryImportFolder());
+        assertEquals("arbitraryFolderExport", getPreferenceManager().getPreferenceArbitraryExportFolder());
         assertTrue(getPreferenceManager().getPreferenceFileLoggerEnabled());
         assertTrue(getPreferenceManager().getPreferenceFileDumpEnabled());
+        assertTrue(getPreferenceManager().getPreferenceAllowArbitraryFileLocation());
     }
 
     @Test
@@ -821,7 +959,10 @@ public class SystemActivityTest extends BaseUITest {
         getPreferenceManager().setPreferenceExternalStorageType(0);
         getPreferenceManager().setPreferenceTheme(-1);
         getPreferenceManager().setPreferenceDownloadFolder("folder");
+        getPreferenceManager().setPreferenceArbitraryDownloadFolder("/folder");
         getPreferenceManager().setPreferenceDownloadKeep(true);
+        getPreferenceManager().setPreferenceLogFolder("folder");
+        getPreferenceManager().setPreferenceArbitraryLogFolder("/folder");
         getPreferenceManager().setPreferenceAccessType(AccessType.CONNECT);
         getPreferenceManager().setPreferenceAddress("address");
         getPreferenceManager().setPreferencePort(123);
@@ -830,12 +971,17 @@ public class SystemActivityTest extends BaseUITest {
         getPreferenceManager().setPreferenceNotification(true);
         getPreferenceManager().setPreferenceImportFolder("folderImport");
         getPreferenceManager().setPreferenceExportFolder("folderExport");
+        getPreferenceManager().setPreferenceArbitraryImportFolder("arbitraryFolderImport");
+        getPreferenceManager().setPreferenceArbitraryExportFolder("arbitraryFolderExport");
         getPreferenceManager().setPreferenceFileLoggerEnabled(true);
         getPreferenceManager().setPreferenceFileDumpEnabled(true);
+        getPreferenceManager().setPreferenceAllowArbitraryFileLocation(true);
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(scrollTo());
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(click());
         onView(withId(R.id.switch_activity_system_file_dump_enabled)).perform(scrollTo());
         onView(withId(R.id.switch_activity_system_file_dump_enabled)).perform(click());
+        onView(withId(R.id.switch_activity_system_allow_arbitrary_file_location)).perform(scrollTo());
+        onView(withId(R.id.switch_activity_system_allow_arbitrary_file_location)).perform(click());
         onView(withId(R.id.cardview_activity_system_config_export)).perform(click());
         onView(withId(R.id.edittext_dialog_file_choose_folder)).check(matches(withText("folderExport")));
         onView(withId(R.id.edittext_dialog_file_choose_file)).check(matches(withText("keepitup_config.json")));
@@ -860,7 +1006,10 @@ public class SystemActivityTest extends BaseUITest {
         assertEquals(0, getPreferenceManager().getPreferenceExternalStorageType());
         assertEquals(-1, getPreferenceManager().getPreferenceTheme());
         assertEquals("folder", getPreferenceManager().getPreferenceDownloadFolder());
+        assertEquals("/folder", getPreferenceManager().getPreferenceArbitraryDownloadFolder());
         assertTrue(getPreferenceManager().getPreferenceDownloadKeep());
+        assertEquals("folder", getPreferenceManager().getPreferenceLogFolder());
+        assertEquals("/folder", getPreferenceManager().getPreferenceArbitraryLogFolder());
         assertEquals(AccessType.CONNECT, getPreferenceManager().getPreferenceAccessType());
         assertEquals("address", getPreferenceManager().getPreferenceAddress());
         assertEquals(123, getPreferenceManager().getPreferencePort());
@@ -869,8 +1018,11 @@ public class SystemActivityTest extends BaseUITest {
         assertTrue(getPreferenceManager().getPreferenceNotification());
         assertEquals("folderImport", getPreferenceManager().getPreferenceImportFolder());
         assertEquals("folderExport", getPreferenceManager().getPreferenceExportFolder());
+        assertEquals("arbitraryFolderImport", getPreferenceManager().getPreferenceArbitraryImportFolder());
+        assertEquals("arbitraryFolderExport", getPreferenceManager().getPreferenceArbitraryExportFolder());
         assertTrue(getPreferenceManager().getPreferenceFileLoggerEnabled());
         assertTrue(getPreferenceManager().getPreferenceFileDumpEnabled());
+        assertTrue(getPreferenceManager().getPreferenceAllowArbitraryFileLocation());
         getNetworkTaskDAO().deleteAllNetworkTasks();
         getLogDAO().deleteAllLogs();
         getIntervalDAO().deleteAllIntervals();
@@ -932,7 +1084,10 @@ public class SystemActivityTest extends BaseUITest {
         assertEquals(0, getPreferenceManager().getPreferenceExternalStorageType());
         assertEquals(-1, getPreferenceManager().getPreferenceTheme());
         assertEquals("folder", getPreferenceManager().getPreferenceDownloadFolder());
+        assertEquals("/folder", getPreferenceManager().getPreferenceArbitraryDownloadFolder());
         assertTrue(getPreferenceManager().getPreferenceDownloadKeep());
+        assertEquals("folder", getPreferenceManager().getPreferenceLogFolder());
+        assertEquals("/folder", getPreferenceManager().getPreferenceArbitraryLogFolder());
         assertEquals(AccessType.CONNECT, getPreferenceManager().getPreferenceAccessType());
         assertEquals("address", getPreferenceManager().getPreferenceAddress());
         assertEquals(123, getPreferenceManager().getPreferencePort());
@@ -941,8 +1096,11 @@ public class SystemActivityTest extends BaseUITest {
         assertTrue(getPreferenceManager().getPreferenceNotification());
         assertEquals("folderImport", getPreferenceManager().getPreferenceImportFolder());
         assertEquals("folderExport", getPreferenceManager().getPreferenceExportFolder());
+        assertEquals("arbitraryFolderImport", getPreferenceManager().getPreferenceArbitraryImportFolder());
+        assertEquals("arbitraryFolderExport", getPreferenceManager().getPreferenceArbitraryExportFolder());
         assertTrue(getPreferenceManager().getPreferenceFileLoggerEnabled());
         assertTrue(getPreferenceManager().getPreferenceFileDumpEnabled());
+        assertTrue(getPreferenceManager().getPreferenceAllowArbitraryFileLocation());
     }
 
     @Test
@@ -974,7 +1132,10 @@ public class SystemActivityTest extends BaseUITest {
         getPreferenceManager().setPreferenceExternalStorageType(0);
         getPreferenceManager().setPreferenceTheme(-1);
         getPreferenceManager().setPreferenceDownloadFolder("folder");
+        getPreferenceManager().setPreferenceArbitraryDownloadFolder("/folder");
         getPreferenceManager().setPreferenceDownloadKeep(true);
+        getPreferenceManager().setPreferenceLogFolder("folder");
+        getPreferenceManager().setPreferenceArbitraryLogFolder("/folder");
         getPreferenceManager().setPreferenceAccessType(AccessType.CONNECT);
         getPreferenceManager().setPreferenceAddress("address");
         getPreferenceManager().setPreferencePort(123);
@@ -983,12 +1144,17 @@ public class SystemActivityTest extends BaseUITest {
         getPreferenceManager().setPreferenceNotification(true);
         getPreferenceManager().setPreferenceImportFolder("folderImport");
         getPreferenceManager().setPreferenceExportFolder("folderExport");
+        getPreferenceManager().setPreferenceArbitraryImportFolder("arbitraryFolderImport");
+        getPreferenceManager().setPreferenceArbitraryExportFolder("arbitraryFolderExport");
         getPreferenceManager().setPreferenceFileLoggerEnabled(true);
         getPreferenceManager().setPreferenceFileDumpEnabled(true);
+        getPreferenceManager().setPreferenceAllowArbitraryFileLocation(true);
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(scrollTo());
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(click());
         onView(withId(R.id.switch_activity_system_file_dump_enabled)).perform(scrollTo());
         onView(withId(R.id.switch_activity_system_file_dump_enabled)).perform(click());
+        onView(withId(R.id.switch_activity_system_allow_arbitrary_file_location)).perform(scrollTo());
+        onView(withId(R.id.switch_activity_system_allow_arbitrary_file_location)).perform(click());
         onView(withId(R.id.cardview_activity_system_config_export)).perform(click());
         onView(withId(R.id.edittext_dialog_file_choose_folder)).check(matches(withText("folderExport")));
         onView(withId(R.id.edittext_dialog_file_choose_file)).check(matches(withText("keepitup_config.json")));
@@ -1014,7 +1180,10 @@ public class SystemActivityTest extends BaseUITest {
         assertEquals(0, getPreferenceManager().getPreferenceExternalStorageType());
         assertEquals(-1, getPreferenceManager().getPreferenceTheme());
         assertEquals("folder", getPreferenceManager().getPreferenceDownloadFolder());
+        assertEquals("/folder", getPreferenceManager().getPreferenceArbitraryDownloadFolder());
         assertTrue(getPreferenceManager().getPreferenceDownloadKeep());
+        assertEquals("folder", getPreferenceManager().getPreferenceLogFolder());
+        assertEquals("/folder", getPreferenceManager().getPreferenceArbitraryLogFolder());
         assertEquals(AccessType.CONNECT, getPreferenceManager().getPreferenceAccessType());
         assertEquals("address", getPreferenceManager().getPreferenceAddress());
         assertEquals(123, getPreferenceManager().getPreferencePort());
@@ -1023,8 +1192,11 @@ public class SystemActivityTest extends BaseUITest {
         assertTrue(getPreferenceManager().getPreferenceNotification());
         assertEquals("folderImport", getPreferenceManager().getPreferenceImportFolder());
         assertEquals("folderExport", getPreferenceManager().getPreferenceExportFolder());
+        assertEquals("arbitraryFolderImport", getPreferenceManager().getPreferenceArbitraryImportFolder());
+        assertEquals("arbitraryFolderExport", getPreferenceManager().getPreferenceArbitraryExportFolder());
         assertTrue(getPreferenceManager().getPreferenceFileLoggerEnabled());
         assertTrue(getPreferenceManager().getPreferenceFileDumpEnabled());
+        assertTrue(getPreferenceManager().getPreferenceAllowArbitraryFileLocation());
     }
 
     @Test
@@ -1056,7 +1228,10 @@ public class SystemActivityTest extends BaseUITest {
         getPreferenceManager().setPreferenceExternalStorageType(0);
         getPreferenceManager().setPreferenceTheme(-1);
         getPreferenceManager().setPreferenceDownloadFolder("folder");
+        getPreferenceManager().setPreferenceArbitraryDownloadFolder("/folder");
         getPreferenceManager().setPreferenceDownloadKeep(true);
+        getPreferenceManager().setPreferenceLogFolder("folder");
+        getPreferenceManager().setPreferenceArbitraryLogFolder("/folder");
         getPreferenceManager().setPreferenceAccessType(AccessType.CONNECT);
         getPreferenceManager().setPreferenceAddress("address");
         getPreferenceManager().setPreferencePort(123);
@@ -1065,12 +1240,17 @@ public class SystemActivityTest extends BaseUITest {
         getPreferenceManager().setPreferenceNotification(true);
         getPreferenceManager().setPreferenceImportFolder("folderImport");
         getPreferenceManager().setPreferenceExportFolder("folderExport");
+        getPreferenceManager().setPreferenceArbitraryImportFolder("arbitraryFolderImport");
+        getPreferenceManager().setPreferenceArbitraryExportFolder("arbitraryFolderExport");
         getPreferenceManager().setPreferenceFileLoggerEnabled(true);
         getPreferenceManager().setPreferenceFileDumpEnabled(true);
+        getPreferenceManager().setPreferenceAllowArbitraryFileLocation(true);
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(scrollTo());
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(click());
         onView(withId(R.id.switch_activity_system_file_dump_enabled)).perform(scrollTo());
         onView(withId(R.id.switch_activity_system_file_dump_enabled)).perform(click());
+        onView(withId(R.id.switch_activity_system_allow_arbitrary_file_location)).perform(scrollTo());
+        onView(withId(R.id.switch_activity_system_allow_arbitrary_file_location)).perform(click());
         onView(withId(R.id.cardview_activity_system_config_export)).perform(click());
         onView(withId(R.id.edittext_dialog_file_choose_folder)).check(matches(withText("folderExport")));
         onView(withId(R.id.edittext_dialog_file_choose_file)).check(matches(withText("keepitup_config.json")));
@@ -1102,7 +1282,10 @@ public class SystemActivityTest extends BaseUITest {
         assertEquals(0, getPreferenceManager().getPreferenceExternalStorageType());
         assertEquals(-1, getPreferenceManager().getPreferenceTheme());
         assertEquals("folder", getPreferenceManager().getPreferenceDownloadFolder());
+        assertEquals("/folder", getPreferenceManager().getPreferenceArbitraryDownloadFolder());
         assertTrue(getPreferenceManager().getPreferenceDownloadKeep());
+        assertEquals("folder", getPreferenceManager().getPreferenceLogFolder());
+        assertEquals("/folder", getPreferenceManager().getPreferenceArbitraryLogFolder());
         assertEquals(AccessType.CONNECT, getPreferenceManager().getPreferenceAccessType());
         assertEquals("address", getPreferenceManager().getPreferenceAddress());
         assertEquals(123, getPreferenceManager().getPreferencePort());
@@ -1111,8 +1294,11 @@ public class SystemActivityTest extends BaseUITest {
         assertTrue(getPreferenceManager().getPreferenceNotification());
         assertEquals("folderImport", getPreferenceManager().getPreferenceImportFolder());
         assertEquals("folderExport", getPreferenceManager().getPreferenceExportFolder());
+        assertEquals("arbitraryFolderImport", getPreferenceManager().getPreferenceArbitraryImportFolder());
+        assertEquals("arbitraryFolderExport", getPreferenceManager().getPreferenceArbitraryExportFolder());
         assertTrue(getPreferenceManager().getPreferenceFileLoggerEnabled());
         assertTrue(getPreferenceManager().getPreferenceFileDumpEnabled());
+        assertTrue(getPreferenceManager().getPreferenceAllowArbitraryFileLocation());
     }
 
     @Test
@@ -1144,7 +1330,10 @@ public class SystemActivityTest extends BaseUITest {
         getPreferenceManager().setPreferenceExternalStorageType(0);
         getPreferenceManager().setPreferenceTheme(-1);
         getPreferenceManager().setPreferenceDownloadFolder("folder");
+        getPreferenceManager().setPreferenceArbitraryDownloadFolder("/folder");
         getPreferenceManager().setPreferenceDownloadKeep(true);
+        getPreferenceManager().setPreferenceLogFolder("folder");
+        getPreferenceManager().setPreferenceArbitraryLogFolder("/folder");
         getPreferenceManager().setPreferenceAccessType(AccessType.CONNECT);
         getPreferenceManager().setPreferenceAddress("address");
         getPreferenceManager().setPreferencePort(123);
@@ -1153,12 +1342,17 @@ public class SystemActivityTest extends BaseUITest {
         getPreferenceManager().setPreferenceNotification(true);
         getPreferenceManager().setPreferenceImportFolder("folderImport");
         getPreferenceManager().setPreferenceExportFolder("folderExport");
+        getPreferenceManager().setPreferenceArbitraryImportFolder("arbitraryFolderImport");
+        getPreferenceManager().setPreferenceArbitraryExportFolder("arbitraryFolderExport");
         getPreferenceManager().setPreferenceFileLoggerEnabled(true);
         getPreferenceManager().setPreferenceFileDumpEnabled(true);
+        getPreferenceManager().setPreferenceAllowArbitraryFileLocation(true);
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(scrollTo());
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(click());
         onView(withId(R.id.switch_activity_system_file_dump_enabled)).perform(scrollTo());
         onView(withId(R.id.switch_activity_system_file_dump_enabled)).perform(click());
+        onView(withId(R.id.switch_activity_system_allow_arbitrary_file_location)).perform(scrollTo());
+        onView(withId(R.id.switch_activity_system_allow_arbitrary_file_location)).perform(click());
         onView(withId(R.id.cardview_activity_system_config_export)).perform(click());
         onView(withId(R.id.edittext_dialog_file_choose_folder)).check(matches(withText("folderExport")));
         onView(withId(R.id.edittext_dialog_file_choose_file)).check(matches(withText("keepitup_config.json")));
@@ -1182,7 +1376,10 @@ public class SystemActivityTest extends BaseUITest {
         assertEquals(0, getPreferenceManager().getPreferenceExternalStorageType());
         assertEquals(-1, getPreferenceManager().getPreferenceTheme());
         assertEquals("folder", getPreferenceManager().getPreferenceDownloadFolder());
+        assertEquals("/folder", getPreferenceManager().getPreferenceArbitraryDownloadFolder());
         assertTrue(getPreferenceManager().getPreferenceDownloadKeep());
+        assertEquals("folder", getPreferenceManager().getPreferenceLogFolder());
+        assertEquals("/folder", getPreferenceManager().getPreferenceArbitraryLogFolder());
         assertEquals(AccessType.CONNECT, getPreferenceManager().getPreferenceAccessType());
         assertEquals("address", getPreferenceManager().getPreferenceAddress());
         assertEquals(123, getPreferenceManager().getPreferencePort());
@@ -1191,8 +1388,11 @@ public class SystemActivityTest extends BaseUITest {
         assertTrue(getPreferenceManager().getPreferenceNotification());
         assertEquals("folderImport", getPreferenceManager().getPreferenceImportFolder());
         assertEquals("folderExport", getPreferenceManager().getPreferenceExportFolder());
+        assertEquals("arbitraryFolderImport", getPreferenceManager().getPreferenceArbitraryImportFolder());
+        assertEquals("arbitraryFolderExport", getPreferenceManager().getPreferenceArbitraryExportFolder());
         assertTrue(getPreferenceManager().getPreferenceFileLoggerEnabled());
         assertTrue(getPreferenceManager().getPreferenceFileDumpEnabled());
+        assertTrue(getPreferenceManager().getPreferenceAllowArbitraryFileLocation());
         getNetworkTaskDAO().deleteAllNetworkTasks();
         getLogDAO().deleteAllLogs();
         getIntervalDAO().deleteAllIntervals();
@@ -1256,7 +1456,10 @@ public class SystemActivityTest extends BaseUITest {
         assertEquals(0, getPreferenceManager().getPreferenceExternalStorageType());
         assertEquals(-1, getPreferenceManager().getPreferenceTheme());
         assertEquals("folder", getPreferenceManager().getPreferenceDownloadFolder());
+        assertEquals("/folder", getPreferenceManager().getPreferenceArbitraryDownloadFolder());
         assertTrue(getPreferenceManager().getPreferenceDownloadKeep());
+        assertEquals("folder", getPreferenceManager().getPreferenceLogFolder());
+        assertEquals("/folder", getPreferenceManager().getPreferenceArbitraryLogFolder());
         assertEquals(AccessType.CONNECT, getPreferenceManager().getPreferenceAccessType());
         assertEquals("address", getPreferenceManager().getPreferenceAddress());
         assertEquals(123, getPreferenceManager().getPreferencePort());
@@ -1265,8 +1468,11 @@ public class SystemActivityTest extends BaseUITest {
         assertTrue(getPreferenceManager().getPreferenceNotification());
         assertEquals("folderImport", getPreferenceManager().getPreferenceImportFolder());
         assertEquals("folderExport", getPreferenceManager().getPreferenceExportFolder());
+        assertEquals("arbitraryFolderImport", getPreferenceManager().getPreferenceArbitraryImportFolder());
+        assertEquals("arbitraryFolderExport", getPreferenceManager().getPreferenceArbitraryExportFolder());
         assertTrue(getPreferenceManager().getPreferenceFileLoggerEnabled());
         assertTrue(getPreferenceManager().getPreferenceFileDumpEnabled());
+        assertTrue(getPreferenceManager().getPreferenceAllowArbitraryFileLocation());
     }
 
     @Test
@@ -1298,7 +1504,10 @@ public class SystemActivityTest extends BaseUITest {
         getPreferenceManager().setPreferenceExternalStorageType(0);
         getPreferenceManager().setPreferenceTheme(-1);
         getPreferenceManager().setPreferenceDownloadFolder("folder");
+        getPreferenceManager().setPreferenceArbitraryDownloadFolder("/folder");
         getPreferenceManager().setPreferenceDownloadKeep(true);
+        getPreferenceManager().setPreferenceLogFolder("folder");
+        getPreferenceManager().setPreferenceArbitraryLogFolder("/folder");
         getPreferenceManager().setPreferenceAccessType(AccessType.CONNECT);
         getPreferenceManager().setPreferenceAddress("address");
         getPreferenceManager().setPreferencePort(123);
@@ -1307,12 +1516,17 @@ public class SystemActivityTest extends BaseUITest {
         getPreferenceManager().setPreferenceNotification(true);
         getPreferenceManager().setPreferenceImportFolder("folderImport");
         getPreferenceManager().setPreferenceExportFolder("folderExport");
+        getPreferenceManager().setPreferenceArbitraryImportFolder("arbitraryFolderImport");
+        getPreferenceManager().setPreferenceArbitraryExportFolder("arbitraryFolderExport");
         getPreferenceManager().setPreferenceFileLoggerEnabled(true);
         getPreferenceManager().setPreferenceFileDumpEnabled(true);
+        getPreferenceManager().setPreferenceAllowArbitraryFileLocation(true);
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(scrollTo());
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(click());
         onView(withId(R.id.switch_activity_system_file_dump_enabled)).perform(scrollTo());
         onView(withId(R.id.switch_activity_system_file_dump_enabled)).perform(click());
+        onView(withId(R.id.switch_activity_system_allow_arbitrary_file_location)).perform(scrollTo());
+        onView(withId(R.id.switch_activity_system_allow_arbitrary_file_location)).perform(click());
         onView(withId(R.id.cardview_activity_system_config_export)).perform(click());
         onView(withId(R.id.edittext_dialog_file_choose_folder)).check(matches(withText("folderExport")));
         onView(withId(R.id.edittext_dialog_file_choose_file)).check(matches(withText("keepitup_config.json")));
@@ -1342,7 +1556,10 @@ public class SystemActivityTest extends BaseUITest {
         assertEquals(0, getPreferenceManager().getPreferenceExternalStorageType());
         assertEquals(-1, getPreferenceManager().getPreferenceTheme());
         assertEquals("folder", getPreferenceManager().getPreferenceDownloadFolder());
+        assertEquals("/folder", getPreferenceManager().getPreferenceArbitraryDownloadFolder());
         assertTrue(getPreferenceManager().getPreferenceDownloadKeep());
+        assertEquals("folder", getPreferenceManager().getPreferenceLogFolder());
+        assertEquals("/folder", getPreferenceManager().getPreferenceArbitraryLogFolder());
         assertEquals(AccessType.CONNECT, getPreferenceManager().getPreferenceAccessType());
         assertEquals("address", getPreferenceManager().getPreferenceAddress());
         assertEquals(123, getPreferenceManager().getPreferencePort());
@@ -1351,8 +1568,11 @@ public class SystemActivityTest extends BaseUITest {
         assertTrue(getPreferenceManager().getPreferenceNotification());
         assertEquals("folderImport", getPreferenceManager().getPreferenceImportFolder());
         assertEquals("folderExport", getPreferenceManager().getPreferenceExportFolder());
+        assertEquals("arbitraryFolderImport", getPreferenceManager().getPreferenceArbitraryImportFolder());
+        assertEquals("arbitraryFolderExport", getPreferenceManager().getPreferenceArbitraryExportFolder());
         assertTrue(getPreferenceManager().getPreferenceFileLoggerEnabled());
         assertTrue(getPreferenceManager().getPreferenceFileDumpEnabled());
+        assertTrue(getPreferenceManager().getPreferenceAllowArbitraryFileLocation());
         getNetworkTaskDAO().deleteAllNetworkTasks();
         getLogDAO().deleteAllLogs();
         getIntervalDAO().deleteAllIntervals();
@@ -1416,7 +1636,10 @@ public class SystemActivityTest extends BaseUITest {
         assertEquals(0, getPreferenceManager().getPreferenceExternalStorageType());
         assertEquals(-1, getPreferenceManager().getPreferenceTheme());
         assertEquals("folder", getPreferenceManager().getPreferenceDownloadFolder());
+        assertEquals("/folder", getPreferenceManager().getPreferenceArbitraryDownloadFolder());
         assertTrue(getPreferenceManager().getPreferenceDownloadKeep());
+        assertEquals("folder", getPreferenceManager().getPreferenceLogFolder());
+        assertEquals("/folder", getPreferenceManager().getPreferenceArbitraryLogFolder());
         assertEquals(AccessType.CONNECT, getPreferenceManager().getPreferenceAccessType());
         assertEquals("address", getPreferenceManager().getPreferenceAddress());
         assertEquals(123, getPreferenceManager().getPreferencePort());
@@ -1425,8 +1648,11 @@ public class SystemActivityTest extends BaseUITest {
         assertTrue(getPreferenceManager().getPreferenceNotification());
         assertEquals("folderImport", getPreferenceManager().getPreferenceImportFolder());
         assertEquals("folderExport", getPreferenceManager().getPreferenceExportFolder());
+        assertEquals("arbitraryFolderImport", getPreferenceManager().getPreferenceArbitraryImportFolder());
+        assertEquals("arbitraryFolderExport", getPreferenceManager().getPreferenceArbitraryExportFolder());
         assertTrue(getPreferenceManager().getPreferenceFileLoggerEnabled());
         assertTrue(getPreferenceManager().getPreferenceFileDumpEnabled());
+        assertTrue(getPreferenceManager().getPreferenceAllowArbitraryFileLocation());
     }
 
     @Test
@@ -1450,7 +1676,10 @@ public class SystemActivityTest extends BaseUITest {
         getPreferenceManager().setPreferenceExternalStorageType(0);
         getPreferenceManager().setPreferenceTheme(-1);
         getPreferenceManager().setPreferenceDownloadFolder("folder");
+        getPreferenceManager().setPreferenceArbitraryDownloadFolder("/folder");
         getPreferenceManager().setPreferenceDownloadKeep(true);
+        getPreferenceManager().setPreferenceLogFolder("folder");
+        getPreferenceManager().setPreferenceArbitraryLogFolder("/folder");
         getPreferenceManager().setPreferenceAccessType(AccessType.CONNECT);
         getPreferenceManager().setPreferenceAddress("address");
         getPreferenceManager().setPreferencePort(123);
@@ -1459,12 +1688,17 @@ public class SystemActivityTest extends BaseUITest {
         getPreferenceManager().setPreferenceNotification(true);
         getPreferenceManager().setPreferenceImportFolder("folderImport");
         getPreferenceManager().setPreferenceExportFolder("folderExport");
+        getPreferenceManager().setPreferenceArbitraryImportFolder("arbitraryFolderImport");
+        getPreferenceManager().setPreferenceArbitraryExportFolder("arbitraryFolderExport");
         getPreferenceManager().setPreferenceFileLoggerEnabled(true);
         getPreferenceManager().setPreferenceFileDumpEnabled(true);
+        getPreferenceManager().setPreferenceAllowArbitraryFileLocation(true);
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(scrollTo());
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(click());
         onView(withId(R.id.switch_activity_system_file_dump_enabled)).perform(scrollTo());
         onView(withId(R.id.switch_activity_system_file_dump_enabled)).perform(click());
+        onView(withId(R.id.switch_activity_system_allow_arbitrary_file_location)).perform(scrollTo());
+        onView(withId(R.id.switch_activity_system_allow_arbitrary_file_location)).perform(click());
         onView(withId(R.id.cardview_activity_system_config_export)).perform(click());
         onView(withId(R.id.edittext_dialog_file_choose_folder)).check(matches(withText("folderExport")));
         onView(withId(R.id.edittext_dialog_file_choose_file)).check(matches(withText("keepitup_config.json")));
@@ -1485,7 +1719,10 @@ public class SystemActivityTest extends BaseUITest {
         assertEquals(0, getPreferenceManager().getPreferenceExternalStorageType());
         assertEquals(-1, getPreferenceManager().getPreferenceTheme());
         assertEquals("folder", getPreferenceManager().getPreferenceDownloadFolder());
+        assertEquals("/folder", getPreferenceManager().getPreferenceArbitraryDownloadFolder());
         assertTrue(getPreferenceManager().getPreferenceDownloadKeep());
+        assertEquals("folder", getPreferenceManager().getPreferenceLogFolder());
+        assertEquals("/folder", getPreferenceManager().getPreferenceArbitraryLogFolder());
         assertEquals(AccessType.CONNECT, getPreferenceManager().getPreferenceAccessType());
         assertEquals("address", getPreferenceManager().getPreferenceAddress());
         assertEquals(123, getPreferenceManager().getPreferencePort());
@@ -1494,8 +1731,11 @@ public class SystemActivityTest extends BaseUITest {
         assertTrue(getPreferenceManager().getPreferenceNotification());
         assertEquals("folderImport", getPreferenceManager().getPreferenceImportFolder());
         assertEquals("folderExport", getPreferenceManager().getPreferenceExportFolder());
+        assertEquals("arbitraryFolderImport", getPreferenceManager().getPreferenceArbitraryImportFolder());
+        assertEquals("arbitraryFolderExport", getPreferenceManager().getPreferenceArbitraryExportFolder());
         assertTrue(getPreferenceManager().getPreferenceFileLoggerEnabled());
         assertTrue(getPreferenceManager().getPreferenceFileDumpEnabled());
+        assertTrue(getPreferenceManager().getPreferenceAllowArbitraryFileLocation());
     }
 
     @Test
@@ -1519,7 +1759,10 @@ public class SystemActivityTest extends BaseUITest {
         getPreferenceManager().setPreferenceExternalStorageType(0);
         getPreferenceManager().setPreferenceTheme(-1);
         getPreferenceManager().setPreferenceDownloadFolder("folder");
+        getPreferenceManager().setPreferenceArbitraryDownloadFolder("/folder");
         getPreferenceManager().setPreferenceDownloadKeep(true);
+        getPreferenceManager().setPreferenceLogFolder("folder");
+        getPreferenceManager().setPreferenceArbitraryLogFolder("/folder");
         getPreferenceManager().setPreferenceAccessType(AccessType.CONNECT);
         getPreferenceManager().setPreferenceAddress("address");
         getPreferenceManager().setPreferencePort(123);
@@ -1528,12 +1771,17 @@ public class SystemActivityTest extends BaseUITest {
         getPreferenceManager().setPreferenceNotification(true);
         getPreferenceManager().setPreferenceImportFolder("folderImport");
         getPreferenceManager().setPreferenceExportFolder("folderExport");
+        getPreferenceManager().setPreferenceArbitraryImportFolder("arbitraryFolderImport");
+        getPreferenceManager().setPreferenceArbitraryExportFolder("arbitraryFolderExport");
         getPreferenceManager().setPreferenceFileLoggerEnabled(true);
         getPreferenceManager().setPreferenceFileDumpEnabled(true);
+        getPreferenceManager().setPreferenceAllowArbitraryFileLocation(true);
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(scrollTo());
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(click());
         onView(withId(R.id.switch_activity_system_file_dump_enabled)).perform(scrollTo());
         onView(withId(R.id.switch_activity_system_file_dump_enabled)).perform(click());
+        onView(withId(R.id.switch_activity_system_allow_arbitrary_file_location)).perform(scrollTo());
+        onView(withId(R.id.switch_activity_system_allow_arbitrary_file_location)).perform(click());
         onView(withId(R.id.cardview_activity_system_config_export)).perform(click());
         onView(withId(R.id.edittext_dialog_file_choose_folder)).check(matches(withText("folderExport")));
         onView(withId(R.id.edittext_dialog_file_choose_file)).check(matches(withText("keepitup_config.json")));
@@ -1557,7 +1805,10 @@ public class SystemActivityTest extends BaseUITest {
         assertEquals(0, getPreferenceManager().getPreferenceExternalStorageType());
         assertEquals(-1, getPreferenceManager().getPreferenceTheme());
         assertEquals("folder", getPreferenceManager().getPreferenceDownloadFolder());
+        assertEquals("/folder", getPreferenceManager().getPreferenceArbitraryDownloadFolder());
         assertTrue(getPreferenceManager().getPreferenceDownloadKeep());
+        assertEquals("folder", getPreferenceManager().getPreferenceLogFolder());
+        assertEquals("/folder", getPreferenceManager().getPreferenceArbitraryLogFolder());
         assertEquals(AccessType.CONNECT, getPreferenceManager().getPreferenceAccessType());
         assertEquals("address", getPreferenceManager().getPreferenceAddress());
         assertEquals(123, getPreferenceManager().getPreferencePort());
@@ -1566,8 +1817,11 @@ public class SystemActivityTest extends BaseUITest {
         assertTrue(getPreferenceManager().getPreferenceNotification());
         assertEquals("folderImport", getPreferenceManager().getPreferenceImportFolder());
         assertEquals("folderExport", getPreferenceManager().getPreferenceExportFolder());
+        assertEquals("arbitraryFolderImport", getPreferenceManager().getPreferenceArbitraryImportFolder());
+        assertEquals("arbitraryFolderExport", getPreferenceManager().getPreferenceArbitraryExportFolder());
         assertTrue(getPreferenceManager().getPreferenceFileLoggerEnabled());
         assertTrue(getPreferenceManager().getPreferenceFileDumpEnabled());
+        assertTrue(getPreferenceManager().getPreferenceAllowArbitraryFileLocation());
     }
 
     @Test
@@ -1663,7 +1917,10 @@ public class SystemActivityTest extends BaseUITest {
         getPreferenceManager().setPreferenceExternalStorageType(30);
         getPreferenceManager().setPreferenceTheme(5);
         getPreferenceManager().setPreferenceDownloadFolder("folder");
+        getPreferenceManager().setPreferenceArbitraryDownloadFolder("/folder");
         getPreferenceManager().setPreferenceDownloadKeep(true);
+        getPreferenceManager().setPreferenceLogFolder("folder");
+        getPreferenceManager().setPreferenceArbitraryLogFolder("/folder");
         getPreferenceManager().setPreferenceAccessType(AccessType.CONNECT);
         getPreferenceManager().setPreferenceAddress("address");
         getPreferenceManager().setPreferencePort(123);
@@ -1672,12 +1929,17 @@ public class SystemActivityTest extends BaseUITest {
         getPreferenceManager().setPreferenceNotification(true);
         getPreferenceManager().setPreferenceImportFolder("folderImport");
         getPreferenceManager().setPreferenceExportFolder("folderExport");
+        getPreferenceManager().setPreferenceArbitraryImportFolder("arbitraryFolderImport");
+        getPreferenceManager().setPreferenceArbitraryExportFolder("arbitraryFolderExport");
         getPreferenceManager().setPreferenceFileLoggerEnabled(true);
         getPreferenceManager().setPreferenceFileDumpEnabled(true);
+        getPreferenceManager().setPreferenceAllowArbitraryFileLocation(true);
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(scrollTo());
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(click());
         onView(withId(R.id.switch_activity_system_file_dump_enabled)).perform(scrollTo());
         onView(withId(R.id.switch_activity_system_file_dump_enabled)).perform(click());
+        onView(withId(R.id.switch_activity_system_allow_arbitrary_file_location)).perform(scrollTo());
+        onView(withId(R.id.switch_activity_system_allow_arbitrary_file_location)).perform(click());
         JSONSystemSetup setup = new JSONSystemSetup(TestRegistry.getContext());
         SystemSetupResult result = setup.exportData();
         assertTrue(result.success());
@@ -1705,7 +1967,10 @@ public class SystemActivityTest extends BaseUITest {
         assertEquals(0, getPreferenceManager().getPreferenceExternalStorageType());
         assertEquals(-1, getPreferenceManager().getPreferenceTheme());
         assertEquals("download", getPreferenceManager().getPreferenceDownloadFolder());
+        assertEquals("/Documents", getPreferenceManager().getPreferenceArbitraryDownloadFolder());
         assertFalse(getPreferenceManager().getPreferenceDownloadKeep());
+        assertEquals("log", getPreferenceManager().getPreferenceLogFolder());
+        assertEquals("/Documents", getPreferenceManager().getPreferenceArbitraryLogFolder());
         assertEquals(AccessType.PING, getPreferenceManager().getPreferenceAccessType());
         assertEquals("192.168.178.1", getPreferenceManager().getPreferenceAddress());
         assertEquals(22, getPreferenceManager().getPreferencePort());
@@ -1714,8 +1979,11 @@ public class SystemActivityTest extends BaseUITest {
         assertFalse(getPreferenceManager().getPreferenceNotification());
         assertEquals("config", getPreferenceManager().getPreferenceImportFolder());
         assertEquals("config", getPreferenceManager().getPreferenceExportFolder());
+        assertEquals("/Documents", getPreferenceManager().getPreferenceArbitraryImportFolder());
+        assertEquals("/Documents", getPreferenceManager().getPreferenceArbitraryExportFolder());
         assertFalse(getPreferenceManager().getPreferenceFileLoggerEnabled());
         assertFalse(getPreferenceManager().getPreferenceFileDumpEnabled());
+        assertFalse(getPreferenceManager().getPreferenceAllowArbitraryFileLocation());
     }
 
     @Test
@@ -1738,7 +2006,10 @@ public class SystemActivityTest extends BaseUITest {
         getPreferenceManager().setPreferenceExternalStorageType(0);
         getPreferenceManager().setPreferenceTheme(-1);
         getPreferenceManager().setPreferenceDownloadFolder("folder");
+        getPreferenceManager().setPreferenceArbitraryDownloadFolder("/folder");
         getPreferenceManager().setPreferenceDownloadKeep(true);
+        getPreferenceManager().setPreferenceLogFolder("folder");
+        getPreferenceManager().setPreferenceArbitraryLogFolder("/folder");
         getPreferenceManager().setPreferenceAccessType(AccessType.CONNECT);
         getPreferenceManager().setPreferenceAddress("address");
         getPreferenceManager().setPreferencePort(123);
@@ -1747,12 +2018,17 @@ public class SystemActivityTest extends BaseUITest {
         getPreferenceManager().setPreferenceNotification(true);
         getPreferenceManager().setPreferenceImportFolder("folderImport");
         getPreferenceManager().setPreferenceExportFolder("folderExport");
+        getPreferenceManager().setPreferenceArbitraryImportFolder("arbitraryFolderImport");
+        getPreferenceManager().setPreferenceArbitraryExportFolder("arbitraryFolderExport");
         getPreferenceManager().setPreferenceFileLoggerEnabled(true);
         getPreferenceManager().setPreferenceFileDumpEnabled(true);
+        getPreferenceManager().setPreferenceAllowArbitraryFileLocation(true);
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(scrollTo());
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(click());
         onView(withId(R.id.switch_activity_system_file_dump_enabled)).perform(scrollTo());
         onView(withId(R.id.switch_activity_system_file_dump_enabled)).perform(click());
+        onView(withId(R.id.switch_activity_system_allow_arbitrary_file_location)).perform(scrollTo());
+        onView(withId(R.id.switch_activity_system_allow_arbitrary_file_location)).perform(click());
         JSONSystemSetup setup = new JSONSystemSetup(TestRegistry.getContext());
         SystemSetupResult result = setup.exportData();
         assertTrue(result.success());
@@ -1782,7 +2058,10 @@ public class SystemActivityTest extends BaseUITest {
         assertEquals(0, getPreferenceManager().getPreferenceExternalStorageType());
         assertEquals(-1, getPreferenceManager().getPreferenceTheme());
         assertEquals("download", getPreferenceManager().getPreferenceDownloadFolder());
+        assertEquals("/Documents", getPreferenceManager().getPreferenceArbitraryDownloadFolder());
         assertFalse(getPreferenceManager().getPreferenceDownloadKeep());
+        assertEquals("log", getPreferenceManager().getPreferenceLogFolder());
+        assertEquals("/Documents", getPreferenceManager().getPreferenceArbitraryLogFolder());
         assertEquals(AccessType.PING, getPreferenceManager().getPreferenceAccessType());
         assertEquals("192.168.178.1", getPreferenceManager().getPreferenceAddress());
         assertEquals(22, getPreferenceManager().getPreferencePort());
@@ -1791,8 +2070,11 @@ public class SystemActivityTest extends BaseUITest {
         assertFalse(getPreferenceManager().getPreferenceNotification());
         assertEquals("config", getPreferenceManager().getPreferenceImportFolder());
         assertEquals("config", getPreferenceManager().getPreferenceExportFolder());
+        assertEquals("/Documents", getPreferenceManager().getPreferenceArbitraryImportFolder());
+        assertEquals("/Documents", getPreferenceManager().getPreferenceArbitraryExportFolder());
         assertFalse(getPreferenceManager().getPreferenceFileLoggerEnabled());
         assertFalse(getPreferenceManager().getPreferenceFileDumpEnabled());
+        assertFalse(getPreferenceManager().getPreferenceAllowArbitraryFileLocation());
     }
 
     @Test
@@ -1815,7 +2097,10 @@ public class SystemActivityTest extends BaseUITest {
         getPreferenceManager().setPreferenceExternalStorageType(0);
         getPreferenceManager().setPreferenceTheme(-1);
         getPreferenceManager().setPreferenceDownloadFolder("folder");
+        getPreferenceManager().setPreferenceArbitraryDownloadFolder("/folder");
         getPreferenceManager().setPreferenceDownloadKeep(true);
+        getPreferenceManager().setPreferenceLogFolder("folder");
+        getPreferenceManager().setPreferenceArbitraryLogFolder("/folder");
         getPreferenceManager().setPreferenceAccessType(AccessType.CONNECT);
         getPreferenceManager().setPreferenceAddress("address");
         getPreferenceManager().setPreferencePort(123);
@@ -1824,12 +2109,17 @@ public class SystemActivityTest extends BaseUITest {
         getPreferenceManager().setPreferenceNotification(true);
         getPreferenceManager().setPreferenceImportFolder("folderImport");
         getPreferenceManager().setPreferenceExportFolder("folderExport");
+        getPreferenceManager().setPreferenceArbitraryImportFolder("arbitraryFolderImport");
+        getPreferenceManager().setPreferenceArbitraryExportFolder("arbitraryFolderExport");
         getPreferenceManager().setPreferenceFileLoggerEnabled(true);
         getPreferenceManager().setPreferenceFileDumpEnabled(true);
+        getPreferenceManager().setPreferenceAllowArbitraryFileLocation(true);
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(scrollTo());
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(click());
         onView(withId(R.id.switch_activity_system_file_dump_enabled)).perform(scrollTo());
         onView(withId(R.id.switch_activity_system_file_dump_enabled)).perform(click());
+        onView(withId(R.id.switch_activity_system_allow_arbitrary_file_location)).perform(scrollTo());
+        onView(withId(R.id.switch_activity_system_allow_arbitrary_file_location)).perform(click());
         JSONSystemSetup setup = new JSONSystemSetup(TestRegistry.getContext());
         SystemSetupResult result = setup.exportData();
         assertTrue(result.success());
@@ -1859,7 +2149,10 @@ public class SystemActivityTest extends BaseUITest {
         assertEquals(0, getPreferenceManager().getPreferenceExternalStorageType());
         assertEquals(-1, getPreferenceManager().getPreferenceTheme());
         assertEquals("download", getPreferenceManager().getPreferenceDownloadFolder());
+        assertEquals("/Documents", getPreferenceManager().getPreferenceArbitraryDownloadFolder());
         assertFalse(getPreferenceManager().getPreferenceDownloadKeep());
+        assertEquals("log", getPreferenceManager().getPreferenceLogFolder());
+        assertEquals("/Documents", getPreferenceManager().getPreferenceArbitraryLogFolder());
         assertEquals(AccessType.PING, getPreferenceManager().getPreferenceAccessType());
         assertEquals("192.168.178.1", getPreferenceManager().getPreferenceAddress());
         assertEquals(22, getPreferenceManager().getPreferencePort());
@@ -1868,8 +2161,11 @@ public class SystemActivityTest extends BaseUITest {
         assertFalse(getPreferenceManager().getPreferenceNotification());
         assertEquals("config", getPreferenceManager().getPreferenceImportFolder());
         assertEquals("config", getPreferenceManager().getPreferenceExportFolder());
+        assertEquals("/Documents", getPreferenceManager().getPreferenceArbitraryImportFolder());
+        assertEquals("/Documents", getPreferenceManager().getPreferenceArbitraryExportFolder());
         assertFalse(getPreferenceManager().getPreferenceFileLoggerEnabled());
         assertFalse(getPreferenceManager().getPreferenceFileDumpEnabled());
+        assertFalse(getPreferenceManager().getPreferenceAllowArbitraryFileLocation());
     }
 
     @Test
@@ -1892,7 +2188,10 @@ public class SystemActivityTest extends BaseUITest {
         getPreferenceManager().setPreferenceExternalStorageType(0);
         getPreferenceManager().setPreferenceTheme(-1);
         getPreferenceManager().setPreferenceDownloadFolder("folder");
+        getPreferenceManager().setPreferenceArbitraryDownloadFolder("/folder");
         getPreferenceManager().setPreferenceDownloadKeep(true);
+        getPreferenceManager().setPreferenceLogFolder("folder");
+        getPreferenceManager().setPreferenceArbitraryLogFolder("/folder");
         getPreferenceManager().setPreferenceAccessType(AccessType.CONNECT);
         getPreferenceManager().setPreferenceAddress("address");
         getPreferenceManager().setPreferencePort(123);
@@ -1901,12 +2200,17 @@ public class SystemActivityTest extends BaseUITest {
         getPreferenceManager().setPreferenceNotification(true);
         getPreferenceManager().setPreferenceImportFolder("folderImport");
         getPreferenceManager().setPreferenceExportFolder("folderExport");
+        getPreferenceManager().setPreferenceArbitraryImportFolder("arbitraryFolderImport");
+        getPreferenceManager().setPreferenceArbitraryExportFolder("arbitraryFolderExport");
         getPreferenceManager().setPreferenceFileLoggerEnabled(true);
         getPreferenceManager().setPreferenceFileDumpEnabled(true);
+        getPreferenceManager().setPreferenceAllowArbitraryFileLocation(true);
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(scrollTo());
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(click());
         onView(withId(R.id.switch_activity_system_file_dump_enabled)).perform(scrollTo());
         onView(withId(R.id.switch_activity_system_file_dump_enabled)).perform(click());
+        onView(withId(R.id.switch_activity_system_allow_arbitrary_file_location)).perform(scrollTo());
+        onView(withId(R.id.switch_activity_system_allow_arbitrary_file_location)).perform(click());
         JSONSystemSetup setup = new JSONSystemSetup(TestRegistry.getContext());
         SystemSetupResult result = setup.exportData();
         assertTrue(result.success());
@@ -1938,7 +2242,10 @@ public class SystemActivityTest extends BaseUITest {
         assertEquals(0, getPreferenceManager().getPreferenceExternalStorageType());
         assertEquals(-1, getPreferenceManager().getPreferenceTheme());
         assertEquals("download", getPreferenceManager().getPreferenceDownloadFolder());
+        assertEquals("/Documents", getPreferenceManager().getPreferenceArbitraryDownloadFolder());
         assertFalse(getPreferenceManager().getPreferenceDownloadKeep());
+        assertEquals("log", getPreferenceManager().getPreferenceLogFolder());
+        assertEquals("/Documents", getPreferenceManager().getPreferenceArbitraryLogFolder());
         assertEquals(AccessType.PING, getPreferenceManager().getPreferenceAccessType());
         assertEquals("192.168.178.1", getPreferenceManager().getPreferenceAddress());
         assertEquals(22, getPreferenceManager().getPreferencePort());
@@ -1947,8 +2254,11 @@ public class SystemActivityTest extends BaseUITest {
         assertFalse(getPreferenceManager().getPreferenceNotification());
         assertEquals("config", getPreferenceManager().getPreferenceImportFolder());
         assertEquals("config", getPreferenceManager().getPreferenceExportFolder());
+        assertEquals("/Documents", getPreferenceManager().getPreferenceArbitraryImportFolder());
+        assertEquals("/Documents", getPreferenceManager().getPreferenceArbitraryExportFolder());
         assertFalse(getPreferenceManager().getPreferenceFileLoggerEnabled());
         assertFalse(getPreferenceManager().getPreferenceFileDumpEnabled());
+        assertFalse(getPreferenceManager().getPreferenceAllowArbitraryFileLocation());
     }
 
     @Test
@@ -1980,7 +2290,10 @@ public class SystemActivityTest extends BaseUITest {
         getPreferenceManager().setPreferenceExternalStorageType(0);
         getPreferenceManager().setPreferenceTheme(-1);
         getPreferenceManager().setPreferenceDownloadFolder("folder");
+        getPreferenceManager().setPreferenceArbitraryDownloadFolder("/folder");
         getPreferenceManager().setPreferenceDownloadKeep(true);
+        getPreferenceManager().setPreferenceLogFolder("folder");
+        getPreferenceManager().setPreferenceArbitraryLogFolder("/folder");
         getPreferenceManager().setPreferenceAccessType(AccessType.CONNECT);
         getPreferenceManager().setPreferenceAddress("address");
         getPreferenceManager().setPreferencePort(123);
@@ -1989,12 +2302,17 @@ public class SystemActivityTest extends BaseUITest {
         getPreferenceManager().setPreferenceNotification(true);
         getPreferenceManager().setPreferenceImportFolder("folderImport");
         getPreferenceManager().setPreferenceExportFolder("folderExport");
+        getPreferenceManager().setPreferenceArbitraryImportFolder("arbitraryFolderImport");
+        getPreferenceManager().setPreferenceArbitraryExportFolder("arbitraryFolderExport");
         getPreferenceManager().setPreferenceFileLoggerEnabled(true);
         getPreferenceManager().setPreferenceFileDumpEnabled(true);
+        getPreferenceManager().setPreferenceAllowArbitraryFileLocation(true);
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(scrollTo());
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(click());
         onView(withId(R.id.switch_activity_system_file_dump_enabled)).perform(scrollTo());
         onView(withId(R.id.switch_activity_system_file_dump_enabled)).perform(click());
+        onView(withId(R.id.switch_activity_system_allow_arbitrary_file_location)).perform(scrollTo());
+        onView(withId(R.id.switch_activity_system_allow_arbitrary_file_location)).perform(click());
         JSONSystemSetup setup = new JSONSystemSetup(TestRegistry.getContext());
         SystemSetupResult result = setup.exportData();
         assertTrue(result.success());
@@ -2065,7 +2383,10 @@ public class SystemActivityTest extends BaseUITest {
         assertEquals(0, getPreferenceManager().getPreferenceExternalStorageType());
         assertEquals(-1, getPreferenceManager().getPreferenceTheme());
         assertEquals("folder", getPreferenceManager().getPreferenceDownloadFolder());
+        assertEquals("/folder", getPreferenceManager().getPreferenceArbitraryDownloadFolder());
         assertTrue(getPreferenceManager().getPreferenceDownloadKeep());
+        assertEquals("folder", getPreferenceManager().getPreferenceLogFolder());
+        assertEquals("/folder", getPreferenceManager().getPreferenceArbitraryLogFolder());
         assertEquals(AccessType.CONNECT, getPreferenceManager().getPreferenceAccessType());
         assertEquals("address", getPreferenceManager().getPreferenceAddress());
         assertEquals(123, getPreferenceManager().getPreferencePort());
@@ -2074,8 +2395,11 @@ public class SystemActivityTest extends BaseUITest {
         assertTrue(getPreferenceManager().getPreferenceNotification());
         assertEquals("folderImport", getPreferenceManager().getPreferenceImportFolder());
         assertEquals("folderExport", getPreferenceManager().getPreferenceExportFolder());
+        assertEquals("arbitraryFolderImport", getPreferenceManager().getPreferenceArbitraryImportFolder());
+        assertEquals("arbitraryFolderExport", getPreferenceManager().getPreferenceArbitraryExportFolder());
         assertTrue(getPreferenceManager().getPreferenceFileLoggerEnabled());
         assertTrue(getPreferenceManager().getPreferenceFileDumpEnabled());
+        assertTrue(getPreferenceManager().getPreferenceAllowArbitraryFileLocation());
         assertEquals(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM, themeManager.getCode());
     }
 
@@ -2108,7 +2432,10 @@ public class SystemActivityTest extends BaseUITest {
         getPreferenceManager().setPreferenceExternalStorageType(0);
         getPreferenceManager().setPreferenceTheme(-1);
         getPreferenceManager().setPreferenceDownloadFolder("folder");
+        getPreferenceManager().setPreferenceArbitraryDownloadFolder("/folder");
         getPreferenceManager().setPreferenceDownloadKeep(true);
+        getPreferenceManager().setPreferenceLogFolder("folder");
+        getPreferenceManager().setPreferenceArbitraryLogFolder("/folder");
         getPreferenceManager().setPreferenceAccessType(AccessType.CONNECT);
         getPreferenceManager().setPreferenceAddress("address");
         getPreferenceManager().setPreferencePort(123);
@@ -2117,12 +2444,17 @@ public class SystemActivityTest extends BaseUITest {
         getPreferenceManager().setPreferenceNotification(true);
         getPreferenceManager().setPreferenceImportFolder("folderImport");
         getPreferenceManager().setPreferenceExportFolder("folderExport");
+        getPreferenceManager().setPreferenceArbitraryImportFolder("arbitraryFolderImport");
+        getPreferenceManager().setPreferenceArbitraryExportFolder("arbitraryFolderExport");
         getPreferenceManager().setPreferenceFileLoggerEnabled(true);
         getPreferenceManager().setPreferenceFileDumpEnabled(true);
+        getPreferenceManager().setPreferenceAllowArbitraryFileLocation(true);
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(scrollTo());
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(click());
         onView(withId(R.id.switch_activity_system_file_dump_enabled)).perform(scrollTo());
         onView(withId(R.id.switch_activity_system_file_dump_enabled)).perform(click());
+        onView(withId(R.id.switch_activity_system_allow_arbitrary_file_location)).perform(scrollTo());
+        onView(withId(R.id.switch_activity_system_allow_arbitrary_file_location)).perform(click());
         JSONSystemSetup setup = new JSONSystemSetup(TestRegistry.getContext());
         SystemSetupResult result = setup.exportData();
         assertTrue(result.success());
@@ -2196,7 +2528,10 @@ public class SystemActivityTest extends BaseUITest {
         assertEquals(0, getPreferenceManager().getPreferenceExternalStorageType());
         assertEquals(-1, getPreferenceManager().getPreferenceTheme());
         assertEquals("folder", getPreferenceManager().getPreferenceDownloadFolder());
+        assertEquals("/folder", getPreferenceManager().getPreferenceArbitraryDownloadFolder());
         assertTrue(getPreferenceManager().getPreferenceDownloadKeep());
+        assertEquals("folder", getPreferenceManager().getPreferenceLogFolder());
+        assertEquals("/folder", getPreferenceManager().getPreferenceArbitraryLogFolder());
         assertEquals(AccessType.CONNECT, getPreferenceManager().getPreferenceAccessType());
         assertEquals("address", getPreferenceManager().getPreferenceAddress());
         assertEquals(123, getPreferenceManager().getPreferencePort());
@@ -2205,8 +2540,11 @@ public class SystemActivityTest extends BaseUITest {
         assertTrue(getPreferenceManager().getPreferenceNotification());
         assertEquals("folderImport", getPreferenceManager().getPreferenceImportFolder());
         assertEquals("folderExport", getPreferenceManager().getPreferenceExportFolder());
+        assertEquals("arbitraryFolderImport", getPreferenceManager().getPreferenceArbitraryImportFolder());
+        assertEquals("arbitraryFolderExport", getPreferenceManager().getPreferenceArbitraryExportFolder());
         assertTrue(getPreferenceManager().getPreferenceFileLoggerEnabled());
         assertTrue(getPreferenceManager().getPreferenceFileDumpEnabled());
+        assertTrue(getPreferenceManager().getPreferenceAllowArbitraryFileLocation());
         assertEquals(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM, themeManager.getCode());
     }
 
@@ -2258,7 +2596,10 @@ public class SystemActivityTest extends BaseUITest {
         getPreferenceManager().setPreferenceExternalStorageType(0);
         getPreferenceManager().setPreferenceTheme(-1);
         getPreferenceManager().setPreferenceDownloadFolder("folder");
+        getPreferenceManager().setPreferenceArbitraryDownloadFolder("/folder");
         getPreferenceManager().setPreferenceDownloadKeep(true);
+        getPreferenceManager().setPreferenceLogFolder("folder");
+        getPreferenceManager().setPreferenceArbitraryLogFolder("/folder");
         getPreferenceManager().setPreferenceAccessType(AccessType.CONNECT);
         getPreferenceManager().setPreferenceAddress("address");
         getPreferenceManager().setPreferencePort(123);
@@ -2267,12 +2608,17 @@ public class SystemActivityTest extends BaseUITest {
         getPreferenceManager().setPreferenceNotification(true);
         getPreferenceManager().setPreferenceImportFolder("folderImport");
         getPreferenceManager().setPreferenceExportFolder("folderExport");
+        getPreferenceManager().setPreferenceArbitraryImportFolder("arbitraryFolderImport");
+        getPreferenceManager().setPreferenceArbitraryExportFolder("arbitraryFolderExport");
         getPreferenceManager().setPreferenceFileLoggerEnabled(true);
         getPreferenceManager().setPreferenceFileDumpEnabled(true);
+        getPreferenceManager().setPreferenceAllowArbitraryFileLocation(true);
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(scrollTo());
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(click());
         onView(withId(R.id.switch_activity_system_file_dump_enabled)).perform(scrollTo());
         onView(withId(R.id.switch_activity_system_file_dump_enabled)).perform(click());
+        onView(withId(R.id.switch_activity_system_allow_arbitrary_file_location)).perform(scrollTo());
+        onView(withId(R.id.switch_activity_system_allow_arbitrary_file_location)).perform(click());
         onView(withId(R.id.cardview_activity_system_config_import)).perform(click());
         onView(withId(R.id.edittext_dialog_file_choose_folder)).check(matches(withText("folderImport")));
         onView(withId(R.id.edittext_dialog_file_choose_file)).perform(replaceText("test.json"));
@@ -2294,7 +2640,10 @@ public class SystemActivityTest extends BaseUITest {
         assertEquals(0, getPreferenceManager().getPreferenceExternalStorageType());
         assertEquals(-1, getPreferenceManager().getPreferenceTheme());
         assertEquals("folder", getPreferenceManager().getPreferenceDownloadFolder());
+        assertEquals("/folder", getPreferenceManager().getPreferenceArbitraryDownloadFolder());
         assertTrue(getPreferenceManager().getPreferenceDownloadKeep());
+        assertEquals("folder", getPreferenceManager().getPreferenceLogFolder());
+        assertEquals("/folder", getPreferenceManager().getPreferenceArbitraryLogFolder());
         assertEquals(AccessType.CONNECT, getPreferenceManager().getPreferenceAccessType());
         assertEquals("address", getPreferenceManager().getPreferenceAddress());
         assertEquals(123, getPreferenceManager().getPreferencePort());
@@ -2303,8 +2652,11 @@ public class SystemActivityTest extends BaseUITest {
         assertTrue(getPreferenceManager().getPreferenceNotification());
         assertEquals("folderImport", getPreferenceManager().getPreferenceImportFolder());
         assertEquals("folderExport", getPreferenceManager().getPreferenceExportFolder());
+        assertEquals("arbitraryFolderImport", getPreferenceManager().getPreferenceArbitraryImportFolder());
+        assertEquals("arbitraryFolderExport", getPreferenceManager().getPreferenceArbitraryExportFolder());
         assertTrue(getPreferenceManager().getPreferenceFileLoggerEnabled());
         assertTrue(getPreferenceManager().getPreferenceFileDumpEnabled());
+        assertTrue(getPreferenceManager().getPreferenceAllowArbitraryFileLocation());
     }
 
     @Test
@@ -2328,7 +2680,10 @@ public class SystemActivityTest extends BaseUITest {
         getPreferenceManager().setPreferenceExternalStorageType(0);
         getPreferenceManager().setPreferenceTheme(-1);
         getPreferenceManager().setPreferenceDownloadFolder("folder");
+        getPreferenceManager().setPreferenceArbitraryDownloadFolder("/folder");
         getPreferenceManager().setPreferenceDownloadKeep(true);
+        getPreferenceManager().setPreferenceLogFolder("folder");
+        getPreferenceManager().setPreferenceArbitraryLogFolder("/folder");
         getPreferenceManager().setPreferenceAccessType(AccessType.CONNECT);
         getPreferenceManager().setPreferenceAddress("address");
         getPreferenceManager().setPreferencePort(123);
@@ -2337,12 +2692,17 @@ public class SystemActivityTest extends BaseUITest {
         getPreferenceManager().setPreferenceNotification(true);
         getPreferenceManager().setPreferenceImportFolder("folderImport");
         getPreferenceManager().setPreferenceExportFolder("folderExport");
+        getPreferenceManager().setPreferenceArbitraryImportFolder("arbitraryFolderImport");
+        getPreferenceManager().setPreferenceArbitraryExportFolder("arbitraryFolderExport");
         getPreferenceManager().setPreferenceFileLoggerEnabled(true);
         getPreferenceManager().setPreferenceFileDumpEnabled(true);
+        getPreferenceManager().setPreferenceAllowArbitraryFileLocation(true);
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(scrollTo());
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(click());
         onView(withId(R.id.switch_activity_system_file_dump_enabled)).perform(scrollTo());
         onView(withId(R.id.switch_activity_system_file_dump_enabled)).perform(click());
+        onView(withId(R.id.switch_activity_system_allow_arbitrary_file_location)).perform(scrollTo());
+        onView(withId(R.id.switch_activity_system_allow_arbitrary_file_location)).perform(click());
         onView(withId(R.id.cardview_activity_system_config_import)).perform(click());
         onView(withId(R.id.edittext_dialog_file_choose_folder)).check(matches(withText("folderImport")));
         onView(withId(R.id.edittext_dialog_file_choose_file)).perform(replaceText("test.json"));
@@ -2364,7 +2724,10 @@ public class SystemActivityTest extends BaseUITest {
         assertEquals(0, getPreferenceManager().getPreferenceExternalStorageType());
         assertEquals(-1, getPreferenceManager().getPreferenceTheme());
         assertEquals("folder", getPreferenceManager().getPreferenceDownloadFolder());
+        assertEquals("/folder", getPreferenceManager().getPreferenceArbitraryDownloadFolder());
         assertTrue(getPreferenceManager().getPreferenceDownloadKeep());
+        assertEquals("folder", getPreferenceManager().getPreferenceLogFolder());
+        assertEquals("/folder", getPreferenceManager().getPreferenceArbitraryLogFolder());
         assertEquals(AccessType.CONNECT, getPreferenceManager().getPreferenceAccessType());
         assertEquals("address", getPreferenceManager().getPreferenceAddress());
         assertEquals(123, getPreferenceManager().getPreferencePort());
@@ -2373,8 +2736,11 @@ public class SystemActivityTest extends BaseUITest {
         assertTrue(getPreferenceManager().getPreferenceNotification());
         assertEquals("folderImport", getPreferenceManager().getPreferenceImportFolder());
         assertEquals("folderExport", getPreferenceManager().getPreferenceExportFolder());
+        assertEquals("arbitraryFolderImport", getPreferenceManager().getPreferenceArbitraryImportFolder());
+        assertEquals("arbitraryFolderExport", getPreferenceManager().getPreferenceArbitraryExportFolder());
         assertTrue(getPreferenceManager().getPreferenceFileLoggerEnabled());
         assertTrue(getPreferenceManager().getPreferenceFileDumpEnabled());
+        assertTrue(getPreferenceManager().getPreferenceAllowArbitraryFileLocation());
     }
 
     @Test
@@ -2398,7 +2764,10 @@ public class SystemActivityTest extends BaseUITest {
         getPreferenceManager().setPreferenceExternalStorageType(0);
         getPreferenceManager().setPreferenceTheme(-1);
         getPreferenceManager().setPreferenceDownloadFolder("folder");
+        getPreferenceManager().setPreferenceArbitraryDownloadFolder("/folder");
         getPreferenceManager().setPreferenceDownloadKeep(true);
+        getPreferenceManager().setPreferenceLogFolder("folder");
+        getPreferenceManager().setPreferenceArbitraryLogFolder("/folder");
         getPreferenceManager().setPreferenceAccessType(AccessType.CONNECT);
         getPreferenceManager().setPreferenceAddress("address");
         getPreferenceManager().setPreferencePort(123);
@@ -2407,12 +2776,17 @@ public class SystemActivityTest extends BaseUITest {
         getPreferenceManager().setPreferenceNotification(true);
         getPreferenceManager().setPreferenceImportFolder("folderImport");
         getPreferenceManager().setPreferenceExportFolder("folderExport");
+        getPreferenceManager().setPreferenceArbitraryImportFolder("arbitraryFolderImport");
+        getPreferenceManager().setPreferenceArbitraryExportFolder("arbitraryFolderExport");
         getPreferenceManager().setPreferenceFileLoggerEnabled(true);
         getPreferenceManager().setPreferenceFileDumpEnabled(true);
+        getPreferenceManager().setPreferenceAllowArbitraryFileLocation(true);
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(scrollTo());
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(click());
         onView(withId(R.id.switch_activity_system_file_dump_enabled)).perform(scrollTo());
         onView(withId(R.id.switch_activity_system_file_dump_enabled)).perform(click());
+        onView(withId(R.id.switch_activity_system_allow_arbitrary_file_location)).perform(scrollTo());
+        onView(withId(R.id.switch_activity_system_allow_arbitrary_file_location)).perform(click());
         onView(withId(R.id.cardview_activity_system_config_import)).perform(click());
         onView(withId(R.id.edittext_dialog_file_choose_folder)).check(matches(withText("folderImport")));
         onView(withId(R.id.edittext_dialog_file_choose_file)).perform(replaceText("test.json"));
@@ -2435,7 +2809,10 @@ public class SystemActivityTest extends BaseUITest {
         assertEquals(0, getPreferenceManager().getPreferenceExternalStorageType());
         assertEquals(-1, getPreferenceManager().getPreferenceTheme());
         assertEquals("folder", getPreferenceManager().getPreferenceDownloadFolder());
+        assertEquals("/folder", getPreferenceManager().getPreferenceArbitraryDownloadFolder());
         assertTrue(getPreferenceManager().getPreferenceDownloadKeep());
+        assertEquals("folder", getPreferenceManager().getPreferenceLogFolder());
+        assertEquals("/folder", getPreferenceManager().getPreferenceArbitraryLogFolder());
         assertEquals(AccessType.CONNECT, getPreferenceManager().getPreferenceAccessType());
         assertEquals("address", getPreferenceManager().getPreferenceAddress());
         assertEquals(123, getPreferenceManager().getPreferencePort());
@@ -2444,8 +2821,11 @@ public class SystemActivityTest extends BaseUITest {
         assertTrue(getPreferenceManager().getPreferenceNotification());
         assertEquals("folderImport", getPreferenceManager().getPreferenceImportFolder());
         assertEquals("folderExport", getPreferenceManager().getPreferenceExportFolder());
+        assertEquals("arbitraryFolderImport", getPreferenceManager().getPreferenceArbitraryImportFolder());
+        assertEquals("arbitraryFolderExport", getPreferenceManager().getPreferenceArbitraryExportFolder());
         assertTrue(getPreferenceManager().getPreferenceFileLoggerEnabled());
         assertTrue(getPreferenceManager().getPreferenceFileDumpEnabled());
+        assertTrue(getPreferenceManager().getPreferenceAllowArbitraryFileLocation());
     }
 
     @Test
@@ -2629,6 +3009,7 @@ public class SystemActivityTest extends BaseUITest {
         assertEquals(0, preferenceManager.getPreferenceExternalStorageType());
         assertFalse(preferenceManager.getPreferenceFileLoggerEnabled());
         assertFalse(preferenceManager.getPreferenceFileDumpEnabled());
+        assertFalse(preferenceManager.getPreferenceAllowArbitraryFileLocation());
         onView(withId(R.id.textview_activity_system_external_storage_type_label)).check(matches(withText("External storage type")));
         onView(withId(R.id.radiogroup_activity_system_external_storage_type)).check(matches(hasChildCount(2)));
         onView(withId(R.id.radiobutton_activity_system_external_storage_type_primary)).check(matches(withText("Primary")));
@@ -2653,6 +3034,8 @@ public class SystemActivityTest extends BaseUITest {
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).check(matches(isNotChecked()));
         onView(withId(R.id.switch_activity_system_file_dump_enabled)).perform(scrollTo());
         onView(withId(R.id.switch_activity_system_file_dump_enabled)).check(matches(isNotChecked()));
+        onView(withId(R.id.switch_activity_system_allow_arbitrary_file_location)).perform(scrollTo());
+        onView(withId(R.id.switch_activity_system_allow_arbitrary_file_location)).check(matches(isNotChecked()));
         onView(withId(R.id.textview_activity_system_log_folder)).check(matches(withText(endsWith("log"))));
         onView(withId(R.id.textview_activity_system_log_folder)).check(matches(not(isEnabled())));
     }
@@ -2680,8 +3063,11 @@ public class SystemActivityTest extends BaseUITest {
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(click());
         onView(withId(R.id.switch_activity_system_file_dump_enabled)).perform(scrollTo());
         onView(withId(R.id.switch_activity_system_file_dump_enabled)).perform(click());
+        onView(withId(R.id.switch_activity_system_allow_arbitrary_file_location)).perform(scrollTo());
+        onView(withId(R.id.switch_activity_system_allow_arbitrary_file_location)).perform(click());
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).check(matches(isChecked()));
         onView(withId(R.id.switch_activity_system_file_dump_enabled)).check(matches(isChecked()));
+        onView(withId(R.id.switch_activity_system_allow_arbitrary_file_location)).check(matches(isChecked()));
         onView(withId(R.id.textview_activity_system_log_folder)).check(matches(withText(endsWith("log"))));
         onView(withId(R.id.textview_activity_system_log_folder)).check(matches(not(isEnabled())));
     }
@@ -2706,6 +3092,15 @@ public class SystemActivityTest extends BaseUITest {
         onView(withId(R.id.switch_activity_system_file_dump_enabled)).perform(click());
         onView(withId(R.id.switch_activity_system_file_dump_enabled)).check(matches(isNotChecked()));
         onView(withId(R.id.textview_activity_system_file_dump_enabled_on_off)).check(matches(withText("no")));
+        onView(withId(R.id.switch_activity_system_allow_arbitrary_file_location)).check(matches(isNotChecked()));
+        onView(withId(R.id.textview_activity_system_allow_arbitrary_file_location_on_off)).check(matches(withText("no")));
+        onView(withId(R.id.switch_activity_system_allow_arbitrary_file_location)).perform(scrollTo());
+        onView(withId(R.id.switch_activity_system_allow_arbitrary_file_location)).perform(click());
+        onView(withId(R.id.switch_activity_system_allow_arbitrary_file_location)).check(matches(isChecked()));
+        onView(withId(R.id.textview_activity_system_allow_arbitrary_file_location_on_off)).check(matches(withText("yes")));
+        onView(withId(R.id.switch_activity_system_allow_arbitrary_file_location)).perform(click());
+        onView(withId(R.id.switch_activity_system_allow_arbitrary_file_location)).check(matches(isNotChecked()));
+        onView(withId(R.id.textview_activity_system_allow_arbitrary_file_location_on_off)).check(matches(withText("no")));
     }
 
     @Test
@@ -2715,10 +3110,13 @@ public class SystemActivityTest extends BaseUITest {
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(click());
         onView(withId(R.id.switch_activity_system_file_dump_enabled)).perform(scrollTo());
         onView(withId(R.id.switch_activity_system_file_dump_enabled)).perform(click());
+        onView(withId(R.id.switch_activity_system_allow_arbitrary_file_location)).perform(scrollTo());
+        onView(withId(R.id.switch_activity_system_allow_arbitrary_file_location)).perform(click());
         PreferenceManager preferenceManager = getPreferenceManager();
         assertEquals(1, preferenceManager.getPreferenceExternalStorageType());
         assertTrue(preferenceManager.getPreferenceFileLoggerEnabled());
         assertTrue(preferenceManager.getPreferenceFileDumpEnabled());
+        assertTrue(preferenceManager.getPreferenceAllowArbitraryFileLocation());
     }
 
     @Test
@@ -2747,6 +3145,8 @@ public class SystemActivityTest extends BaseUITest {
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(click());
         onView(withId(R.id.switch_activity_system_file_dump_enabled)).perform(scrollTo());
         onView(withId(R.id.switch_activity_system_file_dump_enabled)).perform(click());
+        onView(withId(R.id.switch_activity_system_allow_arbitrary_file_location)).perform(scrollTo());
+        onView(withId(R.id.switch_activity_system_allow_arbitrary_file_location)).perform(click());
         openActionBarOverflowOrOptionsMenu(TestRegistry.getContext());
         onView(withText("Reset")).perform(click());
         onView(withId(R.id.radiogroup_activity_system_external_storage_type)).check(matches(hasChildCount(2)));
@@ -2765,10 +3165,12 @@ public class SystemActivityTest extends BaseUITest {
         onView(withId(R.id.radiobutton_activity_system_theme_dark)).check(matches(isNotChecked()));
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).check(matches(isNotChecked()));
         onView(withId(R.id.switch_activity_system_file_dump_enabled)).check(matches(isNotChecked()));
+        onView(withId(R.id.switch_activity_system_allow_arbitrary_file_location)).check(matches(isNotChecked()));
         PreferenceManager preferenceManager = getPreferenceManager();
         assertEquals(0, preferenceManager.getPreferenceExternalStorageType());
         assertFalse(preferenceManager.getPreferenceFileLoggerEnabled());
         assertFalse(preferenceManager.getPreferenceFileDumpEnabled());
+        assertFalse(preferenceManager.getPreferenceAllowArbitraryFileLocation());
         assertEquals(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM, themeManager.getCode());
     }
 

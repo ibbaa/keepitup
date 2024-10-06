@@ -64,9 +64,11 @@ public class PreferenceSetupTest {
         preferenceManager.setPreferenceEnforceDefaultPingPackageSize(true);
         preferenceManager.setPreferenceDownloadExternalStorage(true);
         preferenceManager.setPreferenceDownloadFolder("folder");
+        preferenceManager.setPreferenceArbitraryDownloadFolder("/123");
         preferenceManager.setPreferenceDownloadKeep(true);
         preferenceManager.setPreferenceLogFile(true);
         preferenceManager.setPreferenceLogFolder("folder");
+        preferenceManager.setPreferenceArbitraryLogFolder("/123");
         Map<String, ?> globalSettings = new HashMap<>();
         setup.importGlobalSettings(globalSettings);
         assertFalse(preferenceManager.getPreferenceNotificationInactiveNetwork());
@@ -76,9 +78,11 @@ public class PreferenceSetupTest {
         assertFalse(preferenceManager.getPreferenceEnforceDefaultPingPackageSize());
         assertFalse(preferenceManager.getPreferenceDownloadExternalStorage());
         assertEquals("download", preferenceManager.getPreferenceDownloadFolder());
+        assertEquals("/Documents", preferenceManager.getPreferenceArbitraryDownloadFolder());
         assertFalse(preferenceManager.getPreferenceDownloadKeep());
         assertFalse(preferenceManager.getPreferenceLogFile());
         assertEquals("log", preferenceManager.getPreferenceLogFolder());
+        assertEquals("/Documents", preferenceManager.getPreferenceArbitraryLogFolder());
     }
 
     @Test
@@ -91,9 +95,11 @@ public class PreferenceSetupTest {
         globalSettings.put("preferenceEnforceDefaultPingPackageSize", true);
         globalSettings.put("preferenceDownloadExternalStorage", true);
         globalSettings.put("preferenceDownloadFolder", "folder");
+        globalSettings.put("preferenceArbitraryDownloadFolder", "/123");
         globalSettings.put("preferenceDownloadKeep", true);
         globalSettings.put("preferenceLogFile", true);
         globalSettings.put("preferenceLogFolder", "folder");
+        globalSettings.put("preferenceArbitraryLogFolder", "/456");
         setup.importGlobalSettings(globalSettings);
         assertTrue(preferenceManager.getPreferenceNotificationInactiveNetwork());
         assertEquals(NotificationType.CHANGE, preferenceManager.getPreferenceNotificationType());
@@ -102,9 +108,11 @@ public class PreferenceSetupTest {
         assertTrue(preferenceManager.getPreferenceEnforceDefaultPingPackageSize());
         assertTrue(preferenceManager.getPreferenceDownloadExternalStorage());
         assertEquals("folder", preferenceManager.getPreferenceDownloadFolder());
+        assertEquals("/123", preferenceManager.getPreferenceArbitraryDownloadFolder());
         assertTrue(preferenceManager.getPreferenceDownloadKeep());
         assertTrue(preferenceManager.getPreferenceLogFile());
         assertEquals("folder", preferenceManager.getPreferenceLogFolder());
+        assertEquals("/456", preferenceManager.getPreferenceArbitraryLogFolder());
     }
 
     @Test
@@ -117,9 +125,11 @@ public class PreferenceSetupTest {
         globalSettings.put("preferenceEnforceDefaultPingPackageSize", "true");
         globalSettings.put("preferenceDownloadExternalStorage", "true");
         globalSettings.put("preferenceDownloadFolder", "folder");
+        globalSettings.put("preferenceArbitraryDownloadFolder", "/123");
         globalSettings.put("preferenceDownloadKeep", "true");
         globalSettings.put("preferenceLogFile", "true");
         globalSettings.put("preferenceLogFolder", "folder");
+        globalSettings.put("preferenceArbitraryLogFolder", "/456");
         setup.importGlobalSettings(globalSettings);
         assertTrue(preferenceManager.getPreferenceNotificationInactiveNetwork());
         assertEquals(NotificationType.CHANGE, preferenceManager.getPreferenceNotificationType());
@@ -128,9 +138,11 @@ public class PreferenceSetupTest {
         assertTrue(preferenceManager.getPreferenceEnforceDefaultPingPackageSize());
         assertTrue(preferenceManager.getPreferenceDownloadExternalStorage());
         assertEquals("folder", preferenceManager.getPreferenceDownloadFolder());
+        assertEquals("/123", preferenceManager.getPreferenceArbitraryDownloadFolder());
         assertTrue(preferenceManager.getPreferenceDownloadKeep());
         assertTrue(preferenceManager.getPreferenceLogFile());
         assertEquals("folder", preferenceManager.getPreferenceLogFolder());
+        assertEquals("/456", preferenceManager.getPreferenceArbitraryLogFolder());
     }
 
     @Test
@@ -142,9 +154,11 @@ public class PreferenceSetupTest {
         globalSettings.put("preferenceSuspensionEnabled", "123");
         globalSettings.put("preferenceDownloadExternalStorage", "tru");
         globalSettings.put("preferenceDownloadFolder", null);
+        globalSettings.put("preferenceArbitraryDownloadFolder", null);
         globalSettings.put("preferenceDownloadKeep", 3);
         globalSettings.put("preferenceLogFile", "tru");
         globalSettings.put("preferenceLogFolder", null);
+        globalSettings.put("preferenceArbitraryLogFolder", null);
         setup.importGlobalSettings(globalSettings);
         assertFalse(preferenceManager.getPreferenceNotificationInactiveNetwork());
         assertEquals(NotificationType.FAILURE, preferenceManager.getPreferenceNotificationType());
@@ -152,9 +166,11 @@ public class PreferenceSetupTest {
         assertFalse(preferenceManager.getPreferenceSuspensionEnabled());
         assertFalse(preferenceManager.getPreferenceDownloadExternalStorage());
         assertEquals("download", preferenceManager.getPreferenceDownloadFolder());
+        assertEquals("/Documents", preferenceManager.getPreferenceArbitraryDownloadFolder());
         assertFalse(preferenceManager.getPreferenceDownloadKeep());
         assertFalse(preferenceManager.getPreferenceLogFile());
         assertEquals("log", preferenceManager.getPreferenceLogFolder());
+        assertEquals("/Documents", preferenceManager.getPreferenceArbitraryLogFolder());
     }
 
     @Test
@@ -264,73 +280,97 @@ public class PreferenceSetupTest {
     @Test
     public void testImportSystemSettingsEmpty() {
         preferenceManager.setPreferenceImportFolder("folderImport");
+        preferenceManager.setPreferenceArbitraryImportFolder("arbitraryFolderImport");
         preferenceManager.setPreferenceExportFolder("folderExport");
+        preferenceManager.setPreferenceArbitraryExportFolder("arbitraryFolderExport");
         preferenceManager.setPreferenceExternalStorageType(30);
         preferenceManager.setPreferenceFileLoggerEnabled(true);
         preferenceManager.setPreferenceFileDumpEnabled(true);
         preferenceManager.setPreferenceTheme(5);
+        preferenceManager.setPreferenceAllowArbitraryFileLocation(true);
         Map<String, ?> systemSettings = new HashMap<>();
         setup.importSystemSettings(systemSettings);
         assertEquals("config", preferenceManager.getPreferenceImportFolder());
+        assertEquals("/Documents", preferenceManager.getPreferenceArbitraryImportFolder());
         assertEquals("config", preferenceManager.getPreferenceExportFolder());
+        assertEquals("/Documents", preferenceManager.getPreferenceArbitraryExportFolder());
         assertEquals(0, preferenceManager.getPreferenceExternalStorageType());
         assertFalse(preferenceManager.getPreferenceFileLoggerEnabled());
         assertFalse(preferenceManager.getPreferenceFileDumpEnabled());
         assertEquals(-1, preferenceManager.getPreferenceTheme());
+        assertFalse(preferenceManager.getPreferenceAllowArbitraryFileLocation());
     }
 
     @Test
-    public void testImportSystemSetValues() {
+    public void testImportSystemSettingsSetValues() {
         Map<String, Object> systemSettings = new HashMap<>();
         systemSettings.put("preferenceImportFolder", "folderImport");
+        systemSettings.put("preferenceArbitraryImportFolder", "arbitraryFolderImport");
         systemSettings.put("preferenceExportFolder", "folderExport");
+        systemSettings.put("preferenceArbitraryExportFolder", "arbitraryFolderExport");
         systemSettings.put("preferenceExternalStorageType", 1);
         systemSettings.put("preferenceFileLoggerEnabled", true);
         systemSettings.put("preferenceFileDumpEnabled", true);
         systemSettings.put("preferenceTheme", 1);
+        systemSettings.put("preferenceAllowArbitraryFileLocation", true);
         setup.importSystemSettings(systemSettings);
         assertEquals("folderImport", preferenceManager.getPreferenceImportFolder());
+        assertEquals("arbitraryFolderImport", preferenceManager.getPreferenceArbitraryImportFolder());
         assertEquals("folderExport", preferenceManager.getPreferenceExportFolder());
+        assertEquals("arbitraryFolderExport", preferenceManager.getPreferenceArbitraryExportFolder());
         assertEquals(1, preferenceManager.getPreferenceExternalStorageType());
         assertTrue(preferenceManager.getPreferenceFileLoggerEnabled());
         assertTrue(preferenceManager.getPreferenceFileDumpEnabled());
         assertEquals(1, preferenceManager.getPreferenceTheme());
+        assertTrue(preferenceManager.getPreferenceAllowArbitraryFileLocation());
     }
 
     @Test
-    public void testImportSystemSetValuesAsString() {
+    public void testImportSystemSettingsSetValuesAsString() {
         Map<String, Object> systemSettings = new HashMap<>();
         systemSettings.put("preferenceImportFolder", "folderImport");
+        systemSettings.put("preferenceArbitraryImportFolder", "arbitraryFolderImport");
         systemSettings.put("preferenceExportFolder", "folderExport");
+        systemSettings.put("preferenceArbitraryExportFolder", "arbitraryFolderExport");
         systemSettings.put("preferenceExternalStorageType", "1");
         systemSettings.put("preferenceFileLoggerEnabled", "true");
         systemSettings.put("preferenceFileDumpEnabled", "true");
         systemSettings.put("preferenceTheme", "1");
+        systemSettings.put("preferenceAllowArbitraryFileLocation", "true");
         setup.importSystemSettings(systemSettings);
         assertEquals("folderImport", preferenceManager.getPreferenceImportFolder());
+        assertEquals("arbitraryFolderImport", preferenceManager.getPreferenceArbitraryImportFolder());
         assertEquals("folderExport", preferenceManager.getPreferenceExportFolder());
+        assertEquals("arbitraryFolderExport", preferenceManager.getPreferenceArbitraryExportFolder());
         assertEquals(1, preferenceManager.getPreferenceExternalStorageType());
         assertTrue(preferenceManager.getPreferenceFileLoggerEnabled());
         assertTrue(preferenceManager.getPreferenceFileDumpEnabled());
         assertEquals(1, preferenceManager.getPreferenceTheme());
+        assertTrue(preferenceManager.getPreferenceAllowArbitraryFileLocation());
     }
 
     @Test
-    public void testImportSystemSetInvalid() {
+    public void testImportSystemSettingsInvalid() {
         Map<String, Object> systemSettings = new HashMap<>();
         systemSettings.put("preferenceImportFolder", null);
+        systemSettings.put("preferenceArbitraryImportFolder", null);
         systemSettings.put("preferenceExportFolder", null);
+        systemSettings.put("preferenceArbitraryExportFolder", null);
         systemSettings.put("preferenceExternalStorageType", "abc");
         systemSettings.put("preferenceFileLoggerEnabled", null);
         systemSettings.put("preferenceFileDumpEnabled", null);
         systemSettings.put("preferenceTheme", "abc");
+        systemSettings.put("preferenceAllowArbitraryFileLocation", null);
         setup.importSystemSettings(systemSettings);
         assertEquals("config", preferenceManager.getPreferenceImportFolder());
+        assertEquals("/Documents", preferenceManager.getPreferenceArbitraryImportFolder());
         assertEquals("config", preferenceManager.getPreferenceExportFolder());
+        assertEquals("/Documents", preferenceManager.getPreferenceArbitraryExportFolder());
         assertEquals(0, preferenceManager.getPreferenceExternalStorageType());
         assertFalse(preferenceManager.getPreferenceFileLoggerEnabled());
         assertFalse(preferenceManager.getPreferenceFileDumpEnabled());
         assertEquals(-1, preferenceManager.getPreferenceTheme());
+        assertFalse(preferenceManager.getPreferenceAllowArbitraryFileLocation());
     }
 
     @Test
@@ -343,9 +383,11 @@ public class PreferenceSetupTest {
         assertEquals(globalSettings.get("preferenceEnforceDefaultPingPackageSize"), preferenceManager.getPreferenceEnforceDefaultPingPackageSize());
         assertEquals(globalSettings.get("preferenceDownloadExternalStorage"), preferenceManager.getPreferenceDownloadExternalStorage());
         assertEquals(globalSettings.get("preferenceDownloadFolder"), preferenceManager.getPreferenceDownloadFolder());
+        assertEquals(globalSettings.get("preferenceArbitraryDownloadFolder"), preferenceManager.getPreferenceArbitraryDownloadFolder());
         assertEquals(globalSettings.get("preferenceDownloadKeep"), preferenceManager.getPreferenceDownloadKeep());
         assertEquals(globalSettings.get("preferenceLogFile"), preferenceManager.getPreferenceLogFile());
         assertEquals(globalSettings.get("preferenceLogFolder"), preferenceManager.getPreferenceLogFolder());
+        assertEquals(globalSettings.get("preferenceArbitraryLogFolder"), preferenceManager.getPreferenceArbitraryLogFolder());
     }
 
     @Test
@@ -357,9 +399,11 @@ public class PreferenceSetupTest {
         preferenceManager.setPreferenceEnforceDefaultPingPackageSize(true);
         preferenceManager.setPreferenceDownloadExternalStorage(true);
         preferenceManager.setPreferenceDownloadFolder("folder");
+        preferenceManager.setPreferenceArbitraryDownloadFolder("/123");
         preferenceManager.setPreferenceDownloadKeep(true);
         preferenceManager.setPreferenceLogFile(true);
         preferenceManager.setPreferenceLogFolder("folder");
+        preferenceManager.setPreferenceArbitraryLogFolder("/456");
         Map<String, ?> globalSettings = setup.exportGlobalSettings();
         assertTrue(preferenceManager.getPreferenceNotificationInactiveNetwork());
         assertEquals(NotificationType.CHANGE, preferenceManager.getPreferenceNotificationType());
@@ -368,9 +412,11 @@ public class PreferenceSetupTest {
         assertTrue(preferenceManager.getPreferenceEnforceDefaultPingPackageSize());
         assertTrue(preferenceManager.getPreferenceDownloadExternalStorage());
         assertEquals("folder", preferenceManager.getPreferenceDownloadFolder());
+        assertEquals("/123", preferenceManager.getPreferenceArbitraryDownloadFolder());
         assertTrue(preferenceManager.getPreferenceDownloadKeep());
         assertTrue(preferenceManager.getPreferenceLogFile());
         assertEquals("folder", preferenceManager.getPreferenceLogFolder());
+        assertEquals("/456", preferenceManager.getPreferenceArbitraryLogFolder());
         assertEquals(globalSettings.get("preferenceNotificationInactiveNetwork"), preferenceManager.getPreferenceNotificationInactiveNetwork());
         assertEquals(globalSettings.get("preferenceNotificationType"), preferenceManager.getPreferenceNotificationType().getCode());
         assertEquals(globalSettings.get("preferenceNotificationAfterFailures"), preferenceManager.getPreferenceNotificationAfterFailures());
@@ -378,9 +424,11 @@ public class PreferenceSetupTest {
         assertEquals(globalSettings.get("preferenceEnforceDefaultPingPackageSize"), preferenceManager.getPreferenceEnforceDefaultPingPackageSize());
         assertEquals(globalSettings.get("preferenceDownloadExternalStorage"), preferenceManager.getPreferenceDownloadExternalStorage());
         assertEquals(globalSettings.get("preferenceDownloadFolder"), preferenceManager.getPreferenceDownloadFolder());
+        assertEquals(globalSettings.get("preferenceArbitraryDownloadFolder"), preferenceManager.getPreferenceArbitraryDownloadFolder());
         assertEquals(globalSettings.get("preferenceDownloadKeep"), preferenceManager.getPreferenceDownloadKeep());
         assertEquals(globalSettings.get("preferenceLogFile"), preferenceManager.getPreferenceLogFile());
         assertEquals(globalSettings.get("preferenceLogFolder"), preferenceManager.getPreferenceLogFolder());
+        assertEquals(globalSettings.get("preferenceArbitraryLogFolder"), preferenceManager.getPreferenceArbitraryLogFolder());
     }
 
     @Test
@@ -437,34 +485,46 @@ public class PreferenceSetupTest {
     public void testExportSystemSettingsDefaultValues() {
         Map<String, ?> systemSettings = setup.exportSystemSettings();
         assertEquals(systemSettings.get("preferenceImportFolder"), preferenceManager.getPreferenceImportFolder());
+        assertEquals(systemSettings.get("preferenceArbitraryImportFolder"), preferenceManager.getPreferenceArbitraryImportFolder());
         assertEquals(systemSettings.get("preferenceExportFolder"), preferenceManager.getPreferenceExportFolder());
+        assertEquals(systemSettings.get("preferenceArbitraryExportFolder"), preferenceManager.getPreferenceArbitraryExportFolder());
         assertEquals(systemSettings.get("preferenceExternalStorageType"), preferenceManager.getPreferenceExternalStorageType());
         assertEquals(systemSettings.get("preferenceFileLoggerEnabled"), preferenceManager.getPreferenceFileLoggerEnabled());
         assertEquals(systemSettings.get("preferenceFileDumpEnabled"), preferenceManager.getPreferenceFileDumpEnabled());
         assertEquals(systemSettings.get("preferenceTheme"), preferenceManager.getPreferenceTheme());
+        assertEquals(systemSettings.get("preferenceAllowArbitraryFileLocation"), preferenceManager.getPreferenceAllowArbitraryFileLocation());
     }
 
     @Test
     public void testExportSystemSettingsSetValues() {
         preferenceManager.setPreferenceExternalStorageType(30);
         preferenceManager.setPreferenceImportFolder("folderImport");
+        preferenceManager.setPreferenceArbitraryImportFolder("arbitraryFolderImport");
         preferenceManager.setPreferenceExportFolder("folderExport");
+        preferenceManager.setPreferenceArbitraryExportFolder("arbitraryFolderExport");
         preferenceManager.setPreferenceFileLoggerEnabled(true);
         preferenceManager.setPreferenceFileDumpEnabled(true);
         preferenceManager.setPreferenceTheme(5);
+        preferenceManager.setPreferenceAllowArbitraryFileLocation(true);
         Map<String, ?> systemSettings = setup.exportSystemSettings();
         assertEquals("folderImport", preferenceManager.getPreferenceImportFolder());
+        assertEquals("arbitraryFolderImport", preferenceManager.getPreferenceArbitraryImportFolder());
         assertEquals("folderExport", preferenceManager.getPreferenceExportFolder());
+        assertEquals("arbitraryFolderExport", preferenceManager.getPreferenceArbitraryExportFolder());
         assertEquals(30, preferenceManager.getPreferenceExternalStorageType());
         assertTrue(preferenceManager.getPreferenceFileLoggerEnabled());
         assertTrue(preferenceManager.getPreferenceFileDumpEnabled());
         assertEquals(5, preferenceManager.getPreferenceTheme());
+        assertTrue(preferenceManager.getPreferenceAllowArbitraryFileLocation());
         assertEquals(systemSettings.get("preferenceImportFolder"), preferenceManager.getPreferenceImportFolder());
+        assertEquals(systemSettings.get("preferenceArbitraryImportFolder"), preferenceManager.getPreferenceArbitraryImportFolder());
         assertEquals(systemSettings.get("preferenceExportFolder"), preferenceManager.getPreferenceExportFolder());
+        assertEquals(systemSettings.get("preferenceArbitraryExportFolder"), preferenceManager.getPreferenceArbitraryExportFolder());
         assertEquals(systemSettings.get("preferenceExternalStorageType"), preferenceManager.getPreferenceExternalStorageType());
         assertEquals(systemSettings.get("preferenceFileLoggerEnabled"), preferenceManager.getPreferenceFileLoggerEnabled());
         assertEquals(systemSettings.get("preferenceFileDumpEnabled"), preferenceManager.getPreferenceFileDumpEnabled());
         assertEquals(systemSettings.get("preferenceTheme"), preferenceManager.getPreferenceTheme());
+        assertEquals(systemSettings.get("preferenceAllowArbitraryFileLocation"), preferenceManager.getPreferenceAllowArbitraryFileLocation());
     }
 
     @Test
@@ -476,9 +536,11 @@ public class PreferenceSetupTest {
         preferenceManager.setPreferenceEnforceDefaultPingPackageSize(true);
         preferenceManager.setPreferenceDownloadExternalStorage(true);
         preferenceManager.setPreferenceDownloadFolder("folder");
+        preferenceManager.setPreferenceArbitraryDownloadFolder("/123");
         preferenceManager.setPreferenceDownloadKeep(true);
         preferenceManager.setPreferenceLogFile(true);
         preferenceManager.setPreferenceLogFolder("folder");
+        preferenceManager.setPreferenceArbitraryLogFolder("/456");
         Map<String, ?> globalSettings = setup.exportGlobalSettings();
         setup.importGlobalSettings(globalSettings);
         assertTrue(preferenceManager.getPreferenceNotificationInactiveNetwork());
@@ -487,8 +549,10 @@ public class PreferenceSetupTest {
         assertFalse(preferenceManager.getPreferenceSuspensionEnabled());
         assertTrue(preferenceManager.getPreferenceEnforceDefaultPingPackageSize());
         assertEquals("folder", preferenceManager.getPreferenceDownloadFolder());
+        assertEquals("/123", preferenceManager.getPreferenceArbitraryDownloadFolder());
         assertTrue(preferenceManager.getPreferenceLogFile());
         assertEquals("folder", preferenceManager.getPreferenceLogFolder());
+        assertEquals("/456", preferenceManager.getPreferenceArbitraryLogFolder());
         assertTrue(preferenceManager.getPreferenceDownloadKeep());
         assertEquals(globalSettings.get("preferenceNotificationInactiveNetwork"), preferenceManager.getPreferenceNotificationInactiveNetwork());
         assertEquals(globalSettings.get("preferenceNotificationType"), preferenceManager.getPreferenceNotificationType().getCode());
@@ -497,9 +561,11 @@ public class PreferenceSetupTest {
         assertEquals(globalSettings.get("preferenceSuspensionEnabled"), preferenceManager.getPreferenceSuspensionEnabled());
         assertEquals(globalSettings.get("preferenceEnforceDefaultPingPackageSize"), preferenceManager.getPreferenceEnforceDefaultPingPackageSize());
         assertEquals(globalSettings.get("preferenceDownloadFolder"), preferenceManager.getPreferenceDownloadFolder());
+        assertEquals(globalSettings.get("preferenceArbitraryDownloadFolder"), preferenceManager.getPreferenceArbitraryDownloadFolder());
         assertEquals(globalSettings.get("preferenceDownloadKeep"), preferenceManager.getPreferenceDownloadKeep());
         assertEquals(globalSettings.get("preferenceLogFile"), preferenceManager.getPreferenceLogFile());
         assertEquals(globalSettings.get("preferenceLogFolder"), preferenceManager.getPreferenceLogFolder());
+        assertEquals(globalSettings.get("preferenceArbitraryLogFolder"), preferenceManager.getPreferenceArbitraryLogFolder());
     }
 
     @Test
@@ -542,24 +608,33 @@ public class PreferenceSetupTest {
     public void testImportExportSystemSettings() {
         preferenceManager.setPreferenceExternalStorageType(1);
         preferenceManager.setPreferenceImportFolder("folderImport");
+        preferenceManager.setPreferenceArbitraryImportFolder("arbitraryFolderImport");
         preferenceManager.setPreferenceExportFolder("folderExport");
+        preferenceManager.setPreferenceArbitraryExportFolder("arbitraryFolderExport");
         preferenceManager.setPreferenceFileLoggerEnabled(true);
         preferenceManager.setPreferenceFileDumpEnabled(true);
         preferenceManager.setPreferenceTheme(1);
+        preferenceManager.setPreferenceAllowArbitraryFileLocation(true);
         Map<String, ?> systemSettings = setup.exportSystemSettings();
         setup.importSystemSettings(systemSettings);
         assertEquals("folderImport", preferenceManager.getPreferenceImportFolder());
+        assertEquals("arbitraryFolderImport", preferenceManager.getPreferenceArbitraryImportFolder());
         assertEquals("folderExport", preferenceManager.getPreferenceExportFolder());
+        assertEquals("arbitraryFolderExport", preferenceManager.getPreferenceArbitraryExportFolder());
         assertEquals(1, preferenceManager.getPreferenceExternalStorageType());
         assertTrue(preferenceManager.getPreferenceFileLoggerEnabled());
         assertTrue(preferenceManager.getPreferenceFileDumpEnabled());
         assertEquals(1, preferenceManager.getPreferenceTheme());
+        assertTrue(preferenceManager.getPreferenceAllowArbitraryFileLocation());
         assertEquals(systemSettings.get("preferenceImportFolder"), preferenceManager.getPreferenceImportFolder());
+        assertEquals(systemSettings.get("preferenceArbitraryImportFolder"), preferenceManager.getPreferenceArbitraryImportFolder());
         assertEquals(systemSettings.get("preferenceExportFolder"), preferenceManager.getPreferenceExportFolder());
+        assertEquals(systemSettings.get("preferenceArbitraryExportFolder"), preferenceManager.getPreferenceArbitraryExportFolder());
         assertEquals(systemSettings.get("preferenceExternalStorageType"), preferenceManager.getPreferenceExternalStorageType());
         assertEquals(systemSettings.get("preferenceFileLoggerEnabled"), preferenceManager.getPreferenceFileLoggerEnabled());
         assertEquals(systemSettings.get("preferenceFileDumpEnabled"), preferenceManager.getPreferenceFileDumpEnabled());
         assertEquals(systemSettings.get("preferenceTheme"), preferenceManager.getPreferenceTheme());
+        assertEquals(systemSettings.get("preferenceAllowArbitraryFileLocation"), preferenceManager.getPreferenceAllowArbitraryFileLocation());
     }
 
     @Test
@@ -571,9 +646,11 @@ public class PreferenceSetupTest {
         preferenceManager.setPreferenceEnforceDefaultPingPackageSize(true);
         preferenceManager.setPreferenceDownloadExternalStorage(true);
         preferenceManager.setPreferenceDownloadFolder("folder");
+        preferenceManager.setPreferenceArbitraryDownloadFolder("/123");
         preferenceManager.setPreferenceDownloadKeep(true);
         preferenceManager.setPreferenceLogFile(true);
         preferenceManager.setPreferenceLogFolder("folder");
+        preferenceManager.setPreferenceArbitraryLogFolder("/456");
         setup.removeGlobalSettings();
         assertFalse(preferenceManager.getPreferenceNotificationInactiveNetwork());
         assertEquals(NotificationType.FAILURE, preferenceManager.getPreferenceNotificationType());
@@ -582,9 +659,10 @@ public class PreferenceSetupTest {
         assertFalse(preferenceManager.getPreferenceEnforceDefaultPingPackageSize());
         assertFalse(preferenceManager.getPreferenceDownloadExternalStorage());
         assertEquals("download", preferenceManager.getPreferenceDownloadFolder());
+        assertEquals("/Documents", preferenceManager.getPreferenceArbitraryDownloadFolder());
         assertFalse(preferenceManager.getPreferenceDownloadKeep());
         assertFalse(preferenceManager.getPreferenceLogFile());
-        assertEquals("log", preferenceManager.getPreferenceLogFolder());
+        assertEquals("/Documents", preferenceManager.getPreferenceArbitraryLogFolder());
     }
 
     @Test
@@ -616,17 +694,23 @@ public class PreferenceSetupTest {
     public void testRemoveSystemSettings() {
         preferenceManager.setPreferenceExternalStorageType(30);
         preferenceManager.setPreferenceImportFolder("folderImport");
+        preferenceManager.setPreferenceArbitraryImportFolder("arbitraryFolderImport");
         preferenceManager.setPreferenceExportFolder("folderExport");
+        preferenceManager.setPreferenceArbitraryExportFolder("arbitraryFolderExport");
         preferenceManager.setPreferenceFileLoggerEnabled(true);
         preferenceManager.setPreferenceFileDumpEnabled(true);
         preferenceManager.setPreferenceTheme(5);
+        preferenceManager.setPreferenceAllowArbitraryFileLocation(true);
         setup.removeSystemSettings();
         assertEquals("config", preferenceManager.getPreferenceImportFolder());
+        assertEquals("/Documents", preferenceManager.getPreferenceArbitraryImportFolder());
         assertEquals("config", preferenceManager.getPreferenceExportFolder());
+        assertEquals("/Documents", preferenceManager.getPreferenceArbitraryExportFolder());
         assertEquals(0, preferenceManager.getPreferenceExternalStorageType());
         assertFalse(preferenceManager.getPreferenceFileLoggerEnabled());
         assertFalse(preferenceManager.getPreferenceFileDumpEnabled());
         assertEquals(-1, preferenceManager.getPreferenceTheme());
+        assertFalse(preferenceManager.getPreferenceAllowArbitraryFileLocation());
     }
 
     @Test
@@ -639,9 +723,11 @@ public class PreferenceSetupTest {
         preferenceManager.setPreferenceDownloadExternalStorage(true);
         preferenceManager.setPreferenceExternalStorageType(30);
         preferenceManager.setPreferenceDownloadFolder("folder");
+        preferenceManager.setPreferenceArbitraryDownloadFolder("123");
         preferenceManager.setPreferenceDownloadKeep(true);
         preferenceManager.setPreferenceLogFile(true);
         preferenceManager.setPreferenceLogFolder("folder");
+        preferenceManager.setPreferenceArbitraryLogFolder("/456");
         preferenceManager.setPreferenceAccessType(AccessType.CONNECT);
         preferenceManager.setPreferenceAddress("address");
         preferenceManager.setPreferencePort(123);
@@ -653,10 +739,13 @@ public class PreferenceSetupTest {
         preferenceManager.setPreferenceOnlyWifi(true);
         preferenceManager.setPreferenceNotification(true);
         preferenceManager.setPreferenceImportFolder("folderImport");
+        preferenceManager.setPreferenceArbitraryImportFolder("arbitraryFolderImport");
         preferenceManager.setPreferenceExportFolder("folderExport");
+        preferenceManager.setPreferenceArbitraryExportFolder("arbitraryFolderExport");
         preferenceManager.setPreferenceFileLoggerEnabled(true);
         preferenceManager.setPreferenceFileDumpEnabled(true);
         preferenceManager.setPreferenceTheme(5);
+        preferenceManager.setPreferenceAllowArbitraryFileLocation(true);
         setup.removeAllSettings();
         assertFalse(preferenceManager.getPreferenceNotificationInactiveNetwork());
         assertEquals(NotificationType.FAILURE, preferenceManager.getPreferenceNotificationType());
@@ -666,8 +755,10 @@ public class PreferenceSetupTest {
         assertFalse(preferenceManager.getPreferenceDownloadExternalStorage());
         assertEquals(0, preferenceManager.getPreferenceExternalStorageType());
         assertEquals("download", preferenceManager.getPreferenceDownloadFolder());
+        assertEquals("/Documents", preferenceManager.getPreferenceArbitraryDownloadFolder());
         assertFalse(preferenceManager.getPreferenceLogFile());
         assertEquals("log", preferenceManager.getPreferenceLogFolder());
+        assertEquals("/Documents", preferenceManager.getPreferenceArbitraryLogFolder());
         assertFalse(preferenceManager.getPreferenceDownloadKeep());
         assertEquals(AccessType.PING, preferenceManager.getPreferenceAccessType());
         assertEquals("192.168.178.1", preferenceManager.getPreferenceAddress());
@@ -679,8 +770,13 @@ public class PreferenceSetupTest {
         assertFalse(preferenceManager.getPreferenceStopOnSuccess());
         assertFalse(preferenceManager.getPreferenceOnlyWifi());
         assertFalse(preferenceManager.getPreferenceNotification());
+        assertEquals("config", preferenceManager.getPreferenceImportFolder());
+        assertEquals("/Documents", preferenceManager.getPreferenceArbitraryImportFolder());
+        assertEquals("config", preferenceManager.getPreferenceExportFolder());
+        assertEquals("/Documents", preferenceManager.getPreferenceArbitraryExportFolder());
         assertFalse(preferenceManager.getPreferenceFileLoggerEnabled());
         assertFalse(preferenceManager.getPreferenceFileDumpEnabled());
         assertEquals(-1, preferenceManager.getPreferenceTheme());
+        assertFalse(preferenceManager.getPreferenceAllowArbitraryFileLocation());
     }
 }

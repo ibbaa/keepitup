@@ -50,9 +50,11 @@ public class PreferenceSetup {
         globalSettings.put("preferenceEnforceDefaultPingPackageSize", preferenceManager.getPreferenceEnforceDefaultPingPackageSize());
         globalSettings.put("preferenceDownloadExternalStorage", preferenceManager.getPreferenceDownloadExternalStorage());
         globalSettings.put("preferenceDownloadFolder", preferenceManager.getPreferenceDownloadFolder());
+        globalSettings.put("preferenceArbitraryDownloadFolder", preferenceManager.getPreferenceArbitraryDownloadFolder());
         globalSettings.put("preferenceDownloadKeep", preferenceManager.getPreferenceDownloadKeep());
         globalSettings.put("preferenceLogFile", preferenceManager.getPreferenceLogFile());
         globalSettings.put("preferenceLogFolder", preferenceManager.getPreferenceLogFolder());
+        globalSettings.put("preferenceArbitraryLogFolder", preferenceManager.getPreferenceArbitraryLogFolder());
         return globalSettings;
     }
 
@@ -77,10 +79,13 @@ public class PreferenceSetup {
         Map<String, Object> systemSettings = new HashMap<>();
         systemSettings.put("preferenceExternalStorageType", preferenceManager.getPreferenceExternalStorageType());
         systemSettings.put("preferenceImportFolder", preferenceManager.getPreferenceImportFolder());
+        systemSettings.put("preferenceArbitraryImportFolder", preferenceManager.getPreferenceArbitraryImportFolder());
         systemSettings.put("preferenceExportFolder", preferenceManager.getPreferenceExportFolder());
+        systemSettings.put("preferenceArbitraryExportFolder", preferenceManager.getPreferenceArbitraryExportFolder());
         systemSettings.put("preferenceFileLoggerEnabled", preferenceManager.getPreferenceFileLoggerEnabled());
         systemSettings.put("preferenceFileDumpEnabled", preferenceManager.getPreferenceFileDumpEnabled());
         systemSettings.put("preferenceTheme", preferenceManager.getPreferenceTheme());
+        systemSettings.put("preferenceAllowArbitraryFileLocation", preferenceManager.getPreferenceAllowArbitraryFileLocation());
         return systemSettings;
     }
 
@@ -131,6 +136,12 @@ public class PreferenceSetup {
         } else {
             preferenceManager.removePreferenceDownloadFolder();
         }
+        Object arbitraryDownloadFolder = globalSettings.get("preferenceArbitraryDownloadFolder");
+        if (isValidString(arbitraryDownloadFolder)) {
+            preferenceManager.setPreferenceArbitraryDownloadFolder(arbitraryDownloadFolder.toString());
+        } else {
+            preferenceManager.removePreferenceArbitraryDownloadFolder();
+        }
         Object downloadKeep = globalSettings.get("preferenceDownloadKeep");
         if (isValidBoolean(downloadKeep)) {
             preferenceManager.setPreferenceDownloadKeep(Boolean.parseBoolean(Objects.requireNonNull(downloadExternalStorage).toString()));
@@ -148,6 +159,12 @@ public class PreferenceSetup {
             preferenceManager.setPreferenceLogFolder(logFolder.toString());
         } else {
             preferenceManager.removePreferenceLogFolder();
+        }
+        Object arbitraryLogFolder = globalSettings.get("preferenceArbitraryLogFolder");
+        if (isValidString(arbitraryLogFolder)) {
+            preferenceManager.setPreferenceArbitraryLogFolder(arbitraryLogFolder.toString());
+        } else {
+            preferenceManager.removePreferenceArbitraryLogFolder();
         }
     }
 
@@ -249,11 +266,23 @@ public class PreferenceSetup {
         } else {
             preferenceManager.removePreferenceImportFolder();
         }
+        Object arbitraryImportFolder = systemSettings.get("preferenceArbitraryImportFolder");
+        if (isValidString(arbitraryImportFolder)) {
+            preferenceManager.setPreferenceArbitraryImportFolder(arbitraryImportFolder.toString());
+        } else {
+            preferenceManager.removePreferenceArbitraryImportFolder();
+        }
         Object exportFolder = systemSettings.get("preferenceExportFolder");
         if (isValidString(exportFolder)) {
             preferenceManager.setPreferenceExportFolder(exportFolder.toString());
         } else {
             preferenceManager.removePreferenceExportFolder();
+        }
+        Object arbitraryExportFolder = systemSettings.get("preferenceArbitraryExportFolder");
+        if (isValidString(arbitraryExportFolder)) {
+            preferenceManager.setPreferenceArbitraryExportFolder(arbitraryExportFolder.toString());
+        } else {
+            preferenceManager.removePreferenceArbitraryExportFolder();
         }
         Object fileLoggerEnabled = systemSettings.get("preferenceFileLoggerEnabled");
         if (isValidBoolean(fileLoggerEnabled)) {
@@ -272,6 +301,12 @@ public class PreferenceSetup {
             preferenceManager.setPreferenceTheme(NumberUtil.getIntValue(theme, -1));
         } else {
             preferenceManager.removePreferenceTheme();
+        }
+        Object allowArbitraryFileLocation = systemSettings.get("preferenceAllowArbitraryFileLocation");
+        if (isValidBoolean(allowArbitraryFileLocation)) {
+            preferenceManager.setPreferenceAllowArbitraryFileLocation(Boolean.parseBoolean(Objects.requireNonNull(allowArbitraryFileLocation).toString()));
+        } else {
+            preferenceManager.removePreferenceAllowArbitraryFileLocation();
         }
     }
 
@@ -321,9 +356,11 @@ public class PreferenceSetup {
         preferenceManager.removePreferenceEnforceDefaultPingPackageSize();
         preferenceManager.removePreferenceDownloadExternalStorage();
         preferenceManager.removePreferenceDownloadFolder();
+        preferenceManager.removePreferenceArbitraryDownloadFolder();
         preferenceManager.removePreferenceDownloadKeep();
         preferenceManager.removePreferenceLogFile();
         preferenceManager.removePreferenceLogFolder();
+        preferenceManager.removePreferenceArbitraryLogFolder();
     }
 
     public void removeDefaults() {
@@ -344,10 +381,13 @@ public class PreferenceSetup {
         Log.d(PreferenceSetup.class.getName(), "removeSystemSettings");
         preferenceManager.removePreferenceExternalStorageType();
         preferenceManager.removePreferenceImportFolder();
+        preferenceManager.removePreferenceArbitraryImportFolder();
         preferenceManager.removePreferenceExportFolder();
+        preferenceManager.removePreferenceArbitraryExportFolder();
         preferenceManager.removePreferenceFileLoggerEnabled();
         preferenceManager.removePreferenceFileDumpEnabled();
         preferenceManager.removePreferenceTheme();
+        preferenceManager.removePreferenceAllowArbitraryFileLocation();
     }
 
     public void removeAllSettings() {

@@ -16,6 +16,7 @@
 
 package net.ibbaa.keepitup.ui;
 
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.TypedValue;
 import android.view.Gravity;
@@ -74,6 +75,7 @@ public class GlobalSettingsActivity extends SettingsInputActivity implements Sus
     private SwitchMaterial logFileSwitch;
     private TextView logFileOnOffText;
     private TextView logFolderText;
+    private GenericActivityResultLauncher logFolderLauncher;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -451,12 +453,14 @@ public class GlobalSettingsActivity extends SettingsInputActivity implements Sus
                 setLogFolder(logFolder);
                 logFolderCardView.setEnabled(true);
                 logFolderCardView.setOnClickListener(this::showLogFolderChooseDialog);
+                //logFolderLauncher = new GenericActivityResultLauncher(this, this::accept);
             } else {
                 Log.e(GlobalSettingsActivity.class.getName(), "Error accessing log folder.");
                 Log.d(GlobalSettingsActivity.class.getName(), "Reset to none.");
                 setLogFolder(getResources().getString(R.string.text_activity_global_settings_log_folder_none));
                 logFolderCardView.setEnabled(false);
                 logFolderCardView.setOnClickListener(null);
+                //logFolderLauncher = null;
                 preferenceManager.setPreferenceLogFile(false);
                 logFileSwitch.setChecked(false);
                 prepareLogFileOnOffText();
@@ -467,6 +471,7 @@ public class GlobalSettingsActivity extends SettingsInputActivity implements Sus
             setLogFolder(getResources().getString(R.string.text_activity_global_settings_log_folder_none));
             logFolderCardView.setEnabled(false);
             logFolderCardView.setOnClickListener(null);
+            //logFolderLauncher = null;
         }
     }
 
@@ -539,6 +544,13 @@ public class GlobalSettingsActivity extends SettingsInputActivity implements Sus
         Bundle bundle = BundleUtil.stringsToBundle(new String[]{fileChooseDialog.getFolderRootKey(), fileChooseDialog.getFolderKey(), fileChooseDialog.getFileModeKey(), fileChooseDialog.getTypeKey()}, new String[]{root, folder, FileChooseDialog.Mode.FOLDER.name(), FileChooseDialog.Type.LOGFOLDER.name()});
         fileChooseDialog.setArguments(bundle);
         fileChooseDialog.show(getSupportFragmentManager(), GlobalSettingsActivity.class.getName());
+//        Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT_TREE);
+//        intent.putExtra(DocumentsContract.EXTRA_INITIAL_URI, root);
+//        logFolderLauncher.launch(intent);
+    }
+
+    private void accept(Uri uri) {
+        System.out.println(uri);
     }
 
     private void showInputDialog(Bundle bundle) {

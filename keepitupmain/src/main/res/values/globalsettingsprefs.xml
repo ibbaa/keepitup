@@ -34,10 +34,14 @@
     <bool name="download_external_storage_default">false</bool>
     <string name="download_folder_key">download_folder_key</string>
     <string name="download_folder_default">download</string>
+    <string name="arbitrary_download_folder_key">arbitrary_download_folder_key</string>
+    <string name="arbitrary_download_folder_default">/Documents</string>
     <string name="log_file_key">log_file_key</string>
     <bool name="log_file_default">false</bool>
     <string name="log_folder_key">log_folder_key</string>
     <string name="log_folder_default">log</string>
+    <string name="arbitrary_log_folder_key">arbitrary_log_folder_key</string>
+    <string name="arbitrary_log_folder_default">/Documents</string>
     <string name="download_keep_key">download_keep_key</string>
     <bool name="download_keep_default">false</bool>
 </resources>

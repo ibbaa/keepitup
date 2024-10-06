@@ -1715,9 +1715,11 @@ public class GlobalSettingsActivityTest extends BaseUITest {
         assertTrue(preferenceManager.getPreferenceSuspensionEnabled());
         assertFalse(preferenceManager.getPreferenceDownloadExternalStorage());
         assertEquals("download", preferenceManager.getPreferenceDownloadFolder());
+        assertEquals("/Documents", preferenceManager.getPreferenceArbitraryDownloadFolder());
         assertFalse(preferenceManager.getPreferenceDownloadKeep());
         assertFalse(preferenceManager.getPreferenceLogFile());
         assertEquals("log", preferenceManager.getPreferenceLogFolder());
+        assertEquals("/Documents", preferenceManager.getPreferenceArbitraryLogFolder());
         activityScenario.close();
     }
 
