@@ -54,7 +54,7 @@ public class LogUtil {
         int deleteFileCount = context.getResources().getInteger(R.integer.networktask_file_logger_delete_file_count_default);
         PreferenceManager preferenceManager = new PreferenceManager(context);
         String relativeLogDirectory = preferenceManager.getPreferenceLogFolder();
-        File logDirectoryFile = fileManager.getExternalDirectory(relativeLogDirectory, 0);
+        File logDirectoryFile = FileUtil.getExternalDirectory(fileManager, preferenceManager, relativeLogDirectory);
         if (logDirectoryFile == null) {
             Log.e(LogUtil.class.getName(), "Error accessing log folder.");
             return null;

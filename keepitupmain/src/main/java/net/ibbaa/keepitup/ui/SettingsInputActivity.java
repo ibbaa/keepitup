@@ -37,6 +37,8 @@ import net.ibbaa.keepitup.ui.dialog.GeneralErrorDialog;
 import net.ibbaa.keepitup.ui.dialog.ProgressDialog;
 import net.ibbaa.keepitup.ui.dialog.SettingsInput;
 import net.ibbaa.keepitup.ui.dialog.SettingsInputDialog;
+import net.ibbaa.keepitup.ui.permission.FolderPermissionManager;
+import net.ibbaa.keepitup.ui.permission.IFolderPermissionManager;
 import net.ibbaa.keepitup.util.BundleUtil;
 
 import java.util.List;
@@ -48,6 +50,7 @@ public abstract class SettingsInputActivity extends AppCompatActivity implements
     private IFileManager fileManager;
     private IPowerManager powerManager;
     private TimeBasedSuspensionScheduler timeBasedScheduler;
+    private IFolderPermissionManager folderPermissionManager;
 
     public void injectResources(Resources resources) {
         this.resources = resources;
@@ -63,6 +66,18 @@ public abstract class SettingsInputActivity extends AppCompatActivity implements
 
     public void injectTimeBasedSuspensionScheduler(TimeBasedSuspensionScheduler timeBasedScheduler) {
         this.timeBasedScheduler = timeBasedScheduler;
+    }
+
+    public void injectFolderPermissionManager(IFolderPermissionManager folderPermissionManager) {
+        this.folderPermissionManager = folderPermissionManager;
+    }
+
+    @SuppressWarnings("ReplaceNullCheck")
+    public IFolderPermissionManager getFolderPermissionManager() {
+        if (folderPermissionManager != null) {
+            return folderPermissionManager;
+        }
+        return new FolderPermissionManager();
     }
 
     @Override

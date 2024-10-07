@@ -45,11 +45,16 @@ import net.ibbaa.keepitup.ui.dialog.FileChooseDialog;
 import net.ibbaa.keepitup.ui.dialog.SettingsInput;
 import net.ibbaa.keepitup.ui.dialog.SettingsInputDialog;
 import net.ibbaa.keepitup.ui.dialog.SuspensionIntervalsDialog;
+import net.ibbaa.keepitup.ui.permission.FolderPermissionLauncher;
+import net.ibbaa.keepitup.ui.permission.GenericFolderPermissionLauncher;
+import net.ibbaa.keepitup.ui.permission.IFolderPermissionManager;
+import net.ibbaa.keepitup.ui.permission.NullFolderPermissionLauncher;
 import net.ibbaa.keepitup.ui.validation.NotificationAfterFailuresFieldValidator;
 import net.ibbaa.keepitup.util.BundleUtil;
 import net.ibbaa.keepitup.util.FileUtil;
 import net.ibbaa.keepitup.util.NumberUtil;
 import net.ibbaa.keepitup.util.StringUtil;
+import net.ibbaa.keepitup.util.SystemUtil;
 import net.ibbaa.keepitup.util.TimeUtil;
 
 import java.io.File;
@@ -75,7 +80,7 @@ public class GlobalSettingsActivity extends SettingsInputActivity implements Sus
     private SwitchMaterial logFileSwitch;
     private TextView logFileOnOffText;
     private TextView logFolderText;
-    private GenericActivityResultLauncher logFolderLauncher;
+    private FolderPermissionLauncher logFolderLauncher;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -93,8 +98,13 @@ public class GlobalSettingsActivity extends SettingsInputActivity implements Sus
         prepareDownloadExternalStorageSwitch();
         prepareDownloadFolderField();
         prepareDownloadKeepSwitch();
+        prepareLogFolderLauncher();
         prepareLogFileSwitch();
         prepareLogFolderField();
+    }
+
+    public void injectLogFolderLauncher(FolderPermissionLauncher logFolderLauncher) {
+        this.logFolderLauncher = logFolderLauncher;
     }
 
     @Override
@@ -441,37 +451,66 @@ public class GlobalSettingsActivity extends SettingsInputActivity implements Sus
         prepareLogFolderField();
     }
 
+    private void prepareLogFolderLauncher() {
+        if (SystemUtil.supportsSAFFeature()) {
+            logFolderLauncher = new GenericFolderPermissionLauncher(this, this::grantArbitraryLogFolderPermission);
+        } else {
+            logFolderLauncher = new NullFolderPermissionLauncher(this::grantArbitraryLogFolderPermission);
+        }
+    }
+
     private void prepareLogFolderField() {
         Log.d(GlobalSettingsActivity.class.getName(), "prepareLogFolderField");
         PreferenceManager preferenceManager = new PreferenceManager(this);
         CardView logFolderCardView = findViewById(R.id.cardview_activity_global_settings_log_folder);
         logFolderText = findViewById(R.id.textview_activity_global_settings_log_folder);
         if (logFileSwitch.isChecked()) {
-            String logFolder = getExternalLogFolder();
-            Log.d(GlobalSettingsActivity.class.getName(), "Log folder is " + logFolder);
-            if (logFolder != null) {
-                setLogFolder(logFolder);
-                logFolderCardView.setEnabled(true);
-                logFolderCardView.setOnClickListener(this::showLogFolderChooseDialog);
-                //logFolderLauncher = new GenericActivityResultLauncher(this, this::accept);
+            if (preferenceManager.getPreferenceAllowArbitraryFileLocation()) {
+                prepareArbitraryLogFolder(logFolderCardView);
             } else {
-                Log.e(GlobalSettingsActivity.class.getName(), "Error accessing log folder.");
-                Log.d(GlobalSettingsActivity.class.getName(), "Reset to none.");
-                setLogFolder(getResources().getString(R.string.text_activity_global_settings_log_folder_none));
-                logFolderCardView.setEnabled(false);
-                logFolderCardView.setOnClickListener(null);
-                //logFolderLauncher = null;
-                preferenceManager.setPreferenceLogFile(false);
-                logFileSwitch.setChecked(false);
-                prepareLogFileOnOffText();
-                Log.d(GlobalSettingsActivity.class.getName(), "Showing error dialog.");
-                showErrorDialog(getResources().getString(R.string.text_dialog_general_error_external_root_access));
+                prepareExternalAppLogFolder(logFolderCardView, preferenceManager);
             }
         } else {
             setLogFolder(getResources().getString(R.string.text_activity_global_settings_log_folder_none));
             logFolderCardView.setEnabled(false);
             logFolderCardView.setOnClickListener(null);
-            //logFolderLauncher = null;
+        }
+    }
+
+    private void prepareArbitraryLogFolder(CardView logFolderCardView) {
+        Log.d(GlobalSettingsActivity.class.getName(), "prepareArbitraryLogFolder");
+        logFolderCardView.setEnabled(true);
+        logFolderCardView.setOnClickListener(this::requestArbitraryLogFolderPermission);
+        IFolderPermissionManager folderPermissionManager = getFolderPermissionManager();
+        String arbitraryLogFolder = getPreferenceArbitraryLogFolder();
+        if (folderPermissionManager.hasPermission(this, arbitraryLogFolder)) {
+            Log.d(GlobalSettingsActivity.class.getName(), "Permission for " + arbitraryLogFolder + " is already present");
+            setLogFolder(arbitraryLogFolder);
+        } else {
+            Log.d(GlobalSettingsActivity.class.getName(), "Requesting permission for " + arbitraryLogFolder);
+            folderPermissionManager.requestPermission(this, logFolderLauncher, arbitraryLogFolder);
+        }
+    }
+
+    private void prepareExternalAppLogFolder(CardView logFolderCardView, PreferenceManager preferenceManager) {
+        Log.d(GlobalSettingsActivity.class.getName(), "prepareExternalAppLogFolder");
+        String logFolder = getExternalAppStorageLogFolder();
+        Log.d(GlobalSettingsActivity.class.getName(), "Log folder is " + logFolder);
+        if (logFolder != null) {
+            setLogFolder(logFolder);
+            logFolderCardView.setEnabled(true);
+            logFolderCardView.setOnClickListener(this::showLogFolderChooseDialog);
+        } else {
+            Log.e(GlobalSettingsActivity.class.getName(), "Error accessing log folder.");
+            Log.d(GlobalSettingsActivity.class.getName(), "Reset to none.");
+            setLogFolder(getResources().getString(R.string.text_activity_global_settings_log_folder_none));
+            logFolderCardView.setEnabled(false);
+            logFolderCardView.setOnClickListener(null);
+            preferenceManager.setPreferenceLogFile(false);
+            logFileSwitch.setChecked(false);
+            prepareLogFileOnOffText();
+            Log.d(GlobalSettingsActivity.class.getName(), "Showing error dialog.");
+            showErrorDialog(getResources().getString(R.string.text_dialog_general_error_external_root_access));
         }
     }
 
@@ -544,13 +583,33 @@ public class GlobalSettingsActivity extends SettingsInputActivity implements Sus
         Bundle bundle = BundleUtil.stringsToBundle(new String[]{fileChooseDialog.getFolderRootKey(), fileChooseDialog.getFolderKey(), fileChooseDialog.getFileModeKey(), fileChooseDialog.getTypeKey()}, new String[]{root, folder, FileChooseDialog.Mode.FOLDER.name(), FileChooseDialog.Type.LOGFOLDER.name()});
         fileChooseDialog.setArguments(bundle);
         fileChooseDialog.show(getSupportFragmentManager(), GlobalSettingsActivity.class.getName());
-//        Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT_TREE);
-//        intent.putExtra(DocumentsContract.EXTRA_INITIAL_URI, root);
-//        logFolderLauncher.launch(intent);
     }
 
-    private void accept(Uri uri) {
-        System.out.println(uri);
+    private void requestArbitraryLogFolderPermission(View view) {
+        Log.d(GlobalSettingsActivity.class.getName(), "requestArbitraryLogFolderPermission");
+        IFolderPermissionManager folderPermissionManager = getFolderPermissionManager();
+        String arbitraryLogFolder = getPreferenceArbitraryLogFolder();
+        folderPermissionManager.requestPermission(this, logFolderLauncher, arbitraryLogFolder);
+    }
+
+    public void grantArbitraryLogFolderPermission(Uri uri) {
+        Log.d(GlobalSettingsActivity.class.getName(), "grantArbitraryLogFolderPermission for uri " + uri);
+        if (uri == null) {
+            Log.e(GlobalSettingsActivity.class.getName(), "uri is null");
+            return;
+        }
+        String logFolder = uri.toString();
+        Log.d(GlobalSettingsActivity.class.getName(), "New arbitrary log folder is " + logFolder);
+        PreferenceManager preferenceManager = new PreferenceManager(this);
+        String currentLogFolder = preferenceManager.getPreferenceArbitraryLogFolder();
+        Log.d(GlobalSettingsActivity.class.getName(), "Old arbitrary log folder is " + currentLogFolder);
+        if (!currentLogFolder.equals(logFolder)) {
+            Log.d(GlobalSettingsActivity.class.getName(), "Arbitrary log folder changed. Revoking old permission.");
+            IFolderPermissionManager folderPermissionManager = getFolderPermissionManager();
+            folderPermissionManager.revokePermission(this, currentLogFolder);
+            preferenceManager.setPreferenceArbitraryLogFolder(logFolder);
+        }
+        setLogFolder(logFolder);
     }
 
     private void showInputDialog(Bundle bundle) {
@@ -584,12 +643,18 @@ public class GlobalSettingsActivity extends SettingsInputActivity implements Sus
 
     private String getPreferenceLogFolder() {
         Log.d(GlobalSettingsActivity.class.getName(), "getPreferenceLogFolder");
-        String logFolder = getExternalLogFolder();
+        String logFolder = getExternalAppStorageLogFolder();
         if (logFolder == null) {
             return null;
         }
         PreferenceManager preferenceManager = new PreferenceManager(this);
         return preferenceManager.getPreferenceLogFolder();
+    }
+
+    private String getPreferenceArbitraryLogFolder() {
+        Log.d(GlobalSettingsActivity.class.getName(), "getPreferenceArbitraryLogFolder");
+        PreferenceManager preferenceManager = new PreferenceManager(this);
+        return preferenceManager.getPreferenceArbitraryLogFolder();
     }
 
     private String getExternalDownloadFolder() {
@@ -605,8 +670,8 @@ public class GlobalSettingsActivity extends SettingsInputActivity implements Sus
         return downloadFolder.getAbsolutePath();
     }
 
-    private String getExternalLogFolder() {
-        Log.d(GlobalSettingsActivity.class.getName(), "getExternalLogFolder");
+    private String getExternalAppStorageLogFolder() {
+        Log.d(GlobalSettingsActivity.class.getName(), "getExternalAppStorageLogFolder");
         PreferenceManager preferenceManager = new PreferenceManager(this);
         String folder = preferenceManager.getPreferenceLogFolder();
         IFileManager fileManager = getFileManager();

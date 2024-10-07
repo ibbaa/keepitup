@@ -57,6 +57,7 @@ import net.ibbaa.keepitup.util.BundleUtil;
 import net.ibbaa.keepitup.util.DebugUtil;
 import net.ibbaa.keepitup.util.FileUtil;
 import net.ibbaa.keepitup.util.StringUtil;
+import net.ibbaa.keepitup.util.SystemUtil;
 import net.ibbaa.keepitup.util.ThreadUtil;
 
 import java.io.File;
@@ -318,10 +319,10 @@ public class SystemActivity extends SettingsInputActivity implements ExportSuppo
         CardView arbitraryFileLocationCardView = findViewById(R.id.cardview_activity_system_allow_arbitrary_file_location);
         arbitraryFileLocationSwitch = findViewById(R.id.switch_activity_system_allow_arbitrary_file_location);
         arbitraryFileLocationOnOffText = findViewById(R.id.textview_activity_system_allow_arbitrary_file_location_on_off);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+        PreferenceManager preferenceManager = new PreferenceManager(this);
+        if (SystemUtil.supportsSAFFeature()) {
             Log.d(SystemActivity.class.getName(), "API version is " + Build.VERSION.SDK_INT + ". Enable SAF feature.");
             arbitraryFileLocationCardView.setVisibility(View.VISIBLE);
-            PreferenceManager preferenceManager = new PreferenceManager(this);
             arbitraryFileLocationSwitch.setOnCheckedChangeListener(null);
             arbitraryFileLocationSwitch.setChecked(preferenceManager.getPreferenceAllowArbitraryFileLocation());
             arbitraryFileLocationSwitch.setOnCheckedChangeListener(this::onAllowArbitraryFileLocationCheckedChanged);
@@ -329,6 +330,7 @@ public class SystemActivity extends SettingsInputActivity implements ExportSuppo
         } else {
             Log.d(SystemActivity.class.getName(), "API version is " + Build.VERSION.SDK_INT + ". Disable SAF feature.");
             arbitraryFileLocationCardView.setVisibility(View.GONE);
+            preferenceManager.setPreferenceAllowArbitraryFileLocation(false);
         }
     }
 
