@@ -25,6 +25,9 @@ import net.ibbaa.keepitup.logging.Log;
 import net.ibbaa.keepitup.model.AccessType;
 import net.ibbaa.keepitup.model.NotificationType;
 
+import java.util.HashSet;
+import java.util.Set;
+
 public class PreferenceManager {
 
     private final Context context;
@@ -566,6 +569,15 @@ public class PreferenceManager {
     public void removePreferenceFileDumpEnabled() {
         Log.d(PreferenceManager.class.getName(), "removePreferenceFileDumpEnabled");
         removePreferenceValue(getResources().getString(R.string.file_dump_enabled_key));
+    }
+
+    public Set<String> getArbitraryFolders() {
+        Set<String> folders = new HashSet<>(4);
+        folders.add(getPreferenceArbitraryLogFolder());
+        folders.add(getPreferenceArbitraryDownloadFolder());
+        folders.add(getPreferenceArbitraryImportFolder());
+        folders.add(getPreferenceArbitraryExportFolder());
+        return folders;
     }
 
     private SharedPreferences getDefaultSharedPreferences() {

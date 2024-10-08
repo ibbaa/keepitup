@@ -50,7 +50,7 @@ public class SuspensionIntervalSelectDialogTest extends BaseUITest {
 
     @Test
     public void testMode() {
-        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class);
+        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
         openSuspensionIntervalSelectDialog(SuspensionIntervalSelectDialog.Mode.START, null, null);
         onView(isRoot()).perform(waitFor(500));
         onView(withId(R.id.textview_dialog_suspension_interval_select_label)).check(matches(withText("Add suspension interval")));
@@ -66,7 +66,7 @@ public class SuspensionIntervalSelectDialogTest extends BaseUITest {
 
     @Test
     public void testModeScreenRotation() {
-        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class);
+        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
         openSuspensionIntervalSelectDialog(SuspensionIntervalSelectDialog.Mode.END, null, null);
         onView(isRoot()).perform(waitFor(500));
         onView(withId(R.id.textview_dialog_suspension_interval_select_label)).check(matches(withText("Add suspension interval")));
@@ -83,7 +83,7 @@ public class SuspensionIntervalSelectDialogTest extends BaseUITest {
 
     @Test
     public void testDefaultTimeNotProvided() {
-        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class);
+        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
         SuspensionIntervalSelectDialog intervalSelectDialog = openSuspensionIntervalSelectDialog(SuspensionIntervalSelectDialog.Mode.END, null, null);
         onView(isRoot()).perform(waitFor(500));
         onView(withId(R.id.picker_dialog_suspension_interval_select_time_hour)).check(matches(withValue(22)));
@@ -96,7 +96,7 @@ public class SuspensionIntervalSelectDialogTest extends BaseUITest {
 
     @Test
     public void testDefaultTimeNotProvidedScreenRotation() {
-        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class);
+        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
         SuspensionIntervalSelectDialog intervalSelectDialog = openSuspensionIntervalSelectDialog(SuspensionIntervalSelectDialog.Mode.START, null, null);
         onView(isRoot()).perform(waitFor(500));
         onView(withId(R.id.picker_dialog_suspension_interval_select_time_hour)).check(matches(withValue(22)));
@@ -124,7 +124,7 @@ public class SuspensionIntervalSelectDialogTest extends BaseUITest {
 
     @Test
     public void testDefaultTimeProvided() {
-        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class);
+        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
         Time defaultTime = new Time();
         defaultTime.setHour(12);
         defaultTime.setMinute(34);
@@ -155,7 +155,7 @@ public class SuspensionIntervalSelectDialogTest extends BaseUITest {
 
     @Test
     public void testDefaultTimeProvidedScreenRotation() {
-        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class);
+        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
         Time defaultTime = new Time();
         defaultTime.setHour(23);
         defaultTime.setMinute(45);
@@ -167,7 +167,7 @@ public class SuspensionIntervalSelectDialogTest extends BaseUITest {
 
     @Test
     public void testTimeSelected() {
-        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class);
+        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
         SuspensionIntervalSelectDialog intervalSelectDialog = openSuspensionIntervalSelectDialog(SuspensionIntervalSelectDialog.Mode.START, null, null);
         onView(isRoot()).perform(waitFor(500));
         onView(withId(R.id.picker_dialog_suspension_interval_select_time_hour)).perform(setNumber(0));
@@ -183,7 +183,7 @@ public class SuspensionIntervalSelectDialogTest extends BaseUITest {
 
     @Test
     public void testTimeSelectedScreenRotation() {
-        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class);
+        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
         SuspensionIntervalSelectDialog intervalSelectDialog = openSuspensionIntervalSelectDialog(SuspensionIntervalSelectDialog.Mode.START, null, null);
         onView(isRoot()).perform(waitFor(500));
         onView(withId(R.id.picker_dialog_suspension_interval_select_time_hour)).perform(setNumber(23));
@@ -213,7 +213,7 @@ public class SuspensionIntervalSelectDialogTest extends BaseUITest {
 
     @Test
     public void testTimeInitialNumberPickerColorStart() {
-        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class);
+        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
         getIntervalDAO().insertInterval(getInterval1());
         getIntervalDAO().insertInterval(getInterval2());
         getTimeBasedSuspensionScheduler().restart();
@@ -232,7 +232,7 @@ public class SuspensionIntervalSelectDialogTest extends BaseUITest {
 
     @Test
     public void testTimeSelectedNumberPickerColorStart() {
-        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class);
+        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
         getIntervalDAO().insertInterval(getInterval1());
         getIntervalDAO().insertInterval(getInterval2());
         getTimeBasedSuspensionScheduler().restart();
@@ -263,7 +263,7 @@ public class SuspensionIntervalSelectDialogTest extends BaseUITest {
 
     @Test
     public void testTimeSelectedNumberPickerColorStartScreenRotation() {
-        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class);
+        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
         getIntervalDAO().insertInterval(getInterval1());
         getIntervalDAO().insertInterval(getInterval2());
         getTimeBasedSuspensionScheduler().restart();
@@ -296,7 +296,7 @@ public class SuspensionIntervalSelectDialogTest extends BaseUITest {
 
     @Test
     public void testTimeInitialNumberPickerColorEndDuration() {
-        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class);
+        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
         getIntervalDAO().insertInterval(getInterval1());
         getIntervalDAO().insertInterval(getInterval2());
         getTimeBasedSuspensionScheduler().restart();
@@ -318,7 +318,7 @@ public class SuspensionIntervalSelectDialogTest extends BaseUITest {
 
     @Test
     public void testTimeInitialNumberPickerColorEndOverlap() {
-        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class);
+        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
         getIntervalDAO().insertInterval(getInterval1());
         getIntervalDAO().insertInterval(getInterval2());
         getTimeBasedSuspensionScheduler().restart();
@@ -340,7 +340,7 @@ public class SuspensionIntervalSelectDialogTest extends BaseUITest {
 
     @Test
     public void testTimeSelectedNumberPickerColorEndDuration() {
-        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class);
+        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
         getIntervalDAO().insertInterval(getInterval1());
         getIntervalDAO().insertInterval(getInterval2());
         getTimeBasedSuspensionScheduler().restart();
@@ -372,7 +372,7 @@ public class SuspensionIntervalSelectDialogTest extends BaseUITest {
 
     @Test
     public void testTimeSelectedNumberPickerColorEndOverlap() {
-        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class);
+        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
         getIntervalDAO().insertInterval(getInterval1());
         getIntervalDAO().insertInterval(getInterval2());
         getTimeBasedSuspensionScheduler().restart();
@@ -404,7 +404,7 @@ public class SuspensionIntervalSelectDialogTest extends BaseUITest {
 
     @Test
     public void testTimeSelectedNumberPickerColorEndScreenRotation() {
-        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class);
+        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
         getIntervalDAO().insertInterval(getInterval1());
         getIntervalDAO().insertInterval(getInterval2());
         getTimeBasedSuspensionScheduler().restart();
@@ -439,7 +439,7 @@ public class SuspensionIntervalSelectDialogTest extends BaseUITest {
 
     @Test
     public void testTimeSelectedOkStart() {
-        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class);
+        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
         getIntervalDAO().insertInterval(getInterval1());
         getIntervalDAO().insertInterval(getInterval2());
         getTimeBasedSuspensionScheduler().restart();
@@ -455,7 +455,7 @@ public class SuspensionIntervalSelectDialogTest extends BaseUITest {
 
     @Test
     public void testTimeSelectedFailureStart() {
-        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class);
+        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
         getIntervalDAO().insertInterval(getInterval1());
         getIntervalDAO().insertInterval(getInterval2());
         getTimeBasedSuspensionScheduler().restart();
@@ -487,7 +487,7 @@ public class SuspensionIntervalSelectDialogTest extends BaseUITest {
 
     @Test
     public void testTimeSelectedFailureStartScreenRotation() {
-        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class);
+        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
         getIntervalDAO().insertInterval(getInterval1());
         getIntervalDAO().insertInterval(getInterval2());
         getTimeBasedSuspensionScheduler().restart();
@@ -527,7 +527,7 @@ public class SuspensionIntervalSelectDialogTest extends BaseUITest {
 
     @Test
     public void testTimeSelectedOkEnd() {
-        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class);
+        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
         getIntervalDAO().insertInterval(getInterval1());
         getIntervalDAO().insertInterval(getInterval2());
         getTimeBasedSuspensionScheduler().restart();
@@ -548,7 +548,7 @@ public class SuspensionIntervalSelectDialogTest extends BaseUITest {
 
     @Test
     public void testTimeSelectedFailureEndDuration() {
-        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class);
+        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
         getIntervalDAO().insertInterval(getInterval1());
         getIntervalDAO().insertInterval(getInterval2());
         getTimeBasedSuspensionScheduler().restart();
@@ -577,7 +577,7 @@ public class SuspensionIntervalSelectDialogTest extends BaseUITest {
 
     @Test
     public void testTimeSelectedFailureEndOverlap() {
-        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class);
+        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
         getIntervalDAO().insertInterval(getInterval1());
         getIntervalDAO().insertInterval(getInterval2());
         getTimeBasedSuspensionScheduler().restart();
@@ -603,7 +603,7 @@ public class SuspensionIntervalSelectDialogTest extends BaseUITest {
 
     @Test
     public void testTimeSelectedFailureEndDurationAndOverlap() {
-        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class);
+        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
         getIntervalDAO().insertInterval(getInterval1());
         getIntervalDAO().insertInterval(getInterval2());
         getTimeBasedSuspensionScheduler().restart();
@@ -631,7 +631,7 @@ public class SuspensionIntervalSelectDialogTest extends BaseUITest {
 
     @Test
     public void testTimeSelectedFailureEndScreenRotation() {
-        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class);
+        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
         getIntervalDAO().insertInterval(getInterval1());
         getIntervalDAO().insertInterval(getInterval2());
         getTimeBasedSuspensionScheduler().restart();

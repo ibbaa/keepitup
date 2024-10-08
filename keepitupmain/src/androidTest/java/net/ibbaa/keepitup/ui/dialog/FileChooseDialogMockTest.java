@@ -60,9 +60,9 @@ public class FileChooseDialogMockTest extends BaseUITest {
     @Before
     public void beforeEachTestMethod() {
         super.beforeEachTestMethod();
-        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class);
+        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
         setMockFileManagerData();
-        activityScenario.onActivity(activity -> ((GlobalSettingsActivity) activity).injectFileManager(fileManager));
+        ((GlobalSettingsActivity) getActivity(activityScenario)).injectFileManager(fileManager);
     }
 
     @After

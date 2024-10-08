@@ -49,7 +49,7 @@ public class ValidatorErrorDialogTest extends BaseUITest {
     @Before
     public void beforeEachTestMethod() {
         super.beforeEachTestMethod();
-        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class);
+        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
     }
 
     @After

@@ -32,6 +32,8 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import java.util.Set;
+
 @SmallTest
 @RunWith(AndroidJUnit4.class)
 public class PreferenceManagerTest {
@@ -467,5 +469,37 @@ public class PreferenceManagerTest {
         preferenceManager.setPreferenceFileDumpEnabled(true);
         preferenceManager.removePreferenceFileDumpEnabled();
         assertFalse(preferenceManager.getPreferenceFileDumpEnabled());
+    }
+
+    @Test
+    public void testGetArbitraryFolders() {
+        Set<String> folders = preferenceManager.getArbitraryFolders();
+        assertEquals(1, folders.size());
+        assertTrue(folders.contains("/Documents"));
+        preferenceManager.setPreferenceArbitraryLogFolder("/Documents1");
+        folders = preferenceManager.getArbitraryFolders();
+        assertEquals(2, folders.size());
+        assertTrue(folders.contains("/Documents"));
+        assertTrue(folders.contains("/Documents1"));
+        preferenceManager.setPreferenceArbitraryDownloadFolder("/Documents2");
+        folders = preferenceManager.getArbitraryFolders();
+        assertEquals(3, folders.size());
+        assertTrue(folders.contains("/Documents"));
+        assertTrue(folders.contains("/Documents1"));
+        assertTrue(folders.contains("/Documents2"));
+        preferenceManager.setPreferenceArbitraryImportFolder("/Documents3");
+        folders = preferenceManager.getArbitraryFolders();
+        assertEquals(4, folders.size());
+        assertTrue(folders.contains("/Documents"));
+        assertTrue(folders.contains("/Documents1"));
+        assertTrue(folders.contains("/Documents2"));
+        assertTrue(folders.contains("/Documents3"));
+        preferenceManager.setPreferenceArbitraryExportFolder("/Documents4");
+        folders = preferenceManager.getArbitraryFolders();
+        assertEquals(4, folders.size());
+        assertTrue(folders.contains("/Documents1"));
+        assertTrue(folders.contains("/Documents2"));
+        assertTrue(folders.contains("/Documents3"));
+        assertTrue(folders.contains("/Documents4"));
     }
 }

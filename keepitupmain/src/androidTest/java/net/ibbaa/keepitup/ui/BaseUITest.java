@@ -29,6 +29,7 @@ import static org.hamcrest.Matchers.endsWith;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
+import android.os.Bundle;
 import android.view.View;
 import android.widget.GridLayout;
 import android.widget.NumberPicker;
@@ -70,6 +71,7 @@ import net.ibbaa.keepitup.test.mock.TestNetworkTaskProcessServiceScheduler;
 import net.ibbaa.keepitup.test.mock.TestRegistry;
 import net.ibbaa.keepitup.test.mock.TestTimeBasedSuspensionScheduler;
 import net.ibbaa.keepitup.test.viewaction.WaitForViewAction;
+import net.ibbaa.keepitup.util.BundleUtil;
 
 import org.hamcrest.Matcher;
 import org.junit.After;
@@ -167,7 +169,14 @@ public abstract class BaseUITest {
     }
 
     public ActivityScenario<? extends SettingsInputActivity> launchSettingsInputActivity(Class<? extends SettingsInputActivity> clazz) {
+        return launchSettingsInputActivity(clazz, null);
+    }
+
+    public ActivityScenario<? extends SettingsInputActivity> launchSettingsInputActivity(Class<? extends SettingsInputActivity> clazz, Bundle extras) {
         Intent intent = new Intent(TestRegistry.getContext(), clazz);
+        if (extras != null) {
+            intent.putExtras(extras);
+        }
         return launchSettingsInputActivity(intent);
     }
 
@@ -179,7 +188,14 @@ public abstract class BaseUITest {
     }
 
     public ActivityScenario<? extends RecyclerViewBaseActivity> launchRecyclerViewBaseActivity(Class<? extends RecyclerViewBaseActivity> clazz) {
+        return launchRecyclerViewBaseActivity(clazz, null);
+    }
+
+    public ActivityScenario<? extends RecyclerViewBaseActivity> launchRecyclerViewBaseActivity(Class<? extends RecyclerViewBaseActivity> clazz, Bundle extras) {
         Intent intent = new Intent(TestRegistry.getContext(), clazz);
+        if (extras != null) {
+            intent.putExtras(extras);
+        }
         return launchRecyclerViewBaseActivity(intent);
     }
 
@@ -206,6 +222,12 @@ public abstract class BaseUITest {
             }
         }
         return null;
+    }
+
+    public Bundle getBypassSystemSAFBundle() {
+        Bundle bundle = BundleUtil.booleanToBundle(SystemActivity.getBypassSystemSAFKey(), true);
+        bundle.putBoolean(GlobalSettingsActivity.getBypassSystemSAFKey(), true);
+        return bundle;
     }
 
     public NetworkTaskDAO getNetworkTaskDAO() {

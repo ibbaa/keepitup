@@ -66,7 +66,7 @@ public class FileChooseDialogFolderModeTest extends BaseUITest {
         super.beforeEachTestMethod();
         root = getFileManager().getExternalRootDirectory(0).getAbsolutePath();
         createTestFiles();
-        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class);
+        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
         deleteLogFolder();
     }
 

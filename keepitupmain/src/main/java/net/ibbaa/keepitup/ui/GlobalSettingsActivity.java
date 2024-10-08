@@ -81,6 +81,7 @@ public class GlobalSettingsActivity extends SettingsInputActivity implements Sus
     private TextView logFileOnOffText;
     private TextView logFolderText;
     private FolderPermissionLauncher logFolderLauncher;
+    private FolderPermissionLauncher downloadFolderLauncher;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -95,6 +96,7 @@ public class GlobalSettingsActivity extends SettingsInputActivity implements Sus
         prepareSuspensionEnabledSwitch();
         prepareSuspensionIntervalsField();
         prepareEnforcePingPackageSizeEnabledSwitch();
+        prepareDownloadFolderLauncher();
         prepareDownloadExternalStorageSwitch();
         prepareDownloadFolderField();
         prepareDownloadKeepSwitch();
@@ -105,6 +107,10 @@ public class GlobalSettingsActivity extends SettingsInputActivity implements Sus
 
     public void injectLogFolderLauncher(FolderPermissionLauncher logFolderLauncher) {
         this.logFolderLauncher = logFolderLauncher;
+    }
+
+    public void injectDownloadFolderLauncher(FolderPermissionLauncher downloadFolderLauncher) {
+        this.downloadFolderLauncher = downloadFolderLauncher;
     }
 
     @Override
@@ -367,35 +373,69 @@ public class GlobalSettingsActivity extends SettingsInputActivity implements Sus
         prepareDownloadKeepSwitch();
     }
 
+    private void prepareDownloadFolderLauncher() {
+        Log.d(GlobalSettingsActivity.class.getName(), "prepareDownloadFolderLauncher");
+        boolean bypassSystemSAF = BundleUtil.booleanFromBundle(getBypassSystemSAFKey(), getIntent().getExtras());
+        if (SystemUtil.supportsSAFFeature() && !bypassSystemSAF) {
+            downloadFolderLauncher = new GenericFolderPermissionLauncher(this, this::grantArbitraryDownloadFolderPermission);
+        } else {
+            downloadFolderLauncher = new NullFolderPermissionLauncher();
+        }
+    }
+
     private void prepareDownloadFolderField() {
         Log.d(GlobalSettingsActivity.class.getName(), "prepareDownloadFolderField");
         PreferenceManager preferenceManager = new PreferenceManager(this);
         CardView downloadFolderCardView = findViewById(R.id.cardview_activity_global_settings_download_folder);
         downloadFolderText = findViewById(R.id.textview_activity_global_settings_download_folder);
         if (downloadExternalStorageSwitch.isChecked()) {
-            String downloadFolder = getExternalDownloadFolder();
-            Log.d(GlobalSettingsActivity.class.getName(), "External download folder is " + downloadFolder);
-            if (downloadFolder != null) {
-                setDownloadFolder(downloadFolder);
-                downloadFolderCardView.setEnabled(true);
-                downloadFolderCardView.setOnClickListener(this::showDownloadFolderChooseDialog);
+            if (preferenceManager.getPreferenceAllowArbitraryFileLocation()) {
+                prepareArbitraryDownloadFolder(downloadFolderCardView);
             } else {
-                Log.e(GlobalSettingsActivity.class.getName(), "Error accessing download folder.");
-                Log.d(GlobalSettingsActivity.class.getName(), "Reset to internal folder.");
-                setDownloadFolder(getResources().getString(R.string.text_activity_global_settings_download_folder_internal));
-                downloadFolderCardView.setEnabled(false);
-                downloadFolderCardView.setOnClickListener(null);
-                preferenceManager.setPreferenceDownloadExternalStorage(false);
-                downloadExternalStorageSwitch.setChecked(false);
-                prepareDownloadExternalStorageOnOffText();
-                prepareDownloadKeepSwitch();
-                Log.d(GlobalSettingsActivity.class.getName(), "Showing error dialog.");
-                showErrorDialog(getResources().getString(R.string.text_dialog_general_error_external_root_access));
+                prepareExternalAppDownloadFolder(downloadFolderCardView, preferenceManager);
             }
         } else {
             setDownloadFolder(getResources().getString(R.string.text_activity_global_settings_download_folder_internal));
             downloadFolderCardView.setEnabled(false);
             downloadFolderCardView.setOnClickListener(null);
+        }
+    }
+
+    private void prepareArbitraryDownloadFolder(CardView downloadFolderCardView) {
+        Log.d(GlobalSettingsActivity.class.getName(), "prepareArbitraryDownloadFolder");
+        downloadFolderCardView.setEnabled(true);
+        downloadFolderCardView.setOnClickListener(this::requestArbitraryDownloadFolderPermission);
+        IFolderPermissionManager folderPermissionManager = getFolderPermissionManager();
+        String arbitraryDownloadFolder = getPreferenceArbitraryDownloadFolder();
+        if (folderPermissionManager.hasPermission(this, arbitraryDownloadFolder)) {
+            Log.d(GlobalSettingsActivity.class.getName(), "Permission for " + arbitraryDownloadFolder + " is already present");
+            setDownloadFolder(arbitraryDownloadFolder);
+        } else {
+            Log.d(GlobalSettingsActivity.class.getName(), "Requesting permission for " + arbitraryDownloadFolder);
+            folderPermissionManager.requestPermission(this, downloadFolderLauncher, arbitraryDownloadFolder);
+        }
+    }
+
+    private void prepareExternalAppDownloadFolder(CardView downloadFolderCardView, PreferenceManager preferenceManager) {
+        Log.d(GlobalSettingsActivity.class.getName(), "prepareExternalAppDownloadFolder");
+        String downloadFolder = getExternalAppStorageDownloadFolder();
+        Log.d(GlobalSettingsActivity.class.getName(), "External download folder is " + downloadFolder);
+        if (downloadFolder != null) {
+            setDownloadFolder(downloadFolder);
+            downloadFolderCardView.setEnabled(true);
+            downloadFolderCardView.setOnClickListener(this::showDownloadFolderChooseDialog);
+        } else {
+            Log.e(GlobalSettingsActivity.class.getName(), "Error accessing download folder.");
+            Log.d(GlobalSettingsActivity.class.getName(), "Reset to internal folder.");
+            setDownloadFolder(getResources().getString(R.string.text_activity_global_settings_download_folder_internal));
+            downloadFolderCardView.setEnabled(false);
+            downloadFolderCardView.setOnClickListener(null);
+            preferenceManager.setPreferenceDownloadExternalStorage(false);
+            downloadExternalStorageSwitch.setChecked(false);
+            prepareDownloadExternalStorageOnOffText();
+            prepareDownloadKeepSwitch();
+            Log.d(GlobalSettingsActivity.class.getName(), "Showing error dialog.");
+            showErrorDialog(getResources().getString(R.string.text_dialog_general_error_external_root_access));
         }
     }
 
@@ -452,10 +492,12 @@ public class GlobalSettingsActivity extends SettingsInputActivity implements Sus
     }
 
     private void prepareLogFolderLauncher() {
-        if (SystemUtil.supportsSAFFeature()) {
+        Log.d(GlobalSettingsActivity.class.getName(), "prepareLogFolderLauncher");
+        boolean bypassSystemSAF = BundleUtil.booleanFromBundle(getBypassSystemSAFKey(), getIntent().getExtras());
+        if (SystemUtil.supportsSAFFeature() && !bypassSystemSAF) {
             logFolderLauncher = new GenericFolderPermissionLauncher(this, this::grantArbitraryLogFolderPermission);
         } else {
-            logFolderLauncher = new NullFolderPermissionLauncher(this::grantArbitraryLogFolderPermission);
+            logFolderLauncher = new NullFolderPermissionLauncher();
         }
     }
 
@@ -561,6 +603,33 @@ public class GlobalSettingsActivity extends SettingsInputActivity implements Sus
         fileChooseDialog.show(getSupportFragmentManager(), FileChooseDialog.class.getName());
     }
 
+    private void requestArbitraryDownloadFolderPermission(View view) {
+        Log.d(GlobalSettingsActivity.class.getName(), "requestArbitraryDownloadFolderPermission");
+        IFolderPermissionManager folderPermissionManager = getFolderPermissionManager();
+        String arbitraryDownloadFolder = getPreferenceArbitraryDownloadFolder();
+        folderPermissionManager.requestPermission(this, downloadFolderLauncher, arbitraryDownloadFolder);
+    }
+
+    public void grantArbitraryDownloadFolderPermission(Uri uri) {
+        Log.d(GlobalSettingsActivity.class.getName(), "grantArbitraryDownloadFolderPermission for uri " + uri);
+        if (uri == null) {
+            Log.e(GlobalSettingsActivity.class.getName(), "uri is null");
+            return;
+        }
+        String downloadFolder = uri.toString();
+        Log.d(GlobalSettingsActivity.class.getName(), "New arbitrary download folder is " + downloadFolder);
+        PreferenceManager preferenceManager = new PreferenceManager(this);
+        String currentDownloadFolder = preferenceManager.getPreferenceArbitraryDownloadFolder();
+        Log.d(GlobalSettingsActivity.class.getName(), "Old arbitrary download folder is " + currentDownloadFolder);
+        if (!currentDownloadFolder.equals(downloadFolder)) {
+            Log.d(GlobalSettingsActivity.class.getName(), "Arbitrary download folder changed. Revoking old permission.");
+            preferenceManager.setPreferenceArbitraryDownloadFolder(downloadFolder);
+            IFolderPermissionManager folderPermissionManager = getFolderPermissionManager();
+            folderPermissionManager.revokeOrphanPermissions(this, preferenceManager.getArbitraryFolders());
+        }
+        setDownloadFolder(downloadFolder);
+    }
+
     private void showLogFolderChooseDialog(View view) {
         Log.d(GlobalSettingsActivity.class.getName(), "showLogFolderChooseDialog");
         FileChooseDialog fileChooseDialog = new FileChooseDialog();
@@ -605,9 +674,9 @@ public class GlobalSettingsActivity extends SettingsInputActivity implements Sus
         Log.d(GlobalSettingsActivity.class.getName(), "Old arbitrary log folder is " + currentLogFolder);
         if (!currentLogFolder.equals(logFolder)) {
             Log.d(GlobalSettingsActivity.class.getName(), "Arbitrary log folder changed. Revoking old permission.");
-            IFolderPermissionManager folderPermissionManager = getFolderPermissionManager();
-            folderPermissionManager.revokePermission(this, currentLogFolder);
             preferenceManager.setPreferenceArbitraryLogFolder(logFolder);
+            IFolderPermissionManager folderPermissionManager = getFolderPermissionManager();
+            folderPermissionManager.revokeOrphanPermissions(this, preferenceManager.getArbitraryFolders());
         }
         setLogFolder(logFolder);
     }
@@ -633,12 +702,18 @@ public class GlobalSettingsActivity extends SettingsInputActivity implements Sus
 
     private String getPreferenceDownloadFolder() {
         Log.d(GlobalSettingsActivity.class.getName(), "getPreferenceDownloadFolder");
-        String downloadFolder = getExternalDownloadFolder();
+        String downloadFolder = getExternalAppStorageDownloadFolder();
         if (downloadFolder == null) {
             return null;
         }
         PreferenceManager preferenceManager = new PreferenceManager(this);
         return preferenceManager.getPreferenceDownloadFolder();
+    }
+
+    private String getPreferenceArbitraryDownloadFolder() {
+        Log.d(GlobalSettingsActivity.class.getName(), "getPreferenceArbitraryDownloadFolder");
+        PreferenceManager preferenceManager = new PreferenceManager(this);
+        return preferenceManager.getPreferenceArbitraryDownloadFolder();
     }
 
     private String getPreferenceLogFolder() {
@@ -657,8 +732,8 @@ public class GlobalSettingsActivity extends SettingsInputActivity implements Sus
         return preferenceManager.getPreferenceArbitraryLogFolder();
     }
 
-    private String getExternalDownloadFolder() {
-        Log.d(GlobalSettingsActivity.class.getName(), "getExternalDownloadFolder");
+    private String getExternalAppStorageDownloadFolder() {
+        Log.d(GlobalSettingsActivity.class.getName(), "getExternalAppStorageDownloadFolder");
         PreferenceManager preferenceManager = new PreferenceManager(this);
         String folder = preferenceManager.getPreferenceDownloadFolder();
         IFileManager fileManager = getFileManager();
@@ -750,5 +825,9 @@ public class GlobalSettingsActivity extends SettingsInputActivity implements Sus
     public void onSuspensionIntervalsDialogCancelClicked(SuspensionIntervalsDialog intervalsDialog) {
         Log.d(GlobalSettingsActivity.class.getName(), "onSuspensionIntervalsDialogCancelClicked");
         intervalsDialog.dismiss();
+    }
+
+    public static String getBypassSystemSAFKey() {
+        return GlobalSettingsActivity.class.getSimpleName() + "BypassSystemSAF";
     }
 }

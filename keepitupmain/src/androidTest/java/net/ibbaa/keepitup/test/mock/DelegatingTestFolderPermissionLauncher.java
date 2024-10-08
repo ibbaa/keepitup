@@ -14,15 +14,28 @@
  * limitations under the License.
  */
 
-package net.ibbaa.keepitup.ui.permission;
+package net.ibbaa.keepitup.test.mock;
 
 import android.content.Intent;
+import android.net.Uri;
 
-import net.ibbaa.keepitup.logging.Log;
+import net.ibbaa.keepitup.ui.permission.FolderPermissionLauncher;
 
-public class NullFolderPermissionLauncher implements FolderPermissionLauncher {
+public class DelegatingTestFolderPermissionLauncher implements FolderPermissionLauncher {
+
+    final private Consumer<Uri> callback;
+    final private String uri;
+
+    public DelegatingTestFolderPermissionLauncher(Consumer<Uri> callback) {
+        this(callback, "/Documents");
+    }
+
+    public DelegatingTestFolderPermissionLauncher(Consumer<Uri> callback, String uri) {
+        this.callback = callback;
+        this.uri = uri;
+    }
 
     public void launch(Intent intent) {
-        Log.d(NullFolderPermissionLauncher.class.getName(), "launch");
+        callback.accept(Uri.parse(uri));
     }
 }

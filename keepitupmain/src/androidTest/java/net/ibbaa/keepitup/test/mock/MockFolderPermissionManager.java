@@ -32,13 +32,24 @@ import java.util.Set;
 public class MockFolderPermissionManager implements IFolderPermissionManager {
 
     private Set<String> permissions;
+    private String grantedFolder;
 
     public MockFolderPermissionManager() {
         reset();
     }
 
+    public MockFolderPermissionManager(String grantedFolder) {
+        reset();
+        this.grantedFolder = grantedFolder;
+    }
+
     public void reset() {
         permissions = new HashSet<>();
+        grantedFolder = null;
+    }
+
+    public void setGrantedFolder(String grantedFolder) {
+        this.grantedFolder = grantedFolder;
     }
 
     @Override
@@ -53,9 +64,10 @@ public class MockFolderPermissionManager implements IFolderPermissionManager {
 
     @Override
     public void requestPermission(ComponentActivity activity, FolderPermissionLauncher launcher, String folder) {
-        permissions.add(folder);
+        String actualGrantedFolder = grantedFolder != null ? grantedFolder : folder;
+        permissions.add(actualGrantedFolder);
         Intent intent = new Intent();
-        intent.setData(Uri.parse(folder));
+        intent.setData(Uri.parse(actualGrantedFolder));
         if (launcher != null) {
             launcher.launch(intent);
         }
@@ -64,5 +76,15 @@ public class MockFolderPermissionManager implements IFolderPermissionManager {
     @Override
     public void revokePermission(FragmentActivity activity, String folder) {
         permissions.remove(folder);
+    }
+
+    @Override
+    public void revokeAllPermissions(FragmentActivity activity) {
+        permissions.clear();
+    }
+
+    @Override
+    public void revokeOrphanPermissions(FragmentActivity activity, Set<String> usedFolders) {
+        permissions.retainAll(usedFolders);
     }
 }

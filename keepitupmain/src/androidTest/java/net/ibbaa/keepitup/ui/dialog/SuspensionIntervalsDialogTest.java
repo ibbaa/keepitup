@@ -49,7 +49,7 @@ public class SuspensionIntervalsDialogTest extends BaseUITest {
 
     @Test
     public void testOpenCloseDialog() {
-        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class);
+        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
         injectTimeBasedSuspensionScheduler();
         onView(withId(R.id.textview_activity_global_settings_suspension_enabled_label)).check(matches(withText("Suspension intervals enabled")));
         onView(withId(R.id.switch_activity_global_settings_suspension_enabled)).check(matches(isChecked()));
@@ -65,7 +65,7 @@ public class SuspensionIntervalsDialogTest extends BaseUITest {
 
     @Test
     public void testNoIntervals() {
-        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class);
+        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
         injectTimeBasedSuspensionScheduler();
         onView(withId(R.id.textview_activity_global_settings_suspension_enabled_label)).check(matches(withText("Suspension intervals enabled")));
         onView(withId(R.id.switch_activity_global_settings_suspension_enabled)).check(matches(isChecked()));
@@ -80,7 +80,7 @@ public class SuspensionIntervalsDialogTest extends BaseUITest {
 
     @Test
     public void testNoIntervalsScreenRotation() {
-        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class);
+        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
         injectTimeBasedSuspensionScheduler();
         onView(withId(R.id.textview_activity_global_settings_suspension_enabled_label)).check(matches(withText("Suspension intervals enabled")));
         onView(withId(R.id.switch_activity_global_settings_suspension_enabled)).check(matches(isChecked()));
@@ -107,7 +107,7 @@ public class SuspensionIntervalsDialogTest extends BaseUITest {
     public void testOneInterval() {
         getIntervalDAO().insertInterval(getInterval1());
         getTimeBasedSuspensionScheduler().restart();
-        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class);
+        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
         injectTimeBasedSuspensionScheduler();
         onView(withId(R.id.textview_activity_global_settings_suspension_enabled_label)).check(matches(withText("Suspension intervals enabled")));
         onView(withId(R.id.switch_activity_global_settings_suspension_enabled)).check(matches(isChecked()));
@@ -126,7 +126,7 @@ public class SuspensionIntervalsDialogTest extends BaseUITest {
     public void testOneIntervalScreenRotation() {
         getIntervalDAO().insertInterval(getInterval1());
         getTimeBasedSuspensionScheduler().restart();
-        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class);
+        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
         injectTimeBasedSuspensionScheduler();
         onView(withId(R.id.textview_activity_global_settings_suspension_enabled_label)).check(matches(withText("Suspension intervals enabled")));
         onView(withId(R.id.switch_activity_global_settings_suspension_enabled)).check(matches(isChecked()));
@@ -161,7 +161,7 @@ public class SuspensionIntervalsDialogTest extends BaseUITest {
         getIntervalDAO().insertInterval(getInterval2());
         getIntervalDAO().insertInterval(getInterval3());
         getTimeBasedSuspensionScheduler().restart();
-        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class);
+        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
         injectTimeBasedSuspensionScheduler();
         onView(withId(R.id.textview_activity_global_settings_suspension_enabled_label)).check(matches(withText("Suspension intervals enabled")));
         onView(withId(R.id.switch_activity_global_settings_suspension_enabled)).check(matches(isChecked()));
@@ -188,7 +188,7 @@ public class SuspensionIntervalsDialogTest extends BaseUITest {
         getIntervalDAO().insertInterval(getInterval2());
         getIntervalDAO().insertInterval(getInterval3());
         getTimeBasedSuspensionScheduler().restart();
-        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class);
+        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
         injectTimeBasedSuspensionScheduler();
         onView(withId(R.id.textview_activity_global_settings_suspension_enabled_label)).check(matches(withText("Suspension intervals enabled")));
         onView(withId(R.id.switch_activity_global_settings_suspension_enabled)).check(matches(isChecked()));
@@ -239,7 +239,7 @@ public class SuspensionIntervalsDialogTest extends BaseUITest {
     public void testOneIntervalDeleteCancel() {
         getIntervalDAO().insertInterval(getInterval1());
         getTimeBasedSuspensionScheduler().restart();
-        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class);
+        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
         injectTimeBasedSuspensionScheduler();
         onView(withId(R.id.textview_activity_global_settings_suspension_enabled_label)).check(matches(withText("Suspension intervals enabled")));
         onView(withId(R.id.switch_activity_global_settings_suspension_enabled)).check(matches(isChecked()));
@@ -266,7 +266,7 @@ public class SuspensionIntervalsDialogTest extends BaseUITest {
     public void testOneIntervalDeleteCancelScreenRotation() {
         getIntervalDAO().insertInterval(getInterval1());
         getTimeBasedSuspensionScheduler().restart();
-        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class);
+        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
         injectTimeBasedSuspensionScheduler();
         onView(withId(R.id.textview_activity_global_settings_suspension_enabled_label)).check(matches(withText("Suspension intervals enabled")));
         onView(withId(R.id.switch_activity_global_settings_suspension_enabled)).check(matches(isChecked()));
@@ -295,7 +295,7 @@ public class SuspensionIntervalsDialogTest extends BaseUITest {
     public void testOneIntervalDelete() {
         getIntervalDAO().insertInterval(getInterval1());
         getTimeBasedSuspensionScheduler().restart();
-        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class);
+        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
         injectTimeBasedSuspensionScheduler();
         onView(withId(R.id.textview_activity_global_settings_suspension_enabled_label)).check(matches(withText("Suspension intervals enabled")));
         onView(withId(R.id.switch_activity_global_settings_suspension_enabled)).check(matches(isChecked()));
@@ -320,7 +320,7 @@ public class SuspensionIntervalsDialogTest extends BaseUITest {
     public void testOneIntervalDeleteScreenRotation() {
         getIntervalDAO().insertInterval(getInterval1());
         getTimeBasedSuspensionScheduler().restart();
-        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class);
+        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
         injectTimeBasedSuspensionScheduler();
         onView(withId(R.id.textview_activity_global_settings_suspension_enabled_label)).check(matches(withText("Suspension intervals enabled")));
         onView(withId(R.id.switch_activity_global_settings_suspension_enabled)).check(matches(isChecked()));
@@ -352,7 +352,7 @@ public class SuspensionIntervalsDialogTest extends BaseUITest {
         getIntervalDAO().insertInterval(getInterval2());
         getIntervalDAO().insertInterval(getInterval3());
         getTimeBasedSuspensionScheduler().restart();
-        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class);
+        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
         injectTimeBasedSuspensionScheduler();
         onView(withId(R.id.textview_activity_global_settings_suspension_enabled_label)).check(matches(withText("Suspension intervals enabled")));
         onView(withId(R.id.switch_activity_global_settings_suspension_enabled)).check(matches(isChecked()));
@@ -398,7 +398,7 @@ public class SuspensionIntervalsDialogTest extends BaseUITest {
         getIntervalDAO().insertInterval(getInterval2());
         getIntervalDAO().insertInterval(getInterval3());
         getTimeBasedSuspensionScheduler().restart();
-        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class);
+        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
         injectTimeBasedSuspensionScheduler();
         onView(withId(R.id.textview_activity_global_settings_suspension_enabled_label)).check(matches(withText("Suspension intervals enabled")));
         onView(withId(R.id.switch_activity_global_settings_suspension_enabled)).check(matches(isChecked()));
@@ -442,7 +442,7 @@ public class SuspensionIntervalsDialogTest extends BaseUITest {
 
     @Test
     public void testIntervalDefaultValues() {
-        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class);
+        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
         onView(withId(R.id.cardview_activity_global_settings_suspension_intervals)).perform(click());
         onView(withId(R.id.listview_dialog_suspension_intervals_intervals)).check(matches(withListSize(1)));
         onView(allOf(withId(R.id.textview_list_item_suspension_interval_no_interval), withChildDescendantAtPosition(withId(R.id.listview_dialog_suspension_intervals_intervals), 0))).check(matches(isDisplayed()));
@@ -509,7 +509,7 @@ public class SuspensionIntervalsDialogTest extends BaseUITest {
 
     @Test
     public void testIntervalDefaultValuesNoIntervalsModified() {
-        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class);
+        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
         onView(withId(R.id.cardview_activity_global_settings_suspension_intervals)).perform(click());
         onView(withId(R.id.listview_dialog_suspension_intervals_intervals)).check(matches(withListSize(1)));
         onView(allOf(withId(R.id.textview_list_item_suspension_interval_no_interval), withChildDescendantAtPosition(withId(R.id.listview_dialog_suspension_intervals_intervals), 0))).check(matches(isDisplayed()));
@@ -548,7 +548,7 @@ public class SuspensionIntervalsDialogTest extends BaseUITest {
 
     @Test
     public void testIntervalDefaultValuesNoIntervalsModifiedScreenRotation() {
-        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class);
+        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
         onView(withId(R.id.cardview_activity_global_settings_suspension_intervals)).perform(click());
         onView(withId(R.id.listview_dialog_suspension_intervals_intervals)).check(matches(withListSize(1)));
         onView(allOf(withId(R.id.textview_list_item_suspension_interval_no_interval), withChildDescendantAtPosition(withId(R.id.listview_dialog_suspension_intervals_intervals), 0))).check(matches(isDisplayed()));
@@ -593,7 +593,7 @@ public class SuspensionIntervalsDialogTest extends BaseUITest {
         getIntervalDAO().insertInterval(getInterval2());
         getIntervalDAO().insertInterval(getInterval3());
         getTimeBasedSuspensionScheduler().restart();
-        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class);
+        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
         injectTimeBasedSuspensionScheduler();
         onView(withId(R.id.textview_activity_global_settings_suspension_enabled_label)).check(matches(withText("Suspension intervals enabled")));
         onView(withId(R.id.switch_activity_global_settings_suspension_enabled)).check(matches(isChecked()));
@@ -627,7 +627,7 @@ public class SuspensionIntervalsDialogTest extends BaseUITest {
         getIntervalDAO().insertInterval(getInterval2());
         getIntervalDAO().insertInterval(getInterval3());
         getTimeBasedSuspensionScheduler().restart();
-        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class);
+        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
         injectTimeBasedSuspensionScheduler();
         onView(withId(R.id.textview_activity_global_settings_suspension_enabled_label)).check(matches(withText("Suspension intervals enabled")));
         onView(withId(R.id.switch_activity_global_settings_suspension_enabled)).check(matches(isChecked()));
@@ -677,7 +677,7 @@ public class SuspensionIntervalsDialogTest extends BaseUITest {
         getIntervalDAO().insertInterval(getInterval2());
         getIntervalDAO().insertInterval(interval3);
         getTimeBasedSuspensionScheduler().restart();
-        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class);
+        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
         injectTimeBasedSuspensionScheduler();
         onView(withId(R.id.textview_activity_global_settings_suspension_enabled_label)).check(matches(withText("Suspension intervals enabled")));
         onView(withId(R.id.switch_activity_global_settings_suspension_enabled)).check(matches(isChecked()));
@@ -725,7 +725,7 @@ public class SuspensionIntervalsDialogTest extends BaseUITest {
         getIntervalDAO().insertInterval(getInterval2());
         getIntervalDAO().insertInterval(interval3);
         getTimeBasedSuspensionScheduler().restart();
-        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class);
+        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
         injectTimeBasedSuspensionScheduler();
         onView(withId(R.id.textview_activity_global_settings_suspension_enabled_label)).check(matches(withText("Suspension intervals enabled")));
         onView(withId(R.id.switch_activity_global_settings_suspension_enabled)).check(matches(isChecked()));
@@ -775,7 +775,7 @@ public class SuspensionIntervalsDialogTest extends BaseUITest {
         getIntervalDAO().insertInterval(getInterval2());
         getIntervalDAO().insertInterval(interval3);
         getTimeBasedSuspensionScheduler().restart();
-        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class);
+        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
         injectTimeBasedSuspensionScheduler();
         onView(withId(R.id.textview_activity_global_settings_suspension_enabled_label)).check(matches(withText("Suspension intervals enabled")));
         onView(withId(R.id.switch_activity_global_settings_suspension_enabled)).check(matches(isChecked()));
@@ -817,7 +817,7 @@ public class SuspensionIntervalsDialogTest extends BaseUITest {
         getIntervalDAO().insertInterval(getInterval2());
         getIntervalDAO().insertInterval(interval3);
         getTimeBasedSuspensionScheduler().restart();
-        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class);
+        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
         injectTimeBasedSuspensionScheduler();
         onView(withId(R.id.textview_activity_global_settings_suspension_enabled_label)).check(matches(withText("Suspension intervals enabled")));
         onView(withId(R.id.switch_activity_global_settings_suspension_enabled)).check(matches(isChecked()));
@@ -847,7 +847,7 @@ public class SuspensionIntervalsDialogTest extends BaseUITest {
         getIntervalDAO().insertInterval(getInterval2());
         getIntervalDAO().insertInterval(getInterval3());
         getTimeBasedSuspensionScheduler().restart();
-        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class);
+        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
         injectTimeBasedSuspensionScheduler();
         onView(withId(R.id.textview_activity_global_settings_suspension_enabled_label)).check(matches(withText("Suspension intervals enabled")));
         onView(withId(R.id.switch_activity_global_settings_suspension_enabled)).check(matches(isChecked()));
@@ -883,7 +883,7 @@ public class SuspensionIntervalsDialogTest extends BaseUITest {
         getIntervalDAO().insertInterval(getInterval2());
         getIntervalDAO().insertInterval(getInterval3());
         getTimeBasedSuspensionScheduler().restart();
-        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class);
+        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
         injectTimeBasedSuspensionScheduler();
         onView(withId(R.id.textview_activity_global_settings_suspension_enabled_label)).check(matches(withText("Suspension intervals enabled")));
         onView(withId(R.id.switch_activity_global_settings_suspension_enabled)).check(matches(isChecked()));
@@ -935,7 +935,7 @@ public class SuspensionIntervalsDialogTest extends BaseUITest {
         getIntervalDAO().insertInterval(getInterval2());
         getIntervalDAO().insertInterval(interval3);
         getTimeBasedSuspensionScheduler().restart();
-        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class);
+        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
         injectTimeBasedSuspensionScheduler();
         onView(withId(R.id.textview_activity_global_settings_suspension_enabled_label)).check(matches(withText("Suspension intervals enabled")));
         onView(withId(R.id.switch_activity_global_settings_suspension_enabled)).check(matches(isChecked()));
@@ -985,7 +985,7 @@ public class SuspensionIntervalsDialogTest extends BaseUITest {
         getIntervalDAO().insertInterval(getInterval2());
         getIntervalDAO().insertInterval(interval3);
         getTimeBasedSuspensionScheduler().restart();
-        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class);
+        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
         injectTimeBasedSuspensionScheduler();
         onView(withId(R.id.textview_activity_global_settings_suspension_enabled_label)).check(matches(withText("Suspension intervals enabled")));
         onView(withId(R.id.switch_activity_global_settings_suspension_enabled)).check(matches(isChecked()));
@@ -1022,7 +1022,7 @@ public class SuspensionIntervalsDialogTest extends BaseUITest {
         getIntervalDAO().insertInterval(getInterval2());
         getIntervalDAO().insertInterval(getInterval3());
         getTimeBasedSuspensionScheduler().restart();
-        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class);
+        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
         injectTimeBasedSuspensionScheduler();
         onView(withId(R.id.cardview_activity_global_settings_suspension_intervals)).perform(click());
         onView(withId(R.id.listview_dialog_suspension_intervals_intervals)).check(matches(withListSize(3)));
@@ -1061,7 +1061,7 @@ public class SuspensionIntervalsDialogTest extends BaseUITest {
         getIntervalDAO().insertInterval(getInterval2());
         getIntervalDAO().insertInterval(getInterval3());
         getTimeBasedSuspensionScheduler().restart();
-        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class);
+        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
         injectTimeBasedSuspensionScheduler();
         onView(withId(R.id.cardview_activity_global_settings_suspension_intervals)).perform(click());
         onView(withId(R.id.listview_dialog_suspension_intervals_intervals)).check(matches(withListSize(3)));
@@ -1109,7 +1109,7 @@ public class SuspensionIntervalsDialogTest extends BaseUITest {
         interval1.setEnd(end);
         getIntervalDAO().insertInterval(interval1);
         getTimeBasedSuspensionScheduler().restart();
-        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class);
+        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
         injectTimeBasedSuspensionScheduler();
         onView(withId(R.id.cardview_activity_global_settings_suspension_intervals)).perform(click());
         onView(withId(R.id.listview_dialog_suspension_intervals_intervals)).check(matches(withListSize(1)));
@@ -1147,7 +1147,7 @@ public class SuspensionIntervalsDialogTest extends BaseUITest {
         interval1.setEnd(end);
         getIntervalDAO().insertInterval(interval1);
         getTimeBasedSuspensionScheduler().restart();
-        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class);
+        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
         injectTimeBasedSuspensionScheduler();
         onView(withId(R.id.cardview_activity_global_settings_suspension_intervals)).perform(click());
         onView(withId(R.id.listview_dialog_suspension_intervals_intervals)).check(matches(withListSize(1)));
@@ -1180,7 +1180,7 @@ public class SuspensionIntervalsDialogTest extends BaseUITest {
         getIntervalDAO().insertInterval(getInterval2());
         getIntervalDAO().insertInterval(getInterval3());
         getTimeBasedSuspensionScheduler().restart();
-        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class);
+        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
         injectTimeBasedSuspensionScheduler();
         onView(withId(R.id.cardview_activity_global_settings_suspension_intervals)).perform(click());
         onView(withId(R.id.listview_dialog_suspension_intervals_intervals)).check(matches(withListSize(3)));
@@ -1219,7 +1219,7 @@ public class SuspensionIntervalsDialogTest extends BaseUITest {
         getIntervalDAO().insertInterval(getInterval2());
         getIntervalDAO().insertInterval(getInterval3());
         getTimeBasedSuspensionScheduler().restart();
-        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class);
+        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
         injectTimeBasedSuspensionScheduler();
         onView(withId(R.id.cardview_activity_global_settings_suspension_intervals)).perform(click());
         onView(withId(R.id.listview_dialog_suspension_intervals_intervals)).check(matches(withListSize(3)));
@@ -1260,7 +1260,7 @@ public class SuspensionIntervalsDialogTest extends BaseUITest {
         getIntervalDAO().insertInterval(getInterval2());
         getIntervalDAO().insertInterval(getInterval3());
         getTimeBasedSuspensionScheduler().restart();
-        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class);
+        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
         injectTimeBasedSuspensionScheduler();
         onView(withId(R.id.cardview_activity_global_settings_suspension_intervals)).perform(click());
         onView(withId(R.id.listview_dialog_suspension_intervals_intervals)).check(matches(withListSize(3)));
@@ -1299,7 +1299,7 @@ public class SuspensionIntervalsDialogTest extends BaseUITest {
         getIntervalDAO().insertInterval(getInterval2());
         getIntervalDAO().insertInterval(getInterval3());
         getTimeBasedSuspensionScheduler().restart();
-        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class);
+        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
         injectTimeBasedSuspensionScheduler();
         onView(withId(R.id.cardview_activity_global_settings_suspension_intervals)).perform(click());
         onView(withId(R.id.listview_dialog_suspension_intervals_intervals)).check(matches(withListSize(3)));
@@ -1340,7 +1340,7 @@ public class SuspensionIntervalsDialogTest extends BaseUITest {
         getIntervalDAO().insertInterval(getInterval2());
         getIntervalDAO().insertInterval(getInterval3());
         getTimeBasedSuspensionScheduler().restart();
-        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class);
+        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
         injectTimeBasedSuspensionScheduler();
         onView(withId(R.id.cardview_activity_global_settings_suspension_intervals)).perform(click());
         onView(withId(R.id.listview_dialog_suspension_intervals_intervals)).check(matches(withListSize(3)));
@@ -1379,7 +1379,7 @@ public class SuspensionIntervalsDialogTest extends BaseUITest {
         getIntervalDAO().insertInterval(getInterval2());
         getIntervalDAO().insertInterval(getInterval3());
         getTimeBasedSuspensionScheduler().restart();
-        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class);
+        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
         injectTimeBasedSuspensionScheduler();
         onView(withId(R.id.cardview_activity_global_settings_suspension_intervals)).perform(click());
         onView(withId(R.id.listview_dialog_suspension_intervals_intervals)).check(matches(withListSize(3)));
@@ -1420,7 +1420,7 @@ public class SuspensionIntervalsDialogTest extends BaseUITest {
         getIntervalDAO().insertInterval(getInterval2());
         getIntervalDAO().insertInterval(getInterval3());
         getTimeBasedSuspensionScheduler().restart();
-        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class);
+        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
         injectTimeBasedSuspensionScheduler();
         onView(withId(R.id.cardview_activity_global_settings_suspension_intervals)).perform(click());
         onView(withId(R.id.listview_dialog_suspension_intervals_intervals)).check(matches(withListSize(3)));
@@ -1459,7 +1459,7 @@ public class SuspensionIntervalsDialogTest extends BaseUITest {
         getIntervalDAO().insertInterval(getInterval2());
         getIntervalDAO().insertInterval(getInterval3());
         getTimeBasedSuspensionScheduler().restart();
-        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class);
+        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
         injectTimeBasedSuspensionScheduler();
         onView(withId(R.id.cardview_activity_global_settings_suspension_intervals)).perform(click());
         onView(withId(R.id.listview_dialog_suspension_intervals_intervals)).check(matches(withListSize(3)));
@@ -1505,7 +1505,7 @@ public class SuspensionIntervalsDialogTest extends BaseUITest {
         interval3.setEnd(end);
         getIntervalDAO().insertInterval(interval3);
         getTimeBasedSuspensionScheduler().restart();
-        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class);
+        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
         injectTimeBasedSuspensionScheduler();
         onView(withId(R.id.cardview_activity_global_settings_suspension_intervals)).perform(click());
         onView(withId(R.id.listview_dialog_suspension_intervals_intervals)).check(matches(withListSize(3)));
@@ -1549,7 +1549,7 @@ public class SuspensionIntervalsDialogTest extends BaseUITest {
         interval3.setEnd(end);
         getIntervalDAO().insertInterval(interval3);
         getTimeBasedSuspensionScheduler().restart();
-        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class);
+        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
         injectTimeBasedSuspensionScheduler();
         onView(withId(R.id.cardview_activity_global_settings_suspension_intervals)).perform(click());
         onView(withId(R.id.listview_dialog_suspension_intervals_intervals)).check(matches(withListSize(3)));
@@ -1586,7 +1586,7 @@ public class SuspensionIntervalsDialogTest extends BaseUITest {
 
     @Test
     public void testIntervalAddCancel() {
-        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class);
+        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
         injectTimeBasedSuspensionScheduler();
         onView(withId(R.id.cardview_activity_global_settings_suspension_intervals)).perform(click());
         onView(withId(R.id.listview_dialog_suspension_intervals_intervals)).check(matches(withListSize(1)));
@@ -1611,7 +1611,7 @@ public class SuspensionIntervalsDialogTest extends BaseUITest {
 
     @Test
     public void testIntervalAddCancelModified() {
-        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class);
+        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
         injectTimeBasedSuspensionScheduler();
         onView(withId(R.id.cardview_activity_global_settings_suspension_intervals)).perform(click());
         onView(withId(R.id.listview_dialog_suspension_intervals_intervals)).check(matches(withListSize(1)));
@@ -1650,7 +1650,7 @@ public class SuspensionIntervalsDialogTest extends BaseUITest {
 
     @Test
     public void testIntervalAddCancelModifiedScreenRotation() {
-        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class);
+        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
         injectTimeBasedSuspensionScheduler();
         onView(withId(R.id.cardview_activity_global_settings_suspension_intervals)).perform(click());
         onView(withId(R.id.listview_dialog_suspension_intervals_intervals)).check(matches(withListSize(1)));
@@ -1702,7 +1702,7 @@ public class SuspensionIntervalsDialogTest extends BaseUITest {
         interval1.setEnd(end);
         getIntervalDAO().insertInterval(interval1);
         getTimeBasedSuspensionScheduler().restart();
-        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class);
+        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
         injectTimeBasedSuspensionScheduler();
         onView(withId(R.id.cardview_activity_global_settings_suspension_intervals)).perform(click());
         onView(withId(R.id.listview_dialog_suspension_intervals_intervals)).check(matches(withListSize(1)));
@@ -1752,7 +1752,7 @@ public class SuspensionIntervalsDialogTest extends BaseUITest {
         interval1.setEnd(end);
         getIntervalDAO().insertInterval(interval1);
         getTimeBasedSuspensionScheduler().restart();
-        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class);
+        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
         injectTimeBasedSuspensionScheduler();
         onView(withId(R.id.cardview_activity_global_settings_suspension_intervals)).perform(click());
         onView(withId(R.id.listview_dialog_suspension_intervals_intervals)).check(matches(withListSize(1)));
@@ -1804,7 +1804,7 @@ public class SuspensionIntervalsDialogTest extends BaseUITest {
         interval1.setEnd(end);
         getIntervalDAO().insertInterval(interval1);
         getTimeBasedSuspensionScheduler().restart();
-        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class);
+        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
         injectTimeBasedSuspensionScheduler();
         onView(withId(R.id.cardview_activity_global_settings_suspension_intervals)).perform(click());
         onView(withId(R.id.listview_dialog_suspension_intervals_intervals)).check(matches(withListSize(1)));
@@ -1856,7 +1856,7 @@ public class SuspensionIntervalsDialogTest extends BaseUITest {
         interval1.setEnd(end);
         getIntervalDAO().insertInterval(interval1);
         getTimeBasedSuspensionScheduler().restart();
-        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class);
+        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
         injectTimeBasedSuspensionScheduler();
         onView(withId(R.id.cardview_activity_global_settings_suspension_intervals)).perform(click());
         onView(withId(R.id.listview_dialog_suspension_intervals_intervals)).check(matches(withListSize(1)));
@@ -1899,7 +1899,7 @@ public class SuspensionIntervalsDialogTest extends BaseUITest {
 
     @Test
     public void testIntervalAddCancelScreenRotation() {
-        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class);
+        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
         injectTimeBasedSuspensionScheduler();
         onView(withId(R.id.cardview_activity_global_settings_suspension_intervals)).perform(click());
         onView(withId(R.id.listview_dialog_suspension_intervals_intervals)).check(matches(withListSize(1)));
@@ -1926,7 +1926,7 @@ public class SuspensionIntervalsDialogTest extends BaseUITest {
 
     @Test
     public void testIntervalAddOk() {
-        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class);
+        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
         injectTimeBasedSuspensionScheduler();
         onView(withId(R.id.cardview_activity_global_settings_suspension_intervals)).perform(click());
         onView(withId(R.id.listview_dialog_suspension_intervals_intervals)).check(matches(withListSize(1)));
@@ -1952,7 +1952,7 @@ public class SuspensionIntervalsDialogTest extends BaseUITest {
 
     @Test
     public void testIntervalAddOkScreenRotation() {
-        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class);
+        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
         injectTimeBasedSuspensionScheduler();
         onView(withId(R.id.cardview_activity_global_settings_suspension_intervals)).perform(click());
         onView(withId(R.id.listview_dialog_suspension_intervals_intervals)).check(matches(withListSize(1)));
@@ -1984,7 +1984,7 @@ public class SuspensionIntervalsDialogTest extends BaseUITest {
         getIntervalDAO().insertInterval(getInterval2());
         getIntervalDAO().insertInterval(getInterval3());
         getTimeBasedSuspensionScheduler().restart();
-        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class);
+        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
         injectTimeBasedSuspensionScheduler();
         onView(withId(R.id.textview_activity_global_settings_suspension_enabled_label)).check(matches(withText("Suspension intervals enabled")));
         onView(withId(R.id.switch_activity_global_settings_suspension_enabled)).check(matches(isChecked()));
@@ -2035,7 +2035,7 @@ public class SuspensionIntervalsDialogTest extends BaseUITest {
         getIntervalDAO().insertInterval(getInterval2());
         getIntervalDAO().insertInterval(getInterval3());
         getTimeBasedSuspensionScheduler().restart();
-        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class);
+        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
         injectTimeBasedSuspensionScheduler();
         onView(withId(R.id.textview_activity_global_settings_suspension_enabled_label)).check(matches(withText("Suspension intervals enabled")));
         onView(withId(R.id.switch_activity_global_settings_suspension_enabled)).check(matches(isChecked()));
@@ -2088,7 +2088,7 @@ public class SuspensionIntervalsDialogTest extends BaseUITest {
         getIntervalDAO().insertInterval(getInterval2());
         getIntervalDAO().insertInterval(getInterval3());
         getTimeBasedSuspensionScheduler().restart();
-        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class);
+        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
         injectTimeBasedSuspensionScheduler();
         onView(withId(R.id.textview_activity_global_settings_suspension_enabled_label)).check(matches(withText("Suspension intervals enabled")));
         onView(withId(R.id.switch_activity_global_settings_suspension_enabled)).check(matches(isChecked()));
@@ -2128,7 +2128,7 @@ public class SuspensionIntervalsDialogTest extends BaseUITest {
         getIntervalDAO().insertInterval(getInterval2());
         getIntervalDAO().insertInterval(getInterval3());
         getTimeBasedSuspensionScheduler().restart();
-        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class);
+        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
         injectTimeBasedSuspensionScheduler();
         onView(withId(R.id.textview_activity_global_settings_suspension_enabled_label)).check(matches(withText("Suspension intervals enabled")));
         onView(withId(R.id.switch_activity_global_settings_suspension_enabled)).check(matches(isChecked()));
@@ -2181,7 +2181,7 @@ public class SuspensionIntervalsDialogTest extends BaseUITest {
         end.setMinute(15);
         interval3.setEnd(end);
         getIntervalDAO().insertInterval(interval3);
-        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class);
+        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
         injectTimeBasedSuspensionScheduler();
         onView(withId(R.id.textview_activity_global_settings_suspension_enabled_label)).check(matches(withText("Suspension intervals enabled")));
         onView(withId(R.id.switch_activity_global_settings_suspension_enabled)).check(matches(isChecked()));
@@ -2229,7 +2229,7 @@ public class SuspensionIntervalsDialogTest extends BaseUITest {
         getIntervalDAO().insertInterval(getInterval2());
         getIntervalDAO().insertInterval(getInterval3());
         getTimeBasedSuspensionScheduler().restart();
-        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class);
+        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
         injectTimeBasedSuspensionScheduler();
         onView(withId(R.id.textview_activity_global_settings_suspension_enabled_label)).check(matches(withText("Suspension intervals enabled")));
         onView(withId(R.id.switch_activity_global_settings_suspension_enabled)).check(matches(isChecked()));
@@ -2291,7 +2291,7 @@ public class SuspensionIntervalsDialogTest extends BaseUITest {
         getIntervalDAO().insertInterval(getInterval2());
         getIntervalDAO().insertInterval(getInterval3());
         getTimeBasedSuspensionScheduler().restart();
-        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class);
+        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
         injectTimeBasedSuspensionScheduler();
         onView(withId(R.id.cardview_activity_global_settings_suspension_intervals)).perform(click());
         onView(withId(R.id.listview_dialog_suspension_intervals_intervals)).check(matches(withListSize(3)));
@@ -2328,7 +2328,7 @@ public class SuspensionIntervalsDialogTest extends BaseUITest {
         getIntervalDAO().insertInterval(getInterval2());
         getIntervalDAO().insertInterval(getInterval3());
         getTimeBasedSuspensionScheduler().restart();
-        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class);
+        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
         injectTimeBasedSuspensionScheduler();
         onView(withId(R.id.cardview_activity_global_settings_suspension_intervals)).perform(click());
         onView(withId(R.id.listview_dialog_suspension_intervals_intervals)).check(matches(withListSize(3)));
@@ -2367,7 +2367,7 @@ public class SuspensionIntervalsDialogTest extends BaseUITest {
         getIntervalDAO().insertInterval(getInterval2());
         getIntervalDAO().insertInterval(getInterval3());
         getTimeBasedSuspensionScheduler().restart();
-        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class);
+        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
         injectTimeBasedSuspensionScheduler();
         onView(withId(R.id.cardview_activity_global_settings_suspension_intervals)).perform(click());
         onView(withId(R.id.listview_dialog_suspension_intervals_intervals)).check(matches(withListSize(3)));
@@ -2420,7 +2420,7 @@ public class SuspensionIntervalsDialogTest extends BaseUITest {
         getIntervalDAO().insertInterval(getInterval2());
         getIntervalDAO().insertInterval(getInterval3());
         getTimeBasedSuspensionScheduler().restart();
-        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class);
+        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
         injectTimeBasedSuspensionScheduler();
         onView(withId(R.id.cardview_activity_global_settings_suspension_intervals)).perform(click());
         onView(withId(R.id.listview_dialog_suspension_intervals_intervals)).check(matches(withListSize(3)));
@@ -2478,7 +2478,7 @@ public class SuspensionIntervalsDialogTest extends BaseUITest {
         getIntervalDAO().insertInterval(getInterval2());
         getIntervalDAO().insertInterval(getInterval3());
         getTimeBasedSuspensionScheduler().restart();
-        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class);
+        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
         injectTimeBasedSuspensionScheduler();
         onView(withId(R.id.cardview_activity_global_settings_suspension_intervals)).perform(click());
         onView(withId(R.id.listview_dialog_suspension_intervals_intervals)).check(matches(withListSize(3)));
@@ -2532,7 +2532,7 @@ public class SuspensionIntervalsDialogTest extends BaseUITest {
         getIntervalDAO().insertInterval(getInterval2());
         getIntervalDAO().insertInterval(getInterval3());
         getTimeBasedSuspensionScheduler().restart();
-        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class);
+        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
         injectTimeBasedSuspensionScheduler();
         onView(withId(R.id.cardview_activity_global_settings_suspension_intervals)).perform(click());
         onView(withId(R.id.listview_dialog_suspension_intervals_intervals)).check(matches(withListSize(3)));
@@ -2588,7 +2588,7 @@ public class SuspensionIntervalsDialogTest extends BaseUITest {
         getIntervalDAO().insertInterval(getInterval2());
         getIntervalDAO().insertInterval(getInterval3());
         getTimeBasedSuspensionScheduler().restart();
-        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class);
+        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
         injectTimeBasedSuspensionScheduler();
         onView(withId(R.id.cardview_activity_global_settings_suspension_intervals)).perform(click());
         onView(withId(R.id.listview_dialog_suspension_intervals_intervals)).check(matches(withListSize(3)));
@@ -2654,7 +2654,7 @@ public class SuspensionIntervalsDialogTest extends BaseUITest {
         getIntervalDAO().insertInterval(getInterval2());
         getIntervalDAO().insertInterval(getInterval3());
         getTimeBasedSuspensionScheduler().restart();
-        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class);
+        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
         injectTimeBasedSuspensionScheduler();
         onView(withId(R.id.cardview_activity_global_settings_suspension_intervals)).perform(click());
         onView(withId(R.id.listview_dialog_suspension_intervals_intervals)).check(matches(withListSize(3)));
@@ -2731,7 +2731,7 @@ public class SuspensionIntervalsDialogTest extends BaseUITest {
         getIntervalDAO().insertInterval(getInterval2());
         getIntervalDAO().insertInterval(getInterval3());
         getTimeBasedSuspensionScheduler().restart();
-        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class);
+        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
         injectTimeBasedSuspensionScheduler();
         onView(withId(R.id.cardview_activity_global_settings_suspension_intervals)).perform(click());
         onView(withId(R.id.listview_dialog_suspension_intervals_intervals)).check(matches(withListSize(3)));
@@ -2769,7 +2769,7 @@ public class SuspensionIntervalsDialogTest extends BaseUITest {
         getIntervalDAO().insertInterval(getInterval2());
         getIntervalDAO().insertInterval(getInterval3());
         getTimeBasedSuspensionScheduler().restart();
-        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class);
+        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
         injectTimeBasedSuspensionScheduler();
         onView(withId(R.id.cardview_activity_global_settings_suspension_intervals)).perform(click());
         onView(withId(R.id.listview_dialog_suspension_intervals_intervals)).check(matches(withListSize(3)));
@@ -2810,7 +2810,7 @@ public class SuspensionIntervalsDialogTest extends BaseUITest {
         getIntervalDAO().insertInterval(getInterval2());
         getIntervalDAO().insertInterval(interval3);
         getTimeBasedSuspensionScheduler().restart();
-        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class);
+        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
         injectTimeBasedSuspensionScheduler();
         onView(withId(R.id.cardview_activity_global_settings_suspension_intervals)).perform(click());
         onView(withId(R.id.listview_dialog_suspension_intervals_intervals)).check(matches(withListSize(3)));
@@ -2848,7 +2848,7 @@ public class SuspensionIntervalsDialogTest extends BaseUITest {
         getIntervalDAO().insertInterval(getInterval2());
         getIntervalDAO().insertInterval(interval3);
         getTimeBasedSuspensionScheduler().restart();
-        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class);
+        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
         injectTimeBasedSuspensionScheduler();
         onView(withId(R.id.cardview_activity_global_settings_suspension_intervals)).perform(click());
         onView(withId(R.id.listview_dialog_suspension_intervals_intervals)).check(matches(withListSize(3)));

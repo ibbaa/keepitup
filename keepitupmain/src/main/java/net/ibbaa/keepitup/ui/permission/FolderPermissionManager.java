@@ -29,6 +29,7 @@ import net.ibbaa.keepitup.logging.Log;
 import net.ibbaa.keepitup.util.StringUtil;
 
 import java.util.List;
+import java.util.Set;
 
 public class FolderPermissionManager implements IFolderPermissionManager {
 
@@ -78,6 +79,26 @@ public class FolderPermissionManager implements IFolderPermissionManager {
             activity.revokeUriPermission(folderUri, Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
         } catch (Exception exc) {
             Log.e(FolderPermissionManager.class.getName(), "Error parsing folder uri " + folder, exc);
+        }
+    }
+
+    public void revokeAllPermissions(FragmentActivity activity) {
+        Log.d(FolderPermissionManager.class.getName(), "revokeAllPermissions");
+        List<UriPermission> permissions = getPermissions(activity);
+        for (UriPermission permission : permissions) {
+            String currentPermission = permission.getUri().toString();
+            revokePermission(activity, currentPermission);
+        }
+    }
+
+    public void revokeOrphanPermissions(FragmentActivity activity, Set<String> usedFolders) {
+        Log.d(FolderPermissionManager.class.getName(), "revokeOrphanPermissions");
+        List<UriPermission> permissions = getPermissions(activity);
+        for (UriPermission permission : permissions) {
+            String currentPermission = permission.getUri().toString();
+            if (!usedFolders.contains(currentPermission)) {
+                revokePermission(activity, currentPermission);
+            }
         }
     }
 

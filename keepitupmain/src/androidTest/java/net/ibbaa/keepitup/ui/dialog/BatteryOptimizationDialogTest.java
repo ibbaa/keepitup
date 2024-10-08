@@ -48,9 +48,9 @@ public class BatteryOptimizationDialogTest extends BaseUITest {
     @Before
     public void beforeEachTestMethod() {
         super.beforeEachTestMethod();
-        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class);
+        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
         powerManager = new MockPowerManager();
-        activityScenario.onActivity(activity -> ((GlobalSettingsActivity) activity).injectPowerManager(powerManager));
+        ((GlobalSettingsActivity) getActivity(activityScenario)).injectPowerManager(powerManager);
     }
 
     @After

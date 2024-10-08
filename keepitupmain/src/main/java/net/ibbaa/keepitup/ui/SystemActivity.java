@@ -17,6 +17,7 @@
 package net.ibbaa.keepitup.ui;
 
 import android.graphics.Typeface;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.Menu;
@@ -50,6 +51,10 @@ import net.ibbaa.keepitup.ui.dialog.BatteryOptimizationDialog;
 import net.ibbaa.keepitup.ui.dialog.ConfirmDialog;
 import net.ibbaa.keepitup.ui.dialog.FileChooseDialog;
 import net.ibbaa.keepitup.ui.dialog.GeneralErrorDialog;
+import net.ibbaa.keepitup.ui.permission.FolderPermissionLauncher;
+import net.ibbaa.keepitup.ui.permission.GenericFolderPermissionLauncher;
+import net.ibbaa.keepitup.ui.permission.IFolderPermissionManager;
+import net.ibbaa.keepitup.ui.permission.NullFolderPermissionLauncher;
 import net.ibbaa.keepitup.ui.sync.DBPurgeTask;
 import net.ibbaa.keepitup.ui.sync.ExportTask;
 import net.ibbaa.keepitup.ui.sync.ImportTask;
@@ -85,6 +90,7 @@ public class SystemActivity extends SettingsInputActivity implements ExportSuppo
     private TextView logFolderText;
     private TextView batteryOptimizationText;
     private RadioGroup theme;
+    private FolderPermissionLauncher arbitraryFolderLauncher;
 
     private DBPurgeTask purgeTask;
     private ExportTask exportTask;
@@ -112,6 +118,10 @@ public class SystemActivity extends SettingsInputActivity implements ExportSuppo
         this.themeManager = themeManager;
     }
 
+    public void injectArbitraryFolderLauncher(FolderPermissionLauncher arbitraryFolderLauncher) {
+        this.arbitraryFolderLauncher = arbitraryFolderLauncher;
+    }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -125,7 +135,9 @@ public class SystemActivity extends SettingsInputActivity implements ExportSuppo
         prepareExternalStorageTypeRadioGroup();
         prepareBatteryOptimizationField();
         prepareThemeRadioGroup();
+        prepareArbitraryFolderLauncher();
         prepareAllowArbitraryFileLocationSwitch();
+        prepareArbitraryFolderPermissions();
         prepareDebugSettingsLabel();
         prepareFileLoggerEnabledSwitch();
         prepareFileDumpEnabledSwitch();
@@ -314,6 +326,20 @@ public class SystemActivity extends SettingsInputActivity implements ExportSuppo
         }
     }
 
+    private void prepareArbitraryFolderLauncher() {
+        Log.d(SystemActivity.class.getName(), "prepareArbitraryFolderLauncher");
+        boolean bypassSystemSAF = BundleUtil.booleanFromBundle(getBypassSystemSAFKey(), getIntent().getExtras());
+        if (SystemUtil.supportsSAFFeature() && !bypassSystemSAF) {
+            arbitraryFolderLauncher = new GenericFolderPermissionLauncher(this, this::grantArbitraryFolderPermissions);
+        } else {
+            arbitraryFolderLauncher = new NullFolderPermissionLauncher();
+        }
+    }
+
+    public static String getBypassSystemSAFKey() {
+        return SystemActivity.class.getSimpleName() + "BypassSystemSAF";
+    }
+
     private void prepareAllowArbitraryFileLocationSwitch() {
         Log.d(SystemActivity.class.getName(), "prepareAllowArbitraryFileLocationSwitch");
         CardView arbitraryFileLocationCardView = findViewById(R.id.cardview_activity_system_allow_arbitrary_file_location);
@@ -343,6 +369,34 @@ public class SystemActivity extends SettingsInputActivity implements ExportSuppo
         PreferenceManager preferenceManager = new PreferenceManager(this);
         preferenceManager.setPreferenceAllowArbitraryFileLocation(isChecked);
         prepareAllowArbitraryFileLocationOnOffText();
+        prepareArbitraryFolderPermissions();
+    }
+
+    private void prepareArbitraryFolderPermissions() {
+        Log.d(SystemActivity.class.getName(), "prepareArbitraryFolderPermissions");
+        IFolderPermissionManager folderPermissionManager = getFolderPermissionManager();
+        if (arbitraryFileLocationSwitch.isChecked()) {
+            if (!folderPermissionManager.hasAnyPermission(this)) {
+                folderPermissionManager.requestPermission(this, arbitraryFolderLauncher, null);
+            }
+        }
+    }
+
+    public void grantArbitraryFolderPermissions(Uri uri) {
+        Log.d(SystemActivity.class.getName(), "grantArbitraryFolderPermissions for uri " + uri);
+        if (uri == null) {
+            Log.e(SystemActivity.class.getName(), "uri is null");
+            return;
+        }
+        String arbitraryFolder = uri.toString();
+        Log.d(GlobalSettingsActivity.class.getName(), "Chosen arbitrary folder is " + arbitraryFolder);
+        PreferenceManager preferenceManager = new PreferenceManager(this);
+        preferenceManager.setPreferenceArbitraryLogFolder(arbitraryFolder);
+        preferenceManager.setPreferenceArbitraryDownloadFolder(arbitraryFolder);
+        preferenceManager.setPreferenceArbitraryImportFolder(arbitraryFolder);
+        preferenceManager.setPreferenceArbitraryExportFolder(arbitraryFolder);
+        IFolderPermissionManager folderPermissionManager = getFolderPermissionManager();
+        folderPermissionManager.revokeOrphanPermissions(this, preferenceManager.getArbitraryFolders());
     }
 
     private void prepareDebugSettingsLabel() {
@@ -711,6 +765,7 @@ public class SystemActivity extends SettingsInputActivity implements ExportSuppo
         closeProgressDialog();
         getTimeBasedSuspensionScheduler().restart();
         if (success) {
+            resetFolderPermissions();
             resetActivity();
         } else {
             showErrorDialog(message != null ? message : getResources().getString(R.string.text_dialog_general_error_config_import), Typeface.BOLD, Error.IMPORTERROR.name());
@@ -724,6 +779,7 @@ public class SystemActivity extends SettingsInputActivity implements ExportSuppo
         getTimeBasedSuspensionScheduler().restart();
         if (success) {
             resetPreferences();
+            resetFolderPermissions();
             resetActivity();
         } else {
             showErrorDialog(getResources().getString(R.string.text_dialog_general_error_db_purge), Typeface.BOLD, Error.PURGERROR.name());
@@ -734,6 +790,12 @@ public class SystemActivity extends SettingsInputActivity implements ExportSuppo
         Log.d(SystemActivity.class.getName(), "resetPreferences");
         PreferenceSetup preferenceSetup = new PreferenceSetup(this);
         preferenceSetup.removeAllSettings();
+    }
+
+    private void resetFolderPermissions() {
+        Log.d(SystemActivity.class.getName(), "resetFolderPermissions");
+        IFolderPermissionManager folderPermissionManager = getFolderPermissionManager();
+        folderPermissionManager.revokeAllPermissions(this);
     }
 
     private void resetActivity() {
