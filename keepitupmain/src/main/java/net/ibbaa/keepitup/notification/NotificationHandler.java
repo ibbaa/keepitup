@@ -28,6 +28,7 @@ import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Build;
 
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.NotificationCompat;
 
 import net.ibbaa.keepitup.R;
@@ -35,6 +36,7 @@ import net.ibbaa.keepitup.logging.Log;
 import net.ibbaa.keepitup.model.LogEntry;
 import net.ibbaa.keepitup.model.NetworkTask;
 import net.ibbaa.keepitup.resources.ServiceFactoryContributor;
+import net.ibbaa.keepitup.ui.GlobalSettingsActivity;
 import net.ibbaa.keepitup.ui.NetworkTaskMainActivity;
 import net.ibbaa.keepitup.ui.mapping.EnumMapping;
 import net.ibbaa.keepitup.ui.permission.IPermissionManager;
@@ -127,6 +129,17 @@ public class NotificationHandler {
         notificationManager.notify(NOTIFICATION_FOREGROUND_START_ID, notification);
     }
 
+    public void sendMessageNotificationMissingLogFolderPermission() {
+        Log.d(NotificationHandler.class.getName(), "sendMessageNotificationMissingLogFolderPermission");
+        if (!permissionManager.hasPostNotificationsPermission(getContext())) {
+            Log.e(NotificationHandler.class.getName(), "Cannot send notification because of missing permission.");
+            return;
+        }
+        String text = getResources().getString(R.string.notification_log_permission_text);
+        Notification notification = buildMessageNotificationFolderPermission(text);
+        notificationManager.notify(NOTIFICATION_FOREGROUND_START_ID, notification);
+    }
+
     public void sendMessageNotificationForNetworkTask(NetworkTask task, LogEntry logEntry) {
         Log.d(NotificationHandler.class.getName(), "sendMessageNotification, network task is " + task + ", log entry is " + logEntry);
         if (!permissionManager.hasPostNotificationsPermission(getContext())) {
@@ -151,7 +164,7 @@ public class NotificationHandler {
         }
         errorNotificationBuilder = createMessageNotificationBuilder();
         errorNotificationBuilder.setSmallIcon(logEntry.isSuccess() ? R.drawable.icon_notification_ok : R.drawable.icon_notification_failure).setContentTitle(title).setContentText(text).setStyle(new NotificationCompat.BigTextStyle().bigText(text)).setPriority(NotificationCompat.PRIORITY_DEFAULT);
-        return buildMessageNotification();
+        return buildMessageNotification(NetworkTaskMainActivity.class);
     }
 
     private Notification buildMessageNotificationForegroundStart() {
@@ -160,17 +173,25 @@ public class NotificationHandler {
         String text = getResources().getString(R.string.notification_foreground_start_text);
         errorNotificationBuilder = createMessageNotificationBuilder();
         errorNotificationBuilder.setSmallIcon(R.drawable.icon_notification_foreground_start).setContentTitle(title).setContentText(text).setStyle(new NotificationCompat.BigTextStyle().bigText(text)).setPriority(NotificationCompat.PRIORITY_DEFAULT);
-        return buildMessageNotification();
+        return buildMessageNotification(NetworkTaskMainActivity.class);
     }
 
-    private Notification buildMessageNotification() {
+    private Notification buildMessageNotificationFolderPermission(String notificationText) {
+        Log.d(NotificationHandler.class.getName(), "buildMessageNotificationFolderPermission");
+        String title = getResources().getString(R.string.notification_title);
+        errorNotificationBuilder = createMessageNotificationBuilder();
+        errorNotificationBuilder.setSmallIcon(R.drawable.icon_notification_failure).setContentTitle(title).setContentText(notificationText).setStyle(new NotificationCompat.BigTextStyle().bigText(notificationText)).setPriority(NotificationCompat.PRIORITY_DEFAULT);
+        return buildMessageNotification(GlobalSettingsActivity.class);
+    }
+
+    private Notification buildMessageNotification(Class<? extends AppCompatActivity> activityClass) {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
             errorNotificationBuilder.setVibrate(getVibrationPattern());
             Uri soundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
             errorNotificationBuilder.setSound(soundUri);
         }
         errorNotificationBuilder.setCategory(NotificationCompat.CATEGORY_ERROR);
-        setMainActivityIntent(errorNotificationBuilder);
+        setActivityIntent(errorNotificationBuilder, activityClass);
         return errorNotificationBuilder.build();
     }
 
@@ -198,11 +219,11 @@ public class NotificationHandler {
         return new long[]{0, 500, 250, 500};
     }
 
-    private void setMainActivityIntent(NotificationCompat.Builder builder) {
-        Intent mainActivityIntent = new Intent(getContext(), NetworkTaskMainActivity.class);
-        mainActivityIntent.setPackage(getContext().getPackageName());
+    private void setActivityIntent(NotificationCompat.Builder builder, Class<? extends AppCompatActivity> activityClass) {
+        Intent activityIntent = new Intent(getContext(), activityClass);
+        activityIntent.setPackage(getContext().getPackageName());
         TaskStackBuilder stackBuilder = TaskStackBuilder.create(getContext());
-        stackBuilder.addNextIntentWithParentStack(mainActivityIntent);
+        stackBuilder.addNextIntentWithParentStack(activityIntent);
         PendingIntent resultPendingIntent;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             resultPendingIntent = stackBuilder.getPendingIntent(0, PendingIntent.FLAG_IMMUTABLE | PendingIntent.FLAG_UPDATE_CURRENT);

@@ -626,6 +626,7 @@ public class GlobalSettingsActivity extends SettingsInputActivity implements Sus
             preferenceManager.setPreferenceArbitraryDownloadFolder(downloadFolder);
             IFolderPermissionManager folderPermissionManager = getFolderPermissionManager();
             folderPermissionManager.revokeOrphanPermissions(this, preferenceManager.getArbitraryFolders());
+            NetworkTaskLog.clear();
         }
         setDownloadFolder(downloadFolder);
     }

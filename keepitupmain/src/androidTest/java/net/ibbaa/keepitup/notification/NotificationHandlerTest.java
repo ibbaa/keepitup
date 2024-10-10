@@ -150,6 +150,28 @@ public class NotificationHandlerTest {
     }
 
     @Test
+    public void testSendMessageNotificationMissingLogFolderPermission() {
+        notificationHandler.sendMessageNotificationMissingLogFolderPermission();
+        assertTrue(notificationManager.wasNotifyCalled());
+        MockNotificationManager.NotifyCall notifyCall = notificationManager.getNotifyCalls().get(0);
+        assertEquals(NotificationHandler.NOTIFICATION_FOREGROUND_START_ID, notifyCall.id());
+        assertEquals("KEEPITUP_ERROR_NOTIFICATION_CHANNEL", notifyCall.notification().getChannelId());
+        MockNotificationBuilder notificationBuilder = (MockNotificationBuilder) notificationHandler.getMessageNotificationBuilder();
+        assertEquals(R.drawable.icon_notification_failure, notificationBuilder.getSmallIcon());
+        assertEquals("Keep it up", notificationBuilder.getContentTitle());
+        assertEquals("Missing write permission for configured log folder. Please click here to grant the permission.", notificationBuilder.getContentText());
+        assertTrue(notificationBuilder.getStyle() instanceof NotificationCompat.BigTextStyle);
+        assertEquals(NotificationCompat.PRIORITY_DEFAULT, notificationBuilder.getPriority());
+    }
+
+    @Test
+    public void testSendMessageNotificationMissingLogFolderPermissionWithoutPermission() {
+        permissionManager.setHasPostNotificationsPermission(false);
+        notificationHandler.sendMessageNotificationMissingLogFolderPermission();
+        assertFalse(notificationManager.wasNotifyCalled());
+    }
+
+    @Test
     public void testBuildForegroundNotification() {
         Notification notification = notificationHandler.buildForegroundNotification();
         assertEquals("KEEPITUP_FOREGROUND_NOTIFICATION_CHANNEL", notification.getChannelId());

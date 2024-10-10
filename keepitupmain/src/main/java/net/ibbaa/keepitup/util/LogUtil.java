@@ -18,11 +18,14 @@ package net.ibbaa.keepitup.util;
 
 import android.content.Context;
 
+import androidx.documentfile.provider.DocumentFile;
+
 import net.ibbaa.keepitup.R;
 import net.ibbaa.keepitup.logging.Log;
 import net.ibbaa.keepitup.model.LogEntry;
 import net.ibbaa.keepitup.model.NetworkTask;
 import net.ibbaa.keepitup.resources.PreferenceManager;
+import net.ibbaa.keepitup.service.IDocumentManager;
 import net.ibbaa.keepitup.service.IFileManager;
 import net.ibbaa.phonelog.FileLogger;
 import net.ibbaa.phonelog.ILogger;
@@ -35,7 +38,7 @@ import java.util.Date;
 
 public class LogUtil {
 
-    public static ILogger getFileLogger(Context context, IFileManager fileManager, NetworkTask networkTask) {
+    public static ILogger getFileLogger(Context context, IFileManager fileManager, IDocumentManager documentManager, NetworkTask networkTask) {
         Log.d(LogUtil.class.getName(), "getFileLogger");
         if (networkTask.getIndex() < 0) {
             Log.e(LogUtil.class.getName(), "networkTask index is " + networkTask.getIndex() + " which is invalied");
@@ -59,7 +62,7 @@ public class LogUtil {
             Log.e(LogUtil.class.getName(), "Error accessing log folder.");
             return null;
         }
-        String logDirectory = logDirectoryFile.getAbsolutePath();
+        String logDirectory = getLogDirectory(context, fileManager, documentManager);
         String logFileName = getLogFileName(context, fileManager, networkTask);
         Log.d(LogUtil.class.getName(), "maxLogLevel is " + maxLogLevel.name());
         Log.d(LogUtil.class.getName(), "maxLogFileSize is " + maxLogFileSize);
@@ -68,6 +71,26 @@ public class LogUtil {
         Log.d(LogUtil.class.getName(), "logDirectory is " + logDirectory);
         Log.d(LogUtil.class.getName(), "logFileName is " + logFileName);
         return new FileLogger(maxLogLevel, maxLogFileSize, archiveFileCount, deleteFileCount, logDirectory, logFileName, new PassthroughMessageLogFormatter(), null);
+    }
+
+    private static String getLogDirectory(Context context, IFileManager fileManager, IDocumentManager documentManager) {
+        PreferenceManager preferenceManager = new PreferenceManager(context);
+        if (preferenceManager.getPreferenceAllowArbitraryFileLocation()) {
+            String arbitraryLogDirectory = preferenceManager.getPreferenceArbitraryLogFolder();
+            DocumentFile logDirectoryFile = documentManager.getArbitraryDirectory(arbitraryLogDirectory);
+            if (logDirectoryFile == null) {
+                Log.e(LogUtil.class.getName(), "Error accessing arbitrary log folder " + arbitraryLogDirectory);
+                return null;
+            }
+            return logDirectoryFile.getUri().toString();
+        }
+        String relativeLogDirectory = preferenceManager.getPreferenceLogFolder();
+        File logDirectoryFile = FileUtil.getExternalDirectory(fileManager, preferenceManager, relativeLogDirectory);
+        if (logDirectoryFile == null) {
+            Log.e(LogUtil.class.getName(), "Error accessing relative log folder " + relativeLogDirectory);
+            return null;
+        }
+        return logDirectoryFile.getAbsolutePath();
     }
 
     public static String getLogFileName(Context context, IFileManager fileManager, NetworkTask networkTask) {

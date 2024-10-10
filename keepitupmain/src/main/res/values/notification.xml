@@ -27,4 +27,5 @@
     <string name="notification_success_text" tools:ignore="PluralsCandidate">Execution of network task %d successful. %s. Timestamp: %s. Message: %s</string>
     <string name="notification_foreground_text" tools:ignore="TypographyEllipsis">Network task running...</string>
     <string name="notification_foreground_start_text">Please click here to open the app after device boot to start the foreground service for running network tasks</string>
+    <string name="notification_log_permission_text">Missing write permission for configured log folder. Please click here to grant the permission.</string>
 </resources>

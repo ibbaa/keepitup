@@ -26,6 +26,7 @@ import androidx.test.filters.SmallTest;
 import net.ibbaa.keepitup.model.LogEntry;
 import net.ibbaa.keepitup.model.NetworkTask;
 import net.ibbaa.keepitup.service.SystemFileManager;
+import net.ibbaa.keepitup.test.mock.MockDocumentManager;
 import net.ibbaa.keepitup.test.mock.MockFileManager;
 import net.ibbaa.keepitup.test.mock.TestRegistry;
 
@@ -40,10 +41,12 @@ import java.io.File;
 public class LogUtilTest {
 
     private MockFileManager fileManager;
+    private MockDocumentManager documentManager;
 
     @Before
     public void beforeEachTestMethod() {
         fileManager = new MockFileManager();
+        documentManager = new MockDocumentManager();
     }
 
     @Test
@@ -51,13 +54,13 @@ public class LogUtilTest {
         NetworkTask networkTask = new NetworkTask();
         networkTask.setIndex(1);
         fileManager.setExternalDirectory(null, 0);
-        assertNull(LogUtil.getFileLogger(TestRegistry.getContext(), fileManager, networkTask));
+        assertNull(LogUtil.getFileLogger(TestRegistry.getContext(), fileManager, documentManager, networkTask));
         networkTask.setIndex(-1);
         fileManager.setExternalDirectory(new File("Test"), 0);
-        assertNull(LogUtil.getFileLogger(TestRegistry.getContext(), fileManager, networkTask));
+        assertNull(LogUtil.getFileLogger(TestRegistry.getContext(), fileManager, documentManager, networkTask));
         networkTask.setIndex(1);
         fileManager.setExternalDirectory(new File("Test"), 0);
-        assertNotNull(LogUtil.getFileLogger(TestRegistry.getContext(), fileManager, networkTask));
+        assertNotNull(LogUtil.getFileLogger(TestRegistry.getContext(), fileManager, documentManager, networkTask));
     }
 
     @Test

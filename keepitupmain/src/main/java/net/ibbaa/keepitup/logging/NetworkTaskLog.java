@@ -20,6 +20,7 @@ import android.content.Context;
 
 import net.ibbaa.keepitup.model.LogEntry;
 import net.ibbaa.keepitup.model.NetworkTask;
+import net.ibbaa.keepitup.service.SystemDocumentManager;
 import net.ibbaa.keepitup.service.SystemFileManager;
 import net.ibbaa.keepitup.util.LogUtil;
 import net.ibbaa.phonelog.ILogger;
@@ -35,7 +36,7 @@ public class NetworkTaskLog {
         if (task.getIndex() < 0) {
             return;
         }
-        ILogger logger = LogUtil.getFileLogger(context, new SystemFileManager(context), task);
+        ILogger logger = LogUtil.getFileLogger(context, new SystemFileManager(context), new SystemDocumentManager(context), task);
         if (logger != null) {
             loggers.put(LogUtil.getLogFileKey(context, task), logger);
         }

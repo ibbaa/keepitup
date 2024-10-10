@@ -38,6 +38,7 @@ import net.ibbaa.keepitup.BuildConfig;
 import net.ibbaa.keepitup.R;
 import net.ibbaa.keepitup.logging.Dump;
 import net.ibbaa.keepitup.logging.Log;
+import net.ibbaa.keepitup.logging.NetworkTaskLog;
 import net.ibbaa.keepitup.resources.PreferenceManager;
 import net.ibbaa.keepitup.resources.PreferenceSetup;
 import net.ibbaa.keepitup.resources.SystemSetupResult;
@@ -369,7 +370,11 @@ public class SystemActivity extends SettingsInputActivity implements ExportSuppo
         PreferenceManager preferenceManager = new PreferenceManager(this);
         preferenceManager.setPreferenceAllowArbitraryFileLocation(isChecked);
         prepareAllowArbitraryFileLocationOnOffText();
-        prepareArbitraryFolderPermissions();
+        if (arbitraryFileLocationSwitch.isChecked()) {
+            prepareArbitraryFolderPermissions();
+        } else {
+            NetworkTaskLog.clear();
+        }
     }
 
     private void prepareArbitraryFolderPermissions() {
@@ -397,6 +402,7 @@ public class SystemActivity extends SettingsInputActivity implements ExportSuppo
         preferenceManager.setPreferenceArbitraryExportFolder(arbitraryFolder);
         IFolderPermissionManager folderPermissionManager = getFolderPermissionManager();
         folderPermissionManager.revokeOrphanPermissions(this, preferenceManager.getArbitraryFolders());
+        NetworkTaskLog.clear();
     }
 
     private void prepareDebugSettingsLabel() {
