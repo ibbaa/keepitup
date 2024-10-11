@@ -35,6 +35,7 @@ import net.ibbaa.keepitup.R;
 import net.ibbaa.keepitup.logging.Log;
 import net.ibbaa.keepitup.model.LogEntry;
 import net.ibbaa.keepitup.model.NetworkTask;
+import net.ibbaa.keepitup.resources.PreferenceManager;
 import net.ibbaa.keepitup.resources.ServiceFactoryContributor;
 import net.ibbaa.keepitup.ui.GlobalSettingsActivity;
 import net.ibbaa.keepitup.ui.NetworkTaskMainActivity;
@@ -135,7 +136,20 @@ public class NotificationHandler {
             Log.e(NotificationHandler.class.getName(), "Cannot send notification because of missing permission.");
             return;
         }
-        String text = getResources().getString(R.string.notification_log_permission_text);
+        PreferenceManager preferenceManager = new PreferenceManager(getContext());
+        String text = getResources().getString(R.string.notification_log_permission_text, preferenceManager.getPreferenceArbitraryLogFolder());
+        Notification notification = buildMessageNotificationFolderPermission(text);
+        notificationManager.notify(NOTIFICATION_FOREGROUND_START_ID, notification);
+    }
+
+    public void sendMessageNotificationMissingDownloadFolderPermission() {
+        Log.d(NotificationHandler.class.getName(), "sendMessageNotificationMissingDownloadFolderPermission");
+        if (!permissionManager.hasPostNotificationsPermission(getContext())) {
+            Log.e(NotificationHandler.class.getName(), "Cannot send notification because of missing permission.");
+            return;
+        }
+        PreferenceManager preferenceManager = new PreferenceManager(getContext());
+        String text = getResources().getString(R.string.notification_download_permission_text, preferenceManager.getPreferenceArbitraryDownloadFolder());
         Notification notification = buildMessageNotificationFolderPermission(text);
         notificationManager.notify(NOTIFICATION_FOREGROUND_START_ID, notification);
     }

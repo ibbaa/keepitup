@@ -32,6 +32,7 @@ import net.ibbaa.keepitup.R;
 import net.ibbaa.keepitup.model.AccessType;
 import net.ibbaa.keepitup.model.LogEntry;
 import net.ibbaa.keepitup.model.NetworkTask;
+import net.ibbaa.keepitup.resources.PreferenceManager;
 import net.ibbaa.keepitup.test.mock.MockNotificationBuilder;
 import net.ibbaa.keepitup.test.mock.MockNotificationManager;
 import net.ibbaa.keepitup.test.mock.MockPermissionManager;
@@ -151,6 +152,8 @@ public class NotificationHandlerTest {
 
     @Test
     public void testSendMessageNotificationMissingLogFolderPermission() {
+        PreferenceManager preferenceManager = new PreferenceManager(TestRegistry.getContext());
+        preferenceManager.setPreferenceArbitraryLogFolder("Test");
         notificationHandler.sendMessageNotificationMissingLogFolderPermission();
         assertTrue(notificationManager.wasNotifyCalled());
         MockNotificationManager.NotifyCall notifyCall = notificationManager.getNotifyCalls().get(0);
@@ -159,7 +162,7 @@ public class NotificationHandlerTest {
         MockNotificationBuilder notificationBuilder = (MockNotificationBuilder) notificationHandler.getMessageNotificationBuilder();
         assertEquals(R.drawable.icon_notification_failure, notificationBuilder.getSmallIcon());
         assertEquals("Keep it up", notificationBuilder.getContentTitle());
-        assertEquals("Missing write permission for configured log folder. Please click here to grant the permission.", notificationBuilder.getContentText());
+        assertEquals("Missing write permission for configured log folder: Test. Please click here to grant the permission.", notificationBuilder.getContentText());
         assertTrue(notificationBuilder.getStyle() instanceof NotificationCompat.BigTextStyle);
         assertEquals(NotificationCompat.PRIORITY_DEFAULT, notificationBuilder.getPriority());
     }
@@ -168,6 +171,30 @@ public class NotificationHandlerTest {
     public void testSendMessageNotificationMissingLogFolderPermissionWithoutPermission() {
         permissionManager.setHasPostNotificationsPermission(false);
         notificationHandler.sendMessageNotificationMissingLogFolderPermission();
+        assertFalse(notificationManager.wasNotifyCalled());
+    }
+
+    @Test
+    public void testSendMessageNotificationMissingDownloadFolderPermission() {
+        PreferenceManager preferenceManager = new PreferenceManager(TestRegistry.getContext());
+        preferenceManager.setPreferenceArbitraryDownloadFolder("Test");
+        notificationHandler.sendMessageNotificationMissingDownloadFolderPermission();
+        assertTrue(notificationManager.wasNotifyCalled());
+        MockNotificationManager.NotifyCall notifyCall = notificationManager.getNotifyCalls().get(0);
+        assertEquals(NotificationHandler.NOTIFICATION_FOREGROUND_START_ID, notifyCall.id());
+        assertEquals("KEEPITUP_ERROR_NOTIFICATION_CHANNEL", notifyCall.notification().getChannelId());
+        MockNotificationBuilder notificationBuilder = (MockNotificationBuilder) notificationHandler.getMessageNotificationBuilder();
+        assertEquals(R.drawable.icon_notification_failure, notificationBuilder.getSmallIcon());
+        assertEquals("Keep it up", notificationBuilder.getContentTitle());
+        assertEquals("Missing write permission for configured download folder: Test. Please click here to grant the permission.", notificationBuilder.getContentText());
+        assertTrue(notificationBuilder.getStyle() instanceof NotificationCompat.BigTextStyle);
+        assertEquals(NotificationCompat.PRIORITY_DEFAULT, notificationBuilder.getPriority());
+    }
+
+    @Test
+    public void testSendMessageNotificationMissingDownloadolderPermissionWithoutPermission() {
+        permissionManager.setHasPostNotificationsPermission(false);
+        notificationHandler.sendMessageNotificationMissingDownloadFolderPermission();
         assertFalse(notificationManager.wasNotifyCalled());
     }
 

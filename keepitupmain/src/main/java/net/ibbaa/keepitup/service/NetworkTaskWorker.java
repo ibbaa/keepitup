@@ -38,6 +38,8 @@ import net.ibbaa.keepitup.resources.PreferenceManager;
 import net.ibbaa.keepitup.resources.ServiceFactoryContributor;
 import net.ibbaa.keepitup.service.network.DNSLookup;
 import net.ibbaa.keepitup.service.network.DNSLookupResult;
+import net.ibbaa.keepitup.ui.permission.FolderPermissionManager;
+import net.ibbaa.keepitup.ui.permission.IFolderPermissionManager;
 import net.ibbaa.keepitup.ui.permission.IPermissionManager;
 import net.ibbaa.keepitup.ui.permission.PermissionManager;
 import net.ibbaa.keepitup.ui.sync.LogEntryUIBroadcastReceiver;
@@ -160,8 +162,16 @@ public abstract class NetworkTaskWorker implements Runnable {
         logDAO.insertAndDeleteLog(logEntry);
         PreferenceManager preferenceManager = new PreferenceManager(getContext());
         if (preferenceManager.getPreferenceLogFile()) {
-            Log.d(NetworkTaskWorker.class.getName(), "Writing log entry " + logEntry + " to file, sendNotification is " + sendNotification);
-            NetworkTaskLog.log(getContext(), task, logEntry);
+            Log.d(NetworkTaskWorker.class.getName(), "Writing log entry " + logEntry + " to file");
+            if (preferenceManager.getPreferenceAllowArbitraryFileLocation()) {
+                if (checkArbitraryLogFolderPermission(preferenceManager)) {
+                    NetworkTaskLog.log(getContext(), task, logEntry);
+                } else {
+                    getNotificationHandler().sendMessageNotificationMissingLogFolderPermission();
+                }
+            } else {
+                NetworkTaskLog.log(getContext(), task, logEntry);
+            }
         }
         Log.d(NetworkTaskWorker.class.getName(), "Notify UI");
         sendNetworkTaskUINotificationBroadcast(databaseTask);
@@ -169,6 +179,11 @@ public abstract class NetworkTaskWorker implements Runnable {
         if (sendNotification) {
             sendNotification(databaseTask, logEntry);
         }
+    }
+
+    private boolean checkArbitraryLogFolderPermission(PreferenceManager preferenceManager) {
+        Log.d(NetworkTaskWorker.class.getName(), "checkArbitraryLogFolderPermission");
+        return getFolderPermissionManager().hasPermission(getContext(), preferenceManager.getPreferenceArbitraryLogFolder());
     }
 
     private void sendNetworkTaskUINotificationBroadcast(NetworkTask task) {
@@ -402,6 +417,10 @@ public abstract class NetworkTaskWorker implements Runnable {
 
     public IPermissionManager getPermissionManager() {
         return new PermissionManager();
+    }
+
+    public IFolderPermissionManager getFolderPermissionManager() {
+        return new FolderPermissionManager();
     }
 
     public static class DNSExecutionResult extends ExecutionResult {

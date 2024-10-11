@@ -16,6 +16,8 @@
 
 package net.ibbaa.keepitup.ui.permission;
 
+import android.content.Context;
+
 import androidx.activity.ComponentActivity;
 import androidx.fragment.app.FragmentActivity;
 
@@ -24,9 +26,9 @@ import java.util.Set;
 @SuppressWarnings({"unused"})
 public interface IFolderPermissionManager {
 
-    boolean hasPermission(ComponentActivity activity, String folder);
+    boolean hasPermission(Context context, String folder);
 
-    boolean hasAnyPermission(ComponentActivity activity);
+    boolean hasAnyPermission(Context context);
 
     void requestPermission(ComponentActivity activity, FolderPermissionLauncher launcher, String folder);
 

@@ -16,6 +16,7 @@
 
 package net.ibbaa.keepitup.ui.permission;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.UriPermission;
 import android.net.Uri;
@@ -33,12 +34,12 @@ import java.util.Set;
 
 public class FolderPermissionManager implements IFolderPermissionManager {
 
-    public boolean hasPermission(ComponentActivity activity, String folder) {
+    public boolean hasPermission(Context context, String folder) {
         Log.d(FolderPermissionManager.class.getName(), "hasPermission for folder " + folder);
         if (StringUtil.isEmpty(folder)) {
             return false;
         }
-        List<UriPermission> permissions = getPermissions(activity);
+        List<UriPermission> permissions = getPermissions(context);
         for (UriPermission permission : permissions) {
             if (folder.equals(permission.getUri().toString())) {
                 return true;
@@ -47,9 +48,9 @@ public class FolderPermissionManager implements IFolderPermissionManager {
         return false;
     }
 
-    public boolean hasAnyPermission(ComponentActivity activity) {
+    public boolean hasAnyPermission(Context context) {
         Log.d(FolderPermissionManager.class.getName(), "hasAnyPermission");
-        List<UriPermission> permissions = getPermissions(activity);
+        List<UriPermission> permissions = getPermissions(context);
         return !permissions.isEmpty();
     }
 
@@ -102,8 +103,8 @@ public class FolderPermissionManager implements IFolderPermissionManager {
         }
     }
 
-    private List<UriPermission> getPermissions(ComponentActivity activity) {
+    private List<UriPermission> getPermissions(Context context) {
         Log.d(FolderPermissionManager.class.getName(), "getPermissions");
-        return activity.getContentResolver().getPersistedUriPermissions();
+        return context.getContentResolver().getPersistedUriPermissions();
     }
 }

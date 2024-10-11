@@ -63,7 +63,7 @@ public class StreamUtil {
         byte[] buffer = new byte[BUFFER_SIZE_4096];
         int partsProgress = 0;
         int bytesDownloaded = 0;
-        Log.d(StreamUtil.class.getName(), "Startíng...");
+        Log.d(StreamUtil.class.getName(), "Starting...");
         while (interrupt.shouldContinue() && (read = inputStream.read(buffer, 0, BUFFER_SIZE_4096)) >= 0) {
             outputStream.write(buffer, 0, read);
             bytesDownloaded += read;

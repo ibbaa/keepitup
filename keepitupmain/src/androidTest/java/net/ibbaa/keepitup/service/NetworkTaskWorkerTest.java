@@ -36,6 +36,7 @@ import net.ibbaa.keepitup.notification.NotificationHandler;
 import net.ibbaa.keepitup.resources.PreferenceManager;
 import net.ibbaa.keepitup.service.network.DNSLookupResult;
 import net.ibbaa.keepitup.test.mock.MockDNSLookup;
+import net.ibbaa.keepitup.test.mock.MockFolderPermissionManager;
 import net.ibbaa.keepitup.test.mock.MockNetworkManager;
 import net.ibbaa.keepitup.test.mock.MockNotificationManager;
 import net.ibbaa.keepitup.test.mock.MockTimeService;
@@ -107,6 +108,52 @@ public class NetworkTaskWorkerTest {
         assertTrue(data.isTechnicallyEqual(testNetworkTaskWorker.getExecuteData()));
         NetworkTask readTask = networkTaskDAO.readNetworkTask(task.getId());
         assertEquals(0, readTask.getFailureCount());
+        NotificationHandler notificationHandler = testNetworkTaskWorker.getNotificationHandler();
+        MockNotificationManager notificationManager = (MockNotificationManager) notificationHandler.getNotificationManager();
+        assertFalse(notificationManager.wasNotifyCalled());
+    }
+
+    @Test
+    public void testSuccessfulExecutionNoLogPermission() {
+        preferenceManager.setPreferenceAllowArbitraryFileLocation(true);
+        preferenceManager.setPreferenceLogFile(true);
+        preferenceManager.setPreferenceArbitraryLogFolder("Test");
+        NetworkTask task = getNetworkTask();
+        task = networkTaskDAO.insertNetworkTask(task);
+        AccessTypeData data = getAccessTypeDataWithNetworkTaskId(task.getId());
+        accessTypeDataDAO.insertAccessTypeData(data);
+        TestNetworkTaskWorker testNetworkTaskWorker = new TestNetworkTaskWorker(TestRegistry.getContext(), task, null, true);
+        setCurrentTime(testNetworkTaskWorker);
+        MockFolderPermissionManager folderPermissionManager = new MockFolderPermissionManager();
+        testNetworkTaskWorker.setFolderPermissionManager(folderPermissionManager);
+        folderPermissionManager.requestPermission(null, null, "Movies");
+        MockNetworkManager networkManager = (MockNetworkManager) testNetworkTaskWorker.getNetworkManager();
+        networkManager.setConnected(true);
+        networkManager.setConnectedWithWiFi(true);
+        testNetworkTaskWorker.run();
+        NotificationHandler notificationHandler = testNetworkTaskWorker.getNotificationHandler();
+        MockNotificationManager notificationManager = (MockNotificationManager) notificationHandler.getNotificationManager();
+        assertTrue(notificationManager.wasNotifyCalled());
+    }
+
+    @Test
+    public void testSuccessfulExecutionWithLogPermission() {
+        preferenceManager.setPreferenceAllowArbitraryFileLocation(true);
+        preferenceManager.setPreferenceLogFile(true);
+        preferenceManager.setPreferenceArbitraryLogFolder("Movies");
+        NetworkTask task = getNetworkTask();
+        task = networkTaskDAO.insertNetworkTask(task);
+        AccessTypeData data = getAccessTypeDataWithNetworkTaskId(task.getId());
+        accessTypeDataDAO.insertAccessTypeData(data);
+        TestNetworkTaskWorker testNetworkTaskWorker = new TestNetworkTaskWorker(TestRegistry.getContext(), task, null, true);
+        setCurrentTime(testNetworkTaskWorker);
+        MockFolderPermissionManager folderPermissionManager = new MockFolderPermissionManager();
+        testNetworkTaskWorker.setFolderPermissionManager(folderPermissionManager);
+        folderPermissionManager.requestPermission(null, null, "Movies");
+        MockNetworkManager networkManager = (MockNetworkManager) testNetworkTaskWorker.getNetworkManager();
+        networkManager.setConnected(true);
+        networkManager.setConnectedWithWiFi(true);
+        testNetworkTaskWorker.run();
         NotificationHandler notificationHandler = testNetworkTaskWorker.getNotificationHandler();
         MockNotificationManager notificationManager = (MockNotificationManager) notificationHandler.getNotificationManager();
         assertFalse(notificationManager.wasNotifyCalled());

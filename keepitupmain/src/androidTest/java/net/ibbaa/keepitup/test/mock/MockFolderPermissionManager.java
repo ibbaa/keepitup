@@ -16,6 +16,7 @@
 
 package net.ibbaa.keepitup.test.mock;
 
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 
@@ -53,12 +54,12 @@ public class MockFolderPermissionManager implements IFolderPermissionManager {
     }
 
     @Override
-    public boolean hasPermission(ComponentActivity activity, String folder) {
+    public boolean hasPermission(Context context, String folder) {
         return permissions.contains(folder);
     }
 
     @Override
-    public boolean hasAnyPermission(ComponentActivity activity) {
+    public boolean hasAnyPermission(Context context) {
         return !permissions.isEmpty();
     }
 
