@@ -21,6 +21,7 @@ import android.content.Context;
 import androidx.documentfile.provider.DocumentFile;
 
 import net.ibbaa.keepitup.R;
+import net.ibbaa.keepitup.logging.DocumentFileLogger;
 import net.ibbaa.keepitup.logging.Log;
 import net.ibbaa.keepitup.model.LogEntry;
 import net.ibbaa.keepitup.model.NetworkTask;
@@ -55,14 +56,11 @@ public class LogUtil {
         int maxLogFileSize = context.getResources().getInteger(R.integer.networktask_file_logger_max_file_size_default);
         int archiveFileCount = context.getResources().getInteger(R.integer.networktask_file_logger_archive_file_count_default);
         int deleteFileCount = context.getResources().getInteger(R.integer.networktask_file_logger_delete_file_count_default);
-        PreferenceManager preferenceManager = new PreferenceManager(context);
-        String relativeLogDirectory = preferenceManager.getPreferenceLogFolder();
-        File logDirectoryFile = FileUtil.getExternalDirectory(fileManager, preferenceManager, relativeLogDirectory);
-        if (logDirectoryFile == null) {
+        String logDirectory = getLogDirectory(context, fileManager, documentManager);
+        if (logDirectory == null) {
             Log.e(LogUtil.class.getName(), "Error accessing log folder.");
             return null;
         }
-        String logDirectory = getLogDirectory(context, fileManager, documentManager);
         String logFileName = getLogFileName(context, fileManager, networkTask);
         Log.d(LogUtil.class.getName(), "maxLogLevel is " + maxLogLevel.name());
         Log.d(LogUtil.class.getName(), "maxLogFileSize is " + maxLogFileSize);
@@ -70,6 +68,14 @@ public class LogUtil {
         Log.d(LogUtil.class.getName(), "deleteFileCount is " + deleteFileCount);
         Log.d(LogUtil.class.getName(), "logDirectory is " + logDirectory);
         Log.d(LogUtil.class.getName(), "logFileName is " + logFileName);
+        return createLogger(context, maxLogLevel, maxLogFileSize, archiveFileCount, deleteFileCount, logDirectory, logFileName);
+    }
+
+    private static ILogger createLogger(Context context, LogLevel maxLogLevel, int maxLogFileSize, int archiveFileCount, int deleteFileCount, String logDirectory, String logFileName) {
+        PreferenceManager preferenceManager = new PreferenceManager(context);
+        if (preferenceManager.getPreferenceAllowArbitraryFileLocation()) {
+            return new DocumentFileLogger(context, maxLogLevel, maxLogFileSize, archiveFileCount, deleteFileCount, logDirectory, logFileName, new PassthroughMessageLogFormatter(), null);
+        }
         return new FileLogger(maxLogLevel, maxLogFileSize, archiveFileCount, deleteFileCount, logDirectory, logFileName, new PassthroughMessageLogFormatter(), null);
     }
 
