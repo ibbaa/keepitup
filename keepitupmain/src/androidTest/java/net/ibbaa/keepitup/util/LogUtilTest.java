@@ -19,16 +19,22 @@ package net.ibbaa.keepitup.util;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
+import androidx.documentfile.provider.DocumentFile;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.SmallTest;
 
+import net.ibbaa.keepitup.logging.DocumentFileLogger;
 import net.ibbaa.keepitup.model.LogEntry;
 import net.ibbaa.keepitup.model.NetworkTask;
+import net.ibbaa.keepitup.resources.PreferenceManager;
 import net.ibbaa.keepitup.service.SystemFileManager;
 import net.ibbaa.keepitup.test.mock.MockDocumentManager;
 import net.ibbaa.keepitup.test.mock.MockFileManager;
 import net.ibbaa.keepitup.test.mock.TestRegistry;
+import net.ibbaa.phonelog.FileLogger;
+import net.ibbaa.phonelog.ILogger;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -60,7 +66,26 @@ public class LogUtilTest {
         assertNull(LogUtil.getFileLogger(TestRegistry.getContext(), fileManager, documentManager, networkTask));
         networkTask.setIndex(1);
         fileManager.setExternalDirectory(new File("Test"), 0);
-        assertNotNull(LogUtil.getFileLogger(TestRegistry.getContext(), fileManager, documentManager, networkTask));
+        ILogger logger = LogUtil.getFileLogger(TestRegistry.getContext(), fileManager, documentManager, networkTask);
+        assertNotNull(logger);
+        assertTrue(logger instanceof FileLogger);
+    }
+
+    @Test
+    public void testGetDocumentFileLogger() {
+        PreferenceManager preferenceManager = new PreferenceManager(TestRegistry.getContext());
+        preferenceManager.setPreferenceAllowArbitraryFileLocation(true);
+        NetworkTask networkTask = new NetworkTask();
+        networkTask.setIndex(1);
+        assertNull(LogUtil.getFileLogger(TestRegistry.getContext(), fileManager, documentManager, networkTask));
+        networkTask.setIndex(-1);
+        documentManager.setArbitraryDirectory(DocumentFile.fromFile(new File("test")));
+        assertNull(LogUtil.getFileLogger(TestRegistry.getContext(), fileManager, documentManager, networkTask));
+        networkTask.setIndex(1);
+        documentManager.setArbitraryDirectory(DocumentFile.fromFile(new File("test")));
+        ILogger logger = LogUtil.getFileLogger(TestRegistry.getContext(), fileManager, documentManager, networkTask);
+        assertNotNull(logger);
+        assertTrue(logger instanceof DocumentFileLogger);
     }
 
     @Test

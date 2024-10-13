@@ -67,6 +67,7 @@
     <string name="text_download_http_error">Server return code %d %s.</string>
     <string name="text_download_url_error">Download not possible. The url %s is invalid.</string>
     <string name="text_download_folder_error">Download not possible. The download folder %s does not exist and cannot be created.</string>
+    <string name="text_download_folder_error_arbitrary_permission">Download not possible. Missing permission to access download folder: %s.</string>
     <string name="text_download_invalid_error">The download was stopped because the network task is no longer valid.</string>
     <string name="text_download_stopped_error">The download was stopped.</string>
     <string name="text_download_unknown_error">The download from %s failed for an unknown reason.</string>

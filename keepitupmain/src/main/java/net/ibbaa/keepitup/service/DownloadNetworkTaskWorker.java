@@ -83,15 +83,21 @@ public class DownloadNetworkTaskWorker extends NetworkTaskWorker {
         } else {
             Log.d(DownloadNetworkTaskWorker.class.getName(), "URL is " + url.toExternalForm());
         }
-        File folder = determineDownloadFolder();
+        String folder = determineDownloadFolder();
         if (folder == null) {
             Log.d(DownloadNetworkTaskWorker.class.getName(), "Determined folder is null");
-            String folderMessage = preferenceManager.getPreferenceDownloadExternalStorage() ? preferenceManager.getPreferenceDownloadFolder() : fileManager.getDefaultDownloadDirectoryName();
             logEntry.setSuccess(false);
-            logEntry.setMessage(getResources().getString(R.string.text_download_folder_error, folderMessage));
+            String message;
+            if (preferenceManager.getPreferenceAllowArbitraryFileLocation()) {
+                message = getResources().getString(R.string.text_download_folder_error_arbitrary_permission, preferenceManager.getPreferenceArbitraryDownloadFolder());
+            } else {
+                String folderMessage = preferenceManager.getPreferenceDownloadExternalStorage() ? preferenceManager.getPreferenceDownloadFolder() : fileManager.getDefaultDownloadDirectoryName();
+                message = getResources().getString(R.string.text_download_folder_error, folderMessage);
+            }
+            logEntry.setMessage(message);
             return new ExecutionResult(false, logEntry);
         } else {
-            Log.d(DownloadNetworkTaskWorker.class.getName(), "Download folder is " + folder.getAbsolutePath());
+            Log.d(DownloadNetworkTaskWorker.class.getName(), "Download folder is " + folder);
         }
         boolean delete = determineDeleteDownloadedFile();
         Log.d(DownloadNetworkTaskWorker.class.getName(), "Delete downloaded file: " + delete);
@@ -152,13 +158,13 @@ public class DownloadNetworkTaskWorker extends NetworkTaskWorker {
         return new ExecutionResult(interrupted, logEntry);
     }
 
-    private void prepareConnectError(DownloadCommandResult downloadResult, URL url, int timeout, File folder, boolean delete, LogEntry logEntry) {
+    private void prepareConnectError(DownloadCommandResult downloadResult, URL url, int timeout, String folder, boolean delete, LogEntry logEntry) {
         Log.d(DownloadNetworkTaskWorker.class.getName(), "prepareConnectErrorMessage");
         String connectMessage = getResources().getString(R.string.text_download_connect_error, URLUtil.getHostAndPort(url));
         prepareError(downloadResult, timeout, folder, delete, logEntry, connectMessage);
     }
 
-    private void prepareHTTPReturnCodeError(DownloadCommandResult downloadResult, URL url, int timeout, File folder, boolean delete, LogEntry logEntry) {
+    private void prepareHTTPReturnCodeError(DownloadCommandResult downloadResult, URL url, int timeout, String folder, boolean delete, LogEntry logEntry) {
         Log.d(DownloadNetworkTaskWorker.class.getName(), "prepareHTTPReturnCodeErrorMessage");
         String downloadError = getResources().getString(R.string.text_download_error, url.toExternalForm());
         String httpMessage = getResources().getString(R.string.text_download_http_error, downloadResult.httpResponseCode(), downloadResult.httpResponseMessage());
@@ -166,19 +172,19 @@ public class DownloadNetworkTaskWorker extends NetworkTaskWorker {
         prepareError(downloadResult, timeout, folder, delete, logEntry, message);
     }
 
-    private void prepareStoppedError(DownloadCommandResult downloadResult, int timeout, File folder, boolean delete, LogEntry logEntry) {
+    private void prepareStoppedError(DownloadCommandResult downloadResult, int timeout, String folder, boolean delete, LogEntry logEntry) {
         Log.d(DownloadNetworkTaskWorker.class.getName(), "prepareStoppedError");
         String stoppedMessage = getResources().getString(R.string.text_download_stopped_error);
         prepareError(downloadResult, timeout, folder, delete, logEntry, stoppedMessage);
     }
 
-    private void prepareInvalidError(DownloadCommandResult downloadResult, int timeout, File folder, boolean delete, LogEntry logEntry) {
+    private void prepareInvalidError(DownloadCommandResult downloadResult, int timeout, String folder, boolean delete, LogEntry logEntry) {
         Log.d(DownloadNetworkTaskWorker.class.getName(), "prepareInvalidError");
         String invalidMessage = getResources().getString(R.string.text_download_invalid_error);
         prepareError(downloadResult, timeout, folder, delete, logEntry, invalidMessage);
     }
 
-    private void prepareUnknownError(DownloadCommandResult downloadResult, URL url, int timeout, File folder, boolean delete, LogEntry logEntry) {
+    private void prepareUnknownError(DownloadCommandResult downloadResult, URL url, int timeout, String folder, boolean delete, LogEntry logEntry) {
         Log.d(DownloadNetworkTaskWorker.class.getName(), "prepareUnknownErrorMessage");
         logEntry.setSuccess(false);
         Throwable exc = downloadResult.exception();
@@ -191,7 +197,7 @@ public class DownloadNetworkTaskWorker extends NetworkTaskWorker {
         prepareError(downloadResult, timeout, folder, delete, logEntry, message);
     }
 
-    private void prepareError(DownloadCommandResult downloadResult, int timeout, File folder, boolean delete, LogEntry logEntry, String message) {
+    private void prepareError(DownloadCommandResult downloadResult, int timeout, String folder, boolean delete, LogEntry logEntry, String message) {
         Log.d(DownloadNetworkTaskWorker.class.getName(), "prepareError");
         logEntry.setSuccess(false);
         if (downloadResult.fileExists()) {
@@ -219,7 +225,7 @@ public class DownloadNetworkTaskWorker extends NetworkTaskWorker {
         }
     }
 
-    private void prepareSuccess(DownloadCommandResult downloadResult, URL url, int timeout, File folder, boolean delete, LogEntry logEntry) {
+    private void prepareSuccess(DownloadCommandResult downloadResult, URL url, int timeout, String folder, boolean delete, LogEntry logEntry) {
         Log.d(DownloadNetworkTaskWorker.class.getName(), "prepareSuccess");
         logEntry.setSuccess(true);
         String successMessage = getResources().getString(R.string.text_download_success, url.toExternalForm());
@@ -250,18 +256,37 @@ public class DownloadNetworkTaskWorker extends NetworkTaskWorker {
         return URLUtil.getURL(baseURL, null);
     }
 
-    private File determineDownloadFolder() {
+    private String determineDownloadFolder() {
         Log.d(DownloadNetworkTaskWorker.class.getName(), "determineDownloadFolder");
         PreferenceManager preferenceManager = new PreferenceManager(getContext());
         IFileManager fileManager = getFileManager();
         if (preferenceManager.getPreferenceDownloadExternalStorage()) {
-            Log.d(DownloadNetworkTaskWorker.class.getName(), "Determining external download folder");
-            String preferenceDownloadFolder = preferenceManager.getPreferenceDownloadFolder();
-            Log.d(DownloadNetworkTaskWorker.class.getName(), "Specified folder is " + preferenceDownloadFolder);
-            return FileUtil.getExternalDirectory(fileManager, preferenceManager, preferenceDownloadFolder);
+            if (preferenceManager.getPreferenceAllowArbitraryFileLocation()) {
+                Log.d(DownloadNetworkTaskWorker.class.getName(), "Determining arbitrary external download folder");
+                String arbitraryDownloadFolder = preferenceManager.getPreferenceArbitraryDownloadFolder();
+                Log.d(DownloadNetworkTaskWorker.class.getName(), "Specified arbitrary external download folder is " + arbitraryDownloadFolder);
+                if (!getFolderPermissionManager().hasPermission(getContext(), arbitraryDownloadFolder)) {
+                    getNotificationHandler().sendMessageNotificationMissingDownloadFolderPermission();
+                    return null;
+                }
+                return arbitraryDownloadFolder;
+            } else {
+                Log.d(DownloadNetworkTaskWorker.class.getName(), "Determining external download folder");
+                String preferenceDownloadFolder = preferenceManager.getPreferenceDownloadFolder();
+                Log.d(DownloadNetworkTaskWorker.class.getName(), "Specified external download folder is " + preferenceDownloadFolder);
+                File folder = FileUtil.getExternalDirectory(fileManager, preferenceManager, preferenceDownloadFolder);
+                if (folder == null) {
+                    return null;
+                }
+                return folder.getAbsolutePath();
+            }
         }
         Log.d(DownloadNetworkTaskWorker.class.getName(), "Determining internal download folder");
-        return fileManager.getInternalDownloadDirectory();
+        File folder = fileManager.getInternalDownloadDirectory();
+        if (folder == null) {
+            return null;
+        }
+        return folder.getAbsolutePath();
     }
 
     private boolean determineDeleteDownloadedFile() {
@@ -279,7 +304,7 @@ public class DownloadNetworkTaskWorker extends NetworkTaskWorker {
         return new SystemFileManager(getContext());
     }
 
-    protected Callable<DownloadCommandResult> getDownloadCommand(NetworkTask networkTask, URL url, File folder, boolean delete) {
+    protected Callable<DownloadCommandResult> getDownloadCommand(NetworkTask networkTask, URL url, String folder, boolean delete) {
         return new DownloadCommand(getContext(), networkTask, url, folder, delete);
     }
 }

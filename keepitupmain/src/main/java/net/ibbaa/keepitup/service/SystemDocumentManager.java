@@ -21,21 +21,31 @@ import android.net.Uri;
 
 import androidx.documentfile.provider.DocumentFile;
 
+import net.ibbaa.keepitup.R;
 import net.ibbaa.keepitup.logging.Log;
+import net.ibbaa.keepitup.resources.ServiceFactoryContributor;
+import net.ibbaa.keepitup.util.FileUtil;
 
 public class SystemDocumentManager implements IDocumentManager {
 
     private final Context context;
+    private final ITimeService timeService;
 
     public SystemDocumentManager(Context context) {
         this.context = context;
+        this.timeService = createTimeService();
+    }
+
+    public SystemDocumentManager(Context context, ITimeService timeService) {
+        this.context = context;
+        this.timeService = timeService;
     }
 
     @Override
     public DocumentFile getArbitraryDirectory(String arbitraryFolder) {
         Log.d(SystemDocumentManager.class.getName(), "getArbitraryDirectory, arbitraryFolder is " + arbitraryFolder);
         try {
-            DocumentFile arbitraryDirectory = DocumentFile.fromTreeUri(getContext(), Uri.parse(arbitraryFolder));
+            DocumentFile arbitraryDirectory = getFolder(arbitraryFolder);
             if (arbitraryDirectory != null && arbitraryDirectory.isDirectory()) {
                 if (arbitraryDirectory.canRead() && arbitraryDirectory.canWrite()) {
                     return arbitraryDirectory;
@@ -49,6 +59,70 @@ public class SystemDocumentManager implements IDocumentManager {
             Log.e(SystemFileManager.class.getName(), "Error accessing arbitraryFolder folder " + arbitraryFolder, exc);
         }
         return null;
+    }
+
+    @Override
+    public String getValidFileName(DocumentFile folder, String file) {
+        Log.d(SystemFileManager.class.getName(), "getValidFileName, file is " + file);
+        try {
+            if (!fileExists(folder, file)) {
+                Log.d(SystemFileManager.class.getName(), "File " + file + " does not exist");
+                return file;
+            }
+            Log.d(SystemFileManager.class.getName(), "File " + file + " does exist");
+            String timestampFileName = FileUtil.suffixFileName(file, FileUtil.getTimestampSuffix(getContext(), getTimeService()));
+            if (!fileExists(folder, timestampFileName)) {
+                Log.d(SystemFileManager.class.getName(), "File " + timestampFileName + " does not exist");
+                return timestampFileName;
+            }
+            Log.d(SystemFileManager.class.getName(), "File " + timestampFileName + " does exist");
+            int maxDuplicateFileNumber = getContext().getResources().getInteger(R.integer.max_duplicate_file_number);
+            for (int ii = 1; ii <= maxDuplicateFileNumber; ii++) {
+                String numberFileName = FileUtil.suffixFileName(timestampFileName, FileUtil.getNumberSuffix(ii));
+                if (!fileExists(folder, numberFileName)) {
+                    Log.d(SystemFileManager.class.getName(), "File " + numberFileName + " does not exist");
+                    return numberFileName;
+                }
+                Log.d(SystemFileManager.class.getName(), "File " + numberFileName + " does exist");
+            }
+            Log.d(SystemFileManager.class.getName(), "Unable to find valid file name");
+        } catch (Exception exc) {
+            Log.e(SystemFileManager.class.getName(), "Error creating valid file name", exc);
+        }
+        return null;
+    }
+
+    @Override
+    public DocumentFile getFolder(String folder) {
+        Log.d(SystemFileManager.class.getName(), "getFolder, folder is " + folder);
+        return DocumentFile.fromTreeUri(getContext(), Uri.parse(folder));
+    }
+
+    @Override
+    public DocumentFile getFile(DocumentFile folder, String fileName) {
+        Log.d(SystemFileManager.class.getName(), "getFile, fileName is " + fileName);
+        return folder.findFile(fileName);
+    }
+
+    @Override
+    public boolean fileExists(DocumentFile folder, String fileName) {
+        Log.d(SystemFileManager.class.getName(), "fileExists, fileName is " + fileName);
+        return folder.findFile(fileName) != null;
+    }
+
+    @Override
+    public boolean delete(DocumentFile file) {
+        Log.d(SystemFileManager.class.getName(), "delete");
+        return file.delete();
+    }
+
+    public ITimeService getTimeService() {
+        return timeService;
+    }
+
+    private ITimeService createTimeService() {
+        ServiceFactoryContributor factoryContributor = new ServiceFactoryContributor(getContext());
+        return factoryContributor.createServiceFactory().createTimeService();
     }
 
     private Context getContext() {

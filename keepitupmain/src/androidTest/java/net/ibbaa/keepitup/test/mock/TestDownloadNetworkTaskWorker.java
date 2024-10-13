@@ -24,10 +24,11 @@ import net.ibbaa.keepitup.service.DownloadNetworkTaskWorker;
 import net.ibbaa.keepitup.service.IFileManager;
 import net.ibbaa.keepitup.service.network.DNSLookupResult;
 import net.ibbaa.keepitup.service.network.DownloadCommandResult;
+import net.ibbaa.keepitup.ui.permission.IFolderPermissionManager;
 import net.ibbaa.keepitup.ui.permission.IPermissionManager;
 
-import java.io.File;
 import java.net.URL;
+import java.util.Objects;
 import java.util.concurrent.Callable;
 
 public class TestDownloadNetworkTaskWorker extends DownloadNetworkTaskWorker {
@@ -35,6 +36,7 @@ public class TestDownloadNetworkTaskWorker extends DownloadNetworkTaskWorker {
     private MockDNSLookup mockDNSLookup;
     private MockDownloadCommand mockDownloadCommand;
     private MockFileManager mockFileManager;
+    private MockFolderPermissionManager folderPermissionManager;
 
     public TestDownloadNetworkTaskWorker(Context context, NetworkTask networkTask, PowerManager.WakeLock wakeLock) {
         super(context, networkTask, wakeLock);
@@ -54,13 +56,17 @@ public class TestDownloadNetworkTaskWorker extends DownloadNetworkTaskWorker {
         this.mockFileManager = mockFileManager;
     }
 
+    public void setFolderPermissionManager(MockFolderPermissionManager folderPermissionManager) {
+        this.folderPermissionManager = folderPermissionManager;
+    }
+
     @Override
     protected Callable<DNSLookupResult> getDNSLookup(String host) {
         return mockDNSLookup;
     }
 
     @Override
-    public Callable<DownloadCommandResult> getDownloadCommand(NetworkTask networkTask, URL url, File folder, boolean delete) {
+    public Callable<DownloadCommandResult> getDownloadCommand(NetworkTask networkTask, URL url, String folder, boolean delete) {
         return mockDownloadCommand;
     }
 
@@ -72,5 +78,10 @@ public class TestDownloadNetworkTaskWorker extends DownloadNetworkTaskWorker {
     @Override
     public IPermissionManager getPermissionManager() {
         return new MockPermissionManager();
+    }
+
+    @Override
+    public IFolderPermissionManager getFolderPermissionManager() {
+        return Objects.requireNonNullElseGet(folderPermissionManager, MockFolderPermissionManager::new);
     }
 }

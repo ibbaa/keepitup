@@ -17,21 +17,27 @@
 package net.ibbaa.keepitup.test.mock;
 
 import android.content.Context;
+import android.os.ParcelFileDescriptor;
+
+import androidx.documentfile.provider.DocumentFile;
 
 import net.ibbaa.keepitup.model.NetworkTask;
+import net.ibbaa.keepitup.service.IDocumentManager;
 import net.ibbaa.keepitup.service.IFileManager;
 import net.ibbaa.keepitup.service.network.DownloadCommand;
 
-import java.io.File;
+import java.io.FileOutputStream;
 import java.net.URL;
 import java.net.URLConnection;
 
 public class TestDownloadCommand extends DownloadCommand {
 
     private URLConnection urlConnection;
+    private FileOutputStream outputStream;
     private IFileManager fileManager;
+    private IDocumentManager documentManager;
 
-    public TestDownloadCommand(Context context, NetworkTask networkTask, URL url, File folder, boolean delete) {
+    public TestDownloadCommand(Context context, NetworkTask networkTask, URL url, String folder, boolean delete) {
         super(context, networkTask, url, folder, delete);
         reset();
     }
@@ -45,8 +51,16 @@ public class TestDownloadCommand extends DownloadCommand {
         this.urlConnection = urlConnection;
     }
 
+    public void setOutputStream(FileOutputStream outputStream) {
+        this.outputStream = outputStream;
+    }
+
     public void setFileManager(IFileManager fileManager) {
         this.fileManager = fileManager;
+    }
+
+    public void setDocumentManager(IDocumentManager documentManager) {
+        this.documentManager = documentManager;
     }
 
     @Override
@@ -55,10 +69,28 @@ public class TestDownloadCommand extends DownloadCommand {
     }
 
     @Override
+    protected ParcelFileDescriptor getDownloadFileDescriptor(DocumentFile documentLogFile) {
+        return null;
+    }
+
+    @Override
+    protected FileOutputStream getOutputStream(ParcelFileDescriptor documentFileDescriptor) {
+        return outputStream;
+    }
+
+    @Override
     protected IFileManager getFileManager() {
         if (fileManager != null) {
             return fileManager;
         }
         return super.getFileManager();
+    }
+
+    @Override
+    protected IDocumentManager getDocumentManager() {
+        if (documentManager != null) {
+            return documentManager;
+        }
+        return super.getDocumentManager();
     }
 }

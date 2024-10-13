@@ -18,14 +18,20 @@ package net.ibbaa.keepitup.service.network;
 
 import android.content.Context;
 import android.content.res.Resources;
+import android.os.ParcelFileDescriptor;
+
+import androidx.documentfile.provider.DocumentFile;
 
 import net.ibbaa.keepitup.R;
 import net.ibbaa.keepitup.db.NetworkTaskDAO;
 import net.ibbaa.keepitup.logging.Log;
 import net.ibbaa.keepitup.model.NetworkTask;
+import net.ibbaa.keepitup.resources.PreferenceManager;
 import net.ibbaa.keepitup.resources.ServiceFactoryContributor;
+import net.ibbaa.keepitup.service.IDocumentManager;
 import net.ibbaa.keepitup.service.IFileManager;
 import net.ibbaa.keepitup.service.ITimeService;
+import net.ibbaa.keepitup.service.SystemDocumentManager;
 import net.ibbaa.keepitup.service.SystemFileManager;
 import net.ibbaa.keepitup.util.HTTPUtil;
 import net.ibbaa.keepitup.util.NumberUtil;
@@ -48,16 +54,18 @@ import java.util.concurrent.TimeUnit;
 
 public class DownloadCommand implements Callable<DownloadCommandResult> {
 
+    private final static String UNKNOWN_MIME_TYPE = "unknown/unknown";
+
     private final Context context;
     private final NetworkTask networkTask;
     private final URL url;
-    private final File folder;
+    private final String folder;
     private final boolean delete;
     private boolean valid;
     private boolean stopped;
     private final ITimeService timeService;
 
-    public DownloadCommand(Context context, NetworkTask networkTask, URL url, File folder, boolean delete) {
+    public DownloadCommand(Context context, NetworkTask networkTask, URL url, String folder, boolean delete) {
         this.context = context;
         this.networkTask = networkTask;
         this.url = url;
@@ -72,6 +80,7 @@ public class DownloadCommand implements Callable<DownloadCommandResult> {
         URLConnection connection = null;
         InputStream inputStream = null;
         FileOutputStream outputStream = null;
+        ParcelFileDescriptor fileDescriptor = null;
         boolean connectSuccess = false;
         boolean downloadSuccess = false;
         boolean fileExists;
@@ -117,7 +126,19 @@ public class DownloadCommand implements Callable<DownloadCommandResult> {
             Log.d(DownloadCommand.class.getName(), "Using file name " + fileName);
             Log.d(DownloadCommand.class.getName(), "Opening streams...");
             inputStream = connection.getInputStream();
-            outputStream = getOutputStream(fileName);
+            PreferenceManager preferenceManager = new PreferenceManager(getContext());
+            if (preferenceManager.getPreferenceAllowArbitraryFileLocation()) {
+                DocumentFile downloadDocumentFile = getDownloadDocumentFile(fileName);
+                if (downloadDocumentFile == null) {
+                    Log.e(DownloadCommand.class.getName(), "Error access download file");
+                    long end = timeService.getCurrentTimestamp();
+                    return createDownloadCommandResult(true, false, false, false, httpCode, httpMessage, null, NumberUtil.ensurePositive(end - start), null);
+                }
+                fileDescriptor = getDownloadFileDescriptor(downloadDocumentFile);
+                outputStream = getOutputStream(fileDescriptor);
+            } else {
+                outputStream = getOutputStream(fileName);
+            }
             int pollInterval = getResources().getInteger(R.integer.download_valid_poll_interval);
             Log.d(DownloadCommand.class.getName(), "Scheduling verify valid polling thread with an interval of " + pollInterval);
             executorService.scheduleWithFixedDelay(this::verifyValid, 0, pollInterval, TimeUnit.SECONDS);
@@ -138,7 +159,7 @@ public class DownloadCommand implements Callable<DownloadCommandResult> {
             Log.e(DownloadCommand.class.getName(), "Try closing stream.");
             flushAndCloseOutputStream(outputStream);
             fileExists = downloadedFileExists(fileName);
-            Log.d(DownloadCommand.class.getName(), "Partial download successful: " + fileExists);
+            Log.d(DownloadCommand.class.getName(), "Download file exists: " + fileExists);
             if (delete && fileExists) {
                 Log.d(DownloadCommand.class.getName(), "Deleting downloaded file...");
                 deleteSuccess = deleteDownloadedFile(fileName);
@@ -146,7 +167,7 @@ public class DownloadCommand implements Callable<DownloadCommandResult> {
             long end = timeService.getCurrentTimestamp();
             return createDownloadCommandResult(connectSuccess, downloadSuccess, fileExists, deleteSuccess, httpCode, httpMessage, fileName, NumberUtil.ensurePositive(end - start), exc);
         } finally {
-            closeResources(connection, inputStream, outputStream, executorService);
+            closeResources(connection, inputStream, outputStream, fileDescriptor, executorService);
         }
     }
 
@@ -167,6 +188,28 @@ public class DownloadCommand implements Callable<DownloadCommandResult> {
         connection.setDoOutput(false);
         connection.connect();
         return connection;
+    }
+
+    private DocumentFile getDownloadDocumentFile(String fileName) {
+        Log.d(DownloadCommand.class.getName(), "getDownloadDocumentFile, fileName is " + fileName);
+        DocumentFile documentDownloadDirectory = getDocumentManager().getFolder(folder);
+        if (documentDownloadDirectory == null) {
+            Log.e(DownloadCommand.class.getName(), "Error accessing download folder " + folder);
+            return null;
+        }
+        DocumentFile documentDownloadFile = getDocumentManager().getFile(documentDownloadDirectory, fileName);
+        if (documentDownloadFile == null) {
+            documentDownloadFile = documentDownloadDirectory.createFile(UNKNOWN_MIME_TYPE, fileName);
+        }
+        return documentDownloadFile;
+    }
+
+    protected ParcelFileDescriptor getDownloadFileDescriptor(DocumentFile documentLogFile) throws IOException {
+        return getContext().getContentResolver().openFileDescriptor(documentLogFile.getUri(), "wa");
+    }
+
+    protected FileOutputStream getOutputStream(ParcelFileDescriptor documentFileDescriptor) {
+        return new FileOutputStream(documentFileDescriptor.getFileDescriptor());
     }
 
     private FileOutputStream getOutputStream(String fileName) throws FileNotFoundException {
@@ -196,6 +239,10 @@ public class DownloadCommand implements Callable<DownloadCommandResult> {
 
     private String getFileName(URLConnection connection) {
         Log.d(DownloadCommand.class.getName(), "getFileName");
+        if (folder == null) {
+            Log.d(DownloadCommand.class.getName(), "Download folder is null");
+            return null;
+        }
         String contentDisposition = HTTPUtil.getContentDisposition(getContext(), connection);
         String contentType = connection.getContentType();
         Log.d(DownloadCommand.class.getName(), "Content-Disposition header is " + contentDisposition);
@@ -207,9 +254,25 @@ public class DownloadCommand implements Callable<DownloadCommandResult> {
         IFileManager fileManager = getFileManager();
         String fileName = fileManager.getDownloadFileName(url, contentDispositionFileName, mimeType);
         Log.d(DownloadCommand.class.getName(), "Download file name is " + fileName);
-        String validFileName = fileManager.getValidFileName(folder, fileName);
+        String validFileName = getValidFileName(fileName);
         Log.d(DownloadCommand.class.getName(), "Adjusted valid file name is " + validFileName);
         return validFileName;
+    }
+
+    private String getValidFileName(String fileName) {
+        Log.d(DownloadCommand.class.getName(), "getValidFileName, fileName is " + fileName);
+        PreferenceManager preferenceManager = new PreferenceManager(getContext());
+        if (preferenceManager.getPreferenceAllowArbitraryFileLocation()) {
+            IDocumentManager documentManager = getDocumentManager();
+            DocumentFile downloadDirectory = documentManager.getFolder(folder);
+            if (downloadDirectory != null) {
+                return documentManager.getValidFileName(downloadDirectory, fileName);
+            }
+            Log.e(DownloadCommand.class.getName(), "Error accessing download folder");
+            return null;
+        }
+        IFileManager fileManager = getFileManager();
+        return fileManager.getValidFileName(new File(folder), fileName);
     }
 
     private boolean deleteDownloadedFile(String fileName) {
@@ -217,11 +280,20 @@ public class DownloadCommand implements Callable<DownloadCommandResult> {
         if (StringUtil.isEmpty(fileName)) {
             return false;
         }
+        PreferenceManager preferenceManager = new PreferenceManager(getContext());
         try {
+            if (preferenceManager.getPreferenceAllowArbitraryFileLocation()) {
+                DocumentFile downloadDocumentFile = getDownloadDocumentFile(fileName);
+                if (downloadDocumentFile == null) {
+                    return false;
+                }
+                return getDocumentManager().delete(downloadDocumentFile);
+
+            }
             File file = new File(folder, fileName);
             IFileManager fileManager = getFileManager();
             return fileManager.delete(file);
-        } catch (Exception e) {
+        } catch (Exception exc) {
             Log.e(DownloadCommand.class.getName(), "Error deleting file " + fileName);
             return false;
         }
@@ -232,7 +304,16 @@ public class DownloadCommand implements Callable<DownloadCommandResult> {
         if (StringUtil.isEmpty(fileName)) {
             return false;
         }
+        PreferenceManager preferenceManager = new PreferenceManager(getContext());
         try {
+            if (preferenceManager.getPreferenceAllowArbitraryFileLocation()) {
+                DocumentFile documentDownloadDirectory = getDocumentManager().getFolder(folder);
+                if (documentDownloadDirectory == null) {
+                    Log.e(DownloadCommand.class.getName(), "Error accessing download folder " + folder);
+                    return false;
+                }
+                return getDocumentManager().fileExists(documentDownloadDirectory, fileName);
+            }
             File file = new File(folder, fileName);
             return file.exists();
         } catch (Exception exc) {
@@ -281,7 +362,7 @@ public class DownloadCommand implements Callable<DownloadCommandResult> {
         }
     }
 
-    private void closeResources(URLConnection connection, InputStream inputStream, FileOutputStream outputStream, ScheduledExecutorService executorService) {
+    private void closeResources(URLConnection connection, InputStream inputStream, FileOutputStream outputStream, ParcelFileDescriptor fileDescriptor, ScheduledExecutorService executorService) {
         Log.d(DownloadCommand.class.getName(), "closeResources");
         flushAndCloseOutputStream(outputStream);
         try {
@@ -300,6 +381,13 @@ public class DownloadCommand implements Callable<DownloadCommandResult> {
         } catch (Exception exc) {
             Log.e(DownloadCommand.class.getName(), "Error closing http connection", exc);
         }
+        try {
+            if (fileDescriptor != null) {
+                fileDescriptor.close();
+            }
+        } catch (Exception exc) {
+            Log.e(DownloadCommand.class.getName(), "Error closing http connection", exc);
+        }
         if (executorService != null) {
             Log.d(DownloadCommand.class.getName(), "Shutting down ScheduledExecutorService for polling thread");
             executorService.shutdownNow();
@@ -307,7 +395,11 @@ public class DownloadCommand implements Callable<DownloadCommandResult> {
     }
 
     protected IFileManager getFileManager() {
-        return new SystemFileManager(getContext());
+        return new SystemFileManager(getContext(), getTimeService());
+    }
+
+    protected IDocumentManager getDocumentManager() {
+        return new SystemDocumentManager(getContext(), getTimeService());
     }
 
     private ITimeService createTimeService() {

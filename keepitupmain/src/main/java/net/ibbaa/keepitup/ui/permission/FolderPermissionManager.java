@@ -41,7 +41,7 @@ public class FolderPermissionManager implements IFolderPermissionManager {
         }
         List<UriPermission> permissions = getPermissions(context);
         for (UriPermission permission : permissions) {
-            if (folder.equals(permission.getUri().toString())) {
+            if (folder.equals(permission.getUri().toString()) && permission.isReadPermission() && permission.isWritePermission()) {
                 return true;
             }
         }

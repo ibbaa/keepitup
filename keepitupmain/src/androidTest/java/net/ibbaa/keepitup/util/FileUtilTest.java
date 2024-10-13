@@ -24,6 +24,7 @@ import androidx.test.filters.SmallTest;
 import net.ibbaa.keepitup.logging.Dump;
 import net.ibbaa.keepitup.resources.PreferenceManager;
 import net.ibbaa.keepitup.test.mock.MockFileManager;
+import net.ibbaa.keepitup.test.mock.MockTimeService;
 import net.ibbaa.keepitup.test.mock.TestRegistry;
 
 import org.junit.After;
@@ -32,6 +33,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.io.File;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 
 @SmallTest
 @RunWith(AndroidJUnit4.class)
@@ -97,7 +100,20 @@ public class FileUtilTest {
     }
 
     @Test
-    public void getExternalDirectory() {
+    public void testGetTimestampSuffix() {
+        MockTimeService timeService = new MockTimeService();
+        timeService.setTimestamp(getTestTimestamp());
+        timeService.setTimestamp2(getTestTimestamp());
+        assertEquals("1985.12.24_01_01_01", FileUtil.getTimestampSuffix(TestRegistry.getContext(), timeService));
+    }
+
+    @Test
+    public void testGetNumberSuffix() {
+        assertEquals("(1)", FileUtil.getNumberSuffix(1));
+    }
+
+    @Test
+    public void testGetExternalDirectory() {
         fileManager.setSDCardSupported(false);
         preferenceManager.setPreferenceExternalStorageType(1);
         assertEquals("test0", FileUtil.getExternalDirectory(fileManager, preferenceManager, "test").getName());
@@ -112,7 +128,7 @@ public class FileUtilTest {
     }
 
     @Test
-    public void getExternalRootDirectory() {
+    public void testGetExternalRootDirectory() {
         fileManager.setSDCardSupported(false);
         preferenceManager.setPreferenceExternalStorageType(1);
         assertEquals("test0", FileUtil.getExternalRootDirectory(fileManager, preferenceManager).getName());
@@ -124,5 +140,11 @@ public class FileUtilTest {
         fileManager.setSDCardSupported(true);
         preferenceManager.setPreferenceExternalStorageType(0);
         assertEquals("test0", FileUtil.getExternalRootDirectory(fileManager, preferenceManager).getName());
+    }
+
+    private long getTestTimestamp() {
+        Calendar calendar = new GregorianCalendar(1985, Calendar.DECEMBER, 24, 1, 1, 1);
+        calendar.set(Calendar.MILLISECOND, 999);
+        return calendar.getTimeInMillis();
     }
 }

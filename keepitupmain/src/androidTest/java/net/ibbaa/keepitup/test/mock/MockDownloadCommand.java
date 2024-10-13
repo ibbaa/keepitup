@@ -22,7 +22,6 @@ import net.ibbaa.keepitup.model.NetworkTask;
 import net.ibbaa.keepitup.service.network.DownloadCommand;
 import net.ibbaa.keepitup.service.network.DownloadCommandResult;
 
-import java.io.File;
 import java.net.URL;
 import java.util.concurrent.CountDownLatch;
 
@@ -33,7 +32,7 @@ public class MockDownloadCommand extends DownloadCommand {
     private final boolean block;
     private final CountDownLatch latch;
 
-    public MockDownloadCommand(Context context, NetworkTask networkTask, URL url, File folder, boolean delete, DownloadCommandResult downloadCommandResult) {
+    public MockDownloadCommand(Context context, NetworkTask networkTask, URL url, String folder, boolean delete, DownloadCommandResult downloadCommandResult) {
         super(context, networkTask, url, folder, delete);
         this.exception = null;
         this.downloadCommandResult = downloadCommandResult;
@@ -41,7 +40,7 @@ public class MockDownloadCommand extends DownloadCommand {
         this.latch = new CountDownLatch(1);
     }
 
-    public MockDownloadCommand(Context context, NetworkTask networkTask, URL url, File folder, boolean delete, RuntimeException exception) {
+    public MockDownloadCommand(Context context, NetworkTask networkTask, URL url, String folder, boolean delete, RuntimeException exception) {
         super(context, networkTask, url, folder, delete);
         this.exception = exception;
         this.downloadCommandResult = null;
@@ -49,7 +48,7 @@ public class MockDownloadCommand extends DownloadCommand {
         this.latch = new CountDownLatch(1);
     }
 
-    public MockDownloadCommand(Context context, NetworkTask networkTask, URL url, File folder, boolean delete, DownloadCommandResult downloadCommandResult, boolean block) {
+    public MockDownloadCommand(Context context, NetworkTask networkTask, URL url, String folder, boolean delete, DownloadCommandResult downloadCommandResult, boolean block) {
         super(context, networkTask, url, folder, delete);
         this.exception = null;
         this.downloadCommandResult = downloadCommandResult;

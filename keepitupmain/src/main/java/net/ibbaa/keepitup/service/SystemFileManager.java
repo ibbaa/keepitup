@@ -32,12 +32,9 @@ import net.ibbaa.keepitup.util.URLUtil;
 
 import java.io.File;
 import java.net.URL;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 
 public class SystemFileManager implements IFileManager {
 
@@ -47,6 +44,11 @@ public class SystemFileManager implements IFileManager {
     public SystemFileManager(Context context) {
         this.context = context;
         this.timeService = createTimeService();
+    }
+
+    public SystemFileManager(Context context, ITimeService timeService) {
+        this.context = context;
+        this.timeService = timeService;
     }
 
     @Override
@@ -435,7 +437,7 @@ public class SystemFileManager implements IFileManager {
                 return file;
             }
             Log.d(SystemFileManager.class.getName(), "File " + resultingFile + " does exist");
-            String timestampFileName = FileUtil.suffixFileName(file, getTimestampSuffix());
+            String timestampFileName = FileUtil.suffixFileName(file, FileUtil.getTimestampSuffix(getContext(), getTimeService()));
             resultingFile = new File(folder, timestampFileName);
             if (!resultingFile.exists()) {
                 Log.d(SystemFileManager.class.getName(), "File " + resultingFile + " does not exist");
@@ -444,7 +446,7 @@ public class SystemFileManager implements IFileManager {
             Log.d(SystemFileManager.class.getName(), "File " + resultingFile + " does exist");
             int maxDuplicateFileNumber = getResources().getInteger(R.integer.max_duplicate_file_number);
             for (int ii = 1; ii <= maxDuplicateFileNumber; ii++) {
-                String numberFileName = FileUtil.suffixFileName(timestampFileName, getNumberSuffix(ii));
+                String numberFileName = FileUtil.suffixFileName(timestampFileName, FileUtil.getNumberSuffix(ii));
                 resultingFile = new File(folder, numberFileName);
                 if (!resultingFile.exists()) {
                     Log.d(SystemFileManager.class.getName(), "File " + resultingFile + " does not exist");
@@ -493,15 +495,6 @@ public class SystemFileManager implements IFileManager {
 
     public ITimeService getTimeService() {
         return timeService;
-    }
-
-    private String getTimestampSuffix() {
-        SimpleDateFormat fileNameDateFormat = new SimpleDateFormat(getResources().getString(R.string.timestamp_suffix_file_pattern), Locale.US);
-        return fileNameDateFormat.format(new Date(getTimeService().getCurrentTimestamp()));
-    }
-
-    private String getNumberSuffix(int number) {
-        return "(" + number + ")";
     }
 
     private ITimeService createTimeService() {

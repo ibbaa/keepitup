@@ -21,6 +21,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
+import androidx.documentfile.provider.DocumentFile;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.MediumTest;
 
@@ -33,6 +34,7 @@ import net.ibbaa.keepitup.model.NetworkTask;
 import net.ibbaa.keepitup.resources.PreferenceManager;
 import net.ibbaa.keepitup.service.SystemFileManager;
 import net.ibbaa.keepitup.test.mock.BlockingTestInputStream;
+import net.ibbaa.keepitup.test.mock.MockDocumentManager;
 import net.ibbaa.keepitup.test.mock.MockFileManager;
 import net.ibbaa.keepitup.test.mock.MockHttpURLConnection;
 import net.ibbaa.keepitup.test.mock.MockTimeService;
@@ -50,6 +52,7 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
@@ -202,7 +205,7 @@ public class DownloadCommandTest {
     @Test
     public void testFileNameFromContentDispositionException() throws Exception {
         File externalDir = fileManager.getExternalDirectory(fileManager.getDefaultDownloadDirectoryName(), 0);
-        TestDownloadCommand downloadCommand = new TestDownloadCommand(TestRegistry.getContext(), null, null, externalDir, true);
+        TestDownloadCommand downloadCommand = new TestDownloadCommand(TestRegistry.getContext(), null, null, externalDir.getAbsolutePath(), true);
         setCurrentTime(downloadCommand);
         MockHttpURLConnection urlConnection = prepareHttpURLConnection(null);
         downloadCommand.setURLConnection(urlConnection);
@@ -227,7 +230,7 @@ public class DownloadCommandTest {
     @Test
     public void testFileNameFromContentDispositionExceptionNegativeTime() throws Exception {
         File externalDir = fileManager.getExternalDirectory(fileManager.getDefaultDownloadDirectoryName(), 0);
-        TestDownloadCommand downloadCommand = new TestDownloadCommand(TestRegistry.getContext(), null, null, externalDir, true);
+        TestDownloadCommand downloadCommand = new TestDownloadCommand(TestRegistry.getContext(), null, null, externalDir.getAbsolutePath(), true);
         setNegativeTime(downloadCommand);
         MockHttpURLConnection urlConnection = prepareHttpURLConnection(null);
         downloadCommand.setURLConnection(urlConnection);
@@ -240,7 +243,7 @@ public class DownloadCommandTest {
     @Test
     public void testFileNameFromURLException() throws Exception {
         File externalDir = fileManager.getExternalDirectory(fileManager.getDefaultDownloadDirectoryName(), 0);
-        TestDownloadCommand downloadCommand = new TestDownloadCommand(TestRegistry.getContext(), null, new URL("http://www.host.com/test.jpg"), externalDir, true);
+        TestDownloadCommand downloadCommand = new TestDownloadCommand(TestRegistry.getContext(), null, new URL("http://www.host.com/test.jpg"), externalDir.getAbsolutePath(), true);
         setCurrentTime(downloadCommand);
         MockHttpURLConnection urlConnection = prepareHttpURLConnection(null);
         downloadCommand.setURLConnection(urlConnection);
@@ -264,7 +267,7 @@ public class DownloadCommandTest {
     @Test
     public void testFileNameFromHostException() throws Exception {
         File externalDir = fileManager.getExternalDirectory(fileManager.getDefaultDownloadDirectoryName(), 0);
-        TestDownloadCommand downloadCommand = new TestDownloadCommand(TestRegistry.getContext(), null, new URL("http://www.host.com"), externalDir, true);
+        TestDownloadCommand downloadCommand = new TestDownloadCommand(TestRegistry.getContext(), null, new URL("http://www.host.com"), externalDir.getAbsolutePath(), true);
         setCurrentTime(downloadCommand);
         MockHttpURLConnection urlConnection = prepareHttpURLConnection(null);
         downloadCommand.setURLConnection(urlConnection);
@@ -289,7 +292,7 @@ public class DownloadCommandTest {
     @Test
     public void testFileNameFromHostExceptionNegativeTime() throws Exception {
         File externalDir = fileManager.getExternalDirectory(fileManager.getDefaultDownloadDirectoryName(), 0);
-        TestDownloadCommand downloadCommand = new TestDownloadCommand(TestRegistry.getContext(), null, new URL("http://www.host.com"), externalDir, true);
+        TestDownloadCommand downloadCommand = new TestDownloadCommand(TestRegistry.getContext(), null, new URL("http://www.host.com"), externalDir.getAbsolutePath(), true);
         setNegativeTime(downloadCommand);
         MockHttpURLConnection urlConnection = prepareHttpURLConnection(null);
         downloadCommand.setURLConnection(urlConnection);
@@ -300,12 +303,95 @@ public class DownloadCommandTest {
     }
 
     @Test
+    public void testValidFileNameFileExists() throws Exception {
+        File externalDir = fileManager.getExternalDirectory(fileManager.getDefaultDownloadDirectoryName(), 0);
+        File existingFile = new File(externalDir, "www_host_com.jpg");
+        assertTrue(existingFile.createNewFile());
+        TestDownloadCommand downloadCommand = new TestDownloadCommand(TestRegistry.getContext(), null, new URL("http://www.host.com"), externalDir.getAbsolutePath(), true);
+        setCurrentTime(downloadCommand);
+        ByteArrayInputStream inputStream = new ByteArrayInputStream("TestData".getBytes(Charsets.UTF_8));
+        MockHttpURLConnection urlConnection = prepareHttpURLConnection(inputStream);
+        downloadCommand.setURLConnection(urlConnection);
+        urlConnection.setContentType("image/jpeg");
+        DownloadCommandResult result = downloadCommand.call();
+        assertTrue(result.connectSuccess());
+        assertTrue(result.downloadSuccess());
+        assertTrue(result.fileExists());
+        assertTrue(result.deleteSuccess());
+        assertTrue(result.valid());
+        assertFalse(result.stopped());
+        assertEquals(HttpURLConnection.HTTP_OK, result.httpResponseCode());
+        assertEquals("Everything ok", result.httpResponseMessage());
+        assertEquals("www_host_com_1985.12.24_01_01_01.jpg", result.fileName());
+    }
+
+    @Test
+    public void testArbitraryFileNameIsNull() throws Exception {
+        PreferenceManager preferenceManager = new PreferenceManager(TestRegistry.getContext());
+        preferenceManager.setPreferenceAllowArbitraryFileLocation(true);
+        preferenceManager.setPreferenceArbitraryDownloadFolder("test");
+        TestDownloadCommand downloadCommand = new TestDownloadCommand(TestRegistry.getContext(), null, new URL("http://www.host.com"), "test", true);
+        MockDocumentManager documentManager = new MockDocumentManager();
+        documentManager.setFolder(null);
+        downloadCommand.setDocumentManager(documentManager);
+        setCurrentTime(downloadCommand);
+        ByteArrayInputStream inputStream = new ByteArrayInputStream("TestData".getBytes(Charsets.UTF_8));
+        MockHttpURLConnection urlConnection = prepareHttpURLConnection(inputStream);
+        downloadCommand.setURLConnection(urlConnection);
+        urlConnection.setContentType("image/jpeg");
+        DownloadCommandResult result = downloadCommand.call();
+        assertTrue(result.connectSuccess());
+        assertFalse(result.downloadSuccess());
+        assertFalse(result.fileExists());
+        assertFalse(result.deleteSuccess());
+        assertTrue(result.valid());
+        assertFalse(result.stopped());
+        assertEquals(HttpURLConnection.HTTP_OK, result.httpResponseCode());
+        assertEquals("Everything ok", result.httpResponseMessage());
+        assertNull(result.fileName());
+        assertEquals(99, result.duration());
+        assertNull(result.exception());
+        assertTrue(urlConnection.isDisconnected());
+    }
+
+    @Test
+    public void testArbitraryFileCreateError() throws Exception {
+        PreferenceManager preferenceManager = new PreferenceManager(TestRegistry.getContext());
+        preferenceManager.setPreferenceAllowArbitraryFileLocation(true);
+        preferenceManager.setPreferenceArbitraryDownloadFolder("test");
+        TestDownloadCommand downloadCommand = new TestDownloadCommand(TestRegistry.getContext(), null, new URL("http://www.host.com"), "test", true);
+        MockDocumentManager documentManager = new MockDocumentManager();
+        documentManager.setFolder(DocumentFile.fromFile(new File("test")));
+        documentManager.setValidFileName("valid_file.txt");
+        documentManager.setFileExists(false);
+        downloadCommand.setDocumentManager(documentManager);
+        setCurrentTime(downloadCommand);
+        ByteArrayInputStream inputStream = new ByteArrayInputStream("TestData".getBytes(Charsets.UTF_8));
+        MockHttpURLConnection urlConnection = prepareHttpURLConnection(inputStream);
+        downloadCommand.setURLConnection(urlConnection);
+        urlConnection.setContentType("image/jpeg");
+        DownloadCommandResult result = downloadCommand.call();
+        assertTrue(result.connectSuccess());
+        assertFalse(result.downloadSuccess());
+        assertFalse(result.fileExists());
+        assertFalse(result.deleteSuccess());
+        assertTrue(result.valid());
+        assertFalse(result.stopped());
+        assertEquals(HttpURLConnection.HTTP_OK, result.httpResponseCode());
+        assertEquals("Everything ok", result.httpResponseMessage());
+        assertNull(result.fileName());
+        assertEquals(99, result.duration());
+        assertNull(result.exception());
+        assertTrue(urlConnection.isDisconnected());
+    }
+
+    @Test
     public void testNetworkTaskNotValid() throws Exception {
         NetworkTask databaseTask = networkTaskDAO.insertNetworkTask(getNetworkTask());
         NetworkTask task = getNetworkTaskWithId(databaseTask);
         task.setSchedulerId(databaseTask.getSchedulerId() + 1);
         File externalDir = fileManager.getExternalDirectory(fileManager.getDefaultDownloadDirectoryName(), 0);
-        TestDownloadCommand downloadCommand = new TestDownloadCommand(TestRegistry.getContext(), task, null, externalDir, true);
+        TestDownloadCommand downloadCommand = new TestDownloadCommand(TestRegistry.getContext(), task, null, externalDir.getAbsolutePath(), true);
         setCurrentTime(downloadCommand);
         MockHttpURLConnection urlConnection = prepareHttpURLConnection(new BlockingTestInputStream(downloadCommand::isValid));
         downloadCommand.setURLConnection(urlConnection);
@@ -331,7 +417,7 @@ public class DownloadCommandTest {
         networkTaskDAO.updateNetworkTaskRunning(databaseTask.getId(), false);
         NetworkTask task = getNetworkTaskWithId(databaseTask);
         File externalDir = fileManager.getExternalDirectory(fileManager.getDefaultDownloadDirectoryName(), 0);
-        TestDownloadCommand downloadCommand = new TestDownloadCommand(TestRegistry.getContext(), task, null, externalDir, true);
+        TestDownloadCommand downloadCommand = new TestDownloadCommand(TestRegistry.getContext(), task, null, externalDir.getAbsolutePath(), true);
         setCurrentTime(downloadCommand);
         MockHttpURLConnection urlConnection = prepareHttpURLConnection(new BlockingTestInputStream(downloadCommand::isValid));
         downloadCommand.setURLConnection(urlConnection);
@@ -355,7 +441,7 @@ public class DownloadCommandTest {
     public void testSuccessNot200() throws Exception {
         NetworkTask task = networkTaskDAO.insertNetworkTask(getNetworkTask());
         File externalDir = fileManager.getExternalDirectory(fileManager.getDefaultDownloadDirectoryName(), 0);
-        TestDownloadCommand downloadCommand = new TestDownloadCommand(TestRegistry.getContext(), task, null, externalDir, false);
+        TestDownloadCommand downloadCommand = new TestDownloadCommand(TestRegistry.getContext(), task, null, externalDir.getAbsolutePath(), false);
         setCurrentTime(downloadCommand);
         ByteArrayInputStream inputStream = new ByteArrayInputStream("TestData".getBytes(Charsets.UTF_8));
         MockHttpURLConnection urlConnection = prepareHttpURLConnection(inputStream, 206);
@@ -370,7 +456,7 @@ public class DownloadCommandTest {
     public void testSuccessNotDelete() throws Exception {
         NetworkTask task = networkTaskDAO.insertNetworkTask(getNetworkTask());
         File externalDir = fileManager.getExternalDirectory(fileManager.getDefaultDownloadDirectoryName(), 0);
-        TestDownloadCommand downloadCommand = new TestDownloadCommand(TestRegistry.getContext(), task, null, externalDir, false);
+        TestDownloadCommand downloadCommand = new TestDownloadCommand(TestRegistry.getContext(), task, null, externalDir.getAbsolutePath(), false);
         setCurrentTime(downloadCommand);
         ByteArrayInputStream inputStream = new ByteArrayInputStream("TestData".getBytes(Charsets.UTF_8));
         MockHttpURLConnection urlConnection = prepareHttpURLConnection(inputStream);
@@ -398,7 +484,7 @@ public class DownloadCommandTest {
     public void testSuccessNonHTTPNotDelete() throws Exception {
         NetworkTask task = networkTaskDAO.insertNetworkTask(getNetworkTask());
         File externalDir = fileManager.getExternalDirectory(fileManager.getDefaultDownloadDirectoryName(), 0);
-        TestDownloadCommand downloadCommand = new TestDownloadCommand(TestRegistry.getContext(), task, new URL("http://www.host.com"), externalDir, false);
+        TestDownloadCommand downloadCommand = new TestDownloadCommand(TestRegistry.getContext(), task, new URL("http://www.host.com"), externalDir.getAbsolutePath(), false);
         setCurrentTime(downloadCommand);
         ByteArrayInputStream inputStream = new ByteArrayInputStream("TestData".getBytes(Charsets.UTF_8));
         MockURLConnection urlConnection = new MockURLConnection(new URL("http://test"));
@@ -426,7 +512,7 @@ public class DownloadCommandTest {
     public void testSuccessDelete() throws Exception {
         NetworkTask task = networkTaskDAO.insertNetworkTask(getNetworkTask());
         File externalDir = fileManager.getExternalDirectory(fileManager.getDefaultDownloadDirectoryName(), 0);
-        TestDownloadCommand downloadCommand = new TestDownloadCommand(TestRegistry.getContext(), task, new URL("http://www.host.com/test.jpg"), externalDir, true);
+        TestDownloadCommand downloadCommand = new TestDownloadCommand(TestRegistry.getContext(), task, new URL("http://www.host.com/test.jpg"), externalDir.getAbsolutePath(), true);
         setCurrentTime(downloadCommand);
         ByteArrayInputStream inputStream = new ByteArrayInputStream("TestData".getBytes(Charsets.UTF_8));
         MockHttpURLConnection urlConnection = prepareHttpURLConnection(inputStream);
@@ -449,10 +535,46 @@ public class DownloadCommandTest {
     }
 
     @Test
+    public void testArbitraryFileSuccessDelete() throws Exception {
+        PreferenceManager preferenceManager = new PreferenceManager(TestRegistry.getContext());
+        preferenceManager.setPreferenceAllowArbitraryFileLocation(true);
+        preferenceManager.setPreferenceArbitraryDownloadFolder("test");
+        TestDownloadCommand downloadCommand = new TestDownloadCommand(TestRegistry.getContext(), null, new URL("http://www.host.com"), "test", true);
+        File externalDir = fileManager.getExternalDirectory(fileManager.getDefaultDownloadDirectoryName(), 0);
+        File downloadFile = new File(externalDir, "valid_file.txt");
+        downloadCommand.setOutputStream(new FileOutputStream(downloadFile));
+        MockDocumentManager documentManager = new MockDocumentManager();
+        documentManager.setFolder(DocumentFile.fromFile(new File("test")));
+        documentManager.setValidFileName("valid_file.txt");
+        documentManager.setFileExists(true);
+        documentManager.setDeleteSuccess(true);
+        documentManager.setFile(DocumentFile.fromFile(new File("test")));
+        downloadCommand.setDocumentManager(documentManager);
+        setCurrentTime(downloadCommand);
+        ByteArrayInputStream inputStream = new ByteArrayInputStream("TestData".getBytes(Charsets.UTF_8));
+        MockHttpURLConnection urlConnection = prepareHttpURLConnection(inputStream);
+        downloadCommand.setURLConnection(urlConnection);
+        urlConnection.setContentType("image/jpeg");
+        DownloadCommandResult result = downloadCommand.call();
+        assertTrue(result.connectSuccess());
+        assertTrue(result.downloadSuccess());
+        assertTrue(result.fileExists());
+        assertTrue(result.deleteSuccess());
+        assertTrue(result.valid());
+        assertFalse(result.stopped());
+        assertEquals(HttpURLConnection.HTTP_OK, result.httpResponseCode());
+        assertEquals("Everything ok", result.httpResponseMessage());
+        assertEquals("valid_file.txt", result.fileName());
+        assertEquals(99, result.duration());
+        assertNull(result.exception());
+        assertTrue(urlConnection.isDisconnected());
+    }
+
+    @Test
     public void testSuccessDeleteFailed() throws Exception {
         NetworkTask task = networkTaskDAO.insertNetworkTask(getNetworkTask());
         File externalDir = fileManager.getExternalDirectory(fileManager.getDefaultDownloadDirectoryName(), 0);
-        TestDownloadCommand downloadCommand = new TestDownloadCommand(TestRegistry.getContext(), task, null, externalDir, true);
+        TestDownloadCommand downloadCommand = new TestDownloadCommand(TestRegistry.getContext(), task, null, externalDir.getAbsolutePath(), true);
         setCurrentTime(downloadCommand);
         ByteArrayInputStream inputStream = new ByteArrayInputStream("TestData".getBytes(Charsets.UTF_8));
         MockHttpURLConnection urlConnection = prepareHttpURLConnection(inputStream);
@@ -481,10 +603,46 @@ public class DownloadCommandTest {
     }
 
     @Test
+    public void testArbitraryFileSuccessDeleteFailed() throws Exception {
+        PreferenceManager preferenceManager = new PreferenceManager(TestRegistry.getContext());
+        preferenceManager.setPreferenceAllowArbitraryFileLocation(true);
+        preferenceManager.setPreferenceArbitraryDownloadFolder("test");
+        TestDownloadCommand downloadCommand = new TestDownloadCommand(TestRegistry.getContext(), null, new URL("http://www.host.com"), "test", true);
+        File externalDir = fileManager.getExternalDirectory(fileManager.getDefaultDownloadDirectoryName(), 0);
+        File downloadFile = new File(externalDir, "valid_file.txt");
+        downloadCommand.setOutputStream(new FileOutputStream(downloadFile));
+        MockDocumentManager documentManager = new MockDocumentManager();
+        documentManager.setFolder(DocumentFile.fromFile(new File("test")));
+        documentManager.setValidFileName("valid_file.txt");
+        documentManager.setFileExists(true);
+        documentManager.setDeleteSuccess(false);
+        documentManager.setFile(DocumentFile.fromFile(new File("test")));
+        downloadCommand.setDocumentManager(documentManager);
+        setCurrentTime(downloadCommand);
+        ByteArrayInputStream inputStream = new ByteArrayInputStream("TestData".getBytes(Charsets.UTF_8));
+        MockHttpURLConnection urlConnection = prepareHttpURLConnection(inputStream);
+        downloadCommand.setURLConnection(urlConnection);
+        urlConnection.setContentType("image/jpeg");
+        DownloadCommandResult result = downloadCommand.call();
+        assertTrue(result.connectSuccess());
+        assertTrue(result.downloadSuccess());
+        assertTrue(result.fileExists());
+        assertFalse(result.deleteSuccess());
+        assertTrue(result.valid());
+        assertFalse(result.stopped());
+        assertEquals(HttpURLConnection.HTTP_OK, result.httpResponseCode());
+        assertEquals("Everything ok", result.httpResponseMessage());
+        assertEquals("valid_file.txt", result.fileName());
+        assertEquals(99, result.duration());
+        assertNull(result.exception());
+        assertTrue(urlConnection.isDisconnected());
+    }
+
+    @Test
     public void testSuccessDeleteFailedNegativeTime() throws Exception {
         NetworkTask task = networkTaskDAO.insertNetworkTask(getNetworkTask());
         File externalDir = fileManager.getExternalDirectory(fileManager.getDefaultDownloadDirectoryName(), 0);
-        TestDownloadCommand downloadCommand = new TestDownloadCommand(TestRegistry.getContext(), task, null, externalDir, true);
+        TestDownloadCommand downloadCommand = new TestDownloadCommand(TestRegistry.getContext(), task, null, externalDir.getAbsolutePath(), true);
         setNegativeTime(downloadCommand);
         ByteArrayInputStream inputStream = new ByteArrayInputStream("TestData".getBytes(Charsets.UTF_8));
         MockHttpURLConnection urlConnection = prepareHttpURLConnection(inputStream);

@@ -16,11 +16,18 @@
 
 package net.ibbaa.keepitup.util;
 
+import android.content.Context;
+
+import net.ibbaa.keepitup.R;
 import net.ibbaa.keepitup.logging.Log;
 import net.ibbaa.keepitup.resources.PreferenceManager;
 import net.ibbaa.keepitup.service.IFileManager;
+import net.ibbaa.keepitup.service.ITimeService;
 
 import java.io.File;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
 
 public class FileUtil {
 
@@ -52,6 +59,15 @@ public class FileUtil {
             return getFileNameWithoutExtension(fileName) + "_" + suffix + "." + extension;
         }
         return getFileNameWithoutExtension(fileName) + "_" + suffix;
+    }
+
+    public static String getTimestampSuffix(Context context, ITimeService timeService) {
+        SimpleDateFormat fileNameDateFormat = new SimpleDateFormat(context.getResources().getString(R.string.timestamp_suffix_file_pattern), Locale.US);
+        return fileNameDateFormat.format(new Date(timeService.getCurrentTimestamp()));
+    }
+
+    public static String getNumberSuffix(int number) {
+        return "(" + number + ")";
     }
 
     public static File getExternalDirectory(IFileManager fileManager, PreferenceManager preferenceManager, String directoryName) {

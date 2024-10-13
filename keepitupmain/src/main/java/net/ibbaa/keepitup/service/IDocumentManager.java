@@ -21,4 +21,14 @@ import androidx.documentfile.provider.DocumentFile;
 public interface IDocumentManager {
 
     DocumentFile getArbitraryDirectory(String arbitraryFolder);
+
+    String getValidFileName(DocumentFile folder, String file);
+
+    DocumentFile getFolder(String folder);
+
+    DocumentFile getFile(DocumentFile folder, String fileName);
+
+    boolean delete(DocumentFile file);
+
+    boolean fileExists(DocumentFile folder, String fileName);
 }

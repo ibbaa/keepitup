@@ -38,6 +38,7 @@ import net.ibbaa.keepitup.service.network.DownloadCommandResult;
 import net.ibbaa.keepitup.test.mock.MockDNSLookup;
 import net.ibbaa.keepitup.test.mock.MockDownloadCommand;
 import net.ibbaa.keepitup.test.mock.MockFileManager;
+import net.ibbaa.keepitup.test.mock.MockFolderPermissionManager;
 import net.ibbaa.keepitup.test.mock.MockNotificationManager;
 import net.ibbaa.keepitup.test.mock.MockTimeService;
 import net.ibbaa.keepitup.test.mock.TestDownloadNetworkTaskWorker;
@@ -98,9 +99,9 @@ public class DownloadNetworkTaskWorkerTest {
         MockDNSLookup mockDNSLookup = new MockDNSLookup("127.0.0.1", dnsLookupResult);
         MockDownloadCommand mockDownloadCommand;
         if (exception == null) {
-            mockDownloadCommand = new MockDownloadCommand(TestRegistry.getContext(), getNetworkTask(), new URL("http://127.0.0.1"), new File("folder"), true, downloadCommandResult);
+            mockDownloadCommand = new MockDownloadCommand(TestRegistry.getContext(), getNetworkTask(), new URL("http://127.0.0.1"), "folder", true, downloadCommandResult);
         } else {
-            mockDownloadCommand = new MockDownloadCommand(TestRegistry.getContext(), getNetworkTask(), new URL("http://127.0.0.1"), new File("folder"), true, exception);
+            mockDownloadCommand = new MockDownloadCommand(TestRegistry.getContext(), getNetworkTask(), new URL("http://127.0.0.1"), "folder", true, exception);
         }
         downloadNetworkTaskWorker.setMockDNSLookup(mockDNSLookup);
         downloadNetworkTaskWorker.setMockDownloadCommand(mockDownloadCommand);
@@ -115,7 +116,7 @@ public class DownloadNetworkTaskWorkerTest {
         TestDownloadNetworkTaskWorker downloadNetworkTaskWorker = new TestDownloadNetworkTaskWorker(TestRegistry.getContext(), task, null);
         MockDNSLookup mockDNSLookup = new MockDNSLookup("127.0.0.1", dnsLookupResult);
         MockDownloadCommand mockDownloadCommand;
-        mockDownloadCommand = new MockDownloadCommand(TestRegistry.getContext(), task, new URL("http://127.0.0.1"), new File("folder"), true, downloadCommandResult, true);
+        mockDownloadCommand = new MockDownloadCommand(TestRegistry.getContext(), task, new URL("http://127.0.0.1"), "folder", true, downloadCommandResult, true);
         downloadNetworkTaskWorker.setMockDNSLookup(mockDNSLookup);
         downloadNetworkTaskWorker.setMockDownloadCommand(mockDownloadCommand);
         downloadNetworkTaskWorker.setMockFileManager(fileManager);
@@ -174,6 +175,45 @@ public class DownloadNetworkTaskWorkerTest {
         assertEquals(getTestTimestamp(), logEntry.getTimestamp());
         assertFalse(logEntry.isSuccess());
         assertEquals("Download not possible. The download folder download does not exist and cannot be created.", logEntry.getMessage());
+    }
+
+    @Test
+    public void testInvalidArbitraryDownloadFolder() throws Exception {
+        preferenceManager.setPreferenceAllowArbitraryFileLocation(true);
+        preferenceManager.setPreferenceLogFile(true);
+        preferenceManager.setPreferenceArbitraryDownloadFolder("Test");
+        DNSLookupResult dnsLookupResult = new DNSLookupResult(Arrays.asList(InetAddress.getByName("127.0.0.1"), InetAddress.getByName("::1")), null);
+        TestDownloadNetworkTaskWorker downloadNetworkTaskWorker = prepareTestDownloadNetworkTaskWorker(dnsLookupResult, (DownloadCommandResult) null);
+        MockFolderPermissionManager folderPermissionManager = new MockFolderPermissionManager();
+        downloadNetworkTaskWorker.setFolderPermissionManager(folderPermissionManager);
+        folderPermissionManager.requestPermission(null, null, "Movies");
+        preferenceManager.setPreferenceDownloadExternalStorage(true);
+        fileManager.setExternalDirectory(null, 0);
+        NetworkTaskWorker.ExecutionResult executionResult = downloadNetworkTaskWorker.execute(getNetworkTask(), getAccessTypeData());
+        LogEntry logEntry = executionResult.getLogEntry();
+        assertEquals(45, logEntry.getNetworkTaskId());
+        assertEquals(getTestTimestamp(), logEntry.getTimestamp());
+        assertFalse(logEntry.isSuccess());
+        assertEquals("Download not possible. Missing permission to access download folder: Test.", logEntry.getMessage());
+    }
+
+    @Test
+    public void testValidArbitraryFolder() throws Exception {
+        preferenceManager.setPreferenceAllowArbitraryFileLocation(true);
+        preferenceManager.setPreferenceLogFile(true);
+        preferenceManager.setPreferenceArbitraryDownloadFolder("Movies");
+        DNSLookupResult dnsLookupResult = new DNSLookupResult(Arrays.asList(InetAddress.getByName("127.0.0.1"), InetAddress.getByName("::1")), null);
+        DownloadCommandResult downloadCommandResult = new DownloadCommandResult(true, true, true, true, true, false, HttpURLConnection.HTTP_OK, null, "testfile", 999, null);
+        TestDownloadNetworkTaskWorker downloadNetworkTaskWorker = prepareTestDownloadNetworkTaskWorker(dnsLookupResult, downloadCommandResult);
+        MockFolderPermissionManager folderPermissionManager = new MockFolderPermissionManager();
+        downloadNetworkTaskWorker.setFolderPermissionManager(folderPermissionManager);
+        folderPermissionManager.requestPermission(null, null, "Movies");
+        NetworkTaskWorker.ExecutionResult executionResult = downloadNetworkTaskWorker.execute(getNetworkTask(), getAccessTypeData());
+        LogEntry logEntry = executionResult.getLogEntry();
+        assertEquals(45, logEntry.getNetworkTaskId());
+        assertEquals(getTestTimestamp(), logEntry.getTimestamp());
+        assertTrue(logEntry.isSuccess());
+        assertEquals("The download from http://127.0.0.1:80 was successful. The file was deleted after download. 999 msec download time.", logEntry.getMessage());
     }
 
     @Test
