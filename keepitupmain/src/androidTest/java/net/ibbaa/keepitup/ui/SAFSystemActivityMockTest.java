@@ -59,18 +59,18 @@ public class SAFSystemActivityMockTest extends BaseUITest {
         onView(withId(R.id.switch_activity_system_allow_arbitrary_file_location)).perform(scrollTo());
         onView(withId(R.id.switch_activity_system_allow_arbitrary_file_location)).perform(click());
         onView(withId(R.id.textview_activity_system_allow_arbitrary_file_location_on_off)).check(matches(withText("yes")));
-        assertTrue(folderPermissionManager.hasPermission(getActivity(activityScenario), "/Test"));
-        assertFalse(folderPermissionManager.hasPermission(getActivity(activityScenario), "/Documents"));
+        assertTrue(folderPermissionManager.hasPersistentPermission(getActivity(activityScenario), "/Test"));
+        assertFalse(folderPermissionManager.hasPersistentPermission(getActivity(activityScenario), "/Documents"));
         onView(withId(R.id.switch_activity_system_allow_arbitrary_file_location)).perform(scrollTo());
         onView(withId(R.id.switch_activity_system_allow_arbitrary_file_location)).perform(click());
         onView(withId(R.id.textview_activity_system_allow_arbitrary_file_location_on_off)).check(matches(withText("no")));
-        assertTrue(folderPermissionManager.hasPermission(getActivity(activityScenario), "/Test"));
-        assertFalse(folderPermissionManager.hasPermission(getActivity(activityScenario), "/Documents"));
+        assertTrue(folderPermissionManager.hasPersistentPermission(getActivity(activityScenario), "/Test"));
+        assertFalse(folderPermissionManager.hasPersistentPermission(getActivity(activityScenario), "/Documents"));
         onView(withId(R.id.switch_activity_system_allow_arbitrary_file_location)).perform(scrollTo());
         onView(withId(R.id.switch_activity_system_allow_arbitrary_file_location)).perform(click());
         onView(withId(R.id.textview_activity_system_allow_arbitrary_file_location_on_off)).check(matches(withText("yes")));
-        assertTrue(folderPermissionManager.hasPermission(getActivity(activityScenario), "/Test"));
-        assertFalse(folderPermissionManager.hasPermission(getActivity(activityScenario), "/Documents"));
+        assertTrue(folderPermissionManager.hasPersistentPermission(getActivity(activityScenario), "/Test"));
+        assertFalse(folderPermissionManager.hasPersistentPermission(getActivity(activityScenario), "/Documents"));
         activityScenario.close();
     }
 
@@ -79,27 +79,27 @@ public class SAFSystemActivityMockTest extends BaseUITest {
         ActivityScenario<?> activityScenario = launchSettingsInputActivity(SystemActivity.class, getBypassSystemSAFBundle());
         injectMocks(activityScenario);
         folderPermissionManager.setGrantedFolder("/Movies");
-        folderPermissionManager.requestPermission(null, null, "/Movies");
+        folderPermissionManager.requestPersistentFolderPermission(null, null, "/Movies");
         injectArbitraryFolderLauncher(activityScenario, "/Test");
         folderPermissionManager.setGrantedFolder("/Test");
         onView(withId(R.id.switch_activity_system_allow_arbitrary_file_location)).perform(scrollTo());
         onView(withId(R.id.switch_activity_system_allow_arbitrary_file_location)).perform(click());
         onView(withId(R.id.textview_activity_system_allow_arbitrary_file_location_on_off)).check(matches(withText("yes")));
-        assertTrue(folderPermissionManager.hasPermission(getActivity(activityScenario), "/Movies"));
-        assertFalse(folderPermissionManager.hasPermission(getActivity(activityScenario), "/Test"));
-        assertFalse(folderPermissionManager.hasPermission(getActivity(activityScenario), "/Documents"));
+        assertTrue(folderPermissionManager.hasPersistentPermission(getActivity(activityScenario), "/Movies"));
+        assertFalse(folderPermissionManager.hasPersistentPermission(getActivity(activityScenario), "/Test"));
+        assertFalse(folderPermissionManager.hasPersistentPermission(getActivity(activityScenario), "/Documents"));
         onView(withId(R.id.switch_activity_system_allow_arbitrary_file_location)).perform(scrollTo());
         onView(withId(R.id.switch_activity_system_allow_arbitrary_file_location)).perform(click());
         onView(withId(R.id.textview_activity_system_allow_arbitrary_file_location_on_off)).check(matches(withText("no")));
-        assertTrue(folderPermissionManager.hasPermission(getActivity(activityScenario), "/Movies"));
-        assertFalse(folderPermissionManager.hasPermission(getActivity(activityScenario), "/Test"));
-        assertFalse(folderPermissionManager.hasPermission(getActivity(activityScenario), "/Documents"));
+        assertTrue(folderPermissionManager.hasPersistentPermission(getActivity(activityScenario), "/Movies"));
+        assertFalse(folderPermissionManager.hasPersistentPermission(getActivity(activityScenario), "/Test"));
+        assertFalse(folderPermissionManager.hasPersistentPermission(getActivity(activityScenario), "/Documents"));
         onView(withId(R.id.switch_activity_system_allow_arbitrary_file_location)).perform(scrollTo());
         onView(withId(R.id.switch_activity_system_allow_arbitrary_file_location)).perform(click());
         onView(withId(R.id.textview_activity_system_allow_arbitrary_file_location_on_off)).check(matches(withText("yes")));
-        assertTrue(folderPermissionManager.hasPermission(getActivity(activityScenario), "/Movies"));
-        assertFalse(folderPermissionManager.hasPermission(getActivity(activityScenario), "/Test"));
-        assertFalse(folderPermissionManager.hasPermission(getActivity(activityScenario), "/Documents"));
+        assertTrue(folderPermissionManager.hasPersistentPermission(getActivity(activityScenario), "/Movies"));
+        assertFalse(folderPermissionManager.hasPersistentPermission(getActivity(activityScenario), "/Test"));
+        assertFalse(folderPermissionManager.hasPersistentPermission(getActivity(activityScenario), "/Documents"));
         activityScenario.close();
     }
 

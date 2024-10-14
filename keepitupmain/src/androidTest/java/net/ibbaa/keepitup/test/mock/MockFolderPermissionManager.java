@@ -54,17 +54,17 @@ public class MockFolderPermissionManager implements IFolderPermissionManager {
     }
 
     @Override
-    public boolean hasPermission(Context context, String folder) {
+    public boolean hasPersistentPermission(Context context, String folder) {
         return permissions.contains(folder);
     }
 
     @Override
-    public boolean hasAnyPermission(Context context) {
+    public boolean hasAnyPersistentPermission(Context context) {
         return !permissions.isEmpty();
     }
 
     @Override
-    public void requestPermission(ComponentActivity activity, FolderPermissionLauncher launcher, String folder) {
+    public void requestPersistentFolderPermission(ComponentActivity activity, FolderPermissionLauncher launcher, String folder) {
         String actualGrantedFolder = grantedFolder != null ? grantedFolder : folder;
         permissions.add(actualGrantedFolder);
         Intent intent = new Intent();
@@ -75,17 +75,17 @@ public class MockFolderPermissionManager implements IFolderPermissionManager {
     }
 
     @Override
-    public void revokePermission(FragmentActivity activity, String folder) {
+    public void revokePersistentPermission(FragmentActivity activity, String folder) {
         permissions.remove(folder);
     }
 
     @Override
-    public void revokeAllPermissions(FragmentActivity activity) {
+    public void revokeAllPersistentPermissions(FragmentActivity activity) {
         permissions.clear();
     }
 
     @Override
-    public void revokeOrphanPermissions(FragmentActivity activity, Set<String> usedFolders) {
+    public void revokeOrphanPersistentPermissions(FragmentActivity activity, Set<String> usedFolders) {
         permissions.retainAll(usedFolders);
     }
 }
