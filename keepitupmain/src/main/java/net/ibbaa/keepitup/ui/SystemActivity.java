@@ -52,10 +52,10 @@ import net.ibbaa.keepitup.ui.dialog.BatteryOptimizationDialog;
 import net.ibbaa.keepitup.ui.dialog.ConfirmDialog;
 import net.ibbaa.keepitup.ui.dialog.FileChooseDialog;
 import net.ibbaa.keepitup.ui.dialog.GeneralErrorDialog;
-import net.ibbaa.keepitup.ui.permission.FolderPermissionLauncher;
-import net.ibbaa.keepitup.ui.permission.GenericFolderPermissionLauncher;
-import net.ibbaa.keepitup.ui.permission.IFolderPermissionManager;
-import net.ibbaa.keepitup.ui.permission.NullFolderPermissionLauncher;
+import net.ibbaa.keepitup.ui.permission.GenericPermissionLauncher;
+import net.ibbaa.keepitup.ui.permission.IStoragePermissionManager;
+import net.ibbaa.keepitup.ui.permission.NullPermissionLauncher;
+import net.ibbaa.keepitup.ui.permission.PermissionLauncher;
 import net.ibbaa.keepitup.ui.sync.DBPurgeTask;
 import net.ibbaa.keepitup.ui.sync.ExportTask;
 import net.ibbaa.keepitup.ui.sync.ImportTask;
@@ -91,7 +91,7 @@ public class SystemActivity extends SettingsInputActivity implements ExportSuppo
     private TextView logFolderText;
     private TextView batteryOptimizationText;
     private RadioGroup theme;
-    private FolderPermissionLauncher arbitraryFolderLauncher;
+    private PermissionLauncher arbitraryFolderLauncher;
 
     private DBPurgeTask purgeTask;
     private ExportTask exportTask;
@@ -119,7 +119,7 @@ public class SystemActivity extends SettingsInputActivity implements ExportSuppo
         this.themeManager = themeManager;
     }
 
-    public void injectArbitraryFolderLauncher(FolderPermissionLauncher arbitraryFolderLauncher) {
+    public void injectArbitraryFolderLauncher(PermissionLauncher arbitraryFolderLauncher) {
         this.arbitraryFolderLauncher = arbitraryFolderLauncher;
     }
 
@@ -331,9 +331,9 @@ public class SystemActivity extends SettingsInputActivity implements ExportSuppo
         Log.d(SystemActivity.class.getName(), "prepareArbitraryFolderLauncher");
         boolean bypassSystemSAF = BundleUtil.booleanFromBundle(getBypassSystemSAFKey(), getIntent().getExtras());
         if (SystemUtil.supportsSAFFeature() && !bypassSystemSAF) {
-            arbitraryFolderLauncher = new GenericFolderPermissionLauncher(this, this::grantArbitraryFolderPermissions);
+            arbitraryFolderLauncher = new GenericPermissionLauncher(this, this::grantArbitraryFolderPermissions);
         } else {
-            arbitraryFolderLauncher = new NullFolderPermissionLauncher();
+            arbitraryFolderLauncher = new NullPermissionLauncher();
         }
     }
 
@@ -379,10 +379,10 @@ public class SystemActivity extends SettingsInputActivity implements ExportSuppo
 
     private void prepareArbitraryFolderPermissions() {
         Log.d(SystemActivity.class.getName(), "prepareArbitraryFolderPermissions");
-        IFolderPermissionManager folderPermissionManager = getFolderPermissionManager();
+        IStoragePermissionManager storagePermissionManager = getStoragePermissionManager();
         if (arbitraryFileLocationSwitch.isChecked()) {
-            if (!folderPermissionManager.hasAnyPersistentPermission(this)) {
-                folderPermissionManager.requestPersistentFolderPermission(this, arbitraryFolderLauncher, null);
+            if (!storagePermissionManager.hasAnyPersistentPermission(this)) {
+                storagePermissionManager.requestPersistentFolderPermission(this, arbitraryFolderLauncher, null);
             }
         }
     }
@@ -398,8 +398,8 @@ public class SystemActivity extends SettingsInputActivity implements ExportSuppo
         PreferenceManager preferenceManager = new PreferenceManager(this);
         preferenceManager.setPreferenceArbitraryLogFolder(arbitraryFolder);
         preferenceManager.setPreferenceArbitraryDownloadFolder(arbitraryFolder);
-        IFolderPermissionManager folderPermissionManager = getFolderPermissionManager();
-        folderPermissionManager.revokeOrphanPersistentPermissions(this, preferenceManager.getArbitraryFolders());
+        IStoragePermissionManager storagePermissionManager = getStoragePermissionManager();
+        storagePermissionManager.revokeOrphanPersistentPermissions(this, preferenceManager.getArbitraryFolders());
         NetworkTaskLog.clear();
     }
 
@@ -798,8 +798,8 @@ public class SystemActivity extends SettingsInputActivity implements ExportSuppo
 
     private void resetFolderPermissions() {
         Log.d(SystemActivity.class.getName(), "resetFolderPermissions");
-        IFolderPermissionManager folderPermissionManager = getFolderPermissionManager();
-        folderPermissionManager.revokeAllPersistentPermissions(this);
+        IStoragePermissionManager storagePermissionManager = getStoragePermissionManager();
+        storagePermissionManager.revokeAllPersistentPermissions(this);
     }
 
     private void resetActivity() {

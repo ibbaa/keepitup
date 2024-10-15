@@ -38,10 +38,10 @@ import net.ibbaa.keepitup.resources.PreferenceManager;
 import net.ibbaa.keepitup.resources.ServiceFactoryContributor;
 import net.ibbaa.keepitup.service.network.DNSLookup;
 import net.ibbaa.keepitup.service.network.DNSLookupResult;
-import net.ibbaa.keepitup.ui.permission.FolderPermissionManager;
-import net.ibbaa.keepitup.ui.permission.IFolderPermissionManager;
 import net.ibbaa.keepitup.ui.permission.IPermissionManager;
+import net.ibbaa.keepitup.ui.permission.IStoragePermissionManager;
 import net.ibbaa.keepitup.ui.permission.PermissionManager;
+import net.ibbaa.keepitup.ui.permission.StoragePermissionManager;
 import net.ibbaa.keepitup.ui.sync.LogEntryUIBroadcastReceiver;
 import net.ibbaa.keepitup.ui.sync.NetworkTaskMainUIBroadcastReceiver;
 import net.ibbaa.keepitup.util.ExceptionUtil;
@@ -183,7 +183,7 @@ public abstract class NetworkTaskWorker implements Runnable {
 
     private boolean checkArbitraryLogFolderPermission(PreferenceManager preferenceManager) {
         Log.d(NetworkTaskWorker.class.getName(), "checkArbitraryLogFolderPermission");
-        return getFolderPermissionManager().hasPersistentPermission(getContext(), preferenceManager.getPreferenceArbitraryLogFolder());
+        return getStoragePermissionManager().hasPersistentPermission(getContext(), preferenceManager.getPreferenceArbitraryLogFolder());
     }
 
     private void sendNetworkTaskUINotificationBroadcast(NetworkTask task) {
@@ -419,8 +419,8 @@ public abstract class NetworkTaskWorker implements Runnable {
         return new PermissionManager();
     }
 
-    public IFolderPermissionManager getFolderPermissionManager() {
-        return new FolderPermissionManager();
+    public IStoragePermissionManager getStoragePermissionManager() {
+        return new StoragePermissionManager();
     }
 
     public static class DNSExecutionResult extends ExecutionResult {

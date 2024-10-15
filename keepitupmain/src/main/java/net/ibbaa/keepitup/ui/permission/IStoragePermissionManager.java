@@ -24,13 +24,13 @@ import androidx.fragment.app.FragmentActivity;
 import java.util.Set;
 
 @SuppressWarnings({"unused"})
-public interface IFolderPermissionManager {
+public interface IStoragePermissionManager {
 
     boolean hasPersistentPermission(Context context, String folder);
 
     boolean hasAnyPersistentPermission(Context context);
 
-    void requestPersistentFolderPermission(ComponentActivity activity, FolderPermissionLauncher launcher, String folder);
+    void requestPersistentFolderPermission(ComponentActivity activity, PermissionLauncher launcher, String folder);
 
     void revokePersistentPermission(FragmentActivity activity, String folder);
 

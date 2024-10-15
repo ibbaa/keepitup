@@ -18,11 +18,13 @@ package net.ibbaa.keepitup.ui.permission;
 
 import android.content.Intent;
 
-import net.ibbaa.keepitup.logging.Log;
+public interface PermissionLauncher {
 
-public class NullFolderPermissionLauncher implements FolderPermissionLauncher {
+    void launch(Intent intent);
 
-    public void launch(Intent intent) {
-        Log.d(NullFolderPermissionLauncher.class.getName(), "launch");
+    @FunctionalInterface
+    interface Consumer<S> {
+        @SuppressWarnings({"unused"})
+        void accept(S result);
     }
 }

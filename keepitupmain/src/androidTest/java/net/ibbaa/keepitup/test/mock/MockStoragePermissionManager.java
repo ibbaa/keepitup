@@ -23,23 +23,23 @@ import android.net.Uri;
 import androidx.activity.ComponentActivity;
 import androidx.fragment.app.FragmentActivity;
 
-import net.ibbaa.keepitup.ui.permission.FolderPermissionLauncher;
-import net.ibbaa.keepitup.ui.permission.IFolderPermissionManager;
+import net.ibbaa.keepitup.ui.permission.IStoragePermissionManager;
+import net.ibbaa.keepitup.ui.permission.PermissionLauncher;
 
 import java.util.HashSet;
 import java.util.Set;
 
 @SuppressWarnings({"unused"})
-public class MockFolderPermissionManager implements IFolderPermissionManager {
+public class MockStoragePermissionManager implements IStoragePermissionManager {
 
     private Set<String> permissions;
     private String grantedFolder;
 
-    public MockFolderPermissionManager() {
+    public MockStoragePermissionManager() {
         reset();
     }
 
-    public MockFolderPermissionManager(String grantedFolder) {
+    public MockStoragePermissionManager(String grantedFolder) {
         reset();
         this.grantedFolder = grantedFolder;
     }
@@ -64,7 +64,7 @@ public class MockFolderPermissionManager implements IFolderPermissionManager {
     }
 
     @Override
-    public void requestPersistentFolderPermission(ComponentActivity activity, FolderPermissionLauncher launcher, String folder) {
+    public void requestPersistentFolderPermission(ComponentActivity activity, PermissionLauncher launcher, String folder) {
         String actualGrantedFolder = grantedFolder != null ? grantedFolder : folder;
         permissions.add(actualGrantedFolder);
         Intent intent = new Intent();

@@ -24,8 +24,8 @@ import net.ibbaa.keepitup.service.DownloadNetworkTaskWorker;
 import net.ibbaa.keepitup.service.IFileManager;
 import net.ibbaa.keepitup.service.network.DNSLookupResult;
 import net.ibbaa.keepitup.service.network.DownloadCommandResult;
-import net.ibbaa.keepitup.ui.permission.IFolderPermissionManager;
 import net.ibbaa.keepitup.ui.permission.IPermissionManager;
+import net.ibbaa.keepitup.ui.permission.IStoragePermissionManager;
 
 import java.net.URL;
 import java.util.Objects;
@@ -36,7 +36,7 @@ public class TestDownloadNetworkTaskWorker extends DownloadNetworkTaskWorker {
     private MockDNSLookup mockDNSLookup;
     private MockDownloadCommand mockDownloadCommand;
     private MockFileManager mockFileManager;
-    private MockFolderPermissionManager folderPermissionManager;
+    private MockStoragePermissionManager storagePermissionManager;
 
     public TestDownloadNetworkTaskWorker(Context context, NetworkTask networkTask, PowerManager.WakeLock wakeLock) {
         super(context, networkTask, wakeLock);
@@ -56,8 +56,8 @@ public class TestDownloadNetworkTaskWorker extends DownloadNetworkTaskWorker {
         this.mockFileManager = mockFileManager;
     }
 
-    public void setFolderPermissionManager(MockFolderPermissionManager folderPermissionManager) {
-        this.folderPermissionManager = folderPermissionManager;
+    public void setStoragePermissionManager(MockStoragePermissionManager storagePermissionManager) {
+        this.storagePermissionManager = storagePermissionManager;
     }
 
     @Override
@@ -81,7 +81,7 @@ public class TestDownloadNetworkTaskWorker extends DownloadNetworkTaskWorker {
     }
 
     @Override
-    public IFolderPermissionManager getFolderPermissionManager() {
-        return Objects.requireNonNullElseGet(folderPermissionManager, MockFolderPermissionManager::new);
+    public IStoragePermissionManager getStoragePermissionManager() {
+        return Objects.requireNonNullElseGet(storagePermissionManager, MockStoragePermissionManager::new);
     }
 }

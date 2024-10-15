@@ -27,8 +27,8 @@ import net.ibbaa.keepitup.model.LogEntry;
 import net.ibbaa.keepitup.model.NetworkTask;
 import net.ibbaa.keepitup.service.NetworkTaskWorker;
 import net.ibbaa.keepitup.service.network.DNSLookupResult;
-import net.ibbaa.keepitup.ui.permission.IFolderPermissionManager;
 import net.ibbaa.keepitup.ui.permission.IPermissionManager;
+import net.ibbaa.keepitup.ui.permission.IStoragePermissionManager;
 
 import java.util.Objects;
 import java.util.concurrent.Callable;
@@ -42,7 +42,7 @@ public class TestNetworkTaskWorker extends NetworkTaskWorker {
     private final boolean interrupted;
     private NetworkTask task;
     private AccessTypeData data;
-    private MockFolderPermissionManager folderPermissionManager;
+    private MockStoragePermissionManager storagePermissionManager;
 
     public TestNetworkTaskWorker(Context context, NetworkTask networkTask, PowerManager.WakeLock wakeLock, boolean success) {
         this(context, networkTask, wakeLock, success, 10);
@@ -95,8 +95,8 @@ public class TestNetworkTaskWorker extends NetworkTaskWorker {
         this.mockDNSLookup = mockDNSLookup;
     }
 
-    public void setFolderPermissionManager(MockFolderPermissionManager folderPermissionManager) {
-        this.folderPermissionManager = folderPermissionManager;
+    public void setStoragePermissionManager(MockStoragePermissionManager storagePermissionManager) {
+        this.storagePermissionManager = storagePermissionManager;
     }
 
     @Override
@@ -118,7 +118,7 @@ public class TestNetworkTaskWorker extends NetworkTaskWorker {
     }
 
     @Override
-    public IFolderPermissionManager getFolderPermissionManager() {
-        return Objects.requireNonNullElseGet(folderPermissionManager, MockFolderPermissionManager::new);
+    public IStoragePermissionManager getStoragePermissionManager() {
+        return Objects.requireNonNullElseGet(storagePermissionManager, MockStoragePermissionManager::new);
     }
 }

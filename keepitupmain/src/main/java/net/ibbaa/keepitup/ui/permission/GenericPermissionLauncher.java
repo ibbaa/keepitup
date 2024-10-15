@@ -27,41 +27,50 @@ import androidx.activity.result.contract.ActivityResultContracts;
 
 import net.ibbaa.keepitup.logging.Log;
 
-public class GenericFolderPermissionLauncher implements FolderPermissionLauncher {
+public class GenericPermissionLauncher implements PermissionLauncher {
 
-    final private ComponentActivity activity;
-    final private Consumer<Uri> callback;
-    ActivityResultLauncher<Intent> activityResultLauncher;
+    private final ComponentActivity activity;
+    private final Consumer<Uri> callback;
+    private final boolean persistent;
 
-    public GenericFolderPermissionLauncher(ComponentActivity activity, Consumer<Uri> callback) {
+    private ActivityResultLauncher<Intent> activityResultLauncher;
+
+    public GenericPermissionLauncher(ComponentActivity activity, Consumer<Uri> callback) {
+        this(activity, callback, true);
+    }
+
+    public GenericPermissionLauncher(ComponentActivity activity, Consumer<Uri> callback, boolean persistent) {
         this.activity = activity;
         this.callback = callback;
+        this.persistent = persistent;
         init();
     }
 
-    public void init() {
-        Log.d(GenericFolderPermissionLauncher.class.getName(), "init");
+    private void init() {
+        Log.d(GenericPermissionLauncher.class.getName(), "init");
         activityResultLauncher = activity.registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), this::onActivityResult);
     }
 
     public void launch(Intent intent) {
-        Log.d(GenericFolderPermissionLauncher.class.getName(), "launch");
+        Log.d(GenericPermissionLauncher.class.getName(), "launch");
         activityResultLauncher.launch(intent);
     }
 
     private void onActivityResult(ActivityResult result) {
-        Log.d(GenericFolderPermissionLauncher.class.getName(), "onActivityResult, result is " + result);
+        Log.d(GenericPermissionLauncher.class.getName(), "onActivityResult, result is " + result);
         if (result.getResultCode() == Activity.RESULT_OK) {
             Intent intent = result.getData();
             if (intent != null) {
                 Uri uri = intent.getData();
                 if (uri != null) {
-                    Log.d(GenericFolderPermissionLauncher.class.getName(), "Acquire permission for uri " + uri);
-                    activity.grantUriPermission(activity.getPackageName(), uri, Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
-                    activity.getContentResolver().takePersistableUriPermission(uri, Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+                    if (persistent) {
+                        Log.d(GenericPermissionLauncher.class.getName(), "Acquire permission for uri " + uri);
+                        activity.grantUriPermission(activity.getPackageName(), uri, Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+                        activity.getContentResolver().takePersistableUriPermission(uri, Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+                    }
                     callback.accept(uri);
                 } else {
-                    Log.d(GenericFolderPermissionLauncher.class.getName(), "Uri is null");
+                    Log.d(GenericPermissionLauncher.class.getName(), "Uri is null");
                 }
             }
         }

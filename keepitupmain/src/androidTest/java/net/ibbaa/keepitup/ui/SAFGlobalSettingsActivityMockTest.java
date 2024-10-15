@@ -33,8 +33,8 @@ import androidx.test.filters.MediumTest;
 
 import net.ibbaa.keepitup.R;
 import net.ibbaa.keepitup.resources.PreferenceManager;
-import net.ibbaa.keepitup.test.mock.DelegatingTestFolderPermissionLauncher;
-import net.ibbaa.keepitup.test.mock.MockFolderPermissionManager;
+import net.ibbaa.keepitup.test.mock.DelegatingTestPermissionLauncher;
+import net.ibbaa.keepitup.test.mock.MockStoragePermissionManager;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -45,12 +45,12 @@ import org.junit.runner.RunWith;
 @RunWith(AndroidJUnit4.class)
 public class SAFGlobalSettingsActivityMockTest extends BaseUITest {
 
-    private MockFolderPermissionManager folderPermissionManager;
+    private MockStoragePermissionManager storagePermissionManager;
 
     @Before
     public void beforeEachTestMethod() {
         super.beforeEachTestMethod();
-        folderPermissionManager = getMockFolderPermissionManager();
+        storagePermissionManager = getMockStoragePermissionManager();
     }
 
     @Test
@@ -59,11 +59,11 @@ public class SAFGlobalSettingsActivityMockTest extends BaseUITest {
         injectMocks(activityScenario);
         PreferenceManager preferenceManager = getPreferenceManager();
         preferenceManager.setPreferenceAllowArbitraryFileLocation(true);
-        folderPermissionManager.setGrantedFolder("/Documents");
+        storagePermissionManager.setGrantedFolder("/Documents");
         onView(withId(R.id.switch_activity_global_settings_log_file)).perform(scrollTo());
         onView(withId(R.id.switch_activity_global_settings_log_file)).perform(click());
         onView(withId(R.id.textview_activity_global_settings_log_file_on_off)).check(matches(withText("yes")));
-        assertTrue(folderPermissionManager.hasPersistentPermission(getActivity(activityScenario), "/Documents"));
+        assertTrue(storagePermissionManager.hasPersistentPermission(getActivity(activityScenario), "/Documents"));
         onView(withId(R.id.textview_activity_global_settings_log_folder)).check(matches(withText(endsWith("/Documents"))));
         activityScenario.close();
     }
@@ -75,14 +75,14 @@ public class SAFGlobalSettingsActivityMockTest extends BaseUITest {
         PreferenceManager preferenceManager = getPreferenceManager();
         preferenceManager.setPreferenceAllowArbitraryFileLocation(true);
         injectLogFolderLauncher(activityScenario, "/Pictures");
-        folderPermissionManager.setGrantedFolder("/Pictures");
+        storagePermissionManager.setGrantedFolder("/Pictures");
         onView(withId(R.id.switch_activity_global_settings_log_file)).perform(scrollTo());
         onView(withId(R.id.switch_activity_global_settings_log_file)).perform(click());
         onView(withId(R.id.textview_activity_global_settings_log_file_on_off)).check(matches(withText("yes")));
-        assertTrue(folderPermissionManager.hasPersistentPermission(getActivity(activityScenario), "/Pictures"));
+        assertTrue(storagePermissionManager.hasPersistentPermission(getActivity(activityScenario), "/Pictures"));
         onView(withId(R.id.textview_activity_global_settings_log_folder)).check(matches(withText(endsWith("/Pictures"))));
         assertEquals("/Pictures", preferenceManager.getPreferenceArbitraryLogFolder());
-        assertFalse(folderPermissionManager.hasPersistentPermission(getActivity(activityScenario), "/Documents"));
+        assertFalse(storagePermissionManager.hasPersistentPermission(getActivity(activityScenario), "/Documents"));
         activityScenario.close();
     }
 
@@ -96,13 +96,13 @@ public class SAFGlobalSettingsActivityMockTest extends BaseUITest {
         onView(withId(R.id.switch_activity_global_settings_log_file)).perform(click());
         onView(withId(R.id.textview_activity_global_settings_log_file_on_off)).check(matches(withText("yes")));
         injectLogFolderLauncher(activityScenario, "/Pictures");
-        folderPermissionManager.setGrantedFolder("/Pictures");
+        storagePermissionManager.setGrantedFolder("/Pictures");
         onView(withId(R.id.cardview_activity_global_settings_log_folder)).perform(scrollTo());
         onView(withId(R.id.cardview_activity_global_settings_log_folder)).perform(click());
-        assertTrue(folderPermissionManager.hasPersistentPermission(getActivity(activityScenario), "/Pictures"));
+        assertTrue(storagePermissionManager.hasPersistentPermission(getActivity(activityScenario), "/Pictures"));
         onView(withId(R.id.textview_activity_global_settings_log_folder)).check(matches(withText(endsWith("/Pictures"))));
         assertEquals("/Pictures", preferenceManager.getPreferenceArbitraryLogFolder());
-        assertTrue(folderPermissionManager.hasPersistentPermission(getActivity(activityScenario), "/Documents"));
+        assertTrue(storagePermissionManager.hasPersistentPermission(getActivity(activityScenario), "/Documents"));
     }
 
     @Test
@@ -111,11 +111,11 @@ public class SAFGlobalSettingsActivityMockTest extends BaseUITest {
         injectMocks(activityScenario);
         PreferenceManager preferenceManager = getPreferenceManager();
         preferenceManager.setPreferenceAllowArbitraryFileLocation(true);
-        folderPermissionManager.setGrantedFolder("/Documents");
+        storagePermissionManager.setGrantedFolder("/Documents");
         onView(withId(R.id.switch_activity_global_settings_download_external_storage)).perform(scrollTo());
         onView(withId(R.id.switch_activity_global_settings_download_external_storage)).perform(click());
         onView(withId(R.id.textview_activity_global_settings_download_external_storage_on_off)).check(matches(withText("yes")));
-        assertTrue(folderPermissionManager.hasPersistentPermission(getActivity(activityScenario), "/Documents"));
+        assertTrue(storagePermissionManager.hasPersistentPermission(getActivity(activityScenario), "/Documents"));
         onView(withId(R.id.textview_activity_global_settings_download_folder)).check(matches(withText(endsWith("/Documents"))));
         activityScenario.close();
     }
@@ -127,14 +127,14 @@ public class SAFGlobalSettingsActivityMockTest extends BaseUITest {
         PreferenceManager preferenceManager = getPreferenceManager();
         preferenceManager.setPreferenceAllowArbitraryFileLocation(true);
         injectDownloadFolderLauncher(activityScenario, "/Pictures");
-        folderPermissionManager.setGrantedFolder("/Pictures");
+        storagePermissionManager.setGrantedFolder("/Pictures");
         onView(withId(R.id.switch_activity_global_settings_download_external_storage)).perform(scrollTo());
         onView(withId(R.id.switch_activity_global_settings_download_external_storage)).perform(click());
         onView(withId(R.id.textview_activity_global_settings_download_external_storage_on_off)).check(matches(withText("yes")));
-        assertTrue(folderPermissionManager.hasPersistentPermission(getActivity(activityScenario), "/Pictures"));
+        assertTrue(storagePermissionManager.hasPersistentPermission(getActivity(activityScenario), "/Pictures"));
         onView(withId(R.id.textview_activity_global_settings_download_folder)).check(matches(withText(endsWith("/Pictures"))));
         assertEquals("/Pictures", preferenceManager.getPreferenceArbitraryDownloadFolder());
-        assertFalse(folderPermissionManager.hasPersistentPermission(getActivity(activityScenario), "/Documents"));
+        assertFalse(storagePermissionManager.hasPersistentPermission(getActivity(activityScenario), "/Documents"));
         activityScenario.close();
     }
 
@@ -148,13 +148,13 @@ public class SAFGlobalSettingsActivityMockTest extends BaseUITest {
         onView(withId(R.id.switch_activity_global_settings_download_external_storage)).perform(click());
         onView(withId(R.id.textview_activity_global_settings_download_external_storage_on_off)).check(matches(withText("yes")));
         injectDownloadFolderLauncher(activityScenario, "/Pictures");
-        folderPermissionManager.setGrantedFolder("/Pictures");
+        storagePermissionManager.setGrantedFolder("/Pictures");
         onView(withId(R.id.cardview_activity_global_settings_download_folder)).perform(scrollTo());
         onView(withId(R.id.cardview_activity_global_settings_download_folder)).perform(click());
-        assertTrue(folderPermissionManager.hasPersistentPermission(getActivity(activityScenario), "/Pictures"));
+        assertTrue(storagePermissionManager.hasPersistentPermission(getActivity(activityScenario), "/Pictures"));
         onView(withId(R.id.textview_activity_global_settings_download_folder)).check(matches(withText(endsWith("/Pictures"))));
         assertEquals("/Pictures", preferenceManager.getPreferenceArbitraryDownloadFolder());
-        assertTrue(folderPermissionManager.hasPersistentPermission(getActivity(activityScenario), "/Documents"));
+        assertTrue(storagePermissionManager.hasPersistentPermission(getActivity(activityScenario), "/Documents"));
     }
 
     @Test
@@ -164,50 +164,50 @@ public class SAFGlobalSettingsActivityMockTest extends BaseUITest {
         PreferenceManager preferenceManager = getPreferenceManager();
         preferenceManager.setPreferenceAllowArbitraryFileLocation(true);
         preferenceManager.setPreferenceLastArbitraryExportFile("/Export");
-        folderPermissionManager.setGrantedFolder("/Documents");
+        storagePermissionManager.setGrantedFolder("/Documents");
         onView(withId(R.id.switch_activity_global_settings_log_file)).perform(scrollTo());
         onView(withId(R.id.switch_activity_global_settings_log_file)).perform(click());
         onView(withId(R.id.textview_activity_global_settings_log_file_on_off)).check(matches(withText("yes")));
         onView(withId(R.id.switch_activity_global_settings_download_external_storage)).perform(scrollTo());
         onView(withId(R.id.switch_activity_global_settings_download_external_storage)).perform(click());
         onView(withId(R.id.textview_activity_global_settings_download_external_storage_on_off)).check(matches(withText("yes")));
-        assertTrue(folderPermissionManager.hasPersistentPermission(getActivity(activityScenario), "/Documents"));
+        assertTrue(storagePermissionManager.hasPersistentPermission(getActivity(activityScenario), "/Documents"));
         onView(withId(R.id.textview_activity_global_settings_log_folder)).check(matches(withText(endsWith("/Documents"))));
         onView(withId(R.id.textview_activity_global_settings_download_folder)).check(matches(withText(endsWith("/Documents"))));
         injectLogFolderLauncher(activityScenario, "/Pictures");
         injectDownloadFolderLauncher(activityScenario, "/Pictures");
-        folderPermissionManager.setGrantedFolder("/Pictures");
+        storagePermissionManager.setGrantedFolder("/Pictures");
         onView(withId(R.id.cardview_activity_global_settings_log_folder)).perform(scrollTo());
         onView(withId(R.id.cardview_activity_global_settings_log_folder)).perform(click());
-        assertTrue(folderPermissionManager.hasPersistentPermission(getActivity(activityScenario), "/Pictures"));
+        assertTrue(storagePermissionManager.hasPersistentPermission(getActivity(activityScenario), "/Pictures"));
         onView(withId(R.id.textview_activity_global_settings_log_folder)).check(matches(withText(endsWith("/Pictures"))));
         assertEquals("/Pictures", preferenceManager.getPreferenceArbitraryLogFolder());
-        assertTrue(folderPermissionManager.hasPersistentPermission(getActivity(activityScenario), "/Documents"));
+        assertTrue(storagePermissionManager.hasPersistentPermission(getActivity(activityScenario), "/Documents"));
         onView(withId(R.id.cardview_activity_global_settings_download_folder)).perform(scrollTo());
         onView(withId(R.id.cardview_activity_global_settings_download_folder)).perform(click());
-        assertTrue(folderPermissionManager.hasPersistentPermission(getActivity(activityScenario), "/Pictures"));
+        assertTrue(storagePermissionManager.hasPersistentPermission(getActivity(activityScenario), "/Pictures"));
         onView(withId(R.id.textview_activity_global_settings_download_folder)).check(matches(withText(endsWith("/Pictures"))));
         assertEquals("/Pictures", preferenceManager.getPreferenceArbitraryLogFolder());
-        assertFalse(folderPermissionManager.hasPersistentPermission(getActivity(activityScenario), "/Documents"));
+        assertFalse(storagePermissionManager.hasPersistentPermission(getActivity(activityScenario), "/Documents"));
         activityScenario.close();
     }
 
     private void injectMocks(ActivityScenario<?> activityScenario) {
         ((GlobalSettingsActivity) getActivity(activityScenario)).injectTimeBasedSuspensionScheduler(getTimeBasedSuspensionScheduler());
-        ((GlobalSettingsActivity) getActivity(activityScenario)).injectFolderPermissionManager(folderPermissionManager);
-        ((GlobalSettingsActivity) getActivity(activityScenario)).injectLogFolderLauncher(new DelegatingTestFolderPermissionLauncher(((GlobalSettingsActivity) getActivity(activityScenario))::grantArbitraryLogFolderPermission));
-        ((GlobalSettingsActivity) getActivity(activityScenario)).injectDownloadFolderLauncher(new DelegatingTestFolderPermissionLauncher(((GlobalSettingsActivity) getActivity(activityScenario))::grantArbitraryDownloadFolderPermission));
+        ((GlobalSettingsActivity) getActivity(activityScenario)).injectStoragePermissionManager(storagePermissionManager);
+        ((GlobalSettingsActivity) getActivity(activityScenario)).injectLogFolderLauncher(new DelegatingTestPermissionLauncher(((GlobalSettingsActivity) getActivity(activityScenario))::grantArbitraryLogFolderPermission));
+        ((GlobalSettingsActivity) getActivity(activityScenario)).injectDownloadFolderLauncher(new DelegatingTestPermissionLauncher(((GlobalSettingsActivity) getActivity(activityScenario))::grantArbitraryDownloadFolderPermission));
     }
 
     private void injectLogFolderLauncher(ActivityScenario<?> activityScenario, String uri) {
-        ((GlobalSettingsActivity) getActivity(activityScenario)).injectLogFolderLauncher(new DelegatingTestFolderPermissionLauncher(((GlobalSettingsActivity) getActivity(activityScenario))::grantArbitraryLogFolderPermission, uri));
+        ((GlobalSettingsActivity) getActivity(activityScenario)).injectLogFolderLauncher(new DelegatingTestPermissionLauncher(((GlobalSettingsActivity) getActivity(activityScenario))::grantArbitraryLogFolderPermission, uri));
     }
 
     private void injectDownloadFolderLauncher(ActivityScenario<?> activityScenario, String uri) {
-        ((GlobalSettingsActivity) getActivity(activityScenario)).injectDownloadFolderLauncher(new DelegatingTestFolderPermissionLauncher(((GlobalSettingsActivity) getActivity(activityScenario))::grantArbitraryDownloadFolderPermission, uri));
+        ((GlobalSettingsActivity) getActivity(activityScenario)).injectDownloadFolderLauncher(new DelegatingTestPermissionLauncher(((GlobalSettingsActivity) getActivity(activityScenario))::grantArbitraryDownloadFolderPermission, uri));
     }
 
-    private MockFolderPermissionManager getMockFolderPermissionManager() {
-        return new MockFolderPermissionManager();
+    private MockStoragePermissionManager getMockStoragePermissionManager() {
+        return new MockStoragePermissionManager();
     }
 }

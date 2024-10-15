@@ -45,10 +45,10 @@ import net.ibbaa.keepitup.ui.dialog.FileChooseDialog;
 import net.ibbaa.keepitup.ui.dialog.SettingsInput;
 import net.ibbaa.keepitup.ui.dialog.SettingsInputDialog;
 import net.ibbaa.keepitup.ui.dialog.SuspensionIntervalsDialog;
-import net.ibbaa.keepitup.ui.permission.FolderPermissionLauncher;
-import net.ibbaa.keepitup.ui.permission.GenericFolderPermissionLauncher;
-import net.ibbaa.keepitup.ui.permission.IFolderPermissionManager;
-import net.ibbaa.keepitup.ui.permission.NullFolderPermissionLauncher;
+import net.ibbaa.keepitup.ui.permission.GenericPermissionLauncher;
+import net.ibbaa.keepitup.ui.permission.IStoragePermissionManager;
+import net.ibbaa.keepitup.ui.permission.NullPermissionLauncher;
+import net.ibbaa.keepitup.ui.permission.PermissionLauncher;
 import net.ibbaa.keepitup.ui.validation.NotificationAfterFailuresFieldValidator;
 import net.ibbaa.keepitup.util.BundleUtil;
 import net.ibbaa.keepitup.util.FileUtil;
@@ -80,8 +80,8 @@ public class GlobalSettingsActivity extends SettingsInputActivity implements Sus
     private SwitchMaterial logFileSwitch;
     private TextView logFileOnOffText;
     private TextView logFolderText;
-    private FolderPermissionLauncher logFolderLauncher;
-    private FolderPermissionLauncher downloadFolderLauncher;
+    private PermissionLauncher logFolderLauncher;
+    private PermissionLauncher downloadFolderLauncher;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -105,11 +105,11 @@ public class GlobalSettingsActivity extends SettingsInputActivity implements Sus
         prepareLogFolderField();
     }
 
-    public void injectLogFolderLauncher(FolderPermissionLauncher logFolderLauncher) {
+    public void injectLogFolderLauncher(PermissionLauncher logFolderLauncher) {
         this.logFolderLauncher = logFolderLauncher;
     }
 
-    public void injectDownloadFolderLauncher(FolderPermissionLauncher downloadFolderLauncher) {
+    public void injectDownloadFolderLauncher(PermissionLauncher downloadFolderLauncher) {
         this.downloadFolderLauncher = downloadFolderLauncher;
     }
 
@@ -377,9 +377,9 @@ public class GlobalSettingsActivity extends SettingsInputActivity implements Sus
         Log.d(GlobalSettingsActivity.class.getName(), "prepareDownloadFolderLauncher");
         boolean bypassSystemSAF = BundleUtil.booleanFromBundle(getBypassSystemSAFKey(), getIntent().getExtras());
         if (SystemUtil.supportsSAFFeature() && !bypassSystemSAF) {
-            downloadFolderLauncher = new GenericFolderPermissionLauncher(this, this::grantArbitraryDownloadFolderPermission);
+            downloadFolderLauncher = new GenericPermissionLauncher(this, this::grantArbitraryDownloadFolderPermission);
         } else {
-            downloadFolderLauncher = new NullFolderPermissionLauncher();
+            downloadFolderLauncher = new NullPermissionLauncher();
         }
     }
 
@@ -405,14 +405,14 @@ public class GlobalSettingsActivity extends SettingsInputActivity implements Sus
         Log.d(GlobalSettingsActivity.class.getName(), "prepareArbitraryDownloadFolder");
         downloadFolderCardView.setEnabled(true);
         downloadFolderCardView.setOnClickListener(this::requestArbitraryDownloadFolderPermission);
-        IFolderPermissionManager folderPermissionManager = getFolderPermissionManager();
+        IStoragePermissionManager storagePermissionManager = getStoragePermissionManager();
         String arbitraryDownloadFolder = getPreferenceArbitraryDownloadFolder();
-        if (folderPermissionManager.hasPersistentPermission(this, arbitraryDownloadFolder)) {
+        if (storagePermissionManager.hasPersistentPermission(this, arbitraryDownloadFolder)) {
             Log.d(GlobalSettingsActivity.class.getName(), "Permission for " + arbitraryDownloadFolder + " is already present");
             setDownloadFolder(arbitraryDownloadFolder);
         } else {
             Log.d(GlobalSettingsActivity.class.getName(), "Requesting permission for " + arbitraryDownloadFolder);
-            folderPermissionManager.requestPersistentFolderPermission(this, downloadFolderLauncher, arbitraryDownloadFolder);
+            storagePermissionManager.requestPersistentFolderPermission(this, downloadFolderLauncher, arbitraryDownloadFolder);
         }
     }
 
@@ -495,9 +495,9 @@ public class GlobalSettingsActivity extends SettingsInputActivity implements Sus
         Log.d(GlobalSettingsActivity.class.getName(), "prepareLogFolderLauncher");
         boolean bypassSystemSAF = BundleUtil.booleanFromBundle(getBypassSystemSAFKey(), getIntent().getExtras());
         if (SystemUtil.supportsSAFFeature() && !bypassSystemSAF) {
-            logFolderLauncher = new GenericFolderPermissionLauncher(this, this::grantArbitraryLogFolderPermission);
+            logFolderLauncher = new GenericPermissionLauncher(this, this::grantArbitraryLogFolderPermission);
         } else {
-            logFolderLauncher = new NullFolderPermissionLauncher();
+            logFolderLauncher = new NullPermissionLauncher();
         }
     }
 
@@ -523,14 +523,14 @@ public class GlobalSettingsActivity extends SettingsInputActivity implements Sus
         Log.d(GlobalSettingsActivity.class.getName(), "prepareArbitraryLogFolder");
         logFolderCardView.setEnabled(true);
         logFolderCardView.setOnClickListener(this::requestArbitraryLogFolderPermission);
-        IFolderPermissionManager folderPermissionManager = getFolderPermissionManager();
+        IStoragePermissionManager storagePermissionManager = getStoragePermissionManager();
         String arbitraryLogFolder = getPreferenceArbitraryLogFolder();
-        if (folderPermissionManager.hasPersistentPermission(this, arbitraryLogFolder)) {
+        if (storagePermissionManager.hasPersistentPermission(this, arbitraryLogFolder)) {
             Log.d(GlobalSettingsActivity.class.getName(), "Permission for " + arbitraryLogFolder + " is already present");
             setLogFolder(arbitraryLogFolder);
         } else {
             Log.d(GlobalSettingsActivity.class.getName(), "Requesting permission for " + arbitraryLogFolder);
-            folderPermissionManager.requestPersistentFolderPermission(this, logFolderLauncher, arbitraryLogFolder);
+            storagePermissionManager.requestPersistentFolderPermission(this, logFolderLauncher, arbitraryLogFolder);
         }
     }
 
@@ -605,9 +605,9 @@ public class GlobalSettingsActivity extends SettingsInputActivity implements Sus
 
     private void requestArbitraryDownloadFolderPermission(View view) {
         Log.d(GlobalSettingsActivity.class.getName(), "requestArbitraryDownloadFolderPermission");
-        IFolderPermissionManager folderPermissionManager = getFolderPermissionManager();
+        IStoragePermissionManager storagePermissionManager = getStoragePermissionManager();
         String arbitraryDownloadFolder = getPreferenceArbitraryDownloadFolder();
-        folderPermissionManager.requestPersistentFolderPermission(this, downloadFolderLauncher, arbitraryDownloadFolder);
+        storagePermissionManager.requestPersistentFolderPermission(this, downloadFolderLauncher, arbitraryDownloadFolder);
     }
 
     public void grantArbitraryDownloadFolderPermission(Uri uri) {
@@ -624,8 +624,8 @@ public class GlobalSettingsActivity extends SettingsInputActivity implements Sus
         if (!currentDownloadFolder.equals(downloadFolder)) {
             Log.d(GlobalSettingsActivity.class.getName(), "Arbitrary download folder changed. Revoking old permission.");
             preferenceManager.setPreferenceArbitraryDownloadFolder(downloadFolder);
-            IFolderPermissionManager folderPermissionManager = getFolderPermissionManager();
-            folderPermissionManager.revokeOrphanPersistentPermissions(this, preferenceManager.getArbitraryFolders());
+            IStoragePermissionManager storagePermissionManager = getStoragePermissionManager();
+            storagePermissionManager.revokeOrphanPersistentPermissions(this, preferenceManager.getArbitraryFolders());
             NetworkTaskLog.clear();
         }
         setDownloadFolder(downloadFolder);
@@ -657,9 +657,9 @@ public class GlobalSettingsActivity extends SettingsInputActivity implements Sus
 
     private void requestArbitraryLogFolderPermission(View view) {
         Log.d(GlobalSettingsActivity.class.getName(), "requestArbitraryLogFolderPermission");
-        IFolderPermissionManager folderPermissionManager = getFolderPermissionManager();
+        IStoragePermissionManager storagePermissionManager = getStoragePermissionManager();
         String arbitraryLogFolder = getPreferenceArbitraryLogFolder();
-        folderPermissionManager.requestPersistentFolderPermission(this, logFolderLauncher, arbitraryLogFolder);
+        storagePermissionManager.requestPersistentFolderPermission(this, logFolderLauncher, arbitraryLogFolder);
     }
 
     public void grantArbitraryLogFolderPermission(Uri uri) {
@@ -676,8 +676,8 @@ public class GlobalSettingsActivity extends SettingsInputActivity implements Sus
         if (!currentLogFolder.equals(logFolder)) {
             Log.d(GlobalSettingsActivity.class.getName(), "Arbitrary log folder changed. Revoking old permission.");
             preferenceManager.setPreferenceArbitraryLogFolder(logFolder);
-            IFolderPermissionManager folderPermissionManager = getFolderPermissionManager();
-            folderPermissionManager.revokeOrphanPersistentPermissions(this, preferenceManager.getArbitraryFolders());
+            IStoragePermissionManager storagePermissionManager = getStoragePermissionManager();
+            storagePermissionManager.revokeOrphanPersistentPermissions(this, preferenceManager.getArbitraryFolders());
         }
         setLogFolder(logFolder);
     }

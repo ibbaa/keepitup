@@ -32,10 +32,10 @@ import net.ibbaa.keepitup.util.StringUtil;
 import java.util.List;
 import java.util.Set;
 
-public class FolderPermissionManager implements IFolderPermissionManager {
+public class StoragePermissionManager implements IStoragePermissionManager {
 
     public boolean hasPersistentPermission(Context context, String folder) {
-        Log.d(FolderPermissionManager.class.getName(), "hasPermission for folder " + folder);
+        Log.d(StoragePermissionManager.class.getName(), "hasPermission for folder " + folder);
         if (StringUtil.isEmpty(folder)) {
             return false;
         }
@@ -49,13 +49,13 @@ public class FolderPermissionManager implements IFolderPermissionManager {
     }
 
     public boolean hasAnyPersistentPermission(Context context) {
-        Log.d(FolderPermissionManager.class.getName(), "hasAnyPermission");
+        Log.d(StoragePermissionManager.class.getName(), "hasAnyPermission");
         List<UriPermission> permissions = getPermissions(context);
         return !permissions.isEmpty();
     }
 
-    public void requestPersistentFolderPermission(ComponentActivity activity, FolderPermissionLauncher launcher, String folder) {
-        Log.d(FolderPermissionManager.class.getName(), "requestPermission for folder " + folder);
+    public void requestPersistentFolderPermission(ComponentActivity activity, PermissionLauncher launcher, String folder) {
+        Log.d(StoragePermissionManager.class.getName(), "requestPermission for folder " + folder);
         Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT_TREE);
         intent.addFlags(Intent.FLAG_GRANT_PERSISTABLE_URI_PERMISSION);
         intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
@@ -66,12 +66,12 @@ public class FolderPermissionManager implements IFolderPermissionManager {
     }
 
     public void revokePersistentPermission(FragmentActivity activity, String folder) {
-        Log.d(FolderPermissionManager.class.getName(), "revokePermission for folder " + folder);
+        Log.d(StoragePermissionManager.class.getName(), "revokePermission for folder " + folder);
         if (StringUtil.isEmpty(folder)) {
             return;
         }
         if (!hasPersistentPermission(activity, folder)) {
-            Log.d(FolderPermissionManager.class.getName(), "No permission for folder " + folder + ". Skipping revoke.");
+            Log.d(StoragePermissionManager.class.getName(), "No permission for folder " + folder + ". Skipping revoke.");
             return;
         }
         try {
@@ -79,12 +79,12 @@ public class FolderPermissionManager implements IFolderPermissionManager {
             activity.getContentResolver().releasePersistableUriPermission(folderUri, Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
             activity.revokeUriPermission(folderUri, Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
         } catch (Exception exc) {
-            Log.e(FolderPermissionManager.class.getName(), "Error parsing folder uri " + folder, exc);
+            Log.e(StoragePermissionManager.class.getName(), "Error parsing folder uri " + folder, exc);
         }
     }
 
     public void revokeAllPersistentPermissions(FragmentActivity activity) {
-        Log.d(FolderPermissionManager.class.getName(), "revokeAllPermissions");
+        Log.d(StoragePermissionManager.class.getName(), "revokeAllPermissions");
         List<UriPermission> permissions = getPermissions(activity);
         for (UriPermission permission : permissions) {
             String currentPermission = permission.getUri().toString();
@@ -93,7 +93,7 @@ public class FolderPermissionManager implements IFolderPermissionManager {
     }
 
     public void revokeOrphanPersistentPermissions(FragmentActivity activity, Set<String> usedFolders) {
-        Log.d(FolderPermissionManager.class.getName(), "revokeOrphanPermissions");
+        Log.d(StoragePermissionManager.class.getName(), "revokeOrphanPermissions");
         List<UriPermission> permissions = getPermissions(activity);
         for (UriPermission permission : permissions) {
             String currentPermission = permission.getUri().toString();
@@ -104,7 +104,7 @@ public class FolderPermissionManager implements IFolderPermissionManager {
     }
 
     private List<UriPermission> getPermissions(Context context) {
-        Log.d(FolderPermissionManager.class.getName(), "getPermissions");
+        Log.d(StoragePermissionManager.class.getName(), "getPermissions");
         return context.getContentResolver().getPersistedUriPermissions();
     }
 }
