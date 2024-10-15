@@ -26,15 +26,15 @@ import java.util.Set;
 @SuppressWarnings({"unused"})
 public interface IFolderPermissionManager {
 
-    boolean hasPersistentPermission(Context context, String folder);
+    boolean hasPermission(Context context, String folder);
 
-    boolean hasAnyPersistentPermission(Context context);
+    boolean hasAnyPermission(Context context);
 
-    void requestPersistentFolderPermission(ComponentActivity activity, FolderPermissionLauncher launcher, String folder);
+    void requestPermission(ComponentActivity activity, FolderPermissionLauncher launcher, String folder);
 
-    void revokePersistentPermission(FragmentActivity activity, String folder);
+    void revokePermission(FragmentActivity activity, String folder);
 
-    void revokeAllPersistentPermissions(FragmentActivity activity);
+    void revokeAllPermissions(FragmentActivity activity);
 
-    void revokeOrphanPersistentPermissions(FragmentActivity activity, Set<String> usedFolders);
+    void revokeOrphanPermissions(FragmentActivity activity, Set<String> usedFolders);
 }

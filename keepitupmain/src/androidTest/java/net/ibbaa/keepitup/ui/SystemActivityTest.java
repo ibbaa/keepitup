@@ -146,10 +146,12 @@ public class SystemActivityTest extends BaseUITest {
         getPreferenceManager().setPreferenceNotification(true);
         getPreferenceManager().setPreferenceImportFolder("folderImport");
         getPreferenceManager().setPreferenceExportFolder("folderExport");
+        getPreferenceManager().setPreferenceArbitraryImportFolder("arbitraryFolderImport");
+        getPreferenceManager().setPreferenceArbitraryExportFolder("arbitraryFolderExport");
         getPreferenceManager().setPreferenceFileLoggerEnabled(true);
         getPreferenceManager().setPreferenceFileDumpEnabled(true);
         getPreferenceManager().setPreferenceAllowArbitraryFileLocation(true);
-        assertTrue(folderPermissionManager.hasAnyPersistentPermission(null));
+        assertTrue(folderPermissionManager.hasAnyPermission(null));
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(scrollTo());
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(click());
         onView(withId(R.id.switch_activity_system_file_dump_enabled)).perform(scrollTo());
@@ -158,7 +160,7 @@ public class SystemActivityTest extends BaseUITest {
         onView(withId(R.id.switch_activity_system_allow_arbitrary_file_location)).perform(click());
         onView(withId(R.id.cardview_activity_system_config_reset)).perform(click());
         onView(withId(R.id.imageview_dialog_confirm_cancel)).perform(click());
-        assertTrue(folderPermissionManager.hasAnyPersistentPermission(null));
+        assertTrue(folderPermissionManager.hasAnyPermission(null));
         assertFalse(alarmManager.wasCancelAlarmCalled());
         assertFalse(getNetworkTaskDAO().readAllNetworkTasks().isEmpty());
         assertFalse(getSchedulerIdHistoryDAO().readAllSchedulerIds().isEmpty());
@@ -184,6 +186,8 @@ public class SystemActivityTest extends BaseUITest {
         assertTrue(getPreferenceManager().getPreferenceNotification());
         assertEquals("folderImport", getPreferenceManager().getPreferenceImportFolder());
         assertEquals("folderExport", getPreferenceManager().getPreferenceExportFolder());
+        assertEquals("arbitraryFolderImport", getPreferenceManager().getPreferenceArbitraryImportFolder());
+        assertEquals("arbitraryFolderExport", getPreferenceManager().getPreferenceArbitraryExportFolder());
         assertTrue(getPreferenceManager().getPreferenceFileLoggerEnabled());
         assertTrue(getPreferenceManager().getPreferenceFileDumpEnabled());
         assertTrue(getPreferenceManager().getPreferenceAllowArbitraryFileLocation());
@@ -221,6 +225,8 @@ public class SystemActivityTest extends BaseUITest {
         getPreferenceManager().setPreferenceNotification(true);
         getPreferenceManager().setPreferenceImportFolder("folderImport");
         getPreferenceManager().setPreferenceExportFolder("folderExport");
+        getPreferenceManager().setPreferenceArbitraryImportFolder("arbitraryFolderImport");
+        getPreferenceManager().setPreferenceArbitraryExportFolder("arbitraryFolderExport");
         getPreferenceManager().setPreferenceFileLoggerEnabled(true);
         getPreferenceManager().setPreferenceFileDumpEnabled(true);
         getPreferenceManager().setPreferenceAllowArbitraryFileLocation(false);
@@ -260,6 +266,8 @@ public class SystemActivityTest extends BaseUITest {
         assertTrue(getPreferenceManager().getPreferenceNotification());
         assertEquals("folderImport", getPreferenceManager().getPreferenceImportFolder());
         assertEquals("folderExport", getPreferenceManager().getPreferenceExportFolder());
+        assertEquals("arbitraryFolderImport", getPreferenceManager().getPreferenceArbitraryImportFolder());
+        assertEquals("arbitraryFolderExport", getPreferenceManager().getPreferenceArbitraryExportFolder());
         assertTrue(getPreferenceManager().getPreferenceFileLoggerEnabled());
         assertTrue(getPreferenceManager().getPreferenceFileDumpEnabled());
         assertFalse(getPreferenceManager().getPreferenceAllowArbitraryFileLocation());
@@ -297,10 +305,12 @@ public class SystemActivityTest extends BaseUITest {
         getPreferenceManager().setPreferenceNotification(true);
         getPreferenceManager().setPreferenceImportFolder("folderImport");
         getPreferenceManager().setPreferenceExportFolder("folderExport");
+        getPreferenceManager().setPreferenceArbitraryImportFolder("arbitraryFolderImport");
+        getPreferenceManager().setPreferenceArbitraryExportFolder("arbitraryFolderExport");
         getPreferenceManager().setPreferenceFileLoggerEnabled(true);
         getPreferenceManager().setPreferenceFileDumpEnabled(true);
         getPreferenceManager().setPreferenceAllowArbitraryFileLocation(true);
-        assertTrue(folderPermissionManager.hasAnyPersistentPermission(null));
+        assertTrue(folderPermissionManager.hasAnyPermission(null));
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(scrollTo());
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(click());
         onView(withId(R.id.switch_activity_system_file_dump_enabled)).perform(scrollTo());
@@ -310,7 +320,7 @@ public class SystemActivityTest extends BaseUITest {
         onView(withId(R.id.cardview_activity_system_config_reset)).perform(click());
         onView(withId(R.id.imageview_dialog_confirm_ok)).perform(click());
         assertTrue(alarmManager.wasCancelAlarmCalled());
-        assertFalse(folderPermissionManager.hasAnyPersistentPermission(null));
+        assertFalse(folderPermissionManager.hasAnyPermission(null));
         assertTrue(getNetworkTaskDAO().readAllNetworkTasks().isEmpty());
         assertTrue(getSchedulerIdHistoryDAO().readAllSchedulerIds().isEmpty());
         assertTrue(getLogDAO().readAllLogs().isEmpty());
@@ -339,6 +349,8 @@ public class SystemActivityTest extends BaseUITest {
         assertEquals(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM, themeManager.getCode());
         assertEquals("config", getPreferenceManager().getPreferenceImportFolder());
         assertEquals("config", getPreferenceManager().getPreferenceExportFolder());
+        assertEquals("/Documents", getPreferenceManager().getPreferenceArbitraryImportFolder());
+        assertEquals("/Documents", getPreferenceManager().getPreferenceArbitraryExportFolder());
     }
 
     @Test
@@ -373,6 +385,8 @@ public class SystemActivityTest extends BaseUITest {
         getPreferenceManager().setPreferenceNotification(true);
         getPreferenceManager().setPreferenceImportFolder("folderImport");
         getPreferenceManager().setPreferenceExportFolder("folderExport");
+        getPreferenceManager().setPreferenceArbitraryImportFolder("arbitraryFolderImport");
+        getPreferenceManager().setPreferenceArbitraryExportFolder("arbitraryFolderExport");
         getPreferenceManager().setPreferenceFileLoggerEnabled(true);
         getPreferenceManager().setPreferenceFileDumpEnabled(true);
         getPreferenceManager().setPreferenceAllowArbitraryFileLocation(false);
@@ -416,6 +430,8 @@ public class SystemActivityTest extends BaseUITest {
         assertEquals(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM, themeManager.getCode());
         assertEquals("config", getPreferenceManager().getPreferenceImportFolder());
         assertEquals("config", getPreferenceManager().getPreferenceExportFolder());
+        assertEquals("/Documents", getPreferenceManager().getPreferenceArbitraryImportFolder());
+        assertEquals("/Documents", getPreferenceManager().getPreferenceArbitraryExportFolder());
     }
 
     @Test
@@ -451,6 +467,8 @@ public class SystemActivityTest extends BaseUITest {
         getPreferenceManager().setPreferenceNotification(true);
         getPreferenceManager().setPreferenceImportFolder("folderImport");
         getPreferenceManager().setPreferenceExportFolder("folderExport");
+        getPreferenceManager().setPreferenceArbitraryImportFolder("arbitraryFolderImport");
+        getPreferenceManager().setPreferenceArbitraryExportFolder("arbitraryFolderExport");
         getPreferenceManager().setPreferenceFileLoggerEnabled(true);
         getPreferenceManager().setPreferenceFileDumpEnabled(true);
         getPreferenceManager().setPreferenceAllowArbitraryFileLocation(true);
@@ -490,6 +508,8 @@ public class SystemActivityTest extends BaseUITest {
         assertTrue(getPreferenceManager().getPreferenceNotification());
         assertEquals("folderImport", getPreferenceManager().getPreferenceImportFolder());
         assertEquals("folderExport", getPreferenceManager().getPreferenceExportFolder());
+        assertEquals("arbitraryFolderImport", getPreferenceManager().getPreferenceArbitraryImportFolder());
+        assertEquals("arbitraryFolderExport", getPreferenceManager().getPreferenceArbitraryExportFolder());
         assertTrue(getPreferenceManager().getPreferenceFileLoggerEnabled());
         assertTrue(getPreferenceManager().getPreferenceFileDumpEnabled());
         assertTrue(getPreferenceManager().getPreferenceAllowArbitraryFileLocation());
@@ -528,6 +548,8 @@ public class SystemActivityTest extends BaseUITest {
         getPreferenceManager().setPreferenceNotification(true);
         getPreferenceManager().setPreferenceImportFolder("folderImport");
         getPreferenceManager().setPreferenceExportFolder("folderExport");
+        getPreferenceManager().setPreferenceArbitraryImportFolder("arbitraryFolderImport");
+        getPreferenceManager().setPreferenceArbitraryExportFolder("arbitraryFolderExport");
         getPreferenceManager().setPreferenceFileLoggerEnabled(true);
         getPreferenceManager().setPreferenceFileDumpEnabled(true);
         getPreferenceManager().setPreferenceAllowArbitraryFileLocation(false);
@@ -568,6 +590,8 @@ public class SystemActivityTest extends BaseUITest {
         assertTrue(getPreferenceManager().getPreferenceNotification());
         assertEquals("folderImport", getPreferenceManager().getPreferenceImportFolder());
         assertEquals("folderExport", getPreferenceManager().getPreferenceExportFolder());
+        assertEquals("arbitraryFolderImport", getPreferenceManager().getPreferenceArbitraryImportFolder());
+        assertEquals("arbitraryFolderExport", getPreferenceManager().getPreferenceArbitraryExportFolder());
         assertTrue(getPreferenceManager().getPreferenceFileLoggerEnabled());
         assertTrue(getPreferenceManager().getPreferenceFileDumpEnabled());
         assertFalse(getPreferenceManager().getPreferenceAllowArbitraryFileLocation());
@@ -605,6 +629,8 @@ public class SystemActivityTest extends BaseUITest {
         getPreferenceManager().setPreferenceNotification(true);
         getPreferenceManager().setPreferenceImportFolder("folderImport");
         getPreferenceManager().setPreferenceExportFolder("folderExport");
+        getPreferenceManager().setPreferenceArbitraryImportFolder("arbitraryFolderImport");
+        getPreferenceManager().setPreferenceArbitraryExportFolder("arbitraryFolderExport");
         getPreferenceManager().setPreferenceFileLoggerEnabled(true);
         getPreferenceManager().setPreferenceFileDumpEnabled(true);
         getPreferenceManager().setPreferenceAllowArbitraryFileLocation(true);
@@ -645,6 +671,8 @@ public class SystemActivityTest extends BaseUITest {
         assertTrue(getPreferenceManager().getPreferenceNotification());
         assertEquals("folderImport", getPreferenceManager().getPreferenceImportFolder());
         assertEquals("folderExport", getPreferenceManager().getPreferenceExportFolder());
+        assertEquals("arbitraryFolderImport", getPreferenceManager().getPreferenceArbitraryImportFolder());
+        assertEquals("arbitraryFolderExport", getPreferenceManager().getPreferenceArbitraryExportFolder());
         assertTrue(getPreferenceManager().getPreferenceFileLoggerEnabled());
         assertTrue(getPreferenceManager().getPreferenceFileDumpEnabled());
         assertTrue(getPreferenceManager().getPreferenceAllowArbitraryFileLocation());
@@ -682,6 +710,8 @@ public class SystemActivityTest extends BaseUITest {
         getPreferenceManager().setPreferenceNotification(true);
         getPreferenceManager().setPreferenceImportFolder("folderImport");
         getPreferenceManager().setPreferenceExportFolder("folderExport");
+        getPreferenceManager().setPreferenceArbitraryImportFolder("arbitraryFolderImport");
+        getPreferenceManager().setPreferenceArbitraryExportFolder("arbitraryFolderExport");
         getPreferenceManager().setPreferenceFileLoggerEnabled(true);
         getPreferenceManager().setPreferenceFileDumpEnabled(true);
         getPreferenceManager().setPreferenceAllowArbitraryFileLocation(false);
@@ -726,6 +756,8 @@ public class SystemActivityTest extends BaseUITest {
         assertTrue(getPreferenceManager().getPreferenceNotification());
         assertEquals("folderImport", getPreferenceManager().getPreferenceImportFolder());
         assertEquals("folderExport", getPreferenceManager().getPreferenceExportFolder());
+        assertEquals("arbitraryFolderImport", getPreferenceManager().getPreferenceArbitraryImportFolder());
+        assertEquals("arbitraryFolderExport", getPreferenceManager().getPreferenceArbitraryExportFolder());
         assertTrue(getPreferenceManager().getPreferenceFileLoggerEnabled());
         assertTrue(getPreferenceManager().getPreferenceFileDumpEnabled());
         assertFalse(getPreferenceManager().getPreferenceAllowArbitraryFileLocation());
@@ -772,6 +804,8 @@ public class SystemActivityTest extends BaseUITest {
         getPreferenceManager().setPreferenceNotification(true);
         getPreferenceManager().setPreferenceImportFolder("folderImport");
         getPreferenceManager().setPreferenceExportFolder("folderExport");
+        getPreferenceManager().setPreferenceArbitraryImportFolder("arbitraryFolderImport");
+        getPreferenceManager().setPreferenceArbitraryExportFolder("arbitraryFolderExport");
         getPreferenceManager().setPreferenceFileLoggerEnabled(true);
         getPreferenceManager().setPreferenceFileDumpEnabled(true);
         getPreferenceManager().setPreferenceAllowArbitraryFileLocation(true);
@@ -811,6 +845,8 @@ public class SystemActivityTest extends BaseUITest {
         assertTrue(getPreferenceManager().getPreferenceNotification());
         assertEquals("folderImport", getPreferenceManager().getPreferenceImportFolder());
         assertEquals("folderExport", getPreferenceManager().getPreferenceExportFolder());
+        assertEquals("arbitraryFolderImport", getPreferenceManager().getPreferenceArbitraryImportFolder());
+        assertEquals("arbitraryFolderExport", getPreferenceManager().getPreferenceArbitraryExportFolder());
         assertTrue(getPreferenceManager().getPreferenceFileLoggerEnabled());
         assertTrue(getPreferenceManager().getPreferenceFileDumpEnabled());
         assertTrue(getPreferenceManager().getPreferenceAllowArbitraryFileLocation());
@@ -888,6 +924,8 @@ public class SystemActivityTest extends BaseUITest {
         assertTrue(getPreferenceManager().getPreferenceNotification());
         assertEquals("folderImport", getPreferenceManager().getPreferenceImportFolder());
         assertEquals("folderExport", getPreferenceManager().getPreferenceExportFolder());
+        assertEquals("arbitraryFolderImport", getPreferenceManager().getPreferenceArbitraryImportFolder());
+        assertEquals("arbitraryFolderExport", getPreferenceManager().getPreferenceArbitraryExportFolder());
         assertTrue(getPreferenceManager().getPreferenceFileLoggerEnabled());
         assertTrue(getPreferenceManager().getPreferenceFileDumpEnabled());
         assertTrue(getPreferenceManager().getPreferenceAllowArbitraryFileLocation());
@@ -934,6 +972,8 @@ public class SystemActivityTest extends BaseUITest {
         getPreferenceManager().setPreferenceNotification(true);
         getPreferenceManager().setPreferenceImportFolder("folderImport");
         getPreferenceManager().setPreferenceExportFolder("folderExport");
+        getPreferenceManager().setPreferenceArbitraryImportFolder("arbitraryFolderImport");
+        getPreferenceManager().setPreferenceArbitraryExportFolder("arbitraryFolderExport");
         getPreferenceManager().setPreferenceFileLoggerEnabled(true);
         getPreferenceManager().setPreferenceFileDumpEnabled(true);
         getPreferenceManager().setPreferenceAllowArbitraryFileLocation(false);
@@ -977,6 +1017,8 @@ public class SystemActivityTest extends BaseUITest {
         assertTrue(getPreferenceManager().getPreferenceNotification());
         assertEquals("folderImport", getPreferenceManager().getPreferenceImportFolder());
         assertEquals("folderExport", getPreferenceManager().getPreferenceExportFolder());
+        assertEquals("arbitraryFolderImport", getPreferenceManager().getPreferenceArbitraryImportFolder());
+        assertEquals("arbitraryFolderExport", getPreferenceManager().getPreferenceArbitraryExportFolder());
         assertTrue(getPreferenceManager().getPreferenceFileLoggerEnabled());
         assertTrue(getPreferenceManager().getPreferenceFileDumpEnabled());
         assertFalse(getPreferenceManager().getPreferenceAllowArbitraryFileLocation());
@@ -1053,6 +1095,8 @@ public class SystemActivityTest extends BaseUITest {
         assertTrue(getPreferenceManager().getPreferenceNotification());
         assertEquals("folderImport", getPreferenceManager().getPreferenceImportFolder());
         assertEquals("folderExport", getPreferenceManager().getPreferenceExportFolder());
+        assertEquals("arbitraryFolderImport", getPreferenceManager().getPreferenceArbitraryImportFolder());
+        assertEquals("arbitraryFolderExport", getPreferenceManager().getPreferenceArbitraryExportFolder());
         assertTrue(getPreferenceManager().getPreferenceFileLoggerEnabled());
         assertTrue(getPreferenceManager().getPreferenceFileDumpEnabled());
         assertFalse(getPreferenceManager().getPreferenceAllowArbitraryFileLocation());
@@ -1099,6 +1143,8 @@ public class SystemActivityTest extends BaseUITest {
         getPreferenceManager().setPreferenceNotification(true);
         getPreferenceManager().setPreferenceImportFolder("folderImport");
         getPreferenceManager().setPreferenceExportFolder("folderExport");
+        getPreferenceManager().setPreferenceArbitraryImportFolder("arbitraryFolderImport");
+        getPreferenceManager().setPreferenceArbitraryExportFolder("arbitraryFolderExport");
         getPreferenceManager().setPreferenceFileLoggerEnabled(true);
         getPreferenceManager().setPreferenceFileDumpEnabled(true);
         getPreferenceManager().setPreferenceAllowArbitraryFileLocation(true);
@@ -1145,6 +1191,8 @@ public class SystemActivityTest extends BaseUITest {
         assertTrue(getPreferenceManager().getPreferenceNotification());
         assertEquals("folderImport", getPreferenceManager().getPreferenceImportFolder());
         assertEquals("folderExport", getPreferenceManager().getPreferenceExportFolder());
+        assertEquals("arbitraryFolderImport", getPreferenceManager().getPreferenceArbitraryImportFolder());
+        assertEquals("arbitraryFolderExport", getPreferenceManager().getPreferenceArbitraryExportFolder());
         assertTrue(getPreferenceManager().getPreferenceFileLoggerEnabled());
         assertTrue(getPreferenceManager().getPreferenceFileDumpEnabled());
         assertTrue(getPreferenceManager().getPreferenceAllowArbitraryFileLocation());
@@ -1191,6 +1239,8 @@ public class SystemActivityTest extends BaseUITest {
         getPreferenceManager().setPreferenceNotification(true);
         getPreferenceManager().setPreferenceImportFolder("folderImport");
         getPreferenceManager().setPreferenceExportFolder("folderExport");
+        getPreferenceManager().setPreferenceArbitraryImportFolder("arbitraryFolderImport");
+        getPreferenceManager().setPreferenceArbitraryExportFolder("arbitraryFolderExport");
         getPreferenceManager().setPreferenceFileLoggerEnabled(true);
         getPreferenceManager().setPreferenceFileDumpEnabled(true);
         getPreferenceManager().setPreferenceAllowArbitraryFileLocation(false);
@@ -1241,6 +1291,8 @@ public class SystemActivityTest extends BaseUITest {
         assertTrue(getPreferenceManager().getPreferenceNotification());
         assertEquals("folderImport", getPreferenceManager().getPreferenceImportFolder());
         assertEquals("folderExport", getPreferenceManager().getPreferenceExportFolder());
+        assertEquals("arbitraryFolderImport", getPreferenceManager().getPreferenceArbitraryImportFolder());
+        assertEquals("arbitraryFolderExport", getPreferenceManager().getPreferenceArbitraryExportFolder());
         assertTrue(getPreferenceManager().getPreferenceFileLoggerEnabled());
         assertTrue(getPreferenceManager().getPreferenceFileDumpEnabled());
         assertFalse(getPreferenceManager().getPreferenceAllowArbitraryFileLocation());
@@ -1287,6 +1339,8 @@ public class SystemActivityTest extends BaseUITest {
         getPreferenceManager().setPreferenceNotification(true);
         getPreferenceManager().setPreferenceImportFolder("folderImport");
         getPreferenceManager().setPreferenceExportFolder("folderExport");
+        getPreferenceManager().setPreferenceArbitraryImportFolder("arbitraryFolderImport");
+        getPreferenceManager().setPreferenceArbitraryExportFolder("arbitraryFolderExport");
         getPreferenceManager().setPreferenceFileLoggerEnabled(true);
         getPreferenceManager().setPreferenceFileDumpEnabled(true);
         getPreferenceManager().setPreferenceAllowArbitraryFileLocation(true);
@@ -1331,6 +1385,8 @@ public class SystemActivityTest extends BaseUITest {
         assertTrue(getPreferenceManager().getPreferenceNotification());
         assertEquals("folderImport", getPreferenceManager().getPreferenceImportFolder());
         assertEquals("folderExport", getPreferenceManager().getPreferenceExportFolder());
+        assertEquals("arbitraryFolderImport", getPreferenceManager().getPreferenceArbitraryImportFolder());
+        assertEquals("arbitraryFolderExport", getPreferenceManager().getPreferenceArbitraryExportFolder());
         assertTrue(getPreferenceManager().getPreferenceFileLoggerEnabled());
         assertTrue(getPreferenceManager().getPreferenceFileDumpEnabled());
         assertTrue(getPreferenceManager().getPreferenceAllowArbitraryFileLocation());
@@ -1409,6 +1465,8 @@ public class SystemActivityTest extends BaseUITest {
         assertTrue(getPreferenceManager().getPreferenceNotification());
         assertEquals("folderImport", getPreferenceManager().getPreferenceImportFolder());
         assertEquals("folderExport", getPreferenceManager().getPreferenceExportFolder());
+        assertEquals("arbitraryFolderImport", getPreferenceManager().getPreferenceArbitraryImportFolder());
+        assertEquals("arbitraryFolderExport", getPreferenceManager().getPreferenceArbitraryExportFolder());
         assertTrue(getPreferenceManager().getPreferenceFileLoggerEnabled());
         assertTrue(getPreferenceManager().getPreferenceFileDumpEnabled());
         assertTrue(getPreferenceManager().getPreferenceAllowArbitraryFileLocation());
@@ -1455,6 +1513,8 @@ public class SystemActivityTest extends BaseUITest {
         getPreferenceManager().setPreferenceNotification(true);
         getPreferenceManager().setPreferenceImportFolder("folderImport");
         getPreferenceManager().setPreferenceExportFolder("folderExport");
+        getPreferenceManager().setPreferenceArbitraryImportFolder("arbitraryFolderImport");
+        getPreferenceManager().setPreferenceArbitraryExportFolder("arbitraryFolderExport");
         getPreferenceManager().setPreferenceFileLoggerEnabled(true);
         getPreferenceManager().setPreferenceFileDumpEnabled(true);
         getPreferenceManager().setPreferenceAllowArbitraryFileLocation(false);
@@ -1503,6 +1563,8 @@ public class SystemActivityTest extends BaseUITest {
         assertTrue(getPreferenceManager().getPreferenceNotification());
         assertEquals("folderImport", getPreferenceManager().getPreferenceImportFolder());
         assertEquals("folderExport", getPreferenceManager().getPreferenceExportFolder());
+        assertEquals("arbitraryFolderImport", getPreferenceManager().getPreferenceArbitraryImportFolder());
+        assertEquals("arbitraryFolderExport", getPreferenceManager().getPreferenceArbitraryExportFolder());
         assertTrue(getPreferenceManager().getPreferenceFileLoggerEnabled());
         assertTrue(getPreferenceManager().getPreferenceFileDumpEnabled());
         assertFalse(getPreferenceManager().getPreferenceAllowArbitraryFileLocation());
@@ -1581,6 +1643,8 @@ public class SystemActivityTest extends BaseUITest {
         assertTrue(getPreferenceManager().getPreferenceNotification());
         assertEquals("folderImport", getPreferenceManager().getPreferenceImportFolder());
         assertEquals("folderExport", getPreferenceManager().getPreferenceExportFolder());
+        assertEquals("arbitraryFolderImport", getPreferenceManager().getPreferenceArbitraryImportFolder());
+        assertEquals("arbitraryFolderExport", getPreferenceManager().getPreferenceArbitraryExportFolder());
         assertTrue(getPreferenceManager().getPreferenceFileLoggerEnabled());
         assertTrue(getPreferenceManager().getPreferenceFileDumpEnabled());
         assertFalse(getPreferenceManager().getPreferenceAllowArbitraryFileLocation());
@@ -1619,6 +1683,8 @@ public class SystemActivityTest extends BaseUITest {
         getPreferenceManager().setPreferenceNotification(true);
         getPreferenceManager().setPreferenceImportFolder("folderImport");
         getPreferenceManager().setPreferenceExportFolder("folderExport");
+        getPreferenceManager().setPreferenceArbitraryImportFolder("arbitraryFolderImport");
+        getPreferenceManager().setPreferenceArbitraryExportFolder("arbitraryFolderExport");
         getPreferenceManager().setPreferenceFileLoggerEnabled(true);
         getPreferenceManager().setPreferenceFileDumpEnabled(true);
         getPreferenceManager().setPreferenceAllowArbitraryFileLocation(true);
@@ -1660,6 +1726,8 @@ public class SystemActivityTest extends BaseUITest {
         assertTrue(getPreferenceManager().getPreferenceNotification());
         assertEquals("folderImport", getPreferenceManager().getPreferenceImportFolder());
         assertEquals("folderExport", getPreferenceManager().getPreferenceExportFolder());
+        assertEquals("arbitraryFolderImport", getPreferenceManager().getPreferenceArbitraryImportFolder());
+        assertEquals("arbitraryFolderExport", getPreferenceManager().getPreferenceArbitraryExportFolder());
         assertTrue(getPreferenceManager().getPreferenceFileLoggerEnabled());
         assertTrue(getPreferenceManager().getPreferenceFileDumpEnabled());
         assertTrue(getPreferenceManager().getPreferenceAllowArbitraryFileLocation());
@@ -1698,6 +1766,8 @@ public class SystemActivityTest extends BaseUITest {
         getPreferenceManager().setPreferenceNotification(true);
         getPreferenceManager().setPreferenceImportFolder("folderImport");
         getPreferenceManager().setPreferenceExportFolder("folderExport");
+        getPreferenceManager().setPreferenceArbitraryImportFolder("arbitraryFolderImport");
+        getPreferenceManager().setPreferenceArbitraryExportFolder("arbitraryFolderExport");
         getPreferenceManager().setPreferenceFileLoggerEnabled(true);
         getPreferenceManager().setPreferenceFileDumpEnabled(true);
         getPreferenceManager().setPreferenceAllowArbitraryFileLocation(false);
@@ -1740,6 +1810,8 @@ public class SystemActivityTest extends BaseUITest {
         assertTrue(getPreferenceManager().getPreferenceNotification());
         assertEquals("folderImport", getPreferenceManager().getPreferenceImportFolder());
         assertEquals("folderExport", getPreferenceManager().getPreferenceExportFolder());
+        assertEquals("arbitraryFolderImport", getPreferenceManager().getPreferenceArbitraryImportFolder());
+        assertEquals("arbitraryFolderExport", getPreferenceManager().getPreferenceArbitraryExportFolder());
         assertTrue(getPreferenceManager().getPreferenceFileLoggerEnabled());
         assertTrue(getPreferenceManager().getPreferenceFileDumpEnabled());
         assertFalse(getPreferenceManager().getPreferenceAllowArbitraryFileLocation());
@@ -1850,10 +1922,12 @@ public class SystemActivityTest extends BaseUITest {
         getPreferenceManager().setPreferenceNotification(true);
         getPreferenceManager().setPreferenceImportFolder("folderImport");
         getPreferenceManager().setPreferenceExportFolder("folderExport");
+        getPreferenceManager().setPreferenceArbitraryImportFolder("arbitraryFolderImport");
+        getPreferenceManager().setPreferenceArbitraryExportFolder("arbitraryFolderExport");
         getPreferenceManager().setPreferenceFileLoggerEnabled(true);
         getPreferenceManager().setPreferenceFileDumpEnabled(true);
         getPreferenceManager().setPreferenceAllowArbitraryFileLocation(true);
-        assertTrue(folderPermissionManager.hasAnyPersistentPermission(null));
+        assertTrue(folderPermissionManager.hasAnyPermission(null));
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(scrollTo());
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(click());
         onView(withId(R.id.switch_activity_system_file_dump_enabled)).perform(scrollTo());
@@ -1876,7 +1950,7 @@ public class SystemActivityTest extends BaseUITest {
         onView(withId(R.id.edittext_dialog_file_choose_file)).perform(replaceText("test.json"));
         onView(withId(R.id.imageview_dialog_file_choose_cancel)).perform(click());
         assertFalse(alarmManager.wasCancelAlarmCalled());
-        assertTrue(folderPermissionManager.hasAnyPersistentPermission(null));
+        assertTrue(folderPermissionManager.hasAnyPermission(null));
         assertTrue(getNetworkTaskDAO().readAllNetworkTasks().isEmpty());
         assertTrue(getLogDAO().readAllLogs().isEmpty());
         assertTrue(getIntervalDAO().readAllIntervals().isEmpty());
@@ -1900,6 +1974,8 @@ public class SystemActivityTest extends BaseUITest {
         assertFalse(getPreferenceManager().getPreferenceNotification());
         assertEquals("config", getPreferenceManager().getPreferenceImportFolder());
         assertEquals("config", getPreferenceManager().getPreferenceExportFolder());
+        assertEquals("/Documents", getPreferenceManager().getPreferenceArbitraryImportFolder());
+        assertEquals("/Documents", getPreferenceManager().getPreferenceArbitraryExportFolder());
         assertFalse(getPreferenceManager().getPreferenceFileLoggerEnabled());
         assertFalse(getPreferenceManager().getPreferenceFileDumpEnabled());
         assertFalse(getPreferenceManager().getPreferenceAllowArbitraryFileLocation());
@@ -1937,6 +2013,8 @@ public class SystemActivityTest extends BaseUITest {
         getPreferenceManager().setPreferenceNotification(true);
         getPreferenceManager().setPreferenceImportFolder("folderImport");
         getPreferenceManager().setPreferenceExportFolder("folderExport");
+        getPreferenceManager().setPreferenceArbitraryImportFolder("arbitraryFolderImport");
+        getPreferenceManager().setPreferenceArbitraryExportFolder("arbitraryFolderExport");
         getPreferenceManager().setPreferenceFileLoggerEnabled(true);
         getPreferenceManager().setPreferenceFileDumpEnabled(true);
         getPreferenceManager().setPreferenceAllowArbitraryFileLocation(false);
@@ -1985,6 +2063,8 @@ public class SystemActivityTest extends BaseUITest {
         assertFalse(getPreferenceManager().getPreferenceNotification());
         assertEquals("config", getPreferenceManager().getPreferenceImportFolder());
         assertEquals("config", getPreferenceManager().getPreferenceExportFolder());
+        assertEquals("/Documents", getPreferenceManager().getPreferenceArbitraryImportFolder());
+        assertEquals("/Documents", getPreferenceManager().getPreferenceArbitraryExportFolder());
         assertFalse(getPreferenceManager().getPreferenceFileLoggerEnabled());
         assertFalse(getPreferenceManager().getPreferenceFileDumpEnabled());
         assertFalse(getPreferenceManager().getPreferenceAllowArbitraryFileLocation());
@@ -2022,10 +2102,12 @@ public class SystemActivityTest extends BaseUITest {
         getPreferenceManager().setPreferenceNotification(true);
         getPreferenceManager().setPreferenceImportFolder("folderImport");
         getPreferenceManager().setPreferenceExportFolder("folderExport");
+        getPreferenceManager().setPreferenceArbitraryImportFolder("arbitraryFolderImport");
+        getPreferenceManager().setPreferenceArbitraryExportFolder("arbitraryFolderExport");
         getPreferenceManager().setPreferenceFileLoggerEnabled(true);
         getPreferenceManager().setPreferenceFileDumpEnabled(true);
         getPreferenceManager().setPreferenceAllowArbitraryFileLocation(true);
-        assertTrue(folderPermissionManager.hasAnyPersistentPermission(null));
+        assertTrue(folderPermissionManager.hasAnyPermission(null));
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(scrollTo());
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(click());
         onView(withId(R.id.switch_activity_system_file_dump_enabled)).perform(scrollTo());
@@ -2050,7 +2132,7 @@ public class SystemActivityTest extends BaseUITest {
         onView(withId(R.id.textview_dialog_confirm_description)).check(matches(withText("The import will overwrite all existing network tasks, log entries and the configuration. This cannot be undone.")));
         onView(withId(R.id.imageview_dialog_confirm_cancel)).perform(click());
         assertFalse(alarmManager.wasCancelAlarmCalled());
-        assertTrue(folderPermissionManager.hasAnyPersistentPermission(null));
+        assertTrue(folderPermissionManager.hasAnyPermission(null));
         assertTrue(getNetworkTaskDAO().readAllNetworkTasks().isEmpty());
         assertTrue(getLogDAO().readAllLogs().isEmpty());
         assertTrue(getIntervalDAO().readAllIntervals().isEmpty());
@@ -2074,6 +2156,8 @@ public class SystemActivityTest extends BaseUITest {
         assertFalse(getPreferenceManager().getPreferenceNotification());
         assertEquals("config", getPreferenceManager().getPreferenceImportFolder());
         assertEquals("config", getPreferenceManager().getPreferenceExportFolder());
+        assertEquals("/Documents", getPreferenceManager().getPreferenceArbitraryImportFolder());
+        assertEquals("/Documents", getPreferenceManager().getPreferenceArbitraryExportFolder());
         assertFalse(getPreferenceManager().getPreferenceFileLoggerEnabled());
         assertFalse(getPreferenceManager().getPreferenceFileDumpEnabled());
         assertFalse(getPreferenceManager().getPreferenceAllowArbitraryFileLocation());
@@ -2111,10 +2195,12 @@ public class SystemActivityTest extends BaseUITest {
         getPreferenceManager().setPreferenceNotification(true);
         getPreferenceManager().setPreferenceImportFolder("folderImport");
         getPreferenceManager().setPreferenceExportFolder("folderExport");
+        getPreferenceManager().setPreferenceArbitraryImportFolder("arbitraryFolderImport");
+        getPreferenceManager().setPreferenceArbitraryExportFolder("arbitraryFolderExport");
         getPreferenceManager().setPreferenceFileLoggerEnabled(true);
         getPreferenceManager().setPreferenceFileDumpEnabled(true);
         getPreferenceManager().setPreferenceAllowArbitraryFileLocation(false);
-        assertTrue(folderPermissionManager.hasAnyPersistentPermission(null));
+        assertTrue(folderPermissionManager.hasAnyPermission(null));
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(scrollTo());
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(click());
         onView(withId(R.id.switch_activity_system_file_dump_enabled)).perform(scrollTo());
@@ -2138,7 +2224,7 @@ public class SystemActivityTest extends BaseUITest {
         getTimeBasedSuspensionScheduler().getIntervals();
         getPreferenceManager().removeAllPreferences();
         onView(withId(R.id.imageview_dialog_confirm_cancel)).perform(click());
-        assertTrue(folderPermissionManager.hasAnyPersistentPermission(null));
+        assertTrue(folderPermissionManager.hasAnyPermission(null));
         assertFalse(alarmManager.wasCancelAlarmCalled());
         assertTrue(getNetworkTaskDAO().readAllNetworkTasks().isEmpty());
         assertTrue(getLogDAO().readAllLogs().isEmpty());
@@ -2163,6 +2249,8 @@ public class SystemActivityTest extends BaseUITest {
         assertFalse(getPreferenceManager().getPreferenceNotification());
         assertEquals("config", getPreferenceManager().getPreferenceImportFolder());
         assertEquals("config", getPreferenceManager().getPreferenceExportFolder());
+        assertEquals("/Documents", getPreferenceManager().getPreferenceArbitraryImportFolder());
+        assertEquals("/Documents", getPreferenceManager().getPreferenceArbitraryExportFolder());
         assertFalse(getPreferenceManager().getPreferenceFileLoggerEnabled());
         assertFalse(getPreferenceManager().getPreferenceFileDumpEnabled());
         assertFalse(getPreferenceManager().getPreferenceAllowArbitraryFileLocation());
@@ -2209,10 +2297,12 @@ public class SystemActivityTest extends BaseUITest {
         getPreferenceManager().setPreferenceNotification(true);
         getPreferenceManager().setPreferenceImportFolder("folderImport");
         getPreferenceManager().setPreferenceExportFolder("folderExport");
+        getPreferenceManager().setPreferenceArbitraryImportFolder("arbitraryFolderImport");
+        getPreferenceManager().setPreferenceArbitraryExportFolder("arbitraryFolderExport");
         getPreferenceManager().setPreferenceFileLoggerEnabled(true);
         getPreferenceManager().setPreferenceFileDumpEnabled(true);
         getPreferenceManager().setPreferenceAllowArbitraryFileLocation(true);
-        assertTrue(folderPermissionManager.hasAnyPersistentPermission(null));
+        assertTrue(folderPermissionManager.hasAnyPermission(null));
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(scrollTo());
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(click());
         onView(withId(R.id.switch_activity_system_file_dump_enabled)).perform(scrollTo());
@@ -2236,7 +2326,7 @@ public class SystemActivityTest extends BaseUITest {
         onView(withId(R.id.imageview_dialog_file_choose_ok)).perform(click());
         onView(withId(R.id.textview_dialog_confirm_description)).check(matches(withText("The import will overwrite all existing network tasks, log entries and the configuration. This cannot be undone.")));
         onView(withId(R.id.imageview_dialog_confirm_ok)).perform(click());
-        assertFalse(folderPermissionManager.hasAnyPersistentPermission(null));
+        assertFalse(folderPermissionManager.hasAnyPermission(null));
         assertFalse(getNetworkTaskDAO().readAllNetworkTasks().isEmpty());
         assertFalse(getLogDAO().readAllLogs().isEmpty());
         assertFalse(getIntervalDAO().readAllIntervals().isEmpty());
@@ -2302,6 +2392,8 @@ public class SystemActivityTest extends BaseUITest {
         assertTrue(getPreferenceManager().getPreferenceNotification());
         assertEquals("folderImport", getPreferenceManager().getPreferenceImportFolder());
         assertEquals("folderExport", getPreferenceManager().getPreferenceExportFolder());
+        assertEquals("arbitraryFolderImport", getPreferenceManager().getPreferenceArbitraryImportFolder());
+        assertEquals("arbitraryFolderExport", getPreferenceManager().getPreferenceArbitraryExportFolder());
         assertTrue(getPreferenceManager().getPreferenceFileLoggerEnabled());
         assertTrue(getPreferenceManager().getPreferenceFileDumpEnabled());
         assertTrue(getPreferenceManager().getPreferenceAllowArbitraryFileLocation());
@@ -2349,6 +2441,8 @@ public class SystemActivityTest extends BaseUITest {
         getPreferenceManager().setPreferenceNotification(true);
         getPreferenceManager().setPreferenceImportFolder("folderImport");
         getPreferenceManager().setPreferenceExportFolder("folderExport");
+        getPreferenceManager().setPreferenceArbitraryImportFolder("arbitraryFolderImport");
+        getPreferenceManager().setPreferenceArbitraryExportFolder("arbitraryFolderExport");
         getPreferenceManager().setPreferenceFileLoggerEnabled(true);
         getPreferenceManager().setPreferenceFileDumpEnabled(true);
         getPreferenceManager().setPreferenceAllowArbitraryFileLocation(false);
@@ -2441,6 +2535,8 @@ public class SystemActivityTest extends BaseUITest {
         assertTrue(getPreferenceManager().getPreferenceNotification());
         assertEquals("folderImport", getPreferenceManager().getPreferenceImportFolder());
         assertEquals("folderExport", getPreferenceManager().getPreferenceExportFolder());
+        assertEquals("arbitraryFolderImport", getPreferenceManager().getPreferenceArbitraryImportFolder());
+        assertEquals("arbitraryFolderExport", getPreferenceManager().getPreferenceArbitraryExportFolder());
         assertTrue(getPreferenceManager().getPreferenceFileLoggerEnabled());
         assertTrue(getPreferenceManager().getPreferenceFileDumpEnabled());
         assertFalse(getPreferenceManager().getPreferenceAllowArbitraryFileLocation());
@@ -2507,6 +2603,8 @@ public class SystemActivityTest extends BaseUITest {
         getPreferenceManager().setPreferenceNotification(true);
         getPreferenceManager().setPreferenceImportFolder("folderImport");
         getPreferenceManager().setPreferenceExportFolder("folderExport");
+        getPreferenceManager().setPreferenceArbitraryImportFolder("arbitraryFolderImport");
+        getPreferenceManager().setPreferenceArbitraryExportFolder("arbitraryFolderExport");
         getPreferenceManager().setPreferenceFileLoggerEnabled(true);
         getPreferenceManager().setPreferenceFileDumpEnabled(true);
         getPreferenceManager().setPreferenceAllowArbitraryFileLocation(true);
@@ -2549,6 +2647,8 @@ public class SystemActivityTest extends BaseUITest {
         assertTrue(getPreferenceManager().getPreferenceNotification());
         assertEquals("folderImport", getPreferenceManager().getPreferenceImportFolder());
         assertEquals("folderExport", getPreferenceManager().getPreferenceExportFolder());
+        assertEquals("arbitraryFolderImport", getPreferenceManager().getPreferenceArbitraryImportFolder());
+        assertEquals("arbitraryFolderExport", getPreferenceManager().getPreferenceArbitraryExportFolder());
         assertTrue(getPreferenceManager().getPreferenceFileLoggerEnabled());
         assertTrue(getPreferenceManager().getPreferenceFileDumpEnabled());
         assertTrue(getPreferenceManager().getPreferenceAllowArbitraryFileLocation());
@@ -2587,6 +2687,8 @@ public class SystemActivityTest extends BaseUITest {
         getPreferenceManager().setPreferenceNotification(true);
         getPreferenceManager().setPreferenceImportFolder("folderImport");
         getPreferenceManager().setPreferenceExportFolder("folderExport");
+        getPreferenceManager().setPreferenceArbitraryImportFolder("arbitraryFolderImport");
+        getPreferenceManager().setPreferenceArbitraryExportFolder("arbitraryFolderExport");
         getPreferenceManager().setPreferenceFileLoggerEnabled(true);
         getPreferenceManager().setPreferenceFileDumpEnabled(true);
         getPreferenceManager().setPreferenceAllowArbitraryFileLocation(true);
@@ -2629,6 +2731,8 @@ public class SystemActivityTest extends BaseUITest {
         assertTrue(getPreferenceManager().getPreferenceNotification());
         assertEquals("folderImport", getPreferenceManager().getPreferenceImportFolder());
         assertEquals("folderExport", getPreferenceManager().getPreferenceExportFolder());
+        assertEquals("arbitraryFolderImport", getPreferenceManager().getPreferenceArbitraryImportFolder());
+        assertEquals("arbitraryFolderExport", getPreferenceManager().getPreferenceArbitraryExportFolder());
         assertTrue(getPreferenceManager().getPreferenceFileLoggerEnabled());
         assertTrue(getPreferenceManager().getPreferenceFileDumpEnabled());
         assertTrue(getPreferenceManager().getPreferenceAllowArbitraryFileLocation());
@@ -2667,6 +2771,8 @@ public class SystemActivityTest extends BaseUITest {
         getPreferenceManager().setPreferenceNotification(true);
         getPreferenceManager().setPreferenceImportFolder("folderImport");
         getPreferenceManager().setPreferenceExportFolder("folderExport");
+        getPreferenceManager().setPreferenceArbitraryImportFolder("arbitraryFolderImport");
+        getPreferenceManager().setPreferenceArbitraryExportFolder("arbitraryFolderExport");
         getPreferenceManager().setPreferenceFileLoggerEnabled(true);
         getPreferenceManager().setPreferenceFileDumpEnabled(true);
         getPreferenceManager().setPreferenceAllowArbitraryFileLocation(false);
@@ -2708,6 +2814,8 @@ public class SystemActivityTest extends BaseUITest {
         assertTrue(getPreferenceManager().getPreferenceNotification());
         assertEquals("folderImport", getPreferenceManager().getPreferenceImportFolder());
         assertEquals("folderExport", getPreferenceManager().getPreferenceExportFolder());
+        assertEquals("arbitraryFolderImport", getPreferenceManager().getPreferenceArbitraryImportFolder());
+        assertEquals("arbitraryFolderExport", getPreferenceManager().getPreferenceArbitraryExportFolder());
         assertTrue(getPreferenceManager().getPreferenceFileLoggerEnabled());
         assertTrue(getPreferenceManager().getPreferenceFileDumpEnabled());
         assertFalse(getPreferenceManager().getPreferenceAllowArbitraryFileLocation());
@@ -3245,6 +3353,6 @@ public class SystemActivityTest extends BaseUITest {
 
     private void addFolderPermission() {
         folderPermissionManager.setGrantedFolder("/Test");
-        folderPermissionManager.requestPersistentFolderPermission(null, null, "/Test");
+        folderPermissionManager.requestPermission(null, null, "/Test");
     }
 }
