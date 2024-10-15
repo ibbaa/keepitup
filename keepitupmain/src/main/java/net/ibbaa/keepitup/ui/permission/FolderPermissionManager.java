@@ -34,7 +34,7 @@ import java.util.Set;
 
 public class FolderPermissionManager implements IFolderPermissionManager {
 
-    public boolean hasPermission(Context context, String folder) {
+    public boolean hasPersistentPermission(Context context, String folder) {
         Log.d(FolderPermissionManager.class.getName(), "hasPermission for folder " + folder);
         if (StringUtil.isEmpty(folder)) {
             return false;
@@ -48,13 +48,13 @@ public class FolderPermissionManager implements IFolderPermissionManager {
         return false;
     }
 
-    public boolean hasAnyPermission(Context context) {
+    public boolean hasAnyPersistentPermission(Context context) {
         Log.d(FolderPermissionManager.class.getName(), "hasAnyPermission");
         List<UriPermission> permissions = getPermissions(context);
         return !permissions.isEmpty();
     }
 
-    public void requestPermission(ComponentActivity activity, FolderPermissionLauncher launcher, String folder) {
+    public void requestPersistentFolderPermission(ComponentActivity activity, FolderPermissionLauncher launcher, String folder) {
         Log.d(FolderPermissionManager.class.getName(), "requestPermission for folder " + folder);
         Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT_TREE);
         intent.addFlags(Intent.FLAG_GRANT_PERSISTABLE_URI_PERMISSION);
@@ -65,12 +65,12 @@ public class FolderPermissionManager implements IFolderPermissionManager {
         launcher.launch(intent);
     }
 
-    public void revokePermission(FragmentActivity activity, String folder) {
+    public void revokePersistentPermission(FragmentActivity activity, String folder) {
         Log.d(FolderPermissionManager.class.getName(), "revokePermission for folder " + folder);
         if (StringUtil.isEmpty(folder)) {
             return;
         }
-        if (!hasPermission(activity, folder)) {
+        if (!hasPersistentPermission(activity, folder)) {
             Log.d(FolderPermissionManager.class.getName(), "No permission for folder " + folder + ". Skipping revoke.");
             return;
         }
@@ -83,22 +83,22 @@ public class FolderPermissionManager implements IFolderPermissionManager {
         }
     }
 
-    public void revokeAllPermissions(FragmentActivity activity) {
+    public void revokeAllPersistentPermissions(FragmentActivity activity) {
         Log.d(FolderPermissionManager.class.getName(), "revokeAllPermissions");
         List<UriPermission> permissions = getPermissions(activity);
         for (UriPermission permission : permissions) {
             String currentPermission = permission.getUri().toString();
-            revokePermission(activity, currentPermission);
+            revokePersistentPermission(activity, currentPermission);
         }
     }
 
-    public void revokeOrphanPermissions(FragmentActivity activity, Set<String> usedFolders) {
+    public void revokeOrphanPersistentPermissions(FragmentActivity activity, Set<String> usedFolders) {
         Log.d(FolderPermissionManager.class.getName(), "revokeOrphanPermissions");
         List<UriPermission> permissions = getPermissions(activity);
         for (UriPermission permission : permissions) {
             String currentPermission = permission.getUri().toString();
             if (!usedFolders.contains(currentPermission)) {
-                revokePermission(activity, currentPermission);
+                revokePersistentPermission(activity, currentPermission);
             }
         }
     }

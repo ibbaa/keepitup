@@ -381,8 +381,8 @@ public class SystemActivity extends SettingsInputActivity implements ExportSuppo
         Log.d(SystemActivity.class.getName(), "prepareArbitraryFolderPermissions");
         IFolderPermissionManager folderPermissionManager = getFolderPermissionManager();
         if (arbitraryFileLocationSwitch.isChecked()) {
-            if (!folderPermissionManager.hasAnyPermission(this)) {
-                folderPermissionManager.requestPermission(this, arbitraryFolderLauncher, null);
+            if (!folderPermissionManager.hasAnyPersistentPermission(this)) {
+                folderPermissionManager.requestPersistentFolderPermission(this, arbitraryFolderLauncher, null);
             }
         }
     }
@@ -398,10 +398,8 @@ public class SystemActivity extends SettingsInputActivity implements ExportSuppo
         PreferenceManager preferenceManager = new PreferenceManager(this);
         preferenceManager.setPreferenceArbitraryLogFolder(arbitraryFolder);
         preferenceManager.setPreferenceArbitraryDownloadFolder(arbitraryFolder);
-        preferenceManager.setPreferenceArbitraryImportFolder(arbitraryFolder);
-        preferenceManager.setPreferenceArbitraryExportFolder(arbitraryFolder);
         IFolderPermissionManager folderPermissionManager = getFolderPermissionManager();
-        folderPermissionManager.revokeOrphanPermissions(this, preferenceManager.getArbitraryFolders());
+        folderPermissionManager.revokeOrphanPersistentPermissions(this, preferenceManager.getArbitraryFolders());
         NetworkTaskLog.clear();
     }
 
@@ -801,7 +799,7 @@ public class SystemActivity extends SettingsInputActivity implements ExportSuppo
     private void resetFolderPermissions() {
         Log.d(SystemActivity.class.getName(), "resetFolderPermissions");
         IFolderPermissionManager folderPermissionManager = getFolderPermissionManager();
-        folderPermissionManager.revokeAllPermissions(this);
+        folderPermissionManager.revokeAllPersistentPermissions(this);
     }
 
     private void resetActivity() {

@@ -466,21 +466,6 @@ public class PreferenceManager {
         removePreferenceValue(getResources().getString(R.string.import_folder_key));
     }
 
-    public String getPreferenceArbitraryImportFolder() {
-        Log.d(PreferenceManager.class.getName(), "getPreferenceArbitraryImportFolder");
-        return getPreferenceString(getResources().getString(R.string.arbitrary_import_folder_key), getResources().getString(R.string.arbitrary_import_folder_default));
-    }
-
-    public void setPreferenceArbitraryImportFolder(String importFolder) {
-        Log.d(PreferenceManager.class.getName(), "setPreferenceArbitraryImportFolder, importFolder is " + importFolder);
-        setPreferenceString(getResources().getString(R.string.arbitrary_import_folder_key), importFolder);
-    }
-
-    public void removePreferenceArbitraryImportFolder() {
-        Log.d(PreferenceManager.class.getName(), "removePreferenceArbitraryImportFolder");
-        removePreferenceValue(getResources().getString(R.string.arbitrary_import_folder_key));
-    }
-
     public String getPreferenceExportFolder() {
         Log.d(PreferenceManager.class.getName(), "getPreferenceExportFolder");
         return getPreferenceString(getResources().getString(R.string.export_folder_key), getResources().getString(R.string.export_folder_default));
@@ -496,19 +481,19 @@ public class PreferenceManager {
         removePreferenceValue(getResources().getString(R.string.export_folder_key));
     }
 
-    public String getPreferenceArbitraryExportFolder() {
-        Log.d(PreferenceManager.class.getName(), "getPreferenceArbitraryExportFolder");
-        return getPreferenceString(getResources().getString(R.string.arbitrary_export_folder_key), getResources().getString(R.string.arbitrary_export_folder_default));
+    public String getPreferenceLastArbitraryExportFile() {
+        Log.d(PreferenceManager.class.getName(), "getPreferenceLastArbitraryExportFile");
+        return getPreferenceString(getResources().getString(R.string.last_arbitrary_export_file_key), getResources().getString(R.string.last_arbitrary_export_file_default));
     }
 
-    public void setPreferenceArbitraryExportFolder(String exportFolder) {
-        Log.d(PreferenceManager.class.getName(), "setPreferenceArbitraryExportFolder, importFolder is " + exportFolder);
-        setPreferenceString(getResources().getString(R.string.arbitrary_export_folder_key), exportFolder);
+    public void setPreferenceLastArbitraryExportFile(String exportFolder) {
+        Log.d(PreferenceManager.class.getName(), "setPreferenceLastArbitraryExportFile, exportFolder is " + exportFolder);
+        setPreferenceString(getResources().getString(R.string.last_arbitrary_export_file_key), exportFolder);
     }
 
-    public void removePreferenceArbitraryExportFolder() {
-        Log.d(PreferenceManager.class.getName(), "removePreferenceArbitraryExportFolder");
-        removePreferenceValue(getResources().getString(R.string.arbitrary_export_folder_key));
+    public void removePreferenceLastArbitraryExportFile() {
+        Log.d(PreferenceManager.class.getName(), "removePreferenceLastArbitraryExportFile");
+        removePreferenceValue(getResources().getString(R.string.last_arbitrary_export_file_key));
     }
 
     public int getPreferenceTheme() {
@@ -572,11 +557,9 @@ public class PreferenceManager {
     }
 
     public Set<String> getArbitraryFolders() {
-        Set<String> folders = new HashSet<>(4);
+        Set<String> folders = new HashSet<>(2);
         folders.add(getPreferenceArbitraryLogFolder());
         folders.add(getPreferenceArbitraryDownloadFolder());
-        folders.add(getPreferenceArbitraryImportFolder());
-        folders.add(getPreferenceArbitraryExportFolder());
         return folders;
     }
 

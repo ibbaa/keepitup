@@ -183,7 +183,7 @@ public abstract class NetworkTaskWorker implements Runnable {
 
     private boolean checkArbitraryLogFolderPermission(PreferenceManager preferenceManager) {
         Log.d(NetworkTaskWorker.class.getName(), "checkArbitraryLogFolderPermission");
-        return getFolderPermissionManager().hasPermission(getContext(), preferenceManager.getPreferenceArbitraryLogFolder());
+        return getFolderPermissionManager().hasPersistentPermission(getContext(), preferenceManager.getPreferenceArbitraryLogFolder());
     }
 
     private void sendNetworkTaskUINotificationBroadcast(NetworkTask task) {

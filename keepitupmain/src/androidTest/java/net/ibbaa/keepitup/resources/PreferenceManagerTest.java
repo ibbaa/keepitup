@@ -388,18 +388,6 @@ public class PreferenceManagerTest {
     }
 
     @Test
-    public void testGetSetRemovePreferenceArbitraryImportFolder() {
-        assertEquals("/Documents", preferenceManager.getPreferenceArbitraryImportFolder());
-        preferenceManager.setPreferenceArbitraryImportFolder("/Folder");
-        assertEquals("/Folder", preferenceManager.getPreferenceArbitraryImportFolder());
-        preferenceManager.removeAllPreferences();
-        assertEquals("/Documents", preferenceManager.getPreferenceArbitraryImportFolder());
-        preferenceManager.setPreferenceArbitraryImportFolder("/Folder");
-        preferenceManager.removePreferenceArbitraryImportFolder();
-        assertEquals("/Documents", preferenceManager.getPreferenceArbitraryImportFolder());
-    }
-
-    @Test
     public void testGetSetRemovePreferenceExportFolder() {
         assertEquals("config", preferenceManager.getPreferenceExportFolder());
         preferenceManager.setPreferenceExportFolder("Folder");
@@ -412,15 +400,15 @@ public class PreferenceManagerTest {
     }
 
     @Test
-    public void testGetSetRemovePreferenceArbitraryExportFolder() {
-        assertEquals("/Documents", preferenceManager.getPreferenceArbitraryExportFolder());
-        preferenceManager.setPreferenceArbitraryExportFolder("/Folder");
-        assertEquals("/Folder", preferenceManager.getPreferenceArbitraryExportFolder());
+    public void testGetSetRemovePreferenceLastArbitraryExportFile() {
+        assertEquals("", preferenceManager.getPreferenceLastArbitraryExportFile());
+        preferenceManager.setPreferenceLastArbitraryExportFile("/Folder");
+        assertEquals("/Folder", preferenceManager.getPreferenceLastArbitraryExportFile());
         preferenceManager.removeAllPreferences();
-        assertEquals("/Documents", preferenceManager.getPreferenceArbitraryExportFolder());
-        preferenceManager.setPreferenceArbitraryExportFolder("/Folder");
-        preferenceManager.removePreferenceArbitraryExportFolder();
-        assertEquals("/Documents", preferenceManager.getPreferenceArbitraryExportFolder());
+        assertEquals("", preferenceManager.getPreferenceLastArbitraryExportFile());
+        preferenceManager.setPreferenceLastArbitraryExportFile("/Folder");
+        preferenceManager.removePreferenceLastArbitraryExportFile();
+        assertEquals("", preferenceManager.getPreferenceLastArbitraryExportFile());
     }
 
     @Test
@@ -483,23 +471,8 @@ public class PreferenceManagerTest {
         assertTrue(folders.contains("/Documents1"));
         preferenceManager.setPreferenceArbitraryDownloadFolder("/Documents2");
         folders = preferenceManager.getArbitraryFolders();
-        assertEquals(3, folders.size());
-        assertTrue(folders.contains("/Documents"));
+        assertEquals(2, folders.size());
         assertTrue(folders.contains("/Documents1"));
         assertTrue(folders.contains("/Documents2"));
-        preferenceManager.setPreferenceArbitraryImportFolder("/Documents3");
-        folders = preferenceManager.getArbitraryFolders();
-        assertEquals(4, folders.size());
-        assertTrue(folders.contains("/Documents"));
-        assertTrue(folders.contains("/Documents1"));
-        assertTrue(folders.contains("/Documents2"));
-        assertTrue(folders.contains("/Documents3"));
-        preferenceManager.setPreferenceArbitraryExportFolder("/Documents4");
-        folders = preferenceManager.getArbitraryFolders();
-        assertEquals(4, folders.size());
-        assertTrue(folders.contains("/Documents1"));
-        assertTrue(folders.contains("/Documents2"));
-        assertTrue(folders.contains("/Documents3"));
-        assertTrue(folders.contains("/Documents4"));
     }
 }

@@ -17,12 +17,10 @@
 <resources>
     <string name="import_folder_key">import_folder_key</string>
     <string name="import_folder_default">config</string>
-    <string name="arbitrary_import_folder_key">arbitrary_import_folder_key</string>
-    <string name="arbitrary_import_folder_default">/Documents</string>
     <string name="export_folder_key">export_folder_key</string>
     <string name="export_folder_default">config</string>
-    <string name="arbitrary_export_folder_key">arbitrary_export_folder_key</string>
-    <string name="arbitrary_export_folder_default">/Documents</string>
+    <string name="last_arbitrary_export_file_key">arbitrary_export_folder_key</string>
+    <string name="last_arbitrary_export_file_default" />
     <string name="export_file_prefix">keepitup_config</string>
     <string name="external_storage_type_key">external_storage_type_key</string>
     <integer name="external_storage_type_default">0</integer>
