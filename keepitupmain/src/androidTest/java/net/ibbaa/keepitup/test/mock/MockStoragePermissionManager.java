@@ -20,7 +20,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 
-import androidx.activity.ComponentActivity;
 import androidx.fragment.app.FragmentActivity;
 
 import net.ibbaa.keepitup.ui.permission.IStoragePermissionManager;
@@ -32,41 +31,63 @@ import java.util.Set;
 @SuppressWarnings({"unused"})
 public class MockStoragePermissionManager implements IStoragePermissionManager {
 
-    private Set<String> permissions;
+    private Set<String> folderPermissions;
+    private Set<String> createFilePermissions;
+    private Set<String> openFilePermissions;
     private String grantedFolder;
+    private String grantedCreateFile;
+    private String grantedOpenFile;
 
     public MockStoragePermissionManager() {
-        reset();
+        this(null);
     }
 
     public MockStoragePermissionManager(String grantedFolder) {
+        this(grantedFolder, null, null);
+    }
+
+    public MockStoragePermissionManager(String grantedFolder, String grantedCreateFile, String grantedOpenFile) {
         reset();
         this.grantedFolder = grantedFolder;
+        this.grantedCreateFile = grantedCreateFile;
+        this.grantedOpenFile = grantedOpenFile;
     }
 
     public void reset() {
-        permissions = new HashSet<>();
+        folderPermissions = new HashSet<>();
+        createFilePermissions = new HashSet<>();
+        openFilePermissions = new HashSet<>();
         grantedFolder = null;
+        grantedCreateFile = null;
+        grantedOpenFile = null;
     }
 
     public void setGrantedFolder(String grantedFolder) {
         this.grantedFolder = grantedFolder;
     }
 
+    public void setGrantedCreateFile(String grantedCreateFile) {
+        this.grantedCreateFile = grantedCreateFile;
+    }
+
+    public void setGrantedOpenFile(String grantedOpenFile) {
+        this.grantedOpenFile = grantedOpenFile;
+    }
+
     @Override
     public boolean hasPersistentPermission(Context context, String folder) {
-        return permissions.contains(folder);
+        return folderPermissions.contains(folder);
     }
 
     @Override
     public boolean hasAnyPersistentPermission(Context context) {
-        return !permissions.isEmpty();
+        return !folderPermissions.isEmpty();
     }
 
     @Override
-    public void requestPersistentFolderPermission(ComponentActivity activity, PermissionLauncher launcher, String folder) {
+    public void requestPersistentFolderPermission(PermissionLauncher launcher, String folder) {
         String actualGrantedFolder = grantedFolder != null ? grantedFolder : folder;
-        permissions.add(actualGrantedFolder);
+        folderPermissions.add(actualGrantedFolder);
         Intent intent = new Intent();
         intent.setData(Uri.parse(actualGrantedFolder));
         if (launcher != null) {
@@ -75,17 +96,47 @@ public class MockStoragePermissionManager implements IStoragePermissionManager {
     }
 
     @Override
+    public void requestCreateFilePermission(PermissionLauncher launcher, String fileName) {
+        String actualGrantedCreateFile = grantedCreateFile != null ? grantedCreateFile : fileName;
+        createFilePermissions.add(grantedCreateFile);
+        Intent intent = new Intent();
+        intent.setData(Uri.parse(grantedCreateFile));
+        if (launcher != null) {
+            launcher.launch(intent);
+        }
+    }
+
+    @Override
+    public void requestOpenFilePermission(PermissionLauncher launcher, String fullFilePath) {
+        String actualGrantedOpenFile = grantedOpenFile != null ? grantedOpenFile : fullFilePath;
+        openFilePermissions.add(grantedOpenFile);
+        Intent intent = new Intent();
+        intent.setData(Uri.parse(grantedOpenFile));
+        if (launcher != null) {
+            launcher.launch(intent);
+        }
+    }
+
+    @Override
     public void revokePersistentPermission(FragmentActivity activity, String folder) {
-        permissions.remove(folder);
+        folderPermissions.remove(folder);
     }
 
     @Override
     public void revokeAllPersistentPermissions(FragmentActivity activity) {
-        permissions.clear();
+        folderPermissions.clear();
     }
 
     @Override
     public void revokeOrphanPersistentPermissions(FragmentActivity activity, Set<String> usedFolders) {
-        permissions.retainAll(usedFolders);
+        folderPermissions.retainAll(usedFolders);
+    }
+
+    public Set<String> getCreateFilePermissions() {
+        return createFilePermissions;
+    }
+
+    public Set<String> getOpenFilePermissions() {
+        return openFilePermissions;
     }
 }

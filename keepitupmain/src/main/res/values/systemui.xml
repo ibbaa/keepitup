@@ -21,6 +21,7 @@
     <string name="label_activity_system_config_reset">Reset configuration</string>
     <string name="label_activity_system_config_export">Export configuration</string>
     <string name="label_activity_system_config_import">Import configuration</string>
+    <string name="text_activity_system_import_export_choose_file">Choose file</string>
     <string name="label_activity_system_external_storage_type">External storage type</string>
     <string name="text_activity_system_external_storage_type_primary">Primary</string>
     <string name="text_activity_system_external_storage_type_sdcard">SD card</string>

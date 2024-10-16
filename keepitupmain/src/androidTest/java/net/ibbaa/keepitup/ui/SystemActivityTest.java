@@ -3299,6 +3299,6 @@ public class SystemActivityTest extends BaseUITest {
 
     private void addFolderPermission() {
         storagePermissionManager.setGrantedFolder("/Test");
-        storagePermissionManager.requestPersistentFolderPermission(null, null, "/Test");
+        storagePermissionManager.requestPersistentFolderPermission(null, "/Test");
     }
 }

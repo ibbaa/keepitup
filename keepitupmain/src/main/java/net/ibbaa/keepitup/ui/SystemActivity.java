@@ -91,6 +91,8 @@ public class SystemActivity extends SettingsInputActivity implements ExportSuppo
     private TextView logFolderText;
     private TextView batteryOptimizationText;
     private RadioGroup theme;
+    private PermissionLauncher exportFileLauncher;
+    private PermissionLauncher importFileLauncher;
     private PermissionLauncher arbitraryFolderLauncher;
 
     private DBPurgeTask purgeTask;
@@ -132,7 +134,9 @@ public class SystemActivity extends SettingsInputActivity implements ExportSuppo
         setContentView(R.layout.activity_system);
         prepareConfigurationResetField();
         prepareConfigurationExportField();
+        prepareConfigurationExportFileLauncher();
         prepareConfigurationImportField();
+        prepareConfigurationImportFileLauncher();
         prepareExternalStorageTypeRadioGroup();
         prepareBatteryOptimizationField();
         prepareThemeRadioGroup();
@@ -173,22 +177,32 @@ public class SystemActivity extends SettingsInputActivity implements ExportSuppo
 
     private void prepareConfigurationExportField() {
         Log.d(SystemActivity.class.getName(), "prepareConfigurationExportField");
-        CardView configurationResetView = findViewById(R.id.cardview_activity_system_config_export);
+        CardView configurationExportView = findViewById(R.id.cardview_activity_system_config_export);
         exportFolderText = findViewById(R.id.textview_activity_system_config_export_folder);
         PreferenceManager preferenceManager = new PreferenceManager(this);
-        String exportFolder = getExternalImportExportFolder(preferenceManager.getPreferenceExportFolder());
-        setExportFolder(exportFolder);
-        configurationResetView.setOnClickListener(this::showExportFolderChooseDialog);
+        if (preferenceManager.getPreferenceAllowArbitraryFileLocation()) {
+            setExportFolder(getResources().getString(R.string.text_activity_system_import_export_choose_file));
+            configurationExportView.setOnClickListener(this::requestConfigurationExportFilePermission);
+        } else {
+            String exportFolder = getExternalImportExportFolder(preferenceManager.getPreferenceExportFolder());
+            setExportFolder(exportFolder);
+            configurationExportView.setOnClickListener(this::showExportFolderChooseDialog);
+        }
     }
 
     private void prepareConfigurationImportField() {
         Log.d(SystemActivity.class.getName(), "prepareConfigurationImportField");
-        CardView configurationResetView = findViewById(R.id.cardview_activity_system_config_import);
+        CardView configurationImportView = findViewById(R.id.cardview_activity_system_config_import);
         importFolderText = findViewById(R.id.textview_activity_system_config_import_folder);
         PreferenceManager preferenceManager = new PreferenceManager(this);
-        String importFolder = getExternalImportExportFolder(preferenceManager.getPreferenceImportFolder());
-        setImportFolder(importFolder);
-        configurationResetView.setOnClickListener(this::showImportFolderChooseDialog);
+        if (preferenceManager.getPreferenceAllowArbitraryFileLocation()) {
+            setImportFolder(getResources().getString(R.string.text_activity_system_import_export_choose_file));
+            configurationImportView.setOnClickListener(this::requestConfigurationImportFilePermission);
+        } else {
+            String importFolder = getExternalImportExportFolder(preferenceManager.getPreferenceImportFolder());
+            setImportFolder(importFolder);
+            configurationImportView.setOnClickListener(this::showImportFolderChooseDialog);
+        }
     }
 
     private void prepareExternalStorageTypeRadioGroup() {
@@ -265,7 +279,6 @@ public class SystemActivity extends SettingsInputActivity implements ExportSuppo
             batteryOptimizationCardView.setEnabled(false);
         }
     }
-
 
     private void showBatteryOptimizationDialog(View view) {
         Log.d(SystemActivity.class.getName(), "showBatteryOptimizationDialog");
@@ -382,7 +395,7 @@ public class SystemActivity extends SettingsInputActivity implements ExportSuppo
         IStoragePermissionManager storagePermissionManager = getStoragePermissionManager();
         if (arbitraryFileLocationSwitch.isChecked()) {
             if (!storagePermissionManager.hasAnyPersistentPermission(this)) {
-                storagePermissionManager.requestPersistentFolderPermission(this, arbitraryFolderLauncher, null);
+                storagePermissionManager.requestPersistentFolderPermission(arbitraryFolderLauncher, null);
             }
         }
     }
@@ -400,6 +413,8 @@ public class SystemActivity extends SettingsInputActivity implements ExportSuppo
         preferenceManager.setPreferenceArbitraryDownloadFolder(arbitraryFolder);
         IStoragePermissionManager storagePermissionManager = getStoragePermissionManager();
         storagePermissionManager.revokeOrphanPersistentPermissions(this, preferenceManager.getArbitraryFolders());
+        prepareConfigurationExportField();
+        prepareConfigurationImportField();
         NetworkTaskLog.clear();
     }
 
@@ -510,6 +525,26 @@ public class SystemActivity extends SettingsInputActivity implements ExportSuppo
         }
     }
 
+    private void prepareConfigurationExportFileLauncher() {
+        Log.d(SystemActivity.class.getName(), "prepareConfigurationExportFileLauncher");
+        boolean bypassSystemSAF = BundleUtil.booleanFromBundle(getBypassSystemSAFKey(), getIntent().getExtras());
+        if (SystemUtil.supportsSAFFeature() && !bypassSystemSAF) {
+            exportFileLauncher = new GenericPermissionLauncher(this, this::grantConfigurationExportFilePermission);
+        } else {
+            exportFileLauncher = new NullPermissionLauncher();
+        }
+    }
+
+    private void prepareConfigurationImportFileLauncher() {
+        Log.d(SystemActivity.class.getName(), "prepareConfigurationImportFileLauncher");
+        boolean bypassSystemSAF = BundleUtil.booleanFromBundle(getBypassSystemSAFKey(), getIntent().getExtras());
+        if (SystemUtil.supportsSAFFeature() && !bypassSystemSAF) {
+            importFileLauncher = new GenericPermissionLauncher(this, this::grantConfigurationImportFilePermission);
+        } else {
+            importFileLauncher = new NullPermissionLauncher();
+        }
+    }
+
     private void setLogFolder(String logFolder) {
         logFolderText.setText(StringUtil.notNull(logFolder));
     }
@@ -559,6 +594,34 @@ public class SystemActivity extends SettingsInputActivity implements ExportSuppo
             return null;
         }
         return BundleUtil.stringFromBundle(getFileExtraDataKey(), bundle);
+    }
+
+    private void requestConfigurationExportFilePermission(View view) {
+        Log.d(SystemActivity.class.getName(), "requestExportFilePermission");
+        String fileName = getResources().getString(R.string.export_file_prefix);
+        getStoragePermissionManager().requestCreateFilePermission(exportFileLauncher, fileName);
+    }
+
+    private void requestConfigurationImportFilePermission(View view) {
+        Log.d(SystemActivity.class.getName(), "requestImportFilePermission");
+        PreferenceManager preferenceManager = new PreferenceManager(this);
+        getStoragePermissionManager().requestOpenFilePermission(importFileLauncher, preferenceManager.getPreferenceLastArbitraryExportFile());
+    }
+
+    public void grantConfigurationExportFilePermission(Uri uri) {
+        Log.d(SystemActivity.class.getName(), "grantExportFilePermission for uri " + uri);
+        if (uri == null) {
+            Log.e(SystemActivity.class.getName(), "uri is null");
+            return;
+        }
+    }
+
+    public void grantConfigurationImportFilePermission(Uri uri) {
+        Log.d(SystemActivity.class.getName(), "grantImportFilePermission for uri " + uri);
+        if (uri == null) {
+            Log.e(SystemActivity.class.getName(), "uri is null");
+            return;
+        }
     }
 
     private void showExportFolderChooseDialog(View view) {

@@ -186,7 +186,7 @@ public class DownloadNetworkTaskWorkerTest {
         TestDownloadNetworkTaskWorker downloadNetworkTaskWorker = prepareTestDownloadNetworkTaskWorker(dnsLookupResult, (DownloadCommandResult) null);
         MockStoragePermissionManager storagePermissionManager = new MockStoragePermissionManager();
         downloadNetworkTaskWorker.setStoragePermissionManager(storagePermissionManager);
-        storagePermissionManager.requestPersistentFolderPermission(null, null, "Movies");
+        storagePermissionManager.requestPersistentFolderPermission(null, "Movies");
         preferenceManager.setPreferenceDownloadExternalStorage(true);
         fileManager.setExternalDirectory(null, 0);
         NetworkTaskWorker.ExecutionResult executionResult = downloadNetworkTaskWorker.execute(getNetworkTask(), getAccessTypeData());
@@ -207,7 +207,7 @@ public class DownloadNetworkTaskWorkerTest {
         TestDownloadNetworkTaskWorker downloadNetworkTaskWorker = prepareTestDownloadNetworkTaskWorker(dnsLookupResult, downloadCommandResult);
         MockStoragePermissionManager storagePermissionManager = new MockStoragePermissionManager();
         downloadNetworkTaskWorker.setStoragePermissionManager(storagePermissionManager);
-        storagePermissionManager.requestPersistentFolderPermission(null, null, "Movies");
+        storagePermissionManager.requestPersistentFolderPermission(null, "Movies");
         NetworkTaskWorker.ExecutionResult executionResult = downloadNetworkTaskWorker.execute(getNetworkTask(), getAccessTypeData());
         LogEntry logEntry = executionResult.getLogEntry();
         assertEquals(45, logEntry.getNetworkTaskId());

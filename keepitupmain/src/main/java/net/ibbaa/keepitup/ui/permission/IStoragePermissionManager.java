@@ -18,7 +18,6 @@ package net.ibbaa.keepitup.ui.permission;
 
 import android.content.Context;
 
-import androidx.activity.ComponentActivity;
 import androidx.fragment.app.FragmentActivity;
 
 import java.util.Set;
@@ -30,7 +29,11 @@ public interface IStoragePermissionManager {
 
     boolean hasAnyPersistentPermission(Context context);
 
-    void requestPersistentFolderPermission(ComponentActivity activity, PermissionLauncher launcher, String folder);
+    void requestPersistentFolderPermission(PermissionLauncher launcher, String folder);
+
+    void requestCreateFilePermission(PermissionLauncher launcher, String fileName);
+
+    void requestOpenFilePermission(PermissionLauncher launcher, String fullFilePath);
 
     void revokePersistentPermission(FragmentActivity activity, String folder);
 

@@ -126,7 +126,7 @@ public class NetworkTaskWorkerTest {
         setCurrentTime(testNetworkTaskWorker);
         MockStoragePermissionManager storagePermissionManager = new MockStoragePermissionManager();
         testNetworkTaskWorker.setStoragePermissionManager(storagePermissionManager);
-        storagePermissionManager.requestPersistentFolderPermission(null, null, "Movies");
+        storagePermissionManager.requestPersistentFolderPermission(null, "Movies");
         MockNetworkManager networkManager = (MockNetworkManager) testNetworkTaskWorker.getNetworkManager();
         networkManager.setConnected(true);
         networkManager.setConnectedWithWiFi(true);
@@ -149,7 +149,7 @@ public class NetworkTaskWorkerTest {
         setCurrentTime(testNetworkTaskWorker);
         MockStoragePermissionManager storagePermissionManager = new MockStoragePermissionManager();
         testNetworkTaskWorker.setStoragePermissionManager(storagePermissionManager);
-        storagePermissionManager.requestPersistentFolderPermission(null, null, "Movies");
+        storagePermissionManager.requestPersistentFolderPermission(null, "Movies");
         MockNetworkManager networkManager = (MockNetworkManager) testNetworkTaskWorker.getNetworkManager();
         networkManager.setConnected(true);
         networkManager.setConnectedWithWiFi(true);

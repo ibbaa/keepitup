@@ -92,7 +92,9 @@ public class ImportTaskTest extends BaseUITest {
         getPreferenceManager().setPreferenceDownloadExternalStorage(true);
         getPreferenceManager().setPreferenceExternalStorageType(1);
         getPreferenceManager().setPreferenceDownloadFolder("folder");
+        getPreferenceManager().setPreferenceArbitraryDownloadFolder("folder");
         getPreferenceManager().setPreferenceDownloadKeep(true);
+        getPreferenceManager().setPreferenceArbitraryLogFolder("folder");
         getPreferenceManager().setPreferenceAccessType(AccessType.CONNECT);
         getPreferenceManager().setPreferenceAddress("address");
         getPreferenceManager().setPreferencePort(123);
@@ -105,8 +107,10 @@ public class ImportTaskTest extends BaseUITest {
         getPreferenceManager().setPreferenceNotification(true);
         getPreferenceManager().setPreferenceImportFolder("folderImport");
         getPreferenceManager().setPreferenceExportFolder("folderExport");
+        getPreferenceManager().setPreferenceLastArbitraryExportFile("fileExport");
         getPreferenceManager().setPreferenceFileLoggerEnabled(true);
         getPreferenceManager().setPreferenceFileDumpEnabled(true);
+        getPreferenceManager().setPreferenceAllowArbitraryFileLocation(true);
         JSONSystemSetup setup = new JSONSystemSetup(TestRegistry.getContext());
         SystemSetupResult result = setup.exportData();
         assertTrue(result.success());
@@ -172,7 +176,9 @@ public class ImportTaskTest extends BaseUITest {
         assertTrue(getPreferenceManager().getPreferenceDownloadExternalStorage());
         assertEquals(1, getPreferenceManager().getPreferenceExternalStorageType());
         assertEquals("folder", getPreferenceManager().getPreferenceDownloadFolder());
+        assertEquals("folder", getPreferenceManager().getPreferenceArbitraryDownloadFolder());
         assertTrue(getPreferenceManager().getPreferenceDownloadKeep());
+        assertEquals("folder", getPreferenceManager().getPreferenceArbitraryLogFolder());
         assertEquals(AccessType.CONNECT, getPreferenceManager().getPreferenceAccessType());
         assertEquals("address", getPreferenceManager().getPreferenceAddress());
         assertEquals(123, getPreferenceManager().getPreferencePort());
@@ -185,8 +191,10 @@ public class ImportTaskTest extends BaseUITest {
         assertTrue(getPreferenceManager().getPreferenceNotification());
         assertEquals("folderImport", getPreferenceManager().getPreferenceImportFolder());
         assertEquals("folderExport", getPreferenceManager().getPreferenceExportFolder());
+        assertEquals("fileExport", getPreferenceManager().getPreferenceLastArbitraryExportFile());
         assertTrue(getPreferenceManager().getPreferenceFileLoggerEnabled());
         assertTrue(getPreferenceManager().getPreferenceFileDumpEnabled());
+        assertTrue(getPreferenceManager().getPreferenceAllowArbitraryFileLocation());
     }
 
     @Test
@@ -202,7 +210,9 @@ public class ImportTaskTest extends BaseUITest {
         getPreferenceManager().setPreferenceDownloadExternalStorage(true);
         getPreferenceManager().setPreferenceExternalStorageType(1);
         getPreferenceManager().setPreferenceDownloadFolder("folder");
+        getPreferenceManager().setPreferenceArbitraryDownloadFolder("folder");
         getPreferenceManager().setPreferenceDownloadKeep(true);
+        getPreferenceManager().setPreferenceArbitraryLogFolder("folder");
         getPreferenceManager().setPreferenceAccessType(AccessType.CONNECT);
         getPreferenceManager().setPreferenceAddress("address");
         getPreferenceManager().setPreferencePort(123);
@@ -215,8 +225,10 @@ public class ImportTaskTest extends BaseUITest {
         getPreferenceManager().setPreferenceNotification(true);
         getPreferenceManager().setPreferenceImportFolder("folderImport");
         getPreferenceManager().setPreferenceExportFolder("folderExport");
+        getPreferenceManager().setPreferenceLastArbitraryExportFile("fileExport");
         getPreferenceManager().setPreferenceFileLoggerEnabled(true);
         getPreferenceManager().setPreferenceFileDumpEnabled(true);
+        getPreferenceManager().setPreferenceAllowArbitraryFileLocation(true);
         File folder = getFileManager().getExternalRootDirectory(0);
         StreamUtil.stringToOutputStream("Failure", new FileOutputStream(new File(folder, "test.json")), Charsets.UTF_8);
         ImportTask task = new ImportTask(getActivity(activityScenario), folder, "test.json");
@@ -233,7 +245,9 @@ public class ImportTaskTest extends BaseUITest {
         assertTrue(getPreferenceManager().getPreferenceDownloadExternalStorage());
         assertEquals(1, getPreferenceManager().getPreferenceExternalStorageType());
         assertEquals("folder", getPreferenceManager().getPreferenceDownloadFolder());
+        assertEquals("folder", getPreferenceManager().getPreferenceArbitraryDownloadFolder());
         assertTrue(getPreferenceManager().getPreferenceDownloadKeep());
+        assertEquals("folder", getPreferenceManager().getPreferenceArbitraryLogFolder());
         assertEquals(AccessType.CONNECT, getPreferenceManager().getPreferenceAccessType());
         assertEquals("address", getPreferenceManager().getPreferenceAddress());
         assertEquals(123, getPreferenceManager().getPreferencePort());
@@ -246,8 +260,10 @@ public class ImportTaskTest extends BaseUITest {
         assertTrue(getPreferenceManager().getPreferenceNotification());
         assertEquals("folderImport", getPreferenceManager().getPreferenceImportFolder());
         assertEquals("folderExport", getPreferenceManager().getPreferenceExportFolder());
+        assertEquals("fileExport", getPreferenceManager().getPreferenceLastArbitraryExportFile());
         assertTrue(getPreferenceManager().getPreferenceFileLoggerEnabled());
         assertTrue(getPreferenceManager().getPreferenceFileDumpEnabled());
+        assertTrue(getPreferenceManager().getPreferenceAllowArbitraryFileLocation());
     }
 
     private Interval getInterval() {

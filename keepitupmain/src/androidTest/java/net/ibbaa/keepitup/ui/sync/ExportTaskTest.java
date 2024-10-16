@@ -91,7 +91,9 @@ public class ExportTaskTest extends BaseUITest {
         getPreferenceManager().setPreferenceDownloadExternalStorage(true);
         getPreferenceManager().setPreferenceExternalStorageType(1);
         getPreferenceManager().setPreferenceDownloadFolder("folder");
+        getPreferenceManager().setPreferenceArbitraryDownloadFolder("folder");
         getPreferenceManager().setPreferenceDownloadKeep(true);
+        getPreferenceManager().setPreferenceArbitraryLogFolder("folder");
         getPreferenceManager().setPreferenceAccessType(AccessType.CONNECT);
         getPreferenceManager().setPreferenceAddress("address");
         getPreferenceManager().setPreferencePort(123);
@@ -104,8 +106,10 @@ public class ExportTaskTest extends BaseUITest {
         getPreferenceManager().setPreferenceNotification(true);
         getPreferenceManager().setPreferenceImportFolder("folderImport");
         getPreferenceManager().setPreferenceExportFolder("folderExport");
+        getPreferenceManager().setPreferenceLastArbitraryExportFile("fileExport");
         getPreferenceManager().setPreferenceFileLoggerEnabled(true);
         getPreferenceManager().setPreferenceFileDumpEnabled(true);
+        getPreferenceManager().setPreferenceAllowArbitraryFileLocation(true);
         File folder = getFileManager().getExternalRootDirectory(0);
         ExportTask task = new ExportTask(getActivity(activityScenario), folder, "test.json");
         task.runInBackground();
@@ -176,7 +180,9 @@ public class ExportTaskTest extends BaseUITest {
         assertTrue(getPreferenceManager().getPreferenceDownloadExternalStorage());
         assertEquals(1, getPreferenceManager().getPreferenceExternalStorageType());
         assertEquals("folder", getPreferenceManager().getPreferenceDownloadFolder());
+        assertEquals("folder", getPreferenceManager().getPreferenceArbitraryDownloadFolder());
         assertTrue(getPreferenceManager().getPreferenceDownloadKeep());
+        assertEquals("folder", getPreferenceManager().getPreferenceArbitraryLogFolder());
         assertEquals(AccessType.CONNECT, getPreferenceManager().getPreferenceAccessType());
         assertEquals("address", getPreferenceManager().getPreferenceAddress());
         assertEquals(123, getPreferenceManager().getPreferencePort());
@@ -189,8 +195,10 @@ public class ExportTaskTest extends BaseUITest {
         assertTrue(getPreferenceManager().getPreferenceNotification());
         assertEquals("folderImport", getPreferenceManager().getPreferenceImportFolder());
         assertEquals("folderExport", getPreferenceManager().getPreferenceExportFolder());
+        assertEquals("fileExport", getPreferenceManager().getPreferenceLastArbitraryExportFile());
         assertTrue(getPreferenceManager().getPreferenceFileLoggerEnabled());
         assertTrue(getPreferenceManager().getPreferenceFileDumpEnabled());
+        assertTrue(getPreferenceManager().getPreferenceAllowArbitraryFileLocation());
     }
 
     private Interval getInterval() {

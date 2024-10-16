@@ -412,7 +412,7 @@ public class GlobalSettingsActivity extends SettingsInputActivity implements Sus
             setDownloadFolder(arbitraryDownloadFolder);
         } else {
             Log.d(GlobalSettingsActivity.class.getName(), "Requesting permission for " + arbitraryDownloadFolder);
-            storagePermissionManager.requestPersistentFolderPermission(this, downloadFolderLauncher, arbitraryDownloadFolder);
+            storagePermissionManager.requestPersistentFolderPermission(downloadFolderLauncher, arbitraryDownloadFolder);
         }
     }
 
@@ -530,7 +530,7 @@ public class GlobalSettingsActivity extends SettingsInputActivity implements Sus
             setLogFolder(arbitraryLogFolder);
         } else {
             Log.d(GlobalSettingsActivity.class.getName(), "Requesting permission for " + arbitraryLogFolder);
-            storagePermissionManager.requestPersistentFolderPermission(this, logFolderLauncher, arbitraryLogFolder);
+            storagePermissionManager.requestPersistentFolderPermission(logFolderLauncher, arbitraryLogFolder);
         }
     }
 
@@ -607,7 +607,7 @@ public class GlobalSettingsActivity extends SettingsInputActivity implements Sus
         Log.d(GlobalSettingsActivity.class.getName(), "requestArbitraryDownloadFolderPermission");
         IStoragePermissionManager storagePermissionManager = getStoragePermissionManager();
         String arbitraryDownloadFolder = getPreferenceArbitraryDownloadFolder();
-        storagePermissionManager.requestPersistentFolderPermission(this, downloadFolderLauncher, arbitraryDownloadFolder);
+        storagePermissionManager.requestPersistentFolderPermission(downloadFolderLauncher, arbitraryDownloadFolder);
     }
 
     public void grantArbitraryDownloadFolderPermission(Uri uri) {
@@ -659,7 +659,7 @@ public class GlobalSettingsActivity extends SettingsInputActivity implements Sus
         Log.d(GlobalSettingsActivity.class.getName(), "requestArbitraryLogFolderPermission");
         IStoragePermissionManager storagePermissionManager = getStoragePermissionManager();
         String arbitraryLogFolder = getPreferenceArbitraryLogFolder();
-        storagePermissionManager.requestPersistentFolderPermission(this, logFolderLauncher, arbitraryLogFolder);
+        storagePermissionManager.requestPersistentFolderPermission(logFolderLauncher, arbitraryLogFolder);
     }
 
     public void grantArbitraryLogFolderPermission(Uri uri) {

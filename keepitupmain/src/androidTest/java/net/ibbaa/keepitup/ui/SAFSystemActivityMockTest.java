@@ -79,7 +79,7 @@ public class SAFSystemActivityMockTest extends BaseUITest {
         ActivityScenario<?> activityScenario = launchSettingsInputActivity(SystemActivity.class, getBypassSystemSAFBundle());
         injectMocks(activityScenario);
         storagePermissionManager.setGrantedFolder("/Movies");
-        storagePermissionManager.requestPersistentFolderPermission(null, null, "/Movies");
+        storagePermissionManager.requestPersistentFolderPermission(null, "/Movies");
         injectArbitraryFolderLauncher(activityScenario, "/Test");
         storagePermissionManager.setGrantedFolder("/Test");
         onView(withId(R.id.switch_activity_system_allow_arbitrary_file_location)).perform(scrollTo());

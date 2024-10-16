@@ -225,7 +225,9 @@ public class JSONSystemSetupTest {
         preferenceManager.setPreferenceDownloadExternalStorage(true);
         preferenceManager.setPreferenceExternalStorageType(30);
         preferenceManager.setPreferenceDownloadFolder("folder");
+        preferenceManager.setPreferenceArbitraryDownloadFolder("folder");
         preferenceManager.setPreferenceDownloadKeep(true);
+        preferenceManager.setPreferenceArbitraryLogFolder("folder");
         preferenceManager.setPreferenceAccessType(AccessType.CONNECT);
         preferenceManager.setPreferenceAddress("address");
         preferenceManager.setPreferencePort(123);
@@ -238,9 +240,11 @@ public class JSONSystemSetupTest {
         preferenceManager.setPreferencePingPackageSize(15);
         preferenceManager.setPreferenceImportFolder("folderImport");
         preferenceManager.setPreferenceExportFolder("folderExport");
+        preferenceManager.setPreferenceLastArbitraryExportFile("fileExport");
         preferenceManager.setPreferenceFileLoggerEnabled(true);
         preferenceManager.setPreferenceFileDumpEnabled(true);
         preferenceManager.setPreferenceTheme(5);
+        preferenceManager.setPreferenceAllowArbitraryFileLocation(true);
         SystemSetupResult result = setup.exportData();
         JSONObject jsonData = new JSONObject(result.data());
         JSONObject settingsData = (JSONObject) jsonData.get("preferences");
@@ -254,7 +258,9 @@ public class JSONSystemSetupTest {
         assertTrue(globalSettingsData.getBoolean("preferenceEnforceDefaultPingPackageSize"));
         assertTrue(globalSettingsData.getBoolean("preferenceDownloadExternalStorage"));
         assertEquals("folder", globalSettingsData.getString("preferenceDownloadFolder"));
+        assertEquals("folder", globalSettingsData.getString("preferenceArbitraryDownloadFolder"));
         assertTrue(globalSettingsData.getBoolean("preferenceDownloadKeep"));
+        assertEquals("folder", globalSettingsData.getString("preferenceArbitraryLogFolder"));
         assertEquals(AccessType.CONNECT, AccessType.forCode(defaultsData.getInt("preferenceAccessType")));
         assertEquals("address", defaultsData.getString("preferenceAddress"));
         assertEquals(123, defaultsData.getInt("preferencePort"));
@@ -267,10 +273,12 @@ public class JSONSystemSetupTest {
         assertEquals(15, defaultsData.getInt("preferencePingPackageSize"));
         assertEquals("folderImport", systemSettingsData.getString("preferenceImportFolder"));
         assertEquals("folderExport", systemSettingsData.getString("preferenceExportFolder"));
+        assertEquals("fileExport", systemSettingsData.getString("preferenceLastArbitraryExportFile"));
         assertEquals(30, systemSettingsData.getInt("preferenceExternalStorageType"));
         assertTrue(systemSettingsData.getBoolean("preferenceFileLoggerEnabled"));
         assertTrue(systemSettingsData.getBoolean("preferenceFileDumpEnabled"));
         assertEquals(5, systemSettingsData.getInt("preferenceTheme"));
+        assertTrue(systemSettingsData.getBoolean("preferenceAllowArbitraryFileLocation"));
     }
 
     @Test
@@ -747,9 +755,11 @@ public class JSONSystemSetupTest {
         preferenceManager.setPreferencePingPackageSize(1234);
         preferenceManager.setPreferenceImportFolder("folderImport");
         preferenceManager.setPreferenceExportFolder("folderExport");
+        preferenceManager.setPreferenceLastArbitraryExportFile("fileExport");
         preferenceManager.setPreferenceFileLoggerEnabled(true);
         preferenceManager.setPreferenceFileDumpEnabled(true);
         preferenceManager.setPreferenceTheme(1);
+        preferenceManager.setPreferenceAllowArbitraryFileLocation(true);
         SystemSetupResult exportResult = setup.exportData();
         preferenceManager.removeAllPreferences();
         SystemSetupResult importResult = setup.importData(exportResult.data());
@@ -776,9 +786,11 @@ public class JSONSystemSetupTest {
         assertEquals(1234, preferenceManager.getPreferencePingPackageSize());
         assertEquals("folderImport", preferenceManager.getPreferenceImportFolder());
         assertEquals("folderExport", preferenceManager.getPreferenceExportFolder());
+        assertEquals("fileExport", preferenceManager.getPreferenceLastArbitraryExportFile());
         assertTrue(preferenceManager.getPreferenceFileLoggerEnabled());
         assertTrue(preferenceManager.getPreferenceFileDumpEnabled());
         assertEquals(1, preferenceManager.getPreferenceTheme());
+        assertTrue(preferenceManager.getPreferenceAllowArbitraryFileLocation());
     }
 
     @Test

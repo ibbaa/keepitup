@@ -23,7 +23,6 @@ import android.net.Uri;
 import android.os.Build;
 import android.provider.DocumentsContract;
 
-import androidx.activity.ComponentActivity;
 import androidx.fragment.app.FragmentActivity;
 
 import net.ibbaa.keepitup.logging.Log;
@@ -33,6 +32,16 @@ import java.util.List;
 import java.util.Set;
 
 public class StoragePermissionManager implements IStoragePermissionManager {
+
+    private final String mimeType;
+
+    public StoragePermissionManager() {
+        this("application/json");
+    }
+
+    public StoragePermissionManager(String mimeType) {
+        this.mimeType = mimeType;
+    }
 
     public boolean hasPersistentPermission(Context context, String folder) {
         Log.d(StoragePermissionManager.class.getName(), "hasPermission for folder " + folder);
@@ -54,13 +63,35 @@ public class StoragePermissionManager implements IStoragePermissionManager {
         return !permissions.isEmpty();
     }
 
-    public void requestPersistentFolderPermission(ComponentActivity activity, PermissionLauncher launcher, String folder) {
+    public void requestPersistentFolderPermission(PermissionLauncher launcher, String folder) {
         Log.d(StoragePermissionManager.class.getName(), "requestPermission for folder " + folder);
         Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT_TREE);
         intent.addFlags(Intent.FLAG_GRANT_PERSISTABLE_URI_PERMISSION);
         intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && !StringUtil.isEmpty(folder)) {
             intent.putExtra(DocumentsContract.EXTRA_INITIAL_URI, folder);
+        }
+        launcher.launch(intent);
+    }
+
+    public void requestCreateFilePermission(PermissionLauncher launcher, String fileName) {
+        requestFilePermission(launcher, Intent.ACTION_CREATE_DOCUMENT, fileName, null);
+    }
+
+    public void requestOpenFilePermission(PermissionLauncher launcher, String fullFilePath) {
+        requestFilePermission(launcher, Intent.ACTION_OPEN_DOCUMENT, null, fullFilePath);
+    }
+
+    private void requestFilePermission(PermissionLauncher launcher, String action, String fileName, String fullFilePath) {
+        Log.d(StoragePermissionManager.class.getName(), "requestFilePermission for fileName " + fileName + " and fullFilePath " + fullFilePath);
+        Intent intent = new Intent(action);
+        intent.addCategory(Intent.CATEGORY_OPENABLE);
+        intent.setType(mimeType);
+        if (!StringUtil.isEmpty(fileName)) {
+            intent.putExtra(Intent.EXTRA_TITLE, fileName);
+        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && !StringUtil.isEmpty(fullFilePath)) {
+            intent.putExtra(DocumentsContract.EXTRA_INITIAL_URI, fullFilePath);
         }
         launcher.launch(intent);
     }
