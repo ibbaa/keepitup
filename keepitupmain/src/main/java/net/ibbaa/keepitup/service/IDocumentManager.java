@@ -26,6 +26,8 @@ public interface IDocumentManager {
 
     DocumentFile getFolder(String folder);
 
+    DocumentFile getFile(String file);
+
     DocumentFile getFile(DocumentFile folder, String fileName);
 
     boolean delete(DocumentFile file);

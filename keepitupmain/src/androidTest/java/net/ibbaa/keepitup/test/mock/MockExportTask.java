@@ -27,7 +27,7 @@ public class MockExportTask extends ExportTask {
     private final boolean result;
 
     public MockExportTask(Activity activity, boolean result) {
-        super(activity, new File(""), "");
+        super(activity, new File(""), "", false);
         this.result = result;
     }
 

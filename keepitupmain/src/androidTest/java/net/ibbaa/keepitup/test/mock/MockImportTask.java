@@ -28,7 +28,7 @@ public class MockImportTask extends ImportTask {
     private final SystemSetupResult result;
 
     public MockImportTask(Activity activity, SystemSetupResult result) {
-        super(activity, new File(""), "");
+        super(activity, new File(""), "", false);
         this.result = result;
     }
 

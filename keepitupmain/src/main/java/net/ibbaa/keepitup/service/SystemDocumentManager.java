@@ -99,6 +99,12 @@ public class SystemDocumentManager implements IDocumentManager {
     }
 
     @Override
+    public DocumentFile getFile(String file) {
+        Log.d(SystemFileManager.class.getName(), "getFile, file is " + file);
+        return DocumentFile.fromSingleUri(getContext(), Uri.parse(file));
+    }
+
+    @Override
     public DocumentFile getFile(DocumentFile folder, String fileName) {
         Log.d(SystemFileManager.class.getName(), "getFile, fileName is " + fileName);
         return folder.findFile(fileName);

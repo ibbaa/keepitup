@@ -18,6 +18,9 @@ package net.ibbaa.keepitup.ui.sync;
 
 import android.app.Activity;
 import android.content.Context;
+import android.os.ParcelFileDescriptor;
+
+import androidx.documentfile.provider.DocumentFile;
 
 import com.google.common.base.Charsets;
 
@@ -27,22 +30,27 @@ import net.ibbaa.keepitup.logging.Log;
 import net.ibbaa.keepitup.resources.JSONSystemSetup;
 import net.ibbaa.keepitup.resources.PreferenceSetup;
 import net.ibbaa.keepitup.resources.SystemSetupResult;
+import net.ibbaa.keepitup.service.IDocumentManager;
+import net.ibbaa.keepitup.service.SystemDocumentManager;
 import net.ibbaa.keepitup.ui.ImportSupport;
 import net.ibbaa.keepitup.util.StreamUtil;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
 public class ImportTask extends UIBackgroundTask<SystemSetupResult> {
 
     private final File importFolder;
     private final String file;
+    private final boolean useDocumentApi;
 
-    public ImportTask(Activity activity, File importFolder, String file) {
+    public ImportTask(Activity activity, File importFolder, String file, boolean useDocumentApi) {
         super(activity);
         this.importFolder = importFolder;
         this.file = file;
+        this.useDocumentApi = useDocumentApi;
     }
 
     @Override
@@ -86,11 +94,22 @@ public class ImportTask extends UIBackgroundTask<SystemSetupResult> {
 
     private SystemSetupResult doImportCheck(Context context) throws Exception {
         Log.d(ImportTask.class.getName(), "doImportCheck");
+        ParcelFileDescriptor fileDescriptor = null;
         FileInputStream stream = null;
         try {
             JSONSystemSetup setup = new JSONSystemSetup(context);
-            File importFile = new File(importFolder, file);
-            stream = new FileInputStream(importFile);
+            if (useDocumentApi) {
+                DocumentFile documentFile = getDocumentManager().getFile(file);
+                if (documentFile == null) {
+                    Log.e(ExportTask.class.getName(), "Error accessing file uri " + file);
+                    return new SystemSetupResult(false, false, "", "");
+                }
+                fileDescriptor = getImportFileDescriptor(documentFile);
+                stream = getImportFileInputStream(fileDescriptor);
+            } else {
+                File importFile = new File(importFolder, file);
+                stream = new FileInputStream(importFile);
+            }
             String data = StreamUtil.inputStreamToString(stream, Charsets.UTF_8);
             SystemSetupResult result = setup.checkImportPossible(data);
             return new SystemSetupResult(result.success(), result.versionMismatch(), result.message(), data);
@@ -100,6 +119,13 @@ public class ImportTask extends UIBackgroundTask<SystemSetupResult> {
                     stream.close();
                 } catch (Exception exc) {
                     Log.e(ImportTask.class.getName(), "Error closing file", exc);
+                }
+            }
+            if (fileDescriptor != null) {
+                try {
+                    fileDescriptor.close();
+                } catch (Exception exc) {
+                    Log.e(ExportTask.class.getName(), "Error closing file descriptor", exc);
                 }
             }
         }
@@ -185,5 +211,17 @@ public class ImportTask extends UIBackgroundTask<SystemSetupResult> {
                 ((ImportSupport) activity).onImportDone(result.success(), message);
             }
         }
+    }
+
+    protected IDocumentManager getDocumentManager() {
+        return new SystemDocumentManager(getActivity());
+    }
+
+    protected ParcelFileDescriptor getImportFileDescriptor(DocumentFile documentFile) throws IOException {
+        return getActivity().getContentResolver().openFileDescriptor(documentFile.getUri(), "r");
+    }
+
+    protected FileInputStream getImportFileInputStream(ParcelFileDescriptor documentFileDescriptor) {
+        return new FileInputStream(documentFileDescriptor.getFileDescriptor());
     }
 }

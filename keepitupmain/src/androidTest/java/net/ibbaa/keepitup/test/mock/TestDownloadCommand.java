@@ -69,7 +69,7 @@ public class TestDownloadCommand extends DownloadCommand {
     }
 
     @Override
-    protected ParcelFileDescriptor getDownloadFileDescriptor(DocumentFile documentLogFile) {
+    protected ParcelFileDescriptor getDownloadFileDescriptor(DocumentFile documentDownloadFile) {
         return null;
     }
 

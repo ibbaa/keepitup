@@ -64,6 +64,11 @@ public class MockDocumentManager implements IDocumentManager {
     }
 
     @Override
+    public DocumentFile getFile(String fileName) {
+        return file;
+    }
+
+    @Override
     public DocumentFile getFile(DocumentFile folder, String fileName) {
         return file;
     }

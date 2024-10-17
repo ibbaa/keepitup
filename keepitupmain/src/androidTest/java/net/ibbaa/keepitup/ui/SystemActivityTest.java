@@ -149,14 +149,12 @@ public class SystemActivityTest extends BaseUITest {
         getPreferenceManager().setPreferenceLastArbitraryExportFile("arbitraryFolderExport");
         getPreferenceManager().setPreferenceFileLoggerEnabled(true);
         getPreferenceManager().setPreferenceFileDumpEnabled(true);
-        getPreferenceManager().setPreferenceAllowArbitraryFileLocation(true);
+        getPreferenceManager().setPreferenceAllowArbitraryFileLocation(false);
         assertTrue(storagePermissionManager.hasAnyPersistentPermission(null));
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(scrollTo());
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(click());
         onView(withId(R.id.switch_activity_system_file_dump_enabled)).perform(scrollTo());
         onView(withId(R.id.switch_activity_system_file_dump_enabled)).perform(click());
-        onView(withId(R.id.switch_activity_system_allow_arbitrary_file_location)).perform(scrollTo());
-        onView(withId(R.id.switch_activity_system_allow_arbitrary_file_location)).perform(click());
         onView(withId(R.id.cardview_activity_system_config_reset)).perform(click());
         onView(withId(R.id.imageview_dialog_confirm_cancel)).perform(click());
         assertTrue(storagePermissionManager.hasAnyPersistentPermission(null));
@@ -188,7 +186,7 @@ public class SystemActivityTest extends BaseUITest {
         assertEquals("arbitraryFolderExport", getPreferenceManager().getPreferenceLastArbitraryExportFile());
         assertTrue(getPreferenceManager().getPreferenceFileLoggerEnabled());
         assertTrue(getPreferenceManager().getPreferenceFileDumpEnabled());
-        assertTrue(getPreferenceManager().getPreferenceAllowArbitraryFileLocation());
+        assertFalse(getPreferenceManager().getPreferenceAllowArbitraryFileLocation());
     }
 
     @Test
@@ -304,14 +302,12 @@ public class SystemActivityTest extends BaseUITest {
         getPreferenceManager().setPreferenceLastArbitraryExportFile("arbitraryFolderExport");
         getPreferenceManager().setPreferenceFileLoggerEnabled(true);
         getPreferenceManager().setPreferenceFileDumpEnabled(true);
-        getPreferenceManager().setPreferenceAllowArbitraryFileLocation(true);
+        getPreferenceManager().setPreferenceAllowArbitraryFileLocation(false);
         assertTrue(storagePermissionManager.hasAnyPersistentPermission(null));
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(scrollTo());
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(click());
         onView(withId(R.id.switch_activity_system_file_dump_enabled)).perform(scrollTo());
         onView(withId(R.id.switch_activity_system_file_dump_enabled)).perform(click());
-        onView(withId(R.id.switch_activity_system_allow_arbitrary_file_location)).perform(scrollTo());
-        onView(withId(R.id.switch_activity_system_allow_arbitrary_file_location)).perform(click());
         onView(withId(R.id.cardview_activity_system_config_reset)).perform(click());
         onView(withId(R.id.imageview_dialog_confirm_ok)).perform(click());
         assertTrue(alarmManager.wasCancelAlarmCalled());
@@ -462,13 +458,11 @@ public class SystemActivityTest extends BaseUITest {
         getPreferenceManager().setPreferenceLastArbitraryExportFile("arbitraryFolderExport");
         getPreferenceManager().setPreferenceFileLoggerEnabled(true);
         getPreferenceManager().setPreferenceFileDumpEnabled(true);
-        getPreferenceManager().setPreferenceAllowArbitraryFileLocation(true);
+        getPreferenceManager().setPreferenceAllowArbitraryFileLocation(false);
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(scrollTo());
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(click());
         onView(withId(R.id.switch_activity_system_file_dump_enabled)).perform(scrollTo());
         onView(withId(R.id.switch_activity_system_file_dump_enabled)).perform(click());
-        onView(withId(R.id.switch_activity_system_allow_arbitrary_file_location)).perform(scrollTo());
-        onView(withId(R.id.switch_activity_system_allow_arbitrary_file_location)).perform(click());
         onView(withId(R.id.cardview_activity_system_config_reset)).perform(click());
         onView(withId(R.id.imageview_dialog_confirm_ok)).perform(click());
         assertTrue(alarmManager.wasCancelAlarmCalled());
@@ -502,7 +496,7 @@ public class SystemActivityTest extends BaseUITest {
         assertEquals("arbitraryFolderExport", getPreferenceManager().getPreferenceLastArbitraryExportFile());
         assertTrue(getPreferenceManager().getPreferenceFileLoggerEnabled());
         assertTrue(getPreferenceManager().getPreferenceFileDumpEnabled());
-        assertTrue(getPreferenceManager().getPreferenceAllowArbitraryFileLocation());
+        assertFalse(getPreferenceManager().getPreferenceAllowArbitraryFileLocation());
     }
 
     @Test
@@ -620,13 +614,11 @@ public class SystemActivityTest extends BaseUITest {
         getPreferenceManager().setPreferenceLastArbitraryExportFile("arbitraryFolderExport");
         getPreferenceManager().setPreferenceFileLoggerEnabled(true);
         getPreferenceManager().setPreferenceFileDumpEnabled(true);
-        getPreferenceManager().setPreferenceAllowArbitraryFileLocation(true);
+        getPreferenceManager().setPreferenceAllowArbitraryFileLocation(false);
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(scrollTo());
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(click());
         onView(withId(R.id.switch_activity_system_file_dump_enabled)).perform(scrollTo());
         onView(withId(R.id.switch_activity_system_file_dump_enabled)).perform(click());
-        onView(withId(R.id.switch_activity_system_allow_arbitrary_file_location)).perform(scrollTo());
-        onView(withId(R.id.switch_activity_system_allow_arbitrary_file_location)).perform(click());
         onView(withId(R.id.cardview_activity_system_config_export)).perform(click());
         onView(withId(R.id.edittext_dialog_file_choose_folder)).check(matches(withText("folderExport")));
         onView(withId(R.id.edittext_dialog_file_choose_file)).check(matches(withText("keepitup_config.json")));
@@ -661,7 +653,7 @@ public class SystemActivityTest extends BaseUITest {
         assertEquals("arbitraryFolderExport", getPreferenceManager().getPreferenceLastArbitraryExportFile());
         assertTrue(getPreferenceManager().getPreferenceFileLoggerEnabled());
         assertTrue(getPreferenceManager().getPreferenceFileDumpEnabled());
-        assertTrue(getPreferenceManager().getPreferenceAllowArbitraryFileLocation());
+        assertFalse(getPreferenceManager().getPreferenceAllowArbitraryFileLocation());
     }
 
     @Test
@@ -791,13 +783,11 @@ public class SystemActivityTest extends BaseUITest {
         getPreferenceManager().setPreferenceLastArbitraryExportFile("arbitraryFolderExport");
         getPreferenceManager().setPreferenceFileLoggerEnabled(true);
         getPreferenceManager().setPreferenceFileDumpEnabled(true);
-        getPreferenceManager().setPreferenceAllowArbitraryFileLocation(true);
+        getPreferenceManager().setPreferenceAllowArbitraryFileLocation(false);
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(scrollTo());
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(click());
         onView(withId(R.id.switch_activity_system_file_dump_enabled)).perform(scrollTo());
         onView(withId(R.id.switch_activity_system_file_dump_enabled)).perform(click());
-        onView(withId(R.id.switch_activity_system_allow_arbitrary_file_location)).perform(scrollTo());
-        onView(withId(R.id.switch_activity_system_allow_arbitrary_file_location)).perform(click());
         onView(withId(R.id.cardview_activity_system_config_export)).perform(click());
         onView(withId(R.id.edittext_dialog_file_choose_folder)).check(matches(withText("folderExport")));
         onView(withId(R.id.edittext_dialog_file_choose_file)).check(matches(withText("keepitup_config.json")));
@@ -831,12 +821,14 @@ public class SystemActivityTest extends BaseUITest {
         assertEquals("arbitraryFolderExport", getPreferenceManager().getPreferenceLastArbitraryExportFile());
         assertTrue(getPreferenceManager().getPreferenceFileLoggerEnabled());
         assertTrue(getPreferenceManager().getPreferenceFileDumpEnabled());
-        assertTrue(getPreferenceManager().getPreferenceAllowArbitraryFileLocation());
+        assertFalse(getPreferenceManager().getPreferenceAllowArbitraryFileLocation());
         getNetworkTaskDAO().deleteAllNetworkTasks();
         getLogDAO().deleteAllLogs();
         getIntervalDAO().deleteAllIntervals();
         getPreferenceManager().removeAllPreferences();
-        String jsonData = StreamUtil.inputStreamToString(new FileInputStream(new File(folder, "keepitup_config.json")), Charsets.UTF_8);
+        FileInputStream inputStream = new FileInputStream(new File(folder, "keepitup_config.json"));
+        String jsonData = StreamUtil.inputStreamToString(inputStream, Charsets.UTF_8);
+        inputStream.close();
         JSONSystemSetup setup = new JSONSystemSetup(TestRegistry.getContext());
         SystemSetupResult result = setup.importData(jsonData);
         assertTrue(result.success());
@@ -909,7 +901,7 @@ public class SystemActivityTest extends BaseUITest {
         assertEquals("arbitraryFolderExport", getPreferenceManager().getPreferenceLastArbitraryExportFile());
         assertTrue(getPreferenceManager().getPreferenceFileLoggerEnabled());
         assertTrue(getPreferenceManager().getPreferenceFileDumpEnabled());
-        assertTrue(getPreferenceManager().getPreferenceAllowArbitraryFileLocation());
+        assertFalse(getPreferenceManager().getPreferenceAllowArbitraryFileLocation());
     }
 
     @Test
@@ -1005,7 +997,9 @@ public class SystemActivityTest extends BaseUITest {
         getLogDAO().deleteAllLogs();
         getIntervalDAO().deleteAllIntervals();
         getPreferenceManager().removeAllPreferences();
-        String jsonData = StreamUtil.inputStreamToString(new FileInputStream(new File(folder, "keepitup_config.json")), Charsets.UTF_8);
+        FileInputStream inputStream = new FileInputStream(new File(folder, "keepitup_config.json"));
+        String jsonData = StreamUtil.inputStreamToString(inputStream, Charsets.UTF_8);
+        inputStream.close();
         JSONSystemSetup setup = new JSONSystemSetup(TestRegistry.getContext());
         SystemSetupResult result = setup.importData(jsonData);
         assertTrue(result.success());
@@ -1124,13 +1118,11 @@ public class SystemActivityTest extends BaseUITest {
         getPreferenceManager().setPreferenceLastArbitraryExportFile("arbitraryFolderExport");
         getPreferenceManager().setPreferenceFileLoggerEnabled(true);
         getPreferenceManager().setPreferenceFileDumpEnabled(true);
-        getPreferenceManager().setPreferenceAllowArbitraryFileLocation(true);
+        getPreferenceManager().setPreferenceAllowArbitraryFileLocation(false);
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(scrollTo());
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(click());
         onView(withId(R.id.switch_activity_system_file_dump_enabled)).perform(scrollTo());
         onView(withId(R.id.switch_activity_system_file_dump_enabled)).perform(click());
-        onView(withId(R.id.switch_activity_system_allow_arbitrary_file_location)).perform(scrollTo());
-        onView(withId(R.id.switch_activity_system_allow_arbitrary_file_location)).perform(click());
         onView(withId(R.id.cardview_activity_system_config_export)).perform(click());
         onView(withId(R.id.edittext_dialog_file_choose_folder)).check(matches(withText("folderExport")));
         onView(withId(R.id.edittext_dialog_file_choose_file)).check(matches(withText("keepitup_config.json")));
@@ -1141,7 +1133,9 @@ public class SystemActivityTest extends BaseUITest {
         onView(withId(R.id.imageview_dialog_confirm_cancel)).perform(click());
         assertEquals(1, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
         onView(withId(R.id.imageview_dialog_file_choose_cancel)).perform(click());
-        String fileContent = StreamUtil.inputStreamToString(new FileInputStream(new File(folder, "keepitup_config.json")), Charsets.UTF_8);
+        FileInputStream inputStream = new FileInputStream(new File(folder, "keepitup_config.json"));
+        String fileContent = StreamUtil.inputStreamToString(inputStream, Charsets.UTF_8);
+        inputStream.close();
         assertTrue(fileContent.isEmpty());
         assertFalse(alarmManager.wasCancelAlarmCalled());
         assertFalse(getNetworkTaskDAO().readAllNetworkTasks().isEmpty());
@@ -1171,7 +1165,7 @@ public class SystemActivityTest extends BaseUITest {
         assertEquals("arbitraryFolderExport", getPreferenceManager().getPreferenceLastArbitraryExportFile());
         assertTrue(getPreferenceManager().getPreferenceFileLoggerEnabled());
         assertTrue(getPreferenceManager().getPreferenceFileDumpEnabled());
-        assertTrue(getPreferenceManager().getPreferenceAllowArbitraryFileLocation());
+        assertFalse(getPreferenceManager().getPreferenceAllowArbitraryFileLocation());
     }
 
     @Test
@@ -1239,7 +1233,9 @@ public class SystemActivityTest extends BaseUITest {
         onView(withId(R.id.imageview_dialog_confirm_cancel)).perform(click());
         assertEquals(1, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
         onView(withId(R.id.imageview_dialog_file_choose_cancel)).perform(click());
-        String fileContent = StreamUtil.inputStreamToString(new FileInputStream(new File(folder, "keepitup_config.json")), Charsets.UTF_8);
+        FileInputStream inputStream = new FileInputStream(new File(folder, "keepitup_config.json"));
+        String fileContent = StreamUtil.inputStreamToString(inputStream, Charsets.UTF_8);
+        inputStream.close();
         assertTrue(fileContent.isEmpty());
         assertFalse(alarmManager.wasCancelAlarmCalled());
         assertFalse(getNetworkTaskDAO().readAllNetworkTasks().isEmpty());
@@ -1316,13 +1312,11 @@ public class SystemActivityTest extends BaseUITest {
         getPreferenceManager().setPreferenceLastArbitraryExportFile("arbitraryFolderExport");
         getPreferenceManager().setPreferenceFileLoggerEnabled(true);
         getPreferenceManager().setPreferenceFileDumpEnabled(true);
-        getPreferenceManager().setPreferenceAllowArbitraryFileLocation(true);
+        getPreferenceManager().setPreferenceAllowArbitraryFileLocation(false);
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(scrollTo());
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(click());
         onView(withId(R.id.switch_activity_system_file_dump_enabled)).perform(scrollTo());
         onView(withId(R.id.switch_activity_system_file_dump_enabled)).perform(click());
-        onView(withId(R.id.switch_activity_system_allow_arbitrary_file_location)).perform(scrollTo());
-        onView(withId(R.id.switch_activity_system_allow_arbitrary_file_location)).perform(click());
         onView(withId(R.id.cardview_activity_system_config_export)).perform(click());
         onView(withId(R.id.edittext_dialog_file_choose_folder)).check(matches(withText("folderExport")));
         onView(withId(R.id.edittext_dialog_file_choose_file)).check(matches(withText("keepitup_config.json")));
@@ -1332,7 +1326,9 @@ public class SystemActivityTest extends BaseUITest {
         onView(withId(R.id.textview_dialog_confirm_description)).check(matches(withText("The specified file exists and will be overwritten.")));
         onView(withId(R.id.imageview_dialog_confirm_ok)).perform(click());
         assertTrue(getActivity(activityScenario).getSupportFragmentManager().getFragments().isEmpty());
-        String fileContent = StreamUtil.inputStreamToString(new FileInputStream(new File(folder, "keepitup_config.json")), Charsets.UTF_8);
+        FileInputStream inputStream = new FileInputStream(new File(folder, "keepitup_config.json"));
+        String fileContent = StreamUtil.inputStreamToString(inputStream, Charsets.UTF_8);
+        inputStream.close();
         assertFalse(fileContent.isEmpty());
         assertFalse(alarmManager.wasCancelAlarmCalled());
         assertFalse(getNetworkTaskDAO().readAllNetworkTasks().isEmpty());
@@ -1361,14 +1357,16 @@ public class SystemActivityTest extends BaseUITest {
         assertEquals("arbitraryFolderExport", getPreferenceManager().getPreferenceLastArbitraryExportFile());
         assertTrue(getPreferenceManager().getPreferenceFileLoggerEnabled());
         assertTrue(getPreferenceManager().getPreferenceFileDumpEnabled());
-        assertTrue(getPreferenceManager().getPreferenceAllowArbitraryFileLocation());
+        assertFalse(getPreferenceManager().getPreferenceAllowArbitraryFileLocation());
         getNetworkTaskDAO().deleteAllNetworkTasks();
         getLogDAO().deleteAllLogs();
         getIntervalDAO().deleteAllIntervals();
         getTimeBasedSuspensionScheduler().reset();
         getTimeBasedSuspensionScheduler().getIntervals();
         getPreferenceManager().removeAllPreferences();
-        String jsonData = StreamUtil.inputStreamToString(new FileInputStream(new File(folder, "keepitup_config.json")), Charsets.UTF_8);
+        inputStream = new FileInputStream(new File(folder, "keepitup_config.json"));
+        String jsonData = StreamUtil.inputStreamToString(inputStream, Charsets.UTF_8);
+        inputStream.close();
         JSONSystemSetup setup = new JSONSystemSetup(TestRegistry.getContext());
         SystemSetupResult result = setup.importData(jsonData);
         assertTrue(result.success());
@@ -1440,7 +1438,7 @@ public class SystemActivityTest extends BaseUITest {
         assertEquals("arbitraryFolderExport", getPreferenceManager().getPreferenceLastArbitraryExportFile());
         assertTrue(getPreferenceManager().getPreferenceFileLoggerEnabled());
         assertTrue(getPreferenceManager().getPreferenceFileDumpEnabled());
-        assertTrue(getPreferenceManager().getPreferenceAllowArbitraryFileLocation());
+        assertFalse(getPreferenceManager().getPreferenceAllowArbitraryFileLocation());
     }
 
     @Test
@@ -1507,7 +1505,9 @@ public class SystemActivityTest extends BaseUITest {
         onView(withId(R.id.textview_dialog_confirm_description)).check(matches(withText("The specified file exists and will be overwritten.")));
         onView(withId(R.id.imageview_dialog_confirm_ok)).perform(click());
         assertTrue(getActivity(activityScenario).getSupportFragmentManager().getFragments().isEmpty());
-        String fileContent = StreamUtil.inputStreamToString(new FileInputStream(new File(folder, "keepitup_config.json")), Charsets.UTF_8);
+        FileInputStream inputStream = new FileInputStream(new File(folder, "keepitup_config.json"));
+        String fileContent = StreamUtil.inputStreamToString(inputStream, Charsets.UTF_8);
+        inputStream.close();
         assertFalse(fileContent.isEmpty());
         assertFalse(alarmManager.wasCancelAlarmCalled());
         assertFalse(getNetworkTaskDAO().readAllNetworkTasks().isEmpty());
@@ -1543,7 +1543,9 @@ public class SystemActivityTest extends BaseUITest {
         getTimeBasedSuspensionScheduler().reset();
         getTimeBasedSuspensionScheduler().getIntervals();
         getPreferenceManager().removeAllPreferences();
-        String jsonData = StreamUtil.inputStreamToString(new FileInputStream(new File(folder, "keepitup_config.json")), Charsets.UTF_8);
+        inputStream = new FileInputStream(new File(folder, "keepitup_config.json"));
+        String jsonData = StreamUtil.inputStreamToString(inputStream, Charsets.UTF_8);
+        inputStream.close();
         JSONSystemSetup setup = new JSONSystemSetup(TestRegistry.getContext());
         SystemSetupResult result = setup.importData(jsonData);
         assertTrue(result.success());
@@ -1654,13 +1656,11 @@ public class SystemActivityTest extends BaseUITest {
         getPreferenceManager().setPreferenceLastArbitraryExportFile("arbitraryFolderExport");
         getPreferenceManager().setPreferenceFileLoggerEnabled(true);
         getPreferenceManager().setPreferenceFileDumpEnabled(true);
-        getPreferenceManager().setPreferenceAllowArbitraryFileLocation(true);
+        getPreferenceManager().setPreferenceAllowArbitraryFileLocation(false);
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(scrollTo());
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(click());
         onView(withId(R.id.switch_activity_system_file_dump_enabled)).perform(scrollTo());
         onView(withId(R.id.switch_activity_system_file_dump_enabled)).perform(click());
-        onView(withId(R.id.switch_activity_system_allow_arbitrary_file_location)).perform(scrollTo());
-        onView(withId(R.id.switch_activity_system_allow_arbitrary_file_location)).perform(click());
         onView(withId(R.id.cardview_activity_system_config_export)).perform(click());
         onView(withId(R.id.edittext_dialog_file_choose_folder)).check(matches(withText("folderExport")));
         onView(withId(R.id.edittext_dialog_file_choose_file)).check(matches(withText("keepitup_config.json")));
@@ -1696,7 +1696,7 @@ public class SystemActivityTest extends BaseUITest {
         assertEquals("arbitraryFolderExport", getPreferenceManager().getPreferenceLastArbitraryExportFile());
         assertTrue(getPreferenceManager().getPreferenceFileLoggerEnabled());
         assertTrue(getPreferenceManager().getPreferenceFileDumpEnabled());
-        assertTrue(getPreferenceManager().getPreferenceAllowArbitraryFileLocation());
+        assertFalse(getPreferenceManager().getPreferenceAllowArbitraryFileLocation());
     }
 
     @Test
@@ -1889,14 +1889,12 @@ public class SystemActivityTest extends BaseUITest {
         getPreferenceManager().setPreferenceLastArbitraryExportFile("arbitraryFolderExport");
         getPreferenceManager().setPreferenceFileLoggerEnabled(true);
         getPreferenceManager().setPreferenceFileDumpEnabled(true);
-        getPreferenceManager().setPreferenceAllowArbitraryFileLocation(true);
+        getPreferenceManager().setPreferenceAllowArbitraryFileLocation(false);
         assertTrue(storagePermissionManager.hasAnyPersistentPermission(null));
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(scrollTo());
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(click());
         onView(withId(R.id.switch_activity_system_file_dump_enabled)).perform(scrollTo());
         onView(withId(R.id.switch_activity_system_file_dump_enabled)).perform(click());
-        onView(withId(R.id.switch_activity_system_allow_arbitrary_file_location)).perform(scrollTo());
-        onView(withId(R.id.switch_activity_system_allow_arbitrary_file_location)).perform(click());
         JSONSystemSetup setup = new JSONSystemSetup(TestRegistry.getContext());
         SystemSetupResult result = setup.exportData();
         assertTrue(result.success());
@@ -1907,7 +1905,9 @@ public class SystemActivityTest extends BaseUITest {
         getTimeBasedSuspensionScheduler().getIntervals();
         getPreferenceManager().removeAllPreferences();
         File folder = getFileManager().getExternalDirectory("config", 0);
-        StreamUtil.stringToOutputStream(result.data(), new FileOutputStream(new File(folder, "test.json")), Charsets.UTF_8);
+        FileOutputStream outputStream = new FileOutputStream(new File(folder, "test.json"));
+        StreamUtil.stringToOutputStream(result.data(), outputStream, Charsets.UTF_8);
+        outputStream.close();
         onView(withId(R.id.cardview_activity_system_config_import)).perform(click());
         onView(withId(R.id.edittext_dialog_file_choose_folder)).check(matches(withText("config")));
         onView(withId(R.id.edittext_dialog_file_choose_file)).perform(replaceText("test.json"));
@@ -1987,7 +1987,9 @@ public class SystemActivityTest extends BaseUITest {
         SystemSetupResult result = setup.exportData();
         assertTrue(result.success());
         File folder = getFileManager().getExternalDirectory("folderImport", 0);
-        StreamUtil.stringToOutputStream(result.data(), new FileOutputStream(new File(folder, "test.json")), Charsets.UTF_8);
+        FileOutputStream outputStream = new FileOutputStream(new File(folder, "test.json"));
+        StreamUtil.stringToOutputStream(result.data(), outputStream, Charsets.UTF_8);
+        outputStream.close();
         onView(withId(R.id.cardview_activity_system_config_import)).perform(click());
         onView(withId(R.id.edittext_dialog_file_choose_folder)).check(matches(withText("folderImport")));
         onView(withId(R.id.edittext_dialog_file_choose_file)).perform(replaceText("test.json"));
@@ -2065,14 +2067,12 @@ public class SystemActivityTest extends BaseUITest {
         getPreferenceManager().setPreferenceLastArbitraryExportFile("arbitraryFolderExport");
         getPreferenceManager().setPreferenceFileLoggerEnabled(true);
         getPreferenceManager().setPreferenceFileDumpEnabled(true);
-        getPreferenceManager().setPreferenceAllowArbitraryFileLocation(true);
+        getPreferenceManager().setPreferenceAllowArbitraryFileLocation(false);
         assertTrue(storagePermissionManager.hasAnyPersistentPermission(null));
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(scrollTo());
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(click());
         onView(withId(R.id.switch_activity_system_file_dump_enabled)).perform(scrollTo());
         onView(withId(R.id.switch_activity_system_file_dump_enabled)).perform(click());
-        onView(withId(R.id.switch_activity_system_allow_arbitrary_file_location)).perform(scrollTo());
-        onView(withId(R.id.switch_activity_system_allow_arbitrary_file_location)).perform(click());
         JSONSystemSetup setup = new JSONSystemSetup(TestRegistry.getContext());
         SystemSetupResult result = setup.exportData();
         assertTrue(result.success());
@@ -2083,7 +2083,9 @@ public class SystemActivityTest extends BaseUITest {
         getTimeBasedSuspensionScheduler().getIntervals();
         getPreferenceManager().removeAllPreferences();
         File folder = getFileManager().getExternalDirectory("config", 0);
-        StreamUtil.stringToOutputStream(result.data(), new FileOutputStream(new File(folder, "test.json")), Charsets.UTF_8);
+        FileOutputStream outputStream = new FileOutputStream(new File(folder, "test.json"));
+        StreamUtil.stringToOutputStream(result.data(), outputStream, Charsets.UTF_8);
+        outputStream.close();
         onView(withId(R.id.cardview_activity_system_config_import)).perform(click());
         onView(withId(R.id.edittext_dialog_file_choose_folder)).check(matches(withText("config")));
         onView(withId(R.id.edittext_dialog_file_choose_file)).perform(replaceText("test.json"));
@@ -2166,7 +2168,9 @@ public class SystemActivityTest extends BaseUITest {
         SystemSetupResult result = setup.exportData();
         assertTrue(result.success());
         File folder = getFileManager().getExternalDirectory("config", 0);
-        StreamUtil.stringToOutputStream(result.data(), new FileOutputStream(new File(folder, "test.json")), Charsets.UTF_8);
+        FileOutputStream outputStream = new FileOutputStream(new File(folder, "test.json"));
+        StreamUtil.stringToOutputStream(result.data(), outputStream, Charsets.UTF_8);
+        outputStream.close();
         onView(withId(R.id.cardview_activity_system_config_import)).perform(click());
         onView(withId(R.id.edittext_dialog_file_choose_folder)).check(matches(withText("folderImport")));
         onView(withId(R.id.edittext_dialog_file_choose_file)).perform(replaceText("test.json"));
@@ -2256,14 +2260,12 @@ public class SystemActivityTest extends BaseUITest {
         getPreferenceManager().setPreferenceLastArbitraryExportFile("arbitraryFolderExport");
         getPreferenceManager().setPreferenceFileLoggerEnabled(true);
         getPreferenceManager().setPreferenceFileDumpEnabled(true);
-        getPreferenceManager().setPreferenceAllowArbitraryFileLocation(true);
+        getPreferenceManager().setPreferenceAllowArbitraryFileLocation(false);
         assertTrue(storagePermissionManager.hasAnyPersistentPermission(null));
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(scrollTo());
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(click());
         onView(withId(R.id.switch_activity_system_file_dump_enabled)).perform(scrollTo());
         onView(withId(R.id.switch_activity_system_file_dump_enabled)).perform(click());
-        onView(withId(R.id.switch_activity_system_allow_arbitrary_file_location)).perform(scrollTo());
-        onView(withId(R.id.switch_activity_system_allow_arbitrary_file_location)).perform(click());
         JSONSystemSetup setup = new JSONSystemSetup(TestRegistry.getContext());
         SystemSetupResult result = setup.exportData();
         assertTrue(result.success());
@@ -2274,7 +2276,9 @@ public class SystemActivityTest extends BaseUITest {
         getTimeBasedSuspensionScheduler().getIntervals();
         getPreferenceManager().removeAllPreferences();
         File folder = getFileManager().getExternalDirectory("config", 0);
-        StreamUtil.stringToOutputStream(result.data(), new FileOutputStream(new File(folder, "test.json")), Charsets.UTF_8);
+        FileOutputStream outputStream = new FileOutputStream(new File(folder, "test.json"));
+        StreamUtil.stringToOutputStream(result.data(), outputStream, Charsets.UTF_8);
+        outputStream.close();
         onView(withId(R.id.cardview_activity_system_config_import)).perform(click());
         onView(withId(R.id.edittext_dialog_file_choose_folder)).check(matches(withText("config")));
         onView(withId(R.id.edittext_dialog_file_choose_file)).perform(replaceText("test.json"));
@@ -2350,7 +2354,7 @@ public class SystemActivityTest extends BaseUITest {
         assertEquals("arbitraryFolderExport", getPreferenceManager().getPreferenceLastArbitraryExportFile());
         assertTrue(getPreferenceManager().getPreferenceFileLoggerEnabled());
         assertTrue(getPreferenceManager().getPreferenceFileDumpEnabled());
-        assertTrue(getPreferenceManager().getPreferenceAllowArbitraryFileLocation());
+        assertFalse(getPreferenceManager().getPreferenceAllowArbitraryFileLocation());
         assertEquals(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM, themeManager.getCode());
     }
 
@@ -2413,7 +2417,9 @@ public class SystemActivityTest extends BaseUITest {
         getTimeBasedSuspensionScheduler().getIntervals();
         getPreferenceManager().removeAllPreferences();
         File folder = getFileManager().getExternalDirectory("config", 0);
-        StreamUtil.stringToOutputStream(result.data(), new FileOutputStream(new File(folder, "test.json")), Charsets.UTF_8);
+        FileOutputStream outputStream = new FileOutputStream(new File(folder, "test.json"));
+        StreamUtil.stringToOutputStream(result.data(), outputStream, Charsets.UTF_8);
+        outputStream.close();
         onView(withId(R.id.cardview_activity_system_config_import)).perform(click());
         onView(withId(R.id.edittext_dialog_file_choose_folder)).check(matches(withText("config")));
         onView(withId(R.id.edittext_dialog_file_choose_file)).perform(replaceText("test.json"));
@@ -2507,7 +2513,9 @@ public class SystemActivityTest extends BaseUITest {
         getTimeBasedSuspensionScheduler().reset();
         getTimeBasedSuspensionScheduler().getIntervals();
         File folder = getFileManager().getExternalDirectory("config", 0);
-        StreamUtil.stringToOutputStream(result.data(), new FileOutputStream(new File(folder, "test.json")), Charsets.UTF_8);
+        FileOutputStream outputStream = new FileOutputStream(new File(folder, "test.json"));
+        StreamUtil.stringToOutputStream(result.data(), outputStream, Charsets.UTF_8);
+        outputStream.close();
         assertTrue(getTimeBasedSuspensionScheduler().isRunning());
         onView(withId(R.id.cardview_activity_system_config_import)).perform(click());
         onView(withId(R.id.edittext_dialog_file_choose_folder)).check(matches(withText("config")));
@@ -2558,13 +2566,11 @@ public class SystemActivityTest extends BaseUITest {
         getPreferenceManager().setPreferenceLastArbitraryExportFile("arbitraryFolderExport");
         getPreferenceManager().setPreferenceFileLoggerEnabled(true);
         getPreferenceManager().setPreferenceFileDumpEnabled(true);
-        getPreferenceManager().setPreferenceAllowArbitraryFileLocation(true);
+        getPreferenceManager().setPreferenceAllowArbitraryFileLocation(false);
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(scrollTo());
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(click());
         onView(withId(R.id.switch_activity_system_file_dump_enabled)).perform(scrollTo());
         onView(withId(R.id.switch_activity_system_file_dump_enabled)).perform(click());
-        onView(withId(R.id.switch_activity_system_allow_arbitrary_file_location)).perform(scrollTo());
-        onView(withId(R.id.switch_activity_system_allow_arbitrary_file_location)).perform(click());
         onView(withId(R.id.cardview_activity_system_config_import)).perform(click());
         onView(withId(R.id.edittext_dialog_file_choose_folder)).check(matches(withText("folderImport")));
         onView(withId(R.id.edittext_dialog_file_choose_file)).perform(replaceText("test.json"));
@@ -2601,7 +2607,7 @@ public class SystemActivityTest extends BaseUITest {
         assertEquals("arbitraryFolderExport", getPreferenceManager().getPreferenceLastArbitraryExportFile());
         assertTrue(getPreferenceManager().getPreferenceFileLoggerEnabled());
         assertTrue(getPreferenceManager().getPreferenceFileDumpEnabled());
-        assertTrue(getPreferenceManager().getPreferenceAllowArbitraryFileLocation());
+        assertFalse(getPreferenceManager().getPreferenceAllowArbitraryFileLocation());
     }
 
     @Test
@@ -2640,13 +2646,11 @@ public class SystemActivityTest extends BaseUITest {
         getPreferenceManager().setPreferenceLastArbitraryExportFile("arbitraryFolderExport");
         getPreferenceManager().setPreferenceFileLoggerEnabled(true);
         getPreferenceManager().setPreferenceFileDumpEnabled(true);
-        getPreferenceManager().setPreferenceAllowArbitraryFileLocation(true);
+        getPreferenceManager().setPreferenceAllowArbitraryFileLocation(false);
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(scrollTo());
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(click());
         onView(withId(R.id.switch_activity_system_file_dump_enabled)).perform(scrollTo());
         onView(withId(R.id.switch_activity_system_file_dump_enabled)).perform(click());
-        onView(withId(R.id.switch_activity_system_allow_arbitrary_file_location)).perform(scrollTo());
-        onView(withId(R.id.switch_activity_system_allow_arbitrary_file_location)).perform(click());
         onView(withId(R.id.cardview_activity_system_config_import)).perform(click());
         onView(withId(R.id.edittext_dialog_file_choose_folder)).check(matches(withText("folderImport")));
         onView(withId(R.id.edittext_dialog_file_choose_file)).perform(replaceText("test.json"));
@@ -2683,7 +2687,7 @@ public class SystemActivityTest extends BaseUITest {
         assertEquals("arbitraryFolderExport", getPreferenceManager().getPreferenceLastArbitraryExportFile());
         assertTrue(getPreferenceManager().getPreferenceFileLoggerEnabled());
         assertTrue(getPreferenceManager().getPreferenceFileDumpEnabled());
-        assertTrue(getPreferenceManager().getPreferenceAllowArbitraryFileLocation());
+        assertFalse(getPreferenceManager().getPreferenceAllowArbitraryFileLocation());
     }
 
     @Test

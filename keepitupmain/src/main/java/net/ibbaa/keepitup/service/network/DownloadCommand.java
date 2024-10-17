@@ -204,8 +204,8 @@ public class DownloadCommand implements Callable<DownloadCommandResult> {
         return documentDownloadFile;
     }
 
-    protected ParcelFileDescriptor getDownloadFileDescriptor(DocumentFile documentLogFile) throws IOException {
-        return getContext().getContentResolver().openFileDescriptor(documentLogFile.getUri(), "wa");
+    protected ParcelFileDescriptor getDownloadFileDescriptor(DocumentFile documentDownloadFile) throws IOException {
+        return getContext().getContentResolver().openFileDescriptor(documentDownloadFile.getUri(), "wa");
     }
 
     protected FileOutputStream getOutputStream(ParcelFileDescriptor documentFileDescriptor) {

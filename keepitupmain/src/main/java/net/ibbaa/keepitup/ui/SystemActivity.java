@@ -371,6 +371,7 @@ public class SystemActivity extends SettingsInputActivity implements ExportSuppo
             Log.d(SystemActivity.class.getName(), "API version is " + Build.VERSION.SDK_INT + ". Disable SAF feature.");
             arbitraryFileLocationCardView.setVisibility(View.GONE);
             preferenceManager.setPreferenceAllowArbitraryFileLocation(false);
+            arbitraryFileLocationSwitch.setChecked(false);
         }
     }
 
@@ -385,8 +386,12 @@ public class SystemActivity extends SettingsInputActivity implements ExportSuppo
         prepareAllowArbitraryFileLocationOnOffText();
         if (arbitraryFileLocationSwitch.isChecked()) {
             prepareArbitraryFolderPermissions();
+            prepareConfigurationExportField();
+            prepareConfigurationImportField();
         } else {
             NetworkTaskLog.clear();
+            prepareConfigurationExportField();
+            prepareConfigurationImportField();
         }
     }
 
@@ -413,8 +418,6 @@ public class SystemActivity extends SettingsInputActivity implements ExportSuppo
         preferenceManager.setPreferenceArbitraryDownloadFolder(arbitraryFolder);
         IStoragePermissionManager storagePermissionManager = getStoragePermissionManager();
         storagePermissionManager.revokeOrphanPersistentPermissions(this, preferenceManager.getArbitraryFolders());
-        prepareConfigurationExportField();
-        prepareConfigurationImportField();
         NetworkTaskLog.clear();
     }
 
@@ -614,6 +617,7 @@ public class SystemActivity extends SettingsInputActivity implements ExportSuppo
             Log.e(SystemActivity.class.getName(), "uri is null");
             return;
         }
+        doConfigurationExport(null, uri.toString());
     }
 
     public void grantConfigurationImportFilePermission(Uri uri) {
@@ -622,6 +626,7 @@ public class SystemActivity extends SettingsInputActivity implements ExportSuppo
             Log.e(SystemActivity.class.getName(), "uri is null");
             return;
         }
+        showImportConfirmDialog(uri.toString());
     }
 
     private void showExportFolderChooseDialog(View view) {
@@ -707,7 +712,7 @@ public class SystemActivity extends SettingsInputActivity implements ExportSuppo
         Log.d(SystemActivity.class.getName(), "doConfigurationExport");
         Log.d(SystemActivity.class.getName(), "Export folder is " + exportFolder);
         Log.d(SystemActivity.class.getName(), "File name is " + file);
-        if (exportFolder == null || StringUtil.isEmpty(file)) {
+        if (StringUtil.isEmpty(file)) {
             Log.e(SystemActivity.class.getName(), "Folder or file is empty.");
             showErrorDialog(getResources().getString(R.string.text_dialog_general_error_config_export));
             return;
@@ -731,7 +736,7 @@ public class SystemActivity extends SettingsInputActivity implements ExportSuppo
         Log.d(SystemActivity.class.getName(), "doConfigurationImport");
         Log.d(SystemActivity.class.getName(), "Import folder is " + importFolder);
         Log.d(SystemActivity.class.getName(), "File name is " + file);
-        if (importFolder == null || StringUtil.isEmpty(file)) {
+        if (StringUtil.isEmpty(file)) {
             Log.e(SystemActivity.class.getName(), "Folder or file is empty.");
             showErrorDialog(getResources().getString(R.string.text_dialog_general_error_config_import));
             return;
@@ -774,8 +779,11 @@ public class SystemActivity extends SettingsInputActivity implements ExportSuppo
         } else if (ConfirmDialog.Type.IMPORTCONFIG.equals(type)) {
             IFileManager fileManager = getFileManager();
             PreferenceManager preferenceManager = new PreferenceManager(this);
-            File importFolder = FileUtil.getExternalDirectory(fileManager, preferenceManager, preferenceManager.getPreferenceImportFolder());
+            File importFolder = null;
             String file = getFileExtraData(confirmDialog);
+            if (!preferenceManager.getPreferenceAllowArbitraryFileLocation()) {
+                importFolder = FileUtil.getExternalDirectory(fileManager, preferenceManager, preferenceManager.getPreferenceImportFolder());
+            }
             stopSchedulers();
             dismissConfirmDialog(confirmDialog);
             doConfigurationImport(importFolder, file);
@@ -832,7 +840,9 @@ public class SystemActivity extends SettingsInputActivity implements ExportSuppo
         closeProgressDialog();
         getTimeBasedSuspensionScheduler().restart();
         if (success) {
-            resetFolderPermissions();
+            if (!checkFolderPermissions()) {
+                resetFolderPermissions();
+            }
             resetActivity();
         } else {
             showErrorDialog(message != null ? message : getResources().getString(R.string.text_dialog_general_error_config_import), Typeface.BOLD, Error.IMPORTERROR.name());
@@ -857,6 +867,24 @@ public class SystemActivity extends SettingsInputActivity implements ExportSuppo
         Log.d(SystemActivity.class.getName(), "resetPreferences");
         PreferenceSetup preferenceSetup = new PreferenceSetup(this);
         preferenceSetup.removeAllSettings();
+    }
+
+    @SuppressWarnings("RedundantIfStatement")
+    private boolean checkFolderPermissions() {
+        Log.d(SystemActivity.class.getName(), "checkFolderPermissions");
+        PreferenceManager preferenceManager = new PreferenceManager(this);
+        IStoragePermissionManager storagePermissionManager = getStoragePermissionManager();
+        if (preferenceManager.getPreferenceLogFile()) {
+            if (!storagePermissionManager.hasPersistentPermission(this, preferenceManager.getPreferenceArbitraryLogFolder())) {
+                return false;
+            }
+        }
+        if (preferenceManager.getPreferenceDownloadExternalStorage()) {
+            if (!storagePermissionManager.hasPersistentPermission(this, preferenceManager.getPreferenceArbitraryDownloadFolder())) {
+                return false;
+            }
+        }
+        return true;
     }
 
     private void resetFolderPermissions() {
@@ -962,14 +990,16 @@ public class SystemActivity extends SettingsInputActivity implements ExportSuppo
         if (exportTask != null) {
             return exportTask;
         }
-        return new ExportTask(this, folder, file);
+        PreferenceManager preferenceManager = new PreferenceManager(this);
+        return new ExportTask(this, folder, file, preferenceManager.getPreferenceAllowArbitraryFileLocation());
     }
 
     private ImportTask getImportTask(File folder, String file) {
         if (importTask != null) {
             return importTask;
         }
-        return new ImportTask(this, folder, file);
+        PreferenceManager preferenceManager = new PreferenceManager(this);
+        return new ImportTask(this, folder, file, preferenceManager.getPreferenceAllowArbitraryFileLocation());
     }
 
     private DBPurgeTask getPurgeTask() {
