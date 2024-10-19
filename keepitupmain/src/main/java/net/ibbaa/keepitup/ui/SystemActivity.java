@@ -608,19 +608,19 @@ public class SystemActivity extends SettingsInputActivity implements ExportSuppo
     }
 
     private void requestConfigurationExportFilePermission(View view) {
-        Log.d(SystemActivity.class.getName(), "requestExportFilePermission");
+        Log.d(SystemActivity.class.getName(), "requestConfigurationExportFilePermission");
         String fileName = getResources().getString(R.string.export_file_prefix);
         getStoragePermissionManager().requestCreateFilePermission(exportFileLauncher, fileName);
     }
 
     private void requestConfigurationImportFilePermission(View view) {
-        Log.d(SystemActivity.class.getName(), "requestImportFilePermission");
+        Log.d(SystemActivity.class.getName(), "requestConfigurationImportFilePermission");
         PreferenceManager preferenceManager = new PreferenceManager(this);
         getStoragePermissionManager().requestOpenFilePermission(importFileLauncher, preferenceManager.getPreferenceLastArbitraryExportFile());
     }
 
     public void grantConfigurationExportFilePermission(Uri uri) {
-        Log.d(SystemActivity.class.getName(), "grantExportFilePermission for uri " + uri);
+        Log.d(SystemActivity.class.getName(), "grantConfigurationExportFilePermission for uri " + uri);
         if (uri == null) {
             Log.e(SystemActivity.class.getName(), "uri is null");
             return;
@@ -631,7 +631,7 @@ public class SystemActivity extends SettingsInputActivity implements ExportSuppo
     }
 
     public void grantConfigurationImportFilePermission(Uri uri) {
-        Log.d(SystemActivity.class.getName(), "grantImportFilePermission for uri " + uri);
+        Log.d(SystemActivity.class.getName(), "grantConfigurationImportFilePermission for uri " + uri);
         if (uri == null) {
             Log.e(SystemActivity.class.getName(), "uri is null");
             return;
