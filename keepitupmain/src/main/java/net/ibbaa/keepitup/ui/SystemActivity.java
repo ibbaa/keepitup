@@ -125,6 +125,14 @@ public class SystemActivity extends SettingsInputActivity implements ExportSuppo
         this.arbitraryFolderLauncher = arbitraryFolderLauncher;
     }
 
+    public void injectExportFileLauncher(PermissionLauncher exportFileLauncher) {
+        this.exportFileLauncher = exportFileLauncher;
+    }
+
+    public void injectImportFileLauncher(PermissionLauncher importFileLauncher) {
+        this.importFileLauncher = importFileLauncher;
+    }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

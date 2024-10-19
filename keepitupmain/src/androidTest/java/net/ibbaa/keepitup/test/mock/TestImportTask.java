@@ -26,7 +26,6 @@ import net.ibbaa.keepitup.ui.sync.ImportTask;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.IOException;
 
 public class TestImportTask extends ImportTask {
 
@@ -38,7 +37,7 @@ public class TestImportTask extends ImportTask {
     }
 
     @Override
-    protected ParcelFileDescriptor getImportFileDescriptor(DocumentFile documentFile) throws IOException {
+    protected ParcelFileDescriptor getImportFileDescriptor(DocumentFile documentFile) {
         return null;
     }
 

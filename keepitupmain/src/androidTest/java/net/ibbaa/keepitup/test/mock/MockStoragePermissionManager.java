@@ -98,9 +98,9 @@ public class MockStoragePermissionManager implements IStoragePermissionManager {
     @Override
     public void requestCreateFilePermission(PermissionLauncher launcher, String fileName) {
         String actualGrantedCreateFile = grantedCreateFile != null ? grantedCreateFile : fileName;
-        createFilePermissions.add(grantedCreateFile);
+        createFilePermissions.add(actualGrantedCreateFile);
         Intent intent = new Intent();
-        intent.setData(Uri.parse(grantedCreateFile));
+        intent.setData(Uri.parse(actualGrantedCreateFile));
         if (launcher != null) {
             launcher.launch(intent);
         }
@@ -109,9 +109,9 @@ public class MockStoragePermissionManager implements IStoragePermissionManager {
     @Override
     public void requestOpenFilePermission(PermissionLauncher launcher, String fullFilePath) {
         String actualGrantedOpenFile = grantedOpenFile != null ? grantedOpenFile : fullFilePath;
-        openFilePermissions.add(grantedOpenFile);
+        openFilePermissions.add(actualGrantedOpenFile);
         Intent intent = new Intent();
-        intent.setData(Uri.parse(grantedOpenFile));
+        intent.setData(Uri.parse(actualGrantedOpenFile));
         if (launcher != null) {
             launcher.launch(intent);
         }

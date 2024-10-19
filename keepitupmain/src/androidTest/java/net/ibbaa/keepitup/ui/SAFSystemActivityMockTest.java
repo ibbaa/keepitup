@@ -22,6 +22,7 @@ import static androidx.test.espresso.action.ViewActions.scrollTo;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
+import static org.hamcrest.Matchers.endsWith;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
@@ -30,8 +31,15 @@ import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.MediumTest;
 
 import net.ibbaa.keepitup.R;
+import net.ibbaa.keepitup.resources.SystemSetupResult;
 import net.ibbaa.keepitup.test.mock.DelegatingTestPermissionLauncher;
+import net.ibbaa.keepitup.test.mock.MockExportTask;
+import net.ibbaa.keepitup.test.mock.MockImportTask;
 import net.ibbaa.keepitup.test.mock.MockStoragePermissionManager;
+import net.ibbaa.keepitup.test.mock.TestExportTask;
+import net.ibbaa.keepitup.test.mock.TestImportTask;
+import net.ibbaa.keepitup.ui.sync.ExportTask;
+import net.ibbaa.keepitup.ui.sync.ImportTask;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -59,16 +67,19 @@ public class SAFSystemActivityMockTest extends BaseUITest {
         onView(withId(R.id.switch_activity_system_allow_arbitrary_file_location)).perform(scrollTo());
         onView(withId(R.id.switch_activity_system_allow_arbitrary_file_location)).perform(click());
         onView(withId(R.id.textview_activity_system_allow_arbitrary_file_location_on_off)).check(matches(withText("yes")));
+        assertTrue(getPreferenceManager().getPreferenceAllowArbitraryFileLocation());
         assertTrue(storagePermissionManager.hasPersistentPermission(getActivity(activityScenario), "/Test"));
         assertFalse(storagePermissionManager.hasPersistentPermission(getActivity(activityScenario), "/Documents"));
         onView(withId(R.id.switch_activity_system_allow_arbitrary_file_location)).perform(scrollTo());
         onView(withId(R.id.switch_activity_system_allow_arbitrary_file_location)).perform(click());
         onView(withId(R.id.textview_activity_system_allow_arbitrary_file_location_on_off)).check(matches(withText("no")));
+        assertFalse(getPreferenceManager().getPreferenceAllowArbitraryFileLocation());
         assertTrue(storagePermissionManager.hasPersistentPermission(getActivity(activityScenario), "/Test"));
         assertFalse(storagePermissionManager.hasPersistentPermission(getActivity(activityScenario), "/Documents"));
         onView(withId(R.id.switch_activity_system_allow_arbitrary_file_location)).perform(scrollTo());
         onView(withId(R.id.switch_activity_system_allow_arbitrary_file_location)).perform(click());
         onView(withId(R.id.textview_activity_system_allow_arbitrary_file_location_on_off)).check(matches(withText("yes")));
+        assertTrue(storagePermissionManager.hasPersistentPermission(getActivity(activityScenario), "/Test"));
         assertTrue(storagePermissionManager.hasPersistentPermission(getActivity(activityScenario), "/Test"));
         assertFalse(storagePermissionManager.hasPersistentPermission(getActivity(activityScenario), "/Documents"));
         activityScenario.close();
@@ -85,35 +96,100 @@ public class SAFSystemActivityMockTest extends BaseUITest {
         onView(withId(R.id.switch_activity_system_allow_arbitrary_file_location)).perform(scrollTo());
         onView(withId(R.id.switch_activity_system_allow_arbitrary_file_location)).perform(click());
         onView(withId(R.id.textview_activity_system_allow_arbitrary_file_location_on_off)).check(matches(withText("yes")));
+        assertTrue(getPreferenceManager().getPreferenceAllowArbitraryFileLocation());
         assertTrue(storagePermissionManager.hasPersistentPermission(getActivity(activityScenario), "/Movies"));
         assertFalse(storagePermissionManager.hasPersistentPermission(getActivity(activityScenario), "/Test"));
         assertFalse(storagePermissionManager.hasPersistentPermission(getActivity(activityScenario), "/Documents"));
         onView(withId(R.id.switch_activity_system_allow_arbitrary_file_location)).perform(scrollTo());
         onView(withId(R.id.switch_activity_system_allow_arbitrary_file_location)).perform(click());
         onView(withId(R.id.textview_activity_system_allow_arbitrary_file_location_on_off)).check(matches(withText("no")));
+        assertFalse(getPreferenceManager().getPreferenceAllowArbitraryFileLocation());
         assertTrue(storagePermissionManager.hasPersistentPermission(getActivity(activityScenario), "/Movies"));
         assertFalse(storagePermissionManager.hasPersistentPermission(getActivity(activityScenario), "/Test"));
         assertFalse(storagePermissionManager.hasPersistentPermission(getActivity(activityScenario), "/Documents"));
         onView(withId(R.id.switch_activity_system_allow_arbitrary_file_location)).perform(scrollTo());
         onView(withId(R.id.switch_activity_system_allow_arbitrary_file_location)).perform(click());
         onView(withId(R.id.textview_activity_system_allow_arbitrary_file_location_on_off)).check(matches(withText("yes")));
+        assertTrue(getPreferenceManager().getPreferenceAllowArbitraryFileLocation());
         assertTrue(storagePermissionManager.hasPersistentPermission(getActivity(activityScenario), "/Movies"));
         assertFalse(storagePermissionManager.hasPersistentPermission(getActivity(activityScenario), "/Test"));
         assertFalse(storagePermissionManager.hasPersistentPermission(getActivity(activityScenario), "/Documents"));
         activityScenario.close();
     }
 
+    @Test
+    public void testAllowArbitraryFileLocationImportExportFolderText() {
+        ActivityScenario<?> activityScenario = launchSettingsInputActivity(SystemActivity.class, getBypassSystemSAFBundle());
+        injectMocks(activityScenario);
+        injectArbitraryFolderLauncher(activityScenario, "/Test");
+        storagePermissionManager.setGrantedFolder("/Test");
+        onView(withId(R.id.textview_activity_system_config_import_folder)).check(matches(withText(endsWith("config"))));
+        onView(withId(R.id.textview_activity_system_config_export_folder)).check(matches(withText(endsWith("config"))));
+        onView(withId(R.id.switch_activity_system_allow_arbitrary_file_location)).perform(scrollTo());
+        onView(withId(R.id.switch_activity_system_allow_arbitrary_file_location)).perform(click());
+        onView(withId(R.id.textview_activity_system_allow_arbitrary_file_location_on_off)).check(matches(withText("yes")));
+        assertTrue(getPreferenceManager().getPreferenceAllowArbitraryFileLocation());
+        onView(withId(R.id.textview_activity_system_config_import_folder)).check(matches(withText("Choose file")));
+        onView(withId(R.id.textview_activity_system_config_export_folder)).check(matches(withText("Choose file")));
+        onView(withId(R.id.switch_activity_system_allow_arbitrary_file_location)).perform(scrollTo());
+        onView(withId(R.id.switch_activity_system_allow_arbitrary_file_location)).perform(click());
+        onView(withId(R.id.textview_activity_system_allow_arbitrary_file_location_on_off)).check(matches(withText("no")));
+        assertFalse(getPreferenceManager().getPreferenceAllowArbitraryFileLocation());
+        onView(withId(R.id.textview_activity_system_config_import_folder)).check(matches(withText(endsWith("config"))));
+        onView(withId(R.id.textview_activity_system_config_export_folder)).check(matches(withText(endsWith("config"))));
+    }
+
     private void injectMocks(ActivityScenario<?> activityScenario) {
         ((SystemActivity) getActivity(activityScenario)).injectTimeBasedSuspensionScheduler(getTimeBasedSuspensionScheduler());
         ((SystemActivity) getActivity(activityScenario)).injectStoragePermissionManager(storagePermissionManager);
         ((SystemActivity) getActivity(activityScenario)).injectArbitraryFolderLauncher(new DelegatingTestPermissionLauncher(((SystemActivity) getActivity(activityScenario))::grantArbitraryFolderPermissions));
+        ((SystemActivity) getActivity(activityScenario)).injectExportFileLauncher(new DelegatingTestPermissionLauncher(((SystemActivity) getActivity(activityScenario))::grantConfigurationExportFilePermission));
+        ((SystemActivity) getActivity(activityScenario)).injectImportFileLauncher(new DelegatingTestPermissionLauncher(((SystemActivity) getActivity(activityScenario))::grantConfigurationImportFilePermission));
     }
 
     private void injectArbitraryFolderLauncher(ActivityScenario<?> activityScenario, String uri) {
         ((SystemActivity) getActivity(activityScenario)).injectArbitraryFolderLauncher(new DelegatingTestPermissionLauncher(((SystemActivity) getActivity(activityScenario))::grantArbitraryFolderPermissions, uri));
     }
 
+    private void injectExportFileLauncher(ActivityScenario<?> activityScenario, String uri) {
+        ((SystemActivity) getActivity(activityScenario)).injectExportFileLauncher(new DelegatingTestPermissionLauncher(((SystemActivity) getActivity(activityScenario))::grantConfigurationExportFilePermission, uri));
+    }
+
+    private void injectImportFileLauncher(ActivityScenario<?> activityScenario, String uri) {
+        ((SystemActivity) getActivity(activityScenario)).injectImportFileLauncher(new DelegatingTestPermissionLauncher(((SystemActivity) getActivity(activityScenario))::grantConfigurationImportFilePermission, uri));
+    }
+
     private MockStoragePermissionManager getMockStoragePermissionManager() {
         return new MockStoragePermissionManager();
+    }
+
+    private MockExportTask getMockExportTask(ActivityScenario<?> activityScenario, boolean success) {
+        return new MockExportTask(getActivity(activityScenario), success);
+    }
+
+    private MockImportTask getMockImportTask(ActivityScenario<?> activityScenario, boolean success) {
+        return getMockImportTask(activityScenario, success, false);
+    }
+
+    private MockImportTask getMockImportTask(ActivityScenario<?> activityScenario, boolean success, boolean mismatch) {
+        return new MockImportTask(getActivity(activityScenario), new SystemSetupResult(success, mismatch, "", ""));
+    }
+
+    private TestExportTask getTestExportTask(ActivityScenario<?> activityScenario, String file) {
+        return new TestExportTask(getActivity(activityScenario), null, file, true);
+    }
+
+    private TestImportTask getTesImportTask(ActivityScenario<?> activityScenario, String file) {
+        return new TestImportTask(getActivity(activityScenario), null, file, true);
+    }
+
+    private void injectImportTask(ActivityScenario<?> activityScenario, ImportTask importTask) {
+        SystemActivity activity = (SystemActivity) getActivity(activityScenario);
+        activity.injectImportTask(importTask);
+    }
+
+    private void injectExportTask(ActivityScenario<?> activityScenario, ExportTask exportTask) {
+        SystemActivity activity = (SystemActivity) getActivity(activityScenario);
+        activity.injectExportTask(exportTask);
     }
 }

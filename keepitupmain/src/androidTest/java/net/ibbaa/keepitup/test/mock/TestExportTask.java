@@ -26,7 +26,6 @@ import net.ibbaa.keepitup.ui.sync.ExportTask;
 
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.IOException;
 
 public class TestExportTask extends ExportTask {
 
@@ -38,7 +37,7 @@ public class TestExportTask extends ExportTask {
     }
 
     @Override
-    protected ParcelFileDescriptor getExportFileDescriptor(DocumentFile documentFile) throws IOException {
+    protected ParcelFileDescriptor getExportFileDescriptor(DocumentFile documentFile) {
         return null;
     }
 
