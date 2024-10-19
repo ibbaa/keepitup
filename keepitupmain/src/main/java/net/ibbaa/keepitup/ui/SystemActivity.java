@@ -625,6 +625,8 @@ public class SystemActivity extends SettingsInputActivity implements ExportSuppo
             Log.e(SystemActivity.class.getName(), "uri is null");
             return;
         }
+        PreferenceManager preferenceManager = new PreferenceManager(this);
+        preferenceManager.setPreferenceLastArbitraryExportFile(uri.toString());
         doConfigurationExport(null, uri.toString());
     }
 
