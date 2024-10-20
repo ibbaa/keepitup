@@ -23,6 +23,7 @@ import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
 import static org.hamcrest.Matchers.endsWith;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
@@ -139,6 +140,42 @@ public class SAFSystemActivityMockTest extends BaseUITest {
         onView(withId(R.id.textview_activity_system_config_export_folder)).check(matches(withText(endsWith("config"))));
     }
 
+    @Test
+    public void testAllowArbitraryFileLocationExportPermission() {
+        ActivityScenario<?> activityScenario = launchSettingsInputActivity(SystemActivity.class, getBypassSystemSAFBundle());
+        injectMocks(activityScenario);
+        injectExportTask(activityScenario, getMockExportTask(activityScenario, true));
+        injectArbitraryFolderLauncher(activityScenario, "/Test");
+        storagePermissionManager.setGrantedFolder("/Test");
+        injectExportFileLauncher(activityScenario, "/Test/test.json");
+        storagePermissionManager.setGrantedCreateFile("/Test/test.json");
+        onView(withId(R.id.switch_activity_system_allow_arbitrary_file_location)).perform(scrollTo());
+        onView(withId(R.id.switch_activity_system_allow_arbitrary_file_location)).perform(click());
+        onView(withId(R.id.textview_activity_system_allow_arbitrary_file_location_on_off)).check(matches(withText("yes")));
+        onView(withId(R.id.textview_activity_system_config_export_folder)).perform(click());
+        assertTrue(storagePermissionManager.getCreateFilePermissions().contains("/Test/test.json"));
+        assertEquals("/Test/test.json", getPreferenceManager().getPreferenceLastArbitraryExportFile());
+    }
+
+    @Test
+    public void testAllowArbitraryFileLocationImportPermission() {
+        ActivityScenario<?> activityScenario = launchSettingsInputActivity(SystemActivity.class, getBypassSystemSAFBundle());
+        injectMocks(activityScenario);
+        injectImportTask(activityScenario, getMockImportTask(activityScenario, true));
+        injectArbitraryFolderLauncher(activityScenario, "/Test");
+        storagePermissionManager.setGrantedFolder("/Test");
+        injectImportFileLauncher(activityScenario, "/Test/test.json");
+        storagePermissionManager.setGrantedOpenFile("/Test/test.json");
+        getPreferenceManager().setPreferenceLastArbitraryExportFile("/Test/test.json");
+        onView(withId(R.id.switch_activity_system_allow_arbitrary_file_location)).perform(scrollTo());
+        onView(withId(R.id.switch_activity_system_allow_arbitrary_file_location)).perform(click());
+        onView(withId(R.id.textview_activity_system_allow_arbitrary_file_location_on_off)).check(matches(withText("yes")));
+        onView(withId(R.id.textview_activity_system_config_import_folder)).perform(click());
+        onView(withId(R.id.textview_dialog_confirm_description)).check(matches(withText("The import will overwrite all existing network tasks, log entries and the configuration. This cannot be undone.")));
+        onView(withId(R.id.imageview_dialog_confirm_ok)).perform(click());
+        assertTrue(storagePermissionManager.getOpenFilePermissions().contains("/Test/test.json"));
+    }
+
     private void injectMocks(ActivityScenario<?> activityScenario) {
         ((SystemActivity) getActivity(activityScenario)).injectTimeBasedSuspensionScheduler(getTimeBasedSuspensionScheduler());
         ((SystemActivity) getActivity(activityScenario)).injectStoragePermissionManager(storagePermissionManager);
@@ -168,11 +205,7 @@ public class SAFSystemActivityMockTest extends BaseUITest {
     }
 
     private MockImportTask getMockImportTask(ActivityScenario<?> activityScenario, boolean success) {
-        return getMockImportTask(activityScenario, success, false);
-    }
-
-    private MockImportTask getMockImportTask(ActivityScenario<?> activityScenario, boolean success, boolean mismatch) {
-        return new MockImportTask(getActivity(activityScenario), new SystemSetupResult(success, mismatch, "", ""));
+        return new MockImportTask(getActivity(activityScenario), new SystemSetupResult(success, false, "", ""));
     }
 
     private TestExportTask getTestExportTask(ActivityScenario<?> activityScenario, String file) {
