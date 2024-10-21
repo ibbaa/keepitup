@@ -51,6 +51,7 @@ import net.ibbaa.keepitup.R;
 import net.ibbaa.keepitup.logging.Dump;
 import net.ibbaa.keepitup.logging.Log;
 import net.ibbaa.keepitup.model.AccessType;
+import net.ibbaa.keepitup.model.AccessTypeData;
 import net.ibbaa.keepitup.model.Interval;
 import net.ibbaa.keepitup.model.LogEntry;
 import net.ibbaa.keepitup.model.NetworkTask;
@@ -126,6 +127,7 @@ public class SystemActivityTest extends BaseUITest {
         assertFalse(getTimeBasedSuspensionScheduler().getIntervals().isEmpty());
         assertFalse(getSchedulerIdHistoryDAO().readAllSchedulerIds().isEmpty());
         assertFalse(getLogDAO().readAllLogs().isEmpty());
+        assertFalse(getAccessTypeDataDAO().readAllAccessTypeData().isEmpty());
         assertFalse(getIntervalDAO().readAllIntervals().isEmpty());
         getPreferenceManager().setPreferencePingCount(5);
         getPreferenceManager().setPreferenceConnectCount(10);
@@ -163,6 +165,7 @@ public class SystemActivityTest extends BaseUITest {
         assertFalse(getSchedulerIdHistoryDAO().readAllSchedulerIds().isEmpty());
         assertFalse(getLogDAO().readAllLogs().isEmpty());
         assertFalse(getIntervalDAO().readAllIntervals().isEmpty());
+        assertFalse(getAccessTypeDataDAO().readAllAccessTypeData().isEmpty());
         assertFalse(getTimeBasedSuspensionScheduler().getIntervals().isEmpty());
         assertEquals(5, getPreferenceManager().getPreferencePingCount());
         assertEquals(10, getPreferenceManager().getPreferenceConnectCount());
@@ -200,6 +203,7 @@ public class SystemActivityTest extends BaseUITest {
         assertFalse(getNetworkTaskDAO().readAllNetworkTasks().isEmpty());
         assertFalse(getSchedulerIdHistoryDAO().readAllSchedulerIds().isEmpty());
         assertFalse(getLogDAO().readAllLogs().isEmpty());
+        assertFalse(getAccessTypeDataDAO().readAllAccessTypeData().isEmpty());
         assertFalse(getIntervalDAO().readAllIntervals().isEmpty());
         assertFalse(getTimeBasedSuspensionScheduler().getIntervals().isEmpty());
         getPreferenceManager().setPreferencePingCount(5);
@@ -240,6 +244,7 @@ public class SystemActivityTest extends BaseUITest {
         assertFalse(getNetworkTaskDAO().readAllNetworkTasks().isEmpty());
         assertFalse(getSchedulerIdHistoryDAO().readAllSchedulerIds().isEmpty());
         assertFalse(getLogDAO().readAllLogs().isEmpty());
+        assertFalse(getAccessTypeDataDAO().readAllAccessTypeData().isEmpty());
         assertFalse(getIntervalDAO().readAllIntervals().isEmpty());
         assertFalse(getTimeBasedSuspensionScheduler().getIntervals().isEmpty());
         assertEquals(5, getPreferenceManager().getPreferencePingCount());
@@ -278,6 +283,7 @@ public class SystemActivityTest extends BaseUITest {
         assertFalse(getNetworkTaskDAO().readAllNetworkTasks().isEmpty());
         assertFalse(getSchedulerIdHistoryDAO().readAllSchedulerIds().isEmpty());
         assertFalse(getLogDAO().readAllLogs().isEmpty());
+        assertFalse(getAccessTypeDataDAO().readAllAccessTypeData().isEmpty());
         assertFalse(getIntervalDAO().readAllIntervals().isEmpty());
         assertFalse(getTimeBasedSuspensionScheduler().getIntervals().isEmpty());
         getPreferenceManager().setPreferencePingCount(5);
@@ -315,6 +321,7 @@ public class SystemActivityTest extends BaseUITest {
         assertTrue(getNetworkTaskDAO().readAllNetworkTasks().isEmpty());
         assertTrue(getSchedulerIdHistoryDAO().readAllSchedulerIds().isEmpty());
         assertTrue(getLogDAO().readAllLogs().isEmpty());
+        assertTrue(getAccessTypeDataDAO().readAllAccessTypeData().isEmpty());
         assertTrue(getIntervalDAO().readAllIntervals().isEmpty());
         assertTrue(getTimeBasedSuspensionScheduler().getIntervals().isEmpty());
         assertEquals(3, getPreferenceManager().getPreferencePingCount());
@@ -354,6 +361,7 @@ public class SystemActivityTest extends BaseUITest {
         assertFalse(getNetworkTaskDAO().readAllNetworkTasks().isEmpty());
         assertFalse(getSchedulerIdHistoryDAO().readAllSchedulerIds().isEmpty());
         assertFalse(getLogDAO().readAllLogs().isEmpty());
+        assertFalse(getAccessTypeDataDAO().readAllAccessTypeData().isEmpty());
         assertFalse(getIntervalDAO().readAllIntervals().isEmpty());
         assertFalse(getTimeBasedSuspensionScheduler().getIntervals().isEmpty());
         getPreferenceManager().setPreferencePingCount(5);
@@ -392,6 +400,7 @@ public class SystemActivityTest extends BaseUITest {
         assertTrue(getNetworkTaskDAO().readAllNetworkTasks().isEmpty());
         assertTrue(getSchedulerIdHistoryDAO().readAllSchedulerIds().isEmpty());
         assertTrue(getLogDAO().readAllLogs().isEmpty());
+        assertTrue(getAccessTypeDataDAO().readAllAccessTypeData().isEmpty());
         assertTrue(getIntervalDAO().readAllIntervals().isEmpty());
         assertTrue(getTimeBasedSuspensionScheduler().getIntervals().isEmpty());
         assertTrue(getTimeBasedSuspensionScheduler().getIntervals().isEmpty());
@@ -434,6 +443,7 @@ public class SystemActivityTest extends BaseUITest {
         assertFalse(getNetworkTaskDAO().readAllNetworkTasks().isEmpty());
         assertFalse(getSchedulerIdHistoryDAO().readAllSchedulerIds().isEmpty());
         assertFalse(getLogDAO().readAllLogs().isEmpty());
+        assertFalse(getAccessTypeDataDAO().readAllAccessTypeData().isEmpty());
         assertFalse(getIntervalDAO().readAllIntervals().isEmpty());
         assertFalse(getTimeBasedSuspensionScheduler().getIntervals().isEmpty());
         getPreferenceManager().setPreferencePingCount(5);
@@ -471,6 +481,7 @@ public class SystemActivityTest extends BaseUITest {
         assertFalse(getNetworkTaskDAO().readAllNetworkTasks().isEmpty());
         assertFalse(getSchedulerIdHistoryDAO().readAllSchedulerIds().isEmpty());
         assertFalse(getLogDAO().readAllLogs().isEmpty());
+        assertFalse(getAccessTypeDataDAO().readAllAccessTypeData().isEmpty());
         assertFalse(getIntervalDAO().readAllIntervals().isEmpty());
         assertFalse(getTimeBasedSuspensionScheduler().getIntervals().isEmpty());
         assertEquals(5, getPreferenceManager().getPreferencePingCount());
@@ -511,6 +522,7 @@ public class SystemActivityTest extends BaseUITest {
         assertFalse(getNetworkTaskDAO().readAllNetworkTasks().isEmpty());
         assertFalse(getSchedulerIdHistoryDAO().readAllSchedulerIds().isEmpty());
         assertFalse(getLogDAO().readAllLogs().isEmpty());
+        assertFalse(getAccessTypeDataDAO().readAllAccessTypeData().isEmpty());
         assertFalse(getIntervalDAO().readAllIntervals().isEmpty());
         assertFalse(getTimeBasedSuspensionScheduler().getIntervals().isEmpty());
         getPreferenceManager().setPreferencePingCount(5);
@@ -552,6 +564,7 @@ public class SystemActivityTest extends BaseUITest {
         assertFalse(getNetworkTaskDAO().readAllNetworkTasks().isEmpty());
         assertFalse(getSchedulerIdHistoryDAO().readAllSchedulerIds().isEmpty());
         assertFalse(getLogDAO().readAllLogs().isEmpty());
+        assertFalse(getAccessTypeDataDAO().readAllAccessTypeData().isEmpty());
         assertFalse(getIntervalDAO().readAllIntervals().isEmpty());
         assertFalse(getTimeBasedSuspensionScheduler().getIntervals().isEmpty());
         assertEquals(5, getPreferenceManager().getPreferencePingCount());
@@ -590,6 +603,7 @@ public class SystemActivityTest extends BaseUITest {
         assertFalse(getNetworkTaskDAO().readAllNetworkTasks().isEmpty());
         assertFalse(getSchedulerIdHistoryDAO().readAllSchedulerIds().isEmpty());
         assertFalse(getLogDAO().readAllLogs().isEmpty());
+        assertFalse(getAccessTypeDataDAO().readAllAccessTypeData().isEmpty());
         assertFalse(getIntervalDAO().readAllIntervals().isEmpty());
         assertFalse(getTimeBasedSuspensionScheduler().getIntervals().isEmpty());
         getPreferenceManager().setPreferencePingCount(5);
@@ -629,6 +643,7 @@ public class SystemActivityTest extends BaseUITest {
         assertFalse(getNetworkTaskDAO().readAllNetworkTasks().isEmpty());
         assertFalse(getSchedulerIdHistoryDAO().readAllSchedulerIds().isEmpty());
         assertFalse(getLogDAO().readAllLogs().isEmpty());
+        assertFalse(getAccessTypeDataDAO().readAllAccessTypeData().isEmpty());
         assertFalse(getIntervalDAO().readAllIntervals().isEmpty());
         assertFalse(getTimeBasedSuspensionScheduler().getIntervals().isEmpty());
         assertEquals(5, getPreferenceManager().getPreferencePingCount());
@@ -667,6 +682,7 @@ public class SystemActivityTest extends BaseUITest {
         assertFalse(getNetworkTaskDAO().readAllNetworkTasks().isEmpty());
         assertFalse(getSchedulerIdHistoryDAO().readAllSchedulerIds().isEmpty());
         assertFalse(getLogDAO().readAllLogs().isEmpty());
+        assertFalse(getAccessTypeDataDAO().readAllAccessTypeData().isEmpty());
         assertFalse(getIntervalDAO().readAllIntervals().isEmpty());
         assertFalse(getTimeBasedSuspensionScheduler().getIntervals().isEmpty());
         getPreferenceManager().setPreferencePingCount(5);
@@ -713,6 +729,7 @@ public class SystemActivityTest extends BaseUITest {
         assertFalse(getSchedulerIdHistoryDAO().readAllSchedulerIds().isEmpty());
         assertFalse(getLogDAO().readAllLogs().isEmpty());
         assertFalse(getIntervalDAO().readAllIntervals().isEmpty());
+        assertFalse(getAccessTypeDataDAO().readAllAccessTypeData().isEmpty());
         assertFalse(getTimeBasedSuspensionScheduler().getIntervals().isEmpty());
         assertEquals(5, getPreferenceManager().getPreferencePingCount());
         assertEquals(10, getPreferenceManager().getPreferenceConnectCount());
@@ -753,12 +770,14 @@ public class SystemActivityTest extends BaseUITest {
         LogEntry task3Entry1 = getLogDAO().insertAndDeleteLog(getLogEntry1(task3.getId()));
         LogEntry task3Entry2 = getLogDAO().insertAndDeleteLog(getLogEntry2(task3.getId()));
         LogEntry task3Entry3 = getLogDAO().insertAndDeleteLog(getLogEntry3(task3.getId()));
+        AccessTypeData accessData1 = getAccessTypeDataDAO().insertAccessTypeData(getAccessTypeData1(task1.getId()));
         getIntervalDAO().insertInterval(getInterval1());
         getTimeBasedSuspensionScheduler().reset();
         getTimeBasedSuspensionScheduler().getIntervals();
         assertFalse(getNetworkTaskDAO().readAllNetworkTasks().isEmpty());
         assertFalse(getSchedulerIdHistoryDAO().readAllSchedulerIds().isEmpty());
         assertFalse(getLogDAO().readAllLogs().isEmpty());
+        assertFalse(getAccessTypeDataDAO().readAllAccessTypeData().isEmpty());
         assertFalse(getIntervalDAO().readAllIntervals().isEmpty());
         assertFalse(getTimeBasedSuspensionScheduler().getIntervals().isEmpty());
         getPreferenceManager().setPreferencePingCount(5);
@@ -824,6 +843,7 @@ public class SystemActivityTest extends BaseUITest {
         assertFalse(getPreferenceManager().getPreferenceAllowArbitraryFileLocation());
         getNetworkTaskDAO().deleteAllNetworkTasks();
         getLogDAO().deleteAllLogs();
+        getAccessTypeDataDAO().readAllAccessTypeData();
         getIntervalDAO().deleteAllIntervals();
         getPreferenceManager().removeAllPreferences();
         FileInputStream inputStream = new FileInputStream(new File(folder, "keepitup_config.json"));
@@ -876,6 +896,8 @@ public class SystemActivityTest extends BaseUITest {
         assertEquals(readTask3.getId(), readEntry1.getNetworkTaskId());
         assertEquals(readTask3.getId(), readEntry2.getNetworkTaskId());
         assertEquals(readTask3.getId(), readEntry3.getNetworkTaskId());
+        AccessTypeData readAccessData1 = getAccessTypeDataDAO().readAccessTypeDataForNetworkTask(readTask1.getId());
+        assertTrue(accessData1.isTechnicallyEqual(readAccessData1));
         List<Interval> intervals = getIntervalDAO().readAllIntervals();
         assertEquals(1, intervals.size());
         assertTrue(getInterval1().isEqual(intervals.get(0)));
@@ -918,12 +940,15 @@ public class SystemActivityTest extends BaseUITest {
         LogEntry task3Entry1 = getLogDAO().insertAndDeleteLog(getLogEntry1(task3.getId()));
         LogEntry task3Entry2 = getLogDAO().insertAndDeleteLog(getLogEntry2(task3.getId()));
         LogEntry task3Entry3 = getLogDAO().insertAndDeleteLog(getLogEntry3(task3.getId()));
+        AccessTypeData accessData1 = getAccessTypeDataDAO().insertAccessTypeData(getAccessTypeData1(task1.getId()));
+        getIntervalDAO().insertInterval(getInterval1());
         getIntervalDAO().insertInterval(getInterval1());
         getTimeBasedSuspensionScheduler().reset();
         getTimeBasedSuspensionScheduler().getIntervals();
         assertFalse(getNetworkTaskDAO().readAllNetworkTasks().isEmpty());
         assertFalse(getSchedulerIdHistoryDAO().readAllSchedulerIds().isEmpty());
         assertFalse(getLogDAO().readAllLogs().isEmpty());
+        assertFalse(getAccessTypeDataDAO().readAllAccessTypeData().isEmpty());
         assertFalse(getIntervalDAO().readAllIntervals().isEmpty());
         assertFalse(getTimeBasedSuspensionScheduler().getIntervals().isEmpty());
         getPreferenceManager().setPreferencePingCount(5);
@@ -968,6 +993,7 @@ public class SystemActivityTest extends BaseUITest {
         assertFalse(alarmManager.wasCancelAlarmCalled());
         assertFalse(getNetworkTaskDAO().readAllNetworkTasks().isEmpty());
         assertFalse(getLogDAO().readAllLogs().isEmpty());
+        assertFalse(getAccessTypeDataDAO().readAllAccessTypeData().isEmpty());
         assertFalse(getIntervalDAO().readAllIntervals().isEmpty());
         assertFalse(getTimeBasedSuspensionScheduler().getIntervals().isEmpty());
         assertEquals(5, getPreferenceManager().getPreferencePingCount());
@@ -995,6 +1021,7 @@ public class SystemActivityTest extends BaseUITest {
         assertFalse(getPreferenceManager().getPreferenceAllowArbitraryFileLocation());
         getNetworkTaskDAO().deleteAllNetworkTasks();
         getLogDAO().deleteAllLogs();
+        getAccessTypeDataDAO().deleteAllAccessTypeData();
         getIntervalDAO().deleteAllIntervals();
         getPreferenceManager().removeAllPreferences();
         FileInputStream inputStream = new FileInputStream(new File(folder, "keepitup_config.json"));
@@ -1046,6 +1073,8 @@ public class SystemActivityTest extends BaseUITest {
         assertEquals(readTask3.getId(), readEntry1.getNetworkTaskId());
         assertEquals(readTask3.getId(), readEntry2.getNetworkTaskId());
         assertEquals(readTask3.getId(), readEntry3.getNetworkTaskId());
+        AccessTypeData readAccessData1 = getAccessTypeDataDAO().readAccessTypeDataForNetworkTask(readTask1.getId());
+        assertTrue(accessData1.isTechnicallyEqual(readAccessData1));
         List<Interval> intervals = getIntervalDAO().readAllIntervals();
         assertEquals(1, intervals.size());
         assertTrue(getInterval1().isEqual(intervals.get(0)));
@@ -1088,12 +1117,14 @@ public class SystemActivityTest extends BaseUITest {
         getLogDAO().insertAndDeleteLog(getLogEntry1(task3.getId()));
         getLogDAO().insertAndDeleteLog(getLogEntry2(task3.getId()));
         getLogDAO().insertAndDeleteLog(getLogEntry3(task3.getId()));
+        getAccessTypeDataDAO().insertAccessTypeData(getAccessTypeData1(task1.getId()));
         getIntervalDAO().insertInterval(getInterval1());
         getTimeBasedSuspensionScheduler().reset();
         getTimeBasedSuspensionScheduler().getIntervals();
         assertFalse(getNetworkTaskDAO().readAllNetworkTasks().isEmpty());
         assertFalse(getSchedulerIdHistoryDAO().readAllSchedulerIds().isEmpty());
         assertFalse(getLogDAO().readAllLogs().isEmpty());
+        assertFalse(getAccessTypeDataDAO().readAllAccessTypeData().isEmpty());
         assertFalse(getIntervalDAO().readAllIntervals().isEmpty());
         assertFalse(getTimeBasedSuspensionScheduler().getIntervals().isEmpty());
         getPreferenceManager().setPreferencePingCount(5);
@@ -1141,6 +1172,7 @@ public class SystemActivityTest extends BaseUITest {
         assertFalse(getNetworkTaskDAO().readAllNetworkTasks().isEmpty());
         assertFalse(getSchedulerIdHistoryDAO().readAllSchedulerIds().isEmpty());
         assertFalse(getLogDAO().readAllLogs().isEmpty());
+        assertFalse(getAccessTypeDataDAO().readAllAccessTypeData().isEmpty());
         assertFalse(getIntervalDAO().readAllIntervals().isEmpty());
         assertFalse(getTimeBasedSuspensionScheduler().getIntervals().isEmpty());
         assertEquals(5, getPreferenceManager().getPreferencePingCount());
@@ -1182,12 +1214,14 @@ public class SystemActivityTest extends BaseUITest {
         getLogDAO().insertAndDeleteLog(getLogEntry1(task3.getId()));
         getLogDAO().insertAndDeleteLog(getLogEntry2(task3.getId()));
         getLogDAO().insertAndDeleteLog(getLogEntry3(task3.getId()));
+        getAccessTypeDataDAO().insertAccessTypeData(getAccessTypeData1(task1.getId()));
         getIntervalDAO().insertInterval(getInterval1());
         getTimeBasedSuspensionScheduler().reset();
         getTimeBasedSuspensionScheduler().getIntervals();
         assertFalse(getNetworkTaskDAO().readAllNetworkTasks().isEmpty());
         assertFalse(getSchedulerIdHistoryDAO().readAllSchedulerIds().isEmpty());
         assertFalse(getLogDAO().readAllLogs().isEmpty());
+        assertFalse(getAccessTypeDataDAO().readAllAccessTypeData().isEmpty());
         assertFalse(getIntervalDAO().readAllIntervals().isEmpty());
         assertFalse(getTimeBasedSuspensionScheduler().getIntervals().isEmpty());
         getPreferenceManager().setPreferencePingCount(5);
@@ -1241,6 +1275,7 @@ public class SystemActivityTest extends BaseUITest {
         assertFalse(getNetworkTaskDAO().readAllNetworkTasks().isEmpty());
         assertFalse(getSchedulerIdHistoryDAO().readAllSchedulerIds().isEmpty());
         assertFalse(getLogDAO().readAllLogs().isEmpty());
+        assertFalse(getAccessTypeDataDAO().readAllAccessTypeData().isEmpty());
         assertFalse(getIntervalDAO().readAllIntervals().isEmpty());
         assertFalse(getTimeBasedSuspensionScheduler().getIntervals().isEmpty());
         assertEquals(5, getPreferenceManager().getPreferencePingCount());
@@ -1282,12 +1317,14 @@ public class SystemActivityTest extends BaseUITest {
         LogEntry task3Entry1 = getLogDAO().insertAndDeleteLog(getLogEntry1(task3.getId()));
         LogEntry task3Entry2 = getLogDAO().insertAndDeleteLog(getLogEntry2(task3.getId()));
         LogEntry task3Entry3 = getLogDAO().insertAndDeleteLog(getLogEntry3(task3.getId()));
+        AccessTypeData accessData1 = getAccessTypeDataDAO().insertAccessTypeData(getAccessTypeData1(task1.getId()));
         getIntervalDAO().insertInterval(getInterval1());
         getTimeBasedSuspensionScheduler().reset();
         getTimeBasedSuspensionScheduler().getIntervals();
         assertFalse(getNetworkTaskDAO().readAllNetworkTasks().isEmpty());
         assertFalse(getSchedulerIdHistoryDAO().readAllSchedulerIds().isEmpty());
         assertFalse(getLogDAO().readAllLogs().isEmpty());
+        assertFalse(getAccessTypeDataDAO().readAllAccessTypeData().isEmpty());
         assertFalse(getIntervalDAO().readAllIntervals().isEmpty());
         assertFalse(getTimeBasedSuspensionScheduler().getIntervals().isEmpty());
         getPreferenceManager().setPreferencePingCount(5);
@@ -1360,6 +1397,7 @@ public class SystemActivityTest extends BaseUITest {
         assertFalse(getPreferenceManager().getPreferenceAllowArbitraryFileLocation());
         getNetworkTaskDAO().deleteAllNetworkTasks();
         getLogDAO().deleteAllLogs();
+        getAccessTypeDataDAO().deleteAllAccessTypeData();
         getIntervalDAO().deleteAllIntervals();
         getTimeBasedSuspensionScheduler().reset();
         getTimeBasedSuspensionScheduler().getIntervals();
@@ -1413,6 +1451,8 @@ public class SystemActivityTest extends BaseUITest {
         assertEquals(readTask3.getId(), readEntry1.getNetworkTaskId());
         assertEquals(readTask3.getId(), readEntry2.getNetworkTaskId());
         assertEquals(readTask3.getId(), readEntry3.getNetworkTaskId());
+        AccessTypeData readAccessData1 = getAccessTypeDataDAO().readAccessTypeDataForNetworkTask(readTask1.getId());
+        assertTrue(accessData1.isTechnicallyEqual(readAccessData1));
         List<Interval> intervals = getIntervalDAO().readAllIntervals();
         assertEquals(1, intervals.size());
         assertTrue(getInterval1().isEqual(intervals.get(0)));
@@ -1455,12 +1495,14 @@ public class SystemActivityTest extends BaseUITest {
         LogEntry task3Entry1 = getLogDAO().insertAndDeleteLog(getLogEntry1(task3.getId()));
         LogEntry task3Entry2 = getLogDAO().insertAndDeleteLog(getLogEntry2(task3.getId()));
         LogEntry task3Entry3 = getLogDAO().insertAndDeleteLog(getLogEntry3(task3.getId()));
+        getAccessTypeDataDAO().insertAccessTypeData(getAccessTypeData1(task1.getId()));
         getIntervalDAO().insertInterval(getInterval1());
         getTimeBasedSuspensionScheduler().reset();
         getTimeBasedSuspensionScheduler().getIntervals();
         assertFalse(getNetworkTaskDAO().readAllNetworkTasks().isEmpty());
         assertFalse(getSchedulerIdHistoryDAO().readAllSchedulerIds().isEmpty());
         assertFalse(getLogDAO().readAllLogs().isEmpty());
+        assertFalse(getAccessTypeDataDAO().readAllAccessTypeData().isEmpty());
         assertFalse(getIntervalDAO().readAllIntervals().isEmpty());
         assertFalse(getTimeBasedSuspensionScheduler().getIntervals().isEmpty());
         getPreferenceManager().setPreferencePingCount(5);
@@ -1512,6 +1554,7 @@ public class SystemActivityTest extends BaseUITest {
         assertFalse(alarmManager.wasCancelAlarmCalled());
         assertFalse(getNetworkTaskDAO().readAllNetworkTasks().isEmpty());
         assertFalse(getLogDAO().readAllLogs().isEmpty());
+        assertFalse(getAccessTypeDataDAO().readAllAccessTypeData().isEmpty());
         assertFalse(getIntervalDAO().readAllIntervals().isEmpty());
         assertFalse(getTimeBasedSuspensionScheduler().getIntervals().isEmpty());
         assertEquals(5, getPreferenceManager().getPreferencePingCount());
@@ -1539,6 +1582,7 @@ public class SystemActivityTest extends BaseUITest {
         assertFalse(getPreferenceManager().getPreferenceAllowArbitraryFileLocation());
         getNetworkTaskDAO().deleteAllNetworkTasks();
         getLogDAO().deleteAllLogs();
+        getAccessTypeDataDAO().deleteAllAccessTypeData();
         getIntervalDAO().deleteAllIntervals();
         getTimeBasedSuspensionScheduler().reset();
         getTimeBasedSuspensionScheduler().getIntervals();
@@ -1632,6 +1676,7 @@ public class SystemActivityTest extends BaseUITest {
         assertFalse(getNetworkTaskDAO().readAllNetworkTasks().isEmpty());
         assertFalse(getSchedulerIdHistoryDAO().readAllSchedulerIds().isEmpty());
         assertFalse(getLogDAO().readAllLogs().isEmpty());
+        assertFalse(getAccessTypeDataDAO().readAllAccessTypeData().isEmpty());
         assertFalse(getIntervalDAO().readAllIntervals().isEmpty());
         assertFalse(getTimeBasedSuspensionScheduler().getIntervals().isEmpty());
         getPreferenceManager().setPreferencePingCount(5);
@@ -1865,6 +1910,7 @@ public class SystemActivityTest extends BaseUITest {
         assertFalse(getNetworkTaskDAO().readAllNetworkTasks().isEmpty());
         assertFalse(getSchedulerIdHistoryDAO().readAllSchedulerIds().isEmpty());
         assertFalse(getLogDAO().readAllLogs().isEmpty());
+        assertFalse(getAccessTypeDataDAO().readAllAccessTypeData().isEmpty());
         assertFalse(getIntervalDAO().readAllIntervals().isEmpty());
         assertFalse(getTimeBasedSuspensionScheduler().getIntervals().isEmpty());
         getPreferenceManager().setPreferencePingCount(5);
@@ -1900,6 +1946,7 @@ public class SystemActivityTest extends BaseUITest {
         assertTrue(result.success());
         getNetworkTaskDAO().deleteAllNetworkTasks();
         getLogDAO().deleteAllLogs();
+        getAccessTypeDataDAO().deleteAllAccessTypeData();
         getIntervalDAO().deleteAllIntervals();
         getTimeBasedSuspensionScheduler().reset();
         getTimeBasedSuspensionScheduler().getIntervals();
@@ -1916,6 +1963,7 @@ public class SystemActivityTest extends BaseUITest {
         assertTrue(storagePermissionManager.hasAnyPersistentPermission(null));
         assertTrue(getNetworkTaskDAO().readAllNetworkTasks().isEmpty());
         assertTrue(getLogDAO().readAllLogs().isEmpty());
+        assertTrue(getAccessTypeDataDAO().readAllAccessTypeData().isEmpty());
         assertTrue(getIntervalDAO().readAllIntervals().isEmpty());
         assertTrue(getTimeBasedSuspensionScheduler().getIntervals().isEmpty());
         assertEquals(3, getPreferenceManager().getPreferencePingCount());
@@ -1954,6 +2002,7 @@ public class SystemActivityTest extends BaseUITest {
         assertFalse(getNetworkTaskDAO().readAllNetworkTasks().isEmpty());
         assertFalse(getSchedulerIdHistoryDAO().readAllSchedulerIds().isEmpty());
         assertFalse(getLogDAO().readAllLogs().isEmpty());
+        assertFalse(getAccessTypeDataDAO().readAllAccessTypeData().isEmpty());
         assertFalse(getIntervalDAO().readAllIntervals().isEmpty());
         assertFalse(getTimeBasedSuspensionScheduler().getIntervals().isEmpty());
         getPreferenceManager().setPreferencePingCount(5);
@@ -1997,6 +2046,7 @@ public class SystemActivityTest extends BaseUITest {
         rotateScreen(activityScenario);
         getNetworkTaskDAO().deleteAllNetworkTasks();
         getLogDAO().deleteAllLogs();
+        getAccessTypeDataDAO().deleteAllAccessTypeData();
         getIntervalDAO().deleteAllIntervals();
         getTimeBasedSuspensionScheduler().reset();
         getTimeBasedSuspensionScheduler().getIntervals();
@@ -2005,6 +2055,7 @@ public class SystemActivityTest extends BaseUITest {
         assertFalse(alarmManager.wasCancelAlarmCalled());
         assertTrue(getNetworkTaskDAO().readAllNetworkTasks().isEmpty());
         assertTrue(getLogDAO().readAllLogs().isEmpty());
+        assertTrue(getAccessTypeDataDAO().readAllAccessTypeData().isEmpty());
         assertTrue(getIntervalDAO().readAllIntervals().isEmpty());
         assertTrue(getTimeBasedSuspensionScheduler().getIntervals().isEmpty());
         assertEquals(3, getPreferenceManager().getPreferencePingCount());
@@ -2043,6 +2094,7 @@ public class SystemActivityTest extends BaseUITest {
         assertFalse(getNetworkTaskDAO().readAllNetworkTasks().isEmpty());
         assertFalse(getSchedulerIdHistoryDAO().readAllSchedulerIds().isEmpty());
         assertFalse(getLogDAO().readAllLogs().isEmpty());
+        assertFalse(getAccessTypeDataDAO().readAllAccessTypeData().isEmpty());
         assertFalse(getIntervalDAO().readAllIntervals().isEmpty());
         assertFalse(getTimeBasedSuspensionScheduler().getIntervals().isEmpty());
         getPreferenceManager().setPreferencePingCount(5);
@@ -2078,6 +2130,7 @@ public class SystemActivityTest extends BaseUITest {
         assertTrue(result.success());
         getNetworkTaskDAO().deleteAllNetworkTasks();
         getLogDAO().deleteAllLogs();
+        getAccessTypeDataDAO().deleteAllAccessTypeData();
         getIntervalDAO().deleteAllIntervals();
         getTimeBasedSuspensionScheduler().reset();
         getTimeBasedSuspensionScheduler().getIntervals();
@@ -2096,6 +2149,7 @@ public class SystemActivityTest extends BaseUITest {
         assertTrue(storagePermissionManager.hasAnyPersistentPermission(null));
         assertTrue(getNetworkTaskDAO().readAllNetworkTasks().isEmpty());
         assertTrue(getLogDAO().readAllLogs().isEmpty());
+        assertTrue(getAccessTypeDataDAO().readAllAccessTypeData().isEmpty());
         assertTrue(getIntervalDAO().readAllIntervals().isEmpty());
         assertTrue(getTimeBasedSuspensionScheduler().getIntervals().isEmpty());
         assertEquals(3, getPreferenceManager().getPreferencePingCount());
@@ -2134,6 +2188,7 @@ public class SystemActivityTest extends BaseUITest {
         assertFalse(getNetworkTaskDAO().readAllNetworkTasks().isEmpty());
         assertFalse(getSchedulerIdHistoryDAO().readAllSchedulerIds().isEmpty());
         assertFalse(getLogDAO().readAllLogs().isEmpty());
+        assertFalse(getAccessTypeDataDAO().readAllAccessTypeData().isEmpty());
         assertFalse(getIntervalDAO().readAllIntervals().isEmpty());
         assertFalse(getTimeBasedSuspensionScheduler().getIntervals().isEmpty());
         getPreferenceManager().setPreferencePingCount(5);
@@ -2180,6 +2235,7 @@ public class SystemActivityTest extends BaseUITest {
         rotateScreen(activityScenario);
         getNetworkTaskDAO().deleteAllNetworkTasks();
         getLogDAO().deleteAllLogs();
+        getAccessTypeDataDAO().deleteAllAccessTypeData();
         getIntervalDAO().deleteAllIntervals();
         getTimeBasedSuspensionScheduler().reset();
         getTimeBasedSuspensionScheduler().getIntervals();
@@ -2189,6 +2245,7 @@ public class SystemActivityTest extends BaseUITest {
         assertFalse(alarmManager.wasCancelAlarmCalled());
         assertTrue(getNetworkTaskDAO().readAllNetworkTasks().isEmpty());
         assertTrue(getLogDAO().readAllLogs().isEmpty());
+        assertTrue(getAccessTypeDataDAO().readAllAccessTypeData().isEmpty());
         assertTrue(getIntervalDAO().readAllIntervals().isEmpty());
         assertTrue(getTimeBasedSuspensionScheduler().getIntervals().isEmpty());
         assertEquals(3, getPreferenceManager().getPreferencePingCount());
@@ -2230,6 +2287,7 @@ public class SystemActivityTest extends BaseUITest {
         LogEntry task3Entry1 = getLogDAO().insertAndDeleteLog(getLogEntry1(task3.getId()));
         LogEntry task3Entry2 = getLogDAO().insertAndDeleteLog(getLogEntry2(task3.getId()));
         LogEntry task3Entry3 = getLogDAO().insertAndDeleteLog(getLogEntry3(task3.getId()));
+        AccessTypeData accessData1 = getAccessTypeDataDAO().insertAccessTypeData(getAccessTypeData1(task1.getId()));
         getIntervalDAO().insertInterval(getInterval1());
         getTimeBasedSuspensionScheduler().reset();
         getTimeBasedSuspensionScheduler().getIntervals();
@@ -2271,6 +2329,7 @@ public class SystemActivityTest extends BaseUITest {
         assertTrue(result.success());
         getNetworkTaskDAO().deleteAllNetworkTasks();
         getLogDAO().deleteAllLogs();
+        getAccessTypeDataDAO().deleteAllAccessTypeData();
         getIntervalDAO().deleteAllIntervals();
         getTimeBasedSuspensionScheduler().reset();
         getTimeBasedSuspensionScheduler().getIntervals();
@@ -2330,6 +2389,8 @@ public class SystemActivityTest extends BaseUITest {
         assertEquals(readTask3.getId(), readEntry1.getNetworkTaskId());
         assertEquals(readTask3.getId(), readEntry2.getNetworkTaskId());
         assertEquals(readTask3.getId(), readEntry3.getNetworkTaskId());
+        AccessTypeData readAccessData1 = getAccessTypeDataDAO().readAccessTypeDataForNetworkTask(readTask1.getId());
+        assertTrue(accessData1.isTechnicallyEqual(readAccessData1));
         assertTrue(getInterval1().isEqual(getIntervalDAO().readAllIntervals().get(0)));
         assertTrue(getInterval1().isEqual(getTimeBasedSuspensionScheduler().getIntervals().get(0)));
         assertEquals(5, getPreferenceManager().getPreferencePingCount());
@@ -2372,6 +2433,7 @@ public class SystemActivityTest extends BaseUITest {
         LogEntry task3Entry1 = getLogDAO().insertAndDeleteLog(getLogEntry1(task3.getId()));
         LogEntry task3Entry2 = getLogDAO().insertAndDeleteLog(getLogEntry2(task3.getId()));
         LogEntry task3Entry3 = getLogDAO().insertAndDeleteLog(getLogEntry3(task3.getId()));
+        AccessTypeData accessData1 = getAccessTypeDataDAO().insertAccessTypeData(getAccessTypeData1(task1.getId()));
         getIntervalDAO().insertInterval(getInterval1());
         getTimeBasedSuspensionScheduler().reset();
         getTimeBasedSuspensionScheduler().getIntervals();
@@ -2412,6 +2474,7 @@ public class SystemActivityTest extends BaseUITest {
         assertTrue(result.success());
         getNetworkTaskDAO().deleteAllNetworkTasks();
         getLogDAO().deleteAllLogs();
+        getAccessTypeDataDAO().deleteAllAccessTypeData();
         getIntervalDAO().deleteAllIntervals();
         getTimeBasedSuspensionScheduler().reset();
         getTimeBasedSuspensionScheduler().getIntervals();
@@ -2473,6 +2536,8 @@ public class SystemActivityTest extends BaseUITest {
         assertEquals(readTask3.getId(), readEntry1.getNetworkTaskId());
         assertEquals(readTask3.getId(), readEntry2.getNetworkTaskId());
         assertEquals(readTask3.getId(), readEntry3.getNetworkTaskId());
+        AccessTypeData readAccessData1 = getAccessTypeDataDAO().readAccessTypeDataForNetworkTask(readTask1.getId());
+        assertTrue(accessData1.isTechnicallyEqual(readAccessData1));
         assertTrue(getInterval1().isEqual(getIntervalDAO().readAllIntervals().get(0)));
         assertTrue(getInterval1().isEqual(getTimeBasedSuspensionScheduler().getIntervals().get(0)));
         assertEquals(5, getPreferenceManager().getPreferencePingCount());
@@ -3160,6 +3225,7 @@ public class SystemActivityTest extends BaseUITest {
 
     private void insertAndScheduleNetworkTask() {
         NetworkTask task1 = getNetworkTaskDAO().insertNetworkTask(new NetworkTask());
+        getAccessTypeDataDAO().insertAccessTypeData(getAccessTypeData1(task1.getId()));
         NetworkTask task2 = getNetworkTaskDAO().insertNetworkTask(new NetworkTask());
         getNetworkTaskDAO().updateNetworkTaskRunning(task1.getId(), true);
         getNetworkTaskDAO().updateNetworkTaskRunning(task2.getId(), true);
@@ -3250,6 +3316,17 @@ public class SystemActivityTest extends BaseUITest {
         insertedLogEntry3.setTimestamp(123);
         insertedLogEntry3.setMessage("TestMessage3");
         return insertedLogEntry3;
+    }
+
+    private AccessTypeData getAccessTypeData1(long networkTaskId) {
+        AccessTypeData data = new AccessTypeData();
+        data.setId(0);
+        data.setNetworkTaskId(networkTaskId);
+        data.setPingCount(10);
+        data.setPingPackageSize(1234);
+        data.setConnectCount(3);
+        data.setStopOnSuccess(true);
+        return data;
     }
 
     private Interval getInterval1() {
