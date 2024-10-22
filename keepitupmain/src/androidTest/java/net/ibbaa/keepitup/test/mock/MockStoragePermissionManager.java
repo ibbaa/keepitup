@@ -139,4 +139,8 @@ public class MockStoragePermissionManager implements IStoragePermissionManager {
     public Set<String> getOpenFilePermissions() {
         return openFilePermissions;
     }
+
+    public Set<String> getFolderPermissions() {
+        return folderPermissions;
+    }
 }

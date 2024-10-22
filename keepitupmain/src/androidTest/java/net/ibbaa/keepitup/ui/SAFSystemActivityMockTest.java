@@ -40,6 +40,7 @@ import net.ibbaa.keepitup.model.AccessTypeData;
 import net.ibbaa.keepitup.model.Interval;
 import net.ibbaa.keepitup.model.LogEntry;
 import net.ibbaa.keepitup.model.NetworkTask;
+import net.ibbaa.keepitup.model.NotificationType;
 import net.ibbaa.keepitup.model.Time;
 import net.ibbaa.keepitup.resources.JSONSystemSetup;
 import net.ibbaa.keepitup.resources.SystemSetupResult;
@@ -49,6 +50,7 @@ import net.ibbaa.keepitup.test.mock.MockExportTask;
 import net.ibbaa.keepitup.test.mock.MockImportTask;
 import net.ibbaa.keepitup.test.mock.MockStoragePermissionManager;
 import net.ibbaa.keepitup.test.mock.TestExportTask;
+import net.ibbaa.keepitup.test.mock.TestImportTask;
 import net.ibbaa.keepitup.test.mock.TestRegistry;
 import net.ibbaa.keepitup.ui.sync.ExportTask;
 import net.ibbaa.keepitup.ui.sync.ImportTask;
@@ -191,6 +193,73 @@ public class SAFSystemActivityMockTest extends BaseUITest {
         onView(withId(R.id.textview_dialog_confirm_description)).check(matches(withText("The import will overwrite all existing network tasks, log entries and the configuration. This cannot be undone.")));
         onView(withId(R.id.imageview_dialog_confirm_ok)).perform(click());
         assertTrue(storagePermissionManager.getOpenFilePermissions().contains("/Test/test.json"));
+        assertTrue(storagePermissionManager.getFolderPermissions().contains("/Test"));
+    }
+
+    @Test
+    public void testAllowArbitraryFileLocationImportPermissionResetLogFolder() {
+        ActivityScenario<?> activityScenario = launchSettingsInputActivity(SystemActivity.class, getBypassSystemSAFBundle());
+        injectMocks(activityScenario);
+        injectImportTask(activityScenario, getMockImportTask(activityScenario, true));
+        injectArbitraryFolderLauncher(activityScenario, "/Test");
+        storagePermissionManager.setGrantedFolder("/Test");
+        injectImportFileLauncher(activityScenario, "/Test/test.json");
+        storagePermissionManager.setGrantedOpenFile("/Test/test.json");
+        getPreferenceManager().setPreferenceLastArbitraryExportFile("/Test/test.json");
+        getPreferenceManager().setPreferenceLogFile(true);
+        getPreferenceManager().setPreferenceDownloadExternalStorage(true);
+        onView(withId(R.id.switch_activity_system_allow_arbitrary_file_location)).perform(scrollTo());
+        onView(withId(R.id.switch_activity_system_allow_arbitrary_file_location)).perform(click());
+        onView(withId(R.id.textview_activity_system_allow_arbitrary_file_location_on_off)).check(matches(withText("yes")));
+        getPreferenceManager().setPreferenceArbitraryLogFolder("/abc");
+        onView(withId(R.id.textview_activity_system_config_import_folder)).perform(click());
+        onView(withId(R.id.textview_dialog_confirm_description)).check(matches(withText("The import will overwrite all existing network tasks, log entries and the configuration. This cannot be undone.")));
+        onView(withId(R.id.imageview_dialog_confirm_ok)).perform(click());
+        assertTrue(storagePermissionManager.getOpenFilePermissions().contains("/Test/test.json"));
+        assertTrue(storagePermissionManager.getFolderPermissions().isEmpty());
+    }
+
+    @Test
+    public void testAllowArbitraryFileLocationImportPermissionResetDownloadFolder() {
+        ActivityScenario<?> activityScenario = launchSettingsInputActivity(SystemActivity.class, getBypassSystemSAFBundle());
+        injectMocks(activityScenario);
+        injectImportTask(activityScenario, getMockImportTask(activityScenario, true));
+        injectArbitraryFolderLauncher(activityScenario, "/Test");
+        storagePermissionManager.setGrantedFolder("/Test");
+        injectImportFileLauncher(activityScenario, "/Test/test.json");
+        storagePermissionManager.setGrantedOpenFile("/Test/test.json");
+        getPreferenceManager().setPreferenceLastArbitraryExportFile("/Test/test.json");
+        getPreferenceManager().setPreferenceLogFile(true);
+        getPreferenceManager().setPreferenceDownloadExternalStorage(true);
+        onView(withId(R.id.switch_activity_system_allow_arbitrary_file_location)).perform(scrollTo());
+        onView(withId(R.id.switch_activity_system_allow_arbitrary_file_location)).perform(click());
+        onView(withId(R.id.textview_activity_system_allow_arbitrary_file_location_on_off)).check(matches(withText("yes")));
+        getPreferenceManager().setPreferenceArbitraryDownloadFolder("/xyz");
+        onView(withId(R.id.textview_activity_system_config_import_folder)).perform(click());
+        onView(withId(R.id.textview_dialog_confirm_description)).check(matches(withText("The import will overwrite all existing network tasks, log entries and the configuration. This cannot be undone.")));
+        onView(withId(R.id.imageview_dialog_confirm_ok)).perform(click());
+        assertTrue(storagePermissionManager.getOpenFilePermissions().contains("/Test/test.json"));
+        assertTrue(storagePermissionManager.getFolderPermissions().isEmpty());
+    }
+
+    @Test
+    public void testAllowArbitraryFileLocationResetRevokePermission() {
+        ActivityScenario<?> activityScenario = launchSettingsInputActivity(SystemActivity.class, getBypassSystemSAFBundle());
+        injectMocks(activityScenario);
+        injectArbitraryFolderLauncher(activityScenario, "/Test");
+        storagePermissionManager.setGrantedFolder("/Test");
+        injectImportFileLauncher(activityScenario, "/Test/test.json");
+        storagePermissionManager.setGrantedOpenFile("/Test/test.json");
+        getPreferenceManager().setPreferenceLastArbitraryExportFile("/Test/test.json");
+        getPreferenceManager().setPreferenceLogFile(true);
+        getPreferenceManager().setPreferenceDownloadExternalStorage(true);
+        onView(withId(R.id.switch_activity_system_allow_arbitrary_file_location)).perform(scrollTo());
+        onView(withId(R.id.switch_activity_system_allow_arbitrary_file_location)).perform(click());
+        onView(withId(R.id.textview_activity_system_allow_arbitrary_file_location_on_off)).check(matches(withText("yes")));
+        onView(withId(R.id.textview_activity_system_config_reset_label)).perform(click());
+        onView(withId(R.id.textview_dialog_confirm_description)).check(matches(withText("This will delete all network tasks and log entries, reset the configuration to default settings and cannot be undone.")));
+        onView(withId(R.id.imageview_dialog_confirm_ok)).perform(click());
+        assertTrue(storagePermissionManager.getFolderPermissions().isEmpty());
     }
 
     @Test
@@ -292,6 +361,105 @@ public class SAFSystemActivityMockTest extends BaseUITest {
         assertEquals("folderImport", getPreferenceManager().getPreferenceImportFolder());
         assertEquals("folderExport", getPreferenceManager().getPreferenceExportFolder());
         assertEquals("/Test/test.json", getPreferenceManager().getPreferenceLastArbitraryExportFile());
+        assertTrue(getPreferenceManager().getPreferenceFileLoggerEnabled());
+        assertTrue(getPreferenceManager().getPreferenceFileDumpEnabled());
+    }
+
+    @Test
+    public void testAllowArbitraryFileLocationImport() throws Exception {
+        NetworkTask networkTask = getNetworkTaskDAO().insertNetworkTask(getNetworkTask());
+        LogEntry taskEntry = getLogDAO().insertAndDeleteLog(getLogEntry(networkTask.getId()));
+        getIntervalDAO().insertInterval(getInterval());
+        AccessTypeData accessData = getAccessTypeDataDAO().insertAccessTypeData(getAccessTypeData(networkTask.getId()));
+        getPreferenceManager().setPreferenceNotificationInactiveNetwork(true);
+        getPreferenceManager().setPreferenceNotificationType(NotificationType.CHANGE);
+        getPreferenceManager().setPreferenceSuspensionEnabled(false);
+        getPreferenceManager().setPreferenceEnforceDefaultPingPackageSize(true);
+        getPreferenceManager().setPreferenceDownloadExternalStorage(true);
+        getPreferenceManager().setPreferenceExternalStorageType(1);
+        getPreferenceManager().setPreferenceDownloadFolder("folder");
+        getPreferenceManager().setPreferenceArbitraryDownloadFolder("folder");
+        getPreferenceManager().setPreferenceDownloadKeep(true);
+        getPreferenceManager().setPreferenceArbitraryLogFolder("folder");
+        getPreferenceManager().setPreferenceAccessType(AccessType.CONNECT);
+        getPreferenceManager().setPreferenceAddress("address");
+        getPreferenceManager().setPreferencePort(123);
+        getPreferenceManager().setPreferenceInterval(456);
+        getPreferenceManager().setPreferencePingCount(5);
+        getPreferenceManager().setPreferenceConnectCount(10);
+        getPreferenceManager().setPreferencePingPackageSize(12);
+        getPreferenceManager().setPreferenceStopOnSuccess(true);
+        getPreferenceManager().setPreferenceOnlyWifi(true);
+        getPreferenceManager().setPreferenceNotification(true);
+        getPreferenceManager().setPreferenceImportFolder("folderImport");
+        getPreferenceManager().setPreferenceExportFolder("folderExport");
+        getPreferenceManager().setPreferenceLastArbitraryExportFile("fileExport");
+        getPreferenceManager().setPreferenceFileLoggerEnabled(true);
+        getPreferenceManager().setPreferenceFileDumpEnabled(true);
+        JSONSystemSetup setup = new JSONSystemSetup(TestRegistry.getContext());
+        SystemSetupResult result = setup.exportData();
+        assertTrue(result.success());
+        getNetworkTaskDAO().deleteAllNetworkTasks();
+        getLogDAO().deleteAllLogs();
+        getPreferenceManager().removeAllPreferences();
+        File folder = getFileManager().getExternalRootDirectory(0);
+        File file = new File(folder, "test.json");
+        FileOutputStream stream = new FileOutputStream(file);
+        StreamUtil.stringToOutputStream(result.data(), stream, Charsets.UTF_8);
+        stream.close();
+        ActivityScenario<?> activityScenario = launchSettingsInputActivity(SystemActivity.class, getBypassSystemSAFBundle());
+        injectMocks(activityScenario);
+        injectArbitraryFolderLauncher(activityScenario, "/Test");
+        storagePermissionManager.setGrantedFolder("/Test");
+        injectImportFileLauncher(activityScenario, "/Test/test.json");
+        storagePermissionManager.setGrantedOpenFile("/Test/test.json");
+        TestImportTask task = new TestImportTask(getActivity(activityScenario), folder, "test.json", true);
+        task.setInputStream(new FileInputStream(file));
+        MockDocumentManager documentManager = new MockDocumentManager();
+        documentManager.setFile(DocumentFile.fromFile(new File("test")));
+        task.setDocumentManager(documentManager);
+        injectImportTask(activityScenario, task);
+        onView(withId(R.id.switch_activity_system_allow_arbitrary_file_location)).perform(scrollTo());
+        onView(withId(R.id.switch_activity_system_allow_arbitrary_file_location)).perform(click());
+        onView(withId(R.id.textview_activity_system_allow_arbitrary_file_location_on_off)).check(matches(withText("yes")));
+        onView(withId(R.id.textview_activity_system_config_import_folder)).perform(click());
+        onView(withId(R.id.imageview_dialog_confirm_ok)).perform(click());
+        assertFalse(getNetworkTaskDAO().readAllNetworkTasks().isEmpty());
+        assertFalse(getLogDAO().readAllLogs().isEmpty());
+        assertFalse(getIntervalDAO().readAllIntervals().isEmpty());
+        List<NetworkTask> tasks = getNetworkTaskDAO().readAllNetworkTasks();
+        NetworkTask readTask = tasks.get(0);
+        assertTrue(networkTask.isTechnicallyEqual(readTask));
+        assertFalse(readTask.isRunning());
+        List<LogEntry> entries = getLogDAO().readAllLogsForNetworkTask(readTask.getId());
+        LogEntry readEntry = entries.get(0);
+        assertTrue(taskEntry.isTechnicallyEqual(readEntry));
+        assertTrue(getInterval().isEqual(getIntervalDAO().readAllIntervals().get(0)));
+        AccessTypeData readAccessData = getAccessTypeDataDAO().readAccessTypeDataForNetworkTask(readTask.getId());
+        assertTrue(accessData.isTechnicallyEqual(readAccessData));
+        assertTrue(getPreferenceManager().getPreferenceNotificationInactiveNetwork());
+        assertEquals(NotificationType.CHANGE, getPreferenceManager().getPreferenceNotificationType());
+        assertFalse(getPreferenceManager().getPreferenceSuspensionEnabled());
+        assertTrue(getPreferenceManager().getPreferenceEnforceDefaultPingPackageSize());
+        assertTrue(getPreferenceManager().getPreferenceDownloadExternalStorage());
+        assertEquals(1, getPreferenceManager().getPreferenceExternalStorageType());
+        assertEquals("folder", getPreferenceManager().getPreferenceDownloadFolder());
+        assertEquals("folder", getPreferenceManager().getPreferenceArbitraryDownloadFolder());
+        assertTrue(getPreferenceManager().getPreferenceDownloadKeep());
+        assertEquals("folder", getPreferenceManager().getPreferenceArbitraryLogFolder());
+        assertEquals(AccessType.CONNECT, getPreferenceManager().getPreferenceAccessType());
+        assertEquals("address", getPreferenceManager().getPreferenceAddress());
+        assertEquals(123, getPreferenceManager().getPreferencePort());
+        assertEquals(456, getPreferenceManager().getPreferenceInterval());
+        assertEquals(5, getPreferenceManager().getPreferencePingCount());
+        assertEquals(10, getPreferenceManager().getPreferenceConnectCount());
+        assertEquals(12, getPreferenceManager().getPreferencePingPackageSize());
+        assertTrue(getPreferenceManager().getPreferenceStopOnSuccess());
+        assertTrue(getPreferenceManager().getPreferenceOnlyWifi());
+        assertTrue(getPreferenceManager().getPreferenceNotification());
+        assertEquals("folderImport", getPreferenceManager().getPreferenceImportFolder());
+        assertEquals("folderExport", getPreferenceManager().getPreferenceExportFolder());
+        assertEquals("fileExport", getPreferenceManager().getPreferenceLastArbitraryExportFile());
         assertTrue(getPreferenceManager().getPreferenceFileLoggerEnabled());
         assertTrue(getPreferenceManager().getPreferenceFileDumpEnabled());
     }
