@@ -68,7 +68,7 @@ public class LogUtil {
         Log.d(LogUtil.class.getName(), "deleteFileCount is " + deleteFileCount);
         Log.d(LogUtil.class.getName(), "logDirectory is " + logDirectory);
         Log.d(LogUtil.class.getName(), "logFileName is " + logFileName);
-        return createLogger(context, maxLogLevel, maxLogFileSize, archiveFileCount, deleteFileCount, logDirectory, logFileName);
+        return createLogger(context, maxLogLevel, 10240, 3, 5, logDirectory, logFileName);
     }
 
     private static ILogger createLogger(Context context, LogLevel maxLogLevel, int maxLogFileSize, int archiveFileCount, int deleteFileCount, String logDirectory, String logFileName) {
@@ -76,7 +76,7 @@ public class LogUtil {
         if (preferenceManager.getPreferenceAllowArbitraryFileLocation()) {
             return new DocumentFileLogger(context, maxLogLevel, maxLogFileSize, archiveFileCount, deleteFileCount, logDirectory, logFileName, new PassthroughMessageLogFormatter(), null);
         }
-        return new FileLogger(maxLogLevel, 10240, 3, 5, logDirectory, logFileName, new PassthroughMessageLogFormatter(), null);
+        return new FileLogger(maxLogLevel, maxLogFileSize, archiveFileCount, deleteFileCount, logDirectory, logFileName, new PassthroughMessageLogFormatter(), null);
     }
 
     private static String getLogDirectory(Context context, IFileManager fileManager, IDocumentManager documentManager) {
