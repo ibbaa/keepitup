@@ -76,7 +76,7 @@ public class LogUtil {
         if (preferenceManager.getPreferenceAllowArbitraryFileLocation()) {
             return new DocumentFileLogger(context, maxLogLevel, maxLogFileSize, archiveFileCount, deleteFileCount, logDirectory, logFileName, new PassthroughMessageLogFormatter(), null);
         }
-        return new FileLogger(maxLogLevel, maxLogFileSize, archiveFileCount, deleteFileCount, logDirectory, logFileName, new PassthroughMessageLogFormatter(), null);
+        return new FileLogger(maxLogLevel, maxLogFileSize, 3, 5, logDirectory, logFileName, new PassthroughMessageLogFormatter(), null);
     }
 
     private static String getLogDirectory(Context context, IFileManager fileManager, IDocumentManager documentManager) {
