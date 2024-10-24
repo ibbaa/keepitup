@@ -45,10 +45,13 @@ import net.ibbaa.keepitup.ui.permission.IPermissionManager;
 import java.text.DateFormat;
 import java.util.Date;
 import java.util.Objects;
+import java.util.Set;
 
 public class NotificationHandler {
 
     public final static int NOTIFICATION_FOREGROUND_START_ID = 1234;
+    public final static int NOTIFICATION_MISSING_LOG_FOLDER_PERMISSION = -100;
+    public final static int NOTIFICATION_MISSING_DOWNLOAD_FOLDER_PERMISSION = -200;
 
     private final Context context;
     private final INotificationManager notificationManager;
@@ -100,6 +103,10 @@ public class NotificationHandler {
         }
     }
 
+    public Set<Integer> getReservedIDs() {
+        return Set.of(NOTIFICATION_FOREGROUND_START_ID, NOTIFICATION_MISSING_LOG_FOLDER_PERMISSION, NOTIFICATION_MISSING_DOWNLOAD_FOLDER_PERMISSION);
+    }
+
     private String getErrorChannelId() {
         return getResources().getString(R.string.notification_error_channel_id);
     }
@@ -139,7 +146,7 @@ public class NotificationHandler {
         PreferenceManager preferenceManager = new PreferenceManager(getContext());
         String text = getResources().getString(R.string.notification_log_permission_text, preferenceManager.getPreferenceArbitraryLogFolder());
         Notification notification = buildMessageNotificationFolderPermission(text);
-        notificationManager.notify(NOTIFICATION_FOREGROUND_START_ID, notification);
+        notificationManager.notify(NOTIFICATION_MISSING_LOG_FOLDER_PERMISSION, notification);
     }
 
     public void sendMessageNotificationMissingDownloadFolderPermission() {
@@ -151,7 +158,7 @@ public class NotificationHandler {
         PreferenceManager preferenceManager = new PreferenceManager(getContext());
         String text = getResources().getString(R.string.notification_download_permission_text, preferenceManager.getPreferenceArbitraryDownloadFolder());
         Notification notification = buildMessageNotificationFolderPermission(text);
-        notificationManager.notify(NOTIFICATION_FOREGROUND_START_ID, notification);
+        notificationManager.notify(NOTIFICATION_MISSING_DOWNLOAD_FOLDER_PERMISSION, notification);
     }
 
     public void sendMessageNotificationForNetworkTask(NetworkTask task, LogEntry logEntry) {

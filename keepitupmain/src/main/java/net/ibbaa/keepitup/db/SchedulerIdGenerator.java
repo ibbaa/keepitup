@@ -25,8 +25,11 @@ import android.database.sqlite.SQLiteDatabase;
 import net.ibbaa.keepitup.R;
 import net.ibbaa.keepitup.logging.Log;
 import net.ibbaa.keepitup.model.SchedulerId;
+import net.ibbaa.keepitup.notification.NotificationHandler;
 import net.ibbaa.keepitup.resources.ServiceFactoryContributor;
 import net.ibbaa.keepitup.service.ITimeService;
+import net.ibbaa.keepitup.ui.permission.IPermissionManager;
+import net.ibbaa.keepitup.ui.permission.PermissionManager;
 
 import java.security.SecureRandom;
 
@@ -39,10 +42,12 @@ public class SchedulerIdGenerator {
 
     private final Context context;
     private final ITimeService timeService;
+    private final NotificationHandler notificationHandler;
 
     public SchedulerIdGenerator(Context context) {
         this.context = context;
         this.timeService = createTimeService();
+        this.notificationHandler = createNotificationHandler();
     }
 
     public int createSchedulerId() {
@@ -77,7 +82,7 @@ public class SchedulerIdGenerator {
     }
 
     private boolean isInvalidId(int schedulerId) {
-        return schedulerId == ERROR_SCHEDULER_ID || schedulerId == TIME_BASED_SCHEDULER_ID;
+        return schedulerId == ERROR_SCHEDULER_ID || schedulerId == TIME_BASED_SCHEDULER_ID || notificationHandler.getReservedIDs().contains(schedulerId);
     }
 
     private long readSchedulerIdCountFromNetworkTaskTable(int schedulerId, SQLiteDatabase db) {
@@ -207,6 +212,14 @@ public class SchedulerIdGenerator {
     private ITimeService createTimeService() {
         ServiceFactoryContributor factoryContributor = new ServiceFactoryContributor(getContext());
         return factoryContributor.createServiceFactory().createTimeService();
+    }
+
+    private NotificationHandler createNotificationHandler() {
+        return new NotificationHandler(getContext(), getPermissionManager());
+    }
+
+    private IPermissionManager getPermissionManager() {
+        return new PermissionManager();
     }
 
     private Context getContext() {

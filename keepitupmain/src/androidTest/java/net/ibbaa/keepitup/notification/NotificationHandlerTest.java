@@ -45,6 +45,7 @@ import org.junit.runner.RunWith;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.Locale;
+import java.util.Set;
 
 @MediumTest
 @RunWith(AndroidJUnit4.class)
@@ -157,7 +158,7 @@ public class NotificationHandlerTest {
         notificationHandler.sendMessageNotificationMissingLogFolderPermission();
         assertTrue(notificationManager.wasNotifyCalled());
         MockNotificationManager.NotifyCall notifyCall = notificationManager.getNotifyCalls().get(0);
-        assertEquals(NotificationHandler.NOTIFICATION_FOREGROUND_START_ID, notifyCall.id());
+        assertEquals(NotificationHandler.NOTIFICATION_MISSING_LOG_FOLDER_PERMISSION, notifyCall.id());
         assertEquals("KEEPITUP_ERROR_NOTIFICATION_CHANNEL", notifyCall.notification().getChannelId());
         MockNotificationBuilder notificationBuilder = (MockNotificationBuilder) notificationHandler.getMessageNotificationBuilder();
         assertEquals(R.drawable.icon_notification_failure, notificationBuilder.getSmallIcon());
@@ -181,7 +182,7 @@ public class NotificationHandlerTest {
         notificationHandler.sendMessageNotificationMissingDownloadFolderPermission();
         assertTrue(notificationManager.wasNotifyCalled());
         MockNotificationManager.NotifyCall notifyCall = notificationManager.getNotifyCalls().get(0);
-        assertEquals(NotificationHandler.NOTIFICATION_FOREGROUND_START_ID, notifyCall.id());
+        assertEquals(NotificationHandler.NOTIFICATION_MISSING_DOWNLOAD_FOLDER_PERMISSION, notifyCall.id());
         assertEquals("KEEPITUP_ERROR_NOTIFICATION_CHANNEL", notifyCall.notification().getChannelId());
         MockNotificationBuilder notificationBuilder = (MockNotificationBuilder) notificationHandler.getMessageNotificationBuilder();
         assertEquals(R.drawable.icon_notification_failure, notificationBuilder.getSmallIcon());
@@ -215,6 +216,14 @@ public class NotificationHandlerTest {
         permissionManager.setHasPostNotificationsPermission(false);
         Notification notification = notificationHandler.buildForegroundNotification();
         assertNull(notification);
+    }
+
+    @Test
+    public void testGetReservedIDs() {
+        Set<Integer> reservedIDs = notificationHandler.getReservedIDs();
+        assertTrue(reservedIDs.contains(NotificationHandler.NOTIFICATION_FOREGROUND_START_ID));
+        assertTrue(reservedIDs.contains(NotificationHandler.NOTIFICATION_MISSING_LOG_FOLDER_PERMISSION));
+        assertTrue(reservedIDs.contains(NotificationHandler.NOTIFICATION_MISSING_DOWNLOAD_FOLDER_PERMISSION));
     }
 
     private NetworkTask getNetworkTask1() {
