@@ -397,10 +397,10 @@ public class SystemActivity extends SettingsInputActivity implements ExportSuppo
             prepareConfigurationExportField();
             prepareConfigurationImportField();
         } else {
-            NetworkTaskLog.clear();
             prepareConfigurationExportField();
             prepareConfigurationImportField();
         }
+        NetworkTaskLog.clear();
     }
 
     private void prepareArbitraryFolderPermissions() {

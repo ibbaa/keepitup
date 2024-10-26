@@ -68,7 +68,7 @@ public class LogUtil {
         Log.d(LogUtil.class.getName(), "deleteFileCount is " + deleteFileCount);
         Log.d(LogUtil.class.getName(), "logDirectory is " + logDirectory);
         Log.d(LogUtil.class.getName(), "logFileName is " + logFileName);
-        return createLogger(context, maxLogLevel, 10240, 3, 5, logDirectory, logFileName);
+        return createLogger(context, maxLogLevel, maxLogFileSize, archiveFileCount, deleteFileCount, logDirectory, logFileName);
     }
 
     private static ILogger createLogger(Context context, LogLevel maxLogLevel, int maxLogFileSize, int archiveFileCount, int deleteFileCount, String logDirectory, String logFileName) {
