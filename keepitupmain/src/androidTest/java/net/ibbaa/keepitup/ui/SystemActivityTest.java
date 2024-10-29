@@ -2319,7 +2319,6 @@ public class SystemActivityTest extends BaseUITest {
         getPreferenceManager().setPreferenceFileLoggerEnabled(true);
         getPreferenceManager().setPreferenceFileDumpEnabled(true);
         getPreferenceManager().setPreferenceAllowArbitraryFileLocation(false);
-        assertTrue(storagePermissionManager.hasAnyPersistentPermission(null));
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(scrollTo());
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(click());
         onView(withId(R.id.switch_activity_system_file_dump_enabled)).perform(scrollTo());
@@ -2344,7 +2343,6 @@ public class SystemActivityTest extends BaseUITest {
         onView(withId(R.id.imageview_dialog_file_choose_ok)).perform(click());
         onView(withId(R.id.textview_dialog_confirm_description)).check(matches(withText("The import will overwrite all existing network tasks, log entries and the configuration. This cannot be undone.")));
         onView(withId(R.id.imageview_dialog_confirm_ok)).perform(click());
-        assertFalse(storagePermissionManager.hasAnyPersistentPermission(null));
         assertFalse(getNetworkTaskDAO().readAllNetworkTasks().isEmpty());
         assertFalse(getLogDAO().readAllLogs().isEmpty());
         assertFalse(getIntervalDAO().readAllIntervals().isEmpty());

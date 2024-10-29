@@ -407,7 +407,7 @@ public class SystemActivity extends SettingsInputActivity implements ExportSuppo
         Log.d(SystemActivity.class.getName(), "prepareArbitraryFolderPermissions");
         IStoragePermissionManager storagePermissionManager = getStoragePermissionManager();
         if (arbitraryFileLocationSwitch.isChecked()) {
-            if (!storagePermissionManager.hasAnyPersistentPermission(this)) {
+            if (!checkFolderPermissions()) {
                 storagePermissionManager.requestPersistentFolderPermission(arbitraryFolderLauncher, null);
             }
         }
@@ -850,9 +850,6 @@ public class SystemActivity extends SettingsInputActivity implements ExportSuppo
         closeProgressDialog();
         getTimeBasedSuspensionScheduler().restart();
         if (success) {
-            if (!checkFolderPermissions()) {
-                resetFolderPermissions();
-            }
             resetActivity();
         } else {
             showErrorDialog(message != null ? message : getResources().getString(R.string.text_dialog_general_error_config_import), Typeface.BOLD, Error.IMPORTERROR.name());
@@ -884,15 +881,11 @@ public class SystemActivity extends SettingsInputActivity implements ExportSuppo
         Log.d(SystemActivity.class.getName(), "checkFolderPermissions");
         PreferenceManager preferenceManager = new PreferenceManager(this);
         IStoragePermissionManager storagePermissionManager = getStoragePermissionManager();
-        if (preferenceManager.getPreferenceLogFile()) {
-            if (!storagePermissionManager.hasPersistentPermission(this, preferenceManager.getPreferenceArbitraryLogFolder())) {
-                return false;
-            }
+        if (!storagePermissionManager.hasPersistentPermission(this, preferenceManager.getPreferenceArbitraryLogFolder())) {
+            return false;
         }
-        if (preferenceManager.getPreferenceDownloadExternalStorage()) {
-            if (!storagePermissionManager.hasPersistentPermission(this, preferenceManager.getPreferenceArbitraryDownloadFolder())) {
-                return false;
-            }
+        if (!storagePermissionManager.hasPersistentPermission(this, preferenceManager.getPreferenceArbitraryDownloadFolder())) {
+            return false;
         }
         return true;
     }

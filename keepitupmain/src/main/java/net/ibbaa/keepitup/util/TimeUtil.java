@@ -32,6 +32,7 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Locale;
+import java.util.TimeZone;
 import java.util.concurrent.TimeUnit;
 
 public class TimeUtil {
@@ -167,6 +168,7 @@ public class TimeUtil {
         Time changedTime = new Time();
         Date now = new Date();
         Calendar changedDate = new GregorianCalendar();
+        changedDate.setTimeZone(TimeZone.getTimeZone("UTC"));
         changedDate.setTime(now);
         changedDate.set(Calendar.HOUR_OF_DAY, time.getHour());
         changedDate.set(Calendar.MINUTE, time.getMinute());
