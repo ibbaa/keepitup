@@ -347,6 +347,7 @@ public class GlobalSettingsActivity extends SettingsInputActivity implements Sus
         PreferenceManager preferenceManager = new PreferenceManager(this);
         preferenceManager.setPreferenceEnforceDefaultPingPackageSize(isChecked);
         prepareEnforcePingPackageSizeEnabledOnOffText();
+        getStoragePermissionManager().revokeAllPersistentPermissions(this);
     }
 
     private void prepareDownloadExternalStorageOnOffText() {
