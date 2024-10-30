@@ -183,13 +183,14 @@ public class SAFSystemActivityMockTest extends BaseUITest {
     }
 
     @Test
-    public void testAllowArbitraryFileLocationLogANdDownloadPermissionPresent() {
+    public void testAllowArbitraryFileLocationLogAndDownloadPermissionPresent() {
         ActivityScenario<?> activityScenario = launchSettingsInputActivity(SystemActivity.class, getBypassSystemSAFBundle());
         injectMocks(activityScenario);
         storagePermissionManager.setGrantedFolder("/Movies");
         storagePermissionManager.requestPersistentFolderPermission(null, "/Movies");
         injectArbitraryFolderLauncher(activityScenario, "/Test");
         storagePermissionManager.setGrantedFolder("/Test");
+        storagePermissionManager.requestPersistentFolderPermission(null, "/Test");
         getPreferenceManager().setPreferenceArbitraryLogFolder("/Movies");
         getPreferenceManager().setPreferenceArbitraryDownloadFolder("/Movies");
         onView(withId(R.id.switch_activity_system_allow_arbitrary_file_location)).perform(scrollTo());

@@ -409,6 +409,9 @@ public class SystemActivity extends SettingsInputActivity implements ExportSuppo
         if (arbitraryFileLocationSwitch.isChecked()) {
             if (!checkFolderPermissions()) {
                 storagePermissionManager.requestPersistentFolderPermission(arbitraryFolderLauncher, null);
+            } else {
+                PreferenceManager preferenceManager = new PreferenceManager(this);
+                storagePermissionManager.revokeOrphanPersistentPermissions(this, preferenceManager.getArbitraryFolders());
             }
         }
     }
@@ -850,6 +853,7 @@ public class SystemActivity extends SettingsInputActivity implements ExportSuppo
         closeProgressDialog();
         getTimeBasedSuspensionScheduler().restart();
         if (success) {
+            NetworkTaskLog.clear();
             resetActivity();
         } else {
             showErrorDialog(message != null ? message : getResources().getString(R.string.text_dialog_general_error_config_import), Typeface.BOLD, Error.IMPORTERROR.name());
@@ -864,6 +868,7 @@ public class SystemActivity extends SettingsInputActivity implements ExportSuppo
         if (success) {
             resetPreferences();
             resetFolderPermissions();
+            NetworkTaskLog.clear();
             resetActivity();
         } else {
             showErrorDialog(getResources().getString(R.string.text_dialog_general_error_db_purge), Typeface.BOLD, Error.PURGERROR.name());
