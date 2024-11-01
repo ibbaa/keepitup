@@ -1,4 +1,4 @@
-* It's now possible to use arbitrary folders for file access instead of app specific storage (must be enabled in the system settings)
+* It's now possible to use arbitrary folders for file access instead of app specific storage (can be enabled in the system settings)
 * This can be used for import and export, network task file logging and downloads
 * Fixed bug that file log did not respect SD card setting
 * Various minor fixes
