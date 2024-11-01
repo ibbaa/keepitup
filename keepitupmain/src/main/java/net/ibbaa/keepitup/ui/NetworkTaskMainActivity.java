@@ -34,6 +34,8 @@ import net.ibbaa.keepitup.R;
 import net.ibbaa.keepitup.logging.Log;
 import net.ibbaa.keepitup.model.AccessTypeData;
 import net.ibbaa.keepitup.model.NetworkTask;
+import net.ibbaa.keepitup.notification.NotificationHandler;
+import net.ibbaa.keepitup.resources.PreferenceManager;
 import net.ibbaa.keepitup.service.IAlarmManager;
 import net.ibbaa.keepitup.service.NetworkTaskProcessServiceScheduler;
 import net.ibbaa.keepitup.service.SystemAlarmManager;
@@ -44,10 +46,13 @@ import net.ibbaa.keepitup.ui.dialog.ConfirmDialog;
 import net.ibbaa.keepitup.ui.dialog.InfoDialog;
 import net.ibbaa.keepitup.ui.dialog.NetworkTaskEditDialog;
 import net.ibbaa.keepitup.ui.permission.IPermissionManager;
+import net.ibbaa.keepitup.ui.permission.IStoragePermissionManager;
 import net.ibbaa.keepitup.ui.permission.PermissionManager;
+import net.ibbaa.keepitup.ui.permission.StoragePermissionManager;
 import net.ibbaa.keepitup.ui.sync.NetworkTaskMainUIBroadcastReceiver;
 import net.ibbaa.keepitup.ui.sync.NetworkTaskMainUIInitTask;
 import net.ibbaa.keepitup.util.BundleUtil;
+import net.ibbaa.keepitup.util.SystemUtil;
 import net.ibbaa.keepitup.util.ThreadUtil;
 
 import java.util.ArrayList;
@@ -89,13 +94,45 @@ public class NetworkTaskMainActivity extends RecyclerViewBaseActivity implements
         initRecyclerView();
         prepareAddImageButton();
         startForegroundServiceDelayed();
+        checkPermissions();
+    }
+
+    private void checkPermissions() {
+        Log.d(NetworkTaskMainActivity.class.getName(), "checkPermissions");
         IPermissionManager permissionManager = getPermissionManager();
         if (!permissionManager.hasPostNotificationsPermission(this)) {
+            Log.d(NetworkTaskMainActivity.class.getName(), "Permission to post notifications is missing");
             permissionManager.requestPostNotificationsPermission(this);
         }
         if (!createAlarmManager().canScheduleAlarms()) {
+            Log.d(NetworkTaskMainActivity.class.getName(), "Permission to schedule alarms is missing");
             showAlarmPermissionDialog();
         }
+        PreferenceManager preferenceManager = new PreferenceManager(this);
+        if (SystemUtil.supportsSAFFeature() && preferenceManager.getPreferenceAllowArbitraryFileLocation()) {
+            if (preferenceManager.getPreferenceLogFile()) {
+                if (!checkArbitraryLogFolderPermission(preferenceManager)) {
+                    Log.d(NetworkTaskMainActivity.class.getName(), "Log folder permission is missing");
+                    createNotificationHandler().sendMessageNotificationMissingLogFolderPermission();
+                }
+            }
+            if (preferenceManager.getPreferenceDownloadExternalStorage()) {
+                if (!checkArbitraryDownloadFolderPermission(preferenceManager)) {
+                    Log.d(NetworkTaskMainActivity.class.getName(), "Download folder permission is missing");
+                    createNotificationHandler().sendMessageNotificationMissingDownloadFolderPermission();
+                }
+            }
+        }
+    }
+
+    private boolean checkArbitraryLogFolderPermission(PreferenceManager preferenceManager) {
+        Log.d(NetworkTaskMainActivity.class.getName(), "checkArbitraryLogFolderPermission");
+        return createStoragePermissionManager().hasPersistentPermission(this, preferenceManager.getPreferenceArbitraryLogFolder());
+    }
+
+    private boolean checkArbitraryDownloadFolderPermission(PreferenceManager preferenceManager) {
+        Log.d(NetworkTaskMainActivity.class.getName(), "checkArbitraryDownloadFolderPermission");
+        return createStoragePermissionManager().hasPersistentPermission(this, preferenceManager.getPreferenceArbitraryDownloadFolder());
     }
 
     private void prepareAddImageButton() {
@@ -366,5 +403,13 @@ public class NetworkTaskMainActivity extends RecyclerViewBaseActivity implements
 
     private IAlarmManager createAlarmManager() {
         return new SystemAlarmManager(this);
+    }
+
+    private NotificationHandler createNotificationHandler() {
+        return new NotificationHandler(this, getPermissionManager());
+    }
+
+    private IStoragePermissionManager createStoragePermissionManager() {
+        return new StoragePermissionManager();
     }
 }
