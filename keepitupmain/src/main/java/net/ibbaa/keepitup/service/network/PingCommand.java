@@ -19,13 +19,12 @@ package net.ibbaa.keepitup.service.network;
 import android.content.Context;
 import android.content.res.Resources;
 
-import com.google.common.base.Charsets;
-
 import net.ibbaa.keepitup.R;
 import net.ibbaa.keepitup.logging.Log;
 import net.ibbaa.keepitup.util.StreamUtil;
 import net.ibbaa.keepitup.util.StringUtil;
 
+import java.nio.charset.StandardCharsets;
 import java.util.concurrent.Callable;
 
 public class PingCommand implements Callable<PingCommandResult> {
@@ -74,10 +73,10 @@ public class PingCommand implements Callable<PingCommandResult> {
             String command = getPingCommand();
             Log.d(PingCommand.class.getName(), "Executing ping command: " + command);
             process = runtime.exec(command);
-            String output = StreamUtil.inputStreamToString(process.getInputStream(), Charsets.US_ASCII);
+            String output = StreamUtil.inputStreamToString(process.getInputStream(), StandardCharsets.US_ASCII);
             output = StringUtil.trim(output);
             if (StringUtil.isEmpty(output)) {
-                output = StreamUtil.inputStreamToString(process.getErrorStream(), Charsets.US_ASCII);
+                output = StreamUtil.inputStreamToString(process.getErrorStream(), StandardCharsets.US_ASCII);
                 output = StringUtil.trim(output);
             }
             Log.d(PingCommand.class.getName(), "Ping output: " + output);

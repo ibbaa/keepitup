@@ -22,8 +22,6 @@ import android.os.ParcelFileDescriptor;
 
 import androidx.documentfile.provider.DocumentFile;
 
-import com.google.common.base.Charsets;
-
 import net.ibbaa.keepitup.logging.Log;
 import net.ibbaa.keepitup.resources.JSONSystemSetup;
 import net.ibbaa.keepitup.resources.SystemSetupResult;
@@ -35,6 +33,7 @@ import net.ibbaa.keepitup.util.StreamUtil;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 
 public class ExportTask extends UIBackgroundTask<Boolean> {
 
@@ -74,7 +73,7 @@ public class ExportTask extends UIBackgroundTask<Boolean> {
                         File exportFile = new File(exportFolder, file);
                         stream = new FileOutputStream(exportFile);
                     }
-                    StreamUtil.stringToOutputStream(result.data(), stream, Charsets.UTF_8);
+                    StreamUtil.stringToOutputStream(result.data(), stream, StandardCharsets.UTF_8);
                     return true;
                 } else {
                     Log.d(ExportTask.class.getName(), "Export was not successful: " + result.message());

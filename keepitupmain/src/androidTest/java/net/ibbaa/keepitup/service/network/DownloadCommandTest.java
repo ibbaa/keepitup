@@ -25,8 +25,6 @@ import androidx.documentfile.provider.DocumentFile;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.MediumTest;
 
-import com.google.common.base.Charsets;
-
 import net.ibbaa.keepitup.db.NetworkTaskDAO;
 import net.ibbaa.keepitup.logging.Dump;
 import net.ibbaa.keepitup.model.AccessType;
@@ -57,6 +55,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
@@ -309,7 +308,7 @@ public class DownloadCommandTest {
         assertTrue(existingFile.createNewFile());
         TestDownloadCommand downloadCommand = new TestDownloadCommand(TestRegistry.getContext(), null, new URL("http://www.host.com"), externalDir.getAbsolutePath(), true);
         setCurrentTime(downloadCommand);
-        ByteArrayInputStream inputStream = new ByteArrayInputStream("TestData".getBytes(Charsets.UTF_8));
+        ByteArrayInputStream inputStream = new ByteArrayInputStream("TestData".getBytes(StandardCharsets.UTF_8));
         MockHttpURLConnection urlConnection = prepareHttpURLConnection(inputStream);
         downloadCommand.setURLConnection(urlConnection);
         urlConnection.setContentType("image/jpeg");
@@ -335,7 +334,7 @@ public class DownloadCommandTest {
         documentManager.setFolder(null);
         downloadCommand.setDocumentManager(documentManager);
         setCurrentTime(downloadCommand);
-        ByteArrayInputStream inputStream = new ByteArrayInputStream("TestData".getBytes(Charsets.UTF_8));
+        ByteArrayInputStream inputStream = new ByteArrayInputStream("TestData".getBytes(StandardCharsets.UTF_8));
         MockHttpURLConnection urlConnection = prepareHttpURLConnection(inputStream);
         downloadCommand.setURLConnection(urlConnection);
         urlConnection.setContentType("image/jpeg");
@@ -366,7 +365,7 @@ public class DownloadCommandTest {
         documentManager.setFileExists(false);
         downloadCommand.setDocumentManager(documentManager);
         setCurrentTime(downloadCommand);
-        ByteArrayInputStream inputStream = new ByteArrayInputStream("TestData".getBytes(Charsets.UTF_8));
+        ByteArrayInputStream inputStream = new ByteArrayInputStream("TestData".getBytes(StandardCharsets.UTF_8));
         MockHttpURLConnection urlConnection = prepareHttpURLConnection(inputStream);
         downloadCommand.setURLConnection(urlConnection);
         urlConnection.setContentType("image/jpeg");
@@ -443,7 +442,7 @@ public class DownloadCommandTest {
         File externalDir = fileManager.getExternalDirectory(fileManager.getDefaultDownloadDirectoryName(), 0);
         TestDownloadCommand downloadCommand = new TestDownloadCommand(TestRegistry.getContext(), task, null, externalDir.getAbsolutePath(), false);
         setCurrentTime(downloadCommand);
-        ByteArrayInputStream inputStream = new ByteArrayInputStream("TestData".getBytes(Charsets.UTF_8));
+        ByteArrayInputStream inputStream = new ByteArrayInputStream("TestData".getBytes(StandardCharsets.UTF_8));
         MockHttpURLConnection urlConnection = prepareHttpURLConnection(inputStream, 206);
         downloadCommand.setURLConnection(urlConnection);
         urlConnection.addHeader("Content-Disposition", "attachment; filename=\"test.txt\"");
@@ -458,7 +457,7 @@ public class DownloadCommandTest {
         File externalDir = fileManager.getExternalDirectory(fileManager.getDefaultDownloadDirectoryName(), 0);
         TestDownloadCommand downloadCommand = new TestDownloadCommand(TestRegistry.getContext(), task, null, externalDir.getAbsolutePath(), false);
         setCurrentTime(downloadCommand);
-        ByteArrayInputStream inputStream = new ByteArrayInputStream("TestData".getBytes(Charsets.UTF_8));
+        ByteArrayInputStream inputStream = new ByteArrayInputStream("TestData".getBytes(StandardCharsets.UTF_8));
         MockHttpURLConnection urlConnection = prepareHttpURLConnection(inputStream);
         downloadCommand.setURLConnection(urlConnection);
         urlConnection.addHeader("Content-Disposition", "attachment; filename=\"test.txt\"");
@@ -486,7 +485,7 @@ public class DownloadCommandTest {
         File externalDir = fileManager.getExternalDirectory(fileManager.getDefaultDownloadDirectoryName(), 0);
         TestDownloadCommand downloadCommand = new TestDownloadCommand(TestRegistry.getContext(), task, new URL("http://www.host.com"), externalDir.getAbsolutePath(), false);
         setCurrentTime(downloadCommand);
-        ByteArrayInputStream inputStream = new ByteArrayInputStream("TestData".getBytes(Charsets.UTF_8));
+        ByteArrayInputStream inputStream = new ByteArrayInputStream("TestData".getBytes(StandardCharsets.UTF_8));
         MockURLConnection urlConnection = new MockURLConnection(new URL("http://test"));
         urlConnection.setInputStream(inputStream);
         downloadCommand.setURLConnection(urlConnection);
@@ -514,7 +513,7 @@ public class DownloadCommandTest {
         File externalDir = fileManager.getExternalDirectory(fileManager.getDefaultDownloadDirectoryName(), 0);
         TestDownloadCommand downloadCommand = new TestDownloadCommand(TestRegistry.getContext(), task, new URL("http://www.host.com/test.jpg"), externalDir.getAbsolutePath(), true);
         setCurrentTime(downloadCommand);
-        ByteArrayInputStream inputStream = new ByteArrayInputStream("TestData".getBytes(Charsets.UTF_8));
+        ByteArrayInputStream inputStream = new ByteArrayInputStream("TestData".getBytes(StandardCharsets.UTF_8));
         MockHttpURLConnection urlConnection = prepareHttpURLConnection(inputStream);
         downloadCommand.setURLConnection(urlConnection);
         DownloadCommandResult result = downloadCommand.call();
@@ -551,7 +550,7 @@ public class DownloadCommandTest {
         documentManager.setFile(DocumentFile.fromFile(new File("test")));
         downloadCommand.setDocumentManager(documentManager);
         setCurrentTime(downloadCommand);
-        ByteArrayInputStream inputStream = new ByteArrayInputStream("TestData".getBytes(Charsets.UTF_8));
+        ByteArrayInputStream inputStream = new ByteArrayInputStream("TestData".getBytes(StandardCharsets.UTF_8));
         MockHttpURLConnection urlConnection = prepareHttpURLConnection(inputStream);
         downloadCommand.setURLConnection(urlConnection);
         urlConnection.setContentType("image/jpeg");
@@ -576,7 +575,7 @@ public class DownloadCommandTest {
         File externalDir = fileManager.getExternalDirectory(fileManager.getDefaultDownloadDirectoryName(), 0);
         TestDownloadCommand downloadCommand = new TestDownloadCommand(TestRegistry.getContext(), task, null, externalDir.getAbsolutePath(), true);
         setCurrentTime(downloadCommand);
-        ByteArrayInputStream inputStream = new ByteArrayInputStream("TestData".getBytes(Charsets.UTF_8));
+        ByteArrayInputStream inputStream = new ByteArrayInputStream("TestData".getBytes(StandardCharsets.UTF_8));
         MockHttpURLConnection urlConnection = prepareHttpURLConnection(inputStream);
         downloadCommand.setURLConnection(urlConnection);
         MockFileManager fileManager = new MockFileManager();
@@ -619,7 +618,7 @@ public class DownloadCommandTest {
         documentManager.setFile(DocumentFile.fromFile(new File("test")));
         downloadCommand.setDocumentManager(documentManager);
         setCurrentTime(downloadCommand);
-        ByteArrayInputStream inputStream = new ByteArrayInputStream("TestData".getBytes(Charsets.UTF_8));
+        ByteArrayInputStream inputStream = new ByteArrayInputStream("TestData".getBytes(StandardCharsets.UTF_8));
         MockHttpURLConnection urlConnection = prepareHttpURLConnection(inputStream);
         downloadCommand.setURLConnection(urlConnection);
         urlConnection.setContentType("image/jpeg");
@@ -644,7 +643,7 @@ public class DownloadCommandTest {
         File externalDir = fileManager.getExternalDirectory(fileManager.getDefaultDownloadDirectoryName(), 0);
         TestDownloadCommand downloadCommand = new TestDownloadCommand(TestRegistry.getContext(), task, null, externalDir.getAbsolutePath(), true);
         setNegativeTime(downloadCommand);
-        ByteArrayInputStream inputStream = new ByteArrayInputStream("TestData".getBytes(Charsets.UTF_8));
+        ByteArrayInputStream inputStream = new ByteArrayInputStream("TestData".getBytes(StandardCharsets.UTF_8));
         MockHttpURLConnection urlConnection = prepareHttpURLConnection(inputStream);
         downloadCommand.setURLConnection(urlConnection);
         MockFileManager fileManager = new MockFileManager();
@@ -715,6 +714,6 @@ public class DownloadCommandTest {
             outputStream.write(buffer, 0, read);
         }
         inputStream.close();
-        return new String(outputStream.toByteArray(), Charsets.UTF_8);
+        return new String(outputStream.toByteArray(), StandardCharsets.UTF_8);
     }
 }

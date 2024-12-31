@@ -20,6 +20,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+import androidx.documentfile.provider.DocumentFile;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.MediumTest;
 import androidx.test.platform.app.InstrumentationRegistry;
@@ -36,6 +37,7 @@ import net.ibbaa.keepitup.resources.PreferenceManager;
 import net.ibbaa.keepitup.service.network.DNSLookupResult;
 import net.ibbaa.keepitup.service.network.DownloadCommandResult;
 import net.ibbaa.keepitup.test.mock.MockDNSLookup;
+import net.ibbaa.keepitup.test.mock.MockDocumentManager;
 import net.ibbaa.keepitup.test.mock.MockDownloadCommand;
 import net.ibbaa.keepitup.test.mock.MockFileManager;
 import net.ibbaa.keepitup.test.mock.MockNotificationManager;
@@ -178,12 +180,38 @@ public class DownloadNetworkTaskWorkerTest {
     }
 
     @Test
+    public void testInvalidArbitraryDownloadFolderNoPermission() throws Exception {
+        preferenceManager.setPreferenceAllowArbitraryFileLocation(true);
+        preferenceManager.setPreferenceLogFile(true);
+        preferenceManager.setPreferenceArbitraryDownloadFolder("Test");
+        DNSLookupResult dnsLookupResult = new DNSLookupResult(Arrays.asList(InetAddress.getByName("127.0.0.1"), InetAddress.getByName("::1")), null);
+        TestDownloadNetworkTaskWorker downloadNetworkTaskWorker = prepareTestDownloadNetworkTaskWorker(dnsLookupResult, (DownloadCommandResult) null);
+        MockDocumentManager documentManager = new MockDocumentManager();
+        downloadNetworkTaskWorker.setDocumentManager(documentManager);
+        documentManager.setArbitraryDirectory(DocumentFile.fromFile(new File("Test")));
+        MockStoragePermissionManager storagePermissionManager = new MockStoragePermissionManager();
+        downloadNetworkTaskWorker.setStoragePermissionManager(storagePermissionManager);
+        storagePermissionManager.requestPersistentFolderPermission(null, "Movies");
+        preferenceManager.setPreferenceDownloadExternalStorage(true);
+        fileManager.setExternalDirectory(null, 0);
+        NetworkTaskWorker.ExecutionResult executionResult = downloadNetworkTaskWorker.execute(getNetworkTask(), getAccessTypeData());
+        LogEntry logEntry = executionResult.getLogEntry();
+        assertEquals(45, logEntry.getNetworkTaskId());
+        assertEquals(getTestTimestamp(), logEntry.getTimestamp());
+        assertFalse(logEntry.isSuccess());
+        assertEquals("Download not possible. Missing permission to access download folder: Test.", logEntry.getMessage());
+    }
+
+    @Test
     public void testInvalidArbitraryDownloadFolder() throws Exception {
         preferenceManager.setPreferenceAllowArbitraryFileLocation(true);
         preferenceManager.setPreferenceLogFile(true);
         preferenceManager.setPreferenceArbitraryDownloadFolder("Test");
         DNSLookupResult dnsLookupResult = new DNSLookupResult(Arrays.asList(InetAddress.getByName("127.0.0.1"), InetAddress.getByName("::1")), null);
         TestDownloadNetworkTaskWorker downloadNetworkTaskWorker = prepareTestDownloadNetworkTaskWorker(dnsLookupResult, (DownloadCommandResult) null);
+        MockDocumentManager documentManager = new MockDocumentManager();
+        downloadNetworkTaskWorker.setDocumentManager(documentManager);
+        documentManager.setArbitraryDirectory(null);
         MockStoragePermissionManager storagePermissionManager = new MockStoragePermissionManager();
         downloadNetworkTaskWorker.setStoragePermissionManager(storagePermissionManager);
         storagePermissionManager.requestPersistentFolderPermission(null, "Movies");
@@ -205,6 +233,9 @@ public class DownloadNetworkTaskWorkerTest {
         DNSLookupResult dnsLookupResult = new DNSLookupResult(Arrays.asList(InetAddress.getByName("127.0.0.1"), InetAddress.getByName("::1")), null);
         DownloadCommandResult downloadCommandResult = new DownloadCommandResult(true, true, true, true, true, false, HttpURLConnection.HTTP_OK, null, "testfile", 999, null);
         TestDownloadNetworkTaskWorker downloadNetworkTaskWorker = prepareTestDownloadNetworkTaskWorker(dnsLookupResult, downloadCommandResult);
+        MockDocumentManager documentManager = new MockDocumentManager();
+        downloadNetworkTaskWorker.setDocumentManager(documentManager);
+        documentManager.setArbitraryDirectory(DocumentFile.fromFile(new File("Test")));
         MockStoragePermissionManager storagePermissionManager = new MockStoragePermissionManager();
         downloadNetworkTaskWorker.setStoragePermissionManager(storagePermissionManager);
         storagePermissionManager.requestPersistentFolderPermission(null, "Movies");

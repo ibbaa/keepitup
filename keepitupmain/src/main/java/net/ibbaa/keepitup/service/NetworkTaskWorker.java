@@ -183,7 +183,12 @@ public abstract class NetworkTaskWorker implements Runnable {
 
     private boolean checkArbitraryLogFolderPermission(PreferenceManager preferenceManager) {
         Log.d(NetworkTaskWorker.class.getName(), "checkArbitraryLogFolderPermission");
-        return getStoragePermissionManager().hasPersistentPermission(getContext(), preferenceManager.getPreferenceArbitraryLogFolder());
+        String arbitraryLogFolder = preferenceManager.getPreferenceArbitraryLogFolder();
+        if (getDocumentManager().getArbitraryDirectory(arbitraryLogFolder) == null) {
+            Log.e(NetworkTaskWorker.class.getName(), "Error accessing folder " + arbitraryLogFolder);
+            return false;
+        }
+        return getStoragePermissionManager().hasPersistentPermission(getContext(), arbitraryLogFolder);
     }
 
     private void sendNetworkTaskUINotificationBroadcast(NetworkTask task) {
@@ -417,6 +422,10 @@ public abstract class NetworkTaskWorker implements Runnable {
 
     public IPermissionManager getPermissionManager() {
         return new PermissionManager();
+    }
+
+    public IDocumentManager getDocumentManager() {
+        return new SystemDocumentManager(getContext());
     }
 
     public IStoragePermissionManager getStoragePermissionManager() {

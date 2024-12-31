@@ -26,8 +26,6 @@ import androidx.test.core.app.ActivityScenario;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.MediumTest;
 
-import com.google.common.base.Charsets;
-
 import net.ibbaa.keepitup.model.AccessType;
 import net.ibbaa.keepitup.model.AccessTypeData;
 import net.ibbaa.keepitup.model.Interval;
@@ -52,6 +50,7 @@ import org.junit.runner.RunWith;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 @MediumTest
@@ -123,7 +122,7 @@ public class ImportTaskTest extends BaseUITest {
         getPreferenceManager().removeAllPreferences();
         File folder = getFileManager().getExternalRootDirectory(0);
         FileOutputStream stream = new FileOutputStream(new File(folder, "test.json"));
-        StreamUtil.stringToOutputStream(result.data(), stream, Charsets.UTF_8);
+        StreamUtil.stringToOutputStream(result.data(), stream, StandardCharsets.UTF_8);
         stream.close();
         ImportTask task = new ImportTask(getActivity(activityScenario), folder, "test.json", false);
         task.runInBackground();
@@ -255,7 +254,7 @@ public class ImportTaskTest extends BaseUITest {
         File folder = getFileManager().getExternalRootDirectory(0);
         File file = new File(folder, "test.json");
         FileOutputStream stream = new FileOutputStream(file);
-        StreamUtil.stringToOutputStream(result.data(), stream, Charsets.UTF_8);
+        StreamUtil.stringToOutputStream(result.data(), stream, StandardCharsets.UTF_8);
         stream.close();
         TestImportTask task = new TestImportTask(getActivity(activityScenario), folder, "test.json", true);
         task.setInputStream(new FileInputStream(file));
@@ -373,7 +372,7 @@ public class ImportTaskTest extends BaseUITest {
         getPreferenceManager().setPreferenceAllowArbitraryFileLocation(true);
         File folder = getFileManager().getExternalRootDirectory(0);
         FileOutputStream stream = new FileOutputStream(new File(folder, "test.json"));
-        StreamUtil.stringToOutputStream("Failure", stream, Charsets.UTF_8);
+        StreamUtil.stringToOutputStream("Failure", stream, StandardCharsets.UTF_8);
         stream.close();
         ImportTask task = new ImportTask(getActivity(activityScenario), folder, "test.json", false);
         task.runInBackground();

@@ -25,8 +25,6 @@ import androidx.test.core.app.ActivityScenario;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.MediumTest;
 
-import com.google.common.base.Charsets;
-
 import net.ibbaa.keepitup.model.AccessType;
 import net.ibbaa.keepitup.model.AccessTypeData;
 import net.ibbaa.keepitup.model.Interval;
@@ -51,6 +49,7 @@ import org.junit.runner.RunWith;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 @MediumTest
@@ -125,7 +124,7 @@ public class ExportTaskTest extends BaseUITest {
         getAccessTypeDataDAO().deleteAllAccessTypeData();
         getPreferenceManager().removeAllPreferences();
         FileInputStream inputStream = new FileInputStream(writtenFile);
-        String jsonData = StreamUtil.inputStreamToString(inputStream, Charsets.UTF_8);
+        String jsonData = StreamUtil.inputStreamToString(inputStream, StandardCharsets.UTF_8);
         inputStream.close();
         JSONSystemSetup setup = new JSONSystemSetup(TestRegistry.getContext());
         SystemSetupResult result = setup.importData(jsonData);
@@ -264,7 +263,7 @@ public class ExportTaskTest extends BaseUITest {
         getAccessTypeDataDAO().deleteAllAccessTypeData();
         getPreferenceManager().removeAllPreferences();
         FileInputStream inputStream = new FileInputStream(file);
-        String jsonData = StreamUtil.inputStreamToString(inputStream, Charsets.UTF_8);
+        String jsonData = StreamUtil.inputStreamToString(inputStream, StandardCharsets.UTF_8);
         inputStream.close();
         JSONSystemSetup setup = new JSONSystemSetup(TestRegistry.getContext());
         SystemSetupResult result = setup.importData(jsonData);

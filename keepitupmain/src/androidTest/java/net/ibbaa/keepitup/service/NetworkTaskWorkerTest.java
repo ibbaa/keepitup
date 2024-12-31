@@ -21,6 +21,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
+import androidx.documentfile.provider.DocumentFile;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.MediumTest;
 
@@ -36,6 +37,7 @@ import net.ibbaa.keepitup.notification.NotificationHandler;
 import net.ibbaa.keepitup.resources.PreferenceManager;
 import net.ibbaa.keepitup.service.network.DNSLookupResult;
 import net.ibbaa.keepitup.test.mock.MockDNSLookup;
+import net.ibbaa.keepitup.test.mock.MockDocumentManager;
 import net.ibbaa.keepitup.test.mock.MockNetworkManager;
 import net.ibbaa.keepitup.test.mock.MockNotificationManager;
 import net.ibbaa.keepitup.test.mock.MockStoragePermissionManager;
@@ -48,6 +50,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import java.io.File;
 import java.net.InetAddress;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -124,6 +127,35 @@ public class NetworkTaskWorkerTest {
         accessTypeDataDAO.insertAccessTypeData(data);
         TestNetworkTaskWorker testNetworkTaskWorker = new TestNetworkTaskWorker(TestRegistry.getContext(), task, null, true);
         setCurrentTime(testNetworkTaskWorker);
+        MockDocumentManager documentManager = new MockDocumentManager();
+        testNetworkTaskWorker.setDocumentManager(documentManager);
+        documentManager.setArbitraryDirectory(DocumentFile.fromFile(new File("Test")));
+        MockStoragePermissionManager storagePermissionManager = new MockStoragePermissionManager();
+        testNetworkTaskWorker.setStoragePermissionManager(storagePermissionManager);
+        storagePermissionManager.requestPersistentFolderPermission(null, "Movies");
+        MockNetworkManager networkManager = (MockNetworkManager) testNetworkTaskWorker.getNetworkManager();
+        networkManager.setConnected(true);
+        networkManager.setConnectedWithWiFi(true);
+        testNetworkTaskWorker.run();
+        NotificationHandler notificationHandler = testNetworkTaskWorker.getNotificationHandler();
+        MockNotificationManager notificationManager = (MockNotificationManager) notificationHandler.getNotificationManager();
+        assertTrue(notificationManager.wasNotifyCalled());
+    }
+
+    @Test
+    public void testSuccessfulExecutionNoLogPermissionInvalidFolder() {
+        preferenceManager.setPreferenceAllowArbitraryFileLocation(true);
+        preferenceManager.setPreferenceLogFile(true);
+        preferenceManager.setPreferenceArbitraryLogFolder("Test");
+        NetworkTask task = getNetworkTask();
+        task = networkTaskDAO.insertNetworkTask(task);
+        AccessTypeData data = getAccessTypeDataWithNetworkTaskId(task.getId());
+        accessTypeDataDAO.insertAccessTypeData(data);
+        TestNetworkTaskWorker testNetworkTaskWorker = new TestNetworkTaskWorker(TestRegistry.getContext(), task, null, true);
+        setCurrentTime(testNetworkTaskWorker);
+        MockDocumentManager documentManager = new MockDocumentManager();
+        testNetworkTaskWorker.setDocumentManager(documentManager);
+        documentManager.setArbitraryDirectory(null);
         MockStoragePermissionManager storagePermissionManager = new MockStoragePermissionManager();
         testNetworkTaskWorker.setStoragePermissionManager(storagePermissionManager);
         storagePermissionManager.requestPersistentFolderPermission(null, "Movies");
@@ -147,6 +179,9 @@ public class NetworkTaskWorkerTest {
         accessTypeDataDAO.insertAccessTypeData(data);
         TestNetworkTaskWorker testNetworkTaskWorker = new TestNetworkTaskWorker(TestRegistry.getContext(), task, null, true);
         setCurrentTime(testNetworkTaskWorker);
+        MockDocumentManager documentManager = new MockDocumentManager();
+        testNetworkTaskWorker.setDocumentManager(documentManager);
+        documentManager.setArbitraryDirectory(DocumentFile.fromFile(new File("Test")));
         MockStoragePermissionManager storagePermissionManager = new MockStoragePermissionManager();
         testNetworkTaskWorker.setStoragePermissionManager(storagePermissionManager);
         storagePermissionManager.requestPersistentFolderPermission(null, "Movies");

@@ -25,6 +25,7 @@ import net.ibbaa.keepitup.db.NetworkTaskDAO;
 import net.ibbaa.keepitup.model.AccessTypeData;
 import net.ibbaa.keepitup.model.LogEntry;
 import net.ibbaa.keepitup.model.NetworkTask;
+import net.ibbaa.keepitup.service.IDocumentManager;
 import net.ibbaa.keepitup.service.NetworkTaskWorker;
 import net.ibbaa.keepitup.service.network.DNSLookupResult;
 import net.ibbaa.keepitup.ui.permission.IPermissionManager;
@@ -43,6 +44,7 @@ public class TestNetworkTaskWorker extends NetworkTaskWorker {
     private NetworkTask task;
     private AccessTypeData data;
     private MockStoragePermissionManager storagePermissionManager;
+    private MockDocumentManager documentManager;
 
     public TestNetworkTaskWorker(Context context, NetworkTask networkTask, PowerManager.WakeLock wakeLock, boolean success) {
         this(context, networkTask, wakeLock, success, 10);
@@ -99,6 +101,10 @@ public class TestNetworkTaskWorker extends NetworkTaskWorker {
         this.storagePermissionManager = storagePermissionManager;
     }
 
+    public void setDocumentManager(MockDocumentManager documentManager) {
+        this.documentManager = documentManager;
+    }
+
     @Override
     protected Callable<DNSLookupResult> getDNSLookup(String host) {
         return mockDNSLookup;
@@ -120,5 +126,10 @@ public class TestNetworkTaskWorker extends NetworkTaskWorker {
     @Override
     public IStoragePermissionManager getStoragePermissionManager() {
         return Objects.requireNonNullElseGet(storagePermissionManager, MockStoragePermissionManager::new);
+    }
+
+    @Override
+    public IDocumentManager getDocumentManager() {
+        return Objects.requireNonNullElseGet(documentManager, MockDocumentManager::new);
     }
 }

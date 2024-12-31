@@ -26,14 +26,13 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.DialogFragment;
 
-import com.google.common.base.Charsets;
-
 import net.ibbaa.keepitup.R;
 import net.ibbaa.keepitup.logging.Log;
 import net.ibbaa.keepitup.util.StreamUtil;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 
 @SuppressWarnings({"unused"})
 public class RawTextDialog extends DialogFragment {
@@ -67,7 +66,7 @@ public class RawTextDialog extends DialogFragment {
         try {
             Log.d(RawTextDialog.class.getName(), "Reading text");
             inputStream = getResources().openRawResource(textResourceId);
-            String text = StreamUtil.inputStreamToString(inputStream, Charsets.UTF_8);
+            String text = StreamUtil.inputStreamToString(inputStream, StandardCharsets.UTF_8);
             Log.d(RawTextDialog.class.getName(), "Raw text is " + text);
             text = doReplacements(arguments, text);
             Log.d(RawTextDialog.class.getName(), "Text with applied replacements is " + text);

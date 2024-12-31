@@ -32,8 +32,6 @@ import androidx.test.core.app.ActivityScenario;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.MediumTest;
 
-import com.google.common.base.Charsets;
-
 import net.ibbaa.keepitup.R;
 import net.ibbaa.keepitup.model.AccessType;
 import net.ibbaa.keepitup.model.AccessTypeData;
@@ -63,6 +61,7 @@ import org.junit.runner.RunWith;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 @MediumTest
@@ -359,7 +358,7 @@ public class SAFSystemActivityMockTest extends BaseUITest {
         getAccessTypeDataDAO().deleteAllAccessTypeData();
         getIntervalDAO().deleteAllIntervals();
         FileInputStream inputStream = new FileInputStream(file);
-        String jsonData = StreamUtil.inputStreamToString(inputStream, Charsets.UTF_8);
+        String jsonData = StreamUtil.inputStreamToString(inputStream, StandardCharsets.UTF_8);
         inputStream.close();
         JSONSystemSetup setup = new JSONSystemSetup(TestRegistry.getContext());
         SystemSetupResult result = setup.importData(jsonData);
@@ -445,7 +444,7 @@ public class SAFSystemActivityMockTest extends BaseUITest {
         File folder = getFileManager().getExternalRootDirectory(0);
         File file = new File(folder, "test.json");
         FileOutputStream stream = new FileOutputStream(file);
-        StreamUtil.stringToOutputStream(result.data(), stream, Charsets.UTF_8);
+        StreamUtil.stringToOutputStream(result.data(), stream, StandardCharsets.UTF_8);
         stream.close();
         ActivityScenario<?> activityScenario = launchSettingsInputActivity(SystemActivity.class, getBypassSystemSAFBundle());
         injectMocks(activityScenario);

@@ -22,13 +22,12 @@ import static org.junit.Assert.assertEquals;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.SmallTest;
 
-import com.google.common.base.Charsets;
-
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 
 @SmallTest
@@ -38,28 +37,28 @@ public class StreamUtilTest {
 
     @Test
     public void testInputStreamToString() throws Exception {
-        ByteArrayInputStream stream = new ByteArrayInputStream("Test".getBytes(Charsets.US_ASCII));
-        assertEquals("Test", StreamUtil.inputStreamToString(stream, Charsets.US_ASCII));
+        ByteArrayInputStream stream = new ByteArrayInputStream("Test".getBytes(StandardCharsets.US_ASCII));
+        assertEquals("Test", StreamUtil.inputStreamToString(stream, StandardCharsets.US_ASCII));
     }
 
     @Test
     public void testStringToOutputStream() throws Exception {
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        StreamUtil.stringToOutputStream("Test", stream, Charsets.US_ASCII);
-        assertEquals("Test", stream.toString(Charsets.US_ASCII.name()));
+        StreamUtil.stringToOutputStream("Test", stream, StandardCharsets.US_ASCII);
+        assertEquals("Test", stream.toString(StandardCharsets.US_ASCII.name()));
     }
 
     @Test
     public void testInputStreamToOutputStream() throws Exception {
-        ByteArrayInputStream inputStream = new ByteArrayInputStream("Test".getBytes(Charsets.US_ASCII));
+        ByteArrayInputStream inputStream = new ByteArrayInputStream("Test".getBytes(StandardCharsets.US_ASCII));
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         StreamUtil.inputStreamToOutputStream(inputStream, outputStream, null);
-        assertEquals("Test", new String(outputStream.toByteArray(), Charsets.US_ASCII));
-        inputStream = new ByteArrayInputStream("Test".getBytes(Charsets.US_ASCII));
+        assertEquals("Test", new String(outputStream.toByteArray(), StandardCharsets.US_ASCII));
+        inputStream = new ByteArrayInputStream("Test".getBytes(StandardCharsets.US_ASCII));
         outputStream = new ByteArrayOutputStream();
         StreamUtil.inputStreamToOutputStream(inputStream, outputStream, () -> true);
-        assertEquals("Test", new String(outputStream.toByteArray(), Charsets.US_ASCII));
-        inputStream = new ByteArrayInputStream("Test".getBytes(Charsets.US_ASCII));
+        assertEquals("Test", new String(outputStream.toByteArray(), StandardCharsets.US_ASCII));
+        inputStream = new ByteArrayInputStream("Test".getBytes(StandardCharsets.US_ASCII));
         outputStream = new ByteArrayOutputStream();
         StreamUtil.inputStreamToOutputStream(inputStream, outputStream, () -> false);
         assertEquals(0, outputStream.toByteArray().length);

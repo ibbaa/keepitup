@@ -22,8 +22,6 @@ import android.os.ParcelFileDescriptor;
 
 import androidx.documentfile.provider.DocumentFile;
 
-import com.google.common.base.Charsets;
-
 import net.ibbaa.keepitup.R;
 import net.ibbaa.keepitup.db.DBSetup;
 import net.ibbaa.keepitup.logging.Log;
@@ -38,6 +36,7 @@ import net.ibbaa.keepitup.util.StreamUtil;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.concurrent.TimeUnit;
 
 public class ImportTask extends UIBackgroundTask<SystemSetupResult> {
@@ -110,7 +109,7 @@ public class ImportTask extends UIBackgroundTask<SystemSetupResult> {
                 File importFile = new File(importFolder, file);
                 stream = new FileInputStream(importFile);
             }
-            String data = StreamUtil.inputStreamToString(stream, Charsets.UTF_8);
+            String data = StreamUtil.inputStreamToString(stream, StandardCharsets.UTF_8);
             SystemSetupResult result = setup.checkImportPossible(data);
             return new SystemSetupResult(result.success(), result.versionMismatch(), result.message(), data);
         } finally {

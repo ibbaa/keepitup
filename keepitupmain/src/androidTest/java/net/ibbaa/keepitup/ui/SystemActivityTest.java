@@ -45,8 +45,6 @@ import androidx.test.core.app.ActivityScenario;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.MediumTest;
 
-import com.google.common.base.Charsets;
-
 import net.ibbaa.keepitup.R;
 import net.ibbaa.keepitup.logging.Dump;
 import net.ibbaa.keepitup.logging.Log;
@@ -81,6 +79,7 @@ import org.junit.runner.RunWith;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 @MediumTest
@@ -847,7 +846,7 @@ public class SystemActivityTest extends BaseUITest {
         getIntervalDAO().deleteAllIntervals();
         getPreferenceManager().removeAllPreferences();
         FileInputStream inputStream = new FileInputStream(new File(folder, "keepitup_config.json"));
-        String jsonData = StreamUtil.inputStreamToString(inputStream, Charsets.UTF_8);
+        String jsonData = StreamUtil.inputStreamToString(inputStream, StandardCharsets.UTF_8);
         inputStream.close();
         JSONSystemSetup setup = new JSONSystemSetup(TestRegistry.getContext());
         SystemSetupResult result = setup.importData(jsonData);
@@ -1025,7 +1024,7 @@ public class SystemActivityTest extends BaseUITest {
         getIntervalDAO().deleteAllIntervals();
         getPreferenceManager().removeAllPreferences();
         FileInputStream inputStream = new FileInputStream(new File(folder, "keepitup_config.json"));
-        String jsonData = StreamUtil.inputStreamToString(inputStream, Charsets.UTF_8);
+        String jsonData = StreamUtil.inputStreamToString(inputStream, StandardCharsets.UTF_8);
         inputStream.close();
         JSONSystemSetup setup = new JSONSystemSetup(TestRegistry.getContext());
         SystemSetupResult result = setup.importData(jsonData);
@@ -1165,7 +1164,7 @@ public class SystemActivityTest extends BaseUITest {
         assertEquals(1, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
         onView(withId(R.id.imageview_dialog_file_choose_cancel)).perform(click());
         FileInputStream inputStream = new FileInputStream(new File(folder, "keepitup_config.json"));
-        String fileContent = StreamUtil.inputStreamToString(inputStream, Charsets.UTF_8);
+        String fileContent = StreamUtil.inputStreamToString(inputStream, StandardCharsets.UTF_8);
         inputStream.close();
         assertTrue(fileContent.isEmpty());
         assertFalse(alarmManager.wasCancelAlarmCalled());
@@ -1268,7 +1267,7 @@ public class SystemActivityTest extends BaseUITest {
         assertEquals(1, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
         onView(withId(R.id.imageview_dialog_file_choose_cancel)).perform(click());
         FileInputStream inputStream = new FileInputStream(new File(folder, "keepitup_config.json"));
-        String fileContent = StreamUtil.inputStreamToString(inputStream, Charsets.UTF_8);
+        String fileContent = StreamUtil.inputStreamToString(inputStream, StandardCharsets.UTF_8);
         inputStream.close();
         assertTrue(fileContent.isEmpty());
         assertFalse(alarmManager.wasCancelAlarmCalled());
@@ -1364,7 +1363,7 @@ public class SystemActivityTest extends BaseUITest {
         onView(withId(R.id.imageview_dialog_confirm_ok)).perform(click());
         assertTrue(getActivity(activityScenario).getSupportFragmentManager().getFragments().isEmpty());
         FileInputStream inputStream = new FileInputStream(new File(folder, "keepitup_config.json"));
-        String fileContent = StreamUtil.inputStreamToString(inputStream, Charsets.UTF_8);
+        String fileContent = StreamUtil.inputStreamToString(inputStream, StandardCharsets.UTF_8);
         inputStream.close();
         assertFalse(fileContent.isEmpty());
         assertFalse(alarmManager.wasCancelAlarmCalled());
@@ -1403,7 +1402,7 @@ public class SystemActivityTest extends BaseUITest {
         getTimeBasedSuspensionScheduler().getIntervals();
         getPreferenceManager().removeAllPreferences();
         inputStream = new FileInputStream(new File(folder, "keepitup_config.json"));
-        String jsonData = StreamUtil.inputStreamToString(inputStream, Charsets.UTF_8);
+        String jsonData = StreamUtil.inputStreamToString(inputStream, StandardCharsets.UTF_8);
         inputStream.close();
         JSONSystemSetup setup = new JSONSystemSetup(TestRegistry.getContext());
         SystemSetupResult result = setup.importData(jsonData);
@@ -1548,7 +1547,7 @@ public class SystemActivityTest extends BaseUITest {
         onView(withId(R.id.imageview_dialog_confirm_ok)).perform(click());
         assertTrue(getActivity(activityScenario).getSupportFragmentManager().getFragments().isEmpty());
         FileInputStream inputStream = new FileInputStream(new File(folder, "keepitup_config.json"));
-        String fileContent = StreamUtil.inputStreamToString(inputStream, Charsets.UTF_8);
+        String fileContent = StreamUtil.inputStreamToString(inputStream, StandardCharsets.UTF_8);
         inputStream.close();
         assertFalse(fileContent.isEmpty());
         assertFalse(alarmManager.wasCancelAlarmCalled());
@@ -1588,7 +1587,7 @@ public class SystemActivityTest extends BaseUITest {
         getTimeBasedSuspensionScheduler().getIntervals();
         getPreferenceManager().removeAllPreferences();
         inputStream = new FileInputStream(new File(folder, "keepitup_config.json"));
-        String jsonData = StreamUtil.inputStreamToString(inputStream, Charsets.UTF_8);
+        String jsonData = StreamUtil.inputStreamToString(inputStream, StandardCharsets.UTF_8);
         inputStream.close();
         JSONSystemSetup setup = new JSONSystemSetup(TestRegistry.getContext());
         SystemSetupResult result = setup.importData(jsonData);
@@ -1953,7 +1952,7 @@ public class SystemActivityTest extends BaseUITest {
         getPreferenceManager().removeAllPreferences();
         File folder = getFileManager().getExternalDirectory("config", 0);
         FileOutputStream outputStream = new FileOutputStream(new File(folder, "test.json"));
-        StreamUtil.stringToOutputStream(result.data(), outputStream, Charsets.UTF_8);
+        StreamUtil.stringToOutputStream(result.data(), outputStream, StandardCharsets.UTF_8);
         outputStream.close();
         onView(withId(R.id.cardview_activity_system_config_import)).perform(click());
         onView(withId(R.id.edittext_dialog_file_choose_folder)).check(matches(withText("config")));
@@ -2037,7 +2036,7 @@ public class SystemActivityTest extends BaseUITest {
         assertTrue(result.success());
         File folder = getFileManager().getExternalDirectory("folderImport", 0);
         FileOutputStream outputStream = new FileOutputStream(new File(folder, "test.json"));
-        StreamUtil.stringToOutputStream(result.data(), outputStream, Charsets.UTF_8);
+        StreamUtil.stringToOutputStream(result.data(), outputStream, StandardCharsets.UTF_8);
         outputStream.close();
         onView(withId(R.id.cardview_activity_system_config_import)).perform(click());
         onView(withId(R.id.edittext_dialog_file_choose_folder)).check(matches(withText("folderImport")));
@@ -2137,7 +2136,7 @@ public class SystemActivityTest extends BaseUITest {
         getPreferenceManager().removeAllPreferences();
         File folder = getFileManager().getExternalDirectory("config", 0);
         FileOutputStream outputStream = new FileOutputStream(new File(folder, "test.json"));
-        StreamUtil.stringToOutputStream(result.data(), outputStream, Charsets.UTF_8);
+        StreamUtil.stringToOutputStream(result.data(), outputStream, StandardCharsets.UTF_8);
         outputStream.close();
         onView(withId(R.id.cardview_activity_system_config_import)).perform(click());
         onView(withId(R.id.edittext_dialog_file_choose_folder)).check(matches(withText("config")));
@@ -2224,7 +2223,7 @@ public class SystemActivityTest extends BaseUITest {
         assertTrue(result.success());
         File folder = getFileManager().getExternalDirectory("config", 0);
         FileOutputStream outputStream = new FileOutputStream(new File(folder, "test.json"));
-        StreamUtil.stringToOutputStream(result.data(), outputStream, Charsets.UTF_8);
+        StreamUtil.stringToOutputStream(result.data(), outputStream, StandardCharsets.UTF_8);
         outputStream.close();
         onView(withId(R.id.cardview_activity_system_config_import)).perform(click());
         onView(withId(R.id.edittext_dialog_file_choose_folder)).check(matches(withText("folderImport")));
@@ -2335,7 +2334,7 @@ public class SystemActivityTest extends BaseUITest {
         getPreferenceManager().removeAllPreferences();
         File folder = getFileManager().getExternalDirectory("config", 0);
         FileOutputStream outputStream = new FileOutputStream(new File(folder, "test.json"));
-        StreamUtil.stringToOutputStream(result.data(), outputStream, Charsets.UTF_8);
+        StreamUtil.stringToOutputStream(result.data(), outputStream, StandardCharsets.UTF_8);
         outputStream.close();
         onView(withId(R.id.cardview_activity_system_config_import)).perform(click());
         onView(withId(R.id.edittext_dialog_file_choose_folder)).check(matches(withText("config")));
@@ -2479,7 +2478,7 @@ public class SystemActivityTest extends BaseUITest {
         getPreferenceManager().removeAllPreferences();
         File folder = getFileManager().getExternalDirectory("config", 0);
         FileOutputStream outputStream = new FileOutputStream(new File(folder, "test.json"));
-        StreamUtil.stringToOutputStream(result.data(), outputStream, Charsets.UTF_8);
+        StreamUtil.stringToOutputStream(result.data(), outputStream, StandardCharsets.UTF_8);
         outputStream.close();
         onView(withId(R.id.cardview_activity_system_config_import)).perform(click());
         onView(withId(R.id.edittext_dialog_file_choose_folder)).check(matches(withText("config")));
@@ -2577,7 +2576,7 @@ public class SystemActivityTest extends BaseUITest {
         getTimeBasedSuspensionScheduler().getIntervals();
         File folder = getFileManager().getExternalDirectory("config", 0);
         FileOutputStream outputStream = new FileOutputStream(new File(folder, "test.json"));
-        StreamUtil.stringToOutputStream(result.data(), outputStream, Charsets.UTF_8);
+        StreamUtil.stringToOutputStream(result.data(), outputStream, StandardCharsets.UTF_8);
         outputStream.close();
         assertTrue(getTimeBasedSuspensionScheduler().isRunning());
         onView(withId(R.id.cardview_activity_system_config_import)).perform(click());

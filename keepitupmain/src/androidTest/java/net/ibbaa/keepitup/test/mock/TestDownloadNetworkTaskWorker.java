@@ -21,6 +21,7 @@ import android.os.PowerManager;
 
 import net.ibbaa.keepitup.model.NetworkTask;
 import net.ibbaa.keepitup.service.DownloadNetworkTaskWorker;
+import net.ibbaa.keepitup.service.IDocumentManager;
 import net.ibbaa.keepitup.service.IFileManager;
 import net.ibbaa.keepitup.service.network.DNSLookupResult;
 import net.ibbaa.keepitup.service.network.DownloadCommandResult;
@@ -37,6 +38,7 @@ public class TestDownloadNetworkTaskWorker extends DownloadNetworkTaskWorker {
     private MockDownloadCommand mockDownloadCommand;
     private MockFileManager mockFileManager;
     private MockStoragePermissionManager storagePermissionManager;
+    private MockDocumentManager documentManager;
 
     public TestDownloadNetworkTaskWorker(Context context, NetworkTask networkTask, PowerManager.WakeLock wakeLock) {
         super(context, networkTask, wakeLock);
@@ -58,6 +60,10 @@ public class TestDownloadNetworkTaskWorker extends DownloadNetworkTaskWorker {
 
     public void setStoragePermissionManager(MockStoragePermissionManager storagePermissionManager) {
         this.storagePermissionManager = storagePermissionManager;
+    }
+
+    public void setDocumentManager(MockDocumentManager documentManager) {
+        this.documentManager = documentManager;
     }
 
     @Override
@@ -83,5 +89,10 @@ public class TestDownloadNetworkTaskWorker extends DownloadNetworkTaskWorker {
     @Override
     public IStoragePermissionManager getStoragePermissionManager() {
         return Objects.requireNonNullElseGet(storagePermissionManager, MockStoragePermissionManager::new);
+    }
+
+    @Override
+    public IDocumentManager getDocumentManager() {
+        return Objects.requireNonNullElseGet(documentManager, MockDocumentManager::new);
     }
 }
