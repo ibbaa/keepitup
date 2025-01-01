@@ -89,6 +89,7 @@ public class DownloadNetworkTaskWorker extends NetworkTaskWorker {
             logEntry.setSuccess(false);
             String message;
             if (preferenceManager.getPreferenceAllowArbitraryFileLocation()) {
+                getNotificationHandler().sendMessageNotificationMissingDownloadFolderPermission();
                 message = getResources().getString(R.string.text_download_folder_error_arbitrary_permission, preferenceManager.getPreferenceArbitraryDownloadFolder());
             } else {
                 String folderMessage = preferenceManager.getPreferenceDownloadExternalStorage() ? preferenceManager.getPreferenceDownloadFolder() : fileManager.getDefaultDownloadDirectoryName();
@@ -267,11 +268,9 @@ public class DownloadNetworkTaskWorker extends NetworkTaskWorker {
                 Log.d(DownloadNetworkTaskWorker.class.getName(), "Specified arbitrary external download folder is " + arbitraryDownloadFolder);
                 if (getDocumentManager().getArbitraryDirectory(arbitraryDownloadFolder) == null) {
                     Log.e(NetworkTaskWorker.class.getName(), "Error accessing folder " + arbitraryDownloadFolder);
-                    getNotificationHandler().sendMessageNotificationMissingDownloadFolderPermission();
                     return null;
                 }
                 if (!getStoragePermissionManager().hasPersistentPermission(getContext(), arbitraryDownloadFolder)) {
-                    getNotificationHandler().sendMessageNotificationMissingDownloadFolderPermission();
                     return null;
                 }
                 return arbitraryDownloadFolder;
