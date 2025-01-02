@@ -279,7 +279,7 @@ public class NetworkTaskMainActivity extends RecyclerViewBaseActivity implements
             Log.d(NetworkTaskMainActivity.class.getName(), "Network task is not running, starting " + networkTask);
             handler.startNetworkTask(networkTask, accessTypeData);
         }
-        getAdapter().notifyDataSetChanged();
+        getAdapter().notifyItemChanged(position);
     }
 
     public void onMainDeleteClicked(int position) {
