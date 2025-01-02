@@ -21,7 +21,7 @@ import android.content.Context;
 import androidx.documentfile.provider.DocumentFile;
 
 import net.ibbaa.keepitup.R;
-import net.ibbaa.keepitup.logging.DocumentFileLogger;
+import net.ibbaa.phonelog.android.DocumentFileLogger;
 import net.ibbaa.keepitup.logging.Log;
 import net.ibbaa.keepitup.model.LogEntry;
 import net.ibbaa.keepitup.model.NetworkTask;

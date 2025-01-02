@@ -25,7 +25,7 @@ import androidx.documentfile.provider.DocumentFile;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.SmallTest;
 
-import net.ibbaa.keepitup.logging.DocumentFileLogger;
+import net.ibbaa.phonelog.android.DocumentFileLogger;
 import net.ibbaa.keepitup.model.LogEntry;
 import net.ibbaa.keepitup.model.NetworkTask;
 import net.ibbaa.keepitup.resources.PreferenceManager;
