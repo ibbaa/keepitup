@@ -188,6 +188,10 @@ public class SuspensionIntervalsDialog extends DialogFragment implements Confirm
 
     public void onIntervalDeleteClicked(View view, int index) {
         Log.d(SuspensionIntervalsDialog.class.getName(), "onIntervalDeleteClicked for index " + index);
+        if (index < 0) {
+            Log.e(SuspensionIntervalsDialog.class.getName(), "index " + index + " is invalid");
+            return;
+        }
         ConfirmDialog confirmDialog = new ConfirmDialog();
         String confirmMessage = getResources().getString(R.string.text_dialog_confirm_delete_interval);
         Bundle bundle = BundleUtil.stringsToBundle(new String[]{confirmDialog.getMessageKey(), confirmDialog.getTypeKey()}, new String[]{confirmMessage, ConfirmDialog.Type.DELETEINTERVAL.name()});

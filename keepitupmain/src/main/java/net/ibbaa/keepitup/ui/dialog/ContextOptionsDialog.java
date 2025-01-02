@@ -142,6 +142,10 @@ public class ContextOptionsDialog extends DialogFragment {
 
     public void onContextOptionClicked(View view, int position) {
         Log.d(ContextOptionsDialog.class.getName(), "onContextOptionClicked, position is " + position);
+        if (position < 0) {
+            Log.e(ContextOptionsDialog.class.getName(), "position " + position + " is invalid");
+            return;
+        }
         getAdapter().selectItem(position);
         int sourceResourceId = requireArguments().getInt(getSourceResourceIdKey());
         ContextOption contextOption = getAdapter().getItem(position);

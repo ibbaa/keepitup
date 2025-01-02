@@ -391,11 +391,19 @@ public class FileChooseDialog extends DialogFragment implements ContextOptionsSu
 
     public void onFileEntryClicked(View view, int position) {
         Log.d(FileChooseDialog.class.getName(), "onFileEntryClicked, position is " + position);
+        if (position < 0) {
+            Log.e(FileChooseDialog.class.getName(), "position " + position + " is invalid");
+            return;
+        }
         selectEntry(position);
     }
 
     public void onFileOpenClicked(View view, int position) {
         Log.d(FileChooseDialog.class.getName(), "onFileOpenClicked, position is " + position);
+        if (position < 0) {
+            Log.e(FileChooseDialog.class.getName(), "position " + position + " is invalid");
+            return;
+        }
         openEntry(position);
     }
 

@@ -268,8 +268,18 @@ public class NetworkTaskMainActivity extends RecyclerViewBaseActivity implements
 
     @SuppressWarnings("NotifyDataSetChanged")
     public void onMainStartStopClicked(int position) {
-        NetworkTask networkTask = ((NetworkTaskAdapter) getAdapter()).getItem(position).getNetworkTask();
-        AccessTypeData accessTypeData = ((NetworkTaskAdapter) getAdapter()).getItem(position).getAccessTypeData();
+        Log.d(NetworkTaskMainActivity.class.getName(), "onMainStartStopClicked, position is " + position);
+        if (position < 0) {
+            Log.e(NetworkTaskMainActivity.class.getName(), "position " + position + " is invalid");
+            return;
+        }
+        NetworkTaskUIWrapper uiWrapper = ((NetworkTaskAdapter) getAdapter()).getItem(position);
+        if (uiWrapper == null) {
+            Log.e(NetworkTaskMainActivity.class.getName(), "No item on position " + position);
+            return;
+        }
+        NetworkTask networkTask = uiWrapper.getNetworkTask();
+        AccessTypeData accessTypeData = uiWrapper.getAccessTypeData();
         Log.d(NetworkTaskMainActivity.class.getName(), "onMainStartStopClicked for network task " + networkTask + " and access type data " + accessTypeData);
         NetworkTaskHandler handler = new NetworkTaskHandler(this);
         if (networkTask.isRunning()) {
@@ -284,12 +294,26 @@ public class NetworkTaskMainActivity extends RecyclerViewBaseActivity implements
 
     public void onMainDeleteClicked(int position) {
         Log.d(NetworkTaskMainActivity.class.getName(), "onMainDeleteClicked for position " + position + ", opening " + ConfirmDialog.class.getSimpleName() + " for type " + ConfirmDialog.Type.DELETETASK);
+        if (position < 0) {
+            Log.e(NetworkTaskMainActivity.class.getName(), "position " + position + " is invalid");
+            return;
+        }
         showConfirmDialog(getResources().getString(R.string.text_dialog_confirm_delete_network_task), ConfirmDialog.Type.DELETETASK, position);
     }
 
     public void onMainEditClicked(int position) {
-        NetworkTask task = ((NetworkTaskAdapter) getAdapter()).getItem(position).getNetworkTask();
-        AccessTypeData accessTypeData = ((NetworkTaskAdapter) getAdapter()).getItem(position).getAccessTypeData();
+        Log.d(NetworkTaskMainActivity.class.getName(), "onMainEditClicked, position is " + position);
+        if (position < 0) {
+            Log.e(NetworkTaskMainActivity.class.getName(), "position " + position + " is invalid");
+            return;
+        }
+        NetworkTaskUIWrapper uiWrapper = ((NetworkTaskAdapter) getAdapter()).getItem(position);
+        if (uiWrapper == null) {
+            Log.e(NetworkTaskMainActivity.class.getName(), "No item on position " + position);
+            return;
+        }
+        NetworkTask task = uiWrapper.getNetworkTask();
+        AccessTypeData accessTypeData = uiWrapper.getAccessTypeData();
         Log.d(NetworkTaskMainActivity.class.getName(), "onMainEditClicked for network task " + task + " and access type data " + accessTypeData);
         NetworkTaskEditDialog editDialog = new NetworkTaskEditDialog();
         if (permissionManager != null) {
@@ -304,7 +328,17 @@ public class NetworkTaskMainActivity extends RecyclerViewBaseActivity implements
     }
 
     public void onMainLogClicked(int position) {
-        NetworkTask networkTask = ((NetworkTaskAdapter) getAdapter()).getItem(position).getNetworkTask();
+        Log.d(NetworkTaskMainActivity.class.getName(), "onMainLogClicked, position is " + position);
+        if (position < 0) {
+            Log.e(NetworkTaskMainActivity.class.getName(), "position " + position + " is invalid");
+            return;
+        }
+        NetworkTaskUIWrapper uiWrapper = ((NetworkTaskAdapter) getAdapter()).getItem(position);
+        if (uiWrapper == null) {
+            Log.e(NetworkTaskMainActivity.class.getName(), "No item on position " + position);
+            return;
+        }
+        NetworkTask networkTask = uiWrapper.getNetworkTask();
         Log.d(NetworkTaskMainActivity.class.getName(), "onMainLogClicked for network task " + networkTask);
         Intent intent = new Intent(this, NetworkTaskLogActivity.class);
         intent.putExtras(networkTask.toBundle());
