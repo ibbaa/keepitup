@@ -266,6 +266,7 @@ public class NetworkTaskMainActivity extends RecyclerViewBaseActivity implements
         editDialog.show(getSupportFragmentManager(), NetworkTaskEditDialog.class.getName());
     }
 
+    @SuppressWarnings("NotifyDataSetChanged")
     public void onMainStartStopClicked(int position) {
         NetworkTask networkTask = ((NetworkTaskAdapter) getAdapter()).getItem(position).getNetworkTask();
         AccessTypeData accessTypeData = ((NetworkTaskAdapter) getAdapter()).getItem(position).getAccessTypeData();
@@ -278,7 +279,7 @@ public class NetworkTaskMainActivity extends RecyclerViewBaseActivity implements
             Log.d(NetworkTaskMainActivity.class.getName(), "Network task is not running, starting " + networkTask);
             handler.startNetworkTask(networkTask, accessTypeData);
         }
-        getAdapter().notifyItemChanged(position);
+        getAdapter().notifyDataSetChanged();
     }
 
     public void onMainDeleteClicked(int position) {
