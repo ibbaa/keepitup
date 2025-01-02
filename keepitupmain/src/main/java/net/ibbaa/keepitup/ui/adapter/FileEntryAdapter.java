@@ -60,7 +60,7 @@ public class FileEntryAdapter extends RecyclerView.Adapter<FileEntryViewHolder> 
 
     @Override
     public void onBindViewHolder(@NonNull FileEntryViewHolder fileEntryViewHolder, int position) {
-        Log.d(FileEntryAdapter.class.getName(), "onBindViewHolder");
+        Log.d(FileEntryAdapter.class.getName(), "onBindViewHolder for position " + position);
         if (position < getFileEntries().size()) {
             FileEntry fileEntry = getFileEntries().get(position);
             bindFileName(fileEntryViewHolder, fileEntry, position);

@@ -64,7 +64,7 @@ public class NetworkTaskAdapter extends RecyclerView.Adapter<NetworkTaskViewHold
 
     @Override
     public void onBindViewHolder(@NonNull NetworkTaskViewHolder networkTaskViewHolder, int position) {
-        Log.d(NetworkTaskAdapter.class.getName(), "onBindViewHolder");
+        Log.d(NetworkTaskAdapter.class.getName(), "onBindViewHolder for position " + position);
         NetworkTask networkTask = networkTaskWrapperList.get(position).getNetworkTask();
         AccessTypeData accessTypeData = networkTaskWrapperList.get(position).getAccessTypeData();
         LogEntry logEntry = networkTaskWrapperList.get(position).getLogEntry();

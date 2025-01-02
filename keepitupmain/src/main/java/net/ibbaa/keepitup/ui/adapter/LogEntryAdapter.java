@@ -58,7 +58,7 @@ public class LogEntryAdapter extends RecyclerView.Adapter<LogEntryViewHolder> {
 
     @Override
     public void onBindViewHolder(@NonNull LogEntryViewHolder logEntryViewHolder, int position) {
-        Log.d(LogEntryAdapter.class.getName(), "onBindViewHolder");
+        Log.d(LogEntryAdapter.class.getName(), "onBindViewHolder for position " + position);
         if (!logEntries.isEmpty()) {
             if (position < logEntries.size()) {
                 LogEntry logEntry = logEntries.get(position);
