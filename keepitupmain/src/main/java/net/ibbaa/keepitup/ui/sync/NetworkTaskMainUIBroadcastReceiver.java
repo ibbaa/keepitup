@@ -16,7 +16,6 @@
 
 package net.ibbaa.keepitup.ui.sync;
 
-import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -25,6 +24,7 @@ import net.ibbaa.keepitup.R;
 import net.ibbaa.keepitup.db.NetworkTaskDAO;
 import net.ibbaa.keepitup.logging.Log;
 import net.ibbaa.keepitup.model.NetworkTask;
+import net.ibbaa.keepitup.ui.NetworkTaskMainActivity;
 import net.ibbaa.keepitup.ui.adapter.NetworkTaskAdapter;
 import net.ibbaa.keepitup.util.ThreadUtil;
 
@@ -32,11 +32,11 @@ import java.util.Objects;
 
 public class NetworkTaskMainUIBroadcastReceiver extends BroadcastReceiver {
 
-    private final Activity activity;
+    private final NetworkTaskMainActivity mainActivity;
     private final NetworkTaskAdapter adapter;
 
-    public NetworkTaskMainUIBroadcastReceiver(Activity activity, NetworkTaskAdapter adapter) {
-        this.activity = activity;
+    public NetworkTaskMainUIBroadcastReceiver(NetworkTaskMainActivity mainActivity, NetworkTaskAdapter adapter) {
+        this.mainActivity = mainActivity;
         this.adapter = adapter;
     }
 
@@ -52,7 +52,7 @@ public class NetworkTaskMainUIBroadcastReceiver extends BroadcastReceiver {
         }
         NetworkTask task = new NetworkTask(Objects.requireNonNull(intent.getExtras()));
         Log.d(NetworkTaskMainUIBroadcastReceiver.class.getName(), "Received request for " + task);
-        NetworkTaskDAO dao = new NetworkTaskDAO(activity);
+        NetworkTaskDAO dao = new NetworkTaskDAO(mainActivity);
         NetworkTask databaseTask = dao.readNetworkTask(task.getId());
         if (isNetworkTaskValid(task, databaseTask)) {
             doSync(databaseTask);
@@ -63,7 +63,7 @@ public class NetworkTaskMainUIBroadcastReceiver extends BroadcastReceiver {
 
     protected void doSync(NetworkTask task) {
         Log.d(NetworkTaskMainUIBroadcastReceiver.class.getName(), "doSync, task is " + task);
-        NetworkTaskMainUISyncTask syncTask = new NetworkTaskMainUISyncTask(activity, task, adapter);
+        NetworkTaskMainUISyncTask syncTask = new NetworkTaskMainUISyncTask(mainActivity, task, adapter);
         ThreadUtil.exexute(syncTask);
     }
 

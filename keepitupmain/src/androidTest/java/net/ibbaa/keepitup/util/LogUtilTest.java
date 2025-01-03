@@ -25,7 +25,6 @@ import androidx.documentfile.provider.DocumentFile;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.SmallTest;
 
-import net.ibbaa.phonelog.android.DocumentFileLogger;
 import net.ibbaa.keepitup.model.LogEntry;
 import net.ibbaa.keepitup.model.NetworkTask;
 import net.ibbaa.keepitup.resources.PreferenceManager;
@@ -35,6 +34,7 @@ import net.ibbaa.keepitup.test.mock.MockFileManager;
 import net.ibbaa.keepitup.test.mock.TestRegistry;
 import net.ibbaa.phonelog.FileLogger;
 import net.ibbaa.phonelog.ILogger;
+import net.ibbaa.phonelog.android.DocumentFileLogger;
 
 import org.junit.Before;
 import org.junit.Test;

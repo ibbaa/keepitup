@@ -77,7 +77,7 @@ public class NetworkTaskMainActivity extends RecyclerViewBaseActivity implements
     }
 
     @Override
-    protected int getRecyclerViewId() {
+    public int getRecyclerViewId() {
         return R.id.listview_activity_main_network_tasks;
     }
 
@@ -266,7 +266,6 @@ public class NetworkTaskMainActivity extends RecyclerViewBaseActivity implements
         editDialog.show(getSupportFragmentManager(), NetworkTaskEditDialog.class.getName());
     }
 
-    @SuppressWarnings("NotifyDataSetChanged")
     public void onMainStartStopClicked(int position) {
         Log.d(NetworkTaskMainActivity.class.getName(), "onMainStartStopClicked, position is " + position);
         if (position < 0) {

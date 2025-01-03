@@ -16,6 +16,7 @@
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/layout_list_item_network_task"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -35,6 +36,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/gridlayout_list_item_network_task_margin"
+            android:descendantFocusability="blocksDescendants"
             android:columnCount="3">
 
             <TextView
@@ -47,8 +49,10 @@
                 android:layout_column="0"
                 android:layout_columnSpan="2"
                 android:clickable="true"
-                android:focusable="true"
-                android:text="@string/text_activity_main_list_item_network_task_title" />
+                android:focusable="false"
+                android:focusableInTouchMode="false"
+                android:text="@string/text_activity_main_list_item_network_task_title"
+                tools:ignore="KeyboardInaccessibleWidget" />
 
             <LinearLayout
                 android:id="@+id/linearlayout_list_item_network_task_delete_edit_log"
@@ -65,27 +69,33 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:clickable="true"
-                    android:focusable="true"
+                    android:focusable="false"
+                    android:focusableInTouchMode="false"
                     android:contentDescription="@string/label_activity_main_delete_network_task"
-                    app:srcCompat="@drawable/icon_delete_selector" />
+                    app:srcCompat="@drawable/icon_delete_selector"
+                    tools:ignore="KeyboardInaccessibleWidget" />
 
                 <ImageView
                     android:id="@+id/imageview_list_item_network_task_edit"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:clickable="true"
-                    android:focusable="true"
+                    android:focusable="false"
+                    android:focusableInTouchMode="false"
                     android:contentDescription="@string/label_activity_main_edit_network_task"
-                    app:srcCompat="@drawable/icon_edit_selector" />
+                    app:srcCompat="@drawable/icon_edit_selector"
+                    tools:ignore="KeyboardInaccessibleWidget" />
 
                 <ImageView
                     android:id="@+id/imageview_list_item_network_task_log"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:clickable="true"
-                    android:focusable="true"
+                    android:focusable="false"
+                    android:focusableInTouchMode="false"
                     android:contentDescription="@string/label_activity_main_log_network_task"
-                    app:srcCompat="@drawable/icon_log_selector" />
+                    app:srcCompat="@drawable/icon_log_selector"
+                    tools:ignore="KeyboardInaccessibleWidget" />
 
             </LinearLayout>
 
@@ -109,9 +119,12 @@
                 android:layout_row="1"
                 android:layout_column="1"
                 android:clickable="true"
-                android:focusable="true"
+                android:focusable="false"
+                android:focusableInTouchMode="false"
+                android:descendantFocusability="blocksDescendants"
                 android:contentDescription="@string/label_activity_main_start_network_task"
-                app:srcCompat="@drawable/icon_start_selector" />
+                app:srcCompat="@drawable/icon_start_selector"
+                tools:ignore="KeyboardInaccessibleWidget" />
 
             <TextView
                 android:id="@+id/textview_list_item_network_task_instances"

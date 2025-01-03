@@ -68,7 +68,7 @@ public class NetworkTaskMainUISyncTaskTest extends BaseUITest {
         AccessTypeData data = getAccessTypeDataDAO().insertAccessTypeData(getAccessTypeData1(task.getId()));
         getLogDAO().insertAndDeleteLog(getLogEntryWithNetworkTaskId(task.getId(), new GregorianCalendar(1980, Calendar.MARCH, 17).getTime().getTime()));
         LogEntry logEntry2 = getLogDAO().insertAndDeleteLog(getLogEntryWithNetworkTaskId(task.getId(), new GregorianCalendar(1980, Calendar.MARCH, 18).getTime().getTime()));
-        NetworkTaskMainUISyncTask syncTask = new NetworkTaskMainUISyncTask(getActivity(activityScenario), task, getAdapter(activityScenario));
+        NetworkTaskMainUISyncTask syncTask = new NetworkTaskMainUISyncTask(getNetworkTaskMainActivity(activityScenario), task, getAdapter(activityScenario));
         NetworkTaskUIWrapper wrapper = syncTask.runInBackground();
         assertTrue(task.isEqual(wrapper.getNetworkTask()));
         assertTrue(data.isEqual(wrapper.getAccessTypeData()));
@@ -91,7 +91,7 @@ public class NetworkTaskMainUISyncTaskTest extends BaseUITest {
         adapter.addItem(wrapper1);
         adapter.addItem(wrapper2);
         adapter.addItem(wrapper3);
-        NetworkTaskMainUISyncTask syncTask = new NetworkTaskMainUISyncTask(getActivity(activityScenario), null, getAdapter(activityScenario));
+        NetworkTaskMainUISyncTask syncTask = new NetworkTaskMainUISyncTask(getNetworkTaskMainActivity(activityScenario), null, getAdapter(activityScenario));
         syncTask.runOnUIThread(new NetworkTaskUIWrapper(task2, data2, logEntry));
         InstrumentationRegistry.getInstrumentation().waitForIdleSync();
         wrapper2 = adapter.getItem(1);
@@ -121,7 +121,7 @@ public class NetworkTaskMainUISyncTaskTest extends BaseUITest {
         data2.setPingCount(7);
         AccessTypeData updatedData2 = getAccessTypeDataDAO().updateAccessTypeData(data2);
         LogEntry otherLogEntry = getLogDAO().insertAndDeleteLog(getLogEntryWithNetworkTaskId(task2.getId(), new GregorianCalendar(1980, Calendar.MARCH, 18).getTime().getTime()));
-        NetworkTaskMainUISyncTask syncTask = new NetworkTaskMainUISyncTask(getActivity(activityScenario), null, getAdapter(activityScenario));
+        NetworkTaskMainUISyncTask syncTask = new NetworkTaskMainUISyncTask(getNetworkTaskMainActivity(activityScenario), null, getAdapter(activityScenario));
         syncTask.runOnUIThread(new NetworkTaskUIWrapper(updatedTask2, updatedData2, otherLogEntry));
         InstrumentationRegistry.getInstrumentation().waitForIdleSync();
         wrapper2 = adapter.getItem(1);
@@ -141,7 +141,7 @@ public class NetworkTaskMainUISyncTaskTest extends BaseUITest {
         NetworkTask updatedTask = getNetworkTaskDAO().readNetworkTask(task.getId());
         data.setPingCount(2);
         AccessTypeData updatedData = getAccessTypeDataDAO().updateAccessTypeData(data);
-        NetworkTaskMainUISyncTask syncTask = new NetworkTaskMainUISyncTask(getActivity(activityScenario), updatedTask, getAdapter(activityScenario));
+        NetworkTaskMainUISyncTask syncTask = new NetworkTaskMainUISyncTask(getNetworkTaskMainActivity(activityScenario), updatedTask, getAdapter(activityScenario));
         final NetworkTaskUIWrapper newWrapper = syncTask.runInBackground();
         assertNotNull(newWrapper);
         syncTask.runOnUIThread(newWrapper);
@@ -170,7 +170,7 @@ public class NetworkTaskMainUISyncTaskTest extends BaseUITest {
         adapter.addItem(wrapper1);
         adapter.addItem(wrapper2);
         adapter.addItem(wrapper3);
-        NetworkTaskMainUISyncTask nullSyncTask = new NetworkTaskMainUISyncTask(getActivity(activityScenario), null, null);
+        NetworkTaskMainUISyncTask nullSyncTask = new NetworkTaskMainUISyncTask(getNetworkTaskMainActivity(activityScenario), null, null);
         nullSyncTask.runOnUIThread(new NetworkTaskUIWrapper(task2, data2, logEntry));
         InstrumentationRegistry.getInstrumentation().waitForIdleSync();
         wrapper2 = adapter.getItem(1);
@@ -182,7 +182,7 @@ public class NetworkTaskMainUISyncTaskTest extends BaseUITest {
     @Test
     public void testAdapterAccessTypeCreated() {
         NetworkTask task = getNetworkTaskDAO().insertNetworkTask(getNetworkTask1());
-        NetworkTaskMainUISyncTask syncTask = new NetworkTaskMainUISyncTask(getActivity(activityScenario), task, getAdapter(activityScenario));
+        NetworkTaskMainUISyncTask syncTask = new NetworkTaskMainUISyncTask(getNetworkTaskMainActivity(activityScenario), task, getAdapter(activityScenario));
         NetworkTaskUIWrapper wrapper = syncTask.runInBackground();
         assertTrue(task.isEqual(wrapper.getNetworkTask()));
         AccessTypeData data = wrapper.getAccessTypeData();

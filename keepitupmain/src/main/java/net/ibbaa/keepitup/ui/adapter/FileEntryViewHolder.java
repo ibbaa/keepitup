@@ -83,11 +83,11 @@ public class FileEntryViewHolder extends RecyclerView.ViewHolder {
     }
 
     private void onFileEntryClicked(View view) {
-        folderChooseDialog.onFileEntryClicked(view, getAdapterPosition());
+        folderChooseDialog.onFileEntryClicked(view, getBindingAdapterPosition());
     }
 
     private void onFileOpenClicked(View view) {
-        folderChooseDialog.onFileOpenClicked(view, getAdapterPosition());
+        folderChooseDialog.onFileOpenClicked(view, getBindingAdapterPosition());
     }
 
     private Context getContext() {

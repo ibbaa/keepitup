@@ -16,9 +16,8 @@
 
 package net.ibbaa.keepitup.test.mock;
 
-import android.app.Activity;
-
 import net.ibbaa.keepitup.model.NetworkTask;
+import net.ibbaa.keepitup.ui.NetworkTaskMainActivity;
 import net.ibbaa.keepitup.ui.adapter.NetworkTaskAdapter;
 import net.ibbaa.keepitup.ui.sync.NetworkTaskMainUIBroadcastReceiver;
 
@@ -26,7 +25,7 @@ public class TestNetworkTaskMainUIBroadcastReceiver extends NetworkTaskMainUIBro
 
     private NetworkTask task;
 
-    public TestNetworkTaskMainUIBroadcastReceiver(Activity activity, NetworkTaskAdapter adapter) {
+    public TestNetworkTaskMainUIBroadcastReceiver(NetworkTaskMainActivity activity, NetworkTaskAdapter adapter) {
         super(activity, adapter);
     }
 

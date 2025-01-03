@@ -41,7 +41,11 @@
                 android:id="@+id/listview_activity_main_network_tasks"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal" />
+                android:layout_gravity="center_horizontal"
+                android:focusable="false"
+                android:focusableInTouchMode="false"
+                android:descendantFocusability="afterDescendants"
+                android:overScrollMode="never" />
 
             <ImageView
                 android:id="@+id/imageview_activity_main_network_task_add"

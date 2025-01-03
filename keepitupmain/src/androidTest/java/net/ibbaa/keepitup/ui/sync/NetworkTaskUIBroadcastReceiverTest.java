@@ -78,7 +78,7 @@ public class NetworkTaskUIBroadcastReceiverTest extends BaseUITest {
 
     private TestNetworkTaskMainUIBroadcastReceiver createTestReceiver() {
         NetworkTaskAdapter adapter = new NetworkTaskAdapter(Collections.emptyList(), (NetworkTaskMainActivity) getActivity(activityScenario));
-        return new TestNetworkTaskMainUIBroadcastReceiver(getActivity(activityScenario), adapter);
+        return new TestNetworkTaskMainUIBroadcastReceiver((NetworkTaskMainActivity) getActivity(activityScenario), adapter);
     }
 
     private NetworkTask getNetworkTask() {

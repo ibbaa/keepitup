@@ -52,11 +52,11 @@ public class SuspensionIntervalViewHolder extends RecyclerView.ViewHolder {
     }
 
     public void onIntervalOpenClicked(View view) {
-        intervalsDialog.onIntervalOpenClicked(view, getAdapterPosition());
+        intervalsDialog.onIntervalOpenClicked(view, getBindingAdapterPosition());
     }
 
     public void onIntervalDeleteClicked(View view) {
-        intervalsDialog.onIntervalDeleteClicked(view, getAdapterPosition());
+        intervalsDialog.onIntervalDeleteClicked(view, getBindingAdapterPosition());
     }
 
     public void showIntervalsCardView() {

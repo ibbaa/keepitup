@@ -21,7 +21,6 @@ import android.content.Context;
 import androidx.documentfile.provider.DocumentFile;
 
 import net.ibbaa.keepitup.R;
-import net.ibbaa.phonelog.android.DocumentFileLogger;
 import net.ibbaa.keepitup.logging.Log;
 import net.ibbaa.keepitup.model.LogEntry;
 import net.ibbaa.keepitup.model.NetworkTask;
@@ -32,6 +31,7 @@ import net.ibbaa.phonelog.FileLogger;
 import net.ibbaa.phonelog.ILogger;
 import net.ibbaa.phonelog.LogLevel;
 import net.ibbaa.phonelog.PassthroughMessageLogFormatter;
+import net.ibbaa.phonelog.android.DocumentFileLogger;
 
 import java.io.File;
 import java.text.DateFormat;

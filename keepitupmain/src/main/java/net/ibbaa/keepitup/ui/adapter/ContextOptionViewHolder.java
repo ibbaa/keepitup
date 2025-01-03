@@ -55,7 +55,7 @@ public class ContextOptionViewHolder extends RecyclerView.ViewHolder {
     }
 
     private void onContextOptionClicked(View view) {
-        contextOptionsDialog.onContextOptionClicked(view, getAdapterPosition());
+        contextOptionsDialog.onContextOptionClicked(view, getBindingAdapterPosition());
     }
 
     private Context getContext() {
