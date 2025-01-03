@@ -52,6 +52,6 @@ public class LogEntryUIBroadcastReceiver extends BroadcastReceiver {
     protected void doSync(NetworkTask task) {
         Log.d(LogEntryUIBroadcastReceiver.class.getName(), "doSync, task is " + task);
         LogEntryUISyncTask syncTask = new LogEntryUISyncTask(activity, task, adapter);
-        ThreadUtil.exexute(syncTask);
+        ThreadUtil.execute(syncTask);
     }
 }

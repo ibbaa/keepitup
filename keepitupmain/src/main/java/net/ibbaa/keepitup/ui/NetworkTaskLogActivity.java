@@ -71,7 +71,7 @@ public class NetworkTaskLogActivity extends RecyclerViewBaseActivity {
         registerMenuAdapterDataObserver();
         NetworkTask task = new NetworkTask(Objects.requireNonNull(getIntent().getExtras()));
         LogEntryUIInitTask uiInitTask = getUIInitTask(task, (LogEntryAdapter) getAdapter());
-        ThreadUtil.exexute(uiInitTask);
+        ThreadUtil.execute(uiInitTask);
     }
 
     @Override
@@ -118,7 +118,7 @@ public class NetworkTaskLogActivity extends RecyclerViewBaseActivity {
         Log.d(NetworkTaskLogActivity.class.getName(), "readLogEntriesFromDatabase");
         try {
             LogEntryUIInitTask uiInitTask = getUIInitTask(task, null);
-            Future<List<LogEntry>> logEntriesFuture = ThreadUtil.exexute(uiInitTask);
+            Future<List<LogEntry>> logEntriesFuture = ThreadUtil.execute(uiInitTask);
             List<LogEntry> logEntries = logEntriesFuture.get(getResources().getInteger(R.integer.database_access_timeout), TimeUnit.SECONDS);
             if (logEntries == null) {
                 Log.e(NetworkTaskLogActivity.class.getName(), "Reading all log entries from database returned null");

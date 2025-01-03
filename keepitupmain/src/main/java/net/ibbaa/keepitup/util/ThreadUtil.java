@@ -23,7 +23,7 @@ import java.util.concurrent.Future;
 
 public class ThreadUtil {
 
-    public static <T> Future<T> exexute(Callable<T> callable) {
+    public static <T> Future<T> execute(Callable<T> callable) {
         ExecutorService executorService = null;
         try {
             executorService = Executors.newSingleThreadExecutor();

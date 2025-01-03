@@ -164,7 +164,7 @@ public class NetworkTaskMainActivity extends RecyclerViewBaseActivity implements
         super.onResume();
         registerReceiver();
         NetworkTaskMainUIInitTask uiInitTask = getUIInitTask((NetworkTaskAdapter) getAdapter());
-        ThreadUtil.exexute(uiInitTask);
+        ThreadUtil.execute(uiInitTask);
     }
 
     @Override
@@ -193,7 +193,7 @@ public class NetworkTaskMainActivity extends RecyclerViewBaseActivity implements
         Log.d(NetworkTaskMainActivity.class.getName(), "readNetworkTasksFromDatabase");
         try {
             NetworkTaskMainUIInitTask uiInitTask = getUIInitTask(null);
-            Future<List<NetworkTaskUIWrapper>> wrapperListFuture = ThreadUtil.exexute(uiInitTask);
+            Future<List<NetworkTaskUIWrapper>> wrapperListFuture = ThreadUtil.execute(uiInitTask);
             List<NetworkTaskUIWrapper> wrapperList = wrapperListFuture.get(getResources().getInteger(R.integer.database_access_timeout), TimeUnit.SECONDS);
             if (wrapperList == null) {
                 Log.e(NetworkTaskMainActivity.class.getName(), "Reading all network tasks from database returned null");

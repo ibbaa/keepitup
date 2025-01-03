@@ -732,7 +732,7 @@ public class SystemActivity extends SettingsInputActivity implements ExportSuppo
         }
         showProgressDialog();
         ExportTask exportTask = getExportTask(exportFolder, file);
-        Future<Boolean> exportFuture = ThreadUtil.exexute(exportTask);
+        Future<Boolean> exportFuture = ThreadUtil.execute(exportTask);
         boolean synchronousExecution = getResources().getBoolean(R.bool.uisync_synchronous_execution);
         if (synchronousExecution) {
             try {
@@ -756,7 +756,7 @@ public class SystemActivity extends SettingsInputActivity implements ExportSuppo
         }
         showProgressDialog();
         ImportTask importTask = getImportTask(importFolder, file);
-        Future<SystemSetupResult> importFuture = ThreadUtil.exexute(importTask);
+        Future<SystemSetupResult> importFuture = ThreadUtil.execute(importTask);
         boolean synchronousExecution = getResources().getBoolean(R.bool.uisync_synchronous_execution);
         if (synchronousExecution) {
             try {
@@ -919,7 +919,7 @@ public class SystemActivity extends SettingsInputActivity implements ExportSuppo
     protected void purgeDatabase() {
         Log.d(SystemActivity.class.getName(), "purgeDatabase");
         DBPurgeTask purgeTask = getPurgeTask();
-        Future<Boolean> purgeFuture = ThreadUtil.exexute(purgeTask);
+        Future<Boolean> purgeFuture = ThreadUtil.execute(purgeTask);
         boolean synchronousExecution = getResources().getBoolean(R.bool.uisync_synchronous_execution);
         if (synchronousExecution) {
             try {

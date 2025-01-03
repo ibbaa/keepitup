@@ -51,6 +51,28 @@ public class NetworkTaskUIWrapper {
         return logEntry;
     }
 
+    public boolean isEqual(NetworkTaskUIWrapper other) {
+        if (other == null || getClass() != other.getClass()) {
+            return false;
+        }
+        if (networkTask == null && other.getNetworkTask() != null) {
+            return false;
+        }
+        if (networkTask != null && !networkTask.isEqual(other.getNetworkTask())) {
+            return false;
+        }
+        if (accessTypeData == null && other.getAccessTypeData() != null) {
+            return false;
+        }
+        if (accessTypeData != null && !accessTypeData.isEqual(other.getAccessTypeData())) {
+            return false;
+        }
+        if (logEntry == null && other.getLogEntry() != null) {
+            return false;
+        }
+        return logEntry == null || logEntry.isEqual(other.getLogEntry());
+    }
+
     @NonNull
     @Override
     public String toString() {

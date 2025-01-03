@@ -68,6 +68,7 @@ import net.ibbaa.keepitup.service.network.ConnectCommandTest;
 import net.ibbaa.keepitup.service.network.DownloadCommandTest;
 import net.ibbaa.keepitup.service.network.PingCommandTest;
 import net.ibbaa.keepitup.service.network.PingOutputParserTest;
+import net.ibbaa.keepitup.ui.adapter.NetworkTaskUIWrapperTest;
 import net.ibbaa.keepitup.ui.clipboard.SystemClipboardManagerTest;
 import net.ibbaa.keepitup.ui.mapping.EnumMappingTest;
 import net.ibbaa.keepitup.ui.sync.DBPurgeTaskTest;
@@ -176,6 +177,8 @@ import org.junit.runners.Suite;
         DownloadCommandTest.class,
         PingCommandTest.class,
         PingOutputParserTest.class,
+        //net.ibbaa.keepitup.ui.adaper
+        NetworkTaskUIWrapperTest.class,
         //net.ibbaa.keepitup.ui.clipboard
         SystemClipboardManagerTest.class,
         //net.ibbaa.keepitup.ui.mapping

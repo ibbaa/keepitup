@@ -64,7 +64,7 @@ public class NetworkTaskMainUIBroadcastReceiver extends BroadcastReceiver {
     protected void doSync(NetworkTask task) {
         Log.d(NetworkTaskMainUIBroadcastReceiver.class.getName(), "doSync, task is " + task);
         NetworkTaskMainUISyncTask syncTask = new NetworkTaskMainUISyncTask(mainActivity, task, adapter);
-        ThreadUtil.exexute(syncTask);
+        ThreadUtil.execute(syncTask);
     }
 
     private boolean isNetworkTaskValid(NetworkTask task, NetworkTask databaseTask) {
