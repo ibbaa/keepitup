@@ -110,6 +110,7 @@ public abstract class NetworkTaskWorker implements Runnable {
             if (logEntry != null) {
                 Log.d(NetworkTaskWorker.class.getName(), "Skipping execution. Too many active instances.");
                 writeLogEntry(databaseTask, logEntry, false);
+                sendNetworkTaskUINotificationBroadcast(databaseTask);
                 return;
             }
             Log.d(NetworkTaskWorker.class.getName(), "Increasing instances count.");
@@ -174,7 +175,6 @@ public abstract class NetworkTaskWorker implements Runnable {
             }
         }
         Log.d(NetworkTaskWorker.class.getName(), "Notify UI");
-        sendNetworkTaskUINotificationBroadcast(databaseTask);
         sendLogEntryUINotificationBroadcast(databaseTask);
         if (sendNotification) {
             sendNotification(databaseTask, logEntry);
