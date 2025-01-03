@@ -34,7 +34,11 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:scrollbars="vertical" />
+            android:scrollbars="vertical"
+            android:focusable="false"
+            android:focusableInTouchMode="false"
+            android:descendantFocusability="afterDescendants"
+            android:overScrollMode="never" />
 
     </LinearLayout>
 

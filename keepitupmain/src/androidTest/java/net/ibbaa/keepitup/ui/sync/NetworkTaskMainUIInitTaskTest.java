@@ -58,7 +58,7 @@ public class NetworkTaskMainUIInitTaskTest extends BaseUITest {
     public void beforeEachTestMethod() {
         super.beforeEachTestMethod();
         activityScenario = launchRecyclerViewBaseActivity(NetworkTaskMainActivity.class);
-        initTask = new NetworkTaskMainUIInitTask(getActivity(activityScenario), getAdapter(activityScenario));
+        initTask = new NetworkTaskMainUIInitTask(getNetworkTaskMainActivity(activityScenario), getAdapter(activityScenario));
     }
 
     @After
@@ -139,7 +139,7 @@ public class NetworkTaskMainUIInitTaskTest extends BaseUITest {
         final NetworkTaskUIWrapper wrapper3 = new NetworkTaskUIWrapper(task3, data3, null);
         NetworkTaskAdapter adapter = getAdapter(activityScenario);
         adapter.addItem(new NetworkTaskUIWrapper(task3, null, logEntry2));
-        NetworkTaskMainUIInitTask nullInitTask = new NetworkTaskMainUIInitTask(getActivity(activityScenario), null);
+        NetworkTaskMainUIInitTask nullInitTask = new NetworkTaskMainUIInitTask(getNetworkTaskMainActivity(activityScenario), null);
         nullInitTask.runOnUIThread(Arrays.asList(wrapper1, wrapper2, wrapper3));
         InstrumentationRegistry.getInstrumentation().waitForIdleSync();
         assertEquals(1, adapter.getAllItems().size());

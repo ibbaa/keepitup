@@ -16,8 +16,9 @@
 
 package net.ibbaa.keepitup.ui.sync;
 
-import android.app.Activity;
 import android.content.Context;
+
+import androidx.recyclerview.widget.RecyclerView;
 
 import net.ibbaa.keepitup.db.AccessTypeDataDAO;
 import net.ibbaa.keepitup.db.LogDAO;
@@ -38,8 +39,8 @@ public class NetworkTaskMainUIInitTask extends UIBackgroundTask<List<NetworkTask
 
     private final WeakReference<NetworkTaskAdapter> adapterRef;
 
-    public NetworkTaskMainUIInitTask(Activity activity, NetworkTaskAdapter adapter) {
-        super(activity);
+    public NetworkTaskMainUIInitTask(NetworkTaskMainActivity mainActivity, NetworkTaskAdapter adapter) {
+        super(mainActivity);
         if (adapter != null) {
             this.adapterRef = new WeakReference<>(adapter);
         } else {
@@ -98,7 +99,11 @@ public class NetworkTaskMainUIInitTask extends UIBackgroundTask<List<NetworkTask
             if (adapter != null) {
                 Log.d(NetworkTaskMainUIInitTask.class.getName(), "Initializing adapter");
                 adapter.replaceItems(networkTaskUIWrappers);
+                NetworkTaskMainActivity mainActivity = (NetworkTaskMainActivity) getActivity();
+                RecyclerView recyclerView = mainActivity.findViewById(mainActivity.getRecyclerViewId());
+                recyclerView.setHasFixedSize(true);
                 adapter.notifyDataSetChanged();
+                recyclerView.post(() -> recyclerView.setHasFixedSize(false));
             }
         } catch (Exception exc) {
             Log.e(NetworkTaskMainUISyncTask.class.getName(), "Error initializing adapter", exc);
