@@ -1,2 +1,2 @@
-
+* Fixed bug with broken scrolling
 

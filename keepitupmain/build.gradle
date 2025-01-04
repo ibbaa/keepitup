@@ -24,7 +24,7 @@ android {
         //noinspection OldTargetApi,ExpiredTargetSdkVersion
         targetSdkVersion 33
         versionCode 10
-        versionName "1.7.0"
+        versionName "1.6.1"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         archivesBaseName = "keepitup"
         buildConfigField "long", "TIMESTAMP", System.currentTimeMillis() + "L"
