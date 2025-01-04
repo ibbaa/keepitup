@@ -52,9 +52,11 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:clickable="true"
-                android:focusable="true"
+                android:focusable="false"
+                android:focusableInTouchMode="false"
                 android:contentDescription="@string/label_activity_main_add_network_task"
-                app:srcCompat="@drawable/icon_add_selector" />
+                app:srcCompat="@drawable/icon_add_selector"
+                tools:ignore="KeyboardInaccessibleWidget" />
 
         </LinearLayout>
 
