@@ -22,7 +22,7 @@
     android:layout_height="match_parent"
     tools:context="net.ibbaa.keepitup.ui.NetworkTaskMainActivity">
 
-    <ScrollView
+    <androidx.core.widget.NestedScrollView
         android:id="@+id/scrollview_main_content"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
@@ -45,6 +45,7 @@
                 android:focusable="false"
                 android:focusableInTouchMode="false"
                 android:descendantFocusability="afterDescendants"
+                android:nestedScrollingEnabled="false"
                 android:overScrollMode="never" />
 
             <ImageView
@@ -60,6 +61,6 @@
 
         </LinearLayout>
 
-    </ScrollView>
+    </androidx.core.widget.NestedScrollView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

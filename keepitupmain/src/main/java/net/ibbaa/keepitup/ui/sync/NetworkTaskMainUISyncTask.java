@@ -16,9 +16,8 @@
 
 package net.ibbaa.keepitup.ui.sync;
 
+import android.app.Activity;
 import android.content.Context;
-
-import androidx.recyclerview.widget.RecyclerView;
 
 import net.ibbaa.keepitup.db.AccessTypeDataDAO;
 import net.ibbaa.keepitup.db.LogDAO;
@@ -37,7 +36,7 @@ public class NetworkTaskMainUISyncTask extends UIBackgroundTask<NetworkTaskUIWra
     private final WeakReference<NetworkTaskAdapter> adapterRef;
     private final NetworkTask networkTask;
 
-    public NetworkTaskMainUISyncTask(NetworkTaskMainActivity mainActivity, NetworkTask networkTask, NetworkTaskAdapter adapter) {
+    public NetworkTaskMainUISyncTask(Activity mainActivity, NetworkTask networkTask, NetworkTaskAdapter adapter) {
         super(mainActivity);
         this.networkTask = networkTask;
         if (adapter != null) {
@@ -84,11 +83,7 @@ public class NetworkTaskMainUISyncTask extends UIBackgroundTask<NetworkTaskUIWra
                 Log.d(NetworkTaskMainUISyncTask.class.getName(), "Updating adapter with network task ui wrapper " + networkTaskWrapper);
                 int replacePosition = adapter.replaceItem(networkTaskWrapper);
                 if (replacePosition >= 0) {
-                    NetworkTaskMainActivity mainActivity = (NetworkTaskMainActivity) getActivity();
-                    RecyclerView recyclerView = mainActivity.findViewById(mainActivity.getRecyclerViewId());
-                    recyclerView.setHasFixedSize(true);
                     adapter.notifyItemChanged(replacePosition);
-                    recyclerView.post(() -> recyclerView.setHasFixedSize(false));
                 }
             } catch (Exception exc) {
                 Log.e(NetworkTaskMainUISyncTask.class.getName(), "Error updating adapter with network task ui wrapper " + networkTaskWrapper, exc);

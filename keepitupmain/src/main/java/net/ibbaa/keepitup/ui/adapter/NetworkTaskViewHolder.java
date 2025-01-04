@@ -31,7 +31,6 @@ import net.ibbaa.keepitup.ui.NetworkTaskMainActivity;
 public class NetworkTaskViewHolder extends RecyclerView.ViewHolder {
 
     private final NetworkTaskMainActivity mainActivity;
-    private final RecyclerView recyclerView;
     private final CardView cardView;
     private final TextView titleText;
     private final ImageView startStopImage;
@@ -50,7 +49,6 @@ public class NetworkTaskViewHolder extends RecyclerView.ViewHolder {
     public NetworkTaskViewHolder(@NonNull View itemView, NetworkTaskMainActivity mainActivity) {
         super(itemView);
         this.mainActivity = mainActivity;
-        recyclerView = mainActivity.findViewById(mainActivity.getRecyclerViewId());
         cardView = itemView.findViewById(R.id.cardview_list_item_network_task);
         titleText = itemView.findViewById(R.id.textview_list_item_network_task_title);
         startStopImage = itemView.findViewById(R.id.imageview_list_item_network_task_start_stop);
@@ -150,24 +148,18 @@ public class NetworkTaskViewHolder extends RecyclerView.ViewHolder {
     }
 
     private void onStartStopClicked(View view) {
-        delegateToMainActivity(() -> mainActivity.onMainStartStopClicked(getBindingAdapterPosition()));
+        mainActivity.onMainStartStopClicked(getBindingAdapterPosition());
     }
 
     private void onDeleteClicked(View view) {
-        delegateToMainActivity(() -> mainActivity.onMainDeleteClicked(getBindingAdapterPosition()));
+        mainActivity.onMainDeleteClicked(getBindingAdapterPosition());
     }
 
     private void onEditClicked(View view) {
-        delegateToMainActivity(() -> mainActivity.onMainEditClicked(getBindingAdapterPosition()));
+        mainActivity.onMainEditClicked(getBindingAdapterPosition());
     }
 
     private void onLogClicked(View view) {
-        delegateToMainActivity(() -> mainActivity.onMainLogClicked(getBindingAdapterPosition()));
-    }
-
-    private void delegateToMainActivity(Runnable runnable) {
-        recyclerView.setHasFixedSize(true);
-        runnable.run();
-        recyclerView.post(() -> recyclerView.setHasFixedSize(false));
+        mainActivity.onMainLogClicked(getBindingAdapterPosition());
     }
 }
