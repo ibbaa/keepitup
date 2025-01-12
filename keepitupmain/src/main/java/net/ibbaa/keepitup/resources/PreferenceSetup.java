@@ -143,7 +143,7 @@ public class PreferenceSetup {
         }
         Object downloadKeep = globalSettings.get("preferenceDownloadKeep");
         if (isValidBoolean(downloadKeep)) {
-            preferenceManager.setPreferenceDownloadKeep(Boolean.parseBoolean(Objects.requireNonNull(downloadExternalStorage).toString()));
+            preferenceManager.setPreferenceDownloadKeep(Boolean.parseBoolean(Objects.requireNonNull(downloadKeep).toString()));
         } else {
             preferenceManager.removePreferenceDownloadKeep();
         }

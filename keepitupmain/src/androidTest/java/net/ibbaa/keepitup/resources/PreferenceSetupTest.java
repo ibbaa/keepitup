@@ -116,6 +116,16 @@ public class PreferenceSetupTest {
     }
 
     @Test
+    public void testImportGlobalSettingsSetValuesDownloadKeepOnInternal() {
+        Map<String, Object> globalSettings = new HashMap<>();
+        globalSettings.put("preferenceDownloadExternalStorage", false);
+        globalSettings.put("preferenceDownloadKeep", true);
+        setup.importGlobalSettings(globalSettings);
+        assertFalse(preferenceManager.getPreferenceDownloadExternalStorage());
+        assertTrue(preferenceManager.getPreferenceDownloadKeep());
+    }
+
+    @Test
     public void testImportGlobalSettingsSetValuesAsString() {
         Map<String, Object> globalSettings = new HashMap<>();
         globalSettings.put("preferenceNotificationInactiveNetwork", "true");
