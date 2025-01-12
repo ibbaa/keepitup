@@ -534,9 +534,39 @@ public class DownloadCommandTest {
     }
 
     @Test
+    public void testArbitraryFileSuccessDeleteInternal() throws Exception {
+        PreferenceManager preferenceManager = new PreferenceManager(TestRegistry.getContext());
+        preferenceManager.setPreferenceAllowArbitraryFileLocation(true);
+        preferenceManager.setPreferenceDownloadExternalStorage(false);
+        NetworkTask task = networkTaskDAO.insertNetworkTask(getNetworkTask());
+        File externalDir = fileManager.getExternalDirectory(fileManager.getDefaultDownloadDirectoryName(), 0);
+        TestDownloadCommand downloadCommand = new TestDownloadCommand(TestRegistry.getContext(), task, new URL("http://www.host.com/test.jpg"), externalDir.getAbsolutePath(), true);
+        setCurrentTime(downloadCommand);
+        ByteArrayInputStream inputStream = new ByteArrayInputStream("TestData".getBytes(StandardCharsets.UTF_8));
+        MockHttpURLConnection urlConnection = prepareHttpURLConnection(inputStream);
+        downloadCommand.setURLConnection(urlConnection);
+        DownloadCommandResult result = downloadCommand.call();
+        assertTrue(result.connectSuccess());
+        assertTrue(result.downloadSuccess());
+        assertTrue(result.fileExists());
+        assertTrue(result.deleteSuccess());
+        assertTrue(result.valid());
+        assertFalse(result.stopped());
+        assertEquals(HttpURLConnection.HTTP_OK, result.httpResponseCode());
+        assertEquals("Everything ok", result.httpResponseMessage());
+        assertEquals("test.jpg", result.fileName());
+        assertEquals(99, result.duration());
+        assertNull(result.exception());
+        assertTrue(urlConnection.isDisconnected());
+        File downloadedFile = new File(externalDir, "test.jpg");
+        assertFalse(downloadedFile.exists());
+    }
+
+    @Test
     public void testArbitraryFileSuccessDelete() throws Exception {
         PreferenceManager preferenceManager = new PreferenceManager(TestRegistry.getContext());
         preferenceManager.setPreferenceAllowArbitraryFileLocation(true);
+        preferenceManager.setPreferenceDownloadExternalStorage(true);
         preferenceManager.setPreferenceArbitraryDownloadFolder("test");
         TestDownloadCommand downloadCommand = new TestDownloadCommand(TestRegistry.getContext(), null, new URL("http://www.host.com"), "test", true);
         File externalDir = fileManager.getExternalDirectory(fileManager.getDefaultDownloadDirectoryName(), 0);
@@ -605,6 +635,7 @@ public class DownloadCommandTest {
     public void testArbitraryFileSuccessDeleteFailed() throws Exception {
         PreferenceManager preferenceManager = new PreferenceManager(TestRegistry.getContext());
         preferenceManager.setPreferenceAllowArbitraryFileLocation(true);
+        preferenceManager.setPreferenceDownloadExternalStorage(true);
         preferenceManager.setPreferenceArbitraryDownloadFolder("test");
         TestDownloadCommand downloadCommand = new TestDownloadCommand(TestRegistry.getContext(), null, new URL("http://www.host.com"), "test", true);
         File externalDir = fileManager.getExternalDirectory(fileManager.getDefaultDownloadDirectoryName(), 0);

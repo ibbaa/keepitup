@@ -1,2 +1,2 @@
-
+* Fixed bug that download to internal storage fails if arbitrary file access is enabled
 

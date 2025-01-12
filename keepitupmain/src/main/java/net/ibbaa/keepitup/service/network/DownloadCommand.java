@@ -126,8 +126,7 @@ public class DownloadCommand implements Callable<DownloadCommandResult> {
             Log.d(DownloadCommand.class.getName(), "Using file name " + fileName);
             Log.d(DownloadCommand.class.getName(), "Opening streams...");
             inputStream = connection.getInputStream();
-            PreferenceManager preferenceManager = new PreferenceManager(getContext());
-            if (preferenceManager.getPreferenceAllowArbitraryFileLocation()) {
+            if (useDocumentFileAPI()) {
                 DocumentFile downloadDocumentFile = getDownloadDocumentFile(fileName);
                 if (downloadDocumentFile == null) {
                     Log.e(DownloadCommand.class.getName(), "Error access download file");
@@ -261,8 +260,7 @@ public class DownloadCommand implements Callable<DownloadCommandResult> {
 
     private String getValidFileName(String fileName) {
         Log.d(DownloadCommand.class.getName(), "getValidFileName, fileName is " + fileName);
-        PreferenceManager preferenceManager = new PreferenceManager(getContext());
-        if (preferenceManager.getPreferenceAllowArbitraryFileLocation()) {
+        if (useDocumentFileAPI()) {
             IDocumentManager documentManager = getDocumentManager();
             DocumentFile downloadDirectory = documentManager.getFolder(folder);
             if (downloadDirectory != null) {
@@ -280,9 +278,8 @@ public class DownloadCommand implements Callable<DownloadCommandResult> {
         if (StringUtil.isEmpty(fileName)) {
             return false;
         }
-        PreferenceManager preferenceManager = new PreferenceManager(getContext());
         try {
-            if (preferenceManager.getPreferenceAllowArbitraryFileLocation()) {
+            if (useDocumentFileAPI()) {
                 DocumentFile downloadDocumentFile = getDownloadDocumentFile(fileName);
                 if (downloadDocumentFile == null) {
                     return false;
@@ -304,9 +301,8 @@ public class DownloadCommand implements Callable<DownloadCommandResult> {
         if (StringUtil.isEmpty(fileName)) {
             return false;
         }
-        PreferenceManager preferenceManager = new PreferenceManager(getContext());
         try {
-            if (preferenceManager.getPreferenceAllowArbitraryFileLocation()) {
+            if (useDocumentFileAPI()) {
                 DocumentFile documentDownloadDirectory = getDocumentManager().getFolder(folder);
                 if (documentDownloadDirectory == null) {
                     Log.e(DownloadCommand.class.getName(), "Error accessing download folder " + folder);
@@ -392,6 +388,11 @@ public class DownloadCommand implements Callable<DownloadCommandResult> {
             Log.d(DownloadCommand.class.getName(), "Shutting down ScheduledExecutorService for polling thread");
             executorService.shutdownNow();
         }
+    }
+
+    private boolean useDocumentFileAPI() {
+        PreferenceManager preferenceManager = new PreferenceManager(getContext());
+        return preferenceManager.getPreferenceAllowArbitraryFileLocation() && preferenceManager.getPreferenceDownloadExternalStorage();
     }
 
     protected IFileManager getFileManager() {
