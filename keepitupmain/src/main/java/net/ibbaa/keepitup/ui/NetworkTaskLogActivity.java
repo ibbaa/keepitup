@@ -16,7 +16,9 @@
 
 package net.ibbaa.keepitup.ui;
 
+import android.content.Context;
 import android.content.IntentFilter;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -86,7 +88,11 @@ public class NetworkTaskLogActivity extends RecyclerViewBaseActivity {
         Log.d(NetworkTaskLogActivity.class.getName(), "registerReceiver");
         unregisterReceiver();
         broadcastReceiver = new LogEntryUIBroadcastReceiver(this, (LogEntryAdapter) getAdapter());
-        registerReceiver(broadcastReceiver, new IntentFilter(LogEntryUIBroadcastReceiver.class.getName()));
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            registerReceiver(broadcastReceiver, new IntentFilter(LogEntryUIBroadcastReceiver.class.getName()), Context.RECEIVER_NOT_EXPORTED);
+        } else {
+            registerReceiver(broadcastReceiver, new IntentFilter(LogEntryUIBroadcastReceiver.class.getName()));
+        }
     }
 
     private void unregisterReceiver() {
