@@ -88,7 +88,7 @@ public class NetworkTaskLogActivity extends RecyclerViewBaseActivity {
         Log.d(NetworkTaskLogActivity.class.getName(), "registerReceiver");
         unregisterReceiver();
         broadcastReceiver = new LogEntryUIBroadcastReceiver(this, (LogEntryAdapter) getAdapter());
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             registerReceiver(broadcastReceiver, new IntentFilter(LogEntryUIBroadcastReceiver.class.getName()), Context.RECEIVER_NOT_EXPORTED);
         } else {
             registerReceiver(broadcastReceiver, new IntentFilter(LogEntryUIBroadcastReceiver.class.getName()));
