@@ -18,6 +18,7 @@ Keep it up überprüft den Status von Netzwerkdiensten oder Webseiten indem rege
 - <i>INTERNET</i> für den Internet-Zugriff
 - <i>WAKE_LOCK</i> um das Gerät während der Ausführung eines Tasks aktiv zu halten
 - <i>FOREGROUND_SERVICE</i> um den Dienst zur Ausführung von Tasks zu starten
+- <i>FOREGROUND_SERVICE_DATA_SYNC</i> um dem Dienst zur Ausführung von Tasks Datenübertragung zu erlauben
 - <i>USE_EXACT_ALARM</i> um die Tasks nach Ablauf des Intervalls zu starten (ab Android 13)
 - <i>SCHEDULE_EXACT_ALARM</i> um die Tasks nach Ablauf des Intervalls zu starten (Android 11 und 12)
 - <i>POST_NOTIFICATIONS</i> um Benachrichtigungen zu senden

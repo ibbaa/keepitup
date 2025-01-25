@@ -23,6 +23,7 @@ It checks network services periodically by sending a ping, connecting to a speci
 - <i>INTERNET</i> for accessing the internet
 - <i>WAKE_LOCK</i> to keep the device awake while executing a task
 - <i>FOREGROUND_SERVICE</i> to start the foreground service for running tasks
+- <i>FOREGROUND_SERVICE_DATA_SYNC</i> to use the foreground service with data transmission
 - <i>USE_EXACT_ALARM</i> to start networks tasks after expiry of intervals (Android 13+)
 - <i>SCHEDULE_EXACT_ALARM</i> to start networks tasks after expiry of intervals (Android 11 and 12)
 - <i>POST_NOTIFICATIONS</i> for sending notifications
