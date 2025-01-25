@@ -16,6 +16,7 @@
 
 package net.ibbaa.keepitup.ui;
 
+import android.content.res.ColorStateList;
 import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Build;
@@ -30,6 +31,7 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.cardview.widget.CardView;
+import androidx.core.content.res.ResourcesCompat;
 import androidx.fragment.app.Fragment;
 
 import com.google.android.material.switchmaterial.SwitchMaterial;
@@ -140,6 +142,7 @@ public class SystemActivity extends SettingsInputActivity implements ExportSuppo
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
         setContentView(R.layout.activity_system);
+        initEdgeToEdgeInsets(R.id.layout_activity_system);
         prepareConfigurationResetField();
         prepareConfigurationExportField();
         prepareConfigurationExportFileLauncher();
@@ -222,6 +225,8 @@ public class SystemActivity extends SettingsInputActivity implements ExportSuppo
         if (sdCardSupported) {
             RadioButton primaryStorageTypeButton = findViewById(R.id.radiobutton_activity_system_external_storage_type_primary);
             RadioButton sdCardStorageTypeButton = findViewById(R.id.radiobutton_activity_system_external_storage_type_sdcard);
+            primaryStorageTypeButton.setButtonTintList(ColorStateList.valueOf(ResourcesCompat.getColor(getResources(), R.color.textColor, null)));
+            sdCardStorageTypeButton.setButtonTintList(ColorStateList.valueOf(ResourcesCompat.getColor(getResources(), R.color.textColor, null)));
             sdCardStorageTypeButton.setVisibility(View.VISIBLE);
             PreferenceManager preferenceManager = new PreferenceManager(this);
             int externalStorage = preferenceManager.getPreferenceExternalStorageType();
@@ -311,6 +316,9 @@ public class SystemActivity extends SettingsInputActivity implements ExportSuppo
         RadioButton systemThemeButton = findViewById(R.id.radiobutton_activity_system_theme_system);
         RadioButton lightThemeButton = findViewById(R.id.radiobutton_activity_system_theme_light);
         RadioButton darkThemeButton = findViewById(R.id.radiobutton_activity_system_theme_dark);
+        systemThemeButton.setButtonTintList(ColorStateList.valueOf(ResourcesCompat.getColor(getResources(), R.color.textColor, null)));
+        lightThemeButton.setButtonTintList(ColorStateList.valueOf(ResourcesCompat.getColor(getResources(), R.color.textColor, null)));
+        darkThemeButton.setButtonTintList(ColorStateList.valueOf(ResourcesCompat.getColor(getResources(), R.color.textColor, null)));
         theme.setOnCheckedChangeListener(null);
         if (themeCode == AppCompatDelegate.MODE_NIGHT_NO) {
             lightThemeButton.setChecked(true);

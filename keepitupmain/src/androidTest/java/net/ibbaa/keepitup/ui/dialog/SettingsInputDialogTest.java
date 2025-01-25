@@ -100,6 +100,7 @@ public class SettingsInputDialogTest extends BaseUITest {
         SettingsInput input = new SettingsInput(SettingsInput.Type.ADDRESS, "success", "field", Arrays.asList(TestValidator1.class.getName(), TestValidator1.class.getName()));
         openSettingsInputDialog(input);
         onView(isRoot()).perform(waitFor(500));
+        onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("success"));
         onView(withId(R.id.edittext_dialog_settings_input_value)).check(matches(withTextColor(R.color.textColor)));
         onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("failure"));
         onView(withId(R.id.edittext_dialog_settings_input_value)).check(matches(withTextColor(R.color.textErrorColor)));

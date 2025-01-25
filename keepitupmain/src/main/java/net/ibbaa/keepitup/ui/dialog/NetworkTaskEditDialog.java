@@ -16,6 +16,7 @@
 
 package net.ibbaa.keepitup.ui.dialog;
 
+import android.content.res.ColorStateList;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -30,6 +31,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
+import androidx.core.content.res.ResourcesCompat;
 import androidx.fragment.app.DialogFragment;
 
 import com.google.android.material.switchmaterial.SwitchMaterial;
@@ -244,6 +246,7 @@ public class NetworkTaskEditDialog extends DialogFragment implements ContextOpti
             RadioButton newRadioButton = new RadioButton(requireContext());
             newRadioButton.setText(mapping.getAccessTypeText(accessType));
             newRadioButton.setTextColor(UIUtil.getStyledColor(requireActivity(), android.R.attr.textColor));
+            newRadioButton.setButtonTintList(ColorStateList.valueOf(ResourcesCompat.getColor(getResources(), R.color.textColor, null)));
             newRadioButton.setId(View.generateViewId());
             if (savedSelectedAccessType != null) {
                 newRadioButton.setChecked(accessType.equals(savedSelectedAccessType));

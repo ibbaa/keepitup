@@ -62,6 +62,7 @@ public class NetworkTaskLogActivity extends RecyclerViewBaseActivity {
         Log.d(NetworkTaskLogActivity.class.getName(), "onCreate");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_log_network_task);
+        initEdgeToEdgeInsets(R.id.layout_activity_log);
         initRecyclerView();
     }
 

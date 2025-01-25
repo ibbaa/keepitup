@@ -389,6 +389,8 @@
                             android:id="@+id/switch_activity_defaults_stoponsuccess"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            app:trackTint="@drawable/switchtrack_selector"
+                            app:thumbTint="@drawable/switchthumb_selector"
                             android:showText="false" />
 
                         <TextView
@@ -441,6 +443,8 @@
                             android:id="@+id/switch_activity_defaults_onlywifi"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            app:trackTint="@drawable/switchtrack_selector"
+                            app:thumbTint="@drawable/switchthumb_selector"
                             android:showText="false" />
 
                         <TextView
@@ -493,6 +497,8 @@
                             android:id="@+id/switch_activity_defaults_notification"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            app:trackTint="@drawable/switchtrack_selector"
+                            app:thumbTint="@drawable/switchthumb_selector"
                             android:showText="false" />
 
                         <TextView

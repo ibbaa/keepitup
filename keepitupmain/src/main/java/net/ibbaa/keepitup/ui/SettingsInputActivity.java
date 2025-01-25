@@ -18,9 +18,15 @@ package net.ibbaa.keepitup.ui;
 
 import android.content.res.Resources;
 import android.graphics.Typeface;
+import android.os.Build;
 import android.os.Bundle;
+import android.view.View;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.graphics.Insets;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowCompat;
+import androidx.core.view.WindowInsetsCompat;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 
@@ -109,6 +115,20 @@ public abstract class SettingsInputActivity extends AppCompatActivity implements
             return timeBasedScheduler;
         }
         return new TimeBasedSuspensionScheduler(this);
+    }
+
+    protected void initEdgeToEdgeInsets(int mainLayoutId) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            getWindow().setDecorFitsSystemWindows(false);
+        } else {
+            WindowCompat.setDecorFitsSystemWindows(getWindow(), false);
+        }
+        View mainLayout = findViewById(mainLayoutId);
+        ViewCompat.setOnApplyWindowInsetsListener(mainLayout, (view, insets) -> {
+            Insets systemBarsInsets = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+            view.setPadding(systemBarsInsets.left, systemBarsInsets.top, systemBarsInsets.right, systemBarsInsets.bottom);
+            return insets;
+        });
     }
 
     @Override

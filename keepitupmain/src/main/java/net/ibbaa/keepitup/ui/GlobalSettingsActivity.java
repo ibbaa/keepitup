@@ -16,6 +16,7 @@
 
 package net.ibbaa.keepitup.ui;
 
+import android.content.res.ColorStateList;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.TypedValue;
@@ -30,6 +31,7 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 
 import androidx.cardview.widget.CardView;
+import androidx.core.content.res.ResourcesCompat;
 
 import com.google.android.material.switchmaterial.SwitchMaterial;
 
@@ -90,6 +92,7 @@ public class GlobalSettingsActivity extends SettingsInputActivity implements Sus
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
         setContentView(R.layout.activity_global_settings);
+        initEdgeToEdgeInsets(R.id.layout_activity_global_settings);
         prepareNotificationInactiveNetworkSwitch();
         prepareNotificationTypeRadioGroup();
         prepareNotificationAfterFailuresField();
@@ -162,6 +165,8 @@ public class GlobalSettingsActivity extends SettingsInputActivity implements Sus
         Log.d(GlobalSettingsActivity.class.getName(), "notification type is " + type);
         RadioButton typeFailureButton = findViewById(R.id.radiobutton_activity_global_settings_notification_type_failure);
         RadioButton typeChangeButton = findViewById(R.id.radiobutton_activity_global_settings_notification_type_change);
+        typeFailureButton.setButtonTintList(ColorStateList.valueOf(ResourcesCompat.getColor(getResources(), R.color.textColor, null)));
+        typeChangeButton.setButtonTintList(ColorStateList.valueOf(ResourcesCompat.getColor(getResources(), R.color.textColor, null)));
         notificationType.setOnCheckedChangeListener(null);
         if (type == NotificationType.FAILURE) {
             typeFailureButton.setChecked(true);

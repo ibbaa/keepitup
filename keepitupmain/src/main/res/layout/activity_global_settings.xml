@@ -94,6 +94,8 @@
                             android:id="@+id/switch_activity_global_settings_notification_inactive_network"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            app:trackTint="@drawable/switchtrack_selector"
+                            app:thumbTint="@drawable/switchthumb_selector"
                             android:showText="false" />
 
                         <TextView
@@ -229,6 +231,8 @@
                             android:id="@+id/switch_activity_global_settings_suspension_enabled"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            app:trackTint="@drawable/switchtrack_selector"
+                            app:thumbTint="@drawable/switchthumb_selector"
                             android:showText="false" />
 
                         <TextView
@@ -317,6 +321,8 @@
                             android:id="@+id/switch_activity_global_settings_enforce_ping_package_size_enabled"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            app:trackTint="@drawable/switchtrack_selector"
+                            app:thumbTint="@drawable/switchthumb_selector"
                             android:showText="false" />
 
                         <TextView
@@ -369,6 +375,8 @@
                             android:id="@+id/switch_activity_global_settings_download_external_storage"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            app:trackTint="@drawable/switchtrack_selector"
+                            app:thumbTint="@drawable/switchthumb_selector"
                             android:showText="false" />
 
                         <TextView
@@ -468,6 +476,8 @@
                             android:id="@+id/switch_activity_global_settings_download_keep"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            app:trackTint="@drawable/switchtrack_selector"
+                            app:thumbTint="@drawable/switchthumb_selector"
                             android:showText="false" />
 
                         <TextView
@@ -520,6 +530,8 @@
                             android:id="@+id/switch_activity_global_settings_log_file"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            app:trackTint="@drawable/switchtrack_selector"
+                            app:thumbTint="@drawable/switchthumb_selector"
                             android:showText="false" />
 
                         <TextView

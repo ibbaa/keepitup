@@ -16,6 +16,7 @@
 
 package net.ibbaa.keepitup.ui;
 
+import android.content.res.ColorStateList;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -27,6 +28,7 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 
 import androidx.cardview.widget.CardView;
+import androidx.core.content.res.ResourcesCompat;
 
 import com.google.android.material.switchmaterial.SwitchMaterial;
 
@@ -79,6 +81,7 @@ public class DefaultsActivity extends SettingsInputActivity {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
         setContentView(R.layout.activity_defaults);
+        initEdgeToEdgeInsets(R.id.layout_activity_defaults);
         prepareAccessTypeRadioButtons();
         prepareAddressField();
         preparePortField();
@@ -123,6 +126,7 @@ public class DefaultsActivity extends SettingsInputActivity {
             RadioButton newRadioButton = new RadioButton(this);
             newRadioButton.setText(mapping.getAccessTypeText(accessType));
             newRadioButton.setTextColor(UIUtil.getStyledColor(this, android.R.attr.textColor));
+            newRadioButton.setButtonTintList(ColorStateList.valueOf(ResourcesCompat.getColor(getResources(), R.color.textColor, null)));
             newRadioButton.setId(View.generateViewId());
             if (type == null && ii == 0) {
                 newRadioButton.setChecked(true);

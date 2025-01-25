@@ -20,6 +20,10 @@
     <color name="textColor">#000000</color>
     <color name="textColorDisabled">#888888</color>
     <color name="textColorPrimary">#666666</color>
+    <color name="switchColor">#DDDDDD</color>
+    <color name="switchTrackColor">#BBBBBB</color>
+    <color name="switchColorDisabled">#EEEEEE</color>
+    <color name="switchTrackColorDisabled">#DDDDDD</color>
     <color name="colorAccent">#e0dde3</color>
     <color name="statusBarColor">#666666</color>
     <color name="windowBackground">#FFFFFF</color>

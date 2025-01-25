@@ -29,10 +29,6 @@ import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowCompat;
-import androidx.core.view.WindowInsetsCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import net.ibbaa.keepitup.R;
@@ -95,34 +91,8 @@ public class NetworkTaskMainActivity extends RecyclerViewBaseActivity implements
     protected void onCreate(Bundle savedInstanceState) {
         Log.d(NetworkTaskMainActivity.class.getName(), "onCreate");
         super.onCreate(savedInstanceState);
-
-        // Set the content view
         setContentView(R.layout.activity_main_network_task);
-
-        // Enable Edge-to-Edge mode
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-            getWindow().setDecorFitsSystemWindows(false);
-        } else {
-            WindowCompat.setDecorFitsSystemWindows(getWindow(), false);
-        }
-
-        // Apply WindowInsets to adjust paddings dynamically
-        View mainLayout = findViewById(R.id.layout_activity_main); // Root ConstraintLayout
-        ViewCompat.setOnApplyWindowInsetsListener(mainLayout, (view, insets) -> {
-            Insets systemBarsInsets = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-
-            // Apply paddings to ensure content doesn't overlap with system bars
-            view.setPadding(
-                    systemBarsInsets.left,
-                    systemBarsInsets.top,
-                    systemBarsInsets.right,
-                    systemBarsInsets.bottom
-            );
-
-            return insets;
-        });
-
-        // Initialize your UI components
+        initEdgeToEdgeInsets(R.id.layout_activity_main);
         initRecyclerView();
         prepareAddImageButton();
         startForegroundServiceDelayed();
