@@ -20,8 +20,10 @@ import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
 import static androidx.test.espresso.action.ViewActions.scrollTo;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
+import static androidx.test.espresso.matcher.ViewMatchers.isEnabled;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
+import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.Matchers.endsWith;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -100,6 +102,30 @@ public class SAFSystemActivityMockTest extends BaseUITest {
         onView(withId(R.id.textview_activity_system_allow_arbitrary_file_location_on_off)).check(matches(withText("yes")));
         assertTrue(storagePermissionManager.hasPersistentPermission(getActivity(activityScenario), "/Test"));
         assertFalse(storagePermissionManager.hasPersistentPermission(getActivity(activityScenario), "/Documents"));
+        activityScenario.close();
+    }
+
+    @Test
+    public void testAllowArbitraryFileLocationExternalStorageTypeDisabled() {
+        ActivityScenario<?> activityScenario = launchSettingsInputActivity(SystemActivity.class, getBypassSystemSAFBundle());
+        injectMocks(activityScenario);
+        injectArbitraryFolderLauncher(activityScenario, "/Test");
+        storagePermissionManager.setGrantedFolder("/Test");
+        onView(withId(R.id.radiogroup_activity_system_external_storage_type)).check(matches(isEnabled()));
+        onView(withId(R.id.radiobutton_activity_system_external_storage_type_primary)).check(matches(isEnabled()));
+        onView(withId(R.id.radiobutton_activity_system_external_storage_type_sdcard)).check(matches(isEnabled()));
+        onView(withId(R.id.switch_activity_system_allow_arbitrary_file_location)).perform(scrollTo());
+        onView(withId(R.id.switch_activity_system_allow_arbitrary_file_location)).perform(click());
+        onView(withId(R.id.textview_activity_system_allow_arbitrary_file_location_on_off)).check(matches(withText("yes")));
+        onView(withId(R.id.radiogroup_activity_system_external_storage_type)).check(matches(not(isEnabled())));
+        onView(withId(R.id.radiobutton_activity_system_external_storage_type_primary)).check(matches(not(isEnabled())));
+        onView(withId(R.id.radiobutton_activity_system_external_storage_type_sdcard)).check(matches(not(isEnabled())));
+        onView(withId(R.id.switch_activity_system_allow_arbitrary_file_location)).perform(scrollTo());
+        onView(withId(R.id.switch_activity_system_allow_arbitrary_file_location)).perform(click());
+        onView(withId(R.id.textview_activity_system_allow_arbitrary_file_location_on_off)).check(matches(withText("no")));
+        onView(withId(R.id.radiogroup_activity_system_external_storage_type)).check(matches(isEnabled()));
+        onView(withId(R.id.radiobutton_activity_system_external_storage_type_primary)).check(matches(isEnabled()));
+        onView(withId(R.id.radiobutton_activity_system_external_storage_type_sdcard)).check(matches(isEnabled()));
         activityScenario.close();
     }
 

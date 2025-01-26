@@ -219,6 +219,7 @@ public class SystemActivity extends SettingsInputActivity implements ExportSuppo
     private void prepareExternalStorageTypeRadioGroup() {
         Log.d(SystemActivity.class.getName(), "prepareExternalStorageTypeRadioGroup");
         externalStorageType = findViewById(R.id.radiogroup_activity_system_external_storage_type);
+        PreferenceManager preferenceManager = new PreferenceManager(this);
         IFileManager fileManager = getFileManager();
         boolean sdCardSupported = fileManager.isSDCardSupported();
         Log.d(SystemActivity.class.getName(), "SD card supported: " + sdCardSupported);
@@ -228,7 +229,6 @@ public class SystemActivity extends SettingsInputActivity implements ExportSuppo
             primaryStorageTypeButton.setButtonTintList(ColorStateList.valueOf(ResourcesCompat.getColor(getResources(), R.color.textColor, null)));
             sdCardStorageTypeButton.setButtonTintList(ColorStateList.valueOf(ResourcesCompat.getColor(getResources(), R.color.textColor, null)));
             sdCardStorageTypeButton.setVisibility(View.VISIBLE);
-            PreferenceManager preferenceManager = new PreferenceManager(this);
             int externalStorage = preferenceManager.getPreferenceExternalStorageType();
             Log.d(SystemActivity.class.getName(), "externalStorage is " + externalStorage);
             externalStorageType.setEnabled(true);
@@ -253,6 +253,18 @@ public class SystemActivity extends SettingsInputActivity implements ExportSuppo
             sdCardStorageTypeButton.setEnabled(false);
             sdCardStorageTypeButton.setVisibility(View.GONE);
         }
+        if (preferenceManager.getPreferenceAllowArbitraryFileLocation()) {
+            disableExternalStorageTypeRadioGroup();
+        }
+    }
+
+    private void disableExternalStorageTypeRadioGroup() {
+        Log.d(SystemActivity.class.getName(), "disableExternalStorageTypeRadioGroup");
+        RadioButton primaryStorageTypeButton = findViewById(R.id.radiobutton_activity_system_external_storage_type_primary);
+        RadioButton sdCardStorageTypeButton = findViewById(R.id.radiobutton_activity_system_external_storage_type_sdcard);
+        externalStorageType.setEnabled(false);
+        primaryStorageTypeButton.setEnabled(false);
+        sdCardStorageTypeButton.setEnabled(false);
     }
 
     private void onExternalStorageTypeChanged(RadioGroup group, int checkedId) {
@@ -404,9 +416,11 @@ public class SystemActivity extends SettingsInputActivity implements ExportSuppo
             prepareArbitraryFolderPermissions();
             prepareConfigurationExportField();
             prepareConfigurationImportField();
+            disableExternalStorageTypeRadioGroup();
         } else {
             prepareConfigurationExportField();
             prepareConfigurationImportField();
+            prepareExternalStorageTypeRadioGroup();
         }
         NetworkTaskLog.clear();
     }

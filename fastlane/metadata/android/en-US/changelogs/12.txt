@@ -1,1 +1,4 @@
-
+* New target API level is 35 (Android 15), applied all required changes
+* Minimum API level stays 21 (Android 5)
+* External storage type setting is now ignored and disabled, when arbitrary storage is enabled
+* Minor bug fixes
