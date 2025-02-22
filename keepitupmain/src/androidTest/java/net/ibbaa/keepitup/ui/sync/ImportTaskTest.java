@@ -114,6 +114,7 @@ public class ImportTaskTest extends BaseUITest {
         getPreferenceManager().setPreferenceFileLoggerEnabled(true);
         getPreferenceManager().setPreferenceFileDumpEnabled(true);
         getPreferenceManager().setPreferenceAllowArbitraryFileLocation(true);
+        getPreferenceManager().setPreferenceAskedNotificationPermission(true);
         JSONSystemSetup setup = new JSONSystemSetup(TestRegistry.getContext());
         SystemSetupResult result = setup.exportData();
         assertTrue(result.success());
@@ -200,6 +201,7 @@ public class ImportTaskTest extends BaseUITest {
         assertTrue(getPreferenceManager().getPreferenceFileLoggerEnabled());
         assertTrue(getPreferenceManager().getPreferenceFileDumpEnabled());
         assertTrue(getPreferenceManager().getPreferenceAllowArbitraryFileLocation());
+        assertTrue(getPreferenceManager().getPreferenceAskedNotificationPermission());
     }
 
     @Test
@@ -245,6 +247,7 @@ public class ImportTaskTest extends BaseUITest {
         getPreferenceManager().setPreferenceFileLoggerEnabled(true);
         getPreferenceManager().setPreferenceFileDumpEnabled(true);
         getPreferenceManager().setPreferenceAllowArbitraryFileLocation(true);
+        getPreferenceManager().setPreferenceAskedNotificationPermission(true);
         JSONSystemSetup setup = new JSONSystemSetup(TestRegistry.getContext());
         SystemSetupResult result = setup.exportData();
         assertTrue(result.success());
@@ -336,6 +339,7 @@ public class ImportTaskTest extends BaseUITest {
         assertTrue(getPreferenceManager().getPreferenceFileLoggerEnabled());
         assertTrue(getPreferenceManager().getPreferenceFileDumpEnabled());
         assertTrue(getPreferenceManager().getPreferenceAllowArbitraryFileLocation());
+        assertTrue(getPreferenceManager().getPreferenceAskedNotificationPermission());
     }
 
     @Test
@@ -370,6 +374,7 @@ public class ImportTaskTest extends BaseUITest {
         getPreferenceManager().setPreferenceFileLoggerEnabled(true);
         getPreferenceManager().setPreferenceFileDumpEnabled(true);
         getPreferenceManager().setPreferenceAllowArbitraryFileLocation(true);
+        getPreferenceManager().setPreferenceAskedNotificationPermission(true);
         File folder = getFileManager().getExternalRootDirectory(0);
         FileOutputStream stream = new FileOutputStream(new File(folder, "test.json"));
         StreamUtil.stringToOutputStream("Failure", stream, StandardCharsets.UTF_8);
@@ -407,6 +412,7 @@ public class ImportTaskTest extends BaseUITest {
         assertTrue(getPreferenceManager().getPreferenceFileLoggerEnabled());
         assertTrue(getPreferenceManager().getPreferenceFileDumpEnabled());
         assertTrue(getPreferenceManager().getPreferenceAllowArbitraryFileLocation());
+        assertTrue(getPreferenceManager().getPreferenceAskedNotificationPermission());
     }
 
     private Interval getInterval() {

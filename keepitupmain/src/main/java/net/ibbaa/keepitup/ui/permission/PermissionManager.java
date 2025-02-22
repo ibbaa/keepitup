@@ -40,9 +40,6 @@ public class PermissionManager implements IPermissionManager {
 
     public boolean hasPostNotificationsPermission(Context context) {
         Log.d(PermissionManager.class.getName(), "hasPostNotificationsPermission");
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
-            return true;
-        }
         String postNotificationsPermission = getPostNotificationsPermission(context);
         if (!hasPermission(context, postNotificationsPermission)) {
             Log.d(PermissionManager.class.getName(), "Permission " + postNotificationsPermission + " is not granted");
@@ -54,6 +51,9 @@ public class PermissionManager implements IPermissionManager {
 
     public void requestPostNotificationsPermission(FragmentActivity activity) {
         Log.d(PermissionManager.class.getName(), "requestPostNotificationsPermission");
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) {
+            return;
+        }
         requestPermission(activity, getPostNotificationsPermission(activity), getPostNotificationsPermissionCode(activity));
     }
 

@@ -101,16 +101,17 @@ public class NetworkTaskMainActivity extends RecyclerViewBaseActivity implements
 
     private void checkPermissions() {
         Log.d(NetworkTaskMainActivity.class.getName(), "checkPermissions");
+        PreferenceManager preferenceManager = new PreferenceManager(this);
         IPermissionManager permissionManager = getPermissionManager();
-        if (!permissionManager.hasPostNotificationsPermission(this)) {
+        if (!permissionManager.hasPostNotificationsPermission(this) && !preferenceManager.getPreferenceAskedNotificationPermission()) {
             Log.d(NetworkTaskMainActivity.class.getName(), "Permission to post notifications is missing");
+            preferenceManager.setPreferenceAskedNotificationPermission(true);
             permissionManager.requestPostNotificationsPermission(this);
         }
         if (!createAlarmManager().canScheduleAlarms()) {
             Log.d(NetworkTaskMainActivity.class.getName(), "Permission to schedule alarms is missing");
             showAlarmPermissionDialog();
         }
-        PreferenceManager preferenceManager = new PreferenceManager(this);
         if (SystemUtil.supportsSAFFeature() && preferenceManager.getPreferenceAllowArbitraryFileLocation()) {
             if (preferenceManager.getPreferenceLogFile()) {
                 if (!checkArbitraryLogFolderPermission(preferenceManager)) {

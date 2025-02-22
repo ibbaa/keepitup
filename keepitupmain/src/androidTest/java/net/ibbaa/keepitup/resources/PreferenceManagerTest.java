@@ -460,6 +460,18 @@ public class PreferenceManagerTest {
     }
 
     @Test
+    public void testPreferenceAskedNotificationPermission() {
+        assertFalse(preferenceManager.getPreferenceAskedNotificationPermission());
+        preferenceManager.setPreferenceAskedNotificationPermission(true);
+        assertTrue(preferenceManager.getPreferenceAskedNotificationPermission());
+        preferenceManager.removeAllPreferences();
+        assertFalse(preferenceManager.getPreferenceAskedNotificationPermission());
+        preferenceManager.setPreferenceAskedNotificationPermission(true);
+        preferenceManager.removePreferenceAskedNotificationPermission();
+        assertFalse(preferenceManager.getPreferenceAskedNotificationPermission());
+    }
+
+    @Test
     public void testGetArbitraryFolders() {
         Set<String> folders = preferenceManager.getArbitraryFolders();
         assertEquals(1, folders.size());

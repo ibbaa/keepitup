@@ -85,6 +85,7 @@ public class PreferenceSetup {
         systemSettings.put("preferenceFileDumpEnabled", preferenceManager.getPreferenceFileDumpEnabled());
         systemSettings.put("preferenceTheme", preferenceManager.getPreferenceTheme());
         systemSettings.put("preferenceAllowArbitraryFileLocation", preferenceManager.getPreferenceAllowArbitraryFileLocation());
+        systemSettings.put("preferenceAskedNotificationPermission", preferenceManager.getPreferenceAskedNotificationPermission());
         return systemSettings;
     }
 
@@ -301,6 +302,12 @@ public class PreferenceSetup {
         } else {
             preferenceManager.removePreferenceAllowArbitraryFileLocation();
         }
+        Object askedNotificationPermission = systemSettings.get("preferenceAskedNotificationPermission");
+        if (isValidBoolean(askedNotificationPermission)) {
+            preferenceManager.setPreferenceAskedNotificationPermission(Boolean.parseBoolean(Objects.requireNonNull(askedNotificationPermission).toString()));
+        } else {
+            preferenceManager.removePreferenceAskedNotificationPermission();
+        }
     }
 
     private boolean isValidInteger(Object value, int min, int max) {
@@ -380,6 +387,7 @@ public class PreferenceSetup {
         preferenceManager.removePreferenceFileDumpEnabled();
         preferenceManager.removePreferenceTheme();
         preferenceManager.removePreferenceAllowArbitraryFileLocation();
+        preferenceManager.removePreferenceAskedNotificationPermission();
     }
 
     public void removeAllSettings() {

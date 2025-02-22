@@ -32,4 +32,6 @@
     <bool name="file_dump_enabled_default">false</bool>
     <string name="file_logger_enabled_key">file_logger_enabled_key</string>
     <bool name="file_logger_enabled_default">false</bool>
+    <string name="asked_notification_permission">asked_notification_permission</string>
+    <bool name="asked_notification_permission_default">false</bool>
 </resources>

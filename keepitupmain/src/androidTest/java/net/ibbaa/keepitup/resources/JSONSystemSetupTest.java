@@ -245,6 +245,7 @@ public class JSONSystemSetupTest {
         preferenceManager.setPreferenceFileDumpEnabled(true);
         preferenceManager.setPreferenceTheme(5);
         preferenceManager.setPreferenceAllowArbitraryFileLocation(true);
+        preferenceManager.setPreferenceAskedNotificationPermission(true);
         SystemSetupResult result = setup.exportData();
         JSONObject jsonData = new JSONObject(result.data());
         JSONObject settingsData = (JSONObject) jsonData.get("preferences");
@@ -279,6 +280,7 @@ public class JSONSystemSetupTest {
         assertTrue(systemSettingsData.getBoolean("preferenceFileDumpEnabled"));
         assertEquals(5, systemSettingsData.getInt("preferenceTheme"));
         assertTrue(systemSettingsData.getBoolean("preferenceAllowArbitraryFileLocation"));
+        assertTrue(systemSettingsData.getBoolean("preferenceAskedNotificationPermission"));
     }
 
     @Test
@@ -760,6 +762,7 @@ public class JSONSystemSetupTest {
         preferenceManager.setPreferenceFileDumpEnabled(true);
         preferenceManager.setPreferenceTheme(1);
         preferenceManager.setPreferenceAllowArbitraryFileLocation(true);
+        preferenceManager.setPreferenceAskedNotificationPermission(true);
         SystemSetupResult exportResult = setup.exportData();
         preferenceManager.removeAllPreferences();
         SystemSetupResult importResult = setup.importData(exportResult.data());
@@ -791,6 +794,7 @@ public class JSONSystemSetupTest {
         assertTrue(preferenceManager.getPreferenceFileDumpEnabled());
         assertEquals(1, preferenceManager.getPreferenceTheme());
         assertTrue(preferenceManager.getPreferenceAllowArbitraryFileLocation());
+        assertTrue(preferenceManager.getPreferenceAskedNotificationPermission());
     }
 
     @Test

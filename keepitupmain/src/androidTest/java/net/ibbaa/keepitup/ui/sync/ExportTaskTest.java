@@ -113,6 +113,7 @@ public class ExportTaskTest extends BaseUITest {
         getPreferenceManager().setPreferenceFileLoggerEnabled(true);
         getPreferenceManager().setPreferenceFileDumpEnabled(true);
         getPreferenceManager().setPreferenceAllowArbitraryFileLocation(true);
+        getPreferenceManager().setPreferenceAskedNotificationPermission(true);
         File folder = getFileManager().getExternalRootDirectory(0);
         ExportTask task = new ExportTask(getActivity(activityScenario), folder, "test.json", false);
         task.runInBackground();
@@ -204,6 +205,7 @@ public class ExportTaskTest extends BaseUITest {
         assertTrue(getPreferenceManager().getPreferenceFileLoggerEnabled());
         assertTrue(getPreferenceManager().getPreferenceFileDumpEnabled());
         assertTrue(getPreferenceManager().getPreferenceAllowArbitraryFileLocation());
+        assertTrue(getPreferenceManager().getPreferenceAskedNotificationPermission());
     }
 
     @Test
@@ -249,6 +251,7 @@ public class ExportTaskTest extends BaseUITest {
         getPreferenceManager().setPreferenceFileLoggerEnabled(true);
         getPreferenceManager().setPreferenceFileDumpEnabled(true);
         getPreferenceManager().setPreferenceAllowArbitraryFileLocation(true);
+        getPreferenceManager().setPreferenceAskedNotificationPermission(true);
         File folder = getFileManager().getExternalRootDirectory(0);
         File file = new File(folder, "test.json");
         TestExportTask task = new TestExportTask(getActivity(activityScenario), folder, "test.json", true);
@@ -343,6 +346,7 @@ public class ExportTaskTest extends BaseUITest {
         assertTrue(getPreferenceManager().getPreferenceFileLoggerEnabled());
         assertTrue(getPreferenceManager().getPreferenceFileDumpEnabled());
         assertTrue(getPreferenceManager().getPreferenceAllowArbitraryFileLocation());
+        assertTrue(getPreferenceManager().getPreferenceAskedNotificationPermission());
     }
 
     private Interval getInterval() {

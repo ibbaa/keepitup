@@ -307,6 +307,7 @@ public class PreferenceSetupTest {
         assertFalse(preferenceManager.getPreferenceFileDumpEnabled());
         assertEquals(-1, preferenceManager.getPreferenceTheme());
         assertFalse(preferenceManager.getPreferenceAllowArbitraryFileLocation());
+        assertFalse(preferenceManager.getPreferenceAskedNotificationPermission());
     }
 
     @Test
@@ -321,6 +322,7 @@ public class PreferenceSetupTest {
         systemSettings.put("preferenceFileDumpEnabled", true);
         systemSettings.put("preferenceTheme", 1);
         systemSettings.put("preferenceAllowArbitraryFileLocation", true);
+        systemSettings.put("preferenceAskedNotificationPermission", true);
         setup.importSystemSettings(systemSettings);
         assertEquals("folderImport", preferenceManager.getPreferenceImportFolder());
         assertEquals("folderExport", preferenceManager.getPreferenceExportFolder());
@@ -330,6 +332,7 @@ public class PreferenceSetupTest {
         assertTrue(preferenceManager.getPreferenceFileDumpEnabled());
         assertEquals(1, preferenceManager.getPreferenceTheme());
         assertTrue(preferenceManager.getPreferenceAllowArbitraryFileLocation());
+        assertTrue(preferenceManager.getPreferenceAskedNotificationPermission());
     }
 
     @Test
@@ -344,6 +347,7 @@ public class PreferenceSetupTest {
         systemSettings.put("preferenceFileDumpEnabled", "true");
         systemSettings.put("preferenceTheme", "1");
         systemSettings.put("preferenceAllowArbitraryFileLocation", "true");
+        systemSettings.put("preferenceAskedNotificationPermission", "true");
         setup.importSystemSettings(systemSettings);
         assertEquals("folderImport", preferenceManager.getPreferenceImportFolder());
         assertEquals("folderExport", preferenceManager.getPreferenceExportFolder());
@@ -353,6 +357,7 @@ public class PreferenceSetupTest {
         assertTrue(preferenceManager.getPreferenceFileDumpEnabled());
         assertEquals(1, preferenceManager.getPreferenceTheme());
         assertTrue(preferenceManager.getPreferenceAllowArbitraryFileLocation());
+        assertTrue(preferenceManager.getPreferenceAskedNotificationPermission());
     }
 
     @Test
@@ -367,6 +372,7 @@ public class PreferenceSetupTest {
         systemSettings.put("preferenceFileDumpEnabled", null);
         systemSettings.put("preferenceTheme", "abc");
         systemSettings.put("preferenceAllowArbitraryFileLocation", null);
+        systemSettings.put("preferenceAskedNotificationPermission", null);
         setup.importSystemSettings(systemSettings);
         assertEquals("config", preferenceManager.getPreferenceImportFolder());
         assertEquals("config", preferenceManager.getPreferenceExportFolder());
@@ -376,6 +382,7 @@ public class PreferenceSetupTest {
         assertFalse(preferenceManager.getPreferenceFileDumpEnabled());
         assertEquals(-1, preferenceManager.getPreferenceTheme());
         assertFalse(preferenceManager.getPreferenceAllowArbitraryFileLocation());
+        assertFalse(preferenceManager.getPreferenceAskedNotificationPermission());
     }
 
     @Test
@@ -497,6 +504,7 @@ public class PreferenceSetupTest {
         assertEquals(systemSettings.get("preferenceFileDumpEnabled"), preferenceManager.getPreferenceFileDumpEnabled());
         assertEquals(systemSettings.get("preferenceTheme"), preferenceManager.getPreferenceTheme());
         assertEquals(systemSettings.get("preferenceAllowArbitraryFileLocation"), preferenceManager.getPreferenceAllowArbitraryFileLocation());
+        assertEquals(systemSettings.get("preferenceAskedNotificationPermission"), preferenceManager.getPreferenceAskedNotificationPermission());
     }
 
     @Test
@@ -509,6 +517,7 @@ public class PreferenceSetupTest {
         preferenceManager.setPreferenceFileDumpEnabled(true);
         preferenceManager.setPreferenceTheme(5);
         preferenceManager.setPreferenceAllowArbitraryFileLocation(true);
+        preferenceManager.setPreferenceAskedNotificationPermission(true);
         Map<String, ?> systemSettings = setup.exportSystemSettings();
         assertEquals("folderImport", preferenceManager.getPreferenceImportFolder());
         assertEquals("folderExport", preferenceManager.getPreferenceExportFolder());
@@ -526,6 +535,7 @@ public class PreferenceSetupTest {
         assertEquals(systemSettings.get("preferenceFileDumpEnabled"), preferenceManager.getPreferenceFileDumpEnabled());
         assertEquals(systemSettings.get("preferenceTheme"), preferenceManager.getPreferenceTheme());
         assertEquals(systemSettings.get("preferenceAllowArbitraryFileLocation"), preferenceManager.getPreferenceAllowArbitraryFileLocation());
+        assertEquals(systemSettings.get("preferenceAskedNotificationPermission"), preferenceManager.getPreferenceAskedNotificationPermission());
     }
 
     @Test
@@ -615,6 +625,7 @@ public class PreferenceSetupTest {
         preferenceManager.setPreferenceFileDumpEnabled(true);
         preferenceManager.setPreferenceTheme(1);
         preferenceManager.setPreferenceAllowArbitraryFileLocation(true);
+        preferenceManager.setPreferenceAskedNotificationPermission(true);
         Map<String, ?> systemSettings = setup.exportSystemSettings();
         setup.importSystemSettings(systemSettings);
         assertEquals("folderImport", preferenceManager.getPreferenceImportFolder());
@@ -633,6 +644,7 @@ public class PreferenceSetupTest {
         assertEquals(systemSettings.get("preferenceFileDumpEnabled"), preferenceManager.getPreferenceFileDumpEnabled());
         assertEquals(systemSettings.get("preferenceTheme"), preferenceManager.getPreferenceTheme());
         assertEquals(systemSettings.get("preferenceAllowArbitraryFileLocation"), preferenceManager.getPreferenceAllowArbitraryFileLocation());
+        assertEquals(systemSettings.get("preferenceAskedNotificationPermission"), preferenceManager.getPreferenceAskedNotificationPermission());
     }
 
     @Test
@@ -698,6 +710,7 @@ public class PreferenceSetupTest {
         preferenceManager.setPreferenceFileDumpEnabled(true);
         preferenceManager.setPreferenceTheme(5);
         preferenceManager.setPreferenceAllowArbitraryFileLocation(true);
+        preferenceManager.setPreferenceAskedNotificationPermission(true);
         setup.removeSystemSettings();
         assertEquals("config", preferenceManager.getPreferenceImportFolder());
         assertEquals("config", preferenceManager.getPreferenceExportFolder());
@@ -707,6 +720,7 @@ public class PreferenceSetupTest {
         assertFalse(preferenceManager.getPreferenceFileDumpEnabled());
         assertEquals(-1, preferenceManager.getPreferenceTheme());
         assertFalse(preferenceManager.getPreferenceAllowArbitraryFileLocation());
+        assertFalse(preferenceManager.getPreferenceAskedNotificationPermission());
     }
 
     @Test
@@ -741,6 +755,7 @@ public class PreferenceSetupTest {
         preferenceManager.setPreferenceFileDumpEnabled(true);
         preferenceManager.setPreferenceTheme(5);
         preferenceManager.setPreferenceAllowArbitraryFileLocation(true);
+        preferenceManager.setPreferenceAskedNotificationPermission(true);
         setup.removeAllSettings();
         assertFalse(preferenceManager.getPreferenceNotificationInactiveNetwork());
         assertEquals(NotificationType.FAILURE, preferenceManager.getPreferenceNotificationType());
@@ -772,5 +787,6 @@ public class PreferenceSetupTest {
         assertFalse(preferenceManager.getPreferenceFileDumpEnabled());
         assertEquals(-1, preferenceManager.getPreferenceTheme());
         assertFalse(preferenceManager.getPreferenceAllowArbitraryFileLocation());
+        assertFalse(preferenceManager.getPreferenceAskedNotificationPermission());
     }
 }
