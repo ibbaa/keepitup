@@ -364,6 +364,18 @@ public class PreferenceManagerTest {
     }
 
     @Test
+    public void testGetSetRemovePreferenceDownloadFollowsRedirects() {
+        assertTrue(preferenceManager.getPreferenceDownloadFollowsRedirects());
+        preferenceManager.setPreferenceDownloadFollowsRedirects(false);
+        assertFalse(preferenceManager.getPreferenceDownloadFollowsRedirects());
+        preferenceManager.removeAllPreferences();
+        assertTrue(preferenceManager.getPreferenceDownloadFollowsRedirects());
+        preferenceManager.setPreferenceDownloadFollowsRedirects(false);
+        preferenceManager.removePreferenceDownloadFollowsRedirects();
+        assertTrue(preferenceManager.getPreferenceDownloadFollowsRedirects());
+    }
+
+    @Test
     public void testGetSetRemovePreferenceDownloadKeep() {
         assertFalse(preferenceManager.getPreferenceDownloadKeep());
         preferenceManager.setPreferenceDownloadKeep(true);

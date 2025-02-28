@@ -52,6 +52,7 @@ public class PreferenceSetup {
         globalSettings.put("preferenceDownloadFolder", preferenceManager.getPreferenceDownloadFolder());
         globalSettings.put("preferenceArbitraryDownloadFolder", preferenceManager.getPreferenceArbitraryDownloadFolder());
         globalSettings.put("preferenceDownloadKeep", preferenceManager.getPreferenceDownloadKeep());
+        globalSettings.put("preferenceDownloadFollowsRedirects", preferenceManager.getPreferenceDownloadFollowsRedirects());
         globalSettings.put("preferenceLogFile", preferenceManager.getPreferenceLogFile());
         globalSettings.put("preferenceLogFolder", preferenceManager.getPreferenceLogFolder());
         globalSettings.put("preferenceArbitraryLogFolder", preferenceManager.getPreferenceArbitraryLogFolder());
@@ -147,6 +148,12 @@ public class PreferenceSetup {
             preferenceManager.setPreferenceDownloadKeep(Boolean.parseBoolean(Objects.requireNonNull(downloadKeep).toString()));
         } else {
             preferenceManager.removePreferenceDownloadKeep();
+        }
+        Object downloadFollowsRedirects = globalSettings.get("preferenceDownloadFollowsRedirects");
+        if (isValidBoolean(downloadFollowsRedirects)) {
+            preferenceManager.setPreferenceDownloadFollowsRedirects(Boolean.parseBoolean(Objects.requireNonNull(downloadFollowsRedirects).toString()));
+        } else {
+            preferenceManager.removePreferenceDownloadFollowsRedirects();
         }
         Object logFile = globalSettings.get("preferenceLogFile");
         if (isValidBoolean(logFile)) {
@@ -319,7 +326,7 @@ public class PreferenceSetup {
     }
 
     private boolean isValidBoolean(Object value) {
-        return value != null;
+        return value != null && (value.toString().equals(Boolean.FALSE.toString()) || value.toString().equals(Boolean.TRUE.toString()));
     }
 
     private boolean isValidString(Object value) {
@@ -358,6 +365,7 @@ public class PreferenceSetup {
         preferenceManager.removePreferenceDownloadFolder();
         preferenceManager.removePreferenceArbitraryDownloadFolder();
         preferenceManager.removePreferenceDownloadKeep();
+        preferenceManager.removePreferenceDownloadFollowsRedirects();
         preferenceManager.removePreferenceLogFile();
         preferenceManager.removePreferenceLogFolder();
         preferenceManager.removePreferenceArbitraryLogFolder();

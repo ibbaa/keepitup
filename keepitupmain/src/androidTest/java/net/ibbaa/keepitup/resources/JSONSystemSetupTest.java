@@ -227,6 +227,7 @@ public class JSONSystemSetupTest {
         preferenceManager.setPreferenceDownloadFolder("folder");
         preferenceManager.setPreferenceArbitraryDownloadFolder("folder");
         preferenceManager.setPreferenceDownloadKeep(true);
+        preferenceManager.setPreferenceDownloadFollowsRedirects(false);
         preferenceManager.setPreferenceArbitraryLogFolder("folder");
         preferenceManager.setPreferenceAccessType(AccessType.CONNECT);
         preferenceManager.setPreferenceAddress("address");
@@ -261,6 +262,7 @@ public class JSONSystemSetupTest {
         assertEquals("folder", globalSettingsData.getString("preferenceDownloadFolder"));
         assertEquals("folder", globalSettingsData.getString("preferenceArbitraryDownloadFolder"));
         assertTrue(globalSettingsData.getBoolean("preferenceDownloadKeep"));
+        assertFalse(globalSettingsData.getBoolean("preferenceDownloadFollowsRedirects"));
         assertEquals("folder", globalSettingsData.getString("preferenceArbitraryLogFolder"));
         assertEquals(AccessType.CONNECT, AccessType.forCode(defaultsData.getInt("preferenceAccessType")));
         assertEquals("address", defaultsData.getString("preferenceAddress"));
@@ -745,6 +747,7 @@ public class JSONSystemSetupTest {
         preferenceManager.setPreferenceExternalStorageType(1);
         preferenceManager.setPreferenceDownloadFolder("folder");
         preferenceManager.setPreferenceDownloadKeep(true);
+        preferenceManager.setPreferenceDownloadFollowsRedirects(false);
         preferenceManager.setPreferenceAccessType(AccessType.CONNECT);
         preferenceManager.setPreferenceAddress("address");
         preferenceManager.setPreferencePort(123);
@@ -777,6 +780,7 @@ public class JSONSystemSetupTest {
         assertEquals(1, preferenceManager.getPreferenceExternalStorageType());
         assertEquals("folder", preferenceManager.getPreferenceDownloadFolder());
         assertTrue(preferenceManager.getPreferenceDownloadKeep());
+        assertFalse(preferenceManager.getPreferenceDownloadFollowsRedirects());
         assertEquals(AccessType.CONNECT, preferenceManager.getPreferenceAccessType());
         assertEquals("address", preferenceManager.getPreferenceAddress());
         assertEquals(123, preferenceManager.getPreferencePort());

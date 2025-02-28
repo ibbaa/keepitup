@@ -451,6 +451,21 @@ public class PreferenceManager {
         removePreferenceValue(getResources().getString(R.string.download_keep_key));
     }
 
+    public boolean getPreferenceDownloadFollowsRedirects() {
+        Log.d(PreferenceManager.class.getName(), "getPreferenceDownloadFollowsRedirects");
+        return getPreferenceBoolean(getResources().getString(R.string.download_follows_redirects_key), getResources().getBoolean(R.bool.download_follows_redirects_default));
+    }
+
+    public void setPreferenceDownloadFollowsRedirects(boolean downloadFollowsRedirects) {
+        Log.d(PreferenceManager.class.getName(), "setPreferenceDownloadFollowsRedirects, downloadFollowsRedirects is " + downloadFollowsRedirects);
+        setPreferenceBoolean(getResources().getString(R.string.download_follows_redirects_key), downloadFollowsRedirects);
+    }
+
+    public void removePreferenceDownloadFollowsRedirects() {
+        Log.d(PreferenceManager.class.getName(), "removePreferenceDownloadFollowsRedirects");
+        removePreferenceValue(getResources().getString(R.string.download_follows_redirects_key));
+    }
+
     public String getPreferenceImportFolder() {
         Log.d(PreferenceManager.class.getName(), "getPreferenceImportFolder");
         return getPreferenceString(getResources().getString(R.string.import_folder_key), getResources().getString(R.string.import_folder_default));

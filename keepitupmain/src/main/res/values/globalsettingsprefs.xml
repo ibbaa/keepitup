@@ -44,4 +44,6 @@
     <string name="arbitrary_log_folder_default">/Documents</string>
     <string name="download_keep_key">download_keep_key</string>
     <bool name="download_keep_default">false</bool>
+    <string name="download_follows_redirects_key">download_follows_redirects_key</string>
+    <bool name="download_follows_redirects_default">true</bool>
 </resources>
