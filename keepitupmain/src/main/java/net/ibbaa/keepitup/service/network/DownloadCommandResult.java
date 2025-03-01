@@ -16,6 +16,9 @@
 
 package net.ibbaa.keepitup.service.network;
 
-public record DownloadCommandResult(boolean connectSuccess, boolean downloadSuccess, boolean fileExists, boolean deleteSuccess, boolean valid, boolean stopped, int httpResponseCode, String httpResponseMessage, String fileName, long duration, Throwable exception) {
+import java.net.URL;
+import java.util.List;
+
+public record DownloadCommandResult(URL url, boolean connectSuccess, boolean downloadSuccess, boolean fileExists, boolean deleteSuccess, boolean valid, boolean stopped, List<Integer> httpResponseCodes, List<String> httpResponseMessages, String fileName, long duration, Throwable exception) {
 
 }

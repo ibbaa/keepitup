@@ -34,6 +34,7 @@ import net.ibbaa.keepitup.util.URLUtil;
 
 import java.io.File;
 import java.net.URL;
+import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -113,22 +114,22 @@ public class DownloadNetworkTaskWorker extends NetworkTaskWorker {
             Log.d(DownloadNetworkTaskWorker.class.getName(), downloadCommand.getClass().getSimpleName() + " returned " + downloadResult);
             if (!downloadResult.connectSuccess()) {
                 Log.d(DownloadNetworkTaskWorker.class.getName(), "Connection failed. Preparing error message.");
-                prepareConnectError(downloadResult, url, timeout, folder, delete, logEntry);
+                prepareConnectError(downloadResult, timeout, folder, delete, logEntry);
                 return new ExecutionResult(false, logEntry);
             }
-            if (downloadResult.httpResponseCode() >= 0 && !HTTPUtil.isHTTPReturnCodeOk(downloadResult.httpResponseCode())) {
+            if (returnedHttpFailure(downloadResult)) {
                 Log.d(DownloadNetworkTaskWorker.class.getName(), "HTTP download and HTTP return code is not HTTP_OK. Preparing error message.");
-                prepareHTTPReturnCodeError(downloadResult, url, timeout, folder, delete, logEntry);
+                prepareHTTPReturnCodeError(downloadResult, timeout, folder, delete, logEntry);
                 return new ExecutionResult(false, logEntry);
             }
             if (downloadResult.downloadSuccess()) {
                 if (!downloadResult.fileExists()) {
                     Log.d(DownloadNetworkTaskWorker.class.getName(), "The download was successful but the downloaded file does not exist. Preparing error message.");
-                    prepareUnknownError(downloadResult, url, timeout, folder, delete, logEntry);
+                    prepareUnknownError(downloadResult, timeout, folder, delete, logEntry);
                     return new ExecutionResult(false, logEntry);
                 }
                 Log.d(DownloadNetworkTaskWorker.class.getName(), "The download was successful. Preparing message.");
-                prepareSuccess(downloadResult, url, timeout, folder, delete, logEntry);
+                prepareSuccess(downloadResult, timeout, folder, delete, logEntry);
                 return new ExecutionResult(false, logEntry);
             }
             if (downloadResult.stopped()) {
@@ -142,7 +143,7 @@ public class DownloadNetworkTaskWorker extends NetworkTaskWorker {
                 return new ExecutionResult(false, logEntry);
             }
             Log.d(DownloadNetworkTaskWorker.class.getName(), "The download failed for an unknown reason.");
-            prepareUnknownError(downloadResult, url, timeout, folder, delete, logEntry);
+            prepareUnknownError(downloadResult, timeout, folder, delete, logEntry);
         } catch (Throwable exc) {
             Log.d(DownloadNetworkTaskWorker.class.getName(), "Error executing " + downloadCommand.getClass().getName(), exc);
             logEntry.setSuccess(false);
@@ -159,16 +160,16 @@ public class DownloadNetworkTaskWorker extends NetworkTaskWorker {
         return new ExecutionResult(interrupted, logEntry);
     }
 
-    private void prepareConnectError(DownloadCommandResult downloadResult, URL url, int timeout, String folder, boolean delete, LogEntry logEntry) {
+    private void prepareConnectError(DownloadCommandResult downloadResult, int timeout, String folder, boolean delete, LogEntry logEntry) {
         Log.d(DownloadNetworkTaskWorker.class.getName(), "prepareConnectErrorMessage");
-        String connectMessage = getResources().getString(R.string.text_download_connect_error, URLUtil.getHostAndPort(url));
+        String connectMessage = getResources().getString(R.string.text_download_connect_error, URLUtil.getHostAndPort(downloadResult.url()));
         prepareError(downloadResult, timeout, folder, delete, logEntry, connectMessage);
     }
 
-    private void prepareHTTPReturnCodeError(DownloadCommandResult downloadResult, URL url, int timeout, String folder, boolean delete, LogEntry logEntry) {
+    private void prepareHTTPReturnCodeError(DownloadCommandResult downloadResult, int timeout, String folder, boolean delete, LogEntry logEntry) {
         Log.d(DownloadNetworkTaskWorker.class.getName(), "prepareHTTPReturnCodeErrorMessage");
-        String downloadError = getResources().getString(R.string.text_download_error, url.toExternalForm());
-        String httpMessage = getResources().getString(R.string.text_download_http_error, downloadResult.httpResponseCode(), downloadResult.httpResponseMessage());
+        String downloadError = getResources().getString(R.string.text_download_error, downloadResult.url().toExternalForm());
+        String httpMessage = getResources().getString(R.string.text_download_http_error, getActualReturnCode(downloadResult), getActualReturnMessage(downloadResult));
         String message = downloadError + " " + httpMessage;
         prepareError(downloadResult, timeout, folder, delete, logEntry, message);
     }
@@ -185,15 +186,15 @@ public class DownloadNetworkTaskWorker extends NetworkTaskWorker {
         prepareError(downloadResult, timeout, folder, delete, logEntry, invalidMessage);
     }
 
-    private void prepareUnknownError(DownloadCommandResult downloadResult, URL url, int timeout, String folder, boolean delete, LogEntry logEntry) {
+    private void prepareUnknownError(DownloadCommandResult downloadResult, int timeout, String folder, boolean delete, LogEntry logEntry) {
         Log.d(DownloadNetworkTaskWorker.class.getName(), "prepareUnknownErrorMessage");
         logEntry.setSuccess(false);
         Throwable exc = downloadResult.exception();
         String message;
         if (exc == null) {
-            message = getResources().getString(R.string.text_download_unknown_error, url.toExternalForm());
+            message = getResources().getString(R.string.text_download_unknown_error, downloadResult.url().toExternalForm());
         } else {
-            message = getResources().getString(R.string.text_download_error, url.toExternalForm());
+            message = getResources().getString(R.string.text_download_error, downloadResult.url().toExternalForm());
         }
         prepareError(downloadResult, timeout, folder, delete, logEntry, message);
     }
@@ -201,6 +202,7 @@ public class DownloadNetworkTaskWorker extends NetworkTaskWorker {
     private void prepareError(DownloadCommandResult downloadResult, int timeout, String folder, boolean delete, LogEntry logEntry, String message) {
         Log.d(DownloadNetworkTaskWorker.class.getName(), "prepareError");
         logEntry.setSuccess(false);
+        String redirectMessage = getRedirectMessage(downloadResult);
         if (downloadResult.fileExists()) {
             Log.d(DownloadNetworkTaskWorker.class.getName(), "The file was partially downloaded.");
             message += " " + getResources().getString(R.string.text_download_partial);
@@ -220,16 +222,17 @@ public class DownloadNetworkTaskWorker extends NetworkTaskWorker {
         }
         Throwable exc = downloadResult.exception();
         if (exc == null) {
-            logEntry.setMessage(message);
+            logEntry.setMessage(redirectMessage + message);
         } else {
-            logEntry.setMessage(getMessageFromException(message, exc, timeout));
+            logEntry.setMessage(redirectMessage + getMessageFromException(message, exc, timeout));
         }
     }
 
-    private void prepareSuccess(DownloadCommandResult downloadResult, URL url, int timeout, String folder, boolean delete, LogEntry logEntry) {
+    private void prepareSuccess(DownloadCommandResult downloadResult, int timeout, String folder, boolean delete, LogEntry logEntry) {
         Log.d(DownloadNetworkTaskWorker.class.getName(), "prepareSuccess");
         logEntry.setSuccess(true);
-        String successMessage = getResources().getString(R.string.text_download_success, url.toExternalForm());
+        String successMessage = getRedirectMessage(downloadResult);
+        successMessage += getResources().getString(R.string.text_download_success, downloadResult.url().toExternalForm());
         String durationMessage = getResources().getString(R.string.text_download_time, StringUtil.formatTimeRange(downloadResult.duration(), getContext()));
         if (!delete) {
             String fileMessage = getResources().getString(R.string.text_download_file, new File(folder, downloadResult.fileName()).getAbsolutePath());
@@ -255,6 +258,55 @@ public class DownloadNetworkTaskWorker extends NetworkTaskWorker {
     private URL determineURL(String baseURL) {
         Log.d(DownloadNetworkTaskWorker.class.getName(), "determineURL, baseURL is " + baseURL);
         return URLUtil.getURL(baseURL, null);
+    }
+
+    private boolean returnedHttpFailure(DownloadCommandResult downloadResult) {
+        List<Integer> httpResponseCodes = downloadResult.httpResponseCodes();
+        if (httpResponseCodes == null || httpResponseCodes.isEmpty()) {
+            return false;
+        }
+        int code = getActualReturnCode(downloadResult);
+        if (code < 0) {
+            return false;
+        }
+        PreferenceManager preferenceManager = new PreferenceManager(getContext());
+        if (preferenceManager.getPreferenceDownloadFollowsRedirects()) {
+            return !HTTPUtil.isHTTPReturnCodeOk(code) && !HTTPUtil.isHTTPReturnCodeRedirect(code);
+        }
+        return !HTTPUtil.isHTTPReturnCodeOk(code);
+    }
+
+    private int getActualReturnCode(DownloadCommandResult downloadResult) {
+        List<Integer> httpResponseCodes = downloadResult.httpResponseCodes();
+        if (httpResponseCodes == null || httpResponseCodes.isEmpty()) {
+            return -1;
+        }
+        return httpResponseCodes.get(httpResponseCodes.size() - 1);
+    }
+
+    private String getActualReturnMessage(DownloadCommandResult downloadResult) {
+        List<String> httpResponseMessages = downloadResult.httpResponseMessages();
+        if (httpResponseMessages == null || httpResponseMessages.isEmpty()) {
+            return "";
+        }
+        return httpResponseMessages.get(httpResponseMessages.size() - 1);
+    }
+
+    private String getRedirectMessage(DownloadCommandResult downloadResult) {
+        PreferenceManager preferenceManager = new PreferenceManager(getContext());
+        StringBuilder message = new StringBuilder();
+        if (!preferenceManager.getPreferenceDownloadFollowsRedirects()) {
+            return message.toString();
+        }
+        List<Integer> httpResponseCodes = downloadResult.httpResponseCodes();
+        List<String> httpResponseMessages = downloadResult.httpResponseMessages();
+        for (int ii = 0; ii < httpResponseCodes.size(); ii++) {
+            if (HTTPUtil.isHTTPReturnCodeRedirect(httpResponseCodes.get(ii))) {
+                message.append(getResources().getString(R.string.text_download_http_redirect, httpResponseCodes.get(ii), ii < httpResponseMessages.size() ? httpResponseMessages.get(ii) : ""));
+                message.append(" ");
+            }
+        }
+        return message.toString();
     }
 
     private String determineDownloadFolder() {

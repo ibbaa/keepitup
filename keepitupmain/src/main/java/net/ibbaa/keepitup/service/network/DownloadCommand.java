@@ -37,6 +37,7 @@ import net.ibbaa.keepitup.util.HTTPUtil;
 import net.ibbaa.keepitup.util.NumberUtil;
 import net.ibbaa.keepitup.util.StreamUtil;
 import net.ibbaa.keepitup.util.StringUtil;
+import net.ibbaa.keepitup.util.URLUtil;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -47,6 +48,8 @@ import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -77,7 +80,9 @@ public class DownloadCommand implements Callable<DownloadCommandResult> {
     @Override
     public DownloadCommandResult call() {
         Log.d(DownloadCommand.class.getName(), "call");
+        URL downloadUrl = url;
         URLConnection connection = null;
+        boolean redirect = false;
         InputStream inputStream = null;
         FileOutputStream outputStream = null;
         ParcelFileDescriptor fileDescriptor = null;
@@ -85,43 +90,71 @@ public class DownloadCommand implements Callable<DownloadCommandResult> {
         boolean downloadSuccess = false;
         boolean fileExists;
         boolean deleteSuccess = false;
-        int httpCode = -1;
-        String httpMessage = null;
+        List<Integer> httpCodes = new ArrayList<>();
+        List<String> httpMessages = new ArrayList<>();
         String fileName = null;
         ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor();
         initializeValid();
-        long start = timeService.getCurrentTimestamp();
+        long start = -1;
+        PreferenceManager preferenceManager = new PreferenceManager(context);
         try {
-            Log.d(DownloadCommand.class.getName(), "Establishing connection to " + url);
-            connection = openConnection();
-            if (connection == null) {
-                Log.d(DownloadCommand.class.getName(), "Error establishing connection to " + url);
-                long end = timeService.getCurrentTimestamp();
-                return createDownloadCommandResult(false, false, false, false, httpCode, null, null, NumberUtil.ensurePositive(end - start), null);
-            }
-            connectSuccess = true;
-            Log.d(DownloadCommand.class.getName(), "Connection established.");
-            if (HTTPUtil.isHTTPConnection(connection)) {
-                Log.d(DownloadCommand.class.getName(), "Download is an HTTP download.");
-                HttpURLConnection httpConnection = (HttpURLConnection) connection;
-                httpCode = httpConnection.getResponseCode();
-                Log.d(DownloadCommand.class.getName(), "HTTP return code is " + httpCode);
-                httpMessage = httpConnection.getResponseMessage();
-                httpMessage += getLocationHeader(connection);
-                Log.d(DownloadCommand.class.getName(), "HTTP message is " + httpMessage);
-                if (!HTTPUtil.isHTTPReturnCodeOk(httpCode)) {
-                    Log.d(DownloadCommand.class.getName(), "Connection successful but HTTP return code " + httpCode + " is not HTTP_OK");
+            do {
+                Log.d(DownloadCommand.class.getName(), "Establishing connection to " + downloadUrl);
+                redirect = false;
+                connectSuccess = false;
+                start = timeService.getCurrentTimestamp();
+                connection = openConnection(downloadUrl);
+                if (connection == null) {
+                    Log.d(DownloadCommand.class.getName(), "Error establishing connection to " + downloadUrl);
                     long end = timeService.getCurrentTimestamp();
-                    return createDownloadCommandResult(true, false, false, false, httpCode, httpMessage, null, NumberUtil.ensurePositive(end - start), null);
+                    return createDownloadCommandResult(downloadUrl, false, false, false, false, httpCodes, null, null, NumberUtil.ensurePositive(end - start), null);
                 }
-            } else {
-                Log.d(DownloadCommand.class.getName(), "Download is not an HTTP download.");
-            }
-            fileName = getFileName(connection);
+                connectSuccess = true;
+                Log.d(DownloadCommand.class.getName(), "Connection established.");
+                if (HTTPUtil.isHTTPConnection(connection)) {
+                    Log.d(DownloadCommand.class.getName(), "Download is an HTTP download.");
+                    HttpURLConnection httpConnection = (HttpURLConnection) connection;
+                    int httpCode = httpConnection.getResponseCode();
+                    Log.d(DownloadCommand.class.getName(), "HTTP return code is " + httpCode);
+                    String httpMessage = httpConnection.getResponseMessage();
+                    String location = HTTPUtil.getLocation(getContext(), connection);
+                    httpMessage += getLocationHeaderMessage(location);
+                    Log.d(DownloadCommand.class.getName(), "HTTP message is " + httpMessage);
+                    if (HTTPUtil.isHTTPReturnCodeRedirect(httpCode) && preferenceManager.getPreferenceDownloadFollowsRedirects()) {
+                        Log.d(DownloadCommand.class.getName(), "HTTP return code " + httpCode + " is a redirect, location is " + location);
+                        if (StringUtil.isEmpty(location)) {
+                            Log.e(DownloadCommand.class.getName(), "Location header is empty");
+                            httpMessage += getLocationInvalidMessage();
+                        } else if (!URLUtil.isValidURL(location)) {
+                            Log.e(DownloadCommand.class.getName(), "Location URL is invalid");
+                            httpMessage += getLocationInvalidMessage();
+                        } else {
+                            URL locationUrl = URLUtil.getURL(location, null);
+                            if (locationUrl != null) {
+                                redirect = true;
+                                downloadUrl = locationUrl;
+                            } else {
+                                Log.e(DownloadCommand.class.getName(), "Error parsing location URL");
+                                httpMessage += getLocationInvalidMessage();
+                            }
+                        }
+                    }
+                    httpCodes.add(httpCode);
+                    httpMessages.add(httpMessage);
+                    if (!HTTPUtil.isHTTPReturnCodeOk(httpCode) && !redirect) {
+                        Log.d(DownloadCommand.class.getName(), "Connection successful but HTTP return code " + httpCode + " is not HTTP_OK");
+                        long end = timeService.getCurrentTimestamp();
+                        return createDownloadCommandResult(downloadUrl, true, false, false, false, httpCodes, httpMessages, null, NumberUtil.ensurePositive(end - start), null);
+                    }
+                } else {
+                    Log.d(DownloadCommand.class.getName(), "Download is not an HTTP download.");
+                }
+            } while (redirect);
+            fileName = getFileName(connection, downloadUrl);
             if (fileName == null) {
                 Log.d(DownloadCommand.class.getName(), "Connection successful but download file name could not be determined");
                 long end = timeService.getCurrentTimestamp();
-                return createDownloadCommandResult(true, false, false, false, httpCode, httpMessage, null, NumberUtil.ensurePositive(end - start), null);
+                return createDownloadCommandResult(downloadUrl, true, false, false, false, httpCodes, httpMessages, null, NumberUtil.ensurePositive(end - start), null);
             }
             Log.d(DownloadCommand.class.getName(), "Using file name " + fileName);
             Log.d(DownloadCommand.class.getName(), "Opening streams...");
@@ -131,7 +164,7 @@ public class DownloadCommand implements Callable<DownloadCommandResult> {
                 if (downloadDocumentFile == null) {
                     Log.e(DownloadCommand.class.getName(), "Error access download file");
                     long end = timeService.getCurrentTimestamp();
-                    return createDownloadCommandResult(true, false, false, false, httpCode, httpMessage, null, NumberUtil.ensurePositive(end - start), null);
+                    return createDownloadCommandResult(downloadUrl, true, false, false, false, httpCodes, httpMessages, null, NumberUtil.ensurePositive(end - start), null);
                 }
                 fileDescriptor = getDownloadFileDescriptor(downloadDocumentFile);
                 outputStream = getOutputStream(fileDescriptor);
@@ -152,7 +185,7 @@ public class DownloadCommand implements Callable<DownloadCommandResult> {
                 deleteSuccess = deleteDownloadedFile(fileName);
             }
             long end = timeService.getCurrentTimestamp();
-            return createDownloadCommandResult(true, downloadSuccess, fileExists, deleteSuccess, httpCode, httpMessage, fileName, NumberUtil.ensurePositive(end - start), null);
+            return createDownloadCommandResult(downloadUrl, true, downloadSuccess, fileExists, deleteSuccess, httpCodes, httpMessages, fileName, NumberUtil.ensurePositive(end - start), null);
         } catch (Exception exc) {
             Log.e(DownloadCommand.class.getName(), "Error executing download command", exc);
             Log.e(DownloadCommand.class.getName(), "Try closing stream.");
@@ -164,14 +197,14 @@ public class DownloadCommand implements Callable<DownloadCommandResult> {
                 deleteSuccess = deleteDownloadedFile(fileName);
             }
             long end = timeService.getCurrentTimestamp();
-            return createDownloadCommandResult(connectSuccess, downloadSuccess, fileExists, deleteSuccess, httpCode, httpMessage, fileName, NumberUtil.ensurePositive(end - start), exc);
+            return createDownloadCommandResult(downloadUrl, connectSuccess, downloadSuccess, fileExists, deleteSuccess, httpCodes, httpMessages, fileName, NumberUtil.ensurePositive(end - start), exc);
         } finally {
             closeResources(connection, inputStream, outputStream, fileDescriptor, executorService);
         }
     }
 
-    protected URLConnection openConnection() throws IOException {
-        Log.d(DownloadCommand.class.getName(), "openConnection");
+    protected URLConnection openConnection(URL url) throws IOException {
+        Log.d(DownloadCommand.class.getName(), "openConnection to " + url);
         if (url == null) {
             Log.e(DownloadCommand.class.getName(), "URL is null");
             return null;
@@ -227,16 +260,15 @@ public class DownloadCommand implements Callable<DownloadCommandResult> {
         }
     }
 
-    private String getLocationHeader(URLConnection connection) {
-        Log.d(DownloadCommand.class.getName(), "getLocationHeader");
-        String location = HTTPUtil.getLocation(getContext(), connection);
+    private String getLocationHeaderMessage(String location) {
+        Log.d(DownloadCommand.class.getName(), "getLocationHeaderString, location is " + location);
         if (!StringUtil.isEmpty(location)) {
             return " " + getResources().getString(R.string.http_header_content_location) + ": " + location;
         }
         return "";
     }
 
-    private String getFileName(URLConnection connection) {
+    private String getFileName(URLConnection connection, URL url) {
         Log.d(DownloadCommand.class.getName(), "getFileName");
         if (folder == null) {
             Log.d(DownloadCommand.class.getName(), "Download folder is null");
@@ -256,6 +288,10 @@ public class DownloadCommand implements Callable<DownloadCommandResult> {
         String validFileName = getValidFileName(fileName);
         Log.d(DownloadCommand.class.getName(), "Adjusted valid file name is " + validFileName);
         return validFileName;
+    }
+
+    private String getLocationInvalidMessage() {
+        return " " + getResources().getString(R.string.text_download_http_redirect_location_invalid);
     }
 
     private String getValidFileName(String fileName) {
@@ -318,8 +354,8 @@ public class DownloadCommand implements Callable<DownloadCommandResult> {
         }
     }
 
-    private synchronized DownloadCommandResult createDownloadCommandResult(boolean connectSuccess, boolean downloadSuccess, boolean fileExists, boolean deleteSuccess, int httpCode, String httpMessage, String fileName, long duration, Exception exc) {
-        return new DownloadCommandResult(connectSuccess, downloadSuccess, fileExists, deleteSuccess, valid, stopped, httpCode, httpMessage, fileName, duration, exc);
+    private synchronized DownloadCommandResult createDownloadCommandResult(URL url, boolean connectSuccess, boolean downloadSuccess, boolean fileExists, boolean deleteSuccess, List<Integer> httpCodes, List<String>  httpMessages, String fileName, long duration, Exception exc) {
+        return new DownloadCommandResult(url, connectSuccess, downloadSuccess, fileExists, deleteSuccess, valid, stopped, httpCodes, httpMessages, fileName, duration, exc);
     }
 
     public synchronized boolean isValid() {
