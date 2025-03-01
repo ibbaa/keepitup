@@ -35,6 +35,10 @@ public class HTTPUtil {
         return connection instanceof HttpURLConnection;
     }
 
+    public static boolean isHTTPReturnCodeRedirect(int returnCode) {
+        return returnCode == 301 || returnCode == 302 || returnCode == 307 || returnCode == 308;
+    }
+
     public static boolean isHTTPReturnCodeOk(int returnCode) {
         return returnCode >= 200 && returnCode < 300;
     }

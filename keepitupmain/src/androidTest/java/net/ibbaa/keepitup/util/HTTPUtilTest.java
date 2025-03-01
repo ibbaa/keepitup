@@ -34,6 +34,16 @@ import java.net.HttpURLConnection;
 public class HTTPUtilTest {
 
     @Test
+    public void testIsHTTPReturnCodeRedirect() {
+        assertTrue(HTTPUtil.isHTTPReturnCodeRedirect(HttpURLConnection.HTTP_MOVED_PERM));
+        assertTrue(HTTPUtil.isHTTPReturnCodeRedirect(HttpURLConnection.HTTP_MOVED_TEMP));
+        assertTrue(HTTPUtil.isHTTPReturnCodeRedirect(307));
+        assertTrue(HTTPUtil.isHTTPReturnCodeRedirect(308));
+        assertFalse(HTTPUtil.isHTTPReturnCodeRedirect(HttpURLConnection.HTTP_OK));
+        assertFalse(HTTPUtil.isHTTPReturnCodeRedirect(HttpURLConnection.HTTP_GONE));
+    }
+
+    @Test
     public void testIsHTTPReturnCodeOk() {
         assertTrue(HTTPUtil.isHTTPReturnCodeOk(HttpURLConnection.HTTP_OK));
         assertTrue(HTTPUtil.isHTTPReturnCodeOk(206));
