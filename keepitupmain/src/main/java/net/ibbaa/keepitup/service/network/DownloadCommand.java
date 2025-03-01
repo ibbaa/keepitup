@@ -82,7 +82,7 @@ public class DownloadCommand implements Callable<DownloadCommandResult> {
         Log.d(DownloadCommand.class.getName(), "call");
         URL downloadUrl = url;
         URLConnection connection = null;
-        boolean redirect = false;
+        boolean redirect;
         InputStream inputStream = null;
         FileOutputStream outputStream = null;
         ParcelFileDescriptor fileDescriptor = null;
@@ -122,21 +122,12 @@ public class DownloadCommand implements Callable<DownloadCommandResult> {
                     Log.d(DownloadCommand.class.getName(), "HTTP message is " + httpMessage);
                     if (HTTPUtil.isHTTPReturnCodeRedirect(httpCode) && preferenceManager.getPreferenceDownloadFollowsRedirects()) {
                         Log.d(DownloadCommand.class.getName(), "HTTP return code " + httpCode + " is a redirect, location is " + location);
-                        if (StringUtil.isEmpty(location)) {
-                            Log.e(DownloadCommand.class.getName(), "Location header is empty");
-                            httpMessage += getLocationInvalidMessage();
-                        } else if (!URLUtil.isValidURL(location)) {
-                            Log.e(DownloadCommand.class.getName(), "Location URL is invalid");
+                        URL locationUrl = getLocationURL(location);
+                        if (locationUrl == null) {
                             httpMessage += getLocationInvalidMessage();
                         } else {
-                            URL locationUrl = URLUtil.getURL(location, null);
-                            if (locationUrl != null) {
-                                redirect = true;
-                                downloadUrl = locationUrl;
-                            } else {
-                                Log.e(DownloadCommand.class.getName(), "Error parsing location URL");
-                                httpMessage += getLocationInvalidMessage();
-                            }
+                            redirect = true;
+                            downloadUrl = locationUrl;
                         }
                     }
                     httpCodes.add(httpCode);
@@ -201,6 +192,15 @@ public class DownloadCommand implements Callable<DownloadCommandResult> {
         } finally {
             closeResources(connection, inputStream, outputStream, fileDescriptor, executorService);
         }
+    }
+
+    private URL getLocationURL(String location) {
+        Log.d(DownloadCommand.class.getName(), "getLocationURL for loaction " + location);
+        if (StringUtil.isEmpty(location) || !URLUtil.isValidURL(location)) {
+            Log.d(DownloadCommand.class.getName(), "Location URL is invalid");
+            return null;
+        }
+        return URLUtil.getURL(location, null);
     }
 
     protected URLConnection openConnection(URL url) throws IOException {
