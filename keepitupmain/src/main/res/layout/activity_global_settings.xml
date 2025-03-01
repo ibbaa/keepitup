@@ -494,6 +494,60 @@
             </androidx.cardview.widget.CardView>
 
             <androidx.cardview.widget.CardView xmlns:card_view="http://schemas.android.com/apk/res-auto"
+                android:id="@+id/cardview_activity_global_settings_download_follows_redirects"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/cardview_activity_global_settings_download_follows_redirects_margin"
+                card_view:cardCornerRadius="@dimen/cardview_activity_global_settings_download_follows_redirects_corner_radius"
+                app:cardElevation="@dimen/cardview_activity_global_settings_download_follows_redirects_card_elevation">
+
+                <LinearLayout
+                    android:id="@+id/linearlayout_activity_global_settings_download_follows_redirects"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/linearlayout_activity_global_settings_download_follows_redirects_margin"
+                    android:focusable="true"
+                    android:focusableInTouchMode="true"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/textview_activity_global_settings_download_follows_redirects_label"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textStyle="bold"
+                        android:text="@string/label_activity_global_settings_download_follows_redirects" />
+
+                    <LinearLayout
+                        android:id="@+id/linearlayout_activity_global_settings_download_follows_redirects_on_off"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="@dimen/linearlayout_activity_global_settings_download_follows_redirects_margin"
+                        android:focusable="true"
+                        android:focusableInTouchMode="true"
+                        android:orientation="horizontal">
+
+                        <com.google.android.material.switchmaterial.SwitchMaterial
+                            android:id="@+id/switch_activity_global_settings_download_follows_redirects"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            app:trackTint="@drawable/switchtrack_selector"
+                            app:thumbTint="@drawable/switchthumb_selector"
+                            android:showText="false" />
+
+                        <TextView
+                            android:id="@+id/textview_activity_global_settings_download_follows_redirects_on_off"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textStyle="bold"
+                            android:text="" />
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+            </androidx.cardview.widget.CardView>
+
+            <androidx.cardview.widget.CardView xmlns:card_view="http://schemas.android.com/apk/res-auto"
                 android:id="@+id/cardview_activity_global_settings_log_file"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

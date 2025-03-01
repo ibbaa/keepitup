@@ -79,6 +79,8 @@ public class GlobalSettingsActivity extends SettingsInputActivity implements Sus
     private TextView downloadFolderText;
     private SwitchMaterial downloadKeepSwitch;
     private TextView downloadKeepOnOffText;
+    private SwitchMaterial downloadFollowsRedirectsSwitch;
+    private TextView downloadFollowsRedirectsOnOffText;
     private SwitchMaterial logFileSwitch;
     private TextView logFileOnOffText;
     private TextView logFolderText;
@@ -103,6 +105,7 @@ public class GlobalSettingsActivity extends SettingsInputActivity implements Sus
         prepareDownloadExternalStorageSwitch();
         prepareDownloadFolderField();
         prepareDownloadKeepSwitch();
+        prepareDownloadFollowsRedirectsSwitch();
         prepareLogFolderLauncher();
         prepareLogFileSwitch();
         prepareLogFolderField();
@@ -471,6 +474,28 @@ public class GlobalSettingsActivity extends SettingsInputActivity implements Sus
         PreferenceManager preferenceManager = new PreferenceManager(this);
         preferenceManager.setPreferenceDownloadKeep(isChecked);
         prepareDownloadKeepOnOffText();
+    }
+
+    private void prepareDownloadFollowsRedirectsSwitch() {
+        Log.d(GlobalSettingsActivity.class.getName(), "prepareDownloadFollowsRedirectsSwitch");
+        PreferenceManager preferenceManager = new PreferenceManager(this);
+        downloadFollowsRedirectsSwitch = findViewById(R.id.switch_activity_global_settings_download_follows_redirects);
+        downloadFollowsRedirectsOnOffText = findViewById(R.id.textview_activity_global_settings_download_follows_redirects_on_off);
+        downloadFollowsRedirectsSwitch.setOnCheckedChangeListener(null);
+        downloadFollowsRedirectsSwitch.setChecked(preferenceManager.getPreferenceDownloadFollowsRedirects());
+        downloadFollowsRedirectsSwitch.setOnCheckedChangeListener(this::onDownloadFollowsRedirectsCheckedChanged);
+        prepareDownloadFollowsRedirectsOnOffText();
+    }
+
+    private void prepareDownloadFollowsRedirectsOnOffText() {
+        downloadFollowsRedirectsOnOffText.setText(downloadFollowsRedirectsSwitch.isChecked() ? getResources().getString(R.string.string_yes) : getResources().getString(R.string.string_no));
+    }
+
+    private void onDownloadFollowsRedirectsCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+        Log.d(GlobalSettingsActivity.class.getName(), "onDownloadFollowsRedirectsCheckedChanged, new value is " + isChecked);
+        PreferenceManager preferenceManager = new PreferenceManager(this);
+        preferenceManager.setPreferenceDownloadFollowsRedirects(isChecked);
+        prepareDownloadFollowsRedirectsOnOffText();
     }
 
     private void prepareLogFileSwitch() {

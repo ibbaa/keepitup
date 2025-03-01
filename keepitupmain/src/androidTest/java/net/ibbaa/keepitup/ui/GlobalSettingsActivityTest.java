@@ -89,6 +89,7 @@ public class GlobalSettingsActivityTest extends BaseUITest {
         assertFalse(preferenceManager.getPreferenceEnforceDefaultPingPackageSize());
         assertFalse(preferenceManager.getPreferenceDownloadExternalStorage());
         assertFalse(preferenceManager.getPreferenceDownloadKeep());
+        assertTrue(preferenceManager.getPreferenceDownloadFollowsRedirects());
         assertFalse(preferenceManager.getPreferenceLogFile());
         onView(withId(R.id.textview_activity_global_settings_notification_inactive_network_label)).check(matches(withText("Notifications when network is not active")));
         onView(withId(R.id.switch_activity_global_settings_notification_inactive_network)).check(matches(isNotChecked()));
@@ -114,6 +115,8 @@ public class GlobalSettingsActivityTest extends BaseUITest {
         onView(withId(R.id.textview_activity_global_settings_download_keep_label)).check(matches(withText("Keep downloaded files")));
         onView(withId(R.id.switch_activity_global_settings_download_keep)).check(matches(isNotChecked()));
         onView(withId(R.id.switch_activity_global_settings_download_keep)).check(matches(not(isEnabled())));
+        onView(withId(R.id.textview_activity_global_settings_download_follows_redirects_label)).check(matches(withText("Download follows redirects")));
+        onView(withId(R.id.switch_activity_global_settings_download_follows_redirects)).check(matches(isChecked()));
         onView(withId(R.id.switch_activity_global_settings_log_file)).perform(scrollTo());
         onView(withId(R.id.textview_activity_global_settings_log_file_label)).check(matches(withText("Log to file")));
         onView(withId(R.id.switch_activity_global_settings_log_file)).check(matches(isNotChecked()));
@@ -133,6 +136,7 @@ public class GlobalSettingsActivityTest extends BaseUITest {
         preferenceManager.setPreferenceEnforceDefaultPingPackageSize(true);
         preferenceManager.setPreferenceDownloadExternalStorage(true);
         preferenceManager.setPreferenceDownloadKeep(true);
+        preferenceManager.setPreferenceDownloadFollowsRedirects(false);
         preferenceManager.setPreferenceLogFile(true);
         ActivityScenario<?> activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
         ((GlobalSettingsActivity) getActivity(activityScenario)).injectTimeBasedSuspensionScheduler(getTimeBasedSuspensionScheduler());
@@ -160,6 +164,8 @@ public class GlobalSettingsActivityTest extends BaseUITest {
         onView(withId(R.id.textview_activity_global_settings_download_keep_label)).check(matches(withText("Keep downloaded files")));
         onView(withId(R.id.switch_activity_global_settings_download_keep)).check(matches(isChecked()));
         onView(withId(R.id.switch_activity_global_settings_download_keep)).check(matches(isEnabled()));
+        onView(withId(R.id.textview_activity_global_settings_download_follows_redirects_label)).check(matches(withText("Download follows redirects")));
+        onView(withId(R.id.switch_activity_global_settings_download_follows_redirects)).check(matches(isNotChecked()));
         onView(withId(R.id.switch_activity_global_settings_log_file)).perform(scrollTo());
         onView(withId(R.id.textview_activity_global_settings_log_file_label)).check(matches(withText("Log to file")));
         onView(withId(R.id.switch_activity_global_settings_log_file)).check(matches(isChecked()));
@@ -183,6 +189,8 @@ public class GlobalSettingsActivityTest extends BaseUITest {
         onView(withId(R.id.switch_activity_global_settings_download_external_storage)).perform(click());
         onView(withId(R.id.switch_activity_global_settings_download_keep)).perform(scrollTo());
         onView(withId(R.id.switch_activity_global_settings_download_keep)).perform(click());
+        onView(withId(R.id.switch_activity_global_settings_download_follows_redirects)).perform(scrollTo());
+        onView(withId(R.id.switch_activity_global_settings_download_follows_redirects)).perform(click());
         onView(withId(R.id.switch_activity_global_settings_log_file)).perform(scrollTo());
         onView(withId(R.id.switch_activity_global_settings_log_file)).perform(click());
         onView(withId(R.id.textview_activity_global_settings_notification_inactive_network_label)).check(matches(withText("Notifications when network is not active")));
@@ -204,6 +212,8 @@ public class GlobalSettingsActivityTest extends BaseUITest {
         onView(withId(R.id.textview_activity_global_settings_download_keep_label)).check(matches(withText("Keep downloaded files")));
         onView(withId(R.id.switch_activity_global_settings_download_keep)).check(matches(isChecked()));
         onView(withId(R.id.switch_activity_global_settings_download_keep)).check(matches(isEnabled()));
+        onView(withId(R.id.textview_activity_global_settings_download_follows_redirects_label)).check(matches(withText("Download follows redirects")));
+        onView(withId(R.id.switch_activity_global_settings_download_follows_redirects)).check(matches(isNotChecked()));
         onView(withId(R.id.textview_activity_global_settings_log_file_label)).check(matches(withText("Log to file")));
         onView(withId(R.id.switch_activity_global_settings_log_file)).check(matches(isChecked()));
         onView(withId(R.id.textview_activity_global_settings_log_folder_label)).check(matches(withText("Log folder")));
@@ -258,6 +268,15 @@ public class GlobalSettingsActivityTest extends BaseUITest {
         onView(withId(R.id.switch_activity_global_settings_download_keep)).perform(click());
         onView(withId(R.id.switch_activity_global_settings_download_keep)).check(matches(isNotChecked()));
         onView(withId(R.id.textview_activity_global_settings_download_keep_on_off)).check(matches(withText("no")));
+        onView(withId(R.id.switch_activity_global_settings_download_follows_redirects)).perform(scrollTo());
+        onView(withId(R.id.switch_activity_global_settings_download_follows_redirects)).check(matches(isChecked()));
+        onView(withId(R.id.textview_activity_global_settings_download_follows_redirects_on_off)).check(matches(withText("yes")));
+        onView(withId(R.id.switch_activity_global_settings_download_follows_redirects)).perform(click());
+        onView(withId(R.id.switch_activity_global_settings_download_follows_redirects)).check(matches(isNotChecked()));
+        onView(withId(R.id.textview_activity_global_settings_download_follows_redirects_on_off)).check(matches(withText("no")));
+        onView(withId(R.id.switch_activity_global_settings_download_follows_redirects)).perform(click());
+        onView(withId(R.id.switch_activity_global_settings_download_follows_redirects)).check(matches(isChecked()));
+        onView(withId(R.id.textview_activity_global_settings_download_follows_redirects_on_off)).check(matches(withText("yes")));
         onView(withId(R.id.switch_activity_global_settings_log_file)).perform(scrollTo());
         onView(withId(R.id.switch_activity_global_settings_log_file)).check(matches(isNotChecked()));
         onView(withId(R.id.textview_activity_global_settings_log_file_on_off)).check(matches(withText("no")));
@@ -285,6 +304,8 @@ public class GlobalSettingsActivityTest extends BaseUITest {
         onView(withId(R.id.switch_activity_global_settings_download_external_storage)).perform(click());
         onView(withId(R.id.switch_activity_global_settings_download_keep)).perform(scrollTo());
         onView(withId(R.id.switch_activity_global_settings_download_keep)).perform(click());
+        onView(withId(R.id.switch_activity_global_settings_download_follows_redirects)).perform(scrollTo());
+        onView(withId(R.id.switch_activity_global_settings_download_follows_redirects)).perform(click());
         onView(withId(R.id.switch_activity_global_settings_log_file)).perform(scrollTo());
         onView(withId(R.id.switch_activity_global_settings_log_file)).perform(click());
         PreferenceManager preferenceManager = getPreferenceManager();
@@ -296,6 +317,7 @@ public class GlobalSettingsActivityTest extends BaseUITest {
         assertTrue(preferenceManager.getPreferenceDownloadExternalStorage());
         assertEquals("download", preferenceManager.getPreferenceDownloadFolder());
         assertTrue(preferenceManager.getPreferenceDownloadKeep());
+        assertFalse(preferenceManager.getPreferenceDownloadFollowsRedirects());
         assertTrue(preferenceManager.getPreferenceLogFile());
         activityScenario.close();
     }
@@ -1685,6 +1707,8 @@ public class GlobalSettingsActivityTest extends BaseUITest {
         onView(withId(R.id.switch_activity_global_settings_download_external_storage)).perform(click());
         onView(withId(R.id.switch_activity_global_settings_download_keep)).perform(scrollTo());
         onView(withId(R.id.switch_activity_global_settings_download_keep)).perform(click());
+        onView(withId(R.id.switch_activity_global_settings_download_follows_redirects)).perform(scrollTo());
+        onView(withId(R.id.switch_activity_global_settings_download_follows_redirects)).perform(click());
         onView(withId(R.id.switch_activity_global_settings_log_file)).perform(scrollTo());
         onView(withId(R.id.switch_activity_global_settings_log_file)).perform(click());
         openActionBarOverflowOrOptionsMenu(TestRegistry.getContext());
@@ -1707,6 +1731,8 @@ public class GlobalSettingsActivityTest extends BaseUITest {
         onView(withId(R.id.textview_activity_global_settings_download_keep_label)).check(matches(withText("Keep downloaded files")));
         onView(withId(R.id.switch_activity_global_settings_download_keep)).check(matches(isNotChecked()));
         onView(withId(R.id.switch_activity_global_settings_download_keep)).check(matches(not(isEnabled())));
+        onView(withId(R.id.textview_activity_global_settings_download_follows_redirects_label)).check(matches(withText("Download follows redirects")));
+        onView(withId(R.id.switch_activity_global_settings_download_follows_redirects)).check(matches(isChecked()));
         onView(withId(R.id.switch_activity_global_settings_log_file)).check(matches(isNotChecked()));
         PreferenceManager preferenceManager = getPreferenceManager();
         assertFalse(preferenceManager.getPreferenceNotificationInactiveNetwork());
@@ -1737,6 +1763,8 @@ public class GlobalSettingsActivityTest extends BaseUITest {
         onView(withId(R.id.switch_activity_global_settings_download_external_storage)).perform(click());
         onView(withId(R.id.switch_activity_global_settings_download_keep)).perform(scrollTo());
         onView(withId(R.id.switch_activity_global_settings_download_keep)).perform(click());
+        onView(withId(R.id.switch_activity_global_settings_download_follows_redirects)).perform(scrollTo());
+        onView(withId(R.id.switch_activity_global_settings_download_follows_redirects)).perform(click());
         onView(withId(R.id.switch_activity_global_settings_log_file)).perform(scrollTo());
         onView(withId(R.id.switch_activity_global_settings_log_file)).perform(click());
         rotateScreen(activityScenario);
@@ -1753,6 +1781,8 @@ public class GlobalSettingsActivityTest extends BaseUITest {
         onView(withId(R.id.textview_activity_global_settings_download_external_storage_on_off)).check(matches(withText("yes")));
         onView(withId(R.id.switch_activity_global_settings_download_keep)).check(matches(isChecked()));
         onView(withId(R.id.textview_activity_global_settings_download_keep_on_off)).check(matches(withText("yes")));
+        onView(withId(R.id.switch_activity_global_settings_download_follows_redirects)).check(matches(isNotChecked()));
+        onView(withId(R.id.textview_activity_global_settings_download_follows_redirects_on_off)).check(matches(withText("no")));
         onView(withId(R.id.switch_activity_global_settings_log_file)).check(matches(isChecked()));
         onView(withId(R.id.textview_activity_global_settings_log_file_on_off)).check(matches(withText("yes")));
         rotateScreen(activityScenario);
@@ -1769,6 +1799,8 @@ public class GlobalSettingsActivityTest extends BaseUITest {
         onView(withId(R.id.textview_activity_global_settings_download_external_storage_on_off)).check(matches(withText("yes")));
         onView(withId(R.id.switch_activity_global_settings_download_keep)).check(matches(isChecked()));
         onView(withId(R.id.textview_activity_global_settings_download_keep_on_off)).check(matches(withText("yes")));
+        onView(withId(R.id.switch_activity_global_settings_download_follows_redirects)).check(matches(isNotChecked()));
+        onView(withId(R.id.textview_activity_global_settings_download_follows_redirects_on_off)).check(matches(withText("no")));
         onView(withId(R.id.switch_activity_global_settings_log_file)).check(matches(isChecked()));
         onView(withId(R.id.textview_activity_global_settings_log_file_on_off)).check(matches(withText("yes")));
         activityScenario.close();
