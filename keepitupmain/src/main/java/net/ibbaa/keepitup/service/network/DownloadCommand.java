@@ -123,6 +123,7 @@ public class DownloadCommand implements Callable<DownloadCommandResult> {
                     Log.d(DownloadCommand.class.getName(), "HTTP message is " + httpMessage);
                     if (HTTPUtil.isHTTPReturnCodeRedirect(httpCode) && preferenceManager.getPreferenceDownloadFollowsRedirects()) {
                         Log.d(DownloadCommand.class.getName(), "HTTP return code " + httpCode + " is a redirect, location is " + location);
+                        redirects--;
                         URL locationUrl = getLocationURL(location);
                         if (locationUrl == null) {
                             httpMessage += getLocationInvalidMessage();
@@ -131,7 +132,6 @@ public class DownloadCommand implements Callable<DownloadCommandResult> {
                         } else {
                             redirect = true;
                             downloadUrl = locationUrl;
-                            redirects--;
                         }
                     }
                     httpCodes.add(httpCode);
@@ -144,7 +144,7 @@ public class DownloadCommand implements Callable<DownloadCommandResult> {
                 } else {
                     Log.d(DownloadCommand.class.getName(), "Download is not an HTTP download.");
                 }
-            } while (redirect && redirects > 0);
+            } while (redirect);
             fileName = getFileName(connection, downloadUrl);
             if (fileName == null) {
                 Log.d(DownloadCommand.class.getName(), "Connection successful but download file name could not be determined");
