@@ -107,7 +107,7 @@ public class DownloadCommand implements Callable<DownloadCommandResult> {
                 if (connection == null) {
                     Log.d(DownloadCommand.class.getName(), "Error establishing connection to " + downloadUrl);
                     long end = timeService.getCurrentTimestamp();
-                    return createDownloadCommandResult(downloadUrl, false, false, false, false, httpCodes, null, null, NumberUtil.ensurePositive(end - start), null);
+                    return createDownloadCommandResult(downloadUrl, false, false, false, false, httpCodes, httpMessages, null, NumberUtil.ensurePositive(end - start), null);
                 }
                 connectSuccess = true;
                 Log.d(DownloadCommand.class.getName(), "Connection established.");

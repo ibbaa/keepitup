@@ -29,26 +29,29 @@ import net.ibbaa.keepitup.service.network.DownloadCommand;
 import java.io.FileOutputStream;
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.HashMap;
+import java.util.Map;
 
 public class TestDownloadCommand extends DownloadCommand {
 
-    private URLConnection urlConnection;
+    private Map<String, URLConnection> urlConnections;
     private FileOutputStream outputStream;
     private IFileManager fileManager;
     private IDocumentManager documentManager;
 
     public TestDownloadCommand(Context context, NetworkTask networkTask, URL url, String folder, boolean delete) {
         super(context, networkTask, url, folder, delete);
+        urlConnections = new HashMap<>();
         reset();
     }
 
     public void reset() {
-        urlConnection = null;
+        urlConnections.clear();
         fileManager = null;
     }
 
-    public void setURLConnection(URLConnection urlConnection) {
-        this.urlConnection = urlConnection;
+    public void addURLConnection(String url, URLConnection urlConnection) {
+        urlConnections.put(url, urlConnection);
     }
 
     public void setOutputStream(FileOutputStream outputStream) {
@@ -64,8 +67,11 @@ public class TestDownloadCommand extends DownloadCommand {
     }
 
     @Override
-    protected URLConnection openConnection() {
-        return urlConnection;
+    protected URLConnection openConnection(URL url) {
+        if (url == null) {
+            return null;
+        }
+        return urlConnections.get(url.toString());
     }
 
     @Override
