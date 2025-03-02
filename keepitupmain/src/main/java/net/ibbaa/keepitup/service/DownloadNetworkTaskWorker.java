@@ -269,10 +269,6 @@ public class DownloadNetworkTaskWorker extends NetworkTaskWorker {
         if (code < 0) {
             return false;
         }
-        PreferenceManager preferenceManager = new PreferenceManager(getContext());
-        if (preferenceManager.getPreferenceDownloadFollowsRedirects()) {
-            return !HTTPUtil.isHTTPReturnCodeOk(code) && !HTTPUtil.isHTTPReturnCodeRedirect(code);
-        }
         return !HTTPUtil.isHTTPReturnCodeOk(code);
     }
 
