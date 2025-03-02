@@ -96,7 +96,8 @@ public class DownloadCommand implements Callable<DownloadCommandResult> {
         ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor();
         initializeValid();
         long start = -1;
-        PreferenceManager preferenceManager = new PreferenceManager(context);
+        int redirects = getResources().getInteger(R.integer.download_max_redirect);
+        PreferenceManager preferenceManager = new PreferenceManager(getContext());
         try {
             do {
                 Log.d(DownloadCommand.class.getName(), "Establishing connection to " + downloadUrl);
@@ -125,9 +126,12 @@ public class DownloadCommand implements Callable<DownloadCommandResult> {
                         URL locationUrl = getLocationURL(location);
                         if (locationUrl == null) {
                             httpMessage += getLocationInvalidMessage();
+                        } else if (redirects <= 0) {
+                            httpMessage += getMaxRedirectsExceededMessage();
                         } else {
                             redirect = true;
                             downloadUrl = locationUrl;
+                            redirects--;
                         }
                     }
                     httpCodes.add(httpCode);
@@ -140,7 +144,7 @@ public class DownloadCommand implements Callable<DownloadCommandResult> {
                 } else {
                     Log.d(DownloadCommand.class.getName(), "Download is not an HTTP download.");
                 }
-            } while (redirect);
+            } while (redirect && redirects > 0);
             fileName = getFileName(connection, downloadUrl);
             if (fileName == null) {
                 Log.d(DownloadCommand.class.getName(), "Connection successful but download file name could not be determined");
@@ -292,6 +296,10 @@ public class DownloadCommand implements Callable<DownloadCommandResult> {
 
     private String getLocationInvalidMessage() {
         return " " + getResources().getString(R.string.text_download_http_redirect_location_invalid);
+    }
+
+    private String getMaxRedirectsExceededMessage() {
+        return " " + getResources().getString(R.string.text_download_http_redirect_max_exceeded);
     }
 
     private String getValidFileName(String fileName) {

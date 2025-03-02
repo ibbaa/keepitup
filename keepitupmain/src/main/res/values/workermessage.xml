@@ -67,6 +67,7 @@
     <string name="text_download_http_error">Server return code %d %s.</string>
     <string name="text_download_http_redirect">Server returned redirect %d %s.</string>
     <string name="text_download_http_redirect_location_invalid">(invalid)</string>
+    <string name="text_download_http_redirect_max_exceeded">(max number of redirects exceeded)</string>
     <string name="text_download_url_error">Download not possible. The url %s is invalid.</string>
     <string name="text_download_folder_error">Download not possible. The download folder %s does not exist and cannot be created.</string>
     <string name="text_download_folder_error_arbitrary_permission">Download not possible. Missing permission to access download folder: %s.</string>
