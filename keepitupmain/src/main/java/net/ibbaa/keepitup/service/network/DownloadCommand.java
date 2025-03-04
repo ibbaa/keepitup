@@ -104,6 +104,7 @@ public class DownloadCommand implements Callable<DownloadCommandResult> {
                 redirect = false;
                 connectSuccess = false;
                 start = timeService.getCurrentTimestamp();
+                closeConnection(connection);
                 connection = openConnection(downloadUrl);
                 if (connection == null) {
                     Log.d(DownloadCommand.class.getName(), "Error establishing connection to " + downloadUrl);
@@ -402,6 +403,21 @@ public class DownloadCommand implements Callable<DownloadCommandResult> {
         }
     }
 
+    private void closeConnection(URLConnection connection) {
+        Log.d(DownloadCommand.class.getName(), "closeConnection");
+        if (connection != null) {
+            try {
+                if (HTTPUtil.isHTTPConnection(connection)) {
+                    Log.d(DownloadCommand.class.getName(), "Disconnecting http connection");
+                    ((HttpURLConnection) connection).disconnect();
+                }
+            } catch (Exception exc) {
+                Log.e(DownloadCommand.class.getName(), "Error closing http connection", exc);
+            }
+        }
+    }
+
+
     private void closeResources(URLConnection connection, InputStream inputStream, FileOutputStream outputStream, ParcelFileDescriptor fileDescriptor, ScheduledExecutorService executorService) {
         Log.d(DownloadCommand.class.getName(), "closeResources");
         flushAndCloseOutputStream(outputStream);
@@ -413,14 +429,7 @@ public class DownloadCommand implements Callable<DownloadCommandResult> {
         } catch (Exception exc) {
             Log.e(DownloadCommand.class.getName(), "Error closing input stream", exc);
         }
-        try {
-            if (HTTPUtil.isHTTPConnection(connection)) {
-                Log.d(DownloadCommand.class.getName(), "Disconnecting http connection");
-                ((HttpURLConnection) connection).disconnect();
-            }
-        } catch (Exception exc) {
-            Log.e(DownloadCommand.class.getName(), "Error closing http connection", exc);
-        }
+        closeConnection(connection);
         try {
             if (fileDescriptor != null) {
                 fileDescriptor.close();

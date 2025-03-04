@@ -34,7 +34,7 @@ import java.util.Map;
 
 public class TestDownloadCommand extends DownloadCommand {
 
-    private Map<String, URLConnection> urlConnections;
+    private final Map<String, URLConnection> urlConnections;
     private FileOutputStream outputStream;
     private IFileManager fileManager;
     private IDocumentManager documentManager;
