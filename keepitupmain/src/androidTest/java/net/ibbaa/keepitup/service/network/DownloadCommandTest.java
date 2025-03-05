@@ -120,6 +120,30 @@ public class DownloadCommandTest {
     }
 
     @Test
+    public void testConnectionFailedWithRedirect() throws Exception {
+        preferenceManager.setPreferenceDownloadFollowsRedirects(true);
+        TestDownloadCommand downloadCommand = new TestDownloadCommand(TestRegistry.getContext(), null, new URL("http://test.com"), null, true);
+        MockHttpURLConnection urlConnection = prepareHttpURLConnection("http://test.com", HttpURLConnection.HTTP_MOVED_PERM, "moved", null);
+        urlConnection.addHeader("Location", "http://www.host.com");
+        downloadCommand.addURLConnection("http://test.com", urlConnection);
+        setCurrentTimeInverted(downloadCommand);
+        DownloadCommandResult result = downloadCommand.call();
+        assertFalse(result.connectSuccess());
+        assertFalse(result.downloadSuccess());
+        assertFalse(result.fileExists());
+        assertFalse(result.deleteSuccess());
+        assertTrue(result.valid());
+        assertFalse(result.stopped());
+        assertEquals(1, result.httpResponseCodes().size());
+        assertEquals(1, result.httpResponseMessages().size());
+        assertEquals(HttpURLConnection.HTTP_MOVED_PERM, result.httpResponseCodes().get(0).intValue());
+        assertEquals("moved Location: http://www.host.com", result.httpResponseMessages().get(0));
+        assertNull(result.fileName());
+        assertEquals(99, result.duration());
+        assertNull(result.exception());
+    }
+
+    @Test
     public void testConnectionFailedNegativeTime() {
         preferenceManager.setPreferenceDownloadFollowsRedirects(false);
         TestDownloadCommand downloadCommand = new TestDownloadCommand(TestRegistry.getContext(), null, null, null, true);
@@ -189,38 +213,134 @@ public class DownloadCommandTest {
     }
 
     @Test
-    public void testSuccessWithOneRedirect() throws Exception {
+    public void testHTTPResponseCodeNotOkRedirectInvalidLocationHeader() throws Exception {
         preferenceManager.setPreferenceDownloadFollowsRedirects(true);
-        NetworkTask task = networkTaskDAO.insertNetworkTask(getNetworkTask());
-        File externalDir = fileManager.getExternalDirectory(fileManager.getDefaultDownloadDirectoryName(), 0);
-        TestDownloadCommand downloadCommand = new TestDownloadCommand(TestRegistry.getContext(), task, new URL("http://test.com"), externalDir.getAbsolutePath(), true);
-        setCurrentTimeInverted(downloadCommand);
-        MockHttpURLConnection urlConnection1 = prepareHttpURLConnection("http://test.com", HttpURLConnection.HTTP_MOVED_PERM, "moved", null);
-        urlConnection1.addHeader("Location", "http://www.host.com/test.jpg");
-        ByteArrayInputStream inputStream = new ByteArrayInputStream("TestData".getBytes(StandardCharsets.UTF_8));
-        MockHttpURLConnection urlConnection2 = prepareHttpURLConnection("http://www.host.com/test.jpg", inputStream);
-        downloadCommand.addURLConnection("http://test.com", urlConnection1);
-        downloadCommand.addURLConnection("http://www.host.com/test.jpg", urlConnection2);
+        TestDownloadCommand downloadCommand = new TestDownloadCommand(TestRegistry.getContext(), null, new URL("http://test.com"), null, true);
+        setCurrentTime(downloadCommand);
+        MockHttpURLConnection urlConnection = prepareHttpURLConnection("http://test.com", HttpURLConnection.HTTP_MOVED_PERM, "moved", null);
+        urlConnection.addHeader("Location", "xyz");
+        downloadCommand.addURLConnection("http://test.com", urlConnection);
         DownloadCommandResult result = downloadCommand.call();
         assertTrue(result.connectSuccess());
-        assertTrue(result.downloadSuccess());
-        assertTrue(result.fileExists());
-        assertTrue(result.deleteSuccess());
+        assertFalse(result.downloadSuccess());
+        assertFalse(result.fileExists());
+        assertFalse(result.deleteSuccess());
         assertTrue(result.valid());
         assertFalse(result.stopped());
-        assertEquals(2, result.httpResponseCodes().size());
-        assertEquals(2, result.httpResponseMessages().size());
+        assertEquals(1, result.httpResponseCodes().size());
+        assertEquals(1, result.httpResponseMessages().size());
         assertEquals(HttpURLConnection.HTTP_MOVED_PERM, result.httpResponseCodes().get(0).intValue());
-        assertEquals(HttpURLConnection.HTTP_OK, result.httpResponseCodes().get(1).intValue());
-        assertEquals("moved Location: http://www.host.com/test.jpg", result.httpResponseMessages().get(0));
-        assertEquals("Everything ok", result.httpResponseMessages().get(1));
-        assertEquals("test.jpg", result.fileName());
+        assertEquals("moved Location: xyz (invalid)", result.httpResponseMessages().get(0));
+        assertNull(result.fileName());
         assertEquals(99, result.duration());
+        assertNull(result.exception());
+        assertTrue(urlConnection.isDisconnected());
+    }
+
+    @Test
+    public void testHTTPResponseCodeNotOkRedirectsExceeded() throws Exception {
+        preferenceManager.setPreferenceDownloadFollowsRedirects(true);
+        TestDownloadCommand downloadCommand = new TestDownloadCommand(TestRegistry.getContext(), null, new URL("http://test.com"), null, true);
+        setCurrentTime(downloadCommand);
+        MockHttpURLConnection urlConnection1 = prepareHttpURLConnection("http://test.com", HttpURLConnection.HTTP_MOVED_PERM, "moved", null);
+        urlConnection1.addHeader("Location", "http://test1.com");
+        MockHttpURLConnection urlConnection2 = prepareHttpURLConnection("http://test1.com", HttpURLConnection.HTTP_MOVED_PERM, "moved", null);
+        urlConnection2.addHeader("Location", "http://test2.com");
+        MockHttpURLConnection urlConnection3 = prepareHttpURLConnection("http://test2.com", HttpURLConnection.HTTP_MOVED_PERM, "moved", null);
+        urlConnection3.addHeader("Location", "http://test3.com");
+        MockHttpURLConnection urlConnection4 = prepareHttpURLConnection("http://test3.com", HttpURLConnection.HTTP_MOVED_PERM, "moved", null);
+        urlConnection4.addHeader("Location", "http://test4.com");
+        MockHttpURLConnection urlConnection5 = prepareHttpURLConnection("http://test4.com", HttpURLConnection.HTTP_MOVED_PERM, "moved", null);
+        urlConnection5.addHeader("Location", "http://test5.com");
+        MockHttpURLConnection urlConnection6 = prepareHttpURLConnection("http://test5.com", HttpURLConnection.HTTP_MOVED_PERM, "moved", null);
+        urlConnection6.addHeader("Location", "http://test6.com");
+        MockHttpURLConnection urlConnection7 = prepareHttpURLConnection("http://test6.com", HttpURLConnection.HTTP_MOVED_PERM, "moved", null);
+        urlConnection7.addHeader("Location", "http://test7.com");
+        MockHttpURLConnection urlConnection8 = prepareHttpURLConnection("http://test7.com", HttpURLConnection.HTTP_MOVED_PERM, "moved", null);
+        urlConnection8.addHeader("Location", "http://test8.com");
+        MockHttpURLConnection urlConnection9 = prepareHttpURLConnection("http://test8.com", HttpURLConnection.HTTP_MOVED_PERM, "moved", null);
+        urlConnection9.addHeader("Location", "http://test9.com");
+        MockHttpURLConnection urlConnection10 = prepareHttpURLConnection("http://test9.com", HttpURLConnection.HTTP_MOVED_PERM, "moved", null);
+        urlConnection10.addHeader("Location", "http://test10.com");
+        downloadCommand.addURLConnection("http://test.com", urlConnection1);
+        downloadCommand.addURLConnection("http://test1.com", urlConnection2);
+        downloadCommand.addURLConnection("http://test2.com", urlConnection3);
+        downloadCommand.addURLConnection("http://test3.com", urlConnection4);
+        downloadCommand.addURLConnection("http://test4.com", urlConnection5);
+        downloadCommand.addURLConnection("http://test5.com", urlConnection6);
+        downloadCommand.addURLConnection("http://test6.com", urlConnection7);
+        downloadCommand.addURLConnection("http://test7.com", urlConnection8);
+        downloadCommand.addURLConnection("http://test8.com", urlConnection9);
+        downloadCommand.addURLConnection("http://test9.com", urlConnection10);
+        DownloadCommandResult result = downloadCommand.call();
+        assertTrue(result.connectSuccess());
+        assertFalse(result.downloadSuccess());
+        assertFalse(result.fileExists());
+        assertFalse(result.deleteSuccess());
+        assertTrue(result.valid());
+        assertFalse(result.stopped());
+        assertEquals(10, result.httpResponseCodes().size());
+        assertEquals(10, result.httpResponseMessages().size());
+        assertEquals(HttpURLConnection.HTTP_MOVED_PERM, result.httpResponseCodes().get(0).intValue());
+        assertEquals("moved Location: http://test1.com", result.httpResponseMessages().get(0));
+        assertEquals(HttpURLConnection.HTTP_MOVED_PERM, result.httpResponseCodes().get(1).intValue());
+        assertEquals("moved Location: http://test2.com", result.httpResponseMessages().get(1));
+        assertEquals(HttpURLConnection.HTTP_MOVED_PERM, result.httpResponseCodes().get(2).intValue());
+        assertEquals("moved Location: http://test3.com", result.httpResponseMessages().get(2));
+        assertEquals(HttpURLConnection.HTTP_MOVED_PERM, result.httpResponseCodes().get(3).intValue());
+        assertEquals("moved Location: http://test4.com", result.httpResponseMessages().get(3));
+        assertEquals(HttpURLConnection.HTTP_MOVED_PERM, result.httpResponseCodes().get(4).intValue());
+        assertEquals("moved Location: http://test5.com", result.httpResponseMessages().get(4));
+        assertEquals(HttpURLConnection.HTTP_MOVED_PERM, result.httpResponseCodes().get(5).intValue());
+        assertEquals("moved Location: http://test6.com", result.httpResponseMessages().get(5));
+        assertEquals(HttpURLConnection.HTTP_MOVED_PERM, result.httpResponseCodes().get(6).intValue());
+        assertEquals("moved Location: http://test7.com", result.httpResponseMessages().get(6));
+        assertEquals(HttpURLConnection.HTTP_MOVED_PERM, result.httpResponseCodes().get(7).intValue());
+        assertEquals("moved Location: http://test8.com", result.httpResponseMessages().get(7));
+        assertEquals(HttpURLConnection.HTTP_MOVED_PERM, result.httpResponseCodes().get(8).intValue());
+        assertEquals("moved Location: http://test9.com", result.httpResponseMessages().get(8));
+        assertEquals(HttpURLConnection.HTTP_MOVED_PERM, result.httpResponseCodes().get(9).intValue());
+        assertEquals("moved Location: http://test10.com (max number of redirects exceeded)", result.httpResponseMessages().get(9));
+        assertNull(result.fileName());
         assertNull(result.exception());
         assertTrue(urlConnection1.isDisconnected());
         assertTrue(urlConnection2.isDisconnected());
-        File downloadedFile = new File(externalDir, "test.jpg");
-        assertFalse(downloadedFile.exists());
+        assertTrue(urlConnection3.isDisconnected());
+        assertTrue(urlConnection4.isDisconnected());
+        assertTrue(urlConnection5.isDisconnected());
+        assertTrue(urlConnection6.isDisconnected());
+        assertTrue(urlConnection7.isDisconnected());
+        assertTrue(urlConnection8.isDisconnected());
+        assertTrue(urlConnection9.isDisconnected());
+        assertTrue(urlConnection10.isDisconnected());
+    }
+
+    @Test
+    public void testHTTPResponseCodeNotOkRedirectsExceededRecursive() throws Exception {
+        preferenceManager.setPreferenceDownloadFollowsRedirects(true);
+        TestDownloadCommand downloadCommand = new TestDownloadCommand(TestRegistry.getContext(), null, new URL("http://test.com"), null, true);
+        setCurrentTime(downloadCommand);
+        MockHttpURLConnection urlConnection = prepareHttpURLConnection("http://test.com", HttpURLConnection.HTTP_MOVED_PERM, "moved", null);
+        urlConnection.addHeader("Location", "http://test.com");
+        downloadCommand.addURLConnection("http://test.com", urlConnection);
+        DownloadCommandResult result = downloadCommand.call();
+        assertTrue(result.connectSuccess());
+        assertFalse(result.downloadSuccess());
+        assertFalse(result.fileExists());
+        assertFalse(result.deleteSuccess());
+        assertTrue(result.valid());
+        assertFalse(result.stopped());
+        assertEquals(10, result.httpResponseCodes().size());
+        assertEquals(10, result.httpResponseMessages().size());
+        for(int ii = 0; ii < result.httpResponseCodes().size() - 1; ii++) {
+            assertEquals(HttpURLConnection.HTTP_MOVED_PERM, result.httpResponseCodes().get(ii).intValue());
+            assertEquals("moved Location: http://test.com", result.httpResponseMessages().get(ii));
+        }
+        assertEquals(HttpURLConnection.HTTP_MOVED_PERM, result.httpResponseCodes().get(9).intValue());
+        assertEquals("moved Location: http://test.com (max number of redirects exceeded)", result.httpResponseMessages().get(9));
+        assertNull(result.fileName());
+        assertNull(result.exception());
+        assertTrue(urlConnection.isDisconnected());
     }
 
     @Test
@@ -776,6 +896,80 @@ public class DownloadCommandTest {
         downloadCommand.setFileManager(fileManager);
         DownloadCommandResult result = downloadCommand.call();
         assertEquals(0, result.duration());
+    }
+
+    @Test
+    public void testSuccessWithOneRedirect() throws Exception {
+        preferenceManager.setPreferenceDownloadFollowsRedirects(true);
+        NetworkTask task = networkTaskDAO.insertNetworkTask(getNetworkTask());
+        File externalDir = fileManager.getExternalDirectory(fileManager.getDefaultDownloadDirectoryName(), 0);
+        TestDownloadCommand downloadCommand = new TestDownloadCommand(TestRegistry.getContext(), task, new URL("http://test.com"), externalDir.getAbsolutePath(), true);
+        setCurrentTimeInverted(downloadCommand);
+        MockHttpURLConnection urlConnection1 = prepareHttpURLConnection("http://test.com", HttpURLConnection.HTTP_MOVED_PERM, "moved", null);
+        urlConnection1.addHeader("Location", "http://www.host.com/test.jpg");
+        ByteArrayInputStream inputStream = new ByteArrayInputStream("TestData".getBytes(StandardCharsets.UTF_8));
+        MockHttpURLConnection urlConnection2 = prepareHttpURLConnection("http://www.host.com/test.jpg", inputStream);
+        downloadCommand.addURLConnection("http://test.com", urlConnection1);
+        downloadCommand.addURLConnection("http://www.host.com/test.jpg", urlConnection2);
+        DownloadCommandResult result = downloadCommand.call();
+        assertTrue(result.connectSuccess());
+        assertTrue(result.downloadSuccess());
+        assertTrue(result.fileExists());
+        assertTrue(result.deleteSuccess());
+        assertTrue(result.valid());
+        assertFalse(result.stopped());
+        assertEquals(2, result.httpResponseCodes().size());
+        assertEquals(2, result.httpResponseMessages().size());
+        assertEquals(HttpURLConnection.HTTP_MOVED_PERM, result.httpResponseCodes().get(0).intValue());
+        assertEquals(HttpURLConnection.HTTP_OK, result.httpResponseCodes().get(1).intValue());
+        assertEquals("moved Location: http://www.host.com/test.jpg", result.httpResponseMessages().get(0));
+        assertEquals("Everything ok", result.httpResponseMessages().get(1));
+        assertEquals("test.jpg", result.fileName());
+        assertEquals(99, result.duration());
+        assertNull(result.exception());
+        assertTrue(urlConnection1.isDisconnected());
+        assertTrue(urlConnection2.isDisconnected());
+        File downloadedFile = new File(externalDir, "test.jpg");
+        assertFalse(downloadedFile.exists());
+    }
+
+    @Test
+    public void testSuccessWithTwoRedirects() throws Exception {
+        preferenceManager.setPreferenceDownloadFollowsRedirects(true);
+        NetworkTask task = networkTaskDAO.insertNetworkTask(getNetworkTask());
+        File externalDir = fileManager.getExternalDirectory(fileManager.getDefaultDownloadDirectoryName(), 0);
+        TestDownloadCommand downloadCommand = new TestDownloadCommand(TestRegistry.getContext(), task, new URL("http://test.com"), externalDir.getAbsolutePath(), true);
+        setCurrentTime(downloadCommand);
+        MockHttpURLConnection urlConnection1 = prepareHttpURLConnection("http://test.com", HttpURLConnection.HTTP_MOVED_PERM, "moved", null);
+        urlConnection1.addHeader("Location", "http://test2.com");
+        MockHttpURLConnection urlConnection2 = prepareHttpURLConnection("http://test2.com", HttpURLConnection.HTTP_MOVED_TEMP, "moved2", null);
+        urlConnection2.addHeader("Location", "http://www.host.com/test.jpg");
+        ByteArrayInputStream inputStream = new ByteArrayInputStream("TestData".getBytes(StandardCharsets.UTF_8));
+        MockHttpURLConnection urlConnection3 = prepareHttpURLConnection("http://www.host.com/test.jpg", inputStream);
+        downloadCommand.addURLConnection("http://test.com", urlConnection1);
+        downloadCommand.addURLConnection("http://test2.com", urlConnection2);
+        downloadCommand.addURLConnection("http://www.host.com/test.jpg", urlConnection3);
+        DownloadCommandResult result = downloadCommand.call();
+        assertTrue(result.connectSuccess());
+        assertTrue(result.downloadSuccess());
+        assertTrue(result.fileExists());
+        assertTrue(result.deleteSuccess());
+        assertTrue(result.valid());
+        assertFalse(result.stopped());
+        assertEquals(3, result.httpResponseCodes().size());
+        assertEquals(3, result.httpResponseMessages().size());
+        assertEquals(HttpURLConnection.HTTP_MOVED_PERM, result.httpResponseCodes().get(0).intValue());
+        assertEquals(HttpURLConnection.HTTP_MOVED_TEMP, result.httpResponseCodes().get(1).intValue());
+        assertEquals(HttpURLConnection.HTTP_OK, result.httpResponseCodes().get(2).intValue());
+        assertEquals("moved Location: http://test2.com", result.httpResponseMessages().get(0));
+        assertEquals("moved2 Location: http://www.host.com/test.jpg", result.httpResponseMessages().get(1));
+        assertEquals("Everything ok", result.httpResponseMessages().get(2));
+        assertEquals("test.jpg", result.fileName());
+        assertNull(result.exception());
+        assertTrue(urlConnection1.isDisconnected());
+        assertTrue(urlConnection2.isDisconnected());
+        File downloadedFile = new File(externalDir, "test.jpg");
+        assertFalse(downloadedFile.exists());
     }
 
     private void setNegativeTime(TestDownloadCommand downloadCommand) {

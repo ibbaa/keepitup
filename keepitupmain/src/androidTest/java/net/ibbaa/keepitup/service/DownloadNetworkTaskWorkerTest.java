@@ -130,6 +130,7 @@ public class DownloadNetworkTaskWorkerTest {
 
     @Test
     public void testInvalidURL() throws Exception {
+        preferenceManager.setPreferenceDownloadFollowsRedirects(false);
         DNSLookupResult dnsLookupResult = new DNSLookupResult(Arrays.asList(InetAddress.getByName("127.0.0.1"), InetAddress.getByName("::1")), null);
         TestDownloadNetworkTaskWorker downloadNetworkTaskWorker = prepareTestDownloadNetworkTaskWorker(dnsLookupResult, (DownloadCommandResult) null);
         NetworkTask networkTask = getNetworkTask();
@@ -144,6 +145,7 @@ public class DownloadNetworkTaskWorkerTest {
 
     @Test
     public void testInvalidInternalFolder() throws Exception {
+        preferenceManager.setPreferenceDownloadFollowsRedirects(false);
         DNSLookupResult dnsLookupResult = new DNSLookupResult(Arrays.asList(InetAddress.getByName("127.0.0.1"), InetAddress.getByName("::1")), null);
         TestDownloadNetworkTaskWorker downloadNetworkTaskWorker = prepareTestDownloadNetworkTaskWorker(dnsLookupResult, (DownloadCommandResult) null);
         preferenceManager.setPreferenceDownloadExternalStorage(false);
@@ -159,6 +161,7 @@ public class DownloadNetworkTaskWorkerTest {
 
     @Test
     public void testInvalidExternalFolder() throws Exception {
+        preferenceManager.setPreferenceDownloadFollowsRedirects(false);
         DNSLookupResult dnsLookupResult = new DNSLookupResult(Arrays.asList(InetAddress.getByName("127.0.0.1"), InetAddress.getByName("::1")), null);
         TestDownloadNetworkTaskWorker downloadNetworkTaskWorker = prepareTestDownloadNetworkTaskWorker(dnsLookupResult, (DownloadCommandResult) null);
         preferenceManager.setPreferenceDownloadExternalStorage(true);
@@ -173,6 +176,7 @@ public class DownloadNetworkTaskWorkerTest {
 
     @Test
     public void testInvalidArbitraryDownloadFolderNoPermission() throws Exception {
+        preferenceManager.setPreferenceDownloadFollowsRedirects(false);
         preferenceManager.setPreferenceAllowArbitraryFileLocation(true);
         preferenceManager.setPreferenceLogFile(true);
         preferenceManager.setPreferenceArbitraryDownloadFolder("Test");
@@ -194,8 +198,9 @@ public class DownloadNetworkTaskWorkerTest {
         assertEquals("Download not possible. Missing permission to access download folder: Test.", logEntry.getMessage());
     }
 
- /*   @Test
+    @Test
     public void testInvalidArbitraryDownloadFolder() throws Exception {
+        preferenceManager.setPreferenceDownloadFollowsRedirects(false);
         preferenceManager.setPreferenceAllowArbitraryFileLocation(true);
         preferenceManager.setPreferenceLogFile(true);
         preferenceManager.setPreferenceArbitraryDownloadFolder("Test");
@@ -217,7 +222,7 @@ public class DownloadNetworkTaskWorkerTest {
         assertEquals("Download not possible. Missing permission to access download folder: Test.", logEntry.getMessage());
     }
 
-    @Test
+    /*@Test
     public void testValidArbitraryFolder() throws Exception {
         preferenceManager.setPreferenceAllowArbitraryFileLocation(true);
         preferenceManager.setPreferenceLogFile(true);
