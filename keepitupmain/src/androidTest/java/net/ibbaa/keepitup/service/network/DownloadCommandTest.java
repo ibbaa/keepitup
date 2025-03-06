@@ -332,7 +332,7 @@ public class DownloadCommandTest {
         assertFalse(result.stopped());
         assertEquals(10, result.httpResponseCodes().size());
         assertEquals(10, result.httpResponseMessages().size());
-        for(int ii = 0; ii < result.httpResponseCodes().size() - 1; ii++) {
+        for (int ii = 0; ii < result.httpResponseCodes().size() - 1; ii++) {
             assertEquals(HttpURLConnection.HTTP_MOVED_PERM, result.httpResponseCodes().get(ii).intValue());
             assertEquals("moved Location: http://test.com", result.httpResponseMessages().get(ii));
         }

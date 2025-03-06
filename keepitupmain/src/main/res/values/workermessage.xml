@@ -64,8 +64,10 @@
     <string name="text_connect_last_error">Last error:</string>
     <string name="text_download_error">The download from %s failed.</string>
     <string name="text_download_connect_error">Connection to %s failed.</string>
-    <string name="text_download_http_error">Server return code %d %s.</string>
-    <string name="text_download_http_redirect">Server returned redirect %d %s.</string>
+    <string name="text_download_http_error_with_message">Server return code %d %s.</string>
+    <string name="text_download_http_error_without_message">Server return code %d.</string>
+    <string name="text_download_http_redirect_with_message">Server returned redirect %d %s.</string>
+    <string name="text_download_http_redirect_without_message">Server returned redirect %d.</string>
     <string name="text_download_http_redirect_location_invalid">(invalid)</string>
     <string name="text_download_http_redirect_max_exceeded">(max number of redirects exceeded)</string>
     <string name="text_download_url_error">Download not possible. The url %s is invalid.</string>

@@ -169,7 +169,13 @@ public class DownloadNetworkTaskWorker extends NetworkTaskWorker {
     private void prepareHTTPReturnCodeError(DownloadCommandResult downloadResult, int timeout, String folder, boolean delete, LogEntry logEntry) {
         Log.d(DownloadNetworkTaskWorker.class.getName(), "prepareHTTPReturnCodeErrorMessage");
         String downloadError = getResources().getString(R.string.text_download_error, downloadResult.url().toExternalForm());
-        String httpMessage = getResources().getString(R.string.text_download_http_error, getActualReturnCode(downloadResult), getActualReturnMessage(downloadResult));
+        String httpMessage;
+        String actualReturnMessage = getActualReturnMessage(downloadResult);
+        if (StringUtil.isEmpty(actualReturnMessage)) {
+            httpMessage = getResources().getString(R.string.text_download_http_error_without_message, getActualReturnCode(downloadResult));
+        } else {
+            httpMessage = getResources().getString(R.string.text_download_http_error_with_message, getActualReturnCode(downloadResult), actualReturnMessage);
+        }
         String message = downloadError + " " + httpMessage;
         prepareError(downloadResult, timeout, folder, delete, logEntry, message);
     }
@@ -298,8 +304,14 @@ public class DownloadNetworkTaskWorker extends NetworkTaskWorker {
         List<String> httpResponseMessages = downloadResult.httpResponseMessages();
         for (int ii = 0; ii < httpResponseCodes.size(); ii++) {
             if (HTTPUtil.isHTTPReturnCodeRedirect(httpResponseCodes.get(ii))) {
-                message.append(getResources().getString(R.string.text_download_http_redirect, httpResponseCodes.get(ii), ii < httpResponseMessages.size() ? httpResponseMessages.get(ii) : ""));
-                message.append(" ");
+                String httpMessage = ii < httpResponseMessages.size() ? httpResponseMessages.get(ii) : "";
+                if (StringUtil.isEmpty(httpMessage)) {
+                    message.append(getResources().getString(R.string.text_download_http_redirect_without_message, httpResponseCodes.get(ii)));
+                    message.append(" ");
+                } else {
+                    message.append(getResources().getString(R.string.text_download_http_redirect_with_message, httpResponseCodes.get(ii), httpMessage));
+                    message.append(" ");
+                }
             }
         }
         return message.toString();

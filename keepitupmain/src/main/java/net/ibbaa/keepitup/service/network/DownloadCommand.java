@@ -118,7 +118,7 @@ public class DownloadCommand implements Callable<DownloadCommandResult> {
                     HttpURLConnection httpConnection = (HttpURLConnection) connection;
                     int httpCode = httpConnection.getResponseCode();
                     Log.d(DownloadCommand.class.getName(), "HTTP return code is " + httpCode);
-                    String httpMessage = httpConnection.getResponseMessage();
+                    String httpMessage = getResponseMessage(httpConnection);
                     String location = HTTPUtil.getLocation(getContext(), connection);
                     httpMessage += getLocationHeaderMessage(location);
                     Log.d(DownloadCommand.class.getName(), "HTTP message is " + httpMessage);
@@ -265,8 +265,14 @@ public class DownloadCommand implements Callable<DownloadCommandResult> {
         }
     }
 
+    private static String getResponseMessage(HttpURLConnection httpConnection) throws IOException {
+        Log.d(DownloadCommand.class.getName(), "getResponseMessage");
+        String message = httpConnection.getResponseMessage();
+        return message == null ? "" : message;
+    }
+
     private String getLocationHeaderMessage(String location) {
-        Log.d(DownloadCommand.class.getName(), "getLocationHeaderString, location is " + location);
+        Log.d(DownloadCommand.class.getName(), "getLocationHeaderMessage, location is " + location);
         if (!StringUtil.isEmpty(location)) {
             return " " + getResources().getString(R.string.http_header_content_location) + ": " + location;
         }
@@ -363,7 +369,7 @@ public class DownloadCommand implements Callable<DownloadCommandResult> {
         }
     }
 
-    private synchronized DownloadCommandResult createDownloadCommandResult(URL url, boolean connectSuccess, boolean downloadSuccess, boolean fileExists, boolean deleteSuccess, List<Integer> httpCodes, List<String>  httpMessages, String fileName, long duration, Exception exc) {
+    private synchronized DownloadCommandResult createDownloadCommandResult(URL url, boolean connectSuccess, boolean downloadSuccess, boolean fileExists, boolean deleteSuccess, List<Integer> httpCodes, List<String> httpMessages, String fileName, long duration, Exception exc) {
         return new DownloadCommandResult(url, connectSuccess, downloadSuccess, fileExists, deleteSuccess, valid, stopped, httpCodes, httpMessages, fileName, duration, exc);
     }
 
