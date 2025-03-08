@@ -365,7 +365,7 @@ public class DownloadNetworkTaskWorkerTest {
     public void testDownloadStoppedFileDoesNotExist() throws Exception {
         preferenceManager.setPreferenceDownloadFollowsRedirects(false);
         DNSLookupResult dnsLookupResult = new DNSLookupResult(Arrays.asList(InetAddress.getByName("127.0.0.1"), InetAddress.getByName("::1")), null);
-        DownloadCommandResult downloadCommandResult = new DownloadCommandResult(new URL("http://127.0.0.1"), true, false, false, false, false, true, List.of(HttpURLConnection.HTTP_OK), List.of(""), null, 0, null);
+        DownloadCommandResult downloadCommandResult = new DownloadCommandResult(new URL("http://127.0.0.1"), true, false, false, false, false, true, List.of(HttpURLConnection.HTTP_MOVED_PERM, HttpURLConnection.HTTP_MOVED_PERM, HttpURLConnection.HTTP_MOVED_PERM, HttpURLConnection.HTTP_MOVED_PERM, HttpURLConnection.HTTP_MOVED_PERM, HttpURLConnection.HTTP_MOVED_PERM, HttpURLConnection.HTTP_OK), List.of("1", "2", "3"), null, 0, null);
         TestDownloadNetworkTaskWorker downloadNetworkTaskWorker = prepareTestDownloadNetworkTaskWorker(dnsLookupResult, downloadCommandResult);
         NetworkTaskWorker.ExecutionResult executionResult = downloadNetworkTaskWorker.execute(getNetworkTask(), getAccessTypeData());
         LogEntry logEntry = executionResult.getLogEntry();
@@ -489,7 +489,7 @@ public class DownloadNetworkTaskWorkerTest {
     public void testDownloadStoppedFileExistDeleteFailedInternalStorage() throws Exception {
         preferenceManager.setPreferenceDownloadFollowsRedirects(false);
         DNSLookupResult dnsLookupResult = new DNSLookupResult(Arrays.asList(InetAddress.getByName("127.0.0.1"), InetAddress.getByName("::1")), null);
-        DownloadCommandResult downloadCommandResult = new DownloadCommandResult(new URL("http://127.0.0.1"), true, false, true, false, false, true, List.of(HttpURLConnection.HTTP_OK), List.of(""), "testfile", 1, null);
+        DownloadCommandResult downloadCommandResult = new DownloadCommandResult(new URL("http://127.0.0.1"), true, false, true, false, false, true, List.of(HttpURLConnection.HTTP_MOVED_TEMP, HttpURLConnection.HTTP_MOVED_TEMP, HttpURLConnection.HTTP_MOVED_TEMP, HttpURLConnection.HTTP_OK), List.of("1", "1", "1"), "testfile", 1, null);
         TestDownloadNetworkTaskWorker downloadNetworkTaskWorker = prepareTestDownloadNetworkTaskWorker(dnsLookupResult, downloadCommandResult);
         NetworkTaskWorker.ExecutionResult executionResult = downloadNetworkTaskWorker.execute(getNetworkTask(), getAccessTypeData());
         LogEntry logEntry = executionResult.getLogEntry();
@@ -545,7 +545,7 @@ public class DownloadNetworkTaskWorkerTest {
     public void testDownloadStoppedFileExistDeleteFailedExternalStorage() throws Exception {
         preferenceManager.setPreferenceDownloadFollowsRedirects(false);
         DNSLookupResult dnsLookupResult = new DNSLookupResult(Arrays.asList(InetAddress.getByName("127.0.0.1"), InetAddress.getByName("::1")), null);
-        DownloadCommandResult downloadCommandResult = new DownloadCommandResult(new URL("http://127.0.0.1"), true, false, true, false, false, true, List.of(HttpURLConnection.HTTP_OK), List.of(""), "testfile", 100000, null);
+        DownloadCommandResult downloadCommandResult = new DownloadCommandResult(new URL("http://127.0.0.1"), true, false, true, false, false, true, List.of(HttpURLConnection.HTTP_MOVED_TEMP, HttpURLConnection.HTTP_OK), List.of(""), "testfile", 100000, null);
         TestDownloadNetworkTaskWorker downloadNetworkTaskWorker = prepareTestDownloadNetworkTaskWorker(dnsLookupResult, downloadCommandResult);
         preferenceManager.setPreferenceDownloadKeep(false);
         preferenceManager.setPreferenceDownloadExternalStorage(true);
@@ -593,8 +593,39 @@ public class DownloadNetworkTaskWorkerTest {
     }
 
     @Test
+    public void testDownloadStoppedFileExistDeleteFailedExternalStorageWithExceptionWithRedirect() throws Exception {
+        preferenceManager.setPreferenceDownloadFollowsRedirects(true);
+        DNSLookupResult dnsLookupResult = new DNSLookupResult(Arrays.asList(InetAddress.getByName("127.0.0.1"), InetAddress.getByName("::1")), null);
+        DownloadCommandResult downloadCommandResult = new DownloadCommandResult(new URL("http://127.0.0.1"), true, false, true, false, false, true, List.of(HttpURLConnection.HTTP_MOVED_TEMP, HttpURLConnection.HTTP_OK), List.of("", "123"), "testfile", 9, new Exception("Test"));
+        TestDownloadNetworkTaskWorker downloadNetworkTaskWorker = prepareTestDownloadNetworkTaskWorker(dnsLookupResult, downloadCommandResult);
+        preferenceManager.setPreferenceDownloadKeep(false);
+        preferenceManager.setPreferenceDownloadExternalStorage(true);
+        fileManager.setExternalDirectory(new File("Test"), 0);
+        NetworkTaskWorker.ExecutionResult executionResult = downloadNetworkTaskWorker.execute(getNetworkTask(), getAccessTypeData());
+        LogEntry logEntry = executionResult.getLogEntry();
+        assertEquals(45, logEntry.getNetworkTaskId());
+        assertEquals(getTestTimestamp(), logEntry.getTimestamp());
+        assertFalse(logEntry.isSuccess());
+        assertEquals("Server returned redirect 302. The download was stopped. The file was partially downloaded. The deletion of the partially_downloaded file failed. 9 msec download time. Exception: Test", logEntry.getMessage());
+    }
+
+    @Test
     public void testDownloadStoppedFileExistDeleteSuccess() throws Exception {
         preferenceManager.setPreferenceDownloadFollowsRedirects(false);
+        DNSLookupResult dnsLookupResult = new DNSLookupResult(Arrays.asList(InetAddress.getByName("127.0.0.1"), InetAddress.getByName("::1")), null);
+        DownloadCommandResult downloadCommandResult = new DownloadCommandResult(new URL("http://127.0.0.1"), true, false, true, true, false, true, List.of(HttpURLConnection.HTTP_MOVED_PERM, HttpURLConnection.HTTP_OK), List.of("1", "1"), "testfile", 1, null);
+        TestDownloadNetworkTaskWorker downloadNetworkTaskWorker = prepareTestDownloadNetworkTaskWorker(dnsLookupResult, downloadCommandResult);
+        NetworkTaskWorker.ExecutionResult executionResult = downloadNetworkTaskWorker.execute(getNetworkTask(), getAccessTypeData());
+        LogEntry logEntry = executionResult.getLogEntry();
+        assertEquals(45, logEntry.getNetworkTaskId());
+        assertEquals(getTestTimestamp(), logEntry.getTimestamp());
+        assertFalse(logEntry.isSuccess());
+        assertEquals("The download was stopped. The file was partially downloaded. The partially downloaded file was deleted. 1 msec download time.", logEntry.getMessage());
+    }
+
+    @Test
+    public void testDownloadStoppedFileExistDeleteSuccessWithRedirect() throws Exception {
+        preferenceManager.setPreferenceDownloadFollowsRedirects(true);
         DNSLookupResult dnsLookupResult = new DNSLookupResult(Arrays.asList(InetAddress.getByName("127.0.0.1"), InetAddress.getByName("::1")), null);
         DownloadCommandResult downloadCommandResult = new DownloadCommandResult(new URL("http://127.0.0.1"), true, false, true, true, false, true, List.of(HttpURLConnection.HTTP_OK), List.of(""), "testfile", 1, null);
         TestDownloadNetworkTaskWorker downloadNetworkTaskWorker = prepareTestDownloadNetworkTaskWorker(dnsLookupResult, downloadCommandResult);
@@ -621,6 +652,20 @@ public class DownloadNetworkTaskWorkerTest {
     }
 
     @Test
+    public void testDownloadStoppedFileExistDeleteSuccessWithExceptionWithRedirect() throws Exception {
+        preferenceManager.setPreferenceDownloadFollowsRedirects(true);
+        DNSLookupResult dnsLookupResult = new DNSLookupResult(Arrays.asList(InetAddress.getByName("127.0.0.1"), InetAddress.getByName("::1")), null);
+        DownloadCommandResult downloadCommandResult = new DownloadCommandResult(new URL("http://127.0.0.1"), true, false, true, true, false, true, List.of(HttpURLConnection.HTTP_MOVED_PERM, HttpURLConnection.HTTP_MOVED_PERM, HttpURLConnection.HTTP_MOVED_TEMP, HttpURLConnection.HTTP_MOVED_PERM, HttpURLConnection.HTTP_MOVED_PERM, HttpURLConnection.HTTP_MOVED_PERM, HttpURLConnection.HTTP_OK), List.of("1", "2", "3", "4", "5", "6", "7"), "testfile", 1, new Exception("Test"));
+        TestDownloadNetworkTaskWorker downloadNetworkTaskWorker = prepareTestDownloadNetworkTaskWorker(dnsLookupResult, downloadCommandResult);
+        NetworkTaskWorker.ExecutionResult executionResult = downloadNetworkTaskWorker.execute(getNetworkTask(), getAccessTypeData());
+        LogEntry logEntry = executionResult.getLogEntry();
+        assertEquals(45, logEntry.getNetworkTaskId());
+        assertEquals(getTestTimestamp(), logEntry.getTimestamp());
+        assertFalse(logEntry.isSuccess());
+        assertEquals("Server returned redirect 301 1. Server returned redirect 301 2. Server returned redirect 302 3. Server returned redirect 301 4. Server returned redirect 301 5. Server returned redirect 301 6. The download was stopped. The file was partially downloaded. The partially downloaded file was deleted. 1 msec download time. Exception: Test", logEntry.getMessage());
+    }
+
+    @Test
     public void testDownloadInvalidFileDoesNotExist() throws Exception {
         preferenceManager.setPreferenceDownloadFollowsRedirects(false);
         DNSLookupResult dnsLookupResult = new DNSLookupResult(Arrays.asList(InetAddress.getByName("127.0.0.1"), InetAddress.getByName("::1")), null);
@@ -635,10 +680,24 @@ public class DownloadNetworkTaskWorkerTest {
     }
 
     @Test
+    public void testDownloadInvalidFileDoesNotExistWithRedirect() throws Exception {
+        preferenceManager.setPreferenceDownloadFollowsRedirects(true);
+        DNSLookupResult dnsLookupResult = new DNSLookupResult(Arrays.asList(InetAddress.getByName("127.0.0.1"), InetAddress.getByName("::1")), null);
+        DownloadCommandResult downloadCommandResult = new DownloadCommandResult(new URL("http://127.0.0.1"), true, false, false, false, false, false, List.of(HttpURLConnection.HTTP_MOVED_PERM, HttpURLConnection.HTTP_MOVED_PERM, HttpURLConnection.HTTP_MOVED_PERM, HttpURLConnection.HTTP_OK), List.of(""), null, 0, null);
+        TestDownloadNetworkTaskWorker downloadNetworkTaskWorker = prepareTestDownloadNetworkTaskWorker(dnsLookupResult, downloadCommandResult);
+        NetworkTaskWorker.ExecutionResult executionResult = downloadNetworkTaskWorker.execute(getNetworkTask(), getAccessTypeData());
+        LogEntry logEntry = executionResult.getLogEntry();
+        assertEquals(45, logEntry.getNetworkTaskId());
+        assertEquals(getTestTimestamp(), logEntry.getTimestamp());
+        assertFalse(logEntry.isSuccess());
+        assertEquals("Server returned redirect 301. Server returned redirect 301. Server returned redirect 301. The download was stopped because the network task is no longer valid.", logEntry.getMessage());
+    }
+
+    @Test
     public void testDownloadInvalidFileDoesNotExistWithException() throws Exception {
         preferenceManager.setPreferenceDownloadFollowsRedirects(false);
         DNSLookupResult dnsLookupResult = new DNSLookupResult(Arrays.asList(InetAddress.getByName("127.0.0.1"), InetAddress.getByName("::1")), null);
-        DownloadCommandResult downloadCommandResult = new DownloadCommandResult(new URL("http://127.0.0.1"), true, false, false, false, false, false, List.of(HttpURLConnection.HTTP_OK), List.of(""), null, 0, new Exception("Test"));
+        DownloadCommandResult downloadCommandResult = new DownloadCommandResult(new URL("http://127.0.0.1"), true, false, false, false, false, false, List.of(HttpURLConnection.HTTP_MOVED_PERM, HttpURLConnection.HTTP_MOVED_TEMP, HttpURLConnection.HTTP_OK), List.of("1", "2", "3"), null, 0, new Exception("Test"));
         TestDownloadNetworkTaskWorker downloadNetworkTaskWorker = prepareTestDownloadNetworkTaskWorker(dnsLookupResult, downloadCommandResult);
         NetworkTaskWorker.ExecutionResult executionResult = downloadNetworkTaskWorker.execute(getNetworkTask(), getAccessTypeData());
         LogEntry logEntry = executionResult.getLogEntry();
@@ -646,6 +705,20 @@ public class DownloadNetworkTaskWorkerTest {
         assertEquals(getTestTimestamp(), logEntry.getTimestamp());
         assertFalse(logEntry.isSuccess());
         assertEquals("The download was stopped because the network task is no longer valid. Exception: Test", logEntry.getMessage());
+    }
+
+    @Test
+    public void testDownloadInvalidFileDoesNotExistWithExceptionWithRedirect() throws Exception {
+        preferenceManager.setPreferenceDownloadFollowsRedirects(true);
+        DNSLookupResult dnsLookupResult = new DNSLookupResult(Arrays.asList(InetAddress.getByName("127.0.0.1"), InetAddress.getByName("::1")), null);
+        DownloadCommandResult downloadCommandResult = new DownloadCommandResult(new URL("http://127.0.0.1"), true, false, false, false, false, false, List.of(HttpURLConnection.HTTP_MOVED_TEMP, HttpURLConnection.HTTP_MOVED_TEMP, HttpURLConnection.HTTP_OK), List.of("3", "2", "1"), null, 0, new Exception("Test"));
+        TestDownloadNetworkTaskWorker downloadNetworkTaskWorker = prepareTestDownloadNetworkTaskWorker(dnsLookupResult, downloadCommandResult);
+        NetworkTaskWorker.ExecutionResult executionResult = downloadNetworkTaskWorker.execute(getNetworkTask(), getAccessTypeData());
+        LogEntry logEntry = executionResult.getLogEntry();
+        assertEquals(45, logEntry.getNetworkTaskId());
+        assertEquals(getTestTimestamp(), logEntry.getTimestamp());
+        assertFalse(logEntry.isSuccess());
+        assertEquals("Server returned redirect 302 3. Server returned redirect 302 2. The download was stopped because the network task is no longer valid. Exception: Test", logEntry.getMessage());
     }
 
     @Test
@@ -666,8 +739,24 @@ public class DownloadNetworkTaskWorkerTest {
     }
 
     @Test
+    public void testDownloadInvalidFileExistNotDeleteWithRedirect() throws Exception {
+        preferenceManager.setPreferenceDownloadFollowsRedirects(true);
+        DNSLookupResult dnsLookupResult = new DNSLookupResult(Arrays.asList(InetAddress.getByName("127.0.0.1"), InetAddress.getByName("::1")), null);
+        DownloadCommandResult downloadCommandResult = new DownloadCommandResult(new URL("http://127.0.0.1"), true, false, true, false, false, false, List.of(HttpURLConnection.HTTP_MOVED_PERM, HttpURLConnection.HTTP_OK), List.of("123"), "testfile", 3600000, null);
+        TestDownloadNetworkTaskWorker downloadNetworkTaskWorker = prepareTestDownloadNetworkTaskWorker(dnsLookupResult, downloadCommandResult);
+        preferenceManager.setPreferenceDownloadKeep(true);
+        preferenceManager.setPreferenceDownloadExternalStorage(true);
+        fileManager.setExternalDirectory(new File("Test"), 0);
+        NetworkTaskWorker.ExecutionResult executionResult = downloadNetworkTaskWorker.execute(getNetworkTask(), getAccessTypeData());
+        LogEntry logEntry = executionResult.getLogEntry();
+        assertEquals(45, logEntry.getNetworkTaskId());
+        assertEquals(getTestTimestamp(), logEntry.getTimestamp());
+        assertFalse(logEntry.isSuccess());
+        assertEquals("Server returned redirect 301 123. The download was stopped because the network task is no longer valid. The file was partially downloaded. Downloaded file: /Test/testfile. 3,600 sec download time.", logEntry.getMessage());
+    }
+
+    @Test
     public void testDownloadInvalidFileExistNotDeleteWithException() throws Exception {
-        preferenceManager.setPreferenceDownloadFollowsRedirects(false);
         preferenceManager.setPreferenceDownloadFollowsRedirects(false);
         DNSLookupResult dnsLookupResult = new DNSLookupResult(Arrays.asList(InetAddress.getByName("127.0.0.1"), InetAddress.getByName("::1")), null);
         DownloadCommandResult downloadCommandResult = new DownloadCommandResult(new URL("http://127.0.0.1"), true, false, true, false, false, false, List.of(HttpURLConnection.HTTP_OK), List.of(""), "testfile", 3, new Exception("Test"));
@@ -684,8 +773,39 @@ public class DownloadNetworkTaskWorkerTest {
     }
 
     @Test
+    public void testDownloadInvalidFileExistNotDeleteWithExceptionWithRedirect() throws Exception {
+        preferenceManager.setPreferenceDownloadFollowsRedirects(true);
+        DNSLookupResult dnsLookupResult = new DNSLookupResult(Arrays.asList(InetAddress.getByName("127.0.0.1"), InetAddress.getByName("::1")), null);
+        DownloadCommandResult downloadCommandResult = new DownloadCommandResult(new URL("http://127.0.0.1"), true, false, true, false, false, false, List.of(HttpURLConnection.HTTP_MOVED_PERM, HttpURLConnection.HTTP_MOVED_TEMP, HttpURLConnection.HTTP_OK), List.of("1", "2"), "testfile", 3, new Exception("Test"));
+        TestDownloadNetworkTaskWorker downloadNetworkTaskWorker = prepareTestDownloadNetworkTaskWorker(dnsLookupResult, downloadCommandResult);
+        preferenceManager.setPreferenceDownloadKeep(true);
+        preferenceManager.setPreferenceDownloadExternalStorage(true);
+        fileManager.setExternalDirectory(new File("Test"), 0);
+        NetworkTaskWorker.ExecutionResult executionResult = downloadNetworkTaskWorker.execute(getNetworkTask(), getAccessTypeData());
+        LogEntry logEntry = executionResult.getLogEntry();
+        assertEquals(45, logEntry.getNetworkTaskId());
+        assertEquals(getTestTimestamp(), logEntry.getTimestamp());
+        assertFalse(logEntry.isSuccess());
+        assertEquals("Server returned redirect 301 1. Server returned redirect 302 2. The download was stopped because the network task is no longer valid. The file was partially downloaded. Downloaded file: /Test/testfile. 3 msec download time. Exception: Test", logEntry.getMessage());
+    }
+
+    @Test
     public void testDownloadInvalidFileExistDeleteFailedInternalStorage() throws Exception {
         preferenceManager.setPreferenceDownloadFollowsRedirects(false);
+        DNSLookupResult dnsLookupResult = new DNSLookupResult(Arrays.asList(InetAddress.getByName("127.0.0.1"), InetAddress.getByName("::1")), null);
+        DownloadCommandResult downloadCommandResult = new DownloadCommandResult(new URL("http://127.0.0.1"), true, false, true, false, false, false, List.of(HttpURLConnection.HTTP_OK), List.of(""), "testfile", 1000, null);
+        TestDownloadNetworkTaskWorker downloadNetworkTaskWorker = prepareTestDownloadNetworkTaskWorker(dnsLookupResult, downloadCommandResult);
+        NetworkTaskWorker.ExecutionResult executionResult = downloadNetworkTaskWorker.execute(getNetworkTask(), getAccessTypeData());
+        LogEntry logEntry = executionResult.getLogEntry();
+        assertEquals(45, logEntry.getNetworkTaskId());
+        assertEquals(getTestTimestamp(), logEntry.getTimestamp());
+        assertFalse(logEntry.isSuccess());
+        assertEquals("The download was stopped because the network task is no longer valid. The file was partially downloaded. The deletion of the partially_downloaded file failed. 1 sec download time.", logEntry.getMessage());
+    }
+
+    @Test
+    public void testDownloadInvalidFileExistDeleteFailedInternalStorageWithRedirect() throws Exception {
+        preferenceManager.setPreferenceDownloadFollowsRedirects(true);
         DNSLookupResult dnsLookupResult = new DNSLookupResult(Arrays.asList(InetAddress.getByName("127.0.0.1"), InetAddress.getByName("::1")), null);
         DownloadCommandResult downloadCommandResult = new DownloadCommandResult(new URL("http://127.0.0.1"), true, false, true, false, false, false, List.of(HttpURLConnection.HTTP_OK), List.of(""), "testfile", 1000, null);
         TestDownloadNetworkTaskWorker downloadNetworkTaskWorker = prepareTestDownloadNetworkTaskWorker(dnsLookupResult, downloadCommandResult);
@@ -712,6 +832,20 @@ public class DownloadNetworkTaskWorkerTest {
     }
 
     @Test
+    public void testDownloadInvalidFileExistDeleteFailedInternalStorageWithExceptionWithRedirect() throws Exception {
+        preferenceManager.setPreferenceDownloadFollowsRedirects(true);
+        DNSLookupResult dnsLookupResult = new DNSLookupResult(Arrays.asList(InetAddress.getByName("127.0.0.1"), InetAddress.getByName("::1")), null);
+        DownloadCommandResult downloadCommandResult = new DownloadCommandResult(new URL("http://127.0.0.1"), true, false, true, false, false, false, List.of(HttpURLConnection.HTTP_MOVED_PERM, HttpURLConnection.HTTP_OK), List.of("1", "2"), "testfile", 12000, new Exception("Test"));
+        TestDownloadNetworkTaskWorker downloadNetworkTaskWorker = prepareTestDownloadNetworkTaskWorker(dnsLookupResult, downloadCommandResult);
+        NetworkTaskWorker.ExecutionResult executionResult = downloadNetworkTaskWorker.execute(getNetworkTask(), getAccessTypeData());
+        LogEntry logEntry = executionResult.getLogEntry();
+        assertEquals(45, logEntry.getNetworkTaskId());
+        assertEquals(getTestTimestamp(), logEntry.getTimestamp());
+        assertFalse(logEntry.isSuccess());
+        assertEquals("Server returned redirect 301 1. The download was stopped because the network task is no longer valid. The file was partially downloaded. The deletion of the partially_downloaded file failed. 12 sec download time. Exception: Test", logEntry.getMessage());
+    }
+
+    @Test
     public void testDownloadInvalidFileExistDeleteFailedExternalStorage() throws Exception {
         preferenceManager.setPreferenceDownloadFollowsRedirects(false);
         DNSLookupResult dnsLookupResult = new DNSLookupResult(Arrays.asList(InetAddress.getByName("127.0.0.1"), InetAddress.getByName("::1")), null);
@@ -729,10 +863,27 @@ public class DownloadNetworkTaskWorkerTest {
     }
 
     @Test
+    public void testDownloadInvalidFileExistDeleteFailedExternalStorageWithRedirect() throws Exception {
+        preferenceManager.setPreferenceDownloadFollowsRedirects(true);
+        DNSLookupResult dnsLookupResult = new DNSLookupResult(Arrays.asList(InetAddress.getByName("127.0.0.1"), InetAddress.getByName("::1")), null);
+        DownloadCommandResult downloadCommandResult = new DownloadCommandResult(new URL("http://127.0.0.1"), true, false, true, false, false, false, List.of(HttpURLConnection.HTTP_MOVED_TEMP, HttpURLConnection.HTTP_OK), List.of("1", "2", "3"), "testfile", 20000, null);
+        TestDownloadNetworkTaskWorker downloadNetworkTaskWorker = prepareTestDownloadNetworkTaskWorker(dnsLookupResult, downloadCommandResult);
+        preferenceManager.setPreferenceDownloadKeep(false);
+        preferenceManager.setPreferenceDownloadExternalStorage(true);
+        fileManager.setExternalDirectory(new File("Test"), 0);
+        NetworkTaskWorker.ExecutionResult executionResult = downloadNetworkTaskWorker.execute(getNetworkTask(), getAccessTypeData());
+        LogEntry logEntry = executionResult.getLogEntry();
+        assertEquals(45, logEntry.getNetworkTaskId());
+        assertEquals(getTestTimestamp(), logEntry.getTimestamp());
+        assertFalse(logEntry.isSuccess());
+        assertEquals("Server returned redirect 302 1. The download was stopped because the network task is no longer valid. The file was partially downloaded. The deletion of the partially_downloaded file failed. 20 sec download time.", logEntry.getMessage());
+    }
+
+    @Test
     public void testDownloadInvalidFileExistDeleteFailedExternalStorageWithException() throws Exception {
         preferenceManager.setPreferenceDownloadFollowsRedirects(false);
         DNSLookupResult dnsLookupResult = new DNSLookupResult(Arrays.asList(InetAddress.getByName("127.0.0.1"), InetAddress.getByName("::1")), null);
-        DownloadCommandResult downloadCommandResult = new DownloadCommandResult(new URL("http://127.0.0.1"), true, false, true, false, false, false, List.of(HttpURLConnection.HTTP_OK), List.of(""), "testfile", 7200000, new Exception("Test"));
+        DownloadCommandResult downloadCommandResult = new DownloadCommandResult(new URL("http://127.0.0.1"), true, false, true, false, false, false, List.of(HttpURLConnection.HTTP_MOVED_PERM, HttpURLConnection.HTTP_OK), List.of(""), "testfile", 7200000, new Exception("Test"));
         TestDownloadNetworkTaskWorker downloadNetworkTaskWorker = prepareTestDownloadNetworkTaskWorker(dnsLookupResult, downloadCommandResult);
         preferenceManager.setPreferenceDownloadKeep(false);
         preferenceManager.setPreferenceDownloadExternalStorage(true);
@@ -743,6 +894,23 @@ public class DownloadNetworkTaskWorkerTest {
         assertEquals(getTestTimestamp(), logEntry.getTimestamp());
         assertFalse(logEntry.isSuccess());
         assertEquals("The download was stopped because the network task is no longer valid. The file was partially downloaded. The deletion of the partially_downloaded file failed. 7,200 sec download time. Exception: Test", logEntry.getMessage());
+    }
+
+    @Test
+    public void testDownloadInvalidFileExistDeleteFailedExternalStorageWithExceptionWithRedirect() throws Exception {
+        preferenceManager.setPreferenceDownloadFollowsRedirects(true);
+        DNSLookupResult dnsLookupResult = new DNSLookupResult(Arrays.asList(InetAddress.getByName("127.0.0.1"), InetAddress.getByName("::1")), null);
+        DownloadCommandResult downloadCommandResult = new DownloadCommandResult(new URL("http://127.0.0.1"), true, false, true, false, false, false, List.of(HttpURLConnection.HTTP_MOVED_TEMP, HttpURLConnection.HTTP_MOVED_PERM, HttpURLConnection.HTTP_OK), List.of(""), "testfile", 7200000, new Exception("Test"));
+        TestDownloadNetworkTaskWorker downloadNetworkTaskWorker = prepareTestDownloadNetworkTaskWorker(dnsLookupResult, downloadCommandResult);
+        preferenceManager.setPreferenceDownloadKeep(false);
+        preferenceManager.setPreferenceDownloadExternalStorage(true);
+        fileManager.setExternalDirectory(new File("Test"), 0);
+        NetworkTaskWorker.ExecutionResult executionResult = downloadNetworkTaskWorker.execute(getNetworkTask(), getAccessTypeData());
+        LogEntry logEntry = executionResult.getLogEntry();
+        assertEquals(45, logEntry.getNetworkTaskId());
+        assertEquals(getTestTimestamp(), logEntry.getTimestamp());
+        assertFalse(logEntry.isSuccess());
+        assertEquals("Server returned redirect 302. Server returned redirect 301. The download was stopped because the network task is no longer valid. The file was partially downloaded. The deletion of the partially_downloaded file failed. 7,200 sec download time. Exception: Test", logEntry.getMessage());
     }
 
     @Test
@@ -760,6 +928,20 @@ public class DownloadNetworkTaskWorkerTest {
     }
 
     @Test
+    public void testDownloadInvalidFileExistDeleteSuccessWithRedirect() throws Exception {
+        preferenceManager.setPreferenceDownloadFollowsRedirects(true);
+        DNSLookupResult dnsLookupResult = new DNSLookupResult(Arrays.asList(InetAddress.getByName("127.0.0.1"), InetAddress.getByName("::1")), null);
+        DownloadCommandResult downloadCommandResult = new DownloadCommandResult(new URL("http://127.0.0.1"), true, false, true, true, false, false, List.of(HttpURLConnection.HTTP_MOVED_PERM, HttpURLConnection.HTTP_OK), List.of("123456"), "testfile", 50, null);
+        TestDownloadNetworkTaskWorker downloadNetworkTaskWorker = prepareTestDownloadNetworkTaskWorker(dnsLookupResult, downloadCommandResult);
+        NetworkTaskWorker.ExecutionResult executionResult = downloadNetworkTaskWorker.execute(getNetworkTask(), getAccessTypeData());
+        LogEntry logEntry = executionResult.getLogEntry();
+        assertEquals(45, logEntry.getNetworkTaskId());
+        assertEquals(getTestTimestamp(), logEntry.getTimestamp());
+        assertFalse(logEntry.isSuccess());
+        assertEquals("Server returned redirect 301 123456. The download was stopped because the network task is no longer valid. The file was partially downloaded. The partially downloaded file was deleted. 50 msec download time.", logEntry.getMessage());
+    }
+
+    @Test
     public void testDownloadInvalidFileExistDeleteSuccessWithException() throws Exception {
         preferenceManager.setPreferenceDownloadFollowsRedirects(false);
         DNSLookupResult dnsLookupResult = new DNSLookupResult(Arrays.asList(InetAddress.getByName("127.0.0.1"), InetAddress.getByName("::1")), null);
@@ -771,6 +953,20 @@ public class DownloadNetworkTaskWorkerTest {
         assertEquals(getTestTimestamp(), logEntry.getTimestamp());
         assertFalse(logEntry.isSuccess());
         assertEquals("The download was stopped because the network task is no longer valid. The file was partially downloaded. The partially downloaded file was deleted. 3 msec download time. Exception: Test", logEntry.getMessage());
+    }
+
+    @Test
+    public void testDownloadInvalidFileExistDeleteSuccessWithExceptionWithRedirect() throws Exception {
+        preferenceManager.setPreferenceDownloadFollowsRedirects(true);
+        DNSLookupResult dnsLookupResult = new DNSLookupResult(Arrays.asList(InetAddress.getByName("127.0.0.1"), InetAddress.getByName("::1")), null);
+        DownloadCommandResult downloadCommandResult = new DownloadCommandResult(new URL("http://127.0.0.1"), true, false, true, true, false, false, List.of(HttpURLConnection.HTTP_MOVED_PERM, HttpURLConnection.HTTP_MOVED_PERM, HttpURLConnection.HTTP_OK), List.of("1"), "testfile", 3, new Exception("Test"));
+        TestDownloadNetworkTaskWorker downloadNetworkTaskWorker = prepareTestDownloadNetworkTaskWorker(dnsLookupResult, downloadCommandResult);
+        NetworkTaskWorker.ExecutionResult executionResult = downloadNetworkTaskWorker.execute(getNetworkTask(), getAccessTypeData());
+        LogEntry logEntry = executionResult.getLogEntry();
+        assertEquals(45, logEntry.getNetworkTaskId());
+        assertEquals(getTestTimestamp(), logEntry.getTimestamp());
+        assertFalse(logEntry.isSuccess());
+        assertEquals("Server returned redirect 301 1. Server returned redirect 301. The download was stopped because the network task is no longer valid. The file was partially downloaded. The partially downloaded file was deleted. 3 msec download time. Exception: Test", logEntry.getMessage());
     }
 
     @Test
@@ -788,8 +984,36 @@ public class DownloadNetworkTaskWorkerTest {
     }
 
     @Test
+    public void testDownloadUnknownErrorFileDoesNotExistWithRedirect() throws Exception {
+        preferenceManager.setPreferenceDownloadFollowsRedirects(true);
+        DNSLookupResult dnsLookupResult = new DNSLookupResult(Arrays.asList(InetAddress.getByName("127.0.0.1"), InetAddress.getByName("::1")), null);
+        DownloadCommandResult downloadCommandResult = new DownloadCommandResult(new URL("http://127.0.0.1"), true, false, false, false, true, false, List.of(HttpURLConnection.HTTP_MOVED_TEMP, HttpURLConnection.HTTP_MOVED_TEMP, HttpURLConnection.HTTP_OK), List.of("1"), null, 0, null);
+        TestDownloadNetworkTaskWorker downloadNetworkTaskWorker = prepareTestDownloadNetworkTaskWorker(dnsLookupResult, downloadCommandResult);
+        NetworkTaskWorker.ExecutionResult executionResult = downloadNetworkTaskWorker.execute(getNetworkTask(), getAccessTypeData());
+        LogEntry logEntry = executionResult.getLogEntry();
+        assertEquals(45, logEntry.getNetworkTaskId());
+        assertEquals(getTestTimestamp(), logEntry.getTimestamp());
+        assertFalse(logEntry.isSuccess());
+        assertEquals("Server returned redirect 302 1. Server returned redirect 302. The download from http://127.0.0.1 failed for an unknown reason.", logEntry.getMessage());
+    }
+
+    @Test
     public void testDownloadUnknownErrorFileDoesNotExistWithException() throws Exception {
         preferenceManager.setPreferenceDownloadFollowsRedirects(false);
+        DNSLookupResult dnsLookupResult = new DNSLookupResult(Arrays.asList(InetAddress.getByName("127.0.0.1"), InetAddress.getByName("::1")), null);
+        DownloadCommandResult downloadCommandResult = new DownloadCommandResult(new URL("http://127.0.0.1"), true, false, false, false, true, false, List.of(HttpURLConnection.HTTP_OK), List.of(""), null, 0, new Exception("Test"));
+        TestDownloadNetworkTaskWorker downloadNetworkTaskWorker = prepareTestDownloadNetworkTaskWorker(dnsLookupResult, downloadCommandResult);
+        NetworkTaskWorker.ExecutionResult executionResult = downloadNetworkTaskWorker.execute(getNetworkTask(), getAccessTypeData());
+        LogEntry logEntry = executionResult.getLogEntry();
+        assertEquals(45, logEntry.getNetworkTaskId());
+        assertEquals(getTestTimestamp(), logEntry.getTimestamp());
+        assertFalse(logEntry.isSuccess());
+        assertEquals("The download from http://127.0.0.1 failed. Exception: Test", logEntry.getMessage());
+    }
+
+    @Test
+    public void testDownloadUnknownErrorFileDoesNotExistWithExceptionWithRedirect() throws Exception {
+        preferenceManager.setPreferenceDownloadFollowsRedirects(true);
         DNSLookupResult dnsLookupResult = new DNSLookupResult(Arrays.asList(InetAddress.getByName("127.0.0.1"), InetAddress.getByName("::1")), null);
         DownloadCommandResult downloadCommandResult = new DownloadCommandResult(new URL("http://127.0.0.1"), true, false, false, false, true, false, List.of(HttpURLConnection.HTTP_OK), List.of(""), null, 0, new Exception("Test"));
         TestDownloadNetworkTaskWorker downloadNetworkTaskWorker = prepareTestDownloadNetworkTaskWorker(dnsLookupResult, downloadCommandResult);
@@ -819,6 +1043,23 @@ public class DownloadNetworkTaskWorkerTest {
     }
 
     @Test
+    public void testDownloadUnknownErrorFileExistNotDeleteWithRedirect() throws Exception {
+        preferenceManager.setPreferenceDownloadFollowsRedirects(true);
+        DNSLookupResult dnsLookupResult = new DNSLookupResult(Arrays.asList(InetAddress.getByName("127.0.0.1"), InetAddress.getByName("::1")), null);
+        DownloadCommandResult downloadCommandResult = new DownloadCommandResult(new URL("http://127.0.0.1"), true, false, true, false, true, false, List.of(HttpURLConnection.HTTP_MOVED_PERM, HttpURLConnection.HTTP_OK), List.of("1", "2"), "testfile", 2000, null);
+        TestDownloadNetworkTaskWorker downloadNetworkTaskWorker = prepareTestDownloadNetworkTaskWorker(dnsLookupResult, downloadCommandResult);
+        preferenceManager.setPreferenceDownloadKeep(true);
+        preferenceManager.setPreferenceDownloadExternalStorage(true);
+        fileManager.setExternalDirectory(new File("Test"), 0);
+        NetworkTaskWorker.ExecutionResult executionResult = downloadNetworkTaskWorker.execute(getNetworkTask(), getAccessTypeData());
+        LogEntry logEntry = executionResult.getLogEntry();
+        assertEquals(45, logEntry.getNetworkTaskId());
+        assertEquals(getTestTimestamp(), logEntry.getTimestamp());
+        assertFalse(logEntry.isSuccess());
+        assertEquals("Server returned redirect 301 1. The download from http://127.0.0.1 failed for an unknown reason. The file was partially downloaded. Downloaded file: /Test/testfile. 2 sec download time.", logEntry.getMessage());
+    }
+
+    @Test
     public void testDownloadUnknownErrorFileExistNotDeleteWithException() throws Exception {
         preferenceManager.setPreferenceDownloadFollowsRedirects(false);
         DNSLookupResult dnsLookupResult = new DNSLookupResult(Arrays.asList(InetAddress.getByName("127.0.0.1"), InetAddress.getByName("::1")), null);
@@ -836,6 +1077,23 @@ public class DownloadNetworkTaskWorkerTest {
     }
 
     @Test
+    public void testDownloadUnknownErrorFileExistNotDeleteWithExceptionWithRedirect() throws Exception {
+        preferenceManager.setPreferenceDownloadFollowsRedirects(true);
+        DNSLookupResult dnsLookupResult = new DNSLookupResult(Arrays.asList(InetAddress.getByName("127.0.0.1"), InetAddress.getByName("::1")), null);
+        DownloadCommandResult downloadCommandResult = new DownloadCommandResult(new URL("http://127.0.0.1"), true, false, true, false, true, false, List.of(HttpURLConnection.HTTP_MOVED_PERM, HttpURLConnection.HTTP_MOVED_PERM, HttpURLConnection.HTTP_MOVED_PERM, HttpURLConnection.HTTP_OK), List.of("12", "", "34", ""), "testfile", 44, new Exception("Test"));
+        TestDownloadNetworkTaskWorker downloadNetworkTaskWorker = prepareTestDownloadNetworkTaskWorker(dnsLookupResult, downloadCommandResult);
+        preferenceManager.setPreferenceDownloadKeep(true);
+        preferenceManager.setPreferenceDownloadExternalStorage(true);
+        fileManager.setExternalDirectory(new File("Test"), 0);
+        NetworkTaskWorker.ExecutionResult executionResult = downloadNetworkTaskWorker.execute(getNetworkTask(), getAccessTypeData());
+        LogEntry logEntry = executionResult.getLogEntry();
+        assertEquals(45, logEntry.getNetworkTaskId());
+        assertEquals(getTestTimestamp(), logEntry.getTimestamp());
+        assertFalse(logEntry.isSuccess());
+        assertEquals("Server returned redirect 301 12. Server returned redirect 301. Server returned redirect 301 34. The download from http://127.0.0.1 failed. The file was partially downloaded. Downloaded file: /Test/testfile. 44 msec download time. Exception: Test", logEntry.getMessage());
+    }
+
+    @Test
     public void testDownloadUnknownErrorFileExistDeleteFailedInternalStorage() throws Exception {
         preferenceManager.setPreferenceDownloadFollowsRedirects(false);
         DNSLookupResult dnsLookupResult = new DNSLookupResult(Arrays.asList(InetAddress.getByName("127.0.0.1"), InetAddress.getByName("::1")), null);
@@ -847,6 +1105,20 @@ public class DownloadNetworkTaskWorkerTest {
         assertEquals(getTestTimestamp(), logEntry.getTimestamp());
         assertFalse(logEntry.isSuccess());
         assertEquals("The download from http://127.0.0.1 failed for an unknown reason. The file was partially downloaded. The deletion of the partially_downloaded file failed. 1 sec download time.", logEntry.getMessage());
+    }
+
+    @Test
+    public void testDownloadUnknownErrorFileExistDeleteFailedInternalStorageWithRedirect() throws Exception {
+        preferenceManager.setPreferenceDownloadFollowsRedirects(true);
+        DNSLookupResult dnsLookupResult = new DNSLookupResult(Arrays.asList(InetAddress.getByName("127.0.0.1"), InetAddress.getByName("::1")), null);
+        DownloadCommandResult downloadCommandResult = new DownloadCommandResult(new URL("http://127.0.0.1"), true, false, true, false, true, false, List.of(HttpURLConnection.HTTP_MOVED_TEMP, HttpURLConnection.HTTP_OK), List.of(""), "testfile", 1000, null);
+        TestDownloadNetworkTaskWorker downloadNetworkTaskWorker = prepareTestDownloadNetworkTaskWorker(dnsLookupResult, downloadCommandResult);
+        NetworkTaskWorker.ExecutionResult executionResult = downloadNetworkTaskWorker.execute(getNetworkTask(), getAccessTypeData());
+        LogEntry logEntry = executionResult.getLogEntry();
+        assertEquals(45, logEntry.getNetworkTaskId());
+        assertEquals(getTestTimestamp(), logEntry.getTimestamp());
+        assertFalse(logEntry.isSuccess());
+        assertEquals("Server returned redirect 302. The download from http://127.0.0.1 failed for an unknown reason. The file was partially downloaded. The deletion of the partially_downloaded file failed. 1 sec download time.", logEntry.getMessage());
     }
 
     @Test
@@ -864,8 +1136,39 @@ public class DownloadNetworkTaskWorkerTest {
     }
 
     @Test
+    public void testDownloadUnknownErrorFileExistDeleteFailedInternalStorageWithExceptionWithRedirect() throws Exception {
+        preferenceManager.setPreferenceDownloadFollowsRedirects(true);
+        DNSLookupResult dnsLookupResult = new DNSLookupResult(Arrays.asList(InetAddress.getByName("127.0.0.1"), InetAddress.getByName("::1")), null);
+        DownloadCommandResult downloadCommandResult = new DownloadCommandResult(new URL("http://127.0.0.1"), true, false, true, false, true, false, List.of(HttpURLConnection.HTTP_MOVED_TEMP, HttpURLConnection.HTTP_MOVED_TEMP, HttpURLConnection.HTTP_MOVED_TEMP, HttpURLConnection.HTTP_MOVED_TEMP, HttpURLConnection.HTTP_MOVED_TEMP, HttpURLConnection.HTTP_MOVED_TEMP, HttpURLConnection.HTTP_MOVED_TEMP, HttpURLConnection.HTTP_MOVED_TEMP, HttpURLConnection.HTTP_MOVED_TEMP, HttpURLConnection.HTTP_OK), List.of(""), "testfile", 1, new Exception("Test"));
+        TestDownloadNetworkTaskWorker downloadNetworkTaskWorker = prepareTestDownloadNetworkTaskWorker(dnsLookupResult, downloadCommandResult);
+        NetworkTaskWorker.ExecutionResult executionResult = downloadNetworkTaskWorker.execute(getNetworkTask(), getAccessTypeData());
+        LogEntry logEntry = executionResult.getLogEntry();
+        assertEquals(45, logEntry.getNetworkTaskId());
+        assertEquals(getTestTimestamp(), logEntry.getTimestamp());
+        assertFalse(logEntry.isSuccess());
+        assertEquals("Server returned redirect 302. Server returned redirect 302. Server returned redirect 302. Server returned redirect 302. Server returned redirect 302. Server returned redirect 302. Server returned redirect 302. Server returned redirect 302. Server returned redirect 302. The download from http://127.0.0.1 failed. The file was partially downloaded. The deletion of the partially_downloaded file failed. 1 msec download time. Exception: Test", logEntry.getMessage());
+    }
+
+    @Test
     public void testDownloadUnknownErrorFileExistDeleteFailedExternalStorage() throws Exception {
         preferenceManager.setPreferenceDownloadFollowsRedirects(false);
+        DNSLookupResult dnsLookupResult = new DNSLookupResult(Arrays.asList(InetAddress.getByName("127.0.0.1"), InetAddress.getByName("::1")), null);
+        DownloadCommandResult downloadCommandResult = new DownloadCommandResult(new URL("http://127.0.0.1"), true, false, true, false, true, false, List.of(HttpURLConnection.HTTP_OK), List.of(""), "testfile", 3, null);
+        TestDownloadNetworkTaskWorker downloadNetworkTaskWorker = prepareTestDownloadNetworkTaskWorker(dnsLookupResult, downloadCommandResult);
+        preferenceManager.setPreferenceDownloadKeep(false);
+        preferenceManager.setPreferenceDownloadExternalStorage(true);
+        fileManager.setExternalDirectory(new File("Test"), 0);
+        NetworkTaskWorker.ExecutionResult executionResult = downloadNetworkTaskWorker.execute(getNetworkTask(), getAccessTypeData());
+        LogEntry logEntry = executionResult.getLogEntry();
+        assertEquals(45, logEntry.getNetworkTaskId());
+        assertEquals(getTestTimestamp(), logEntry.getTimestamp());
+        assertFalse(logEntry.isSuccess());
+        assertEquals("The download from http://127.0.0.1 failed for an unknown reason. The file was partially downloaded. The deletion of the partially_downloaded file failed. 3 msec download time.", logEntry.getMessage());
+    }
+
+    @Test
+    public void testDownloadUnknownErrorFileExistDeleteFailedExternalStorageWithRedirect() throws Exception {
+        preferenceManager.setPreferenceDownloadFollowsRedirects(true);
         DNSLookupResult dnsLookupResult = new DNSLookupResult(Arrays.asList(InetAddress.getByName("127.0.0.1"), InetAddress.getByName("::1")), null);
         DownloadCommandResult downloadCommandResult = new DownloadCommandResult(new URL("http://127.0.0.1"), true, false, true, false, true, false, List.of(HttpURLConnection.HTTP_OK), List.of(""), "testfile", 3, null);
         TestDownloadNetworkTaskWorker downloadNetworkTaskWorker = prepareTestDownloadNetworkTaskWorker(dnsLookupResult, downloadCommandResult);
@@ -898,6 +1201,23 @@ public class DownloadNetworkTaskWorkerTest {
     }
 
     @Test
+    public void testDownloadUnknownErrorFileExistDeleteFailedExternalStorageWithExceptionWithRedirect() throws Exception {
+        preferenceManager.setPreferenceDownloadFollowsRedirects(true);
+        DNSLookupResult dnsLookupResult = new DNSLookupResult(Arrays.asList(InetAddress.getByName("127.0.0.1"), InetAddress.getByName("::1")), null);
+        DownloadCommandResult downloadCommandResult = new DownloadCommandResult(new URL("http://127.0.0.1"), true, false, true, false, true, false, List.of(HttpURLConnection.HTTP_MOVED_TEMP, HttpURLConnection.HTTP_MOVED_PERM, HttpURLConnection.HTTP_OK), List.of("a", "b", "c"), "testfile", 500000, new Exception("Test"));
+        TestDownloadNetworkTaskWorker downloadNetworkTaskWorker = prepareTestDownloadNetworkTaskWorker(dnsLookupResult, downloadCommandResult);
+        preferenceManager.setPreferenceDownloadKeep(false);
+        preferenceManager.setPreferenceDownloadExternalStorage(true);
+        fileManager.setExternalDirectory(new File("Test"), 0);
+        NetworkTaskWorker.ExecutionResult executionResult = downloadNetworkTaskWorker.execute(getNetworkTask(), getAccessTypeData());
+        LogEntry logEntry = executionResult.getLogEntry();
+        assertEquals(45, logEntry.getNetworkTaskId());
+        assertEquals(getTestTimestamp(), logEntry.getTimestamp());
+        assertFalse(logEntry.isSuccess());
+        assertEquals("Server returned redirect 302 a. Server returned redirect 301 b. The download from http://127.0.0.1 failed. The file was partially downloaded. The deletion of the partially_downloaded file failed. 500 sec download time. Exception: Test", logEntry.getMessage());
+    }
+
+    @Test
     public void testDownloadUnknownErrorFileExistDeleteSuccess() throws Exception {
         preferenceManager.setPreferenceDownloadFollowsRedirects(false);
         DNSLookupResult dnsLookupResult = new DNSLookupResult(Arrays.asList(InetAddress.getByName("127.0.0.1"), InetAddress.getByName("::1")), null);
@@ -912,10 +1232,24 @@ public class DownloadNetworkTaskWorkerTest {
     }
 
     @Test
+    public void testDownloadUnknownErrorFileExistDeleteSuccessWithRedirect() throws Exception {
+        preferenceManager.setPreferenceDownloadFollowsRedirects(true);
+        DNSLookupResult dnsLookupResult = new DNSLookupResult(Arrays.asList(InetAddress.getByName("127.0.0.1"), InetAddress.getByName("::1")), null);
+        DownloadCommandResult downloadCommandResult = new DownloadCommandResult(new URL("http://127.0.0.1"), true, false, true, true, true, false, List.of(HttpURLConnection.HTTP_MOVED_TEMP, HttpURLConnection.HTTP_OK), List.of("5"), "testfile", 2, null);
+        TestDownloadNetworkTaskWorker downloadNetworkTaskWorker = prepareTestDownloadNetworkTaskWorker(dnsLookupResult, downloadCommandResult);
+        NetworkTaskWorker.ExecutionResult executionResult = downloadNetworkTaskWorker.execute(getNetworkTask(), getAccessTypeData());
+        LogEntry logEntry = executionResult.getLogEntry();
+        assertEquals(45, logEntry.getNetworkTaskId());
+        assertEquals(getTestTimestamp(), logEntry.getTimestamp());
+        assertFalse(logEntry.isSuccess());
+        assertEquals("Server returned redirect 302 5. The download from http://127.0.0.1 failed for an unknown reason. The file was partially downloaded. The partially downloaded file was deleted. 2 msec download time.", logEntry.getMessage());
+    }
+
+    @Test
     public void testDownloadUnknownErrorFileExistDeleteSuccessWithException() throws Exception {
         preferenceManager.setPreferenceDownloadFollowsRedirects(false);
         DNSLookupResult dnsLookupResult = new DNSLookupResult(Arrays.asList(InetAddress.getByName("127.0.0.1"), InetAddress.getByName("::1")), null);
-        DownloadCommandResult downloadCommandResult = new DownloadCommandResult(new URL("http://127.0.0.1"), true, false, true, true, true, false, List.of(HttpURLConnection.HTTP_OK), List.of(""), "testfile", 5, new Exception("Test"));
+        DownloadCommandResult downloadCommandResult = new DownloadCommandResult(new URL("http://127.0.0.1"), true, false, true, true, true, false, List.of(HttpURLConnection.HTTP_MOVED_PERM, HttpURLConnection.HTTP_MOVED_PERM, HttpURLConnection.HTTP_OK), List.of("2", "3", "4"), "testfile", 5, new Exception("Test"));
         TestDownloadNetworkTaskWorker downloadNetworkTaskWorker = prepareTestDownloadNetworkTaskWorker(dnsLookupResult, downloadCommandResult);
         NetworkTaskWorker.ExecutionResult executionResult = downloadNetworkTaskWorker.execute(getNetworkTask(), getAccessTypeData());
         LogEntry logEntry = executionResult.getLogEntry();
@@ -923,6 +1257,20 @@ public class DownloadNetworkTaskWorkerTest {
         assertEquals(getTestTimestamp(), logEntry.getTimestamp());
         assertFalse(logEntry.isSuccess());
         assertEquals("The download from http://127.0.0.1 failed. The file was partially downloaded. The partially downloaded file was deleted. 5 msec download time. Exception: Test", logEntry.getMessage());
+    }
+
+    @Test
+    public void testDownloadUnknownErrorFileExistDeleteSuccessWithExceptionWithRedirect() throws Exception {
+        preferenceManager.setPreferenceDownloadFollowsRedirects(true);
+        DNSLookupResult dnsLookupResult = new DNSLookupResult(Arrays.asList(InetAddress.getByName("127.0.0.1"), InetAddress.getByName("::1")), null);
+        DownloadCommandResult downloadCommandResult = new DownloadCommandResult(new URL("http://127.0.0.1"), true, false, true, true, true, false, List.of(HttpURLConnection.HTTP_MOVED_PERM, HttpURLConnection.HTTP_OK), List.of("5"), "testfile", 5, new Exception("Test"));
+        TestDownloadNetworkTaskWorker downloadNetworkTaskWorker = prepareTestDownloadNetworkTaskWorker(dnsLookupResult, downloadCommandResult);
+        NetworkTaskWorker.ExecutionResult executionResult = downloadNetworkTaskWorker.execute(getNetworkTask(), getAccessTypeData());
+        LogEntry logEntry = executionResult.getLogEntry();
+        assertEquals(45, logEntry.getNetworkTaskId());
+        assertEquals(getTestTimestamp(), logEntry.getTimestamp());
+        assertFalse(logEntry.isSuccess());
+        assertEquals("Server returned redirect 301 5. The download from http://127.0.0.1 failed. The file was partially downloaded. The partially downloaded file was deleted. 5 msec download time. Exception: Test", logEntry.getMessage());
     }
 
     @Test
@@ -954,6 +1302,20 @@ public class DownloadNetworkTaskWorkerTest {
     }
 
     @Test
+    public void testDownloadSuccessFileDoesNotExistWithRedirect() throws Exception {
+        preferenceManager.setPreferenceDownloadFollowsRedirects(true);
+        DNSLookupResult dnsLookupResult = new DNSLookupResult(Arrays.asList(InetAddress.getByName("127.0.0.1"), InetAddress.getByName("::1")), null);
+        DownloadCommandResult downloadCommandResult = new DownloadCommandResult(new URL("http://127.0.0.1"), true, true, false, false, true, false, List.of(HttpURLConnection.HTTP_MOVED_PERM, HttpURLConnection.HTTP_MOVED_TEMP, HttpURLConnection.HTTP_MOVED_PERM, HttpURLConnection.HTTP_OK), List.of(""), null, 0, null);
+        TestDownloadNetworkTaskWorker downloadNetworkTaskWorker = prepareTestDownloadNetworkTaskWorker(dnsLookupResult, downloadCommandResult);
+        NetworkTaskWorker.ExecutionResult executionResult = downloadNetworkTaskWorker.execute(getNetworkTask(), getAccessTypeData());
+        LogEntry logEntry = executionResult.getLogEntry();
+        assertEquals(45, logEntry.getNetworkTaskId());
+        assertEquals(getTestTimestamp(), logEntry.getTimestamp());
+        assertFalse(logEntry.isSuccess());
+        assertEquals("Server returned redirect 301. Server returned redirect 302. Server returned redirect 301. The download from http://127.0.0.1 failed for an unknown reason.", logEntry.getMessage());
+    }
+
+    @Test
     public void testDownloadSuccessFileDoesNotExistWithException() throws Exception {
         preferenceManager.setPreferenceDownloadFollowsRedirects(false);
         DNSLookupResult dnsLookupResult = new DNSLookupResult(Arrays.asList(InetAddress.getByName("127.0.0.1"), InetAddress.getByName("::1")), null);
@@ -968,8 +1330,39 @@ public class DownloadNetworkTaskWorkerTest {
     }
 
     @Test
+    public void testDownloadSuccessFileDoesNotExistWithExceptionWithRedirect() throws Exception {
+        preferenceManager.setPreferenceDownloadFollowsRedirects(true);
+        DNSLookupResult dnsLookupResult = new DNSLookupResult(Arrays.asList(InetAddress.getByName("127.0.0.1"), InetAddress.getByName("::1")), null);
+        DownloadCommandResult downloadCommandResult = new DownloadCommandResult(new URL("http://127.0.0.1"), true, true, false, false, true, false, List.of(HttpURLConnection.HTTP_MOVED_PERM, HttpURLConnection.HTTP_OK), List.of("2", "1"), null, 0, new Exception("Test"));
+        TestDownloadNetworkTaskWorker downloadNetworkTaskWorker = prepareTestDownloadNetworkTaskWorker(dnsLookupResult, downloadCommandResult);
+        NetworkTaskWorker.ExecutionResult executionResult = downloadNetworkTaskWorker.execute(getNetworkTask(), getAccessTypeData());
+        LogEntry logEntry = executionResult.getLogEntry();
+        assertEquals(45, logEntry.getNetworkTaskId());
+        assertEquals(getTestTimestamp(), logEntry.getTimestamp());
+        assertFalse(logEntry.isSuccess());
+        assertEquals("Server returned redirect 301 2. The download from http://127.0.0.1 failed. Exception: Test", logEntry.getMessage());
+    }
+
+    @Test
     public void testDownloadSuccessFileExistNotDelete() throws Exception {
         preferenceManager.setPreferenceDownloadFollowsRedirects(false);
+        DNSLookupResult dnsLookupResult = new DNSLookupResult(Arrays.asList(InetAddress.getByName("127.0.0.1"), InetAddress.getByName("::1")), null);
+        DownloadCommandResult downloadCommandResult = new DownloadCommandResult(new URL("http://127.0.0.1"), true, true, true, false, true, false, List.of(HttpURLConnection.HTTP_OK), List.of(""), "testfile", 100, null);
+        TestDownloadNetworkTaskWorker downloadNetworkTaskWorker = prepareTestDownloadNetworkTaskWorker(dnsLookupResult, downloadCommandResult);
+        preferenceManager.setPreferenceDownloadKeep(true);
+        preferenceManager.setPreferenceDownloadExternalStorage(true);
+        fileManager.setExternalDirectory(new File("Test"), 0);
+        NetworkTaskWorker.ExecutionResult executionResult = downloadNetworkTaskWorker.execute(getNetworkTask(), getAccessTypeData());
+        LogEntry logEntry = executionResult.getLogEntry();
+        assertEquals(45, logEntry.getNetworkTaskId());
+        assertEquals(getTestTimestamp(), logEntry.getTimestamp());
+        assertTrue(logEntry.isSuccess());
+        assertEquals("The download from http://127.0.0.1 was successful. Downloaded file: /Test/testfile. 100 msec download time.", logEntry.getMessage());
+    }
+
+    @Test
+    public void testDownloadSuccessFileExistNotDeleteWithRedirect() throws Exception {
+        preferenceManager.setPreferenceDownloadFollowsRedirects(true);
         DNSLookupResult dnsLookupResult = new DNSLookupResult(Arrays.asList(InetAddress.getByName("127.0.0.1"), InetAddress.getByName("::1")), null);
         DownloadCommandResult downloadCommandResult = new DownloadCommandResult(new URL("http://127.0.0.1"), true, true, true, false, true, false, List.of(HttpURLConnection.HTTP_OK), List.of(""), "testfile", 100, null);
         TestDownloadNetworkTaskWorker downloadNetworkTaskWorker = prepareTestDownloadNetworkTaskWorker(dnsLookupResult, downloadCommandResult);
@@ -1004,10 +1397,29 @@ public class DownloadNetworkTaskWorkerTest {
     }
 
     @Test
+    public void testDownloadSuccessSDCardNotSupportedWithRedirect() throws Exception {
+        preferenceManager.setPreferenceDownloadFollowsRedirects(true);
+        DNSLookupResult dnsLookupResult = new DNSLookupResult(Arrays.asList(InetAddress.getByName("127.0.0.1"), InetAddress.getByName("::1")), null);
+        DownloadCommandResult downloadCommandResult = new DownloadCommandResult(new URL("http://127.0.0.1"), true, true, true, false, true, false, List.of(HttpURLConnection.HTTP_MOVED_TEMP, HttpURLConnection.HTTP_OK), List.of(""), "testfile", 100, null);
+        TestDownloadNetworkTaskWorker downloadNetworkTaskWorker = prepareTestDownloadNetworkTaskWorker(dnsLookupResult, downloadCommandResult);
+        preferenceManager.setPreferenceDownloadKeep(true);
+        preferenceManager.setPreferenceDownloadExternalStorage(true);
+        preferenceManager.setPreferenceExternalStorageType(1);
+        fileManager.setExternalDirectory(new File("Test0"), 0);
+        fileManager.setExternalDirectory(new File("Test1"), 1);
+        NetworkTaskWorker.ExecutionResult executionResult = downloadNetworkTaskWorker.execute(getNetworkTask(), getAccessTypeData());
+        LogEntry logEntry = executionResult.getLogEntry();
+        assertEquals(45, logEntry.getNetworkTaskId());
+        assertEquals(getTestTimestamp(), logEntry.getTimestamp());
+        assertTrue(logEntry.isSuccess());
+        assertEquals("Server returned redirect 302. The download from http://127.0.0.1 was successful. Downloaded file: /Test0/testfile. 100 msec download time.", logEntry.getMessage());
+    }
+
+    @Test
     public void testDownloadSuccessSDCardNotSupportedSDCard() throws Exception {
         preferenceManager.setPreferenceDownloadFollowsRedirects(false);
         DNSLookupResult dnsLookupResult = new DNSLookupResult(Arrays.asList(InetAddress.getByName("127.0.0.1"), InetAddress.getByName("::1")), null);
-        DownloadCommandResult downloadCommandResult = new DownloadCommandResult(new URL("http://127.0.0.1"), true, true, true, false, true, false, List.of(HttpURLConnection.HTTP_OK), List.of(""), "testfile", 100, null);
+        DownloadCommandResult downloadCommandResult = new DownloadCommandResult(new URL("http://127.0.0.1"), true, true, true, false, true, false, List.of(HttpURLConnection.HTTP_MOVED_PERM, HttpURLConnection.HTTP_OK), List.of("1"), "testfile", 100, null);
         TestDownloadNetworkTaskWorker downloadNetworkTaskWorker = prepareTestDownloadNetworkTaskWorker(dnsLookupResult, downloadCommandResult);
         preferenceManager.setPreferenceDownloadKeep(true);
         preferenceManager.setPreferenceDownloadExternalStorage(true);
@@ -1021,6 +1433,26 @@ public class DownloadNetworkTaskWorkerTest {
         assertEquals(getTestTimestamp(), logEntry.getTimestamp());
         assertTrue(logEntry.isSuccess());
         assertEquals("The download from http://127.0.0.1 was successful. Downloaded file: /Test1/testfile. 100 msec download time.", logEntry.getMessage());
+    }
+
+    @Test
+    public void testDownloadSuccessSDCardNotSupportedSDCardWithRedirect() throws Exception {
+        preferenceManager.setPreferenceDownloadFollowsRedirects(true);
+        DNSLookupResult dnsLookupResult = new DNSLookupResult(Arrays.asList(InetAddress.getByName("127.0.0.1"), InetAddress.getByName("::1")), null);
+        DownloadCommandResult downloadCommandResult = new DownloadCommandResult(new URL("http://127.0.0.1"), true, true, true, false, true, false, List.of(HttpURLConnection.HTTP_MOVED_TEMP, HttpURLConnection.HTTP_MOVED_TEMP, HttpURLConnection.HTTP_MOVED_TEMP, HttpURLConnection.HTTP_OK), List.of("302", "302", "302", "302"), "testfile", 100, null);
+        TestDownloadNetworkTaskWorker downloadNetworkTaskWorker = prepareTestDownloadNetworkTaskWorker(dnsLookupResult, downloadCommandResult);
+        preferenceManager.setPreferenceDownloadKeep(true);
+        preferenceManager.setPreferenceDownloadExternalStorage(true);
+        preferenceManager.setPreferenceExternalStorageType(1);
+        fileManager.setSDCardSupported(true);
+        fileManager.setExternalDirectory(new File("Test0"), 0);
+        fileManager.setExternalDirectory(new File("Test1"), 1);
+        NetworkTaskWorker.ExecutionResult executionResult = downloadNetworkTaskWorker.execute(getNetworkTask(), getAccessTypeData());
+        LogEntry logEntry = executionResult.getLogEntry();
+        assertEquals(45, logEntry.getNetworkTaskId());
+        assertEquals(getTestTimestamp(), logEntry.getTimestamp());
+        assertTrue(logEntry.isSuccess());
+        assertEquals("Server returned redirect 302 302. Server returned redirect 302 302. Server returned redirect 302 302. The download from http://127.0.0.1 was successful. Downloaded file: /Test1/testfile. 100 msec download time.", logEntry.getMessage());
     }
 
     @Test
@@ -1044,6 +1476,26 @@ public class DownloadNetworkTaskWorkerTest {
     }
 
     @Test
+    public void testDownloadSuccessSDCardNotSupportedPrimaryWithRedirect() throws Exception {
+        preferenceManager.setPreferenceDownloadFollowsRedirects(true);
+        DNSLookupResult dnsLookupResult = new DNSLookupResult(Arrays.asList(InetAddress.getByName("127.0.0.1"), InetAddress.getByName("::1")), null);
+        DownloadCommandResult downloadCommandResult = new DownloadCommandResult(new URL("http://127.0.0.1"), true, true, true, false, true, false, List.of(HttpURLConnection.HTTP_MOVED_PERM, HttpURLConnection.HTTP_MOVED_TEMP, HttpURLConnection.HTTP_OK), List.of(""), "testfile", 100, null);
+        TestDownloadNetworkTaskWorker downloadNetworkTaskWorker = prepareTestDownloadNetworkTaskWorker(dnsLookupResult, downloadCommandResult);
+        preferenceManager.setPreferenceDownloadKeep(true);
+        preferenceManager.setPreferenceDownloadExternalStorage(true);
+        preferenceManager.setPreferenceExternalStorageType(0);
+        fileManager.setSDCardSupported(true);
+        fileManager.setExternalDirectory(new File("Test0"), 0);
+        fileManager.setExternalDirectory(new File("Test1"), 1);
+        NetworkTaskWorker.ExecutionResult executionResult = downloadNetworkTaskWorker.execute(getNetworkTask(), getAccessTypeData());
+        LogEntry logEntry = executionResult.getLogEntry();
+        assertEquals(45, logEntry.getNetworkTaskId());
+        assertEquals(getTestTimestamp(), logEntry.getTimestamp());
+        assertTrue(logEntry.isSuccess());
+        assertEquals("Server returned redirect 301. Server returned redirect 302. The download from http://127.0.0.1 was successful. Downloaded file: /Test0/testfile. 100 msec download time.", logEntry.getMessage());
+    }
+
+    @Test
     public void testDownloadSuccessFileExistDeleteSuccess() throws Exception {
         preferenceManager.setPreferenceDownloadFollowsRedirects(false);
         DNSLookupResult dnsLookupResult = new DNSLookupResult(Arrays.asList(InetAddress.getByName("127.0.0.1"), InetAddress.getByName("::1")), null);
@@ -1055,6 +1507,20 @@ public class DownloadNetworkTaskWorkerTest {
         assertEquals(getTestTimestamp(), logEntry.getTimestamp());
         assertTrue(logEntry.isSuccess());
         assertEquals("The download from http://127.0.0.1 was successful. The file was deleted after download. 999 msec download time.", logEntry.getMessage());
+    }
+
+    @Test
+    public void testDownloadSuccessFileExistDeleteSuccessWithRedirect() throws Exception {
+        preferenceManager.setPreferenceDownloadFollowsRedirects(true);
+        DNSLookupResult dnsLookupResult = new DNSLookupResult(Arrays.asList(InetAddress.getByName("127.0.0.1"), InetAddress.getByName("::1")), null);
+        DownloadCommandResult downloadCommandResult = new DownloadCommandResult(new URL("http://127.0.0.1"), true, true, true, true, true, false, List.of(HttpURLConnection.HTTP_MOVED_PERM, HttpURLConnection.HTTP_OK), List.of("301"), "testfile", 999, null);
+        TestDownloadNetworkTaskWorker downloadNetworkTaskWorker = prepareTestDownloadNetworkTaskWorker(dnsLookupResult, downloadCommandResult);
+        NetworkTaskWorker.ExecutionResult executionResult = downloadNetworkTaskWorker.execute(getNetworkTask(), getAccessTypeData());
+        LogEntry logEntry = executionResult.getLogEntry();
+        assertEquals(45, logEntry.getNetworkTaskId());
+        assertEquals(getTestTimestamp(), logEntry.getTimestamp());
+        assertTrue(logEntry.isSuccess());
+        assertEquals("Server returned redirect 301 301. The download from http://127.0.0.1 was successful. The file was deleted after download. 999 msec download time.", logEntry.getMessage());
     }
 
     @Test
@@ -1072,8 +1538,36 @@ public class DownloadNetworkTaskWorkerTest {
     }
 
     @Test
+    public void testDownloadSuccessFileExistDeleteFailedInternalStorageWithRedirect() throws Exception {
+        preferenceManager.setPreferenceDownloadFollowsRedirects(true);
+        DNSLookupResult dnsLookupResult = new DNSLookupResult(Arrays.asList(InetAddress.getByName("127.0.0.1"), InetAddress.getByName("::1")), null);
+        DownloadCommandResult downloadCommandResult = new DownloadCommandResult(new URL("http://127.0.0.1"), true, true, true, false, true, false, List.of(HttpURLConnection.HTTP_MOVED_TEMP, HttpURLConnection.HTTP_OK), List.of("302"), "testfile", 333, null);
+        TestDownloadNetworkTaskWorker downloadNetworkTaskWorker = prepareTestDownloadNetworkTaskWorker(dnsLookupResult, downloadCommandResult);
+        NetworkTaskWorker.ExecutionResult executionResult = downloadNetworkTaskWorker.execute(getNetworkTask(), getAccessTypeData());
+        LogEntry logEntry = executionResult.getLogEntry();
+        assertEquals(45, logEntry.getNetworkTaskId());
+        assertEquals(getTestTimestamp(), logEntry.getTimestamp());
+        assertTrue(logEntry.isSuccess());
+        assertEquals("Server returned redirect 302 302. The download from http://127.0.0.1 was successful. The deletion of the downloaded file failed. 333 msec download time.", logEntry.getMessage());
+    }
+
+    @Test
     public void testDownloadSuccessFileExistDeleteFailedInternalStorageWithException() throws Exception {
         preferenceManager.setPreferenceDownloadFollowsRedirects(false);
+        DNSLookupResult dnsLookupResult = new DNSLookupResult(Arrays.asList(InetAddress.getByName("127.0.0.1"), InetAddress.getByName("::1")), null);
+        DownloadCommandResult downloadCommandResult = new DownloadCommandResult(new URL("http://127.0.0.1"), true, true, true, false, true, false, List.of(HttpURLConnection.HTTP_OK), List.of(""), "testfile", 33000, new Exception("Test"));
+        TestDownloadNetworkTaskWorker downloadNetworkTaskWorker = prepareTestDownloadNetworkTaskWorker(dnsLookupResult, downloadCommandResult);
+        NetworkTaskWorker.ExecutionResult executionResult = downloadNetworkTaskWorker.execute(getNetworkTask(), getAccessTypeData());
+        LogEntry logEntry = executionResult.getLogEntry();
+        assertEquals(45, logEntry.getNetworkTaskId());
+        assertEquals(getTestTimestamp(), logEntry.getTimestamp());
+        assertTrue(logEntry.isSuccess());
+        assertEquals("The download from http://127.0.0.1 was successful. The deletion of the downloaded file failed. 33 sec download time. Exception: Test", logEntry.getMessage());
+    }
+
+    @Test
+    public void testDownloadSuccessFileExistDeleteFailedInternalStorageWithExceptionWithRedirect() throws Exception {
+        preferenceManager.setPreferenceDownloadFollowsRedirects(true);
         DNSLookupResult dnsLookupResult = new DNSLookupResult(Arrays.asList(InetAddress.getByName("127.0.0.1"), InetAddress.getByName("::1")), null);
         DownloadCommandResult downloadCommandResult = new DownloadCommandResult(new URL("http://127.0.0.1"), true, true, true, false, true, false, List.of(HttpURLConnection.HTTP_OK), List.of(""), "testfile", 33000, new Exception("Test"));
         TestDownloadNetworkTaskWorker downloadNetworkTaskWorker = prepareTestDownloadNetworkTaskWorker(dnsLookupResult, downloadCommandResult);
@@ -1089,7 +1583,7 @@ public class DownloadNetworkTaskWorkerTest {
     public void testDownloadSuccessFileExistDeleteFailedExternalStorage() throws Exception {
         preferenceManager.setPreferenceDownloadFollowsRedirects(false);
         DNSLookupResult dnsLookupResult = new DNSLookupResult(Arrays.asList(InetAddress.getByName("127.0.0.1"), InetAddress.getByName("::1")), null);
-        DownloadCommandResult downloadCommandResult = new DownloadCommandResult(new URL("http://127.0.0.1"), true, true, true, false, true, false, List.of(HttpURLConnection.HTTP_OK), List.of(""), "testfile", 1000, null);
+        DownloadCommandResult downloadCommandResult = new DownloadCommandResult(new URL("http://127.0.0.1"), true, true, true, false, true, false, List.of(HttpURLConnection.HTTP_MOVED_TEMP, HttpURLConnection.HTTP_OK), List.of("1", "1"), "testfile", 1000, null);
         TestDownloadNetworkTaskWorker downloadNetworkTaskWorker = prepareTestDownloadNetworkTaskWorker(dnsLookupResult, downloadCommandResult);
         preferenceManager.setPreferenceDownloadKeep(false);
         preferenceManager.setPreferenceDownloadExternalStorage(true);
@@ -1103,10 +1597,27 @@ public class DownloadNetworkTaskWorkerTest {
     }
 
     @Test
+    public void testDownloadSuccessFileExistDeleteFailedExternalStorageWithRedirect() throws Exception {
+        preferenceManager.setPreferenceDownloadFollowsRedirects(true);
+        DNSLookupResult dnsLookupResult = new DNSLookupResult(Arrays.asList(InetAddress.getByName("127.0.0.1"), InetAddress.getByName("::1")), null);
+        DownloadCommandResult downloadCommandResult = new DownloadCommandResult(new URL("http://127.0.0.1"), true, true, true, false, true, false, List.of(HttpURLConnection.HTTP_MOVED_PERM, HttpURLConnection.HTTP_MOVED_PERM, HttpURLConnection.HTTP_OK), List.of("1", "1", "1", "1"), "testfile", 1000, null);
+        TestDownloadNetworkTaskWorker downloadNetworkTaskWorker = prepareTestDownloadNetworkTaskWorker(dnsLookupResult, downloadCommandResult);
+        preferenceManager.setPreferenceDownloadKeep(false);
+        preferenceManager.setPreferenceDownloadExternalStorage(true);
+        fileManager.setExternalDirectory(new File("Test"), 0);
+        NetworkTaskWorker.ExecutionResult executionResult = downloadNetworkTaskWorker.execute(getNetworkTask(), getAccessTypeData());
+        LogEntry logEntry = executionResult.getLogEntry();
+        assertEquals(45, logEntry.getNetworkTaskId());
+        assertEquals(getTestTimestamp(), logEntry.getTimestamp());
+        assertTrue(logEntry.isSuccess());
+        assertEquals("Server returned redirect 301 1. Server returned redirect 301 1. The download from http://127.0.0.1 was successful. The deletion of the downloaded file failed. 1 sec download time.", logEntry.getMessage());
+    }
+
+    @Test
     public void testDownloadSuccessFileExistDeleteFailedExternalStorageWithException() throws Exception {
         preferenceManager.setPreferenceDownloadFollowsRedirects(false);
         DNSLookupResult dnsLookupResult = new DNSLookupResult(Arrays.asList(InetAddress.getByName("127.0.0.1"), InetAddress.getByName("::1")), null);
-        DownloadCommandResult downloadCommandResult = new DownloadCommandResult(new URL("http://127.0.0.1"), true, true, true, false, true, false, List.of(HttpURLConnection.HTTP_OK), List.of(""), "testfile", 22, new Exception("Test"));
+        DownloadCommandResult downloadCommandResult = new DownloadCommandResult(new URL("http://127.0.0.1"), true, true, true, false, true, false, List.of(HttpURLConnection.HTTP_MOVED_TEMP, HttpURLConnection.HTTP_MOVED_TEMP, HttpURLConnection.HTTP_OK), List.of(""), "testfile", 22, new Exception("Test"));
         TestDownloadNetworkTaskWorker downloadNetworkTaskWorker = prepareTestDownloadNetworkTaskWorker(dnsLookupResult, downloadCommandResult);
         preferenceManager.setPreferenceDownloadKeep(false);
         preferenceManager.setPreferenceDownloadExternalStorage(true);
@@ -1117,6 +1628,23 @@ public class DownloadNetworkTaskWorkerTest {
         assertEquals(getTestTimestamp(), logEntry.getTimestamp());
         assertTrue(logEntry.isSuccess());
         assertEquals("The download from http://127.0.0.1 was successful. The deletion of the downloaded file failed. 22 msec download time. Exception: Test", logEntry.getMessage());
+    }
+
+    @Test
+    public void testDownloadSuccessFileExistDeleteFailedExternalStorageWithExceptionWithRedirect() throws Exception {
+        preferenceManager.setPreferenceDownloadFollowsRedirects(true);
+        DNSLookupResult dnsLookupResult = new DNSLookupResult(Arrays.asList(InetAddress.getByName("127.0.0.1"), InetAddress.getByName("::1")), null);
+        DownloadCommandResult downloadCommandResult = new DownloadCommandResult(new URL("http://127.0.0.1"), true, true, true, false, true, false, List.of(HttpURLConnection.HTTP_MOVED_TEMP, HttpURLConnection.HTTP_MOVED_TEMP, HttpURLConnection.HTTP_OK), List.of("1", "1", "1", "1"), "testfile", 22, new Exception("Test"));
+        TestDownloadNetworkTaskWorker downloadNetworkTaskWorker = prepareTestDownloadNetworkTaskWorker(dnsLookupResult, downloadCommandResult);
+        preferenceManager.setPreferenceDownloadKeep(false);
+        preferenceManager.setPreferenceDownloadExternalStorage(true);
+        fileManager.setExternalDirectory(new File("Test"), 0);
+        NetworkTaskWorker.ExecutionResult executionResult = downloadNetworkTaskWorker.execute(getNetworkTask(), getAccessTypeData());
+        LogEntry logEntry = executionResult.getLogEntry();
+        assertEquals(45, logEntry.getNetworkTaskId());
+        assertEquals(getTestTimestamp(), logEntry.getTimestamp());
+        assertTrue(logEntry.isSuccess());
+        assertEquals("Server returned redirect 302 1. Server returned redirect 302 1. The download from http://127.0.0.1 was successful. The deletion of the downloaded file failed. 22 msec download time. Exception: Test", logEntry.getMessage());
     }
 
     @Test
