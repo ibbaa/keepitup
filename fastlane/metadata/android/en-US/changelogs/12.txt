@@ -3,4 +3,5 @@
 * External storage type setting is now ignored and disabled, when arbitrary storage is enabled
 * NetworkTask notifications are now generally shown as no notification, if notifications are globally disallowed for the app
 * Fixed broken monochrome app icon
+* Download follows redirects now (can be disabled)
 * Some minor bug fixes
