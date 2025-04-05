@@ -76,25 +76,14 @@ public class URLUtil {
     }
 
     public static URL getURL(String inputUrl) {
-        return getURL(inputUrl, null);
+        return getURL(null, inputUrl);
     }
 
-    public static URL getURL(String inputUrl, String inputHost) {
-        Log.d(URLUtil.class.getName(), "getURL, inputUrl is " + inputUrl + ", inputHost is " + inputHost);
-        String encodedInputUrl = encodeURL(inputUrl);
-        if (!isValidURL(encodedInputUrl)) {
-            Log.d(URLUtil.class.getName(), "URL " + encodedInputUrl + " is invalid");
-            return null;
-        }
+    public static URL getURL(URL baseURL, String inputUrl) {
+        Log.d(URLUtil.class.getName(), "getURL, baseURL is " + baseURL + ", inputUrl is " + inputUrl);
         try {
-            URL url = new URL(encodedInputUrl);
-            String host;
-            if (inputHost == null) {
-                host = url.getHost();
-            } else {
-                host = inputHost;
-            }
-            URI uri = new URI(url.getProtocol(), url.getUserInfo(), IDN.toASCII(host), url.getPort(), url.getPath(), url.getQuery(), url.getRef());
+            URL url = baseURL == null ? new URL(inputUrl) : new URL(baseURL, inputUrl);
+            URI uri = new URI(url.getProtocol(), url.getUserInfo(), IDN.toASCII(url.getHost()), url.getPort(), url.getPath(), url.getQuery(), url.getRef());
             return uri.toURL();
         } catch (Exception exc) {
             Log.d(URLUtil.class.getName(), "Exception parsing url " + inputUrl, exc);

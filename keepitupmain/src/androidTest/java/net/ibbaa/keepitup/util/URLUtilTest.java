@@ -19,7 +19,6 @@ package net.ibbaa.keepitup.util;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import androidx.test.ext.junit.runners.AndroidJUnit4;
@@ -30,6 +29,7 @@ import org.junit.runner.RunWith;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Objects;
 
 @SmallTest
 @RunWith(AndroidJUnit4.class)
@@ -86,38 +86,58 @@ public class URLUtilTest {
     }
 
     @Test
-    public void testGetURL() {
-        URL url = URLUtil.getURL("http://www.host.com", null);
+    public void testGetURL() throws Exception {
+        URL url = URLUtil.getURL("http://www.host.com");
         assertNotNull(url);
+        assertEquals("http://www.host.com", url.toString());
         assertEquals("www.host.com", url.getHost());
         assertFalse(url.getPort() > 0);
         assertTrue(StringUtil.isEmpty(url.getQuery()));
         assertTrue(StringUtil.isEmpty(url.getPath()));
         url = URLUtil.getURL("http://www.host.com:8080/test/url?query");
         assertNotNull(url);
+        assertEquals("http://www.host.com:8080/test/url?query", url.toString());
         assertEquals("www.host.com", url.getHost());
         assertEquals(8080, url.getPort());
         assertEquals("query", url.getQuery());
         assertEquals("/test/url", url.getPath());
-        url = URLUtil.getURL("http://www.host.com", "127.0.0.1");
+        url = URLUtil.getURL(new URL("http://www.host.com"), "http://127.0.0.1");
         assertNotNull(url);
+        assertEquals("http://127.0.0.1", url.toString());
         assertEquals("127.0.0.1", url.getHost());
         assertFalse(url.getPort() > 0);
         assertTrue(StringUtil.isEmpty(url.getQuery()));
         assertTrue(StringUtil.isEmpty(url.getPath()));
-        url = URLUtil.getURL("http://www.host.com:8080/test/url?query", "xyz");
+        url = URLUtil.getURL(new URL("http://www.host.com:8080/test/url?query"), "xyz");
         assertNotNull(url);
-        assertEquals("xyz", url.getHost());
-        assertEquals(8080, url.getPort());
-        assertEquals("query", url.getQuery());
-        assertEquals("/test/url", url.getPath());
-        url = URLUtil.getURL("http://www.host.com:8080/test", "3ffe:1900:4545:3:200:f8ff:fe21:67cf");
-        assertNotNull(url);
-        assertEquals("[3ffe:1900:4545:3:200:f8ff:fe21:67cf]", url.getHost());
+        assertEquals("http://www.host.com:8080/test/xyz", url.toString());
+        assertEquals("www.host.com", url.getHost());
         assertEquals(8080, url.getPort());
         assertTrue(StringUtil.isEmpty(url.getQuery()));
-        assertEquals("/test", url.getPath());
-        assertNull(URLUtil.getURL("https:/123", "3ffe:1900:4545:3:200:f8ff:fe21:67cf"));
-        assertNull(URLUtil.getURL("xyz", null));
+        assertEquals("/test/xyz", url.getPath());
+        url = URLUtil.getURL(new URL("http://www.host.com:8080/test/url"), "/xyz");
+        assertNotNull(url);
+        assertEquals("http://www.host.com:8080/xyz", url.toString());
+        assertEquals("www.host.com", url.getHost());
+        assertEquals(8080, url.getPort());
+        assertTrue(StringUtil.isEmpty(url.getQuery()));
+        assertEquals("/xyz", url.getPath());
+        url = URLUtil.getURL(new URL("http://www.host.com:8080/test"), "https://[3ffe:1900:4545:3:200:f8ff:fe21:67cf]");
+        assertNotNull(url);
+        assertEquals("https://[3ffe:1900:4545:3:200:f8ff:fe21:67cf]", url.toString());
+        assertEquals("[3ffe:1900:4545:3:200:f8ff:fe21:67cf]", url.getHost());
+        assertFalse(url.getPort() > 0);
+        assertTrue(StringUtil.isEmpty(url.getQuery()));
+        assertTrue(StringUtil.isEmpty(url.getQuery()));
+    }
+
+    @Test
+    public void testGetURLEncoded() throws Exception {
+        URL url = URLUtil.getURL("http://www.host.com/t est?x=1");
+        assertEquals("http://www.host.com/t%20est?x=1", url.toString());
+        url = URLUtil.getURL(new URL("http://www.host.com:8080/test/url"), "/xy z");
+        assertEquals("http://www.host.com:8080/xy%20z", Objects.requireNonNull(url).toString());
+        url = URLUtil.getURL(new URL("http://www.host.com"), "http://127.0.0.1/b l a");
+        assertEquals("http://127.0.0.1/b%20l%20a", Objects.requireNonNull(url).toString());
     }
 }

@@ -263,7 +263,7 @@ public class DownloadNetworkTaskWorker extends NetworkTaskWorker {
 
     private URL determineURL(String baseURL) {
         Log.d(DownloadNetworkTaskWorker.class.getName(), "determineURL, baseURL is " + baseURL);
-        return URLUtil.getURL(baseURL, null);
+        return URLUtil.getURL(baseURL);
     }
 
     private boolean returnedHttpFailure(DownloadCommandResult downloadResult) {

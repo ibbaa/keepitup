@@ -116,6 +116,7 @@ public class DownloadCommand implements Callable<DownloadCommandResult> {
                 if (HTTPUtil.isHTTPConnection(connection)) {
                     Log.d(DownloadCommand.class.getName(), "Download is an HTTP download.");
                     HttpURLConnection httpConnection = (HttpURLConnection) connection;
+                    httpConnection.setInstanceFollowRedirects(false);
                     int httpCode = httpConnection.getResponseCode();
                     Log.d(DownloadCommand.class.getName(), "HTTP return code is " + httpCode);
                     String httpMessage = getResponseMessage(httpConnection);
@@ -125,7 +126,7 @@ public class DownloadCommand implements Callable<DownloadCommandResult> {
                     if (HTTPUtil.isHTTPReturnCodeRedirect(httpCode) && preferenceManager.getPreferenceDownloadFollowsRedirects()) {
                         Log.d(DownloadCommand.class.getName(), "HTTP return code " + httpCode + " is a redirect, location is " + location);
                         redirects--;
-                        URL locationUrl = getLocationURL(location);
+                        URL locationUrl = getLocationURL(downloadUrl, location);
                         if (locationUrl == null) {
                             httpMessage += getLocationInvalidMessage();
                         } else if (redirects <= 0) {
@@ -199,13 +200,12 @@ public class DownloadCommand implements Callable<DownloadCommandResult> {
         }
     }
 
-    private URL getLocationURL(String location) {
-        Log.d(DownloadCommand.class.getName(), "getLocationURL for loaction " + location);
-        if (StringUtil.isEmpty(location) || !URLUtil.isValidURL(location)) {
-            Log.d(DownloadCommand.class.getName(), "Location URL is invalid");
-            return null;
+    private URL getLocationURL(URL downloadURL, String location) {
+        Log.d(DownloadCommand.class.getName(), "getLocationURL, downloadURL is " + downloadURL + ", location is " + location);
+        if (!StringUtil.isEmpty(location) && URLUtil.isValidURL(location)) {
+            return URLUtil.getURL(location);
         }
-        return URLUtil.getURL(location, null);
+        return URLUtil.getURL(downloadURL, location);
     }
 
     protected URLConnection openConnection(URL url) throws IOException {

@@ -16,31 +16,11 @@
 
 package net.ibbaa.keepitup.util;
 
-import android.content.Context;
-import android.content.res.Resources;
-import android.content.res.TypedArray;
 import android.text.InputType;
-import android.util.TypedValue;
 
 public class UIUtil {
 
     public static boolean isInputTypeNumber(int inputType) {
         return (inputType & InputType.TYPE_CLASS_NUMBER) == InputType.TYPE_CLASS_NUMBER;
-    }
-
-    @SuppressWarnings({"resource"})
-    public static int getStyledColor(Context context, int colorid) {
-        TypedValue typedValue = new TypedValue();
-        Resources.Theme theme = context.getTheme();
-        theme.resolveAttribute(colorid, typedValue, true);
-        TypedArray typedArray = null;
-        try {
-            typedArray = context.obtainStyledAttributes(typedValue.data, new int[]{colorid});
-            return typedArray.getColor(0, -1);
-        } finally {
-            if (typedArray != null) {
-                typedArray.recycle();
-            }
-        }
     }
 }

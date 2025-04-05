@@ -57,7 +57,6 @@ import net.ibbaa.keepitup.ui.validation.ValidationResult;
 import net.ibbaa.keepitup.util.BundleUtil;
 import net.ibbaa.keepitup.util.NumberUtil;
 import net.ibbaa.keepitup.util.StringUtil;
-import net.ibbaa.keepitup.util.UIUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -245,7 +244,7 @@ public class NetworkTaskEditDialog extends DialogFragment implements ContextOpti
             AccessType accessType = accessTypes[ii];
             RadioButton newRadioButton = new RadioButton(requireContext());
             newRadioButton.setText(mapping.getAccessTypeText(accessType));
-            newRadioButton.setTextColor(UIUtil.getStyledColor(requireActivity(), android.R.attr.textColor));
+            newRadioButton.setTextColor(getResources().getColor(R.color.textColor));
             newRadioButton.setButtonTintList(ColorStateList.valueOf(ResourcesCompat.getColor(getResources(), R.color.textColor, null)));
             newRadioButton.setId(View.generateViewId());
             if (savedSelectedAccessType != null) {
