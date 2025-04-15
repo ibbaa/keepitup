@@ -69,7 +69,7 @@ dependencies {
     implementation 'androidx.annotation:annotation:1.9.1'
     implementation 'androidx.preference:preference:1.2.1'
     implementation 'net.ibbaa.phonelog:phonelog:2.0.0'
-    implementation('com.google.guava:guava:33.4.6-android') {
+    implementation('com.google.guava:guava:33.4.8-android') {
         exclude group: 'com.google.guava', module: 'failureaccess'
     }
     testImplementation 'junit:junit:4.13.2'
