@@ -15,6 +15,7 @@
   -->
 
 <resources>
+    <dimen name="imageview_activity_main_add_padding_bottom">4dp</dimen>
     <dimen name="cardview_list_item_network_task_margin">4dp</dimen>
     <dimen name="cardview_list_item_network_task_corner_radius">4dp</dimen>
     <dimen name="cardview_list_item_network_task_card_elevation">4dp</dimen>
