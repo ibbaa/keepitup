@@ -16,22 +16,32 @@
 
 package net.ibbaa.keepitup.ui.dialog;
 
+import android.app.Dialog;
 import android.content.res.ColorStateList;
 import android.os.Bundle;
+import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.res.ResourcesCompat;
+import androidx.core.graphics.Insets;
+import androidx.core.view.OnApplyWindowInsetsListener;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
 import androidx.fragment.app.DialogFragment;
 
 import com.google.android.material.switchmaterial.SwitchMaterial;
@@ -118,6 +128,28 @@ public class NetworkTaskEditDialog extends DialogFragment implements ContextOpti
         Log.d(NetworkTaskEditDialog.class.getName(), "onCreate");
         super.onCreate(savedInstanceState);
         setStyle(DialogFragment.STYLE_NO_FRAME, R.style.DialogTheme);
+
+
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        Dialog dialog = getDialog();
+        if (dialog != null && dialog.getWindow() != null) {
+            Window window = dialog.getWindow();
+
+            // 1. Größe setzen (nicht Fullscreen, aber groß genug für Scrollbarkeit)
+            DisplayMetrics metrics = new DisplayMetrics();
+            requireActivity().getWindowManager().getDefaultDisplay().getMetrics(metrics);
+            int width = (int)(metrics.widthPixels * 0.90);
+            int height = (int)(metrics.heightPixels * 0.85); // oder WRAP_CONTENT
+
+            window.setLayout(width, height);
+
+            // 2. Softinput-Handling aktivieren
+            window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
+        }
     }
 
     @Override
@@ -139,6 +171,21 @@ public class NetworkTaskEditDialog extends DialogFragment implements ContextOpti
         prepareNotificationSwitch();
         prepareOkCancelImageButtons();
         return dialogView;
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        final ScrollView scrollView = dialogView.findViewById(R.id.scrollview_dialog_network_task_edit); // deine ScrollView-ID
+
+        ViewCompat.setOnApplyWindowInsetsListener(scrollView, new OnApplyWindowInsetsListener() {
+            @Override
+            public WindowInsetsCompat onApplyWindowInsets(View v, WindowInsetsCompat insets) {
+                Insets imeInsets = insets.getInsets(WindowInsetsCompat.Type.ime());
+                v.setPadding(v.getPaddingLeft(), v.getPaddingTop(), v.getPaddingRight(), imeInsets.bottom);
+                return insets;
+            }
+        });
     }
 
     @Override
