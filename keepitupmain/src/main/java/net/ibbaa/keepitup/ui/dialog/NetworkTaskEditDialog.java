@@ -17,10 +17,13 @@
 package net.ibbaa.keepitup.ui.dialog;
 
 import android.content.res.ColorStateList;
+import android.graphics.Rect;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -32,6 +35,8 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.res.ResourcesCompat;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
 import androidx.fragment.app.DialogFragment;
 
 import com.google.android.material.switchmaterial.SwitchMaterial;
@@ -121,6 +126,22 @@ public class NetworkTaskEditDialog extends DialogFragment implements ContextOpti
     }
 
     @Override
+    public void onStart() {
+        super.onStart();
+        if (getDialog() != null && getDialog().getWindow() != null) {
+            getDialog().getWindow().setSoftInputMode(
+                    WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE
+            );
+
+            // Optional: Window-Size explizit begrenzen (verhindert Fullscreen)
+            getDialog().getWindow().setLayout(
+                    ViewGroup.LayoutParams.WRAP_CONTENT,
+                    ViewGroup.LayoutParams.WRAP_CONTENT
+            );
+        }
+    }
+
+    @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         Log.d(NetworkTaskEditDialog.class.getName(), "onCreateView");
         dialogView = inflater.inflate(R.layout.dialog_network_task_edit, container);
@@ -138,6 +159,28 @@ public class NetworkTaskEditDialog extends DialogFragment implements ContextOpti
         prepareOnlyWifiSwitch();
         prepareNotificationSwitch();
         prepareOkCancelImageButtons();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            dialogView.setOnApplyWindowInsetsListener((v, insets) -> {
+                android.graphics.Insets systemInsets = insets.getInsets(
+                        android.view.WindowInsets.Type.systemBars());
+                v.setPadding(systemInsets.left, systemInsets.top, systemInsets.right, systemInsets.bottom);
+                return insets;
+            });
+        } else {
+            ViewCompat.setOnApplyWindowInsetsListener(dialogView, (view, insets) -> {
+                androidx.core.graphics.Insets systemInsets = insets.getInsets(
+                        WindowInsetsCompat.Type.systemBars());
+                view.setPadding(systemInsets.left, systemInsets.top, systemInsets.right, systemInsets.bottom);
+                return insets;
+            });
+        }
+
+        dialogView.getViewTreeObserver().addOnGlobalLayoutListener(() -> {
+            Rect r = new Rect();
+            dialogView.getWindowVisibleDisplayFrame(r);
+            int heightDiff = dialogView.getRootView().getHeight() - r.height();
+            Log.d("DialogKeyboard", "Visible height diff: " + heightDiff);
+        });
         return dialogView;
     }
 
