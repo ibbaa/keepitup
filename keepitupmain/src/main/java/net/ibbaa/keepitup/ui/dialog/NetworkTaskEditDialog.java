@@ -122,7 +122,7 @@ public class NetworkTaskEditDialog extends DialogFragment implements ContextOpti
     public void onCreate(Bundle savedInstanceState) {
         Log.d(NetworkTaskEditDialog.class.getName(), "onCreate");
         super.onCreate(savedInstanceState);
-        setStyle(DialogFragment.STYLE_NO_FRAME, R.style.DialogTheme);
+        setStyle(DialogFragment.STYLE_NO_TITLE, R.style.DialogTheme);
     }
 
     @Override
