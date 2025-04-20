@@ -58,12 +58,14 @@
 
             <NumberPicker
                 android:id="@+id/picker_dialog_suspension_interval_select_time_hour"
+                android:theme="@style/NumberPickerTheme"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/picker_dialog_suspension_interval_select_time_hour_margin" />
 
             <NumberPicker
                 android:id="@+id/picker_dialog_suspension_interval_select_time_minute"
+                android:theme="@style/NumberPickerTheme"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/picker_dialog_suspension_interval_select_time_minute_margin" />

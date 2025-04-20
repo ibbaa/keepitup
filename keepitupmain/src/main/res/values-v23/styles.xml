@@ -48,4 +48,8 @@
         <item name="android:background">@drawable/dialog_edittext_background</item>
     </style>
 
+    <style name="NumberPickerTheme" parent="AppTheme">
+        <item name="colorControlNormal">@color/pickerDividerColor</item>
+    </style>
+
 </resources>
