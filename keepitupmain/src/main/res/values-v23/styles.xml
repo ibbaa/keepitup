@@ -43,7 +43,7 @@
         <item name="android:windowNoTitle">true</item>
     </style>
 
-    <style name="DialogEditTextTheme" parent="AppTheme">
+    <style name="EditTextTheme" parent="AppTheme">
         <item name="android:textAppearance">?android:attr/textAppearanceSmall</item>
         <item name="android:background">@drawable/dialog_edittext_background</item>
     </style>

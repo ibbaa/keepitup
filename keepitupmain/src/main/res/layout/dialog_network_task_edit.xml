@@ -76,7 +76,7 @@
 
                 <EditText
                     android:id="@+id/edittext_dialog_network_task_edit_address"
-                    style="@style/DialogEditTextTheme"
+                    style="@style/EditTextTheme"
                     android:layout_width="@dimen/edittext_dialog_network_task_edit_address_width"
                     android:layout_height="wrap_content"
                     android:importantForAutofill="no"
@@ -109,7 +109,7 @@
 
                 <EditText
                     android:id="@+id/edittext_dialog_network_task_edit_port"
-                    style="@style/DialogEditTextTheme"
+                    style="@style/EditTextTheme"
                     android:layout_width="@dimen/edittext_dialog_network_task_edit_port_width"
                     android:layout_height="wrap_content"
                     android:maxLength="@integer/edittext_dialog_network_task_edit_port_max_length"
@@ -141,7 +141,7 @@
 
                 <EditText
                     android:id="@+id/edittext_dialog_network_task_edit_interval"
-                    style="@style/DialogEditTextTheme"
+                    style="@style/EditTextTheme"
                     android:layout_width="@dimen/edittext_dialog_network_task_edit_interval_width"
                     android:layout_height="wrap_content"
                     android:importantForAutofill="no"
@@ -172,7 +172,7 @@
 
                 <EditText
                     android:id="@+id/edittext_dialog_network_task_edit_ping_count"
-                    style="@style/DialogEditTextTheme"
+                    style="@style/EditTextTheme"
                     android:layout_width="@dimen/edittext_dialog_network_task_edit_ping_count_width"
                     android:layout_height="wrap_content"
                     android:maxLength="@integer/edittext_dialog_network_task_edit_ping_count_max_length"
@@ -204,7 +204,7 @@
 
                 <EditText
                     android:id="@+id/edittext_dialog_network_task_edit_connect_count"
-                    style="@style/DialogEditTextTheme"
+                    style="@style/EditTextTheme"
                     android:layout_width="@dimen/edittext_dialog_network_task_edit_connect_count_width"
                     android:layout_height="wrap_content"
                     android:maxLength="@integer/edittext_dialog_network_task_edit_connect_count_max_length"
@@ -236,7 +236,7 @@
 
                 <EditText
                     android:id="@+id/edittext_dialog_network_task_edit_ping_package_size"
-                    style="@style/DialogEditTextTheme"
+                    style="@style/EditTextTheme"
                     android:layout_width="@dimen/edittext_dialog_network_task_edit_ping_package_size_width"
                     android:layout_height="wrap_content"
                     android:maxLength="@integer/edittext_dialog_network_task_edit_ping_package_size_max_length"

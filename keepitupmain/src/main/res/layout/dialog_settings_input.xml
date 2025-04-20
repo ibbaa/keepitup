@@ -39,7 +39,7 @@
 
             <EditText
                 android:id="@+id/edittext_dialog_settings_input_value"
-                style="@style/DialogEditTextTheme"
+                style="@style/EditTextTheme"
                 android:layout_width="@dimen/edittext_dialog_settings_input_value_width"
                 android:layout_height="wrap_content"
                 android:importantForAutofill="no"

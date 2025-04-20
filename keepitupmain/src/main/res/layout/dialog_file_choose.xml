@@ -46,7 +46,7 @@
 
         <EditText
             android:id="@+id/edittext_dialog_file_choose_folder"
-            style="@style/DialogEditTextTheme"
+            style="@style/EditTextTheme"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/edittext_dialog_file_choose_folder_margin_left"
@@ -76,7 +76,7 @@
 
             <EditText
                 android:id="@+id/edittext_dialog_file_choose_file"
-                style="@style/DialogEditTextTheme"
+                style="@style/EditTextTheme"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/edittext_dialog_file_choose_file_margin_left"
