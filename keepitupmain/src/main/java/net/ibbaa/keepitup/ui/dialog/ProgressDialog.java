@@ -27,7 +27,7 @@ import androidx.fragment.app.DialogFragment;
 import net.ibbaa.keepitup.R;
 import net.ibbaa.keepitup.logging.Log;
 
-public class ProgressDialog extends DialogFragment {
+public class ProgressDialog extends DialogFragmentBase {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -39,6 +39,8 @@ public class ProgressDialog extends DialogFragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         Log.d(ProgressDialog.class.getName(), "onCreateView");
-        return inflater.inflate(R.layout.dialog_progress, container);
+        View view = inflater.inflate(R.layout.dialog_progress, container);
+        initEdgeToEdgeInsets(view);
+        return view;
     }
 }

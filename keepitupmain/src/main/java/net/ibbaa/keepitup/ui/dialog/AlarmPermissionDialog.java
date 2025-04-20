@@ -31,7 +31,7 @@ import net.ibbaa.keepitup.logging.Log;
 import net.ibbaa.keepitup.ui.AlarmPermissionSupport;
 
 @SuppressWarnings({"unused"})
-public class AlarmPermissionDialog extends DialogFragment {
+public class AlarmPermissionDialog extends DialogFragmentBase {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -44,6 +44,7 @@ public class AlarmPermissionDialog extends DialogFragment {
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         Log.d(AlarmPermissionDialog.class.getName(), "onCreateView");
         View view = inflater.inflate(R.layout.dialog_alarm_permission, container);
+        initEdgeToEdgeInsets(view);
         prepareOkImageButton(view);
         return view;
     }

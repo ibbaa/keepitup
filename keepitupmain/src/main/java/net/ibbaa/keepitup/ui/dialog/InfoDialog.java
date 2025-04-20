@@ -37,7 +37,7 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 
 @SuppressWarnings({"unused"})
-public class InfoDialog extends DialogFragment {
+public class InfoDialog extends DialogFragmentBase {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -50,6 +50,7 @@ public class InfoDialog extends DialogFragment {
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         Log.d(InfoDialog.class.getName(), "onCreateView");
         View view = inflater.inflate(R.layout.dialog_info, container);
+        initEdgeToEdgeInsets(view);
         prepareBuildInfo(view);
         prepareCopyright(view);
         prepareLicense(view);

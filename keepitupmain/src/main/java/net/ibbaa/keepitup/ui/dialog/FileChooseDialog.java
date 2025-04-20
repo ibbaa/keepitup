@@ -59,7 +59,7 @@ import java.util.Collections;
 import java.util.List;
 
 @SuppressWarnings({"unused", "SameReturnValue", "NotifyDataSetChanged"})
-public class FileChooseDialog extends DialogFragment implements ContextOptionsSupport {
+public class FileChooseDialog extends DialogFragmentBase implements ContextOptionsSupport {
 
     public enum Type {
         DOWNLOADFOLDER,
@@ -110,6 +110,7 @@ public class FileChooseDialog extends DialogFragment implements ContextOptionsSu
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         Log.d(FileChooseDialog.class.getName(), "onCreateView");
         dialogView = inflater.inflate(R.layout.dialog_file_choose, container);
+        initEdgeToEdgeInsets(dialogView);
         mode = getMode();
         type = getType();
         Log.d(FileChooseDialog.class.getName(), "mode is " + mode);

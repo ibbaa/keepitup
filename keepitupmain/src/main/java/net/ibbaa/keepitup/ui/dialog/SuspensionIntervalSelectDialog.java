@@ -49,7 +49,7 @@ import java.util.List;
 import java.util.Objects;
 
 @SuppressWarnings({"unused", "FieldCanBeLocal"})
-public class SuspensionIntervalSelectDialog extends DialogFragment {
+public class SuspensionIntervalSelectDialog extends DialogFragmentBase {
 
     public enum Mode {
         START,
@@ -73,6 +73,7 @@ public class SuspensionIntervalSelectDialog extends DialogFragment {
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         Log.d(SuspensionIntervalSelectDialog.class.getName(), "onCreateView");
         dialogView = inflater.inflate(R.layout.dialog_suspension_interval_select, container);
+        initEdgeToEdgeInsets(dialogView);
         Time savedTime = null;
         if (savedInstanceState != null && savedInstanceState.containsKey(getSavedTimeKey())) {
             savedTime = new Time(Objects.requireNonNull(savedInstanceState.getBundle(getSavedTimeKey())));

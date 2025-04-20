@@ -48,7 +48,7 @@ import java.util.Collections;
 import java.util.List;
 
 @SuppressWarnings({"unused", "SameReturnValue"})
-public class SettingsInputDialog extends DialogFragment implements ContextOptionsSupport {
+public class SettingsInputDialog extends DialogFragmentBase implements ContextOptionsSupport {
 
     private View dialogView;
     private SettingsInput input;
@@ -79,6 +79,7 @@ public class SettingsInputDialog extends DialogFragment implements ContextOption
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         Log.d(SettingsInputDialog.class.getName(), "onCreateView");
         dialogView = inflater.inflate(R.layout.dialog_settings_input, container);
+        initEdgeToEdgeInsets(dialogView);
         input = new SettingsInput(requireArguments());
         Log.d(SettingsInputDialog.class.getName(), "settings input is " + input);
         prepareValueTextField();

@@ -37,7 +37,7 @@ import net.ibbaa.keepitup.util.BundleUtil;
 import java.util.List;
 
 @SuppressWarnings({"unused"})
-public class ValidatorErrorDialog extends DialogFragment {
+public class ValidatorErrorDialog extends DialogFragmentBase {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -50,6 +50,7 @@ public class ValidatorErrorDialog extends DialogFragment {
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         Log.d(ValidatorErrorDialog.class.getName(), "onCreateView");
         View view = inflater.inflate(R.layout.dialog_validator_error, container);
+        initEdgeToEdgeInsets(view);
         List<ValidationResult> resultList = BundleUtil.validationResultListFromBundle(getValidationResultBaseKey(), requireArguments());
         prepareErrorMessages(view, resultList);
         prepareOkButton(view, resultList.size() + 1);

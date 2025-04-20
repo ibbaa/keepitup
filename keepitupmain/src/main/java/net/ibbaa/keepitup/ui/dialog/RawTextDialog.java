@@ -35,7 +35,7 @@ import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 
 @SuppressWarnings({"unused"})
-public class RawTextDialog extends DialogFragment {
+public class RawTextDialog extends DialogFragmentBase {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -48,6 +48,7 @@ public class RawTextDialog extends DialogFragment {
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         Log.d(RawTextDialog.class.getName(), "onCreateView");
         View view = inflater.inflate(R.layout.dialog_raw_text, container);
+        initEdgeToEdgeInsets(view);
         prepareContent(view);
         prepareOkImageButton(view);
         return view;

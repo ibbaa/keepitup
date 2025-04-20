@@ -41,7 +41,7 @@ import java.util.Collections;
 import java.util.List;
 
 @SuppressWarnings({"unused"})
-public class ContextOptionsDialog extends DialogFragment {
+public class ContextOptionsDialog extends DialogFragmentBase {
 
     private View dialogView;
     private RecyclerView contextOptionRecyclerView;
@@ -57,6 +57,7 @@ public class ContextOptionsDialog extends DialogFragment {
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         Log.d(ContextOptionsDialog.class.getName(), "onCreateView");
         dialogView = inflater.inflate(R.layout.dialog_context_options, container);
+        initEdgeToEdgeInsets(dialogView);
         boolean containsSavedState = containsSavedState(savedInstanceState);
         Log.d(ContextOptionsDialog.class.getName(), "containsSavedState is " + containsSavedState);
         Bundle adapterState = containsSavedState ? savedInstanceState.getBundle(getContextOptionAdapterKey()) : null;

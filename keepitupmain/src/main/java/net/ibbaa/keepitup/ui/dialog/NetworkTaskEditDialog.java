@@ -21,7 +21,6 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -64,7 +63,7 @@ import java.util.List;
 import java.util.Objects;
 
 @SuppressWarnings({"unused"})
-public class NetworkTaskEditDialog extends DialogFragment implements ContextOptionsSupport {
+public class NetworkTaskEditDialog extends DialogFragmentBase implements ContextOptionsSupport {
 
     private View dialogView;
     private NetworkTask task;
@@ -125,9 +124,7 @@ public class NetworkTaskEditDialog extends DialogFragment implements ContextOpti
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         Log.d(NetworkTaskEditDialog.class.getName(), "onCreateView");
         dialogView = inflater.inflate(R.layout.dialog_network_task_edit, container);
-        if (getDialog() != null && getDialog().getWindow() != null) {
-            getDialog().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
-        }
+        initEdgeToEdgeInsets(dialogView);
         Bundle taskBundle = BundleUtil.bundleFromBundle(getTaskKey(), requireArguments());
         task = taskBundle != null ? new NetworkTask(taskBundle) : new NetworkTask();
         Bundle accessTypeDataBundle = BundleUtil.bundleFromBundle(getAccessTypeDataKey(), requireArguments());

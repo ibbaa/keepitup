@@ -34,7 +34,7 @@ import net.ibbaa.keepitup.ui.ErrorSupport;
 import net.ibbaa.keepitup.util.BundleUtil;
 
 @SuppressWarnings({"unused"})
-public class GeneralErrorDialog extends DialogFragment {
+public class GeneralErrorDialog extends DialogFragmentBase {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -47,6 +47,7 @@ public class GeneralErrorDialog extends DialogFragment {
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         Log.d(GeneralErrorDialog.class.getName(), "onCreateView");
         View view = inflater.inflate(R.layout.dialog_general_error, container);
+        initEdgeToEdgeInsets(view);
         String message = BundleUtil.stringFromBundle(getMessageKey(), requireArguments());
         prepareErrorMessage(view, message);
         prepareOkImageButton(view);

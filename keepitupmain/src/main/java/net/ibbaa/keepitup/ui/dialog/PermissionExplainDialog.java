@@ -33,7 +33,7 @@ import net.ibbaa.keepitup.ui.permission.PermissionManager;
 import net.ibbaa.keepitup.util.BundleUtil;
 import net.ibbaa.keepitup.util.StringUtil;
 
-public class PermissionExplainDialog extends DialogFragment {
+public class PermissionExplainDialog extends DialogFragmentBase {
 
     public enum Permission {
         POST_NOTIFICATIONS
@@ -63,6 +63,7 @@ public class PermissionExplainDialog extends DialogFragment {
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         Log.d(PermissionExplainDialog.class.getName(), "onCreateView");
         View view = inflater.inflate(R.layout.dialog_permission_explain, container);
+        initEdgeToEdgeInsets(view);
         String message = BundleUtil.stringFromBundle(getMessageKey(), requireArguments());
         prepareExplainMessage(view, message);
         prepareOkImageButton(view);

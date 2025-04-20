@@ -37,7 +37,7 @@ import net.ibbaa.keepitup.util.StringUtil;
 import java.util.List;
 
 @SuppressWarnings({"unused"})
-public class ConfirmDialog extends DialogFragment {
+public class ConfirmDialog extends DialogFragmentBase {
 
     public enum Type {
         DELETETASK,
@@ -59,6 +59,7 @@ public class ConfirmDialog extends DialogFragment {
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         Log.d(ConfirmDialog.class.getName(), "onCreateView");
         View view = inflater.inflate(R.layout.dialog_confirm, container);
+        initEdgeToEdgeInsets(view);
         String message = BundleUtil.stringFromBundle(getMessageKey(), requireArguments());
         String description = BundleUtil.stringFromBundle(getDescriptionKey(), requireArguments());
         prepareConfirmMessage(view, message);

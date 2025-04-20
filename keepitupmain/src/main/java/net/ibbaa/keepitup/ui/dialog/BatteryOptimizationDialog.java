@@ -40,7 +40,7 @@ import net.ibbaa.keepitup.service.SystemPowerManager;
 import net.ibbaa.keepitup.ui.BatteryOptimizationSupport;
 
 @SuppressWarnings({"unused"})
-public class BatteryOptimizationDialog extends DialogFragment {
+public class BatteryOptimizationDialog extends DialogFragmentBase {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -53,6 +53,7 @@ public class BatteryOptimizationDialog extends DialogFragment {
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         Log.d(BatteryOptimizationDialog.class.getName(), "onCreateView");
         View view = inflater.inflate(R.layout.dialog_battery_optimization, container);
+        initEdgeToEdgeInsets(view);
         prepareBatteryOptimizationInfo(view);
         prepareBatteryOptimizationLink(view);
         prepareOkImageButton(view);
