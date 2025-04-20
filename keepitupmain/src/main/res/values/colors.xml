@@ -24,8 +24,12 @@
     <color name="switchTrackColor">#BBBBBB</color>
     <color name="switchColorDisabled">#EEEEEE</color>
     <color name="switchTrackColorDisabled">#DDDDDD</color>
+    <color name="checkboxColor">#DDDDDD</color>
+    <color name="checkboxCheckedColor">#BBBBBB</color>
+    <color name="checkboxColorDisabled">#EEEEEE</color>
     <color name="colorAccent">#e0dde3</color>
     <color name="statusBarColor">#666666</color>
     <color name="windowBackground">#FFFFFF</color>
     <color name="textErrorColor">#DD0000</color>
+    <color name="cardBackgroundColor">#FFFFFF</color>
 </resources>

@@ -36,7 +36,8 @@
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/cardview_list_item_log_entry_margin"
         card_view:cardCornerRadius="@dimen/cardview_list_item_log_entry_corner_radius"
-        app:cardElevation="@dimen/cardview_list_item_log_entry_card_elevation">
+        app:cardElevation="@dimen/cardview_list_item_log_entry_card_elevation"
+        app:cardBackgroundColor="@color/cardBackgroundColor">
 
         <LinearLayout
             android:id="@+id/linearlayout_list_item_log_entry"

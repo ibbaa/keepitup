@@ -98,10 +98,11 @@
             android:focusableInTouchMode="true"
             android:orientation="horizontal">
 
-            <CheckBox
+            <com.google.android.material.checkbox.MaterialCheckBox
                 android:id="@+id/checkbox_dialog_file_choose_show_files"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                app:buttonTint="@drawable/checkbox_selector"
                 android:checked="true" />
 
             <TextView
