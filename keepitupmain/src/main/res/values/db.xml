@@ -16,7 +16,7 @@
 
 <resources>
     <string name="db_name">keepitup.db</string>
-    <integer name="db_version">4</integer>
+    <integer name="db_version">5</integer>
     <string name="task_table_name">NETWORKTASK</string>
     <string name="task_id_column_name">_id</string>
     <string name="task_index_column_name">UIINDEX</string>

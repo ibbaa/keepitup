@@ -11,3 +11,4 @@ versionCode;dbVersion;version
 10;4;1.6.1
 11;4;1.6.2
 12;4;1.7.0
+13;5;1.8.0
