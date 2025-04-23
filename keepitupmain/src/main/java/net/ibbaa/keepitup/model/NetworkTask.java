@@ -46,6 +46,7 @@ public class NetworkTask {
     private boolean running;
     private long lastScheduled;
     private int failureCount;
+    private boolean highPrio;
 
     public NetworkTask() {
         this.id = -1;
@@ -61,6 +62,7 @@ public class NetworkTask {
         this.running = false;
         this.lastScheduled = -1;
         this.failureCount = 0;
+        this.highPrio = false;
     }
 
     public NetworkTask(Context context) {
@@ -74,6 +76,7 @@ public class NetworkTask {
         this.onlyWifi = preferenceManager.getPreferenceOnlyWifi();
         this.notification = preferenceManager.getPreferenceNotification();
         this.running = resources.getBoolean(R.bool.task_running_default);
+        this.highPrio = preferenceManager.getPreferenceHighPrio();
     }
 
     public NetworkTask(PersistableBundle bundle) {
@@ -97,6 +100,7 @@ public class NetworkTask {
         this.running = bundle.getInt("running") >= 1;
         this.lastScheduled = bundle.getLong("lastScheduled");
         this.failureCount = bundle.getInt("failureCount");
+        this.highPrio = bundle.getInt("highPrio") >= 1;
     }
 
     public NetworkTask(Map<String, ?> map) {
@@ -139,6 +143,9 @@ public class NetworkTask {
         }
         if (NumberUtil.isValidIntValue(map.get("failureCount"))) {
             this.failureCount = NumberUtil.getIntValue(map.get("failureCount"), 0);
+        }
+        if (map.get("highPrio") != null) {
+            this.highPrio = Boolean.parseBoolean(Objects.requireNonNull(map.get("highPrio")).toString());
         }
     }
 
@@ -246,6 +253,14 @@ public class NetworkTask {
         this.failureCount = failureCount;
     }
 
+    public boolean isHighPrio() {
+        return highPrio;
+    }
+
+    public void setHighPrio(boolean highPrio) {
+        this.highPrio = highPrio;
+    }
+
     public PersistableBundle toPersistableBundle() {
         PersistableBundle bundle = new PersistableBundle();
         bundle.putLong("id", id);
@@ -265,6 +280,7 @@ public class NetworkTask {
         bundle.putInt("running", running ? 1 : 0);
         bundle.putLong("lastScheduled", lastScheduled);
         bundle.putInt("failureCount", failureCount);
+        bundle.putInt("highPrio", highPrio ? 1 : 0);
         return bundle;
     }
 
@@ -291,6 +307,7 @@ public class NetworkTask {
         map.put("running", running);
         map.put("lastScheduled", lastScheduled);
         map.put("failureCount", failureCount);
+        map.put("highPrio", highPrio);
         return map;
     }
 
@@ -331,6 +348,9 @@ public class NetworkTask {
         if (running != other.running) {
             return false;
         }
+        if (highPrio != other.highPrio) {
+            return false;
+        }
         if (!Objects.equals(address, other.address)) {
             return false;
         }
@@ -351,6 +371,9 @@ public class NetworkTask {
             return false;
         }
         if (notification != other.notification) {
+            return false;
+        }
+        if (highPrio != other.highPrio) {
             return false;
         }
         if (!Objects.equals(address, other.address)) {
@@ -376,6 +399,7 @@ public class NetworkTask {
                 ", running=" + running +
                 ", lastScheduled=" + lastScheduled +
                 ", failureCount=" + failureCount +
+                ", highPrio=" + highPrio +
                 '}';
     }
 }
