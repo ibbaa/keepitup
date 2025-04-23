@@ -603,17 +603,32 @@ public class PreferenceManager {
 
     public boolean getPreferenceAskedNotificationPermission() {
         Log.d(PreferenceManager.class.getName(), "getPreferenceAskedNotificationPermission");
-        return getPreferenceBoolean(getResources().getString(R.string.asked_notification_permission), getResources().getBoolean(R.bool.asked_notification_permission_default));
+        return getPreferenceBoolean(getResources().getString(R.string.asked_notification_permission_key), getResources().getBoolean(R.bool.asked_notification_permission_default));
     }
 
     public void setPreferenceAskedNotificationPermission(boolean askedNotificationPermission) {
         Log.d(PreferenceManager.class.getName(), "setPreferenceAskedNotificationPermission, askedNotificationPermission is " + askedNotificationPermission);
-        setPreferenceBoolean(getResources().getString(R.string.asked_notification_permission), askedNotificationPermission);
+        setPreferenceBoolean(getResources().getString(R.string.asked_notification_permission_key), askedNotificationPermission);
     }
 
     public void removePreferenceAskedNotificationPermission() {
         Log.d(PreferenceManager.class.getName(), "removePreferenceAskedNotificationPermission");
-        removePreferenceValue(getResources().getString(R.string.asked_notification_permission));
+        removePreferenceValue(getResources().getString(R.string.asked_notification_permission_key));
+    }
+
+    public boolean getPreferenceAlarmInfoShown() {
+        Log.d(PreferenceManager.class.getName(), "getPreferenceAlarmInfoShown");
+        return getPreferenceBoolean(getResources().getString(R.string.alarm_info_shown_key), getResources().getBoolean(R.bool.alarm_info_shown_default));
+    }
+
+    public void setPreferenceAlarmInfoShown(boolean alarmInfoShown) {
+        Log.d(PreferenceManager.class.getName(), "setPreferenceAlarmInfoShown, alarmInfoShown is " + alarmInfoShown);
+        setPreferenceBoolean(getResources().getString(R.string.alarm_info_shown_key), alarmInfoShown);
+    }
+
+    public void removePreferenceAlarmInfoShown() {
+        Log.d(PreferenceManager.class.getName(), "removePreferenceAlarmInfoShown");
+        removePreferenceValue(getResources().getString(R.string.alarm_info_shown_key));
     }
 
     public Set<String> getArbitraryFolders() {
