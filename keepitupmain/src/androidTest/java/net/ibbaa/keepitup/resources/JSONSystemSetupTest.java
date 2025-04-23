@@ -238,6 +238,7 @@ public class JSONSystemSetupTest {
         preferenceManager.setPreferenceStopOnSuccess(true);
         preferenceManager.setPreferenceOnlyWifi(true);
         preferenceManager.setPreferenceNotification(true);
+        preferenceManager.setPreferenceHighPrio(true);
         preferenceManager.setPreferencePingPackageSize(15);
         preferenceManager.setPreferenceImportFolder("folderImport");
         preferenceManager.setPreferenceExportFolder("folderExport");
@@ -246,6 +247,7 @@ public class JSONSystemSetupTest {
         preferenceManager.setPreferenceFileDumpEnabled(true);
         preferenceManager.setPreferenceTheme(5);
         preferenceManager.setPreferenceAllowArbitraryFileLocation(true);
+        preferenceManager.setPreferenceAlarmOnHighPrio(true);
         preferenceManager.setPreferenceAskedNotificationPermission(true);
         SystemSetupResult result = setup.exportData();
         JSONObject jsonData = new JSONObject(result.data());
@@ -273,6 +275,7 @@ public class JSONSystemSetupTest {
         assertTrue(defaultsData.getBoolean("preferenceStopOnSuccess"));
         assertTrue(defaultsData.getBoolean("preferenceOnlyWifi"));
         assertTrue(defaultsData.getBoolean("preferenceNotification"));
+        assertTrue(defaultsData.getBoolean("preferenceHighPrio"));
         assertEquals(15, defaultsData.getInt("preferencePingPackageSize"));
         assertEquals("folderImport", systemSettingsData.getString("preferenceImportFolder"));
         assertEquals("folderExport", systemSettingsData.getString("preferenceExportFolder"));
@@ -282,6 +285,7 @@ public class JSONSystemSetupTest {
         assertTrue(systemSettingsData.getBoolean("preferenceFileDumpEnabled"));
         assertEquals(5, systemSettingsData.getInt("preferenceTheme"));
         assertTrue(systemSettingsData.getBoolean("preferenceAllowArbitraryFileLocation"));
+        assertTrue(systemSettingsData.getBoolean("preferenceAlarmOnHighPrio"));
         assertTrue(systemSettingsData.getBoolean("preferenceAskedNotificationPermission"));
     }
 
@@ -757,6 +761,7 @@ public class JSONSystemSetupTest {
         preferenceManager.setPreferenceStopOnSuccess(true);
         preferenceManager.setPreferenceOnlyWifi(true);
         preferenceManager.setPreferenceNotification(true);
+        preferenceManager.setPreferenceHighPrio(true);
         preferenceManager.setPreferencePingPackageSize(1234);
         preferenceManager.setPreferenceImportFolder("folderImport");
         preferenceManager.setPreferenceExportFolder("folderExport");
@@ -765,6 +770,7 @@ public class JSONSystemSetupTest {
         preferenceManager.setPreferenceFileDumpEnabled(true);
         preferenceManager.setPreferenceTheme(1);
         preferenceManager.setPreferenceAllowArbitraryFileLocation(true);
+        preferenceManager.setPreferenceAlarmOnHighPrio(true);
         preferenceManager.setPreferenceAskedNotificationPermission(true);
         SystemSetupResult exportResult = setup.exportData();
         preferenceManager.removeAllPreferences();
@@ -790,6 +796,7 @@ public class JSONSystemSetupTest {
         assertTrue(preferenceManager.getPreferenceStopOnSuccess());
         assertTrue(preferenceManager.getPreferenceOnlyWifi());
         assertTrue(preferenceManager.getPreferenceNotification());
+        assertTrue(preferenceManager.getPreferenceHighPrio());
         assertEquals(1234, preferenceManager.getPreferencePingPackageSize());
         assertEquals("folderImport", preferenceManager.getPreferenceImportFolder());
         assertEquals("folderExport", preferenceManager.getPreferenceExportFolder());
@@ -798,6 +805,7 @@ public class JSONSystemSetupTest {
         assertTrue(preferenceManager.getPreferenceFileDumpEnabled());
         assertEquals(1, preferenceManager.getPreferenceTheme());
         assertTrue(preferenceManager.getPreferenceAllowArbitraryFileLocation());
+        assertTrue(preferenceManager.getPreferenceAlarmOnHighPrio());
         assertTrue(preferenceManager.getPreferenceAskedNotificationPermission());
     }
 

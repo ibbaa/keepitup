@@ -108,12 +108,14 @@ public class ExportTaskTest extends BaseUITest {
         getPreferenceManager().setPreferenceStopOnSuccess(true);
         getPreferenceManager().setPreferenceOnlyWifi(true);
         getPreferenceManager().setPreferenceNotification(true);
+        getPreferenceManager().setPreferenceHighPrio(true);
         getPreferenceManager().setPreferenceImportFolder("folderImport");
         getPreferenceManager().setPreferenceExportFolder("folderExport");
         getPreferenceManager().setPreferenceLastArbitraryExportFile("fileExport");
         getPreferenceManager().setPreferenceFileLoggerEnabled(true);
         getPreferenceManager().setPreferenceFileDumpEnabled(true);
         getPreferenceManager().setPreferenceAllowArbitraryFileLocation(true);
+        getPreferenceManager().setPreferenceAlarmOnHighPrio(true);
         getPreferenceManager().setPreferenceAskedNotificationPermission(true);
         File folder = getFileManager().getExternalRootDirectory(0);
         ExportTask task = new ExportTask(getActivity(activityScenario), folder, "test.json", false);
@@ -201,12 +203,14 @@ public class ExportTaskTest extends BaseUITest {
         assertTrue(getPreferenceManager().getPreferenceStopOnSuccess());
         assertTrue(getPreferenceManager().getPreferenceOnlyWifi());
         assertTrue(getPreferenceManager().getPreferenceNotification());
+        assertTrue(getPreferenceManager().getPreferenceHighPrio());
         assertEquals("folderImport", getPreferenceManager().getPreferenceImportFolder());
         assertEquals("folderExport", getPreferenceManager().getPreferenceExportFolder());
         assertEquals("fileExport", getPreferenceManager().getPreferenceLastArbitraryExportFile());
         assertTrue(getPreferenceManager().getPreferenceFileLoggerEnabled());
         assertTrue(getPreferenceManager().getPreferenceFileDumpEnabled());
         assertTrue(getPreferenceManager().getPreferenceAllowArbitraryFileLocation());
+        assertTrue(getPreferenceManager().getPreferenceAlarmOnHighPrio());
         assertTrue(getPreferenceManager().getPreferenceAskedNotificationPermission());
     }
 
@@ -248,12 +252,14 @@ public class ExportTaskTest extends BaseUITest {
         getPreferenceManager().setPreferenceStopOnSuccess(true);
         getPreferenceManager().setPreferenceOnlyWifi(true);
         getPreferenceManager().setPreferenceNotification(true);
+        getPreferenceManager().setPreferenceHighPrio(true);
         getPreferenceManager().setPreferenceImportFolder("folderImport");
         getPreferenceManager().setPreferenceExportFolder("folderExport");
         getPreferenceManager().setPreferenceLastArbitraryExportFile("fileExport");
         getPreferenceManager().setPreferenceFileLoggerEnabled(true);
         getPreferenceManager().setPreferenceFileDumpEnabled(true);
         getPreferenceManager().setPreferenceAllowArbitraryFileLocation(true);
+        getPreferenceManager().setPreferenceAlarmOnHighPrio(true);
         getPreferenceManager().setPreferenceAskedNotificationPermission(true);
         File folder = getFileManager().getExternalRootDirectory(0);
         File file = new File(folder, "test.json");
@@ -344,12 +350,14 @@ public class ExportTaskTest extends BaseUITest {
         assertTrue(getPreferenceManager().getPreferenceStopOnSuccess());
         assertTrue(getPreferenceManager().getPreferenceOnlyWifi());
         assertTrue(getPreferenceManager().getPreferenceNotification());
+        assertTrue(getPreferenceManager().getPreferenceHighPrio());
         assertEquals("folderImport", getPreferenceManager().getPreferenceImportFolder());
         assertEquals("folderExport", getPreferenceManager().getPreferenceExportFolder());
         assertEquals("fileExport", getPreferenceManager().getPreferenceLastArbitraryExportFile());
         assertTrue(getPreferenceManager().getPreferenceFileLoggerEnabled());
         assertTrue(getPreferenceManager().getPreferenceFileDumpEnabled());
         assertTrue(getPreferenceManager().getPreferenceAllowArbitraryFileLocation());
+        assertTrue(getPreferenceManager().getPreferenceAlarmOnHighPrio());
         assertTrue(getPreferenceManager().getPreferenceAskedNotificationPermission());
     }
 

@@ -172,6 +172,18 @@ public class PreferenceManagerTest {
     }
 
     @Test
+    public void testGetSetRemovePreferenceHighPrio() {
+        assertFalse(preferenceManager.getPreferenceHighPrio());
+        preferenceManager.setPreferenceHighPrio(true);
+        assertTrue(preferenceManager.getPreferenceHighPrio());
+        preferenceManager.removeAllPreferences();
+        assertFalse(preferenceManager.getPreferenceHighPrio());
+        preferenceManager.setPreferenceHighPrio(true);
+        preferenceManager.removePreferenceHighPrio();
+        assertFalse(preferenceManager.getPreferenceHighPrio());
+    }
+
+    @Test
     public void testGetSetRemovePingCount() {
         assertEquals(3, preferenceManager.getPreferencePingCount());
         preferenceManager.setPreferencePingCount(15);
@@ -445,6 +457,18 @@ public class PreferenceManagerTest {
         preferenceManager.setPreferenceAllowArbitraryFileLocation(true);
         preferenceManager.removePreferenceAllowArbitraryFileLocation();
         assertFalse(preferenceManager.getPreferenceAllowArbitraryFileLocation());
+    }
+
+    @Test
+    public void testGetSetRemovePreferenceAlarmOnHighPrio() {
+        assertFalse(preferenceManager.getPreferenceAlarmOnHighPrio());
+        preferenceManager.setPreferenceAlarmOnHighPrio(true);
+        assertTrue(preferenceManager.getPreferenceAlarmOnHighPrio());
+        preferenceManager.removeAllPreferences();
+        assertFalse(preferenceManager.getPreferenceAlarmOnHighPrio());
+        preferenceManager.setPreferenceAlarmOnHighPrio(true);
+        preferenceManager.removePreferenceAlarmOnHighPrio();
+        assertFalse(preferenceManager.getPreferenceAlarmOnHighPrio());
     }
 
     @Test

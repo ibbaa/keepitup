@@ -196,6 +196,21 @@ public class PreferenceManager {
         removePreferenceValue(getResources().getString(R.string.task_notification_key));
     }
 
+    public boolean getPreferenceHighPrio() {
+        Log.d(PreferenceManager.class.getName(), "getPreferenceHighPrio");
+        return getPreferenceBoolean(getResources().getString(R.string.task_highprio_key), getResources().getBoolean(R.bool.task_highprio_default));
+    }
+
+    public void setPreferenceHighPrio(boolean highPrio) {
+        Log.d(PreferenceManager.class.getName(), "setPreferenceHighPrio, highPrio is " + highPrio);
+        setPreferenceBoolean(getResources().getString(R.string.task_highprio_key), highPrio);
+    }
+
+    public void removePreferenceHighPrio() {
+        Log.d(PreferenceManager.class.getName(), "removePreferenceHighPrio");
+        removePreferenceValue(getResources().getString(R.string.task_highprio_key));
+    }
+
     public int getPreferencePingCount() {
         Log.d(PreferenceManager.class.getName(), "getPreferencePingCount");
         return getPreferenceInt(getResources().getString(R.string.ping_count_key), getResources().getInteger(R.integer.ping_count_default));
@@ -539,6 +554,21 @@ public class PreferenceManager {
     public void removePreferenceAllowArbitraryFileLocation() {
         Log.d(PreferenceManager.class.getName(), "removePreferenceAllowArbitraryFileLocation");
         removePreferenceValue(getResources().getString(R.string.allow_arbitrary_file_location_key));
+    }
+
+    public boolean getPreferenceAlarmOnHighPrio() {
+        Log.d(PreferenceManager.class.getName(), "getPreferenceAlarmOnHighPrio");
+        return getPreferenceBoolean(getResources().getString(R.string.alarm_on_highprio_key), getResources().getBoolean(R.bool.alarm_on_highprio_default));
+    }
+
+    public void setPreferenceAlarmOnHighPrio(boolean alarmOnHighPrio) {
+        Log.d(PreferenceManager.class.getName(), "setPreferenceAlarmOnHighPrio, alarmOnHighPrio is " + alarmOnHighPrio);
+        setPreferenceBoolean(getResources().getString(R.string.alarm_on_highprio_key), alarmOnHighPrio);
+    }
+
+    public void removePreferenceAlarmOnHighPrio() {
+        Log.d(PreferenceManager.class.getName(), "removePreferenceAlarmOnHighPrio");
+        removePreferenceValue(getResources().getString(R.string.alarm_on_highprio_key));
     }
 
     public boolean getPreferenceFileLoggerEnabled() {

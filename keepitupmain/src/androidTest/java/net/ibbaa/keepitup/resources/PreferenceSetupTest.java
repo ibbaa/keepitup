@@ -202,6 +202,7 @@ public class PreferenceSetupTest {
         preferenceManager.setPreferenceStopOnSuccess(true);
         preferenceManager.setPreferenceOnlyWifi(true);
         preferenceManager.setPreferenceNotification(true);
+        preferenceManager.setPreferenceAlarmOnHighPrio(true);
         preferenceManager.setPreferencePingPackageSize(1234);
         Map<String, ?> defaults = new HashMap<>();
         setup.importDefaults(defaults);
@@ -214,6 +215,7 @@ public class PreferenceSetupTest {
         assertFalse(preferenceManager.getPreferenceStopOnSuccess());
         assertFalse(preferenceManager.getPreferenceOnlyWifi());
         assertFalse(preferenceManager.getPreferenceNotification());
+        assertFalse(preferenceManager.getPreferenceHighPrio());
         assertEquals(56, preferenceManager.getPreferencePingPackageSize());
     }
 
@@ -229,6 +231,7 @@ public class PreferenceSetupTest {
         defaults.put("preferenceStopOnSuccess", true);
         defaults.put("preferenceOnlyWifi", true);
         defaults.put("preferenceNotification", true);
+        defaults.put("preferenceHighPrio", true);
         defaults.put("preferencePingPackageSize", 1234);
         setup.importDefaults(defaults);
         assertEquals(AccessType.CONNECT, preferenceManager.getPreferenceAccessType());
@@ -240,6 +243,7 @@ public class PreferenceSetupTest {
         assertTrue(preferenceManager.getPreferenceStopOnSuccess());
         assertTrue(preferenceManager.getPreferenceOnlyWifi());
         assertTrue(preferenceManager.getPreferenceNotification());
+        assertTrue(preferenceManager.getPreferenceHighPrio());
         assertEquals(1234, preferenceManager.getPreferencePingPackageSize());
     }
 
@@ -255,6 +259,7 @@ public class PreferenceSetupTest {
         defaults.put("preferenceStopOnSuccess", "true");
         defaults.put("preferenceOnlyWifi", "true");
         defaults.put("preferenceNotification", "true");
+        defaults.put("preferenceHighPrio", "true");
         defaults.put("preferencePingPackageSize", 1234);
         setup.importDefaults(defaults);
         assertEquals(AccessType.CONNECT, preferenceManager.getPreferenceAccessType());
@@ -266,6 +271,7 @@ public class PreferenceSetupTest {
         assertTrue(preferenceManager.getPreferenceStopOnSuccess());
         assertTrue(preferenceManager.getPreferenceOnlyWifi());
         assertTrue(preferenceManager.getPreferenceNotification());
+        assertTrue(preferenceManager.getPreferenceHighPrio());
         assertEquals(1234, preferenceManager.getPreferencePingPackageSize());
     }
 
@@ -281,6 +287,7 @@ public class PreferenceSetupTest {
         defaults.put("preferenceStopOnSuccess", 1);
         defaults.put("preferenceOnlyWifi", 1);
         defaults.put("preferenceNotification", 1);
+        defaults.put("preferenceHighPrio", 1);
         defaults.put("pingPackageSize", 12345678);
         setup.importDefaults(defaults);
         assertEquals(AccessType.PING, preferenceManager.getPreferenceAccessType());
@@ -292,6 +299,7 @@ public class PreferenceSetupTest {
         assertFalse(preferenceManager.getPreferenceStopOnSuccess());
         assertFalse(preferenceManager.getPreferenceOnlyWifi());
         assertFalse(preferenceManager.getPreferenceNotification());
+        assertFalse(preferenceManager.getPreferenceHighPrio());
         assertEquals(56, preferenceManager.getPreferencePingPackageSize());
     }
 
@@ -305,6 +313,8 @@ public class PreferenceSetupTest {
         preferenceManager.setPreferenceFileDumpEnabled(true);
         preferenceManager.setPreferenceTheme(5);
         preferenceManager.setPreferenceAllowArbitraryFileLocation(true);
+        preferenceManager.setPreferenceAlarmOnHighPrio(true);
+        preferenceManager.setPreferenceAskedNotificationPermission(true);
         Map<String, ?> systemSettings = new HashMap<>();
         setup.importSystemSettings(systemSettings);
         assertEquals("config", preferenceManager.getPreferenceImportFolder());
@@ -315,6 +325,7 @@ public class PreferenceSetupTest {
         assertFalse(preferenceManager.getPreferenceFileDumpEnabled());
         assertEquals(-1, preferenceManager.getPreferenceTheme());
         assertFalse(preferenceManager.getPreferenceAllowArbitraryFileLocation());
+        assertFalse(preferenceManager.getPreferenceAlarmOnHighPrio());
         assertFalse(preferenceManager.getPreferenceAskedNotificationPermission());
     }
 
@@ -330,6 +341,7 @@ public class PreferenceSetupTest {
         systemSettings.put("preferenceFileDumpEnabled", true);
         systemSettings.put("preferenceTheme", 1);
         systemSettings.put("preferenceAllowArbitraryFileLocation", true);
+        systemSettings.put("preferenceAlarmOnHighPrio", true);
         systemSettings.put("preferenceAskedNotificationPermission", true);
         setup.importSystemSettings(systemSettings);
         assertEquals("folderImport", preferenceManager.getPreferenceImportFolder());
@@ -340,6 +352,7 @@ public class PreferenceSetupTest {
         assertTrue(preferenceManager.getPreferenceFileDumpEnabled());
         assertEquals(1, preferenceManager.getPreferenceTheme());
         assertTrue(preferenceManager.getPreferenceAllowArbitraryFileLocation());
+        assertTrue(preferenceManager.getPreferenceAlarmOnHighPrio());
         assertTrue(preferenceManager.getPreferenceAskedNotificationPermission());
     }
 
@@ -355,6 +368,7 @@ public class PreferenceSetupTest {
         systemSettings.put("preferenceFileDumpEnabled", "true");
         systemSettings.put("preferenceTheme", "1");
         systemSettings.put("preferenceAllowArbitraryFileLocation", "true");
+        systemSettings.put("preferenceAlarmOnHighPrio", "true");
         systemSettings.put("preferenceAskedNotificationPermission", "true");
         setup.importSystemSettings(systemSettings);
         assertEquals("folderImport", preferenceManager.getPreferenceImportFolder());
@@ -365,6 +379,7 @@ public class PreferenceSetupTest {
         assertTrue(preferenceManager.getPreferenceFileDumpEnabled());
         assertEquals(1, preferenceManager.getPreferenceTheme());
         assertTrue(preferenceManager.getPreferenceAllowArbitraryFileLocation());
+        assertTrue(preferenceManager.getPreferenceAlarmOnHighPrio());
         assertTrue(preferenceManager.getPreferenceAskedNotificationPermission());
     }
 
@@ -380,6 +395,7 @@ public class PreferenceSetupTest {
         systemSettings.put("preferenceFileDumpEnabled", null);
         systemSettings.put("preferenceTheme", "abc");
         systemSettings.put("preferenceAllowArbitraryFileLocation", null);
+        systemSettings.put("preferenceAlarmOnHighPrio", null);
         systemSettings.put("preferenceAskedNotificationPermission", null);
         setup.importSystemSettings(systemSettings);
         assertEquals("config", preferenceManager.getPreferenceImportFolder());
@@ -390,6 +406,7 @@ public class PreferenceSetupTest {
         assertFalse(preferenceManager.getPreferenceFileDumpEnabled());
         assertEquals(-1, preferenceManager.getPreferenceTheme());
         assertFalse(preferenceManager.getPreferenceAllowArbitraryFileLocation());
+        assertFalse(preferenceManager.getPreferenceAlarmOnHighPrio());
         assertFalse(preferenceManager.getPreferenceAskedNotificationPermission());
     }
 
@@ -467,6 +484,7 @@ public class PreferenceSetupTest {
         assertEquals(defaults.get("preferenceStopOnSuccess"), preferenceManager.getPreferenceStopOnSuccess());
         assertEquals(defaults.get("preferenceOnlyWifi"), preferenceManager.getPreferenceOnlyWifi());
         assertEquals(defaults.get("preferenceNotification"), preferenceManager.getPreferenceNotification());
+        assertEquals(defaults.get("preferenceHighPrio"), preferenceManager.getPreferenceHighPrio());
         assertEquals(defaults.get("preferencePingPackageSize"), preferenceManager.getPreferencePingPackageSize());
     }
 
@@ -481,6 +499,7 @@ public class PreferenceSetupTest {
         preferenceManager.setPreferenceStopOnSuccess(true);
         preferenceManager.setPreferenceOnlyWifi(true);
         preferenceManager.setPreferenceNotification(true);
+        preferenceManager.setPreferenceHighPrio(true);
         preferenceManager.setPreferencePingPackageSize(1234);
         Map<String, ?> defaults = setup.exportDefaults();
         assertEquals(AccessType.CONNECT, preferenceManager.getPreferenceAccessType());
@@ -492,6 +511,7 @@ public class PreferenceSetupTest {
         assertTrue(preferenceManager.getPreferenceStopOnSuccess());
         assertTrue(preferenceManager.getPreferenceOnlyWifi());
         assertTrue(preferenceManager.getPreferenceNotification());
+        assertTrue(preferenceManager.getPreferenceHighPrio());
         assertEquals(1234, preferenceManager.getPreferencePingPackageSize());
         assertEquals(defaults.get("preferenceAccessType"), preferenceManager.getPreferenceAccessType().getCode());
         assertEquals(defaults.get("preferenceAddress"), preferenceManager.getPreferenceAddress());
@@ -502,6 +522,7 @@ public class PreferenceSetupTest {
         assertEquals(defaults.get("preferenceStopOnSuccess"), preferenceManager.getPreferenceStopOnSuccess());
         assertEquals(defaults.get("preferenceOnlyWifi"), preferenceManager.getPreferenceOnlyWifi());
         assertEquals(defaults.get("preferenceNotification"), preferenceManager.getPreferenceNotification());
+        assertEquals(defaults.get("preferenceHighPrio"), preferenceManager.getPreferenceHighPrio());
         assertEquals(defaults.get("preferencePingPackageSize"), preferenceManager.getPreferencePingPackageSize());
     }
 
@@ -516,6 +537,7 @@ public class PreferenceSetupTest {
         assertEquals(systemSettings.get("preferenceFileDumpEnabled"), preferenceManager.getPreferenceFileDumpEnabled());
         assertEquals(systemSettings.get("preferenceTheme"), preferenceManager.getPreferenceTheme());
         assertEquals(systemSettings.get("preferenceAllowArbitraryFileLocation"), preferenceManager.getPreferenceAllowArbitraryFileLocation());
+        assertEquals(systemSettings.get("preferenceAlarmOnHighPrio"), preferenceManager.getPreferenceAlarmOnHighPrio());
         assertEquals(systemSettings.get("preferenceAskedNotificationPermission"), preferenceManager.getPreferenceAskedNotificationPermission());
     }
 
@@ -529,6 +551,7 @@ public class PreferenceSetupTest {
         preferenceManager.setPreferenceFileDumpEnabled(true);
         preferenceManager.setPreferenceTheme(5);
         preferenceManager.setPreferenceAllowArbitraryFileLocation(true);
+        preferenceManager.setPreferenceAlarmOnHighPrio(true);
         preferenceManager.setPreferenceAskedNotificationPermission(true);
         Map<String, ?> systemSettings = setup.exportSystemSettings();
         assertEquals("folderImport", preferenceManager.getPreferenceImportFolder());
@@ -539,6 +562,8 @@ public class PreferenceSetupTest {
         assertTrue(preferenceManager.getPreferenceFileDumpEnabled());
         assertEquals(5, preferenceManager.getPreferenceTheme());
         assertTrue(preferenceManager.getPreferenceAllowArbitraryFileLocation());
+        assertTrue(preferenceManager.getPreferenceAlarmOnHighPrio());
+        assertTrue(preferenceManager.getPreferenceAskedNotificationPermission());
         assertEquals(systemSettings.get("preferenceImportFolder"), preferenceManager.getPreferenceImportFolder());
         assertEquals(systemSettings.get("preferenceExportFolder"), preferenceManager.getPreferenceExportFolder());
         assertEquals(systemSettings.get("preferenceLastArbitraryExportFile"), preferenceManager.getPreferenceLastArbitraryExportFile());
@@ -547,6 +572,7 @@ public class PreferenceSetupTest {
         assertEquals(systemSettings.get("preferenceFileDumpEnabled"), preferenceManager.getPreferenceFileDumpEnabled());
         assertEquals(systemSettings.get("preferenceTheme"), preferenceManager.getPreferenceTheme());
         assertEquals(systemSettings.get("preferenceAllowArbitraryFileLocation"), preferenceManager.getPreferenceAllowArbitraryFileLocation());
+        assertEquals(systemSettings.get("preferenceAlarmOnHighPrio"), preferenceManager.getPreferenceAlarmOnHighPrio());
         assertEquals(systemSettings.get("preferenceAskedNotificationPermission"), preferenceManager.getPreferenceAskedNotificationPermission());
     }
 
@@ -606,6 +632,7 @@ public class PreferenceSetupTest {
         preferenceManager.setPreferenceStopOnSuccess(true);
         preferenceManager.setPreferenceOnlyWifi(true);
         preferenceManager.setPreferenceNotification(true);
+        preferenceManager.setPreferenceHighPrio(true);
         Map<String, ?> defaults = setup.exportDefaults();
         setup.importDefaults(defaults);
         assertEquals(AccessType.CONNECT, preferenceManager.getPreferenceAccessType());
@@ -618,6 +645,7 @@ public class PreferenceSetupTest {
         assertTrue(preferenceManager.getPreferenceStopOnSuccess());
         assertTrue(preferenceManager.getPreferenceOnlyWifi());
         assertTrue(preferenceManager.getPreferenceNotification());
+        assertTrue(preferenceManager.getPreferenceHighPrio());
         assertEquals(defaults.get("preferenceAccessType"), preferenceManager.getPreferenceAccessType().getCode());
         assertEquals(defaults.get("preferenceAddress"), preferenceManager.getPreferenceAddress());
         assertEquals(defaults.get("preferencePort"), preferenceManager.getPreferencePort());
@@ -628,6 +656,7 @@ public class PreferenceSetupTest {
         assertEquals(defaults.get("preferenceStopOnSuccess"), preferenceManager.getPreferenceStopOnSuccess());
         assertEquals(defaults.get("preferenceOnlyWifi"), preferenceManager.getPreferenceOnlyWifi());
         assertEquals(defaults.get("preferenceNotification"), preferenceManager.getPreferenceNotification());
+        assertEquals(defaults.get("preferenceHighPrio"), preferenceManager.getPreferenceHighPrio());
     }
 
     @Test
@@ -640,6 +669,7 @@ public class PreferenceSetupTest {
         preferenceManager.setPreferenceFileDumpEnabled(true);
         preferenceManager.setPreferenceTheme(1);
         preferenceManager.setPreferenceAllowArbitraryFileLocation(true);
+        preferenceManager.setPreferenceAlarmOnHighPrio(true);
         preferenceManager.setPreferenceAskedNotificationPermission(true);
         Map<String, ?> systemSettings = setup.exportSystemSettings();
         setup.importSystemSettings(systemSettings);
@@ -651,6 +681,8 @@ public class PreferenceSetupTest {
         assertTrue(preferenceManager.getPreferenceFileDumpEnabled());
         assertEquals(1, preferenceManager.getPreferenceTheme());
         assertTrue(preferenceManager.getPreferenceAllowArbitraryFileLocation());
+        assertTrue(preferenceManager.getPreferenceAlarmOnHighPrio());
+        assertTrue(preferenceManager.getPreferenceAskedNotificationPermission());
         assertEquals(systemSettings.get("preferenceImportFolder"), preferenceManager.getPreferenceImportFolder());
         assertEquals(systemSettings.get("preferenceExportFolder"), preferenceManager.getPreferenceExportFolder());
         assertEquals(systemSettings.get("preferenceLastArbitraryExportFile"), preferenceManager.getPreferenceLastArbitraryExportFile());
@@ -659,6 +691,7 @@ public class PreferenceSetupTest {
         assertEquals(systemSettings.get("preferenceFileDumpEnabled"), preferenceManager.getPreferenceFileDumpEnabled());
         assertEquals(systemSettings.get("preferenceTheme"), preferenceManager.getPreferenceTheme());
         assertEquals(systemSettings.get("preferenceAllowArbitraryFileLocation"), preferenceManager.getPreferenceAllowArbitraryFileLocation());
+        assertEquals(systemSettings.get("preferenceAlarmOnHighPrio"), preferenceManager.getPreferenceAlarmOnHighPrio());
         assertEquals(systemSettings.get("preferenceAskedNotificationPermission"), preferenceManager.getPreferenceAskedNotificationPermission());
     }
 
@@ -704,6 +737,7 @@ public class PreferenceSetupTest {
         preferenceManager.setPreferenceStopOnSuccess(true);
         preferenceManager.setPreferenceOnlyWifi(true);
         preferenceManager.setPreferenceNotification(true);
+        preferenceManager.setPreferenceHighPrio(true);
         setup.removeDefaults();
         assertEquals(AccessType.PING, preferenceManager.getPreferenceAccessType());
         assertEquals("192.168.178.1", preferenceManager.getPreferenceAddress());
@@ -715,6 +749,7 @@ public class PreferenceSetupTest {
         assertFalse(preferenceManager.getPreferenceStopOnSuccess());
         assertFalse(preferenceManager.getPreferenceOnlyWifi());
         assertFalse(preferenceManager.getPreferenceNotification());
+        assertFalse(preferenceManager.getPreferenceHighPrio());
     }
 
     @Test
@@ -727,6 +762,7 @@ public class PreferenceSetupTest {
         preferenceManager.setPreferenceFileDumpEnabled(true);
         preferenceManager.setPreferenceTheme(5);
         preferenceManager.setPreferenceAllowArbitraryFileLocation(true);
+        preferenceManager.setPreferenceAlarmOnHighPrio(true);
         preferenceManager.setPreferenceAskedNotificationPermission(true);
         setup.removeSystemSettings();
         assertEquals("config", preferenceManager.getPreferenceImportFolder());
@@ -737,6 +773,7 @@ public class PreferenceSetupTest {
         assertFalse(preferenceManager.getPreferenceFileDumpEnabled());
         assertEquals(-1, preferenceManager.getPreferenceTheme());
         assertFalse(preferenceManager.getPreferenceAllowArbitraryFileLocation());
+        assertFalse(preferenceManager.getPreferenceAlarmOnHighPrio());
         assertFalse(preferenceManager.getPreferenceAskedNotificationPermission());
     }
 
@@ -766,6 +803,7 @@ public class PreferenceSetupTest {
         preferenceManager.setPreferenceStopOnSuccess(true);
         preferenceManager.setPreferenceOnlyWifi(true);
         preferenceManager.setPreferenceNotification(true);
+        preferenceManager.setPreferenceHighPrio(true);
         preferenceManager.setPreferenceImportFolder("folderImport");
         preferenceManager.setPreferenceExportFolder("folderExport");
         preferenceManager.setPreferenceLastArbitraryExportFile("arbitraryFolderExport");
@@ -773,6 +811,7 @@ public class PreferenceSetupTest {
         preferenceManager.setPreferenceFileDumpEnabled(true);
         preferenceManager.setPreferenceTheme(5);
         preferenceManager.setPreferenceAllowArbitraryFileLocation(true);
+        preferenceManager.setPreferenceAlarmOnHighPrio(true);
         preferenceManager.setPreferenceAskedNotificationPermission(true);
         setup.removeAllSettings();
         assertFalse(preferenceManager.getPreferenceNotificationInactiveNetwork());
@@ -799,6 +838,7 @@ public class PreferenceSetupTest {
         assertFalse(preferenceManager.getPreferenceStopOnSuccess());
         assertFalse(preferenceManager.getPreferenceOnlyWifi());
         assertFalse(preferenceManager.getPreferenceNotification());
+        assertFalse(preferenceManager.getPreferenceHighPrio());
         assertEquals("config", preferenceManager.getPreferenceImportFolder());
         assertEquals("config", preferenceManager.getPreferenceExportFolder());
         assertEquals("", preferenceManager.getPreferenceLastArbitraryExportFile());
@@ -806,6 +846,7 @@ public class PreferenceSetupTest {
         assertFalse(preferenceManager.getPreferenceFileDumpEnabled());
         assertEquals(-1, preferenceManager.getPreferenceTheme());
         assertFalse(preferenceManager.getPreferenceAllowArbitraryFileLocation());
+        assertFalse(preferenceManager.getPreferenceAlarmOnHighPrio());
         assertFalse(preferenceManager.getPreferenceAskedNotificationPermission());
     }
 }

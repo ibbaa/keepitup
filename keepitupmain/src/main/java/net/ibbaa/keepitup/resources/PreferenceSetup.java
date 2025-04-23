@@ -71,6 +71,7 @@ public class PreferenceSetup {
         defaults.put("preferenceStopOnSuccess", preferenceManager.getPreferenceStopOnSuccess());
         defaults.put("preferenceOnlyWifi", preferenceManager.getPreferenceOnlyWifi());
         defaults.put("preferenceNotification", preferenceManager.getPreferenceNotification());
+        defaults.put("preferenceHighPrio", preferenceManager.getPreferenceHighPrio());
         defaults.put("preferencePingPackageSize", preferenceManager.getPreferencePingPackageSize());
         return defaults;
     }
@@ -86,6 +87,7 @@ public class PreferenceSetup {
         systemSettings.put("preferenceFileDumpEnabled", preferenceManager.getPreferenceFileDumpEnabled());
         systemSettings.put("preferenceTheme", preferenceManager.getPreferenceTheme());
         systemSettings.put("preferenceAllowArbitraryFileLocation", preferenceManager.getPreferenceAllowArbitraryFileLocation());
+        systemSettings.put("preferenceAlarmOnHighPrio", preferenceManager.getPreferenceAlarmOnHighPrio());
         systemSettings.put("preferenceAskedNotificationPermission", preferenceManager.getPreferenceAskedNotificationPermission());
         return systemSettings;
     }
@@ -226,6 +228,12 @@ public class PreferenceSetup {
         } else {
             preferenceManager.removePreferenceNotification();
         }
+        Object highPrio = defaults.get("preferenceHighPrio");
+        if (isValidBoolean(highPrio)) {
+            preferenceManager.setPreferenceHighPrio(Boolean.parseBoolean(highPrio.toString()));
+        } else {
+            preferenceManager.removePreferenceHighPrio();
+        }
         Object pingPackageSize = defaults.get("preferencePingPackageSize");
         int pingPackageSizeMin = getResources().getInteger(R.integer.ping_package_size_minimum);
         int pingPackageSizeMax = getResources().getInteger(R.integer.ping_package_size_maximum);
@@ -305,9 +313,15 @@ public class PreferenceSetup {
         }
         Object allowArbitraryFileLocation = systemSettings.get("preferenceAllowArbitraryFileLocation");
         if (isValidBoolean(allowArbitraryFileLocation)) {
-            preferenceManager.setPreferenceAllowArbitraryFileLocation(Boolean.parseBoolean(Objects.requireNonNull(allowArbitraryFileLocation).toString()));
+            preferenceManager.setPreferenceAllowArbitraryFileLocation(Boolean.parseBoolean(allowArbitraryFileLocation.toString()));
         } else {
             preferenceManager.removePreferenceAllowArbitraryFileLocation();
+        }
+        Object alarmOnHighPrio = systemSettings.get("preferenceAlarmOnHighPrio");
+        if (isValidBoolean(alarmOnHighPrio)) {
+            preferenceManager.setPreferenceAlarmOnHighPrio(Boolean.parseBoolean(alarmOnHighPrio.toString()));
+        } else {
+            preferenceManager.removePreferenceAlarmOnHighPrio();
         }
         Object askedNotificationPermission = systemSettings.get("preferenceAskedNotificationPermission");
         if (isValidBoolean(askedNotificationPermission)) {
@@ -383,6 +397,7 @@ public class PreferenceSetup {
         preferenceManager.removePreferencePingPackageSize();
         preferenceManager.removePreferenceOnlyWifi();
         preferenceManager.removePreferenceNotification();
+        preferenceManager.removePreferenceHighPrio();
     }
 
     public void removeSystemSettings() {
@@ -395,6 +410,7 @@ public class PreferenceSetup {
         preferenceManager.removePreferenceFileDumpEnabled();
         preferenceManager.removePreferenceTheme();
         preferenceManager.removePreferenceAllowArbitraryFileLocation();
+        preferenceManager.removePreferenceAlarmOnHighPrio();
         preferenceManager.removePreferenceAskedNotificationPermission();
     }
 

@@ -27,6 +27,8 @@
     <string name="task_onlywifi_key">task_onlywifi_key</string>
     <bool name="task_notification_default">false</bool>
     <string name="task_notification_key">task_notification_key</string>
+    <bool name="task_highprio_default">false</bool>
+    <string name="task_highprio_key">task_highprio_key</string>
     <bool name="task_running_default">false</bool>
     <integer name="task_port_minimum">0</integer>
     <integer name="task_port_maximum">65535</integer>
