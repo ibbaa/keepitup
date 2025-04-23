@@ -89,6 +89,7 @@ public class PreferenceSetup {
         systemSettings.put("preferenceAllowArbitraryFileLocation", preferenceManager.getPreferenceAllowArbitraryFileLocation());
         systemSettings.put("preferenceAlarmOnHighPrio", preferenceManager.getPreferenceAlarmOnHighPrio());
         systemSettings.put("preferenceAskedNotificationPermission", preferenceManager.getPreferenceAskedNotificationPermission());
+        systemSettings.put("preferenceAlarmInfoShown", preferenceManager.getPreferenceAlarmInfoShown());
         return systemSettings;
     }
 
@@ -325,9 +326,15 @@ public class PreferenceSetup {
         }
         Object askedNotificationPermission = systemSettings.get("preferenceAskedNotificationPermission");
         if (isValidBoolean(askedNotificationPermission)) {
-            preferenceManager.setPreferenceAskedNotificationPermission(Boolean.parseBoolean(Objects.requireNonNull(askedNotificationPermission).toString()));
+            preferenceManager.setPreferenceAskedNotificationPermission(Boolean.parseBoolean(askedNotificationPermission.toString()));
         } else {
             preferenceManager.removePreferenceAskedNotificationPermission();
+        }
+        Object alarmInfoShown = systemSettings.get("preferenceAlarmInfoShown");
+        if (isValidBoolean(alarmInfoShown)) {
+            preferenceManager.setPreferenceAlarmInfoShown(Boolean.parseBoolean(alarmInfoShown.toString()));
+        } else {
+            preferenceManager.removePreferenceAlarmInfoShown();
         }
     }
 
@@ -412,6 +419,7 @@ public class PreferenceSetup {
         preferenceManager.removePreferenceAllowArbitraryFileLocation();
         preferenceManager.removePreferenceAlarmOnHighPrio();
         preferenceManager.removePreferenceAskedNotificationPermission();
+        preferenceManager.removePreferenceAlarmInfoShown();
     }
 
     public void removeAllSettings() {

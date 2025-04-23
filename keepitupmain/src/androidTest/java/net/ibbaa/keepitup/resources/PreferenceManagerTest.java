@@ -508,6 +508,18 @@ public class PreferenceManagerTest {
     }
 
     @Test
+    public void testPreferenceAlarmInfoShown() {
+        assertFalse(preferenceManager.getPreferenceAlarmInfoShown());
+        preferenceManager.setPreferenceAlarmInfoShown(true);
+        assertTrue(preferenceManager.getPreferenceAlarmInfoShown());
+        preferenceManager.removeAllPreferences();
+        assertFalse(preferenceManager.getPreferenceAlarmInfoShown());
+        preferenceManager.setPreferenceAlarmInfoShown(true);
+        preferenceManager.removePreferenceAlarmInfoShown();
+        assertFalse(preferenceManager.getPreferenceAlarmInfoShown());
+    }
+
+    @Test
     public void testGetArbitraryFolders() {
         Set<String> folders = preferenceManager.getArbitraryFolders();
         assertEquals(1, folders.size());

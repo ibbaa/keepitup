@@ -117,6 +117,7 @@ public class ExportTaskTest extends BaseUITest {
         getPreferenceManager().setPreferenceAllowArbitraryFileLocation(true);
         getPreferenceManager().setPreferenceAlarmOnHighPrio(true);
         getPreferenceManager().setPreferenceAskedNotificationPermission(true);
+        getPreferenceManager().setPreferenceAlarmInfoShown(true);
         File folder = getFileManager().getExternalRootDirectory(0);
         ExportTask task = new ExportTask(getActivity(activityScenario), folder, "test.json", false);
         task.runInBackground();
@@ -212,6 +213,7 @@ public class ExportTaskTest extends BaseUITest {
         assertTrue(getPreferenceManager().getPreferenceAllowArbitraryFileLocation());
         assertTrue(getPreferenceManager().getPreferenceAlarmOnHighPrio());
         assertTrue(getPreferenceManager().getPreferenceAskedNotificationPermission());
+        assertTrue(getPreferenceManager().getPreferenceAlarmInfoShown());
     }
 
     @Test
@@ -261,6 +263,7 @@ public class ExportTaskTest extends BaseUITest {
         getPreferenceManager().setPreferenceAllowArbitraryFileLocation(true);
         getPreferenceManager().setPreferenceAlarmOnHighPrio(true);
         getPreferenceManager().setPreferenceAskedNotificationPermission(true);
+        getPreferenceManager().setPreferenceAlarmInfoShown(true);
         File folder = getFileManager().getExternalRootDirectory(0);
         File file = new File(folder, "test.json");
         TestExportTask task = new TestExportTask(getActivity(activityScenario), folder, "test.json", true);
@@ -359,6 +362,7 @@ public class ExportTaskTest extends BaseUITest {
         assertTrue(getPreferenceManager().getPreferenceAllowArbitraryFileLocation());
         assertTrue(getPreferenceManager().getPreferenceAlarmOnHighPrio());
         assertTrue(getPreferenceManager().getPreferenceAskedNotificationPermission());
+        assertTrue(getPreferenceManager().getPreferenceAlarmInfoShown());
     }
 
     private Interval getInterval() {

@@ -249,6 +249,7 @@ public class JSONSystemSetupTest {
         preferenceManager.setPreferenceAllowArbitraryFileLocation(true);
         preferenceManager.setPreferenceAlarmOnHighPrio(true);
         preferenceManager.setPreferenceAskedNotificationPermission(true);
+        preferenceManager.setPreferenceAlarmInfoShown(true);
         SystemSetupResult result = setup.exportData();
         JSONObject jsonData = new JSONObject(result.data());
         JSONObject settingsData = (JSONObject) jsonData.get("preferences");
@@ -287,6 +288,7 @@ public class JSONSystemSetupTest {
         assertTrue(systemSettingsData.getBoolean("preferenceAllowArbitraryFileLocation"));
         assertTrue(systemSettingsData.getBoolean("preferenceAlarmOnHighPrio"));
         assertTrue(systemSettingsData.getBoolean("preferenceAskedNotificationPermission"));
+        assertTrue(systemSettingsData.getBoolean("preferenceAlarmInfoShown"));
     }
 
     @Test
@@ -772,6 +774,7 @@ public class JSONSystemSetupTest {
         preferenceManager.setPreferenceAllowArbitraryFileLocation(true);
         preferenceManager.setPreferenceAlarmOnHighPrio(true);
         preferenceManager.setPreferenceAskedNotificationPermission(true);
+        preferenceManager.setPreferenceAlarmInfoShown(true);
         SystemSetupResult exportResult = setup.exportData();
         preferenceManager.removeAllPreferences();
         SystemSetupResult importResult = setup.importData(exportResult.data());
@@ -807,6 +810,7 @@ public class JSONSystemSetupTest {
         assertTrue(preferenceManager.getPreferenceAllowArbitraryFileLocation());
         assertTrue(preferenceManager.getPreferenceAlarmOnHighPrio());
         assertTrue(preferenceManager.getPreferenceAskedNotificationPermission());
+        assertTrue(preferenceManager.getPreferenceAlarmInfoShown());
     }
 
     @Test
