@@ -573,17 +573,17 @@ public class PreferenceManager {
 
     public boolean getPreferenceAskedNotificationPermission() {
         Log.d(PreferenceManager.class.getName(), "getPreferenceAskedNotificationPermission");
-        return getPreferenceBoolean(getResources().getString(R.string.asked_notification_permission), getResources().getBoolean(R.bool.asked_notification_permission_default));
+        return getPreferenceBoolean(getResources().getString(R.string.asked_notification_permission_key), getResources().getBoolean(R.bool.asked_notification_permission_default));
     }
 
     public void setPreferenceAskedNotificationPermission(boolean askedNotificationPermission) {
         Log.d(PreferenceManager.class.getName(), "setPreferenceAskedNotificationPermission, askedNotificationPermission is " + askedNotificationPermission);
-        setPreferenceBoolean(getResources().getString(R.string.asked_notification_permission), askedNotificationPermission);
+        setPreferenceBoolean(getResources().getString(R.string.asked_notification_permission_key), askedNotificationPermission);
     }
 
     public void removePreferenceAskedNotificationPermission() {
         Log.d(PreferenceManager.class.getName(), "removePreferenceAskedNotificationPermission");
-        removePreferenceValue(getResources().getString(R.string.asked_notification_permission));
+        removePreferenceValue(getResources().getString(R.string.asked_notification_permission_key));
     }
 
     public Set<String> getArbitraryFolders() {
