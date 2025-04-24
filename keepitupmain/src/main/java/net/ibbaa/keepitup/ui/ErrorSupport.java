@@ -16,9 +16,9 @@
 
 package net.ibbaa.keepitup.ui;
 
-import net.ibbaa.keepitup.ui.dialog.GeneralErrorDialog;
+import net.ibbaa.keepitup.ui.dialog.GeneralMessageDialog;
 
 public interface ErrorSupport {
 
-    void onErrorDialogOkClicked(GeneralErrorDialog errorDialog);
+    void onErrorDialogOkClicked(GeneralMessageDialog errorDialog);
 }

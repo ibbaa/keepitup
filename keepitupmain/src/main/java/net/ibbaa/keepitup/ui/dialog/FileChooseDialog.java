@@ -431,7 +431,7 @@ public class FileChooseDialog extends DialogFragmentBase implements ContextOptio
                 entries = readFiles(getFileManager().getAbsoluteParent(getRoot(), folder));
             } else {
                 entries = Collections.emptyList();
-                showErrorDialog(getResources().getString(R.string.text_dialog_general_error_file_access));
+                showMessageDialog(getResources().getString(R.string.text_dialog_general_message_file_access));
             }
         } else {
             entries = readFiles(getFileManager().getAbsolutePath(getRoot(), getSelectionFolder()));
@@ -499,7 +499,7 @@ public class FileChooseDialog extends DialogFragmentBase implements ContextOptio
     private void setFile(String file) {
         if (file == null) {
             resetFiles();
-            showErrorDialog(getResources().getString(R.string.text_dialog_general_error_file_access));
+            showMessageDialog(getResources().getString(R.string.text_dialog_general_message_file_access));
             return;
         }
         String absolutePath = getAbsolutePath(getRoot(), getFolder());
@@ -562,7 +562,7 @@ public class FileChooseDialog extends DialogFragmentBase implements ContextOptio
     private void setFolders(String nestedFolder) {
         if (nestedFolder == null) {
             resetFiles();
-            showErrorDialog(getResources().getString(R.string.text_dialog_general_error_file_access));
+            showMessageDialog(getResources().getString(R.string.text_dialog_general_message_file_access));
             return;
         }
         if (folderChooseTextWatcher != null) {
@@ -614,7 +614,7 @@ public class FileChooseDialog extends DialogFragmentBase implements ContextOptio
         String absoluteFolder = getAbsolutePath(getRoot(), getSelectionFolder());
         if (absoluteFolder == null) {
             Log.e(FileChooseDialog.class.getName(), "File manager returned null as parent");
-            showErrorDialog(getResources().getString(R.string.text_dialog_general_error_list_folder_files));
+            showMessageDialog(getResources().getString(R.string.text_dialog_general_message_list_folder_files));
             return new FileEntryAdapter(Collections.emptyList(), this);
         }
         IFileManager fileManager = getFileManager();
@@ -623,7 +623,7 @@ public class FileChooseDialog extends DialogFragmentBase implements ContextOptio
             String parent = fileManager.getAbsoluteParent(getRoot(), absoluteFolder);
             if (parent == null) {
                 Log.e(FileChooseDialog.class.getName(), "File manager returned null as parent");
-                showErrorDialog(getResources().getString(R.string.text_dialog_general_error_list_folder_files));
+                showMessageDialog(getResources().getString(R.string.text_dialog_general_message_list_folder_files));
                 return new FileEntryAdapter(Collections.emptyList(), this);
             }
             List<FileEntry> entries = readFiles(parent);
@@ -638,7 +638,7 @@ public class FileChooseDialog extends DialogFragmentBase implements ContextOptio
             selectionFolder = fileManager.getRelativeParent(selectionFolder);
             if (selectionFolder == null) {
                 Log.e(FileChooseDialog.class.getName(), "selectionFolder is null");
-                showErrorDialog(getResources().getString(R.string.text_dialog_general_error_file_access));
+                showMessageDialog(getResources().getString(R.string.text_dialog_general_message_file_access));
                 adapter = new FileEntryAdapter(Collections.emptyList(), this);
             }
         }
@@ -650,7 +650,7 @@ public class FileChooseDialog extends DialogFragmentBase implements ContextOptio
         Log.d(FileChooseDialog.class.getName(), "readFiles, folder is " + folder);
         if (folder == null) {
             Log.e(FileChooseDialog.class.getName(), "File manager returned null as folder file list");
-            showErrorDialog(getResources().getString(R.string.text_dialog_general_error_list_folder_files));
+            showMessageDialog(getResources().getString(R.string.text_dialog_general_message_list_folder_files));
             return Collections.emptyList();
         }
         IFileManager fileManager = getFileManager();
@@ -658,7 +658,7 @@ public class FileChooseDialog extends DialogFragmentBase implements ContextOptio
         List<FileEntry> entries = fileManager.getFiles(root, folder);
         if (entries == null) {
             Log.e(FileChooseDialog.class.getName(), "File manager returned null as folder file list");
-            showErrorDialog(getResources().getString(R.string.text_dialog_general_error_list_folder_files));
+            showMessageDialog(getResources().getString(R.string.text_dialog_general_message_list_folder_files));
             return Collections.emptyList();
         }
         Log.d(FileChooseDialog.class.getName(), "File manager returned the following file entries: " + (entries.isEmpty() ? "no file entries" : ""));
@@ -675,7 +675,7 @@ public class FileChooseDialog extends DialogFragmentBase implements ContextOptio
         }
         Log.e(FileChooseDialog.class.getName(), "Folder is null");
         resetFiles();
-        showErrorDialog(getResources().getString(R.string.text_dialog_general_error_file_access));
+        showMessageDialog(getResources().getString(R.string.text_dialog_general_message_file_access));
         return "";
     }
 
@@ -734,18 +734,18 @@ public class FileChooseDialog extends DialogFragmentBase implements ContextOptio
         return new FilenameFieldValidator(getResources().getString(R.string.label_dialog_file_choose_file), isEmptyFilenameAllowed(), getContext());
     }
 
-    private void showErrorDialog(String errorMessage) {
-        showErrorDialog(errorMessage, Typeface.BOLD);
+    private void showMessageDialog(String errorMessage) {
+        showMessageDialog(errorMessage, Typeface.BOLD);
     }
 
     @SuppressWarnings({"SameParameterValue"})
-    private void showErrorDialog(String errorMessage, int typeface) {
-        Log.d(FileChooseDialog.class.getName(), "showErrorDialog with message " + errorMessage);
-        GeneralErrorDialog errorDialog = new GeneralErrorDialog();
+    private void showMessageDialog(String errorMessage, int typeface) {
+        Log.d(FileChooseDialog.class.getName(), "showMessageDialog with message " + errorMessage);
+        GeneralMessageDialog errorDialog = new GeneralMessageDialog();
         Bundle bundle = BundleUtil.stringToBundle(errorDialog.getMessageKey(), errorMessage);
         bundle.putInt(errorDialog.getTypefaceStyleKey(), typeface);
         errorDialog.setArguments(bundle);
-        errorDialog.show(getParentFragmentManager(), GeneralErrorDialog.class.getName());
+        errorDialog.show(getParentFragmentManager(), GeneralMessageDialog.class.getName());
     }
 
     private void showValidatorErrorDialog(List<ValidationResult> validationResult) {

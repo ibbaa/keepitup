@@ -53,7 +53,7 @@ import net.ibbaa.keepitup.service.SystemThemeManager;
 import net.ibbaa.keepitup.ui.dialog.BatteryOptimizationDialog;
 import net.ibbaa.keepitup.ui.dialog.ConfirmDialog;
 import net.ibbaa.keepitup.ui.dialog.FileChooseDialog;
-import net.ibbaa.keepitup.ui.dialog.GeneralErrorDialog;
+import net.ibbaa.keepitup.ui.dialog.GeneralMessageDialog;
 import net.ibbaa.keepitup.ui.permission.GenericPermissionLauncher;
 import net.ibbaa.keepitup.ui.permission.IStoragePermissionManager;
 import net.ibbaa.keepitup.ui.permission.NullPermissionLauncher;
@@ -550,7 +550,7 @@ public class SystemActivity extends SettingsInputActivity implements ExportSuppo
                 Log.e(SystemActivity.class.getName(), "Error accessing log folder.");
                 setLogFolder("");
                 Log.d(SystemActivity.class.getName(), "Showing error dialog.");
-                showErrorDialog(getResources().getString(R.string.text_dialog_general_error_external_root_access));
+                showMessageDialog(getResources().getString(R.string.text_dialog_general_message_external_root_access));
             } else {
                 setLogFolder(logFolder);
             }
@@ -698,7 +698,7 @@ public class SystemActivity extends SettingsInputActivity implements ExportSuppo
         if (root == null || folder == null) {
             Log.e(SystemActivity.class.getName(), "Error accessing folder.");
             Log.d(SystemActivity.class.getName(), "Showing error dialog.");
-            showErrorDialog(getResources().getString(R.string.text_dialog_general_error_external_root_access));
+            showMessageDialog(getResources().getString(R.string.text_dialog_general_message_external_root_access));
             return;
         }
         Bundle bundle = BundleUtil.stringsToBundle(new String[]{fileChooseDialog.getFolderRootKey(), fileChooseDialog.getFolderKey(), fileChooseDialog.getFileKey(), fileChooseDialog.getFileModeKey(), fileChooseDialog.getTypeKey()}, new String[]{root, folder, file, FileChooseDialog.Mode.FILE.name(), type.name()});
@@ -719,7 +719,7 @@ public class SystemActivity extends SettingsInputActivity implements ExportSuppo
                 Log.e(SystemActivity.class.getName(), "Error accessing folder.");
                 fileChooseDialog.dismiss();
                 Log.d(SystemActivity.class.getName(), "Showing error dialog.");
-                showErrorDialog(getResources().getString(R.string.text_dialog_general_error_external_import_export_create));
+                showMessageDialog(getResources().getString(R.string.text_dialog_general_message_external_import_export_create));
                 return;
             }
             String file = fileChooseDialog.getFile();
@@ -749,7 +749,7 @@ public class SystemActivity extends SettingsInputActivity implements ExportSuppo
         Log.d(SystemActivity.class.getName(), "File name is " + file);
         if (StringUtil.isEmpty(file)) {
             Log.e(SystemActivity.class.getName(), "Folder or file is empty.");
-            showErrorDialog(getResources().getString(R.string.text_dialog_general_error_config_export));
+            showMessageDialog(getResources().getString(R.string.text_dialog_general_message_config_export));
             return;
         }
         showProgressDialog();
@@ -773,7 +773,7 @@ public class SystemActivity extends SettingsInputActivity implements ExportSuppo
         Log.d(SystemActivity.class.getName(), "File name is " + file);
         if (StringUtil.isEmpty(file)) {
             Log.e(SystemActivity.class.getName(), "Folder or file is empty.");
-            showErrorDialog(getResources().getString(R.string.text_dialog_general_error_config_import));
+            showMessageDialog(getResources().getString(R.string.text_dialog_general_message_config_import));
             return;
         }
         showProgressDialog();
@@ -850,7 +850,7 @@ public class SystemActivity extends SettingsInputActivity implements ExportSuppo
     }
 
     @Override
-    public void onErrorDialogOkClicked(GeneralErrorDialog errorDialog) {
+    public void onErrorDialogOkClicked(GeneralMessageDialog errorDialog) {
         Log.d(SystemActivity.class.getName(), "onErrorDialogOkClicked");
         String extraData = errorDialog.getExtraData();
         Log.d(SystemActivity.class.getName(), "onErrorDialogOkClicked, extraData is " + extraData);
@@ -865,7 +865,7 @@ public class SystemActivity extends SettingsInputActivity implements ExportSuppo
         Log.d(SystemActivity.class.getName(), "onExportDone, success is " + success);
         closeProgressDialog();
         if (!success) {
-            showErrorDialog(getResources().getString(R.string.text_dialog_general_error_config_export));
+            showMessageDialog(getResources().getString(R.string.text_dialog_general_message_config_export));
         }
     }
 
@@ -878,7 +878,7 @@ public class SystemActivity extends SettingsInputActivity implements ExportSuppo
             NetworkTaskLog.clear();
             resetActivity();
         } else {
-            showErrorDialog(message != null ? message : getResources().getString(R.string.text_dialog_general_error_config_import), Typeface.BOLD, Error.IMPORTERROR.name());
+            showMessageDialog(message != null ? message : getResources().getString(R.string.text_dialog_general_message_config_import), Typeface.BOLD, Error.IMPORTERROR.name());
         }
     }
 
@@ -893,7 +893,7 @@ public class SystemActivity extends SettingsInputActivity implements ExportSuppo
             NetworkTaskLog.clear();
             resetActivity();
         } else {
-            showErrorDialog(getResources().getString(R.string.text_dialog_general_error_db_purge), Typeface.BOLD, Error.PURGERROR.name());
+            showMessageDialog(getResources().getString(R.string.text_dialog_general_message_db_purge), Typeface.BOLD, Error.PURGERROR.name());
         }
     }
 

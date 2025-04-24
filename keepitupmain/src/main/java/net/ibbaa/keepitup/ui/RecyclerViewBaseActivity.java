@@ -34,7 +34,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import net.ibbaa.keepitup.logging.Log;
 import net.ibbaa.keepitup.ui.dialog.ConfirmDialog;
-import net.ibbaa.keepitup.ui.dialog.GeneralErrorDialog;
+import net.ibbaa.keepitup.ui.dialog.GeneralMessageDialog;
 import net.ibbaa.keepitup.util.BundleUtil;
 
 @SuppressWarnings({"SameParameterValue"})
@@ -85,17 +85,17 @@ public abstract class RecyclerViewBaseActivity extends AppCompatActivity impleme
         return recyclerView.getAdapter();
     }
 
-    protected void showErrorDialog(String errorMessage) {
-        showErrorDialog(errorMessage, Typeface.BOLD);
+    protected void showMessageDialog(String errorMessage) {
+        showMessageDialog(errorMessage, Typeface.BOLD);
     }
 
-    protected void showErrorDialog(String errorMessage, int typeface) {
-        Log.d(RecyclerViewBaseActivity.class.getName(), "showErrorDialog with message " + errorMessage);
-        GeneralErrorDialog errorDialog = new GeneralErrorDialog();
+    protected void showMessageDialog(String errorMessage, int typeface) {
+        Log.d(RecyclerViewBaseActivity.class.getName(), "showMessageDialog with message " + errorMessage);
+        GeneralMessageDialog errorDialog = new GeneralMessageDialog();
         Bundle bundle = BundleUtil.stringToBundle(errorDialog.getMessageKey(), errorMessage);
         bundle.putInt(errorDialog.getTypefaceStyleKey(), typeface);
         errorDialog.setArguments(bundle);
-        showDialog(errorDialog, GeneralErrorDialog.class.getName());
+        showDialog(errorDialog, GeneralMessageDialog.class.getName());
     }
 
     protected void showConfirmDialog(String confirmMessage, ConfirmDialog.Type type, int position) {

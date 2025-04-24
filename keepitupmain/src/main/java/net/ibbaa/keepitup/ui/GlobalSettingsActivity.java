@@ -443,7 +443,7 @@ public class GlobalSettingsActivity extends SettingsInputActivity implements Sus
             prepareDownloadExternalStorageOnOffText();
             prepareDownloadKeepSwitch();
             Log.d(GlobalSettingsActivity.class.getName(), "Showing error dialog.");
-            showErrorDialog(getResources().getString(R.string.text_dialog_general_error_external_root_access));
+            showMessageDialog(getResources().getString(R.string.text_dialog_general_message_external_root_access));
         }
     }
 
@@ -582,7 +582,7 @@ public class GlobalSettingsActivity extends SettingsInputActivity implements Sus
             logFileSwitch.setChecked(false);
             prepareLogFileOnOffText();
             Log.d(GlobalSettingsActivity.class.getName(), "Showing error dialog.");
-            showErrorDialog(getResources().getString(R.string.text_dialog_general_error_external_root_access));
+            showMessageDialog(getResources().getString(R.string.text_dialog_general_message_external_root_access));
         }
     }
 
@@ -617,7 +617,7 @@ public class GlobalSettingsActivity extends SettingsInputActivity implements Sus
         if (root == null) {
             Log.e(GlobalSettingsActivity.class.getName(), "Error accessing root folder.");
             Log.d(GlobalSettingsActivity.class.getName(), "Showing error dialog.");
-            showErrorDialog(getResources().getString(R.string.text_dialog_general_error_external_root_access));
+            showMessageDialog(getResources().getString(R.string.text_dialog_general_message_external_root_access));
             return;
         }
         String folder = getPreferenceDownloadFolder();
@@ -625,7 +625,7 @@ public class GlobalSettingsActivity extends SettingsInputActivity implements Sus
         if (folder == null) {
             Log.e(GlobalSettingsActivity.class.getName(), "Error accessing download folder.");
             Log.d(GlobalSettingsActivity.class.getName(), "Showing error dialog.");
-            showErrorDialog(getResources().getString(R.string.text_dialog_general_error_external_root_access));
+            showMessageDialog(getResources().getString(R.string.text_dialog_general_message_external_root_access));
             return;
         }
         Bundle bundle = BundleUtil.stringsToBundle(new String[]{fileChooseDialog.getFolderRootKey(), fileChooseDialog.getFolderKey(), fileChooseDialog.getFileModeKey(), fileChooseDialog.getTypeKey()}, new String[]{root, folder, FileChooseDialog.Mode.FOLDER.name(), FileChooseDialog.Type.DOWNLOADFOLDER.name()});
@@ -669,7 +669,7 @@ public class GlobalSettingsActivity extends SettingsInputActivity implements Sus
         if (root == null) {
             Log.e(GlobalSettingsActivity.class.getName(), "Error accessing root folder.");
             Log.d(GlobalSettingsActivity.class.getName(), "Showing error dialog.");
-            showErrorDialog(getResources().getString(R.string.text_dialog_general_error_external_root_access));
+            showMessageDialog(getResources().getString(R.string.text_dialog_general_message_external_root_access));
             return;
         }
         String folder = getPreferenceLogFolder();
@@ -677,7 +677,7 @@ public class GlobalSettingsActivity extends SettingsInputActivity implements Sus
         if (folder == null) {
             Log.e(GlobalSettingsActivity.class.getName(), "Error accessing log folder.");
             Log.d(GlobalSettingsActivity.class.getName(), "Showing error dialog.");
-            showErrorDialog(getResources().getString(R.string.text_dialog_general_error_external_root_access));
+            showMessageDialog(getResources().getString(R.string.text_dialog_general_message_external_root_access));
             return;
         }
         Bundle bundle = BundleUtil.stringsToBundle(new String[]{fileChooseDialog.getFolderRootKey(), fileChooseDialog.getFolderKey(), fileChooseDialog.getFileModeKey(), fileChooseDialog.getTypeKey()}, new String[]{root, folder, FileChooseDialog.Mode.FOLDER.name(), FileChooseDialog.Type.LOGFOLDER.name()});
@@ -815,7 +815,7 @@ public class GlobalSettingsActivity extends SettingsInputActivity implements Sus
                 Log.e(GlobalSettingsActivity.class.getName(), "Error accessing download folder.");
                 folderChooseDialog.dismiss();
                 Log.d(GlobalSettingsActivity.class.getName(), "Showing error dialog.");
-                showErrorDialog(getResources().getString(R.string.text_dialog_general_error_external_download_create));
+                showMessageDialog(getResources().getString(R.string.text_dialog_general_message_external_download_create));
                 return;
             }
             preferenceManager.setPreferenceDownloadFolder(folder);
@@ -829,7 +829,7 @@ public class GlobalSettingsActivity extends SettingsInputActivity implements Sus
                 Log.e(GlobalSettingsActivity.class.getName(), "Error accessing log folder.");
                 folderChooseDialog.dismiss();
                 Log.d(GlobalSettingsActivity.class.getName(), "Showing error dialog.");
-                showErrorDialog(getResources().getString(R.string.text_dialog_general_error_external_log_create));
+                showMessageDialog(getResources().getString(R.string.text_dialog_general_message_external_log_create));
                 return;
             }
             preferenceManager.setPreferenceLogFolder(folder);

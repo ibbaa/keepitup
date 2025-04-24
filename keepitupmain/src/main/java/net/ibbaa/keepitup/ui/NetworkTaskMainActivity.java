@@ -204,13 +204,13 @@ public class NetworkTaskMainActivity extends RecyclerViewBaseActivity implements
             List<NetworkTaskUIWrapper> wrapperList = wrapperListFuture.get(getResources().getInteger(R.integer.database_access_timeout), TimeUnit.SECONDS);
             if (wrapperList == null) {
                 Log.e(NetworkTaskMainActivity.class.getName(), "Reading all network tasks from database returned null");
-                showErrorDialog(getResources().getString(R.string.text_dialog_general_error_read_network_tasks));
+                showMessageDialog(getResources().getString(R.string.text_dialog_general_message_read_network_tasks));
                 return new ArrayList<>();
             }
             return wrapperList;
         } catch (Exception exc) {
             Log.e(NetworkTaskMainActivity.class.getName(), "Error reading all network tasks from database", exc);
-            showErrorDialog(getResources().getString(R.string.text_dialog_general_error_read_network_tasks));
+            showMessageDialog(getResources().getString(R.string.text_dialog_general_message_read_network_tasks));
             return new ArrayList<>();
         }
     }

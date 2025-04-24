@@ -42,7 +42,7 @@ import org.junit.runner.RunWith;
 
 @MediumTest
 @RunWith(AndroidJUnit4.class)
-public class GeneralErrorDialogTest extends BaseUITest {
+public class GeneralMessageDialogTest extends BaseUITest {
 
     private ActivityScenario<?> activityScenario;
 
@@ -59,31 +59,31 @@ public class GeneralErrorDialogTest extends BaseUITest {
     }
 
     @Test
-    public void testErrorMessage() {
-        GeneralErrorDialog errorDialog = openGeneralErrorDialog();
+    public void testMessage() {
+        GeneralMessageDialog errorDialog = openGeneralMessageDialog();
         onView(isRoot()).perform(waitFor(500));
         assertEquals("ExtraData", errorDialog.getExtraData());
-        onView(withId(R.id.textview_dialog_general_error_message)).check(matches(withText("Message")));
-        onView(withId(R.id.imageview_dialog_general_error_ok)).perform(click());
+        onView(withId(R.id.textview_dialog_general_message_message)).check(matches(withText("Message")));
+        onView(withId(R.id.imageview_dialog_general_message_ok)).perform(click());
     }
 
     @Test
     public void testScreenRotation() {
-        openGeneralErrorDialog();
-        onView(withId(R.id.textview_dialog_general_error_message)).check(matches(withText("Message")));
+        openGeneralMessageDialog();
+        onView(withId(R.id.textview_dialog_general_message_message)).check(matches(withText("Message")));
         rotateScreen(activityScenario);
-        onView(withId(R.id.textview_dialog_general_error_message)).check(matches(withText("Message")));
+        onView(withId(R.id.textview_dialog_general_message_message)).check(matches(withText("Message")));
         rotateScreen(activityScenario);
-        onView(withId(R.id.textview_dialog_general_error_message)).check(matches(withText("Message")));
-        onView(withId(R.id.imageview_dialog_general_error_ok)).perform(click());
+        onView(withId(R.id.textview_dialog_general_message_message)).check(matches(withText("Message")));
+        onView(withId(R.id.imageview_dialog_general_message_ok)).perform(click());
     }
 
-    private GeneralErrorDialog openGeneralErrorDialog() {
-        GeneralErrorDialog errorDialog = new GeneralErrorDialog();
+    private GeneralMessageDialog openGeneralMessageDialog() {
+        GeneralMessageDialog errorDialog = new GeneralMessageDialog();
         Bundle bundle = BundleUtil.stringToBundle(errorDialog.getMessageKey(), "Message");
         BundleUtil.stringToBundle(errorDialog.getExtraDataKey(), "ExtraData", bundle);
         errorDialog.setArguments(bundle);
-        errorDialog.show(getActivity(activityScenario).getSupportFragmentManager(), GeneralErrorDialog.class.getName());
+        errorDialog.show(getActivity(activityScenario).getSupportFragmentManager(), GeneralMessageDialog.class.getName());
         onView(isRoot()).perform(waitFor(500));
         return errorDialog;
     }

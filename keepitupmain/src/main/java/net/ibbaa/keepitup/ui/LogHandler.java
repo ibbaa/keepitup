@@ -40,12 +40,12 @@ public class LogHandler {
             getAdapter().removeItems();
         } catch (Exception exc) {
             Log.e(NetworkTaskHandler.class.getName(), "Error deleting logs.", exc);
-            showErrorDialog(getResources().getString(R.string.text_dialog_general_error_delete_logs));
+            showMessageDialog(getResources().getString(R.string.text_dialog_general_message_delete_logs));
         }
     }
 
-    private void showErrorDialog(String errorMessage) {
-        logActivity.showErrorDialog(errorMessage);
+    private void showMessageDialog(String errorMessage) {
+        logActivity.showMessageDialog(errorMessage);
     }
 
     private LogEntryAdapter getAdapter() {

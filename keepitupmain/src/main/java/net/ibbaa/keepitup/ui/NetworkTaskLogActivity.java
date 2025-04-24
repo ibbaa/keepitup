@@ -129,13 +129,13 @@ public class NetworkTaskLogActivity extends RecyclerViewBaseActivity {
             List<LogEntry> logEntries = logEntriesFuture.get(getResources().getInteger(R.integer.database_access_timeout), TimeUnit.SECONDS);
             if (logEntries == null) {
                 Log.e(NetworkTaskLogActivity.class.getName(), "Reading all log entries from database returned null");
-                showErrorDialog(getResources().getString(R.string.text_dialog_general_error_read_log_entries));
+                showMessageDialog(getResources().getString(R.string.text_dialog_general_message_read_log_entries));
                 return new ArrayList<>();
             }
             return logEntries;
         } catch (Exception exc) {
             Log.e(NetworkTaskLogActivity.class.getName(), "Error reading all log entries from database", exc);
-            showErrorDialog(getResources().getString(R.string.text_dialog_general_error_read_log_entries));
+            showMessageDialog(getResources().getString(R.string.text_dialog_general_message_read_log_entries));
             return new ArrayList<>();
         }
     }

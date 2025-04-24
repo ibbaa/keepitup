@@ -133,7 +133,7 @@ public class SettingsInputDialog extends DialogFragmentBase implements ContextOp
             }
         } else {
             Log.d(SettingsInputDialog.class.getName(), "Validation failed");
-            showErrorDialog(validationResult);
+            showMessageDialog(validationResult);
         }
     }
 
@@ -230,8 +230,8 @@ public class SettingsInputDialog extends DialogFragmentBase implements ContextOp
         return null;
     }
 
-    private void showErrorDialog(List<ValidationResult> validationResult) {
-        Log.d(SettingsInputDialog.class.getName(), "showErrorDialog, opening ValidatorErrorDialog");
+    private void showMessageDialog(List<ValidationResult> validationResult) {
+        Log.d(SettingsInputDialog.class.getName(), "showMessageDialog, opening ValidatorErrorDialog");
         ValidatorErrorDialog errorDialog = new ValidatorErrorDialog();
         errorDialog.setArguments(BundleUtil.validationResultListToBundle(errorDialog.getValidationResultBaseKey(), validationResult));
         errorDialog.show(getParentFragmentManager(), ValidatorErrorDialog.class.getName());

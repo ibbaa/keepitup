@@ -68,7 +68,7 @@ public class IntervalHandler {
             }
         } catch (Exception exc) {
             Log.e(IntervalHandler.class.getName(), "Error synchronizing intervals.", exc);
-            showErrorDialog(getResources().getString(R.string.text_dialog_general_error_synchronize_intervals));
+            showMessageDialog(getResources().getString(R.string.text_dialog_general_message_synchronize_intervals));
         }
         return didChanges;
     }
@@ -101,8 +101,8 @@ public class IntervalHandler {
         return null;
     }
 
-    private void showErrorDialog(String errorMessage) {
-        globalSettingsActivity.showErrorDialog(errorMessage);
+    private void showMessageDialog(String errorMessage) {
+        globalSettingsActivity.showMessageDialog(errorMessage);
     }
 
     private Resources getResources() {

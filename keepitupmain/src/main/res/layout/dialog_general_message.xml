@@ -21,14 +21,14 @@
     android:layout_height="fill_parent">
 
     <LinearLayout
-        android:id="@+id/linearlayout_dialog_general_error"
+        android:id="@+id/linearlayout_dialog_general_message"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="@dimen/linearlayout_dialog_general_error_padding"
+        android:padding="@dimen/linearlayout_dialog_general_message_padding"
         android:orientation="vertical">
 
         <TextView
-            android:id="@+id/textview_dialog_general_error_message"
+            android:id="@+id/textview_dialog_general_message_message"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
@@ -36,14 +36,14 @@
             android:text="" />
 
         <ImageView
-            android:id="@+id/imageview_dialog_general_error_ok"
+            android:id="@+id/imageview_dialog_general_message_ok"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:paddingTop="@dimen/imageview_dialog_general_error_ok_padding_top"
+            android:paddingTop="@dimen/imageview_dialog_general_message_ok_padding_top"
             android:layout_gravity="center"
             android:clickable="true"
             android:focusable="true"
-            android:contentDescription="@string/label_dialog_general_error_ok"
+            android:contentDescription="@string/label_dialog_general_message_ok"
             app:srcCompat="@drawable/icon_ok_selector" />
     </LinearLayout>
 </ScrollView>

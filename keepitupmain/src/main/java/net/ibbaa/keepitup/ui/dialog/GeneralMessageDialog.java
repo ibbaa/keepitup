@@ -34,19 +34,19 @@ import net.ibbaa.keepitup.ui.ErrorSupport;
 import net.ibbaa.keepitup.util.BundleUtil;
 
 @SuppressWarnings({"unused"})
-public class GeneralErrorDialog extends DialogFragmentBase {
+public class GeneralMessageDialog extends DialogFragmentBase {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        Log.d(GeneralErrorDialog.class.getName(), "onCreate");
+        Log.d(GeneralMessageDialog.class.getName(), "onCreate");
         super.onCreate(savedInstanceState);
         setStyle(DialogFragment.STYLE_NO_FRAME, R.style.DialogTheme);
     }
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        Log.d(GeneralErrorDialog.class.getName(), "onCreateView");
-        View view = inflater.inflate(R.layout.dialog_general_error, container);
+        Log.d(GeneralMessageDialog.class.getName(), "onCreateView");
+        View view = inflater.inflate(R.layout.dialog_general_message, container);
         initEdgeToEdgeInsets(view);
         String message = BundleUtil.stringFromBundle(getMessageKey(), requireArguments());
         prepareErrorMessage(view, message);
@@ -55,11 +55,11 @@ public class GeneralErrorDialog extends DialogFragmentBase {
     }
 
     public String getMessageKey() {
-        return GeneralErrorDialog.class.getSimpleName() + "Message";
+        return GeneralMessageDialog.class.getSimpleName() + "Message";
     }
 
     public String getExtraDataKey() {
-        return GeneralErrorDialog.class.getSimpleName() + "ExtraData";
+        return GeneralMessageDialog.class.getSimpleName() + "ExtraData";
     }
 
     public String getExtraData() {
@@ -67,25 +67,25 @@ public class GeneralErrorDialog extends DialogFragmentBase {
     }
 
     public String getTypefaceStyleKey() {
-        return GeneralErrorDialog.class.getSimpleName() + "TypefaceStyle";
+        return GeneralMessageDialog.class.getSimpleName() + "TypefaceStyle";
     }
 
     private void prepareErrorMessage(View view, String message) {
-        Log.d(GeneralErrorDialog.class.getName(), "prepareErrorMessage");
-        TextView messageText = view.findViewById(R.id.textview_dialog_general_error_message);
+        Log.d(GeneralMessageDialog.class.getName(), "prepareErrorMessage");
+        TextView messageText = view.findViewById(R.id.textview_dialog_general_message_message);
         int style = requireArguments().getInt(getTypefaceStyleKey(), Typeface.BOLD);
         messageText.setTypeface(null, style);
         messageText.setText(message);
     }
 
     private void prepareOkImageButton(View view) {
-        Log.d(GeneralErrorDialog.class.getName(), "prepareOkImageButton");
-        ImageView okImage = view.findViewById(R.id.imageview_dialog_general_error_ok);
+        Log.d(GeneralMessageDialog.class.getName(), "prepareOkImageButton");
+        ImageView okImage = view.findViewById(R.id.imageview_dialog_general_message_ok);
         okImage.setOnClickListener(this::onOkClicked);
     }
 
     private void onOkClicked(View view) {
-        Log.d(GeneralErrorDialog.class.getName(), "onOkClicked");
+        Log.d(GeneralMessageDialog.class.getName(), "onOkClicked");
         ErrorSupport errorSupport = getErrorSupport();
         if (errorSupport == null) {
             dismiss();
@@ -95,14 +95,14 @@ public class GeneralErrorDialog extends DialogFragmentBase {
     }
 
     private ErrorSupport getErrorSupport() {
-        Log.d(GeneralErrorDialog.class.getName(), "getErrorSupport");
+        Log.d(GeneralMessageDialog.class.getName(), "getErrorSupport");
         Activity activity = getActivity();
         if (activity == null) {
-            Log.d(GeneralErrorDialog.class.getName(), "getErrorSupport, activity is null");
+            Log.d(GeneralMessageDialog.class.getName(), "getErrorSupport, activity is null");
             return null;
         }
         if (!(activity instanceof ErrorSupport)) {
-            Log.d(GeneralErrorDialog.class.getName(), "getErrorSupport, activity is not an instance of " + ErrorSupport.class.getSimpleName());
+            Log.d(GeneralMessageDialog.class.getName(), "getErrorSupport, activity is not an instance of " + ErrorSupport.class.getSimpleName());
             return null;
         }
         return (ErrorSupport) activity;

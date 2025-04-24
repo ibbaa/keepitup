@@ -48,7 +48,7 @@ class NetworkTaskHandler {
             getAdapter().replaceNetworkTask(task, data);
         } catch (Exception exc) {
             Log.e(NetworkTaskHandler.class.getName(), "Error starting network task. Showing error dialog.", exc);
-            showErrorDialog(getResources().getString(R.string.text_dialog_general_error_start_network_task));
+            showMessageDialog(getResources().getString(R.string.text_dialog_general_message_start_network_task));
         }
     }
 
@@ -59,7 +59,7 @@ class NetworkTaskHandler {
             getAdapter().replaceNetworkTask(task, data);
         } catch (Exception exc) {
             Log.e(NetworkTaskHandler.class.getName(), "Error stopping network task. Showing error dialog.", exc);
-            showErrorDialog(getResources().getString(R.string.text_dialog_general_error_stop_network_task));
+            showMessageDialog(getResources().getString(R.string.text_dialog_general_message_stop_network_task));
         }
     }
 
@@ -72,7 +72,7 @@ class NetworkTaskHandler {
             task = dao.insertNetworkTask(task);
             if (task.getId() < 0) {
                 Log.e(NetworkTaskHandler.class.getName(), "Error inserting task into database. Showing error dialog.");
-                mainActivity.showErrorDialog(getResources().getString(R.string.text_dialog_general_error_insert_network_task));
+                mainActivity.showMessageDialog(getResources().getString(R.string.text_dialog_general_message_insert_network_task));
             } else {
                 AccessTypeDataDAO accessTypeDataDAO = new AccessTypeDataDAO(mainActivity);
                 data.setNetworkTaskId(task.getId());
@@ -83,7 +83,7 @@ class NetworkTaskHandler {
             }
         } catch (Exception exc) {
             Log.e(NetworkTaskHandler.class.getName(), "Error inserting task into database. Showing error dialog.", exc);
-            showErrorDialog(getResources().getString(R.string.text_dialog_general_error_insert_network_task));
+            showMessageDialog(getResources().getString(R.string.text_dialog_general_message_insert_network_task));
         }
     }
 
@@ -99,7 +99,7 @@ class NetworkTaskHandler {
             task = networkTaskDAO.updateNetworkTask(task);
             if (task.getSchedulerId() == SchedulerIdGenerator.ERROR_SCHEDULER_ID) {
                 Log.e(NetworkTaskHandler.class.getName(), "Error updating task. Showing error dialog.");
-                mainActivity.showErrorDialog(getResources().getString(R.string.text_dialog_general_error_update_network_task));
+                mainActivity.showMessageDialog(getResources().getString(R.string.text_dialog_general_message_update_network_task));
                 return;
             }
             AccessTypeDataDAO accessTypeDataDAO = new AccessTypeDataDAO(mainActivity);
@@ -112,7 +112,7 @@ class NetworkTaskHandler {
             getAdapter().replaceNetworkTask(task, data);
         } catch (Exception exc) {
             Log.e(NetworkTaskHandler.class.getName(), "Error updating task. Showing error dialog.", exc);
-            showErrorDialog(getResources().getString(R.string.text_dialog_general_error_update_network_task));
+            showMessageDialog(getResources().getString(R.string.text_dialog_general_message_update_network_task));
         } finally {
             NetworkTaskLog.clear();
         }
@@ -134,14 +134,14 @@ class NetworkTaskHandler {
             getAdapter().removeItem(new NetworkTaskUIWrapper(task, null, null));
         } catch (Exception exc) {
             Log.e(NetworkTaskHandler.class.getName(), "Error deleting network task.", exc);
-            showErrorDialog(getResources().getString(R.string.text_dialog_general_error_delete_network_task));
+            showMessageDialog(getResources().getString(R.string.text_dialog_general_message_delete_network_task));
         } finally {
             NetworkTaskLog.clear();
         }
     }
 
-    private void showErrorDialog(String errorMessage) {
-        mainActivity.showErrorDialog(errorMessage);
+    private void showMessageDialog(String errorMessage) {
+        mainActivity.showMessageDialog(errorMessage);
     }
 
     private NetworkTaskAdapter getAdapter() {

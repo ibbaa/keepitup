@@ -206,7 +206,7 @@ public class ImportTask extends UIBackgroundTask<SystemSetupResult> {
         Activity activity = getActivity();
         if (activity != null && !activity.isDestroyed()) {
             if (activity instanceof ImportSupport) {
-                String message = result.versionMismatch() ? getActivity().getResources().getString(R.string.text_dialog_general_error_config_import_version_mismatch) : null;
+                String message = result.versionMismatch() ? getActivity().getResources().getString(R.string.text_dialog_general_message_config_import_version_mismatch) : null;
                 ((ImportSupport) activity).onImportDone(result.success(), message);
             }
         }

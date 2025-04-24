@@ -1528,8 +1528,8 @@ public class GlobalSettingsActivityTest extends BaseUITest {
         onView(withId(R.id.edittext_dialog_file_choose_folder)).perform(replaceText("test"));
         onView(withId(R.id.imageview_dialog_file_choose_ok)).perform(click());
         assertEquals(1, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
-        onView(withId(R.id.textview_dialog_general_error_message)).check(matches(withText("Error creating download directory.")));
-        onView(withId(R.id.imageview_dialog_general_error_ok)).perform(click());
+        onView(withId(R.id.textview_dialog_general_message_message)).check(matches(withText("Error creating download directory.")));
+        onView(withId(R.id.imageview_dialog_general_message_ok)).perform(click());
         onView(withId(R.id.textview_activity_global_settings_download_folder)).check(matches(withText(endsWith("download"))));
         assertEquals("download", preferenceManager.getPreferenceDownloadFolder());
         activityScenario.close();
@@ -1551,8 +1551,8 @@ public class GlobalSettingsActivityTest extends BaseUITest {
         onView(withId(R.id.edittext_dialog_file_choose_folder)).perform(replaceText("test"));
         onView(withId(R.id.imageview_dialog_file_choose_ok)).perform(click());
         assertEquals(1, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
-        onView(withId(R.id.textview_dialog_general_error_message)).check(matches(withText("Error creating log directory.")));
-        onView(withId(R.id.imageview_dialog_general_error_ok)).perform(click());
+        onView(withId(R.id.textview_dialog_general_message_message)).check(matches(withText("Error creating log directory.")));
+        onView(withId(R.id.imageview_dialog_general_message_ok)).perform(click());
         onView(withId(R.id.cardview_activity_global_settings_log_folder)).perform(scrollTo());
         onView(withId(R.id.textview_activity_global_settings_log_folder)).check(matches(withText(endsWith("log"))));
         assertEquals("log", preferenceManager.getPreferenceLogFolder());
@@ -1570,8 +1570,8 @@ public class GlobalSettingsActivityTest extends BaseUITest {
         activityScenario.onActivity(activity -> ((GlobalSettingsActivity) activity).injectFileManager(mockFileManager));
         onView(withId(R.id.switch_activity_global_settings_download_external_storage)).perform(click());
         assertEquals(1, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
-        onView(withId(R.id.textview_dialog_general_error_message)).check(matches(withText("Error accessing external files directory.")));
-        onView(withId(R.id.imageview_dialog_general_error_ok)).perform(click());
+        onView(withId(R.id.textview_dialog_general_message_message)).check(matches(withText("Error accessing external files directory.")));
+        onView(withId(R.id.imageview_dialog_general_message_ok)).perform(click());
         onView(withId(R.id.textview_activity_global_settings_download_external_storage_label)).check(matches(withText("Download to an external storage folder")));
         onView(withId(R.id.switch_activity_global_settings_download_external_storage)).check(matches(isNotChecked()));
         onView(withId(R.id.textview_activity_global_settings_download_folder_label)).check(matches(withText("Download folder")));
@@ -1595,8 +1595,8 @@ public class GlobalSettingsActivityTest extends BaseUITest {
         onView(withId(R.id.switch_activity_global_settings_log_file)).perform(scrollTo());
         onView(withId(R.id.switch_activity_global_settings_log_file)).perform(click());
         assertEquals(1, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
-        onView(withId(R.id.textview_dialog_general_error_message)).check(matches(withText("Error accessing external files directory.")));
-        onView(withId(R.id.imageview_dialog_general_error_ok)).perform(click());
+        onView(withId(R.id.textview_dialog_general_message_message)).check(matches(withText("Error accessing external files directory.")));
+        onView(withId(R.id.imageview_dialog_general_message_ok)).perform(click());
         onView(withId(R.id.textview_activity_global_settings_log_file_label)).check(matches(withText("Log to file")));
         onView(withId(R.id.switch_activity_global_settings_log_file)).check(matches(isNotChecked()));
         onView(withId(R.id.textview_activity_global_settings_log_folder_label)).check(matches(withText("Log folder")));
@@ -1617,8 +1617,8 @@ public class GlobalSettingsActivityTest extends BaseUITest {
         activityScenario.onActivity(activity -> ((GlobalSettingsActivity) activity).injectFileManager(mockFileManager));
         onView(withId(R.id.cardview_activity_global_settings_download_folder)).perform(click());
         assertEquals(1, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
-        onView(withId(R.id.textview_dialog_general_error_message)).check(matches(withText("Error accessing external files directory.")));
-        onView(withId(R.id.imageview_dialog_general_error_ok)).perform(click());
+        onView(withId(R.id.textview_dialog_general_message_message)).check(matches(withText("Error accessing external files directory.")));
+        onView(withId(R.id.imageview_dialog_general_message_ok)).perform(click());
         onView(withId(R.id.textview_activity_global_settings_download_external_storage_label)).check(matches(withText("Download to an external storage folder")));
         onView(withId(R.id.switch_activity_global_settings_download_external_storage)).check(matches(isChecked()));
         onView(withId(R.id.textview_activity_global_settings_download_folder_label)).check(matches(withText("Download folder")));
@@ -1639,8 +1639,8 @@ public class GlobalSettingsActivityTest extends BaseUITest {
         onView(withId(R.id.cardview_activity_global_settings_log_folder)).perform(scrollTo());
         onView(withId(R.id.cardview_activity_global_settings_log_folder)).perform(click());
         assertEquals(1, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
-        onView(withId(R.id.textview_dialog_general_error_message)).check(matches(withText("Error accessing external files directory.")));
-        onView(withId(R.id.imageview_dialog_general_error_ok)).perform(click());
+        onView(withId(R.id.textview_dialog_general_message_message)).check(matches(withText("Error accessing external files directory.")));
+        onView(withId(R.id.imageview_dialog_general_message_ok)).perform(click());
         onView(withId(R.id.textview_activity_global_settings_log_file_label)).check(matches(withText("Log to file")));
         onView(withId(R.id.switch_activity_global_settings_log_file)).check(matches(isChecked()));
         onView(withId(R.id.textview_activity_global_settings_log_folder_label)).check(matches(withText("Log folder")));
@@ -1662,8 +1662,8 @@ public class GlobalSettingsActivityTest extends BaseUITest {
         onView(withId(R.id.edittext_dialog_file_choose_folder)).perform(replaceText("test"));
         onView(withId(R.id.imageview_dialog_file_choose_ok)).perform(click());
         assertEquals(1, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
-        onView(withId(R.id.textview_dialog_general_error_message)).check(matches(withText("Error creating download directory.")));
-        onView(withId(R.id.imageview_dialog_general_error_ok)).perform(click());
+        onView(withId(R.id.textview_dialog_general_message_message)).check(matches(withText("Error creating download directory.")));
+        onView(withId(R.id.imageview_dialog_general_message_ok)).perform(click());
         onView(withId(R.id.textview_activity_global_settings_download_folder)).check(matches(withText(endsWith("download"))));
         assertEquals("download", preferenceManager.getPreferenceDownloadFolder());
         activityScenario.close();
@@ -1685,8 +1685,8 @@ public class GlobalSettingsActivityTest extends BaseUITest {
         onView(withId(R.id.edittext_dialog_file_choose_folder)).perform(replaceText("test"));
         onView(withId(R.id.imageview_dialog_file_choose_ok)).perform(click());
         assertEquals(1, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
-        onView(withId(R.id.textview_dialog_general_error_message)).check(matches(withText("Error creating log directory.")));
-        onView(withId(R.id.imageview_dialog_general_error_ok)).perform(click());
+        onView(withId(R.id.textview_dialog_general_message_message)).check(matches(withText("Error creating log directory.")));
+        onView(withId(R.id.imageview_dialog_general_message_ok)).perform(click());
         onView(withId(R.id.cardview_activity_global_settings_log_folder)).perform(scrollTo());
         onView(withId(R.id.textview_activity_global_settings_log_folder)).check(matches(withText(endsWith("log"))));
         assertEquals("log", preferenceManager.getPreferenceLogFolder());

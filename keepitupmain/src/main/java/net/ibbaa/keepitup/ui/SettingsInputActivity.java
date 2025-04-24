@@ -39,7 +39,7 @@ import net.ibbaa.keepitup.service.TimeBasedSuspensionScheduler;
 import net.ibbaa.keepitup.ui.dialog.BatteryOptimizationDialog;
 import net.ibbaa.keepitup.ui.dialog.ConfirmDialog;
 import net.ibbaa.keepitup.ui.dialog.FileChooseDialog;
-import net.ibbaa.keepitup.ui.dialog.GeneralErrorDialog;
+import net.ibbaa.keepitup.ui.dialog.GeneralMessageDialog;
 import net.ibbaa.keepitup.ui.dialog.ProgressDialog;
 import net.ibbaa.keepitup.ui.dialog.SettingsInput;
 import net.ibbaa.keepitup.ui.dialog.SettingsInputDialog;
@@ -181,27 +181,27 @@ public abstract class SettingsInputActivity extends AppCompatActivity implements
         overridePendingTransition(0, 0);
     }
 
-    protected void showErrorDialog(String errorMessage) {
-        showErrorDialog(errorMessage, Typeface.BOLD);
+    protected void showMessageDialog(String errorMessage) {
+        showMessageDialog(errorMessage, Typeface.BOLD);
     }
 
-    protected void showErrorDialog(String errorMessage, int typeface) {
-        Log.d(SettingsInputActivity.class.getName(), "showErrorDialog with message " + errorMessage);
-        GeneralErrorDialog errorDialog = new GeneralErrorDialog();
+    protected void showMessageDialog(String errorMessage, int typeface) {
+        Log.d(SettingsInputActivity.class.getName(), "showMessageDialog with message " + errorMessage);
+        GeneralMessageDialog errorDialog = new GeneralMessageDialog();
         Bundle bundle = BundleUtil.stringToBundle(errorDialog.getMessageKey(), errorMessage);
         bundle.putInt(errorDialog.getTypefaceStyleKey(), typeface);
         errorDialog.setArguments(bundle);
-        showDialog(errorDialog, GeneralErrorDialog.class.getName());
+        showDialog(errorDialog, GeneralMessageDialog.class.getName());
     }
 
-    protected void showErrorDialog(String errorMessage, int typeface, String extraData) {
-        Log.d(SettingsInputActivity.class.getName(), "showErrorDialog with message " + errorMessage);
-        GeneralErrorDialog errorDialog = new GeneralErrorDialog();
+    protected void showMessageDialog(String errorMessage, int typeface, String extraData) {
+        Log.d(SettingsInputActivity.class.getName(), "showMessageDialog with message " + errorMessage);
+        GeneralMessageDialog errorDialog = new GeneralMessageDialog();
         Bundle bundle = BundleUtil.stringToBundle(errorDialog.getMessageKey(), errorMessage);
         bundle.putInt(errorDialog.getTypefaceStyleKey(), typeface);
         BundleUtil.stringToBundle(errorDialog.getExtraDataKey(), extraData, bundle);
         errorDialog.setArguments(bundle);
-        showDialog(errorDialog, GeneralErrorDialog.class.getName());
+        showDialog(errorDialog, GeneralMessageDialog.class.getName());
     }
 
     protected void showConfirmDialog(String confirmMessage, String description, ConfirmDialog.Type type) {
