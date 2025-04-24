@@ -30,7 +30,7 @@ import androidx.fragment.app.DialogFragment;
 
 import net.ibbaa.keepitup.R;
 import net.ibbaa.keepitup.logging.Log;
-import net.ibbaa.keepitup.ui.ErrorSupport;
+import net.ibbaa.keepitup.ui.MessageSupport;
 import net.ibbaa.keepitup.util.BundleUtil;
 
 @SuppressWarnings({"unused"})
@@ -86,25 +86,25 @@ public class GeneralMessageDialog extends DialogFragmentBase {
 
     private void onOkClicked(View view) {
         Log.d(GeneralMessageDialog.class.getName(), "onOkClicked");
-        ErrorSupport errorSupport = getErrorSupport();
-        if (errorSupport == null) {
+        MessageSupport messageSupport = getMessageSupport();
+        if (messageSupport == null) {
             dismiss();
         } else {
-            errorSupport.onErrorDialogOkClicked(this);
+            messageSupport.onMessageDialogOkClicked(this);
         }
     }
 
-    private ErrorSupport getErrorSupport() {
-        Log.d(GeneralMessageDialog.class.getName(), "getErrorSupport");
+    private MessageSupport getMessageSupport() {
+        Log.d(GeneralMessageDialog.class.getName(), "getMessageSupport");
         Activity activity = getActivity();
         if (activity == null) {
-            Log.d(GeneralMessageDialog.class.getName(), "getErrorSupport, activity is null");
+            Log.d(GeneralMessageDialog.class.getName(), "getMessageSupport, activity is null");
             return null;
         }
-        if (!(activity instanceof ErrorSupport)) {
-            Log.d(GeneralMessageDialog.class.getName(), "getErrorSupport, activity is not an instance of " + ErrorSupport.class.getSimpleName());
+        if (!(activity instanceof MessageSupport)) {
+            Log.d(GeneralMessageDialog.class.getName(), "getMessageSupport, activity is not an instance of " + MessageSupport.class.getSimpleName());
             return null;
         }
-        return (ErrorSupport) activity;
+        return (MessageSupport) activity;
     }
 }

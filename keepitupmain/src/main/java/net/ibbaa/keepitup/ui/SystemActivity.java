@@ -74,7 +74,7 @@ import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
 @SuppressWarnings({"unused", "FieldCanBeLocal"})
-public class SystemActivity extends SettingsInputActivity implements ExportSupport, ImportSupport, DBPurgeSupport, ErrorSupport {
+public class SystemActivity extends SettingsInputActivity implements ExportSupport, ImportSupport, DBPurgeSupport, MessageSupport {
 
     private enum Error {
         IMPORTERROR,
@@ -850,7 +850,7 @@ public class SystemActivity extends SettingsInputActivity implements ExportSuppo
     }
 
     @Override
-    public void onErrorDialogOkClicked(GeneralMessageDialog errorDialog) {
+    public void onMessageDialogOkClicked(GeneralMessageDialog errorDialog) {
         Log.d(SystemActivity.class.getName(), "onErrorDialogOkClicked");
         String extraData = errorDialog.getExtraData();
         Log.d(SystemActivity.class.getName(), "onErrorDialogOkClicked, extraData is " + extraData);
