@@ -394,6 +394,7 @@ public class ExportTaskTest extends BaseUITest {
         task.setRunning(true);
         task.setLastScheduled(0);
         task.setFailureCount(1);
+        task.setHighPrio(true);
         return task;
     }
 
@@ -412,6 +413,7 @@ public class ExportTaskTest extends BaseUITest {
         task.setRunning(false);
         task.setLastScheduled(0);
         task.setFailureCount(2);
+        task.setHighPrio(false);
         return task;
     }
 
@@ -430,6 +432,7 @@ public class ExportTaskTest extends BaseUITest {
         task.setRunning(false);
         task.setLastScheduled(0);
         task.setFailureCount(3);
+        task.setHighPrio(false);
         return task;
     }
 

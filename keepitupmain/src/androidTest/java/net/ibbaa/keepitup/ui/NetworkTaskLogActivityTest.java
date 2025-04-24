@@ -163,6 +163,7 @@ public class NetworkTaskLogActivityTest extends BaseUITest {
         networkTask.setRunning(false);
         networkTask.setLastScheduled(1);
         networkTask.setFailureCount(2);
+        networkTask.setHighPrio(true);
         return networkTask;
     }
 

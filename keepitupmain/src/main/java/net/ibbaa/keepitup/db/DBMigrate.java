@@ -41,6 +41,8 @@ public class DBMigrate {
         versionDowngrades.put(3, this::version3DowngradeTo2);
         versionUpgrades.put(4, this::version4UpgradeFrom3);
         versionDowngrades.put(4, this::version4DowngradeTo3);
+        versionUpgrades.put(5, this::version5UpgradeFrom4);
+        versionDowngrades.put(5, this::version5DowngradeTo4);
     }
 
     public void doUpgrade(Context context, int oldVersion, int newVersion) {
@@ -127,6 +129,24 @@ public class DBMigrate {
             setup.dropStopOnSuccessColumnFromAccessTypeDataTable(db);
         } catch (Exception exc) {
             Log.e(DBMigrate.class.getName(), "version4DowngradeTo3 failed ", exc);
+        }
+    }
+
+    private void version5UpgradeFrom4(SQLiteDatabase db) {
+        Log.d(DBMigrate.class.getName(), "version5UpgradeFrom4");
+        try {
+            setup.addHighPrioColumnToNetworkTaskTable(db);
+        } catch (Exception exc) {
+            Log.e(DBMigrate.class.getName(), "version5UpgradeFrom4 failed ", exc);
+        }
+    }
+
+    private void version5DowngradeTo4(SQLiteDatabase db) {
+        Log.d(DBMigrate.class.getName(), "version5DowngradeTo4");
+        try {
+            setup.dropHighPrioColumnFromNetworkTaskTable(db);
+        } catch (Exception exc) {
+            Log.e(DBMigrate.class.getName(), "version5DowngradeTo4 failed ", exc);
         }
     }
 

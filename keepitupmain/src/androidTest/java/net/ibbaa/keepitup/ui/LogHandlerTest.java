@@ -89,6 +89,7 @@ public class LogHandlerTest extends BaseUITest {
         networkTask.setRunning(false);
         networkTask.setLastScheduled(1);
         networkTask.setFailureCount(1);
+        networkTask.setHighPrio(true);
         return networkTask;
     }
 

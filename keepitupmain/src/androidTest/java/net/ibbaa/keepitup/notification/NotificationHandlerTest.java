@@ -240,6 +240,7 @@ public class NotificationHandlerTest {
         task.setRunning(false);
         task.setLastScheduled(1);
         task.setFailureCount(1);
+        task.setHighPrio(true);
         return task;
     }
 
@@ -257,6 +258,7 @@ public class NotificationHandlerTest {
         task.setRunning(false);
         task.setLastScheduled(1);
         task.setFailureCount(2);
+        task.setHighPrio(true);
         return task;
     }
 
@@ -270,10 +272,12 @@ public class NotificationHandlerTest {
         task.setPort(456);
         task.setAccessType(AccessType.DOWNLOAD);
         task.setInterval(20);
+        task.setOnlyWifi(false);
         task.setNotification(true);
         task.setRunning(false);
         task.setLastScheduled(1);
         task.setFailureCount(3);
+        task.setHighPrio(true);
         return task;
     }
 

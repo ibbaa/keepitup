@@ -1110,6 +1110,7 @@ public class NetworkTaskWorkerTest {
         task.setRunning(true);
         task.setLastScheduled(1);
         task.setFailureCount(0);
+        task.setHighPrio(true);
         return task;
     }
 

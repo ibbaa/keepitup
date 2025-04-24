@@ -129,6 +129,7 @@ public class SchedulerIdGeneratorTest {
         task.setRunning(true);
         task.setLastScheduled(1);
         task.setFailureCount(1);
+        task.setHighPrio(true);
         return task;
     }
 }

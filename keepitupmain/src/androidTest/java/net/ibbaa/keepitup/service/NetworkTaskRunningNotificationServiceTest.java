@@ -126,10 +126,12 @@ public class NetworkTaskRunningNotificationServiceTest {
         task.setPort(80);
         task.setAccessType(AccessType.PING);
         task.setInterval(20);
+        task.setOnlyWifi(false);
         task.setNotification(true);
         task.setRunning(true);
         task.setLastScheduled(1);
         task.setFailureCount(1);
+        task.setHighPrio(true);
         return task;
     }
 }

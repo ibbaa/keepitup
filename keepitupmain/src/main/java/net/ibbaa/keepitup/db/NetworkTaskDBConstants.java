@@ -36,6 +36,7 @@ class NetworkTaskDBConstants {
     private final String runningColumnName;
     private final String lastScheduledColumnName;
     private final String failureCountColumnName;
+    private final String highPrioColumnName;
 
     public NetworkTaskDBConstants(Context context) {
         tableName = context.getResources().getString(R.string.task_table_name);
@@ -52,6 +53,7 @@ class NetworkTaskDBConstants {
         runningColumnName = context.getResources().getString(R.string.task_running_column_name);
         lastScheduledColumnName = context.getResources().getString(R.string.task_lastscheduled_column_name);
         failureCountColumnName = context.getResources().getString(R.string.task_failurecount_column_name);
+        highPrioColumnName = context.getResources().getString(R.string.task_highprio_column_name);
     }
 
     public String getTableName() {
@@ -110,7 +112,46 @@ class NetworkTaskDBConstants {
         return failureCountColumnName;
     }
 
+    public String getHighPrioColumnName() {
+        return highPrioColumnName;
+    }
+
     public String getCreateTableStatement() {
+        return ("CREATE TABLE IF NOT EXISTS " + getTableName() + "(") +
+                getIdColumnName() + " INTEGER PRIMARY KEY ASC, " +
+                getIndexColumnName() + " INTEGER NOT NULL, " +
+                getSchedulerIdColumnName() + " INTEGER, " +
+                getInstancesColumnName() + " INTEGER, " +
+                getAddressColumnName() + " TEXT, " +
+                getPortColumnName() + " INTEGER, " +
+                getAccessTypeColumnName() + " INTEGER, " +
+                getIntervalColumnName() + " INTEGER, " +
+                getOnlyWifiColumnName() + " TEXT, " +
+                getNotificationColumnName() + " INTEGER, " +
+                getRunningColumnName() + " INTEGER, " +
+                getLastScheduledColumnName() + " INTEGER, " +
+                getFailureCountColumnName() + " INTEGER, " +
+                getHighPrioColumnName() + " INTEGER);";
+    }
+
+    public String getCreateTableStatementWithoutFailureCount() {
+        return ("CREATE TABLE IF NOT EXISTS " + getTableName() + "(") +
+                getIdColumnName() + " INTEGER PRIMARY KEY ASC, " +
+                getIndexColumnName() + " INTEGER NOT NULL, " +
+                getSchedulerIdColumnName() + " INTEGER, " +
+                getInstancesColumnName() + " INTEGER, " +
+                getAddressColumnName() + " TEXT, " +
+                getPortColumnName() + " INTEGER, " +
+                getAccessTypeColumnName() + " INTEGER, " +
+                getIntervalColumnName() + " INTEGER, " +
+                getOnlyWifiColumnName() + " TEXT, " +
+                getNotificationColumnName() + " INTEGER, " +
+                getRunningColumnName() + " INTEGER, " +
+                getLastScheduledColumnName() + " INTEGER, " +
+                getHighPrioColumnName() + " INTEGER);";
+    }
+
+    public String getCreateTableStatementWithoutHighPrio() {
         return ("CREATE TABLE IF NOT EXISTS " + getTableName() + "(") +
                 getIdColumnName() + " INTEGER PRIMARY KEY ASC, " +
                 getIndexColumnName() + " INTEGER NOT NULL, " +
@@ -127,22 +168,6 @@ class NetworkTaskDBConstants {
                 getFailureCountColumnName() + " INTEGER);";
     }
 
-    public String getCreateTableStatementWithoutFailureCount() {
-        return ("CREATE TABLE IF NOT EXISTS " + getTableName() + "(") +
-                getIdColumnName() + " INTEGER PRIMARY KEY ASC, " +
-                getIndexColumnName() + " INTEGER NOT NULL, " +
-                getSchedulerIdColumnName() + " INTEGER, " +
-                getInstancesColumnName() + " INTEGER, " +
-                getAddressColumnName() + " TEXT, " +
-                getPortColumnName() + " INTEGER, " +
-                getAccessTypeColumnName() + " INTEGER, " +
-                getIntervalColumnName() + " INTEGER, " +
-                getOnlyWifiColumnName() + " TEXT, " +
-                getNotificationColumnName() + " INTEGER, " +
-                getRunningColumnName() + " INTEGER, " +
-                getLastScheduledColumnName() + " INTEGER);";
-    }
-
     public String getDropTableStatement() {
         return "DROP TABLE IF EXISTS " + getTableName();
     }
@@ -153,6 +178,14 @@ class NetworkTaskDBConstants {
 
     public String getDropFailureCountColumnStatement() {
         return "ALTER TABLE " + getTableName() + " DROP COLUMN " + getFailureCountColumnName() + ";";
+    }
+
+    public String getAddHighPrioColumnStatement() {
+        return "ALTER TABLE " + getTableName() + " ADD COLUMN " + getHighPrioColumnName() + " INTEGER;";
+    }
+
+    public String getDropHighPrioColumnStatement() {
+        return "ALTER TABLE " + getTableName() + " DROP COLUMN " + getHighPrioColumnName() + ";";
     }
 
     public String getReadNetworkTaskStatement() {
@@ -169,7 +202,8 @@ class NetworkTaskDBConstants {
                 getNotificationColumnName() + ", " +
                 getRunningColumnName() + ", " +
                 getLastScheduledColumnName() + ", " +
-                getFailureCountColumnName() +
+                getFailureCountColumnName() + ", " +
+                getHighPrioColumnName() +
                 " FROM " + getTableName() +
                 "  WHERE " + getIdColumnName() + " = ?;";
     }
@@ -189,7 +223,8 @@ class NetworkTaskDBConstants {
                 getNotificationColumnName() + ", " +
                 getRunningColumnName() + ", " +
                 getLastScheduledColumnName() + ", " +
-                getFailureCountColumnName() +
+                getFailureCountColumnName() + ", " +
+                getHighPrioColumnName() +
                 " FROM " + getTableName() +
                 " ORDER BY " + getIndexColumnName() + " ASC";
     }

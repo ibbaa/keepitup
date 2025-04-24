@@ -73,6 +73,11 @@ public class DBSetup {
         db.execSQL(networkTaskDBConstants.getAddFailureCountColumnStatement());
     }
 
+    public void addHighPrioColumnToNetworkTaskTable(SQLiteDatabase db) {
+        Log.d(DBSetup.class.getName(), "Adding column " + networkTaskDBConstants.getHighPrioColumnName() + " to table " + networkTaskDBConstants.getTableName());
+        db.execSQL(networkTaskDBConstants.getAddHighPrioColumnStatement());
+    }
+
     public void initializeFailureCountColumn(SQLiteDatabase db) {
         Log.d(DBSetup.class.getName(), "Setting " + networkTaskDBConstants.getFailureCountColumnName() + " to 0 in " + networkTaskDBConstants.getTableName());
         NetworkTaskDBConstants dbConstants = new NetworkTaskDBConstants(getContext());
@@ -146,6 +151,11 @@ public class DBSetup {
     public void dropFailureCountColumnFromNetworkTaskTable(SQLiteDatabase db) {
         Log.d(DBSetup.class.getName(), "Dropping column " + networkTaskDBConstants.getFailureCountColumnName() + " from table " + networkTaskDBConstants.getTableName());
         db.execSQL(networkTaskDBConstants.getDropFailureCountColumnStatement());
+    }
+
+    public void dropHighPrioColumnFromNetworkTaskTable(SQLiteDatabase db) {
+        Log.d(DBSetup.class.getName(), "Dropping column " + networkTaskDBConstants.getHighPrioColumnName() + " from table " + networkTaskDBConstants.getTableName());
+        db.execSQL(networkTaskDBConstants.getDropHighPrioColumnStatement());
     }
 
     public void dropLogTable(SQLiteDatabase db) {
@@ -232,6 +242,10 @@ public class DBSetup {
         addFailureCountColumnToNetworkTaskTable(DBOpenHelper.getInstance(getContext()).getWritableDatabase());
     }
 
+    public void addHighPrioColumnToNetworkTaskTable() {
+        addHighPrioColumnToNetworkTaskTable(DBOpenHelper.getInstance(getContext()).getWritableDatabase());
+    }
+
     public void initializeFailureCountColumn() {
         initializeFailureCountColumn(DBOpenHelper.getInstance(getContext()).getWritableDatabase());
     }
@@ -271,6 +285,11 @@ public class DBSetup {
     @SuppressWarnings({"unused"})
     public void dropFailureCountColumnFromNetworkTaskTable() {
         dropFailureCountColumnFromNetworkTaskTable(DBOpenHelper.getInstance(getContext()).getWritableDatabase());
+    }
+
+    @SuppressWarnings({"unused"})
+    public void dropHighPrioColumnFromNetworkTaskTable() {
+        dropHighPrioColumnFromNetworkTaskTable(DBOpenHelper.getInstance(getContext()).getWritableDatabase());
     }
 
     public void dropLogTable() {

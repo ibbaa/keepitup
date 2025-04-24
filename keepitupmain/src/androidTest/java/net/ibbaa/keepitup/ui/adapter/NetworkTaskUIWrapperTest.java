@@ -83,6 +83,7 @@ public class NetworkTaskUIWrapperTest {
         task.setRunning(true);
         task.setLastScheduled(0);
         task.setFailureCount(2);
+        task.setHighPrio(true);
         return task;
     }
 

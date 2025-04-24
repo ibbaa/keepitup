@@ -598,6 +598,7 @@ public class NetworkTaskProcessServiceSchedulerTest {
         task.setRunning(false);
         task.setLastScheduled(1);
         task.setFailureCount(1);
+        task.setHighPrio(true);
         return task;
     }
 
@@ -611,10 +612,12 @@ public class NetworkTaskProcessServiceSchedulerTest {
         task.setPort(21);
         task.setAccessType(null);
         task.setInterval(1);
+        task.setOnlyWifi(false);
         task.setNotification(false);
         task.setRunning(false);
         task.setLastScheduled(1);
         task.setFailureCount(2);
+        task.setHighPrio(false);
         return task;
     }
 

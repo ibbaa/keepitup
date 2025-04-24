@@ -183,6 +183,38 @@ public class DBMigrateTest {
         assertTrue(data.isTechnicallyEqual(data1));
     }
 
+    @Test
+    public void testUpgradeFrom4To5HighPrioSuccessColumn() {
+        setup.createTables();
+        setup.dropNetworkTaskTable();
+        NetworkTaskDBConstants dbConstants = new NetworkTaskDBConstants(TestRegistry.getContext());
+        DBOpenHelper.getInstance(TestRegistry.getContext()).getWritableDatabase().execSQL(dbConstants.getCreateTableStatementWithoutHighPrio());
+        migrate.doUpgrade(TestRegistry.getContext(), 4, 5);
+        networkTaskDAO.insertNetworkTask(new NetworkTask());
+        assertEquals(1, networkTaskDAO.readAllNetworkTasks().size());
+    }
+
+    @Test
+    public void testUpgradeFrom0To5() {
+        setup.createTables();
+        setup.dropIntervalTable();
+        setup.dropAccessTypeDataTable();
+        setup.dropNetworkTaskTable();
+        NetworkTaskDBConstants dbConstants = new NetworkTaskDBConstants(TestRegistry.getContext());
+        DBOpenHelper.getInstance(TestRegistry.getContext()).getWritableDatabase().execSQL(dbConstants.getCreateTableStatementWithoutHighPrio());
+        NetworkTask task1 = networkTaskDAO.insertNetworkTask(getNetworkTask1());
+        migrate.doUpgrade(TestRegistry.getContext(), 0, 5);
+        AccessTypeData data = new AccessTypeData();
+        data.setNetworkTaskId(task1.getId());
+        accessTypeDataDAO.insertAccessTypeData(data);
+        intervalDAO.insertInterval(new Interval());
+        List<Interval> intervals = intervalDAO.readAllIntervals();
+        assertEquals(1, intervals.size());
+        assertNotNull(schedulerStateDAO.readSchedulerState());
+        AccessTypeData data1 = accessTypeDataDAO.readAccessTypeDataForNetworkTask(task1.getId());
+        assertTrue(data.isTechnicallyEqual(data1));
+    }
+
     private NetworkTask getNetworkTask1() {
         NetworkTask task = new NetworkTask();
         task.setId(0);
@@ -198,6 +230,7 @@ public class DBMigrateTest {
         task.setRunning(true);
         task.setLastScheduled(0);
         task.setFailureCount(2);
+        task.setHighPrio(true);
         return task;
     }
 
@@ -216,6 +249,7 @@ public class DBMigrateTest {
         task.setRunning(false);
         task.setLastScheduled(0);
         task.setFailureCount(1);
+        task.setHighPrio(false);
         return task;
     }
 
@@ -234,6 +268,7 @@ public class DBMigrateTest {
         task.setRunning(false);
         task.setLastScheduled(0);
         task.setFailureCount(0);
+        task.setHighPrio(false);
         return task;
     }
 }

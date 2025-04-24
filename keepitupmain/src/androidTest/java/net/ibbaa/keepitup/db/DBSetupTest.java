@@ -152,6 +152,16 @@ public class DBSetupTest {
     }
 
     @Test
+    public void testAddHighPrioColumn() {
+        setup.dropNetworkTaskTable();
+        NetworkTaskDBConstants dbConstants = new NetworkTaskDBConstants(TestRegistry.getContext());
+        DBOpenHelper.getInstance(TestRegistry.getContext()).getWritableDatabase().execSQL(dbConstants.getCreateTableStatementWithoutHighPrio());
+        setup.addHighPrioColumnToNetworkTaskTable();
+        networkTaskDAO.insertNetworkTask(new NetworkTask());
+        assertEquals(1, networkTaskDAO.readAllNetworkTasks().size());
+    }
+
+    @Test
     public void testInitializeFailureCountColumn() {
         NetworkTask task1 = new NetworkTask();
         NetworkTask task2 = new NetworkTask();
@@ -691,6 +701,7 @@ public class DBSetupTest {
         task.setRunning(true);
         task.setLastScheduled(0);
         task.setFailureCount(2);
+        task.setHighPrio(true);
         return task;
     }
 
@@ -709,6 +720,7 @@ public class DBSetupTest {
         task.setRunning(false);
         task.setLastScheduled(0);
         task.setFailureCount(2);
+        task.setHighPrio(false);
         return task;
     }
 
@@ -727,6 +739,7 @@ public class DBSetupTest {
         task.setRunning(false);
         task.setLastScheduled(0);
         task.setFailureCount(1);
+        task.setHighPrio(false);
         return task;
     }
 

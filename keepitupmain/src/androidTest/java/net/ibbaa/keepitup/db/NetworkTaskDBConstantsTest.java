@@ -48,6 +48,7 @@ public class NetworkTaskDBConstantsTest {
         assertEquals(getResourceString(R.string.task_running_column_name), dbConstants.getRunningColumnName());
         assertEquals(getResourceString(R.string.task_lastscheduled_column_name), dbConstants.getLastScheduledColumnName());
         assertEquals(getResourceString(R.string.task_failurecount_column_name), dbConstants.getFailureCountColumnName());
+        assertEquals(getResourceString(R.string.task_highprio_column_name), dbConstants.getHighPrioColumnName());
     }
 
     private String getResourceString(int id) {

@@ -231,6 +231,7 @@ public class NetworkTaskDAO extends BaseDAO {
         values.put(dbConstants.getRunningColumnName(), networkTask.isRunning() ? 1 : 0);
         values.put(dbConstants.getLastScheduledColumnName(), networkTask.getLastScheduled());
         values.put(dbConstants.getFailureCountColumnName(), networkTask.getFailureCount());
+        values.put(dbConstants.getHighPrioColumnName(), networkTask.isHighPrio() ? 1 : 0);
         Log.d(NetworkTaskDAO.class.getName(), "Inserting...");
         long rowid = db.insert(dbConstants.getTableName(), null, values);
         if (rowid < 0) {
@@ -448,6 +449,7 @@ public class NetworkTaskDAO extends BaseDAO {
         values.put(dbConstants.getAccessTypeColumnName(), networkTask.getAccessType() == null ? null : networkTask.getAccessType().getCode());
         values.put(dbConstants.getIntervalColumnName(), networkTask.getInterval());
         values.put(dbConstants.getLastScheduledColumnName(), networkTask.getLastScheduled());
+        values.put(dbConstants.getHighPrioColumnName(), networkTask.isHighPrio() ? 1 : 0);
         Log.d(NetworkTaskDAO.class.getName(), "Updating...");
         db.update(dbConstants.getTableName(), values, selection, selectionArgs);
         return networkTask;
@@ -574,6 +576,7 @@ public class NetworkTaskDAO extends BaseDAO {
         int indexRunningColumn = cursor.getColumnIndex(dbConstants.getRunningColumnName());
         int indexLastScheduledColumn = cursor.getColumnIndex(dbConstants.getLastScheduledColumnName());
         int indexFailureCountColumn = cursor.getColumnIndex(dbConstants.getFailureCountColumnName());
+        int indexHighPrioColumn = cursor.getColumnIndex(dbConstants.getHighPrioColumnName());
         networkTask.setId(cursor.getInt(indexIdColumn));
         networkTask.setIndex(cursor.getInt(indexIndexColumn));
         networkTask.setSchedulerId(cursor.getInt(indexSchedulerIdColumn));
@@ -591,6 +594,7 @@ public class NetworkTaskDAO extends BaseDAO {
         networkTask.setRunning(cursor.getInt(indexRunningColumn) >= 1);
         networkTask.setLastScheduled(cursor.getLong(indexLastScheduledColumn));
         networkTask.setFailureCount(cursor.getInt(indexFailureCountColumn));
+        networkTask.setHighPrio(cursor.getInt(indexHighPrioColumn) >= 1);
         return networkTask;
     }
 }

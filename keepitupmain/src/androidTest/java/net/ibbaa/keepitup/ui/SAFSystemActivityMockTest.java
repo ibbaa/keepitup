@@ -370,9 +370,13 @@ public class SAFSystemActivityMockTest extends BaseUITest {
         getPreferenceManager().setPreferenceInterval(456);
         getPreferenceManager().setPreferenceOnlyWifi(true);
         getPreferenceManager().setPreferenceNotification(true);
+        getPreferenceManager().setPreferenceHighPrio(true);
         getPreferenceManager().setPreferenceImportFolder("folderImport");
         getPreferenceManager().setPreferenceExportFolder("folderExport");
         getPreferenceManager().setPreferenceLastArbitraryExportFile("arbitraryFolderExport");
+        getPreferenceManager().setPreferenceAlarmOnHighPrio(true);
+        getPreferenceManager().setPreferenceAskedNotificationPermission(true);
+        getPreferenceManager().setPreferenceAlarmInfoShown(true);
         getPreferenceManager().setPreferenceFileLoggerEnabled(true);
         getPreferenceManager().setPreferenceFileDumpEnabled(true);
         onView(withId(R.id.switch_activity_system_allow_arbitrary_file_location)).perform(scrollTo());
@@ -423,9 +427,13 @@ public class SAFSystemActivityMockTest extends BaseUITest {
         assertEquals(456, getPreferenceManager().getPreferenceInterval());
         assertTrue(getPreferenceManager().getPreferenceOnlyWifi());
         assertTrue(getPreferenceManager().getPreferenceNotification());
+        assertTrue(getPreferenceManager().getPreferenceHighPrio());
         assertEquals("folderImport", getPreferenceManager().getPreferenceImportFolder());
         assertEquals("folderExport", getPreferenceManager().getPreferenceExportFolder());
         assertEquals("/Test/test.json", getPreferenceManager().getPreferenceLastArbitraryExportFile());
+        assertTrue(getPreferenceManager().getPreferenceAlarmOnHighPrio());
+        assertTrue(getPreferenceManager().getPreferenceAskedNotificationPermission());
+        assertTrue(getPreferenceManager().getPreferenceAlarmInfoShown());
         assertTrue(getPreferenceManager().getPreferenceFileLoggerEnabled());
         assertTrue(getPreferenceManager().getPreferenceFileDumpEnabled());
     }
@@ -456,9 +464,13 @@ public class SAFSystemActivityMockTest extends BaseUITest {
         getPreferenceManager().setPreferenceStopOnSuccess(true);
         getPreferenceManager().setPreferenceOnlyWifi(true);
         getPreferenceManager().setPreferenceNotification(true);
+        getPreferenceManager().setPreferenceHighPrio(true);
         getPreferenceManager().setPreferenceImportFolder("folderImport");
         getPreferenceManager().setPreferenceExportFolder("folderExport");
         getPreferenceManager().setPreferenceLastArbitraryExportFile("fileExport");
+        getPreferenceManager().setPreferenceAlarmOnHighPrio(true);
+        getPreferenceManager().setPreferenceAskedNotificationPermission(true);
+        getPreferenceManager().setPreferenceAlarmInfoShown(true);
         getPreferenceManager().setPreferenceFileLoggerEnabled(true);
         getPreferenceManager().setPreferenceFileDumpEnabled(true);
         JSONSystemSetup setup = new JSONSystemSetup(TestRegistry.getContext());
@@ -525,6 +537,9 @@ public class SAFSystemActivityMockTest extends BaseUITest {
         assertEquals("folderImport", getPreferenceManager().getPreferenceImportFolder());
         assertEquals("folderExport", getPreferenceManager().getPreferenceExportFolder());
         assertEquals("fileExport", getPreferenceManager().getPreferenceLastArbitraryExportFile());
+        assertTrue(getPreferenceManager().getPreferenceAlarmOnHighPrio());
+        assertTrue(getPreferenceManager().getPreferenceAskedNotificationPermission());
+        assertTrue(getPreferenceManager().getPreferenceAlarmInfoShown());
         assertTrue(getPreferenceManager().getPreferenceFileLoggerEnabled());
         assertTrue(getPreferenceManager().getPreferenceFileDumpEnabled());
     }
@@ -544,6 +559,7 @@ public class SAFSystemActivityMockTest extends BaseUITest {
         task.setRunning(true);
         task.setLastScheduled(0);
         task.setFailureCount(1);
+        task.setHighPrio(true);
         return task;
     }
 

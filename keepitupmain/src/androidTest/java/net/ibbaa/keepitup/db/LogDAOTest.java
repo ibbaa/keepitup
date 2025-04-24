@@ -268,6 +268,7 @@ public class LogDAOTest {
         task.setRunning(true);
         task.setLastScheduled(1);
         task.setFailureCount(2);
+        task.setHighPrio(true);
         return task;
     }
 

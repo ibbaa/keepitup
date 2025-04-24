@@ -184,6 +184,7 @@ public class NetworkTaskDAOTest {
         assertEquals(insertedTask1.isNotification(), readTask1.isNotification());
         assertEquals(insertedTask1.getSchedulerId(), readTask1.getSchedulerId());
         assertEquals(insertedTask1.getInstances(), readTask1.getInstances());
+        assertEquals(insertedTask1.isHighPrio(), readTask1.isHighPrio());
         assertFalse(readTask1.isRunning());
         assertEquals(-1, readTask1.getLastScheduled());
         assertEquals(1, readTask1.getFailureCount());
@@ -207,6 +208,7 @@ public class NetworkTaskDAOTest {
         assertEquals(insertedTask1.isNotification(), readTask1.isNotification());
         assertEquals(insertedTask1.getSchedulerId(), readTask1.getSchedulerId());
         assertEquals(insertedTask1.getInstances(), readTask1.getInstances());
+        assertEquals(insertedTask1.isHighPrio(), readTask1.isHighPrio());
         assertTrue(readTask1.isRunning());
         assertEquals(-1, readTask1.getLastScheduled());
         assertEquals(0, readTask1.getFailureCount());
@@ -242,6 +244,7 @@ public class NetworkTaskDAOTest {
         assertEquals(task2.getInterval(), readTask1.getInterval());
         assertEquals(task2.isOnlyWifi(), readTask1.isOnlyWifi());
         assertEquals(task2.isNotification(), readTask1.isNotification());
+        assertEquals(task2.isHighPrio(), readTask1.isHighPrio());
         assertEquals(insertedTask1.getIndex(), readTask1.getIndex());
         assertEquals(insertedTask1.isRunning(), readTask1.isRunning());
         assertEquals(-1, readTask1.getLastScheduled());
@@ -440,6 +443,7 @@ public class NetworkTaskDAOTest {
         task.setRunning(true);
         task.setLastScheduled(0);
         task.setFailureCount(2);
+        task.setHighPrio(true);
         return task;
     }
 
@@ -458,6 +462,7 @@ public class NetworkTaskDAOTest {
         task.setRunning(false);
         task.setLastScheduled(0);
         task.setFailureCount(1);
+        task.setHighPrio(false);
         return task;
     }
 
@@ -476,6 +481,7 @@ public class NetworkTaskDAOTest {
         task.setRunning(false);
         task.setLastScheduled(0);
         task.setFailureCount(0);
+        task.setHighPrio(false);
         return task;
     }
 }
