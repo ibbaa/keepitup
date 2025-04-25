@@ -86,6 +86,8 @@ public class SystemActivity extends SettingsInputActivity implements ExportSuppo
     private RadioGroup externalStorageType;
     private SwitchMaterial arbitraryFileLocationSwitch;
     private TextView arbitraryFileLocationOnOffText;
+    private SwitchMaterial alarmOnHighPrioSwitch;
+    private TextView alarmOnHighPrioOnOffText;
     private SwitchMaterial fileLoggerEnabledSwitch;
     private TextView fileLoggerEnabledOnOffText;
     private SwitchMaterial fileDumpEnabledSwitch;
@@ -154,6 +156,7 @@ public class SystemActivity extends SettingsInputActivity implements ExportSuppo
         prepareArbitraryFolderLauncher();
         prepareAllowArbitraryFileLocationSwitch();
         prepareArbitraryFolderPermissions();
+        prepareAlarmOnHighPrioSwitch();
         prepareDebugSettingsLabel();
         prepareFileLoggerEnabledSwitch();
         prepareFileDumpEnabledSwitch();
@@ -452,6 +455,34 @@ public class SystemActivity extends SettingsInputActivity implements ExportSuppo
         IStoragePermissionManager storagePermissionManager = getStoragePermissionManager();
         storagePermissionManager.revokeOrphanPersistentPermissions(this, preferenceManager.getArbitraryFolders());
         NetworkTaskLog.clear();
+    }
+
+    private void prepareAlarmOnHighPrioSwitch() {
+        Log.d(SystemActivity.class.getName(), "prepareAlarmOnHighPrioSwitch");
+        PreferenceManager preferenceManager = new PreferenceManager(this);
+        alarmOnHighPrioSwitch = findViewById(R.id.switch_activity_system_alarm_on_high_prio);
+        alarmOnHighPrioOnOffText = findViewById(R.id.textview_activity_system_alarm_on_high_prio_on_off);
+        alarmOnHighPrioSwitch.setOnCheckedChangeListener(null);
+        alarmOnHighPrioSwitch.setChecked(preferenceManager.getPreferenceAlarmOnHighPrio());
+        alarmOnHighPrioSwitch.setOnCheckedChangeListener(this::onAlarmOnHighPrioCheckedChanged);
+        prepareAlarmOnHighPrioOnOffText();
+
+    }
+
+    private void prepareAlarmOnHighPrioOnOffText() {
+        alarmOnHighPrioOnOffText.setText(alarmOnHighPrioSwitch.isChecked() ? getResources().getString(R.string.string_yes) : getResources().getString(R.string.string_no));
+    }
+
+    private void onAlarmOnHighPrioCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+        Log.d(SystemActivity.class.getName(), "onAlarmOnHighPrioCheckedChanged, new value is " + isChecked);
+        PreferenceManager preferenceManager = new PreferenceManager(this);
+        if (isChecked && !preferenceManager.getPreferenceAlarmInfoShown()) {
+            int alarmDuration = getResources().getInteger(R.integer.task_alarm_duration);
+            showMessageDialog(getResources().getString(R.string.text_dialog_general_message_alarm_on_high_prio_notice, alarmDuration), Typeface.NORMAL);
+            preferenceManager.setPreferenceAlarmInfoShown(true);
+        }
+        preferenceManager.setPreferenceAlarmOnHighPrio(isChecked);
+        prepareAlarmOnHighPrioOnOffText();
     }
 
     private void prepareDebugSettingsLabel() {

@@ -242,6 +242,7 @@ public class SystemActivityTest extends BaseUITest {
         getPreferenceManager().setPreferenceAlarmInfoShown(true);
         onView(withId(R.id.radiobutton_activity_system_external_storage_type_sdcard)).perform(click());
         onView(withId(R.id.radiobutton_activity_system_theme_light)).perform(click());
+        onView(withId(R.id.switch_activity_system_alarm_on_high_prio)).perform(click());
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(scrollTo());
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(click());
         onView(withId(R.id.switch_activity_system_file_dump_enabled)).perform(scrollTo());
@@ -593,6 +594,7 @@ public class SystemActivityTest extends BaseUITest {
         getPreferenceManager().setPreferenceAlarmInfoShown(true);
         onView(withId(R.id.radiobutton_activity_system_external_storage_type_sdcard)).perform(click());
         onView(withId(R.id.radiobutton_activity_system_theme_light)).perform(click());
+        onView(withId(R.id.switch_activity_system_alarm_on_high_prio)).perform(click());
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(scrollTo());
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(click());
         onView(withId(R.id.switch_activity_system_file_dump_enabled)).perform(scrollTo());
@@ -767,6 +769,7 @@ public class SystemActivityTest extends BaseUITest {
         getPreferenceManager().setPreferenceAlarmOnHighPrio(true);
         getPreferenceManager().setPreferenceAskedNotificationPermission(true);
         getPreferenceManager().setPreferenceAlarmInfoShown(true);
+        onView(withId(R.id.switch_activity_system_alarm_on_high_prio)).perform(click());
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(scrollTo());
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(click());
         onView(withId(R.id.switch_activity_system_file_dump_enabled)).perform(scrollTo());
@@ -1053,6 +1056,7 @@ public class SystemActivityTest extends BaseUITest {
         getPreferenceManager().setPreferenceAlarmOnHighPrio(true);
         getPreferenceManager().setPreferenceAskedNotificationPermission(true);
         getPreferenceManager().setPreferenceAlarmInfoShown(true);
+        onView(withId(R.id.switch_activity_system_alarm_on_high_prio)).perform(click());
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(scrollTo());
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(click());
         onView(withId(R.id.switch_activity_system_file_dump_enabled)).perform(scrollTo());
@@ -1346,6 +1350,7 @@ public class SystemActivityTest extends BaseUITest {
         getPreferenceManager().setPreferenceAlarmOnHighPrio(true);
         getPreferenceManager().setPreferenceAskedNotificationPermission(true);
         getPreferenceManager().setPreferenceAlarmInfoShown(true);
+        onView(withId(R.id.switch_activity_system_alarm_on_high_prio)).perform(click());
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(scrollTo());
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(click());
         onView(withId(R.id.switch_activity_system_file_dump_enabled)).perform(scrollTo());
@@ -1647,6 +1652,7 @@ public class SystemActivityTest extends BaseUITest {
         getPreferenceManager().setPreferenceAlarmOnHighPrio(true);
         getPreferenceManager().setPreferenceAskedNotificationPermission(true);
         getPreferenceManager().setPreferenceAlarmInfoShown(true);
+        onView(withId(R.id.switch_activity_system_alarm_on_high_prio)).perform(click());
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(scrollTo());
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(click());
         onView(withId(R.id.switch_activity_system_file_dump_enabled)).perform(scrollTo());
@@ -1920,6 +1926,7 @@ public class SystemActivityTest extends BaseUITest {
         getPreferenceManager().setPreferenceAlarmOnHighPrio(true);
         getPreferenceManager().setPreferenceAskedNotificationPermission(true);
         getPreferenceManager().setPreferenceAlarmInfoShown(true);
+        onView(withId(R.id.switch_activity_system_alarm_on_high_prio)).perform(click());
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(scrollTo());
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(click());
         onView(withId(R.id.switch_activity_system_file_dump_enabled)).perform(scrollTo());
@@ -2084,6 +2091,7 @@ public class SystemActivityTest extends BaseUITest {
         getPreferenceManager().setPreferenceAskedNotificationPermission(true);
         getPreferenceManager().setPreferenceAlarmInfoShown(true);
         assertTrue(storagePermissionManager.hasAnyPersistentPermission(null));
+        onView(withId(R.id.switch_activity_system_alarm_on_high_prio)).perform(click());
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(scrollTo());
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(click());
         onView(withId(R.id.switch_activity_system_file_dump_enabled)).perform(scrollTo());
@@ -2183,6 +2191,7 @@ public class SystemActivityTest extends BaseUITest {
         getPreferenceManager().setPreferenceAlarmOnHighPrio(true);
         getPreferenceManager().setPreferenceAskedNotificationPermission(true);
         getPreferenceManager().setPreferenceAlarmInfoShown(true);
+        onView(withId(R.id.switch_activity_system_alarm_on_high_prio)).perform(click());
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(scrollTo());
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(click());
         onView(withId(R.id.switch_activity_system_file_dump_enabled)).perform(scrollTo());
@@ -2284,6 +2293,7 @@ public class SystemActivityTest extends BaseUITest {
         getPreferenceManager().setPreferenceAskedNotificationPermission(true);
         getPreferenceManager().setPreferenceAlarmInfoShown(true);
         assertTrue(storagePermissionManager.hasAnyPersistentPermission(null));
+        onView(withId(R.id.switch_activity_system_alarm_on_high_prio)).perform(click());
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(scrollTo());
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(click());
         onView(withId(R.id.switch_activity_system_file_dump_enabled)).perform(scrollTo());
@@ -2386,6 +2396,7 @@ public class SystemActivityTest extends BaseUITest {
         getPreferenceManager().setPreferenceAskedNotificationPermission(true);
         getPreferenceManager().setPreferenceAlarmInfoShown(true);
         assertTrue(storagePermissionManager.hasAnyPersistentPermission(null));
+        onView(withId(R.id.switch_activity_system_alarm_on_high_prio)).perform(click());
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(scrollTo());
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(click());
         onView(withId(R.id.switch_activity_system_file_dump_enabled)).perform(scrollTo());
@@ -2498,6 +2509,7 @@ public class SystemActivityTest extends BaseUITest {
         getPreferenceManager().setPreferenceAlarmOnHighPrio(true);
         getPreferenceManager().setPreferenceAskedNotificationPermission(true);
         getPreferenceManager().setPreferenceAlarmInfoShown(true);
+        onView(withId(R.id.switch_activity_system_alarm_on_high_prio)).perform(click());
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(scrollTo());
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(click());
         onView(withId(R.id.switch_activity_system_file_dump_enabled)).perform(scrollTo());
@@ -2825,6 +2837,7 @@ public class SystemActivityTest extends BaseUITest {
         getPreferenceManager().setPreferenceAlarmOnHighPrio(true);
         getPreferenceManager().setPreferenceAskedNotificationPermission(true);
         getPreferenceManager().setPreferenceAlarmInfoShown(true);
+        onView(withId(R.id.switch_activity_system_alarm_on_high_prio)).perform(click());
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(scrollTo());
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(click());
         onView(withId(R.id.switch_activity_system_file_dump_enabled)).perform(scrollTo());
@@ -2913,6 +2926,7 @@ public class SystemActivityTest extends BaseUITest {
         getPreferenceManager().setPreferenceAlarmOnHighPrio(true);
         getPreferenceManager().setPreferenceAskedNotificationPermission(true);
         getPreferenceManager().setPreferenceAlarmInfoShown(true);
+        onView(withId(R.id.switch_activity_system_alarm_on_high_prio)).perform(click());
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(scrollTo());
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(click());
         onView(withId(R.id.switch_activity_system_file_dump_enabled)).perform(scrollTo());
@@ -3001,6 +3015,7 @@ public class SystemActivityTest extends BaseUITest {
         getPreferenceManager().setPreferenceAlarmOnHighPrio(true);
         getPreferenceManager().setPreferenceAskedNotificationPermission(true);
         getPreferenceManager().setPreferenceAlarmInfoShown(true);
+        onView(withId(R.id.switch_activity_system_alarm_on_high_prio)).perform(click());
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(scrollTo());
         onView(withId(R.id.switch_activity_system_file_logger_enabled)).perform(click());
         onView(withId(R.id.switch_activity_system_file_dump_enabled)).perform(scrollTo());
@@ -3436,6 +3451,92 @@ public class SystemActivityTest extends BaseUITest {
         onView(withId(R.id.textview_activity_system_file_logger_enabled_on_off)).check(matches(withText("yes")));
         onView(withId(R.id.switch_activity_system_file_dump_enabled)).check(matches(isChecked()));
         onView(withId(R.id.textview_activity_system_file_dump_enabled_on_off)).check(matches(withText("yes")));
+    }
+
+    @Test
+    public void testAlarmOnHighPrio() {
+        onView(withId(R.id.switch_activity_system_alarm_on_high_prio)).check(matches(isNotChecked()));
+        PreferenceManager preferenceManager = getPreferenceManager();
+        assertFalse(preferenceManager.getPreferenceAlarmOnHighPrio());
+        assertFalse(preferenceManager.getPreferenceAlarmInfoShown());
+        onView(withId(R.id.switch_activity_system_alarm_on_high_prio)).perform(click());
+        assertEquals(1, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
+        onView(withId(R.id.imageview_dialog_general_message_ok)).perform(click());
+        onView(withId(R.id.switch_activity_system_alarm_on_high_prio)).check(matches(isChecked()));
+        assertTrue(preferenceManager.getPreferenceAlarmOnHighPrio());
+        assertTrue(preferenceManager.getPreferenceAlarmInfoShown());
+        onView(withId(R.id.switch_activity_system_alarm_on_high_prio)).perform(click());
+        onView(withId(R.id.switch_activity_system_alarm_on_high_prio)).check(matches(isNotChecked()));
+        assertFalse(preferenceManager.getPreferenceAlarmOnHighPrio());
+        assertTrue(preferenceManager.getPreferenceAlarmInfoShown());
+    }
+
+    @Test
+    public void testAlarmOnHighPrioScreenRotation() {
+        onView(withId(R.id.switch_activity_system_alarm_on_high_prio)).check(matches(isNotChecked()));
+        PreferenceManager preferenceManager = getPreferenceManager();
+        assertFalse(preferenceManager.getPreferenceAlarmOnHighPrio());
+        assertFalse(preferenceManager.getPreferenceAlarmInfoShown());
+        onView(withId(R.id.switch_activity_system_alarm_on_high_prio)).perform(click());
+        rotateScreen(activityScenario);
+        assertEquals(1, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
+        onView(withId(R.id.imageview_dialog_general_message_ok)).perform(click());
+        onView(withId(R.id.switch_activity_system_alarm_on_high_prio)).check(matches(isChecked()));
+        assertTrue(preferenceManager.getPreferenceAlarmOnHighPrio());
+        assertTrue(preferenceManager.getPreferenceAlarmInfoShown());
+        rotateScreen(activityScenario);
+        onView(withId(R.id.switch_activity_system_alarm_on_high_prio)).perform(click());
+        onView(withId(R.id.switch_activity_system_alarm_on_high_prio)).check(matches(isNotChecked()));
+        assertFalse(preferenceManager.getPreferenceAlarmOnHighPrio());
+        assertTrue(preferenceManager.getPreferenceAlarmInfoShown());
+    }
+
+    @Test
+    public void testAlarmOnHighPrioReset() {
+        onView(withId(R.id.switch_activity_system_alarm_on_high_prio)).check(matches(isNotChecked()));
+        PreferenceManager preferenceManager = getPreferenceManager();
+        assertFalse(preferenceManager.getPreferenceAlarmOnHighPrio());
+        assertFalse(preferenceManager.getPreferenceAlarmInfoShown());
+        onView(withId(R.id.switch_activity_system_alarm_on_high_prio)).perform(click());
+        assertEquals(1, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
+        onView(withId(R.id.imageview_dialog_general_message_ok)).perform(click());
+        onView(withId(R.id.switch_activity_system_alarm_on_high_prio)).check(matches(isChecked()));
+        assertTrue(preferenceManager.getPreferenceAlarmOnHighPrio());
+        assertTrue(preferenceManager.getPreferenceAlarmInfoShown());
+        openActionBarOverflowOrOptionsMenu(TestRegistry.getContext());
+        onView(withText("Reset")).perform(click());
+        onView(withId(R.id.switch_activity_system_alarm_on_high_prio)).check(matches(isNotChecked()));
+        assertFalse(preferenceManager.getPreferenceAlarmOnHighPrio());
+        assertFalse(preferenceManager.getPreferenceAlarmInfoShown());
+        onView(withId(R.id.switch_activity_system_alarm_on_high_prio)).perform(click());
+        onView(withId(R.id.imageview_dialog_general_message_ok)).perform(click());
+        onView(withId(R.id.switch_activity_system_alarm_on_high_prio)).check(matches(isChecked()));
+        assertTrue(preferenceManager.getPreferenceAlarmOnHighPrio());
+        assertTrue(preferenceManager.getPreferenceAlarmInfoShown());
+    }
+
+    @Test
+    public void testAlarmOnHighPrioConfigurationReset() {
+        onView(withId(R.id.switch_activity_system_alarm_on_high_prio)).check(matches(isNotChecked()));
+        PreferenceManager preferenceManager = getPreferenceManager();
+        assertFalse(preferenceManager.getPreferenceAlarmOnHighPrio());
+        assertFalse(preferenceManager.getPreferenceAlarmInfoShown());
+        onView(withId(R.id.switch_activity_system_alarm_on_high_prio)).perform(click());
+        assertEquals(1, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
+        onView(withId(R.id.imageview_dialog_general_message_ok)).perform(click());
+        onView(withId(R.id.switch_activity_system_alarm_on_high_prio)).check(matches(isChecked()));
+        assertTrue(preferenceManager.getPreferenceAlarmOnHighPrio());
+        assertTrue(preferenceManager.getPreferenceAlarmInfoShown());
+        onView(withId(R.id.cardview_activity_system_config_reset)).perform(click());
+        onView(withId(R.id.imageview_dialog_confirm_ok)).perform(click());
+        onView(withId(R.id.switch_activity_system_alarm_on_high_prio)).check(matches(isNotChecked()));
+        assertFalse(preferenceManager.getPreferenceAlarmOnHighPrio());
+        assertFalse(preferenceManager.getPreferenceAlarmInfoShown());
+        onView(withId(R.id.switch_activity_system_alarm_on_high_prio)).perform(click());
+        onView(withId(R.id.imageview_dialog_general_message_ok)).perform(click());
+        onView(withId(R.id.switch_activity_system_alarm_on_high_prio)).check(matches(isChecked()));
+        assertTrue(preferenceManager.getPreferenceAlarmOnHighPrio());
+        assertTrue(preferenceManager.getPreferenceAlarmInfoShown());
     }
 
     private void insertAndScheduleNetworkTask() {

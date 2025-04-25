@@ -35,4 +35,5 @@
     <string name="text_activity_system_theme_light">Light</string>
     <string name="text_activity_system_theme_dark">Dark</string>
     <string name="label_activity_allow_arbitrary_file_location">Allow arbitrary file location</string>
+    <string name="label_activity_alarm_on_high_prio">Alarm on high priority failure</string>
 </resources>
