@@ -85,8 +85,10 @@ public class NetworkTaskEditDialog extends DialogFragmentBase implements Context
     private TextView stopOnSuccessOnOffText;
     private SwitchMaterial onlyWifiSwitch;
     private SwitchMaterial notificationSwitch;
+    private SwitchMaterial highPrioSwitch;
     private TextView onlyWifiOnOffText;
     private TextView notificationOnOffText;
+    private TextView highPrioOnOffText;
 
     private IClipboardManager clipboardManager;
     private IPermissionManager permissionManager;
@@ -138,6 +140,7 @@ public class NetworkTaskEditDialog extends DialogFragmentBase implements Context
         prepareAccessTypeDataFieldsVisibility();
         prepareOnlyWifiSwitch();
         prepareNotificationSwitch();
+        prepareHighPrioSwitch();
         prepareOkCancelImageButtons();
         return dialogView;
     }
@@ -226,6 +229,10 @@ public class NetworkTaskEditDialog extends DialogFragmentBase implements Context
 
     private boolean isStopOnSuccessVisible() {
         return stopOnSuccessSwitch.getVisibility() == View.VISIBLE;
+    }
+
+    private boolean isHighPrioVisible() {
+        return highPrioSwitch.getVisibility() == View.VISIBLE;
     }
 
     private void prepareAccessTypeRadioButtons(Bundle savedInstanceState) {
@@ -492,6 +499,42 @@ public class NetworkTaskEditDialog extends DialogFragmentBase implements Context
         prepareNotificationOnOffText();
     }
 
+    private void prepareHighPrioSwitch() {
+        Log.d(NetworkTaskEditDialog.class.getName(), "prepareHighPrioSwitch with highprio setting of " + task.isHighPrio());
+        highPrioSwitch = dialogView.findViewById(R.id.switch_dialog_network_task_edit_highprio);
+        highPrioOnOffText = dialogView.findViewById(R.id.textview_dialog_network_task_edit_highprio_on_off);
+        boolean hasPostNotificationsPermission = getPermissionManager().hasPostNotificationsPermission(requireContext());
+        Log.d(NetworkTaskEditDialog.class.getName(), "hasPostNotificationsPermission is " + hasPostNotificationsPermission);
+        if (hasPostNotificationsPermission) {
+            highPrioSwitch.setEnabled(true);
+            highPrioSwitch.setChecked(task.isHighPrio());
+            highPrioSwitch.setOnCheckedChangeListener(this::onHighPrioCheckedChanged);
+        } else {
+            highPrioSwitch.setEnabled(false);
+            highPrioSwitch.setChecked(false);
+            highPrioSwitch.setOnCheckedChangeListener(null);
+        }
+        prepareHighPrioOnOffText();
+        prepareHighPrioVisibility();
+    }
+
+    private void prepareHighPrioVisibility() {
+        Log.d(NetworkTaskEditDialog.class.getName(), "prepareHighPrioVisibility");
+        TextView highPrioLabel = dialogView.findViewById(R.id.textview_dialog_network_task_edit_highprio_label);
+        highPrioSwitch = dialogView.findViewById(R.id.switch_dialog_network_task_edit_highprio);
+        highPrioOnOffText = dialogView.findViewById(R.id.textview_dialog_network_task_edit_highprio_on_off);
+        notificationSwitch = dialogView.findViewById(R.id.switch_dialog_network_task_edit_notification);
+        if (notificationSwitch.isChecked()) {
+            highPrioLabel.setVisibility(View.VISIBLE);
+            highPrioSwitch.setVisibility(View.VISIBLE);
+            highPrioOnOffText.setVisibility(View.VISIBLE);
+        } else {
+            highPrioLabel.setVisibility(View.GONE);
+            highPrioSwitch.setVisibility(View.GONE);
+            highPrioOnOffText.setVisibility(View.GONE);
+        }
+    }
+
     private void prepareStopOnSuccessOnOffText() {
         stopOnSuccessOnOffText.setText(stopOnSuccessSwitch.isChecked() ? getResources().getString(R.string.string_yes) : getResources().getString(R.string.string_no));
     }
@@ -502,6 +545,10 @@ public class NetworkTaskEditDialog extends DialogFragmentBase implements Context
 
     private void prepareNotificationOnOffText() {
         notificationOnOffText.setText(notificationSwitch.isChecked() ? getResources().getString(R.string.string_yes) : getResources().getString(R.string.string_no));
+    }
+
+    private void prepareHighPrioOnOffText() {
+        highPrioOnOffText.setText(highPrioSwitch.isChecked() ? getResources().getString(R.string.string_yes) : getResources().getString(R.string.string_no));
     }
 
     private void prepareOkCancelImageButtons() {
@@ -538,6 +585,9 @@ public class NetworkTaskEditDialog extends DialogFragmentBase implements Context
         }
         task.setOnlyWifi(onlyWifiSwitch.isChecked());
         task.setNotification(notificationSwitch.isChecked());
+        if (isHighPrioVisible()) {
+            task.setHighPrio(highPrioSwitch.isChecked());
+        }
         Log.d(NetworkTaskEditDialog.class.getName(), "getNetworkTask, network task is " + task);
         return task;
     }
@@ -599,6 +649,12 @@ public class NetworkTaskEditDialog extends DialogFragmentBase implements Context
     private void onNotificationCheckedChanged(CompoundButton buttonView, boolean isChecked) {
         Log.d(NetworkTaskEditDialog.class.getName(), "onCheckedChanged, new value is " + isChecked);
         prepareNotificationOnOffText();
+        prepareHighPrioVisibility();
+    }
+
+    private void onHighPrioCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+        Log.d(NetworkTaskEditDialog.class.getName(), "onHighPrioCheckedChanged, new value is " + isChecked);
+        prepareHighPrioOnOffText();
     }
 
     private boolean hasErrors(List<ValidationResult> validationResult) {

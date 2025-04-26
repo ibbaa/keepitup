@@ -25,6 +25,7 @@
     <string name="label_dialog_network_task_edit_stoponsuccess">Stop on success:</string>
     <string name="label_dialog_network_task_edit_onlywifi">Only on WiFi:</string>
     <string name="label_dialog_network_task_edit_notification">Notifications:</string>
+    <string name="label_dialog_network_task_edit_highprio">High prio:</string>
     <integer name="edittext_dialog_network_task_edit_address_max_lines">5</integer>
     <integer name="edittext_dialog_network_task_edit_port_max_length">5</integer>
     <integer name="edittext_dialog_network_task_edit_ping_count_max_length">2</integer>

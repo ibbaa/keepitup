@@ -56,7 +56,11 @@
     <dimen name="cardview_activity_defaults_notification_corner_radius">4dp</dimen>
     <dimen name="cardview_activity_defaults_notification_card_elevation">4dp</dimen>
     <dimen name="linearlayout_activity_defaults_notification_margin">4dp</dimen>
-    <dimen name="cardview_activity_defaults_ccesstype_margin">4dp</dimen>
+    <dimen name="cardview_activity_defaults_highprio_margin">4dp</dimen>
+    <dimen name="cardview_activity_defaults_highprio_corner_radius">4dp</dimen>
+    <dimen name="cardview_activity_defaults_highprio_card_elevation">4dp</dimen>
+    <dimen name="linearlayout_activity_defaults_highprio_margin">4dp</dimen>
+    <dimen name="cardview_activity_defaults_accesstype_margin">4dp</dimen>
     <dimen name="cardview_activity_defaults_accesstype_corner_radius">4dp</dimen>
     <dimen name="cardview_activity_defaults_accesstype_card_elevation">4dp</dimen>
     <dimen name="linearlayout_activity_defaults_accesstype_margin">4dp</dimen>

@@ -67,6 +67,7 @@ public class DefaultsActivityTest extends BaseUITest {
         assertFalse(preferenceManager.getPreferenceStopOnSuccess());
         assertFalse(preferenceManager.getPreferenceOnlyWifi());
         assertFalse(preferenceManager.getPreferenceNotification());
+        assertFalse(preferenceManager.getPreferenceHighPrio());
         onView(withId(R.id.textview_activity_defaults_accesstype_label)).check(matches(withText("Type")));
         onView(withId(R.id.radiogroup_activity_defaults_accesstype)).check(matches(hasChildCount(3)));
         onView(withText("Ping")).check(matches(isChecked()));
@@ -92,6 +93,10 @@ public class DefaultsActivityTest extends BaseUITest {
         onView(withId(R.id.textview_activity_defaults_notification_label)).check(matches(withText("Notifications")));
         onView(withId(R.id.switch_activity_defaults_notification)).check(matches(isNotChecked()));
         onView(withId(R.id.textview_activity_defaults_notification_on_off)).check(matches(withText("no")));
+        onView(withId(R.id.switch_activity_defaults_highprio)).perform(scrollTo());
+        onView(withId(R.id.textview_activity_defaults_highprio_label)).check(matches(withText("High prio")));
+        onView(withId(R.id.switch_activity_defaults_highprio)).check(matches(isNotChecked()));
+        onView(withId(R.id.textview_activity_defaults_highprio_on_off)).check(matches(withText("no")));
         activityScenario.close();
     }
 
@@ -108,6 +113,7 @@ public class DefaultsActivityTest extends BaseUITest {
         preferenceManager.setPreferenceStopOnSuccess(true);
         preferenceManager.setPreferenceOnlyWifi(false);
         preferenceManager.setPreferenceNotification(true);
+        preferenceManager.setPreferenceHighPrio(true);
         ActivityScenario<?> activityScenario = launchSettingsInputActivity(DefaultsActivity.class);
         onView(withId(R.id.textview_activity_defaults_accesstype_label)).check(matches(withText("Type")));
         onView(withId(R.id.radiogroup_activity_defaults_accesstype)).check(matches(hasChildCount(3)));
@@ -134,6 +140,10 @@ public class DefaultsActivityTest extends BaseUITest {
         onView(withId(R.id.textview_activity_defaults_notification_label)).check(matches(withText("Notifications")));
         onView(withId(R.id.switch_activity_defaults_notification)).check(matches(isChecked()));
         onView(withId(R.id.textview_activity_defaults_notification_on_off)).check(matches(withText("yes")));
+        onView(withId(R.id.switch_activity_defaults_highprio)).perform(scrollTo());
+        onView(withId(R.id.textview_activity_defaults_highprio_label)).check(matches(withText("High prio")));
+        onView(withId(R.id.switch_activity_defaults_highprio)).check(matches(isChecked()));
+        onView(withId(R.id.textview_activity_defaults_highprio_on_off)).check(matches(withText("yes")));
         activityScenario.close();
     }
 
@@ -162,6 +172,8 @@ public class DefaultsActivityTest extends BaseUITest {
         onView(withId(R.id.switch_activity_defaults_stoponsuccess)).perform(click());
         onView(withId(R.id.switch_activity_defaults_onlywifi)).perform(click());
         onView(withId(R.id.switch_activity_defaults_notification)).perform(click());
+        onView(withId(R.id.switch_activity_defaults_highprio)).perform(scrollTo());
+        onView(withId(R.id.switch_activity_defaults_highprio)).perform(click());
         onView(withText("Download")).check(matches(isChecked()));
         onView(withId(R.id.textview_activity_defaults_address_label)).check(matches(withText("Host / URL")));
         onView(withId(R.id.textview_activity_defaults_address)).check(matches(withText("localhost")));
@@ -185,6 +197,10 @@ public class DefaultsActivityTest extends BaseUITest {
         onView(withId(R.id.textview_activity_defaults_notification_label)).check(matches(withText("Notifications")));
         onView(withId(R.id.switch_activity_defaults_notification)).check(matches(isChecked()));
         onView(withId(R.id.textview_activity_defaults_notification_on_off)).check(matches(withText("yes")));
+        onView(withId(R.id.switch_activity_defaults_highprio)).perform(scrollTo());
+        onView(withId(R.id.textview_activity_defaults_highprio_label)).check(matches(withText("High prio")));
+        onView(withId(R.id.switch_activity_defaults_highprio)).check(matches(isChecked()));
+        onView(withId(R.id.textview_activity_defaults_highprio_on_off)).check(matches(withText("yes")));
         activityScenario.close();
     }
 
@@ -224,6 +240,10 @@ public class DefaultsActivityTest extends BaseUITest {
         onView(withId(R.id.switch_activity_defaults_notification)).perform(click());
         onView(withId(R.id.switch_activity_defaults_notification)).check(matches(isChecked()));
         onView(withId(R.id.textview_activity_defaults_notification_on_off)).check(matches(withText("yes")));
+        onView(withId(R.id.switch_activity_defaults_highprio)).perform(scrollTo());
+        onView(withId(R.id.switch_activity_defaults_highprio)).perform(click());
+        onView(withId(R.id.switch_activity_defaults_highprio)).check(matches(isChecked()));
+        onView(withId(R.id.textview_activity_defaults_highprio_on_off)).check(matches(withText("yes")));
         onView(withId(R.id.switch_activity_defaults_stoponsuccess)).perform(click());
         onView(withId(R.id.switch_activity_defaults_stoponsuccess)).check(matches(isNotChecked()));
         onView(withId(R.id.textview_activity_defaults_stoponsuccess_on_off)).check(matches(withText("no")));
@@ -231,8 +251,13 @@ public class DefaultsActivityTest extends BaseUITest {
         onView(withId(R.id.switch_activity_defaults_onlywifi)).check(matches(isNotChecked()));
         onView(withId(R.id.textview_activity_defaults_onlywifi_on_off)).check(matches(withText("no")));
         onView(withId(R.id.switch_activity_defaults_notification)).perform(click());
-        onView(withId(R.id.switch_activity_defaults_onlywifi)).check(matches(isNotChecked()));
-        onView(withId(R.id.textview_activity_defaults_onlywifi_on_off)).check(matches(withText("no")));
+        onView(withId(R.id.switch_activity_defaults_notification)).check(matches(isNotChecked()));
+        onView(withId(R.id.textview_activity_defaults_notification_on_off)).check(matches(withText("no")));
+        onView(withId(R.id.switch_activity_defaults_highprio)).perform(scrollTo());
+        onView(withId(R.id.switch_activity_defaults_highprio)).perform(click());
+        onView(withId(R.id.switch_activity_defaults_highprio)).check(matches(isNotChecked()));
+        onView(withId(R.id.textview_activity_defaults_highprio_on_off)).check(matches(withText("no")));
+
         activityScenario.close();
     }
 
@@ -261,6 +286,8 @@ public class DefaultsActivityTest extends BaseUITest {
         onView(withId(R.id.switch_activity_defaults_stoponsuccess)).perform(click());
         onView(withId(R.id.switch_activity_defaults_onlywifi)).perform(click());
         onView(withId(R.id.switch_activity_defaults_notification)).perform(click());
+        onView(withId(R.id.switch_activity_defaults_highprio)).perform(scrollTo());
+        onView(withId(R.id.switch_activity_defaults_highprio)).perform(click());
         PreferenceManager preferenceManager = getPreferenceManager();
         assertEquals(AccessType.DOWNLOAD, preferenceManager.getPreferenceAccessType());
         assertEquals("localhost", preferenceManager.getPreferenceAddress());
@@ -272,6 +299,7 @@ public class DefaultsActivityTest extends BaseUITest {
         assertTrue(preferenceManager.getPreferenceStopOnSuccess());
         assertTrue(preferenceManager.getPreferenceOnlyWifi());
         assertTrue(preferenceManager.getPreferenceNotification());
+        assertTrue(preferenceManager.getPreferenceHighPrio());
         activityScenario.close();
     }
 
@@ -854,6 +882,8 @@ public class DefaultsActivityTest extends BaseUITest {
         onView(withId(R.id.switch_activity_defaults_stoponsuccess)).perform(click());
         onView(withId(R.id.switch_activity_defaults_onlywifi)).perform(click());
         onView(withId(R.id.switch_activity_defaults_notification)).perform(click());
+        onView(withId(R.id.switch_activity_defaults_highprio)).perform(scrollTo());
+        onView(withId(R.id.switch_activity_defaults_highprio)).perform(click());
         openActionBarOverflowOrOptionsMenu(TestRegistry.getContext());
         onView(withText("Reset")).perform(click());
         onView(withText("Ping")).check(matches(isChecked()));
@@ -879,6 +909,10 @@ public class DefaultsActivityTest extends BaseUITest {
         onView(withId(R.id.textview_activity_defaults_notification_label)).check(matches(withText("Notifications")));
         onView(withId(R.id.switch_activity_defaults_notification)).check(matches(isNotChecked()));
         onView(withId(R.id.textview_activity_defaults_notification_on_off)).check(matches(withText("no")));
+        onView(withId(R.id.switch_activity_defaults_highprio)).perform(scrollTo());
+        onView(withId(R.id.textview_activity_defaults_highprio_label)).check(matches(withText("High prio")));
+        onView(withId(R.id.switch_activity_defaults_highprio)).check(matches(isNotChecked()));
+        onView(withId(R.id.textview_activity_defaults_highprio_on_off)).check(matches(withText("no")));
         PreferenceManager preferenceManager = getPreferenceManager();
         assertEquals(AccessType.PING, preferenceManager.getPreferenceAccessType());
         assertEquals("192.168.178.1", preferenceManager.getPreferenceAddress());
@@ -890,6 +924,7 @@ public class DefaultsActivityTest extends BaseUITest {
         assertFalse(preferenceManager.getPreferenceStopOnSuccess());
         assertFalse(preferenceManager.getPreferenceOnlyWifi());
         assertFalse(preferenceManager.getPreferenceNotification());
+        assertFalse(preferenceManager.getPreferenceHighPrio());
         activityScenario.close();
     }
 
@@ -918,6 +953,8 @@ public class DefaultsActivityTest extends BaseUITest {
         onView(withId(R.id.switch_activity_defaults_stoponsuccess)).perform(click());
         onView(withId(R.id.switch_activity_defaults_onlywifi)).perform(click());
         onView(withId(R.id.switch_activity_defaults_notification)).perform(click());
+        onView(withId(R.id.switch_activity_defaults_highprio)).perform(scrollTo());
+        onView(withId(R.id.switch_activity_defaults_highprio)).perform(click());
         rotateScreen(activityScenario);
         onView(withText("Connect")).check(matches(isChecked()));
         onView(withId(R.id.textview_activity_defaults_address)).check(matches(withText("localhost")));
@@ -933,6 +970,9 @@ public class DefaultsActivityTest extends BaseUITest {
         onView(withId(R.id.textview_activity_defaults_onlywifi_on_off)).check(matches(withText("yes")));
         onView(withId(R.id.switch_activity_defaults_notification)).check(matches(isChecked()));
         onView(withId(R.id.textview_activity_defaults_notification_on_off)).check(matches(withText("yes")));
+        onView(withId(R.id.switch_activity_defaults_highprio)).perform(scrollTo());
+        onView(withId(R.id.switch_activity_defaults_highprio)).check(matches(isChecked()));
+        onView(withId(R.id.textview_activity_defaults_highprio_on_off)).check(matches(withText("yes")));
         rotateScreen(activityScenario);
         onView(withText("Connect")).check(matches(isChecked()));
         onView(withId(R.id.textview_activity_defaults_address)).check(matches(withText("localhost")));
@@ -948,6 +988,9 @@ public class DefaultsActivityTest extends BaseUITest {
         onView(withId(R.id.textview_activity_defaults_onlywifi_on_off)).check(matches(withText("yes")));
         onView(withId(R.id.switch_activity_defaults_notification)).check(matches(isChecked()));
         onView(withId(R.id.textview_activity_defaults_notification_on_off)).check(matches(withText("yes")));
+        onView(withId(R.id.switch_activity_defaults_highprio)).perform(scrollTo());
+        onView(withId(R.id.switch_activity_defaults_highprio)).check(matches(isChecked()));
+        onView(withId(R.id.textview_activity_defaults_highprio_on_off)).check(matches(withText("yes")));
         activityScenario.close();
     }
 

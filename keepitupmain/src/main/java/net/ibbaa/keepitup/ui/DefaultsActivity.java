@@ -72,6 +72,8 @@ public class DefaultsActivity extends SettingsInputActivity {
     private TextView onlyWifiOnOffText;
     private SwitchMaterial notificationSwitch;
     private TextView notificationOnOffText;
+    private SwitchMaterial highPrioSwitch;
+    private TextView highPrioOnOffText;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -91,6 +93,7 @@ public class DefaultsActivity extends SettingsInputActivity {
         prepareStopOnSuccessSwitch();
         prepareOnlyWifiSwitch();
         prepareNotificationSwitch();
+        prepareHighPrioSwitch();
     }
 
     @Override
@@ -271,6 +274,28 @@ public class DefaultsActivity extends SettingsInputActivity {
         PreferenceManager preferenceManager = new PreferenceManager(this);
         preferenceManager.setPreferenceNotification(isChecked);
         prepareNotificationOnOffText();
+    }
+
+    private void prepareHighPrioSwitch() {
+        Log.d(DefaultsActivity.class.getName(), "prepareHighPrioSwitch");
+        PreferenceManager preferenceManager = new PreferenceManager(this);
+        highPrioSwitch = findViewById(R.id.switch_activity_defaults_highprio);
+        highPrioOnOffText = findViewById(R.id.textview_activity_defaults_highprio_on_off);
+        highPrioSwitch.setOnCheckedChangeListener(null);
+        highPrioSwitch.setChecked(preferenceManager.getPreferenceHighPrio());
+        highPrioSwitch.setOnCheckedChangeListener(this::onHighPrioCheckedChanged);
+        prepareHighPrioOnOffText();
+    }
+
+    private void prepareHighPrioOnOffText() {
+        highPrioOnOffText.setText(highPrioSwitch.isChecked() ? getResources().getString(R.string.string_yes) : getResources().getString(R.string.string_no));
+    }
+
+    private void onHighPrioCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+        Log.d(DefaultsActivity.class.getName(), "onHighPrioCheckedChanged, new value is " + isChecked);
+        PreferenceManager preferenceManager = new PreferenceManager(this);
+        preferenceManager.setPreferenceHighPrio(isChecked);
+        prepareHighPrioOnOffText();
     }
 
     private String getAddress() {

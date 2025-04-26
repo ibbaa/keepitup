@@ -369,6 +369,47 @@
 
             </LinearLayout>
 
+            <TextView
+                android:id="@+id/textview_dialog_network_task_edit_highprio_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/textview_dialog_network_task_edit_highprio_label_margin_top"
+                android:textStyle="bold"
+                android:layout_row="9"
+                android:layout_column="0"
+                android:text="@string/label_dialog_network_task_edit_highprio" />
+
+            <LinearLayout
+                android:id="@+id/linearlayout_dialog_network_task_edit_highprio"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:layout_marginStart="@dimen/linearlayout_dialog_network_task_edit_highprio_margin_left"
+                android:layout_marginTop="@dimen/linearlayout_dialog_network_task_edit_highprio_margin_top"
+                android:layout_row="9"
+                android:layout_column="1">
+
+                <com.google.android.material.switchmaterial.SwitchMaterial
+                    android:id="@+id/switch_dialog_network_task_edit_highprio"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingTop="@dimen/switch_dialog_network_task_edit_highprio_padding_top"
+                    android:paddingBottom="@dimen/switch_dialog_network_task_edit_highprio_padding_bottom"
+                    android:minHeight="@dimen/switch_dialog_network_task_edit_highprio_min_height"
+                    app:trackTint="@drawable/switchtrack_selector"
+                    app:thumbTint="@drawable/switchthumb_selector"
+                    android:showText="false" />
+
+                <TextView
+                    android:id="@+id/textview_dialog_network_task_edit_highprio_on_off"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textStyle="bold"
+                    android:text="" />
+
+            </LinearLayout>
+
         </GridLayout>
 
         <LinearLayout

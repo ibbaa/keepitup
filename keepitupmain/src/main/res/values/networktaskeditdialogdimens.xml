@@ -53,6 +53,12 @@
     <dimen name="switch_dialog_network_task_edit_notification_padding_top">0dp</dimen>
     <dimen name="switch_dialog_network_task_edit_notification_padding_bottom">0dp</dimen>
     <dimen name="switch_dialog_network_task_edit_notification_min_height">0dp</dimen>
+    <dimen name="textview_dialog_network_task_edit_highprio_label_margin_top">14dp</dimen>
+    <dimen name="linearlayout_dialog_network_task_edit_highprio_margin_top">12dp</dimen>
+    <dimen name="linearlayout_dialog_network_task_edit_highprio_margin_left">10dp</dimen>
+    <dimen name="switch_dialog_network_task_edit_highprio_padding_top">0dp</dimen>
+    <dimen name="switch_dialog_network_task_edit_highprio_padding_bottom">0dp</dimen>
+    <dimen name="switch_dialog_network_task_edit_highprio_min_height">0dp</dimen>
     <dimen name="linearlayout_dialog_network_task_edit_ok_cancel_padding_top">10dp</dimen>
     <dimen name="edittext_network_task_edit_line_size">2dp</dimen>
     <dimen name="edittext_network_task_edit_line_height">4dp</dimen>

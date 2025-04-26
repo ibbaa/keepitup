@@ -96,7 +96,7 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
         onView(allOf(withId(R.id.textview_list_item_network_task_interval), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 0))).check(matches(withText("Interval: 15 minutes")));
         onView(allOf(withId(R.id.textview_list_item_network_task_stoponsuccess), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 0))).check(matches(withText("Stop on success: no")));
         onView(allOf(withId(R.id.textview_list_item_network_task_onlywifi), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 0))).check(matches(withText("Only on WiFi: no")));
-        onView(allOf(withId(R.id.textview_list_item_network_task_notification), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 0))).check(matches(withText("Notifications: yes")));
+        onView(allOf(withId(R.id.textview_list_item_network_task_notification), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 0))).check(matches(withText("Notifications (high prio): yes")));
         onView(allOf(withId(R.id.textview_list_item_network_task_last_exec_timestamp), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 0))).check(matches(withText("Last execution: successful, Mar 17, 1980 12:00:00 AM")));
         onView(allOf(withId(R.id.textview_list_item_network_task_last_exec_message), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 0))).check(matches(withText("Last execution message: TestMessage")));
         onView(allOf(withId(R.id.textview_list_item_network_task_title), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 1))).check(matches(withText("Network task 2")));
@@ -221,6 +221,7 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
         onView(withId(R.id.edittext_dialog_network_task_edit_interval)).perform(replaceText("60"));
         onView(withId(R.id.switch_dialog_network_task_edit_onlywifi)).perform(click());
         onView(withId(R.id.switch_dialog_network_task_edit_notification)).perform(click());
+        onView(withId(R.id.switch_dialog_network_task_edit_highprio)).perform(click());
         onView(withId(R.id.imageview_dialog_network_task_edit_ok)).perform(click());
         onView(allOf(withId(R.id.textview_list_item_network_task_title), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 2))).check(matches(withText("Network task 3")));
         onView(allOf(withId(R.id.textview_list_item_network_task_status), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 2))).check(matches(withText("Status: Stopped")));
@@ -230,7 +231,7 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
         onView(allOf(withId(R.id.textview_list_item_network_task_address), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 2))).check(matches(withText("URL: http://test")));
         onView(allOf(withId(R.id.textview_list_item_network_task_interval), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 2))).check(matches(withText("Interval: 60 minutes")));
         onView(allOf(withId(R.id.textview_list_item_network_task_onlywifi), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 2))).check(matches(withText("Only on WiFi: yes")));
-        onView(allOf(withId(R.id.textview_list_item_network_task_notification), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 2))).check(matches(withText("Notifications: yes")));
+        onView(allOf(withId(R.id.textview_list_item_network_task_notification), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 2))).check(matches(withText("Notifications (high prio): yes")));
         onView(allOf(withId(R.id.textview_list_item_network_task_last_exec_timestamp), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 2))).check(matches(withText("Last execution: not executed")));
         activityScenario.close();
     }
@@ -333,6 +334,25 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
         onView(allOf(withId(R.id.textview_list_item_network_task_stoponsuccess), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 0))).check(matches(withText("Stop on success: yes")));
         onView(allOf(withId(R.id.textview_list_item_network_task_onlywifi), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 0))).check(matches(withText("Only on WiFi: yes")));
         onView(allOf(withId(R.id.textview_list_item_network_task_notification), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 0))).check(matches(withText("Notifications: yes")));
+        activityScenario.close();
+    }
+
+    @Test
+    public void testEditNetworkTaskHighPrioNotification() {
+        ActivityScenario<?> activityScenario = launchRecyclerViewBaseActivity(NetworkTaskMainActivity.class);
+        injectPermissionManager(activityScenario);
+        onView(allOf(withId(R.id.imageview_activity_main_network_task_add), isDisplayed())).perform(click());
+        onView(withId(R.id.imageview_dialog_network_task_edit_ok)).perform(click());
+        onView(allOf(withId(R.id.imageview_list_item_network_task_edit), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 0))).perform(click());
+        onView(withId(R.id.switch_dialog_network_task_edit_notification)).perform(click());
+        onView(withId(R.id.switch_dialog_network_task_edit_highprio)).perform(click());
+        onView(withId(R.id.imageview_dialog_network_task_edit_ok)).perform(click());
+        onView(allOf(withId(R.id.textview_list_item_network_task_notification), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 0))).check(matches(withText("Notifications (high prio): yes")));
+        onView(isRoot()).perform(waitFor(500));
+        onView(allOf(withId(R.id.imageview_list_item_network_task_edit), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 0))).perform(click());
+        onView(withId(R.id.switch_dialog_network_task_edit_notification)).perform(click());
+        onView(withId(R.id.imageview_dialog_network_task_edit_ok)).perform(click());
+        onView(allOf(withId(R.id.textview_list_item_network_task_notification), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 0))).check(matches(withText("Notifications: no")));
         activityScenario.close();
     }
 

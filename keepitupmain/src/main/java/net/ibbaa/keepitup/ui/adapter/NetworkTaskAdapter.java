@@ -190,7 +190,12 @@ public class NetworkTaskAdapter extends RecyclerView.Adapter<NetworkTaskViewHold
         Log.d(NetworkTaskAdapter.class.getName(), "bindNotification, networkTask is " + networkTask);
         boolean hasPostNotificationsPermission = mainActivity.getPermissionManager().hasPostNotificationsPermission(mainActivity);
         String sendNotification = hasPostNotificationsPermission && networkTask.isNotification() ? getResources().getString(R.string.string_yes) : getResources().getString(R.string.string_no);
-        String formattedNotificationText = getResources().getString(R.string.text_activity_main_list_item_network_task_notification, sendNotification);
+        String formattedNotificationText;
+        if (hasPostNotificationsPermission && networkTask.isNotification() && networkTask.isHighPrio()) {
+            formattedNotificationText = getResources().getString(R.string.text_activity_main_list_item_network_task_notification_highprio, sendNotification);
+        } else {
+            formattedNotificationText = getResources().getString(R.string.text_activity_main_list_item_network_task_notification, sendNotification);
+        }
         Log.d(NetworkTaskAdapter.class.getName(), "binding notification text " + formattedNotificationText);
         networkTaskViewHolder.setNotification(formattedNotificationText);
     }

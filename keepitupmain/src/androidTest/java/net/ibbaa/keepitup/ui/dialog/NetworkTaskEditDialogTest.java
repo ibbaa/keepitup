@@ -22,6 +22,7 @@ import static androidx.test.espresso.Espresso.pressBack;
 import static androidx.test.espresso.action.ViewActions.click;
 import static androidx.test.espresso.action.ViewActions.longClick;
 import static androidx.test.espresso.action.ViewActions.replaceText;
+import static androidx.test.espresso.action.ViewActions.scrollTo;
 import static androidx.test.espresso.assertion.ViewAssertions.doesNotExist;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.matcher.ViewMatchers.hasChildCount;
@@ -97,6 +98,8 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         onView(withId(R.id.textview_dialog_network_task_edit_onlywifi_on_off)).check(matches(withText("no")));
         onView(withId(R.id.switch_dialog_network_task_edit_notification)).check(matches(isNotChecked()));
         onView(withId(R.id.textview_dialog_network_task_edit_notification_on_off)).check(matches(withText("no")));
+        onView(withId(R.id.switch_dialog_network_task_edit_highprio)).check(matches(not(isDisplayed())));
+        onView(withId(R.id.textview_dialog_network_task_edit_highprio_on_off)).check(matches(not(isDisplayed())));
         NetworkTaskEditDialog dialog = (NetworkTaskEditDialog) getActivity(activityScenario).getSupportFragmentManager().getFragments().get(0);
         NetworkTask task = dialog.getNetworkTask();
         AccessTypeData data = dialog.getAccessTypeData();
@@ -108,6 +111,7 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         assertEquals(15, task.getInterval());
         assertFalse(task.isOnlyWifi());
         assertFalse(task.isNotification());
+        assertFalse(task.isHighPrio());
         assertEquals(3, data.getPingCount());
         assertEquals(56, data.getPingPackageSize());
         assertEquals(1, data.getConnectCount());
@@ -138,6 +142,11 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         onView(withId(R.id.textview_dialog_network_task_edit_onlywifi_on_off)).check(matches(withText("yes")));
         onView(withId(R.id.switch_dialog_network_task_edit_notification)).check(matches(isChecked()));
         onView(withId(R.id.textview_dialog_network_task_edit_notification_on_off)).check(matches(withText("yes")));
+        onView(withId(R.id.switch_dialog_network_task_edit_highprio)).check(matches(isNotChecked()));
+        onView(withId(R.id.textview_dialog_network_task_edit_highprio_on_off)).check(matches(withText("no")));
+        onView(withId(R.id.switch_dialog_network_task_edit_highprio)).perform(click());
+        onView(withId(R.id.switch_dialog_network_task_edit_highprio)).check(matches(isChecked()));
+        onView(withId(R.id.textview_dialog_network_task_edit_highprio_on_off)).check(matches(withText("yes")));
         onView(withId(R.id.switch_dialog_network_task_edit_stoponsuccess)).perform(click());
         onView(withId(R.id.switch_dialog_network_task_edit_stoponsuccess)).check(matches(isNotChecked()));
         onView(withId(R.id.textview_dialog_network_task_edit_stoponsuccess_on_off)).check(matches(withText("no")));
@@ -146,6 +155,8 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         onView(withId(R.id.textview_dialog_network_task_edit_onlywifi_on_off)).check(matches(withText("no")));
         onView(withId(R.id.switch_dialog_network_task_edit_notification)).check(matches(isChecked()));
         onView(withId(R.id.textview_dialog_network_task_edit_notification_on_off)).check(matches(withText("yes")));
+        onView(withId(R.id.switch_dialog_network_task_edit_highprio)).check(matches(isChecked()));
+        onView(withId(R.id.textview_dialog_network_task_edit_highprio_on_off)).check(matches(withText("yes")));
         onView(withId(R.id.switch_dialog_network_task_edit_notification)).perform(click());
         onView(withId(R.id.switch_dialog_network_task_edit_stoponsuccess)).check(matches(isNotChecked()));
         onView(withId(R.id.textview_dialog_network_task_edit_stoponsuccess_on_off)).check(matches(withText("no")));
@@ -153,6 +164,14 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         onView(withId(R.id.textview_dialog_network_task_edit_onlywifi_on_off)).check(matches(withText("no")));
         onView(withId(R.id.switch_dialog_network_task_edit_notification)).check(matches(isNotChecked()));
         onView(withId(R.id.textview_dialog_network_task_edit_notification_on_off)).check(matches(withText("no")));
+        onView(withId(R.id.switch_dialog_network_task_edit_highprio)).check(matches(not(isDisplayed())));
+        onView(withId(R.id.textview_dialog_network_task_edit_highprio_on_off)).check(matches(not(isDisplayed())));
+        onView(withId(R.id.switch_dialog_network_task_edit_notification)).perform(click());
+        onView(withId(R.id.switch_dialog_network_task_edit_highprio)).check(matches(isChecked()));
+        onView(withId(R.id.textview_dialog_network_task_edit_highprio_on_off)).check(matches(withText("yes")));
+        onView(withId(R.id.switch_dialog_network_task_edit_highprio)).perform(click());
+        onView(withId(R.id.switch_dialog_network_task_edit_highprio)).check(matches(isNotChecked()));
+        onView(withId(R.id.textview_dialog_network_task_edit_highprio_on_off)).check(matches(withText("no")));
     }
 
     @Test
@@ -166,6 +185,7 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         onView(withId(R.id.switch_dialog_network_task_edit_stoponsuccess)).perform(click());
         onView(withId(R.id.switch_dialog_network_task_edit_onlywifi)).perform(click());
         onView(withId(R.id.switch_dialog_network_task_edit_notification)).perform(click());
+        onView(withId(R.id.switch_dialog_network_task_edit_highprio)).perform(click());
         NetworkTaskEditDialog dialog = (NetworkTaskEditDialog) getActivity(activityScenario).getSupportFragmentManager().getFragments().get(0);
         NetworkTask task = dialog.getNetworkTask();
         AccessTypeData data = dialog.getAccessTypeData();
@@ -176,32 +196,39 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         assertEquals(60, task.getInterval());
         assertTrue(task.isOnlyWifi());
         assertTrue(task.isNotification());
+        assertTrue(task.isHighPrio());
         assertEquals(3, data.getPingCount());
         assertEquals(56, data.getPingPackageSize());
         assertEquals(9, data.getConnectCount());
         assertTrue(data.isStopOnSuccess());
         onView(withText("Ping")).perform(click());
+        onView(withId(R.id.switch_dialog_network_task_edit_onlywifi)).perform(click());
+        onView(withId(R.id.switch_dialog_network_task_edit_highprio)).perform(click());
         task = dialog.getNetworkTask();
         data = dialog.getAccessTypeData();
         assertEquals(AccessType.PING, task.getAccessType());
         assertEquals("localhost", task.getAddress());
         assertEquals(60, task.getInterval());
-        assertTrue(task.isOnlyWifi());
+        assertFalse(task.isOnlyWifi());
         assertTrue(task.isNotification());
+        assertFalse(task.isHighPrio());
         assertEquals(3, data.getPingCount());
         assertEquals(56, data.getPingPackageSize());
         assertEquals(1, data.getConnectCount());
         assertTrue(data.isStopOnSuccess());
         onView(withText("Download")).perform(click());
         onView(withId(R.id.edittext_dialog_network_task_edit_address)).perform(replaceText("http://test.com"));
+        onView(withId(R.id.switch_dialog_network_task_edit_highprio)).perform(click());
+        onView(withId(R.id.switch_dialog_network_task_edit_notification)).perform(click());
         task = dialog.getNetworkTask();
         data = dialog.getAccessTypeData();
         assertNotNull(task);
         assertEquals(AccessType.DOWNLOAD, task.getAccessType());
         assertEquals("http://test.com", task.getAddress());
         assertEquals(60, task.getInterval());
-        assertTrue(task.isOnlyWifi());
-        assertTrue(task.isNotification());
+        assertFalse(task.isOnlyWifi());
+        assertFalse(task.isNotification());
+        assertFalse(task.isHighPrio());
         assertEquals(3, data.getPingCount());
         assertEquals(56, data.getPingPackageSize());
         assertEquals(1, data.getConnectCount());
@@ -219,6 +246,7 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         onView(withId(R.id.switch_dialog_network_task_edit_stoponsuccess)).perform(click());
         onView(withId(R.id.switch_dialog_network_task_edit_onlywifi)).perform(click());
         onView(withId(R.id.switch_dialog_network_task_edit_notification)).perform(click());
+        onView(withId(R.id.switch_dialog_network_task_edit_highprio)).perform(click());
         NetworkTaskEditDialog dialog = (NetworkTaskEditDialog) getActivity(activityScenario).getSupportFragmentManager().getFragments().get(0);
         NetworkTask task = dialog.getNetworkTask();
         AccessTypeData data = dialog.getAccessTypeData();
@@ -228,6 +256,7 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         assertEquals(60, task.getInterval());
         assertTrue(task.isOnlyWifi());
         assertTrue(task.isNotification());
+        assertTrue(task.isHighPrio());
         assertEquals(9, data.getPingCount());
         assertEquals(65000, data.getPingPackageSize());
         assertEquals(1, data.getConnectCount());
@@ -257,6 +286,7 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         assertEquals(initialTask.getInterval(), task.getInterval());
         assertEquals(initialTask.isOnlyWifi(), task.isOnlyWifi());
         assertEquals(initialTask.isNotification(), task.isNotification());
+        assertEquals(initialTask.isHighPrio(), task.isHighPrio());
         assertEquals(initialTask.isRunning(), task.isRunning());
         assertEquals(initialAccessTypeData.getPingCount(), data.getPingCount());
         assertEquals(initialAccessTypeData.getPingPackageSize(), data.getPingPackageSize());
@@ -278,6 +308,7 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         assertNotEquals(initialTask.getInterval(), task.getInterval());
         assertNotEquals(initialTask.isOnlyWifi(), task.isOnlyWifi());
         assertNotEquals(initialTask.isNotification(), task.isNotification());
+        assertEquals(initialTask.isHighPrio(), task.isHighPrio());
         assertEquals(initialTask.isRunning(), task.isRunning());
         assertEquals(initialAccessTypeData.getPingCount(), data.getPingCount());
         assertEquals(initialAccessTypeData.getPingPackageSize(), data.getPingPackageSize());
@@ -309,6 +340,21 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
     }
 
     @Test
+    public void testHighPrioPreservedOnNotificationChange() {
+        onView(allOf(withId(R.id.imageview_activity_main_network_task_add), isDisplayed())).perform(click());
+        onView(withId(R.id.switch_dialog_network_task_edit_notification)).perform(click());
+        onView(withId(R.id.switch_dialog_network_task_edit_highprio)).check(matches(isNotChecked()));
+        onView(withId(R.id.textview_dialog_network_task_edit_highprio_on_off)).check(matches(withText("no")));
+        onView(withId(R.id.switch_dialog_network_task_edit_highprio)).perform(click());
+        onView(withId(R.id.switch_dialog_network_task_edit_highprio)).check(matches(isChecked()));
+        onView(withId(R.id.textview_dialog_network_task_edit_highprio_on_off)).check(matches(withText("yes")));
+        onView(withId(R.id.switch_dialog_network_task_edit_notification)).perform(click());
+        onView(withId(R.id.switch_dialog_network_task_edit_notification)).perform(click());
+        onView(withId(R.id.switch_dialog_network_task_edit_highprio)).check(matches(isChecked()));
+        onView(withId(R.id.textview_dialog_network_task_edit_highprio_on_off)).check(matches(withText("yes")));
+    }
+
+    @Test
     public void testAccessTypePortAndAccessTypeDataFields() {
         onView(allOf(withId(R.id.imageview_activity_main_network_task_add), isDisplayed())).perform(click());
         onView(withText("Connect")).perform(click());
@@ -323,6 +369,7 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         onView(withId(R.id.switch_dialog_network_task_edit_stoponsuccess)).check(matches(isDisplayed()));
         onView(withId(R.id.switch_dialog_network_task_edit_onlywifi)).check(matches(isDisplayed()));
         onView(withId(R.id.switch_dialog_network_task_edit_notification)).check(matches(isDisplayed()));
+        onView(withId(R.id.switch_dialog_network_task_edit_highprio)).check(matches(not(isDisplayed())));
         onView(withText("Ping")).perform(click());
         onView(withId(R.id.edittext_dialog_network_task_edit_address)).check(matches(isDisplayed()));
         onView(withId(R.id.edittext_dialog_network_task_edit_port)).check(matches(not(isDisplayed())));
@@ -334,6 +381,7 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         onView(withId(R.id.switch_dialog_network_task_edit_stoponsuccess)).check(matches(isDisplayed()));
         onView(withId(R.id.switch_dialog_network_task_edit_onlywifi)).check(matches(isDisplayed()));
         onView(withId(R.id.switch_dialog_network_task_edit_notification)).check(matches(isDisplayed()));
+        onView(withId(R.id.switch_dialog_network_task_edit_highprio)).check(matches(not(isDisplayed())));
         onView(withText("Download")).perform(click());
         onView(withId(R.id.edittext_dialog_network_task_edit_address)).check(matches(isDisplayed()));
         onView(withId(R.id.edittext_dialog_network_task_edit_port)).check(matches(not(isDisplayed())));
@@ -348,6 +396,7 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         onView(withId(R.id.switch_dialog_network_task_edit_stoponsuccess)).check(matches(not(isDisplayed())));
         onView(withId(R.id.switch_dialog_network_task_edit_onlywifi)).check(matches(isDisplayed()));
         onView(withId(R.id.switch_dialog_network_task_edit_notification)).check(matches(isDisplayed()));
+        onView(withId(R.id.switch_dialog_network_task_edit_highprio)).check(matches(not(isDisplayed())));
     }
 
     @Test
@@ -565,6 +614,7 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         onView(withId(R.id.textview_dialog_network_task_edit_onlywifi_on_off)).check(matches(withText("no")));
         onView(withId(R.id.switch_dialog_network_task_edit_notification)).check(matches(isNotChecked()));
         onView(withId(R.id.textview_dialog_network_task_edit_notification_on_off)).check(matches(withText("no")));
+        onView(withId(R.id.switch_dialog_network_task_edit_highprio)).check(matches(not(isDisplayed())));
         onView(withId(R.id.imageview_dialog_network_task_edit_cancel)).perform(click());
         openActionBarOverflowOrOptionsMenu(TestRegistry.getContext());
         onView(withText("Defaults")).perform(click());
@@ -589,6 +639,8 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         onView(withId(R.id.switch_activity_defaults_stoponsuccess)).perform(click());
         onView(withId(R.id.switch_activity_defaults_onlywifi)).perform(click());
         onView(withId(R.id.switch_activity_defaults_notification)).perform(click());
+        onView(withId(R.id.switch_activity_defaults_highprio)).perform(scrollTo());
+        onView(withId(R.id.switch_activity_defaults_highprio)).perform(click());
         onView(withText("Connect")).perform(click());
         onView(isRoot()).perform(ViewActions.pressBack());
         onView(allOf(withId(R.id.imageview_activity_main_network_task_add), isDisplayed())).perform(click());
@@ -602,6 +654,8 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         onView(withId(R.id.textview_dialog_network_task_edit_onlywifi_on_off)).check(matches(withText("yes")));
         onView(withId(R.id.switch_dialog_network_task_edit_notification)).check(matches(isChecked()));
         onView(withId(R.id.textview_dialog_network_task_edit_notification_on_off)).check(matches(withText("yes")));
+        onView(withId(R.id.switch_dialog_network_task_edit_highprio)).check(matches(isChecked()));
+        onView(withId(R.id.textview_dialog_network_task_edit_highprio_on_off)).check(matches(withText("yes")));
         onView(withText("Connect")).check(matches(isChecked()));
         onView(withText("Ping")).perform(click());
         onView(withId(R.id.edittext_dialog_network_task_edit_address)).check(matches(withText("host.com")));
@@ -614,6 +668,8 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         onView(withId(R.id.textview_dialog_network_task_edit_onlywifi_on_off)).check(matches(withText("yes")));
         onView(withId(R.id.switch_dialog_network_task_edit_notification)).check(matches(isChecked()));
         onView(withId(R.id.textview_dialog_network_task_edit_notification_on_off)).check(matches(withText("yes")));
+        onView(withId(R.id.switch_dialog_network_task_edit_highprio)).check(matches(isChecked()));
+        onView(withId(R.id.textview_dialog_network_task_edit_highprio_on_off)).check(matches(withText("yes")));
     }
 
     @Test
@@ -682,6 +738,27 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         onView(withId(R.id.textview_dialog_network_task_edit_onlywifi_on_off)).check(matches(withText("yes")));
         onView(withId(R.id.switch_dialog_network_task_edit_notification)).check(matches(isNotChecked()));
         onView(withId(R.id.textview_dialog_network_task_edit_notification_on_off)).check(matches(withText("no")));
+    }
+
+    @Test
+    public void testHighPrioStateSavedOnScreenRotation() {
+        onView(allOf(withId(R.id.imageview_activity_main_network_task_add), isDisplayed())).perform(click());
+        onView(withId(R.id.switch_dialog_network_task_edit_notification)).perform(click());
+        onView(withId(R.id.switch_dialog_network_task_edit_highprio)).perform(click());
+        onView(withId(R.id.switch_dialog_network_task_edit_notification)).check(matches(isChecked()));
+        onView(withId(R.id.textview_dialog_network_task_edit_notification_on_off)).check(matches(withText("yes")));
+        onView(withId(R.id.switch_dialog_network_task_edit_highprio)).check(matches(isChecked()));
+        onView(withId(R.id.textview_dialog_network_task_edit_highprio_on_off)).check(matches(withText("yes")));
+        rotateScreen(activityScenario);
+        onView(withId(R.id.switch_dialog_network_task_edit_notification)).check(matches(isChecked()));
+        onView(withId(R.id.textview_dialog_network_task_edit_notification_on_off)).check(matches(withText("yes")));
+        onView(withId(R.id.switch_dialog_network_task_edit_highprio)).check(matches(isChecked()));
+        onView(withId(R.id.textview_dialog_network_task_edit_highprio_on_off)).check(matches(withText("yes")));
+        rotateScreen(activityScenario);
+        onView(withId(R.id.switch_dialog_network_task_edit_notification)).check(matches(isChecked()));
+        onView(withId(R.id.textview_dialog_network_task_edit_notification_on_off)).check(matches(withText("yes")));
+        onView(withId(R.id.switch_dialog_network_task_edit_highprio)).check(matches(isChecked()));
+        onView(withId(R.id.textview_dialog_network_task_edit_highprio_on_off)).check(matches(withText("yes")));
     }
 
     @Test

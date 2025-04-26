@@ -27,5 +27,6 @@
     <string name="label_activity_defaults_stoponsuccess">Stop on success</string>
     <string name="label_activity_defaults_onlywifi">Only on WiFi</string>
     <string name="label_activity_defaults_notification">Notifications</string>
+    <string name="label_activity_defaults_highprio">High prio</string>
     <string name="label_activity_defaults_accesstype">Type</string>
 </resources>
