@@ -18,14 +18,21 @@
     <string name="notification_error_channel_id">KEEPITUP_ERROR_NOTIFICATION_CHANNEL</string>
     <string name="notification_error_channel_name">Keep it up error notifications</string>
     <string name="notification_error_channel_description">Keep it up error notifications</string>
+    <string name="notification_highprio_error_channel_id">KEEPITUP_HIGH_PRIO_ERROR_NOTIFICATION_CHANNEL</string>
+    <string name="notification_highprio_error_channel_name">Keep it up high priority error notifications</string>
+    <string name="notification_highprio_error_channel_description">Keep it up high priority error notifications</string>
     <string name="notification_foreground_channel_id">KEEPITUP_FOREGROUND_NOTIFICATION_CHANNEL</string>
     <string name="notification_foreground_channel_name">Keep it up foreground notifications</string>
     <string name="notification_foreground_channel_description">Keep it up foreground notifications</string>
+    <string name="notification_alarm_foreground_channel_id">KEEPITUP_ALARM_FOREGROUND_NOTIFICATION_CHANNEL</string>
+    <string name="notification_alarm_foreground_channel_name">Keep it up alarm notifications</string>
+    <string name="notification_alarm_foreground_channel_description">Keep it up alarm notifications</string>
     <string name="notification_title">Keep it up</string>
     <string name="notification_address">%s</string>
     <string name="notification_error_text" tools:ignore="PluralsCandidate">Execution of network task %d failed. %s. Failures since last success: %d. Timestamp: %s. Message: %s</string>
     <string name="notification_success_text" tools:ignore="PluralsCandidate">Execution of network task %d successful. %s. Timestamp: %s. Message: %s</string>
     <string name="notification_foreground_text" tools:ignore="TypographyEllipsis">Network task running...</string>
+    <string name="notification_alarm_foreground_text" tools:ignore="TypographyEllipsis">Network task alarm</string>
     <string name="notification_foreground_start_text">Please click here to open the app after device boot to start the foreground service for running network tasks</string>
     <string name="notification_log_permission_text">Missing write permission for configured log folder: %s. Please click here to grant the permission.</string>
     <string name="notification_download_permission_text">Missing write permission for configured download folder: %s. Please click here to grant the permission.</string>

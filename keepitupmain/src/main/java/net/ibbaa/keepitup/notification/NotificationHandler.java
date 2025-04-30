@@ -56,8 +56,9 @@ public class NotificationHandler {
     private final Context context;
     private final INotificationManager notificationManager;
     private final IPermissionManager permissionManager;
-    private NotificationCompat.Builder errorNotificationBuilder;
+    private NotificationCompat.Builder messageNotificationBuilder;
     private NotificationCompat.Builder foregroundNotificationBuilder;
+    private NotificationCompat.Builder alarmForegroundNotificationBuilder;
 
     public NotificationHandler(Context context, IPermissionManager permissionManager) {
         this.context = context;
@@ -65,6 +66,8 @@ public class NotificationHandler {
         if (permissionManager.hasPostNotificationsPermission(context)) {
             initErrorChannel();
             initForegroundChannel();
+            initHighPrioErrorChannel();
+            initAlarmForegroundChannel();
         } else {
             Log.e(NotificationHandler.class.getName(), "Skipping initialization of notification channels. Missing permission.");
         }
@@ -78,6 +81,22 @@ public class NotificationHandler {
             String name = getResources().getString(R.string.notification_error_channel_name);
             String description = getResources().getString(R.string.notification_error_channel_description);
             int importance = android.app.NotificationManager.IMPORTANCE_DEFAULT;
+            NotificationChannel channel = new NotificationChannel(id, name, importance);
+            channel.setDescription(description);
+            channel.setVibrationPattern(getVibrationPattern());
+            channel.enableVibration(true);
+            android.app.NotificationManager notificationManager = context.getSystemService(android.app.NotificationManager.class);
+            Objects.requireNonNull(notificationManager).createNotificationChannel(channel);
+        }
+    }
+
+    private void initHighPrioErrorChannel() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            String id = getHighPrioErrorChannelId();
+            Log.d(NotificationHandler.class.getName(), "initHighPrioErrorChannel: " + id);
+            String name = getResources().getString(R.string.notification_highprio_error_channel_name);
+            String description = getResources().getString(R.string.notification_highprio_error_channel_description);
+            int importance = android.app.NotificationManager.IMPORTANCE_HIGH;
             NotificationChannel channel = new NotificationChannel(id, name, importance);
             channel.setDescription(description);
             channel.setVibrationPattern(getVibrationPattern());
@@ -103,6 +122,22 @@ public class NotificationHandler {
         }
     }
 
+    private void initAlarmForegroundChannel() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            String id = getAlarmForegroundChannelId();
+            Log.d(NotificationHandler.class.getName(), "initAlarmForegroundChannel: " + id);
+            String name = getResources().getString(R.string.notification_alarm_foreground_channel_name);
+            String description = getResources().getString(R.string.notification_alarm_foreground_channel_description);
+            int importance = NotificationManager.IMPORTANCE_HIGH;
+            NotificationChannel channel = new NotificationChannel(id, name, importance);
+            channel.setDescription(description);
+            channel.setSound(null, null);
+            channel.enableVibration(false);
+            android.app.NotificationManager notificationManager = context.getSystemService(android.app.NotificationManager.class);
+            Objects.requireNonNull(notificationManager).createNotificationChannel(channel);
+        }
+    }
+
     public Set<Integer> getReservedIDs() {
         return Set.of(NOTIFICATION_FOREGROUND_START_ID, NOTIFICATION_MISSING_LOG_FOLDER_PERMISSION, NOTIFICATION_MISSING_DOWNLOAD_FOLDER_PERMISSION);
     }
@@ -111,20 +146,20 @@ public class NotificationHandler {
         return getResources().getString(R.string.notification_error_channel_id);
     }
 
+    private String getHighPrioErrorChannelId() {
+        return getResources().getString(R.string.notification_highprio_error_channel_id);
+    }
+
     private String getForegroundChannelId() {
         return getResources().getString(R.string.notification_foreground_channel_id);
     }
 
+    private String getAlarmForegroundChannelId() {
+        return getResources().getString(R.string.notification_alarm_foreground_channel_id);
+    }
+
     public INotificationManager getNotificationManager() {
         return notificationManager;
-    }
-
-    public NotificationCompat.Builder getMessageNotificationBuilder() {
-        return errorNotificationBuilder;
-    }
-
-    public NotificationCompat.Builder getForegroundNotificationBuilder() {
-        return foregroundNotificationBuilder;
     }
 
     public void sendMessageNotificationForegroundStart() {
@@ -183,37 +218,42 @@ public class NotificationHandler {
         } else {
             text = String.format(getResources().getString(R.string.notification_error_text), task.getIndex() + 1, formattedAddressText, task.getFailureCount(), timestampText, logEntry.getMessage() == null ? getResources().getString(R.string.string_none) : logEntry.getMessage());
         }
-        errorNotificationBuilder = createMessageNotificationBuilder();
-        errorNotificationBuilder.setSmallIcon(logEntry.isSuccess() ? R.drawable.icon_notification_ok : R.drawable.icon_notification_failure).setContentTitle(title).setContentText(text).setStyle(new NotificationCompat.BigTextStyle().bigText(text)).setPriority(NotificationCompat.PRIORITY_DEFAULT);
-        return buildMessageNotification(NetworkTaskMainActivity.class);
+        if (task.isHighPrio()) {
+            messageNotificationBuilder = createHighPrioMessageNotificationBuilder();
+        } else {
+            messageNotificationBuilder = createMessageNotificationBuilder();
+        }
+        messageNotificationBuilder.setSmallIcon(logEntry.isSuccess() ? R.drawable.icon_notification_ok : R.drawable.icon_notification_failure).setContentTitle(title).setContentText(text).setStyle(new NotificationCompat.BigTextStyle().bigText(text));
+        messageNotificationBuilder.setPriority(task.isHighPrio() ? NotificationCompat.PRIORITY_HIGH : NotificationCompat.PRIORITY_DEFAULT);
+        return buildMessageNotification(NetworkTaskMainActivity.class, messageNotificationBuilder);
     }
 
     private Notification buildMessageNotificationForegroundStart() {
         Log.d(NotificationHandler.class.getName(), "buildMessageNotificationForegroundStart");
         String title = getResources().getString(R.string.notification_title);
         String text = getResources().getString(R.string.notification_foreground_start_text);
-        errorNotificationBuilder = createMessageNotificationBuilder();
-        errorNotificationBuilder.setSmallIcon(R.drawable.icon_notification_foreground_start).setContentTitle(title).setContentText(text).setStyle(new NotificationCompat.BigTextStyle().bigText(text)).setPriority(NotificationCompat.PRIORITY_DEFAULT);
-        return buildMessageNotification(NetworkTaskMainActivity.class);
+        messageNotificationBuilder = createMessageNotificationBuilder();
+        messageNotificationBuilder.setSmallIcon(R.drawable.icon_notification_foreground_start).setContentTitle(title).setContentText(text).setStyle(new NotificationCompat.BigTextStyle().bigText(text)).setPriority(NotificationCompat.PRIORITY_DEFAULT);
+        return buildMessageNotification(NetworkTaskMainActivity.class, messageNotificationBuilder);
     }
 
     private Notification buildMessageNotificationFolderPermission(String notificationText) {
         Log.d(NotificationHandler.class.getName(), "buildMessageNotificationFolderPermission");
         String title = getResources().getString(R.string.notification_title);
-        errorNotificationBuilder = createMessageNotificationBuilder();
-        errorNotificationBuilder.setSmallIcon(R.drawable.icon_notification_failure).setContentTitle(title).setContentText(notificationText).setStyle(new NotificationCompat.BigTextStyle().bigText(notificationText)).setPriority(NotificationCompat.PRIORITY_DEFAULT);
-        return buildMessageNotification(GlobalSettingsActivity.class);
+        messageNotificationBuilder = createMessageNotificationBuilder();
+        messageNotificationBuilder.setSmallIcon(R.drawable.icon_notification_failure).setContentTitle(title).setContentText(notificationText).setStyle(new NotificationCompat.BigTextStyle().bigText(notificationText)).setPriority(NotificationCompat.PRIORITY_DEFAULT);
+        return buildMessageNotification(GlobalSettingsActivity.class, messageNotificationBuilder);
     }
 
-    private Notification buildMessageNotification(Class<? extends AppCompatActivity> activityClass) {
+    private Notification buildMessageNotification(Class<? extends AppCompatActivity> activityClass, NotificationCompat.Builder notificationBuilder) {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
-            errorNotificationBuilder.setVibrate(getVibrationPattern());
+            notificationBuilder.setVibrate(getVibrationPattern());
             Uri soundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
-            errorNotificationBuilder.setSound(soundUri);
+            notificationBuilder.setSound(soundUri);
         }
-        errorNotificationBuilder.setCategory(NotificationCompat.CATEGORY_ERROR);
-        setActivityIntent(errorNotificationBuilder, activityClass);
-        return errorNotificationBuilder.build();
+        notificationBuilder.setCategory(NotificationCompat.CATEGORY_ERROR);
+        setActivityIntent(notificationBuilder, activityClass);
+        return notificationBuilder.build();
     }
 
     public Notification buildForegroundNotification() {
@@ -234,6 +274,26 @@ public class NotificationHandler {
             foregroundNotificationBuilder.setForegroundServiceBehavior(Notification.FOREGROUND_SERVICE_IMMEDIATE);
         }
         return foregroundNotificationBuilder.build();
+    }
+
+    public Notification buildAlarmForegroundNotification() {
+        Log.d(NotificationHandler.class.getName(), "buildAlarmForegroundNotification");
+        if (!permissionManager.hasPostNotificationsPermission(getContext())) {
+            Log.e(NotificationHandler.class.getName(), "Cannot build alarm foreground notification because of missing permission. Returning null.");
+            return null;
+        }
+        String title = getResources().getString(R.string.notification_title);
+        String text = getResources().getString(R.string.notification_alarm_foreground_text);
+        alarmForegroundNotificationBuilder = createAlarmForegroundNotificationBuilder();
+        alarmForegroundNotificationBuilder.setSmallIcon(R.drawable.icon_notification_foreground).setContentTitle(title).setContentText(text).setStyle(new NotificationCompat.BigTextStyle().bigText(text)).setPriority(NotificationCompat.PRIORITY_HIGH);
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
+            alarmForegroundNotificationBuilder.setVibrate(null);
+            alarmForegroundNotificationBuilder.setSound(null);
+        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            alarmForegroundNotificationBuilder.setForegroundServiceBehavior(Notification.FOREGROUND_SERVICE_IMMEDIATE);
+        }
+        return alarmForegroundNotificationBuilder.build();
     }
 
     private long[] getVibrationPattern() {
@@ -265,9 +325,31 @@ public class NotificationHandler {
         return factoryContributor.createServiceFactory().createNotificationBuilder(getContext(), getErrorChannelId());
     }
 
+    private NotificationCompat.Builder createHighPrioMessageNotificationBuilder() {
+        ServiceFactoryContributor factoryContributor = new ServiceFactoryContributor(getContext());
+        return factoryContributor.createServiceFactory().createNotificationBuilder(getContext(), getHighPrioErrorChannelId());
+    }
+
     private NotificationCompat.Builder createForegroundNotificationBuilder() {
         ServiceFactoryContributor factoryContributor = new ServiceFactoryContributor(getContext());
         return factoryContributor.createServiceFactory().createNotificationBuilder(getContext(), getForegroundChannelId());
+    }
+
+    private NotificationCompat.Builder createAlarmForegroundNotificationBuilder() {
+        ServiceFactoryContributor factoryContributor = new ServiceFactoryContributor(getContext());
+        return factoryContributor.createServiceFactory().createNotificationBuilder(getContext(), getAlarmForegroundChannelId());
+    }
+
+    public NotificationCompat.Builder getMessageNotificationBuilder() {
+        return messageNotificationBuilder;
+    }
+
+    public NotificationCompat.Builder getForegroundNotificationBuilder() {
+        return foregroundNotificationBuilder;
+    }
+
+    public NotificationCompat.Builder getAlarmForegroundNotificationBuilder() {
+        return alarmForegroundNotificationBuilder;
     }
 
     private Context getContext() {
