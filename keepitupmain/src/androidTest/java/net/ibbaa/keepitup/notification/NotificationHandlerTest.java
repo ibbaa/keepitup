@@ -85,6 +85,24 @@ public class NotificationHandlerTest {
     }
 
     @Test
+    public void testSendMessageNotificationForNetworkTaskSuccessHighPrio() {
+        NetworkTask networkTask = getNetworkTask1();
+        networkTask.setHighPrio(true);
+        LogEntry logEntry = getLogEntry(new GregorianCalendar(1980, Calendar.MARCH, 17).getTime().getTime(), "Test", true);
+        notificationHandler.sendMessageNotificationForNetworkTask(networkTask, logEntry);
+        assertTrue(notificationManager.wasNotifyCalled());
+        MockNotificationManager.NotifyCall notifyCall = notificationManager.getNotifyCalls().get(0);
+        assertEquals(networkTask.getSchedulerId(), notifyCall.id());
+        assertEquals("KEEPITUP_HIGH_PRIO_ERROR_NOTIFICATION_CHANNEL", notifyCall.notification().getChannelId());
+        MockNotificationBuilder notificationBuilder = (MockNotificationBuilder) notificationHandler.getMessageNotificationBuilder();
+        assertEquals(R.drawable.icon_notification_ok, notificationBuilder.getSmallIcon());
+        assertEquals("Keep it up", notificationBuilder.getContentTitle());
+        assertEquals("Execution of network task 2 successful. Host: 127.0.0.1. Timestamp: Mar 17, 1980 12:00:00 AM. Message: Test", notificationBuilder.getContentText());
+        assertTrue(notificationBuilder.getStyle() instanceof NotificationCompat.BigTextStyle);
+        assertEquals(NotificationCompat.PRIORITY_HIGH, notificationBuilder.getPriority());
+    }
+
+    @Test
     public void testSendMessageNotificationForNetworkTaskFailure() {
         NetworkTask networkTask = getNetworkTask1();
         LogEntry logEntry = getLogEntry(new GregorianCalendar(1980, Calendar.MARCH, 17).getTime().getTime(), "Test", false);
@@ -99,6 +117,24 @@ public class NotificationHandlerTest {
         assertEquals("Execution of network task 2 failed. Host: 127.0.0.1. Failures since last success: 1. Timestamp: Mar 17, 1980 12:00:00 AM. Message: Test", notificationBuilder.getContentText());
         assertTrue(notificationBuilder.getStyle() instanceof NotificationCompat.BigTextStyle);
         assertEquals(NotificationCompat.PRIORITY_DEFAULT, notificationBuilder.getPriority());
+    }
+
+    @Test
+    public void testSendMessageNotificationForNetworkTaskFailureHighPrio() {
+        NetworkTask networkTask = getNetworkTask1();
+        networkTask.setHighPrio(true);
+        LogEntry logEntry = getLogEntry(new GregorianCalendar(1980, Calendar.MARCH, 17).getTime().getTime(), "Test", false);
+        notificationHandler.sendMessageNotificationForNetworkTask(networkTask, logEntry);
+        assertTrue(notificationManager.wasNotifyCalled());
+        MockNotificationManager.NotifyCall notifyCall = notificationManager.getNotifyCalls().get(0);
+        assertEquals(networkTask.getSchedulerId(), notifyCall.id());
+        assertEquals("KEEPITUP_HIGH_PRIO_ERROR_NOTIFICATION_CHANNEL", notifyCall.notification().getChannelId());
+        MockNotificationBuilder notificationBuilder = (MockNotificationBuilder) notificationHandler.getMessageNotificationBuilder();
+        assertEquals(R.drawable.icon_notification_failure, notificationBuilder.getSmallIcon());
+        assertEquals("Keep it up", notificationBuilder.getContentTitle());
+        assertEquals("Execution of network task 2 failed. Host: 127.0.0.1. Failures since last success: 1. Timestamp: Mar 17, 1980 12:00:00 AM. Message: Test", notificationBuilder.getContentText());
+        assertTrue(notificationBuilder.getStyle() instanceof NotificationCompat.BigTextStyle);
+        assertEquals(NotificationCompat.PRIORITY_HIGH, notificationBuilder.getPriority());
     }
 
     @Test
@@ -212,9 +248,28 @@ public class NotificationHandlerTest {
     }
 
     @Test
+    public void testBuildAlarmForegroundNotification() {
+        Notification notification = notificationHandler.buildAlarmForegroundNotification();
+        assertEquals("KEEPITUP_ALARM_FOREGROUND_NOTIFICATION_CHANNEL", notification.getChannelId());
+        MockNotificationBuilder notificationBuilder = (MockNotificationBuilder) notificationHandler.getAlarmForegroundNotificationBuilder();
+        assertEquals("Keep it up", notificationBuilder.getContentTitle());
+        assertEquals("Network task alarm", notificationBuilder.getContentText());
+        assertEquals(R.drawable.icon_notification_foreground_alarm, notificationBuilder.getSmallIcon());
+        assertTrue(notificationBuilder.getStyle() instanceof NotificationCompat.BigTextStyle);
+        assertEquals(NotificationCompat.PRIORITY_HIGH, notificationBuilder.getPriority());
+    }
+
+    @Test
     public void testBuildForegroundNotificationWithoutPermission() {
         permissionManager.setHasPostNotificationsPermission(false);
         Notification notification = notificationHandler.buildForegroundNotification();
+        assertNull(notification);
+    }
+
+    @Test
+    public void testBuildAlarmForegroundNotificationWithoutPermission() {
+        permissionManager.setHasPostNotificationsPermission(false);
+        Notification notification = notificationHandler.buildAlarmForegroundNotification();
         assertNull(notification);
     }
 
@@ -277,7 +332,7 @@ public class NotificationHandlerTest {
         task.setRunning(false);
         task.setLastScheduled(1);
         task.setFailureCount(3);
-        task.setHighPrio(false);
+        task.setHighPrio(true);
         return task;
     }
 

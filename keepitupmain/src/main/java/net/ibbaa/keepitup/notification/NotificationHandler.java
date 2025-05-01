@@ -285,7 +285,7 @@ public class NotificationHandler {
         String title = getResources().getString(R.string.notification_title);
         String text = getResources().getString(R.string.notification_alarm_foreground_text);
         alarmForegroundNotificationBuilder = createAlarmForegroundNotificationBuilder();
-        alarmForegroundNotificationBuilder.setSmallIcon(R.drawable.icon_notification_foreground).setContentTitle(title).setContentText(text).setStyle(new NotificationCompat.BigTextStyle().bigText(text)).setPriority(NotificationCompat.PRIORITY_HIGH);
+        alarmForegroundNotificationBuilder.setSmallIcon(R.drawable.icon_notification_foreground_alarm).setContentTitle(title).setContentText(text).setStyle(new NotificationCompat.BigTextStyle().bigText(text)).setPriority(NotificationCompat.PRIORITY_HIGH);
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
             alarmForegroundNotificationBuilder.setVibrate(null);
             alarmForegroundNotificationBuilder.setSound(null);
