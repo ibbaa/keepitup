@@ -23,10 +23,9 @@
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_DATA_SYNC" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MEDIA_PLAYBACK" />
     <uses-permission android:name="android.permission.USE_EXACT_ALARM" />
-    <uses-permission
-        android:name="android.permission.SCHEDULE_EXACT_ALARM"
-        android:maxSdkVersion="32" />
+    <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" android:maxSdkVersion="32" />
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
 
     <application
@@ -93,9 +92,11 @@
                 android:value=".ui.NetworkTaskMainActivity" />
         </activity>
 
-        <receiver android:name=".service.NetworkTaskProcessBroadcastReceiver" />
+        <receiver android:name=".service.NetworkTaskProcessBroadcastReceiver" android:exported="false"/>
 
-        <receiver android:name=".service.TimeBasedSuspensionBroadcastReceiver" />
+        <receiver android:name=".service.alarm.StopAlarmReceiver" android:exported="false"/>
+
+        <receiver android:name=".service.TimeBasedSuspensionBroadcastReceiver" android:exported="false"/>
 
         <receiver
             android:name=".service.StartupService"
@@ -112,7 +113,13 @@
 
         <service
             android:name=".service.NetworkTaskRunningNotificationService"
+            android:exported="false"
             android:foregroundServiceType="dataSync" />
+
+        <service
+            android:name=".service.alarm.AlarmService"
+            android:exported="false"
+            android:foregroundServiceType="mediaPlayback" />
 
     </application>
 

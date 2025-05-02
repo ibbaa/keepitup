@@ -37,8 +37,6 @@ import net.ibbaa.keepitup.util.StringUtil;
 
 public class NetworkTaskRunningNotificationService extends Service {
 
-    public final static int NOTIFICATION_SERVICE_ID = 111;
-
     private NetworkTaskProcessServiceScheduler scheduler;
 
     @Override
@@ -56,9 +54,9 @@ public class NetworkTaskRunningNotificationService extends Service {
 
     protected void startNetworkTaskRunningNotificationForeground(@NonNull Notification notification, int foregroundServiceType) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            startForeground(NOTIFICATION_SERVICE_ID, notification, ServiceInfo.FOREGROUND_SERVICE_TYPE_DATA_SYNC);
+            startForeground(NotificationHandler.NOTIFICATION_FOREGROUND_NETWORKSTASK_RUNNING_SERVICE_ID, notification, foregroundServiceType);
         } else {
-            startForeground(NOTIFICATION_SERVICE_ID, notification);
+            startForeground(NotificationHandler.NOTIFICATION_FOREGROUND_NETWORKSTASK_RUNNING_SERVICE_ID, notification);
         }
     }
 

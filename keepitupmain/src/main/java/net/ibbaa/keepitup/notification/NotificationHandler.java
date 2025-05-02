@@ -32,11 +32,13 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.NotificationCompat;
 
 import net.ibbaa.keepitup.R;
+import net.ibbaa.keepitup.db.SchedulerIdGenerator;
 import net.ibbaa.keepitup.logging.Log;
 import net.ibbaa.keepitup.model.LogEntry;
 import net.ibbaa.keepitup.model.NetworkTask;
 import net.ibbaa.keepitup.resources.PreferenceManager;
 import net.ibbaa.keepitup.resources.ServiceFactoryContributor;
+import net.ibbaa.keepitup.service.alarm.StopAlarmReceiver;
 import net.ibbaa.keepitup.ui.GlobalSettingsActivity;
 import net.ibbaa.keepitup.ui.NetworkTaskMainActivity;
 import net.ibbaa.keepitup.ui.mapping.EnumMapping;
@@ -52,6 +54,8 @@ public class NotificationHandler {
     public final static int NOTIFICATION_FOREGROUND_START_ID = 1234;
     public final static int NOTIFICATION_MISSING_LOG_FOLDER_PERMISSION = -100;
     public final static int NOTIFICATION_MISSING_DOWNLOAD_FOLDER_PERMISSION = -200;
+    public final static int NOTIFICATION_FOREGROUND_NETWORKSTASK_RUNNING_SERVICE_ID = 111;
+    public final static int NOTIFICATION_FOREGROUND_ALARM_SERVICE_ID = -222;
 
     private final Context context;
     private final INotificationManager notificationManager;
@@ -139,7 +143,7 @@ public class NotificationHandler {
     }
 
     public Set<Integer> getReservedIDs() {
-        return Set.of(NOTIFICATION_FOREGROUND_START_ID, NOTIFICATION_MISSING_LOG_FOLDER_PERMISSION, NOTIFICATION_MISSING_DOWNLOAD_FOLDER_PERMISSION);
+        return Set.of(NOTIFICATION_FOREGROUND_START_ID, NOTIFICATION_MISSING_LOG_FOLDER_PERMISSION, NOTIFICATION_MISSING_DOWNLOAD_FOLDER_PERMISSION, NOTIFICATION_FOREGROUND_NETWORKSTASK_RUNNING_SERVICE_ID, NOTIFICATION_FOREGROUND_ALARM_SERVICE_ID);
     }
 
     private String getErrorChannelId() {
@@ -225,7 +229,23 @@ public class NotificationHandler {
         }
         messageNotificationBuilder.setSmallIcon(logEntry.isSuccess() ? R.drawable.icon_notification_ok : R.drawable.icon_notification_failure).setContentTitle(title).setContentText(text).setStyle(new NotificationCompat.BigTextStyle().bigText(text));
         messageNotificationBuilder.setPriority(task.isHighPrio() ? NotificationCompat.PRIORITY_HIGH : NotificationCompat.PRIORITY_DEFAULT);
+        PreferenceManager preferenceManager = new PreferenceManager(getContext());
+        if (task.isHighPrio() && preferenceManager.getPreferenceAlarmOnHighPrio()) {
+            PendingIntent stopPendingIntent = createStopPendingIntent();
+            messageNotificationBuilder.addAction(R.drawable.icon_stop, getResources().getString(R.string.notification_stop_alarm_text), stopPendingIntent);
+        }
         return buildMessageNotification(NetworkTaskMainActivity.class, messageNotificationBuilder);
+    }
+
+    private PendingIntent createStopPendingIntent() {
+        Log.d(NotificationHandler.class.getName(), "createStopPendingIntent");
+        Intent stopIntent = new Intent(getContext(), StopAlarmReceiver.class);
+        stopIntent.setPackage(getContext().getPackageName());
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            return PendingIntent.getBroadcast(getContext(), SchedulerIdGenerator.STOP_ALARM_SERVICE_ID, stopIntent, PendingIntent.FLAG_IMMUTABLE | PendingIntent.FLAG_UPDATE_CURRENT);
+        } else {
+            return PendingIntent.getBroadcast(getContext(), SchedulerIdGenerator.STOP_ALARM_SERVICE_ID, stopIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        }
     }
 
     private Notification buildMessageNotificationForegroundStart() {
@@ -286,6 +306,8 @@ public class NotificationHandler {
         String text = getResources().getString(R.string.notification_alarm_foreground_text);
         alarmForegroundNotificationBuilder = createAlarmForegroundNotificationBuilder();
         alarmForegroundNotificationBuilder.setSmallIcon(R.drawable.icon_notification_foreground_alarm).setContentTitle(title).setContentText(text).setStyle(new NotificationCompat.BigTextStyle().bigText(text)).setPriority(NotificationCompat.PRIORITY_HIGH);
+        PendingIntent stopPendingIntent = createStopPendingIntent();
+        alarmForegroundNotificationBuilder.addAction(R.drawable.icon_stop, getResources().getString(R.string.notification_stop_alarm_text), stopPendingIntent);
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
             alarmForegroundNotificationBuilder.setVibrate(null);
             alarmForegroundNotificationBuilder.setSound(null);

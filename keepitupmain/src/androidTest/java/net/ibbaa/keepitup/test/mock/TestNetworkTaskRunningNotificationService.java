@@ -34,7 +34,7 @@ public class TestNetworkTaskRunningNotificationService extends NetworkTaskRunnin
 
     public TestNetworkTaskRunningNotificationService() {
         this.startNetworkTaskRunningNotificationForegroundCalls = new ArrayList<>();
-        stopNetworkTaskRunningNotificationForegroundCalls = new ArrayList<>();
+        this.stopNetworkTaskRunningNotificationForegroundCalls = new ArrayList<>();
         attachBaseContext(TestRegistry.getContext());
     }
 
@@ -47,6 +47,7 @@ public class TestNetworkTaskRunningNotificationService extends NetworkTaskRunnin
         return Collections.unmodifiableList(startNetworkTaskRunningNotificationForegroundCalls);
     }
 
+    @SuppressWarnings("unused")
     public List<StopNetworkTaskRunningNotificationForegroundCall> getStopNetworkTaskRunningNotificationForegroundCalls() {
         return Collections.unmodifiableList(stopNetworkTaskRunningNotificationForegroundCalls);
     }

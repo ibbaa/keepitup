@@ -19,6 +19,7 @@ package net.ibbaa.keepitup.service;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
+import android.os.Build;
 import android.os.PowerManager;
 
 import androidx.annotation.NonNull;
@@ -36,6 +37,7 @@ import net.ibbaa.keepitup.model.NotificationType;
 import net.ibbaa.keepitup.notification.NotificationHandler;
 import net.ibbaa.keepitup.resources.PreferenceManager;
 import net.ibbaa.keepitup.resources.ServiceFactoryContributor;
+import net.ibbaa.keepitup.service.alarm.AlarmService;
 import net.ibbaa.keepitup.service.network.DNSLookup;
 import net.ibbaa.keepitup.service.network.DNSLookupResult;
 import net.ibbaa.keepitup.ui.permission.IPermissionManager;
@@ -253,6 +255,21 @@ public abstract class NetworkTaskWorker implements Runnable {
 
     private void sendNotification(NetworkTask task, LogEntry logEntry) {
         Log.d(NetworkTaskWorker.class.getName(), "sendNotification for network task " + task + " and log entry " + logEntry);
+        if (!getPermissionManager().hasPostNotificationsPermission(getContext())) {
+            Log.e(NotificationHandler.class.getName(), "Cannot send notification because of missing permission.");
+            return;
+        }
+        PreferenceManager preferenceManager = new PreferenceManager(getContext());
+        if (task.isHighPrio() && preferenceManager.getPreferenceAlarmOnHighPrio()) {
+            Log.d(NetworkTaskWorker.class.getName(), "Starting alarm service...");
+            Intent intent = new Intent(getContext(), AlarmService.class);
+            intent.setPackage(getContext().getPackageName());
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                getContext().startForegroundService(intent);
+            } else {
+                getContext().startService(intent);
+            }
+        }
         notificationHandler.sendMessageNotificationForNetworkTask(task, logEntry);
     }
 

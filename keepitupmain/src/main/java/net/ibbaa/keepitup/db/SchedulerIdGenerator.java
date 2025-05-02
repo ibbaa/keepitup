@@ -37,6 +37,7 @@ public class SchedulerIdGenerator {
 
     public final static int ERROR_SCHEDULER_ID = -1;
     public final static int TIME_BASED_SCHEDULER_ID = -10;
+    public final static int STOP_ALARM_SERVICE_ID = -20;
 
     private final static SecureRandom randomGenerator = new SecureRandom();
 
@@ -82,7 +83,7 @@ public class SchedulerIdGenerator {
     }
 
     private boolean isInvalidId(int schedulerId) {
-        return schedulerId == ERROR_SCHEDULER_ID || schedulerId == TIME_BASED_SCHEDULER_ID || notificationHandler.getReservedIDs().contains(schedulerId);
+        return schedulerId == ERROR_SCHEDULER_ID || schedulerId == TIME_BASED_SCHEDULER_ID || schedulerId == STOP_ALARM_SERVICE_ID || notificationHandler.getReservedIDs().contains(schedulerId);
     }
 
     private long readSchedulerIdCountFromNetworkTaskTable(int schedulerId, SQLiteDatabase db) {

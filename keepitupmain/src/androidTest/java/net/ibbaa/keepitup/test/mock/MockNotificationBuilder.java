@@ -16,10 +16,13 @@
 
 package net.ibbaa.keepitup.test.mock;
 
+import android.app.PendingIntent;
 import android.content.Context;
 
 import androidx.annotation.NonNull;
 import androidx.core.app.NotificationCompat;
+
+import org.jspecify.annotations.Nullable;
 
 public class MockNotificationBuilder extends NotificationCompat.Builder {
 
@@ -28,6 +31,7 @@ public class MockNotificationBuilder extends NotificationCompat.Builder {
     private NotificationCompat.Style style;
     private int priority;
     private int smallIcon;
+    private CharSequence actionText;
 
     public MockNotificationBuilder(@NonNull Context context, @NonNull String channelId) {
         super(context, channelId);
@@ -68,6 +72,12 @@ public class MockNotificationBuilder extends NotificationCompat.Builder {
         return super.setSmallIcon(icon);
     }
 
+    @Override
+    public NotificationCompat.@org.jspecify.annotations.NonNull Builder addAction(int icon, @Nullable CharSequence title, @Nullable PendingIntent intent) {
+        this.actionText = title;
+        return super.addAction(icon, title, intent);
+    }
+
     public CharSequence getContentTitle() {
         return contentTitle;
     }
@@ -87,5 +97,9 @@ public class MockNotificationBuilder extends NotificationCompat.Builder {
 
     public int getSmallIcon() {
         return smallIcon;
+    }
+
+    public CharSequence getActionText() {
+        return actionText;
     }
 }

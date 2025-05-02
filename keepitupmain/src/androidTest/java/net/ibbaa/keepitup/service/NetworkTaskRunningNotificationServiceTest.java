@@ -18,7 +18,6 @@ package net.ibbaa.keepitup.service;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import android.app.Notification;
@@ -112,8 +111,6 @@ public class NetworkTaskRunningNotificationServiceTest {
         assertTrue(future1.isCancelled());
         assertTrue(future2.isCancelled());
         assertTrue(service.wasStopNetworkTaskRunningNotificationForegroundCalled());
-        TestNetworkTaskRunningNotificationService.StopNetworkTaskRunningNotificationForegroundCall stopNetworkTaskRunningNotificationForegroundCall = service.getStopNetworkTaskRunningNotificationForegroundCalls().get(0);
-        assertNotNull(stopNetworkTaskRunningNotificationForegroundCall);
     }
 
     private NetworkTask getNetworkTask() {

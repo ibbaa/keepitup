@@ -21,6 +21,7 @@
     <string name="notification_highprio_error_channel_id">KEEPITUP_HIGH_PRIO_ERROR_NOTIFICATION_CHANNEL</string>
     <string name="notification_highprio_error_channel_name">Keep it up high priority error notifications</string>
     <string name="notification_highprio_error_channel_description">Keep it up high priority error notifications</string>
+    <string name="notification_stop_alarm_text">Stop alarm</string>
     <string name="notification_foreground_channel_id">KEEPITUP_FOREGROUND_NOTIFICATION_CHANNEL</string>
     <string name="notification_foreground_channel_name">Keep it up foreground notifications</string>
     <string name="notification_foreground_channel_description">Keep it up foreground notifications</string>
