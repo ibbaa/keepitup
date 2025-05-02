@@ -40,6 +40,7 @@ import net.ibbaa.keepitup.resources.PreferenceManager;
 import net.ibbaa.keepitup.service.IAlarmManager;
 import net.ibbaa.keepitup.service.NetworkTaskProcessServiceScheduler;
 import net.ibbaa.keepitup.service.SystemAlarmManager;
+import net.ibbaa.keepitup.service.alarm.AlarmService;
 import net.ibbaa.keepitup.ui.adapter.NetworkTaskAdapter;
 import net.ibbaa.keepitup.ui.adapter.NetworkTaskUIWrapper;
 import net.ibbaa.keepitup.ui.dialog.AlarmPermissionDialog;
@@ -96,7 +97,68 @@ public class NetworkTaskMainActivity extends RecyclerViewBaseActivity implements
         initRecyclerView();
         prepareAddImageButton();
         startForegroundServiceDelayed();
+    }
+
+    private void prepareAddImageButton() {
+        Log.d(NetworkTaskMainActivity.class.getName(), "prepareAddImageButton");
+        ImageView addImage = findViewById(R.id.imageview_activity_main_network_task_add);
+        addImage.setOnClickListener(this::onMainAddClicked);
+    }
+
+    private void startForegroundServiceDelayed() {
+        Log.d(NetworkTaskMainActivity.class.getName(), "startForegroundServiceDelayed");
+        List<NetworkTaskUIWrapper> networkTasks = ((NetworkTaskAdapter) getAdapter()).getAllItems();
+        for (NetworkTaskUIWrapper wrapper : networkTasks) {
+            if (wrapper.getNetworkTask().isRunning()) {
+                getNetworkTaskProcessServiceScheduler().startServiceDelayed();
+                return;
+            }
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        Log.d(NetworkTaskMainActivity.class.getName(), "onResume");
+        super.onResume();
+        registerReceiver();
+        NetworkTaskMainUIInitTask uiInitTask = getUIInitTask((NetworkTaskAdapter) getAdapter());
+        ThreadUtil.execute(uiInitTask);
         checkPermissions();
+        checkActiveAlarm();
+    }
+
+    @Override
+    protected void onPause() {
+        Log.d(NetworkTaskMainActivity.class.getName(), "onPause");
+        super.onPause();
+        unregisterReceiver();
+    }
+
+    private void registerReceiver() {
+        Log.d(NetworkTaskMainActivity.class.getName(), "registerReceiver");
+        unregisterReceiver();
+        broadcastReceiver = new NetworkTaskMainUIBroadcastReceiver(this, (NetworkTaskAdapter) getAdapter());
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            registerReceiver(broadcastReceiver, new IntentFilter(NetworkTaskMainUIBroadcastReceiver.class.getName()), Context.RECEIVER_NOT_EXPORTED);
+        } else {
+            registerReceiver(broadcastReceiver, new IntentFilter(NetworkTaskMainUIBroadcastReceiver.class.getName()));
+        }
+    }
+
+    private void unregisterReceiver() {
+        Log.d(NetworkTaskMainActivity.class.getName(), "unregisterReceiver");
+        if (broadcastReceiver != null) {
+            unregisterReceiver(broadcastReceiver);
+            broadcastReceiver = null;
+        }
+    }
+
+    private void checkActiveAlarm() {
+        Log.d(NetworkTaskMainActivity.class.getName(), "checkActiveAlarm");
+        if (AlarmService.isRunning()) {
+            Log.d(NetworkTaskMainActivity.class.getName(), "Alarm is active");
+            showConfirmDialog(getResources().getString(R.string.text_dialog_confirm_dismiss_active_alarm), getResources().getString(R.string.text_dialog_confirm_dismiss_active_alarm_description), ConfirmDialog.Type.DISMISSALARM);
+        }
     }
 
     private void checkPermissions() {
@@ -138,62 +200,10 @@ public class NetworkTaskMainActivity extends RecyclerViewBaseActivity implements
         return createStoragePermissionManager().hasPersistentPermission(this, preferenceManager.getPreferenceArbitraryDownloadFolder());
     }
 
-    private void prepareAddImageButton() {
-        Log.d(NetworkTaskMainActivity.class.getName(), "prepareAddImageButton");
-        ImageView addImage = findViewById(R.id.imageview_activity_main_network_task_add);
-        addImage.setOnClickListener(this::onMainAddClicked);
-    }
-
     private void showAlarmPermissionDialog() {
         Log.d(NetworkTaskMainActivity.class.getName(), "showAlarmPermissionDialog");
         AlarmPermissionDialog alarmPermissionDialog = new AlarmPermissionDialog();
         alarmPermissionDialog.show(getSupportFragmentManager(), AlarmPermissionDialog.class.getName());
-    }
-
-    private void startForegroundServiceDelayed() {
-        Log.d(NetworkTaskMainActivity.class.getName(), "startForegroundServiceDelayed");
-        List<NetworkTaskUIWrapper> networkTasks = ((NetworkTaskAdapter) getAdapter()).getAllItems();
-        for (NetworkTaskUIWrapper wrapper : networkTasks) {
-            if (wrapper.getNetworkTask().isRunning()) {
-                getNetworkTaskProcessServiceScheduler().startServiceDelayed();
-                return;
-            }
-        }
-    }
-
-    @Override
-    protected void onResume() {
-        Log.d(NetworkTaskMainActivity.class.getName(), "onResume");
-        super.onResume();
-        registerReceiver();
-        NetworkTaskMainUIInitTask uiInitTask = getUIInitTask((NetworkTaskAdapter) getAdapter());
-        ThreadUtil.execute(uiInitTask);
-    }
-
-    @Override
-    protected void onPause() {
-        Log.d(NetworkTaskMainActivity.class.getName(), "onPause");
-        super.onPause();
-        unregisterReceiver();
-    }
-
-    private void registerReceiver() {
-        Log.d(NetworkTaskMainActivity.class.getName(), "registerReceiver");
-        unregisterReceiver();
-        broadcastReceiver = new NetworkTaskMainUIBroadcastReceiver(this, (NetworkTaskAdapter) getAdapter());
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            registerReceiver(broadcastReceiver, new IntentFilter(NetworkTaskMainUIBroadcastReceiver.class.getName()), Context.RECEIVER_NOT_EXPORTED);
-        } else {
-            registerReceiver(broadcastReceiver, new IntentFilter(NetworkTaskMainUIBroadcastReceiver.class.getName()));
-        }
-    }
-
-    private void unregisterReceiver() {
-        Log.d(NetworkTaskMainActivity.class.getName(), "unregisterReceiver");
-        if (broadcastReceiver != null) {
-            unregisterReceiver(broadcastReceiver);
-            broadcastReceiver = null;
-        }
     }
 
     private List<NetworkTaskUIWrapper> readNetworkTasksFromDatabase() {
@@ -399,6 +409,9 @@ public class NetworkTaskMainActivity extends RecyclerViewBaseActivity implements
             } else {
                 Log.e(NetworkTaskMainActivity.class.getName(), ConfirmDialog.class.getSimpleName() + " arguments do not contain position key " + confirmDialog.getPositionKey());
             }
+        } else if (ConfirmDialog.Type.DISMISSALARM.equals(type)) {
+            Log.d(NetworkTaskMainActivity.class.getName(), "Stopping alarm service...");
+            stopService(new Intent(this, AlarmService.class));
         } else {
             Log.e(NetworkTaskMainActivity.class.getName(), "Unknown type " + type);
         }

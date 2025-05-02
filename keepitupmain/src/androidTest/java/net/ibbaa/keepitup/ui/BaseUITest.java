@@ -80,6 +80,7 @@ import org.junit.Before;
 import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.BooleanSupplier;
 
 public abstract class BaseUITest {
 
@@ -312,6 +313,18 @@ public abstract class BaseUITest {
 
     public static Matcher<View> withValue(int value) {
         return new NumberPickerValueMatcher(value);
+    }
+
+    @SuppressWarnings({"BusyWait"})
+    public static void waitUntil(BooleanSupplier supplier, int count) {
+        while (!supplier.getAsBoolean() && count > 0) {
+            count--;
+            try {
+                Thread.sleep(100);
+            } catch (InterruptedException exc) {
+                throw new RuntimeException(exc);
+            }
+        }
     }
 
     public static String getText(final Matcher<View> matcher) {

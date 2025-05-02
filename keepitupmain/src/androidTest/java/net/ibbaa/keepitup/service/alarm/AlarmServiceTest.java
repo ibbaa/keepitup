@@ -48,12 +48,12 @@ public class AlarmServiceTest {
     @Before
     public void beforeEachTestMethod() {
         service = new TestAlarmService();
+        service.reset();
     }
 
     @Test
     public void testOnCreate() {
         service.onCreate();
-        service.reset();
         assertTrue(service.wasStartAlarmForegroundCalled());
         TestAlarmService.StartAlarmForegroundCall startAlarmForegroundCall = service.getStartAlarmForegroundCalls().get(0);
         assertEquals(ServiceInfo.FOREGROUND_SERVICE_TYPE_MEDIA_PLAYBACK, startAlarmForegroundCall.foregroundServiceType());
@@ -77,16 +77,16 @@ public class AlarmServiceTest {
     public void testStartStopService() throws Exception {
         Intent startIntent = new Intent(TestRegistry.getContext(), AlarmService.class);
         startIntent.setPackage(TestRegistry.getContext().getPackageName());
-        assertFalse(TestAlarmService.isRunning());
+        assertFalse(AlarmService.isRunning());
         TestRegistry.getContext().startForegroundService(startIntent);
         waitUntil(AlarmService::isRunning);
-        assertTrue(TestAlarmService.isRunning());
+        assertTrue(AlarmService.isRunning());
         Intent stopIntent = new Intent(TestRegistry.getContext(), StopAlarmReceiver.class);
         stopIntent.setPackage(TestRegistry.getContext().getPackageName());
         PendingIntent stopPendingIntent = PendingIntent.getBroadcast(TestRegistry.getContext(), SchedulerIdGenerator.STOP_ALARM_SERVICE_ID, stopIntent, PendingIntent.FLAG_IMMUTABLE | PendingIntent.FLAG_UPDATE_CURRENT);
         stopPendingIntent.send();
         waitUntil(() -> !AlarmService.isRunning());
-        assertFalse(TestAlarmService.isRunning());
+        assertFalse(AlarmService.isRunning());
     }
 
     @SuppressWarnings({"BusyWait"})

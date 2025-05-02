@@ -115,6 +115,14 @@ public abstract class RecyclerViewBaseActivity extends AppCompatActivity impleme
         showDialog(confirmDialog, ConfirmDialog.class.getName());
     }
 
+    protected void showConfirmDialog(String confirmMessage, String description, ConfirmDialog.Type type) {
+        Log.d(SettingsInputActivity.class.getName(), "showConfirmDialog with message " + confirmMessage + " and description " + description + " for type " + type);
+        ConfirmDialog confirmDialog = new ConfirmDialog();
+        Bundle bundle = BundleUtil.stringsToBundle(new String[]{confirmDialog.getMessageKey(), confirmDialog.getDescriptionKey(), confirmDialog.getTypeKey()}, new String[]{confirmMessage, description, type.name()});
+        confirmDialog.setArguments(bundle);
+        showDialog(confirmDialog, ConfirmDialog.class.getName());
+    }
+
     private void showDialog(DialogFragment dialog, String name) {
         try {
             dialog.show(getSupportFragmentManager(), name);

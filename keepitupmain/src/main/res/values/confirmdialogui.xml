@@ -22,8 +22,10 @@
     <string name="text_dialog_confirm_delete_interval">Really delete?</string>
     <string name="text_dialog_confirm_config_reset">Reset configuration</string>
     <string name="text_dialog_confirm_config_import">Import configuration</string>
+    <string name="text_dialog_confirm_dismiss_active_alarm">Dismiss alarm?</string>
     <string name="text_dialog_confirm_config_export_existing_file">Export configuration</string>
     <string name="text_dialog_confirm_config_reset_description">This will delete all network tasks and log entries, reset the configuration to default settings and cannot be undone.</string>
     <string name="text_dialog_confirm_config_import_description">The import will overwrite all existing network tasks, log entries and the configuration. This cannot be undone.</string>
     <string name="text_dialog_confirm_config_export_existing_file_description">The specified file exists and will be overwritten.</string>
+    <string name="text_dialog_confirm_dismiss_active_alarm_description">An alarm sound is playing because of a failed high priority task. Dismiss the alarm now?</string>
 </resources>

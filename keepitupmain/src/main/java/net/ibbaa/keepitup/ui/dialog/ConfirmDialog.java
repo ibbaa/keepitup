@@ -46,6 +46,7 @@ public class ConfirmDialog extends DialogFragmentBase {
         RESETCONFIG,
         IMPORTCONFIG,
         EXPORTCONFIGEXISTINGFILE,
+        DISMISSALARM
     }
 
     @Override

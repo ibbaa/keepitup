@@ -35,6 +35,9 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertTrue;
 
+import android.app.PendingIntent;
+import android.content.Intent;
+
 import androidx.test.core.app.ActivityScenario;
 import androidx.test.espresso.action.ViewActions;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
@@ -42,11 +45,14 @@ import androidx.test.filters.MediumTest;
 import androidx.test.platform.app.InstrumentationRegistry;
 
 import net.ibbaa.keepitup.R;
+import net.ibbaa.keepitup.db.SchedulerIdGenerator;
 import net.ibbaa.keepitup.model.AccessType;
 import net.ibbaa.keepitup.model.AccessTypeData;
 import net.ibbaa.keepitup.model.LogEntry;
 import net.ibbaa.keepitup.model.NetworkTask;
 import net.ibbaa.keepitup.model.SchedulerState;
+import net.ibbaa.keepitup.service.alarm.AlarmService;
+import net.ibbaa.keepitup.service.alarm.StopAlarmReceiver;
 import net.ibbaa.keepitup.test.mock.MockPermissionManager;
 import net.ibbaa.keepitup.test.mock.TestRegistry;
 import net.ibbaa.keepitup.ui.adapter.NetworkTaskAdapter;
@@ -110,6 +116,30 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
         onView(allOf(withId(R.id.textview_list_item_network_task_notification), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 1))).check(matches(withText("Notifications: no")));
         onView(allOf(withId(R.id.textview_list_item_network_task_last_exec_timestamp), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 1))).check(matches(withText("Last execution: not executed")));
         activityScenario.close();
+    }
+
+    @Test
+    public void testDismissAlarmDialogOk() {
+        startAlarmService();
+        assertTrue(AlarmService.isRunning());
+        ActivityScenario<?> activityScenario = launchRecyclerViewBaseActivity(NetworkTaskMainActivity.class);
+        injectPermissionManager(activityScenario);
+        assertEquals(1, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
+        onView(withId(R.id.imageview_dialog_confirm_ok)).perform(click());
+        waitUntil(() -> !AlarmService.isRunning(), 30);
+        assertFalse(AlarmService.isRunning());
+    }
+
+    @Test
+    public void testDismissAlarmDialogCancel() throws Exception {
+        startAlarmService();
+        assertTrue(AlarmService.isRunning());
+        ActivityScenario<?> activityScenario = launchRecyclerViewBaseActivity(NetworkTaskMainActivity.class);
+        injectPermissionManager(activityScenario);
+        assertEquals(1, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
+        onView(withId(R.id.imageview_dialog_confirm_cancel)).perform(click());
+        assertTrue(AlarmService.isRunning());
+        stopAlarmService();
     }
 
     @Test
@@ -621,6 +651,21 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
         onView(allOf(withId(R.id.textview_list_item_network_task_onlywifi), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 0))).check(matches(withText("Only on WiFi: no")));
         onView(allOf(withId(R.id.textview_list_item_network_task_notification), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 0))).check(matches(withText("Notifications: no")));
         activityScenario.close();
+    }
+
+    private void startAlarmService() {
+        Intent startIntent = new Intent(TestRegistry.getContext(), AlarmService.class);
+        startIntent.setPackage(TestRegistry.getContext().getPackageName());
+        TestRegistry.getContext().startForegroundService(startIntent);
+        waitUntil(AlarmService::isRunning, 30);
+    }
+
+    private void stopAlarmService() throws Exception {
+        Intent stopIntent = new Intent(TestRegistry.getContext(), StopAlarmReceiver.class);
+        stopIntent.setPackage(TestRegistry.getContext().getPackageName());
+        PendingIntent stopPendingIntent = PendingIntent.getBroadcast(TestRegistry.getContext(), SchedulerIdGenerator.STOP_ALARM_SERVICE_ID, stopIntent, PendingIntent.FLAG_IMMUTABLE | PendingIntent.FLAG_UPDATE_CURRENT);
+        stopPendingIntent.send();
+        waitUntil(() -> !AlarmService.isRunning(), 30);
     }
 
     private void setTaskExecuted(ActivityScenario<?> activityScenario, int position, Calendar calendar, boolean success, String message) {
