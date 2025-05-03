@@ -26,14 +26,22 @@ import androidx.annotation.Nullable;
 import net.ibbaa.keepitup.R;
 import net.ibbaa.keepitup.logging.Log;
 import net.ibbaa.keepitup.resources.ServiceFactoryContributor;
+import net.ibbaa.keepitup.service.NetworkTaskProcessServiceScheduler;
 
 public class AlarmService extends Service {
 
     private static boolean isRunning = false;
 
     private IAlarmMediaPlayer mediaPlayer;
+    private NetworkTaskProcessServiceScheduler scheduler;
     private Handler handler;
     private Runnable timeoutCallback;
+
+    @Override
+    public void onCreate() {
+        Log.d(AlarmService.class.getName(), "onCreate");
+        scheduler = createNetworkTaskProcessServiceScheduler();
+    }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
@@ -43,6 +51,7 @@ public class AlarmService extends Service {
         int playbackTime = this.getResources().getInteger(R.integer.task_alarm_duration);
         int intentPlaybackTime = intent.getIntExtra(getResources().getString(R.string.task_alarm_duration_key), playbackTime);
         startPlayTimer(intentPlaybackTime);
+        scheduler.restartForegroundService(true);
         return START_STICKY;
     }
 
@@ -52,6 +61,7 @@ public class AlarmService extends Service {
         setRunning(false);
         stopMediaPlayer();
         stopPlayTimer();
+        scheduler.restartForegroundService(false);
     }
 
     private synchronized void startMediaPlayer() {
@@ -108,8 +118,16 @@ public class AlarmService extends Service {
         return mediaPlayer;
     }
 
+    public NetworkTaskProcessServiceScheduler getNetworkTaskProcessServiceScheduler() {
+        return scheduler;
+    }
+
     private IAlarmMediaPlayer createAlarmMediaPlayer() {
         ServiceFactoryContributor factoryContributor = new ServiceFactoryContributor(this);
         return factoryContributor.createServiceFactory().createAlarmMediaPlayer(this);
+    }
+
+    public NetworkTaskProcessServiceScheduler createNetworkTaskProcessServiceScheduler() {
+        return new NetworkTaskProcessServiceScheduler(this);
     }
 }

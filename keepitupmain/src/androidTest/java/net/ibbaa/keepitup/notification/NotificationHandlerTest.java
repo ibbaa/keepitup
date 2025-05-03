@@ -298,6 +298,20 @@ public class NotificationHandlerTest {
         assertEquals(R.drawable.icon_notification_foreground, notificationBuilder.getSmallIcon());
         assertTrue(notificationBuilder.getStyle() instanceof NotificationCompat.BigTextStyle);
         assertEquals(NotificationCompat.PRIORITY_LOW, notificationBuilder.getPriority());
+        assertNull(notificationBuilder.getActionText());
+    }
+
+    @Test
+    public void testBuildForegroundNotificationWithStopAlarmAction() {
+        Notification notification = notificationHandler.buildForegroundNotification(true);
+        assertEquals("KEEPITUP_FOREGROUND_NOTIFICATION_CHANNEL", notification.getChannelId());
+        MockNotificationBuilder notificationBuilder = (MockNotificationBuilder) notificationHandler.getForegroundNotificationBuilder();
+        assertEquals("Keep it up", notificationBuilder.getContentTitle());
+        assertEquals("Network task running...", notificationBuilder.getContentText());
+        assertEquals(R.drawable.icon_notification_foreground, notificationBuilder.getSmallIcon());
+        assertTrue(notificationBuilder.getStyle() instanceof NotificationCompat.BigTextStyle);
+        assertEquals(NotificationCompat.PRIORITY_LOW, notificationBuilder.getPriority());
+        assertEquals("Stop alarm", notificationBuilder.getActionText());
     }
 
     @Test
@@ -305,6 +319,16 @@ public class NotificationHandlerTest {
         permissionManager.setHasPostNotificationsPermission(false);
         Notification notification = notificationHandler.buildForegroundNotification();
         assertNull(notification);
+    }
+
+    @Test
+    public void testSendForegroundNotification() {
+        Notification notification = notificationHandler.buildForegroundNotification();
+        notificationHandler.sendForegroundNotification(notification);
+        assertTrue(notificationManager.wasNotifyCalled());
+        MockNotificationManager.NotifyCall notifyCall = notificationManager.getNotifyCalls().get(0);
+        assertEquals(NotificationHandler.NOTIFICATION_FOREGROUND_NETWORKTASK_RUNNING_SERVICE_ID, notifyCall.id());
+        assertEquals("KEEPITUP_FOREGROUND_NOTIFICATION_CHANNEL", notifyCall.notification().getChannelId());
     }
 
     @Test

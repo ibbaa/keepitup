@@ -38,11 +38,13 @@ import net.ibbaa.keepitup.util.StringUtil;
 public class NetworkTaskRunningNotificationService extends Service {
 
     private NetworkTaskProcessServiceScheduler scheduler;
+    private NotificationHandler notificationHandler;
 
     @Override
     public void onCreate() {
         Log.d(NetworkTaskRunningNotificationService.class.getName(), "onCreate");
         scheduler = new NetworkTaskProcessServiceScheduler(this);
+        notificationHandler = new NotificationHandler(this, getPermissionManager());
         NotificationHandler notificationHandler = new NotificationHandler(this, getPermissionManager());
         Notification notification = notificationHandler.buildForegroundNotification();
         int foregroundServiceType = 0;
@@ -64,6 +66,10 @@ public class NetworkTaskRunningNotificationService extends Service {
         return NetworkTaskRunningNotificationService.class.getSimpleName() + "RescheduleDelay";
     }
 
+    public static String getWithAlarmKey() {
+        return NetworkTaskRunningNotificationService.class.getSimpleName() + "WithAlarm";
+    }
+
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         Log.d(NetworkTaskRunningNotificationService.class.getName(), "onStartCommand");
@@ -76,6 +82,7 @@ public class NetworkTaskRunningNotificationService extends Service {
             Log.e(NetworkTaskRunningNotificationService.class.getName(), "extras bundle is null");
             return START_NOT_STICKY;
         }
+        updateNotification(extras);
         NetworkTaskProcessServiceScheduler.Delay delay = getDelay(extras);
         if (delay == null) {
             Log.e(NetworkTaskRunningNotificationService.class.getName(), "Delay is invalid");
@@ -86,6 +93,13 @@ public class NetworkTaskRunningNotificationService extends Service {
         Log.d(NetworkTaskRunningNotificationService.class.getName(), "Delay is " + delay);
         getScheduler().reschedule(task, delay);
         return START_NOT_STICKY;
+    }
+
+    private void updateNotification(Bundle extras) {
+        Log.d(NetworkTaskRunningNotificationService.class.getName(), "updateNotification");
+        boolean withAlarm = getWithAlarm(extras);
+        Notification notification = notificationHandler.buildForegroundNotification(withAlarm);
+        notificationHandler.sendForegroundNotification(notification);
     }
 
     private NetworkTaskProcessServiceScheduler.Delay getDelay(Bundle extras) {
@@ -101,6 +115,11 @@ public class NetworkTaskRunningNotificationService extends Service {
             Log.e(NetworkTaskRunningNotificationService.class.getName(), NetworkTaskProcessServiceScheduler.Delay.class.getSimpleName() + "." + delayString + " does not exist", exc);
             return null;
         }
+    }
+
+    private boolean getWithAlarm(Bundle extras) {
+        Log.d(NetworkTaskRunningNotificationService.class.getName(), "getWithAlarm");
+        return BundleUtil.booleanFromBundle(getWithAlarmKey(), extras);
     }
 
     @Override
@@ -123,6 +142,10 @@ public class NetworkTaskRunningNotificationService extends Service {
 
     public NetworkTaskProcessServiceScheduler getScheduler() {
         return scheduler;
+    }
+
+    public NotificationHandler getNotificationHandler() {
+        return notificationHandler;
     }
 
     public IPermissionManager getPermissionManager() {

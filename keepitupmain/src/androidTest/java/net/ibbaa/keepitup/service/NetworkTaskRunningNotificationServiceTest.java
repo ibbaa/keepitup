@@ -18,6 +18,7 @@ package net.ibbaa.keepitup.service;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import android.app.Notification;
@@ -31,8 +32,11 @@ import androidx.test.filters.MediumTest;
 import net.ibbaa.keepitup.db.NetworkTaskDAO;
 import net.ibbaa.keepitup.model.AccessType;
 import net.ibbaa.keepitup.model.NetworkTask;
+import net.ibbaa.keepitup.notification.NotificationHandler;
 import net.ibbaa.keepitup.test.mock.MockAlarmManager;
 import net.ibbaa.keepitup.test.mock.MockFuture;
+import net.ibbaa.keepitup.test.mock.MockNotificationBuilder;
+import net.ibbaa.keepitup.test.mock.MockNotificationManager;
 import net.ibbaa.keepitup.test.mock.TestNetworkTaskRunningNotificationService;
 import net.ibbaa.keepitup.test.mock.TestRegistry;
 
@@ -49,12 +53,16 @@ public class NetworkTaskRunningNotificationServiceTest {
     private NetworkTaskProcessServiceScheduler scheduler;
     private NetworkTaskDAO networkTaskDAO;
     private MockAlarmManager alarmManager;
+    private NotificationHandler notificationHandler;
+    private MockNotificationManager notificationManager;
 
     @Before
     public void beforeEachTestMethod() {
         service = new TestNetworkTaskRunningNotificationService();
         service.onCreate();
         service.reset();
+        notificationHandler = service.getNotificationHandler();
+        notificationManager = (MockNotificationManager) notificationHandler.getNotificationManager();
         scheduler = service.getScheduler();
         scheduler.cancelAll();
         NetworkTaskProcessServiceScheduler.getNetworkTaskProcessPool().reset();
@@ -111,6 +119,26 @@ public class NetworkTaskRunningNotificationServiceTest {
         assertTrue(future1.isCancelled());
         assertTrue(future2.isCancelled());
         assertTrue(service.wasStopNetworkTaskRunningNotificationForegroundCalled());
+    }
+
+    @Test
+    public void testUpdateNotification() {
+        Intent intent = new Intent(TestRegistry.getContext(), TestNetworkTaskRunningNotificationService.class);
+        service.onStartCommand(intent, 1, 1);
+        assertFalse(notificationManager.wasNotifyCalled());
+        intent.putExtra(TestNetworkTaskRunningNotificationService.getWithAlarmKey(), false);
+        service.onStartCommand(intent, 1, 1);
+        assertTrue(notificationManager.wasNotifyCalled());
+        MockNotificationBuilder notificationBuilder = (MockNotificationBuilder) notificationHandler.getForegroundNotificationBuilder();
+        assertEquals("Keep it up", notificationBuilder.getContentTitle());
+        assertEquals("Network task running...", notificationBuilder.getContentText());
+        assertNull(notificationBuilder.getActionText());
+        intent.putExtra(TestNetworkTaskRunningNotificationService.getWithAlarmKey(), true);
+        service.onStartCommand(intent, 1, 1);
+        notificationBuilder = (MockNotificationBuilder) notificationHandler.getForegroundNotificationBuilder();
+        assertEquals("Keep it up", notificationBuilder.getContentTitle());
+        assertEquals("Network task running...", notificationBuilder.getContentText());
+        assertEquals("Stop alarm", notificationBuilder.getActionText());
     }
 
     private NetworkTask getNetworkTask() {

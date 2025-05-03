@@ -110,7 +110,7 @@ public class NetworkTaskMainActivity extends RecyclerViewBaseActivity implements
         List<NetworkTaskUIWrapper> networkTasks = ((NetworkTaskAdapter) getAdapter()).getAllItems();
         for (NetworkTaskUIWrapper wrapper : networkTasks) {
             if (wrapper.getNetworkTask().isRunning()) {
-                getNetworkTaskProcessServiceScheduler().startServiceDelayed();
+                getNetworkTaskProcessServiceScheduler().restartForegroundService();
                 return;
             }
         }

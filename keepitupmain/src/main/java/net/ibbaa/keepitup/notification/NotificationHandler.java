@@ -187,6 +187,15 @@ public class NotificationHandler {
         notificationManager.notify(task.getSchedulerId(), notification);
     }
 
+    public void sendForegroundNotification(Notification notification) {
+        Log.d(NotificationHandler.class.getName(), "sendForegroundNotification");
+        if (!permissionManager.hasPostNotificationsPermission(getContext())) {
+            Log.e(NotificationHandler.class.getName(), "Cannot send notification because of missing permission.");
+            return;
+        }
+        notificationManager.notify(NOTIFICATION_FOREGROUND_NETWORKTASK_RUNNING_SERVICE_ID, notification);
+    }
+
     private Notification buildMessageNotificationForNetworkTask(NetworkTask task, LogEntry logEntry) {
         Log.d(NotificationHandler.class.getName(), "buildMessageNotificationForNetworkTask, network task is " + task + ", log entry is " + logEntry);
         String title = getResources().getString(R.string.notification_title);
@@ -254,6 +263,10 @@ public class NotificationHandler {
     }
 
     public Notification buildForegroundNotification() {
+        return buildForegroundNotification(false);
+    }
+
+    public Notification buildForegroundNotification(boolean withAlarm) {
         Log.d(NotificationHandler.class.getName(), "buildForegroundNotification");
         if (!permissionManager.hasPostNotificationsPermission(getContext())) {
             Log.e(NotificationHandler.class.getName(), "Cannot build foreground notification because of missing permission. Returning null.");
@@ -269,6 +282,10 @@ public class NotificationHandler {
         }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
             foregroundNotificationBuilder.setForegroundServiceBehavior(Notification.FOREGROUND_SERVICE_IMMEDIATE);
+        }
+        if (withAlarm) {
+            PendingIntent stopPendingIntent = createStopPendingIntent();
+            foregroundNotificationBuilder.addAction(R.drawable.icon_stop, getResources().getString(R.string.notification_stop_alarm_text), stopPendingIntent);
         }
         return foregroundNotificationBuilder.build();
     }

@@ -16,6 +16,7 @@
 
 package net.ibbaa.keepitup.test.mock;
 
+import net.ibbaa.keepitup.service.NetworkTaskProcessServiceScheduler;
 import net.ibbaa.keepitup.service.alarm.AlarmService;
 
 import java.util.ArrayList;
@@ -53,6 +54,11 @@ public class TestAlarmService extends AlarmService {
     @Override
     public synchronized void stopPlayTimer() {
         stopPlayTimerCalls.add(new StopPlayTimerCall());
+    }
+
+    @Override
+    public NetworkTaskProcessServiceScheduler createNetworkTaskProcessServiceScheduler() {
+        return new TestNetworkTaskProcessServiceScheduler(TestRegistry.getContext());
     }
 
     public record StartPlayTimerCall(int playbackTime) {

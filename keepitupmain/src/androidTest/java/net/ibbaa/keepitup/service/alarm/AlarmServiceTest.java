@@ -31,6 +31,7 @@ import net.ibbaa.keepitup.R;
 import net.ibbaa.keepitup.db.SchedulerIdGenerator;
 import net.ibbaa.keepitup.test.mock.MockAlarmMediaPlayer;
 import net.ibbaa.keepitup.test.mock.TestAlarmService;
+import net.ibbaa.keepitup.test.mock.TestNetworkTaskProcessServiceScheduler;
 import net.ibbaa.keepitup.test.mock.TestRegistry;
 
 import org.junit.Before;
@@ -44,10 +45,13 @@ import java.util.function.BooleanSupplier;
 public class AlarmServiceTest {
 
     private TestAlarmService service;
+    private TestNetworkTaskProcessServiceScheduler scheduler;
 
     @Before
     public void beforeEachTestMethod() {
         service = new TestAlarmService();
+        service.onCreate();
+        scheduler = (TestNetworkTaskProcessServiceScheduler) service.getNetworkTaskProcessServiceScheduler();
         service.reset();
     }
 
@@ -58,15 +62,20 @@ public class AlarmServiceTest {
         int startFlag = service.onStartCommand(intent, 1, 1);
         assertEquals(Service.START_STICKY, startFlag);
         assertTrue(TestAlarmService.isRunning());
+        assertTrue(scheduler.wasRestartForegroundServiceCalled());
+        assertTrue(scheduler.getRestartForegroundServiceCalls().get(0).withAlarm());
         MockAlarmMediaPlayer mediaPlayer = (MockAlarmMediaPlayer) service.getMediaPlayer();
         assertTrue(mediaPlayer.isPlaying());
         assertTrue(mediaPlayer.wasPlayAlarmCalled());
         assertTrue(service.wasStartPlayTimerCalled());
+        scheduler.reset();
         service.onDestroy();
         assertFalse(TestAlarmService.isRunning());
         assertFalse(mediaPlayer.isPlaying());
         assertTrue(mediaPlayer.wasStopAlarmCalled());
         assertTrue(service.wasStopPlayTimerCalled());
+        assertTrue(scheduler.wasRestartForegroundServiceCalled());
+        assertFalse(scheduler.getRestartForegroundServiceCalls().get(0).withAlarm());
     }
 
     @Test
