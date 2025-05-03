@@ -92,11 +92,17 @@
                 android:value=".ui.NetworkTaskMainActivity" />
         </activity>
 
-        <receiver android:name=".service.NetworkTaskProcessBroadcastReceiver" android:exported="false"/>
+        <receiver
+            android:name=".service.NetworkTaskProcessBroadcastReceiver"
+            android:exported="false" />
 
-        <receiver android:name=".service.alarm.StopAlarmReceiver" android:exported="false"/>
+        <receiver
+            android:name=".service.alarm.StopAlarmReceiver"
+            android:exported="false" />
 
-        <receiver android:name=".service.TimeBasedSuspensionBroadcastReceiver" android:exported="false"/>
+        <receiver
+            android:name=".service.TimeBasedSuspensionBroadcastReceiver"
+            android:exported="false" />
 
         <receiver
             android:name=".service.StartupService"

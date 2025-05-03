@@ -26,6 +26,7 @@ import net.ibbaa.keepitup.resources.ServiceFactory;
 import net.ibbaa.keepitup.service.IAlarmManager;
 import net.ibbaa.keepitup.service.INetworkManager;
 import net.ibbaa.keepitup.service.ITimeService;
+import net.ibbaa.keepitup.service.alarm.IAlarmMediaPlayer;
 
 public class TestServiceFactory implements ServiceFactory {
 
@@ -57,5 +58,11 @@ public class TestServiceFactory implements ServiceFactory {
     public ITimeService createTimeService() {
         Log.d(TestServiceFactory.class.getName(), "createTimeService");
         return new MockTimeService();
+    }
+
+    @Override
+    public IAlarmMediaPlayer createAlarmMediaPlayer(Context context) {
+        Log.d(TestServiceFactory.class.getName(), "createAlarmMediaPlayer");
+        return new MockAlarmMediaPlayer();
     }
 }

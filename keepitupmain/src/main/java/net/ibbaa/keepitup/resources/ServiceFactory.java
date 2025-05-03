@@ -24,6 +24,7 @@ import net.ibbaa.keepitup.notification.INotificationManager;
 import net.ibbaa.keepitup.service.IAlarmManager;
 import net.ibbaa.keepitup.service.INetworkManager;
 import net.ibbaa.keepitup.service.ITimeService;
+import net.ibbaa.keepitup.service.alarm.IAlarmMediaPlayer;
 
 public interface ServiceFactory {
 
@@ -36,4 +37,6 @@ public interface ServiceFactory {
     INetworkManager createNetworkManager(Context context);
 
     ITimeService createTimeService();
+
+    IAlarmMediaPlayer createAlarmMediaPlayer(Context context);
 }

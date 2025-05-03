@@ -29,6 +29,8 @@ import net.ibbaa.keepitup.service.ITimeService;
 import net.ibbaa.keepitup.service.SystemAlarmManager;
 import net.ibbaa.keepitup.service.SystemNetworkManager;
 import net.ibbaa.keepitup.service.SystemTimeService;
+import net.ibbaa.keepitup.service.alarm.IAlarmMediaPlayer;
+import net.ibbaa.keepitup.service.alarm.SystemAlarmMediaPlayer;
 
 public class SystemServiceFactory implements ServiceFactory {
 
@@ -60,5 +62,11 @@ public class SystemServiceFactory implements ServiceFactory {
     public ITimeService createTimeService() {
         Log.d(SystemServiceFactory.class.getName(), "createTimeService");
         return new SystemTimeService();
+    }
+
+    @Override
+    public IAlarmMediaPlayer createAlarmMediaPlayer(Context context) {
+        Log.d(SystemServiceFactory.class.getName(), "createAlarmMediaPlayer");
+        return new SystemAlarmMediaPlayer(context);
     }
 }

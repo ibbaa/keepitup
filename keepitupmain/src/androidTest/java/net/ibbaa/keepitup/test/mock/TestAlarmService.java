@@ -31,25 +31,26 @@ public class TestAlarmService extends AlarmService {
 
     private final List<StartAlarmForegroundCall> startAlarmForegroundCalls;
     private final List<StopAlarmForegroundCall> stopAlarmForegroundCalls;
+    private final List<StartPlayTimerCall> startPlayTimerCalls;
+    private final List<StopPlayTimerCall> stopPlayTimerCalls;
 
     public TestAlarmService() {
         this.startAlarmForegroundCalls = new ArrayList<>();
         this.stopAlarmForegroundCalls = new ArrayList<>();
+        this.startPlayTimerCalls = new ArrayList<>();
+        this.stopPlayTimerCalls = new ArrayList<>();
         attachBaseContext(TestRegistry.getContext());
     }
 
     public void reset() {
         startAlarmForegroundCalls.clear();
         stopAlarmForegroundCalls.clear();
+        startPlayTimerCalls.clear();
+        stopPlayTimerCalls.clear();
     }
 
     public List<StartAlarmForegroundCall> getStartAlarmForegroundCalls() {
         return Collections.unmodifiableList(startAlarmForegroundCalls);
-    }
-
-    @SuppressWarnings("unused")
-    public List<StopAlarmForegroundCall> getStopAlarmForegroundCalls() {
-        return Collections.unmodifiableList(stopAlarmForegroundCalls);
     }
 
     public boolean wasStartAlarmForegroundCalled() {
@@ -58,6 +59,14 @@ public class TestAlarmService extends AlarmService {
 
     public boolean wasStopAlarmForegroundCalled() {
         return !stopAlarmForegroundCalls.isEmpty();
+    }
+
+    public boolean wasStartPlayTimerCalled() {
+        return !startPlayTimerCalls.isEmpty();
+    }
+
+    public boolean wasStopPlayTimerCalled() {
+        return !stopPlayTimerCalls.isEmpty();
     }
 
     @Override
@@ -71,6 +80,16 @@ public class TestAlarmService extends AlarmService {
     }
 
     @Override
+    public synchronized void startPlayTimer(int playbackTime) {
+        startPlayTimerCalls.add(new StartPlayTimerCall(playbackTime));
+    }
+
+    @Override
+    public synchronized void stopPlayTimer() {
+        stopPlayTimerCalls.add(new StopPlayTimerCall());
+    }
+
+    @Override
     public IPermissionManager getPermissionManager() {
         return new MockPermissionManager();
     }
@@ -80,6 +99,14 @@ public class TestAlarmService extends AlarmService {
     }
 
     public record StopAlarmForegroundCall() {
+
+    }
+
+    public record StartPlayTimerCall(int playbackTime) {
+
+    }
+
+    public record StopPlayTimerCall() {
 
     }
 }

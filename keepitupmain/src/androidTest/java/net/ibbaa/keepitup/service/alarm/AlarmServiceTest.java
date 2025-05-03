@@ -29,7 +29,9 @@ import android.content.pm.ServiceInfo;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.MediumTest;
 
+import net.ibbaa.keepitup.R;
 import net.ibbaa.keepitup.db.SchedulerIdGenerator;
+import net.ibbaa.keepitup.test.mock.MockAlarmMediaPlayer;
 import net.ibbaa.keepitup.test.mock.TestAlarmService;
 import net.ibbaa.keepitup.test.mock.TestRegistry;
 
@@ -68,24 +70,46 @@ public class AlarmServiceTest {
         int startFlag = service.onStartCommand(intent, 1, 1);
         assertEquals(Service.START_STICKY, startFlag);
         assertTrue(TestAlarmService.isRunning());
+        MockAlarmMediaPlayer mediaPlayer = (MockAlarmMediaPlayer) service.getMediaPlayer();
+        assertTrue(mediaPlayer.isPlaying());
+        assertTrue(mediaPlayer.wasPlayAlarmCalled());
+        assertTrue(service.wasStartPlayTimerCalled());
         service.onDestroy();
         assertFalse(TestAlarmService.isRunning());
         assertTrue(service.wasStopAlarmForegroundCalled());
+        assertFalse(mediaPlayer.isPlaying());
+        assertTrue(mediaPlayer.wasStopAlarmCalled());
+        assertTrue(service.wasStopPlayTimerCalled());
     }
 
     @Test
     public void testStartStopService() throws Exception {
         Intent startIntent = new Intent(TestRegistry.getContext(), AlarmService.class);
+        startIntent.putExtra(TestRegistry.getContext().getResources().getString(R.string.task_alarm_duration_key), 2);
         startIntent.setPackage(TestRegistry.getContext().getPackageName());
         assertFalse(AlarmService.isRunning());
         TestRegistry.getContext().startForegroundService(startIntent);
         waitUntil(AlarmService::isRunning);
         assertTrue(AlarmService.isRunning());
+        Thread.sleep(3500);
         Intent stopIntent = new Intent(TestRegistry.getContext(), StopAlarmReceiver.class);
         stopIntent.setPackage(TestRegistry.getContext().getPackageName());
         PendingIntent stopPendingIntent = PendingIntent.getBroadcast(TestRegistry.getContext(), SchedulerIdGenerator.STOP_ALARM_SERVICE_ID, stopIntent, PendingIntent.FLAG_IMMUTABLE | PendingIntent.FLAG_UPDATE_CURRENT);
         stopPendingIntent.send();
         waitUntil(() -> !AlarmService.isRunning());
+        assertFalse(AlarmService.isRunning());
+    }
+
+    @Test
+    public void testPlaybackTimeout() throws Exception {
+        Intent startIntent = new Intent(TestRegistry.getContext(), AlarmService.class);
+        startIntent.putExtra(TestRegistry.getContext().getResources().getString(R.string.task_alarm_duration_key), 2);
+        startIntent.setPackage(TestRegistry.getContext().getPackageName());
+        assertFalse(AlarmService.isRunning());
+        TestRegistry.getContext().startForegroundService(startIntent);
+        waitUntil(AlarmService::isRunning);
+        assertTrue(AlarmService.isRunning());
+        Thread.sleep(4000);
         assertFalse(AlarmService.isRunning());
     }
 

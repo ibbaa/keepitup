@@ -35,5 +35,5 @@
     <string name="text_dialog_general_message_config_import_version_mismatch">Version mismatch. The imported file has been created with a newer version. Import not possible.</string>
     <string name="text_dialog_general_message_config_export">An error occurred exporting the configuration.</string>
     <string name="text_dialog_general_message_synchronize_intervals">Fatal error synchronizing suspension intervals with database.</string>
-    <string name="text_dialog_general_message_alarm_on_high_prio_notice" tools:ignore="PluralsCandidate">This will trigger an alarm sound when a high priority task fails. The sound will last for %d seconds and can be dismissed.</string>
+    <string name="text_dialog_general_message_alarm_on_high_prio_notice" tools:ignore="PluralsCandidate">This will trigger the alarm sound of the device when a high priority task fails. The sound will last for %d seconds and can be dismissed.</string>
 </resources>
