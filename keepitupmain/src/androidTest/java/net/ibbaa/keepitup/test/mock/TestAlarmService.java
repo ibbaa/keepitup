@@ -16,49 +16,25 @@
 
 package net.ibbaa.keepitup.test.mock;
 
-import android.app.Notification;
-
-import androidx.annotation.NonNull;
-
 import net.ibbaa.keepitup.service.alarm.AlarmService;
-import net.ibbaa.keepitup.ui.permission.IPermissionManager;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 public class TestAlarmService extends AlarmService {
 
-    private final List<StartAlarmForegroundCall> startAlarmForegroundCalls;
-    private final List<StopAlarmForegroundCall> stopAlarmForegroundCalls;
     private final List<StartPlayTimerCall> startPlayTimerCalls;
     private final List<StopPlayTimerCall> stopPlayTimerCalls;
 
     public TestAlarmService() {
-        this.startAlarmForegroundCalls = new ArrayList<>();
-        this.stopAlarmForegroundCalls = new ArrayList<>();
         this.startPlayTimerCalls = new ArrayList<>();
         this.stopPlayTimerCalls = new ArrayList<>();
         attachBaseContext(TestRegistry.getContext());
     }
 
     public void reset() {
-        startAlarmForegroundCalls.clear();
-        stopAlarmForegroundCalls.clear();
         startPlayTimerCalls.clear();
         stopPlayTimerCalls.clear();
-    }
-
-    public List<StartAlarmForegroundCall> getStartAlarmForegroundCalls() {
-        return Collections.unmodifiableList(startAlarmForegroundCalls);
-    }
-
-    public boolean wasStartAlarmForegroundCalled() {
-        return !startAlarmForegroundCalls.isEmpty();
-    }
-
-    public boolean wasStopAlarmForegroundCalled() {
-        return !stopAlarmForegroundCalls.isEmpty();
     }
 
     public boolean wasStartPlayTimerCalled() {
@@ -70,16 +46,6 @@ public class TestAlarmService extends AlarmService {
     }
 
     @Override
-    protected void startAlarmForeground(@NonNull Notification notification, int foregroundServiceType) {
-        startAlarmForegroundCalls.add(new StartAlarmForegroundCall(notification, foregroundServiceType));
-    }
-
-    @Override
-    protected void stopAlarmForeground() {
-        stopAlarmForegroundCalls.add(new StopAlarmForegroundCall());
-    }
-
-    @Override
     public synchronized void startPlayTimer(int playbackTime) {
         startPlayTimerCalls.add(new StartPlayTimerCall(playbackTime));
     }
@@ -87,19 +53,6 @@ public class TestAlarmService extends AlarmService {
     @Override
     public synchronized void stopPlayTimer() {
         stopPlayTimerCalls.add(new StopPlayTimerCall());
-    }
-
-    @Override
-    public IPermissionManager getPermissionManager() {
-        return new MockPermissionManager();
-    }
-
-    public record StartAlarmForegroundCall(Notification notification, int foregroundServiceType) {
-
-    }
-
-    public record StopAlarmForegroundCall() {
-
     }
 
     public record StartPlayTimerCall(int playbackTime) {

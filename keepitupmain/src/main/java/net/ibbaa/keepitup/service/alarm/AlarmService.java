@@ -16,23 +16,16 @@
 
 package net.ibbaa.keepitup.service.alarm;
 
-import android.app.Notification;
 import android.app.Service;
 import android.content.Intent;
-import android.content.pm.ServiceInfo;
-import android.os.Build;
 import android.os.Handler;
 import android.os.IBinder;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import net.ibbaa.keepitup.R;
 import net.ibbaa.keepitup.logging.Log;
-import net.ibbaa.keepitup.notification.NotificationHandler;
 import net.ibbaa.keepitup.resources.ServiceFactoryContributor;
-import net.ibbaa.keepitup.ui.permission.IPermissionManager;
-import net.ibbaa.keepitup.ui.permission.PermissionManager;
 
 public class AlarmService extends Service {
 
@@ -41,26 +34,6 @@ public class AlarmService extends Service {
     private IAlarmMediaPlayer mediaPlayer;
     private Handler handler;
     private Runnable timeoutCallback;
-
-    @Override
-    public void onCreate() {
-        Log.d(AlarmService.class.getName(), "onCreate");
-        NotificationHandler notificationHandler = new NotificationHandler(this, getPermissionManager());
-        Notification notification = notificationHandler.buildAlarmForegroundNotification();
-        int foregroundServiceType = 0;
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            foregroundServiceType = ServiceInfo.FOREGROUND_SERVICE_TYPE_MEDIA_PLAYBACK;
-        }
-        startAlarmForeground(notification, foregroundServiceType);
-    }
-
-    protected void startAlarmForeground(@NonNull Notification notification, int foregroundServiceType) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            startForeground(NotificationHandler.NOTIFICATION_FOREGROUND_ALARM_SERVICE_ID, notification, foregroundServiceType);
-        } else {
-            startForeground(NotificationHandler.NOTIFICATION_FOREGROUND_ALARM_SERVICE_ID, notification);
-        }
-    }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
@@ -76,14 +49,9 @@ public class AlarmService extends Service {
     @Override
     public void onDestroy() {
         Log.d(AlarmService.class.getName(), "onDestroy");
-        stopAlarmForeground();
         setRunning(false);
         stopMediaPlayer();
         stopPlayTimer();
-    }
-
-    protected void stopAlarmForeground() {
-        stopForeground(true);
     }
 
     private synchronized void startMediaPlayer() {
@@ -134,10 +102,6 @@ public class AlarmService extends Service {
 
     private synchronized static void setRunning(boolean running) {
         AlarmService.isRunning = running;
-    }
-
-    public IPermissionManager getPermissionManager() {
-        return new PermissionManager();
     }
 
     public synchronized IAlarmMediaPlayer getMediaPlayer() {

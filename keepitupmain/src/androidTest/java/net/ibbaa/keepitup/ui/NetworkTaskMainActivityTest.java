@@ -656,7 +656,7 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
     private void startAlarmService() {
         Intent startIntent = new Intent(TestRegistry.getContext(), AlarmService.class);
         startIntent.setPackage(TestRegistry.getContext().getPackageName());
-        TestRegistry.getContext().startForegroundService(startIntent);
+        TestRegistry.getContext().startService(startIntent);
         waitUntil(AlarmService::isRunning, 30);
     }
 

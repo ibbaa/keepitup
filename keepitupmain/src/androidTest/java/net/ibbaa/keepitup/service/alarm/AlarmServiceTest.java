@@ -20,11 +20,9 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-import android.app.Notification;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Intent;
-import android.content.pm.ServiceInfo;
 
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.MediumTest;
@@ -54,16 +52,6 @@ public class AlarmServiceTest {
     }
 
     @Test
-    public void testOnCreate() {
-        service.onCreate();
-        assertTrue(service.wasStartAlarmForegroundCalled());
-        TestAlarmService.StartAlarmForegroundCall startAlarmForegroundCall = service.getStartAlarmForegroundCalls().get(0);
-        assertEquals(ServiceInfo.FOREGROUND_SERVICE_TYPE_MEDIA_PLAYBACK, startAlarmForegroundCall.foregroundServiceType());
-        Notification notification = startAlarmForegroundCall.notification();
-        assertEquals("KEEPITUP_ALARM_FOREGROUND_NOTIFICATION_CHANNEL", notification.getChannelId());
-    }
-
-    @Test
     public void testIsRunning() {
         Intent intent = new Intent(TestRegistry.getContext(), TestAlarmService.class);
         assertFalse(TestAlarmService.isRunning());
@@ -76,7 +64,6 @@ public class AlarmServiceTest {
         assertTrue(service.wasStartPlayTimerCalled());
         service.onDestroy();
         assertFalse(TestAlarmService.isRunning());
-        assertTrue(service.wasStopAlarmForegroundCalled());
         assertFalse(mediaPlayer.isPlaying());
         assertTrue(mediaPlayer.wasStopAlarmCalled());
         assertTrue(service.wasStopPlayTimerCalled());
@@ -88,7 +75,7 @@ public class AlarmServiceTest {
         startIntent.putExtra(TestRegistry.getContext().getResources().getString(R.string.task_alarm_duration_key), 2);
         startIntent.setPackage(TestRegistry.getContext().getPackageName());
         assertFalse(AlarmService.isRunning());
-        TestRegistry.getContext().startForegroundService(startIntent);
+        TestRegistry.getContext().startService(startIntent);
         waitUntil(AlarmService::isRunning);
         assertTrue(AlarmService.isRunning());
         Thread.sleep(3500);
@@ -106,7 +93,7 @@ public class AlarmServiceTest {
         startIntent.putExtra(TestRegistry.getContext().getResources().getString(R.string.task_alarm_duration_key), 2);
         startIntent.setPackage(TestRegistry.getContext().getPackageName());
         assertFalse(AlarmService.isRunning());
-        TestRegistry.getContext().startForegroundService(startIntent);
+        TestRegistry.getContext().startService(startIntent);
         waitUntil(AlarmService::isRunning);
         assertTrue(AlarmService.isRunning());
         Thread.sleep(4000);
