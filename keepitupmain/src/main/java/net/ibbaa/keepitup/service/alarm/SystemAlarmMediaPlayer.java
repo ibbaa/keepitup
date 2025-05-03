@@ -17,9 +17,12 @@
 package net.ibbaa.keepitup.service.alarm;
 
 import android.content.Context;
+import android.media.AudioAttributes;
+import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.media.RingtoneManager;
 import android.net.Uri;
+import android.os.Build;
 
 import net.ibbaa.keepitup.logging.Log;
 
@@ -45,17 +48,23 @@ public class SystemAlarmMediaPlayer implements IAlarmMediaPlayer {
         }
         Log.d(SystemAlarmMediaPlayer.class.getName(), "Alarm uri: " + alarmUri);
         try {
-            mediaPlayer = MediaPlayer.create(getContext(), alarmUri);
-            if (mediaPlayer == null) {
-                Log.e(SystemAlarmMediaPlayer.class.getName(), "Media player cannot be created. Returning.");
-                return;
+            mediaPlayer = new MediaPlayer();
+            mediaPlayer.setAudioStreamType(AudioManager.STREAM_ALARM);
+            mediaPlayer.setDataSource(getContext(), alarmUri);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                mediaPlayer.setAudioAttributes(getAlarmAudioAttributes());
             }
             mediaPlayer.setLooping(true);
+            mediaPlayer.prepare();
             mediaPlayer.start();
         } catch (Exception exc) {
             Log.e(SystemAlarmMediaPlayer.class.getName(), "Error playing alarm.", exc);
             stopAlarm();
         }
+    }
+
+    private AudioAttributes getAlarmAudioAttributes() {
+        return new AudioAttributes.Builder().setUsage(AudioAttributes.USAGE_ALARM).setContentType(AudioAttributes.CONTENT_TYPE_MUSIC).build();
     }
 
     @Override

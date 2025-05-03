@@ -27,7 +27,7 @@
     <string name="notification_foreground_channel_description">Keep it up foreground notifications</string>
     <string name="notification_alarm_foreground_channel_id">KEEPITUP_ALARM_FOREGROUND_NOTIFICATION_CHANNEL</string>
     <string name="notification_alarm_foreground_channel_name">Keep it up alarm notifications</string>
-    <string name="notification_alarm_foreground_channel_description">Keep it up alarm notifications</string>
+    <string name="notification_alarm_foreground_channel_description">Keep it up alarm foreground notifications</string>
     <string name="notification_title">Keep it up</string>
     <string name="notification_address">%s</string>
     <string name="notification_error_text" tools:ignore="PluralsCandidate">Execution of network task %d failed. %s. Failures since last success: %d. Timestamp: %s. Message: %s</string>

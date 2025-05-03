@@ -54,9 +54,9 @@ public class NetworkTaskRunningNotificationService extends Service {
 
     protected void startNetworkTaskRunningNotificationForeground(@NonNull Notification notification, int foregroundServiceType) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            startForeground(NotificationHandler.NOTIFICATION_FOREGROUND_NETWORKSTASK_RUNNING_SERVICE_ID, notification, foregroundServiceType);
+            startForeground(NotificationHandler.NOTIFICATION_FOREGROUND_NETWORKTASK_RUNNING_SERVICE_ID, notification, foregroundServiceType);
         } else {
-            startForeground(NotificationHandler.NOTIFICATION_FOREGROUND_NETWORKSTASK_RUNNING_SERVICE_ID, notification);
+            startForeground(NotificationHandler.NOTIFICATION_FOREGROUND_NETWORKTASK_RUNNING_SERVICE_ID, notification);
         }
     }
 
