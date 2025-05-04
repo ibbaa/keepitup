@@ -16,12 +16,10 @@
 
 package net.ibbaa.keepitup.service.alarm;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import android.app.PendingIntent;
-import android.app.Service;
 import android.content.Intent;
 
 import androidx.test.ext.junit.runners.AndroidJUnit4;
@@ -29,70 +27,60 @@ import androidx.test.filters.MediumTest;
 
 import net.ibbaa.keepitup.R;
 import net.ibbaa.keepitup.db.SchedulerIdGenerator;
-import net.ibbaa.keepitup.test.mock.MockAlarmMediaPlayer;
-import net.ibbaa.keepitup.test.mock.TestAlarmService;
-import net.ibbaa.keepitup.test.mock.TestNetworkTaskProcessServiceScheduler;
+import net.ibbaa.keepitup.model.AccessType;
+import net.ibbaa.keepitup.model.NetworkTask;
 import net.ibbaa.keepitup.test.mock.TestRegistry;
+import net.ibbaa.keepitup.test.mock.TestUtil;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-
-import java.util.function.BooleanSupplier;
 
 @MediumTest
 @RunWith(AndroidJUnit4.class)
 public class AlarmServiceTest {
 
-    private TestAlarmService service;
-    private TestNetworkTaskProcessServiceScheduler scheduler;
-
     @Before
     public void beforeEachTestMethod() {
-        service = new TestAlarmService();
-        service.onCreate();
-        scheduler = (TestNetworkTaskProcessServiceScheduler) service.getNetworkTaskProcessServiceScheduler();
-        service.reset();
+        stopAlarmService();
+    }
+
+    @After
+    public void afterEachTestMethod() {
+        stopAlarmService();
     }
 
     @Test
-    public void testIsRunning() {
-        Intent intent = new Intent(TestRegistry.getContext(), TestAlarmService.class);
-        assertFalse(TestAlarmService.isRunning());
-        int startFlag = service.onStartCommand(intent, 1, 1);
-        assertEquals(Service.START_STICKY, startFlag);
-        assertTrue(TestAlarmService.isRunning());
-        assertTrue(scheduler.wasRestartForegroundServiceCalled());
-        assertTrue(scheduler.getRestartForegroundServiceCalls().get(0).withAlarm());
-        MockAlarmMediaPlayer mediaPlayer = (MockAlarmMediaPlayer) service.getMediaPlayer();
-        assertTrue(mediaPlayer.isPlaying());
-        assertTrue(mediaPlayer.wasPlayAlarmCalled());
-        assertTrue(service.wasStartPlayTimerCalled());
-        scheduler.reset();
-        service.onDestroy();
-        assertFalse(TestAlarmService.isRunning());
-        assertFalse(mediaPlayer.isPlaying());
-        assertTrue(mediaPlayer.wasStopAlarmCalled());
-        assertTrue(service.wasStopPlayTimerCalled());
-        assertTrue(scheduler.wasRestartForegroundServiceCalled());
-        assertFalse(scheduler.getRestartForegroundServiceCalls().get(0).withAlarm());
+    public void testNoNetworkTask() {
+        Intent startIntent = new Intent(TestRegistry.getContext(), AlarmService.class);
+        startIntent.putExtra(TestRegistry.getContext().getResources().getString(R.string.task_alarm_duration_key), 300);
+        startIntent.setPackage(TestRegistry.getContext().getPackageName());
+        TestRegistry.getContext().startService(startIntent);
+        TestUtil.waitUntil(() -> !AlarmService.isRunning(), 100);
+        assertFalse(AlarmService.isRunning());
     }
 
     @Test
-    public void testStartStopService() throws Exception {
+    public void testRemoveNetworkTask() throws Exception {
         Intent startIntent = new Intent(TestRegistry.getContext(), AlarmService.class);
         startIntent.putExtra(TestRegistry.getContext().getResources().getString(R.string.task_alarm_duration_key), 2);
+        startIntent.putExtra(AlarmService.getNetworkTaskBundleKey(), getNetworkTask(123).toBundle());
         startIntent.setPackage(TestRegistry.getContext().getPackageName());
         assertFalse(AlarmService.isRunning());
         TestRegistry.getContext().startService(startIntent);
-        waitUntil(AlarmService::isRunning);
+        TestUtil.waitUntil(AlarmService::isRunning, 500);
         assertTrue(AlarmService.isRunning());
-        Thread.sleep(3500);
-        Intent stopIntent = new Intent(TestRegistry.getContext(), StopAlarmReceiver.class);
-        stopIntent.setPackage(TestRegistry.getContext().getPackageName());
-        PendingIntent stopPendingIntent = PendingIntent.getBroadcast(TestRegistry.getContext(), SchedulerIdGenerator.STOP_ALARM_SERVICE_ID, stopIntent, PendingIntent.FLAG_IMMUTABLE | PendingIntent.FLAG_UPDATE_CURRENT);
-        stopPendingIntent.send();
-        waitUntil(() -> !AlarmService.isRunning());
+        startIntent = new Intent(TestRegistry.getContext(), AlarmService.class);
+        startIntent.putExtra(TestRegistry.getContext().getResources().getString(R.string.task_alarm_duration_key), 2);
+        startIntent.putExtra(AlarmService.getNetworkTaskBundleKey(), getNetworkTask(456).toBundle());
+        startIntent.setPackage(TestRegistry.getContext().getPackageName());
+        TestRegistry.getContext().startService(startIntent);
+        Thread.sleep(1000);
+        AlarmService.removeNetworkTask(TestRegistry.getContext(), getNetworkTask(123));
+        assertTrue(AlarmService.isRunning());
+        AlarmService.removeNetworkTask(TestRegistry.getContext(), getNetworkTask(456));
+        TestUtil.waitUntil(() -> !AlarmService.isRunning(), 30);
         assertFalse(AlarmService.isRunning());
     }
 
@@ -100,21 +88,44 @@ public class AlarmServiceTest {
     public void testPlaybackTimeout() throws Exception {
         Intent startIntent = new Intent(TestRegistry.getContext(), AlarmService.class);
         startIntent.putExtra(TestRegistry.getContext().getResources().getString(R.string.task_alarm_duration_key), 2);
+        startIntent.putExtra(AlarmService.getNetworkTaskBundleKey(), getNetworkTask(123).toBundle());
         startIntent.setPackage(TestRegistry.getContext().getPackageName());
         assertFalse(AlarmService.isRunning());
         TestRegistry.getContext().startService(startIntent);
-        waitUntil(AlarmService::isRunning);
+        TestUtil.waitUntil(AlarmService::isRunning, 30);
         assertTrue(AlarmService.isRunning());
         Thread.sleep(4000);
         assertFalse(AlarmService.isRunning());
     }
 
-    @SuppressWarnings({"BusyWait"})
-    private void waitUntil(BooleanSupplier supplier) throws InterruptedException {
-        int count = 30;
-        while (!supplier.getAsBoolean() && count > 0) {
-            count--;
-            Thread.sleep(100);
+    public void stopAlarmService() {
+        Intent stopIntent = new Intent(TestRegistry.getContext(), StopAlarmReceiver.class);
+        stopIntent.setPackage(TestRegistry.getContext().getPackageName());
+        PendingIntent stopPendingIntent = PendingIntent.getBroadcast(TestRegistry.getContext(), SchedulerIdGenerator.STOP_ALARM_SERVICE_ID, stopIntent, PendingIntent.FLAG_IMMUTABLE | PendingIntent.FLAG_UPDATE_CURRENT);
+        try {
+            stopPendingIntent.send();
+        } catch (PendingIntent.CanceledException exc) {
+            throw new RuntimeException(exc);
         }
+        TestUtil.waitUntil(() -> !AlarmService.isRunning(), 500);
+    }
+
+    private NetworkTask getNetworkTask(int schedulerId) {
+        NetworkTask task = new NetworkTask();
+        task.setId(0);
+        task.setIndex(1);
+        task.setSchedulerId(schedulerId);
+        task.setInstances(1);
+        task.setAddress("127.0.0.1");
+        task.setPort(80);
+        task.setAccessType(AccessType.PING);
+        task.setInterval(15);
+        task.setOnlyWifi(false);
+        task.setNotification(true);
+        task.setRunning(true);
+        task.setLastScheduled(0);
+        task.setFailureCount(2);
+        task.setHighPrio(true);
+        return task;
     }
 }

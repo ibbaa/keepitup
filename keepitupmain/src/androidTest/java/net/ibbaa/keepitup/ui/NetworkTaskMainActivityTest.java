@@ -35,7 +35,6 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertTrue;
 
-import android.app.PendingIntent;
 import android.content.Intent;
 
 import androidx.test.core.app.ActivityScenario;
@@ -45,19 +44,19 @@ import androidx.test.filters.MediumTest;
 import androidx.test.platform.app.InstrumentationRegistry;
 
 import net.ibbaa.keepitup.R;
-import net.ibbaa.keepitup.db.SchedulerIdGenerator;
 import net.ibbaa.keepitup.model.AccessType;
 import net.ibbaa.keepitup.model.AccessTypeData;
 import net.ibbaa.keepitup.model.LogEntry;
 import net.ibbaa.keepitup.model.NetworkTask;
 import net.ibbaa.keepitup.model.SchedulerState;
 import net.ibbaa.keepitup.service.alarm.AlarmService;
-import net.ibbaa.keepitup.service.alarm.StopAlarmReceiver;
 import net.ibbaa.keepitup.test.mock.MockPermissionManager;
 import net.ibbaa.keepitup.test.mock.TestRegistry;
+import net.ibbaa.keepitup.test.mock.TestUtil;
 import net.ibbaa.keepitup.ui.adapter.NetworkTaskAdapter;
 import net.ibbaa.keepitup.ui.adapter.NetworkTaskUIWrapper;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -76,6 +75,12 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
     public void beforeEachTestMethod() {
         super.beforeEachTestMethod();
         permissionManager = new MockPermissionManager();
+    }
+
+    @After
+    public void afterEachTestMethod() {
+        super.afterEachTestMethod();
+        stopAlarmService();
     }
 
     @Test
@@ -120,19 +125,21 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
 
     @Test
     public void testDismissAlarmDialogOk() {
-        startAlarmService();
+        NetworkTask task = getNetworkTask1();
+        startAlarmService(task);
         assertTrue(AlarmService.isRunning());
         ActivityScenario<?> activityScenario = launchRecyclerViewBaseActivity(NetworkTaskMainActivity.class);
         injectPermissionManager(activityScenario);
         assertEquals(1, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
         onView(withId(R.id.imageview_dialog_confirm_ok)).perform(click());
-        waitUntil(() -> !AlarmService.isRunning(), 30);
+        TestUtil.waitUntil(() -> !AlarmService.isRunning(), 50);
         assertFalse(AlarmService.isRunning());
     }
 
     @Test
-    public void testDismissAlarmDialogCancel() throws Exception {
-        startAlarmService();
+    public void testDismissAlarmDialogCancel() {
+        NetworkTask task = getNetworkTask1();
+        startAlarmService(task);
         assertTrue(AlarmService.isRunning());
         ActivityScenario<?> activityScenario = launchRecyclerViewBaseActivity(NetworkTaskMainActivity.class);
         injectPermissionManager(activityScenario);
@@ -140,6 +147,23 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
         onView(withId(R.id.imageview_dialog_confirm_cancel)).perform(click());
         assertTrue(AlarmService.isRunning());
         stopAlarmService();
+    }
+
+    @Test
+    public void testDismissAlarmOnStop() {
+        getPreferenceManager().setPreferenceAlarmOnHighPrio(true);
+        NetworkTask task = getNetworkTask1();
+        task.setRunning(true);
+        task.setNotification(true);
+        task.setHighPrio(true);
+        task = getNetworkTaskDAO().insertNetworkTask(task);
+        ActivityScenario<?> activityScenario = launchRecyclerViewBaseActivity(NetworkTaskMainActivity.class);
+        injectPermissionManager(activityScenario);
+        startAlarmService(task);
+        assertTrue(AlarmService.isRunning());
+        onView(allOf(withId(R.id.imageview_list_item_network_task_start_stop), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 0))).perform(click());
+        TestUtil.waitUntil(() -> !AlarmService.isRunning(), 50);
+        assertFalse(AlarmService.isRunning());
     }
 
     @Test
@@ -653,19 +677,13 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
         activityScenario.close();
     }
 
-    private void startAlarmService() {
+    private void startAlarmService(NetworkTask task) {
         Intent startIntent = new Intent(TestRegistry.getContext(), AlarmService.class);
+        startIntent.putExtra(TestRegistry.getContext().getResources().getString(R.string.task_alarm_duration_key), 300);
+        startIntent.putExtra(AlarmService.getNetworkTaskBundleKey(), task.toBundle());
         startIntent.setPackage(TestRegistry.getContext().getPackageName());
         TestRegistry.getContext().startService(startIntent);
-        waitUntil(AlarmService::isRunning, 30);
-    }
-
-    private void stopAlarmService() throws Exception {
-        Intent stopIntent = new Intent(TestRegistry.getContext(), StopAlarmReceiver.class);
-        stopIntent.setPackage(TestRegistry.getContext().getPackageName());
-        PendingIntent stopPendingIntent = PendingIntent.getBroadcast(TestRegistry.getContext(), SchedulerIdGenerator.STOP_ALARM_SERVICE_ID, stopIntent, PendingIntent.FLAG_IMMUTABLE | PendingIntent.FLAG_UPDATE_CURRENT);
-        stopPendingIntent.send();
-        waitUntil(() -> !AlarmService.isRunning(), 30);
+        TestUtil.waitUntil(AlarmService::isRunning, 50);
     }
 
     private void setTaskExecuted(ActivityScenario<?> activityScenario, int position, Calendar calendar, boolean success, String message) {

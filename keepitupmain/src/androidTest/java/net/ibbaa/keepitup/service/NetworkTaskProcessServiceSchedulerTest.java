@@ -22,9 +22,12 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertTrue;
 
+import android.content.Intent;
+
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.MediumTest;
 
+import net.ibbaa.keepitup.R;
 import net.ibbaa.keepitup.db.IntervalDAO;
 import net.ibbaa.keepitup.db.NetworkTaskDAO;
 import net.ibbaa.keepitup.db.SchedulerStateDAO;
@@ -33,11 +36,13 @@ import net.ibbaa.keepitup.model.Interval;
 import net.ibbaa.keepitup.model.NetworkTask;
 import net.ibbaa.keepitup.model.SchedulerState;
 import net.ibbaa.keepitup.model.Time;
+import net.ibbaa.keepitup.service.alarm.AlarmService;
 import net.ibbaa.keepitup.test.mock.MockAlarmManager;
 import net.ibbaa.keepitup.test.mock.MockTimeService;
 import net.ibbaa.keepitup.test.mock.TestNetworkTaskProcessServiceScheduler;
 import net.ibbaa.keepitup.test.mock.TestRegistry;
 import net.ibbaa.keepitup.test.mock.TestTimeBasedSuspensionScheduler;
+import net.ibbaa.keepitup.test.mock.TestUtil;
 
 import org.junit.After;
 import org.junit.Before;
@@ -173,6 +178,30 @@ public class NetworkTaskProcessServiceSchedulerTest {
         assertEquals(1, readTask2.getFailureCount());
         assertEquals(-1, task1.getLastScheduled());
         assertEquals(-1, task2.getLastScheduled());
+    }
+
+    @Test
+    public void testStartCancelAlarmDismissed() throws Exception {
+        NetworkTask task1 = getNetworkTask1();
+        NetworkTask task2 = getNetworkTask2();
+        task1 = networkTaskDAO.insertNetworkTask(task1);
+        task2 = networkTaskDAO.insertNetworkTask(task2);
+        task1 = scheduler.start(task1);
+        task2 = scheduler.start(task2);
+        Intent startIntent = new Intent(TestRegistry.getContext(), AlarmService.class);
+        startIntent.putExtra(TestRegistry.getContext().getResources().getString(R.string.task_alarm_duration_key), 300);
+        startIntent.putExtra(AlarmService.getNetworkTaskBundleKey(), task1.toBundle());
+        startIntent.putExtra(AlarmService.getNetworkTaskBundleKey(), task2.toBundle());
+        startIntent.setPackage(TestRegistry.getContext().getPackageName());
+        TestRegistry.getContext().startService(startIntent);
+        TestUtil.waitUntil(AlarmService::isRunning, 50);
+        assertTrue(AlarmService.isRunning());
+        scheduler.cancel(task1);
+        Thread.sleep(1000);
+        assertTrue(AlarmService.isRunning());
+        scheduler.cancel(task2);
+        TestUtil.waitUntil(() -> !AlarmService.isRunning(), 50);
+        assertFalse(AlarmService.isRunning());
     }
 
     @Test

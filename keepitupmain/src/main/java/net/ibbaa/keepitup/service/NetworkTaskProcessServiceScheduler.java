@@ -28,6 +28,7 @@ import net.ibbaa.keepitup.logging.Log;
 import net.ibbaa.keepitup.model.NetworkTask;
 import net.ibbaa.keepitup.notification.NotificationHandler;
 import net.ibbaa.keepitup.resources.ServiceFactoryContributor;
+import net.ibbaa.keepitup.service.alarm.AlarmService;
 import net.ibbaa.keepitup.ui.permission.IPermissionManager;
 import net.ibbaa.keepitup.ui.permission.PermissionManager;
 import net.ibbaa.keepitup.util.NumberUtil;
@@ -130,6 +131,7 @@ public class NetworkTaskProcessServiceScheduler {
             networkTaskDAO.updateNetworkTaskRunning(networkTask.getId(), false);
             networkTask.setLastScheduled(-1);
             terminate(networkTask);
+            AlarmService.removeNetworkTask(getContext(), networkTask);
             if (!areNetworkTasksRunning()) {
                 Log.d(NetworkTaskProcessServiceScheduler.class.getName(), "No running tasks. Stopping time bases scheduler.");
                 getTimeBasedSuspensionScheduler().stop();

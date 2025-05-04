@@ -263,6 +263,7 @@ public abstract class NetworkTaskWorker implements Runnable {
         if (task.isHighPrio() && preferenceManager.getPreferenceAlarmOnHighPrio()) {
             Log.d(NetworkTaskWorker.class.getName(), "Starting alarm service...");
             Intent intent = new Intent(getContext(), AlarmService.class);
+            intent.putExtra(AlarmService.getNetworkTaskBundleKey(), task.toBundle());
             intent.setPackage(getContext().getPackageName());
             getContext().startService(intent);
         }

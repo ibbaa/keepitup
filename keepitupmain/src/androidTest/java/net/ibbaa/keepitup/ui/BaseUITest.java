@@ -59,6 +59,7 @@ import net.ibbaa.keepitup.service.IFileManager;
 import net.ibbaa.keepitup.service.NetworkTaskProcessServiceScheduler;
 import net.ibbaa.keepitup.service.SystemFileManager;
 import net.ibbaa.keepitup.service.SystemThemeManager;
+import net.ibbaa.keepitup.service.alarm.AlarmService;
 import net.ibbaa.keepitup.test.matcher.ChildDescendantAtPositionMatcher;
 import net.ibbaa.keepitup.test.matcher.DrawableMatcher;
 import net.ibbaa.keepitup.test.matcher.GridLayoutPositionMatcher;
@@ -70,6 +71,7 @@ import net.ibbaa.keepitup.test.mock.MockTimeService;
 import net.ibbaa.keepitup.test.mock.TestNetworkTaskProcessServiceScheduler;
 import net.ibbaa.keepitup.test.mock.TestRegistry;
 import net.ibbaa.keepitup.test.mock.TestTimeBasedSuspensionScheduler;
+import net.ibbaa.keepitup.test.mock.TestUtil;
 import net.ibbaa.keepitup.test.viewaction.WaitForViewAction;
 import net.ibbaa.keepitup.util.BundleUtil;
 
@@ -80,7 +82,6 @@ import org.junit.Before;
 import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.atomic.AtomicReference;
-import java.util.function.BooleanSupplier;
 
 public abstract class BaseUITest {
 
@@ -225,6 +226,11 @@ public abstract class BaseUITest {
         return null;
     }
 
+    public void stopAlarmService() {
+        TestRegistry.getContext().stopService(new Intent(TestRegistry.getContext(), AlarmService.class));
+        TestUtil.waitUntil(() -> !AlarmService.isRunning(), 100);
+    }
+
     public Bundle getBypassSystemSAFBundle() {
         Bundle bundle = BundleUtil.booleanToBundle(SystemActivity.getBypassSystemSAFKey(), true);
         bundle.putBoolean(GlobalSettingsActivity.getBypassSystemSAFKey(), true);
@@ -313,18 +319,6 @@ public abstract class BaseUITest {
 
     public static Matcher<View> withValue(int value) {
         return new NumberPickerValueMatcher(value);
-    }
-
-    @SuppressWarnings({"BusyWait"})
-    public static void waitUntil(BooleanSupplier supplier, int count) {
-        while (!supplier.getAsBoolean() && count > 0) {
-            count--;
-            try {
-                Thread.sleep(100);
-            } catch (InterruptedException exc) {
-                throw new RuntimeException(exc);
-            }
-        }
     }
 
     public static String getText(final Matcher<View> matcher) {

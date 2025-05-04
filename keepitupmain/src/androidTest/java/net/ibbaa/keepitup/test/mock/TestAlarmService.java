@@ -26,16 +26,19 @@ public class TestAlarmService extends AlarmService {
 
     private final List<StartPlayTimerCall> startPlayTimerCalls;
     private final List<StopPlayTimerCall> stopPlayTimerCalls;
+    private boolean stopCalled;
 
     public TestAlarmService() {
         this.startPlayTimerCalls = new ArrayList<>();
         this.stopPlayTimerCalls = new ArrayList<>();
+        this.stopCalled = false;
         attachBaseContext(TestRegistry.getContext());
     }
 
     public void reset() {
         startPlayTimerCalls.clear();
         stopPlayTimerCalls.clear();
+        this.stopCalled = false;
     }
 
     public boolean wasStartPlayTimerCalled() {
@@ -46,6 +49,10 @@ public class TestAlarmService extends AlarmService {
         return !stopPlayTimerCalls.isEmpty();
     }
 
+    public boolean wasStopCalled() {
+        return stopCalled;
+    }
+
     @Override
     public synchronized void startPlayTimer(int playbackTime) {
         startPlayTimerCalls.add(new StartPlayTimerCall(playbackTime));
@@ -54,6 +61,11 @@ public class TestAlarmService extends AlarmService {
     @Override
     public synchronized void stopPlayTimer() {
         stopPlayTimerCalls.add(new StopPlayTimerCall());
+    }
+
+    @Override
+    public void stop() {
+        this.stopCalled = true;
     }
 
     @Override
