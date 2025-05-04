@@ -678,6 +678,9 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
     }
 
     private void startAlarmService(NetworkTask task) {
+        if (AlarmService.isRunning()) {
+            return;
+        }
         Intent startIntent = new Intent(TestRegistry.getContext(), AlarmService.class);
         startIntent.putExtra(TestRegistry.getContext().getResources().getString(R.string.task_alarm_duration_key), 300);
         startIntent.putExtra(AlarmService.getNetworkTaskBundleKey(), task.toBundle());

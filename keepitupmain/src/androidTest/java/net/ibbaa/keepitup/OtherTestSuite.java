@@ -64,6 +64,7 @@ import net.ibbaa.keepitup.service.SystemFileManagerTest;
 import net.ibbaa.keepitup.service.SystemThemeManagerTest;
 import net.ibbaa.keepitup.service.TimeBasedSuspensionBroadcastReceiverTest;
 import net.ibbaa.keepitup.service.TimeBasedSuspensionSchedulerTest;
+import net.ibbaa.keepitup.service.alarm.AlarmServiceMockTest;
 import net.ibbaa.keepitup.service.alarm.AlarmServiceTest;
 import net.ibbaa.keepitup.service.alarm.SystemAlarmMediaPlayerTest;
 import net.ibbaa.keepitup.service.network.ConnectCommandTest;
@@ -175,7 +176,7 @@ import org.junit.runners.Suite;
         TimeBasedSuspensionBroadcastReceiverTest.class,
         TimeBasedSuspensionSchedulerTest.class,
         //net.ibbaa.keepitup.service.alarm
-        //AlarmServiceMockTest.class,
+        AlarmServiceMockTest.class,
         AlarmServiceTest.class,
         SystemAlarmMediaPlayerTest.class,
         //net.ibbaa.keepitup.service.network

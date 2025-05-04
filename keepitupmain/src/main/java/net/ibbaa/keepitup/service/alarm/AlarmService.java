@@ -49,14 +49,14 @@ public class AlarmService extends Service {
 
     @Override
     public void onCreate() {
-        Log.e(AlarmService.class.getName(), "onCreate");
+        Log.e(AlarmService.class.getName(), "onCreate" + " " + Thread.currentThread());
         scheduler = createNetworkTaskProcessServiceScheduler();
         alarmTasks.clear();
     }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        Log.e(AlarmService.class.getName(), "onStartCommand");
+        Log.e(AlarmService.class.getName(), "onStartCommand" + " " + Thread.currentThread());
         boolean doStop = false;
         synchronized (LOCK) {
             setRunning(true);
@@ -87,7 +87,7 @@ public class AlarmService extends Service {
 
     @Override
     public void onDestroy() {
-        Log.e(AlarmService.class.getName(), "onDestroy");
+        Log.e(AlarmService.class.getName(), "onDestroy" + " " + Thread.currentThread());
         synchronized (LOCK) {
             setRunning(false);
             stopMediaPlayer();
@@ -98,7 +98,7 @@ public class AlarmService extends Service {
     }
 
     private void startMediaPlayer() {
-        Log.e(AlarmService.class.getName(), "startMediaPlayer");
+        Log.e(AlarmService.class.getName(), "startMediaPlayer" + " " + Thread.currentThread());
         if (mediaPlayer == null) {
             mediaPlayer = createAlarmMediaPlayer();
         }
@@ -108,7 +108,7 @@ public class AlarmService extends Service {
     }
 
     private void stopMediaPlayer() {
-        Log.e(AlarmService.class.getName(), "stopMediaPlayer");
+        Log.e(AlarmService.class.getName(), "stopMediaPlayer" + " " + Thread.currentThread());
         if (mediaPlayer != null) {
             mediaPlayer.stopAlarm();
             mediaPlayer = null;
@@ -116,7 +116,7 @@ public class AlarmService extends Service {
     }
 
     public void startPlayTimer(int playbackTime) {
-        Log.e(AlarmService.class.getName(), "startPlayTimer");
+        Log.e(AlarmService.class.getName(), "startPlayTimer" + " " + Thread.currentThread());
         Handler localHandler;
         Runnable localCallback;
         synchronized (LOCK) {
@@ -130,7 +130,7 @@ public class AlarmService extends Service {
     }
 
     public void stopPlayTimer() {
-        Log.e(AlarmService.class.getName(), "stopPlayTimer");
+        Log.e(AlarmService.class.getName(), "stopPlayTimer" + " " + Thread.currentThread());
         synchronized (LOCK) {
             if (handler != null && timeoutCallback != null) {
                 handler.removeCallbacks(timeoutCallback);
@@ -149,16 +149,18 @@ public class AlarmService extends Service {
 
     public static boolean isRunning() {
         synchronized (LOCK) {
+            Log.e(AlarmService.class.getName(), "isRunning " + AlarmService.isRunning + " " + Thread.currentThread());
             return AlarmService.isRunning;
         }
     }
 
     private static void setRunning(boolean running) {
+        Log.e(AlarmService.class.getName(), "setRunning " + running + " " + Thread.currentThread());
         AlarmService.isRunning = running;
     }
 
     public static void removeNetworkTask(Context context, NetworkTask task) {
-        Log.e(AlarmService.class.getName(), "removeNetworkTask, network task is " + task);
+        Log.e(AlarmService.class.getName(), "removeNetworkTask, network task is " + task + " " + Thread.currentThread());
         boolean doStop = false;
         synchronized (LOCK) {
             if (task == null) {
@@ -187,7 +189,7 @@ public class AlarmService extends Service {
     }
 
     private NetworkTask getNetworkTask(Intent intent) {
-        Log.d(AlarmService.class.getName(), "getNetworkTask");
+        Log.d(AlarmService.class.getName(), "getNetworkTask" + " " + Thread.currentThread().getId());
         Bundle taskBundle = intent.getBundleExtra(getNetworkTaskBundleKey());
         if (taskBundle == null) {
             return null;

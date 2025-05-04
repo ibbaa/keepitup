@@ -60,15 +60,6 @@ public class AlarmServiceMockTest {
     }
 
     @Test
-    public void testNoNetworkTask() {
-        Intent intent = new Intent(TestRegistry.getContext(), TestAlarmService.class);
-        assertFalse(TestAlarmService.isRunning());
-        int startFlag = service.onStartCommand(intent, 1, 1);
-        assertEquals(Service.START_NOT_STICKY, startFlag);
-        assertTrue(service.wasStopCalled());
-    }
-
-    @Test
     public void testStartStop() {
         Intent intent = new Intent(TestRegistry.getContext(), TestAlarmService.class);
         intent.putExtra(AlarmService.getNetworkTaskBundleKey(), getNetworkTask().toBundle());

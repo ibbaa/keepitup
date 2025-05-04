@@ -227,6 +227,9 @@ public abstract class BaseUITest {
     }
 
     public void stopAlarmService() {
+        if (!AlarmService.isRunning()) {
+            return;
+        }
         TestRegistry.getContext().stopService(new Intent(TestRegistry.getContext(), AlarmService.class));
         TestUtil.waitUntil(() -> !AlarmService.isRunning(), 100);
     }

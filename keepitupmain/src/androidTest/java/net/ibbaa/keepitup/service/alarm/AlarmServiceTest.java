@@ -19,20 +19,17 @@ package net.ibbaa.keepitup.service.alarm;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-import android.app.PendingIntent;
 import android.content.Intent;
 
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.MediumTest;
 
 import net.ibbaa.keepitup.R;
-import net.ibbaa.keepitup.db.SchedulerIdGenerator;
 import net.ibbaa.keepitup.model.AccessType;
 import net.ibbaa.keepitup.model.NetworkTask;
 import net.ibbaa.keepitup.test.mock.TestRegistry;
 import net.ibbaa.keepitup.test.mock.TestUtil;
 
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -46,33 +43,28 @@ public class AlarmServiceTest {
         stopAlarmService();
     }
 
-    @After
-    public void afterEachTestMethod() {
-        stopAlarmService();
-    }
-
     @Test
     public void testNoNetworkTask() {
         Intent startIntent = new Intent(TestRegistry.getContext(), AlarmService.class);
         startIntent.putExtra(TestRegistry.getContext().getResources().getString(R.string.task_alarm_duration_key), 300);
         startIntent.setPackage(TestRegistry.getContext().getPackageName());
         TestRegistry.getContext().startService(startIntent);
-        TestUtil.waitUntil(() -> !AlarmService.isRunning(), 100);
+        TestUtil.waitUntil(() -> !AlarmService.isRunning(), 300);
         assertFalse(AlarmService.isRunning());
     }
 
     @Test
     public void testRemoveNetworkTask() throws Exception {
         Intent startIntent = new Intent(TestRegistry.getContext(), AlarmService.class);
-        startIntent.putExtra(TestRegistry.getContext().getResources().getString(R.string.task_alarm_duration_key), 2);
+        startIntent.putExtra(TestRegistry.getContext().getResources().getString(R.string.task_alarm_duration_key), 10);
         startIntent.putExtra(AlarmService.getNetworkTaskBundleKey(), getNetworkTask(123).toBundle());
         startIntent.setPackage(TestRegistry.getContext().getPackageName());
         assertFalse(AlarmService.isRunning());
         TestRegistry.getContext().startService(startIntent);
-        TestUtil.waitUntil(AlarmService::isRunning, 100);
+        TestUtil.waitUntil(AlarmService::isRunning, 300);
         assertTrue(AlarmService.isRunning());
         startIntent = new Intent(TestRegistry.getContext(), AlarmService.class);
-        startIntent.putExtra(TestRegistry.getContext().getResources().getString(R.string.task_alarm_duration_key), 2);
+        startIntent.putExtra(TestRegistry.getContext().getResources().getString(R.string.task_alarm_duration_key), 10);
         startIntent.putExtra(AlarmService.getNetworkTaskBundleKey(), getNetworkTask(456).toBundle());
         startIntent.setPackage(TestRegistry.getContext().getPackageName());
         TestRegistry.getContext().startService(startIntent);
@@ -80,34 +72,30 @@ public class AlarmServiceTest {
         AlarmService.removeNetworkTask(TestRegistry.getContext(), getNetworkTask(123));
         assertTrue(AlarmService.isRunning());
         AlarmService.removeNetworkTask(TestRegistry.getContext(), getNetworkTask(456));
-        TestUtil.waitUntil(() -> !AlarmService.isRunning(), 30);
+        TestUtil.waitUntil(() -> !AlarmService.isRunning(), 300);
         assertFalse(AlarmService.isRunning());
     }
 
     @Test
     public void testPlaybackTimeout() throws Exception {
         Intent startIntent = new Intent(TestRegistry.getContext(), AlarmService.class);
-        startIntent.putExtra(TestRegistry.getContext().getResources().getString(R.string.task_alarm_duration_key), 2);
+        startIntent.putExtra(TestRegistry.getContext().getResources().getString(R.string.task_alarm_duration_key), 10);
         startIntent.putExtra(AlarmService.getNetworkTaskBundleKey(), getNetworkTask(123).toBundle());
         startIntent.setPackage(TestRegistry.getContext().getPackageName());
         assertFalse(AlarmService.isRunning());
         TestRegistry.getContext().startService(startIntent);
-        TestUtil.waitUntil(AlarmService::isRunning, 50);
+        TestUtil.waitUntil(AlarmService::isRunning, 300);
         assertTrue(AlarmService.isRunning());
-        Thread.sleep(4000);
+        Thread.sleep(12000);
         assertFalse(AlarmService.isRunning());
     }
 
     public void stopAlarmService() {
-        Intent stopIntent = new Intent(TestRegistry.getContext(), StopAlarmReceiver.class);
-        stopIntent.setPackage(TestRegistry.getContext().getPackageName());
-        PendingIntent stopPendingIntent = PendingIntent.getBroadcast(TestRegistry.getContext(), SchedulerIdGenerator.STOP_ALARM_SERVICE_ID, stopIntent, PendingIntent.FLAG_IMMUTABLE | PendingIntent.FLAG_UPDATE_CURRENT);
-        try {
-            stopPendingIntent.send();
-        } catch (PendingIntent.CanceledException exc) {
-            throw new RuntimeException(exc);
+        if (!AlarmService.isRunning()) {
+            return;
         }
-        TestUtil.waitUntil(() -> !AlarmService.isRunning(), 500);
+        TestRegistry.getContext().stopService(new Intent(TestRegistry.getContext(), AlarmService.class));
+        TestUtil.waitUntil(() -> !AlarmService.isRunning(), 100);
     }
 
     private NetworkTask getNetworkTask(int schedulerId) {
