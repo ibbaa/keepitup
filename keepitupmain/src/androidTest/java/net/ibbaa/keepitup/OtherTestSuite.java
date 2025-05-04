@@ -50,6 +50,20 @@ import net.ibbaa.keepitup.resources.JSONSystemSetupTest;
 import net.ibbaa.keepitup.resources.PreferenceManagerTest;
 import net.ibbaa.keepitup.resources.PreferenceSetupTest;
 import net.ibbaa.keepitup.resources.SystemWorkerFactoryTest;
+import net.ibbaa.keepitup.service.ConnectNetworkTaskWorkerTest;
+import net.ibbaa.keepitup.service.DownloadNetworkTaskWorkerTest;
+import net.ibbaa.keepitup.service.NetworkTaskProcessBroadcastReceiverTest;
+import net.ibbaa.keepitup.service.NetworkTaskProcessPoolTest;
+import net.ibbaa.keepitup.service.NetworkTaskProcessServiceSchedulerTest;
+import net.ibbaa.keepitup.service.NetworkTaskRunningNotificationServiceTest;
+import net.ibbaa.keepitup.service.NetworkTaskWorkerTest;
+import net.ibbaa.keepitup.service.NullNetworkTaskWorkerTest;
+import net.ibbaa.keepitup.service.PingNetworkTaskWorkerTest;
+import net.ibbaa.keepitup.service.SystemDocumentManagerTest;
+import net.ibbaa.keepitup.service.SystemFileManagerTest;
+import net.ibbaa.keepitup.service.SystemThemeManagerTest;
+import net.ibbaa.keepitup.service.TimeBasedSuspensionBroadcastReceiverTest;
+import net.ibbaa.keepitup.service.TimeBasedSuspensionSchedulerTest;
 import net.ibbaa.keepitup.service.alarm.AlarmServiceTest;
 import net.ibbaa.keepitup.service.alarm.SystemAlarmMediaPlayerTest;
 import net.ibbaa.keepitup.service.network.ConnectCommandTest;
@@ -146,7 +160,7 @@ import org.junit.runners.Suite;
         PreferenceSetupTest.class,
         SystemWorkerFactoryTest.class,
         //net.ibbaa.keepitup.service
-        /*ConnectNetworkTaskWorkerTest.class,
+        ConnectNetworkTaskWorkerTest.class,
         DownloadNetworkTaskWorkerTest.class,
         NetworkTaskProcessBroadcastReceiverTest.class,
         NetworkTaskProcessPoolTest.class,
@@ -159,7 +173,7 @@ import org.junit.runners.Suite;
         SystemFileManagerTest.class,
         SystemThemeManagerTest.class,
         TimeBasedSuspensionBroadcastReceiverTest.class,
-        TimeBasedSuspensionSchedulerTest.class,*/
+        TimeBasedSuspensionSchedulerTest.class,
         //net.ibbaa.keepitup.service.alarm
         //AlarmServiceMockTest.class,
         AlarmServiceTest.class,
