@@ -168,7 +168,7 @@ public class AlarmService extends Service {
             alarmTasks.remove(task.getSchedulerId());
             if (alarmTasks.isEmpty()) {
                 Log.d(AlarmService.class.getName(), "No more alarm tasks. Stopping service.");
-                doStop = true;
+                doStop = isRunning();
             }
         }
         if (doStop) {

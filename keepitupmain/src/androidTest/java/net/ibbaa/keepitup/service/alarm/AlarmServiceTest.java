@@ -69,7 +69,7 @@ public class AlarmServiceTest {
         startIntent.setPackage(TestRegistry.getContext().getPackageName());
         assertFalse(AlarmService.isRunning());
         TestRegistry.getContext().startService(startIntent);
-        TestUtil.waitUntil(AlarmService::isRunning, 500);
+        TestUtil.waitUntil(AlarmService::isRunning, 100);
         assertTrue(AlarmService.isRunning());
         startIntent = new Intent(TestRegistry.getContext(), AlarmService.class);
         startIntent.putExtra(TestRegistry.getContext().getResources().getString(R.string.task_alarm_duration_key), 2);
