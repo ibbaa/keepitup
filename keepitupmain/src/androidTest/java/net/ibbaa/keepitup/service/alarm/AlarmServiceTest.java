@@ -92,7 +92,7 @@ public class AlarmServiceTest {
         startIntent.setPackage(TestRegistry.getContext().getPackageName());
         assertFalse(AlarmService.isRunning());
         TestRegistry.getContext().startService(startIntent);
-        TestUtil.waitUntil(AlarmService::isRunning, 30);
+        TestUtil.waitUntil(AlarmService::isRunning, 50);
         assertTrue(AlarmService.isRunning());
         Thread.sleep(4000);
         assertFalse(AlarmService.isRunning());

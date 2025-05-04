@@ -59,6 +59,7 @@ public class AlarmService extends Service {
         Log.e(AlarmService.class.getName(), "onStartCommand");
         boolean doStop = false;
         synchronized (LOCK) {
+            setRunning(true);
             NetworkTask task = getNetworkTask(intent);
             Log.d(AlarmService.class.getName(), "onStartCommand, network task is " + task);
             if (task == null) {
@@ -67,7 +68,6 @@ public class AlarmService extends Service {
             } else {
                 alarmTasks.add(task.getSchedulerId());
             }
-            setRunning(true);
             startMediaPlayer();
         }
         scheduler.restartForegroundService(true);
