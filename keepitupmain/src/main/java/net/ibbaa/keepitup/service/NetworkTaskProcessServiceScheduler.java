@@ -280,7 +280,7 @@ public class NetworkTaskProcessServiceScheduler {
 
     public void restartForegroundService(boolean withAlarm) {
         Log.d(NetworkTaskProcessServiceScheduler.class.getName(), "startServiceDelayed");
-        if (shouldStartForegroundService()) {
+        if (shouldStartForegroundService() && areNetworkTasksRunning()) {
             try {
                 Intent intent = new Intent(getContext(), NetworkTaskRunningNotificationService.class);
                 intent.putExtra(NetworkTaskRunningNotificationService.getWithAlarmKey(), withAlarm);
