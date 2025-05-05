@@ -49,14 +49,14 @@ public class AlarmService extends Service {
 
     @Override
     public void onCreate() {
-        Log.e(AlarmService.class.getName(), "onCreate" + " " + Thread.currentThread());
+        Log.d(AlarmService.class.getName(), "onCreate");
         scheduler = createNetworkTaskProcessServiceScheduler();
         alarmTasks.clear();
     }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        Log.e(AlarmService.class.getName(), "onStartCommand" + " " + Thread.currentThread());
+        Log.d(AlarmService.class.getName(), "onStartCommand");
         boolean doStop = false;
         synchronized (LOCK) {
             setRunning(true);
@@ -87,7 +87,7 @@ public class AlarmService extends Service {
 
     @Override
     public void onDestroy() {
-        Log.e(AlarmService.class.getName(), "onDestroy" + " " + Thread.currentThread());
+        Log.d(AlarmService.class.getName(), "onDestroy");
         synchronized (LOCK) {
             setRunning(false);
             stopMediaPlayer();
@@ -98,7 +98,7 @@ public class AlarmService extends Service {
     }
 
     private void startMediaPlayer() {
-        Log.e(AlarmService.class.getName(), "startMediaPlayer" + " " + Thread.currentThread());
+        Log.d(AlarmService.class.getName(), "startMediaPlayer");
         if (mediaPlayer == null) {
             mediaPlayer = createAlarmMediaPlayer();
         }
@@ -108,7 +108,7 @@ public class AlarmService extends Service {
     }
 
     private void stopMediaPlayer() {
-        Log.e(AlarmService.class.getName(), "stopMediaPlayer" + " " + Thread.currentThread());
+        Log.d(AlarmService.class.getName(), "stopMediaPlayer");
         if (mediaPlayer != null) {
             mediaPlayer.stopAlarm();
             mediaPlayer = null;
@@ -116,7 +116,7 @@ public class AlarmService extends Service {
     }
 
     public void startPlayTimer(int playbackTime) {
-        Log.e(AlarmService.class.getName(), "startPlayTimer" + " " + Thread.currentThread());
+        Log.d(AlarmService.class.getName(), "startPlayTimer");
         Handler localHandler;
         Runnable localCallback;
         synchronized (LOCK) {
@@ -130,7 +130,7 @@ public class AlarmService extends Service {
     }
 
     public void stopPlayTimer() {
-        Log.e(AlarmService.class.getName(), "stopPlayTimer" + " " + Thread.currentThread());
+        Log.d(AlarmService.class.getName(), "stopPlayTimer");
         synchronized (LOCK) {
             if (handler != null && timeoutCallback != null) {
                 handler.removeCallbacks(timeoutCallback);
@@ -149,18 +149,18 @@ public class AlarmService extends Service {
 
     public static boolean isRunning() {
         synchronized (LOCK) {
-            Log.e(AlarmService.class.getName(), "isRunning " + AlarmService.isRunning + " " + Thread.currentThread());
+            Log.d(AlarmService.class.getName(), "isRunning");
             return AlarmService.isRunning;
         }
     }
 
     private static void setRunning(boolean running) {
-        Log.e(AlarmService.class.getName(), "setRunning " + running + " " + Thread.currentThread());
+        Log.d(AlarmService.class.getName(), "setRunning");
         AlarmService.isRunning = running;
     }
 
     public static void removeNetworkTask(Context context, NetworkTask task) {
-        Log.e(AlarmService.class.getName(), "removeNetworkTask, network task is " + task + " " + Thread.currentThread());
+        Log.d(AlarmService.class.getName(), "removeNetworkTask, network task is " + task);
         boolean doStop = false;
         synchronized (LOCK) {
             if (task == null) {
@@ -169,8 +169,13 @@ public class AlarmService extends Service {
             }
             alarmTasks.remove(task.getSchedulerId());
             if (alarmTasks.isEmpty()) {
-                Log.d(AlarmService.class.getName(), "No more alarm tasks. Stopping service.");
+                Log.d(AlarmService.class.getName(), "No more alarm tasks.");
                 doStop = isRunning();
+                if (doStop) {
+                    Log.d(AlarmService.class.getName(), "Service is currently running and will be stopped.");
+                } else {
+                    Log.d(AlarmService.class.getName(), "Service is currently not running. Stop not necessary.");
+                }
             }
         }
         if (doStop) {
@@ -189,7 +194,7 @@ public class AlarmService extends Service {
     }
 
     private NetworkTask getNetworkTask(Intent intent) {
-        Log.d(AlarmService.class.getName(), "getNetworkTask" + " " + Thread.currentThread().getId());
+        Log.d(AlarmService.class.getName(), "getNetworkTask");
         Bundle taskBundle = intent.getBundleExtra(getNetworkTaskBundleKey());
         if (taskBundle == null) {
             return null;
