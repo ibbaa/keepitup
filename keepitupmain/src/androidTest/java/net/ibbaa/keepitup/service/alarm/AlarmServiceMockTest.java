@@ -69,7 +69,6 @@ public class AlarmServiceMockTest {
         assertFalse(service.wasStopCalled());
         assertTrue(TestAlarmService.isRunning());
         assertTrue(scheduler.wasRestartForegroundServiceCalled());
-        assertTrue(scheduler.getRestartForegroundServiceCalls().get(0).withAlarm());
         MockAlarmMediaPlayer mediaPlayer = (MockAlarmMediaPlayer) service.getMediaPlayer();
         assertTrue(mediaPlayer.isPlaying());
         assertTrue(mediaPlayer.wasPlayAlarmCalled());
@@ -81,7 +80,6 @@ public class AlarmServiceMockTest {
         assertTrue(mediaPlayer.wasStopAlarmCalled());
         assertTrue(service.wasStopPlayTimerCalled());
         assertTrue(scheduler.wasRestartForegroundServiceCalled());
-        assertFalse(scheduler.getRestartForegroundServiceCalls().get(0).withAlarm());
     }
 
     private NetworkTask getNetworkTask() {

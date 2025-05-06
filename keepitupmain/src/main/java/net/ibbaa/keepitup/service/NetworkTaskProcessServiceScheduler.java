@@ -275,15 +275,11 @@ public class NetworkTaskProcessServiceScheduler {
     }
 
     public void restartForegroundService() {
-        restartForegroundService(false);
-    }
-
-    public void restartForegroundService(boolean withAlarm) {
         Log.d(NetworkTaskProcessServiceScheduler.class.getName(), "startServiceDelayed");
         if (shouldStartForegroundService() && areNetworkTasksRunning()) {
             try {
                 Intent intent = new Intent(getContext(), NetworkTaskRunningNotificationService.class);
-                intent.putExtra(NetworkTaskRunningNotificationService.getWithAlarmKey(), withAlarm);
+                intent.putExtra(NetworkTaskRunningNotificationService.getWithAlarmKey(), AlarmService.isRunning());
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                     getContext().startForegroundService(intent);
                 } else {

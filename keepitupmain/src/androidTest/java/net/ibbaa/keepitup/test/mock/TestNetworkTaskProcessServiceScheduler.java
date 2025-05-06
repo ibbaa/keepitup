@@ -22,19 +22,16 @@ import net.ibbaa.keepitup.model.NetworkTask;
 import net.ibbaa.keepitup.service.NetworkTaskProcessServiceScheduler;
 import net.ibbaa.keepitup.service.TimeBasedSuspensionScheduler;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class TestNetworkTaskProcessServiceScheduler extends NetworkTaskProcessServiceScheduler {
 
     private TimeBasedSuspensionScheduler timeBasedScheduler;
     private NetworkTask lastRescheduledTask;
-    private final List<TestNetworkTaskProcessServiceScheduler.RestartForegroundServiceCall> restartForegroundServiceCalls;
+    private boolean restartForegroundServiceCalled;
 
     public TestNetworkTaskProcessServiceScheduler(Context context) {
         super(context);
         lastRescheduledTask = null;
-        restartForegroundServiceCalls = new ArrayList<>();
+        restartForegroundServiceCalled = false;
     }
 
     public void setTimeBasedSuspensionScheduler(TimeBasedSuspensionScheduler timeBasedScheduler) {
@@ -43,7 +40,7 @@ public class TestNetworkTaskProcessServiceScheduler extends NetworkTaskProcessSe
 
     public void reset() {
         lastRescheduledTask = null;
-        restartForegroundServiceCalls.clear();
+        restartForegroundServiceCalled = false;
     }
 
     public NetworkTask getLastRescheduledTask() {
@@ -55,11 +52,7 @@ public class TestNetworkTaskProcessServiceScheduler extends NetworkTaskProcessSe
     }
 
     public boolean wasRestartForegroundServiceCalled() {
-        return !restartForegroundServiceCalls.isEmpty();
-    }
-
-    public List<RestartForegroundServiceCall> getRestartForegroundServiceCalls() {
-        return restartForegroundServiceCalls;
+        return restartForegroundServiceCalled;
     }
 
     @Override
@@ -74,11 +67,7 @@ public class TestNetworkTaskProcessServiceScheduler extends NetworkTaskProcessSe
     }
 
     @Override
-    public void restartForegroundService(boolean withAlarm) {
-        restartForegroundServiceCalls.add(new RestartForegroundServiceCall(withAlarm));
-    }
-
-    public record RestartForegroundServiceCall(boolean withAlarm) {
-
+    public void restartForegroundService() {
+        restartForegroundServiceCalled = true;
     }
 }

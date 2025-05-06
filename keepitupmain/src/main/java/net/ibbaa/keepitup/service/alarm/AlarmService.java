@@ -72,7 +72,7 @@ public class AlarmService extends Service {
             }
             startMediaPlayer();
         }
-        scheduler.restartForegroundService(true);
+        scheduler.restartForegroundService();
         if (doStop) {
             stop();
         } else {
@@ -98,7 +98,7 @@ public class AlarmService extends Service {
             alarmTasks.clear();
         }
         sendNetworkTaskUINotificationBroadcast(this);
-        scheduler.restartForegroundService(false);
+        scheduler.restartForegroundService();
     }
 
     private void startMediaPlayer() {
