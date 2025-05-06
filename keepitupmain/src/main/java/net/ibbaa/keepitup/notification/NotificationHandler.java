@@ -300,16 +300,18 @@ public class NotificationHandler {
         Log.d(NotificationHandler.class.getName(), "setActivityIntent, bundle key " + bundleKey + ", network task is " + task);
         Intent activityIntent = new Intent(getContext(), activityClass);
         activityIntent.setPackage(getContext().getPackageName());
+        int requestCode = 0;
         if (bundleKey != null && task != null) {
             activityIntent.putExtra(bundleKey, task.toBundle());
+            requestCode = task.getSchedulerId();
         }
         TaskStackBuilder stackBuilder = TaskStackBuilder.create(getContext());
         stackBuilder.addNextIntentWithParentStack(activityIntent);
         PendingIntent resultPendingIntent;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            resultPendingIntent = stackBuilder.getPendingIntent(0, PendingIntent.FLAG_IMMUTABLE | PendingIntent.FLAG_UPDATE_CURRENT);
+            resultPendingIntent = stackBuilder.getPendingIntent(requestCode, PendingIntent.FLAG_IMMUTABLE | PendingIntent.FLAG_UPDATE_CURRENT);
         } else {
-            resultPendingIntent = stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
+            resultPendingIntent = stackBuilder.getPendingIntent(requestCode, PendingIntent.FLAG_UPDATE_CURRENT);
         }
         builder.setContentIntent(resultPendingIntent);
         builder.setAutoCancel(true);
