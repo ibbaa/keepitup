@@ -60,20 +60,26 @@ public class AlarmServiceTest {
         startIntent.putExtra(AlarmService.getNetworkTaskBundleKey(), getNetworkTask(123).toBundle());
         startIntent.setPackage(TestRegistry.getContext().getPackageName());
         assertFalse(AlarmService.isRunning());
+        assertFalse(AlarmService.isPlayingAlarm(getNetworkTask(123)));
         TestRegistry.getContext().startService(startIntent);
         TestUtil.waitUntil(AlarmService::isRunning, 300);
         assertTrue(AlarmService.isRunning());
+        assertTrue(AlarmService.isPlayingAlarm(getNetworkTask(123)));
+        assertFalse(AlarmService.isPlayingAlarm(getNetworkTask(456)));
         startIntent = new Intent(TestRegistry.getContext(), AlarmService.class);
         startIntent.putExtra(TestRegistry.getContext().getResources().getString(R.string.task_alarm_duration_key), 10);
         startIntent.putExtra(AlarmService.getNetworkTaskBundleKey(), getNetworkTask(456).toBundle());
         startIntent.setPackage(TestRegistry.getContext().getPackageName());
         TestRegistry.getContext().startService(startIntent);
         Thread.sleep(1000);
+        assertTrue(AlarmService.isPlayingAlarm(getNetworkTask(456)));
         AlarmService.removeNetworkTask(TestRegistry.getContext(), getNetworkTask(123));
         assertTrue(AlarmService.isRunning());
+        assertFalse(AlarmService.isPlayingAlarm(getNetworkTask(123)));
         AlarmService.removeNetworkTask(TestRegistry.getContext(), getNetworkTask(456));
         TestUtil.waitUntil(() -> !AlarmService.isRunning(), 300);
         assertFalse(AlarmService.isRunning());
+        assertFalse(AlarmService.isPlayingAlarm(getNetworkTask(456)));
     }
 
     @Test

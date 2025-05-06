@@ -23,6 +23,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import net.ibbaa.keepitup.R;
@@ -33,6 +34,7 @@ import net.ibbaa.keepitup.model.LogEntry;
 import net.ibbaa.keepitup.model.NetworkTask;
 import net.ibbaa.keepitup.resources.PreferenceManager;
 import net.ibbaa.keepitup.service.TimeBasedSuspensionScheduler;
+import net.ibbaa.keepitup.service.alarm.AlarmService;
 import net.ibbaa.keepitup.ui.NetworkTaskMainActivity;
 import net.ibbaa.keepitup.ui.mapping.EnumMapping;
 import net.ibbaa.keepitup.util.StringUtil;
@@ -85,7 +87,13 @@ public class NetworkTaskAdapter extends RecyclerView.Adapter<NetworkTaskViewHold
     private void bindTitle(@NonNull NetworkTaskViewHolder networkTaskViewHolder, NetworkTask networkTask) {
         Log.d(NetworkTaskAdapter.class.getName(), "bindTitle, networkTask is " + networkTask);
         String formattedTitleText = getResources().getString(R.string.text_activity_main_list_item_network_task_title, networkTask.getIndex() + 1);
+        int color = getColor(R.color.textColor);
+        if (AlarmService.isPlayingAlarm(networkTask)) {
+            formattedTitleText += " " + getResources().getString(R.string.text_activity_main_list_item_network_task_title_alarm);
+            color = getColor(R.color.textErrorColor);
+        }
         networkTaskViewHolder.setTitle(formattedTitleText);
+        networkTaskViewHolder.setTitleColor(color);
     }
 
     private void bindStatus(@NonNull NetworkTaskViewHolder networkTaskViewHolder, NetworkTask networkTask) {
@@ -339,5 +347,9 @@ public class NetworkTaskAdapter extends RecyclerView.Adapter<NetworkTaskViewHold
 
     public Resources getResources() {
         return getContext().getResources();
+    }
+
+    private int getColor(int colorid) {
+        return ContextCompat.getColor(getContext(), colorid);
     }
 }

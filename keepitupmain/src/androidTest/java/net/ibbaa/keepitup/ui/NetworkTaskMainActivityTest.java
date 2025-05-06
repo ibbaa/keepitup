@@ -150,7 +150,7 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
     }
 
     @Test
-    public void testDismissAlarmOnStop() {
+    public void testDismissAlarmOnStop() throws Exception {
         getPreferenceManager().setPreferenceAlarmOnHighPrio(true);
         NetworkTask task = getNetworkTask1();
         task.setRunning(true);
@@ -161,9 +161,13 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
         injectPermissionManager(activityScenario);
         startAlarmService(task);
         assertTrue(AlarmService.isRunning());
+        assertTrue(AlarmService.isPlayingAlarm(task));
+        onView(allOf(withId(R.id.textview_list_item_network_task_title), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 0))).check(matches(withText("Network task 1 (alarm playing)")));
         onView(allOf(withId(R.id.imageview_list_item_network_task_start_stop), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 0))).perform(click());
         TestUtil.waitUntil(() -> !AlarmService.isRunning(), 50);
         assertFalse(AlarmService.isRunning());
+        Thread.sleep(1000);
+        onView(allOf(withId(R.id.textview_list_item_network_task_title), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 0))).check(matches(withText("Network task 1")));
     }
 
     @Test

@@ -77,6 +77,10 @@ public class NetworkTaskViewHolder extends RecyclerView.ViewHolder {
         titleText.setText(title);
     }
 
+    public void setTitleColor(int color) {
+        titleText.setTextColor(color);
+    }
+
     public void setStatus(String status, String descriptionStartStopImage, int startStopImageResource) {
         statusText.setText(status);
         startStopImage.setImageResource(startStopImageResource);

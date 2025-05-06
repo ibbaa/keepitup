@@ -337,7 +337,7 @@ public class TimeBasedSuspensionScheduler {
 
     private void sendNetworkTaskUINotificationBroadcast() {
         String actionKey = getContext().getResources().getString(R.string.sync_action_key);
-        String notifyAction = context.getResources().getString(R.string.sync_action_notify);
+        String notifyAction = getContext().getResources().getString(R.string.sync_action_notify);
         Intent mainUIintent = new Intent(NetworkTaskMainUIBroadcastReceiver.class.getName());
         mainUIintent.setPackage(getContext().getPackageName());
         mainUIintent.putExtra(actionKey, notifyAction);

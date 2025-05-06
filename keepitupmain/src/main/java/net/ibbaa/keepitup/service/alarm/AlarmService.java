@@ -30,6 +30,7 @@ import net.ibbaa.keepitup.logging.Log;
 import net.ibbaa.keepitup.model.NetworkTask;
 import net.ibbaa.keepitup.resources.ServiceFactoryContributor;
 import net.ibbaa.keepitup.service.NetworkTaskProcessServiceScheduler;
+import net.ibbaa.keepitup.ui.sync.NetworkTaskMainUIBroadcastReceiver;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -58,9 +59,10 @@ public class AlarmService extends Service {
     public int onStartCommand(Intent intent, int flags, int startId) {
         Log.d(AlarmService.class.getName(), "onStartCommand");
         boolean doStop = false;
+        NetworkTask task;
         synchronized (LOCK) {
             setRunning(true);
-            NetworkTask task = getNetworkTask(intent);
+            task = getNetworkTask(intent);
             Log.d(AlarmService.class.getName(), "onStartCommand, network task is " + task);
             if (task == null) {
                 Log.e(AlarmService.class.getName(), "onStartCommand, network task is null");
@@ -77,6 +79,7 @@ public class AlarmService extends Service {
             int playbackTime = this.getResources().getInteger(R.integer.task_alarm_duration);
             int intentPlaybackTime = intent.getIntExtra(getResources().getString(R.string.task_alarm_duration_key), playbackTime);
             startPlayTimer(intentPlaybackTime);
+            sendNetworkTaskUINotificationBroadcast(this);
         }
         return START_NOT_STICKY;
     }
@@ -94,6 +97,7 @@ public class AlarmService extends Service {
             stopPlayTimer();
             alarmTasks.clear();
         }
+        sendNetworkTaskUINotificationBroadcast(this);
         scheduler.restartForegroundService(false);
     }
 
@@ -159,6 +163,20 @@ public class AlarmService extends Service {
         AlarmService.isRunning = running;
     }
 
+    public static boolean isPlayingAlarm(NetworkTask task) {
+        Log.d(AlarmService.class.getName(), "isPlayingAlarm, network task is " + task);
+        if (task == null) {
+            Log.e(AlarmService.class.getName(), "isPlayingAlarm, network task is null");
+            return false;
+        }
+        if (!isRunning()) {
+            return false;
+        }
+        synchronized (LOCK) {
+            return alarmTasks.contains(task.getSchedulerId());
+        }
+    }
+
     public static void removeNetworkTask(Context context, NetworkTask task) {
         Log.d(AlarmService.class.getName(), "removeNetworkTask, network task is " + task);
         boolean doStop = false;
@@ -178,8 +196,11 @@ public class AlarmService extends Service {
                 }
             }
         }
+
         if (doStop) {
             context.stopService(new Intent(context, AlarmService.class));
+        } else {
+            sendNetworkTaskUINotificationBroadcast(context);
         }
     }
 
@@ -191,6 +212,15 @@ public class AlarmService extends Service {
 
     public NetworkTaskProcessServiceScheduler getNetworkTaskProcessServiceScheduler() {
         return scheduler;
+    }
+
+    private static void sendNetworkTaskUINotificationBroadcast(Context context) {
+        String actionKey = context.getResources().getString(R.string.sync_action_key);
+        String notifyAction = context.getResources().getString(R.string.sync_action_notify);
+        Intent mainUIintent = new Intent(NetworkTaskMainUIBroadcastReceiver.class.getName());
+        mainUIintent.setPackage(context.getPackageName());
+        mainUIintent.putExtra(actionKey, notifyAction);
+        context.sendBroadcast(mainUIintent);
     }
 
     private NetworkTask getNetworkTask(Intent intent) {
