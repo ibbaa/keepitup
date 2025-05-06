@@ -153,6 +153,7 @@ public class NetworkTaskMainActivity extends RecyclerViewBaseActivity implements
                 return;
             }
             layoutManager.scrollToPosition(index);
+            Log.d(NetworkTaskMainActivity.class.getName(), "scrollToProvidedEntry, post scroll event");
             recyclerView.postDelayed(() -> {
                 View targetView = layoutManager.findViewByPosition(index);
                 if (targetView != null) {
@@ -165,6 +166,7 @@ public class NetworkTaskMainActivity extends RecyclerViewBaseActivity implements
                 }
             }, 300);
         }
+        Log.d(NetworkTaskMainActivity.class.getName(), "scrollToProvidedEntry, remove task bundle");
         getIntent().removeExtra(getNetworkTaskBundleKey());
     }
 

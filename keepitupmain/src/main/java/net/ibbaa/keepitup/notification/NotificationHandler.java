@@ -252,6 +252,7 @@ public class NotificationHandler {
     }
 
     private Notification buildMessageNotification(Class<? extends AppCompatActivity> activityClass, NotificationCompat.Builder notificationBuilder, String bundleKey, NetworkTask task) {
+        Log.d(NotificationHandler.class.getName(), "buildMessageNotification, bundle key " + bundleKey + ", network task is " + task);
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
             notificationBuilder.setVibrate(getVibrationPattern());
             Uri soundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
@@ -296,6 +297,7 @@ public class NotificationHandler {
     }
 
     private void setActivityIntent(NotificationCompat.Builder builder, Class<? extends AppCompatActivity> activityClass, String bundleKey, NetworkTask task) {
+        Log.d(NotificationHandler.class.getName(), "setActivityIntent, bundle key " + bundleKey + ", network task is " + task);
         Intent activityIntent = new Intent(getContext(), activityClass);
         activityIntent.setPackage(getContext().getPackageName());
         if (bundleKey != null && task != null) {
