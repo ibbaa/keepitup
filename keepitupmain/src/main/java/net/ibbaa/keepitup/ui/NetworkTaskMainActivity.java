@@ -29,6 +29,8 @@ import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
+import androidx.core.widget.NestedScrollView;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import net.ibbaa.keepitup.R;
@@ -125,6 +127,45 @@ public class NetworkTaskMainActivity extends RecyclerViewBaseActivity implements
         ThreadUtil.execute(uiInitTask);
         checkPermissions();
         checkActiveAlarm();
+        scrollToProvidedEntry();
+    }
+
+    private void scrollToProvidedEntry() {
+        Log.d(NetworkTaskMainActivity.class.getName(), "scrollToProvidedEntry");
+        Intent intent = getIntent();
+        if (intent == null) {
+            Log.d(NetworkTaskMainActivity.class.getName(), "scrollToProvidedEntry, no intent present");
+            return;
+        }
+        Bundle taskBundle = intent.getBundleExtra(getNetworkTaskBundleKey());
+        if (taskBundle == null) {
+            Log.d(NetworkTaskMainActivity.class.getName(), "scrollToProvidedEntry, no taskBundle present");
+            return;
+        }
+        NetworkTask task = new NetworkTask(taskBundle);
+        int index = task.getIndex();
+        if (index >= 0 && index < getAdapter().getItemCount()) {
+            RecyclerView recyclerView = findViewById(getRecyclerViewId());
+            NestedScrollView scrollView = findViewById(R.id.scrollview_main_content);
+            LinearLayoutManager layoutManager = (LinearLayoutManager) recyclerView.getLayoutManager();
+            if (layoutManager == null) {
+                Log.e(NetworkTaskMainActivity.class.getName(), "scrollToProvidedEntry, layoutManager is null");
+                return;
+            }
+            layoutManager.scrollToPosition(index);
+            recyclerView.postDelayed(() -> {
+                View targetView = layoutManager.findViewByPosition(index);
+                if (targetView != null) {
+                    int[] location = new int[2];
+                    targetView.getLocationOnScreen(location);
+                    int[] scrollLocation = new int[2];
+                    scrollView.getLocationOnScreen(scrollLocation);
+                    int scrollY = location[1] - scrollLocation[1];
+                    scrollView.smoothScrollBy(0, scrollY);
+                }
+            }, 300);
+        }
+        getIntent().removeExtra(getNetworkTaskBundleKey());
     }
 
     @Override
@@ -445,6 +486,10 @@ public class NetworkTaskMainActivity extends RecyclerViewBaseActivity implements
             intent.setAction(Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM);
             startActivity(intent);
         }
+    }
+
+    public static String getNetworkTaskBundleKey() {
+        return NetworkTaskMainActivity.class + ".NetworkTaskBundleKey";
     }
 
     private NetworkTaskProcessServiceScheduler getNetworkTaskProcessServiceScheduler() {

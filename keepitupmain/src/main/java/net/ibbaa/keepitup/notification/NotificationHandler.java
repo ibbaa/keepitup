@@ -220,7 +220,7 @@ public class NotificationHandler {
             PendingIntent stopPendingIntent = createStopPendingIntent();
             messageNotificationBuilder.addAction(R.drawable.icon_stop, getResources().getString(R.string.notification_stop_alarm_text), stopPendingIntent);
         }
-        return buildMessageNotification(NetworkTaskMainActivity.class, messageNotificationBuilder);
+        return buildMessageNotification(NetworkTaskMainActivity.class, messageNotificationBuilder, NetworkTaskMainActivity.getNetworkTaskBundleKey(), task);
     }
 
     private PendingIntent createStopPendingIntent() {
@@ -240,7 +240,7 @@ public class NotificationHandler {
         String text = getResources().getString(R.string.notification_foreground_start_text);
         messageNotificationBuilder = createMessageNotificationBuilder();
         messageNotificationBuilder.setSmallIcon(R.drawable.icon_notification_foreground_start).setContentTitle(title).setContentText(text).setStyle(new NotificationCompat.BigTextStyle().bigText(text)).setPriority(NotificationCompat.PRIORITY_DEFAULT);
-        return buildMessageNotification(NetworkTaskMainActivity.class, messageNotificationBuilder);
+        return buildMessageNotification(NetworkTaskMainActivity.class, messageNotificationBuilder, null, null);
     }
 
     private Notification buildMessageNotificationFolderPermission(String notificationText) {
@@ -248,17 +248,17 @@ public class NotificationHandler {
         String title = getResources().getString(R.string.notification_title);
         messageNotificationBuilder = createMessageNotificationBuilder();
         messageNotificationBuilder.setSmallIcon(R.drawable.icon_notification_failure).setContentTitle(title).setContentText(notificationText).setStyle(new NotificationCompat.BigTextStyle().bigText(notificationText)).setPriority(NotificationCompat.PRIORITY_DEFAULT);
-        return buildMessageNotification(GlobalSettingsActivity.class, messageNotificationBuilder);
+        return buildMessageNotification(GlobalSettingsActivity.class, messageNotificationBuilder, null, null);
     }
 
-    private Notification buildMessageNotification(Class<? extends AppCompatActivity> activityClass, NotificationCompat.Builder notificationBuilder) {
+    private Notification buildMessageNotification(Class<? extends AppCompatActivity> activityClass, NotificationCompat.Builder notificationBuilder, String bundleKey, NetworkTask task) {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
             notificationBuilder.setVibrate(getVibrationPattern());
             Uri soundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
             notificationBuilder.setSound(soundUri);
         }
         notificationBuilder.setCategory(NotificationCompat.CATEGORY_ERROR);
-        setActivityIntent(notificationBuilder, activityClass);
+        setActivityIntent(notificationBuilder, activityClass, bundleKey, task);
         return notificationBuilder.build();
     }
 
@@ -287,6 +287,7 @@ public class NotificationHandler {
             PendingIntent stopPendingIntent = createStopPendingIntent();
             foregroundNotificationBuilder.addAction(R.drawable.icon_stop, getResources().getString(R.string.notification_stop_alarm_text), stopPendingIntent);
         }
+        setActivityIntent(foregroundNotificationBuilder, NetworkTaskMainActivity.class, null, null);
         return foregroundNotificationBuilder.build();
     }
 
@@ -294,9 +295,12 @@ public class NotificationHandler {
         return new long[]{0, 500, 250, 500};
     }
 
-    private void setActivityIntent(NotificationCompat.Builder builder, Class<? extends AppCompatActivity> activityClass) {
+    private void setActivityIntent(NotificationCompat.Builder builder, Class<? extends AppCompatActivity> activityClass, String bundleKey, NetworkTask task) {
         Intent activityIntent = new Intent(getContext(), activityClass);
         activityIntent.setPackage(getContext().getPackageName());
+        if (bundleKey != null && task != null) {
+            activityIntent.putExtra(bundleKey, task.toBundle());
+        }
         TaskStackBuilder stackBuilder = TaskStackBuilder.create(getContext());
         stackBuilder.addNextIntentWithParentStack(activityIntent);
         PendingIntent resultPendingIntent;
