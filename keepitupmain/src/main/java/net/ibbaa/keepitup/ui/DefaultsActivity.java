@@ -68,6 +68,8 @@ public class DefaultsActivity extends SettingsInputActivity {
     private TextView connectCountText;
     private SwitchMaterial stopOnSuccessSwitch;
     private TextView stopOnSuccessOnOffText;
+    private SwitchMaterial ignoreSSLErrorSwitch;
+    private TextView ignoreSSLErrorOnOffText;
     private SwitchMaterial onlyWifiSwitch;
     private TextView onlyWifiOnOffText;
     private SwitchMaterial notificationSwitch;
@@ -91,6 +93,7 @@ public class DefaultsActivity extends SettingsInputActivity {
         preparePingPackageSizeField();
         prepareConnectCountField();
         prepareStopOnSuccessSwitch();
+        prepareIgnoreSSLErrorSwitch();
         prepareOnlyWifiSwitch();
         prepareNotificationSwitch();
         prepareHighPrioSwitch();
@@ -213,8 +216,8 @@ public class DefaultsActivity extends SettingsInputActivity {
     private void prepareStopOnSuccessSwitch() {
         Log.d(DefaultsActivity.class.getName(), "prepareStopOnSuccessSwitch");
         PreferenceManager preferenceManager = new PreferenceManager(this);
-        stopOnSuccessSwitch = findViewById(R.id.switch_activity_defaults_stoponsuccess);
-        stopOnSuccessOnOffText = findViewById(R.id.textview_activity_defaults_stoponsuccess_on_off);
+        stopOnSuccessSwitch = findViewById(R.id.switch_activity_defaults_stop_on_success);
+        stopOnSuccessOnOffText = findViewById(R.id.textview_activity_defaults_stop_on_success_on_off);
         stopOnSuccessSwitch.setOnCheckedChangeListener(null);
         stopOnSuccessSwitch.setChecked(preferenceManager.getPreferenceStopOnSuccess());
         stopOnSuccessSwitch.setOnCheckedChangeListener(this::onStopOnSuccessCheckedChanged);
@@ -232,11 +235,33 @@ public class DefaultsActivity extends SettingsInputActivity {
         prepareStopOnSuccessOnOffText();
     }
 
+    private void prepareIgnoreSSLErrorSwitch() {
+        Log.d(DefaultsActivity.class.getName(), "prepareIgnoreSSLErrorSwitch");
+        PreferenceManager preferenceManager = new PreferenceManager(this);
+        ignoreSSLErrorSwitch = findViewById(R.id.switch_activity_defaults_ignore_ssl_error);
+        ignoreSSLErrorOnOffText = findViewById(R.id.textview_activity_defaults_ignore_ssl_error_on_off);
+        ignoreSSLErrorSwitch.setOnCheckedChangeListener(null);
+        ignoreSSLErrorSwitch.setChecked(preferenceManager.getPreferenceIgnoreSSLError());
+        ignoreSSLErrorSwitch.setOnCheckedChangeListener(this::onIgnoreSSLErrorCheckedChanged);
+        prepareIgnoreSSLErrorOnOffText();
+    }
+
+    private void prepareIgnoreSSLErrorOnOffText() {
+        ignoreSSLErrorOnOffText.setText(ignoreSSLErrorSwitch.isChecked() ? getResources().getString(R.string.string_yes) : getResources().getString(R.string.string_no));
+    }
+
+    private void onIgnoreSSLErrorCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+        Log.d(DefaultsActivity.class.getName(), "onIgnoreSSLErrorCheckedChanged, new value is " + isChecked);
+        PreferenceManager preferenceManager = new PreferenceManager(this);
+        preferenceManager.setPreferenceIgnoreSSLError(isChecked);
+        prepareIgnoreSSLErrorOnOffText();
+    }
+
     private void prepareOnlyWifiSwitch() {
         Log.d(DefaultsActivity.class.getName(), "prepareOnlyWifiSwitch");
         PreferenceManager preferenceManager = new PreferenceManager(this);
-        onlyWifiSwitch = findViewById(R.id.switch_activity_defaults_onlywifi);
-        onlyWifiOnOffText = findViewById(R.id.textview_activity_defaults_onlywifi_on_off);
+        onlyWifiSwitch = findViewById(R.id.switch_activity_defaults_only_wifi);
+        onlyWifiOnOffText = findViewById(R.id.textview_activity_defaults_only_wifi_on_off);
         onlyWifiSwitch.setOnCheckedChangeListener(null);
         onlyWifiSwitch.setChecked(preferenceManager.getPreferenceOnlyWifi());
         onlyWifiSwitch.setOnCheckedChangeListener(this::onOnlyWifiCheckedChanged);
@@ -279,8 +304,8 @@ public class DefaultsActivity extends SettingsInputActivity {
     private void prepareHighPrioSwitch() {
         Log.d(DefaultsActivity.class.getName(), "prepareHighPrioSwitch");
         PreferenceManager preferenceManager = new PreferenceManager(this);
-        highPrioSwitch = findViewById(R.id.switch_activity_defaults_highprio);
-        highPrioOnOffText = findViewById(R.id.textview_activity_defaults_highprio_on_off);
+        highPrioSwitch = findViewById(R.id.switch_activity_defaults_high_prio);
+        highPrioOnOffText = findViewById(R.id.textview_activity_defaults_high_prio_on_off);
         highPrioSwitch.setOnCheckedChangeListener(null);
         highPrioSwitch.setChecked(preferenceManager.getPreferenceHighPrio());
         highPrioSwitch.setOnCheckedChangeListener(this::onHighPrioCheckedChanged);

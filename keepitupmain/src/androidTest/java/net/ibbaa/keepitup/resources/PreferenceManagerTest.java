@@ -232,6 +232,18 @@ public class PreferenceManagerTest {
     }
 
     @Test
+    public void testGetSetRemovePreferenceIgnoreSSLError() {
+        assertFalse(preferenceManager.getPreferenceIgnoreSSLError());
+        preferenceManager.setPreferenceIgnoreSSLError(true);
+        assertTrue(preferenceManager.getPreferenceIgnoreSSLError());
+        preferenceManager.removeAllPreferences();
+        assertFalse(preferenceManager.getPreferenceIgnoreSSLError());
+        preferenceManager.setPreferenceIgnoreSSLError(true);
+        preferenceManager.removePreferenceIgnoreSSLError();
+        assertFalse(preferenceManager.getPreferenceIgnoreSSLError());
+    }
+
+    @Test
     public void testGetSetRemovePreferenceNotificationInactiveNetwork() {
         assertFalse(preferenceManager.getPreferenceNotificationInactiveNetwork());
         preferenceManager.setPreferenceNotificationInactiveNetwork(true);

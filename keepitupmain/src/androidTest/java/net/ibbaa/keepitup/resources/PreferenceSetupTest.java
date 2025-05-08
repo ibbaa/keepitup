@@ -200,6 +200,7 @@ public class PreferenceSetupTest {
         preferenceManager.setPreferencePingCount(5);
         preferenceManager.setPreferenceConnectCount(10);
         preferenceManager.setPreferenceStopOnSuccess(true);
+        preferenceManager.setPreferenceIgnoreSSLError(true);
         preferenceManager.setPreferenceOnlyWifi(true);
         preferenceManager.setPreferenceNotification(true);
         preferenceManager.setPreferenceAlarmOnHighPrio(true);
@@ -213,6 +214,7 @@ public class PreferenceSetupTest {
         assertEquals(3, preferenceManager.getPreferencePingCount());
         assertEquals(1, preferenceManager.getPreferenceConnectCount());
         assertFalse(preferenceManager.getPreferenceStopOnSuccess());
+        assertFalse(preferenceManager.getPreferenceIgnoreSSLError());
         assertFalse(preferenceManager.getPreferenceOnlyWifi());
         assertFalse(preferenceManager.getPreferenceNotification());
         assertFalse(preferenceManager.getPreferenceHighPrio());
@@ -229,6 +231,7 @@ public class PreferenceSetupTest {
         defaults.put("preferencePingCount", 5);
         defaults.put("preferenceConnectCount", 10);
         defaults.put("preferenceStopOnSuccess", true);
+        defaults.put("preferenceIgnoreSSLError", true);
         defaults.put("preferenceOnlyWifi", true);
         defaults.put("preferenceNotification", true);
         defaults.put("preferenceHighPrio", true);
@@ -241,6 +244,7 @@ public class PreferenceSetupTest {
         assertEquals(5, preferenceManager.getPreferencePingCount());
         assertEquals(10, preferenceManager.getPreferenceConnectCount());
         assertTrue(preferenceManager.getPreferenceStopOnSuccess());
+        assertTrue(preferenceManager.getPreferenceIgnoreSSLError());
         assertTrue(preferenceManager.getPreferenceOnlyWifi());
         assertTrue(preferenceManager.getPreferenceNotification());
         assertTrue(preferenceManager.getPreferenceHighPrio());
@@ -257,6 +261,7 @@ public class PreferenceSetupTest {
         defaults.put("preferencePingCount", "5");
         defaults.put("preferenceConnectCount", "10");
         defaults.put("preferenceStopOnSuccess", "true");
+        defaults.put("preferenceIgnoreSSLError", "true");
         defaults.put("preferenceOnlyWifi", "true");
         defaults.put("preferenceNotification", "true");
         defaults.put("preferenceHighPrio", "true");
@@ -269,6 +274,7 @@ public class PreferenceSetupTest {
         assertEquals(5, preferenceManager.getPreferencePingCount());
         assertEquals(10, preferenceManager.getPreferenceConnectCount());
         assertTrue(preferenceManager.getPreferenceStopOnSuccess());
+        assertTrue(preferenceManager.getPreferenceIgnoreSSLError());
         assertTrue(preferenceManager.getPreferenceOnlyWifi());
         assertTrue(preferenceManager.getPreferenceNotification());
         assertTrue(preferenceManager.getPreferenceHighPrio());
@@ -285,6 +291,7 @@ public class PreferenceSetupTest {
         defaults.put("preferencePingCount", 11);
         defaults.put("preferenceConnectCount", 55);
         defaults.put("preferenceStopOnSuccess", 1);
+        defaults.put("preferenceIgnoreSSLError", 1);
         defaults.put("preferenceOnlyWifi", 1);
         defaults.put("preferenceNotification", 1);
         defaults.put("preferenceHighPrio", 1);
@@ -297,6 +304,7 @@ public class PreferenceSetupTest {
         assertEquals(3, preferenceManager.getPreferencePingCount());
         assertEquals(1, preferenceManager.getPreferenceConnectCount());
         assertFalse(preferenceManager.getPreferenceStopOnSuccess());
+        assertFalse(preferenceManager.getPreferenceIgnoreSSLError());
         assertFalse(preferenceManager.getPreferenceOnlyWifi());
         assertFalse(preferenceManager.getPreferenceNotification());
         assertFalse(preferenceManager.getPreferenceHighPrio());
@@ -490,6 +498,7 @@ public class PreferenceSetupTest {
         assertEquals(defaults.get("preferencePingCount"), preferenceManager.getPreferencePingCount());
         assertEquals(defaults.get("preferenceConnectCount"), preferenceManager.getPreferenceConnectCount());
         assertEquals(defaults.get("preferenceStopOnSuccess"), preferenceManager.getPreferenceStopOnSuccess());
+        assertEquals(defaults.get("preferenceIgnoreSSLError"), preferenceManager.getPreferenceIgnoreSSLError());
         assertEquals(defaults.get("preferenceOnlyWifi"), preferenceManager.getPreferenceOnlyWifi());
         assertEquals(defaults.get("preferenceNotification"), preferenceManager.getPreferenceNotification());
         assertEquals(defaults.get("preferenceHighPrio"), preferenceManager.getPreferenceHighPrio());
@@ -505,6 +514,7 @@ public class PreferenceSetupTest {
         preferenceManager.setPreferencePingCount(5);
         preferenceManager.setPreferenceConnectCount(10);
         preferenceManager.setPreferenceStopOnSuccess(true);
+        preferenceManager.setPreferenceIgnoreSSLError(true);
         preferenceManager.setPreferenceOnlyWifi(true);
         preferenceManager.setPreferenceNotification(true);
         preferenceManager.setPreferenceHighPrio(true);
@@ -517,6 +527,7 @@ public class PreferenceSetupTest {
         assertEquals(5, preferenceManager.getPreferencePingCount());
         assertEquals(10, preferenceManager.getPreferenceConnectCount());
         assertTrue(preferenceManager.getPreferenceStopOnSuccess());
+        assertTrue(preferenceManager.getPreferenceIgnoreSSLError());
         assertTrue(preferenceManager.getPreferenceOnlyWifi());
         assertTrue(preferenceManager.getPreferenceNotification());
         assertTrue(preferenceManager.getPreferenceHighPrio());
@@ -528,6 +539,7 @@ public class PreferenceSetupTest {
         assertEquals(defaults.get("preferencePingCount"), preferenceManager.getPreferencePingCount());
         assertEquals(defaults.get("preferenceConnectCount"), preferenceManager.getPreferenceConnectCount());
         assertEquals(defaults.get("preferenceStopOnSuccess"), preferenceManager.getPreferenceStopOnSuccess());
+        assertEquals(defaults.get("preferenceIgnoreSSLError"), preferenceManager.getPreferenceIgnoreSSLError());
         assertEquals(defaults.get("preferenceOnlyWifi"), preferenceManager.getPreferenceOnlyWifi());
         assertEquals(defaults.get("preferenceNotification"), preferenceManager.getPreferenceNotification());
         assertEquals(defaults.get("preferenceHighPrio"), preferenceManager.getPreferenceHighPrio());
@@ -641,6 +653,7 @@ public class PreferenceSetupTest {
         preferenceManager.setPreferenceConnectCount(10);
         preferenceManager.setPreferencePingPackageSize(123);
         preferenceManager.setPreferenceStopOnSuccess(true);
+        preferenceManager.setPreferenceIgnoreSSLError(true);
         preferenceManager.setPreferenceOnlyWifi(true);
         preferenceManager.setPreferenceNotification(true);
         preferenceManager.setPreferenceHighPrio(true);
@@ -654,6 +667,7 @@ public class PreferenceSetupTest {
         assertEquals(10, preferenceManager.getPreferenceConnectCount());
         assertEquals(123, preferenceManager.getPreferencePingPackageSize());
         assertTrue(preferenceManager.getPreferenceStopOnSuccess());
+        assertTrue(preferenceManager.getPreferenceIgnoreSSLError());
         assertTrue(preferenceManager.getPreferenceOnlyWifi());
         assertTrue(preferenceManager.getPreferenceNotification());
         assertTrue(preferenceManager.getPreferenceHighPrio());
@@ -665,6 +679,7 @@ public class PreferenceSetupTest {
         assertEquals(defaults.get("preferenceConnectCount"), preferenceManager.getPreferenceConnectCount());
         assertEquals(defaults.get("preferencePingPackageSize"), preferenceManager.getPreferencePingPackageSize());
         assertEquals(defaults.get("preferenceStopOnSuccess"), preferenceManager.getPreferenceStopOnSuccess());
+        assertEquals(defaults.get("preferenceIgnoreSSLError"), preferenceManager.getPreferenceIgnoreSSLError());
         assertEquals(defaults.get("preferenceOnlyWifi"), preferenceManager.getPreferenceOnlyWifi());
         assertEquals(defaults.get("preferenceNotification"), preferenceManager.getPreferenceNotification());
         assertEquals(defaults.get("preferenceHighPrio"), preferenceManager.getPreferenceHighPrio());
@@ -748,6 +763,7 @@ public class PreferenceSetupTest {
         preferenceManager.setPreferencePingPackageSize(12);
         preferenceManager.setPreferenceConnectCount(10);
         preferenceManager.setPreferenceStopOnSuccess(true);
+        preferenceManager.setPreferenceIgnoreSSLError(true);
         preferenceManager.setPreferenceOnlyWifi(true);
         preferenceManager.setPreferenceNotification(true);
         preferenceManager.setPreferenceHighPrio(true);
@@ -760,6 +776,7 @@ public class PreferenceSetupTest {
         assertEquals(1, preferenceManager.getPreferenceConnectCount());
         assertEquals(56, preferenceManager.getPreferencePingPackageSize());
         assertFalse(preferenceManager.getPreferenceStopOnSuccess());
+        assertFalse(preferenceManager.getPreferenceIgnoreSSLError());
         assertFalse(preferenceManager.getPreferenceOnlyWifi());
         assertFalse(preferenceManager.getPreferenceNotification());
         assertFalse(preferenceManager.getPreferenceHighPrio());
@@ -816,6 +833,7 @@ public class PreferenceSetupTest {
         preferenceManager.setPreferenceConnectCount(10);
         preferenceManager.setPreferencePingPackageSize(12);
         preferenceManager.setPreferenceStopOnSuccess(true);
+        preferenceManager.setPreferenceIgnoreSSLError(true);
         preferenceManager.setPreferenceOnlyWifi(true);
         preferenceManager.setPreferenceNotification(true);
         preferenceManager.setPreferenceHighPrio(true);
@@ -852,6 +870,7 @@ public class PreferenceSetupTest {
         assertEquals(1, preferenceManager.getPreferenceConnectCount());
         assertEquals(56, preferenceManager.getPreferencePingPackageSize());
         assertFalse(preferenceManager.getPreferenceStopOnSuccess());
+        assertFalse(preferenceManager.getPreferenceIgnoreSSLError());
         assertFalse(preferenceManager.getPreferenceOnlyWifi());
         assertFalse(preferenceManager.getPreferenceNotification());
         assertFalse(preferenceManager.getPreferenceHighPrio());

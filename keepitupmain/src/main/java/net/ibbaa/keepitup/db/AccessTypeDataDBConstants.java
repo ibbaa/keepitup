@@ -30,6 +30,7 @@ public class AccessTypeDataDBConstants {
     private final String pingPackageSizeColumnName;
     private final String connectCountColumnName;
     private final String stopOnSuccessColumnName;
+    private final String ignoreSSLErrorColumnName;
 
     public AccessTypeDataDBConstants(Context context) {
         networkTaskDBConstants = new NetworkTaskDBConstants(context);
@@ -40,6 +41,7 @@ public class AccessTypeDataDBConstants {
         pingPackageSizeColumnName = context.getResources().getString(R.string.accesstypedata_pingpackagesize_column_name);
         connectCountColumnName = context.getResources().getString(R.string.accesstypedata_connectcount_column_name);
         stopOnSuccessColumnName = context.getResources().getString(R.string.accesstypedata_stoponsuccess_column_name);
+        ignoreSSLErrorColumnName = context.getResources().getString(R.string.accesstypedata_ignoresslerror_column_name);
     }
 
     public String getTableName() {
@@ -70,6 +72,10 @@ public class AccessTypeDataDBConstants {
         return stopOnSuccessColumnName;
     }
 
+    public String getIgnoreSSLErrorColumnName() {
+        return ignoreSSLErrorColumnName;
+    }
+
     public String getCreateTableStatement() {
         return ("CREATE TABLE IF NOT EXISTS  " + getTableName() + "(") +
                 getIdColumnName() + " INTEGER PRIMARY KEY ASC, " +
@@ -77,7 +83,8 @@ public class AccessTypeDataDBConstants {
                 getPingCountColumnName() + " INTEGER, " +
                 getPingPackageSizeColumnName() + " INTEGER, " +
                 getConnectCountColumnName() + " INTEGER, " +
-                getStopOnSuccessColumnName() + " INTEGER);";
+                getStopOnSuccessColumnName() + " INTEGER, " +
+                getIgnoreSSLErrorColumnName() + " INTEGER);";
     }
 
     public String getCreateTableStatementWithoutStopOnSuccess() {
@@ -86,7 +93,18 @@ public class AccessTypeDataDBConstants {
                 getNetworkTaskIdColumnName() + " INTEGER NOT NULL, " +
                 getPingCountColumnName() + " INTEGER, " +
                 getPingPackageSizeColumnName() + " INTEGER, " +
-                getConnectCountColumnName() + " INTEGER);";
+                getConnectCountColumnName() + " INTEGER, " +
+                getIgnoreSSLErrorColumnName() + " INTEGER);";
+    }
+
+    public String getCreateTableStatementWithoutIgnoreSSLError() {
+        return ("CREATE TABLE IF NOT EXISTS  " + getTableName() + "(") +
+                getIdColumnName() + " INTEGER PRIMARY KEY ASC, " +
+                getNetworkTaskIdColumnName() + " INTEGER NOT NULL, " +
+                getPingCountColumnName() + " INTEGER, " +
+                getPingPackageSizeColumnName() + " INTEGER, " +
+                getConnectCountColumnName() + " INTEGER, " +
+                getStopOnSuccessColumnName() + " INTEGER);";
     }
 
     public String getDropTableStatement() {
@@ -100,7 +118,8 @@ public class AccessTypeDataDBConstants {
                 getPingCountColumnName() + ", " +
                 getPingPackageSizeColumnName() + ", " +
                 getConnectCountColumnName() + ", " +
-                getStopOnSuccessColumnName() +
+                getStopOnSuccessColumnName() + ", " +
+                getIgnoreSSLErrorColumnName() +
                 " FROM " + getTableName() +
                 " WHERE " + getNetworkTaskIdColumnName() + " = ?";
     }
@@ -112,7 +131,8 @@ public class AccessTypeDataDBConstants {
                 getPingCountColumnName() + ", " +
                 getPingPackageSizeColumnName() + ", " +
                 getConnectCountColumnName() + ", " +
-                getStopOnSuccessColumnName() +
+                getStopOnSuccessColumnName() + ", " +
+                getIgnoreSSLErrorColumnName() +
                 " FROM " + getTableName();
     }
 
@@ -131,7 +151,15 @@ public class AccessTypeDataDBConstants {
         return "ALTER TABLE " + getTableName() + " ADD COLUMN " + getStopOnSuccessColumnName() + " INTEGER;";
     }
 
+    public String getAddIgnoreSSLErrorColumnStatement() {
+        return "ALTER TABLE " + getTableName() + " ADD COLUMN " + getIgnoreSSLErrorColumnName() + " INTEGER;";
+    }
+
     public String getDropStopOnSuccessColumnStatement() {
         return "ALTER TABLE " + getTableName() + " DROP COLUMN " + getStopOnSuccessColumnName() + ";";
+    }
+
+    public String getDropIgnoreSSLErrorColumnStatement() {
+        return "ALTER TABLE " + getTableName() + " DROP COLUMN " + getIgnoreSSLErrorColumnName() + ";";
     }
 }

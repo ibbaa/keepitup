@@ -154,11 +154,17 @@ public class DBSetupTest {
     @Test
     public void testAddHighPrioColumn() {
         setup.dropNetworkTaskTable();
-        NetworkTaskDBConstants dbConstants = new NetworkTaskDBConstants(TestRegistry.getContext());
-        DBOpenHelper.getInstance(TestRegistry.getContext()).getWritableDatabase().execSQL(dbConstants.getCreateTableStatementWithoutHighPrio());
+        setup.dropAccessTypeDataTable();
+        NetworkTaskDBConstants networkTaskDBConstants = new NetworkTaskDBConstants(TestRegistry.getContext());
+        AccessTypeDataDBConstants accessTypeDataDBConstants = new AccessTypeDataDBConstants(TestRegistry.getContext());
+        DBOpenHelper.getInstance(TestRegistry.getContext()).getWritableDatabase().execSQL(networkTaskDBConstants.getCreateTableStatementWithoutHighPrio());
+        DBOpenHelper.getInstance(TestRegistry.getContext()).getWritableDatabase().execSQL(accessTypeDataDBConstants.getCreateTableStatementWithoutIgnoreSSLError());
         setup.addHighPrioColumnToNetworkTaskTable();
+        setup.addIgnoreSSLErrorColumnToAccessTypeDataTable();
         networkTaskDAO.insertNetworkTask(new NetworkTask());
         assertEquals(1, networkTaskDAO.readAllNetworkTasks().size());
+        accessTypeDataDAO.insertAccessTypeData(new AccessTypeData());
+        assertEquals(1, accessTypeDataDAO.readAllAccessTypeData().size());
     }
 
     @Test
@@ -823,6 +829,7 @@ public class DBSetupTest {
         data.setPingPackageSize(1234);
         data.setConnectCount(3);
         data.setStopOnSuccess(true);
+        data.setIgnoreSSLError(true);
         return data;
     }
 }

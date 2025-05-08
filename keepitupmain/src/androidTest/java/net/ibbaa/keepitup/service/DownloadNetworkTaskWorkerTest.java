@@ -1715,6 +1715,7 @@ public class DownloadNetworkTaskWorkerTest {
         data.setPingPackageSize(1234);
         data.setConnectCount(3);
         data.setStopOnSuccess(true);
+        data.setIgnoreSSLError(true);
         return data;
     }
 }

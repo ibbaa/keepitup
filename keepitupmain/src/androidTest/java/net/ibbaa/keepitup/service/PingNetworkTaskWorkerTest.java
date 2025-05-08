@@ -405,6 +405,7 @@ public class PingNetworkTaskWorkerTest {
         data.setPingPackageSize(1234);
         data.setConnectCount(3);
         data.setStopOnSuccess(stopOnSuccess);
+        data.setIgnoreSSLError(true);
         return data;
     }
 

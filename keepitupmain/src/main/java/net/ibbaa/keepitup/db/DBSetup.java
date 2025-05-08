@@ -133,6 +133,11 @@ public class DBSetup {
         db.execSQL(accessTypeDataDBConstants.getAddStopOnSuccessColumnStatement());
     }
 
+    public void addIgnoreSSLErrorColumnToAccessTypeDataTable(SQLiteDatabase db) {
+        Log.d(DBSetup.class.getName(), "Adding column " + accessTypeDataDBConstants.getIgnoreSSLErrorColumnName() + " to table " + accessTypeDataDBConstants.getTableName());
+        db.execSQL(accessTypeDataDBConstants.getAddIgnoreSSLErrorColumnStatement());
+    }
+
     public void dropTables(SQLiteDatabase db) {
         Log.d(DBSetup.class.getName(), "dropTables");
         dropSchedulerIdHistoryTable(db);
@@ -186,6 +191,11 @@ public class DBSetup {
     public void dropStopOnSuccessColumnFromAccessTypeDataTable(SQLiteDatabase db) {
         Log.d(DBSetup.class.getName(), "Dropping column " + accessTypeDataDBConstants.getStopOnSuccessColumnName() + " from table " + accessTypeDataDBConstants.getTableName());
         db.execSQL(accessTypeDataDBConstants.getDropStopOnSuccessColumnStatement());
+    }
+
+    public void dropIgnoreSSLErrorColumnFromAccessTypeDataTable(SQLiteDatabase db) {
+        Log.d(DBSetup.class.getName(), "Dropping column " + accessTypeDataDBConstants.getIgnoreSSLErrorColumnName() + " from table " + accessTypeDataDBConstants.getTableName());
+        db.execSQL(accessTypeDataDBConstants.getDropIgnoreSSLErrorColumnStatement());
     }
 
     public void recreateNetworkTaskTable(SQLiteDatabase db) {
@@ -244,6 +254,10 @@ public class DBSetup {
 
     public void addHighPrioColumnToNetworkTaskTable() {
         addHighPrioColumnToNetworkTaskTable(DBOpenHelper.getInstance(getContext()).getWritableDatabase());
+    }
+
+    public void addIgnoreSSLErrorColumnToAccessTypeDataTable() {
+        addIgnoreSSLErrorColumnToAccessTypeDataTable(DBOpenHelper.getInstance(getContext()).getWritableDatabase());
     }
 
     public void initializeFailureCountColumn() {

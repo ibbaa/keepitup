@@ -236,6 +236,7 @@ public class JSONSystemSetupTest {
         preferenceManager.setPreferencePingCount(5);
         preferenceManager.setPreferenceConnectCount(10);
         preferenceManager.setPreferenceStopOnSuccess(true);
+        preferenceManager.setPreferenceIgnoreSSLError(true);
         preferenceManager.setPreferenceOnlyWifi(true);
         preferenceManager.setPreferenceNotification(true);
         preferenceManager.setPreferenceHighPrio(true);
@@ -274,6 +275,7 @@ public class JSONSystemSetupTest {
         assertEquals(5, defaultsData.getInt("preferencePingCount"));
         assertEquals(10, defaultsData.getInt("preferenceConnectCount"));
         assertTrue(defaultsData.getBoolean("preferenceStopOnSuccess"));
+        assertTrue(defaultsData.getBoolean("preferenceIgnoreSSLError"));
         assertTrue(defaultsData.getBoolean("preferenceOnlyWifi"));
         assertTrue(defaultsData.getBoolean("preferenceNotification"));
         assertTrue(defaultsData.getBoolean("preferenceHighPrio"));
@@ -761,6 +763,7 @@ public class JSONSystemSetupTest {
         preferenceManager.setPreferencePingCount(5);
         preferenceManager.setPreferenceConnectCount(10);
         preferenceManager.setPreferenceStopOnSuccess(true);
+        preferenceManager.setPreferenceIgnoreSSLError(true);
         preferenceManager.setPreferenceOnlyWifi(true);
         preferenceManager.setPreferenceNotification(true);
         preferenceManager.setPreferenceHighPrio(true);
@@ -797,6 +800,7 @@ public class JSONSystemSetupTest {
         assertEquals(5, preferenceManager.getPreferencePingCount());
         assertEquals(10, preferenceManager.getPreferenceConnectCount());
         assertTrue(preferenceManager.getPreferenceStopOnSuccess());
+        assertTrue(preferenceManager.getPreferenceIgnoreSSLError());
         assertTrue(preferenceManager.getPreferenceOnlyWifi());
         assertTrue(preferenceManager.getPreferenceNotification());
         assertTrue(preferenceManager.getPreferenceHighPrio());
@@ -1047,6 +1051,7 @@ public class JSONSystemSetupTest {
         data.setPingPackageSize(1234);
         data.setConnectCount(3);
         data.setStopOnSuccess(true);
+        data.setIgnoreSSLError(true);
         return data;
     }
 
@@ -1058,6 +1063,7 @@ public class JSONSystemSetupTest {
         data.setPingPackageSize(55);
         data.setConnectCount(5);
         data.setStopOnSuccess(true);
+        data.setIgnoreSSLError(true);
         return data;
     }
 }

@@ -40,6 +40,7 @@ public class NetworkTaskViewHolder extends RecyclerView.ViewHolder {
     private final TextView addressText;
     private final TextView intervalText;
     private final TextView notificationText;
+    private final TextView ignoreSSLErrorText;
     private final TextView stopOnSuccessText;
     private final TextView onlyWifiText;
     private final TextView lastExecTimestampText;
@@ -66,8 +67,9 @@ public class NetworkTaskViewHolder extends RecyclerView.ViewHolder {
         addressText = itemView.findViewById(R.id.textview_list_item_network_task_address);
         intervalText = itemView.findViewById(R.id.textview_list_item_network_task_interval);
         notificationText = itemView.findViewById(R.id.textview_list_item_network_task_notification);
-        stopOnSuccessText = itemView.findViewById(R.id.textview_list_item_network_task_stoponsuccess);
-        onlyWifiText = itemView.findViewById(R.id.textview_list_item_network_task_onlywifi);
+        ignoreSSLErrorText = itemView.findViewById(R.id.textview_list_item_network_task_ignore_ssl_error);
+        stopOnSuccessText = itemView.findViewById(R.id.textview_list_item_network_task_stop_on_success);
+        onlyWifiText = itemView.findViewById(R.id.textview_list_item_network_task_only_wifi);
         lastExecTimestampText = itemView.findViewById(R.id.textview_list_item_network_task_last_exec_timestamp);
         failureCountText = itemView.findViewById(R.id.textview_list_item_network_task_failure_count);
         lastExecMessageText = itemView.findViewById(R.id.textview_list_item_network_task_last_exec_message);
@@ -101,6 +103,10 @@ public class NetworkTaskViewHolder extends RecyclerView.ViewHolder {
 
     public void setInterval(String interval) {
         intervalText.setText(interval);
+    }
+
+    public void setIgnoreSSLError(String ignoreSSLError) {
+        ignoreSSLErrorText.setText(ignoreSSLError);
     }
 
     public void setStopOnSuccess(String stopOnSuccess) {
@@ -141,6 +147,14 @@ public class NetworkTaskViewHolder extends RecyclerView.ViewHolder {
 
     public void hideLastExecMessageTextView() {
         lastExecMessageText.setVisibility(View.GONE);
+    }
+
+    public void showIgnoreSSLErrorTextView() {
+        ignoreSSLErrorText.setVisibility(View.VISIBLE);
+    }
+
+    public void hideIgnoreSSLErrorTextView() {
+        ignoreSSLErrorText.setVisibility(View.GONE);
     }
 
     public void showStopOnSuccessTextView() {

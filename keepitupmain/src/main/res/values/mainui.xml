@@ -34,9 +34,10 @@
     <string name="text_activity_main_list_item_network_task_address">%s</string>
     <string name="text_activity_main_list_item_network_task_interval">Interval: %d %s</string>
     <string name="text_activity_main_list_item_network_task_notification">Notifications: %s</string>
-    <string name="text_activity_main_list_item_network_task_notification_highprio">Notifications (high prio): %s</string>
-    <string name="text_activity_main_list_item_network_task_stoponsuccess">Stop on success: %s</string>
-    <string name="text_activity_main_list_item_network_task_onlywifi">Only on WiFi: %s</string>
+    <string name="text_activity_main_list_item_network_task_notification_high_prio">Notifications (high prio): %s</string>
+    <string name="text_activity_main_list_item_network_task_ignore_ssl_error">Ignore SSL errors: %s</string>
+    <string name="text_activity_main_list_item_network_task_stop_on_success">Stop on success: %s</string>
+    <string name="text_activity_main_list_item_network_task_only_wifi">Only on WiFi: %s</string>
     <string name="text_activity_main_list_item_network_task_last_exec_timestamp">Last execution: %s</string>
     <string name="text_activity_main_list_item_network_task_failure_count">Failures since last success: %d</string>
     <string name="text_activity_main_list_item_network_task_last_exec_message">Last execution message: %s</string>

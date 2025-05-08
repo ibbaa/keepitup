@@ -171,30 +171,40 @@
                 android:text="@string/text_activity_main_list_item_network_task_interval" />
 
             <TextView
-                android:id="@+id/textview_list_item_network_task_stoponsuccess"
+                android:id="@+id/textview_list_item_network_task_ignore_ssl_error"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_row="6"
                 android:layout_column="0"
                 android:layout_columnSpan="3"
                 android:textStyle="normal"
-                android:text="@string/text_activity_main_list_item_network_task_stoponsuccess" />
+                android:text="@string/text_activity_main_list_item_network_task_ignore_ssl_error" />
 
             <TextView
-                android:id="@+id/textview_list_item_network_task_onlywifi"
+                android:id="@+id/textview_list_item_network_task_stop_on_success"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_row="7"
                 android:layout_column="0"
                 android:layout_columnSpan="3"
                 android:textStyle="normal"
-                android:text="@string/text_activity_main_list_item_network_task_onlywifi" />
+                android:text="@string/text_activity_main_list_item_network_task_stop_on_success" />
+
+            <TextView
+                android:id="@+id/textview_list_item_network_task_only_wifi"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_row="8"
+                android:layout_column="0"
+                android:layout_columnSpan="3"
+                android:textStyle="normal"
+                android:text="@string/text_activity_main_list_item_network_task_only_wifi" />
 
             <TextView
                 android:id="@+id/textview_list_item_network_task_notification"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_row="8"
+                android:layout_row="9"
                 android:layout_column="0"
                 android:layout_columnSpan="3"
                 android:textStyle="normal"
@@ -204,7 +214,7 @@
                 android:id="@+id/textview_list_item_network_task_last_exec_timestamp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_row="9"
+                android:layout_row="10"
                 android:layout_column="0"
                 android:layout_columnSpan="3"
                 android:textStyle="normal"
@@ -214,7 +224,7 @@
                 android:id="@+id/textview_list_item_network_task_failure_count"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_row="10"
+                android:layout_row="11"
                 android:layout_column="0"
                 android:layout_columnSpan="3"
                 android:textStyle="normal"
@@ -224,7 +234,7 @@
                 android:id="@+id/textview_list_item_network_task_last_exec_message"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_row="11"
+                android:layout_row="12"
                 android:layout_column="0"
                 android:layout_columnSpan="3"
                 android:textStyle="normal"

@@ -102,6 +102,7 @@ public class AccessTypeDataDAO extends BaseDAO {
         values.put(dbConstants.getPingPackageSizeColumnName(), accessTypeData.getPingPackageSize());
         values.put(dbConstants.getConnectCountColumnName(), accessTypeData.getConnectCount());
         values.put(dbConstants.getStopOnSuccessColumnName(), accessTypeData.isStopOnSuccess() ? 1 : 0);
+        values.put(dbConstants.getIgnoreSSLErrorColumnName(), accessTypeData.isIgnoreSSLError() ? 1 : 0);
         long rowid = db.insert(dbConstants.getTableName(), null, values);
         if (rowid < 0) {
             Log.e(AccessTypeDataDAO.class.getName(), "Error inserting accessTypeData into database. Insert returned -1.");
@@ -122,6 +123,7 @@ public class AccessTypeDataDAO extends BaseDAO {
         values.put(dbConstants.getPingPackageSizeColumnName(), accessTypeData.getPingPackageSize());
         values.put(dbConstants.getConnectCountColumnName(), accessTypeData.getConnectCount());
         values.put(dbConstants.getStopOnSuccessColumnName(), accessTypeData.isStopOnSuccess() ? 1 : 0);
+        values.put(dbConstants.getIgnoreSSLErrorColumnName(), accessTypeData.isIgnoreSSLError() ? 1 : 0);
         db.update(dbConstants.getTableName(), values, selection, selectionArgs);
         return accessTypeData;
     }
@@ -211,12 +213,14 @@ public class AccessTypeDataDAO extends BaseDAO {
         int indexPingPackageSizeColumn = cursor.getColumnIndex(dbConstants.getPingPackageSizeColumnName());
         int indexConnectCountColumn = cursor.getColumnIndex(dbConstants.getConnectCountColumnName());
         int indexStopOnSuccessColumn = cursor.getColumnIndex(dbConstants.getStopOnSuccessColumnName());
+        int indexIgnoreSSLErrorColumn = cursor.getColumnIndex(dbConstants.getIgnoreSSLErrorColumnName());
         accessTypeData.setId(cursor.getInt(indexIdColumn));
         accessTypeData.setNetworkTaskId(cursor.getLong(indexNetworkTaskIdColumn));
         accessTypeData.setPingCount(cursor.getInt(indexPingCountColumn));
         accessTypeData.setPingPackageSize(cursor.getInt(indexPingPackageSizeColumn));
         accessTypeData.setConnectCount(cursor.getInt(indexConnectCountColumn));
         accessTypeData.setStopOnSuccess(cursor.getInt(indexStopOnSuccessColumn) >= 1);
+        accessTypeData.setIgnoreSSLError(cursor.getInt(indexIgnoreSSLErrorColumn) >= 1);
         return accessTypeData;
     }
 }

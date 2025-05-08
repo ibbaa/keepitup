@@ -106,12 +106,14 @@ public class AccessTypeDataDAOTest {
         AccessTypeData readData2 = accessTypeDataDAO.readAccessTypeDataForNetworkTask(1);
         readData2.setPingCount(9);
         readData2.setStopOnSuccess(false);
+        readData2.setIgnoreSSLError(false);
         accessTypeDataDAO.updateAccessTypeData(readData2);
         readData2 = accessTypeDataDAO.readAccessTypeDataForNetworkTask(1);
         assertEquals(9, readData2.getPingCount());
         assertFalse(readData2.isStopOnSuccess());
         readData2.setPingCount(data2.getPingCount());
         readData2.setStopOnSuccess(data2.isStopOnSuccess());
+        readData2.setIgnoreSSLError(data2.isIgnoreSSLError());
         assertTrue(data2.isEqual(readData2));
         readData1.setPingPackageSize(12);
         readData1.setConnectCount(1);
@@ -180,6 +182,7 @@ public class AccessTypeDataDAOTest {
         data.setPingPackageSize(1234);
         data.setConnectCount(3);
         data.setStopOnSuccess(true);
+        data.setIgnoreSSLError(true);
         return data;
     }
 
@@ -191,6 +194,7 @@ public class AccessTypeDataDAOTest {
         data.setPingPackageSize(123);
         data.setConnectCount(2);
         data.setStopOnSuccess(true);
+        data.setIgnoreSSLError(true);
         return data;
     }
 
@@ -202,6 +206,7 @@ public class AccessTypeDataDAOTest {
         data.setPingPackageSize(4321);
         data.setConnectCount(5);
         data.setStopOnSuccess(false);
+        data.setIgnoreSSLError(false);
         return data;
     }
 }

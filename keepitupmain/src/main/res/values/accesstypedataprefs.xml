@@ -29,4 +29,6 @@
     <integer name="connect_count_maximum">10</integer>
     <string name="stop_on_success_key">stop_on_success_key</string>
     <bool name="stop_on_success_default">false</bool>
+    <string name="ignore_ssl_error_key">ignore_ssl_error_key</string>
+    <bool name="ignore_ssl_error_default">false</bool>
 </resources>

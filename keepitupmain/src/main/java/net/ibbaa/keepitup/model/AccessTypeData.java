@@ -37,6 +37,7 @@ public class AccessTypeData {
     private int pingPackageSize;
     private int connectCount;
     private boolean stopOnSuccess;
+    private boolean ignoreSSLError;
 
     public AccessTypeData() {
         this.id = -1;
@@ -45,6 +46,7 @@ public class AccessTypeData {
         this.pingPackageSize = 56;
         this.connectCount = 1;
         this.stopOnSuccess = false;
+        this.ignoreSSLError = false;
     }
 
     public AccessTypeData(Context context) {
@@ -54,6 +56,7 @@ public class AccessTypeData {
         this.pingPackageSize = preferenceManager.getPreferencePingPackageSize();
         this.connectCount = preferenceManager.getPreferenceConnectCount();
         this.stopOnSuccess = preferenceManager.getPreferenceStopOnSuccess();
+        this.ignoreSSLError = preferenceManager.getPreferenceIgnoreSSLError();
     }
 
     public AccessTypeData(PersistableBundle bundle) {
@@ -68,6 +71,7 @@ public class AccessTypeData {
         this.pingPackageSize = bundle.getInt("pingPackageSize");
         this.connectCount = bundle.getInt("connectCount");
         this.stopOnSuccess = bundle.getInt("stopOnSuccess") >= 1;
+        this.ignoreSSLError = bundle.getInt("ignoreSSLError") >= 1;
     }
 
     public AccessTypeData(Map<String, ?> map) {
@@ -89,6 +93,9 @@ public class AccessTypeData {
         }
         if (map.get("stopOnSuccess") != null) {
             this.stopOnSuccess = Boolean.parseBoolean(Objects.requireNonNull(map.get("stopOnSuccess")).toString());
+        }
+        if (map.get("ignoreSSLError") != null) {
+            this.ignoreSSLError = Boolean.parseBoolean(Objects.requireNonNull(map.get("ignoreSSLError")).toString());
         }
     }
 
@@ -140,6 +147,14 @@ public class AccessTypeData {
         this.stopOnSuccess = stopOnSuccess;
     }
 
+    public boolean isIgnoreSSLError() {
+        return ignoreSSLError;
+    }
+
+    public void setIgnoreSSLError(boolean ignoreSSLError) {
+        this.ignoreSSLError = ignoreSSLError;
+    }
+
     public PersistableBundle toPersistableBundle() {
         PersistableBundle bundle = new PersistableBundle();
         bundle.putLong("id", id);
@@ -148,6 +163,7 @@ public class AccessTypeData {
         bundle.putInt("pingPackageSize", pingPackageSize);
         bundle.putInt("connectCount", connectCount);
         bundle.putInt("stopOnSuccess", stopOnSuccess ? 1 : 0);
+        bundle.putInt("ignoreSSLError", ignoreSSLError ? 1 : 0);
         return bundle;
     }
 
@@ -163,6 +179,7 @@ public class AccessTypeData {
         map.put("pingPackageSize", pingPackageSize);
         map.put("connectCount", connectCount);
         map.put("stopOnSuccess", stopOnSuccess);
+        map.put("ignoreSSLError", ignoreSSLError);
         return map;
     }
 
@@ -185,7 +202,10 @@ public class AccessTypeData {
         if (connectCount != other.connectCount) {
             return false;
         }
-        return Objects.equals(stopOnSuccess, other.stopOnSuccess);
+        if (stopOnSuccess != other.stopOnSuccess) {
+            return false;
+        }
+        return Objects.equals(ignoreSSLError, other.ignoreSSLError);
     }
 
     public boolean isTechnicallyEqual(AccessTypeData other) {
@@ -204,7 +224,10 @@ public class AccessTypeData {
         if (connectCount != other.connectCount) {
             return false;
         }
-        return Objects.equals(stopOnSuccess, other.stopOnSuccess);
+        if (stopOnSuccess != other.stopOnSuccess) {
+            return false;
+        }
+        return Objects.equals(ignoreSSLError, other.ignoreSSLError);
     }
 
     @NonNull
@@ -217,6 +240,7 @@ public class AccessTypeData {
                 ", pingPackageSize=" + pingPackageSize +
                 ", connectCount=" + connectCount +
                 ", stopOnSuccess=" + stopOnSuccess +
+                ", ignoreSSLError=" + ignoreSSLError +
                 '}';
     }
 }

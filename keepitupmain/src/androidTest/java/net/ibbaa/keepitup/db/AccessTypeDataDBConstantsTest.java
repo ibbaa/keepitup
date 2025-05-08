@@ -41,6 +41,7 @@ public class AccessTypeDataDBConstantsTest {
         assertEquals(getResourceString(R.string.accesstypedata_pingpackagesize_column_name), dbConstants.getPingPackageSizeColumnName());
         assertEquals(getResourceString(R.string.accesstypedata_connectcount_column_name), dbConstants.getConnectCountColumnName());
         assertEquals(getResourceString(R.string.accesstypedata_stoponsuccess_column_name), dbConstants.getStopOnSuccessColumnName());
+        assertEquals(getResourceString(R.string.accesstypedata_ignoresslerror_column_name), dbConstants.getIgnoreSSLErrorColumnName());
     }
 
     private String getResourceString(int id) {

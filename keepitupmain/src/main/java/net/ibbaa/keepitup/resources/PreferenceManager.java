@@ -262,13 +262,28 @@ public class PreferenceManager {
     }
 
     public void setPreferenceStopOnSuccess(boolean stopOnSuccess) {
-        Log.d(PreferenceManager.class.getName(), "stopOnSuccess, stopOnSuccess is " + stopOnSuccess);
+        Log.d(PreferenceManager.class.getName(), "setPreferenceStopOnSuccess, stopOnSuccess is " + stopOnSuccess);
         setPreferenceBoolean(getResources().getString(R.string.stop_on_success_key), stopOnSuccess);
     }
 
     public void removePreferenceStopOnSuccess() {
         Log.d(PreferenceManager.class.getName(), "removePreferenceStopOnSuccess");
         removePreferenceValue(getResources().getString(R.string.stop_on_success_key));
+    }
+
+    public boolean getPreferenceIgnoreSSLError() {
+        Log.d(PreferenceManager.class.getName(), "getPreferenceIgnoreSSLError");
+        return getPreferenceBoolean(getResources().getString(R.string.ignore_ssl_error_key), getResources().getBoolean(R.bool.ignore_ssl_error_default));
+    }
+
+    public void setPreferenceIgnoreSSLError(boolean ignoreSSLError) {
+        Log.d(PreferenceManager.class.getName(), "setPreferenceIgnoreSSLError, ignoreSSLError is " + ignoreSSLError);
+        setPreferenceBoolean(getResources().getString(R.string.ignore_ssl_error_key), ignoreSSLError);
+    }
+
+    public void removePreferenceIgnoreSSLError() {
+        Log.d(PreferenceManager.class.getName(), "removePreferenceIgnoreSSLError");
+        removePreferenceValue(getResources().getString(R.string.ignore_ssl_error_key));
     }
 
     public NotificationType getPreferenceNotificationType() {

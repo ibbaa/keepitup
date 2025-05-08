@@ -79,6 +79,7 @@ public class NetworkTaskAdapter extends RecyclerView.Adapter<NetworkTaskViewHold
         bindLastExecTimestamp(networkTaskViewHolder, logEntry);
         bindFailureCount(networkTaskViewHolder, networkTask, logEntry);
         bindLastExecMessage(networkTaskViewHolder, logEntry);
+        bindIgnoreSSLError(networkTaskViewHolder, networkTask, accessTypeData);
         bindStopOnSuccess(networkTaskViewHolder, networkTask, accessTypeData);
         bindOnlyWifi(networkTaskViewHolder, networkTask);
         bindNotification(networkTaskViewHolder, networkTask);
@@ -173,10 +174,23 @@ public class NetworkTaskAdapter extends RecyclerView.Adapter<NetworkTaskViewHold
         networkTaskViewHolder.setInterval(formattedIntervalText);
     }
 
+    private void bindIgnoreSSLError(@NonNull NetworkTaskViewHolder networkTaskViewHolder, NetworkTask networkTask, AccessTypeData accessTypeData) {
+        Log.d(NetworkTaskAdapter.class.getName(), "bindIgnoreSSLError, networkTask is " + networkTask + ", accessTypeData is " + accessTypeData);
+        String ignoreSSLError = accessTypeData != null && accessTypeData.isIgnoreSSLError() ? getResources().getString(R.string.string_yes) : getResources().getString(R.string.string_no);
+        String formattedIgnoreSSLErrorText = getResources().getString(R.string.text_activity_main_list_item_network_task_ignore_ssl_error, ignoreSSLError);
+        Log.d(NetworkTaskAdapter.class.getName(), "binding ignroe ssl error " + formattedIgnoreSSLErrorText);
+        networkTaskViewHolder.setIgnoreSSLError(formattedIgnoreSSLErrorText);
+        if (AccessType.DOWNLOAD.equals(networkTask.getAccessType())) {
+            networkTaskViewHolder.showIgnoreSSLErrorTextView();
+        } else {
+            networkTaskViewHolder.hideIgnoreSSLErrorTextView();
+        }
+    }
+
     private void bindStopOnSuccess(@NonNull NetworkTaskViewHolder networkTaskViewHolder, NetworkTask networkTask, AccessTypeData accessTypeData) {
         Log.d(NetworkTaskAdapter.class.getName(), "bindStopOnSuccess, networkTask is " + networkTask + ", accessTypeData is " + accessTypeData);
         String stopOnSuccess = accessTypeData != null && accessTypeData.isStopOnSuccess() ? getResources().getString(R.string.string_yes) : getResources().getString(R.string.string_no);
-        String formattedStopOnSuccessText = getResources().getString(R.string.text_activity_main_list_item_network_task_stoponsuccess, stopOnSuccess);
+        String formattedStopOnSuccessText = getResources().getString(R.string.text_activity_main_list_item_network_task_stop_on_success, stopOnSuccess);
         Log.d(NetworkTaskAdapter.class.getName(), "binding stop on success " + formattedStopOnSuccessText);
         networkTaskViewHolder.setStopOnSuccess(formattedStopOnSuccessText);
         if (AccessType.DOWNLOAD.equals(networkTask.getAccessType())) {
@@ -189,7 +203,7 @@ public class NetworkTaskAdapter extends RecyclerView.Adapter<NetworkTaskViewHold
     private void bindOnlyWifi(@NonNull NetworkTaskViewHolder networkTaskViewHolder, NetworkTask networkTask) {
         Log.d(NetworkTaskAdapter.class.getName(), "bindOnlyWifi, networkTask is " + networkTask);
         String onlyWifi = networkTask.isOnlyWifi() ? getResources().getString(R.string.string_yes) : getResources().getString(R.string.string_no);
-        String formattedOnlyWifiText = getResources().getString(R.string.text_activity_main_list_item_network_task_onlywifi, onlyWifi);
+        String formattedOnlyWifiText = getResources().getString(R.string.text_activity_main_list_item_network_task_only_wifi, onlyWifi);
         Log.d(NetworkTaskAdapter.class.getName(), "binding only wifi text " + formattedOnlyWifiText);
         networkTaskViewHolder.setOnlyWifi(formattedOnlyWifiText);
     }
@@ -200,7 +214,7 @@ public class NetworkTaskAdapter extends RecyclerView.Adapter<NetworkTaskViewHold
         String sendNotification = hasPostNotificationsPermission && networkTask.isNotification() ? getResources().getString(R.string.string_yes) : getResources().getString(R.string.string_no);
         String formattedNotificationText;
         if (hasPostNotificationsPermission && networkTask.isNotification() && networkTask.isHighPrio()) {
-            formattedNotificationText = getResources().getString(R.string.text_activity_main_list_item_network_task_notification_highprio, sendNotification);
+            formattedNotificationText = getResources().getString(R.string.text_activity_main_list_item_network_task_notification_high_prio, sendNotification);
         } else {
             formattedNotificationText = getResources().getString(R.string.text_activity_main_list_item_network_task_notification, sendNotification);
         }

@@ -107,6 +107,7 @@ public class ImportTaskTest extends BaseUITest {
         getPreferenceManager().setPreferenceConnectCount(10);
         getPreferenceManager().setPreferencePingPackageSize(12);
         getPreferenceManager().setPreferenceStopOnSuccess(true);
+        getPreferenceManager().setPreferenceIgnoreSSLError(true);
         getPreferenceManager().setPreferenceOnlyWifi(true);
         getPreferenceManager().setPreferenceNotification(true);
         getPreferenceManager().setPreferenceHighPrio(true);
@@ -198,6 +199,7 @@ public class ImportTaskTest extends BaseUITest {
         assertEquals(10, getPreferenceManager().getPreferenceConnectCount());
         assertEquals(12, getPreferenceManager().getPreferencePingPackageSize());
         assertTrue(getPreferenceManager().getPreferenceStopOnSuccess());
+        assertTrue(getPreferenceManager().getPreferenceIgnoreSSLError());
         assertTrue(getPreferenceManager().getPreferenceOnlyWifi());
         assertTrue(getPreferenceManager().getPreferenceNotification());
         assertTrue(getPreferenceManager().getPreferenceHighPrio());
@@ -248,6 +250,7 @@ public class ImportTaskTest extends BaseUITest {
         getPreferenceManager().setPreferenceConnectCount(10);
         getPreferenceManager().setPreferencePingPackageSize(12);
         getPreferenceManager().setPreferenceStopOnSuccess(true);
+        getPreferenceManager().setPreferenceIgnoreSSLError(true);
         getPreferenceManager().setPreferenceOnlyWifi(true);
         getPreferenceManager().setPreferenceNotification(true);
         getPreferenceManager().setPreferenceHighPrio(true);
@@ -344,6 +347,7 @@ public class ImportTaskTest extends BaseUITest {
         assertEquals(10, getPreferenceManager().getPreferenceConnectCount());
         assertEquals(12, getPreferenceManager().getPreferencePingPackageSize());
         assertTrue(getPreferenceManager().getPreferenceStopOnSuccess());
+        assertTrue(getPreferenceManager().getPreferenceIgnoreSSLError());
         assertTrue(getPreferenceManager().getPreferenceOnlyWifi());
         assertTrue(getPreferenceManager().getPreferenceNotification());
         assertTrue(getPreferenceManager().getPreferenceHighPrio());
@@ -383,6 +387,7 @@ public class ImportTaskTest extends BaseUITest {
         getPreferenceManager().setPreferenceConnectCount(10);
         getPreferenceManager().setPreferencePingPackageSize(12);
         getPreferenceManager().setPreferenceStopOnSuccess(true);
+        getPreferenceManager().setPreferenceIgnoreSSLError(true);
         getPreferenceManager().setPreferenceOnlyWifi(true);
         getPreferenceManager().setPreferenceNotification(true);
         getPreferenceManager().setPreferenceHighPrio(true);
@@ -425,6 +430,7 @@ public class ImportTaskTest extends BaseUITest {
         assertEquals(10, getPreferenceManager().getPreferenceConnectCount());
         assertEquals(12, getPreferenceManager().getPreferencePingPackageSize());
         assertTrue(getPreferenceManager().getPreferenceStopOnSuccess());
+        assertTrue(getPreferenceManager().getPreferenceIgnoreSSLError());
         assertTrue(getPreferenceManager().getPreferenceOnlyWifi());
         assertTrue(getPreferenceManager().getPreferenceNotification());
         assertTrue(getPreferenceManager().getPreferenceHighPrio());
@@ -548,6 +554,7 @@ public class ImportTaskTest extends BaseUITest {
         data.setPingPackageSize(1234);
         data.setConnectCount(3);
         data.setStopOnSuccess(true);
+        data.setIgnoreSSLError(true);
         return data;
     }
 
@@ -559,6 +566,7 @@ public class ImportTaskTest extends BaseUITest {
         data.setPingPackageSize(55);
         data.setConnectCount(5);
         data.setStopOnSuccess(false);
+        data.setIgnoreSSLError(false);
         return data;
     }
 }

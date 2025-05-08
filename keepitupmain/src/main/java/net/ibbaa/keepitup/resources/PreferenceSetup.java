@@ -69,6 +69,7 @@ public class PreferenceSetup {
         defaults.put("preferencePingCount", preferenceManager.getPreferencePingCount());
         defaults.put("preferenceConnectCount", preferenceManager.getPreferenceConnectCount());
         defaults.put("preferenceStopOnSuccess", preferenceManager.getPreferenceStopOnSuccess());
+        defaults.put("preferenceIgnoreSSLError", preferenceManager.getPreferenceIgnoreSSLError());
         defaults.put("preferenceOnlyWifi", preferenceManager.getPreferenceOnlyWifi());
         defaults.put("preferenceNotification", preferenceManager.getPreferenceNotification());
         defaults.put("preferenceHighPrio", preferenceManager.getPreferenceHighPrio());
@@ -216,6 +217,12 @@ public class PreferenceSetup {
             preferenceManager.setPreferenceStopOnSuccess(Boolean.parseBoolean(stopOnSuccess.toString()));
         } else {
             preferenceManager.removePreferenceStopOnSuccess();
+        }
+        Object ignoreSSLError = defaults.get("preferenceIgnoreSSLError");
+        if (isValidBoolean(ignoreSSLError)) {
+            preferenceManager.setPreferenceIgnoreSSLError(Boolean.parseBoolean(ignoreSSLError.toString()));
+        } else {
+            preferenceManager.removePreferenceIgnoreSSLError();
         }
         Object onlyWifi = defaults.get("preferenceOnlyWifi");
         if (isValidBoolean(onlyWifi)) {
@@ -401,6 +408,7 @@ public class PreferenceSetup {
         preferenceManager.removePreferencePingCount();
         preferenceManager.removePreferenceConnectCount();
         preferenceManager.removePreferenceStopOnSuccess();
+        preferenceManager.removePreferenceIgnoreSSLError();
         preferenceManager.removePreferencePingPackageSize();
         preferenceManager.removePreferenceOnlyWifi();
         preferenceManager.removePreferenceNotification();

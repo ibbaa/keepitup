@@ -315,6 +315,7 @@ public class NetworkTaskHandlerTest extends BaseUITest {
         data.setPingPackageSize(1234);
         data.setConnectCount(3);
         data.setStopOnSuccess(true);
+        data.setIgnoreSSLError(true);
         return data;
     }
 
@@ -326,6 +327,7 @@ public class NetworkTaskHandlerTest extends BaseUITest {
         data.setPingPackageSize(123);
         data.setConnectCount(2);
         data.setStopOnSuccess(false);
+        data.setIgnoreSSLError(false);
         return data;
     }
 
@@ -337,6 +339,7 @@ public class NetworkTaskHandlerTest extends BaseUITest {
         data.setPingPackageSize(4321);
         data.setConnectCount(5);
         data.setStopOnSuccess(true);
+        data.setIgnoreSSLError(true);
         return data;
     }
 
@@ -348,6 +351,7 @@ public class NetworkTaskHandlerTest extends BaseUITest {
         data.setPingPackageSize(12);
         data.setConnectCount(5);
         data.setStopOnSuccess(false);
+        data.setIgnoreSSLError(false);
         return data;
     }
 

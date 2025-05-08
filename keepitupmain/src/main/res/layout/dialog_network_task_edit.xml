@@ -247,39 +247,39 @@
             </LinearLayout>
 
             <TextView
-                android:id="@+id/textview_dialog_network_task_edit_stoponsuccess_label"
+                android:id="@+id/textview_dialog_network_task_edit_ignore_ssl_error_label"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/textview_dialog_network_task_edit_stoponsuccess_label_margin_top"
+                android:layout_marginTop="@dimen/textview_dialog_network_task_edit_ignore_ssl_error_label_margin_top"
                 android:textStyle="bold"
                 android:layout_row="6"
                 android:layout_column="0"
-                android:text="@string/label_dialog_network_task_edit_stoponsuccess" />
+                android:text="@string/label_dialog_network_task_edit_ignore_ssl_error" />
 
             <LinearLayout
-                android:id="@+id/linearlayout_dialog_network_task_edit_stoponsuccess"
+                android:id="@+id/linearlayout_dialog_network_task_edit_ignore_ssl_error"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
                 android:gravity="center_vertical"
-                android:layout_marginStart="@dimen/linearlayout_dialog_network_task_edit_stoponsuccess_margin_left"
-                android:layout_marginTop="@dimen/linearlayout_dialog_network_task_edit_stoponsuccess_margin_top"
+                android:layout_marginStart="@dimen/linearlayout_dialog_network_task_edit_ignore_ssl_error_margin_left"
+                android:layout_marginTop="@dimen/linearlayout_dialog_network_task_edit_ignore_ssl_error_margin_top"
                 android:layout_row="6"
                 android:layout_column="1">
 
                 <com.google.android.material.switchmaterial.SwitchMaterial
-                    android:id="@+id/switch_dialog_network_task_edit_stoponsuccess"
+                    android:id="@+id/switch_dialog_network_task_edit_ignore_ssl_error"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:paddingTop="@dimen/switch_dialog_network_task_edit_stoponsuccess_padding_top"
-                    android:paddingBottom="@dimen/switch_dialog_network_task_edit_stoponsuccess_padding_bottom"
-                    android:minHeight="@dimen/switch_dialog_network_task_edit_stoponsuccess_min_height"
+                    android:paddingTop="@dimen/switch_dialog_network_task_edit_ignore_ssl_error_padding_top"
+                    android:paddingBottom="@dimen/switch_dialog_network_task_edit_ignore_ssl_error_padding_bottom"
+                    android:minHeight="@dimen/switch_dialog_network_task_edit_ignore_ssl_error_min_height"
                     app:trackTint="@drawable/switchtrack_selector"
                     app:thumbTint="@drawable/switchthumb_selector"
                     android:showText="false" />
 
                 <TextView
-                    android:id="@+id/textview_dialog_network_task_edit_stoponsuccess_on_off"
+                    android:id="@+id/textview_dialog_network_task_edit_ignore_ssl_error_on_off"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textStyle="bold"
@@ -288,39 +288,80 @@
             </LinearLayout>
 
             <TextView
-                android:id="@+id/textview_dialog_network_task_edit_onlywifi_label"
+                android:id="@+id/textview_dialog_network_task_edit_stop_on_success_label"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/textview_dialog_network_task_edit_onlywifi_label_margin_top"
+                android:layout_marginTop="@dimen/textview_dialog_network_task_edit_stop_on_success_label_margin_top"
                 android:textStyle="bold"
                 android:layout_row="7"
                 android:layout_column="0"
-                android:text="@string/label_dialog_network_task_edit_onlywifi" />
+                android:text="@string/label_dialog_network_task_edit_stop_on_success" />
 
             <LinearLayout
-                android:id="@+id/linearlayout_dialog_network_task_edit_onlywifi"
+                android:id="@+id/linearlayout_dialog_network_task_edit_stop_on_success"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
                 android:gravity="center_vertical"
-                android:layout_marginStart="@dimen/linearlayout_dialog_network_task_edit_onlywifi_margin_left"
-                android:layout_marginTop="@dimen/linearlayout_dialog_network_task_edit_onlywifi_margin_top"
+                android:layout_marginStart="@dimen/linearlayout_dialog_network_task_edit_stop_on_success_margin_left"
+                android:layout_marginTop="@dimen/linearlayout_dialog_network_task_edit_stop_on_success_margin_top"
                 android:layout_row="7"
                 android:layout_column="1">
 
                 <com.google.android.material.switchmaterial.SwitchMaterial
-                    android:id="@+id/switch_dialog_network_task_edit_onlywifi"
+                    android:id="@+id/switch_dialog_network_task_edit_stop_on_success"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:paddingTop="@dimen/switch_dialog_network_task_edit_onlywifi_padding_top"
-                    android:paddingBottom="@dimen/switch_dialog_network_task_edit_onlywifi_padding_bottom"
-                    android:minHeight="@dimen/switch_dialog_network_task_edit_onlywifi_min_height"
+                    android:paddingTop="@dimen/switch_dialog_network_task_edit_stop_on_success_padding_top"
+                    android:paddingBottom="@dimen/switch_dialog_network_task_edit_stop_on_success_padding_bottom"
+                    android:minHeight="@dimen/switch_dialog_network_task_edit_stop_on_success_min_height"
                     app:trackTint="@drawable/switchtrack_selector"
                     app:thumbTint="@drawable/switchthumb_selector"
                     android:showText="false" />
 
                 <TextView
-                    android:id="@+id/textview_dialog_network_task_edit_onlywifi_on_off"
+                    android:id="@+id/textview_dialog_network_task_edit_stop_on_success_on_off"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textStyle="bold"
+                    android:text="" />
+
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/textview_dialog_network_task_edit_only_wifi_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/textview_dialog_network_task_edit_only_wifi_label_margin_top"
+                android:textStyle="bold"
+                android:layout_row="8"
+                android:layout_column="0"
+                android:text="@string/label_dialog_network_task_edit_only_wifi" />
+
+            <LinearLayout
+                android:id="@+id/linearlayout_dialog_network_task_edit_only_wifi"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:layout_marginStart="@dimen/linearlayout_dialog_network_task_edit_only_wifi_margin_left"
+                android:layout_marginTop="@dimen/linearlayout_dialog_network_task_edit_only_wifi_margin_top"
+                android:layout_row="8"
+                android:layout_column="1">
+
+                <com.google.android.material.switchmaterial.SwitchMaterial
+                    android:id="@+id/switch_dialog_network_task_edit_only_wifi"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingTop="@dimen/switch_dialog_network_task_edit_only_wifi_padding_top"
+                    android:paddingBottom="@dimen/switch_dialog_network_task_edit_only_wifi_padding_bottom"
+                    android:minHeight="@dimen/switch_dialog_network_task_edit_only_wifi_min_height"
+                    app:trackTint="@drawable/switchtrack_selector"
+                    app:thumbTint="@drawable/switchthumb_selector"
+                    android:showText="false" />
+
+                <TextView
+                    android:id="@+id/textview_dialog_network_task_edit_only_wifi_on_off"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textStyle="bold"
@@ -334,7 +375,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/textview_dialog_network_task_edit_notification_label_margin_top"
                 android:textStyle="bold"
-                android:layout_row="8"
+                android:layout_row="9"
                 android:layout_column="0"
                 android:text="@string/label_dialog_network_task_edit_notification" />
 
@@ -346,7 +387,7 @@
                 android:gravity="center_vertical"
                 android:layout_marginStart="@dimen/linearlayout_dialog_network_task_edit_notification_margin_left"
                 android:layout_marginTop="@dimen/linearlayout_dialog_network_task_edit_notification_margin_top"
-                android:layout_row="8"
+                android:layout_row="9"
                 android:layout_column="1">
 
                 <com.google.android.material.switchmaterial.SwitchMaterial
@@ -370,39 +411,39 @@
             </LinearLayout>
 
             <TextView
-                android:id="@+id/textview_dialog_network_task_edit_highprio_label"
+                android:id="@+id/textview_dialog_network_task_edit_high_prio_label"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/textview_dialog_network_task_edit_highprio_label_margin_top"
+                android:layout_marginTop="@dimen/textview_dialog_network_task_edit_high_prio_label_margin_top"
                 android:textStyle="bold"
-                android:layout_row="9"
+                android:layout_row="10"
                 android:layout_column="0"
-                android:text="@string/label_dialog_network_task_edit_highprio" />
+                android:text="@string/label_dialog_network_task_edit_high_prio" />
 
             <LinearLayout
-                android:id="@+id/linearlayout_dialog_network_task_edit_highprio"
+                android:id="@+id/linearlayout_dialog_network_task_edit_high_prio"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
                 android:gravity="center_vertical"
-                android:layout_marginStart="@dimen/linearlayout_dialog_network_task_edit_highprio_margin_left"
-                android:layout_marginTop="@dimen/linearlayout_dialog_network_task_edit_highprio_margin_top"
-                android:layout_row="9"
+                android:layout_marginStart="@dimen/linearlayout_dialog_network_task_edit_high_prio_margin_left"
+                android:layout_marginTop="@dimen/linearlayout_dialog_network_task_edit_high_prio_margin_top"
+                android:layout_row="10"
                 android:layout_column="1">
 
                 <com.google.android.material.switchmaterial.SwitchMaterial
-                    android:id="@+id/switch_dialog_network_task_edit_highprio"
+                    android:id="@+id/switch_dialog_network_task_edit_high_prio"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:paddingTop="@dimen/switch_dialog_network_task_edit_highprio_padding_top"
-                    android:paddingBottom="@dimen/switch_dialog_network_task_edit_highprio_padding_bottom"
-                    android:minHeight="@dimen/switch_dialog_network_task_edit_highprio_min_height"
+                    android:paddingTop="@dimen/switch_dialog_network_task_edit_high_prio_padding_top"
+                    android:paddingBottom="@dimen/switch_dialog_network_task_edit_high_prio_padding_bottom"
+                    android:minHeight="@dimen/switch_dialog_network_task_edit_high_prio_min_height"
                     app:trackTint="@drawable/switchtrack_selector"
                     app:thumbTint="@drawable/switchthumb_selector"
                     android:showText="false" />
 
                 <TextView
-                    android:id="@+id/textview_dialog_network_task_edit_highprio_on_off"
+                    android:id="@+id/textview_dialog_network_task_edit_high_prio_on_off"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textStyle="bold"

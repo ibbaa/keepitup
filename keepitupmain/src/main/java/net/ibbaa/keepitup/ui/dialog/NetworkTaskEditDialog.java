@@ -81,6 +81,8 @@ public class NetworkTaskEditDialog extends DialogFragmentBase implements Context
     private TextColorValidatingWatcher connectCountEditTextWatcher;
     private EditText pingPackageSizeEditText;
     private TextColorValidatingWatcher pingPackageSizeEditTextWatcher;
+    private SwitchMaterial ignoreSSLErrorSwitch;
+    private TextView ignoreSSLErrorOnOffText;
     private SwitchMaterial stopOnSuccessSwitch;
     private TextView stopOnSuccessOnOffText;
     private SwitchMaterial onlyWifiSwitch;
@@ -135,6 +137,7 @@ public class NetworkTaskEditDialog extends DialogFragmentBase implements Context
         prepareAddressTextFields();
         prepareAddressTextFieldsVisibility();
         prepareIntervalTextField();
+        prepareIgnoreSSLErrorSwitch();
         prepareStopOnSuccessSwitch();
         prepareAccessTypeDataFields();
         prepareAccessTypeDataFieldsVisibility();
@@ -225,6 +228,10 @@ public class NetworkTaskEditDialog extends DialogFragmentBase implements Context
 
     private boolean isPingPackageSizeVisible() {
         return pingPackageSizeEditText.getVisibility() == View.VISIBLE;
+    }
+
+    private boolean isIgnoreSSLErrorVisible() {
+        return ignoreSSLErrorSwitch.getVisibility() == View.VISIBLE;
     }
 
     private boolean isStopOnSuccessVisible() {
@@ -384,11 +391,13 @@ public class NetworkTaskEditDialog extends DialogFragmentBase implements Context
         LinearLayout pingCountLinearLayout = dialogView.findViewById(R.id.linearlayout_dialog_network_task_edit_ping_count);
         LinearLayout connectCountLinearLayout = dialogView.findViewById(R.id.linearlayout_dialog_network_task_edit_connect_count);
         LinearLayout pingPackageSizeLinearLayout = dialogView.findViewById(R.id.linearlayout_dialog_network_task_edit_ping_package_size);
-        LinearLayout stopOnSuccessLinearLayout = dialogView.findViewById(R.id.linearlayout_dialog_network_task_edit_stoponsuccess);
+        LinearLayout stopOnSuccessLinearLayout = dialogView.findViewById(R.id.linearlayout_dialog_network_task_edit_stop_on_success);
+        LinearLayout ignoreSSLErrorLinearLayout = dialogView.findViewById(R.id.linearlayout_dialog_network_task_edit_ignore_ssl_error);
         TextView pingCountTextView = dialogView.findViewById(R.id.textview_dialog_network_task_edit_ping_count_label);
         TextView connectCountTextView = dialogView.findViewById(R.id.textview_dialog_network_task_edit_connect_count_label);
         TextView pingPackageSizeTextView = dialogView.findViewById(R.id.textview_dialog_network_task_edit_ping_package_size_label);
-        TextView stopOnSuccessTextView = dialogView.findViewById(R.id.textview_dialog_network_task_edit_stoponsuccess_label);
+        TextView stopOnSuccessTextView = dialogView.findViewById(R.id.textview_dialog_network_task_edit_stop_on_success_label);
+        TextView ignoreSSLErrorTextView = dialogView.findViewById(R.id.textview_dialog_network_task_edit_ignore_ssl_error_label);
         if (accessType.isPing()) {
             PreferenceManager preferenceManager = new PreferenceManager(requireContext());
             pingCountTextView.setVisibility(View.VISIBLE);
@@ -427,9 +436,16 @@ public class NetworkTaskEditDialog extends DialogFragmentBase implements Context
             connectCountLinearLayout.setVisibility(View.GONE);
         }
         if (accessType.isDownload()) {
+            ignoreSSLErrorTextView.setVisibility(View.VISIBLE);
+            ignoreSSLErrorSwitch.setVisibility(View.VISIBLE);
+            ignoreSSLErrorLinearLayout.setVisibility(View.VISIBLE);
             stopOnSuccessTextView.setVisibility(View.GONE);
             stopOnSuccessSwitch.setVisibility(View.GONE);
             stopOnSuccessLinearLayout.setVisibility(View.GONE);
+        } else {
+            ignoreSSLErrorTextView.setVisibility(View.GONE);
+            ignoreSSLErrorSwitch.setVisibility(View.GONE);
+            ignoreSSLErrorLinearLayout.setVisibility(View.GONE);
         }
     }
 
@@ -463,10 +479,19 @@ public class NetworkTaskEditDialog extends DialogFragmentBase implements Context
         pingPackageSizeEditText.addTextChangedListener(pingPackageSizeEditTextWatcher);
     }
 
+    private void prepareIgnoreSSLErrorSwitch() {
+        Log.d(NetworkTaskEditDialog.class.getName(), "prepareIgnoreSSLErrorSwitch with stop on success setting of " + accessTypeData.isIgnoreSSLError());
+        ignoreSSLErrorSwitch = dialogView.findViewById(R.id.switch_dialog_network_task_edit_ignore_ssl_error);
+        ignoreSSLErrorOnOffText = dialogView.findViewById(R.id.textview_dialog_network_task_edit_ignore_ssl_error_on_off);
+        ignoreSSLErrorSwitch.setChecked(accessTypeData.isIgnoreSSLError());
+        ignoreSSLErrorSwitch.setOnCheckedChangeListener(this::onIgnoreSSLErrorCheckedChanged);
+        prepareIgnoreSSLErrorOnOffText();
+    }
+
     private void prepareStopOnSuccessSwitch() {
         Log.d(NetworkTaskEditDialog.class.getName(), "prepareStopOnSuccessSwitch with stop on success setting of " + accessTypeData.isStopOnSuccess());
-        stopOnSuccessSwitch = dialogView.findViewById(R.id.switch_dialog_network_task_edit_stoponsuccess);
-        stopOnSuccessOnOffText = dialogView.findViewById(R.id.textview_dialog_network_task_edit_stoponsuccess_on_off);
+        stopOnSuccessSwitch = dialogView.findViewById(R.id.switch_dialog_network_task_edit_stop_on_success);
+        stopOnSuccessOnOffText = dialogView.findViewById(R.id.textview_dialog_network_task_edit_stop_on_success_on_off);
         stopOnSuccessSwitch.setChecked(accessTypeData.isStopOnSuccess());
         stopOnSuccessSwitch.setOnCheckedChangeListener(this::onStopOnSuccessCheckedChanged);
         prepareStopOnSuccessOnOffText();
@@ -474,8 +499,8 @@ public class NetworkTaskEditDialog extends DialogFragmentBase implements Context
 
     private void prepareOnlyWifiSwitch() {
         Log.d(NetworkTaskEditDialog.class.getName(), "prepareOnlyWifiSwitch with only wifi setting of " + task.isOnlyWifi());
-        onlyWifiSwitch = dialogView.findViewById(R.id.switch_dialog_network_task_edit_onlywifi);
-        onlyWifiOnOffText = dialogView.findViewById(R.id.textview_dialog_network_task_edit_onlywifi_on_off);
+        onlyWifiSwitch = dialogView.findViewById(R.id.switch_dialog_network_task_edit_only_wifi);
+        onlyWifiOnOffText = dialogView.findViewById(R.id.textview_dialog_network_task_edit_only_wifi_on_off);
         onlyWifiSwitch.setChecked(task.isOnlyWifi());
         onlyWifiSwitch.setOnCheckedChangeListener(this::onOnlyWifiCheckedChanged);
         prepareOnlyWifiOnOffText();
@@ -501,8 +526,8 @@ public class NetworkTaskEditDialog extends DialogFragmentBase implements Context
 
     private void prepareHighPrioSwitch() {
         Log.d(NetworkTaskEditDialog.class.getName(), "prepareHighPrioSwitch with highprio setting of " + task.isHighPrio());
-        highPrioSwitch = dialogView.findViewById(R.id.switch_dialog_network_task_edit_highprio);
-        highPrioOnOffText = dialogView.findViewById(R.id.textview_dialog_network_task_edit_highprio_on_off);
+        highPrioSwitch = dialogView.findViewById(R.id.switch_dialog_network_task_edit_high_prio);
+        highPrioOnOffText = dialogView.findViewById(R.id.textview_dialog_network_task_edit_high_prio_on_off);
         boolean hasPostNotificationsPermission = getPermissionManager().hasPostNotificationsPermission(requireContext());
         Log.d(NetworkTaskEditDialog.class.getName(), "hasPostNotificationsPermission is " + hasPostNotificationsPermission);
         if (hasPostNotificationsPermission) {
@@ -520,9 +545,9 @@ public class NetworkTaskEditDialog extends DialogFragmentBase implements Context
 
     private void prepareHighPrioVisibility() {
         Log.d(NetworkTaskEditDialog.class.getName(), "prepareHighPrioVisibility");
-        TextView highPrioLabel = dialogView.findViewById(R.id.textview_dialog_network_task_edit_highprio_label);
-        highPrioSwitch = dialogView.findViewById(R.id.switch_dialog_network_task_edit_highprio);
-        highPrioOnOffText = dialogView.findViewById(R.id.textview_dialog_network_task_edit_highprio_on_off);
+        TextView highPrioLabel = dialogView.findViewById(R.id.textview_dialog_network_task_edit_high_prio_label);
+        highPrioSwitch = dialogView.findViewById(R.id.switch_dialog_network_task_edit_high_prio);
+        highPrioOnOffText = dialogView.findViewById(R.id.textview_dialog_network_task_edit_high_prio_on_off);
         notificationSwitch = dialogView.findViewById(R.id.switch_dialog_network_task_edit_notification);
         if (notificationSwitch.isChecked()) {
             highPrioLabel.setVisibility(View.VISIBLE);
@@ -533,6 +558,10 @@ public class NetworkTaskEditDialog extends DialogFragmentBase implements Context
             highPrioSwitch.setVisibility(View.GONE);
             highPrioOnOffText.setVisibility(View.GONE);
         }
+    }
+
+    private void prepareIgnoreSSLErrorOnOffText() {
+        ignoreSSLErrorOnOffText.setText(ignoreSSLErrorSwitch.isChecked() ? getResources().getString(R.string.string_yes) : getResources().getString(R.string.string_no));
     }
 
     private void prepareStopOnSuccessOnOffText() {
@@ -610,6 +639,9 @@ public class NetworkTaskEditDialog extends DialogFragmentBase implements Context
                 accessTypeData.setPingPackageSize(NumberUtil.getIntValue(getPingPackageSize(), accessTypeData.getPingPackageSize()));
             }
         }
+        if (isIgnoreSSLErrorVisible()) {
+            accessTypeData.setIgnoreSSLError(ignoreSSLErrorSwitch.isChecked());
+        }
         if (isStopOnSuccessVisible()) {
             accessTypeData.setStopOnSuccess(stopOnSuccessSwitch.isChecked());
         }
@@ -634,6 +666,11 @@ public class NetworkTaskEditDialog extends DialogFragmentBase implements Context
         Log.d(NetworkTaskEditDialog.class.getName(), "onCancelClicked");
         NetworkTaskMainActivity activity = (NetworkTaskMainActivity) getActivity();
         Objects.requireNonNull(activity).onEditDialogCancelClicked(this);
+    }
+
+    private void onIgnoreSSLErrorCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+        Log.d(NetworkTaskEditDialog.class.getName(), "onIgnoreSSLErrorCheckedChanged, new value is " + isChecked);
+        prepareIgnoreSSLErrorOnOffText();
     }
 
     private void onStopOnSuccessCheckedChanged(CompoundButton buttonView, boolean isChecked) {

@@ -59,4 +59,5 @@
     <string name="accesstypedata_pingpackagesize_column_name">PINGPACKAGESIZE</string>
     <string name="accesstypedata_connectcount_column_name">CONNECTCOUNT</string>
     <string name="accesstypedata_stoponsuccess_column_name">STOPONSUCCESS</string>
+    <string name="accesstypedata_ignoresslerror_column_name">IGNORESSLERROR</string>
 </resources>
