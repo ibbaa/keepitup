@@ -23,7 +23,7 @@
     <string name="label_dialog_network_task_edit_connect_count">Connect count:</string>
     <string name="label_dialog_network_task_edit_ping_package_size">Package size:</string>
     <string name="label_dialog_network_task_edit_stop_on_success">Stop on success:</string>
-    <string name="label_dialog_network_task_edit_ignore_ssl_error">Ignore SSL error:</string>
+    <string name="label_dialog_network_task_edit_ignore_ssl_error">Ignore SSL errors:</string>
     <string name="label_dialog_network_task_edit_only_wifi">Only on WiFi:</string>
     <string name="label_dialog_network_task_edit_notification">Notifications:</string>
     <string name="label_dialog_network_task_edit_high_prio">High prio:</string>
