@@ -24,8 +24,12 @@ import net.ibbaa.keepitup.logging.Log;
 import java.net.IDN;
 import java.net.URI;
 import java.net.URL;
+import java.util.regex.Pattern;
 
 public class URLUtil {
+
+    private static final Pattern UNENCODED_FORBIDDEN_CHARS = Pattern.compile("[^\\p{ASCII}]|[ \"<>#{}|\\\\^`\\[\\]]");
+    private static final Pattern VALID_PERCENT = Pattern.compile("%[0-9a-fA-F]{2}");
 
     public static boolean isValidIPAddress(String ipAddress) {
         return InetAddresses.isInetAddress(ipAddress);
@@ -59,12 +63,36 @@ public class URLUtil {
         Log.d(URLUtil.class.getName(), "encodeURL, inputUrl is " + inputUrl);
         try {
             URL url = new URL(inputUrl);
+            if (isEncoded(inputUrl)) {
+                return inputUrl;
+            }
             URI uri = new URI(url.getProtocol(), url.getUserInfo(), IDN.toASCII(url.getHost()), url.getPort(), url.getPath(), url.getQuery(), url.getRef());
             return uri.toASCIIString();
         } catch (Exception exc) {
             Log.d(URLUtil.class.getName(), "Exception parsing url " + inputUrl, exc);
         }
         return inputUrl;
+    }
+
+    public static boolean isEncoded(String inputUrl) {
+        Log.d(URLUtil.class.getName(), "isEncoded, inputUrl is " + inputUrl);
+        try {
+            new URI(inputUrl);
+            if (UNENCODED_FORBIDDEN_CHARS.matcher(inputUrl).find()) {
+                return false;
+            }
+            for (int ii = 0; ii < inputUrl.length(); ii++) {
+                if (inputUrl.charAt(ii) == '%') {
+                    if (ii + 2 >= inputUrl.length() || !VALID_PERCENT.matcher(inputUrl.substring(ii, ii + 3)).matches()) {
+                        return false;
+                    }
+                }
+            }
+            return true;
+        } catch (Exception exc) {
+            Log.d(URLUtil.class.getName(), "Exception parsing url " + inputUrl, exc);
+        }
+        return false;
     }
 
     public static String getHostAndPort(URL url) {
@@ -83,6 +111,9 @@ public class URLUtil {
         Log.d(URLUtil.class.getName(), "getURL, baseURL is " + baseURL + ", inputUrl is " + inputUrl);
         try {
             URL url = baseURL == null ? new URL(inputUrl) : new URL(baseURL, inputUrl);
+            if (isEncoded(url.toString())) {
+                return url;
+            }
             URI uri = new URI(url.getProtocol(), url.getUserInfo(), IDN.toASCII(url.getHost()), url.getPort(), url.getPath(), url.getQuery(), url.getRef());
             return uri.toURL();
         } catch (Exception exc) {

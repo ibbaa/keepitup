@@ -417,7 +417,7 @@ public class GlobalSettingsActivity extends SettingsInputActivity implements Sus
         String arbitraryDownloadFolder = getPreferenceArbitraryDownloadFolder();
         if (storagePermissionManager.hasPersistentPermission(this, arbitraryDownloadFolder)) {
             Log.d(GlobalSettingsActivity.class.getName(), "Permission for " + arbitraryDownloadFolder + " is already present");
-            setDownloadFolder(arbitraryDownloadFolder);
+            setDownloadFolder(Uri.decode(arbitraryDownloadFolder));
         } else {
             Log.d(GlobalSettingsActivity.class.getName(), "Requesting permission for " + arbitraryDownloadFolder);
             storagePermissionManager.requestPersistentFolderPermission(downloadFolderLauncher, arbitraryDownloadFolder);
@@ -557,7 +557,7 @@ public class GlobalSettingsActivity extends SettingsInputActivity implements Sus
         String arbitraryLogFolder = getPreferenceArbitraryLogFolder();
         if (storagePermissionManager.hasPersistentPermission(this, arbitraryLogFolder)) {
             Log.d(GlobalSettingsActivity.class.getName(), "Permission for " + arbitraryLogFolder + " is already present");
-            setLogFolder(arbitraryLogFolder);
+            setLogFolder(Uri.decode(arbitraryLogFolder));
         } else {
             Log.d(GlobalSettingsActivity.class.getName(), "Requesting permission for " + arbitraryLogFolder);
             storagePermissionManager.requestPersistentFolderPermission(logFolderLauncher, arbitraryLogFolder);
@@ -658,7 +658,7 @@ public class GlobalSettingsActivity extends SettingsInputActivity implements Sus
             storagePermissionManager.revokeOrphanPersistentPermissions(this, preferenceManager.getArbitraryFolders());
             NetworkTaskLog.clear();
         }
-        setDownloadFolder(downloadFolder);
+        setDownloadFolder(Uri.decode(downloadFolder));
     }
 
     private void showLogFolderChooseDialog(View view) {
@@ -709,7 +709,7 @@ public class GlobalSettingsActivity extends SettingsInputActivity implements Sus
             IStoragePermissionManager storagePermissionManager = getStoragePermissionManager();
             storagePermissionManager.revokeOrphanPersistentPermissions(this, preferenceManager.getArbitraryFolders());
         }
-        setLogFolder(logFolder);
+        setLogFolder(Uri.decode(logFolder));
     }
 
     private void showInputDialog(Bundle bundle) {

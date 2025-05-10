@@ -212,7 +212,7 @@ public class DownloadNetworkTaskWorkerTest {
         preferenceManager.setPreferenceDownloadFollowsRedirects(false);
         preferenceManager.setPreferenceAllowArbitraryFileLocation(true);
         preferenceManager.setPreferenceLogFile(true);
-        preferenceManager.setPreferenceArbitraryDownloadFolder("Test");
+        preferenceManager.setPreferenceArbitraryDownloadFolder("%3ATest");
         DNSLookupResult dnsLookupResult = new DNSLookupResult(Arrays.asList(InetAddress.getByName("127.0.0.1"), InetAddress.getByName("::1")), null);
         TestDownloadNetworkTaskWorker downloadNetworkTaskWorker = prepareTestDownloadNetworkTaskWorker(dnsLookupResult, (DownloadCommandResult) null);
         MockDocumentManager documentManager = new MockDocumentManager();
@@ -228,7 +228,7 @@ public class DownloadNetworkTaskWorkerTest {
         assertEquals(45, logEntry.getNetworkTaskId());
         assertEquals(getTestTimestamp(), logEntry.getTimestamp());
         assertFalse(logEntry.isSuccess());
-        assertEquals("Download not possible. Missing permission to access download folder: Test.", logEntry.getMessage());
+        assertEquals("Download not possible. Missing permission to access download folder: :Test.", logEntry.getMessage());
     }
 
     @Test
@@ -1043,6 +1043,31 @@ public class DownloadNetworkTaskWorkerTest {
     }
 
     @Test
+    public void testArbitraryDownloadUnknownErrorFileExistNotDeleteDecoded() throws Exception {
+        preferenceManager.setPreferenceDownloadFollowsRedirects(false);
+        preferenceManager.setPreferenceAllowArbitraryFileLocation(true);
+        preferenceManager.setPreferenceLogFile(true);
+        preferenceManager.setPreferenceArbitraryDownloadFolder("%3ATest");
+        DNSLookupResult dnsLookupResult = new DNSLookupResult(Arrays.asList(InetAddress.getByName("127.0.0.1"), InetAddress.getByName("::1")), null);
+        DownloadCommandResult downloadCommandResult = new DownloadCommandResult(new URL("http://127.0.0.1"), true, false, true, false, true, false, List.of(HttpURLConnection.HTTP_OK), List.of(""), "testfile", 999, null);
+        TestDownloadNetworkTaskWorker downloadNetworkTaskWorker = prepareTestDownloadNetworkTaskWorker(dnsLookupResult, downloadCommandResult);
+        MockDocumentManager documentManager = new MockDocumentManager();
+        downloadNetworkTaskWorker.setDocumentManager(documentManager);
+        documentManager.setArbitraryDirectory(DocumentFile.fromFile(new File("%3ATest")));
+        MockStoragePermissionManager storagePermissionManager = new MockStoragePermissionManager();
+        downloadNetworkTaskWorker.setStoragePermissionManager(storagePermissionManager);
+        storagePermissionManager.requestPersistentFolderPermission(null, "%3ATest");
+        preferenceManager.setPreferenceDownloadKeep(true);
+        preferenceManager.setPreferenceDownloadExternalStorage(true);
+        NetworkTaskWorker.ExecutionResult executionResult = downloadNetworkTaskWorker.execute(getNetworkTask(), getAccessTypeData());
+        LogEntry logEntry = executionResult.getLogEntry();
+        assertEquals(45, logEntry.getNetworkTaskId());
+        assertEquals(getTestTimestamp(), logEntry.getTimestamp());
+        assertFalse(logEntry.isSuccess());
+        assertEquals("The download from http://127.0.0.1 failed for an unknown reason. The file was partially downloaded. Downloaded file: :Test/testfile. 999 msec download time.", logEntry.getMessage());
+    }
+
+    @Test
     public void testDownloadUnknownErrorFileExistNotDeleteWithRedirect() throws Exception {
         preferenceManager.setPreferenceDownloadFollowsRedirects(true);
         DNSLookupResult dnsLookupResult = new DNSLookupResult(Arrays.asList(InetAddress.getByName("127.0.0.1"), InetAddress.getByName("::1")), null);
@@ -1375,6 +1400,31 @@ public class DownloadNetworkTaskWorkerTest {
         assertEquals(getTestTimestamp(), logEntry.getTimestamp());
         assertTrue(logEntry.isSuccess());
         assertEquals("The download from http://127.0.0.1 was successful. Downloaded file: /Test/testfile. 100 msec download time.", logEntry.getMessage());
+    }
+
+    @Test
+    public void testArbitraryDownloadSuccessFileExistNotDeleteDecoded() throws Exception {
+        preferenceManager.setPreferenceDownloadFollowsRedirects(false);
+        preferenceManager.setPreferenceAllowArbitraryFileLocation(true);
+        preferenceManager.setPreferenceLogFile(true);
+        preferenceManager.setPreferenceArbitraryDownloadFolder("%3ATest");
+        DNSLookupResult dnsLookupResult = new DNSLookupResult(Arrays.asList(InetAddress.getByName("127.0.0.1"), InetAddress.getByName("::1")), null);
+        DownloadCommandResult downloadCommandResult = new DownloadCommandResult(new URL("http://127.0.0.1"), true, true, true, true, true, false, List.of(HttpURLConnection.HTTP_OK), List.of(""), "testfile", 999, null);
+        TestDownloadNetworkTaskWorker downloadNetworkTaskWorker = prepareTestDownloadNetworkTaskWorker(dnsLookupResult, downloadCommandResult);
+        MockDocumentManager documentManager = new MockDocumentManager();
+        downloadNetworkTaskWorker.setDocumentManager(documentManager);
+        documentManager.setArbitraryDirectory(DocumentFile.fromFile(new File("%3ATest")));
+        MockStoragePermissionManager storagePermissionManager = new MockStoragePermissionManager();
+        downloadNetworkTaskWorker.setStoragePermissionManager(storagePermissionManager);
+        storagePermissionManager.requestPersistentFolderPermission(null, "%3ATest");
+        preferenceManager.setPreferenceDownloadKeep(true);
+        preferenceManager.setPreferenceDownloadExternalStorage(true);
+        NetworkTaskWorker.ExecutionResult executionResult = downloadNetworkTaskWorker.execute(getNetworkTask(), getAccessTypeData());
+        LogEntry logEntry = executionResult.getLogEntry();
+        assertEquals(45, logEntry.getNetworkTaskId());
+        assertEquals(getTestTimestamp(), logEntry.getTimestamp());
+        assertTrue(logEntry.isSuccess());
+        assertEquals("The download from http://127.0.0.1 was successful. Downloaded file: :Test/testfile. 999 msec download time.", logEntry.getMessage());
     }
 
     @Test

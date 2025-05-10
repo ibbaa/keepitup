@@ -67,9 +67,30 @@ public class URLUtilTest {
     }
 
     @Test
+    public void testIsEncoded() {
+        assertFalse(URLUtil.isEncoded("http://www.ho st.com"));
+        assertTrue(URLUtil.isEncoded("http://www.host.com"));
+        assertFalse(URLUtil.isEncoded("http://www.host.com/t est"));
+        assertFalse(URLUtil.isEncoded("http://www.host.com/äöü"));
+        assertTrue(URLUtil.isEncoded("http://www.host.com/t%20est"));
+        assertFalse(URLUtil.isEncoded("http://www.host.com/t est?x=1"));
+        assertTrue(URLUtil.isEncoded("http://www.host.com/t%20est?x=1"));
+        assertFalse(URLUtil.isEncoded("http://www.host.com/test?x= 1"));
+        assertTrue(URLUtil.isEncoded("http://www.host.com/test?x=%201"));
+        assertFalse(URLUtil.isEncoded("http://www.host.com/t%20est?x= 1"));
+    }
+
+    @Test
     public void testEncodeURL() {
         assertEquals("http://www.host.com", URLUtil.encodeURL("http://www.host.com"));
+        assertEquals("http://www.host.com/t%20est", URLUtil.encodeURL("http://www.host.com/t est"));
+        assertEquals("http://www.host.com/%C3%A4%C3%B6%C3%BC", URLUtil.encodeURL("http://www.host.com/äöü"));
+        assertEquals("http://www.host.com/t%20est", URLUtil.encodeURL("http://www.host.com/t%20est"));
+        assertEquals("http://www.host.com/t%2520est?x=%201", URLUtil.encodeURL("http://www.host.com/t%20est?x= 1"));
         assertEquals("http://www.host.com/t%20est?x=1", URLUtil.encodeURL("http://www.host.com/t est?x=1"));
+        assertEquals("http://www.host.com/t%20est?x=1", URLUtil.encodeURL("http://www.host.com/t%20est?x=1"));
+        assertEquals("http://www.host.com/test?x=%201", URLUtil.encodeURL("http://www.host.com/test?x= 1"));
+        assertEquals("http://www.host.com/test?x=%201", URLUtil.encodeURL("http://www.host.com/test?x=%201"));
         assertEquals("http://test/%E2%80%A5/test", URLUtil.encodeURL("http://test/‥/test"));
         assertEquals("www.ho st.com/t est?x=1", URLUtil.encodeURL("www.ho st.com/t est?x=1"));
         assertEquals("http://[3ffe:1900:4545:3:200:f8ff:fe21:67cf]", URLUtil.encodeURL("http://[3ffe:1900:4545:3:200:f8ff:fe21:67cf]"));
@@ -135,6 +156,12 @@ public class URLUtilTest {
     public void testGetURLEncoded() throws Exception {
         URL url = URLUtil.getURL("http://www.host.com/t est?x=1");
         assertEquals("http://www.host.com/t%20est?x=1", url.toString());
+        url = URLUtil.getURL("http://www.host.com/t%20est?x=1");
+        assertEquals("http://www.host.com/t%20est?x=1", url.toString());
+        url = URLUtil.getURL("http://www.host.com/test?x=%201");
+        assertEquals("http://www.host.com/test?x=%201", url.toString());
+        url = URLUtil.getURL("http://www.host.com/t%20est?x=%201");
+        assertEquals("http://www.host.com/t%20est?x=%201", url.toString());
         url = URLUtil.getURL(new URL("http://www.host.com:8080/test/url"), "/xy z");
         assertEquals("http://www.host.com:8080/xy%20z", Objects.requireNonNull(url).toString());
         url = URLUtil.getURL(new URL("http://www.host.com"), "http://127.0.0.1/b l a");

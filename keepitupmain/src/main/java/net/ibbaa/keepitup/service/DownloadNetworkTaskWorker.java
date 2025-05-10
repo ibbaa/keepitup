@@ -17,6 +17,7 @@
 package net.ibbaa.keepitup.service;
 
 import android.content.Context;
+import android.net.Uri;
 import android.os.PowerManager;
 
 import net.ibbaa.keepitup.R;
@@ -91,7 +92,7 @@ public class DownloadNetworkTaskWorker extends NetworkTaskWorker {
             String message;
             if (preferenceManager.getPreferenceAllowArbitraryFileLocation()) {
                 getNotificationHandler().sendMessageNotificationMissingDownloadFolderPermission();
-                message = getResources().getString(R.string.text_download_folder_error_arbitrary_permission, preferenceManager.getPreferenceArbitraryDownloadFolder());
+                message = getResources().getString(R.string.text_download_folder_error_arbitrary_permission, Uri.decode(preferenceManager.getPreferenceArbitraryDownloadFolder()));
             } else {
                 String folderMessage = preferenceManager.getPreferenceDownloadExternalStorage() ? preferenceManager.getPreferenceDownloadFolder() : fileManager.getDefaultDownloadDirectoryName();
                 message = getResources().getString(R.string.text_download_folder_error, folderMessage);
@@ -211,9 +212,13 @@ public class DownloadNetworkTaskWorker extends NetworkTaskWorker {
         String redirectMessage = getRedirectMessage(downloadResult);
         if (downloadResult.fileExists()) {
             Log.d(DownloadNetworkTaskWorker.class.getName(), "The file was partially downloaded.");
+            PreferenceManager preferenceManager = new PreferenceManager(getContext());
+            if (preferenceManager.getPreferenceAllowArbitraryFileLocation()) {
+                folder = Uri.decode(folder);
+            }
             message += " " + getResources().getString(R.string.text_download_partial);
             if (!delete) {
-                message += " " + getResources().getString(R.string.text_download_file, new File(folder, downloadResult.fileName()).getAbsolutePath());
+                message += " " + getResources().getString(R.string.text_download_file, new File(folder, downloadResult.fileName()).toString());
             } else {
                 if (downloadResult.deleteSuccess()) {
                     Log.d(DownloadNetworkTaskWorker.class.getName(), "The partially downloaded file was deleted.");
@@ -241,7 +246,11 @@ public class DownloadNetworkTaskWorker extends NetworkTaskWorker {
         successMessage += getResources().getString(R.string.text_download_success, downloadResult.url().toExternalForm());
         String durationMessage = getResources().getString(R.string.text_download_time, StringUtil.formatTimeRange(downloadResult.duration(), getContext()));
         if (!delete) {
-            String fileMessage = getResources().getString(R.string.text_download_file, new File(folder, downloadResult.fileName()).getAbsolutePath());
+            PreferenceManager preferenceManager = new PreferenceManager(getContext());
+            if (preferenceManager.getPreferenceAllowArbitraryFileLocation()) {
+                folder = Uri.decode(folder);
+            }
+            String fileMessage = getResources().getString(R.string.text_download_file, new File(folder, downloadResult.fileName()).toString());
             logEntry.setMessage(successMessage + " " + fileMessage + " " + durationMessage);
             return;
         }
