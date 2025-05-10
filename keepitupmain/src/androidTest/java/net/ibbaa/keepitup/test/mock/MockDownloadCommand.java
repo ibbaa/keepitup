@@ -31,9 +31,13 @@ public class MockDownloadCommand extends DownloadCommand {
     private final RuntimeException exception;
     private final boolean block;
     private final CountDownLatch latch;
+    private URL url;
+    private String folder;
 
     public MockDownloadCommand(Context context, NetworkTask networkTask, URL url, String folder, boolean delete, DownloadCommandResult downloadCommandResult) {
         super(context, networkTask, url, folder, delete);
+        this.url = url;
+        this.folder = folder;
         this.exception = null;
         this.downloadCommandResult = downloadCommandResult;
         this.block = false;
@@ -42,6 +46,8 @@ public class MockDownloadCommand extends DownloadCommand {
 
     public MockDownloadCommand(Context context, NetworkTask networkTask, URL url, String folder, boolean delete, RuntimeException exception) {
         super(context, networkTask, url, folder, delete);
+        this.url = url;
+        this.folder = folder;
         this.exception = exception;
         this.downloadCommandResult = null;
         this.block = false;
@@ -50,10 +56,28 @@ public class MockDownloadCommand extends DownloadCommand {
 
     public MockDownloadCommand(Context context, NetworkTask networkTask, URL url, String folder, boolean delete, DownloadCommandResult downloadCommandResult, boolean block) {
         super(context, networkTask, url, folder, delete);
+        this.url = url;
+        this.folder = folder;
         this.exception = null;
         this.downloadCommandResult = downloadCommandResult;
         this.block = block;
         this.latch = new CountDownLatch(1);
+    }
+
+    public URL getUrl() {
+        return url;
+    }
+
+    public void setUrl(URL url) {
+        this.url = url;
+    }
+
+    public String getFolder() {
+        return folder;
+    }
+
+    public void setFolder(String folder) {
+        this.folder = folder;
     }
 
     public void waitUntilReady() {

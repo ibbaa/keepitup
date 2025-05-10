@@ -73,6 +73,12 @@ public class TestDownloadNetworkTaskWorker extends DownloadNetworkTaskWorker {
 
     @Override
     public Callable<DownloadCommandResult> getDownloadCommand(NetworkTask networkTask, URL url, String folder, boolean delete) {
+        mockDownloadCommand.setUrl(url);
+        mockDownloadCommand.setFolder(folder);
+        return mockDownloadCommand;
+    }
+
+    public MockDownloadCommand getMockDownloadCommand() {
         return mockDownloadCommand;
     }
 

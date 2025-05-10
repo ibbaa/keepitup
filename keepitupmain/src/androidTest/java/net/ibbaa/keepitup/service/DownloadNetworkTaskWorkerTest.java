@@ -153,6 +153,29 @@ public class DownloadNetworkTaskWorkerTest {
     }
 
     @Test
+    public void testURLEncoding() throws Exception {
+        preferenceManager.setPreferenceDownloadFollowsRedirects(false);
+        DNSLookupResult dnsLookupResult = new DNSLookupResult(Arrays.asList(InetAddress.getByName("127.0.0.1"), InetAddress.getByName("::1")), null);
+        TestDownloadNetworkTaskWorker downloadNetworkTaskWorker = prepareTestDownloadNetworkTaskWorker(dnsLookupResult, (DownloadCommandResult) null);
+        NetworkTask networkTask = getNetworkTask();
+        networkTask.setAddress("https://test.com/tes t");
+        downloadNetworkTaskWorker.execute(networkTask, getAccessTypeData());
+        MockDownloadCommand downloadCommand = downloadNetworkTaskWorker.getMockDownloadCommand();
+        assertEquals("https://test.com/tes%20t", downloadCommand.getUrl().toString());
+        assertEquals("/test", downloadCommand.getFolder());
+        networkTask.setAddress("https://test.com/tes%20t");
+        downloadNetworkTaskWorker.execute(networkTask, getAccessTypeData());
+        downloadCommand = downloadNetworkTaskWorker.getMockDownloadCommand();
+        assertEquals("https://test.com/tes%20t", downloadCommand.getUrl().toString());
+        assertEquals("/test", downloadCommand.getFolder());
+        networkTask.setAddress("https://test.com/tes%20t?xyz%20=%201");
+        downloadNetworkTaskWorker.execute(networkTask, getAccessTypeData());
+        downloadCommand = downloadNetworkTaskWorker.getMockDownloadCommand();
+        assertEquals("https://test.com/tes%20t?xyz%20=%201", downloadCommand.getUrl().toString());
+        assertEquals("/test", downloadCommand.getFolder());
+    }
+
+    @Test
     public void testInvalidInternalFolder() throws Exception {
         preferenceManager.setPreferenceDownloadFollowsRedirects(false);
         DNSLookupResult dnsLookupResult = new DNSLookupResult(Arrays.asList(InetAddress.getByName("127.0.0.1"), InetAddress.getByName("::1")), null);
@@ -1707,7 +1730,7 @@ public class DownloadNetworkTaskWorkerTest {
         TestDownloadNetworkTaskWorker downloadNetworkTaskWorker = prepareBlockingTestDownloadNetworkTaskWorker(dnsLookupResult, downloadCommandResult, task);
         ExecutorService executorService = Executors.newSingleThreadExecutor();
         Future<?> downloadFuture = executorService.submit(downloadNetworkTaskWorker);
-        MockDownloadCommand downloadCommand = (MockDownloadCommand) downloadNetworkTaskWorker.getDownloadCommand(null, null, null, false);
+        MockDownloadCommand downloadCommand = downloadNetworkTaskWorker.getMockDownloadCommand();
         downloadCommand.waitUntilReady();
         downloadFuture.cancel(true);
         List<LogEntry> logs = logDAO.readAllLogsForNetworkTask(task.getId());
