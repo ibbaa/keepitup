@@ -97,11 +97,134 @@ public class NetworkTaskLogActivityTest extends BaseUITest {
         onView(withText("Delete logs")).perform(click());
         onView(withId(R.id.imageview_dialog_confirm_cancel)).perform(click());
         onView(withId(R.id.listview_activity_log_log_entries)).check(matches(withListSize(2)));
+        onView(allOf(withId(R.id.textview_list_item_log_entry_title), withChildDescendantAtPosition(withId(R.id.listview_activity_log_log_entries), 0))).check(matches(withText("Log entry for network task 1")));
+        onView(allOf(withId(R.id.textview_list_item_log_entry_success), withChildDescendantAtPosition(withId(R.id.listview_activity_log_log_entries), 0))).check(matches(withText("Execution successful")));
+        onView(allOf(withId(R.id.textview_list_item_log_entry_message), withChildDescendantAtPosition(withId(R.id.listview_activity_log_log_entries), 0))).check(matches(withText("Message: Message2")));
+        onView(allOf(withId(R.id.textview_list_item_log_entry_title), withChildDescendantAtPosition(withId(R.id.listview_activity_log_log_entries), 1))).check(matches(withText("Log entry for network task 1")));
+        onView(allOf(withId(R.id.textview_list_item_log_entry_success), withChildDescendantAtPosition(withId(R.id.listview_activity_log_log_entries), 1))).check(matches(withText("Execution failed")));
+        onView(allOf(withId(R.id.textview_list_item_log_entry_message), withChildDescendantAtPosition(withId(R.id.listview_activity_log_log_entries), 1))).check(matches(withText("Message: Message1")));
         openActionBarOverflowOrOptionsMenu(TestRegistry.getContext());
         onView(withText("Delete logs")).perform(click());
         onView(withId(R.id.imageview_dialog_confirm_ok)).perform(click());
         onView(withId(R.id.listview_activity_log_log_entries)).check(matches(withListSize(1)));
-        onView(withOverflowButton()).check(doesNotExist());
+        onView(allOf(withId(R.id.textview_list_item_log_entry_no_log), withChildDescendantAtPosition(withId(R.id.listview_activity_log_log_entries), 0))).check(matches(isDisplayed()));
+        onView(allOf(withId(R.id.textview_list_item_log_entry_no_log), withChildDescendantAtPosition(withId(R.id.listview_activity_log_log_entries), 0))).check(matches(withText("No logs present for network task 1")));
+        openActionBarOverflowOrOptionsMenu(TestRegistry.getContext());
+        onView(withText("Delete logs")).check(doesNotExist());
+        activityScenario.close();
+    }
+
+    @Test
+    public void testShowHideSuccessful() {
+        NetworkTask task = insertNetworkTask();
+        LogEntry entry1 = getLogEntry(task, new GregorianCalendar(1985, Calendar.DECEMBER, 24), true, "Message1");
+        LogEntry entry2 = getLogEntry(task, new GregorianCalendar(1985, Calendar.MAY, 24), false, "Message2");
+        LogEntry entry3 = getLogEntry(task, new GregorianCalendar(1985, Calendar.APRIL, 18), true, "Message3");
+        LogEntry entry4 = getLogEntry(task, new GregorianCalendar(1985, Calendar.APRIL, 17), true, "Message4");
+        LogEntry entry5 = getLogEntry(task, new GregorianCalendar(1985, Calendar.MARCH, 17), false, "Message5");
+        getLogDAO().insertAndDeleteLog(entry1);
+        getLogDAO().insertAndDeleteLog(entry2);
+        getLogDAO().insertAndDeleteLog(entry3);
+        getLogDAO().insertAndDeleteLog(entry4);
+        getLogDAO().insertAndDeleteLog(entry5);
+        ActivityScenario<?> activityScenario = launchRecyclerViewBaseActivity(getNetworkTaskLogIntent(task));
+        onView(withId(R.id.listview_activity_log_log_entries)).check(matches(withListSize(5)));
+        onView(allOf(withId(R.id.textview_list_item_log_entry_title), withChildDescendantAtPosition(withId(R.id.listview_activity_log_log_entries), 0))).check(matches(withText("Log entry for network task 1")));
+        onView(allOf(withId(R.id.textview_list_item_log_entry_success), withChildDescendantAtPosition(withId(R.id.listview_activity_log_log_entries), 0))).check(matches(withText("Execution successful")));
+        onView(allOf(withId(R.id.textview_list_item_log_entry_message), withChildDescendantAtPosition(withId(R.id.listview_activity_log_log_entries), 0))).check(matches(withText("Message: Message1")));
+        onView(allOf(withId(R.id.textview_list_item_log_entry_title), withChildDescendantAtPosition(withId(R.id.listview_activity_log_log_entries), 1))).check(matches(withText("Log entry for network task 1")));
+        onView(allOf(withId(R.id.textview_list_item_log_entry_success), withChildDescendantAtPosition(withId(R.id.listview_activity_log_log_entries), 1))).check(matches(withText("Execution failed")));
+        onView(allOf(withId(R.id.textview_list_item_log_entry_message), withChildDescendantAtPosition(withId(R.id.listview_activity_log_log_entries), 1))).check(matches(withText("Message: Message2")));
+        onView(allOf(withId(R.id.textview_list_item_log_entry_title), withChildDescendantAtPosition(withId(R.id.listview_activity_log_log_entries), 2))).check(matches(withText("Log entry for network task 1")));
+        onView(allOf(withId(R.id.textview_list_item_log_entry_success), withChildDescendantAtPosition(withId(R.id.listview_activity_log_log_entries), 2))).check(matches(withText("Execution successful")));
+        onView(allOf(withId(R.id.textview_list_item_log_entry_message), withChildDescendantAtPosition(withId(R.id.listview_activity_log_log_entries), 2))).check(matches(withText("Message: Message3")));
+        onView(allOf(withId(R.id.textview_list_item_log_entry_title), withChildDescendantAtPosition(withId(R.id.listview_activity_log_log_entries), 3))).check(matches(withText("Log entry for network task 1")));
+        onView(allOf(withId(R.id.textview_list_item_log_entry_success), withChildDescendantAtPosition(withId(R.id.listview_activity_log_log_entries), 3))).check(matches(withText("Execution successful")));
+        onView(allOf(withId(R.id.textview_list_item_log_entry_message), withChildDescendantAtPosition(withId(R.id.listview_activity_log_log_entries), 3))).check(matches(withText("Message: Message4")));
+        onView(allOf(withId(R.id.textview_list_item_log_entry_title), withChildDescendantAtPosition(withId(R.id.listview_activity_log_log_entries), 4))).check(matches(withText("Log entry for network task 1")));
+        onView(allOf(withId(R.id.textview_list_item_log_entry_success), withChildDescendantAtPosition(withId(R.id.listview_activity_log_log_entries), 4))).check(matches(withText("Execution failed")));
+        onView(allOf(withId(R.id.textview_list_item_log_entry_message), withChildDescendantAtPosition(withId(R.id.listview_activity_log_log_entries), 4))).check(matches(withText("Message: Message5")));
+        openActionBarOverflowOrOptionsMenu(TestRegistry.getContext());
+        onView(withText("Hide successful")).perform(click());
+        onView(withId(R.id.listview_activity_log_log_entries)).check(matches(withListSize(2)));
+        onView(allOf(withId(R.id.textview_list_item_log_entry_title), withChildDescendantAtPosition(withId(R.id.listview_activity_log_log_entries), 0))).check(matches(withText("Log entry for network task 1")));
+        onView(allOf(withId(R.id.textview_list_item_log_entry_success), withChildDescendantAtPosition(withId(R.id.listview_activity_log_log_entries), 0))).check(matches(withText("Execution failed")));
+        onView(allOf(withId(R.id.textview_list_item_log_entry_message), withChildDescendantAtPosition(withId(R.id.listview_activity_log_log_entries), 0))).check(matches(withText("Message: Message2")));
+        onView(allOf(withId(R.id.textview_list_item_log_entry_title), withChildDescendantAtPosition(withId(R.id.listview_activity_log_log_entries), 1))).check(matches(withText("Log entry for network task 1")));
+        onView(allOf(withId(R.id.textview_list_item_log_entry_success), withChildDescendantAtPosition(withId(R.id.listview_activity_log_log_entries), 1))).check(matches(withText("Execution failed")));
+        onView(allOf(withId(R.id.textview_list_item_log_entry_message), withChildDescendantAtPosition(withId(R.id.listview_activity_log_log_entries), 1))).check(matches(withText("Message: Message5")));
+        openActionBarOverflowOrOptionsMenu(TestRegistry.getContext());
+        onView(withText("Show all")).perform(click());
+        onView(withId(R.id.listview_activity_log_log_entries)).check(matches(withListSize(5)));
+        onView(allOf(withId(R.id.textview_list_item_log_entry_title), withChildDescendantAtPosition(withId(R.id.listview_activity_log_log_entries), 0))).check(matches(withText("Log entry for network task 1")));
+        onView(allOf(withId(R.id.textview_list_item_log_entry_success), withChildDescendantAtPosition(withId(R.id.listview_activity_log_log_entries), 0))).check(matches(withText("Execution successful")));
+        onView(allOf(withId(R.id.textview_list_item_log_entry_message), withChildDescendantAtPosition(withId(R.id.listview_activity_log_log_entries), 0))).check(matches(withText("Message: Message1")));
+        onView(allOf(withId(R.id.textview_list_item_log_entry_title), withChildDescendantAtPosition(withId(R.id.listview_activity_log_log_entries), 1))).check(matches(withText("Log entry for network task 1")));
+        onView(allOf(withId(R.id.textview_list_item_log_entry_success), withChildDescendantAtPosition(withId(R.id.listview_activity_log_log_entries), 1))).check(matches(withText("Execution failed")));
+        onView(allOf(withId(R.id.textview_list_item_log_entry_message), withChildDescendantAtPosition(withId(R.id.listview_activity_log_log_entries), 1))).check(matches(withText("Message: Message2")));
+        onView(allOf(withId(R.id.textview_list_item_log_entry_title), withChildDescendantAtPosition(withId(R.id.listview_activity_log_log_entries), 2))).check(matches(withText("Log entry for network task 1")));
+        onView(allOf(withId(R.id.textview_list_item_log_entry_success), withChildDescendantAtPosition(withId(R.id.listview_activity_log_log_entries), 2))).check(matches(withText("Execution successful")));
+        onView(allOf(withId(R.id.textview_list_item_log_entry_message), withChildDescendantAtPosition(withId(R.id.listview_activity_log_log_entries), 2))).check(matches(withText("Message: Message3")));
+        onView(allOf(withId(R.id.textview_list_item_log_entry_title), withChildDescendantAtPosition(withId(R.id.listview_activity_log_log_entries), 3))).check(matches(withText("Log entry for network task 1")));
+        onView(allOf(withId(R.id.textview_list_item_log_entry_success), withChildDescendantAtPosition(withId(R.id.listview_activity_log_log_entries), 3))).check(matches(withText("Execution successful")));
+        onView(allOf(withId(R.id.textview_list_item_log_entry_message), withChildDescendantAtPosition(withId(R.id.listview_activity_log_log_entries), 3))).check(matches(withText("Message: Message4")));
+        onView(allOf(withId(R.id.textview_list_item_log_entry_title), withChildDescendantAtPosition(withId(R.id.listview_activity_log_log_entries), 4))).check(matches(withText("Log entry for network task 1")));
+        onView(allOf(withId(R.id.textview_list_item_log_entry_success), withChildDescendantAtPosition(withId(R.id.listview_activity_log_log_entries), 4))).check(matches(withText("Execution failed")));
+        onView(allOf(withId(R.id.textview_list_item_log_entry_message), withChildDescendantAtPosition(withId(R.id.listview_activity_log_log_entries), 4))).check(matches(withText("Message: Message5")));
+        activityScenario.close();
+    }
+
+    @Test
+    public void testShowHideSuccessfulScreenRotation() {
+        NetworkTask task = insertNetworkTask();
+        LogEntry entry1 = getLogEntry(task, new GregorianCalendar(1985, Calendar.DECEMBER, 25), true, "Message1");
+        LogEntry entry2 = getLogEntry(task, new GregorianCalendar(1985, Calendar.DECEMBER, 24), false, "Message2");
+        getLogDAO().insertAndDeleteLog(entry1);
+        getLogDAO().insertAndDeleteLog(entry2);
+        ActivityScenario<?> activityScenario = launchRecyclerViewBaseActivity(getNetworkTaskLogIntent(task));
+        onView(withId(R.id.listview_activity_log_log_entries)).check(matches(withListSize(2)));
+        onView(allOf(withId(R.id.textview_list_item_log_entry_title), withChildDescendantAtPosition(withId(R.id.listview_activity_log_log_entries), 0))).check(matches(withText("Log entry for network task 1")));
+        onView(allOf(withId(R.id.textview_list_item_log_entry_success), withChildDescendantAtPosition(withId(R.id.listview_activity_log_log_entries), 0))).check(matches(withText("Execution successful")));
+        onView(allOf(withId(R.id.textview_list_item_log_entry_message), withChildDescendantAtPosition(withId(R.id.listview_activity_log_log_entries), 0))).check(matches(withText("Message: Message1")));
+        onView(allOf(withId(R.id.textview_list_item_log_entry_title), withChildDescendantAtPosition(withId(R.id.listview_activity_log_log_entries), 1))).check(matches(withText("Log entry for network task 1")));
+        onView(allOf(withId(R.id.textview_list_item_log_entry_success), withChildDescendantAtPosition(withId(R.id.listview_activity_log_log_entries), 1))).check(matches(withText("Execution failed")));
+        onView(allOf(withId(R.id.textview_list_item_log_entry_message), withChildDescendantAtPosition(withId(R.id.listview_activity_log_log_entries), 1))).check(matches(withText("Message: Message2")));
+        openActionBarOverflowOrOptionsMenu(TestRegistry.getContext());
+        onView(withText("Hide successful")).perform(click());
+        rotateScreen(activityScenario);
+        onView(withId(R.id.listview_activity_log_log_entries)).check(matches(withListSize(1)));
+        onView(allOf(withId(R.id.textview_list_item_log_entry_title), withChildDescendantAtPosition(withId(R.id.listview_activity_log_log_entries), 0))).check(matches(withText("Log entry for network task 1")));
+        onView(allOf(withId(R.id.textview_list_item_log_entry_success), withChildDescendantAtPosition(withId(R.id.listview_activity_log_log_entries), 0))).check(matches(withText("Execution failed")));
+        onView(allOf(withId(R.id.textview_list_item_log_entry_message), withChildDescendantAtPosition(withId(R.id.listview_activity_log_log_entries), 0))).check(matches(withText("Message: Message2")));
+        rotateScreen(activityScenario);
+        onView(withId(R.id.listview_activity_log_log_entries)).check(matches(withListSize(1)));
+        onView(allOf(withId(R.id.textview_list_item_log_entry_title), withChildDescendantAtPosition(withId(R.id.listview_activity_log_log_entries), 0))).check(matches(withText("Log entry for network task 1")));
+        onView(allOf(withId(R.id.textview_list_item_log_entry_success), withChildDescendantAtPosition(withId(R.id.listview_activity_log_log_entries), 0))).check(matches(withText("Execution failed")));
+        onView(allOf(withId(R.id.textview_list_item_log_entry_message), withChildDescendantAtPosition(withId(R.id.listview_activity_log_log_entries), 0))).check(matches(withText("Message: Message2")));
+        activityScenario.close();
+    }
+
+    @Test
+    public void testShowHideSuccessfulEmpty() {
+        NetworkTask task = insertNetworkTask();
+        LogEntry entry = getLogEntry(task, new GregorianCalendar(1985, Calendar.DECEMBER, 24), true, "Message1");
+        getLogDAO().insertAndDeleteLog(entry);
+        ActivityScenario<?> activityScenario = launchRecyclerViewBaseActivity(getNetworkTaskLogIntent(task));
+        onView(withId(R.id.listview_activity_log_log_entries)).check(matches(withListSize(1)));
+        onView(allOf(withId(R.id.textview_list_item_log_entry_title), withChildDescendantAtPosition(withId(R.id.listview_activity_log_log_entries), 0))).check(matches(withText("Log entry for network task 1")));
+        onView(allOf(withId(R.id.textview_list_item_log_entry_success), withChildDescendantAtPosition(withId(R.id.listview_activity_log_log_entries), 0))).check(matches(withText("Execution successful")));
+        onView(allOf(withId(R.id.textview_list_item_log_entry_message), withChildDescendantAtPosition(withId(R.id.listview_activity_log_log_entries), 0))).check(matches(withText("Message: Message1")));
+        openActionBarOverflowOrOptionsMenu(TestRegistry.getContext());
+        onView(withText("Hide successful")).perform(click());
+        onView(withId(R.id.listview_activity_log_log_entries)).check(matches(withListSize(1)));
+        onView(allOf(withId(R.id.textview_list_item_log_entry_no_log), withChildDescendantAtPosition(withId(R.id.listview_activity_log_log_entries), 0))).check(matches(isDisplayed()));
+        onView(allOf(withId(R.id.textview_list_item_log_entry_no_log), withChildDescendantAtPosition(withId(R.id.listview_activity_log_log_entries), 0))).check(matches(withText("No logs present for network task 1")));
+        openActionBarOverflowOrOptionsMenu(TestRegistry.getContext());
+        onView(withText("Show all")).perform(click());
+        onView(withId(R.id.listview_activity_log_log_entries)).check(matches(withListSize(1)));
+        onView(allOf(withId(R.id.textview_list_item_log_entry_title), withChildDescendantAtPosition(withId(R.id.listview_activity_log_log_entries), 0))).check(matches(withText("Log entry for network task 1")));
+        onView(allOf(withId(R.id.textview_list_item_log_entry_success), withChildDescendantAtPosition(withId(R.id.listview_activity_log_log_entries), 0))).check(matches(withText("Execution successful")));
+        onView(allOf(withId(R.id.textview_list_item_log_entry_message), withChildDescendantAtPosition(withId(R.id.listview_activity_log_log_entries), 0))).check(matches(withText("Message: Message1")));
         activityScenario.close();
     }
 
@@ -133,7 +256,7 @@ public class NetworkTaskLogActivityTest extends BaseUITest {
         onView(withId(R.id.imageview_dialog_confirm_ok)).perform(click());
         rotateScreen(activityScenario);
         onView(withId(R.id.listview_activity_log_log_entries)).check(matches(withListSize(1)));
-        onView(withOverflowButton()).check(doesNotExist());
+        onView(withText("Delete logs")).check(doesNotExist());
         activityScenario.close();
     }
 

@@ -18,13 +18,7 @@ package net.ibbaa.keepitup.ui;
 
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.matcher.ViewMatchers.isAssignableFrom;
-import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.isRoot;
-import static androidx.test.espresso.matcher.ViewMatchers.withClassName;
-import static androidx.test.espresso.matcher.ViewMatchers.withContentDescription;
-import static org.hamcrest.Matchers.allOf;
-import static org.hamcrest.Matchers.anyOf;
-import static org.hamcrest.Matchers.endsWith;
 
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
@@ -310,10 +304,6 @@ public abstract class BaseUITest {
 
     public static Matcher<View> withNumberPickerColor(int expectedId) {
         return new NumberPickerColorMatcher(expectedId);
-    }
-
-    public static Matcher<View> withOverflowButton() {
-        return anyOf(allOf(isDisplayed(), withContentDescription("More options")), allOf(isDisplayed(), withClassName(endsWith("OverflowMenuButton"))));
     }
 
     public static ViewAction waitFor(long time) {

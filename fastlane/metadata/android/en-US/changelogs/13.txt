@@ -3,6 +3,7 @@
 * Other tasks use default priority (no change)
 * Optionally the alarm sound of the device will play whenever a high priority notification is sent (disabled by default)
 * The alarm lasts for 60 sec and can be dismissed at any time
+* Added a menu item to the log view to hide successful executions
 * Storage folders are now correctly displayed when arbitrary file location is used
 * Encoding and handling of encoded URLs improved
 * Some minor bug fixes

@@ -17,6 +17,8 @@
 <resources>
     <string name="activity_log_title">Log</string>
     <string name="menu_action_activity_log_delete">Delete logs</string>
+    <string name="menu_action_activity_log_show_all">Show all</string>
+    <string name="menu_action_activity_log_hide_successful">Hide successful</string>
     <string name="text_activity_log_list_item_log_entry_no_log">No logs present for network task %d</string>
     <string name="text_activity_log_list_item_log_entry_title">Log entry for network task %d</string>
     <string name="text_activity_log_list_item_log_entry_success">Execution %s</string>

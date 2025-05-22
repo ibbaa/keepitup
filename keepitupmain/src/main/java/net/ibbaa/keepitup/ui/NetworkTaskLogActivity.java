@@ -16,6 +16,7 @@
 
 package net.ibbaa.keepitup.ui;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.IntentFilter;
 import android.os.Build;
@@ -34,6 +35,8 @@ import net.ibbaa.keepitup.ui.dialog.ConfirmDialog;
 import net.ibbaa.keepitup.ui.sync.LogEntryUIBroadcastReceiver;
 import net.ibbaa.keepitup.ui.sync.LogEntryUIInitTask;
 import net.ibbaa.keepitup.util.ThreadUtil;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -66,6 +69,7 @@ public class NetworkTaskLogActivity extends RecyclerViewBaseActivity {
         initRecyclerView();
     }
 
+
     @Override
     protected void onResume() {
         Log.d(NetworkTaskLogActivity.class.getName(), "onResume");
@@ -83,6 +87,26 @@ public class NetworkTaskLogActivity extends RecyclerViewBaseActivity {
         super.onPause();
         unregisterReceiver();
         unregisterMenuAdapterDataObserver();
+    }
+
+    @Override
+    protected void onSaveInstanceState(@NotNull Bundle state) {
+        super.onSaveInstanceState(state);
+        LogEntryAdapter adapter = (LogEntryAdapter) getAdapter();
+        Bundle bundle = adapter.saveStateToBundle();
+        state.putBundle(getLogEntryAdapterKey(), bundle);
+    }
+
+    @Override
+    protected void onRestoreInstanceState(@NotNull Bundle state) {
+        super.onRestoreInstanceState(state);
+        if (state.containsKey(getLogEntryAdapterKey())) {
+            Bundle bundle = state.getBundle(getLogEntryAdapterKey());
+            if (bundle != null) {
+                LogEntryAdapter adapter = (LogEntryAdapter) getAdapter();
+                adapter.restoreStateFromBundle(bundle);
+            }
+        }
     }
 
     private void registerReceiver() {
@@ -144,19 +168,22 @@ public class NetworkTaskLogActivity extends RecyclerViewBaseActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         Log.d(NetworkTaskLogActivity.class.getName(), "onCreateOptionsMenu");
         getMenuInflater().inflate(R.menu.menu_log, menu);
-        MenuItem item = menu.findItem(R.id.menu_action_activity_log_delete);
+        MenuItem deleteItem = menu.findItem(R.id.menu_action_activity_log_delete);
         LogEntryAdapter adapter = (LogEntryAdapter) getAdapter();
         if (adapter.hasValidEntries()) {
             Log.d(NetworkTaskLogActivity.class.getName(), "Adapter has valid entries. Showing log delete menu item.");
-            item.setVisible(true);
+            deleteItem.setVisible(true);
         } else {
             Log.d(NetworkTaskLogActivity.class.getName(), "Adapter has no valid entries. Hiding log delete menu item.");
-            item.setVisible(false);
+            deleteItem.setVisible(false);
         }
+        MenuItem showHideItem = menu.findItem(R.id.menu_action_activity_log_show_hide);
+        setShowHideMenuItemText(showHideItem);
         return true;
     }
 
     @Override
+    @SuppressLint("NotifyDataSetChanged")
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         if (id == R.id.menu_action_activity_log_delete) {
@@ -164,7 +191,26 @@ public class NetworkTaskLogActivity extends RecyclerViewBaseActivity {
             showConfirmDialog(getResources().getString(R.string.text_dialog_confirm_delete_logs), ConfirmDialog.Type.DELETELOGS);
             return true;
         }
+        if (id == R.id.menu_action_activity_log_show_hide) {
+            Log.d(NetworkTaskLogActivity.class.getName(), "menu_action_activity_log_show_hide triggered");
+            LogEntryAdapter adapter = (LogEntryAdapter) getAdapter();
+            adapter.setHideSuccessful(!adapter.isHideSuccessful());
+            adapter.notifyDataSetChanged();
+            setShowHideMenuItemText(item);
+        }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void setShowHideMenuItemText(MenuItem item) {
+        Log.d(NetworkTaskLogActivity.class.getName(), "setShowHideMenuItemText");
+        LogEntryAdapter adapter = (LogEntryAdapter) getAdapter();
+        if (adapter.isHideSuccessful()) {
+            Log.d(NetworkTaskLogActivity.class.getName(), "Successful entries are hidden.");
+            item.setTitle(getResources().getString(R.string.menu_action_activity_log_show_all));
+        } else {
+            Log.d(NetworkTaskLogActivity.class.getName(), "Successful entries are shown.");
+            item.setTitle(getResources().getString(R.string.menu_action_activity_log_hide_successful));
+        }
     }
 
     @SuppressWarnings("NotifyDataSetChanged")
@@ -188,6 +234,10 @@ public class NetworkTaskLogActivity extends RecyclerViewBaseActivity {
 
     private LogEntryUIInitTask getUIInitTask(NetworkTask task, LogEntryAdapter adapter) {
         return new LogEntryUIInitTask(this, task, adapter);
+    }
+
+    private String getLogEntryAdapterKey() {
+        return NetworkTaskLogActivity.class.getSimpleName() + "LogEntryAdapter";
     }
 
     private class MenuAdapterDataObserver extends RecyclerView.AdapterDataObserver {

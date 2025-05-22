@@ -20,4 +20,7 @@
     <item
         android:id="@+id/menu_action_activity_log_delete"
         android:title="@string/menu_action_activity_log_delete" />
+    <item
+        android:id="@+id/menu_action_activity_log_show_hide"
+        android:title="@string/menu_action_activity_log_hide_successful" />
 </menu>
