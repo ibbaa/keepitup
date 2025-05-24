@@ -78,6 +78,11 @@ public class DBSetup {
         db.execSQL(networkTaskDBConstants.getAddHighPrioColumnStatement());
     }
 
+    public void addNameColumnToNetworkTaskTable(SQLiteDatabase db) {
+        Log.d(DBSetup.class.getName(), "Adding column " + networkTaskDBConstants.getNameColumnName() + " to table " + networkTaskDBConstants.getTableName());
+        db.execSQL(networkTaskDBConstants.getAddNameColumnStatement());
+    }
+
     public void initializeFailureCountColumn(SQLiteDatabase db) {
         Log.d(DBSetup.class.getName(), "Setting " + networkTaskDBConstants.getFailureCountColumnName() + " to 0 in " + networkTaskDBConstants.getTableName());
         NetworkTaskDBConstants dbConstants = new NetworkTaskDBConstants(getContext());
@@ -161,6 +166,11 @@ public class DBSetup {
     public void dropHighPrioColumnFromNetworkTaskTable(SQLiteDatabase db) {
         Log.d(DBSetup.class.getName(), "Dropping column " + networkTaskDBConstants.getHighPrioColumnName() + " from table " + networkTaskDBConstants.getTableName());
         db.execSQL(networkTaskDBConstants.getDropHighPrioColumnStatement());
+    }
+
+    public void dropNameColumnFromNetworkTaskTable(SQLiteDatabase db) {
+        Log.d(DBSetup.class.getName(), "Dropping column " + networkTaskDBConstants.getNameColumnName() + " from table " + networkTaskDBConstants.getTableName());
+        db.execSQL(networkTaskDBConstants.getDropNameColumnStatement());
     }
 
     public void dropLogTable(SQLiteDatabase db) {
@@ -256,6 +266,10 @@ public class DBSetup {
         addHighPrioColumnToNetworkTaskTable(DBOpenHelper.getInstance(getContext()).getWritableDatabase());
     }
 
+    public void addNameColumnToNetworkTaskTable() {
+        addNameColumnToNetworkTaskTable(DBOpenHelper.getInstance(getContext()).getWritableDatabase());
+    }
+
     public void addIgnoreSSLErrorColumnToAccessTypeDataTable() {
         addIgnoreSSLErrorColumnToAccessTypeDataTable(DBOpenHelper.getInstance(getContext()).getWritableDatabase());
     }
@@ -304,6 +318,11 @@ public class DBSetup {
     @SuppressWarnings({"unused"})
     public void dropHighPrioColumnFromNetworkTaskTable() {
         dropHighPrioColumnFromNetworkTaskTable(DBOpenHelper.getInstance(getContext()).getWritableDatabase());
+    }
+
+    @SuppressWarnings({"unused"})
+    public void dropNameColumnFromNetworkTaskTable() {
+        dropNameColumnFromNetworkTaskTable(DBOpenHelper.getInstance(getContext()).getWritableDatabase());
     }
 
     public void dropLogTable() {

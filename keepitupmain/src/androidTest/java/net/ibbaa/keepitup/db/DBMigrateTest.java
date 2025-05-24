@@ -190,7 +190,7 @@ public class DBMigrateTest {
         setup.dropNetworkTaskTable();
         NetworkTaskDBConstants networkTaskDBConstants = new NetworkTaskDBConstants(TestRegistry.getContext());
         AccessTypeDataDBConstants accessTypeDataDBConstants = new AccessTypeDataDBConstants(TestRegistry.getContext());
-        DBOpenHelper.getInstance(TestRegistry.getContext()).getWritableDatabase().execSQL(networkTaskDBConstants.getCreateTableStatementWithoutHighPrio());
+        DBOpenHelper.getInstance(TestRegistry.getContext()).getWritableDatabase().execSQL(networkTaskDBConstants.getCreateTableStatementWithoutHighPrioAndName());
         DBOpenHelper.getInstance(TestRegistry.getContext()).getWritableDatabase().execSQL(accessTypeDataDBConstants.getCreateTableStatementWithoutIgnoreSSLError());
         migrate.doUpgrade(TestRegistry.getContext(), 4, 5);
         networkTaskDAO.insertNetworkTask(new NetworkTask());
@@ -206,7 +206,7 @@ public class DBMigrateTest {
         setup.dropAccessTypeDataTable();
         setup.dropNetworkTaskTable();
         NetworkTaskDBConstants dbConstants = new NetworkTaskDBConstants(TestRegistry.getContext());
-        DBOpenHelper.getInstance(TestRegistry.getContext()).getWritableDatabase().execSQL(dbConstants.getCreateTableStatementWithoutHighPrio());
+        DBOpenHelper.getInstance(TestRegistry.getContext()).getWritableDatabase().execSQL(dbConstants.getCreateTableStatementWithoutHighPrioAndName());
         NetworkTask task1 = networkTaskDAO.insertNetworkTask(getNetworkTask1());
         migrate.doUpgrade(TestRegistry.getContext(), 0, 5);
         AccessTypeData data = new AccessTypeData();
@@ -225,6 +225,7 @@ public class DBMigrateTest {
         task.setId(0);
         task.setIndex(1);
         task.setSchedulerId(0);
+        task.setName("name");
         task.setInstances(1);
         task.setAddress("127.0.0.1");
         task.setPort(80);
@@ -244,6 +245,7 @@ public class DBMigrateTest {
         task.setId(0);
         task.setIndex(2);
         task.setSchedulerId(0);
+        task.setName("name");
         task.setInstances(2);
         task.setAddress("host.com");
         task.setPort(21);
@@ -263,6 +265,7 @@ public class DBMigrateTest {
         task.setId(0);
         task.setIndex(3);
         task.setSchedulerId(0);
+        task.setName("name");
         task.setInstances(3);
         task.setAddress(null);
         task.setPort(456);

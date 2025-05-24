@@ -62,6 +62,7 @@ public class NetworkTaskTest {
         assertEquals(-1, task.getId());
         assertEquals(-1, task.getIndex());
         assertEquals(-1, task.getSchedulerId());
+        assertNull(task.getName());
         assertEquals(0, task.getInstances());
         assertNull(task.getAddress());
         assertEquals(0, task.getPort());
@@ -79,6 +80,7 @@ public class NetworkTaskTest {
         assertEquals(-1, task.getId());
         assertEquals(-1, task.getIndex());
         assertEquals(-1, task.getSchedulerId());
+        assertNull(task.getName());
         assertEquals(0, task.getInstances());
         assertNull(task.getAddress());
         assertEquals(0, task.getPort());
@@ -96,6 +98,7 @@ public class NetworkTaskTest {
         assertEquals(-1, task.getId());
         assertEquals(-1, task.getIndex());
         assertEquals(-1, task.getSchedulerId());
+        assertNull(task.getName());
         assertEquals(0, task.getInstances());
         assertNull(task.getAddress());
         assertEquals(0, task.getPort());
@@ -113,6 +116,7 @@ public class NetworkTaskTest {
         assertEquals(-1, task.getId());
         assertEquals(-1, task.getIndex());
         assertEquals(-1, task.getSchedulerId());
+        assertNull(task.getName());
         assertEquals(0, task.getInstances());
         assertNull(task.getAddress());
         assertEquals(0, task.getPort());
@@ -132,6 +136,7 @@ public class NetworkTaskTest {
         assertEquals(-1, task.getId());
         assertEquals(-1, task.getIndex());
         assertEquals(-1, task.getSchedulerId());
+        assertNull(task.getName());
         assertEquals(0, task.getInstances());
         assertNull(task.getAddress());
         assertEquals(0, task.getPort());
@@ -151,6 +156,7 @@ public class NetworkTaskTest {
         map.put("id", "xyz");
         map.put("index", "index");
         map.put("schedulerid", "abc");
+        map.put("name", null);
         map.put("instances", "abc");
         map.put("address", null);
         map.put("port", "port");
@@ -166,6 +172,7 @@ public class NetworkTaskTest {
         assertEquals(-1, task.getId());
         assertEquals(-1, task.getIndex());
         assertEquals(-1, task.getSchedulerId());
+        assertNull(task.getName());
         assertEquals(0, task.getInstances());
         assertNull(task.getAddress());
         assertEquals(0, task.getPort());
@@ -185,6 +192,7 @@ public class NetworkTaskTest {
         map.put("id", "1");
         map.put("index", "2");
         map.put("schedulerid", "3");
+        map.put("name", "name");
         map.put("instances", "4");
         map.put("address", "address");
         map.put("port", "5");
@@ -200,6 +208,7 @@ public class NetworkTaskTest {
         assertEquals(1, task.getId());
         assertEquals(2, task.getIndex());
         assertEquals(3, task.getSchedulerId());
+        assertEquals("name", task.getName());
         assertEquals(4, task.getInstances());
         assertEquals("address", task.getAddress());
         assertEquals(5, task.getPort());
@@ -227,6 +236,7 @@ public class NetworkTaskTest {
         assertEquals(-1, task.getId());
         assertEquals(-1, task.getIndex());
         assertEquals(-1, task.getSchedulerId());
+        assertEquals("Network task", task.getName());
         assertEquals(0, task.getInstances());
         assertEquals("host.com", task.getAddress());
         assertEquals(80, task.getPort());
@@ -243,6 +253,7 @@ public class NetworkTaskTest {
         assertEquals(-1, task.getId());
         assertEquals(-1, task.getIndex());
         assertEquals(-1, task.getSchedulerId());
+        assertEquals("Network task", task.getName());
         assertEquals(0, task.getInstances());
         assertEquals("192.168.178.1", task.getAddress());
         assertEquals(22, task.getPort());
@@ -263,6 +274,7 @@ public class NetworkTaskTest {
         task.setId(1);
         task.setIndex(2);
         task.setSchedulerId(3);
+        task.setName("name");
         task.setInstances(3);
         task.setAddress("127.0.0.1");
         task.setPort(23);
@@ -277,6 +289,7 @@ public class NetworkTaskTest {
         assertEquals(1, task.getId());
         assertEquals(2, task.getIndex());
         assertEquals(3, task.getSchedulerId());
+        assertEquals("name", task.getName());
         assertEquals(3, task.getInstances());
         assertEquals("127.0.0.1", task.getAddress());
         assertEquals(23, task.getPort());
@@ -294,6 +307,7 @@ public class NetworkTaskTest {
         assertEquals(1, task.getId());
         assertEquals(2, task.getIndex());
         assertEquals(3, task.getSchedulerId());
+        assertEquals("name", task.getName());
         assertEquals(3, task.getInstances());
         assertEquals("127.0.0.1", task.getAddress());
         assertEquals(23, task.getPort());
@@ -311,6 +325,7 @@ public class NetworkTaskTest {
         assertEquals(1, task.getId());
         assertEquals(2, task.getIndex());
         assertEquals(3, task.getSchedulerId());
+        assertEquals("name", task.getName());
         assertEquals(3, task.getInstances());
         assertEquals("127.0.0.1", task.getAddress());
         assertEquals(23, task.getPort());
@@ -331,6 +346,7 @@ public class NetworkTaskTest {
         task.setId(1);
         task.setIndex(2);
         task.setSchedulerId(3);
+        task.setName("name");
         task.setInstances(3);
         task.setAddress("127.0.0.1");
         task.setPort(23);
@@ -348,6 +364,7 @@ public class NetworkTaskTest {
         assertEquals(1, task.getId());
         assertEquals(2, task.getIndex());
         assertEquals(3, task.getSchedulerId());
+        assertEquals("name", task.getName());
         assertEquals(3, task.getInstances());
         assertEquals("127.0.0.1", task.getAddress());
         assertEquals(23, task.getPort());
@@ -409,6 +426,9 @@ public class NetworkTaskTest {
         networkTask1.setSchedulerId(11);
         assertFalse(networkTask1.isEqual(networkTask2));
         networkTask2.setSchedulerId(11);
+        networkTask1.setName("name");
+        assertFalse(networkTask1.isEqual(networkTask2));
+        networkTask2.setName("name");
         assertTrue(networkTask1.isEqual(networkTask2));
         networkTask1.setLastScheduled(25);
         assertFalse(networkTask1.isEqual(networkTask2));
@@ -430,6 +450,8 @@ public class NetworkTaskTest {
         NetworkTask networkTask2 = new NetworkTask();
         assertTrue(networkTask1.isTechnicallyEqual(networkTask2));
         networkTask1.setId(0);
+        assertTrue(networkTask1.isTechnicallyEqual(networkTask2));
+        networkTask1.setName("name");
         assertTrue(networkTask1.isTechnicallyEqual(networkTask2));
         networkTask1.setSchedulerId(1);
         assertTrue(networkTask1.isTechnicallyEqual(networkTask2));

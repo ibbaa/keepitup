@@ -146,6 +146,7 @@ public class NetworkTaskRunningNotificationServiceTest {
         task.setId(1);
         task.setIndex(1);
         task.setSchedulerId(1);
+        task.setName("name");
         task.setInstances(0);
         task.setAddress("127.0.0.1");
         task.setPort(80);

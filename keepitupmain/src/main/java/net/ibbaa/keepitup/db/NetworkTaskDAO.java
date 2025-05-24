@@ -75,6 +75,15 @@ public class NetworkTaskDAO extends BaseDAO {
         dumpDatabase("Dump after updateNetworkTaskRunning call");
     }
 
+    public void updateNetworkTaskName(long taskId, String name) {
+        Log.d(NetworkTaskDAO.class.getName(), "Updating name to " + name + " of task with id " + taskId);
+        NetworkTask networkTask = new NetworkTask();
+        networkTask.setId(taskId);
+        networkTask.setName(name);
+        executeDBOperationInTransaction(networkTask, this::updateNetworkTaskName);
+        dumpDatabase("Dump after updateNetworkTaskRunning call");
+    }
+
     public int readNetworkTasksRunning() {
         Log.d(NetworkTaskDAO.class.getName(), "Reading number of running tasks");
         int runningTasks = executeDBOperationInTransaction((NetworkTask) null, this::readNetworkTasksRunning);
@@ -221,6 +230,7 @@ public class NetworkTaskDAO extends BaseDAO {
         networkTask.setFailureCount(0);
         values.put(dbConstants.getIndexColumnName(), networkTask.getIndex());
         values.put(dbConstants.getSchedulerIdColumnName(), networkTask.getSchedulerId());
+        values.put(dbConstants.getNameColumnName(), networkTask.getName());
         values.put(dbConstants.getInstancesColumnName(), networkTask.getInstances());
         values.put(dbConstants.getAddressColumnName(), networkTask.getAddress());
         values.put(dbConstants.getPortColumnName(), networkTask.getPort());
@@ -270,6 +280,17 @@ public class NetworkTaskDAO extends BaseDAO {
             values.put(dbConstants.getFailureCountColumnName(), 0);
         }
         Log.d(NetworkTaskDAO.class.getName(), "Updating to " + networkTask.isRunning());
+        return db.update(dbConstants.getTableName(), values, selection, selectionArgs);
+    }
+
+    private int updateNetworkTaskName(NetworkTask networkTask, SQLiteDatabase db) {
+        Log.d(NetworkTaskDAO.class.getName(), "updateNetworkTaskName, task is " + networkTask);
+        NetworkTaskDBConstants dbConstants = new NetworkTaskDBConstants(getContext());
+        String selection = dbConstants.getIdColumnName() + " = ?";
+        String[] selectionArgs = {String.valueOf(networkTask.getId())};
+        ContentValues values = new ContentValues();
+        values.put(dbConstants.getNameColumnName(), networkTask.getName());
+        Log.d(NetworkTaskDAO.class.getName(), "Updating to " + networkTask.getName());
         return db.update(dbConstants.getTableName(), values, selection, selectionArgs);
     }
 
@@ -440,6 +461,7 @@ public class NetworkTaskDAO extends BaseDAO {
         networkTask.setLastScheduled(-1);
         ContentValues values = new ContentValues();
         values.put(dbConstants.getSchedulerIdColumnName(), networkTask.getSchedulerId());
+        values.put(dbConstants.getNameColumnName(), networkTask.getName());
         values.put(dbConstants.getInstancesColumnName(), networkTask.getInstances());
         values.put(dbConstants.getAccessTypeColumnName(), networkTask.getAccessType() == null ? null : networkTask.getAccessType().getCode());
         values.put(dbConstants.getOnlyWifiColumnName(), networkTask.isOnlyWifi() ? 1 : 0);
@@ -566,6 +588,7 @@ public class NetworkTaskDAO extends BaseDAO {
         int indexIdColumn = cursor.getColumnIndex(dbConstants.getIdColumnName());
         int indexIndexColumn = cursor.getColumnIndex(dbConstants.getIndexColumnName());
         int indexSchedulerIdColumn = cursor.getColumnIndex(dbConstants.getSchedulerIdColumnName());
+        int indexNameColumn = cursor.getColumnIndex(dbConstants.getNameColumnName());
         int indexInstancesColumn = cursor.getColumnIndex(dbConstants.getInstancesColumnName());
         int indexAddressColumn = cursor.getColumnIndex(dbConstants.getAddressColumnName());
         int indexPortColumn = cursor.getColumnIndex(dbConstants.getPortColumnName());
@@ -580,6 +603,7 @@ public class NetworkTaskDAO extends BaseDAO {
         networkTask.setId(cursor.getInt(indexIdColumn));
         networkTask.setIndex(cursor.getInt(indexIndexColumn));
         networkTask.setSchedulerId(cursor.getInt(indexSchedulerIdColumn));
+        networkTask.setName(cursor.getString(indexNameColumn));
         networkTask.setInstances(cursor.getInt(indexInstancesColumn));
         networkTask.setAddress(cursor.getString(indexAddressColumn));
         networkTask.setPort(cursor.getInt(indexPortColumn));

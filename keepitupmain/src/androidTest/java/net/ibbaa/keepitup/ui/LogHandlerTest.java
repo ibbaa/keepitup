@@ -79,6 +79,7 @@ public class LogHandlerTest extends BaseUITest {
         networkTask.setId(-1);
         networkTask.setIndex(-1);
         networkTask.setSchedulerId(-1);
+        networkTask.setName("name");
         networkTask.setInstances(0);
         networkTask.setAddress("127.0.0.1");
         networkTask.setPort(80);

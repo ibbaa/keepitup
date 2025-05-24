@@ -183,6 +183,7 @@ public class NetworkTaskDAOTest {
         assertEquals(insertedTask1.isOnlyWifi(), readTask1.isOnlyWifi());
         assertEquals(insertedTask1.isNotification(), readTask1.isNotification());
         assertEquals(insertedTask1.getSchedulerId(), readTask1.getSchedulerId());
+        assertEquals(insertedTask1.getName(), readTask1.getName());
         assertEquals(insertedTask1.getInstances(), readTask1.getInstances());
         assertEquals(insertedTask1.isHighPrio(), readTask1.isHighPrio());
         assertFalse(readTask1.isRunning());
@@ -207,11 +208,27 @@ public class NetworkTaskDAOTest {
         assertEquals(insertedTask1.isOnlyWifi(), readTask1.isOnlyWifi());
         assertEquals(insertedTask1.isNotification(), readTask1.isNotification());
         assertEquals(insertedTask1.getSchedulerId(), readTask1.getSchedulerId());
+        assertEquals(insertedTask1.getName(), readTask1.getName());
         assertEquals(insertedTask1.getInstances(), readTask1.getInstances());
         assertEquals(insertedTask1.isHighPrio(), readTask1.isHighPrio());
         assertTrue(readTask1.isRunning());
         assertEquals(-1, readTask1.getLastScheduled());
         assertEquals(0, readTask1.getFailureCount());
+    }
+
+    @Test
+    public void testUpdateName() {
+        NetworkTask insertedTask = getNetworkTask1();
+        networkTaskDAO.insertNetworkTask(insertedTask);
+        List<NetworkTask> readTasks = networkTaskDAO.readAllNetworkTasks();
+        NetworkTask readTask = readTasks.get(0);
+        assertEquals(insertedTask.getName(), readTask.getName());
+        networkTaskDAO.updateNetworkTaskName(readTask.getId(), "otherName");
+        readTask = networkTaskDAO.readNetworkTask(readTask.getId());
+        assertEquals("otherName", readTask.getName());
+        networkTaskDAO.updateNetworkTaskName(readTask.getId(), null);
+        readTask = networkTaskDAO.readNetworkTask(readTask.getId());
+        assertNull(readTask.getName());
     }
 
     @Test
@@ -245,6 +262,7 @@ public class NetworkTaskDAOTest {
         assertEquals(task2.isOnlyWifi(), readTask1.isOnlyWifi());
         assertEquals(task2.isNotification(), readTask1.isNotification());
         assertEquals(task2.isHighPrio(), readTask1.isHighPrio());
+        assertEquals(task2.getName(), readTask1.getName());
         assertEquals(insertedTask1.getIndex(), readTask1.getIndex());
         assertEquals(insertedTask1.isRunning(), readTask1.isRunning());
         assertEquals(-1, readTask1.getLastScheduled());
@@ -433,6 +451,7 @@ public class NetworkTaskDAOTest {
         task.setId(0);
         task.setIndex(1);
         task.setSchedulerId(0);
+        task.setName("name1");
         task.setInstances(1);
         task.setAddress("127.0.0.1");
         task.setPort(80);
@@ -452,6 +471,7 @@ public class NetworkTaskDAOTest {
         task.setId(0);
         task.setIndex(10);
         task.setSchedulerId(0);
+        task.setName("name2");
         task.setInstances(2);
         task.setAddress("host.com");
         task.setPort(21);
@@ -471,6 +491,7 @@ public class NetworkTaskDAOTest {
         task.setId(0);
         task.setIndex(5);
         task.setSchedulerId(0);
+        task.setName("name3");
         task.setInstances(3);
         task.setAddress(null);
         task.setPort(456);

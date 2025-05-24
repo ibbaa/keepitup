@@ -26,6 +26,7 @@ class NetworkTaskDBConstants {
     private final String idColumnName;
     private final String indexColumnName;
     private final String schedulerIdColumnName;
+    private final String nameColumnName;
     private final String instancesColumnName;
     private final String addressColumnName;
     private final String portColumnName;
@@ -43,6 +44,7 @@ class NetworkTaskDBConstants {
         idColumnName = context.getResources().getString(R.string.task_id_column_name);
         indexColumnName = context.getResources().getString(R.string.task_index_column_name);
         schedulerIdColumnName = context.getResources().getString(R.string.task_schedulerid_column_name);
+        nameColumnName = context.getResources().getString(R.string.task_name_column_name);
         instancesColumnName = context.getResources().getString(R.string.task_instances_column_name);
         addressColumnName = context.getResources().getString(R.string.task_address_column_name);
         portColumnName = context.getResources().getString(R.string.task_port_column_name);
@@ -70,6 +72,10 @@ class NetworkTaskDBConstants {
 
     public String getSchedulerIdColumnName() {
         return schedulerIdColumnName;
+    }
+
+    public String getNameColumnName() {
+        return nameColumnName;
     }
 
     public String getInstancesColumnName() {
@@ -121,6 +127,7 @@ class NetworkTaskDBConstants {
                 getIdColumnName() + " INTEGER PRIMARY KEY ASC, " +
                 getIndexColumnName() + " INTEGER NOT NULL, " +
                 getSchedulerIdColumnName() + " INTEGER, " +
+                getNameColumnName() + " TEXT, " +
                 getInstancesColumnName() + " INTEGER, " +
                 getAddressColumnName() + " TEXT, " +
                 getPortColumnName() + " INTEGER, " +
@@ -139,6 +146,7 @@ class NetworkTaskDBConstants {
                 getIdColumnName() + " INTEGER PRIMARY KEY ASC, " +
                 getIndexColumnName() + " INTEGER NOT NULL, " +
                 getSchedulerIdColumnName() + " INTEGER, " +
+                getNameColumnName() + " TEXT, " +
                 getInstancesColumnName() + " INTEGER, " +
                 getAddressColumnName() + " TEXT, " +
                 getPortColumnName() + " INTEGER, " +
@@ -151,7 +159,7 @@ class NetworkTaskDBConstants {
                 getHighPrioColumnName() + " INTEGER);";
     }
 
-    public String getCreateTableStatementWithoutHighPrio() {
+    public String getCreateTableStatementWithoutHighPrioAndName() {
         return ("CREATE TABLE IF NOT EXISTS " + getTableName() + "(") +
                 getIdColumnName() + " INTEGER PRIMARY KEY ASC, " +
                 getIndexColumnName() + " INTEGER NOT NULL, " +
@@ -188,11 +196,20 @@ class NetworkTaskDBConstants {
         return "ALTER TABLE " + getTableName() + " DROP COLUMN " + getHighPrioColumnName() + ";";
     }
 
+    public String getAddNameColumnStatement() {
+        return "ALTER TABLE " + getTableName() + " ADD COLUMN " + getNameColumnName() + " TEXT;";
+    }
+
+    public String getDropNameColumnStatement() {
+        return "ALTER TABLE " + getTableName() + " DROP COLUMN " + getNameColumnName() + ";";
+    }
+
     public String getReadNetworkTaskStatement() {
         return "SELECT " +
                 getIdColumnName() + ", " +
                 getIndexColumnName() + ", " +
                 getSchedulerIdColumnName() + ", " +
+                getNameColumnName() + ", " +
                 getInstancesColumnName() + ", " +
                 getAddressColumnName() + ", " +
                 getPortColumnName() + ", " +
@@ -214,6 +231,7 @@ class NetworkTaskDBConstants {
                 getIdColumnName() + ", " +
                 getIndexColumnName() + ", " +
                 getSchedulerIdColumnName() + ", " +
+                getNameColumnName() + ", " +
                 getInstancesColumnName() + ", " +
                 getAddressColumnName() + ", " +
                 getPortColumnName() + ", " +

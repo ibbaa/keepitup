@@ -109,6 +109,7 @@ public class AlarmServiceTest {
         task.setId(0);
         task.setIndex(1);
         task.setSchedulerId(schedulerId);
+        task.setName("name");
         task.setInstances(1);
         task.setAddress("127.0.0.1");
         task.setPort(80);

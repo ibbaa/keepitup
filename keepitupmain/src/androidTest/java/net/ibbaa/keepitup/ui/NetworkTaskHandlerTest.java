@@ -236,6 +236,7 @@ public class NetworkTaskHandlerTest extends BaseUITest {
         networkTask.setId(-1);
         networkTask.setIndex(-1);
         networkTask.setSchedulerId(-1);
+        networkTask.setName("name");
         networkTask.setInstances(0);
         networkTask.setAddress("127.0.0.1");
         networkTask.setPort(80);
@@ -255,6 +256,7 @@ public class NetworkTaskHandlerTest extends BaseUITest {
         networkTask.setId(-1);
         networkTask.setIndex(-1);
         networkTask.setSchedulerId(-1);
+        networkTask.setName("name");
         networkTask.setInstances(0);
         networkTask.setAddress("localhost");
         networkTask.setPort(22);
@@ -274,6 +276,7 @@ public class NetworkTaskHandlerTest extends BaseUITest {
         networkTask.setId(-1);
         networkTask.setIndex(-1);
         networkTask.setSchedulerId(-1);
+        networkTask.setName("name");
         networkTask.setInstances(0);
         networkTask.setAddress("192.168.178.100");
         networkTask.setPort(8080);
@@ -293,6 +296,7 @@ public class NetworkTaskHandlerTest extends BaseUITest {
         networkTask.setId(-1);
         networkTask.setIndex(-1);
         networkTask.setSchedulerId(-1);
+        networkTask.setName("name");
         networkTask.setInstances(0);
         networkTask.setAddress("192.168.178.200");
         networkTask.setPort(3389);

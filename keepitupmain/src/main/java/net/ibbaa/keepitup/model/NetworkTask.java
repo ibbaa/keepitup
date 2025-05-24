@@ -36,6 +36,7 @@ public class NetworkTask {
     private long id;
     private int index;
     private int schedulerid;
+    private String name;
     private int instances;
     private String address;
     private int port;
@@ -52,6 +53,7 @@ public class NetworkTask {
         this.id = -1;
         this.index = -1;
         this.schedulerid = -1;
+        this.name = null;
         this.instances = 0;
         this.address = null;
         this.port = 0;
@@ -69,6 +71,7 @@ public class NetworkTask {
         this();
         Resources resources = context.getResources();
         PreferenceManager preferenceManager = new PreferenceManager(context);
+        this.name = resources.getString(R.string.task_name_default);
         this.address = preferenceManager.getPreferenceAddress();
         this.port = preferenceManager.getPreferencePort();
         this.accessType = preferenceManager.getPreferenceAccessType();
@@ -88,6 +91,7 @@ public class NetworkTask {
         this.id = bundle.getLong("id");
         this.index = bundle.getInt("index");
         this.schedulerid = bundle.getInt("schedulerid");
+        this.name = bundle.getString("name");
         this.instances = bundle.getInt("instances");
         this.address = bundle.getString("address");
         this.port = bundle.getInt("port");
@@ -113,6 +117,9 @@ public class NetworkTask {
         }
         if (NumberUtil.isValidIntValue(map.get("schedulerid"))) {
             this.schedulerid = NumberUtil.getIntValue(map.get("schedulerid"), -1);
+        }
+        if (map.get("name") != null) {
+            this.name = Objects.requireNonNull(map.get("name")).toString();
         }
         if (NumberUtil.isValidIntValue(map.get("instances"))) {
             this.instances = NumberUtil.getIntValue(map.get("instances"), 0);
@@ -171,6 +178,14 @@ public class NetworkTask {
 
     public void setSchedulerId(int schedulerid) {
         this.schedulerid = schedulerid;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public int getInstances() {
@@ -266,6 +281,7 @@ public class NetworkTask {
         bundle.putLong("id", id);
         bundle.putInt("index", index);
         bundle.putInt("schedulerid", schedulerid);
+        bundle.putString("name", name);
         bundle.putInt("instances", instances);
         if (address != null) {
             bundle.putString("address", address);
@@ -293,6 +309,7 @@ public class NetworkTask {
         map.put("id", id);
         map.put("index", index);
         map.put("schedulerid", schedulerid);
+        map.put("name", name);
         map.put("instances", instances);
         if (address != null) {
             map.put("address", address);
@@ -322,6 +339,9 @@ public class NetworkTask {
             return false;
         }
         if (schedulerid != other.schedulerid) {
+            return false;
+        }
+        if (!Objects.equals(name, other.name)) {
             return false;
         }
         if (instances != other.instances) {
@@ -389,6 +409,7 @@ public class NetworkTask {
                 "id=" + id +
                 ", index=" + index +
                 ", schedulerid=" + schedulerid +
+                ", name='" + name + '\'' +
                 ", instances=" + instances +
                 ", address='" + address + '\'' +
                 ", port=" + port +

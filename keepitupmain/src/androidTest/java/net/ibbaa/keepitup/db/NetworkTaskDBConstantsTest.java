@@ -38,6 +38,7 @@ public class NetworkTaskDBConstantsTest {
         assertEquals(getResourceString(R.string.task_id_column_name), dbConstants.getIdColumnName());
         assertEquals(getResourceString(R.string.task_index_column_name), dbConstants.getIndexColumnName());
         assertEquals(getResourceString(R.string.task_schedulerid_column_name), dbConstants.getSchedulerIdColumnName());
+        assertEquals(getResourceString(R.string.task_name_column_name), dbConstants.getNameColumnName());
         assertEquals(getResourceString(R.string.task_instances_column_name), dbConstants.getInstancesColumnName());
         assertEquals(getResourceString(R.string.task_address_column_name), dbConstants.getAddressColumnName());
         assertEquals(getResourceString(R.string.task_port_column_name), dbConstants.getPortColumnName());

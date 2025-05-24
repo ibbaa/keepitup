@@ -186,6 +186,7 @@ public class NetworkTaskMainUIInitTaskTest extends BaseUITest {
         task.setId(0);
         task.setIndex(1);
         task.setSchedulerId(0);
+        task.setName("name");
         task.setInstances(0);
         task.setAddress("127.0.0.1");
         task.setPort(80);
@@ -205,6 +206,7 @@ public class NetworkTaskMainUIInitTaskTest extends BaseUITest {
         task.setId(1);
         task.setIndex(2);
         task.setSchedulerId(5);
+        task.setName("name");
         task.setInstances(0);
         task.setAddress("192.168.178.1");
         task.setPort(25);
@@ -224,6 +226,7 @@ public class NetworkTaskMainUIInitTaskTest extends BaseUITest {
         task.setId(2);
         task.setIndex(3);
         task.setSchedulerId(789);
+        task.setName("name");
         task.setInstances(0);
         task.setAddress("www.host.com");
         task.setPort(456);

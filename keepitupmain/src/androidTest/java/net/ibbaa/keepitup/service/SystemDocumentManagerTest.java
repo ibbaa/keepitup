@@ -39,7 +39,7 @@ public class SystemDocumentManagerTest {
     }
 
     @Test
-    public void testGetArbitraryDirectoryFailure() throws Exception {
+    public void testGetArbitraryDirectoryFailure() {
         assertNull(documentManager.getArbitraryDirectory("test"));
     }
 }

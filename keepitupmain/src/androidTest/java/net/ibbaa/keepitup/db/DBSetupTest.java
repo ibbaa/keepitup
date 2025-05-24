@@ -157,9 +157,10 @@ public class DBSetupTest {
         setup.dropAccessTypeDataTable();
         NetworkTaskDBConstants networkTaskDBConstants = new NetworkTaskDBConstants(TestRegistry.getContext());
         AccessTypeDataDBConstants accessTypeDataDBConstants = new AccessTypeDataDBConstants(TestRegistry.getContext());
-        DBOpenHelper.getInstance(TestRegistry.getContext()).getWritableDatabase().execSQL(networkTaskDBConstants.getCreateTableStatementWithoutHighPrio());
+        DBOpenHelper.getInstance(TestRegistry.getContext()).getWritableDatabase().execSQL(networkTaskDBConstants.getCreateTableStatementWithoutHighPrioAndName());
         DBOpenHelper.getInstance(TestRegistry.getContext()).getWritableDatabase().execSQL(accessTypeDataDBConstants.getCreateTableStatementWithoutIgnoreSSLError());
         setup.addHighPrioColumnToNetworkTaskTable();
+        setup.addNameColumnToNetworkTaskTable();
         setup.addIgnoreSSLErrorColumnToAccessTypeDataTable();
         networkTaskDAO.insertNetworkTask(new NetworkTask());
         assertEquals(1, networkTaskDAO.readAllNetworkTasks().size());
@@ -697,6 +698,7 @@ public class DBSetupTest {
         task.setId(0);
         task.setIndex(1);
         task.setSchedulerId(0);
+        task.setName("name");
         task.setInstances(1);
         task.setAddress("127.0.0.1");
         task.setPort(80);
@@ -716,6 +718,7 @@ public class DBSetupTest {
         task.setId(0);
         task.setIndex(2);
         task.setSchedulerId(0);
+        task.setName("name");
         task.setInstances(2);
         task.setAddress("host.com");
         task.setPort(21);
@@ -735,6 +738,7 @@ public class DBSetupTest {
         task.setId(0);
         task.setIndex(3);
         task.setSchedulerId(0);
+        task.setName("name");
         task.setInstances(3);
         task.setAddress(null);
         task.setPort(456);

@@ -137,6 +137,7 @@ public class DBMigrate {
         try {
             setup.addHighPrioColumnToNetworkTaskTable(db);
             setup.addIgnoreSSLErrorColumnToAccessTypeDataTable(db);
+            setup.addNameColumnToNetworkTaskTable(db);
         } catch (Exception exc) {
             Log.e(DBMigrate.class.getName(), "version5UpgradeFrom4 failed ", exc);
         }
@@ -147,6 +148,7 @@ public class DBMigrate {
         try {
             setup.dropHighPrioColumnFromNetworkTaskTable(db);
             setup.dropIgnoreSSLErrorColumnFromAccessTypeDataTable(db);
+            setup.dropNameColumnFromNetworkTaskTable(db);
         } catch (Exception exc) {
             Log.e(DBMigrate.class.getName(), "version5DowngradeTo4 failed ", exc);
         }

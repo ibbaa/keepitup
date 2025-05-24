@@ -21,6 +21,7 @@
     <string name="task_id_column_name">_id</string>
     <string name="task_index_column_name">UIINDEX</string>
     <string name="task_schedulerid_column_name">SCHEDULERID</string>
+    <string name="task_name_column_name">NAME</string>
     <string name="task_instances_column_name">INSTANCES</string>
     <string name="task_address_column_name">ADDRESS</string>
     <string name="task_port_column_name">PORT</string>

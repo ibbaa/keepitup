@@ -1081,6 +1081,7 @@ public class DownloadCommandTest {
         task.setId(0);
         task.setIndex(1);
         task.setSchedulerId(0);
+        task.setName("name");
         task.setInstances(1);
         task.setAddress("http://testurl");
         task.setPort(80);
