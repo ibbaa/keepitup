@@ -102,7 +102,11 @@ public class LogUtil {
     public static String getLogFileName(Context context, IFileManager fileManager, NetworkTask networkTask) {
         String baseFileName = context.getResources().getString(R.string.networktask_file_logger_log_file_base_name_default);
         String extension = context.getResources().getString(R.string.networktask_file_logger_log_file_base_extension_default);
-        return fileManager.getLogFileName(baseFileName, networkTask.getName(), extension, networkTask.getSchedulerId(), networkTask.getIndex(), networkTask.getAddress());
+        String name = StringUtil.isEmpty(networkTask.getName()) ? context.getResources().getString(R.string.task_name_default) : networkTask.getName();
+        if (name.equals(context.getResources().getString(R.string.task_name_default))) {
+            name = null;
+        }
+        return fileManager.getLogFileName(baseFileName, name, extension, networkTask.getSchedulerId(), networkTask.getIndex(), networkTask.getAddress());
     }
 
     public static String getLogFileKey(Context context, NetworkTask networkTask) {

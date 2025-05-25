@@ -95,11 +95,9 @@ public class LogUtilTest {
         networkTask.setAddress("127.0.0.1");
         networkTask.setSchedulerId(123);
         assertEquals("networktask_2_127_0_0_1_id_0000007B.log", LogUtil.getLogFileName(TestRegistry.getContext(), new SystemFileManager(TestRegistry.getContext()), networkTask));
-        networkTask = new NetworkTask();
-        networkTask.setIndex(1);
+        networkTask.setName("Network task");
+        assertEquals("networktask_2_127_0_0_1_id_0000007B.log", LogUtil.getLogFileName(TestRegistry.getContext(), new SystemFileManager(TestRegistry.getContext()), networkTask));
         networkTask.setName("nam e");
-        networkTask.setAddress("127.0.0.1");
-        networkTask.setSchedulerId(123);
         assertEquals("networktask_2_nam_e_127_0_0_1_id_0000007B.log", LogUtil.getLogFileName(TestRegistry.getContext(), new SystemFileManager(TestRegistry.getContext()), networkTask));
     }
 
