@@ -16,6 +16,7 @@
 
 <resources xmlns:tools="http://schemas.android.com/tools">
     <string name="task_interval_field_name">Interval</string>
+    <string name="task_name_field_name">Name</string>
     <string name="task_host_field_name">Host</string>
     <string name="task_url_field_name">URL</string>
     <string name="task_address_field_name">Address</string>
@@ -30,6 +31,7 @@
     <string name="invalid_file_name">No valid filename</string>
     <string name="invalid_range_minimim">Minimum: %d</string>
     <string name="invalid_range_maximum">Maximum: %d</string>
+    <string name="invalid_length_maximum">Maximum length: %d</string>
     <string name="suspension_interval_field_name">Interval</string>
     <string name="suspension_interval_overlap" tools:ignore="PluralsCandidate">Intervals must not overlap and must have a distance of at least %d minutes from each other.</string>
     <string name="suspension_interval_duration" tools:ignore="PluralsCandidate">Interval length minimum is %d minutes.</string>

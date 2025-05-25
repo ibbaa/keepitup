@@ -95,6 +95,12 @@ public class LogUtilTest {
         networkTask.setAddress("127.0.0.1");
         networkTask.setSchedulerId(123);
         assertEquals("networktask_2_127_0_0_1_id_0000007B.log", LogUtil.getLogFileName(TestRegistry.getContext(), new SystemFileManager(TestRegistry.getContext()), networkTask));
+        networkTask = new NetworkTask();
+        networkTask.setIndex(1);
+        networkTask.setName("nam e");
+        networkTask.setAddress("127.0.0.1");
+        networkTask.setSchedulerId(123);
+        assertEquals("networktask_2_nam_e_127_0_0_1_id_0000007B.log", LogUtil.getLogFileName(TestRegistry.getContext(), new SystemFileManager(TestRegistry.getContext()), networkTask));
     }
 
     @Test
@@ -107,9 +113,22 @@ public class LogUtilTest {
     }
 
     @Test
-    public void formatLogEntryLog() {
+    public void testFormatLogEntryLog() {
+        NetworkTask networkTask = new NetworkTask();
+        networkTask.setIndex(1);
         LogEntry entry = getLogEntry();
-        assertEquals("Log entry for network task 2, Execution successful, Timestamp: Jan 1, 1970 1:00:00 AM, Message: TestMessage1", LogUtil.formatLogEntryLog(TestRegistry.getContext(), 1, entry));
+        assertEquals("Log entry for network task 2, Execution successful, Timestamp: Jan 1, 1970 1:00:00 AM, Message: TestMessage1", LogUtil.formatLogEntryLog(TestRegistry.getContext(), networkTask, entry));
+        networkTask.setName("name");
+        assertEquals("Log entry for name (network task 2), Execution successful, Timestamp: Jan 1, 1970 1:00:00 AM, Message: TestMessage1", LogUtil.formatLogEntryLog(TestRegistry.getContext(), networkTask, entry));
+    }
+
+    @Test
+    public void testGetLogTitleText() {
+        NetworkTask networkTask = new NetworkTask();
+        networkTask.setIndex(1);
+        assertEquals("Log entry for network task 2", LogUtil.getLogTitleText(TestRegistry.getContext(), networkTask));
+        networkTask.setName("name");
+        assertEquals("Log entry for name (network task 2)", LogUtil.getLogTitleText(TestRegistry.getContext(), networkTask));
     }
 
     private LogEntry getLogEntry() {

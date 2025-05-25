@@ -21,6 +21,7 @@ import android.content.Context;
 import net.ibbaa.keepitup.R;
 import net.ibbaa.keepitup.logging.Log;
 import net.ibbaa.keepitup.model.NetworkTask;
+import net.ibbaa.keepitup.util.StringUtil;
 import net.ibbaa.keepitup.util.URLUtil;
 
 public class NetworkTaskValidator {
@@ -33,7 +34,20 @@ public class NetworkTaskValidator {
 
     public boolean validate(NetworkTask task) {
         Log.d(NetworkTaskValidator.class.getName(), "validate task " + task);
-        return validateAccessType(task) && validateAddress(task) && validatePort(task) && validateInterval(task);
+        return validateName(task) && validateAccessType(task) && validateAddress(task) && validatePort(task) && validateInterval(task);
+    }
+
+    public boolean validateName(NetworkTask task) {
+        Log.d(NetworkTaskValidator.class.getName(), "validateName of task " + task);
+        String name = task.getName();
+        if (!StringUtil.isEmpty(name)) {
+            int nameMaxLength = context.getResources().getInteger(R.integer.task_name_max_length);
+            if (name.length() > nameMaxLength) {
+                Log.d(NetworkTaskValidator.class.getName(), "name is too long. Returning false.");
+                return false;
+            }
+        }
+        return true;
     }
 
     public boolean validateAccessType(NetworkTask task) {

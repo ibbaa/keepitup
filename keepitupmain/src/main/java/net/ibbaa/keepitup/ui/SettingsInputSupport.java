@@ -21,7 +21,7 @@ import net.ibbaa.keepitup.ui.dialog.SettingsInputDialog;
 
 public interface SettingsInputSupport {
 
-    void onInputDialogOkClicked(SettingsInputDialog inputDialog, SettingsInput.Type type);
+    void onInputDialogOkClicked(SettingsInputDialog inputDialog, SettingsInput type);
 
     void onInputDialogCancelClicked(SettingsInputDialog inputDialog);
 }

@@ -205,10 +205,12 @@ public class DBMigrateTest {
         setup.dropIntervalTable();
         setup.dropAccessTypeDataTable();
         setup.dropNetworkTaskTable();
-        NetworkTaskDBConstants dbConstants = new NetworkTaskDBConstants(TestRegistry.getContext());
-        DBOpenHelper.getInstance(TestRegistry.getContext()).getWritableDatabase().execSQL(dbConstants.getCreateTableStatementWithoutHighPrioAndName());
-        NetworkTask task1 = networkTaskDAO.insertNetworkTask(getNetworkTask1());
+        NetworkTaskDBConstants networkTaskDBConstants = new NetworkTaskDBConstants(TestRegistry.getContext());
+        AccessTypeDataDBConstants accessTypeDataDBConstants = new AccessTypeDataDBConstants(TestRegistry.getContext());
+        DBOpenHelper.getInstance(TestRegistry.getContext()).getWritableDatabase().execSQL(networkTaskDBConstants.getCreateTableStatementWithoutHighPrioAndName());
+        DBOpenHelper.getInstance(TestRegistry.getContext()).getWritableDatabase().execSQL(accessTypeDataDBConstants.getCreateTableStatementWithoutIgnoreSSLError());
         migrate.doUpgrade(TestRegistry.getContext(), 0, 5);
+        NetworkTask task1 = networkTaskDAO.insertNetworkTask(getNetworkTask1());
         AccessTypeData data = new AccessTypeData();
         data.setNetworkTaskId(task1.getId());
         accessTypeDataDAO.insertAccessTypeData(data);

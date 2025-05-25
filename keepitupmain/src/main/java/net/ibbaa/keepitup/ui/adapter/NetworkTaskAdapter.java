@@ -87,13 +87,16 @@ public class NetworkTaskAdapter extends RecyclerView.Adapter<NetworkTaskViewHold
 
     private void bindTitle(@NonNull NetworkTaskViewHolder networkTaskViewHolder, NetworkTask networkTask) {
         Log.d(NetworkTaskAdapter.class.getName(), "bindTitle, networkTask is " + networkTask);
-        String formattedTitleText = getResources().getString(R.string.text_activity_main_list_item_network_task_title, networkTask.getIndex() + 1);
+        String name = StringUtil.isEmpty(networkTask.getName()) ? getResources().getString(R.string.task_name_default) : networkTask.getName();
+        if (name.equals(getResources().getString(R.string.task_name_default))) {
+            name = getResources().getString(R.string.text_activity_main_list_item_network_task_title, networkTask.getIndex() + 1);
+        }
         int color = getColor(R.color.textColor);
         if (AlarmService.isPlayingAlarm(networkTask)) {
-            formattedTitleText += " " + getResources().getString(R.string.text_activity_main_list_item_network_task_title_alarm);
+            name += " " + getResources().getString(R.string.text_activity_main_list_item_network_task_title_alarm);
             color = getColor(R.color.textErrorColor);
         }
-        networkTaskViewHolder.setTitle(formattedTitleText);
+        networkTaskViewHolder.setTitle(name);
         networkTaskViewHolder.setTitleColor(color);
     }
 

@@ -33,7 +33,8 @@ public class SettingsInput {
         PINGCOUNT(InputType.TYPE_CLASS_NUMBER),
         PINGPACKAGESIZE(InputType.TYPE_CLASS_NUMBER),
         CONNECTCOUNT(InputType.TYPE_CLASS_NUMBER),
-        NOTIFICATIONAFTER(InputType.TYPE_CLASS_NUMBER);
+        NOTIFICATIONAFTER(InputType.TYPE_CLASS_NUMBER),
+        TASKNAME(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_MULTI_LINE | InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS);
 
         private final int inputType;
 
@@ -49,12 +50,18 @@ public class SettingsInput {
     private final Type type;
     private final String value;
     private final String field;
+    private final int position;
     private final List<String> validators;
 
     public SettingsInput(Type type, String value, String field, List<String> validators) {
+        this(type, value, field, -1, validators);
+    }
+
+    public SettingsInput(Type type, String value, String field, int position, List<String> validators) {
         this.type = type;
         this.value = value;
         this.field = field;
+        this.position = position;
         this.validators = validators;
     }
 
@@ -66,6 +73,7 @@ public class SettingsInput {
         }
         this.value = bundle.getString("value");
         this.field = bundle.getString("field");
+        this.position = bundle.getInt("position", -1);
         this.validators = bundle.getStringArrayList("validators");
     }
 
@@ -81,6 +89,10 @@ public class SettingsInput {
         return field;
     }
 
+    public int getPosition() {
+        return position;
+    }
+
     public List<String> getValidators() {
         return validators;
     }
@@ -92,6 +104,7 @@ public class SettingsInput {
         }
         bundle.putString("value", value);
         bundle.putString("field", field);
+        bundle.putInt("position", position);
         bundle.putStringArrayList("validators", validators == null ? null : new ArrayList<>(validators));
         return bundle;
     }

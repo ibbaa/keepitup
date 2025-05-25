@@ -87,6 +87,21 @@ class NetworkTaskHandler {
         }
     }
 
+    public void updateNetworkTaskName(NetworkTask task, AccessTypeData data, String name) {
+        Log.d(NetworkTaskHandler.class.getName(), "updateNetworkTask for task " + task + " and name " + name);
+        try {
+            NetworkTaskDAO networkTaskDAO = new NetworkTaskDAO(mainActivity);
+            networkTaskDAO.updateNetworkTaskName(task.getId(), name);
+            task.setName(name);
+            getAdapter().replaceNetworkTask(task, data);
+        } catch (Exception exc) {
+            Log.e(NetworkTaskHandler.class.getName(), "Error updating task name. Showing error dialog.", exc);
+            showMessageDialog(getResources().getString(R.string.text_dialog_general_message_update_network_task));
+        } finally {
+            NetworkTaskLog.clear();
+        }
+    }
+
     public void updateNetworkTask(NetworkTask task, AccessTypeData data) {
         Log.d(NetworkTaskHandler.class.getName(), "updateNetworkTask for task " + task + " and access type data " + data);
         try {

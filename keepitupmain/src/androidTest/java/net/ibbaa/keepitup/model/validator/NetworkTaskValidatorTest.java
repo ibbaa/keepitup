@@ -37,6 +37,28 @@ public class NetworkTaskValidatorTest {
     }
 
     @Test
+    public void testValidateName() {
+        NetworkTask task = getNetworkTask();
+        assertTrue(validator.validateName(task));
+        assertTrue(validator.validate(task));
+        task.setName(null);
+        assertTrue(validator.validateName(task));
+        assertTrue(validator.validate(task));
+        task.setName("");
+        assertTrue(validator.validateName(task));
+        assertTrue(validator.validate(task));
+        task.setName("1");
+        assertTrue(validator.validateName(task));
+        assertTrue(validator.validate(task));
+        task.setName("1234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890");
+        assertTrue(validator.validateName(task));
+        assertTrue(validator.validate(task));
+        task.setName("12345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901");
+        assertFalse(validator.validateName(task));
+        assertFalse(validator.validate(task));
+    }
+
+    @Test
     public void testValidateAccessType() {
         NetworkTask task = getNetworkTask();
         assertTrue(validator.validateAccessType(task));

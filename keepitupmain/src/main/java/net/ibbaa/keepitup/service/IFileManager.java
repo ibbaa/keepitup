@@ -51,7 +51,7 @@ public interface IFileManager {
 
     String getDownloadFileName(URL url, String specifiedFileName, String mimeType);
 
-    String getLogFileName(String baseFileName, String extension, int id, int index, String address);
+    String getLogFileName(String baseFileName, String name, String extension, int id, int index, String address);
 
     boolean doesFileExist(File folder, String file);
 

@@ -790,14 +790,14 @@ public class GlobalSettingsActivity extends SettingsInputActivity implements Sus
     }
 
     @Override
-    public void onInputDialogOkClicked(SettingsInputDialog inputDialog, SettingsInput.Type type) {
+    public void onInputDialogOkClicked(SettingsInputDialog inputDialog, SettingsInput type) {
         Log.d(GlobalSettingsActivity.class.getName(), "onInputDialogOkClicked, type is " + type + ", value is " + inputDialog.getValue());
         PreferenceManager preferenceManager = new PreferenceManager(this);
-        if (SettingsInput.Type.NOTIFICATIONAFTER.equals(type)) {
+        if (SettingsInput.Type.NOTIFICATIONAFTER.equals(type.getType())) {
             setNotificationAfterFailures(inputDialog.getValue());
             preferenceManager.setPreferenceNotificationAfterFailures(NumberUtil.getIntValue(getNotificationAfterFailures(), getResources().getInteger(R.integer.notification_after_failures_default)));
         } else {
-            Log.e(GlobalSettingsActivity.class.getName(), "type " + type + " unknown");
+            Log.e(GlobalSettingsActivity.class.getName(), "type " + type.getType() + " unknown");
         }
         inputDialog.dismiss();
     }

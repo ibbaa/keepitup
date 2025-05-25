@@ -63,6 +63,40 @@ public class DBSetup {
         createAccessTypeDataTable(db);
     }
 
+    public void tryDropTables(SQLiteDatabase db) {
+        Log.d(DBSetup.class.getName(), "tryDropTables");
+        try {
+            dropSchedulerIdHistoryTable(db);
+        } catch (Exception exc) {
+            Log.d(DBMigrate.class.getName(), "dropSchedulerIdHistoryTable failed ", exc);
+        }
+        try {
+            dropLogTable(db);
+        } catch (Exception exc) {
+            Log.d(DBMigrate.class.getName(), "dropLogTable failed ", exc);
+        }
+        try {
+            dropNetworkTaskTable(db);
+        } catch (Exception exc) {
+            Log.d(DBMigrate.class.getName(), "dropNetworkTaskTable failed ", exc);
+        }
+        try {
+            dropIntervalTable(db);
+        } catch (Exception exc) {
+            Log.d(DBMigrate.class.getName(), "dropIntervalTable failed ", exc);
+        }
+        try {
+            dropSchedulerStateTable(db);
+        } catch (Exception exc) {
+            Log.d(DBMigrate.class.getName(), "dropSchedulerStateTable failed ", exc);
+        }
+        try {
+            dropAccessTypeDataTable(db);
+        } catch (Exception exc) {
+            Log.d(DBMigrate.class.getName(), "dropAccessTypeDataTable failed ", exc);
+        }
+    }
+
     public void createNetworkTaskTable(SQLiteDatabase db) {
         Log.d(DBSetup.class.getName(), "Creating database table " + networkTaskDBConstants.getTableName());
         db.execSQL(networkTaskDBConstants.getCreateTableStatement());
@@ -158,6 +192,14 @@ public class DBSetup {
         db.execSQL(networkTaskDBConstants.getDropTableStatement());
     }
 
+    public void tryDropNetworkTaskTable(SQLiteDatabase db) {
+        try {
+            dropNetworkTaskTable(db);
+        } catch (Exception exc) {
+            Log.d(DBMigrate.class.getName(), "dropNetworkTaskTable failed ", exc);
+        }
+    }
+
     public void dropFailureCountColumnFromNetworkTaskTable(SQLiteDatabase db) {
         Log.d(DBSetup.class.getName(), "Dropping column " + networkTaskDBConstants.getFailureCountColumnName() + " from table " + networkTaskDBConstants.getTableName());
         db.execSQL(networkTaskDBConstants.getDropFailureCountColumnStatement());
@@ -178,9 +220,25 @@ public class DBSetup {
         db.execSQL(logDBConstants.getDropTableStatement());
     }
 
+    public void tryDropLogTable(SQLiteDatabase db) {
+        try {
+            dropLogTable(db);
+        } catch (Exception exc) {
+            Log.d(DBMigrate.class.getName(), "dropLogTable failed ", exc);
+        }
+    }
+
     public void dropSchedulerIdHistoryTable(SQLiteDatabase db) {
         Log.d(DBSetup.class.getName(), "Dropping database table " + schedulerIdDBConstants.getTableName());
         db.execSQL(schedulerIdDBConstants.getDropTableStatement());
+    }
+
+    public void tryDropSchedulerIdHistoryTable(SQLiteDatabase db) {
+        try {
+            dropSchedulerIdHistoryTable(db);
+        } catch (Exception exc) {
+            Log.d(DBMigrate.class.getName(), "dropSchedulerIdHistoryTable failed ", exc);
+        }
     }
 
     public void dropIntervalTable(SQLiteDatabase db) {
@@ -188,14 +246,38 @@ public class DBSetup {
         db.execSQL(intervalDBConstants.getDropTableStatement());
     }
 
+    public void tryDropIntervalTable(SQLiteDatabase db) {
+        try {
+            dropIntervalTable(db);
+        } catch (Exception exc) {
+            Log.d(DBMigrate.class.getName(), "dropIntervalTable failed ", exc);
+        }
+    }
+
     public void dropSchedulerStateTable(SQLiteDatabase db) {
         Log.d(DBSetup.class.getName(), "Dropping database table " + schedulerStateDBConstants.getTableName());
         db.execSQL(schedulerStateDBConstants.getDropTableStatement());
     }
 
+    public void tryDropSchedulerStateTable(SQLiteDatabase db) {
+        try {
+            dropSchedulerStateTable(db);
+        } catch (Exception exc) {
+            Log.d(DBMigrate.class.getName(), "dropSchedulerStateTable failed ", exc);
+        }
+    }
+
     public void dropAccessTypeDataTable(SQLiteDatabase db) {
         Log.d(DBSetup.class.getName(), "Dropping database table " + accessTypeDataDBConstants.getTableName());
         db.execSQL(accessTypeDataDBConstants.getDropTableStatement());
+    }
+
+    public void tryDropAccessTypeDataTable(SQLiteDatabase db) {
+        try {
+            dropAccessTypeDataTable(db);
+        } catch (Exception exc) {
+            Log.d(DBMigrate.class.getName(), "dropAccessTypeDataTable failed ", exc);
+        }
     }
 
     public void dropStopOnSuccessColumnFromAccessTypeDataTable(SQLiteDatabase db) {
@@ -252,6 +334,10 @@ public class DBSetup {
 
     public void createTables() {
         createTables(DBOpenHelper.getInstance(getContext()).getWritableDatabase());
+    }
+
+    public void tryDropTables() {
+        tryDropTables(DBOpenHelper.getInstance(getContext()).getWritableDatabase());
     }
 
     public void createNetworkTaskTable() {
@@ -311,6 +397,11 @@ public class DBSetup {
     }
 
     @SuppressWarnings({"unused"})
+    public void tryDropNetworkTaskTable() {
+        tryDropNetworkTaskTable(DBOpenHelper.getInstance(getContext()).getWritableDatabase());
+    }
+
+    @SuppressWarnings({"unused"})
     public void dropFailureCountColumnFromNetworkTaskTable() {
         dropFailureCountColumnFromNetworkTaskTable(DBOpenHelper.getInstance(getContext()).getWritableDatabase());
     }
@@ -329,20 +420,45 @@ public class DBSetup {
         dropLogTable(DBOpenHelper.getInstance(getContext()).getWritableDatabase());
     }
 
+    @SuppressWarnings({"unused"})
+    public void tryDropLogTable() {
+        tryDropLogTable(DBOpenHelper.getInstance(getContext()).getWritableDatabase());
+    }
+
     public void dropSchedulerIdHistoryTable() {
         dropSchedulerIdHistoryTable(DBOpenHelper.getInstance(getContext()).getWritableDatabase());
+    }
+
+    @SuppressWarnings({"unused"})
+    public void tryDropSchedulerIdHistoryTable() {
+        tryDropSchedulerIdHistoryTable(DBOpenHelper.getInstance(getContext()).getWritableDatabase());
     }
 
     public void dropIntervalTable() {
         dropIntervalTable(DBOpenHelper.getInstance(getContext()).getWritableDatabase());
     }
 
+    @SuppressWarnings({"unused"})
+    public void tryDropIntervalTable() {
+        tryDropIntervalTable(DBOpenHelper.getInstance(getContext()).getWritableDatabase());
+    }
+
     public void dropSchedulerStateTable() {
         dropSchedulerStateTable(DBOpenHelper.getInstance(getContext()).getWritableDatabase());
     }
 
+    @SuppressWarnings({"unused"})
+    public void tryDropSchedulerStateTable() {
+        tryDropSchedulerStateTable(DBOpenHelper.getInstance(getContext()).getWritableDatabase());
+    }
+
     public void dropAccessTypeDataTable() {
         dropAccessTypeDataTable(DBOpenHelper.getInstance(getContext()).getWritableDatabase());
+    }
+
+    @SuppressWarnings({"unused"})
+    public void tryDropAccessTypeDataTable() {
+        tryDropAccessTypeDataTable(DBOpenHelper.getInstance(getContext()).getWritableDatabase());
     }
 
     public void recreateNetworkTaskTable() {

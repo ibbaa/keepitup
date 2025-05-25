@@ -52,6 +52,7 @@ public class NetworkTaskViewHolder extends RecyclerView.ViewHolder {
         this.mainActivity = mainActivity;
         cardView = itemView.findViewById(R.id.cardview_list_item_network_task);
         titleText = itemView.findViewById(R.id.textview_list_item_network_task_title);
+        titleText.setOnClickListener(this::onTitleClicked);
         startStopImage = itemView.findViewById(R.id.imageview_list_item_network_task_start_stop);
         startStopImage.setOnClickListener(this::onStartStopClicked);
         ImageView deleteImage = itemView.findViewById(R.id.imageview_list_item_network_task_delete);
@@ -163,6 +164,10 @@ public class NetworkTaskViewHolder extends RecyclerView.ViewHolder {
 
     public void hideStopOnSuccessTextView() {
         stopOnSuccessText.setVisibility(View.GONE);
+    }
+
+    private void onTitleClicked(View view) {
+        mainActivity.onMainTitleClicked(getBindingAdapterPosition());
     }
 
     private void onStartStopClicked(View view) {

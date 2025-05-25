@@ -126,7 +126,7 @@ public class SettingsInputDialog extends DialogFragmentBase implements ContextOp
             Log.d(SettingsInputDialog.class.getName(), "Validation was successful");
             SettingsInputSupport settingsInputSupport = getSettingsInputSupport();
             if (settingsInputSupport != null) {
-                settingsInputSupport.onInputDialogOkClicked(this, input.getType());
+                settingsInputSupport.onInputDialogOkClicked(this, input);
             } else {
                 Log.e(SettingsInputDialog.class.getName(), "settingsInputSupport is null");
                 dismiss();

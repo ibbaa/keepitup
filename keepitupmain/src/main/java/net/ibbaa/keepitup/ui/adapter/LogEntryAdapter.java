@@ -31,6 +31,7 @@ import net.ibbaa.keepitup.logging.Log;
 import net.ibbaa.keepitup.model.LogEntry;
 import net.ibbaa.keepitup.model.NetworkTask;
 import net.ibbaa.keepitup.util.BundleUtil;
+import net.ibbaa.keepitup.util.LogUtil;
 
 import java.text.DateFormat;
 import java.util.ArrayList;
@@ -94,7 +95,7 @@ public class LogEntryAdapter extends RecyclerView.Adapter<LogEntryViewHolder> {
 
     private void bindTitle(@NonNull LogEntryViewHolder logEntryViewHolder) {
         Log.d(LogEntryAdapter.class.getName(), "bindTitle");
-        String formattedTitleText = getResources().getString(R.string.text_activity_log_list_item_log_entry_title, networkTask.getIndex() + 1);
+        String formattedTitleText = LogUtil.getLogTitleText(getContext(), networkTask);
         logEntryViewHolder.setTitleText(formattedTitleText);
     }
 

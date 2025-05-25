@@ -137,6 +137,31 @@ public class NetworkTaskHandlerTest extends BaseUITest {
     }
 
     @Test
+    public void testUpdateNetworkTaskName() {
+        NetworkTask task1 = getNetworkTask1();
+        AccessTypeData data1 = getAccessTypeData1();
+        handler.insertNetworkTask(task1, data1);
+        LogEntry logEntry = getLogEntryWithNetworkTaskId(task1.getId());
+        logEntry = getLogDAO().insertAndDeleteLog(logEntry);
+        getAdapter().replaceItem(new NetworkTaskUIWrapper(task1, data1, logEntry));
+        handler.updateNetworkTaskName(task1, data1, "otherName");
+        assertEquals("otherName", task1.getName());
+        task1 = getNetworkTaskDAO().readNetworkTask(task1.getId());
+        assertEquals("otherName", task1.getName());
+    }
+
+    @Test
+    public void testUpdateNetworkTaskNameClearNetworkTaskLog() {
+        NetworkTask task1 = getNetworkTask1();
+        AccessTypeData data1 = getAccessTypeData1();
+        handler.insertNetworkTask(task1, data1);
+        ILogger logger = NetworkTaskLog.getLogger(TestRegistry.getContext(), task1);
+        handler.updateNetworkTaskName(task1, data1, "otherName");
+        ILogger logger2 = NetworkTaskLog.getLogger(TestRegistry.getContext(), task1);
+        assertNotSame(logger, logger2);
+    }
+
+    @Test
     public void testUpdateNetworkTask() {
         NetworkTask task1 = getNetworkTask1();
         AccessTypeData data1 = getAccessTypeData1();

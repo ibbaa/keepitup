@@ -354,8 +354,11 @@ public class SystemFileManager implements IFileManager {
     }
 
     @Override
-    public String getLogFileName(String baseFileName, String extension, int id, int index, String address) {
+    public String getLogFileName(String baseFileName, String name, String extension, int id, int index, String address) {
         String logFileName = baseFileName + "_" + (index + 1);
+        if (!StringUtil.isEmpty(name)) {
+            logFileName = logFileName + "_" + name;
+        }
         String host = address;
         if (!StringUtil.isEmpty(address)) {
             String urlAddress = URLUtil.encodeURL(address);
@@ -374,7 +377,7 @@ public class SystemFileManager implements IFileManager {
             logFileName = logFileName + "_" + host;
         }
         logFileName = logFileName + "_id_" + String.format("%08X", id);
-        return logFileName.replaceAll("\\.", "_").replaceAll("/", "_") + extension;
+        return logFileName.replaceAll("\\.", "_").replaceAll("/", "_").replaceAll("\\s+", "_") + extension;
     }
 
     private String extractFileNameFromURL(URL url) {

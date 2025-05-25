@@ -85,6 +85,32 @@ public class NetworkTaskLogActivityTest extends BaseUITest {
     }
 
     @Test
+    public void testInitializeActivityNamedNetworkTask() {
+        NetworkTask task = insertNetworkTask();
+        task.setName("name of my task");
+        getNetworkTaskDAO().updateNetworkTaskName(task.getId(), task.getName());
+        LogEntry entry1 = getLogEntry(task, new GregorianCalendar(1980, Calendar.MARCH, 17), false, "Message1");
+        LogEntry entry2 = getLogEntry(task, new GregorianCalendar(1985, Calendar.DECEMBER, 24), true, "Message2");
+        getLogDAO().insertAndDeleteLog(entry1);
+        getLogDAO().insertAndDeleteLog(entry2);
+        ActivityScenario<?> activityScenario = launchRecyclerViewBaseActivity(getNetworkTaskLogIntent(task));
+        onView(withId(R.id.listview_activity_log_log_entries)).check(matches(withListSize(2)));
+        onView(allOf(withId(R.id.textview_list_item_log_entry_no_log), withChildDescendantAtPosition(withId(R.id.listview_activity_log_log_entries), 0))).check(matches(not(isDisplayed())));
+        onView(allOf(withId(R.id.textview_list_item_log_entry_no_log), withChildDescendantAtPosition(withId(R.id.listview_activity_log_log_entries), 1))).check(matches(not(isDisplayed())));
+        onView(allOf(withId(R.id.cardview_list_item_log_entry), withChildDescendantAtPosition(withId(R.id.listview_activity_log_log_entries), 0))).check(matches(isDisplayed()));
+        onView(allOf(withId(R.id.textview_list_item_log_entry_title), withChildDescendantAtPosition(withId(R.id.listview_activity_log_log_entries), 0))).check(matches(withText("Log entry for name of my task (network task 1)")));
+        onView(allOf(withId(R.id.textview_list_item_log_entry_success), withChildDescendantAtPosition(withId(R.id.listview_activity_log_log_entries), 0))).check(matches(withText("Execution successful")));
+        onView(allOf(withId(R.id.textview_list_item_log_entry_timestamp), withChildDescendantAtPosition(withId(R.id.listview_activity_log_log_entries), 0))).check(matches(withText("Timestamp: Dec 24, 1985 12:00:00 AM")));
+        onView(allOf(withId(R.id.textview_list_item_log_entry_message), withChildDescendantAtPosition(withId(R.id.listview_activity_log_log_entries), 0))).check(matches(withText("Message: Message2")));
+        onView(allOf(withId(R.id.cardview_list_item_log_entry), withChildDescendantAtPosition(withId(R.id.listview_activity_log_log_entries), 1))).check(matches(isDisplayed()));
+        onView(allOf(withId(R.id.textview_list_item_log_entry_title), withChildDescendantAtPosition(withId(R.id.listview_activity_log_log_entries), 1))).check(matches(withText("Log entry for name of my task (network task 1)")));
+        onView(allOf(withId(R.id.textview_list_item_log_entry_success), withChildDescendantAtPosition(withId(R.id.listview_activity_log_log_entries), 1))).check(matches(withText("Execution failed")));
+        onView(allOf(withId(R.id.textview_list_item_log_entry_timestamp), withChildDescendantAtPosition(withId(R.id.listview_activity_log_log_entries), 1))).check(matches(withText("Timestamp: Mar 17, 1980 12:00:00 AM")));
+        onView(allOf(withId(R.id.textview_list_item_log_entry_message), withChildDescendantAtPosition(withId(R.id.listview_activity_log_log_entries), 1))).check(matches(withText("Message: Message1")));
+        activityScenario.close();
+    }
+
+    @Test
     public void testDeleteLogs() {
         NetworkTask task = insertNetworkTask();
         LogEntry entry1 = getLogEntry(task, new GregorianCalendar(1980, Calendar.MARCH, 17), false, "Message1");
@@ -276,7 +302,7 @@ public class NetworkTaskLogActivityTest extends BaseUITest {
         networkTask.setId(-1);
         networkTask.setIndex(0);
         networkTask.setSchedulerId(-1);
-        networkTask.setName("name");
+        networkTask.setName("Network task");
         networkTask.setInstances(0);
         networkTask.setAddress("127.0.0.1");
         networkTask.setPort(80);

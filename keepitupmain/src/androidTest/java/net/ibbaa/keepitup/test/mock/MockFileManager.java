@@ -241,7 +241,7 @@ public class MockFileManager implements IFileManager {
     }
 
     @Override
-    public String getLogFileName(String baseFileName, String extension, int id, int index, String address) {
+    public String getLogFileName(String baseFileName, String name, String extension, int id, int index, String address) {
         return logFileName;
     }
 

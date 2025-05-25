@@ -21,6 +21,7 @@
     <string name="menu_action_activity_log_hide_successful">Hide successful</string>
     <string name="text_activity_log_list_item_log_entry_no_log">No logs present for network task %d</string>
     <string name="text_activity_log_list_item_log_entry_title">Log entry for network task %d</string>
+    <string name="text_activity_log_list_item_log_entry_title_named_task">Log entry for %s (network task %d)</string>
     <string name="text_activity_log_list_item_log_entry_success">Execution %s</string>
     <string name="text_activity_log_list_item_log_entry_timestamp">Timestamp: %s</string>
     <string name="text_activity_log_list_item_log_entry_message">Message: %s</string>

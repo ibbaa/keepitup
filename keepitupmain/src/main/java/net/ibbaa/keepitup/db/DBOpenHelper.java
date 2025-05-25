@@ -45,6 +45,7 @@ public class DBOpenHelper extends SQLiteOpenHelper {
 
     public void onCreate(SQLiteDatabase db) {
         Log.d(DBOpenHelper.class.getName(), "onCreate");
+        setup.tryDropTables(db);
         setup.createTables(db);
     }
 

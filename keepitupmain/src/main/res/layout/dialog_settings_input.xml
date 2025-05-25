@@ -44,6 +44,7 @@
                 android:layout_height="wrap_content"
                 android:importantForAutofill="no"
                 android:inputType="textUri|textMultiLine|textNoSuggestions"
+                android:scrollHorizontally="false"
                 android:maxLines="@integer/edittext_dialog_settings_input_value_max_lines"
                 android:text=""
                 tools:ignore="LabelFor" />

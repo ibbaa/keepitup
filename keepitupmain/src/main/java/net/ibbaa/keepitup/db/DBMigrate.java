@@ -79,23 +79,22 @@ public class DBMigrate {
 
     private void version2UpgradeFrom1(SQLiteDatabase db) {
         Log.d(DBMigrate.class.getName(), "version2UpgradeFrom1");
-        setup.recreateIntervalTable(db);
-        setup.recreateSchedulerStateTable(db);
+        setup.tryDropIntervalTable(db);
+        setup.tryDropSchedulerStateTable(db);
+        setup.createIntervalTable(db);
+        setup.createSchedulerStateTable(db);
     }
 
     private void version2DowngradeTo1(SQLiteDatabase db) {
         Log.d(DBMigrate.class.getName(), "version2DowngradeTo1");
-        try {
-            setup.dropIntervalTable(db);
-            setup.dropSchedulerStateTable(db);
-        } catch (Exception exc) {
-            Log.e(DBMigrate.class.getName(), "version2DowngradeTo1 failed ", exc);
-        }
+        setup.tryDropIntervalTable(db);
+        setup.tryDropSchedulerStateTable(db);
     }
 
     private void version3UpgradeFrom2(SQLiteDatabase db) {
         Log.d(DBMigrate.class.getName(), "version3UpgradeFrom2");
-        setup.recreateAccessTypeDataTable(db);
+        setup.tryDropAccessTypeDataTable(db);
+        setup.createAccessTypeDataTable(db);
         setup.initializeAccessTypeDataTable(db);
         try {
             setup.addFailureCountColumnToNetworkTaskTable(db);
@@ -106,7 +105,7 @@ public class DBMigrate {
 
     private void version3DowngradeTo2(SQLiteDatabase db) {
         Log.d(DBMigrate.class.getName(), "version3DowngradeTo2");
-        setup.dropAccessTypeDataTable(db);
+        setup.tryDropAccessTypeDataTable(db);
         try {
             setup.dropFailureCountColumnFromNetworkTaskTable(db);
         } catch (Exception exc) {
@@ -136,18 +135,34 @@ public class DBMigrate {
         Log.d(DBMigrate.class.getName(), "version5UpgradeFrom4");
         try {
             setup.addHighPrioColumnToNetworkTaskTable(db);
-            setup.addIgnoreSSLErrorColumnToAccessTypeDataTable(db);
+        } catch (Exception exc) {
+            Log.e(DBMigrate.class.getName(), "addHighPrioColumnToNetworkTaskTable failed ", exc);
+        }
+        try {
             setup.addNameColumnToNetworkTaskTable(db);
         } catch (Exception exc) {
-            Log.e(DBMigrate.class.getName(), "version5UpgradeFrom4 failed ", exc);
+            Log.e(DBMigrate.class.getName(), "addNameColumnToNetworkTaskTable failed ", exc);
+        }
+        try {
+            setup.addIgnoreSSLErrorColumnToAccessTypeDataTable(db);
+        } catch (Exception exc) {
+            Log.e(DBMigrate.class.getName(), "addIgnoreSSLErrorColumnToAccessTypeDataTable failed ", exc);
         }
     }
 
     private void version5DowngradeTo4(SQLiteDatabase db) {
         Log.d(DBMigrate.class.getName(), "version5DowngradeTo4");
         try {
-            setup.dropHighPrioColumnFromNetworkTaskTable(db);
             setup.dropIgnoreSSLErrorColumnFromAccessTypeDataTable(db);
+        } catch (Exception exc) {
+            Log.e(DBMigrate.class.getName(), "version5DowngradeTo4 failed ", exc);
+        }
+        try {
+            setup.dropHighPrioColumnFromNetworkTaskTable(db);
+        } catch (Exception exc) {
+            Log.e(DBMigrate.class.getName(), "version5DowngradeTo4 failed ", exc);
+        }
+        try {
             setup.dropNameColumnFromNetworkTaskTable(db);
         } catch (Exception exc) {
             Log.e(DBMigrate.class.getName(), "version5DowngradeTo4 failed ", exc);

@@ -425,29 +425,29 @@ public class DefaultsActivity extends SettingsInputActivity {
     }
 
     @Override
-    public void onInputDialogOkClicked(SettingsInputDialog inputDialog, SettingsInput.Type type) {
+    public void onInputDialogOkClicked(SettingsInputDialog inputDialog, SettingsInput type) {
         Log.d(DefaultsActivity.class.getName(), "onInputDialogOkClicked, type is " + type + ", value is " + inputDialog.getValue());
         PreferenceManager preferenceManager = new PreferenceManager(this);
-        if (SettingsInput.Type.ADDRESS.equals(type)) {
+        if (SettingsInput.Type.ADDRESS.equals(type.getType())) {
             setAddress(inputDialog.getValue());
             preferenceManager.setPreferenceAddress(getAddress());
-        } else if (SettingsInput.Type.PORT.equals(type)) {
+        } else if (SettingsInput.Type.PORT.equals(type.getType())) {
             setPort(inputDialog.getValue());
             preferenceManager.setPreferencePort(NumberUtil.getIntValue(getPort(), getResources().getInteger(R.integer.task_port_default)));
-        } else if (SettingsInput.Type.INTERVAL.equals(type)) {
+        } else if (SettingsInput.Type.INTERVAL.equals(type.getType())) {
             setInterval(inputDialog.getValue());
             preferenceManager.setPreferenceInterval(NumberUtil.getIntValue(getInterval(), getResources().getInteger(R.integer.task_interval_default)));
-        } else if (SettingsInput.Type.PINGCOUNT.equals(type)) {
+        } else if (SettingsInput.Type.PINGCOUNT.equals(type.getType())) {
             setPingCount(inputDialog.getValue());
             preferenceManager.setPreferencePingCount(NumberUtil.getIntValue(getPingCount(), getResources().getInteger(R.integer.ping_count_default)));
-        } else if (SettingsInput.Type.PINGPACKAGESIZE.equals(type)) {
+        } else if (SettingsInput.Type.PINGPACKAGESIZE.equals(type.getType())) {
             setPingPackageSize(inputDialog.getValue());
             preferenceManager.setPreferencePingPackageSize(NumberUtil.getIntValue(getPingPackageSize(), getResources().getInteger(R.integer.ping_package_size_default)));
-        } else if (SettingsInput.Type.CONNECTCOUNT.equals(type)) {
+        } else if (SettingsInput.Type.CONNECTCOUNT.equals(type.getType())) {
             setConnectCount(inputDialog.getValue());
             preferenceManager.setPreferenceConnectCount(NumberUtil.getIntValue(getConnectCount(), getResources().getInteger(R.integer.connect_count_default)));
         } else {
-            Log.e(DefaultsActivity.class.getName(), "type " + type + " unknown");
+            Log.e(DefaultsActivity.class.getName(), "type " + type.getType() + " unknown");
         }
         inputDialog.dismiss();
     }

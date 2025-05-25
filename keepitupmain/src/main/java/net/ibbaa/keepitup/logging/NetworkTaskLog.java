@@ -61,7 +61,7 @@ public class NetworkTaskLog {
         if (logger == null) {
             return;
         }
-        String text = LogUtil.formatLogEntryLog(context, task.getIndex(), entry);
+        String text = LogUtil.formatLogEntryLog(context, task, entry);
         logger.log("", text, null, LogLevel.DEBUG);
     }
 }

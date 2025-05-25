@@ -49,22 +49,27 @@ import net.ibbaa.keepitup.ui.dialog.AlarmPermissionDialog;
 import net.ibbaa.keepitup.ui.dialog.ConfirmDialog;
 import net.ibbaa.keepitup.ui.dialog.InfoDialog;
 import net.ibbaa.keepitup.ui.dialog.NetworkTaskEditDialog;
+import net.ibbaa.keepitup.ui.dialog.SettingsInput;
+import net.ibbaa.keepitup.ui.dialog.SettingsInputDialog;
 import net.ibbaa.keepitup.ui.permission.IPermissionManager;
 import net.ibbaa.keepitup.ui.permission.IStoragePermissionManager;
 import net.ibbaa.keepitup.ui.permission.PermissionManager;
 import net.ibbaa.keepitup.ui.permission.StoragePermissionManager;
 import net.ibbaa.keepitup.ui.sync.NetworkTaskMainUIBroadcastReceiver;
 import net.ibbaa.keepitup.ui.sync.NetworkTaskMainUIInitTask;
+import net.ibbaa.keepitup.ui.validation.NameFieldValidator;
 import net.ibbaa.keepitup.util.BundleUtil;
+import net.ibbaa.keepitup.util.StringUtil;
 import net.ibbaa.keepitup.util.SystemUtil;
 import net.ibbaa.keepitup.util.ThreadUtil;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
-public class NetworkTaskMainActivity extends RecyclerViewBaseActivity implements AlarmPermissionSupport {
+public class NetworkTaskMainActivity extends RecyclerViewBaseActivity implements SettingsInputSupport, AlarmPermissionSupport {
 
     private NetworkTaskMainUIBroadcastReceiver broadcastReceiver;
     private IPermissionManager permissionManager;
@@ -310,6 +315,24 @@ public class NetworkTaskMainActivity extends RecyclerViewBaseActivity implements
         Log.d(NetworkTaskMainActivity.class.getName(), "onActivityResult");
     }
 
+    public void onMainTitleClicked(int position) {
+        Log.d(NetworkTaskMainActivity.class.getName(), "onMainTitleClicked, position is " + position);
+        if (position < 0) {
+            Log.e(NetworkTaskMainActivity.class.getName(), "position " + position + " is invalid");
+            return;
+        }
+        NetworkTaskUIWrapper uiWrapper = ((NetworkTaskAdapter) getAdapter()).getItem(position);
+        if (uiWrapper == null) {
+            Log.e(NetworkTaskMainActivity.class.getName(), "No item on position " + position);
+            return;
+        }
+        NetworkTask networkTask = uiWrapper.getNetworkTask();
+        String name = StringUtil.isEmpty(networkTask.getName()) ? getResources().getString(R.string.task_name_default) : networkTask.getName();
+        List<String> validators = Collections.singletonList(NameFieldValidator.class.getName());
+        SettingsInput input = new SettingsInput(SettingsInput.Type.TASKNAME, name, getResources().getString(R.string.task_name_field_name), position, validators);
+        showInputDialog(input.toBundle());
+    }
+
     public void onMainAddClicked(View view) {
         Log.d(NetworkTaskMainActivity.class.getName(), "onMainAddClicked");
         NetworkTaskEditDialog editDialog = new NetworkTaskEditDialog();
@@ -473,6 +496,42 @@ public class NetworkTaskMainActivity extends RecyclerViewBaseActivity implements
     public void onConfirmDialogCancelClicked(ConfirmDialog confirmDialog) {
         Log.d(NetworkTaskMainActivity.class.getName(), "onConfirmDialogCancelClicked");
         confirmDialog.dismiss();
+    }
+
+    private void showInputDialog(Bundle bundle) {
+        Log.d(NetworkTaskMainActivity.class.getName(), "showInputDialog, opening SettingsInputDialog");
+        SettingsInputDialog inputDialog = new SettingsInputDialog();
+        inputDialog.setArguments(bundle);
+        inputDialog.show(getSupportFragmentManager(), DefaultsActivity.class.getName());
+    }
+
+    @Override
+    public void onInputDialogOkClicked(SettingsInputDialog inputDialog, SettingsInput type) {
+        Log.d(NetworkTaskMainActivity.class.getName(), "onInputDialogOkClicked, type is " + type + ", value is " + inputDialog.getValue());
+        if (SettingsInput.Type.TASKNAME.equals(type.getType())) {
+            NetworkTaskUIWrapper uiWrapper = ((NetworkTaskAdapter) getAdapter()).getItem(type.getPosition());
+            if (uiWrapper == null) {
+                Log.e(NetworkTaskMainActivity.class.getName(), "No item on position " + type.getPosition());
+                return;
+            }
+            NetworkTask networkTask = uiWrapper.getNetworkTask();
+            AccessTypeData accessTypeData = uiWrapper.getAccessTypeData();
+            Log.d(NetworkTaskMainActivity.class.getName(), "onInputDialogOkClicked for network task " + networkTask + " and access type data " + accessTypeData);
+            NetworkTaskHandler handler = new NetworkTaskHandler(this);
+            String name = StringUtil.isEmpty(inputDialog.getValue()) ? getResources().getString(R.string.task_name_default) : inputDialog.getValue();
+            Log.d(NetworkTaskMainActivity.class.getName(), "new name is " + name);
+            handler.updateNetworkTaskName(networkTask, accessTypeData, name);
+            getAdapter().notifyItemChanged(type.getPosition());
+        } else {
+            Log.e(NetworkTaskMainActivity.class.getName(), "type " + type + " unknown");
+        }
+        inputDialog.dismiss();
+    }
+
+    @Override
+    public void onInputDialogCancelClicked(SettingsInputDialog inputDialog) {
+        Log.d(NetworkTaskMainActivity.class.getName(), "onInputDialogCancelClicked");
+        inputDialog.dismiss();
     }
 
     @Override

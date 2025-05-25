@@ -132,7 +132,7 @@ public abstract class SettingsInputActivity extends AppCompatActivity implements
     }
 
     @Override
-    public void onInputDialogOkClicked(SettingsInputDialog inputDialog, SettingsInput.Type type) {
+    public void onInputDialogOkClicked(SettingsInputDialog inputDialog, SettingsInput type) {
         Log.d(SettingsInputActivity.class.getName(), "onInputDialogOkClicked, type is " + type + ", value is " + inputDialog.getValue());
         inputDialog.dismiss();
     }
