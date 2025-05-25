@@ -49,17 +49,19 @@ public class SettingsInput {
 
     private final Type type;
     private final String value;
+    private final String title;
     private final String field;
     private final int position;
     private final List<String> validators;
 
     public SettingsInput(Type type, String value, String field, List<String> validators) {
-        this(type, value, field, -1, validators);
+        this(type, null, value, field, -1, validators);
     }
 
-    public SettingsInput(Type type, String value, String field, int position, List<String> validators) {
+    public SettingsInput(Type type, String title, String value, String field, int position, List<String> validators) {
         this.type = type;
         this.value = value;
+        this.title = title;
         this.field = field;
         this.position = position;
         this.validators = validators;
@@ -72,6 +74,7 @@ public class SettingsInput {
             type = null;
         }
         this.value = bundle.getString("value");
+        this.title = bundle.getString("title");
         this.field = bundle.getString("field");
         this.position = bundle.getInt("position", -1);
         this.validators = bundle.getStringArrayList("validators");
@@ -79,6 +82,10 @@ public class SettingsInput {
 
     public Type getType() {
         return type;
+    }
+
+    public String getTitle() {
+        return title;
     }
 
     public String getValue() {
@@ -103,6 +110,7 @@ public class SettingsInput {
             bundle.putString("type", type.name());
         }
         bundle.putString("value", value);
+        bundle.putString("title", title);
         bundle.putString("field", field);
         bundle.putInt("position", position);
         bundle.putStringArrayList("validators", validators == null ? null : new ArrayList<>(validators));
@@ -115,7 +123,9 @@ public class SettingsInput {
         return "SettingsInput{" +
                 "type=" + type +
                 ", value='" + value + '\'' +
+                ", title='" + title + '\'' +
                 ", field='" + field + '\'' +
+                ", position=" + position +
                 ", validators=" + validators +
                 '}';
     }

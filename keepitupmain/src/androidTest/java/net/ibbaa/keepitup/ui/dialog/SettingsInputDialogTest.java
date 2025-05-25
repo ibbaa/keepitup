@@ -26,6 +26,7 @@ import static androidx.test.espresso.matcher.ViewMatchers.isRoot;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
 import static org.hamcrest.Matchers.allOf;
+import static org.hamcrest.Matchers.not;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
@@ -66,6 +67,23 @@ public class SettingsInputDialogTest extends BaseUITest {
     public void afterEachTestMethod() {
         super.afterEachTestMethod();
         activityScenario.close();
+    }
+
+    @Test
+    public void testTitleText() {
+        SettingsInput input = new SettingsInput(SettingsInput.Type.ADDRESS, "abc", "field", Collections.emptyList());
+        openSettingsInputDialog(input);
+        onView(isRoot()).perform(waitFor(500));
+        onView(withId(R.id.linearlayout_dialog_settingsinput_title)).check(matches(not(isDisplayed())));
+        onView(withId(R.id.textview_dialog_settingsinput_title)).check(matches(not(isDisplayed())));
+        onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
+        input = new SettingsInput(SettingsInput.Type.ADDRESS, "title", "abc", "field", 1, Collections.emptyList());
+        openSettingsInputDialog(input);
+        onView(isRoot()).perform(waitFor(500));
+        onView(withId(R.id.linearlayout_dialog_settingsinput_title)).check(matches(isDisplayed()));
+        onView(withId(R.id.textview_dialog_settingsinput_title)).check(matches(isDisplayed()));
+        onView(withId(R.id.textview_dialog_settingsinput_title)).check(matches(withText("title")));
+        onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
     }
 
     @Test

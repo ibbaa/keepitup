@@ -16,6 +16,9 @@
 
 <resources>
     <dimen name="linearlayout_dialog_settings_input_padding">20dp</dimen>
+    <dimen name="linearlayout_dialog_settings_input_title_margin_top">0dp</dimen>
+    <dimen name="linearlayout_dialog_settings_input_title_margin_bottom">10dp</dimen>
+    <dimen name="linearlayout_dialog_settings_input_title_margin_left">10dp</dimen>
     <dimen name="linearlayout_dialog_settings_input_value_margin_top">0dp</dimen>
     <dimen name="linearlayout_dialog_settings_input_value_margin_left">10dp</dimen>
     <dimen name="edittext_dialog_settings_input_value_width">120dp</dimen>

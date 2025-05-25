@@ -31,6 +31,24 @@
         android:orientation="vertical">
 
         <LinearLayout
+            android:id="@+id/linearlayout_dialog_settingsinput_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/linearlayout_dialog_settings_input_title_margin_left"
+            android:layout_marginTop="@dimen/linearlayout_dialog_settings_input_title_margin_top"
+            android:layout_marginBottom="@dimen/linearlayout_dialog_settings_input_title_margin_bottom">
+
+            <TextView
+                android:id="@+id/textview_dialog_settingsinput_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:textStyle="bold"
+                android:text="" />
+
+        </LinearLayout>
+
+        <LinearLayout
             android:id="@+id/linearlayout_dialog_settingsinput_value"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

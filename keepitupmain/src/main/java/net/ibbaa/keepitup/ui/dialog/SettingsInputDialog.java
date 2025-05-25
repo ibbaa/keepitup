@@ -24,6 +24,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
@@ -82,9 +84,25 @@ public class SettingsInputDialog extends DialogFragmentBase implements ContextOp
         initEdgeToEdgeInsets(dialogView);
         input = new SettingsInput(requireArguments());
         Log.d(SettingsInputDialog.class.getName(), "settings input is " + input);
+        prepareTitleText();
         prepareValueTextField();
         prepareOkCancelImageButtons();
         return dialogView;
+    }
+
+    private void prepareTitleText() {
+        Log.d(SettingsInputDialog.class.getName(), "prepareTitleText");
+        LinearLayout titleLinearLayout = dialogView.findViewById(R.id.linearlayout_dialog_settingsinput_title);
+        TextView titleTextView = dialogView.findViewById(R.id.textview_dialog_settingsinput_title);
+        if (StringUtil.isEmpty(input.getTitle())) {
+            titleLinearLayout.setVisibility(View.GONE);
+            titleTextView.setVisibility(View.GONE);
+            titleTextView.setText("");
+        } else {
+            titleLinearLayout.setVisibility(View.VISIBLE);
+            titleTextView.setVisibility(View.VISIBLE);
+            titleTextView.setText(input.getTitle());
+        }
     }
 
     private void prepareValueTextField() {
