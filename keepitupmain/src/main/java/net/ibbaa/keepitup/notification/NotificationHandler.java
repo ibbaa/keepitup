@@ -43,6 +43,7 @@ import net.ibbaa.keepitup.ui.GlobalSettingsActivity;
 import net.ibbaa.keepitup.ui.NetworkTaskMainActivity;
 import net.ibbaa.keepitup.ui.mapping.EnumMapping;
 import net.ibbaa.keepitup.ui.permission.IPermissionManager;
+import net.ibbaa.keepitup.util.UIUtil;
 
 import java.text.DateFormat;
 import java.util.Date;
@@ -203,10 +204,11 @@ public class NotificationHandler {
         String addressText = String.format(getResources().getString(R.string.notification_address), new EnumMapping(getContext()).getAccessTypeAddressText(task.getAccessType()));
         String formattedAddressText = String.format(addressText, task.getAddress(), task.getPort());
         String text;
+        String networkTaskTitle = UIUtil.getTextForNamedTask(context, task);
         if (logEntry.isSuccess()) {
-            text = String.format(getResources().getString(R.string.notification_success_text), task.getIndex() + 1, formattedAddressText, timestampText, logEntry.getMessage() == null ? getResources().getString(R.string.string_none) : logEntry.getMessage());
+            text = String.format(getResources().getString(R.string.notification_success_text), networkTaskTitle, formattedAddressText, timestampText, logEntry.getMessage() == null ? getResources().getString(R.string.string_none) : logEntry.getMessage());
         } else {
-            text = String.format(getResources().getString(R.string.notification_error_text), task.getIndex() + 1, formattedAddressText, task.getFailureCount(), timestampText, logEntry.getMessage() == null ? getResources().getString(R.string.string_none) : logEntry.getMessage());
+            text = String.format(getResources().getString(R.string.notification_error_text), networkTaskTitle, formattedAddressText, task.getFailureCount(), timestampText, logEntry.getMessage() == null ? getResources().getString(R.string.string_none) : logEntry.getMessage());
         }
         if (task.isHighPrio()) {
             messageNotificationBuilder = createHighPrioMessageNotificationBuilder();

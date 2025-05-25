@@ -31,7 +31,7 @@ import net.ibbaa.keepitup.logging.Log;
 import net.ibbaa.keepitup.model.LogEntry;
 import net.ibbaa.keepitup.model.NetworkTask;
 import net.ibbaa.keepitup.util.BundleUtil;
-import net.ibbaa.keepitup.util.LogUtil;
+import net.ibbaa.keepitup.util.UIUtil;
 
 import java.text.DateFormat;
 import java.util.ArrayList;
@@ -89,13 +89,15 @@ public class LogEntryAdapter extends RecyclerView.Adapter<LogEntryViewHolder> {
 
     private void bindNoLog(@NonNull LogEntryViewHolder logEntryViewHolder) {
         Log.d(LogEntryAdapter.class.getName(), "bindNoLog");
-        String formattedNoLogText = getResources().getString(R.string.text_activity_log_list_item_log_entry_no_log, networkTask.getIndex() + 1);
+        String networkTaskTitle = UIUtil.getTextForNamedTask(context, networkTask);
+        String formattedNoLogText = getContext().getResources().getString(R.string.text_activity_log_list_item_log_entry_no_log, networkTaskTitle);
         logEntryViewHolder.setNoLogText(formattedNoLogText);
     }
 
     private void bindTitle(@NonNull LogEntryViewHolder logEntryViewHolder) {
         Log.d(LogEntryAdapter.class.getName(), "bindTitle");
-        String formattedTitleText = LogUtil.getLogTitleText(getContext(), networkTask);
+        String networkTaskTitle = UIUtil.getTextForNamedTask(context, networkTask);
+        String formattedTitleText = getContext().getResources().getString(R.string.text_activity_log_list_item_log_entry_title, networkTaskTitle);
         logEntryViewHolder.setTitleText(formattedTitleText);
     }
 

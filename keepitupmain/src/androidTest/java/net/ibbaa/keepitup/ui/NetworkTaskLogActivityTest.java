@@ -85,6 +85,18 @@ public class NetworkTaskLogActivityTest extends BaseUITest {
     }
 
     @Test
+    public void testInitializeActivityNoDataNamedNetworkTask() {
+        NetworkTask task = insertNetworkTask();
+        task.setName("name of my task");
+        ActivityScenario<?> activityScenario = launchRecyclerViewBaseActivity(getNetworkTaskLogIntent(task));
+        onView(withId(R.id.listview_activity_log_log_entries)).check(matches(withListSize(1)));
+        onView(allOf(withId(R.id.textview_list_item_log_entry_no_log), withChildDescendantAtPosition(withId(R.id.listview_activity_log_log_entries), 0))).check(matches(isDisplayed()));
+        onView(allOf(withId(R.id.textview_list_item_log_entry_no_log), withChildDescendantAtPosition(withId(R.id.listview_activity_log_log_entries), 0))).check(matches(withText("No logs present for name of my task (network task 1)")));
+        onView(allOf(withId(R.id.cardview_list_item_log_entry), withChildDescendantAtPosition(withId(R.id.listview_activity_log_log_entries), 0))).check(matches(not(isDisplayed())));
+        activityScenario.close();
+    }
+
+    @Test
     public void testInitializeActivityNamedNetworkTask() {
         NetworkTask task = insertNetworkTask();
         task.setName("name of my task");

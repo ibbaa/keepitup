@@ -16,6 +16,7 @@
 
 package net.ibbaa.keepitup.util;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
@@ -23,6 +24,9 @@ import android.text.InputType;
 
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.SmallTest;
+
+import net.ibbaa.keepitup.model.NetworkTask;
+import net.ibbaa.keepitup.test.mock.TestRegistry;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -39,5 +43,14 @@ public class UIUtilTest {
         assertTrue(UIUtil.isInputTypeNumber(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_VARIATION_PASSWORD | InputType.TYPE_TEXT_VARIATION_URI));
         assertTrue(UIUtil.isInputTypeNumber(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_VARIATION_PASSWORD));
         assertTrue(UIUtil.isInputTypeNumber(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL));
+    }
+
+    @Test
+    public void testGetTextForNamedTask() {
+        NetworkTask networkTask = new NetworkTask();
+        networkTask.setIndex(1);
+        assertEquals("network task 2", UIUtil.getTextForNamedTask(TestRegistry.getContext(), networkTask));
+        networkTask.setName("name");
+        assertEquals("name (network task 2)", UIUtil.getTextForNamedTask(TestRegistry.getContext(), networkTask));
     }
 }

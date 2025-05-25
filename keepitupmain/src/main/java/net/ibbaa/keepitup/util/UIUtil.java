@@ -16,11 +16,26 @@
 
 package net.ibbaa.keepitup.util;
 
+import android.content.Context;
 import android.text.InputType;
+
+import net.ibbaa.keepitup.R;
+import net.ibbaa.keepitup.model.NetworkTask;
 
 public class UIUtil {
 
     public static boolean isInputTypeNumber(int inputType) {
         return (inputType & InputType.TYPE_CLASS_NUMBER) == InputType.TYPE_CLASS_NUMBER;
+    }
+
+    public static String getTextForNamedTask(Context context, NetworkTask task) {
+        String name = StringUtil.isEmpty(task.getName()) ? context.getResources().getString(R.string.task_name_default) : task.getName();
+        String formattedTitleText;
+        if (name.equals(context.getResources().getString(R.string.task_name_default))) {
+            formattedTitleText = context.getResources().getString(R.string.task_title_normal, task.getIndex() + 1);
+        } else {
+            formattedTitleText = context.getResources().getString(R.string.task_title_named, name, task.getIndex() + 1);
+        }
+        return formattedTitleText;
     }
 }

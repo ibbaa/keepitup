@@ -115,23 +115,13 @@ public class LogUtil {
     }
 
     public static String formatLogEntryLog(Context context, NetworkTask task, LogEntry entry) {
-        String formattedTitleText = getLogTitleText(context, task);
+        String networkTaskTitle = UIUtil.getTextForNamedTask(context, task);
+        String formattedTitleText = context.getResources().getString(R.string.text_activity_log_list_item_log_entry_title, networkTaskTitle);
         String successText = entry.isSuccess() ? context.getResources().getString(R.string.string_successful) : context.getResources().getString(R.string.string_not_successful);
         String formattedSuccessText = context.getResources().getString(R.string.text_activity_log_list_item_log_entry_success, successText);
         String timestampText = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.MEDIUM).format(new Date(entry.getTimestamp()));
         String formattedTimestampText = context.getResources().getString(R.string.text_activity_log_list_item_log_entry_timestamp, timestampText);
         String formattedMessageText = context.getResources().getString(R.string.text_activity_log_list_item_log_entry_message, entry.getMessage());
         return formattedTitleText + ", " + formattedSuccessText + ", " + formattedTimestampText + ", " + formattedMessageText;
-    }
-
-    public static String getLogTitleText(Context context, NetworkTask task) {
-        String name = StringUtil.isEmpty(task.getName()) ? context.getResources().getString(R.string.task_name_default) : task.getName();
-        String formattedTitleText;
-        if (name.equals(context.getResources().getString(R.string.task_name_default))) {
-            formattedTitleText = context.getResources().getString(R.string.text_activity_log_list_item_log_entry_title, task.getIndex() + 1);
-        } else {
-            formattedTitleText = context.getResources().getString(R.string.text_activity_log_list_item_log_entry_title_named_task, name, task.getIndex() + 1);
-        }
-        return formattedTitleText;
     }
 }

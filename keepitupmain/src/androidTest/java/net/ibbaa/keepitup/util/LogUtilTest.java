@@ -120,15 +120,6 @@ public class LogUtilTest {
         assertEquals("Log entry for name (network task 2), Execution successful, Timestamp: Jan 1, 1970 1:00:00 AM, Message: TestMessage1", LogUtil.formatLogEntryLog(TestRegistry.getContext(), networkTask, entry));
     }
 
-    @Test
-    public void testGetLogTitleText() {
-        NetworkTask networkTask = new NetworkTask();
-        networkTask.setIndex(1);
-        assertEquals("Log entry for network task 2", LogUtil.getLogTitleText(TestRegistry.getContext(), networkTask));
-        networkTask.setName("name");
-        assertEquals("Log entry for name (network task 2)", LogUtil.getLogTitleText(TestRegistry.getContext(), networkTask));
-    }
-
     private LogEntry getLogEntry() {
         LogEntry insertedLogEntry1 = new LogEntry();
         insertedLogEntry1.setId(0);
