@@ -184,7 +184,7 @@ public class DBMigrateTest {
     }
 
     @Test
-    public void testUpgradeFrom4To5HighPrioCAndIgnoreSSLErrorColumn() {
+    public void testUpgradeFrom4To5HighPrioAndIgnoreSSLErrorColumn() {
         setup.createTables();
         setup.dropAccessTypeDataTable();
         setup.dropNetworkTaskTable();
