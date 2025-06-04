@@ -176,6 +176,22 @@ class NetworkTaskDBConstants {
                 getFailureCountColumnName() + " INTEGER);";
     }
 
+    public String getCreateTableStatementWithoutHighPrioAndNameAndFailureCount() {
+        return ("CREATE TABLE IF NOT EXISTS " + getTableName() + "(") +
+                getIdColumnName() + " INTEGER PRIMARY KEY ASC, " +
+                getIndexColumnName() + " INTEGER NOT NULL, " +
+                getSchedulerIdColumnName() + " INTEGER, " +
+                getInstancesColumnName() + " INTEGER, " +
+                getAddressColumnName() + " TEXT, " +
+                getPortColumnName() + " INTEGER, " +
+                getAccessTypeColumnName() + " INTEGER, " +
+                getIntervalColumnName() + " INTEGER, " +
+                getOnlyWifiColumnName() + " TEXT, " +
+                getNotificationColumnName() + " INTEGER, " +
+                getRunningColumnName() + " INTEGER, " +
+                getLastScheduledColumnName() + " INTEGER);";
+    }
+
     public String getDropTableStatement() {
         return "DROP TABLE IF EXISTS " + getTableName();
     }

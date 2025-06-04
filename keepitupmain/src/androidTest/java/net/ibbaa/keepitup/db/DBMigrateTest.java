@@ -206,8 +206,29 @@ public class DBMigrateTest {
         setup.dropAccessTypeDataTable();
         setup.dropNetworkTaskTable();
         NetworkTaskDBConstants networkTaskDBConstants = new NetworkTaskDBConstants(TestRegistry.getContext());
+        DBOpenHelper.getInstance(TestRegistry.getContext()).getWritableDatabase().execSQL(networkTaskDBConstants.getCreateTableStatementWithoutHighPrioAndNameAndFailureCount());
+        migrate.doUpgrade(TestRegistry.getContext(), 0, 5);
+        NetworkTask task1 = networkTaskDAO.insertNetworkTask(getNetworkTask1());
+        AccessTypeData data = new AccessTypeData();
+        data.setNetworkTaskId(task1.getId());
+        accessTypeDataDAO.insertAccessTypeData(data);
+        intervalDAO.insertInterval(new Interval());
+        List<Interval> intervals = intervalDAO.readAllIntervals();
+        assertEquals(1, intervals.size());
+        assertNotNull(schedulerStateDAO.readSchedulerState());
+        AccessTypeData data1 = accessTypeDataDAO.readAccessTypeDataForNetworkTask(task1.getId());
+        assertTrue(data.isTechnicallyEqual(data1));
+    }
+
+    @Test
+    public void testUpgradeFrom0To5ExistingTablesAndColumns() {
+        setup.createTables();
+        setup.dropIntervalTable();
+        setup.dropAccessTypeDataTable();
+        setup.dropNetworkTaskTable();
+        NetworkTaskDBConstants networkTaskDBConstants = new NetworkTaskDBConstants(TestRegistry.getContext());
         AccessTypeDataDBConstants accessTypeDataDBConstants = new AccessTypeDataDBConstants(TestRegistry.getContext());
-        DBOpenHelper.getInstance(TestRegistry.getContext()).getWritableDatabase().execSQL(networkTaskDBConstants.getCreateTableStatementWithoutHighPrioAndName());
+        DBOpenHelper.getInstance(TestRegistry.getContext()).getWritableDatabase().execSQL(networkTaskDBConstants.getCreateTableStatementWithoutHighPrioAndNameAndFailureCount());
         DBOpenHelper.getInstance(TestRegistry.getContext()).getWritableDatabase().execSQL(accessTypeDataDBConstants.getCreateTableStatementWithoutIgnoreSSLError());
         migrate.doUpgrade(TestRegistry.getContext(), 0, 5);
         NetworkTask task1 = networkTaskDAO.insertNetworkTask(getNetworkTask1());
