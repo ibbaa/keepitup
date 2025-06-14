@@ -184,7 +184,7 @@ public class DBMigrateTest {
     }
 
     @Test
-    public void testUpgradeFrom4To5HighPrioAndIgnoreSSLErrorColumn() {
+    public void testUpgradeFrom4To5() {
         setup.createTables();
         setup.dropAccessTypeDataTable();
         setup.dropNetworkTaskTable();
@@ -206,7 +206,7 @@ public class DBMigrateTest {
         setup.dropAccessTypeDataTable();
         setup.dropNetworkTaskTable();
         NetworkTaskDBConstants networkTaskDBConstants = new NetworkTaskDBConstants(TestRegistry.getContext());
-        DBOpenHelper.getInstance(TestRegistry.getContext()).getWritableDatabase().execSQL(networkTaskDBConstants.getCreateTableStatementWithoutHighPrioAndNameAndFailureCount());
+        DBOpenHelper.getInstance(TestRegistry.getContext()).getWritableDatabase().execSQL(networkTaskDBConstants.getCreateTableStatementWithoutAddedColumns());
         migrate.doUpgrade(TestRegistry.getContext(), 0, 5);
         NetworkTask task1 = networkTaskDAO.insertNetworkTask(getNetworkTask1());
         AccessTypeData data = new AccessTypeData();
@@ -228,7 +228,7 @@ public class DBMigrateTest {
         setup.dropNetworkTaskTable();
         NetworkTaskDBConstants networkTaskDBConstants = new NetworkTaskDBConstants(TestRegistry.getContext());
         AccessTypeDataDBConstants accessTypeDataDBConstants = new AccessTypeDataDBConstants(TestRegistry.getContext());
-        DBOpenHelper.getInstance(TestRegistry.getContext()).getWritableDatabase().execSQL(networkTaskDBConstants.getCreateTableStatementWithoutHighPrioAndNameAndFailureCount());
+        DBOpenHelper.getInstance(TestRegistry.getContext()).getWritableDatabase().execSQL(networkTaskDBConstants.getCreateTableStatementWithoutAddedColumns());
         DBOpenHelper.getInstance(TestRegistry.getContext()).getWritableDatabase().execSQL(accessTypeDataDBConstants.getCreateTableStatementWithoutIgnoreSSLError());
         migrate.doUpgrade(TestRegistry.getContext(), 0, 5);
         NetworkTask task1 = networkTaskDAO.insertNetworkTask(getNetworkTask1());

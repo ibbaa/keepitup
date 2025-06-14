@@ -176,7 +176,7 @@ class NetworkTaskDBConstants {
                 getFailureCountColumnName() + " INTEGER);";
     }
 
-    public String getCreateTableStatementWithoutHighPrioAndNameAndFailureCount() {
+    public String getCreateTableStatementWithoutAddedColumns() {
         return ("CREATE TABLE IF NOT EXISTS " + getTableName() + "(") +
                 getIdColumnName() + " INTEGER PRIMARY KEY ASC, " +
                 getIndexColumnName() + " INTEGER NOT NULL, " +
