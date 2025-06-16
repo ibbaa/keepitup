@@ -18,6 +18,7 @@ package net.ibbaa.keepitup.test.mock;
 
 import android.content.Context;
 
+import net.ibbaa.keepitup.model.AccessTypeData;
 import net.ibbaa.keepitup.model.NetworkTask;
 import net.ibbaa.keepitup.service.network.DownloadCommand;
 import net.ibbaa.keepitup.service.network.DownloadCommandResult;
@@ -34,8 +35,8 @@ public class MockDownloadCommand extends DownloadCommand {
     private URL url;
     private String folder;
 
-    public MockDownloadCommand(Context context, NetworkTask networkTask, URL url, String folder, boolean delete, DownloadCommandResult downloadCommandResult) {
-        super(context, networkTask, url, folder, delete);
+    public MockDownloadCommand(Context context, NetworkTask networkTask, AccessTypeData data, URL url, String folder, boolean delete, DownloadCommandResult downloadCommandResult) {
+        super(context, networkTask, data, url, folder, delete);
         this.url = url;
         this.folder = folder;
         this.exception = null;
@@ -44,8 +45,8 @@ public class MockDownloadCommand extends DownloadCommand {
         this.latch = new CountDownLatch(1);
     }
 
-    public MockDownloadCommand(Context context, NetworkTask networkTask, URL url, String folder, boolean delete, RuntimeException exception) {
-        super(context, networkTask, url, folder, delete);
+    public MockDownloadCommand(Context context, NetworkTask networkTask, AccessTypeData data, URL url, String folder, boolean delete, RuntimeException exception) {
+        super(context, networkTask, data, url, folder, delete);
         this.url = url;
         this.folder = folder;
         this.exception = exception;
@@ -54,8 +55,8 @@ public class MockDownloadCommand extends DownloadCommand {
         this.latch = new CountDownLatch(1);
     }
 
-    public MockDownloadCommand(Context context, NetworkTask networkTask, URL url, String folder, boolean delete, DownloadCommandResult downloadCommandResult, boolean block) {
-        super(context, networkTask, url, folder, delete);
+    public MockDownloadCommand(Context context, NetworkTask networkTask, AccessTypeData data, URL url, String folder, boolean delete, DownloadCommandResult downloadCommandResult, boolean block) {
+        super(context, networkTask, data, url, folder, delete);
         this.url = url;
         this.folder = folder;
         this.exception = null;

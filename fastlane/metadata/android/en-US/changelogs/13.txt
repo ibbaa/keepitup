@@ -5,6 +5,7 @@
 * The alarm lasts for 60 sec and can be dismissed at any time
 * It's now possible to change the name of a network task (click on the name in the task list)
 * Added a menu item to the log view to hide successful executions
+* It's now possible to optionally ignore SSL certificate errors on https connections
 * Storage folders are now correctly displayed when arbitrary file location is used
 * Encoding and handling of encoded URLs improved
 * Some minor bug fixes

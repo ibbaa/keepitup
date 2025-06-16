@@ -26,6 +26,8 @@ import java.net.URLConnection;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import javax.net.ssl.HttpsURLConnection;
+
 public class HTTPUtil {
 
     private static final Pattern CONTENT_DISPOSITION = Pattern.compile("attachment;\\s*filename\\s*=\\s*\"([^\"]*)\"", Pattern.CASE_INSENSITIVE);
@@ -33,6 +35,10 @@ public class HTTPUtil {
 
     public static boolean isHTTPConnection(URLConnection connection) {
         return connection instanceof HttpURLConnection;
+    }
+
+    public static boolean isHTTPSConnection(URLConnection connection) {
+        return connection instanceof HttpsURLConnection;
     }
 
     public static boolean isHTTPReturnCodeRedirect(int returnCode) {

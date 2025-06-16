@@ -25,6 +25,7 @@ import androidx.documentfile.provider.DocumentFile;
 import net.ibbaa.keepitup.R;
 import net.ibbaa.keepitup.db.NetworkTaskDAO;
 import net.ibbaa.keepitup.logging.Log;
+import net.ibbaa.keepitup.model.AccessTypeData;
 import net.ibbaa.keepitup.model.NetworkTask;
 import net.ibbaa.keepitup.resources.PreferenceManager;
 import net.ibbaa.keepitup.resources.ServiceFactoryContributor;
@@ -48,6 +49,9 @@ import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
+import java.security.KeyManagementException;
+import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
@@ -55,12 +59,17 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
+import javax.net.ssl.HttpsURLConnection;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.TrustManager;
+
 public class DownloadCommand implements Callable<DownloadCommandResult> {
 
     private final static String UNKNOWN_MIME_TYPE = "unknown/unknown";
 
     private final Context context;
     private final NetworkTask networkTask;
+    private final AccessTypeData accessTypeData;
     private final URL url;
     private final String folder;
     private final boolean delete;
@@ -68,9 +77,10 @@ public class DownloadCommand implements Callable<DownloadCommandResult> {
     private boolean stopped;
     private final ITimeService timeService;
 
-    public DownloadCommand(Context context, NetworkTask networkTask, URL url, String folder, boolean delete) {
+    public DownloadCommand(Context context, NetworkTask networkTask, AccessTypeData accessTypeData, URL url, String folder, boolean delete) {
         this.context = context;
         this.networkTask = networkTask;
+        this.accessTypeData = accessTypeData;
         this.url = url;
         this.folder = folder;
         this.delete = delete;
@@ -208,7 +218,7 @@ public class DownloadCommand implements Callable<DownloadCommandResult> {
         return URLUtil.getURL(downloadURL, location);
     }
 
-    protected URLConnection openConnection(URL url) throws IOException {
+    protected URLConnection openConnection(URL url) throws IOException, KeyManagementException, NoSuchAlgorithmException {
         Log.d(DownloadCommand.class.getName(), "openConnection to " + url);
         if (url == null) {
             Log.e(DownloadCommand.class.getName(), "URL is null");
@@ -219,12 +229,28 @@ public class DownloadCommand implements Callable<DownloadCommandResult> {
             Log.e(DownloadCommand.class.getName(), "Connection is null");
             return null;
         }
+        if (HTTPUtil.isHTTPSConnection(connection) && isIgnoreSSLError()) {
+            disableSSLCheck((HttpsURLConnection) connection);
+        }
         connection.setConnectTimeout(getResources().getInteger(R.integer.download_connect_timeout) * 1000);
         connection.setReadTimeout(getResources().getInteger(R.integer.download_read_timeout) * 1000);
         connection.setDoInput(true);
         connection.setDoOutput(false);
         connection.connect();
         return connection;
+    }
+
+    private static void disableSSLCheck(HttpsURLConnection httpsConnection) throws NoSuchAlgorithmException, KeyManagementException {
+        Log.d(DownloadCommand.class.getName(), "disableSSLCheck");
+        TrustManager[] trustAllCerts = new TrustManager[]{new TrustAllX509TrustManager()};
+        SSLContext sslContext = SSLContext.getInstance("TLS");
+        sslContext.init(null, trustAllCerts, new SecureRandom());
+        httpsConnection.setSSLSocketFactory(sslContext.getSocketFactory());
+        httpsConnection.setHostnameVerifier((hostname, session) -> true);
+    }
+
+    private boolean isIgnoreSSLError() {
+        return accessTypeData != null && accessTypeData.isIgnoreSSLError();
     }
 
     private DocumentFile getDownloadDocumentFile(String fileName) {

@@ -19,6 +19,7 @@ package net.ibbaa.keepitup.test.mock;
 import android.content.Context;
 import android.os.PowerManager;
 
+import net.ibbaa.keepitup.model.AccessTypeData;
 import net.ibbaa.keepitup.model.NetworkTask;
 import net.ibbaa.keepitup.service.DownloadNetworkTaskWorker;
 import net.ibbaa.keepitup.service.IDocumentManager;
@@ -72,7 +73,7 @@ public class TestDownloadNetworkTaskWorker extends DownloadNetworkTaskWorker {
     }
 
     @Override
-    public Callable<DownloadCommandResult> getDownloadCommand(NetworkTask networkTask, URL url, String folder, boolean delete) {
+    public Callable<DownloadCommandResult> getDownloadCommand(NetworkTask networkTask, AccessTypeData data, URL url, String folder, boolean delete) {
         mockDownloadCommand.setUrl(url);
         mockDownloadCommand.setFolder(folder);
         return mockDownloadCommand;

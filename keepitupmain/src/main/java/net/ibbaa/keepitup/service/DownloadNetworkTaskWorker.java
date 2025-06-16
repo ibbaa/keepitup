@@ -61,7 +61,7 @@ public class DownloadNetworkTaskWorker extends NetworkTaskWorker {
     @Override
     public ExecutionResult execute(NetworkTask networkTask, AccessTypeData data) {
         Log.d(DownloadNetworkTaskWorker.class.getName(), "Executing DownloadNetworkTaskWorker for network task " + networkTask + " and access type data" + data);
-        ExecutionResult downloadExecutionResult = executeDownloadCommand(networkTask);
+        ExecutionResult downloadExecutionResult = executeDownloadCommand(networkTask, data);
         LogEntry logEntry = downloadExecutionResult.getLogEntry();
         logEntry.setNetworkTaskId(networkTask.getId());
         logEntry.setTimestamp(getTimeService().getCurrentTimestamp());
@@ -69,7 +69,7 @@ public class DownloadNetworkTaskWorker extends NetworkTaskWorker {
         return downloadExecutionResult;
     }
 
-    private ExecutionResult executeDownloadCommand(NetworkTask networkTask) {
+    private ExecutionResult executeDownloadCommand(NetworkTask networkTask, AccessTypeData data) {
         Log.d(DownloadNetworkTaskWorker.class.getName(), "executeDownloadCommand, networkTask is " + networkTask);
         PreferenceManager preferenceManager = new PreferenceManager(getContext());
         IFileManager fileManager = getFileManager();
@@ -104,7 +104,7 @@ public class DownloadNetworkTaskWorker extends NetworkTaskWorker {
         }
         boolean delete = determineDeleteDownloadedFile();
         Log.d(DownloadNetworkTaskWorker.class.getName(), "Delete downloaded file: " + delete);
-        Callable<DownloadCommandResult> downloadCommand = getDownloadCommand(networkTask, url, folder, delete);
+        Callable<DownloadCommandResult> downloadCommand = getDownloadCommand(networkTask, data, url, folder, delete);
         int timeout = getResources().getInteger(R.integer.download_timeout);
         Log.d(DownloadNetworkTaskWorker.class.getName(), "Creating ExecutorService");
         ExecutorService executorService = Executors.newSingleThreadExecutor();
@@ -377,7 +377,7 @@ public class DownloadNetworkTaskWorker extends NetworkTaskWorker {
         return new SystemFileManager(getContext());
     }
 
-    protected Callable<DownloadCommandResult> getDownloadCommand(NetworkTask networkTask, URL url, String folder, boolean delete) {
-        return new DownloadCommand(getContext(), networkTask, url, folder, delete);
+    protected Callable<DownloadCommandResult> getDownloadCommand(NetworkTask networkTask, AccessTypeData data, URL url, String folder, boolean delete) {
+        return new DownloadCommand(getContext(), networkTask, data, url, folder, delete);
     }
 }

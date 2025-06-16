@@ -21,6 +21,7 @@ import android.os.ParcelFileDescriptor;
 
 import androidx.documentfile.provider.DocumentFile;
 
+import net.ibbaa.keepitup.model.AccessTypeData;
 import net.ibbaa.keepitup.model.NetworkTask;
 import net.ibbaa.keepitup.service.IDocumentManager;
 import net.ibbaa.keepitup.service.IFileManager;
@@ -39,8 +40,8 @@ public class TestDownloadCommand extends DownloadCommand {
     private IFileManager fileManager;
     private IDocumentManager documentManager;
 
-    public TestDownloadCommand(Context context, NetworkTask networkTask, URL url, String folder, boolean delete) {
-        super(context, networkTask, url, folder, delete);
+    public TestDownloadCommand(Context context, NetworkTask networkTask, AccessTypeData data, URL url, String folder, boolean delete) {
+        super(context, networkTask, data, url, folder, delete);
         urlConnections = new HashMap<>();
         reset();
     }

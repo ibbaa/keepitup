@@ -49,6 +49,15 @@ public class AccessTypeData {
         this.ignoreSSLError = false;
     }
 
+    public AccessTypeData(AccessTypeData otherData) {
+        this();
+        this.pingCount = otherData.getPingCount();
+        this.pingPackageSize = otherData.getPingPackageSize();
+        this.connectCount = otherData.getConnectCount();
+        this.stopOnSuccess = otherData.isStopOnSuccess();
+        this.ignoreSSLError = otherData.isIgnoreSSLError();
+    }
+
     public AccessTypeData(Context context) {
         this();
         PreferenceManager preferenceManager = new PreferenceManager(context);

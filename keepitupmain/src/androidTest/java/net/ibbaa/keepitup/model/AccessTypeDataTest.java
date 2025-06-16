@@ -97,6 +97,26 @@ public class AccessTypeDataTest {
     }
 
     @Test
+    public void testCopy() {
+        AccessTypeData data = new AccessTypeData();
+        data.setId(1);
+        data.setNetworkTaskId(2);
+        data.setPingCount(123);
+        data.setPingPackageSize(456);
+        data.setConnectCount(789);
+        data.setStopOnSuccess(true);
+        data.setIgnoreSSLError(true);
+        AccessTypeData copyData = new AccessTypeData(data);
+        assertEquals(-1, copyData.getId());
+        assertEquals(-1, copyData.getNetworkTaskId());
+        assertEquals(123, copyData.getPingCount());
+        assertEquals(456, copyData.getPingPackageSize());
+        assertEquals(789, copyData.getConnectCount());
+        assertTrue(copyData.isStopOnSuccess());
+        assertTrue(copyData.isIgnoreSSLError());
+    }
+
+    @Test
     public void testEmptyMap() {
         AccessTypeData data = new AccessTypeData(new HashMap<>());
         assertEquals(-1, data.getId());

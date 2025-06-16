@@ -131,6 +131,43 @@ public class NetworkTaskTest {
     }
 
     @Test
+    public void testCopy() {
+        long timestamp = System.currentTimeMillis();
+        NetworkTask task = new NetworkTask();
+        task.setId(1);
+        task.setIndex(2);
+        task.setSchedulerId(3);
+        task.setName("name");
+        task.setInstances(3);
+        task.setAddress("127.0.0.1");
+        task.setPort(23);
+        task.setAccessType(AccessType.PING);
+        task.setInterval(15);
+        task.setOnlyWifi(true);
+        task.setNotification(true);
+        task.setRunning(true);
+        task.setLastScheduled(timestamp);
+        task.setFailureCount(12);
+        task.setHighPrio(true);
+        NetworkTask copyTask = new NetworkTask(task);
+        assertEquals(-1, copyTask.getId());
+        assertEquals(-1, copyTask.getIndex());
+        assertEquals(-1, copyTask.getSchedulerId());
+        assertEquals("name", copyTask.getName());
+        assertEquals(0, copyTask.getInstances());
+        assertEquals("127.0.0.1", copyTask.getAddress());
+        assertEquals(23, copyTask.getPort());
+        assertEquals(AccessType.PING, copyTask.getAccessType());
+        assertEquals(15, copyTask.getInterval());
+        assertTrue(copyTask.isOnlyWifi());
+        assertTrue(copyTask.isNotification());
+        assertFalse(copyTask.isRunning());
+        assertEquals(-1, copyTask.getLastScheduled());
+        assertEquals(0, copyTask.getFailureCount());
+        assertTrue(copyTask.isHighPrio());
+    }
+
+    @Test
     public void testEmptyMap() {
         NetworkTask task = new NetworkTask(new HashMap<>());
         assertEquals(-1, task.getId());

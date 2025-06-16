@@ -67,6 +67,18 @@ public class NetworkTask {
         this.highPrio = false;
     }
 
+    public NetworkTask(NetworkTask otherTask) {
+        this();
+        this.name = otherTask.getName();
+        this.address = otherTask.getAddress();
+        this.port = otherTask.getPort();
+        this.accessType = otherTask.getAccessType();
+        this.interval = otherTask.getInterval();
+        this.onlyWifi = otherTask.isOnlyWifi();
+        this.notification = otherTask.isNotification();
+        this.highPrio = otherTask.isHighPrio();
+    }
+
     public NetworkTask(Context context) {
         this();
         Resources resources = context.getResources();

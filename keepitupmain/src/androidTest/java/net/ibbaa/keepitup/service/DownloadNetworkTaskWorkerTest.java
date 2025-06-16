@@ -102,9 +102,9 @@ public class DownloadNetworkTaskWorkerTest {
         MockDNSLookup mockDNSLookup = new MockDNSLookup("127.0.0.1", dnsLookupResult);
         MockDownloadCommand mockDownloadCommand;
         if (exception == null) {
-            mockDownloadCommand = new MockDownloadCommand(TestRegistry.getContext(), getNetworkTask(), new URL("http://127.0.0.1"), "folder", true, downloadCommandResult);
+            mockDownloadCommand = new MockDownloadCommand(TestRegistry.getContext(), getNetworkTask(), getAccessTypeData(), new URL("http://127.0.0.1"), "folder", true, downloadCommandResult);
         } else {
-            mockDownloadCommand = new MockDownloadCommand(TestRegistry.getContext(), getNetworkTask(), new URL("http://127.0.0.1"), "folder", true, exception);
+            mockDownloadCommand = new MockDownloadCommand(TestRegistry.getContext(), getNetworkTask(), getAccessTypeData(), new URL("http://127.0.0.1"), "folder", true, exception);
         }
         downloadNetworkTaskWorker.setMockDNSLookup(mockDNSLookup);
         downloadNetworkTaskWorker.setMockDownloadCommand(mockDownloadCommand);
@@ -119,7 +119,7 @@ public class DownloadNetworkTaskWorkerTest {
         TestDownloadNetworkTaskWorker downloadNetworkTaskWorker = new TestDownloadNetworkTaskWorker(TestRegistry.getContext(), task, null);
         MockDNSLookup mockDNSLookup = new MockDNSLookup("127.0.0.1", dnsLookupResult);
         MockDownloadCommand mockDownloadCommand;
-        mockDownloadCommand = new MockDownloadCommand(TestRegistry.getContext(), task, new URL("http://127.0.0.1"), "folder", true, downloadCommandResult, true);
+        mockDownloadCommand = new MockDownloadCommand(TestRegistry.getContext(), task, getAccessTypeData(), new URL("http://127.0.0.1"), "folder", true, downloadCommandResult, true);
         downloadNetworkTaskWorker.setMockDNSLookup(mockDNSLookup);
         downloadNetworkTaskWorker.setMockDownloadCommand(mockDownloadCommand);
         downloadNetworkTaskWorker.setMockFileManager(fileManager);
