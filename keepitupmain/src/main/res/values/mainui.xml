@@ -20,6 +20,7 @@
     <string name="label_activity_main_stop_network_task">Stop</string>
     <string name="label_activity_main_delete_network_task">Delete network task</string>
     <string name="label_activity_main_edit_network_task">Edit network task</string>
+    <string name="label_activity_main_copy_network_task" tools:ignore="UnusedResources">Copy network task</string>
     <string name="label_activity_main_log_network_task">Display log</string>
     <string name="menu_action_activity_main_defaults">Defaults</string>
     <string name="menu_action_activity_main_global_settings">Settings</string>

@@ -55,7 +55,7 @@
                 tools:ignore="KeyboardInaccessibleWidget" />
 
             <LinearLayout
-                android:id="@+id/linearlayout_list_item_network_task_delete_edit_log"
+                android:id="@+id/linearlayout_list_item_network_task_delete_edit_copy_log"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="end|top"
@@ -85,6 +85,17 @@
                     android:contentDescription="@string/label_activity_main_edit_network_task"
                     app:srcCompat="@drawable/icon_edit_selector"
                     tools:ignore="KeyboardInaccessibleWidget" />
+
+                <!--<ImageView
+                    android:id="@+id/imageview_list_item_network_task_copy"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:clickable="true"
+                    android:focusable="false"
+                    android:focusableInTouchMode="false"
+                    android:contentDescription="@string/label_activity_main_copy_network_task"
+                    app:srcCompat="@drawable/icon_copy_selector"
+                    tools:ignore="KeyboardInaccessibleWidget" />-->
 
                 <ImageView
                     android:id="@+id/imageview_list_item_network_task_log"
