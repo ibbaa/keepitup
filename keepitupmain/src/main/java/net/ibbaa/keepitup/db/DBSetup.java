@@ -576,6 +576,9 @@ public class DBSetup {
         AccessTypeDataDAO accessTypeDataDAO = new AccessTypeDataDAO(getContext());
         NetworkTaskValidator networkTaskValidator = new NetworkTaskValidator(getContext());
         NetworkTask task = new NetworkTask(taskMap);
+        if (task.getAddress() != null) {
+            task.setAddress(task.getAddress().trim());
+        }
         Log.d(DBSetup.class.getName(), "NetworkTask is " + task);
         if (!networkTaskValidator.validate(task)) {
             Log.e(DBSetup.class.getName(), "NetworkTask is invalid and will not be imported: " + task);

@@ -191,7 +191,7 @@ public class NetworkTaskEditDialog extends DialogFragmentBase implements Context
     }
 
     private String getAddress() {
-        return StringUtil.notNull(addressEditText.getText());
+        return StringUtil.notNull(addressEditText.getText()).trim();
     }
 
     private String getPort() {

@@ -426,6 +426,21 @@ public class JSONSystemSetupTest {
     }
 
     @Test
+    public void testImportDatabaseAddressTrimmed() {
+        NetworkTask task1 = networkTaskDAO.insertNetworkTask(getNetworkTask1());
+        accessTypeDataDAO.insertAccessTypeData(getAccessTypeData1(task1.getId()));
+        SystemSetupResult exportResult = setup.exportData();
+        networkTaskDAO.deleteAllNetworkTasks();
+        logDAO.deleteAllLogs();
+        accessTypeDataDAO.deleteAllAccessTypeData();
+        setup.importData(exportResult.data().replace("\"address\":\"127.0.0.1\"", "\"address\":\"   127.0.0.1   \""));
+        List<NetworkTask> tasks = networkTaskDAO.readAllNetworkTasks();
+        NetworkTask readTask1 = tasks.get(0);
+        assertTrue(task1.isTechnicallyEqual(readTask1));
+        assertEquals("127.0.0.1", readTask1.getAddress());
+    }
+
+    @Test
     public void testImportDatabaseWithIntervals() {
         NetworkTask task1 = networkTaskDAO.insertNetworkTask(getNetworkTask1());
         LogEntry task1Entry1 = logDAO.insertAndDeleteLog(getLogEntry1(task1.getId()));
@@ -815,6 +830,17 @@ public class JSONSystemSetupTest {
         assertTrue(preferenceManager.getPreferenceAlarmOnHighPrio());
         assertTrue(preferenceManager.getPreferenceAskedNotificationPermission());
         assertTrue(preferenceManager.getPreferenceAlarmInfoShown());
+    }
+
+    @Test
+    public void testImportSettingsAddressTrimmed() {
+        preferenceManager.setPreferenceAddress("   address   ");
+        SystemSetupResult exportResult = setup.exportData();
+        preferenceManager.removeAllPreferences();
+        SystemSetupResult importResult = setup.importData(exportResult.data());
+        assertTrue(importResult.success());
+        assertEquals(exportResult.data(), importResult.data());
+        assertEquals("address", preferenceManager.getPreferenceAddress());
     }
 
     @Test

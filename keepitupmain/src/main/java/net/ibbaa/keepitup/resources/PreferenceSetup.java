@@ -189,7 +189,7 @@ public class PreferenceSetup {
         }
         Object address = defaults.get("preferenceAddress");
         if (isValidAddress(address)) {
-            preferenceManager.setPreferenceAddress(address.toString());
+            preferenceManager.setPreferenceAddress(address.toString().trim());
         } else {
             preferenceManager.removePreferenceAddress();
         }

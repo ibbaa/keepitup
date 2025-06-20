@@ -429,8 +429,9 @@ public class DefaultsActivity extends SettingsInputActivity {
         Log.d(DefaultsActivity.class.getName(), "onInputDialogOkClicked, type is " + type + ", value is " + inputDialog.getValue());
         PreferenceManager preferenceManager = new PreferenceManager(this);
         if (SettingsInput.Type.ADDRESS.equals(type.getType())) {
-            setAddress(inputDialog.getValue());
-            preferenceManager.setPreferenceAddress(getAddress());
+            String address = StringUtil.notNull(inputDialog.getValue()).trim();
+            setAddress(address);
+            preferenceManager.setPreferenceAddress(address);
         } else if (SettingsInput.Type.PORT.equals(type.getType())) {
             setPort(inputDialog.getValue());
             preferenceManager.setPreferencePort(NumberUtil.getIntValue(getPort(), getResources().getInteger(R.integer.task_port_default)));

@@ -423,6 +423,30 @@ public class DBSetupTest {
     }
 
     @Test
+    public void testImportNetworkTaskAddressTrimmed() {
+        NetworkTask task = getNetworkTask1();
+        task.setAddress("   127.0.0.1");
+        Map<String, ?> taskMap = task.toMap();
+        Map<String, ?> dataMap = getAccessTypeData(0).toMap();
+        setup.importNetworkTaskWithLogsAndAccessTypeData(taskMap, Collections.emptyList(), dataMap);
+        List<NetworkTask> taskList = networkTaskDAO.readAllNetworkTasks();
+        assertEquals(1, taskList.size());
+        task = taskList.get(0);
+        assertTrue(task.isTechnicallyEqual(getNetworkTask1()));
+        assertEquals("127.0.0.1", task.getAddress());
+        networkTaskDAO.deleteAllNetworkTasks();
+        accessTypeDataDAO.deleteAllAccessTypeData();
+        task = getNetworkTask1();
+        task.setAddress("   https://test.org   ");
+        taskMap = task.toMap();
+        setup.importNetworkTaskWithLogsAndAccessTypeData(taskMap, Collections.emptyList(), dataMap);
+        taskList = networkTaskDAO.readAllNetworkTasks();
+        assertEquals(1, taskList.size());
+        task = taskList.get(0);
+        assertEquals("https://test.org", task.getAddress());
+    }
+
+    @Test
     public void testImportNetworkTaskWithLogsAndAccessTypeDataMissing() {
         Map<String, ?> taskMap = getNetworkTask1().toMap();
         Map<String, ?> entryMap1 = getLogEntry1(0).toMap();

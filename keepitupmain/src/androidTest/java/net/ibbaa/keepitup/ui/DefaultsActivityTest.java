@@ -393,6 +393,22 @@ public class DefaultsActivityTest extends BaseUITest {
     }
 
     @Test
+    public void testAddressTrimmed() {
+        ActivityScenario<?> activityScenario = launchSettingsInputActivity(DefaultsActivity.class);
+        onView(withId(R.id.textview_activity_defaults_address)).perform(click());
+        onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("  host.com  "));
+        onView(withId(R.id.edittext_dialog_settings_input_value)).check(matches(withTextColor(R.color.textColor)));
+        onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
+        onView(withId(R.id.textview_activity_defaults_address)).check(matches(withText("host.com")));
+        onView(withId(R.id.textview_activity_defaults_address)).perform(click());
+        onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("192.168.2.100  "));
+        onView(withId(R.id.edittext_dialog_settings_input_value)).check(matches(withTextColor(R.color.textColor)));
+        onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
+        onView(withId(R.id.textview_activity_defaults_address)).check(matches(withText("192.168.2.100")));
+        activityScenario.close();
+    }
+
+    @Test
     public void testAddressCopyPasteOption() {
         ActivityScenario<?> activityScenario = launchSettingsInputActivity(DefaultsActivity.class);
         onView(withId(R.id.textview_activity_defaults_address)).perform(click());
