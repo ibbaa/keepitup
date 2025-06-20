@@ -21,8 +21,10 @@ import android.content.Context;
 import net.ibbaa.keepitup.R;
 import net.ibbaa.keepitup.logging.Log;
 
+import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URLConnection;
+import java.net.URLDecoder;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -30,7 +32,9 @@ import javax.net.ssl.HttpsURLConnection;
 
 public class HTTPUtil {
 
-    private static final Pattern CONTENT_DISPOSITION = Pattern.compile("attachment;\\s*filename\\s*=\\s*\"([^\"]*)\"", Pattern.CASE_INSENSITIVE);
+    private static final Pattern FILENAME_STAR = Pattern.compile("filename\\*\\s*=\\s*([^']*)''([^;\\s]+)", Pattern.CASE_INSENSITIVE);
+    private static final Pattern FILENAME_QUOTED = Pattern.compile("filename\\s*=\\s*\"([^\"]+)\"", Pattern.CASE_INSENSITIVE);
+    private static final Pattern FILENAME_UNQUOTED = Pattern.compile("filename\\s*=\\s*([^;\\s]+)", Pattern.CASE_INSENSITIVE);
     private static final Pattern MIME_TYPE = Pattern.compile("\\s*(\\w*/\\w*)\\s*", Pattern.CASE_INSENSITIVE);
 
     public static boolean isHTTPConnection(URLConnection connection) {
@@ -57,28 +61,47 @@ public class HTTPUtil {
         return connection.getHeaderField(context.getResources().getString(R.string.http_header_content_location));
     }
 
+    public static void setUserAgent(Context context, URLConnection connection) {
+        connection.setRequestProperty(context.getResources().getString(R.string.http_header_user_agent), context.getResources().getString(R.string.http_user_agent));
+    }
+
     public static String getFileNameFromContentDisposition(String contentDisposition) {
         Log.d(HTTPUtil.class.getName(), "getFileNameFromContentDisposition, contentDisposition is " + contentDisposition);
         if (contentDisposition == null) {
             return null;
         }
         try {
-            Matcher matcher = CONTENT_DISPOSITION.matcher(contentDisposition);
+            Matcher matcher = FILENAME_STAR.matcher(contentDisposition);
             if (matcher.find()) {
-                String fileName = matcher.group(1);
-                if (fileName != null) {
-                    int index = fileName.lastIndexOf('/') + 1;
-                    if (index > 0) {
-                        fileName = fileName.substring(index);
-                    }
+                String encoding = matcher.group(1);
+                String encodedFilename = matcher.group(2);
+                try {
+                    String decoded = URLDecoder.decode(encodedFilename, encoding);
+                    return stripPath(decoded);
+                } catch (UnsupportedEncodingException exc) {
+                    return stripPath(encodedFilename);
                 }
-                Log.d(HTTPUtil.class.getName(), "Extracted file name is " + fileName);
-                return fileName;
+            }
+            matcher = FILENAME_QUOTED.matcher(contentDisposition);
+            if (matcher.find()) {
+                return stripPath(matcher.group(1));
+            }
+            matcher = FILENAME_UNQUOTED.matcher(contentDisposition);
+            if (matcher.find()) {
+                return stripPath(matcher.group(1));
             }
         } catch (Exception exc) {
             Log.d(HTTPUtil.class.getName(), "Exception parsing content disposition " + contentDisposition, exc);
         }
         return null;
+    }
+
+    private static String stripPath(String fileName) {
+        if (fileName == null) {
+            return null;
+        }
+        int lastSlash = Math.max(fileName.lastIndexOf('/'), fileName.lastIndexOf('\\'));
+        return lastSlash >= 0 ? fileName.substring(lastSlash + 1) : fileName;
     }
 
     public static String getMimeTypeFromContentType(String contentType) {

@@ -233,6 +233,7 @@ public class DownloadCommand implements Callable<DownloadCommandResult> {
         if (HTTPUtil.isHTTPSConnection(connection) && isIgnoreSSLError()) {
             disableSSLCheck((HttpsURLConnection) connection);
         }
+        HTTPUtil.setUserAgent(getContext(), connection);
         connection.setConnectTimeout(getResources().getInteger(R.integer.download_connect_timeout) * 1000);
         connection.setReadTimeout(getResources().getInteger(R.integer.download_read_timeout) * 1000);
         connection.setDoInput(true);

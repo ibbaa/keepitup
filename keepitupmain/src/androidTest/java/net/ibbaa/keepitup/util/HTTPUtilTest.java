@@ -24,14 +24,41 @@ import static org.junit.Assert.assertTrue;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.SmallTest;
 
+import net.ibbaa.keepitup.test.mock.MockURLConnection;
+import net.ibbaa.keepitup.test.mock.TestRegistry;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.net.HttpURLConnection;
+import java.net.URL;
 
 @SmallTest
 @RunWith(AndroidJUnit4.class)
 public class HTTPUtilTest {
+
+    @Test
+    public void testGetLocation() throws Exception {
+        MockURLConnection urlConnection = new MockURLConnection(new URL("http://test.com"));
+        assertNull(HTTPUtil.getLocation(TestRegistry.getContext(), urlConnection));
+        urlConnection.addHeader("Location", "123");
+        assertEquals("123", HTTPUtil.getLocation(TestRegistry.getContext(), urlConnection));
+    }
+
+    @Test
+    public void testGetContentDisposition() throws Exception {
+        MockURLConnection urlConnection = new MockURLConnection(new URL("http://test.com"));
+        assertNull(HTTPUtil.getContentDisposition(TestRegistry.getContext(), urlConnection));
+        urlConnection.addHeader("Content-Disposition", "123");
+        assertEquals("123", HTTPUtil.getContentDisposition(TestRegistry.getContext(), urlConnection));
+    }
+
+    @Test
+    public void testSetUserAgent() throws Exception {
+        MockURLConnection urlConnection = new MockURLConnection(new URL("http://test.com"));
+        HTTPUtil.setUserAgent(TestRegistry.getContext(), urlConnection);
+        assertEquals("Mozilla/5.0", urlConnection.getHeaderField("User-Agent"));
+    }
 
     @Test
     public void testIsHTTPReturnCodeRedirect() {
@@ -53,14 +80,25 @@ public class HTTPUtilTest {
     @Test
     public void testGetFileNameFromContentDisposition() {
         assertNull(HTTPUtil.getFileNameFromContentDisposition(null));
+        assertNull(HTTPUtil.getFileNameFromContentDisposition("attachment"));
         assertNull(HTTPUtil.getFileNameFromContentDisposition(""));
         assertNull(HTTPUtil.getFileNameFromContentDisposition("123"));
-        assertNull(HTTPUtil.getFileNameFromContentDisposition("filename=\"xyz.jpg\""));
+        assertEquals("xyz.jpg", HTTPUtil.getFileNameFromContentDisposition("filename=\"xyz.jpg\""));
         assertEquals("xyz.jpg", HTTPUtil.getFileNameFromContentDisposition("    attachment; filename=\"xyz.jpg\""));
         assertEquals("xyz.jpg", HTTPUtil.getFileNameFromContentDisposition("attachment; filename=\"xyz.jpg\""));
         assertEquals("xyz.jpg", HTTPUtil.getFileNameFromContentDisposition("attachment; filename=\"abc/xyz.jpg\""));
         assertEquals(" xyz.bin", HTTPUtil.getFileNameFromContentDisposition("attachment;  filename  = \"abc/xyz/ xyz.bin\" "));
         assertEquals("XYZ.jpg", HTTPUtil.getFileNameFromContentDisposition("aTTachment; filename=\"XYZ.jpg\""));
+        assertEquals("abc.txt", HTTPUtil.getFileNameFromContentDisposition("attachment; filename=abc.txt;"));
+        assertEquals("test.pdf", HTTPUtil.getFileNameFromContentDisposition("attachment; filename=\"test.pdf\""));
+        assertEquals("test.pdf", HTTPUtil.getFileNameFromContentDisposition("attachment; filename=test.pdf"));
+        assertEquals("test.pdf", HTTPUtil.getFileNameFromContentDisposition("attachment; filename=\"C:\\temp\\test.pdf\""));
+        assertEquals("test.pdf", HTTPUtil.getFileNameFromContentDisposition("attachment; filename=\"/var/tmp/test.pdf\""));
+        assertEquals("€_rates.txt", HTTPUtil.getFileNameFromContentDisposition("attachment; filename*=UTF-8''%E2%82%AC_rates.txt"));
+        assertEquals("über uns.txt", HTTPUtil.getFileNameFromContentDisposition("attachment; filename*=UTF-8''%C3%BCber%20uns.txt"));
+        assertEquals("über_uns.txt", HTTPUtil.getFileNameFromContentDisposition("attachment; filename*=ISO-8859-1''%FCber_uns.txt"));
+        assertEquals("file.pdf", HTTPUtil.getFileNameFromContentDisposition("ATTACHMENT ;   FILENAME = \"file.pdf\""));
+        assertEquals("doc.txt", HTTPUtil.getFileNameFromContentDisposition("inline; creation-date=\"today\"; filename=\"doc.txt\""));
     }
 
     @Test

@@ -80,6 +80,11 @@ public class MockURLConnection extends URLConnection {
     }
 
     @Override
+    public void setRequestProperty(String key, String value) {
+        addHeader(key, value);
+    }
+
+    @Override
     public InputStream getInputStream() throws IOException {
         if (exceptionOnInputStream != null) {
             throw exceptionOnInputStream;

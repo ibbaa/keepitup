@@ -32,4 +32,6 @@
     <integer name="dns_lookup_timeout">60</integer>
     <string name="http_header_content_disposition">Content-Disposition</string>
     <string name="http_header_content_location">Location</string>
+    <string name="http_header_user_agent">User-Agent</string>
+    <string name="http_user_agent">Mozilla/5.0</string>
 </resources>
