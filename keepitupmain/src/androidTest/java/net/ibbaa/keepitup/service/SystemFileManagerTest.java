@@ -28,7 +28,6 @@ import androidx.test.filters.SmallTest;
 import net.ibbaa.keepitup.model.FileEntry;
 import net.ibbaa.keepitup.test.mock.MockTimeService;
 import net.ibbaa.keepitup.test.mock.TestRegistry;
-import net.ibbaa.keepitup.util.URLUtil;
 
 import org.junit.After;
 import org.junit.Before;
@@ -282,13 +281,13 @@ public class SystemFileManagerTest {
 
     @Test
     public void testGetDownloadFileNameSpecified() throws Exception {
-        assertEquals("xyz.jpg", fileManager.getDownloadFileName(new URL(URLUtil.encodeURL("http://www.host.com")), "xyz.jpg", "image/jpeg"));
-        assertEquals("xyz.jpg", fileManager.getDownloadFileName(new URL(URLUtil.encodeURL("http://www.host.com")), "xyz", "image/jpeg"));
-        assertEquals("  xyz .jpg", fileManager.getDownloadFileName(new URL(URLUtil.encodeURL("http://www.host.com")), "  xyz ", "image/jpeg"));
-        assertEquals(" abc/xyz/xyz.mp3", fileManager.getDownloadFileName(new URL(URLUtil.encodeURL("http://www.host.com")), " abc/xyz/xyz", "audio/mpeg"));
-        assertEquals("x y z.txt", fileManager.getDownloadFileName(new URL(URLUtil.encodeURL("http://www.host.com")), "x y z", "text/plain"));
-        assertEquals("xy z.ab c", fileManager.getDownloadFileName(new URL(URLUtil.encodeURL("http://www.host.com")), "xy z.ab c", "text/plain"));
-        assertEquals("  .ab c", fileManager.getDownloadFileName(new URL(URLUtil.encodeURL("http://www.host.com")), "  .ab c", "text/plain"));
+        assertEquals("xyz.jpg", fileManager.getDownloadFileName(new URL("http://www.host.com"), "xyz.jpg", "image/jpeg"));
+        assertEquals("xyz.jpg", fileManager.getDownloadFileName(new URL("http://www.host.com"), "xyz", "image/jpeg"));
+        assertEquals("  xyz .jpg", fileManager.getDownloadFileName(new URL("http://www.host.com"), "  xyz ", "image/jpeg"));
+        assertEquals(" abc_xyz_xyz.mp3", fileManager.getDownloadFileName(new URL("http://www.host.com"), " abc/xyz/xyz", "audio/mpeg"));
+        assertEquals("x y z.txt", fileManager.getDownloadFileName(new URL("http://www.host.com"), "x y z", "text/plain"));
+        assertEquals("xy z.ab c", fileManager.getDownloadFileName(new URL("http://www.host.com"), "xy z.ab c", "text/plain"));
+        assertEquals("  .ab c", fileManager.getDownloadFileName(new URL("http://www.host.com"), "  .ab c", "text/plain"));
         assertEquals("downloadfile.txt", fileManager.getDownloadFileName(null, "..", "text/plain"));
         assertEquals("downloadfile.txt", fileManager.getDownloadFileName(null, "....//..", "text/plain"));
         assertTrue(verifyHTMLFile("downloadfile", fileManager.getDownloadFileName(null, null, "text/html")));
@@ -298,29 +297,30 @@ public class SystemFileManagerTest {
 
     @Test
     public void testGetDownloadFileNameURL() throws Exception {
-        assertEquals("xyz.jpg", fileManager.getDownloadFileName(new URL(URLUtil.encodeURL("http://www.host.com/xyz.jpg")), null, null));
-        assertEquals("xyz.abc", fileManager.getDownloadFileName(new URL(URLUtil.encodeURL("http://www.host.com/xyz.abc")), "..", null));
-        assertEquals("xyz.abc", fileManager.getDownloadFileName(new URL(URLUtil.encodeURL("http://www.host.com/123/xyz.abc")), "/", "image/jpeg"));
-        assertEquals("xyz.a b c", fileManager.getDownloadFileName(new URL(URLUtil.encodeURL("http://www.host.com/123/xyz.a b c")), "", "image/jpeg"));
-        assertEquals("xy z.abc", fileManager.getDownloadFileName(new URL(URLUtil.encodeURL("http://www.host.com/123/xy z.abc")), "", "image/jpeg"));
-        assertEquals("www_host_com.jpg", fileManager.getDownloadFileName(new URL(URLUtil.encodeURL("http://www.host.com/..")), null, "image/jpeg"));
-        assertTrue(verifyHTMLFile("www_host_com", fileManager.getDownloadFileName(new URL(URLUtil.encodeURL("http://www.host.com/abc/..")), null, "text/html")));
-        assertEquals("www_host_com.jpg", fileManager.getDownloadFileName(new URL(URLUtil.encodeURL("http://www.host.com/......")), null, "image/jpeg"));
-        assertEquals("www_host_com.jpg", fileManager.getDownloadFileName(new URL(URLUtil.encodeURL("http://www.host.com/xyz//......")), null, "image/jpeg"));
+        assertEquals("xyz.jpg", fileManager.getDownloadFileName(new URL("http://www.host.com/xyz.jpg"), null, null));
+        assertEquals("xyz.abc", fileManager.getDownloadFileName(new URL("http://www.host.com/xyz.abc"), "..", null));
+        assertEquals("xyz.abc", fileManager.getDownloadFileName(new URL("http://www.host.com/123/xyz.abc"), "/", "image/jpeg"));
+        assertEquals("xyz.a b c", fileManager.getDownloadFileName(new URL("http://www.host.com/123/xyz.a b c"), "", "image/jpeg"));
+        assertEquals("xyz.a bc", fileManager.getDownloadFileName(new URL("http://www.host.com/123/xyz.a%20bc"), "", "image/jpeg"));
+        assertEquals("xy z.abc", fileManager.getDownloadFileName(new URL("http://www.host.com/123/xy z.abc"), "", "image/jpeg"));
+        assertEquals("www_host_com.jpg", fileManager.getDownloadFileName(new URL("http://www.host.com/.."), null, "image/jpeg"));
+        assertTrue(verifyHTMLFile("www_host_com", fileManager.getDownloadFileName(new URL("http://www.host.com/abc/.."), null, "text/html")));
+        assertEquals("www_host_com.jpg", fileManager.getDownloadFileName(new URL("http://www.host.com/......"), null, "image/jpeg"));
+        assertEquals("www_host_com.jpg", fileManager.getDownloadFileName(new URL("http://www.host.com/xyz//......"), null, "image/jpeg"));
     }
 
     @Test
     public void testGetDownloadFileNameHost() throws Exception {
-        assertEquals("www_host_com", fileManager.getDownloadFileName(new URL(URLUtil.encodeURL("http://www.host.com")), null, null));
-        assertEquals("www_host_com.css", fileManager.getDownloadFileName(new URL(URLUtil.encodeURL("http://www.host.com")), null, "text/css"));
-        assertEquals("abcd.css", fileManager.getDownloadFileName(new URL(URLUtil.encodeURL("http://abcd")), "/", "text/css"));
-        assertEquals("127_0_0_1.css", fileManager.getDownloadFileName(new URL(URLUtil.encodeURL("http://127.0.0.1///......")), "...////...///", "text/css"));
-        assertEquals("[3ffe:1900:4545:3:200:f8ff:fe21:67cf].zip", fileManager.getDownloadFileName(new URL(URLUtil.encodeURL("ftp://[3ffe:1900:4545:3:200:f8ff:fe21:67cf]")), "", "application/zip"));
-        assertEquals("downloadfile.rtf", fileManager.getDownloadFileName(new URL(URLUtil.encodeURL("http://www.h ost.com")), "", "text/rtf"));
+        assertEquals("www_host_com", fileManager.getDownloadFileName(new URL("http://www.host.com"), null, null));
+        assertEquals("www_host_com.css", fileManager.getDownloadFileName(new URL("http://www.host.com"), null, "text/css"));
+        assertEquals("abcd.css", fileManager.getDownloadFileName(new URL("http://abcd"), "/", "text/css"));
+        assertEquals("127_0_0_1.css", fileManager.getDownloadFileName(new URL("http://127.0.0.1///......"), "...////...///", "text/css"));
+        assertEquals("[3ffe:1900:4545:3:200:f8ff:fe21:67cf].zip", fileManager.getDownloadFileName(new URL("ftp://[3ffe:1900:4545:3:200:f8ff:fe21:67cf]"), "", "application/zip"));
+        assertEquals("www_h ost_com.rtf", fileManager.getDownloadFileName(new URL("http://www.h ost.com"), "", "text/rtf"));
     }
 
     @Test
-    public void testGetLogFileName() throws Exception {
+    public void testGetLogFileName() {
         assertEquals("test_3_id_00000001.log", fileManager.getLogFileName("test", null, ".log", 1, 2, null));
         assertEquals("test_3_id_0000000F.log", fileManager.getLogFileName("test", "", ".log", 15, 2, ""));
         assertEquals("test_2_name_www_host_com_id_0000000A.log", fileManager.getLogFileName("test", "name", ".log", 10, 1, "www.host.com"));
@@ -343,7 +343,9 @@ public class SystemFileManagerTest {
 
     @Test
     public void testGetValidFileName() throws Exception {
-        String fileName = fileManager.getValidFileName(fileManager.getInternalDownloadDirectory(), "test.file");
+        String fileName = fileManager.getValidFileName(fileManager.getInternalDownloadDirectory(), "//test/test.file");
+        assertEquals("testtest.file", fileName);
+        fileName = fileManager.getValidFileName(fileManager.getInternalDownloadDirectory(), "test.file");
         assertEquals("test.file", fileName);
         File file = new File(fileManager.getInternalDownloadDirectory().getAbsolutePath(), fileName);
         assertTrue(file.createNewFile());

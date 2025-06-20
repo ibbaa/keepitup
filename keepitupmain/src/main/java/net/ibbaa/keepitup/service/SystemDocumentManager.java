@@ -65,6 +65,7 @@ public class SystemDocumentManager implements IDocumentManager {
     public String getValidFileName(DocumentFile folder, String file) {
         Log.d(SystemFileManager.class.getName(), "getValidFileName, file is " + file);
         try {
+            file = file.replaceAll("/", "");
             if (!fileExists(folder, file)) {
                 Log.d(SystemFileManager.class.getName(), "File " + file + " does not exist");
                 return file;

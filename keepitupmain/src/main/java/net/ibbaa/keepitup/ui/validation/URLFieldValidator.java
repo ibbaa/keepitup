@@ -45,9 +45,7 @@ public class URLFieldValidator implements FieldValidator {
             return new ValidationResult(false, field, failedMessageNoValue);
         }
         Log.d(URLFieldValidator.class.getName(), "Encoding and modifying URL.");
-        String encodedURL = URLUtil.encodeURL(value);
-        Log.d(URLFieldValidator.class.getName(), "Modified URL is " + encodedURL);
-        if (URLUtil.isValidURL(encodedURL)) {
+        if (URLUtil.isValidURL(value)) {
             Log.d(URLFieldValidator.class.getName(), "Valid URL. Validation successful.");
             return new ValidationResult(true, field, successMessage);
         }

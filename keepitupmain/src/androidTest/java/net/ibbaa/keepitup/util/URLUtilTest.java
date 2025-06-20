@@ -96,22 +96,6 @@ public class URLUtilTest {
     }
 
     @Test
-    public void testEncodeURL() {
-        assertEquals("http://www.host.com", URLUtil.encodeURL("http://www.host.com"));
-        assertEquals("http://www.host.com/t%20est", URLUtil.encodeURL("http://www.host.com/t est"));
-        assertEquals("http://www.host.com/%C3%A4%C3%B6%C3%BC", URLUtil.encodeURL("http://www.host.com/äöü"));
-        assertEquals("http://www.host.com/t%20est", URLUtil.encodeURL("http://www.host.com/t%20est"));
-        assertEquals("http://www.host.com/t%20est?x=%201", URLUtil.encodeURL("http://www.host.com/t%20est?x= 1"));
-        assertEquals("http://www.host.com/t%20est?x=1", URLUtil.encodeURL("http://www.host.com/t est?x=1"));
-        assertEquals("http://www.host.com/t%20est?x=1", URLUtil.encodeURL("http://www.host.com/t%20est?x=1"));
-        assertEquals("http://www.host.com/test?x=%201", URLUtil.encodeURL("http://www.host.com/test?x= 1"));
-        assertEquals("http://www.host.com/test?x=%201", URLUtil.encodeURL("http://www.host.com/test?x=%201"));
-        assertEquals("http://test/%E2%80%A5/test", URLUtil.encodeURL("http://test/‥/test"));
-        assertEquals("www.ho st.com/t est?x=1", URLUtil.encodeURL("www.ho st.com/t est?x=1"));
-        assertEquals("http://[3ffe:1900:4545:3:200:f8ff:fe21:67cf]", URLUtil.encodeURL("http://[3ffe:1900:4545:3:200:f8ff:fe21:67cf]"));
-    }
-
-    @Test
     public void testGetHostAndPort() throws MalformedURLException {
         assertEquals("www.host.com", URLUtil.getHostAndPort(new URL("http://www.host.com")));
         assertEquals("www.host.com:8080", URLUtil.getHostAndPort(new URL("http://www.host.com:8080")));
@@ -163,7 +147,6 @@ public class URLUtilTest {
         assertEquals("https://[3ffe:1900:4545:3:200:f8ff:fe21:67cf]", url.toString());
         assertEquals("[3ffe:1900:4545:3:200:f8ff:fe21:67cf]", url.getHost());
         assertFalse(url.getPort() > 0);
-        assertTrue(StringUtil.isEmpty(url.getQuery()));
         assertTrue(StringUtil.isEmpty(url.getQuery()));
     }
 

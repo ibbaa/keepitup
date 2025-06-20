@@ -347,10 +347,10 @@ public class SystemFileManager implements IFileManager {
         if (!StringUtil.isEmpty(extension)) {
             String fileNameWithExtension = fileNameWithoutExtension + "." + extension;
             Log.d(SystemFileManager.class.getName(), "Returning file name " + fileNameWithExtension);
-            return fileNameWithExtension;
+            return fileNameWithExtension.replaceAll("/", "_");
         }
         Log.d(SystemFileManager.class.getName(), "Returning file name " + fileNameWithoutExtension);
-        return fileNameWithoutExtension;
+        return fileNameWithoutExtension.replaceAll("/", "_");
     }
 
     @Override
@@ -361,14 +361,13 @@ public class SystemFileManager implements IFileManager {
         }
         String host = address;
         if (!StringUtil.isEmpty(address)) {
-            String urlAddress = URLUtil.encodeURL(address);
-            if (URLUtil.isValidURL(urlAddress)) {
-                URL url = URLUtil.getURL(urlAddress);
+            URL url = URLUtil.getURL(address);
+            if (url != null) {
                 host = url.getHost();
             } else {
-                urlAddress = URLUtil.prefixHTTPProtocol(urlAddress);
-                if (URLUtil.isValidURL(urlAddress)) {
-                    URL url = URLUtil.getURL(urlAddress);
+                String urlAddress = URLUtil.prefixHTTPProtocol(address);
+                url = URLUtil.getURL(urlAddress);
+                if (url != null) {
                     host = url.getHost();
                 }
             }
@@ -383,7 +382,10 @@ public class SystemFileManager implements IFileManager {
     private String extractFileNameFromURL(URL url) {
         Log.d(SystemFileManager.class.getName(), "extractFileNameFromURL, url is " + url);
         try {
-            String fileName = new File(url.toURI().getPath()).getName();
+            if (url.getPath() == null) {
+                return null;
+            }
+            String fileName = new File(url.getPath()).getName();
             return Uri.decode(fileName);
         } catch (Exception exc) {
             Log.d(SystemFileManager.class.getName(), "Exception extracting file name from URL " + url, exc);
@@ -394,7 +396,7 @@ public class SystemFileManager implements IFileManager {
     private String createFileNameFromHost(URL url) {
         Log.d(SystemFileManager.class.getName(), "createFileNameFromHost, url is " + url);
         try {
-            String host = url.toURI().getHost();
+            String host = url.getHost();
             if (!StringUtil.isEmpty(host)) {
                 return host.replaceAll("\\.", "_");
             }
@@ -428,6 +430,7 @@ public class SystemFileManager implements IFileManager {
     public String getValidFileName(File folder, String file) {
         Log.d(SystemFileManager.class.getName(), "getValidFileName, folder is " + folder + ", file is " + file);
         try {
+            file = file.replaceAll("/", "");
             if (!folder.exists()) {
                 if (!folder.mkdirs()) {
                     Log.e(SystemFileManager.class.getName(), "Error creating " + folder);

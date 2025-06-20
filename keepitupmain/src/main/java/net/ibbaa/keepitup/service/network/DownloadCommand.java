@@ -212,8 +212,9 @@ public class DownloadCommand implements Callable<DownloadCommandResult> {
 
     private URL getLocationURL(URL downloadURL, String location) {
         Log.d(DownloadCommand.class.getName(), "getLocationURL, downloadURL is " + downloadURL + ", location is " + location);
-        if (!StringUtil.isEmpty(location) && URLUtil.isValidURL(location)) {
-            return URLUtil.getURL(location);
+        URL url = URLUtil.getURL(location);
+        if (url != null) {
+            return url;
         }
         return URLUtil.getURL(downloadURL, location);
     }

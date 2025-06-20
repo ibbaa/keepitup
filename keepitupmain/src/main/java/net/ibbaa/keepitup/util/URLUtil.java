@@ -23,7 +23,6 @@ import net.ibbaa.keepitup.logging.Log;
 
 import java.io.UnsupportedEncodingException;
 import java.net.IDN;
-import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
 import java.net.URLEncoder;
@@ -74,37 +73,7 @@ public class URLUtil {
 
     public static boolean isValidURL(String inputUrl) {
         Log.d(URLUtil.class.getName(), "isValidURL, inputUrl is " + inputUrl);
-        try {
-            URL url = new URL(inputUrl);
-            String protocol = url.getProtocol();
-            if (!"http".equalsIgnoreCase(protocol) && !"https".equalsIgnoreCase(protocol)) {
-                return false;
-            }
-            String host = url.getHost();
-            if (host == null || host.isEmpty()) {
-                return false;
-            }
-            if (inputUrl.trim().equalsIgnoreCase(protocol + "://")) {
-                return false;
-            }
-            return getURL(inputUrl) != null;
-        } catch (MalformedURLException exc) {
-            Log.d(URLUtil.class.getName(), "Error parsing inputUrl " + inputUrl, exc);
-        }
-        return false;
-    }
-
-    public static String encodeURL(String inputUrl) {
-        Log.d(URLUtil.class.getName(), "encodeURL, inputUrl is " + inputUrl);
-        try {
-            URL url = getURL(inputUrl);
-            if (url != null) {
-                return url.toString();
-            }
-        } catch (Exception exc) {
-            Log.d(URLUtil.class.getName(), "Exception parsing url " + inputUrl, exc);
-        }
-        return inputUrl;
+        return getURL(inputUrl) != null;
     }
 
     public static boolean isEncoded(String string) {
@@ -154,6 +123,12 @@ public class URLUtil {
             String query = url.getQuery();
             String ref = url.getRef();
             String asciiHost;
+            if (!"http".equalsIgnoreCase(protocol) && !"https".equalsIgnoreCase(protocol)) {
+                return null;
+            }
+            if (StringUtil.isEmpty(host)) {
+                return null;
+            }
             try {
                 asciiHost = IDN.toASCII(host);
             } catch (Exception exc) {
