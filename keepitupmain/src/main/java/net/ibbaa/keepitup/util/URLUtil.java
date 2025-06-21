@@ -26,12 +26,29 @@ import java.net.IDN;
 import java.net.URI;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.util.Set;
 import java.util.regex.Pattern;
 
 public class URLUtil {
 
-    private static final Pattern UNENCODED_CHARS = Pattern.compile("[^\\p{ASCII}]|[ \"<>#{}|\\\\^`\\[\\]]");
+    private static final Pattern UNENCODED_CHARS = Pattern.compile("[^\\p{ASCII}]|[ \"<>#{}|\\\\^`\\[\\]\\t\\n\\r+]");
     private static final Pattern VALID_PERCENT = Pattern.compile("%[0-9a-fA-F]{2}");
+
+    private static final Set<Character> PATH_RESERVED = Set.of('=', '?', '&', '#', '/', '+', ';', ',');
+    private static final Set<Character> QUERY_KEY_RESERVED = Set.of('=', '&', '?', '#', '+', '/', ';', ',');
+    private static final Set<Character> QUERY_VALUE_RESERVED = Set.of('&', '?', '#', '+', ';', ',');
+    private static final Set<Character> FRAGMENT_RESERVED = Set.of(' ', '"', '#', '<', '>', '`', '\\', '^', '[', ']', '{', '}', '|', '+');
+    private static final Set<Character> USER_INFO_RESERVED = Set.of(' ', '/', '@', '%', '"', '\\', '^', '`', '[', ']', '{', '}', '|', '#', '?');
+
+    private static final String USER_INFO_ALLOWED = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._~!$&'()*+,;=:";
+
+    public enum URLComponent {
+        PATH,
+        QUERY_KEY,
+        QUERY_VALUE,
+        FRAGMENT,
+        USER_INFO
+    }
 
     public static boolean isValidIPAddress(String ipAddress) {
         if (StringUtil.isEmpty(ipAddress)) {
@@ -76,25 +93,45 @@ public class URLUtil {
         return getURL(inputUrl) != null;
     }
 
-    public static boolean isEncoded(String string) {
-        Log.d(URLUtil.class.getName(), "isEncoded, string is " + string);
+    public static boolean isEncoded(String input, URLComponent urlComponent) {
+        Log.d(URLUtil.class.getName(), "isEncoded, input is " + input + ", urlComponent is " + urlComponent);
         try {
-            if (string == null) {
+            if (StringUtil.isEmpty(input)) {
                 return true;
             }
-            if (UNENCODED_CHARS.matcher(string).find()) {
+            if (UNENCODED_CHARS.matcher(input).find()) {
                 return false;
             }
-            for (int i = 0; i < string.length(); i++) {
-                if (string.charAt(i) == '%') {
-                    if (i + 2 >= string.length() || !VALID_PERCENT.matcher(string.substring(i, i + 3)).matches()) {
+            Set<Character> forbiddenChars = switch (urlComponent) {
+                case PATH -> PATH_RESERVED;
+                case QUERY_KEY -> QUERY_KEY_RESERVED;
+                case QUERY_VALUE -> QUERY_VALUE_RESERVED;
+                case FRAGMENT -> FRAGMENT_RESERVED;
+                case USER_INFO -> USER_INFO_RESERVED;
+            };
+            for (int ii = 0; ii < input.length(); ii++) {
+                char cc = input.charAt(ii);
+                if (cc == '%') {
+                    if (ii + 2 >= input.length() || !VALID_PERCENT.matcher(input.substring(ii, ii + 3)).matches()) {
+                        return false;
+                    }
+                    ii += 2;
+                } else {
+                    if (forbiddenChars.contains(cc)) {
+                        return false;
+                    }
+                }
+            }
+            for (int ii = 0; ii < input.length(); ii++) {
+                if (input.charAt(ii) == '%') {
+                    if (ii + 2 >= input.length() || !VALID_PERCENT.matcher(input.substring(ii, ii + 3)).matches()) {
                         return false;
                     }
                 }
             }
             return true;
         } catch (Exception exc) {
-            Log.d(URLUtil.class.getName(), "Exception parsing url " + string, exc);
+            Log.d(URLUtil.class.getName(), "Exception processing url component " + input, exc);
         }
         return false;
     }
@@ -129,17 +166,23 @@ public class URLUtil {
             if (StringUtil.isEmpty(host)) {
                 return null;
             }
+            if (userInfo != null) {
+                userInfo = getEncodedUserInfo(userInfo);
+            }
             try {
                 asciiHost = IDN.toASCII(host);
             } catch (Exception exc) {
-                Log.e(URLUtil.class.getName(), "Exception using  toASCII on " + host, exc);
+                Log.e(URLUtil.class.getName(), "Exception using toASCII on " + host, exc);
                 asciiHost = host;
             }
-            if (path != null && !isEncoded(path)) {
-                path = encodePath(path);
+            if (path != null) {
+                path = getEncodedPath(path);
             }
-            if (query != null && !isEncoded(query)) {
-                query = encodeQuery(query);
+            if (query != null) {
+                query = getEncodedQuery(query);
+            }
+            if (ref != null) {
+                ref = getEncodedRef(ref);
             }
             String finalURL = assembleURL(protocol, userInfo, asciiHost, port, path, query, ref);
             URI uri = new URI(finalURL);
@@ -148,6 +191,60 @@ public class URLUtil {
             Log.d(URLUtil.class.getName(), "Exception parsing url " + inputUrl, exc);
         }
         return null;
+    }
+
+    public static String getEncodedQuery(String query) {
+        Log.d(URLUtil.class.getName(), "getEncodedQuery, query is " + query);
+        if (StringUtil.isEmpty(query)) {
+            return "";
+        }
+        StringBuilder encodedQuery = new StringBuilder();
+        String[] pairs = query.split("&");
+        for (int ii = 0; ii < pairs.length; ii++) {
+            if (ii > 0) {
+                encodedQuery.append("&");
+            }
+            String[] keyValue = pairs[ii].split("=", 2);
+            String key = keyValue.length > 0 ? keyValue[0] : "";
+            String value = keyValue.length > 1 ? keyValue[1] : "";
+            encodedQuery.append(isEncoded(key, URLComponent.QUERY_KEY) ? key : encodeURIComponent(key));
+            encodedQuery.append("=");
+            encodedQuery.append(isEncoded(value, URLComponent.QUERY_VALUE) ? value : encodeURIComponent(value));
+        }
+        return encodedQuery.toString();
+    }
+
+    public static String getEncodedPath(String path) {
+        Log.d(URLUtil.class.getName(), "getEncodedPath, path is " + path);
+        if (StringUtil.isEmpty(path)) {
+            return "";
+        }
+        StringBuilder encodedPath = new StringBuilder();
+        String[] segments = path.split("/", -1);
+        for (int ii = 0; ii < segments.length; ii++) {
+            if (ii > 0) {
+                encodedPath.append("/");
+            }
+            String segment = segments[ii];
+            encodedPath.append(isEncoded(segment, URLComponent.PATH) ? segment : encodeURIComponent(segment));
+        }
+        return encodedPath.toString();
+    }
+
+    public static String getEncodedUserInfo(String userInfo) {
+        Log.d(URLUtil.class.getName(), "getEncodedUserInfo, userInfo is " + userInfo);
+        if (!isEncoded(userInfo, URLComponent.USER_INFO)) {
+            return encodeUserInfo(userInfo);
+        }
+        return userInfo;
+    }
+
+    public static String getEncodedRef(String ref) {
+        Log.d(URLUtil.class.getName(), "getEncodedRef, ref is " + ref);
+        if (!isEncoded(ref, URLComponent.FRAGMENT)) {
+            return encodeURIComponent(ref);
+        }
+        return ref;
     }
 
     public static String assembleURL(String protocol, String userInfo, String asciiHost, int port, String path, String query, String ref) {
@@ -173,45 +270,6 @@ public class URLUtil {
         return urlBuilder.toString();
     }
 
-    public static String encodeQuery(String query) {
-        Log.d(URLUtil.class.getName(), "encodeQuery, query is " + query);
-        StringBuilder encoded = new StringBuilder();
-        String[] pairs = query.split("&");
-        boolean first = true;
-        for (String pair : pairs) {
-            if (!first) {
-                encoded.append('&');
-            }
-            first = false;
-            int index = pair.indexOf('=');
-            if (index >= 0) {
-                String key = pair.substring(0, index);
-                String value = pair.substring(index + 1);
-                encoded.append(encodeURIComponent(key));
-                encoded.append('=');
-                encoded.append(encodeURIComponent(value));
-            } else {
-                encoded.append(encodeURIComponent(pair));
-            }
-        }
-        return encoded.toString();
-    }
-
-    public static String encodePath(String path) {
-        Log.d(URLUtil.class.getName(), "encodePath, path is " + path);
-        StringBuilder encoded = new StringBuilder();
-        for (String segment : path.split("/")) {
-            if (!segment.isEmpty()) {
-                encoded.append('/');
-                encoded.append(encodeURIComponent(segment));
-            }
-        }
-        if (path.endsWith("/")) {
-            encoded.append('/');
-        }
-        return encoded.length() == 0 ? "/" : encoded.toString();
-    }
-
     @SuppressWarnings({"CharsetObjectCanBeUsed"})
     private static String encodeURIComponent(String component) {
         Log.d(URLUtil.class.getName(), "encodeURIComponent, component is " + component);
@@ -221,5 +279,24 @@ public class URLUtil {
             Log.e(URLUtil.class.getName(), "Exception encoding " + component, exc);
             return component;
         }
+    }
+
+    @SuppressWarnings({"CharsetObjectCanBeUsed"})
+    private static String encodeUserInfo(String input) {
+        Log.d(URLUtil.class.getName(), "encodeUserInfo, input is " + input);
+        StringBuilder userInfoBuilder = new StringBuilder();
+        for (char cc : input.toCharArray()) {
+            if (USER_INFO_ALLOWED.indexOf(cc) != -1) {
+                userInfoBuilder.append(cc);
+            } else {
+                try {
+                    userInfoBuilder.append(URLEncoder.encode(String.valueOf(cc), "UTF-8"));
+                } catch (UnsupportedEncodingException exc) {
+                    Log.e(URLUtil.class.getName(), "Exception encoding " + input, exc);
+                    userInfoBuilder.append(cc);
+                }
+            }
+        }
+        return userInfoBuilder.toString().replace("+", "%20");
     }
 }

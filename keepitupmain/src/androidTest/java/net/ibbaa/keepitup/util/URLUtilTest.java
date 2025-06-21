@@ -19,6 +19,7 @@ package net.ibbaa.keepitup.util;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import androidx.test.ext.junit.runners.AndroidJUnit4;
@@ -79,20 +80,73 @@ public class URLUtilTest {
     }
 
     @Test
-    public void testIsEncoded() {
-        assertFalse(URLUtil.isEncoded("http://www.ho st.com"));
-        assertTrue(URLUtil.isEncoded("http://www.host.com"));
-        assertFalse(URLUtil.isEncoded("http://www.host.com/t est"));
-        assertFalse(URLUtil.isEncoded("http://www.host.com/äöü"));
-        assertTrue(URLUtil.isEncoded("http://www.host.com/t%20est"));
-        assertFalse(URLUtil.isEncoded("http://www.host.com/t est?x=1"));
-        assertTrue(URLUtil.isEncoded("http://www.host.com/t%20est?x=1"));
-        assertFalse(URLUtil.isEncoded("http://www.host.com/test?x= 1"));
-        assertTrue(URLUtil.isEncoded("http://www.host.com/test?x=%201"));
-        assertFalse(URLUtil.isEncoded("http://www.host.com/t%20est?x= 1"));
-        assertFalse(URLUtil.isEncoded("x= 1"));
-        assertTrue(URLUtil.isEncoded("x=%201"));
-        assertTrue(URLUtil.isEncoded("test?x=%201"));
+    public void testIsEncodedPath() {
+        assertTrue(URLUtil.isEncoded("", URLUtil.URLComponent.PATH));
+        assertTrue(URLUtil.isEncoded("is-ok", URLUtil.URLComponent.PATH));
+        assertTrue(URLUtil.isEncoded("file%20name", URLUtil.URLComponent.PATH));
+        assertTrue(URLUtil.isEncoded("abc%3Ddef", URLUtil.URLComponent.PATH));
+        assertFalse(URLUtil.isEncoded("file name", URLUtil.URLComponent.PATH));
+        assertFalse(URLUtil.isEncoded("äpfel", URLUtil.URLComponent.PATH));
+        assertFalse(URLUtil.isEncoded("folder=name", URLUtil.URLComponent.PATH));
+        assertFalse(URLUtil.isEncoded("path/segment", URLUtil.URLComponent.PATH));
+        assertFalse(URLUtil.isEncoded("a+b", URLUtil.URLComponent.PATH));
+        assertFalse(URLUtil.isEncoded("abc%2", URLUtil.URLComponent.PATH));
+    }
+
+    @Test
+    public void testIsEncodedQueryKey() {
+        assertTrue(URLUtil.isEncoded("", URLUtil.URLComponent.QUERY_KEY));
+        assertTrue(URLUtil.isEncoded("key", URLUtil.URLComponent.QUERY_KEY));
+        assertTrue(URLUtil.isEncoded("na%20me", URLUtil.URLComponent.QUERY_KEY));
+        assertTrue(URLUtil.isEncoded("user%3Aname", URLUtil.URLComponent.QUERY_KEY));
+        assertFalse(URLUtil.isEncoded("user name", URLUtil.URLComponent.QUERY_KEY));
+        assertFalse(URLUtil.isEncoded("x=1", URLUtil.URLComponent.QUERY_KEY));
+        assertFalse(URLUtil.isEncoded("k&v", URLUtil.URLComponent.QUERY_KEY));
+        assertFalse(URLUtil.isEncoded("abc+def", URLUtil.URLComponent.QUERY_KEY));
+        assertFalse(URLUtil.isEncoded("äöü", URLUtil.URLComponent.QUERY_KEY));
+        assertFalse(URLUtil.isEncoded("wrong%text", URLUtil.URLComponent.QUERY_KEY));
+    }
+
+    @Test
+    public void testIsEncodedQueryValue() {
+        assertTrue(URLUtil.isEncoded("", URLUtil.URLComponent.QUERY_VALUE));
+        assertTrue(URLUtil.isEncoded("1", URLUtil.URLComponent.QUERY_VALUE));
+        assertTrue(URLUtil.isEncoded("a=b", URLUtil.URLComponent.QUERY_VALUE));
+        assertTrue(URLUtil.isEncoded("text%20mit%3Dzeichen", URLUtil.URLComponent.QUERY_VALUE));
+        assertFalse(URLUtil.isEncoded("äpfel", URLUtil.URLComponent.QUERY_VALUE));
+        assertFalse(URLUtil.isEncoded("text with space", URLUtil.URLComponent.QUERY_VALUE));
+        assertFalse(URLUtil.isEncoded("val&ue", URLUtil.URLComponent.QUERY_VALUE));
+        assertFalse(URLUtil.isEncoded("abc+def", URLUtil.URLComponent.QUERY_VALUE));
+        assertFalse(URLUtil.isEncoded("abc%2", URLUtil.URLComponent.QUERY_VALUE));
+    }
+
+    @Test
+    public void testIsEncodedFragment() {
+        assertTrue(URLUtil.isEncoded("section1", URLUtil.URLComponent.FRAGMENT));
+        assertTrue(URLUtil.isEncoded("%C3%BCbersicht%20kapitel", URLUtil.URLComponent.FRAGMENT));
+        assertTrue(URLUtil.isEncoded("anchor%3Dvalue%26another%3D2", URLUtil.URLComponent.FRAGMENT));
+        assertTrue(URLUtil.isEncoded("x%3Dy%26z", URLUtil.URLComponent.FRAGMENT));
+        assertFalse(URLUtil.isEncoded("übersicht%20kapitel", URLUtil.URLComponent.FRAGMENT));
+        assertFalse(URLUtil.isEncoded("section 1", URLUtil.URLComponent.FRAGMENT));
+        assertFalse(URLUtil.isEncoded("kapitel#2", URLUtil.URLComponent.FRAGMENT));
+        assertFalse(URLUtil.isEncoded("abc+def", URLUtil.URLComponent.FRAGMENT));
+        assertFalse(URLUtil.isEncoded("äöü", URLUtil.URLComponent.FRAGMENT));
+        assertFalse(URLUtil.isEncoded("abc%2", URLUtil.URLComponent.FRAGMENT));
+        assertFalse(URLUtil.isEncoded("title<name>", URLUtil.URLComponent.FRAGMENT));
+    }
+
+    @Test
+    public void testIsEncodedUserInfo() {
+        assertTrue(URLUtil.isEncoded("user", URLUtil.URLComponent.USER_INFO));
+        assertTrue(URLUtil.isEncoded("user:pass", URLUtil.URLComponent.USER_INFO));
+        assertTrue(URLUtil.isEncoded("user%40example.com", URLUtil.URLComponent.USER_INFO));
+        assertTrue(URLUtil.isEncoded("john.doe%2Badmin", URLUtil.URLComponent.USER_INFO));
+        assertTrue(URLUtil.isEncoded("us%24er%21", URLUtil.URLComponent.USER_INFO));
+        assertFalse(URLUtil.isEncoded("user name", URLUtil.URLComponent.USER_INFO));
+        assertFalse(URLUtil.isEncoded("pässword", URLUtil.URLComponent.USER_INFO));
+        assertFalse(URLUtil.isEncoded("admin@example.com", URLUtil.URLComponent.USER_INFO));
+        assertFalse(URLUtil.isEncoded("abc%2", URLUtil.URLComponent.USER_INFO));
+        assertFalse(URLUtil.isEncoded("abc+def", URLUtil.URLComponent.USER_INFO));
     }
 
     @Test
@@ -116,10 +170,10 @@ public class URLUtilTest {
         assertTrue(StringUtil.isEmpty(url.getPath()));
         url = URLUtil.getURL("http://www.host.com:8080/test/url?query");
         assertNotNull(url);
-        assertEquals("http://www.host.com:8080/test/url?query", url.toString());
+        assertEquals("http://www.host.com:8080/test/url?query=", url.toString());
         assertEquals("www.host.com", url.getHost());
         assertEquals(8080, url.getPort());
-        assertEquals("query", url.getQuery());
+        assertEquals("query=", url.getQuery());
         assertEquals("/test/url", url.getPath());
         url = URLUtil.getURL(new URL("http://www.host.com"), "http://127.0.0.1");
         assertNotNull(url);
@@ -152,6 +206,8 @@ public class URLUtilTest {
 
     @Test
     public void testGetURLEncoded() throws Exception {
+        assertNull(URLUtil.getURL(null, "ftp://www.host.com/"));
+        assertNull(URLUtil.getURL(null, "/only-path"));
         URL url = URLUtil.getURL("http://www.host.com/t est?x=1");
         assertEquals("http://www.host.com/t%20est?x=1", url.toString());
         url = URLUtil.getURL("http://www.host.com/t%20est?x=1");
@@ -166,8 +222,58 @@ public class URLUtilTest {
         assertEquals("http://127.0.0.1/b%20l%20a", Objects.requireNonNull(url).toString());
         url = URLUtil.getURL("http://äöü/b l a");
         assertEquals("http://xn--4ca0bs/b%20l%20a", Objects.requireNonNull(url).toString());
+        url = URLUtil.getURL("http://my:password@www.host.com");
+        assertEquals("http://my:password@www.host.com", url.toString());
+        url = URLUtil.getURL("http://my:pässword@www.host.com");
+        assertEquals("http://my:p%C3%A4ssword@www.host.com", url.toString());
         url = URLUtil.getURL(new URL("http://www.älg.com"), "http://127.0.0.1/b l a");
         assertEquals("http://127.0.0.1/b%20l%20a", Objects.requireNonNull(url).toString());
+        url = URLUtil.getURL(new URL("https://example.com/path/"), "https://www.test.de/index.html");
+        assertEquals("https://www.test.de/index.html", Objects.requireNonNull(url).toString());
+        url = URLUtil.getURL(new URL("https://www.host.com/path/"), "sub/page.html");
+        assertEquals("https://www.host.com/path/sub/page.html", Objects.requireNonNull(url).toString());
+        url = URLUtil.getURL(new URL("https://www.host.com/path/"), "file name.txt");
+        assertEquals("https://www.host.com/path/file%20name.txt", Objects.requireNonNull(url).toString());
+        url = URLUtil.getURL(new URL("https://www.host.com/path/"), "äöü.html");
+        assertEquals("https://www.host.com/path/%C3%A4%C3%B6%C3%BC.html", Objects.requireNonNull(url).toString());
+        url = URLUtil.getURL(new URL("https://www.host.com/path/"), "?q=test value&x=ü");
+        assertEquals("https://www.host.com/path/?q=test%20value&x=%C3%BC", Objects.requireNonNull(url).toString());
+        url = URLUtil.getURL(new URL("https://www.host.com/path/"), "?a=1&b=%20");
+        assertEquals("https://www.host.com/path/?a=1&b=%20", Objects.requireNonNull(url).toString());
+        url = URLUtil.getURL(new URL("https://www.host.com/path/"), "page.html#top");
+        assertEquals("https://www.host.com/path/page.html#top", Objects.requireNonNull(url).toString());
+        url = URLUtil.getURL(new URL("https://www.host.com/path/"), "page.html#to p");
+        assertEquals("https://www.host.com/path/page.html#to%20p", Objects.requireNonNull(url).toString());
+        url = URLUtil.getURL(new URL("https://www.host.com/path/"), "#section2");
+        assertEquals("https://www.host.com/path/#section2", Objects.requireNonNull(url).toString());
+    }
+
+    @Test
+    public void testGetEncodedQuery() {
+        assertEquals("=", URLUtil.getEncodedQuery("="));
+        assertEquals("", URLUtil.getEncodedQuery(""));
+        assertEquals("a=1&b=2", URLUtil.getEncodedQuery("a=1&b=2"));
+        assertEquals("key=value%201", URLUtil.getEncodedQuery("key=value 1"));
+        assertEquals("x=%C3%A4", URLUtil.getEncodedQuery("x=ä"));
+        assertEquals("x=%20", URLUtil.getEncodedQuery("x=%20"));
+        assertEquals("onlykey=", URLUtil.getEncodedQuery("onlykey"));
+        assertEquals("k1=&k2=", URLUtil.getEncodedQuery("k1=&k2="));
+        assertEquals("first%20name=John", URLUtil.getEncodedQuery("first name=John"));
+        assertEquals("a=b=c", URLUtil.getEncodedQuery("a=b=c"));
+        assertEquals("x=%C3%B6", URLUtil.getEncodedQuery("x=ö"));
+        assertEquals("key=%2520", URLUtil.getEncodedQuery("key=%2520"));
+        assertEquals("=value", URLUtil.getEncodedQuery("=value"));
+        assertEquals("a=1&b=%C3%BC&c=%20", URLUtil.getEncodedQuery("a=1&b=ü&c= "));
+    }
+
+    @Test
+    public void testGetEncodedPath() {
+        assertEquals("", URLUtil.getEncodedPath(""));
+        assertEquals("test/other/test2", URLUtil.getEncodedPath("test/other/test2"));
+        assertEquals("test/other%20name/file.txt", URLUtil.getEncodedPath("test/other name/file.txt"));
+        assertEquals("%C3%A4%C3%B6%C3%BC/datei", URLUtil.getEncodedPath("äöü/datei"));
+        assertEquals("test/%20/other", URLUtil.getEncodedPath("test/%20/other"));
+        assertEquals("/api//v1", URLUtil.getEncodedPath("/api//v1"));
     }
 
     @Test
@@ -175,23 +281,5 @@ public class URLUtilTest {
         assertEquals("https://www.example.com/test", URLUtil.assembleURL("https", null, "www.example.com", -1, "/test", null, null));
         assertEquals("https://user:pass@host.com:8080/path?a=b&c=d#frag", URLUtil.assembleURL("https", "user:pass", "host.com", 8080, "/path", "a=b&c=d", "frag"));
         assertEquals("http://example.com", URLUtil.assembleURL("http", null, "example.com", -1, null, null, null));
-    }
-
-    @Test
-    public void testEncodeQuery() {
-        assertEquals("token", URLUtil.encodeQuery("token"));
-        assertEquals("=value", URLUtil.encodeQuery("=value"));
-        assertEquals("a=", URLUtil.encodeQuery("a="));
-        assertEquals("a=b&c=d%20e", URLUtil.encodeQuery("a=b&c=d e"));
-        assertEquals("a=b%2Bc&x=%C3%A4%C3%B6%C3%BC&y=1%2B1%3D2", URLUtil.encodeQuery("a=b+c&x=äöü&y=1+1=2"));
-        assertEquals("a=b%3Dc%3Dd", URLUtil.encodeQuery("a=b=c=d"));
-    }
-
-    @Test
-    public void testEncodePath() {
-        assertEquals("/test/", URLUtil.encodePath("/test/"));
-        assertEquals("/", URLUtil.encodePath("/"));
-        assertEquals("/", URLUtil.encodePath(""));
-        assertEquals("/a%20b/c%2Bd", URLUtil.encodePath("/a b/c+d"));
     }
 }
