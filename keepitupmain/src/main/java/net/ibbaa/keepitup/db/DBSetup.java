@@ -608,6 +608,10 @@ public class DBSetup {
                 accessTypeDataDAO.insertAccessTypeData(accessTypeData);
             } else {
                 Log.e(DBSetup.class.getName(), "AccessTypeData is invalid and will not be imported: " + accessTypeData);
+                Log.e(DBSetup.class.getName(), "Importing default AccessTypeData.");
+                AccessTypeData defaultAccessTypeData = new AccessTypeData(getContext());
+                defaultAccessTypeData.setNetworkTaskId(task.getId());
+                accessTypeDataDAO.insertAccessTypeData(defaultAccessTypeData);
             }
         }
     }

@@ -32,11 +32,16 @@ public class JSONUtil {
         Iterator<String> keys = jsonObject.keys();
         while (keys.hasNext()) {
             String key = keys.next();
-            Object value = jsonObject.opt(key);
-            if (value instanceof JSONArray) {
-                value = toList((JSONArray) value);
-            } else if (value instanceof JSONObject) {
-                value = toMap((JSONObject) value);
+            Object value;
+            if (jsonObject.isNull(key)) {
+                value = null;
+            } else {
+                value = jsonObject.opt(key);
+                if (value instanceof JSONArray) {
+                    value = toList((JSONArray) value);
+                } else if (value instanceof JSONObject) {
+                    value = toMap((JSONObject) value);
+                }
             }
             map.put(key, value);
         }
@@ -46,11 +51,16 @@ public class JSONUtil {
     public static List<?> toList(JSONArray jsonArray) {
         List<Object> list = new ArrayList<>();
         for (int ii = 0; ii < jsonArray.length(); ii++) {
-            Object value = jsonArray.opt(ii);
-            if (value instanceof JSONArray) {
-                value = toList((JSONArray) value);
-            } else if (value instanceof JSONObject) {
-                value = toMap((JSONObject) value);
+            Object value;
+            if (jsonArray.isNull(ii)) {
+                value = null;
+            } else {
+                value = jsonArray.opt(ii);
+                if (value instanceof JSONArray) {
+                    value = toList((JSONArray) value);
+                } else if (value instanceof JSONObject) {
+                    value = toMap((JSONObject) value);
+                }
             }
             list.add(value);
         }
