@@ -297,6 +297,6 @@ public class URLUtil {
                 }
             }
         }
-        return userInfoBuilder.toString().replace("+", "%20");
+        return userInfoBuilder.toString().replace("+", "%20").replace("%21", "!").replace("%27", "'").replace("%28", "(").replace("%29", ")").replace("%7E", "~");
     }
 }

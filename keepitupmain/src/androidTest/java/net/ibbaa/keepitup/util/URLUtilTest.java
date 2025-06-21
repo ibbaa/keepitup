@@ -277,6 +277,32 @@ public class URLUtilTest {
     }
 
     @Test
+    public void testGetEncodedUserInfo() {
+        assertEquals("", URLUtil.getEncodedUserInfo(""));
+        assertEquals("user", URLUtil.getEncodedUserInfo("user"));
+        assertEquals("user%20name", URLUtil.getEncodedUserInfo("user name"));
+        assertEquals("user:pass", URLUtil.getEncodedUserInfo("user:pass"));
+        assertEquals("user%23hash", URLUtil.getEncodedUserInfo("user#hash"));
+        assertEquals("%C3%BCser", URLUtil.getEncodedUserInfo("üser"));
+        assertEquals("user%20name:p%C3%A4ssword", URLUtil.getEncodedUserInfo("user name:pässword"));
+        assertEquals("user%20name:p%C3%A4ssword", URLUtil.getEncodedUserInfo("user%20name:p%C3%A4ssword"));
+        assertEquals("user!name'()~:pass", URLUtil.getEncodedUserInfo("user!name'()~:pass"));
+    }
+
+    @Test
+    public void testGetEncodedRef() {
+        assertEquals("", URLUtil.getEncodedRef(""));
+        assertEquals("simpleRef", URLUtil.getEncodedRef("simpleRef"));
+        assertEquals("space%20here", URLUtil.getEncodedRef("space here"));
+        assertEquals("slash/test", URLUtil.getEncodedRef("slash/test"));
+        assertEquals("%C3%BCnicode", URLUtil.getEncodedRef("ünicode"));
+        assertEquals("special%23chars%3F", URLUtil.getEncodedRef("special#chars?"));
+        assertEquals("%C3%BCbersicht%20kapitel!%20~%20test", URLUtil.getEncodedRef("übersicht kapitel! ~ test"));
+        assertEquals("%C3%BCbersicht%20kapitel!%20~%20test", URLUtil.getEncodedRef("%C3%BCbersicht%20kapitel!%20~%20test"));
+        assertEquals("chapter%231%26section%3D2", URLUtil.getEncodedRef("chapter#1&section=2"));
+    }
+
+    @Test
     public void testAssembleURL() {
         assertEquals("https://www.example.com/test", URLUtil.assembleURL("https", null, "www.example.com", -1, "/test", null, null));
         assertEquals("https://user:pass@host.com:8080/path?a=b&c=d#frag", URLUtil.assembleURL("https", "user:pass", "host.com", 8080, "/path", "a=b&c=d", "frag"));
