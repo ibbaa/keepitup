@@ -157,6 +157,7 @@ public class JSONSystemSetup {
                 importNetworkTask(dbData, key);
             }
         }
+        dbSetup.normalizeUIIndex();
     }
 
     private void importNetworkTask(JSONObject dbData, String key) throws JSONException {

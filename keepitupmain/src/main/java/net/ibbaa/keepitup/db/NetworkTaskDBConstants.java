@@ -263,6 +263,14 @@ class NetworkTaskDBConstants {
                 " ORDER BY " + getIndexColumnName() + " ASC";
     }
 
+    public String getReadNetworkTasksIndexStatement() {
+        return "SELECT " +
+                getIdColumnName() + ", " +
+                getIndexColumnName() +
+                " FROM " + getTableName() +
+                " ORDER BY " + getIndexColumnName() + " ASC";
+    }
+
     public String getSchedulerIdCountStatement() {
         return "SELECT COUNT(*) FROM " + getTableName() + " WHERE " + getSchedulerIdColumnName() + " = ?";
     }
@@ -281,5 +289,9 @@ class NetworkTaskDBConstants {
 
     public String getUpdateIndexNetworkTasksStatement() {
         return "UPDATE " + getTableName() + " SET " + getIndexColumnName() + " = " + getIndexColumnName() + " - 1 WHERE " + getIndexColumnName() + " > ?;";
+    }
+
+    public record IndexTask(long id, int uiIndex) {
+
     }
 }

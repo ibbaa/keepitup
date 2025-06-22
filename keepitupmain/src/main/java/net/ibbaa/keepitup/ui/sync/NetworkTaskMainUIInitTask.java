@@ -19,6 +19,7 @@ package net.ibbaa.keepitup.ui.sync;
 import android.app.Activity;
 import android.content.Context;
 
+import net.ibbaa.keepitup.BuildConfig;
 import net.ibbaa.keepitup.db.AccessTypeDataDAO;
 import net.ibbaa.keepitup.db.LogDAO;
 import net.ibbaa.keepitup.db.NetworkTaskDAO;
@@ -58,11 +59,13 @@ public class NetworkTaskMainUIInitTask extends UIBackgroundTask<List<NetworkTask
                 NetworkTaskDAO networkTaskDAO = new NetworkTaskDAO(context);
                 List<NetworkTask> tasks = networkTaskDAO.readAllNetworkTasks();
                 Log.d(NetworkTaskMainActivity.class.getName(), "Database returned the following network tasks: " + (tasks.isEmpty() ? "no network tasks" : ""));
-                for (NetworkTask currentTask : tasks) {
-                    Log.d(NetworkTaskMainActivity.class.getName(), currentTask.toString());
+                if (BuildConfig.DEBUG) {
+                    for (NetworkTask currentTask : tasks) {
+                        Log.d(NetworkTaskMainActivity.class.getName(), currentTask.toString());
+                    }
                 }
                 for (NetworkTask currentTask : tasks) {
-                    Log.d(NetworkTaskMainActivity.class.getName(), "Reading most recent log for " + currentTask);
+                    Log.d(NetworkTaskMainActivity.class.getName(), "Reading access type data for " + currentTask);
                     AccessTypeDataDAO accessTypeDataDAO = new AccessTypeDataDAO(context);
                     AccessTypeData data = accessTypeDataDAO.readAccessTypeDataForNetworkTask(currentTask.getId());
                     Log.d(NetworkTaskMainActivity.class.getName(), "Database returned the following access type data: " + (data == null ? "null" : data.toString()));
@@ -72,6 +75,7 @@ public class NetworkTaskMainUIInitTask extends UIBackgroundTask<List<NetworkTask
                         data.setNetworkTaskId(currentTask.getId());
                         accessTypeDataDAO.insertAccessTypeData(data);
                     }
+                    Log.d(NetworkTaskMainActivity.class.getName(), "Reading most recent log for " + currentTask);
                     LogDAO logDAO = new LogDAO(context);
                     LogEntry logEntry = logDAO.readMostRecentLogForNetworkTask(currentTask.getId());
                     Log.d(NetworkTaskMainActivity.class.getName(), "Database returned the following log entry: " + (logEntry == null ? "no log entry" : logEntry.toString()));

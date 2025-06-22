@@ -135,6 +135,6 @@ public class SchedulerStateDAO extends BaseDAO {
         int indexSuspendedColumn = cursor.getColumnIndex(dbConstants.getSuspendedColumnName());
         int indexTimestampColumn = cursor.getColumnIndex(dbConstants.getTimestampColumnName());
         boolean suspended = cursor.getInt(indexSuspendedColumn) > 0;
-        return new SchedulerState(cursor.getInt(indexIdColumn), suspended, cursor.getInt(indexTimestampColumn));
+        return new SchedulerState(cursor.getLong(indexIdColumn), suspended, cursor.getInt(indexTimestampColumn));
     }
 }

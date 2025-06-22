@@ -16,7 +16,6 @@
 
 package net.ibbaa.keepitup.service;
 
-import android.annotation.SuppressLint;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
@@ -302,7 +301,7 @@ public class TimeBasedSuspensionScheduler {
         }
     }
 
-    @SuppressLint("UnspecifiedImmutableFlag")
+    @SuppressWarnings("UnspecifiedImmutableFlag")
     private PendingIntent getPendingIntent() {
         Intent intent = new Intent(getContext(), TimeBasedSuspensionBroadcastReceiver.class);
         intent.setPackage(getContext().getPackageName());
@@ -313,7 +312,7 @@ public class TimeBasedSuspensionScheduler {
         }
     }
 
-    @SuppressLint("UnspecifiedImmutableFlag")
+    @SuppressWarnings("UnspecifiedImmutableFlag")
     private PendingIntent createPendingIntent(Action action, boolean restart) {
         Intent intent = new Intent(getContext(), TimeBasedSuspensionBroadcastReceiver.class);
         intent.setPackage(getContext().getPackageName());

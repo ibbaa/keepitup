@@ -16,7 +16,6 @@
 
 package net.ibbaa.keepitup.ui;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.IntentFilter;
 import android.os.Build;
@@ -183,7 +182,7 @@ public class NetworkTaskLogActivity extends RecyclerViewBaseActivity {
     }
 
     @Override
-    @SuppressLint("NotifyDataSetChanged")
+    @SuppressWarnings("NotifyDataSetChanged")
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         if (id == R.id.menu_action_activity_log_delete) {

@@ -16,15 +16,13 @@
 
 package net.ibbaa.keepitup.service.network;
 
-import android.annotation.SuppressLint;
-
 import net.ibbaa.keepitup.logging.Log;
 
 import java.security.cert.X509Certificate;
 
 import javax.net.ssl.X509TrustManager;
 
-@SuppressLint("CustomX509TrustManager")
+@SuppressWarnings("CustomX509TrustManager")
 public class TrustAllX509TrustManager implements X509TrustManager {
 
     public X509Certificate[] getAcceptedIssuers() {

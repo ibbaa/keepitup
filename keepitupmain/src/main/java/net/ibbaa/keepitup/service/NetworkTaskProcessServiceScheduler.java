@@ -16,7 +16,6 @@
 
 package net.ibbaa.keepitup.service;
 
-import android.annotation.SuppressLint;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
@@ -223,7 +222,7 @@ public class NetworkTaskProcessServiceScheduler {
         return alarmManager;
     }
 
-    @SuppressLint("UnspecifiedImmutableFlag")
+    @SuppressWarnings("UnspecifiedImmutableFlag")
     private boolean hasPendingIntent(NetworkTask networkTask) {
         Intent intent = new Intent(getContext(), NetworkTaskProcessBroadcastReceiver.class);
         intent.setPackage(getContext().getPackageName());
@@ -235,7 +234,7 @@ public class NetworkTaskProcessServiceScheduler {
         }
     }
 
-    @SuppressLint("UnspecifiedImmutableFlag")
+    @SuppressWarnings("UnspecifiedImmutableFlag")
     private PendingIntent getPendingIntent(NetworkTask networkTask) {
         Intent intent = new Intent(getContext(), NetworkTaskProcessBroadcastReceiver.class);
         intent.setPackage(getContext().getPackageName());
@@ -247,7 +246,7 @@ public class NetworkTaskProcessServiceScheduler {
         }
     }
 
-    @SuppressLint("UnspecifiedImmutableFlag")
+    @SuppressWarnings("UnspecifiedImmutableFlag")
     private PendingIntent createPendingIntent(NetworkTask networkTask) {
         Intent intent = new Intent(getContext(), NetworkTaskProcessBroadcastReceiver.class);
         intent.setPackage(getContext().getPackageName());

@@ -194,7 +194,7 @@ public class IntervalDAO extends BaseDAO {
         int indexMinutestart = cursor.getColumnIndex(dbConstants.getMinutestartColumnName());
         int indexHourend = cursor.getColumnIndex(dbConstants.getHourendColumnName());
         int indexMinuteend = cursor.getColumnIndex(dbConstants.getMinuteendColumnName());
-        interval.setId(cursor.getInt(indexIdColumn));
+        interval.setId(cursor.getLong(indexIdColumn));
         Time start = new Time();
         start.setHour(cursor.getInt(indexHourstart));
         start.setMinute(cursor.getInt(indexMinutestart));

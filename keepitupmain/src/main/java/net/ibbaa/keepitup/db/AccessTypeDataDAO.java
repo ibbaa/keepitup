@@ -214,7 +214,7 @@ public class AccessTypeDataDAO extends BaseDAO {
         int indexConnectCountColumn = cursor.getColumnIndex(dbConstants.getConnectCountColumnName());
         int indexStopOnSuccessColumn = cursor.getColumnIndex(dbConstants.getStopOnSuccessColumnName());
         int indexIgnoreSSLErrorColumn = cursor.getColumnIndex(dbConstants.getIgnoreSSLErrorColumnName());
-        accessTypeData.setId(cursor.getInt(indexIdColumn));
+        accessTypeData.setId(cursor.getLong(indexIdColumn));
         accessTypeData.setNetworkTaskId(cursor.getLong(indexNetworkTaskIdColumn));
         accessTypeData.setPingCount(cursor.getInt(indexPingCountColumn));
         accessTypeData.setPingPackageSize(cursor.getInt(indexPingPackageSizeColumn));

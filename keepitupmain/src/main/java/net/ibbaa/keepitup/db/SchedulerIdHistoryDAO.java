@@ -85,7 +85,7 @@ public class SchedulerIdHistoryDAO extends BaseDAO {
         int indexIdColumn = cursor.getColumnIndex(dbConstants.getIdColumnName());
         int indexSchedulerIdColumn = cursor.getColumnIndex(dbConstants.getSchedulerIdColumnName());
         int indexTimestampColumn = cursor.getColumnIndex(dbConstants.getTimestampColumnName());
-        schedulerId.setId(cursor.getInt(indexIdColumn));
+        schedulerId.setId(cursor.getLong(indexIdColumn));
         schedulerId.setSchedulerId(cursor.getInt(indexSchedulerIdColumn));
         schedulerId.setTimestamp(cursor.getLong(indexTimestampColumn));
         return schedulerId;

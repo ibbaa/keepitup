@@ -427,6 +427,37 @@ public class JSONSystemSetupTest {
     }
 
     @Test
+    public void testImportDatabaseWithInconsistency() {
+        NetworkTask task1 = getNetworkTask1();
+        task1.setIndex(5);
+        NetworkTask task2 = getNetworkTask2();
+        task2.setIndex(4);
+        NetworkTask task3 = getNetworkTask3();
+        task3.setIndex(3);
+        task1 = networkTaskDAO.insertNetworkTask(task1);
+        task2 = networkTaskDAO.insertNetworkTask(task2);
+        task3 = networkTaskDAO.insertNetworkTask(task3);
+        accessTypeDataDAO.insertAccessTypeData(getAccessTypeData1(task1.getId()));
+        accessTypeDataDAO.insertAccessTypeData(getAccessTypeData2(task2.getId()));
+        SystemSetupResult exportResult = setup.exportData();
+        networkTaskDAO.deleteAllNetworkTasks();
+        logDAO.deleteAllLogs();
+        accessTypeDataDAO.deleteAllAccessTypeData();
+        SystemSetupResult importResult = setup.importData(exportResult.data());
+        assertTrue(importResult.success());
+        List<NetworkTask> tasks = networkTaskDAO.readAllNetworkTasks();
+        NetworkTask readTask1 = tasks.get(0);
+        NetworkTask readTask2 = tasks.get(1);
+        NetworkTask readTask3 = tasks.get(2);
+        assertEquals(0, readTask1.getIndex());
+        assertEquals(1, readTask2.getIndex());
+        assertEquals(2, readTask3.getIndex());
+        assertTrue(task3.isTechnicallyEqual(readTask1));
+        assertTrue(task2.isTechnicallyEqual(readTask2));
+        assertTrue(task1.isTechnicallyEqual(readTask3));
+    }
+
+    @Test
     public void testImportDatabaseNullName() {
         NetworkTask task = getNetworkTask1();
         task.setName(null);
@@ -975,7 +1006,7 @@ public class JSONSystemSetupTest {
     private NetworkTask getNetworkTask1() {
         NetworkTask task = new NetworkTask();
         task.setId(0);
-        task.setIndex(1);
+        task.setIndex(0);
         task.setSchedulerId(0);
         task.setName("name");
         task.setInstances(1);
@@ -995,7 +1026,7 @@ public class JSONSystemSetupTest {
     private NetworkTask getNetworkTask2() {
         NetworkTask task = new NetworkTask();
         task.setId(0);
-        task.setIndex(2);
+        task.setIndex(1);
         task.setSchedulerId(0);
         task.setName("name");
         task.setInstances(2);
@@ -1015,7 +1046,7 @@ public class JSONSystemSetupTest {
     private NetworkTask getNetworkTask3() {
         NetworkTask task = new NetworkTask();
         task.setId(0);
-        task.setIndex(3);
+        task.setIndex(2);
         task.setSchedulerId(0);
         task.setName("name");
         task.setInstances(3);

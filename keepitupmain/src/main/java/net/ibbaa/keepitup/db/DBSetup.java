@@ -525,6 +525,12 @@ public class DBSetup {
         dao.deleteAllAccessTypeData();
     }
 
+    public void normalizeUIIndex() {
+        Log.d(DBSetup.class.getName(), "normalizeUIIndex");
+        NetworkTaskDAO dao = new NetworkTaskDAO(getContext());
+        dao.normalizeUIIndex();
+    }
+
     public List<Map<String, ?>> exportNetworkTasks() {
         Log.d(DBSetup.class.getName(), "exportNetworkTasks");
         NetworkTaskDAO dao = new NetworkTaskDAO(getContext());

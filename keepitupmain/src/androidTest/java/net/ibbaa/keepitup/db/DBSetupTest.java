@@ -337,6 +337,20 @@ public class DBSetupTest {
     }
 
     @Test
+    public void testNormalizeUIIndex() {
+        NetworkTask insertedTask1 = getNetworkTask1();
+        NetworkTask insertedTask2 = getNetworkTask2();
+        insertedTask1 = networkTaskDAO.insertNetworkTask(insertedTask1);
+        insertedTask2 = networkTaskDAO.insertNetworkTask(insertedTask2);
+        setup.normalizeUIIndex();
+        List<NetworkTask> readTasks = networkTaskDAO.readAllNetworkTasks();
+        assertEquals(0, readTasks.get(0).getIndex());
+        assertEquals(1, readTasks.get(1).getIndex());
+        assertTrue(insertedTask1.isTechnicallyEqual(readTasks.get(0)));
+        assertTrue(insertedTask2.isTechnicallyEqual(readTasks.get(1)));
+    }
+
+    @Test
     public void testExportNetworkTasks() {
         networkTaskDAO.insertNetworkTask(getNetworkTask1());
         networkTaskDAO.insertNetworkTask(getNetworkTask2());

@@ -27,6 +27,7 @@ import net.ibbaa.keepitup.logging.Log;
 import net.ibbaa.keepitup.model.AccessType;
 import net.ibbaa.keepitup.model.NetworkTask;
 import net.ibbaa.keepitup.model.SchedulerId;
+import net.ibbaa.keepitup.ui.NetworkTaskMainActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -202,6 +203,13 @@ public class NetworkTaskDAO extends BaseDAO {
         return taskList;
     }
 
+    public boolean normalizeUIIndex() {
+        Log.d(NetworkTaskDAO.class.getName(), "normalizeUIIndex");
+        boolean inconsistency = executeDBOperationInTransaction((NetworkTask) null, this::normalizeUIIndex);
+        dumpDatabase("Dump after normalizeUIIndex call");
+        return inconsistency;
+    }
+
     private void dumpDatabase(String message) {
         if (BuildConfig.DEBUG) {
             Dump.dump(NetworkTaskDAO.class.getName(), message, NetworkTask.class.getSimpleName().toLowerCase(), this::readAllNetworkTasks);
@@ -262,8 +270,9 @@ public class NetworkTaskDAO extends BaseDAO {
         return value;
     }
 
+    @SuppressWarnings("unused")
     private int deleteAllNetworkTasks(NetworkTask networkTask, SQLiteDatabase db) {
-        Log.d(NetworkTaskDAO.class.getName(), "deleteAllNetworkTasks, task is " + networkTask);
+        Log.d(NetworkTaskDAO.class.getName(), "deleteAllNetworkTasks");
         NetworkTaskDBConstants dbConstants = new NetworkTaskDBConstants(getContext());
         return db.delete(dbConstants.getTableName(), null, null);
     }
@@ -294,8 +303,9 @@ public class NetworkTaskDAO extends BaseDAO {
         return db.update(dbConstants.getTableName(), values, selection, selectionArgs);
     }
 
+    @SuppressWarnings("unused")
     private int readNetworkTasksRunning(NetworkTask networkTask, SQLiteDatabase db) {
-        Log.d(NetworkTaskDAO.class.getName(), "readNetworkTasksRunning, task is " + networkTask);
+        Log.d(NetworkTaskDAO.class.getName(), "readNetworkTasksRunning");
         Cursor cursor = null;
         NetworkTaskDBConstants dbConstants = new NetworkTaskDBConstants(getContext());
         try {
@@ -365,8 +375,9 @@ public class NetworkTaskDAO extends BaseDAO {
         return db.update(dbConstants.getTableName(), values, selection, selectionArgs);
     }
 
+    @SuppressWarnings("unused")
     private int resetAllNetworkTaskInstances(NetworkTask networkTask, SQLiteDatabase db) {
-        Log.d(NetworkTaskDAO.class.getName(), "resetAllNetworkTaskInstances, task is " + networkTask);
+        Log.d(NetworkTaskDAO.class.getName(), "resetAllNetworkTaskInstances");
         NetworkTaskDBConstants dbConstants = new NetworkTaskDBConstants(getContext());
         ContentValues values = new ContentValues();
         values.put(dbConstants.getInstancesColumnName(), 0);
@@ -433,8 +444,9 @@ public class NetworkTaskDAO extends BaseDAO {
         return db.update(dbConstants.getTableName(), values, selection, selectionArgs);
     }
 
+    @SuppressWarnings("unused")
     private int resetAllNetworkTaskFailureCount(NetworkTask networkTask, SQLiteDatabase db) {
-        Log.d(NetworkTaskDAO.class.getName(), "resetAllNetworkTaskFailureCount, task is " + networkTask);
+        Log.d(NetworkTaskDAO.class.getName(), "resetAllNetworkTaskFailureCount");
         NetworkTaskDBConstants dbConstants = new NetworkTaskDBConstants(getContext());
         ContentValues values = new ContentValues();
         values.put(dbConstants.getFailureCountColumnName(), 0);
@@ -554,8 +566,9 @@ public class NetworkTaskDAO extends BaseDAO {
         return result;
     }
 
+    @SuppressWarnings("unused")
     private List<NetworkTask> readAllNetworkTasks(NetworkTask networkTask, SQLiteDatabase db) {
-        Log.d(NetworkTaskDAO.class.getName(), "readAllNetworkTasks, task is " + networkTask);
+        Log.d(NetworkTaskDAO.class.getName(), "readAllNetworkTasks");
         Cursor cursor = null;
         List<NetworkTask> result = new ArrayList<>();
         NetworkTaskDBConstants dbConstants = new NetworkTaskDBConstants(getContext());
@@ -582,6 +595,54 @@ public class NetworkTaskDAO extends BaseDAO {
         return result;
     }
 
+    @SuppressWarnings("unused")
+    private boolean normalizeUIIndex(NetworkTask networkTask, SQLiteDatabase db) {
+        Log.d(NetworkTaskDAO.class.getName(), "normalizeUIIndex");
+        Cursor cursor = null;
+        List<NetworkTaskDBConstants.IndexTask> result = new ArrayList<>();
+        NetworkTaskDBConstants dbConstants = new NetworkTaskDBConstants(getContext());
+        boolean inconsistencyDetected = false;
+        try {
+            Log.d(NetworkTaskDAO.class.getName(), "Executing SQL " + dbConstants.getReadNetworkTasksIndexStatement());
+            cursor = db.rawQuery(dbConstants.getReadNetworkTasksIndexStatement(), null);
+            while (cursor.moveToNext()) {
+                int indexIdColumn = cursor.getColumnIndex(dbConstants.getIdColumnName());
+                int indexIndexColumn = cursor.getColumnIndex(dbConstants.getIndexColumnName());
+                if (!cursor.isNull(indexIdColumn)) {
+                    NetworkTaskDBConstants.IndexTask indexTask = new NetworkTaskDBConstants.IndexTask(cursor.getLong(indexIdColumn), cursor.getInt(indexIndexColumn));
+                    result.add(indexTask);
+                }
+            }
+        } finally {
+            if (cursor != null) {
+                try {
+                    cursor.close();
+                } catch (Throwable exc) {
+                    Log.e(NetworkTaskDAO.class.getName(), "Error closing result cursor", exc);
+                }
+            }
+        }
+        Log.d(NetworkTaskMainActivity.class.getName(), "Database returned the following index tasks: " + (result.isEmpty() ? "no index tasks" : ""));
+        if (BuildConfig.DEBUG) {
+            for (NetworkTaskDBConstants.IndexTask indexTask : result) {
+                Log.d(NetworkTaskDAO.class.getName(), indexTask.toString());
+            }
+        }
+        String selection = dbConstants.getIdColumnName() + " = ?";
+        for (int ii = 0; ii < result.size(); ii++) {
+            NetworkTaskDBConstants.IndexTask indexTask = result.get(ii);
+            if (indexTask.uiIndex() != ii) {
+                Log.e(NetworkTaskDAO.class.getName(), "Index task is inconsistent: " + indexTask);
+                inconsistencyDetected = true;
+                ContentValues values = new ContentValues();
+                values.put(dbConstants.getIndexColumnName(), ii);
+                String[] selectionArgs = {String.valueOf(indexTask.id())};
+                db.update(dbConstants.getTableName(), values, selection, selectionArgs);
+            }
+        }
+        return inconsistencyDetected;
+    }
+
     private NetworkTask mapCursorToNetworkTask(Cursor cursor) {
         NetworkTask networkTask = new NetworkTask();
         NetworkTaskDBConstants dbConstants = new NetworkTaskDBConstants(getContext());
@@ -600,7 +661,7 @@ public class NetworkTaskDAO extends BaseDAO {
         int indexLastScheduledColumn = cursor.getColumnIndex(dbConstants.getLastScheduledColumnName());
         int indexFailureCountColumn = cursor.getColumnIndex(dbConstants.getFailureCountColumnName());
         int indexHighPrioColumn = cursor.getColumnIndex(dbConstants.getHighPrioColumnName());
-        networkTask.setId(cursor.getInt(indexIdColumn));
+        networkTask.setId(cursor.getLong(indexIdColumn));
         networkTask.setIndex(cursor.getInt(indexIndexColumn));
         networkTask.setSchedulerId(cursor.getInt(indexSchedulerIdColumn));
         networkTask.setName(cursor.getString(indexNameColumn));

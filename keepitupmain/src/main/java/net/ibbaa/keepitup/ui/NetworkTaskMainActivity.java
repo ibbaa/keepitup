@@ -34,6 +34,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import net.ibbaa.keepitup.R;
+import net.ibbaa.keepitup.db.NetworkTaskDAO;
 import net.ibbaa.keepitup.logging.Log;
 import net.ibbaa.keepitup.model.AccessTypeData;
 import net.ibbaa.keepitup.model.NetworkTask;
@@ -102,8 +103,22 @@ public class NetworkTaskMainActivity extends RecyclerViewBaseActivity implements
         setContentView(R.layout.activity_main_network_task);
         initEdgeToEdgeInsets(R.id.layout_activity_main);
         initRecyclerView();
+        checkIndexConsistency();
         prepareAddImageButton();
         startForegroundServiceDelayed();
+    }
+
+    @SuppressWarnings("NotifyDataSetChanged")
+    private void checkIndexConsistency() {
+        Log.d(NetworkTaskMainActivity.class.getName(), "checkIndexConsistency");
+        boolean isIndexConsistent = ((NetworkTaskAdapter) getAdapter()).isIndexConsistent();
+        if (!isIndexConsistent) {
+            Log.e(NetworkTaskMainActivity.class.getName(), "UI index is inconsistent. Repairing...");
+            NetworkTaskDAO networkTaskDAO = new NetworkTaskDAO(this);
+            networkTaskDAO.normalizeUIIndex();
+            ((NetworkTaskAdapter) getAdapter()).replaceItems(readNetworkTasksFromDatabase());
+            getAdapter().notifyDataSetChanged();
+        }
     }
 
     private void prepareAddImageButton() {
