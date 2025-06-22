@@ -298,6 +298,8 @@ public class SystemFileManagerTest {
     @Test
     public void testGetDownloadFileNameURL() throws Exception {
         assertEquals("xyz.jpg", fileManager.getDownloadFileName(new URL("http://www.host.com/xyz.jpg"), null, null));
+        assertEquals("xyz", fileManager.getDownloadFileName(new URL("http://www.host.com/xyz/"), null, null));
+        assertEquals("xyz.pdf", fileManager.getDownloadFileName(new URL("http://www.host.com/xyz/"), null, "application/pdf"));
         assertEquals("xyz.abc", fileManager.getDownloadFileName(new URL("http://www.host.com/xyz.abc"), "..", null));
         assertEquals("xyz.abc", fileManager.getDownloadFileName(new URL("http://www.host.com/123/xyz.abc"), "/", "image/jpeg"));
         assertEquals("xyz.a b c", fileManager.getDownloadFileName(new URL("http://www.host.com/123/xyz.a b c"), "", "image/jpeg"));
