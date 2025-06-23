@@ -52,6 +52,7 @@ import net.ibbaa.keepitup.ui.permission.IStoragePermissionManager;
 import net.ibbaa.keepitup.ui.permission.NullPermissionLauncher;
 import net.ibbaa.keepitup.ui.permission.PermissionLauncher;
 import net.ibbaa.keepitup.ui.validation.NotificationAfterFailuresFieldValidator;
+import net.ibbaa.keepitup.ui.validation.UserAgentFieldValidator;
 import net.ibbaa.keepitup.util.BundleUtil;
 import net.ibbaa.keepitup.util.FileUtil;
 import net.ibbaa.keepitup.util.NumberUtil;
@@ -81,6 +82,7 @@ public class GlobalSettingsActivity extends SettingsInputActivity implements Sus
     private TextView downloadKeepOnOffText;
     private SwitchMaterial downloadFollowsRedirectsSwitch;
     private TextView downloadFollowsRedirectsOnOffText;
+    private TextView httpUserAgentText;
     private SwitchMaterial logFileSwitch;
     private TextView logFileOnOffText;
     private TextView logFolderText;
@@ -106,6 +108,7 @@ public class GlobalSettingsActivity extends SettingsInputActivity implements Sus
         prepareDownloadFolderField();
         prepareDownloadKeepSwitch();
         prepareDownloadFollowsRedirectsSwitch();
+        prepareHTTPUserAgentField();
         prepareLogFolderLauncher();
         prepareLogFileSwitch();
         prepareLogFolderField();
@@ -498,6 +501,16 @@ public class GlobalSettingsActivity extends SettingsInputActivity implements Sus
         prepareDownloadFollowsRedirectsOnOffText();
     }
 
+    private void prepareHTTPUserAgentField() {
+        Log.d(GlobalSettingsActivity.class.getName(), "prepareHTTPUserAgentField");
+        PreferenceManager preferenceManager = new PreferenceManager(this);
+        httpUserAgentText = findViewById(R.id.textview_activity_global_settings_http_user_agent);
+        String httpUserAgent = preferenceManager.getPreferenceHTTPUserAgent();
+        setHTTPUserAgent(preferenceManager.getPreferenceHTTPUserAgent());
+        CardView httpUserAgentCardView = findViewById(R.id.cardview_activity_global_settings_http_user_agent);
+        httpUserAgentCardView.setOnClickListener(this::showHTTPUserAgentInputDialog);
+    }
+
     private void prepareLogFileSwitch() {
         Log.d(GlobalSettingsActivity.class.getName(), "prepareLogFileSwitch");
         PreferenceManager preferenceManager = new PreferenceManager(this);
@@ -598,6 +611,14 @@ public class GlobalSettingsActivity extends SettingsInputActivity implements Sus
         downloadFolderText.setText(StringUtil.notNull(downloadFolder));
     }
 
+    private String getHTTPUserAgent() {
+        return StringUtil.notNull(httpUserAgentText.getText());
+    }
+
+    private void setHTTPUserAgent(String httpUserAgent) {
+        httpUserAgentText.setText(StringUtil.notNull(httpUserAgent));
+    }
+
     private void setLogFolder(String logFolder) {
         logFolderText.setText(StringUtil.notNull(logFolder));
     }
@@ -606,6 +627,13 @@ public class GlobalSettingsActivity extends SettingsInputActivity implements Sus
         Log.d(GlobalSettingsActivity.class.getName(), "showNotificationAfterFailuresInputDialog");
         List<String> validators = Collections.singletonList(NotificationAfterFailuresFieldValidator.class.getName());
         SettingsInput input = new SettingsInput(SettingsInput.Type.NOTIFICATIONAFTER, getNotificationAfterFailures(), getResources().getString(R.string.label_activity_global_settings_notification_after_failures), validators);
+        showInputDialog(input.toBundle());
+    }
+
+    private void showHTTPUserAgentInputDialog(View view) {
+        Log.d(GlobalSettingsActivity.class.getName(), "showNotificationAfterFailuresInputDialog");
+        List<String> validators = Collections.singletonList(UserAgentFieldValidator.class.getName());
+        SettingsInput input = new SettingsInput(SettingsInput.Type.USERAGENT, getHTTPUserAgent(), getResources().getString(R.string.label_activity_global_settings_http_user_agent_field), validators);
         showInputDialog(input.toBundle());
     }
 
@@ -796,6 +824,10 @@ public class GlobalSettingsActivity extends SettingsInputActivity implements Sus
         if (SettingsInput.Type.NOTIFICATIONAFTER.equals(type.getType())) {
             setNotificationAfterFailures(inputDialog.getValue());
             preferenceManager.setPreferenceNotificationAfterFailures(NumberUtil.getIntValue(getNotificationAfterFailures(), getResources().getInteger(R.integer.notification_after_failures_default)));
+        }
+        if (SettingsInput.Type.USERAGENT.equals(type.getType())) {
+            setHTTPUserAgent(inputDialog.getValue());
+            preferenceManager.setPreferenceHTTPUserAgent(getHTTPUserAgent());
         } else {
             Log.e(GlobalSettingsActivity.class.getName(), "type " + type.getType() + " unknown");
         }

@@ -24,6 +24,7 @@ import static org.junit.Assert.assertTrue;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.SmallTest;
 
+import net.ibbaa.keepitup.resources.PreferenceManager;
 import net.ibbaa.keepitup.test.mock.MockURLConnection;
 import net.ibbaa.keepitup.test.mock.TestRegistry;
 
@@ -56,6 +57,13 @@ public class HTTPUtilTest {
     @Test
     public void testSetUserAgent() throws Exception {
         MockURLConnection urlConnection = new MockURLConnection(new URL("http://test.com"));
+        HTTPUtil.setUserAgent(TestRegistry.getContext(), urlConnection);
+        assertEquals("Mozilla/5.0", urlConnection.getHeaderField("User-Agent"));
+        PreferenceManager preferenceManager = new PreferenceManager(TestRegistry.getContext());
+        preferenceManager.setPreferenceHTTPUserAgent("abc");
+        HTTPUtil.setUserAgent(TestRegistry.getContext(), urlConnection);
+        assertEquals("abc", urlConnection.getHeaderField("User-Agent"));
+        preferenceManager.removePreferenceHTTPUserAgent();
         HTTPUtil.setUserAgent(TestRegistry.getContext(), urlConnection);
         assertEquals("Mozilla/5.0", urlConnection.getHeaderField("User-Agent"));
     }

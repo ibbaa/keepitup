@@ -46,4 +46,6 @@
     <bool name="download_keep_default">false</bool>
     <string name="download_follows_redirects_key">download_follows_redirects_key</string>
     <bool name="download_follows_redirects_default">true</bool>
+    <string name="http_user_agent_key">http_user_agent_default_key</string>
+    <string name="http_user_agent_default">Mozilla/5.0</string>
 </resources>

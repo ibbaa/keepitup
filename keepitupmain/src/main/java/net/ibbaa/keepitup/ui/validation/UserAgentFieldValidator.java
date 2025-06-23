@@ -20,17 +20,22 @@ import android.content.Context;
 
 import net.ibbaa.keepitup.R;
 import net.ibbaa.keepitup.logging.Log;
+import net.ibbaa.keepitup.util.StringUtil;
 
-public class NameFieldValidator extends BaseStringValidator implements FieldValidator {
+public class UserAgentFieldValidator extends BaseStringValidator implements FieldValidator {
 
-    public NameFieldValidator(String field, Context context) {
+    public UserAgentFieldValidator(String field, Context context) {
         super(field, context);
     }
 
     @Override
     public ValidationResult validate(String value) {
-        Log.d(NameFieldValidator.class.getName(), "validate, value is " + value);
-        int maximum = getResources().getInteger(R.integer.task_name_max_length);
+        Log.d(UserAgentFieldValidator.class.getName(), "validate, value is " + value);
+        if (StringUtil.isEmpty(value)) {
+            Log.d(BaseIntegerValidator.class.getName(), "No value specified. Validation failed.");
+            return new ValidationResult(false, getField(), getResources().getString(R.string.invalid_no_value));
+        }
+        int maximum = getResources().getInteger(R.integer.http_header_user_agent_max_length);
         return validateString(value, maximum);
     }
 }

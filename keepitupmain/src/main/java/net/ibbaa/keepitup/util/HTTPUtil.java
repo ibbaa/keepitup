@@ -20,6 +20,7 @@ import android.content.Context;
 
 import net.ibbaa.keepitup.R;
 import net.ibbaa.keepitup.logging.Log;
+import net.ibbaa.keepitup.resources.PreferenceManager;
 
 import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
@@ -62,7 +63,8 @@ public class HTTPUtil {
     }
 
     public static void setUserAgent(Context context, URLConnection connection) {
-        connection.setRequestProperty(context.getResources().getString(R.string.http_header_user_agent), context.getResources().getString(R.string.http_user_agent));
+        PreferenceManager preferenceManager = new PreferenceManager(context);
+        connection.setRequestProperty(context.getResources().getString(R.string.http_header_user_agent), preferenceManager.getPreferenceHTTPUserAgent());
     }
 
     public static String getFileNameFromContentDisposition(String contentDisposition) {

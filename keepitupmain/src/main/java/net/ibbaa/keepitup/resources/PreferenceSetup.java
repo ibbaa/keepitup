@@ -24,6 +24,7 @@ import net.ibbaa.keepitup.logging.Log;
 import net.ibbaa.keepitup.model.AccessType;
 import net.ibbaa.keepitup.model.NotificationType;
 import net.ibbaa.keepitup.util.NumberUtil;
+import net.ibbaa.keepitup.util.StringUtil;
 import net.ibbaa.keepitup.util.URLUtil;
 
 import java.util.HashMap;
@@ -53,6 +54,7 @@ public class PreferenceSetup {
         globalSettings.put("preferenceArbitraryDownloadFolder", preferenceManager.getPreferenceArbitraryDownloadFolder());
         globalSettings.put("preferenceDownloadKeep", preferenceManager.getPreferenceDownloadKeep());
         globalSettings.put("preferenceDownloadFollowsRedirects", preferenceManager.getPreferenceDownloadFollowsRedirects());
+        globalSettings.put("preferenceHTTPUserAgent", preferenceManager.getPreferenceHTTPUserAgent());
         globalSettings.put("preferenceLogFile", preferenceManager.getPreferenceLogFile());
         globalSettings.put("preferenceLogFolder", preferenceManager.getPreferenceLogFolder());
         globalSettings.put("preferenceArbitraryLogFolder", preferenceManager.getPreferenceArbitraryLogFolder());
@@ -158,6 +160,12 @@ public class PreferenceSetup {
             preferenceManager.setPreferenceDownloadFollowsRedirects(Boolean.parseBoolean(Objects.requireNonNull(downloadFollowsRedirects).toString()));
         } else {
             preferenceManager.removePreferenceDownloadFollowsRedirects();
+        }
+        Object httpUserAgent = globalSettings.get("preferenceHTTPUserAgent");
+        if (isValidString(httpUserAgent, getResources().getInteger(R.integer.http_header_user_agent_max_length)) && !StringUtil.isEmpty(httpUserAgent.toString())) {
+            preferenceManager.setPreferenceHTTPUserAgent(httpUserAgent.toString());
+        } else {
+            preferenceManager.removePreferenceHTTPUserAgent();
         }
         Object logFile = globalSettings.get("preferenceLogFile");
         if (isValidBoolean(logFile)) {
@@ -361,6 +369,10 @@ public class PreferenceSetup {
         return value != null;
     }
 
+    private boolean isValidString(Object value, int maxLength) {
+        return value != null && value.toString().length() <= maxLength;
+    }
+
     private boolean isValidAddress(Object value) {
         if (value == null || value.toString().isEmpty()) {
             return false;
@@ -394,6 +406,7 @@ public class PreferenceSetup {
         preferenceManager.removePreferenceArbitraryDownloadFolder();
         preferenceManager.removePreferenceDownloadKeep();
         preferenceManager.removePreferenceDownloadFollowsRedirects();
+        preferenceManager.removePreferenceHTTPUserAgent();
         preferenceManager.removePreferenceLogFile();
         preferenceManager.removePreferenceLogFolder();
         preferenceManager.removePreferenceArbitraryLogFolder();

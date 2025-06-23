@@ -496,6 +496,21 @@ public class PreferenceManager {
         removePreferenceValue(getResources().getString(R.string.download_follows_redirects_key));
     }
 
+    public String getPreferenceHTTPUserAgent() {
+        Log.d(PreferenceManager.class.getName(), "getPreferenceHTTPUserAgent");
+        return getPreferenceString(getResources().getString(R.string.http_user_agent_key), getResources().getString(R.string.http_user_agent_default));
+    }
+
+    public void setPreferenceHTTPUserAgent(String userAgent) {
+        Log.d(PreferenceManager.class.getName(), "setPreferenceHTTPUserAgent, userAgent is " + userAgent);
+        setPreferenceString(getResources().getString(R.string.http_user_agent_key), userAgent);
+    }
+
+    public void removePreferenceHTTPUserAgent() {
+        Log.d(PreferenceManager.class.getName(), "removePreferenceHTTPUserAgent");
+        removePreferenceValue(getResources().getString(R.string.http_user_agent_key));
+    }
+
     public String getPreferenceImportFolder() {
         Log.d(PreferenceManager.class.getName(), "getPreferenceImportFolder");
         return getPreferenceString(getResources().getString(R.string.import_folder_key), getResources().getString(R.string.import_folder_default));

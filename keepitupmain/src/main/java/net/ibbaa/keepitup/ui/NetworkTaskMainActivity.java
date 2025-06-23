@@ -518,7 +518,7 @@ public class NetworkTaskMainActivity extends RecyclerViewBaseActivity implements
         Log.d(NetworkTaskMainActivity.class.getName(), "showInputDialog, opening SettingsInputDialog");
         SettingsInputDialog inputDialog = new SettingsInputDialog();
         inputDialog.setArguments(bundle);
-        inputDialog.show(getSupportFragmentManager(), DefaultsActivity.class.getName());
+        inputDialog.show(getSupportFragmentManager(), NetworkTaskMainActivity.class.getName());
     }
 
     @Override

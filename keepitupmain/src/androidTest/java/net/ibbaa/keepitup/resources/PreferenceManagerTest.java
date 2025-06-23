@@ -400,6 +400,18 @@ public class PreferenceManagerTest {
     }
 
     @Test
+    public void testGetSetRemovePreferenceHTTPUserAgent() {
+        assertEquals("Mozilla/5.0", preferenceManager.getPreferenceHTTPUserAgent());
+        preferenceManager.setPreferenceHTTPUserAgent("Test");
+        assertEquals("Test", preferenceManager.getPreferenceHTTPUserAgent());
+        preferenceManager.removeAllPreferences();
+        assertEquals("Mozilla/5.0", preferenceManager.getPreferenceHTTPUserAgent());
+        preferenceManager.setPreferenceHTTPUserAgent("Test");
+        preferenceManager.removePreferenceHTTPUserAgent();
+        assertEquals("Mozilla/5.0", preferenceManager.getPreferenceHTTPUserAgent());
+    }
+
+    @Test
     public void testGetSetRemovePreferenceDownloadKeep() {
         assertFalse(preferenceManager.getPreferenceDownloadKeep());
         preferenceManager.setPreferenceDownloadKeep(true);

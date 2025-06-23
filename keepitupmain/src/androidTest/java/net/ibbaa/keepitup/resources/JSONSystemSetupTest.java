@@ -229,6 +229,7 @@ public class JSONSystemSetupTest {
         preferenceManager.setPreferenceArbitraryDownloadFolder("folder");
         preferenceManager.setPreferenceDownloadKeep(true);
         preferenceManager.setPreferenceDownloadFollowsRedirects(false);
+        preferenceManager.setPreferenceHTTPUserAgent("UserAgent");
         preferenceManager.setPreferenceArbitraryLogFolder("folder");
         preferenceManager.setPreferenceAccessType(AccessType.CONNECT);
         preferenceManager.setPreferenceAddress("address");
@@ -268,6 +269,7 @@ public class JSONSystemSetupTest {
         assertEquals("folder", globalSettingsData.getString("preferenceArbitraryDownloadFolder"));
         assertTrue(globalSettingsData.getBoolean("preferenceDownloadKeep"));
         assertFalse(globalSettingsData.getBoolean("preferenceDownloadFollowsRedirects"));
+        assertEquals("UserAgent", globalSettingsData.getString("preferenceHTTPUserAgent"));
         assertEquals("folder", globalSettingsData.getString("preferenceArbitraryLogFolder"));
         assertEquals(AccessType.CONNECT, AccessType.forCode(defaultsData.getInt("preferenceAccessType")));
         assertEquals("address", defaultsData.getString("preferenceAddress"));
@@ -834,6 +836,7 @@ public class JSONSystemSetupTest {
         preferenceManager.setPreferenceDownloadFolder("folder");
         preferenceManager.setPreferenceDownloadKeep(true);
         preferenceManager.setPreferenceDownloadFollowsRedirects(false);
+        preferenceManager.setPreferenceHTTPUserAgent("ABC");
         preferenceManager.setPreferenceAccessType(AccessType.CONNECT);
         preferenceManager.setPreferenceAddress("address");
         preferenceManager.setPreferencePort(123);
@@ -871,6 +874,7 @@ public class JSONSystemSetupTest {
         assertEquals("folder", preferenceManager.getPreferenceDownloadFolder());
         assertTrue(preferenceManager.getPreferenceDownloadKeep());
         assertFalse(preferenceManager.getPreferenceDownloadFollowsRedirects());
+        assertEquals("ABC", preferenceManager.getPreferenceHTTPUserAgent());
         assertEquals(AccessType.CONNECT, preferenceManager.getPreferenceAccessType());
         assertEquals("address", preferenceManager.getPreferenceAddress());
         assertEquals(123, preferenceManager.getPreferencePort());
@@ -916,6 +920,7 @@ public class JSONSystemSetupTest {
         preferenceManager.setPreferencePingCount(20);
         preferenceManager.setPreferenceConnectCount(20);
         preferenceManager.setPreferenceTheme(5);
+        preferenceManager.setPreferenceHTTPUserAgent(new String(new char[1001]));
         SystemSetupResult exportResult = setup.exportData();
         preferenceManager.removeAllPreferences();
         SystemSetupResult importResult = setup.importData(exportResult.data());
@@ -929,6 +934,7 @@ public class JSONSystemSetupTest {
         assertEquals(3, preferenceManager.getPreferencePingCount());
         assertEquals(1, preferenceManager.getPreferenceConnectCount());
         assertEquals(-1, preferenceManager.getPreferenceTheme());
+        assertEquals("Mozilla/5.0", preferenceManager.getPreferenceHTTPUserAgent());
     }
 
     @Test

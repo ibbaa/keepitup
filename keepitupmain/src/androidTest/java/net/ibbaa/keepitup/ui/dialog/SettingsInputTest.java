@@ -126,5 +126,15 @@ public class SettingsInputTest {
         assertEquals("testfield", settingsInput.getField());
         assertEquals(3, settingsInput.getPosition());
         assertThat(settingsInput.getValidators(), is(Arrays.asList("1", "1")));
+        settingsInput = new SettingsInput(SettingsInput.Type.USERAGENT, "test", "test", "testfield", 3, Arrays.asList("1", "1"));
+        bundle = settingsInput.toBundle();
+        settingsInput = new SettingsInput(bundle);
+        assertEquals(SettingsInput.Type.USERAGENT, settingsInput.getType());
+        assertEquals(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_MULTI_LINE | InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS, settingsInput.getType().getInputType());
+        assertEquals("test", settingsInput.getTitle());
+        assertEquals("test", settingsInput.getValue());
+        assertEquals("testfield", settingsInput.getField());
+        assertEquals(3, settingsInput.getPosition());
+        assertThat(settingsInput.getValidators(), is(Arrays.asList("1", "1")));
     }
 }
