@@ -235,6 +235,24 @@ public class GlobalSettingsActivityTest extends BaseUITest {
     }
 
     @Test
+    public void testDisplayValuesUserAgentEmptyString() {
+        ActivityScenario<?> activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
+        ((GlobalSettingsActivity) getActivity(activityScenario)).injectTimeBasedSuspensionScheduler(getTimeBasedSuspensionScheduler());
+        onView(withId(R.id.textview_activity_global_settings_http_user_agent)).perform(scrollTo());
+        onView(withId(R.id.textview_activity_global_settings_http_user_agent)).perform(click());
+        onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("123"));
+        onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
+        onView(withId(R.id.textview_activity_global_settings_http_user_agent_label)).check(matches(withText("User Agent Header")));
+        onView(withId(R.id.textview_activity_global_settings_http_user_agent)).check(matches(withText("123")));
+        onView(withId(R.id.textview_activity_global_settings_http_user_agent)).perform(click());
+        onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText(""));
+        onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
+        onView(withId(R.id.textview_activity_global_settings_http_user_agent_label)).check(matches(withText("User Agent Header")));
+        onView(withId(R.id.textview_activity_global_settings_http_user_agent)).check(matches(withText("Mozilla/5.0")));
+        activityScenario.close();
+    }
+
+    @Test
     public void testSwitchYesNoText() {
         ActivityScenario<?> activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
         ((GlobalSettingsActivity) getActivity(activityScenario)).injectTimeBasedSuspensionScheduler(getTimeBasedSuspensionScheduler());

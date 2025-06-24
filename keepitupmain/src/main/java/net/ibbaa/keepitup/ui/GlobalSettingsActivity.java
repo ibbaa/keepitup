@@ -207,7 +207,6 @@ public class GlobalSettingsActivity extends SettingsInputActivity implements Sus
         Log.d(GlobalSettingsActivity.class.getName(), "prepareNotificationAfterFailuresField");
         PreferenceManager preferenceManager = new PreferenceManager(this);
         notificationAfterFailuresText = findViewById(R.id.textview_activity_global_settings_notification_after_failures);
-        int notificationAfterFailures = preferenceManager.getPreferenceNotificationAfterFailures();
         setNotificationAfterFailures(String.valueOf(preferenceManager.getPreferenceNotificationAfterFailures()));
         CardView notificationsAfterFailuresCardView = findViewById(R.id.cardview_activity_global_settings_notification_after_failures);
         notificationsAfterFailuresCardView.setOnClickListener(this::showNotificationAfterFailuresInputDialog);
@@ -505,7 +504,6 @@ public class GlobalSettingsActivity extends SettingsInputActivity implements Sus
         Log.d(GlobalSettingsActivity.class.getName(), "prepareHTTPUserAgentField");
         PreferenceManager preferenceManager = new PreferenceManager(this);
         httpUserAgentText = findViewById(R.id.textview_activity_global_settings_http_user_agent);
-        String httpUserAgent = preferenceManager.getPreferenceHTTPUserAgent();
         setHTTPUserAgent(preferenceManager.getPreferenceHTTPUserAgent());
         CardView httpUserAgentCardView = findViewById(R.id.cardview_activity_global_settings_http_user_agent);
         httpUserAgentCardView.setOnClickListener(this::showHTTPUserAgentInputDialog);
@@ -826,8 +824,12 @@ public class GlobalSettingsActivity extends SettingsInputActivity implements Sus
             preferenceManager.setPreferenceNotificationAfterFailures(NumberUtil.getIntValue(getNotificationAfterFailures(), getResources().getInteger(R.integer.notification_after_failures_default)));
         }
         if (SettingsInput.Type.USERAGENT.equals(type.getType())) {
-            setHTTPUserAgent(inputDialog.getValue());
-            preferenceManager.setPreferenceHTTPUserAgent(getHTTPUserAgent());
+            if (StringUtil.isEmpty(inputDialog.getValue())) {
+                preferenceManager.removePreferenceHTTPUserAgent();
+            } else {
+                preferenceManager.setPreferenceHTTPUserAgent(inputDialog.getValue());
+            }
+            setHTTPUserAgent(preferenceManager.getPreferenceHTTPUserAgent());
         } else {
             Log.e(GlobalSettingsActivity.class.getName(), "type " + type.getType() + " unknown");
         }

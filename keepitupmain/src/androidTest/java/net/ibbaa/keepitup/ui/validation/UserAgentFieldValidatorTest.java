@@ -36,13 +36,13 @@ public class UserAgentFieldValidatorTest {
     public void testValidate() {
         UserAgentFieldValidator validator = new UserAgentFieldValidator("User Agent", TestRegistry.getContext());
         ValidationResult result = validator.validate(null);
-        assertFalse(result.isValidationSuccessful());
+        assertTrue(result.isValidationSuccessful());
         assertEquals("User Agent", result.getFieldName());
-        assertEquals("No value specified", result.getMessage());
+        assertEquals("Validation successful", result.getMessage());
         result = validator.validate("");
-        assertFalse(result.isValidationSuccessful());
+        assertTrue(result.isValidationSuccessful());
         assertEquals("User Agent", result.getFieldName());
-        assertEquals("No value specified", result.getMessage());
+        assertEquals("Validation successful", result.getMessage());
         result = validator.validate("123");
         assertTrue(result.isValidationSuccessful());
         assertEquals("User Agent", result.getFieldName());
