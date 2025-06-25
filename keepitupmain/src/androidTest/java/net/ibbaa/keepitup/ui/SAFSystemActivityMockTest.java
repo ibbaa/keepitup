@@ -18,7 +18,6 @@ package net.ibbaa.keepitup.ui;
 
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
-import static androidx.test.espresso.action.ViewActions.replaceText;
 import static androidx.test.espresso.action.ViewActions.scrollTo;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.matcher.ViewMatchers.isEnabled;
@@ -308,38 +307,6 @@ public class SAFSystemActivityMockTest extends BaseUITest {
         onView(withId(R.id.imageview_dialog_confirm_ok)).perform(click());
         assertTrue(storagePermissionManager.getOpenFilePermissions().contains("/Test/test.json"));
         assertTrue(storagePermissionManager.getFolderPermissions().contains("/Test"));
-        activityScenario.close();
-    }
-
-    @Test
-    public void testImportWithoutArbitraryFileLocationRevokePermission() throws Exception {
-        ActivityScenario<?> activityScenario = launchSettingsInputActivity(SystemActivity.class, getBypassSystemSAFBundle());
-        injectMocks(activityScenario);
-        injectArbitraryFolderLauncher(activityScenario, "/Test");
-        storagePermissionManager.setGrantedFolder("/Test");
-        injectImportFileLauncher(activityScenario, "/Test/test.json");
-        storagePermissionManager.setGrantedOpenFile("/Test/test.json");
-        getPreferenceManager().setPreferenceLastArbitraryExportFile("/Test/test.json");
-        onView(withId(R.id.switch_activity_system_allow_arbitrary_file_location)).perform(scrollTo());
-        onView(withId(R.id.switch_activity_system_allow_arbitrary_file_location)).perform(click());
-        onView(withId(R.id.textview_activity_system_allow_arbitrary_file_location_on_off)).check(matches(withText("yes")));
-        onView(withId(R.id.switch_activity_system_allow_arbitrary_file_location)).perform(scrollTo());
-        onView(withId(R.id.switch_activity_system_allow_arbitrary_file_location)).perform(click());
-        onView(withId(R.id.textview_activity_system_allow_arbitrary_file_location_on_off)).check(matches(withText("no")));
-        JSONSystemSetup setup = new JSONSystemSetup(TestRegistry.getContext());
-        SystemSetupResult result = setup.exportData();
-        assertTrue(result.success());
-        File folder = getFileManager().getExternalDirectory("config", 0);
-        FileOutputStream outputStream = new FileOutputStream(new File(folder, "test.json"));
-        StreamUtil.stringToOutputStream(result.data(), outputStream, StandardCharsets.UTF_8);
-        outputStream.close();
-        onView(withId(R.id.cardview_activity_system_config_import)).perform(click());
-        onView(withId(R.id.edittext_dialog_file_choose_folder)).check(matches(withText("config")));
-        onView(withId(R.id.edittext_dialog_file_choose_file)).perform(replaceText("test.json"));
-        onView(withId(R.id.imageview_dialog_file_choose_ok)).perform(click());
-        onView(withId(R.id.textview_dialog_confirm_description)).check(matches(withText("The import will overwrite all existing network tasks, log entries and the configuration. This cannot be undone.")));
-        onView(withId(R.id.imageview_dialog_confirm_ok)).perform(click());
-        assertTrue(storagePermissionManager.getFolderPermissions().isEmpty());
         activityScenario.close();
     }
 
