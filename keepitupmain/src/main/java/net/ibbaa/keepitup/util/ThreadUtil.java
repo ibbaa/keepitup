@@ -23,6 +23,7 @@ import java.util.concurrent.Future;
 
 public class ThreadUtil {
 
+    @SuppressWarnings("resource")
     public static <T> Future<T> execute(Callable<T> callable) {
         ExecutorService executorService = null;
         try {

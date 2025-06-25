@@ -310,6 +310,7 @@ public abstract class NetworkTaskWorker implements Runnable {
         return null;
     }
 
+    @SuppressWarnings("resource")
     public DNSExecutionResult executeDNSLookup(String host, boolean preferIp4) {
         Log.d(NetworkTaskWorker.class.getName(), "executeDNSLookup, host is " + host + ", preferIp4 is " + preferIp4);
         Callable<DNSLookupResult> dnsLookup = getDNSLookup(host);

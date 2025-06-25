@@ -84,6 +84,7 @@ public class ConnectNetworkTaskWorker extends NetworkTaskWorker {
         logEntry.setTimestamp(getTimeService().getCurrentTimestamp());
     }
 
+    @SuppressWarnings("resource")
     private ExecutionResult executeConnectCommand(InetAddress address, int port, int connectCount, boolean stopOnSuccess, boolean ip6) {
         Log.d(ConnectNetworkTaskWorker.class.getName(), "executeConnectCommand, address is " + address + ", port is " + port + ", connectCount is " + connectCount + ", ip6 is " + ip6);
         Callable<ConnectCommandResult> connectCommand = getConnectCommand(address, port, connectCount, stopOnSuccess);

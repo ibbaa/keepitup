@@ -271,7 +271,6 @@ public class FileChooseDialog extends DialogFragmentBase implements ContextOptio
         Log.d(FileChooseDialog.class.getName(), "prepareFolderChooseTextWatcher");
         if (folderChooseTextWatcher != null) {
             folderEditText.removeTextChangedListener(folderChooseTextWatcher);
-            folderChooseTextWatcher = null;
         }
         folderChooseTextWatcher = new FolderChooseWatcher(this);
         folderEditText.addTextChangedListener(folderChooseTextWatcher);
@@ -297,7 +296,6 @@ public class FileChooseDialog extends DialogFragmentBase implements ContextOptio
         Log.d(FileChooseDialog.class.getName(), "prepareFileChooseTextWatcher");
         if (fileChooseTextWatcher != null) {
             fileEditText.removeTextChangedListener(fileChooseTextWatcher);
-            fileChooseTextWatcher = null;
         }
         fileChooseTextWatcher = new FileChooseWatcher(this);
         fileEditText.addTextChangedListener(fileChooseTextWatcher);

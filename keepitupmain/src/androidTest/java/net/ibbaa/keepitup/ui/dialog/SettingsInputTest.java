@@ -33,6 +33,7 @@ import org.junit.runner.RunWith;
 
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Objects;
 
 @SmallTest
 @RunWith(AndroidJUnit4.class)
@@ -53,17 +54,17 @@ public class SettingsInputTest {
         bundle = settingsInput.toBundle();
         settingsInput = new SettingsInput(bundle);
         assertEquals(SettingsInput.Type.ADDRESS, settingsInput.getType());
-        assertEquals(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_URI | InputType.TYPE_TEXT_FLAG_MULTI_LINE | InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS, settingsInput.getType().getInputType());
+        assertEquals(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_URI | InputType.TYPE_TEXT_FLAG_MULTI_LINE | InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS, Objects.requireNonNull(settingsInput.getType()).getInputType());
         assertEquals("", settingsInput.getTitle());
         assertEquals("", settingsInput.getValue());
         assertEquals("", settingsInput.getField());
         assertEquals(5, settingsInput.getPosition());
-        assertTrue(settingsInput.getValidators().isEmpty());
+        assertTrue(Objects.requireNonNull(settingsInput.getValidators()).isEmpty());
         settingsInput = new SettingsInput(SettingsInput.Type.PORT, "test", "testfield", Arrays.asList("1", "2", "3"));
         bundle = settingsInput.toBundle();
         settingsInput = new SettingsInput(bundle);
         assertEquals(SettingsInput.Type.PORT, settingsInput.getType());
-        assertEquals(InputType.TYPE_CLASS_NUMBER, settingsInput.getType().getInputType());
+        assertEquals(InputType.TYPE_CLASS_NUMBER, Objects.requireNonNull(settingsInput.getType()).getInputType());
         assertEquals("test", settingsInput.getValue());
         assertEquals("testfield", settingsInput.getField());
         assertEquals(-1, settingsInput.getPosition());
@@ -72,7 +73,7 @@ public class SettingsInputTest {
         bundle = settingsInput.toBundle();
         settingsInput = new SettingsInput(bundle);
         assertEquals(SettingsInput.Type.INTERVAL, settingsInput.getType());
-        assertEquals(InputType.TYPE_CLASS_NUMBER, settingsInput.getType().getInputType());
+        assertEquals(InputType.TYPE_CLASS_NUMBER, Objects.requireNonNull(settingsInput.getType()).getInputType());
         assertEquals("title", settingsInput.getTitle());
         assertEquals("xyz", settingsInput.getValue());
         assertEquals("testfield", settingsInput.getField());
@@ -82,7 +83,7 @@ public class SettingsInputTest {
         bundle = settingsInput.toBundle();
         settingsInput = new SettingsInput(bundle);
         assertEquals(SettingsInput.Type.PINGCOUNT, settingsInput.getType());
-        assertEquals(InputType.TYPE_CLASS_NUMBER, settingsInput.getType().getInputType());
+        assertEquals(InputType.TYPE_CLASS_NUMBER, Objects.requireNonNull(settingsInput.getType()).getInputType());
         assertEquals("test", settingsInput.getValue());
         assertEquals("testfield", settingsInput.getField());
         assertEquals(-1, settingsInput.getPosition());
@@ -91,7 +92,7 @@ public class SettingsInputTest {
         bundle = settingsInput.toBundle();
         settingsInput = new SettingsInput(bundle);
         assertEquals(SettingsInput.Type.CONNECTCOUNT, settingsInput.getType());
-        assertEquals(InputType.TYPE_CLASS_NUMBER, settingsInput.getType().getInputType());
+        assertEquals(InputType.TYPE_CLASS_NUMBER, Objects.requireNonNull(settingsInput.getType()).getInputType());
         assertNull(settingsInput.getTitle());
         assertEquals("test", settingsInput.getValue());
         assertEquals("testfield", settingsInput.getField());
@@ -101,7 +102,7 @@ public class SettingsInputTest {
         bundle = settingsInput.toBundle();
         settingsInput = new SettingsInput(bundle);
         assertEquals(SettingsInput.Type.PINGPACKAGESIZE, settingsInput.getType());
-        assertEquals(InputType.TYPE_CLASS_NUMBER, settingsInput.getType().getInputType());
+        assertEquals(InputType.TYPE_CLASS_NUMBER, Objects.requireNonNull(settingsInput.getType()).getInputType());
         assertEquals("test", settingsInput.getTitle());
         assertEquals("test", settingsInput.getValue());
         assertEquals("testfield", settingsInput.getField());
@@ -111,7 +112,7 @@ public class SettingsInputTest {
         bundle = settingsInput.toBundle();
         settingsInput = new SettingsInput(bundle);
         assertEquals(SettingsInput.Type.NOTIFICATIONAFTER, settingsInput.getType());
-        assertEquals(InputType.TYPE_CLASS_NUMBER, settingsInput.getType().getInputType());
+        assertEquals(InputType.TYPE_CLASS_NUMBER, Objects.requireNonNull(settingsInput.getType()).getInputType());
         assertEquals("test", settingsInput.getValue());
         assertEquals("testfield", settingsInput.getField());
         assertEquals(-1, settingsInput.getPosition());
@@ -120,7 +121,7 @@ public class SettingsInputTest {
         bundle = settingsInput.toBundle();
         settingsInput = new SettingsInput(bundle);
         assertEquals(SettingsInput.Type.TASKNAME, settingsInput.getType());
-        assertEquals(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_MULTI_LINE | InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS, settingsInput.getType().getInputType());
+        assertEquals(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_MULTI_LINE | InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS, Objects.requireNonNull(settingsInput.getType()).getInputType());
         assertEquals("test", settingsInput.getTitle());
         assertEquals("test", settingsInput.getValue());
         assertEquals("testfield", settingsInput.getField());
@@ -130,7 +131,7 @@ public class SettingsInputTest {
         bundle = settingsInput.toBundle();
         settingsInput = new SettingsInput(bundle);
         assertEquals(SettingsInput.Type.USERAGENT, settingsInput.getType());
-        assertEquals(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_MULTI_LINE | InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS, settingsInput.getType().getInputType());
+        assertEquals(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_MULTI_LINE | InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS, Objects.requireNonNull(settingsInput.getType()).getInputType());
         assertEquals("test", settingsInput.getTitle());
         assertEquals("test", settingsInput.getValue());
         assertEquals("testfield", settingsInput.getField());

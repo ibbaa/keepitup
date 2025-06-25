@@ -476,7 +476,6 @@ public class NetworkTaskWorkerTest {
         assertTrue(notificationManager.wasNotifyCalled());
         notificationManager.reset();
         testNetworkTaskWorker.run();
-        notificationHandler = testNetworkTaskWorker.getNotificationHandler();
         notificationManager = (MockNotificationManager) notificationHandler.getNotificationManager();
         assertFalse(notificationManager.wasNotifyCalled());
         notificationManager.reset();
@@ -484,7 +483,6 @@ public class NetworkTaskWorkerTest {
         assertTrue(notificationManager.wasNotifyCalled());
         notificationManager.reset();
         testNetworkTaskWorker.run();
-        notificationHandler = testNetworkTaskWorker.getNotificationHandler();
         notificationManager = (MockNotificationManager) notificationHandler.getNotificationManager();
         assertFalse(notificationManager.wasNotifyCalled());
         notificationManager.reset();

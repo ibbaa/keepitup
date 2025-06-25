@@ -33,6 +33,7 @@ import net.ibbaa.keepitup.ui.permission.PermissionManager;
 
 import java.security.SecureRandom;
 
+@SuppressWarnings("TryFinallyCanBeTryWithResources")
 public class SchedulerIdGenerator {
 
     public final static int ERROR_SCHEDULER_ID = -1;

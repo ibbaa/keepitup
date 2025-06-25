@@ -69,6 +69,7 @@ public class DownloadNetworkTaskWorker extends NetworkTaskWorker {
         return downloadExecutionResult;
     }
 
+    @SuppressWarnings("resource")
     private ExecutionResult executeDownloadCommand(NetworkTask networkTask, AccessTypeData data) {
         Log.d(DownloadNetworkTaskWorker.class.getName(), "executeDownloadCommand, networkTask is " + networkTask);
         PreferenceManager preferenceManager = new PreferenceManager(getContext());

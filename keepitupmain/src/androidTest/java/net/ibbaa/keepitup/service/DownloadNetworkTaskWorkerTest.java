@@ -1721,7 +1721,7 @@ public class DownloadNetworkTaskWorkerTest {
     }
 
     @Test
-    @SuppressWarnings({"BusyWait"})
+    @SuppressWarnings({"BusyWait", "resource"})
     public void testDownloadThreadInterrupted() throws Exception {
         preferenceManager.setPreferenceDownloadFollowsRedirects(false);
         NetworkTask task = networkTaskDAO.insertNetworkTask(getNetworkTask());

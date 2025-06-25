@@ -90,6 +90,7 @@ public class PingNetworkTaskWorker extends NetworkTaskWorker {
         logEntry.setTimestamp(getTimeService().getCurrentTimestamp());
     }
 
+    @SuppressWarnings("resource")
     private ExecutionResult executePingCommand(String address, int pingCount, boolean defaultPackageSize, int packageSize, boolean stopOnSuccess, boolean ip6) {
         Log.d(PingNetworkTaskWorker.class.getName(), "executePingCommand, address is " + address + ", pingCount is " + pingCount + ", defaultPackageSize is " + defaultPackageSize + ", packageSize is " + packageSize + ", ip6 is " + ip6);
         Callable<PingCommandResult> pingCommand = getPingCommand(address, pingCount, defaultPackageSize, packageSize, stopOnSuccess, ip6);
