@@ -907,6 +907,10 @@ public class SystemActivity extends SettingsInputActivity implements ExportSuppo
         getTimeBasedSuspensionScheduler().restart();
         if (success) {
             NetworkTaskLog.clear();
+            PreferenceManager preferenceManager = new PreferenceManager(this);
+            if (!preferenceManager.getPreferenceAllowArbitraryFileLocation()) {
+                resetFolderPermissions();
+            }
             resetActivity();
         } else {
             showMessageDialog(message != null ? message : getResources().getString(R.string.text_dialog_general_message_config_import), Typeface.BOLD, Error.IMPORTERROR.name());
