@@ -425,6 +425,10 @@ public class NetworkTaskMainActivity extends RecyclerViewBaseActivity implements
         editDialog.show(getSupportFragmentManager(), NetworkTaskEditDialog.class.getName());
     }
 
+    public void onMainCopyClicked(int position) {
+        Log.d(NetworkTaskMainActivity.class.getName(), "onMainCopyClicked, position is " + position);
+    }
+
     public void onMainLogClicked(int position) {
         Log.d(NetworkTaskMainActivity.class.getName(), "onMainLogClicked, position is " + position);
         if (position < 0) {

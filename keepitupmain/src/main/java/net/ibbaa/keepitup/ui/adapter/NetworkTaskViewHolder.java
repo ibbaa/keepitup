@@ -59,6 +59,8 @@ public class NetworkTaskViewHolder extends RecyclerView.ViewHolder {
         deleteImage.setOnClickListener(this::onDeleteClicked);
         ImageView editImage = itemView.findViewById(R.id.imageview_list_item_network_task_edit);
         editImage.setOnClickListener(this::onEditClicked);
+        ImageView copyImage = itemView.findViewById(R.id.imageview_list_item_network_task_copy);
+        copyImage.setOnClickListener(this::onCopyClicked);
         ImageView logImage = itemView.findViewById(R.id.imageview_list_item_network_task_log);
         logImage.setOnClickListener(this::onLogClicked);
         statusText = itemView.findViewById(R.id.textview_list_item_network_task_status);
@@ -180,6 +182,10 @@ public class NetworkTaskViewHolder extends RecyclerView.ViewHolder {
 
     private void onEditClicked(View view) {
         mainActivity.onMainEditClicked(getBindingAdapterPosition());
+    }
+
+    private void onCopyClicked(View view) {
+        mainActivity.onMainCopyClicked(getBindingAdapterPosition());
     }
 
     private void onLogClicked(View view) {
