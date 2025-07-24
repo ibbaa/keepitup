@@ -351,18 +351,9 @@ public class NetworkTaskMainActivity extends RecyclerViewBaseActivity implements
 
     public void onMainAddClicked(View view) {
         Log.d(NetworkTaskMainActivity.class.getName(), "onMainAddClicked");
-        NetworkTaskEditDialog editDialog = new NetworkTaskEditDialog();
-        if (permissionManager != null) {
-            editDialog.injectPermissionManager(permissionManager);
-        }
         NetworkTask task = new NetworkTask(this);
         AccessTypeData data = new AccessTypeData(this);
-        Bundle bundle = BundleUtil.integerToBundle(editDialog.getPositionKey(), -1);
-        bundle = BundleUtil.bundleToBundle(editDialog.getTaskKey(), task.toBundle(), bundle);
-        bundle = BundleUtil.bundleToBundle(editDialog.getAccessTypeDataKey(), data.toBundle(), bundle);
-        editDialog.setArguments(bundle);
-        Log.d(NetworkTaskMainActivity.class.getName(), "Opening " + NetworkTaskEditDialog.class.getSimpleName());
-        editDialog.show(getSupportFragmentManager(), NetworkTaskEditDialog.class.getName());
+        openNetworkTaskEditDialog(task, data, -1);
     }
 
     public void onMainStartStopClicked(int position) {
@@ -412,7 +403,27 @@ public class NetworkTaskMainActivity extends RecyclerViewBaseActivity implements
         }
         NetworkTask task = uiWrapper.getNetworkTask();
         AccessTypeData accessTypeData = uiWrapper.getAccessTypeData();
-        Log.d(NetworkTaskMainActivity.class.getName(), "onMainEditClicked for network task " + task + " and access type data " + accessTypeData);
+        openNetworkTaskEditDialog(task, accessTypeData, position);
+    }
+
+    public void onMainCopyClicked(int position) {
+        Log.d(NetworkTaskMainActivity.class.getName(), "onMainCopyClicked, position is " + position);
+        if (position < 0) {
+            Log.e(NetworkTaskMainActivity.class.getName(), "position " + position + " is invalid");
+            return;
+        }
+        NetworkTaskUIWrapper uiWrapper = ((NetworkTaskAdapter) getAdapter()).getItem(position);
+        if (uiWrapper == null) {
+            Log.e(NetworkTaskMainActivity.class.getName(), "No item on position " + position);
+            return;
+        }
+        NetworkTask task = new NetworkTask(uiWrapper.getNetworkTask());
+        AccessTypeData accessTypeData = new AccessTypeData(uiWrapper.getAccessTypeData());
+        openNetworkTaskEditDialog(task, accessTypeData, position);
+    }
+
+    private void openNetworkTaskEditDialog(NetworkTask task, AccessTypeData accessTypeData, int position) {
+        Log.d(NetworkTaskMainActivity.class.getName(), "openNetworkTaskEditDialog, task is " + task + ", accessTypeData is" + accessTypeData + ", position is " + position);
         NetworkTaskEditDialog editDialog = new NetworkTaskEditDialog();
         if (permissionManager != null) {
             editDialog.injectPermissionManager(permissionManager);
@@ -423,10 +434,6 @@ public class NetworkTaskMainActivity extends RecyclerViewBaseActivity implements
         editDialog.setArguments(bundle);
         Log.d(NetworkTaskMainActivity.class.getName(), "Opening " + NetworkTaskEditDialog.class.getSimpleName());
         editDialog.show(getSupportFragmentManager(), NetworkTaskEditDialog.class.getName());
-    }
-
-    public void onMainCopyClicked(int position) {
-        Log.d(NetworkTaskMainActivity.class.getName(), "onMainCopyClicked, position is " + position);
     }
 
     public void onMainLogClicked(int position) {

@@ -552,6 +552,72 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
     }
 
     @Test
+    public void testCopyNetworkTask() {
+        ActivityScenario<?> activityScenario = launchRecyclerViewBaseActivity(NetworkTaskMainActivity.class);
+        injectPermissionManager(activityScenario);
+        onView(allOf(withId(R.id.imageview_activity_main_network_task_add), isDisplayed())).perform(click());
+        onView(withId(R.id.imageview_dialog_network_task_edit_ok)).perform(click());
+        onView(withId(R.id.listview_activity_main_network_tasks)).check(matches(withListSize(1)));
+        onView(allOf(withId(R.id.imageview_list_item_network_task_copy), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 0))).perform(click());
+        onView(withId(R.id.edittext_dialog_network_task_edit_address)).perform(replaceText("localhost"));
+        onView(withId(R.id.edittext_dialog_network_task_edit_interval)).perform(replaceText("60"));
+        onView(withId(R.id.switch_dialog_network_task_edit_stop_on_success)).perform(click());
+        onView(withId(R.id.switch_dialog_network_task_edit_only_wifi)).perform(click());
+        onView(withId(R.id.switch_dialog_network_task_edit_notification)).perform(click());
+        onView(withId(R.id.imageview_dialog_network_task_edit_ok)).perform(click());
+        onView(withId(R.id.listview_activity_main_network_tasks)).check(matches(withListSize(2)));
+        onView(allOf(withId(R.id.textview_list_item_network_task_accesstype), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 0))).check(matches(withText("Type: Ping, package size: 56")));
+        onView(allOf(withId(R.id.textview_list_item_network_task_address), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 0))).check(matches(withText("Host: 192.168.178.1")));
+        onView(allOf(withId(R.id.textview_list_item_network_task_interval), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 0))).check(matches(withText("Interval: 15 minutes")));
+        onView(allOf(withId(R.id.textview_list_item_network_task_stop_on_success), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 0))).check(matches(withText("Stop on success: no")));
+        onView(allOf(withId(R.id.textview_list_item_network_task_only_wifi), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 0))).check(matches(withText("Only on WiFi: no")));
+        onView(allOf(withId(R.id.textview_list_item_network_task_notification), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 0))).check(matches(withText("Notifications: no")));
+        onView(allOf(withId(R.id.textview_list_item_network_task_accesstype), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 1))).check(matches(withText("Type: Ping, package size: 56")));
+        onView(allOf(withId(R.id.textview_list_item_network_task_address), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 1))).check(matches(withText("Host: localhost")));
+        onView(allOf(withId(R.id.textview_list_item_network_task_interval), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 1))).check(matches(withText("Interval: 60 minutes")));
+        onView(allOf(withId(R.id.textview_list_item_network_task_stop_on_success), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 1))).check(matches(withText("Stop on success: yes")));
+        onView(allOf(withId(R.id.textview_list_item_network_task_only_wifi), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 1))).check(matches(withText("Only on WiFi: yes")));
+        onView(allOf(withId(R.id.textview_list_item_network_task_notification), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 1))).check(matches(withText("Notifications: yes")));
+        onView(allOf(withId(R.id.imageview_list_item_network_task_copy), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 0))).perform(click());
+        onView(withId(R.id.imageview_dialog_network_task_edit_cancel)).perform(click());
+        onView(withId(R.id.listview_activity_main_network_tasks)).check(matches(withListSize(2)));
+        onView(allOf(withId(R.id.imageview_list_item_network_task_copy), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 0))).perform(click());
+        onView(withText("Connect")).perform(click());
+        onView(withId(R.id.imageview_dialog_network_task_edit_ok)).perform(click());
+        onView(withId(R.id.listview_activity_main_network_tasks)).check(matches(withListSize(3)));
+        onView(allOf(withId(R.id.textview_list_item_network_task_accesstype), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 0))).check(matches(withText("Type: Ping, package size: 56")));
+        onView(allOf(withId(R.id.textview_list_item_network_task_address), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 0))).check(matches(withText("Host: 192.168.178.1")));
+        onView(allOf(withId(R.id.textview_list_item_network_task_interval), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 0))).check(matches(withText("Interval: 15 minutes")));
+        onView(allOf(withId(R.id.textview_list_item_network_task_stop_on_success), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 0))).check(matches(withText("Stop on success: no")));
+        onView(allOf(withId(R.id.textview_list_item_network_task_only_wifi), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 0))).check(matches(withText("Only on WiFi: no")));
+        onView(allOf(withId(R.id.textview_list_item_network_task_notification), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 0))).check(matches(withText("Notifications: no")));
+        onView(allOf(withId(R.id.textview_list_item_network_task_accesstype), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 1))).check(matches(withText("Type: Ping, package size: 56")));
+        onView(allOf(withId(R.id.textview_list_item_network_task_address), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 1))).check(matches(withText("Host: localhost")));
+        onView(allOf(withId(R.id.textview_list_item_network_task_interval), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 1))).check(matches(withText("Interval: 60 minutes")));
+        onView(allOf(withId(R.id.textview_list_item_network_task_stop_on_success), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 1))).check(matches(withText("Stop on success: yes")));
+        onView(allOf(withId(R.id.textview_list_item_network_task_only_wifi), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 1))).check(matches(withText("Only on WiFi: yes")));
+        onView(allOf(withId(R.id.textview_list_item_network_task_notification), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 1))).check(matches(withText("Notifications: yes")));
+        onView(allOf(withId(R.id.textview_list_item_network_task_accesstype), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 2))).check(matches(withText("Type: Connect")));
+        onView(allOf(withId(R.id.textview_list_item_network_task_address), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 2))).check(matches(withText("Host: 192.168.178.1 Port: 22")));
+        onView(allOf(withId(R.id.textview_list_item_network_task_interval), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 2))).check(matches(withText("Interval: 15 minutes")));
+        onView(allOf(withId(R.id.textview_list_item_network_task_stop_on_success), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 2))).check(matches(withText("Stop on success: no")));
+        onView(allOf(withId(R.id.textview_list_item_network_task_only_wifi), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 2))).check(matches(withText("Only on WiFi: no")));
+        onView(allOf(withId(R.id.textview_list_item_network_task_notification), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 2))).check(matches(withText("Notifications: no")));
+        List<NetworkTask> readTasks = getNetworkTaskDAO().readAllNetworkTasks();
+        assertEquals(3, readTasks.size());
+        NetworkTask readTask0 = readTasks.get(0);
+        NetworkTask readTask1 = readTasks.get(1);
+        NetworkTask readTask2 = readTasks.get(2);
+        assertEquals(0, readTask0.getIndex());
+        assertEquals(1, readTask1.getIndex());
+        assertEquals(2, readTask2.getIndex());
+        assertEquals(AccessType.PING, readTask0.getAccessType());
+        assertEquals(AccessType.PING, readTask1.getAccessType());
+        assertEquals(AccessType.CONNECT, readTask2.getAccessType());
+        activityScenario.close();
+    }
+
+    @Test
     public void testNetworkTaskAddressTrimmed() {
         ActivityScenario<?> activityScenario = launchRecyclerViewBaseActivity(NetworkTaskMainActivity.class);
         injectPermissionManager(activityScenario);
