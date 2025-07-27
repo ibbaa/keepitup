@@ -1,4 +1,4 @@
-Keep it up überprüft den Status von Netzwerkdiensten oder Webseiten indem regelmäßig pings gesendet werden, Verbindungsversuche unternommen werden oder Seiten heruntergeladen werden. Auf diese Weise können auch Verbindugen aufrechterhalten werden, die ansonsten nach einer bestimmten Zeit der Inaktivität geschlossen werden.
+Keep it up überprüft den Status von Netzwerkdiensten oder Webseiten indem regelmäßig pings gesendet werden, Verbindungsversuche unternommen werden oder Seiten heruntergeladen werden. Auf diese Weise können auch Verbindungen aufrechterhalten werden, die ansonsten nach einer bestimmten Zeit der Inaktivität geschlossen werden.
 
 <b>Features</b>
 
