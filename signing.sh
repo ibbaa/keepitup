@@ -35,6 +35,7 @@ if [ -z "$KEEPITUP_KEY_PASS" ]; then
 fi
 
 mv $KEEPITUP_DEBUG_APK_PATH/keepitup-debug.apk $KEEPITUP_DEBUG_APK_PATH/keepitup-debug-unsigned.apk
+mv $KEEPITUP_RELEASE_APK_PATH/keepitup-release.apk $KEEPITUP_RELEASE_APK_PATH/keepitup-release-unsigned.apk
 $BUILD_TOOLS_PATH/apksigner sign --ks $KEEPITUP_KEYSTORE_FILE --ks-key-alias $KEEPITUP_KEY_ALIAS --ks-pass env:KEEPITUP_KEYSTORE_PASS --key-pass env:KEEPITUP_KEY_PASS --out $KEEPITUP_DEBUG_APK_PATH/keepitup-debug.apk $KEEPITUP_DEBUG_APK_PATH/keepitup-debug-unsigned.apk
 $BUILD_TOOLS_PATH/apksigner sign --ks $KEEPITUP_KEYSTORE_FILE --ks-key-alias $KEEPITUP_KEY_ALIAS --ks-pass env:KEEPITUP_KEYSTORE_PASS --key-pass env:KEEPITUP_KEY_PASS --out $KEEPITUP_RELEASE_APK_PATH/keepitup-release.apk $KEEPITUP_RELEASE_APK_PATH/keepitup-release-unsigned.apk
 rm $KEEPITUP_DEBUG_APK_PATH/keepitup-debug-unsigned.apk $KEEPITUP_RELEASE_APK_PATH/keepitup-release-unsigned.apk

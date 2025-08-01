@@ -13,11 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 apply plugin: 'com.android.application'
 
 android {
-    compileSdk 36
+    compileSdkVersion 36
     defaultConfig {
         applicationId "net.ibbaa.keepitup"
         minSdkVersion 21
@@ -26,7 +25,6 @@ android {
         versionCode 14
         versionName "1.9.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
-        archivesBaseName = "keepitup"
         buildConfigField "long", "TIMESTAMP", System.currentTimeMillis() + "L"
         buildConfigField "int", "RELEASE_YEAR", '2025'
     }
@@ -58,6 +56,14 @@ configurations.configureEach {
     }
 }
 
+androidComponents {
+    onVariants(selector().all()) { variant ->
+        variant.outputs.forEach { output ->
+            output.outputFileName.set("keepitup-${variant.buildType}.apk")
+        }
+    }
+}
+
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation(platform('org.jetbrains.kotlin:kotlin-bom:2.2.0'))
@@ -78,9 +84,9 @@ dependencies {
     testImplementation 'org.powermock:powermock-module-junit4:2.0.9'
     testImplementation 'org.powermock:powermock-core:2.0.9'
     testImplementation 'androidx.annotation:annotation:1.9.1'
-    androidTestImplementation 'androidx.test:core:1.6.1'
-    androidTestImplementation 'androidx.test.ext:junit:1.2.1'
-    androidTestImplementation 'androidx.test:runner:1.6.2'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.6.1'
-    androidTestImplementation 'androidx.test:rules:1.6.1'
+    androidTestImplementation 'androidx.test:core:1.7.0'
+    androidTestImplementation 'androidx.test.ext:junit:1.3.0'
+    androidTestImplementation 'androidx.test:runner:1.7.0'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.7.0'
+    androidTestImplementation 'androidx.test:rules:1.7.0'
 }
