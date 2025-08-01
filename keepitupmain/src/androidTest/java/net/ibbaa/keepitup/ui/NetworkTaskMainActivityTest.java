@@ -684,6 +684,7 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
         onView(withId(R.id.imageview_dialog_network_task_edit_ok)).perform(click());
         NetworkTask taskBefore = getNetworkTaskDAO().readAllNetworkTasks().get(0);
         AccessTypeData dataBefore = getAccessTypeDataDAO().readAccessTypeDataForNetworkTask(taskBefore.getId());
+        onView(isRoot()).perform(waitFor(500));
         onView(allOf(withId(R.id.imageview_list_item_network_task_edit), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 0))).perform(click());
         onView(withId(R.id.switch_dialog_network_task_edit_stop_on_success)).perform(click());
         onView(withId(R.id.imageview_dialog_network_task_edit_ok)).perform(click());

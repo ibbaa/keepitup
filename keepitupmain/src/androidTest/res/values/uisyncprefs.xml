@@ -16,4 +16,5 @@
 
 <resources>
     <bool name="uisync_synchronous_execution">true</bool>
+    <bool name="ui_use_scrolling">false</bool>
 </resources>

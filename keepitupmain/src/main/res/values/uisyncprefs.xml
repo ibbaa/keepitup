@@ -16,6 +16,7 @@
 
 <resources>
     <bool name="uisync_synchronous_execution">false</bool>
+    <bool name="ui_use_scrolling">true</bool>
     <integer name="drop_table_retry_count">5</integer>
     <integer name="delete_table_retry_count">5</integer>
     <integer name="drop_table_timeout">500</integer>

@@ -1,0 +1,2 @@
+* Provided a copy option for networks tasks
+* When adding or copying a task, the UI scrolls to the new task

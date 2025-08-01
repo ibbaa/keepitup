@@ -163,7 +163,17 @@ public class NetworkTaskMainActivity extends RecyclerViewBaseActivity implements
             return;
         }
         NetworkTask task = new NetworkTask(taskBundle);
-        int index = task.getIndex();
+        scrollToEntryByIndex(task.getIndex());
+        Log.d(NetworkTaskMainActivity.class.getName(), "scrollToProvidedEntry, remove task bundle");
+        getIntent().removeExtra(getNetworkTaskBundleKey());
+    }
+
+    private void scrollToEntryByIndex(int index) {
+        Log.d(NetworkTaskMainActivity.class.getName(), "scrollToEntryByIndex, index is " + index);
+        if (!getResources().getBoolean(R.bool.ui_use_scrolling)) {
+            Log.d(NetworkTaskMainActivity.class.getName(), "scrolling is disabled");
+            return;
+        }
         if (index >= 0 && index < getAdapter().getItemCount()) {
             RecyclerView recyclerView = findViewById(getRecyclerViewId());
             NestedScrollView scrollView = findViewById(R.id.scrollview_main_content);
@@ -186,8 +196,6 @@ public class NetworkTaskMainActivity extends RecyclerViewBaseActivity implements
                 }
             }, 300);
         }
-        Log.d(NetworkTaskMainActivity.class.getName(), "scrollToProvidedEntry, remove task bundle");
-        getIntent().removeExtra(getNetworkTaskBundleKey());
     }
 
     @Override
@@ -464,6 +472,7 @@ public class NetworkTaskMainActivity extends RecyclerViewBaseActivity implements
             Log.d(NetworkTaskMainActivity.class.getName(), "Network task is new, inserting " + task);
             handler.insertNetworkTask(task, accessTypeData);
             getAdapter().notifyItemInserted(getAdapter().getItemCount() + 1);
+            scrollToEntryByIndex(task.getIndex());
         } else {
             NetworkTask initialTask = editDialog.getInitialNetworkTask();
             AccessTypeData initialAccessTypeData = editDialog.getInitialAccessTypeData();
