@@ -50,17 +50,17 @@ android {
     namespace 'net.ibbaa.keepitup'
 }
 
-configurations.configureEach {
-    resolutionStrategy.capabilitiesResolution.withCapability("com.google.guava:listenablefuture") {
-        select("com.google.guava:guava:0")
-    }
-}
-
 androidComponents {
     onVariants(selector().all()) { variant ->
         variant.outputs.forEach { output ->
             output.outputFileName.set("keepitup-${variant.buildType}.apk")
         }
+    }
+}
+
+configurations.configureEach {
+    resolutionStrategy.capabilitiesResolution.withCapability("com.google.guava:listenablefuture") {
+        select("com.google.guava:guava:0")
     }
 }
 
