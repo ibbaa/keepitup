@@ -238,7 +238,7 @@ class NetworkTaskDBConstants {
                 getFailureCountColumnName() + ", " +
                 getHighPrioColumnName() +
                 " FROM " + getTableName() +
-                "  WHERE " + getIdColumnName() + " = ?;";
+                " WHERE " + getIdColumnName() + " = ?;";
     }
 
 
@@ -271,6 +271,13 @@ class NetworkTaskDBConstants {
                 " ORDER BY " + getIndexColumnName() + " ASC";
     }
 
+    public String getReadNetworkTaskIndexStatement() {
+        return "SELECT " +
+                getIndexColumnName() +
+                " FROM " + getTableName() +
+                " WHERE " + getIdColumnName() + " = ?;";
+    }
+
     public String getSchedulerIdCountStatement() {
         return "SELECT COUNT(*) FROM " + getTableName() + " WHERE " + getSchedulerIdColumnName() + " = ?";
     }
@@ -292,6 +299,10 @@ class NetworkTaskDBConstants {
     }
 
     public record IndexTask(long id, int uiIndex) {
+
+    }
+
+    public record SwapTask(long fromId, long toId) {
 
     }
 }

@@ -447,6 +447,32 @@ public class NetworkTaskDAOTest {
     }
 
     @Test
+    public void testSwapUIIndex() {
+        NetworkTask insertedTask1 = getNetworkTask1();
+        NetworkTask insertedTask2 = getNetworkTask2();
+        NetworkTask insertedTask3 = getNetworkTask3();
+        insertedTask1 = networkTaskDAO.insertNetworkTask(insertedTask1);
+        insertedTask2 = networkTaskDAO.insertNetworkTask(insertedTask2);
+        insertedTask3 = networkTaskDAO.insertNetworkTask(insertedTask3);
+        assertTrue(networkTaskDAO.swapUIIndex(insertedTask1.getId(), insertedTask3.getId()));
+        NetworkTask readTask1 = networkTaskDAO.readNetworkTask(insertedTask1.getId());
+        NetworkTask readTask2 = networkTaskDAO.readNetworkTask(insertedTask2.getId());
+        NetworkTask readTask3 = networkTaskDAO.readNetworkTask(insertedTask3.getId());
+        assertEquals(insertedTask3.getIndex(), readTask1.getIndex());
+        assertEquals(insertedTask2.getIndex(), readTask2.getIndex());
+        assertEquals(insertedTask1.getIndex(), readTask3.getIndex());
+        assertTrue(networkTaskDAO.swapUIIndex(insertedTask2.getId(), insertedTask3.getId()));
+        readTask1 = networkTaskDAO.readNetworkTask(insertedTask1.getId());
+        readTask2 = networkTaskDAO.readNetworkTask(insertedTask2.getId());
+        readTask3 = networkTaskDAO.readNetworkTask(insertedTask3.getId());
+        assertEquals(insertedTask3.getIndex(), readTask1.getIndex());
+        assertEquals(insertedTask1.getIndex(), readTask2.getIndex());
+        assertEquals(insertedTask2.getIndex(), readTask3.getIndex());
+        networkTaskDAO.deleteAllNetworkTasks();
+        assertFalse(networkTaskDAO.swapUIIndex(insertedTask1.getId(), insertedTask3.getId()));
+    }
+
+    @Test
     public void testNormalizeUIIndex() {
         assertFalse(networkTaskDAO.normalizeUIIndex());
         assertTrue(networkTaskDAO.readAllNetworkTasks().isEmpty());

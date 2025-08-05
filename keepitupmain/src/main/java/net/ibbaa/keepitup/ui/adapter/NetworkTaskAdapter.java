@@ -347,6 +347,23 @@ public class NetworkTaskAdapter extends RecyclerView.Adapter<NetworkTaskViewHold
         }
     }
 
+    @SuppressWarnings("unused")
+    public void moveItem(int fromPosition, int toPosition) {
+        Log.d(NetworkTaskAdapter.class.getName(), "moveItem, fromPosition is " + fromPosition + ", toPosition is " + toPosition);
+        if (fromPosition < 0 || toPosition < 0 || fromPosition >= getItemCount() || toPosition >= getItemCount() || fromPosition == toPosition) {
+            Log.d(NetworkTaskAdapter.class.getName(), "invalid positions, move cancelled");
+            return;
+        }
+        NetworkTask taskFrom = networkTaskWrapperList.get(fromPosition).getNetworkTask();
+        NetworkTask taskTo = networkTaskWrapperList.get(toPosition).getNetworkTask();
+        int indexWrapperFrom = taskFrom.getIndex();
+        int indexWrapperTo = taskTo.getIndex();
+        taskFrom.setIndex(indexWrapperTo);
+        taskTo.setIndex(indexWrapperFrom);
+        Collections.swap(networkTaskWrapperList, fromPosition, toPosition);
+        notifyItemMoved(fromPosition, toPosition);
+    }
+
     public int getNextIndex() {
         return networkTaskWrapperList.size();
     }

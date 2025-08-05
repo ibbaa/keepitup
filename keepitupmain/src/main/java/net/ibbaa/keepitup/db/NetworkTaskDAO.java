@@ -203,6 +203,13 @@ public class NetworkTaskDAO extends BaseDAO {
         return taskList;
     }
 
+    public boolean swapUIIndex(long taskIdFrom, long taskIdTo) {
+        Log.d(NetworkTaskDAO.class.getName(), "swapUIIndex from task with id " + taskIdFrom + " to task with id " + taskIdTo);
+        boolean success = executeDBOperationInTransaction(new NetworkTaskDBConstants.SwapTask(taskIdFrom, taskIdTo), this::swapUIIndex);
+        dumpDatabase("Dump after swapUIIndex call");
+        return success;
+    }
+
     public boolean normalizeUIIndex() {
         Log.d(NetworkTaskDAO.class.getName(), "normalizeUIIndex");
         boolean inconsistency = executeDBOperationInTransaction((NetworkTask) null, this::normalizeUIIndex);
@@ -593,6 +600,53 @@ public class NetworkTaskDAO extends BaseDAO {
         }
         Log.d(NetworkTaskDAO.class.getName(), "readAllNetworkTasks, returning " + result);
         return result;
+    }
+
+    private boolean swapUIIndex(NetworkTaskDBConstants.SwapTask swapTask, SQLiteDatabase db) {
+        Log.d(NetworkTaskDAO.class.getName(), "swapUIIndex, swapTask is " + swapTask);
+        NetworkTaskDBConstants dbConstants = new NetworkTaskDBConstants(getContext());
+        int fromIndex = readIndex(db, swapTask.fromId());
+        int toIndex = readIndex(db, swapTask.toId());
+        Log.d(NetworkTaskDAO.class.getName(), "read fromIndex " + fromIndex);
+        Log.d(NetworkTaskDAO.class.getName(), "read toIndex " + toIndex);
+        if (fromIndex < 0 || toIndex < 0) {
+            return false;
+        }
+        String selection = dbConstants.getIdColumnName() + " = ?";
+        String[] selectionArgsFrom = {String.valueOf(swapTask.fromId())};
+        String[] selectionArgsTo = {String.valueOf(swapTask.toId())};
+        ContentValues valuesFrom = new ContentValues();
+        valuesFrom.put(dbConstants.getIndexColumnName(), toIndex);
+        ContentValues valuesTo = new ContentValues();
+        valuesTo.put(dbConstants.getIndexColumnName(), fromIndex);
+        int fromUpdated = db.update(dbConstants.getTableName(), valuesFrom, selection, selectionArgsFrom);
+        int toUpdated = db.update(dbConstants.getTableName(), valuesTo, selection, selectionArgsTo);
+        return fromUpdated > 0 && toUpdated > 0;
+    }
+
+    private int readIndex(SQLiteDatabase db, long id) {
+        Log.d(NetworkTaskDAO.class.getName(), "readIndex, id is " + id);
+        Cursor cursor = null;
+        NetworkTaskDBConstants dbConstants = new NetworkTaskDBConstants(getContext());
+        try {
+            Log.d(NetworkTaskDAO.class.getName(), "Executing SQL " + dbConstants.getReadNetworkTaskIndexStatement() + " with a parameter of " + id);
+            cursor = db.rawQuery(dbConstants.getReadNetworkTaskIndexStatement(), new String[]{String.valueOf(id)});
+            while (cursor.moveToNext()) {
+                int indexIndexColumn = cursor.getColumnIndex(dbConstants.getIndexColumnName());
+                if (!cursor.isNull(indexIndexColumn)) {
+                    return cursor.getInt(indexIndexColumn);
+                }
+            }
+        } finally {
+            if (cursor != null) {
+                try {
+                    cursor.close();
+                } catch (Throwable exc) {
+                    Log.e(NetworkTaskDAO.class.getName(), "Error closing result cursor", exc);
+                }
+            }
+        }
+        return -1;
     }
 
     @SuppressWarnings("unused")
