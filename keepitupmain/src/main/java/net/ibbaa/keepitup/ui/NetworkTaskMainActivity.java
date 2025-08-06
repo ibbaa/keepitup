@@ -30,6 +30,7 @@ import android.widget.ImageView;
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.core.widget.NestedScrollView;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -44,6 +45,7 @@ import net.ibbaa.keepitup.service.IAlarmManager;
 import net.ibbaa.keepitup.service.NetworkTaskProcessServiceScheduler;
 import net.ibbaa.keepitup.service.SystemAlarmManager;
 import net.ibbaa.keepitup.service.alarm.AlarmService;
+import net.ibbaa.keepitup.ui.adapter.DragAndDropCallback;
 import net.ibbaa.keepitup.ui.adapter.NetworkTaskAdapter;
 import net.ibbaa.keepitup.ui.adapter.NetworkTaskUIWrapper;
 import net.ibbaa.keepitup.ui.dialog.AlarmPermissionDialog;
@@ -104,8 +106,16 @@ public class NetworkTaskMainActivity extends RecyclerViewBaseActivity implements
         initEdgeToEdgeInsets(R.id.layout_activity_main);
         initRecyclerView();
         checkIndexConsistency();
+        initDragAndDrop();
         prepareAddImageButton();
         startForegroundServiceDelayed();
+    }
+
+    private void initDragAndDrop() {
+        Log.d(NetworkTaskMainActivity.class.getName(), "initDragAndDrop");
+        RecyclerView recyclerView = findViewById(getRecyclerViewId());
+        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(new DragAndDropCallback(this));
+        itemTouchHelper.attachToRecyclerView(recyclerView);
     }
 
     @SuppressWarnings("NotifyDataSetChanged")

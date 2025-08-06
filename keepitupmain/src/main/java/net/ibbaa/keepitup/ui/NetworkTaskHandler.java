@@ -28,10 +28,11 @@ import net.ibbaa.keepitup.logging.NetworkTaskLog;
 import net.ibbaa.keepitup.model.AccessTypeData;
 import net.ibbaa.keepitup.model.NetworkTask;
 import net.ibbaa.keepitup.service.NetworkTaskProcessServiceScheduler;
+import net.ibbaa.keepitup.ui.adapter.DragAndDropCallback;
 import net.ibbaa.keepitup.ui.adapter.NetworkTaskAdapter;
 import net.ibbaa.keepitup.ui.adapter.NetworkTaskUIWrapper;
 
-class NetworkTaskHandler {
+public class NetworkTaskHandler {
 
     private final NetworkTaskMainActivity mainActivity;
     private final NetworkTaskProcessServiceScheduler scheduler;
@@ -150,6 +151,31 @@ class NetworkTaskHandler {
         } catch (Exception exc) {
             Log.e(NetworkTaskHandler.class.getName(), "Error deleting network task.", exc);
             showMessageDialog(getResources().getString(R.string.text_dialog_general_message_delete_network_task));
+        } finally {
+            NetworkTaskLog.clear();
+        }
+    }
+
+    public boolean moveNetworkTask(int fromIndex, int toIndex) {
+        Log.d(NetworkTaskHandler.class.getName(), "moveNetworkTask, fromIndex is " + fromIndex + ", toIndex is " + toIndex);
+        if (fromIndex < 0 || toIndex < 0 || fromIndex >= getAdapter().getItemCount() || toIndex >= getAdapter().getItemCount() || fromIndex == toIndex) {
+            Log.d(NetworkTaskHandler.class.getName(), "invalid positions, move cancelled");
+            return false;
+        }
+        try {
+            NetworkTaskDAO dao = new NetworkTaskDAO(mainActivity);
+            NetworkTask fromTask = getAdapter().getItem(fromIndex).getNetworkTask();
+            NetworkTask toTask = getAdapter().getItem(toIndex).getNetworkTask();
+            boolean successfulMove = dao.swapUIIndex(fromTask.getId(), toTask.getId());
+            if (!successfulMove) {
+                Log.e(DragAndDropCallback.class.getName(), "Position invalid. Skip move.");
+                return false;
+            }
+            getAdapter().moveItem(fromIndex, toIndex);
+            return true;
+        } catch (Exception exc) {
+            Log.e(NetworkTaskHandler.class.getName(), "Error moving network task.", exc);
+            return false;
         } finally {
             NetworkTaskLog.clear();
         }

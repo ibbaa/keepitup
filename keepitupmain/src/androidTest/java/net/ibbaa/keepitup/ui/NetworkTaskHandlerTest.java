@@ -246,6 +246,82 @@ public class NetworkTaskHandlerTest extends BaseUITest {
     }
 
     @Test
+    public void testMoveNetworkTask() {
+        NetworkTask task1 = getNetworkTask1();
+        AccessTypeData data1 = getAccessTypeData1();
+        handler.insertNetworkTask(task1, data1);
+        NetworkTask task2 = getNetworkTask2();
+        AccessTypeData data2 = getAccessTypeData2();
+        handler.insertNetworkTask(task2, data2);
+        NetworkTask task3 = getNetworkTask3();
+        AccessTypeData data3 = getAccessTypeData3();
+        handler.insertNetworkTask(task3, data3);
+        handler.moveNetworkTask(task3.getIndex(), task1.getIndex());
+        List<NetworkTask> tasks = getNetworkTaskDAO().readAllNetworkTasks();
+        NetworkTask readTask1 = tasks.get(0);
+        NetworkTask readTask2 = tasks.get(1);
+        NetworkTask readTask3 = tasks.get(2);
+        assertTrue(task1.isTechnicallyEqual(readTask3));
+        assertTrue(task2.isTechnicallyEqual(readTask2));
+        assertTrue(task3.isTechnicallyEqual(readTask1));
+        assertEquals(0, readTask1.getIndex());
+        assertEquals(1, readTask2.getIndex());
+        assertEquals(2, readTask3.getIndex());
+        assertTrue(task1.isTechnicallyEqual(getAdapter().getItem(2).getNetworkTask()));
+        assertTrue(task2.isTechnicallyEqual(getAdapter().getItem(1).getNetworkTask()));
+        assertTrue(task3.isTechnicallyEqual(getAdapter().getItem(0).getNetworkTask()));
+        assertEquals(0, getAdapter().getItem(0).getNetworkTask().getIndex());
+        assertEquals(1, getAdapter().getItem(1).getNetworkTask().getIndex());
+        assertEquals(2, getAdapter().getItem(2).getNetworkTask().getIndex());
+        handler.moveNetworkTask(readTask2.getIndex(), readTask3.getIndex());
+        tasks = getNetworkTaskDAO().readAllNetworkTasks();
+        NetworkTask newReadTask1 = tasks.get(0);
+        NetworkTask newReadTask2 = tasks.get(1);
+        NetworkTask newReadTask3 = tasks.get(2);
+        assertTrue(readTask1.isTechnicallyEqual(newReadTask1));
+        assertTrue(readTask2.isTechnicallyEqual(newReadTask3));
+        assertTrue(readTask3.isTechnicallyEqual(newReadTask2));
+        assertTrue(readTask1.isTechnicallyEqual(getAdapter().getItem(0).getNetworkTask()));
+        assertTrue(readTask2.isTechnicallyEqual(getAdapter().getItem(2).getNetworkTask()));
+        assertTrue(readTask3.isTechnicallyEqual(getAdapter().getItem(1).getNetworkTask()));
+    }
+
+    @Test
+    public void testMoveNetworkTaskInvalidIndex() {
+        NetworkTask task1 = getNetworkTask1();
+        AccessTypeData data1 = getAccessTypeData1();
+        handler.insertNetworkTask(task1, data1);
+        NetworkTask task2 = getNetworkTask2();
+        AccessTypeData data2 = getAccessTypeData2();
+        handler.insertNetworkTask(task2, data2);
+        NetworkTask task3 = getNetworkTask3();
+        AccessTypeData data3 = getAccessTypeData3();
+        handler.insertNetworkTask(task3, data3);
+        handler.moveNetworkTask(3, 1);
+        List<NetworkTask> tasks = getNetworkTaskDAO().readAllNetworkTasks();
+        NetworkTask readTask1 = tasks.get(0);
+        NetworkTask readTask2 = tasks.get(1);
+        NetworkTask readTask3 = tasks.get(2);
+        assertTrue(task1.isTechnicallyEqual(readTask1));
+        assertTrue(task2.isTechnicallyEqual(readTask2));
+        assertTrue(task3.isTechnicallyEqual(readTask3));
+        assertTrue(task1.isTechnicallyEqual(getAdapter().getItem(0).getNetworkTask()));
+        assertTrue(task2.isTechnicallyEqual(getAdapter().getItem(1).getNetworkTask()));
+        assertTrue(task3.isTechnicallyEqual(getAdapter().getItem(2).getNetworkTask()));
+        handler.moveNetworkTask(-1, 1);
+        tasks = getNetworkTaskDAO().readAllNetworkTasks();
+        readTask1 = tasks.get(0);
+        readTask2 = tasks.get(1);
+        readTask3 = tasks.get(2);
+        assertTrue(task1.isTechnicallyEqual(readTask1));
+        assertTrue(task2.isTechnicallyEqual(readTask2));
+        assertTrue(task3.isTechnicallyEqual(readTask3));
+        assertTrue(task1.isTechnicallyEqual(getAdapter().getItem(0).getNetworkTask()));
+        assertTrue(task2.isTechnicallyEqual(getAdapter().getItem(1).getNetworkTask()));
+        assertTrue(task3.isTechnicallyEqual(getAdapter().getItem(2).getNetworkTask()));
+    }
+
+    @Test
     public void testDeleteNetworkTaskClearNetworkTaskLog() {
         NetworkTask task1 = getNetworkTask1();
         AccessTypeData data1 = getAccessTypeData1();

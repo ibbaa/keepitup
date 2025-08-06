@@ -347,7 +347,6 @@ public class NetworkTaskAdapter extends RecyclerView.Adapter<NetworkTaskViewHold
         }
     }
 
-    @SuppressWarnings("unused")
     public void moveItem(int fromPosition, int toPosition) {
         Log.d(NetworkTaskAdapter.class.getName(), "moveItem, fromPosition is " + fromPosition + ", toPosition is " + toPosition);
         if (fromPosition < 0 || toPosition < 0 || fromPosition >= getItemCount() || toPosition >= getItemCount() || fromPosition == toPosition) {
