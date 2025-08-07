@@ -17,9 +17,12 @@
 package net.ibbaa.keepitup.ui.adapter;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.core.widget.NestedScrollView;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.RecyclerView;
 
+import net.ibbaa.keepitup.R;
 import net.ibbaa.keepitup.logging.Log;
 import net.ibbaa.keepitup.ui.NetworkTaskHandler;
 import net.ibbaa.keepitup.ui.NetworkTaskMainActivity;
@@ -28,9 +31,28 @@ import net.ibbaa.keepitup.ui.NetworkTaskMainActivity;
 public class DragAndDropCallback extends ItemTouchHelper.Callback {
 
     private final NetworkTaskMainActivity mainActivity;
+    private final NestedScrollRunnable scrollRunnable;
 
     public DragAndDropCallback(NetworkTaskMainActivity mainActivity) {
         this.mainActivity = mainActivity;
+        NestedScrollView scrollView = mainActivity.findViewById(R.id.scrollview_main_content);
+        int scrollThreshold = mainActivity.getResources().getInteger(R.integer.ui_scroll_threshold);
+        int scrollAmount = mainActivity.getResources().getInteger(R.integer.ui_scroll_amount);
+        this.scrollRunnable = new NestedScrollRunnable(scrollView, scrollThreshold, scrollAmount);
+    }
+
+    @Override
+    public void onSelectedChanged(@Nullable RecyclerView.ViewHolder viewHolder, int actionState) {
+        super.onSelectedChanged(viewHolder, actionState);
+        if (!mainActivity.getResources().getBoolean(R.bool.ui_use_scrolling)) {
+            Log.d(DragAndDropCallback.class.getName(), "scrolling is disabled");
+            return;
+        }
+        if (actionState == ItemTouchHelper.ACTION_STATE_DRAG && viewHolder != null) {
+            scrollRunnable.start(viewHolder);
+        } else if (actionState == ItemTouchHelper.ACTION_STATE_IDLE) {
+            scrollRunnable.stop();
+        }
     }
 
     @Override
