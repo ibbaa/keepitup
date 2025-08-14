@@ -38,6 +38,8 @@ import net.ibbaa.keepitup.util.StringUtil;
 
 public class NetworkTaskRunningNotificationService extends Service {
 
+    public final Object LOCK = new Object();
+
     private NetworkTaskProcessServiceScheduler scheduler;
     private NotificationHandler notificationHandler;
     private boolean started;
@@ -47,7 +49,6 @@ public class NetworkTaskRunningNotificationService extends Service {
         Log.d(NetworkTaskRunningNotificationService.class.getName(), "onCreate");
         scheduler = new NetworkTaskProcessServiceScheduler(this);
         notificationHandler = new NotificationHandler(this, getPermissionManager());
-        NotificationHandler notificationHandler = new NotificationHandler(this, getPermissionManager());
         Notification notification = notificationHandler.buildForegroundNotification();
         int foregroundServiceType = 0;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
@@ -94,21 +95,23 @@ public class NetworkTaskRunningNotificationService extends Service {
             Log.e(NetworkTaskRunningNotificationService.class.getName(), "extras bundle is null");
             return START_NOT_STICKY;
         }
-        if (isStarted()) {
-            updateNotification(extras);
-            notificationHandler.cancelMessageNotificationForegroundStart();
-        }
-        NetworkTaskProcessServiceScheduler.Delay delay = getDelay(extras);
-        if (delay == null) {
-            Log.e(NetworkTaskRunningNotificationService.class.getName(), "Delay is invalid");
-            return START_NOT_STICKY;
-        }
-        NetworkTask task = new NetworkTask(extras);
-        Log.d(NetworkTaskRunningNotificationService.class.getName(), "Network task is " + task);
-        Log.d(NetworkTaskRunningNotificationService.class.getName(), "Delay is " + delay);
-        getScheduler().reschedule(task, delay);
-        if (!isStarted()) {
-            stopSelf();
+        synchronized (LOCK) {
+            if (isStarted()) {
+                updateNotification(extras);
+                notificationHandler.cancelMessageNotificationForegroundStart();
+            }
+            NetworkTaskProcessServiceScheduler.Delay delay = getDelay(extras);
+            if (delay == null) {
+                Log.e(NetworkTaskRunningNotificationService.class.getName(), "Delay is invalid");
+                return START_NOT_STICKY;
+            }
+            NetworkTask task = new NetworkTask(extras);
+            Log.d(NetworkTaskRunningNotificationService.class.getName(), "Network task is " + task);
+            Log.d(NetworkTaskRunningNotificationService.class.getName(), "Delay is " + delay);
+            getScheduler().reschedule(task, delay);
+            if (!isStarted()) {
+                stopSelf();
+            }
         }
         return START_NOT_STICKY;
     }
@@ -153,11 +156,15 @@ public class NetworkTaskRunningNotificationService extends Service {
     }
 
     protected boolean isStarted() {
-        return started;
+        synchronized (LOCK) {
+            return started;
+        }
     }
 
     protected void setStarted(boolean started) {
-        this.started = started;
+        synchronized (LOCK) {
+            this.started = started;
+        }
     }
 
     @Nullable
