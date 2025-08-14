@@ -24,7 +24,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import net.ibbaa.keepitup.logging.Log;
@@ -33,6 +32,7 @@ import net.ibbaa.keepitup.notification.NotificationHandler;
 import net.ibbaa.keepitup.ui.permission.IPermissionManager;
 import net.ibbaa.keepitup.ui.permission.PermissionManager;
 import net.ibbaa.keepitup.util.BundleUtil;
+import net.ibbaa.keepitup.util.ExceptionUtil;
 import net.ibbaa.keepitup.util.StringUtil;
 
 public class NetworkTaskRunningNotificationService extends Service {
@@ -45,21 +45,6 @@ public class NetworkTaskRunningNotificationService extends Service {
         Log.d(NetworkTaskRunningNotificationService.class.getName(), "onCreate");
         scheduler = new NetworkTaskProcessServiceScheduler(this);
         notificationHandler = new NotificationHandler(this, getPermissionManager());
-        NotificationHandler notificationHandler = new NotificationHandler(this, getPermissionManager());
-        Notification notification = notificationHandler.buildForegroundNotification();
-        int foregroundServiceType = 0;
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            foregroundServiceType = ServiceInfo.FOREGROUND_SERVICE_TYPE_DATA_SYNC;
-        }
-        startNetworkTaskRunningNotificationForeground(notification, foregroundServiceType);
-    }
-
-    protected void startNetworkTaskRunningNotificationForeground(@NonNull Notification notification, int foregroundServiceType) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            startForeground(NotificationHandler.NOTIFICATION_FOREGROUND_NETWORKTASK_RUNNING_SERVICE_ID, notification, foregroundServiceType);
-        } else {
-            startForeground(NotificationHandler.NOTIFICATION_FOREGROUND_NETWORKTASK_RUNNING_SERVICE_ID, notification);
-        }
     }
 
     public static String getRescheduleDelayKey() {
@@ -73,6 +58,7 @@ public class NetworkTaskRunningNotificationService extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         Log.d(NetworkTaskRunningNotificationService.class.getName(), "onStartCommand");
+        startNetworkTaskRunningNotificationForeground();
         if (intent == null) {
             Log.e(NetworkTaskRunningNotificationService.class.getName(), "intent is null");
             return START_NOT_STICKY;
@@ -93,6 +79,28 @@ public class NetworkTaskRunningNotificationService extends Service {
         Log.d(NetworkTaskRunningNotificationService.class.getName(), "Delay is " + delay);
         getScheduler().reschedule(task, delay);
         return START_NOT_STICKY;
+    }
+
+    protected void startNetworkTaskRunningNotificationForeground() {
+        Log.d(NetworkTaskRunningNotificationService.class.getName(), "startForegroundService");
+        Notification notification = notificationHandler.buildForegroundNotification();
+        int foregroundServiceType = 0;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            foregroundServiceType = ServiceInfo.FOREGROUND_SERVICE_TYPE_DATA_SYNC;
+        }
+        try {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                startForeground(NotificationHandler.NOTIFICATION_FOREGROUND_NETWORKTASK_RUNNING_SERVICE_ID, notification, foregroundServiceType);
+            } else {
+                startForeground(NotificationHandler.NOTIFICATION_FOREGROUND_NETWORKTASK_RUNNING_SERVICE_ID, notification);
+            }
+        } catch (Exception exc) {
+            Log.e(NetworkTaskProcessServiceScheduler.class.getName(), "startForegroundService: Error starting the foreground service.", exc);
+            if (ExceptionUtil.isForegroundServiceStartNotAllowedException(exc)) {
+                Log.d(NetworkTaskProcessServiceScheduler.class.getName(), "Sending notification to open app");
+                notificationHandler.sendMessageNotificationForegroundStart();
+            }
+        }
     }
 
     private void updateNotification(Bundle extras) {

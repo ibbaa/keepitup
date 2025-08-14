@@ -30,6 +30,7 @@ import net.ibbaa.keepitup.resources.ServiceFactoryContributor;
 import net.ibbaa.keepitup.service.alarm.AlarmService;
 import net.ibbaa.keepitup.ui.permission.IPermissionManager;
 import net.ibbaa.keepitup.ui.permission.PermissionManager;
+import net.ibbaa.keepitup.util.ExceptionUtil;
 import net.ibbaa.keepitup.util.NumberUtil;
 
 import java.util.List;
@@ -306,15 +307,11 @@ public class NetworkTaskProcessServiceScheduler {
             Log.e(NetworkTaskProcessServiceScheduler.class.getName(), "startService: Error starting the foreground service.", exc);
             Log.d(NetworkTaskProcessServiceScheduler.class.getName(), "Scheduling without service");
             reschedule(task, delay);
-            if (isForegroundServiceStartNotAllowedException(exc)) {
+            if (ExceptionUtil.isForegroundServiceStartNotAllowedException(exc)) {
                 Log.d(NetworkTaskProcessServiceScheduler.class.getName(), "Sending notification to open app");
                 createNotificationHandler().sendMessageNotificationForegroundStart();
             }
         }
-    }
-
-    private boolean isForegroundServiceStartNotAllowedException(Exception exc) {
-        return exc.getClass().getName().equals("android.app.ForegroundServiceStartNotAllowedException");
     }
 
     private boolean shouldStartForegroundService() {

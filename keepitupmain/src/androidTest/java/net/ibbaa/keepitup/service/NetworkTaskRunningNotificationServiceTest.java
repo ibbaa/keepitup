@@ -21,10 +21,8 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
-import android.app.Notification;
 import android.app.Service;
 import android.content.Intent;
-import android.content.pm.ServiceInfo;
 
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.MediumTest;
@@ -80,13 +78,9 @@ public class NetworkTaskRunningNotificationServiceTest {
     }
 
     @Test
-    public void testOnCreate() {
-        service.onCreate();
+    public void testOnStartCommandServiceStart() {
+        service.onStartCommand(null, 1, 1);
         assertTrue(service.wasStartNetworkTaskRunningNotificationForegroundCalled());
-        TestNetworkTaskRunningNotificationService.StartNetworkTaskRunningNotificationForegroundCall startNetworkTaskRunningNotificationForegroundCall = service.getStartNetworkTaskRunningNotificationForegroundCalls().get(0);
-        assertEquals(ServiceInfo.FOREGROUND_SERVICE_TYPE_DATA_SYNC, startNetworkTaskRunningNotificationForegroundCall.foregroundServiceType());
-        Notification notification = startNetworkTaskRunningNotificationForegroundCall.notification();
-        assertEquals("KEEPITUP_FOREGROUND_NOTIFICATION_CHANNEL", notification.getChannelId());
     }
 
     @Test

@@ -266,7 +266,7 @@ public class NotificationHandlerTest {
         MockNotificationBuilder notificationBuilder = (MockNotificationBuilder) notificationHandler.getMessageNotificationBuilder();
         assertEquals(R.drawable.icon_notification_foreground_start, notificationBuilder.getSmallIcon());
         assertEquals("Keep it up", notificationBuilder.getContentTitle());
-        assertEquals("Please click here to open the app after device boot to start the foreground service for running network tasks", notificationBuilder.getContentText());
+        assertEquals("Please click here to open the app to start the foreground service for running network tasks", notificationBuilder.getContentText());
         assertTrue(notificationBuilder.getStyle() instanceof NotificationCompat.BigTextStyle);
         assertEquals(NotificationCompat.PRIORITY_DEFAULT, notificationBuilder.getPriority());
     }

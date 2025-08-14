@@ -69,5 +69,4 @@ public class ExceptionUtilTest {
             assertEquals("java.lang.Exception", ExceptionUtil.getLogableMessage(exc));
         }
     }
-
 }
