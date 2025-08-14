@@ -24,6 +24,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import net.ibbaa.keepitup.logging.Log;
@@ -39,12 +40,38 @@ public class NetworkTaskRunningNotificationService extends Service {
 
     private NetworkTaskProcessServiceScheduler scheduler;
     private NotificationHandler notificationHandler;
+    private boolean started;
 
     @Override
     public void onCreate() {
         Log.d(NetworkTaskRunningNotificationService.class.getName(), "onCreate");
         scheduler = new NetworkTaskProcessServiceScheduler(this);
         notificationHandler = new NotificationHandler(this, getPermissionManager());
+        NotificationHandler notificationHandler = new NotificationHandler(this, getPermissionManager());
+        Notification notification = notificationHandler.buildForegroundNotification();
+        int foregroundServiceType = 0;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            foregroundServiceType = ServiceInfo.FOREGROUND_SERVICE_TYPE_DATA_SYNC;
+        }
+        startNetworkTaskRunningNotificationForeground(notification, foregroundServiceType);
+    }
+
+    protected void startNetworkTaskRunningNotificationForeground(@NonNull Notification notification, int foregroundServiceType) {
+        try {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                startForeground(NotificationHandler.NOTIFICATION_FOREGROUND_NETWORKTASK_RUNNING_SERVICE_ID, notification, foregroundServiceType);
+            } else {
+                startForeground(NotificationHandler.NOTIFICATION_FOREGROUND_NETWORKTASK_RUNNING_SERVICE_ID, notification);
+            }
+            setStarted(true);
+        } catch (Exception exc) {
+            Log.e(NetworkTaskRunningNotificationService.class.getName(), "startService: Error starting the foreground service.", exc);
+            if (ExceptionUtil.isForegroundServiceStartNotAllowedException(exc)) {
+                Log.d(NetworkTaskProcessServiceScheduler.class.getName(), "Sending notification to open app");
+                notificationHandler.sendMessageNotificationForegroundStart();
+            }
+            setStarted(false);
+        }
     }
 
     public static String getRescheduleDelayKey() {
@@ -58,7 +85,6 @@ public class NetworkTaskRunningNotificationService extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         Log.d(NetworkTaskRunningNotificationService.class.getName(), "onStartCommand");
-        startNetworkTaskRunningNotificationForeground();
         if (intent == null) {
             Log.e(NetworkTaskRunningNotificationService.class.getName(), "intent is null");
             return START_NOT_STICKY;
@@ -68,7 +94,10 @@ public class NetworkTaskRunningNotificationService extends Service {
             Log.e(NetworkTaskRunningNotificationService.class.getName(), "extras bundle is null");
             return START_NOT_STICKY;
         }
-        updateNotification(extras);
+        if (isStarted()) {
+            updateNotification(extras);
+            notificationHandler.cancelMessageNotificationForegroundStart();
+        }
         NetworkTaskProcessServiceScheduler.Delay delay = getDelay(extras);
         if (delay == null) {
             Log.e(NetworkTaskRunningNotificationService.class.getName(), "Delay is invalid");
@@ -78,30 +107,10 @@ public class NetworkTaskRunningNotificationService extends Service {
         Log.d(NetworkTaskRunningNotificationService.class.getName(), "Network task is " + task);
         Log.d(NetworkTaskRunningNotificationService.class.getName(), "Delay is " + delay);
         getScheduler().reschedule(task, delay);
+        if (!isStarted()) {
+            stopSelf();
+        }
         return START_NOT_STICKY;
-    }
-
-    protected void startNetworkTaskRunningNotificationForeground() {
-        Log.d(NetworkTaskRunningNotificationService.class.getName(), "startForegroundService");
-        Notification notification = notificationHandler.buildForegroundNotification();
-        int foregroundServiceType = 0;
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            foregroundServiceType = ServiceInfo.FOREGROUND_SERVICE_TYPE_DATA_SYNC;
-        }
-        try {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                startForeground(NotificationHandler.NOTIFICATION_FOREGROUND_NETWORKTASK_RUNNING_SERVICE_ID, notification, foregroundServiceType);
-            } else {
-                startForeground(NotificationHandler.NOTIFICATION_FOREGROUND_NETWORKTASK_RUNNING_SERVICE_ID, notification);
-            }
-            notificationHandler.cancelMessageNotificationForegroundStart();
-        } catch (Exception exc) {
-            Log.e(NetworkTaskRunningNotificationService.class.getName(), "startForegroundService: Error starting the foreground service.", exc);
-            if (ExceptionUtil.isForegroundServiceStartNotAllowedException(exc)) {
-                Log.d(NetworkTaskProcessServiceScheduler.class.getName(), "Sending notification to open app");
-                notificationHandler.sendMessageNotificationForegroundStart();
-            }
-        }
     }
 
     private void updateNotification(Bundle extras) {
@@ -136,10 +145,19 @@ public class NetworkTaskRunningNotificationService extends Service {
         Log.d(NetworkTaskRunningNotificationService.class.getName(), "onDestroy");
         NetworkTaskProcessServiceScheduler.getNetworkTaskProcessPool().cancelAll();
         stopNetworkTaskRunningNotificationForeground();
+        setStarted(false);
     }
 
     protected void stopNetworkTaskRunningNotificationForeground() {
         stopForeground(true);
+    }
+
+    protected boolean isStarted() {
+        return started;
+    }
+
+    protected void setStarted(boolean started) {
+        this.started = started;
     }
 
     @Nullable

@@ -21,8 +21,10 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
+import android.app.Notification;
 import android.app.Service;
 import android.content.Intent;
+import android.content.pm.ServiceInfo;
 
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.MediumTest;
@@ -78,9 +80,14 @@ public class NetworkTaskRunningNotificationServiceTest {
     }
 
     @Test
-    public void testOnStartCommandServiceStart() {
-        service.onStartCommand(null, 1, 1);
+    public void testOnCreate() {
+        service.onCreate();
         assertTrue(service.wasStartNetworkTaskRunningNotificationForegroundCalled());
+        assertTrue(service.isStarted());
+        TestNetworkTaskRunningNotificationService.StartNetworkTaskRunningNotificationForegroundCall startNetworkTaskRunningNotificationForegroundCall = service.getStartNetworkTaskRunningNotificationForegroundCalls().get(0);
+        assertEquals(ServiceInfo.FOREGROUND_SERVICE_TYPE_DATA_SYNC, startNetworkTaskRunningNotificationForegroundCall.foregroundServiceType());
+        Notification notification = startNetworkTaskRunningNotificationForegroundCall.notification();
+        assertEquals("KEEPITUP_FOREGROUND_NOTIFICATION_CHANNEL", notification.getChannelId());
     }
 
     @Test
@@ -113,6 +120,7 @@ public class NetworkTaskRunningNotificationServiceTest {
         assertTrue(future1.isCancelled());
         assertTrue(future2.isCancelled());
         assertTrue(service.wasStopNetworkTaskRunningNotificationForegroundCalled());
+        assertFalse(service.isStarted());
     }
 
     @Test
@@ -133,6 +141,16 @@ public class NetworkTaskRunningNotificationServiceTest {
         assertEquals("Keep it up", notificationBuilder.getContentTitle());
         assertEquals("Network task running...", notificationBuilder.getContentText());
         assertEquals("Stop alarm", notificationBuilder.getActionText());
+        assertTrue(notificationManager.wasCancelCalled());
+    }
+
+    @Test
+    public void testNotUpdateNotificationWhenNotStarted() {
+        Intent intent = new Intent(TestRegistry.getContext(), TestNetworkTaskRunningNotificationService.class);
+        intent.putExtra(TestNetworkTaskRunningNotificationService.getWithAlarmKey(), false);
+        service.setStarted(false);
+        service.onStartCommand(intent, 1, 1);
+        assertFalse(notificationManager.wasNotifyCalled());
     }
 
     private NetworkTask getNetworkTask() {

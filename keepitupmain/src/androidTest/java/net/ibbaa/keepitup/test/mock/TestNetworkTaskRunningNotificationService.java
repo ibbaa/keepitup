@@ -16,6 +16,10 @@
 
 package net.ibbaa.keepitup.test.mock;
 
+import android.app.Notification;
+
+import androidx.annotation.NonNull;
+
 import net.ibbaa.keepitup.service.NetworkTaskRunningNotificationService;
 import net.ibbaa.keepitup.ui.permission.IPermissionManager;
 
@@ -39,6 +43,10 @@ public class TestNetworkTaskRunningNotificationService extends NetworkTaskRunnin
         stopNetworkTaskRunningNotificationForegroundCalls.clear();
     }
 
+    public List<StartNetworkTaskRunningNotificationForegroundCall> getStartNetworkTaskRunningNotificationForegroundCalls() {
+        return Collections.unmodifiableList(startNetworkTaskRunningNotificationForegroundCalls);
+    }
+
     @SuppressWarnings("unused")
     public List<StopNetworkTaskRunningNotificationForegroundCall> getStopNetworkTaskRunningNotificationForegroundCalls() {
         return Collections.unmodifiableList(stopNetworkTaskRunningNotificationForegroundCalls);
@@ -53,13 +61,15 @@ public class TestNetworkTaskRunningNotificationService extends NetworkTaskRunnin
     }
 
     @Override
-    protected void startNetworkTaskRunningNotificationForeground() {
-        startNetworkTaskRunningNotificationForegroundCalls.add(new StartNetworkTaskRunningNotificationForegroundCall());
+    protected void startNetworkTaskRunningNotificationForeground(@NonNull Notification notification, int foregroundServiceType) {
+        startNetworkTaskRunningNotificationForegroundCalls.add(new StartNetworkTaskRunningNotificationForegroundCall(notification, foregroundServiceType));
+        setStarted(true);
     }
 
     @Override
     protected void stopNetworkTaskRunningNotificationForeground() {
         stopNetworkTaskRunningNotificationForegroundCalls.add(new StopNetworkTaskRunningNotificationForegroundCall());
+        setStarted(false);
     }
 
     @Override
@@ -67,7 +77,7 @@ public class TestNetworkTaskRunningNotificationService extends NetworkTaskRunnin
         return new MockPermissionManager();
     }
 
-    public record StartNetworkTaskRunningNotificationForegroundCall() {
+    public record StartNetworkTaskRunningNotificationForegroundCall(Notification notification, int foregroundServiceType) {
 
     }
 
