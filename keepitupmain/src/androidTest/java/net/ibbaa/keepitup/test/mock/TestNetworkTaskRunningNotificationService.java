@@ -63,11 +63,13 @@ public class TestNetworkTaskRunningNotificationService extends NetworkTaskRunnin
     @Override
     protected void startNetworkTaskRunningNotificationForeground(@NonNull Notification notification, int foregroundServiceType) {
         startNetworkTaskRunningNotificationForegroundCalls.add(new StartNetworkTaskRunningNotificationForegroundCall(notification, foregroundServiceType));
+        setStarted(true);
     }
 
     @Override
     protected void stopNetworkTaskRunningNotificationForeground() {
         stopNetworkTaskRunningNotificationForegroundCalls.add(new StopNetworkTaskRunningNotificationForegroundCall());
+        setStarted(false);
     }
 
     @Override

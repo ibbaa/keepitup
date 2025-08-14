@@ -21,4 +21,6 @@ import android.app.Notification;
 public interface INotificationManager {
 
     void notify(int id, Notification notification);
+
+    void cancel(int id);
 }

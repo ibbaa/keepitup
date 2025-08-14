@@ -33,4 +33,8 @@ public class ExceptionUtil {
         }
         return throwable.getClass().getSimpleName() + ": " + message;
     }
+
+    public static boolean isForegroundServiceStartNotAllowedException(Exception exc) {
+        return exc.getClass().getName().equals("android.app.ForegroundServiceStartNotAllowedException");
+    }
 }
