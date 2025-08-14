@@ -94,8 +94,9 @@ public class NetworkTaskRunningNotificationService extends Service {
             } else {
                 startForeground(NotificationHandler.NOTIFICATION_FOREGROUND_NETWORKTASK_RUNNING_SERVICE_ID, notification);
             }
+            notificationHandler.cancelMessageNotificationForegroundStart();
         } catch (Exception exc) {
-            Log.e(NetworkTaskProcessServiceScheduler.class.getName(), "startForegroundService: Error starting the foreground service.", exc);
+            Log.e(NetworkTaskRunningNotificationService.class.getName(), "startForegroundService: Error starting the foreground service.", exc);
             if (ExceptionUtil.isForegroundServiceStartNotAllowedException(exc)) {
                 Log.d(NetworkTaskProcessServiceScheduler.class.getName(), "Sending notification to open app");
                 notificationHandler.sendMessageNotificationForegroundStart();

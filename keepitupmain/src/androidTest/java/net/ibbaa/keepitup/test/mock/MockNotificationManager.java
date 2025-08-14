@@ -28,13 +28,19 @@ import java.util.List;
 public class MockNotificationManager implements INotificationManager {
 
     private final List<NotifyCall> notifyCalls;
+    private final List<CancelCall> cancelCalls;
 
     public MockNotificationManager() {
         notifyCalls = new ArrayList<>();
+        cancelCalls = new ArrayList<>();
     }
 
     public List<NotifyCall> getNotifyCalls() {
         return Collections.unmodifiableList(notifyCalls);
+    }
+
+    public List<CancelCall> getCancelCalls() {
+        return Collections.unmodifiableList(cancelCalls);
     }
 
     public void reset() {
@@ -45,12 +51,25 @@ public class MockNotificationManager implements INotificationManager {
         return !notifyCalls.isEmpty();
     }
 
+    public boolean wasCancelCalled() {
+        return !cancelCalls.isEmpty();
+    }
+
     @Override
     public void notify(int id, Notification notification) {
         notifyCalls.add(new NotifyCall(id, notification));
     }
 
+    @Override
+    public void cancel(int id) {
+        cancelCalls.add(new CancelCall(id));
+    }
+
     public record NotifyCall(int id, Notification notification) {
+
+    }
+
+    public record CancelCall(int id) {
 
     }
 }

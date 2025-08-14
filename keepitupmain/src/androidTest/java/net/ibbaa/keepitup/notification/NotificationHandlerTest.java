@@ -279,6 +279,14 @@ public class NotificationHandlerTest {
     }
 
     @Test
+    public void testCancelMessageNotificationForegroundStart() {
+        notificationHandler.cancelMessageNotificationForegroundStart();
+        assertTrue(notificationManager.wasCancelCalled());
+        MockNotificationManager.CancelCall cancelCall = notificationManager.getCancelCalls().get(0);
+        assertEquals(NotificationHandler.NOTIFICATION_FOREGROUND_START_ID, cancelCall.id());
+    }
+
+    @Test
     public void testSendMessageNotificationMissingLogFolderPermission() {
         PreferenceManager preferenceManager = new PreferenceManager(TestRegistry.getContext());
         preferenceManager.setPreferenceArbitraryLogFolder("Test");

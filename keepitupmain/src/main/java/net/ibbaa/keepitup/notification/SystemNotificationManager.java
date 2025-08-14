@@ -35,4 +35,10 @@ public class SystemNotificationManager implements INotificationManager {
         Log.d(SystemNotificationManager.class.getName(), "Sending notification with id " + id);
         notificationManager.notify(id, notification);
     }
+
+    @Override
+    public void cancel(int id) {
+        Log.d(SystemNotificationManager.class.getName(), "Cancel notification with id " + id);
+        notificationManager.cancel(id);
+    }
 }

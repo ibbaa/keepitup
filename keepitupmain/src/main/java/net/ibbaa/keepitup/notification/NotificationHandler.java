@@ -154,6 +154,15 @@ public class NotificationHandler {
         notificationManager.notify(NOTIFICATION_FOREGROUND_START_ID, notification);
     }
 
+    public void cancelMessageNotificationForegroundStart() {
+        Log.d(NotificationHandler.class.getName(), "cancelMessageNotificationForegroundStart");
+        if (!permissionManager.hasPostNotificationsPermission(getContext())) {
+            Log.e(NotificationHandler.class.getName(), "Cannot remove notification because of missing permission.");
+            return;
+        }
+        notificationManager.cancel(NOTIFICATION_FOREGROUND_START_ID);
+    }
+
     public void sendMessageNotificationMissingLogFolderPermission() {
         Log.d(NotificationHandler.class.getName(), "sendMessageNotificationMissingLogFolderPermission");
         if (!permissionManager.hasPostNotificationsPermission(getContext())) {
