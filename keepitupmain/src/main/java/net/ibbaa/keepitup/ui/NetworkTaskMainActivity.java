@@ -45,7 +45,7 @@ import net.ibbaa.keepitup.service.IAlarmManager;
 import net.ibbaa.keepitup.service.NetworkTaskProcessServiceScheduler;
 import net.ibbaa.keepitup.service.SystemAlarmManager;
 import net.ibbaa.keepitup.service.alarm.AlarmService;
-import net.ibbaa.keepitup.ui.adapter.DragAndDropCallback;
+import net.ibbaa.keepitup.ui.adapter.NetworkTaskDragAndDropCallback;
 import net.ibbaa.keepitup.ui.adapter.NetworkTaskAdapter;
 import net.ibbaa.keepitup.ui.adapter.NetworkTaskUIWrapper;
 import net.ibbaa.keepitup.ui.dialog.AlarmPermissionDialog;
@@ -115,7 +115,7 @@ public class NetworkTaskMainActivity extends RecyclerViewBaseActivity implements
     private void initDragAndDrop() {
         Log.d(NetworkTaskMainActivity.class.getName(), "initDragAndDrop");
         RecyclerView recyclerView = findViewById(getRecyclerViewId());
-        itemTouchHelper = new ItemTouchHelper(new DragAndDropCallback(this));
+        itemTouchHelper = new ItemTouchHelper(new NetworkTaskDragAndDropCallback(this));
         itemTouchHelper.attachToRecyclerView(recyclerView);
     }
 
@@ -574,7 +574,7 @@ public class NetworkTaskMainActivity extends RecyclerViewBaseActivity implements
             itemTouchHelper.attachToRecyclerView(null);
         }
         recyclerView.post(() -> {
-            itemTouchHelper = new ItemTouchHelper(new DragAndDropCallback(this));
+            itemTouchHelper = new ItemTouchHelper(new NetworkTaskDragAndDropCallback(this));
             itemTouchHelper.attachToRecyclerView(recyclerView);
         });
     }

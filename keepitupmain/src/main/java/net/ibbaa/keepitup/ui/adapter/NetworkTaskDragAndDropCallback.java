@@ -28,12 +28,12 @@ import net.ibbaa.keepitup.ui.NetworkTaskHandler;
 import net.ibbaa.keepitup.ui.NetworkTaskMainActivity;
 
 @SuppressWarnings("NotifyDataSetChanged")
-public class DragAndDropCallback extends ItemTouchHelper.Callback {
+public class NetworkTaskDragAndDropCallback extends ItemTouchHelper.Callback {
 
     private final NetworkTaskMainActivity mainActivity;
     private final NestedScrollRunnable scrollRunnable;
 
-    public DragAndDropCallback(NetworkTaskMainActivity mainActivity) {
+    public NetworkTaskDragAndDropCallback(NetworkTaskMainActivity mainActivity) {
         this.mainActivity = mainActivity;
         NestedScrollView scrollView = mainActivity.findViewById(R.id.scrollview_main_content);
         int scrollThreshold = mainActivity.getResources().getInteger(R.integer.ui_scroll_threshold);
@@ -45,7 +45,7 @@ public class DragAndDropCallback extends ItemTouchHelper.Callback {
     public void onSelectedChanged(@Nullable RecyclerView.ViewHolder viewHolder, int actionState) {
         super.onSelectedChanged(viewHolder, actionState);
         if (!mainActivity.getResources().getBoolean(R.bool.ui_use_scrolling)) {
-            Log.d(DragAndDropCallback.class.getName(), "scrolling is disabled");
+            Log.d(NetworkTaskDragAndDropCallback.class.getName(), "scrolling is disabled");
             return;
         }
         if (actionState == ItemTouchHelper.ACTION_STATE_DRAG && viewHolder != null) {
@@ -64,7 +64,7 @@ public class DragAndDropCallback extends ItemTouchHelper.Callback {
     public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
         int fromPosition = viewHolder.getAbsoluteAdapterPosition();
         int toPosition = target.getAbsoluteAdapterPosition();
-        Log.d(DragAndDropCallback.class.getName(), "moveItem, fromPosition is " + fromPosition + ", toPosition is " + toPosition);
+        Log.d(NetworkTaskDragAndDropCallback.class.getName(), "moveItem, fromPosition is " + fromPosition + ", toPosition is " + toPosition);
         NetworkTaskHandler handler = new NetworkTaskHandler(mainActivity);
         return handler.moveNetworkTask(fromPosition, toPosition);
     }
@@ -73,7 +73,7 @@ public class DragAndDropCallback extends ItemTouchHelper.Callback {
     public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
         if (direction == ItemTouchHelper.RIGHT) {
             int position = viewHolder.getAbsoluteAdapterPosition();
-            Log.d(DragAndDropCallback.class.getName(), "onSwiped, position is " + position);
+            Log.d(NetworkTaskDragAndDropCallback.class.getName(), "onSwiped, position is " + position);
             mainActivity.onMainDeleteSwiped(position);
         }
     }

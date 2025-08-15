@@ -28,7 +28,7 @@ import net.ibbaa.keepitup.logging.NetworkTaskLog;
 import net.ibbaa.keepitup.model.AccessTypeData;
 import net.ibbaa.keepitup.model.NetworkTask;
 import net.ibbaa.keepitup.service.NetworkTaskProcessServiceScheduler;
-import net.ibbaa.keepitup.ui.adapter.DragAndDropCallback;
+import net.ibbaa.keepitup.ui.adapter.NetworkTaskDragAndDropCallback;
 import net.ibbaa.keepitup.ui.adapter.NetworkTaskAdapter;
 import net.ibbaa.keepitup.ui.adapter.NetworkTaskUIWrapper;
 
@@ -168,7 +168,7 @@ public class NetworkTaskHandler {
             NetworkTask toTask = getAdapter().getItem(toIndex).getNetworkTask();
             boolean successfulMove = dao.swapUIIndex(fromTask.getId(), toTask.getId());
             if (!successfulMove) {
-                Log.e(DragAndDropCallback.class.getName(), "Position invalid. Skip move.");
+                Log.e(NetworkTaskDragAndDropCallback.class.getName(), "Position invalid. Skip move.");
                 return false;
             }
             getAdapter().moveItem(fromIndex, toIndex);
