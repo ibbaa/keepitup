@@ -221,7 +221,7 @@ public class SuspensionIntervalsDialog extends DialogFragmentBase implements Con
     }
 
     @Override
-    public void onConfirmDialogCancelClicked(ConfirmDialog confirmDialog) {
+    public void onConfirmDialogCancelClicked(ConfirmDialog confirmDialog, ConfirmDialog.Type type) {
         Log.d(SuspensionIntervalsDialog.class.getName(), "onConfirmDialogCancelClicked");
         confirmDialog.dismiss();
     }

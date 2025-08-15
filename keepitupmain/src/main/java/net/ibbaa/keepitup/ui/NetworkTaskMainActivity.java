@@ -76,6 +76,7 @@ public class NetworkTaskMainActivity extends RecyclerViewBaseActivity implements
 
     private NetworkTaskMainUIBroadcastReceiver broadcastReceiver;
     private IPermissionManager permissionManager;
+    private ItemTouchHelper itemTouchHelper;
 
     public void injectPermissionManager(IPermissionManager permissionManager) {
         this.permissionManager = permissionManager;
@@ -114,7 +115,7 @@ public class NetworkTaskMainActivity extends RecyclerViewBaseActivity implements
     private void initDragAndDrop() {
         Log.d(NetworkTaskMainActivity.class.getName(), "initDragAndDrop");
         RecyclerView recyclerView = findViewById(getRecyclerViewId());
-        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(new DragAndDropCallback(this));
+        itemTouchHelper = new ItemTouchHelper(new DragAndDropCallback(this));
         itemTouchHelper.attachToRecyclerView(recyclerView);
     }
 
@@ -408,6 +409,15 @@ public class NetworkTaskMainActivity extends RecyclerViewBaseActivity implements
         showConfirmDialog(getResources().getString(R.string.text_dialog_confirm_delete_network_task), ConfirmDialog.Type.DELETETASK, position);
     }
 
+    public void onMainDeleteSwiped(int position) {
+        Log.d(NetworkTaskMainActivity.class.getName(), "onMainDeleteSwiped for position " + position + ", opening " + ConfirmDialog.class.getSimpleName() + " for type " + ConfirmDialog.Type.DELETETASKSWIPE);
+        if (position < 0) {
+            Log.e(NetworkTaskMainActivity.class.getName(), "position " + position + " is invalid");
+            return;
+        }
+        showConfirmDialog(getResources().getString(R.string.text_dialog_confirm_delete_network_task), ConfirmDialog.Type.DELETETASKSWIPE, position);
+    }
+
     public void onMainEditClicked(int position) {
         Log.d(NetworkTaskMainActivity.class.getName(), "onMainEditClicked, position is " + position);
         if (position < 0) {
@@ -507,17 +517,25 @@ public class NetworkTaskMainActivity extends RecyclerViewBaseActivity implements
         editDialog.dismiss();
     }
 
-    @SuppressWarnings("NotifyDataSetChanged")
     public void onConfirmDialogOkClicked(ConfirmDialog confirmDialog, ConfirmDialog.Type type) {
         Log.d(NetworkTaskMainActivity.class.getName(), "onConfirmDialogOkClicked for type " + type);
-        if (ConfirmDialog.Type.DELETETASK.equals(type)) {
+        if (ConfirmDialog.Type.DELETETASK.equals(type) || ConfirmDialog.Type.DELETETASKSWIPE.equals(type)) {
             int position = confirmDialog.getPosition();
             if (position >= 0) {
                 NetworkTaskHandler handler = new NetworkTaskHandler(this);
                 NetworkTask task = ((NetworkTaskAdapter) getAdapter()).getItem(position).getNetworkTask();
                 Log.d(NetworkTaskMainActivity.class.getName(), "Deleting " + task);
                 handler.deleteNetworkTask(task);
-                getAdapter().notifyDataSetChanged();
+                getAdapter().notifyItemRemoved(position);
+                RecyclerView recyclerView = findViewById(getRecyclerViewId());
+                recyclerView.post(() -> {
+                    for (int ii = position; ii < getAdapter().getItemCount(); ii++) {
+                        getAdapter().notifyItemChanged(ii);
+                    }
+                });
+                if (ConfirmDialog.Type.DELETETASKSWIPE.equals(type)) {
+                    reattachItemTouchHelper();
+                }
             } else {
                 Log.e(NetworkTaskMainActivity.class.getName(), ConfirmDialog.class.getSimpleName() + " arguments do not contain position key " + confirmDialog.getPositionKey());
             }
@@ -539,9 +557,26 @@ public class NetworkTaskMainActivity extends RecyclerViewBaseActivity implements
         permissionManager.onRequestPermissionsResult(this, requestCode, permissions, grantResults);
     }
 
-    public void onConfirmDialogCancelClicked(ConfirmDialog confirmDialog) {
-        Log.d(NetworkTaskMainActivity.class.getName(), "onConfirmDialogCancelClicked");
+    public void onConfirmDialogCancelClicked(ConfirmDialog confirmDialog, ConfirmDialog.Type type) {
+        Log.d(NetworkTaskMainActivity.class.getName(), "onConfirmDialogCancelClicked for type " + type);
+        if (ConfirmDialog.Type.DELETETASKSWIPE.equals(type)) {
+            int position = confirmDialog.getPosition();
+            getAdapter().notifyItemChanged(position);
+            reattachItemTouchHelper();
+        }
         confirmDialog.dismiss();
+    }
+
+    private void reattachItemTouchHelper() {
+        Log.d(NetworkTaskMainActivity.class.getName(), "reattachItemTouchHelper");
+        RecyclerView recyclerView = findViewById(getRecyclerViewId());
+        if (itemTouchHelper != null) {
+            itemTouchHelper.attachToRecyclerView(null);
+        }
+        recyclerView.post(() -> {
+            itemTouchHelper = new ItemTouchHelper(new DragAndDropCallback(this));
+            itemTouchHelper.attachToRecyclerView(recyclerView);
+        });
     }
 
     private void showInputDialog(Bundle bundle) {

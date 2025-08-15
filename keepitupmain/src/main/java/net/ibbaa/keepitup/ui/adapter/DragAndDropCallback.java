@@ -57,7 +57,7 @@ public class DragAndDropCallback extends ItemTouchHelper.Callback {
 
     @Override
     public int getMovementFlags(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder) {
-        return makeMovementFlags(ItemTouchHelper.UP | ItemTouchHelper.DOWN, 0);
+        return makeMovementFlags(ItemTouchHelper.UP | ItemTouchHelper.DOWN, ItemTouchHelper.RIGHT);
     }
 
     @Override
@@ -71,7 +71,11 @@ public class DragAndDropCallback extends ItemTouchHelper.Callback {
 
     @Override
     public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
-
+        if (direction == ItemTouchHelper.RIGHT) {
+            int position = viewHolder.getAbsoluteAdapterPosition();
+            Log.d(DragAndDropCallback.class.getName(), "onSwiped, position is " + position);
+            mainActivity.onMainDeleteSwiped(position);
+        }
     }
 
     @Override

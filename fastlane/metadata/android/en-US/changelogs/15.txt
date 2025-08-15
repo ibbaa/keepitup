@@ -1,1 +1,4 @@
-- fixed an issue where the app crashes on device reboot under certain conditions with Android 15 and 16
+* Provided a copy option for networks tasks
+* When adding or copying a task, the UI scrolls to the new task
+* Implemented drag and drop moving of network tasks
+* Implemented swipe right delete for network tasks

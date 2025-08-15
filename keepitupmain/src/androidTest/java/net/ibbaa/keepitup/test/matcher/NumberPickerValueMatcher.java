@@ -39,7 +39,7 @@ public class NumberPickerValueMatcher extends BoundedMatcher<View, NumberPicker>
 
     @Override
     public void describeTo(Description description) {
-        description.appendText("with vaule: ");
+        description.appendText("with value: ");
         description.appendValue(expectedValue);
     }
 }

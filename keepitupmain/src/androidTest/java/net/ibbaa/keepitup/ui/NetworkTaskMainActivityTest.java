@@ -281,6 +281,36 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
     }
 
     @Test
+    public void testSwipeDeleteNetworkTask() {
+        ActivityScenario<?> activityScenario = launchRecyclerViewBaseActivity(NetworkTaskMainActivity.class);
+        injectPermissionManager(activityScenario);
+        onView(allOf(withId(R.id.imageview_activity_main_network_task_add), isDisplayed())).perform(click());
+        onView(withId(R.id.imageview_dialog_network_task_edit_ok)).perform(click());
+        onView(allOf(withId(R.id.imageview_activity_main_network_task_add), isDisplayed())).perform(click());
+        onView(withId(R.id.imageview_dialog_network_task_edit_ok)).perform(click());
+        onView(allOf(withId(R.id.imageview_activity_main_network_task_add), isDisplayed())).perform(click());
+        onView(withId(R.id.imageview_dialog_network_task_edit_ok)).perform(click());
+        onView(withId(R.id.listview_activity_main_network_tasks)).check(matches(withListSize(3)));
+        assertEquals(0, getAdapter(activityScenario).getItem(0).getNetworkTask().getIndex());
+        assertEquals(1, getAdapter(activityScenario).getItem(1).getNetworkTask().getIndex());
+        assertEquals(2, getAdapter(activityScenario).getItem(2).getNetworkTask().getIndex());
+        onView(withRecyclerView(R.id.listview_activity_main_network_tasks).atPosition(1)).perform(ViewActions.swipeRight());
+        onView(withId(R.id.imageview_dialog_confirm_cancel)).perform(click());
+        onView(withId(R.id.listview_activity_main_network_tasks)).check(matches(withListSize(3)));
+        onView(withRecyclerView(R.id.listview_activity_main_network_tasks).atPosition(1)).perform(ViewActions.swipeRight());
+        onView(withId(R.id.imageview_dialog_confirm_ok)).perform(click());
+        onView(isRoot()).perform(waitFor(500));
+        onView(withId(R.id.listview_activity_main_network_tasks)).check(matches(withListSize(2)));
+        assertEquals(0, getAdapter(activityScenario).getItem(0).getNetworkTask().getIndex());
+        assertEquals(1, getAdapter(activityScenario).getItem(1).getNetworkTask().getIndex());
+        onView(withRecyclerView(R.id.listview_activity_main_network_tasks).atPosition(1)).perform(ViewActions.swipeRight());
+        onView(withId(R.id.imageview_dialog_confirm_ok)).perform(click());
+        onView(withId(R.id.listview_activity_main_network_tasks)).check(matches(withListSize(1)));
+        assertEquals(0, getAdapter(activityScenario).getItem(0).getNetworkTask().getIndex());
+        activityScenario.close();
+    }
+
+    @Test
     public void testAddDeleteNetworkTaskIndex() {
         ActivityScenario<?> activityScenario = launchRecyclerViewBaseActivity(NetworkTaskMainActivity.class);
         injectPermissionManager(activityScenario);
@@ -302,6 +332,34 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
         onView(allOf(withId(R.id.textview_list_item_network_task_title), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 1))).check(matches(withText("Network task 2")));
         onView(allOf(withId(R.id.imageview_list_item_network_task_delete), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 0))).perform(click());
         onView(withId(R.id.imageview_dialog_confirm_ok)).perform(click());
+        onView(allOf(withId(R.id.textview_list_item_network_task_title), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 0))).check(matches(withText("Network task 1")));
+        activityScenario.close();
+    }
+
+    @Test
+    public void testSwipeDeleteNetworkTaskIndex() {
+        ActivityScenario<?> activityScenario = launchRecyclerViewBaseActivity(NetworkTaskMainActivity.class);
+        injectPermissionManager(activityScenario);
+        onView(allOf(withId(R.id.imageview_activity_main_network_task_add), isDisplayed())).perform(click());
+        onView(withId(R.id.imageview_dialog_network_task_edit_ok)).perform(click());
+        onView(allOf(withId(R.id.textview_list_item_network_task_title), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 0))).check(matches(withText("Network task 1")));
+        onView(allOf(withId(R.id.imageview_activity_main_network_task_add), isDisplayed())).perform(click());
+        onView(withId(R.id.imageview_dialog_network_task_edit_ok)).perform(click());
+        onView(allOf(withId(R.id.textview_list_item_network_task_title), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 0))).check(matches(withText("Network task 1")));
+        onView(allOf(withId(R.id.textview_list_item_network_task_title), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 1))).check(matches(withText("Network task 2")));
+        onView(allOf(withId(R.id.imageview_activity_main_network_task_add), isDisplayed())).perform(click());
+        onView(withId(R.id.imageview_dialog_network_task_edit_ok)).perform(click());
+        onView(allOf(withId(R.id.textview_list_item_network_task_title), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 0))).check(matches(withText("Network task 1")));
+        onView(allOf(withId(R.id.textview_list_item_network_task_title), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 1))).check(matches(withText("Network task 2")));
+        onView(allOf(withId(R.id.textview_list_item_network_task_title), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 2))).check(matches(withText("Network task 3")));
+        onView(withRecyclerView(R.id.listview_activity_main_network_tasks).atPosition(1)).perform(ViewActions.swipeRight());
+        onView(withId(R.id.imageview_dialog_confirm_ok)).perform(click());
+        onView(isRoot()).perform(waitFor(500));
+        onView(allOf(withId(R.id.textview_list_item_network_task_title), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 0))).check(matches(withText("Network task 1")));
+        onView(allOf(withId(R.id.textview_list_item_network_task_title), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 1))).check(matches(withText("Network task 2")));
+        onView(withRecyclerView(R.id.listview_activity_main_network_tasks).atPosition(0)).perform(ViewActions.swipeRight());
+        onView(withId(R.id.imageview_dialog_confirm_ok)).perform(click());
+        onView(isRoot()).perform(waitFor(500));
         onView(allOf(withId(R.id.textview_list_item_network_task_title), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 0))).check(matches(withText("Network task 1")));
         activityScenario.close();
     }
@@ -891,6 +949,38 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
     }
 
     @Test
+    public void testSwipeDeleteNetworkTaskScreenRotation() {
+        ActivityScenario<?> activityScenario = launchRecyclerViewBaseActivity(NetworkTaskMainActivity.class);
+        injectPermissionManager(activityScenario);
+        onView(allOf(withId(R.id.imageview_activity_main_network_task_add), isDisplayed())).perform(click());
+        onView(withId(R.id.imageview_dialog_network_task_edit_ok)).perform(click());
+        onView(withId(R.id.listview_activity_main_network_tasks)).check(matches(withListSize(1)));
+        onView(withRecyclerView(R.id.listview_activity_main_network_tasks).atPosition(0)).perform(ViewActions.swipeRight());
+        onView(isRoot()).perform(waitFor(500));
+        rotateScreen(activityScenario);
+        onView(withId(R.id.imageview_dialog_confirm_ok)).perform(click());
+        rotateScreen(activityScenario);
+        onView(withId(R.id.listview_activity_main_network_tasks)).check(matches(withListSize(0)));
+        activityScenario.close();
+    }
+
+    @Test
+    public void testSwipeDeleteNetworkTaskCancelScreenRotation() {
+        ActivityScenario<?> activityScenario = launchRecyclerViewBaseActivity(NetworkTaskMainActivity.class);
+        injectPermissionManager(activityScenario);
+        onView(allOf(withId(R.id.imageview_activity_main_network_task_add), isDisplayed())).perform(click());
+        onView(withId(R.id.imageview_dialog_network_task_edit_ok)).perform(click());
+        onView(withId(R.id.listview_activity_main_network_tasks)).check(matches(withListSize(1)));
+        onView(withRecyclerView(R.id.listview_activity_main_network_tasks).atPosition(0)).perform(ViewActions.swipeRight());
+        onView(isRoot()).perform(waitFor(500));
+        rotateScreen(activityScenario);
+        onView(withId(R.id.imageview_dialog_confirm_cancel)).perform(click());
+        rotateScreen(activityScenario);
+        onView(withId(R.id.listview_activity_main_network_tasks)).check(matches(withListSize(1)));
+        activityScenario.close();
+    }
+
+    @Test
     public void testEditNetworkTaskScreenRotation() {
         ActivityScenario<?> activityScenario = launchRecyclerViewBaseActivity(NetworkTaskMainActivity.class);
         injectPermissionManager(activityScenario);
@@ -938,6 +1028,27 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
         onView(allOf(withId(R.id.textview_list_item_network_task_stop_on_success), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 0))).check(matches(withText("Stop on success: no")));
         onView(allOf(withId(R.id.textview_list_item_network_task_only_wifi), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 0))).check(matches(withText("Only on WiFi: no")));
         onView(allOf(withId(R.id.textview_list_item_network_task_notification), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 0))).check(matches(withText("Notifications: no")));
+        activityScenario.close();
+    }
+
+    @Test
+    public void testCopyNetworkTaskScreenRotation() {
+        ActivityScenario<?> activityScenario = launchRecyclerViewBaseActivity(NetworkTaskMainActivity.class);
+        injectPermissionManager(activityScenario);
+        onView(allOf(withId(R.id.imageview_activity_main_network_task_add), isDisplayed())).perform(click());
+        onView(withId(R.id.imageview_dialog_network_task_edit_ok)).perform(click());
+        onView(allOf(withId(R.id.imageview_list_item_network_task_copy), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 0))).perform(click());
+        onView(withId(R.id.edittext_dialog_network_task_edit_interval)).check(matches(withText("15")));
+        rotateScreen(activityScenario);
+        onView(withId(R.id.edittext_dialog_network_task_edit_interval)).perform(replaceText("60"));
+        rotateScreen(activityScenario);
+        onView(withId(R.id.edittext_dialog_network_task_edit_interval)).check(matches(withText("60")));
+        onView(withId(R.id.imageview_dialog_network_task_edit_ok)).perform(click());
+        onView(withId(R.id.listview_activity_main_network_tasks)).check(matches(withListSize(2)));
+        onView(allOf(withId(R.id.textview_list_item_network_task_title), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 0))).check(matches(withText("Network task 1")));
+        onView(allOf(withId(R.id.textview_list_item_network_task_interval), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 0))).check(matches(withText("Interval: 15 minutes")));
+        onView(allOf(withId(R.id.textview_list_item_network_task_title), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 1))).check(matches(withText("Network task 2")));
+        onView(allOf(withId(R.id.textview_list_item_network_task_interval), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 1))).check(matches(withText("Interval: 60 minutes")));
         activityScenario.close();
     }
 

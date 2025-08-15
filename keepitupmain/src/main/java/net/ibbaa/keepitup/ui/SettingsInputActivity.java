@@ -168,7 +168,7 @@ public abstract class SettingsInputActivity extends AppCompatActivity implements
     }
 
     @Override
-    public void onConfirmDialogCancelClicked(ConfirmDialog confirmDialog) {
+    public void onConfirmDialogCancelClicked(ConfirmDialog confirmDialog, ConfirmDialog.Type type) {
         Log.d(SettingsInputActivity.class.getName(), "onConfirmDialogCancelClicked");
         confirmDialog.dismiss();
     }

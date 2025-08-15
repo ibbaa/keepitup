@@ -60,6 +60,7 @@ import net.ibbaa.keepitup.test.matcher.GridLayoutPositionMatcher;
 import net.ibbaa.keepitup.test.matcher.ListSizeMatcher;
 import net.ibbaa.keepitup.test.matcher.NumberPickerColorMatcher;
 import net.ibbaa.keepitup.test.matcher.NumberPickerValueMatcher;
+import net.ibbaa.keepitup.test.matcher.RecyclerViewMatcher;
 import net.ibbaa.keepitup.test.matcher.TextColorMatcher;
 import net.ibbaa.keepitup.test.mock.MockTimeService;
 import net.ibbaa.keepitup.test.mock.TestNetworkTaskProcessServiceScheduler;
@@ -312,6 +313,10 @@ public abstract class BaseUITest {
 
     public static Matcher<View> withValue(int value) {
         return new NumberPickerValueMatcher(value);
+    }
+
+    public static RecyclerViewMatcher withRecyclerView(final int recyclerViewId) {
+        return new RecyclerViewMatcher(recyclerViewId);
     }
 
     public static String getText(final Matcher<View> matcher) {

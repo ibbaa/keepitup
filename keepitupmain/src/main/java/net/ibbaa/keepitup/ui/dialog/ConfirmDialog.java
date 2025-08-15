@@ -41,6 +41,7 @@ public class ConfirmDialog extends DialogFragmentBase {
 
     public enum Type {
         DELETETASK,
+        DELETETASKSWIPE,
         DELETELOGS,
         DELETEINTERVAL,
         RESETCONFIG,
@@ -131,30 +132,33 @@ public class ConfirmDialog extends DialogFragmentBase {
             dismiss();
             return;
         }
-        String typeString = BundleUtil.stringFromBundle(getTypeKey(), requireArguments());
-        if (StringUtil.isEmpty(typeString)) {
-            Log.e(ConfirmDialog.class.getName(), ConfirmDialog.Type.class.getSimpleName() + " not specified.");
-            confirmSupport.onConfirmDialogOkClicked(this, null);
-            return;
-        }
-        Type type = null;
-        try {
-            type = Type.valueOf(typeString);
-        } catch (IllegalArgumentException exc) {
-            Log.e(ConfirmDialog.class.getName(), ConfirmDialog.Type.class.getSimpleName() + "." + typeString + " does not exist");
-        }
-        confirmSupport.onConfirmDialogOkClicked(this, type);
+        confirmSupport.onConfirmDialogOkClicked(this, getType());
     }
 
     private void onCancelClicked(View view) {
         Log.d(ConfirmDialog.class.getName(), "onCancelClicked");
         ConfirmSupport confirmSupport = getConfirmSupport();
-        if (confirmSupport != null) {
-            confirmSupport.onConfirmDialogCancelClicked(this);
-        } else {
+        if (confirmSupport == null) {
             Log.e(ConfirmDialog.class.getName(), "confirmSupport is null");
             dismiss();
+            return;
         }
+        confirmSupport.onConfirmDialogCancelClicked(this, getType());
+    }
+
+    private Type getType() {
+        Log.d(ConfirmDialog.class.getName(), "getType");
+        String typeString = BundleUtil.stringFromBundle(getTypeKey(), requireArguments());
+        Type type = null;
+        if (!StringUtil.isEmpty(typeString)) {
+            try {
+                type = Type.valueOf(typeString);
+            } catch (IllegalArgumentException exc) {
+                Log.e(ConfirmDialog.class.getName(), Type.class.getSimpleName() + "." + typeString + " does not exist");
+            }
+        }
+        Log.d(ConfirmDialog.class.getName(), "type is " + type);
+        return type;
     }
 
     private ConfirmSupport getConfirmSupport() {

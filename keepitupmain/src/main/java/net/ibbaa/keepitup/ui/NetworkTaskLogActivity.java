@@ -226,7 +226,7 @@ public class NetworkTaskLogActivity extends RecyclerViewBaseActivity {
         confirmDialog.dismiss();
     }
 
-    public void onConfirmDialogCancelClicked(ConfirmDialog confirmDialog) {
+    public void onConfirmDialogCancelClicked(ConfirmDialog confirmDialog, ConfirmDialog.Type type) {
         Log.d(NetworkTaskLogActivity.class.getName(), "onConfirmDialogCancelClicked");
         confirmDialog.dismiss();
     }

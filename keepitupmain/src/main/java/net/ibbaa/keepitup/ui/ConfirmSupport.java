@@ -22,5 +22,5 @@ public interface ConfirmSupport {
 
     void onConfirmDialogOkClicked(ConfirmDialog confirmDialog, ConfirmDialog.Type type);
 
-    void onConfirmDialogCancelClicked(ConfirmDialog confirmDialog);
+    void onConfirmDialogCancelClicked(ConfirmDialog confirmDialog, ConfirmDialog.Type type);
 }
