@@ -16,6 +16,9 @@
 
 package net.ibbaa.keepitup.ui.adapter;
 
+import android.graphics.Canvas;
+import android.view.View;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.widget.NestedScrollView;
@@ -26,6 +29,7 @@ import net.ibbaa.keepitup.R;
 import net.ibbaa.keepitup.logging.Log;
 import net.ibbaa.keepitup.ui.NetworkTaskHandler;
 import net.ibbaa.keepitup.ui.NetworkTaskMainActivity;
+import net.ibbaa.keepitup.util.UIUtil;
 
 @SuppressWarnings("NotifyDataSetChanged")
 public class NetworkTaskDragAndDropCallback extends ItemTouchHelper.Callback {
@@ -76,6 +80,15 @@ public class NetworkTaskDragAndDropCallback extends ItemTouchHelper.Callback {
             Log.d(NetworkTaskDragAndDropCallback.class.getName(), "onSwiped, position is " + position);
             mainActivity.onMainDeleteSwiped(position);
         }
+    }
+
+    @Override
+    public void onChildDraw(@NonNull Canvas canvas, @NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, float dX, float dY, int actionState, boolean isCurrentlyActive) {
+        if (actionState == ItemTouchHelper.ACTION_STATE_SWIPE) {
+            View itemView = viewHolder.itemView;
+            UIUtil.drawSwipeTrashcan(canvas, recyclerView, itemView, dX, R.drawable.icon_trashcan, 64f, 32f, 96f);
+        }
+        super.onChildDraw(canvas, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive);
     }
 
     @Override

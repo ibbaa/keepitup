@@ -1,0 +1,27 @@
+<!--
+  ~ Copyright (c) 2025 Alwin Ibba
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~ http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:width="875dp"
+    android:height="1000dp"
+    android:viewportWidth="875"
+    android:viewportHeight="1000"
+    tools:ignore="VectorRaster">
+  <path
+      android:fillColor="#FF000000"
+      android:pathData="M0,281.3l0,-68.4q2,-37.1 29.3,-62.5t64.4,-25.4l93.7,0l0,-31.2q0,-39.1 27.3,-66.4t66.4,-27.3l312.5,0q39.1,0 66.4,27.3t27.3,66.4l0,31.2l93.7,0q37.1,0 64.4,25.4t29.3,62.5l0,68.4q0,25.4 -18.6,43.9t-43.9,18.6l0,531.2q0,52.7 -36.1,88.9t-88.9,36.1l-500,0q-52.7,0 -88.9,-36.1t-36.1,-88.9l0,-531.2q-25.4,0 -43.9,-18.6t-18.6,-43.9zM62.5,281.3l750,0l0,-62.5q0,-13.7 -8.8,-22.5t-22.5,-8.8l-687.5,0q-13.7,0 -22.5,8.8t-8.8,22.5l0,62.5zM125,875q0,25.4 18.6,43.9t43.9,18.6l500,0q25.4,0 43.9,-18.6t18.6,-43.9l0,-531.2l-625,0l0,531.2zM187.5,843.8l0,-406.2q0,-13.7 8.8,-22.5t22.5,-8.8l62.5,0q13.7,0 22.5,8.8t8.8,22.5l0,406.2q0,13.7 -8.8,22.5t-22.5,8.8l-62.5,0q-13.7,0 -22.5,-8.8t-8.8,-22.5zM218.7,843.8l62.5,0l0,-406.2l-62.5,0l0,406.2zM250,125.1l375,0l0,-31.2q0,-13.7 -8.8,-22.5t-22.5,-8.8l-312.5,0q-13.7,0 -22.5,8.8t-8.8,22.5l0,31.2zM375,843.8l0,-406.2q0,-13.7 8.8,-22.5t22.5,-8.8l62.5,0q13.7,0 22.5,8.8t8.8,22.5l0,406.2q0,13.7 -8.8,22.5t-22.5,8.8l-62.5,0q-13.7,0 -22.5,-8.8t-8.8,-22.5zM406.2,843.8l62.5,0l0,-406.2l-62.5,0l0,406.2zM562.5,843.8l0,-406.2q0,-13.7 8.8,-22.5t22.5,-8.8l62.5,0q13.7,0 22.5,8.8t8.8,22.5l0,406.2q0,13.7 -8.8,22.5t-22.5,8.8l-62.5,0q-13.7,0 -22.5,-8.8t-8.8,-22.5zM593.7,843.8l62.5,0l0,-406.2l-62.5,0l0,406.2z"/>
+</vector>

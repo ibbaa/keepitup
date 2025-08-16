@@ -17,7 +17,17 @@
 package net.ibbaa.keepitup.util;
 
 import android.content.Context;
+import android.content.res.Configuration;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.text.InputType;
+import android.view.View;
+
+import androidx.annotation.DrawableRes;
+import androidx.annotation.NonNull;
+import androidx.appcompat.content.res.AppCompatResources;
+import androidx.recyclerview.widget.RecyclerView;
 
 import net.ibbaa.keepitup.R;
 import net.ibbaa.keepitup.model.NetworkTask;
@@ -37,5 +47,32 @@ public class UIUtil {
             formattedTitleText = context.getResources().getString(R.string.task_title_named, name, task.getIndex() + 1);
         }
         return formattedTitleText;
+    }
+
+    public static void drawSwipeTrashcan(@NonNull Canvas canvas, @NonNull RecyclerView recyclerView, @NonNull View itemView, float dX, @DrawableRes int iconRes, float marginDp, float startSizeDp, float endSizeDp) {
+        if (dX <= 0f) {
+            return;
+        }
+        Drawable icon = AppCompatResources.getDrawable(recyclerView.getContext(), iconRes);
+        if (icon == null) {
+            return;
+        }
+        float density = recyclerView.getResources().getDisplayMetrics().density;
+        int marginPx = Math.round(marginDp * density);
+        int startSizePx = Math.round(startSizeDp * density);
+        int endSizePx = Math.round(endSizeDp * density);
+        float progress = Math.min(1f, dX / itemView.getWidth());
+        int iconSize = (int) (startSizePx + (endSizePx - startSizePx) * progress);
+        int iconTop = itemView.getTop() + (itemView.getHeight() - iconSize) / 2;
+        int iconLeft = itemView.getLeft() + marginPx;
+        icon.setBounds(iconLeft, iconTop, iconLeft + iconSize, iconTop + iconSize);
+        icon.setAlpha((int) (255 * progress));
+        int nightModeFlags = recyclerView.getContext().getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
+        if (nightModeFlags == Configuration.UI_MODE_NIGHT_YES) {
+            icon.setTint(Color.WHITE);
+        } else {
+            icon.setTint(Color.BLACK);
+        }
+        icon.draw(canvas);
     }
 }
