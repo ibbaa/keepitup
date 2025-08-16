@@ -44,6 +44,7 @@ public class ConfirmDialog extends DialogFragmentBase {
         DELETETASKSWIPE,
         DELETELOGS,
         DELETEINTERVAL,
+        DELETEINTERVALSWIPE,
         RESETCONFIG,
         IMPORTCONFIG,
         EXPORTCONFIGEXISTINGFILE,

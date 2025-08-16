@@ -26,6 +26,7 @@ import android.widget.ImageView;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.DialogFragment;
 import androidx.recyclerview.widget.DefaultItemAnimator;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -35,10 +36,12 @@ import net.ibbaa.keepitup.model.Interval;
 import net.ibbaa.keepitup.model.Time;
 import net.ibbaa.keepitup.service.TimeBasedSuspensionScheduler;
 import net.ibbaa.keepitup.ui.ConfirmSupport;
+import net.ibbaa.keepitup.ui.NetworkTaskMainActivity;
 import net.ibbaa.keepitup.ui.SettingsInputActivity;
 import net.ibbaa.keepitup.ui.SuspensionIntervalSelectSupport;
 import net.ibbaa.keepitup.ui.SuspensionIntervalsSupport;
 import net.ibbaa.keepitup.ui.adapter.SuspensionIntervalAdapter;
+import net.ibbaa.keepitup.ui.adapter.SuspensionIntervalSwipeCallback;
 import net.ibbaa.keepitup.ui.validation.IntervalValidator;
 import net.ibbaa.keepitup.ui.validation.StandardIntervalValidator;
 import net.ibbaa.keepitup.ui.validation.ValidationResult;
@@ -55,6 +58,7 @@ public class SuspensionIntervalsDialog extends DialogFragmentBase implements Con
 
     private View dialogView;
     private RecyclerView suspensionIntervalsRecyclerView;
+    private ItemTouchHelper itemTouchHelper;
     private Interval currentInterval;
     private boolean keepEnd;
     private int position;
@@ -132,6 +136,8 @@ public class SuspensionIntervalsDialog extends DialogFragmentBase implements Con
         suspensionIntervalsRecyclerView.setItemAnimator(new DefaultItemAnimator());
         RecyclerView.Adapter<?> adapter = adapterState == null ? createAdapter() : restoreAdapter(adapterState);
         suspensionIntervalsRecyclerView.setAdapter(adapter);
+        itemTouchHelper = new ItemTouchHelper(new SuspensionIntervalSwipeCallback(this));
+        itemTouchHelper.attachToRecyclerView(suspensionIntervalsRecyclerView);
     }
 
     private void prepareCurrentInterval(Bundle currentIntervalState, boolean keepEndState) {
@@ -193,9 +199,22 @@ public class SuspensionIntervalsDialog extends DialogFragmentBase implements Con
             Log.e(SuspensionIntervalsDialog.class.getName(), "index " + index + " is invalid");
             return;
         }
+        openConfirmDialog(index, ConfirmDialog.Type.DELETEINTERVAL);
+    }
+
+    public void onIntervalDeleteSwiped(int index) {
+        Log.d(SuspensionIntervalsDialog.class.getName(), "onIntervalDeleteSwiped for index " + index);
+        if (index < 0) {
+            Log.e(SuspensionIntervalsDialog.class.getName(), "index " + index + " is invalid");
+            return;
+        }
+        openConfirmDialog(index, ConfirmDialog.Type.DELETEINTERVALSWIPE);
+    }
+
+    private void openConfirmDialog(int index, ConfirmDialog.Type type) {
         ConfirmDialog confirmDialog = new ConfirmDialog();
         String confirmMessage = getResources().getString(R.string.text_dialog_confirm_delete_interval);
-        Bundle bundle = BundleUtil.stringsToBundle(new String[]{confirmDialog.getMessageKey(), confirmDialog.getTypeKey()}, new String[]{confirmMessage, ConfirmDialog.Type.DELETEINTERVAL.name()});
+        Bundle bundle = BundleUtil.stringsToBundle(new String[]{confirmDialog.getMessageKey(), confirmDialog.getTypeKey()}, new String[]{confirmMessage, type.name()});
         bundle.putInt(confirmDialog.getPositionKey(), index);
         confirmDialog.setArguments(bundle);
         showDialog(confirmDialog, ConfirmDialog.class.getName());
@@ -204,13 +223,16 @@ public class SuspensionIntervalsDialog extends DialogFragmentBase implements Con
     @Override
     public void onConfirmDialogOkClicked(ConfirmDialog confirmDialog, ConfirmDialog.Type type) {
         Log.d(SuspensionIntervalsDialog.class.getName(), "onConfirmDialogOkClicked for type " + type);
-        if (ConfirmDialog.Type.DELETEINTERVAL.equals(type)) {
+        if (ConfirmDialog.Type.DELETEINTERVAL.equals(type) || ConfirmDialog.Type.DELETEINTERVALSWIPE.equals(type)) {
             int deletePosition = confirmDialog.getPosition();
             if (deletePosition >= 0) {
                 Log.d(SuspensionIntervalsDialog.class.getName(), "deleting interval at deletePosition " + deletePosition);
                 getAdapter().removeItem(deletePosition);
                 getAdapter().notifyItemRemoved(deletePosition);
                 initializeCurrentInterval();
+                if (ConfirmDialog.Type.DELETEINTERVALSWIPE.equals(type)) {
+                    reattachItemTouchHelper();
+                }
             } else {
                 Log.e(SuspensionIntervalsDialog.class.getName(), ConfirmDialog.class.getSimpleName() + " arguments do not contain deletePosition key " + confirmDialog.getPositionKey());
             }
@@ -223,7 +245,24 @@ public class SuspensionIntervalsDialog extends DialogFragmentBase implements Con
     @Override
     public void onConfirmDialogCancelClicked(ConfirmDialog confirmDialog, ConfirmDialog.Type type) {
         Log.d(SuspensionIntervalsDialog.class.getName(), "onConfirmDialogCancelClicked");
+        if (ConfirmDialog.Type.DELETEINTERVALSWIPE.equals(type)) {
+            int position = confirmDialog.getPosition();
+            getAdapter().notifyItemChanged(position);
+            reattachItemTouchHelper();
+        }
         confirmDialog.dismiss();
+    }
+
+    private void reattachItemTouchHelper() {
+        Log.d(NetworkTaskMainActivity.class.getName(), "reattachItemTouchHelper");
+        RecyclerView recyclerView = dialogView.findViewById(R.id.listview_dialog_suspension_intervals_intervals);
+        if (itemTouchHelper != null) {
+            itemTouchHelper.attachToRecyclerView(null);
+        }
+        recyclerView.post(() -> {
+            itemTouchHelper = new ItemTouchHelper(new SuspensionIntervalSwipeCallback(this));
+            itemTouchHelper.attachToRecyclerView(recyclerView);
+        });
     }
 
     @Override
