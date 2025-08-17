@@ -228,7 +228,7 @@ public class SystemFileManager implements IFileManager {
 
     @Override
     public String getNestedPath(String path1, String path2) {
-        Log.d(SystemFileManager.class.getName(), "getNestedFolder, path1 is " + path1 + ", path2 is " + path2);
+        Log.d(SystemFileManager.class.getName(), "getNestedPath, path1 is " + path1 + ", path2 is " + path2);
         path2 = StringUtil.notNull(path2);
         if (StringUtil.isEmpty(path1)) {
             return path2;

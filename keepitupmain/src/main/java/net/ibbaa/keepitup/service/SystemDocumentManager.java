@@ -50,76 +50,76 @@ public class SystemDocumentManager implements IDocumentManager {
                 if (arbitraryDirectory.canRead() && arbitraryDirectory.canWrite()) {
                     return arbitraryDirectory;
                 } else {
-                    Log.e(SystemFileManager.class.getName(), "Insufficient permission for folder " + arbitraryFolder);
+                    Log.e(SystemDocumentManager.class.getName(), "Insufficient permission for folder " + arbitraryFolder);
                 }
             } else {
-                Log.e(SystemFileManager.class.getName(), arbitraryFolder + " is not a directory");
+                Log.e(SystemDocumentManager.class.getName(), arbitraryFolder + " is not a directory");
             }
         } catch (Exception exc) {
-            Log.e(SystemFileManager.class.getName(), "Error accessing arbitraryFolder folder " + arbitraryFolder, exc);
+            Log.e(SystemDocumentManager.class.getName(), "Error accessing arbitraryFolder folder " + arbitraryFolder, exc);
         }
         return null;
     }
 
     @Override
     public String getValidFileName(DocumentFile folder, String file) {
-        Log.d(SystemFileManager.class.getName(), "getValidFileName, file is " + file);
+        Log.d(SystemDocumentManager.class.getName(), "getValidFileName, file is " + file);
         try {
             file = file.replaceAll("/", "");
             if (!fileExists(folder, file)) {
-                Log.d(SystemFileManager.class.getName(), "File " + file + " does not exist");
+                Log.d(SystemDocumentManager.class.getName(), "File " + file + " does not exist");
                 return file;
             }
-            Log.d(SystemFileManager.class.getName(), "File " + file + " does exist");
+            Log.d(SystemDocumentManager.class.getName(), "File " + file + " does exist");
             String timestampFileName = FileUtil.suffixFileName(file, FileUtil.getTimestampSuffix(getContext(), getTimeService()));
             if (!fileExists(folder, timestampFileName)) {
-                Log.d(SystemFileManager.class.getName(), "File " + timestampFileName + " does not exist");
+                Log.d(SystemDocumentManager.class.getName(), "File " + timestampFileName + " does not exist");
                 return timestampFileName;
             }
-            Log.d(SystemFileManager.class.getName(), "File " + timestampFileName + " does exist");
+            Log.d(SystemDocumentManager.class.getName(), "File " + timestampFileName + " does exist");
             int maxDuplicateFileNumber = getContext().getResources().getInteger(R.integer.max_duplicate_file_number);
             for (int ii = 1; ii <= maxDuplicateFileNumber; ii++) {
                 String numberFileName = FileUtil.suffixFileName(timestampFileName, FileUtil.getNumberSuffix(ii));
                 if (!fileExists(folder, numberFileName)) {
-                    Log.d(SystemFileManager.class.getName(), "File " + numberFileName + " does not exist");
+                    Log.d(SystemDocumentManager.class.getName(), "File " + numberFileName + " does not exist");
                     return numberFileName;
                 }
-                Log.d(SystemFileManager.class.getName(), "File " + numberFileName + " does exist");
+                Log.d(SystemDocumentManager.class.getName(), "File " + numberFileName + " does exist");
             }
-            Log.d(SystemFileManager.class.getName(), "Unable to find valid file name");
+            Log.d(SystemDocumentManager.class.getName(), "Unable to find valid file name");
         } catch (Exception exc) {
-            Log.e(SystemFileManager.class.getName(), "Error creating valid file name", exc);
+            Log.e(SystemDocumentManager.class.getName(), "Error creating valid file name", exc);
         }
         return null;
     }
 
     @Override
     public DocumentFile getFolder(String folder) {
-        Log.d(SystemFileManager.class.getName(), "getFolder, folder is " + folder);
+        Log.d(SystemDocumentManager.class.getName(), "getFolder, folder is " + folder);
         return DocumentFile.fromTreeUri(getContext(), Uri.parse(folder));
     }
 
     @Override
     public DocumentFile getFile(String file) {
-        Log.d(SystemFileManager.class.getName(), "getFile, file is " + file);
+        Log.d(SystemDocumentManager.class.getName(), "getFile, file is " + file);
         return DocumentFile.fromSingleUri(getContext(), Uri.parse(file));
     }
 
     @Override
     public DocumentFile getFile(DocumentFile folder, String fileName) {
-        Log.d(SystemFileManager.class.getName(), "getFile, fileName is " + fileName);
+        Log.d(SystemDocumentManager.class.getName(), "getFile, fileName is " + fileName);
         return folder.findFile(fileName);
     }
 
     @Override
     public boolean fileExists(DocumentFile folder, String fileName) {
-        Log.d(SystemFileManager.class.getName(), "fileExists, fileName is " + fileName);
+        Log.d(SystemDocumentManager.class.getName(), "fileExists, fileName is " + fileName);
         return folder.findFile(fileName) != null;
     }
 
     @Override
     public boolean delete(DocumentFile file) {
-        Log.d(SystemFileManager.class.getName(), "delete");
+        Log.d(SystemDocumentManager.class.getName(), "delete");
         return file.delete();
     }
 
