@@ -59,7 +59,6 @@ public class StartupService extends BroadcastReceiver {
             Dump.initialize(null);
         }
         Log.d(StartupService.class.getName(), "Logging initialized. Staring app with pid " + android.os.Process.myPid());
-        Log.d(StartupService.class.getName(), "Startup caller was " + getCaller());
         Log.d(StartupService.class.getName(), "Checking active instances");
         if (!NetworkTaskProcessServiceScheduler.getNetworkTaskProcessPool().hasActive()) {
             Log.d(StartupService.class.getName(), "There are no active instances");
@@ -73,15 +72,6 @@ public class StartupService extends BroadcastReceiver {
         Log.d(StartupService.class.getName(), "Initialize scheduler.");
         initializeScheduler(context);
         initializeTheme(context);
-    }
-
-    private String getCaller() {
-        StackTraceElement[] stackTrace = Thread.currentThread().getStackTrace();
-        if (stackTrace.length > 3) {
-            StackTraceElement caller = stackTrace[3];
-            return caller.getClassName() + "." + caller.getMethodName() + " (line " + caller.getLineNumber() + ")";
-        }
-        return "unknown";
     }
 
     private void initializeDatabase(Context context) {
