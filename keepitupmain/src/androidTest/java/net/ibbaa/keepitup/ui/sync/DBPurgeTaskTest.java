@@ -56,7 +56,8 @@ public class DBPurgeTaskTest extends BaseUITest {
 
     @Test
     public void testPurge() {
-        getNetworkTaskDAO().insertNetworkTask(new NetworkTask());
+        NetworkTask networkTask = getNetworkTaskDAO().insertNetworkTask(new NetworkTask());
+        getNetworkTaskDAO().updateNetworkTask(networkTask);
         getLogDAO().insertAndDeleteLog(new LogEntry());
         getIntervalDAO().insertInterval(new Interval());
         getAccessTypeDataDAO().insertAccessTypeData(new AccessTypeData());

@@ -272,6 +272,8 @@ public class NetworkTaskDAO extends BaseDAO {
         String selection = dbConstants.getIdColumnName() + " = ?";
         String[] selectionArgs = {String.valueOf(networkTask.getId())};
         int value = db.delete(dbConstants.getTableName(), selection, selectionArgs);
+        SchedulerIdGenerator idGenerator = new SchedulerIdGenerator(getContext());
+        idGenerator.enlistToSchedulerIdHistory(db, networkTask.getSchedulerId());
         Log.d(NetworkTaskDAO.class.getName(), "Executing SQL " + dbConstants.getUpdateIndexNetworkTasksStatement() + " with a parameter of " + networkTask.getIndex());
         db.execSQL(dbConstants.getUpdateIndexNetworkTasksStatement(), new Object[]{String.valueOf(networkTask.getIndex())});
         return value;
@@ -474,6 +476,7 @@ public class NetworkTaskDAO extends BaseDAO {
             return networkTask;
         } else {
             Log.d(NetworkTaskDAO.class.getName(), "Generated scheduler id is " + schedulerId.getSchedulerId());
+            idGenerator.enlistToSchedulerIdHistory(db, networkTask.getSchedulerId());
             networkTask.setSchedulerId(schedulerId.getSchedulerId());
         }
         networkTask.setInstances(0);

@@ -2,3 +2,5 @@
 * Implemented drag and drop moving of network tasks
 * Implemented swipe right delete for network tasks and suspension intervals
 * When adding or copying a task, the UI now scrolls to the new task
+* minor changes to make scheduling more robust
+* small bug fixes

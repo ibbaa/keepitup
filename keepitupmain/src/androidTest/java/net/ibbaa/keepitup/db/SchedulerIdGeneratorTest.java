@@ -75,7 +75,18 @@ public class SchedulerIdGeneratorTest {
         assertNotEquals(schedulerId1.getSchedulerId(), schedulerId2.getSchedulerId());
         assertNotEquals(SchedulerIdGenerator.ERROR_SCHEDULER_ID, schedulerId1.getSchedulerId());
         assertNotEquals(SchedulerIdGenerator.ERROR_SCHEDULER_ID, schedulerId2.getSchedulerId());
+    }
+
+    @Test
+    public void testEnlistToSchedulerIdHistory() {
         List<SchedulerId> databaseSchedulerIds = schedulerIdHistoryDAO.readAllSchedulerIds();
+        assertTrue(databaseSchedulerIds.isEmpty());
+        SchedulerIdGenerator idGenerator = new SchedulerIdGenerator(TestRegistry.getContext());
+        SchedulerId schedulerId1 = idGenerator.createUniqueSchedulerId(db);
+        SchedulerId schedulerId2 = idGenerator.createUniqueSchedulerId(db);
+        idGenerator.enlistToSchedulerIdHistory(db, schedulerId1.getSchedulerId());
+        idGenerator.enlistToSchedulerIdHistory(db, schedulerId2.getSchedulerId());
+        databaseSchedulerIds = schedulerIdHistoryDAO.readAllSchedulerIds();
         assertEquals(2, databaseSchedulerIds.size());
         assertTrue(containsSchedulerId(databaseSchedulerIds, schedulerId1.getSchedulerId()));
         assertTrue(containsSchedulerId(databaseSchedulerIds, schedulerId2.getSchedulerId()));
@@ -94,12 +105,14 @@ public class SchedulerIdGeneratorTest {
     public void testInsertHistoryLimitExceeded() throws Exception {
         SchedulerIdGenerator idGenerator = new SchedulerIdGenerator(TestRegistry.getContext());
         for (int ii = 0; ii < 100; ii++) {
-            idGenerator.createUniqueSchedulerId(db);
+            SchedulerId schedulerId = idGenerator.createUniqueSchedulerId(db);
+            idGenerator.enlistToSchedulerIdHistory(db, schedulerId.getSchedulerId());
         }
         List<SchedulerId> databaseSchedulerIds = schedulerIdHistoryDAO.readAllSchedulerIds();
         assertEquals(100, databaseSchedulerIds.size());
         Thread.sleep(10);
         SchedulerId schedulerId = idGenerator.createUniqueSchedulerId(db);
+        idGenerator.enlistToSchedulerIdHistory(db, schedulerId.getSchedulerId());
         databaseSchedulerIds = schedulerIdHistoryDAO.readAllSchedulerIds();
         assertEquals(100, databaseSchedulerIds.size());
         assertTrue(containsSchedulerId(databaseSchedulerIds, schedulerId.getSchedulerId()));

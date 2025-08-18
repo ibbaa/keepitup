@@ -354,7 +354,6 @@ public class SAFSystemActivityMockTest extends BaseUITest {
         getTimeBasedSuspensionScheduler().reset();
         getTimeBasedSuspensionScheduler().getIntervals();
         assertFalse(getNetworkTaskDAO().readAllNetworkTasks().isEmpty());
-        assertFalse(getSchedulerIdHistoryDAO().readAllSchedulerIds().isEmpty());
         assertFalse(getLogDAO().readAllLogs().isEmpty());
         assertFalse(getAccessTypeDataDAO().readAllAccessTypeData().isEmpty());
         assertFalse(getIntervalDAO().readAllIntervals().isEmpty());

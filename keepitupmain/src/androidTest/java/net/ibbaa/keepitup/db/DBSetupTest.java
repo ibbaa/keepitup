@@ -51,6 +51,7 @@ public class DBSetupTest {
 
     private NetworkTaskDAO networkTaskDAO;
     private SchedulerIdHistoryDAO schedulerIdHistoryDAO;
+    private SchedulerIdGenerator schedulerIdGenerator;
     private LogDAO logDAO;
     private IntervalDAO intervalDAO;
     private SchedulerStateDAO schedulerStateDAO;
@@ -64,6 +65,7 @@ public class DBSetupTest {
         setup.createTables();
         networkTaskDAO = new NetworkTaskDAO(TestRegistry.getContext());
         schedulerIdHistoryDAO = new SchedulerIdHistoryDAO(TestRegistry.getContext());
+        schedulerIdGenerator = new SchedulerIdGenerator(TestRegistry.getContext());
         logDAO = new LogDAO(TestRegistry.getContext());
         intervalDAO = new IntervalDAO(TestRegistry.getContext());
         schedulerStateDAO = new SchedulerStateDAO(TestRegistry.getContext());
@@ -90,6 +92,7 @@ public class DBSetupTest {
     @Test
     public void testDropCreateTables() {
         networkTaskDAO.insertNetworkTask(new NetworkTask());
+        schedulerIdGenerator.enlistToSchedulerIdHistory(DBOpenHelper.getInstance(TestRegistry.getContext()).getWritableDatabase(), 22);
         logDAO.insertAndDeleteLog(new LogEntry());
         intervalDAO.insertInterval(new Interval());
         schedulerStateDAO.insertSchedulerState(new SchedulerState(0, false, 1));
@@ -109,6 +112,7 @@ public class DBSetupTest {
         assertNotNull(schedulerStateDAO.readSchedulerState());
         assertTrue(accessTypeDataDAO.readAllAccessTypeData().isEmpty());
         networkTaskDAO.insertNetworkTask(new NetworkTask());
+        schedulerIdGenerator.enlistToSchedulerIdHistory(DBOpenHelper.getInstance(TestRegistry.getContext()).getWritableDatabase(), 22);
         logDAO.insertAndDeleteLog(new LogEntry());
         intervalDAO.insertInterval(new Interval());
         schedulerStateDAO.insertSchedulerState(new SchedulerState(0, false, 1));
@@ -209,12 +213,12 @@ public class DBSetupTest {
 
     @Test
     public void testDropCreateSchedulerIdHistoryTable() {
-        networkTaskDAO.insertNetworkTask(new NetworkTask());
+        schedulerIdGenerator.enlistToSchedulerIdHistory(DBOpenHelper.getInstance(TestRegistry.getContext()).getWritableDatabase(), 22);
         assertFalse(schedulerIdHistoryDAO.readAllSchedulerIds().isEmpty());
         setup.dropSchedulerIdHistoryTable();
         setup.createSchedulerIdHistoryTable();
         assertTrue(schedulerIdHistoryDAO.readAllSchedulerIds().isEmpty());
-        networkTaskDAO.insertNetworkTask(new NetworkTask());
+        schedulerIdGenerator.enlistToSchedulerIdHistory(DBOpenHelper.getInstance(TestRegistry.getContext()).getWritableDatabase(), 22);
         assertFalse(schedulerIdHistoryDAO.readAllSchedulerIds().isEmpty());
         setup.recreateSchedulerIdHistoryTable();
         assertTrue(schedulerIdHistoryDAO.readAllSchedulerIds().isEmpty());
@@ -262,6 +266,7 @@ public class DBSetupTest {
     @Test
     public void testDeleteTables() {
         networkTaskDAO.insertNetworkTask(new NetworkTask());
+        schedulerIdGenerator.enlistToSchedulerIdHistory(DBOpenHelper.getInstance(TestRegistry.getContext()).getWritableDatabase(), 22);
         logDAO.insertAndDeleteLog(new LogEntry());
         intervalDAO.insertInterval(new Interval());
         schedulerStateDAO.insertSchedulerState(new SchedulerState(0, false, 1));

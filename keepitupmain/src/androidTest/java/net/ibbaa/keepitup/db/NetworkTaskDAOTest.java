@@ -28,6 +28,7 @@ import androidx.test.filters.MediumTest;
 import net.ibbaa.keepitup.logging.Dump;
 import net.ibbaa.keepitup.model.AccessType;
 import net.ibbaa.keepitup.model.NetworkTask;
+import net.ibbaa.keepitup.model.SchedulerId;
 import net.ibbaa.keepitup.test.mock.TestRegistry;
 
 import org.junit.After;
@@ -36,23 +37,29 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @MediumTest
 @RunWith(AndroidJUnit4.class)
 public class NetworkTaskDAOTest {
 
     private NetworkTaskDAO networkTaskDAO;
+    private SchedulerIdHistoryDAO schedulerIdHistoryDAO;
 
     @Before
     public void beforeEachTestMethod() {
         Dump.initialize(null);
         networkTaskDAO = new NetworkTaskDAO(TestRegistry.getContext());
+        schedulerIdHistoryDAO = new SchedulerIdHistoryDAO(TestRegistry.getContext());
         networkTaskDAO.deleteAllNetworkTasks();
+        schedulerIdHistoryDAO.deleteAllSchedulerIds();
     }
 
     @After
     public void afterEachTestMethod() {
         networkTaskDAO.deleteAllNetworkTasks();
+        schedulerIdHistoryDAO.deleteAllSchedulerIds();
     }
 
     @Test
@@ -93,6 +100,28 @@ public class NetworkTaskDAOTest {
         networkTaskDAO.deleteNetworkTask(readTask2);
         readTask2 = networkTaskDAO.readNetworkTask(readTask2.getId());
         assertNull(readTask2);
+    }
+
+    @Test
+    public void testDeleteOldSchedulerIdEnlisted() {
+        NetworkTask insertedTask1 = getNetworkTask1();
+        NetworkTask insertedTask2 = getNetworkTask2();
+        networkTaskDAO.insertNetworkTask(insertedTask1);
+        networkTaskDAO.insertNetworkTask(insertedTask2);
+        List<NetworkTask> readTasks = networkTaskDAO.readAllNetworkTasks();
+        NetworkTask readTask1 = readTasks.get(0);
+        NetworkTask readTask2 = readTasks.get(1);
+        int schedulerId1 = readTask1.getSchedulerId();
+        int schedulerId2 = readTask2.getSchedulerId();
+        List<SchedulerId> schedulerIds = schedulerIdHistoryDAO.readAllSchedulerIds();
+        assertTrue(schedulerIds.isEmpty());
+        networkTaskDAO.deleteNetworkTask(readTask1);
+        networkTaskDAO.deleteNetworkTask(readTask2);
+        schedulerIds = schedulerIdHistoryDAO.readAllSchedulerIds();
+        assertEquals(2, schedulerIds.size());
+        Set<Integer> idsAsInt = schedulerIds.stream().map(SchedulerId::getSchedulerId).collect(Collectors.toSet());
+        assertTrue(idsAsInt.contains(schedulerId1));
+        assertTrue(idsAsInt.contains(schedulerId2));
     }
 
     @Test
@@ -281,6 +310,22 @@ public class NetworkTaskDAOTest {
         readTasks = networkTaskDAO.readAllNetworkTasks();
         readTask1 = readTasks.get(0);
         assertNotEquals(schedulerId, readTask1.getSchedulerId());
+    }
+
+    @Test
+    public void testUpdateOldSchedulerIdEnlisted() {
+        NetworkTask insertedTask1 = getNetworkTask1();
+        networkTaskDAO.insertNetworkTask(insertedTask1);
+        List<NetworkTask> readTasks = networkTaskDAO.readAllNetworkTasks();
+        NetworkTask readTask1 = readTasks.get(0);
+        int schedulerId = readTask1.getSchedulerId();
+        List<SchedulerId> schedulerIds = schedulerIdHistoryDAO.readAllSchedulerIds();
+        assertTrue(schedulerIds.isEmpty());
+        readTask1.setAddress("abc.com");
+        networkTaskDAO.updateNetworkTask(readTask1);
+        schedulerIds = schedulerIdHistoryDAO.readAllSchedulerIds();
+        assertEquals(1, schedulerIds.size());
+        assertEquals(schedulerId, schedulerIds.get(0).getSchedulerId());
     }
 
     @Test

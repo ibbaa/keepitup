@@ -73,14 +73,14 @@ public class SchedulerIdGenerator {
             }
             Log.d(SchedulerIdGenerator.class.getName(), "Created random scheduler id is " + schedulerId);
         }
-        Log.d(SchedulerIdGenerator.class.getName(), "Created random scheduler id is unique and does not exist.");
+        return createSchedulerIdResult(schedulerId, true);
+    }
+
+    public void enlistToSchedulerIdHistory(SQLiteDatabase db, int schedulerid) {
+        Log.d(SchedulerIdGenerator.class.getName(), "enlistToSchedulerIdHistory for schedulerid " + schedulerid);
         SchedulerIdHistoryDBConstants schedulerIdDBConstants = new SchedulerIdHistoryDBConstants(getContext());
         Log.d(SchedulerIdGenerator.class.getName(), "Inserting new scheduler id in " + schedulerIdDBConstants.getTableName());
-        if (insertAndDeleteSchedulerIdHistory(schedulerId, db) < 0) {
-            Log.d(SchedulerIdGenerator.class.getName(), "Error inserting new scheduler in " + schedulerIdDBConstants.getTableName());
-            return createSchedulerIdResult(ERROR_SCHEDULER_ID, false);
-        }
-        return createSchedulerIdResult(schedulerId, true);
+        insertAndDeleteSchedulerIdHistory(schedulerid, db);
     }
 
     private boolean isInvalidId(int schedulerId) {
@@ -127,7 +127,7 @@ public class SchedulerIdGenerator {
         return 0;
     }
 
-    private long insertAndDeleteSchedulerIdHistory(int schedulerId, SQLiteDatabase db) {
+    private void insertAndDeleteSchedulerIdHistory(int schedulerId, SQLiteDatabase db) {
         SchedulerIdHistoryDBConstants dbConstants = new SchedulerIdHistoryDBConstants(getContext());
         ContentValues values = new ContentValues();
         values.put(dbConstants.getSchedulerIdColumnName(), schedulerId);
@@ -135,7 +135,7 @@ public class SchedulerIdGenerator {
         long rowid = db.insert(dbConstants.getTableName(), null, values);
         if (rowid < 0) {
             Log.e(SchedulerIdGenerator.class.getName(), "Error inserting scheduler id into history. Insert returned -1.");
-            return -1;
+            return;
         }
         Log.d(SchedulerIdGenerator.class.getName(), "Reading scheduler id history count");
         long scheduleridCount = readSchedulerIdCount(db);
@@ -146,7 +146,6 @@ public class SchedulerIdGenerator {
         } else {
             Log.d(SchedulerIdGenerator.class.getName(), "Scheduler id history count of " + scheduleridCount + " does not exceed limit of " + limit + ". Delete skipped.");
         }
-        return rowid;
     }
 
     private long readSchedulerIdCount(SQLiteDatabase db) {

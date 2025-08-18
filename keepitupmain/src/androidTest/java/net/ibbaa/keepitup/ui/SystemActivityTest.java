@@ -825,8 +825,11 @@ public class SystemActivityTest extends BaseUITest {
     @Test
     public void testExportConfiguration() throws Exception {
         NetworkTask task1 = getNetworkTaskDAO().insertNetworkTask(getNetworkTask1());
+        getNetworkTaskDAO().updateNetworkTask(task1);
         NetworkTask task2 = getNetworkTaskDAO().insertNetworkTask(getNetworkTask2());
+        getNetworkTaskDAO().updateNetworkTask(task2);
         NetworkTask task3 = getNetworkTaskDAO().insertNetworkTask(getNetworkTask3());
+        getNetworkTaskDAO().updateNetworkTask(task3);
         LogEntry task1Entry1 = getLogDAO().insertAndDeleteLog(getLogEntry1(task1.getId()));
         LogEntry task1Entry2 = getLogDAO().insertAndDeleteLog(getLogEntry2(task1.getId()));
         LogEntry task1Entry3 = getLogDAO().insertAndDeleteLog(getLogEntry3(task1.getId()));
@@ -1007,8 +1010,11 @@ public class SystemActivityTest extends BaseUITest {
     @Test
     public void testExportConfigurationScreenRotation() throws Exception {
         NetworkTask task1 = getNetworkTaskDAO().insertNetworkTask(getNetworkTask1());
+        getNetworkTaskDAO().updateNetworkTask(task1);
         NetworkTask task2 = getNetworkTaskDAO().insertNetworkTask(getNetworkTask2());
+        getNetworkTaskDAO().updateNetworkTask(task2);
         NetworkTask task3 = getNetworkTaskDAO().insertNetworkTask(getNetworkTask3());
+        getNetworkTaskDAO().updateNetworkTask(task3);
         LogEntry task1Entry1 = getLogDAO().insertAndDeleteLog(getLogEntry1(task1.getId()));
         LogEntry task1Entry2 = getLogDAO().insertAndDeleteLog(getLogEntry2(task1.getId()));
         LogEntry task1Entry3 = getLogDAO().insertAndDeleteLog(getLogEntry3(task1.getId()));
@@ -1197,8 +1203,11 @@ public class SystemActivityTest extends BaseUITest {
     @Test
     public void testExportConfigurationFileExistsCancel() throws Exception {
         NetworkTask task1 = getNetworkTaskDAO().insertNetworkTask(getNetworkTask1());
+        getNetworkTaskDAO().updateNetworkTask(task1);
         NetworkTask task2 = getNetworkTaskDAO().insertNetworkTask(getNetworkTask2());
+        getNetworkTaskDAO().updateNetworkTask(task2);
         NetworkTask task3 = getNetworkTaskDAO().insertNetworkTask(getNetworkTask3());
+        getNetworkTaskDAO().updateNetworkTask(task3);
         getLogDAO().insertAndDeleteLog(getLogEntry1(task1.getId()));
         getLogDAO().insertAndDeleteLog(getLogEntry2(task1.getId()));
         getLogDAO().insertAndDeleteLog(getLogEntry3(task1.getId()));
@@ -1302,8 +1311,11 @@ public class SystemActivityTest extends BaseUITest {
     @Test
     public void testExportConfigurationFileExistsCancelScreenRotation() throws Exception {
         NetworkTask task1 = getNetworkTaskDAO().insertNetworkTask(getNetworkTask1());
+        getNetworkTaskDAO().updateNetworkTask(task1);
         NetworkTask task2 = getNetworkTaskDAO().insertNetworkTask(getNetworkTask2());
+        getNetworkTaskDAO().updateNetworkTask(task2);
         NetworkTask task3 = getNetworkTaskDAO().insertNetworkTask(getNetworkTask3());
+        getNetworkTaskDAO().updateNetworkTask(task3);
         getLogDAO().insertAndDeleteLog(getLogEntry1(task1.getId()));
         getLogDAO().insertAndDeleteLog(getLogEntry2(task1.getId()));
         getLogDAO().insertAndDeleteLog(getLogEntry3(task1.getId()));
@@ -1414,8 +1426,11 @@ public class SystemActivityTest extends BaseUITest {
     @Test
     public void testExportConfigurationFileExistsOk() throws Exception {
         NetworkTask task1 = getNetworkTaskDAO().insertNetworkTask(getNetworkTask1());
+        getNetworkTaskDAO().updateNetworkTask(task1);
         NetworkTask task2 = getNetworkTaskDAO().insertNetworkTask(getNetworkTask2());
+        getNetworkTaskDAO().updateNetworkTask(task2);
         NetworkTask task3 = getNetworkTaskDAO().insertNetworkTask(getNetworkTask3());
+        getNetworkTaskDAO().updateNetworkTask(task3);
         LogEntry task1Entry1 = getLogDAO().insertAndDeleteLog(getLogEntry1(task1.getId()));
         LogEntry task1Entry2 = getLogDAO().insertAndDeleteLog(getLogEntry2(task1.getId()));
         LogEntry task1Entry3 = getLogDAO().insertAndDeleteLog(getLogEntry3(task1.getId()));
@@ -1604,8 +1619,11 @@ public class SystemActivityTest extends BaseUITest {
     @Test
     public void testExportConfigurationFileExistsOkScreenRotation() throws Exception {
         NetworkTask task1 = getNetworkTaskDAO().insertNetworkTask(getNetworkTask1());
+        getNetworkTaskDAO().updateNetworkTask(task1);
         NetworkTask task2 = getNetworkTaskDAO().insertNetworkTask(getNetworkTask2());
+        getNetworkTaskDAO().updateNetworkTask(task2);
         NetworkTask task3 = getNetworkTaskDAO().insertNetworkTask(getNetworkTask3());
+        getNetworkTaskDAO().updateNetworkTask(task3);
         LogEntry task1Entry1 = getLogDAO().insertAndDeleteLog(getLogEntry1(task1.getId()));
         LogEntry task1Entry2 = getLogDAO().insertAndDeleteLog(getLogEntry2(task1.getId()));
         LogEntry task1Entry3 = getLogDAO().insertAndDeleteLog(getLogEntry3(task1.getId()));
@@ -2462,8 +2480,11 @@ public class SystemActivityTest extends BaseUITest {
     @Test
     public void testImportConfiguration() throws Exception {
         NetworkTask task1 = getNetworkTaskDAO().insertNetworkTask(getNetworkTask1());
+        getNetworkTaskDAO().updateNetworkTask(task1);
         NetworkTask task2 = getNetworkTaskDAO().insertNetworkTask(getNetworkTask2());
+        getNetworkTaskDAO().updateNetworkTask(task2);
         NetworkTask task3 = getNetworkTaskDAO().insertNetworkTask(getNetworkTask3());
+        getNetworkTaskDAO().updateNetworkTask(task3);
         LogEntry task1Entry1 = getLogDAO().insertAndDeleteLog(getLogEntry1(task1.getId()));
         LogEntry task1Entry2 = getLogDAO().insertAndDeleteLog(getLogEntry2(task1.getId()));
         LogEntry task1Entry3 = getLogDAO().insertAndDeleteLog(getLogEntry3(task1.getId()));
@@ -2615,8 +2636,11 @@ public class SystemActivityTest extends BaseUITest {
     @Test
     public void testImportConfigurationScreenRotation() throws Exception {
         NetworkTask task1 = getNetworkTaskDAO().insertNetworkTask(getNetworkTask1());
+        getNetworkTaskDAO().updateNetworkTask(task1);
         NetworkTask task2 = getNetworkTaskDAO().insertNetworkTask(getNetworkTask2());
+        getNetworkTaskDAO().updateNetworkTask(task2);
         NetworkTask task3 = getNetworkTaskDAO().insertNetworkTask(getNetworkTask3());
+        getNetworkTaskDAO().updateNetworkTask(task3);
         LogEntry task1Entry1 = getLogDAO().insertAndDeleteLog(getLogEntry1(task1.getId()));
         LogEntry task1Entry2 = getLogDAO().insertAndDeleteLog(getLogEntry2(task1.getId()));
         LogEntry task1Entry3 = getLogDAO().insertAndDeleteLog(getLogEntry3(task1.getId()));
@@ -3541,6 +3565,7 @@ public class SystemActivityTest extends BaseUITest {
 
     private void insertAndScheduleNetworkTask() {
         NetworkTask task1 = getNetworkTaskDAO().insertNetworkTask(new NetworkTask());
+        getNetworkTaskDAO().updateNetworkTask(task1);
         getAccessTypeDataDAO().insertAccessTypeData(getAccessTypeData1(task1.getId()));
         NetworkTask task2 = getNetworkTaskDAO().insertNetworkTask(new NetworkTask());
         getNetworkTaskDAO().updateNetworkTaskRunning(task1.getId(), true);
