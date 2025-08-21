@@ -1,5 +1,5 @@
 * Provided a copy option for networks tasks
-* Implemented drag and drop moving of network tasks
+* Implemented drag and drop moving of network tasks (long click on a task)
 * Implemented swipe right delete for network tasks and suspension intervals
 * When adding or copying a task, the UI now scrolls to the new task
 * minor changes to make scheduling more robust
