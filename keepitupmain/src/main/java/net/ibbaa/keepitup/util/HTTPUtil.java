@@ -26,6 +26,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URLConnection;
 import java.net.URLDecoder;
+import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -65,6 +66,28 @@ public class HTTPUtil {
     public static void setUserAgent(Context context, URLConnection connection) {
         PreferenceManager preferenceManager = new PreferenceManager(context);
         connection.setRequestProperty(context.getResources().getString(R.string.http_header_user_agent), preferenceManager.getPreferenceHTTPUserAgent());
+    }
+
+    public static void setAcceptHeader(Context context, URLConnection connection) {
+        connection.setRequestProperty(context.getResources().getString(R.string.http_header_accept), context.getResources().getString(R.string.http_header_accept_value));
+    }
+
+    public static void setAcceptLanguageHeader(Context context, Locale locale, URLConnection connection) {
+        if (locale == null) {
+            connection.setRequestProperty(context.getResources().getString(R.string.http_header_accept_language), context.getResources().getString(R.string.http_header_accept_language_default_value));
+            return;
+        }
+        String primaryTag = locale.toLanguageTag();
+        String primaryLang = locale.getLanguage();
+        StringBuilder langValue = new StringBuilder();
+        langValue.append(primaryTag);
+        if (!primaryTag.equalsIgnoreCase(primaryLang)) {
+            langValue.append(",").append(primaryLang).append(";q=0.9");
+        }
+        if (!"en".equalsIgnoreCase(primaryLang)) {
+            langValue.append(",en;q=0.8");
+        }
+        connection.setRequestProperty(context.getResources().getString(R.string.http_header_accept_language), langValue.toString());
     }
 
     public static String getFileNameFromContentDisposition(String contentDisposition) {

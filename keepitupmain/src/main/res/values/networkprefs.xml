@@ -34,4 +34,8 @@
     <string name="http_header_content_location">Location</string>
     <string name="http_header_user_agent">User-Agent</string>
     <integer name="http_header_user_agent_max_length">1000</integer>
+    <string name="http_header_accept">Accept</string>
+    <string name="http_header_accept_value">text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8</string>
+    <string name="http_header_accept_language">Accept-Language</string>
+    <string name="http_header_accept_language_default_value">en-US,en;q=0.9</string>
 </resources>

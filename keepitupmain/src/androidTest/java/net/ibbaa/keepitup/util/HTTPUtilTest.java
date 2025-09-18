@@ -33,6 +33,7 @@ import org.junit.runner.RunWith;
 
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.Locale;
 
 @SmallTest
 @RunWith(AndroidJUnit4.class)
@@ -66,6 +67,24 @@ public class HTTPUtilTest {
         preferenceManager.removePreferenceHTTPUserAgent();
         HTTPUtil.setUserAgent(TestRegistry.getContext(), urlConnection);
         assertEquals("Mozilla/5.0", urlConnection.getHeaderField("User-Agent"));
+    }
+
+    @Test
+    public void testSetAcceptHeader() throws Exception {
+        MockURLConnection urlConnection = new MockURLConnection(new URL("http://test.com"));
+        HTTPUtil.setAcceptHeader(TestRegistry.getContext(), urlConnection);
+        assertEquals("text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8", urlConnection.getHeaderField("Accept"));
+    }
+
+    @Test
+    public void testSetAcceptLanguageHeader() throws Exception {
+        MockURLConnection urlConnection = new MockURLConnection(new URL("http://test.com"));
+        HTTPUtil.setAcceptLanguageHeader(TestRegistry.getContext(), null, urlConnection);
+        assertEquals("en-US,en;q=0.9", urlConnection.getHeaderField("Accept-Language"));
+        HTTPUtil.setAcceptLanguageHeader(TestRegistry.getContext(), Locale.GERMANY, urlConnection);
+        assertEquals("de-DE,de;q=0.9,en;q=0.8", urlConnection.getHeaderField("Accept-Language"));
+        HTTPUtil.setAcceptLanguageHeader(TestRegistry.getContext(), Locale.US, urlConnection);
+        assertEquals("en-US,en;q=0.9", urlConnection.getHeaderField("Accept-Language"));
     }
 
     @Test

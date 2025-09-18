@@ -54,6 +54,7 @@ import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.concurrent.Callable;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -234,6 +235,8 @@ public class DownloadCommand implements Callable<DownloadCommandResult> {
             disableSSLCheck((HttpsURLConnection) connection);
         }
         HTTPUtil.setUserAgent(getContext(), connection);
+        HTTPUtil.setAcceptHeader(getContext(), connection);
+        HTTPUtil.setAcceptLanguageHeader(getContext(), Locale.getDefault(), connection);
         connection.setConnectTimeout(getResources().getInteger(R.integer.download_connect_timeout) * 1000);
         connection.setReadTimeout(getResources().getInteger(R.integer.download_read_timeout) * 1000);
         connection.setDoInput(true);
