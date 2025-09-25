@@ -52,6 +52,7 @@ import java.util.Arrays;
 import java.util.Collections;
 
 @MediumTest
+@SuppressWarnings({"SequencedCollectionMethodCanBeUsed"})
 @RunWith(AndroidJUnit4.class)
 public class SettingsInputDialogTest extends BaseUITest {
 

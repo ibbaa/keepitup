@@ -66,7 +66,7 @@ import java.util.GregorianCalendar;
 import java.util.List;
 
 @MediumTest
-@SuppressWarnings({"SameParameterValue"})
+@SuppressWarnings({"SameParameterValue", "SequencedCollectionMethodCanBeUsed"})
 @RunWith(AndroidJUnit4.class)
 public class NetworkTaskMainActivityTest extends BaseUITest {
 

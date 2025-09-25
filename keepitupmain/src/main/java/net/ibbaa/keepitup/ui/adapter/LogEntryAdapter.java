@@ -38,6 +38,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+@SuppressWarnings({"SequencedCollectionMethodCanBeUsed"})
 public class LogEntryAdapter extends RecyclerView.Adapter<LogEntryViewHolder> {
 
     private final NetworkTask networkTask;

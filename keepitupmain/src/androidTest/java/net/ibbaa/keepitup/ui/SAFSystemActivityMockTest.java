@@ -67,7 +67,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 @MediumTest
-@SuppressWarnings({"SameParameterValue"})
+@SuppressWarnings({"SameParameterValue", "SequencedCollectionMethodCanBeUsed"})
 @RunWith(AndroidJUnit4.class)
 public class SAFSystemActivityMockTest extends BaseUITest {
 

@@ -66,6 +66,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
 @MediumTest
+@SuppressWarnings({"SequencedCollectionMethodCanBeUsed"})
 @RunWith(AndroidJUnit4.class)
 public class DownloadNetworkTaskWorkerTest {
 

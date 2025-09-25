@@ -14,7 +14,7 @@
 # limitations under the License.
 #
 
-FROM debian:bookworm
+FROM debian:trixie
 
 ARG UID
 ARG GID
@@ -28,7 +28,7 @@ ENV KEEPITUP_KEYSTORE_PASS=$KEEPITUP_KEYSTORE_PASS
 ENV KEEPITUP_KEY_PASS=$KEEPITUP_KEY_PASS
 
 
-ARG JDK_VERSION=17
+ARG JDK_VERSION=21
 # https://developer.android.com/studio#command-line-tools-only
 ARG ANDROID_SDK_VERSION=13114758
 ARG BUILD_TOOLS_VERSION=36.0.0
@@ -36,10 +36,9 @@ ARG BUILD_TOOLS_VERSION=36.0.0
 ENV JAVA_HOME /usr/lib/jvm/java-${JDK_VERSION}-openjdk-amd64
 ENV ANDROID_HOME /opt/android-sdk
 
-RUN dpkg --add-architecture i386
 RUN apt -y update
 RUN apt -y full-upgrade
-RUN apt -y install libncurses5:i386 libc6:i386 libstdc++6:i386 lib32gcc-s1 lib32ncurses6 lib32z1 zlib1g:i386
+RUN apt -y install lib32gcc-s1 lib32ncurses6 lib32z1
 RUN apt -y install wget unzip openjdk-${JDK_VERSION}-jdk
 RUN cd /opt
 RUN mkdir -p ${ANDROID_HOME}/cmdline-tools

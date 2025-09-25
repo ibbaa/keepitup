@@ -37,6 +37,7 @@ import net.ibbaa.keepitup.util.TimeUtil;
 
 import java.util.List;
 
+@SuppressWarnings({"SequencedCollectionMethodCanBeUsed"})
 public class TimeBasedSuspensionScheduler {
 
     public enum Action {

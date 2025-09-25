@@ -35,6 +35,7 @@ import java.util.Locale;
 import java.util.TimeZone;
 import java.util.concurrent.TimeUnit;
 
+@SuppressWarnings({"SequencedCollectionMethodCanBeUsed"})
 public class TimeUtil {
 
     public static long getTimestampToday(Time time, ITimeService timeService) {

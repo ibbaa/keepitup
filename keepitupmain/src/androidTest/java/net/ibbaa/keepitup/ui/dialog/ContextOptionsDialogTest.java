@@ -50,6 +50,7 @@ import java.util.Collections;
 import java.util.List;
 
 @MediumTest
+@SuppressWarnings({"SequencedCollectionMethodCanBeUsed"})
 @RunWith(AndroidJUnit4.class)
 public class ContextOptionsDialogTest extends BaseUITest {
 

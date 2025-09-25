@@ -49,6 +49,7 @@ import java.util.Locale;
 import java.util.Set;
 
 @MediumTest
+@SuppressWarnings({"SequencedCollectionMethodCanBeUsed"})
 @RunWith(AndroidJUnit4.class)
 public class NotificationHandlerTest {
 

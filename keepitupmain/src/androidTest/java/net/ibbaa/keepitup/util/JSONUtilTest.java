@@ -34,7 +34,7 @@ import java.util.List;
 import java.util.Map;
 
 @SmallTest
-@SuppressWarnings({"unchecked", "DataFlowIssue"})
+@SuppressWarnings({"unchecked", "DataFlowIssue", "SequencedCollectionMethodCanBeUsed"})
 @RunWith(AndroidJUnit4.class)
 public class JSONUtilTest {
 

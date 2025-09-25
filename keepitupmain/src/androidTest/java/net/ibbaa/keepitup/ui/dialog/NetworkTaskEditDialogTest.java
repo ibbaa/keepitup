@@ -63,6 +63,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 @MediumTest
+@SuppressWarnings({"SequencedCollectionMethodCanBeUsed"})
 @RunWith(AndroidJUnit4.class)
 public class NetworkTaskEditDialogTest extends BaseUITest {
 

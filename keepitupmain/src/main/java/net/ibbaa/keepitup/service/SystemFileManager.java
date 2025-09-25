@@ -36,6 +36,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+@SuppressWarnings({"SequencedCollectionMethodCanBeUsed"})
 public class SystemFileManager implements IFileManager {
 
     private final Context context;

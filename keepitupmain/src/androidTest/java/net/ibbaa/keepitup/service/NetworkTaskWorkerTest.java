@@ -59,6 +59,7 @@ import java.util.GregorianCalendar;
 import java.util.List;
 
 @MediumTest
+@SuppressWarnings({"SequencedCollectionMethodCanBeUsed"})
 @RunWith(AndroidJUnit4.class)
 public class NetworkTaskWorkerTest {
 

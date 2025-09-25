@@ -60,6 +60,7 @@ import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
+@SuppressWarnings({"SequencedCollectionMethodCanBeUsed"})
 public abstract class NetworkTaskWorker implements Runnable {
 
     private final static String LOG_TIMESTAMP_PATTERN = "yyyy-MM-dd HH:mm:ss.SSS";

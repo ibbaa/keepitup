@@ -41,6 +41,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 @MediumTest
+@SuppressWarnings({"SequencedCollectionMethodCanBeUsed"})
 @RunWith(AndroidJUnit4.class)
 public class NetworkTaskDAOTest {
 

@@ -46,6 +46,7 @@ import java.util.List;
 import java.util.Map;
 
 @MediumTest
+@SuppressWarnings({"SequencedCollectionMethodCanBeUsed"})
 @RunWith(AndroidJUnit4.class)
 public class DBSetupTest {
 

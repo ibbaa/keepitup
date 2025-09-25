@@ -26,6 +26,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+@SuppressWarnings({"SequencedCollectionMethodCanBeUsed"})
 public class MockURLConnection extends URLConnection {
 
     private boolean connected;

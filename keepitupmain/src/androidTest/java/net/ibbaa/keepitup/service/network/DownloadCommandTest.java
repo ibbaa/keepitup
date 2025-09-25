@@ -60,6 +60,7 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 
 @MediumTest
+@SuppressWarnings({"SequencedCollectionMethodCanBeUsed"})
 @RunWith(AndroidJUnit4.class)
 public class DownloadCommandTest {
 
