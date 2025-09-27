@@ -31,7 +31,7 @@ ENV KEEPITUP_KEY_PASS=$KEEPITUP_KEY_PASS
 ARG JDK_VERSION=21
 # https://developer.android.com/studio#command-line-tools-only
 ARG ANDROID_SDK_VERSION=13114758
-ARG BUILD_TOOLS_VERSION=36.0.0
+ARG BUILD_TOOLS_VERSION=36.1.0
 
 ENV JAVA_HOME /usr/lib/jvm/java-${JDK_VERSION}-openjdk-amd64
 ENV ANDROID_HOME /opt/android-sdk
