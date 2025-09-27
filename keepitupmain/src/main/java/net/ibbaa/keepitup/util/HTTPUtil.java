@@ -23,14 +23,13 @@ import net.ibbaa.keepitup.logging.Log;
 import net.ibbaa.keepitup.resources.PreferenceManager;
 
 import java.io.UnsupportedEncodingException;
-import java.net.HttpURLConnection;
-import java.net.URLConnection;
 import java.net.URLDecoder;
 import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import javax.net.ssl.HttpsURLConnection;
+import okhttp3.Request;
+import okhttp3.Response;
 
 public class HTTPUtil {
 
@@ -38,14 +37,6 @@ public class HTTPUtil {
     private static final Pattern FILENAME_QUOTED = Pattern.compile("filename\\s*=\\s*\"([^\"]+)\"", Pattern.CASE_INSENSITIVE);
     private static final Pattern FILENAME_UNQUOTED = Pattern.compile("filename\\s*=\\s*([^;\\s]+)", Pattern.CASE_INSENSITIVE);
     private static final Pattern MIME_TYPE = Pattern.compile("\\s*(\\w*/\\w*)\\s*", Pattern.CASE_INSENSITIVE);
-
-    public static boolean isHTTPConnection(URLConnection connection) {
-        return connection instanceof HttpURLConnection;
-    }
-
-    public static boolean isHTTPSConnection(URLConnection connection) {
-        return connection instanceof HttpsURLConnection;
-    }
 
     public static boolean isHTTPReturnCodeRedirect(int returnCode) {
         return returnCode == 301 || returnCode == 302 || returnCode == 307 || returnCode == 308;
@@ -55,26 +46,31 @@ public class HTTPUtil {
         return returnCode >= 200 && returnCode < 300;
     }
 
-    public static String getContentDisposition(Context context, URLConnection connection) {
-        return connection.getHeaderField(context.getResources().getString(R.string.http_header_content_disposition));
+    public static String getContentDisposition(Context context, Response response) {
+        return response.header(context.getResources().getString(R.string.http_header_content_disposition));
     }
 
-    public static String getLocation(Context context, URLConnection connection) {
-        return connection.getHeaderField(context.getResources().getString(R.string.http_header_content_location));
+    public static String getContentType(Context context, Response response) {
+        return response.header(context.getResources().getString(R.string.http_header_content_type));
     }
 
-    public static void setUserAgent(Context context, URLConnection connection) {
+    public static String getLocation(Context context, Response response) {
+        return response.header(context.getResources().getString(R.string.http_header_content_location));
+    }
+
+    public static void setUserAgent(Context context, Request.Builder builder) {
         PreferenceManager preferenceManager = new PreferenceManager(context);
-        connection.setRequestProperty(context.getResources().getString(R.string.http_header_user_agent), preferenceManager.getPreferenceHTTPUserAgent());
+        builder.header(context.getResources().getString(R.string.http_header_user_agent), preferenceManager.getPreferenceHTTPUserAgent());
     }
 
-    public static void setAcceptHeader(Context context, URLConnection connection) {
-        connection.setRequestProperty(context.getResources().getString(R.string.http_header_accept), context.getResources().getString(R.string.http_header_accept_value));
+    public static void setAcceptHeader(Context context, Request.Builder builder) {
+        builder.header(context.getResources().getString(R.string.http_header_accept), context.getResources().getString(R.string.http_header_accept_value));
     }
 
-    public static void setAcceptLanguageHeader(Context context, Locale locale, URLConnection connection) {
+    public static void setAcceptLanguageHeader(Context context, Locale locale, Request.Builder builder) {
+        String headerName = context.getResources().getString(R.string.http_header_accept_language);
         if (locale == null) {
-            connection.setRequestProperty(context.getResources().getString(R.string.http_header_accept_language), context.getResources().getString(R.string.http_header_accept_language_default_value));
+            builder.header(headerName, context.getResources().getString(R.string.http_header_accept_language_default_value));
             return;
         }
         String primaryTag = locale.toLanguageTag();
@@ -87,7 +83,7 @@ public class HTTPUtil {
         if (!"en".equalsIgnoreCase(primaryLang)) {
             langValue.append(",en;q=0.8");
         }
-        connection.setRequestProperty(context.getResources().getString(R.string.http_header_accept_language), langValue.toString());
+        builder.header(headerName, langValue.toString());
     }
 
     public static String getFileNameFromContentDisposition(String contentDisposition) {

@@ -32,13 +32,13 @@ import net.ibbaa.keepitup.model.NetworkTask;
 import net.ibbaa.keepitup.resources.PreferenceManager;
 import net.ibbaa.keepitup.service.SystemFileManager;
 import net.ibbaa.keepitup.test.mock.BlockingTestInputStream;
+import net.ibbaa.keepitup.test.mock.ExceptionResponseBody;
 import net.ibbaa.keepitup.test.mock.MockDocumentManager;
 import net.ibbaa.keepitup.test.mock.MockFileManager;
-import net.ibbaa.keepitup.test.mock.MockHttpURLConnection;
 import net.ibbaa.keepitup.test.mock.MockTimeService;
-import net.ibbaa.keepitup.test.mock.MockURLConnection;
 import net.ibbaa.keepitup.test.mock.TestDownloadCommand;
 import net.ibbaa.keepitup.test.mock.TestRegistry;
+import net.ibbaa.keepitup.test.mock.TestResponseBody;
 
 import org.junit.After;
 import org.junit.Before;
@@ -58,6 +58,11 @@ import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
+
+import okhttp3.Protocol;
+import okhttp3.Request;
+import okhttp3.Response;
+import okhttp3.ResponseBody;
 
 @MediumTest
 @SuppressWarnings({"SequencedCollectionMethodCanBeUsed"})
@@ -85,20 +90,9 @@ public class DownloadCommandTest {
         fileManager.delete(fileManager.getExternalDirectory(fileManager.getDefaultDownloadDirectoryName(), 0));
     }
 
-    private MockHttpURLConnection prepareHttpURLConnection(String url, int responseCode, String responseMessage, InputStream inputStream) throws Exception {
-        MockHttpURLConnection urlConnection = new MockHttpURLConnection(new URL(url));
-        urlConnection.setRespondeCode(responseCode);
-        urlConnection.setResponseMessage(responseMessage);
-        urlConnection.setInputStream(inputStream);
-        return urlConnection;
-    }
-
-    private MockHttpURLConnection prepareHttpURLConnection(String url, InputStream inputStream) throws Exception {
-        return prepareHttpURLConnection(url, inputStream, HttpURLConnection.HTTP_OK);
-    }
-
-    private MockHttpURLConnection prepareHttpURLConnection(String url, InputStream inputStream, int responseCode) throws Exception {
-        return prepareHttpURLConnection(url, responseCode, "Everything ok", inputStream);
+    private Response prepareResponse(String url, int code, String message, InputStream bodyStream) throws Exception {
+        ResponseBody body = new TestResponseBody(bodyStream);
+        return new Response.Builder().request(new Request.Builder().url(url).build()).protocol(Protocol.HTTP_1_1).code(code).message(message != null ? message : "").body(body).build();
     }
 
     @Test
@@ -124,9 +118,8 @@ public class DownloadCommandTest {
     public void testConnectionFailedWithRedirect() throws Exception {
         preferenceManager.setPreferenceDownloadFollowsRedirects(true);
         TestDownloadCommand downloadCommand = new TestDownloadCommand(TestRegistry.getContext(), null, null, new URL("http://test.com"), null, true);
-        MockHttpURLConnection urlConnection = prepareHttpURLConnection("http://test.com", HttpURLConnection.HTTP_MOVED_PERM, "moved", null);
-        urlConnection.addHeader("Location", "http://www.host.com");
-        downloadCommand.addURLConnection("http://test.com", urlConnection);
+        Response testResponse = prepareResponse("http://test.com", HttpURLConnection.HTTP_MOVED_PERM, "moved", null).newBuilder().header("Location", "http://www.host.com").build();
+        downloadCommand.addResponse("http://test.com", testResponse);
         setCurrentTimeInverted(downloadCommand);
         DownloadCommandResult result = downloadCommand.call();
         assertFalse(result.connectSuccess());
@@ -142,6 +135,7 @@ public class DownloadCommandTest {
         assertNull(result.fileName());
         assertEquals(99, result.duration());
         assertNull(result.exception());
+        testResponse.close();
     }
 
     @Test
@@ -158,8 +152,8 @@ public class DownloadCommandTest {
         preferenceManager.setPreferenceDownloadFollowsRedirects(false);
         TestDownloadCommand downloadCommand = new TestDownloadCommand(TestRegistry.getContext(), null, null, new URL("http://test.com"), null, true);
         setCurrentTime(downloadCommand);
-        MockHttpURLConnection urlConnection = prepareHttpURLConnection("http://test.com", HttpURLConnection.HTTP_NOT_FOUND, "not found", null);
-        downloadCommand.addURLConnection("http://test.com", urlConnection);
+        Response testResponse = prepareResponse("http://test.com", HttpURLConnection.HTTP_NOT_FOUND, "not found", null);
+        downloadCommand.addResponse("http://test.com", testResponse);
         DownloadCommandResult result = downloadCommand.call();
         assertTrue(result.connectSuccess());
         assertFalse(result.downloadSuccess());
@@ -174,7 +168,7 @@ public class DownloadCommandTest {
         assertNull(result.fileName());
         assertEquals(99, result.duration());
         assertNull(result.exception());
-        assertTrue(urlConnection.isDisconnected());
+        testResponse.close();
     }
 
     @Test
@@ -182,10 +176,11 @@ public class DownloadCommandTest {
         preferenceManager.setPreferenceDownloadFollowsRedirects(false);
         TestDownloadCommand downloadCommand = new TestDownloadCommand(TestRegistry.getContext(), null, null, new URL("http://test.com"), null, true);
         setNegativeTime(downloadCommand);
-        MockHttpURLConnection urlConnection = prepareHttpURLConnection("http://test.com", HttpURLConnection.HTTP_NOT_FOUND, "not found", null);
-        downloadCommand.addURLConnection("http://test.com", urlConnection);
+        Response testResponse = prepareResponse("http://test.com", HttpURLConnection.HTTP_NOT_FOUND, "not found", null);
+        downloadCommand.addResponse("http://test.com", testResponse);
         DownloadCommandResult result = downloadCommand.call();
         assertEquals(0, result.duration());
+        testResponse.close();
     }
 
     @Test
@@ -193,9 +188,9 @@ public class DownloadCommandTest {
         preferenceManager.setPreferenceDownloadFollowsRedirects(false);
         TestDownloadCommand downloadCommand = new TestDownloadCommand(TestRegistry.getContext(), null, null, new URL("http://test.com"), null, true);
         setCurrentTime(downloadCommand);
-        MockHttpURLConnection urlConnection = prepareHttpURLConnection("http://test.com", HttpURLConnection.HTTP_MOVED_PERM, "moved", null);
-        urlConnection.addHeader("Location", "new location");
-        downloadCommand.addURLConnection("http://test.com", urlConnection);
+        Response testResponse = prepareResponse("http://test.com", HttpURLConnection.HTTP_MOVED_PERM, "moved", null);
+        testResponse = testResponse.newBuilder().header("Location", "new location").build();
+        downloadCommand.addResponse("http://test.com", testResponse);
         DownloadCommandResult result = downloadCommand.call();
         assertTrue(result.connectSuccess());
         assertFalse(result.downloadSuccess());
@@ -210,7 +205,7 @@ public class DownloadCommandTest {
         assertNull(result.fileName());
         assertEquals(99, result.duration());
         assertNull(result.exception());
-        assertTrue(urlConnection.isDisconnected());
+        testResponse.close();
     }
 
     @Test
@@ -218,9 +213,9 @@ public class DownloadCommandTest {
         preferenceManager.setPreferenceDownloadFollowsRedirects(true);
         TestDownloadCommand downloadCommand = new TestDownloadCommand(TestRegistry.getContext(), null, null, new URL("http://test.com"), null, true);
         setCurrentTime(downloadCommand);
-        MockHttpURLConnection urlConnection = prepareHttpURLConnection("http://test.com", HttpURLConnection.HTTP_MOVED_PERM, "moved", null);
-        urlConnection.addHeader("Location", "ccc://xyz");
-        downloadCommand.addURLConnection("http://test.com", urlConnection);
+        Response testResponse = prepareResponse("http://test.com", HttpURLConnection.HTTP_MOVED_PERM, "moved", null);
+        testResponse = testResponse.newBuilder().header("Location", "ccc://xyz").build();
+        downloadCommand.addResponse("http://test.com", testResponse);
         DownloadCommandResult result = downloadCommand.call();
         assertTrue(result.connectSuccess());
         assertFalse(result.downloadSuccess());
@@ -235,7 +230,7 @@ public class DownloadCommandTest {
         assertNull(result.fileName());
         assertEquals(99, result.duration());
         assertNull(result.exception());
-        assertTrue(urlConnection.isDisconnected());
+        testResponse.close();
     }
 
     @Test
@@ -243,36 +238,36 @@ public class DownloadCommandTest {
         preferenceManager.setPreferenceDownloadFollowsRedirects(true);
         TestDownloadCommand downloadCommand = new TestDownloadCommand(TestRegistry.getContext(), null, null, new URL("http://test.com"), null, true);
         setCurrentTime(downloadCommand);
-        MockHttpURLConnection urlConnection1 = prepareHttpURLConnection("http://test.com", HttpURLConnection.HTTP_MOVED_PERM, "moved", null);
-        urlConnection1.addHeader("Location", "http://test1.com");
-        MockHttpURLConnection urlConnection2 = prepareHttpURLConnection("http://test1.com", HttpURLConnection.HTTP_MOVED_PERM, "moved", null);
-        urlConnection2.addHeader("Location", "http://test2.com");
-        MockHttpURLConnection urlConnection3 = prepareHttpURLConnection("http://test2.com", HttpURLConnection.HTTP_MOVED_PERM, "moved", null);
-        urlConnection3.addHeader("Location", "http://test3.com");
-        MockHttpURLConnection urlConnection4 = prepareHttpURLConnection("http://test3.com", HttpURLConnection.HTTP_MOVED_PERM, "moved", null);
-        urlConnection4.addHeader("Location", "http://test4.com");
-        MockHttpURLConnection urlConnection5 = prepareHttpURLConnection("http://test4.com", HttpURLConnection.HTTP_MOVED_PERM, "moved", null);
-        urlConnection5.addHeader("Location", "http://test5.com");
-        MockHttpURLConnection urlConnection6 = prepareHttpURLConnection("http://test5.com", HttpURLConnection.HTTP_MOVED_PERM, "moved", null);
-        urlConnection6.addHeader("Location", "http://test6.com");
-        MockHttpURLConnection urlConnection7 = prepareHttpURLConnection("http://test6.com", HttpURLConnection.HTTP_MOVED_PERM, "moved", null);
-        urlConnection7.addHeader("Location", "http://test7.com");
-        MockHttpURLConnection urlConnection8 = prepareHttpURLConnection("http://test7.com", HttpURLConnection.HTTP_MOVED_PERM, "moved", null);
-        urlConnection8.addHeader("Location", "http://test8.com");
-        MockHttpURLConnection urlConnection9 = prepareHttpURLConnection("http://test8.com", HttpURLConnection.HTTP_MOVED_PERM, "moved", null);
-        urlConnection9.addHeader("Location", "http://test9.com");
-        MockHttpURLConnection urlConnection10 = prepareHttpURLConnection("http://test9.com", HttpURLConnection.HTTP_MOVED_PERM, "moved", null);
-        urlConnection10.addHeader("Location", "http://test10.com");
-        downloadCommand.addURLConnection("http://test.com", urlConnection1);
-        downloadCommand.addURLConnection("http://test1.com", urlConnection2);
-        downloadCommand.addURLConnection("http://test2.com", urlConnection3);
-        downloadCommand.addURLConnection("http://test3.com", urlConnection4);
-        downloadCommand.addURLConnection("http://test4.com", urlConnection5);
-        downloadCommand.addURLConnection("http://test5.com", urlConnection6);
-        downloadCommand.addURLConnection("http://test6.com", urlConnection7);
-        downloadCommand.addURLConnection("http://test7.com", urlConnection8);
-        downloadCommand.addURLConnection("http://test8.com", urlConnection9);
-        downloadCommand.addURLConnection("http://test9.com", urlConnection10);
+        Response response1 = prepareResponse("http://test.com", HttpURLConnection.HTTP_MOVED_PERM, "moved", null);
+        response1 = response1.newBuilder().header("Location", "http://test1.com").build();
+        Response response2 = prepareResponse("http://test.com", HttpURLConnection.HTTP_MOVED_PERM, "moved", null);
+        response2 = response2.newBuilder().header("Location", "http://test2.com").build();
+        Response response3 = prepareResponse("http://test.com", HttpURLConnection.HTTP_MOVED_PERM, "moved", null);
+        response3 = response3.newBuilder().header("Location", "http://test3.com").build();
+        Response response4 = prepareResponse("http://test.com", HttpURLConnection.HTTP_MOVED_PERM, "moved", null);
+        response4 = response4.newBuilder().header("Location", "http://test4.com").build();
+        Response response5 = prepareResponse("http://test.com", HttpURLConnection.HTTP_MOVED_PERM, "moved", null);
+        response5 = response5.newBuilder().header("Location", "http://test5.com").build();
+        Response response6 = prepareResponse("http://test.com", HttpURLConnection.HTTP_MOVED_PERM, "moved", null);
+        response6 = response6.newBuilder().header("Location", "http://test6.com").build();
+        Response response7 = prepareResponse("http://test.com", HttpURLConnection.HTTP_MOVED_PERM, "moved", null);
+        response7 = response7.newBuilder().header("Location", "http://test7.com").build();
+        Response response8 = prepareResponse("http://test.com", HttpURLConnection.HTTP_MOVED_PERM, "moved", null);
+        response8 = response8.newBuilder().header("Location", "http://test8.com").build();
+        Response response9 = prepareResponse("http://test.com", HttpURLConnection.HTTP_MOVED_PERM, "moved", null);
+        response9 = response9.newBuilder().header("Location", "http://test9.com").build();
+        Response response10 = prepareResponse("http://test.com", HttpURLConnection.HTTP_MOVED_PERM, "moved", null);
+        response10 = response10.newBuilder().header("Location", "http://test10.com").build();
+        downloadCommand.addResponse("http://test.com", response1);
+        downloadCommand.addResponse("http://test1.com", response2);
+        downloadCommand.addResponse("http://test2.com", response3);
+        downloadCommand.addResponse("http://test3.com", response4);
+        downloadCommand.addResponse("http://test4.com", response5);
+        downloadCommand.addResponse("http://test5.com", response6);
+        downloadCommand.addResponse("http://test6.com", response7);
+        downloadCommand.addResponse("http://test7.com", response8);
+        downloadCommand.addResponse("http://test8.com", response9);
+        downloadCommand.addResponse("http://test9.com", response10);
         DownloadCommandResult result = downloadCommand.call();
         assertTrue(result.connectSuccess());
         assertFalse(result.downloadSuccess());
@@ -304,16 +299,16 @@ public class DownloadCommandTest {
         assertEquals("moved Location: http://test10.com (max number of redirects exceeded)", result.httpResponseMessages().get(9));
         assertNull(result.fileName());
         assertNull(result.exception());
-        assertTrue(urlConnection1.isDisconnected());
-        assertTrue(urlConnection2.isDisconnected());
-        assertTrue(urlConnection3.isDisconnected());
-        assertTrue(urlConnection4.isDisconnected());
-        assertTrue(urlConnection5.isDisconnected());
-        assertTrue(urlConnection6.isDisconnected());
-        assertTrue(urlConnection7.isDisconnected());
-        assertTrue(urlConnection8.isDisconnected());
-        assertTrue(urlConnection9.isDisconnected());
-        assertTrue(urlConnection10.isDisconnected());
+        response1.close();
+        response2.close();
+        response3.close();
+        response4.close();
+        response5.close();
+        response6.close();
+        response7.close();
+        response8.close();
+        response9.close();
+        response10.close();
     }
 
     @Test
@@ -321,9 +316,9 @@ public class DownloadCommandTest {
         preferenceManager.setPreferenceDownloadFollowsRedirects(true);
         TestDownloadCommand downloadCommand = new TestDownloadCommand(TestRegistry.getContext(), null, null, new URL("http://test.com"), null, true);
         setCurrentTime(downloadCommand);
-        MockHttpURLConnection urlConnection = prepareHttpURLConnection("http://test.com", HttpURLConnection.HTTP_MOVED_PERM, "moved", null);
-        urlConnection.addHeader("Location", "http://test.com");
-        downloadCommand.addURLConnection("http://test.com", urlConnection);
+        Response testResponse = prepareResponse("http://test.com", HttpURLConnection.HTTP_MOVED_PERM, "moved", null);
+        testResponse = testResponse.newBuilder().header("Location", "http://test.com").build();
+        downloadCommand.addResponse("http://test.com", testResponse);
         DownloadCommandResult result = downloadCommand.call();
         assertTrue(result.connectSuccess());
         assertFalse(result.downloadSuccess());
@@ -341,7 +336,7 @@ public class DownloadCommandTest {
         assertEquals("moved Location: http://test.com (max number of redirects exceeded)", result.httpResponseMessages().get(9));
         assertNull(result.fileName());
         assertNull(result.exception());
-        assertTrue(urlConnection.isDisconnected());
+        testResponse.close();
     }
 
     @Test
@@ -349,9 +344,9 @@ public class DownloadCommandTest {
         preferenceManager.setPreferenceDownloadFollowsRedirects(false);
         TestDownloadCommand downloadCommand = new TestDownloadCommand(TestRegistry.getContext(), null, null, new URL("http://test.com"), null, true);
         setCurrentTime(downloadCommand);
-        MockHttpURLConnection urlConnection = prepareHttpURLConnection("http://test.com", null);
+        Response testResponse = prepareResponse("http://test.com", HttpURLConnection.HTTP_OK, "Everything ok", null);
         MockFileManager fileManager = new MockFileManager();
-        downloadCommand.addURLConnection("http://test.com", urlConnection);
+        downloadCommand.addResponse("http://test.com", testResponse);
         downloadCommand.setFileManager(fileManager);
         DownloadCommandResult result = downloadCommand.call();
         assertTrue(result.connectSuccess());
@@ -367,7 +362,7 @@ public class DownloadCommandTest {
         assertNull(result.fileName());
         assertEquals(99, result.duration());
         assertNull(result.exception());
-        assertTrue(urlConnection.isDisconnected());
+        testResponse.close();
     }
 
     @Test
@@ -376,15 +371,14 @@ public class DownloadCommandTest {
         File externalDir = fileManager.getExternalDirectory(fileManager.getDefaultDownloadDirectoryName(), 0);
         TestDownloadCommand downloadCommand = new TestDownloadCommand(TestRegistry.getContext(), null, null, new URL("http://test.com"), externalDir.getAbsolutePath(), true);
         setCurrentTime(downloadCommand);
-        MockHttpURLConnection urlConnection = prepareHttpURLConnection("http://test.com", null);
-        downloadCommand.addURLConnection("http://test.com", urlConnection);
-        urlConnection.setExceptionOnInputStream(new IOException("Test"));
-        urlConnection.addHeader("Content-Disposition", "attachment; filename=\"test.jpg\"");
+        ResponseBody body = new ExceptionResponseBody();
+        Response testResponse = new Response.Builder().request(new Request.Builder().url("http://test.com").build()).protocol(Protocol.HTTP_1_1).code(HttpURLConnection.HTTP_OK).message("Everything ok").header("Content-Disposition", "attachment; filename=\"test.jpg\"").body(body).build();
+        downloadCommand.addResponse("http://test.com", testResponse);
         DownloadCommandResult result = downloadCommand.call();
         assertTrue(result.connectSuccess());
         assertFalse(result.downloadSuccess());
-        assertFalse(result.fileExists());
-        assertFalse(result.deleteSuccess());
+        assertTrue(result.fileExists());
+        assertTrue(result.deleteSuccess());
         assertTrue(result.valid());
         assertFalse(result.stopped());
         assertEquals(1, result.httpResponseCodes().size());
@@ -395,7 +389,7 @@ public class DownloadCommandTest {
         assertEquals(99, result.duration());
         assertTrue(result.exception() instanceof IOException);
         assertEquals("Test", result.exception().getMessage());
-        assertTrue(urlConnection.isDisconnected());
+        testResponse.close();
     }
 
     @Test
@@ -404,12 +398,12 @@ public class DownloadCommandTest {
         File externalDir = fileManager.getExternalDirectory(fileManager.getDefaultDownloadDirectoryName(), 0);
         TestDownloadCommand downloadCommand = new TestDownloadCommand(TestRegistry.getContext(), null, null, new URL("http://test.com"), externalDir.getAbsolutePath(), true);
         setNegativeTime(downloadCommand);
-        MockHttpURLConnection urlConnection = prepareHttpURLConnection("http://test.com", null);
-        downloadCommand.addURLConnection("http://test.com", urlConnection);
-        urlConnection.setExceptionOnInputStream(new IOException("Test"));
-        urlConnection.addHeader("Content-Disposition", "attachment; filename=\"test.jpg\"");
+        ResponseBody body = new ExceptionResponseBody();
+        Response testResponse = new Response.Builder().request(new Request.Builder().url("http://test.com").build()).protocol(Protocol.HTTP_1_1).code(HttpURLConnection.HTTP_OK).message("Everything ok").header("Content-Disposition", "attachment; filename=\"test.jpg\"").body(body).build();
+        downloadCommand.addResponse("http://test.com", testResponse);
         DownloadCommandResult result = downloadCommand.call();
         assertEquals(0, result.duration());
+        testResponse.close();
     }
 
     @Test
@@ -418,14 +412,14 @@ public class DownloadCommandTest {
         File externalDir = fileManager.getExternalDirectory(fileManager.getDefaultDownloadDirectoryName(), 0);
         TestDownloadCommand downloadCommand = new TestDownloadCommand(TestRegistry.getContext(), null, null, new URL("http://www.host.com/test.jpg"), externalDir.getAbsolutePath(), true);
         setCurrentTime(downloadCommand);
-        MockHttpURLConnection urlConnection = prepareHttpURLConnection("http://www.host.com/test.jpg", null);
-        downloadCommand.addURLConnection("http://www.host.com/test.jpg", urlConnection);
-        urlConnection.setExceptionOnInputStream(new IOException("Test"));
+        ResponseBody body = new ExceptionResponseBody();
+        Response testResponse = new Response.Builder().request(new Request.Builder().url("http://www.host.com/test.jpg").build()).protocol(Protocol.HTTP_1_1).code(HttpURLConnection.HTTP_OK).message("Everything ok").header("Content-Disposition", "attachment; filename=\"test.jpg\"").body(body).build();
+        downloadCommand.addResponse("http://www.host.com/test.jpg", testResponse);
         DownloadCommandResult result = downloadCommand.call();
         assertTrue(result.connectSuccess());
         assertFalse(result.downloadSuccess());
-        assertFalse(result.fileExists());
-        assertFalse(result.deleteSuccess());
+        assertTrue(result.fileExists());
+        assertTrue(result.deleteSuccess());
         assertTrue(result.valid());
         assertFalse(result.stopped());
         assertEquals(1, result.httpResponseCodes().size());
@@ -436,7 +430,7 @@ public class DownloadCommandTest {
         assertEquals(99, result.duration());
         assertTrue(result.exception() instanceof IOException);
         assertEquals("Test", result.exception().getMessage());
-        assertTrue(urlConnection.isDisconnected());
+        testResponse.close();
     }
 
     @Test
@@ -445,15 +439,14 @@ public class DownloadCommandTest {
         File externalDir = fileManager.getExternalDirectory(fileManager.getDefaultDownloadDirectoryName(), 0);
         TestDownloadCommand downloadCommand = new TestDownloadCommand(TestRegistry.getContext(), null, null, new URL("http://www.host.com"), externalDir.getAbsolutePath(), true);
         setCurrentTime(downloadCommand);
-        MockHttpURLConnection urlConnection = prepareHttpURLConnection("http://www.host.com", null);
-        downloadCommand.addURLConnection("http://www.host.com", urlConnection);
-        urlConnection.setExceptionOnInputStream(new IOException("Test"));
-        urlConnection.setContentType("image/jpeg");
+        ResponseBody body = new ExceptionResponseBody();
+        Response testResponse = new Response.Builder().request(new Request.Builder().url("http://www.host.com").build()).protocol(Protocol.HTTP_1_1).code(HttpURLConnection.HTTP_OK).message("Everything ok").header("Content-Type", "image/jpeg").body(body).build();
+        downloadCommand.addResponse("http://www.host.com", testResponse);
         DownloadCommandResult result = downloadCommand.call();
         assertTrue(result.connectSuccess());
         assertFalse(result.downloadSuccess());
-        assertFalse(result.fileExists());
-        assertFalse(result.deleteSuccess());
+        assertTrue(result.fileExists());
+        assertTrue(result.deleteSuccess());
         assertTrue(result.valid());
         assertFalse(result.stopped());
         assertEquals(1, result.httpResponseCodes().size());
@@ -464,7 +457,7 @@ public class DownloadCommandTest {
         assertEquals(99, result.duration());
         assertTrue(result.exception() instanceof IOException);
         assertEquals("Test", result.exception().getMessage());
-        assertTrue(urlConnection.isDisconnected());
+        testResponse.close();
     }
 
     @Test
@@ -473,12 +466,12 @@ public class DownloadCommandTest {
         File externalDir = fileManager.getExternalDirectory(fileManager.getDefaultDownloadDirectoryName(), 0);
         TestDownloadCommand downloadCommand = new TestDownloadCommand(TestRegistry.getContext(), null, null, new URL("http://www.host.com"), externalDir.getAbsolutePath(), true);
         setNegativeTime(downloadCommand);
-        MockHttpURLConnection urlConnection = prepareHttpURLConnection("http://www.host.com", null);
-        downloadCommand.addURLConnection("http://www.host.com", urlConnection);
-        urlConnection.setExceptionOnInputStream(new IOException("Test"));
-        urlConnection.setContentType("image/jpeg");
+        ResponseBody body = new ExceptionResponseBody();
+        Response testResponse = new Response.Builder().request(new Request.Builder().url("http://www.host.com").build()).protocol(Protocol.HTTP_1_1).code(HttpURLConnection.HTTP_OK).message("Everything ok").header("Content-Type", "image/jpeg").body(body).build();
+        downloadCommand.addResponse("http://www.host.com", testResponse);
         DownloadCommandResult result = downloadCommand.call();
         assertEquals(0, result.duration());
+        testResponse.close();
     }
 
     @Test
@@ -490,9 +483,9 @@ public class DownloadCommandTest {
         TestDownloadCommand downloadCommand = new TestDownloadCommand(TestRegistry.getContext(), null, null, new URL("http://www.host.com"), externalDir.getAbsolutePath(), true);
         setCurrentTime(downloadCommand);
         ByteArrayInputStream inputStream = new ByteArrayInputStream("TestData".getBytes(StandardCharsets.UTF_8));
-        MockHttpURLConnection urlConnection = prepareHttpURLConnection("http://www.host.com", inputStream);
-        downloadCommand.addURLConnection("http://www.host.com", urlConnection);
-        urlConnection.setContentType("image/jpeg");
+        Response testResponse = prepareResponse("http://test.com", HttpURLConnection.HTTP_OK, "Everything ok", inputStream);
+        testResponse = testResponse.newBuilder().header("Content-Type", "image/jpeg").build();
+        downloadCommand.addResponse("http://www.host.com", testResponse);
         DownloadCommandResult result = downloadCommand.call();
         assertTrue(result.connectSuccess());
         assertTrue(result.downloadSuccess());
@@ -505,6 +498,7 @@ public class DownloadCommandTest {
         assertEquals(HttpURLConnection.HTTP_OK, result.httpResponseCodes().get(0).intValue());
         assertEquals("Everything ok", result.httpResponseMessages().get(0));
         assertEquals("www_host_com_1985.12.24_01_01_01.jpg", result.fileName());
+        testResponse.close();
     }
 
     @Test
@@ -519,9 +513,9 @@ public class DownloadCommandTest {
         downloadCommand.setDocumentManager(documentManager);
         setCurrentTime(downloadCommand);
         ByteArrayInputStream inputStream = new ByteArrayInputStream("TestData".getBytes(StandardCharsets.UTF_8));
-        MockHttpURLConnection urlConnection = prepareHttpURLConnection("http://www.host.com", inputStream);
-        downloadCommand.addURLConnection("http://www.host.com", urlConnection);
-        urlConnection.setContentType("image/jpeg");
+        Response testResponse = prepareResponse("http://test.com", HttpURLConnection.HTTP_OK, "Everything ok", inputStream);
+        testResponse = testResponse.newBuilder().header("Content-Type", "image/jpeg").build();
+        downloadCommand.addResponse("http://www.host.com", testResponse);
         DownloadCommandResult result = downloadCommand.call();
         assertTrue(result.connectSuccess());
         assertFalse(result.downloadSuccess());
@@ -536,7 +530,7 @@ public class DownloadCommandTest {
         assertNull(result.fileName());
         assertEquals(99, result.duration());
         assertNull(result.exception());
-        assertTrue(urlConnection.isDisconnected());
+        testResponse.close();
     }
 
     @Test
@@ -553,9 +547,9 @@ public class DownloadCommandTest {
         downloadCommand.setDocumentManager(documentManager);
         setCurrentTime(downloadCommand);
         ByteArrayInputStream inputStream = new ByteArrayInputStream("TestData".getBytes(StandardCharsets.UTF_8));
-        MockHttpURLConnection urlConnection = prepareHttpURLConnection("http://www.host.com", inputStream);
-        downloadCommand.addURLConnection("http://www.host.com", urlConnection);
-        urlConnection.setContentType("image/jpeg");
+        Response testResponse = prepareResponse("http://test.com", HttpURLConnection.HTTP_OK, "Everything ok", inputStream);
+        testResponse = testResponse.newBuilder().header("Content-Type", "image/jpeg").build();
+        downloadCommand.addResponse("http://www.host.com", testResponse);
         DownloadCommandResult result = downloadCommand.call();
         assertTrue(result.connectSuccess());
         assertFalse(result.downloadSuccess());
@@ -570,7 +564,7 @@ public class DownloadCommandTest {
         assertNull(result.fileName());
         assertEquals(99, result.duration());
         assertNull(result.exception());
-        assertTrue(urlConnection.isDisconnected());
+        testResponse.close();
     }
 
     @Test
@@ -582,9 +576,9 @@ public class DownloadCommandTest {
         File externalDir = fileManager.getExternalDirectory(fileManager.getDefaultDownloadDirectoryName(), 0);
         TestDownloadCommand downloadCommand = new TestDownloadCommand(TestRegistry.getContext(), task, null, new URL("http://www.host.com"), externalDir.getAbsolutePath(), true);
         setCurrentTime(downloadCommand);
-        MockHttpURLConnection urlConnection = prepareHttpURLConnection("http://www.host.com", new BlockingTestInputStream(downloadCommand::isValid));
-        downloadCommand.addURLConnection("http://www.host.com", urlConnection);
-        urlConnection.addHeader("Content-Disposition", "attachment; filename=\"test.jpg\"");
+        Response testResponse = prepareResponse("http://www.host.com", HttpURLConnection.HTTP_OK, "Everything ok", new BlockingTestInputStream(downloadCommand::isValid));
+        testResponse = testResponse.newBuilder().header("Content-Disposition", "attachment; filename=\"test.jpg\"").build();
+        downloadCommand.addResponse("http://www.host.com", testResponse);
         DownloadCommandResult result = downloadCommand.call();
         assertTrue(result.connectSuccess());
         assertFalse(result.downloadSuccess());
@@ -599,7 +593,7 @@ public class DownloadCommandTest {
         assertEquals("test.jpg", result.fileName());
         assertEquals(99, result.duration());
         assertNull(result.exception());
-        assertTrue(urlConnection.isDisconnected());
+        testResponse.close();
     }
 
     @Test
@@ -611,9 +605,9 @@ public class DownloadCommandTest {
         File externalDir = fileManager.getExternalDirectory(fileManager.getDefaultDownloadDirectoryName(), 0);
         TestDownloadCommand downloadCommand = new TestDownloadCommand(TestRegistry.getContext(), task, null, new URL("http://www.host.com"), externalDir.getAbsolutePath(), true);
         setCurrentTime(downloadCommand);
-        MockHttpURLConnection urlConnection = prepareHttpURLConnection("http://www.host.com", new BlockingTestInputStream(downloadCommand::isValid));
-        downloadCommand.addURLConnection("http://www.host.com", urlConnection);
-        urlConnection.addHeader("Content-Disposition", "attachment; filename=\"test.jpg\"");
+        Response testResponse = prepareResponse("http://www.host.com", HttpURLConnection.HTTP_OK, "Everything ok", new BlockingTestInputStream(downloadCommand::isValid));
+        testResponse = testResponse.newBuilder().header("Content-Disposition", "attachment; filename=\"test.jpg\"").build();
+        downloadCommand.addResponse("http://www.host.com", testResponse);
         DownloadCommandResult result = downloadCommand.call();
         assertTrue(result.connectSuccess());
         assertFalse(result.downloadSuccess());
@@ -628,7 +622,7 @@ public class DownloadCommandTest {
         assertEquals("test.jpg", result.fileName());
         assertEquals(99, result.duration());
         assertNull(result.exception());
-        assertTrue(urlConnection.isDisconnected());
+        testResponse.close();
     }
 
     @Test
@@ -639,12 +633,13 @@ public class DownloadCommandTest {
         TestDownloadCommand downloadCommand = new TestDownloadCommand(TestRegistry.getContext(), task, null, new URL("http://www.host.com"), externalDir.getAbsolutePath(), false);
         setCurrentTime(downloadCommand);
         ByteArrayInputStream inputStream = new ByteArrayInputStream("TestData".getBytes(StandardCharsets.UTF_8));
-        MockHttpURLConnection urlConnection = prepareHttpURLConnection("http://www.host.com", inputStream, 206);
-        downloadCommand.addURLConnection("http://www.host.com", urlConnection);
-        urlConnection.addHeader("Content-Disposition", "attachment; filename=\"test.txt\"");
+        Response testResponse = prepareResponse("http://www.host.com", 206, "Everything ok", inputStream);
+        testResponse = testResponse.newBuilder().header("Content-Disposition", "attachment; filename=\"test.jpg\"").build();
+        downloadCommand.addResponse("http://www.host.com", testResponse);
         DownloadCommandResult result = downloadCommand.call();
         assertTrue(result.connectSuccess());
         assertTrue(result.downloadSuccess());
+        testResponse.close();
     }
 
     @Test
@@ -655,9 +650,9 @@ public class DownloadCommandTest {
         TestDownloadCommand downloadCommand = new TestDownloadCommand(TestRegistry.getContext(), task, null, new URL("http://www.host.com"), externalDir.getAbsolutePath(), false);
         setCurrentTime(downloadCommand);
         ByteArrayInputStream inputStream = new ByteArrayInputStream("TestData".getBytes(StandardCharsets.UTF_8));
-        MockHttpURLConnection urlConnection = prepareHttpURLConnection("http://www.host.com", inputStream);
-        downloadCommand.addURLConnection("http://www.host.com", urlConnection);
-        urlConnection.addHeader("Content-Disposition", "attachment; filename=\"test.txt\"");
+        Response testResponse = prepareResponse("http://www.host.com", HttpURLConnection.HTTP_OK, "Everything ok", inputStream);
+        testResponse = testResponse.newBuilder().header("Content-Disposition", "attachment; filename=\"test.txt\"").build();
+        downloadCommand.addResponse("http://www.host.com", testResponse);
         DownloadCommandResult result = downloadCommand.call();
         assertTrue(result.connectSuccess());
         assertTrue(result.downloadSuccess());
@@ -672,39 +667,10 @@ public class DownloadCommandTest {
         assertEquals("test.txt", result.fileName());
         assertEquals(99, result.duration());
         assertNull(result.exception());
-        assertTrue(urlConnection.isDisconnected());
         File downloadedFile = new File(externalDir, "test.txt");
         assertTrue(downloadedFile.exists());
         assertEquals("TestData", getFileContent(downloadedFile));
-    }
-
-    @Test
-    public void testSuccessNonHTTPNotDelete() throws Exception {
-        preferenceManager.setPreferenceDownloadFollowsRedirects(false);
-        NetworkTask task = networkTaskDAO.insertNetworkTask(getNetworkTask());
-        File externalDir = fileManager.getExternalDirectory(fileManager.getDefaultDownloadDirectoryName(), 0);
-        TestDownloadCommand downloadCommand = new TestDownloadCommand(TestRegistry.getContext(), task, null, new URL("http://www.host.com"), externalDir.getAbsolutePath(), false);
-        setCurrentTime(downloadCommand);
-        ByteArrayInputStream inputStream = new ByteArrayInputStream("TestData".getBytes(StandardCharsets.UTF_8));
-        MockURLConnection urlConnection = new MockURLConnection(new URL("http://test"));
-        urlConnection.setInputStream(inputStream);
-        downloadCommand.addURLConnection("http://www.host.com", urlConnection);
-        urlConnection.setContentType("text/plain");
-        DownloadCommandResult result = downloadCommand.call();
-        assertTrue(result.connectSuccess());
-        assertTrue(result.downloadSuccess());
-        assertTrue(result.fileExists());
-        assertFalse(result.deleteSuccess());
-        assertTrue(result.valid());
-        assertFalse(result.stopped());
-        assertTrue(result.httpResponseCodes().isEmpty());
-        assertTrue(result.httpResponseMessages().isEmpty());
-        assertEquals("www_host_com.txt", result.fileName());
-        assertEquals(99, result.duration());
-        assertNull(result.exception());
-        File downloadedFile = new File(externalDir, "www_host_com.txt");
-        assertTrue(downloadedFile.exists());
-        assertEquals("TestData", getFileContent(downloadedFile));
+        testResponse.close();
     }
 
     @Test
@@ -715,8 +681,9 @@ public class DownloadCommandTest {
         TestDownloadCommand downloadCommand = new TestDownloadCommand(TestRegistry.getContext(), task, null, new URL("http://www.host.com/test.jpg"), externalDir.getAbsolutePath(), true);
         setCurrentTime(downloadCommand);
         ByteArrayInputStream inputStream = new ByteArrayInputStream("TestData".getBytes(StandardCharsets.UTF_8));
-        MockHttpURLConnection urlConnection = prepareHttpURLConnection("http://www.host.com/test.jpg", inputStream);
-        downloadCommand.addURLConnection("http://www.host.com/test.jpg", urlConnection);
+        Response testResponse = prepareResponse("http://www.host.com", HttpURLConnection.HTTP_OK, "Everything ok", inputStream);
+        testResponse = testResponse.newBuilder().header("Content-Type", "text/plain").build();
+        downloadCommand.addResponse("http://www.host.com/test.jpg", testResponse);
         DownloadCommandResult result = downloadCommand.call();
         assertTrue(result.connectSuccess());
         assertTrue(result.downloadSuccess());
@@ -731,9 +698,9 @@ public class DownloadCommandTest {
         assertEquals("test.jpg", result.fileName());
         assertEquals(99, result.duration());
         assertNull(result.exception());
-        assertTrue(urlConnection.isDisconnected());
         File downloadedFile = new File(externalDir, "test.jpg");
         assertFalse(downloadedFile.exists());
+        testResponse.close();
     }
 
     @Test
@@ -746,8 +713,8 @@ public class DownloadCommandTest {
         TestDownloadCommand downloadCommand = new TestDownloadCommand(TestRegistry.getContext(), task, null, new URL("http://www.host.com/test.jpg"), externalDir.getAbsolutePath(), true);
         setCurrentTime(downloadCommand);
         ByteArrayInputStream inputStream = new ByteArrayInputStream("TestData".getBytes(StandardCharsets.UTF_8));
-        MockHttpURLConnection urlConnection = prepareHttpURLConnection("http://www.host.com/test.jpg", inputStream);
-        downloadCommand.addURLConnection("http://www.host.com/test.jpg", urlConnection);
+        Response testResponse = prepareResponse("http://www.host.com/test.jpg", HttpURLConnection.HTTP_OK, "Everything ok", inputStream);
+        downloadCommand.addResponse("http://www.host.com/test.jpg", testResponse);
         DownloadCommandResult result = downloadCommand.call();
         assertTrue(result.connectSuccess());
         assertTrue(result.downloadSuccess());
@@ -762,9 +729,9 @@ public class DownloadCommandTest {
         assertEquals("test.jpg", result.fileName());
         assertEquals(99, result.duration());
         assertNull(result.exception());
-        assertTrue(urlConnection.isDisconnected());
         File downloadedFile = new File(externalDir, "test.jpg");
         assertFalse(downloadedFile.exists());
+        testResponse.close();
     }
 
     @Test
@@ -786,9 +753,9 @@ public class DownloadCommandTest {
         downloadCommand.setDocumentManager(documentManager);
         setCurrentTime(downloadCommand);
         ByteArrayInputStream inputStream = new ByteArrayInputStream("TestData".getBytes(StandardCharsets.UTF_8));
-        MockHttpURLConnection urlConnection = prepareHttpURLConnection("http://www.host.com", inputStream);
-        downloadCommand.addURLConnection("http://www.host.com", urlConnection);
-        urlConnection.setContentType("image/jpeg");
+        Response testResponse = prepareResponse("http://www.host.com", HttpURLConnection.HTTP_OK, "Everything ok", inputStream);
+        testResponse = testResponse.newBuilder().header("Content-Type", "image/jpeg").build();
+        downloadCommand.addResponse("http://www.host.com", testResponse);
         DownloadCommandResult result = downloadCommand.call();
         assertTrue(result.connectSuccess());
         assertTrue(result.downloadSuccess());
@@ -803,7 +770,7 @@ public class DownloadCommandTest {
         assertEquals("valid_file.txt", result.fileName());
         assertEquals(99, result.duration());
         assertNull(result.exception());
-        assertTrue(urlConnection.isDisconnected());
+        testResponse.close();
     }
 
     @Test
@@ -814,8 +781,8 @@ public class DownloadCommandTest {
         TestDownloadCommand downloadCommand = new TestDownloadCommand(TestRegistry.getContext(), task, null, new URL("https://www.host.com"), externalDir.getAbsolutePath(), true);
         setCurrentTime(downloadCommand);
         ByteArrayInputStream inputStream = new ByteArrayInputStream("TestData".getBytes(StandardCharsets.UTF_8));
-        MockHttpURLConnection urlConnection = prepareHttpURLConnection("https://www.host.com", inputStream);
-        downloadCommand.addURLConnection("https://www.host.com", urlConnection);
+        Response testResponse = prepareResponse("https://www.host.com", HttpURLConnection.HTTP_OK, "Everything ok", inputStream);
+        downloadCommand.addResponse("https://www.host.com", testResponse);
         MockFileManager fileManager = new MockFileManager();
         fileManager.setDownloadFileName("test.txt");
         fileManager.setValidFileName("test.txt");
@@ -835,10 +802,10 @@ public class DownloadCommandTest {
         assertEquals("test.txt", result.fileName());
         assertEquals(99, result.duration());
         assertNull(result.exception());
-        assertTrue(urlConnection.isDisconnected());
         File downloadedFile = new File(externalDir, "test.txt");
         assertTrue(downloadedFile.exists());
         assertEquals("TestData", getFileContent(downloadedFile));
+        testResponse.close();
     }
 
     @Test
@@ -860,9 +827,9 @@ public class DownloadCommandTest {
         downloadCommand.setDocumentManager(documentManager);
         setCurrentTime(downloadCommand);
         ByteArrayInputStream inputStream = new ByteArrayInputStream("TestData".getBytes(StandardCharsets.UTF_8));
-        MockHttpURLConnection urlConnection = prepareHttpURLConnection("http://www.host.com", inputStream);
-        downloadCommand.addURLConnection("http://www.host.com", urlConnection);
-        urlConnection.setContentType("image/jpeg");
+        Response testResponse = prepareResponse("http://www.host.com", HttpURLConnection.HTTP_OK, "Everything ok", inputStream);
+        testResponse = testResponse.newBuilder().header("Content-Type", "image/jpeg").build();
+        downloadCommand.addResponse("http://www.host.com", testResponse);
         DownloadCommandResult result = downloadCommand.call();
         assertTrue(result.connectSuccess());
         assertTrue(result.downloadSuccess());
@@ -877,7 +844,7 @@ public class DownloadCommandTest {
         assertEquals("valid_file.txt", result.fileName());
         assertEquals(99, result.duration());
         assertNull(result.exception());
-        assertTrue(urlConnection.isDisconnected());
+        testResponse.close();
     }
 
     @Test
@@ -888,8 +855,8 @@ public class DownloadCommandTest {
         TestDownloadCommand downloadCommand = new TestDownloadCommand(TestRegistry.getContext(), task, null, new URL("http://www.host.com"), externalDir.getAbsolutePath(), true);
         setNegativeTime(downloadCommand);
         ByteArrayInputStream inputStream = new ByteArrayInputStream("TestData".getBytes(StandardCharsets.UTF_8));
-        MockHttpURLConnection urlConnection = prepareHttpURLConnection("http://www.host.com", inputStream);
-        downloadCommand.addURLConnection("http://www.host.com", urlConnection);
+        Response testResponse = prepareResponse("http://www.host.com", HttpURLConnection.HTTP_OK, "Everything ok", inputStream);
+        downloadCommand.addResponse("http://www.host.com", testResponse);
         MockFileManager fileManager = new MockFileManager();
         fileManager.setDownloadFileName("test.txt");
         fileManager.setValidFileName("test.txt");
@@ -897,6 +864,7 @@ public class DownloadCommandTest {
         downloadCommand.setFileManager(fileManager);
         DownloadCommandResult result = downloadCommand.call();
         assertEquals(0, result.duration());
+        testResponse.close();
     }
 
     @Test
@@ -906,12 +874,12 @@ public class DownloadCommandTest {
         File externalDir = fileManager.getExternalDirectory(fileManager.getDefaultDownloadDirectoryName(), 0);
         TestDownloadCommand downloadCommand = new TestDownloadCommand(TestRegistry.getContext(), task, null, new URL("http://test.com"), externalDir.getAbsolutePath(), true);
         setCurrentTimeInverted(downloadCommand);
-        MockHttpURLConnection urlConnection1 = prepareHttpURLConnection("http://test.com", HttpURLConnection.HTTP_MOVED_PERM, "moved", null);
-        urlConnection1.addHeader("Location", "http://www.host.com/test.jpg");
+        Response response1 = prepareResponse("http://test.com", HttpURLConnection.HTTP_MOVED_PERM, "moved", null);
+        response1 = response1.newBuilder().header("Location", "http://www.host.com/test.jpg").build();
         ByteArrayInputStream inputStream = new ByteArrayInputStream("TestData".getBytes(StandardCharsets.UTF_8));
-        MockHttpURLConnection urlConnection2 = prepareHttpURLConnection("http://www.host.com/test.jpg", inputStream);
-        downloadCommand.addURLConnection("http://test.com", urlConnection1);
-        downloadCommand.addURLConnection("http://www.host.com/test.jpg", urlConnection2);
+        Response response2 = prepareResponse("http://www.host.com/test.jpg", HttpURLConnection.HTTP_OK, "Everything ok", inputStream);
+        downloadCommand.addResponse("http://test.com", response1);
+        downloadCommand.addResponse("http://www.host.com/test.jpg", response2);
         DownloadCommandResult result = downloadCommand.call();
         assertTrue(result.connectSuccess());
         assertTrue(result.downloadSuccess());
@@ -928,10 +896,10 @@ public class DownloadCommandTest {
         assertEquals("test.jpg", result.fileName());
         assertEquals(99, result.duration());
         assertNull(result.exception());
-        assertTrue(urlConnection1.isDisconnected());
-        assertTrue(urlConnection2.isDisconnected());
         File downloadedFile = new File(externalDir, "test.jpg");
         assertFalse(downloadedFile.exists());
+        response1.close();
+        response2.close();
     }
 
     @Test
@@ -941,12 +909,12 @@ public class DownloadCommandTest {
         File externalDir = fileManager.getExternalDirectory(fileManager.getDefaultDownloadDirectoryName(), 0);
         TestDownloadCommand downloadCommand = new TestDownloadCommand(TestRegistry.getContext(), task, null, new URL("http://test.com"), externalDir.getAbsolutePath(), true);
         setCurrentTimeInverted(downloadCommand);
-        MockHttpURLConnection urlConnection1 = prepareHttpURLConnection("http://test.com", HttpURLConnection.HTTP_MOVED_PERM, "moved", null);
-        urlConnection1.addHeader("Location", "/abc");
+        Response response1 = prepareResponse("http://test.com", HttpURLConnection.HTTP_MOVED_PERM, "moved", null);
+        response1 = response1.newBuilder().header("Location", "/abc").build();
         ByteArrayInputStream inputStream = new ByteArrayInputStream("TestData".getBytes(StandardCharsets.UTF_8));
-        MockHttpURLConnection urlConnection2 = prepareHttpURLConnection("http://test.com/abc", inputStream);
-        downloadCommand.addURLConnection("http://test.com", urlConnection1);
-        downloadCommand.addURLConnection("http://test.com/abc", urlConnection2);
+        Response response2 = prepareResponse("http://test.com/abc", HttpURLConnection.HTTP_OK, "Everything ok", inputStream);
+        downloadCommand.addResponse("http://test.com", response1);
+        downloadCommand.addResponse("http://test.com/abc", response2);
         DownloadCommandResult result = downloadCommand.call();
         assertTrue(result.connectSuccess());
         assertTrue(result.downloadSuccess());
@@ -963,10 +931,10 @@ public class DownloadCommandTest {
         assertEquals("abc", result.fileName());
         assertEquals(99, result.duration());
         assertNull(result.exception());
-        assertTrue(urlConnection1.isDisconnected());
-        assertTrue(urlConnection2.isDisconnected());
         File downloadedFile = new File(externalDir, "test.jpg");
         assertFalse(downloadedFile.exists());
+        response1.close();
+        response2.close();
     }
 
     @Test
@@ -976,15 +944,15 @@ public class DownloadCommandTest {
         File externalDir = fileManager.getExternalDirectory(fileManager.getDefaultDownloadDirectoryName(), 0);
         TestDownloadCommand downloadCommand = new TestDownloadCommand(TestRegistry.getContext(), task, null, new URL("http://test.com"), externalDir.getAbsolutePath(), true);
         setCurrentTime(downloadCommand);
-        MockHttpURLConnection urlConnection1 = prepareHttpURLConnection("http://test.com", HttpURLConnection.HTTP_MOVED_PERM, "moved", null);
-        urlConnection1.addHeader("Location", "http://test2.com");
-        MockHttpURLConnection urlConnection2 = prepareHttpURLConnection("http://test2.com", HttpURLConnection.HTTP_MOVED_TEMP, "moved2", null);
-        urlConnection2.addHeader("Location", "http://www.host.com/test.jpg");
+        Response response1 = prepareResponse("http://test.com", HttpURLConnection.HTTP_MOVED_PERM, "moved", null);
+        response1 = response1.newBuilder().header("Location", "http://test2.com").build();
+        Response response2 = prepareResponse("http://test2.com", HttpURLConnection.HTTP_MOVED_TEMP, "moved2", null);
+        response2 = response2.newBuilder().header("Location", "http://www.host.com/test.jpg").build();
         ByteArrayInputStream inputStream = new ByteArrayInputStream("TestData".getBytes(StandardCharsets.UTF_8));
-        MockHttpURLConnection urlConnection3 = prepareHttpURLConnection("http://www.host.com/test.jpg", inputStream);
-        downloadCommand.addURLConnection("http://test.com", urlConnection1);
-        downloadCommand.addURLConnection("http://test2.com", urlConnection2);
-        downloadCommand.addURLConnection("http://www.host.com/test.jpg", urlConnection3);
+        Response response3 = prepareResponse("http://www.host.com/test.jpg", HttpURLConnection.HTTP_OK, "Everything ok", inputStream);
+        downloadCommand.addResponse("http://test.com", response1);
+        downloadCommand.addResponse("http://test2.com", response2);
+        downloadCommand.addResponse("http://www.host.com/test.jpg", response3);
         DownloadCommandResult result = downloadCommand.call();
         assertTrue(result.connectSuccess());
         assertTrue(result.downloadSuccess());
@@ -1002,10 +970,11 @@ public class DownloadCommandTest {
         assertEquals("Everything ok", result.httpResponseMessages().get(2));
         assertEquals("test.jpg", result.fileName());
         assertNull(result.exception());
-        assertTrue(urlConnection1.isDisconnected());
-        assertTrue(urlConnection2.isDisconnected());
         File downloadedFile = new File(externalDir, "test.jpg");
         assertFalse(downloadedFile.exists());
+        response1.close();
+        response2.close();
+        response3.close();
     }
 
     @Test
@@ -1015,15 +984,15 @@ public class DownloadCommandTest {
         File externalDir = fileManager.getExternalDirectory(fileManager.getDefaultDownloadDirectoryName(), 0);
         TestDownloadCommand downloadCommand = new TestDownloadCommand(TestRegistry.getContext(), task, null, new URL("http://test.com/abc/xyz"), externalDir.getAbsolutePath(), true);
         setCurrentTime(downloadCommand);
-        MockHttpURLConnection urlConnection1 = prepareHttpURLConnection("http://test.com/abc/xyz", HttpURLConnection.HTTP_MOVED_PERM, "moved", null);
-        urlConnection1.addHeader("Location", "abc");
-        MockHttpURLConnection urlConnection2 = prepareHttpURLConnection("http://test.com/abc/abc", HttpURLConnection.HTTP_MOVED_TEMP, "moved2", null);
-        urlConnection2.addHeader("Location", "/abc");
+        Response response1 = prepareResponse("http://test.com/abc/xyz", HttpURLConnection.HTTP_MOVED_PERM, "moved", null);
+        response1 = response1.newBuilder().header("Location", "abc").build();
+        Response response2 = prepareResponse("http://test.com/abc/abc", HttpURLConnection.HTTP_MOVED_TEMP, "moved2", null);
+        response2 = response2.newBuilder().header("Location", "/abc").build();
         ByteArrayInputStream inputStream = new ByteArrayInputStream("TestData".getBytes(StandardCharsets.UTF_8));
-        MockHttpURLConnection urlConnection3 = prepareHttpURLConnection("http://test.com/abc", inputStream);
-        downloadCommand.addURLConnection("http://test.com/abc/xyz", urlConnection1);
-        downloadCommand.addURLConnection("http://test.com/abc/abc", urlConnection2);
-        downloadCommand.addURLConnection("http://test.com/abc", urlConnection3);
+        Response response3 = prepareResponse("http://test.com/abc", HttpURLConnection.HTTP_OK, "Everything ok", inputStream);
+        downloadCommand.addResponse("http://test.com/abc/xyz", response1);
+        downloadCommand.addResponse("http://test.com/abc/abc", response2);
+        downloadCommand.addResponse("http://test.com/abc", response3);
         DownloadCommandResult result = downloadCommand.call();
         assertTrue(result.connectSuccess());
         assertTrue(result.downloadSuccess());
@@ -1041,8 +1010,6 @@ public class DownloadCommandTest {
         assertEquals("Everything ok", result.httpResponseMessages().get(2));
         assertEquals("abc", result.fileName());
         assertNull(result.exception());
-        assertTrue(urlConnection1.isDisconnected());
-        assertTrue(urlConnection2.isDisconnected());
         File downloadedFile = new File(externalDir, "test.jpg");
         assertFalse(downloadedFile.exists());
     }

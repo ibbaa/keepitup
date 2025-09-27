@@ -29,30 +29,31 @@ import net.ibbaa.keepitup.service.network.DownloadCommand;
 
 import java.io.FileOutputStream;
 import java.net.URL;
-import java.net.URLConnection;
 import java.util.HashMap;
 import java.util.Map;
 
+import okhttp3.Response;
+
 public class TestDownloadCommand extends DownloadCommand {
 
-    private final Map<String, URLConnection> urlConnections;
+    private final Map<String, Response> responses;
     private FileOutputStream outputStream;
     private IFileManager fileManager;
     private IDocumentManager documentManager;
 
     public TestDownloadCommand(Context context, NetworkTask networkTask, AccessTypeData data, URL url, String folder, boolean delete) {
         super(context, networkTask, data, url, folder, delete);
-        urlConnections = new HashMap<>();
+        responses = new HashMap<>();
         reset();
     }
 
     public void reset() {
-        urlConnections.clear();
+        responses.clear();
         fileManager = null;
     }
 
-    public void addURLConnection(String url, URLConnection urlConnection) {
-        urlConnections.put(url, urlConnection);
+    public void addResponse(String url, Response response) {
+        responses.put(url, response);
     }
 
     public void setOutputStream(FileOutputStream outputStream) {
@@ -68,11 +69,11 @@ public class TestDownloadCommand extends DownloadCommand {
     }
 
     @Override
-    protected URLConnection openConnection(URL url) {
+    protected Response openResponse(URL url) {
         if (url == null) {
             return null;
         }
-        return urlConnections.get(url.toString());
+        return responses.get(url.toString());
     }
 
     @Override
@@ -87,17 +88,11 @@ public class TestDownloadCommand extends DownloadCommand {
 
     @Override
     protected IFileManager getFileManager() {
-        if (fileManager != null) {
-            return fileManager;
-        }
-        return super.getFileManager();
+        return fileManager != null ? fileManager : super.getFileManager();
     }
 
     @Override
     protected IDocumentManager getDocumentManager() {
-        if (documentManager != null) {
-            return documentManager;
-        }
-        return super.getDocumentManager();
+        return documentManager != null ? documentManager : super.getDocumentManager();
     }
 }

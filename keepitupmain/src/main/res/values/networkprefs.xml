@@ -31,6 +31,7 @@
     <integer name="download_max_redirect">10</integer>
     <integer name="dns_lookup_timeout">60</integer>
     <string name="http_header_content_disposition">Content-Disposition</string>
+    <string name="http_header_content_type">Content-Type</string>
     <string name="http_header_content_location">Location</string>
     <string name="http_header_user_agent">User-Agent</string>
     <integer name="http_header_user_agent_max_length">1000</integer>

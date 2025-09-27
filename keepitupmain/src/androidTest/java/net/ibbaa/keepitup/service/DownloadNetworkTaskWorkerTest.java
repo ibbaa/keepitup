@@ -116,6 +116,14 @@ public class DownloadNetworkTaskWorkerTest {
         return downloadNetworkTaskWorker;
     }
 
+    private TestDownloadNetworkTaskWorker prepareTestDownloadNetworkTaskWorker(DNSLookupResult dnsLookupResult, DownloadCommandResult downloadCommandResult) throws Exception {
+        return prepareTestDownloadNetworkTaskWorker(dnsLookupResult, downloadCommandResult, null);
+    }
+
+    private TestDownloadNetworkTaskWorker prepareTestDownloadNetworkTaskWorker(DNSLookupResult dnsLookupResult, RuntimeException exception) throws Exception {
+        return prepareTestDownloadNetworkTaskWorker(dnsLookupResult, null, exception);
+    }
+
     private TestDownloadNetworkTaskWorker prepareBlockingTestDownloadNetworkTaskWorker(DNSLookupResult dnsLookupResult, DownloadCommandResult downloadCommandResult, NetworkTask task) throws Exception {
         TestDownloadNetworkTaskWorker downloadNetworkTaskWorker = new TestDownloadNetworkTaskWorker(TestRegistry.getContext(), task, null);
         MockDNSLookup mockDNSLookup = new MockDNSLookup("127.0.0.1", dnsLookupResult);
@@ -128,14 +136,6 @@ public class DownloadNetworkTaskWorkerTest {
         timeService.setTimestamp(getTestTimestamp());
         timeService.setTimestamp2(getTestTimestamp());
         return downloadNetworkTaskWorker;
-    }
-
-    private TestDownloadNetworkTaskWorker prepareTestDownloadNetworkTaskWorker(DNSLookupResult dnsLookupResult, DownloadCommandResult downloadCommandResult) throws Exception {
-        return prepareTestDownloadNetworkTaskWorker(dnsLookupResult, downloadCommandResult, null);
-    }
-
-    private TestDownloadNetworkTaskWorker prepareTestDownloadNetworkTaskWorker(DNSLookupResult dnsLookupResult, RuntimeException exception) throws Exception {
-        return prepareTestDownloadNetworkTaskWorker(dnsLookupResult, null, exception);
     }
 
     @Test

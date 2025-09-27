@@ -46,9 +46,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.net.HttpURLConnection;
 import java.net.URL;
-import java.net.URLConnection;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
@@ -60,9 +58,13 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
-import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManager;
+import javax.net.ssl.X509TrustManager;
+
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
 
 public class DownloadCommand implements Callable<DownloadCommandResult> {
 
@@ -92,8 +94,7 @@ public class DownloadCommand implements Callable<DownloadCommandResult> {
     public DownloadCommandResult call() {
         Log.d(DownloadCommand.class.getName(), "call");
         URL downloadUrl = url;
-        URLConnection connection = null;
-        boolean redirect;
+        Response response = null;
         InputStream inputStream = null;
         FileOutputStream outputStream = null;
         ParcelFileDescriptor fileDescriptor = null;
@@ -110,67 +111,56 @@ public class DownloadCommand implements Callable<DownloadCommandResult> {
         int redirects = getResources().getInteger(R.integer.download_max_redirect);
         PreferenceManager preferenceManager = new PreferenceManager(getContext());
         try {
+            boolean redirect;
             do {
                 Log.d(DownloadCommand.class.getName(), "Establishing connection to " + downloadUrl);
                 redirect = false;
                 connectSuccess = false;
                 start = timeService.getCurrentTimestamp();
-                closeConnection(connection);
-                connection = openConnection(downloadUrl);
-                if (connection == null) {
-                    Log.d(DownloadCommand.class.getName(), "Error establishing connection to " + downloadUrl);
+                closeResponse(response);
+                response = openResponse(downloadUrl);
+                if (response == null) {
                     long end = timeService.getCurrentTimestamp();
                     return createDownloadCommandResult(downloadUrl, false, false, false, false, httpCodes, httpMessages, null, NumberUtil.ensurePositive(end - start), null);
                 }
                 connectSuccess = true;
                 Log.d(DownloadCommand.class.getName(), "Connection established.");
-                if (HTTPUtil.isHTTPConnection(connection)) {
-                    Log.d(DownloadCommand.class.getName(), "Download is an HTTP download.");
-                    HttpURLConnection httpConnection = (HttpURLConnection) connection;
-                    httpConnection.setInstanceFollowRedirects(false);
-                    int httpCode = httpConnection.getResponseCode();
-                    Log.d(DownloadCommand.class.getName(), "HTTP return code is " + httpCode);
-                    String httpMessage = getResponseMessage(httpConnection);
-                    String location = HTTPUtil.getLocation(getContext(), connection);
-                    httpMessage += getLocationHeaderMessage(location);
-                    Log.d(DownloadCommand.class.getName(), "HTTP message is " + httpMessage);
-                    if (HTTPUtil.isHTTPReturnCodeRedirect(httpCode) && preferenceManager.getPreferenceDownloadFollowsRedirects()) {
-                        Log.d(DownloadCommand.class.getName(), "HTTP return code " + httpCode + " is a redirect, location is " + location);
-                        redirects--;
-                        URL locationUrl = getLocationURL(downloadUrl, location);
-                        if (locationUrl == null) {
-                            httpMessage += getLocationInvalidMessage();
-                        } else if (redirects <= 0) {
-                            httpMessage += getMaxRedirectsExceededMessage();
-                        } else {
-                            redirect = true;
-                            downloadUrl = locationUrl;
-                        }
+                int httpCode = response.code();
+                String location = HTTPUtil.getLocation(getContext(), response);
+                String httpMessage = getResponseMessage(response);
+                httpMessage = getLocationHeaderMessage(httpMessage, location);
+                if (HTTPUtil.isHTTPReturnCodeRedirect(httpCode) && preferenceManager.getPreferenceDownloadFollowsRedirects()) {
+                    Log.d(DownloadCommand.class.getName(), "HTTP return code " + httpCode + " is a redirect, location is " + location);
+                    redirects--;
+                    URL locationUrl = getLocationURL(downloadUrl, location);
+                    if (locationUrl == null) {
+                        httpMessage += getLocationInvalidMessage();
+                    } else if (redirects <= 0) {
+                        httpMessage += getMaxRedirectsExceededMessage();
+                    } else {
+                        redirect = true;
+                        downloadUrl = locationUrl;
                     }
-                    httpCodes.add(httpCode);
-                    httpMessages.add(httpMessage);
-                    if (!HTTPUtil.isHTTPReturnCodeOk(httpCode) && !redirect) {
-                        Log.d(DownloadCommand.class.getName(), "Connection successful but HTTP return code " + httpCode + " is not HTTP_OK");
-                        long end = timeService.getCurrentTimestamp();
-                        return createDownloadCommandResult(downloadUrl, true, false, false, false, httpCodes, httpMessages, null, NumberUtil.ensurePositive(end - start), null);
-                    }
-                } else {
-                    Log.d(DownloadCommand.class.getName(), "Download is not an HTTP download.");
+                }
+                httpCodes.add(httpCode);
+                httpMessages.add(httpMessage);
+                if (!HTTPUtil.isHTTPReturnCodeOk(httpCode) && !redirect) {
+                    Log.d(DownloadCommand.class.getName(), "Connection successful but HTTP return code " + httpCode + " is not HTTP_OK");
+                    long end = timeService.getCurrentTimestamp();
+                    return createDownloadCommandResult(downloadUrl, true, false, false, false, httpCodes, httpMessages, null, NumberUtil.ensurePositive(end - start), null);
                 }
             } while (redirect);
-            fileName = getFileName(connection, downloadUrl);
+            fileName = getFileName(response, downloadUrl);
             if (fileName == null) {
-                Log.d(DownloadCommand.class.getName(), "Connection successful but download file name could not be determined");
                 long end = timeService.getCurrentTimestamp();
                 return createDownloadCommandResult(downloadUrl, true, false, false, false, httpCodes, httpMessages, null, NumberUtil.ensurePositive(end - start), null);
             }
             Log.d(DownloadCommand.class.getName(), "Using file name " + fileName);
             Log.d(DownloadCommand.class.getName(), "Opening streams...");
-            inputStream = connection.getInputStream();
+            inputStream = response.body().byteStream();
             if (useDocumentFileAPI()) {
                 DocumentFile downloadDocumentFile = getDownloadDocumentFile(fileName);
                 if (downloadDocumentFile == null) {
-                    Log.e(DownloadCommand.class.getName(), "Error access download file");
                     long end = timeService.getCurrentTimestamp();
                     return createDownloadCommandResult(downloadUrl, true, false, false, false, httpCodes, httpMessages, null, NumberUtil.ensurePositive(end - start), null);
                 }
@@ -207,7 +197,7 @@ public class DownloadCommand implements Callable<DownloadCommandResult> {
             long end = timeService.getCurrentTimestamp();
             return createDownloadCommandResult(downloadUrl, connectSuccess, downloadSuccess, fileExists, deleteSuccess, httpCodes, httpMessages, fileName, NumberUtil.ensurePositive(end - start), exc);
         } finally {
-            closeResources(connection, inputStream, outputStream, fileDescriptor, executorService);
+            closeResources(response, inputStream, outputStream, fileDescriptor, executorService);
         }
     }
 
@@ -220,38 +210,32 @@ public class DownloadCommand implements Callable<DownloadCommandResult> {
         return URLUtil.getURL(downloadURL, location);
     }
 
-    protected URLConnection openConnection(URL url) throws IOException, KeyManagementException, NoSuchAlgorithmException {
+    protected Response openResponse(URL url) throws IOException, KeyManagementException, NoSuchAlgorithmException {
         Log.d(DownloadCommand.class.getName(), "openConnection to " + url);
         if (url == null) {
             Log.e(DownloadCommand.class.getName(), "URL is null");
             return null;
         }
-        URLConnection connection = url.openConnection();
-        if (connection == null) {
-            Log.e(DownloadCommand.class.getName(), "Connection is null");
-            return null;
+        OkHttpClient.Builder clientBuilder = new OkHttpClient.Builder().connectTimeout(getResources().getInteger(R.integer.download_connect_timeout), TimeUnit.SECONDS).readTimeout(getResources().getInteger(R.integer.download_read_timeout), TimeUnit.SECONDS).followRedirects(false);
+        if (isIgnoreSSLError()) {
+            disableSSLCheck(clientBuilder);
         }
-        if (HTTPUtil.isHTTPSConnection(connection) && isIgnoreSSLError()) {
-            disableSSLCheck((HttpsURLConnection) connection);
-        }
-        HTTPUtil.setUserAgent(getContext(), connection);
-        HTTPUtil.setAcceptHeader(getContext(), connection);
-        HTTPUtil.setAcceptLanguageHeader(getContext(), Locale.getDefault(), connection);
-        connection.setConnectTimeout(getResources().getInteger(R.integer.download_connect_timeout) * 1000);
-        connection.setReadTimeout(getResources().getInteger(R.integer.download_read_timeout) * 1000);
-        connection.setDoInput(true);
-        connection.setDoOutput(false);
-        connection.connect();
-        return connection;
+        OkHttpClient client = clientBuilder.build();
+        Request.Builder requestBuilder = new Request.Builder().url(url.toString());
+        HTTPUtil.setUserAgent(getContext(), requestBuilder);
+        HTTPUtil.setAcceptHeader(getContext(), requestBuilder);
+        HTTPUtil.setAcceptLanguageHeader(getContext(), Locale.getDefault(), requestBuilder);
+        Request request = requestBuilder.build();
+        return client.newCall(request).execute();
     }
 
-    private static void disableSSLCheck(HttpsURLConnection httpsConnection) throws NoSuchAlgorithmException, KeyManagementException {
+    private static void disableSSLCheck(OkHttpClient.Builder builder) throws NoSuchAlgorithmException, KeyManagementException {
         Log.d(DownloadCommand.class.getName(), "disableSSLCheck");
         TrustManager[] trustAllCerts = new TrustManager[]{new TrustAllX509TrustManager()};
         SSLContext sslContext = SSLContext.getInstance("TLS");
         sslContext.init(null, trustAllCerts, new SecureRandom());
-        httpsConnection.setSSLSocketFactory(sslContext.getSocketFactory());
-        httpsConnection.setHostnameVerifier((hostname, session) -> true);
+        builder.sslSocketFactory(sslContext.getSocketFactory(), (X509TrustManager) trustAllCerts[0]);
+        builder.hostnameVerifier((hostname, session) -> true);
     }
 
     private boolean isIgnoreSSLError() {
@@ -296,28 +280,36 @@ public class DownloadCommand implements Callable<DownloadCommandResult> {
         }
     }
 
-    private static String getResponseMessage(HttpURLConnection httpConnection) throws IOException {
+    private static String getResponseMessage(Response response) {
         Log.d(DownloadCommand.class.getName(), "getResponseMessage");
-        String message = httpConnection.getResponseMessage();
-        return message == null ? "" : message;
-    }
-
-    private String getLocationHeaderMessage(String location) {
-        Log.d(DownloadCommand.class.getName(), "getLocationHeaderMessage, location is " + location);
-        if (!StringUtil.isEmpty(location)) {
-            return " " + getResources().getString(R.string.http_header_content_location) + ": " + location;
+        String message = response != null ? response.message() : "";
+        if (message.endsWith(" ")) {
+            message = message.substring(0, message.length() - 1);
         }
-        return "";
+        return message;
     }
 
-    private String getFileName(URLConnection connection, URL url) {
+    private String getLocationHeaderMessage(String message, String location) {
+        Log.d(DownloadCommand.class.getName(), "getLocationHeaderMessage, message is " + message + ", location is " + location);
+        if (!StringUtil.isEmpty(location)) {
+            if (!StringUtil.isEmpty(message)) {
+                message += " ";
+            } else {
+                message = "";
+            }
+            return message + getResources().getString(R.string.http_header_content_location) + ": " + location;
+        }
+        return message;
+    }
+
+    private String getFileName(Response response, URL url) {
         Log.d(DownloadCommand.class.getName(), "getFileName");
         if (folder == null) {
             Log.d(DownloadCommand.class.getName(), "Download folder is null");
             return null;
         }
-        String contentDisposition = HTTPUtil.getContentDisposition(getContext(), connection);
-        String contentType = connection.getContentType();
+        String contentDisposition = HTTPUtil.getContentDisposition(getContext(), response);
+        String contentType = HTTPUtil.getContentType(getContext(), response);
         Log.d(DownloadCommand.class.getName(), "Content-Disposition header is " + contentDisposition);
         Log.d(DownloadCommand.class.getName(), "Content-Type header is " + contentType);
         String contentDispositionFileName = HTTPUtil.getFileNameFromContentDisposition(contentDisposition);
@@ -440,22 +432,19 @@ public class DownloadCommand implements Callable<DownloadCommandResult> {
         }
     }
 
-    private void closeConnection(URLConnection connection) {
-        Log.d(DownloadCommand.class.getName(), "closeConnection");
-        if (connection != null) {
+    private void closeResponse(Response response) {
+        Log.d(DownloadCommand.class.getName(), "closeResponse");
+        if (response != null) {
             try {
-                if (HTTPUtil.isHTTPConnection(connection)) {
-                    Log.d(DownloadCommand.class.getName(), "Disconnecting http connection");
-                    ((HttpURLConnection) connection).disconnect();
-                }
+                Log.d(DownloadCommand.class.getName(), "Closing OkHttp response");
+                response.close();
             } catch (Exception exc) {
-                Log.e(DownloadCommand.class.getName(), "Error closing http connection", exc);
+                Log.e(DownloadCommand.class.getName(), "Error closing OkHttp response", exc);
             }
         }
     }
 
-
-    private void closeResources(URLConnection connection, InputStream inputStream, FileOutputStream outputStream, ParcelFileDescriptor fileDescriptor, ScheduledExecutorService executorService) {
+    private void closeResources(Response response, InputStream inputStream, FileOutputStream outputStream, ParcelFileDescriptor fileDescriptor, ScheduledExecutorService executorService) {
         Log.d(DownloadCommand.class.getName(), "closeResources");
         flushAndCloseOutputStream(outputStream);
         try {
@@ -466,13 +455,13 @@ public class DownloadCommand implements Callable<DownloadCommandResult> {
         } catch (Exception exc) {
             Log.e(DownloadCommand.class.getName(), "Error closing input stream", exc);
         }
-        closeConnection(connection);
+        closeResponse(response);
         try {
             if (fileDescriptor != null) {
                 fileDescriptor.close();
             }
         } catch (Exception exc) {
-            Log.e(DownloadCommand.class.getName(), "Error closing http connection", exc);
+            Log.e(DownloadCommand.class.getName(), "Error closing file descriptor", exc);
         }
         if (executorService != null) {
             Log.d(DownloadCommand.class.getName(), "Shutting down ScheduledExecutorService for polling thread");

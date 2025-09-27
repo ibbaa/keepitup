@@ -25,15 +25,18 @@ import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.SmallTest;
 
 import net.ibbaa.keepitup.resources.PreferenceManager;
-import net.ibbaa.keepitup.test.mock.MockURLConnection;
 import net.ibbaa.keepitup.test.mock.TestRegistry;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.Locale;
+
+import okhttp3.Protocol;
+import okhttp3.Request;
+import okhttp3.Response;
+import okhttp3.ResponseBody;
 
 @SmallTest
 @RunWith(AndroidJUnit4.class)
@@ -41,50 +44,67 @@ public class HTTPUtilTest {
 
     @Test
     public void testGetLocation() throws Exception {
-        MockURLConnection urlConnection = new MockURLConnection(new URL("http://test.com"));
-        assertNull(HTTPUtil.getLocation(TestRegistry.getContext(), urlConnection));
-        urlConnection.addHeader("Location", "123");
-        assertEquals("123", HTTPUtil.getLocation(TestRegistry.getContext(), urlConnection));
+        Response response = new Response.Builder().request(new Request.Builder().url("http://test.com/").build()).protocol(Protocol.HTTP_1_1).code(200).message("OK").body(ResponseBody.create(new byte[0], null)).build();
+        assertNull(HTTPUtil.getLocation(TestRegistry.getContext(), response));
+        response = response.newBuilder().header("Location", "123").build();
+        assertEquals("123", HTTPUtil.getLocation(TestRegistry.getContext(), response));
     }
 
     @Test
-    public void testGetContentDisposition() throws Exception {
-        MockURLConnection urlConnection = new MockURLConnection(new URL("http://test.com"));
-        assertNull(HTTPUtil.getContentDisposition(TestRegistry.getContext(), urlConnection));
-        urlConnection.addHeader("Content-Disposition", "123");
-        assertEquals("123", HTTPUtil.getContentDisposition(TestRegistry.getContext(), urlConnection));
+    public void testGetContentDisposition() {
+        Response response = new Response.Builder().request(new Request.Builder().url("http://test.com/").build()).protocol(Protocol.HTTP_1_1).code(200).message("OK").body(ResponseBody.create(new byte[0], null)).build();
+        assertNull(HTTPUtil.getContentDisposition(TestRegistry.getContext(), response));
+        response = response.newBuilder().header("Content-Disposition", "123").build();
+        assertEquals("123", HTTPUtil.getContentDisposition(TestRegistry.getContext(), response));
     }
 
     @Test
-    public void testSetUserAgent() throws Exception {
-        MockURLConnection urlConnection = new MockURLConnection(new URL("http://test.com"));
-        HTTPUtil.setUserAgent(TestRegistry.getContext(), urlConnection);
-        assertEquals("Mozilla/5.0", urlConnection.getHeaderField("User-Agent"));
+    public void testGetContentTypeWithOkHttpResponse() {
+        Response response = new Response.Builder().request(new Request.Builder().url("http://test.com/").build()).protocol(Protocol.HTTP_1_1).code(200).message("OK").body(ResponseBody.create(new byte[0], null)).build();
+        assertNull(HTTPUtil.getContentType(TestRegistry.getContext(), response));
+        response = response.newBuilder().header("Content-Type", "application/json").build();
+        assertEquals("application/json", HTTPUtil.getContentType(TestRegistry.getContext(), response));
+    }
+
+    @Test
+    public void testSetUserAgent() {
+        Request.Builder builder = new Request.Builder().url("http://test.com");
+        HTTPUtil.setUserAgent(TestRegistry.getContext(), builder);
+        Request request = builder.build();
+        assertEquals("Mozilla/5.0", request.header("User-Agent"));
         PreferenceManager preferenceManager = new PreferenceManager(TestRegistry.getContext());
         preferenceManager.setPreferenceHTTPUserAgent("abc");
-        HTTPUtil.setUserAgent(TestRegistry.getContext(), urlConnection);
-        assertEquals("abc", urlConnection.getHeaderField("User-Agent"));
+        builder = new Request.Builder().url("http://test.com");
+        HTTPUtil.setUserAgent(TestRegistry.getContext(), builder);
+        request = builder.build();
+        assertEquals("abc", request.header("User-Agent"));
         preferenceManager.removePreferenceHTTPUserAgent();
-        HTTPUtil.setUserAgent(TestRegistry.getContext(), urlConnection);
-        assertEquals("Mozilla/5.0", urlConnection.getHeaderField("User-Agent"));
+        builder = new Request.Builder().url("http://test.com");
+        HTTPUtil.setUserAgent(TestRegistry.getContext(), builder);
+        request = builder.build();
+        assertEquals("Mozilla/5.0", request.header("User-Agent"));
     }
 
     @Test
-    public void testSetAcceptHeader() throws Exception {
-        MockURLConnection urlConnection = new MockURLConnection(new URL("http://test.com"));
-        HTTPUtil.setAcceptHeader(TestRegistry.getContext(), urlConnection);
-        assertEquals("text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8", urlConnection.getHeaderField("Accept"));
+    public void testSetAcceptHeader() {
+        Request.Builder builder = new Request.Builder().url("http://test.com");
+        HTTPUtil.setAcceptHeader(TestRegistry.getContext(), builder);
+        Request request = builder.build();
+        assertEquals("text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8", request.header("Accept"));
     }
 
     @Test
-    public void testSetAcceptLanguageHeader() throws Exception {
-        MockURLConnection urlConnection = new MockURLConnection(new URL("http://test.com"));
-        HTTPUtil.setAcceptLanguageHeader(TestRegistry.getContext(), null, urlConnection);
-        assertEquals("en-US,en;q=0.9", urlConnection.getHeaderField("Accept-Language"));
-        HTTPUtil.setAcceptLanguageHeader(TestRegistry.getContext(), Locale.GERMANY, urlConnection);
-        assertEquals("de-DE,de;q=0.9,en;q=0.8", urlConnection.getHeaderField("Accept-Language"));
-        HTTPUtil.setAcceptLanguageHeader(TestRegistry.getContext(), Locale.US, urlConnection);
-        assertEquals("en-US,en;q=0.9", urlConnection.getHeaderField("Accept-Language"));
+    public void testSetAcceptLanguageHeader() {
+        Request.Builder builder = new Request.Builder().url("http://test.com");
+        HTTPUtil.setAcceptLanguageHeader(TestRegistry.getContext(), null, builder);
+        builder = new Request.Builder().url("http://test.com");
+        HTTPUtil.setAcceptLanguageHeader(TestRegistry.getContext(), Locale.GERMANY, builder);
+        Request request = builder.build();
+        assertEquals("de-DE,de;q=0.9,en;q=0.8", request.header("Accept-Language"));
+        builder = new Request.Builder().url("http://test.com");
+        HTTPUtil.setAcceptLanguageHeader(TestRegistry.getContext(), Locale.US, builder);
+        request = builder.build();
+        assertEquals("en-US,en;q=0.9", request.header("Accept-Language"));
     }
 
     @Test
