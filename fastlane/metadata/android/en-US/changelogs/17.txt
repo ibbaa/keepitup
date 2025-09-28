@@ -1,0 +1,1 @@
+* New target API level is 36 (Android 16) with Java 21, applied all required changes
