@@ -78,14 +78,14 @@ dependencies {
     implementation "androidx.documentfile:documentfile:1.1.0"
     implementation 'com.google.android.material:material:1.13.0'
     implementation 'com.google.guava:guava:33.5.0-android'
-    implementation 'net.ibbaa.phonelog:phonelog:2.0.0'
+    implementation 'net.ibbaa.phonelog:phonelog:2.1.0'
     implementation("com.squareup.okhttp3:okhttp:5.1.0")
+    testImplementation 'androidx.annotation:annotation:1.9.1'
     testImplementation 'junit:junit:4.13.2'
     testImplementation 'org.mockito:mockito-core:5.20.0'
     testImplementation 'org.powermock:powermock-api-mockito2:2.0.9'
     testImplementation 'org.powermock:powermock-module-junit4:2.0.9'
     testImplementation 'org.powermock:powermock-core:2.0.9'
-    testImplementation 'androidx.annotation:annotation:1.9.1'
     androidTestImplementation 'androidx.test:core:1.7.0'
     androidTestImplementation 'androidx.test.ext:junit:1.3.0'
     androidTestImplementation 'androidx.test:runner:1.7.0'

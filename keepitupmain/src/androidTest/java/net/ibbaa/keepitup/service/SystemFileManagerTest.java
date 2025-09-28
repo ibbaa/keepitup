@@ -282,6 +282,7 @@ public class SystemFileManagerTest {
     @Test
     public void testGetDownloadFileNameSpecified() throws Exception {
         assertEquals("xyz.jpg", fileManager.getDownloadFileName(new URL("http://www.host.com"), "xyz.jpg", "image/jpeg"));
+        assertEquals("xyz.jpg", fileManager.getDownloadFileName(new URL("http://www.host.com"), "xYz.jpg", "image/jpeg"));
         assertEquals("xyz.jpg", fileManager.getDownloadFileName(new URL("http://www.host.com"), "xyz", "image/jpeg"));
         assertEquals("  xyz .jpg", fileManager.getDownloadFileName(new URL("http://www.host.com"), "  xyz ", "image/jpeg"));
         assertEquals(" abc_xyz_xyz.mp3", fileManager.getDownloadFileName(new URL("http://www.host.com"), " abc/xyz/xyz", "audio/mpeg"));
@@ -300,6 +301,7 @@ public class SystemFileManagerTest {
         assertEquals("xyz.jpg", fileManager.getDownloadFileName(new URL("http://www.host.com/xyz.jpg"), null, null));
         assertEquals("xyz", fileManager.getDownloadFileName(new URL("http://www.host.com/xyz/"), null, null));
         assertEquals("xyz.pdf", fileManager.getDownloadFileName(new URL("http://www.host.com/xyz/"), null, "application/pdf"));
+        assertEquals("xyz.pdf", fileManager.getDownloadFileName(new URL("http://www.host.com/xYz/"), null, "application/pdf"));
         assertEquals("xyz.abc", fileManager.getDownloadFileName(new URL("http://www.host.com/xyz.abc"), "..", null));
         assertEquals("xyz.abc", fileManager.getDownloadFileName(new URL("http://www.host.com/123/xyz.abc"), "/", "image/jpeg"));
         assertEquals("xyz.a b c", fileManager.getDownloadFileName(new URL("http://www.host.com/123/xyz.a b c"), "", "image/jpeg"));
@@ -314,6 +316,7 @@ public class SystemFileManagerTest {
     @Test
     public void testGetDownloadFileNameHost() throws Exception {
         assertEquals("www_host_com", fileManager.getDownloadFileName(new URL("http://www.host.com"), null, null));
+        assertEquals("www_host_com", fileManager.getDownloadFileName(new URL("http://www.hOst.com"), null, null));
         assertEquals("www_host_com.css", fileManager.getDownloadFileName(new URL("http://www.host.com"), null, "text/css"));
         assertEquals("abcd.css", fileManager.getDownloadFileName(new URL("http://abcd"), "/", "text/css"));
         assertEquals("127_0_0_1.css", fileManager.getDownloadFileName(new URL("http://127.0.0.1///......"), "...////...///", "text/css"));
@@ -326,6 +329,7 @@ public class SystemFileManagerTest {
         assertEquals("test_3_id_00000001.log", fileManager.getLogFileName("test", null, ".log", 1, 2, null));
         assertEquals("test_3_id_0000000F.log", fileManager.getLogFileName("test", "", ".log", 15, 2, ""));
         assertEquals("test_2_name_www_host_com_id_0000000A.log", fileManager.getLogFileName("test", "name", ".log", 10, 1, "www.host.com"));
+        assertEquals("test_2_name_www_host_com_id_0000000A.log", fileManager.getLogFileName("test", "name", ".log", 10, 1, "www.Host.com"));
         assertEquals("tes_t_2_www_host_com_id_000000FF.log", fileManager.getLogFileName("tes/t", "", ".log", 255, 1, "www.host.com"));
         assertEquals("test_2_123_www_host_com_id_00000001log", fileManager.getLogFileName("test", "123", "log", 1, 1, "www.host.com/download.html"));
         assertEquals("xyz_-2_name_127_0_0_1_id_00000002.log", fileManager.getLogFileName("xyz", "name", ".log", 2, -3, "127.0.0.1"));
