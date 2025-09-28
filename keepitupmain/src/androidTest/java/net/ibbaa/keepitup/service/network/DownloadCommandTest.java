@@ -781,7 +781,7 @@ public class DownloadCommandTest {
         documentManager.setValidFileName("valid_file.txt");
         documentManager.setFileExists(true);
         documentManager.setDeleteSuccess(true);
-        documentManager.setFile(DocumentFile.fromFile(new File("test")));
+        documentManager.setFile(DocumentFile.fromFile(new File("test.txt")));
         downloadCommand.setDocumentManager(documentManager);
         setCurrentTime(downloadCommand);
         ByteArrayInputStream inputStream = new ByteArrayInputStream("TestData".getBytes(StandardCharsets.UTF_8));
@@ -799,7 +799,7 @@ public class DownloadCommandTest {
         assertEquals(1, result.httpResponseMessages().size());
         assertEquals(HttpURLConnection.HTTP_OK, result.httpResponseCodes().get(0).intValue());
         assertEquals("Everything ok", result.httpResponseMessages().get(0));
-        assertEquals("valid_file.txt", result.fileName());
+        assertEquals("test.txt", result.fileName());
         assertEquals(99, result.duration());
         assertNull(result.exception());
         assertTrue(urlConnection.isDisconnected());
@@ -855,7 +855,7 @@ public class DownloadCommandTest {
         documentManager.setValidFileName("valid_file.txt");
         documentManager.setFileExists(true);
         documentManager.setDeleteSuccess(false);
-        documentManager.setFile(DocumentFile.fromFile(new File("test")));
+        documentManager.setFile(DocumentFile.fromFile(new File("test.txt")));
         downloadCommand.setDocumentManager(documentManager);
         setCurrentTime(downloadCommand);
         ByteArrayInputStream inputStream = new ByteArrayInputStream("TestData".getBytes(StandardCharsets.UTF_8));
@@ -873,7 +873,7 @@ public class DownloadCommandTest {
         assertEquals(1, result.httpResponseMessages().size());
         assertEquals(HttpURLConnection.HTTP_OK, result.httpResponseCodes().get(0).intValue());
         assertEquals("Everything ok", result.httpResponseMessages().get(0));
-        assertEquals("valid_file.txt", result.fileName());
+        assertEquals("test.txt", result.fileName());
         assertEquals(99, result.duration());
         assertNull(result.exception());
         assertTrue(urlConnection.isDisconnected());

@@ -114,7 +114,13 @@ public class SystemDocumentManager implements IDocumentManager {
     @Override
     public boolean fileExists(DocumentFile folder, String fileName) {
         Log.d(SystemDocumentManager.class.getName(), "fileExists, fileName is " + fileName);
-        return folder.findFile(fileName) != null;
+        for (DocumentFile child : folder.listFiles()) {
+            String name = child.getName();
+            if (name != null && name.equalsIgnoreCase(fileName)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     @Override

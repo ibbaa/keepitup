@@ -174,6 +174,7 @@ public class DownloadCommand implements Callable<DownloadCommandResult> {
                     long end = timeService.getCurrentTimestamp();
                     return createDownloadCommandResult(downloadUrl, true, false, false, false, httpCodes, httpMessages, null, NumberUtil.ensurePositive(end - start), null);
                 }
+                fileName = downloadDocumentFile.getName();
                 fileDescriptor = getDownloadFileDescriptor(downloadDocumentFile);
                 outputStream = getOutputStream(fileDescriptor);
             } else {
@@ -367,7 +368,6 @@ public class DownloadCommand implements Callable<DownloadCommandResult> {
                     return false;
                 }
                 return getDocumentManager().delete(downloadDocumentFile);
-
             }
             File file = new File(folder, fileName);
             IFileManager fileManager = getFileManager();

@@ -347,10 +347,10 @@ public class SystemFileManager implements IFileManager {
         if (!StringUtil.isEmpty(extension)) {
             String fileNameWithExtension = fileNameWithoutExtension + "." + extension;
             Log.d(SystemFileManager.class.getName(), "Returning file name " + fileNameWithExtension);
-            return fileNameWithExtension.replaceAll("/", "_");
+            return fileNameWithExtension.toLowerCase().replaceAll("/", "_");
         }
         Log.d(SystemFileManager.class.getName(), "Returning file name " + fileNameWithoutExtension);
-        return fileNameWithoutExtension.replaceAll("/", "_");
+        return fileNameWithoutExtension.toLowerCase().replaceAll("/", "_");
     }
 
     @Override
@@ -375,7 +375,7 @@ public class SystemFileManager implements IFileManager {
         if (!StringUtil.isEmpty(host)) {
             logFileName = logFileName + "_" + host;
         }
-        logFileName = logFileName + "_id_" + String.format("%08X", id);
+        logFileName = logFileName.toLowerCase() + "_id_" + String.format("%08X", id);
         return logFileName.replaceAll("\\.", "_").replaceAll("/", "_").replaceAll("\\s+", "_") + extension;
     }
 

@@ -1,0 +1,1 @@
+* Fixed several bugs with inconsistent case sensitive or insensitive file access of storage access framework
