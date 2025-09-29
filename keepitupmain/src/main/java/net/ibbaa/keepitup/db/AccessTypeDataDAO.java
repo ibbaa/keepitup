@@ -46,8 +46,8 @@ public class AccessTypeDataDAO extends BaseDAO {
     public AccessTypeData updateAccessTypeData(AccessTypeData accessTypeData) {
         Log.d(AccessTypeDataDAO.class.getName(), "Updating accessTypeData with id " + accessTypeData.getId());
         AccessTypeData returnedAccessTypeData = executeDBOperationInTransaction(accessTypeData, this::updateAccessTypeData);
-        Log.d(AccessTypeDataDAO.class.getName(), "Updated interval is " + returnedAccessTypeData);
-        dumpDatabase("Dump after updateInterval call");
+        Log.d(AccessTypeDataDAO.class.getName(), "Updated accessTypeData is " + returnedAccessTypeData);
+        dumpDatabase("Dump after updateAccessTypeData call");
         return returnedAccessTypeData;
     }
 
@@ -69,16 +69,16 @@ public class AccessTypeDataDAO extends BaseDAO {
 
     public void deleteAccessTypeDataForNetworkTask(long networkTaskId) {
         Log.d(AccessTypeDataDAO.class.getName(), "Deleting all accessTypeData for network task with id " + networkTaskId);
-        AccessTypeData sccessTypeData = new AccessTypeData();
-        sccessTypeData.setNetworkTaskId(networkTaskId);
-        executeDBOperationInTransaction(sccessTypeData, this::deleteAccessTypeDataForNetworkTask);
+        AccessTypeData accessTypeData = new AccessTypeData();
+        accessTypeData.setNetworkTaskId(networkTaskId);
+        executeDBOperationInTransaction(accessTypeData, this::deleteAccessTypeDataForNetworkTask);
         dumpDatabase("Dump after deleteAccessTypeDataForNetworkTask call");
     }
 
     public void deleteAllOrphanAccessTypeData() {
         Log.d(AccessTypeDataDAO.class.getName(), "Deleting all orphan accessTypeData");
         executeDBOperationInTransaction((AccessTypeData) null, this::deleteAllOrphanAccessTypeData);
-        dumpDatabase("Dump after deleteAllOrphanLogs call");
+        dumpDatabase("Dump after deleteAllOrphanAccessTypeData call");
     }
 
     public void deleteAllAccessTypeData() {
@@ -113,7 +113,7 @@ public class AccessTypeDataDAO extends BaseDAO {
 
     @SuppressWarnings({"ExtractMethodRecommender"})
     private AccessTypeData updateAccessTypeData(AccessTypeData accessTypeData, SQLiteDatabase db) {
-        Log.d(IntervalDAO.class.getName(), "updateAccessTypeData, accessTypeData is " + accessTypeData);
+        Log.d(AccessTypeDataDAO.class.getName(), "updateAccessTypeData, accessTypeData is " + accessTypeData);
         AccessTypeDataDBConstants dbConstants = new AccessTypeDataDBConstants(getContext());
         String selection = dbConstants.getIdColumnName() + " = ?";
         String[] selectionArgs = {String.valueOf(accessTypeData.getId())};

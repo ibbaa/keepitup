@@ -18,6 +18,7 @@ package net.ibbaa.keepitup.resources;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import androidx.test.ext.junit.runners.AndroidJUnit4;
@@ -181,6 +182,30 @@ public class PreferenceManagerTest {
         preferenceManager.setPreferenceHighPrio(true);
         preferenceManager.removePreferenceHighPrio();
         assertFalse(preferenceManager.getPreferenceHighPrio());
+    }
+
+    @Test
+    public void testGetSetRemovePreferenceResolveAddress() {
+        assertNull(preferenceManager.getPreferenceResolveAddress());
+        preferenceManager.setPreferenceResolveAddress("www.host.com");
+        assertEquals("www.host.com", preferenceManager.getPreferenceResolveAddress());
+        preferenceManager.removeAllPreferences();
+        assertNull(preferenceManager.getPreferenceResolveAddress());
+        preferenceManager.setPreferenceResolveAddress("www.host.com");
+        preferenceManager.removePreferenceResolveAddress();
+        assertNull(preferenceManager.getPreferenceResolveAddress());
+    }
+
+    @Test
+    public void testGetSetRemovePreferenceResolvePort() {
+        assertEquals(-1, preferenceManager.getPreferenceResolvePort());
+        preferenceManager.setPreferenceResolvePort(80);
+        assertEquals(80, preferenceManager.getPreferenceResolvePort());
+        preferenceManager.removeAllPreferences();
+        assertEquals(-1, preferenceManager.getPreferenceResolvePort());
+        preferenceManager.setPreferenceResolvePort(80);
+        preferenceManager.removePreferenceResolvePort();
+        assertEquals(-1, preferenceManager.getPreferenceResolvePort());
     }
 
     @Test

@@ -244,6 +244,8 @@ public class JSONSystemSetupTest {
         preferenceManager.setPreferenceNotification(true);
         preferenceManager.setPreferenceHighPrio(true);
         preferenceManager.setPreferencePingPackageSize(15);
+        preferenceManager.setPreferenceResolveAddress("127.0.0.1");
+        preferenceManager.setPreferenceResolvePort(123);
         preferenceManager.setPreferenceImportFolder("folderImport");
         preferenceManager.setPreferenceExportFolder("folderExport");
         preferenceManager.setPreferenceLastArbitraryExportFile("fileExport");
@@ -284,6 +286,8 @@ public class JSONSystemSetupTest {
         assertTrue(defaultsData.getBoolean("preferenceNotification"));
         assertTrue(defaultsData.getBoolean("preferenceHighPrio"));
         assertEquals(15, defaultsData.getInt("preferencePingPackageSize"));
+        assertEquals("127.0.0.1", defaultsData.getString("preferenceResolveAddress"));
+        assertEquals(123, defaultsData.getInt("preferenceResolvePort"));
         assertEquals("folderImport", systemSettingsData.getString("preferenceImportFolder"));
         assertEquals("folderExport", systemSettingsData.getString("preferenceExportFolder"));
         assertEquals("fileExport", systemSettingsData.getString("preferenceLastArbitraryExportFile"));
@@ -301,6 +305,7 @@ public class JSONSystemSetupTest {
     public void testExportSettingsInvalid() throws Exception {
         preferenceManager.setPreferenceNotificationAfterFailures(21);
         preferenceManager.setPreferencePingPackageSize(12345678);
+        preferenceManager.setPreferenceResolvePort(12345678);
         preferenceManager.setPreferenceExternalStorageType(30);
         preferenceManager.setPreferencePort(100000);
         preferenceManager.setPreferenceInterval(-5);
@@ -321,6 +326,7 @@ public class JSONSystemSetupTest {
         assertEquals(25, defaultsData.getInt("preferencePingCount"));
         assertEquals(25, defaultsData.getInt("preferenceConnectCount"));
         assertEquals(12345678, defaultsData.getInt("preferencePingPackageSize"));
+        assertEquals(12345678, defaultsData.getInt("preferenceResolvePort"));
     }
 
     @Test
@@ -850,6 +856,8 @@ public class JSONSystemSetupTest {
         preferenceManager.setPreferenceNotification(true);
         preferenceManager.setPreferenceHighPrio(true);
         preferenceManager.setPreferencePingPackageSize(1234);
+        preferenceManager.setPreferenceResolveAddress("127.0.0.1");
+        preferenceManager.setPreferenceResolvePort(123);
         preferenceManager.setPreferenceImportFolder("folderImport");
         preferenceManager.setPreferenceExportFolder("folderExport");
         preferenceManager.setPreferenceLastArbitraryExportFile("fileExport");
@@ -888,6 +896,8 @@ public class JSONSystemSetupTest {
         assertTrue(preferenceManager.getPreferenceNotification());
         assertTrue(preferenceManager.getPreferenceHighPrio());
         assertEquals(1234, preferenceManager.getPreferencePingPackageSize());
+        assertEquals("127.0.0.1", preferenceManager.getPreferenceResolveAddress());
+        assertEquals(123, preferenceManager.getPreferenceResolvePort());
         assertEquals("folderImport", preferenceManager.getPreferenceImportFolder());
         assertEquals("folderExport", preferenceManager.getPreferenceExportFolder());
         assertEquals("fileExport", preferenceManager.getPreferenceLastArbitraryExportFile());
@@ -903,18 +913,21 @@ public class JSONSystemSetupTest {
     @Test
     public void testImportSettingsAddressTrimmed() {
         preferenceManager.setPreferenceAddress("   address   ");
+        preferenceManager.setPreferenceResolveAddress("   address   ");
         SystemSetupResult exportResult = setup.exportData();
         preferenceManager.removeAllPreferences();
         SystemSetupResult importResult = setup.importData(exportResult.data());
         assertTrue(importResult.success());
         assertEquals(exportResult.data(), importResult.data());
         assertEquals("address", preferenceManager.getPreferenceAddress());
+        assertEquals("address", preferenceManager.getPreferenceResolveAddress());
     }
 
     @Test
     public void testImportSettingsInvalid() {
         preferenceManager.setPreferenceNotificationAfterFailures(21);
         preferenceManager.setPreferencePingPackageSize(12345678);
+        preferenceManager.setPreferenceResolvePort(12345678);
         preferenceManager.setPreferenceExternalStorageType(2);
         preferenceManager.setPreferencePort(100000);
         preferenceManager.setPreferenceInterval(-5);
@@ -929,6 +942,7 @@ public class JSONSystemSetupTest {
         assertEquals(exportResult.data(), importResult.data());
         assertEquals(1, preferenceManager.getPreferenceNotificationAfterFailures());
         assertEquals(56, preferenceManager.getPreferencePingPackageSize());
+        assertEquals(-1, preferenceManager.getPreferenceResolvePort());
         assertEquals(0, preferenceManager.getPreferenceExternalStorageType());
         assertEquals(22, preferenceManager.getPreferencePort());
         assertEquals(15, preferenceManager.getPreferenceInterval());

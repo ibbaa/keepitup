@@ -69,17 +69,55 @@ public class NetworkTaskValidatorTest {
     }
 
     @Test
-    public void testValidateAddress() {
+    public void testValidateAddressPing() {
         NetworkTask task = getNetworkTask();
         assertTrue(validator.validateAddress(task));
         assertTrue(validator.validate(task));
-        task.setAddress("http:// xyz abc");
+        task.setAddress("http://xyz.com");
         assertFalse(validator.validateAddress(task));
         assertFalse(validator.validate(task));
         task.setAddress("123.456.788.111");
         assertFalse(validator.validateAddress(task));
         assertFalse(validator.validate(task));
         task.setAddress("127.0.0.1");
+        assertTrue(validator.validateAddress(task));
+        assertTrue(validator.validate(task));
+    }
+
+    @Test
+    public void testValidateAddressConnect() {
+        NetworkTask task = getNetworkTask();
+        task.setAccessType(AccessType.CONNECT);
+        assertTrue(validator.validateAddress(task));
+        assertTrue(validator.validate(task));
+        task.setAddress("http://xyz.com");
+        assertFalse(validator.validateAddress(task));
+        assertFalse(validator.validate(task));
+        task.setAddress("123.456.788.111");
+        assertFalse(validator.validateAddress(task));
+        assertFalse(validator.validate(task));
+        task.setAddress("127.0.0.1.5");
+        assertFalse(validator.validateAddress(task));
+        assertFalse(validator.validate(task));
+    }
+
+    @Test
+    public void testValidateAddressDownload() {
+        NetworkTask task = getNetworkTask();
+        task.setAccessType(AccessType.DOWNLOAD);
+        task.setAddress("http://xyz.com");
+        assertTrue(validator.validateAddress(task));
+        assertTrue(validator.validate(task));
+        task.setAddress("http:// xyz com");
+        assertFalse(validator.validateAddress(task));
+        assertFalse(validator.validate(task));
+        task.setAddress("123.456.788.111");
+        assertFalse(validator.validateAddress(task));
+        assertFalse(validator.validate(task));
+        task.setAddress("127.0.0.1");
+        assertFalse(validator.validateAddress(task));
+        assertFalse(validator.validate(task));
+        task.setAddress("http://127.0.0.1");
         assertTrue(validator.validateAddress(task));
         assertTrue(validator.validate(task));
     }

@@ -211,6 +211,36 @@ public class PreferenceManager {
         removePreferenceValue(getResources().getString(R.string.task_highprio_key));
     }
 
+    public String getPreferenceResolveAddress() {
+        Log.d(PreferenceManager.class.getName(), "getPreferenceResolveAddress");
+        return getPreferenceString(getResources().getString(R.string.resolve_address_key), null);
+    }
+
+    public void setPreferenceResolveAddress(String address) {
+        Log.d(PreferenceManager.class.getName(), "setPreferenceResolveAddress, address is " + address);
+        setPreferenceString(getResources().getString(R.string.resolve_address_key), address);
+    }
+
+    public void removePreferenceResolveAddress() {
+        Log.d(PreferenceManager.class.getName(), "removePreferenceResolveAddress");
+        removePreferenceValue(getResources().getString(R.string.resolve_address_key));
+    }
+
+    public int getPreferenceResolvePort() {
+        Log.d(PreferenceManager.class.getName(), "getPreferenceResolvePort");
+        return getPreferenceInt(getResources().getString(R.string.resolve_port_key), getResources().getInteger(R.integer.resolve_port_default));
+    }
+
+    public void setPreferenceResolvePort(int port) {
+        Log.d(PreferenceManager.class.getName(), "setPreferenceResolvePort, port is " + port);
+        setPreferenceInt(getResources().getString(R.string.resolve_port_key), port);
+    }
+
+    public void removePreferenceResolvePort() {
+        Log.d(PreferenceManager.class.getName(), "removePreferenceResolvePort");
+        removePreferenceValue(getResources().getString(R.string.resolve_port_key));
+    }
+
     public int getPreferencePingCount() {
         Log.d(PreferenceManager.class.getName(), "getPreferencePingCount");
         return getPreferenceInt(getResources().getString(R.string.ping_count_key), getResources().getInteger(R.integer.ping_count_default));

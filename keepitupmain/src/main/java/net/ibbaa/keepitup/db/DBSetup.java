@@ -25,9 +25,11 @@ import net.ibbaa.keepitup.model.AccessTypeData;
 import net.ibbaa.keepitup.model.Interval;
 import net.ibbaa.keepitup.model.LogEntry;
 import net.ibbaa.keepitup.model.NetworkTask;
+import net.ibbaa.keepitup.model.Resolve;
 import net.ibbaa.keepitup.model.validation.AccessTypeDataValidator;
 import net.ibbaa.keepitup.model.validation.IntervalValidator;
 import net.ibbaa.keepitup.model.validation.NetworkTaskValidator;
+import net.ibbaa.keepitup.model.validation.ResolveValidator;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -42,6 +44,7 @@ public class DBSetup {
     private final IntervalDBConstants intervalDBConstants;
     private final SchedulerStateDBConstants schedulerStateDBConstants;
     private final AccessTypeDataDBConstants accessTypeDataDBConstants;
+    private final ResolveDBConstants resolveDBConstants;
 
     public DBSetup(Context context) {
         this.context = context;
@@ -51,6 +54,7 @@ public class DBSetup {
         this.intervalDBConstants = new IntervalDBConstants(context);
         this.schedulerStateDBConstants = new SchedulerStateDBConstants(context);
         this.accessTypeDataDBConstants = new AccessTypeDataDBConstants(context);
+        this.resolveDBConstants = new ResolveDBConstants(context);
     }
 
     public void createTables(SQLiteDatabase db) {
@@ -61,6 +65,7 @@ public class DBSetup {
         createIntervalTable(db);
         createSchedulerStateTable(db);
         createAccessTypeDataTable(db);
+        createResolveTable(db);
     }
 
     public void tryDropTables(SQLiteDatabase db) {
@@ -94,6 +99,11 @@ public class DBSetup {
             dropAccessTypeDataTable(db);
         } catch (Exception exc) {
             Log.d(DBMigrate.class.getName(), "dropAccessTypeDataTable failed ", exc);
+        }
+        try {
+            dropResolveTable(db);
+        } catch (Exception exc) {
+            Log.d(DBMigrate.class.getName(), "dropResolveTable failed ", exc);
         }
     }
 
@@ -177,6 +187,11 @@ public class DBSetup {
         db.execSQL(accessTypeDataDBConstants.getAddIgnoreSSLErrorColumnStatement());
     }
 
+    public void createResolveTable(SQLiteDatabase db) {
+        Log.d(DBSetup.class.getName(), "Creating database table " + resolveDBConstants.getTableName());
+        db.execSQL(resolveDBConstants.getCreateTableStatement());
+    }
+
     public void dropTables(SQLiteDatabase db) {
         Log.d(DBSetup.class.getName(), "dropTables");
         dropSchedulerIdHistoryTable(db);
@@ -185,6 +200,7 @@ public class DBSetup {
         dropIntervalTable(db);
         dropSchedulerStateTable(db);
         dropAccessTypeDataTable(db);
+        dropResolveTable(db);
     }
 
     public void dropNetworkTaskTable(SQLiteDatabase db) {
@@ -290,6 +306,19 @@ public class DBSetup {
         db.execSQL(accessTypeDataDBConstants.getDropIgnoreSSLErrorColumnStatement());
     }
 
+    public void dropResolveTable(SQLiteDatabase db) {
+        Log.d(DBSetup.class.getName(), "Dropping database table " + resolveDBConstants.getTableName());
+        db.execSQL(resolveDBConstants.getDropTableStatement());
+    }
+
+    public void tryDropResolveTable(SQLiteDatabase db) {
+        try {
+            dropResolveTable(db);
+        } catch (Exception exc) {
+            Log.d(DBMigrate.class.getName(), "dropResolveTable failed ", exc);
+        }
+    }
+
     public void recreateNetworkTaskTable(SQLiteDatabase db) {
         Log.d(DBSetup.class.getName(), "recreateNetworkTaskTable");
         dropNetworkTaskTable(db);
@@ -318,6 +347,12 @@ public class DBSetup {
         Log.d(DBSetup.class.getName(), "recreateAccessTypeDataTable");
         dropAccessTypeDataTable(db);
         createAccessTypeDataTable(db);
+    }
+
+    public void recreateResolveTable(SQLiteDatabase db) {
+        Log.d(DBSetup.class.getName(), "recreateResolveTable");
+        dropResolveTable(db);
+        createResolveTable(db);
     }
 
     public void recreateSchedulerStateTable(SQLiteDatabase db) {
@@ -386,6 +421,10 @@ public class DBSetup {
 
     public void initializeAccessTypeDataTable() {
         initializeAccessTypeDataTable(DBOpenHelper.getInstance(getContext()).getWritableDatabase());
+    }
+
+    public void createResolveTable() {
+        createResolveTable(DBOpenHelper.getInstance(getContext()).getWritableDatabase());
     }
 
     public void dropTables() {
@@ -461,6 +500,15 @@ public class DBSetup {
         tryDropAccessTypeDataTable(DBOpenHelper.getInstance(getContext()).getWritableDatabase());
     }
 
+    public void dropResolveTable() {
+        dropResolveTable(DBOpenHelper.getInstance(getContext()).getWritableDatabase());
+    }
+
+    @SuppressWarnings({"unused"})
+    public void tryDropResolveTable() {
+        tryDropResolveTable(DBOpenHelper.getInstance(getContext()).getWritableDatabase());
+    }
+
     public void recreateNetworkTaskTable() {
         recreateNetworkTaskTable(DBOpenHelper.getInstance(getContext()).getWritableDatabase());
     }
@@ -483,6 +531,10 @@ public class DBSetup {
 
     public void recreateAccessTypeDataTable() {
         recreateAccessTypeDataTable(DBOpenHelper.getInstance(getContext()).getWritableDatabase());
+    }
+
+    public void recreateResolveTable() {
+        recreateResolveTable(DBOpenHelper.getInstance(getContext()).getWritableDatabase());
     }
 
     public void recreateTables() {
@@ -525,6 +577,12 @@ public class DBSetup {
         dao.deleteAllAccessTypeData();
     }
 
+    public void deleteAllResolve() {
+        Log.d(DBSetup.class.getName(), "deleteAllResolve");
+        ResolveDAO dao = new ResolveDAO(getContext());
+        dao.deleteAllResolve();
+    }
+
     public void normalizeUIIndex() {
         Log.d(DBSetup.class.getName(), "normalizeUIIndex");
         NetworkTaskDAO dao = new NetworkTaskDAO(getContext());
@@ -560,6 +618,13 @@ public class DBSetup {
         return accessTypeData != null ? accessTypeData.toMap() : null;
     }
 
+    public Map<String, ?> exportResolveForNetworkTask(long networkTaskId) {
+        Log.d(DBSetup.class.getName(), "exportResolveForNetworkTask, networkTaskId is " + networkTaskId);
+        ResolveDAO dao = new ResolveDAO(getContext());
+        Resolve resolve = dao.readResolveForNetworkTask(networkTaskId);
+        return resolve != null ? resolve.toMap() : null;
+    }
+
     public List<Map<String, ?>> exportIntervals() {
         Log.d(DBSetup.class.getName(), "exportIntervals");
         IntervalDAO dao = new IntervalDAO(getContext());
@@ -571,15 +636,16 @@ public class DBSetup {
         return exportedList;
     }
 
-    public void importNetworkTaskWithLogsAndAccessTypeData(Map<String, ?> taskMap, List<Map<String, ?>> logList, Map<String, ?> accessTypeDataMap) {
-        importNetworkTaskWithLogsAndAccessTypeData(taskMap, logList, accessTypeDataMap, true);
+    public void importNetworkTaskWithLogsAccessTypeDataAndResolve(Map<String, ?> taskMap, List<Map<String, ?>> logList, Map<String, ?> accessTypeDataMap, Map<String, ?> resolveMap) {
+        importNetworkTaskWithLogsAccessTypeDataAndResolve(taskMap, logList, accessTypeDataMap, resolveMap, true);
     }
 
-    public void importNetworkTaskWithLogsAndAccessTypeData(Map<String, ?> taskMap, List<Map<String, ?>> logList, Map<String, ?> accessTypeDataMap, boolean resetRunnning) {
+    public void importNetworkTaskWithLogsAccessTypeDataAndResolve(Map<String, ?> taskMap, List<Map<String, ?>> logList, Map<String, ?> accessTypeDataMap, Map<String, ?> resolveMap, boolean resetRunnning) {
         Log.d(DBSetup.class.getName(), "importNetworkTaskWithLogsAndAccessTypeData, resetRunning is " + resetRunnning);
         NetworkTaskDAO networkTaskDAO = new NetworkTaskDAO(getContext());
         LogDAO logDAO = new LogDAO(getContext());
         AccessTypeDataDAO accessTypeDataDAO = new AccessTypeDataDAO(getContext());
+        ResolveDAO resolveDAO = new ResolveDAO(getContext());
         NetworkTaskValidator networkTaskValidator = new NetworkTaskValidator(getContext());
         NetworkTask task = new NetworkTask(taskMap);
         if (task.getAddress() != null) {
@@ -605,6 +671,7 @@ public class DBSetup {
             }
         }
         AccessTypeDataValidator accessTypeDataValidator = new AccessTypeDataValidator(getContext());
+        ResolveValidator resolveValidator = new ResolveValidator(getContext());
         if (task.getId() > 0) {
             AccessTypeData accessTypeData = accessTypeDataMap == null ? new AccessTypeData(getContext()) : new AccessTypeData(accessTypeDataMap);
             accessTypeData.setNetworkTaskId(task.getId());
@@ -618,6 +685,22 @@ public class DBSetup {
                 AccessTypeData defaultAccessTypeData = new AccessTypeData(getContext());
                 defaultAccessTypeData.setNetworkTaskId(task.getId());
                 accessTypeDataDAO.insertAccessTypeData(defaultAccessTypeData);
+            }
+            if (resolveMap == null) {
+                Log.d(DBSetup.class.getName(), "Resolve map is null. Nothing to import.");
+            } else {
+                Resolve resolve = new Resolve(resolveMap);
+                resolve.setNetworkTaskId(task.getId());
+                if (resolve.getAddress() != null) {
+                    resolve.setAddress(resolve.getAddress().trim());
+                }
+                Log.d(DBSetup.class.getName(), "Resolve object is " + resolve);
+                if (resolveValidator.validate(resolve)) {
+                    Log.d(DBSetup.class.getName(), "Importing resolve object.");
+                    resolveDAO.insertResolve(resolve);
+                } else {
+                    Log.e(DBSetup.class.getName(), "Resolve object is invalid and will not be imported: " + resolve);
+                }
             }
         }
     }

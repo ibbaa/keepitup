@@ -42,7 +42,7 @@ public class DBPurgeTask extends UIBackgroundTask<Boolean> {
                 int dropTableRetry = context.getResources().getInteger(R.integer.drop_table_retry_count);
                 int dropTableTimeout = context.getResources().getInteger(R.integer.drop_table_timeout);
                 while (dropTableRetry > 0) {
-                    boolean dropSuccess = purgeTables(setup::recreateLogTable, setup::recreateNetworkTaskTable, setup::recreateSchedulerIdHistoryTable, setup::recreateIntervalTable, setup::recreateSchedulerStateTable, setup::recreateAccessTypeDataTable);
+                    boolean dropSuccess = purgeTables(setup::recreateLogTable, setup::recreateNetworkTaskTable, setup::recreateSchedulerIdHistoryTable, setup::recreateIntervalTable, setup::recreateSchedulerStateTable, setup::recreateAccessTypeDataTable, setup::recreateResolveTable);
                     if (!dropSuccess) {
                         TimeUnit.MILLISECONDS.sleep(dropTableTimeout);
                     } else {
@@ -54,7 +54,7 @@ public class DBPurgeTask extends UIBackgroundTask<Boolean> {
                 int deleteTableRetry = context.getResources().getInteger(R.integer.delete_table_retry_count);
                 int deleteTableTimeout = context.getResources().getInteger(R.integer.delete_table_timeout);
                 while (deleteTableRetry > 0) {
-                    boolean deleteSuccess = purgeTables(setup::deleteAllLogs, setup::deleteAllNetworkTasks, setup::deleteAllSchedulerIds, setup::deleteAllIntervals, setup::recreateSchedulerStateTable, setup::deleteAllAccessTypeData);
+                    boolean deleteSuccess = purgeTables(setup::deleteAllLogs, setup::deleteAllNetworkTasks, setup::deleteAllSchedulerIds, setup::deleteAllIntervals, setup::recreateSchedulerStateTable, setup::deleteAllAccessTypeData, setup::deleteAllResolve);
                     if (!deleteSuccess) {
                         TimeUnit.MILLISECONDS.sleep(deleteTableTimeout);
                     } else {
@@ -70,7 +70,7 @@ public class DBPurgeTask extends UIBackgroundTask<Boolean> {
         return false;
     }
 
-    private boolean purgeTables(PurgeOperation logOperation, PurgeOperation networkOperation, PurgeOperation schedulerIdOperation, PurgeOperation intervalOperation, PurgeOperation schedulerStateOperation, PurgeOperation accessTypeDataOperation) {
+    private boolean purgeTables(PurgeOperation logOperation, PurgeOperation networkOperation, PurgeOperation schedulerIdOperation, PurgeOperation intervalOperation, PurgeOperation schedulerStateOperation, PurgeOperation accessTypeDataOperation, PurgeOperation resolveOperation) {
         Log.d(DBPurgeTask.class.getName(), "purgeTables");
         boolean logTableSuccess = false;
         boolean networkTaskTableSuccess = false;
@@ -78,6 +78,7 @@ public class DBPurgeTask extends UIBackgroundTask<Boolean> {
         boolean intervalTableSuccess = false;
         boolean schedulerStateTableSuccess = false;
         boolean accessTypeDataTableSuccess = false;
+        boolean resolveTableSuccess = false;
         try {
             logOperation.doPurge();
             logTableSuccess = true;
@@ -114,13 +115,20 @@ public class DBPurgeTask extends UIBackgroundTask<Boolean> {
         } catch (Exception exc) {
             Log.e(DBPurgeTask.class.getName(), "Error purging access type data table", exc);
         }
+        try {
+            resolveOperation.doPurge();
+            resolveTableSuccess = true;
+        } catch (Exception exc) {
+            Log.e(DBPurgeTask.class.getName(), "Error purging resolve table", exc);
+        }
         Log.d(DBPurgeTask.class.getName(), "logTableSuccess: " + logTableSuccess);
         Log.d(DBPurgeTask.class.getName(), "networkTaskTableSuccess: " + networkTaskTableSuccess);
         Log.d(DBPurgeTask.class.getName(), "schedulerIdTableSuccess: " + schedulerIdTableSuccess);
         Log.d(DBPurgeTask.class.getName(), "intervalTableSuccess: " + intervalTableSuccess);
         Log.d(DBPurgeTask.class.getName(), "schedulerStateTableSuccess: " + schedulerStateTableSuccess);
         Log.d(DBPurgeTask.class.getName(), "accessTypeDataTableSuccess: " + accessTypeDataTableSuccess);
-        return logTableSuccess && networkTaskTableSuccess && schedulerIdTableSuccess && intervalTableSuccess && schedulerStateTableSuccess && accessTypeDataTableSuccess;
+        Log.d(DBPurgeTask.class.getName(), "resolveTableSuccess: " + resolveTableSuccess);
+        return logTableSuccess && networkTaskTableSuccess && schedulerIdTableSuccess && intervalTableSuccess && schedulerStateTableSuccess && accessTypeDataTableSuccess && resolveTableSuccess;
     }
 
     @Override

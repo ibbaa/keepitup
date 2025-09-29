@@ -107,6 +107,8 @@ public class ExportTaskTest extends BaseUITest {
         getPreferenceManager().setPreferencePingCount(5);
         getPreferenceManager().setPreferenceConnectCount(10);
         getPreferenceManager().setPreferencePingPackageSize(12);
+        getPreferenceManager().setPreferenceResolveAddress("127.0.0.1");
+        getPreferenceManager().setPreferenceResolvePort(123);
         getPreferenceManager().setPreferenceStopOnSuccess(true);
         getPreferenceManager().setPreferenceIgnoreSSLError(true);
         getPreferenceManager().setPreferenceOnlyWifi(true);
@@ -205,6 +207,8 @@ public class ExportTaskTest extends BaseUITest {
         assertEquals(5, getPreferenceManager().getPreferencePingCount());
         assertEquals(10, getPreferenceManager().getPreferenceConnectCount());
         assertEquals(12, getPreferenceManager().getPreferencePingPackageSize());
+        assertEquals("127.0.0.1", getPreferenceManager().getPreferenceResolveAddress());
+        assertEquals(123, getPreferenceManager().getPreferenceResolvePort());
         assertTrue(getPreferenceManager().getPreferenceStopOnSuccess());
         assertTrue(getPreferenceManager().getPreferenceIgnoreSSLError());
         assertTrue(getPreferenceManager().getPreferenceOnlyWifi());
@@ -257,6 +261,8 @@ public class ExportTaskTest extends BaseUITest {
         getPreferenceManager().setPreferencePingCount(5);
         getPreferenceManager().setPreferenceConnectCount(10);
         getPreferenceManager().setPreferencePingPackageSize(12);
+        getPreferenceManager().setPreferenceResolveAddress("127.0.0.1");
+        getPreferenceManager().setPreferenceResolvePort(123);
         getPreferenceManager().setPreferenceStopOnSuccess(true);
         getPreferenceManager().setPreferenceIgnoreSSLError(true);
         getPreferenceManager().setPreferenceOnlyWifi(true);
@@ -358,6 +364,8 @@ public class ExportTaskTest extends BaseUITest {
         assertEquals(5, getPreferenceManager().getPreferencePingCount());
         assertEquals(10, getPreferenceManager().getPreferenceConnectCount());
         assertEquals(12, getPreferenceManager().getPreferencePingPackageSize());
+        assertEquals("127.0.0.1", getPreferenceManager().getPreferenceResolveAddress());
+        assertEquals(123, getPreferenceManager().getPreferenceResolvePort());
         assertTrue(getPreferenceManager().getPreferenceStopOnSuccess());
         assertTrue(getPreferenceManager().getPreferenceIgnoreSSLError());
         assertTrue(getPreferenceManager().getPreferenceOnlyWifi());

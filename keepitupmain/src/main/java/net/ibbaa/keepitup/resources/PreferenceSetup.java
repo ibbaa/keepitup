@@ -76,6 +76,8 @@ public class PreferenceSetup {
         defaults.put("preferenceNotification", preferenceManager.getPreferenceNotification());
         defaults.put("preferenceHighPrio", preferenceManager.getPreferenceHighPrio());
         defaults.put("preferencePingPackageSize", preferenceManager.getPreferencePingPackageSize());
+        defaults.put("preferenceResolveAddress", preferenceManager.getPreferenceResolveAddress());
+        defaults.put("preferenceResolvePort", preferenceManager.getPreferenceResolvePort());
         return defaults;
     }
 
@@ -259,6 +261,21 @@ public class PreferenceSetup {
         } else {
             preferenceManager.removePreferencePingPackageSize();
         }
+        Object resolveAddress = defaults.get("preferenceResolveAddress");
+        if (isValidAddress(resolveAddress)) {
+            preferenceManager.setPreferenceResolveAddress(resolveAddress.toString().trim());
+        } else {
+            preferenceManager.removePreferenceResolveAddress();
+        }
+        Object resolvePort = defaults.get("preferenceResolvePort");
+        int resolvePortMin = getResources().getInteger(R.integer.resolve_port_minimum);
+        int resolvePortMax = getResources().getInteger(R.integer.resolve_port_maximum);
+        int resolvePortDefault = getResources().getInteger(R.integer.resolve_port_default);
+        if (isValidInteger(resolvePort, resolvePortMin, resolvePortMax)) {
+            preferenceManager.setPreferenceResolvePort(NumberUtil.getIntValue(port, resolvePortDefault));
+        } else {
+            preferenceManager.removePreferenceResolvePort();
+        }
     }
 
     public void importPingAndConnectCount(Map<String, ?> map) {
@@ -426,6 +443,8 @@ public class PreferenceSetup {
         preferenceManager.removePreferenceOnlyWifi();
         preferenceManager.removePreferenceNotification();
         preferenceManager.removePreferenceHighPrio();
+        preferenceManager.removePreferenceResolveAddress();
+        preferenceManager.removePreferenceResolvePort();
     }
 
     public void removeSystemSettings() {

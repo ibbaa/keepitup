@@ -43,6 +43,8 @@ public class DBMigrate {
         versionDowngrades.put(4, this::version4DowngradeTo3);
         versionUpgrades.put(5, this::version5UpgradeFrom4);
         versionDowngrades.put(5, this::version5DowngradeTo4);
+        versionUpgrades.put(6, this::version6UpgradeFrom5);
+        versionDowngrades.put(6, this::version6DowngradeTo5);
     }
 
     public void doUpgrade(Context context, int oldVersion, int newVersion) {
@@ -167,6 +169,17 @@ public class DBMigrate {
         } catch (Exception exc) {
             Log.e(DBMigrate.class.getName(), "version5DowngradeTo4 failed ", exc);
         }
+    }
+
+    private void version6UpgradeFrom5(SQLiteDatabase db) {
+        Log.d(DBMigrate.class.getName(), "version6UpgradeFrom5");
+        setup.tryDropResolveTable(db);
+        setup.createResolveTable(db);
+    }
+
+    private void version6DowngradeTo5(SQLiteDatabase db) {
+        Log.d(DBMigrate.class.getName(), "version6DowngradeTo5");
+        setup.tryDropResolveTable(db);
     }
 
     @FunctionalInterface

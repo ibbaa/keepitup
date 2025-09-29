@@ -292,7 +292,7 @@ public class AccessTypeDataTest {
     }
 
     @Test
-    public void testTechnicallyIsEqual() {
+    public void testIsTechnicallyEqual() {
         AccessTypeData data1 = new AccessTypeData();
         AccessTypeData data2 = new AccessTypeData();
         assertTrue(data1.isTechnicallyEqual(data2));

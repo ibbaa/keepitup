@@ -16,7 +16,7 @@
 
 <resources>
     <string name="db_name">keepitup.db</string>
-    <integer name="db_version">5</integer>
+    <integer name="db_version">6</integer>
     <string name="task_table_name">NETWORKTASK</string>
     <string name="task_id_column_name">_id</string>
     <string name="task_index_column_name">UIINDEX</string>
@@ -61,4 +61,9 @@
     <string name="accesstypedata_connectcount_column_name">CONNECTCOUNT</string>
     <string name="accesstypedata_stoponsuccess_column_name">STOPONSUCCESS</string>
     <string name="accesstypedata_ignoresslerror_column_name">IGNORESSLERROR</string>
+    <string name="resolve_table_name">RESOLVE</string>
+    <string name="resolve_id_column_name">_id</string>
+    <string name="resolve_taskid_column_name">NETWORKTASKID</string>
+    <string name="resolve_address_column_name">ADDRESS</string>
+    <string name="resolve_port_column_name">PORT</string>
 </resources>

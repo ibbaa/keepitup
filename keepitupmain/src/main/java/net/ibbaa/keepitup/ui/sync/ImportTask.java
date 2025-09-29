@@ -139,6 +139,7 @@ public class ImportTask extends UIBackgroundTask<SystemSetupResult> {
         boolean intervalTableSuccess = false;
         boolean schedulerStateTableSuccess = false;
         boolean accessTypeDataTableSuccess = false;
+        boolean resolveTableSuccess = false;
         try {
             setup.deleteAllLogs();
             logTableSuccess = true;
@@ -175,13 +176,20 @@ public class ImportTask extends UIBackgroundTask<SystemSetupResult> {
         } catch (Exception exc) {
             Log.e(ImportTask.class.getName(), "Error purging access type data table", exc);
         }
+        try {
+            setup.recreateResolveTable();
+            resolveTableSuccess = true;
+        } catch (Exception exc) {
+            Log.e(ImportTask.class.getName(), "Error purging access type data table", exc);
+        }
         Log.d(ImportTask.class.getName(), "logTableSuccess: " + logTableSuccess);
         Log.d(ImportTask.class.getName(), "networkTaskTableSuccess: " + networkTaskTableSuccess);
         Log.d(DBPurgeTask.class.getName(), "schedulerIdTableSuccess: " + schedulerIdTableSuccess);
         Log.d(DBPurgeTask.class.getName(), "intervalTableSuccess: " + intervalTableSuccess);
         Log.d(DBPurgeTask.class.getName(), "schedulerStateTableSuccess: " + schedulerStateTableSuccess);
         Log.d(DBPurgeTask.class.getName(), "accessTypeDataTableSuccess: " + accessTypeDataTableSuccess);
-        return logTableSuccess && networkTaskTableSuccess && schedulerIdTableSuccess && intervalTableSuccess && schedulerStateTableSuccess && accessTypeDataTableSuccess;
+        Log.d(DBPurgeTask.class.getName(), "resolveTableSuccess: " + resolveTableSuccess);
+        return logTableSuccess && networkTaskTableSuccess && schedulerIdTableSuccess && intervalTableSuccess && schedulerStateTableSuccess && accessTypeDataTableSuccess && resolveTableSuccess;
     }
 
     private SystemSetupResult doImport(Context context, String data) {

@@ -67,7 +67,14 @@ public class NetworkTaskValidator {
             Log.d(NetworkTaskValidator.class.getName(), "address is null. Returning false.");
             return false;
         }
-        boolean isValidAddress = URLUtil.isValidIPAddress(address) || URLUtil.isValidHostName(address) || URLUtil.isValidURL(address);
+        boolean isValidAddress;
+        if (task.getAccessType() == null) {
+            isValidAddress = URLUtil.isValidIPAddress(address) || URLUtil.isValidHostName(address) || URLUtil.isValidURL(address);
+        } else if (task.getAccessType().isDownload()) {
+            isValidAddress = URLUtil.isValidURL(address);
+        } else {
+            isValidAddress = URLUtil.isValidIPAddress(address) || URLUtil.isValidHostName(address);
+        }
         Log.d(NetworkTaskValidator.class.getName(), "isValidAddress is " + isValidAddress);
         return isValidAddress;
     }
