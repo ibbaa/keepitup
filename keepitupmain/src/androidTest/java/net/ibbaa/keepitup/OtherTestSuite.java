@@ -26,6 +26,7 @@ import net.ibbaa.keepitup.db.LogDAOTest;
 import net.ibbaa.keepitup.db.LogDBConstantsTest;
 import net.ibbaa.keepitup.db.NetworkTaskDAOTest;
 import net.ibbaa.keepitup.db.NetworkTaskDBConstantsTest;
+import net.ibbaa.keepitup.db.ResolveDAOTest;
 import net.ibbaa.keepitup.db.ResolveDBConstantsTest;
 import net.ibbaa.keepitup.db.SchedulerIdGeneratorTest;
 import net.ibbaa.keepitup.db.SchedulerIdHistoryDBConstantsTest;
@@ -134,6 +135,7 @@ import org.junit.runners.Suite;
         LogDBConstantsTest.class,
         NetworkTaskDAOTest.class,
         NetworkTaskDBConstantsTest.class,
+        ResolveDAOTest.class,
         ResolveDBConstantsTest.class,
         SchedulerIdGeneratorTest.class,
         SchedulerIdHistoryDBConstantsTest.class,

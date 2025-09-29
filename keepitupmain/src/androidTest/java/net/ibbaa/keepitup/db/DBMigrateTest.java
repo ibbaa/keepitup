@@ -30,6 +30,7 @@ import net.ibbaa.keepitup.model.AccessType;
 import net.ibbaa.keepitup.model.AccessTypeData;
 import net.ibbaa.keepitup.model.Interval;
 import net.ibbaa.keepitup.model.NetworkTask;
+import net.ibbaa.keepitup.model.Resolve;
 import net.ibbaa.keepitup.resources.PreferenceManager;
 import net.ibbaa.keepitup.test.mock.TestRegistry;
 
@@ -50,6 +51,7 @@ public class DBMigrateTest {
     private IntervalDAO intervalDAO;
     private SchedulerStateDAO schedulerStateDAO;
     private AccessTypeDataDAO accessTypeDataDAO;
+    private ResolveDAO resolveDAO;
     private PreferenceManager preferenceManager;
 
     @Before
@@ -61,6 +63,7 @@ public class DBMigrateTest {
         intervalDAO = new IntervalDAO(TestRegistry.getContext());
         schedulerStateDAO = new SchedulerStateDAO(TestRegistry.getContext());
         accessTypeDataDAO = new AccessTypeDataDAO(TestRegistry.getContext());
+        resolveDAO = new ResolveDAO(TestRegistry.getContext());
         preferenceManager = new PreferenceManager(TestRegistry.getContext());
         preferenceManager.removeAllPreferences();
         setup.dropTables();
@@ -241,6 +244,55 @@ public class DBMigrateTest {
         assertNotNull(schedulerStateDAO.readSchedulerState());
         AccessTypeData data1 = accessTypeDataDAO.readAccessTypeDataForNetworkTask(task1.getId());
         assertTrue(data.isTechnicallyEqual(data1));
+    }
+
+    @Test
+    public void testUpgradeFrom5To6() {
+        setup.createTables();
+        setup.dropResolveTable();
+        migrate.doUpgrade(TestRegistry.getContext(), 5, 6);
+        networkTaskDAO.insertNetworkTask(new NetworkTask());
+        assertEquals(1, networkTaskDAO.readAllNetworkTasks().size());
+        accessTypeDataDAO.insertAccessTypeData(new AccessTypeData());
+        assertEquals(1, accessTypeDataDAO.readAllAccessTypeData().size());
+        intervalDAO.insertInterval(new Interval());
+        assertEquals(1, intervalDAO.readAllIntervals().size());
+        resolveDAO.insertResolve(new Resolve());
+        assertEquals(1, resolveDAO.readAllResolve().size());
+    }
+
+    @Test(expected = SQLiteException.class)
+    public void testDowngradeFrom6To5() {
+        setup.createTables();
+        migrate.doDowngrade(TestRegistry.getContext(), 6, 5);
+        resolveDAO.readAllResolve();
+    }
+
+    @Test
+    public void testUpgradeFrom0To6() {
+        setup.createTables();
+        setup.dropIntervalTable();
+        setup.dropAccessTypeDataTable();
+        setup.dropNetworkTaskTable();
+        setup.dropResolveTable();
+        NetworkTaskDBConstants networkTaskDBConstants = new NetworkTaskDBConstants(TestRegistry.getContext());
+        DBOpenHelper.getInstance(TestRegistry.getContext()).getWritableDatabase().execSQL(networkTaskDBConstants.getCreateTableStatementWithoutAddedColumns());
+        migrate.doUpgrade(TestRegistry.getContext(), 0, 6);
+        NetworkTask task1 = networkTaskDAO.insertNetworkTask(getNetworkTask1());
+        AccessTypeData data = new AccessTypeData();
+        data.setNetworkTaskId(task1.getId());
+        accessTypeDataDAO.insertAccessTypeData(data);
+        Resolve resolve = new Resolve();
+        resolve.setNetworkTaskId(task1.getId());
+        resolveDAO.insertResolve(resolve);
+        intervalDAO.insertInterval(new Interval());
+        List<Interval> intervals = intervalDAO.readAllIntervals();
+        assertEquals(1, intervals.size());
+        assertNotNull(schedulerStateDAO.readSchedulerState());
+        AccessTypeData data1 = accessTypeDataDAO.readAccessTypeDataForNetworkTask(task1.getId());
+        assertTrue(data.isTechnicallyEqual(data1));
+        Resolve resolve1 = resolveDAO.readResolveForNetworkTask(task1.getId());
+        assertTrue(resolve.isTechnicallyEqual(resolve1));
     }
 
     private NetworkTask getNetworkTask1() {

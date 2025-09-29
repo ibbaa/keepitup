@@ -28,6 +28,7 @@ import net.ibbaa.keepitup.model.AccessTypeData;
 import net.ibbaa.keepitup.model.Interval;
 import net.ibbaa.keepitup.model.LogEntry;
 import net.ibbaa.keepitup.model.NetworkTask;
+import net.ibbaa.keepitup.model.Resolve;
 import net.ibbaa.keepitup.ui.BaseUITest;
 import net.ibbaa.keepitup.ui.NetworkTaskMainActivity;
 
@@ -61,12 +62,14 @@ public class DBPurgeTaskTest extends BaseUITest {
         getLogDAO().insertAndDeleteLog(new LogEntry());
         getIntervalDAO().insertInterval(new Interval());
         getAccessTypeDataDAO().insertAccessTypeData(new AccessTypeData());
+        getResolveDAO().insertResolve(new Resolve());
         assertFalse(getNetworkTaskDAO().readAllNetworkTasks().isEmpty());
         assertFalse(getSchedulerIdHistoryDAO().readAllSchedulerIds().isEmpty());
         assertFalse(getLogDAO().readAllLogs().isEmpty());
         assertFalse(getIntervalDAO().readAllIntervals().isEmpty());
         assertNotNull(getSchedulerStateDAO().readSchedulerState());
         assertFalse(getAccessTypeDataDAO().readAllAccessTypeData().isEmpty());
+        assertFalse(getResolveDAO().readAllResolve().isEmpty());
         DBPurgeTask task = new DBPurgeTask(getActivity(activityScenario));
         assertTrue(task.runInBackground());
         assertTrue(getNetworkTaskDAO().readAllNetworkTasks().isEmpty());
@@ -75,5 +78,6 @@ public class DBPurgeTaskTest extends BaseUITest {
         assertTrue(getIntervalDAO().readAllIntervals().isEmpty());
         assertNotNull(getSchedulerStateDAO().readSchedulerState());
         assertTrue(getAccessTypeDataDAO().readAllAccessTypeData().isEmpty());
+        assertTrue(getResolveDAO().readAllResolve().isEmpty());
     }
 }

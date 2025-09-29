@@ -31,6 +31,7 @@ import net.ibbaa.keepitup.model.Interval;
 import net.ibbaa.keepitup.model.LogEntry;
 import net.ibbaa.keepitup.model.NetworkTask;
 import net.ibbaa.keepitup.model.NotificationType;
+import net.ibbaa.keepitup.model.Resolve;
 import net.ibbaa.keepitup.model.Time;
 import net.ibbaa.keepitup.resources.JSONSystemSetup;
 import net.ibbaa.keepitup.resources.SystemSetupResult;
@@ -88,6 +89,8 @@ public class ExportTaskTest extends BaseUITest {
         getIntervalDAO().insertInterval(getInterval());
         AccessTypeData accessData1 = getAccessTypeDataDAO().insertAccessTypeData(getAccessTypeData1(task1.getId()));
         AccessTypeData accessData2 = getAccessTypeDataDAO().insertAccessTypeData(getAccessTypeData2(task2.getId()));
+        Resolve resolve1 = getResolveDAO().insertResolve(getResolve1(task1.getId()));
+        Resolve resolve2 = getResolveDAO().insertResolve(getResolve2(task2.getId()));
         getPreferenceManager().setPreferenceNotificationInactiveNetwork(true);
         getPreferenceManager().setPreferenceNotificationType(NotificationType.CHANGE);
         getPreferenceManager().setPreferenceSuspensionEnabled(false);
@@ -132,6 +135,7 @@ public class ExportTaskTest extends BaseUITest {
         getLogDAO().deleteAllLogs();
         getIntervalDAO().deleteAllIntervals();
         getAccessTypeDataDAO().deleteAllAccessTypeData();
+        getResolveDAO().deleteAllResolve();
         getPreferenceManager().removeAllPreferences();
         FileInputStream inputStream = new FileInputStream(writtenFile);
         String jsonData = StreamUtil.inputStreamToString(inputStream, StandardCharsets.UTF_8);
@@ -188,6 +192,10 @@ public class ExportTaskTest extends BaseUITest {
         AccessTypeData readAccessData2 = getAccessTypeDataDAO().readAccessTypeDataForNetworkTask(readTask2.getId());
         assertTrue(accessData1.isTechnicallyEqual(readAccessData1));
         assertTrue(accessData2.isTechnicallyEqual(readAccessData2));
+        Resolve readResolve1 = getResolveDAO().readResolveForNetworkTask(readTask1.getId());
+        Resolve readResolve2 = getResolveDAO().readResolveForNetworkTask(readTask2.getId());
+        assertTrue(resolve1.isTechnicallyEqual(readResolve1));
+        assertTrue(resolve2.isTechnicallyEqual(readResolve2));
         assertTrue(getPreferenceManager().getPreferenceNotificationInactiveNetwork());
         assertEquals(NotificationType.CHANGE, getPreferenceManager().getPreferenceNotificationType());
         assertFalse(getPreferenceManager().getPreferenceSuspensionEnabled());
@@ -242,6 +250,8 @@ public class ExportTaskTest extends BaseUITest {
         getIntervalDAO().insertInterval(getInterval());
         AccessTypeData accessData1 = getAccessTypeDataDAO().insertAccessTypeData(getAccessTypeData1(task1.getId()));
         AccessTypeData accessData2 = getAccessTypeDataDAO().insertAccessTypeData(getAccessTypeData2(task2.getId()));
+        Resolve resolve1 = getResolveDAO().insertResolve(getResolve1(task1.getId()));
+        Resolve resolve2 = getResolveDAO().insertResolve(getResolve2(task2.getId()));
         getPreferenceManager().setPreferenceNotificationInactiveNetwork(true);
         getPreferenceManager().setPreferenceNotificationType(NotificationType.CHANGE);
         getPreferenceManager().setPreferenceSuspensionEnabled(false);
@@ -289,6 +299,7 @@ public class ExportTaskTest extends BaseUITest {
         getLogDAO().deleteAllLogs();
         getIntervalDAO().deleteAllIntervals();
         getAccessTypeDataDAO().deleteAllAccessTypeData();
+        getResolveDAO().deleteAllResolve();
         getPreferenceManager().removeAllPreferences();
         FileInputStream inputStream = new FileInputStream(file);
         String jsonData = StreamUtil.inputStreamToString(inputStream, StandardCharsets.UTF_8);
@@ -345,6 +356,10 @@ public class ExportTaskTest extends BaseUITest {
         AccessTypeData readAccessData2 = getAccessTypeDataDAO().readAccessTypeDataForNetworkTask(readTask2.getId());
         assertTrue(accessData1.isTechnicallyEqual(readAccessData1));
         assertTrue(accessData2.isTechnicallyEqual(readAccessData2));
+        Resolve readResolve1 = getResolveDAO().readResolveForNetworkTask(readTask1.getId());
+        Resolve readResolve2 = getResolveDAO().readResolveForNetworkTask(readTask2.getId());
+        assertTrue(resolve1.isTechnicallyEqual(readResolve1));
+        assertTrue(resolve2.isTechnicallyEqual(readResolve2));
         assertTrue(getPreferenceManager().getPreferenceNotificationInactiveNetwork());
         assertEquals(NotificationType.CHANGE, getPreferenceManager().getPreferenceNotificationType());
         assertFalse(getPreferenceManager().getPreferenceSuspensionEnabled());
@@ -508,5 +523,23 @@ public class ExportTaskTest extends BaseUITest {
         data.setStopOnSuccess(false);
         data.setIgnoreSSLError(false);
         return data;
+    }
+
+    private Resolve getResolve1(long networkTaskId) {
+        Resolve resolve = new Resolve();
+        resolve.setId(0);
+        resolve.setNetworkTaskId(networkTaskId);
+        resolve.setAddress("192.168.178.1");
+        resolve.setPort(22);
+        return resolve;
+    }
+
+    private Resolve getResolve2(long networkTaskId) {
+        Resolve resolve = new Resolve();
+        resolve.setId(0);
+        resolve.setNetworkTaskId(networkTaskId);
+        resolve.setAddress("127.0.0.1");
+        resolve.setPort(80);
+        return resolve;
     }
 }

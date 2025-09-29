@@ -15,7 +15,7 @@
   -->
 
 <resources>
-    <integer name="schedulerid_history_count_maximum">100</integer>
+    <integer name="scheduler_id_history_count_maximum">100</integer>
     <integer name="scheduler_id_retry_count">10000000</integer>
     <integer name="scheduler_restart_time_threshold">30</integer>
     <integer name="scheduler_receiver_time_threshold">10</integer>

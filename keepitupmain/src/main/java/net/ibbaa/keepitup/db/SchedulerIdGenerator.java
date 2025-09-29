@@ -139,7 +139,7 @@ public class SchedulerIdGenerator {
         }
         Log.d(SchedulerIdGenerator.class.getName(), "Reading scheduler id history count");
         long scheduleridCount = readSchedulerIdCount(db);
-        int limit = getResources().getInteger(R.integer.schedulerid_history_count_maximum);
+        int limit = getResources().getInteger(R.integer.scheduler_id_history_count_maximum);
         if (scheduleridCount > limit) {
             Log.d(SchedulerIdGenerator.class.getName(), "Scheduler id history count of " + scheduleridCount + " exceeds limit of " + limit + ". Performing delete.");
             deleteOldestSchedulerIdHistoryEntry(db);

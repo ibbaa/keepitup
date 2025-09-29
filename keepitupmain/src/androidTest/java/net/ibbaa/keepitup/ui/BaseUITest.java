@@ -264,6 +264,10 @@ public abstract class BaseUITest {
         return accessTypeDataDAO;
     }
 
+    public ResolveDAO getResolveDAO() {
+        return resolveDAO;
+    }
+
     public NetworkTaskProcessServiceScheduler getNetworkTaskProcessServiceScheduler() {
         return networkTaskProcessServiceScheduler;
     }

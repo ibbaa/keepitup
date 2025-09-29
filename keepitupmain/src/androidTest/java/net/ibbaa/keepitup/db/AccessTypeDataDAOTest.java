@@ -63,7 +63,7 @@ public class AccessTypeDataDAOTest {
     @Test
     public void testInsertReadDelete() {
         AccessTypeData data1 = getAccessTypeData1();
-        accessTypeDataDAO.insertAccessTypeData(data1);
+        data1 = accessTypeDataDAO.insertAccessTypeData(data1);
         List<AccessTypeData> readDataList = accessTypeDataDAO.readAllAccessTypeData();
         assertEquals(1, readDataList.size());
         AccessTypeData readData = readDataList.get(0);
@@ -73,8 +73,8 @@ public class AccessTypeDataDAOTest {
         assertTrue(data1.isEqual(readData));
         AccessTypeData data2 = getAccessTypeData2();
         AccessTypeData data3 = getAccessTypeData3();
-        accessTypeDataDAO.insertAccessTypeData(data2);
-        accessTypeDataDAO.insertAccessTypeData(data3);
+        data2 = accessTypeDataDAO.insertAccessTypeData(data2);
+        data3 = accessTypeDataDAO.insertAccessTypeData(data3);
         readDataList = accessTypeDataDAO.readAllAccessTypeData();
         assertEquals(3, readDataList.size());
         AccessTypeData readData1 = readDataList.get(0);
