@@ -24,6 +24,8 @@
     <string name="label_activity_defaults_ping_count">Ping count</string>
     <string name="label_activity_defaults_ping_package_size">Ping package size</string>
     <string name="label_activity_defaults_connect_count">Connect count</string>
+    <string name="label_activity_defaults_connect_to_host">Connect-to host</string>
+    <string name="label_activity_defaults_connect_to_port">Connect-to port</string>
     <string name="label_activity_defaults_stop_on_success">Stop on success</string>
     <string name="label_activity_defaults_ignore_ssl_error">Ignore SSL errors</string>
     <string name="label_activity_defaults_only_wifi">Only on WiFi</string>

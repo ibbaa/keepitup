@@ -680,8 +680,11 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
         onView(withId(R.id.textview_activity_defaults_connect_count)).perform(click());
         onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("5"));
         onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
+        onView(withId(R.id.switch_activity_defaults_ignore_ssl_error)).perform(scrollTo());
         onView(withId(R.id.switch_activity_defaults_ignore_ssl_error)).perform(click());
+        onView(withId(R.id.switch_activity_defaults_stop_on_success)).perform(scrollTo());
         onView(withId(R.id.switch_activity_defaults_stop_on_success)).perform(click());
+        onView(withId(R.id.switch_activity_defaults_only_wifi)).perform(scrollTo());
         onView(withId(R.id.switch_activity_defaults_only_wifi)).perform(click());
         onView(withId(R.id.switch_activity_defaults_notification)).perform(scrollTo());
         onView(withId(R.id.switch_activity_defaults_notification)).perform(click());

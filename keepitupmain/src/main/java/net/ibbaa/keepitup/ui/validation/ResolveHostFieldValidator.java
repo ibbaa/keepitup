@@ -20,15 +20,15 @@ import android.content.Context;
 
 import net.ibbaa.keepitup.logging.Log;
 
-public class HostFieldValidator extends BaseHostValidator implements FieldValidator {
+public class ResolveHostFieldValidator extends BaseHostValidator implements FieldValidator {
 
-    public HostFieldValidator(String field, Context context) {
+    public ResolveHostFieldValidator(String field, Context context) {
         super(field, context);
     }
 
     @Override
     public ValidationResult validate(String value) {
-        Log.d(HostFieldValidator.class.getName(), "validate, value is " + value);
-        return super.validateHost(value, false);
+        Log.d(ResolveHostFieldValidator.class.getName(), "validate, value is " + value);
+        return super.validateHost(value, true);
     }
 }

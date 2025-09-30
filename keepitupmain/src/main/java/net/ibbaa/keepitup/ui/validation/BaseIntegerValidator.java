@@ -35,11 +35,20 @@ public abstract class BaseIntegerValidator {
     }
 
     protected ValidationResult validateIntNumber(String value, int defaultValue, int minimum, int maximum) {
+        return validateIntNumber(value, defaultValue, minimum, maximum, false);
+    }
+
+    protected ValidationResult validateIntNumber(String value, int defaultValue, int minimum, int maximum, boolean emptyIsValid) {
         Log.d(BaseIntegerValidator.class.getName(), "validateIntNumber for field " + field);
         Log.d(BaseIntegerValidator.class.getName(), "value is " + value);
         if (StringUtil.isEmpty(value)) {
-            Log.d(BaseIntegerValidator.class.getName(), "No value specified. Validation failed.");
-            return new ValidationResult(false, field, getResources().getString(R.string.invalid_no_value));
+            if (emptyIsValid) {
+                Log.d(BaseIntegerValidator.class.getName(), "No value specified. Validation successful.");
+                return new ValidationResult(true, field, getResources().getString(R.string.validation_successful));
+            } else {
+                Log.d(BaseIntegerValidator.class.getName(), "No value specified. Validation failed.");
+                return new ValidationResult(false, field, getResources().getString(R.string.invalid_no_value));
+            }
         }
         if (!NumberUtil.isValidLongValue(value)) {
             Log.d(BaseIntegerValidator.class.getName(), "invalid number format");

@@ -18,17 +18,21 @@ package net.ibbaa.keepitup.ui.validation;
 
 import android.content.Context;
 
+import net.ibbaa.keepitup.R;
 import net.ibbaa.keepitup.logging.Log;
 
-public class HostFieldValidator extends BaseHostValidator implements FieldValidator {
+public class ResolvePortFieldValidator extends BaseIntegerValidator implements FieldValidator {
 
-    public HostFieldValidator(String field, Context context) {
+    public ResolvePortFieldValidator(String field, Context context) {
         super(field, context);
     }
 
     @Override
     public ValidationResult validate(String value) {
-        Log.d(HostFieldValidator.class.getName(), "validate, value is " + value);
-        return super.validateHost(value, false);
+        Log.d(ResolvePortFieldValidator.class.getName(), "validate, value is " + value);
+        int minimum = getResources().getInteger(R.integer.resolve_port_minimum);
+        int maximum = getResources().getInteger(R.integer.resolve_port_maximum);
+        int defaultValue = getResources().getInteger(R.integer.resolve_port_default);
+        return validateIntNumber(value, defaultValue, minimum, maximum, true);
     }
 }

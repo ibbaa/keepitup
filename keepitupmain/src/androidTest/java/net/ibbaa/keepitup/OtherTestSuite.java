@@ -98,6 +98,8 @@ import net.ibbaa.keepitup.ui.validation.NumberPickerColorListenerTest;
 import net.ibbaa.keepitup.ui.validation.PingCountFieldValidatorTest;
 import net.ibbaa.keepitup.ui.validation.PingPackageSizeFieldValidatorTest;
 import net.ibbaa.keepitup.ui.validation.PortFieldValidatorTest;
+import net.ibbaa.keepitup.ui.validation.ResolveHostFieldValidatorTest;
+import net.ibbaa.keepitup.ui.validation.ResolvePortFieldValidatorTest;
 import net.ibbaa.keepitup.ui.validation.StandardAccessTypeDataValidatorTest;
 import net.ibbaa.keepitup.ui.validation.StandardHostPortValidatorTest;
 import net.ibbaa.keepitup.ui.validation.StandardIntervalValidatorTest;
@@ -220,6 +222,8 @@ import org.junit.runners.Suite;
         PingCountFieldValidatorTest.class,
         PingPackageSizeFieldValidatorTest.class,
         PortFieldValidatorTest.class,
+        ResolveHostFieldValidatorTest.class,
+        ResolvePortFieldValidatorTest.class,
         StandardAccessTypeDataValidatorTest.class,
         StandardHostPortValidatorTest.class,
         StandardIntervalValidatorTest.class,

@@ -47,6 +47,8 @@ import net.ibbaa.keepitup.ui.validation.IntervalFieldValidator;
 import net.ibbaa.keepitup.ui.validation.PingCountFieldValidator;
 import net.ibbaa.keepitup.ui.validation.PingPackageSizeFieldValidator;
 import net.ibbaa.keepitup.ui.validation.PortFieldValidator;
+import net.ibbaa.keepitup.ui.validation.ResolveHostFieldValidator;
+import net.ibbaa.keepitup.ui.validation.ResolvePortFieldValidator;
 import net.ibbaa.keepitup.ui.validation.URLFieldValidator;
 import net.ibbaa.keepitup.util.NumberUtil;
 import net.ibbaa.keepitup.util.StringUtil;
@@ -66,6 +68,8 @@ public class DefaultsActivity extends SettingsInputActivity {
     private TextView pingCountText;
     private TextView pingPackageSizeText;
     private TextView connectCountText;
+    private TextView connectToHostText;
+    private TextView connectToPortText;
     private SwitchMaterial stopOnSuccessSwitch;
     private TextView stopOnSuccessOnOffText;
     private SwitchMaterial ignoreSSLErrorSwitch;
@@ -92,6 +96,8 @@ public class DefaultsActivity extends SettingsInputActivity {
         preparePingCountField();
         preparePingPackageSizeField();
         prepareConnectCountField();
+        prepareConnectToHostField();
+        prepareConnectToPortField();
         prepareStopOnSuccessSwitch();
         prepareIgnoreSSLErrorSwitch();
         prepareOnlyWifiSwitch();
@@ -211,6 +217,28 @@ public class DefaultsActivity extends SettingsInputActivity {
         setConnectCount(String.valueOf(preferenceManager.getPreferenceConnectCount()));
         CardView connectCountCardView = findViewById(R.id.cardview_activity_defaults_connect_count);
         connectCountCardView.setOnClickListener(this::showConnectCountInputDialog);
+    }
+
+    private void prepareConnectToHostField() {
+        Log.d(DefaultsActivity.class.getName(), "prepareConnectToHostField");
+        PreferenceManager preferenceManager = new PreferenceManager(this);
+        connectToHostText = findViewById(R.id.textview_activity_defaults_connect_to_host);
+        String connectToHost = preferenceManager.getPreferenceResolveAddress();
+        connectToHost = StringUtil.isEmpty(connectToHost) ? getResources().getString(R.string.string_not_set) : connectToHost;
+        setConnectToHost(connectToHost);
+        CardView connectToHostCardView = findViewById(R.id.cardview_activity_defaults_connect_to_host);
+        connectToHostCardView.setOnClickListener(this::showConnectToHostInputDialog);
+    }
+
+    private void prepareConnectToPortField() {
+        Log.d(DefaultsActivity.class.getName(), "prepareConnectToPortField");
+        PreferenceManager preferenceManager = new PreferenceManager(this);
+        connectToPortText = findViewById(R.id.textview_activity_defaults_connect_to_port);
+        int resolvePort = preferenceManager.getPreferenceResolvePort();
+        String connectToPort = resolvePort < 0 ? getResources().getString(R.string.string_not_set) : String.valueOf(resolvePort);
+        setConnectToPort(connectToPort);
+        CardView connectToPortCardView = findViewById(R.id.cardview_activity_defaults_connect_to_port);
+        connectToPortCardView.setOnClickListener(this::showConnectToPortInputDialog);
     }
 
     private void prepareStopOnSuccessSwitch() {
@@ -375,6 +403,22 @@ public class DefaultsActivity extends SettingsInputActivity {
         connectCountText.setText(StringUtil.notNull(connectCount));
     }
 
+    private String getConnectToHost() {
+        return StringUtil.notNull(connectToHostText.getText());
+    }
+
+    private void setConnectToHost(String connectToHost) {
+        connectToHostText.setText(StringUtil.notNull(connectToHost));
+    }
+
+    private String getConnectToPort() {
+        return StringUtil.notNull(connectToPortText.getText());
+    }
+
+    private void setConnectToPort(String connectToPort) {
+        connectToPortText.setText(StringUtil.notNull(connectToPort));
+    }
+
     private void showAddressInputDialog(View view) {
         Log.d(DefaultsActivity.class.getName(), "showAddressInputDialog");
         List<String> validators = Arrays.asList(HostFieldValidator.class.getName(), URLFieldValidator.class.getName());
@@ -417,6 +461,22 @@ public class DefaultsActivity extends SettingsInputActivity {
         showInputDialog(input.toBundle());
     }
 
+    private void showConnectToHostInputDialog(View view) {
+        Log.d(DefaultsActivity.class.getName(), "showConnectToHostInputDialog");
+        List<String> validators = Collections.singletonList(ResolveHostFieldValidator.class.getName());
+        String connectToAddress = getConnectToHost().trim().equals(getResources().getString(R.string.string_not_set)) ? "" : getConnectToHost();
+        SettingsInput input = new SettingsInput(SettingsInput.Type.RESOLVEADDRESS, connectToAddress, getResources().getString(R.string.label_activity_defaults_connect_to_host), validators);
+        showInputDialog(input.toBundle());
+    }
+
+    private void showConnectToPortInputDialog(View view) {
+        Log.d(DefaultsActivity.class.getName(), "showConnectToPortInputDialog");
+        List<String> validators = Collections.singletonList(ResolvePortFieldValidator.class.getName());
+        String connectToPort = getConnectToPort().trim().equals(getResources().getString(R.string.string_not_set)) ? "" : getConnectToPort();
+        SettingsInput input = new SettingsInput(SettingsInput.Type.RESOLVEPORT, connectToPort, getResources().getString(R.string.label_activity_defaults_connect_to_port), validators);
+        showInputDialog(input.toBundle());
+    }
+
     private void showInputDialog(Bundle bundle) {
         Log.d(DefaultsActivity.class.getName(), "showInputDialog, opening SettingsInputDialog");
         SettingsInputDialog inputDialog = new SettingsInputDialog();
@@ -447,6 +507,24 @@ public class DefaultsActivity extends SettingsInputActivity {
         } else if (SettingsInput.Type.CONNECTCOUNT.equals(type.getType())) {
             setConnectCount(inputDialog.getValue());
             preferenceManager.setPreferenceConnectCount(NumberUtil.getIntValue(getConnectCount(), getResources().getInteger(R.integer.connect_count_default)));
+        } else if (SettingsInput.Type.RESOLVEADDRESS.equals(type.getType())) {
+            String resolveAddress = StringUtil.notNull(inputDialog.getValue()).trim();
+            if (StringUtil.isEmpty(resolveAddress)) {
+                setConnectToHost(getResources().getString(R.string.string_not_set));
+                preferenceManager.removePreferenceResolveAddress();
+            } else {
+                setConnectToHost(resolveAddress);
+                preferenceManager.setPreferenceResolveAddress(resolveAddress);
+            }
+        } else if (SettingsInput.Type.RESOLVEPORT.equals(type.getType())) {
+            String resolvePort = StringUtil.notNull(inputDialog.getValue()).trim();
+            if (StringUtil.isEmpty(resolvePort)) {
+                setConnectToPort(getResources().getString(R.string.string_not_set));
+                preferenceManager.removePreferenceResolvePort();
+            } else {
+                setConnectToPort(resolvePort);
+                preferenceManager.setPreferenceResolvePort(NumberUtil.getIntValue(resolvePort, getResources().getInteger(R.integer.resolve_port_default)));
+            }
         } else {
             Log.e(DefaultsActivity.class.getName(), "type " + type.getType() + " unknown");
         }

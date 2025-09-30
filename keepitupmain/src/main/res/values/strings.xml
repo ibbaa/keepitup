@@ -34,6 +34,7 @@
     <string name="string_yes">yes</string>
     <string name="string_no">no</string>
     <string name="string_none">none</string>
+    <string name="string_not_set">not set</string>
     <string name="string_open">Open</string>
     <string name="string_sec">sec</string>
     <string name="string_msec">msec</string>

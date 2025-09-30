@@ -44,6 +44,14 @@
     <dimen name="cardview_activity_defaults_connect_count_corner_radius">4dp</dimen>
     <dimen name="cardview_activity_defaults_connect_count_card_elevation">4dp</dimen>
     <dimen name="linearlayout_activity_defaults_connect_count_margin">4dp</dimen>
+    <dimen name="cardview_activity_defaults_connect_to_host_margin">4dp</dimen>
+    <dimen name="cardview_activity_defaults_connect_to_host_corner_radius">4dp</dimen>
+    <dimen name="cardview_activity_defaults_connect_to_host_card_elevation">4dp</dimen>
+    <dimen name="linearlayout_activity_defaults_connect_to_host_margin">4dp</dimen>
+    <dimen name="cardview_activity_defaults_connect_to_port_margin">4dp</dimen>
+    <dimen name="cardview_activity_defaults_connect_to_port_corner_radius">4dp</dimen>
+    <dimen name="cardview_activity_defaults_connect_to_port_card_elevation">4dp</dimen>
+    <dimen name="linearlayout_activity_defaults_connect_to_port_margin">4dp</dimen>
     <dimen name="cardview_activity_defaults_stop_on_success_margin">4dp</dimen>
     <dimen name="cardview_activity_defaults_stop_on_success_corner_radius">4dp</dimen>
     <dimen name="cardview_activity_defaults_stop_on_success_card_elevation">4dp</dimen>
