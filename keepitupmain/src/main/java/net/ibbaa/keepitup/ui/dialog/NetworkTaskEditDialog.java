@@ -53,6 +53,7 @@ import net.ibbaa.keepitup.ui.permission.IPermissionManager;
 import net.ibbaa.keepitup.ui.permission.PermissionManager;
 import net.ibbaa.keepitup.ui.validation.AccessTypeDataValidator;
 import net.ibbaa.keepitup.ui.validation.NetworkTaskValidator;
+import net.ibbaa.keepitup.ui.validation.ResolveValidator;
 import net.ibbaa.keepitup.ui.validation.TextColorValidatingWatcher;
 import net.ibbaa.keepitup.ui.validation.ValidationResult;
 import net.ibbaa.keepitup.util.BundleUtil;
@@ -83,6 +84,10 @@ public class NetworkTaskEditDialog extends DialogFragmentBase implements Context
     private TextColorValidatingWatcher connectCountEditTextWatcher;
     private EditText pingPackageSizeEditText;
     private TextColorValidatingWatcher pingPackageSizeEditTextWatcher;
+    private EditText connectToHostEditText;
+    private TextColorValidatingWatcher connectToHostEditTextWatcher;
+    private EditText connectToPortEditText;
+    private TextColorValidatingWatcher connectToPortEditTextWatcher;
     private SwitchMaterial ignoreSSLErrorSwitch;
     private TextView ignoreSSLErrorOnOffText;
     private SwitchMaterial stopOnSuccessSwitch;
@@ -145,6 +150,8 @@ public class NetworkTaskEditDialog extends DialogFragmentBase implements Context
         prepareStopOnSuccessSwitch();
         prepareAccessTypeDataFields();
         prepareAccessTypeDataFieldsVisibility();
+        prepareResolveFields();
+        prepareResolveFieldsVisibility();
         prepareOnlyWifiSwitch();
         prepareNotificationSwitch();
         prepareHighPrioSwitch();
@@ -220,6 +227,14 @@ public class NetworkTaskEditDialog extends DialogFragmentBase implements Context
 
     private String getPingPackageSize() {
         return StringUtil.notNull(pingPackageSizeEditText.getText());
+    }
+
+    private String getConnectToHost() {
+        return StringUtil.notNull(connectToHostEditText.getText());
+    }
+
+    private String getConnectToPort() {
+        return StringUtil.notNull(connectToPortEditText.getText());
     }
 
     private boolean isPortVisible() {
@@ -385,6 +400,28 @@ public class NetworkTaskEditDialog extends DialogFragmentBase implements Context
         pingPackageSizeEditText.setText(String.valueOf(accessTypeData.getPingPackageSize()));
     }
 
+    private void prepareResolveFields() {
+        Log.d(NetworkTaskEditDialog.class.getName(), "prepareResolveFields with resolve object of " + resolve);
+        connectToHostEditText = dialogView.findViewById(R.id.edittext_dialog_network_task_edit_connect_to_host);
+        prepareConnectToHostEditTextListener();
+        connectToHostEditText.setOnLongClickListener(this::onEditTextLongClicked);
+        connectToPortEditText = dialogView.findViewById(R.id.edittext_dialog_network_task_edit_connect_to_port);
+        prepareConnectToPortEditTextListener();
+        connectToHostEditText.setOnLongClickListener(this::onEditTextLongClicked);
+    }
+
+    private void prepareResolveFieldsVisibility() {
+        Log.d(NetworkTaskEditDialog.class.getName(), "prepareResolveFieldsVisibility with resolve object of " + resolve);
+        LinearLayout connectToHostLinearLayout = dialogView.findViewById(R.id.linearlayout_dialog_network_task_edit_connect_to_host);
+        LinearLayout connectToPortLinearLayout = dialogView.findViewById(R.id.linearlayout_dialog_network_task_edit_connect_to_port);
+        TextView connectToHostTextView = dialogView.findViewById(R.id.textview_dialog_network_task_edit_connect_to_host_label);
+        TextView connectToPortTextView = dialogView.findViewById(R.id.textview_dialog_network_task_edit_connect_to_port_label);
+        connectToHostLinearLayout.setVisibility(View.GONE);
+        connectToPortLinearLayout.setVisibility(View.GONE);
+        connectToHostTextView.setVisibility(View.GONE);
+        connectToPortTextView.setVisibility(View.GONE);
+    }
+
     private void prepareAccessTypeDataFieldsVisibility() {
         Log.d(NetworkTaskEditDialog.class.getName(), "prepareAccessTypeDataFieldsVisibility with acccess type data of " + accessTypeData);
         EnumMapping mapping = new EnumMapping(requireContext());
@@ -485,6 +522,26 @@ public class NetworkTaskEditDialog extends DialogFragmentBase implements Context
         }
         pingPackageSizeEditTextWatcher = new TextColorValidatingWatcher(pingPackageSizeEditText, this::validatePingPackageSize, getColor(R.color.textColor), getColor(R.color.textErrorColor));
         pingPackageSizeEditText.addTextChangedListener(pingPackageSizeEditTextWatcher);
+    }
+
+    private void prepareConnectToHostEditTextListener() {
+        Log.d(NetworkTaskEditDialog.class.getName(), "prepareConnectToHostEditTextListener");
+        if (connectToHostEditTextWatcher != null) {
+            connectToHostEditText.removeTextChangedListener(connectToHostEditTextWatcher);
+            connectToHostEditTextWatcher = null;
+        }
+        connectToHostEditTextWatcher = new TextColorValidatingWatcher(connectToHostEditText, this::validateConnectToHost, getColor(R.color.textColor), getColor(R.color.textErrorColor));
+        connectToHostEditText.addTextChangedListener(connectToHostEditTextWatcher);
+    }
+
+    private void prepareConnectToPortEditTextListener() {
+        Log.d(NetworkTaskEditDialog.class.getName(), "prepareConnectToPortEditTextListener");
+        if (connectToPortEditTextWatcher != null) {
+            connectToPortEditText.removeTextChangedListener(connectToHostEditTextWatcher);
+            connectToPortEditTextWatcher = null;
+        }
+        connectToPortEditTextWatcher = new TextColorValidatingWatcher(connectToHostEditText, this::validateConnectToHost, getColor(R.color.textColor), getColor(R.color.textErrorColor));
+        connectToPortEditText.addTextChangedListener(connectToHostEditTextWatcher);
     }
 
     private void prepareIgnoreSSLErrorSwitch() {
@@ -857,6 +914,22 @@ public class NetworkTaskEditDialog extends DialogFragmentBase implements Context
         return result.isValidationSuccessful();
     }
 
+    private boolean validateConnectToHost(EditText editText) {
+        Log.d(NetworkTaskEditDialog.class.getName(), "validateConnectToHost");
+        ResolveValidator validator = getResolveValidator();
+        ValidationResult result = validator.validateAddress(getConnectToHost());
+        Log.d(NetworkTaskEditDialog.class.getName(), "connect-to host validation result: " + result);
+        return result.isValidationSuccessful();
+    }
+
+    private boolean validateConnectToPort(EditText editText) {
+        Log.d(NetworkTaskEditDialog.class.getName(), "validateConnectToPort");
+        ResolveValidator validator = getResolveValidator();
+        ValidationResult result = validator.validatePort(getConnectToPort());
+        Log.d(NetworkTaskEditDialog.class.getName(), "connect-to port validation result: " + result);
+        return result.isValidationSuccessful();
+    }
+
     @NonNull
     private NetworkTaskValidator getNetworkTaskValidator() {
         EnumMapping mapping = new EnumMapping(requireContext());
@@ -871,6 +944,15 @@ public class NetworkTaskEditDialog extends DialogFragmentBase implements Context
         EnumMapping mapping = new EnumMapping(requireContext());
         AccessType accessType = getAccessType();
         AccessTypeDataValidator validator = mapping.getAccessTypeDataValidator(accessType);
+        Log.d(NetworkTaskEditDialog.class.getName(), "Validator is " + validator.getClass().getSimpleName() + " for access type " + accessType);
+        return validator;
+    }
+
+    @NonNull
+    private ResolveValidator getResolveValidator() {
+        EnumMapping mapping = new EnumMapping(requireContext());
+        AccessType accessType = getAccessType();
+        ResolveValidator validator = mapping.getResolveValidator(accessType);
         Log.d(NetworkTaskEditDialog.class.getName(), "Validator is " + validator.getClass().getSimpleName() + " for access type " + accessType);
         return validator;
     }

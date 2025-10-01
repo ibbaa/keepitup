@@ -22,6 +22,8 @@
     <string name="label_dialog_network_task_edit_ping_count">Ping count:</string>
     <string name="label_dialog_network_task_edit_connect_count">Connect count:</string>
     <string name="label_dialog_network_task_edit_ping_package_size">Package size:</string>
+    <string name="label_dialog_network_task_edit_connect_to_host">Connect-to host:</string>
+    <string name="label_dialog_network_task_edit_connect_to_port">Connect-to port:</string>
     <string name="label_dialog_network_task_edit_stop_on_success">Stop on success:</string>
     <string name="label_dialog_network_task_edit_ignore_ssl_error">Ignore SSL errors:</string>
     <string name="label_dialog_network_task_edit_only_wifi">Only on WiFi:</string>
@@ -32,4 +34,5 @@
     <integer name="edittext_dialog_network_task_edit_ping_count_max_length">2</integer>
     <integer name="edittext_dialog_network_task_edit_connect_count_max_length">2</integer>
     <integer name="edittext_dialog_network_task_edit_ping_package_size_max_length">5</integer>
+    <integer name="edittext_dialog_network_task_edit_connect_to_port_max_length">5</integer>
 </resources>

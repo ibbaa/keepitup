@@ -35,28 +35,28 @@ public abstract class BaseHostValidator {
     }
 
     public ValidationResult validateHost(String value, boolean emptyIsValid) {
-        Log.d(HostFieldValidator.class.getName(), "validateHost, value is " + value);
+        Log.d(BaseHostValidator.class.getName(), "validateHost, value is " + value);
         String successMessage = getResources().getString(R.string.validation_successful);
         String failedMessage = getResources().getString(R.string.invalid_host_format);
         String failedMessageNoValue = getResources().getString(R.string.invalid_no_value);
         if (StringUtil.isEmpty(value)) {
             if (emptyIsValid) {
-                Log.d(BaseIntegerValidator.class.getName(), "No value specified. Validation successful.");
+                Log.d(BaseHostValidator.class.getName(), "No value specified. Validation successful.");
                 return new ValidationResult(true, field, successMessage);
             } else {
-                Log.d(HostFieldValidator.class.getName(), "No value specified. Validation failed.");
+                Log.d(BaseHostValidator.class.getName(), "No value specified. Validation failed.");
                 return new ValidationResult(false, field, failedMessageNoValue);
             }
         }
         if (URLUtil.isValidIPAddress(value)) {
-            Log.d(HostFieldValidator.class.getName(), "Valid IP address. Validation successful.");
+            Log.d(BaseHostValidator.class.getName(), "Valid IP address. Validation successful.");
             return new ValidationResult(true, field, successMessage);
         }
         if (URLUtil.isValidHostName(value)) {
-            Log.d(HostFieldValidator.class.getName(), "Valid host name. Validation successful.");
+            Log.d(BaseHostValidator.class.getName(), "Valid host name. Validation successful.");
             return new ValidationResult(true, field, successMessage);
         }
-        Log.d(HostFieldValidator.class.getName(), "Neither IP address nor host name. Validation failed.");
+        Log.d(BaseHostValidator.class.getName(), "Neither IP address nor host name. Validation failed.");
         return new ValidationResult(false, field, failedMessage);
     }
 

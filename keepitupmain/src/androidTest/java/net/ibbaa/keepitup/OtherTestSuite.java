@@ -94,6 +94,7 @@ import net.ibbaa.keepitup.ui.validation.IntervalFieldValidatorTest;
 import net.ibbaa.keepitup.ui.validation.NotificationAfterFailuresFieldValidatorTest;
 import net.ibbaa.keepitup.ui.validation.NullAccessTypeDataValidatorTest;
 import net.ibbaa.keepitup.ui.validation.NullNetworkTaskValidatorTest;
+import net.ibbaa.keepitup.ui.validation.NullResolveValidatorTest;
 import net.ibbaa.keepitup.ui.validation.NumberPickerColorListenerTest;
 import net.ibbaa.keepitup.ui.validation.PingCountFieldValidatorTest;
 import net.ibbaa.keepitup.ui.validation.PingPackageSizeFieldValidatorTest;
@@ -103,6 +104,7 @@ import net.ibbaa.keepitup.ui.validation.ResolvePortFieldValidatorTest;
 import net.ibbaa.keepitup.ui.validation.StandardAccessTypeDataValidatorTest;
 import net.ibbaa.keepitup.ui.validation.StandardHostPortValidatorTest;
 import net.ibbaa.keepitup.ui.validation.StandardIntervalValidatorTest;
+import net.ibbaa.keepitup.ui.validation.StandardResolveValidatorTest;
 import net.ibbaa.keepitup.ui.validation.TextColorValidatingWatcherTest;
 import net.ibbaa.keepitup.ui.validation.URLFieldValidatorTest;
 import net.ibbaa.keepitup.ui.validation.URLValidatorTest;
@@ -218,6 +220,7 @@ import org.junit.runners.Suite;
         NotificationAfterFailuresFieldValidatorTest.class,
         NullAccessTypeDataValidatorTest.class,
         NullNetworkTaskValidatorTest.class,
+        NullResolveValidatorTest.class,
         NumberPickerColorListenerTest.class,
         PingCountFieldValidatorTest.class,
         PingPackageSizeFieldValidatorTest.class,
@@ -227,6 +230,7 @@ import org.junit.runners.Suite;
         StandardAccessTypeDataValidatorTest.class,
         StandardHostPortValidatorTest.class,
         StandardIntervalValidatorTest.class,
+        StandardResolveValidatorTest.class,
         TextColorValidatingWatcherTest.class,
         URLFieldValidatorTest.class,
         URLValidatorTest.class,

@@ -27,8 +27,10 @@ import net.ibbaa.keepitup.test.mock.TestRegistry;
 import net.ibbaa.keepitup.ui.dialog.ContextOption;
 import net.ibbaa.keepitup.ui.validation.NullAccessTypeDataValidator;
 import net.ibbaa.keepitup.ui.validation.NullNetworkTaskValidator;
+import net.ibbaa.keepitup.ui.validation.NullResolveValidator;
 import net.ibbaa.keepitup.ui.validation.StandardAccessTypeDataValidator;
 import net.ibbaa.keepitup.ui.validation.StandardHostPortValidator;
+import net.ibbaa.keepitup.ui.validation.StandardResolveValidator;
 import net.ibbaa.keepitup.ui.validation.URLValidator;
 
 import org.junit.Before;
@@ -74,6 +76,14 @@ public class EnumMappingTest {
         assertTrue(enumMapping.getAccessTypeDataValidator(AccessType.PING) instanceof StandardAccessTypeDataValidator);
         assertTrue(enumMapping.getAccessTypeDataValidator(AccessType.CONNECT) instanceof StandardAccessTypeDataValidator);
         assertTrue(enumMapping.getAccessTypeDataValidator(AccessType.DOWNLOAD) instanceof StandardAccessTypeDataValidator);
+    }
+
+    @Test
+    public void testGetResolveValidator() {
+        assertTrue(enumMapping.getResolveValidator(null) instanceof NullResolveValidator);
+        assertTrue(enumMapping.getResolveValidator(AccessType.PING) instanceof StandardResolveValidator);
+        assertTrue(enumMapping.getResolveValidator(AccessType.CONNECT) instanceof StandardResolveValidator);
+        assertTrue(enumMapping.getResolveValidator(AccessType.DOWNLOAD) instanceof StandardResolveValidator);
     }
 
     @Test
