@@ -32,6 +32,7 @@ import net.ibbaa.keepitup.model.AccessType;
 import net.ibbaa.keepitup.model.AccessTypeData;
 import net.ibbaa.keepitup.model.LogEntry;
 import net.ibbaa.keepitup.model.NetworkTask;
+import net.ibbaa.keepitup.model.Resolve;
 import net.ibbaa.keepitup.resources.PreferenceManager;
 import net.ibbaa.keepitup.service.TimeBasedSuspensionScheduler;
 import net.ibbaa.keepitup.service.alarm.AlarmService;
@@ -300,12 +301,18 @@ public class NetworkTaskAdapter extends RecyclerView.Adapter<NetworkTaskViewHold
         return -1;
     }
 
-    public void replaceNetworkTask(NetworkTask task, AccessTypeData data) {
+    public void replaceNetworkTask(NetworkTask task, AccessTypeData data, Resolve resolve) {
         Log.d(NetworkTaskAdapter.class.getName(), "replaceNetworkTask " + task);
         for (int ii = 0; ii < networkTaskWrapperList.size(); ii++) {
             NetworkTaskUIWrapper currentTask = networkTaskWrapperList.get(ii);
             if (task.getId() == currentTask.getId()) {
-                networkTaskWrapperList.set(ii, new NetworkTaskUIWrapper(task, data, currentTask.getLogEntry()));
+                if (data == null) {
+                    data = currentTask.getAccessTypeData();
+                }
+                if (resolve == null) {
+                    resolve = currentTask.getResolve();
+                }
+                networkTaskWrapperList.set(ii, new NetworkTaskUIWrapper(task, data, resolve, currentTask.getLogEntry()));
                 return;
             }
         }
@@ -317,7 +324,7 @@ public class NetworkTaskAdapter extends RecyclerView.Adapter<NetworkTaskViewHold
         for (int ii = 0; ii < networkTaskWrapperList.size(); ii++) {
             NetworkTaskUIWrapper currentTask = networkTaskWrapperList.get(ii);
             if (task.getId() == currentTask.getId()) {
-                networkTaskWrapperList.set(ii, new NetworkTaskUIWrapper(currentTask.getNetworkTask(), currentTask.getAccessTypeData(), logEntry));
+                networkTaskWrapperList.set(ii, new NetworkTaskUIWrapper(currentTask.getNetworkTask(), currentTask.getAccessTypeData(), currentTask.getResolve(), logEntry));
                 return;
             }
         }

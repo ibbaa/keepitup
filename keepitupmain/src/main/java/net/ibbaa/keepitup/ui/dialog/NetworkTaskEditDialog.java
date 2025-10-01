@@ -41,6 +41,7 @@ import net.ibbaa.keepitup.logging.Log;
 import net.ibbaa.keepitup.model.AccessType;
 import net.ibbaa.keepitup.model.AccessTypeData;
 import net.ibbaa.keepitup.model.NetworkTask;
+import net.ibbaa.keepitup.model.Resolve;
 import net.ibbaa.keepitup.resources.PreferenceManager;
 import net.ibbaa.keepitup.ui.ContextOptionsSupport;
 import net.ibbaa.keepitup.ui.ContextOptionsSupportManager;
@@ -68,6 +69,7 @@ public class NetworkTaskEditDialog extends DialogFragmentBase implements Context
     private View dialogView;
     private NetworkTask task;
     private AccessTypeData accessTypeData;
+    private Resolve resolve;
     private RadioGroup accessTypeGroup;
     private EditText addressEditText;
     private TextColorValidatingWatcher addressEditTextWatcher;
@@ -133,6 +135,8 @@ public class NetworkTaskEditDialog extends DialogFragmentBase implements Context
         task = taskBundle != null ? new NetworkTask(taskBundle) : new NetworkTask();
         Bundle accessTypeDataBundle = BundleUtil.bundleFromBundle(getAccessTypeDataKey(), requireArguments());
         accessTypeData = accessTypeDataBundle != null ? new AccessTypeData(accessTypeDataBundle) : new AccessTypeData();
+        Bundle resolveBundle = BundleUtil.bundleFromBundle(getResolveKey(), requireArguments());
+        resolve = resolveBundle != null ? new Resolve(resolveBundle) : new Resolve();
         prepareAccessTypeRadioButtons(savedInstanceState);
         prepareAddressTextFields();
         prepareAddressTextFieldsVisibility();
@@ -174,6 +178,10 @@ public class NetworkTaskEditDialog extends DialogFragmentBase implements Context
 
     public String getAccessTypeDataKey() {
         return NetworkTaskEditDialog.class.getName() + ".AccessTypeData";
+    }
+
+    public String getResolveKey() {
+        return NetworkTaskEditDialog.class.getName() + ".Resolve";
     }
 
     private String getAccessTypeBundleKey() {
@@ -596,6 +604,10 @@ public class NetworkTaskEditDialog extends DialogFragmentBase implements Context
         return accessTypeData;
     }
 
+    public Resolve getInitialResolve() {
+        return resolve;
+    }
+
     public NetworkTask getNetworkTask() {
         Bundle taskBundle = BundleUtil.bundleFromBundle(getTaskKey(), requireArguments());
         NetworkTask task = taskBundle != null ? new NetworkTask(taskBundle) : new NetworkTask();
@@ -647,6 +659,13 @@ public class NetworkTaskEditDialog extends DialogFragmentBase implements Context
         }
         Log.d(NetworkTaskEditDialog.class.getName(), "getAccessTypeData, access type data task is " + accessTypeData);
         return accessTypeData;
+    }
+
+    public Resolve getResolve() {
+        Bundle resolveBundle = BundleUtil.bundleFromBundle(getResolveKey(), requireArguments());
+        Resolve resolve = resolveBundle != null ? new Resolve(resolveBundle) : new Resolve();
+        Log.d(NetworkTaskEditDialog.class.getName(), "getResolve, resolve object is " + resolve);
+        return resolve;
     }
 
     private void onOkClicked(View view) {

@@ -21,17 +21,20 @@ import androidx.annotation.NonNull;
 import net.ibbaa.keepitup.model.AccessTypeData;
 import net.ibbaa.keepitup.model.LogEntry;
 import net.ibbaa.keepitup.model.NetworkTask;
+import net.ibbaa.keepitup.model.Resolve;
 
 @SuppressWarnings({"ClassCanBeRecord"})
 public class NetworkTaskUIWrapper {
 
     private final NetworkTask networkTask;
     private final AccessTypeData accessTypeData;
+    private final Resolve resolve;
     private final LogEntry logEntry;
 
-    public NetworkTaskUIWrapper(NetworkTask networkTask, AccessTypeData accessTypeData, LogEntry logEntry) {
+    public NetworkTaskUIWrapper(NetworkTask networkTask, AccessTypeData accessTypeData, Resolve resolve, LogEntry logEntry) {
         this.networkTask = networkTask;
         this.accessTypeData = accessTypeData;
+        this.resolve = resolve;
         this.logEntry = logEntry;
     }
 
@@ -45,6 +48,10 @@ public class NetworkTaskUIWrapper {
 
     public AccessTypeData getAccessTypeData() {
         return accessTypeData;
+    }
+
+    public Resolve getResolve() {
+        return resolve;
     }
 
     public LogEntry getLogEntry() {
@@ -67,6 +74,12 @@ public class NetworkTaskUIWrapper {
         if (accessTypeData != null && !accessTypeData.isEqual(other.getAccessTypeData())) {
             return false;
         }
+        if (resolve == null && other.getResolve() != null) {
+            return false;
+        }
+        if (resolve != null && !resolve.isEqual(other.getResolve())) {
+            return false;
+        }
         if (logEntry == null && other.getLogEntry() != null) {
             return false;
         }
@@ -79,6 +92,7 @@ public class NetworkTaskUIWrapper {
         return "NetworkTaskUIWrapper{" +
                 "networkTask=" + networkTask +
                 ", accessTypeData=" + accessTypeData +
+                ", resolve=" + resolve +
                 ", logEntry=" + logEntry +
                 '}';
     }

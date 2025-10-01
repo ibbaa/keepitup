@@ -26,6 +26,7 @@ import net.ibbaa.keepitup.model.AccessType;
 import net.ibbaa.keepitup.model.AccessTypeData;
 import net.ibbaa.keepitup.model.LogEntry;
 import net.ibbaa.keepitup.model.NetworkTask;
+import net.ibbaa.keepitup.model.Resolve;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -36,35 +37,43 @@ public class NetworkTaskUIWrapperTest {
 
     @Test
     public void testIsEqual() {
-        NetworkTaskUIWrapper wrapper1 = new NetworkTaskUIWrapper(getNetworkTask(), getAccessTypeData(), getLogEntry());
-        NetworkTaskUIWrapper wrapper2 = new NetworkTaskUIWrapper(null, null, null);
+        NetworkTaskUIWrapper wrapper1 = new NetworkTaskUIWrapper(getNetworkTask(), getAccessTypeData(), getResolve(), getLogEntry());
+        NetworkTaskUIWrapper wrapper2 = new NetworkTaskUIWrapper(null, null, null, null);
         assertFalse(wrapper1.isEqual(wrapper2));
-        wrapper2 = new NetworkTaskUIWrapper(null, null, getLogEntry());
-        assertFalse(wrapper1.isEqual(wrapper2));
-        assertFalse(wrapper2.isEqual(wrapper1));
-        wrapper2 = new NetworkTaskUIWrapper(null, getAccessTypeData(), getLogEntry());
+        wrapper2 = new NetworkTaskUIWrapper(null, null, null, getLogEntry());
         assertFalse(wrapper1.isEqual(wrapper2));
         assertFalse(wrapper2.isEqual(wrapper1));
-        wrapper2 = new NetworkTaskUIWrapper(getNetworkTask(), getAccessTypeData(), getLogEntry());
+        wrapper2 = new NetworkTaskUIWrapper(null, null, getResolve(), getLogEntry());
+        assertFalse(wrapper1.isEqual(wrapper2));
+        assertFalse(wrapper2.isEqual(wrapper1));
+        wrapper2 = new NetworkTaskUIWrapper(null, getAccessTypeData(), getResolve(), getLogEntry());
+        assertFalse(wrapper1.isEqual(wrapper2));
+        assertFalse(wrapper2.isEqual(wrapper1));
+        wrapper2 = new NetworkTaskUIWrapper(getNetworkTask(), getAccessTypeData(), getResolve(), getLogEntry());
         assertTrue(wrapper1.isEqual(wrapper2));
         assertTrue(wrapper2.isEqual(wrapper1));
         NetworkTask task = getNetworkTask();
         task.setInstances(3);
-        wrapper2 = new NetworkTaskUIWrapper(task, getAccessTypeData(), getLogEntry());
+        wrapper2 = new NetworkTaskUIWrapper(task, getAccessTypeData(), getResolve(), getLogEntry());
         assertFalse(wrapper1.isEqual(wrapper2));
         assertFalse(wrapper2.isEqual(wrapper1));
         LogEntry entry = getLogEntry();
         entry.setNetworkTaskId(2);
-        wrapper2 = new NetworkTaskUIWrapper(getNetworkTask(), getAccessTypeData(), entry);
+        wrapper2 = new NetworkTaskUIWrapper(getNetworkTask(), getAccessTypeData(), getResolve(), entry);
         assertFalse(wrapper1.isEqual(wrapper2));
         assertFalse(wrapper2.isEqual(wrapper1));
         AccessTypeData data = getAccessTypeData();
         data.setConnectCount(25);
-        wrapper2 = new NetworkTaskUIWrapper(getNetworkTask(), data, getLogEntry());
+        wrapper2 = new NetworkTaskUIWrapper(getNetworkTask(), data, getResolve(), getLogEntry());
         assertFalse(wrapper1.isEqual(wrapper2));
         assertFalse(wrapper2.isEqual(wrapper1));
-        wrapper1 = new NetworkTaskUIWrapper(null, null, null);
-        wrapper2 = new NetworkTaskUIWrapper(null, null, null);
+        Resolve resolve = getResolve();
+        resolve.setAddress("address");
+        wrapper2 = new NetworkTaskUIWrapper(getNetworkTask(), getAccessTypeData(), resolve, getLogEntry());
+        assertFalse(wrapper1.isEqual(wrapper2));
+        assertFalse(wrapper2.isEqual(wrapper1));
+        wrapper1 = new NetworkTaskUIWrapper(null, null, null, null);
+        wrapper2 = new NetworkTaskUIWrapper(null, null, null, null);
         assertTrue(wrapper1.isEqual(wrapper2));
     }
 
@@ -108,5 +117,14 @@ public class NetworkTaskUIWrapperTest {
         data.setStopOnSuccess(true);
         data.setIgnoreSSLError(true);
         return data;
+    }
+
+    private Resolve getResolve() {
+        Resolve resolve = new Resolve();
+        resolve.setId(0);
+        resolve.setNetworkTaskId(0);
+        resolve.setAddress("192.168.178.1");
+        resolve.setPort(22);
+        return resolve;
     }
 }

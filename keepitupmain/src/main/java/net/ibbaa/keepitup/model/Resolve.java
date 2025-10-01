@@ -24,6 +24,7 @@ import androidx.annotation.NonNull;
 
 import net.ibbaa.keepitup.resources.PreferenceManager;
 import net.ibbaa.keepitup.util.NumberUtil;
+import net.ibbaa.keepitup.util.StringUtil;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -40,7 +41,14 @@ public class Resolve {
         this.id = -1;
         this.networktaskid = -1;
         this.address = null;
-        this.port = 0;
+        this.port = -1;
+    }
+
+    public Resolve(long networktaskid) {
+        this.id = -1;
+        this.networktaskid = networktaskid;
+        this.address = null;
+        this.port = -1;
     }
 
     public Resolve(Resolve other) {
@@ -140,6 +148,10 @@ public class Resolve {
         }
         map.put("port", port);
         return map;
+    }
+
+    public boolean isEmpty() {
+        return StringUtil.isEmpty(address) && port < 0;
     }
 
     public boolean isEqual(Resolve other) {

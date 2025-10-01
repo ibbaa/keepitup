@@ -47,28 +47,37 @@ public class ResolveTest {
         assertEquals(-1, resolve.getId());
         assertEquals(-1, resolve.getNetworkTaskId());
         assertNull(resolve.getAddress());
-        assertEquals(0, resolve.getPort());
+        assertEquals(-1, resolve.getPort());
         PersistableBundle persistableBundle = resolve.toPersistableBundle();
         assertNotNull(persistableBundle);
         resolve = new Resolve(persistableBundle);
         assertEquals(-1, resolve.getId());
         assertEquals(-1, resolve.getNetworkTaskId());
         assertNull(resolve.getAddress());
-        assertEquals(0, resolve.getPort());
+        assertEquals(-1, resolve.getPort());
         Bundle bundle = resolve.toBundle();
         assertNotNull(bundle);
         resolve = new Resolve(bundle);
         assertEquals(-1, resolve.getId());
         assertEquals(-1, resolve.getNetworkTaskId());
         assertNull(resolve.getAddress());
-        assertEquals(0, resolve.getPort());
+        assertEquals(-1, resolve.getPort());
         Map<String, ?> map = resolve.toMap();
         assertNotNull(map);
         resolve = new Resolve(map);
         assertEquals(-1, resolve.getId());
         assertEquals(-1, resolve.getNetworkTaskId());
         assertNull(resolve.getAddress());
-        assertEquals(0, resolve.getPort());
+        assertEquals(-1, resolve.getPort());
+    }
+
+    @Test
+    public void testNetworkTaskIdInitialize() {
+        Resolve resolve = new Resolve(25);
+        assertEquals(-1, resolve.getId());
+        assertEquals(25, resolve.getNetworkTaskId());
+        assertNull(resolve.getAddress());
+        assertEquals(-1, resolve.getPort());
     }
 
     @Test
@@ -91,7 +100,7 @@ public class ResolveTest {
         assertEquals(-1, resolve.getId());
         assertEquals(-1, resolve.getNetworkTaskId());
         assertNull(resolve.getAddress());
-        assertEquals(0, resolve.getPort());
+        assertEquals(-1, resolve.getPort());
     }
 
     @Test
@@ -105,7 +114,7 @@ public class ResolveTest {
         assertEquals(-1, resolve.getId());
         assertEquals(-1, resolve.getNetworkTaskId());
         assertNull(resolve.getAddress());
-        assertEquals(0, resolve.getPort());
+        assertEquals(-1, resolve.getPort());
     }
 
     @Test
@@ -181,6 +190,30 @@ public class ResolveTest {
         assertEquals(2, resolve.getNetworkTaskId());
         assertEquals("127.0.0.1", resolve.getAddress());
         assertEquals(23, resolve.getPort());
+    }
+
+    @Test
+    public void testIsEmpty() {
+        Resolve resolve = new Resolve();
+        assertTrue(resolve.isEmpty());
+        resolve = new Resolve(TestRegistry.getContext());
+        assertTrue(resolve.isEmpty());
+        resolve = new Resolve(new Resolve());
+        assertTrue(resolve.isEmpty());
+        resolve.setNetworkTaskId(25);
+        assertTrue(resolve.isEmpty());
+        resolve.setAddress("");
+        assertTrue(resolve.isEmpty());
+        resolve.setAddress("123");
+        assertFalse(resolve.isEmpty());
+        resolve = new Resolve();
+        resolve.setPort(3);
+        assertFalse(resolve.isEmpty());
+        PreferenceManager preferenceManager = new PreferenceManager(TestRegistry.getContext());
+        preferenceManager.setPreferenceResolveAddress("127.0.0.1");
+        preferenceManager.setPreferenceResolvePort(12);
+        resolve = new Resolve(TestRegistry.getContext());
+        assertFalse(resolve.isEmpty());
     }
 
     @Test

@@ -30,6 +30,7 @@ import net.ibbaa.keepitup.model.AccessType;
 import net.ibbaa.keepitup.model.AccessTypeData;
 import net.ibbaa.keepitup.model.LogEntry;
 import net.ibbaa.keepitup.model.NetworkTask;
+import net.ibbaa.keepitup.model.Resolve;
 import net.ibbaa.keepitup.test.mock.TestRegistry;
 import net.ibbaa.keepitup.ui.BaseUITest;
 import net.ibbaa.keepitup.ui.NetworkTaskMainActivity;
@@ -76,6 +77,9 @@ public class NetworkTaskMainUIInitTaskTest extends BaseUITest {
         AccessTypeData data1 = getAccessTypeDataDAO().insertAccessTypeData(getAccessTypeData1(task1.getId()));
         AccessTypeData data2 = getAccessTypeDataDAO().insertAccessTypeData(getAccessTypeData2(task2.getId()));
         AccessTypeData data3 = getAccessTypeDataDAO().insertAccessTypeData(getAccessTypeData3(task3.getId()));
+        Resolve resolve1 = getResolveDAO().insertResolve(getResolve1(task1.getId()));
+        Resolve resolve2 = getResolveDAO().insertResolve(getResolve2(task2.getId()));
+        Resolve resolve3 = getResolveDAO().insertResolve(getResolve3(task3.getId()));
         LogEntry logEntry1 = getLogDAO().insertAndDeleteLog(getLogEntryWithNetworkTaskId(task1.getId(), new GregorianCalendar(1980, Calendar.MARCH, 17).getTime().getTime()));
         LogEntry logEntry2 = getLogDAO().insertAndDeleteLog(getLogEntryWithNetworkTaskId(task2.getId(), new GregorianCalendar(1981, Calendar.MARCH, 17).getTime().getTime()));
         List<NetworkTaskUIWrapper> wrapperList = initTask.runInBackground();
@@ -85,13 +89,29 @@ public class NetworkTaskMainUIInitTaskTest extends BaseUITest {
         NetworkTaskUIWrapper wrapper3 = wrapperList.get(2);
         assertTrue(task1.isEqual(wrapper1.getNetworkTask()));
         assertTrue(data1.isEqual(wrapper1.getAccessTypeData()));
+        assertTrue(resolve1.isEqual(wrapper1.getResolve()));
         assertTrue(logEntry1.isEqual(wrapper1.getLogEntry()));
         assertTrue(task2.isEqual(wrapper2.getNetworkTask()));
         assertTrue(data2.isEqual(wrapper2.getAccessTypeData()));
+        assertTrue(resolve2.isEqual(wrapper2.getResolve()));
         assertTrue(logEntry2.isEqual(wrapper2.getLogEntry()));
         assertTrue(task3.isEqual(wrapper3.getNetworkTask()));
         assertTrue(data3.isEqual(wrapper3.getAccessTypeData()));
+        assertTrue(resolve3.isEqual(wrapper3.getResolve()));
         assertNull(wrapper3.getLogEntry());
+    }
+
+    @Test
+    public void testNullResolveAndLogEntry() {
+        NetworkTask task = getNetworkTaskDAO().insertNetworkTask(getNetworkTask1());
+        AccessTypeData data = getAccessTypeDataDAO().insertAccessTypeData(getAccessTypeData1(task.getId()));
+        List<NetworkTaskUIWrapper> wrapperList = initTask.runInBackground();
+        assertEquals(1, wrapperList.size());
+        NetworkTaskUIWrapper wrapper = wrapperList.get(0);
+        assertTrue(task.isEqual(wrapper.getNetworkTask()));
+        assertTrue(data.isEqual(wrapper.getAccessTypeData()));
+        assertNull(wrapper.getResolve());
+        assertNull(wrapper.getLogEntry());
     }
 
     @Test
@@ -102,13 +122,15 @@ public class NetworkTaskMainUIInitTaskTest extends BaseUITest {
         AccessTypeData data1 = getAccessTypeDataDAO().insertAccessTypeData(getAccessTypeData1(task1.getId()));
         AccessTypeData data2 = getAccessTypeDataDAO().insertAccessTypeData(getAccessTypeData2(task2.getId()));
         AccessTypeData data3 = getAccessTypeDataDAO().insertAccessTypeData(getAccessTypeData3(task3.getId()));
+        Resolve resolve1 = getResolveDAO().insertResolve(getResolve1(task1.getId()));
+        Resolve resolve2 = getResolveDAO().insertResolve(getResolve2(task2.getId()));
         LogEntry logEntry1 = getLogDAO().insertAndDeleteLog(getLogEntryWithNetworkTaskId(task1.getId(), new GregorianCalendar(1980, Calendar.MARCH, 17).getTime().getTime()));
         LogEntry logEntry2 = getLogDAO().insertAndDeleteLog(getLogEntryWithNetworkTaskId(task2.getId(), new GregorianCalendar(1981, Calendar.MARCH, 17).getTime().getTime()));
-        final NetworkTaskUIWrapper wrapper1 = new NetworkTaskUIWrapper(task1, data1, logEntry1);
-        final NetworkTaskUIWrapper wrapper2 = new NetworkTaskUIWrapper(task2, data2, logEntry2);
-        final NetworkTaskUIWrapper wrapper3 = new NetworkTaskUIWrapper(task3, data3, null);
+        final NetworkTaskUIWrapper wrapper1 = new NetworkTaskUIWrapper(task1, data1, resolve1, logEntry1);
+        final NetworkTaskUIWrapper wrapper2 = new NetworkTaskUIWrapper(task2, data2, resolve2, logEntry2);
+        final NetworkTaskUIWrapper wrapper3 = new NetworkTaskUIWrapper(task3, data3, null, null);
         NetworkTaskAdapter adapter = getAdapter(activityScenario);
-        adapter.addItem(new NetworkTaskUIWrapper(task3, null, logEntry2));
+        adapter.addItem(new NetworkTaskUIWrapper(task3, null, resolve2, logEntry2));
         initTask.runOnUIThread(Arrays.asList(wrapper1, wrapper2, wrapper3));
         InstrumentationRegistry.getInstrumentation().waitForIdleSync();
         adapter.getItem(0);
@@ -116,12 +138,15 @@ public class NetworkTaskMainUIInitTaskTest extends BaseUITest {
         adapter.getItem(2);
         assertTrue(task1.isEqual(wrapper1.getNetworkTask()));
         assertTrue(data1.isEqual(wrapper1.getAccessTypeData()));
+        assertTrue(resolve1.isEqual(wrapper1.getResolve()));
         assertTrue(logEntry1.isEqual(wrapper1.getLogEntry()));
         assertTrue(task2.isEqual(wrapper2.getNetworkTask()));
         assertTrue(data2.isEqual(wrapper2.getAccessTypeData()));
+        assertTrue(resolve2.isEqual(wrapper2.getResolve()));
         assertTrue(logEntry2.isEqual(wrapper2.getLogEntry()));
         assertTrue(task3.isEqual(wrapper3.getNetworkTask()));
         assertTrue(data3.isEqual(wrapper3.getAccessTypeData()));
+        assertNull(wrapper3.getResolve());
         assertNull(wrapper3.getLogEntry());
     }
 
@@ -133,13 +158,15 @@ public class NetworkTaskMainUIInitTaskTest extends BaseUITest {
         AccessTypeData data1 = getAccessTypeDataDAO().insertAccessTypeData(getAccessTypeData1(task1.getId()));
         AccessTypeData data2 = getAccessTypeDataDAO().insertAccessTypeData(getAccessTypeData2(task2.getId()));
         AccessTypeData data3 = getAccessTypeDataDAO().insertAccessTypeData(getAccessTypeData3(task3.getId()));
+        Resolve resolve1 = getResolveDAO().insertResolve(getResolve1(task1.getId()));
+        Resolve resolve2 = getResolveDAO().insertResolve(getResolve2(task2.getId()));
         LogEntry logEntry1 = getLogDAO().insertAndDeleteLog(getLogEntryWithNetworkTaskId(task1.getId(), new GregorianCalendar(1980, Calendar.MARCH, 17).getTime().getTime()));
         LogEntry logEntry2 = getLogDAO().insertAndDeleteLog(getLogEntryWithNetworkTaskId(task2.getId(), new GregorianCalendar(1981, Calendar.MARCH, 17).getTime().getTime()));
-        final NetworkTaskUIWrapper wrapper1 = new NetworkTaskUIWrapper(task1, data1, logEntry1);
-        final NetworkTaskUIWrapper wrapper2 = new NetworkTaskUIWrapper(task2, data2, logEntry2);
-        final NetworkTaskUIWrapper wrapper3 = new NetworkTaskUIWrapper(task3, data3, null);
+        final NetworkTaskUIWrapper wrapper1 = new NetworkTaskUIWrapper(task1, data1, resolve1, logEntry1);
+        final NetworkTaskUIWrapper wrapper2 = new NetworkTaskUIWrapper(task2, data2, resolve2, logEntry2);
+        final NetworkTaskUIWrapper wrapper3 = new NetworkTaskUIWrapper(task3, data3, null, null);
         NetworkTaskAdapter adapter = getAdapter(activityScenario);
-        adapter.addItem(new NetworkTaskUIWrapper(task3, null, logEntry2));
+        adapter.addItem(new NetworkTaskUIWrapper(task3, null, resolve2, logEntry2));
         NetworkTaskMainUIInitTask nullInitTask = new NetworkTaskMainUIInitTask(getActivity(activityScenario), null);
         nullInitTask.runOnUIThread(Arrays.asList(wrapper1, wrapper2, wrapper3));
         InstrumentationRegistry.getInstrumentation().waitForIdleSync();
@@ -154,11 +181,13 @@ public class NetworkTaskMainUIInitTaskTest extends BaseUITest {
         AccessTypeData data1 = getAccessTypeDataDAO().insertAccessTypeData(getAccessTypeData1(task1.getId()));
         AccessTypeData data2 = getAccessTypeDataDAO().insertAccessTypeData(getAccessTypeData2(task2.getId()));
         AccessTypeData data3 = getAccessTypeDataDAO().insertAccessTypeData(getAccessTypeData3(task3.getId()));
+        Resolve resolve1 = getResolveDAO().insertResolve(getResolve1(task1.getId()));
+        Resolve resolve2 = getResolveDAO().insertResolve(getResolve2(task2.getId()));
         LogEntry logEntry1 = getLogDAO().insertAndDeleteLog(getLogEntryWithNetworkTaskId(task1.getId(), new GregorianCalendar(1980, Calendar.MARCH, 17).getTime().getTime()));
         LogEntry logEntry2 = getLogDAO().insertAndDeleteLog(getLogEntryWithNetworkTaskId(task2.getId(), new GregorianCalendar(1981, Calendar.MARCH, 17).getTime().getTime()));
-        NetworkTaskUIWrapper wrapper1 = new NetworkTaskUIWrapper(task1, data1, logEntry1);
-        NetworkTaskUIWrapper wrapper2 = new NetworkTaskUIWrapper(task2, data2, logEntry2);
-        NetworkTaskUIWrapper wrapper3 = new NetworkTaskUIWrapper(task3, data3, null);
+        NetworkTaskUIWrapper wrapper1 = new NetworkTaskUIWrapper(task1, data1, resolve1, logEntry1);
+        NetworkTaskUIWrapper wrapper2 = new NetworkTaskUIWrapper(task2, data2, resolve2, logEntry2);
+        NetworkTaskUIWrapper wrapper3 = new NetworkTaskUIWrapper(task3, data3, null, null);
         NetworkTaskAdapter adapter = getAdapter(activityScenario);
         adapter.addItem(wrapper1);
         adapter.addItem(wrapper2);
@@ -276,6 +305,33 @@ public class NetworkTaskMainUIInitTaskTest extends BaseUITest {
         data.setStopOnSuccess(false);
         data.setIgnoreSSLError(false);
         return data;
+    }
+
+    private Resolve getResolve1(long networkTaskId) {
+        Resolve resolve = new Resolve();
+        resolve.setId(0);
+        resolve.setNetworkTaskId(networkTaskId);
+        resolve.setAddress("192.168.178.1");
+        resolve.setPort(22);
+        return resolve;
+    }
+
+    private Resolve getResolve2(long networkTaskId) {
+        Resolve resolve = new Resolve();
+        resolve.setId(0);
+        resolve.setNetworkTaskId(networkTaskId);
+        resolve.setAddress("192.168.178.1");
+        resolve.setPort(443);
+        return resolve;
+    }
+
+    private Resolve getResolve3(long networkTaskId) {
+        Resolve resolve = new Resolve();
+        resolve.setId(0);
+        resolve.setNetworkTaskId(networkTaskId);
+        resolve.setAddress("127.0.0.1");
+        resolve.setPort(-1);
+        return resolve;
     }
 
     private LogEntry getLogEntryWithNetworkTaskId(long networkTaskId, long timestamp) {

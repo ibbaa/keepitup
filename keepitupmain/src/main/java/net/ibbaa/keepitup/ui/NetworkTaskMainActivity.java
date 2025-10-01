@@ -39,6 +39,7 @@ import net.ibbaa.keepitup.db.NetworkTaskDAO;
 import net.ibbaa.keepitup.logging.Log;
 import net.ibbaa.keepitup.model.AccessTypeData;
 import net.ibbaa.keepitup.model.NetworkTask;
+import net.ibbaa.keepitup.model.Resolve;
 import net.ibbaa.keepitup.notification.NotificationHandler;
 import net.ibbaa.keepitup.resources.PreferenceManager;
 import net.ibbaa.keepitup.service.IAlarmManager;
@@ -372,7 +373,8 @@ public class NetworkTaskMainActivity extends RecyclerViewBaseActivity implements
         Log.d(NetworkTaskMainActivity.class.getName(), "onMainAddClicked");
         NetworkTask task = new NetworkTask(this);
         AccessTypeData data = new AccessTypeData(this);
-        openNetworkTaskEditDialog(task, data, -1);
+        Resolve resolve = new Resolve(this);
+        openNetworkTaskEditDialog(task, data, resolve, -1);
     }
 
     public void onMainStartStopClicked(int position) {
@@ -392,10 +394,10 @@ public class NetworkTaskMainActivity extends RecyclerViewBaseActivity implements
         NetworkTaskHandler handler = new NetworkTaskHandler(this);
         if (networkTask.isRunning()) {
             Log.d(NetworkTaskMainActivity.class.getName(), "Network task is running, stopping " + networkTask);
-            handler.stopNetworkTask(networkTask, accessTypeData);
+            handler.stopNetworkTask(networkTask);
         } else {
             Log.d(NetworkTaskMainActivity.class.getName(), "Network task is not running, starting " + networkTask);
-            handler.startNetworkTask(networkTask, accessTypeData);
+            handler.startNetworkTask(networkTask);
         }
         getAdapter().notifyItemChanged(position);
     }
@@ -431,7 +433,8 @@ public class NetworkTaskMainActivity extends RecyclerViewBaseActivity implements
         }
         NetworkTask task = uiWrapper.getNetworkTask();
         AccessTypeData accessTypeData = uiWrapper.getAccessTypeData();
-        openNetworkTaskEditDialog(task, accessTypeData, position);
+        Resolve resolve = uiWrapper.getResolve() == null ? new Resolve(task.getId()) : uiWrapper.getResolve();
+        openNetworkTaskEditDialog(task, accessTypeData, resolve, position);
     }
 
     public void onMainCopyClicked(int position) {
@@ -447,11 +450,12 @@ public class NetworkTaskMainActivity extends RecyclerViewBaseActivity implements
         }
         NetworkTask task = new NetworkTask(uiWrapper.getNetworkTask());
         AccessTypeData accessTypeData = new AccessTypeData(uiWrapper.getAccessTypeData());
-        openNetworkTaskEditDialog(task, accessTypeData, position);
+        Resolve resolve = uiWrapper.getResolve() == null ? new Resolve(task.getId()) : new Resolve(uiWrapper.getResolve());
+        openNetworkTaskEditDialog(task, accessTypeData, resolve, position);
     }
 
-    private void openNetworkTaskEditDialog(NetworkTask task, AccessTypeData accessTypeData, int position) {
-        Log.d(NetworkTaskMainActivity.class.getName(), "openNetworkTaskEditDialog, task is " + task + ", accessTypeData is" + accessTypeData + ", position is " + position);
+    private void openNetworkTaskEditDialog(NetworkTask task, AccessTypeData accessTypeData, Resolve resolve, int position) {
+        Log.d(NetworkTaskMainActivity.class.getName(), "openNetworkTaskEditDialog, task is " + task + ", accessTypeData is" + accessTypeData + ", resolve is" + resolve + ", position is " + position);
         NetworkTaskEditDialog editDialog = new NetworkTaskEditDialog();
         if (permissionManager != null) {
             editDialog.injectPermissionManager(permissionManager);
@@ -459,6 +463,7 @@ public class NetworkTaskMainActivity extends RecyclerViewBaseActivity implements
         Bundle bundle = BundleUtil.integerToBundle(editDialog.getPositionKey(), position);
         bundle = BundleUtil.bundleToBundle(editDialog.getTaskKey(), task.toBundle(), bundle);
         bundle = BundleUtil.bundleToBundle(editDialog.getAccessTypeDataKey(), accessTypeData.toBundle(), bundle);
+        bundle = BundleUtil.bundleToBundle(editDialog.getResolveKey(), resolve.toBundle(), bundle);
         editDialog.setArguments(bundle);
         Log.d(NetworkTaskMainActivity.class.getName(), "Opening " + NetworkTaskEditDialog.class.getSimpleName());
         editDialog.show(getSupportFragmentManager(), NetworkTaskEditDialog.class.getName());
@@ -486,26 +491,34 @@ public class NetworkTaskMainActivity extends RecyclerViewBaseActivity implements
     public void onEditDialogOkClicked(NetworkTaskEditDialog editDialog) {
         NetworkTask task = editDialog.getNetworkTask();
         AccessTypeData accessTypeData = editDialog.getAccessTypeData();
-        Log.d(NetworkTaskMainActivity.class.getName(), "onEditDialogOkClicked, network task is " + task + ", access type data is " + accessTypeData);
+        Resolve resolve = editDialog.getResolve();
+        resolve.setNetworkTaskId(task.getId());
+        Log.d(NetworkTaskMainActivity.class.getName(), "onEditDialogOkClicked, network task is " + task + ", access type data is " + accessTypeData + ", resolve is " + resolve);
         NetworkTaskHandler handler = new NetworkTaskHandler(this);
         if (task.getId() < 0) {
             Log.d(NetworkTaskMainActivity.class.getName(), "Network task is new, inserting " + task);
-            handler.insertNetworkTask(task, accessTypeData);
+            handler.insertNetworkTask(task, accessTypeData, resolve);
             getAdapter().notifyItemInserted(getAdapter().getItemCount() + 1);
             scrollToEntryByIndex(task.getIndex());
         } else {
             NetworkTask initialTask = editDialog.getInitialNetworkTask();
             AccessTypeData initialAccessTypeData = editDialog.getInitialAccessTypeData();
             initialAccessTypeData.setNetworkTaskId(initialTask.getId());
+            Resolve initialResolve = editDialog.getInitialResolve();
+            initialResolve.setNetworkTaskId(initialTask.getId());
             Log.d(NetworkTaskMainActivity.class.getName(), "Initial network task is " + initialTask);
             Log.d(NetworkTaskMainActivity.class.getName(), "Initial access type data is " + initialAccessTypeData);
-            if (initialTask.isTechnicallyEqual(task) && initialAccessTypeData.isTechnicallyEqual(accessTypeData)) {
-                Log.d(NetworkTaskMainActivity.class.getName(), "Initial network task and network task are technically equal.");
-                Log.d(NetworkTaskMainActivity.class.getName(), "Initial access type data and access type data are technically equal.");
+            boolean taskChanged = !initialTask.isTechnicallyEqual(task);
+            boolean accessTypeDataChanged = !initialAccessTypeData.isTechnicallyEqual(accessTypeData);
+            boolean resolveChanged = !initialResolve.isTechnicallyEqual(resolve);
+            Log.d(NetworkTaskMainActivity.class.getName(), "Initial network task changed: " + taskChanged);
+            Log.d(NetworkTaskMainActivity.class.getName(), "Initial access type data changed: " + accessTypeDataChanged);
+            Log.d(NetworkTaskMainActivity.class.getName(), "Initial resolve object changed: " + resolveChanged);
+            if (!taskChanged && !accessTypeDataChanged && !resolveChanged) {
                 Log.d(NetworkTaskMainActivity.class.getName(), "No changes were made. Skipping update.");
             } else {
                 Log.d(NetworkTaskMainActivity.class.getName(), "Updating " + task);
-                handler.updateNetworkTask(task, accessTypeData);
+                handler.updateNetworkTask(task, accessTypeDataChanged ? accessTypeData : null, resolveChanged ? resolve : null);
                 getAdapter().notifyItemChanged(editDialog.getPosition());
             }
         }
@@ -601,7 +614,7 @@ public class NetworkTaskMainActivity extends RecyclerViewBaseActivity implements
             NetworkTaskHandler handler = new NetworkTaskHandler(this);
             String name = StringUtil.isEmpty(inputDialog.getValue()) ? getResources().getString(R.string.task_name_default) : inputDialog.getValue();
             Log.d(NetworkTaskMainActivity.class.getName(), "new name is " + name);
-            handler.updateNetworkTaskName(networkTask, accessTypeData, name);
+            handler.updateNetworkTaskName(networkTask, name);
             getAdapter().notifyItemChanged(type.getPosition());
         } else {
             Log.e(NetworkTaskMainActivity.class.getName(), "type " + type + " unknown");

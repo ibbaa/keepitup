@@ -35,6 +35,11 @@ public class NetworkTaskMainUIBroadcastReceiver extends BroadcastReceiver {
     private final NetworkTaskMainActivity mainActivity;
     private final NetworkTaskAdapter adapter;
 
+    public NetworkTaskMainUIBroadcastReceiver() {
+        this.mainActivity = null;
+        this.adapter = null;
+    }
+
     public NetworkTaskMainUIBroadcastReceiver(NetworkTaskMainActivity mainActivity, NetworkTaskAdapter adapter) {
         this.mainActivity = mainActivity;
         this.adapter = adapter;
@@ -43,6 +48,10 @@ public class NetworkTaskMainUIBroadcastReceiver extends BroadcastReceiver {
     @Override
     @SuppressWarnings("NotifyDataSetChanged")
     public void onReceive(Context context, Intent intent) {
+        if (mainActivity == null || adapter == null) {
+            Log.e(NetworkTaskMainUIBroadcastReceiver.class.getName(), "Dependencies are null.");
+            return;
+        }
         String action = intent.getStringExtra(context.getResources().getString(R.string.sync_action_key));
         String notifyAction = context.getResources().getString(R.string.sync_action_notify);
         if (notifyAction.equals(action)) {

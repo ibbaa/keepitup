@@ -23,10 +23,12 @@ import net.ibbaa.keepitup.BuildConfig;
 import net.ibbaa.keepitup.db.AccessTypeDataDAO;
 import net.ibbaa.keepitup.db.LogDAO;
 import net.ibbaa.keepitup.db.NetworkTaskDAO;
+import net.ibbaa.keepitup.db.ResolveDAO;
 import net.ibbaa.keepitup.logging.Log;
 import net.ibbaa.keepitup.model.AccessTypeData;
 import net.ibbaa.keepitup.model.LogEntry;
 import net.ibbaa.keepitup.model.NetworkTask;
+import net.ibbaa.keepitup.model.Resolve;
 import net.ibbaa.keepitup.ui.NetworkTaskMainActivity;
 import net.ibbaa.keepitup.ui.adapter.NetworkTaskAdapter;
 import net.ibbaa.keepitup.ui.adapter.NetworkTaskUIWrapper;
@@ -50,7 +52,7 @@ public class NetworkTaskMainUIInitTask extends UIBackgroundTask<List<NetworkTask
 
     @Override
     protected List<NetworkTaskUIWrapper> runInBackground() {
-        Log.d(NetworkTaskMainUISyncTask.class.getName(), "runInBackground");
+        Log.d(NetworkTaskMainUIInitTask.class.getName(), "runInBackground");
         try {
             Context context = getActivity();
             if (context != null) {
@@ -75,11 +77,15 @@ public class NetworkTaskMainUIInitTask extends UIBackgroundTask<List<NetworkTask
                         data.setNetworkTaskId(currentTask.getId());
                         accessTypeDataDAO.insertAccessTypeData(data);
                     }
+                    Log.d(NetworkTaskMainActivity.class.getName(), "Reading resolve object for " + currentTask);
+                    ResolveDAO resolveDAO = new ResolveDAO(context);
+                    Resolve resolve = resolveDAO.readResolveForNetworkTask(currentTask.getId());
+                    Log.d(NetworkTaskMainActivity.class.getName(), "Database returned the following resolve object: " + (resolve == null ? "null" : resolve.toString()));
                     Log.d(NetworkTaskMainActivity.class.getName(), "Reading most recent log for " + currentTask);
                     LogDAO logDAO = new LogDAO(context);
                     LogEntry logEntry = logDAO.readMostRecentLogForNetworkTask(currentTask.getId());
                     Log.d(NetworkTaskMainActivity.class.getName(), "Database returned the following log entry: " + (logEntry == null ? "no log entry" : logEntry.toString()));
-                    NetworkTaskUIWrapper currentWrapper = new NetworkTaskUIWrapper(currentTask, data, logEntry);
+                    NetworkTaskUIWrapper currentWrapper = new NetworkTaskUIWrapper(currentTask, data, resolve, logEntry);
                     wrapperList.add(currentWrapper);
                 }
                 return wrapperList;
@@ -105,7 +111,7 @@ public class NetworkTaskMainUIInitTask extends UIBackgroundTask<List<NetworkTask
                 adapter.notifyDataSetChanged();
             }
         } catch (Exception exc) {
-            Log.e(NetworkTaskMainUISyncTask.class.getName(), "Error initializing adapter", exc);
+            Log.e(NetworkTaskMainUIInitTask.class.getName(), "Error initializing adapter", exc);
         }
     }
 }
