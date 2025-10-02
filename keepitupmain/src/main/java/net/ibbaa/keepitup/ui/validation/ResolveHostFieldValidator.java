@@ -19,6 +19,7 @@ package net.ibbaa.keepitup.ui.validation;
 import android.content.Context;
 
 import net.ibbaa.keepitup.logging.Log;
+import net.ibbaa.keepitup.util.UIUtil;
 
 public class ResolveHostFieldValidator extends BaseHostValidator implements FieldValidator {
 
@@ -29,6 +30,6 @@ public class ResolveHostFieldValidator extends BaseHostValidator implements Fiel
     @Override
     public ValidationResult validate(String value) {
         Log.d(ResolveHostFieldValidator.class.getName(), "validate, value is " + value);
-        return super.validateHost(value, true);
+        return super.validateHost(UIUtil.getEmptyIfNotSet(getContext(), value), true);
     }
 }

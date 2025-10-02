@@ -18,7 +18,6 @@ package net.ibbaa.keepitup.resources;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import androidx.test.ext.junit.runners.AndroidJUnit4;
@@ -186,14 +185,14 @@ public class PreferenceManagerTest {
 
     @Test
     public void testGetSetRemovePreferenceResolveAddress() {
-        assertNull(preferenceManager.getPreferenceResolveAddress());
+        assertEquals("", preferenceManager.getPreferenceResolveAddress());
         preferenceManager.setPreferenceResolveAddress("www.host.com");
         assertEquals("www.host.com", preferenceManager.getPreferenceResolveAddress());
         preferenceManager.removeAllPreferences();
-        assertNull(preferenceManager.getPreferenceResolveAddress());
+        assertEquals("", preferenceManager.getPreferenceResolveAddress());
         preferenceManager.setPreferenceResolveAddress("www.host.com");
         preferenceManager.removePreferenceResolveAddress();
-        assertNull(preferenceManager.getPreferenceResolveAddress());
+        assertEquals("", preferenceManager.getPreferenceResolveAddress());
     }
 
     @Test

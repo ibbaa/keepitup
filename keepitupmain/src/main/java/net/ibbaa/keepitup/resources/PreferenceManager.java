@@ -213,7 +213,7 @@ public class PreferenceManager {
 
     public String getPreferenceResolveAddress() {
         Log.d(PreferenceManager.class.getName(), "getPreferenceResolveAddress");
-        return getPreferenceString(getResources().getString(R.string.resolve_address_key), null);
+        return getPreferenceString(getResources().getString(R.string.resolve_address_key), "");
     }
 
     public void setPreferenceResolveAddress(String address) {

@@ -20,6 +20,7 @@ import android.content.Context;
 
 import net.ibbaa.keepitup.R;
 import net.ibbaa.keepitup.logging.Log;
+import net.ibbaa.keepitup.util.UIUtil;
 
 public class ResolvePortFieldValidator extends BaseIntegerValidator implements FieldValidator {
 
@@ -33,6 +34,6 @@ public class ResolvePortFieldValidator extends BaseIntegerValidator implements F
         int minimum = getResources().getInteger(R.integer.resolve_port_minimum);
         int maximum = getResources().getInteger(R.integer.resolve_port_maximum);
         int defaultValue = getResources().getInteger(R.integer.resolve_port_default);
-        return validateIntNumber(value, defaultValue, minimum, maximum, true);
+        return validateIntNumber(UIUtil.getEmptyIfNotSet(getContext(), value), defaultValue, minimum, maximum, true);
     }
 }

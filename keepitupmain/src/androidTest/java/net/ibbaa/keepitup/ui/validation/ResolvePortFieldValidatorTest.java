@@ -59,5 +59,9 @@ public class ResolvePortFieldValidatorTest {
         assertTrue(result.isValidationSuccessful());
         assertEquals("testport", result.getFieldName());
         assertEquals("Validation successful", result.getMessage());
+        result = validator.validate("not set");
+        assertTrue(result.isValidationSuccessful());
+        assertEquals("testport", result.getFieldName());
+        assertEquals("Validation successful", result.getMessage());
     }
 }

@@ -33,7 +33,6 @@ import static androidx.test.espresso.matcher.ViewMatchers.withText;
 import static org.hamcrest.Matchers.allOf;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import androidx.test.core.app.ActivityScenario;
@@ -66,7 +65,7 @@ public class DefaultsActivityTest extends BaseUITest {
         assertEquals(3, preferenceManager.getPreferencePingCount());
         assertEquals(56, preferenceManager.getPreferencePingPackageSize());
         assertEquals(1, preferenceManager.getPreferenceConnectCount());
-        assertNull(preferenceManager.getPreferenceResolveAddress());
+        assertEquals("", preferenceManager.getPreferenceResolveAddress());
         assertEquals(-1, preferenceManager.getPreferenceResolvePort());
         assertFalse(preferenceManager.getPreferenceStopOnSuccess());
         assertFalse(preferenceManager.getPreferenceIgnoreSSLError());
@@ -404,7 +403,7 @@ public class DefaultsActivityTest extends BaseUITest {
         assertEquals(3, preferenceManager.getPreferencePingCount());
         assertEquals(56, preferenceManager.getPreferencePingPackageSize());
         assertEquals(1, preferenceManager.getPreferenceConnectCount());
-        assertNull(preferenceManager.getPreferenceResolveAddress());
+        assertEquals("", preferenceManager.getPreferenceResolveAddress());
         assertEquals(-1, preferenceManager.getPreferenceResolvePort());
         activityScenario.close();
     }
@@ -963,6 +962,11 @@ public class DefaultsActivityTest extends BaseUITest {
         onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
         onView(withId(R.id.textview_activity_defaults_connect_to_host)).check(matches(withText("not set")));
         onView(withId(R.id.textview_activity_defaults_connect_to_host)).perform(click());
+        onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("not set"));
+        onView(withId(R.id.edittext_dialog_settings_input_value)).check(matches(withTextColor(R.color.textColor)));
+        onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
+        onView(withId(R.id.textview_activity_defaults_connect_to_host)).check(matches(withText("not set")));
+        onView(withId(R.id.textview_activity_defaults_connect_to_host)).perform(click());
         onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("host.com"));
         onView(withId(R.id.edittext_dialog_settings_input_value)).check(matches(withTextColor(R.color.textColor)));
         onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
@@ -1136,7 +1140,7 @@ public class DefaultsActivityTest extends BaseUITest {
         onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
         onView(withId(R.id.textview_activity_defaults_connect_to_host)).check(matches(withText("not set")));
         onView(withId(R.id.textview_activity_defaults_connect_to_port)).check(matches(withText("not set")));
-        assertNull(preferenceManager.getPreferenceResolveAddress());
+        assertEquals("", preferenceManager.getPreferenceResolveAddress());
         assertEquals(-1, preferenceManager.getPreferenceResolvePort());
         activityScenario.close();
     }
@@ -1223,7 +1227,7 @@ public class DefaultsActivityTest extends BaseUITest {
         assertEquals(3, preferenceManager.getPreferencePingCount());
         assertEquals(56, preferenceManager.getPreferencePingPackageSize());
         assertEquals(1, preferenceManager.getPreferenceConnectCount());
-        assertNull(preferenceManager.getPreferenceResolveAddress());
+        assertEquals("", preferenceManager.getPreferenceResolveAddress());
         assertEquals(-1, preferenceManager.getPreferenceResolvePort());
         assertFalse(preferenceManager.getPreferenceStopOnSuccess());
         assertFalse(preferenceManager.getPreferenceIgnoreSSLError());

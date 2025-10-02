@@ -18,6 +18,7 @@ package net.ibbaa.keepitup.util;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import android.text.InputType;
@@ -43,6 +44,30 @@ public class UIUtilTest {
         assertTrue(UIUtil.isInputTypeNumber(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_VARIATION_PASSWORD | InputType.TYPE_TEXT_VARIATION_URI));
         assertTrue(UIUtil.isInputTypeNumber(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_VARIATION_PASSWORD));
         assertTrue(UIUtil.isInputTypeNumber(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL));
+    }
+
+    @Test
+    public void testGetEmptyIfNotSet() {
+        assertNull(UIUtil.getEmptyIfNotSet(TestRegistry.getContext(), null));
+        assertEquals("", UIUtil.getEmptyIfNotSet(TestRegistry.getContext(), ""));
+        assertEquals("123", UIUtil.getEmptyIfNotSet(TestRegistry.getContext(), "123"));
+        assertEquals("", UIUtil.getEmptyIfNotSet(TestRegistry.getContext(), "not set"));
+    }
+
+    @Test
+    public void testGetNegativeIfNotSet() {
+        assertEquals(-1, UIUtil.getNegativeIfNotSet(TestRegistry.getContext(), null));
+        assertEquals(-1, UIUtil.getNegativeIfNotSet(TestRegistry.getContext(), ""));
+        assertEquals(-1, UIUtil.getNegativeIfNotSet(TestRegistry.getContext(), "not set"));
+        assertEquals(-1, UIUtil.getNegativeIfNotSet(TestRegistry.getContext(), "abc"));
+        assertEquals(5, UIUtil.getNegativeIfNotSet(TestRegistry.getContext(), "5"));
+    }
+
+    @Test
+    public void testGetNotSetIfNegative() {
+        assertEquals("not set", UIUtil.getNotSetIfNegative(TestRegistry.getContext(), -5));
+        assertEquals("123", UIUtil.getNotSetIfNegative(TestRegistry.getContext(), 123));
+        assertEquals("0", UIUtil.getNotSetIfNegative(TestRegistry.getContext(), 0));
     }
 
     @Test

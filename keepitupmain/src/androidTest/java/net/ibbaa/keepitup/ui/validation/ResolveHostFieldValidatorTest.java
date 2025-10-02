@@ -55,5 +55,9 @@ public class ResolveHostFieldValidatorTest {
         assertTrue(result.isValidationSuccessful());
         assertEquals("testhost", result.getFieldName());
         assertEquals("Validation successful", result.getMessage());
+        result = validator.validate("not set");
+        assertTrue(result.isValidationSuccessful());
+        assertEquals("testhost", result.getFieldName());
+        assertEquals("Validation successful", result.getMessage());
     }
 }

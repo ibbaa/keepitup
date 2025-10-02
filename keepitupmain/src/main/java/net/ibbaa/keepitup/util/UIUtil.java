@@ -38,6 +38,29 @@ public class UIUtil {
         return (inputType & InputType.TYPE_CLASS_NUMBER) == InputType.TYPE_CLASS_NUMBER;
     }
 
+    public static String getEmptyIfNotSet(Context context, String value) {
+        String notSetValue = context.getResources().getString(R.string.string_not_set);
+        return notSetValue.equals(value) ? "" : value;
+    }
+
+    public static String getNotSetIfEmpty(Context context, String value) {
+        String notSetValue = context.getResources().getString(R.string.string_not_set);
+        return StringUtil.isEmpty(value) ? notSetValue : value;
+    }
+
+    public static int getNegativeIfNotSet(Context context, String value) {
+        String notSetValue = context.getResources().getString(R.string.string_not_set);
+        if (StringUtil.isEmpty(value) || notSetValue.equals(value)) {
+            return -1;
+        }
+        return NumberUtil.getIntValue(value, -1);
+    }
+
+    public static String getNotSetIfNegative(Context context, int value) {
+        String notSetValue = context.getResources().getString(R.string.string_not_set);
+        return value < 0 ? notSetValue : String.valueOf(value);
+    }
+
     public static String getTextForNamedTask(Context context, NetworkTask task) {
         String name = StringUtil.isEmpty(task.getName()) ? context.getResources().getString(R.string.task_name_default) : task.getName();
         String formattedTitleText;

@@ -18,7 +18,6 @@ package net.ibbaa.keepitup.resources;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import androidx.test.ext.junit.runners.AndroidJUnit4;
@@ -233,7 +232,7 @@ public class PreferenceSetupTest {
         assertFalse(preferenceManager.getPreferenceNotification());
         assertFalse(preferenceManager.getPreferenceHighPrio());
         assertEquals(56, preferenceManager.getPreferencePingPackageSize());
-        assertNull(preferenceManager.getPreferenceResolveAddress());
+        assertEquals("", preferenceManager.getPreferenceResolveAddress());
         assertEquals(-1, preferenceManager.getPreferenceResolvePort());
     }
 
@@ -335,7 +334,7 @@ public class PreferenceSetupTest {
         assertFalse(preferenceManager.getPreferenceNotification());
         assertFalse(preferenceManager.getPreferenceHighPrio());
         assertEquals(56, preferenceManager.getPreferencePingPackageSize());
-        assertNull(preferenceManager.getPreferenceResolveAddress());
+        assertEquals("", preferenceManager.getPreferenceResolveAddress());
         assertEquals(-1, preferenceManager.getPreferenceResolvePort());
     }
 
@@ -833,7 +832,7 @@ public class PreferenceSetupTest {
         assertFalse(preferenceManager.getPreferenceOnlyWifi());
         assertFalse(preferenceManager.getPreferenceNotification());
         assertFalse(preferenceManager.getPreferenceHighPrio());
-        assertNull(preferenceManager.getPreferenceResolveAddress());
+        assertEquals("", preferenceManager.getPreferenceResolveAddress());
         assertEquals(-1, preferenceManager.getPreferenceResolvePort());
     }
 
@@ -928,7 +927,7 @@ public class PreferenceSetupTest {
         assertEquals(3, preferenceManager.getPreferencePingCount());
         assertEquals(1, preferenceManager.getPreferenceConnectCount());
         assertEquals(56, preferenceManager.getPreferencePingPackageSize());
-        assertNull(preferenceManager.getPreferenceResolveAddress());
+        assertEquals("", preferenceManager.getPreferenceResolveAddress());
         assertEquals(-1, preferenceManager.getPreferenceResolvePort());
         assertFalse(preferenceManager.getPreferenceStopOnSuccess());
         assertFalse(preferenceManager.getPreferenceIgnoreSSLError());

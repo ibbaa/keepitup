@@ -145,7 +145,7 @@ public class ResolveTest {
         resolve = new Resolve(TestRegistry.getContext());
         assertEquals(-1, resolve.getId());
         assertEquals(-1, resolve.getNetworkTaskId());
-        assertNull(resolve.getAddress());
+        assertEquals("", resolve.getAddress());
         assertEquals(-1, resolve.getPort());
     }
 

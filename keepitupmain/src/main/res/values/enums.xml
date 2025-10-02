@@ -22,19 +22,19 @@
     <string name="AccessType_PING_port" tools:ignore="ExtraTranslation" tools:keep="@string/AccessType_PING_port">Port:</string>
     <string name="AccessType_PING_task_validator" tools:ignore="ExtraTranslation" tools:keep="@string/AccessType_PING_task_validator">net.ibbaa.keepitup.ui.validation.StandardHostPortValidator</string>
     <string name="AccessType_PING_data_validator" tools:ignore="ExtraTranslation" tools:keep="@string/AccessType_PING_data_validator">net.ibbaa.keepitup.ui.validation.StandardAccessTypeDataValidator</string>
-    <string name="AccessType_PING_resolve_validator" tools:ignore="ExtraTranslation" tools:keep="@string/AccessType_CONNECT_data_validator">net.ibbaa.keepitup.ui.validation.StandardResolveValidator</string>
+    <string name="AccessType_PING_resolve_validator" tools:ignore="ExtraTranslation" tools:keep="@string/AccessType_PING_resolve_validator">net.ibbaa.keepitup.ui.validation.StandardResolveValidator</string>
     <string name="AccessType_CONNECT" tools:ignore="ExtraTranslation" tools:keep="@string/AccessType_CONNECT">Connect</string>
     <string name="AccessType_CONNECT_address" tools:ignore="ExtraTranslation" tools:keep="@string/AccessType_CONNECT_address">Host:</string>
     <string name="AccessType_CONNECT_port" tools:ignore="ExtraTranslation" tools:keep="@string/AccessType_CONNECT_port">Port:</string>
     <string name="AccessType_CONNECT_task_validator" tools:ignore="ExtraTranslation" tools:keep="@string/AccessType_CONNECT_task_validator">net.ibbaa.keepitup.ui.validation.StandardHostPortValidator</string>
     <string name="AccessType_CONNECT_data_validator" tools:ignore="ExtraTranslation" tools:keep="@string/AccessType_CONNECT_data_validator">net.ibbaa.keepitup.ui.validation.StandardAccessTypeDataValidator</string>
-    <string name="AccessType_CONNECT_resolve_validator" tools:ignore="ExtraTranslation" tools:keep="@string/AccessType_CONNECT_data_validator">net.ibbaa.keepitup.ui.validation.StandardResolveValidator</string>
+    <string name="AccessType_CONNECT_resolve_validator" tools:ignore="ExtraTranslation" tools:keep="@string/AccessType_CONNECT_resolve_validator">net.ibbaa.keepitup.ui.validation.StandardResolveValidator</string>
     <string name="AccessType_DOWNLOAD" tools:ignore="ExtraTranslation" tools:keep="@string/AccessType_DOWNLOAD">Download</string>
     <string name="AccessType_DOWNLOAD_address" tools:ignore="ExtraTranslation" tools:keep="@string/AccessType_DOWNLOAD_address">URL:</string>
     <string name="AccessType_DOWNLOAD_port" tools:ignore="ExtraTranslation" tools:keep="@string/AccessType_DOWNLOAD_port">Port:</string>
     <string name="AccessType_DOWNLOAD_task_validator" tools:ignore="ExtraTranslation" tools:keep="@string/AccessType_DOWNLOAD_task_validator">net.ibbaa.keepitup.ui.validation.URLValidator</string>
     <string name="AccessType_DOWNLOAD_data_validator" tools:ignore="ExtraTranslation" tools:keep="@string/AccessType_DOWNLOAD_data_validator">net.ibbaa.keepitup.ui.validation.StandardAccessTypeDataValidator</string>
-    <string name="AccessType_DOWNLOAD_resolve_validator" tools:ignore="ExtraTranslation" tools:keep="@string/AccessType_CONNECT_data_validator">net.ibbaa.keepitup.ui.validation.StandardResolveValidator</string>
+    <string name="AccessType_DOWNLOAD_resolve_validator" tools:ignore="ExtraTranslation" tools:keep="@string/AccessType_DOWNLOAD_resolve_validator">net.ibbaa.keepitup.ui.validation.StandardResolveValidator</string>
     <string name="ContextOption_COPY_name" tools:ignore="ExtraTranslation" tools:keep="@string/ContextOption_COPY_name">Copy</string>
     <string name="ContextOption_PASTE_name" tools:ignore="ExtraTranslation" tools:keep="@string/ContextOption_PASTE_name">Paste</string>
 </resources>

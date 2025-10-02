@@ -59,6 +59,7 @@ import net.ibbaa.keepitup.ui.validation.ValidationResult;
 import net.ibbaa.keepitup.util.BundleUtil;
 import net.ibbaa.keepitup.util.NumberUtil;
 import net.ibbaa.keepitup.util.StringUtil;
+import net.ibbaa.keepitup.util.UIUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -230,7 +231,7 @@ public class NetworkTaskEditDialog extends DialogFragmentBase implements Context
     }
 
     private String getConnectToHost() {
-        return StringUtil.notNull(connectToHostEditText.getText());
+        return StringUtil.notNull(connectToHostEditText.getText()).trim();
     }
 
     private String getConnectToPort() {
@@ -251,6 +252,14 @@ public class NetworkTaskEditDialog extends DialogFragmentBase implements Context
 
     private boolean isPingPackageSizeVisible() {
         return pingPackageSizeEditText.getVisibility() == View.VISIBLE;
+    }
+
+    private boolean isConnectToHostVisible() {
+        return connectToHostEditText.getVisibility() == View.VISIBLE;
+    }
+
+    private boolean isConnectToPortVisible() {
+        return connectToPortEditText.getVisibility() == View.VISIBLE;
     }
 
     private boolean isIgnoreSSLErrorVisible() {
@@ -304,6 +313,7 @@ public class NetworkTaskEditDialog extends DialogFragmentBase implements Context
     private void onAccessTypeChanged(RadioGroup group, int checkedId) {
         prepareAddressTextFieldsVisibility();
         prepareAccessTypeDataFieldsVisibility();
+        prepareResolveFieldsVisibility();
         validateInput();
     }
 
@@ -384,6 +394,49 @@ public class NetworkTaskEditDialog extends DialogFragmentBase implements Context
         intervalEditText.addTextChangedListener(intervalEditTextWatcher);
     }
 
+    private void prepareResolveFields() {
+        Log.d(NetworkTaskEditDialog.class.getName(), "prepareResolveFields with resolve object of " + resolve);
+        connectToHostEditText = dialogView.findViewById(R.id.edittext_dialog_network_task_edit_connect_to_host);
+        prepareConnectToHostEditTextListener();
+        connectToHostEditText.setOnLongClickListener(this::onEditTextLongClicked);
+        connectToHostEditText.setText(UIUtil.getNotSetIfEmpty(requireContext(), resolve.getAddress()));
+        connectToPortEditText = dialogView.findViewById(R.id.edittext_dialog_network_task_edit_connect_to_port);
+        prepareConnectToPortEditTextListener();
+        connectToPortEditText.setOnLongClickListener(this::onEditTextLongClicked);
+        connectToPortEditText.setText(UIUtil.getNotSetIfNegative(requireContext(), resolve.getPort()));
+    }
+
+    private void prepareResolveFieldsVisibility() {
+        Log.d(NetworkTaskEditDialog.class.getName(), "prepareResolveFieldsVisibility with resolve object of " + resolve);
+        RadioGroup accessTypeGroup = dialogView.findViewById(R.id.radiogroup_dialog_network_task_edit_accesstype);
+        int selectedId = accessTypeGroup.getCheckedRadioButtonId();
+        RadioButton selectedAccessTypeRadioButton = dialogView.findViewById(selectedId);
+        if (selectedAccessTypeRadioButton == null) {
+            Log.d(NetworkTaskEditDialog.class.getName(), "prepareAccessTypeDataFieldsVisibility, selectedAccessTypeRadioButton is null, no access type selected");
+            return;
+        }
+        AccessType accessType = (AccessType) selectedAccessTypeRadioButton.getTag();
+        LinearLayout connectToHostLinearLayout = dialogView.findViewById(R.id.linearlayout_dialog_network_task_edit_connect_to_host);
+        LinearLayout connectToPortLinearLayout = dialogView.findViewById(R.id.linearlayout_dialog_network_task_edit_connect_to_port);
+        TextView connectToHostTextView = dialogView.findViewById(R.id.textview_dialog_network_task_edit_connect_to_host_label);
+        TextView connectToPortTextView = dialogView.findViewById(R.id.textview_dialog_network_task_edit_connect_to_port_label);
+        if (accessType.isDownload()) {
+            connectToHostLinearLayout.setVisibility(View.VISIBLE);
+            connectToPortLinearLayout.setVisibility(View.VISIBLE);
+            connectToHostTextView.setVisibility(View.VISIBLE);
+            connectToPortTextView.setVisibility(View.VISIBLE);
+            connectToHostEditText.setVisibility(View.VISIBLE);
+            connectToPortEditText.setVisibility(View.VISIBLE);
+        } else {
+            connectToHostLinearLayout.setVisibility(View.GONE);
+            connectToPortLinearLayout.setVisibility(View.GONE);
+            connectToHostTextView.setVisibility(View.GONE);
+            connectToPortTextView.setVisibility(View.GONE);
+            connectToHostEditText.setVisibility(View.GONE);
+            connectToPortEditText.setVisibility(View.GONE);
+        }
+    }
+
     private void prepareAccessTypeDataFields() {
         Log.d(NetworkTaskEditDialog.class.getName(), "prepareAccessTypeDataFields with acccess type data of " + accessTypeData);
         pingCountEditText = dialogView.findViewById(R.id.edittext_dialog_network_task_edit_ping_count);
@@ -398,28 +451,6 @@ public class NetworkTaskEditDialog extends DialogFragmentBase implements Context
         preparePingPackageSizeEditTextListener();
         pingPackageSizeEditText.setOnLongClickListener(this::onEditTextLongClicked);
         pingPackageSizeEditText.setText(String.valueOf(accessTypeData.getPingPackageSize()));
-    }
-
-    private void prepareResolveFields() {
-        Log.d(NetworkTaskEditDialog.class.getName(), "prepareResolveFields with resolve object of " + resolve);
-        connectToHostEditText = dialogView.findViewById(R.id.edittext_dialog_network_task_edit_connect_to_host);
-        prepareConnectToHostEditTextListener();
-        connectToHostEditText.setOnLongClickListener(this::onEditTextLongClicked);
-        connectToPortEditText = dialogView.findViewById(R.id.edittext_dialog_network_task_edit_connect_to_port);
-        prepareConnectToPortEditTextListener();
-        connectToHostEditText.setOnLongClickListener(this::onEditTextLongClicked);
-    }
-
-    private void prepareResolveFieldsVisibility() {
-        Log.d(NetworkTaskEditDialog.class.getName(), "prepareResolveFieldsVisibility with resolve object of " + resolve);
-        LinearLayout connectToHostLinearLayout = dialogView.findViewById(R.id.linearlayout_dialog_network_task_edit_connect_to_host);
-        LinearLayout connectToPortLinearLayout = dialogView.findViewById(R.id.linearlayout_dialog_network_task_edit_connect_to_port);
-        TextView connectToHostTextView = dialogView.findViewById(R.id.textview_dialog_network_task_edit_connect_to_host_label);
-        TextView connectToPortTextView = dialogView.findViewById(R.id.textview_dialog_network_task_edit_connect_to_port_label);
-        connectToHostLinearLayout.setVisibility(View.GONE);
-        connectToPortLinearLayout.setVisibility(View.GONE);
-        connectToHostTextView.setVisibility(View.GONE);
-        connectToPortTextView.setVisibility(View.GONE);
     }
 
     private void prepareAccessTypeDataFieldsVisibility() {
@@ -537,11 +568,11 @@ public class NetworkTaskEditDialog extends DialogFragmentBase implements Context
     private void prepareConnectToPortEditTextListener() {
         Log.d(NetworkTaskEditDialog.class.getName(), "prepareConnectToPortEditTextListener");
         if (connectToPortEditTextWatcher != null) {
-            connectToPortEditText.removeTextChangedListener(connectToHostEditTextWatcher);
+            connectToPortEditText.removeTextChangedListener(connectToPortEditTextWatcher);
             connectToPortEditTextWatcher = null;
         }
-        connectToPortEditTextWatcher = new TextColorValidatingWatcher(connectToHostEditText, this::validateConnectToHost, getColor(R.color.textColor), getColor(R.color.textErrorColor));
-        connectToPortEditText.addTextChangedListener(connectToHostEditTextWatcher);
+        connectToPortEditTextWatcher = new TextColorValidatingWatcher(connectToPortEditText, this::validateConnectToPort, getColor(R.color.textColor), getColor(R.color.textErrorColor));
+        connectToPortEditText.addTextChangedListener(connectToPortEditTextWatcher);
     }
 
     private void prepareIgnoreSSLErrorSwitch() {
@@ -721,6 +752,12 @@ public class NetworkTaskEditDialog extends DialogFragmentBase implements Context
     public Resolve getResolve() {
         Bundle resolveBundle = BundleUtil.bundleFromBundle(getResolveKey(), requireArguments());
         Resolve resolve = resolveBundle != null ? new Resolve(resolveBundle) : new Resolve();
+        if (isConnectToHostVisible()) {
+            resolve.setAddress(UIUtil.getEmptyIfNotSet(requireContext(), getConnectToHost()));
+        }
+        if (isConnectToPortVisible()) {
+            resolve.setPort(UIUtil.getNegativeIfNotSet(requireContext(), getConnectToPort()));
+        }
         Log.d(NetworkTaskEditDialog.class.getName(), "getResolve, resolve object is " + resolve);
         return resolve;
     }
@@ -807,6 +844,7 @@ public class NetworkTaskEditDialog extends DialogFragmentBase implements Context
         List<ValidationResult> validationResultList = new ArrayList<>();
         validateFinalNetworkTask(validationResultList);
         validateFinalAccessTypeData(validationResultList);
+        validateFinalResolve(validationResultList);
         return validationResultList;
     }
 
@@ -863,6 +901,29 @@ public class NetworkTaskEditDialog extends DialogFragmentBase implements Context
             }
         } else {
             Log.d(NetworkTaskEditDialog.class.getName(), "ping package size count validation skipped");
+        }
+    }
+
+    private void validateFinalResolve(List<ValidationResult> validationResultList) {
+        Log.d(NetworkTaskEditDialog.class.getName(), "validateFinalResolve");
+        ResolveValidator resolveValidator = getResolveValidator();
+        if (isConnectToHostVisible()) {
+            ValidationResult result = resolveValidator.validateAddress(getConnectToHost());
+            Log.d(NetworkTaskEditDialog.class.getName(), "connect-to host validation result: " + result);
+            if (!result.isValidationSuccessful()) {
+                validationResultList.add(result);
+            }
+        } else {
+            Log.d(NetworkTaskEditDialog.class.getName(), "connect-to host validation skipped");
+        }
+        if (isConnectToPortVisible()) {
+            ValidationResult result = resolveValidator.validatePort(getConnectToPort());
+            Log.d(NetworkTaskEditDialog.class.getName(), "connect-to host validation result: " + result);
+            if (!result.isValidationSuccessful()) {
+                validationResultList.add(result);
+            }
+        } else {
+            Log.d(NetworkTaskEditDialog.class.getName(), "connect-to port validation skipped");
         }
     }
 
@@ -1002,6 +1063,12 @@ public class NetworkTaskEditDialog extends DialogFragmentBase implements Context
         } else if (connectCountEditText.getId() == sourceResourceId) {
             Log.d(NetworkTaskEditDialog.class.getName(), "Source field is the connect count field");
             editText = connectCountEditText;
+        } else if (connectToHostEditText.getId() == sourceResourceId) {
+            Log.d(NetworkTaskEditDialog.class.getName(), "Source field is the connect to host field");
+            editText = connectToHostEditText;
+        } else if (connectToPortEditText.getId() == sourceResourceId) {
+            Log.d(NetworkTaskEditDialog.class.getName(), "Source field is the connect to port field");
+            editText = connectToPortEditText;
         }
         if (editText != null) {
             contextOptionsSupportManager.handleContextOption(editText, option);

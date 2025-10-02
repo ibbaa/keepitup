@@ -66,6 +66,10 @@ public class StandardResolveValidatorTest {
         assertTrue(result.isValidationSuccessful());
         assertEquals("Connect-to host", result.getFieldName());
         assertEquals("Validation successful", result.getMessage());
+        result = validator.validateAddress("not set");
+        assertTrue(result.isValidationSuccessful());
+        assertEquals("Connect-to host", result.getFieldName());
+        assertEquals("Validation successful", result.getMessage());
     }
 
     @Test
@@ -91,6 +95,10 @@ public class StandardResolveValidatorTest {
         assertEquals("Connect-to port", result.getFieldName());
         assertEquals("Validation successful", result.getMessage());
         result = validator.validatePort(null);
+        assertTrue(result.isValidationSuccessful());
+        assertEquals("Connect-to port", result.getFieldName());
+        assertEquals("Validation successful", result.getMessage());
+        result = validator.validatePort("not set");
         assertTrue(result.isValidationSuccessful());
         assertEquals("Connect-to port", result.getFieldName());
         assertEquals("Validation successful", result.getMessage());
