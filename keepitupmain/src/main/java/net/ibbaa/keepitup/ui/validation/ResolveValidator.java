@@ -18,7 +18,7 @@ package net.ibbaa.keepitup.ui.validation;
 
 public interface ResolveValidator {
 
-    ValidationResult validateAddress(String address);
+    ValidationResult validateTargetAddress(String address);
 
-    ValidationResult validatePort(String port);
+    ValidationResult validateTargetPort(String port);
 }

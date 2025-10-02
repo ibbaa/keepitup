@@ -691,8 +691,8 @@ public class DBSetup {
             } else {
                 Resolve resolve = new Resolve(resolveMap);
                 resolve.setNetworkTaskId(task.getId());
-                if (resolve.getAddress() != null) {
-                    resolve.setAddress(resolve.getAddress().trim());
+                if (resolve.getTargetAddress() != null) {
+                    resolve.setTargetAddress(resolve.getTargetAddress().trim());
                 }
                 Log.d(DBSetup.class.getName(), "Resolve object is " + resolve);
                 if (resolveValidator.validate(resolve)) {

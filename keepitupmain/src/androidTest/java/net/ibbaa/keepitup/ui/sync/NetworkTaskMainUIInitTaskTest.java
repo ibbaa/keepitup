@@ -311,8 +311,8 @@ public class NetworkTaskMainUIInitTaskTest extends BaseUITest {
         Resolve resolve = new Resolve();
         resolve.setId(0);
         resolve.setNetworkTaskId(networkTaskId);
-        resolve.setAddress("192.168.178.1");
-        resolve.setPort(22);
+        resolve.setTargetAddress("192.168.178.1");
+        resolve.setTargetPort(22);
         return resolve;
     }
 
@@ -320,8 +320,10 @@ public class NetworkTaskMainUIInitTaskTest extends BaseUITest {
         Resolve resolve = new Resolve();
         resolve.setId(0);
         resolve.setNetworkTaskId(networkTaskId);
-        resolve.setAddress("192.168.178.1");
-        resolve.setPort(443);
+        resolve.setSourceAddress("");
+        resolve.setSourcePort(-1);
+        resolve.setTargetAddress("192.168.178.1");
+        resolve.setTargetPort(443);
         return resolve;
     }
 
@@ -329,8 +331,10 @@ public class NetworkTaskMainUIInitTaskTest extends BaseUITest {
         Resolve resolve = new Resolve();
         resolve.setId(0);
         resolve.setNetworkTaskId(networkTaskId);
-        resolve.setAddress("127.0.0.1");
-        resolve.setPort(-1);
+        resolve.setSourceAddress("");
+        resolve.setSourcePort(-1);
+        resolve.setTargetAddress("127.0.0.1");
+        resolve.setTargetPort(-1);
         return resolve;
     }
 

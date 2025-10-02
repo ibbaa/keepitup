@@ -31,7 +31,7 @@ public class StandardResolveValidator implements ResolveValidator {
     }
 
     @Override
-    public ValidationResult validateAddress(String address) {
+    public ValidationResult validateTargetAddress(String address) {
         Log.d(StandardResolveValidator.class.getName(), "validateAddress, address is " + address);
         String fieldName = getResources().getString(R.string.resolve_host_field_name);
         ValidationResult result = new ResolveHostFieldValidator(fieldName, getContext()).validate(address);
@@ -40,7 +40,7 @@ public class StandardResolveValidator implements ResolveValidator {
     }
 
     @Override
-    public ValidationResult validatePort(String port) {
+    public ValidationResult validateTargetPort(String port) {
         Log.d(StandardResolveValidator.class.getName(), "validatePort, port is " + port);
         String fieldName = getResources().getString(R.string.resolve_port_field_name);
         ValidationResult result = new ResolvePortFieldValidator(fieldName, getContext()).validate(port);

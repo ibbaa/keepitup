@@ -21,6 +21,7 @@ import android.content.Context;
 import net.ibbaa.keepitup.R;
 import net.ibbaa.keepitup.logging.Log;
 import net.ibbaa.keepitup.model.Resolve;
+import net.ibbaa.keepitup.util.StringUtil;
 import net.ibbaa.keepitup.util.URLUtil;
 
 public class ResolveValidator {
@@ -33,13 +34,32 @@ public class ResolveValidator {
 
     public boolean validate(Resolve resolve) {
         Log.d(ResolveValidator.class.getName(), "validate resolve object " + resolve);
-        return validateAddress(resolve) && validatePort(resolve);
+        return validateTargetAddress(resolve) && validateTargetPort(resolve) && validateSourceAddress(resolve) && validateSourcePort(resolve);
     }
 
-    public boolean validateAddress(Resolve resolve) {
-        Log.d(ResolveValidator.class.getName(), "validateAddress of resolve object " + resolve);
-        String address = resolve.getAddress();
-        if (address == null) {
+    public boolean validateSourceAddress(Resolve resolve) {
+        Log.d(ResolveValidator.class.getName(), "validateSourceAddress of resolve object " + resolve);
+        return validateAddress(resolve.getSourceAddress());
+    }
+
+    public boolean validateSourcePort(Resolve resolve) {
+        Log.d(ResolveValidator.class.getName(), "validateSourcePort of resolve object " + resolve);
+        return validatePort(resolve.getSourcePort());
+    }
+
+    public boolean validateTargetAddress(Resolve resolve) {
+        Log.d(ResolveValidator.class.getName(), "validateTargetAddress of resolve object " + resolve);
+        return validateAddress(resolve.getTargetAddress());
+    }
+
+    public boolean validateTargetPort(Resolve resolve) {
+        Log.d(ResolveValidator.class.getName(), "validateTargetPort of resolve object " + resolve);
+        return validatePort(resolve.getTargetPort());
+    }
+
+    public boolean validateAddress(String address) {
+        Log.d(ResolveValidator.class.getName(), "validateAddress, address is " + address);
+        if (StringUtil.isEmpty(address)) {
             Log.d(ResolveValidator.class.getName(), "address is null. Returning true.");
             return true;
         }
@@ -48,15 +68,15 @@ public class ResolveValidator {
         return isValidAddress;
     }
 
-    public boolean validatePort(Resolve resolve) {
-        Log.d(ResolveValidator.class.getName(), "validatePort of resolve object " + resolve);
-        if (resolve.getPort() == -1) {
+    private boolean validatePort(int port) {
+        Log.d(ResolveValidator.class.getName(), "validatePort, port is " + port);
+        if (port == -1) {
             Log.d(ResolveValidator.class.getName(), "port is -1. Returning true.");
             return true;
         }
         int portMin = context.getResources().getInteger(R.integer.resolve_port_minimum);
         int portMax = context.getResources().getInteger(R.integer.resolve_port_maximum);
-        if (resolve.getPort() < portMin || resolve.getPort() > portMax) {
+        if (port < portMin || port > portMax) {
             Log.d(ResolveValidator.class.getName(), "port is invalid. Returning false.");
             return false;
         }

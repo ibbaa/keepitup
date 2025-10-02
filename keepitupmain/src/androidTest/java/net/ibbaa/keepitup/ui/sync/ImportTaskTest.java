@@ -617,8 +617,10 @@ public class ImportTaskTest extends BaseUITest {
         Resolve resolve = new Resolve();
         resolve.setId(0);
         resolve.setNetworkTaskId(networkTaskId);
-        resolve.setAddress("192.168.178.1");
-        resolve.setPort(22);
+        resolve.setSourceAddress("");
+        resolve.setSourcePort(-1);
+        resolve.setTargetAddress("192.168.178.1");
+        resolve.setTargetPort(22);
         return resolve;
     }
 
@@ -626,8 +628,10 @@ public class ImportTaskTest extends BaseUITest {
         Resolve resolve = new Resolve();
         resolve.setId(0);
         resolve.setNetworkTaskId(networkTaskId);
-        resolve.setAddress("127.0.0.1");
-        resolve.setPort(80);
+        resolve.setSourceAddress("");
+        resolve.setSourcePort(-1);
+        resolve.setTargetAddress("127.0.0.1");
+        resolve.setTargetPort(80);
         return resolve;
     }
 }

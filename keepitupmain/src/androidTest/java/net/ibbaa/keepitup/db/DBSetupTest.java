@@ -504,7 +504,7 @@ public class DBSetupTest {
         Map<String, ?> taskMap = task.toMap();
         Map<String, ?> dataMap = getAccessTypeData(0).toMap();
         Resolve resolve = getResolve(0);
-        resolve.setAddress("   127.0.0.1");
+        resolve.setTargetAddress("   127.0.0.1");
         Map<String, ?> resolveMap = resolve.toMap();
         setup.importNetworkTaskWithLogsAccessTypeDataAndResolve(taskMap, Collections.emptyList(), dataMap, resolveMap);
         List<NetworkTask> taskList = networkTaskDAO.readAllNetworkTasks();
@@ -513,7 +513,7 @@ public class DBSetupTest {
         assertTrue(task.isTechnicallyEqual(getNetworkTask1()));
         assertEquals("127.0.0.1", task.getAddress());
         resolve = resolveDAO.readResolveForNetworkTask(task.getId());
-        assertEquals("127.0.0.1", resolve.getAddress());
+        assertEquals("127.0.0.1", resolve.getTargetAddress());
         networkTaskDAO.deleteAllNetworkTasks();
         accessTypeDataDAO.deleteAllAccessTypeData();
         resolveDAO.deleteAllResolve();
@@ -522,7 +522,7 @@ public class DBSetupTest {
         task.setAddress("   https://test.org   ");
         taskMap = task.toMap();
         resolve = getResolve(0);
-        resolve.setAddress("   192.168.178.1  ");
+        resolve.setTargetAddress("   192.168.178.1  ");
         resolveMap = resolve.toMap();
         setup.importNetworkTaskWithLogsAccessTypeDataAndResolve(taskMap, Collections.emptyList(), dataMap, resolveMap);
         taskList = networkTaskDAO.readAllNetworkTasks();
@@ -530,7 +530,7 @@ public class DBSetupTest {
         task = taskList.get(0);
         assertEquals("https://test.org", task.getAddress());
         resolve = resolveDAO.readResolveForNetworkTask(task.getId());
-        assertEquals("192.168.178.1", resolve.getAddress());
+        assertEquals("192.168.178.1", resolve.getTargetAddress());
     }
 
     @Test
@@ -706,7 +706,7 @@ public class DBSetupTest {
         Map<String, ?> taskMap = task.toMap();
         Map<String, ?> dataMap = getAccessTypeData(0).toMap();
         Resolve resolve = getResolve(0);
-        resolve.setAddress("1.1.1.1.1");
+        resolve.setTargetAddress("1.1.1.1.1");
         assertTrue(networkTaskDAO.readAllNetworkTasks().isEmpty());
         assertTrue(accessTypeDataDAO.readAllAccessTypeData().isEmpty());
         assertTrue(resolveDAO.readAllResolve().isEmpty());
@@ -721,7 +721,7 @@ public class DBSetupTest {
         accessTypeDataDAO.deleteAllAccessTypeData();
         resolveDAO.deleteAllResolve();
         resolve = getResolve(0);
-        resolve.setPort(Integer.MAX_VALUE);
+        resolve.setTargetPort(Integer.MAX_VALUE);
         setup.importNetworkTaskWithLogsAccessTypeDataAndResolve(taskMap, Collections.emptyList(), data.toMap(), resolve.toMap());
         assertFalse(networkTaskDAO.readAllNetworkTasks().isEmpty());
         assertFalse(accessTypeDataDAO.readAllAccessTypeData().isEmpty());
@@ -1072,8 +1072,10 @@ public class DBSetupTest {
         Resolve resolve = new Resolve();
         resolve.setId(0);
         resolve.setNetworkTaskId(networkTaskId);
-        resolve.setAddress("host.com");
-        resolve.setPort(1234);
+        resolve.setSourceAddress("");
+        resolve.setSourcePort(-1);
+        resolve.setTargetAddress("host.com");
+        resolve.setTargetPort(1234);
         return resolve;
     }
 }

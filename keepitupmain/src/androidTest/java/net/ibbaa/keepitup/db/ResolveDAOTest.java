@@ -99,24 +99,25 @@ public class ResolveDAOTest {
         resolveDAO.insertResolve(resolve2);
         Resolve readResolve1 = resolveDAO.readResolveForNetworkTask(0);
         Resolve readResolve2 = resolveDAO.readResolveForNetworkTask(1);
-        readResolve2.setAddress("192.168.178.25");
-        readResolve2.setPort(443);
+        readResolve2.setTargetAddress("192.168.178.25");
+        readResolve2.setTargetPort(443);
         resolveDAO.updateResolve(readResolve2);
         readResolve2 = resolveDAO.readResolveForNetworkTask(1);
-        assertEquals("192.168.178.25", readResolve2.getAddress());
-        assertEquals(443, readResolve2.getPort());
-        readResolve2.setAddress(resolve2.getAddress());
-        readResolve2.setPort(resolve2.getPort());
+        assertEquals("192.168.178.25", readResolve2.getTargetAddress());
+        assertEquals(443, readResolve2.getTargetPort());
+        readResolve2.setTargetAddress(resolve2.getTargetAddress());
+        readResolve2.setTargetPort(resolve2.getTargetPort());
         assertTrue(resolve2.isEqual(readResolve2));
-        readResolve1.setAddress("192.168.188.25");
-        readResolve1.setPort(12);
+        readResolve1.setSourceAddress("192.168.188.25");
+        readResolve1.setSourcePort(12);
+        readResolve1.setTargetAddress("192.168.188.25");
+        readResolve1.setTargetPort(12);
         resolveDAO.updateResolve(readResolve1);
         readResolve1 = resolveDAO.readResolveForNetworkTask(0);
-        assertEquals("192.168.188.25", readResolve1.getAddress());
-        assertEquals(12, readResolve1.getPort());
-        readResolve1.setAddress(resolve1.getAddress());
-        readResolve1.setPort(resolve1.getPort());
-        assertTrue(resolve1.isTechnicallyEqual(readResolve1));
+        assertEquals("192.168.188.25", readResolve1.getSourceAddress());
+        assertEquals(12, readResolve1.getSourcePort());
+        assertEquals("192.168.188.25", readResolve1.getTargetAddress());
+        assertEquals(12, readResolve1.getTargetPort());
     }
 
     @Test
@@ -169,8 +170,10 @@ public class ResolveDAOTest {
         Resolve resolve = new Resolve();
         resolve.setId(0);
         resolve.setNetworkTaskId(0);
-        resolve.setAddress("192.168.178.1");
-        resolve.setPort(22);
+        resolve.setSourceAddress("127.0.0.1");
+        resolve.setSourcePort(443);
+        resolve.setTargetAddress("192.168.178.1");
+        resolve.setTargetPort(22);
         return resolve;
     }
 
@@ -178,8 +181,10 @@ public class ResolveDAOTest {
         Resolve resolve = new Resolve();
         resolve.setId(0);
         resolve.setNetworkTaskId(1);
-        resolve.setAddress("127.0.0.1");
-        resolve.setPort(80);
+        resolve.setSourceAddress("localhost");
+        resolve.setSourcePort(443);
+        resolve.setTargetAddress("127.0.0.1");
+        resolve.setTargetPort(80);
         return resolve;
     }
 }

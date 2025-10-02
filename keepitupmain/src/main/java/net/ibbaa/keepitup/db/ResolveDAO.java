@@ -98,8 +98,10 @@ public class ResolveDAO extends BaseDAO {
         ContentValues values = new ContentValues();
         ResolveDBConstants dbConstants = new ResolveDBConstants(getContext());
         values.put(dbConstants.getNetworkTaskIdColumnName(), resolve.getNetworkTaskId());
-        values.put(dbConstants.getAddressColumnName(), resolve.getAddress());
-        values.put(dbConstants.getPortColumnName(), resolve.getPort());
+        values.put(dbConstants.getSourceAddressColumnName(), resolve.getSourceAddress());
+        values.put(dbConstants.getSourcePortColumnName(), resolve.getSourcePort());
+        values.put(dbConstants.getTargetAddressColumnName(), resolve.getTargetAddress());
+        values.put(dbConstants.getTargetPortColumnName(), resolve.getTargetPort());
         long rowid = db.insert(dbConstants.getTableName(), null, values);
         if (rowid < 0) {
             Log.e(ResolveDAO.class.getName(), "Error inserting resolve object into database. Insert returned -1.");
@@ -115,8 +117,10 @@ public class ResolveDAO extends BaseDAO {
         String[] selectionArgs = {String.valueOf(resolve.getId())};
         ContentValues values = new ContentValues();
         values.put(dbConstants.getNetworkTaskIdColumnName(), resolve.getNetworkTaskId());
-        values.put(dbConstants.getAddressColumnName(), resolve.getAddress());
-        values.put(dbConstants.getPortColumnName(), resolve.getPort());
+        values.put(dbConstants.getSourceAddressColumnName(), resolve.getSourceAddress());
+        values.put(dbConstants.getSourcePortColumnName(), resolve.getSourcePort());
+        values.put(dbConstants.getTargetAddressColumnName(), resolve.getTargetAddress());
+        values.put(dbConstants.getTargetPortColumnName(), resolve.getTargetPort());
         db.update(dbConstants.getTableName(), values, selection, selectionArgs);
         return resolve;
     }
@@ -202,12 +206,16 @@ public class ResolveDAO extends BaseDAO {
         ResolveDBConstants dbConstants = new ResolveDBConstants(getContext());
         int indexIdColumn = cursor.getColumnIndex(dbConstants.getIdColumnName());
         int indexNetworkTaskIdColumn = cursor.getColumnIndex(dbConstants.getNetworkTaskIdColumnName());
-        int indexAddressColumn = cursor.getColumnIndex(dbConstants.getAddressColumnName());
-        int indexPortColumn = cursor.getColumnIndex(dbConstants.getPortColumnName());
+        int indexSourceAddressColumn = cursor.getColumnIndex(dbConstants.getSourceAddressColumnName());
+        int indexSourcePortColumn = cursor.getColumnIndex(dbConstants.getSourcePortColumnName());
+        int indexTargetAddressColumn = cursor.getColumnIndex(dbConstants.getTargetAddressColumnName());
+        int indexTargetPortColumn = cursor.getColumnIndex(dbConstants.getTargetPortColumnName());
         resolve.setId(cursor.getLong(indexIdColumn));
         resolve.setNetworkTaskId(cursor.getLong(indexNetworkTaskIdColumn));
-        resolve.setAddress(cursor.getString(indexAddressColumn));
-        resolve.setPort(cursor.getInt(indexPortColumn));
+        resolve.setSourceAddress(cursor.getString(indexSourceAddressColumn));
+        resolve.setSourcePort(cursor.getInt(indexSourcePortColumn));
+        resolve.setTargetAddress(cursor.getString(indexTargetAddressColumn));
+        resolve.setTargetPort(cursor.getInt(indexTargetPortColumn));
         return resolve;
     }
 }

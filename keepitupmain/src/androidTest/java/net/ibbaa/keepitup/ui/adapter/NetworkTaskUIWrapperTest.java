@@ -68,7 +68,7 @@ public class NetworkTaskUIWrapperTest {
         assertFalse(wrapper1.isEqual(wrapper2));
         assertFalse(wrapper2.isEqual(wrapper1));
         Resolve resolve = getResolve();
-        resolve.setAddress("address");
+        resolve.setTargetAddress("address");
         wrapper2 = new NetworkTaskUIWrapper(getNetworkTask(), getAccessTypeData(), resolve, getLogEntry());
         assertFalse(wrapper1.isEqual(wrapper2));
         assertFalse(wrapper2.isEqual(wrapper1));
@@ -123,8 +123,10 @@ public class NetworkTaskUIWrapperTest {
         Resolve resolve = new Resolve();
         resolve.setId(0);
         resolve.setNetworkTaskId(0);
-        resolve.setAddress("192.168.178.1");
-        resolve.setPort(22);
+        resolve.setSourceAddress("");
+        resolve.setSourcePort(-1);
+        resolve.setTargetAddress("192.168.178.1");
+        resolve.setTargetPort(22);
         return resolve;
     }
 }

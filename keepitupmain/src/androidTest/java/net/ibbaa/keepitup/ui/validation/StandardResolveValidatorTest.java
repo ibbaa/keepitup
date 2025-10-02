@@ -41,64 +41,64 @@ public class StandardResolveValidatorTest {
     }
 
     @Test
-    public void testValidateAddress() {
-        ValidationResult result = validator.validateAddress("www.host.com");
+    public void testValidateTargetAddress() {
+        ValidationResult result = validator.validateTargetAddress("www.host.com");
         assertTrue(result.isValidationSuccessful());
         assertEquals("Connect-to host", result.getFieldName());
         assertEquals("Validation successful", result.getMessage());
-        result = validator.validateAddress("3ffe:1900:4545:3:200:f8ff:fe21:67cf");
+        result = validator.validateTargetAddress("3ffe:1900:4545:3:200:f8ff:fe21:67cf");
         assertTrue(result.isValidationSuccessful());
         assertEquals("Connect-to host", result.getFieldName());
         assertEquals("Validation successful", result.getMessage());
-        result = validator.validateAddress("192.168.178.100");
+        result = validator.validateTargetAddress("192.168.178.100");
         assertTrue(result.isValidationSuccessful());
         assertEquals("Connect-to host", result.getFieldName());
         assertEquals("Validation successful", result.getMessage());
-        result = validator.validateAddress("not valid");
+        result = validator.validateTargetAddress("not valid");
         assertFalse(result.isValidationSuccessful());
         assertEquals("Connect-to host", result.getFieldName());
         assertEquals("No valid host or IP address", result.getMessage());
-        result = validator.validateAddress("");
+        result = validator.validateTargetAddress("");
         assertTrue(result.isValidationSuccessful());
         assertEquals("Connect-to host", result.getFieldName());
         assertEquals("Validation successful", result.getMessage());
-        result = validator.validateAddress(null);
+        result = validator.validateTargetAddress(null);
         assertTrue(result.isValidationSuccessful());
         assertEquals("Connect-to host", result.getFieldName());
         assertEquals("Validation successful", result.getMessage());
-        result = validator.validateAddress("not set");
+        result = validator.validateTargetAddress("not set");
         assertTrue(result.isValidationSuccessful());
         assertEquals("Connect-to host", result.getFieldName());
         assertEquals("Validation successful", result.getMessage());
     }
 
     @Test
-    public void testValidatePort() {
-        ValidationResult result = validator.validatePort("80");
+    public void testValidateTargetPort() {
+        ValidationResult result = validator.validateTargetPort("80");
         assertTrue(result.isValidationSuccessful());
         assertEquals("Connect-to port", result.getFieldName());
         assertEquals("Validation successful", result.getMessage());
-        result = validator.validatePort("abc");
+        result = validator.validateTargetPort("abc");
         assertFalse(result.isValidationSuccessful());
         assertEquals("Connect-to port", result.getFieldName());
         assertEquals("Invalid format", result.getMessage());
-        result = validator.validatePort("-1");
+        result = validator.validateTargetPort("-1");
         assertFalse(result.isValidationSuccessful());
         assertEquals("Connect-to port", result.getFieldName());
         assertEquals("Minimum: 0", result.getMessage());
-        result = validator.validatePort("12345678");
+        result = validator.validateTargetPort("12345678");
         assertFalse(result.isValidationSuccessful());
         assertEquals("Connect-to port", result.getFieldName());
         assertEquals("Maximum: 65535", result.getMessage());
-        result = validator.validatePort("");
+        result = validator.validateTargetPort("");
         assertTrue(result.isValidationSuccessful());
         assertEquals("Connect-to port", result.getFieldName());
         assertEquals("Validation successful", result.getMessage());
-        result = validator.validatePort(null);
+        result = validator.validateTargetPort(null);
         assertTrue(result.isValidationSuccessful());
         assertEquals("Connect-to port", result.getFieldName());
         assertEquals("Validation successful", result.getMessage());
-        result = validator.validatePort("not set");
+        result = validator.validateTargetPort("not set");
         assertTrue(result.isValidationSuccessful());
         assertEquals("Connect-to port", result.getFieldName());
         assertEquals("Validation successful", result.getMessage());

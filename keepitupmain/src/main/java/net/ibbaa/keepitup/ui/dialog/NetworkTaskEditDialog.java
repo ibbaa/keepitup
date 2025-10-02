@@ -399,11 +399,11 @@ public class NetworkTaskEditDialog extends DialogFragmentBase implements Context
         connectToHostEditText = dialogView.findViewById(R.id.edittext_dialog_network_task_edit_connect_to_host);
         prepareConnectToHostEditTextListener();
         connectToHostEditText.setOnLongClickListener(this::onEditTextLongClicked);
-        connectToHostEditText.setText(UIUtil.getNotSetIfEmpty(requireContext(), resolve.getAddress()));
+        connectToHostEditText.setText(UIUtil.getNotSetIfEmpty(requireContext(), resolve.getTargetAddress()));
         connectToPortEditText = dialogView.findViewById(R.id.edittext_dialog_network_task_edit_connect_to_port);
         prepareConnectToPortEditTextListener();
         connectToPortEditText.setOnLongClickListener(this::onEditTextLongClicked);
-        connectToPortEditText.setText(UIUtil.getNotSetIfNegative(requireContext(), resolve.getPort()));
+        connectToPortEditText.setText(UIUtil.getNotSetIfNegative(requireContext(), resolve.getTargetPort()));
     }
 
     private void prepareResolveFieldsVisibility() {
@@ -753,10 +753,10 @@ public class NetworkTaskEditDialog extends DialogFragmentBase implements Context
         Bundle resolveBundle = BundleUtil.bundleFromBundle(getResolveKey(), requireArguments());
         Resolve resolve = resolveBundle != null ? new Resolve(resolveBundle) : new Resolve();
         if (isConnectToHostVisible()) {
-            resolve.setAddress(UIUtil.getEmptyIfNotSet(requireContext(), getConnectToHost()));
+            resolve.setTargetAddress(UIUtil.getEmptyIfNotSet(requireContext(), getConnectToHost()));
         }
         if (isConnectToPortVisible()) {
-            resolve.setPort(UIUtil.getNegativeIfNotSet(requireContext(), getConnectToPort()));
+            resolve.setTargetPort(UIUtil.getNegativeIfNotSet(requireContext(), getConnectToPort()));
         }
         Log.d(NetworkTaskEditDialog.class.getName(), "getResolve, resolve object is " + resolve);
         return resolve;
@@ -908,7 +908,7 @@ public class NetworkTaskEditDialog extends DialogFragmentBase implements Context
         Log.d(NetworkTaskEditDialog.class.getName(), "validateFinalResolve");
         ResolveValidator resolveValidator = getResolveValidator();
         if (isConnectToHostVisible()) {
-            ValidationResult result = resolveValidator.validateAddress(getConnectToHost());
+            ValidationResult result = resolveValidator.validateTargetAddress(getConnectToHost());
             Log.d(NetworkTaskEditDialog.class.getName(), "connect-to host validation result: " + result);
             if (!result.isValidationSuccessful()) {
                 validationResultList.add(result);
@@ -917,7 +917,7 @@ public class NetworkTaskEditDialog extends DialogFragmentBase implements Context
             Log.d(NetworkTaskEditDialog.class.getName(), "connect-to host validation skipped");
         }
         if (isConnectToPortVisible()) {
-            ValidationResult result = resolveValidator.validatePort(getConnectToPort());
+            ValidationResult result = resolveValidator.validateTargetPort(getConnectToPort());
             Log.d(NetworkTaskEditDialog.class.getName(), "connect-to host validation result: " + result);
             if (!result.isValidationSuccessful()) {
                 validationResultList.add(result);
@@ -978,7 +978,7 @@ public class NetworkTaskEditDialog extends DialogFragmentBase implements Context
     private boolean validateConnectToHost(EditText editText) {
         Log.d(NetworkTaskEditDialog.class.getName(), "validateConnectToHost");
         ResolveValidator validator = getResolveValidator();
-        ValidationResult result = validator.validateAddress(getConnectToHost());
+        ValidationResult result = validator.validateTargetAddress(getConnectToHost());
         Log.d(NetworkTaskEditDialog.class.getName(), "connect-to host validation result: " + result);
         return result.isValidationSuccessful();
     }
@@ -986,7 +986,7 @@ public class NetworkTaskEditDialog extends DialogFragmentBase implements Context
     private boolean validateConnectToPort(EditText editText) {
         Log.d(NetworkTaskEditDialog.class.getName(), "validateConnectToPort");
         ResolveValidator validator = getResolveValidator();
-        ValidationResult result = validator.validatePort(getConnectToPort());
+        ValidationResult result = validator.validateTargetPort(getConnectToPort());
         Log.d(NetworkTaskEditDialog.class.getName(), "connect-to port validation result: " + result);
         return result.isValidationSuccessful();
     }

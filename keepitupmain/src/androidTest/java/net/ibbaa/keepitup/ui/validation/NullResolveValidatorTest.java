@@ -41,11 +41,11 @@ public class NullResolveValidatorTest {
 
     @Test
     public void testValidate() {
-        ValidationResult result = validator.validateAddress("www.host.com");
+        ValidationResult result = validator.validateTargetAddress("www.host.com");
         assertFalse(result.isValidationSuccessful());
         assertEquals("Connect-to host", result.getFieldName());
         assertEquals("No value specified", result.getMessage());
-        result = validator.validatePort("23");
+        result = validator.validateTargetPort("23");
         assertFalse(result.isValidationSuccessful());
         assertEquals("Connect-to port", result.getFieldName());
         assertEquals("No value specified", result.getMessage());

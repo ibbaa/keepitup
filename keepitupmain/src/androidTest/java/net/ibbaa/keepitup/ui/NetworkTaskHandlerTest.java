@@ -191,7 +191,7 @@ public class NetworkTaskHandlerTest extends BaseUITest {
         handler.insertNetworkTask(task1, data1, resolve1);
         task1.setAddress("192.168.178.1");
         data1.setPingCount(9);
-        resolve1.setPort(8080);
+        resolve1.setTargetPort(8080);
         LogEntry logEntry = getLogEntryWithNetworkTaskId(task1.getId());
         logEntry = getLogDAO().insertAndDeleteLog(logEntry);
         getAdapter().replaceItem(new NetworkTaskUIWrapper(task1, data1, resolve1, logEntry));
@@ -203,13 +203,13 @@ public class NetworkTaskHandlerTest extends BaseUITest {
         assertEquals(9, readData1.getPingCount());
         assertTrue(data1.isTechnicallyEqual(readData1));
         Resolve readResolve1 = getResolveDAO().readResolveForNetworkTask(task1.getId());
-        assertEquals(8080, readResolve1.getPort());
+        assertEquals(8080, readResolve1.getTargetPort());
         assertTrue(resolve1.isTechnicallyEqual(readResolve1));
         NetworkTaskUIWrapper adapterWrapper1 = getAdapter().getItem(0);
         assertTrue(logEntry.isEqual(adapterWrapper1.getLogEntry()));
         assertEquals("192.168.178.1", adapterWrapper1.getNetworkTask().getAddress());
         assertEquals(9, adapterWrapper1.getAccessTypeData().getPingCount());
-        assertEquals(8080, adapterWrapper1.getResolve().getPort());
+        assertEquals(8080, adapterWrapper1.getResolve().getTargetPort());
         assertTrue(task1.isEqual(adapterWrapper1.getNetworkTask()));
         assertTrue(data1.isEqual(adapterWrapper1.getAccessTypeData()));
         assertTrue(resolve1.isEqual(adapterWrapper1.getResolve()));
@@ -224,7 +224,7 @@ public class NetworkTaskHandlerTest extends BaseUITest {
         handler.insertNetworkTask(task1, data1, resolve1);
         task1.setAddress("192.168.178.1");
         data1.setPingCount(9);
-        resolve1.setPort(8080);
+        resolve1.setTargetPort(8080);
         getAdapter().replaceNetworkTask(task1, null, null);
         handler.updateNetworkTask(task1, null, null);
         List<NetworkTask> tasks = getNetworkTaskDAO().readAllNetworkTasks();
@@ -234,7 +234,7 @@ public class NetworkTaskHandlerTest extends BaseUITest {
         assertEquals(10, readData1.getPingCount());
         assertFalse(data1.isTechnicallyEqual(readData1));
         Resolve readResolve1 = getResolveDAO().readResolveForNetworkTask(task1.getId());
-        assertEquals(22, readResolve1.getPort());
+        assertEquals(22, readResolve1.getTargetPort());
         assertFalse(resolve1.isTechnicallyEqual(readResolve1));
     }
 
@@ -527,8 +527,10 @@ public class NetworkTaskHandlerTest extends BaseUITest {
         Resolve resolve = new Resolve();
         resolve.setId(0);
         resolve.setNetworkTaskId(0);
-        resolve.setAddress("192.168.178.1");
-        resolve.setPort(22);
+        resolve.setSourceAddress("");
+        resolve.setSourcePort(-1);
+        resolve.setTargetAddress("192.168.178.1");
+        resolve.setTargetPort(22);
         return resolve;
     }
 
@@ -536,8 +538,10 @@ public class NetworkTaskHandlerTest extends BaseUITest {
         Resolve resolve = new Resolve();
         resolve.setId(0);
         resolve.setNetworkTaskId(1);
-        resolve.setAddress("192.168.178.1");
-        resolve.setPort(443);
+        resolve.setSourceAddress("");
+        resolve.setSourcePort(-1);
+        resolve.setTargetAddress("192.168.178.1");
+        resolve.setTargetPort(443);
         return resolve;
     }
 
@@ -545,8 +549,10 @@ public class NetworkTaskHandlerTest extends BaseUITest {
         Resolve resolve = new Resolve();
         resolve.setId(0);
         resolve.setNetworkTaskId(2);
-        resolve.setAddress("127.0.0.1");
-        resolve.setPort(-1);
+        resolve.setSourceAddress("");
+        resolve.setSourcePort(-1);
+        resolve.setTargetAddress("127.0.0.1");
+        resolve.setTargetPort(-1);
         return resolve;
     }
 
@@ -554,8 +560,10 @@ public class NetworkTaskHandlerTest extends BaseUITest {
         Resolve resolve = new Resolve();
         resolve.setId(0);
         resolve.setNetworkTaskId(2);
-        resolve.setAddress("127.0.0.1");
-        resolve.setPort(15);
+        resolve.setSourceAddress("");
+        resolve.setSourcePort(-1);
+        resolve.setTargetAddress("127.0.0.1");
+        resolve.setTargetPort(15);
         return resolve;
     }
 

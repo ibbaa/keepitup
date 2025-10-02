@@ -36,34 +36,66 @@ public class ResolveValidatorTest {
     }
 
     @Test
-    public void testValidateAddress() {
+    public void testValidateSourceAddress() {
         Resolve resolve = getResolve();
-        assertTrue(validator.validateAddress(resolve));
+        assertTrue(validator.validateSourceAddress(resolve));
         assertTrue(validator.validate(resolve));
-        resolve.setAddress("http://xyz.com");
-        assertFalse(validator.validateAddress(resolve));
+        resolve.setSourceAddress("http://xyz.com");
+        assertFalse(validator.validateSourceAddress(resolve));
         assertFalse(validator.validate(resolve));
-        resolve.setAddress("123.456.788.111");
-        assertFalse(validator.validateAddress(resolve));
+        resolve.setSourceAddress("123.456.788.111");
+        assertFalse(validator.validateSourceAddress(resolve));
         assertFalse(validator.validate(resolve));
-        resolve.setAddress("127.0.0.1");
-        assertTrue(validator.validateAddress(resolve));
+        resolve.setSourceAddress("127.0.0.1");
+        assertTrue(validator.validateSourceAddress(resolve));
         assertTrue(validator.validate(resolve));
     }
 
     @Test
-    public void testValidatePort() {
+    public void testValidateSourcePort() {
         Resolve resolve = getResolve();
-        assertTrue(validator.validatePort(resolve));
+        assertTrue(validator.validateSourcePort(resolve));
         assertTrue(validator.validate(resolve));
-        resolve.setPort(-1);
-        assertTrue(validator.validatePort(resolve));
+        resolve.setSourcePort(-1);
+        assertTrue(validator.validateSourcePort(resolve));
         assertTrue(validator.validate(resolve));
-        resolve.setPort(65536);
-        assertFalse(validator.validatePort(resolve));
+        resolve.setSourcePort(65536);
+        assertFalse(validator.validateSourcePort(resolve));
         assertFalse(validator.validate(resolve));
-        resolve.setPort(65535);
-        assertTrue(validator.validatePort(resolve));
+        resolve.setSourcePort(65535);
+        assertTrue(validator.validateSourcePort(resolve));
+        assertTrue(validator.validate(resolve));
+    }
+
+    @Test
+    public void testValidateTargetAddress() {
+        Resolve resolve = getResolve();
+        assertTrue(validator.validateTargetAddress(resolve));
+        assertTrue(validator.validate(resolve));
+        resolve.setTargetAddress("http://xyz.com");
+        assertFalse(validator.validateTargetAddress(resolve));
+        assertFalse(validator.validate(resolve));
+        resolve.setTargetAddress("123.456.788.111");
+        assertFalse(validator.validateTargetAddress(resolve));
+        assertFalse(validator.validate(resolve));
+        resolve.setTargetAddress("127.0.0.1");
+        assertTrue(validator.validateTargetAddress(resolve));
+        assertTrue(validator.validate(resolve));
+    }
+
+    @Test
+    public void testValidateTargetPort() {
+        Resolve resolve = getResolve();
+        assertTrue(validator.validateTargetPort(resolve));
+        assertTrue(validator.validate(resolve));
+        resolve.setTargetPort(-1);
+        assertTrue(validator.validateTargetPort(resolve));
+        assertTrue(validator.validate(resolve));
+        resolve.setTargetPort(65536);
+        assertFalse(validator.validateTargetPort(resolve));
+        assertFalse(validator.validate(resolve));
+        resolve.setTargetPort(65535);
+        assertTrue(validator.validateTargetPort(resolve));
         assertTrue(validator.validate(resolve));
     }
 
@@ -71,8 +103,10 @@ public class ResolveValidatorTest {
         Resolve resolve = new Resolve();
         resolve.setId(0);
         resolve.setNetworkTaskId(1);
-        resolve.setAddress("127.0.0.1");
-        resolve.setPort(80);
+        resolve.setSourceAddress("");
+        resolve.setSourcePort(-1);
+        resolve.setTargetAddress("127.0.0.1");
+        resolve.setTargetPort(80);
         return resolve;
     }
 }

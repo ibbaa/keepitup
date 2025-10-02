@@ -34,34 +34,42 @@ public class Resolve {
 
     private long id;
     private long networktaskid;
-    private String address;
-    private int port;
+    private String sourceAddress;
+    private int sourcePort;
+    private String targetAddress;
+    private int targetPort;
 
     public Resolve() {
         this.id = -1;
         this.networktaskid = -1;
-        this.address = null;
-        this.port = -1;
+        this.sourceAddress = "";
+        this.sourcePort = -1;
+        this.targetAddress = "";
+        this.targetPort = -1;
     }
 
     public Resolve(long networktaskid) {
         this.id = -1;
         this.networktaskid = networktaskid;
-        this.address = null;
-        this.port = -1;
+        this.sourceAddress = "";
+        this.sourcePort = -1;
+        this.targetAddress = "";
+        this.targetPort = -1;
     }
 
     public Resolve(Resolve other) {
         this();
-        this.address = other.getAddress();
-        this.port = other.getPort();
+        this.sourceAddress = other.getSourceAddress();
+        this.sourcePort = other.getSourcePort();
+        this.targetAddress = other.getTargetAddress();
+        this.targetPort = other.getTargetPort();
     }
 
     public Resolve(Context context) {
         this();
         PreferenceManager preferenceManager = new PreferenceManager(context);
-        this.address = preferenceManager.getPreferenceResolveAddress();
-        this.port = preferenceManager.getPreferenceResolvePort();
+        this.targetAddress = preferenceManager.getPreferenceResolveAddress();
+        this.targetPort = preferenceManager.getPreferenceResolvePort();
     }
 
     public Resolve(PersistableBundle bundle) {
@@ -72,8 +80,10 @@ public class Resolve {
         this();
         this.id = bundle.getLong("id");
         this.networktaskid = bundle.getLong("networktaskid");
-        this.address = bundle.getString("address");
-        this.port = bundle.getInt("port");
+        this.sourceAddress = bundle.getString("sourceAddress");
+        this.sourcePort = bundle.getInt("sourcePort");
+        this.targetAddress = bundle.getString("targetAddress");
+        this.targetPort = bundle.getInt("targetPort");
     }
 
     public Resolve(Map<String, ?> map) {
@@ -84,11 +94,17 @@ public class Resolve {
         if (NumberUtil.isValidLongValue(map.get("networktaskid"))) {
             this.networktaskid = NumberUtil.getLongValue(map.get("networktaskid"), -1);
         }
-        if (map.get("address") != null) {
-            this.address = Objects.requireNonNull(map.get("address")).toString();
+        if (map.get("sourceAddress") != null) {
+            this.sourceAddress = Objects.requireNonNull(map.get("sourceAddress")).toString();
         }
-        if (NumberUtil.isValidIntValue(map.get("port"))) {
-            this.port = NumberUtil.getIntValue(map.get("port"), 0);
+        if (NumberUtil.isValidIntValue(map.get("sourcePort"))) {
+            this.sourcePort = NumberUtil.getIntValue(map.get("sourcePort"), 0);
+        }
+        if (map.get("targetAddress") != null) {
+            this.targetAddress = Objects.requireNonNull(map.get("targetAddress")).toString();
+        }
+        if (NumberUtil.isValidIntValue(map.get("targetPort"))) {
+            this.targetPort = NumberUtil.getIntValue(map.get("targetPort"), 0);
         }
     }
 
@@ -108,30 +124,50 @@ public class Resolve {
         this.networktaskid = networktaskid;
     }
 
-    public String getAddress() {
-        return address;
+    public String getTargetAddress() {
+        return targetAddress;
     }
 
-    public void setAddress(String address) {
-        this.address = address;
+    public void setTargetAddress(String targetaddress) {
+        this.targetAddress = targetaddress;
     }
 
-    public int getPort() {
-        return port;
+    public int getTargetPort() {
+        return targetPort;
     }
 
-    public void setPort(int port) {
-        this.port = port;
+    public void setTargetPort(int targetPort) {
+        this.targetPort = targetPort;
+    }
+
+    public String getSourceAddress() {
+        return sourceAddress;
+    }
+
+    public void setSourceAddress(String sourceAddress) {
+        this.sourceAddress = sourceAddress;
+    }
+
+    public int getSourcePort() {
+        return sourcePort;
+    }
+
+    public void setSourcePort(int sourcePort) {
+        this.sourcePort = sourcePort;
     }
 
     public PersistableBundle toPersistableBundle() {
         PersistableBundle bundle = new PersistableBundle();
         bundle.putLong("id", id);
         bundle.putLong("networktaskid", networktaskid);
-        if (address != null) {
-            bundle.putString("address", address);
+        if (sourceAddress != null) {
+            bundle.putString("sourceAddress", sourceAddress);
         }
-        bundle.putInt("port", port);
+        bundle.putInt("sourcePort", sourcePort);
+        if (targetAddress != null) {
+            bundle.putString("targetAddress", targetAddress);
+        }
+        bundle.putInt("targetPort", targetPort);
         return bundle;
     }
 
@@ -143,15 +179,19 @@ public class Resolve {
         Map<String, Object> map = new HashMap<>();
         map.put("id", id);
         map.put("networktaskid", networktaskid);
-        if (address != null) {
-            map.put("address", address);
+        if (sourceAddress != null) {
+            map.put("sourceAddress", sourceAddress);
         }
-        map.put("port", port);
+        map.put("sourcePort", sourcePort);
+        if (targetAddress != null) {
+            map.put("targetAddress", targetAddress);
+        }
+        map.put("targetPort", targetPort);
         return map;
     }
 
     public boolean isEmpty() {
-        return StringUtil.isEmpty(address) && port < 0;
+        return StringUtil.isEmpty(targetAddress) && targetPort < 0;
     }
 
     public boolean isEqual(Resolve other) {
@@ -164,10 +204,16 @@ public class Resolve {
         if (networktaskid != other.networktaskid) {
             return false;
         }
-        if (port != other.port) {
+        if (!Objects.equals(sourceAddress, other.sourceAddress)) {
             return false;
         }
-        return Objects.equals(address, other.address);
+        if (sourcePort != other.sourcePort) {
+            return false;
+        }
+        if (targetPort != other.targetPort) {
+            return false;
+        }
+        return Objects.equals(targetAddress, other.targetAddress);
     }
 
     public boolean isTechnicallyEqual(Resolve other) {
@@ -177,10 +223,16 @@ public class Resolve {
         if (networktaskid != other.networktaskid) {
             return false;
         }
-        if (port != other.port) {
+        if (!Objects.equals(sourceAddress, other.sourceAddress)) {
             return false;
         }
-        return Objects.equals(address, other.address);
+        if (sourcePort != other.sourcePort) {
+            return false;
+        }
+        if (targetPort != other.targetPort) {
+            return false;
+        }
+        return Objects.equals(targetAddress, other.targetAddress);
     }
 
     @NonNull
@@ -189,8 +241,10 @@ public class Resolve {
         return "Resolve{" +
                 "id=" + id +
                 ", networktaskid=" + networktaskid +
-                ", address='" + address + '\'' +
-                ", port=" + port +
+                ", sourceAddress='" + sourceAddress + '\'' +
+                ", sourcePort=" + sourcePort +
+                ", targetAddress='" + targetAddress + '\'' +
+                ", targetPort=" + targetPort +
                 '}';
     }
 }

@@ -64,6 +64,8 @@
     <string name="resolve_table_name">RESOLVE</string>
     <string name="resolve_id_column_name">_id</string>
     <string name="resolve_taskid_column_name">NETWORKTASKID</string>
-    <string name="resolve_address_column_name">ADDRESS</string>
-    <string name="resolve_port_column_name">PORT</string>
+    <string name="resolve_source_address_column_name">SOURCEADDRESS</string>
+    <string name="resolve_source_port_column_name">SOURCEPORT</string>
+    <string name="resolve_target_address_column_name">TARGETADDRESS</string>
+    <string name="resolve_target_port_column_name">TARGETPORT</string>
 </resources>

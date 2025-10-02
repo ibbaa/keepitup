@@ -142,7 +142,7 @@ public class NetworkTaskMainUISyncTaskTest extends BaseUITest {
         NetworkTask updatedTask2 = getNetworkTaskDAO().readNetworkTask(task2.getId());
         data2.setPingCount(7);
         AccessTypeData updatedData2 = getAccessTypeDataDAO().updateAccessTypeData(data2);
-        resolve2.setAddress("address");
+        resolve2.setTargetAddress("address");
         Resolve updatedResolve2 = getResolveDAO().updateResolve(resolve2);
         LogEntry otherLogEntry = getLogDAO().insertAndDeleteLog(getLogEntryWithNetworkTaskId(task2.getId(), new GregorianCalendar(1980, Calendar.MARCH, 18).getTime().getTime()));
         NetworkTaskMainUISyncTask syncTask = new NetworkTaskMainUISyncTask(getActivity(activityScenario), null, getAdapter(activityScenario));
@@ -320,8 +320,8 @@ public class NetworkTaskMainUISyncTaskTest extends BaseUITest {
         Resolve resolve = new Resolve();
         resolve.setId(0);
         resolve.setNetworkTaskId(networkTaskId);
-        resolve.setAddress("192.168.178.1");
-        resolve.setPort(22);
+        resolve.setTargetAddress("192.168.178.1");
+        resolve.setTargetPort(22);
         return resolve;
     }
 
@@ -329,8 +329,10 @@ public class NetworkTaskMainUISyncTaskTest extends BaseUITest {
         Resolve resolve = new Resolve();
         resolve.setId(0);
         resolve.setNetworkTaskId(networkTaskId);
-        resolve.setAddress("192.168.178.1");
-        resolve.setPort(443);
+        resolve.setSourceAddress("");
+        resolve.setSourcePort(-1);
+        resolve.setTargetAddress("192.168.178.1");
+        resolve.setTargetPort(443);
         return resolve;
     }
 
@@ -338,8 +340,10 @@ public class NetworkTaskMainUISyncTaskTest extends BaseUITest {
         Resolve resolve = new Resolve();
         resolve.setId(0);
         resolve.setNetworkTaskId(networkTaskId);
-        resolve.setAddress("127.0.0.1");
-        resolve.setPort(-1);
+        resolve.setSourceAddress("");
+        resolve.setSourcePort(-1);
+        resolve.setTargetAddress("127.0.0.1");
+        resolve.setTargetPort(-1);
         return resolve;
     }
 

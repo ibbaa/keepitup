@@ -26,16 +26,20 @@ public class ResolveDBConstants {
     private final String tableName;
     private final String idColumnName;
     private final String networkTaskIdColumnName;
-    private final String addressColumnName;
-    private final String portColumnName;
+    private final String sourceAddressColumnName;
+    private final String sourcePortColumnName;
+    private final String targetAddressColumnName;
+    private final String targetPortColumnName;
 
     public ResolveDBConstants(Context context) {
         networkTaskDBConstants = new NetworkTaskDBConstants(context);
         tableName = context.getResources().getString(R.string.resolve_table_name);
         idColumnName = context.getResources().getString(R.string.resolve_id_column_name);
         networkTaskIdColumnName = context.getResources().getString(R.string.resolve_taskid_column_name);
-        addressColumnName = context.getResources().getString(R.string.resolve_address_column_name);
-        portColumnName = context.getResources().getString(R.string.resolve_port_column_name);
+        sourceAddressColumnName = context.getResources().getString(R.string.resolve_source_address_column_name);
+        sourcePortColumnName = context.getResources().getString(R.string.resolve_source_port_column_name);
+        targetAddressColumnName = context.getResources().getString(R.string.resolve_target_address_column_name);
+        targetPortColumnName = context.getResources().getString(R.string.resolve_target_port_column_name);
     }
 
     public String getTableName() {
@@ -50,20 +54,30 @@ public class ResolveDBConstants {
         return networkTaskIdColumnName;
     }
 
-    public String getAddressColumnName() {
-        return addressColumnName;
+    public String getSourcePortColumnName() {
+        return sourcePortColumnName;
     }
 
-    public String getPortColumnName() {
-        return portColumnName;
+    public String getSourceAddressColumnName() {
+        return sourceAddressColumnName;
+    }
+
+    public String getTargetAddressColumnName() {
+        return targetAddressColumnName;
+    }
+
+    public String getTargetPortColumnName() {
+        return targetPortColumnName;
     }
 
     public String getCreateTableStatement() {
         return ("CREATE TABLE IF NOT EXISTS  " + getTableName() + "(") +
                 getIdColumnName() + " INTEGER PRIMARY KEY ASC, " +
                 getNetworkTaskIdColumnName() + " INTEGER NOT NULL, " +
-                getAddressColumnName() + " TEXT, " +
-                getPortColumnName() + " INTEGER);";
+                getSourceAddressColumnName() + " TEXT, " +
+                getSourcePortColumnName() + " INTEGER, " +
+                getTargetAddressColumnName() + " TEXT, " +
+                getTargetPortColumnName() + " INTEGER);";
     }
 
     public String getDropTableStatement() {
@@ -74,8 +88,10 @@ public class ResolveDBConstants {
         return "SELECT " +
                 getIdColumnName() + ", " +
                 getNetworkTaskIdColumnName() + ", " +
-                getAddressColumnName() + ", " +
-                getPortColumnName() +
+                getSourceAddressColumnName() + ", " +
+                getSourcePortColumnName() + ", " +
+                getTargetAddressColumnName() + ", " +
+                getTargetPortColumnName() +
                 " FROM " + getTableName() +
                 " WHERE " + getNetworkTaskIdColumnName() + " = ?";
     }
@@ -84,8 +100,10 @@ public class ResolveDBConstants {
         return "SELECT " +
                 getIdColumnName() + ", " +
                 getNetworkTaskIdColumnName() + ", " +
-                getAddressColumnName() + ", " +
-                getPortColumnName() +
+                getSourceAddressColumnName() + ", " +
+                getSourcePortColumnName() + ", " +
+                getTargetAddressColumnName() + ", " +
+                getTargetPortColumnName() +
                 " FROM " + getTableName();
     }
 

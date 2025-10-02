@@ -37,8 +37,10 @@ public class ResolveDBConstantsTest {
         assertEquals(getResourceString(R.string.resolve_table_name), dbConstants.getTableName());
         assertEquals(getResourceString(R.string.resolve_id_column_name), dbConstants.getIdColumnName());
         assertEquals(getResourceString(R.string.resolve_taskid_column_name), dbConstants.getNetworkTaskIdColumnName());
-        assertEquals(getResourceString(R.string.resolve_address_column_name), dbConstants.getAddressColumnName());
-        assertEquals(getResourceString(R.string.resolve_port_column_name), dbConstants.getPortColumnName());
+        assertEquals(getResourceString(R.string.resolve_source_address_column_name), dbConstants.getSourceAddressColumnName());
+        assertEquals(getResourceString(R.string.resolve_source_port_column_name), dbConstants.getSourcePortColumnName());
+        assertEquals(getResourceString(R.string.resolve_target_address_column_name), dbConstants.getTargetAddressColumnName());
+        assertEquals(getResourceString(R.string.resolve_target_port_column_name), dbConstants.getTargetPortColumnName());
     }
 
     private String getResourceString(int id) {
