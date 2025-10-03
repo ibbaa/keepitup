@@ -23,6 +23,7 @@ import net.ibbaa.keepitup.db.IntervalDAO;
 import net.ibbaa.keepitup.logging.Log;
 import net.ibbaa.keepitup.model.Interval;
 import net.ibbaa.keepitup.ui.dialog.SuspensionIntervalsDialog;
+import net.ibbaa.keepitup.ui.sync.DBSyncHandler;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,38 +40,28 @@ public class IntervalHandler {
 
     public boolean synchronizeIntervals() {
         Log.d(IntervalHandler.class.getName(), "synchronizeIntervals");
-        boolean didChanges = false;
         try {
             List<Interval> newIntervals = intervalDialog.getAdapter().getAllItems();
             List<Interval> dbIntervals = new ArrayList<>(globalSettingsActivity.getTimeBasedSuspensionScheduler().getIntervals());
-            for (Interval interval : newIntervals) {
-                Log.d(IntervalHandler.class.getName(), "Processing interval " + interval);
-                if (interval.getId() < 0) {
-                    insertInterval(interval);
-                    didChanges = true;
+            DBSyncHandler<Interval> syncHandler = new DBSyncHandler<>();
+            List<DBSyncHandler.ActionWrapper<Interval>> intervalActions = syncHandler.retrieveSyncList(newIntervals, dbIntervals);
+            for (DBSyncHandler.ActionWrapper<Interval> actionWrapper : intervalActions) {
+                if (DBSyncHandler.Action.INSERT.equals(actionWrapper.action())) {
+                    insertInterval(actionWrapper.object());
+                } else if (DBSyncHandler.Action.UPDATE.equals(actionWrapper.action())) {
+                    updateInterval(actionWrapper.object());
+                } else if (DBSyncHandler.Action.DELETE.equals(actionWrapper.action())) {
+                    deleteInterval(actionWrapper.object());
                 } else {
-                    Interval dbInterval = findById(interval.getId(), dbIntervals);
-                    Log.d(IntervalHandler.class.getName(), "Found dbInterval = " + dbInterval);
-                    if (dbInterval != null) {
-                        if (!interval.isEqual(dbInterval)) {
-                            updateInterval(interval);
-                            didChanges = true;
-                        }
-                        dbIntervals.remove(dbInterval);
-                    } else {
-                        Log.e(IntervalHandler.class.getName(), "No interval with id " + interval.getId() + " found");
-                    }
+                    Log.e(IntervalHandler.class.getName(), "Unknown action " + actionWrapper.action());
                 }
             }
-            for (Interval interval : dbIntervals) {
-                deleteInterval(interval);
-                didChanges = true;
-            }
+            return !intervalActions.isEmpty();
         } catch (Exception exc) {
             Log.e(IntervalHandler.class.getName(), "Error synchronizing intervals.", exc);
             showMessageDialog(getResources().getString(R.string.text_dialog_general_message_synchronize_intervals));
         }
-        return didChanges;
+        return false;
     }
 
     private void insertInterval(Interval interval) {
@@ -89,16 +80,6 @@ public class IntervalHandler {
         Log.d(IntervalHandler.class.getName(), "deleteInterval, interval = " + interval);
         IntervalDAO intervalDAO = new IntervalDAO(globalSettingsActivity);
         intervalDAO.deleteInterval(interval);
-    }
-
-    private Interval findById(long id, List<Interval> dbIntervals) {
-        Log.d(IntervalHandler.class.getName(), "findById for id " + id);
-        for (Interval interval : dbIntervals) {
-            if (id == interval.getId()) {
-                return interval;
-            }
-        }
-        return null;
     }
 
     private void showMessageDialog(String errorMessage) {

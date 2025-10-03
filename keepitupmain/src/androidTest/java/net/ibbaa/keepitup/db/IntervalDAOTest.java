@@ -61,9 +61,9 @@ public class IntervalDAOTest {
         List<Interval> readIntervals = intervalDAO.readAllIntervals();
         assertEquals(1, readIntervals.size());
         Interval readInterval = readIntervals.get(0);
-        assertTrue(readInterval.getId() > 0);
+        assertTrue(readInterval.id() > 0);
         assertTrue(insertedInterval1.isEqual(readInterval));
-        readInterval = intervalDAO.readInterval(readInterval.getId());
+        readInterval = intervalDAO.readInterval(readInterval.id());
         assertTrue(insertedInterval1.isEqual(readInterval));
         Interval insertedInterval2 = getInterval2();
         Interval insertedInterval3 = getInterval3();
@@ -80,28 +80,28 @@ public class IntervalDAOTest {
         Interval readInterval3 = readIntervals.get(2);
         Interval readInterval4 = readIntervals.get(3);
         Interval readInterval5 = readIntervals.get(4);
-        assertTrue(readInterval1.getId() > 0);
-        assertTrue(readInterval2.getId() > 0);
-        assertTrue(readInterval3.getId() > 0);
-        assertTrue(readInterval4.getId() > 0);
-        assertTrue(readInterval5.getId() > 0);
+        assertTrue(readInterval1.id() > 0);
+        assertTrue(readInterval2.id() > 0);
+        assertTrue(readInterval3.id() > 0);
+        assertTrue(readInterval4.id() > 0);
+        assertTrue(readInterval5.id() > 0);
         assertTrue(insertedInterval1.isEqual(readInterval3));
         assertTrue(insertedInterval2.isEqual(readInterval1));
         assertTrue(insertedInterval3.isEqual(readInterval5));
         assertTrue(insertedInterval4.isEqual(readInterval2));
         assertTrue(insertedInterval5.isEqual(readInterval4));
-        readInterval1 = intervalDAO.readInterval(readInterval1.getId());
-        readInterval2 = intervalDAO.readInterval(readInterval2.getId());
-        readInterval3 = intervalDAO.readInterval(readInterval3.getId());
-        readInterval4 = intervalDAO.readInterval(readInterval4.getId());
-        readInterval5 = intervalDAO.readInterval(readInterval5.getId());
+        readInterval1 = intervalDAO.readInterval(readInterval1.id());
+        readInterval2 = intervalDAO.readInterval(readInterval2.id());
+        readInterval3 = intervalDAO.readInterval(readInterval3.id());
+        readInterval4 = intervalDAO.readInterval(readInterval4.id());
+        readInterval5 = intervalDAO.readInterval(readInterval5.id());
         assertTrue(insertedInterval1.isEqual(readInterval3));
         assertTrue(insertedInterval2.isEqual(readInterval1));
         assertTrue(insertedInterval3.isEqual(readInterval5));
         assertTrue(insertedInterval4.isEqual(readInterval2));
         assertTrue(insertedInterval5.isEqual(readInterval4));
         intervalDAO.deleteInterval(readInterval2);
-        readInterval2 = intervalDAO.readInterval(readInterval2.getId());
+        readInterval2 = intervalDAO.readInterval(readInterval2.id());
         assertNull(readInterval2);
     }
 
@@ -166,16 +166,16 @@ public class IntervalDAOTest {
     public void testReadValues() {
         Interval interval1 = getInterval1();
         interval1 = intervalDAO.insertInterval(interval1);
-        assertTrue(interval1.getId() > 0);
-        interval1 = intervalDAO.readInterval(interval1.getId());
+        assertTrue(interval1.id() > 0);
+        interval1 = intervalDAO.readInterval(interval1.id());
         assertEquals(10, interval1.getStart().getHour());
         assertEquals(11, interval1.getStart().getMinute());
         assertEquals(11, interval1.getEnd().getHour());
         assertEquals(12, interval1.getEnd().getMinute());
         Interval interval2 = getInterval2();
         interval2 = intervalDAO.insertInterval(interval2);
-        assertTrue(interval2.getId() > 0);
-        interval2 = intervalDAO.readInterval(interval2.getId());
+        assertTrue(interval2.id() > 0);
+        interval2 = intervalDAO.readInterval(interval2.id());
         assertEquals(1, interval2.getStart().getHour());
         assertEquals(1, interval2.getStart().getMinute());
         assertEquals(2, interval2.getEnd().getHour());
@@ -189,10 +189,10 @@ public class IntervalDAOTest {
         List<Interval> readIntervals = intervalDAO.readAllIntervals();
         Interval readInterval1 = readIntervals.get(0);
         Interval interval2 = getInterval2();
-        interval2.setId(readInterval1.getId());
+        interval2.setId(readInterval1.id());
         intervalDAO.updateInterval(interval2);
         assertTrue(insertedInterval1.isEqual(readInterval1));
-        readInterval1 = intervalDAO.readInterval(readInterval1.getId());
+        readInterval1 = intervalDAO.readInterval(readInterval1.id());
         assertTrue(interval2.isEqual(readInterval1));
     }
 

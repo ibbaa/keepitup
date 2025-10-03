@@ -79,6 +79,7 @@ import net.ibbaa.keepitup.ui.adapter.NetworkTaskUIWrapperTest;
 import net.ibbaa.keepitup.ui.clipboard.SystemClipboardManagerTest;
 import net.ibbaa.keepitup.ui.mapping.EnumMappingTest;
 import net.ibbaa.keepitup.ui.sync.DBPurgeTaskTest;
+import net.ibbaa.keepitup.ui.sync.DBSyncHandlerTest;
 import net.ibbaa.keepitup.ui.sync.ExportTaskTest;
 import net.ibbaa.keepitup.ui.sync.ImportTaskTest;
 import net.ibbaa.keepitup.ui.sync.LogEntryUIBroadcastReceiverTest;
@@ -204,6 +205,7 @@ import org.junit.runners.Suite;
         EnumMappingTest.class,
         //net.ibbaa.keepitup.ui.sync
         DBPurgeTaskTest.class,
+        DBSyncHandlerTest.class,
         ExportTaskTest.class,
         ImportTaskTest.class,
         LogEntryUIBroadcastReceiverTest.class,

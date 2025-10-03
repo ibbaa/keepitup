@@ -45,7 +45,7 @@ public class IntervalDAO extends BaseDAO {
     }
 
     public void deleteInterval(Interval interval) {
-        Log.d(IntervalDAO.class.getName(), "Deleting interval with id " + interval.getId());
+        Log.d(IntervalDAO.class.getName(), "Deleting interval with id " + interval.id());
         executeDBOperationInTransaction(interval, this::deleteInterval);
         dumpDatabase("Dump after deleteInterval call");
     }
@@ -58,7 +58,7 @@ public class IntervalDAO extends BaseDAO {
 
     @SuppressWarnings({"UnusedReturnValue"})
     public Interval updateInterval(Interval interval) {
-        Log.d(IntervalDAO.class.getName(), "Updating interval with id " + interval.getId());
+        Log.d(IntervalDAO.class.getName(), "Updating interval with id " + interval.id());
         Interval returnedInterval = executeDBOperationInTransaction(interval, this::updateInterval);
         Log.d(IntervalDAO.class.getName(), "Updated interval is " + returnedInterval);
         dumpDatabase("Dump after updateInterval call");
@@ -107,7 +107,7 @@ public class IntervalDAO extends BaseDAO {
         Log.d(IntervalDAO.class.getName(), "deleteInterval, interval is " + interval);
         IntervalDBConstants dbConstants = new IntervalDBConstants(getContext());
         String selection = dbConstants.getIdColumnName() + " = ?";
-        String[] selectionArgs = {String.valueOf(interval.getId())};
+        String[] selectionArgs = {String.valueOf(interval.id())};
         return db.delete(dbConstants.getTableName(), selection, selectionArgs);
     }
 
@@ -121,7 +121,7 @@ public class IntervalDAO extends BaseDAO {
         Log.d(IntervalDAO.class.getName(), "updateInterval, interval is " + interval);
         IntervalDBConstants dbConstants = new IntervalDBConstants(getContext());
         String selection = dbConstants.getIdColumnName() + " = ?";
-        String[] selectionArgs = {String.valueOf(interval.getId())};
+        String[] selectionArgs = {String.valueOf(interval.id())};
         ContentValues values = new ContentValues();
         values.put(dbConstants.getHourstartColumnName(), interval.getStart().getHour());
         values.put(dbConstants.getMinutestartColumnName(), interval.getStart().getMinute());
@@ -137,8 +137,8 @@ public class IntervalDAO extends BaseDAO {
         Interval result = null;
         IntervalDBConstants dbConstants = new IntervalDBConstants(getContext());
         try {
-            Log.d(IntervalDAO.class.getName(), "Executing SQL " + dbConstants.getReadIntervalStatement() + " with a parameter of " + interval.getId());
-            cursor = db.rawQuery(dbConstants.getReadIntervalStatement(), new String[]{String.valueOf(interval.getId())});
+            Log.d(IntervalDAO.class.getName(), "Executing SQL " + dbConstants.getReadIntervalStatement() + " with a parameter of " + interval.id());
+            cursor = db.rawQuery(dbConstants.getReadIntervalStatement(), new String[]{String.valueOf(interval.id())});
             while (cursor.moveToNext()) {
                 int indexIdColumn = cursor.getColumnIndex(dbConstants.getIdColumnName());
                 if (!cursor.isNull(indexIdColumn)) {

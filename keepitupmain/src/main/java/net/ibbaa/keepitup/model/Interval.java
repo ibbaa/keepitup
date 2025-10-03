@@ -26,7 +26,7 @@ import net.ibbaa.keepitup.util.NumberUtil;
 import java.util.HashMap;
 import java.util.Map;
 
-public class Interval {
+public class Interval implements Syncable<Interval> {
 
     private long id;
     private Time start;
@@ -70,7 +70,7 @@ public class Interval {
         }
     }
 
-    public long getId() {
+    public long id() {
         return id;
     }
 
