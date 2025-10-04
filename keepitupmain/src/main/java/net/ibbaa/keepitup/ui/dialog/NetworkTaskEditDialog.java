@@ -399,10 +399,12 @@ public class NetworkTaskEditDialog extends DialogFragmentBase implements Context
         connectToHostEditText = dialogView.findViewById(R.id.edittext_dialog_network_task_edit_connect_to_host);
         prepareConnectToHostEditTextListener();
         connectToHostEditText.setOnLongClickListener(this::onEditTextLongClicked);
+        connectToHostEditText.setOnFocusChangeListener(new PlaceholderFocusChangeListener(connectToHostEditText, getResources().getString(R.string.string_not_set)));
         connectToHostEditText.setText(UIUtil.getNotSetIfEmpty(requireContext(), resolve.getTargetAddress()));
         connectToPortEditText = dialogView.findViewById(R.id.edittext_dialog_network_task_edit_connect_to_port);
         prepareConnectToPortEditTextListener();
         connectToPortEditText.setOnLongClickListener(this::onEditTextLongClicked);
+        connectToPortEditText.setOnFocusChangeListener(new PlaceholderFocusChangeListener(connectToPortEditText, getResources().getString(R.string.string_not_set)));
         connectToPortEditText.setText(UIUtil.getNotSetIfNegative(requireContext(), resolve.getTargetPort()));
     }
 
