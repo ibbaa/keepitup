@@ -495,6 +495,36 @@ public class NetworkTaskEditDialogTest extends BaseUITest {
     }
 
     @Test
+    public void testResolveFieldsNotSetHandling() {
+        onView(allOf(withId(R.id.imageview_activity_main_network_task_add), isDisplayed())).perform(click());
+        onView(withText("Download")).perform(click());
+        onView(withId(R.id.edittext_dialog_network_task_edit_connect_to_host)).check(matches(withText("not set")));
+        onView(withId(R.id.edittext_dialog_network_task_edit_connect_to_host)).perform(click());
+        onView(isRoot()).perform(waitFor(500));
+        onView(withId(R.id.edittext_dialog_network_task_edit_connect_to_host)).check(matches(withText("")));
+        onView(withId(R.id.edittext_dialog_network_task_edit_connect_to_port)).check(matches(withText("not set")));
+        onView(withId(R.id.edittext_dialog_network_task_edit_connect_to_port)).perform(click());
+        onView(isRoot()).perform(waitFor(500));
+        onView(withId(R.id.edittext_dialog_network_task_edit_connect_to_port)).check(matches(withText("")));
+        onView(withId(R.id.edittext_dialog_network_task_edit_interval)).perform(click());
+        onView(isRoot()).perform(waitFor(500));
+        onView(withId(R.id.edittext_dialog_network_task_edit_connect_to_host)).check(matches(withText("not set")));
+        onView(withId(R.id.edittext_dialog_network_task_edit_connect_to_port)).check(matches(withText("not set")));
+        onView(withId(R.id.edittext_dialog_network_task_edit_connect_to_host)).perform(replaceText("host.com"));
+        onView(withId(R.id.edittext_dialog_network_task_edit_connect_to_port)).perform(replaceText("11"));
+        onView(withId(R.id.edittext_dialog_network_task_edit_connect_to_host)).perform(click());
+        onView(isRoot()).perform(waitFor(500));
+        onView(withId(R.id.edittext_dialog_network_task_edit_connect_to_host)).check(matches(withText("host.com")));
+        onView(withId(R.id.edittext_dialog_network_task_edit_connect_to_port)).perform(click());
+        onView(isRoot()).perform(waitFor(500));
+        onView(withId(R.id.edittext_dialog_network_task_edit_connect_to_port)).check(matches(withText("11")));
+        onView(withId(R.id.edittext_dialog_network_task_edit_interval)).perform(click());
+        onView(isRoot()).perform(waitFor(500));
+        onView(withId(R.id.edittext_dialog_network_task_edit_connect_to_host)).check(matches(withText("host.com")));
+        onView(withId(R.id.edittext_dialog_network_task_edit_connect_to_port)).check(matches(withText("11")));
+    }
+
+    @Test
     public void testOnOkCancelClickedDialogDismissed() {
         onView(allOf(withId(R.id.imageview_activity_main_network_task_add), isDisplayed())).perform(click());
         assertEquals(1, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
