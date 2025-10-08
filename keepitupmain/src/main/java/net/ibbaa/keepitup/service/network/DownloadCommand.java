@@ -46,6 +46,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.InetAddress;
 import java.net.URL;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
@@ -76,17 +77,25 @@ public class DownloadCommand implements Callable<DownloadCommandResult> {
     private final URL url;
     private final String folder;
     private final boolean delete;
+    private final InetAddress resolveAddress;
+    private final int resolvePort;
     private boolean valid;
     private boolean stopped;
     private final ITimeService timeService;
 
     public DownloadCommand(Context context, NetworkTask networkTask, AccessTypeData accessTypeData, URL url, String folder, boolean delete) {
+        this(context, networkTask, accessTypeData, url, folder, delete, null, -1);
+    }
+
+    public DownloadCommand(Context context, NetworkTask networkTask, AccessTypeData accessTypeData, URL url, String folder, boolean delete, InetAddress resolveAddress, int resolvePort) {
         this.context = context;
         this.networkTask = networkTask;
         this.accessTypeData = accessTypeData;
         this.url = url;
         this.folder = folder;
         this.delete = delete;
+        this.resolveAddress = resolveAddress;
+        this.resolvePort = resolvePort;
         this.timeService = createTimeService();
     }
 

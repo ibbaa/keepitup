@@ -76,9 +76,8 @@ public class PingNetworkTaskWorker extends NetworkTaskWorker {
             completeLogEntry(networkTask, logEntry);
             Log.d(PingNetworkTaskWorker.class.getName(), "Returning " + pingExecutionResult);
             return pingExecutionResult;
-        } else {
-            Log.e(PingNetworkTaskWorker.class.getName(), "executeDNSLookup returned null. DNSLookup failed.");
         }
+        Log.e(PingNetworkTaskWorker.class.getName(), "executeDNSLookup returned null. DNSLookup failed.");
         LogEntry logEntry = dnsExecutionResult.getLogEntry();
         completeLogEntry(networkTask, logEntry);
         Log.d(PingNetworkTaskWorker.class.getName(), "Returning " + dnsExecutionResult);

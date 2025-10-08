@@ -70,9 +70,8 @@ public class ConnectNetworkTaskWorker extends NetworkTaskWorker {
             completeLogEntry(networkTask, logEntry);
             Log.d(ConnectNetworkTaskWorker.class.getName(), "Returning " + connectExecutionResult);
             return connectExecutionResult;
-        } else {
-            Log.e(ConnectNetworkTaskWorker.class.getName(), "executeDNSLookup returned null. DNSLookup failed.");
         }
+        Log.e(ConnectNetworkTaskWorker.class.getName(), "executeDNSLookup returned null. DNSLookup failed.");
         LogEntry logEntry = dnsExecutionResult.getLogEntry();
         completeLogEntry(networkTask, logEntry);
         Log.d(ConnectNetworkTaskWorker.class.getName(), "Returning " + dnsExecutionResult);

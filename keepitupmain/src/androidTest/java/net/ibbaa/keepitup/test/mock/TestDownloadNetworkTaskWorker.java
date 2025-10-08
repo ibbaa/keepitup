@@ -29,6 +29,7 @@ import net.ibbaa.keepitup.service.network.DownloadCommandResult;
 import net.ibbaa.keepitup.ui.permission.IPermissionManager;
 import net.ibbaa.keepitup.ui.permission.IStoragePermissionManager;
 
+import java.net.InetAddress;
 import java.net.URL;
 import java.util.Objects;
 import java.util.concurrent.Callable;
@@ -73,9 +74,11 @@ public class TestDownloadNetworkTaskWorker extends DownloadNetworkTaskWorker {
     }
 
     @Override
-    public Callable<DownloadCommandResult> getDownloadCommand(NetworkTask networkTask, AccessTypeData data, URL url, String folder, boolean delete) {
+    public Callable<DownloadCommandResult> getDownloadCommand(NetworkTask networkTask, AccessTypeData data, URL url, String folder, boolean delete, InetAddress address, int port) {
         mockDownloadCommand.setUrl(url);
         mockDownloadCommand.setFolder(folder);
+        mockDownloadCommand.setAddress(address);
+        mockDownloadCommand.setPort(port);
         return mockDownloadCommand;
     }
 
