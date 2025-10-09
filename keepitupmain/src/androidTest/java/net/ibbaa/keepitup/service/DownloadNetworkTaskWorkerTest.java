@@ -110,9 +110,9 @@ public class DownloadNetworkTaskWorkerTest {
         MockDNSLookup mockDNSLookup = new MockDNSLookup("127.0.0.1", dnsLookupResult);
         MockDownloadCommand mockDownloadCommand;
         if (exception == null) {
-            mockDownloadCommand = new MockDownloadCommand(TestRegistry.getContext(), getNetworkTask(), getAccessTypeData(), new URL("http://127.0.0.1"), "folder", true, null, -1, downloadCommandResult);
+            mockDownloadCommand = new MockDownloadCommand(TestRegistry.getContext(), getNetworkTask(), getAccessTypeData(), new URL("http://127.0.0.1"), "folder", true, null, downloadCommandResult);
         } else {
-            mockDownloadCommand = new MockDownloadCommand(TestRegistry.getContext(), getNetworkTask(), getAccessTypeData(), new URL("http://127.0.0.1"), "folder", true, null, -1, exception);
+            mockDownloadCommand = new MockDownloadCommand(TestRegistry.getContext(), getNetworkTask(), getAccessTypeData(), new URL("http://127.0.0.1"), "folder", true, null, exception);
         }
         downloadNetworkTaskWorker.setMockDNSLookup(mockDNSLookup);
         downloadNetworkTaskWorker.setMockDownloadCommand(mockDownloadCommand);
@@ -135,7 +135,7 @@ public class DownloadNetworkTaskWorkerTest {
         TestDownloadNetworkTaskWorker downloadNetworkTaskWorker = new TestDownloadNetworkTaskWorker(TestRegistry.getContext(), task, null);
         MockDNSLookup mockDNSLookup = new MockDNSLookup("127.0.0.1", dnsLookupResult);
         MockDownloadCommand mockDownloadCommand;
-        mockDownloadCommand = new MockDownloadCommand(TestRegistry.getContext(), task, getAccessTypeData(), new URL("http://127.0.0.1"), "folder", true, null, -1, downloadCommandResult, true);
+        mockDownloadCommand = new MockDownloadCommand(TestRegistry.getContext(), task, getAccessTypeData(), new URL("http://127.0.0.1"), "folder", true, null, downloadCommandResult, true);
         downloadNetworkTaskWorker.setMockDNSLookup(mockDNSLookup);
         downloadNetworkTaskWorker.setMockDownloadCommand(mockDownloadCommand);
         downloadNetworkTaskWorker.setMockFileManager(fileManager);
@@ -155,16 +155,14 @@ public class DownloadNetworkTaskWorkerTest {
         networkTask = networkTaskDAO.insertNetworkTask(networkTask);
         downloadNetworkTaskWorker.execute(networkTask, getAccessTypeData());
         MockDownloadCommand downloadCommand = downloadNetworkTaskWorker.getMockDownloadCommand();
-        assertNull(downloadCommand.getAddress());
-        assertEquals(-1, downloadCommand.getPort());
+        assertNull(downloadCommand.getConnectToAddress());
         Resolve resolve = getResolve(networkTask.getId());
         resolve.setTargetAddress("");
         resolve.setTargetPort(-1);
         resolveDAO.insertResolve(resolve);
         downloadNetworkTaskWorker.execute(networkTask, getAccessTypeData());
         downloadCommand = downloadNetworkTaskWorker.getMockDownloadCommand();
-        assertNull(downloadCommand.getAddress());
-        assertEquals(-1, downloadCommand.getPort());
+        assertNull(downloadCommand.getConnectToAddress());
     }
 
     @Test
@@ -195,14 +193,35 @@ public class DownloadNetworkTaskWorkerTest {
         networkTask = networkTaskDAO.insertNetworkTask(networkTask);
         downloadNetworkTaskWorker.execute(networkTask, getAccessTypeData());
         MockDownloadCommand downloadCommand = downloadNetworkTaskWorker.getMockDownloadCommand();
-        assertNull(downloadCommand.getAddress());
-        assertEquals(-1, downloadCommand.getPort());
+        assertNull(downloadCommand.getConnectToAddress());
         Resolve resolve = getResolve(networkTask.getId());
         resolveDAO.insertResolve(resolve);
         downloadNetworkTaskWorker.execute(networkTask, getAccessTypeData());
         downloadCommand = downloadNetworkTaskWorker.getMockDownloadCommand();
-        assertEquals("127.0.0.1", downloadCommand.getAddress().getHostAddress());
-        assertEquals(22, downloadCommand.getPort());
+        assertEquals("192.168.178.1", downloadCommand.getConnectToAddress().resolve().getTargetAddress());
+        assertEquals(22, downloadCommand.getConnectToAddress().resolve().getTargetPort());
+        assertEquals("127.0.0.1", downloadCommand.getConnectToAddress().resolvedAddress().getHostAddress());
+    }
+
+    @Test
+    public void testResolveWithEmptyHost() throws Exception {
+        preferenceManager.setPreferenceDownloadFollowsRedirects(false);
+        DNSLookupResult dnsLookupResult = new DNSLookupResult(Arrays.asList(InetAddress.getByName("127.0.0.1"), InetAddress.getByName("::1")), null);
+        TestDownloadNetworkTaskWorker downloadNetworkTaskWorker = prepareTestDownloadNetworkTaskWorker(dnsLookupResult, (DownloadCommandResult) null);
+        NetworkTask networkTask = getNetworkTask();
+        networkTask.setAddress("https://test.com");
+        networkTask = networkTaskDAO.insertNetworkTask(networkTask);
+        downloadNetworkTaskWorker.execute(networkTask, getAccessTypeData());
+        MockDownloadCommand downloadCommand = downloadNetworkTaskWorker.getMockDownloadCommand();
+        assertNull(downloadCommand.getConnectToAddress());
+        Resolve resolve = getResolve(networkTask.getId());
+        resolve.setTargetAddress("");
+        resolveDAO.insertResolve(resolve);
+        downloadNetworkTaskWorker.execute(networkTask, getAccessTypeData());
+        downloadCommand = downloadNetworkTaskWorker.getMockDownloadCommand();
+        assertEquals("test.com", downloadCommand.getConnectToAddress().resolve().getTargetAddress());
+        assertEquals(22, downloadCommand.getConnectToAddress().resolve().getTargetPort());
+        assertEquals("127.0.0.1", downloadCommand.getConnectToAddress().resolvedAddress().getHostAddress());
     }
 
     @Test

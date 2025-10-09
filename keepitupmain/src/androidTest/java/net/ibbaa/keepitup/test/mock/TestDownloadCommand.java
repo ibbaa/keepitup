@@ -28,7 +28,6 @@ import net.ibbaa.keepitup.service.IFileManager;
 import net.ibbaa.keepitup.service.network.DownloadCommand;
 
 import java.io.FileOutputStream;
-import java.net.InetAddress;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
@@ -42,8 +41,8 @@ public class TestDownloadCommand extends DownloadCommand {
     private IFileManager fileManager;
     private IDocumentManager documentManager;
 
-    public TestDownloadCommand(Context context, NetworkTask networkTask, AccessTypeData data, URL url, String folder, boolean delete, InetAddress address, int port) {
-        super(context, networkTask, data, url, folder, delete, address, port);
+    public TestDownloadCommand(Context context, NetworkTask networkTask, AccessTypeData data, URL url, String folder, boolean delete, ConnectToAddress connectToAddress) {
+        super(context, networkTask, data, url, folder, delete, connectToAddress);
         responses = new HashMap<>();
         reset();
     }

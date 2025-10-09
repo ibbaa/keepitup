@@ -79,32 +79,34 @@ public class DownloadNetworkTaskWorker extends NetworkTaskWorker {
         Log.d(DownloadNetworkTaskWorker.class.getName(), "URL is " + url.toExternalForm());
         if (resolve == null) {
             Log.d(DownloadNetworkTaskWorker.class.getName(), "No valid resolve object present");
-            ExecutionResult downloadExecutionResult = executeDownloadCommand(networkTask, data, url, null, -1);
+            ExecutionResult downloadExecutionResult = executeDownloadCommand(networkTask, data, url, null);
             LogEntry logEntry = downloadExecutionResult.getLogEntry();
             completeLogEntry(networkTask, logEntry);
             Log.d(DownloadNetworkTaskWorker.class.getName(), "Returning " + downloadExecutionResult);
             return downloadExecutionResult;
         }
-        DNSExecutionResult dnsExecutionResult = executeDNSLookup(getTargetAddress(resolve, url), getResources().getBoolean(R.bool.network_prefer_ipv4));
+        String targetAddress = getTargetAddress(resolve, url);
+        resolve.setTargetAddress(targetAddress);
+        DNSExecutionResult dnsExecutionResult = executeDNSLookup(targetAddress, getResources().getBoolean(R.bool.network_prefer_ipv4));
         if (dnsExecutionResult.getAddress() != null) {
             InetAddress address = dnsExecutionResult.getAddress();
-            Log.d(ConnectNetworkTaskWorker.class.getName(), "executeDNSLookup returned " + address);
+            Log.d(DownloadNetworkTaskWorker.class.getName(), "executeDNSLookup returned " + address);
             boolean ip6 = address instanceof Inet6Address;
             if (ip6) {
-                Log.d(ConnectNetworkTaskWorker.class.getName(), address + " is an IPv6 address");
+                Log.d(DownloadNetworkTaskWorker.class.getName(), address + " is an IPv6 address");
             } else {
-                Log.d(ConnectNetworkTaskWorker.class.getName(), address + " is an IPv4 address");
+                Log.d(DownloadNetworkTaskWorker.class.getName(), address + " is an IPv4 address");
             }
-            ExecutionResult connectExecutionResult = executeDownloadCommand(networkTask, data, url, address, resolve.getTargetPort());
+            ExecutionResult connectExecutionResult = executeDownloadCommand(networkTask, data, url, new DownloadCommand.ConnectToAddress(resolve, address));
             LogEntry logEntry = connectExecutionResult.getLogEntry();
             completeLogEntry(networkTask, logEntry);
-            Log.d(ConnectNetworkTaskWorker.class.getName(), "Returning " + connectExecutionResult);
+            Log.d(DownloadNetworkTaskWorker.class.getName(), "Returning " + connectExecutionResult);
             return connectExecutionResult;
         }
-        Log.e(ConnectNetworkTaskWorker.class.getName(), "executeDNSLookup returned null. DNSLookup failed.");
+        Log.e(DownloadNetworkTaskWorker.class.getName(), "executeDNSLookup returned null. DNSLookup failed.");
         LogEntry logEntry = dnsExecutionResult.getLogEntry();
         completeLogEntry(networkTask, logEntry);
-        Log.d(ConnectNetworkTaskWorker.class.getName(), "Returning " + dnsExecutionResult);
+        Log.d(DownloadNetworkTaskWorker.class.getName(), "Returning " + dnsExecutionResult);
         return dnsExecutionResult;
     }
 
@@ -133,7 +135,7 @@ public class DownloadNetworkTaskWorker extends NetworkTaskWorker {
     }
 
     @SuppressWarnings("resource")
-    private ExecutionResult executeDownloadCommand(NetworkTask networkTask, AccessTypeData data, URL url, InetAddress address, int port) {
+    private ExecutionResult executeDownloadCommand(NetworkTask networkTask, AccessTypeData data, URL url, DownloadCommand.ConnectToAddress connectToAddress) {
         Log.d(DownloadNetworkTaskWorker.class.getName(), "executeDownloadCommand, networkTask is " + networkTask);
         PreferenceManager preferenceManager = new PreferenceManager(getContext());
         IFileManager fileManager = getFileManager();
@@ -158,7 +160,7 @@ public class DownloadNetworkTaskWorker extends NetworkTaskWorker {
         }
         boolean delete = determineDeleteDownloadedFile();
         Log.d(DownloadNetworkTaskWorker.class.getName(), "Delete downloaded file: " + delete);
-        Callable<DownloadCommandResult> downloadCommand = getDownloadCommand(networkTask, data, url, folder, delete, address, port);
+        Callable<DownloadCommandResult> downloadCommand = getDownloadCommand(networkTask, data, url, folder, delete, connectToAddress);
         int timeout = getResources().getInteger(R.integer.download_timeout);
         Log.d(DownloadNetworkTaskWorker.class.getName(), "Creating ExecutorService");
         ExecutorService executorService = Executors.newSingleThreadExecutor();
@@ -431,7 +433,7 @@ public class DownloadNetworkTaskWorker extends NetworkTaskWorker {
         return new SystemFileManager(getContext());
     }
 
-    protected Callable<DownloadCommandResult> getDownloadCommand(NetworkTask networkTask, AccessTypeData data, URL url, String folder, boolean delete, InetAddress address, int port) {
-        return new DownloadCommand(getContext(), networkTask, data, url, folder, delete, address, port);
+    protected Callable<DownloadCommandResult> getDownloadCommand(NetworkTask networkTask, AccessTypeData data, URL url, String folder, boolean delete, DownloadCommand.ConnectToAddress connectToAddress) {
+        return new DownloadCommand(getContext(), networkTask, data, url, folder, delete, connectToAddress);
     }
 }

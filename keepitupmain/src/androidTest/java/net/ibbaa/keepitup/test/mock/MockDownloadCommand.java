@@ -23,7 +23,6 @@ import net.ibbaa.keepitup.model.NetworkTask;
 import net.ibbaa.keepitup.service.network.DownloadCommand;
 import net.ibbaa.keepitup.service.network.DownloadCommandResult;
 
-import java.net.InetAddress;
 import java.net.URL;
 import java.util.concurrent.CountDownLatch;
 
@@ -34,15 +33,13 @@ public class MockDownloadCommand extends DownloadCommand {
     private final boolean block;
     private final CountDownLatch latch;
     private URL url;
-    private InetAddress address;
-    private int port;
+    private ConnectToAddress connectToAddress;
     private String folder;
 
-    public MockDownloadCommand(Context context, NetworkTask networkTask, AccessTypeData data, URL url, String folder, boolean delete, InetAddress address, int port, DownloadCommandResult downloadCommandResult) {
+    public MockDownloadCommand(Context context, NetworkTask networkTask, AccessTypeData data, URL url, String folder, boolean delete, ConnectToAddress connectToAddress, DownloadCommandResult downloadCommandResult) {
         super(context, networkTask, data, url, folder, delete);
         this.url = url;
-        this.address = address;
-        this.port = port;
+        this.connectToAddress = connectToAddress;
         this.folder = folder;
         this.exception = null;
         this.downloadCommandResult = downloadCommandResult;
@@ -50,11 +47,10 @@ public class MockDownloadCommand extends DownloadCommand {
         this.latch = new CountDownLatch(1);
     }
 
-    public MockDownloadCommand(Context context, NetworkTask networkTask, AccessTypeData data, URL url, String folder, boolean delete, InetAddress address, int port, RuntimeException exception) {
+    public MockDownloadCommand(Context context, NetworkTask networkTask, AccessTypeData data, URL url, String folder, boolean delete, ConnectToAddress connectToAddress, RuntimeException exception) {
         super(context, networkTask, data, url, folder, delete);
         this.url = url;
-        this.address = address;
-        this.port = port;
+        this.connectToAddress = connectToAddress;
         this.folder = folder;
         this.exception = exception;
         this.downloadCommandResult = null;
@@ -62,11 +58,10 @@ public class MockDownloadCommand extends DownloadCommand {
         this.latch = new CountDownLatch(1);
     }
 
-    public MockDownloadCommand(Context context, NetworkTask networkTask, AccessTypeData data, URL url, String folder, boolean delete, InetAddress address, int port, DownloadCommandResult downloadCommandResult, boolean block) {
+    public MockDownloadCommand(Context context, NetworkTask networkTask, AccessTypeData data, URL url, String folder, boolean delete, ConnectToAddress connectToAddress, DownloadCommandResult downloadCommandResult, boolean block) {
         super(context, networkTask, data, url, folder, delete);
         this.url = url;
-        this.address = address;
-        this.port = port;
+        this.connectToAddress = connectToAddress;
         this.folder = folder;
         this.exception = null;
         this.downloadCommandResult = downloadCommandResult;
@@ -82,20 +77,12 @@ public class MockDownloadCommand extends DownloadCommand {
         this.url = url;
     }
 
-    public InetAddress getAddress() {
-        return address;
+    public ConnectToAddress getConnectToAddress() {
+        return connectToAddress;
     }
 
-    public void setAddress(InetAddress address) {
-        this.address = address;
-    }
-
-    public int getPort() {
-        return port;
-    }
-
-    public void setPort(int port) {
-        this.port = port;
+    public void setConnectToAddress(ConnectToAddress connectToAddress) {
+        this.connectToAddress = connectToAddress;
     }
 
     public String getFolder() {

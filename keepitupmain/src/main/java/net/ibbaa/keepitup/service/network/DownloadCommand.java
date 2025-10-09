@@ -27,6 +27,7 @@ import net.ibbaa.keepitup.db.NetworkTaskDAO;
 import net.ibbaa.keepitup.logging.Log;
 import net.ibbaa.keepitup.model.AccessTypeData;
 import net.ibbaa.keepitup.model.NetworkTask;
+import net.ibbaa.keepitup.model.Resolve;
 import net.ibbaa.keepitup.resources.PreferenceManager;
 import net.ibbaa.keepitup.resources.ServiceFactoryContributor;
 import net.ibbaa.keepitup.service.IDocumentManager;
@@ -77,25 +78,23 @@ public class DownloadCommand implements Callable<DownloadCommandResult> {
     private final URL url;
     private final String folder;
     private final boolean delete;
-    private final InetAddress resolveAddress;
-    private final int resolvePort;
+    private final ConnectToAddress connectToAddress;
     private boolean valid;
     private boolean stopped;
     private final ITimeService timeService;
 
     public DownloadCommand(Context context, NetworkTask networkTask, AccessTypeData accessTypeData, URL url, String folder, boolean delete) {
-        this(context, networkTask, accessTypeData, url, folder, delete, null, -1);
+        this(context, networkTask, accessTypeData, url, folder, delete, null);
     }
 
-    public DownloadCommand(Context context, NetworkTask networkTask, AccessTypeData accessTypeData, URL url, String folder, boolean delete, InetAddress resolveAddress, int resolvePort) {
+    public DownloadCommand(Context context, NetworkTask networkTask, AccessTypeData accessTypeData, URL url, String folder, boolean delete, ConnectToAddress connectToAddress) {
         this.context = context;
         this.networkTask = networkTask;
         this.accessTypeData = accessTypeData;
         this.url = url;
         this.folder = folder;
         this.delete = delete;
-        this.resolveAddress = resolveAddress;
-        this.resolvePort = resolvePort;
+        this.connectToAddress = connectToAddress;
         this.timeService = createTimeService();
     }
 
@@ -239,7 +238,18 @@ public class DownloadCommand implements Callable<DownloadCommandResult> {
         return client.newCall(request).execute();
     }
 
-    private static void disableSSLCheck(OkHttpClient.Builder builder) throws NoSuchAlgorithmException, KeyManagementException {
+    private boolean shouldConnectHostBeOverridden(URL currentURL) {
+        Log.d(DownloadCommand.class.getName(), "shouldConnectHostBeOverridden for " + currentURL);
+        if (connectToAddress == null) {
+            return false;
+        }
+        if (connectToAddress.resolve.isEmpty()) {
+            return false;
+        }
+        return URLUtil.isSameHostAndPort(currentURL, url);
+    }
+
+    private void disableSSLCheck(OkHttpClient.Builder builder) throws NoSuchAlgorithmException, KeyManagementException {
         Log.d(DownloadCommand.class.getName(), "disableSSLCheck");
         TrustManager[] trustAllCerts = new TrustManager[]{new TrustAllX509TrustManager()};
         SSLContext sslContext = SSLContext.getInstance("TLS");
@@ -506,5 +516,9 @@ public class DownloadCommand implements Callable<DownloadCommandResult> {
 
     private Resources getResources() {
         return getContext().getResources();
+    }
+
+    public static record ConnectToAddress(Resolve resolve, InetAddress resolvedAddress) {
+
     }
 }

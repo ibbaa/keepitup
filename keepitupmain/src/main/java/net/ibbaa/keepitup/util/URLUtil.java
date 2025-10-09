@@ -23,6 +23,7 @@ import net.ibbaa.keepitup.logging.Log;
 
 import java.io.UnsupportedEncodingException;
 import java.net.IDN;
+import java.net.InetAddress;
 import java.net.URI;
 import java.net.URL;
 import java.net.URLEncoder;
@@ -62,6 +63,39 @@ public class URLUtil {
             return false;
         }
         return InternetDomainName.isValid(hostName.trim());
+    }
+
+    public static boolean isSameHostAndPort(URL url1, URL url2) {
+        if (url1 == null || url2 == null) {
+            return false;
+        }
+        String host1 = normalizeHost(url1.getHost());
+        String host2 = normalizeHost(url2.getHost());
+        boolean sameHost;
+        if (isValidIPAddress(host1) && isValidIPAddress(host2)) {
+            try {
+                InetAddress address1 = InetAddress.getByName(host1);
+                InetAddress address2 = InetAddress.getByName(host2);
+                sameHost = address1.equals(address2);
+            } catch (Exception exc) {
+                sameHost = false;
+            }
+        } else {
+            sameHost = host1.equalsIgnoreCase(host2);
+        }
+        int port1 = url1.getPort() != -1 ? url1.getPort() : url1.getDefaultPort();
+        int port2 = url2.getPort() != -1 ? url2.getPort() : url2.getDefaultPort();
+        return sameHost && port1 == port2;
+    }
+
+    public static String normalizeHost(String host) {
+        if (host == null || host.length() < 2) {
+            return host;
+        }
+        if (host.startsWith("[") && host.endsWith("]")) {
+            return host.substring(1, host.length() - 1);
+        }
+        return host;
     }
 
     public static String prefixHTTPProtocol(String inputUrl) {

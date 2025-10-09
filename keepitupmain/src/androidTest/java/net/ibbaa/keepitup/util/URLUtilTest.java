@@ -80,6 +80,43 @@ public class URLUtilTest {
     }
 
     @Test
+    public void testIsSameHostAndPort() throws Exception {
+        assertFalse(URLUtil.isSameHostAndPort(null, null));
+        assertFalse(URLUtil.isSameHostAndPort(null, new URL("https://example.com")));
+        assertTrue(URLUtil.isSameHostAndPort(new URL("https://www.example.com"), new URL("https://www.EXAMPLE.com:443")));
+        assertFalse(URLUtil.isSameHostAndPort(new URL("https://www.example.com"), new URL("https://api.example.com")));
+        assertTrue(URLUtil.isSameHostAndPort(new URL("https://127.0.0.1"), new URL("https://127.0.0.1:443")));
+        assertFalse(URLUtil.isSameHostAndPort(new URL("https://127.0.0.1:443"), new URL("https://127.0.0.1:8443")));
+        assertTrue(URLUtil.isSameHostAndPort(new URL("https://[::1]"), new URL("https://[0:0:0:0:0:0:0:1]:443")));
+        assertFalse(URLUtil.isSameHostAndPort(new URL("https://[::1]"), new URL("https://[::2]")));
+        assertFalse(URLUtil.isSameHostAndPort(new URL("https://localhost"), new URL("https://127.0.0.1")));
+        assertFalse(URLUtil.isSameHostAndPort(new URL("http://www.example.com"), new URL("https://www.example.com")));
+        assertTrue(URLUtil.isSameHostAndPort(new URL("https://[::1]"), new URL("https://[::1]:443")));
+        assertTrue(URLUtil.isSameHostAndPort(new URL("http://127.0.0.1"), new URL("http://127.0.0.1:80")));
+        assertTrue(URLUtil.isSameHostAndPort(new URL("https://www.example.com"), new URL("https://www.example.com:443")));
+        assertTrue(URLUtil.isSameHostAndPort(new URL("http://example.org"), new URL("http://example.org:80")));
+        assertTrue(URLUtil.isSameHostAndPort(new URL("https://EXAMPLE.com"), new URL("https://example.COM")));
+        assertFalse(URLUtil.isSameHostAndPort(new URL("https://www.example.com"), new URL("https://api.example.com")));
+        assertFalse(URLUtil.isSameHostAndPort(new URL("https://example.com"), new URL("https://example.net")));
+        assertFalse(URLUtil.isSameHostAndPort(new URL("https://www.example.com:443"), new URL("https://www.example.com:8443")));
+        assertFalse(URLUtil.isSameHostAndPort(new URL("https://127.0.0.1"), new URL("https://127.0.0.2")));
+        assertTrue(URLUtil.isSameHostAndPort(new URL("https://[::1]"), new URL("https://[::1]:443")));
+        assertTrue(URLUtil.isSameHostAndPort(new URL("http://example.com:80"), new URL("http://example.com")));
+    }
+
+    @Test
+    public void testNormalizeHost() {
+        assertNull(URLUtil.normalizeHost(null));
+        assertEquals("", URLUtil.normalizeHost(""));
+        assertEquals("a", URLUtil.normalizeHost("a"));
+        assertEquals("", URLUtil.normalizeHost("[]"));
+        assertEquals("www.host.com", URLUtil.normalizeHost("www.host.com"));
+        assertEquals("[www.host.com", URLUtil.normalizeHost("[www.host.com"));
+        assertEquals("www.host.com", URLUtil.normalizeHost("[www.host.com]"));
+        assertEquals("3ffe:1900:4545:3:200:f8ff:fe21:67cf", URLUtil.normalizeHost("[3ffe:1900:4545:3:200:f8ff:fe21:67cf]"));
+    }
+
+    @Test
     public void testIsEncodedPath() {
         assertTrue(URLUtil.isEncoded("", URLUtil.URLComponent.PATH));
         assertTrue(URLUtil.isEncoded("is-ok", URLUtil.URLComponent.PATH));
