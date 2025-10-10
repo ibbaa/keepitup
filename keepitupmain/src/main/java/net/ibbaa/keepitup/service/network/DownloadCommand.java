@@ -518,7 +518,7 @@ public class DownloadCommand implements Callable<DownloadCommandResult> {
         return getContext().getResources();
     }
 
-    public static record ConnectToAddress(Resolve resolve, InetAddress resolvedAddress) {
+    public record ConnectToAddress(Resolve resolve, InetAddress resolvedAddress) {
 
     }
 }
