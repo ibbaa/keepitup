@@ -105,6 +105,14 @@ public class URLUtilTest {
     }
 
     @Test
+    public void testGetPort() throws Exception {
+        assertEquals(443, URLUtil.getPort(new URL("https://127.0.0.2")));
+        assertEquals(80, URLUtil.getPort(new URL("https://127.0.0.2:80")));
+        assertEquals(80, URLUtil.getPort(new URL("http://127.0.0.2")));
+        assertEquals(3333, URLUtil.getPort(new URL("http://example.com:3333")));
+    }
+
+    @Test
     public void testNormalizeHost() {
         assertNull(URLUtil.normalizeHost(null));
         assertEquals("", URLUtil.normalizeHost(""));

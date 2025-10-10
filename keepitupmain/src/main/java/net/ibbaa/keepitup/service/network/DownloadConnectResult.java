@@ -16,10 +16,7 @@
 
 package net.ibbaa.keepitup.service.network;
 
-import java.net.URL;
-import java.util.List;
+import java.net.InetAddress;
 
-public record DownloadCommandResult(URL url, List<DownloadConnectResult> connectResults, boolean downloadSuccess, boolean fileExists, boolean deleteSuccess, boolean valid, boolean stopped, List<Integer> httpResponseCodes, List<String> httpResponseMessages, String fileName, long duration,
-                                    Throwable exception) {
-
+public record DownloadConnectResult(String host, int port, InetAddress connectAddress, int connectPort, boolean success) {
 }

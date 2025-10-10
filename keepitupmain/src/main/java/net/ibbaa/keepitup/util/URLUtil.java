@@ -83,9 +83,13 @@ public class URLUtil {
         } else {
             sameHost = host1.equalsIgnoreCase(host2);
         }
-        int port1 = url1.getPort() != -1 ? url1.getPort() : url1.getDefaultPort();
-        int port2 = url2.getPort() != -1 ? url2.getPort() : url2.getDefaultPort();
+        int port1 = getPort(url1);
+        int port2 = getPort(url2);
         return sameHost && port1 == port2;
+    }
+
+    public static int getPort(URL url) {
+        return url.getPort() != -1 ? url.getPort() : url.getDefaultPort();
     }
 
     public static String normalizeHost(String host) {

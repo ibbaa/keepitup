@@ -96,12 +96,16 @@ public class DownloadCommandTest {
     }
 
     @Test
-    public void testConnectionFailed() {
+    public void testConnectionFailed() throws Exception {
         preferenceManager.setPreferenceDownloadFollowsRedirects(false);
-        TestDownloadCommand downloadCommand = new TestDownloadCommand(TestRegistry.getContext(), null, null, null, null, true, null);
+        TestDownloadCommand downloadCommand = new TestDownloadCommand(TestRegistry.getContext(), null, null, new URL("https://127.0.0.1"), null, true, null);
         setCurrentTime(downloadCommand);
         DownloadCommandResult result = downloadCommand.call();
-        assertFalse(result.connectSuccess());
+        assertEquals(1, result.connectResults().size());
+        assertFalse(result.connectResults().get(0).success());
+        assertEquals("127.0.0.1", result.connectResults().get(0).host());
+        assertEquals(443, result.connectResults().get(0).port());
+        assertFalse(result.connectResults().get(0).success());
         assertFalse(result.downloadSuccess());
         assertFalse(result.fileExists());
         assertFalse(result.deleteSuccess());
@@ -122,7 +126,13 @@ public class DownloadCommandTest {
         downloadCommand.addResponse("http://test.com", testResponse);
         setCurrentTimeInverted(downloadCommand);
         DownloadCommandResult result = downloadCommand.call();
-        assertFalse(result.connectSuccess());
+        assertEquals(2, result.connectResults().size());
+        assertTrue(result.connectResults().get(0).success());
+        assertEquals("test.com", result.connectResults().get(0).host());
+        assertEquals(80, result.connectResults().get(0).port());
+        assertFalse(result.connectResults().get(1).success());
+        assertEquals("www.host.com", result.connectResults().get(1).host());
+        assertEquals(80, result.connectResults().get(1).port());
         assertFalse(result.downloadSuccess());
         assertFalse(result.fileExists());
         assertFalse(result.deleteSuccess());
@@ -139,9 +149,9 @@ public class DownloadCommandTest {
     }
 
     @Test
-    public void testConnectionFailedNegativeTime() {
+    public void testConnectionFailedNegativeTime() throws Exception {
         preferenceManager.setPreferenceDownloadFollowsRedirects(false);
-        TestDownloadCommand downloadCommand = new TestDownloadCommand(TestRegistry.getContext(), null, null, null, null, true, null);
+        TestDownloadCommand downloadCommand = new TestDownloadCommand(TestRegistry.getContext(), null, null, new URL("http://test.com"), null, true, null);
         setNegativeTime(downloadCommand);
         DownloadCommandResult result = downloadCommand.call();
         assertEquals(0, result.duration());
@@ -150,12 +160,15 @@ public class DownloadCommandTest {
     @Test
     public void testHTTPResponseCodeNotOk() throws Exception {
         preferenceManager.setPreferenceDownloadFollowsRedirects(false);
-        TestDownloadCommand downloadCommand = new TestDownloadCommand(TestRegistry.getContext(), null, null, new URL("http://test.com"), null, true, null);
+        TestDownloadCommand downloadCommand = new TestDownloadCommand(TestRegistry.getContext(), null, null, new URL("http://test.com:333"), null, true, null);
         setCurrentTime(downloadCommand);
-        Response testResponse = prepareResponse("http://test.com", HttpURLConnection.HTTP_NOT_FOUND, "not found", null);
-        downloadCommand.addResponse("http://test.com", testResponse);
+        Response testResponse = prepareResponse("http://test.com:333", HttpURLConnection.HTTP_NOT_FOUND, "not found", null);
+        downloadCommand.addResponse("http://test.com:333", testResponse);
         DownloadCommandResult result = downloadCommand.call();
-        assertTrue(result.connectSuccess());
+        assertEquals(1, result.connectResults().size());
+        assertTrue(result.connectResults().get(0).success());
+        assertEquals("test.com", result.connectResults().get(0).host());
+        assertEquals(333, result.connectResults().get(0).port());
         assertFalse(result.downloadSuccess());
         assertFalse(result.fileExists());
         assertFalse(result.deleteSuccess());
@@ -186,13 +199,16 @@ public class DownloadCommandTest {
     @Test
     public void testHTTPResponseCodeNotOkWithLocationHeaderWithoutRedirect() throws Exception {
         preferenceManager.setPreferenceDownloadFollowsRedirects(false);
-        TestDownloadCommand downloadCommand = new TestDownloadCommand(TestRegistry.getContext(), null, null, new URL("http://test.com"), null, true, null);
+        TestDownloadCommand downloadCommand = new TestDownloadCommand(TestRegistry.getContext(), null, null, new URL("https://test.com"), null, true, null);
         setCurrentTime(downloadCommand);
-        Response testResponse = prepareResponse("http://test.com", HttpURLConnection.HTTP_MOVED_PERM, "moved", null);
+        Response testResponse = prepareResponse("https://test.com", HttpURLConnection.HTTP_MOVED_PERM, "moved", null);
         testResponse = testResponse.newBuilder().header("Location", "new location").build();
-        downloadCommand.addResponse("http://test.com", testResponse);
+        downloadCommand.addResponse("https://test.com", testResponse);
         DownloadCommandResult result = downloadCommand.call();
-        assertTrue(result.connectSuccess());
+        assertEquals(1, result.connectResults().size());
+        assertTrue(result.connectResults().get(0).success());
+        assertEquals("test.com", result.connectResults().get(0).host());
+        assertEquals(443, result.connectResults().get(0).port());
         assertFalse(result.downloadSuccess());
         assertFalse(result.fileExists());
         assertFalse(result.deleteSuccess());
@@ -217,7 +233,10 @@ public class DownloadCommandTest {
         testResponse = testResponse.newBuilder().header("Location", "ccc://xyz").build();
         downloadCommand.addResponse("http://test.com", testResponse);
         DownloadCommandResult result = downloadCommand.call();
-        assertTrue(result.connectSuccess());
+        assertEquals(1, result.connectResults().size());
+        assertTrue(result.connectResults().get(0).success());
+        assertEquals("test.com", result.connectResults().get(0).host());
+        assertEquals(80, result.connectResults().get(0).port());
         assertFalse(result.downloadSuccess());
         assertFalse(result.fileExists());
         assertFalse(result.deleteSuccess());
@@ -269,7 +288,37 @@ public class DownloadCommandTest {
         downloadCommand.addResponse("http://test8.com", response9);
         downloadCommand.addResponse("http://test9.com", response10);
         DownloadCommandResult result = downloadCommand.call();
-        assertTrue(result.connectSuccess());
+        assertEquals(10, result.connectResults().size());
+        assertTrue(result.connectResults().get(0).success());
+        assertEquals("test.com", result.connectResults().get(0).host());
+        assertEquals(80, result.connectResults().get(0).port());
+        assertTrue(result.connectResults().get(1).success());
+        assertEquals("test1.com", result.connectResults().get(1).host());
+        assertEquals(80, result.connectResults().get(1).port());
+        assertTrue(result.connectResults().get(2).success());
+        assertEquals("test2.com", result.connectResults().get(2).host());
+        assertEquals(80, result.connectResults().get(2).port());
+        assertTrue(result.connectResults().get(3).success());
+        assertEquals("test3.com", result.connectResults().get(3).host());
+        assertEquals(80, result.connectResults().get(3).port());
+        assertTrue(result.connectResults().get(4).success());
+        assertEquals("test4.com", result.connectResults().get(4).host());
+        assertEquals(80, result.connectResults().get(4).port());
+        assertTrue(result.connectResults().get(5).success());
+        assertEquals("test5.com", result.connectResults().get(5).host());
+        assertEquals(80, result.connectResults().get(5).port());
+        assertTrue(result.connectResults().get(6).success());
+        assertEquals("test6.com", result.connectResults().get(6).host());
+        assertEquals(80, result.connectResults().get(6).port());
+        assertTrue(result.connectResults().get(7).success());
+        assertEquals("test7.com", result.connectResults().get(7).host());
+        assertEquals(80, result.connectResults().get(7).port());
+        assertTrue(result.connectResults().get(8).success());
+        assertEquals("test8.com", result.connectResults().get(8).host());
+        assertEquals(80, result.connectResults().get(8).port());
+        assertTrue(result.connectResults().get(9).success());
+        assertEquals("test9.com", result.connectResults().get(9).host());
+        assertEquals(80, result.connectResults().get(9).port());
         assertFalse(result.downloadSuccess());
         assertFalse(result.fileExists());
         assertFalse(result.deleteSuccess());
@@ -320,7 +369,12 @@ public class DownloadCommandTest {
         testResponse = testResponse.newBuilder().header("Location", "http://test.com").build();
         downloadCommand.addResponse("http://test.com", testResponse);
         DownloadCommandResult result = downloadCommand.call();
-        assertTrue(result.connectSuccess());
+        assertEquals(10, result.connectResults().size());
+        for (int ii = 0; ii < result.httpResponseCodes().size() - 1; ii++) {
+            assertTrue(result.connectResults().get(ii).success());
+            assertEquals("test.com", result.connectResults().get(ii).host());
+            assertEquals(80, result.connectResults().get(ii).port());
+        }
         assertFalse(result.downloadSuccess());
         assertFalse(result.fileExists());
         assertFalse(result.deleteSuccess());
@@ -349,7 +403,10 @@ public class DownloadCommandTest {
         downloadCommand.addResponse("http://test.com", testResponse);
         downloadCommand.setFileManager(fileManager);
         DownloadCommandResult result = downloadCommand.call();
-        assertTrue(result.connectSuccess());
+        assertEquals(1, result.connectResults().size());
+        assertTrue(result.connectResults().get(0).success());
+        assertEquals("test.com", result.connectResults().get(0).host());
+        assertEquals(80, result.connectResults().get(0).port());
         assertFalse(result.downloadSuccess());
         assertFalse(result.fileExists());
         assertFalse(result.deleteSuccess());
@@ -375,7 +432,10 @@ public class DownloadCommandTest {
         Response testResponse = new Response.Builder().request(new Request.Builder().url("http://test.com").build()).protocol(Protocol.HTTP_1_1).code(HttpURLConnection.HTTP_OK).message("Everything ok").header("Content-Disposition", "attachment; filename=\"test.jpg\"").body(body).build();
         downloadCommand.addResponse("http://test.com", testResponse);
         DownloadCommandResult result = downloadCommand.call();
-        assertTrue(result.connectSuccess());
+        assertEquals(1, result.connectResults().size());
+        assertTrue(result.connectResults().get(0).success());
+        assertEquals("test.com", result.connectResults().get(0).host());
+        assertEquals(80, result.connectResults().get(0).port());
         assertFalse(result.downloadSuccess());
         assertTrue(result.fileExists());
         assertTrue(result.deleteSuccess());
@@ -410,13 +470,16 @@ public class DownloadCommandTest {
     public void testFileNameFromURLException() throws Exception {
         preferenceManager.setPreferenceDownloadFollowsRedirects(false);
         File externalDir = fileManager.getExternalDirectory(fileManager.getDefaultDownloadDirectoryName(), 0);
-        TestDownloadCommand downloadCommand = new TestDownloadCommand(TestRegistry.getContext(), null, null, new URL("http://www.host.com/test.jpg"), externalDir.getAbsolutePath(), true, null);
+        TestDownloadCommand downloadCommand = new TestDownloadCommand(TestRegistry.getContext(), null, null, new URL("https://www.host.com/test.jpg"), externalDir.getAbsolutePath(), true, null);
         setCurrentTime(downloadCommand);
         ResponseBody body = new ExceptionResponseBody();
-        Response testResponse = new Response.Builder().request(new Request.Builder().url("http://www.host.com/test.jpg").build()).protocol(Protocol.HTTP_1_1).code(HttpURLConnection.HTTP_OK).message("Everything ok").header("Content-Disposition", "attachment; filename=\"test.jpg\"").body(body).build();
-        downloadCommand.addResponse("http://www.host.com/test.jpg", testResponse);
+        Response testResponse = new Response.Builder().request(new Request.Builder().url("https://www.host.com/test.jpg").build()).protocol(Protocol.HTTP_1_1).code(HttpURLConnection.HTTP_OK).message("Everything ok").header("Content-Disposition", "attachment; filename=\"test.jpg\"").body(body).build();
+        downloadCommand.addResponse("https://www.host.com/test.jpg", testResponse);
         DownloadCommandResult result = downloadCommand.call();
-        assertTrue(result.connectSuccess());
+        assertEquals(1, result.connectResults().size());
+        assertTrue(result.connectResults().get(0).success());
+        assertEquals("www.host.com", result.connectResults().get(0).host());
+        assertEquals(443, result.connectResults().get(0).port());
         assertFalse(result.downloadSuccess());
         assertTrue(result.fileExists());
         assertTrue(result.deleteSuccess());
@@ -437,13 +500,16 @@ public class DownloadCommandTest {
     public void testFileNameFromHostException() throws Exception {
         preferenceManager.setPreferenceDownloadFollowsRedirects(false);
         File externalDir = fileManager.getExternalDirectory(fileManager.getDefaultDownloadDirectoryName(), 0);
-        TestDownloadCommand downloadCommand = new TestDownloadCommand(TestRegistry.getContext(), null, null, new URL("http://www.host.com"), externalDir.getAbsolutePath(), true, null);
+        TestDownloadCommand downloadCommand = new TestDownloadCommand(TestRegistry.getContext(), null, null, new URL("http://www.host.com:1234"), externalDir.getAbsolutePath(), true, null);
         setCurrentTime(downloadCommand);
         ResponseBody body = new ExceptionResponseBody();
         Response testResponse = new Response.Builder().request(new Request.Builder().url("http://www.host.com").build()).protocol(Protocol.HTTP_1_1).code(HttpURLConnection.HTTP_OK).message("Everything ok").header("Content-Type", "image/jpeg").body(body).build();
-        downloadCommand.addResponse("http://www.host.com", testResponse);
+        downloadCommand.addResponse("http://www.host.com:1234", testResponse);
         DownloadCommandResult result = downloadCommand.call();
-        assertTrue(result.connectSuccess());
+        assertEquals(1, result.connectResults().size());
+        assertTrue(result.connectResults().get(0).success());
+        assertEquals("www.host.com", result.connectResults().get(0).host());
+        assertEquals(1234, result.connectResults().get(0).port());
         assertFalse(result.downloadSuccess());
         assertTrue(result.fileExists());
         assertTrue(result.deleteSuccess());
@@ -487,7 +553,10 @@ public class DownloadCommandTest {
         testResponse = testResponse.newBuilder().header("Content-Type", "image/jpeg").build();
         downloadCommand.addResponse("http://www.host.com", testResponse);
         DownloadCommandResult result = downloadCommand.call();
-        assertTrue(result.connectSuccess());
+        assertEquals(1, result.connectResults().size());
+        assertTrue(result.connectResults().get(0).success());
+        assertEquals("www.host.com", result.connectResults().get(0).host());
+        assertEquals(80, result.connectResults().get(0).port());
         assertTrue(result.downloadSuccess());
         assertTrue(result.fileExists());
         assertTrue(result.deleteSuccess());
@@ -517,7 +586,10 @@ public class DownloadCommandTest {
         testResponse = testResponse.newBuilder().header("Content-Type", "image/jpeg").build();
         downloadCommand.addResponse("http://www.host.com", testResponse);
         DownloadCommandResult result = downloadCommand.call();
-        assertTrue(result.connectSuccess());
+        assertEquals(1, result.connectResults().size());
+        assertTrue(result.connectResults().get(0).success());
+        assertEquals("www.host.com", result.connectResults().get(0).host());
+        assertEquals(80, result.connectResults().get(0).port());
         assertFalse(result.downloadSuccess());
         assertFalse(result.fileExists());
         assertFalse(result.deleteSuccess());
@@ -551,7 +623,10 @@ public class DownloadCommandTest {
         testResponse = testResponse.newBuilder().header("Content-Type", "image/jpeg").build();
         downloadCommand.addResponse("http://www.host.com", testResponse);
         DownloadCommandResult result = downloadCommand.call();
-        assertTrue(result.connectSuccess());
+        assertEquals(1, result.connectResults().size());
+        assertTrue(result.connectResults().get(0).success());
+        assertEquals("www.host.com", result.connectResults().get(0).host());
+        assertEquals(80, result.connectResults().get(0).port());
         assertFalse(result.downloadSuccess());
         assertFalse(result.fileExists());
         assertFalse(result.deleteSuccess());
@@ -580,7 +655,10 @@ public class DownloadCommandTest {
         testResponse = testResponse.newBuilder().header("Content-Disposition", "attachment; filename=\"test.jpg\"").build();
         downloadCommand.addResponse("http://www.host.com", testResponse);
         DownloadCommandResult result = downloadCommand.call();
-        assertTrue(result.connectSuccess());
+        assertEquals(1, result.connectResults().size());
+        assertTrue(result.connectResults().get(0).success());
+        assertEquals("www.host.com", result.connectResults().get(0).host());
+        assertEquals(80, result.connectResults().get(0).port());
         assertFalse(result.downloadSuccess());
         assertTrue(result.fileExists());
         assertTrue(result.deleteSuccess());
@@ -609,7 +687,10 @@ public class DownloadCommandTest {
         testResponse = testResponse.newBuilder().header("Content-Disposition", "attachment; filename=\"test.jpg\"").build();
         downloadCommand.addResponse("http://www.host.com", testResponse);
         DownloadCommandResult result = downloadCommand.call();
-        assertTrue(result.connectSuccess());
+        assertEquals(1, result.connectResults().size());
+        assertTrue(result.connectResults().get(0).success());
+        assertEquals("www.host.com", result.connectResults().get(0).host());
+        assertEquals(80, result.connectResults().get(0).port());
         assertFalse(result.downloadSuccess());
         assertTrue(result.fileExists());
         assertTrue(result.deleteSuccess());
@@ -637,7 +718,10 @@ public class DownloadCommandTest {
         testResponse = testResponse.newBuilder().header("Content-Disposition", "attachment; filename=\"test.jpg\"").build();
         downloadCommand.addResponse("http://www.host.com", testResponse);
         DownloadCommandResult result = downloadCommand.call();
-        assertTrue(result.connectSuccess());
+        assertEquals(1, result.connectResults().size());
+        assertTrue(result.connectResults().get(0).success());
+        assertEquals("www.host.com", result.connectResults().get(0).host());
+        assertEquals(80, result.connectResults().get(0).port());
         assertTrue(result.downloadSuccess());
         testResponse.close();
     }
@@ -654,7 +738,10 @@ public class DownloadCommandTest {
         testResponse = testResponse.newBuilder().header("Content-Disposition", "attachment; filename=\"test.txt\"").build();
         downloadCommand.addResponse("http://www.host.com", testResponse);
         DownloadCommandResult result = downloadCommand.call();
-        assertTrue(result.connectSuccess());
+        assertEquals(1, result.connectResults().size());
+        assertTrue(result.connectResults().get(0).success());
+        assertEquals("www.host.com", result.connectResults().get(0).host());
+        assertEquals(80, result.connectResults().get(0).port());
         assertTrue(result.downloadSuccess());
         assertTrue(result.fileExists());
         assertFalse(result.deleteSuccess());
@@ -685,7 +772,10 @@ public class DownloadCommandTest {
         testResponse = testResponse.newBuilder().header("Content-Type", "text/plain").build();
         downloadCommand.addResponse("http://www.host.com/test.jpg", testResponse);
         DownloadCommandResult result = downloadCommand.call();
-        assertTrue(result.connectSuccess());
+        assertEquals(1, result.connectResults().size());
+        assertTrue(result.connectResults().get(0).success());
+        assertEquals("www.host.com", result.connectResults().get(0).host());
+        assertEquals(80, result.connectResults().get(0).port());
         assertTrue(result.downloadSuccess());
         assertTrue(result.fileExists());
         assertTrue(result.deleteSuccess());
@@ -716,7 +806,10 @@ public class DownloadCommandTest {
         Response testResponse = prepareResponse("http://www.host.com/test.jpg", HttpURLConnection.HTTP_OK, "Everything ok", inputStream);
         downloadCommand.addResponse("http://www.host.com/test.jpg", testResponse);
         DownloadCommandResult result = downloadCommand.call();
-        assertTrue(result.connectSuccess());
+        assertEquals(1, result.connectResults().size());
+        assertTrue(result.connectResults().get(0).success());
+        assertEquals("www.host.com", result.connectResults().get(0).host());
+        assertEquals(80, result.connectResults().get(0).port());
         assertTrue(result.downloadSuccess());
         assertTrue(result.fileExists());
         assertTrue(result.deleteSuccess());
@@ -757,7 +850,10 @@ public class DownloadCommandTest {
         testResponse = testResponse.newBuilder().header("Content-Type", "image/jpeg").build();
         downloadCommand.addResponse("http://www.host.com", testResponse);
         DownloadCommandResult result = downloadCommand.call();
-        assertTrue(result.connectSuccess());
+        assertEquals(1, result.connectResults().size());
+        assertTrue(result.connectResults().get(0).success());
+        assertEquals("www.host.com", result.connectResults().get(0).host());
+        assertEquals(80, result.connectResults().get(0).port());
         assertTrue(result.downloadSuccess());
         assertTrue(result.fileExists());
         assertTrue(result.deleteSuccess());
@@ -789,7 +885,10 @@ public class DownloadCommandTest {
         fileManager.setDelete(false);
         downloadCommand.setFileManager(fileManager);
         DownloadCommandResult result = downloadCommand.call();
-        assertTrue(result.connectSuccess());
+        assertEquals(1, result.connectResults().size());
+        assertTrue(result.connectResults().get(0).success());
+        assertEquals("www.host.com", result.connectResults().get(0).host());
+        assertEquals(443, result.connectResults().get(0).port());
         assertTrue(result.downloadSuccess());
         assertTrue(result.fileExists());
         assertFalse(result.deleteSuccess());
@@ -831,7 +930,10 @@ public class DownloadCommandTest {
         testResponse = testResponse.newBuilder().header("Content-Type", "image/jpeg").build();
         downloadCommand.addResponse("http://www.host.com", testResponse);
         DownloadCommandResult result = downloadCommand.call();
-        assertTrue(result.connectSuccess());
+        assertEquals(1, result.connectResults().size());
+        assertTrue(result.connectResults().get(0).success());
+        assertEquals("www.host.com", result.connectResults().get(0).host());
+        assertEquals(80, result.connectResults().get(0).port());
         assertTrue(result.downloadSuccess());
         assertTrue(result.fileExists());
         assertFalse(result.deleteSuccess());
@@ -881,7 +983,13 @@ public class DownloadCommandTest {
         downloadCommand.addResponse("http://test.com", response1);
         downloadCommand.addResponse("http://www.host.com/test.jpg", response2);
         DownloadCommandResult result = downloadCommand.call();
-        assertTrue(result.connectSuccess());
+        assertEquals(2, result.connectResults().size());
+        assertTrue(result.connectResults().get(0).success());
+        assertEquals("test.com", result.connectResults().get(0).host());
+        assertEquals(80, result.connectResults().get(0).port());
+        assertTrue(result.connectResults().get(1).success());
+        assertEquals("www.host.com", result.connectResults().get(1).host());
+        assertEquals(80, result.connectResults().get(1).port());
         assertTrue(result.downloadSuccess());
         assertTrue(result.fileExists());
         assertTrue(result.deleteSuccess());
@@ -916,7 +1024,13 @@ public class DownloadCommandTest {
         downloadCommand.addResponse("http://test.com", response1);
         downloadCommand.addResponse("http://test.com/abc", response2);
         DownloadCommandResult result = downloadCommand.call();
-        assertTrue(result.connectSuccess());
+        assertEquals(2, result.connectResults().size());
+        assertTrue(result.connectResults().get(0).success());
+        assertEquals("test.com", result.connectResults().get(0).host());
+        assertEquals(80, result.connectResults().get(0).port());
+        assertTrue(result.connectResults().get(1).success());
+        assertEquals("test.com", result.connectResults().get(1).host());
+        assertEquals(80, result.connectResults().get(1).port());
         assertTrue(result.downloadSuccess());
         assertTrue(result.fileExists());
         assertTrue(result.deleteSuccess());
@@ -954,7 +1068,16 @@ public class DownloadCommandTest {
         downloadCommand.addResponse("http://test2.com", response2);
         downloadCommand.addResponse("http://www.host.com/test.jpg", response3);
         DownloadCommandResult result = downloadCommand.call();
-        assertTrue(result.connectSuccess());
+        assertEquals(3, result.connectResults().size());
+        assertTrue(result.connectResults().get(0).success());
+        assertEquals("test.com", result.connectResults().get(0).host());
+        assertEquals(80, result.connectResults().get(0).port());
+        assertTrue(result.connectResults().get(1).success());
+        assertEquals("test2.com", result.connectResults().get(1).host());
+        assertEquals(80, result.connectResults().get(1).port());
+        assertTrue(result.connectResults().get(2).success());
+        assertEquals("www.host.com", result.connectResults().get(2).host());
+        assertEquals(80, result.connectResults().get(2).port());
         assertTrue(result.downloadSuccess());
         assertTrue(result.fileExists());
         assertTrue(result.deleteSuccess());
@@ -994,7 +1117,16 @@ public class DownloadCommandTest {
         downloadCommand.addResponse("http://test.com/abc/abc", response2);
         downloadCommand.addResponse("http://test.com/abc", response3);
         DownloadCommandResult result = downloadCommand.call();
-        assertTrue(result.connectSuccess());
+        assertEquals(3, result.connectResults().size());
+        assertTrue(result.connectResults().get(0).success());
+        assertEquals("test.com", result.connectResults().get(0).host());
+        assertEquals(80, result.connectResults().get(0).port());
+        assertTrue(result.connectResults().get(1).success());
+        assertEquals("test.com", result.connectResults().get(1).host());
+        assertEquals(80, result.connectResults().get(1).port());
+        assertTrue(result.connectResults().get(2).success());
+        assertEquals("test.com", result.connectResults().get(2).host());
+        assertEquals(80, result.connectResults().get(2).port());
         assertTrue(result.downloadSuccess());
         assertTrue(result.fileExists());
         assertTrue(result.deleteSuccess());

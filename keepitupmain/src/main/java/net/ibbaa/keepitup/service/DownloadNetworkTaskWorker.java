@@ -30,6 +30,7 @@ import net.ibbaa.keepitup.model.Resolve;
 import net.ibbaa.keepitup.resources.PreferenceManager;
 import net.ibbaa.keepitup.service.network.DownloadCommand;
 import net.ibbaa.keepitup.service.network.DownloadCommandResult;
+import net.ibbaa.keepitup.service.network.DownloadConnectResult;
 import net.ibbaa.keepitup.util.FileUtil;
 import net.ibbaa.keepitup.util.HTTPUtil;
 import net.ibbaa.keepitup.util.StringUtil;
@@ -179,7 +180,7 @@ public class DownloadNetworkTaskWorker extends NetworkTaskWorker {
             downloadResultFuture = executorService.submit(downloadCommand);
             DownloadCommandResult downloadResult = downloadResultFuture.get(timeout, TimeUnit.SECONDS);
             Log.d(DownloadNetworkTaskWorker.class.getName(), downloadCommand.getClass().getSimpleName() + " returned " + downloadResult);
-            if (!downloadResult.connectSuccess()) {
+            if (returnedConnectFailure(downloadResult)) {
                 Log.d(DownloadNetworkTaskWorker.class.getName(), "Connection failed. Preparing error message.");
                 prepareConnectError(downloadResult, timeout, folder, delete, logEntry);
                 return new ExecutionResult(false, logEntry);
@@ -339,6 +340,26 @@ public class DownloadNetworkTaskWorker extends NetworkTaskWorker {
     private URL determineURL(String baseURL) {
         Log.d(DownloadNetworkTaskWorker.class.getName(), "determineURL, baseURL is " + baseURL);
         return URLUtil.getURL(baseURL);
+    }
+
+    private boolean returnedConnectFailure(DownloadCommandResult downloadResult) {
+        List<DownloadConnectResult> connectResults = downloadResult.connectResults();
+        if (connectResults == null || connectResults.isEmpty()) {
+            return false;
+        }
+        DownloadConnectResult connectResult = getActualConnectResult(downloadResult);
+        if (connectResult == null) {
+            return false;
+        }
+        return !connectResult.success();
+    }
+
+    private DownloadConnectResult getActualConnectResult(DownloadCommandResult downloadResult) {
+        List<DownloadConnectResult> connectResults = downloadResult.connectResults();
+        if (connectResults == null || connectResults.isEmpty()) {
+            return null;
+        }
+        return connectResults.get(connectResults.size() - 1);
     }
 
     private boolean returnedHttpFailure(DownloadCommandResult downloadResult) {

@@ -112,6 +112,7 @@ public class DownloadCommand implements Callable<DownloadCommandResult> {
         boolean deleteSuccess = false;
         List<Integer> httpCodes = new ArrayList<>();
         List<String> httpMessages = new ArrayList<>();
+        List<DownloadConnectResult> connectResults = new ArrayList<>();
         String fileName = null;
         ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor();
         initializeValid();
@@ -129,8 +130,10 @@ public class DownloadCommand implements Callable<DownloadCommandResult> {
                 response = openResponse(downloadUrl);
                 if (response == null) {
                     long end = timeService.getCurrentTimestamp();
-                    return createDownloadCommandResult(downloadUrl, false, false, false, false, httpCodes, httpMessages, null, NumberUtil.ensurePositive(end - start), null);
+                    connectResults.add(new DownloadConnectResult(URLUtil.normalizeHost(downloadUrl.getHost()), URLUtil.getPort(downloadUrl), null, -1, false));
+                    return createDownloadCommandResult(downloadUrl, connectResults, false, false, false, httpCodes, httpMessages, null, NumberUtil.ensurePositive(end - start), null);
                 }
+                connectResults.add(new DownloadConnectResult(URLUtil.normalizeHost(downloadUrl.getHost()), URLUtil.getPort(downloadUrl), null, -1, true));
                 connectSuccess = true;
                 Log.d(DownloadCommand.class.getName(), "Connection established.");
                 int httpCode = response.code();
@@ -155,13 +158,13 @@ public class DownloadCommand implements Callable<DownloadCommandResult> {
                 if (!HTTPUtil.isHTTPReturnCodeOk(httpCode) && !redirect) {
                     Log.d(DownloadCommand.class.getName(), "Connection successful but HTTP return code " + httpCode + " is not HTTP_OK");
                     long end = timeService.getCurrentTimestamp();
-                    return createDownloadCommandResult(downloadUrl, true, false, false, false, httpCodes, httpMessages, null, NumberUtil.ensurePositive(end - start), null);
+                    return createDownloadCommandResult(downloadUrl, connectResults, false, false, false, httpCodes, httpMessages, null, NumberUtil.ensurePositive(end - start), null);
                 }
             } while (redirect);
             fileName = getFileName(response, downloadUrl);
             if (fileName == null) {
                 long end = timeService.getCurrentTimestamp();
-                return createDownloadCommandResult(downloadUrl, true, false, false, false, httpCodes, httpMessages, null, NumberUtil.ensurePositive(end - start), null);
+                return createDownloadCommandResult(downloadUrl, connectResults, false, false, false, httpCodes, httpMessages, null, NumberUtil.ensurePositive(end - start), null);
             }
             Log.d(DownloadCommand.class.getName(), "Using file name " + fileName);
             Log.d(DownloadCommand.class.getName(), "Opening streams...");
@@ -170,7 +173,7 @@ public class DownloadCommand implements Callable<DownloadCommandResult> {
                 DocumentFile downloadDocumentFile = getDownloadDocumentFile(fileName);
                 if (downloadDocumentFile == null) {
                     long end = timeService.getCurrentTimestamp();
-                    return createDownloadCommandResult(downloadUrl, true, false, false, false, httpCodes, httpMessages, null, NumberUtil.ensurePositive(end - start), null);
+                    return createDownloadCommandResult(downloadUrl, connectResults, false, false, false, httpCodes, httpMessages, null, NumberUtil.ensurePositive(end - start), null);
                 }
                 fileName = downloadDocumentFile.getName();
                 fileDescriptor = getDownloadFileDescriptor(downloadDocumentFile);
@@ -192,7 +195,7 @@ public class DownloadCommand implements Callable<DownloadCommandResult> {
                 deleteSuccess = deleteDownloadedFile(fileName);
             }
             long end = timeService.getCurrentTimestamp();
-            return createDownloadCommandResult(downloadUrl, true, downloadSuccess, fileExists, deleteSuccess, httpCodes, httpMessages, fileName, NumberUtil.ensurePositive(end - start), null);
+            return createDownloadCommandResult(downloadUrl, connectResults, downloadSuccess, fileExists, deleteSuccess, httpCodes, httpMessages, fileName, NumberUtil.ensurePositive(end - start), null);
         } catch (Exception exc) {
             Log.e(DownloadCommand.class.getName(), "Error executing download command", exc);
             Log.e(DownloadCommand.class.getName(), "Try closing stream.");
@@ -204,7 +207,10 @@ public class DownloadCommand implements Callable<DownloadCommandResult> {
                 deleteSuccess = deleteDownloadedFile(fileName);
             }
             long end = timeService.getCurrentTimestamp();
-            return createDownloadCommandResult(downloadUrl, connectSuccess, downloadSuccess, fileExists, deleteSuccess, httpCodes, httpMessages, fileName, NumberUtil.ensurePositive(end - start), exc);
+            if (!connectSuccess) {
+                connectResults.add(new DownloadConnectResult(URLUtil.normalizeHost(downloadUrl.getHost()), URLUtil.getPort(downloadUrl), null, -1, false));
+            }
+            return createDownloadCommandResult(downloadUrl, connectResults, downloadSuccess, fileExists, deleteSuccess, httpCodes, httpMessages, fileName, NumberUtil.ensurePositive(end - start), exc);
         } finally {
             closeResources(response, inputStream, outputStream, fileDescriptor, executorService);
         }
@@ -411,8 +417,8 @@ public class DownloadCommand implements Callable<DownloadCommandResult> {
         }
     }
 
-    private synchronized DownloadCommandResult createDownloadCommandResult(URL url, boolean connectSuccess, boolean downloadSuccess, boolean fileExists, boolean deleteSuccess, List<Integer> httpCodes, List<String> httpMessages, String fileName, long duration, Exception exc) {
-        return new DownloadCommandResult(url, connectSuccess, downloadSuccess, fileExists, deleteSuccess, valid, stopped, httpCodes, httpMessages, fileName, duration, exc);
+    private synchronized DownloadCommandResult createDownloadCommandResult(URL url, List<DownloadConnectResult> connectResults, boolean downloadSuccess, boolean fileExists, boolean deleteSuccess, List<Integer> httpCodes, List<String> httpMessages, String fileName, long duration, Exception exc) {
+        return new DownloadCommandResult(url, connectResults, downloadSuccess, fileExists, deleteSuccess, valid, stopped, httpCodes, httpMessages, fileName, duration, exc);
     }
 
     public synchronized boolean isValid() {
