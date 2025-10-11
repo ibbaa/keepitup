@@ -42,8 +42,12 @@ public class URLUtilTest {
         assertTrue(URLUtil.isValidIPAddress("123.123.123.123"));
         assertTrue(URLUtil.isValidIPAddress("   123.123.123.123   "));
         assertTrue(URLUtil.isValidIPAddress("3ffe:1900:4545:3:200:f8ff:fe21:67cf"));
+        assertTrue(URLUtil.isValidIP6Address("3ffe:1900:4545:3:200:f8ff:fe21:67cf"));
+        assertTrue(URLUtil.isValidIP6Address("   3ffe:1900:4545:3:200:f8ff:fe21:67cf  "));
         assertFalse(URLUtil.isValidIPAddress("256.123.123.123"));
+        assertFalse(URLUtil.isValidIP6Address("256.123.123.123"));
         assertFalse(URLUtil.isValidIPAddress("Test"));
+        assertFalse(URLUtil.isValidIP6Address("Test"));
         assertTrue(URLUtil.isValidHostName("www.host.com"));
         assertTrue(URLUtil.isValidHostName("  www.host.com"));
         assertTrue(URLUtil.isValidHostName("Test.co.uk"));

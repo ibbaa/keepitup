@@ -110,6 +110,7 @@ public class DownloadCommand implements Callable<DownloadCommandResult> {
         boolean downloadSuccess = false;
         boolean fileExists;
         boolean deleteSuccess = false;
+        boolean overrideConnect = false;
         List<Integer> httpCodes = new ArrayList<>();
         List<String> httpMessages = new ArrayList<>();
         List<DownloadConnectResult> connectResults = new ArrayList<>();
@@ -127,13 +128,14 @@ public class DownloadCommand implements Callable<DownloadCommandResult> {
                 connectSuccess = false;
                 start = timeService.getCurrentTimestamp();
                 closeResponse(response);
+                overrideConnect = shouldConnectHostBeOverridden(downloadUrl);
                 response = openResponse(downloadUrl);
                 if (response == null) {
                     long end = timeService.getCurrentTimestamp();
-                    connectResults.add(new DownloadConnectResult(URLUtil.normalizeHost(downloadUrl.getHost()), URLUtil.getPort(downloadUrl), null, -1, false));
+                    connectResults.add(createDownloadConnectResult(downloadUrl, overrideConnect, false));
                     return createDownloadCommandResult(downloadUrl, connectResults, false, false, false, httpCodes, httpMessages, null, NumberUtil.ensurePositive(end - start), null);
                 }
-                connectResults.add(new DownloadConnectResult(URLUtil.normalizeHost(downloadUrl.getHost()), URLUtil.getPort(downloadUrl), null, -1, true));
+                connectResults.add(createDownloadConnectResult(downloadUrl, overrideConnect, true));
                 connectSuccess = true;
                 Log.d(DownloadCommand.class.getName(), "Connection established.");
                 int httpCode = response.code();
@@ -208,7 +210,7 @@ public class DownloadCommand implements Callable<DownloadCommandResult> {
             }
             long end = timeService.getCurrentTimestamp();
             if (!connectSuccess) {
-                connectResults.add(new DownloadConnectResult(URLUtil.normalizeHost(downloadUrl.getHost()), URLUtil.getPort(downloadUrl), null, -1, false));
+                connectResults.add(createDownloadConnectResult(downloadUrl, overrideConnect, false));
             }
             return createDownloadCommandResult(downloadUrl, connectResults, downloadSuccess, fileExists, deleteSuccess, httpCodes, httpMessages, fileName, NumberUtil.ensurePositive(end - start), exc);
         } finally {
@@ -249,7 +251,7 @@ public class DownloadCommand implements Callable<DownloadCommandResult> {
         if (connectToAddress == null) {
             return false;
         }
-        if (connectToAddress.resolve.isEmpty()) {
+        if (connectToAddress.resolve().isEmpty() || connectToAddress.resolvedAddress() == null) {
             return false;
         }
         return URLUtil.isSameHostAndPort(currentURL, url);
@@ -417,6 +419,12 @@ public class DownloadCommand implements Callable<DownloadCommandResult> {
         }
     }
 
+    private synchronized DownloadConnectResult createDownloadConnectResult(URL downloadUrl, boolean hostOverridden, boolean success) {
+        InetAddress address = hostOverridden ? getConnectToAddress().resolvedAddress() : null;
+        int port = hostOverridden ? getConnectToAddress().resolve().getTargetPort() : -1;
+        return new DownloadConnectResult(URLUtil.normalizeHost(downloadUrl.getHost()), URLUtil.getPort(downloadUrl), address, port, success);
+    }
+
     private synchronized DownloadCommandResult createDownloadCommandResult(URL url, List<DownloadConnectResult> connectResults, boolean downloadSuccess, boolean fileExists, boolean deleteSuccess, List<Integer> httpCodes, List<String> httpMessages, String fileName, long duration, Exception exc) {
         return new DownloadCommandResult(url, connectResults, downloadSuccess, fileExists, deleteSuccess, valid, stopped, httpCodes, httpMessages, fileName, duration, exc);
     }
@@ -514,6 +522,10 @@ public class DownloadCommand implements Callable<DownloadCommandResult> {
 
     public ITimeService getTimeService() {
         return timeService;
+    }
+
+    private ConnectToAddress getConnectToAddress() {
+        return connectToAddress;
     }
 
     private Context getContext() {

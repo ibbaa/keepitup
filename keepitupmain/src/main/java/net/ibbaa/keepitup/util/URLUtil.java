@@ -51,6 +51,13 @@ public class URLUtil {
         USER_INFO
     }
 
+    public static boolean isValidIP6Address(String ipAddress) {
+        if (StringUtil.isEmpty(ipAddress) || !ipAddress.contains(":")) {
+            return false;
+        }
+        return InetAddresses.isInetAddress(ipAddress.trim());
+    }
+
     public static boolean isValidIPAddress(String ipAddress) {
         if (StringUtil.isEmpty(ipAddress)) {
             return false;

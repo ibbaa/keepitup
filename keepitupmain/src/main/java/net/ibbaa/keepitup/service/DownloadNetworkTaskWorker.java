@@ -230,8 +230,7 @@ public class DownloadNetworkTaskWorker extends NetworkTaskWorker {
 
     private void prepareConnectError(DownloadCommandResult downloadResult, int timeout, String folder, boolean delete, LogEntry logEntry) {
         Log.d(DownloadNetworkTaskWorker.class.getName(), "prepareConnectErrorMessage");
-        String connectMessage = getResources().getString(R.string.text_download_connect_error, URLUtil.getHostAndPort(downloadResult.url()));
-        prepareError(downloadResult, timeout, folder, delete, logEntry, connectMessage);
+        prepareError(downloadResult, timeout, folder, delete, logEntry, "");
     }
 
     private void prepareHTTPReturnCodeError(DownloadCommandResult downloadResult, int timeout, String folder, boolean delete, LogEntry logEntry) {
@@ -298,11 +297,15 @@ public class DownloadNetworkTaskWorker extends NetworkTaskWorker {
             String durationMessage = getResources().getString(R.string.text_download_time, StringUtil.formatTimeRange(downloadResult.duration(), getContext()));
             message += " " + durationMessage;
         }
+        String connectMessage = getConnectionMessage(getActualConnectResult(downloadResult));
+        if (!StringUtil.isEmpty(connectMessage) && !StringUtil.isEmpty(message)) {
+            connectMessage += " ";
+        }
         Throwable exc = downloadResult.exception();
         if (exc == null) {
-            logEntry.setMessage(redirectMessage + message);
+            logEntry.setMessage(redirectMessage + connectMessage + message);
         } else {
-            logEntry.setMessage(redirectMessage + getMessageFromException(message, exc, timeout));
+            logEntry.setMessage(redirectMessage + connectMessage + getMessageFromException(message, exc, timeout));
         }
     }
 
@@ -310,6 +313,10 @@ public class DownloadNetworkTaskWorker extends NetworkTaskWorker {
         Log.d(DownloadNetworkTaskWorker.class.getName(), "prepareSuccess");
         logEntry.setSuccess(true);
         String successMessage = getRedirectMessage(downloadResult);
+        String connectMessage = getConnectionMessage(getActualConnectResult(downloadResult));
+        if (!StringUtil.isEmpty(connectMessage)) {
+            successMessage += connectMessage + " ";
+        }
         successMessage += getResources().getString(R.string.text_download_success, downloadResult.url().toExternalForm());
         String durationMessage = getResources().getString(R.string.text_download_time, StringUtil.formatTimeRange(downloadResult.duration(), getContext()));
         if (!delete) {
@@ -400,6 +407,11 @@ public class DownloadNetworkTaskWorker extends NetworkTaskWorker {
         List<String> httpResponseMessages = downloadResult.httpResponseMessages();
         for (int ii = 0; ii < httpResponseCodes.size(); ii++) {
             if (HTTPUtil.isHTTPReturnCodeRedirect(httpResponseCodes.get(ii))) {
+                String connectMessage = getConnectionMessage(downloadResult, ii);
+                if (!StringUtil.isEmpty(connectMessage)) {
+                    message.append(connectMessage);
+                    message.append(" ");
+                }
                 String httpMessage = ii < httpResponseMessages.size() ? httpResponseMessages.get(ii) : "";
                 if (StringUtil.isEmpty(httpMessage)) {
                     message.append(getResources().getString(R.string.text_download_http_redirect_without_message, httpResponseCodes.get(ii)));
@@ -411,6 +423,39 @@ public class DownloadNetworkTaskWorker extends NetworkTaskWorker {
             }
         }
         return message.toString();
+    }
+
+    private String getConnectionMessage(DownloadCommandResult downloadResult, int index) {
+        List<DownloadConnectResult> connectResults = downloadResult.connectResults();
+        if (connectResults == null || connectResults.size() <= index) {
+            return "";
+        }
+        DownloadConnectResult connectResult = connectResults.get(index);
+        return getConnectionMessage(connectResult);
+    }
+
+    private String getConnectionMessage(DownloadConnectResult connectResult) {
+        if (connectResult == null) {
+            return "";
+        }
+        if (connectResult.success()) {
+            return getResources().getString(R.string.text_download_connect_success, getHostAndPortMessage(connectResult));
+        }
+        return getResources().getString(R.string.text_download_connect_error, getHostAndPortMessage(connectResult));
+    }
+
+    private String getHostAndPortMessage(DownloadConnectResult connectResult) {
+        String host;
+        int port;
+        if (connectResult.connectAddress() == null || connectResult.port() < 0) {
+            host = URLUtil.isValidIP6Address(connectResult.host()) ? "[" + connectResult.host() + "]" : connectResult.host();
+            port = connectResult.port();
+        } else {
+            String hostAddress = connectResult.connectAddress().getHostAddress();
+            host = URLUtil.isValidIP6Address(hostAddress) ? "[" + hostAddress + "]" : hostAddress;
+            port = connectResult.connectPort();
+        }
+        return host + ":" + port;
     }
 
     private String determineDownloadFolder() {
