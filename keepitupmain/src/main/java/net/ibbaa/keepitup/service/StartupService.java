@@ -21,9 +21,11 @@ import android.content.Context;
 import android.content.Intent;
 
 import net.ibbaa.keepitup.BuildConfig;
+import net.ibbaa.keepitup.db.AccessTypeDataDAO;
 import net.ibbaa.keepitup.db.DBOpenHelper;
 import net.ibbaa.keepitup.db.LogDAO;
 import net.ibbaa.keepitup.db.NetworkTaskDAO;
+import net.ibbaa.keepitup.db.ResolveDAO;
 import net.ibbaa.keepitup.db.SchedulerIdHistoryDAO;
 import net.ibbaa.keepitup.logging.Dump;
 import net.ibbaa.keepitup.logging.Log;
@@ -68,6 +70,8 @@ public class StartupService extends BroadcastReceiver {
             cleanupFiles(context);
         }
         Log.d(StartupService.class.getName(), "Cleanup logs");
+        cleanupAccessTypeData(context);
+        cleanupResolve(context);
         cleanupLogs(context);
         Log.d(StartupService.class.getName(), "Initialize scheduler.");
         initializeScheduler(context);
@@ -155,6 +159,28 @@ public class StartupService extends BroadcastReceiver {
             fileManager.delete(fileManager.getInternalDownloadDirectory());
         } catch (Exception exc) {
             Log.e(StartupService.class.getName(), "Error on deleting internal download files", exc);
+        }
+    }
+
+    private void cleanupAccessTypeData(Context context) {
+        Log.d(StartupService.class.getName(), "cleanupAccessTypeData");
+        try {
+            Log.d(StartupService.class.getName(), "Deleting orphan access type data.");
+            AccessTypeDataDAO accessTypeDataDAO = new AccessTypeDataDAO(context);
+            accessTypeDataDAO.deleteAllOrphanAccessTypeData();
+        } catch (Exception exc) {
+            Log.e(StartupService.class.getName(), "Error on cleaning up access type data", exc);
+        }
+    }
+
+    private void cleanupResolve(Context context) {
+        Log.d(StartupService.class.getName(), "cleanupResolve");
+        try {
+            Log.d(StartupService.class.getName(), "Deleting orphan resolve objects.");
+            ResolveDAO resolveDAO = new ResolveDAO(context);
+            resolveDAO.deleteAllOrphanResolve();
+        } catch (Exception exc) {
+            Log.e(StartupService.class.getName(), "Error on cleaning up resolve objects", exc);
         }
     }
 
