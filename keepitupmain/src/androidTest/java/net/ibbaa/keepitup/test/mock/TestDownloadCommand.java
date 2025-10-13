@@ -69,7 +69,7 @@ public class TestDownloadCommand extends DownloadCommand {
     }
 
     @Override
-    protected Response openResponse(URL url) {
+    protected Response openResponse(URL url, boolean overrideConnectHost) {
         if (url == null) {
             return null;
         }

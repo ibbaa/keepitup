@@ -50,6 +50,7 @@ import java.io.OutputStream;
 import java.net.InetAddress;
 import java.net.URL;
 import java.security.KeyManagementException;
+import java.security.KeyStore;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.util.ArrayList;
@@ -61,7 +62,9 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLSocketFactory;
 import javax.net.ssl.TrustManager;
+import javax.net.ssl.TrustManagerFactory;
 import javax.net.ssl.X509TrustManager;
 
 import okhttp3.OkHttpClient;
@@ -129,7 +132,7 @@ public class DownloadCommand implements Callable<DownloadCommandResult> {
                 start = timeService.getCurrentTimestamp();
                 closeResponse(response);
                 overrideConnect = shouldConnectHostBeOverridden(downloadUrl);
-                response = openResponse(downloadUrl);
+                response = openResponse(downloadUrl, overrideConnect);
                 if (response == null) {
                     long end = timeService.getCurrentTimestamp();
                     connectResults.add(createDownloadConnectResult(downloadUrl, overrideConnect, false));
@@ -227,13 +230,16 @@ public class DownloadCommand implements Callable<DownloadCommandResult> {
         return URLUtil.getURL(downloadURL, location);
     }
 
-    protected Response openResponse(URL url) throws IOException, KeyManagementException, NoSuchAlgorithmException {
-        Log.d(DownloadCommand.class.getName(), "openConnection to " + url);
+    protected Response openResponse(URL url, boolean overrideConnectHost) throws IOException, KeyManagementException, NoSuchAlgorithmException {
+        Log.d(DownloadCommand.class.getName(), "openConnection to " + url + " with overrideConnectHost of " + overrideConnectHost);
         if (url == null) {
             Log.e(DownloadCommand.class.getName(), "URL is null");
             return null;
         }
         OkHttpClient.Builder clientBuilder = new OkHttpClient.Builder().connectTimeout(getResources().getInteger(R.integer.download_connect_timeout), TimeUnit.SECONDS).readTimeout(getResources().getInteger(R.integer.download_read_timeout), TimeUnit.SECONDS).followRedirects(false);
+        if (overrideConnectHost) {
+            overrideConnectHost(clientBuilder, isIgnoreSSLError());
+        }
         if (isIgnoreSSLError()) {
             disableSSLCheck(clientBuilder);
         }
@@ -246,12 +252,23 @@ public class DownloadCommand implements Callable<DownloadCommandResult> {
         return client.newCall(request).execute();
     }
 
+    private void overrideConnectHost(OkHttpClient.Builder clientBuilder, boolean isIgnoreSSLError) {
+        Log.d(DownloadCommand.class.getName(), "overrideConnectHost");
+        String overrideHost = connectToAddress.resolvedAddress().getHostAddress();
+        int overridePort = connectToAddress.resolve().getTargetPort();
+        clientBuilder.socketFactory(new ConnectToSocketFactory(overrideHost, overridePort));
+        if (!isIgnoreSSLError) {
+            SSLSocketFactory defaultSSL = (SSLSocketFactory) SSLSocketFactory.getDefault();
+            clientBuilder.sslSocketFactory(new ConnectToSSLSocketFactory(defaultSSL, overrideHost, overridePort), getDefaultTrustManager());
+        }
+    }
+
     private boolean shouldConnectHostBeOverridden(URL currentURL) {
         Log.d(DownloadCommand.class.getName(), "shouldConnectHostBeOverridden for " + currentURL);
-        if (connectToAddress == null) {
+        if (connectToAddress == null || connectToAddress.resolve() == null || connectToAddress.resolvedAddress() == null) {
             return false;
         }
-        if (connectToAddress.resolve().isEmpty() || connectToAddress.resolvedAddress() == null) {
+        if (StringUtil.isEmpty(connectToAddress.resolve().getTargetAddress()) || connectToAddress.resolve().getTargetPort() < 0) {
             return false;
         }
         return URLUtil.isSameHostAndPort(currentURL, url);
@@ -265,6 +282,22 @@ public class DownloadCommand implements Callable<DownloadCommandResult> {
         builder.sslSocketFactory(sslContext.getSocketFactory(), (X509TrustManager) trustAllCerts[0]);
         builder.hostnameVerifier((hostname, session) -> true);
     }
+
+    private X509TrustManager getDefaultTrustManager() {
+        try {
+            TrustManagerFactory factory = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
+            factory.init((KeyStore) null);
+            for (TrustManager trustManager : factory.getTrustManagers()) {
+                if (trustManager instanceof X509TrustManager) {
+                    return (X509TrustManager) trustManager;
+                }
+            }
+            throw new IllegalStateException("No default X509TrustManager found.");
+        } catch (Exception exc) {
+            throw new RuntimeException("Failed to get default trust manager", exc);
+        }
+    }
+
 
     private boolean isIgnoreSSLError() {
         return accessTypeData != null && accessTypeData.isIgnoreSSLError();
