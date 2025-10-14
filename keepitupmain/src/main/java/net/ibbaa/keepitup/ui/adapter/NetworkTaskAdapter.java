@@ -39,7 +39,9 @@ import net.ibbaa.keepitup.service.alarm.AlarmService;
 import net.ibbaa.keepitup.ui.NetworkTaskMainActivity;
 import net.ibbaa.keepitup.ui.mapping.EnumMapping;
 import net.ibbaa.keepitup.util.StringUtil;
+import net.ibbaa.keepitup.util.URLUtil;
 
+import java.net.URL;
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -70,12 +72,14 @@ public class NetworkTaskAdapter extends RecyclerView.Adapter<NetworkTaskViewHold
         Log.d(NetworkTaskAdapter.class.getName(), "onBindViewHolder for position " + position);
         NetworkTask networkTask = networkTaskWrapperList.get(position).getNetworkTask();
         AccessTypeData accessTypeData = networkTaskWrapperList.get(position).getAccessTypeData();
+        Resolve resolve = networkTaskWrapperList.get(position).getResolve();
         LogEntry logEntry = networkTaskWrapperList.get(position).getLogEntry();
         bindTitle(networkTaskViewHolder, networkTask);
         bindStatus(networkTaskViewHolder, networkTask);
         bindInstances(networkTaskViewHolder, networkTask);
         bindAccessType(networkTaskViewHolder, networkTask, accessTypeData);
         bindAddress(networkTaskViewHolder, networkTask);
+        bindConnectTo(networkTaskViewHolder, networkTask, resolve);
         bindInterval(networkTaskViewHolder, networkTask);
         bindLastExecTimestamp(networkTaskViewHolder, logEntry);
         bindFailureCount(networkTaskViewHolder, networkTask, logEntry);
@@ -167,6 +171,32 @@ public class NetworkTaskAdapter extends RecyclerView.Adapter<NetworkTaskViewHold
         String formattedAddressText = String.format(addressText, networkTask.getAddress(), networkTask.getPort());
         Log.d(NetworkTaskAdapter.class.getName(), "binding address text " + formattedAddressText);
         networkTaskViewHolder.setAddress(formattedAddressText);
+    }
+
+    private void bindConnectTo(@NonNull NetworkTaskViewHolder networkTaskViewHolder, NetworkTask networkTask, Resolve resolve) {
+        Log.d(NetworkTaskAdapter.class.getName(), "bindConnectTo, networkTask is " + networkTask + ", resolve is " + resolve);
+        if (AccessType.DOWNLOAD.equals(networkTask.getAccessType())) {
+            networkTaskViewHolder.showConnectToTextView();
+            String hostAndPort;
+            if (resolve == null || resolve.isEmpty()) {
+                hostAndPort = getResources().getString(R.string.string_not_set);
+            } else {
+                URL url = URLUtil.getURL(networkTask.getAddress());
+                if (url == null) {
+                    hostAndPort = getResources().getString(R.string.string_not_set);
+                } else {
+                    String targetAddress = URLUtil.getTargetAddress(resolve, url);
+                    targetAddress = URLUtil.isValidIP6Address(targetAddress) ? "[" + targetAddress + "]" : targetAddress;
+                    int targetPort = URLUtil.getTargetPort(resolve, url);
+                    hostAndPort = targetAddress + ":" + targetPort;
+                }
+            }
+            String formattedConnectToText = getResources().getString(R.string.text_activity_main_list_item_network_task_connect_to, hostAndPort);
+            networkTaskViewHolder.setConnectTo(formattedConnectToText);
+        } else {
+            networkTaskViewHolder.hideConnectToTextView();
+        }
+
     }
 
     private void bindInterval(@NonNull NetworkTaskViewHolder networkTaskViewHolder, NetworkTask networkTask) {

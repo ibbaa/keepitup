@@ -133,6 +133,7 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
         onView(allOf(withId(R.id.textview_list_item_network_task_instances), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 2))).check(matches(withText("Instances: 0 active")));
         onView(allOf(withId(R.id.textview_list_item_network_task_accesstype), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 2))).check(matches(withText("Type: Download")));
         onView(allOf(withId(R.id.textview_list_item_network_task_address), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 2))).check(matches(withText("URL: https://localhost")));
+        onView(allOf(withId(R.id.textview_list_item_network_task_connect_to), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 2))).check(matches(withText("Connect to: not set")));
         onView(allOf(withId(R.id.textview_list_item_network_task_interval), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 2))).check(matches(withText("Interval: 40 minutes")));
         onView(allOf(withId(R.id.textview_list_item_network_task_ignore_ssl_error), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 2))).check(matches(withText("Ignore SSL errors: yes")));
         onView(allOf(withId(R.id.textview_list_item_network_task_only_wifi), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 2))).check(matches(withText("Only on WiFi: yes")));
@@ -169,6 +170,7 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
         onView(allOf(withId(R.id.textview_list_item_network_task_instances), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 0))).check(matches(withText("Instances: 0 active")));
         onView(allOf(withId(R.id.textview_list_item_network_task_accesstype), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 0))).check(matches(withText("Type: Download")));
         onView(allOf(withId(R.id.textview_list_item_network_task_address), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 0))).check(matches(withText("URL: https://localhost")));
+        onView(allOf(withId(R.id.textview_list_item_network_task_connect_to), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 0))).check(matches(withText("Connect to: not set")));
         onView(allOf(withId(R.id.textview_list_item_network_task_interval), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 0))).check(matches(withText("Interval: 40 minutes")));
         onView(allOf(withId(R.id.textview_list_item_network_task_ignore_ssl_error), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 0))).check(matches(withText("Ignore SSL errors: yes")));
         onView(allOf(withId(R.id.textview_list_item_network_task_only_wifi), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 0))).check(matches(withText("Only on WiFi: yes")));
@@ -431,6 +433,7 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
         onView(allOf(withId(R.id.textview_list_item_network_task_instances), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 2))).check(matches(withText("Instances: 0 active")));
         onView(allOf(withId(R.id.textview_list_item_network_task_accesstype), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 2))).check(matches(withText("Type: Download")));
         onView(allOf(withId(R.id.textview_list_item_network_task_address), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 2))).check(matches(withText("URL: http://test")));
+        onView(allOf(withId(R.id.textview_list_item_network_task_connect_to), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 2))).check(matches(withText("Connect to: not set")));
         onView(allOf(withId(R.id.textview_list_item_network_task_interval), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 2))).check(matches(withText("Interval: 60 minutes")));
         onView(allOf(withId(R.id.textview_list_item_network_task_ignore_ssl_error), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 2))).check(matches(withText("Ignore SSL errors: yes")));
         onView(allOf(withId(R.id.textview_list_item_network_task_only_wifi), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 2))).check(matches(withText("Only on WiFi: yes")));
@@ -825,6 +828,40 @@ public class NetworkTaskMainActivityTest extends BaseUITest {
         onView(withId(R.id.imageview_dialog_network_task_edit_ok)).perform(click());
         resolveAfter = getResolveDAO().readResolveForNetworkTask(taskAfter.getId());
         assertNull(resolveAfter);
+        activityScenario.close();
+    }
+
+    @Test
+    public void testEditConnectToField() {
+        ActivityScenario<?> activityScenario = launchRecyclerViewBaseActivity(NetworkTaskMainActivity.class);
+        injectPermissionManager(activityScenario);
+        onView(allOf(withId(R.id.imageview_activity_main_network_task_add), isDisplayed())).perform(click());
+        onView(withText("Download")).perform(click());
+        onView(withId(R.id.edittext_dialog_network_task_edit_address)).perform(replaceText("https://localhost"));
+        onView(withId(R.id.imageview_dialog_network_task_edit_ok)).perform(click());
+        onView(allOf(withId(R.id.textview_list_item_network_task_accesstype), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 0))).check(matches(withText("Type: Download")));
+        onView(allOf(withId(R.id.textview_list_item_network_task_address), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 0))).check(matches(withText("URL: https://localhost")));
+        onView(allOf(withId(R.id.textview_list_item_network_task_connect_to), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 0))).check(matches(withText("Connect to: not set")));
+        onView(allOf(withId(R.id.imageview_list_item_network_task_edit), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 0))).perform(click());
+        onView(withId(R.id.edittext_dialog_network_task_edit_connect_to_port)).perform(replaceText("22"));
+        onView(withId(R.id.imageview_dialog_network_task_edit_ok)).perform(click());
+        onView(allOf(withId(R.id.textview_list_item_network_task_accesstype), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 0))).check(matches(withText("Type: Download")));
+        onView(allOf(withId(R.id.textview_list_item_network_task_address), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 0))).check(matches(withText("URL: https://localhost")));
+        onView(allOf(withId(R.id.textview_list_item_network_task_connect_to), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 0))).check(matches(withText("Connect to: localhost:22")));
+        onView(isRoot()).perform(waitFor(500));
+        onView(allOf(withId(R.id.imageview_list_item_network_task_edit), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 0))).perform(click());
+        onView(withId(R.id.edittext_dialog_network_task_edit_connect_to_host)).perform(replaceText("127.0.0.1"));
+        onView(withId(R.id.imageview_dialog_network_task_edit_ok)).perform(click());
+        onView(allOf(withId(R.id.textview_list_item_network_task_accesstype), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 0))).check(matches(withText("Type: Download")));
+        onView(allOf(withId(R.id.textview_list_item_network_task_address), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 0))).check(matches(withText("URL: https://localhost")));
+        onView(allOf(withId(R.id.textview_list_item_network_task_connect_to), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 0))).check(matches(withText("Connect to: 127.0.0.1:22")));
+        onView(isRoot()).perform(waitFor(500));
+        onView(allOf(withId(R.id.imageview_list_item_network_task_edit), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 0))).perform(click());
+        onView(withId(R.id.edittext_dialog_network_task_edit_connect_to_host)).perform(replaceText("::1"));
+        onView(withId(R.id.imageview_dialog_network_task_edit_ok)).perform(click());
+        onView(allOf(withId(R.id.textview_list_item_network_task_accesstype), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 0))).check(matches(withText("Type: Download")));
+        onView(allOf(withId(R.id.textview_list_item_network_task_address), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 0))).check(matches(withText("URL: https://localhost")));
+        onView(allOf(withId(R.id.textview_list_item_network_task_connect_to), withChildDescendantAtPosition(withId(R.id.listview_activity_main_network_tasks), 0))).check(matches(withText("Connect to: [::1]:22")));
         activityScenario.close();
     }
 

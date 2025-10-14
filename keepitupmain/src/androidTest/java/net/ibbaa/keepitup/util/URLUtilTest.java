@@ -25,6 +25,8 @@ import static org.junit.Assert.assertTrue;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.SmallTest;
 
+import net.ibbaa.keepitup.model.Resolve;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -126,6 +128,27 @@ public class URLUtilTest {
         assertEquals("[www.host.com", URLUtil.normalizeHost("[www.host.com"));
         assertEquals("www.host.com", URLUtil.normalizeHost("[www.host.com]"));
         assertEquals("3ffe:1900:4545:3:200:f8ff:fe21:67cf", URLUtil.normalizeHost("[3ffe:1900:4545:3:200:f8ff:fe21:67cf]"));
+    }
+
+    @Test
+    public void testGetTargetAddress() throws Exception {
+        Resolve resolve = new Resolve();
+        assertEquals("127.0.0.2", URLUtil.getTargetAddress(resolve, new URL("https://127.0.0.2")));
+        resolve.setTargetAddress(null);
+        assertEquals("www.test.com", URLUtil.getTargetAddress(resolve, new URL("https://www.test.com")));
+        resolve.setTargetAddress("www.test.com");
+        assertEquals("www.test.com", URLUtil.getTargetAddress(resolve, new URL("https://127.0.0.2")));
+    }
+
+    @Test
+    public void testGetTargetPort() throws Exception {
+        Resolve resolve = new Resolve();
+        assertEquals(443, URLUtil.getTargetPort(resolve, new URL("https://127.0.0.2")));
+        assertEquals(80, URLUtil.getTargetPort(resolve, new URL("http://test.org")));
+        assertEquals(8080, URLUtil.getTargetPort(resolve, new URL("https://127.0.0.2:8080")));
+        resolve.setTargetPort(22);
+        assertEquals(22, URLUtil.getTargetPort(resolve, new URL("https://127.0.0.2:8080")));
+        assertEquals(22, URLUtil.getTargetPort(resolve, new URL("http://www.test.com")));
     }
 
     @Test

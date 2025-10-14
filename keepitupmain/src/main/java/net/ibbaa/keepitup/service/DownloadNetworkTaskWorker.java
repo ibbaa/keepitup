@@ -86,9 +86,9 @@ public class DownloadNetworkTaskWorker extends NetworkTaskWorker {
             Log.d(DownloadNetworkTaskWorker.class.getName(), "Returning " + downloadExecutionResult);
             return downloadExecutionResult;
         }
-        String targetAddress = getTargetAddress(resolve, url);
+        String targetAddress = URLUtil.getTargetAddress(resolve, url);
         resolve.setTargetAddress(targetAddress);
-        int targetPort = getTargetPort(resolve, url);
+        int targetPort = URLUtil.getTargetPort(resolve, url);
         resolve.setTargetPort(targetPort);
         DNSExecutionResult dnsExecutionResult = executeDNSLookup(targetAddress, getResources().getBoolean(R.bool.network_prefer_ipv4));
         if (dnsExecutionResult.getAddress() != null) {
@@ -116,22 +116,6 @@ public class DownloadNetworkTaskWorker extends NetworkTaskWorker {
     private void completeLogEntry(NetworkTask networkTask, LogEntry logEntry) {
         logEntry.setNetworkTaskId(networkTask.getId());
         logEntry.setTimestamp(getTimeService().getCurrentTimestamp());
-    }
-
-    private String getTargetAddress(Resolve resolve, URL url) {
-        Log.d(DownloadNetworkTaskWorker.class.getName(), "getTargetAddress for resolve object " + resolve + " and url " + url.toExternalForm());
-        if (StringUtil.isEmpty(resolve.getTargetAddress())) {
-            return url.getHost();
-        }
-        return resolve.getTargetAddress();
-    }
-
-    private int getTargetPort(Resolve resolve, URL url) {
-        Log.d(DownloadNetworkTaskWorker.class.getName(), "getTargetPort for resolve object " + resolve + " and url " + url.toExternalForm());
-        if (resolve.getTargetPort() < 0) {
-            return url.getPort();
-        }
-        return resolve.getTargetPort();
     }
 
     private Resolve getResolve(NetworkTask networkTask) {

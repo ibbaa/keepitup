@@ -20,6 +20,7 @@ import com.google.common.net.InetAddresses;
 import com.google.common.net.InternetDomainName;
 
 import net.ibbaa.keepitup.logging.Log;
+import net.ibbaa.keepitup.model.Resolve;
 
 import java.io.UnsupportedEncodingException;
 import java.net.IDN;
@@ -107,6 +108,20 @@ public class URLUtil {
             return host.substring(1, host.length() - 1);
         }
         return host;
+    }
+
+    public static String getTargetAddress(Resolve resolve, URL url) {
+        if (StringUtil.isEmpty(resolve.getTargetAddress())) {
+            return url.getHost();
+        }
+        return resolve.getTargetAddress();
+    }
+
+    public static int getTargetPort(Resolve resolve, URL url) {
+        if (resolve.getTargetPort() < 0) {
+            return getPort(url);
+        }
+        return resolve.getTargetPort();
     }
 
     public static String prefixHTTPProtocol(String inputUrl) {
