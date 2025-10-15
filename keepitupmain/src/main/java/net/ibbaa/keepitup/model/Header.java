@@ -1,0 +1,186 @@
+/*
+ * Copyright (c) 2025 Alwin Ibba
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package net.ibbaa.keepitup.model;
+
+import android.os.Bundle;
+import android.os.PersistableBundle;
+
+import androidx.annotation.NonNull;
+
+import net.ibbaa.keepitup.util.NumberUtil;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
+
+public class Header {
+
+    private long id;
+    private long networktaskid;
+    private String name;
+    private String value;
+
+    public Header() {
+        this.id = -1;
+        this.networktaskid = -1;
+        this.name = null;
+        this.value = null;
+    }
+
+    public Header(long networktaskid) {
+        this.id = -1;
+        this.networktaskid = networktaskid;
+        this.name = null;
+        this.value = null;
+    }
+
+    public Header(Header other) {
+        this();
+        this.name = other.getName();
+        this.value = other.getValue();
+    }
+
+    public Header(PersistableBundle bundle) {
+        this(new Bundle(bundle));
+    }
+
+    public Header(Bundle bundle) {
+        this();
+        this.id = bundle.getLong("id");
+        this.networktaskid = bundle.getLong("networktaskid");
+        this.name = bundle.getString("name");
+        this.value = bundle.getString("value");
+    }
+
+    public Header(Map<String, ?> map) {
+        this();
+        if (NumberUtil.isValidLongValue(map.get("id"))) {
+            this.id = NumberUtil.getLongValue(map.get("id"), -1);
+        }
+        if (NumberUtil.isValidLongValue(map.get("networktaskid"))) {
+            this.networktaskid = NumberUtil.getLongValue(map.get("networktaskid"), -1);
+        }
+        if (map.get("name") != null) {
+            this.name = Objects.requireNonNull(map.get("name")).toString();
+        }
+        if (map.get("value") != null) {
+            this.value = Objects.requireNonNull(map.get("value")).toString();
+        }
+    }
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
+
+    public long getNetworkTaskId() {
+        return networktaskid;
+    }
+
+    public void setNetworkTaskId(long networktaskid) {
+        this.networktaskid = networktaskid;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getValue() {
+        return value;
+    }
+
+    public void setValue(String value) {
+        this.value = value;
+    }
+
+    public PersistableBundle toPersistableBundle() {
+        PersistableBundle bundle = new PersistableBundle();
+        bundle.putLong("id", id);
+        bundle.putLong("networktaskid", networktaskid);
+        if (name != null) {
+            bundle.putString("name", name);
+        }
+        if (value != null) {
+            bundle.putString("value", value);
+        }
+        return bundle;
+    }
+
+    public Bundle toBundle() {
+        return new Bundle(toPersistableBundle());
+    }
+
+    public Map<String, ?> toMap() {
+        Map<String, Object> map = new HashMap<>();
+        map.put("id", id);
+        map.put("networktaskid", networktaskid);
+        if (name != null) {
+            map.put("name", name);
+        }
+        if (value != null) {
+            map.put("value", value);
+        }
+        return map;
+    }
+
+    public boolean isEqual(Header other) {
+        if (other == null || getClass() != other.getClass()) {
+            return false;
+        }
+        if (id != other.id) {
+            return false;
+        }
+        if (networktaskid != other.networktaskid) {
+            return false;
+        }
+        if (!Objects.equals(name, other.name)) {
+            return false;
+        }
+        return Objects.equals(value, other.value);
+    }
+
+    public boolean isTechnicallyEqual(Header other) {
+        if (other == null || getClass() != other.getClass()) {
+            return false;
+        }
+        if (networktaskid != other.networktaskid) {
+            return false;
+        }
+        if (!Objects.equals(name, other.name)) {
+            return false;
+        }
+        return Objects.equals(value, other.value);
+    }
+
+    @NonNull
+    @Override
+    public String toString() {
+        return "Header{" +
+                "id=" + id +
+                ", networktaskid=" + networktaskid +
+                ", name='" + name + '\'' +
+                ", value='" + value + '\'' +
+                '}';
+    }
+}

@@ -20,6 +20,7 @@ import net.ibbaa.keepitup.db.AccessTypeDataDAOTest;
 import net.ibbaa.keepitup.db.AccessTypeDataDBConstantsTest;
 import net.ibbaa.keepitup.db.DBMigrateTest;
 import net.ibbaa.keepitup.db.DBSetupTest;
+import net.ibbaa.keepitup.db.HeaderDBConstantsTest;
 import net.ibbaa.keepitup.db.IntervalDAOTest;
 import net.ibbaa.keepitup.db.IntervalDBConstantsTest;
 import net.ibbaa.keepitup.db.LogDAOTest;
@@ -38,6 +39,7 @@ import net.ibbaa.keepitup.logging.NetworkTaskLogTest;
 import net.ibbaa.keepitup.model.AccessTypeDataTest;
 import net.ibbaa.keepitup.model.AccessTypeTest;
 import net.ibbaa.keepitup.model.FileEntryTest;
+import net.ibbaa.keepitup.model.HeaderTest;
 import net.ibbaa.keepitup.model.IntervalTest;
 import net.ibbaa.keepitup.model.LogEntryTest;
 import net.ibbaa.keepitup.model.NetworkTaskTest;
@@ -134,6 +136,7 @@ import org.junit.runners.Suite;
         AccessTypeDataDBConstantsTest.class,
         DBMigrateTest.class,
         DBSetupTest.class,
+        HeaderDBConstantsTest.class,
         IntervalDAOTest.class,
         IntervalDBConstantsTest.class,
         LogDAOTest.class,
@@ -154,6 +157,7 @@ import org.junit.runners.Suite;
         AccessTypeDataTest.class,
         AccessTypeTest.class,
         FileEntryTest.class,
+        HeaderTest.class,
         IntervalTest.class,
         LogEntryTest.class,
         NetworkTaskTest.class,

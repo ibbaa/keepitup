@@ -68,4 +68,9 @@
     <string name="resolve_source_port_column_name">SOURCEPORT</string>
     <string name="resolve_target_address_column_name">TARGETADDRESS</string>
     <string name="resolve_target_port_column_name">TARGETPORT</string>
+    <string name="header_table_name">HEADER</string>
+    <string name="header_id_column_name">_id</string>
+    <string name="header_taskid_column_name">NETWORKTASKID</string>
+    <string name="header_name_column_name">NAME</string>
+    <string name="header_value_column_name">VALUE</string>
 </resources>

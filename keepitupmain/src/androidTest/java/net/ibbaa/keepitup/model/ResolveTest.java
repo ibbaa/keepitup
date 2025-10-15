@@ -129,6 +129,7 @@ public class ResolveTest {
         map.put("targetPort", "port");
         Resolve resolve = new Resolve(map);
         assertEquals(-1, resolve.getId());
+        assertEquals(-1, resolve.getNetworkTaskId());
         assertEquals("", resolve.getSourceAddress());
         assertEquals(-1, resolve.getSourcePort());
         assertEquals("", resolve.getTargetAddress());

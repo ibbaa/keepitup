@@ -188,7 +188,7 @@ public class ResolveDAO extends BaseDAO {
     }
 
     private int deleteAllResolve(Resolve resolve, SQLiteDatabase db) {
-        Log.d(ResolveDAO.class.getName(), "deleteAllResolve, resolve is " + resolve);
+        Log.d(ResolveDAO.class.getName(), "deleteAllResolve, resolve object is " + resolve);
         ResolveDBConstants dbConstants = new ResolveDBConstants(getContext());
         return db.delete(dbConstants.getTableName(), null, null);
     }
