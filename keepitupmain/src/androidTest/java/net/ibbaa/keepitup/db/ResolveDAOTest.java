@@ -78,8 +78,8 @@ public class ResolveDAOTest {
         Resolve readResolve2 = readResolveList.get(1);
         assertTrue(readResolve1.getId() > 0);
         assertTrue(readResolve2.getId() > 0);
-        assertTrue(doesAccessTypeDataListContain(readResolveList, resolve1));
-        assertTrue(doesAccessTypeDataListContain(readResolveList, resolve2));
+        assertTrue(doesResolveListContain(readResolveList, resolve1));
+        assertTrue(doesResolveListContain(readResolveList, resolve2));
         resolveDAO.deleteResolveForNetworkTask(1);
         readResolve = resolveDAO.readResolveForNetworkTask(1);
         assertNull(readResolve);
@@ -110,14 +110,10 @@ public class ResolveDAOTest {
         assertTrue(resolve2.isEqual(readResolve2));
         readResolve1.setSourceAddress("192.168.188.25");
         readResolve1.setSourcePort(12);
-        readResolve1.setTargetAddress("192.168.188.25");
-        readResolve1.setTargetPort(12);
         resolveDAO.updateResolve(readResolve1);
         readResolve1 = resolveDAO.readResolveForNetworkTask(0);
         assertEquals("192.168.188.25", readResolve1.getSourceAddress());
         assertEquals(12, readResolve1.getSourcePort());
-        assertEquals("192.168.188.25", readResolve1.getTargetAddress());
-        assertEquals(12, readResolve1.getTargetPort());
     }
 
     @Test
@@ -137,7 +133,7 @@ public class ResolveDAOTest {
         assertTrue(resolve1.isTechnicallyEqual(readResolveList.get(0)));
     }
 
-    private boolean doesAccessTypeDataListContain(List<Resolve> resolveList, Resolve resolve) {
+    private boolean doesResolveListContain(List<Resolve> resolveList, Resolve resolve) {
         for (Resolve currentResolve : resolveList) {
             if (currentResolve.isTechnicallyEqual(resolve)) {
                 return true;

@@ -61,7 +61,7 @@ public class HeaderDBConstants {
     public String getCreateTableStatement() {
         return ("CREATE TABLE IF NOT EXISTS  " + getTableName() + "(") +
                 getIdColumnName() + " INTEGER PRIMARY KEY ASC, " +
-                getNetworkTaskIdColumnName() + " INTEGER NOT NULL, " +
+                getNetworkTaskIdColumnName() + " INTEGER," +
                 getNameColumnName() + " TEXT, " +
                 getValueColumnName() + " TEXT);";
     }

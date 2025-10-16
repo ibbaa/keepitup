@@ -20,8 +20,10 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 
+import net.ibbaa.keepitup.R;
 import net.ibbaa.keepitup.logging.Log;
 import net.ibbaa.keepitup.model.AccessTypeData;
+import net.ibbaa.keepitup.model.Header;
 import net.ibbaa.keepitup.model.Interval;
 import net.ibbaa.keepitup.model.LogEntry;
 import net.ibbaa.keepitup.model.NetworkTask;
@@ -30,6 +32,7 @@ import net.ibbaa.keepitup.model.validation.AccessTypeDataValidator;
 import net.ibbaa.keepitup.model.validation.IntervalValidator;
 import net.ibbaa.keepitup.model.validation.NetworkTaskValidator;
 import net.ibbaa.keepitup.model.validation.ResolveValidator;
+import net.ibbaa.keepitup.resources.PreferenceManager;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -45,6 +48,7 @@ public class DBSetup {
     private final SchedulerStateDBConstants schedulerStateDBConstants;
     private final AccessTypeDataDBConstants accessTypeDataDBConstants;
     private final ResolveDBConstants resolveDBConstants;
+    private final HeaderDBConstants headerDBConstants;
 
     public DBSetup(Context context) {
         this.context = context;
@@ -55,6 +59,7 @@ public class DBSetup {
         this.schedulerStateDBConstants = new SchedulerStateDBConstants(context);
         this.accessTypeDataDBConstants = new AccessTypeDataDBConstants(context);
         this.resolveDBConstants = new ResolveDBConstants(context);
+        this.headerDBConstants = new HeaderDBConstants(context);
     }
 
     public void createTables(SQLiteDatabase db) {
@@ -66,6 +71,7 @@ public class DBSetup {
         createSchedulerStateTable(db);
         createAccessTypeDataTable(db);
         createResolveTable(db);
+        createHeaderTable(db);
     }
 
     public void tryDropTables(SQLiteDatabase db) {
@@ -104,6 +110,11 @@ public class DBSetup {
             dropResolveTable(db);
         } catch (Exception exc) {
             Log.d(DBMigrate.class.getName(), "dropResolveTable failed ", exc);
+        }
+        try {
+            dropHeaderTable(db);
+        } catch (Exception exc) {
+            Log.d(DBMigrate.class.getName(), "dropHeaderTable failed ", exc);
         }
     }
 
@@ -192,6 +203,24 @@ public class DBSetup {
         db.execSQL(resolveDBConstants.getCreateTableStatement());
     }
 
+    public void createHeaderTable(SQLiteDatabase db) {
+        Log.d(DBSetup.class.getName(), "Creating database table " + headerDBConstants.getTableName());
+        db.execSQL(headerDBConstants.getCreateTableStatement());
+        initializeHeaderTable(db);
+    }
+
+    public void initializeHeaderTable(SQLiteDatabase db) {
+        Log.d(DBSetup.class.getName(), "initializeHeaderTable");
+        db.execSQL(accessTypeDataDBConstants.getMigrateNetworkTasksAccessTypeDataStatement());
+        ContentValues values = new ContentValues();
+        HeaderDBConstants dbConstants = new HeaderDBConstants(getContext());
+        PreferenceManager preferenceManager = new PreferenceManager(getContext());
+        values.put(dbConstants.getNetworkTaskIdColumnName(), (Long) null);
+        values.put(dbConstants.getNameColumnName(), getContext().getResources().getString(R.string.http_header_user_agent));
+        values.put(dbConstants.getValueColumnName(), preferenceManager.getPreferenceHTTPUserAgent());
+        db.insert(dbConstants.getTableName(), null, values);
+    }
+
     public void dropTables(SQLiteDatabase db) {
         Log.d(DBSetup.class.getName(), "dropTables");
         dropSchedulerIdHistoryTable(db);
@@ -201,6 +230,7 @@ public class DBSetup {
         dropSchedulerStateTable(db);
         dropAccessTypeDataTable(db);
         dropResolveTable(db);
+        dropHeaderTable(db);
     }
 
     public void dropNetworkTaskTable(SQLiteDatabase db) {
@@ -319,6 +349,19 @@ public class DBSetup {
         }
     }
 
+    public void dropHeaderTable(SQLiteDatabase db) {
+        Log.d(DBSetup.class.getName(), "Dropping database table " + headerDBConstants.getTableName());
+        db.execSQL(headerDBConstants.getDropTableStatement());
+    }
+
+    public void tryDropHeaderTable(SQLiteDatabase db) {
+        try {
+            dropHeaderTable(db);
+        } catch (Exception exc) {
+            Log.d(DBMigrate.class.getName(), "dropHeaderTable failed ", exc);
+        }
+    }
+
     public void recreateNetworkTaskTable(SQLiteDatabase db) {
         Log.d(DBSetup.class.getName(), "recreateNetworkTaskTable");
         dropNetworkTaskTable(db);
@@ -353,6 +396,12 @@ public class DBSetup {
         Log.d(DBSetup.class.getName(), "recreateResolveTable");
         dropResolveTable(db);
         createResolveTable(db);
+    }
+
+    public void recreateHeaderTable(SQLiteDatabase db) {
+        Log.d(DBSetup.class.getName(), "recreateHeaderTable");
+        dropHeaderTable(db);
+        createHeaderTable(db);
     }
 
     public void recreateSchedulerStateTable(SQLiteDatabase db) {
@@ -425,6 +474,10 @@ public class DBSetup {
 
     public void createResolveTable() {
         createResolveTable(DBOpenHelper.getInstance(getContext()).getWritableDatabase());
+    }
+
+    public void createHeaderTable() {
+        createHeaderTable(DBOpenHelper.getInstance(getContext()).getWritableDatabase());
     }
 
     public void dropTables() {
@@ -509,6 +562,15 @@ public class DBSetup {
         tryDropResolveTable(DBOpenHelper.getInstance(getContext()).getWritableDatabase());
     }
 
+    public void dropHeaderTable() {
+        dropHeaderTable(DBOpenHelper.getInstance(getContext()).getWritableDatabase());
+    }
+
+    @SuppressWarnings({"unused"})
+    public void tryDropHeaderTable() {
+        tryDropHeaderTable(DBOpenHelper.getInstance(getContext()).getWritableDatabase());
+    }
+
     public void recreateNetworkTaskTable() {
         recreateNetworkTaskTable(DBOpenHelper.getInstance(getContext()).getWritableDatabase());
     }
@@ -535,6 +597,10 @@ public class DBSetup {
 
     public void recreateResolveTable() {
         recreateResolveTable(DBOpenHelper.getInstance(getContext()).getWritableDatabase());
+    }
+
+    public void recreateHeaderTable() {
+        recreateHeaderTable(DBOpenHelper.getInstance(getContext()).getWritableDatabase());
     }
 
     public void recreateTables() {
@@ -581,6 +647,12 @@ public class DBSetup {
         Log.d(DBSetup.class.getName(), "deleteAllResolve");
         ResolveDAO dao = new ResolveDAO(getContext());
         dao.deleteAllResolve();
+    }
+
+    public void deleteAllHeaders() {
+        Log.d(DBSetup.class.getName(), "deleteAllHeaders");
+        HeaderDAO dao = new HeaderDAO(getContext());
+        dao.deleteAllHeaders();
     }
 
     public void normalizeUIIndex() {
@@ -632,6 +704,17 @@ public class DBSetup {
         List<Map<String, ?>> exportedList = new ArrayList<>();
         for (Interval interval : intervalList) {
             exportedList.add(interval.toMap());
+        }
+        return exportedList;
+    }
+
+    public List<Map<String, ?>> exportGlobalHeaders() {
+        Log.d(DBSetup.class.getName(), "exportGlobalHeaders");
+        HeaderDAO dao = new HeaderDAO(getContext());
+        List<Header> headerList = dao.readGlobalHeaders();
+        List<Map<String, ?>> exportedList = new ArrayList<>();
+        for (Header header : headerList) {
+            exportedList.add(header.toMap());
         }
         return exportedList;
     }
@@ -720,6 +803,17 @@ public class DBSetup {
             } else {
                 Log.e(DBSetup.class.getName(), "Interval is invalid and will not be imported: " + interval);
             }
+        }
+    }
+
+    public void importGlobalHeaders(List<Map<String, ?>> headerList) {
+        Log.d(DBSetup.class.getName(), "importGlobalHeaders");
+        HeaderDAO dao = new HeaderDAO(getContext());
+        for (Map<String, ?> headerMap : headerList) {
+            Header header = new Header(headerMap);
+            Log.d(DBSetup.class.getName(), "Header is " + header);
+            Log.d(DBSetup.class.getName(), "Importing header.");
+            dao.insertHeader(header);
         }
     }
 

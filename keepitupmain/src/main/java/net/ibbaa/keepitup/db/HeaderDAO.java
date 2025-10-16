@@ -43,12 +43,11 @@ public class HeaderDAO extends BaseDAO {
         return returnedHeader;
     }
 
-    public Header updateHeader(Header header) {
+    public void updateHeader(Header header) {
         Log.d(HeaderDAO.class.getName(), "Updating header with id " + header.getId());
         Header returnedHeader = executeDBOperationInTransaction(header, this::updateHeader);
         Log.d(HeaderDAO.class.getName(), "Updated header is " + returnedHeader);
         dumpDatabase("Dump after updateHeader call");
-        return returnedHeader;
     }
 
     public List<Header> readGlobalHeaders() {
@@ -110,7 +109,7 @@ public class HeaderDAO extends BaseDAO {
         Log.d(HeaderDAO.class.getName(), "insertHeader, header is " + header);
         ContentValues values = new ContentValues();
         HeaderDBConstants dbConstants = new HeaderDBConstants(getContext());
-        values.put(dbConstants.getNetworkTaskIdColumnName(), header.getNetworkTaskId());
+        values.put(dbConstants.getNetworkTaskIdColumnName(), header.getNetworkTaskId() < 0 ? null : header.getNetworkTaskId());
         values.put(dbConstants.getNameColumnName(), header.getName());
         values.put(dbConstants.getValueColumnName(), header.getValue());
         long rowid = db.insert(dbConstants.getTableName(), null, values);
@@ -127,7 +126,7 @@ public class HeaderDAO extends BaseDAO {
         String selection = dbConstants.getIdColumnName() + " = ?";
         String[] selectionArgs = {String.valueOf(header.getId())};
         ContentValues values = new ContentValues();
-        values.put(dbConstants.getNetworkTaskIdColumnName(), header.getNetworkTaskId());
+        values.put(dbConstants.getNetworkTaskIdColumnName(), header.getNetworkTaskId() < 0 ? null : header.getNetworkTaskId());
         values.put(dbConstants.getNameColumnName(), header.getName());
         values.put(dbConstants.getValueColumnName(), header.getValue());
         db.update(dbConstants.getTableName(), values, selection, selectionArgs);
@@ -256,7 +255,7 @@ public class HeaderDAO extends BaseDAO {
         int indexNameColumn = cursor.getColumnIndex(dbConstants.getNameColumnName());
         int indexValueColumn = cursor.getColumnIndex(dbConstants.getValueColumnName());
         header.setId(cursor.getLong(indexIdColumn));
-        header.setNetworkTaskId(cursor.getLong(indexNetworkTaskIdColumn));
+        header.setNetworkTaskId(cursor.isNull(indexNetworkTaskIdColumn) ? -1 : cursor.getLong(indexNetworkTaskIdColumn));
         header.setName(cursor.getString(indexNameColumn));
         header.setValue(cursor.getString(indexValueColumn));
         return header;
