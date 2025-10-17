@@ -204,6 +204,20 @@ public class URLUtil {
         return url.getHost() + ":" + port;
     }
 
+    public static boolean isHTTP(URL url) {
+        if (url == null) {
+            return false;
+        }
+        return "http".equalsIgnoreCase(url.getProtocol());
+    }
+
+    public static boolean isHTTPS(URL url) {
+        if (url == null) {
+            return false;
+        }
+        return "https".equalsIgnoreCase(url.getProtocol());
+    }
+
     public static URL getURL(String inputUrl) {
         return getURL(null, inputUrl);
     }
@@ -220,7 +234,7 @@ public class URLUtil {
             String query = url.getQuery();
             String ref = url.getRef();
             String asciiHost;
-            if (!"http".equalsIgnoreCase(protocol) && !"https".equalsIgnoreCase(protocol)) {
+            if (!isHTTP(url) && !isHTTPS(url)) {
                 return null;
             }
             if (StringUtil.isEmpty(host)) {

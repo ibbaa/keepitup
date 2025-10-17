@@ -232,6 +232,18 @@ public class URLUtilTest {
     }
 
     @Test
+    public void testIsHTTPS() {
+        assertFalse(URLUtil.isHTTP(null));
+        assertFalse(URLUtil.isHTTPS(null));
+        assertTrue(URLUtil.isHTTP(URLUtil.getURL("http://www.host.com")));
+        assertFalse(URLUtil.isHTTPS(URLUtil.getURL("http://www.host.com")));
+        assertFalse(URLUtil.isHTTP(URLUtil.getURL("https://www.host.com")));
+        assertTrue(URLUtil.isHTTPS(URLUtil.getURL("https://www.host.com")));
+        assertFalse(URLUtil.isHTTP(URLUtil.getURL("ftp://www.host.com")));
+        assertFalse(URLUtil.isHTTPS(URLUtil.getURL("ftp://www.host.com")));
+    }
+
+    @Test
     public void testGetURL() throws Exception {
         URL url = URLUtil.getURL("http://www.host.com");
         assertNotNull(url);

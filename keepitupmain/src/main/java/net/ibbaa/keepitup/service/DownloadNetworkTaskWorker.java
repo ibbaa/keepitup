@@ -289,7 +289,8 @@ public class DownloadNetworkTaskWorker extends NetworkTaskWorker {
         if (exc == null) {
             logEntry.setMessage(redirectMessage + connectMessage + message);
         } else {
-            logEntry.setMessage(redirectMessage + connectMessage + getMessageFromException(message, exc, timeout));
+            String mismatchMessage = getProtocolMismatchMessage(downloadResult);
+            logEntry.setMessage(redirectMessage + connectMessage + getMessageFromException(message, exc, timeout) + mismatchMessage);
         }
     }
 
@@ -440,6 +441,24 @@ public class DownloadNetworkTaskWorker extends NetworkTaskWorker {
             port = connectResult.connectPort();
         }
         return host + ":" + port;
+    }
+
+    private String getProtocolMismatchMessage(DownloadCommandResult downloadResult) {
+        DownloadConnectResult connectResult = getActualConnectResult(downloadResult);
+        if (connectResult == null) {
+            return "";
+        }
+        if (URLUtil.isHTTP(downloadResult.url())) {
+            if (connectResult.connectPort() == 443 || (connectResult.connectPort() < 0 && connectResult.port() == 443)) {
+                return " " + getResources().getString(R.string.text_download_protocol_mismatch_http_to_443);
+            }
+        }
+        if (URLUtil.isHTTPS(downloadResult.url())) {
+            if (connectResult.connectPort() == 80 || (connectResult.connectPort() < 0 && connectResult.port() == 80)) {
+                return " " + getResources().getString(R.string.text_download_protocol_mismatch_https_to_80);
+            }
+        }
+        return "";
     }
 
     private String determineDownloadFolder() {

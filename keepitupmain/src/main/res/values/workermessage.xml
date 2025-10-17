@@ -77,6 +77,8 @@
     <string name="text_download_invalid_error">The download was stopped because the network task is no longer valid.</string>
     <string name="text_download_stopped_error">The download was stopped.</string>
     <string name="text_download_unknown_error">The download from %s failed for an unknown reason.</string>
+    <string name="text_download_protocol_mismatch_http_to_443">(protocol mismatch http to port 443)</string>
+    <string name="text_download_protocol_mismatch_https_to_80">(protocol mismatch https to port 80)</string>
     <string name="text_download_success">The download from %s was successful.</string>
     <string name="text_download_partial">The file was partially downloaded.</string>
     <string name="text_download_file">Downloaded file: %s.</string>
