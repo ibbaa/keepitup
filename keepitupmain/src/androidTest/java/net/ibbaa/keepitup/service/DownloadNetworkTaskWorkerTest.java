@@ -362,7 +362,7 @@ public class DownloadNetworkTaskWorkerTest {
         assertEquals(45, logEntry.getNetworkTaskId());
         assertEquals(getTestTimestamp(), logEntry.getTimestamp());
         assertTrue(logEntry.isSuccess());
-        assertEquals("Connected to host:123 successfully. The download from http://127.0.0.1 was successful. The file was deleted after download. 999 msec download time.", logEntry.getMessage());
+        assertEquals("Request to host:123 was successful. The download from http://127.0.0.1 was successful. The file was deleted after download. 999 msec download time.", logEntry.getMessage());
     }
 
     @Test
@@ -385,7 +385,7 @@ public class DownloadNetworkTaskWorkerTest {
         assertEquals(45, logEntry.getNetworkTaskId());
         assertEquals(getTestTimestamp(), logEntry.getTimestamp());
         assertTrue(logEntry.isSuccess());
-        assertEquals("Connected to 127.0.0.1:22 successfully. Server returned redirect 301 test. Connected to host:123 successfully. The download from http://127.0.0.1 was successful. The file was deleted after download. 999 msec download time.", logEntry.getMessage());
+        assertEquals("Request to 127.0.0.1:22 was successful. Server returned redirect 301 test. Request to host:123 was successful. The download from http://127.0.0.1 was successful. The file was deleted after download. 999 msec download time.", logEntry.getMessage());
     }
 
     @Test
@@ -399,7 +399,7 @@ public class DownloadNetworkTaskWorkerTest {
         assertEquals(45, logEntry.getNetworkTaskId());
         assertEquals(getTestTimestamp(), logEntry.getTimestamp());
         assertFalse(logEntry.isSuccess());
-        assertEquals("Connection to host:123 failed.", logEntry.getMessage());
+        assertEquals("Request to host:123 failed.", logEntry.getMessage());
     }
 
     @Test
@@ -413,7 +413,7 @@ public class DownloadNetworkTaskWorkerTest {
         assertEquals(45, logEntry.getNetworkTaskId());
         assertEquals(getTestTimestamp(), logEntry.getTimestamp());
         assertFalse(logEntry.isSuccess());
-        assertEquals("Connected to 127.0.0.1:22 successfully. Server returned redirect 301 test1. Connected to 192.168.178.1:80 successfully. Server returned redirect 302 test2. Connection to host:123 failed.", logEntry.getMessage());
+        assertEquals("Request to 127.0.0.1:22 was successful. Server returned redirect 301 test1. Request to 192.168.178.1:80 was successful. Server returned redirect 302 test2. Request to host:123 failed.", logEntry.getMessage());
     }
 
     @Test
@@ -427,7 +427,7 @@ public class DownloadNetworkTaskWorkerTest {
         assertEquals(45, logEntry.getNetworkTaskId());
         assertEquals(getTestTimestamp(), logEntry.getTimestamp());
         assertFalse(logEntry.isSuccess());
-        assertEquals("Connected to host:123 successfully. The download from http://127.0.0.1 failed. Server return code 404.", logEntry.getMessage());
+        assertEquals("Request to host:123 was successful. The download from http://127.0.0.1 failed. Server return code 404.", logEntry.getMessage());
     }
 
     @Test
@@ -441,7 +441,7 @@ public class DownloadNetworkTaskWorkerTest {
         assertEquals(45, logEntry.getNetworkTaskId());
         assertEquals(getTestTimestamp(), logEntry.getTimestamp());
         assertFalse(logEntry.isSuccess());
-        assertEquals("Connected to host:123 successfully. Server returned redirect 301 test. Connected to host:123 successfully. The download from http://127.0.0.1 failed. Server return code 404 message.", logEntry.getMessage());
+        assertEquals("Request to host:123 was successful. Server returned redirect 301 test. Request to host:123 was successful. The download from http://127.0.0.1 failed. Server return code 404 message.", logEntry.getMessage());
     }
 
     @Test
@@ -455,7 +455,7 @@ public class DownloadNetworkTaskWorkerTest {
         assertEquals(45, logEntry.getNetworkTaskId());
         assertEquals(getTestTimestamp(), logEntry.getTimestamp());
         assertTrue(logEntry.isSuccess());
-        assertEquals("Connected to host:123 successfully. The download from http://127.0.0.1 was successful. The file was deleted after download. 20 msec download time.", logEntry.getMessage());
+        assertEquals("Request to host:123 was successful. The download from http://127.0.0.1 was successful. The file was deleted after download. 20 msec download time.", logEntry.getMessage());
     }
 
     @Test
@@ -469,7 +469,7 @@ public class DownloadNetworkTaskWorkerTest {
         assertEquals(45, logEntry.getNetworkTaskId());
         assertEquals(getTestTimestamp(), logEntry.getTimestamp());
         assertTrue(logEntry.isSuccess());
-        assertEquals("Connected to host:123 successfully. The download from http://127.0.0.1 was successful. The file was deleted after download. 20 msec download time.", logEntry.getMessage());
+        assertEquals("Request to host:123 was successful. The download from http://127.0.0.1 was successful. The file was deleted after download. 20 msec download time.", logEntry.getMessage());
     }
 
     @Test
@@ -483,7 +483,7 @@ public class DownloadNetworkTaskWorkerTest {
         assertEquals(45, logEntry.getNetworkTaskId());
         assertEquals(getTestTimestamp(), logEntry.getTimestamp());
         assertFalse(logEntry.isSuccess());
-        assertEquals("Connected to host:123 successfully. The download was stopped.", logEntry.getMessage());
+        assertEquals("Request to host:123 was successful. The download was stopped.", logEntry.getMessage());
     }
 
     @Test
@@ -497,7 +497,7 @@ public class DownloadNetworkTaskWorkerTest {
         assertEquals(45, logEntry.getNetworkTaskId());
         assertEquals(getTestTimestamp(), logEntry.getTimestamp());
         assertFalse(logEntry.isSuccess());
-        assertEquals("Connected to 192.192.192.192:22 successfully. Server returned redirect 301. Connected to [fd00::3eec:efff:feb5:d5c]:22 successfully. Server returned redirect 301. Connected to 127.0.0.1:443 successfully. Server returned redirect 301. Connected to host:123 successfully. The download was stopped.", logEntry.getMessage());
+        assertEquals("Request to 192.192.192.192:22 was successful. Server returned redirect 301. Request to [fd00::3eec:efff:feb5:d5c]:22 was successful. Server returned redirect 301. Request to 127.0.0.1:443 was successful. Server returned redirect 301. Request to host:123 was successful. The download was stopped.", logEntry.getMessage());
     }
 
     @Test
@@ -511,7 +511,7 @@ public class DownloadNetworkTaskWorkerTest {
         assertEquals(45, logEntry.getNetworkTaskId());
         assertEquals(getTestTimestamp(), logEntry.getTimestamp());
         assertFalse(logEntry.isSuccess());
-        assertEquals("Connected to host:123 successfully. The download was stopped. Exception: Test", logEntry.getMessage());
+        assertEquals("Request to host:123 was successful. The download was stopped. Exception: Test", logEntry.getMessage());
     }
 
     @Test
@@ -525,7 +525,7 @@ public class DownloadNetworkTaskWorkerTest {
         assertEquals(45, logEntry.getNetworkTaskId());
         assertEquals(getTestTimestamp(), logEntry.getTimestamp());
         assertFalse(logEntry.isSuccess());
-        assertEquals("Connected to host:123 successfully. Server returned redirect 302 1. Connected to host:123 successfully. The download was stopped. Exception: Test", logEntry.getMessage());
+        assertEquals("Request to host:123 was successful. Server returned redirect 302 1. Request to host:123 was successful. The download was stopped. Exception: Test", logEntry.getMessage());
     }
 
     @Test
@@ -542,7 +542,7 @@ public class DownloadNetworkTaskWorkerTest {
         assertEquals(45, logEntry.getNetworkTaskId());
         assertEquals(getTestTimestamp(), logEntry.getTimestamp());
         assertFalse(logEntry.isSuccess());
-        assertEquals("Connected to host:123 successfully. The download was stopped. The file was partially downloaded. Downloaded file: /Test/testfile. 1 sec download time.", logEntry.getMessage());
+        assertEquals("Request to host:123 was successful. The download was stopped. The file was partially downloaded. Downloaded file: /Test/testfile. 1 sec download time.", logEntry.getMessage());
     }
 
     @Test
@@ -559,7 +559,7 @@ public class DownloadNetworkTaskWorkerTest {
         assertEquals(45, logEntry.getNetworkTaskId());
         assertEquals(getTestTimestamp(), logEntry.getTimestamp());
         assertFalse(logEntry.isSuccess());
-        assertEquals("Connected to host:123 successfully. The download was stopped. The file was partially downloaded. Downloaded file: /Test/testfile. 1 sec download time.", logEntry.getMessage());
+        assertEquals("Request to host:123 was successful. The download was stopped. The file was partially downloaded. Downloaded file: /Test/testfile. 1 sec download time.", logEntry.getMessage());
     }
 
     @Test
@@ -576,7 +576,7 @@ public class DownloadNetworkTaskWorkerTest {
         assertEquals(45, logEntry.getNetworkTaskId());
         assertEquals(getTestTimestamp(), logEntry.getTimestamp());
         assertFalse(logEntry.isSuccess());
-        assertEquals("Connected to host:123 successfully. The download was stopped. The file was partially downloaded. Downloaded file: /Test/testfile. 10 sec download time. Exception: Test", logEntry.getMessage());
+        assertEquals("Request to host:123 was successful. The download was stopped. The file was partially downloaded. Downloaded file: /Test/testfile. 10 sec download time. Exception: Test", logEntry.getMessage());
     }
 
     @Test
@@ -593,7 +593,7 @@ public class DownloadNetworkTaskWorkerTest {
         assertEquals(45, logEntry.getNetworkTaskId());
         assertEquals(getTestTimestamp(), logEntry.getTimestamp());
         assertFalse(logEntry.isSuccess());
-        assertEquals("Connected to 220.120.220.1:123 successfully. Server returned redirect 301 1. Connected to host:123 successfully. Server returned redirect 302 2. Connected to 8.8.8.8:12 successfully. Server returned redirect 302 3. Connected to host:123 successfully. Server returned redirect 302 4. Connected to host:123 successfully. Server returned redirect 302 5. Connected to host:123 successfully. The download was stopped. The file was partially downloaded. Downloaded file: /Test/testfile. 10 sec download time. Exception: Test", logEntry.getMessage());
+        assertEquals("Request to 220.120.220.1:123 was successful. Server returned redirect 301 1. Request to host:123 was successful. Server returned redirect 302 2. Request to 8.8.8.8:12 was successful. Server returned redirect 302 3. Request to host:123 was successful. Server returned redirect 302 4. Request to host:123 was successful. Server returned redirect 302 5. Request to host:123 was successful. The download was stopped. The file was partially downloaded. Downloaded file: /Test/testfile. 10 sec download time. Exception: Test", logEntry.getMessage());
     }
 
     @Test
@@ -607,7 +607,7 @@ public class DownloadNetworkTaskWorkerTest {
         assertEquals(45, logEntry.getNetworkTaskId());
         assertEquals(getTestTimestamp(), logEntry.getTimestamp());
         assertFalse(logEntry.isSuccess());
-        assertEquals("Connected to 220.120.220.1:123 successfully. The download was stopped. The file was partially downloaded. The deletion of the partially_downloaded file failed. 1 msec download time.", logEntry.getMessage());
+        assertEquals("Request to 220.120.220.1:123 was successful. The download was stopped. The file was partially downloaded. The deletion of the partially_downloaded file failed. 1 msec download time.", logEntry.getMessage());
     }
 
     @Test
@@ -621,7 +621,7 @@ public class DownloadNetworkTaskWorkerTest {
         assertEquals(45, logEntry.getNetworkTaskId());
         assertEquals(getTestTimestamp(), logEntry.getTimestamp());
         assertFalse(logEntry.isSuccess());
-        assertEquals("Connected to host:123 successfully. Server returned redirect 301. Connected to host:123 successfully. The download was stopped. The file was partially downloaded. The deletion of the partially_downloaded file failed. 1 msec download time.", logEntry.getMessage());
+        assertEquals("Request to host:123 was successful. Server returned redirect 301. Request to host:123 was successful. The download was stopped. The file was partially downloaded. The deletion of the partially_downloaded file failed. 1 msec download time.", logEntry.getMessage());
     }
 
     @Test
@@ -635,7 +635,7 @@ public class DownloadNetworkTaskWorkerTest {
         assertEquals(45, logEntry.getNetworkTaskId());
         assertEquals(getTestTimestamp(), logEntry.getTimestamp());
         assertFalse(logEntry.isSuccess());
-        assertEquals("Connected to [::1]:123 successfully. The download was stopped. The file was partially downloaded. The deletion of the partially_downloaded file failed. 5 msec download time. Exception: Test", logEntry.getMessage());
+        assertEquals("Request to [::1]:123 was successful. The download was stopped. The file was partially downloaded. The deletion of the partially_downloaded file failed. 5 msec download time. Exception: Test", logEntry.getMessage());
     }
 
     @Test
@@ -649,7 +649,7 @@ public class DownloadNetworkTaskWorkerTest {
         assertEquals(45, logEntry.getNetworkTaskId());
         assertEquals(getTestTimestamp(), logEntry.getTimestamp());
         assertFalse(logEntry.isSuccess());
-        assertEquals("Connected to host:123 successfully. Server returned redirect 301 1. Connected to [::11.22.33.44]:555 successfully. The download was stopped. The file was partially downloaded. The deletion of the partially_downloaded file failed. 5 msec download time. Exception: Test", logEntry.getMessage());
+        assertEquals("Request to host:123 was successful. Server returned redirect 301 1. Request to [::11.22.33.44]:555 was successful. The download was stopped. The file was partially downloaded. The deletion of the partially_downloaded file failed. 5 msec download time. Exception: Test", logEntry.getMessage());
     }
 
     @Test
@@ -666,7 +666,7 @@ public class DownloadNetworkTaskWorkerTest {
         assertEquals(45, logEntry.getNetworkTaskId());
         assertEquals(getTestTimestamp(), logEntry.getTimestamp());
         assertFalse(logEntry.isSuccess());
-        assertEquals("Connected to host:123 successfully. The download was stopped. The file was partially downloaded. The deletion of the partially_downloaded file failed. 100 sec download time.", logEntry.getMessage());
+        assertEquals("Request to host:123 was successful. The download was stopped. The file was partially downloaded. The deletion of the partially_downloaded file failed. 100 sec download time.", logEntry.getMessage());
     }
 
     @Test
@@ -683,7 +683,7 @@ public class DownloadNetworkTaskWorkerTest {
         assertEquals(45, logEntry.getNetworkTaskId());
         assertEquals(getTestTimestamp(), logEntry.getTimestamp());
         assertFalse(logEntry.isSuccess());
-        assertEquals("Connected to [::11.22.33.44]:1 successfully. Server returned redirect 302 123. Connected to host:123 successfully. The download was stopped. The file was partially downloaded. The deletion of the partially_downloaded file failed. 100 sec download time.", logEntry.getMessage());
+        assertEquals("Request to [::11.22.33.44]:1 was successful. Server returned redirect 302 123. Request to host:123 was successful. The download was stopped. The file was partially downloaded. The deletion of the partially_downloaded file failed. 100 sec download time.", logEntry.getMessage());
     }
 
     @Test
@@ -700,7 +700,7 @@ public class DownloadNetworkTaskWorkerTest {
         assertEquals(45, logEntry.getNetworkTaskId());
         assertEquals(getTestTimestamp(), logEntry.getTimestamp());
         assertFalse(logEntry.isSuccess());
-        assertEquals("Connected to host:123 successfully. The download was stopped. The file was partially downloaded. The deletion of the partially_downloaded file failed. 9 msec download time. Exception: Test", logEntry.getMessage());
+        assertEquals("Request to host:123 was successful. The download was stopped. The file was partially downloaded. The deletion of the partially_downloaded file failed. 9 msec download time. Exception: Test", logEntry.getMessage());
     }
 
     @Test
@@ -717,7 +717,7 @@ public class DownloadNetworkTaskWorkerTest {
         assertEquals(45, logEntry.getNetworkTaskId());
         assertEquals(getTestTimestamp(), logEntry.getTimestamp());
         assertFalse(logEntry.isSuccess());
-        assertEquals("Connected to [::2]:2 successfully. Server returned redirect 302. Connected to [::1]:1 successfully. The download was stopped. The file was partially downloaded. The deletion of the partially_downloaded file failed. 9 msec download time. Exception: Test", logEntry.getMessage());
+        assertEquals("Request to [::2]:2 was successful. Server returned redirect 302. Request to [::1]:1 was successful. The download was stopped. The file was partially downloaded. The deletion of the partially_downloaded file failed. 9 msec download time. Exception: Test", logEntry.getMessage());
     }
 
     @Test
@@ -731,7 +731,7 @@ public class DownloadNetworkTaskWorkerTest {
         assertEquals(45, logEntry.getNetworkTaskId());
         assertEquals(getTestTimestamp(), logEntry.getTimestamp());
         assertFalse(logEntry.isSuccess());
-        assertEquals("Connected to 1.2.3.4:2 successfully. The download was stopped. The file was partially downloaded. The partially downloaded file was deleted. 1 msec download time.", logEntry.getMessage());
+        assertEquals("Request to 1.2.3.4:2 was successful. The download was stopped. The file was partially downloaded. The partially downloaded file was deleted. 1 msec download time.", logEntry.getMessage());
     }
 
     @Test
@@ -745,7 +745,7 @@ public class DownloadNetworkTaskWorkerTest {
         assertEquals(45, logEntry.getNetworkTaskId());
         assertEquals(getTestTimestamp(), logEntry.getTimestamp());
         assertFalse(logEntry.isSuccess());
-        assertEquals("Connected to host:123 successfully. The download was stopped. The file was partially downloaded. The partially downloaded file was deleted. 1 msec download time.", logEntry.getMessage());
+        assertEquals("Request to host:123 was successful. The download was stopped. The file was partially downloaded. The partially downloaded file was deleted. 1 msec download time.", logEntry.getMessage());
     }
 
     @Test
@@ -759,7 +759,7 @@ public class DownloadNetworkTaskWorkerTest {
         assertEquals(45, logEntry.getNetworkTaskId());
         assertEquals(getTestTimestamp(), logEntry.getTimestamp());
         assertFalse(logEntry.isSuccess());
-        assertEquals("Connected to host:123 successfully. The download was stopped. The file was partially downloaded. The partially downloaded file was deleted. 1 msec download time. Exception: Test", logEntry.getMessage());
+        assertEquals("Request to host:123 was successful. The download was stopped. The file was partially downloaded. The partially downloaded file was deleted. 1 msec download time. Exception: Test", logEntry.getMessage());
     }
 
     @Test
@@ -773,7 +773,7 @@ public class DownloadNetworkTaskWorkerTest {
         assertEquals(45, logEntry.getNetworkTaskId());
         assertEquals(getTestTimestamp(), logEntry.getTimestamp());
         assertFalse(logEntry.isSuccess());
-        assertEquals("Connected to 1.2.3.4:2 successfully. Server returned redirect 301 1. Connected to 1.2.3.4:2 successfully. Server returned redirect 301 2. Connected to host:123 successfully. Server returned redirect 302 3. Connected to host:123 successfully. Server returned redirect 301 4. Connected to host:123 successfully. Server returned redirect 301 5. Connected to [::1]:2 successfully. Server returned redirect 301 6. Connected to 1.2.3.4:2 successfully. The download was stopped. The file was partially downloaded. The partially downloaded file was deleted. 1 msec download time. Exception: Test", logEntry.getMessage());
+        assertEquals("Request to 1.2.3.4:2 was successful. Server returned redirect 301 1. Request to 1.2.3.4:2 was successful. Server returned redirect 301 2. Request to host:123 was successful. Server returned redirect 302 3. Request to host:123 was successful. Server returned redirect 301 4. Request to host:123 was successful. Server returned redirect 301 5. Request to [::1]:2 was successful. Server returned redirect 301 6. Request to 1.2.3.4:2 was successful. The download was stopped. The file was partially downloaded. The partially downloaded file was deleted. 1 msec download time. Exception: Test", logEntry.getMessage());
     }
 
     @Test
@@ -787,7 +787,7 @@ public class DownloadNetworkTaskWorkerTest {
         assertEquals(45, logEntry.getNetworkTaskId());
         assertEquals(getTestTimestamp(), logEntry.getTimestamp());
         assertFalse(logEntry.isSuccess());
-        assertEquals("Connected to host:123 successfully. The download was stopped because the network task is no longer valid.", logEntry.getMessage());
+        assertEquals("Request to host:123 was successful. The download was stopped because the network task is no longer valid.", logEntry.getMessage());
     }
 
     @Test
@@ -801,7 +801,7 @@ public class DownloadNetworkTaskWorkerTest {
         assertEquals(45, logEntry.getNetworkTaskId());
         assertEquals(getTestTimestamp(), logEntry.getTimestamp());
         assertFalse(logEntry.isSuccess());
-        assertEquals("Connected to host:123 successfully. Server returned redirect 301. Connected to host:123 successfully. Server returned redirect 301. Connected to host:123 successfully. Server returned redirect 301. Connected to host:123 successfully. The download was stopped because the network task is no longer valid.", logEntry.getMessage());
+        assertEquals("Request to host:123 was successful. Server returned redirect 301. Request to host:123 was successful. Server returned redirect 301. Request to host:123 was successful. Server returned redirect 301. Request to host:123 was successful. The download was stopped because the network task is no longer valid.", logEntry.getMessage());
     }
 
     @Test
@@ -815,7 +815,7 @@ public class DownloadNetworkTaskWorkerTest {
         assertEquals(45, logEntry.getNetworkTaskId());
         assertEquals(getTestTimestamp(), logEntry.getTimestamp());
         assertFalse(logEntry.isSuccess());
-        assertEquals("Connected to host:123 successfully. The download was stopped because the network task is no longer valid. Exception: Test", logEntry.getMessage());
+        assertEquals("Request to host:123 was successful. The download was stopped because the network task is no longer valid. Exception: Test", logEntry.getMessage());
     }
 
     @Test
@@ -829,7 +829,7 @@ public class DownloadNetworkTaskWorkerTest {
         assertEquals(45, logEntry.getNetworkTaskId());
         assertEquals(getTestTimestamp(), logEntry.getTimestamp());
         assertFalse(logEntry.isSuccess());
-        assertEquals("Connected to host:123 successfully. Server returned redirect 302 3. Connected to host:123 successfully. Server returned redirect 302 2. Connected to 127.0.0.1:65000 successfully. The download was stopped because the network task is no longer valid. Exception: Test", logEntry.getMessage());
+        assertEquals("Request to host:123 was successful. Server returned redirect 302 3. Request to host:123 was successful. Server returned redirect 302 2. Request to 127.0.0.1:65000 was successful. The download was stopped because the network task is no longer valid. Exception: Test", logEntry.getMessage());
     }
 
     @Test
@@ -846,7 +846,7 @@ public class DownloadNetworkTaskWorkerTest {
         assertEquals(45, logEntry.getNetworkTaskId());
         assertEquals(getTestTimestamp(), logEntry.getTimestamp());
         assertFalse(logEntry.isSuccess());
-        assertEquals("Connected to 127.0.0.1:65000 successfully. The download was stopped because the network task is no longer valid. The file was partially downloaded. Downloaded file: /Test/testfile. 3,600 sec download time.", logEntry.getMessage());
+        assertEquals("Request to 127.0.0.1:65000 was successful. The download was stopped because the network task is no longer valid. The file was partially downloaded. Downloaded file: /Test/testfile. 3,600 sec download time.", logEntry.getMessage());
     }
 
     @Test
@@ -863,7 +863,7 @@ public class DownloadNetworkTaskWorkerTest {
         assertEquals(45, logEntry.getNetworkTaskId());
         assertEquals(getTestTimestamp(), logEntry.getTimestamp());
         assertFalse(logEntry.isSuccess());
-        assertEquals("Connected to 127.0.0.1:65000 successfully. Server returned redirect 301 123. Connected to host:123 successfully. The download was stopped because the network task is no longer valid. The file was partially downloaded. Downloaded file: /Test/testfile. 3,600 sec download time.", logEntry.getMessage());
+        assertEquals("Request to 127.0.0.1:65000 was successful. Server returned redirect 301 123. Request to host:123 was successful. The download was stopped because the network task is no longer valid. The file was partially downloaded. Downloaded file: /Test/testfile. 3,600 sec download time.", logEntry.getMessage());
     }
 
     @Test
@@ -880,7 +880,7 @@ public class DownloadNetworkTaskWorkerTest {
         assertEquals(45, logEntry.getNetworkTaskId());
         assertEquals(getTestTimestamp(), logEntry.getTimestamp());
         assertFalse(logEntry.isSuccess());
-        assertEquals("Connected to host:123 successfully. The download was stopped because the network task is no longer valid. The file was partially downloaded. Downloaded file: /Test/testfile. 3 msec download time. Exception: Test", logEntry.getMessage());
+        assertEquals("Request to host:123 was successful. The download was stopped because the network task is no longer valid. The file was partially downloaded. Downloaded file: /Test/testfile. 3 msec download time. Exception: Test", logEntry.getMessage());
     }
 
     @Test
@@ -897,7 +897,7 @@ public class DownloadNetworkTaskWorkerTest {
         assertEquals(45, logEntry.getNetworkTaskId());
         assertEquals(getTestTimestamp(), logEntry.getTimestamp());
         assertFalse(logEntry.isSuccess());
-        assertEquals("Connected to host:123 successfully. Server returned redirect 301 1. Connected to host:123 successfully. Server returned redirect 302 2. Connected to host:123 successfully. The download was stopped because the network task is no longer valid. The file was partially downloaded. Downloaded file: /Test/testfile. 3 msec download time. Exception: Test", logEntry.getMessage());
+        assertEquals("Request to host:123 was successful. Server returned redirect 301 1. Request to host:123 was successful. Server returned redirect 302 2. Request to host:123 was successful. The download was stopped because the network task is no longer valid. The file was partially downloaded. Downloaded file: /Test/testfile. 3 msec download time. Exception: Test", logEntry.getMessage());
     }
 
     @Test
@@ -911,7 +911,7 @@ public class DownloadNetworkTaskWorkerTest {
         assertEquals(45, logEntry.getNetworkTaskId());
         assertEquals(getTestTimestamp(), logEntry.getTimestamp());
         assertFalse(logEntry.isSuccess());
-        assertEquals("Connected to [::5]:65000 successfully. The download was stopped because the network task is no longer valid. The file was partially downloaded. The deletion of the partially_downloaded file failed. 1 sec download time.", logEntry.getMessage());
+        assertEquals("Request to [::5]:65000 was successful. The download was stopped because the network task is no longer valid. The file was partially downloaded. The deletion of the partially_downloaded file failed. 1 sec download time.", logEntry.getMessage());
     }
 
     @Test
@@ -925,7 +925,7 @@ public class DownloadNetworkTaskWorkerTest {
         assertEquals(45, logEntry.getNetworkTaskId());
         assertEquals(getTestTimestamp(), logEntry.getTimestamp());
         assertFalse(logEntry.isSuccess());
-        assertEquals("Connected to [::5]:65000 successfully. The download was stopped because the network task is no longer valid. The file was partially downloaded. The deletion of the partially_downloaded file failed. 1 sec download time.", logEntry.getMessage());
+        assertEquals("Request to [::5]:65000 was successful. The download was stopped because the network task is no longer valid. The file was partially downloaded. The deletion of the partially_downloaded file failed. 1 sec download time.", logEntry.getMessage());
     }
 
     @Test
@@ -939,7 +939,7 @@ public class DownloadNetworkTaskWorkerTest {
         assertEquals(45, logEntry.getNetworkTaskId());
         assertEquals(getTestTimestamp(), logEntry.getTimestamp());
         assertFalse(logEntry.isSuccess());
-        assertEquals("Connected to host:123 successfully. The download was stopped because the network task is no longer valid. The file was partially downloaded. The deletion of the partially_downloaded file failed. 12 sec download time. Exception: Test", logEntry.getMessage());
+        assertEquals("Request to host:123 was successful. The download was stopped because the network task is no longer valid. The file was partially downloaded. The deletion of the partially_downloaded file failed. 12 sec download time. Exception: Test", logEntry.getMessage());
     }
 
     @Test
@@ -953,7 +953,7 @@ public class DownloadNetworkTaskWorkerTest {
         assertEquals(45, logEntry.getNetworkTaskId());
         assertEquals(getTestTimestamp(), logEntry.getTimestamp());
         assertFalse(logEntry.isSuccess());
-        assertEquals("Connected to [::5]:1 successfully. Server returned redirect 301 1. Connected to [::5]:65000 successfully. The download was stopped because the network task is no longer valid. The file was partially downloaded. The deletion of the partially_downloaded file failed. 12 sec download time. Exception: Test", logEntry.getMessage());
+        assertEquals("Request to [::5]:1 was successful. Server returned redirect 301 1. Request to [::5]:65000 was successful. The download was stopped because the network task is no longer valid. The file was partially downloaded. The deletion of the partially_downloaded file failed. 12 sec download time. Exception: Test", logEntry.getMessage());
     }
 
     @Test
@@ -970,7 +970,7 @@ public class DownloadNetworkTaskWorkerTest {
         assertEquals(45, logEntry.getNetworkTaskId());
         assertEquals(getTestTimestamp(), logEntry.getTimestamp());
         assertFalse(logEntry.isSuccess());
-        assertEquals("Connected to host:123 successfully. The download was stopped because the network task is no longer valid. The file was partially downloaded. The deletion of the partially_downloaded file failed. 20 sec download time.", logEntry.getMessage());
+        assertEquals("Request to host:123 was successful. The download was stopped because the network task is no longer valid. The file was partially downloaded. The deletion of the partially_downloaded file failed. 20 sec download time.", logEntry.getMessage());
     }
 
     @Test
@@ -987,7 +987,7 @@ public class DownloadNetworkTaskWorkerTest {
         assertEquals(45, logEntry.getNetworkTaskId());
         assertEquals(getTestTimestamp(), logEntry.getTimestamp());
         assertFalse(logEntry.isSuccess());
-        assertEquals("Connected to host:123 successfully. Server returned redirect 302 1. Connected to host:123 successfully. The download was stopped because the network task is no longer valid. The file was partially downloaded. The deletion of the partially_downloaded file failed. 20 sec download time.", logEntry.getMessage());
+        assertEquals("Request to host:123 was successful. Server returned redirect 302 1. Request to host:123 was successful. The download was stopped because the network task is no longer valid. The file was partially downloaded. The deletion of the partially_downloaded file failed. 20 sec download time.", logEntry.getMessage());
     }
 
     @Test
@@ -1004,7 +1004,7 @@ public class DownloadNetworkTaskWorkerTest {
         assertEquals(45, logEntry.getNetworkTaskId());
         assertEquals(getTestTimestamp(), logEntry.getTimestamp());
         assertFalse(logEntry.isSuccess());
-        assertEquals("Connected to 127.0.0.1:8090 successfully. The download was stopped because the network task is no longer valid. The file was partially downloaded. The deletion of the partially_downloaded file failed. 7,200 sec download time. Exception: Test", logEntry.getMessage());
+        assertEquals("Request to 127.0.0.1:8090 was successful. The download was stopped because the network task is no longer valid. The file was partially downloaded. The deletion of the partially_downloaded file failed. 7,200 sec download time. Exception: Test", logEntry.getMessage());
     }
 
     @Test
@@ -1021,7 +1021,7 @@ public class DownloadNetworkTaskWorkerTest {
         assertEquals(45, logEntry.getNetworkTaskId());
         assertEquals(getTestTimestamp(), logEntry.getTimestamp());
         assertFalse(logEntry.isSuccess());
-        assertEquals("Connected to host:123 successfully. Server returned redirect 302. Connected to 127.0.0.1:8090 successfully. Server returned redirect 301. Connected to host:123 successfully. The download was stopped because the network task is no longer valid. The file was partially downloaded. The deletion of the partially_downloaded file failed. 7,200 sec download time. Exception: Test", logEntry.getMessage());
+        assertEquals("Request to host:123 was successful. Server returned redirect 302. Request to 127.0.0.1:8090 was successful. Server returned redirect 301. Request to host:123 was successful. The download was stopped because the network task is no longer valid. The file was partially downloaded. The deletion of the partially_downloaded file failed. 7,200 sec download time. Exception: Test", logEntry.getMessage());
     }
 
     @Test
@@ -1035,7 +1035,7 @@ public class DownloadNetworkTaskWorkerTest {
         assertEquals(45, logEntry.getNetworkTaskId());
         assertEquals(getTestTimestamp(), logEntry.getTimestamp());
         assertFalse(logEntry.isSuccess());
-        assertEquals("Connected to host:123 successfully. The download was stopped because the network task is no longer valid. The file was partially downloaded. The partially downloaded file was deleted. 50 msec download time.", logEntry.getMessage());
+        assertEquals("Request to host:123 was successful. The download was stopped because the network task is no longer valid. The file was partially downloaded. The partially downloaded file was deleted. 50 msec download time.", logEntry.getMessage());
     }
 
     @Test
@@ -1049,7 +1049,7 @@ public class DownloadNetworkTaskWorkerTest {
         assertEquals(45, logEntry.getNetworkTaskId());
         assertEquals(getTestTimestamp(), logEntry.getTimestamp());
         assertFalse(logEntry.isSuccess());
-        assertEquals("Connected to host:123 successfully. Server returned redirect 301 123456. Connected to host:123 successfully. The download was stopped because the network task is no longer valid. The file was partially downloaded. The partially downloaded file was deleted. 50 msec download time.", logEntry.getMessage());
+        assertEquals("Request to host:123 was successful. Server returned redirect 301 123456. Request to host:123 was successful. The download was stopped because the network task is no longer valid. The file was partially downloaded. The partially downloaded file was deleted. 50 msec download time.", logEntry.getMessage());
     }
 
     @Test
@@ -1063,7 +1063,7 @@ public class DownloadNetworkTaskWorkerTest {
         assertEquals(45, logEntry.getNetworkTaskId());
         assertEquals(getTestTimestamp(), logEntry.getTimestamp());
         assertFalse(logEntry.isSuccess());
-        assertEquals("Connected to 10.20.30.40:224 successfully. The download was stopped because the network task is no longer valid. The file was partially downloaded. The partially downloaded file was deleted. 3 msec download time. Exception: Test", logEntry.getMessage());
+        assertEquals("Request to 10.20.30.40:224 was successful. The download was stopped because the network task is no longer valid. The file was partially downloaded. The partially downloaded file was deleted. 3 msec download time. Exception: Test", logEntry.getMessage());
     }
 
     @Test
@@ -1077,7 +1077,7 @@ public class DownloadNetworkTaskWorkerTest {
         assertEquals(45, logEntry.getNetworkTaskId());
         assertEquals(getTestTimestamp(), logEntry.getTimestamp());
         assertFalse(logEntry.isSuccess());
-        assertEquals("Connected to 10.20.30.40:224 successfully. Server returned redirect 301 1. Connected to [::30]:225 successfully. Server returned redirect 301. Connected to host:123 successfully. The download was stopped because the network task is no longer valid. The file was partially downloaded. The partially downloaded file was deleted. 3 msec download time. Exception: Test", logEntry.getMessage());
+        assertEquals("Request to 10.20.30.40:224 was successful. Server returned redirect 301 1. Request to [::30]:225 was successful. Server returned redirect 301. Request to host:123 was successful. The download was stopped because the network task is no longer valid. The file was partially downloaded. The partially downloaded file was deleted. 3 msec download time. Exception: Test", logEntry.getMessage());
     }
 
     @Test
@@ -1091,7 +1091,7 @@ public class DownloadNetworkTaskWorkerTest {
         assertEquals(45, logEntry.getNetworkTaskId());
         assertEquals(getTestTimestamp(), logEntry.getTimestamp());
         assertFalse(logEntry.isSuccess());
-        assertEquals("Connected to 10.20.30.40:224 successfully. The download from http://127.0.0.1 failed for an unknown reason.", logEntry.getMessage());
+        assertEquals("Request to 10.20.30.40:224 was successful. The download from http://127.0.0.1 failed for an unknown reason.", logEntry.getMessage());
     }
 
     @Test
@@ -1105,7 +1105,7 @@ public class DownloadNetworkTaskWorkerTest {
         assertEquals(45, logEntry.getNetworkTaskId());
         assertEquals(getTestTimestamp(), logEntry.getTimestamp());
         assertFalse(logEntry.isSuccess());
-        assertEquals("Connected to [::30]:225 successfully. Server returned redirect 302 1. Connected to [::30]:225 successfully. Server returned redirect 302. Connected to host:123 successfully. The download from http://127.0.0.1 failed for an unknown reason.", logEntry.getMessage());
+        assertEquals("Request to [::30]:225 was successful. Server returned redirect 302 1. Request to [::30]:225 was successful. Server returned redirect 302. Request to host:123 was successful. The download from http://127.0.0.1 failed for an unknown reason.", logEntry.getMessage());
     }
 
     @Test
@@ -1119,7 +1119,7 @@ public class DownloadNetworkTaskWorkerTest {
         assertEquals(45, logEntry.getNetworkTaskId());
         assertEquals(getTestTimestamp(), logEntry.getTimestamp());
         assertFalse(logEntry.isSuccess());
-        assertEquals("Connected to host:123 successfully. The download from http://127.0.0.1 failed. Exception: Test", logEntry.getMessage());
+        assertEquals("Request to host:123 was successful. The download from http://127.0.0.1 failed. Exception: Test", logEntry.getMessage());
     }
 
     @Test
@@ -1133,7 +1133,7 @@ public class DownloadNetworkTaskWorkerTest {
         assertEquals(45, logEntry.getNetworkTaskId());
         assertEquals(getTestTimestamp(), logEntry.getTimestamp());
         assertFalse(logEntry.isSuccess());
-        assertEquals("Connected to host:123 successfully. Server returned redirect 301. Connected to host:123 successfully. The download from http://127.0.0.1 failed. Exception: Test", logEntry.getMessage());
+        assertEquals("Request to host:123 was successful. Server returned redirect 301. Request to host:123 was successful. The download from http://127.0.0.1 failed. Exception: Test", logEntry.getMessage());
     }
 
     @Test
@@ -1147,7 +1147,7 @@ public class DownloadNetworkTaskWorkerTest {
         assertEquals(45, logEntry.getNetworkTaskId());
         assertEquals(getTestTimestamp(), logEntry.getTimestamp());
         assertFalse(logEntry.isSuccess());
-        assertEquals("Connection to 127.0.0.1:443 failed. Exception: Test (protocol mismatch http to port 443)", logEntry.getMessage());
+        assertEquals("Request to 127.0.0.1:443 failed. Exception: Test (protocol mismatch http to port 443)", logEntry.getMessage());
     }
 
     @Test
@@ -1161,7 +1161,7 @@ public class DownloadNetworkTaskWorkerTest {
         assertEquals(45, logEntry.getNetworkTaskId());
         assertEquals(getTestTimestamp(), logEntry.getTimestamp());
         assertFalse(logEntry.isSuccess());
-        assertEquals("Connection to host:443 failed. Exception: Test (protocol mismatch http to port 443)", logEntry.getMessage());
+        assertEquals("Request to host:443 failed. Exception: Test (protocol mismatch http to port 443)", logEntry.getMessage());
     }
 
     @Test
@@ -1175,7 +1175,7 @@ public class DownloadNetworkTaskWorkerTest {
         assertEquals(45, logEntry.getNetworkTaskId());
         assertEquals(getTestTimestamp(), logEntry.getTimestamp());
         assertFalse(logEntry.isSuccess());
-        assertEquals("Connection to 127.0.0.1:80 failed. Exception: Test (protocol mismatch https to port 80)", logEntry.getMessage());
+        assertEquals("Request to 127.0.0.1:80 failed. Exception: Test (protocol mismatch https to port 80)", logEntry.getMessage());
     }
 
     @Test
@@ -1189,7 +1189,7 @@ public class DownloadNetworkTaskWorkerTest {
         assertEquals(45, logEntry.getNetworkTaskId());
         assertEquals(getTestTimestamp(), logEntry.getTimestamp());
         assertFalse(logEntry.isSuccess());
-        assertEquals("Connection to host:80 failed. Exception: Test (protocol mismatch https to port 80)", logEntry.getMessage());
+        assertEquals("Request to host:80 failed. Exception: Test (protocol mismatch https to port 80)", logEntry.getMessage());
     }
 
     @Test
@@ -1203,7 +1203,7 @@ public class DownloadNetworkTaskWorkerTest {
         assertEquals(45, logEntry.getNetworkTaskId());
         assertEquals(getTestTimestamp(), logEntry.getTimestamp());
         assertFalse(logEntry.isSuccess());
-        assertEquals("Connected to host:123 successfully. Server returned redirect 302. Connection to 127.0.0.1:443 failed. Exception: Test (protocol mismatch http to port 443)", logEntry.getMessage());
+        assertEquals("Request to host:123 was successful. Server returned redirect 302. Request to 127.0.0.1:443 failed. Exception: Test (protocol mismatch http to port 443)", logEntry.getMessage());
     }
 
     @Test
@@ -1217,7 +1217,7 @@ public class DownloadNetworkTaskWorkerTest {
         assertEquals(45, logEntry.getNetworkTaskId());
         assertEquals(getTestTimestamp(), logEntry.getTimestamp());
         assertFalse(logEntry.isSuccess());
-        assertEquals("Connected to host:123 successfully. Server returned redirect 302. Connection to host:80 failed. Exception: Test (protocol mismatch https to port 80)", logEntry.getMessage());
+        assertEquals("Request to host:123 was successful. Server returned redirect 302. Request to host:80 failed. Exception: Test (protocol mismatch https to port 80)", logEntry.getMessage());
     }
 
     @Test
@@ -1234,7 +1234,7 @@ public class DownloadNetworkTaskWorkerTest {
         assertEquals(45, logEntry.getNetworkTaskId());
         assertEquals(getTestTimestamp(), logEntry.getTimestamp());
         assertFalse(logEntry.isSuccess());
-        assertEquals("Connected to 127.0.0.1:2 successfully. The download from http://127.0.0.1 failed for an unknown reason. The file was partially downloaded. Downloaded file: /Test/testfile. 2 sec download time.", logEntry.getMessage());
+        assertEquals("Request to 127.0.0.1:2 was successful. The download from http://127.0.0.1 failed for an unknown reason. The file was partially downloaded. Downloaded file: /Test/testfile. 2 sec download time.", logEntry.getMessage());
     }
 
     @Test
@@ -1259,7 +1259,7 @@ public class DownloadNetworkTaskWorkerTest {
         assertEquals(45, logEntry.getNetworkTaskId());
         assertEquals(getTestTimestamp(), logEntry.getTimestamp());
         assertFalse(logEntry.isSuccess());
-        assertEquals("Connected to 127.0.0.1:2 successfully. The download from http://127.0.0.1 failed for an unknown reason. The file was partially downloaded. Downloaded file: :Test/testfile. 999 msec download time.", logEntry.getMessage());
+        assertEquals("Request to 127.0.0.1:2 was successful. The download from http://127.0.0.1 failed for an unknown reason. The file was partially downloaded. Downloaded file: :Test/testfile. 999 msec download time.", logEntry.getMessage());
     }
 
     @Test
@@ -1276,7 +1276,7 @@ public class DownloadNetworkTaskWorkerTest {
         assertEquals(45, logEntry.getNetworkTaskId());
         assertEquals(getTestTimestamp(), logEntry.getTimestamp());
         assertFalse(logEntry.isSuccess());
-        assertEquals("Connected to host:123 successfully. Server returned redirect 301 1. Connected to host:123 successfully. The download from http://127.0.0.1 failed for an unknown reason. The file was partially downloaded. Downloaded file: /Test/testfile. 2 sec download time.", logEntry.getMessage());
+        assertEquals("Request to host:123 was successful. Server returned redirect 301 1. Request to host:123 was successful. The download from http://127.0.0.1 failed for an unknown reason. The file was partially downloaded. Downloaded file: /Test/testfile. 2 sec download time.", logEntry.getMessage());
     }
 
     @Test
@@ -1293,7 +1293,7 @@ public class DownloadNetworkTaskWorkerTest {
         assertEquals(45, logEntry.getNetworkTaskId());
         assertEquals(getTestTimestamp(), logEntry.getTimestamp());
         assertFalse(logEntry.isSuccess());
-        assertEquals("Connected to host:123 successfully. The download from http://127.0.0.1 failed. The file was partially downloaded. Downloaded file: /Test/testfile. 44 msec download time. Exception: Test", logEntry.getMessage());
+        assertEquals("Request to host:123 was successful. The download from http://127.0.0.1 failed. The file was partially downloaded. Downloaded file: /Test/testfile. 44 msec download time. Exception: Test", logEntry.getMessage());
     }
 
     @Test
@@ -1310,7 +1310,7 @@ public class DownloadNetworkTaskWorkerTest {
         assertEquals(45, logEntry.getNetworkTaskId());
         assertEquals(getTestTimestamp(), logEntry.getTimestamp());
         assertFalse(logEntry.isSuccess());
-        assertEquals("Connected to host:123 successfully. Server returned redirect 301 12. Connected to host:123 successfully. Server returned redirect 301. Connected to host:123 successfully. Server returned redirect 301 34. Connected to [fd00::e2ff:ffff:feef:8b14]:89 successfully. The download from http://127.0.0.1 failed. The file was partially downloaded. Downloaded file: /Test/testfile. 44 msec download time. Exception: Test", logEntry.getMessage());
+        assertEquals("Request to host:123 was successful. Server returned redirect 301 12. Request to host:123 was successful. Server returned redirect 301. Request to host:123 was successful. Server returned redirect 301 34. Request to [fd00::e2ff:ffff:feef:8b14]:89 was successful. The download from http://127.0.0.1 failed. The file was partially downloaded. Downloaded file: /Test/testfile. 44 msec download time. Exception: Test", logEntry.getMessage());
     }
 
     @Test
@@ -1324,7 +1324,7 @@ public class DownloadNetworkTaskWorkerTest {
         assertEquals(45, logEntry.getNetworkTaskId());
         assertEquals(getTestTimestamp(), logEntry.getTimestamp());
         assertFalse(logEntry.isSuccess());
-        assertEquals("Connected to [fd00::e2ff:ffff:feef:8b14]:89 successfully. The download from http://127.0.0.1 failed for an unknown reason. The file was partially downloaded. The deletion of the partially_downloaded file failed. 1 sec download time.", logEntry.getMessage());
+        assertEquals("Request to [fd00::e2ff:ffff:feef:8b14]:89 was successful. The download from http://127.0.0.1 failed for an unknown reason. The file was partially downloaded. The deletion of the partially_downloaded file failed. 1 sec download time.", logEntry.getMessage());
     }
 
     @Test
@@ -1338,7 +1338,7 @@ public class DownloadNetworkTaskWorkerTest {
         assertEquals(45, logEntry.getNetworkTaskId());
         assertEquals(getTestTimestamp(), logEntry.getTimestamp());
         assertFalse(logEntry.isSuccess());
-        assertEquals("Connected to [fd00::e2ff:ffff:feef:8b14]:89 successfully. Server returned redirect 302. Connected to host:123 successfully. The download from http://127.0.0.1 failed for an unknown reason. The file was partially downloaded. The deletion of the partially_downloaded file failed. 1 sec download time.", logEntry.getMessage());
+        assertEquals("Request to [fd00::e2ff:ffff:feef:8b14]:89 was successful. Server returned redirect 302. Request to host:123 was successful. The download from http://127.0.0.1 failed for an unknown reason. The file was partially downloaded. The deletion of the partially_downloaded file failed. 1 sec download time.", logEntry.getMessage());
     }
 
     @Test
@@ -1352,7 +1352,7 @@ public class DownloadNetworkTaskWorkerTest {
         assertEquals(45, logEntry.getNetworkTaskId());
         assertEquals(getTestTimestamp(), logEntry.getTimestamp());
         assertFalse(logEntry.isSuccess());
-        assertEquals("Connected to host:123 successfully. The download from http://127.0.0.1 failed. The file was partially downloaded. The deletion of the partially_downloaded file failed. 1 msec download time. Exception: Test", logEntry.getMessage());
+        assertEquals("Request to host:123 was successful. The download from http://127.0.0.1 failed. The file was partially downloaded. The deletion of the partially_downloaded file failed. 1 msec download time. Exception: Test", logEntry.getMessage());
     }
 
     @Test
@@ -1366,7 +1366,7 @@ public class DownloadNetworkTaskWorkerTest {
         assertEquals(45, logEntry.getNetworkTaskId());
         assertEquals(getTestTimestamp(), logEntry.getTimestamp());
         assertFalse(logEntry.isSuccess());
-        assertEquals("Connected to host:123 successfully. Server returned redirect 302. Connected to host:123 successfully. Server returned redirect 302. Connected to host:123 successfully. Server returned redirect 302. Connected to host:123 successfully. Server returned redirect 302. Connected to host:123 successfully. Server returned redirect 302. Connected to host:123 successfully. Server returned redirect 302. Connected to host:123 successfully. Server returned redirect 302. Connected to host:123 successfully. Server returned redirect 302. Connected to host:123 successfully. Server returned redirect 302. Connected to 192.168.178.22:22 successfully. The download from http://127.0.0.1 failed. The file was partially downloaded. The deletion of the partially_downloaded file failed. 1 msec download time. Exception: Test", logEntry.getMessage());
+        assertEquals("Request to host:123 was successful. Server returned redirect 302. Request to host:123 was successful. Server returned redirect 302. Request to host:123 was successful. Server returned redirect 302. Request to host:123 was successful. Server returned redirect 302. Request to host:123 was successful. Server returned redirect 302. Request to host:123 was successful. Server returned redirect 302. Request to host:123 was successful. Server returned redirect 302. Request to host:123 was successful. Server returned redirect 302. Request to host:123 was successful. Server returned redirect 302. Request to 192.168.178.22:22 was successful. The download from http://127.0.0.1 failed. The file was partially downloaded. The deletion of the partially_downloaded file failed. 1 msec download time. Exception: Test", logEntry.getMessage());
     }
 
     @Test
@@ -1383,7 +1383,7 @@ public class DownloadNetworkTaskWorkerTest {
         assertEquals(45, logEntry.getNetworkTaskId());
         assertEquals(getTestTimestamp(), logEntry.getTimestamp());
         assertFalse(logEntry.isSuccess());
-        assertEquals("Connected to 192.168.178.22:22 successfully. The download from http://127.0.0.1 failed for an unknown reason. The file was partially downloaded. The deletion of the partially_downloaded file failed. 3 msec download time.", logEntry.getMessage());
+        assertEquals("Request to 192.168.178.22:22 was successful. The download from http://127.0.0.1 failed for an unknown reason. The file was partially downloaded. The deletion of the partially_downloaded file failed. 3 msec download time.", logEntry.getMessage());
     }
 
     @Test
@@ -1400,7 +1400,7 @@ public class DownloadNetworkTaskWorkerTest {
         assertEquals(45, logEntry.getNetworkTaskId());
         assertEquals(getTestTimestamp(), logEntry.getTimestamp());
         assertFalse(logEntry.isSuccess());
-        assertEquals("Connected to host:123 successfully. The download from http://127.0.0.1 failed for an unknown reason. The file was partially downloaded. The deletion of the partially_downloaded file failed. 3 msec download time.", logEntry.getMessage());
+        assertEquals("Request to host:123 was successful. The download from http://127.0.0.1 failed for an unknown reason. The file was partially downloaded. The deletion of the partially_downloaded file failed. 3 msec download time.", logEntry.getMessage());
     }
 
     @Test
@@ -1417,7 +1417,7 @@ public class DownloadNetworkTaskWorkerTest {
         assertEquals(45, logEntry.getNetworkTaskId());
         assertEquals(getTestTimestamp(), logEntry.getTimestamp());
         assertFalse(logEntry.isSuccess());
-        assertEquals("Connected to host:123 successfully. The download from http://127.0.0.1 failed. The file was partially downloaded. The deletion of the partially_downloaded file failed. 500 sec download time. Exception: Test", logEntry.getMessage());
+        assertEquals("Request to host:123 was successful. The download from http://127.0.0.1 failed. The file was partially downloaded. The deletion of the partially_downloaded file failed. 500 sec download time. Exception: Test", logEntry.getMessage());
     }
 
     @Test
@@ -1434,7 +1434,7 @@ public class DownloadNetworkTaskWorkerTest {
         assertEquals(45, logEntry.getNetworkTaskId());
         assertEquals(getTestTimestamp(), logEntry.getTimestamp());
         assertFalse(logEntry.isSuccess());
-        assertEquals("Connected to host:123 successfully. Server returned redirect 302 a. Connected to host:123 successfully. Server returned redirect 301 b. Connected to 127.0.0.1:123 successfully. The download from http://127.0.0.1 failed. The file was partially downloaded. The deletion of the partially_downloaded file failed. 500 sec download time. Exception: Test", logEntry.getMessage());
+        assertEquals("Request to host:123 was successful. Server returned redirect 302 a. Request to host:123 was successful. Server returned redirect 301 b. Request to 127.0.0.1:123 was successful. The download from http://127.0.0.1 failed. The file was partially downloaded. The deletion of the partially_downloaded file failed. 500 sec download time. Exception: Test", logEntry.getMessage());
     }
 
     @Test
@@ -1448,7 +1448,7 @@ public class DownloadNetworkTaskWorkerTest {
         assertEquals(45, logEntry.getNetworkTaskId());
         assertEquals(getTestTimestamp(), logEntry.getTimestamp());
         assertFalse(logEntry.isSuccess());
-        assertEquals("Connected to host:123 successfully. The download from http://127.0.0.1 failed for an unknown reason. The file was partially downloaded. The partially downloaded file was deleted. 2 msec download time.", logEntry.getMessage());
+        assertEquals("Request to host:123 was successful. The download from http://127.0.0.1 failed for an unknown reason. The file was partially downloaded. The partially downloaded file was deleted. 2 msec download time.", logEntry.getMessage());
     }
 
     @Test
@@ -1462,7 +1462,7 @@ public class DownloadNetworkTaskWorkerTest {
         assertEquals(45, logEntry.getNetworkTaskId());
         assertEquals(getTestTimestamp(), logEntry.getTimestamp());
         assertFalse(logEntry.isSuccess());
-        assertEquals("Connected to host:123 successfully. Server returned redirect 302 5. Connected to host:123 successfully. The download from http://127.0.0.1 failed for an unknown reason. The file was partially downloaded. The partially downloaded file was deleted. 2 msec download time.", logEntry.getMessage());
+        assertEquals("Request to host:123 was successful. Server returned redirect 302 5. Request to host:123 was successful. The download from http://127.0.0.1 failed for an unknown reason. The file was partially downloaded. The partially downloaded file was deleted. 2 msec download time.", logEntry.getMessage());
     }
 
     @Test
@@ -1476,7 +1476,7 @@ public class DownloadNetworkTaskWorkerTest {
         assertEquals(45, logEntry.getNetworkTaskId());
         assertEquals(getTestTimestamp(), logEntry.getTimestamp());
         assertFalse(logEntry.isSuccess());
-        assertEquals("Connected to [::1]:1 successfully. The download from http://127.0.0.1 failed. The file was partially downloaded. The partially downloaded file was deleted. 5 msec download time. Exception: Test", logEntry.getMessage());
+        assertEquals("Request to [::1]:1 was successful. The download from http://127.0.0.1 failed. The file was partially downloaded. The partially downloaded file was deleted. 5 msec download time. Exception: Test", logEntry.getMessage());
     }
 
     @Test
@@ -1490,7 +1490,7 @@ public class DownloadNetworkTaskWorkerTest {
         assertEquals(45, logEntry.getNetworkTaskId());
         assertEquals(getTestTimestamp(), logEntry.getTimestamp());
         assertFalse(logEntry.isSuccess());
-        assertEquals("Connected to [::1]:1 successfully. Server returned redirect 301 5. Connected to [::1]:1 successfully. The download from http://127.0.0.1 failed. The file was partially downloaded. The partially downloaded file was deleted. 5 msec download time. Exception: Test", logEntry.getMessage());
+        assertEquals("Request to [::1]:1 was successful. Server returned redirect 301 5. Request to [::1]:1 was successful. The download from http://127.0.0.1 failed. The file was partially downloaded. The partially downloaded file was deleted. 5 msec download time. Exception: Test", logEntry.getMessage());
     }
 
     @Test
@@ -1518,7 +1518,7 @@ public class DownloadNetworkTaskWorkerTest {
         assertEquals(45, logEntry.getNetworkTaskId());
         assertEquals(getTestTimestamp(), logEntry.getTimestamp());
         assertFalse(logEntry.isSuccess());
-        assertEquals("Connected to host:123 successfully. The download from http://127.0.0.1 failed for an unknown reason.", logEntry.getMessage());
+        assertEquals("Request to host:123 was successful. The download from http://127.0.0.1 failed for an unknown reason.", logEntry.getMessage());
     }
 
     @Test
@@ -1532,7 +1532,7 @@ public class DownloadNetworkTaskWorkerTest {
         assertEquals(45, logEntry.getNetworkTaskId());
         assertEquals(getTestTimestamp(), logEntry.getTimestamp());
         assertFalse(logEntry.isSuccess());
-        assertEquals("Connected to host:123 successfully. Server returned redirect 301. Connected to host:123 successfully. Server returned redirect 302. Connected to host:123 successfully. Server returned redirect 301. Connected to host:123 successfully. The download from http://127.0.0.1 failed for an unknown reason.", logEntry.getMessage());
+        assertEquals("Request to host:123 was successful. Server returned redirect 301. Request to host:123 was successful. Server returned redirect 302. Request to host:123 was successful. Server returned redirect 301. Request to host:123 was successful. The download from http://127.0.0.1 failed for an unknown reason.", logEntry.getMessage());
     }
 
     @Test
@@ -1546,7 +1546,7 @@ public class DownloadNetworkTaskWorkerTest {
         assertEquals(45, logEntry.getNetworkTaskId());
         assertEquals(getTestTimestamp(), logEntry.getTimestamp());
         assertFalse(logEntry.isSuccess());
-        assertEquals("Connected to host:123 successfully. The download from http://127.0.0.1 failed. Exception: Test", logEntry.getMessage());
+        assertEquals("Request to host:123 was successful. The download from http://127.0.0.1 failed. Exception: Test", logEntry.getMessage());
     }
 
     @Test
@@ -1560,7 +1560,7 @@ public class DownloadNetworkTaskWorkerTest {
         assertEquals(45, logEntry.getNetworkTaskId());
         assertEquals(getTestTimestamp(), logEntry.getTimestamp());
         assertFalse(logEntry.isSuccess());
-        assertEquals("Connected to host:123 successfully. Server returned redirect 301 2. Connected to 11.12.13.14:22 successfully. The download from http://127.0.0.1 failed. Exception: Test", logEntry.getMessage());
+        assertEquals("Request to host:123 was successful. Server returned redirect 301 2. Request to 11.12.13.14:22 was successful. The download from http://127.0.0.1 failed. Exception: Test", logEntry.getMessage());
     }
 
     @Test
@@ -1577,7 +1577,7 @@ public class DownloadNetworkTaskWorkerTest {
         assertEquals(45, logEntry.getNetworkTaskId());
         assertEquals(getTestTimestamp(), logEntry.getTimestamp());
         assertTrue(logEntry.isSuccess());
-        assertEquals("Connected to host:123 successfully. The download from http://127.0.0.1 was successful. Downloaded file: /Test/testfile. 100 msec download time.", logEntry.getMessage());
+        assertEquals("Request to host:123 was successful. The download from http://127.0.0.1 was successful. Downloaded file: /Test/testfile. 100 msec download time.", logEntry.getMessage());
     }
 
     @Test
@@ -1594,7 +1594,7 @@ public class DownloadNetworkTaskWorkerTest {
         assertEquals(45, logEntry.getNetworkTaskId());
         assertEquals(getTestTimestamp(), logEntry.getTimestamp());
         assertTrue(logEntry.isSuccess());
-        assertEquals("Connected to 11.12.13.14:22 successfully. The download from http://127.0.0.1 was successful. Downloaded file: /Test/testfile. 100 msec download time.", logEntry.getMessage());
+        assertEquals("Request to 11.12.13.14:22 was successful. The download from http://127.0.0.1 was successful. Downloaded file: /Test/testfile. 100 msec download time.", logEntry.getMessage());
     }
 
     @Test
@@ -1619,7 +1619,7 @@ public class DownloadNetworkTaskWorkerTest {
         assertEquals(45, logEntry.getNetworkTaskId());
         assertEquals(getTestTimestamp(), logEntry.getTimestamp());
         assertTrue(logEntry.isSuccess());
-        assertEquals("Connected to 11.12.13.14:22 successfully. The download from http://127.0.0.1 was successful. Downloaded file: :Test/testfile. 999 msec download time.", logEntry.getMessage());
+        assertEquals("Request to 11.12.13.14:22 was successful. The download from http://127.0.0.1 was successful. Downloaded file: :Test/testfile. 999 msec download time.", logEntry.getMessage());
     }
 
     @Test
@@ -1638,7 +1638,7 @@ public class DownloadNetworkTaskWorkerTest {
         assertEquals(45, logEntry.getNetworkTaskId());
         assertEquals(getTestTimestamp(), logEntry.getTimestamp());
         assertTrue(logEntry.isSuccess());
-        assertEquals("Connected to host:123 successfully. The download from http://127.0.0.1 was successful. Downloaded file: /Test0/testfile. 100 msec download time.", logEntry.getMessage());
+        assertEquals("Request to host:123 was successful. The download from http://127.0.0.1 was successful. Downloaded file: /Test0/testfile. 100 msec download time.", logEntry.getMessage());
     }
 
     @Test
@@ -1657,7 +1657,7 @@ public class DownloadNetworkTaskWorkerTest {
         assertEquals(45, logEntry.getNetworkTaskId());
         assertEquals(getTestTimestamp(), logEntry.getTimestamp());
         assertTrue(logEntry.isSuccess());
-        assertEquals("Connected to host:123 successfully. Server returned redirect 302. Connected to host:123 successfully. The download from http://127.0.0.1 was successful. Downloaded file: /Test0/testfile. 100 msec download time.", logEntry.getMessage());
+        assertEquals("Request to host:123 was successful. Server returned redirect 302. Request to host:123 was successful. The download from http://127.0.0.1 was successful. Downloaded file: /Test0/testfile. 100 msec download time.", logEntry.getMessage());
     }
 
     @Test
@@ -1677,7 +1677,7 @@ public class DownloadNetworkTaskWorkerTest {
         assertEquals(45, logEntry.getNetworkTaskId());
         assertEquals(getTestTimestamp(), logEntry.getTimestamp());
         assertTrue(logEntry.isSuccess());
-        assertEquals("Connected to 11.12.13.14:456 successfully. The download from http://127.0.0.1 was successful. Downloaded file: /Test1/testfile. 100 msec download time.", logEntry.getMessage());
+        assertEquals("Request to 11.12.13.14:456 was successful. The download from http://127.0.0.1 was successful. Downloaded file: /Test1/testfile. 100 msec download time.", logEntry.getMessage());
     }
 
     @Test
@@ -1697,7 +1697,7 @@ public class DownloadNetworkTaskWorkerTest {
         assertEquals(45, logEntry.getNetworkTaskId());
         assertEquals(getTestTimestamp(), logEntry.getTimestamp());
         assertTrue(logEntry.isSuccess());
-        assertEquals("Connected to 11.12.13.14:456 successfully. Server returned redirect 302 302. Connected to 11.12.13.14:456 successfully. Server returned redirect 302 302. Connected to 11.12.13.14:456 successfully. Server returned redirect 302 302. Connected to 11.12.13.14:456 successfully. The download from http://127.0.0.1 was successful. Downloaded file: /Test1/testfile. 100 msec download time.", logEntry.getMessage());
+        assertEquals("Request to 11.12.13.14:456 was successful. Server returned redirect 302 302. Request to 11.12.13.14:456 was successful. Server returned redirect 302 302. Request to 11.12.13.14:456 was successful. Server returned redirect 302 302. Request to 11.12.13.14:456 was successful. The download from http://127.0.0.1 was successful. Downloaded file: /Test1/testfile. 100 msec download time.", logEntry.getMessage());
     }
 
     @Test
@@ -1717,7 +1717,7 @@ public class DownloadNetworkTaskWorkerTest {
         assertEquals(45, logEntry.getNetworkTaskId());
         assertEquals(getTestTimestamp(), logEntry.getTimestamp());
         assertTrue(logEntry.isSuccess());
-        assertEquals("Connected to host:123 successfully. The download from http://127.0.0.1 was successful. Downloaded file: /Test0/testfile. 100 msec download time.", logEntry.getMessage());
+        assertEquals("Request to host:123 was successful. The download from http://127.0.0.1 was successful. Downloaded file: /Test0/testfile. 100 msec download time.", logEntry.getMessage());
     }
 
     @Test
@@ -1737,7 +1737,7 @@ public class DownloadNetworkTaskWorkerTest {
         assertEquals(45, logEntry.getNetworkTaskId());
         assertEquals(getTestTimestamp(), logEntry.getTimestamp());
         assertTrue(logEntry.isSuccess());
-        assertEquals("Connected to host:123 successfully. Server returned redirect 301. Connected to host:123 successfully. Server returned redirect 302. Connected to host:123 successfully. The download from http://127.0.0.1 was successful. Downloaded file: /Test0/testfile. 100 msec download time.", logEntry.getMessage());
+        assertEquals("Request to host:123 was successful. Server returned redirect 301. Request to host:123 was successful. Server returned redirect 302. Request to host:123 was successful. The download from http://127.0.0.1 was successful. Downloaded file: /Test0/testfile. 100 msec download time.", logEntry.getMessage());
     }
 
     @Test
@@ -1751,7 +1751,7 @@ public class DownloadNetworkTaskWorkerTest {
         assertEquals(45, logEntry.getNetworkTaskId());
         assertEquals(getTestTimestamp(), logEntry.getTimestamp());
         assertTrue(logEntry.isSuccess());
-        assertEquals("Connected to 1.1.1.1:999 successfully. The download from http://127.0.0.1 was successful. The file was deleted after download. 999 msec download time.", logEntry.getMessage());
+        assertEquals("Request to 1.1.1.1:999 was successful. The download from http://127.0.0.1 was successful. The file was deleted after download. 999 msec download time.", logEntry.getMessage());
     }
 
     @Test
@@ -1765,7 +1765,7 @@ public class DownloadNetworkTaskWorkerTest {
         assertEquals(45, logEntry.getNetworkTaskId());
         assertEquals(getTestTimestamp(), logEntry.getTimestamp());
         assertTrue(logEntry.isSuccess());
-        assertEquals("Connected to 1.1.1.1:999 successfully. Server returned redirect 301 301. Connected to host:123 successfully. The download from http://127.0.0.1 was successful. The file was deleted after download. 999 msec download time.", logEntry.getMessage());
+        assertEquals("Request to 1.1.1.1:999 was successful. Server returned redirect 301 301. Request to host:123 was successful. The download from http://127.0.0.1 was successful. The file was deleted after download. 999 msec download time.", logEntry.getMessage());
     }
 
     @Test
@@ -1779,7 +1779,7 @@ public class DownloadNetworkTaskWorkerTest {
         assertEquals(45, logEntry.getNetworkTaskId());
         assertEquals(getTestTimestamp(), logEntry.getTimestamp());
         assertTrue(logEntry.isSuccess());
-        assertEquals("Connected to host:123 successfully. The download from http://127.0.0.1 was successful. The deletion of the downloaded file failed. 333 msec download time.", logEntry.getMessage());
+        assertEquals("Request to host:123 was successful. The download from http://127.0.0.1 was successful. The deletion of the downloaded file failed. 333 msec download time.", logEntry.getMessage());
     }
 
     @Test
@@ -1793,7 +1793,7 @@ public class DownloadNetworkTaskWorkerTest {
         assertEquals(45, logEntry.getNetworkTaskId());
         assertEquals(getTestTimestamp(), logEntry.getTimestamp());
         assertTrue(logEntry.isSuccess());
-        assertEquals("Connected to host:123 successfully. Server returned redirect 302 302. Connected to host:123 successfully. The download from http://127.0.0.1 was successful. The deletion of the downloaded file failed. 333 msec download time.", logEntry.getMessage());
+        assertEquals("Request to host:123 was successful. Server returned redirect 302 302. Request to host:123 was successful. The download from http://127.0.0.1 was successful. The deletion of the downloaded file failed. 333 msec download time.", logEntry.getMessage());
     }
 
     @Test
@@ -1807,7 +1807,7 @@ public class DownloadNetworkTaskWorkerTest {
         assertEquals(45, logEntry.getNetworkTaskId());
         assertEquals(getTestTimestamp(), logEntry.getTimestamp());
         assertTrue(logEntry.isSuccess());
-        assertEquals("Connected to [::1]:999 successfully. The download from http://127.0.0.1 was successful. The deletion of the downloaded file failed. 33 sec download time. Exception: Test", logEntry.getMessage());
+        assertEquals("Request to [::1]:999 was successful. The download from http://127.0.0.1 was successful. The deletion of the downloaded file failed. 33 sec download time. Exception: Test", logEntry.getMessage());
     }
 
     @Test
@@ -1821,7 +1821,7 @@ public class DownloadNetworkTaskWorkerTest {
         assertEquals(45, logEntry.getNetworkTaskId());
         assertEquals(getTestTimestamp(), logEntry.getTimestamp());
         assertTrue(logEntry.isSuccess());
-        assertEquals("Connected to host:123 successfully. The download from http://127.0.0.1 was successful. The deletion of the downloaded file failed. 33 sec download time. Exception: Test", logEntry.getMessage());
+        assertEquals("Request to host:123 was successful. The download from http://127.0.0.1 was successful. The deletion of the downloaded file failed. 33 sec download time. Exception: Test", logEntry.getMessage());
     }
 
     @Test
@@ -1838,7 +1838,7 @@ public class DownloadNetworkTaskWorkerTest {
         assertEquals(45, logEntry.getNetworkTaskId());
         assertEquals(getTestTimestamp(), logEntry.getTimestamp());
         assertTrue(logEntry.isSuccess());
-        assertEquals("Connected to host:123 successfully. The download from http://127.0.0.1 was successful. The deletion of the downloaded file failed. 1 sec download time.", logEntry.getMessage());
+        assertEquals("Request to host:123 was successful. The download from http://127.0.0.1 was successful. The deletion of the downloaded file failed. 1 sec download time.", logEntry.getMessage());
     }
 
     @Test
@@ -1855,7 +1855,7 @@ public class DownloadNetworkTaskWorkerTest {
         assertEquals(45, logEntry.getNetworkTaskId());
         assertEquals(getTestTimestamp(), logEntry.getTimestamp());
         assertTrue(logEntry.isSuccess());
-        assertEquals("Connected to host:123 successfully. Server returned redirect 301 1. Connected to host:123 successfully. Server returned redirect 301 1. Connected to host:123 successfully. The download from http://127.0.0.1 was successful. The deletion of the downloaded file failed. 1 sec download time.", logEntry.getMessage());
+        assertEquals("Request to host:123 was successful. Server returned redirect 301 1. Request to host:123 was successful. Server returned redirect 301 1. Request to host:123 was successful. The download from http://127.0.0.1 was successful. The deletion of the downloaded file failed. 1 sec download time.", logEntry.getMessage());
     }
 
     @Test
@@ -1872,7 +1872,7 @@ public class DownloadNetworkTaskWorkerTest {
         assertEquals(45, logEntry.getNetworkTaskId());
         assertEquals(getTestTimestamp(), logEntry.getTimestamp());
         assertTrue(logEntry.isSuccess());
-        assertEquals("Connected to [::1]:999 successfully. The download from http://127.0.0.1 was successful. The deletion of the downloaded file failed. 22 msec download time. Exception: Test", logEntry.getMessage());
+        assertEquals("Request to [::1]:999 was successful. The download from http://127.0.0.1 was successful. The deletion of the downloaded file failed. 22 msec download time. Exception: Test", logEntry.getMessage());
     }
 
     @Test
@@ -1889,7 +1889,7 @@ public class DownloadNetworkTaskWorkerTest {
         assertEquals(45, logEntry.getNetworkTaskId());
         assertEquals(getTestTimestamp(), logEntry.getTimestamp());
         assertTrue(logEntry.isSuccess());
-        assertEquals("Connected to [::1]:999 successfully. Server returned redirect 302 1. Connected to [::1]:999 successfully. Server returned redirect 302 1. Connected to [::1]:999 successfully. The download from http://127.0.0.1 was successful. The deletion of the downloaded file failed. 22 msec download time. Exception: Test", logEntry.getMessage());
+        assertEquals("Request to [::1]:999 was successful. Server returned redirect 302 1. Request to [::1]:999 was successful. Server returned redirect 302 1. Request to [::1]:999 was successful. The download from http://127.0.0.1 was successful. The deletion of the downloaded file failed. 22 msec download time. Exception: Test", logEntry.getMessage());
     }
 
     @Test

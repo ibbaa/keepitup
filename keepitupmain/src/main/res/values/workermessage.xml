@@ -63,8 +63,8 @@
     <string name="text_connect_time">%s connect time.</string>
     <string name="text_connect_last_error">Last error:</string>
     <string name="text_download_error">The download from %s failed.</string>
-    <string name="text_download_connect_success">Connected to %s successfully.</string>
-    <string name="text_download_connect_error">Connection to %s failed.</string>
+    <string name="text_download_connect_success">Request to %s was successful.</string>
+    <string name="text_download_connect_error">Request to %s failed.</string>
     <string name="text_download_http_error_with_message">Server return code %d %s.</string>
     <string name="text_download_http_error_without_message">Server return code %d.</string>
     <string name="text_download_http_redirect_with_message">Server returned redirect %d %s.</string>
