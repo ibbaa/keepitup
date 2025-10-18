@@ -219,6 +219,7 @@ public class DBSetup {
         values.put(dbConstants.getNameColumnName(), getContext().getResources().getString(R.string.http_header_user_agent));
         values.put(dbConstants.getValueColumnName(), preferenceManager.getPreferenceHTTPUserAgent());
         db.insert(dbConstants.getTableName(), null, values);
+        preferenceManager.removePreferenceHTTPUserAgent();
     }
 
     public void dropTables(SQLiteDatabase db) {
