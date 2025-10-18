@@ -77,7 +77,8 @@ public class HeaderDBConstants {
                 getNameColumnName() + ", " +
                 getValueColumnName() +
                 " FROM " + getTableName() +
-                " WHERE " + getNetworkTaskIdColumnName() + " IS NULL";
+                " WHERE " + getNetworkTaskIdColumnName() + " IS NULL" +
+                " ORDER BY " + getNameColumnName() + " ASC";
     }
 
     public String getReadHeadersForNetworkTaskStatement() {
@@ -87,7 +88,8 @@ public class HeaderDBConstants {
                 getNameColumnName() + ", " +
                 getValueColumnName() +
                 " FROM " + getTableName() +
-                " WHERE " + getNetworkTaskIdColumnName() + " = ?";
+                " WHERE " + getNetworkTaskIdColumnName() + " = ?" +
+                " ORDER BY " + getNameColumnName() + " ASC";
     }
 
     public String getReadAllHeadersStatement() {
@@ -96,7 +98,8 @@ public class HeaderDBConstants {
                 getNetworkTaskIdColumnName() + ", " +
                 getNameColumnName() + ", " +
                 getValueColumnName() +
-                " FROM " + getTableName();
+                " FROM " + getTableName() +
+                " ORDER BY " + getNameColumnName() + " ASC";
     }
 
     public String getDeleteGlobalHeadersStatement() {

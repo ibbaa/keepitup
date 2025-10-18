@@ -28,12 +28,14 @@ import androidx.test.filters.MediumTest;
 import net.ibbaa.keepitup.logging.Dump;
 import net.ibbaa.keepitup.model.AccessType;
 import net.ibbaa.keepitup.model.AccessTypeData;
+import net.ibbaa.keepitup.model.Header;
 import net.ibbaa.keepitup.model.Interval;
 import net.ibbaa.keepitup.model.LogEntry;
 import net.ibbaa.keepitup.model.NetworkTask;
 import net.ibbaa.keepitup.model.Resolve;
 import net.ibbaa.keepitup.model.SchedulerState;
 import net.ibbaa.keepitup.model.Time;
+import net.ibbaa.keepitup.resources.PreferenceManager;
 import net.ibbaa.keepitup.test.mock.TestRegistry;
 
 import org.junit.After;
@@ -59,6 +61,7 @@ public class DBSetupTest {
     private SchedulerStateDAO schedulerStateDAO;
     private AccessTypeDataDAO accessTypeDataDAO;
     private ResolveDAO resolveDAO;
+    private HeaderDAO headerDAO;
     private DBSetup setup;
 
     @Before
@@ -74,6 +77,7 @@ public class DBSetupTest {
         schedulerStateDAO = new SchedulerStateDAO(TestRegistry.getContext());
         accessTypeDataDAO = new AccessTypeDataDAO(TestRegistry.getContext());
         resolveDAO = new ResolveDAO(TestRegistry.getContext());
+        headerDAO = new HeaderDAO(TestRegistry.getContext());
         networkTaskDAO.deleteAllNetworkTasks();
         schedulerIdHistoryDAO.deleteAllSchedulerIds();
         logDAO.deleteAllLogs();
@@ -81,6 +85,7 @@ public class DBSetupTest {
         schedulerStateDAO.deleteSchedulerState();
         accessTypeDataDAO.deleteAllAccessTypeData();
         resolveDAO.deleteAllResolve();
+        headerDAO.deleteAllHeaders();
     }
 
     @After
@@ -93,6 +98,7 @@ public class DBSetupTest {
         schedulerStateDAO.deleteSchedulerState();
         accessTypeDataDAO.deleteAllAccessTypeData();
         resolveDAO.deleteAllResolve();
+        headerDAO.deleteAllHeaders();
     }
 
     @Test
@@ -104,6 +110,7 @@ public class DBSetupTest {
         schedulerStateDAO.insertSchedulerState(new SchedulerState(0, false, 1));
         accessTypeDataDAO.insertAccessTypeData(getAccessTypeData(0));
         resolveDAO.insertResolve(getResolve(0));
+        headerDAO.insertHeader(getHeader(0));
         assertFalse(networkTaskDAO.readAllNetworkTasks().isEmpty());
         assertFalse(schedulerIdHistoryDAO.readAllSchedulerIds().isEmpty());
         assertFalse(logDAO.readAllLogs().isEmpty());
@@ -111,6 +118,7 @@ public class DBSetupTest {
         assertNotNull(schedulerStateDAO.readSchedulerState());
         assertFalse(accessTypeDataDAO.readAllAccessTypeData().isEmpty());
         assertFalse(resolveDAO.readAllResolve().isEmpty());
+        assertFalse(headerDAO.readAllHeaders().isEmpty());
         setup.dropTables();
         setup.createTables();
         assertTrue(networkTaskDAO.readAllNetworkTasks().isEmpty());
@@ -120,6 +128,8 @@ public class DBSetupTest {
         assertNotNull(schedulerStateDAO.readSchedulerState());
         assertTrue(accessTypeDataDAO.readAllAccessTypeData().isEmpty());
         assertTrue(resolveDAO.readAllResolve().isEmpty());
+        assertEquals(1, headerDAO.readAllHeaders().size());
+        assertEquals(1, headerDAO.readGlobalHeaders().size());
         networkTaskDAO.insertNetworkTask(new NetworkTask());
         schedulerIdGenerator.enlistToSchedulerIdHistory(DBOpenHelper.getInstance(TestRegistry.getContext()).getWritableDatabase(), 22);
         logDAO.insertAndDeleteLog(new LogEntry());
@@ -127,6 +137,7 @@ public class DBSetupTest {
         schedulerStateDAO.insertSchedulerState(new SchedulerState(0, false, 1));
         accessTypeDataDAO.insertAccessTypeData(getAccessTypeData(0));
         resolveDAO.insertResolve(getResolve(0));
+        headerDAO.insertHeader(getHeader(0));
         assertFalse(networkTaskDAO.readAllNetworkTasks().isEmpty());
         assertFalse(schedulerIdHistoryDAO.readAllSchedulerIds().isEmpty());
         assertFalse(logDAO.readAllLogs().isEmpty());
@@ -134,6 +145,8 @@ public class DBSetupTest {
         assertNotNull(schedulerStateDAO.readSchedulerState());
         assertFalse(accessTypeDataDAO.readAllAccessTypeData().isEmpty());
         assertFalse(resolveDAO.readAllResolve().isEmpty());
+        assertEquals(2, headerDAO.readAllHeaders().size());
+        assertEquals(1, headerDAO.readGlobalHeaders().size());
         setup.recreateTables();
         assertTrue(networkTaskDAO.readAllNetworkTasks().isEmpty());
         assertTrue(schedulerIdHistoryDAO.readAllSchedulerIds().isEmpty());
@@ -142,12 +155,15 @@ public class DBSetupTest {
         assertNotNull(schedulerStateDAO.readSchedulerState());
         assertTrue(accessTypeDataDAO.readAllAccessTypeData().isEmpty());
         assertTrue(resolveDAO.readAllResolve().isEmpty());
+        assertEquals(1, headerDAO.readAllHeaders().size());
+        assertEquals(1, headerDAO.readGlobalHeaders().size());
         networkTaskDAO.insertNetworkTask(new NetworkTask());
         logDAO.insertAndDeleteLog(new LogEntry());
         intervalDAO.insertInterval(new Interval());
         schedulerStateDAO.insertSchedulerState(new SchedulerState(0, false, 1));
         accessTypeDataDAO.insertAccessTypeData(getAccessTypeData(0));
         resolveDAO.insertResolve(getResolve(0));
+        headerDAO.insertHeader(getHeader(0));
         setup.tryDropTables();
         setup.createTables();
         assertTrue(networkTaskDAO.readAllNetworkTasks().isEmpty());
@@ -157,6 +173,8 @@ public class DBSetupTest {
         assertNotNull(schedulerStateDAO.readSchedulerState());
         assertTrue(accessTypeDataDAO.readAllAccessTypeData().isEmpty());
         assertTrue(resolveDAO.readAllResolve().isEmpty());
+        assertEquals(1, headerDAO.readAllHeaders().size());
+        assertEquals(1, headerDAO.readGlobalHeaders().size());
     }
 
     @Test
@@ -291,6 +309,46 @@ public class DBSetupTest {
     }
 
     @Test
+    public void testDropCreateHeaderTable() {
+        assertTrue(headerDAO.readAllHeaders().isEmpty());
+        headerDAO.insertHeader(getHeader(0));
+        assertEquals(1, headerDAO.readAllHeaders().size());
+        assertEquals(0, headerDAO.readGlobalHeaders().size());
+        headerDAO.insertHeader(getHeader(-1));
+        assertEquals(2, headerDAO.readAllHeaders().size());
+        assertEquals(1, headerDAO.readGlobalHeaders().size());
+        setup.dropHeaderTable();
+        setup.createHeaderTable();
+        assertEquals(1, headerDAO.readAllHeaders().size());
+        assertEquals(1, headerDAO.readGlobalHeaders().size());
+        resolveDAO.insertResolve(getResolve(0));
+        headerDAO.insertHeader(getHeader(-1));
+        assertEquals(2, headerDAO.readAllHeaders().size());
+        assertEquals(2, headerDAO.readGlobalHeaders().size());
+        setup.recreateHeaderTable();
+        assertEquals(1, headerDAO.readAllHeaders().size());
+        assertEquals(1, headerDAO.readGlobalHeaders().size());
+    }
+
+    @Test
+    public void testInitializeHeaderTable() {
+        PreferenceManager preferenceManager = new PreferenceManager(TestRegistry.getContext());
+        assertTrue(headerDAO.readAllHeaders().isEmpty());
+        setup.dropHeaderTable();
+        setup.createHeaderTable();
+        Header header = headerDAO.readGlobalHeaders().get(0);
+        assertEquals(-1, header.getNetworkTaskId());
+        assertEquals("User-Agent", header.getName());
+        assertEquals(preferenceManager.getPreferenceHTTPUserAgent(), header.getValue());
+        preferenceManager.setPreferenceHTTPUserAgent("Test");
+        setup.recreateHeaderTable();
+        header = headerDAO.readGlobalHeaders().get(0);
+        assertEquals(-1, header.getNetworkTaskId());
+        assertEquals("User-Agent", header.getName());
+        assertEquals("Test", header.getValue());
+    }
+
+    @Test
     public void testDeleteTables() {
         networkTaskDAO.insertNetworkTask(new NetworkTask());
         schedulerIdGenerator.enlistToSchedulerIdHistory(DBOpenHelper.getInstance(TestRegistry.getContext()).getWritableDatabase(), 22);
@@ -299,6 +357,7 @@ public class DBSetupTest {
         schedulerStateDAO.insertSchedulerState(new SchedulerState(0, false, 1));
         accessTypeDataDAO.insertAccessTypeData(getAccessTypeData(0));
         resolveDAO.insertResolve(getResolve(0));
+        headerDAO.insertHeader(getHeader(0));
         assertFalse(networkTaskDAO.readAllNetworkTasks().isEmpty());
         assertFalse(schedulerIdHistoryDAO.readAllSchedulerIds().isEmpty());
         assertFalse(logDAO.readAllLogs().isEmpty());
@@ -306,6 +365,7 @@ public class DBSetupTest {
         assertNotNull(schedulerStateDAO.readSchedulerState());
         assertFalse(accessTypeDataDAO.readAllAccessTypeData().isEmpty());
         assertFalse(resolveDAO.readAllResolve().isEmpty());
+        assertFalse(headerDAO.readAllHeaders().isEmpty());
         setup.deleteAllNetworkTasks();
         assertTrue(networkTaskDAO.readAllNetworkTasks().isEmpty());
         assertFalse(schedulerIdHistoryDAO.readAllSchedulerIds().isEmpty());
@@ -314,6 +374,7 @@ public class DBSetupTest {
         assertNotNull(schedulerStateDAO.readSchedulerState());
         assertFalse(accessTypeDataDAO.readAllAccessTypeData().isEmpty());
         assertFalse(resolveDAO.readAllResolve().isEmpty());
+        assertFalse(headerDAO.readAllHeaders().isEmpty());
         setup.deleteAllSchedulerIds();
         assertTrue(networkTaskDAO.readAllNetworkTasks().isEmpty());
         assertTrue(schedulerIdHistoryDAO.readAllSchedulerIds().isEmpty());
@@ -322,6 +383,7 @@ public class DBSetupTest {
         assertNotNull(schedulerStateDAO.readSchedulerState());
         assertFalse(accessTypeDataDAO.readAllAccessTypeData().isEmpty());
         assertFalse(resolveDAO.readAllResolve().isEmpty());
+        assertFalse(headerDAO.readAllHeaders().isEmpty());
         setup.deleteAllLogs();
         assertTrue(networkTaskDAO.readAllNetworkTasks().isEmpty());
         assertTrue(schedulerIdHistoryDAO.readAllSchedulerIds().isEmpty());
@@ -330,6 +392,7 @@ public class DBSetupTest {
         assertNotNull(schedulerStateDAO.readSchedulerState());
         assertFalse(accessTypeDataDAO.readAllAccessTypeData().isEmpty());
         assertFalse(resolveDAO.readAllResolve().isEmpty());
+        assertFalse(headerDAO.readAllHeaders().isEmpty());
         setup.deleteAllIntervals();
         assertTrue(networkTaskDAO.readAllNetworkTasks().isEmpty());
         assertTrue(schedulerIdHistoryDAO.readAllSchedulerIds().isEmpty());
@@ -338,6 +401,7 @@ public class DBSetupTest {
         assertNotNull(schedulerStateDAO.readSchedulerState());
         assertFalse(accessTypeDataDAO.readAllAccessTypeData().isEmpty());
         assertFalse(resolveDAO.readAllResolve().isEmpty());
+        assertFalse(headerDAO.readAllHeaders().isEmpty());
         setup.deleteSchedulerState();
         assertTrue(networkTaskDAO.readAllNetworkTasks().isEmpty());
         assertTrue(schedulerIdHistoryDAO.readAllSchedulerIds().isEmpty());
@@ -346,6 +410,7 @@ public class DBSetupTest {
         assertNull(schedulerStateDAO.readSchedulerState());
         assertFalse(accessTypeDataDAO.readAllAccessTypeData().isEmpty());
         assertFalse(resolveDAO.readAllResolve().isEmpty());
+        assertFalse(headerDAO.readAllHeaders().isEmpty());
         setup.deleteAllAccessTypeData();
         assertTrue(networkTaskDAO.readAllNetworkTasks().isEmpty());
         assertTrue(schedulerIdHistoryDAO.readAllSchedulerIds().isEmpty());
@@ -354,6 +419,7 @@ public class DBSetupTest {
         assertNull(schedulerStateDAO.readSchedulerState());
         assertTrue(accessTypeDataDAO.readAllAccessTypeData().isEmpty());
         assertFalse(resolveDAO.readAllResolve().isEmpty());
+        assertFalse(headerDAO.readAllHeaders().isEmpty());
         setup.deleteAllResolve();
         assertTrue(networkTaskDAO.readAllNetworkTasks().isEmpty());
         assertTrue(schedulerIdHistoryDAO.readAllSchedulerIds().isEmpty());
@@ -362,6 +428,16 @@ public class DBSetupTest {
         assertNull(schedulerStateDAO.readSchedulerState());
         assertTrue(accessTypeDataDAO.readAllAccessTypeData().isEmpty());
         assertTrue(resolveDAO.readAllResolve().isEmpty());
+        assertFalse(headerDAO.readAllHeaders().isEmpty());
+        setup.deleteAllHeaders();
+        assertTrue(networkTaskDAO.readAllNetworkTasks().isEmpty());
+        assertTrue(schedulerIdHistoryDAO.readAllSchedulerIds().isEmpty());
+        assertTrue(logDAO.readAllLogs().isEmpty());
+        assertTrue(intervalDAO.readAllIntervals().isEmpty());
+        assertNull(schedulerStateDAO.readSchedulerState());
+        assertTrue(accessTypeDataDAO.readAllAccessTypeData().isEmpty());
+        assertTrue(resolveDAO.readAllResolve().isEmpty());
+        assertTrue(headerDAO.readAllHeaders().isEmpty());
     }
 
     @Test
@@ -466,6 +542,23 @@ public class DBSetupTest {
         assertTrue(getInterval2().isEqual(exportedInterval1));
         assertTrue(getInterval3().isEqual(exportedInterval2));
         assertTrue(getInterval1().isEqual(exportedInterval3));
+    }
+
+    @Test
+    public void testExportHeaders() {
+        Header header1 = getHeader(-1);
+        header1.setName("bName");
+        Header header2 = getHeader(-1);
+        header2.setName("aName");
+        headerDAO.insertHeader(header1);
+        headerDAO.insertHeader(getHeader(0));
+        headerDAO.insertHeader(header2);
+        List<Map<String, ?>> headerList = setup.exportGlobalHeaders();
+        assertEquals(2, headerList.size());
+        Header exportedHeader1 = new Header(headerList.get(0));
+        Header exportedHeader2 = new Header(headerList.get(1));
+        assertTrue(exportedHeader2.isEqual(header1));
+        assertTrue(exportedHeader1.isEqual(header2));
     }
 
     @Test
@@ -904,6 +997,23 @@ public class DBSetupTest {
     }
 
     @Test
+    public void testImportHeaders() {
+        Map<String, ?> headerMap1 = getHeader(-1).toMap();
+        Map<String, ?> headerMap2 = getHeader(0).toMap();
+        Map<String, ?> headerMap3 = getHeader(-2).toMap();
+        assertTrue(headerDAO.readAllHeaders().isEmpty());
+        setup.importGlobalHeaders(Arrays.asList(headerMap1, headerMap2, headerMap3));
+        List<Header> headerList = headerDAO.readAllHeaders();
+        List<Header> globalHeaderList = headerDAO.readGlobalHeaders();
+        assertEquals(2, headerList.size());
+        assertEquals(2, globalHeaderList.size());
+        assertTrue(getHeader(-1).isTechnicallyEqual(headerList.get(0)));
+        assertTrue(getHeader(-1).isTechnicallyEqual(headerList.get(1)));
+        assertTrue(getHeader(-1).isTechnicallyEqual(globalHeaderList.get(0)));
+        assertTrue(getHeader(-1).isTechnicallyEqual(globalHeaderList.get(1)));
+    }
+
+    @Test
     public void testImportIntervalsOverlapDaysOverlap() {
         Interval interval1 = getInterval1();
         Time start = new Time();
@@ -1077,5 +1187,14 @@ public class DBSetupTest {
         resolve.setTargetAddress("host.com");
         resolve.setTargetPort(1234);
         return resolve;
+    }
+
+    private Header getHeader(long networkTaskId) {
+        Header header = new Header();
+        header.setId(0);
+        header.setNetworkTaskId(networkTaskId);
+        header.setName("name");
+        header.setValue("value");
+        return header;
     }
 }

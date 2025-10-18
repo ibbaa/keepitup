@@ -812,8 +812,12 @@ public class DBSetup {
         for (Map<String, ?> headerMap : headerList) {
             Header header = new Header(headerMap);
             Log.d(DBSetup.class.getName(), "Header is " + header);
-            Log.d(DBSetup.class.getName(), "Importing header.");
-            dao.insertHeader(header);
+            if (header.getNetworkTaskId() < 0) {
+                Log.d(DBSetup.class.getName(), "Importing header.");
+                dao.insertHeader(header);
+            } else {
+                Log.e(DBSetup.class.getName(), "Header is not a global header and will not be imported: " + header);
+            }
         }
     }
 

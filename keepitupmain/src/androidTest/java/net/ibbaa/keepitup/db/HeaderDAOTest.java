@@ -78,8 +78,8 @@ public class HeaderDAOTest {
         Header readHeader2 = readHeaderList.get(1);
         assertTrue(readHeader1.getId() > 0);
         assertTrue(readHeader2.getId() > 0);
-        assertTrue(doesHeaderListContain(readHeaderList, header1));
-        assertTrue(doesHeaderListContain(readHeaderList, header2));
+        assertTrue(readHeader1.isTechnicallyEqual(header1));
+        assertTrue(readHeader2.isTechnicallyEqual(header2));
         headerDAO.deleteHeadersForNetworkTask(1);
         readHeaderList = headerDAO.readHeadersForNetworkTask(1);
         assertTrue(readHeaderList.isEmpty());
@@ -111,10 +111,10 @@ public class HeaderDAOTest {
         assertEquals(4, readHeaderAllList.size());
         assertEquals(2, readHeaderGlobalList.size());
         assertEquals(2, readHeaderNetworkTaskList.size());
-        assertTrue(doesHeaderListContain(readHeaderGlobalList, headerGlobal1));
-        assertTrue(doesHeaderListContain(readHeaderGlobalList, headerGlobal2));
-        assertTrue(doesHeaderListContain(readHeaderNetworkTaskList, headerNetworkTask1));
-        assertTrue(doesHeaderListContain(readHeaderNetworkTaskList, headerNetworkTask2));
+        assertTrue(readHeaderGlobalList.get(0).isTechnicallyEqual(headerGlobal1));
+        assertTrue(readHeaderGlobalList.get(1).isTechnicallyEqual(headerGlobal2));
+        assertTrue(readHeaderNetworkTaskList.get(0).isTechnicallyEqual(headerNetworkTask1));
+        assertTrue(readHeaderNetworkTaskList.get(1).isTechnicallyEqual(headerNetworkTask2));
         headerDAO.deleteGlobalHeaders();
         readHeaderAllList = headerDAO.readAllHeaders();
         readHeaderGlobalList = headerDAO.readGlobalHeaders();
