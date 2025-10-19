@@ -28,6 +28,7 @@ import androidx.test.filters.MediumTest;
 import net.ibbaa.keepitup.logging.Dump;
 import net.ibbaa.keepitup.model.AccessType;
 import net.ibbaa.keepitup.model.AccessTypeData;
+import net.ibbaa.keepitup.model.Header;
 import net.ibbaa.keepitup.model.Interval;
 import net.ibbaa.keepitup.model.NetworkTask;
 import net.ibbaa.keepitup.model.Resolve;
@@ -52,6 +53,7 @@ public class DBMigrateTest {
     private SchedulerStateDAO schedulerStateDAO;
     private AccessTypeDataDAO accessTypeDataDAO;
     private ResolveDAO resolveDAO;
+    private HeaderDAO headerDAO;
     private PreferenceManager preferenceManager;
 
     @Before
@@ -64,6 +66,7 @@ public class DBMigrateTest {
         schedulerStateDAO = new SchedulerStateDAO(TestRegistry.getContext());
         accessTypeDataDAO = new AccessTypeDataDAO(TestRegistry.getContext());
         resolveDAO = new ResolveDAO(TestRegistry.getContext());
+        headerDAO = new HeaderDAO(TestRegistry.getContext());
         preferenceManager = new PreferenceManager(TestRegistry.getContext());
         preferenceManager.removeAllPreferences();
         setup.dropTables();
@@ -250,6 +253,7 @@ public class DBMigrateTest {
     public void testUpgradeFrom5To6() {
         setup.createTables();
         setup.dropResolveTable();
+        setup.dropHeaderTable();
         migrate.doUpgrade(TestRegistry.getContext(), 5, 6);
         networkTaskDAO.insertNetworkTask(new NetworkTask());
         assertEquals(1, networkTaskDAO.readAllNetworkTasks().size());
@@ -259,22 +263,33 @@ public class DBMigrateTest {
         assertEquals(1, intervalDAO.readAllIntervals().size());
         resolveDAO.insertResolve(new Resolve());
         assertEquals(1, resolveDAO.readAllResolve().size());
+        headerDAO.insertHeader(new Header());
+        assertEquals(2, headerDAO.readAllHeaders().size());
     }
 
     @Test(expected = SQLiteException.class)
-    public void testDowngradeFrom6To5() {
+    public void testDowngradeFrom6To5ResolveTable() {
         setup.createTables();
         migrate.doDowngrade(TestRegistry.getContext(), 6, 5);
         resolveDAO.readAllResolve();
     }
 
+    @Test(expected = SQLiteException.class)
+    public void testDowngradeFrom6To5HeaderTable() {
+        setup.createTables();
+        migrate.doDowngrade(TestRegistry.getContext(), 6, 5);
+        headerDAO.readAllHeaders();
+    }
+
     @Test
+    @SuppressWarnings({"SequencedCollectionMethodCanBeUsed"})
     public void testUpgradeFrom0To6() {
         setup.createTables();
         setup.dropIntervalTable();
         setup.dropAccessTypeDataTable();
         setup.dropNetworkTaskTable();
         setup.dropResolveTable();
+        setup.dropHeaderTable();
         NetworkTaskDBConstants networkTaskDBConstants = new NetworkTaskDBConstants(TestRegistry.getContext());
         DBOpenHelper.getInstance(TestRegistry.getContext()).getWritableDatabase().execSQL(networkTaskDBConstants.getCreateTableStatementWithoutAddedColumns());
         migrate.doUpgrade(TestRegistry.getContext(), 0, 6);
@@ -285,6 +300,9 @@ public class DBMigrateTest {
         Resolve resolve = new Resolve();
         resolve.setNetworkTaskId(task1.getId());
         resolveDAO.insertResolve(resolve);
+        Header header = new Header();
+        header.setNetworkTaskId(task1.getId());
+        headerDAO.insertHeader(header);
         intervalDAO.insertInterval(new Interval());
         List<Interval> intervals = intervalDAO.readAllIntervals();
         assertEquals(1, intervals.size());
@@ -293,6 +311,8 @@ public class DBMigrateTest {
         assertTrue(data.isTechnicallyEqual(data1));
         Resolve resolve1 = resolveDAO.readResolveForNetworkTask(task1.getId());
         assertTrue(resolve.isTechnicallyEqual(resolve1));
+        Header header1 = headerDAO.readHeadersForNetworkTask(task1.getId()).get(0);
+        assertTrue(header.isTechnicallyEqual(header1));
     }
 
     private NetworkTask getNetworkTask1() {

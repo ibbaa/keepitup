@@ -175,11 +175,14 @@ public class DBMigrate {
         Log.d(DBMigrate.class.getName(), "version6UpgradeFrom5");
         setup.tryDropResolveTable(db);
         setup.createResolveTable(db);
+        setup.tryDropHeaderTable(db);
+        setup.createHeaderTable(db);
     }
 
     private void version6DowngradeTo5(SQLiteDatabase db) {
         Log.d(DBMigrate.class.getName(), "version6DowngradeTo5");
         setup.tryDropResolveTable(db);
+        setup.tryDropHeaderTable(db);
     }
 
     @FunctionalInterface
