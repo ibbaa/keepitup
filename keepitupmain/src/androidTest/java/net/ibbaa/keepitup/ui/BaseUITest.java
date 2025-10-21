@@ -40,6 +40,7 @@ import androidx.test.espresso.matcher.ViewMatchers;
 import androidx.test.platform.app.InstrumentationRegistry;
 
 import net.ibbaa.keepitup.db.AccessTypeDataDAO;
+import net.ibbaa.keepitup.db.HeaderDAO;
 import net.ibbaa.keepitup.db.IntervalDAO;
 import net.ibbaa.keepitup.db.LogDAO;
 import net.ibbaa.keepitup.db.NetworkTaskDAO;
@@ -88,6 +89,7 @@ public abstract class BaseUITest {
     private SchedulerStateDAO schedulerStateDAO;
     private AccessTypeDataDAO accessTypeDataDAO;
     private ResolveDAO resolveDAO;
+    private HeaderDAO headerDAO;
     private TestNetworkTaskProcessServiceScheduler networkTaskProcessServiceScheduler;
     private TestTimeBasedSuspensionScheduler timeBasedSuspensionScheduler;
     private PreferenceManager preferenceManager;
@@ -123,6 +125,8 @@ public abstract class BaseUITest {
         accessTypeDataDAO.deleteAllAccessTypeData();
         resolveDAO = new ResolveDAO(TestRegistry.getContext());
         resolveDAO.deleteAllResolve();
+        headerDAO = new HeaderDAO(TestRegistry.getContext());
+        headerDAO.deleteAllHeaders();
         setLocale(Locale.US);
         preferenceManager = new PreferenceManager(TestRegistry.getContext());
         preferenceManager.removeAllPreferences();
@@ -153,6 +157,7 @@ public abstract class BaseUITest {
         schedulerStateDAO.insertSchedulerState(new SchedulerState(0, false, 0));
         accessTypeDataDAO.deleteAllAccessTypeData();
         resolveDAO.deleteAllResolve();
+        headerDAO.deleteAllHeaders();
         preferenceManager.removeAllPreferences();
         fileManager = new SystemFileManager(TestRegistry.getContext());
         fileManager.delete(fileManager.getInternalDownloadDirectory());
@@ -266,6 +271,10 @@ public abstract class BaseUITest {
 
     public ResolveDAO getResolveDAO() {
         return resolveDAO;
+    }
+
+    public HeaderDAO getHeaderDAO() {
+        return headerDAO;
     }
 
     public NetworkTaskProcessServiceScheduler getNetworkTaskProcessServiceScheduler() {

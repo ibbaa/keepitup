@@ -148,11 +148,14 @@ public class JSONSystemSetup {
     private void importDatabase(JSONObject dbData) throws JSONException {
         Log.d(JSONSystemSetup.class.getName(), "importDatabase for data " + dbData);
         String intervalKey = getResources().getString(R.string.interval_json_key);
+        String globalHeaderKey = getResources().getString(R.string.globalheader_json_key);
         Iterator<String> keys = dbData.keys();
         while (keys.hasNext()) {
             String key = keys.next();
             if (intervalKey.equals(key)) {
-                importIntervals(dbData, key);
+                importJSONList(dbData, key, dbSetup::importIntervals);
+            } else if (globalHeaderKey.equals(key)) {
+                importJSONList(dbData, key, dbSetup::importGlobalHeaders);
             } else {
                 importNetworkTask(dbData, key);
             }
@@ -175,9 +178,10 @@ public class JSONSystemSetup {
         }
     }
 
-    private void importIntervals(JSONObject dbData, String key) throws JSONException {
-        List<?> intervalList = dbData.has(key) ? JSONUtil.toList((JSONArray) dbData.get(key)) : Collections.emptyList();
-        dbSetup.importIntervals(filterList(intervalList));
+    @SuppressWarnings("unchecked")
+    private void importJSONList(JSONObject dbData, String key, Importer importer) throws JSONException {
+        List<Map<String, ?>> list = dbData.has(key) ? (List<Map<String, ?>>) JSONUtil.toList((JSONArray) dbData.get(key)) : Collections.emptyList();
+        importer.importList(list);
     }
 
     private void importSettings(JSONObject settings) throws JSONException {
@@ -192,11 +196,11 @@ public class JSONSystemSetup {
 
     @SuppressWarnings({"unchecked"})
     private List<Map<String, ?>> filterList(List<?> list) {
-        Log.d(JSONSystemSetup.class.getName(), "filterLogList");
+        Log.d(JSONSystemSetup.class.getName(), "filterList");
         List<Map<String, ?>> filteredList = new ArrayList<>();
-        for (Object log : list) {
-            if (log instanceof Map) {
-                filteredList.add((Map<String, ?>) log);
+        for (Object obj : list) {
+            if (obj instanceof Map) {
+                filteredList.add((Map<String, ?>) obj);
             }
         }
         return filteredList;
@@ -219,6 +223,9 @@ public class JSONSystemSetup {
         List<Map<String, ?>> intervals = dbSetup.exportIntervals();
         String intervalKey = getResources().getString(R.string.interval_json_key);
         dbData.put(intervalKey, new JSONArray(intervals));
+        List<Map<String, ?>> globalHeaders = dbSetup.exportGlobalHeaders();
+        String globalHeaderKey = getResources().getString(R.string.globalheader_json_key);
+        dbData.put(globalHeaderKey, new JSONArray(globalHeaders));
         return dbData;
     }
 
@@ -281,5 +288,11 @@ public class JSONSystemSetup {
 
     private Resources getResources() {
         return getContext().getResources();
+    }
+
+    @FunctionalInterface
+    private interface Importer {
+        @SuppressWarnings({"unused"})
+        void importList(List<Map<String, ?>> headerList);
     }
 }

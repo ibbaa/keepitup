@@ -28,6 +28,7 @@ import androidx.test.filters.MediumTest;
 
 import net.ibbaa.keepitup.model.AccessType;
 import net.ibbaa.keepitup.model.AccessTypeData;
+import net.ibbaa.keepitup.model.Header;
 import net.ibbaa.keepitup.model.Interval;
 import net.ibbaa.keepitup.model.LogEntry;
 import net.ibbaa.keepitup.model.NetworkTask;
@@ -92,6 +93,8 @@ public class ImportTaskTest extends BaseUITest {
         AccessTypeData accessData2 = getAccessTypeDataDAO().insertAccessTypeData(getAccessTypeData2(task2.getId()));
         Resolve resolve1 = getResolveDAO().insertResolve(getResolve1(task1.getId()));
         Resolve resolve2 = getResolveDAO().insertResolve(getResolve2(task2.getId()));
+        getHeaderDAO().insertHeader(getHeader1(task1.getId()));
+        Header header2 = getHeaderDAO().insertHeader(getHeader2(-1));
         getPreferenceManager().setPreferenceNotificationInactiveNetwork(true);
         getPreferenceManager().setPreferenceNotificationType(NotificationType.CHANGE);
         getPreferenceManager().setPreferenceSuspensionEnabled(false);
@@ -135,6 +138,7 @@ public class ImportTaskTest extends BaseUITest {
         getIntervalDAO().deleteAllIntervals();
         getAccessTypeDataDAO().deleteAllAccessTypeData();
         getResolveDAO().deleteAllResolve();
+        getHeaderDAO().deleteAllHeaders();
         getPreferenceManager().removeAllPreferences();
         File folder = getFileManager().getExternalRootDirectory(0);
         FileOutputStream stream = new FileOutputStream(new File(folder, "test.json"));
@@ -194,6 +198,10 @@ public class ImportTaskTest extends BaseUITest {
         Resolve readResolve2 = getResolveDAO().readResolveForNetworkTask(readTask2.getId());
         assertTrue(resolve1.isTechnicallyEqual(readResolve1));
         assertTrue(resolve2.isTechnicallyEqual(readResolve2));
+        assertEquals(1, getHeaderDAO().readAllHeaders().size());
+        assertEquals(1, getHeaderDAO().readGlobalHeaders().size());
+        Header readHeader = getHeaderDAO().readGlobalHeaders().get(0);
+        assertTrue(readHeader.isTechnicallyEqual(header2));
         assertTrue(getPreferenceManager().getPreferenceNotificationInactiveNetwork());
         assertEquals(NotificationType.CHANGE, getPreferenceManager().getPreferenceNotificationType());
         assertFalse(getPreferenceManager().getPreferenceSuspensionEnabled());
@@ -250,6 +258,8 @@ public class ImportTaskTest extends BaseUITest {
         AccessTypeData accessData2 = getAccessTypeDataDAO().insertAccessTypeData(getAccessTypeData2(task2.getId()));
         Resolve resolve1 = getResolveDAO().insertResolve(getResolve1(task1.getId()));
         Resolve resolve2 = getResolveDAO().insertResolve(getResolve2(task2.getId()));
+        getHeaderDAO().insertHeader(getHeader1(task1.getId()));
+        Header header2 = getHeaderDAO().insertHeader(getHeader2(-1));
         getPreferenceManager().setPreferenceNotificationInactiveNetwork(true);
         getPreferenceManager().setPreferenceNotificationType(NotificationType.CHANGE);
         getPreferenceManager().setPreferenceSuspensionEnabled(false);
@@ -357,6 +367,10 @@ public class ImportTaskTest extends BaseUITest {
         Resolve readResolve2 = getResolveDAO().readResolveForNetworkTask(readTask2.getId());
         assertTrue(resolve1.isTechnicallyEqual(readResolve1));
         assertTrue(resolve2.isTechnicallyEqual(readResolve2));
+        assertEquals(1, getHeaderDAO().readAllHeaders().size());
+        assertEquals(1, getHeaderDAO().readGlobalHeaders().size());
+        Header readHeader = getHeaderDAO().readGlobalHeaders().get(0);
+        assertTrue(readHeader.isTechnicallyEqual(header2));
         assertTrue(getPreferenceManager().getPreferenceNotificationInactiveNetwork());
         assertEquals(NotificationType.CHANGE, getPreferenceManager().getPreferenceNotificationType());
         assertFalse(getPreferenceManager().getPreferenceSuspensionEnabled());
@@ -401,6 +415,7 @@ public class ImportTaskTest extends BaseUITest {
         getIntervalDAO().insertInterval(getInterval());
         getAccessTypeDataDAO().insertAccessTypeData(getAccessTypeData1(task1.getId()));
         getResolveDAO().insertResolve(getResolve1(task1.getId()));
+        getHeaderDAO().insertHeader(getHeader1(task1.getId()));
         getPreferenceManager().setPreferenceNotificationInactiveNetwork(true);
         getPreferenceManager().setPreferenceNotificationType(NotificationType.CHANGE);
         getPreferenceManager().setPreferenceSuspensionEnabled(false);
@@ -448,6 +463,8 @@ public class ImportTaskTest extends BaseUITest {
         assertNotNull(getSchedulerStateDAO().readSchedulerState());
         assertFalse(getAccessTypeDataDAO().readAllAccessTypeData().isEmpty());
         assertFalse(getResolveDAO().readAllResolve().isEmpty());
+        assertFalse(getHeaderDAO().readAllHeaders().isEmpty());
+        assertTrue(getHeaderDAO().readGlobalHeaders().isEmpty());
         assertTrue(getPreferenceManager().getPreferenceNotificationInactiveNetwork());
         assertEquals(NotificationType.CHANGE, getPreferenceManager().getPreferenceNotificationType());
         assertFalse(getPreferenceManager().getPreferenceSuspensionEnabled());
@@ -633,5 +650,24 @@ public class ImportTaskTest extends BaseUITest {
         resolve.setTargetAddress("127.0.0.1");
         resolve.setTargetPort(80);
         return resolve;
+    }
+
+    private Header getHeader1(long networkTaskId) {
+        Header header = new Header();
+        header.setId(0);
+        header.setNetworkTaskId(networkTaskId);
+        header.setName("bname");
+        header.setValue("value");
+        return header;
+    }
+
+    @SuppressWarnings({"SameParameterValue"})
+    private Header getHeader2(long networkTaskId) {
+        Header header = new Header();
+        header.setId(0);
+        header.setNetworkTaskId(networkTaskId);
+        header.setName("aname");
+        header.setValue("value");
+        return header;
     }
 }

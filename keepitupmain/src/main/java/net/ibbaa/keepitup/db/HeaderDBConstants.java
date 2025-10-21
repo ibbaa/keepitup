@@ -107,6 +107,6 @@ public class HeaderDBConstants {
     }
 
     public String getDeleteOrphanHeadersStatement() {
-        return "DELETE FROM " + getTableName() + " WHERE " + getNetworkTaskIdColumnName() + " NOT IN (SELECT " + networkTaskDBConstants.getIdColumnName() + " FROM " + networkTaskDBConstants.getTableName() + ");";
+        return "DELETE FROM " + getTableName() + " WHERE " + getNetworkTaskIdColumnName() + " IS NOT NULL AND " + getNetworkTaskIdColumnName() + " NOT IN (SELECT " + networkTaskDBConstants.getIdColumnName() + " FROM " + networkTaskDBConstants.getTableName() + ");";
     }
 }

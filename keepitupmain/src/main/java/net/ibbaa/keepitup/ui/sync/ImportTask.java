@@ -140,6 +140,7 @@ public class ImportTask extends UIBackgroundTask<SystemSetupResult> {
         boolean schedulerStateTableSuccess = false;
         boolean accessTypeDataTableSuccess = false;
         boolean resolveTableSuccess = false;
+        boolean headerTableSuccess = false;
         try {
             setup.deleteAllLogs();
             logTableSuccess = true;
@@ -171,16 +172,22 @@ public class ImportTask extends UIBackgroundTask<SystemSetupResult> {
             Log.e(ImportTask.class.getName(), "Error purging scheduler state table", exc);
         }
         try {
-            setup.recreateAccessTypeDataTable();
+            setup.deleteAllAccessTypeData();
             accessTypeDataTableSuccess = true;
         } catch (Exception exc) {
             Log.e(ImportTask.class.getName(), "Error purging access type data table", exc);
         }
         try {
-            setup.recreateResolveTable();
+            setup.deleteAllResolve();
             resolveTableSuccess = true;
         } catch (Exception exc) {
-            Log.e(ImportTask.class.getName(), "Error purging access type data table", exc);
+            Log.e(ImportTask.class.getName(), "Error purging resolve table", exc);
+        }
+        try {
+            setup.deleteAllHeaders();
+            headerTableSuccess = true;
+        } catch (Exception exc) {
+            Log.e(ImportTask.class.getName(), "Error purging header table", exc);
         }
         Log.d(ImportTask.class.getName(), "logTableSuccess: " + logTableSuccess);
         Log.d(ImportTask.class.getName(), "networkTaskTableSuccess: " + networkTaskTableSuccess);
@@ -189,7 +196,8 @@ public class ImportTask extends UIBackgroundTask<SystemSetupResult> {
         Log.d(DBPurgeTask.class.getName(), "schedulerStateTableSuccess: " + schedulerStateTableSuccess);
         Log.d(DBPurgeTask.class.getName(), "accessTypeDataTableSuccess: " + accessTypeDataTableSuccess);
         Log.d(DBPurgeTask.class.getName(), "resolveTableSuccess: " + resolveTableSuccess);
-        return logTableSuccess && networkTaskTableSuccess && schedulerIdTableSuccess && intervalTableSuccess && schedulerStateTableSuccess && accessTypeDataTableSuccess && resolveTableSuccess;
+        Log.d(DBPurgeTask.class.getName(), "headerTableSuccess: " + headerTableSuccess);
+        return logTableSuccess && networkTaskTableSuccess && schedulerIdTableSuccess && intervalTableSuccess && schedulerStateTableSuccess && accessTypeDataTableSuccess && resolveTableSuccess && headerTableSuccess;
     }
 
     private SystemSetupResult doImport(Context context, String data) {

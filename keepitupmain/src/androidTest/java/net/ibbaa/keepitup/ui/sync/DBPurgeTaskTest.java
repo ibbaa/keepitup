@@ -16,6 +16,7 @@
 
 package net.ibbaa.keepitup.ui.sync;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
@@ -25,6 +26,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.MediumTest;
 
 import net.ibbaa.keepitup.model.AccessTypeData;
+import net.ibbaa.keepitup.model.Header;
 import net.ibbaa.keepitup.model.Interval;
 import net.ibbaa.keepitup.model.LogEntry;
 import net.ibbaa.keepitup.model.NetworkTask;
@@ -38,6 +40,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 @MediumTest
+@SuppressWarnings({"SequencedCollectionMethodCanBeUsed"})
 @RunWith(AndroidJUnit4.class)
 public class DBPurgeTaskTest extends BaseUITest {
 
@@ -63,6 +66,7 @@ public class DBPurgeTaskTest extends BaseUITest {
         getIntervalDAO().insertInterval(new Interval());
         getAccessTypeDataDAO().insertAccessTypeData(new AccessTypeData());
         getResolveDAO().insertResolve(new Resolve());
+        getHeaderDAO().insertHeader(getHeader());
         assertFalse(getNetworkTaskDAO().readAllNetworkTasks().isEmpty());
         assertFalse(getSchedulerIdHistoryDAO().readAllSchedulerIds().isEmpty());
         assertFalse(getLogDAO().readAllLogs().isEmpty());
@@ -70,6 +74,9 @@ public class DBPurgeTaskTest extends BaseUITest {
         assertNotNull(getSchedulerStateDAO().readSchedulerState());
         assertFalse(getAccessTypeDataDAO().readAllAccessTypeData().isEmpty());
         assertFalse(getResolveDAO().readAllResolve().isEmpty());
+        assertEquals(1, getHeaderDAO().readAllHeaders().size());
+        Header header = getHeaderDAO().readAllHeaders().get(0);
+        assertEquals("name", header.getName());
         DBPurgeTask task = new DBPurgeTask(getActivity(activityScenario));
         assertTrue(task.runInBackground());
         assertTrue(getNetworkTaskDAO().readAllNetworkTasks().isEmpty());
@@ -79,5 +86,17 @@ public class DBPurgeTaskTest extends BaseUITest {
         assertNotNull(getSchedulerStateDAO().readSchedulerState());
         assertTrue(getAccessTypeDataDAO().readAllAccessTypeData().isEmpty());
         assertTrue(getResolveDAO().readAllResolve().isEmpty());
+        assertEquals(1, getHeaderDAO().readAllHeaders().size());
+        header = getHeaderDAO().readAllHeaders().get(0);
+        assertEquals("User-Agent", header.getName());
+    }
+
+    private Header getHeader() {
+        Header resolve = new Header();
+        resolve.setId(0);
+        resolve.setNetworkTaskId(-1);
+        resolve.setName("name");
+        resolve.setValue("value");
+        return resolve;
     }
 }

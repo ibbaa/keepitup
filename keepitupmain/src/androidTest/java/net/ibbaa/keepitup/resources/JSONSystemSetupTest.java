@@ -27,6 +27,7 @@ import androidx.test.filters.MediumTest;
 import net.ibbaa.keepitup.BuildConfig;
 import net.ibbaa.keepitup.R;
 import net.ibbaa.keepitup.db.AccessTypeDataDAO;
+import net.ibbaa.keepitup.db.HeaderDAO;
 import net.ibbaa.keepitup.db.IntervalDAO;
 import net.ibbaa.keepitup.db.LogDAO;
 import net.ibbaa.keepitup.db.NetworkTaskDAO;
@@ -34,6 +35,7 @@ import net.ibbaa.keepitup.db.ResolveDAO;
 import net.ibbaa.keepitup.logging.Dump;
 import net.ibbaa.keepitup.model.AccessType;
 import net.ibbaa.keepitup.model.AccessTypeData;
+import net.ibbaa.keepitup.model.Header;
 import net.ibbaa.keepitup.model.Interval;
 import net.ibbaa.keepitup.model.LogEntry;
 import net.ibbaa.keepitup.model.NetworkTask;
@@ -62,6 +64,7 @@ public class JSONSystemSetupTest {
     private IntervalDAO intervalDAO;
     private AccessTypeDataDAO accessTypeDataDAO;
     private ResolveDAO resolveDAO;
+    private HeaderDAO headerDAO;
     private PreferenceManager preferenceManager;
     private JSONSystemSetup setup;
 
@@ -73,11 +76,13 @@ public class JSONSystemSetupTest {
         intervalDAO = new IntervalDAO(TestRegistry.getContext());
         accessTypeDataDAO = new AccessTypeDataDAO(TestRegistry.getContext());
         resolveDAO = new ResolveDAO(TestRegistry.getContext());
+        headerDAO = new HeaderDAO(TestRegistry.getContext());
         networkTaskDAO.deleteAllNetworkTasks();
         logDAO.deleteAllLogs();
         intervalDAO.deleteAllIntervals();
         accessTypeDataDAO.deleteAllAccessTypeData();
         resolveDAO.deleteAllResolve();
+        headerDAO.deleteAllHeaders();
         preferenceManager = new PreferenceManager(TestRegistry.getContext());
         preferenceManager.removeAllPreferences();
         setup = new JSONSystemSetup(TestRegistry.getContext());
@@ -90,6 +95,7 @@ public class JSONSystemSetupTest {
         intervalDAO.deleteAllIntervals();
         accessTypeDataDAO.deleteAllAccessTypeData();
         resolveDAO.deleteAllResolve();
+        headerDAO.deleteAllHeaders();
         preferenceManager.removeAllPreferences();
     }
 
@@ -172,12 +178,15 @@ public class JSONSystemSetupTest {
     }
 
     @Test
-    public void testExportDatabaseWithIntervals() throws Exception {
+    public void testExportDatabaseWithIntervalsAndGlobalHeaders() throws Exception {
         NetworkTask task1 = networkTaskDAO.insertNetworkTask(getNetworkTask1());
         LogEntry task1Entry1 = logDAO.insertAndDeleteLog(getLogEntry1(task1.getId()));
         Interval interval1 = intervalDAO.insertInterval(getInterval1());
         Interval interval2 = intervalDAO.insertInterval(getInterval2());
         Interval interval3 = intervalDAO.insertInterval(getInterval3());
+        Header header1 = headerDAO.insertHeader(getHeader1(-1));
+        Header header2 = headerDAO.insertHeader(getHeader2(-1));
+        headerDAO.insertHeader(getHeader2(task1.getId()));
         SystemSetupResult result = setup.exportData();
         assertTrue(result.success());
         JSONObject jsonData = new JSONObject(result.data());
@@ -192,10 +201,16 @@ public class JSONSystemSetupTest {
         JSONArray intervalData = (JSONArray) databaseData.get("interval");
         Interval readInterval1 = new Interval(JSONUtil.toMap((JSONObject) intervalData.get(0)));
         Interval readInterval2 = new Interval(JSONUtil.toMap((JSONObject) intervalData.get(1)));
-        Interval readinterval3 = new Interval(JSONUtil.toMap((JSONObject) intervalData.get(2)));
+        Interval readInterval3 = new Interval(JSONUtil.toMap((JSONObject) intervalData.get(2)));
         assertTrue(interval1.isEqual(readInterval2));
         assertTrue(interval2.isEqual(readInterval1));
-        assertTrue(interval3.isEqual(readinterval3));
+        assertTrue(interval3.isEqual(readInterval3));
+        JSONArray globalHeaderData = (JSONArray) databaseData.get("globalheader");
+        assertEquals(2, globalHeaderData.length());
+        Header readHeader1 = new Header(JSONUtil.toMap((JSONObject) globalHeaderData.get(0)));
+        Header readHeader2 = new Header(JSONUtil.toMap((JSONObject) globalHeaderData.get(1)));
+        assertTrue(header1.isEqual(readHeader2));
+        assertTrue(header2.isEqual(readHeader1));
     }
 
     @Test
@@ -536,23 +551,30 @@ public class JSONSystemSetupTest {
     }
 
     @Test
-    public void testImportDatabaseWithIntervals() {
+    public void testImportDatabaseWithIntervalsAndGlobalHeaders() {
         NetworkTask task1 = networkTaskDAO.insertNetworkTask(getNetworkTask1());
         LogEntry task1Entry1 = logDAO.insertAndDeleteLog(getLogEntry1(task1.getId()));
         Interval interval1 = intervalDAO.insertInterval(getInterval1());
         Interval interval2 = intervalDAO.insertInterval(getInterval2());
         Interval interval3 = intervalDAO.insertInterval(getInterval3());
+        Header header1 = headerDAO.insertHeader(getHeader1(-1));
+        Header header2 = headerDAO.insertHeader(getHeader1(-1));
+        headerDAO.insertHeader(getHeader1(task1.getId()));
         SystemSetupResult exportResult = setup.exportData();
         networkTaskDAO.deleteAllNetworkTasks();
         logDAO.deleteAllLogs();
         intervalDAO.deleteAllIntervals();
+        headerDAO.deleteAllHeaders();
         assertTrue(networkTaskDAO.readAllNetworkTasks().isEmpty());
         assertTrue(logDAO.readAllLogs().isEmpty());
         assertTrue(intervalDAO.readAllIntervals().isEmpty());
+        assertTrue(headerDAO.readAllHeaders().isEmpty());
         SystemSetupResult importResult = setup.importData(exportResult.data());
         assertFalse(networkTaskDAO.readAllNetworkTasks().isEmpty());
         assertFalse(logDAO.readAllLogs().isEmpty());
         assertFalse(intervalDAO.readAllIntervals().isEmpty());
+        assertFalse(headerDAO.readAllHeaders().isEmpty());
+        assertFalse(headerDAO.readGlobalHeaders().isEmpty());
         assertTrue(importResult.success());
         assertEquals(exportResult.data(), importResult.data());
         List<NetworkTask> tasks = networkTaskDAO.readAllNetworkTasks();
@@ -568,6 +590,12 @@ public class JSONSystemSetupTest {
         assertTrue(interval1.isEqual(readInterval2));
         assertTrue(interval2.isEqual(readInterval1));
         assertTrue(interval3.isEqual(readInterval3));
+        List<Header> headers = headerDAO.readAllHeaders();
+        assertEquals(2, headers.size());
+        Header readHeader1 = headers.get(0);
+        Header readHeader2 = headers.get(1);
+        assertTrue(header1.isTechnicallyEqual(readHeader2));
+        assertTrue(header2.isTechnicallyEqual(readHeader1));
     }
 
     @Test
@@ -1312,5 +1340,23 @@ public class JSONSystemSetupTest {
         resolve.setTargetAddress("127.0.0.1");
         resolve.setTargetPort(80);
         return resolve;
+    }
+
+    private Header getHeader1(long networkTaskId) {
+        Header header = new Header();
+        header.setId(0);
+        header.setNetworkTaskId(networkTaskId);
+        header.setName("bname");
+        header.setValue("value");
+        return header;
+    }
+
+    private Header getHeader2(long networkTaskId) {
+        Header header = new Header();
+        header.setId(0);
+        header.setNetworkTaskId(networkTaskId);
+        header.setName("aname");
+        header.setValue("value");
+        return header;
     }
 }

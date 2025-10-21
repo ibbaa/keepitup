@@ -22,6 +22,7 @@
     <string name="networktask_json_key">networktask</string>
     <string name="logentry_json_key">logentry</string>
     <string name="interval_json_key">interval</string>
+    <string name="globalheader_json_key">globalheader</string>
     <string name="accesstypedata_json_key">accesstypedata</string>
     <string name="resolve_json_key">resolve</string>
     <string name="preferences_json_key">preferences</string>
