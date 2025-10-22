@@ -481,6 +481,10 @@ public class DBSetup {
         createHeaderTable(DBOpenHelper.getInstance(getContext()).getWritableDatabase());
     }
 
+    public void initializeHeaderTable() {
+        initializeHeaderTable(DBOpenHelper.getInstance(getContext()).getWritableDatabase());
+    }
+
     public void dropTables() {
         dropTables(DBOpenHelper.getInstance(getContext()).getWritableDatabase());
     }

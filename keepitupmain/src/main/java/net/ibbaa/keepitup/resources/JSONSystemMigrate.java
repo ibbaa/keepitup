@@ -20,6 +20,7 @@ import android.content.Context;
 import android.content.res.Resources;
 
 import net.ibbaa.keepitup.R;
+import net.ibbaa.keepitup.db.DBSetup;
 import net.ibbaa.keepitup.logging.Log;
 import net.ibbaa.keepitup.util.JSONUtil;
 
@@ -45,6 +46,7 @@ public class JSONSystemMigrate {
         this.versionAdaptAfterDatabase = new TreeMap<>();
         this.versionAdaptAfter = new TreeMap<>();
         versionAdaptAfter.put(3, this::version3AdaptAfterFrom0);
+        versionAdaptAfter.put(6, this::version6AdaptAfterFrom3);
     }
 
     public void adaptBefore(JSONObject root, int oldVersion, int newVersion) {
@@ -84,7 +86,7 @@ public class JSONSystemMigrate {
     }
 
     private void version3AdaptAfterFrom0(JSONObject root) {
-        Log.d(JSONSystemMigrate.class.getName(), "version3UpgradeFrom0");
+        Log.d(JSONSystemMigrate.class.getName(), "version3AdaptAfterFrom0");
         String settingsKey = getResources().getString(R.string.preferences_json_key);
         try {
             if (!root.has(settingsKey)) {
@@ -102,6 +104,18 @@ public class JSONSystemMigrate {
             Log.d(JSONSystemMigrate.class.getName(), "version3UpgradeFrom0, importing ping and connect count from global settings");
             setup.importPingAndConnectCount(JSONUtil.toMap(globalSettings));
         } catch (JSONException exc) {
+            Log.e(JSONSystemMigrate.class.getName(), "Error on migrating version3UpgradeFrom0", exc);
+        }
+    }
+
+    @SuppressWarnings("unused")
+    private void version6AdaptAfterFrom3(JSONObject root) {
+        Log.d(JSONSystemMigrate.class.getName(), "version6AdaptAfterFrom3");
+        try {
+            DBSetup setup = new DBSetup(getContext());
+            setup.deleteAllHeaders();
+            setup.initializeHeaderTable();
+        } catch (Exception exc) {
             Log.e(JSONSystemMigrate.class.getName(), "Error on migrating version3UpgradeFrom0", exc);
         }
     }

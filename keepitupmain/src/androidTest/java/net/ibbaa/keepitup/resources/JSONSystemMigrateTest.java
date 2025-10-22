@@ -21,7 +21,9 @@ import static org.junit.Assert.assertEquals;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.MediumTest;
 
+import net.ibbaa.keepitup.db.HeaderDAO;
 import net.ibbaa.keepitup.logging.Dump;
+import net.ibbaa.keepitup.model.Header;
 import net.ibbaa.keepitup.test.mock.TestRegistry;
 
 import org.json.JSONException;
@@ -32,11 +34,13 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 @MediumTest
+@SuppressWarnings({"SequencedCollectionMethodCanBeUsed"})
 @RunWith(AndroidJUnit4.class)
 public class JSONSystemMigrateTest {
 
     private PreferenceManager preferenceManager;
     private JSONSystemMigrate migrate;
+    private HeaderDAO headerDAO;
 
     @Before
     public void beforeEachTestMethod() {
@@ -44,11 +48,14 @@ public class JSONSystemMigrateTest {
         preferenceManager = new PreferenceManager(TestRegistry.getContext());
         preferenceManager.removeAllPreferences();
         migrate = new JSONSystemMigrate(TestRegistry.getContext());
+        headerDAO = new HeaderDAO(TestRegistry.getContext());
+        headerDAO.deleteAllHeaders();
     }
 
     @After
     public void afterEachTestMethod() {
         preferenceManager.removeAllPreferences();
+        headerDAO.deleteAllHeaders();
     }
 
     @Test
@@ -105,6 +112,32 @@ public class JSONSystemMigrateTest {
         migrate.adaptAfter(root, 0, 3);
         assertEquals(5, preferenceManager.getPreferencePingCount());
         assertEquals(5, preferenceManager.getPreferenceConnectCount());
+    }
+
+    @Test
+    public void testVersionAdaptAfter3to6() {
+        preferenceManager.setPreferenceHTTPUserAgent("test");
+        migrate.adaptAfter(new JSONObject(), 3, 6);
+        assertEquals(1, headerDAO.readGlobalHeaders().size());
+        assertEquals(1, headerDAO.readAllHeaders().size());
+        Header header = headerDAO.readGlobalHeaders().get(0);
+        assertEquals("User-Agent", header.getName());
+        assertEquals("test", header.getValue());
+    }
+
+    @Test
+    public void testVersionAdaptAfter0to6() throws Exception {
+        assertEquals(3, preferenceManager.getPreferencePingCount());
+        assertEquals(1, preferenceManager.getPreferenceConnectCount());
+        JSONObject root = createRoot(5, 5);
+        migrate.adaptAfter(root, 0, 6);
+        assertEquals(5, preferenceManager.getPreferencePingCount());
+        assertEquals(5, preferenceManager.getPreferenceConnectCount());
+        assertEquals(1, headerDAO.readGlobalHeaders().size());
+        assertEquals(1, headerDAO.readAllHeaders().size());
+        Header header = headerDAO.readGlobalHeaders().get(0);
+        assertEquals("User-Agent", header.getName());
+        assertEquals("Mozilla/5.0", header.getValue());
     }
 
     private JSONObject createRoot(int pingCount, int connectCount) throws JSONException {
