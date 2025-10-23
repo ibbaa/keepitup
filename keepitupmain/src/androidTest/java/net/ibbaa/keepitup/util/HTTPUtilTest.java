@@ -24,6 +24,8 @@ import static org.junit.Assert.assertTrue;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.SmallTest;
 
+import net.ibbaa.keepitup.R;
+import net.ibbaa.keepitup.resources.ConstantPreferenceManager;
 import net.ibbaa.keepitup.resources.PreferenceManager;
 import net.ibbaa.keepitup.test.mock.TestRegistry;
 
@@ -73,12 +75,13 @@ public class HTTPUtilTest {
         Request request = builder.build();
         assertEquals("Mozilla/5.0", request.header("User-Agent"));
         PreferenceManager preferenceManager = new PreferenceManager(TestRegistry.getContext());
-        preferenceManager.setPreferenceHTTPUserAgent("abc");
+        ConstantPreferenceManager constantPreferenceManager = new ConstantPreferenceManager(TestRegistry.getContext());
+        preferenceManager.setPreferenceString(TestRegistry.getContext().getResources().getString(R.string.http_user_agent_key), "abc");
         builder = new Request.Builder().url("http://test.com");
         HTTPUtil.setUserAgent(TestRegistry.getContext(), builder);
         request = builder.build();
         assertEquals("abc", request.header("User-Agent"));
-        preferenceManager.removePreferenceHTTPUserAgent();
+        constantPreferenceManager.removePreferenceHTTPUserAgent();
         builder = new Request.Builder().url("http://test.com");
         HTTPUtil.setUserAgent(TestRegistry.getContext(), builder);
         request = builder.build();

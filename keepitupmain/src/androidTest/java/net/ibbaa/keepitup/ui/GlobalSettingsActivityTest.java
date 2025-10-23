@@ -90,7 +90,6 @@ public class GlobalSettingsActivityTest extends BaseUITest {
         assertFalse(preferenceManager.getPreferenceDownloadExternalStorage());
         assertFalse(preferenceManager.getPreferenceDownloadKeep());
         assertTrue(preferenceManager.getPreferenceDownloadFollowsRedirects());
-        assertEquals("Mozilla/5.0", preferenceManager.getPreferenceHTTPUserAgent());
         assertFalse(preferenceManager.getPreferenceLogFile());
         onView(withId(R.id.textview_activity_global_settings_notification_inactive_network_label)).check(matches(withText("Notifications when network is not active")));
         onView(withId(R.id.switch_activity_global_settings_notification_inactive_network)).check(matches(isNotChecked()));
@@ -118,8 +117,6 @@ public class GlobalSettingsActivityTest extends BaseUITest {
         onView(withId(R.id.switch_activity_global_settings_download_keep)).check(matches(not(isEnabled())));
         onView(withId(R.id.textview_activity_global_settings_download_follows_redirects_label)).check(matches(withText("Download follows redirects")));
         onView(withId(R.id.switch_activity_global_settings_download_follows_redirects)).check(matches(isChecked()));
-        onView(withId(R.id.textview_activity_global_settings_http_user_agent_label)).check(matches(withText("User Agent Header")));
-        onView(withId(R.id.textview_activity_global_settings_http_user_agent)).check(matches(withText("Mozilla/5.0")));
         onView(withId(R.id.switch_activity_global_settings_log_file)).perform(scrollTo());
         onView(withId(R.id.textview_activity_global_settings_log_file_label)).check(matches(withText("Log to file")));
         onView(withId(R.id.switch_activity_global_settings_log_file)).check(matches(isNotChecked()));
@@ -140,7 +137,6 @@ public class GlobalSettingsActivityTest extends BaseUITest {
         preferenceManager.setPreferenceDownloadExternalStorage(true);
         preferenceManager.setPreferenceDownloadKeep(true);
         preferenceManager.setPreferenceDownloadFollowsRedirects(false);
-        preferenceManager.setPreferenceHTTPUserAgent("MyUserAgent");
         preferenceManager.setPreferenceLogFile(true);
         ActivityScenario<?> activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
         ((GlobalSettingsActivity) getActivity(activityScenario)).injectTimeBasedSuspensionScheduler(getTimeBasedSuspensionScheduler());
@@ -170,8 +166,6 @@ public class GlobalSettingsActivityTest extends BaseUITest {
         onView(withId(R.id.switch_activity_global_settings_download_keep)).check(matches(isEnabled()));
         onView(withId(R.id.textview_activity_global_settings_download_follows_redirects_label)).check(matches(withText("Download follows redirects")));
         onView(withId(R.id.switch_activity_global_settings_download_follows_redirects)).check(matches(isNotChecked()));
-        onView(withId(R.id.textview_activity_global_settings_http_user_agent_label)).check(matches(withText("User Agent Header")));
-        onView(withId(R.id.textview_activity_global_settings_http_user_agent)).check(matches(withText("MyUserAgent")));
         onView(withId(R.id.switch_activity_global_settings_log_file)).perform(scrollTo());
         onView(withId(R.id.textview_activity_global_settings_log_file_label)).check(matches(withText("Log to file")));
         onView(withId(R.id.switch_activity_global_settings_log_file)).check(matches(isChecked()));
@@ -197,10 +191,6 @@ public class GlobalSettingsActivityTest extends BaseUITest {
         onView(withId(R.id.switch_activity_global_settings_download_keep)).perform(click());
         onView(withId(R.id.switch_activity_global_settings_download_follows_redirects)).perform(scrollTo());
         onView(withId(R.id.switch_activity_global_settings_download_follows_redirects)).perform(click());
-        onView(withId(R.id.textview_activity_global_settings_http_user_agent)).perform(scrollTo());
-        onView(withId(R.id.textview_activity_global_settings_http_user_agent)).perform(click());
-        onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("123"));
-        onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
         onView(withId(R.id.switch_activity_global_settings_log_file)).perform(scrollTo());
         onView(withId(R.id.switch_activity_global_settings_log_file)).perform(click());
         onView(withId(R.id.textview_activity_global_settings_notification_inactive_network_label)).check(matches(withText("Notifications when network is not active")));
@@ -224,31 +214,11 @@ public class GlobalSettingsActivityTest extends BaseUITest {
         onView(withId(R.id.switch_activity_global_settings_download_keep)).check(matches(isEnabled()));
         onView(withId(R.id.textview_activity_global_settings_download_follows_redirects_label)).check(matches(withText("Download follows redirects")));
         onView(withId(R.id.switch_activity_global_settings_download_follows_redirects)).check(matches(isNotChecked()));
-        onView(withId(R.id.textview_activity_global_settings_http_user_agent_label)).check(matches(withText("User Agent Header")));
-        onView(withId(R.id.textview_activity_global_settings_http_user_agent)).check(matches(withText("123")));
         onView(withId(R.id.textview_activity_global_settings_log_file_label)).check(matches(withText("Log to file")));
         onView(withId(R.id.switch_activity_global_settings_log_file)).check(matches(isChecked()));
         onView(withId(R.id.textview_activity_global_settings_log_folder_label)).check(matches(withText("Log folder")));
         onView(withId(R.id.textview_activity_global_settings_log_folder)).check(matches(withText(endsWith("log"))));
         onView(withId(R.id.textview_activity_global_settings_log_folder)).check(matches(isEnabled()));
-        activityScenario.close();
-    }
-
-    @Test
-    public void testDisplayValuesUserAgentEmptyString() {
-        ActivityScenario<?> activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
-        ((GlobalSettingsActivity) getActivity(activityScenario)).injectTimeBasedSuspensionScheduler(getTimeBasedSuspensionScheduler());
-        onView(withId(R.id.textview_activity_global_settings_http_user_agent)).perform(scrollTo());
-        onView(withId(R.id.textview_activity_global_settings_http_user_agent)).perform(click());
-        onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("123"));
-        onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
-        onView(withId(R.id.textview_activity_global_settings_http_user_agent_label)).check(matches(withText("User Agent Header")));
-        onView(withId(R.id.textview_activity_global_settings_http_user_agent)).check(matches(withText("123")));
-        onView(withId(R.id.textview_activity_global_settings_http_user_agent)).perform(click());
-        onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText(""));
-        onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
-        onView(withId(R.id.textview_activity_global_settings_http_user_agent_label)).check(matches(withText("User Agent Header")));
-        onView(withId(R.id.textview_activity_global_settings_http_user_agent)).check(matches(withText("Mozilla/5.0")));
         activityScenario.close();
     }
 
@@ -336,10 +306,6 @@ public class GlobalSettingsActivityTest extends BaseUITest {
         onView(withId(R.id.switch_activity_global_settings_download_keep)).perform(click());
         onView(withId(R.id.switch_activity_global_settings_download_follows_redirects)).perform(scrollTo());
         onView(withId(R.id.switch_activity_global_settings_download_follows_redirects)).perform(click());
-        onView(withId(R.id.textview_activity_global_settings_http_user_agent)).perform(scrollTo());
-        onView(withId(R.id.textview_activity_global_settings_http_user_agent)).perform(click());
-        onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("UserAgent"));
-        onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
         onView(withId(R.id.switch_activity_global_settings_log_file)).perform(scrollTo());
         onView(withId(R.id.switch_activity_global_settings_log_file)).perform(click());
         PreferenceManager preferenceManager = getPreferenceManager();
@@ -352,7 +318,6 @@ public class GlobalSettingsActivityTest extends BaseUITest {
         assertEquals("download", preferenceManager.getPreferenceDownloadFolder());
         assertTrue(preferenceManager.getPreferenceDownloadKeep());
         assertFalse(preferenceManager.getPreferenceDownloadFollowsRedirects());
-        assertEquals("UserAgent", preferenceManager.getPreferenceHTTPUserAgent());
         assertTrue(preferenceManager.getPreferenceLogFile());
         activityScenario.close();
     }
@@ -460,60 +425,6 @@ public class GlobalSettingsActivityTest extends BaseUITest {
         assertEquals("6", clipboardManager.getData());
         onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
         onView(withId(R.id.textview_activity_global_settings_notification_after_failures)).check(matches(withText("6")));
-        activityScenario.close();
-    }
-
-    @Test
-    public void testUserAgentHeaderCopyPasteOption() {
-        ActivityScenario<?> activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
-        onView(withId(R.id.textview_activity_global_settings_http_user_agent)).perform(scrollTo());
-        onView(withId(R.id.textview_activity_global_settings_http_user_agent)).perform(click());
-        SettingsInputDialog inputDialog = (SettingsInputDialog) getActivity(activityScenario).getSupportFragmentManager().getFragments().get(0);
-        MockClipboardManager clipboardManager = prepareMockClipboardManager(inputDialog);
-        clipboardManager.putData("ABC");
-        onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("XYZ"));
-        onView(withId(R.id.edittext_dialog_settings_input_value)).perform(longClick());
-        assertEquals(2, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
-        onView(withId(R.id.listview_dialog_context_options)).check(matches(withListSize(2)));
-        onView(withId(R.id.textview_dialog_context_options_title)).check(matches(withText("Text options")));
-        onView(allOf(withId(R.id.textview_list_item_context_option_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options), 0))).check(matches(withText("Copy")));
-        onView(allOf(withId(R.id.textview_list_item_context_option_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options), 1))).check(matches(withText("Paste")));
-        onView(allOf(withId(R.id.textview_list_item_context_option_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options), 0))).perform(click());
-        assertEquals(1, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
-        onView(withId(R.id.edittext_dialog_settings_input_value)).check(matches(withText("XYZ")));
-        assertTrue(clipboardManager.hasData());
-        assertEquals("XYZ", clipboardManager.getData());
-        onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
-        onView(withId(R.id.textview_activity_global_settings_http_user_agent)).check(matches(withText("XYZ")));
-        activityScenario.close();
-    }
-
-    @Test
-    public void testUserAgentHeaderCopyPasteOptionScreenRotation() {
-        ActivityScenario<?> activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
-        onView(withId(R.id.textview_activity_global_settings_http_user_agent)).perform(scrollTo());
-        onView(withId(R.id.textview_activity_global_settings_http_user_agent)).perform(click());
-        SettingsInputDialog inputDialog = (SettingsInputDialog) getActivity(activityScenario).getSupportFragmentManager().getFragments().get(0);
-        MockClipboardManager clipboardManager = prepareMockClipboardManager(inputDialog);
-        clipboardManager.putData("ABC");
-        onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("XYZ"));
-        onView(withId(R.id.edittext_dialog_settings_input_value)).perform(longClick());
-        rotateScreen(activityScenario);
-        assertEquals(2, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
-        onView(withId(R.id.listview_dialog_context_options)).check(matches(withListSize(2)));
-        onView(withId(R.id.textview_dialog_context_options_title)).check(matches(withText("Text options")));
-        onView(allOf(withId(R.id.textview_list_item_context_option_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options), 0))).check(matches(withText("Copy")));
-        onView(allOf(withId(R.id.textview_list_item_context_option_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options), 1))).check(matches(withText("Paste")));
-        rotateScreen(activityScenario);
-        clipboardManager = prepareMockClipboardManager(getDialog(activityScenario));
-        clipboardManager.putData("123");
-        onView(allOf(withId(R.id.textview_list_item_context_option_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_context_options), 0))).perform(click());
-        assertEquals(1, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
-        onView(withId(R.id.edittext_dialog_settings_input_value)).check(matches(withText("XYZ")));
-        assertTrue(clipboardManager.hasData());
-        assertEquals("XYZ", clipboardManager.getData());
-        onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
-        onView(withId(R.id.textview_activity_global_settings_http_user_agent)).check(matches(withText("XYZ")));
         activityScenario.close();
     }
 
@@ -1798,10 +1709,6 @@ public class GlobalSettingsActivityTest extends BaseUITest {
         onView(withId(R.id.switch_activity_global_settings_download_keep)).perform(click());
         onView(withId(R.id.switch_activity_global_settings_download_follows_redirects)).perform(scrollTo());
         onView(withId(R.id.switch_activity_global_settings_download_follows_redirects)).perform(click());
-        onView(withId(R.id.textview_activity_global_settings_http_user_agent)).perform(scrollTo());
-        onView(withId(R.id.textview_activity_global_settings_http_user_agent)).perform(click());
-        onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("MyUserAgent"));
-        onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
         onView(withId(R.id.switch_activity_global_settings_log_file)).perform(scrollTo());
         onView(withId(R.id.switch_activity_global_settings_log_file)).perform(click());
         openActionBarOverflowOrOptionsMenu(TestRegistry.getContext());
@@ -1826,8 +1733,6 @@ public class GlobalSettingsActivityTest extends BaseUITest {
         onView(withId(R.id.switch_activity_global_settings_download_keep)).check(matches(not(isEnabled())));
         onView(withId(R.id.textview_activity_global_settings_download_follows_redirects_label)).check(matches(withText("Download follows redirects")));
         onView(withId(R.id.switch_activity_global_settings_download_follows_redirects)).check(matches(isChecked()));
-        onView(withId(R.id.textview_activity_global_settings_http_user_agent_label)).check(matches(withText("User Agent Header")));
-        onView(withId(R.id.textview_activity_global_settings_http_user_agent)).check(matches(withText("Mozilla/5.0")));
         onView(withId(R.id.switch_activity_global_settings_log_file)).check(matches(isNotChecked()));
         PreferenceManager preferenceManager = getPreferenceManager();
         assertFalse(preferenceManager.getPreferenceNotificationInactiveNetwork());
@@ -1839,7 +1744,6 @@ public class GlobalSettingsActivityTest extends BaseUITest {
         assertEquals("/Documents", preferenceManager.getPreferenceArbitraryDownloadFolder());
         assertFalse(preferenceManager.getPreferenceDownloadKeep());
         assertTrue(preferenceManager.getPreferenceDownloadFollowsRedirects());
-        assertEquals("Mozilla/5.0", preferenceManager.getPreferenceHTTPUserAgent());
         assertFalse(preferenceManager.getPreferenceLogFile());
         assertEquals("log", preferenceManager.getPreferenceLogFolder());
         assertEquals("/Documents", preferenceManager.getPreferenceArbitraryLogFolder());
@@ -1862,10 +1766,6 @@ public class GlobalSettingsActivityTest extends BaseUITest {
         onView(withId(R.id.switch_activity_global_settings_download_keep)).perform(click());
         onView(withId(R.id.switch_activity_global_settings_download_follows_redirects)).perform(scrollTo());
         onView(withId(R.id.switch_activity_global_settings_download_follows_redirects)).perform(click());
-        onView(withId(R.id.textview_activity_global_settings_http_user_agent)).perform(scrollTo());
-        onView(withId(R.id.textview_activity_global_settings_http_user_agent)).perform(click());
-        onView(withId(R.id.edittext_dialog_settings_input_value)).perform(replaceText("MyUserAgent"));
-        onView(withId(R.id.imageview_dialog_settings_input_ok)).perform(click());
         onView(withId(R.id.switch_activity_global_settings_log_file)).perform(scrollTo());
         onView(withId(R.id.switch_activity_global_settings_log_file)).perform(click());
         rotateScreen(activityScenario);
@@ -1883,8 +1783,6 @@ public class GlobalSettingsActivityTest extends BaseUITest {
         onView(withId(R.id.switch_activity_global_settings_download_keep)).check(matches(isChecked()));
         onView(withId(R.id.textview_activity_global_settings_download_keep_on_off)).check(matches(withText("yes")));
         onView(withId(R.id.switch_activity_global_settings_download_follows_redirects)).check(matches(isNotChecked()));
-        onView(withId(R.id.textview_activity_global_settings_http_user_agent_label)).check(matches(withText("User Agent Header")));
-        onView(withId(R.id.textview_activity_global_settings_http_user_agent)).check(matches(withText("MyUserAgent")));
         onView(withId(R.id.textview_activity_global_settings_download_follows_redirects_on_off)).check(matches(withText("no")));
         onView(withId(R.id.switch_activity_global_settings_log_file)).check(matches(isChecked()));
         onView(withId(R.id.textview_activity_global_settings_log_file_on_off)).check(matches(withText("yes")));
@@ -1903,8 +1801,6 @@ public class GlobalSettingsActivityTest extends BaseUITest {
         onView(withId(R.id.switch_activity_global_settings_download_keep)).check(matches(isChecked()));
         onView(withId(R.id.textview_activity_global_settings_download_keep_on_off)).check(matches(withText("yes")));
         onView(withId(R.id.switch_activity_global_settings_download_follows_redirects)).check(matches(isNotChecked()));
-        onView(withId(R.id.textview_activity_global_settings_http_user_agent_label)).check(matches(withText("User Agent Header")));
-        onView(withId(R.id.textview_activity_global_settings_http_user_agent)).check(matches(withText("MyUserAgent")));
         onView(withId(R.id.textview_activity_global_settings_download_follows_redirects_on_off)).check(matches(withText("no")));
         onView(withId(R.id.switch_activity_global_settings_log_file)).check(matches(isChecked()));
         onView(withId(R.id.textview_activity_global_settings_log_file_on_off)).check(matches(withText("yes")));

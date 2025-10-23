@@ -51,6 +51,7 @@ import net.ibbaa.keepitup.model.validator.IntervalValidatorTest;
 import net.ibbaa.keepitup.model.validator.NetworkTaskValidatorTest;
 import net.ibbaa.keepitup.model.validator.ResolveValidatorTest;
 import net.ibbaa.keepitup.notification.NotificationHandlerTest;
+import net.ibbaa.keepitup.resources.ConstantPreferenceManagerTest;
 import net.ibbaa.keepitup.resources.JSONSystemMigrateTest;
 import net.ibbaa.keepitup.resources.JSONSystemSetupTest;
 import net.ibbaa.keepitup.resources.PreferenceManagerTest;
@@ -172,6 +173,7 @@ import org.junit.runners.Suite;
         //net.ibbaa.keepitup.notification
         NotificationHandlerTest.class,
         //net.ibbaa.keepitup.resources
+        ConstantPreferenceManagerTest.class,
         JSONSystemMigrateTest.class,
         JSONSystemSetupTest.class,
         PreferenceManagerTest.class,

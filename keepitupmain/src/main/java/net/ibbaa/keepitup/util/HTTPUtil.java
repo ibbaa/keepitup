@@ -20,7 +20,7 @@ import android.content.Context;
 
 import net.ibbaa.keepitup.R;
 import net.ibbaa.keepitup.logging.Log;
-import net.ibbaa.keepitup.resources.PreferenceManager;
+import net.ibbaa.keepitup.resources.ConstantPreferenceManager;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
@@ -59,7 +59,7 @@ public class HTTPUtil {
     }
 
     public static void setUserAgent(Context context, Request.Builder builder) {
-        PreferenceManager preferenceManager = new PreferenceManager(context);
+        ConstantPreferenceManager preferenceManager = new ConstantPreferenceManager(context);
         builder.header(context.getResources().getString(R.string.http_header_user_agent), preferenceManager.getPreferenceHTTPUserAgent());
     }
 

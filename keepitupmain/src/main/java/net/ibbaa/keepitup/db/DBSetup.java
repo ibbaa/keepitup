@@ -32,7 +32,7 @@ import net.ibbaa.keepitup.model.validation.AccessTypeDataValidator;
 import net.ibbaa.keepitup.model.validation.IntervalValidator;
 import net.ibbaa.keepitup.model.validation.NetworkTaskValidator;
 import net.ibbaa.keepitup.model.validation.ResolveValidator;
-import net.ibbaa.keepitup.resources.PreferenceManager;
+import net.ibbaa.keepitup.resources.ConstantPreferenceManager;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -214,7 +214,7 @@ public class DBSetup {
         db.execSQL(accessTypeDataDBConstants.getMigrateNetworkTasksAccessTypeDataStatement());
         ContentValues values = new ContentValues();
         HeaderDBConstants dbConstants = new HeaderDBConstants(getContext());
-        PreferenceManager preferenceManager = new PreferenceManager(getContext());
+        ConstantPreferenceManager preferenceManager = new ConstantPreferenceManager(getContext());
         values.put(dbConstants.getNetworkTaskIdColumnName(), (Long) null);
         values.put(dbConstants.getNameColumnName(), getContext().getResources().getString(R.string.http_header_user_agent));
         values.put(dbConstants.getValueColumnName(), preferenceManager.getPreferenceHTTPUserAgent());

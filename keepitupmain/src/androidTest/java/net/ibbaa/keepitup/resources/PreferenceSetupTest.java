@@ -67,7 +67,6 @@ public class PreferenceSetupTest {
         preferenceManager.setPreferenceArbitraryDownloadFolder("/123");
         preferenceManager.setPreferenceDownloadKeep(true);
         preferenceManager.setPreferenceDownloadFollowsRedirects(false);
-        preferenceManager.setPreferenceHTTPUserAgent("ABC");
         preferenceManager.setPreferenceLogFile(true);
         preferenceManager.setPreferenceLogFolder("folder");
         preferenceManager.setPreferenceArbitraryLogFolder("/123");
@@ -83,7 +82,6 @@ public class PreferenceSetupTest {
         assertEquals("/Documents", preferenceManager.getPreferenceArbitraryDownloadFolder());
         assertFalse(preferenceManager.getPreferenceDownloadKeep());
         assertTrue(preferenceManager.getPreferenceDownloadFollowsRedirects());
-        assertEquals("Mozilla/5.0", preferenceManager.getPreferenceHTTPUserAgent());
         assertFalse(preferenceManager.getPreferenceLogFile());
         assertEquals("log", preferenceManager.getPreferenceLogFolder());
         assertEquals("/Documents", preferenceManager.getPreferenceArbitraryLogFolder());
@@ -102,7 +100,6 @@ public class PreferenceSetupTest {
         globalSettings.put("preferenceArbitraryDownloadFolder", "/123");
         globalSettings.put("preferenceDownloadKeep", true);
         globalSettings.put("preferenceDownloadFollowsRedirects", false);
-        globalSettings.put("preferenceHTTPUserAgent", "ABC");
         globalSettings.put("preferenceLogFile", true);
         globalSettings.put("preferenceLogFolder", "folder");
         globalSettings.put("preferenceArbitraryLogFolder", "/456");
@@ -117,7 +114,6 @@ public class PreferenceSetupTest {
         assertEquals("/123", preferenceManager.getPreferenceArbitraryDownloadFolder());
         assertTrue(preferenceManager.getPreferenceDownloadKeep());
         assertFalse(preferenceManager.getPreferenceDownloadFollowsRedirects());
-        assertEquals("ABC", preferenceManager.getPreferenceHTTPUserAgent());
         assertTrue(preferenceManager.getPreferenceLogFile());
         assertEquals("folder", preferenceManager.getPreferenceLogFolder());
         assertEquals("/456", preferenceManager.getPreferenceArbitraryLogFolder());
@@ -146,7 +142,6 @@ public class PreferenceSetupTest {
         globalSettings.put("preferenceArbitraryDownloadFolder", "/123");
         globalSettings.put("preferenceDownloadKeep", "true");
         globalSettings.put("preferenceDownloadFollowsRedirects", "false");
-        globalSettings.put("preferenceHTTPUserAgent", "ABC");
         globalSettings.put("preferenceLogFile", "true");
         globalSettings.put("preferenceLogFolder", "folder");
         globalSettings.put("preferenceArbitraryLogFolder", "/456");
@@ -161,7 +156,6 @@ public class PreferenceSetupTest {
         assertEquals("/123", preferenceManager.getPreferenceArbitraryDownloadFolder());
         assertTrue(preferenceManager.getPreferenceDownloadKeep());
         assertFalse(preferenceManager.getPreferenceDownloadFollowsRedirects());
-        assertEquals("ABC", preferenceManager.getPreferenceHTTPUserAgent());
         assertTrue(preferenceManager.getPreferenceLogFile());
         assertEquals("folder", preferenceManager.getPreferenceLogFolder());
         assertEquals("/456", preferenceManager.getPreferenceArbitraryLogFolder());
@@ -179,7 +173,6 @@ public class PreferenceSetupTest {
         globalSettings.put("preferenceArbitraryDownloadFolder", null);
         globalSettings.put("preferenceDownloadKeep", 3);
         globalSettings.put("preferenceDownloadFollowsRedirects", 3);
-        globalSettings.put("preferenceHTTPUserAgent", new String(new char[1001]));
         globalSettings.put("preferenceLogFile", "tru");
         globalSettings.put("preferenceLogFolder", null);
         globalSettings.put("preferenceArbitraryLogFolder", null);
@@ -193,13 +186,11 @@ public class PreferenceSetupTest {
         assertEquals("/Documents", preferenceManager.getPreferenceArbitraryDownloadFolder());
         assertFalse(preferenceManager.getPreferenceDownloadKeep());
         assertTrue(preferenceManager.getPreferenceDownloadFollowsRedirects());
-        assertEquals("Mozilla/5.0", preferenceManager.getPreferenceHTTPUserAgent());
         assertFalse(preferenceManager.getPreferenceLogFile());
         assertEquals("log", preferenceManager.getPreferenceLogFolder());
         assertEquals("/Documents", preferenceManager.getPreferenceArbitraryLogFolder());
         globalSettings.put("preferenceHTTPUserAgent", "");
         setup.importGlobalSettings(globalSettings);
-        assertEquals("Mozilla/5.0", preferenceManager.getPreferenceHTTPUserAgent());
     }
 
     @Test
@@ -466,7 +457,6 @@ public class PreferenceSetupTest {
         assertEquals(globalSettings.get("preferenceArbitraryDownloadFolder"), preferenceManager.getPreferenceArbitraryDownloadFolder());
         assertEquals(globalSettings.get("preferenceDownloadKeep"), preferenceManager.getPreferenceDownloadKeep());
         assertEquals(globalSettings.get("preferenceDownloadFollowsRedirects"), preferenceManager.getPreferenceDownloadFollowsRedirects());
-        assertEquals(globalSettings.get("preferenceHTTPUserAgent"), preferenceManager.getPreferenceHTTPUserAgent());
         assertEquals(globalSettings.get("preferenceLogFile"), preferenceManager.getPreferenceLogFile());
         assertEquals(globalSettings.get("preferenceLogFolder"), preferenceManager.getPreferenceLogFolder());
         assertEquals(globalSettings.get("preferenceArbitraryLogFolder"), preferenceManager.getPreferenceArbitraryLogFolder());
@@ -484,7 +474,6 @@ public class PreferenceSetupTest {
         preferenceManager.setPreferenceArbitraryDownloadFolder("/123");
         preferenceManager.setPreferenceDownloadKeep(true);
         preferenceManager.setPreferenceDownloadFollowsRedirects(false);
-        preferenceManager.setPreferenceHTTPUserAgent("UserAgent");
         preferenceManager.setPreferenceLogFile(true);
         preferenceManager.setPreferenceLogFolder("folder");
         preferenceManager.setPreferenceArbitraryLogFolder("/456");
@@ -499,7 +488,6 @@ public class PreferenceSetupTest {
         assertEquals("/123", preferenceManager.getPreferenceArbitraryDownloadFolder());
         assertTrue(preferenceManager.getPreferenceDownloadKeep());
         assertFalse(preferenceManager.getPreferenceDownloadFollowsRedirects());
-        assertEquals("UserAgent", preferenceManager.getPreferenceHTTPUserAgent());
         assertTrue(preferenceManager.getPreferenceLogFile());
         assertEquals("folder", preferenceManager.getPreferenceLogFolder());
         assertEquals("/456", preferenceManager.getPreferenceArbitraryLogFolder());
@@ -513,7 +501,6 @@ public class PreferenceSetupTest {
         assertEquals(globalSettings.get("preferenceArbitraryDownloadFolder"), preferenceManager.getPreferenceArbitraryDownloadFolder());
         assertEquals(globalSettings.get("preferenceDownloadKeep"), preferenceManager.getPreferenceDownloadKeep());
         assertEquals(globalSettings.get("preferenceDownloadFollowsRedirects"), preferenceManager.getPreferenceDownloadFollowsRedirects());
-        assertEquals(globalSettings.get("preferenceHTTPUserAgent"), preferenceManager.getPreferenceHTTPUserAgent());
         assertEquals(globalSettings.get("preferenceLogFile"), preferenceManager.getPreferenceLogFile());
         assertEquals(globalSettings.get("preferenceLogFolder"), preferenceManager.getPreferenceLogFolder());
         assertEquals(globalSettings.get("preferenceArbitraryLogFolder"), preferenceManager.getPreferenceArbitraryLogFolder());
@@ -650,7 +637,6 @@ public class PreferenceSetupTest {
         preferenceManager.setPreferenceArbitraryDownloadFolder("/123");
         preferenceManager.setPreferenceDownloadKeep(true);
         preferenceManager.setPreferenceDownloadFollowsRedirects(false);
-        preferenceManager.setPreferenceHTTPUserAgent("ABC");
         preferenceManager.setPreferenceLogFile(true);
         preferenceManager.setPreferenceLogFolder("folder");
         preferenceManager.setPreferenceArbitraryLogFolder("/456");
@@ -668,7 +654,6 @@ public class PreferenceSetupTest {
         assertEquals("/456", preferenceManager.getPreferenceArbitraryLogFolder());
         assertTrue(preferenceManager.getPreferenceDownloadKeep());
         assertFalse(preferenceManager.getPreferenceDownloadFollowsRedirects());
-        assertEquals("ABC", preferenceManager.getPreferenceHTTPUserAgent());
         assertEquals(globalSettings.get("preferenceNotificationInactiveNetwork"), preferenceManager.getPreferenceNotificationInactiveNetwork());
         assertEquals(globalSettings.get("preferenceNotificationType"), preferenceManager.getPreferenceNotificationType().getCode());
         assertEquals(globalSettings.get("preferenceNotificationAfterFailures"), preferenceManager.getPreferenceNotificationAfterFailures());
@@ -679,7 +664,6 @@ public class PreferenceSetupTest {
         assertEquals(globalSettings.get("preferenceArbitraryDownloadFolder"), preferenceManager.getPreferenceArbitraryDownloadFolder());
         assertEquals(globalSettings.get("preferenceDownloadKeep"), preferenceManager.getPreferenceDownloadKeep());
         assertEquals(globalSettings.get("preferenceDownloadFollowsRedirects"), preferenceManager.getPreferenceDownloadFollowsRedirects());
-        assertEquals(globalSettings.get("preferenceHTTPUserAgent"), preferenceManager.getPreferenceHTTPUserAgent());
         assertEquals(globalSettings.get("preferenceLogFile"), preferenceManager.getPreferenceLogFile());
         assertEquals(globalSettings.get("preferenceLogFolder"), preferenceManager.getPreferenceLogFolder());
         assertEquals(globalSettings.get("preferenceArbitraryLogFolder"), preferenceManager.getPreferenceArbitraryLogFolder());
@@ -783,7 +767,6 @@ public class PreferenceSetupTest {
         preferenceManager.setPreferenceArbitraryDownloadFolder("/123");
         preferenceManager.setPreferenceDownloadKeep(true);
         preferenceManager.setPreferenceDownloadFollowsRedirects(false);
-        preferenceManager.setPreferenceHTTPUserAgent("ABC");
         preferenceManager.setPreferenceLogFile(true);
         preferenceManager.setPreferenceLogFolder("folder");
         preferenceManager.setPreferenceArbitraryLogFolder("/456");
@@ -798,7 +781,6 @@ public class PreferenceSetupTest {
         assertEquals("/Documents", preferenceManager.getPreferenceArbitraryDownloadFolder());
         assertFalse(preferenceManager.getPreferenceDownloadKeep());
         assertTrue(preferenceManager.getPreferenceDownloadFollowsRedirects());
-        assertEquals("Mozilla/5.0", preferenceManager.getPreferenceHTTPUserAgent());
         assertFalse(preferenceManager.getPreferenceLogFile());
         assertEquals("/Documents", preferenceManager.getPreferenceArbitraryLogFolder());
     }
@@ -876,7 +858,6 @@ public class PreferenceSetupTest {
         preferenceManager.setPreferenceArbitraryDownloadFolder("123");
         preferenceManager.setPreferenceDownloadKeep(true);
         preferenceManager.setPreferenceDownloadFollowsRedirects(false);
-        preferenceManager.setPreferenceHTTPUserAgent("UserAgent");
         preferenceManager.setPreferenceLogFile(true);
         preferenceManager.setPreferenceLogFolder("folder");
         preferenceManager.setPreferenceArbitraryLogFolder("/456");
@@ -919,7 +900,6 @@ public class PreferenceSetupTest {
         assertEquals("/Documents", preferenceManager.getPreferenceArbitraryLogFolder());
         assertFalse(preferenceManager.getPreferenceDownloadKeep());
         assertTrue(preferenceManager.getPreferenceDownloadFollowsRedirects());
-        assertEquals("Mozilla/5.0", preferenceManager.getPreferenceHTTPUserAgent());
         assertEquals(AccessType.PING, preferenceManager.getPreferenceAccessType());
         assertEquals("192.168.178.1", preferenceManager.getPreferenceAddress());
         assertEquals(22, preferenceManager.getPreferencePort());

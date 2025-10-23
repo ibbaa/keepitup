@@ -21,6 +21,7 @@ import static org.junit.Assert.assertEquals;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.MediumTest;
 
+import net.ibbaa.keepitup.R;
 import net.ibbaa.keepitup.db.HeaderDAO;
 import net.ibbaa.keepitup.logging.Dump;
 import net.ibbaa.keepitup.model.Header;
@@ -116,7 +117,7 @@ public class JSONSystemMigrateTest {
 
     @Test
     public void testVersionAdaptAfter3to6() {
-        preferenceManager.setPreferenceHTTPUserAgent("test");
+        preferenceManager.setPreferenceString(TestRegistry.getContext().getResources().getString(R.string.http_user_agent_key), "test");
         migrate.adaptAfter(new JSONObject(), 3, 6);
         assertEquals(1, headerDAO.readGlobalHeaders().size());
         assertEquals(1, headerDAO.readAllHeaders().size());

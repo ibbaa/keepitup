@@ -25,6 +25,7 @@ import static org.junit.Assert.assertTrue;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.MediumTest;
 
+import net.ibbaa.keepitup.R;
 import net.ibbaa.keepitup.logging.Dump;
 import net.ibbaa.keepitup.model.AccessType;
 import net.ibbaa.keepitup.model.AccessTypeData;
@@ -35,6 +36,7 @@ import net.ibbaa.keepitup.model.NetworkTask;
 import net.ibbaa.keepitup.model.Resolve;
 import net.ibbaa.keepitup.model.SchedulerState;
 import net.ibbaa.keepitup.model.Time;
+import net.ibbaa.keepitup.resources.ConstantPreferenceManager;
 import net.ibbaa.keepitup.resources.PreferenceManager;
 import net.ibbaa.keepitup.test.mock.TestRegistry;
 
@@ -333,20 +335,21 @@ public class DBSetupTest {
     @Test
     public void testInitializeHeaderTable() {
         PreferenceManager preferenceManager = new PreferenceManager(TestRegistry.getContext());
+        ConstantPreferenceManager constantPreferenceManager = new ConstantPreferenceManager(TestRegistry.getContext());
         assertTrue(headerDAO.readAllHeaders().isEmpty());
         setup.dropHeaderTable();
         setup.createHeaderTable();
         Header header = headerDAO.readGlobalHeaders().get(0);
         assertEquals(-1, header.getNetworkTaskId());
         assertEquals("User-Agent", header.getName());
-        assertEquals(preferenceManager.getPreferenceHTTPUserAgent(), header.getValue());
-        preferenceManager.setPreferenceHTTPUserAgent("Test");
+        assertEquals(constantPreferenceManager.getPreferenceHTTPUserAgent(), header.getValue());
+        preferenceManager.setPreferenceString(TestRegistry.getContext().getResources().getString(R.string.http_user_agent_key), "Test");
         setup.recreateHeaderTable();
         header = headerDAO.readGlobalHeaders().get(0);
         assertEquals(-1, header.getNetworkTaskId());
         assertEquals("User-Agent", header.getName());
         assertEquals("Test", header.getValue());
-        assertEquals("Mozilla/5.0", preferenceManager.getPreferenceHTTPUserAgent());
+        assertEquals("Mozilla/5.0", constantPreferenceManager.getPreferenceHTTPUserAgent());
     }
 
     @Test

@@ -104,7 +104,6 @@ public class ExportTaskTest extends BaseUITest {
         getPreferenceManager().setPreferenceArbitraryDownloadFolder("folder");
         getPreferenceManager().setPreferenceDownloadKeep(true);
         getPreferenceManager().setPreferenceDownloadFollowsRedirects(false);
-        getPreferenceManager().setPreferenceHTTPUserAgent("UserAgent");
         getPreferenceManager().setPreferenceArbitraryLogFolder("folder");
         getPreferenceManager().setPreferenceAccessType(AccessType.CONNECT);
         getPreferenceManager().setPreferenceAddress("address");
@@ -214,7 +213,6 @@ public class ExportTaskTest extends BaseUITest {
         assertEquals("folder", getPreferenceManager().getPreferenceArbitraryDownloadFolder());
         assertTrue(getPreferenceManager().getPreferenceDownloadKeep());
         assertFalse(getPreferenceManager().getPreferenceDownloadFollowsRedirects());
-        assertEquals("UserAgent", getPreferenceManager().getPreferenceHTTPUserAgent());
         assertEquals("folder", getPreferenceManager().getPreferenceArbitraryLogFolder());
         assertEquals(AccessType.CONNECT, getPreferenceManager().getPreferenceAccessType());
         assertEquals("address", getPreferenceManager().getPreferenceAddress());
@@ -272,7 +270,6 @@ public class ExportTaskTest extends BaseUITest {
         getPreferenceManager().setPreferenceArbitraryDownloadFolder("folder");
         getPreferenceManager().setPreferenceDownloadKeep(true);
         getPreferenceManager().setPreferenceDownloadFollowsRedirects(false);
-        getPreferenceManager().setPreferenceHTTPUserAgent("ABC");
         getPreferenceManager().setPreferenceArbitraryLogFolder("folder");
         getPreferenceManager().setPreferenceAccessType(AccessType.CONNECT);
         getPreferenceManager().setPreferenceAddress("address");
@@ -385,7 +382,6 @@ public class ExportTaskTest extends BaseUITest {
         assertEquals("folder", getPreferenceManager().getPreferenceArbitraryDownloadFolder());
         assertTrue(getPreferenceManager().getPreferenceDownloadKeep());
         assertFalse(getPreferenceManager().getPreferenceDownloadFollowsRedirects());
-        assertEquals("ABC", getPreferenceManager().getPreferenceHTTPUserAgent());
         assertEquals("folder", getPreferenceManager().getPreferenceArbitraryLogFolder());
         assertEquals(AccessType.CONNECT, getPreferenceManager().getPreferenceAccessType());
         assertEquals("address", getPreferenceManager().getPreferenceAddress());
