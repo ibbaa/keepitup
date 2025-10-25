@@ -17,6 +17,7 @@
 package net.ibbaa.keepitup.db;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import androidx.test.ext.junit.runners.AndroidJUnit4;
@@ -89,6 +90,52 @@ public class HeaderDAOTest {
         assertTrue(header1.isTechnicallyEqual(readHeader1));
         headerDAO.deleteAllHeaders();
         assertTrue(headerDAO.readAllHeaders().isEmpty());
+    }
+
+    @Test
+    public void testDelete() {
+        Header headerGlobal1 = getHeader1();
+        headerGlobal1.setNetworkTaskId(-1);
+        Header headerGlobal2 = getHeader1();
+        headerGlobal2.setNetworkTaskId(-1);
+        Header headerNetworkTask1 = getHeader2();
+        headerNetworkTask1.setNetworkTaskId(1);
+        Header headerNetworkTask2 = getHeader2();
+        headerNetworkTask2.setNetworkTaskId(1);
+        headerDAO.insertHeader(headerGlobal1);
+        headerDAO.insertHeader(headerGlobal2);
+        headerDAO.insertHeader(headerNetworkTask1);
+        headerDAO.insertHeader(headerNetworkTask2);
+        List<Header> readHeaderAllList = headerDAO.readAllHeaders();
+        assertEquals(4, readHeaderAllList.size());
+        assertTrue(doesHeaderListContain(readHeaderAllList, headerGlobal1));
+        assertTrue(doesHeaderListContain(readHeaderAllList, headerGlobal2));
+        assertTrue(doesHeaderListContain(readHeaderAllList, headerNetworkTask1));
+        assertTrue(doesHeaderListContain(readHeaderAllList, headerNetworkTask2));
+        headerDAO.deleteHeader(headerGlobal1);
+        readHeaderAllList = headerDAO.readAllHeaders();
+        assertEquals(3, readHeaderAllList.size());
+        assertFalse(doesHeaderListContain(readHeaderAllList, headerGlobal1));
+        assertTrue(doesHeaderListContain(readHeaderAllList, headerGlobal2));
+        assertTrue(doesHeaderListContain(readHeaderAllList, headerNetworkTask1));
+        assertTrue(doesHeaderListContain(readHeaderAllList, headerNetworkTask2));
+        headerDAO.deleteHeader(headerNetworkTask1);
+        readHeaderAllList = headerDAO.readAllHeaders();
+        assertEquals(2, readHeaderAllList.size());
+        assertFalse(doesHeaderListContain(readHeaderAllList, headerGlobal1));
+        assertTrue(doesHeaderListContain(readHeaderAllList, headerGlobal2));
+        assertFalse(doesHeaderListContain(readHeaderAllList, headerNetworkTask1));
+        assertTrue(doesHeaderListContain(readHeaderAllList, headerNetworkTask2));
+        headerDAO.deleteHeader(headerGlobal2);
+        readHeaderAllList = headerDAO.readAllHeaders();
+        assertEquals(1, readHeaderAllList.size());
+        assertFalse(doesHeaderListContain(readHeaderAllList, headerGlobal1));
+        assertFalse(doesHeaderListContain(readHeaderAllList, headerGlobal2));
+        assertFalse(doesHeaderListContain(readHeaderAllList, headerNetworkTask1));
+        assertTrue(doesHeaderListContain(readHeaderAllList, headerNetworkTask2));
+        headerDAO.deleteHeader(headerNetworkTask2);
+        readHeaderAllList = headerDAO.readAllHeaders();
+        assertEquals(0, readHeaderAllList.size());
     }
 
     @Test
@@ -179,7 +226,7 @@ public class HeaderDAOTest {
 
     private boolean doesHeaderListContain(List<Header> headerList, Header header) {
         for (Header currentHeader : headerList) {
-            if (currentHeader.isTechnicallyEqual(header)) {
+            if (currentHeader.isEqual(header)) {
                 return true;
             }
         }

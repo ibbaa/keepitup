@@ -25,16 +25,15 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import net.ibbaa.keepitup.R;
 import net.ibbaa.keepitup.logging.Log;
-import net.ibbaa.keepitup.ui.dialog.SuspensionIntervalsDialog;
+import net.ibbaa.keepitup.ui.SwipeDeleteSupport;
 import net.ibbaa.keepitup.util.UIUtil;
 
-@SuppressWarnings("NotifyDataSetChanged")
-public class SuspensionIntervalSwipeCallback extends ItemTouchHelper.Callback {
+public class DeleteSwipeCallback extends ItemTouchHelper.Callback {
 
-    private final SuspensionIntervalsDialog dialog;
+    private final SwipeDeleteSupport swipeDeleteSupport;
 
-    public SuspensionIntervalSwipeCallback(SuspensionIntervalsDialog dialog) {
-        this.dialog = dialog;
+    public DeleteSwipeCallback(SwipeDeleteSupport swipeDeleteSupport) {
+        this.swipeDeleteSupport = swipeDeleteSupport;
     }
 
     @Override
@@ -51,8 +50,8 @@ public class SuspensionIntervalSwipeCallback extends ItemTouchHelper.Callback {
     public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
         if (direction == ItemTouchHelper.RIGHT) {
             int position = viewHolder.getAbsoluteAdapterPosition();
-            Log.d(SuspensionIntervalSwipeCallback.class.getName(), "onSwiped, position is " + position);
-            dialog.onIntervalDeleteSwiped(position);
+            Log.d(DeleteSwipeCallback.class.getName(), "onSwiped, position is " + position);
+            swipeDeleteSupport.onDeleteSwiped(position);
         }
     }
 

@@ -37,10 +37,10 @@ public class DBSyncHandler<T extends Syncable<T>> {
         List<ActionWrapper<T>> actionList = new ArrayList<>();
         for (T object : newSyncList) {
             Log.d(DBSyncHandler.class.getName(), "Processing " + object);
-            if (object.id() < 0) {
+            if (object.getId() < 0) {
                 actionList.add(new ActionWrapper<>(object, Action.INSERT));
             } else {
-                T oldObject = findById(object.id(), oldSyncList);
+                T oldObject = findById(object.getId(), oldSyncList);
                 Log.d(IntervalHandler.class.getName(), "Found old object = " + oldObject);
                 if (oldObject != null) {
                     if (!object.isEqual(oldObject)) {
@@ -48,7 +48,7 @@ public class DBSyncHandler<T extends Syncable<T>> {
                     }
                     oldSyncList.remove(oldObject);
                 } else {
-                    Log.e(IntervalHandler.class.getName(), "No object with id " + object.id() + " found");
+                    Log.e(IntervalHandler.class.getName(), "No object with id " + object.getId() + " found");
                 }
             }
         }
@@ -61,7 +61,7 @@ public class DBSyncHandler<T extends Syncable<T>> {
     private T findById(long id, List<T> objects) {
         Log.d(DBSyncHandler.class.getName(), "findById for id " + id);
         for (T object : objects) {
-            if (id == object.id()) {
+            if (id == object.getId()) {
                 return object;
             }
         }

@@ -14,11 +14,9 @@
  * limitations under the License.
  */
 
-package net.ibbaa.keepitup.model;
+package net.ibbaa.keepitup.ui;
 
-public interface Syncable<T> {
+public interface SwipeDeleteSupport {
 
-    long getId();
-
-    boolean isEqual(T other);
+    void onDeleteSwiped(int index);
 }

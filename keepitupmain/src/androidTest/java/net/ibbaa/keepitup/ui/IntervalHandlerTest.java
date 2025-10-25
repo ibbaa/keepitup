@@ -65,10 +65,11 @@ public class IntervalHandlerTest extends BaseUITest {
         assertFalse(handler.synchronizeIntervals());
         assertTrue(getIntervalDAO().readAllIntervals().isEmpty());
         assertTrue(intervalsDialog.getAdapter().getAllItems().isEmpty());
+        activityScenario.close();
     }
 
     @Test
-    public void testSynchronizeDelete() {
+    public void testSynchronizeIntervalsDelete() {
         getIntervalDAO().insertInterval(getInterval1());
         getIntervalDAO().insertInterval(getInterval2());
         activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class);
@@ -79,6 +80,7 @@ public class IntervalHandlerTest extends BaseUITest {
         intervalsDialog.getAdapter().removeItems();
         assertTrue(handler.synchronizeIntervals());
         assertTrue(getIntervalDAO().readAllIntervals().isEmpty());
+        activityScenario.close();
     }
 
     @Test
@@ -96,6 +98,7 @@ public class IntervalHandlerTest extends BaseUITest {
         assertEquals(2, intervals.size());
         assertTrue(intervals.get(0).isEqual(getInterval1()));
         assertTrue(intervals.get(1).isEqual(getInterval2()));
+        activityScenario.close();
     }
 
     @Test
@@ -115,6 +118,7 @@ public class IntervalHandlerTest extends BaseUITest {
         assertEquals(2, intervals.size());
         assertTrue(intervals.get(0).isEqual(getInterval1()));
         assertTrue(intervals.get(1).isEqual(getInterval2()));
+        activityScenario.close();
     }
 
     @Test
@@ -152,6 +156,7 @@ public class IntervalHandlerTest extends BaseUITest {
         assertFalse(intervals.get(1).isEqual(getInterval2()));
         assertTrue(intervals.get(0).isEqual(interval1));
         assertTrue(intervals.get(1).isEqual(interval2));
+        activityScenario.close();
     }
 
     @Test
@@ -175,6 +180,7 @@ public class IntervalHandlerTest extends BaseUITest {
         assertEquals(2, intervals.size());
         assertTrue(intervals.get(0).isEqual(getInterval1()));
         assertTrue(intervals.get(1).isEqual(interval3));
+        activityScenario.close();
     }
 
     private void injectTimeBasedSuspensionScheduler() {

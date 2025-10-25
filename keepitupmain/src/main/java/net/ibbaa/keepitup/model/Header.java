@@ -27,7 +27,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
-public class Header {
+public class Header implements Syncable<Header> {
 
     private long id;
     private long networktaskid;

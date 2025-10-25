@@ -40,8 +40,9 @@ import net.ibbaa.keepitup.ui.NetworkTaskMainActivity;
 import net.ibbaa.keepitup.ui.SettingsInputActivity;
 import net.ibbaa.keepitup.ui.SuspensionIntervalSelectSupport;
 import net.ibbaa.keepitup.ui.SuspensionIntervalsSupport;
+import net.ibbaa.keepitup.ui.SwipeDeleteSupport;
+import net.ibbaa.keepitup.ui.adapter.DeleteSwipeCallback;
 import net.ibbaa.keepitup.ui.adapter.SuspensionIntervalAdapter;
-import net.ibbaa.keepitup.ui.adapter.SuspensionIntervalSwipeCallback;
 import net.ibbaa.keepitup.ui.validation.IntervalValidator;
 import net.ibbaa.keepitup.ui.validation.StandardIntervalValidator;
 import net.ibbaa.keepitup.ui.validation.ValidationResult;
@@ -54,7 +55,7 @@ import java.util.List;
 import java.util.Objects;
 
 @SuppressWarnings({"unused"})
-public class SuspensionIntervalsDialog extends DialogFragmentBase implements ConfirmSupport, SuspensionIntervalSelectSupport, IntervalValidator {
+public class SuspensionIntervalsDialog extends DialogFragmentBase implements ConfirmSupport, SwipeDeleteSupport, SuspensionIntervalSelectSupport, IntervalValidator {
 
     private View dialogView;
     private RecyclerView suspensionIntervalsRecyclerView;
@@ -136,7 +137,7 @@ public class SuspensionIntervalsDialog extends DialogFragmentBase implements Con
         suspensionIntervalsRecyclerView.setItemAnimator(new DefaultItemAnimator());
         RecyclerView.Adapter<?> adapter = adapterState == null ? createAdapter() : restoreAdapter(adapterState);
         suspensionIntervalsRecyclerView.setAdapter(adapter);
-        itemTouchHelper = new ItemTouchHelper(new SuspensionIntervalSwipeCallback(this));
+        itemTouchHelper = new ItemTouchHelper(new DeleteSwipeCallback(this));
         itemTouchHelper.attachToRecyclerView(suspensionIntervalsRecyclerView);
     }
 
@@ -202,7 +203,7 @@ public class SuspensionIntervalsDialog extends DialogFragmentBase implements Con
         openConfirmDialog(index, ConfirmDialog.Type.DELETEINTERVAL);
     }
 
-    public void onIntervalDeleteSwiped(int index) {
+    public void onDeleteSwiped(int index) {
         Log.d(SuspensionIntervalsDialog.class.getName(), "onIntervalDeleteSwiped for index " + index);
         if (index < 0) {
             Log.e(SuspensionIntervalsDialog.class.getName(), "index " + index + " is invalid");
@@ -260,7 +261,7 @@ public class SuspensionIntervalsDialog extends DialogFragmentBase implements Con
             itemTouchHelper.attachToRecyclerView(null);
         }
         recyclerView.post(() -> {
-            itemTouchHelper = new ItemTouchHelper(new SuspensionIntervalSwipeCallback(this));
+            itemTouchHelper = new ItemTouchHelper(new DeleteSwipeCallback(this));
             itemTouchHelper.attachToRecyclerView(recyclerView);
         });
     }

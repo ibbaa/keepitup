@@ -28,6 +28,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.SmallTest;
 
 import net.ibbaa.keepitup.model.FileEntry;
+import net.ibbaa.keepitup.model.Header;
 import net.ibbaa.keepitup.model.Interval;
 import net.ibbaa.keepitup.model.Time;
 import net.ibbaa.keepitup.ui.dialog.ContextOption;
@@ -517,6 +518,60 @@ public class BundleUtilTest {
         assertTrue(interval2.isEqual(intervalList.get(1)));
     }
 
+    @Test
+    public void testEmptyHeaderListToBundle() {
+        Bundle bundle = BundleUtil.headerListToBundle("key", null);
+        assertNotNull(bundle);
+        assertTrue(bundle.isEmpty());
+        bundle = BundleUtil.headerListToBundle("key", Collections.emptyList());
+        assertNotNull(bundle);
+        assertTrue(bundle.isEmpty());
+    }
+
+    @Test
+    public void testHeaderListFromEmptyBundle() {
+        List<Header> headerList = BundleUtil.headerListFromBundle("key", null);
+        assertNotNull(headerList);
+        assertTrue(headerList.isEmpty());
+        Bundle bundle = new Bundle();
+        headerList = BundleUtil.headerListFromBundle("key", bundle);
+        assertNotNull(headerList);
+        assertTrue(headerList.isEmpty());
+    }
+
+    @Test
+    public void testHeaderListToBundle() {
+        Header header1 = getHeader(1, 2, "name1", "value1");
+        Header header2 = getHeader(2, 3, "name2", "value2");
+        Bundle bundle = BundleUtil.headerListToBundle("key", Arrays.asList(header1, header2));
+        Header otherHeader1 = new Header(Objects.requireNonNull(bundle.getBundle("key0")));
+        Header otherHeader2 = new Header(Objects.requireNonNull(bundle.getBundle("key1")));
+        assertTrue(header1.isEqual(otherHeader1));
+        assertTrue(header2.isEqual(otherHeader2));
+    }
+
+    @Test
+    public void testHeaderListFromBundle() {
+        Bundle bundle = new Bundle();
+        Header header1 = getHeader(1, 2, "name1", "value1");
+        Header header2 = getHeader(2, 3, "name2", "value2");
+        bundle.putBundle("key0", header1.toBundle());
+        bundle.putBundle("key1", header2.toBundle());
+        List<Header> headerList = BundleUtil.headerListFromBundle("key", bundle);
+        assertTrue(header1.isEqual(headerList.get(0)));
+        assertTrue(header2.isEqual(headerList.get(1)));
+    }
+
+    @Test
+    public void testHeaderListToAndFromBundle() {
+        Header header1 = getHeader(1, 2, "name1", "value1");
+        Header header2 = getHeader(2, 3, "name2", "value2");
+        Bundle bundle = BundleUtil.headerListToBundle("key", Arrays.asList(header1, header2));
+        List<Header> headerList = BundleUtil.headerListFromBundle("key", bundle);
+        assertTrue(header1.isEqual(headerList.get(0)));
+        assertTrue(header2.isEqual(headerList.get(1)));
+    }
+
     private FileEntry getFileEntry(String name, boolean directory, boolean parent, boolean canVisit) {
         FileEntry fileEntry = new FileEntry();
         fileEntry.setName(name);
@@ -537,5 +592,14 @@ public class BundleUtilTest {
         interval.setStart(start);
         interval.setEnd(end);
         return interval;
+    }
+
+    private Header getHeader(long id, long networkTaskId, String name, String value) {
+        Header header = new Header();
+        header.setId(id);
+        header.setNetworkTaskId(networkTaskId);
+        header.setName(name);
+        header.setValue(value);
+        return header;
     }
 }

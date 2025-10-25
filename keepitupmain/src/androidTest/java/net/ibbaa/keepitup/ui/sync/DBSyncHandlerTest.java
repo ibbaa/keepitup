@@ -136,6 +136,11 @@ public class DBSyncHandlerTest {
     private record SyncTest(long id, String data) implements Syncable<SyncTest> {
 
         @Override
+        public long getId() {
+            return id;
+        }
+
+        @Override
         public boolean isEqual(SyncTest other) {
             return id == other.id && data.equals(other.data);
         }

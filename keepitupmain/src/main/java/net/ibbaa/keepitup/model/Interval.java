@@ -70,7 +70,7 @@ public class Interval implements Syncable<Interval> {
         }
     }
 
-    public long id() {
+    public long getId() {
         return id;
     }
 
