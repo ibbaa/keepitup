@@ -47,6 +47,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.MediumTest;
 
 import net.ibbaa.keepitup.R;
+import net.ibbaa.keepitup.db.DBSetup;
 import net.ibbaa.keepitup.logging.NetworkTaskLog;
 import net.ibbaa.keepitup.model.AccessType;
 import net.ibbaa.keepitup.model.Interval;
@@ -63,6 +64,7 @@ import net.ibbaa.phonelog.ILogger;
 
 import org.hamcrest.Matcher;
 import org.hamcrest.Matchers;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -76,6 +78,13 @@ import java.util.List;
 @SuppressWarnings({"SameParameterValue", "SequencedCollectionMethodCanBeUsed"})
 @RunWith(AndroidJUnit4.class)
 public class GlobalSettingsActivityTest extends BaseUITest {
+
+    @Before
+    public void beforeEachTestMethod() {
+        super.beforeEachTestMethod();
+        DBSetup dbSetup = new DBSetup(TestRegistry.getContext());
+        dbSetup.initializeHeaderTable();
+    }
 
     @Test
     public void testDisplayDefaultValues() {

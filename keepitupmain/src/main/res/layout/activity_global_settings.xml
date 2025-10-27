@@ -548,39 +548,41 @@
             </androidx.cardview.widget.CardView>
 
             <androidx.cardview.widget.CardView xmlns:card_view="http://schemas.android.com/apk/res-auto"
-                android:id="@+id/cardview_activity_global_settings_http_user_agent"
+                android:id="@+id/cardview_activity_global_settings_global_headers"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="@dimen/cardview_activity_global_settings_http_user_agent_margin"
-                card_view:cardCornerRadius="@dimen/cardview_activity_global_settings_http_user_agent_corner_radius"
-                app:cardElevation="@dimen/cardview_activity_global_settings_http_user_agent_card_elevation">
+                android:layout_margin="@dimen/cardview_activity_global_settings_global_headers_margin"
+                card_view:cardCornerRadius="@dimen/cardview_activity_global_settings_global_headers_corner_radius"
+                app:cardElevation="@dimen/cardview_activity_global_settings_global_headers_card_elevation">
 
                 <LinearLayout
-                    android:id="@+id/linearlayout_activity_global_settings_http_user_agent"
+                    android:id="@+id/linearlayout_activity_global_settings_global_headers"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_margin="@dimen/linearlayout_activity_global_settings_http_user_agent_margin"
+                    android:layout_margin="@dimen/linearlayout_activity_global_settings_global_headers_margin"
                     android:focusable="true"
                     android:focusableInTouchMode="true"
                     android:orientation="vertical">
 
                     <TextView
-                        android:id="@+id/textview_activity_global_settings_http_user_agent_label"
+                        android:id="@+id/textview_activity_global_settings_global_headers_label"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:textStyle="bold"
-                        android:text="@string/label_activity_global_settings_http_user_agent" />
+                        android:text="@string/label_activity_global_settings_global_headers" />
 
-                    <TextView
-                        android:id="@+id/textview_activity_global_settings_http_user_agent"
-                        android:layout_width="wrap_content"
+                    <GridLayout
+                        android:id="@+id/gridlayout_activity_global_settings_global_headers_value"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:textStyle="normal"
-                        android:text="" />
+                        android:layout_margin="@dimen/gridlayout_activity_global_settings_global_headers_margin">
+
+                    </GridLayout>
 
                 </LinearLayout>
 
             </androidx.cardview.widget.CardView>
+
 
             <androidx.cardview.widget.CardView xmlns:card_view="http://schemas.android.com/apk/res-auto"
                 android:id="@+id/cardview_activity_global_settings_log_file"

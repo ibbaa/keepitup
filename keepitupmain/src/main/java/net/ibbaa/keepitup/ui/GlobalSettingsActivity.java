@@ -38,9 +38,9 @@ import com.google.android.material.switchmaterial.SwitchMaterial;
 import net.ibbaa.keepitup.R;
 import net.ibbaa.keepitup.logging.Log;
 import net.ibbaa.keepitup.logging.NetworkTaskLog;
+import net.ibbaa.keepitup.model.Header;
 import net.ibbaa.keepitup.model.Interval;
 import net.ibbaa.keepitup.model.NotificationType;
-import net.ibbaa.keepitup.resources.ConstantPreferenceManager;
 import net.ibbaa.keepitup.resources.PreferenceManager;
 import net.ibbaa.keepitup.resources.PreferenceSetup;
 import net.ibbaa.keepitup.service.IFileManager;
@@ -55,6 +55,7 @@ import net.ibbaa.keepitup.ui.permission.PermissionLauncher;
 import net.ibbaa.keepitup.ui.validation.NotificationAfterFailuresFieldValidator;
 import net.ibbaa.keepitup.util.BundleUtil;
 import net.ibbaa.keepitup.util.FileUtil;
+import net.ibbaa.keepitup.util.HTTPUtil;
 import net.ibbaa.keepitup.util.NumberUtil;
 import net.ibbaa.keepitup.util.StringUtil;
 import net.ibbaa.keepitup.util.SystemUtil;
@@ -108,7 +109,7 @@ public class GlobalSettingsActivity extends SettingsInputActivity implements Sus
         prepareDownloadFolderField();
         prepareDownloadKeepSwitch();
         prepareDownloadFollowsRedirectsSwitch();
-        prepareHTTPUserAgentField();
+        prepareGlobalHeadersField();
         prepareLogFolderLauncher();
         prepareLogFileSwitch();
         prepareLogFolderField();
@@ -314,8 +315,8 @@ public class GlobalSettingsActivity extends SettingsInputActivity implements Sus
         intervalTextParams.height = GridLayout.LayoutParams.WRAP_CONTENT;
         intervalTextParams.width = GridLayout.LayoutParams.WRAP_CONTENT;
         intervalTextParams.setGravity(Gravity.CENTER);
-        intervalTextParams.rightMargin = getResources().getDimensionPixelSize(R.dimen.textview_activity_global_settings_intervals_value_margin_right);
-        intervalTextParams.topMargin = getResources().getDimensionPixelSize(R.dimen.textview_activity_global_settings_intervals_value_margin_top);
+        intervalTextParams.rightMargin = getResources().getDimensionPixelSize(R.dimen.textview_activity_global_settings_suspension_intervals_value_margin_right);
+        intervalTextParams.topMargin = getResources().getDimensionPixelSize(R.dimen.textview_activity_global_settings_suspension_intervals_value_margin_top);
         intervalTextParams.columnSpec = GridLayout.spec(column, 1, GridLayout.LEFT);
         intervalTextParams.rowSpec = GridLayout.spec(row + 1, 1, GridLayout.LEFT);
         return intervalTextParams;
@@ -500,11 +501,74 @@ public class GlobalSettingsActivity extends SettingsInputActivity implements Sus
         prepareDownloadFollowsRedirectsOnOffText();
     }
 
-    private void prepareHTTPUserAgentField() {
-        Log.d(GlobalSettingsActivity.class.getName(), "prepareHTTPUserAgentField");
-        ConstantPreferenceManager preferenceManager = new ConstantPreferenceManager(this);
-        httpUserAgentText = findViewById(R.id.textview_activity_global_settings_http_user_agent);
-        setHTTPUserAgent(preferenceManager.getPreferenceHTTPUserAgent());
+    private void prepareGlobalHeadersField() {
+        Log.d(GlobalSettingsActivity.class.getName(), "prepareGlobalHeadersField");
+        CardView globalHeadersCardView = findViewById(R.id.cardview_activity_global_settings_global_headers);
+        //globalHeadersCardView.setOnClickListener(this::showGlobalHeadersDialog);
+        prepareGlobalHeadersTextLayoutFields();
+    }
+
+    private void prepareGlobalHeadersTextLayoutFields() {
+        Log.d(GlobalSettingsActivity.class.getName(), "prepareGlobalHeadersTextLayoutFields");
+        GridLayout gridLayout = findViewById(R.id.gridlayout_activity_global_settings_global_headers_value);
+        gridLayout.removeAllViews();
+        gridLayout.setColumnCount(1);
+        List<Header> headers = new GlobalHeaderHandler(this).getGlobalHeaders();
+        if (headers.isEmpty()) {
+            Log.d(GlobalSettingsActivity.class.getName(), "No headers defined");
+            prepareGlobalHeadersTextFieldsSingleLayout(getResources().getString(R.string.text_activity_global_settings_global_headers_none));
+            return;
+        }
+        prepareGlobalHeadersTextFieldsLayout(headers);
+    }
+
+    private void prepareGlobalHeadersTextFieldsSingleLayout(String text) {
+        Log.d(GlobalSettingsActivity.class.getName(), "prepareGlobalHeadersTextFieldsSingleLayout with text " + text);
+        GridLayout gridLayout = findViewById(R.id.gridlayout_activity_global_settings_global_headers_value);
+        TextView intervalText = getGlobalHeadersTextView(text, getGlobalHeadersTextSize(1));
+        GridLayout.LayoutParams intervalTextParams = getGlobalHeaderTextViewLayoutParams(0);
+        gridLayout.addView(intervalText, intervalTextParams);
+    }
+
+    private void prepareGlobalHeadersTextFieldsLayout(List<Header> headers) {
+        Log.d(GlobalSettingsActivity.class.getName(), "prepareGlobalHeadersTextFieldsLayout");
+        GridLayout gridLayout = findViewById(R.id.gridlayout_activity_global_settings_global_headers_value);
+        for (int ii = 0; ii < headers.size(); ii++) {
+            Header header = headers.get(ii);
+            TextView intervalText = getGlobalHeadersTextView(HTTPUtil.getHeaderText(header), getGlobalHeadersTextSize(headers.size()));
+            GridLayout.LayoutParams intervalTextParams = getGlobalHeaderTextViewLayoutParams(ii);
+            gridLayout.addView(intervalText, intervalTextParams);
+        }
+    }
+
+    private TextView getGlobalHeadersTextView(String text, int textSize) {
+        TextView intervalText = new TextView(this);
+        intervalText.setId(View.generateViewId());
+        intervalText.setText(text);
+        intervalText.setTextSize(TypedValue.COMPLEX_UNIT_SP, textSize);
+        return intervalText;
+    }
+
+    private GridLayout.LayoutParams getGlobalHeaderTextViewLayoutParams(int row) {
+        GridLayout.LayoutParams intervalTextParams = new GridLayout.LayoutParams();
+        intervalTextParams.height = GridLayout.LayoutParams.WRAP_CONTENT;
+        intervalTextParams.width = GridLayout.LayoutParams.WRAP_CONTENT;
+        intervalTextParams.setGravity(Gravity.CENTER);
+        intervalTextParams.rightMargin = getResources().getDimensionPixelSize(R.dimen.textview_activity_global_settings_global_headers_value_margin_right);
+        intervalTextParams.topMargin = getResources().getDimensionPixelSize(R.dimen.textview_activity_global_settings_global_headers_value_margin_top);
+        intervalTextParams.columnSpec = GridLayout.spec(0, 1, GridLayout.LEFT);
+        intervalTextParams.rowSpec = GridLayout.spec(row + 1, 1, GridLayout.LEFT);
+        return intervalTextParams;
+    }
+
+    private int getGlobalHeadersTextSize(int headerCount) {
+        if (headerCount <= 1) {
+            return getResources().getInteger(R.integer.global_headers_text_size_normal);
+        } else if (headerCount == 2) {
+            return getResources().getInteger(R.integer.global_headers_text_size_smaller);
+        } else {
+            return getResources().getInteger(R.integer.global_headers_text_size_small);
+        }
     }
 
     private void prepareLogFileSwitch() {

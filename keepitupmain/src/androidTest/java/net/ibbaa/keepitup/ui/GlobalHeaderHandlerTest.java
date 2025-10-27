@@ -27,6 +27,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.MediumTest;
 
 import net.ibbaa.keepitup.model.Header;
+import net.ibbaa.keepitup.test.mock.TestRegistry;
 import net.ibbaa.keepitup.ui.dialog.GlobalHeadersDialog;
 
 import org.junit.After;
@@ -57,10 +58,7 @@ public class GlobalHeaderHandlerTest extends BaseUITest {
 
     @Test
     public void testGetGlobalHeaders() {
-        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class);
-        GlobalHeadersDialog headersDialog = openGlobalHeadersDialog();
-        onView(isRoot()).perform(waitFor(500));
-        GlobalHeaderHandler handler = new GlobalHeaderHandler(getGlobalSettingsActivity(), headersDialog);
+        GlobalHeaderHandler handler = new GlobalHeaderHandler(TestRegistry.getContext());
         handler.reset();
         assertEquals(0, handler.getGlobalHeaders().size());
         getHeaderDAO().insertHeader(getHeader1(-1));
@@ -74,7 +72,6 @@ public class GlobalHeaderHandlerTest extends BaseUITest {
         assertTrue(getHeader1(-1).isTechnicallyEqual(handler.getGlobalHeaders().get(0)));
         assertTrue(getHeader2(-1).isTechnicallyEqual(handler.getGlobalHeaders().get(1)));
         handler.reset();
-        activityScenario.close();
     }
 
     @Test

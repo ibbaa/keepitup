@@ -16,6 +16,7 @@
 
 package net.ibbaa.keepitup.ui;
 
+import android.content.Context;
 import android.content.res.Resources;
 
 import net.ibbaa.keepitup.R;
@@ -42,6 +43,12 @@ public class GlobalHeaderHandler {
         this.globalSettingsActivity = globalSettingsActivity;
         this.headerDialog = headerDialog;
         this.headerDAO = new HeaderDAO(globalSettingsActivity);
+    }
+
+    public GlobalHeaderHandler(Context context) {
+        this.globalSettingsActivity = null;
+        this.headerDialog = null;
+        this.headerDAO = new HeaderDAO(context);
     }
 
     public List<Header> getGlobalHeaders() {

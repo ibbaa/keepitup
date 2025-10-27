@@ -25,6 +25,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.SmallTest;
 
 import net.ibbaa.keepitup.R;
+import net.ibbaa.keepitup.model.Header;
 import net.ibbaa.keepitup.resources.ConstantPreferenceManager;
 import net.ibbaa.keepitup.resources.PreferenceManager;
 import net.ibbaa.keepitup.test.mock.TestRegistry;
@@ -45,7 +46,15 @@ import okhttp3.ResponseBody;
 public class HTTPUtilTest {
 
     @Test
-    public void testGetLocation() throws Exception {
+    public void testGetHeaderText() {
+        Header header = new Header();
+        header.setName("name");
+        header.setValue("value");
+        assertEquals("name: value", HTTPUtil.getHeaderText(header));
+    }
+
+    @Test
+    public void testGetLocation() {
         Response response = new Response.Builder().request(new Request.Builder().url("http://test.com/").build()).protocol(Protocol.HTTP_1_1).code(200).message("OK").body(ResponseBody.create(new byte[0], null)).build();
         assertNull(HTTPUtil.getLocation(TestRegistry.getContext(), response));
         response = response.newBuilder().header("Location", "123").build();

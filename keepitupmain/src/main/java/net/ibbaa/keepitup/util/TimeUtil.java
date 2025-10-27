@@ -141,7 +141,6 @@ public class TimeUtil {
         return currentGap;
     }
 
-
     public static String formatSuspensionIntervalText(Interval interval, Context context) {
         SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm", Locale.getDefault());
         Date start = new Date(getRelativeTimestamp(interval.getStart()));

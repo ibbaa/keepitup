@@ -20,6 +20,7 @@ import android.content.Context;
 
 import net.ibbaa.keepitup.R;
 import net.ibbaa.keepitup.logging.Log;
+import net.ibbaa.keepitup.model.Header;
 import net.ibbaa.keepitup.resources.ConstantPreferenceManager;
 
 import java.io.UnsupportedEncodingException;
@@ -44,6 +45,10 @@ public class HTTPUtil {
 
     public static boolean isHTTPReturnCodeOk(int returnCode) {
         return returnCode >= 200 && returnCode < 300;
+    }
+
+    public static String getHeaderText(Header header) {
+        return header.getName() + ": " + header.getValue();
     }
 
     public static String getContentDisposition(Context context, Response response) {
