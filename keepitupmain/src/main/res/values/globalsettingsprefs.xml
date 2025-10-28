@@ -31,6 +31,7 @@
     <integer name="global_headers_text_size_normal">14</integer>
     <integer name="global_headers_text_size_smaller">12</integer>
     <integer name="global_headers_text_size_small">10</integer>
+    <integer name="global_headers_max_value_lines">5</integer>
     <string name="enforce_default_ping_package_size_key">enforce_default_ping_package_size_key</string>
     <bool name="enforce_default_ping_package_size_default">false</bool>
     <string name="download_external_storage_key">download_external_storage_key</string>

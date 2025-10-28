@@ -17,8 +17,14 @@
 package net.ibbaa.keepitup.ui;
 
 import android.content.res.ColorStateList;
+import android.graphics.Typeface;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.text.Layout;
+import android.text.StaticLayout;
+import android.text.TextPaint;
+import android.text.TextUtils;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.Menu;
@@ -55,7 +61,6 @@ import net.ibbaa.keepitup.ui.permission.PermissionLauncher;
 import net.ibbaa.keepitup.ui.validation.NotificationAfterFailuresFieldValidator;
 import net.ibbaa.keepitup.util.BundleUtil;
 import net.ibbaa.keepitup.util.FileUtil;
-import net.ibbaa.keepitup.util.HTTPUtil;
 import net.ibbaa.keepitup.util.NumberUtil;
 import net.ibbaa.keepitup.util.StringUtil;
 import net.ibbaa.keepitup.util.SystemUtil;
@@ -512,21 +517,22 @@ public class GlobalSettingsActivity extends SettingsInputActivity implements Sus
         Log.d(GlobalSettingsActivity.class.getName(), "prepareGlobalHeadersTextLayoutFields");
         GridLayout gridLayout = findViewById(R.id.gridlayout_activity_global_settings_global_headers_value);
         gridLayout.removeAllViews();
-        gridLayout.setColumnCount(1);
         List<Header> headers = new GlobalHeaderHandler(this).getGlobalHeaders();
         if (headers.isEmpty()) {
             Log.d(GlobalSettingsActivity.class.getName(), "No headers defined");
+            gridLayout.setColumnCount(1);
             prepareGlobalHeadersTextFieldsSingleLayout(getResources().getString(R.string.text_activity_global_settings_global_headers_none));
             return;
         }
+        gridLayout.setColumnCount(2);
         prepareGlobalHeadersTextFieldsLayout(headers);
     }
 
     private void prepareGlobalHeadersTextFieldsSingleLayout(String text) {
         Log.d(GlobalSettingsActivity.class.getName(), "prepareGlobalHeadersTextFieldsSingleLayout with text " + text);
         GridLayout gridLayout = findViewById(R.id.gridlayout_activity_global_settings_global_headers_value);
-        TextView intervalText = getGlobalHeadersTextView(text, getGlobalHeadersTextSize(1));
-        GridLayout.LayoutParams intervalTextParams = getGlobalHeaderTextViewLayoutParams(0);
+        TextView intervalText = getGlobalHeadersTextView(text, getGlobalHeadersTextSize(1), Typeface.NORMAL, Integer.MAX_VALUE);
+        GridLayout.LayoutParams intervalTextParams = getGlobalHeaderTextViewLayoutParams(0, 0);
         gridLayout.addView(intervalText, intervalTextParams);
     }
 
@@ -535,30 +541,51 @@ public class GlobalSettingsActivity extends SettingsInputActivity implements Sus
         GridLayout gridLayout = findViewById(R.id.gridlayout_activity_global_settings_global_headers_value);
         for (int ii = 0; ii < headers.size(); ii++) {
             Header header = headers.get(ii);
-            TextView intervalText = getGlobalHeadersTextView(HTTPUtil.getHeaderText(header), getGlobalHeadersTextSize(headers.size()));
-            GridLayout.LayoutParams intervalTextParams = getGlobalHeaderTextViewLayoutParams(ii);
-            gridLayout.addView(intervalText, intervalTextParams);
+            int textSize = getGlobalHeadersTextSize(headers.size());
+            int maxLines = getResources().getInteger(R.integer.global_headers_max_value_lines);
+            TextView nameText = getGlobalHeadersTextView(header.getName() + ": ", textSize, Typeface.BOLD, Integer.MAX_VALUE);
+            TextView valueText = getGlobalHeadersTextView(header.getValue(), textSize, Typeface.NORMAL, maxLines);
+            GridLayout.LayoutParams nameTextParams = getGlobalHeaderTextViewLayoutParams(ii, 0);
+            GridLayout.LayoutParams valueTextParams = getGlobalHeaderTextViewLayoutParams(ii, 1);
+            gridLayout.addView(nameText, nameTextParams);
+            gridLayout.addView(valueText, valueTextParams);
+            enableHeaderTextToggleIfOverflow(valueText, maxLines);
         }
     }
 
-    private TextView getGlobalHeadersTextView(String text, int textSize) {
-        TextView intervalText = new TextView(this);
-        intervalText.setId(View.generateViewId());
-        intervalText.setText(text);
-        intervalText.setTextSize(TypedValue.COMPLEX_UNIT_SP, textSize);
-        return intervalText;
+    private TextView getGlobalHeadersTextView(String text, int textSize, int typeface, int maxLines) {
+        Log.d(GlobalSettingsActivity.class.getName(), "getGlobalHeadersTextView, text is " + text + ", textSize is " + textSize + ", maxLines is " + maxLines);
+        TextView headerText = new TextView(this);
+        headerText.setId(View.generateViewId());
+        headerText.setText(text);
+        headerText.setTextSize(TypedValue.COMPLEX_UNIT_SP, textSize);
+        headerText.setTypeface(null, typeface);
+        if (maxLines < Integer.MAX_VALUE) {
+            headerText.setMaxLines(maxLines);
+            headerText.setEllipsize(TextUtils.TruncateAt.END);
+        } else {
+            headerText.setMaxLines(Integer.MAX_VALUE);
+            headerText.setEllipsize(null);
+        }
+        return headerText;
     }
 
-    private GridLayout.LayoutParams getGlobalHeaderTextViewLayoutParams(int row) {
-        GridLayout.LayoutParams intervalTextParams = new GridLayout.LayoutParams();
-        intervalTextParams.height = GridLayout.LayoutParams.WRAP_CONTENT;
-        intervalTextParams.width = GridLayout.LayoutParams.WRAP_CONTENT;
-        intervalTextParams.setGravity(Gravity.CENTER);
-        intervalTextParams.rightMargin = getResources().getDimensionPixelSize(R.dimen.textview_activity_global_settings_global_headers_value_margin_right);
-        intervalTextParams.topMargin = getResources().getDimensionPixelSize(R.dimen.textview_activity_global_settings_global_headers_value_margin_top);
-        intervalTextParams.columnSpec = GridLayout.spec(0, 1, GridLayout.LEFT);
-        intervalTextParams.rowSpec = GridLayout.spec(row + 1, 1, GridLayout.LEFT);
-        return intervalTextParams;
+    private GridLayout.LayoutParams getGlobalHeaderTextViewLayoutParams(int row, int column) {
+        Log.d(GlobalSettingsActivity.class.getName(), "getGlobalHeaderTextViewLayoutParams, row is " + row + ", column is " + column);
+        GridLayout.LayoutParams params = new GridLayout.LayoutParams();
+        if (column == 1) {
+            params.width = 0;
+            params.columnSpec = GridLayout.spec(column, 1f);
+        } else {
+            params.width = GridLayout.LayoutParams.WRAP_CONTENT;
+            params.columnSpec = GridLayout.spec(column);
+        }
+        params.height = GridLayout.LayoutParams.WRAP_CONTENT;
+        params.setGravity(Gravity.FILL_HORIZONTAL);
+        params.rightMargin = getResources().getDimensionPixelSize(R.dimen.textview_activity_global_settings_global_headers_value_margin_right);
+        params.topMargin = getResources().getDimensionPixelSize(R.dimen.textview_activity_global_settings_global_headers_value_margin_top);
+        params.rowSpec = GridLayout.spec(row + 1);
+        return params;
     }
 
     private int getGlobalHeadersTextSize(int headerCount) {
@@ -568,6 +595,61 @@ public class GlobalSettingsActivity extends SettingsInputActivity implements Sus
             return getResources().getInteger(R.integer.global_headers_text_size_smaller);
         } else {
             return getResources().getInteger(R.integer.global_headers_text_size_small);
+        }
+    }
+
+    @SuppressWarnings("SizeReplaceableByIsEmpty")
+    private void enableHeaderTextToggleIfOverflow(TextView textView, int maxLines) {
+        Log.d(GlobalSettingsActivity.class.getName(), "enableHeaderTextToggleIfOverflow with maxLines of " + maxLines);
+        textView.post(() -> {
+            textView.setSingleLine(false);
+            textView.setMaxLines(maxLines);
+            textView.setEllipsize(TextUtils.TruncateAt.END);
+            Layout layout = textView.getLayout();
+            boolean overflow = false;
+            if (layout != null) {
+                int visibleLines = layout.getLineCount();
+                if (visibleLines > 0) {
+                    int lastVisibleLineIndex = Math.min(visibleLines, maxLines) - 1;
+                    if (lastVisibleLineIndex >= 0 && layout.getEllipsisCount(lastVisibleLineIndex) > 0) {
+                        overflow = true;
+                    }
+                }
+            }
+            if (!overflow) {
+                CharSequence text = textView.getText();
+                TextPaint tp = textView.getPaint();
+                int availWidth = textView.getWidth() - textView.getPaddingLeft() - textView.getPaddingRight();
+                if (availWidth > 0 && text != null && text.length() > 0) {
+                    int realLines;
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                        StaticLayout staticLayout = StaticLayout.Builder.obtain(text, 0, text.length(), tp, availWidth).setAlignment(Layout.Alignment.ALIGN_NORMAL).setLineSpacing(textView.getLineSpacingExtra(), textView.getLineSpacingMultiplier()).setIncludePad(textView.getIncludeFontPadding()).build();
+                        realLines = staticLayout.getLineCount();
+                    } else {
+                        StaticLayout staticLayout = new StaticLayout(text, tp, availWidth, Layout.Alignment.ALIGN_NORMAL, textView.getLineSpacingMultiplier(), textView.getLineSpacingExtra(), textView.getIncludeFontPadding());
+                        realLines = staticLayout.getLineCount();
+                    }
+                    if (realLines > maxLines) {
+                        overflow = true;
+                    }
+                }
+            }
+            Log.d(GlobalSettingsActivity.class.getName(), "overflow is " + overflow);
+            if (overflow) {
+                textView.setOnClickListener(v -> toggleHeaderTextExpandCollapse(textView, maxLines));
+            } else {
+                textView.setOnClickListener(null);
+            }
+        });
+    }
+
+    private void toggleHeaderTextExpandCollapse(TextView textView, int maxLines) {
+        if (textView.getMaxLines() == Integer.MAX_VALUE) {
+            textView.setMaxLines(maxLines);
+            textView.setEllipsize(TextUtils.TruncateAt.END);
+        } else {
+            textView.setMaxLines(Integer.MAX_VALUE);
+            textView.setEllipsize(null);
         }
     }
 
