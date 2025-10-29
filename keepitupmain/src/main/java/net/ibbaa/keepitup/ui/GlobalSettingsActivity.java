@@ -30,6 +30,7 @@ import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewParent;
 import android.widget.CompoundButton;
 import android.widget.GridLayout;
 import android.widget.RadioButton;
@@ -94,6 +95,7 @@ public class GlobalSettingsActivity extends SettingsInputActivity implements Sus
     private TextView logFolderText;
     private PermissionLauncher logFolderLauncher;
     private PermissionLauncher downloadFolderLauncher;
+    private DoubleClickTracker doubleClickTracker;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -101,6 +103,7 @@ public class GlobalSettingsActivity extends SettingsInputActivity implements Sus
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
+        doubleClickTracker = new DoubleClickTracker(this);
         setContentView(R.layout.activity_global_settings);
         initEdgeToEdgeInsets(R.id.layout_activity_global_settings);
         prepareNotificationInactiveNetworkSwitch();
@@ -531,9 +534,9 @@ public class GlobalSettingsActivity extends SettingsInputActivity implements Sus
     private void prepareGlobalHeadersTextFieldsSingleLayout(String text) {
         Log.d(GlobalSettingsActivity.class.getName(), "prepareGlobalHeadersTextFieldsSingleLayout with text " + text);
         GridLayout gridLayout = findViewById(R.id.gridlayout_activity_global_settings_global_headers_value);
-        TextView intervalText = getGlobalHeadersTextView(text, getGlobalHeadersTextSize(1), Typeface.NORMAL, Integer.MAX_VALUE);
-        GridLayout.LayoutParams intervalTextParams = getGlobalHeaderTextViewLayoutParams(0, 0);
-        gridLayout.addView(intervalText, intervalTextParams);
+        TextView gloablHeaderText = getGlobalHeadersTextView(text, getGlobalHeadersTextSize(1), Typeface.NORMAL, Integer.MAX_VALUE);
+        GridLayout.LayoutParams globalHeaderTextParams = getGlobalHeaderTextViewLayoutParams(0, 0);
+        gridLayout.addView(gloablHeaderText, globalHeaderTextParams);
     }
 
     private void prepareGlobalHeadersTextFieldsLayout(List<Header> headers) {
@@ -644,6 +647,15 @@ public class GlobalSettingsActivity extends SettingsInputActivity implements Sus
     }
 
     private void toggleHeaderTextExpandCollapse(TextView textView, int maxLines) {
+        if (!doubleClickTracker.isDoubleClick()) {
+            View parent = findClickableParent(textView);
+            if (parent != null) {
+                parent.performClick();
+            } else {
+                Log.e(GlobalSettingsActivity.class.getName(), "No clickable parent found to delegate single click");
+            }
+            return;
+        }
         if (textView.getMaxLines() == Integer.MAX_VALUE) {
             textView.setMaxLines(maxLines);
             textView.setEllipsize(TextUtils.TruncateAt.END);
@@ -651,6 +663,17 @@ public class GlobalSettingsActivity extends SettingsInputActivity implements Sus
             textView.setMaxLines(Integer.MAX_VALUE);
             textView.setEllipsize(null);
         }
+    }
+
+    private View findClickableParent(View view) {
+        ViewParent parent = view.getParent();
+        while (parent instanceof View parentView) {
+            if (parentView.isClickable()) {
+                return parentView;
+            }
+            parent = parent.getParent();
+        }
+        return null;
     }
 
     private void prepareLogFileSwitch() {
