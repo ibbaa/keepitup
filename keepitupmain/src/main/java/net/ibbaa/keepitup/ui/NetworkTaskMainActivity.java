@@ -35,11 +35,9 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import net.ibbaa.keepitup.R;
-import net.ibbaa.keepitup.db.HeaderDAO;
 import net.ibbaa.keepitup.db.NetworkTaskDAO;
 import net.ibbaa.keepitup.logging.Log;
 import net.ibbaa.keepitup.model.AccessTypeData;
-import net.ibbaa.keepitup.model.Header;
 import net.ibbaa.keepitup.model.NetworkTask;
 import net.ibbaa.keepitup.model.Resolve;
 import net.ibbaa.keepitup.notification.NotificationHandler;
@@ -113,7 +111,7 @@ public class NetworkTaskMainActivity extends RecyclerViewBaseActivity implements
         initDragAndDrop();
         prepareAddImageButton();
         startForegroundServiceDelayed();
-        HeaderDAO headerDAO = new HeaderDAO(this);
+        /*HeaderDAO headerDAO = new HeaderDAO(this);
         headerDAO.deleteAllHeaders();
         Header header1 = new Header();
         header1.setName("User-Agent");
@@ -138,7 +136,7 @@ public class NetworkTaskMainActivity extends RecyclerViewBaseActivity implements
         headerDAO.insertHeader(header3);
         headerDAO.insertHeader(header4);
         headerDAO.insertHeader(header5);
-        headerDAO.insertHeader(header6);
+        headerDAO.insertHeader(header6);*/
     }
 
     private void initDragAndDrop() {
