@@ -35,9 +35,11 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import net.ibbaa.keepitup.R;
+import net.ibbaa.keepitup.db.HeaderDAO;
 import net.ibbaa.keepitup.db.NetworkTaskDAO;
 import net.ibbaa.keepitup.logging.Log;
 import net.ibbaa.keepitup.model.AccessTypeData;
+import net.ibbaa.keepitup.model.Header;
 import net.ibbaa.keepitup.model.NetworkTask;
 import net.ibbaa.keepitup.model.Resolve;
 import net.ibbaa.keepitup.notification.NotificationHandler;
@@ -111,7 +113,7 @@ public class NetworkTaskMainActivity extends RecyclerViewBaseActivity implements
         initDragAndDrop();
         prepareAddImageButton();
         startForegroundServiceDelayed();
-        /*HeaderDAO headerDAO = new HeaderDAO(this);
+        HeaderDAO headerDAO = new HeaderDAO(this);
         headerDAO.deleteAllHeaders();
         Header header1 = new Header();
         header1.setName("User-Agent");
@@ -125,11 +127,18 @@ public class NetworkTaskMainActivity extends RecyclerViewBaseActivity implements
         Header header4 = new Header();
         header4.setName("X-Forwarded-For");
         header4.setValue("2003:c3:9706:2900:2184:498c:a31d:d35");
+        Header header5 = new Header();
+        header5.setName("X-Forwarded-For-2");
+        header5.setValue("2003:c3:9706:2900:2184:498c:a31d:d35");
+        Header header6 = new Header();
+        header6.setName("X-Forwarded-For-3");
+        header6.setValue("2003:c3:9706:2900:2184:498c:a31d:d35");
         headerDAO.insertHeader(header1);
         headerDAO.insertHeader(header2);
         headerDAO.insertHeader(header3);
-        headerDAO.insertHeader(header4);*/
-
+        headerDAO.insertHeader(header4);
+        headerDAO.insertHeader(header5);
+        headerDAO.insertHeader(header6);
     }
 
     private void initDragAndDrop() {

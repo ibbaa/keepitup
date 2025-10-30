@@ -96,6 +96,11 @@ public class GlobalSettingsActivity extends SettingsInputActivity implements Sus
     private PermissionLauncher logFolderLauncher;
     private PermissionLauncher downloadFolderLauncher;
     private DoubleClickTracker doubleClickTracker;
+    private boolean globalHeadersExpanded;
+
+    public static String getBypassSystemSAFKey() {
+        return GlobalSettingsActivity.class.getSimpleName() + "BypassSystemSAF";
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -104,6 +109,7 @@ public class GlobalSettingsActivity extends SettingsInputActivity implements Sus
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
         doubleClickTracker = new DoubleClickTracker(this);
+        globalHeadersExpanded = false;
         setContentView(R.layout.activity_global_settings);
         initEdgeToEdgeInsets(R.id.layout_activity_global_settings);
         prepareNotificationInactiveNetworkSwitch();
@@ -534,18 +540,22 @@ public class GlobalSettingsActivity extends SettingsInputActivity implements Sus
     private void prepareGlobalHeadersTextFieldsSingleLayout(String text) {
         Log.d(GlobalSettingsActivity.class.getName(), "prepareGlobalHeadersTextFieldsSingleLayout with text " + text);
         GridLayout gridLayout = findViewById(R.id.gridlayout_activity_global_settings_global_headers_value);
-        TextView gloablHeaderText = getGlobalHeadersTextView(text, getGlobalHeadersTextSize(1), Typeface.NORMAL, Integer.MAX_VALUE);
+        TextView globalHeaderText = getGlobalHeadersTextView(text, getGlobalHeadersTextSize(1), Typeface.NORMAL, Integer.MAX_VALUE);
         GridLayout.LayoutParams globalHeaderTextParams = getGlobalHeaderTextViewLayoutParams(0, 0);
-        gridLayout.addView(gloablHeaderText, globalHeaderTextParams);
+        gridLayout.addView(globalHeaderText, globalHeaderTextParams);
     }
 
     private void prepareGlobalHeadersTextFieldsLayout(List<Header> headers) {
         Log.d(GlobalSettingsActivity.class.getName(), "prepareGlobalHeadersTextFieldsLayout");
         GridLayout gridLayout = findViewById(R.id.gridlayout_activity_global_settings_global_headers_value);
-        for (int ii = 0; ii < headers.size(); ii++) {
+        int textSize = getGlobalHeadersTextSize(headers.size());
+        int maxLines = getResources().getInteger(R.integer.global_headers_max_value_lines);
+        int maxVisibleHeaders = getResources().getInteger(R.integer.global_headers_max_value_visible_headers);
+        int visibleCount = globalHeadersExpanded ? headers.size() : Math.min(headers.size(), maxVisibleHeaders);
+        Log.d(GlobalSettingsActivity.class.getName(), "Header count is " + headers.size());
+        Log.d(GlobalSettingsActivity.class.getName(), "Visible count is " + visibleCount);
+        for (int ii = 0; ii < visibleCount; ii++) {
             Header header = headers.get(ii);
-            int textSize = getGlobalHeadersTextSize(headers.size());
-            int maxLines = getResources().getInteger(R.integer.global_headers_max_value_lines);
             TextView nameText = getGlobalHeadersTextView(header.getName() + ": ", textSize, Typeface.BOLD, Integer.MAX_VALUE);
             TextView valueText = getGlobalHeadersTextView(header.getValue(), textSize, Typeface.NORMAL, maxLines);
             GridLayout.LayoutParams nameTextParams = getGlobalHeaderTextViewLayoutParams(ii, 0);
@@ -553,6 +563,25 @@ public class GlobalSettingsActivity extends SettingsInputActivity implements Sus
             gridLayout.addView(nameText, nameTextParams);
             gridLayout.addView(valueText, valueTextParams);
             enableHeaderTextToggleIfOverflow(valueText, maxLines);
+        }
+        if (headers.size() > maxVisibleHeaders) {
+            String more = getResources().getString(R.string.text_activity_global_settings_global_headers_more, headers.size() - maxVisibleHeaders);
+            String less = getResources().getString(R.string.text_activity_global_settings_global_headers_less);
+            TextView toggleText = getGlobalHeadersTextView(globalHeadersExpanded ? less : more, getGlobalHeadersTextSize(headers.size()), Typeface.ITALIC, Integer.MAX_VALUE);
+            GridLayout.LayoutParams toggleParams = getGlobalHeaderTextViewLayoutParams(visibleCount, 0);
+            GridLayout.LayoutParams globalHeaderTextParams = getGlobalHeaderTextViewLayoutParams(0, 0);
+            gridLayout.addView(toggleText, toggleParams);
+            toggleText.setOnClickListener(view -> {
+                if (doubleClickTracker.isDoubleClick()) {
+                    globalHeadersExpanded = !globalHeadersExpanded;
+                    prepareGlobalHeadersTextLayoutFields();
+                } else {
+                    View parent = findClickableParent(view);
+                    if (parent != null) {
+                        parent.performClick();
+                    }
+                }
+            });
         }
     }
 
@@ -639,7 +668,7 @@ public class GlobalSettingsActivity extends SettingsInputActivity implements Sus
             }
             Log.d(GlobalSettingsActivity.class.getName(), "overflow is " + overflow);
             if (overflow) {
-                textView.setOnClickListener(v -> toggleHeaderTextExpandCollapse(textView, maxLines));
+                textView.setOnClickListener(view -> toggleHeaderTextExpandCollapse(textView, maxLines));
             } else {
                 textView.setOnClickListener(null);
             }
@@ -1040,9 +1069,5 @@ public class GlobalSettingsActivity extends SettingsInputActivity implements Sus
     public void onSuspensionIntervalsDialogCancelClicked(SuspensionIntervalsDialog intervalsDialog) {
         Log.d(GlobalSettingsActivity.class.getName(), "onSuspensionIntervalsDialogCancelClicked");
         intervalsDialog.dismiss();
-    }
-
-    public static String getBypassSystemSAFKey() {
-        return GlobalSettingsActivity.class.getSimpleName() + "BypassSystemSAF";
     }
 }

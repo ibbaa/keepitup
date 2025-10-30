@@ -36,6 +36,8 @@
     <string name="label_activity_global_settings_download_follows_redirects">Download follows redirects</string>
     <string name="label_activity_global_settings_global_headers">HTTP Header</string>
     <string name="text_activity_global_settings_global_headers_none">None</string>
+    <string name="text_activity_global_settings_global_headers_more">%d more…</string>
+    <string name="text_activity_global_settings_global_headers_less">less…</string>
     <string name="text_activity_global_settings_download_folder_internal">Internal storage folder</string>
     <string name="text_activity_global_settings_log_folder_none">None</string>
 </resources>
