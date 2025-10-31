@@ -14,7 +14,7 @@
   ~ limitations under the License.
   -->
 
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <string name="activity_global_settings_title">Global settings</string>
     <string name="menu_action_activity_global_settings_reset">Reset</string>
     <string name="label_activity_global_settings_global">Global settings</string>
@@ -36,7 +36,7 @@
     <string name="label_activity_global_settings_download_follows_redirects">Download follows redirects</string>
     <string name="label_activity_global_settings_global_headers">HTTP Header</string>
     <string name="text_activity_global_settings_global_headers_none">None</string>
-    <string name="text_activity_global_settings_global_headers_more">%d more…</string>
+    <string name="text_activity_global_settings_global_headers_more" tools:ignore="PluralsCandidate">%d more…</string>
     <string name="text_activity_global_settings_global_headers_less">less…</string>
     <string name="text_activity_global_settings_download_folder_internal">Internal storage folder</string>
     <string name="text_activity_global_settings_log_folder_none">None</string>

@@ -24,6 +24,7 @@ import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.hamcrest.TypeSafeMatcher;
 
+@SuppressWarnings("ClassCanBeRecord")
 public class RecyclerViewMatcher {
     private final int recyclerViewId;
 

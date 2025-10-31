@@ -22,6 +22,7 @@ import java.net.InetAddress;
 import java.util.Collections;
 import java.util.List;
 
+@SuppressWarnings("ClassCanBeRecord")
 public class DNSLookupResult {
 
     private final List<InetAddress> addresses;

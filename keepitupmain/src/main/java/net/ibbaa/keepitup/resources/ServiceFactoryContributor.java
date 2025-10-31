@@ -23,6 +23,7 @@ import net.ibbaa.keepitup.logging.Log;
 
 import java.util.Objects;
 
+@SuppressWarnings("ALL")
 public class ServiceFactoryContributor {
 
     private final Context context;

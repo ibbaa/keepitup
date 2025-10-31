@@ -24,6 +24,7 @@ import net.ibbaa.keepitup.logging.Log;
 import java.util.Collections;
 import java.util.List;
 
+@SuppressWarnings("ClassCanBeRecord")
 public class NumberPickerColorListener implements NumberPicker.OnValueChangeListener {
 
     private final List<NumberPicker> numberPickers;

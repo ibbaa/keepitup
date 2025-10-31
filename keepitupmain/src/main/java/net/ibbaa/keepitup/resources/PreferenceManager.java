@@ -28,6 +28,7 @@ import net.ibbaa.keepitup.model.NotificationType;
 import java.util.HashSet;
 import java.util.Set;
 
+@SuppressWarnings("ClassCanBeRecord")
 public class PreferenceManager {
 
     private final Context context;

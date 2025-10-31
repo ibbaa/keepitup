@@ -24,6 +24,7 @@ import net.ibbaa.keepitup.model.Resolve;
 import net.ibbaa.keepitup.util.StringUtil;
 import net.ibbaa.keepitup.util.URLUtil;
 
+@SuppressWarnings("ClassCanBeRecord")
 public class ResolveValidator {
 
     private final Context context;

@@ -22,6 +22,7 @@ import android.content.res.Resources;
 import net.ibbaa.keepitup.R;
 import net.ibbaa.keepitup.logging.Log;
 
+@SuppressWarnings("ClassCanBeRecord")
 public class StandardResolveValidator implements ResolveValidator {
 
     private final Context context;

@@ -22,7 +22,7 @@ import android.net.NetworkInfo;
 
 import net.ibbaa.keepitup.logging.Log;
 
-@SuppressWarnings({"deprecation", "RedundantSuppression"})
+@SuppressWarnings({"deprecation", "RedundantSuppression", "ClassCanBeRecord"})
 public class SystemNetworkManager implements INetworkManager {
 
     private final ConnectivityManager connectivityManager;

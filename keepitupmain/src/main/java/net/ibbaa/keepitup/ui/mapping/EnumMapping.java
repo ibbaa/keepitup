@@ -32,7 +32,7 @@ import net.ibbaa.keepitup.ui.validation.ResolveValidator;
 
 import java.lang.reflect.Constructor;
 
-@SuppressWarnings("DiscouragedApi")
+@SuppressWarnings({"DiscouragedApi", "ClassCanBeRecord"})
 public class EnumMapping {
 
     private final Context context;

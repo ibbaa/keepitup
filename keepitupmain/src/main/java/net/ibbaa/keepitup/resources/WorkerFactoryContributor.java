@@ -23,6 +23,7 @@ import net.ibbaa.keepitup.logging.Log;
 
 import java.util.Objects;
 
+@SuppressWarnings("ClassCanBeRecord")
 public class WorkerFactoryContributor {
 
     private final Context context;

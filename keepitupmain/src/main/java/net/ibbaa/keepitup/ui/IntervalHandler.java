@@ -28,6 +28,7 @@ import net.ibbaa.keepitup.ui.sync.DBSyncHandler;
 import java.util.ArrayList;
 import java.util.List;
 
+@SuppressWarnings("ClassCanBeRecord")
 public class IntervalHandler {
 
     private final GlobalSettingsActivity globalSettingsActivity;

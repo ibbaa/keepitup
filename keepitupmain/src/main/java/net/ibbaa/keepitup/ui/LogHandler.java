@@ -24,6 +24,7 @@ import net.ibbaa.keepitup.logging.Log;
 import net.ibbaa.keepitup.model.NetworkTask;
 import net.ibbaa.keepitup.ui.adapter.LogEntryAdapter;
 
+@SuppressWarnings("ClassCanBeRecord")
 public class LogHandler {
 
     private final NetworkTaskLogActivity logActivity;
