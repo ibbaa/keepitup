@@ -59,6 +59,7 @@ import net.ibbaa.keepitup.service.alarm.AlarmService;
 import net.ibbaa.keepitup.test.matcher.ChildDescendantAtPositionMatcher;
 import net.ibbaa.keepitup.test.matcher.DrawableMatcher;
 import net.ibbaa.keepitup.test.matcher.GridLayoutPositionMatcher;
+import net.ibbaa.keepitup.test.matcher.GridLayoutRowColumnPositionMatcher;
 import net.ibbaa.keepitup.test.matcher.ListSizeMatcher;
 import net.ibbaa.keepitup.test.matcher.NumberPickerColorMatcher;
 import net.ibbaa.keepitup.test.matcher.NumberPickerValueMatcher;
@@ -303,6 +304,10 @@ public abstract class BaseUITest {
 
     public static Matcher<View> withChildDescendantAtPosition(Matcher<View> parentMatcher, int childPosition) {
         return new ChildDescendantAtPositionMatcher(parentMatcher, childPosition);
+    }
+
+    public static Matcher<View> withGridLayoutRowColumnPosition(int row, int column) {
+        return new GridLayoutRowColumnPositionMatcher(row, column);
     }
 
     public static Matcher<View> withGridLayoutPosition(int row, int column) {

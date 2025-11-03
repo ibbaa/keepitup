@@ -50,6 +50,7 @@ import net.ibbaa.keepitup.R;
 import net.ibbaa.keepitup.db.DBSetup;
 import net.ibbaa.keepitup.logging.NetworkTaskLog;
 import net.ibbaa.keepitup.model.AccessType;
+import net.ibbaa.keepitup.model.Header;
 import net.ibbaa.keepitup.model.Interval;
 import net.ibbaa.keepitup.model.NetworkTask;
 import net.ibbaa.keepitup.model.NotificationType;
@@ -1340,6 +1341,17 @@ public class GlobalSettingsActivityTest extends BaseUITest {
         onView(withId(R.id.imageview_dialog_suspension_intervals_ok)).perform(click());
         assertFalse(getTimeBasedSuspensionScheduler().isSuspended());
         assertTrue(getTimeBasedSuspensionScheduler().isRunning());
+        activityScenario.close();
+    }
+
+    @Test
+    public void testHTTPHeaderOneHeader() {
+        ActivityScenario<?> activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
+        onView(withId(R.id.cardview_activity_global_settings_global_headers)).perform(scrollTo());
+        onView(withId(R.id.textview_activity_global_settings_global_headers_label)).check(matches(withText("HTTP Header")));
+        onView(allOf(withText("User-Agent: "), withFontSize(14), withGridLayoutRowColumnPosition(1, 0))).check(matches(isDisplayed()));
+        onView(allOf(withText("Mozilla/5.0"), withFontSize(14), withGridLayoutRowColumnPosition(1, 1))).check(matches(isDisplayed()));
+        activityScenario.close();
     }
 
     @Test
@@ -1863,6 +1875,11 @@ public class GlobalSettingsActivityTest extends BaseUITest {
         activityScenario.close();
     }
 
+    private void resetGlobalHeaderHandler() {
+        GlobalHeaderHandler handler = new GlobalHeaderHandler(TestRegistry.getContext());
+        handler.reset();
+    }
+
     private void setTestTime(long time) {
         getTimeService().setTimestamp(time);
         getTimeService().setTimestamp2(time);
@@ -2004,5 +2021,13 @@ public class GlobalSettingsActivityTest extends BaseUITest {
         end.setMinute(39);
         interval.setEnd(end);
         return interval;
+    }
+
+    private Header getHeader1(long networkTaskId) {
+        Header header = new Header();
+        header.setNetworkTaskId(networkTaskId);
+        header.setName("name1");
+        header.setValue("value1");
+        return header;
     }
 }
