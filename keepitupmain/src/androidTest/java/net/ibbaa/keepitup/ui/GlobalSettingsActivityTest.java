@@ -26,6 +26,7 @@ import static androidx.test.espresso.action.ViewActions.swipeUp;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.matcher.ViewMatchers.hasChildCount;
 import static androidx.test.espresso.matcher.ViewMatchers.isChecked;
+import static androidx.test.espresso.matcher.ViewMatchers.isDescendantOfA;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.isEnabled;
 import static androidx.test.espresso.matcher.ViewMatchers.isNotChecked;
@@ -65,6 +66,7 @@ import net.ibbaa.phonelog.ILogger;
 
 import org.hamcrest.Matcher;
 import org.hamcrest.Matchers;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -85,6 +87,13 @@ public class GlobalSettingsActivityTest extends BaseUITest {
         super.beforeEachTestMethod();
         DBSetup dbSetup = new DBSetup(TestRegistry.getContext());
         dbSetup.initializeHeaderTable();
+        resetGlobalHeaderHandler();
+    }
+
+    @After
+    public void afterEachTestMethod() {
+        super.afterEachTestMethod();
+        resetGlobalHeaderHandler();
     }
 
     @Test
@@ -1345,12 +1354,172 @@ public class GlobalSettingsActivityTest extends BaseUITest {
     }
 
     @Test
+    public void testHTTPHeaderNone() {
+        getHeaderDAO().deleteAllHeaders();
+        resetGlobalHeaderHandler();
+        ActivityScenario<?> activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
+        onView(withId(R.id.cardview_activity_global_settings_global_headers)).perform(scrollTo());
+        onView(withId(R.id.textview_activity_global_settings_global_headers_label)).check(matches(withText("HTTP Header")));
+        onView(allOf(withText("None"), withFontSize(14), withGridLayoutRowColumnPosition(1, 0), isDescendantOfA(withId(R.id.gridlayout_activity_global_settings_global_headers_value)))).check(matches(isDisplayed()));
+        activityScenario.close();
+    }
+
+    @Test
     public void testHTTPHeaderOneHeader() {
         ActivityScenario<?> activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
         onView(withId(R.id.cardview_activity_global_settings_global_headers)).perform(scrollTo());
         onView(withId(R.id.textview_activity_global_settings_global_headers_label)).check(matches(withText("HTTP Header")));
         onView(allOf(withText("User-Agent: "), withFontSize(14), withGridLayoutRowColumnPosition(1, 0))).check(matches(isDisplayed()));
         onView(allOf(withText("Mozilla/5.0"), withFontSize(14), withGridLayoutRowColumnPosition(1, 1))).check(matches(isDisplayed()));
+        GlobalHeaderHandler handler = new GlobalHeaderHandler(TestRegistry.getContext());
+        assertEquals(1, handler.getGlobalHeaders().size());
+        assertEquals("User-Agent", handler.getGlobalHeaders().get(0).getName());
+        assertEquals("Mozilla/5.0", handler.getGlobalHeaders().get(0).getValue());
+        activityScenario.close();
+    }
+
+    @Test
+    public void testHTTPHeaderTwoHeaders() {
+        getHeaderDAO().insertHeader(getHeader(1));
+        resetGlobalHeaderHandler();
+        ActivityScenario<?> activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
+        onView(withId(R.id.cardview_activity_global_settings_global_headers)).perform(scrollTo());
+        onView(withId(R.id.textview_activity_global_settings_global_headers_label)).check(matches(withText("HTTP Header")));
+        onView(allOf(withText("Name1: "), withFontSize(12), withGridLayoutRowColumnPosition(1, 0))).check(matches(isDisplayed()));
+        onView(allOf(withText("Value1"), withFontSize(12), withGridLayoutRowColumnPosition(1, 1))).check(matches(isDisplayed()));
+        onView(allOf(withText("User-Agent: "), withFontSize(12), withGridLayoutRowColumnPosition(2, 0))).check(matches(isDisplayed()));
+        onView(allOf(withText("Mozilla/5.0"), withFontSize(12), withGridLayoutRowColumnPosition(2, 1))).check(matches(isDisplayed()));
+        GlobalHeaderHandler handler = new GlobalHeaderHandler(TestRegistry.getContext());
+        assertEquals(2, handler.getGlobalHeaders().size());
+        assertEquals("Name1", handler.getGlobalHeaders().get(0).getName());
+        assertEquals("Value1", handler.getGlobalHeaders().get(0).getValue());
+        assertEquals("User-Agent", handler.getGlobalHeaders().get(1).getName());
+        assertEquals("Mozilla/5.0", handler.getGlobalHeaders().get(1).getValue());
+        activityScenario.close();
+    }
+
+    @Test
+    public void testHTTPHeaderFiveHeaders() {
+        getHeaderDAO().insertHeader(getHeader(1));
+        getHeaderDAO().insertHeader(getHeader(2));
+        getHeaderDAO().insertHeader(getHeader(3));
+        getHeaderDAO().insertHeader(getHeader(4));
+        resetGlobalHeaderHandler();
+        ActivityScenario<?> activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
+        onView(withId(R.id.cardview_activity_global_settings_global_headers)).perform(scrollTo());
+        onView(withId(R.id.textview_activity_global_settings_global_headers_label)).check(matches(withText("HTTP Header")));
+        onView(allOf(withText("Name1: "), withFontSize(10), withGridLayoutRowColumnPosition(1, 0))).check(matches(isDisplayed()));
+        onView(allOf(withText("Value1"), withFontSize(10), withGridLayoutRowColumnPosition(1, 1))).check(matches(isDisplayed()));
+        onView(allOf(withText("Name2: "), withFontSize(10), withGridLayoutRowColumnPosition(2, 0))).check(matches(isDisplayed()));
+        onView(allOf(withText("Value2"), withFontSize(10), withGridLayoutRowColumnPosition(2, 1))).check(matches(isDisplayed()));
+        onView(allOf(withText("Name3: "), withFontSize(10), withGridLayoutRowColumnPosition(3, 0))).check(matches(isDisplayed()));
+        onView(allOf(withText("Value3"), withFontSize(10), withGridLayoutRowColumnPosition(3, 1))).check(matches(isDisplayed()));
+        onView(allOf(withText("Name4: "), withFontSize(10), withGridLayoutRowColumnPosition(4, 0))).check(matches(isDisplayed()));
+        onView(allOf(withText("Value4"), withFontSize(10), withGridLayoutRowColumnPosition(4, 1))).check(matches(isDisplayed()));
+        onView(allOf(withText("User-Agent: "), withFontSize(10), withGridLayoutRowColumnPosition(5, 0))).check(matches(isDisplayed()));
+        onView(allOf(withText("Mozilla/5.0"), withFontSize(10), withGridLayoutRowColumnPosition(5, 1))).check(matches(isDisplayed()));
+        GlobalHeaderHandler handler = new GlobalHeaderHandler(TestRegistry.getContext());
+        assertEquals(5, handler.getGlobalHeaders().size());
+        assertEquals("Name1", handler.getGlobalHeaders().get(0).getName());
+        assertEquals("Value1", handler.getGlobalHeaders().get(0).getValue());
+        assertEquals("Name2", handler.getGlobalHeaders().get(1).getName());
+        assertEquals("Value2", handler.getGlobalHeaders().get(1).getValue());
+        assertEquals("Name3", handler.getGlobalHeaders().get(2).getName());
+        assertEquals("Value3", handler.getGlobalHeaders().get(2).getValue());
+        assertEquals("Name4", handler.getGlobalHeaders().get(3).getName());
+        assertEquals("Value4", handler.getGlobalHeaders().get(3).getValue());
+        assertEquals("User-Agent", handler.getGlobalHeaders().get(4).getName());
+        assertEquals("Mozilla/5.0", handler.getGlobalHeaders().get(4).getValue());
+        activityScenario.close();
+    }
+
+    @Test
+    public void testHTTPHeaderSixHeaders() {
+        getHeaderDAO().insertHeader(getHeader(1));
+        getHeaderDAO().insertHeader(getHeader(2));
+        getHeaderDAO().insertHeader(getHeader(3));
+        getHeaderDAO().insertHeader(getHeader(4));
+        getHeaderDAO().insertHeader(getHeader(5));
+        resetGlobalHeaderHandler();
+        ActivityScenario<?> activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
+        onView(withId(R.id.cardview_activity_global_settings_global_headers)).perform(scrollTo());
+        onView(withId(R.id.textview_activity_global_settings_global_headers_label)).check(matches(withText("HTTP Header")));
+        onView(allOf(withText("Name1: "), withFontSize(10), withGridLayoutRowColumnPosition(1, 0))).check(matches(isDisplayed()));
+        onView(allOf(withText("Value1"), withFontSize(10), withGridLayoutRowColumnPosition(1, 1))).check(matches(isDisplayed()));
+        onView(allOf(withText("Name2: "), withFontSize(10), withGridLayoutRowColumnPosition(2, 0))).check(matches(isDisplayed()));
+        onView(allOf(withText("Value2"), withFontSize(10), withGridLayoutRowColumnPosition(2, 1))).check(matches(isDisplayed()));
+        onView(allOf(withText("Name3: "), withFontSize(10), withGridLayoutRowColumnPosition(3, 0))).check(matches(isDisplayed()));
+        onView(allOf(withText("Value3"), withFontSize(10), withGridLayoutRowColumnPosition(3, 1))).check(matches(isDisplayed()));
+        onView(allOf(withText("Name4: "), withFontSize(10), withGridLayoutRowColumnPosition(4, 0))).check(matches(isDisplayed()));
+        onView(allOf(withText("Value4"), withFontSize(10), withGridLayoutRowColumnPosition(4, 1))).check(matches(isDisplayed()));
+        onView(allOf(withText("Name5: "), withFontSize(10), withGridLayoutRowColumnPosition(5, 0))).check(matches(isDisplayed()));
+        onView(allOf(withText("Value5"), withFontSize(10), withGridLayoutRowColumnPosition(5, 1))).check(matches(isDisplayed()));
+        onView(allOf(withText("1 more…"), withFontSize(10), withGridLayoutRowColumnPosition(6, 0))).check(matches(isDisplayed()));
+        GlobalHeaderHandler handler = new GlobalHeaderHandler(TestRegistry.getContext());
+        assertEquals(6, handler.getGlobalHeaders().size());
+        assertEquals("Name1", handler.getGlobalHeaders().get(0).getName());
+        assertEquals("Value1", handler.getGlobalHeaders().get(0).getValue());
+        assertEquals("Name2", handler.getGlobalHeaders().get(1).getName());
+        assertEquals("Value2", handler.getGlobalHeaders().get(1).getValue());
+        assertEquals("Name3", handler.getGlobalHeaders().get(2).getName());
+        assertEquals("Value3", handler.getGlobalHeaders().get(2).getValue());
+        assertEquals("Name4", handler.getGlobalHeaders().get(3).getName());
+        assertEquals("Value4", handler.getGlobalHeaders().get(3).getValue());
+        assertEquals("Name5", handler.getGlobalHeaders().get(4).getName());
+        assertEquals("Value5", handler.getGlobalHeaders().get(4).getValue());
+        assertEquals("User-Agent", handler.getGlobalHeaders().get(5).getName());
+        assertEquals("Mozilla/5.0", handler.getGlobalHeaders().get(5).getValue());
+        activityScenario.close();
+    }
+
+    @Test
+    public void testHTTPHeaderTenHeaders() {
+        getHeaderDAO().insertHeader(getHeader(1));
+        getHeaderDAO().insertHeader(getHeader(2));
+        getHeaderDAO().insertHeader(getHeader(3));
+        getHeaderDAO().insertHeader(getHeader(4));
+        getHeaderDAO().insertHeader(getHeader(5));
+        getHeaderDAO().insertHeader(getHeader(6));
+        getHeaderDAO().insertHeader(getHeader(7));
+        getHeaderDAO().insertHeader(getHeader(8));
+        getHeaderDAO().insertHeader(getHeader(9));
+        resetGlobalHeaderHandler();
+        ActivityScenario<?> activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
+        onView(withId(R.id.cardview_activity_global_settings_global_headers)).perform(scrollTo());
+        onView(withId(R.id.textview_activity_global_settings_global_headers_label)).check(matches(withText("HTTP Header")));
+        onView(allOf(withText("Name1: "), withFontSize(10), withGridLayoutRowColumnPosition(1, 0))).check(matches(isDisplayed()));
+        onView(allOf(withText("Value1"), withFontSize(10), withGridLayoutRowColumnPosition(1, 1))).check(matches(isDisplayed()));
+        onView(allOf(withText("Name2: "), withFontSize(10), withGridLayoutRowColumnPosition(2, 0))).check(matches(isDisplayed()));
+        onView(allOf(withText("Value2"), withFontSize(10), withGridLayoutRowColumnPosition(2, 1))).check(matches(isDisplayed()));
+        onView(allOf(withText("Name3: "), withFontSize(10), withGridLayoutRowColumnPosition(3, 0))).check(matches(isDisplayed()));
+        onView(allOf(withText("Value3"), withFontSize(10), withGridLayoutRowColumnPosition(3, 1))).check(matches(isDisplayed()));
+        onView(allOf(withText("Name4: "), withFontSize(10), withGridLayoutRowColumnPosition(4, 0))).check(matches(isDisplayed()));
+        onView(allOf(withText("Value4"), withFontSize(10), withGridLayoutRowColumnPosition(4, 1))).check(matches(isDisplayed()));
+        onView(allOf(withText("Name5: "), withFontSize(10), withGridLayoutRowColumnPosition(5, 0))).check(matches(isDisplayed()));
+        onView(allOf(withText("Value5"), withFontSize(10), withGridLayoutRowColumnPosition(5, 1))).check(matches(isDisplayed()));
+        onView(allOf(withText("5 more…"), withFontSize(10), withGridLayoutRowColumnPosition(6, 0))).check(matches(isDisplayed()));
+        GlobalHeaderHandler handler = new GlobalHeaderHandler(TestRegistry.getContext());
+        assertEquals(10, handler.getGlobalHeaders().size());
+        assertEquals("Name1", handler.getGlobalHeaders().get(0).getName());
+        assertEquals("Value1", handler.getGlobalHeaders().get(0).getValue());
+        assertEquals("Name2", handler.getGlobalHeaders().get(1).getName());
+        assertEquals("Value2", handler.getGlobalHeaders().get(1).getValue());
+        assertEquals("Name3", handler.getGlobalHeaders().get(2).getName());
+        assertEquals("Value3", handler.getGlobalHeaders().get(2).getValue());
+        assertEquals("Name4", handler.getGlobalHeaders().get(3).getName());
+        assertEquals("Value4", handler.getGlobalHeaders().get(3).getValue());
+        assertEquals("Name5", handler.getGlobalHeaders().get(4).getName());
+        assertEquals("Value5", handler.getGlobalHeaders().get(4).getValue());
+        assertEquals("Name6", handler.getGlobalHeaders().get(5).getName());
+        assertEquals("Value6", handler.getGlobalHeaders().get(5).getValue());
+        assertEquals("Name7", handler.getGlobalHeaders().get(6).getName());
+        assertEquals("Value7", handler.getGlobalHeaders().get(6).getValue());
+        assertEquals("Name8", handler.getGlobalHeaders().get(7).getName());
+        assertEquals("Value8", handler.getGlobalHeaders().get(7).getValue());
+        assertEquals("Name9", handler.getGlobalHeaders().get(8).getName());
+        assertEquals("Value9", handler.getGlobalHeaders().get(8).getValue());
+        assertEquals("User-Agent", handler.getGlobalHeaders().get(9).getName());
+        assertEquals("Mozilla/5.0", handler.getGlobalHeaders().get(9).getValue());
         activityScenario.close();
     }
 
@@ -2023,11 +2192,11 @@ public class GlobalSettingsActivityTest extends BaseUITest {
         return interval;
     }
 
-    private Header getHeader1(long networkTaskId) {
+    private Header getHeader(int number) {
         Header header = new Header();
-        header.setNetworkTaskId(networkTaskId);
-        header.setName("name1");
-        header.setValue("value1");
+        header.setNetworkTaskId(-1);
+        header.setName("Name" + number);
+        header.setValue("Value" + number);
         return header;
     }
 }
