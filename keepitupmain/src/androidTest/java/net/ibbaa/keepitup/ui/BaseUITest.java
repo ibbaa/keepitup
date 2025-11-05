@@ -18,7 +18,10 @@ package net.ibbaa.keepitup.ui;
 
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.matcher.ViewMatchers.isAssignableFrom;
+import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
+import static androidx.test.espresso.matcher.ViewMatchers.isEnabled;
 import static androidx.test.espresso.matcher.ViewMatchers.isRoot;
+import static org.hamcrest.Matchers.allOf;
 
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
@@ -58,6 +61,7 @@ import net.ibbaa.keepitup.service.SystemThemeManager;
 import net.ibbaa.keepitup.service.alarm.AlarmService;
 import net.ibbaa.keepitup.test.matcher.ChildDescendantAtPositionMatcher;
 import net.ibbaa.keepitup.test.matcher.DrawableMatcher;
+import net.ibbaa.keepitup.test.matcher.EllipsizedMatcher;
 import net.ibbaa.keepitup.test.matcher.GridLayoutPositionMatcher;
 import net.ibbaa.keepitup.test.matcher.GridLayoutRowColumnPositionMatcher;
 import net.ibbaa.keepitup.test.matcher.ListSizeMatcher;
@@ -383,5 +387,31 @@ public abstract class BaseUITest {
                 return ViewMatchers.isAssignableFrom(NumberPicker.class);
             }
         };
+    }
+
+    public static ViewAction doubleClick() {
+        return new ViewAction() {
+            @Override
+            public Matcher<View> getConstraints() {
+                return allOf(isDisplayed(), isEnabled());
+            }
+
+            @Override
+            public String getDescription() {
+                return "double click";
+            }
+
+            @Override
+            public void perform(UiController uiController, View view) {
+                view.performClick();
+                uiController.loopMainThreadForAtLeast(80);
+                view.performClick();
+                uiController.loopMainThreadUntilIdle();
+            }
+        };
+    }
+
+    public static Matcher<View> isEllipsized() {
+        return new EllipsizedMatcher();
     }
 }
