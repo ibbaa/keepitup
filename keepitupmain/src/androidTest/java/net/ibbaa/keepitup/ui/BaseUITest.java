@@ -18,10 +18,7 @@ package net.ibbaa.keepitup.ui;
 
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.matcher.ViewMatchers.isAssignableFrom;
-import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
-import static androidx.test.espresso.matcher.ViewMatchers.isEnabled;
 import static androidx.test.espresso.matcher.ViewMatchers.isRoot;
-import static org.hamcrest.Matchers.allOf;
 
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
@@ -385,28 +382,6 @@ public abstract class BaseUITest {
             @Override
             public Matcher<View> getConstraints() {
                 return ViewMatchers.isAssignableFrom(NumberPicker.class);
-            }
-        };
-    }
-
-    public static ViewAction doubleClick() {
-        return new ViewAction() {
-            @Override
-            public Matcher<View> getConstraints() {
-                return allOf(isDisplayed(), isEnabled());
-            }
-
-            @Override
-            public String getDescription() {
-                return "double click";
-            }
-
-            @Override
-            public void perform(UiController uiController, View view) {
-                view.performClick();
-                uiController.loopMainThreadForAtLeast(80);
-                view.performClick();
-                uiController.loopMainThreadUntilIdle();
             }
         };
     }

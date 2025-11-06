@@ -16,24 +16,11 @@
 
 package net.ibbaa.keepitup.ui;
 
-import android.content.Context;
+import net.ibbaa.keepitup.ui.dialog.GlobalHeadersDialog;
 
-import net.ibbaa.keepitup.R;
+public interface GlobalHeadersSupport {
 
-public class DoubleClickTracker {
+    void onGlobalHeadersDialogOkClicked(GlobalHeadersDialog globalHeadersDialog);
 
-    private final int doubleClickInterval;
-    private long lastClickTime;
-
-    public DoubleClickTracker(Context context) {
-        this.doubleClickInterval = context.getResources().getInteger(R.integer.doubleclick_interval);
-        this.lastClickTime = 0;
-    }
-
-    public boolean isDoubleClick() {
-        long currentTime = System.currentTimeMillis();
-        boolean result = currentTime - lastClickTime < doubleClickInterval;
-        lastClickTime = currentTime;
-        return result;
-    }
+    void onGlobalHeadersDialogCancelClicked(GlobalHeadersDialog globalHeadersDialog);
 }

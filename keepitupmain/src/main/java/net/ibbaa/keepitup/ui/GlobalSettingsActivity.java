@@ -52,6 +52,7 @@ import net.ibbaa.keepitup.resources.PreferenceManager;
 import net.ibbaa.keepitup.resources.PreferenceSetup;
 import net.ibbaa.keepitup.service.IFileManager;
 import net.ibbaa.keepitup.ui.dialog.FileChooseDialog;
+import net.ibbaa.keepitup.ui.dialog.GlobalHeadersDialog;
 import net.ibbaa.keepitup.ui.dialog.SettingsInput;
 import net.ibbaa.keepitup.ui.dialog.SettingsInputDialog;
 import net.ibbaa.keepitup.ui.dialog.SuspensionIntervalsDialog;
@@ -72,7 +73,7 @@ import java.util.Collections;
 import java.util.List;
 
 @SuppressWarnings({"unused", "FieldCanBeLocal"})
-public class GlobalSettingsActivity extends SettingsInputActivity implements SuspensionIntervalsSupport {
+public class GlobalSettingsActivity extends SettingsInputActivity implements SuspensionIntervalsSupport, GlobalHeadersSupport {
 
     private SwitchMaterial notificationInactiveNetworkSwitch;
     private TextView notificationInactiveNetworkOnOffText;
@@ -95,7 +96,6 @@ public class GlobalSettingsActivity extends SettingsInputActivity implements Sus
     private TextView logFolderText;
     private PermissionLauncher logFolderLauncher;
     private PermissionLauncher downloadFolderLauncher;
-    private DoubleClickTracker doubleClickTracker;
     private boolean globalHeadersExpanded;
 
     public static String getBypassSystemSAFKey() {
@@ -108,7 +108,6 @@ public class GlobalSettingsActivity extends SettingsInputActivity implements Sus
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
-        doubleClickTracker = new DoubleClickTracker(this);
         globalHeadersExpanded = false;
         setContentView(R.layout.activity_global_settings);
         initEdgeToEdgeInsets(R.id.layout_activity_global_settings);
@@ -518,7 +517,7 @@ public class GlobalSettingsActivity extends SettingsInputActivity implements Sus
     private void prepareGlobalHeadersField() {
         Log.d(GlobalSettingsActivity.class.getName(), "prepareGlobalHeadersField");
         CardView globalHeadersCardView = findViewById(R.id.cardview_activity_global_settings_global_headers);
-        //globalHeadersCardView.setOnClickListener(this::showGlobalHeadersDialog);
+        globalHeadersCardView.setOnClickListener(this::showGlobalHeadersDialog);
         prepareGlobalHeadersTextLayoutFields();
     }
 
@@ -572,15 +571,8 @@ public class GlobalSettingsActivity extends SettingsInputActivity implements Sus
             GridLayout.LayoutParams globalHeaderTextParams = getGlobalHeaderTextViewLayoutParams(0, 0);
             gridLayout.addView(toggleText, toggleParams);
             toggleText.setOnClickListener(view -> {
-                if (doubleClickTracker.isDoubleClick()) {
-                    globalHeadersExpanded = !globalHeadersExpanded;
-                    prepareGlobalHeadersTextLayoutFields();
-                } else {
-                    View parent = findClickableParent(view);
-                    if (parent != null) {
-                        parent.performClick();
-                    }
-                }
+                globalHeadersExpanded = !globalHeadersExpanded;
+                prepareGlobalHeadersTextLayoutFields();
             });
         }
     }
@@ -670,21 +662,12 @@ public class GlobalSettingsActivity extends SettingsInputActivity implements Sus
             if (overflow) {
                 textView.setOnClickListener(view -> toggleHeaderTextExpandCollapse(textView, maxLines));
             } else {
-                textView.setOnClickListener(null);
+                textView.setOnClickListener(this::showGlobalHeadersDialog);
             }
         });
     }
 
     private void toggleHeaderTextExpandCollapse(TextView textView, int maxLines) {
-        if (!doubleClickTracker.isDoubleClick()) {
-            View parent = findClickableParent(textView);
-            if (parent != null) {
-                parent.performClick();
-            } else {
-                Log.e(GlobalSettingsActivity.class.getName(), "No clickable parent found to delegate single click");
-            }
-            return;
-        }
         if (textView.getMaxLines() == Integer.MAX_VALUE) {
             textView.setMaxLines(maxLines);
             textView.setEllipsize(TextUtils.TruncateAt.END);
@@ -703,6 +686,12 @@ public class GlobalSettingsActivity extends SettingsInputActivity implements Sus
             parent = parent.getParent();
         }
         return null;
+    }
+
+    private void showGlobalHeadersDialog(View view) {
+        Log.d(GlobalSettingsActivity.class.getName(), "showGlobalHeadersDialog");
+        GlobalHeadersDialog globalHeadersDialog = new GlobalHeadersDialog();
+        globalHeadersDialog.show(getSupportFragmentManager(), GlobalHeadersDialog.class.getName());
     }
 
     private void prepareLogFileSwitch() {
@@ -1069,5 +1058,17 @@ public class GlobalSettingsActivity extends SettingsInputActivity implements Sus
     public void onSuspensionIntervalsDialogCancelClicked(SuspensionIntervalsDialog intervalsDialog) {
         Log.d(GlobalSettingsActivity.class.getName(), "onSuspensionIntervalsDialogCancelClicked");
         intervalsDialog.dismiss();
+    }
+
+    @Override
+    public void onGlobalHeadersDialogOkClicked(GlobalHeadersDialog globalHeadersDialog) {
+        Log.d(GlobalSettingsActivity.class.getName(), "onGlobalHeadersDialogOkClicked");
+        globalHeadersDialog.dismiss();
+    }
+
+    @Override
+    public void onGlobalHeadersDialogCancelClicked(GlobalHeadersDialog globalHeadersDialog) {
+        Log.d(GlobalSettingsActivity.class.getName(), "onSGlobalHeadersCancelClicked");
+        globalHeadersDialog.dismiss();
     }
 }

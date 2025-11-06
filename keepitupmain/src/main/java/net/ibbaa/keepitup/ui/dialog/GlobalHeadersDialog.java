@@ -35,6 +35,7 @@ import net.ibbaa.keepitup.logging.Log;
 import net.ibbaa.keepitup.model.Header;
 import net.ibbaa.keepitup.ui.ConfirmSupport;
 import net.ibbaa.keepitup.ui.GlobalHeaderHandler;
+import net.ibbaa.keepitup.ui.GlobalHeadersSupport;
 import net.ibbaa.keepitup.ui.GlobalSettingsActivity;
 import net.ibbaa.keepitup.ui.NetworkTaskMainActivity;
 import net.ibbaa.keepitup.ui.SettingsInputActivity;
@@ -285,10 +286,24 @@ public class GlobalHeadersDialog extends DialogFragmentBase implements ConfirmSu
 
     private void onOkClicked(View view) {
         Log.d(GlobalHeadersDialog.class.getName(), "onOkClicked");
+        GlobalHeadersSupport globalHeadersSupport = getGlobalHeadersSupport();
+        if (globalHeadersSupport != null) {
+            globalHeadersSupport.onGlobalHeadersDialogCancelClicked(this);
+        } else {
+            Log.e(GlobalHeadersDialog.class.getName(), "globalHeadersSupport is null");
+            dismiss();
+        }
     }
 
     private void onCancelClicked(View view) {
         Log.d(GlobalHeadersDialog.class.getName(), "onCancelClicked");
+        GlobalHeadersSupport globalHeadersSupport = getGlobalHeadersSupport();
+        if (globalHeadersSupport != null) {
+            globalHeadersSupport.onGlobalHeadersDialogCancelClicked(this);
+        } else {
+            Log.e(GlobalHeadersDialog.class.getName(), "globalHeadersSupport is null");
+            dismiss();
+        }
     }
 
     public RecyclerView getGlobalHeadersRecyclerView() {
@@ -319,6 +334,20 @@ public class GlobalHeadersDialog extends DialogFragmentBase implements ConfirmSu
             return null;
         }
         return new GlobalHeaderHandler((GlobalSettingsActivity) activity, this);
+    }
+
+    private GlobalHeadersSupport getGlobalHeadersSupport() {
+        Log.d(GlobalHeadersDialog.class.getName(), "getGlobalHeadersSupport");
+        Activity activity = getActivity();
+        if (activity == null) {
+            Log.e(GlobalHeadersDialog.class.getName(), "getGlobalHeadersSupport, activity is null");
+            return null;
+        }
+        if (!(activity instanceof GlobalHeadersSupport)) {
+            Log.e(GlobalHeadersDialog.class.getName(), "getGlobalHeadersSupport, activity is not an instance of " + GlobalHeadersSupport.class.getSimpleName());
+            return null;
+        }
+        return (GlobalHeadersSupport) activity;
     }
 
     /*private void showSuspensionIntervalSelectDialog(SuspensionIntervalSelectDialog.Mode mode, Time defaultTime, Time startTime) {

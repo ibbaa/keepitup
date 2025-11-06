@@ -17,46 +17,61 @@
 package net.ibbaa.keepitup.ui.adapter;
 
 import android.view.View;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
+import net.ibbaa.keepitup.R;
 import net.ibbaa.keepitup.ui.dialog.GlobalHeadersDialog;
 
+@SuppressWarnings({"FieldCanBeLocal"})
 public class GlobalHeaderViewHolder extends RecyclerView.ViewHolder {
 
     private final GlobalHeadersDialog headersDialog;
+    private final TextView noHeadersText;
+    private final CardView cardView;
+    private final TextView headerText;
+    private final ImageView headerDeleteImage;
 
     public GlobalHeaderViewHolder(@NonNull View itemView, GlobalHeadersDialog headersDialog) {
         super(itemView);
         this.headersDialog = headersDialog;
+        noHeadersText = itemView.findViewById(R.id.textview_list_item_global_header_no_header);
+        cardView = itemView.findViewById(R.id.cardview_list_item_global_header);
+        cardView.setOnClickListener(this::onHeaderOpenClicked);
+        headerText = itemView.findViewById(R.id.textview_list_item_global_header);
+        headerDeleteImage = itemView.findViewById(R.id.imageview_list_item_global_header_delete);
+        headerDeleteImage.setOnClickListener(this::onHeaderDeleteClicked);
     }
 
     public void setHeaderText(String text) {
-
+        headerText.setText(text);
     }
 
     public void onHeaderOpenClicked(View view) {
-
+        headersDialog.onHeaderOpenClicked(view, getBindingAdapterPosition());
     }
 
     public void onHeaderDeleteClicked(View view) {
-
+        headersDialog.onHeaderDeleteClicked(view, getBindingAdapterPosition());
     }
 
     public void showHeadersCardView() {
-
+        cardView.setVisibility(View.VISIBLE);
     }
 
     public void hideHeadersCardView() {
-
+        cardView.setVisibility(View.GONE);
     }
 
     public void showNoHeadersTextView() {
-
+        noHeadersText.setVisibility(View.VISIBLE);
     }
 
     public void hideNoHeadersTextView() {
-
+        noHeadersText.setVisibility(View.GONE);
     }
 }

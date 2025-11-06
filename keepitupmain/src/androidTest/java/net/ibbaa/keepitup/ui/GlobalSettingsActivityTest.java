@@ -30,7 +30,6 @@ import static androidx.test.espresso.matcher.ViewMatchers.isDescendantOfA;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.isEnabled;
 import static androidx.test.espresso.matcher.ViewMatchers.isNotChecked;
-import static androidx.test.espresso.matcher.ViewMatchers.isRoot;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
 import static org.hamcrest.CoreMatchers.containsString;
@@ -1536,12 +1535,10 @@ public class GlobalSettingsActivityTest extends BaseUITest {
         onView(withId(R.id.textview_activity_global_settings_global_headers_label)).check(matches(withText("HTTP Header")));
         onView(allOf(withText("Name1: "), withFontSize(14), withGridLayoutRowColumnPosition(1, 0))).check(matches(isDisplayed()));
         onView(allOf(withFontSize(14), withGridLayoutRowColumnPosition(1, 1), isDescendantOfA(withId(R.id.gridlayout_activity_global_settings_global_headers_value)))).check(matches(isEllipsized()));
-        onView(allOf(withFontSize(14), withGridLayoutRowColumnPosition(1, 1), isDescendantOfA(withId(R.id.gridlayout_activity_global_settings_global_headers_value)))).perform(doubleClick());
+        onView(allOf(withFontSize(14), withGridLayoutRowColumnPosition(1, 1), isDescendantOfA(withId(R.id.gridlayout_activity_global_settings_global_headers_value)))).perform(click());
         onView(allOf(withFontSize(14), withGridLayoutRowColumnPosition(1, 1), isDescendantOfA(withId(R.id.gridlayout_activity_global_settings_global_headers_value)))).check(matches(not(isEllipsized())));
         onView(allOf(withFontSize(14), withGridLayoutRowColumnPosition(1, 1), isDescendantOfA(withId(R.id.gridlayout_activity_global_settings_global_headers_value)))).perform(scrollTo());
-        onView(isRoot()).perform(waitFor(200));
-        onView(allOf(withFontSize(14), withGridLayoutRowColumnPosition(1, 1), isDescendantOfA(withId(R.id.gridlayout_activity_global_settings_global_headers_value)))).perform(doubleClick());
-        onView(isRoot()).perform(waitFor(200));
+        onView(allOf(withFontSize(14), withGridLayoutRowColumnPosition(1, 1), isDescendantOfA(withId(R.id.gridlayout_activity_global_settings_global_headers_value)))).perform(click());
         onView(allOf(withFontSize(14), withGridLayoutRowColumnPosition(1, 1), isDescendantOfA(withId(R.id.gridlayout_activity_global_settings_global_headers_value)))).check(matches(isEllipsized()));
         activityScenario.close();
     }
@@ -1569,7 +1566,7 @@ public class GlobalSettingsActivityTest extends BaseUITest {
         onView(allOf(withText("Name5: "), withFontSize(10), withGridLayoutRowColumnPosition(5, 0))).check(matches(isDisplayed()));
         onView(allOf(withText("Value5"), withFontSize(10), withGridLayoutRowColumnPosition(5, 1))).check(matches(isDisplayed()));
         onView(allOf(withText("2 more…"), withFontSize(10), withGridLayoutRowColumnPosition(6, 0))).check(matches(isDisplayed()));
-        onView(allOf(withText("2 more…"), withFontSize(10), withGridLayoutRowColumnPosition(6, 0))).perform(doubleClick());
+        onView(allOf(withText("2 more…"), withFontSize(10), withGridLayoutRowColumnPosition(6, 0))).perform(click());
         onView(allOf(withText("less…"), withFontSize(10), withGridLayoutRowColumnPosition(8, 0))).perform(scrollTo());
         onView(allOf(withText("Name1: "), withFontSize(10), withGridLayoutRowColumnPosition(1, 0))).check(matches(isDisplayed()));
         onView(allOf(withText("Value1"), withFontSize(10), withGridLayoutRowColumnPosition(1, 1))).check(matches(isDisplayed()));
@@ -1586,9 +1583,7 @@ public class GlobalSettingsActivityTest extends BaseUITest {
         onView(allOf(withText("User-Agent: "), withFontSize(10), withGridLayoutRowColumnPosition(7, 0))).check(matches(isDisplayed()));
         onView(allOf(withText("Mozilla/5.0"), withFontSize(10), withGridLayoutRowColumnPosition(7, 1))).check(matches(isDisplayed()));
         onView(allOf(withText("less…"), withFontSize(10), withGridLayoutRowColumnPosition(8, 0))).check(matches(isDisplayed()));
-        onView(isRoot()).perform(waitFor(200));
-        onView(allOf(withText("less…"), withFontSize(10), withGridLayoutRowColumnPosition(8, 0))).perform(doubleClick());
-        onView(isRoot()).perform(waitFor(200));
+        onView(allOf(withText("less…"), withFontSize(10), withGridLayoutRowColumnPosition(8, 0))).perform(click());
         onView(allOf(withText("Name1: "), withFontSize(10), withGridLayoutRowColumnPosition(1, 0))).check(matches(isDisplayed()));
         onView(allOf(withText("Value1"), withFontSize(10), withGridLayoutRowColumnPosition(1, 1))).check(matches(isDisplayed()));
         onView(allOf(withText("Name2: "), withFontSize(10), withGridLayoutRowColumnPosition(2, 0))).check(matches(isDisplayed()));

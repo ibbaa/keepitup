@@ -21,4 +21,53 @@
     android:layout_height="wrap_content"
     android:orientation="vertical">
 
+    <TextView
+        android:id="@+id/textview_list_item_global_header_no_header"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/textview_list_item_global_header_margin"
+        android:layout_gravity="center_horizontal"
+        android:textStyle="normal"
+        android:text="@string/text_dialog_global_headers_no_headers" />
+
+    <androidx.cardview.widget.CardView xmlns:card_view="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/cardview_list_item_global_header"
+        android:layout_gravity="center"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/cardview_list_item_global_header_margin"
+        card_view:cardCornerRadius="@dimen/cardview_list_item_global_header_corner_radius"
+        app:cardElevation="@dimen/cardview_list_item_global_header_card_elevation"
+        app:cardBackgroundColor="@color/cardBackgroundColor">
+
+        <LinearLayout
+            android:id="@+id/linearlayout_list_item_global_header"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/linearlayout_list_item_global_header_margin"
+            android:orientation="horizontal"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <TextView
+                android:id="@+id/textview_list_item_global_header"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginStart="@dimen/textview_list_item_global_header_margin"
+                android:textStyle="normal"
+                android:text="" />
+
+            <ImageView
+                android:id="@+id/imageview_list_item_global_header_delete"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:clickable="true"
+                android:focusable="true"
+                android:contentDescription="@string/label_dialog_global_headers_delete_header"
+                app:srcCompat="@drawable/icon_delete_selector" />
+
+        </LinearLayout>
+
+    </androidx.cardview.widget.CardView>
+
 </LinearLayout>

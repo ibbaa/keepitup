@@ -561,7 +561,6 @@ public class SuspensionIntervalsDialog extends DialogFragmentBase implements Con
         return (SuspensionIntervalsSupport) activity;
     }
 
-
     private void showSuspensionIntervalSelectDialog(SuspensionIntervalSelectDialog.Mode mode, Time defaultTime, Time startTime) {
         Log.d(SuspensionIntervalsDialog.class.getName(), "showSuspensionIntervallSelectDialog with mode " + mode + " and defaultTime " + defaultTime);
         SuspensionIntervalSelectDialog intervalSelectDialog = new SuspensionIntervalSelectDialog();
