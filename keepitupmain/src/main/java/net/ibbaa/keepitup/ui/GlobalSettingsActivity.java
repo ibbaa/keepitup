@@ -68,6 +68,8 @@ import net.ibbaa.keepitup.util.StringUtil;
 import net.ibbaa.keepitup.util.SystemUtil;
 import net.ibbaa.keepitup.util.TimeUtil;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.io.File;
 import java.util.Collections;
 import java.util.List;
@@ -108,7 +110,7 @@ public class GlobalSettingsActivity extends SettingsInputActivity implements Sus
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
-        globalHeadersExpanded = false;
+        initGlobalHeadersExpanded(savedInstanceState);
         setContentView(R.layout.activity_global_settings);
         initEdgeToEdgeInsets(R.id.layout_activity_global_settings);
         prepareNotificationInactiveNetworkSwitch();
@@ -126,6 +128,14 @@ public class GlobalSettingsActivity extends SettingsInputActivity implements Sus
         prepareLogFolderLauncher();
         prepareLogFileSwitch();
         prepareLogFolderField();
+    }
+
+    private void initGlobalHeadersExpanded(Bundle savedInstanceState) {
+        if (savedInstanceState != null && savedInstanceState.containsKey(getGlobalHeadersExpandedKey())) {
+            globalHeadersExpanded = savedInstanceState.getBoolean(getGlobalHeadersExpandedKey());
+        } else {
+            globalHeadersExpanded = false;
+        }
     }
 
     public void injectLogFolderLauncher(PermissionLauncher logFolderLauncher) {
@@ -153,6 +163,12 @@ public class GlobalSettingsActivity extends SettingsInputActivity implements Sus
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected void onSaveInstanceState(@NotNull Bundle state) {
+        super.onSaveInstanceState(state);
+        state.putBoolean(getGlobalHeadersExpandedKey(), globalHeadersExpanded);
     }
 
     private void prepareNotificationInactiveNetworkSwitch() {
@@ -1070,5 +1086,9 @@ public class GlobalSettingsActivity extends SettingsInputActivity implements Sus
     public void onGlobalHeadersDialogCancelClicked(GlobalHeadersDialog globalHeadersDialog) {
         Log.d(GlobalSettingsActivity.class.getName(), "onSGlobalHeadersCancelClicked");
         globalHeadersDialog.dismiss();
+    }
+
+    private String getGlobalHeadersExpandedKey() {
+        return GlobalSettingsActivity.class.getSimpleName() + "GlobalHeadersExpanded";
     }
 }

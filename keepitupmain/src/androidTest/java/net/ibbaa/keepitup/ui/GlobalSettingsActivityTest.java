@@ -1365,6 +1365,25 @@ public class GlobalSettingsActivityTest extends BaseUITest {
     }
 
     @Test
+    public void testHTTPHeaderNoneScreenRotation() {
+        getHeaderDAO().deleteAllHeaders();
+        resetGlobalHeaderHandler();
+        ActivityScenario<?> activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
+        onView(withId(R.id.cardview_activity_global_settings_global_headers)).perform(scrollTo());
+        onView(withId(R.id.textview_activity_global_settings_global_headers_label)).check(matches(withText("HTTP Header")));
+        onView(allOf(withText("None"), withFontSize(14), withGridLayoutRowColumnPosition(1, 0), isDescendantOfA(withId(R.id.gridlayout_activity_global_settings_global_headers_value)))).check(matches(isDisplayed()));
+        rotateScreen(activityScenario);
+        onView(withId(R.id.cardview_activity_global_settings_global_headers)).perform(scrollTo());
+        onView(withId(R.id.textview_activity_global_settings_global_headers_label)).check(matches(withText("HTTP Header")));
+        onView(allOf(withText("None"), withFontSize(14), withGridLayoutRowColumnPosition(1, 0), isDescendantOfA(withId(R.id.gridlayout_activity_global_settings_global_headers_value)))).check(matches(isDisplayed()));
+        rotateScreen(activityScenario);
+        onView(withId(R.id.cardview_activity_global_settings_global_headers)).perform(scrollTo());
+        onView(withId(R.id.textview_activity_global_settings_global_headers_label)).check(matches(withText("HTTP Header")));
+        onView(allOf(withText("None"), withFontSize(14), withGridLayoutRowColumnPosition(1, 0), isDescendantOfA(withId(R.id.gridlayout_activity_global_settings_global_headers_value)))).check(matches(isDisplayed()));
+        activityScenario.close();
+    }
+
+    @Test
     public void testHTTPHeaderOneHeader() {
         ActivityScenario<?> activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
         onView(withId(R.id.cardview_activity_global_settings_global_headers)).perform(scrollTo());
@@ -1383,6 +1402,40 @@ public class GlobalSettingsActivityTest extends BaseUITest {
         getHeaderDAO().insertHeader(getHeader(1));
         resetGlobalHeaderHandler();
         ActivityScenario<?> activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
+        onView(withId(R.id.cardview_activity_global_settings_global_headers)).perform(scrollTo());
+        onView(withId(R.id.textview_activity_global_settings_global_headers_label)).check(matches(withText("HTTP Header")));
+        onView(allOf(withText("Name1: "), withFontSize(12), withGridLayoutRowColumnPosition(1, 0))).check(matches(isDisplayed()));
+        onView(allOf(withText("Value1"), withFontSize(12), withGridLayoutRowColumnPosition(1, 1))).check(matches(isDisplayed()));
+        onView(allOf(withText("User-Agent: "), withFontSize(12), withGridLayoutRowColumnPosition(2, 0))).check(matches(isDisplayed()));
+        onView(allOf(withText("Mozilla/5.0"), withFontSize(12), withGridLayoutRowColumnPosition(2, 1))).check(matches(isDisplayed()));
+        GlobalHeaderHandler handler = new GlobalHeaderHandler(TestRegistry.getContext());
+        assertEquals(2, handler.getGlobalHeaders().size());
+        assertEquals("Name1", handler.getGlobalHeaders().get(0).getName());
+        assertEquals("Value1", handler.getGlobalHeaders().get(0).getValue());
+        assertEquals("User-Agent", handler.getGlobalHeaders().get(1).getName());
+        assertEquals("Mozilla/5.0", handler.getGlobalHeaders().get(1).getValue());
+        activityScenario.close();
+    }
+
+    @Test
+    public void testHTTPHeaderTwoHeadersScreenRotation() {
+        getHeaderDAO().insertHeader(getHeader(1));
+        resetGlobalHeaderHandler();
+        ActivityScenario<?> activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
+        onView(withId(R.id.cardview_activity_global_settings_global_headers)).perform(scrollTo());
+        onView(withId(R.id.textview_activity_global_settings_global_headers_label)).check(matches(withText("HTTP Header")));
+        onView(allOf(withText("Name1: "), withFontSize(12), withGridLayoutRowColumnPosition(1, 0))).check(matches(isDisplayed()));
+        onView(allOf(withText("Value1"), withFontSize(12), withGridLayoutRowColumnPosition(1, 1))).check(matches(isDisplayed()));
+        onView(allOf(withText("User-Agent: "), withFontSize(12), withGridLayoutRowColumnPosition(2, 0))).check(matches(isDisplayed()));
+        onView(allOf(withText("Mozilla/5.0"), withFontSize(12), withGridLayoutRowColumnPosition(2, 1))).check(matches(isDisplayed()));
+        rotateScreen(activityScenario);
+        onView(withId(R.id.cardview_activity_global_settings_global_headers)).perform(scrollTo());
+        onView(withId(R.id.textview_activity_global_settings_global_headers_label)).check(matches(withText("HTTP Header")));
+        onView(allOf(withText("Name1: "), withFontSize(12), withGridLayoutRowColumnPosition(1, 0))).check(matches(isDisplayed()));
+        onView(allOf(withText("Value1"), withFontSize(12), withGridLayoutRowColumnPosition(1, 1))).check(matches(isDisplayed()));
+        onView(allOf(withText("User-Agent: "), withFontSize(12), withGridLayoutRowColumnPosition(2, 0))).check(matches(isDisplayed()));
+        onView(allOf(withText("Mozilla/5.0"), withFontSize(12), withGridLayoutRowColumnPosition(2, 1))).check(matches(isDisplayed()));
+        rotateScreen(activityScenario);
         onView(withId(R.id.cardview_activity_global_settings_global_headers)).perform(scrollTo());
         onView(withId(R.id.textview_activity_global_settings_global_headers_label)).check(matches(withText("HTTP Header")));
         onView(allOf(withText("Name1: "), withFontSize(12), withGridLayoutRowColumnPosition(1, 0))).check(matches(isDisplayed()));
@@ -1584,6 +1637,64 @@ public class GlobalSettingsActivityTest extends BaseUITest {
         onView(allOf(withText("Mozilla/5.0"), withFontSize(10), withGridLayoutRowColumnPosition(7, 1))).check(matches(isDisplayed()));
         onView(allOf(withText("less…"), withFontSize(10), withGridLayoutRowColumnPosition(8, 0))).check(matches(isDisplayed()));
         onView(allOf(withText("less…"), withFontSize(10), withGridLayoutRowColumnPosition(8, 0))).perform(click());
+        onView(allOf(withText("Name1: "), withFontSize(10), withGridLayoutRowColumnPosition(1, 0))).check(matches(isDisplayed()));
+        onView(allOf(withText("Value1"), withFontSize(10), withGridLayoutRowColumnPosition(1, 1))).check(matches(isDisplayed()));
+        onView(allOf(withText("Name2: "), withFontSize(10), withGridLayoutRowColumnPosition(2, 0))).check(matches(isDisplayed()));
+        onView(allOf(withText("Value2"), withFontSize(10), withGridLayoutRowColumnPosition(2, 1))).check(matches(isDisplayed()));
+        onView(allOf(withText("Name3: "), withFontSize(10), withGridLayoutRowColumnPosition(3, 0))).check(matches(isDisplayed()));
+        onView(allOf(withText("Value3"), withFontSize(10), withGridLayoutRowColumnPosition(3, 1))).check(matches(isDisplayed()));
+        onView(allOf(withText("Name4: "), withFontSize(10), withGridLayoutRowColumnPosition(4, 0))).check(matches(isDisplayed()));
+        onView(allOf(withText("Value4"), withFontSize(10), withGridLayoutRowColumnPosition(4, 1))).check(matches(isDisplayed()));
+        onView(allOf(withText("Name5: "), withFontSize(10), withGridLayoutRowColumnPosition(5, 0))).check(matches(isDisplayed()));
+        onView(allOf(withText("Value5"), withFontSize(10), withGridLayoutRowColumnPosition(5, 1))).check(matches(isDisplayed()));
+        onView(allOf(withText("2 more…"), withFontSize(10), withGridLayoutRowColumnPosition(6, 0))).check(matches(isDisplayed()));
+        activityScenario.close();
+    }
+
+    @Test
+    public void testHTTPHeaderToggleMoreLessHeadersScreenRotation() {
+        getHeaderDAO().insertHeader(getHeader(1));
+        getHeaderDAO().insertHeader(getHeader(2));
+        getHeaderDAO().insertHeader(getHeader(3));
+        getHeaderDAO().insertHeader(getHeader(4));
+        getHeaderDAO().insertHeader(getHeader(5));
+        getHeaderDAO().insertHeader(getHeader(6));
+        resetGlobalHeaderHandler();
+        ActivityScenario<?> activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
+        onView(withId(R.id.cardview_activity_global_settings_global_headers)).perform(scrollTo());
+        onView(withId(R.id.textview_activity_global_settings_global_headers_label)).check(matches(withText("HTTP Header")));
+        onView(allOf(withText("Name1: "), withFontSize(10), withGridLayoutRowColumnPosition(1, 0))).check(matches(isDisplayed()));
+        onView(allOf(withText("Value1"), withFontSize(10), withGridLayoutRowColumnPosition(1, 1))).check(matches(isDisplayed()));
+        onView(allOf(withText("Name2: "), withFontSize(10), withGridLayoutRowColumnPosition(2, 0))).check(matches(isDisplayed()));
+        onView(allOf(withText("Value2"), withFontSize(10), withGridLayoutRowColumnPosition(2, 1))).check(matches(isDisplayed()));
+        onView(allOf(withText("Name3: "), withFontSize(10), withGridLayoutRowColumnPosition(3, 0))).check(matches(isDisplayed()));
+        onView(allOf(withText("Value3"), withFontSize(10), withGridLayoutRowColumnPosition(3, 1))).check(matches(isDisplayed()));
+        onView(allOf(withText("Name4: "), withFontSize(10), withGridLayoutRowColumnPosition(4, 0))).check(matches(isDisplayed()));
+        onView(allOf(withText("Value4"), withFontSize(10), withGridLayoutRowColumnPosition(4, 1))).check(matches(isDisplayed()));
+        onView(allOf(withText("Name5: "), withFontSize(10), withGridLayoutRowColumnPosition(5, 0))).check(matches(isDisplayed()));
+        onView(allOf(withText("Value5"), withFontSize(10), withGridLayoutRowColumnPosition(5, 1))).check(matches(isDisplayed()));
+        onView(allOf(withText("2 more…"), withFontSize(10), withGridLayoutRowColumnPosition(6, 0))).check(matches(isDisplayed()));
+        onView(allOf(withText("2 more…"), withFontSize(10), withGridLayoutRowColumnPosition(6, 0))).perform(click());
+        rotateScreen(activityScenario);
+        onView(allOf(withText("less…"), withFontSize(10), withGridLayoutRowColumnPosition(8, 0))).perform(scrollTo());
+        onView(allOf(withText("Name1: "), withFontSize(10), withGridLayoutRowColumnPosition(1, 0))).check(matches(isDisplayed()));
+        onView(allOf(withText("Value1"), withFontSize(10), withGridLayoutRowColumnPosition(1, 1))).check(matches(isDisplayed()));
+        onView(allOf(withText("Name2: "), withFontSize(10), withGridLayoutRowColumnPosition(2, 0))).check(matches(isDisplayed()));
+        onView(allOf(withText("Value2"), withFontSize(10), withGridLayoutRowColumnPosition(2, 1))).check(matches(isDisplayed()));
+        onView(allOf(withText("Name3: "), withFontSize(10), withGridLayoutRowColumnPosition(3, 0))).check(matches(isDisplayed()));
+        onView(allOf(withText("Value3"), withFontSize(10), withGridLayoutRowColumnPosition(3, 1))).check(matches(isDisplayed()));
+        onView(allOf(withText("Name4: "), withFontSize(10), withGridLayoutRowColumnPosition(4, 0))).check(matches(isDisplayed()));
+        onView(allOf(withText("Value4"), withFontSize(10), withGridLayoutRowColumnPosition(4, 1))).check(matches(isDisplayed()));
+        onView(allOf(withText("Name5: "), withFontSize(10), withGridLayoutRowColumnPosition(5, 0))).check(matches(isDisplayed()));
+        onView(allOf(withText("Value5"), withFontSize(10), withGridLayoutRowColumnPosition(5, 1))).check(matches(isDisplayed()));
+        onView(allOf(withText("Name6: "), withFontSize(10), withGridLayoutRowColumnPosition(6, 0))).check(matches(isDisplayed()));
+        onView(allOf(withText("Value6"), withFontSize(10), withGridLayoutRowColumnPosition(6, 1))).check(matches(isDisplayed()));
+        onView(allOf(withText("User-Agent: "), withFontSize(10), withGridLayoutRowColumnPosition(7, 0))).check(matches(isDisplayed()));
+        onView(allOf(withText("Mozilla/5.0"), withFontSize(10), withGridLayoutRowColumnPosition(7, 1))).check(matches(isDisplayed()));
+        onView(allOf(withText("less…"), withFontSize(10), withGridLayoutRowColumnPosition(8, 0))).check(matches(isDisplayed()));
+        onView(allOf(withText("less…"), withFontSize(10), withGridLayoutRowColumnPosition(8, 0))).perform(click());
+        rotateScreen(activityScenario);
+        onView(withId(R.id.cardview_activity_global_settings_global_headers)).perform(scrollTo());
         onView(allOf(withText("Name1: "), withFontSize(10), withGridLayoutRowColumnPosition(1, 0))).check(matches(isDisplayed()));
         onView(allOf(withText("Value1"), withFontSize(10), withGridLayoutRowColumnPosition(1, 1))).check(matches(isDisplayed()));
         onView(allOf(withText("Name2: "), withFontSize(10), withGridLayoutRowColumnPosition(2, 0))).check(matches(isDisplayed()));
