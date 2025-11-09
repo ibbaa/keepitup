@@ -20,9 +20,11 @@
     <dimen name="listview_dialog_global_headers_margin">0dp</dimen>
     <dimen name="listview_dialog_global_headers_padding">0dp</dimen>
     <dimen name="linearlayout_dialog_global_headers_ok_cancel_padding_top">10dp</dimen>
+    <dimen name="relativelayout_list_item_global_header_padding">8dp</dimen>
     <dimen name="cardview_list_item_global_header_margin">4dp</dimen>
     <dimen name="cardview_list_item_global_header_corner_radius">4dp</dimen>
     <dimen name="cardview_list_item_global_header_card_elevation">4dp</dimen>
-    <dimen name="linearlayout_list_item_global_header_margin">4dp</dimen>
     <dimen name="textview_list_item_global_header_margin">4dp</dimen>
+    <dimen name="textview_list_item_global_header_value_margin_top">2dp</dimen>
+    <dimen name="textview_list_item_global_header_value_margin_end">40dp</dimen>
 </resources>

@@ -49,8 +49,7 @@ public class GridLayoutRowColumnPositionMatcher extends TypeSafeMatcher<View> {
             int rowOfChild = ii / columnCount + 1;
             int colOfChild = ii % columnCount;
             if (rowOfChild == expectedRow && colOfChild == expectedColumn) {
-                boolean match = grid.getChildAt(ii) == view;
-                return match;
+                return grid.getChildAt(ii) == view;
             }
         }
         return false;

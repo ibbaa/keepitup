@@ -76,7 +76,8 @@ public class GlobalHeaderAdapter extends RecyclerView.Adapter<GlobalHeaderViewHo
 
     private void bindHeaderText(@NonNull GlobalHeaderViewHolder globalHeaderViewHolder, Header header) {
         Log.d(LogEntryAdapter.class.getName(), "bindHeaderText");
-        globalHeaderViewHolder.setHeaderText("");
+        globalHeaderViewHolder.setHeaderNameText(header.getName());
+        globalHeaderViewHolder.setHeaderValueText(header.getValue());
     }
 
     public Bundle saveStateToBundle() {
@@ -90,7 +91,7 @@ public class GlobalHeaderAdapter extends RecyclerView.Adapter<GlobalHeaderViewHo
     }
 
     private String getGlobalHeadersKey() {
-        return GlobalHeaderAdapter.class.getSimpleName() + "getGlobalHeaders";
+        return GlobalHeaderAdapter.class.getSimpleName() + "GlobalHeaders";
     }
 
     public void addItem(Header header) {

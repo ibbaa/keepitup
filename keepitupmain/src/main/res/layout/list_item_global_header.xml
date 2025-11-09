@@ -40,33 +40,44 @@
         app:cardElevation="@dimen/cardview_list_item_global_header_card_elevation"
         app:cardBackgroundColor="@color/cardBackgroundColor">
 
-        <LinearLayout
-            android:id="@+id/linearlayout_list_item_global_header"
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="@dimen/linearlayout_list_item_global_header_margin"
-            android:orientation="horizontal"
-            app:layout_constraintTop_toTopOf="parent">
-
-            <TextView
-                android:id="@+id/textview_list_item_global_header"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:layout_marginStart="@dimen/textview_list_item_global_header_margin"
-                android:textStyle="normal"
-                android:text="" />
+            android:padding="@dimen/relativelayout_list_item_global_header_padding">
 
             <ImageView
                 android:id="@+id/imageview_list_item_global_header_delete"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentTop="true"
                 android:clickable="true"
                 android:focusable="true"
                 android:contentDescription="@string/label_dialog_global_headers_delete_header"
                 app:srcCompat="@drawable/icon_delete_selector" />
 
-        </LinearLayout>
+            <TextView
+                android:id="@+id/textview_list_item_global_header_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_toStartOf="@id/imageview_list_item_global_header_delete"
+                android:textStyle="bold"
+                android:singleLine="true"
+                android:ellipsize="end"
+                android:text="" />
+
+            <TextView
+                android:id="@+id/textview_list_item_global_header_value"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/textview_list_item_global_header_name"
+                android:layout_alignParentStart="true"
+                android:layout_marginTop="@dimen/textview_list_item_global_header_value_margin_top"
+                android:layout_marginEnd="@dimen/textview_list_item_global_header_value_margin_end"
+                android:text="" />
+
+        </RelativeLayout>
 
     </androidx.cardview.widget.CardView>
 

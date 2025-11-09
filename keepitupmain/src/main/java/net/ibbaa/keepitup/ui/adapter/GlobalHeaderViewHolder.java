@@ -33,7 +33,8 @@ public class GlobalHeaderViewHolder extends RecyclerView.ViewHolder {
     private final GlobalHeadersDialog headersDialog;
     private final TextView noHeadersText;
     private final CardView cardView;
-    private final TextView headerText;
+    private final TextView headerName;
+    private final TextView headerValue;
     private final ImageView headerDeleteImage;
 
     public GlobalHeaderViewHolder(@NonNull View itemView, GlobalHeadersDialog headersDialog) {
@@ -42,13 +43,18 @@ public class GlobalHeaderViewHolder extends RecyclerView.ViewHolder {
         noHeadersText = itemView.findViewById(R.id.textview_list_item_global_header_no_header);
         cardView = itemView.findViewById(R.id.cardview_list_item_global_header);
         cardView.setOnClickListener(this::onHeaderOpenClicked);
-        headerText = itemView.findViewById(R.id.textview_list_item_global_header);
+        headerName = itemView.findViewById(R.id.textview_list_item_global_header_name);
+        headerValue = itemView.findViewById(R.id.textview_list_item_global_header_value);
         headerDeleteImage = itemView.findViewById(R.id.imageview_list_item_global_header_delete);
         headerDeleteImage.setOnClickListener(this::onHeaderDeleteClicked);
     }
 
-    public void setHeaderText(String text) {
-        headerText.setText(text);
+    public void setHeaderNameText(String text) {
+        headerName.setText(text);
+    }
+
+    public void setHeaderValueText(String text) {
+        headerValue.setText(text);
     }
 
     public void onHeaderOpenClicked(View view) {
