@@ -1079,6 +1079,11 @@ public class GlobalSettingsActivity extends SettingsInputActivity implements Sus
     @Override
     public void onGlobalHeadersDialogOkClicked(GlobalHeadersDialog globalHeadersDialog) {
         Log.d(GlobalSettingsActivity.class.getName(), "onGlobalHeadersDialogOkClicked");
+        GlobalHeaderHandler handler = new GlobalHeaderHandler(this, globalHeadersDialog);
+        if (handler.synchronizeHeaders()) {
+            handler.reset();
+            prepareGlobalHeadersField();
+        }
         globalHeadersDialog.dismiss();
     }
 

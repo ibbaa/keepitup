@@ -64,6 +64,7 @@
                 android:layout_toStartOf="@id/imageview_list_item_global_header_delete"
                 android:textStyle="bold"
                 android:singleLine="true"
+                android:textSize="@dimen/list_item_global_header_text_size_name"
                 android:ellipsize="end"
                 android:text="" />
 
@@ -75,6 +76,10 @@
                 android:layout_alignParentStart="true"
                 android:layout_marginTop="@dimen/textview_list_item_global_header_value_margin_top"
                 android:layout_marginEnd="@dimen/textview_list_item_global_header_value_margin_end"
+                android:maxLines="@integer/list_item_global_header_max_value_lines"
+                android:singleLine="false"
+                android:textSize="@dimen/list_item_global_header_text_size_value"
+                android:ellipsize="end"
                 android:text="" />
 
         </RelativeLayout>

@@ -288,7 +288,7 @@ public class GlobalHeadersDialog extends DialogFragmentBase implements ConfirmSu
         Log.d(GlobalHeadersDialog.class.getName(), "onOkClicked");
         GlobalHeadersSupport globalHeadersSupport = getGlobalHeadersSupport();
         if (globalHeadersSupport != null) {
-            globalHeadersSupport.onGlobalHeadersDialogCancelClicked(this);
+            globalHeadersSupport.onGlobalHeadersDialogOkClicked(this);
         } else {
             Log.e(GlobalHeadersDialog.class.getName(), "globalHeadersSupport is null");
             dismiss();
