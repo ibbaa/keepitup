@@ -613,13 +613,14 @@ public class GlobalSettingsActivity extends SettingsInputActivity implements Sus
     private GridLayout.LayoutParams getGlobalHeaderTextViewLayoutParams(int row, int column) {
         Log.d(GlobalSettingsActivity.class.getName(), "getGlobalHeaderTextViewLayoutParams, row is " + row + ", column is " + column);
         GridLayout.LayoutParams params = new GridLayout.LayoutParams();
+        float weight;
         if (column == 1) {
-            params.width = 0;
-            params.columnSpec = GridLayout.spec(column, 1f);
+            weight = Float.parseFloat(getResources().getString(R.string.textview_activity_global_settings_global_headers_value_weight));
         } else {
-            params.width = GridLayout.LayoutParams.WRAP_CONTENT;
-            params.columnSpec = GridLayout.spec(column);
+            weight = Float.parseFloat(getResources().getString(R.string.textview_activity_global_settings_global_headers_name_weight));
         }
+        params.width = 0;
+        params.columnSpec = GridLayout.spec(column, weight);
         params.height = GridLayout.LayoutParams.WRAP_CONTENT;
         params.setGravity(Gravity.FILL_HORIZONTAL);
         params.rightMargin = getResources().getDimensionPixelSize(R.dimen.textview_activity_global_settings_global_headers_value_margin_right);

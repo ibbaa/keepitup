@@ -67,6 +67,8 @@
     <dimen name="cardview_activity_global_settings_global_headers_card_elevation">4dp</dimen>
     <dimen name="linearlayout_activity_global_settings_global_headers_margin">4dp</dimen>
     <dimen name="gridlayout_activity_global_settings_global_headers_margin">4dp</dimen>
+    <string name="textview_activity_global_settings_global_headers_value_weight">0.7</string>
+    <string name="textview_activity_global_settings_global_headers_name_weight">0.3</string>
     <dimen name="textview_activity_global_settings_global_headers_value_margin_right">8dp</dimen>
     <dimen name="textview_activity_global_settings_global_headers_value_margin_top">3dp</dimen>
     <dimen name="cardview_activity_global_settings_log_file_margin">4dp</dimen>
