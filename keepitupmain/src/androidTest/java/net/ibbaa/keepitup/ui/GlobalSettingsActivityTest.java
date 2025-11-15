@@ -2127,6 +2127,27 @@ public class GlobalSettingsActivityTest extends BaseUITest {
     }
 
     @Test
+    public void testResetValuesSuspensionIntervals() {
+        getNetworkTaskDAO().insertNetworkTask(getNetworkTask1());
+        getIntervalDAO().insertInterval(getInterval1());
+        getIntervalDAO().insertInterval(getInterval2());
+        getTimeBasedSuspensionScheduler().restart();
+        assertTrue(getTimeBasedSuspensionScheduler().isRunning());
+        ActivityScenario<?> activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
+        ((GlobalSettingsActivity) getActivity(activityScenario)).injectTimeBasedSuspensionScheduler(getTimeBasedSuspensionScheduler());
+        openActionBarOverflowOrOptionsMenu(TestRegistry.getContext());
+        onView(withText("Reset")).perform(click());
+        onView(withId(R.id.textview_activity_global_settings_suspension_enabled_label)).check(matches(withText("Suspension intervals enabled")));
+        onView(withId(R.id.switch_activity_global_settings_suspension_enabled)).check(matches(isChecked()));
+        onView(withId(R.id.textview_activity_global_settings_suspension_intervals_label)).check(matches(withText("Defined suspension intervals")));
+        onView(allOf(withText("None"), withFontSize(14), withGridLayoutPosition(1, 0))).check(matches(isDisplayed()));
+        assertTrue(getTimeBasedSuspensionScheduler().getIntervals().isEmpty());
+        assertFalse(getTimeBasedSuspensionScheduler().isSuspended());
+        assertFalse(getTimeBasedSuspensionScheduler().isRunning());
+        activityScenario.close();
+    }
+
+    @Test
     public void testPreserveValuesOnScreenRotation() {
         ActivityScenario<?> activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
         ((GlobalSettingsActivity) getActivity(activityScenario)).injectTimeBasedSuspensionScheduler(getTimeBasedSuspensionScheduler());

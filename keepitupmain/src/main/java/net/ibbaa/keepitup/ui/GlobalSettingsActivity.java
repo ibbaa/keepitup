@@ -43,6 +43,7 @@ import androidx.core.content.res.ResourcesCompat;
 import com.google.android.material.switchmaterial.SwitchMaterial;
 
 import net.ibbaa.keepitup.R;
+import net.ibbaa.keepitup.db.IntervalDAO;
 import net.ibbaa.keepitup.logging.Log;
 import net.ibbaa.keepitup.logging.NetworkTaskLog;
 import net.ibbaa.keepitup.model.Header;
@@ -159,6 +160,9 @@ public class GlobalSettingsActivity extends SettingsInputActivity implements Sus
             Log.d(GlobalSettingsActivity.class.getName(), "menu_action_activity_global_settings_reset triggered");
             PreferenceSetup preferenceSetup = new PreferenceSetup(this);
             preferenceSetup.removeGlobalSettings();
+            IntervalDAO intervalDAO = new IntervalDAO(this);
+            intervalDAO.deleteAllIntervals();
+            getTimeBasedSuspensionScheduler().restart();
             recreateActivity();
             return true;
         }
