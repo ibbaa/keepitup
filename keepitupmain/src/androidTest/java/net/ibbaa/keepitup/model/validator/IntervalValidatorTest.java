@@ -19,6 +19,9 @@ package net.ibbaa.keepitup.model.validator;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+import androidx.test.ext.junit.runners.AndroidJUnit4;
+import androidx.test.filters.SmallTest;
+
 import net.ibbaa.keepitup.model.Interval;
 import net.ibbaa.keepitup.model.Time;
 import net.ibbaa.keepitup.model.validation.IntervalValidator;
@@ -26,11 +29,14 @@ import net.ibbaa.keepitup.test.mock.TestRegistry;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+@SmallTest
+@RunWith(AndroidJUnit4.class)
 public class IntervalValidatorTest {
 
     private IntervalValidator validator;

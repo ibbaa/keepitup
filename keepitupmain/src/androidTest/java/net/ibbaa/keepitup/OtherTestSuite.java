@@ -47,6 +47,7 @@ import net.ibbaa.keepitup.model.ResolveTest;
 import net.ibbaa.keepitup.model.SchedulerIdTest;
 import net.ibbaa.keepitup.model.TimeTest;
 import net.ibbaa.keepitup.model.validator.AccessTypeDataValidatorTest;
+import net.ibbaa.keepitup.model.validator.HeaderValidatorTest;
 import net.ibbaa.keepitup.model.validator.IntervalValidatorTest;
 import net.ibbaa.keepitup.model.validator.NetworkTaskValidatorTest;
 import net.ibbaa.keepitup.model.validator.ResolveValidatorTest;
@@ -167,6 +168,7 @@ import org.junit.runners.Suite;
         TimeTest.class,
         //net.ibbaa.keepitup.model.validator
         AccessTypeDataValidatorTest.class,
+        HeaderValidatorTest.class,
         IntervalValidatorTest.class,
         NetworkTaskValidatorTest.class,
         ResolveValidatorTest.class,

@@ -254,20 +254,20 @@ public class HeaderDAOTest {
     }
 
     private Header getHeader1() {
-        Header resolve = new Header();
-        resolve.setId(0);
-        resolve.setNetworkTaskId(0);
-        resolve.setName("name1");
-        resolve.setValue("value1");
-        return resolve;
+        Header header = new Header();
+        header.setId(0);
+        header.setNetworkTaskId(0);
+        header.setName("name1");
+        header.setValue("value1");
+        return header;
     }
 
     private Header getHeader2() {
-        Header resolve = new Header();
-        resolve.setId(0);
-        resolve.setNetworkTaskId(1);
-        resolve.setName("name2");
-        resolve.setValue("value2");
-        return resolve;
+        Header header = new Header();
+        header.setId(0);
+        header.setNetworkTaskId(1);
+        header.setName("name2");
+        header.setValue("value2");
+        return header;
     }
 }
