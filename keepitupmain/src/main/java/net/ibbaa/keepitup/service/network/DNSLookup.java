@@ -18,6 +18,7 @@ package net.ibbaa.keepitup.service.network;
 
 import net.ibbaa.keepitup.logging.Log;
 
+import java.net.IDN;
 import java.net.InetAddress;
 import java.util.Arrays;
 import java.util.Collections;
@@ -35,7 +36,14 @@ public class DNSLookup implements Callable<DNSLookupResult> {
     public DNSLookupResult call() {
         Log.d(DNSLookup.class.getName(), "call");
         try {
-            InetAddress[] addresses = InetAddress.getAllByName(host);
+            String asciiHost;
+            try {
+                asciiHost = IDN.toASCII(host);
+            } catch (Exception exc) {
+                Log.e(DNSLookup.class.getName(), "Exception using toASCII on " + host, exc);
+                asciiHost = host;
+            }
+            InetAddress[] addresses = InetAddress.getAllByName(IDN.toASCII(asciiHost));
             return new DNSLookupResult(Arrays.asList(addresses), null);
         } catch (Exception exc) {
             Log.e(DNSLookup.class.getName(), "Error executing DNS lookup", exc);

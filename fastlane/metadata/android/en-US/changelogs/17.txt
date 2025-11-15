@@ -1,4 +1,5 @@
 * New target API level is 36 (Android 16) with Java 21, applied all required changes
 * Added the possibility to use another host for the network connection than the one specified in the URL (similar to the connect-to option of curl)
 * Defined suspension intervals are now deleted on global settings reset
+* DNS lookup now works for punycode encoded host names
 * Some small bug fixes
