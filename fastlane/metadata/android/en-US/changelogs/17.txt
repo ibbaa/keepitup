@@ -1,1 +1,1 @@
-* DNS lookup now works for punycode encoded host names now works
+* DNS lookup now works for punycode encoded host names
