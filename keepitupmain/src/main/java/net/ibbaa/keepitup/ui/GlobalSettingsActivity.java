@@ -447,9 +447,9 @@ public class GlobalSettingsActivity extends SettingsInputActivity implements Sus
         downloadFolderCardView.setOnClickListener(this::requestArbitraryDownloadFolderPermission);
         IStoragePermissionManager storagePermissionManager = getStoragePermissionManager();
         String arbitraryDownloadFolder = getPreferenceArbitraryDownloadFolder();
+        setDownloadFolder(Uri.decode(arbitraryDownloadFolder));
         if (storagePermissionManager.hasPersistentPermission(this, arbitraryDownloadFolder)) {
             Log.d(GlobalSettingsActivity.class.getName(), "Permission for " + arbitraryDownloadFolder + " is already present");
-            setDownloadFolder(Uri.decode(arbitraryDownloadFolder));
         } else {
             Log.d(GlobalSettingsActivity.class.getName(), "Requesting permission for " + arbitraryDownloadFolder);
             storagePermissionManager.requestPersistentFolderPermission(downloadFolderLauncher, arbitraryDownloadFolder);
@@ -768,9 +768,9 @@ public class GlobalSettingsActivity extends SettingsInputActivity implements Sus
         logFolderCardView.setOnClickListener(this::requestArbitraryLogFolderPermission);
         IStoragePermissionManager storagePermissionManager = getStoragePermissionManager();
         String arbitraryLogFolder = getPreferenceArbitraryLogFolder();
+        setLogFolder(Uri.decode(arbitraryLogFolder));
         if (storagePermissionManager.hasPersistentPermission(this, arbitraryLogFolder)) {
             Log.d(GlobalSettingsActivity.class.getName(), "Permission for " + arbitraryLogFolder + " is already present");
-            setLogFolder(Uri.decode(arbitraryLogFolder));
         } else {
             Log.d(GlobalSettingsActivity.class.getName(), "Requesting permission for " + arbitraryLogFolder);
             storagePermissionManager.requestPersistentFolderPermission(logFolderLauncher, arbitraryLogFolder);
