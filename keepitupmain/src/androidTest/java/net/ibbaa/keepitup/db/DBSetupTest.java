@@ -1001,23 +1001,6 @@ public class DBSetupTest {
     }
 
     @Test
-    public void testImportHeaders() {
-        Map<String, ?> headerMap1 = getHeader(-1).toMap();
-        Map<String, ?> headerMap2 = getHeader(0).toMap();
-        Map<String, ?> headerMap3 = getHeader(-2).toMap();
-        assertTrue(headerDAO.readAllHeaders().isEmpty());
-        setup.importGlobalHeaders(Arrays.asList(headerMap1, headerMap2, headerMap3));
-        List<Header> headerList = headerDAO.readAllHeaders();
-        List<Header> globalHeaderList = headerDAO.readGlobalHeaders();
-        assertEquals(2, headerList.size());
-        assertEquals(2, globalHeaderList.size());
-        assertTrue(getHeader(-1).isTechnicallyEqual(headerList.get(0)));
-        assertTrue(getHeader(-1).isTechnicallyEqual(headerList.get(1)));
-        assertTrue(getHeader(-1).isTechnicallyEqual(globalHeaderList.get(0)));
-        assertTrue(getHeader(-1).isTechnicallyEqual(globalHeaderList.get(1)));
-    }
-
-    @Test
     public void testImportIntervalsOverlapDaysOverlap() {
         Interval interval1 = getInterval1();
         Time start = new Time();
@@ -1036,6 +1019,48 @@ public class DBSetupTest {
         List<Interval> intervalList = intervalDAO.readAllIntervals();
         assertEquals(1, intervalList.size());
         assertTrue(interval1.isEqual(intervalList.get(0)));
+    }
+
+    @Test
+    public void testImportGlobalHeaders() {
+        Map<String, ?> headerMap1 = getHeader(-1).toMap();
+        Map<String, ?> headerMap2 = getHeader(0).toMap();
+        Map<String, ?> headerMap3 = getHeader(-2).toMap();
+        assertTrue(headerDAO.readAllHeaders().isEmpty());
+        setup.importGlobalHeaders(Arrays.asList(headerMap1, headerMap2, headerMap3));
+        List<Header> headerList = headerDAO.readAllHeaders();
+        List<Header> globalHeaderList = headerDAO.readGlobalHeaders();
+        assertEquals(2, headerList.size());
+        assertEquals(2, globalHeaderList.size());
+        assertTrue(getHeader(-1).isTechnicallyEqual(headerList.get(0)));
+        assertTrue(getHeader(-1).isTechnicallyEqual(headerList.get(1)));
+        assertTrue(getHeader(-1).isTechnicallyEqual(globalHeaderList.get(0)));
+        assertTrue(getHeader(-1).isTechnicallyEqual(globalHeaderList.get(1)));
+    }
+
+    @Test
+    public void testImportGlobalHeadersInvalid() {
+        Header header1 = getHeader(-1);
+        Header header2 = getHeader(-1);
+        Header header3 = getHeader(-1);
+        Header header4 = getHeader(-1);
+        Header header5 = getHeader(-1);
+        Header header6 = getHeader(-1);
+        header1.setName("  ");
+        header2.setName("Name\nTest");
+        header3.setName(new String(new char[129]));
+        header4.setValue("Test\u0001More");
+        header5.setValue("Name\nTest");
+        header6.setValue(new String(new char[8193]));
+        Map<String, ?> headerMap1 = header1.toMap();
+        Map<String, ?> headerMap2 = header2.toMap();
+        Map<String, ?> headerMap3 = header3.toMap();
+        Map<String, ?> headerMap4 = header4.toMap();
+        Map<String, ?> headerMap5 = header5.toMap();
+        Map<String, ?> headerMap6 = header6.toMap();
+        assertTrue(headerDAO.readAllHeaders().isEmpty());
+        setup.importGlobalHeaders(Arrays.asList(headerMap1, headerMap2, headerMap3, headerMap4, headerMap5, headerMap6));
+        assertTrue(headerDAO.readAllHeaders().isEmpty());
     }
 
     private NetworkTask getNetworkTask1() {

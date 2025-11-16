@@ -38,6 +38,16 @@ public class HTTPUtil {
     private static final Pattern FILENAME_QUOTED = Pattern.compile("filename\\s*=\\s*\"([^\"]+)\"", Pattern.CASE_INSENSITIVE);
     private static final Pattern FILENAME_UNQUOTED = Pattern.compile("filename\\s*=\\s*([^;\\s]+)", Pattern.CASE_INSENSITIVE);
     private static final Pattern MIME_TYPE = Pattern.compile("\\s*(\\w*/\\w*)\\s*", Pattern.CASE_INSENSITIVE);
+    private static final Pattern HEADER_NAME_PATTERN = Pattern.compile("^[!#$%&'*+\\-.^_`|~0-9A-Za-z]+$");
+    private static final Pattern HEADER_VALUE_PATTERN = Pattern.compile("^[\\t\\x20-\\x7E\\x80-\\uFFFF]*$");
+
+    public static boolean validateHeaderName(String name) {
+        return HEADER_NAME_PATTERN.matcher(name).matches();
+    }
+
+    public static boolean validateHeaderValue(String value) {
+        return HEADER_VALUE_PATTERN.matcher(value).matches();
+    }
 
     public static boolean isHTTPReturnCodeRedirect(int returnCode) {
         return returnCode == 301 || returnCode == 302 || returnCode == 307 || returnCode == 308;

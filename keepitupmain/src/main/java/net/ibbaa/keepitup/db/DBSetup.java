@@ -29,6 +29,7 @@ import net.ibbaa.keepitup.model.LogEntry;
 import net.ibbaa.keepitup.model.NetworkTask;
 import net.ibbaa.keepitup.model.Resolve;
 import net.ibbaa.keepitup.model.validation.AccessTypeDataValidator;
+import net.ibbaa.keepitup.model.validation.HeaderValidator;
 import net.ibbaa.keepitup.model.validation.IntervalValidator;
 import net.ibbaa.keepitup.model.validation.NetworkTaskValidator;
 import net.ibbaa.keepitup.model.validation.ResolveValidator;
@@ -814,14 +815,19 @@ public class DBSetup {
     public void importGlobalHeaders(List<Map<String, ?>> headerList) {
         Log.d(DBSetup.class.getName(), "importGlobalHeaders");
         HeaderDAO dao = new HeaderDAO(getContext());
+        HeaderValidator validator = new HeaderValidator(getContext());
         for (Map<String, ?> headerMap : headerList) {
             Header header = new Header(headerMap);
             Log.d(DBSetup.class.getName(), "Header is " + header);
-            if (header.getNetworkTaskId() < 0) {
-                Log.d(DBSetup.class.getName(), "Importing header.");
-                dao.insertHeader(header);
+            if (validator.validate(header)) {
+                if (header.getNetworkTaskId() < 0) {
+                    Log.d(DBSetup.class.getName(), "Importing header.");
+                    dao.insertHeader(header);
+                } else {
+                    Log.e(DBSetup.class.getName(), "Header is not a global header and will not be imported: " + header);
+                }
             } else {
-                Log.e(DBSetup.class.getName(), "Header is not a global header and will not be imported: " + header);
+                Log.e(DBSetup.class.getName(), "Header is invalid and will not be imported: " + header);
             }
         }
     }

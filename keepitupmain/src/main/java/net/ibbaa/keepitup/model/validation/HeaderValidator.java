@@ -21,6 +21,7 @@ import android.content.Context;
 import net.ibbaa.keepitup.R;
 import net.ibbaa.keepitup.logging.Log;
 import net.ibbaa.keepitup.model.Header;
+import net.ibbaa.keepitup.util.HTTPUtil;
 import net.ibbaa.keepitup.util.StringUtil;
 
 import java.util.regex.Pattern;
@@ -55,7 +56,7 @@ public class HeaderValidator {
             Log.d(HeaderValidator.class.getName(), "name is too long. Returning false.");
             return false;
         }
-        if (!HEADER_NAME_PATTERN.matcher(name).matches()) {
+        if (!HTTPUtil.validateHeaderName(name)) {
             Log.d(HeaderValidator.class.getName(), "name has invalid characters. Returning false.");
             return false;
         }
@@ -73,7 +74,7 @@ public class HeaderValidator {
             Log.d(HeaderValidator.class.getName(), "value is too long. Returning false.");
             return false;
         }
-        if (!HEADER_VALUE_PATTERN.matcher(value).matches()) {
+        if (!HTTPUtil.validateHeaderValue(value)) {
             Log.d(HeaderValidator.class.getName(), "value has invalid characters. Returning false.");
             return false;
         }

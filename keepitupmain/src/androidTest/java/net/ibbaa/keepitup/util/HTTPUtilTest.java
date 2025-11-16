@@ -46,6 +46,27 @@ import okhttp3.ResponseBody;
 public class HTTPUtilTest {
 
     @Test
+    public void testValidateHeaderName() {
+        assertFalse(HTTPUtil.validateHeaderName("Äpfel"));
+        assertFalse(HTTPUtil.validateHeaderName("Name\\nTest"));
+        assertFalse(HTTPUtil.validateHeaderName("Name\rTest"));
+        assertFalse(HTTPUtil.validateHeaderName("Name\tTest"));
+        assertFalse(HTTPUtil.validateHeaderName("Name,Test"));
+        assertTrue(HTTPUtil.validateHeaderName("Name"));
+    }
+
+    @Test
+    public void testValidateHeaderValue() {
+        assertFalse(HTTPUtil.validateHeaderValue("Test\u0001More"));
+        assertFalse(HTTPUtil.validateHeaderValue("Name\nTest"));
+        assertFalse(HTTPUtil.validateHeaderValue("Name\rTest"));
+        assertFalse(HTTPUtil.validateHeaderValue("Test\u007FMore"));
+        assertTrue(HTTPUtil.validateHeaderValue("Name\tTest"));
+        assertTrue(HTTPUtil.validateHeaderValue("Äpfel"));
+        assertTrue(HTTPUtil.validateHeaderValue("Value"));
+    }
+
+    @Test
     public void testGetHeaderText() {
         Header header = new Header();
         header.setName("name");

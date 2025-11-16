@@ -970,6 +970,21 @@ public class JSONSystemSetupTest {
     }
 
     @Test
+    public void testImportDatabaseInvalidHeaders() {
+        Header header1 = getHeader1(-1);
+        Header header2 = getHeader2(-1);
+        header1.setName("");
+        header2.setValue("Test\u007FMore");
+        headerDAO.insertHeader(header1);
+        headerDAO.insertHeader(header2);
+        SystemSetupResult exportResult = setup.exportData();
+        headerDAO.deleteAllHeaders();
+        SystemSetupResult importResult = setup.importData(exportResult.data());
+        assertTrue(importResult.success());
+        assertTrue(headerDAO.readAllHeaders().isEmpty());
+    }
+
+    @Test
     public void testImportSettings() {
         preferenceManager.setPreferenceNotificationInactiveNetwork(true);
         preferenceManager.setPreferenceNotificationType(NotificationType.CHANGE);
