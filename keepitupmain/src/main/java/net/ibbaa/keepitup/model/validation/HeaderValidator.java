@@ -24,14 +24,8 @@ import net.ibbaa.keepitup.model.Header;
 import net.ibbaa.keepitup.util.HTTPUtil;
 import net.ibbaa.keepitup.util.StringUtil;
 
-import java.util.regex.Pattern;
-
 @SuppressWarnings("ClassCanBeRecord")
 public class HeaderValidator {
-
-    private static final Pattern HEADER_NAME_PATTERN = Pattern.compile("^[!#$%&'*+\\-.^_`|~0-9A-Za-z]+$");
-
-    private static final Pattern HEADER_VALUE_PATTERN = Pattern.compile("^[\\t\\x20-\\x7E\\x80-\\uFFFF]*$");
 
     private final Context context;
 
