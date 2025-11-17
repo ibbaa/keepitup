@@ -21,15 +21,15 @@ import android.content.Context;
 import net.ibbaa.keepitup.R;
 import net.ibbaa.keepitup.logging.Log;
 
-public class NameFieldValidator extends BaseStringValidator implements FieldValidator {
+public class NetworkTaskNameFieldValidator extends BaseStringValidator implements FieldValidator {
 
-    public NameFieldValidator(String field, Context context) {
+    public NetworkTaskNameFieldValidator(String field, Context context) {
         super(field, context);
     }
 
     @Override
     public ValidationResult validate(String value) {
-        Log.d(NameFieldValidator.class.getName(), "validate, value is " + value);
+        Log.d(NetworkTaskNameFieldValidator.class.getName(), "validate, value is " + value);
         int maximum = getResources().getInteger(R.integer.task_name_max_length);
         return validateString(value, maximum);
     }

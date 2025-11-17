@@ -21,8 +21,9 @@ import android.content.res.Resources;
 
 import net.ibbaa.keepitup.R;
 import net.ibbaa.keepitup.logging.Log;
-import net.ibbaa.keepitup.model.validation.NetworkTaskValidator;
 import net.ibbaa.keepitup.util.StringUtil;
+
+import java.util.Objects;
 
 public abstract class BaseStringValidator {
 
@@ -35,20 +36,38 @@ public abstract class BaseStringValidator {
     }
 
     protected ValidationResult validateString(String value, int maximum) {
-        Log.d(BaseIntegerValidator.class.getName(), "validateString for field " + field);
-        Log.d(BaseIntegerValidator.class.getName(), "value is " + value);
-        if (!StringUtil.isEmpty(value)) {
-            if (value.length() > maximum) {
-                Log.d(NetworkTaskValidator.class.getName(), "Value too long. Validation failed.");
-                String formattedFailedMessage = getResources().getString(R.string.invalid_length_maximum, maximum);
-                return new ValidationResult(false, field, formattedFailedMessage);
+        return validateString(value, maximum, true, false);
+    }
+
+    protected ValidationResult validateString(String value, int maximum, boolean emptyIsValid, boolean trim) {
+        Log.d(BaseStringValidator.class.getName(), "validateString for field " + field);
+        Log.d(BaseStringValidator.class.getName(), "value is " + value);
+        Log.d(BaseStringValidator.class.getName(), "maximum is " + maximum);
+        Log.d(BaseStringValidator.class.getName(), "emptyIsValid is " + emptyIsValid);
+        Log.d(BaseStringValidator.class.getName(), "trim is " + trim);
+        String successMessage = getResources().getString(R.string.validation_successful);
+        String failedMessageNoValue = getResources().getString(R.string.invalid_no_value);
+        if (value != null && trim) {
+            value = value.trim();
+        }
+        if (StringUtil.isEmpty(value)) {
+            if (emptyIsValid) {
+                Log.d(BaseStringValidator.class.getName(), "No value specified. Validation successful.");
+                return new ValidationResult(true, field, successMessage);
+            } else {
+                Log.d(BaseStringValidator.class.getName(), "No value specified. Validation failed.");
+                return new ValidationResult(false, field, failedMessageNoValue);
             }
         }
-        Log.d(BaseIntegerValidator.class.getName(), "Validation successful");
+        if (Objects.requireNonNull(value).length() > maximum) {
+            Log.d(BaseStringValidator.class.getName(), "Value too long. Validation failed.");
+            String formattedFailedMessage = getResources().getString(R.string.invalid_length_maximum, maximum);
+            return new ValidationResult(false, field, formattedFailedMessage);
+        }
+        Log.d(BaseStringValidator.class.getName(), "Validation successful");
         return new ValidationResult(true, field, getResources().getString(R.string.validation_successful));
     }
 
-    @SuppressWarnings({"unused"})
     protected String getField() {
         return field;
     }

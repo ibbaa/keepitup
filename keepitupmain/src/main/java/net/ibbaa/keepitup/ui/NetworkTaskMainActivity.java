@@ -61,7 +61,7 @@ import net.ibbaa.keepitup.ui.permission.PermissionManager;
 import net.ibbaa.keepitup.ui.permission.StoragePermissionManager;
 import net.ibbaa.keepitup.ui.sync.NetworkTaskMainUIBroadcastReceiver;
 import net.ibbaa.keepitup.ui.sync.NetworkTaskMainUIInitTask;
-import net.ibbaa.keepitup.ui.validation.NameFieldValidator;
+import net.ibbaa.keepitup.ui.validation.NetworkTaskNameFieldValidator;
 import net.ibbaa.keepitup.util.BundleUtil;
 import net.ibbaa.keepitup.util.StringUtil;
 import net.ibbaa.keepitup.util.SystemUtil;
@@ -390,7 +390,7 @@ public class NetworkTaskMainActivity extends RecyclerViewBaseActivity implements
         NetworkTask networkTask = uiWrapper.getNetworkTask();
         String name = StringUtil.isEmpty(networkTask.getName()) ? getResources().getString(R.string.task_name_default) : networkTask.getName();
         String title = getResources().getString(R.string.label_dialog_settings_change_task_name);
-        List<String> validators = Collections.singletonList(NameFieldValidator.class.getName());
+        List<String> validators = Collections.singletonList(NetworkTaskNameFieldValidator.class.getName());
         SettingsInput input = new SettingsInput(SettingsInput.Type.TASKNAME, title, name, getResources().getString(R.string.task_name_field_name), position, validators);
         showInputDialog(input.toBundle());
     }

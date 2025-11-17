@@ -113,6 +113,9 @@ public class HeaderValidatorTest {
         header = getHeader("Content-Type", "  ");
         assertTrue(validator.validateValue(header));
         assertTrue(validator.validate(header));
+        header = getHeader("Content-Type", "");
+        assertTrue(validator.validateValue(header));
+        assertTrue(validator.validate(header));
         header = getHeader("Content-Type", "Test");
         assertTrue(validator.validateValue(header));
         assertTrue(validator.validate(header));

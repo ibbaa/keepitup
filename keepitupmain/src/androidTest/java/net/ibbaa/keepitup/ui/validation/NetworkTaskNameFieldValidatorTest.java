@@ -30,11 +30,11 @@ import org.junit.runner.RunWith;
 
 @SmallTest
 @RunWith(AndroidJUnit4.class)
-public class NameFieldValidatorTest {
+public class NetworkTaskNameFieldValidatorTest {
 
     @Test
     public void testValidate() {
-        NameFieldValidator validator = new NameFieldValidator("Name", TestRegistry.getContext());
+        NetworkTaskNameFieldValidator validator = new NetworkTaskNameFieldValidator("Name", TestRegistry.getContext());
         ValidationResult result = validator.validate(null);
         assertTrue(result.isValidationSuccessful());
         assertEquals("Name", result.getFieldName());
