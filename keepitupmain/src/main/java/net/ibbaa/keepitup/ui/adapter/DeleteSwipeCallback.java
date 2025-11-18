@@ -25,7 +25,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import net.ibbaa.keepitup.R;
 import net.ibbaa.keepitup.logging.Log;
-import net.ibbaa.keepitup.ui.SwipeDeleteSupport;
+import net.ibbaa.keepitup.ui.support.SwipeDeleteSupport;
 import net.ibbaa.keepitup.util.UIUtil;
 
 public class DeleteSwipeCallback extends ItemTouchHelper.Callback {

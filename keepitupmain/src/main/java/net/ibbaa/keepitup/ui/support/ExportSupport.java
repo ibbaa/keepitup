@@ -14,11 +14,9 @@
  * limitations under the License.
  */
 
-package net.ibbaa.keepitup.ui;
+package net.ibbaa.keepitup.ui.support;
 
-import net.ibbaa.keepitup.ui.dialog.GeneralMessageDialog;
+public interface ExportSupport {
 
-public interface MessageSupport {
-
-    void onMessageDialogOkClicked(GeneralMessageDialog errorDialog);
+    void onExportDone(boolean success);
 }

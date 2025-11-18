@@ -59,6 +59,8 @@ import net.ibbaa.keepitup.ui.permission.IPermissionManager;
 import net.ibbaa.keepitup.ui.permission.IStoragePermissionManager;
 import net.ibbaa.keepitup.ui.permission.PermissionManager;
 import net.ibbaa.keepitup.ui.permission.StoragePermissionManager;
+import net.ibbaa.keepitup.ui.support.AlarmPermissionSupport;
+import net.ibbaa.keepitup.ui.support.SettingsInputSupport;
 import net.ibbaa.keepitup.ui.sync.NetworkTaskMainUIBroadcastReceiver;
 import net.ibbaa.keepitup.ui.sync.NetworkTaskMainUIInitTask;
 import net.ibbaa.keepitup.ui.validation.NetworkTaskNameFieldValidator;

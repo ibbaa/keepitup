@@ -35,6 +35,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import net.ibbaa.keepitup.logging.Log;
 import net.ibbaa.keepitup.ui.dialog.ConfirmDialog;
 import net.ibbaa.keepitup.ui.dialog.GeneralMessageDialog;
+import net.ibbaa.keepitup.ui.support.ConfirmSupport;
 import net.ibbaa.keepitup.util.BundleUtil;
 
 @SuppressWarnings({"SameParameterValue"})

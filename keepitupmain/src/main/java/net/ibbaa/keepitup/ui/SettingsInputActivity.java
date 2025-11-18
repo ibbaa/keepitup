@@ -45,6 +45,10 @@ import net.ibbaa.keepitup.ui.dialog.SettingsInput;
 import net.ibbaa.keepitup.ui.dialog.SettingsInputDialog;
 import net.ibbaa.keepitup.ui.permission.IStoragePermissionManager;
 import net.ibbaa.keepitup.ui.permission.StoragePermissionManager;
+import net.ibbaa.keepitup.ui.support.BatteryOptimizationSupport;
+import net.ibbaa.keepitup.ui.support.ConfirmSupport;
+import net.ibbaa.keepitup.ui.support.FileChooseSupport;
+import net.ibbaa.keepitup.ui.support.SettingsInputSupport;
 import net.ibbaa.keepitup.util.BundleUtil;
 
 import java.util.List;

@@ -14,9 +14,11 @@
  * limitations under the License.
  */
 
-package net.ibbaa.keepitup.ui;
+package net.ibbaa.keepitup.ui.support;
 
-public interface ImportSupport {
+import net.ibbaa.keepitup.ui.dialog.AlarmPermissionDialog;
 
-    void onImportDone(boolean success, String message);
+public interface AlarmPermissionSupport {
+
+    void onAlarmPermissionDialogOkClicked(AlarmPermissionDialog alarmPermissionDialog);
 }

@@ -14,13 +14,16 @@
  * limitations under the License.
  */
 
-package net.ibbaa.keepitup.ui;
+package net.ibbaa.keepitup.ui.support;
 
-import net.ibbaa.keepitup.ui.dialog.GlobalHeadersDialog;
+import net.ibbaa.keepitup.service.IFileManager;
+import net.ibbaa.keepitup.ui.dialog.FileChooseDialog;
 
-public interface GlobalHeadersSupport {
+public interface FileChooseSupport {
 
-    void onGlobalHeadersDialogOkClicked(GlobalHeadersDialog globalHeadersDialog);
+    IFileManager getFileManager();
 
-    void onGlobalHeadersDialogCancelClicked(GlobalHeadersDialog globalHeadersDialog);
+    void onFileChooseDialogOkClicked(FileChooseDialog chooseDialog, FileChooseDialog.Type type);
+
+    void onFileChooseDialogCancelClicked(FileChooseDialog chooseDialog);
 }

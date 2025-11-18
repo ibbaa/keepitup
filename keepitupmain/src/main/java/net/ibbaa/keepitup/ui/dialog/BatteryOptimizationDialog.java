@@ -37,7 +37,7 @@ import net.ibbaa.keepitup.R;
 import net.ibbaa.keepitup.logging.Log;
 import net.ibbaa.keepitup.service.IPowerManager;
 import net.ibbaa.keepitup.service.SystemPowerManager;
-import net.ibbaa.keepitup.ui.BatteryOptimizationSupport;
+import net.ibbaa.keepitup.ui.support.BatteryOptimizationSupport;
 
 @SuppressWarnings({"unused"})
 public class BatteryOptimizationDialog extends DialogFragmentBase {

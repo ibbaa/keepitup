@@ -16,9 +16,9 @@
 
 package net.ibbaa.keepitup.test.mock;
 
-import net.ibbaa.keepitup.ui.ContextOptionsSupport;
 import net.ibbaa.keepitup.ui.dialog.ContextOption;
 import net.ibbaa.keepitup.ui.dialog.ContextOptionsDialog;
+import net.ibbaa.keepitup.ui.support.ContextOptionsSupport;
 
 import java.util.ArrayList;
 import java.util.Collections;

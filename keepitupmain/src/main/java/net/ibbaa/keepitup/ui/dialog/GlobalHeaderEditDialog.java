@@ -17,15 +17,12 @@
 package net.ibbaa.keepitup.ui.dialog;
 
 import android.app.Activity;
-import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
@@ -37,23 +34,22 @@ import net.ibbaa.keepitup.ui.ContextOptionsSupportManager;
 import net.ibbaa.keepitup.ui.clipboard.IClipboardManager;
 import net.ibbaa.keepitup.ui.clipboard.SystemClipboardManager;
 import net.ibbaa.keepitup.ui.support.ContextOptionsSupport;
-import net.ibbaa.keepitup.ui.support.SettingsInputSupport;
+import net.ibbaa.keepitup.ui.support.GlobalHeaderEditSupport;
 import net.ibbaa.keepitup.ui.validation.FieldValidator;
+import net.ibbaa.keepitup.ui.validation.HeaderValueFieldValidator;
 import net.ibbaa.keepitup.ui.validation.TextColorValidatingWatcher;
 import net.ibbaa.keepitup.ui.validation.ValidationResult;
 import net.ibbaa.keepitup.util.BundleUtil;
 import net.ibbaa.keepitup.util.StringUtil;
 
-import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 @SuppressWarnings({"unused", "SameReturnValue"})
-public class SettingsInputDialog extends DialogFragmentBase implements ContextOptionsSupport {
+public class GlobalHeaderEditDialog extends DialogFragmentBase implements ContextOptionsSupport {
 
     private View dialogView;
-    private SettingsInput input;
     private EditText valueEditText;
     private TextColorValidatingWatcher valueEditTextWatcher;
 
@@ -72,51 +68,31 @@ public class SettingsInputDialog extends DialogFragmentBase implements ContextOp
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        Log.d(SettingsInputDialog.class.getName(), "onCreate");
+        Log.d(GlobalHeaderEditDialog.class.getName(), "onCreate");
         super.onCreate(savedInstanceState);
         setStyle(DialogFragment.STYLE_NO_FRAME, R.style.DialogTheme);
     }
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        Log.d(SettingsInputDialog.class.getName(), "onCreateView");
-        dialogView = inflater.inflate(R.layout.dialog_settings_input, container);
+        Log.d(GlobalHeaderEditDialog.class.getName(), "onCreateView");
+        dialogView = inflater.inflate(R.layout.dialog_global_header_edit, container);
         initEdgeToEdgeInsets(dialogView);
-        input = new SettingsInput(requireArguments());
-        Log.d(SettingsInputDialog.class.getName(), "settings input is " + input);
-        prepareTitleText();
         prepareValueTextField();
         prepareOkCancelImageButtons();
         return dialogView;
     }
 
-    private void prepareTitleText() {
-        Log.d(SettingsInputDialog.class.getName(), "prepareTitleText");
-        LinearLayout titleLinearLayout = dialogView.findViewById(R.id.linearlayout_dialog_settings_input_title);
-        TextView titleTextView = dialogView.findViewById(R.id.textview_dialog_settings_input_title);
-        if (StringUtil.isEmpty(input.getTitle())) {
-            titleLinearLayout.setVisibility(View.GONE);
-            titleTextView.setVisibility(View.GONE);
-            titleTextView.setText("");
-        } else {
-            titleLinearLayout.setVisibility(View.VISIBLE);
-            titleTextView.setVisibility(View.VISIBLE);
-            titleTextView.setText(input.getTitle());
-        }
-    }
-
     private void prepareValueTextField() {
-        Log.d(SettingsInputDialog.class.getName(), "prepareValueTextField");
-        valueEditText = dialogView.findViewById(R.id.edittext_dialog_settings_input_value);
+        Log.d(GlobalHeaderEditDialog.class.getName(), "prepareValueTextField");
+        valueEditText = dialogView.findViewById(R.id.edittext_dialog_global_header_edit_value);
         valueEditText.setOnLongClickListener(this::onValueEditTextLongClicked);
-        valueEditText.setText(StringUtil.notNull(input.getValue()));
-        valueEditText.setInputType(input.getType().getInputType());
-        valueEditText.setHint(input.getField());
+        valueEditText.setText("Text");
         prepareValueEditTextListener();
     }
 
     private void prepareValueEditTextListener() {
-        Log.d(SettingsInputDialog.class.getName(), "prepareValueEditTextListener");
+        Log.d(GlobalHeaderEditDialog.class.getName(), "prepareValueEditTextListener");
         if (valueEditTextWatcher != null) {
             valueEditText.removeTextChangedListener(valueEditTextWatcher);
             valueEditTextWatcher = null;
@@ -126,9 +102,9 @@ public class SettingsInputDialog extends DialogFragmentBase implements ContextOp
     }
 
     private void prepareOkCancelImageButtons() {
-        Log.d(SettingsInputDialog.class.getName(), "prepareOkCancelImageButtons");
-        ImageView okImage = dialogView.findViewById(R.id.imageview_dialog_settings_input_ok);
-        ImageView cancelImage = dialogView.findViewById(R.id.imageview_dialog_settings_input_cancel);
+        Log.d(GlobalHeaderEditDialog.class.getName(), "prepareOkCancelImageButtons");
+        ImageView okImage = dialogView.findViewById(R.id.imageview_dialog_global_header_edit_ok);
+        ImageView cancelImage = dialogView.findViewById(R.id.imageview_dialog_global_header_edit_cancel);
         okImage.setOnClickListener(this::onOkClicked);
         cancelImage.setOnClickListener(this::onCancelClicked);
     }
@@ -138,30 +114,30 @@ public class SettingsInputDialog extends DialogFragmentBase implements ContextOp
     }
 
     private void onOkClicked(View view) {
-        Log.d(SettingsInputDialog.class.getName(), "onOkClicked");
+        Log.d(GlobalHeaderEditDialog.class.getName(), "onOkClicked");
         List<ValidationResult> validationResult = validateInput();
         if (!hasErrors(validationResult)) {
-            Log.d(SettingsInputDialog.class.getName(), "Validation was successful");
-            SettingsInputSupport settingsInputSupport = getSettingsInputSupport();
-            if (settingsInputSupport != null) {
-                settingsInputSupport.onInputDialogOkClicked(this, input);
+            Log.d(GlobalHeaderEditDialog.class.getName(), "Validation was successful");
+            GlobalHeaderEditSupport globalHeaderEditSupport = getGlobalHeaderEditSupport();
+            if (globalHeaderEditSupport != null) {
+                globalHeaderEditSupport.onGlobalHeaderEditDialogOkClicked(this);
             } else {
-                Log.e(SettingsInputDialog.class.getName(), "settingsInputSupport is null");
+                Log.e(GlobalHeaderEditDialog.class.getName(), "settingsInputSupport is null");
                 dismiss();
             }
         } else {
-            Log.d(SettingsInputDialog.class.getName(), "Validation failed");
+            Log.d(GlobalHeaderEditDialog.class.getName(), "Validation failed");
             showMessageDialog(validationResult);
         }
     }
 
     private void onCancelClicked(View view) {
-        Log.d(SettingsInputDialog.class.getName(), "onCancelClicked");
-        SettingsInputSupport settingsInputSupport = getSettingsInputSupport();
-        if (settingsInputSupport != null) {
-            settingsInputSupport.onInputDialogCancelClicked(this);
+        Log.d(GlobalHeaderEditDialog.class.getName(), "onCancelClicked");
+        GlobalHeaderEditSupport globalHeaderEditSupport = getGlobalHeaderEditSupport();
+        if (globalHeaderEditSupport != null) {
+            globalHeaderEditSupport.onGlobalHeaderEditDialogCancelClicked(this);
         } else {
-            Log.e(SettingsInputDialog.class.getName(), "settingsInputSupport is null");
+            Log.e(GlobalHeaderEditDialog.class.getName(), "settingsInputSupport is null");
             dismiss();
         }
     }
@@ -171,30 +147,23 @@ public class SettingsInputDialog extends DialogFragmentBase implements ContextOp
     }
 
     private boolean validateValue(EditText editText) {
-        Log.d(SettingsInputDialog.class.getName(), "validateValue");
-        List<FieldValidator> validators = getValidators();
-        for (FieldValidator validator : validators) {
-            Log.d(SettingsInputDialog.class.getName(), "Current validator: " + validator.getClass().getName());
-            ValidationResult result = validator.validate(getValue());
-            Log.d(SettingsInputDialog.class.getName(), "Validation result: " + result);
-            if (result.isValidationSuccessful()) {
-                return true;
-            }
-        }
-        Log.d(SettingsInputDialog.class.getName(), "Validation failed");
-        return false;
+        Log.d(GlobalHeaderEditDialog.class.getName(), "validateValue");
+        HeaderValueFieldValidator validator = new HeaderValueFieldValidator(getResources().getString(R.string.label_dialog_global_header_edit_value), getContext());
+        ValidationResult result = validator.validate(getValue());
+        Log.d(GlobalHeaderEditDialog.class.getName(), "Validation result: " + result);
+        return result.isValidationSuccessful();
     }
 
     private List<ValidationResult> validateInput() {
-        Log.d(SettingsInputDialog.class.getName(), "validateInput");
+        Log.d(GlobalHeaderEditDialog.class.getName(), "validateInput");
         List<FieldValidator> validators = getValidators();
         List<ValidationResult> validationResults = new ArrayList<>();
         for (FieldValidator validator : validators) {
-            Log.d(SettingsInputDialog.class.getName(), "Current validator: " + validator.getClass().getName());
+            Log.d(GlobalHeaderEditDialog.class.getName(), "Current validator: " + validator.getClass().getName());
             ValidationResult result = validator.validate(getValue());
-            Log.d(SettingsInputDialog.class.getName(), "Validation result: " + result);
+            Log.d(GlobalHeaderEditDialog.class.getName(), "Validation result: " + result);
             if (result.isValidationSuccessful()) {
-                Log.d(SettingsInputDialog.class.getName(), "Validation successful.");
+                Log.d(GlobalHeaderEditDialog.class.getName(), "Validation successful.");
                 return Collections.emptyList();
             }
             if (!result.isValidationSuccessful() && !containsValidationResult(validationResults, result)) {
@@ -214,68 +183,68 @@ public class SettingsInputDialog extends DialogFragmentBase implements ContextOp
     }
 
     private List<FieldValidator> getValidators() {
-        Log.d(SettingsInputDialog.class.getName(), "getValidators");
-        List<String> validatorClassNames = input.getValidators();
+        Log.d(GlobalHeaderEditDialog.class.getName(), "getValidators");
+        /*List<String> validatorClassNames = input.getValidators();
         List<FieldValidator> validators = new ArrayList<>();
         if (validatorClassNames == null) {
-            Log.d(SettingsInputDialog.class.getName(), "validatorClasses is null. Returning empty list.");
+            Log.d(GlobalHeaderEditDialog.class.getName(), "validatorClasses is null. Returning empty list.");
             return Collections.emptyList();
         }
         for (String validatorClassName : validatorClassNames) {
-            Log.d(SettingsInputDialog.class.getName(), "Specified validator class is " + validatorClassName);
+            Log.d(GlobalHeaderEditDialog.class.getName(), "Specified validator class is " + validatorClassName);
             FieldValidator validator = getValidator(validatorClassName);
             if (validator != null) {
-                Log.d(SettingsInputDialog.class.getName(), "Validator class is " + validator.getClass().getName());
+                Log.d(GlobalHeaderEditDialog.class.getName(), "Validator class is " + validator.getClass().getName());
                 validators.add(validator);
             } else {
-                Log.d(SettingsInputDialog.class.getName(), "Validator class is null");
+                Log.d(GlobalHeaderEditDialog.class.getName(), "Validator class is null");
             }
         }
         if (validators.isEmpty()) {
-            Log.d(SettingsInputDialog.class.getName(), "No validators specified. Returning empty list.");
-        }
-        return validators;
+            Log.d(GlobalHeaderEditDialog.class.getName(), "No validators specified. Returning empty list.");
+        }*/
+        return null;
     }
 
     private FieldValidator getValidator(String validatorClassName) {
-        try {
+        /*try {
             Class<?> validatorClass = requireContext().getClassLoader().loadClass(validatorClassName);
             Constructor<?> validatorClassConstructor = validatorClass.getConstructor(String.class, Context.class);
             return (FieldValidator) validatorClassConstructor.newInstance(input.getField(), getContext());
         } catch (Throwable exc) {
-            Log.e(SettingsInputDialog.class.getName(), "Error instantiating validator class", exc);
-        }
+            Log.e(GlobalHeaderEditDialog.class.getName(), "Error instantiating validator class", exc);
+        }*/
         return null;
     }
 
     private void showMessageDialog(List<ValidationResult> validationResult) {
-        Log.d(SettingsInputDialog.class.getName(), "showMessageDialog, opening ValidatorErrorDialog");
+        Log.d(GlobalHeaderEditDialog.class.getName(), "showMessageDialog, opening ValidatorErrorDialog");
         ValidatorErrorDialog errorDialog = new ValidatorErrorDialog();
         errorDialog.setArguments(BundleUtil.validationResultListToBundle(errorDialog.getValidationResultBaseKey(), validationResult));
         errorDialog.show(getParentFragmentManager(), ValidatorErrorDialog.class.getName());
     }
 
     private boolean onValueEditTextLongClicked(View view) {
-        Log.d(SettingsInputDialog.class.getName(), "onValueEditTextLongClicked");
+        Log.d(GlobalHeaderEditDialog.class.getName(), "onValueEditTextLongClicked");
         showContextOptionsDialog((EditText) view);
         return true;
     }
 
     private void showContextOptionsDialog(EditText editText) {
-        Log.d(SettingsInputDialog.class.getName(), "showContextOptionsDialog");
+        Log.d(GlobalHeaderEditDialog.class.getName(), "showContextOptionsDialog");
         new ContextOptionsSupportManager(getParentFragmentManager(), getClipboardManager()).showContextOptionsDialog(editText);
     }
 
     @Override
     public void onContextOptionsDialogClicked(ContextOptionsDialog contextOptionsDialog, int sourceResourceId, ContextOption option) {
-        Log.d(SettingsInputDialog.class.getName(), "onContextOptionsDialogEntryClicked, sourceResourceId is " + sourceResourceId + ", option is " + option);
+        Log.d(GlobalHeaderEditDialog.class.getName(), "onContextOptionsDialogEntryClicked, sourceResourceId is " + sourceResourceId + ", option is " + option);
         ContextOptionsSupportManager contextOptionsSupportManager = new ContextOptionsSupportManager(getParentFragmentManager(), getClipboardManager());
         if (valueEditText.getId() == sourceResourceId) {
-            Log.e(SettingsInputDialog.class.getName(), "Source field is the correct value input field.");
+            Log.e(GlobalHeaderEditDialog.class.getName(), "Source field is the correct value input field.");
             contextOptionsSupportManager.handleContextOption(valueEditText, option);
             valueEditText.setSelection(valueEditText.getText().length());
         } else {
-            Log.e(SettingsInputDialog.class.getName(), "Source field is undefined.");
+            Log.e(GlobalHeaderEditDialog.class.getName(), "Source field is undefined.");
         }
         contextOptionsDialog.dismiss();
     }
@@ -284,17 +253,17 @@ public class SettingsInputDialog extends DialogFragmentBase implements ContextOp
         return ContextCompat.getColor(requireContext(), colorid);
     }
 
-    private SettingsInputSupport getSettingsInputSupport() {
-        Log.d(SettingsInputDialog.class.getName(), "getSettingsInputSupport");
+    private GlobalHeaderEditSupport getGlobalHeaderEditSupport() {
+        Log.d(GlobalHeaderEditDialog.class.getName(), "getGlobalHeaderEditSupport");
         Activity activity = getActivity();
         if (activity == null) {
-            Log.e(SettingsInputDialog.class.getName(), "getSettingsInputSupport, activity is null");
+            Log.e(GlobalHeaderEditDialog.class.getName(), "getGlobalHeaderEditSupport, activity is null");
             return null;
         }
-        if (!(activity instanceof SettingsInputSupport)) {
-            Log.e(SettingsInputDialog.class.getName(), "getSettingsInputSupport, activity is not an instance of " + SettingsInputSupport.class.getSimpleName());
+        if (!(activity instanceof GlobalHeaderEditSupport)) {
+            Log.e(GlobalHeaderEditDialog.class.getName(), "getGlobalHeaderEditSupport, activity is not an instance of " + GlobalHeaderEditSupport.class.getSimpleName());
             return null;
         }
-        return (SettingsInputSupport) activity;
+        return (GlobalHeaderEditSupport) activity;
     }
 }

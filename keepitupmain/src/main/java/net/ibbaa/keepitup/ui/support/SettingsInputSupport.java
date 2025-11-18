@@ -14,13 +14,14 @@
  * limitations under the License.
  */
 
-package net.ibbaa.keepitup.ui;
+package net.ibbaa.keepitup.ui.support;
 
-import net.ibbaa.keepitup.ui.dialog.SuspensionIntervalsDialog;
+import net.ibbaa.keepitup.ui.dialog.SettingsInput;
+import net.ibbaa.keepitup.ui.dialog.SettingsInputDialog;
 
-public interface SuspensionIntervalsSupport {
+public interface SettingsInputSupport {
 
-    void onSuspensionIntervalsDialogOkClicked(SuspensionIntervalsDialog intervalsDialog);
+    void onInputDialogOkClicked(SettingsInputDialog inputDialog, SettingsInput type);
 
-    void onSuspensionIntervalsDialogCancelClicked(SuspensionIntervalsDialog intervalsDialog);
+    void onInputDialogCancelClicked(SettingsInputDialog inputDialog);
 }

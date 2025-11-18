@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-package net.ibbaa.keepitup.ui;
+package net.ibbaa.keepitup.ui.support;
 
-public interface DBPurgeSupport {
+public interface SwipeDeleteSupport {
 
-    void onPurgeDone(boolean success);
+    void onDeleteSwiped(int index);
 }

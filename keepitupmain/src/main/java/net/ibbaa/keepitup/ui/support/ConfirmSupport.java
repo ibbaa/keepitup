@@ -14,14 +14,13 @@
  * limitations under the License.
  */
 
-package net.ibbaa.keepitup.ui;
+package net.ibbaa.keepitup.ui.support;
 
-import net.ibbaa.keepitup.service.IPowerManager;
-import net.ibbaa.keepitup.ui.dialog.BatteryOptimizationDialog;
+import net.ibbaa.keepitup.ui.dialog.ConfirmDialog;
 
-public interface BatteryOptimizationSupport {
+public interface ConfirmSupport {
 
-    IPowerManager getPowerManager();
+    void onConfirmDialogOkClicked(ConfirmDialog confirmDialog, ConfirmDialog.Type type);
 
-    void onBatteryOptimizationDialogOkClicked(BatteryOptimizationDialog batteryOptimizationDialog);
+    void onConfirmDialogCancelClicked(ConfirmDialog confirmDialog, ConfirmDialog.Type type);
 }

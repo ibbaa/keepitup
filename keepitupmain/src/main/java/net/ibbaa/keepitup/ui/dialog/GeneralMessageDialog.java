@@ -30,7 +30,7 @@ import androidx.fragment.app.DialogFragment;
 
 import net.ibbaa.keepitup.R;
 import net.ibbaa.keepitup.logging.Log;
-import net.ibbaa.keepitup.ui.MessageSupport;
+import net.ibbaa.keepitup.ui.support.MessageSupport;
 import net.ibbaa.keepitup.util.BundleUtil;
 
 @SuppressWarnings({"unused"})

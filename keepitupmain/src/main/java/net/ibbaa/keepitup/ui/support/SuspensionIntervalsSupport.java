@@ -14,11 +14,13 @@
  * limitations under the License.
  */
 
-package net.ibbaa.keepitup.ui;
+package net.ibbaa.keepitup.ui.support;
 
-import net.ibbaa.keepitup.ui.dialog.AlarmPermissionDialog;
+import net.ibbaa.keepitup.ui.dialog.SuspensionIntervalsDialog;
 
-public interface AlarmPermissionSupport {
+public interface SuspensionIntervalsSupport {
 
-    void onAlarmPermissionDialogOkClicked(AlarmPermissionDialog alarmPermissionDialog);
+    void onSuspensionIntervalsDialogOkClicked(SuspensionIntervalsDialog intervalsDialog);
+
+    void onSuspensionIntervalsDialogCancelClicked(SuspensionIntervalsDialog intervalsDialog);
 }

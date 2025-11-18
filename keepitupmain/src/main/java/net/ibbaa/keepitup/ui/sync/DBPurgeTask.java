@@ -22,7 +22,7 @@ import android.content.Context;
 import net.ibbaa.keepitup.R;
 import net.ibbaa.keepitup.db.DBSetup;
 import net.ibbaa.keepitup.logging.Log;
-import net.ibbaa.keepitup.ui.DBPurgeSupport;
+import net.ibbaa.keepitup.ui.support.DBPurgeSupport;
 
 import java.util.concurrent.TimeUnit;
 

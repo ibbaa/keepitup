@@ -22,29 +22,29 @@
     android:layout_height="fill_parent">
 
     <LinearLayout
-        android:id="@+id/linearlayout_dialog_settings_input"
+        android:id="@+id/linearlayout_dialog_global_header_edit"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="@dimen/linearlayout_dialog_settings_input_padding"
+        android:padding="@dimen/linearlayout_dialog_global_header_edit_padding"
         android:focusable="true"
         android:focusableInTouchMode="true"
         android:orientation="vertical">
 
         <LinearLayout
-            android:id="@+id/linearlayout_dialog_settings_input_title"
+            android:id="@+id/linearlayout_dialog_global_header_edit_title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/linearlayout_dialog_settings_input_title_margin_left"
-            android:layout_marginTop="@dimen/linearlayout_dialog_settings_input_title_margin_top"
-            android:layout_marginBottom="@dimen/linearlayout_dialog_settings_input_title_margin_bottom">
+            android:layout_marginStart="@dimen/linearlayout_dialog_global_header_edit_title_margin_left"
+            android:layout_marginTop="@dimen/linearlayout_dialog_global_header_edit_title_margin_top"
+            android:layout_marginBottom="@dimen/linearlayout_dialog_global_header_edit_title_margin_bottom">
 
             <TextView
-                android:id="@+id/textview_dialog_settings_input_title"
+                android:id="@+id/textview_dialog_global_header_edit_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:textStyle="bold"
-                android:text="" />
+                android:text="@string/label_dialog_global_header_edit_title" />
 
         </LinearLayout>
 
@@ -52,48 +52,49 @@
             android:id="@+id/linearlayout_dialog_settings_input_value"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/linearlayout_dialog_settings_input_value_margin_left"
-            android:layout_marginTop="@dimen/linearlayout_dialog_settings_input_value_margin_top">
+            android:layout_marginStart="@dimen/linearlayout_dialog_global_header_edit_value_margin_left"
+            android:layout_marginTop="@dimen/linearlayout_dialog_global_header_edit_value_margin_top">
 
             <EditText
-                android:id="@+id/edittext_dialog_settings_input_value"
+                android:id="@+id/edittext_dialog_global_header_edit_value"
                 style="@style/EditTextTheme"
-                android:layout_width="@dimen/edittext_dialog_settings_input_value_width"
+                android:layout_width="@dimen/edittext_dialog_global_header_edit_value_width"
                 android:layout_height="wrap_content"
                 android:importantForAutofill="no"
                 android:inputType="textUri|textMultiLine|textNoSuggestions"
                 android:scrollHorizontally="false"
-                android:maxLines="@integer/edittext_dialog_settings_input_value_max_lines"
+                android:maxLines="@integer/edittext_dialog_global_header_edit_value_max_lines"
+                android:hint="@string/label_dialog_global_header_edit_value"
                 android:text=""
                 tools:ignore="LabelFor" />
 
         </LinearLayout>
 
         <LinearLayout
-            android:id="@+id/linearlayout_dialog_settings_input_ok_cancel"
+            android:id="@+id/linearlayout_dialog_global_header_edit_ok_cancel"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingTop="@dimen/linearlayout_dialog_settings_input_ok_cancel_padding_top"
+            android:paddingTop="@dimen/linearlayout_dialog_global_header_edit_ok_cancel_padding_top"
             android:orientation="horizontal">
 
             <ImageView
-                android:id="@+id/imageview_dialog_settings_input_ok"
+                android:id="@+id/imageview_dialog_global_header_edit_ok"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:clickable="true"
                 android:focusable="true"
-                android:contentDescription="@string/label_dialog_settings_input_ok"
+                android:contentDescription="@string/label_dialog_global_header_edit_ok"
                 app:srcCompat="@drawable/icon_ok_selector" />
 
             <ImageView
-                android:id="@+id/imageview_dialog_settings_input_cancel"
+                android:id="@+id/imageview_dialog_global_header_edit_cancel"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:clickable="true"
                 android:focusable="true"
-                android:contentDescription="@string/label_dialog_settings_input_cancel"
+                android:contentDescription="@string/label_dialog_global_header_edit_cancel"
                 app:srcCompat="@drawable/icon_cancel_selector" />
 
         </LinearLayout>

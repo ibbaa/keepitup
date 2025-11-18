@@ -14,14 +14,11 @@
  * limitations under the License.
  */
 
-package net.ibbaa.keepitup.ui;
+package net.ibbaa.keepitup.ui.support;
 
-import net.ibbaa.keepitup.ui.dialog.SettingsInput;
-import net.ibbaa.keepitup.ui.dialog.SettingsInputDialog;
+import net.ibbaa.keepitup.ui.dialog.GeneralMessageDialog;
 
-public interface SettingsInputSupport {
+public interface MessageSupport {
 
-    void onInputDialogOkClicked(SettingsInputDialog inputDialog, SettingsInput type);
-
-    void onInputDialogCancelClicked(SettingsInputDialog inputDialog);
+    void onMessageDialogOkClicked(GeneralMessageDialog errorDialog);
 }

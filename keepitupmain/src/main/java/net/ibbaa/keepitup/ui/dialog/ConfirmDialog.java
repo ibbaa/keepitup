@@ -30,7 +30,7 @@ import androidx.fragment.app.Fragment;
 
 import net.ibbaa.keepitup.R;
 import net.ibbaa.keepitup.logging.Log;
-import net.ibbaa.keepitup.ui.ConfirmSupport;
+import net.ibbaa.keepitup.ui.support.ConfirmSupport;
 import net.ibbaa.keepitup.util.BundleUtil;
 import net.ibbaa.keepitup.util.StringUtil;
 

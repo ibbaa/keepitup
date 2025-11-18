@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-package net.ibbaa.keepitup.ui;
+package net.ibbaa.keepitup.ui.support;
 
-import net.ibbaa.keepitup.ui.dialog.ConfirmDialog;
+import net.ibbaa.keepitup.ui.dialog.GlobalHeadersDialog;
 
-public interface ConfirmSupport {
+public interface GlobalHeadersSupport {
 
-    void onConfirmDialogOkClicked(ConfirmDialog confirmDialog, ConfirmDialog.Type type);
+    void onGlobalHeadersDialogOkClicked(GlobalHeadersDialog globalHeadersDialog);
 
-    void onConfirmDialogCancelClicked(ConfirmDialog confirmDialog, ConfirmDialog.Type type);
+    void onGlobalHeadersDialogCancelClicked(GlobalHeadersDialog globalHeadersDialog);
 }

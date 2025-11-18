@@ -53,7 +53,7 @@
             android:layout_height="wrap_content"
             android:clickable="true"
             android:focusable="true"
-            android:contentDescription="@string/label_dialog_global_headers_select_header"
+            android:contentDescription="@string/label_dialog_global_headers_edit_header"
             app:srcCompat="@drawable/icon_add_selector" />
 
         <LinearLayout

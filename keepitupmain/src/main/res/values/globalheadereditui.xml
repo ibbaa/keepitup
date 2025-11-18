@@ -15,10 +15,10 @@
   -->
 
 <resources>
-    <string name="label_dialog_global_headers_headers">Global headers</string>
-    <string name="text_dialog_global_headers_no_headers">No headers defined</string>
-    <string name="label_dialog_global_headers_delete_header">Delete header</string>
-    <string name="label_dialog_global_headers_ok">@android:string/ok</string>
-    <string name="label_dialog_global_headers_cancel">@android:string/cancel</string>
-    <string name="label_dialog_global_headers_edit_header">Add global header</string>
+    <string name="label_dialog_global_header_edit_ok">@android:string/ok</string>
+    <string name="label_dialog_global_header_edit_cancel">@android:string/cancel</string>
+    <string name="label_dialog_global_header_edit_title">HTTP header</string>
+    <string name="label_dialog_global_header_edit_name">Header name</string>
+    <string name="label_dialog_global_header_edit_value">Header value</string>
+    <integer name="edittext_dialog_global_header_edit_value_max_lines">5</integer>
 </resources>

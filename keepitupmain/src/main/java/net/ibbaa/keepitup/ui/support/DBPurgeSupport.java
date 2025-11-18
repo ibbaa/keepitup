@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-package net.ibbaa.keepitup.ui;
+package net.ibbaa.keepitup.ui.support;
 
-public interface ExportSupport {
+public interface DBPurgeSupport {
 
-    void onExportDone(boolean success);
+    void onPurgeDone(boolean success);
 }

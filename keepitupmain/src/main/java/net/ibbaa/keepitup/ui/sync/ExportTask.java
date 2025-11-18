@@ -27,7 +27,7 @@ import net.ibbaa.keepitup.resources.JSONSystemSetup;
 import net.ibbaa.keepitup.resources.SystemSetupResult;
 import net.ibbaa.keepitup.service.IDocumentManager;
 import net.ibbaa.keepitup.service.SystemDocumentManager;
-import net.ibbaa.keepitup.ui.ExportSupport;
+import net.ibbaa.keepitup.ui.support.ExportSupport;
 import net.ibbaa.keepitup.util.StreamUtil;
 
 import java.io.File;

@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-package net.ibbaa.keepitup.ui;
+package net.ibbaa.keepitup.ui.support;
 
-public interface SwipeDeleteSupport {
+public interface ImportSupport {
 
-    void onDeleteSwiped(int index);
+    void onImportDone(boolean success, String message);
 }

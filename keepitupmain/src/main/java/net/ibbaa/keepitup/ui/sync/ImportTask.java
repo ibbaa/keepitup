@@ -30,7 +30,7 @@ import net.ibbaa.keepitup.resources.PreferenceSetup;
 import net.ibbaa.keepitup.resources.SystemSetupResult;
 import net.ibbaa.keepitup.service.IDocumentManager;
 import net.ibbaa.keepitup.service.SystemDocumentManager;
-import net.ibbaa.keepitup.ui.ImportSupport;
+import net.ibbaa.keepitup.ui.support.ImportSupport;
 import net.ibbaa.keepitup.util.StreamUtil;
 
 import java.io.File;

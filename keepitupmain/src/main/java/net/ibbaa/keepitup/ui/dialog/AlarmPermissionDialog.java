@@ -28,7 +28,7 @@ import androidx.fragment.app.DialogFragment;
 
 import net.ibbaa.keepitup.R;
 import net.ibbaa.keepitup.logging.Log;
-import net.ibbaa.keepitup.ui.AlarmPermissionSupport;
+import net.ibbaa.keepitup.ui.support.AlarmPermissionSupport;
 
 @SuppressWarnings({"unused"})
 public class AlarmPermissionDialog extends DialogFragmentBase {

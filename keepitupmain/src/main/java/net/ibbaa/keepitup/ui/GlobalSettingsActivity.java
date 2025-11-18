@@ -61,6 +61,8 @@ import net.ibbaa.keepitup.ui.permission.GenericPermissionLauncher;
 import net.ibbaa.keepitup.ui.permission.IStoragePermissionManager;
 import net.ibbaa.keepitup.ui.permission.NullPermissionLauncher;
 import net.ibbaa.keepitup.ui.permission.PermissionLauncher;
+import net.ibbaa.keepitup.ui.support.GlobalHeadersSupport;
+import net.ibbaa.keepitup.ui.support.SuspensionIntervalsSupport;
 import net.ibbaa.keepitup.ui.validation.NotificationAfterFailuresFieldValidator;
 import net.ibbaa.keepitup.util.BundleUtil;
 import net.ibbaa.keepitup.util.FileUtil;

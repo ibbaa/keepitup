@@ -33,15 +33,15 @@ import androidx.recyclerview.widget.RecyclerView;
 import net.ibbaa.keepitup.R;
 import net.ibbaa.keepitup.logging.Log;
 import net.ibbaa.keepitup.model.Header;
-import net.ibbaa.keepitup.ui.ConfirmSupport;
 import net.ibbaa.keepitup.ui.GlobalHeaderHandler;
-import net.ibbaa.keepitup.ui.GlobalHeadersSupport;
 import net.ibbaa.keepitup.ui.GlobalSettingsActivity;
 import net.ibbaa.keepitup.ui.NetworkTaskMainActivity;
 import net.ibbaa.keepitup.ui.SettingsInputActivity;
-import net.ibbaa.keepitup.ui.SwipeDeleteSupport;
 import net.ibbaa.keepitup.ui.adapter.DeleteSwipeCallback;
 import net.ibbaa.keepitup.ui.adapter.GlobalHeaderAdapter;
+import net.ibbaa.keepitup.ui.support.ConfirmSupport;
+import net.ibbaa.keepitup.ui.support.GlobalHeadersSupport;
+import net.ibbaa.keepitup.ui.support.SwipeDeleteSupport;
 import net.ibbaa.keepitup.util.BundleUtil;
 
 import java.util.Collections;

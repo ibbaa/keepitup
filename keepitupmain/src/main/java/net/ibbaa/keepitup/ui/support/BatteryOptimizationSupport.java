@@ -14,20 +14,14 @@
  * limitations under the License.
  */
 
-package net.ibbaa.keepitup.test.mock;
+package net.ibbaa.keepitup.ui.support;
 
-import net.ibbaa.keepitup.ui.dialog.ContextOptionsDialog;
-import net.ibbaa.keepitup.ui.support.ContextOptionsSupport;
+import net.ibbaa.keepitup.service.IPowerManager;
+import net.ibbaa.keepitup.ui.dialog.BatteryOptimizationDialog;
 
-public class TestContextOptionsDialog extends ContextOptionsDialog {
+public interface BatteryOptimizationSupport {
 
-    private TestContextOptionsSupport contextOptionsSupport;
+    IPowerManager getPowerManager();
 
-    @Override
-    public ContextOptionsSupport getContextOptionsSupport() {
-        if (contextOptionsSupport == null) {
-            contextOptionsSupport = new TestContextOptionsSupport();
-        }
-        return contextOptionsSupport;
-    }
+    void onBatteryOptimizationDialogOkClicked(BatteryOptimizationDialog batteryOptimizationDialog);
 }

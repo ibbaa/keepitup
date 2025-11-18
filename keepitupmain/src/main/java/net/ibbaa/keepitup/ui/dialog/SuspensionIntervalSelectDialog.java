@@ -35,7 +35,7 @@ import net.ibbaa.keepitup.R;
 import net.ibbaa.keepitup.logging.Log;
 import net.ibbaa.keepitup.model.Interval;
 import net.ibbaa.keepitup.model.Time;
-import net.ibbaa.keepitup.ui.SuspensionIntervalSelectSupport;
+import net.ibbaa.keepitup.ui.support.SuspensionIntervalSelectSupport;
 import net.ibbaa.keepitup.ui.validation.IntervalValidator;
 import net.ibbaa.keepitup.ui.validation.NumberPickerColorListener;
 import net.ibbaa.keepitup.ui.validation.ValidationResult;
