@@ -586,7 +586,7 @@ public class SuspensionIntervalsDialog extends DialogFragmentBase implements Con
         try {
             dialog.show(getParentFragmentManager(), name);
         } catch (Exception exc) {
-            Log.e(SettingsInputActivity.class.getName(), "Error opening dialog", exc);
+            Log.e(SuspensionIntervalsDialog.class.getName(), "Error opening dialog", exc);
         }
     }
 }

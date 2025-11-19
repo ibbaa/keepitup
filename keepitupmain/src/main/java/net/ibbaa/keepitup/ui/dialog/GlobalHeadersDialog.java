@@ -36,7 +36,6 @@ import net.ibbaa.keepitup.model.Header;
 import net.ibbaa.keepitup.ui.GlobalHeaderHandler;
 import net.ibbaa.keepitup.ui.GlobalSettingsActivity;
 import net.ibbaa.keepitup.ui.NetworkTaskMainActivity;
-import net.ibbaa.keepitup.ui.SettingsInputActivity;
 import net.ibbaa.keepitup.ui.adapter.DeleteSwipeCallback;
 import net.ibbaa.keepitup.ui.adapter.GlobalHeaderAdapter;
 import net.ibbaa.keepitup.ui.support.ConfirmSupport;
@@ -69,7 +68,6 @@ public class GlobalHeadersDialog extends DialogFragmentBase implements ConfirmSu
         boolean containsSavedState = containsSavedState(savedInstanceState);
         Log.d(GlobalHeadersDialog.class.getName(), "containsSavedState is " + containsSavedState);
         Bundle adapterState = containsSavedState ? savedInstanceState.getBundle(getGlobalHeadersAdapterKey()) : null;
-        Bundle currentHeaderState = containsSavedState ? savedInstanceState.getBundle(getCurrentHeaderKey()) : null;
         prepareGlobalHeadersRecyclerView(adapterState);
         prepareAddImageButton();
         prepareOkCancelImageButtons();
@@ -95,14 +93,6 @@ public class GlobalHeadersDialog extends DialogFragmentBase implements ConfirmSu
 
     private String getGlobalHeadersAdapterKey() {
         return GlobalHeadersDialog.class.getSimpleName() + "GlobalHeadersAdapter";
-    }
-
-    private String getCurrentHeaderKey() {
-        return GlobalHeadersDialog.class.getSimpleName() + "CurrentHeader";
-    }
-
-    private String getPositionKey() {
-        return GlobalHeadersDialog.class.getSimpleName() + "Position";
     }
 
     private void prepareGlobalHeadersRecyclerView(Bundle adapterState) {
@@ -281,7 +271,7 @@ public class GlobalHeadersDialog extends DialogFragmentBase implements ConfirmSu
 
     private void onHeaderAddClicked(View view) {
         Log.d(GlobalHeadersDialog.class.getName(), "onHeaderAddClicked");
-        //showSuspensionIntervalSelectDialog(SuspensionIntervalSelectDialog.Mode.START, currentInterval.getStart(), null);
+        showGlobalHeaderEditDialog(new Header(), -1);
     }
 
     private void onOkClicked(View view) {
@@ -350,23 +340,20 @@ public class GlobalHeadersDialog extends DialogFragmentBase implements ConfirmSu
         return (GlobalHeadersSupport) activity;
     }
 
-    /*private void showSuspensionIntervalSelectDialog(SuspensionIntervalSelectDialog.Mode mode, Time defaultTime, Time startTime) {
-        Log.d(GlobalHeadersDialog.class.getName(), "showSuspensionIntervallSelectDialog with mode " + mode + " and defaultTime " + defaultTime);
-        SuspensionIntervalSelectDialog intervalSelectDialog = new SuspensionIntervalSelectDialog();
-        Bundle bundle = BundleUtil.stringToBundle(intervalSelectDialog.getModeKey(), mode.name());
-        bundle = BundleUtil.bundleToBundle(intervalSelectDialog.getDefaultTimeKey(), defaultTime.toBundle(), bundle);
-        if (startTime != null) {
-            bundle = BundleUtil.bundleToBundle(intervalSelectDialog.getStartTimeKey(), startTime.toBundle(), bundle);
-        }
-        intervalSelectDialog.setArguments(bundle);
-        showDialog(intervalSelectDialog, SuspensionIntervalSelectDialog.class.getName());
-    }*/
+    private void showGlobalHeaderEditDialog(Header header, int position) {
+        Log.d(GlobalHeadersDialog.class.getName(), "showGlobalHeaderEditDialog with header " + header + " and position " + position);
+        GlobalHeaderEditDialog headerEditDialog = new GlobalHeaderEditDialog();
+        Bundle bundle = BundleUtil.bundleToBundle(headerEditDialog.getHeaderKey(), header.toBundle());
+        bundle = BundleUtil.integerToBundle(headerEditDialog.getPositionKey(), position, bundle);
+        headerEditDialog.setArguments(bundle);
+        showDialog(headerEditDialog, GlobalHeaderEditDialog.class.getName());
+    }
 
     private void showDialog(DialogFragment dialog, String name) {
         try {
             dialog.show(getParentFragmentManager(), name);
         } catch (Exception exc) {
-            Log.e(SettingsInputActivity.class.getName(), "Error opening dialog", exc);
+            Log.e(GlobalHeadersDialog.class.getName(), "Error opening dialog", exc);
         }
     }
 }

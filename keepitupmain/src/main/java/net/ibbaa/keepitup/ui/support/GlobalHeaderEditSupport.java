@@ -20,7 +20,7 @@ import net.ibbaa.keepitup.ui.dialog.GlobalHeaderEditDialog;
 
 public interface GlobalHeaderEditSupport {
 
-    void onGlobalHeaderEditDialogOkClicked(GlobalHeaderEditDialog globalHeaderEditDialog);
+    void onGlobalHeaderEditDialogOkClicked(GlobalHeaderEditDialog globalHeaderEditDialog, int position);
 
     void onGlobalHeaderEditDialogCancelClicked(GlobalHeaderEditDialog globalHeaderEditDialog);
 }

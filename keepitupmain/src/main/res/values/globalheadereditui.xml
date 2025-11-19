@@ -20,5 +20,6 @@
     <string name="label_dialog_global_header_edit_title">HTTP header</string>
     <string name="label_dialog_global_header_edit_name">Header name</string>
     <string name="label_dialog_global_header_edit_value">Header value</string>
+    <integer name="edittext_dialog_global_header_edit_name_max_lines">2</integer>
     <integer name="edittext_dialog_global_header_edit_value_max_lines">5</integer>
 </resources>

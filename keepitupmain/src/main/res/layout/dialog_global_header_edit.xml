@@ -49,6 +49,28 @@
         </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/linearlayout_dialog_settings_input_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/linearlayout_dialog_global_header_edit_name_margin_left"
+            android:layout_marginTop="@dimen/linearlayout_dialog_global_header_edit_name_margin_top">
+
+            <EditText
+                android:id="@+id/edittext_dialog_global_header_edit_name"
+                style="@style/EditTextTheme"
+                android:layout_width="@dimen/edittext_dialog_global_header_edit_name_width"
+                android:layout_height="wrap_content"
+                android:importantForAutofill="no"
+                android:inputType="textUri|textMultiLine|textNoSuggestions"
+                android:scrollHorizontally="false"
+                android:maxLines="@integer/edittext_dialog_global_header_edit_name_max_lines"
+                android:hint="@string/label_dialog_global_header_edit_name"
+                android:text=""
+                tools:ignore="LabelFor" />
+
+        </LinearLayout>
+
+        <LinearLayout
             android:id="@+id/linearlayout_dialog_settings_input_value"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
