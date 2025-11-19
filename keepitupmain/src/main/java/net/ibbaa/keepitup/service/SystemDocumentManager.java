@@ -67,6 +67,7 @@ public class SystemDocumentManager implements IDocumentManager {
         Log.d(SystemDocumentManager.class.getName(), "getValidFileName, file is " + file);
         try {
             file = file.replaceAll("/", "");
+            file = file.replaceAll("[:*?\"<>|]", "_");
             if (!fileExists(folder, file)) {
                 Log.d(SystemDocumentManager.class.getName(), "File " + file + " does not exist");
                 return file;
