@@ -27,6 +27,7 @@ import android.widget.ImageView;
 import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.DialogFragment;
+import androidx.fragment.app.Fragment;
 
 import net.ibbaa.keepitup.R;
 import net.ibbaa.keepitup.logging.Log;
@@ -36,7 +37,6 @@ import net.ibbaa.keepitup.ui.clipboard.IClipboardManager;
 import net.ibbaa.keepitup.ui.clipboard.SystemClipboardManager;
 import net.ibbaa.keepitup.ui.support.ContextOptionsSupport;
 import net.ibbaa.keepitup.ui.support.GlobalHeaderEditSupport;
-import net.ibbaa.keepitup.ui.validation.FieldValidator;
 import net.ibbaa.keepitup.ui.validation.HeaderNameFieldValidator;
 import net.ibbaa.keepitup.ui.validation.HeaderValueFieldValidator;
 import net.ibbaa.keepitup.ui.validation.TextColorValidatingWatcher;
@@ -49,9 +49,6 @@ import java.util.List;
 
 @SuppressWarnings({"unused", "SameReturnValue"})
 public class GlobalHeaderEditDialog extends DialogFragmentBase implements ContextOptionsSupport {
-
-    private Header header;
-    private int position;
 
     private View dialogView;
     private EditText nameEditText;
@@ -85,19 +82,18 @@ public class GlobalHeaderEditDialog extends DialogFragmentBase implements Contex
         dialogView = inflater.inflate(R.layout.dialog_global_header_edit, container);
         initEdgeToEdgeInsets(dialogView);
         Bundle headerBundle = BundleUtil.bundleFromBundle(getHeaderKey(), requireArguments());
-        header = headerBundle != null ? new Header(headerBundle) : new Header();
-        position = BundleUtil.integerFromBundle(getPositionKey(), requireArguments());
-        prepareNameTextField();
-        prepareValueTextField();
+        Header header = headerBundle != null ? new Header(headerBundle) : new Header();
+        prepareNameTextField(header);
+        prepareValueTextField(header);
         prepareOkCancelImageButtons();
         return dialogView;
     }
 
-    private void prepareNameTextField() {
+    private void prepareNameTextField(Header header) {
         Log.d(GlobalHeaderEditDialog.class.getName(), "prepareNameTextField");
         nameEditText = dialogView.findViewById(R.id.edittext_dialog_global_header_edit_name);
         nameEditText.setOnLongClickListener(this::onNameEditTextLongClicked);
-        nameEditText.setText("");
+        nameEditText.setText(StringUtil.notNull(header.getName()));
         prepareNameEditTextListener();
     }
 
@@ -111,11 +107,11 @@ public class GlobalHeaderEditDialog extends DialogFragmentBase implements Contex
         nameEditText.addTextChangedListener(nameEditTextWatcher);
     }
 
-    private void prepareValueTextField() {
+    private void prepareValueTextField(Header header) {
         Log.d(GlobalHeaderEditDialog.class.getName(), "prepareValueTextField");
         valueEditText = dialogView.findViewById(R.id.edittext_dialog_global_header_edit_value);
         valueEditText.setOnLongClickListener(this::onValueEditTextLongClicked);
-        valueEditText.setText("");
+        valueEditText.setText(StringUtil.notNull(header.getValue()));
         prepareValueEditTextListener();
     }
 
@@ -160,7 +156,7 @@ public class GlobalHeaderEditDialog extends DialogFragmentBase implements Contex
             Log.d(GlobalHeaderEditDialog.class.getName(), "Validation was successful");
             GlobalHeaderEditSupport globalHeaderEditSupport = getGlobalHeaderEditSupport();
             if (globalHeaderEditSupport != null) {
-                globalHeaderEditSupport.onGlobalHeaderEditDialogOkClicked(this, position);
+                globalHeaderEditSupport.onGlobalHeaderEditDialogOkClicked(this, BundleUtil.integerFromBundle(getPositionKey(), requireArguments()));
             } else {
                 Log.e(GlobalHeaderEditDialog.class.getName(), "globalHeaderEditSupport is null");
                 dismiss();
@@ -180,6 +176,15 @@ public class GlobalHeaderEditDialog extends DialogFragmentBase implements Contex
             Log.e(GlobalHeaderEditDialog.class.getName(), "settingsInputSupport is null");
             dismiss();
         }
+    }
+
+    public Header getHeader() {
+        Log.d(GlobalHeaderEditDialog.class.getName(), "getHeader");
+        Bundle headerBundle = BundleUtil.bundleFromBundle(getHeaderKey(), requireArguments());
+        Header header = headerBundle != null ? new Header(headerBundle) : new Header();
+        header.setName(getName());
+        header.setValue(getValue());
+        return header;
     }
 
     private boolean hasErrors(List<ValidationResult> validationResult) {
@@ -227,41 +232,6 @@ public class GlobalHeaderEditDialog extends DialogFragmentBase implements Contex
             }
         }
         return false;
-    }
-
-    private List<FieldValidator> getValidators() {
-        Log.d(GlobalHeaderEditDialog.class.getName(), "getValidators");
-        /*List<String> validatorClassNames = input.getValidators();
-        List<FieldValidator> validators = new ArrayList<>();
-        if (validatorClassNames == null) {
-            Log.d(GlobalHeaderEditDialog.class.getName(), "validatorClasses is null. Returning empty list.");
-            return Collections.emptyList();
-        }
-        for (String validatorClassName : validatorClassNames) {
-            Log.d(GlobalHeaderEditDialog.class.getName(), "Specified validator class is " + validatorClassName);
-            FieldValidator validator = getValidator(validatorClassName);
-            if (validator != null) {
-                Log.d(GlobalHeaderEditDialog.class.getName(), "Validator class is " + validator.getClass().getName());
-                validators.add(validator);
-            } else {
-                Log.d(GlobalHeaderEditDialog.class.getName(), "Validator class is null");
-            }
-        }
-        if (validators.isEmpty()) {
-            Log.d(GlobalHeaderEditDialog.class.getName(), "No validators specified. Returning empty list.");
-        }*/
-        return null;
-    }
-
-    private FieldValidator getValidator(String validatorClassName) {
-        /*try {
-            Class<?> validatorClass = requireContext().getClassLoader().loadClass(validatorClassName);
-            Constructor<?> validatorClassConstructor = validatorClass.getConstructor(String.class, Context.class);
-            return (FieldValidator) validatorClassConstructor.newInstance(input.getField(), getContext());
-        } catch (Throwable exc) {
-            Log.e(GlobalHeaderEditDialog.class.getName(), "Error instantiating validator class", exc);
-        }*/
-        return null;
     }
 
     private void showMessageDialog(List<ValidationResult> validationResult) {
@@ -312,6 +282,12 @@ public class GlobalHeaderEditDialog extends DialogFragmentBase implements Contex
 
     private GlobalHeaderEditSupport getGlobalHeaderEditSupport() {
         Log.d(GlobalHeaderEditDialog.class.getName(), "getGlobalHeaderEditSupport");
+        List<Fragment> fragments = getParentFragmentManager().getFragments();
+        for (Fragment fragment : fragments) {
+            if (fragment instanceof GlobalHeaderEditSupport) {
+                return (GlobalHeaderEditSupport) fragment;
+            }
+        }
         Activity activity = getActivity();
         if (activity == null) {
             Log.e(GlobalHeaderEditDialog.class.getName(), "getGlobalHeaderEditSupport, activity is null");

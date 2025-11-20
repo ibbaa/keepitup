@@ -17,7 +17,7 @@
 <resources>
     <string name="label_dialog_global_header_edit_ok">@android:string/ok</string>
     <string name="label_dialog_global_header_edit_cancel">@android:string/cancel</string>
-    <string name="label_dialog_global_header_edit_title">HTTP header</string>
+    <string name="label_dialog_global_header_edit_title">HTTP Header</string>
     <string name="label_dialog_global_header_edit_name">Header name</string>
     <string name="label_dialog_global_header_edit_value">Header value</string>
     <integer name="edittext_dialog_global_header_edit_name_max_lines">2</integer>

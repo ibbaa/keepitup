@@ -38,6 +38,7 @@ import net.ibbaa.keepitup.ui.dialog.FileChooseDialogFolderModeTest;
 import net.ibbaa.keepitup.ui.dialog.FileChooseDialogMockTest;
 import net.ibbaa.keepitup.ui.dialog.GeneralMessageDialogTest;
 import net.ibbaa.keepitup.ui.dialog.GlobalHeadersDialogTest;
+import net.ibbaa.keepitup.ui.dialog.GlobalHeadersEditDialogTest;
 import net.ibbaa.keepitup.ui.dialog.InfoDialogTest;
 import net.ibbaa.keepitup.ui.dialog.NetworkTaskEditDialogTest;
 import net.ibbaa.keepitup.ui.dialog.PermissionExplainDialogTest;
@@ -80,6 +81,7 @@ import org.junit.runners.Suite;
         FileChooseDialogMockTest.class,
         GeneralMessageDialogTest.class,
         GlobalHeadersDialogTest.class,
+        GlobalHeadersEditDialogTest.class,
         InfoDialogTest.class,
         NetworkTaskEditDialogTest.class,
         PermissionExplainDialogTest.class,

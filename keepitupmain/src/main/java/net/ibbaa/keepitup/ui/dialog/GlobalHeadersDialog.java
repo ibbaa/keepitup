@@ -39,6 +39,7 @@ import net.ibbaa.keepitup.ui.NetworkTaskMainActivity;
 import net.ibbaa.keepitup.ui.adapter.DeleteSwipeCallback;
 import net.ibbaa.keepitup.ui.adapter.GlobalHeaderAdapter;
 import net.ibbaa.keepitup.ui.support.ConfirmSupport;
+import net.ibbaa.keepitup.ui.support.GlobalHeaderEditSupport;
 import net.ibbaa.keepitup.ui.support.GlobalHeadersSupport;
 import net.ibbaa.keepitup.ui.support.SwipeDeleteSupport;
 import net.ibbaa.keepitup.util.BundleUtil;
@@ -47,7 +48,7 @@ import java.util.Collections;
 import java.util.Objects;
 
 @SuppressWarnings({"unused"})
-public class GlobalHeadersDialog extends DialogFragmentBase implements ConfirmSupport, SwipeDeleteSupport {
+public class GlobalHeadersDialog extends DialogFragmentBase implements GlobalHeaderEditSupport, ConfirmSupport, SwipeDeleteSupport {
 
     private View dialogView;
     private RecyclerView globalHeadersRecyclerView;
@@ -204,6 +205,18 @@ public class GlobalHeadersDialog extends DialogFragmentBase implements ConfirmSu
             itemTouchHelper = new ItemTouchHelper(new DeleteSwipeCallback(this));
             itemTouchHelper.attachToRecyclerView(recyclerView);
         });
+    }
+
+    @Override
+    public void onGlobalHeaderEditDialogOkClicked(GlobalHeaderEditDialog globalHeaderEditDialog, int position) {
+        Log.d(GlobalHeadersDialog.class.getName(), "onGlobalHeaderEditDialogOkClicked with position " + position);
+        globalHeaderEditDialog.dismiss();
+    }
+
+    @Override
+    public void onGlobalHeaderEditDialogCancelClicked(GlobalHeaderEditDialog globalHeaderEditDialog) {
+        Log.d(GlobalHeadersDialog.class.getName(), "onGlobalHeaderEditDialogCancelClicked");
+        globalHeaderEditDialog.dismiss();
     }
 
     /*@Override
