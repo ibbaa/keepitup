@@ -36,7 +36,8 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/linearlayout_dialog_global_header_edit_title_margin_left"
             android:layout_marginTop="@dimen/linearlayout_dialog_global_header_edit_title_margin_top"
-            android:layout_marginBottom="@dimen/linearlayout_dialog_global_header_edit_title_margin_bottom">
+            android:layout_marginBottom="@dimen/linearlayout_dialog_global_header_edit_title_margin_bottom"
+            android:orientation="vertical">
 
             <TextView
                 android:id="@+id/textview_dialog_global_header_edit_title"
@@ -53,12 +54,14 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/linearlayout_dialog_global_header_edit_name_margin_left"
-            android:layout_marginTop="@dimen/linearlayout_dialog_global_header_edit_name_margin_top">
+            android:layout_marginEnd="@dimen/linearlayout_dialog_global_header_edit_value_margin_end"
+            android:layout_marginTop="@dimen/linearlayout_dialog_global_header_edit_name_margin_top"
+            android:orientation="vertical">
 
             <EditText
                 android:id="@+id/edittext_dialog_global_header_edit_name"
                 style="@style/EditTextTheme"
-                android:layout_width="@dimen/edittext_dialog_global_header_edit_name_width"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:importantForAutofill="no"
                 android:inputType="textUri|textMultiLine|textNoSuggestions"
@@ -75,12 +78,14 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/linearlayout_dialog_global_header_edit_value_margin_left"
+            android:layout_marginEnd="@dimen/linearlayout_dialog_global_header_edit_value_margin_end"
             android:layout_marginTop="@dimen/linearlayout_dialog_global_header_edit_value_margin_top">
 
             <EditText
                 android:id="@+id/edittext_dialog_global_header_edit_value"
                 style="@style/EditTextTheme"
-                android:layout_width="@dimen/edittext_dialog_global_header_edit_value_width"
+                android:layout_width="match_parent"
+                android:layout_marginEnd="16dp"
                 android:layout_height="wrap_content"
                 android:importantForAutofill="no"
                 android:inputType="textUri|textMultiLine|textNoSuggestions"
