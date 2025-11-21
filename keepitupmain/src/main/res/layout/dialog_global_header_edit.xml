@@ -85,7 +85,6 @@
                 android:id="@+id/edittext_dialog_global_header_edit_value"
                 style="@style/EditTextTheme"
                 android:layout_width="match_parent"
-                android:layout_marginEnd="16dp"
                 android:layout_height="wrap_content"
                 android:importantForAutofill="no"
                 android:inputType="textUri|textMultiLine|textNoSuggestions"
