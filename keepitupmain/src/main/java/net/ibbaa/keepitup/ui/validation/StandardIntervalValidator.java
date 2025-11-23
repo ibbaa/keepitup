@@ -39,7 +39,7 @@ public class StandardIntervalValidator implements IntervalValidator {
 
     @Override
     public ValidationResult validateDuration() {
-        Log.d(StandardHostPortValidator.class.getName(), "validateDuration");
+        Log.d(StandardIntervalValidator.class.getName(), "validateDuration");
         boolean result = validator.validateDuration(existingIntervals);
         Log.d(StandardHostPortValidator.class.getName(), "Validation result is " + result);
         String message;
@@ -54,9 +54,9 @@ public class StandardIntervalValidator implements IntervalValidator {
 
     @Override
     public ValidationResult validateDuration(Interval interval) {
-        Log.d(StandardHostPortValidator.class.getName(), "validateDuration, interval is " + interval);
+        Log.d(StandardIntervalValidator.class.getName(), "validateDuration, interval is " + interval);
         boolean result = validator.validateDuration(interval);
-        Log.d(StandardHostPortValidator.class.getName(), "Validation result is " + result);
+        Log.d(StandardIntervalValidator.class.getName(), "Validation result is " + result);
         String message;
         if (result) {
             message = context.getResources().getString(R.string.validation_successful);
@@ -69,18 +69,18 @@ public class StandardIntervalValidator implements IntervalValidator {
 
     @Override
     public ValidationResult validateOverlapSorted() {
-        Log.d(StandardHostPortValidator.class.getName(), "validateOverlapSorted");
+        Log.d(StandardIntervalValidator.class.getName(), "validateOverlapSorted");
         boolean result = validator.validateOverlapSorted(existingIntervals);
-        Log.d(StandardHostPortValidator.class.getName(), "Validation result is " + result);
+        Log.d(StandardIntervalValidator.class.getName(), "Validation result is " + result);
         String message = getOverlapMessage(result);
         return new ValidationResult(result, context.getResources().getString(R.string.suspension_interval_field_name), message);
     }
 
     @Override
     public ValidationResult validateOverlap(Interval interval) {
-        Log.d(StandardHostPortValidator.class.getName(), "validateOverlap, interval is " + interval);
+        Log.d(StandardIntervalValidator.class.getName(), "validateOverlap, interval is " + interval);
         boolean result = validator.validateOverlap(interval, existingIntervals);
-        Log.d(StandardHostPortValidator.class.getName(), "Validation result is " + result);
+        Log.d(StandardIntervalValidator.class.getName(), "Validation result is " + result);
         String message = getOverlapMessage(result);
         return new ValidationResult(result, context.getResources().getString(R.string.suspension_interval_field_name), message);
     }

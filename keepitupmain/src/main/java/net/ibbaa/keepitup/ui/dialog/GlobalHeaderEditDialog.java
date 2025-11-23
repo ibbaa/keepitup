@@ -37,8 +37,8 @@ import net.ibbaa.keepitup.ui.clipboard.IClipboardManager;
 import net.ibbaa.keepitup.ui.clipboard.SystemClipboardManager;
 import net.ibbaa.keepitup.ui.support.ContextOptionsSupport;
 import net.ibbaa.keepitup.ui.support.GlobalHeaderEditSupport;
-import net.ibbaa.keepitup.ui.validation.HeaderNameFieldValidator;
-import net.ibbaa.keepitup.ui.validation.HeaderValueFieldValidator;
+import net.ibbaa.keepitup.ui.validation.HeaderValidator;
+import net.ibbaa.keepitup.ui.validation.StandardHeaderValidator;
 import net.ibbaa.keepitup.ui.validation.TextColorValidatingWatcher;
 import net.ibbaa.keepitup.ui.validation.ValidationResult;
 import net.ibbaa.keepitup.util.BundleUtil;
@@ -193,16 +193,16 @@ public class GlobalHeaderEditDialog extends DialogFragmentBase implements Contex
 
     private boolean validateName(EditText editText) {
         Log.d(GlobalHeaderEditDialog.class.getName(), "validateName");
-        HeaderNameFieldValidator validator = new HeaderNameFieldValidator(getResources().getString(R.string.label_dialog_global_header_edit_name), getContext());
-        ValidationResult result = validator.validate(getName());
+        HeaderValidator validator = new StandardHeaderValidator(getContext());
+        ValidationResult result = validator.validateName(getName());
         Log.d(GlobalHeaderEditDialog.class.getName(), "Validation result: " + result);
         return result.isValidationSuccessful();
     }
 
     private boolean validateValue(EditText editText) {
-        Log.d(GlobalHeaderEditDialog.class.getName(), "validateValue");
-        HeaderValueFieldValidator validator = new HeaderValueFieldValidator(getResources().getString(R.string.label_dialog_global_header_edit_value), getContext());
-        ValidationResult result = validator.validate(getValue());
+        Log.d(GlobalHeaderEditDialog.class.getName(), "validateName");
+        HeaderValidator validator = new StandardHeaderValidator(getContext());
+        ValidationResult result = validator.validateValue(getValue());
         Log.d(GlobalHeaderEditDialog.class.getName(), "Validation result: " + result);
         return result.isValidationSuccessful();
     }
@@ -210,12 +210,9 @@ public class GlobalHeaderEditDialog extends DialogFragmentBase implements Contex
     private List<ValidationResult> validateInput() {
         Log.d(GlobalHeaderEditDialog.class.getName(), "validateInput");
         List<ValidationResult> validationResults = new ArrayList<>();
-        HeaderNameFieldValidator nameFieldValidator = new HeaderNameFieldValidator(getResources().getString(R.string.label_dialog_global_header_edit_name), getContext());
-        HeaderValueFieldValidator valueFieldValidator = new HeaderValueFieldValidator(getResources().getString(R.string.label_dialog_global_header_edit_value), getContext());
-        ValidationResult nameResult = nameFieldValidator.validate(getName());
-        ValidationResult valueResult = valueFieldValidator.validate(getValue());
-        Log.d(GlobalHeaderEditDialog.class.getName(), "Validation of name field result: " + nameResult);
-        Log.d(GlobalHeaderEditDialog.class.getName(), "Validation of value field result: " + valueResult);
+        HeaderValidator validator = new StandardHeaderValidator(getContext());
+        ValidationResult nameResult = validator.validateName(getName());
+        ValidationResult valueResult = validator.validateValue(getValue());
         if (!nameResult.isValidationSuccessful()) {
             validationResults.add(nameResult);
         }

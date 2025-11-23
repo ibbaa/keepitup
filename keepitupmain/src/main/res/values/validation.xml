@@ -26,8 +26,8 @@
     <string name="accesstypedata_connect_count_field_name">Connect count</string>
     <string name="resolve_host_field_name">Connect-to host</string>
     <string name="resolve_port_field_name">Connect-to port</string>
-    <string name="header_name_field_name">Name</string>
-    <string name="header_value_field_name">Value</string>
+    <string name="header_name_field_name">Header name</string>
+    <string name="header_value_field_name">Header value</string>
     <string name="invalid_no_value">No value specified</string>
     <string name="invalid_number_format">Invalid format</string>
     <string name="invalid_host_format">No valid host or IP address</string>
