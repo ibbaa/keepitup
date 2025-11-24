@@ -21,6 +21,7 @@ import static androidx.test.espresso.action.ViewActions.click;
 import static androidx.test.espresso.action.ViewActions.longClick;
 import static androidx.test.espresso.action.ViewActions.replaceText;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
+import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.isRoot;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
@@ -315,6 +316,78 @@ public class GlobalHeadersEditDialogTest extends BaseUITest {
         assertEquals("NameTest", header.getName());
         assertEquals("TestMore", header.getValue());
         onView(withId(R.id.imageview_dialog_global_header_edit_cancel)).perform(click());
+        activityScenario.close();
+    }
+
+    @Test
+    public void testNameValidationFailed() {
+        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
+        openGlobalHeaderEditDialog(getHeader(1));
+        onView(withId(R.id.edittext_dialog_global_header_edit_name)).perform(replaceText("1234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789123456789012345678901234567890"));
+        onView(isRoot()).perform(waitFor(500));
+        onView(withId(R.id.imageview_dialog_global_header_edit_ok)).perform(click());
+        assertEquals(2, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
+        onView(allOf(withText("Header name"), withGridLayoutPosition(1, 0))).check(matches(isDisplayed()));
+        onView(allOf(withText("Maximum length: 128"), withGridLayoutPosition(1, 1))).check(matches(isDisplayed()));
+        onView(withId(R.id.imageview_dialog_validator_error_ok)).perform(click());
+        onView(withId(R.id.edittext_dialog_global_header_edit_name)).perform(replaceText(""));
+        onView(isRoot()).perform(waitFor(500));
+        onView(withId(R.id.imageview_dialog_global_header_edit_ok)).perform(click());
+        assertEquals(2, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
+        onView(allOf(withText("Header name"), withGridLayoutPosition(1, 0))).check(matches(isDisplayed()));
+        onView(allOf(withText("No value specified"), withGridLayoutPosition(1, 1))).check(matches(isDisplayed()));
+        onView(withId(R.id.imageview_dialog_validator_error_ok)).perform(click());
+        onView(withId(R.id.edittext_dialog_global_header_edit_name)).perform(replaceText("Äpfel"));
+        onView(isRoot()).perform(waitFor(500));
+        onView(withId(R.id.imageview_dialog_global_header_edit_ok)).perform(click());
+        assertEquals(2, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
+        onView(allOf(withText("Header name"), withGridLayoutPosition(1, 0))).check(matches(isDisplayed()));
+        onView(allOf(withText("Value contains invalid characters"), withGridLayoutPosition(1, 1))).check(matches(isDisplayed()));
+        onView(withId(R.id.imageview_dialog_validator_error_ok)).perform(click());
+        onView(withId(R.id.edittext_dialog_global_header_edit_name)).perform(replaceText("success"));
+        onView(isRoot()).perform(waitFor(500));
+        onView(withId(R.id.imageview_dialog_global_header_edit_ok)).perform(click());
+        assertEquals(0, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
+        activityScenario.close();
+    }
+
+    @Test
+    public void testValueValidationFailed() {
+        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
+        openGlobalHeaderEditDialog(getHeader(1));
+        onView(withId(R.id.edittext_dialog_global_header_edit_value)).perform(replaceText("Test\nMore"));
+        onView(isRoot()).perform(waitFor(500));
+        onView(withId(R.id.imageview_dialog_global_header_edit_ok)).perform(click());
+        assertEquals(2, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
+        onView(allOf(withText("Header value"), withGridLayoutPosition(1, 0))).check(matches(isDisplayed()));
+        onView(allOf(withText("Value contains invalid characters"), withGridLayoutPosition(1, 1))).check(matches(isDisplayed()));
+        onView(withId(R.id.imageview_dialog_validator_error_ok)).perform(click());
+        onView(withId(R.id.edittext_dialog_global_header_edit_value)).perform(replaceText(""));
+        onView(isRoot()).perform(waitFor(500));
+        onView(withId(R.id.imageview_dialog_global_header_edit_ok)).perform(click());
+        assertEquals(0, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
+        activityScenario.close();
+    }
+
+    @Test
+    public void testNameAndValueValidationFailed() {
+        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
+        openGlobalHeaderEditDialog(getHeader(1));
+        onView(withId(R.id.edittext_dialog_global_header_edit_name)).perform(replaceText("Test\nMore"));
+        onView(withId(R.id.edittext_dialog_global_header_edit_value)).perform(replaceText("Test\nMore"));
+        onView(isRoot()).perform(waitFor(500));
+        onView(withId(R.id.imageview_dialog_global_header_edit_ok)).perform(click());
+        assertEquals(2, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
+        onView(allOf(withText("Header name"), withGridLayoutPosition(1, 0))).check(matches(isDisplayed()));
+        onView(allOf(withText("Value contains invalid characters"), withGridLayoutPosition(1, 1))).check(matches(isDisplayed()));
+        onView(allOf(withText("Header value"), withGridLayoutPosition(2, 0))).check(matches(isDisplayed()));
+        onView(allOf(withText("Value contains invalid characters"), withGridLayoutPosition(2, 1))).check(matches(isDisplayed()));
+        onView(withId(R.id.imageview_dialog_validator_error_ok)).perform(click());
+        onView(withId(R.id.edittext_dialog_global_header_edit_name)).perform(replaceText("success"));
+        onView(withId(R.id.edittext_dialog_global_header_edit_value)).perform(replaceText("success"));
+        onView(isRoot()).perform(waitFor(500));
+        onView(withId(R.id.imageview_dialog_global_header_edit_ok)).perform(click());
+        assertEquals(0, getActivity(activityScenario).getSupportFragmentManager().getFragments().size());
         activityScenario.close();
     }
 
