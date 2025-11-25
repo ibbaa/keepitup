@@ -215,6 +215,7 @@ public class GlobalHeaderHandlerTest extends BaseUITest {
         return resolve;
     }
 
+    @SuppressWarnings("SameParameterValue")
     private Header getHeader3(long networktaskid) {
         Header resolve = new Header();
         resolve.setId(-1);

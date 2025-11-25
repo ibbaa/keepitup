@@ -16,7 +16,6 @@
 
 package net.ibbaa.keepitup.ui.adapter;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -133,9 +132,5 @@ public class GlobalHeaderAdapter extends RecyclerView.Adapter<GlobalHeaderViewHo
 
     public List<Header> getAllItems() {
         return Collections.unmodifiableList(headers);
-    }
-
-    private Context getContext() {
-        return headersDialog.getActivity();
     }
 }

@@ -28,6 +28,7 @@ import net.ibbaa.keepitup.ui.sync.DBSyncHandler;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class GlobalHeaderHandler {
 
@@ -70,6 +71,10 @@ public class GlobalHeaderHandler {
 
     public boolean synchronizeHeaders() {
         Log.d(GlobalHeaderHandler.class.getName(), "synchronizeHeaders");
+        if (headerDialog == null) {
+            Log.e(GlobalHeaderHandler.class.getName(), "headerDialog is null");
+            return false;
+        }
         try {
             List<Header> newHeaders = headerDialog.getAdapter().getAllItems();
             newHeaders = excludeNonGlobal(newHeaders);
@@ -90,7 +95,9 @@ public class GlobalHeaderHandler {
             return !headerActions.isEmpty();
         } catch (Exception exc) {
             Log.e(GlobalHeaderHandler.class.getName(), "Error synchronizing headers.", exc);
-            showMessageDialog(getResources().getString(R.string.text_dialog_general_message_synchronize_headers));
+            if (globalSettingsActivity != null) {
+                showMessageDialog(getResources().getString(R.string.text_dialog_general_message_synchronize_headers));
+            }
         }
         return false;
     }
@@ -121,10 +128,10 @@ public class GlobalHeaderHandler {
     }
 
     private void showMessageDialog(String errorMessage) {
-        globalSettingsActivity.showMessageDialog(errorMessage);
+        Objects.requireNonNull(globalSettingsActivity).showMessageDialog(errorMessage);
     }
 
     private Resources getResources() {
-        return globalSettingsActivity.getResources();
+        return Objects.requireNonNull(globalSettingsActivity).getResources();
     }
 }

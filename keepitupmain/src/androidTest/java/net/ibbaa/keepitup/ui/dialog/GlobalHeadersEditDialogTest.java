@@ -822,6 +822,7 @@ public class GlobalHeadersEditDialogTest extends BaseUITest {
         return (GlobalHeaderEditDialog) getDialog(activityScenario, GlobalHeaderEditDialog.class);
     }
 
+    @SuppressWarnings("SameParameterValue")
     private Header getHeader(int number) {
         Header header = new Header();
         header.setNetworkTaskId(-1);

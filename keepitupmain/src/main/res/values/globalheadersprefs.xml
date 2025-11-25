@@ -16,6 +16,6 @@
 
 <resources>
     <integer name="list_item_global_header_max_value_lines">3</integer>
-    <dimen name="list_item_global_header_text_size_name">12sp</dimen>
-    <dimen name="list_item_global_header_text_size_value">10sp</dimen>
+    <dimen name="list_item_global_header_text_size_name">14sp</dimen>
+    <dimen name="list_item_global_header_text_size_value">12sp</dimen>
 </resources>

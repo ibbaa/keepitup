@@ -113,32 +113,6 @@ public class NetworkTaskMainActivity extends RecyclerViewBaseActivity implements
         initDragAndDrop();
         prepareAddImageButton();
         startForegroundServiceDelayed();
-        /*HeaderDAO headerDAO = new HeaderDAO(this);
-        headerDAO.deleteAllHeaders();
-        Header header1 = new Header();
-        header1.setName("User-Agent");
-        header1.setValue("Mozilla/5.0 (X11; Linux x86_64; rv:140.0) Gecko/20100101 Firefox/140.0");
-        Header header2 = new Header();
-        header2.setName("Cookie");
-        header2.setValue("euconsent-v2=CQX8PMAQX8PMAAKA9ADEB8FgALAAAELAAB5YLmwBwCJAJyAXmA0WC24LdwW9Bb-C4ILmguZAJAXmA0WC3ALcwW7BbwC4AFwgLiwXHBciC5YLmAAA.YAAAAAAAAAAA; addtl_consent=1~89; IABGPP_HDR_GppString=DBABMA~CQX-bgnQX-bgnAKA9ADEB8FgALAAAELAAB5YLmwBwCJAJyAXmA0WC24LdwW9Bb-C4ILmguZAJAXmA0WC3ALcwW7BbwC4AFwgLiwXHBciC5YLmAAA.YAAAAAAAAAAA");
-        Header header3 = new Header();
-        header3.setName("Accept-Encoding");
-        header3.setValue("gzip, br");
-        Header header4 = new Header();
-        header4.setName("X-Forwarded-For");
-        header4.setValue("2003:c3:9706:2900:2184:498c:a31d:d35");
-        Header header5 = new Header();
-        header5.setName("X-Forwarded-For-2");
-        header5.setValue("2003:c3:9706:2900:2184:498c:a31d:d35");
-        Header header6 = new Header();
-        header6.setName("X-Forwarded-For-3");
-        header6.setValue("2003:c3:9706:2900:2184:498c:a31d:d35");
-        headerDAO.insertHeader(header1);
-        headerDAO.insertHeader(header2);
-        headerDAO.insertHeader(header3);
-        headerDAO.insertHeader(header4);
-        headerDAO.insertHeader(header5);
-        headerDAO.insertHeader(header6);*/
     }
 
     private void initDragAndDrop() {

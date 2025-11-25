@@ -43,8 +43,12 @@ import net.ibbaa.keepitup.ui.support.GlobalHeaderEditSupport;
 import net.ibbaa.keepitup.ui.support.GlobalHeadersSupport;
 import net.ibbaa.keepitup.ui.support.SwipeDeleteSupport;
 import net.ibbaa.keepitup.util.BundleUtil;
+import net.ibbaa.keepitup.util.StringUtil;
 
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 import java.util.Objects;
 
 @SuppressWarnings({"unused"})
@@ -133,7 +137,7 @@ public class GlobalHeadersDialog extends DialogFragmentBase implements GlobalHea
             Log.e(GlobalHeadersDialog.class.getName(), "onHeaderOpenClicked, header is null");
             return;
         }
-        //open dialog
+        showGlobalHeaderEditDialog(header, index);
     }
 
     public void onHeaderDeleteClicked(View view, int index) {
@@ -208,8 +212,17 @@ public class GlobalHeadersDialog extends DialogFragmentBase implements GlobalHea
     }
 
     @Override
+    @SuppressWarnings("NotifyDataSetChanged")
     public void onGlobalHeaderEditDialogOkClicked(GlobalHeaderEditDialog globalHeaderEditDialog, int position) {
         Log.d(GlobalHeadersDialog.class.getName(), "onGlobalHeaderEditDialogOkClicked with position " + position);
+        if (position >= 0) {
+            getAdapter().removeItem(position);
+        }
+        Header header = globalHeaderEditDialog.getHeader();
+        getAdapter().addItem(header);
+        List<Header> headers = sortHeaderList(getAdapter().getAllItems());
+        getAdapter().replaceItems(headers);
+        getAdapter().notifyDataSetChanged();
         globalHeaderEditDialog.dismiss();
     }
 
@@ -218,69 +231,6 @@ public class GlobalHeadersDialog extends DialogFragmentBase implements GlobalHea
         Log.d(GlobalHeadersDialog.class.getName(), "onGlobalHeaderEditDialogCancelClicked");
         globalHeaderEditDialog.dismiss();
     }
-
-    /*@Override
-    @SuppressWarnings("NotifyDataSetChanged")
-    public void onGlobalHeaderSelectDialogOkClicked(SuspensionIntervalSelectDialog intervalSelectDialog, SuspensionIntervalSelectDialog.Mode mode) {
-        Log.d(GlobalHeadersDialog.class.getName(), "onSuspensionIntervalSelectDialogOkClicked with mode ");
-        if (SuspensionIntervalSelectDialog.Mode.START.equals(mode)) {
-            prepareCurrentInterval(intervalSelectDialog);
-            intervalSelectDialog.dismiss();
-            showSuspensionIntervalSelectDialog(SuspensionIntervalSelectDialog.Mode.END, currentInterval.getEnd(), currentInterval.getStart());
-        } else {
-            currentInterval.setEnd(intervalSelectDialog.getSelectedTime());
-            if (position >= 0) {
-                getAdapter().removeItem(position);
-                position = -1;
-            }
-            getAdapter().addItem(currentInterval);
-            List<Interval> intervals = TimeUtil.sortIntervalList(getAdapter().getAllItems());
-            getAdapter().replaceItems(intervals);
-            getAdapter().notifyDataSetChanged();
-            initializeCurrentInterval();
-            intervalSelectDialog.dismiss();
-        }
-    }
-
-    @Override
-    public void onSuspensionIntervalSelectDialogCancelClicked(SuspensionIntervalSelectDialog intervalSelectDialog, SuspensionIntervalSelectDialog.Mode mode) {
-        Log.d(GlobalHeadersDialog.class.getName(), "onSuspensionIntervalSelectDialogCancelClicked with mode " + mode);
-        if (position >= 0) {
-            position = -1;
-            initializeCurrentInterval();
-        } else {
-            if (SuspensionIntervalSelectDialog.Mode.START.equals(mode)) {
-                prepareCurrentInterval(intervalSelectDialog);
-            } else {
-                currentInterval.setEnd(intervalSelectDialog.getSelectedTime());
-                keepEnd = true;
-            }
-        }
-        intervalSelectDialog.dismiss();
-    }
-
-    private void prepareCurrentInterval(SuspensionIntervalSelectDialog intervalSelectDialog) {
-        Log.d(GlobalHeadersDialog.class.getName(), "prepareCurrentInterval");
-        Log.d(GlobalHeadersDialog.class.getName(), "position is " + position);
-        Time start = intervalSelectDialog.getSelectedTime();
-        Time end;
-        if (position >= 0) {
-            Interval interval = getAdapter().getItem(position);
-            if (interval == null) {
-                Log.e(GlobalHeadersDialog.class.getName(), "prepareCurrentInterval, interval at position " + position + " is null");
-                end = getEnd(start);
-            } else {
-                end = isIntervalEndStillValid(interval, start) ? interval.getEnd() : getEnd(start);
-            }
-        } else {
-            end = keepEnd && isIntervalEndStillValid(currentInterval, start) ? currentInterval.getEnd() : getEnd(start);
-            getEnd(start);
-        }
-        Log.d(GlobalHeadersDialog.class.getName(), "start is " + start);
-        Log.d(GlobalHeadersDialog.class.getName(), "end is " + end);
-        currentInterval.setStart(start);
-        currentInterval.setEnd(end);
-    }*/
 
     private void onHeaderAddClicked(View view) {
         Log.d(GlobalHeadersDialog.class.getName(), "onHeaderAddClicked");
@@ -367,6 +317,22 @@ public class GlobalHeadersDialog extends DialogFragmentBase implements GlobalHea
             dialog.show(getParentFragmentManager(), name);
         } catch (Exception exc) {
             Log.e(GlobalHeadersDialog.class.getName(), "Error opening dialog", exc);
+        }
+    }
+
+    public static List<Header> sortHeaderList(List<Header> headerList) {
+        List<Header> sortedList = new ArrayList<>(headerList);
+        Collections.sort(sortedList, new HeaderComparator());
+        return sortedList;
+    }
+
+    private static class HeaderComparator implements Comparator<Header> {
+        @Override
+        public int compare(Header header1, Header header2) {
+            if (header1.isEqual(header2)) {
+                return 0;
+            }
+            return StringUtil.notNull(header1.getName()).compareTo(StringUtil.notNull(header2.getName()));
         }
     }
 }
