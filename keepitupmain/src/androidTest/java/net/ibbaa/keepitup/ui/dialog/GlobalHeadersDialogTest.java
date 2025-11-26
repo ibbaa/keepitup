@@ -662,7 +662,6 @@ public class GlobalHeadersDialogTest extends BaseUITest {
         activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
         onView(withId(R.id.cardview_activity_global_settings_global_headers)).perform(scrollTo());
         onView(withId(R.id.cardview_activity_global_settings_global_headers)).perform(click());
-        assertEquals(1, getDialog().getAdapter().getAllItems().size());
         onView(withId(R.id.imageview_dialog_global_headers_add)).perform(click());
         onView(withId(R.id.imageview_dialog_global_header_edit_cancel)).perform(click());
         onView(withId(R.id.listview_dialog_global_headers_headers)).check(matches(withListSize(1)));
@@ -681,7 +680,6 @@ public class GlobalHeadersDialogTest extends BaseUITest {
         activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
         onView(withId(R.id.cardview_activity_global_settings_global_headers)).perform(scrollTo());
         onView(withId(R.id.cardview_activity_global_settings_global_headers)).perform(click());
-        assertEquals(1, getDialog().getAdapter().getAllItems().size());
         onView(withId(R.id.imageview_dialog_global_headers_add)).perform(click());
         rotateScreen(activityScenario);
         onView(withId(R.id.imageview_dialog_global_header_edit_cancel)).perform(click());
@@ -702,7 +700,6 @@ public class GlobalHeadersDialogTest extends BaseUITest {
         activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
         onView(withId(R.id.cardview_activity_global_settings_global_headers)).perform(scrollTo());
         onView(withId(R.id.cardview_activity_global_settings_global_headers)).perform(click());
-        assertEquals(1, getDialog().getAdapter().getAllItems().size());
         onView(withId(R.id.imageview_dialog_global_headers_add)).perform(click());
         onView(withId(R.id.edittext_dialog_global_header_edit_name)).perform(replaceText("AName"));
         onView(withId(R.id.edittext_dialog_global_header_edit_value)).perform(replaceText("AValue"));
@@ -731,7 +728,6 @@ public class GlobalHeadersDialogTest extends BaseUITest {
         activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
         onView(withId(R.id.cardview_activity_global_settings_global_headers)).perform(scrollTo());
         onView(withId(R.id.cardview_activity_global_settings_global_headers)).perform(click());
-        assertEquals(1, getDialog().getAdapter().getAllItems().size());
         rotateScreen(activityScenario);
         onView(withId(R.id.imageview_dialog_global_headers_add)).perform(click());
         onView(withId(R.id.edittext_dialog_global_header_edit_name)).perform(replaceText("AName"));
@@ -1003,8 +999,10 @@ public class GlobalHeadersDialogTest extends BaseUITest {
         onView(withId(R.id.cardview_activity_global_settings_global_headers)).perform(scrollTo());
         onView(withId(R.id.cardview_activity_global_settings_global_headers)).perform(click());
         onView(withId(R.id.imageview_dialog_global_headers_add)).perform(click());
+        rotateScreen(activityScenario);
         onView(withId(R.id.edittext_dialog_global_header_edit_name)).perform(replaceText("Name\nName"));
         onView(withId(R.id.edittext_dialog_global_header_edit_value)).perform(replaceText("Name\nName"));
+        rotateScreen(activityScenario);
         onView(withId(R.id.imageview_dialog_global_header_edit_ok)).perform(click());
         onView(allOf(withText("Header name"), withGridLayoutPosition(1, 0))).check(matches(isDisplayed()));
         onView(allOf(withText("Value contains invalid characters"), withGridLayoutPosition(1, 1))).check(matches(isDisplayed()));
@@ -1023,6 +1021,364 @@ public class GlobalHeadersDialogTest extends BaseUITest {
         Header header = getDialog().getAdapter().getItem(0);
         assertEquals("success", header.getName());
         assertEquals("success", header.getValue());
+        onView(withId(R.id.imageview_dialog_global_headers_cancel)).perform(click());
+        activityScenario.close();
+    }
+
+    @Test
+    public void testDefaultHeaderOpenCancel() {
+        addDefaultHeader();
+        resetGlobalHeaderHandler();
+        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
+        onView(withId(R.id.cardview_activity_global_settings_global_headers)).perform(scrollTo());
+        onView(withId(R.id.cardview_activity_global_settings_global_headers)).perform(click());
+        onView(allOf(withId(R.id.cardview_list_item_global_header), withChildDescendantAtPosition(withId(R.id.listview_dialog_global_headers_headers), 0))).perform(click());
+        onView(withId(R.id.edittext_dialog_global_header_edit_name)).perform(replaceText("Name"));
+        onView(withId(R.id.edittext_dialog_global_header_edit_value)).perform(replaceText("Value"));
+        onView(withId(R.id.imageview_dialog_global_header_edit_cancel)).perform(click());
+        onView(withId(R.id.listview_dialog_global_headers_headers)).check(matches(withListSize(1)));
+        onView(allOf(withId(R.id.textview_list_item_global_header_no_header), withChildDescendantAtPosition(withId(R.id.listview_dialog_global_headers_headers), 0))).check(matches(not(isDisplayed())));
+        onView(allOf(withId(R.id.textview_list_item_global_header_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_global_headers_headers), 0))).check(matches(withText("User-Agent")));
+        onView(allOf(withId(R.id.textview_list_item_global_header_value), withChildDescendantAtPosition(withId(R.id.listview_dialog_global_headers_headers), 0))).check(matches(withText("Mozilla/5.0")));
+        assertEquals(1, getDialog().getAdapter().getAllItems().size());
+        onView(withId(R.id.imageview_dialog_global_headers_cancel)).perform(click());
+        activityScenario.close();
+    }
+
+    @Test
+    public void testDefaultHeaderOpenCancelScreenRotation() {
+        addDefaultHeader();
+        resetGlobalHeaderHandler();
+        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
+        onView(withId(R.id.cardview_activity_global_settings_global_headers)).perform(scrollTo());
+        onView(withId(R.id.cardview_activity_global_settings_global_headers)).perform(click());
+        onView(allOf(withId(R.id.cardview_list_item_global_header), withChildDescendantAtPosition(withId(R.id.listview_dialog_global_headers_headers), 0))).perform(click());
+        rotateScreen(activityScenario);
+        onView(withId(R.id.edittext_dialog_global_header_edit_name)).perform(replaceText("Name"));
+        onView(withId(R.id.edittext_dialog_global_header_edit_value)).perform(replaceText("Value"));
+        rotateScreen(activityScenario);
+        onView(withId(R.id.imageview_dialog_global_header_edit_cancel)).perform(click());
+        onView(withId(R.id.listview_dialog_global_headers_headers)).check(matches(withListSize(1)));
+        onView(allOf(withId(R.id.textview_list_item_global_header_no_header), withChildDescendantAtPosition(withId(R.id.listview_dialog_global_headers_headers), 0))).check(matches(not(isDisplayed())));
+        onView(allOf(withId(R.id.textview_list_item_global_header_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_global_headers_headers), 0))).check(matches(withText("User-Agent")));
+        onView(allOf(withId(R.id.textview_list_item_global_header_value), withChildDescendantAtPosition(withId(R.id.listview_dialog_global_headers_headers), 0))).check(matches(withText("Mozilla/5.0")));
+        assertEquals(1, getDialog().getAdapter().getAllItems().size());
+        onView(withId(R.id.imageview_dialog_global_headers_cancel)).perform(click());
+        activityScenario.close();
+    }
+
+    @Test
+    public void testDefaultHeaderOpenOk() {
+        addDefaultHeader();
+        resetGlobalHeaderHandler();
+        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
+        onView(withId(R.id.cardview_activity_global_settings_global_headers)).perform(scrollTo());
+        onView(withId(R.id.cardview_activity_global_settings_global_headers)).perform(click());
+        onView(allOf(withId(R.id.cardview_list_item_global_header), withChildDescendantAtPosition(withId(R.id.listview_dialog_global_headers_headers), 0))).perform(click());
+        onView(withId(R.id.edittext_dialog_global_header_edit_name)).perform(replaceText("Name"));
+        onView(withId(R.id.edittext_dialog_global_header_edit_value)).perform(replaceText("Value"));
+        onView(withId(R.id.imageview_dialog_global_header_edit_ok)).perform(click());
+        onView(withId(R.id.listview_dialog_global_headers_headers)).check(matches(withListSize(1)));
+        onView(allOf(withId(R.id.textview_list_item_global_header_no_header), withChildDescendantAtPosition(withId(R.id.listview_dialog_global_headers_headers), 0))).check(matches(not(isDisplayed())));
+        onView(allOf(withId(R.id.textview_list_item_global_header_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_global_headers_headers), 0))).check(matches(withText("Name")));
+        onView(allOf(withId(R.id.textview_list_item_global_header_value), withChildDescendantAtPosition(withId(R.id.listview_dialog_global_headers_headers), 0))).check(matches(withText("Value")));
+        assertEquals(1, getDialog().getAdapter().getAllItems().size());
+        Header header = getDialog().getAdapter().getItem(0);
+        assertEquals("Name", header.getName());
+        assertEquals("Value", header.getValue());
+        onView(withId(R.id.imageview_dialog_global_headers_cancel)).perform(click());
+        activityScenario.close();
+    }
+
+    @Test
+    public void testDefaultHeaderOpenOkScreenRotation() {
+        addDefaultHeader();
+        resetGlobalHeaderHandler();
+        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
+        onView(withId(R.id.cardview_activity_global_settings_global_headers)).perform(scrollTo());
+        onView(withId(R.id.cardview_activity_global_settings_global_headers)).perform(click());
+        onView(allOf(withId(R.id.cardview_list_item_global_header), withChildDescendantAtPosition(withId(R.id.listview_dialog_global_headers_headers), 0))).perform(click());
+        rotateScreen(activityScenario);
+        onView(withId(R.id.edittext_dialog_global_header_edit_name)).perform(replaceText("Name"));
+        onView(withId(R.id.edittext_dialog_global_header_edit_value)).perform(replaceText("Value"));
+        rotateScreen(activityScenario);
+        onView(withId(R.id.imageview_dialog_global_header_edit_ok)).perform(click());
+        onView(withId(R.id.listview_dialog_global_headers_headers)).check(matches(withListSize(1)));
+        onView(allOf(withId(R.id.textview_list_item_global_header_no_header), withChildDescendantAtPosition(withId(R.id.listview_dialog_global_headers_headers), 0))).check(matches(not(isDisplayed())));
+        onView(allOf(withId(R.id.textview_list_item_global_header_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_global_headers_headers), 0))).check(matches(withText("Name")));
+        onView(allOf(withId(R.id.textview_list_item_global_header_value), withChildDescendantAtPosition(withId(R.id.listview_dialog_global_headers_headers), 0))).check(matches(withText("Value")));
+        assertEquals(1, getDialog().getAdapter().getAllItems().size());
+        Header header = getDialog().getAdapter().getItem(0);
+        assertEquals("Name", header.getName());
+        assertEquals("Value", header.getValue());
+        onView(withId(R.id.imageview_dialog_global_headers_cancel)).perform(click());
+        activityScenario.close();
+    }
+
+    @Test
+    public void testThreeHeadersOpenCancel() {
+        getHeaderDAO().insertHeader(getHeader(1));
+        getHeaderDAO().insertHeader(getHeader(2));
+        getHeaderDAO().insertHeader(getHeader(3));
+        resetGlobalHeaderHandler();
+        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
+        onView(withId(R.id.cardview_activity_global_settings_global_headers)).perform(scrollTo());
+        onView(withId(R.id.cardview_activity_global_settings_global_headers)).perform(click());
+        onView(allOf(withId(R.id.cardview_list_item_global_header), withChildDescendantAtPosition(withId(R.id.listview_dialog_global_headers_headers), 1))).perform(click());
+        onView(withId(R.id.edittext_dialog_global_header_edit_name)).perform(replaceText("AName"));
+        onView(withId(R.id.edittext_dialog_global_header_edit_value)).perform(replaceText("AValue"));
+        onView(withId(R.id.imageview_dialog_global_header_edit_cancel)).perform(click());
+        onView(withId(R.id.listview_dialog_global_headers_headers)).check(matches(withListSize(3)));
+        onView(allOf(withId(R.id.textview_list_item_global_header_no_header), withChildDescendantAtPosition(withId(R.id.listview_dialog_global_headers_headers), 0))).check(matches(not(isDisplayed())));
+        onView(allOf(withId(R.id.textview_list_item_global_header_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_global_headers_headers), 0))).check(matches(withText("Name1")));
+        onView(allOf(withId(R.id.textview_list_item_global_header_value), withChildDescendantAtPosition(withId(R.id.listview_dialog_global_headers_headers), 0))).check(matches(withText("Value1")));
+        onView(allOf(withId(R.id.textview_list_item_global_header_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_global_headers_headers), 1))).check(matches(withText("Name2")));
+        onView(allOf(withId(R.id.textview_list_item_global_header_value), withChildDescendantAtPosition(withId(R.id.listview_dialog_global_headers_headers), 1))).check(matches(withText("Value2")));
+        onView(allOf(withId(R.id.textview_list_item_global_header_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_global_headers_headers), 2))).check(matches(withText("Name3")));
+        onView(allOf(withId(R.id.textview_list_item_global_header_value), withChildDescendantAtPosition(withId(R.id.listview_dialog_global_headers_headers), 2))).check(matches(withText("Value3")));
+        onView(withId(R.id.imageview_dialog_global_headers_cancel)).perform(click());
+        activityScenario.close();
+    }
+
+    @Test
+    public void testThreeHeadersOpenCancelScreenRotation() {
+        getHeaderDAO().insertHeader(getHeader(1));
+        getHeaderDAO().insertHeader(getHeader(2));
+        getHeaderDAO().insertHeader(getHeader(3));
+        resetGlobalHeaderHandler();
+        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
+        onView(withId(R.id.cardview_activity_global_settings_global_headers)).perform(scrollTo());
+        onView(withId(R.id.cardview_activity_global_settings_global_headers)).perform(click());
+        onView(allOf(withId(R.id.cardview_list_item_global_header), withChildDescendantAtPosition(withId(R.id.listview_dialog_global_headers_headers), 1))).perform(click());
+        rotateScreen(activityScenario);
+        onView(withId(R.id.edittext_dialog_global_header_edit_name)).perform(replaceText("AName"));
+        onView(withId(R.id.edittext_dialog_global_header_edit_value)).perform(replaceText("AValue"));
+        onView(withId(R.id.imageview_dialog_global_header_edit_cancel)).perform(click());
+        rotateScreen(activityScenario);
+        onView(withId(R.id.listview_dialog_global_headers_headers)).check(matches(withListSize(3)));
+        onView(allOf(withId(R.id.textview_list_item_global_header_no_header), withChildDescendantAtPosition(withId(R.id.listview_dialog_global_headers_headers), 0))).check(matches(not(isDisplayed())));
+        onView(allOf(withId(R.id.textview_list_item_global_header_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_global_headers_headers), 0))).check(matches(withText("Name1")));
+        onView(allOf(withId(R.id.textview_list_item_global_header_value), withChildDescendantAtPosition(withId(R.id.listview_dialog_global_headers_headers), 0))).check(matches(withText("Value1")));
+        onView(allOf(withId(R.id.textview_list_item_global_header_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_global_headers_headers), 1))).check(matches(withText("Name2")));
+        onView(allOf(withId(R.id.textview_list_item_global_header_value), withChildDescendantAtPosition(withId(R.id.listview_dialog_global_headers_headers), 1))).check(matches(withText("Value2")));
+        onView(allOf(withId(R.id.textview_list_item_global_header_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_global_headers_headers), 2))).check(matches(withText("Name3")));
+        onView(allOf(withId(R.id.textview_list_item_global_header_value), withChildDescendantAtPosition(withId(R.id.listview_dialog_global_headers_headers), 2))).check(matches(withText("Value3")));
+        onView(withId(R.id.imageview_dialog_global_headers_cancel)).perform(click());
+        activityScenario.close();
+    }
+
+    @Test
+    public void testThreeHeadersOpenOk() {
+        getHeaderDAO().insertHeader(getHeader(1));
+        getHeaderDAO().insertHeader(getHeader(2));
+        getHeaderDAO().insertHeader(getHeader(3));
+        resetGlobalHeaderHandler();
+        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
+        onView(withId(R.id.cardview_activity_global_settings_global_headers)).perform(scrollTo());
+        onView(withId(R.id.cardview_activity_global_settings_global_headers)).perform(click());
+        onView(allOf(withId(R.id.cardview_list_item_global_header), withChildDescendantAtPosition(withId(R.id.listview_dialog_global_headers_headers), 1))).perform(click());
+        onView(withId(R.id.edittext_dialog_global_header_edit_name)).perform(replaceText("AName"));
+        onView(withId(R.id.edittext_dialog_global_header_edit_value)).perform(replaceText("AValue"));
+        onView(withId(R.id.imageview_dialog_global_header_edit_ok)).perform(click());
+        onView(withId(R.id.listview_dialog_global_headers_headers)).check(matches(withListSize(3)));
+        onView(allOf(withId(R.id.textview_list_item_global_header_no_header), withChildDescendantAtPosition(withId(R.id.listview_dialog_global_headers_headers), 0))).check(matches(not(isDisplayed())));
+        onView(allOf(withId(R.id.textview_list_item_global_header_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_global_headers_headers), 0))).check(matches(withText("AName")));
+        onView(allOf(withId(R.id.textview_list_item_global_header_value), withChildDescendantAtPosition(withId(R.id.listview_dialog_global_headers_headers), 0))).check(matches(withText("AValue")));
+        onView(allOf(withId(R.id.textview_list_item_global_header_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_global_headers_headers), 1))).check(matches(withText("Name1")));
+        onView(allOf(withId(R.id.textview_list_item_global_header_value), withChildDescendantAtPosition(withId(R.id.listview_dialog_global_headers_headers), 1))).check(matches(withText("Value1")));
+        onView(allOf(withId(R.id.textview_list_item_global_header_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_global_headers_headers), 2))).check(matches(withText("Name3")));
+        onView(allOf(withId(R.id.textview_list_item_global_header_value), withChildDescendantAtPosition(withId(R.id.listview_dialog_global_headers_headers), 2))).check(matches(withText("Value3")));
+        assertEquals(3, getDialog().getAdapter().getAllItems().size());
+        Header header1 = getDialog().getAdapter().getItem(0);
+        Header header2 = getDialog().getAdapter().getItem(1);
+        Header header3 = getDialog().getAdapter().getItem(2);
+        assertEquals("AName", header1.getName());
+        assertEquals("AValue", header1.getValue());
+        assertEquals("Name1", header2.getName());
+        assertEquals("Value1", header2.getValue());
+        assertEquals("Name3", header3.getName());
+        assertEquals("Value3", header3.getValue());
+        onView(withId(R.id.imageview_dialog_global_headers_cancel)).perform(click());
+        activityScenario.close();
+    }
+
+    @Test
+    public void testThreeHeadersOpenOkScreenRotation() {
+        getHeaderDAO().insertHeader(getHeader(1));
+        getHeaderDAO().insertHeader(getHeader(2));
+        getHeaderDAO().insertHeader(getHeader(3));
+        resetGlobalHeaderHandler();
+        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
+        onView(withId(R.id.cardview_activity_global_settings_global_headers)).perform(scrollTo());
+        onView(withId(R.id.cardview_activity_global_settings_global_headers)).perform(click());
+        onView(allOf(withId(R.id.cardview_list_item_global_header), withChildDescendantAtPosition(withId(R.id.listview_dialog_global_headers_headers), 1))).perform(click());
+        rotateScreen(activityScenario);
+        onView(withId(R.id.edittext_dialog_global_header_edit_name)).perform(replaceText("AName"));
+        onView(withId(R.id.edittext_dialog_global_header_edit_value)).perform(replaceText("AValue"));
+        onView(withId(R.id.imageview_dialog_global_header_edit_ok)).perform(click());
+        rotateScreen(activityScenario);
+        onView(withId(R.id.listview_dialog_global_headers_headers)).check(matches(withListSize(3)));
+        onView(allOf(withId(R.id.textview_list_item_global_header_no_header), withChildDescendantAtPosition(withId(R.id.listview_dialog_global_headers_headers), 0))).check(matches(not(isDisplayed())));
+        onView(allOf(withId(R.id.textview_list_item_global_header_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_global_headers_headers), 0))).check(matches(withText("AName")));
+        onView(allOf(withId(R.id.textview_list_item_global_header_value), withChildDescendantAtPosition(withId(R.id.listview_dialog_global_headers_headers), 0))).check(matches(withText("AValue")));
+        onView(allOf(withId(R.id.textview_list_item_global_header_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_global_headers_headers), 1))).check(matches(withText("Name1")));
+        onView(allOf(withId(R.id.textview_list_item_global_header_value), withChildDescendantAtPosition(withId(R.id.listview_dialog_global_headers_headers), 1))).check(matches(withText("Value1")));
+        onView(allOf(withId(R.id.textview_list_item_global_header_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_global_headers_headers), 2))).check(matches(withText("Name3")));
+        onView(allOf(withId(R.id.textview_list_item_global_header_value), withChildDescendantAtPosition(withId(R.id.listview_dialog_global_headers_headers), 2))).check(matches(withText("Value3")));
+        assertEquals(3, getDialog().getAdapter().getAllItems().size());
+        Header header1 = getDialog().getAdapter().getItem(0);
+        Header header2 = getDialog().getAdapter().getItem(1);
+        Header header3 = getDialog().getAdapter().getItem(2);
+        assertEquals("AName", header1.getName());
+        assertEquals("AValue", header1.getValue());
+        assertEquals("Name1", header2.getName());
+        assertEquals("Value1", header2.getValue());
+        assertEquals("Name3", header3.getName());
+        assertEquals("Value3", header3.getValue());
+        onView(withId(R.id.imageview_dialog_global_headers_cancel)).perform(click());
+        activityScenario.close();
+    }
+
+    @Test
+    public void testTwoHeadersOpenValidationFailed() {
+        getHeaderDAO().insertHeader(getHeader(1));
+        getHeaderDAO().insertHeader(getHeader(2));
+        resetGlobalHeaderHandler();
+        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
+        onView(withId(R.id.cardview_activity_global_settings_global_headers)).perform(scrollTo());
+        onView(withId(R.id.cardview_activity_global_settings_global_headers)).perform(click());
+        onView(allOf(withId(R.id.cardview_list_item_global_header), withChildDescendantAtPosition(withId(R.id.listview_dialog_global_headers_headers), 1))).perform(click());
+        onView(withId(R.id.edittext_dialog_global_header_edit_name)).perform(replaceText("1234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789123456789012345678901234567890"));
+        onView(withId(R.id.edittext_dialog_global_header_edit_value)).perform(replaceText("Value\nValue"));
+        onView(withId(R.id.imageview_dialog_global_header_edit_ok)).perform(click());
+        onView(allOf(withText("Header name"), withGridLayoutPosition(1, 0))).check(matches(isDisplayed()));
+        onView(allOf(withText("Maximum length: 128"), withGridLayoutPosition(1, 1))).check(matches(isDisplayed()));
+        onView(allOf(withText("Header value"), withGridLayoutPosition(2, 0))).check(matches(isDisplayed()));
+        onView(allOf(withText("Value contains invalid characters"), withGridLayoutPosition(2, 1))).check(matches(isDisplayed()));
+        onView(withId(R.id.imageview_dialog_validator_error_ok)).perform(click());
+        onView(withId(R.id.edittext_dialog_global_header_edit_name)).perform(replaceText("Success"));
+        onView(withId(R.id.edittext_dialog_global_header_edit_value)).perform(replaceText("Success"));
+        onView(withId(R.id.imageview_dialog_global_header_edit_ok)).perform(click());
+        onView(isRoot()).perform(waitFor(500));
+        onView(withId(R.id.listview_dialog_global_headers_headers)).check(matches(withListSize(2)));
+        onView(allOf(withId(R.id.textview_list_item_global_header_no_header), withChildDescendantAtPosition(withId(R.id.listview_dialog_global_headers_headers), 0))).check(matches(not(isDisplayed())));
+        onView(allOf(withId(R.id.textview_list_item_global_header_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_global_headers_headers), 0))).check(matches(withText("Name1")));
+        onView(allOf(withId(R.id.textview_list_item_global_header_value), withChildDescendantAtPosition(withId(R.id.listview_dialog_global_headers_headers), 0))).check(matches(withText("Value1")));
+        onView(allOf(withId(R.id.textview_list_item_global_header_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_global_headers_headers), 1))).check(matches(withText("Success")));
+        onView(allOf(withId(R.id.textview_list_item_global_header_value), withChildDescendantAtPosition(withId(R.id.listview_dialog_global_headers_headers), 1))).check(matches(withText("Success")));
+        assertEquals(2, getDialog().getAdapter().getAllItems().size());
+        Header header1 = getDialog().getAdapter().getItem(0);
+        Header header2 = getDialog().getAdapter().getItem(1);
+        assertEquals("Name1", header1.getName());
+        assertEquals("Value1", header1.getValue());
+        assertEquals("Success", header2.getName());
+        assertEquals("Success", header2.getValue());
+        onView(withId(R.id.imageview_dialog_global_headers_cancel)).perform(click());
+        activityScenario.close();
+    }
+
+    @Test
+    public void testTwoHeadersOpenValidationFailedScreenRotation() {
+        getHeaderDAO().insertHeader(getHeader(1));
+        getHeaderDAO().insertHeader(getHeader(2));
+        resetGlobalHeaderHandler();
+        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
+        onView(withId(R.id.cardview_activity_global_settings_global_headers)).perform(scrollTo());
+        onView(withId(R.id.cardview_activity_global_settings_global_headers)).perform(click());
+        onView(allOf(withId(R.id.cardview_list_item_global_header), withChildDescendantAtPosition(withId(R.id.listview_dialog_global_headers_headers), 1))).perform(click());
+        onView(withId(R.id.edittext_dialog_global_header_edit_name)).perform(replaceText("1234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789123456789012345678901234567890"));
+        onView(withId(R.id.edittext_dialog_global_header_edit_value)).perform(replaceText("Value\nValue"));
+        rotateScreen(activityScenario);
+        onView(withId(R.id.imageview_dialog_global_header_edit_ok)).perform(click());
+        onView(allOf(withText("Header name"), withGridLayoutPosition(1, 0))).check(matches(isDisplayed()));
+        onView(allOf(withText("Maximum length: 128"), withGridLayoutPosition(1, 1))).check(matches(isDisplayed()));
+        onView(allOf(withText("Header value"), withGridLayoutPosition(2, 0))).check(matches(isDisplayed()));
+        onView(allOf(withText("Value contains invalid characters"), withGridLayoutPosition(2, 1))).check(matches(isDisplayed()));
+        onView(withId(R.id.imageview_dialog_validator_error_ok)).perform(click());
+        onView(withId(R.id.edittext_dialog_global_header_edit_name)).perform(replaceText("Success"));
+        onView(withId(R.id.edittext_dialog_global_header_edit_value)).perform(replaceText("Success"));
+        rotateScreen(activityScenario);
+        onView(withId(R.id.imageview_dialog_global_header_edit_ok)).perform(click());
+        onView(isRoot()).perform(waitFor(500));
+        onView(withId(R.id.listview_dialog_global_headers_headers)).check(matches(withListSize(2)));
+        onView(allOf(withId(R.id.textview_list_item_global_header_no_header), withChildDescendantAtPosition(withId(R.id.listview_dialog_global_headers_headers), 0))).check(matches(not(isDisplayed())));
+        onView(allOf(withId(R.id.textview_list_item_global_header_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_global_headers_headers), 0))).check(matches(withText("Name1")));
+        onView(allOf(withId(R.id.textview_list_item_global_header_value), withChildDescendantAtPosition(withId(R.id.listview_dialog_global_headers_headers), 0))).check(matches(withText("Value1")));
+        onView(allOf(withId(R.id.textview_list_item_global_header_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_global_headers_headers), 1))).check(matches(withText("Success")));
+        onView(allOf(withId(R.id.textview_list_item_global_header_value), withChildDescendantAtPosition(withId(R.id.listview_dialog_global_headers_headers), 1))).check(matches(withText("Success")));
+        assertEquals(2, getDialog().getAdapter().getAllItems().size());
+        Header header1 = getDialog().getAdapter().getItem(0);
+        Header header2 = getDialog().getAdapter().getItem(1);
+        assertEquals("Name1", header1.getName());
+        assertEquals("Value1", header1.getValue());
+        assertEquals("Success", header2.getName());
+        assertEquals("Success", header2.getValue());
+        onView(withId(R.id.imageview_dialog_global_headers_cancel)).perform(click());
+        activityScenario.close();
+    }
+
+    @Test
+    public void testThreeHeadersOpenAndDelete() {
+        getHeaderDAO().insertHeader(getHeader(1));
+        getHeaderDAO().insertHeader(getHeader(2));
+        getHeaderDAO().insertHeader(getHeader(3));
+        resetGlobalHeaderHandler();
+        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
+        onView(withId(R.id.cardview_activity_global_settings_global_headers)).perform(scrollTo());
+        onView(withId(R.id.cardview_activity_global_settings_global_headers)).perform(click());
+        onView(allOf(withId(R.id.imageview_list_item_global_header_delete), withChildDescendantAtPosition(withId(R.id.listview_dialog_global_headers_headers), 2))).perform(click());
+        onView(withId(R.id.imageview_dialog_confirm_ok)).perform(click());
+        onView(allOf(withId(R.id.cardview_list_item_global_header), withChildDescendantAtPosition(withId(R.id.listview_dialog_global_headers_headers), 1))).perform(click());
+        onView(withId(R.id.edittext_dialog_global_header_edit_name)).perform(replaceText("Name3"));
+        onView(withId(R.id.edittext_dialog_global_header_edit_value)).perform(replaceText("Value3"));
+        onView(withId(R.id.imageview_dialog_global_header_edit_ok)).perform(click());
+        onView(withId(R.id.listview_dialog_global_headers_headers)).check(matches(withListSize(2)));
+        onView(allOf(withId(R.id.textview_list_item_global_header_no_header), withChildDescendantAtPosition(withId(R.id.listview_dialog_global_headers_headers), 0))).check(matches(not(isDisplayed())));
+        onView(allOf(withId(R.id.textview_list_item_global_header_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_global_headers_headers), 0))).check(matches(withText("Name1")));
+        onView(allOf(withId(R.id.textview_list_item_global_header_value), withChildDescendantAtPosition(withId(R.id.listview_dialog_global_headers_headers), 0))).check(matches(withText("Value1")));
+        onView(allOf(withId(R.id.textview_list_item_global_header_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_global_headers_headers), 1))).check(matches(withText("Name3")));
+        onView(allOf(withId(R.id.textview_list_item_global_header_value), withChildDescendantAtPosition(withId(R.id.listview_dialog_global_headers_headers), 1))).check(matches(withText("Value3")));
+        assertEquals(2, getDialog().getAdapter().getAllItems().size());
+        Header header1 = getDialog().getAdapter().getItem(0);
+        Header header2 = getDialog().getAdapter().getItem(1);
+        assertEquals("Name1", header1.getName());
+        assertEquals("Value1", header1.getValue());
+        assertEquals("Name3", header2.getName());
+        assertEquals("Value3", header2.getValue());
+        onView(withId(R.id.imageview_dialog_global_headers_cancel)).perform(click());
+        activityScenario.close();
+    }
+
+    @Test
+    public void testThreeHeadersOpenAndDeleteScreenRotation() {
+        getHeaderDAO().insertHeader(getHeader(1));
+        getHeaderDAO().insertHeader(getHeader(2));
+        getHeaderDAO().insertHeader(getHeader(3));
+        resetGlobalHeaderHandler();
+        activityScenario = launchSettingsInputActivity(GlobalSettingsActivity.class, getBypassSystemSAFBundle());
+        onView(withId(R.id.cardview_activity_global_settings_global_headers)).perform(scrollTo());
+        onView(withId(R.id.cardview_activity_global_settings_global_headers)).perform(click());
+        rotateScreen(activityScenario);
+        onView(allOf(withId(R.id.imageview_list_item_global_header_delete), withChildDescendantAtPosition(withId(R.id.listview_dialog_global_headers_headers), 2))).perform(click());
+        onView(withId(R.id.imageview_dialog_confirm_ok)).perform(click());
+        onView(allOf(withId(R.id.cardview_list_item_global_header), withChildDescendantAtPosition(withId(R.id.listview_dialog_global_headers_headers), 1))).perform(click());
+        onView(withId(R.id.edittext_dialog_global_header_edit_name)).perform(replaceText("Name3"));
+        onView(withId(R.id.edittext_dialog_global_header_edit_value)).perform(replaceText("Value3"));
+        rotateScreen(activityScenario);
+        onView(withId(R.id.imageview_dialog_global_header_edit_ok)).perform(click());
+        onView(withId(R.id.listview_dialog_global_headers_headers)).check(matches(withListSize(2)));
+        onView(allOf(withId(R.id.textview_list_item_global_header_no_header), withChildDescendantAtPosition(withId(R.id.listview_dialog_global_headers_headers), 0))).check(matches(not(isDisplayed())));
+        onView(allOf(withId(R.id.textview_list_item_global_header_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_global_headers_headers), 0))).check(matches(withText("Name1")));
+        onView(allOf(withId(R.id.textview_list_item_global_header_value), withChildDescendantAtPosition(withId(R.id.listview_dialog_global_headers_headers), 0))).check(matches(withText("Value1")));
+        onView(allOf(withId(R.id.textview_list_item_global_header_name), withChildDescendantAtPosition(withId(R.id.listview_dialog_global_headers_headers), 1))).check(matches(withText("Name3")));
+        onView(allOf(withId(R.id.textview_list_item_global_header_value), withChildDescendantAtPosition(withId(R.id.listview_dialog_global_headers_headers), 1))).check(matches(withText("Value3")));
+        assertEquals(2, getDialog().getAdapter().getAllItems().size());
+        Header header1 = getDialog().getAdapter().getItem(0);
+        Header header2 = getDialog().getAdapter().getItem(1);
+        assertEquals("Name1", header1.getName());
+        assertEquals("Value1", header1.getValue());
+        assertEquals("Name3", header2.getName());
+        assertEquals("Value3", header2.getValue());
         onView(withId(R.id.imageview_dialog_global_headers_cancel)).perform(click());
         activityScenario.close();
     }
