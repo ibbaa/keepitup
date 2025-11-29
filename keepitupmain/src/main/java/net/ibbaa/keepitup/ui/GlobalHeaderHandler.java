@@ -98,8 +98,8 @@ public class GlobalHeaderHandler {
             if (globalSettingsActivity != null) {
                 showMessageDialog(getResources().getString(R.string.text_dialog_general_message_synchronize_headers));
             }
+            return true;
         }
-        return false;
     }
 
     private List<Header> excludeNonGlobal(List<Header> newHeaders) {
