@@ -19,10 +19,13 @@ package net.ibbaa.keepitup.model.validation;
 import android.content.Context;
 
 import net.ibbaa.keepitup.R;
+import net.ibbaa.keepitup.db.DBSetup;
 import net.ibbaa.keepitup.logging.Log;
 import net.ibbaa.keepitup.model.Header;
 import net.ibbaa.keepitup.util.HTTPUtil;
 import net.ibbaa.keepitup.util.StringUtil;
+
+import java.util.List;
 
 @SuppressWarnings("ClassCanBeRecord")
 public class HeaderValidator {
@@ -39,7 +42,7 @@ public class HeaderValidator {
     }
 
     public boolean validateName(Header header) {
-        Log.d(HeaderValidator.class.getName(), "validateName of header " + header);
+        Log.d(HeaderValidator.class.getName(), "validateName for header " + header);
         String name = header.getName();
         if (StringUtil.isEmpty(name) || name.trim().isEmpty()) {
             return false;
@@ -57,8 +60,20 @@ public class HeaderValidator {
         return true;
     }
 
+    public boolean validateNameExists(List<Header> headers, Header header) {
+        Log.d(HeaderValidator.class.getName(), "validateNameExists for header " + header);
+        String name = StringUtil.notNull(header.getName()).trim();
+        for (Header currentHeader : headers) {
+            if (StringUtil.notNull(currentHeader.getName()).trim().equals(name)) {
+                Log.d(DBSetup.class.getName(), "Name exists");
+                return false;
+            }
+        }
+        return true;
+    }
+
     public boolean validateValue(Header header) {
-        Log.d(HeaderValidator.class.getName(), "validateValue of header " + header);
+        Log.d(HeaderValidator.class.getName(), "validateValue for header " + header);
         String value = header.getValue();
         if (value == null) {
             return false;

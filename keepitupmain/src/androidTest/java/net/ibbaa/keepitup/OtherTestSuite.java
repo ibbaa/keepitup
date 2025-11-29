@@ -94,6 +94,7 @@ import net.ibbaa.keepitup.ui.sync.NetworkTaskMainUISyncTaskTest;
 import net.ibbaa.keepitup.ui.sync.NetworkTaskUIBroadcastReceiverTest;
 import net.ibbaa.keepitup.ui.validation.ConnectCountFieldValidatorTest;
 import net.ibbaa.keepitup.ui.validation.FilenameFieldValidatorTest;
+import net.ibbaa.keepitup.ui.validation.HeaderNameExistsFieldValidatorTest;
 import net.ibbaa.keepitup.ui.validation.HeaderNameFieldValidatorTest;
 import net.ibbaa.keepitup.ui.validation.HeaderValueFieldValidatorTest;
 import net.ibbaa.keepitup.ui.validation.HostFieldValidatorTest;
@@ -228,6 +229,7 @@ import org.junit.runners.Suite;
         //net.ibbaa.keepitup.ui.validation
         ConnectCountFieldValidatorTest.class,
         FilenameFieldValidatorTest.class,
+        HeaderNameExistsFieldValidatorTest.class,
         HeaderNameFieldValidatorTest.class,
         HeaderValueFieldValidatorTest.class,
         HostFieldValidatorTest.class,

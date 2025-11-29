@@ -29,6 +29,8 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import java.util.List;
+
 @SmallTest
 @RunWith(AndroidJUnit4.class)
 public class StandardHeaderValidatorTest {
@@ -79,6 +81,35 @@ public class StandardHeaderValidatorTest {
         assertEquals("Header name", result.getFieldName());
         assertEquals("Validation successful", result.getMessage());
         result = validator.validateName("abc");
+        assertTrue(result.isValidationSuccessful());
+        assertEquals("Header name", result.getFieldName());
+        assertEquals("Validation successful", result.getMessage());
+    }
+
+    @Test
+    public void testValidateNameExists() {
+        List<String> existingNames = List.of("", "name1", "name2");
+        ValidationResult result = validator.validateNameExists(existingNames, null);
+        assertFalse(result.isValidationSuccessful());
+        assertEquals("Header name", result.getFieldName());
+        assertEquals("Value already exists", result.getMessage());
+        result = validator.validateNameExists(existingNames, "");
+        assertFalse(result.isValidationSuccessful());
+        assertEquals("Header name", result.getFieldName());
+        assertEquals("Value already exists", result.getMessage());
+        result = validator.validateNameExists(existingNames, "  ");
+        assertFalse(result.isValidationSuccessful());
+        assertEquals("Header name", result.getFieldName());
+        assertEquals("Value already exists", result.getMessage());
+        result = validator.validateNameExists(existingNames, " name2 ");
+        assertFalse(result.isValidationSuccessful());
+        assertEquals("Header name", result.getFieldName());
+        assertEquals("Value already exists", result.getMessage());
+        result = validator.validateNameExists(existingNames, "name1");
+        assertFalse(result.isValidationSuccessful());
+        assertEquals("Header name", result.getFieldName());
+        assertEquals("Value already exists", result.getMessage());
+        result = validator.validateNameExists(existingNames, "name3");
         assertTrue(result.isValidationSuccessful());
         assertEquals("Header name", result.getFieldName());
         assertEquals("Validation successful", result.getMessage());

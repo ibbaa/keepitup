@@ -232,6 +232,17 @@ public class GlobalHeadersDialog extends DialogFragmentBase implements GlobalHea
         globalHeaderEditDialog.dismiss();
     }
 
+    @Override
+    public List<String> getExistingHeaderNames() {
+        Log.d(GlobalHeadersDialog.class.getName(), "getExistingHeaderNames");
+        List<String> names = new ArrayList<>();
+        List<Header> headers = getAdapter().getAllItems();
+        for (Header header : headers) {
+            names.add(header.getName());
+        }
+        return names;
+    }
+
     private void onHeaderAddClicked(View view) {
         Log.d(GlobalHeadersDialog.class.getName(), "onHeaderAddClicked");
         showGlobalHeaderEditDialog(new Header(), -1);

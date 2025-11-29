@@ -1025,17 +1025,20 @@ public class DBSetupTest {
     public void testImportGlobalHeaders() {
         Map<String, ?> headerMap1 = getHeader(-1).toMap();
         Map<String, ?> headerMap2 = getHeader(0).toMap();
-        Map<String, ?> headerMap3 = getHeader(-2).toMap();
+        Map<String, ?> headerMap3 = getHeader(-1).toMap();
+        Header header4 = getHeader(-1);
+        header4.setName("  otherName  ");
+        Map<String, ?> headerMap4 = header4.toMap();
         assertTrue(headerDAO.readAllHeaders().isEmpty());
-        setup.importGlobalHeaders(Arrays.asList(headerMap1, headerMap2, headerMap3));
+        setup.importGlobalHeaders(Arrays.asList(headerMap1, headerMap2, headerMap3, headerMap4));
         List<Header> headerList = headerDAO.readAllHeaders();
         List<Header> globalHeaderList = headerDAO.readGlobalHeaders();
         assertEquals(2, headerList.size());
         assertEquals(2, globalHeaderList.size());
-        assertTrue(getHeader(-1).isTechnicallyEqual(headerList.get(0)));
-        assertTrue(getHeader(-1).isTechnicallyEqual(headerList.get(1)));
-        assertTrue(getHeader(-1).isTechnicallyEqual(globalHeaderList.get(0)));
-        assertTrue(getHeader(-1).isTechnicallyEqual(globalHeaderList.get(1)));
+        assertTrue(containsName(headerList, "name"));
+        assertTrue(containsName(headerList, "otherName"));
+        assertTrue(containsName(globalHeaderList, "name"));
+        assertTrue(containsName(globalHeaderList, "otherName"));
     }
 
     @Test
@@ -1061,6 +1064,15 @@ public class DBSetupTest {
         assertTrue(headerDAO.readAllHeaders().isEmpty());
         setup.importGlobalHeaders(Arrays.asList(headerMap1, headerMap2, headerMap3, headerMap4, headerMap5, headerMap6));
         assertTrue(headerDAO.readAllHeaders().isEmpty());
+    }
+
+    private boolean containsName(List<Header> headers, String name) {
+        for (Header header : headers) {
+            if (header.getName().equals(name)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private NetworkTask getNetworkTask1() {

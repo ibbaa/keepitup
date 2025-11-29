@@ -151,12 +151,13 @@ public class GlobalHeaderEditDialog extends DialogFragmentBase implements Contex
 
     private void onOkClicked(View view) {
         Log.d(GlobalHeaderEditDialog.class.getName(), "onOkClicked");
-        List<ValidationResult> validationResult = validateInput();
+        int position = BundleUtil.integerFromBundle(getPositionKey(), requireArguments());
+        List<ValidationResult> validationResult = validateInput(position);
         if (!hasErrors(validationResult)) {
             Log.d(GlobalHeaderEditDialog.class.getName(), "Validation was successful");
             GlobalHeaderEditSupport globalHeaderEditSupport = getGlobalHeaderEditSupport();
             if (globalHeaderEditSupport != null) {
-                globalHeaderEditSupport.onGlobalHeaderEditDialogOkClicked(this, BundleUtil.integerFromBundle(getPositionKey(), requireArguments()));
+                globalHeaderEditSupport.onGlobalHeaderEditDialogOkClicked(this, position);
             } else {
                 Log.e(GlobalHeaderEditDialog.class.getName(), "globalHeaderEditSupport is null");
                 dismiss();
@@ -207,14 +208,27 @@ public class GlobalHeaderEditDialog extends DialogFragmentBase implements Contex
         return result.isValidationSuccessful();
     }
 
-    private List<ValidationResult> validateInput() {
-        Log.d(GlobalHeaderEditDialog.class.getName(), "validateInput");
+    private List<ValidationResult> validateInput(int position) {
+        Log.d(GlobalHeaderEditDialog.class.getName(), "validateInput for position " + position);
         List<ValidationResult> validationResults = new ArrayList<>();
         HeaderValidator validator = new StandardHeaderValidator(getContext());
         ValidationResult nameResult = validator.validateName(getName());
         ValidationResult valueResult = validator.validateValue(getValue());
         if (!nameResult.isValidationSuccessful()) {
             validationResults.add(nameResult);
+        }
+        GlobalHeaderEditSupport globalHeaderEditSupport = getGlobalHeaderEditSupport();
+        if (globalHeaderEditSupport != null) {
+            List<String> currentHeaderNames = globalHeaderEditSupport.getExistingHeaderNames();
+            if (position >= 0 && position < currentHeaderNames.size()) {
+                currentHeaderNames.remove(position);
+            }
+            ValidationResult nameExistsResult = validator.validateNameExists(currentHeaderNames, getName());
+            if (!nameExistsResult.isValidationSuccessful()) {
+                validationResults.add(nameExistsResult);
+            }
+        } else {
+            Log.e(GlobalHeaderEditDialog.class.getName(), "globalHeaderEditSupport is null");
         }
         if (!valueResult.isValidationSuccessful()) {
             validationResults.add(valueResult);

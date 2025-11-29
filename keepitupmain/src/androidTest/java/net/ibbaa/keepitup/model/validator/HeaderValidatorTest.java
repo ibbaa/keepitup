@@ -30,6 +30,8 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import java.util.List;
+
 @SmallTest
 @RunWith(AndroidJUnit4.class)
 public class HeaderValidatorTest {
@@ -82,6 +84,18 @@ public class HeaderValidatorTest {
         header = getHeader("  Content-Type ", "Test");
         assertTrue(validator.validateName(header));
         assertTrue(validator.validate(header));
+    }
+
+    @Test
+    public void testValidateNameExists() {
+        Header header1 = getHeader(null, "Test");
+        Header header2 = getHeader("name1", "Test");
+        Header header3 = getHeader("name2", "Test");
+        List<Header> existingHeaders = List.of(header1, header2, header3);
+        assertFalse(validator.validateNameExists(existingHeaders, getHeader(null, "Test")));
+        assertFalse(validator.validateNameExists(existingHeaders, getHeader("  ", "Test")));
+        assertFalse(validator.validateNameExists(existingHeaders, getHeader("name2", "Test")));
+        assertTrue(validator.validateNameExists(existingHeaders, getHeader("name3", "Test")));
     }
 
     @Test

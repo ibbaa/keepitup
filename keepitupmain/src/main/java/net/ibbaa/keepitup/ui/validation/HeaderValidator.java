@@ -16,9 +16,13 @@
 
 package net.ibbaa.keepitup.ui.validation;
 
+import java.util.List;
+
 public interface HeaderValidator {
 
     ValidationResult validateName(String name);
+
+    ValidationResult validateNameExists(List<String> names, String name);
 
     ValidationResult validateValue(String value);
 }

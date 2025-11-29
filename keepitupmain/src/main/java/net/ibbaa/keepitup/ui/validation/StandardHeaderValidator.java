@@ -22,6 +22,8 @@ import android.content.res.Resources;
 import net.ibbaa.keepitup.R;
 import net.ibbaa.keepitup.logging.Log;
 
+import java.util.List;
+
 @SuppressWarnings("ClassCanBeRecord")
 public class StandardHeaderValidator implements HeaderValidator {
 
@@ -33,7 +35,7 @@ public class StandardHeaderValidator implements HeaderValidator {
 
     @Override
     public ValidationResult validateName(String name) {
-        Log.d(StandardHeaderValidator.class.getName(), "validateAddress, name is " + name);
+        Log.d(StandardHeaderValidator.class.getName(), "validateName, name is " + name);
         String fieldName = getResources().getString(R.string.header_name_field_name);
         ValidationResult result = new HeaderNameFieldValidator(fieldName, getContext()).validate(name);
         Log.d(StandardHeaderValidator.class.getName(), HeaderNameFieldValidator.class.getSimpleName() + " returned " + result);
@@ -41,8 +43,17 @@ public class StandardHeaderValidator implements HeaderValidator {
     }
 
     @Override
+    public ValidationResult validateNameExists(List<String> names, String name) {
+        Log.d(StandardHeaderValidator.class.getName(), "validateNameExists, name is " + name);
+        String fieldName = getResources().getString(R.string.header_name_field_name);
+        ValidationResult result = new HeaderNameExistsFieldValidator(fieldName, names, getContext()).validate(name);
+        Log.d(StandardHeaderValidator.class.getName(), HeaderNameExistsFieldValidator.class.getSimpleName() + " returned " + result);
+        return result;
+    }
+
+    @Override
     public ValidationResult validateValue(String value) {
-        Log.d(StandardHeaderValidator.class.getName(), "validateAddress, value is " + value);
+        Log.d(StandardHeaderValidator.class.getName(), "validateValue, value is " + value);
         String fieldName = getResources().getString(R.string.header_value_field_name);
         ValidationResult result = new HeaderValueFieldValidator(fieldName, getContext()).validate(value);
         Log.d(StandardHeaderValidator.class.getName(), HeaderValueFieldValidator.class.getSimpleName() + " returned " + result);

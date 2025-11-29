@@ -18,9 +18,13 @@ package net.ibbaa.keepitup.ui.support;
 
 import net.ibbaa.keepitup.ui.dialog.GlobalHeaderEditDialog;
 
+import java.util.List;
+
 public interface GlobalHeaderEditSupport {
 
     void onGlobalHeaderEditDialogOkClicked(GlobalHeaderEditDialog globalHeaderEditDialog, int position);
 
     void onGlobalHeaderEditDialogCancelClicked(GlobalHeaderEditDialog globalHeaderEditDialog);
+
+    List<String> getExistingHeaderNames();
 }

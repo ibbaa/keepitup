@@ -816,19 +816,30 @@ public class DBSetup {
         Log.d(DBSetup.class.getName(), "importGlobalHeaders");
         HeaderDAO dao = new HeaderDAO(getContext());
         HeaderValidator validator = new HeaderValidator(getContext());
+        List<Header> headersToInsert = new ArrayList<>();
         for (Map<String, ?> headerMap : headerList) {
             Header header = new Header(headerMap);
             Log.d(DBSetup.class.getName(), "Header is " + header);
             if (validator.validate(header)) {
                 if (header.getNetworkTaskId() < 0) {
-                    Log.d(DBSetup.class.getName(), "Importing header.");
-                    dao.insertHeader(header);
+                    header.setName(header.getName().trim());
+                    if (validator.validateNameExists(headersToInsert, header)) {
+                        Log.d(DBSetup.class.getName(), "Adding header to import list.");
+                        headersToInsert.add(header);
+                    } else {
+                        Log.e(DBSetup.class.getName(), "Header name exists. Not adding header to import list.");
+                    }
+
                 } else {
                     Log.e(DBSetup.class.getName(), "Header is not a global header and will not be imported: " + header);
                 }
             } else {
                 Log.e(DBSetup.class.getName(), "Header is invalid and will not be imported: " + header);
             }
+        }
+        Log.d(DBSetup.class.getName(), "Inserting all headers...");
+        for (Header header : headersToInsert) {
+            dao.insertHeader(header);
         }
     }
 

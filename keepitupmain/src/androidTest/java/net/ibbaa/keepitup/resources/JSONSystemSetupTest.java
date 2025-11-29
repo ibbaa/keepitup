@@ -556,7 +556,7 @@ public class JSONSystemSetupTest {
         Interval interval2 = intervalDAO.insertInterval(getInterval2());
         Interval interval3 = intervalDAO.insertInterval(getInterval3());
         Header header1 = headerDAO.insertHeader(getHeader1(-1));
-        Header header2 = headerDAO.insertHeader(getHeader1(-1));
+        Header header2 = headerDAO.insertHeader(getHeader2(-1));
         headerDAO.insertHeader(getHeader1(task1.getId()));
         SystemSetupResult exportResult = setup.exportData();
         networkTaskDAO.deleteAllNetworkTasks();
@@ -982,6 +982,19 @@ public class JSONSystemSetupTest {
         SystemSetupResult importResult = setup.importData(exportResult.data());
         assertTrue(importResult.success());
         assertTrue(headerDAO.readAllHeaders().isEmpty());
+    }
+
+    @Test
+    public void testImportDatabaseHeaderExists() {
+        Header header1 = getHeader1(-1);
+        Header header2 = getHeader1(-1);
+        headerDAO.insertHeader(header1);
+        headerDAO.insertHeader(header2);
+        SystemSetupResult exportResult = setup.exportData();
+        headerDAO.deleteAllHeaders();
+        SystemSetupResult importResult = setup.importData(exportResult.data());
+        assertTrue(importResult.success());
+        assertEquals(1, headerDAO.readAllHeaders().size());
     }
 
     @Test

@@ -34,6 +34,7 @@
     <string name="invalid_url_format">No valid URL</string>
     <string name="invalid_file_name">No valid filename</string>
     <string name="invalid_characters">Value contains invalid characters</string>
+    <string name="invalid_exists">Value already exists</string>
     <string name="invalid_range_minimim">Minimum: %d</string>
     <string name="invalid_range_maximum">Maximum: %d</string>
     <string name="invalid_length_maximum">Maximum length: %d</string>
